@@ -461,14 +461,14 @@ export class LeadQualificationAgent {
   /** Pure preflight: no phase or final provider request is sent. */
   planPhasedFinalRequest(candidate:CorrectedLeadWorkflowCandidate,playbook:LeadMarketPlaybook,
     countryCode:string,countryName:string,objective:string,
-    outputs:QualificationPhaseOutput[]){
+    outputs:QualificationPhaseOutput[],finalModel=this.routineModel){
     if(!this.provider.requestBytes)throw new Error("Phase scoring requires an exact provider byte contract");
     const plan=planQualificationFactPhases({candidate,playbook,countryCode,countryName,objective,
       modelVersion:this.routineModel,requestBytes:request=>this.provider.requestBytes!(request)});
     const synthesis=assembleQualificationPhaseSynthesis({candidate,playbook,countryCode,countryName,objective,
       modelVersion:this.routineModel,plan,outputs});
     const request=this.request([candidate],playbook,countryCode,countryName,objective,
-      this.routineModel,synthesis);
+      finalModel,synthesis);
     const bytes=this.provider.requestBytes(request),limit=leadRequestByteLimit(request);
     if(limit!==null&&bytes>limit)throw new LeadRequestTooLargeError(bytes,limit);
     return {plan,synthesis,request};
@@ -504,7 +504,20 @@ export class LeadQualificationAgent {
       if(outputs.length!==plan.phases.length)continue;
       try{
         const final=this.planPhasedFinalRequest(candidate,playbook,countryCode,countryName,objective,outputs);
-        const contract=this.provider.cacheIdentity(final.request);
+        let contract=this.provider.cacheIdentity(final.request);
+        if(this.routineModel!==this.escalationModel){
+          try{
+            const pro=this.planPhasedFinalRequest(candidate,playbook,countryCode,countryName,
+              objective,outputs,this.escalationModel);
+            const proContract=this.provider.cacheIdentity(pro.request);
+            const proPaid=this.provider.paidRequestFingerprint(pro.request);
+            if(/^[a-f0-9]{64}$/.test(proContract)&&/^[a-f0-9]{64}$/.test(proPaid)){
+              const finalCheckpoint=this.finalCheckpointFactory({...scope,countryCode,
+                expectedProviderId:this.provider.id.replace(/^resilient:/,"")});
+              if(await finalCheckpoint.load(pro.request,proContract,proPaid))contract=proContract;
+            }
+          }catch(error){if(!(error instanceof LeadRequestTooLargeError))throw error;}
+        }
         if(/^[a-f0-9]{64}$/.test(contract))contracts.set(candidate.candidateId,contract);
       }catch(error){if(!(error instanceof LeadRequestTooLargeError))throw error;}
     }
@@ -724,8 +737,28 @@ export class LeadQualificationAgent {
       "Phased final score omitted or invalidated the candidate; paid output is retained for investigation, not replayed.",this.promptVersion);
     const allowOemOdm=/\b(?:oem|odm|private[ -]?label|manufactur(?:e|ing))\b/i.test(objective);
     const normalized=normalizeAssessment(value,candidate,routine.response,false,allowOemOdm,this.includeCooperationPaths);
-    if(requiresEscalation(candidate,normalized,value)&&this.routineModel!==this.escalationModel)
-      return failedAssessment(candidate,"Phased final score requires material Pro escalation; no oversized request was replayed.",this.promptVersion);
+    if(requiresEscalation(candidate,normalized,value)&&this.routineModel!==this.escalationModel){
+      let pro:ReturnType<LeadQualificationAgent["planPhasedFinalRequest"]>;
+      try{pro=this.planPhasedFinalRequest(candidate,playbook,countryCode,countryName,
+        objective,outputs,this.escalationModel);}
+      catch(error){if(error instanceof LeadRequestTooLargeError)return failedAssessment(candidate,
+        `The Pro score request exceeds its approved byte limit (${error.message}); the routine response remains saved.`,
+        this.promptVersion);throw error;}
+      const escalated=await this.invokeCheckpointedPhasedFinal(candidate,playbook,countryCode,countryName,
+        objective,pro.request,scope,usageRecords);
+      const proValue=escalated.parsed.assessments.find(item=>item.candidateId===candidate.candidateId);
+      if(!proValue||!escalated.parsed.complete)return failedAssessment(candidate,
+        "Phased Pro score omitted or invalidated the candidate; paid output remains saved, not replayed.",
+        this.promptVersion);
+      const decided=normalizeAssessment(proValue,candidate,escalated.response,true,allowOemOdm,
+        this.includeCooperationPaths);
+      const proContract=this.provider.cacheIdentity(pro.request);
+      if(!/^[a-f0-9]{64}$/.test(proContract))throw new Error("Phased Pro score has no reusable contract");
+      const finalDecision={...decided,warnings:["Material semantic escalation from the saved routine score.",
+        ...decided.warnings]};
+      if(finalDecision.scoringStatus==="completed")this.exactAssessmentContracts.set(finalDecision,proContract);
+      return finalDecision;
+    }
     const expectedProvider=this.provider.id.replace(/^resilient:/,"");
     if(routine.response.modelVersion!==this.routineModel||routine.response.actualProviderId!==expectedProvider)
       return failedAssessment(candidate,"Phased final score used a different provider/model; primary-route cache cannot safely retain it.",this.promptVersion);

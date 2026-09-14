@@ -62,7 +62,7 @@ const agentCandidate={...correctedCandidate,evidence:[originalEvidence,...agentE
       statement:`Corrected networking fact ${index}: ${createHash("sha256")
         .update(`agent-fact-${index}`).digest("hex")}`,evidenceIds:[item.id],
       status:index===25?"conflicting" as const:"supported" as const}))]}};
-function agentProvider(failPhaseAt=0){
+function agentProvider(failPhaseAt=0,semanticEscalation=false){
   const calls:StructuredAiRequest<unknown>[]=[];
   let phaseCalls=0;
   return {calls,provider:{id:"synthetic-phase-agent",requestBytes:(input:StructuredAiRequest<unknown>)=>wire.requestBytes(input),
@@ -85,8 +85,9 @@ function agentProvider(failPhaseAt=0){
         dimension,score,reason:"Synthetic cited scoring rationale.",
         findingIds:["finding-distribution"],evidenceIds:[originalEvidence.id],confidence:85}));
       return {output:{assessments:[{...assessment,dimensionRationales,
-        escalation:{required:false,expectedTotalScoreChange:0,criticalStateChanges:[],
-          higherCapabilityCanResolve:false,reason:""}}]} as O,
+        escalation:{required:semanticEscalation&&input.modelVersion==="deepseek-v4-flash",
+          expectedTotalScoreChange:semanticEscalation?8:0,criticalStateChanges:[],
+          higherCapabilityCanResolve:semanticEscalation,reason:semanticEscalation?"Material conflict":""}}]} as O,
         modelVersion:input.modelVersion,promptVersion:input.promptVersion,latencyMs:3,warnings:[],
         actualProviderId:"synthetic-phase-agent"};
     }},
@@ -133,9 +134,27 @@ if(mode==="probe"){
   console.log(JSON.stringify({crossProcessAgentResume:"passed",reusedCompletedPhases:1,
     newPhaseCalls:calls.length-1,finalScoreCalls:1,paidProviderCalls:0}));
   await getPool().end();await admin.end();
+}else if(mode==="probe-agent-pro"){
+  const [userId,workspaceId,actionId]=process.argv.slice(3);
+  const {calls,provider}=agentProvider(0,true);
+  const agent=new LeadQualificationAgent(provider,{routineModel:"deepseek-v4-flash",
+    escalationModel:"deepseek-v4-pro",includeCooperationPaths:true,batchSize:1,concurrency:1});
+  const scope={userId,workspaceId,actionId};
+  const contracts=await agent.phasedCacheContracts([agentCandidate],playbook,"CO","Colombia",
+    "new-market",scope);
+  const result=await agent.evaluateWithUsage([agentCandidate],playbook,"CO","Colombia",
+    "new-market",undefined,scope);
+  assert.equal(result.assessments[0].scoringStatus,"completed");
+  assert.equal(result.usage.length,0);
+  assert.equal(calls.length,0);
+  assert.equal(contracts.get(agentCandidate.candidateId),
+    agent.completedCacheContracts(result.assessments).get(agentCandidate.candidateId));
+  console.log(JSON.stringify({crossProcessPhasedPro:"passed",modelCalls:0,newUsage:0}));
+  await getPool().end();await admin.end();
 }else if(!mode){
   const userId=randomUUID(),otherUserId=randomUUID(),workspaceId=randomUUID(),otherWorkspaceId=randomUUID();
-  const actionId=randomUUID(),otherActionId=randomUUID(),conversationId=randomUUID(),otherConversationId=randomUUID();
+  const actionId=randomUUID(),proActionId=randomUUID(),otherActionId=randomUUID();
+  const conversationId=randomUUID(),otherConversationId=randomUUID();
   const reservationId=randomUUID(),companyKey=createHash("sha256").update("synthetic-phase-company-key").digest("hex");
   let created=false;
   try{
@@ -155,7 +174,8 @@ if(mode==="probe"){
       for(const [conversation,owner] of [[conversationId,userId],[otherConversationId,otherUserId]])await client.query(
         "insert into assistant_conversation(id,user_id,title) values($1,$2,'Phase checkpoint fixture')",
         [conversation,owner]);
-      for(const [action,owner,conversation] of [[actionId,userId,conversationId],[otherActionId,otherUserId,otherConversationId]])
+      for(const [action,owner,conversation] of [[actionId,userId,conversationId],
+        [proActionId,userId,conversationId],[otherActionId,otherUserId,otherConversationId]])
         await client.query("insert into assistant_action(id,user_id,conversation_id,action_type,status,payload) values($1,$2,$3,'lead-search','running','{}'::jsonb)",
           [action,owner,conversation]);
       await client.query("commit");created=true;
@@ -267,11 +287,34 @@ if(mode==="probe"){
       {cwd:process.cwd(),encoding:"utf8",windowsHide:true,timeout:30_000});
     assert.equal(agentChild.status,0,`Cross-process agent phase load failed: ${agentChild.stderr}`);
     assert.match(agentChild.stdout,/"crossProcessAgentPhaseContracts":"passed"/);
+    const {calls:proCalls,provider:proProvider}=agentProvider(0,true);
+    const proAgent=new LeadQualificationAgent(proProvider,{routineModel:"deepseek-v4-flash",
+      escalationModel:"deepseek-v4-pro",includeCooperationPaths:true,batchSize:1,concurrency:1});
+    const proScope={userId,workspaceId,actionId:proActionId};
+    const proResult=await proAgent.evaluateWithUsage([agentCandidate],playbook,"CO","Colombia",
+      "new-market",undefined,proScope);
+    assert.equal(proResult.assessments[0].scoringStatus,"completed");
+    assert.equal(proResult.assessments[0].escalated,true);
+    assert.deepEqual(proCalls.slice(-2).map(item=>item.modelVersion),
+      ["deepseek-v4-flash","deepseek-v4-pro"]);
+    assert.ok(wire.requestBytes(proCalls.at(-1)!)<=61_440);
+    assert.equal(proCalls.length,6);
+    const proFinalRows=await tenantQuery<{model_version:string}>(userId,
+      "select response->>'modelVersion' as model_version from lead_qualification_final_checkpoint where action_id=$1 order by created_at",
+      [proActionId]);
+    assert.deepEqual(proFinalRows.map(item=>item.model_version),
+      ["deepseek-v4-flash","deepseek-v4-pro"]);
+    const proChild=spawnSync(process.execPath,["scripts/run-tsx.cjs",
+      "scripts/verify-qualification-phase-checkpoint-sql.ts","probe-agent-pro",userId,workspaceId,proActionId],
+      {cwd:process.cwd(),encoding:"utf8",windowsHide:true,timeout:30_000});
+    assert.equal(proChild.status,0,`Cross-process Pro resume failed: ${proChild.stderr}`);
+    assert.match(proChild.stdout,/"crossProcessPhasedPro":"passed"/);
     console.log(JSON.stringify({phaseCheckpointSql:"passed",crossProcessLoads:1,completedRows:1,
       duplicateRows:0,foreignReads:0,crossCountryReads:0,mutationDenied:true,
       replayGuard:"exact reported complete only",agentPhaseRows,
       crossProcessAgentLoads:1,crossProcessPartialResume:1,finalResponseRows:1,
-      crossProcessFinalReplays:0,paidProviderCalls:0}));
+      crossProcessFinalReplays:0,proSyntheticModelCalls:proCalls.length,
+      proFinalRows:2,proCrossProcessCalls:0,paidProviderCalls:0}));
   }finally{
     if(created){
       const client=await admin.connect();

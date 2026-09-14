@@ -264,6 +264,10 @@ try{
     ?Number((scoreBound.maximumPerCallUsd*5).toFixed(6)):null;
   const fourPhaseWithPlaybook=fourPhaseFixtureBound!==null&&playbookBound?.maximumPerCallUsd!==undefined
     ?Number((fourPhaseFixtureBound+playbookBound.maximumPerCallUsd).toFixed(6)):null;
+  const fourPhaseWithProBound=scoreBound?.maximumPerCallUsd!==undefined
+    ?Number((scoreBound.maximumPerCallUsd*6).toFixed(6)):null;
+  const fourPhaseProWithPlaybook=fourPhaseWithProBound!==null&&playbookBound?.maximumPerCallUsd!==undefined
+    ?Number((fourPhaseWithProBound+playbookBound.maximumPerCallUsd).toFixed(6)):null;
   console.log(JSON.stringify({mode:"read-only-prerequisite-preview",limitUsd:30,occupiedUsd:Number(budget.budget.occupied_micros)/1e6,
     remainingUsd:Number(budget.budget.remaining_micros)/1e6,frozen:budget.budget.frozen,
     firstRoundPoolForOneTarget:plannedCandidatePool({targetCount:1,acceptedCount:0,discoveredUniqueCount:0,round:0}),
@@ -278,10 +282,15 @@ try{
     actualRequestContractsChecked:false,
     checkedSingleCallBoundsFit:stages.every(stage=>stage.tariff==="available"&&stage.fitsCurrentRemainingBudget),
     phasedScoring:{conditional:true,plannedPhaseCountBound:null,totalPhaseAndFinalBoundUsd:null,
-      fourPhaseSyntheticFixtureOnly:{phaseCalls:4,finalScoreCalls:1,scoreMaximumUsd:fourPhaseFixtureBound,
+      proEscalationConditional:true,
+      fourPhaseSyntheticFixtureOnly:{phaseCalls:4,finalScoreCalls:1,conditionalProScoreCalls:1,
+        scoreMaximumUsd:fourPhaseFixtureBound,scoreWithProMaximumUsd:fourPhaseWithProBound,
         scorePlusPlaybookMaximumUsd:fourPhaseWithPlaybook,
-        fitsCurrentRemainingBudget:fourPhaseWithPlaybook===null?null
-          :fourPhaseWithPlaybook<=Number(budget.budget.remaining_micros)/1e6}},
-    totalRunBoundUsd:null,limitations:"Lists configured minimal-plan discovery and conditional review routes; captures synthetic playbook, Brave, Exa and Tavily provider wires. Real market requests, provider responses, remaining fallback/search/model contracts, conditional execution, phased scoring call count and total-run bound remain unverified",
+        scoreWithProPlusPlaybookMaximumUsd:fourPhaseProWithPlaybook,
+        fitsCurrentRemainingBudgetWithoutPro:fourPhaseWithPlaybook===null?null
+          :fourPhaseWithPlaybook<=Number(budget.budget.remaining_micros)/1e6,
+        fitsCurrentRemainingBudgetWithPro:fourPhaseProWithPlaybook===null?null
+          :fourPhaseProWithPlaybook<=Number(budget.budget.remaining_micros)/1e6}},
+    totalRunBoundUsd:null,limitations:"Lists configured minimal-plan discovery and conditional review routes; captures synthetic playbook, Brave, Exa and Tavily provider wires. Real market requests, provider responses, remaining fallback/search/model contracts, conditional Pro escalation, phased scoring call count and total-run bound remain unverified",
     providerCalls:0,accountsModified:0,jobsClaimed:0},null,2));
 }finally{await getPool().end();}

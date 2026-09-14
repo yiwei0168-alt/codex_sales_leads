@@ -185,7 +185,7 @@ describe("LeadQualificationAgent", () => {
       },
     })) as typeof productQualificationPhaseCheckpoint;
     const finalRecords=new Map<string,StructuredAiResponse<unknown>>();
-    let finalWriteFails=false;
+    let finalWriteFails=false,proWriteFails=false;
     const finalCheckpointFactory=((scope:{userId:string;workspaceId:string;actionId:string;
       countryCode:string;expectedProviderId:string})=>({
       load:async(_request:StructuredAiRequest<unknown>,contract:string,paid:string)=>
@@ -193,7 +193,8 @@ describe("LeadQualificationAgent", () => {
       save:async(_request:StructuredAiRequest<unknown>,contract:string,paid:string,
         response:StructuredAiResponse<unknown>)=>{
         if(response.actualProviderId!==scope.expectedProviderId)throw new Error("final actual route differs");
-        if(finalWriteFails)throw new Error("synthetic final checkpoint unavailable");
+        if(finalWriteFails||(proWriteFails&&response.modelVersion==="deepseek-v4-pro"))
+          throw new Error("synthetic final checkpoint unavailable");
         const key=`${scope.actionId}:${scope.countryCode}:${contract}:${paid}`;
         if(finalRecords.has(key))throw new Error("duplicate final paid request");
         finalRecords.set(key,response);
@@ -265,6 +266,46 @@ describe("LeadQualificationAgent", () => {
         expect(finalRecords.size).toBe(0);
       }
     }
+    const semantic={required:true,expectedTotalScoreChange:8,criticalStateChanges:[],
+      higherCapabilityCanResolve:true,reason:"Material evidence conflict"};
+    const proProvider=new PhaseProvider({escalation:semantic});
+    const proAgent=new LeadQualificationAgent(proProvider,{routineModel:"deepseek-v4-flash",
+      escalationModel:"deepseek-v4-pro",includeCooperationPaths:false,batchSize:1,concurrency:1,
+      phaseCheckpointFactory:checkpointFactory,finalCheckpointFactory});
+    const proScope={...scope,actionId:"fixture-pro-write-failure"};
+    proWriteFails=true;
+    await expect(proAgent.evaluateWithUsage([large],playbook,"DE","Germany","new-market",
+      undefined,proScope)).rejects.toThrow(/final checkpoint unavailable/);
+    expect(proProvider.calls.at(-2)?.modelVersion).toBe("deepseek-v4-flash");
+    expect(proProvider.calls.at(-1)?.modelVersion).toBe("deepseek-v4-pro");
+    expect(proProvider.requestBytes(proProvider.calls.at(-1)!)).toBeLessThanOrEqual(57_344);
+    proWriteFails=false;
+    const successfulProScope={...scope,actionId:"fixture-pro-complete"};
+    const proResult=await proAgent.evaluateWithUsage([large],playbook,"DE","Germany",
+      "new-market",undefined,successfulProScope);
+    expect(proProvider.calls.at(-1)?.modelVersion).toBe("deepseek-v4-pro");
+    expect(proResult.assessments[0].scoringStatus).toBe("completed");
+    expect(proResult.assessments[0].escalated).toBe(true);
+    const proContract=proAgent.completedCacheContracts(proResult.assessments).get(large.candidateId);
+    expect(proContract).toMatch(/^[a-f0-9]{64}$/);
+    expect((await proAgent.phasedCacheContracts([large],playbook,"DE","Germany","new-market",successfulProScope))
+      .get(large.candidateId)).toBe(proContract);
+    const completeProCalls=proProvider.calls.length;
+    const reusedPro=await proAgent.evaluateWithUsage([large],playbook,"DE","Germany",
+      "new-market",undefined,successfulProScope);
+    expect(reusedPro.assessments[0].scoringStatus).toBe("completed");
+    expect(reusedPro.usage).toHaveLength(0);
+    expect(proProvider.calls).toHaveLength(completeProCalls);
+    const subthresholdProvider=new PhaseProvider({escalation:{...semantic,expectedTotalScoreChange:7}});
+    const subthresholdAgent=new LeadQualificationAgent(subthresholdProvider,{
+      routineModel:"deepseek-v4-flash",escalationModel:"deepseek-v4-pro",
+      includeCooperationPaths:false,batchSize:1,concurrency:1,
+      phaseCheckpointFactory:checkpointFactory,finalCheckpointFactory});
+    const subthreshold=await subthresholdAgent.evaluateWithUsage([large],playbook,"DE","Germany",
+      "new-market",undefined,{...scope,actionId:"fixture-below-threshold"});
+    expect(subthreshold.assessments[0].escalated).toBe(false);
+    expect(subthresholdProvider.calls.filter(request=>request.promptVersion!=="qualification-fact-phase-v1")
+      .map(request=>request.modelVersion)).toEqual(["deepseek-v4-flash"]);
   });
   it("checkpoints a complete peer before a missing member's repair is blocked",async()=>{
     class PartialPauseProvider extends CacheableFakeProvider {
