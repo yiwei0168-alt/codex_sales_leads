@@ -87,12 +87,28 @@ const chunkCandidate={...correctedCandidate,evidence:[originalEvidence],
   correction:{...correctedCandidate.correction,findings:correctedCandidate.correction.findings.map(item=>
     item.kind==="role"?{...item,statement:Array.from({length:2_000},(_,index)=>createHash("sha256")
       .update(`chunk-agent-role-${index}`).digest("hex")).join("")}:item)}};
-function agentProvider(failPhaseAt=0,semanticEscalation=false,failChunkAt=0){
+function agentProvider(failPhaseAt=0,semanticEscalation=false,failChunkAt=0,
+  fallback:{phaseAt?:number;final?:boolean}={}){
   const calls:StructuredAiRequest<unknown>[]=[];
   let phaseCalls=0,chunkCalls=0;
-  return {calls,provider:{id:"synthetic-phase-agent",requestBytes:(input:StructuredAiRequest<unknown>)=>wire.requestBytes(input),
-    cacheIdentity:(input:StructuredAiRequest<unknown>)=>wire.cacheIdentity(input),
-    paidRequestFingerprint:(input:StructuredAiRequest<unknown>)=>wire.paidRequestFingerprint(input),
+  const alternate=(input:StructuredAiRequest<unknown>)=>({...input,modelVersion:"openai/gpt-4o"});
+  const alternateRoute=Boolean(fallback.phaseAt||fallback.final);
+  const cacheIdentity=(input:StructuredAiRequest<unknown>)=>input.modelVersion.startsWith("openai/")
+    ?fallbackWire.cacheIdentity(input):wire.cacheIdentity(input);
+  const paidRequestFingerprint=(input:StructuredAiRequest<unknown>)=>input.modelVersion.startsWith("openai/")
+    ?fallbackWire.paidRequestFingerprint(input):wire.paidRequestFingerprint(input);
+  return {calls,provider:{id:"synthetic-phase-agent",requestBytes:(input:StructuredAiRequest<unknown>)=>
+    input.modelVersion.startsWith("openai/")?fallbackWire.requestBytes(input)
+      :Math.max(wire.requestBytes(input),alternateRoute?fallbackWire.requestBytes(alternate(input)):0),
+    cacheIdentity,paidRequestFingerprint,
+    executionRoutes:(input:StructuredAiRequest<unknown>)=>{
+      const primary={providerId:"synthetic-phase-agent",request:input,
+        cacheIdentity:cacheIdentity(input),paidRequestFingerprint:paidRequestFingerprint(input)};
+      if(!alternateRoute)return [primary];
+      const other=alternate(input);
+      return [primary,{providerId:fallbackWire.id,request:other,
+        cacheIdentity:cacheIdentity(other),paidRequestFingerprint:paidRequestFingerprint(other)}];
+    },
     execute:async<I,O>(input:StructuredAiRequest<I>):Promise<StructuredAiResponse<O>>=>{
       if(input.promptVersion==="qualification-singleton-chunk-v1"){
         chunkCalls++;
@@ -110,13 +126,17 @@ function agentProvider(failPhaseAt=0,semanticEscalation=false,failChunkAt=0){
       if(input.promptVersion==="qualification-fact-phase-v1"){
         phaseCalls++;
         if(phaseCalls===failPhaseAt)throw new BudgetDeniedError("budget-exhausted");
+        const alternateResponse=phaseCalls===fallback.phaseAt;
         const phase=input.input as {candidate:{findings:Array<{findingId:string;evidenceIds:string[]}>};
           unlinkedEvidenceIds:string[]};
         return {output:{facts:phase.candidate.findings.map(item=>({findingId:item.findingId,
           materiality:"material",summary:`Screened ${item.findingId}`,evidenceIds:item.evidenceIds})),
           sources:phase.unlinkedEvidenceIds.map(id=>({evidenceId:id,materiality:"context",
-            summary:`Screened ${id}`}))} as O,modelVersion:input.modelVersion,
-          promptVersion:input.promptVersion,latencyMs:3,warnings:[],actualProviderId:"synthetic-phase-agent"};
+            summary:`Screened ${id}`}))} as O,
+          modelVersion:alternateResponse?alternate(input).modelVersion:input.modelVersion,
+          promptVersion:input.promptVersion,latencyMs:3,warnings:[],
+          actualProviderId:alternateResponse?fallbackWire.id:"synthetic-phase-agent",
+          requestedModelVersion:alternateResponse?input.modelVersion:undefined};
       }
       const dimensionRationales=Object.entries(assessment.dimensions).map(([dimension,score])=>({
         dimension,score,reason:"Synthetic cited scoring rationale.",
@@ -125,8 +145,10 @@ function agentProvider(failPhaseAt=0,semanticEscalation=false,failChunkAt=0){
         escalation:{required:semanticEscalation&&input.modelVersion==="deepseek-v4-flash",
           expectedTotalScoreChange:semanticEscalation?8:0,criticalStateChanges:[],
           higherCapabilityCanResolve:semanticEscalation,reason:semanticEscalation?"Material conflict":""}}]} as O,
-        modelVersion:input.modelVersion,promptVersion:input.promptVersion,latencyMs:3,warnings:[],
-        actualProviderId:"synthetic-phase-agent"};
+        modelVersion:fallback.final?alternate(input).modelVersion:input.modelVersion,
+        promptVersion:input.promptVersion,latencyMs:3,warnings:[],
+        actualProviderId:fallback.final?fallbackWire.id:"synthetic-phase-agent",
+        requestedModelVersion:fallback.final?input.modelVersion:undefined};
     }},
   };
 }
@@ -217,10 +239,40 @@ if(mode==="probe"){
   console.log(JSON.stringify({crossProcessChunkAgentResume:"passed",reusedFirstChunk:true,
     newChunkCalls:newChunks.length,finalScoreCalls:1,paidProviderCalls:0}));
   await getPool().end();await admin.end();
+}else if(mode==="probe-agent-wide-fallback-resume"||mode==="probe-agent-wide-fallback-replay"){
+  const [userId,workspaceId,actionId]=process.argv.slice(3);
+  const {calls,provider}=agentProvider(0,false,0,{final:true});
+  const agent=new LeadQualificationAgent(provider,{routineModel:"deepseek-v4-pro",
+    escalationModel:"deepseek-v4-pro",includeCooperationPaths:true,batchSize:1,concurrency:1});
+  const scope={userId,workspaceId,actionId};
+  const result=await agent.evaluateWithUsage([agentCandidate],playbook,"CO","Colombia",
+    "new-market",undefined,scope);
+  assert.equal(result.assessments[0].scoringStatus,"completed");
+  assert.equal(agentCandidate.evidence.length,151);
+  assert.equal(agentCandidate.correction.findings.length,151);
+  if(mode==="probe-agent-wide-fallback-resume"){
+    assert.ok(calls.some(item=>item.promptVersion==="qualification-fact-phase-v1"));
+    assert.ok(calls.some(item=>item.promptVersion.startsWith("lead-value-v")));
+    for(const request of calls)for(const route of provider.executionRoutes(request))
+      assert.ok(provider.requestBytes(route.request)<=(request.promptVersion==="qualification-fact-phase-v1"
+        ?57_344:61_440));
+    const phases=await tenantQuery<{n:number}>(userId,
+      "select count(*)::int as n from lead_qualification_phase_checkpoint where action_id=$1",
+      [actionId]);
+    assert.equal(phases[0].n,calls.filter(item=>item.promptVersion==="qualification-fact-phase-v1").length+1);
+  }else{
+    assert.equal(calls.length,0);
+    assert.equal(result.usage.length,0);
+    assert.match((await agent.phasedCacheContracts([agentCandidate],playbook,"CO","Colombia",
+      "new-market",scope)).get(agentCandidate.candidateId)??"",/^[a-f0-9]{64}$/);
+  }
+  console.log(JSON.stringify({wideFallbackGraph:mode==="probe-agent-wide-fallback-resume"
+    ?"resumed":"replayed",newModelCalls:calls.length,paidProviderCalls:0}));
+  await getPool().end();await admin.end();
 }else if(!mode){
   const userId=randomUUID(),otherUserId=randomUUID(),workspaceId=randomUUID(),otherWorkspaceId=randomUUID();
   const actionId=randomUUID(),proActionId=randomUUID(),fallbackActionId=randomUUID(),
-    chunkActionId=randomUUID(),otherActionId=randomUUID();
+    chunkActionId=randomUUID(),wideFallbackActionId=randomUUID(),otherActionId=randomUUID();
   const conversationId=randomUUID(),otherConversationId=randomUUID();
   const reservationId=randomUUID(),fallbackReservationId=randomUUID(),
     companyKey=createHash("sha256").update("synthetic-phase-company-key").digest("hex");
@@ -244,7 +296,7 @@ if(mode==="probe"){
         [conversation,owner]);
       for(const [action,owner,conversation] of [[actionId,userId,conversationId],
         [proActionId,userId,conversationId],[fallbackActionId,userId,conversationId],
-        [chunkActionId,userId,conversationId],
+        [chunkActionId,userId,conversationId],[wideFallbackActionId,userId,conversationId],
         [otherActionId,otherUserId,otherConversationId]])
         await client.query("insert into assistant_action(id,user_id,conversation_id,action_type,status,payload) values($1,$2,$3,'lead-search','running','{}'::jsonb)",
           [action,owner,conversation]);
@@ -442,13 +494,41 @@ if(mode==="probe"){
     assert.equal(replay.assessments[0].scoringStatus,"completed");
     assert.equal(replayCalls.length,0);
     assert.equal(replay.usage.length,0);
+    const {calls:wideCalls,provider:wideProvider}=agentProvider(2,false,0,{phaseAt:1,final:true});
+    const wideAgent=new LeadQualificationAgent(wideProvider,{routineModel:"deepseek-v4-pro",
+      escalationModel:"deepseek-v4-pro",includeCooperationPaths:true,batchSize:1,concurrency:1});
+    const wideScope={userId,workspaceId,actionId:wideFallbackActionId};
+    await assert.rejects(wideAgent.evaluateWithUsage([agentCandidate],playbook,"CO","Colombia",
+      "new-market",undefined,wideScope),BudgetDeniedError);
+    assert.equal(wideCalls.length,2);
+    const wideFirst=await tenantQuery<{model_version:string;provider_id:string}>(userId,
+      "select response->>'modelVersion' as model_version,response->>'actualProviderId' as provider_id from lead_qualification_phase_checkpoint where action_id=$1",
+      [wideFallbackActionId]);
+    assert.deepEqual(wideFirst,[{model_version:"openai/gpt-4o",provider_id:fallbackWire.id}]);
+    const wideResume=spawnSync(process.execPath,["scripts/run-tsx.cjs",
+      "scripts/verify-qualification-phase-checkpoint-sql.ts","probe-agent-wide-fallback-resume",
+      userId,workspaceId,wideFallbackActionId],
+    {cwd:process.cwd(),encoding:"utf8",windowsHide:true,timeout:30_000});
+    assert.equal(wideResume.status,0,`Wide fallback resume failed: ${wideResume.stderr}`);
+    assert.match(wideResume.stdout,/"wideFallbackGraph":"resumed"/);
+    const wideFinal=await tenantQuery<{model_version:string;provider_id:string}>(userId,
+      "select response->>'modelVersion' as model_version,response->>'actualProviderId' as provider_id from lead_qualification_final_checkpoint where action_id=$1",
+      [wideFallbackActionId]);
+    assert.deepEqual(wideFinal,[{model_version:"openai/gpt-4o",provider_id:fallbackWire.id}]);
+    const wideReplay=spawnSync(process.execPath,["scripts/run-tsx.cjs",
+      "scripts/verify-qualification-phase-checkpoint-sql.ts","probe-agent-wide-fallback-replay",
+      userId,workspaceId,wideFallbackActionId],
+    {cwd:process.cwd(),encoding:"utf8",windowsHide:true,timeout:30_000});
+    assert.equal(wideReplay.status,0,`Wide fallback replay failed: ${wideReplay.stderr}`);
+    assert.match(wideReplay.stdout,/"wideFallbackGraph":"replayed","newModelCalls":0/);
     console.log(JSON.stringify({phaseCheckpointSql:"passed",crossProcessLoads:1,completedRows:1,
       duplicateRows:0,foreignReads:0,crossCountryReads:0,mutationDenied:true,
       replayGuard:"exact reported complete only",agentPhaseRows,
       crossProcessAgentLoads:1,crossProcessPartialResume:1,finalResponseRows:1,
       crossProcessFinalReplays:0,proSyntheticModelCalls:proCalls.length,
       proFinalRows:2,proCrossProcessCalls:0,chunkAgentCrossProcessResume:1,
-      chunkAgentFullReplayCalls:0,paidProviderCalls:0}));
+      chunkAgentFullReplayCalls:0,wideFallbackCrossProcessResume:1,
+      wideFallbackCrossProcessReplayCalls:0,paidProviderCalls:0}));
   }finally{
     if(created){
       const client=await admin.connect();
