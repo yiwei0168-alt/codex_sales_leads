@@ -21,6 +21,7 @@ import {assembleQualificationPhaseSynthesis} from "./qualification-phase-synthes
 import type {QualificationPhaseOutput} from "./qualification-phase-output";
 import {planQualificationFactPhases} from "./qualification-phase-plan";
 import {productQualificationPhaseCheckpoint} from "./qualification-phase-checkpoint";
+import {productQualificationFinalCheckpoint} from "./qualification-final-checkpoint";
 import { leadAssessmentBatchSchema, leadAssessmentModelSchema, leadAssessmentScoreOnlyBatchSchema,
   leadAssessmentScoreOnlyModelSchema, type LeadAssessmentModelOutput,
   type LeadAssessmentScoreOnlyModelOutput } from "./schemas";
@@ -77,6 +78,7 @@ interface LeadQualificationAgentOptions {
   concurrency?: number;
   includeCooperationPaths?: boolean;
   phaseCheckpointFactory?: typeof productQualificationPhaseCheckpoint;
+  finalCheckpointFactory?: typeof productQualificationFinalCheckpoint;
 }
 
 export interface QualificationPhaseScope {userId:string;workspaceId:string;actionId:string}
@@ -401,6 +403,7 @@ export class LeadQualificationAgent {
   private readonly concurrency: number;
   private readonly includeCooperationPaths: boolean;
   private readonly phaseCheckpointFactory:typeof productQualificationPhaseCheckpoint;
+  private readonly finalCheckpointFactory:typeof productQualificationFinalCheckpoint;
 
   constructor(private readonly provider: AiProvider = createLeadAiProvider(), options: LeadQualificationAgentOptions = {}) {
     this.routineModel = options.routineModel ?? process.env.DEEPSEEK_MODEL?.trim() ?? "deepseek-v4-flash";
@@ -411,6 +414,7 @@ export class LeadQualificationAgent {
     this.concurrency = Math.max(1, Math.min(8, options.concurrency ?? 2));
     this.includeCooperationPaths = options.includeCooperationPaths ?? true;
     this.phaseCheckpointFactory=options.phaseCheckpointFactory??productQualificationPhaseCheckpoint;
+    this.finalCheckpointFactory=options.finalCheckpointFactory??productQualificationFinalCheckpoint;
   }
 
   private get promptVersion(): string {
@@ -623,13 +627,14 @@ export class LeadQualificationAgent {
   }
 
   private async invokeBatch(candidates: CorrectedLeadWorkflowCandidate[], playbook: LeadMarketPlaybook, countryCode: string, countryName: string, objective: string, modelVersion: string,
-    usageRecords: WorkflowModelUsage[],preparedRequest?:ReturnType<LeadQualificationAgent["request"]>) {
+    usageRecords: WorkflowModelUsage[],preparedRequest?:ReturnType<LeadQualificationAgent["request"]>,
+    responseOverride?:StructuredAiResponse<unknown>,recordUsage=true) {
     const request=preparedRequest??this.request(candidates,playbook,countryCode,countryName,objective,modelVersion);
-    const response = await withCompanyCostAttribution(candidates,countryCode,()=>this.provider.execute<LeadAssessmentRequest, unknown>(
+    const response = responseOverride??await withCompanyCostAttribution(candidates,countryCode,()=>this.provider.execute<LeadAssessmentRequest, unknown>(
       request,
       AbortSignal.timeout(modelVersion === this.escalationModel ? 120_000 : 75_000),
     ));
-    usageRecords.push({ stage: "qualification", requestPreparation:request.preparation, requestedModel: response.requestedModelVersion ?? modelVersion,
+    if(recordUsage)usageRecords.push({ stage: "qualification", requestPreparation:request.preparation, requestedModel: response.requestedModelVersion ?? modelVersion,
       actualModel: response.modelVersion, providerId: response.actualProviderId,
       promptTokens: response.usage?.promptTokens ?? 0, completionTokens: response.usage?.completionTokens ?? 0,
       reasoningTokens: response.usage?.reasoningTokens ?? 0, totalTokens: response.usage?.totalTokens ?? 0,
@@ -641,8 +646,30 @@ export class LeadQualificationAgent {
       validatedAssessmentSchema(this.includeCooperationPaths),
       candidates.map(candidate=>candidate.candidateId));
     const parsed={assessments:validated.items,complete:validated.complete};
-    usageRecords[usageRecords.length-1].batchValidation={inputItems:candidates.length,validOutputItems:validated.items.length,rejectedOutputItems:validated.rejectedItems,missingOutputItems:validated.missingItems,complete:validated.complete};
+    if(recordUsage)usageRecords[usageRecords.length-1].batchValidation={inputItems:candidates.length,validOutputItems:validated.items.length,rejectedOutputItems:validated.rejectedItems,missingOutputItems:validated.missingItems,complete:validated.complete};
     return { response, parsed };
+  }
+
+  private async invokeCheckpointedPhasedFinal(candidate:CorrectedLeadWorkflowCandidate,
+    playbook:LeadMarketPlaybook,countryCode:string,countryName:string,objective:string,
+    request:ReturnType<LeadQualificationAgent["request"]>,scope:QualificationPhaseScope,
+    usageRecords:WorkflowModelUsage[]){
+    const contract=this.provider.cacheIdentity?.(request),paid=this.provider.paidRequestFingerprint?.(request);
+    if(!contract||!paid||!/^[a-f0-9]{64}$/.test(contract)||!/^[a-f0-9]{64}$/.test(paid))
+      throw new Error("Qualification final request identity unavailable; no paid call is safe");
+    const checkpoint=this.finalCheckpointFactory({...scope,countryCode,
+      expectedProviderId:this.provider.id.replace(/^resilient:/,"")});
+    let response=await checkpoint.load(request,contract,paid);
+    const reused=Boolean(response);
+    if(!response){
+      const fresh=await withCompanyCostAttribution([candidate],countryCode,()=>this.provider.execute(
+        request,AbortSignal.timeout(120_000)));
+      await checkpoint.save(request,contract,paid,fresh);
+      response=await checkpoint.load(request,contract,paid);
+      if(!response)throw new Error("Completed qualification final checkpoint could not be read");
+    }
+    return this.invokeBatch([candidate],playbook,countryCode,countryName,objective,
+      request.modelVersion,usageRecords,request,response,!reused);
   }
 
   private async evaluatePhased(candidate:CorrectedLeadWorkflowCandidate,playbook:LeadMarketPlaybook,
@@ -690,8 +717,8 @@ export class LeadQualificationAgent {
     catch(error){if(error instanceof LeadRequestTooLargeError)return failedAssessment(candidate,
       `Phase summaries exceed the final approved score request limit (${error.message}); original evidence remains pending.`,this.promptVersion);
       throw error;}
-    const routine=await this.invokeBatch([candidate],playbook,countryCode,countryName,objective,
-      this.routineModel,usageRecords,final.request);
+    const routine=await this.invokeCheckpointedPhasedFinal(candidate,playbook,countryCode,countryName,
+      objective,final.request,scope,usageRecords);
     const value=routine.parsed.assessments.find(item=>item.candidateId===candidate.candidateId);
     if(!value||!routine.parsed.complete)return failedAssessment(candidate,
       "Phased final score omitted or invalidated the candidate; paid output is retained for investigation, not replayed.",this.promptVersion);

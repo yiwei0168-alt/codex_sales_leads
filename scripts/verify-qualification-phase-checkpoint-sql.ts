@@ -108,8 +108,13 @@ if(mode==="probe"){
   const contracts=await agent.phasedCacheContracts([agentCandidate],playbook,"CO","Colombia",
     "new-market",{userId,workspaceId,actionId});
   assert.match(contracts.get(agentCandidate.candidateId)??"",/^[a-f0-9]{64}$/);
+  const result=await agent.evaluateWithUsage([agentCandidate],playbook,"CO","Colombia",
+    "new-market",undefined,{userId,workspaceId,actionId});
+  assert.equal(result.assessments[0].scoringStatus,"completed");
   assert.equal(calls.length,0);
-  console.log(JSON.stringify({crossProcessAgentPhaseContracts:"passed",modelCalls:0}));
+  assert.equal(result.usage.length,0);
+  console.log(JSON.stringify({crossProcessAgentPhaseContracts:"passed",modelCalls:0,
+    finalResponseReused:true}));
   await getPool().end();await admin.end();
 }else if(mode==="probe-agent-resume"){
   const [userId,workspaceId,actionId]=process.argv.slice(3);
@@ -137,6 +142,7 @@ if(mode==="probe"){
     const ddl=await readFile(new URL("../db/migrations/067_qualification_phase_checkpoint.sql",import.meta.url),"utf8");
     await admin.query(ddl);
     await admin.query(await readFile(new URL("../db/migrations/068_qualification_phase_paid_replay_identity.sql",import.meta.url),"utf8"));
+    await admin.query(await readFile(new URL("../db/migrations/069_qualification_final_response_checkpoint.sql",import.meta.url),"utf8"));
     const client=await admin.connect();
     try{
       await client.query("begin");
@@ -225,6 +231,37 @@ if(mode==="probe"){
       "select count(*)::int as n from lead_qualification_phase_checkpoint where action_id=$1 and candidate_id=$2",
       [actionId,agentCandidate.candidateId]))[0].n;
     assert.ok(agentPhaseRows>1);
+    const finalRows=await tenantQuery<{paid_request_fingerprint:string}>(userId,
+      "select paid_request_fingerprint from lead_qualification_final_checkpoint where action_id=$1 and candidate_id=$2",
+      [actionId,agentCandidate.candidateId]);
+    assert.equal(finalRows.length,1);
+    assert.match(finalRows[0].paid_request_fingerprint,/^[a-f0-9]{64}$/);
+    assert.equal((await tenantQuery(otherUserId,
+      "select id from lead_qualification_final_checkpoint where action_id=$1",[actionId])).length,0);
+    await assert.rejects(tenantQuery(userId,
+      "update lead_qualification_final_checkpoint set response='{}'::jsonb where action_id=$1",[actionId]),
+    /permission denied/i);
+    const finalReservationId=randomUUID();
+    await admin.query(`insert into paid_call_reservation(id,user_id,operation_id,stage,tariff_key,tariff_version,
+      reserved_micros,reported_micros,status,metrics,request_fingerprint)
+      values($1,$2,$3,'scoring','synthetic-final','fixture',1,1,'reported',$4::jsonb,$5)`,
+      [finalReservationId,userId,actionId,JSON.stringify({modelAttempt:{task:"lead-qualification"},
+        costAttribution:{kind:"company-inputs",companyKeys:[companyKey]},validOutputItems:1,
+        outputIncomplete:false}),finalRows[0].paid_request_fingerprint]);
+    await guard();
+    await admin.query("update paid_call_reservation set status='unknown' where id=$1",[finalReservationId]);
+    await assert.rejects(guard(),/paid-request-already-recorded/);
+    await admin.query("update paid_call_reservation set status='reported' where id=$1",[finalReservationId]);
+    await guard();
+    await admin.query("update paid_call_reservation set metrics=metrics || '{\"outputIncomplete\":true}'::jsonb where id=$1",[finalReservationId]);
+    await assert.rejects(guard(),/paid-request-already-recorded/);
+    await admin.query("update paid_call_reservation set metrics=metrics || '{\"outputIncomplete\":false}'::jsonb where id=$1",[finalReservationId]);
+    await admin.query("update paid_call_reservation set request_fingerprint=$2 where id=$1",
+      [finalReservationId,"b".repeat(64)]);
+    await assert.rejects(guard(),/paid-request-already-recorded/);
+    await admin.query("update paid_call_reservation set request_fingerprint=$2 where id=$1",
+      [finalReservationId,finalRows[0].paid_request_fingerprint]);
+    await guard();
     const agentChild=spawnSync(process.execPath,["scripts/run-tsx.cjs",
       "scripts/verify-qualification-phase-checkpoint-sql.ts","probe-agent",userId,workspaceId,actionId],
       {cwd:process.cwd(),encoding:"utf8",windowsHide:true,timeout:30_000});
@@ -233,7 +270,8 @@ if(mode==="probe"){
     console.log(JSON.stringify({phaseCheckpointSql:"passed",crossProcessLoads:1,completedRows:1,
       duplicateRows:0,foreignReads:0,crossCountryReads:0,mutationDenied:true,
       replayGuard:"exact reported complete only",agentPhaseRows,
-      crossProcessAgentLoads:1,crossProcessPartialResume:1,paidProviderCalls:0}));
+      crossProcessAgentLoads:1,crossProcessPartialResume:1,finalResponseRows:1,
+      crossProcessFinalReplays:0,paidProviderCalls:0}));
   }finally{
     if(created){
       const client=await admin.connect();
@@ -243,6 +281,7 @@ if(mode==="probe"){
           [[userId,otherUserId]]);
         if(owners.rowCount!==2)throw new Error("Fixture ownership mismatch");
         await client.query("delete from paid_call_reservation where id=$1 and user_id=$2",[reservationId,userId]);
+        await client.query("delete from paid_call_reservation where operation_id=$1 and user_id=$2 and tariff_key='synthetic-final'",[actionId,userId]);
         await client.query("delete from market_workspace where id=any($1::uuid[])",[[workspaceId,otherWorkspaceId]]);
         await client.query("delete from app_user where id=any($1::uuid[])",[[userId,otherUserId]]);
         await client.query("commit");
@@ -252,6 +291,10 @@ if(mode==="probe"){
         "select count(*)::int as n from lead_qualification_phase_checkpoint where user_id=any($1::uuid[])",
         [[userId,otherUserId]]);
       assert.equal(leftovers.rows[0].n,0);
+      const finalLeftovers=await admin.query<{n:number}>(
+        "select count(*)::int as n from lead_qualification_final_checkpoint where user_id=any($1::uuid[])",
+        [[userId,otherUserId]]);
+      assert.equal(finalLeftovers.rows[0].n,0);
     }
     await getPool().end();await admin.end();
   }

@@ -13,6 +13,7 @@ import {assessmentDependencyFingerprint,validCachedAssessment} from "./assessmen
 import { roleScoringAnchors } from "./role-scoring-anchors";
 import {validateQualificationPhaseOutput,type QualificationPhaseOutput} from "./qualification-phase-output";
 import type {productQualificationPhaseCheckpoint} from "./qualification-phase-checkpoint";
+import type {productQualificationFinalCheckpoint} from "./qualification-final-checkpoint";
 import { CHANNEL_ROLE_FAMILIES } from "./types";
 import type { CorrectedLeadWorkflowCandidate, LeadMarketPlaybook } from "./types";
 
@@ -143,12 +144,16 @@ describe("LeadQualificationAgent", () => {
       private readonly wire=new DeepSeekProvider({apiKey:"fixture-never-sent",maxAttempts:1,
         fetchImplementation:async()=>{throw new Error("Synthetic phase test must not use transport");}});
       phaseCalls=0;failPhaseAt=0;fallbackPhaseAt=0;invalidPhaseAt=0;
+      finalFallback=false;finalInvalid=false;
       requestBytes(request:StructuredAiRequest<unknown>){return this.wire.requestBytes(request);}
       cacheIdentity(request:StructuredAiRequest<unknown>){return this.wire.cacheIdentity(request);}
       paidRequestFingerprint(request:StructuredAiRequest<unknown>){return this.wire.paidRequestFingerprint(request);}
       override async execute<I,O>(request:StructuredAiRequest<I>):Promise<StructuredAiResponse<O>>{
-        if(request.promptVersion!=="qualification-fact-phase-v1")
-          return {...await super.execute<I,O>(request),actualProviderId:"fake"};
+        if(request.promptVersion!=="qualification-fact-phase-v1"){
+          const response=await super.execute<I,O>(request);
+          return {...response,output:this.finalInvalid?{assessments:[]} as O:response.output,
+            actualProviderId:this.finalFallback?"fallback":"fake"};
+        }
         this.calls.push(request as StructuredAiRequest<unknown>);this.phaseCalls++;
         if(this.phaseCalls===this.failPhaseAt)throw new BudgetDeniedError("budget-exhausted");
         const input=request.input as {candidate:{findings:Array<{findingId:string;evidenceIds:string[]}>};
@@ -179,9 +184,25 @@ describe("LeadQualificationAgent", () => {
         records.set(key,{...response,output});
       },
     })) as typeof productQualificationPhaseCheckpoint;
+    const finalRecords=new Map<string,StructuredAiResponse<unknown>>();
+    let finalWriteFails=false;
+    const finalCheckpointFactory=((scope:{userId:string;workspaceId:string;actionId:string;
+      countryCode:string;expectedProviderId:string})=>({
+      load:async(_request:StructuredAiRequest<unknown>,contract:string,paid:string)=>
+        finalRecords.get(`${scope.actionId}:${scope.countryCode}:${contract}:${paid}`)??null,
+      save:async(_request:StructuredAiRequest<unknown>,contract:string,paid:string,
+        response:StructuredAiResponse<unknown>)=>{
+        if(response.actualProviderId!==scope.expectedProviderId)throw new Error("final actual route differs");
+        if(finalWriteFails)throw new Error("synthetic final checkpoint unavailable");
+        const key=`${scope.actionId}:${scope.countryCode}:${contract}:${paid}`;
+        if(finalRecords.has(key))throw new Error("duplicate final paid request");
+        finalRecords.set(key,response);
+      },
+    })) as typeof productQualificationFinalCheckpoint;
     const provider=new PhaseProvider(),large=incompressibleCandidate(150);
     const agent=new LeadQualificationAgent(provider,{batchSize:1,concurrency:1,
-      includeCooperationPaths:false,phaseCheckpointFactory:checkpointFactory});
+      includeCooperationPaths:false,phaseCheckpointFactory:checkpointFactory,
+      finalCheckpointFactory});
     const scope={userId:"fixture-owner",workspaceId:"fixture-workspace",actionId:"fixture-action"};
     provider.failPhaseAt=2;
     await expect(agent.evaluateWithUsage([large],playbook,"DE","Germany","new-market",undefined,scope))
@@ -203,6 +224,12 @@ describe("LeadQualificationAgent", () => {
     expect(completed).toMatch(/^[a-f0-9]{64}$/);
     expect((await agent.phasedCacheContracts([large],playbook,"DE","Germany","new-market",scope))
       .get(large.candidateId)).toBe(completed);
+    expect(finalRecords.size).toBe(1);
+    const priorCalls=provider.calls.length;
+    const reused=await agent.evaluateWithUsage([large],playbook,"DE","Germany","new-market",undefined,scope);
+    expect(reused.assessments[0].scoringStatus).toBe("completed");
+    expect(reused.usage).toHaveLength(0);
+    expect(provider.calls).toHaveLength(priorCalls);
     for(const mode of ["fallback","invalid","write-failure"] as const){
       records.clear();provider.calls.length=0;provider.phaseCalls=0;
       provider.fallbackPhaseAt=mode==="fallback"?1:0;
@@ -213,6 +240,30 @@ describe("LeadQualificationAgent", () => {
         :mode==="invalid"?/missing or extra/:/checkpoint unavailable/);
       expect(provider.calls).toHaveLength(1);
       expect(records.size).toBe(0);
+    }
+    records.clear();finalRecords.clear();provider.calls.length=0;provider.phaseCalls=0;
+    provider.fallbackPhaseAt=0;provider.invalidPhaseAt=0;checkpointWriteFails=false;
+    await agent.evaluateWithUsage([large],playbook,"DE","Germany","new-market",undefined,scope);
+    expect(finalRecords.size).toBe(1);
+    for(const mode of ["fallback","write-failure","invalid"] as const){
+      finalRecords.clear();provider.calls.length=0;
+      provider.finalFallback=mode==="fallback";
+      provider.finalInvalid=mode==="invalid";
+      finalWriteFails=mode==="write-failure";
+      if(mode==="invalid"){
+        const failed=await agent.evaluateWithUsage([large],playbook,"DE","Germany","new-market",undefined,scope);
+        expect(failed.assessments[0].scoringStatus).toBe("retry-required");
+        expect(finalRecords.size).toBe(1);
+        const calls=provider.calls.length;
+        await agent.evaluateWithUsage([large],playbook,"DE","Germany","new-market",undefined,scope);
+        expect(provider.calls).toHaveLength(calls);
+      }else{
+        await expect(agent.evaluateWithUsage([large],playbook,"DE","Germany","new-market",
+          undefined,scope)).rejects.toThrow(mode==="fallback"?/final actual route differs/
+          :/final checkpoint unavailable/);
+        expect(provider.calls).toHaveLength(1);
+        expect(finalRecords.size).toBe(0);
+      }
     }
   });
   it("checkpoints a complete peer before a missing member's repair is blocked",async()=>{
