@@ -11,11 +11,15 @@ const {resolveOpenRouterModel}=await import("../src/providers/openrouter");
 const {deepSeekRequestBody}=await import("../src/providers/deepseek-request");
 const {textOutputLimit}=await import("../src/lib/billing/text-output-policy");
 const {plannedCandidatePool}=await import("../src/lib/leads/workflow/target-completion-policy");
-const {buildHybridSearchRoute}=await import("../src/lib/leads/workflow/hybrid-search-policy");
+const {buildHybridSearchRoute,discoveryResultsPerRoute}=await import("../src/lib/leads/workflow/hybrid-search-policy");
 const {readSearchRateStatuses}=await import("../src/lib/billing/search-rate-repository");
 const userId="cbee9803-3c43-4609-9228-66086b207012";
 const minimalPlan={countryCode:"CO",countryName:"Colombia",objective:"new-market" as const,
   roles:["Distributor" as const],targetCount:1,queryLanguage:"es",userRequest:"Synthetic acceptance wire only"};
+const firstRoundPool=plannedCandidatePool({targetCount:minimalPlan.targetCount,
+  acceptedCount:0,discoveredUniqueCount:0,round:0});
+const firstRoundRoute=buildHybridSearchRoute(minimalPlan);
+const firstRoundRequestedResults=discoveryResultsPerRoute(firstRoundPool,firstRoundRoute);
 async function captureMinimalPlaybookWire(){
   const originalFetch=globalThis.fetch;
   const originalKey=process.env.OPENROUTER_API_KEY;
@@ -61,7 +65,7 @@ async function captureMinimalBraveWire(){
     const {createDiscoveryProvider}=await import("../src/providers/discovery");
     const {buildStandardLeadMarketPlaybook}=await import("../src/lib/leads/workflow/playbook");
     const {ragContext}=await import("./workflow-recovery-fixtures");
-    const route=buildHybridSearchRoute(minimalPlan).find(step=>step.provider==="brave"&&step.trigger==="core");
+    const route=firstRoundRoute.find(step=>step.provider==="brave"&&step.trigger==="core");
     if(!route)throw new Error("Minimal plan has no Brave core route");
     const playbook=buildStandardLeadMarketPlaybook(minimalPlan,ragContext);
     const provider=createDiscoveryProvider("brave",{maxAttempts:1,fetchImplementation:async(input,init)=>{
@@ -69,7 +73,7 @@ async function captureMinimalBraveWire(){
       throw new BudgetDeniedError("missing-tariff");
     }});
     try{await provider.search({query:playbook.searchQueries[0].query,countryCode:minimalPlan.countryCode,
-      countryName:minimalPlan.countryName,languageCode:minimalPlan.queryLanguage,maxResults:2,
+      countryName:minimalPlan.countryName,languageCode:minimalPlan.queryLanguage,maxResults:firstRoundRequestedResults,
       category:route.category,track:route.track,engine:route.engine,mechanism:route.mechanism});}
     catch(error){if(!(error instanceof BudgetDeniedError)||error.code!=="missing-tariff")throw error;}
     if(captured.length!==1)throw new Error("Unexpected Brave core transport count");
@@ -100,14 +104,14 @@ async function captureMinimalExaWire(){
   process.env.EXA_API_KEY="synthetic-never-sent";
   try{
     const {createDiscoveryProvider}=await import("../src/providers/discovery");
-    const route=buildHybridSearchRoute(minimalPlan).find(step=>step.provider==="exa");
+    const route=firstRoundRoute.find(step=>step.provider==="exa");
     if(!route)throw new Error("Minimal plan has no Exa route");
     const provider=createDiscoveryProvider("exa",{maxAttempts:1,fetchImplementation:async(input,init)=>{
       captured.push(new Request(input,init));
       throw new BudgetDeniedError("missing-tariff");
     }});
     try{await provider.search({query:"Synthetic networking distributor Colombia",countryCode:minimalPlan.countryCode,
-      countryName:minimalPlan.countryName,languageCode:minimalPlan.queryLanguage,maxResults:2,
+      countryName:minimalPlan.countryName,languageCode:minimalPlan.queryLanguage,maxResults:firstRoundRequestedResults,
       category:route.category,track:route.track,engine:route.engine,mechanism:route.mechanism});}
     catch(error){if(!(error instanceof BudgetDeniedError)||error.code!=="missing-tariff")throw error;}
     if(captured.length!==1)throw new Error("Unexpected Exa transport count");
@@ -231,7 +235,7 @@ try{
     (await readSearchRateStatuses()).map(item=>[item.tariffKey,item]));
   const searchSourceByProvider=new Map<string,string>([["brave","brave-standard-web-search"],
     ["exa","exa-company-auto-text-search"],["google-places","google-places-text-search-enterprise"]]);
-  const searchRoute=buildHybridSearchRoute(minimalPlan).map(step=>{
+  const searchRoute=firstRoundRoute.map(step=>{
     const tariffKey=searchSourceByProvider.get(step.provider)??null;
     const rule=tariffKey?billingPolicy.rules.find(item=>item.key===tariffKey):undefined;
     const source=tariffKey?sourceStatus.get(tariffKey):undefined;
@@ -270,7 +274,7 @@ try{
     ?Number((fourPhaseWithProBound+playbookBound.maximumPerCallUsd).toFixed(6)):null;
   console.log(JSON.stringify({mode:"read-only-prerequisite-preview",limitUsd:30,occupiedUsd:Number(budget.budget.occupied_micros)/1e6,
     remainingUsd:Number(budget.budget.remaining_micros)/1e6,frozen:budget.budget.frozen,
-    firstRoundPoolForOneTarget:plannedCandidatePool({targetCount:1,acceptedCount:0,discoveredUniqueCount:0,round:0}),
+    firstRoundPoolForOneTarget:firstRoundPool,firstRoundRequestedResults,
     stages,searchRoute,supplementalEvidence,marketPlaybookWire,braveCoreWire,
     exaConditionalWire,tavilyEvidenceWires,
     checkedTariffsAvailable:stages.every(stage=>stage.tariff==="available")

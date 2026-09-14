@@ -179,6 +179,13 @@ export function buildHybridSearchRoute(input: LeadSearchPlan): HybridSearchRoute
   }));
 }
 
+/** Shared first/next-round request sizing for execution and read-only wire preflight. */
+export function discoveryResultsPerRoute(targetPool:number,route:HybridSearchRouteStep[]):number{
+  const trackCount=Math.max(1,new Set(route.map(step=>`${step.category}/${step.track}`)).size);
+  return Math.min(ACTIVE_HYBRID_SEARCH_POLICY.maxBatchSize,
+    Math.max(ACTIVE_HYBRID_SEARCH_POLICY.defaultBatchSize,Math.ceil(targetPool/trackCount)));
+}
+
 export function hybridSearchPolicyChecksum(policy: HybridSearchPolicy = ACTIVE_HYBRID_SEARCH_POLICY): string {
   return createHash("sha256").update(JSON.stringify(policy)).digest("hex");
 }

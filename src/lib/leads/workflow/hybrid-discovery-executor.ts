@@ -9,7 +9,7 @@ import type { DiscoveryItem, DiscoveryProvider, DiscoveryProviderResult,
 
 import { RealtimeCandidateRegistry } from "./candidate-registry";
 import { LeadDiscoveryGate, type DiscoveryGateResult } from "./discovery-gate";
-import { ACTIVE_HYBRID_SEARCH_POLICY, buildHybridSearchRoute, normalizeLeadSearchPlan,
+import { ACTIVE_HYBRID_SEARCH_POLICY, buildHybridSearchRoute, discoveryResultsPerRoute, normalizeLeadSearchPlan,
   type HybridSearchRouteStep, type LeadSearchCategory } from "./hybrid-search-policy";
 import type { LeadMarketPlaybook, LeadWorkflowCandidate, WorkflowModelUsage } from "./types";
 
@@ -307,9 +307,7 @@ export async function executeHybridDiscovery(runId: string, inputPlan: LeadSearc
   const defaultTargetPool = Math.max(plan.targetCount + 5,
     Math.ceil(plan.targetCount * ACTIVE_HYBRID_SEARCH_POLICY.initialCandidateMultiplier));
   const targetPool = Math.min(150, Math.max(1, Math.ceil(options.targetPoolOverride ?? defaultTargetPool)));
-  const trackCount = Math.max(1, new Set(route.map((step) => `${step.category}/${step.track}`)).size);
-  const requestedResults = Math.min(ACTIVE_HYBRID_SEARCH_POLICY.maxBatchSize,
-    Math.max(ACTIVE_HYBRID_SEARCH_POLICY.defaultBatchSize, Math.ceil(targetPool / trackCount)));
+  const requestedResults = discoveryResultsPerRoute(targetPool,route);
   const queryRound = Math.max(0, Math.floor(options.queryRound ?? 0));
   const session = options.session ?? createHybridDiscoverySession();
   for (const domain of options.initialExcludeDomains ?? []) {

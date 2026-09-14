@@ -4,6 +4,7 @@ import type { LeadSearchPlan } from "@/lib/assistant/types";
 import {
   ACTIVE_HYBRID_SEARCH_POLICY,
   buildHybridSearchRoute,
+  discoveryResultsPerRoute,
   hybridSearchPolicyChecksum,
   normalizeLeadSearchPlan,
 } from "./hybrid-search-policy";
@@ -48,6 +49,13 @@ describe("hybrid search policy", () => {
       .every(step => step.trigger === "marginal-gap")).toBe(true);
     expect(route.some((step) => step.provider === "gemini-product")).toBe(false);
     expect(route.some((step) => step.provider === "searchapi" && step.engine === "google")).toBe(false);
+  });
+
+  it("uses the same per-route result count for a one-target preflight and discovery execution", () => {
+    const route = buildHybridSearchRoute(plan({countryCode:"CO",countryName:"Colombia",
+      queryLanguage:"es",targetCount:1}));
+    expect(discoveryResultsPerRoute(2,route)).toBe(12);
+    expect(discoveryResultsPerRoute(150,route)).toBe(20);
   });
 
   it("does not enable Agent, Brand Owner or OEM ODM from stale persisted role fields", () => {
