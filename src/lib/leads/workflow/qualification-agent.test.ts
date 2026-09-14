@@ -213,14 +213,23 @@ describe("LeadQualificationAgent", () => {
     class PhaseProvider extends FakeProvider {
       private readonly wire=new DeepSeekProvider({apiKey:"fixture-never-sent",maxAttempts:1,
         fetchImplementation:async()=>{throw new Error("Synthetic phase test must not use transport");}});
+      private readonly fallbackWire=new OpenAiCompatibleProvider({id:"fallback",
+        apiKey:"fixture-never-sent",baseUrl:"https://example.invalid/v1",maxAttempts:1,
+        extraBody:{provider:{require_parameters:true,data_collection:"deny"}},
+        fetchImplementation:async()=>{throw new Error("Synthetic fallback must not use transport");}});
       phaseCalls=0;failPhaseAt=0;fallbackPhaseAt=0;invalidPhaseAt=0;
       finalFallback=false;finalInvalid=false;approvedFallback=false;
       private fallbackRequest(request:StructuredAiRequest<unknown>){return {...request,
-        modelVersion:request.modelVersion.includes("pro")?"fallback-pro":"fallback-routine"};}
-      requestBytes(request:StructuredAiRequest<unknown>){return Math.max(this.wire.requestBytes(request),
-        this.approvedFallback?this.wire.requestBytes(this.fallbackRequest(request)):0);}
-      cacheIdentity(request:StructuredAiRequest<unknown>){return this.wire.cacheIdentity(request);}
-      paidRequestFingerprint(request:StructuredAiRequest<unknown>){return this.wire.paidRequestFingerprint(request);}
+        modelVersion:request.modelVersion.includes("pro")?"openai/gpt-4o":"openai/gpt-4o-mini"};}
+      requestBytes(request:StructuredAiRequest<unknown>){
+        if(request.modelVersion.startsWith("openai/"))return this.fallbackWire.requestBytes(request);
+        return Math.max(this.wire.requestBytes(request),this.approvedFallback
+          ?this.fallbackWire.requestBytes(this.fallbackRequest(request)):0);
+      }
+      cacheIdentity(request:StructuredAiRequest<unknown>){return request.modelVersion.startsWith("openai/")
+        ?this.fallbackWire.cacheIdentity(request):this.wire.cacheIdentity(request);}
+      paidRequestFingerprint(request:StructuredAiRequest<unknown>){return request.modelVersion.startsWith("openai/")
+        ?this.fallbackWire.paidRequestFingerprint(request):this.wire.paidRequestFingerprint(request);}
       executionRoutes(request:StructuredAiRequest<unknown>){
         const primary={providerId:"fake",request,cacheIdentity:this.cacheIdentity(request),
           paidRequestFingerprint:this.paidRequestFingerprint(request)};
@@ -401,10 +410,17 @@ describe("LeadQualificationAgent", () => {
     const fallbackScope={...scope,actionId:"fixture-approved-fallback"};
     const fallbackAgent=new LeadQualificationAgent(fallbackProvider,{includeCooperationPaths:false,
       batchSize:1,concurrency:1,phaseCheckpointFactory:checkpointFactory,finalCheckpointFactory});
+    expect(large.evidence).toHaveLength(151);
+    expect(large.correction.findings).toHaveLength(155);
     const fallbackResult=await fallbackAgent.evaluateWithUsage([large],playbook,"DE","Germany",
       "new-market",undefined,fallbackScope);
     expect(fallbackResult.assessments[0].scoringStatus).toBe("completed");
     expect(fallbackResult.usage.some(item=>item.providerId==="fallback")).toBe(true);
+    for(const request of fallbackProvider.calls){
+      const limit=request.promptVersion==="qualification-fact-phase-v1"?57_344:61_440;
+      for(const route of fallbackProvider.executionRoutes(request))
+        expect(fallbackProvider.requestBytes(route.request)).toBeLessThanOrEqual(limit);
+    }
     const fallbackContract=fallbackAgent.completedCacheContracts(fallbackResult.assessments)
       .get(large.candidateId);
     expect(fallbackContract).toMatch(/^[a-f0-9]{64}$/);
