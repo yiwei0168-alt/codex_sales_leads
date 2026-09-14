@@ -1,6 +1,7 @@
 import {BudgetDeniedError,IncompleteModelOutputError} from "@/lib/billing/policy";
 import {compatibleOutputTask,textOutputLimit,textOutputCompletion} from "@/lib/billing/text-output-policy";
 import { budgetedFetch } from "@/lib/billing/paid-fetch";
+import {paidRequestFingerprint} from "@/lib/billing/paid-request-fingerprint";
 import type { AiProvider, StructuredAiRequest, StructuredAiResponse } from "./contracts";
 import { ProviderUnavailableError } from "./contracts";
 import { structuredUserPrompt } from './structured-user-prompt';
@@ -90,6 +91,11 @@ export class OpenAiCompatibleProvider implements AiProvider {
         .sort(([left], [right]) => left.localeCompare(right))),
       body: this.requestBody(request),
     })).digest("hex");
+  }
+
+  paidRequestFingerprint(request: StructuredAiRequest<unknown>): string {
+    return paidRequestFingerprint("POST",new URL(`${this.baseUrl}/chat/completions`),
+      this.requestBody(request));
   }
 
   async execute<TInput, TOutput>(request: StructuredAiRequest<TInput>, signal?: AbortSignal) {

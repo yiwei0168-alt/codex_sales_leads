@@ -1,6 +1,8 @@
 import {afterEach,expect,it,vi} from "vitest";
 import {DeepSeekProvider} from "./deepseek";
 import {ResilientAiProvider} from "./resilient-ai";
+import {OpenAiCompatibleProvider} from "./openai-compatible";
+import {paidRequestFingerprint} from "@/lib/billing/paid-request-fingerprint";
 import type {StructuredAiRequest} from "./contracts";
 import {createHash} from "node:crypto";
 import {deepSeekRequestBody} from "./deepseek-request";
@@ -57,4 +59,26 @@ it("invalidates pre-approval Flash cache contracts but leaves Pro contracts unch
     if(model.includes("pro"))expect(provider.cacheIdentity(input)).toBe(before);
     else expect(provider.cacheIdentity(input)).not.toBe(before);
   }
+});
+it("matches the paid HTTP replay identity for the actual compatible route",()=>{
+  const provider=new OpenAiCompatibleProvider({id:"fixture-route",apiKey:"fixture-secret",
+    baseUrl:"https://example.test/v1",maxAttempts:1,
+    extraBody:{provider:{only:["OpenAI"]}}});
+  const actual={...request,modelVersion:"openai/gpt-4o-mini"};
+  const seen:string[]=[];
+  const transport=new OpenAiCompatibleProvider({id:"fixture-route",apiKey:"fixture-secret",
+    baseUrl:"https://example.test/v1",maxAttempts:1,
+    extraBody:{provider:{only:["OpenAI"]}},
+    fetchImplementation:async(input,init)=>{
+      seen.push(paidRequestFingerprint(String(init?.method),new URL(String(input)),String(init?.body)));
+      return Response.json({id:"fixture",model:actual.modelVersion,
+        choices:[{finish_reason:"stop",message:{content:'{"assessments":[]}'}}]});
+    }});
+  expect(provider.paidRequestFingerprint(actual)).toMatch(/^[a-f0-9]{64}$/);
+  expect(provider.paidRequestFingerprint(actual)).not.toContain("fixture-secret");
+  return transport.execute(actual).then(()=>{
+    expect(seen).toEqual([provider.paidRequestFingerprint(actual)]);
+    expect(provider.paidRequestFingerprint({...actual,modelVersion:"openai/gpt-4o"}))
+      .not.toBe(provider.paidRequestFingerprint(actual));
+  });
 });
