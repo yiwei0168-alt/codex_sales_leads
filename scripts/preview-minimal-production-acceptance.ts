@@ -1,4 +1,5 @@
 import nextEnv from "@next/env";
+import {readFile} from "node:fs/promises";
 nextEnv.loadEnvConfig(process.cwd());
 const {query,getPool}=await import("../src/lib/rag/db");
 const {readSpendBudget}=await import("../src/lib/billing/repository");
@@ -37,6 +38,17 @@ async function captureMinimalPlaybookWire(){
     if(captured.length!==1)throw new Error("Unexpected market-playbook transport count");
     const request=captured[0],url=new URL(request.url),wire=await request.text(),body=JSON.parse(wire);
     const bytes=Buffer.byteLength(wire,"utf8");
+    const publicEvidence=JSON.parse(await readFile(new URL("../docs/OPENROUTER_ROUTE_ENDPOINT_EVIDENCE_2026-09-14.json",import.meta.url),"utf8"));
+    if(publicEvidence.status!=="public-evidence-only-no-tariff-admission")throw new Error("Unexpected OpenRouter evidence status");
+    const openAiEndpoint=publicEvidence.models.find((item:{id:string})=>item.id===body.model)?.endpoints
+      .find((item:{tag:string})=>item.tag==="openai");
+    if(!openAiEndpoint||!Array.isArray(openAiEndpoint.supportedParameters))throw new Error("OpenAI endpoint evidence missing");
+    const constrainedParameters=["max_completion_tokens","response_format","temperature"]
+      .filter(parameter=>Object.hasOwn(body,parameter));
+    const publicEndpointParameterEvidence={snapshotCapturedAt:publicEvidence.capturedAt,
+      endpointTag:"openai",checkedRequestParameters:constrainedParameters,
+      notListedInEndpointMetadata:constrainedParameters.filter(parameter=>!openAiEndpoint.supportedParameters.includes(parameter)),
+      providerAcceptanceChecked:false};
     const quote={origin:url.origin,pathname:url.pathname,model:body.model,
       requestBytes:bytes,outputTokens:body.max_completion_tokens};
     try{
@@ -44,11 +56,13 @@ async function captureMinimalPlaybookWire(){
         ?quoteRequest(quote,undefined,Date.now(),"openrouter-sol-openai-playbook-credits"):quoteRequest(quote);
       assertRequestContract(rule,body,url.search,request.method,request.headers);
       return {status:"contract-valid-synthetic-wire",model:body.model,requestBytes:bytes,
+        requestParameterNames:Object.keys(body).sort(),publicEndpointParameterEvidence,
         outputTokens:body.max_completion_tokens,tariffKey:rule.key,maximumPerCallUsd:rule.maximumChargeMicros/1e6,
         actualMarketContextChecked:false,providerCalls:0};
     }catch(error){
       if(!(error instanceof BudgetDeniedError))throw error;
       return {status:error.code,model:body.model,requestBytes:bytes,
+        requestParameterNames:Object.keys(body).sort(),publicEndpointParameterEvidence,
         outputTokens:body.max_completion_tokens,actualMarketContextChecked:false,providerCalls:0};
     }
   }finally{

@@ -1,5 +1,7 @@
 # 当前唯一验收矩阵（更新至 2026-09-14）
 
+阶段175 [S01公开端点参数差异](S01_PUBLIC_ENDPOINT_PARAMETER_GAP_2026-09-14.md)：现行市场计划合成请求含 `max_completion_tokens`、`temperature`，OpenRouter OpenAI标准端点公开参数清单未列这两项；官方通用API支持前者，元数据差异不等于真实拒绝。只读预检显式保留 `providerAcceptanceChecked=false`、整次上界`null`，S01确认和付费门禁均不变。
+
 阶段174 [费用台账ACL](BILLING_LEDGER_ACL_ACCEPTANCE_2026-09-14.md)：真实应用角色初检15表中9表有旧UPDATE/DELETE授权，迁移071精确收紧后15/15通过；费用核销、任务限额SQL和公开价证缓存复验通过，账本仍USD12.324404/30、未知6，0付费。追加式权限部分验收，不等于真实账单或A11完成。
 
 阶段173 [FX过期与追加式权限](BILLING_FX_EXPIRY_AND_APPEND_ONLY_ACL_2026-09-14.md)：官方仍只有9月11日参考日，72小时门禁在14日00:00 UTC生效；计划刷新失败后保留旧快照并于06:47 UTC重试。迁移070撤销应用角色对汇率快照/观测的旧修改权限，真实SQL三表ACL及无内容变化更新拒绝通过，0付费。A10刷新/门禁与A05追加式参考数据部分验收；有效新汇率、完整整次费用和A11仍缺。
