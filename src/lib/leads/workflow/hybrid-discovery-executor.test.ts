@@ -82,6 +82,19 @@ describe("hybrid discovery executor", () => {
     expect(session.failedCalls.size).toBe(0);
     expect(session.providerFailureCounts.get("brave")).toBe(0);
   });
+  it("keeps failed Gemini grounding usage unknown after an attempted request", async () => {
+    const output = await executeHybridDiscovery("unknown-grounding", { ...plan, roles: ["ISP"] }, playbook, {
+      gate: passGate, providerFactory: step => ({ id: step.provider, search: async query => {
+        if (step.provider === "gemini-full") throw new DiscoveryProviderError("synthetic interrupted response", {
+          provider: "gemini-full", kind: "transport", attempts: 1, latencyMs: 2,
+          retryable: false, circuitScope: "route" });
+        return new FakeProvider(step.provider, null).search(query);
+      } }),
+    });
+    const failed = output.calls.find(call => call.route.provider === "gemini-full" && call.status === "failed");
+    expect(failed?.groundingQueries).toBeUndefined();
+    expect(failed?.groundingCountSource).toBe("unknown");
+  });
   it.each(["missing-tariff", "budget-exhausted"] as const)(
     "keeps %s distinct from provider failure and search exhaustion", async (code) => {
       const session = createHybridDiscoverySession();
@@ -195,6 +208,8 @@ describe("hybrid discovery executor", () => {
     expect(output.calls.some((call) => call.route.provider === "gemini-product")).toBe(false);
     expect(output.calls.some((call) => call.route.provider === "gemini-full" && call.status === "completed"
       && call.fallbackUsed)).toBe(true);
+    expect(output.calls.filter((call) => call.route.provider === "gemini-full" && call.status === "completed")
+      .every((call) => call.groundingQueries === undefined)).toBe(true);
   });
 
   it("keeps the conditional Gemini Full backup idle while SearchAPI is healthy", async () => {

@@ -28,7 +28,8 @@ export interface HybridSearchCallTelemetry {
   rejectedResults: number;
   paidSearchCredits: number;
   requestCount: number;
-  groundingQueries: number;
+  groundingQueries?: number;
+  groundingCountSource?: "provider-usage" | "response-steps" | "unknown" | "cache-hit";
   inputTokens: number;
   outputTokens: number;
   latencyMs: number;
@@ -451,7 +452,9 @@ export async function executeHybridDiscovery(runId: string, inputPlan: LeadSearc
           rejectedResults: response.items.length - normalizedCompanies,
           paidSearchCredits: cached ? 0 : response.usage.paidSearchCredits,
           requestCount: cached ? 0 : response.requestCount,
-          groundingQueries: cached ? 0 : response.usage.groundingQueries ?? 0,
+          groundingQueries: cached ? 0 : response.usage.groundingQueries
+            ?? (step.provider.startsWith("gemini") ? undefined : 0),
+          groundingCountSource: cached ? "cache-hit" : response.usage.groundingCountSource,
           inputTokens: cached ? 0 : response.usage.inputTokens,
           outputTokens: cached ? 0 : response.usage.outputTokens,
           latencyMs: cached ? 0 : response.latencyMs,
@@ -479,7 +482,9 @@ export async function executeHybridDiscovery(runId: string, inputPlan: LeadSearc
         const failed: HybridSearchCallTelemetry = { callKey, callFingerprint: fingerprint,
           queryClusterKey: clusterKey, route: step, query: searchQuery, status: "failed",
           requestedResults, rawResults: 0, normalizedCompanies: 0, newUniqueCompanies: 0, existingCompanyHits: 0, rejectedResults: 0,
-          paidSearchCredits: 0, groundingQueries: 0, inputTokens: 0, outputTokens: 0, latencyMs: details.latencyMs,
+          paidSearchCredits: 0, groundingQueries: step.provider.startsWith("gemini") ? undefined : 0,
+          groundingCountSource: step.provider.startsWith("gemini") ? "unknown" : undefined,
+          inputTokens: 0, outputTokens: 0, latencyMs: details.latencyMs,
           requestCount: details.attempts, retryCount: Math.max(0, details.attempts - 1),
           fallbackUsed: false, cacheStatus: "miss", failureClass: details.kind,
           circuitScope: details.circuitScope, discardedReasonCounts: { [`provider-${details.kind}`]: 1 }, items: [],

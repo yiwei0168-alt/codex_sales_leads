@@ -31,6 +31,7 @@ export interface DiscoveryUsage {
   outputTokens: number;
   totalTokens: number;
   groundingQueries?: number;
+  groundingCountSource?: "provider-usage" | "response-steps" | "unknown";
 }
 
 export interface DiscoveryProviderResult {

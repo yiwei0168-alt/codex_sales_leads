@@ -172,13 +172,29 @@ function usage(value: Record<string, unknown> | undefined, paidSearchCredits = 1
     totalTokens: number(["total_tokens", "totalTokenCount"]) || inputTokens + outputTokens };
 }
 
-function groundingQueries(value: unknown): number {
-  const body = value as { steps?: Array<{ type?: string; arguments?: { queries?: unknown[] } }> };
-  const calls = (body.steps ?? []).filter((step) => step.type === "google_search_call");
-  const queries = new Set(calls.flatMap((step) => step.arguments?.queries ?? [])
+function groundingQueries(value: unknown): { count?: number; source: "provider-usage" | "response-steps" | "unknown" } {
+  const body = value as { usage?: { grounding_tool_count?: unknown };
+    steps?: Array<{ type?: string; arguments?: { queries?: unknown[] } }> };
+  const reported = body.usage?.grounding_tool_count;
+  if (Array.isArray(reported)) {
+    let count = 0;
+    let valid = true;
+    for (const item of reported) {
+      if (!item || typeof item !== "object" || (item as { type?: unknown }).type !== "google_search") continue;
+      const amount = (item as { count?: unknown }).count;
+      if (typeof amount !== "number" || !Number.isSafeInteger(amount) || amount < 0
+        || !Number.isSafeInteger(count + amount)) { valid = false; break; }
+      count += amount;
+    }
+    if (valid) return { count, source: "provider-usage" };
+  }
+  if (!Array.isArray(body.steps)) return { source: "unknown" };
+  const calls = body.steps.filter((step) => step.type === "google_search_call");
+  if (calls.some((step) => !Array.isArray(step.arguments?.queries))) return { source: "unknown" };
+  const queries = new Set(calls.flatMap((step) => step.arguments!.queries!)
     .filter((query): query is string => typeof query === "string" && query.trim().length > 0)
     .map((query) => query.trim()));
-  return queries.size || calls.length;
+  return { count: queries.size, source: "response-steps" };
 }
 
 function item(providerId: DiscoveryProviderId, value: Omit<DiscoveryItem, "providerId" | "rank">,
@@ -237,8 +253,10 @@ class GeminiDiscoveryProvider extends BaseProvider implements DiscoveryProvider 
       title: new URL(urlValue).hostname.replace(/^www\./, ""), url: urlValue,
       snippet: answerText.slice(0, 2_000), sourceKind: "grounded-answer",
     }, index));
+    const grounding = groundingQueries(response.body);
     return result(this.id, query, startedAt, items, response.attempts, { answerText, sourceUrls: urls,
-      usage: { ...usage(response.body.usage), groundingQueries: groundingQueries(response.body) },
+      usage: { ...usage(response.body.usage), groundingQueries: grounding.count,
+        groundingCountSource: grounding.source },
       rawResponse: response.body });
   }
 }

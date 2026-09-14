@@ -57,6 +57,30 @@ describe("production discovery providers", () => {
     expect(output.usage.totalTokens).toBe(15);
   });
 
+  it("uses Gemini's reported Google Search count when steps show fewer queries", async () => {
+    configured("gemini-full");
+    const fetchMock = vi.fn().mockResolvedValue(Response.json({ status: "completed",
+      steps: [{ type: "google_search_call", arguments: { queries: ["first search"] } }],
+      usage: { grounding_tool_count: [{ type: "google_search", count: 3 }] } }));
+    const output = await createDiscoveryProvider("gemini-full", { fetchImplementation: fetchMock,
+      maxAttempts: 1 }).search({ ...baseQuery, engine: "google-grounded", mechanism: "planning" });
+    expect(output.usage).toMatchObject({ groundingQueries: 3, groundingCountSource: "provider-usage" });
+  });
+
+  it("retains unknown Gemini search usage and only derives unique queries from complete steps", async () => {
+    configured("gemini-full");
+    const fetchMock = vi.fn().mockResolvedValueOnce(Response.json({ status: "completed",
+      steps: [{ type: "google_search_call", arguments: { queries: ["same", ""] } },
+        { type: "google_search_call", arguments: { queries: ["same"] } }] }))
+      .mockResolvedValueOnce(Response.json({ status: "completed", usage: { input_tokens: 5 } }));
+    const provider = createDiscoveryProvider("gemini-full", { fetchImplementation: fetchMock, maxAttempts: 1 });
+    const fromSteps = await provider.search({ ...baseQuery, engine: "google-grounded", mechanism: "planning" });
+    expect(fromSteps.usage).toMatchObject({ groundingQueries: 1, groundingCountSource: "response-steps" });
+    const unknown = await provider.search({ ...baseQuery, engine: "google-grounded", mechanism: "planning" });
+    expect(unknown.usage.groundingQueries).toBeUndefined();
+    expect(unknown.usage.groundingCountSource).toBe("unknown");
+  });
+
   it("selects Google or Bing explicitly in SearchAPI", async () => {
     configured("searchapi");
     const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({ organic_results: [
