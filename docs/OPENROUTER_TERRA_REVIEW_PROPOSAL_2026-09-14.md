@@ -1,5 +1,7 @@
 # OpenRouter Terra 二次复核费用候选合同（阶段95）
 
+2026-09-14 当前补充：S01 市场计划专用路由后来已获确认并实施（[独立验收](S01_SOL_PLAYBOOK_ROUTING_ACCEPTANCE_2026-09-14.md)）；本页 Terra **仍是未获确认的候选合同**，不受 S01 授权覆盖。阶段132用当前 `LeadAssessmentReviewAgent` 捕获到 `reasoning.effort=medium`、严格 JSON、8,192 总输出及原 provider 参数的实际合成请求，现行产品仍在预留前 `missing-tariff`；请求形态见[实际传输预检](OPENROUTER_REVIEW_ACTUAL_WIRE_PREFLIGHT_2026-09-14.md)。即使此项获准，USD11.019202 与 S01 单次上界相加已超过最近余额，整次业务仍不能凭两个单次报价启动。以下原文中“S01 待确认”是报告写成时的状态。
+
 本文件只记录公开元数据的只读复核和费用上界候选，**不批准费率、不修改实际路由或费用门禁**。当前账号按用户 A20 确认仅使用 OpenRouter credits、未配置 BYOK；历史累计 USD30 验收占用最后记录 USD12.324404，付费前仍须重新核验。A11 要求计费合同或模型路由变化经用户确认，S01 单一 OpenAI 标准路由也仍是待确认提案。
 
 ## 本次核验
