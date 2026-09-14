@@ -1,5 +1,7 @@
 # 产品开发恢复节点 — 2026-09-11
 
+**当前恢复入口：**[阶段 239 产品端到端与质量闭环恢复节点](RESUME_PRODUCT_ACCEPTANCE_STAGE239_2026-09-14.md)。下文为阶段 108 及以前的历史恢复记录；下次先读新入口、[当前验收矩阵](CURRENT_ACCEPTANCE_MATRIX_2026-09-13.md)和阶段 238 真实停点，不按旧 USD30、旧汇率或“待确认 S02”文字启动任务。
+
 2026-09-14阶段108 / A05：Brave/Tavily官方Search费率每日只读复核接worker/预算门禁/UI；迁移058真实PostgreSQL重复应用，两规则validated/hold=false、并发每源最多1 GET、预算不变。954测试/202文件、build、lint0错误/audit0高危、Chrome桌面/手机64组通过，fixture清理、0真实付费/发信。[报告](SEARCH_PUBLIC_RATE_REFRESH_ACCEPTANCE_2026-09-14.md)。其他来源、变更确认和A11仍缺，整体验收未完成。
 
 2026-09-14阶段107 / A05：DeepSeek Flash/Pro 官方费率每日只读复核已接worker/预留门禁/预算页面；迁移057真实PostgreSQL通过、两规则validated/hold=false、公共GET并发合并且预算不变。935测试/200文件、build、lint0错误/audit0高危和本地生产Chrome桌面/手机62组通过，fixture清理，0真实付费/发信。[报告](DEEPSEEK_PUBLIC_RATE_REFRESH_ACCEPTANCE_2026-09-14.md)。其余来源、变更确认、S01及A11真实闭环仍缺，整体验收未完成。
