@@ -123,6 +123,48 @@ function compactFieldTables<T extends StructuredAiRequest<unknown>>(request: T):
       "Lossless candidate field tables: evidenceTable and findingsTable replace only their corresponding arrays. Reconstruct each ordered row as an object by pairing columns[i] with row[i], retaining every value, nested structure, null and original row order. Then apply all original evidence and scoring instructions. No fact or citation is omitted; table rows do not imply corroboration, identity equivalence or eligibility. Resolve evidenceTextDictionary references after reconstruction when present."] } } as T;
 }
 
+/** Keep every corrected fact and source identity; fold only supported-fact excerpts when needed. */
+function foldSupportedExcerpts<T extends StructuredAiRequest<unknown>>(request:T,
+  requestBytes:(value:StructuredAiRequest<unknown>)=>number,limit:number):T{
+  if(request.task!=="lead-qualification")return request;
+  const input=request.input as {candidates?:CandidateInput[];instructions?:string[];
+    evidenceExcerptEncoding?:unknown}|null;
+  if(!input?.candidates||input.candidates.length!==1||!Array.isArray(input.instructions)
+    ||input.evidenceExcerptEncoding!==undefined)return request;
+  const candidate=input.candidates[0],evidence=candidate.evidence,findings=candidate.findings;
+  if(!evidence?.length||!findings?.length)return request;
+  const protectedIds=new Set<string>(),supportedIds=new Set<string>(),firstByKind=new Set<string>();
+  for(const finding of findings){
+    const record=finding as {kind?:unknown;status?:unknown;evidenceIds?:unknown};
+    const ids=Array.isArray(record.evidenceIds)?record.evidenceIds.filter((id):id is string=>typeof id==="string"):[];
+    if(record.status!=="supported")for(const id of ids)protectedIds.add(id);
+    else for(const id of ids)supportedIds.add(id);
+    const kind=typeof record.kind==="string"?record.kind:"unknown";
+    if(!firstByKind.has(kind)&&ids.length){protectedIds.add(ids[0]);firstByKind.add(kind);}
+  }
+  const candidates=evidence.map((item,index)=>({index,id:item.evidenceId,
+    length:typeof item.excerpt==="string"?Buffer.byteLength(item.excerpt,"utf8"):0}))
+    .filter(item=>typeof item.id==="string"&&supportedIds.has(item.id)
+      &&!protectedIds.has(item.id)&&item.length>96)
+    .sort((left,right)=>right.length-left.length||left.index-right.index);
+  if(!candidates.length)return request;
+  const folded=evidence.map(item=>({...item}));
+  const instructions=[...input.instructions,
+    "Some raw excerpts for correction-stage supported findings are folded to meet the request limit. Every corrected finding, status, evidence ID, title and URL remains. A folded excerpt is not independent corroboration or a negative fact. Use only stated findings and visible source text; if omitted raw wording could change a gate or score, mark it unknown and request review. Never invent missing source content."];
+  let current=request,omitted=0;
+  for(const item of candidates){
+    folded[item.index]={...folded[item.index],excerpt:"[folded supported-fact excerpt]",excerptFolded:true};
+    omitted++;
+    current={...request,input:{...input,instructions,candidates:[{...candidate,evidence:folded}],
+      evidenceExcerptEncoding:"supported-excerpt-fold-v1"}} as T;
+    if(requestBytes(current)<=limit)break;
+  }
+  if(!omitted||requestBytes(current)>=requestBytes(request))return request;
+  return {...current,preparation:{encoding:"supported-excerpt-fold-v1",
+    originalMaximumWireBytes:requestBytes(request),preparedMaximumWireBytes:requestBytes(current),
+    evidenceItems:evidence.length,findingItems:findings.length,omittedEvidenceExcerpts:omitted}};
+}
+
 /** Lossless request-only compression. Original evidence, findings and citation identities never mutate. */
 export function compactLeadSingleton<T extends StructuredAiRequest<unknown>>(request: T,
   requestBytes: (value: StructuredAiRequest<unknown>) => number = value =>
@@ -176,5 +218,8 @@ export function compactLeadSingleton<T extends StructuredAiRequest<unknown>>(req
   }
   const phrased = compactSharedPhrases(smallest, requestBytes, limit);
   if (requestBytes(phrased) < requestBytes(smallest)) smallest = phrased;
-  return finish(smallest);
+  if(requestBytes(smallest)<=limit)return finish(smallest);
+  const folded=foldSupportedExcerpts(request,requestBytes,limit);
+  if(requestBytes(folded)<requestBytes(smallest))smallest=folded;
+  return smallest===folded?folded:finish(smallest);
 }

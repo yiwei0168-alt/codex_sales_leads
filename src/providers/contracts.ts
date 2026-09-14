@@ -34,6 +34,8 @@ export interface LeadRequestPreparation {
   preparedMaximumWireBytes: number;
   evidenceItems: number;
   findingItems: number;
+  /** Source text folded only after every corrected finding and citation remains in the request. */
+  omittedEvidenceExcerpts?: number;
 }
 
 export interface StructuredAiRequest<TInput> {

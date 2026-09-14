@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+阶段146 / B07、B26：单公司无损请求仍超限时，评分请求可显式折叠仅由已支持事实追溯的部分证据原文，保留全部事实、状态和引用，冲突/否定/未知原文及原任务证据不变。55条独有事实合成评分与全冲突拒绝路径通过；150条仍待分阶段处理，真实模型遵从与A11未验收。[证据](P06_SUPPORTED_EXCERPT_FOLD_ACCEPTANCE_2026-09-14.md)。
+
 阶段145 / B07、B26、A11：984项/203文件、生产构建、18项桌面/手机浏览器、lint及生产依赖审计通过。P06不可压缩任意大单公司尚不能分阶段完成评分；只读整次预检 `totalRunBoundUsd=null`，真实闭环未运行、整体验收未通过。[边界与证据](CURRENT_REGRESSION_AND_P06_BOUNDARY_2026-09-14.md)。
 
 阶段144 / B07、B25、B26、O01/O05：初始证据为空的合成候选经现行 `collectLeadEvidence` 处理模拟搜索与提取，各1次，形成稳定官方证据供现行校正、评分 Agent 引用；正结果入产品 SQL 并在生产 Chrome 双视口刷新一致。真实搜索、模型语义、可信费用与 A11 未验收。[证据](CURRENT_EVIDENCE_COLLECTOR_POSITIVE_GRAPH_ACCEPTANCE_2026-09-14.md)。

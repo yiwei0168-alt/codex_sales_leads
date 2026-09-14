@@ -9,7 +9,7 @@ import {DeepSeekProvider} from "@/providers/deepseek";
 import { leadEvidenceContentHash } from "@/lib/leads/evidence-snapshot";
 
 import { enforceAssessmentEvidenceCaps, LeadQualificationAgent } from "./qualification-agent";
-import {validCachedAssessment} from "./assessment-cache";
+import {assessmentDependencyFingerprint,validCachedAssessment} from "./assessment-cache";
 import { roleScoringAnchors } from "./role-scoring-anchors";
 import { CHANNEL_ROLE_FAMILIES } from "./types";
 import type { CorrectedLeadWorkflowCandidate, LeadMarketPlaybook } from "./types";
@@ -122,8 +122,8 @@ function uniqueFactCandidate(count: number): CorrectedLeadWorkflowCandidate {
         evidenceIds: [item.id] }))] } };
 }
 
-function incompressibleCandidate():CorrectedLeadWorkflowCandidate{
-  const large=uniqueFactCandidate(150);
+function incompressibleCandidate(count=150):CorrectedLeadWorkflowCandidate{
+  const large=uniqueFactCandidate(count);
   const extras=large.evidence.slice(1).map((item,index)=>{
     const excerpt=Array.from({length:9},(_,part)=>createHash("sha256")
       .update(`independent-${index}-${part}`).digest("hex")).join(" ");
@@ -393,6 +393,62 @@ describe("LeadQualificationAgent", () => {
     expect(result[0]).toMatchObject({candidateId:large.candidateId,eligible:false,
       scoringStatus:"retry-required",eligibilityStatus:"research-required"});
     expect(result[0].warnings.join(" ")).toContain("exceeds the approved byte limit");
+    expect(provider.calls).toHaveLength(0);
+    expect(JSON.stringify(large)).toBe(original);
+  });
+
+  it("folds only supported-fact source prose while retaining every finding and citation for a large singleton",async()=>{
+    class ContractProvider extends FakeProvider {
+      private readonly wire=new DeepSeekProvider({apiKey:"fixture",maxAttempts:1,
+        fetchImplementation:async()=>{throw new Error("Synthetic scoring must not use transport");}});
+      requestBytes(request:StructuredAiRequest<unknown>){return this.wire.requestBytes(request);}
+      cacheIdentity(request:StructuredAiRequest<unknown>){return this.wire.cacheIdentity(request);}
+    }
+    const provider=new ContractProvider();
+    const agent=new LeadQualificationAgent(provider);
+    const large=incompressibleCandidate(55);
+    const protectedFact=large.correction.findings.find(item=>item.evidenceIds.includes("unique-25"))!;
+    protectedFact.status="conflicting";
+    const original=JSON.stringify(large);
+    const expected=agent.cacheContracts([large],playbook,"DE","Germany","new-market");
+    const result=await agent.evaluate([large],playbook,"DE","Germany","new-market");
+    expect(result[0].scoringStatus).toBe("completed");
+    expect(provider.calls).toHaveLength(1);
+    const sent=provider.calls[0];
+    expect(provider.requestBytes(sent)).toBeLessThanOrEqual(61_440);
+    expect(sent.preparation?.encoding).toBe("supported-excerpt-fold-v1");
+    expect(sent.preparation?.omittedEvidenceExcerpts).toBeGreaterThan(0);
+    expect(sent.evidenceIds).toEqual(large.evidence.map(item=>item.id));
+    const payload=sent.input as {instructions:string[];candidates:Array<{findings:typeof large.correction.findings;
+      evidence:Array<{evidenceId:string;url:string;title:string;excerpt:string;excerptFolded?:boolean}>}>};
+    expect(payload.instructions.join(" ")).toContain("not independent corroboration");
+    expect(payload.candidates[0].findings).toEqual(large.correction.findings);
+    expect(payload.candidates[0].evidence.map(item=>item.evidenceId)).toEqual(large.evidence.map(item=>item.id));
+    expect(payload.candidates[0].evidence.map(item=>item.url)).toEqual(large.evidence.map(item=>item.url));
+    expect(payload.candidates[0].evidence.find(item=>item.evidenceId==="unique-25")?.excerpt)
+      .toBe(large.evidence.find(item=>item.id==="unique-25")?.excerpt);
+    expect(payload.candidates[0].evidence.filter(item=>item.excerptFolded).every(item=>
+      !large.correction.findings.some(finding=>finding.status!=="supported"
+        &&finding.evidenceIds.includes(item.evidenceId)))).toBe(true);
+    expect(agent.completedCacheContracts(result)).toEqual(expected);
+    const omittedId=payload.candidates[0].evidence.find(item=>item.excerptFolded)!.evidenceId;
+    const changed=structuredClone(large);
+    const source=changed.evidence.find(item=>item.id===omittedId)!;
+    source.excerpt=`${source.excerpt.slice(0,-1)}X`;
+    source.contentHash=leadEvidenceContentHash(source.excerpt);
+    const context={countryCode:"DE",countryName:"Germany",executionContract:expected.get(large.candidateId)!};
+    expect(assessmentDependencyFingerprint(changed,playbook,"new-market",context))
+      .not.toBe(assessmentDependencyFingerprint(large,playbook,"new-market",context));
+    expect(JSON.stringify(large)).toBe(original);
+  });
+
+  it("does not fold unresolved source prose merely to force an oversized score",async()=>{
+    const provider=new CacheableFakeProvider();
+    const large=incompressibleCandidate(55);
+    large.correction.findings=large.correction.findings.map(item=>({...item,status:"conflicting"}));
+    const original=JSON.stringify(large);
+    const result=await new LeadQualificationAgent(provider).evaluate([large],playbook,"DE","Germany","new-market");
+    expect(result[0]).toMatchObject({scoringStatus:"retry-required",eligibilityStatus:"research-required"});
     expect(provider.calls).toHaveLength(0);
     expect(JSON.stringify(large)).toBe(original);
   });
