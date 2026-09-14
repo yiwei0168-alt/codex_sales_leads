@@ -5,6 +5,7 @@ import type {StructuredAiRequest} from "@/providers/contracts";
 import {LeadRequestTooLargeError,leadRequestByteLimit} from "@/providers/lead-request-bounds";
 
 import type {CorrectedLeadWorkflowCandidate,LeadMarketPlaybook} from "./types";
+import {qualificationPhaseOutputJsonSchema} from "./qualification-phase-output";
 
 export const QUALIFICATION_FACT_PHASE_VERSION="qualification-fact-phase-v1";
 
@@ -26,16 +27,6 @@ export function planQualificationFactPhases(options:{candidate:CorrectedLeadWork
     candidateId:candidate.candidateId,
     countryCode,countryName,objective,modelVersion,playbook,candidate: {companyName:candidate.companyName,
       domain:candidate.domain,correction:candidate.correction,evidence}})).digest("hex");
-  const outputSchema={type:"object",additionalProperties:false,required:["facts","sources"],properties:{
-    facts:{type:"array",items:{type:"object",additionalProperties:false,
-      required:["findingId","materiality","summary","evidenceIds"],properties:{
-        findingId:{type:"string"},materiality:{type:"string",enum:["material","context","uncertain"]},
-        summary:{type:"string",maxLength:240},evidenceIds:{type:"array",items:{type:"string"}}}}},
-    sources:{type:"array",items:{type:"object",additionalProperties:false,
-      required:["evidenceId","materiality","summary"],properties:{
-        evidenceId:{type:"string"},materiality:{type:"string",enum:["material","context","uncertain"]},
-        summary:{type:"string",maxLength:240}}}},
-  }} as Record<string,unknown>;
   const build=(chosen:typeof units,index:number):StructuredAiRequest<unknown>=>{
     const factIndexes=new Set(chosen.filter(item=>item.kind==="finding").map(item=>item.index));
     const sourceIndexes=new Set(chosen.filter(item=>item.kind==="source").map(item=>item.index));
@@ -44,7 +35,8 @@ export function planQualificationFactPhases(options:{candidate:CorrectedLeadWork
     const ids=new Set([...selectedFindings.flatMap(item=>item.evidenceIds),...selectedSources.map(item=>item.id)]);
     const selectedEvidence=evidence.filter(item=>ids.has(item.id));
     return {task:"lead-qualification",modelVersion,promptVersion:QUALIFICATION_FACT_PHASE_VERSION,
-      input:{phaseIndex:index,sourceFingerprint,market:{countryCode,countryName,objective},
+      input:{phaseIndex:index,sourceFingerprint,unlinkedEvidenceIds:selectedSources.map(item=>item.id),
+        market:{countryCode,countryName,objective},
         candidate:{candidateId:candidate.candidateId,companyName:candidate.companyName,domain:candidate.domain,
           primaryRole:candidate.correction.primaryRole,resolvedRoles:candidate.correction.resolvedRoles,
           findings:selectedFindings,evidence:selectedEvidence.map(item=>({evidenceId:item.id,
@@ -54,7 +46,7 @@ export function planQualificationFactPhases(options:{candidate:CorrectedLeadWork
         instructions:["This is a bounded evidence-screening phase, not a final eligibility or score decision.",
           "Return exactly one fact record for each supplied findingId and one source record for each supplied unlinked evidenceId. Preserve uncertainty, disagreement and negative evidence; never turn missing information into rejection.",
           "Use only supplied source text. Keep a concise, evidence-linked summary of every supplied finding and unlinked source. Do not infer omitted facts or create new evidence IDs. Final scoring will consider all validated phases together."]},
-      evidenceIds:selectedEvidence.map(item=>item.id),outputSchema,
+      evidenceIds:selectedEvidence.map(item=>item.id),outputSchema:qualificationPhaseOutputJsonSchema,
       dataClassification:playbook.cooperationPathMemory?.length?"private-workspace":"public"};
   };
   const phases:StructuredAiRequest<unknown>[]=[];
