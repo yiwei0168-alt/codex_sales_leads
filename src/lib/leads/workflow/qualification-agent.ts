@@ -4,9 +4,10 @@ import {withCompanyCostAttribution} from "@/lib/billing/company-cost-context";
 import {leadRequestBatches} from "@/providers/lead-request-batches";
 import {LeadRequestTooLargeError,leadRequestByteLimit} from "@/providers/lead-request-bounds";
 import {validateBatchItems} from "./batch-output";
-import type { AiProvider, StructuredAiResponse } from "@/providers/contracts";
+import type { AiExecutionRoute,AiProvider,StructuredAiRequest, StructuredAiResponse } from "@/providers/contracts";
 import { createLeadAiProvider } from "@/providers/resilient-ai";
 import { z } from "zod";
+import {isDeepStrictEqual} from "node:util";
 
 import { candidateValueScore, clampDimension, recommendationPriority, salesAccountTier, selectResearchDepth } from "../candidate-value";
 import { isCurrentLeadScoringEvidence } from "../evidence-snapshot";
@@ -474,6 +475,30 @@ export class LeadQualificationAgent {
     return {plan,synthesis,request};
   }
 
+  private executionRoutes(request:StructuredAiRequest<unknown>):AiExecutionRoute[]{
+    const primaryId=this.provider.id.replace(/^resilient:/,"");
+    const routes=this.provider.executionRoutes?.(request)??[{
+      providerId:primaryId,request,cacheIdentity:this.provider.cacheIdentity?.(request)??"",
+      paidRequestFingerprint:this.provider.paidRequestFingerprint?.(request)??""}];
+    if(!routes.length||routes[0].providerId!==primaryId
+      ||routes[0].request.modelVersion!==request.modelVersion
+      ||routes.some(route=>!/^[a-f0-9]{64}$/.test(route.cacheIdentity)
+        ||!/^[a-f0-9]{64}$/.test(route.paidRequestFingerprint)
+        ||!route.providerId.trim()
+        ||!isDeepStrictEqual({...route.request,modelVersion:request.modelVersion},request))
+      ||new Set(routes.map(route=>`${route.providerId}:${route.request.modelVersion}`)).size
+        !==routes.length)
+      throw new Error("Qualification route identity unavailable; no paid call is safe");
+    return routes;
+  }
+
+  private routeForResponse(routes:AiExecutionRoute[],response:StructuredAiResponse<unknown>){
+    const route=routes.find(item=>item.providerId===response.actualProviderId
+      &&item.request.modelVersion===response.modelVersion);
+    if(!route)throw new Error("Qualification actual route differs from every exact approved provider/model identity");
+    return route;
+  }
+
   private phasePlan(candidate:CorrectedLeadWorkflowCandidate,playbook:LeadMarketPlaybook,
     countryCode:string,countryName:string,objective:string){
     if(!this.provider.requestBytes)throw new Error("Phase scoring requires an exact provider byte contract");
@@ -485,8 +510,6 @@ export class LeadQualificationAgent {
     countryCode:string,countryName:string,objective:string,scope:QualificationPhaseScope):Promise<Map<string,string>>{
     const contracts=new Map<string,string>();
     if(!this.provider.cacheIdentity||!this.provider.paidRequestFingerprint||!this.provider.requestBytes)return contracts;
-    const checkpoint=this.phaseCheckpointFactory({...scope,countryCode,
-      expectedProviderId:this.provider.id.replace(/^resilient:/,"")});
     const oversized=this.requestableCandidates(candidates,playbook,countryCode,countryName,objective).oversized;
     for(const candidate of candidates){
       if(!oversized.has(candidate.candidateId))continue;
@@ -495,9 +518,13 @@ export class LeadQualificationAgent {
       catch(error){if(error instanceof LeadRequestTooLargeError)continue;throw error;}
       const outputs:QualificationPhaseOutput[]=[];
       for(const request of plan.phases){
-        const contract=this.provider.cacheIdentity(request),paid=this.provider.paidRequestFingerprint(request);
-        if(!/^[a-f0-9]{64}$/.test(contract)||!/^[a-f0-9]{64}$/.test(paid))break;
-        const hit=await checkpoint.load(request,contract,paid);
+        let hit:StructuredAiResponse<QualificationPhaseOutput>|null=null;
+        for(const route of this.executionRoutes(request)){
+          const checkpoint=this.phaseCheckpointFactory({...scope,countryCode,
+            expectedProviderId:route.providerId,requestedModelVersion:request.modelVersion});
+          hit=await checkpoint.load(route.request,route.cacheIdentity,route.paidRequestFingerprint);
+          if(hit)break;
+        }
         if(!hit)break;
         outputs.push(hit.output);
       }
@@ -505,16 +532,24 @@ export class LeadQualificationAgent {
       try{
         const final=this.planPhasedFinalRequest(candidate,playbook,countryCode,countryName,objective,outputs);
         let contract=this.provider.cacheIdentity(final.request);
+        for(const route of this.executionRoutes(final.request)){
+          const finalCheckpoint=this.finalCheckpointFactory({...scope,countryCode,
+            expectedProviderId:route.providerId,requestedModelVersion:final.request.modelVersion});
+          if(await finalCheckpoint.load(route.request,route.cacheIdentity,route.paidRequestFingerprint)){
+            contract=route.cacheIdentity;break;
+          }
+        }
         if(this.routineModel!==this.escalationModel){
           try{
             const pro=this.planPhasedFinalRequest(candidate,playbook,countryCode,countryName,
               objective,outputs,this.escalationModel);
-            const proContract=this.provider.cacheIdentity(pro.request);
-            const proPaid=this.provider.paidRequestFingerprint(pro.request);
-            if(/^[a-f0-9]{64}$/.test(proContract)&&/^[a-f0-9]{64}$/.test(proPaid)){
+            for(const route of this.executionRoutes(pro.request)){
               const finalCheckpoint=this.finalCheckpointFactory({...scope,countryCode,
-                expectedProviderId:this.provider.id.replace(/^resilient:/,"")});
-              if(await finalCheckpoint.load(pro.request,proContract,proPaid))contract=proContract;
+                expectedProviderId:route.providerId,requestedModelVersion:pro.request.modelVersion});
+              if(await finalCheckpoint.load(route.request,route.cacheIdentity,
+                route.paidRequestFingerprint)){
+                contract=route.cacheIdentity;break;
+              }
             }
           }catch(error){if(!(error instanceof LeadRequestTooLargeError))throw error;}
         }
@@ -667,22 +702,34 @@ export class LeadQualificationAgent {
     playbook:LeadMarketPlaybook,countryCode:string,countryName:string,objective:string,
     request:ReturnType<LeadQualificationAgent["request"]>,scope:QualificationPhaseScope,
     usageRecords:WorkflowModelUsage[]){
-    const contract=this.provider.cacheIdentity?.(request),paid=this.provider.paidRequestFingerprint?.(request);
-    if(!contract||!paid||!/^[a-f0-9]{64}$/.test(contract)||!/^[a-f0-9]{64}$/.test(paid))
-      throw new Error("Qualification final request identity unavailable; no paid call is safe");
-    const checkpoint=this.finalCheckpointFactory({...scope,countryCode,
-      expectedProviderId:this.provider.id.replace(/^resilient:/,"")});
-    let response=await checkpoint.load(request,contract,paid);
+    const routes=this.executionRoutes(request);
+    let response:StructuredAiResponse<unknown>|null=null;
+    let completedRoute:AiExecutionRoute|null=null;
+    for(const route of routes){
+      const checkpoint=this.finalCheckpointFactory({...scope,countryCode,
+        expectedProviderId:route.providerId,requestedModelVersion:request.modelVersion});
+      response=await checkpoint.load(route.request,route.cacheIdentity,route.paidRequestFingerprint);
+      if(response){completedRoute=route;break;}
+    }
     const reused=Boolean(response);
     if(!response){
+      const guardCheckpoint=this.finalCheckpointFactory({...scope,countryCode,
+        expectedProviderId:routes[0].providerId,requestedModelVersion:request.modelVersion});
+      await guardCheckpoint.assertNoOtherCompleted?.(request,routes.map(route=>({
+        contract:route.cacheIdentity,paidFingerprint:route.paidRequestFingerprint})));
       const fresh=await withCompanyCostAttribution([candidate],countryCode,()=>this.provider.execute(
         request,AbortSignal.timeout(120_000)));
-      await checkpoint.save(request,contract,paid,fresh);
-      response=await checkpoint.load(request,contract,paid);
+      completedRoute=this.routeForResponse(routes,fresh);
+      const checkpoint=this.finalCheckpointFactory({...scope,countryCode,
+        expectedProviderId:completedRoute.providerId,requestedModelVersion:request.modelVersion});
+      await checkpoint.save(completedRoute.request,completedRoute.cacheIdentity,
+        completedRoute.paidRequestFingerprint,fresh);
+      response=await checkpoint.load(completedRoute.request,completedRoute.cacheIdentity,
+        completedRoute.paidRequestFingerprint);
       if(!response)throw new Error("Completed qualification final checkpoint could not be read");
     }
-    return this.invokeBatch([candidate],playbook,countryCode,countryName,objective,
-      request.modelVersion,usageRecords,request,response,!reused);
+    return {...await this.invokeBatch([candidate],playbook,countryCode,countryName,objective,
+      request.modelVersion,usageRecords,request,response,!reused),contract:completedRoute!.cacheIdentity};
   }
 
   private async evaluatePhased(candidate:CorrectedLeadWorkflowCandidate,playbook:LeadMarketPlaybook,
@@ -696,15 +743,21 @@ export class LeadQualificationAgent {
       `A single fact phase exceeds the approved byte limit (${error.message}); no request was sent.`,this.promptVersion);
       throw error;}
     if(!plan.phases.length)return failedAssessment(candidate,"No bounded fact phase can be planned; no request was sent.",this.promptVersion);
-    const checkpoint=this.phaseCheckpointFactory({...scope,countryCode,
-      expectedProviderId:this.provider.id.replace(/^resilient:/,"")});
     const outputs:QualificationPhaseOutput[]=[];
     for(const request of plan.phases){
-      const contract=this.provider.cacheIdentity(request),paid=this.provider.paidRequestFingerprint(request);
-      if(!/^[a-f0-9]{64}$/.test(contract)||!/^[a-f0-9]{64}$/.test(paid))
-        throw new Error("Qualification phase primary request identity unavailable; no further paid call is safe");
-      const cached=await checkpoint.load(request,contract,paid);
+      const routes=this.executionRoutes(request);
+      let cached:StructuredAiResponse<QualificationPhaseOutput>|null=null;
+      for(const route of routes){
+        const checkpoint=this.phaseCheckpointFactory({...scope,countryCode,
+          expectedProviderId:route.providerId,requestedModelVersion:request.modelVersion});
+        cached=await checkpoint.load(route.request,route.cacheIdentity,route.paidRequestFingerprint);
+        if(cached)break;
+      }
       if(cached){outputs.push(cached.output);continue;}
+      const checkpointBeforeCall=this.phaseCheckpointFactory({...scope,countryCode,
+        expectedProviderId:routes[0].providerId,requestedModelVersion:request.modelVersion});
+      await checkpointBeforeCall.assertNoOtherCompleted?.(request,routes.map(route=>({
+        contract:route.cacheIdentity,paidFingerprint:route.paidRequestFingerprint})));
       const response=await withCompanyCostAttribution([candidate],countryCode,()=>this.provider.execute(
         request,AbortSignal.timeout(120_000)));
       usageRecords.push({stage:"qualification",requestedModel:response.requestedModelVersion??request.modelVersion,
@@ -718,8 +771,13 @@ export class LeadQualificationAgent {
           .candidate.findings.length+(request.input as {unlinkedEvidenceIds:string[]}).unlinkedEvidenceIds.length,
           validOutputItems:0,rejectedOutputItems:0,missingOutputItems:0,complete:false}});
       // A completed row is written before another phase or final score can incur cost.
-      await checkpoint.save(request,contract,paid,response);
-      const completed=await checkpoint.load(request,contract,paid);
+      const completedRoute=this.routeForResponse(routes,response);
+      const checkpoint=this.phaseCheckpointFactory({...scope,countryCode,
+        expectedProviderId:completedRoute.providerId,requestedModelVersion:request.modelVersion});
+      await checkpoint.save(completedRoute.request,completedRoute.cacheIdentity,
+        completedRoute.paidRequestFingerprint,response);
+      const completed=await checkpoint.load(completedRoute.request,completedRoute.cacheIdentity,
+        completedRoute.paidRequestFingerprint);
       if(!completed)throw new Error("Completed qualification phase checkpoint could not be read");
       outputs.push(completed.output);
       usageRecords[usageRecords.length-1].batchValidation={...usageRecords[usageRecords.length-1].batchValidation!,
@@ -752,19 +810,14 @@ export class LeadQualificationAgent {
         this.promptVersion);
       const decided=normalizeAssessment(proValue,candidate,escalated.response,true,allowOemOdm,
         this.includeCooperationPaths);
-      const proContract=this.provider.cacheIdentity(pro.request);
-      if(!/^[a-f0-9]{64}$/.test(proContract))throw new Error("Phased Pro score has no reusable contract");
       const finalDecision={...decided,warnings:["Material semantic escalation from the saved routine score.",
         ...decided.warnings]};
-      if(finalDecision.scoringStatus==="completed")this.exactAssessmentContracts.set(finalDecision,proContract);
+      if(finalDecision.scoringStatus==="completed")this.exactAssessmentContracts.set(finalDecision,
+        escalated.contract);
       return finalDecision;
     }
-    const expectedProvider=this.provider.id.replace(/^resilient:/,"");
-    if(routine.response.modelVersion!==this.routineModel||routine.response.actualProviderId!==expectedProvider)
-      return failedAssessment(candidate,"Phased final score used a different provider/model; primary-route cache cannot safely retain it.",this.promptVersion);
-    const contract=this.provider.cacheIdentity(final.request);
-    if(!/^[a-f0-9]{64}$/.test(contract))throw new Error("Phased final score has no reusable contract");
-    if(normalized.scoringStatus==="completed")this.exactAssessmentContracts.set(normalized,contract);
+    if(normalized.scoringStatus==="completed")this.exactAssessmentContracts.set(normalized,
+      routine.contract);
     return normalized;
   }
 

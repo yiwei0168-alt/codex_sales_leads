@@ -34,8 +34,10 @@ function identity(scope:QualificationPhaseCheckpointScope,request:StructuredAiRe
 }
 function safeResponse(scope:QualificationPhaseCheckpointScope,request:StructuredAiRequest<unknown>,
   response:StructuredAiResponse<unknown>):StructuredAiResponse<unknown>{
+  const requestedModel=scope.requestedModelVersion??request.modelVersion;
   if(response.modelVersion!==request.modelVersion||response.promptVersion!==request.promptVersion
-    ||(response.requestedModelVersion&&response.requestedModelVersion!==request.modelVersion)
+    ||(response.requestedModelVersion&&response.requestedModelVersion!==requestedModel)
+    ||(requestedModel!==request.modelVersion&&response.requestedModelVersion!==requestedModel)
     ||response.actualProviderId!==scope.expectedProviderId)
     throw new Error("Qualification final actual route differs from the reusable request contract");
   const parsed=responseSchema.parse(response);
@@ -49,6 +51,22 @@ function safeResponse(scope:QualificationPhaseCheckpointScope,request:Structured
 /** Durable parsed provider response; business-invalid output is retained and never bought again automatically. */
 export function productQualificationFinalCheckpoint(scope:QualificationPhaseCheckpointScope){
   return {
+    async assertNoOtherCompleted(request:StructuredAiRequest<unknown>,
+      allowed:Array<{contract:string;paidFingerprint:string}>):Promise<void>{
+      if(!allowed.length)throw new Error("Qualification final has no approved completed route");
+      const id=identity(scope,request,allowed[0].contract,allowed[0].paidFingerprint);
+      const rows=await tenantQuery<{execution_contract:string;paid_request_fingerprint:string}>(scope.userId,
+        `select execution_contract,paid_request_fingerprint from lead_qualification_final_checkpoint
+          where user_id=$1 and workspace_id=$2 and action_id=$3 and country_code=$4
+            and candidate_id=$5 and source_fingerprint=$6
+            and coalesce(response->>'requestedModelVersion',response->>'modelVersion')=$7`,
+        [scope.userId,scope.workspaceId,scope.actionId,scope.countryCode,id.candidateId,
+          id.sourceFingerprint,scope.requestedModelVersion??request.modelVersion]);
+      if(rows.length)throw new Error(rows.some(row=>!allowed.some(route=>
+        route.contract===row.execution_contract&&route.paidFingerprint===row.paid_request_fingerprint))
+        ?"Prior qualification final route changed; paid work requires manual recovery"
+        :"Qualification final completed concurrently; reload before any paid work");
+    },
     async load(request:StructuredAiRequest<unknown>,contract:string,
       paidFingerprint:string):Promise<StructuredAiResponse<unknown>|null>{
       const id=identity(scope,request,contract,paidFingerprint);

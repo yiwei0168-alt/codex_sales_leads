@@ -82,3 +82,23 @@ it("matches the paid HTTP replay identity for the actual compatible route",()=>{
       .not.toBe(provider.paidRequestFingerprint(actual));
   });
 });
+it("enumerates only approved actual route contracts without changing the primary identity",()=>{
+  const primary=new DeepSeekProvider({apiKey:"fixture-secret",baseUrl:"https://example.test"});
+  const fallback=new OpenAiCompatibleProvider({id:"fixture-peer",apiKey:"fixture-secret",
+    baseUrl:"https://peer.test/v1"});
+  const resilient=new ResilientAiProvider(primary,{fallbacks:[{provider:fallback,
+    routineModel:"openai/gpt-4o-mini",escalationModel:"openai/gpt-4o",
+    approvedDataClassifications:["public"]}]});
+  const routes=resilient.executionRoutes(request);
+  expect(routes).toHaveLength(2);
+  expect(routes[0]).toMatchObject({providerId:primary.id,request,
+    cacheIdentity:primary.cacheIdentity(request),
+    paidRequestFingerprint:primary.paidRequestFingerprint(request)});
+  const mapped={...request,modelVersion:"openai/gpt-4o-mini"};
+  expect(routes[1]).toMatchObject({providerId:fallback.id,request:mapped,
+    cacheIdentity:fallback.cacheIdentity(mapped),
+    paidRequestFingerprint:fallback.paidRequestFingerprint(mapped)});
+  expect(resilient.executionRoutes({...request,dataClassification:"private-workspace"}))
+    .toHaveLength(1);
+  expect(resilient.cacheIdentity(request)).toBe(primary.cacheIdentity(request));
+});

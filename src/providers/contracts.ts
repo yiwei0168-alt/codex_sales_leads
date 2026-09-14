@@ -77,6 +77,14 @@ export interface StructuredAiResponse<TOutput> {
   };
 }
 
+/** Configured wire routes for reading completed paid work; never a routing or tariff approval. */
+export interface AiExecutionRoute {
+  providerId:string;
+  request:StructuredAiRequest<unknown>;
+  cacheIdentity:string;
+  paidRequestFingerprint:string;
+}
+
 export interface AiProvider {
   readonly id: string;
   /** Exact wire bytes (or maximum across approved routes); pure preflight, no transport or credentials. */
@@ -85,6 +93,7 @@ export interface AiProvider {
   cacheIdentity?(request:StructuredAiRequest<unknown>):string;
   /** Exact primary-route paid HTTP replay identity, excluding credentials. */
   paidRequestFingerprint?(request:StructuredAiRequest<unknown>):string;
+  executionRoutes?(request:StructuredAiRequest<unknown>):AiExecutionRoute[];
   execute<TInput, TOutput>(request: StructuredAiRequest<TInput>, signal?: AbortSignal): Promise<StructuredAiResponse<TOutput>>;
 }
 

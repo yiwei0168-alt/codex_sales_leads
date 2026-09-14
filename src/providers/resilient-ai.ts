@@ -2,7 +2,7 @@ import {BudgetDeniedError} from "@/lib/billing/policy";
 import { createHash } from "node:crypto";
 import { currentSpendContext } from "@/lib/billing/context";
 
-import type { AiProvider, StructuredAiRequest, StructuredAiResponse } from "./contracts";
+import type { AiExecutionRoute, AiProvider, StructuredAiRequest, StructuredAiResponse } from "./contracts";
 import { ProviderUnavailableError } from "./contracts";
 import { DeepSeekProvider } from "./deepseek";
 import { OpenAiCompatibleProvider } from "./openai-compatible";
@@ -108,6 +108,25 @@ export class ResilientAiProvider implements AiProvider {
 
   paidRequestFingerprint(request:StructuredAiRequest<unknown>):string {
     return this.primary.paidRequestFingerprint?.(request)??"";
+  }
+
+  executionRoutes(request:StructuredAiRequest<unknown>):AiExecutionRoute[]{
+    const route=(provider:AiProvider,actualRequest:StructuredAiRequest<unknown>):AiExecutionRoute|null=>{
+      const cacheIdentity=provider.cacheIdentity?.(actualRequest);
+      const paidRequestFingerprint=provider.paidRequestFingerprint?.(actualRequest);
+      return cacheIdentity&&paidRequestFingerprint?{providerId:provider.id,request:actualRequest,
+        cacheIdentity,paidRequestFingerprint}:null;
+    };
+    const primary=route(this.primary,request);
+    const routes=primary?[primary]:[];
+    for(const fallback of this.fallbacks){
+      if(!fallback.approvedDataClassifications.includes(request.dataClassification??"public"))continue;
+      const modelVersion=this.modelFor(fallback,request.modelVersion);
+      if(!modelVersion)continue;
+      const alternate=route(fallback.provider,{...request,modelVersion});
+      if(alternate)routes.push(alternate);
+    }
+    return routes;
   }
 
   requestBytes(request: StructuredAiRequest<unknown>): number {

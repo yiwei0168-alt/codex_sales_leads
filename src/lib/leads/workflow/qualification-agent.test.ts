@@ -144,27 +144,45 @@ describe("LeadQualificationAgent", () => {
       private readonly wire=new DeepSeekProvider({apiKey:"fixture-never-sent",maxAttempts:1,
         fetchImplementation:async()=>{throw new Error("Synthetic phase test must not use transport");}});
       phaseCalls=0;failPhaseAt=0;fallbackPhaseAt=0;invalidPhaseAt=0;
-      finalFallback=false;finalInvalid=false;
-      requestBytes(request:StructuredAiRequest<unknown>){return this.wire.requestBytes(request);}
+      finalFallback=false;finalInvalid=false;approvedFallback=false;
+      private fallbackRequest(request:StructuredAiRequest<unknown>){return {...request,
+        modelVersion:request.modelVersion.includes("pro")?"fallback-pro":"fallback-routine"};}
+      requestBytes(request:StructuredAiRequest<unknown>){return Math.max(this.wire.requestBytes(request),
+        this.approvedFallback?this.wire.requestBytes(this.fallbackRequest(request)):0);}
       cacheIdentity(request:StructuredAiRequest<unknown>){return this.wire.cacheIdentity(request);}
       paidRequestFingerprint(request:StructuredAiRequest<unknown>){return this.wire.paidRequestFingerprint(request);}
+      executionRoutes(request:StructuredAiRequest<unknown>){
+        const primary={providerId:"fake",request,cacheIdentity:this.cacheIdentity(request),
+          paidRequestFingerprint:this.paidRequestFingerprint(request)};
+        if(!this.approvedFallback)return [primary];
+        const alternate=this.fallbackRequest(request);
+        return [primary,{providerId:"fallback",request:alternate,
+          cacheIdentity:this.cacheIdentity(alternate),paidRequestFingerprint:this.paidRequestFingerprint(alternate)}];
+      }
       override async execute<I,O>(request:StructuredAiRequest<I>):Promise<StructuredAiResponse<O>>{
         if(request.promptVersion!=="qualification-fact-phase-v1"){
           const response=await super.execute<I,O>(request);
           return {...response,output:this.finalInvalid?{assessments:[]} as O:response.output,
-            actualProviderId:this.finalFallback?"fallback":"fake"};
+            actualProviderId:this.finalFallback?"fallback":"fake",
+            modelVersion:this.finalFallback&&this.approvedFallback
+              ?this.fallbackRequest(request).modelVersion:response.modelVersion,
+            requestedModelVersion:this.finalFallback&&this.approvedFallback
+              ?request.modelVersion:undefined};
         }
         this.calls.push(request as StructuredAiRequest<unknown>);this.phaseCalls++;
         if(this.phaseCalls===this.failPhaseAt)throw new BudgetDeniedError("budget-exhausted");
         const input=request.input as {candidate:{findings:Array<{findingId:string;evidenceIds:string[]}>};
           unlinkedEvidenceIds:string[]};
+        const fallback=this.phaseCalls===this.fallbackPhaseAt;
         return {output:{facts:(this.phaseCalls===this.invalidPhaseAt?[]:input.candidate.findings)
           .map(item=>({findingId:item.findingId,
           materiality:"material",summary:`Screened ${item.findingId}`,evidenceIds:item.evidenceIds})),
           sources:input.unlinkedEvidenceIds.map(id=>({evidenceId:id,materiality:"context",
-            summary:`Screened ${id}`}))} as O,modelVersion:request.modelVersion,
+            summary:`Screened ${id}`}))} as O,modelVersion:fallback&&this.approvedFallback
+              ?this.fallbackRequest(request).modelVersion:request.modelVersion,
           promptVersion:request.promptVersion,latencyMs:5,warnings:[],
-          actualProviderId:this.phaseCalls===this.fallbackPhaseAt?"fallback":"fake",
+          actualProviderId:fallback?"fallback":"fake",
+          requestedModelVersion:fallback&&this.approvedFallback?request.modelVersion:undefined,
           usage:{promptTokens:10,completionTokens:5,reasoningTokens:0,totalTokens:15}};
       }
     }
@@ -260,7 +278,7 @@ describe("LeadQualificationAgent", () => {
         expect(provider.calls).toHaveLength(calls);
       }else{
         await expect(agent.evaluateWithUsage([large],playbook,"DE","Germany","new-market",
-          undefined,scope)).rejects.toThrow(mode==="fallback"?/final actual route differs/
+          undefined,scope)).rejects.toThrow(mode==="fallback"?/actual route differs/
           :/final checkpoint unavailable/);
         expect(provider.calls).toHaveLength(1);
         expect(finalRecords.size).toBe(0);
@@ -306,7 +324,42 @@ describe("LeadQualificationAgent", () => {
     expect(subthreshold.assessments[0].escalated).toBe(false);
     expect(subthresholdProvider.calls.filter(request=>request.promptVersion!=="qualification-fact-phase-v1")
       .map(request=>request.modelVersion)).toEqual(["deepseek-v4-flash"]);
-  });
+    const fallbackProvider=new PhaseProvider();
+    fallbackProvider.approvedFallback=true;
+    fallbackProvider.fallbackPhaseAt=2;
+    fallbackProvider.finalFallback=true;
+    const fallbackScope={...scope,actionId:"fixture-approved-fallback"};
+    const fallbackAgent=new LeadQualificationAgent(fallbackProvider,{includeCooperationPaths:false,
+      batchSize:1,concurrency:1,phaseCheckpointFactory:checkpointFactory,finalCheckpointFactory});
+    const fallbackResult=await fallbackAgent.evaluateWithUsage([large],playbook,"DE","Germany",
+      "new-market",undefined,fallbackScope);
+    expect(fallbackResult.assessments[0].scoringStatus).toBe("completed");
+    expect(fallbackResult.usage.some(item=>item.providerId==="fallback")).toBe(true);
+    const fallbackContract=fallbackAgent.completedCacheContracts(fallbackResult.assessments)
+      .get(large.candidateId);
+    expect(fallbackContract).toMatch(/^[a-f0-9]{64}$/);
+    expect((await fallbackAgent.phasedCacheContracts([large],playbook,"DE","Germany",
+      "new-market",fallbackScope)).get(large.candidateId)).toBe(fallbackContract);
+    const fallbackCalls=fallbackProvider.calls.length;
+    const fallbackReplay=await fallbackAgent.evaluateWithUsage([large],playbook,"DE","Germany",
+      "new-market",undefined,fallbackScope);
+    expect(fallbackReplay.assessments[0].scoringStatus).toBe("completed");
+    expect(fallbackReplay.usage).toHaveLength(0);
+    expect(fallbackProvider.calls).toHaveLength(fallbackCalls);
+    class AmbiguousProvider extends PhaseProvider {
+      override executionRoutes(request:StructuredAiRequest<unknown>){
+        const routes=super.executionRoutes(request);
+        return [...routes,routes[0]];
+      }
+    }
+    const ambiguousProvider=new AmbiguousProvider();
+    const ambiguousAgent=new LeadQualificationAgent(ambiguousProvider,{includeCooperationPaths:false,
+      batchSize:1,concurrency:1,phaseCheckpointFactory:checkpointFactory,finalCheckpointFactory});
+    await expect(ambiguousAgent.evaluateWithUsage([large],playbook,"DE","Germany",
+      "new-market",undefined,{...scope,actionId:"fixture-ambiguous-route"}))
+      .rejects.toThrow(/route identity unavailable/);
+    expect(ambiguousProvider.calls).toHaveLength(0);
+  },15_000);
   it("checkpoints a complete peer before a missing member's repair is blocked",async()=>{
     class PartialPauseProvider extends CacheableFakeProvider {
       override async execute<I,O>(request:StructuredAiRequest<I>):Promise<StructuredAiResponse<O>>{

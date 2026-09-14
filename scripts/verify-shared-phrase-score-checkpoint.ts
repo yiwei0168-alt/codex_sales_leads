@@ -14,6 +14,7 @@ import { buildLeadWorkflowGraph, type LeadWorkflowDependencies } from "../src/li
 import { LeadQualificationAgent } from "../src/lib/leads/workflow/qualification-agent";
 import { checkpointInvocation, WorkflowPausedError } from "../src/lib/leads/workflow/pause";
 import { DeepSeekProvider } from "../src/providers/deepseek";
+import {OpenAiCompatibleProvider} from "../src/providers/openai-compatible";
 import type { AiProvider, StructuredAiRequest, StructuredAiResponse } from "../src/providers/contracts";
 import { assessment, candidate, correctedCandidate, plan, playbook } from "./workflow-recovery-fixtures";
 
@@ -24,7 +25,9 @@ if (!/^verify-phrase-score:[a-f0-9-]{36}$/.test(threadId)) throw new Error("Inva
 if (mode && !["seed", "resume", "sql", "sql-resume"].includes(mode)) throw new Error("Invalid verification phase");
 const foldedVariant = process.env.P06_SYNTHETIC_FOLD_VARIANT === "1";
 const phasedProVariant = process.env.P06_SYNTHETIC_PHASED_PRO_VARIANT === "1";
-const phasedVariant = process.env.P06_SYNTHETIC_PHASED_VARIANT === "1" || phasedProVariant;
+const phasedFallbackVariant=process.env.P06_SYNTHETIC_PHASED_FALLBACK_VARIANT === "1";
+const phasedVariant = process.env.P06_SYNTHETIC_PHASED_VARIANT === "1" || phasedProVariant
+  ||phasedFallbackVariant;
 if (foldedVariant && phasedVariant) throw new Error("Choose one synthetic scoring variant");
 if (phasedVariant && mode !== "sql" && mode !== "sql-resume")
   throw new Error("The phased scoring variant requires the isolated product SQL mode");
@@ -38,7 +41,8 @@ function assertEncoding(value: string | undefined): void {
   else if (foldedVariant) assert.equal(value, expectedEncoding);
   else assert.match(value ?? "", /exact-shared-phrase-v1/);
 }
-const extraCount = phasedVariant ? 150 : foldedTableVariant ? 110 : foldedVariant ? 55 : 100;
+const extraCount = phasedFallbackVariant ? 125 : phasedVariant ? 150
+  : foldedTableVariant ? 110 : foldedVariant ? 55 : 100;
 const expectedEvidenceCount = extraCount + 1;
 const expectedFindingCount = extraCount + correctedCandidate.correction.findings.length
   + (foldedVariant || phasedVariant ? 0 : 4);
@@ -69,12 +73,25 @@ const corrected = { ...correctedCandidate, evidenceSnapshotRunId: runId,
 const fullPlan = { ...plan, targetCount: 1 };
 const wire = new DeepSeekProvider({ apiKey: "fixture-never-sent", maxAttempts: 1,
   fetchImplementation: async () => { throw new Error("External transport is forbidden"); } });
+const fallbackWire=new OpenAiCompatibleProvider({id:"fixture-fallback",apiKey:"fixture-never-sent",
+  baseUrl:"https://fixture.invalid/v1",maxAttempts:1,
+  fetchImplementation:async()=>{throw new Error("External fallback transport is forbidden");}});
+const fallbackRequest=(request:StructuredAiRequest<unknown>)=>({...request,modelVersion:"openai/gpt-4o"});
 const calls: StructuredAiRequest<unknown>[] = [];
 const provider: AiProvider = {
   id: phasedVariant ? "deepseek" : "synthetic-score",
-  requestBytes: request => wire.requestBytes(request),
+  requestBytes: request => Math.max(wire.requestBytes(request),
+    phasedFallbackVariant?fallbackWire.requestBytes(fallbackRequest(request)):0),
   cacheIdentity: request => wire.cacheIdentity(request),
   paidRequestFingerprint: request => wire.paidRequestFingerprint(request),
+  ...(phasedFallbackVariant?{executionRoutes:(request:StructuredAiRequest<unknown>)=>{
+    const alternate=fallbackRequest(request);
+    return [{providerId:"deepseek",request,cacheIdentity:wire.cacheIdentity(request),
+      paidRequestFingerprint:wire.paidRequestFingerprint(request)},
+    {providerId:fallbackWire.id,request:alternate,
+      cacheIdentity:fallbackWire.cacheIdentity(alternate),
+      paidRequestFingerprint:fallbackWire.paidRequestFingerprint(alternate)}];
+  }}:{}),
   execute: async <I, O>(request: StructuredAiRequest<I>): Promise<StructuredAiResponse<O>> => {
     calls.push(request as StructuredAiRequest<unknown>);
     assert.ok(mode === "resume" || mode === "sql-resume");
@@ -82,12 +99,15 @@ const provider: AiProvider = {
       assert.ok(wire.requestBytes(request) <= 61_440);
       const input = request.input as { candidate: {findings:Array<{findingId:string;evidenceIds:string[]}>};
         unlinkedEvidenceIds:string[] };
+      const alternate=phasedFallbackVariant&&calls.length===2;
       return { output: { facts: input.candidate.findings.map(item => ({ findingId:item.findingId,
         materiality:"material",summary:"Verified",evidenceIds:item.evidenceIds })),
         sources: input.unlinkedEvidenceIds.map(evidenceId => ({ evidenceId,materiality:"context",
           summary:"Context" })) } as O,
-        modelVersion:request.modelVersion,promptVersion:request.promptVersion,latencyMs:0,warnings:[],
-        actualProviderId:"deepseek" };
+        modelVersion:alternate?fallbackRequest(request).modelVersion:request.modelVersion,
+        promptVersion:request.promptVersion,latencyMs:0,warnings:[],
+        requestedModelVersion:alternate?request.modelVersion:undefined,
+        actualProviderId:alternate?fallbackWire.id:"deepseek" };
     }
     if (phasedVariant) {
       const screening=(request.input as {phaseScreening?:{factRows:unknown[][];sourceRows:unknown[][]}}).phaseScreening;
@@ -131,8 +151,10 @@ const provider: AiProvider = {
         expectedTotalScoreChange: phasedProVariant ? 8 : 0, criticalStateChanges: [],
         higherCapabilityCanResolve: phasedProVariant,
         reason: phasedProVariant ? "Synthetic material conflict" : "" } }] } as O,
-      modelVersion: request.modelVersion, promptVersion: request.promptVersion, latencyMs: 0, warnings: [],
-      actualProviderId:phasedVariant?"deepseek":undefined };
+      modelVersion:phasedFallbackVariant?fallbackRequest(request).modelVersion:request.modelVersion,
+      promptVersion: request.promptVersion, latencyMs: 0, warnings: [],
+      requestedModelVersion:phasedFallbackVariant?request.modelVersion:undefined,
+      actualProviderId:phasedFallbackVariant?fallbackWire.id:phasedVariant?"deepseek":undefined };
   },
 };
 const agent = new LeadQualificationAgent(provider, { batchSize: 1, concurrency: 1,
@@ -320,6 +342,22 @@ async function verifyProductSql(): Promise<void> {
       const phases = await tenantQuery<{n:number}>(userId,
         "select count(*)::int as n from lead_qualification_phase_checkpoint where action_id=$1",[actionId]);
       assert.equal(phases[0].n,resumed.fakeModelCalls-(phasedProVariant?2:1));
+      if(phasedFallbackVariant){
+        const phaseRoutes=await tenantQuery<{provider:string;model:string;
+          execution_contract:string;paid_request_fingerprint:string}>(userId,
+          `select response->>'actualProviderId' as provider,response->>'modelVersion' as model,
+            execution_contract,paid_request_fingerprint from lead_qualification_phase_checkpoint
+            where action_id=$1`,[actionId]);
+        assert.equal(phaseRoutes.filter(row=>row.provider===fallbackWire.id).length,1);
+        assert.ok(phaseRoutes.every(row=>/^[a-f0-9]{64}$/.test(row.execution_contract)
+          &&/^[a-f0-9]{64}$/.test(row.paid_request_fingerprint)));
+        const finalRoutes=await tenantQuery<{provider:string;model:string;execution_contract:string}>(userId,
+          `select response->>'actualProviderId' as provider,response->>'modelVersion' as model,
+            execution_contract from lead_qualification_final_checkpoint where action_id=$1`,
+          [actionId]);
+        assert.deepEqual(finalRoutes.map(row=>[row.provider,row.model]),
+          [[fallbackWire.id,"openai/gpt-4o"]]);
+      }
       if(phasedProVariant){
         const finals=await tenantQuery<{model_version:string}>(userId,
           "select response->>'modelVersion' as model_version from lead_qualification_final_checkpoint where action_id=$1 order by created_at",
@@ -331,6 +369,12 @@ async function verifyProductSql(): Promise<void> {
         fullPlan.countryCode,fullPlan.countryName,fullPlan.objective,
         {userId,workspaceId,actionId});
       assert.match(contracts.get(sqlCorrected.candidateId)??"",/^[a-f0-9]{64}$/);
+      if(phasedFallbackVariant){
+        const finalRoute=await tenantQuery<{execution_contract:string}>(userId,
+          "select execution_contract from lead_qualification_final_checkpoint where action_id=$1",
+          [actionId]);
+        assert.equal(finalRoute[0].execution_contract,contracts.get(sqlCorrected.candidateId));
+      }
       const reused=await loadCachedLeadAssessments({userId,workspaceId,candidates:[sqlCorrected],
         playbook,objective:fullPlan.objective,countryCode:fullPlan.countryCode,
         countryName:fullPlan.countryName,contracts});

@@ -9,6 +9,7 @@ import {qualificationPhaseOutputSchema,validateQualificationPhaseOutput,
 
 export interface QualificationPhaseCheckpointScope {
   userId:string;workspaceId:string;actionId:string;countryCode:string;expectedProviderId:string;
+  requestedModelVersion?:string;
 }
 const responseSchema=z.strictObject({
   output:qualificationPhaseOutputSchema,
@@ -40,8 +41,10 @@ function identity(scope:QualificationPhaseCheckpointScope,request:StructuredAiRe
 }
 function safeResponse(scope:QualificationPhaseCheckpointScope,request:StructuredAiRequest<unknown>,
   response:StructuredAiResponse<unknown>):SavedPhaseResponse{
+  const requestedModel=scope.requestedModelVersion??request.modelVersion;
   if(response.modelVersion!==request.modelVersion||response.promptVersion!==request.promptVersion
-    ||(response.requestedModelVersion&&response.requestedModelVersion!==request.modelVersion)
+    ||(response.requestedModelVersion&&response.requestedModelVersion!==requestedModel)
+    ||(requestedModel!==request.modelVersion&&response.requestedModelVersion!==requestedModel)
     ||response.actualProviderId!==scope.expectedProviderId)
     throw new Error("Qualification phase actual route differs from the reusable request contract");
   const parsed=responseSchema.parse({output:validateQualificationPhaseOutput(request,response.output),
@@ -55,6 +58,22 @@ function safeResponse(scope:QualificationPhaseCheckpointScope,request:Structured
 /** Completed only. A miss never grants permission to replay an unknown paid request. */
 export function productQualificationPhaseCheckpoint(scope:QualificationPhaseCheckpointScope){
   return {
+    async assertNoOtherCompleted(request:StructuredAiRequest<unknown>,
+      allowed:Array<{contract:string;paidFingerprint:string}>):Promise<void>{
+      if(!allowed.length)throw new Error("Qualification phase has no approved completed route");
+      const id=identity(scope,request,allowed[0].contract);
+      const rows=await tenantQuery<{execution_contract:string;paid_request_fingerprint:string}>(scope.userId,
+        `select execution_contract,paid_request_fingerprint from lead_qualification_phase_checkpoint
+          where user_id=$1 and workspace_id=$2 and action_id=$3 and country_code=$4
+            and candidate_id=$5 and source_fingerprint=$6 and phase_index=$7
+            and coalesce(response->>'requestedModelVersion',response->>'modelVersion')=$8`,
+        [scope.userId,scope.workspaceId,scope.actionId,scope.countryCode,id.candidateId,
+          id.sourceFingerprint,id.phaseIndex,scope.requestedModelVersion??request.modelVersion]);
+      if(rows.length)throw new Error(rows.some(row=>!allowed.some(route=>
+        route.contract===row.execution_contract&&route.paidFingerprint===row.paid_request_fingerprint))
+        ?"Prior qualification phase route changed; paid work requires manual recovery"
+        :"Qualification phase completed concurrently; reload before any paid work");
+    },
     async load(request:StructuredAiRequest<unknown>,contract:string,
       paidFingerprint:string):Promise<StructuredAiResponse<QualificationPhaseOutput>|null>{
       const id=identity(scope,request,contract);

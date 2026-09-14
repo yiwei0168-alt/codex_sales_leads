@@ -8,6 +8,7 @@ import {Pool} from "pg";
 
 import {databaseConnectionString,databaseSslConfiguration} from "../src/lib/rag/database-ssl";
 import {DeepSeekProvider} from "../src/providers/deepseek";
+import {OpenAiCompatibleProvider} from "../src/providers/openai-compatible";
 import type {StructuredAiRequest,StructuredAiResponse} from "../src/providers/contracts";
 import {qualificationPhaseOutputJsonSchema} from "../src/lib/leads/workflow/qualification-phase-output";
 import {LeadQualificationAgent} from "../src/lib/leads/workflow/qualification-agent";
@@ -25,6 +26,7 @@ const admin=new Pool({connectionString:databaseConnectionString(migrationUrl),
   ssl:databaseSslConfiguration(migrationUrl)});
 const {tenantQuery,getPool}=await import("../src/lib/rag/db");
 const {productQualificationPhaseCheckpoint}=await import("../src/lib/leads/workflow/qualification-phase-checkpoint");
+const {productQualificationFinalCheckpoint}=await import("../src/lib/leads/workflow/qualification-final-checkpoint");
 const {assertUncheckpointedQualificationResponsesAbsent}=await import("../src/lib/billing/repository");
 const sourceFingerprint=createHash("sha256").update("synthetic-phase-source").digest("hex");
 const request:StructuredAiRequest<unknown>={task:"lead-qualification",modelVersion:"deepseek-v4-pro",
@@ -46,6 +48,25 @@ const response:StructuredAiResponse<unknown>={output:{facts:[{findingId:"fixture
   modelVersion:request.modelVersion,promptVersion:request.promptVersion,latencyMs:7,warnings:[],
   requestedModelVersion:request.modelVersion,actualProviderId:"deepseek",attempts:1,retries:0,
   usage:{promptTokens:30,completionTokens:12,reasoningTokens:0,totalTokens:42}};
+const fallbackWire=new OpenAiCompatibleProvider({id:"fixture-fallback",apiKey:"fixture-never-sent",
+  baseUrl:"https://fixture.invalid/v1",maxAttempts:1,
+  fetchImplementation:async()=>{throw new Error("External fallback transport is forbidden");}});
+const fallbackRequest={...request,modelVersion:"openai/gpt-4o"};
+const fallbackContract=fallbackWire.cacheIdentity(fallbackRequest);
+const fallbackPaid=fallbackWire.paidRequestFingerprint(fallbackRequest);
+const fallbackResponse={...response,modelVersion:fallbackRequest.modelVersion,
+  requestedModelVersion:request.modelVersion,actualProviderId:fallbackWire.id};
+const finalRequest:StructuredAiRequest<unknown>={task:"lead-qualification",
+  modelVersion:request.modelVersion,promptVersion:"lead-value-v10-role-anchors-score-only",
+  evidenceIds:[],input:{market:{countryCode:"CO"},phaseScreening:{sourceFingerprint},
+    candidates:[{candidateId:"synthetic-phase-company"}]}};
+const fallbackFinalRequest={...finalRequest,modelVersion:fallbackRequest.modelVersion};
+const fallbackFinalContract=fallbackWire.cacheIdentity(fallbackFinalRequest);
+const fallbackFinalPaid=fallbackWire.paidRequestFingerprint(fallbackFinalRequest);
+const fallbackFinalResponse:StructuredAiResponse<unknown>={output:{assessments:[]},
+  modelVersion:fallbackFinalRequest.modelVersion,promptVersion:finalRequest.promptVersion,
+  latencyMs:4,warnings:[],requestedModelVersion:finalRequest.modelVersion,
+  actualProviderId:fallbackWire.id};
 const originalEvidence={...correctedCandidate.evidence[0],evidenceRunId:"run-1",
   freshnessStatus:"fresh" as const,
   contentHash:leadEvidenceContentHash(correctedCandidate.evidence[0].excerpt)};
@@ -101,6 +122,16 @@ if(mode==="probe"){
   assert.deepEqual(loaded,response);
   console.log(JSON.stringify({crossProcessPhaseCheckpoint:"passed",modelCalls:0}));
   await getPool().end();await admin.end();
+}else if(mode==="probe-fallback"){
+  const [userId,workspaceId,actionId]=process.argv.slice(3);
+  const scope={userId,workspaceId,actionId,countryCode:"CO",expectedProviderId:fallbackWire.id,
+    requestedModelVersion:request.modelVersion};
+  assert.deepEqual(await productQualificationPhaseCheckpoint(scope).load(fallbackRequest,
+    fallbackContract,fallbackPaid),fallbackResponse);
+  assert.deepEqual(await productQualificationFinalCheckpoint(scope).load(fallbackFinalRequest,
+    fallbackFinalContract,fallbackFinalPaid),fallbackFinalResponse);
+  console.log(JSON.stringify({crossProcessFallbackCheckpoint:"passed",newModelCalls:0}));
+  await getPool().end();await admin.end();
 }else if(mode==="probe-agent"){
   const [userId,workspaceId,actionId]=process.argv.slice(3);
   const {calls,provider}=agentProvider();
@@ -153,9 +184,10 @@ if(mode==="probe"){
   await getPool().end();await admin.end();
 }else if(!mode){
   const userId=randomUUID(),otherUserId=randomUUID(),workspaceId=randomUUID(),otherWorkspaceId=randomUUID();
-  const actionId=randomUUID(),proActionId=randomUUID(),otherActionId=randomUUID();
+  const actionId=randomUUID(),proActionId=randomUUID(),fallbackActionId=randomUUID(),otherActionId=randomUUID();
   const conversationId=randomUUID(),otherConversationId=randomUUID();
-  const reservationId=randomUUID(),companyKey=createHash("sha256").update("synthetic-phase-company-key").digest("hex");
+  const reservationId=randomUUID(),fallbackReservationId=randomUUID(),
+    companyKey=createHash("sha256").update("synthetic-phase-company-key").digest("hex");
   let created=false;
   try{
     const ddl=await readFile(new URL("../db/migrations/067_qualification_phase_checkpoint.sql",import.meta.url),"utf8");
@@ -175,7 +207,8 @@ if(mode==="probe"){
         "insert into assistant_conversation(id,user_id,title) values($1,$2,'Phase checkpoint fixture')",
         [conversation,owner]);
       for(const [action,owner,conversation] of [[actionId,userId,conversationId],
-        [proActionId,userId,conversationId],[otherActionId,otherUserId,otherConversationId]])
+        [proActionId,userId,conversationId],[fallbackActionId,userId,conversationId],
+        [otherActionId,otherUserId,otherConversationId]])
         await client.query("insert into assistant_action(id,user_id,conversation_id,action_type,status,payload) values($1,$2,$3,'lead-search','running','{}'::jsonb)",
           [action,owner,conversation]);
       await client.query("commit");created=true;
@@ -212,6 +245,44 @@ if(mode==="probe"){
     await assert.rejects(tenantQuery(userId,
       "update lead_qualification_phase_checkpoint set response='{}'::jsonb where action_id=$1",[actionId]),
     /permission denied/i);
+    const fallbackScope={userId,workspaceId,actionId:fallbackActionId,countryCode:"CO",
+      expectedProviderId:fallbackWire.id,requestedModelVersion:request.modelVersion};
+    const fallbackPhaseCheckpoint=productQualificationPhaseCheckpoint(fallbackScope);
+    const fallbackFinalCheckpoint=productQualificationFinalCheckpoint(fallbackScope);
+    await fallbackPhaseCheckpoint.save(fallbackRequest,fallbackContract,fallbackPaid,fallbackResponse);
+    await fallbackFinalCheckpoint.save(fallbackFinalRequest,fallbackFinalContract,fallbackFinalPaid,
+      fallbackFinalResponse);
+    await assert.rejects(fallbackPhaseCheckpoint.assertNoOtherCompleted(request,[{
+      contract:fallbackContract,paidFingerprint:fallbackPaid}]),/completed concurrently/);
+    await assert.rejects(fallbackFinalCheckpoint.assertNoOtherCompleted(finalRequest,[{
+      contract:fallbackFinalContract,paidFingerprint:fallbackFinalPaid}]),/completed concurrently/);
+    await assert.rejects(fallbackPhaseCheckpoint.assertNoOtherCompleted(request,[{contract:contract!,
+      paidFingerprint}]),/route changed/);
+    await assert.rejects(fallbackFinalCheckpoint.assertNoOtherCompleted(finalRequest,[{
+      contract:wire.cacheIdentity(finalRequest),paidFingerprint:wire.paidRequestFingerprint(finalRequest)}]),
+    /route changed/);
+    await assert.rejects(fallbackPhaseCheckpoint.save(fallbackRequest,fallbackContract,fallbackPaid,
+      {...fallbackResponse,requestedModelVersion:"wrong-model"}),/actual route differs/);
+    const fallbackChild=spawnSync(process.execPath,["scripts/run-tsx.cjs",
+      "scripts/verify-qualification-phase-checkpoint-sql.ts","probe-fallback",userId,workspaceId,
+      fallbackActionId],{cwd:process.cwd(),encoding:"utf8",windowsHide:true,timeout:30_000});
+    assert.equal(fallbackChild.status,0,`Cross-process fallback load failed: ${fallbackChild.stderr}`);
+    assert.match(fallbackChild.stdout,/"crossProcessFallbackCheckpoint":"passed"/);
+    assert.equal((await tenantQuery(otherUserId,
+      "select id from lead_qualification_final_checkpoint where action_id=$1",[fallbackActionId])).length,0);
+    await admin.query(`insert into paid_call_reservation(id,user_id,operation_id,stage,tariff_key,
+      tariff_version,reserved_micros,reported_micros,status,metrics,request_fingerprint)
+      values($1,$2,$3,'scoring','synthetic-fallback','fixture',1,1,'reported',$4::jsonb,$5)`,
+      [fallbackReservationId,userId,fallbackActionId,JSON.stringify({
+        modelAttempt:{task:"lead-qualification"},costAttribution:{kind:"company-inputs",
+          companyKeys:[companyKey]},validOutputItems:1,outputIncomplete:false}),fallbackPaid]);
+    const fallbackGuard=()=>assertUncheckpointedQualificationResponsesAbsent(userId,
+      fallbackActionId,new Date(Date.now()-60_000).toISOString(),[companyKey]);
+    await fallbackGuard();
+    await admin.query("update paid_call_reservation set status='unknown' where id=$1",[fallbackReservationId]);
+    await assert.rejects(fallbackGuard(),/paid-request-already-recorded/);
+    await admin.query("update paid_call_reservation set status='reported' where id=$1",[fallbackReservationId]);
+    await fallbackGuard();
     await admin.query(`insert into paid_call_reservation(id,user_id,operation_id,stage,tariff_key,tariff_version,
       reserved_micros,reported_micros,status,metrics,request_fingerprint)
       values($1,$2,$3,'scoring','synthetic-phase','fixture',1,1,'reported',$4::jsonb,$5)`,
@@ -324,6 +395,8 @@ if(mode==="probe"){
           [[userId,otherUserId]]);
         if(owners.rowCount!==2)throw new Error("Fixture ownership mismatch");
         await client.query("delete from paid_call_reservation where id=$1 and user_id=$2",[reservationId,userId]);
+        await client.query("delete from paid_call_reservation where id=$1 and user_id=$2",
+          [fallbackReservationId,userId]);
         await client.query("delete from paid_call_reservation where operation_id=$1 and user_id=$2 and tariff_key='synthetic-final'",[actionId,userId]);
         await client.query("delete from market_workspace where id=any($1::uuid[])",[[workspaceId,otherWorkspaceId]]);
         await client.query("delete from app_user where id=any($1::uuid[])",[[userId,otherUserId]]);
