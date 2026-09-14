@@ -16,12 +16,15 @@ import {LeadHandoffAssembler} from "../src/lib/leads/workflow/handoff-assembler"
 import {confirmAndQueueLeadWorkflow,claimLeadWorkflowByAction} from "../src/lib/leads/workflow/jobs";
 import {completeWorkflowJob} from "../src/lib/leads/workflow/job-completion";
 import {persistLeadWorkflowResult,updateWorkflowPhase} from "../src/lib/leads/workflow/persistence";
+import {checkpointInvocation,WorkflowPausedError} from "../src/lib/leads/workflow/pause";
 import type {DiscoveryResult} from "../src/lib/leads/workflow/discovery";
 import type {LeadAssessmentReview} from "../src/lib/leads/workflow/types";
 import {ragContext,playbook as fixturePlaybook,candidate as fixtureCandidate,
   correctedCandidate as fixtureCorrected,assessment as fixtureAssessment,plan as fixturePlan} from "./workflow-recovery-fixtures";
 
 nextEnv.loadEnvConfig(process.cwd());
+const pauseResume=process.argv[2]==="--pause-resume";
+if(process.argv[2]&&!pauseResume)throw new Error("Unknown verification mode");
 const app=process.env.DATABASE_URL,migration=process.env.DATABASE_MIGRATION_URL;
 if(!app||!migration)throw new Error("Both database connections required");
 const appUrl=new URL(app),migrationUrl=new URL(migration);
@@ -66,7 +69,7 @@ const callMetric:NonNullable<DiscoveryResult["callMetrics"]>[number]={
   groundingQueries:0,inputTokens:0,outputTokens:0,latencyMs:0,retryCount:0,fallbackUsed:false,
   cacheStatus:"miss",discardedReasonCounts:{},items:[]};
 const counters={rag:0,playbook:0,discover:0,evidence:0,correct:0,score:0,review:0};
-let created=false,threadId:string|undefined,httpViewports=0;
+let created=false,threadId:string|undefined,httpViewports=0,pauseScoring=pauseResume;
 const startedAt=Date.now();
 try{
   const client=await admin.connect();
@@ -96,7 +99,10 @@ try{
     tariffKey:"synthetic-positive-graph",tariffVersion:"fixture",maximumChargeMicros:7,requestBytes:0,
     costAttribution:{version:"company-cost-attribution-v1",kind:"task-shared",companyKeys:[],roundKey:costRoundKey(threadId)}});
   const deps:LeadWorkflowDependencies={
-    updatePhase:updateWorkflowPhase,
+    updatePhase:async(...args)=>{
+      if(pauseScoring&&args[2]==="scoring")throw new WorkflowPausedError();
+      return updateWorkflowPhase(...args);
+    },
     retrieveRagContext:async()=>{counters.rag++;return ragContext;},
     buildPlaybook:async()=>{counters.playbook++;return {...fixturePlaybook,
       marketHypothesis:"Synthetic Colombian positive-result wiring"};},
@@ -109,10 +115,28 @@ try{
     handoffAssembler:new LeadHandoffAssembler(),persist:persistLeadWorkflowResult,
   };
   const graph=buildLeadWorkflowGraph(deps,saver);
-  const state=await graph.invoke({userId,actionId,workspaceId,graphThreadId:threadId,plan,phase:"queued",
+  const config={configurable:{thread_id:threadId},recursionLimit:50};
+  const initial={userId,actionId,workspaceId,graphThreadId:threadId,plan,phase:"queued" as const,
     ragContext:[],candidates:[],correctedCandidates:[],assessments:[],assessmentReviews:[],handoffs:[],
-    modelUsage:[],stageMetrics:[],creditsUsed:0,warnings:[],processedCompanyKeys:[]},
-  {configurable:{thread_id:threadId},recursionLimit:50});
+    modelUsage:[],stageMetrics:[],creditsUsed:0,warnings:[],processedCompanyKeys:[]};
+  if(pauseResume){
+    await assert.rejects(graph.invoke(initial,config),WorkflowPausedError);
+    const checkpoint=await graph.getState(config);
+    assert.deepEqual(checkpoint.next,["score_candidates"]);
+    assert.equal(checkpointInvocation(checkpoint,userId,actionId,plan),"resume");
+    assert.throws(()=>checkpointInvocation(checkpoint,otherUserId,actionId),/ownership/);
+    assert.throws(()=>checkpointInvocation(checkpoint,userId,randomUUID()),/ownership/);
+    assert.equal(checkpoint.values.correctedCandidates[0].candidateId,candidate.candidateId);
+    assert.deepEqual(checkpoint.values.correctedCandidates[0].evidence,candidate.evidence);
+    assert.equal(checkpoint.values.creditsUsed,0);
+    assert.deepEqual(counters,{rag:1,playbook:1,discover:1,evidence:1,correct:1,score:0,review:0});
+    assert.equal((await tenantQuery(userId,
+      "select candidate_id from workspace_company_market where workspace_id=$1",[workspaceId])).length,0);
+    assert.equal((await tenantQuery<{occupied_micros:string}>(userId,
+      "select occupied_micros::text from user_spend_budget where user_id=$1",[userId]))[0].occupied_micros,"7");
+    pauseScoring=false;
+  }
+  const state=pauseResume?await graph.invoke(null,config):await graph.invoke(initial,config);
   assert.equal(state.result?.accepted,1);assert.equal(state.result?.targetCompletionReason,"target-met");
   assert.deepEqual(counters,{rag:1,playbook:1,discover:1,evidence:1,correct:1,score:1,review:1});
   assert.equal(state.handoffs.length,1);
@@ -174,7 +198,7 @@ try{
       }
     }finally{await browser.close();}
   }
-  console.log(JSON.stringify({positiveGraphSql:"passed",target:1,accepted:1,stopReason:"target-met",counters,
+  console.log(JSON.stringify({positiveGraphSql:"passed",pauseResume,target:1,accepted:1,stopReason:"target-met",counters,
     handoffs:state.handoffs.length,companyRows:companies.length,assessmentRows:assessmentRows.length,
     completionReceipts:receipts.length,httpViewports,syntheticReservedMicros:7,allocatedMicros:7,actualPaidCalls:0,
     latencyMs:Date.now()-startedAt}));
