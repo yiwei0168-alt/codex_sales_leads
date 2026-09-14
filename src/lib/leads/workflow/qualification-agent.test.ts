@@ -144,6 +144,23 @@ function incompressibleCandidate(count=150):CorrectedLeadWorkflowCandidate{
 }
 
 describe("LeadQualificationAgent", () => {
+  it("keeps a 151-source company with an additional long critical statement pending when complete recovery cannot fit",async()=>{
+    const large=structuredClone(incompressibleCandidate(150));
+    large.correction.findings.find(item=>item.kind==="role")!.statement=Array.from({length:2_000},
+      (_,index)=>createHash("sha256").update(`wide-critical-${index}`).digest("hex")).join("");
+    const original=JSON.stringify(large);
+    let transports=0;
+    const provider=new DeepSeekProvider({apiKey:"fixture-never-sent",maxAttempts:1,
+      fetchImplementation:async()=>{transports++;throw new Error("No provider transport is allowed");}});
+    const agent=new LeadQualificationAgent(provider,{routineModel:"deepseek-v4-pro",
+      escalationModel:"deepseek-v4-pro",batchSize:1,concurrency:1});
+    const result=await agent.evaluateWithUsage([large],playbook,"DE","Germany","new-market",
+      undefined,{userId:"fixture-owner",workspaceId:"fixture-workspace",actionId:"fixture-wide"});
+    expect(result.assessments[0].scoringStatus).toBe("retry-required");
+    expect(result.assessments[0].warnings.join(" ")).toContain("no chunk request was sent");
+    expect(transports).toBe(0);
+    expect(JSON.stringify(large)).toBe(original);
+  });
   it("keeps 155 facts and 151 sources inside the actual compatible final wire without model calls",()=>{
     const primary=new DeepSeekProvider({apiKey:"fixture-never-sent",maxAttempts:1,
       fetchImplementation:async()=>{throw new Error("No provider transport is allowed");}});
