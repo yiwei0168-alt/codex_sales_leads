@@ -107,11 +107,22 @@ describe("qualification fact phase plan",()=>{
     expect(plan.phases.every(phase=>wire.requestBytes(phase)<=57_344)).toBe(true);
     expect(JSON.stringify(candidate)).toBe(original);
     const changed=structuredClone(candidate);
-    changed.evidence[1].excerpt=changed.evidence[1].excerpt.replace("x", "y");
+    changed.evidence[1].excerpt=changed.evidence[1].excerpt.slice(0,50_000)+"y"
+      +changed.evidence[1].excerpt.slice(50_001);
     changed.evidence[1].contentHash=leadEvidenceContentHash(changed.evidence[1].excerpt);
-    expect(planQualificationFactPhases({candidate:changed,playbook,countryCode:"DE",countryName:"Germany",
-      objective:"new-market",modelVersion:"deepseek-v4-pro",requestBytes:request=>wire.requestBytes(request)}).sourceFingerprint)
-      .not.toBe(plan.sourceFingerprint);
+    const changedPlan=planQualificationFactPhases({candidate:changed,playbook,countryCode:"DE",
+      countryName:"Germany",objective:"new-market",modelVersion:"deepseek-v4-pro",
+      requestBytes:request=>wire.requestBytes(request)});
+    expect(changedPlan.sourceFingerprint).not.toBe(plan.sourceFingerprint);
+    const foldedPhase=plan.phases.find(phase=>(phase.input as {foldedEvidenceIds?:string[]})
+      .foldedEvidenceIds?.includes("phase-source-0"));
+    const changedFoldedPhase=changedPlan.phases.find(phase=>(phase.input as {foldedEvidenceIds?:string[]})
+      .foldedEvidenceIds?.includes("phase-source-0"));
+    expect(foldedPhase).toBeDefined();
+    expect(changedFoldedPhase).toBeDefined();
+    expect(wire.cacheIdentity(changedFoldedPhase!)).not.toBe(wire.cacheIdentity(foldedPhase!));
+    expect(wire.paidRequestFingerprint(changedFoldedPhase!))
+      .not.toBe(wire.paidRequestFingerprint(foldedPhase!));
   });
 
   it("keeps conflict, unknown kind and unlinked oversized sources in technical pending state",()=>{
