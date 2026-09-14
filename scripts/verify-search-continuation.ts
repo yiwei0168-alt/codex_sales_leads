@@ -32,6 +32,17 @@ try{
   const result=await proposeSearchContinuationInTransaction(client,workspace.owner_id,parent.rows[0].id);
   const again=await proposeSearchContinuationInTransaction(client,workspace.owner_id,parent.rows[0].id);
   if(!again.reused||result.actionId!==again.actionId)throw new Error('Repeated proposal was not idempotent');
+  for(const statement of [
+    'update lead_search_continuation set depth=depth where parent_action_id=$1',
+    'delete from lead_search_continuation where parent_action_id=$1',
+  ]){
+    await client.query('savepoint immutable_continuation');
+    let denied=false;
+    try{await client.query(statement,[parent.rows[0].id]);}
+    catch(error){denied=(error as {code?:string}).code==='42501';}
+    await client.query('rollback to savepoint immutable_continuation');
+    if(!denied)throw new Error('Application role could mutate search continuation');
+  }
   const metrics=await client.query<{changes:{efficiency:{outputItems:number;validOutputItems:number;downstreamUsedItems:number;userAdoptedItems:number|null}}}>(
     "select changes from workspace_audit_event where workspace_id=$1 and entity_id=$2",[workspaceId,result.actionId]);
   if(metrics.rows.length!==2||metrics.rows.reduce((sum,row)=>sum+row.changes.efficiency.outputItems,0)!==1
@@ -49,5 +60,5 @@ try{
   const removed=await client.query('select child_action_id from lead_search_continuation where child_action_id=$1',[result.actionId]);if(removed.rowCount)throw new Error('Conversation deletion left dangling lineage');
   await client.query('rollback to savepoint fixtures');
   await client.query(process.argv.includes('--apply')?'commit':'rollback');
-  console.log(process.argv.includes('--apply')?'PASS: migration 049 applied; proposal/idempotency/RLS fixtures fully rolled back.':'PASS: proposal/idempotency/RLS verified; ALL schema and fixture changes rolled back.');
+  console.log(process.argv.includes('--apply')?'PASS: migration 049 applied; proposal/idempotency/RLS/immutable links verified; fixtures fully rolled back.':'PASS: proposal/idempotency/RLS/immutable links verified; ALL schema and fixture changes rolled back.');
 }catch(error){await client.query('rollback');throw error;}finally{client.release();await pool.end();}

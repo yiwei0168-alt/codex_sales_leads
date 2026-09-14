@@ -24,9 +24,20 @@ try{
   if(own.rows.map(row=>row.operation).join(",")!=="INSERT,UPDATE,DELETE")throw new Error("Unexpected audit sequence/no-op not suppressed");
   if(JSON.stringify(own.rows).includes("PRIVATE-"))throw new Error("Private text leaked into audit");
   if(!own.rows[1].changed_fields.includes("status"))throw new Error("Missing status change");
+  for(const statement of [
+    "update user_memory_audit set operation=operation where memory_id=$1",
+    "delete from user_memory_audit where memory_id=$1",
+  ]){
+    await client.query("savepoint immutable_audit");
+    let denied=false;
+    try{await client.query(statement,[id]);}
+    catch(error){denied=error.code==="42501";}
+    await client.query("rollback to savepoint immutable_audit");
+    if(!denied)throw new Error("Application role could mutate memory audit");
+  }
   await client.query("select set_config('app.current_user_id','00000000-0000-4000-8000-999999999999',true)");
   const other=await client.query("select id from user_memory_audit where memory_id=$1",[id]);
   if(other.rowCount!==0)throw new Error("Cross-user audit visibility");
   await client.query("rollback");
-  console.log("PASS: audit INSERT/UPDATE/DELETE, no-op suppression, body exclusion, owner-only visibility; all writes rolled back.");
+  console.log("PASS: audit INSERT/UPDATE/DELETE, no-op suppression, body exclusion, owner-only visibility, immutable audit; all writes rolled back.");
 }finally{await client.query("rollback");client.release();await pool.end();}
