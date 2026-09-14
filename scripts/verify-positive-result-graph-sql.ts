@@ -13,22 +13,27 @@ import {hashClientAddress} from "../src/lib/auth/session";
 import {processAssistantMessage} from "../src/lib/assistant/service";
 import type {LeadSearchPlan} from "../src/lib/assistant/types";
 import {leadEvidenceContentHash} from "../src/lib/leads/evidence-snapshot";
+import {loadCachedLeadAssessments,saveCachedLeadAssessments} from "../src/lib/leads/workflow/assessment-cache";
 import {buildLeadWorkflowGraph,type LeadWorkflowDependencies} from "../src/lib/leads/workflow/graph";
 import {LeadHandoffAssembler} from "../src/lib/leads/workflow/handoff-assembler";
+import {LeadQualificationAgent} from "../src/lib/leads/workflow/qualification-agent";
 import {confirmAndQueueLeadWorkflow,claimLeadWorkflowByAction} from "../src/lib/leads/workflow/jobs";
 import {completeWorkflowJob} from "../src/lib/leads/workflow/job-completion";
 import {persistLeadWorkflowResult,updateWorkflowPhase} from "../src/lib/leads/workflow/persistence";
 import {checkpointInvocation,WorkflowPausedError} from "../src/lib/leads/workflow/pause";
 import type {DiscoveryResult} from "../src/lib/leads/workflow/discovery";
 import type {LeadAssessmentReview} from "../src/lib/leads/workflow/types";
+import type {AiProvider,StructuredAiRequest,StructuredAiResponse} from "../src/providers/contracts";
+import {DeepSeekProvider} from "../src/providers/deepseek";
 import {ragContext,playbook as fixturePlaybook,candidate as fixtureCandidate,
   correctedCandidate as fixtureCorrected,assessment as fixtureAssessment,plan as fixturePlan} from "./workflow-recovery-fixtures";
 
 nextEnv.loadEnvConfig(process.cwd());
 const modes=new Set(process.argv.slice(2));
-if(modes.size!==process.argv.length-2||[...modes].some(mode=>!["--pause-resume","--assistant-fallback"].includes(mode)))
+if(modes.size!==process.argv.length-2||[...modes].some(mode=>!["--pause-resume","--assistant-fallback","--actual-score-agent"].includes(mode)))
   throw new Error("Unknown or repeated verification mode");
-const pauseResume=modes.has("--pause-resume"),assistantFallback=modes.has("--assistant-fallback");
+const pauseResume=modes.has("--pause-resume"),assistantFallback=modes.has("--assistant-fallback"),
+  actualScoreAgent=modes.has("--actual-score-agent");
 const app=process.env.DATABASE_URL,migration=process.env.DATABASE_MIGRATION_URL;
 if(!app||!migration)throw new Error("Both database connections required");
 const appUrl=new URL(app),migrationUrl=new URL(migration);
@@ -46,7 +51,7 @@ const password=randomBytes(32).toString("base64url"),fixtureAddress=`positive-gr
 const companyKey=companyCostKey(domain,"CO");
 let plan:LeadSearchPlan={...fixturePlan,countryCode:"CO",countryName:"Colombia",targetCount:1,roles:["Distributor"],
   queryLanguage:"es",userRequest:"Synthetic positive-result graph wiring check"};
-const evidenceText="Synthetic official source: networking distributor with Colombian business customers.";
+const evidenceText="Synthetic official company page: Positive Graph Fixture is a Colombian networking distributor. It resells Wi-Fi routers and PoE switches to business resellers and system integrators in Colombia, purchases inventory from manufacturers, and accepts vendor supply proposals.";
 const evidence={...fixtureCandidate.evidence[0],url:`https://${domain}/`,title:"Positive graph fixture",
   excerpt:evidenceText,capturedAt:new Date().toISOString(),evidenceRunId:runId,
   freshnessStatus:"fresh" as const,contentHash:leadEvidenceContentHash(evidenceText)};
@@ -55,13 +60,40 @@ const candidate={...fixtureCandidate,candidateId:`fixture-${randomUUID()}`,compa
 const corrected={...candidate,correction:{...fixtureCorrected.correction,
   originalCompanyName:candidate.companyName,originalDomain:domain,originalOfficialWebsiteUrl:candidate.officialWebsiteUrl,
   reliedEvidenceIds:[evidence.id],findings:[...fixtureCorrected.correction.findings,
+    {...fixtureCorrected.correction.findings[0],findingId:"finding-identity",kind:"identity" as const,
+      statement:"Positive Graph Fixture owns its official Colombian company domain.",roles:[]},
     {...fixtureCorrected.correction.findings[0],findingId:"finding-country",kind:"country-presence" as const,
       statement:"Synthetic fixture operates in Colombia.",roles:[]},
     {...fixtureCorrected.correction.findings[0],findingId:"finding-product",kind:"product-family" as const,
-      statement:"Synthetic fixture distributes networking routers.",roles:[]}]}};
+      statement:"Synthetic fixture distributes Wi-Fi routers and PoE switches.",roles:[]},
+    {...fixtureCorrected.correction.findings[0],findingId:"finding-procurement",kind:"commercial-action" as const,
+      statement:"Synthetic fixture purchases manufacturer inventory and accepts vendor proposals.",roles:[]}]}};
 const assessment={...fixtureAssessment,candidateId:candidate.candidateId,
   evidenceIds:[evidence.id],cooperationPaths:fixtureAssessment.cooperationPaths.map(path=>({...path,
     evidenceIds:[evidence.id]}))};
+const wire=new DeepSeekProvider({apiKey:"synthetic-never-sent",maxAttempts:1,
+  fetchImplementation:async()=>{throw new Error("External scoring transport is forbidden");}});
+const scoreRequests:StructuredAiRequest<unknown>[]=[];
+const scoreProvider:AiProvider={
+  id:"synthetic-score-wire",
+  requestBytes:request=>wire.requestBytes(request),
+  cacheIdentity:request=>wire.cacheIdentity(request),
+  execute:async <I,O>(request:StructuredAiRequest<I>):Promise<StructuredAiResponse<O>>=>{
+    scoreRequests.push(request as StructuredAiRequest<unknown>);
+    assert.equal(request.task,"lead-qualification");
+    assert.ok(request.evidenceIds.includes(evidence.id));
+    assert.ok(wire.requestBytes(request)<=61_440);
+    const modelAssessment={...assessment,
+      dimensionRationales:Object.entries(assessment.dimensions).map(([dimension,score])=>({dimension,score,
+        reason:"Synthetic current-run company fact supports this dimension.",findingIds:["finding-product"],
+        evidenceIds:[evidence.id],confidence:85})),
+      escalation:{required:false,expectedTotalScoreChange:0,criticalStateChanges:[],
+        higherCapabilityCanResolve:false,reason:""}};
+    return {output:{assessments:[modelAssessment]} as O,modelVersion:request.modelVersion,
+      promptVersion:request.promptVersion,latencyMs:0,warnings:[]};
+  },
+};
+const scoreAgent=new LeadQualificationAgent(scoreProvider,{batchSize:1,concurrency:1});
 const review:LeadAssessmentReview={candidateId:candidate.candidateId,required:false,triggers:[],
   status:"not-required",primaryModel:assessment.model,primaryScore:assessment.totalScore,
   finalScore:assessment.totalScore,materialDisagreements:[],rationale:"Synthetic no-review fixture.",warnings:[]};
@@ -140,8 +172,17 @@ try{
       creditsUsed:0,warnings:[],callMetrics:[callMetric]};},
     collectEvidence:async()=>{counters.evidence++;return {candidates:[candidate],creditsUsed:0,warnings:[]};},
     correctionAgent:{correct:async()=>{counters.correct++;return {candidates:[corrected],creditsUsed:0,warnings:[]};}},
-    qualificationAgent:{evaluate:async()=>{counters.score++;return [assessment];}},
-    assessmentReviewAgent:{review:async(_candidates,assessments)=>{counters.review++;return {assessments,reviews:[review],warnings:[]};}},
+    qualificationAgent:actualScoreAgent?{
+      evaluate:async(...args)=>{counters.score++;return scoreAgent.evaluate(...args);},
+      evaluateWithUsage:async(...args)=>{counters.score++;return scoreAgent.evaluateWithUsage(...args);},
+      cacheContracts:(...args)=>scoreAgent.cacheContracts(...args),
+      completedCacheContracts:values=>scoreAgent.completedCacheContracts(values),
+    }:{evaluate:async()=>{counters.score++;return [assessment];}},
+    loadAssessmentCache:actualScoreAgent?loadCachedLeadAssessments:undefined,
+    saveAssessmentCache:actualScoreAgent?saveCachedLeadAssessments:undefined,
+    assessmentReviewAgent:{review:async(_candidates,assessments)=>{counters.review++;
+      return {assessments,reviews:[{...review,primaryScore:assessments[0].totalScore,
+        finalScore:assessments[0].totalScore}],warnings:[]};}},
     handoffAssembler:new LeadHandoffAssembler(),persist:persistLeadWorkflowResult,
   };
   const graph=buildLeadWorkflowGraph(deps,saver);
@@ -169,6 +210,18 @@ try{
   const state=pauseResume?await graph.invoke(null,config):await graph.invoke(initial,config);
   assert.equal(state.result?.accepted,1);assert.equal(state.result?.targetCompletionReason,"target-met");
   assert.deepEqual(counters,{rag:1,playbook:1,discover:1,evidence:1,correct:1,score:1,review:1});
+  assert.equal(scoreRequests.length,actualScoreAgent?1:0);
+  if(actualScoreAgent){
+    const scored=state.assessments[0];
+    assert.equal(scored.scoringStatus,"completed");assert.equal(scored.eligibilityStatus,"eligible");
+    assert.deepEqual(Object.values(scored.gates),Array(5).fill("supported"));
+    assert.equal(scored.companyScaleClass,"Unknown");
+    assert.equal(scored.dimensions.scaleAndChannelCoverage,8);
+    assert.ok(scored.totalScore<=fixtureAssessment.totalScore);
+    assert.deepEqual(scored.evidenceIds,[evidence.id]);
+    assert.equal(scored.dimensionRationales.length,7);
+    assert.equal(scoreRequests[0].dataClassification,"public");
+  }
   assert.equal(state.handoffs.length,1);
   await completeWorkflowJob(claim,state.result!);
   await completeWorkflowJob(claim,state.result!);
@@ -187,6 +240,11 @@ try{
   const assessmentRows=await tenantQuery<{candidate_id:string;scoring_status:string}>(userId,
     "select candidate_id,scoring_status from lead_candidate_assessment where run_id=$1",[runId]);
   assert.deepEqual(assessmentRows,[{candidate_id:candidate.candidateId,scoring_status:"completed"}]);
+  if(actualScoreAgent){
+    const cached=await tenantQuery<{candidate_id:string}>(userId,
+      "select candidate_id from lead_assessment_cache where workspace_id=$1",[workspaceId]);
+    assert.deepEqual(cached,[{candidate_id:candidate.candidateId}]);
+  }
   const receipts=await tenantQuery<{content:string}>(userId,
     "select content from assistant_message where user_id=$1 and metadata->>'completionJobId'=$2",[userId,claim.jobId]);
   assert.equal(receipts.length,1);
@@ -228,7 +286,8 @@ try{
       }
     }finally{await browser.close();}
   }
-  console.log(JSON.stringify({positiveGraphSql:"passed",pauseResume,assistantFallback,target:1,accepted:1,stopReason:"target-met",counters,
+  console.log(JSON.stringify({positiveGraphSql:"passed",pauseResume,assistantFallback,actualScoreAgent,
+    syntheticScoringRequests:scoreRequests.length,target:1,accepted:1,stopReason:"target-met",counters,
     handoffs:state.handoffs.length,companyRows:companies.length,assessmentRows:assessmentRows.length,
     completionReceipts:receipts.length,httpViewports,syntheticReservedMicros:7,allocatedMicros:7,actualPaidCalls:0,
     latencyMs:Date.now()-startedAt}));

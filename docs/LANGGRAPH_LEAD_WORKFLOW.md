@@ -1,5 +1,7 @@
 # LangChain / LangGraph 销售线索工作流
 
+2026-09-14 / 阶段142：两轮自然语言降级正结果任务在评分前检查点恢复后，由当前`LeadQualificationAgent`对合成模拟提供方响应执行完整请求准备、资格门禁、确定性评分和精确SQL缓存，再经图交接/产品SQL/生产双视口保存1家。模拟响应不证明真实模型语义或A11账单。[证据](CURRENT_SCORE_AGENT_POSITIVE_GRAPH_ACCEPTANCE_2026-09-14.md)。
+
 2026-09-14 / 阶段141：实际助手服务两轮自然语言用`deterministic-fallback`产生目标2再改目标1的提案，旧提案取消后确认新任务；图在评分前停于PostgreSQL检查点，恢复后合成正结果经SQL及本地生产双视口达标。内部阶段仍为夹具，模型真实语义及A11可信账单未验收。[证据](ASSISTANT_FALLBACK_POSITIVE_GRAPH_ACCEPTANCE_2026-09-14.md)。
 
 2026-09-14 / 阶段140：正结果图→产品SQL验收夹具增加全局`sales_company`清理及清理后断言；初版6条本轮无引用合成残留已删除。此为验收夹具数据卫生修复，原图、费用、角色和评分合同不变，真实业务仍待A11。[证据](POSITIVE_GRAPH_FIXTURE_CLEANUP_2026-09-14.md)。
