@@ -1,0 +1,7 @@
+# Scheduled ECB FX retry — stage 178 (2026-09-14)
+
+At 06:48:44 UTC, the existing credential-free `refreshBillingFxReference` ran after its one-hour backoff. It made one official HTTP request and stored `status=unavailable`, `checked_at=2026-09-14 06:48:44 UTC`, `next_attempt_at=2026-09-14 07:48:44 UTC` in the public refresh state. The independent [ECB reference page](https://www.ecb.europa.eu/stats/policy_and_exchange_rates/euro_reference_exchange_rates/html/index.en.html) still lists **11 September 2026**, with USD 1.1592 and CNY 7.7762 per EUR. No newer authoritative reference was inferred or inserted.
+
+The current stored snapshot remains `fx.asOf=2026-09-11 00:00 UTC` and expired at `2026-09-14 00:00 UTC` under confirmed A10's 72-hour rule. Read-only status returned `expired-or-invalid`; paid CNY-bound requests remain held. The retry did not claim a lead job, send a model/search request, change the USD30 budget, or update a historical bill.
+
+Efficiency observation: input one scheduled reference request, valid new reference output zero, downstream-usable FX output zero, one discarded stale-date response, retries zero, model tokens/API credits/cash zero. The source fetch and local state check took about two seconds; provider network latency is not separately established. The existing one-hour backoff prevents per-user repeated fetches. Real FX usability, full-run cost and A11 business closure remain unverified.

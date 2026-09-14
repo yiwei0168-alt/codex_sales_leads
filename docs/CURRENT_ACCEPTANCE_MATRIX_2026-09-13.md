@@ -1,4 +1,5 @@
 # 当前唯一验收矩阵（更新至 2026-09-14）
+Stage 178 [scheduled FX recheck](FX_SCHEDULED_RECHECK_2026-09-14.md): 06:48 UTC official retry stored unavailable; the 2026-09-11 snapshot remains expired and the next retry is 07:48 UTC. No paid call or change to the USD30 occupancy; A11 FX prerequisite remains open.
 Stage 177 A11 [Tavily Extract candidate](TAVILY_EXTRACT_TARIFF_PROPOSAL_2026-09-14.md): official pricing and exact synthetic 2/20-URL wires support a strict USD0.032000 candidate, but /extract remains missing-tariff in active policy pending contract confirmation. No real paid closure or overall acceptance is claimed.
 Stage 176 O03 [post-review target verification](O03_POST_REVIEW_TARGET_COMPLETION_2026-09-14.md): synthetic downgrade continues discovery, targeted research pauses, and primary score reuse remains intact. Full 1,017-test regression, typecheck, build and lint pass. A11 total conservative bound, live model semantics and real bill are still unverified; overall acceptance remains open.
 

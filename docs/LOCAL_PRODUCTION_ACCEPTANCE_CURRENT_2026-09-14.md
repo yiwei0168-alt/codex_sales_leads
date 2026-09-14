@@ -1,4 +1,5 @@
 # 本地生产阶段性验收（2026-09-14，未完成）
+Stage 178 [scheduled FX recheck](FX_SCHEDULED_RECHECK_2026-09-14.md): at 06:48 UTC the official no-key request produced no newer reference; database state is unavailable, next attempt 07:48 UTC. Existing 2026-09-11 snapshot remains expired and paid CNY-bound requests stay blocked.
 Stage 177 [Tavily Extract candidate](TAVILY_EXTRACT_TARIFF_PROPOSAL_2026-09-14.md): product official-evidence collection has an unpriced /extract dependency. Strict validator and USD0.032000 candidate are prepared, inactive under A11. Read-only budget and full-run gate remain unchanged; real A11 not run.
 Stage 176 [post-review target verification](O03_POST_REVIEW_TARGET_COMPLETION_2026-09-14.md): synthetic graph now decides continuation from final reviewed eligibility. Read-only preflight shows 5 rounds / at most 20 scheduled route actions but totalRunBoundUsd=null; occupied USD12.324404/30, zero paid calls. This is product control-flow evidence, not the live A11 closure.
 
