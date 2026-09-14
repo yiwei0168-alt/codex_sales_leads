@@ -30,6 +30,16 @@ it("retains old snapshots on failure, bounds recovery frequency and does not log
   expect(result).toMatchObject({status:"unavailable",nextAttemptAt:"2026-09-13T06:00:00.000Z"});
   expect(mocks.sql.mock.calls.some(call=>/insert into billing_fx_reference_snapshot|delete from|update billing_fx_reference_snapshot/.test(call[0]))).toBe(false);
   expect(JSON.stringify(mocks.sql.mock.calls)).not.toContain("private-raw-error");
+  const observation=mocks.sql.mock.calls.find(call=>call[0].includes("insert into billing_reference_refresh_observation"))!;
+  expect(JSON.parse(observation[1][3]).discardedReasonCounts).toEqual({unavailableOrInvalidReference:1});
+});
+it("records an expired official response separately from transport failure without renewing the FX snapshot",async()=>{
+  const staleAt=Date.parse("2026-09-14T08:49:24Z");
+  const result=await refreshBillingFxReference(vi.fn().mockResolvedValue(new Response(xml)),staleAt);
+  expect(result).toMatchObject({status:"unavailable",failureClass:"staleOfficialReference",httpCalls:1,nextAttemptAt:"2026-09-14T09:49:24.000Z"});
+  expect(mocks.sql.mock.calls.some(call=>call[0].includes("insert into billing_fx_reference_snapshot"))).toBe(false);
+  const observation=mocks.sql.mock.calls.find(call=>call[0].includes("insert into billing_reference_refresh_observation"))!;
+  expect(JSON.parse(observation[1][3]).discardedReasonCounts).toEqual({staleOfficialReference:1});
 });
 it("rejects expired or foreign-source stored references without deleting historical data",async()=>{
   const reference=parseEcbCnyReference(xml,new Date(time).toISOString());

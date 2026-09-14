@@ -11,7 +11,7 @@ if(a.hostname!==m.hostname||(a.port||"5432")!==(m.port||"5432")||a.pathname!==m.
 const admin=new Pool({connectionString:databaseConnectionString(migration),ssl:databaseSslConfiguration(migration)});
 const {query,getPool}=await import("../src/lib/rag/db");
 const {refreshBillingFxReference,readCurrentCnyFxReference,readBillingReferenceStatus}=await import("../src/lib/billing/fx-reference-repository");
-const {ECB_SOURCE_KEY,ECB_REFERENCE_URL,fetchEcbCnyReference}=await import("../src/lib/billing/ecb-reference");
+const {ECB_SOURCE_KEY,ECB_REFERENCE_URL,fetchEcbCnyReference,StaleEcbReferenceError}=await import("../src/lib/billing/ecb-reference");
 let verificationStep="migration";
 try{
   const ddl=await readFile(new URL("../db/migrations/053_billing_fx_reference.sql",import.meta.url),"utf8");
@@ -61,7 +61,7 @@ try{
     const status=await readBillingReferenceStatus();
     assert.equal(status.fx.status,"expired-or-invalid");
     verificationStep="official-expiry-check";
-    await assert.rejects(fetchEcbCnyReference(),/FX observation expired or invalid/);
+    await assert.rejects(fetchEcbCnyReference(),StaleEcbReferenceError);
     console.log(JSON.stringify({migrations:["053","070"],fixedOfficialSource:true,concurrentAtMostOneFetch:true,
       scheduledRefreshAttempted:results.some(item=>item.httpCalls===1),repeatCached:true,
       immutableSnapshot:true,rateUsable:false,holdReason:"official-reference-expired",

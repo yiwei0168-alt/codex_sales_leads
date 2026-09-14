@@ -1,5 +1,5 @@
 import {expect,it,vi} from "vitest";
-import {parseEcbCnyReference,fetchEcbCnyReference,ECB_REFERENCE_URL,MAX_REFERENCE_BYTES} from "./ecb-reference";
+import {parseEcbCnyReference,fetchEcbCnyReference,ECB_REFERENCE_URL,MAX_REFERENCE_BYTES,StaleEcbReferenceError} from "./ecb-reference";
 import {foreignReservationMicros} from "./fx-policy";
 const now="2026-09-13T05:00:00Z";
 const xml="<Cube><Cube time='2026-09-11'><Cube currency='USD' rate='1.1592'/><Cube currency='CNY' rate='7.7762'/></Cube></Cube>";
@@ -15,6 +15,8 @@ it("rejects missing/duplicate/invalid rates, ambiguous dates, XML entities, stal
     xml.replace("2026-09-11","2026-09-09"),xml.replace("2026-09-11","2026-09-14"),xml.replace("2026-09-11","2026-02-31")])
     expect(()=>parseEcbCnyReference(input,now)).toThrow();
   expect(()=>parseEcbCnyReference(xml,"2026-09-14T00:00:00Z")).toThrow();
+  expect(()=>parseEcbCnyReference(xml,"2026-09-14T00:00:00Z")).toThrow(StaleEcbReferenceError);
+  expect(parseEcbCnyReference(xml,"2026-09-13T23:59:59Z").referenceDate).toBe("2026-09-11");
 });
 it("fetches only the fixed credential-free official feed with a bounded response",async()=>{
   const transport=vi.fn<typeof fetch>().mockResolvedValue(new Response(xml));

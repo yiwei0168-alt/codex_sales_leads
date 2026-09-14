@@ -1,5 +1,5 @@
 import {transaction,query} from "@/lib/rag/db";
-import {fetchEcbCnyReference,ECB_SOURCE_KEY,ECB_REFERENCE_URL} from "./ecb-reference";
+import {fetchEcbCnyReference,ECB_SOURCE_KEY,ECB_REFERENCE_URL,StaleEcbReferenceError} from "./ecb-reference";
 import {foreignCostBoundSchema,foreignReservationMicros,type ForeignCostBound} from "./fx-policy";
 import {fxReferenceStatus,dynamicTariffStatus,type BillingReferenceStatus} from "./reference-status";
 
@@ -11,7 +11,11 @@ export async function refreshBillingFxReference(transport:typeof fetch=fetch,now
     const prior=await client.query<{next_attempt_at:Date}>("select next_attempt_at from billing_reference_refresh_state where source_key=$1",[ECB_SOURCE_KEY]);
     if(prior.rows[0]&&new Date(prior.rows[0].next_attempt_at).getTime()>now)return {status:"cached-refresh-state",httpCalls:0};
     const started=Date.now();let result:Awaited<ReturnType<typeof fetchEcbCnyReference>>|undefined;
-    try{result=await fetchEcbCnyReference(transport,now);}catch{/* No raw response/error or secrets in the public log. */}
+    let failureClass:"staleOfficialReference"|"unavailableOrInvalidReference"="unavailableOrInvalidReference";
+    try{result=await fetchEcbCnyReference(transport,now);}catch(error){
+      // Only classify the known public-date condition; never store a raw response/error or secrets.
+      if(error instanceof StaleEcbReferenceError)failureClass="staleOfficialReference";
+    }
     const status=result?"validated":"unavailable";
     if(result)await client.query(`insert into billing_fx_reference_snapshot(source_key,source_hash,native_currency,reference_date,retrieved_at,fx)
       values($1,$2,$3,$4,$5,$6) on conflict do nothing`,[ECB_SOURCE_KEY,result.sourceHash,result.currency,result.referenceDate,result.fx.retrievedAt,JSON.stringify(result.fx)]);
@@ -23,9 +27,9 @@ export async function refreshBillingFxReference(transport:typeof fetch=fetch,now
       ECB_SOURCE_KEY,new Date(now).toISOString(),status,JSON.stringify({inputItems:1,generatedOutputItems:result?1:0,validOutputItems:result?1:0,
         downstreamUsedItems:result?1:0,inputBytes:0,outputBytes:result?.bytes??null,inputTokens:0,outputTokens:0,apiCredits:0,costUsd:0,
         freeHttpRequests:1,latencyMs:Date.now()-started,retries:0,utilizationEfficiency:result?1:0,
-        discardedReasonCounts:result?{}:{unavailableOrInvalidReference:1},usageBoundary:"public-fx-reference-validated-and-stored-not-invoice-or-paid-call-adoption",
+        discardedReasonCounts:result?{}:{[failureClass]:1},usageBoundary:"public-fx-reference-validated-and-stored-not-invoice-or-paid-call-adoption",
         optimizationOpportunity:"Share one daily source snapshot; avoid per-user or per-model reference fetches"})]);
-    return {status,httpCalls:1,nextAttemptAt:nextAttempt};
+    return {status,httpCalls:1,nextAttemptAt:nextAttempt,...(!result?{failureClass}:{})};
   });
 }
 
