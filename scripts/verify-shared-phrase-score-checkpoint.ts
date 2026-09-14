@@ -23,12 +23,14 @@ const threadId = process.argv[3] ?? `verify-phrase-score:${randomUUID()}`;
 if (!/^verify-phrase-score:[a-f0-9-]{36}$/.test(threadId)) throw new Error("Invalid isolated verification thread");
 if (mode && !["seed", "resume", "sql", "sql-resume"].includes(mode)) throw new Error("Invalid verification phase");
 const foldedVariant = process.env.P06_SYNTHETIC_FOLD_VARIANT === "1";
-const phasedVariant = process.env.P06_SYNTHETIC_PHASED_VARIANT === "1";
+const phasedProVariant = process.env.P06_SYNTHETIC_PHASED_PRO_VARIANT === "1";
+const phasedVariant = process.env.P06_SYNTHETIC_PHASED_VARIANT === "1" || phasedProVariant;
 if (foldedVariant && phasedVariant) throw new Error("Choose one synthetic scoring variant");
 if (phasedVariant && mode !== "sql" && mode !== "sql-resume")
   throw new Error("The phased scoring variant requires the isolated product SQL mode");
 const foldedTableVariant = foldedVariant && process.env.P06_SYNTHETIC_FOLD_COUNT === "110";
-const expectedEncoding = phasedVariant ? "fact-phase-synthesis-v1"
+const expectedEncoding = phasedProVariant ? "fact-phase-synthesis-pro-v1"
+  : phasedVariant ? "fact-phase-synthesis-v1"
   : foldedTableVariant ? "supported-excerpt-fold-v1+exact-field-table-v1"
   : foldedVariant ? "supported-excerpt-fold-v1" : "exact-shared-phrase-v1";
 function assertEncoding(value: string | undefined): void {
@@ -125,14 +127,17 @@ const provider: AiProvider = {
       findingIds: ["finding-distribution"], evidenceIds: [originalEvidence.id], confidence: 85,
     }));
     return { output: { assessments: [{ ...assessment, dimensionRationales,
-      escalation: { required: false, expectedTotalScoreChange: 0, criticalStateChanges: [],
-        higherCapabilityCanResolve: false, reason: "" } }] } as O,
+      escalation: { required: phasedProVariant && request.modelVersion === "deepseek-v4-flash",
+        expectedTotalScoreChange: phasedProVariant ? 8 : 0, criticalStateChanges: [],
+        higherCapabilityCanResolve: phasedProVariant,
+        reason: phasedProVariant ? "Synthetic material conflict" : "" } }] } as O,
       modelVersion: request.modelVersion, promptVersion: request.promptVersion, latencyMs: 0, warnings: [],
       actualProviderId:phasedVariant?"deepseek":undefined };
   },
 };
 const agent = new LeadQualificationAgent(provider, { batchSize: 1, concurrency: 1,
-  ...(phasedVariant?{routineModel:"deepseek-v4-pro",escalationModel:"deepseek-v4-pro"}:{}) });
+  ...(phasedProVariant?{routineModel:"deepseek-v4-flash",escalationModel:"deepseek-v4-pro"}
+    :phasedVariant?{routineModel:"deepseek-v4-pro",escalationModel:"deepseek-v4-pro"}:{}) });
 const expectedContract = agent.cacheContracts([corrected], playbook, fullPlan.countryCode,
   fullPlan.countryName, fullPlan.objective);
 if (phasedVariant) assert.equal(expectedContract.size,0);
@@ -271,6 +276,7 @@ async function verifyProductSql(): Promise<void> {
     const completed = await graph.getState(config);
     assert.equal(completed.values.result?.accepted, 0);
     assert.equal(completed.values.assessments[0].scoringStatus, "completed");
+    if(phasedProVariant)assert.equal(completed.values.assessments[0].escalated,true);
     const assessments = await tenantQuery<{scoring_status:string;selected:boolean;eligible:boolean;
       evidence:unknown[];fact_ledger:unknown[]}>(userId,
       "select scoring_status,selected,eligible,evidence,fact_ledger from lead_candidate_assessment where run_id=$1",
@@ -313,7 +319,14 @@ async function verifyProductSql(): Promise<void> {
     if (phasedVariant) {
       const phases = await tenantQuery<{n:number}>(userId,
         "select count(*)::int as n from lead_qualification_phase_checkpoint where action_id=$1",[actionId]);
-      assert.equal(phases[0].n,resumed.fakeModelCalls-1);
+      assert.equal(phases[0].n,resumed.fakeModelCalls-(phasedProVariant?2:1));
+      if(phasedProVariant){
+        const finals=await tenantQuery<{model_version:string}>(userId,
+          "select response->>'modelVersion' as model_version from lead_qualification_final_checkpoint where action_id=$1 order by created_at",
+          [actionId]);
+        assert.deepEqual(finals.map(item=>item.model_version),
+          ["deepseek-v4-flash","deepseek-v4-pro"]);
+      }
       const contracts=await agent.phasedCacheContracts([sqlCorrected],playbook,
         fullPlan.countryCode,fullPlan.countryName,fullPlan.objective,
         {userId,workspaceId,actionId});
@@ -401,6 +414,11 @@ try {
     });
     assert.equal(result.result?.accepted, 0);
     assert.equal(result.assessments[0].scoringStatus, "completed");
+    if(phasedProVariant){
+      assert.equal(result.assessments[0].escalated,true);
+      assert.deepEqual(calls.slice(-2).map(item=>item.modelVersion),
+        ["deepseek-v4-flash","deepseek-v4-pro"]);
+    }
     if (!phasedVariant) assert.deepEqual(agent.completedCacheContracts(result.assessments),
       agent.cacheContracts(snapshot.values.correctedCandidates, playbook,
         fullPlan.countryCode, fullPlan.countryName, fullPlan.objective));
