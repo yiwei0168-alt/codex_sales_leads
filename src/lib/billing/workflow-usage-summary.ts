@@ -5,6 +5,22 @@ export const WORKFLOW_STAGE_USAGE_SQL=`select stage,count(*)::int as stage_recor
       sum(valid_artifacts)::text as valid_artifacts,
       sum(downstream_used_artifacts)::text as downstream_used_artifacts,
       sum(paid_search_credits)::text as recorded_search_credits,
+      sum(case when jsonb_typeof(metadata->'reportedCreditCalls')='number'
+        and metadata->>'reportedCreditCalls' ~ '^[0-9]{1,12}$'
+        then (metadata->>'reportedCreditCalls')::bigint end)::text as tavily_reported_credit_calls,
+      sum(case when jsonb_typeof(metadata->'estimatedCreditCalls')='number'
+        and metadata->>'estimatedCreditCalls' ~ '^[0-9]{1,12}$'
+        then (metadata->>'estimatedCreditCalls')::bigint end)::text as tavily_estimated_credit_calls,
+      sum(case when jsonb_typeof(metadata->'reportedCredits')='number'
+        and metadata->>'reportedCredits' ~ '^[0-9]{1,12}$'
+        then (metadata->>'reportedCredits')::bigint end)::text as tavily_reported_credits,
+      sum(case when jsonb_typeof(metadata->'estimatedCredits')='number'
+        and metadata->>'estimatedCredits' ~ '^[0-9]{1,12}$'
+        then (metadata->>'estimatedCredits')::bigint end)::text as tavily_estimated_credits,
+      sum(case when jsonb_typeof(metadata->'unknownCreditAttempts')='number'
+        and metadata->>'unknownCreditAttempts' ~ '^[0-9]{1,12}$'
+        then (metadata->>'unknownCreditAttempts')::bigint end)::text as tavily_unknown_credit_attempts,
+      count(*) filter(where metadata ? 'reportedCreditCalls')::int as tavily_credit_coverage_records,
       sum(extract(epoch from completed_at-started_at)*1000)::text as recorded_stage_latency_ms,
       count(*) filter(where downstream_used_artifacts>generated_artifacts
         or downstream_used_artifacts>valid_artifacts

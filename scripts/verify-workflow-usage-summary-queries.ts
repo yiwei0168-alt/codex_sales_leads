@@ -42,6 +42,28 @@ try{
       assert.equal(own?.valid_artifacts,"2");assert.equal(own?.downstream_used_artifacts,"2");
       assert.equal(own?.invalid_count_records,0);
       assert.ok(Math.abs(Number(own?.downstream_utilization)-2/3)<1e-12);
+      assert.equal(own?.tavily_credit_coverage_records,0);
+      assert.equal(own?.tavily_reported_credits,null);
+      const creditStage=`${stage}-tavily`;
+      await client.query(`insert into workflow_stage_metric(user_id,workspace_id,graph_thread_id,workflow_key,
+        workflow_version,stage,status,started_at,completed_at,paid_search_credits,
+        generated_artifacts,valid_artifacts,downstream_used_artifacts,dependency_fingerprint,metadata)
+        values($1,$2,'verify-usage','verify-usage','1',$3,'completed',now(),now(),3,1,1,1,'fixture',$4::jsonb)`,
+      [userId,workspaceId,creditStage,JSON.stringify({reportedCreditCalls:1,estimatedCreditCalls:1,
+        reportedCredits:2,estimatedCredits:1,unknownCreditAttempts:1})]);
+      await client.query(`insert into workflow_stage_metric(user_id,workspace_id,graph_thread_id,workflow_key,
+        workflow_version,stage,status,started_at,completed_at,paid_search_credits,
+        generated_artifacts,valid_artifacts,downstream_used_artifacts,dependency_fingerprint)
+        values($1,$2,'verify-usage','verify-usage','1',$3,'completed',now(),now(),1,1,1,1,'legacy-fixture')`,
+      [userId,workspaceId,creditStage]);
+      const credit=(await client.query(WORKFLOW_STAGE_USAGE_SQL,[userId])).rows.find(row=>row.stage===creditStage);
+      assert.equal(Number(credit?.recorded_search_credits),4);
+      assert.equal(credit?.tavily_credit_coverage_records,1);
+      assert.equal(credit?.tavily_reported_credit_calls,"1");
+      assert.equal(credit?.tavily_estimated_credit_calls,"1");
+      assert.equal(credit?.tavily_reported_credits,"2");
+      assert.equal(credit?.tavily_estimated_credits,"1");
+      assert.equal(credit?.tavily_unknown_credit_attempts,"1");
       const model=(await client.query(WORKFLOW_MODEL_USAGE_SQL,[userId])).rows.find(row=>row.stage===stage);
       assert.equal(model?.recorded_total_tokens,"15");assert.equal(model?.fallback_records,0);
       const invalidStage=`${stage}-invalid`;
@@ -55,6 +77,7 @@ try{
       assert.equal(invalid?.downstream_utilization,null);
       await client.query("select set_config('app.current_user_id',$1,true)",[foreignUserId]);
       assert.equal((await client.query(WORKFLOW_STAGE_USAGE_SQL,[userId])).rows.some(row=>row.stage===stage),false);
+      assert.equal((await client.query(WORKFLOW_STAGE_USAGE_SQL,[userId])).rows.some(row=>row.stage===creditStage),false);
       assert.equal((await client.query(WORKFLOW_STAGE_USAGE_SQL,[userId])).rows.some(row=>row.stage===invalidStage),false);
       assert.equal((await client.query(WORKFLOW_MODEL_USAGE_SQL,[userId])).rows.some(row=>row.stage===stage),false);
       fixtureVerified=true;

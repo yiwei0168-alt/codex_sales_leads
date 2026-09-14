@@ -1,0 +1,9 @@
+# Stage 228 — Tavily credit provenance in the read-only usage API
+
+Stage 227 records Tavily API-credit origin inside the evidence and correction stage metrics. The 30-day `/api/tasks/usage` aggregate previously exposed only the mixed `recorded_search_credits` sum, so an operator could not see how much came from a provider report versus the compatibility estimate.
+
+The existing tenant-scoped stage query now exposes separately named reported/estimated credit calls and credits, unknown credit attempts, and the count of stage rows carrying the new observation. A legacy row with no provenance retains `null` aggregates and zero coverage rows; it is not interpreted as a reported zero. The old mixed aggregate remains for compatibility and must not be added to either breakdown or read as a USD charge. No mutation, migration, paid wire or fee admission changed.
+
+A rollback-only PostgreSQL fixture inserts one current provenance row and one legacy row under the isolated disabled acceptance user. It checks mixed aggregate 4, provenance report 2/estimate 1/unknown attempt 1, provenance-row coverage 1 of 2, and foreign-user isolation. The fixture rolls back entirely. Full 1,048 tests/208 files, TypeScript, changed-file lint and production build pass. Real customer usage and provider reports remain untested; no external paid request, customer task, token, API credit, USD or email was used. A03 real cash matching and A11 whole-run paid admission remain open.
+
+Efficiency: two synthetic stage rows produced one valid current/legacy aggregate assertion set used in acceptance; real qualified leads, downstream customer use and adoption remain unknown. One no-paid SQL run took about three seconds; full regression about 22 seconds, production build about 23 seconds, paid-provider latency unknown. No retries or discarded business output. Opportunity: show this provenance coverage explicitly in operator views before treating a mixed credit total as a reported bill.
