@@ -101,4 +101,36 @@ describe("qualification phase synthesis",()=>{
     const incomplete=structuredClone(outputs);incomplete[0].facts.pop();
     expect(()=>assemble(candidate,incomplete)).toThrow(/missing or extra/);
   });
+
+  it("carries a folded source disclosure into final scoring without changing the original snapshot",()=>{
+    const candidate=fixture(1);
+    candidate.correction.findings[1].kind="product-family";
+    candidate.evidence[1].excerpt="head "+"x".repeat(100_000)+" tail";
+    candidate.evidence[1].contentHash=leadEvidenceContentHash(candidate.evidence[1].excerpt);
+    const original=JSON.stringify(candidate);
+    const plan=planQualificationFactPhases({candidate,playbook,...market,
+      requestBytes:request=>wire.requestBytes(request)});
+    const outputs:QualificationPhaseOutput[]=plan.phases.map(phase=>{
+      const input=phase.input as {candidate:{findings:Array<{findingId:string;evidenceIds:string[]}>};
+        unlinkedEvidenceIds:string[]};
+      return {facts:input.candidate.findings.map(item=>({findingId:item.findingId,
+        materiality:"uncertain",summary:"Original corrected fact retained; omitted raw middle not reviewed.",
+        evidenceIds:item.evidenceIds})),sources:input.unlinkedEvidenceIds.map(id=>({
+        evidenceId:id,materiality:"context",summary:"Unlinked source retained."}))};
+    });
+    const synthesis=assembleQualificationPhaseSynthesis({candidate,playbook,...market,plan,outputs});
+    expect(synthesis.foldedEvidenceIds).toEqual(["synthesis-source-0"]);
+    expect(synthesis.facts.find(item=>item.findingId==="synthesis-finding-0")?.statement)
+      .toBe(candidate.correction.findings[1].statement);
+    const final=new LeadQualificationAgent(wire,{routineModel:market.modelVersion,
+      escalationModel:market.modelVersion,includeCooperationPaths:false})
+      .planPhasedFinalRequest(candidate,playbook,market.countryCode,market.countryName,
+        market.objective,outputs);
+    const finalInput=final.request.input as {phaseScreening?:{foldedEvidenceIds?:readonly string[]};
+      instructions:string[]};
+    expect(finalInput.phaseScreening?.foldedEvidenceIds).toEqual(["synthesis-source-0"]);
+    expect(finalInput.instructions.join(" ")).toContain("Do not treat omitted text");
+    expect(wire.requestBytes(final.request)).toBeLessThanOrEqual(57_344);
+    expect(JSON.stringify(candidate)).toBe(original);
+  });
 });

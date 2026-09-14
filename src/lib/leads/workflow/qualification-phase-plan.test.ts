@@ -81,4 +81,55 @@ describe("qualification fact phase plan",()=>{
       objective:"new-market",modelVersion:"deepseek-v4-pro",requestBytes:request=>wire.requestBytes(request)}))
       .toThrow(LeadRequestTooLargeError);
   });
+
+  it("folds only a supported noncritical oversized excerpt while retaining exact fact and source identity",()=>{
+    const candidate=fixture(1),originalExcerpt="opening "+"x".repeat(100_000)+" closing";
+    candidate.correction.findings[1].kind="product-family";
+    candidate.evidence[1].excerpt=originalExcerpt;
+    candidate.evidence[1].contentHash=leadEvidenceContentHash(originalExcerpt);
+    const original=JSON.stringify(candidate);
+    const plan=planQualificationFactPhases({candidate,playbook,countryCode:"DE",countryName:"Germany",
+      objective:"new-market",modelVersion:"deepseek-v4-pro",requestBytes:request=>wire.requestBytes(request)});
+    const folded=plan.phases.map(phase=>phase.input as {foldedEvidenceIds?:string[];
+      candidate:{findings:typeof candidate.correction.findings;
+        evidence:Array<{evidenceId:string;sourceType:string;url:string;excerpt:string;excerptFolded?:boolean}>}})
+      .find(input=>input.foldedEvidenceIds?.includes("phase-source-0"));
+    expect(folded).toBeDefined();
+    expect(folded?.candidate.findings.find(item=>item.findingId==="phase-finding-0")?.statement)
+      .toBe(candidate.correction.findings[1].statement);
+    const source=folded?.candidate.evidence.find(item=>item.evidenceId==="phase-source-0");
+    expect(source).toMatchObject({sourceType:candidate.evidence[1].sourceType,
+      url:candidate.evidence[1].url,excerptFolded:true});
+    expect(source?.excerpt).toContain(createHash("sha256").update(originalExcerpt).digest("hex"));
+    expect(source?.excerpt).toContain("opening ");
+    expect(source?.excerpt).toContain(" closing");
+    expect(source?.excerpt.length).toBeLessThan(originalExcerpt.length);
+    expect(plan.phases.every(phase=>wire.requestBytes(phase)<=57_344)).toBe(true);
+    expect(JSON.stringify(candidate)).toBe(original);
+    const changed=structuredClone(candidate);
+    changed.evidence[1].excerpt=changed.evidence[1].excerpt.replace("x", "y");
+    changed.evidence[1].contentHash=leadEvidenceContentHash(changed.evidence[1].excerpt);
+    expect(planQualificationFactPhases({candidate:changed,playbook,countryCode:"DE",countryName:"Germany",
+      objective:"new-market",modelVersion:"deepseek-v4-pro",requestBytes:request=>wire.requestBytes(request)}).sourceFingerprint)
+      .not.toBe(plan.sourceFingerprint);
+  });
+
+  it("keeps conflict, unknown kind and unlinked oversized sources in technical pending state",()=>{
+    for(const kind of ["role","other","product-family"] as const){
+      const candidate=fixture(1);
+      candidate.correction.findings[1].kind=kind;
+      candidate.correction.findings[1].status=kind==="product-family"?"conflicting":"supported";
+      candidate.evidence[1].excerpt="x".repeat(100_000);
+      candidate.evidence[1].contentHash=leadEvidenceContentHash(candidate.evidence[1].excerpt);
+      expect(()=>planQualificationFactPhases({candidate,playbook,countryCode:"DE",countryName:"Germany",
+        objective:"new-market",modelVersion:"deepseek-v4-pro",requestBytes:request=>wire.requestBytes(request)}))
+        .toThrow(LeadRequestTooLargeError);
+    }
+    const orphan=fixture(1);
+    orphan.evidence[2].excerpt="x".repeat(100_000);
+    orphan.evidence[2].contentHash=leadEvidenceContentHash(orphan.evidence[2].excerpt);
+    expect(()=>planQualificationFactPhases({candidate:orphan,playbook,countryCode:"DE",countryName:"Germany",
+      objective:"new-market",modelVersion:"deepseek-v4-pro",requestBytes:request=>wire.requestBytes(request)}))
+      .toThrow(LeadRequestTooLargeError);
+  });
 });

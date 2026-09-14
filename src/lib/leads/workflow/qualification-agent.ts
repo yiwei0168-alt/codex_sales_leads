@@ -48,6 +48,7 @@ interface LeadAssessmentRequest {
     version:string;sourceFingerprint:string;
     factColumns:string[];factRows:unknown[][];sourceColumns:string[];sourceRows:unknown[][];
     sourceReferenceEncoding?:string;
+    foldedEvidenceIds?:readonly string[];
   };
   market: { countryCode: string; countryName: string; objective: string };
   cudyFitBrief: {
@@ -581,6 +582,7 @@ export class LeadQualificationAgent {
         `Act as an independent role-aware sales-lead qualification${this.includeCooperationPaths ? " and cooperation-path" : ""} agent. Ignore provider scores, discovery order and the original search lane.`,
         "Assess only supplied current-run evidence. Never invent company facts, roles, scale, product fit, relationships, paths or evidence IDs.",
         ...(synthesis?["The phaseScreening factRows and sourceRows use the matching Columns arrays. Each fact retains its corrected status, original citation IDs and screened summary; critical or non-supported corrected statements are also retained verbatim. Every current source retains its ID and type; source URLs were available in the bounded phases and remain linked by ID outside this final prompt. Phase summaries are bounded interpretations, not raw quotations or independent corroboration. Preserve uncertain, conflicting and negative findings; missing raw excerpts after phase screening are not negative evidence."]:[]),
+        ...(synthesis?.foldedEvidenceIds.length?["foldedEvidenceIds lists sources whose long, supported noncritical excerpts had their middle omitted in a fact phase. Do not treat omitted text or phase summaries as independent corroboration or upgrade an eligibility gate from them."]:[]),
         "Treat old-run or discovery-only material as a search lead, never as scoring evidence unless it was freshly acquired or revalidated into this run.",
         "Every gate is supported, not-supported, unknown or conflicting. Failed acquisition and missing evidence are unknown, never a negative fact.",
         "The targetCountryPresence gate must follow the supplied correction-stage country-presence finding for this exact candidate and target market; never infer it from an unrelated page or from operations in a different country.",
@@ -599,6 +601,7 @@ export class LeadQualificationAgent {
         "Return one assessment for every candidateId. Request escalation only when a higher-capability model can resolve the issue and is expected to change total score by at least 8 points or change a critical identity, eligibility, primary-role, existence, country-presence or networking-relevance state. Top-N position and confidence alone never justify escalation.",
       ],
       ...(synthesis?{phaseScreening:{version:synthesis.version,sourceFingerprint:synthesis.sourceFingerprint,
+        ...(synthesis.foldedEvidenceIds.length?{foldedEvidenceIds:synthesis.foldedEvidenceIds}:{}),
         factColumns:["findingId","kind","status","retainedCorrectedStatement","evidenceIds",
           "phaseMateriality","phaseSummary","phaseCitedEvidenceIds"],
         factRows:synthesis.facts.map(item=>[item.findingId,item.kind,item.status,

@@ -6,6 +6,7 @@ import {LeadRequestTooLargeError,leadRequestByteLimit} from "@/providers/lead-re
 
 import type {CorrectedLeadWorkflowCandidate,LeadMarketPlaybook} from "./types";
 import {qualificationPhaseOutputJsonSchema} from "./qualification-phase-output";
+import {foldOversizedQualificationPhase} from "./qualification-phase-excerpt-fold";
 
 export const QUALIFICATION_FACT_PHASE_VERSION="qualification-fact-phase-v1";
 
@@ -41,7 +42,7 @@ export function planQualificationFactPhases(options:{candidate:CorrectedLeadWork
     const selectedSources=sourceOnly.filter((_,position)=>sourceIndexes.has(position));
     const ids=new Set([...selectedFindings.flatMap(item=>item.evidenceIds),...selectedSources.map(item=>item.id)]);
     const selectedEvidence=evidence.filter(item=>ids.has(item.id));
-    return {task:"lead-qualification",modelVersion,promptVersion:QUALIFICATION_FACT_PHASE_VERSION,
+    const request={task:"lead-qualification",modelVersion,promptVersion:QUALIFICATION_FACT_PHASE_VERSION,
       input:{phaseIndex:index,sourceFingerprint,unlinkedEvidenceIds:selectedSources.map(item=>item.id),
         market:{countryCode,countryName,objective},
         candidate:{candidateId:candidate.candidateId,companyName:candidate.companyName,domain:candidate.domain,
@@ -54,7 +55,8 @@ export function planQualificationFactPhases(options:{candidate:CorrectedLeadWork
           "Return exactly one fact record for each supplied findingId and one source record for each supplied unlinked evidenceId. Preserve uncertainty, disagreement and negative evidence; never turn missing information into rejection.",
           "Use only supplied source text. Keep a concise, evidence-linked summary of every supplied finding and unlinked source. Do not infer omitted facts or create new evidence IDs. Final scoring will consider all validated phases together."]},
       evidenceIds:selectedEvidence.map(item=>item.id),outputSchema:qualificationPhaseOutputJsonSchema,
-      dataClassification:playbook.cooperationPathMemory?.length?"private-workspace":"public"};
+      dataClassification:playbook.cooperationPathMemory?.length?"private-workspace":"public"} as StructuredAiRequest<unknown>;
+    return foldOversizedQualificationPhase(request,requestBytes);
   };
   const phases:StructuredAiRequest<unknown>[]=[];
   let pending:typeof units=[];

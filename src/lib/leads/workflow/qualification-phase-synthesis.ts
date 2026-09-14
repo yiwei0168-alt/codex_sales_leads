@@ -26,8 +26,9 @@ export function assembleQualificationPhaseSynthesis(options:{candidate:Corrected
   const seenFacts=new Map<string,QualificationPhaseOutput["facts"][number]>();
   const seenSources=new Map<string,QualificationPhaseOutput["sources"][number]>();
   const seenEvidence=new Set<string>();
+  const foldedEvidenceIds=new Set<string>();
   for(const [index,request] of plan.phases.entries()){
-    const input=request.input as {phaseIndex?:unknown;sourceFingerprint?:unknown;
+    const input=request.input as {phaseIndex?:unknown;sourceFingerprint?:unknown;foldedEvidenceIds?:unknown;
       market?:{countryCode?:unknown};candidate?:{candidateId?:unknown}}|null;
     if(request.task!=="lead-qualification"||request.promptVersion!==QUALIFICATION_FACT_PHASE_VERSION
       ||request.modelVersion!==modelVersion||input?.sourceFingerprint!==expectedFingerprint
@@ -35,6 +36,12 @@ export function assembleQualificationPhaseSynthesis(options:{candidate:Corrected
       ||input?.candidate?.candidateId!==candidate.candidateId)
       throw new Error("Qualification phase synthesis request identity differs");
     const output=validateQualificationPhaseOutput(request,outputs[index]);
+    const folded=input?.foldedEvidenceIds;
+    if(folded!==undefined){
+      if(!Array.isArray(folded)||folded.some(id=>typeof id!=="string"||!request.evidenceIds.includes(id)))
+        throw new Error("Qualification phase folded source identities differ");
+      for(const id of folded)foldedEvidenceIds.add(id);
+    }
     for(const id of request.evidenceIds){
       if(!evidenceById.has(id))throw new Error("Qualification phase synthesis includes an unknown source");
       seenEvidence.add(id);
@@ -58,7 +65,7 @@ export function assembleQualificationPhaseSynthesis(options:{candidate:Corrected
     ||[...seenSources.keys()].some(id=>linked.has(id)))
     throw new Error("Qualification phase unlinked source coverage differs");
   return {version:QUALIFICATION_PHASE_SYNTHESIS_VERSION,sourceFingerprint:expectedFingerprint,
-    candidateId:candidate.candidateId,
+    candidateId:candidate.candidateId,foldedEvidenceIds:[...foldedEvidenceIds],
     facts:candidate.correction.findings.map(item=>{
       const screening=seenFacts.get(item.findingId)!;
       return {findingId:item.findingId,kind:item.kind,statement:item.statement,status:item.status,
