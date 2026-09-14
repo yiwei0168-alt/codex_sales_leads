@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
-import { DISCOVERY_PROVIDER_ENVIRONMENTS, configuredGeminiDiscoveryModel } from "@/providers/discovery";
+import { DISCOVERY_PROVIDER_ENVIRONMENTS, configuredGeminiDiscoveryModel,
+  resolveDiscoveryProviderConnection } from "@/providers/discovery";
 import type { LeadSearchPlan } from "@/lib/assistant/types";
 import { ACTIVE_HYBRID_SEARCH_POLICY } from "./hybrid-search-policy";
 import { createHybridDiscoverySession, type HybridDiscoverySession } from "./hybrid-discovery-executor";
@@ -19,9 +20,10 @@ export interface DiscoverySessionSnapshot {
 
 export function discoverySessionDependency(plan: LeadSearchPlan, graphThreadId: string): string {
   // Never persist credentials or endpoint values: only the combined dependency digest.
-  const providers = DISCOVERY_PROVIDER_ENVIRONMENTS.map(config => [config.id,
-    process.env[config.apiKeyEnv] ?? (config.id === "searchapi" ? process.env["SearchApi.io_API_KEY"] : undefined),
-    process.env[config.baseUrlEnv] ?? config.defaultBaseUrl]);
+  const providers = DISCOVERY_PROVIDER_ENVIRONMENTS.map(config => {
+    const connection=resolveDiscoveryProviderConnection(config);
+    return [config.id,connection.apiKey,connection.baseUrl];
+  });
   return createHash("sha256").update(JSON.stringify({ graphThreadId, plan,
     policy: ACTIVE_HYBRID_SEARCH_POLICY, requestContract: "discovery-request-v4-searchapi-google-limit", providers,
     model: configuredGeminiDiscoveryModel() })).digest("hex");

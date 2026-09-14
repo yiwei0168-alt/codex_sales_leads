@@ -34,6 +34,17 @@ it("invalidates paid discovery recovery when a blank primary override resolves t
   vi.stubEnv("GEMINI_SEARCH_MODEL", "gemini-2.5-flash");
   expect(() => restoreDiscoverySession(snapshot, discoverySessionDependency(plan, "thread"))).toThrow("dependencies changed");
 });
+it("invalidates paid SearchAPI recovery when a blank standard key resolves to a changed alias account", () => {
+  vi.stubEnv("SEARCHAPI_API_KEY", "   ");
+  vi.stubEnv("SearchApi.io_API_KEY", "synthetic-account-a");
+  const dependency = discoverySessionDependency(plan, "thread");
+  const snapshot = snapshotDiscoverySession(createHybridDiscoverySession(), dependency);
+  expect(JSON.stringify(snapshot)).not.toContain("synthetic-account-a");
+  vi.stubEnv("SEARCHAPI_API_KEY", "");
+  expect(discoverySessionDependency(plan, "thread")).toBe(dependency);
+  vi.stubEnv("SearchApi.io_API_KEY", "synthetic-account-b");
+  expect(() => restoreDiscoverySession(snapshot, discoverySessionDependency(plan, "thread"))).toThrow("dependencies changed");
+});
 it("does not persist credential values in the dependency record", () => {
   vi.stubEnv("BRAVE_SEARCH_API_KEY", "synthetic-secret");
   expect(JSON.stringify(snapshotDiscoverySession(createHybridDiscoverySession(), discoverySessionDependency(plan, "thread"))))

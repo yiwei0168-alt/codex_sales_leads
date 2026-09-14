@@ -25,6 +25,15 @@ it("uses the same trimmed model fallback for the actual Gemini request and recov
   expect(JSON.parse(String(transport.mock.calls[0][1]?.body)).model).toBe(configuredGeminiDiscoveryModel());
 });
 
+it("uses SearchAPI's alias credential when the standard key is blank",async()=>{
+  vi.stubEnv("SEARCHAPI_API_KEY","   ");
+  vi.stubEnv("SearchApi.io_API_KEY","synthetic-alias");
+  const transport=vi.fn<typeof fetch>(async()=>Response.json({organic_results:[]}));
+  await createDiscoveryProvider("searchapi",{fetchImplementation:transport,maxAttempts:1})
+    .search({...baseQuery,engine:"google"});
+  expect(new Headers(transport.mock.calls[0][1]?.headers).get("authorization")).toBe("Bearer synthetic-alias");
+});
+
 it("uses Google's documented fixed ten-result page without issuing additional paid pages",async()=>{
   configured("searchapi");
   const transport=vi.fn<typeof fetch>(async()=>Response.json({organic_results:[]}));

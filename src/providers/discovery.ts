@@ -51,6 +51,11 @@ function apiKeyFor(config: DiscoveryProviderEnvironment): string | undefined {
   return config.id === "searchapi" ? process.env["SearchApi.io_API_KEY"]?.trim() : undefined;
 }
 
+/** Actual provider connection identity; keep the key inside the request or a one-way recovery digest. */
+export function resolveDiscoveryProviderConnection(config:DiscoveryProviderEnvironment){
+  return {apiKey:apiKeyFor(config),baseUrl:process.env[config.baseUrlEnv]?.trim() || config.defaultBaseUrl};
+}
+
 function environment(id: DiscoveryProviderId): DiscoveryProviderEnvironment {
   const config = DISCOVERY_PROVIDER_ENVIRONMENTS.find((item) => item.id === id);
   if (!config) throw new Error(`Unknown discovery provider: ${id}`);
@@ -59,9 +64,9 @@ function environment(id: DiscoveryProviderId): DiscoveryProviderEnvironment {
 
 function credentials(id: DiscoveryProviderId): { apiKey: string; baseUrl: string } {
   const config = environment(id);
-  const apiKey = apiKeyFor(config);
+  const {apiKey,baseUrl}=resolveDiscoveryProviderConnection(config);
   if (!apiKey) throw new Error(`${config.apiKeyEnv} is not configured`);
-  return { apiKey, baseUrl: process.env[config.baseUrlEnv]?.trim() || config.defaultBaseUrl };
+  return { apiKey, baseUrl };
 }
 
 export function trustedDiscoveryEndpoint(baseUrl: string, allowedHosts: string[], path: string): string {
@@ -360,7 +365,9 @@ export function createDiscoveryProvider(id: DiscoveryProviderId, options: Provid
 }
 
 export function discoveryEnvironmentStatus() {
-  return DISCOVERY_PROVIDER_ENVIRONMENTS.map((config) => ({ providerId: config.id,
-    configured: Boolean(apiKeyFor(config)), apiKeyEnv: config.apiKeyEnv,
-    baseUrl: process.env[config.baseUrlEnv]?.trim() || config.defaultBaseUrl, purpose: config.purpose }));
+  return DISCOVERY_PROVIDER_ENVIRONMENTS.map((config) => {
+    const connection=resolveDiscoveryProviderConnection(config);
+    return {providerId:config.id,configured:Boolean(connection.apiKey),apiKeyEnv:config.apiKeyEnv,
+      baseUrl:connection.baseUrl,purpose:config.purpose};
+  });
 }
