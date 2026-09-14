@@ -4,7 +4,8 @@ import {describe,expect,it} from "vitest";
 import {DeepSeekProvider} from "@/providers/deepseek";
 import {LeadRequestTooLargeError} from "@/providers/lead-request-bounds";
 
-import {planQualificationSingletonChunks,validateQualificationSingletonChunkOutput} from "./qualification-singleton-chunks";
+import {assembleQualificationSingletonChunks,planQualificationSingletonChunks,
+  validateQualificationSingletonChunkOutput} from "./qualification-singleton-chunks";
 
 describe("qualification singleton chunk preflight",()=>{
   const wire=new DeepSeekProvider({apiKey:"fixture-never-sent",maxAttempts:1,
@@ -77,5 +78,31 @@ describe("qualification singleton chunk preflight",()=>{
     expect(wire.cacheIdentity(first.requests[0])).toBe(wire.cacheIdentity(second.requests[0]));
     expect(wire.paidRequestFingerprint(first.requests[0]))
       .toBe(wire.paidRequestFingerprint(second.requests[0]));
+  });
+
+  it("assembles only complete ordered interpretations of the unchanged original source",()=>{
+    const unit={kind:"evidence" as const,id:"source-original",
+      text:"important beginning "+"unusual 🛰️ conflicting detail ".repeat(3_000)+" important end",
+      evidenceIds:["source-original"]};
+    const planned=planQualificationSingletonChunks({...base,unit});
+    expect(planned.requests.length).toBeGreaterThan(1);
+    const outputs=planned.requests.map((_,index)=>({unitKind:"evidence",unitId:"source-original",
+      chunkIndex:index,materiality:index===0?"material":"uncertain",
+      summary:`Segment ${index} needs whole-source review.`,citedEvidenceIds:["source-original"]}));
+    const assembled=assembleQualificationSingletonChunks({plan:planned,unit,outputs});
+    expect(assembled).toMatchObject({unitId:"source-original",partCount:planned.requests.length,
+      materiality:"uncertain",citedEvidenceIds:["source-original"]});
+    expect(assembled.partSummaries).toHaveLength(planned.requests.length);
+    expect(()=>assembleQualificationSingletonChunks({plan:planned,unit,
+      outputs:outputs.slice(0,-1)})).toThrow("output count");
+    expect(()=>assembleQualificationSingletonChunks({plan:planned,unit,
+      outputs:[outputs[1],outputs[0],...outputs.slice(2)]})).toThrow();
+    expect(()=>assembleQualificationSingletonChunks({plan:planned,
+      unit:{...unit,text:unit.text.replace("conflicting","changed")},outputs})).toThrow("source");
+    expect(()=>assembleQualificationSingletonChunks({plan:planned,
+      unit:{...unit,evidenceIds:["other-source"]},outputs})).toThrow("coverage");
+    const damaged=structuredClone(planned);
+    (damaged.requests[1].input as {startCodePoint:number}).startCodePoint=0;
+    expect(()=>assembleQualificationSingletonChunks({plan:damaged,unit,outputs})).toThrow("order");
   });
 });

@@ -112,3 +112,51 @@ export function validateQualificationSingletonChunkOutput(request:StructuredAiRe
     throw new Error("Singleton chunk output identity or citation closure differs");
   return parsed;
 }
+
+/** Complete ordered coverage is required before any chunk interpretation can enter final scoring. */
+export function assembleQualificationSingletonChunks(options:{
+  plan:ReturnType<typeof planQualificationSingletonChunks>;
+  unit:QualificationSingletonUnit;
+  outputs:unknown[];
+}){
+  const {plan,unit,outputs}=options;
+  if(!plan.requests.length||outputs.length!==plan.requests.length
+    ||plan.contentSha256!==createHash("sha256").update(unit.text).digest("hex"))
+    throw new Error("Singleton chunk source or output count differs");
+  const expectedCheckpoint=createHash("sha256").update(JSON.stringify({
+    version:QUALIFICATION_SINGLETON_CHUNK_VERSION,
+    candidateSourceFingerprint:plan.candidateSourceFingerprint,
+    unitKind:unit.kind,unitId:unit.id,contentSha256:plan.contentSha256})).digest("hex");
+  if(plan.checkpointFingerprint!==expectedCheckpoint)throw new Error("Singleton chunk stream differs");
+  const excerpts:string[]=[],summaries:string[]=[],cited=new Set<string>();
+  let nextOffset=0,uncertain=false,material=false;
+  for(const [index,request] of plan.requests.entries()){
+    const input=request.input as {unitKind?:unknown;unitId?:unknown;sourceFingerprint?:unknown;
+      candidateSourceFingerprint?:unknown;contentSha256?:unknown;chunkIndex?:unknown;
+      chunkCount?:unknown;startCodePoint?:unknown;endCodePoint?:unknown;excerpt?:unknown}|null;
+    if(input?.unitKind!==unit.kind||input?.unitId!==unit.id
+      ||request.evidenceIds.length!==unit.evidenceIds.length
+      ||request.evidenceIds.some((id,position)=>id!==unit.evidenceIds[position])
+      ||input?.sourceFingerprint!==plan.checkpointFingerprint
+      ||input?.candidateSourceFingerprint!==plan.candidateSourceFingerprint
+      ||input?.contentSha256!==plan.contentSha256||input?.chunkIndex!==index
+      ||input?.chunkCount!==plan.requests.length||input?.startCodePoint!==nextOffset
+      ||typeof input?.excerpt!=="string"||typeof input?.endCodePoint!=="number"
+      ||input.endCodePoint!==nextOffset+Array.from(input.excerpt).length)
+      throw new Error("Singleton chunk order or source coverage differs");
+    const output=validateQualificationSingletonChunkOutput(request,outputs[index]);
+    excerpts.push(input.excerpt);
+    summaries.push(`[${index+1}/${plan.requests.length}] ${output.summary}`);
+    for(const id of output.citedEvidenceIds)cited.add(id);
+    uncertain ||= output.materiality==="uncertain";
+    material ||= output.materiality==="material";
+    nextOffset=input.endCodePoint;
+  }
+  if(excerpts.join("")!==unit.text||nextOffset!==plan.codePointCount)
+    throw new Error("Singleton chunk full text differs");
+  return {unitKind:unit.kind,unitId:unit.id,contentSha256:plan.contentSha256,
+    candidateSourceFingerprint:plan.candidateSourceFingerprint,
+    checkpointFingerprint:plan.checkpointFingerprint,
+    materiality:uncertain?"uncertain" as const:material?"material" as const:"context" as const,
+    partSummaries:summaries,citedEvidenceIds:[...cited],partCount:plan.requests.length};
+}
