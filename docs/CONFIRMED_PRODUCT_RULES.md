@@ -1,4 +1,6 @@
 # 用户确认规则登记表
+2026-09-14 stage 232 / A26-A11 observation: the isolated real two-turn assistant produced a corrected Spanish CO/Distributor target-one proposal; actual S01 OpenAI-only market planning then received HTTP 404 for unsupported request parameters. No company discovery or result save followed. Occupancy is USD23.520920/50, six original plus four new incomplete provider-cost reports retained. [S02 parameter-only proposal](S02_SOL_PLAYBOOK_PARAMETER_PROPOSAL_2026-09-14.md) is **not confirmed or implemented**; S01 stays paused and the failed paid action is not replayed. This observation does not supersede A26 or approve another route. [Evidence](A26_LIVE_PARTIAL_ACCEPTANCE_STAGE232_2026-09-14.md).
+
 
 ### A26 — 本地验收固定汇率、USD50 上限及产品每周汇率（2026-09-14，用户明确确认；实现/无付费验收通过，真实闭环待验）
 
