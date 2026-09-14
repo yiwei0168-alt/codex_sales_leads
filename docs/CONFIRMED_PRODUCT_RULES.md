@@ -1,4 +1,5 @@
 # 用户确认规则登记表
+2026-09-14 stage 214 / existing search and telemetry scope: provider raw row/link count and over-delivery are now separately recorded from admitted and normalized candidate counts. Old cached responses without raw volume stay unknown historically. This is a verified implementation under A21, not a new product confirmation or a claim of unique/qualified company gain. [Evidence](DISCOVERY_PROVIDER_VOLUME_TELEMETRY_2026-09-14.md).
 ### A24 — Sol 分歧裁决费用合同（2026-09-14，用户明确批准，已实施、无付费验收通过）
 用户原话：“批准两项合同的实现与无付费验收”。其中 Sol 分歧裁决按 [候选报告](OPENROUTER_SOL_JUDGE_PROPOSAL_2026-09-14.md) 限定为现有 OpenRouter credits、`openai/gpt-5.6-sol`、严格 JSON、`reasoning.effort=high`、总输出最多 12,000 token、五个标准端点范围，单次保守预留 USD27.736500；不得借用 S01 市场计划的 OpenAI-only 合同。只授权实现与无付费验收，不授权真实调用；累计 USD30 与整次费用预检照旧。实施版本 `request-bounds-v1.9.0`，严格合同、任务路由、真实SQL合成预算和回归通过；真实模型兼容性与账单未验收。[证据](OPENROUTER_REVIEW_ACTIVE_CONTRACT_ACCEPTANCE_2026-09-14.md)。历史提案时“未确认”保留为旧状态。
 

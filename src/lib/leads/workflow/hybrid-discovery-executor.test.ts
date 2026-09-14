@@ -129,6 +129,24 @@ describe("hybrid discovery executor", () => {
     expect(output.calls.some((call) => call.existingCompanyHits > 0)).toBe(true);
   });
 
+  it("records provider over-delivery separately from admitted and normalized candidates",async()=>{
+    const output=await executeHybridDiscovery("overdelivery-telemetry",{...plan,targetCount:1},playbook,{
+      gate:passGate,providerFactory:step=>({id:step.provider,search:async query=>{
+        const base=await new FakeProvider(step.provider,null).search(query);
+        const items=Array.from({length:query.maxResults-1},(_,index)=>({providerId:step.provider,
+          title:`Network distributor ${index}`,url:`https://network-${index}.de`,
+          snippet:"Networking distributor",rank:index+1,sourceKind:"web" as const}));
+        return {...base,items,sourceUrls:items.map(item=>item.url),
+          providerReturnedItems:query.maxResults+2,providerOverdeliveredItems:2};
+      }}),concurrency:1});
+    const call=output.calls.find(item=>item.status==="completed")!;
+    expect(call.rawResults).toBe(call.requestedResults+2);
+    expect(call.items).toHaveLength(call.requestedResults-1);
+    expect(call.discardedReasonCounts["provider-overdelivery"]).toBe(2);
+    expect(call.discardedReasonCounts["provider-unusable-row"]).toBe(1);
+    expect(call.rejectedResults).toBe(call.rawResults-call.normalizedCompanies);
+  });
+
   it("stops a track after two no-value batches and records skipped cost", async () => {
     const output = await executeHybridDiscovery("run-2", { ...plan, targetCount: 20 }, playbook, { gate: passGate,
       providerFactory: (step) => new FakeProvider(step.provider, null), concurrency: 1 });

@@ -214,7 +214,7 @@ function result(providerId: DiscoveryProviderId, query: DiscoveryQuery, startedA
   attempts: number, extra: Partial<DiscoveryProviderResult> = {}): DiscoveryProviderResult {
   return { providerId, query, items, sourceUrls: [...new Set(items.flatMap((entry) => entry.url ? [entry.url] : []))],
     requestCount: attempts, retryCount: Math.max(0, attempts - 1), latencyMs: Date.now() - startedAt,
-    usage: usage(undefined), ...extra };
+    usage: usage(undefined), providerReturnedItems:items.length,providerOverdeliveredItems:0,...extra };
 }
 
 abstract class BaseProvider {
@@ -264,6 +264,7 @@ class GeminiDiscoveryProvider extends BaseProvider implements DiscoveryProvider 
     }, index));
     const grounding = groundingQueries(response.body);
     return result(this.id, query, startedAt, items, response.attempts, { answerText, sourceUrls: urls,
+      providerReturnedItems:urls.length,providerOverdeliveredItems:Math.max(0,urls.length-boundedResults(query.maxResults)),
       usage: { ...usage(response.body.usage), groundingQueries: grounding.count,
         groundingCountSource: grounding.source },
       rawResponse: response.body });
@@ -291,7 +292,9 @@ class GooglePlacesDiscoveryProvider extends BaseProvider implements DiscoveryPro
       snippet: [place.primaryTypeDisplayName?.text, place.formattedAddress].filter(Boolean).join(" · "),
       sourceKind: "place", externalId: place.id,
     }, index));
-    return result(this.id, query, startedAt, items, response.attempts, { rawResponse: response.body });
+    return result(this.id, query, startedAt, items, response.attempts, { rawResponse: response.body,
+      providerReturnedItems:response.body.places?.length??0,
+      providerOverdeliveredItems:Math.max(0,(response.body.places?.length??0)-boundedResults(query.maxResults)) });
   }
 }
 
@@ -312,7 +315,9 @@ class ExaDiscoveryProvider extends BaseProvider implements DiscoveryProvider {
       title: entry.title ?? new URL(entry.url).hostname, url: entry.url,
       snippet: entry.text?.slice(0, 2_000) ?? "", sourceKind: "web", externalId: entry.id,
     }, index)] : []);
-    return result(this.id, query, startedAt, items, response.attempts, { rawResponse: response.body });
+    return result(this.id, query, startedAt, items, response.attempts, { rawResponse: response.body,
+      providerReturnedItems:response.body.results?.length??0,
+      providerOverdeliveredItems:Math.max(0,(response.body.results?.length??0)-boundedResults(query.maxResults)) });
   }
 }
 
@@ -336,7 +341,9 @@ class BraveDiscoveryProvider extends BaseProvider implements DiscoveryProvider {
       title: entry.title ?? new URL(entry.url).hostname, url: entry.url,
       snippet: entry.description ?? "", sourceKind: "web",
     }, index)] : []);
-    return result(this.id, query, startedAt, items, response.attempts, { rawResponse: response.body });
+    return result(this.id, query, startedAt, items, response.attempts, { rawResponse: response.body,
+      providerReturnedItems:response.body.web?.results?.length??0,
+      providerOverdeliveredItems:Math.max(0,(response.body.web?.results?.length??0)-boundedResults(query.maxResults)) });
   }
 }
 
@@ -355,7 +362,9 @@ class SearchApiDiscoveryProvider extends BaseProvider implements DiscoveryProvid
     const items = (response.body.organic_results ?? []).slice(0, boundedResults(query.maxResults))
       .flatMap((entry, index) => entry.link ? [item(this.id, { title: entry.title ?? new URL(entry.link).hostname,
         url: entry.link, snippet: entry.snippet ?? "", sourceKind: "web" }, entry.position ? entry.position - 1 : index)] : []);
-    return result(this.id, query, startedAt, items, response.attempts, { rawResponse: response.body });
+    return result(this.id, query, startedAt, items, response.attempts, { rawResponse: response.body,
+      providerReturnedItems:response.body.organic_results?.length??0,
+      providerOverdeliveredItems:Math.max(0,(response.body.organic_results?.length??0)-boundedResults(query.maxResults)) });
   }
 }
 

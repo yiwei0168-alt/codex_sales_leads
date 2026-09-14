@@ -415,6 +415,16 @@ export async function executeHybridDiscovery(runId: string, inputPlan: LeadSearc
           invocationProviderCircuits.delete(step.provider);
         }
         const discarded: Record<string, number> = {};
+        const rawResults=Number.isSafeInteger(response.providerReturnedItems)
+          &&(response.providerReturnedItems??0)>=response.items.length
+          ?response.providerReturnedItems!:response.items.length;
+        const overdelivered=Number.isSafeInteger(response.providerOverdeliveredItems)
+          &&(response.providerOverdeliveredItems??0)>=0
+          &&(response.providerOverdeliveredItems??0)<=rawResults-response.items.length
+          ?response.providerOverdeliveredItems!:0;
+        if(overdelivered)discarded["provider-overdelivery"]=overdelivered;
+        const unmapped=rawResults-response.items.length-overdelivered;
+        if(unmapped)discarded["provider-unusable-row"]=unmapped;
         let normalizedCompanies = 0;
         let newUniqueCompanies = 0;
         let existingCompanyHits = 0;
@@ -448,8 +458,8 @@ export async function executeHybridDiscovery(runId: string, inputPlan: LeadSearc
         }
         const completed: HybridSearchCallTelemetry = { callKey, callFingerprint: fingerprint,
           queryClusterKey: clusterKey, route: step, query: searchQuery, status: "completed",
-          requestedResults, rawResults: response.items.length, normalizedCompanies, newUniqueCompanies, existingCompanyHits,
-          rejectedResults: response.items.length - normalizedCompanies,
+          requestedResults, rawResults, normalizedCompanies, newUniqueCompanies, existingCompanyHits,
+          rejectedResults: rawResults - normalizedCompanies,
           paidSearchCredits: cached ? 0 : response.usage.paidSearchCredits,
           requestCount: cached ? 0 : response.requestCount,
           groundingQueries: cached ? 0 : response.usage.groundingQueries

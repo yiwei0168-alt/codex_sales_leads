@@ -65,6 +65,8 @@ it.each(["google-places","exa","brave"] as const)("bounds %s returned candidates
   const result=await createDiscoveryProvider(providerId,{fetchImplementation:transport,maxAttempts:1})
     .search({...baseQuery,maxResults:3});
   expect(result.items).toHaveLength(3);
+  expect(result.providerReturnedItems).toBe(5);
+  expect(result.providerOverdeliveredItems).toBe(2);
   expect(result.items.map(item=>item.rank)).toEqual([1,2,3]);
   expect(result.sourceUrls).toHaveLength(3);
   expect(transport).toHaveBeenCalledOnce();

@@ -38,6 +38,9 @@ export interface DiscoveryProviderResult {
   providerId: DiscoveryProviderId;
   query: DiscoveryQuery;
   items: DiscoveryItem[];
+  /** Provider rows/links before the local requested-result cap; never a unique-company count. */
+  providerReturnedItems?: number;
+  providerOverdeliveredItems?: number;
   answerText?: string;
   sourceUrls: string[];
   requestCount: number;
