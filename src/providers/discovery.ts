@@ -285,7 +285,8 @@ class GooglePlacesDiscoveryProvider extends BaseProvider implements DiscoveryPro
         body: JSON.stringify({ textQuery: `${query.query} ${query.countryName}`,
           pageSize: boundedResults(query.maxResults), languageCode: language(query.languageCode), regionCode: query.countryCode }),
       }, this.requestOptions(), signal);
-    const items = (response.body.places ?? []).map((place, index) => item(this.id, {
+    const items = (response.body.places ?? []).slice(0, boundedResults(query.maxResults))
+      .map((place, index) => item(this.id, {
       title: place.displayName?.text ?? place.id ?? "Unnamed place", url: place.websiteUri ?? place.googleMapsUri ?? null,
       snippet: [place.primaryTypeDisplayName?.text, place.formattedAddress].filter(Boolean).join(" · "),
       sourceKind: "place", externalId: place.id,
@@ -306,7 +307,8 @@ class ExaDiscoveryProvider extends BaseProvider implements DiscoveryProvider {
           userLocation: query.countryCode, numResults: boundedResults(query.maxResults),
           // Company-category searches reject excludeDomains; the task registry still enforces exclusions locally.
           contents: { text: true } }) }, this.requestOptions(), signal);
-    const items = (response.body.results ?? []).flatMap((entry, index) => entry.url ? [item(this.id, {
+    const items = (response.body.results ?? []).slice(0, boundedResults(query.maxResults))
+      .flatMap((entry, index) => entry.url ? [item(this.id, {
       title: entry.title ?? new URL(entry.url).hostname, url: entry.url,
       snippet: entry.text?.slice(0, 2_000) ?? "", sourceKind: "web", externalId: entry.id,
     }, index)] : []);
@@ -329,7 +331,8 @@ class BraveDiscoveryProvider extends BaseProvider implements DiscoveryProvider {
     const response = await requestJson<{ web?: { results?: Array<{ title?: string; url?: string; description?: string }> } }>(
       this.id, url.toString(), { headers: { "x-subscription-token": apiKey, accept: "application/json" } },
       this.requestOptions(), signal);
-    const items = (response.body.web?.results ?? []).flatMap((entry, index) => entry.url ? [item(this.id, {
+    const items = (response.body.web?.results ?? []).slice(0, boundedResults(query.maxResults))
+      .flatMap((entry, index) => entry.url ? [item(this.id, {
       title: entry.title ?? new URL(entry.url).hostname, url: entry.url,
       snippet: entry.description ?? "", sourceKind: "web",
     }, index)] : []);

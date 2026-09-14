@@ -54,6 +54,22 @@ it("omits Exa's unsupported company-category domain filter while preserving the 
   expect(body.query).toBe(`${baseQuery.query} in ${baseQuery.countryName}`);
 });
 
+it.each(["google-places","exa","brave"] as const)("bounds %s returned candidates even if the provider overdelivers",async providerId=>{
+  configured(providerId);
+  const entries=Array.from({length:5},(_,index)=>({id:`id-${index}`,title:`Company ${index}`,
+    url:`https://company-${index}.example`,text:"Networking",description:"Networking",
+    displayName:{text:`Company ${index}`},websiteUri:`https://company-${index}.example`}));
+  const body=providerId==="google-places"?{places:entries}
+    :providerId==="exa"?{results:entries}:{web:{results:entries}};
+  const transport=vi.fn<typeof fetch>(async()=>Response.json(body));
+  const result=await createDiscoveryProvider(providerId,{fetchImplementation:transport,maxAttempts:1})
+    .search({...baseQuery,maxResults:3});
+  expect(result.items).toHaveLength(3);
+  expect(result.items.map(item=>item.rank)).toEqual([1,2,3]);
+  expect(result.sourceUrls).toHaveLength(3);
+  expect(transport).toHaveBeenCalledOnce();
+});
+
 describe("production discovery providers", () => {
   it("reports configuration without exposing credentials", () => {
     vi.stubEnv("BRAVE_SEARCH_API_KEY", "private-value");

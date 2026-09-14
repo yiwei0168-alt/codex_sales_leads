@@ -312,8 +312,9 @@ try{
       routeActionsAtMost:MAX_DISCOVERY_ROUNDS*firstRoundRoute.length,
       requestedResultsPerRouteAtMost,requestedResultSlotsAtMost:MAX_DISCOVERY_ROUNDS*firstRoundRoute.length*requestedResultsPerRouteAtMost,
       actualReturnedItemsAtMost:null,
+      downstreamAcceptedItemsAtMost:MAX_DISCOVERY_ROUNDS*firstRoundRoute.length*requestedResultsPerRouteAtMost,
       byRoute:discoveryRouteActionCeilings,
-      semantics:`current production default: one scheduled route step per round, including conditional/skipped steps; each executed step has at most ${DEFAULT_DISCOVERY_MAX_ATTEMPTS} provider HTTP attempts; requested result slots are not a hard bound on over-delivered provider items or Gemini server-side Google searches`},
+      semantics:`current production default: one scheduled route step per round, including conditional/skipped steps; each executed step has at most ${DEFAULT_DISCOVERY_MAX_ATTEMPTS} provider HTTP attempts; provider response size and Gemini server-side Google searches remain unbounded, while each provider passes at most its requested result count into downstream candidate processing`},
     stages,searchRoute,supplementalEvidence,officialEvidenceExtract,marketPlaybookWire,braveCoreWire,
     exaConditionalWire,tavilyEvidenceWires,
     checkedTariffsAvailable:stages.every(stage=>stage.tariff==="available")
@@ -335,6 +336,6 @@ try{
           :fourPhaseWithPlaybook<=Number(budget.budget.remaining_micros)/1e6,
         fitsCurrentRemainingBudgetWithPro:fourPhaseProWithPlaybook===null?null
           :fourPhaseProWithPlaybook<=Number(budget.budget.remaining_micros)/1e6}},
-    totalRunBoundUsd:null,limitations:"Lists configured minimal-plan discovery, evidence Extract and conditional review routes; captures synthetic playbook, Brave, Exa and Tavily Search wires. Requested result slots do not cap Brave/Exa over-delivery into downstream processing. Real market requests, Extract tariff and response, remaining fallback/search/model contracts, conditional Pro escalation, phased scoring call count and total-run bound remain unverified",
+    totalRunBoundUsd:null,limitations:"Lists configured minimal-plan discovery, evidence Extract and conditional review routes; captures synthetic playbook, Brave, Exa and Tavily Search wires. Provider over-delivery is capped before downstream candidate processing, but these accepted item slots are not unique companies. Real market requests, Extract tariff and response, remaining fallback/search/model contracts, conditional Pro escalation, phased scoring call count and total-run bound remain unverified",
     providerCalls:0,accountsModified:0,jobsClaimed:0},null,2));
 }finally{await getPool().end();}
