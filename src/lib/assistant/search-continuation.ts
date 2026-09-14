@@ -6,7 +6,7 @@ export function continuationGap(target:number,accepted:unknown,depth:number,prev
   if(!Number.isSafeInteger(target)||target<1||target>500||typeof accepted!=='number'||!Number.isSafeInteger(accepted)||accepted<0||accepted>=target)throw new Error('没有可确认的续搜缺口；目标已满足或历史计数不完整。');
   if(depth>=3)throw new Error('已达到三次续搜上限，请在助手中调整搜索目标，避免重复搜索。');
   if(reason==='processing-incomplete')throw new Error('原任务仍有未完成处理，请从原检查点恢复，不能用续搜绕过费用核验。');
-  if(reason==='confirmed-exhaustion')throw new Error('已达到停滞结束条件，请修改地区、类别或要求后重新规划。');
+  if(reason==='confirmed-exhaustion'||reason==='no-qualified-progress')throw new Error('已达到停滞结束条件，请修改地区、类别或要求后重新规划。');
   void previousAccepted; // Historical zero counts alone do not prove market exhaustion.
   return target-accepted;
 }

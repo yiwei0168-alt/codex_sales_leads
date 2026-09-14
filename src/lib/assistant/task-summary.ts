@@ -4,7 +4,8 @@ export const taskStatusLabels: Record<AssistantActionDto["status"], string> = {
   proposed: "待确认", confirmed: "已排队", running: "运行中", completed: "已完成", failed: "失败", cancelled: "已取消",
 };
 export const searchStopReasonLabels: Record<string, string> = {
-  "target-met": "目标已满足", "confirmed-exhaustion": "已达到有记录的搜索耗尽条件",
+  "target-met": "目标已满足", "confirmed-exhaustion": "历史任务：连续轮次无新增合格，未证明市场耗尽",
+  "no-qualified-progress": "连续两轮无新增最终合格，达到停滞安全阈值",
   "provider-unavailable": "搜索服务不可用", "maximum-rounds": "达到搜索轮次安全上限",
   "processing-incomplete": "校正或评分未完成，已有结果和费用保留",
   "role-unresolved": "仍有公司角色待判，未认定市场耗尽",

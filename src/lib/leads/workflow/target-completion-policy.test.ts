@@ -40,7 +40,7 @@ describe("target completion policy", () => {
       maximumRounds: 5 }).complete).toBe(false);
   });
 
-  it("requires two completed zero-value rounds before confirmed exhaustion", () => {
+  it("stops after two completed zero-final rounds without claiming market exhaustion", () => {
     const first = nextNoFinalRoundCount(0, { finalEligibleAdded: 0, completedFreshCalls: 3 });
     expect(targetCompletionDecision({ acceptedCount: 6, targetCount: 30, completedFreshCalls: 3,
       hadProviderFailureOrCircuit: false, consecutiveNoFinalRounds: first, round: 1,
@@ -48,6 +48,6 @@ describe("target completion policy", () => {
     const second = nextNoFinalRoundCount(first, { finalEligibleAdded: 0, completedFreshCalls: 2 });
     expect(targetCompletionDecision({ acceptedCount: 6, targetCount: 30, completedFreshCalls: 2,
       hadProviderFailureOrCircuit: false, consecutiveNoFinalRounds: second, round: 2,
-      maximumRounds: 5 }).reason).toBe("confirmed-exhaustion");
+      maximumRounds: 5 }).reason).toBe("no-qualified-progress");
   });
 });

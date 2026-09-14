@@ -48,7 +48,8 @@ const completionScenarios=[
   {reason:"target-met",label:"目标已满足",accepted:5},
   {reason:"provider-unavailable",label:"搜索服务不可用",accepted:2},
   {reason:"maximum-rounds",label:"达到搜索轮次安全上限",accepted:2},
-  {reason:"confirmed-exhaustion",label:"已达到有记录的搜索耗尽条件",accepted:2},
+  {reason:"confirmed-exhaustion",label:"历史任务：连续轮次无新增合格，未证明市场耗尽",accepted:2},
+  {reason:"no-qualified-progress",label:"连续两轮无新增最终合格，达到停滞安全阈值",accepted:2},
   {reason:"processing-incomplete",label:"校正或评分未完成，已有结果和费用保留",accepted:2},
   {reason:"role-unresolved",label:"仍有公司角色待判，未认定市场耗尽",accepted:2},
   {reason:"qualified-shortfall",label:"最终审核或保存后合格数量不足",accepted:2},
@@ -432,7 +433,7 @@ try{
         else await expect(panel.getByText('运行结束，目标未填满 · 目标 5 家',{exact:true})).toBeVisible();
         if(scenario.reason==='role-unresolved')await expect(panel.getByText('角色待判 1 家（未计入最终合格）',{exact:true})).toBeVisible();
       }
-      if(['confirmed-exhaustion','processing-incomplete','budget-blocked'].includes(scenario.reason))
+      if(['confirmed-exhaustion','no-qualified-progress','processing-incomplete','budget-blocked'].includes(scenario.reason))
         await expect(panel.getByRole('button',{name:'建立缺口续搜计划（不执行）',exact:true})).toHaveCount(0);
       const before=await (await readLocal(new URL(`/api/tasks/${scenario.id}?kind=search`,base).href)).json();
       await page.getByRole('button',{name:'刷新',exact:true}).click();

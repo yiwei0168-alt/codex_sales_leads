@@ -18,6 +18,7 @@ it('uses only a known remaining gap and enforces depth and stagnation stops',()=
   expect(continuationGap(50,0,1,0,'provider-unavailable')).toBe(50);
   expect(()=>continuationGap(50,0,1,0,'processing-incomplete')).toThrow('原检查点');
   expect(()=>continuationGap(50,30,0,undefined,'confirmed-exhaustion')).toThrow('停滞');
+  expect(()=>continuationGap(50,30,0,undefined,'no-qualified-progress')).toThrow('停滞');
 });
 it('creates a proposal, retains parent results and keeps exclusions out of model plans',async()=>{
   const result=await proposeSearchContinuationInTransaction({query} as unknown as PoolClient,'owner','parent');

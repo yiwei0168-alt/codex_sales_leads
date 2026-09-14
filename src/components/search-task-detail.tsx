@@ -33,7 +33,7 @@ export function SearchTaskDetail({ action,refreshKey=0,recoveryFamily }: { actio
     {typeof action.result.pendingRoleCount==='number'&&<p>角色待判 {action.result.pendingRoleCount} 家（未计入最终合格）</p>}
     {shortfall !== null && shortfall > 0 && <p>缺口 {shortfall} 家；{stopReason??action.errorMessage??"历史记录未保存结构化停止原因，请展开检查点核实。"}</p>}
     {partial&&['processing-incomplete','role-unresolved'].includes(String(action.result.targetCompletionReason))&&<ProcessingRecovery key={action.id} actionId={action.id} existingChild={typeof action.result.processingRecoveryChild==='string'?action.result.processingRecoveryChild:undefined}/>}
-    {partial&&!['confirmed-exhaustion','processing-incomplete'].includes(String(action.result.targetCompletionReason))&&Number(continuation?.depth??0)<3&&<SearchContinuation key={action.id} actionId={action.id}/>}
+    {partial&&!['confirmed-exhaustion','no-qualified-progress','processing-incomplete'].includes(String(action.result.targetCompletionReason))&&Number(continuation?.depth??0)<3&&<SearchContinuation key={action.id} actionId={action.id}/>}
     <a href={marketHref(action.payload.countryCode,"leads")}>查看该国家候选库（含其他任务结果）</a>
     <details><summary>原始任务要求</summary><p style={{whiteSpace:"pre-wrap"}}>{action.payload.userRequest}</p></details>
   </section>;

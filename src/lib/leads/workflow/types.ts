@@ -367,7 +367,7 @@ export interface LeadDevelopmentHandoff {
 }
 
 export interface LeadWorkflowResult {
-  targetCompletionReason?: "target-met" | "confirmed-exhaustion" | "provider-unavailable" | "maximum-rounds" | "processing-incomplete" | "role-unresolved" | "qualified-shortfall";
+  targetCompletionReason?: "target-met" | "confirmed-exhaustion" | "no-qualified-progress" | "provider-unavailable" | "maximum-rounds" | "processing-incomplete" | "role-unresolved" | "qualified-shortfall";
   pendingRoleCount?: number;
   deliveryCounts?:{added:number;updated:number;roleChanged:number};
   runId: string;
@@ -447,7 +447,7 @@ export interface LeadWorkflowState {
   scoreRecoveryCheckpointAt?: string;
   terminalRecoveryOnly?: boolean;
   savedProcessingRecovery?: {sourceActionId:string;sourceRunId:string;sourceFingerprint:string;refreshCandidateIds:string[];evidenceBlocked?:boolean};
-  targetCompletionReason?: "target-met" | "confirmed-exhaustion" | "provider-unavailable" | "maximum-rounds" | "processing-incomplete" | "role-unresolved" | "qualified-shortfall";
+  targetCompletionReason?: "target-met" | "confirmed-exhaustion" | "no-qualified-progress" | "provider-unavailable" | "maximum-rounds" | "processing-incomplete" | "role-unresolved" | "qualified-shortfall";
   assessmentReviews: LeadAssessmentReview[];
   handoffs: LeadDevelopmentHandoff[];
   creditsUsed: number;

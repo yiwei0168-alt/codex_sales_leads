@@ -2,7 +2,7 @@ import { ACTIVE_HYBRID_SEARCH_POLICY } from "./hybrid-search-policy";
 
 export const MAX_DISCOVERY_ROUNDS = 5;
 
-export type TargetCompletionReason = "target-met" | "confirmed-exhaustion"
+export type TargetCompletionReason = "target-met" | "confirmed-exhaustion" | "no-qualified-progress"
   | "provider-unavailable" | "maximum-rounds" | "processing-incomplete" | "role-unresolved" | "qualified-shortfall";
 
 export function plannedCandidatePool(input: { targetCount: number; acceptedCount: number;
@@ -33,7 +33,7 @@ export function targetCompletionDecision(input: { acceptedCount: number; targetC
     return { complete: true, reason: "provider-unavailable" };
   }
   if (!input.hadProviderFailureOrCircuit && input.consecutiveNoFinalRounds >= ACTIVE_HYBRID_SEARCH_POLICY.maxConsecutiveNoValueBatches) {
-    return { complete: true, reason: "confirmed-exhaustion" };
+    return { complete: true, reason: "no-qualified-progress" };
   }
   if (input.round + 1 >= input.maximumRounds) return { complete: true, reason: "maximum-rounds" };
   return { complete: false };

@@ -261,7 +261,7 @@ describe("LangGraph lead workflow", () => {
     const state=await buildLeadWorkflowGraph(deps).invoke({userId:"u",actionId:"a",graphThreadId:"zero",workspaceId:"w",
       plan:{...plan,targetCount:2},phase:"queued",ragContext:[],candidates:[],correctedCandidates:[],assessments:[],
       processedCompanyKeys:[],assessmentReviews:[],handoffs:[],creditsUsed:0,warnings:[]},{recursionLimit:50});
-    expect(state.targetCompletionReason).toBe(failure?"provider-unavailable":"confirmed-exhaustion");
+    expect(state.targetCompletionReason).toBe(failure?"provider-unavailable":"no-qualified-progress");
     expect(deps.discover).toHaveBeenCalledTimes(failure?1:2);
     expect(deps.qualificationAgent.evaluate).not.toHaveBeenCalled();
     expect(deps.persist).toHaveBeenCalledWith(expect.objectContaining({processedCompanyKeys:[],assessments:[],creditsUsed:failure?1:2}));
