@@ -36,6 +36,7 @@ const appendOnlyTables=[
   "lead_processing_recovery",
   "lead_search_continuation",
   "user_memory_audit",
+  "knowledge_document_revision",
   "workflow_stage_metric",
   "workflow_model_usage",
   "workflow_artifact_event",
