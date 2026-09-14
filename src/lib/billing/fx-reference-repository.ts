@@ -1,6 +1,6 @@
 import {transaction,query} from "@/lib/rag/db";
 import {fetchEcbCnyReference,ECB_SOURCE_KEY,ECB_REFERENCE_URL,StaleEcbReferenceError} from "./ecb-reference";
-import {foreignCostBoundSchema,foreignReservationMicros,type ForeignCostBound} from "./fx-policy";
+import {foreignCostBoundSchema,foreignReservationMicros,PRODUCTION_FX_MAX_AGE_MS,type ForeignCostBound} from "./fx-policy";
 import {fxReferenceStatus,dynamicTariffStatus,type BillingReferenceStatus} from "./reference-status";
 import {currentSpendContext} from "./context";
 
@@ -20,8 +20,16 @@ export async function refreshBillingFxReference(transport:typeof fetch=fetch,now
     const status=result?"validated":"unavailable";
     if(result)await client.query(`insert into billing_fx_reference_snapshot(source_key,source_hash,native_currency,reference_date,retrieved_at,fx)
       values($1,$2,$3,$4,$5,$6) on conflict do nothing`,[ECB_SOURCE_KEY,result.sourceHash,result.currency,result.referenceDate,result.fx.retrievedAt,JSON.stringify(result.fx)]);
+    // Re-fetch before the STORED snapshot expires. A duplicate official payload is not inserted
+    // again, so scheduling from this fetch time alone could leave a gap in native-price admission.
+    const stored=result?await client.query<{retrieved_at:string}>(`select fx->>'retrievedAt' as retrieved_at
+      from billing_fx_reference_snapshot where source_key=$1 and source_hash=$2 limit 1`,
+    [ECB_SOURCE_KEY,result.sourceHash]):null;
+    const storedAt=stored?.rows[0]?.retrieved_at?Date.parse(stored.rows[0].retrieved_at):result?Date.parse(result.fx.retrievedAt):null;
+    const successNext=storedAt===null?null:Math.min(now+PRODUCTION_FX_MAX_AGE_MS,
+      Math.max(now+60*60*1000,storedAt+PRODUCTION_FX_MAX_AGE_MS-60*60*1000));
     // Failure never deletes/refreshes the date of a previous still-valid snapshot.
-    const nextAttempt=new Date(now+(result?7*24:1)*60*60*1000).toISOString();
+    const nextAttempt=new Date(result&&successNext!==null?successNext:now+60*60*1000).toISOString();
     await client.query(`insert into billing_reference_refresh_state(source_key,checked_at,next_attempt_at,status) values($1,$2,$3,$4)
       on conflict(source_key) do update set checked_at=excluded.checked_at,next_attempt_at=excluded.next_attempt_at,status=excluded.status`,[ECB_SOURCE_KEY,new Date(now).toISOString(),nextAttempt,status]);
     await client.query("insert into billing_reference_refresh_observation(source_key,checked_at,status,metrics) values($1,$2,$3,$4)",[

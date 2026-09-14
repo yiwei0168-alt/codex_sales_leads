@@ -15,8 +15,8 @@ export function foreignReservationMicros(bound:ForeignCostBound,now=Date.now()):
   const checked=foreignCostBoundSchema.parse(bound);
   const asOf=Date.parse(checked.fx.asOf),retrieved=Date.parse(checked.fx.retrievedAt);
   const fixedVersion=currentSpendContext()?.fixedFxReferenceVersion;
-  if(asOf>now||retrieved>now||retrieved<asOf
-    ||(fixedVersion!==checked.fx.version&&now-asOf>=PRODUCTION_FX_MAX_AGE_MS))
+  if(asOf>now||retrieved>now||retrieved<asOf||retrieved-asOf>=PRODUCTION_FX_MAX_AGE_MS
+    ||(fixedVersion!==checked.fx.version&&now-retrieved>=PRODUCTION_FX_MAX_AGE_MS))
     throw new Error("FX observation expired or invalid");
   // Exact rational conversion + the approved 5% reservation-only FX buffer, rounded UP.
   const numerator=BigInt(checked.maximumNativeMicros)*BigInt(checked.fx.usdNumerator)*BigInt(105);

@@ -12,7 +12,7 @@ export function fxReferenceStatus(value:unknown,now=Date.now()) {
   }
   const fx=parsed.data.fx;
   const dates={asOf:fx.asOf,retrievedAt:fx.retrievedAt,
-    effectiveExpiresAt:new Date(Date.parse(fx.asOf)+PRODUCTION_FX_MAX_AGE_MS).toISOString()};
+    effectiveExpiresAt:new Date(Date.parse(fx.retrievedAt)+PRODUCTION_FX_MAX_AGE_MS).toISOString()};
   try {foreignReservationMicros(parsed.data,now);return {status:"valid" as const,...dates};}
   catch {return {status:"expired-or-invalid" as const,...dates};}
 }

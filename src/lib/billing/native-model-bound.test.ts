@@ -20,7 +20,7 @@ it("does not open unreviewed gateways, international endpoint, models or paths",
 });
 it("blocks expired/missing references, rates, oversized and unbounded requests",async()=>{
   await expect(nativeModelBound(input,now,async()=>null)).rejects.toThrow("expired-tariff");
-  await expect(nativeModelBound(input,Date.parse("2026-09-18T00:00:00Z"),async()=>fx)).rejects.toThrow("expired-tariff");
+  await expect(nativeModelBound(input,Date.parse("2026-09-18T00:00:00Z"),async()=>fx)).resolves.not.toBeNull();
   await expect(nativeModelBound(input,Date.parse("2026-09-20T00:00:00Z"),async()=>fx)).rejects.toThrow("expired-tariff");
   for(const patch of [{outputTokens:null},{outputTokens:12001},{requestBytes:262145}])await expect(nativeModelBound({...input,...patch},now,async()=>fx)).rejects.toThrow("request-out-of-bounds");
 });

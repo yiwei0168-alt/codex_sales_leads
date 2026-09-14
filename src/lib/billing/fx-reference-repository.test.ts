@@ -16,10 +16,16 @@ it("observes reference failures as unknown without a refresh or snapshot mutatio
 });
 it("stores a valid public reference with zero paid cost and defers the next successful refresh by one week",async()=>{
   const result=await refreshBillingFxReference(vi.fn().mockResolvedValue(new Response(xml)),time);
-  expect(result).toMatchObject({status:"validated",httpCalls:1,nextAttemptAt:"2026-09-20T05:00:00.000Z"});
+  expect(result).toMatchObject({status:"validated",httpCalls:1,nextAttemptAt:"2026-09-20T04:00:00.000Z"});
   expect(mocks.sql.mock.calls.some(call=>call[0].includes("insert into billing_fx_reference_snapshot"))).toBe(true);
   const log=mocks.sql.mock.calls.find(call=>call[0].includes("insert into billing_reference_refresh_observation"))!;
   expect(JSON.parse(log[1][3])).toMatchObject({costUsd:0,apiCredits:0,inputTokens:0,outputTokens:0,freeHttpRequests:1,validOutputItems:1});
+});
+it("rechecks a duplicate official source before the original stored snapshot expires",async()=>{
+  mocks.sql.mockImplementation(async(text:string)=>({rows:text.includes("pg_try_advisory")?[{locked:true}]
+    :text.includes("as retrieved_at")?[{retrieved_at:"2026-09-12T05:00:00Z"}]:[]}));
+  const result=await refreshBillingFxReference(vi.fn().mockResolvedValue(new Response(xml)),time);
+  expect(result).toMatchObject({status:"validated",nextAttemptAt:"2026-09-19T04:00:00.000Z"});
 });
 it.each(["another-process","not-due"])("does not fetch again when %s",async state=>{
   mocks.sql.mockImplementation(async(text:string)=>({rows:text.includes("pg_try_advisory")?[{locked:state!=="another-process"}]:[{next_attempt_at:new Date(time+10000)}]}));
@@ -46,7 +52,8 @@ it("rejects expired or foreign-source stored references without deleting histori
   const reference=parseEcbCnyReference(xml,new Date(time).toISOString());
   mocks.read.mockResolvedValue([{fx:reference.fx}]);
   expect(await readCurrentCnyFxReference(time)).toEqual(reference.fx);
-  expect(await readCurrentCnyFxReference(Date.parse("2026-09-18T00:00:00Z"))).toBeNull();
+  expect(await readCurrentCnyFxReference(Date.parse("2026-09-20T04:59:59Z"))).toEqual(reference.fx);
+  expect(await readCurrentCnyFxReference(Date.parse("2026-09-20T05:00:00Z"))).toBeNull();
   mocks.read.mockResolvedValue([{fx:{...reference.fx,reference:"https://unreviewed.test"}}]);
   expect(await readCurrentCnyFxReference(time)).toBeNull();
 });

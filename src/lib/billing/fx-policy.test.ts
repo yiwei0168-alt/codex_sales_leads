@@ -10,7 +10,9 @@ it("uses exact conversion and rounds the 5% buffered reservation upward",()=>{
 });
 it("rejects missing, future or week-old production FX without guessing parity",()=>{
   expect(()=>foreignReservationMicros({...bound,fx:{...bound.fx,nativeDenominator:"0"}},now)).toThrow();
-  expect(()=>foreignReservationMicros(bound,Date.parse("2026-09-19T00:00:00Z"))).toThrow();
+  expect(foreignReservationMicros(bound,Date.parse("2026-09-19T00:59:59Z"))).toBe(150000);
+  expect(()=>foreignReservationMicros(bound,Date.parse("2026-09-19T01:00:00Z"))).toThrow();
+  expect(()=>foreignReservationMicros({...bound,fx:{...bound.fx,retrievedAt:"2026-09-19T00:00:00Z"}},Date.parse("2026-09-19T00:00:00Z"))).toThrow();
   expect(()=>foreignReservationMicros(bound,Date.parse("2026-09-11T00:00:00Z"))).toThrow();
 });
 it("pins one official version only inside a server-side acceptance scope",()=>{

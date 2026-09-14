@@ -3,8 +3,8 @@ import {fxReferenceStatus,dynamicTariffStatus} from "./reference-status";
 import {ECB_REFERENCE_URL} from "./ecb-reference";
 const fx={usdNumerator:"1",nativeDenominator:"7",asOf:"2026-09-11T00:00:00Z",retrievedAt:"2026-09-11T01:00:00Z",reference:ECB_REFERENCE_URL,version:"fixture"};
 it("shows the same weekly production reference boundary, never refreshing its date",()=>{
-  const deadline=Date.parse(fx.asOf)+7*24*3600000;
-  expect(fxReferenceStatus(fx,deadline-1)).toMatchObject({status:"valid",effectiveExpiresAt:"2026-09-18T00:00:00.000Z"});
+  const deadline=Date.parse(fx.retrievedAt)+7*24*3600000;
+  expect(fxReferenceStatus(fx,deadline-1)).toMatchObject({status:"valid",effectiveExpiresAt:"2026-09-18T01:00:00.000Z"});
   expect(fxReferenceStatus(fx,deadline)).toMatchObject({status:"expired-or-invalid",asOf:fx.asOf});
   expect(fxReferenceStatus(fx,Date.parse(fx.asOf))).toMatchObject({status:"expired-or-invalid"});
 });
