@@ -1,5 +1,7 @@
 # LangChain / LangGraph 销售线索工作流
 
+2026-09-14 / 阶段136 P06：超大单公司评分的完整请求预检抛出 `LeadRequestTooLargeError` 时，图停在 `score_candidates`，保存已校正公司、原证据和前置额度；合成恢复只重新执行缺失评分，发现/补证/校正各不重跑。当前无损压缩仍有不可压缩边界，真实模型质量及分阶段方案未验收。[图检查点验收](P06_OVERSIZED_SCORE_GRAPH_CHECKPOINT_2026-09-14.md)。
+
 2026-09-14 / 阶段135：Kimi 自然语言意图与北京 Embedding 在阶段134 S01 后的整次预检因共享 ECB CNY/USD 参考日过72小时而暂停，静态模型合同本身未到期。官方源仍为9月11日参考日；不能将9月14日抓取时间当作新价证。刷新机制等待有效参考日，旧结果/费用不变，真实工作流未启动。[归因](S01_SOL_PLAYBOOK_ROUTING_ACCEPTANCE_2026-09-14.md)。
 
 2026-09-14 / 阶段134 S01：`buildLeadMarketPlaybook` 使用 Sol 时，实际 LangChain 请求的 `provider` 限定 OpenAI 标准端点并禁用供应商回退；新的 `openrouter-sol-openai-playbook-v1` 费用合同只按该工作流任务选择，其他 Sol 保留原合同。端点错误使计划阶段暂停，旧计划缓存因新增模型/路由身份失效；未完成的工作不被当成有效计划。静态报价 USD10.622880/次须先通过累计 USD30 与整次预检，真实供应商链路尚待验收。[证据](S01_SOL_PLAYBOOK_ROUTING_ACCEPTANCE_2026-09-14.md)。

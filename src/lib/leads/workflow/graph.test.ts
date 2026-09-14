@@ -506,6 +506,29 @@ describe("LangGraph lead workflow", () => {
     expect(deps.collectEvidence).toHaveBeenCalledTimes(1);
     expect(deps.qualificationAgent.evaluate).toHaveBeenCalledTimes(1);
   });
+  it("keeps an oversized scoring singleton pending at its checkpoint without repurchasing earlier stages",async()=>{
+    const deps=dependencies([]);
+    const error=new LeadRequestTooLargeError(70_000,61_440);
+    deps.qualificationAgent.evaluate=vi.fn(async()=>{throw error;});
+    const saver=new MemorySaver();const config={configurable:{thread_id:"oversized-score-singleton"}};
+    const graph=buildLeadWorkflowGraph(deps,saver);
+    await expect(graph.invoke({userId:"u",actionId:"a",graphThreadId:"oversized-score-singleton",workspaceId:"w",plan,
+      phase:"queued",ragContext:[],candidates:[],assessments:[],assessmentReviews:[],handoffs:[],creditsUsed:0,warnings:[]},config))
+      .rejects.toBe(error);
+    const paused=await graph.getState(config);
+    expect(paused.next).toEqual(["score_candidates"]);
+    expect(paused.values.correctedCandidates).toEqual([correctedCandidate]);
+    expect(paused.values.assessments).toEqual([]);
+    expect(paused.values.creditsUsed).toBeGreaterThan(0);
+    expect(deps.persist).not.toHaveBeenCalled();
+    deps.qualificationAgent.evaluate=vi.fn(async()=>[assessment]);
+    const resumed=await buildLeadWorkflowGraph(deps,saver).invoke(null,config);
+    expect(resumed.result).toBeDefined();
+    expect(deps.discover).toHaveBeenCalledOnce();
+    expect(deps.collectEvidence).toHaveBeenCalledOnce();
+    expect(deps.correctionAgent.correct).toHaveBeenCalledOnce();
+    expect(resumed.creditsUsed).toBe(paused.values.creditsUsed);
+  });
   it("retrieves all three RAG domains before search and scores before persistence", async () => {
     const events: string[] = [];
     const graph = buildLeadWorkflowGraph(dependencies(events));

@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+阶段136 / B07、B26：合成超界评分错误在图的 `score_candidates` 检查点暂停，原已校正候选/证据/额度保留；同检查点模拟恢复后仅评分，发现/补证/校正不重跑。此为 P06 技术暂停边界的验收，不证明不可压缩单项分阶段完成、真实模型质量或 A11 业务闭环。[证据](P06_OVERSIZED_SCORE_GRAPH_CHECKPOINT_2026-09-14.md)。
+
 阶段135 / A09–A10 只读归因：阶段134整次预检中 Kimi/北京 Embedding 的 `expired-tariff` 来自共享 ECB CNY/USD 参考日9月11日已过72小时，静态价格合同仍有效至9月20日；ECB 免费当前源仍为9月11日，不得以重新抓取时间延长有效期。无模型/付费调用，整次预检仍不通过。[澄清](S01_SOL_PLAYBOOK_ROUTING_ACCEPTANCE_2026-09-14.md)。
 
 阶段134 / S01：用户已批准仅将市场计划的 OpenRouter Sol 限定到 OpenAI 标准端点。现行专用合同 `request-bounds-v1.7.0` 对完整请求最多 61,440 字节、输出 4,096 token 按 USD10.622880 保守预留；其他 Sol 请求仍使用原多供应商 USD27.345252 上界。不可用时暂停，缓存身份包含模型与路由；累计 USD30 和整次费用预检照旧。实际 SDK 合成传输、拒绝路径和全量回归见 [S01 验收](S01_SOL_PLAYBOOK_ROUTING_ACCEPTANCE_2026-09-14.md)。真实最小业务闭环仍未完成。
