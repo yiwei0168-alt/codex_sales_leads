@@ -13,6 +13,10 @@ import type {
 
 interface ProviderOptions { fetchImplementation?: typeof fetch; timeoutMs?: number; maxAttempts?: number }
 export const DEFAULT_DISCOVERY_MAX_ATTEMPTS = 2;
+export function configuredGeminiDiscoveryModel():string {
+  return process.env.GEMINI_DISCOVERY_MODEL?.trim()
+    || process.env.GEMINI_SEARCH_MODEL?.trim() || "gemini-3.6-flash";
+}
 
 export type DiscoveryFailureKind = "authentication" | "quota" | "rate-limit" | "timeout"
   | "transport" | "http" | "invalid-response" | "configuration";
@@ -241,8 +245,7 @@ class GeminiDiscoveryProvider extends BaseProvider implements DiscoveryProvider 
     const response = await requestJson<{ status?: string; steps?: Array<{ type?: string; content?: Array<{ type?: string; text?: string }> }>;
       usage?: Record<string, unknown> }>(this.id, url, { method: "POST",
       headers: { "x-goog-api-key": apiKey, "content-type": "application/json" },
-      body: JSON.stringify({ model: process.env.GEMINI_DISCOVERY_MODEL?.trim()
-        || process.env.GEMINI_SEARCH_MODEL?.trim() || "gemini-3.6-flash", input,
+      body: JSON.stringify({ model: configuredGeminiDiscoveryModel(), input,
       tools: [{ type: "google_search" }], generation_config: { thinking_level: "low", max_output_tokens: 12_000 } }) }, this.requestOptions(), signal);
     if (response.body.status && response.body.status !== "completed")
       throw new Error(`Gemini discovery output ${response.body.status === "incomplete" ? "incomplete" : "not completed"}; paid result requires recovery`);

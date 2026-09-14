@@ -14,7 +14,7 @@ const {textOutputLimit}=await import("../src/lib/billing/text-output-policy");
 const {plannedCandidatePool,MAX_DISCOVERY_ROUNDS}=await import("../src/lib/leads/workflow/target-completion-policy");
 const {buildHybridSearchRoute,discoveryResultsPerRoute}=await import("../src/lib/leads/workflow/hybrid-search-policy");
 const {readSearchRateStatuses}=await import("../src/lib/billing/search-rate-repository");
-const {DEFAULT_DISCOVERY_MAX_ATTEMPTS}=await import("../src/providers/discovery");
+const {DEFAULT_DISCOVERY_MAX_ATTEMPTS,configuredGeminiDiscoveryModel}=await import("../src/providers/discovery");
 const userId="cbee9803-3c43-4609-9228-66086b207012";
 const minimalPlan={countryCode:"CO",countryName:"Colombia",objective:"new-market" as const,
   roles:["Distributor" as const],targetCount:1,queryLanguage:"es",userRequest:"Synthetic acceptance wire only"};
@@ -263,6 +263,7 @@ try{
   });
   const discoveryRouteActionCeilings=searchRoute.map(route=>({
     category:route.category,track:route.track,provider:route.provider,trigger:route.trigger,
+    configuredModel:route.provider.startsWith("gemini-")?configuredGeminiDiscoveryModel():null,
     scheduledActionsAtMost:MAX_DISCOVERY_ROUNDS,
     providerHttpAttemptsAtMost:MAX_DISCOVERY_ROUNDS*DEFAULT_DISCOVERY_MAX_ATTEMPTS,
     billableGoogleSearchToolCallsAtMost:route.provider.startsWith("gemini-")?null:0,

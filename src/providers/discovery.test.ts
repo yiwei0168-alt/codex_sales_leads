@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 import type { DiscoveryProviderId } from "@/lib/leads/workflow/hybrid-search-policy";
 import type { DiscoveryQuery } from "./discovery-contracts";
-import { createDiscoveryProvider, DiscoveryProviderError, discoveryEnvironmentStatus } from "./discovery";
+import { createDiscoveryProvider, DiscoveryProviderError, discoveryEnvironmentStatus, configuredGeminiDiscoveryModel } from "./discovery";
 
 const baseQuery: DiscoveryQuery = { query: "WLAN Systemhaus Germany", countryCode: "DE", countryName: "Germany",
   languageCode: "de", maxResults: 3, category: "si-msp", track: "local-smb", engine: "google",
@@ -13,6 +13,17 @@ const keyByProvider: Record<DiscoveryProviderId, string> = { "gemini-full": "GEM
 function configured(provider: DiscoveryProviderId) { vi.stubEnv(keyByProvider[provider], "test-key"); }
 
 afterEach(() => vi.unstubAllEnvs());
+
+it("uses the same trimmed model fallback for the actual Gemini request and recovery identity",async()=>{
+  configured("gemini-full");
+  vi.stubEnv("GEMINI_DISCOVERY_MODEL","  ");
+  vi.stubEnv("GEMINI_SEARCH_MODEL","gemini-2.5-flash");
+  const transport=vi.fn<typeof fetch>(async()=>Response.json({status:"completed",steps:[]}));
+  await createDiscoveryProvider("gemini-full",{fetchImplementation:transport,maxAttempts:1})
+    .search({...baseQuery,engine:"google-grounded",mechanism:"planning"});
+  expect(configuredGeminiDiscoveryModel()).toBe("gemini-2.5-flash");
+  expect(JSON.parse(String(transport.mock.calls[0][1]?.body)).model).toBe(configuredGeminiDiscoveryModel());
+});
 
 it("uses Google's documented fixed ten-result page without issuing additional paid pages",async()=>{
   configured("searchapi");

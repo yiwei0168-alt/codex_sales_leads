@@ -27,6 +27,13 @@ it("invalidates country, request, task and provider configuration without silent
   vi.stubEnv("GEMINI_DISCOVERY_MODEL", "new-model");
   expect(() => restoreDiscoverySession(snapshot, discoverySessionDependency(plan, "thread"))).toThrow("dependencies changed");
 });
+it("invalidates paid discovery recovery when a blank primary override resolves to a changed fallback model", () => {
+  vi.stubEnv("GEMINI_DISCOVERY_MODEL", "   ");
+  vi.stubEnv("GEMINI_SEARCH_MODEL", "gemini-3.6-flash");
+  const snapshot = snapshotDiscoverySession(createHybridDiscoverySession(), discoverySessionDependency(plan, "thread"));
+  vi.stubEnv("GEMINI_SEARCH_MODEL", "gemini-2.5-flash");
+  expect(() => restoreDiscoverySession(snapshot, discoverySessionDependency(plan, "thread"))).toThrow("dependencies changed");
+});
 it("does not persist credential values in the dependency record", () => {
   vi.stubEnv("BRAVE_SEARCH_API_KEY", "synthetic-secret");
   expect(JSON.stringify(snapshotDiscoverySession(createHybridDiscoverySession(), discoverySessionDependency(plan, "thread"))))
