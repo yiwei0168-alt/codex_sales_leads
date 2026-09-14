@@ -1,12 +1,12 @@
 # 用户确认规则登记表
 
-### A27 — 主要端到端业务优先、记录技术妥协（2026-09-14，用户明确确认；本阶段用于S02，其他个案待逐项验证）
+### A27 — 主要端到端业务优先、记录技术妥协（2026-09-14，用户明确确认；S02 已真实部分验证，其他个案待逐项验证）
 
-用户原话：“遇到类似阻塞点时，降低要求，以跑通产品主要端对端业务验收为准。类似问题记录、妥协或者绕开。”适用于本地生产验收中与 OpenRouter 参数兼容性类似的技术阻塞：优先使主要自然语言→搜索→补证→角色/评分→国家结果展示链可运行，并如实记录实际降低、绕开的条件和未验证部分。此话没有给出新的费率、额外预算、搜索范围或合格标准数值；当前仍沿用已确认的 A26 隔离 USD50、A25 已知单步费用与原子预留、不重复公司和国家/用户隔离。具体新模型路由或收费合同仍需形成可核对的边界，不能从“降低要求”推定未知成本为零。实施/验收状态：S02 已按下面具体确认落地并完成无付费回归；真实主要闭环与其他潜在妥协尚未验收。[证据](S02_PLAYBOOK_PARAMETER_ACCEPTANCE_STAGE237_2026-09-14.md)。
+用户原话：“遇到类似阻塞点时，降低要求，以跑通产品主要端对端业务验收为准。类似问题记录、妥协或者绕开。”适用于本地生产验收中与 OpenRouter 参数兼容性类似的技术阻塞：优先使主要自然语言→搜索→补证→角色/评分→国家结果展示链可运行，并如实记录实际降低、绕开的条件和未验证部分。此话没有给出新的费率、额外预算、搜索范围或合格标准数值；当前仍沿用已确认的 A26 隔离 USD50、A25 已知单步费用与原子预留、不重复公司和国家/用户隔离。具体新模型路由或收费合同仍需形成可核对的边界，不能从“降低要求”推定未知成本为零。实施/验收状态：S02 已落地并真实通过市场计划、搜索、补证及首次评分；Terra 复核费用未知并被防重放门禁暂停，没有绕过复核、降低标准或入库结果。[无付费证据](S02_PLAYBOOK_PARAMETER_ACCEPTANCE_STAGE237_2026-09-14.md)、[真实部分验收](S02_MINIMAL_LIVE_PARTIAL_STAGE238_2026-09-14.md)。
 
-### S02 — 市场计划 Sol 参数专用修订（2026-09-14，用户明确批准；实现/无付费验收通过，真实调用待验）
+### S02 — 市场计划 Sol 参数专用修订（2026-09-14，用户明确批准；实现、无付费及真实单步验收通过，整体验收未通过）
 
-用户原话：“批准 S02 并继续最小真实验收（推荐）”。范围为[已审S02提案](S02_SOL_PLAYBOOK_PARAMETER_PROPOSAL_2026-09-14.md)：仅在已批准 S01 的 OpenRouter credits/OpenAI 标准端点市场计划使用 `max_tokens=4096` 并省略 `temperature`；维持 `openai/gpt-5.6-sol`、严格 JSON、`provider.only=["openai"]`、`allow_fallbacks=false`、61,440 字节、4,096 总输出及单次 USD10.622880。现行隔离累计 USD50 与逐请求费用门禁不变；旧 404 动作与未知费用占用不自动重放或释放。版本 `request-bounds-v1.10.0` / `openrouter-sol-openai-playbook-v2`、新缓存身份及合成线形/全量回归通过；新真实任务尚未执行，[阶段237证据](S02_PLAYBOOK_PARAMETER_ACCEPTANCE_STAGE237_2026-09-14.md)。原 S01/v1 提案、路由及失败事实保留为历史。
+用户原话：“批准 S02 并继续最小真实验收（推荐）”。范围为[已审S02提案](S02_SOL_PLAYBOOK_PARAMETER_PROPOSAL_2026-09-14.md)：仅在已批准 S01 的 OpenRouter credits/OpenAI 标准端点市场计划使用 `max_tokens=4096` 并省略 `temperature`；维持 `openai/gpt-5.6-sol`、严格 JSON、`provider.only=["openai"]`、`allow_fallbacks=false`、61,440 字节、4,096 总输出及单次 USD10.622880。现行隔离累计 USD50 与逐请求费用门禁不变；旧 404 动作与未知费用占用不自动重放或释放。版本 `request-bounds-v1.10.0` / `openrouter-sol-openai-playbook-v2`、新缓存身份及合成线形/全量回归通过；新隔离真实任务的市场计划返回有效输出，预留 USD10.622880、报告 USD0.017461，但完整业务在 Terra 复核未知费用时暂停。[阶段237无付费证据](S02_PLAYBOOK_PARAMETER_ACCEPTANCE_STAGE237_2026-09-14.md)、[阶段238真实部分验收](S02_MINIMAL_LIVE_PARTIAL_STAGE238_2026-09-14.md)。原 S01/v1 提案、路由及失败事实保留为历史。
 
 2026-09-14 stage 236 / A26 acceptance observation: the post-FX production build passed 68/68 isolated desktop/mobile Chrome checks, including dynamic FX and budget views; fixtures and server were removed, external paid calls/mail zero. Read-only acceptance occupancy stayed USD23.520920/50 with ten incomplete cost reports. This is regression evidence, not a new rule, S02 approval or A11 closed loop. [Evidence](A26_POST_FX_CURRENT_BUILD_UI_STAGE236_2026-09-14.md).
 2026-09-14 stage 235 / A25-A26 documentation status: present-tense acceptance table rows were reconciled to the confirmed progressive per-request admission and isolated USD50/fixed-FX validation rule, plus the actual stage232 partial live run. Earlier USD30/72-hour and unrun stage notes remain as history. This is not a new confirmation, S02 approval, paid call or A11 completion. [Evidence](A26_CURRENT_ACCEPTANCE_TABLE_RECONCILIATION_STAGE235_2026-09-14.md).
