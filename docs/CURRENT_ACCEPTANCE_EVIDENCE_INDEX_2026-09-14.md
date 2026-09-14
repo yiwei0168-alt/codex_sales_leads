@@ -1,4 +1,5 @@
 # 当前验收方法、权限与提交索引（阶段203）
+Stage 204 A11 read-only preflight: [requested result slots versus actual returned items](A11_REQUESTED_RESULT_SLOTS_PREFLIGHT_2026-09-14.md) was verified and committed as `79f1949`. It exposes 240 requested slots and an unknown actual returned-item ceiling; A11's live result and whole-run cost remain unverified.
 
 以[唯一当前验收矩阵](CURRENT_ACCEPTANCE_MATRIX_2026-09-13.md)主体行作为“已实现范围／尚缺行为”的权威状态。本索引补齐每项的可追溯验证方法、执行权限、实际结果和既有证据提交；提交号在建索引时由 `git log -1 --format=%h -- <证据文件>` 核对。后续矩阵或索引的文档提交不改变原验证提交。历史报告写入时的状态与测试数继续保留，不能覆盖矩阵当前行。“通过”只表示该行注明的验证范围，不能替代真实 A11 闭环或整体验收。
 
