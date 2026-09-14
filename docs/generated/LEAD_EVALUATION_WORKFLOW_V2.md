@@ -760,7 +760,7 @@ flowchart TD
 | `src/lib/leads/workflow/graph.ts` | `2cf1de345fd70a85f38d6a068e55b26a66cd010b3c20c469fddb0a1fe9d08f27` |
 | `src/lib/leads/workflow/jobs.ts` | `aaa6747c17996197d428d111039ac02345681b13bf812e033a0425d8a55eebea` |
 | `src/lib/leads/workflow/rag-context.ts` | `1e1ee21e77b90731e849426cd7130de7d1e50ee6aec9f196e44cb642bf81387b` |
-| `src/lib/leads/workflow/playbook.ts` | `5905ab3bb1bdb3d8a570c82c178ebe966665fc015e6cf1711eb356196b885d35` |
+| `src/lib/leads/workflow/playbook.ts` | `7c4bf05b562825b9b3c9d7f0e6a27eff13edc70f3b8ea32d5e98d98f2a1cc3f6` |
 | `src/lib/leads/workflow/playbook-cache.ts` | `2c16be23aa54888be27e6483e2634fa763b07be7bce551bb9199c4d55c66cfa0` |
 | `src/lib/leads/workflow/hybrid-search-policy.ts` | `c6f411fb4ac29addede040379f32f965dc5a0850ea8230a986233a910ba24294` |
 | `src/lib/leads/workflow/candidate-registry.ts` | `1666f5010362467f9fcd453115e6961cfeaa4ff2f6a3becf96f5aec168fce5cc` |
