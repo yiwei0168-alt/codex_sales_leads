@@ -773,10 +773,10 @@ flowchart TD
 | `src/lib/leads/workflow/qualification-agent.ts` | `6df11f6f97967747ea7cab01a9127491c4d7fc837cc967b321c6bd99d1c57eb3` |
 | `src/lib/leads/workflow/assessment-cache.ts` | `fd85ce372411429490cd1f272575f337a91a543bdd2b0c06cb04c362842c4df4` |
 | `src/lib/leads/workflow/assessment-review-agent.ts` | `fab927be853efd3e40907e444246d1acdddc3b60fb643807753743e9a526e8e7` |
-| `src/providers/deepseek.ts` | `a6339cca9173581a86e81e220784cfc97dc142b5bb7653f795aa018a976e0a8c` |
+| `src/providers/deepseek.ts` | `1854d05d89a8a6717d730119249782c1ddb9243c0789f787619b032b6237c6f5` |
 | `src/providers/discovery-contracts.ts` | `063e409c3545060f1a7be3222cbaa9c9a118b513cf7f12f3d839a9dce7f491c9` |
 | `src/providers/discovery.ts` | `389e236910d3769cf8ee55937beda7e57e2e4386e310178a6c7d00e787b7b5db` |
-| `src/providers/resilient-ai.ts` | `9bf63f3bbfc9426fd40783ae60a04fcb4fa1832ee0b04597f41e82c7a3451651` |
+| `src/providers/resilient-ai.ts` | `cf668776c1a800c4fb1eabec44593425e4a85c43ddd51eccee91ac465f163e50` |
 | `src/providers/openrouter.ts` | `b43ba8fdf08602cb7d3567ea88bdc2cfee704de0c1b197cc574abe5e9b89143d` |
 | `db/migrations/034_model_account_cash_cost.sql` | `4790c7ad12eda543e197c84ddd77c4a5ce296b7871ccee799f3aa2262684bdbb` |
 | `src/providers/tavily.ts` | `e981be543a25b56b456654fdc55c8dd67303ac42cb14b82c8c4b4d35d9c78d20` |
