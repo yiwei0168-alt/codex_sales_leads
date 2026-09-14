@@ -1,5 +1,7 @@
 # LangChain / LangGraph 销售线索工作流
 
+2026-09-14 / 阶段141：实际助手服务两轮自然语言用`deterministic-fallback`产生目标2再改目标1的提案，旧提案取消后确认新任务；图在评分前停于PostgreSQL检查点，恢复后合成正结果经SQL及本地生产双视口达标。内部阶段仍为夹具，模型真实语义及A11可信账单未验收。[证据](ASSISTANT_FALLBACK_POSITIVE_GRAPH_ACCEPTANCE_2026-09-14.md)。
+
 2026-09-14 / 阶段140：正结果图→产品SQL验收夹具增加全局`sales_company`清理及清理后断言；初版6条本轮无引用合成残留已删除。此为验收夹具数据卫生修复，原图、费用、角色和评分合同不变，真实业务仍待A11。[证据](POSITIVE_GRAPH_FIXTURE_CLEANUP_2026-09-14.md)。
 
 2026-09-14 / 阶段139：预置正结果图在`score_candidates`入口受控暂停，PostgreSQL保留已校正证据与7 micro-USD夹具预留；同检查点恢复后前置节点不重跑，评分/复核/交接及真实结果SQL各完成1次，生产任务页面双视口刷新一致。越权恢复拒绝，未知在途付费请求与跨进程完整正结果仍须另验。[证据](POSITIVE_GRAPH_SCORING_PAUSE_RECOVERY_2026-09-14.md)。

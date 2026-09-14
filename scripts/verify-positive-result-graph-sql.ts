@@ -10,6 +10,8 @@ import {companyCostKey,costRoundKey} from "../src/lib/billing/company-cost-conte
 import {reservePaidCall,setSpendBudget} from "../src/lib/billing/repository";
 import {hashPassword} from "../src/lib/auth/password";
 import {hashClientAddress} from "../src/lib/auth/session";
+import {processAssistantMessage} from "../src/lib/assistant/service";
+import type {LeadSearchPlan} from "../src/lib/assistant/types";
 import {leadEvidenceContentHash} from "../src/lib/leads/evidence-snapshot";
 import {buildLeadWorkflowGraph,type LeadWorkflowDependencies} from "../src/lib/leads/workflow/graph";
 import {LeadHandoffAssembler} from "../src/lib/leads/workflow/handoff-assembler";
@@ -23,8 +25,10 @@ import {ragContext,playbook as fixturePlaybook,candidate as fixtureCandidate,
   correctedCandidate as fixtureCorrected,assessment as fixtureAssessment,plan as fixturePlan} from "./workflow-recovery-fixtures";
 
 nextEnv.loadEnvConfig(process.cwd());
-const pauseResume=process.argv[2]==="--pause-resume";
-if(process.argv[2]&&!pauseResume)throw new Error("Unknown verification mode");
+const modes=new Set(process.argv.slice(2));
+if(modes.size!==process.argv.length-2||[...modes].some(mode=>!["--pause-resume","--assistant-fallback"].includes(mode)))
+  throw new Error("Unknown or repeated verification mode");
+const pauseResume=modes.has("--pause-resume"),assistantFallback=modes.has("--assistant-fallback");
 const app=process.env.DATABASE_URL,migration=process.env.DATABASE_MIGRATION_URL;
 if(!app||!migration)throw new Error("Both database connections required");
 const appUrl=new URL(app),migrationUrl=new URL(migration);
@@ -36,10 +40,11 @@ const httpBase=process.env.UI_VERIFY_BASE_URL?new URL(process.env.UI_VERIFY_BASE
 if(httpBase&&(httpBase.protocol!=="http:"||!["localhost","127.0.0.1"].includes(httpBase.hostname)))
   throw new Error("HTTP fixture requires a local server");
 const userId=randomUUID(),otherUserId=randomUUID(),workspaceId=randomUUID(),conversationId=randomUUID();
-const actionId=randomUUID(),runId=randomUUID(),domain=`positive-graph-${randomUUID()}.fixture.invalid`;
+let actionId:string=randomUUID();
+const runId=randomUUID(),domain=`positive-graph-${randomUUID()}.fixture.invalid`;
 const password=randomBytes(32).toString("base64url"),fixtureAddress=`positive-graph-${userId}`;
 const companyKey=companyCostKey(domain,"CO");
-const plan={...fixturePlan,countryCode:"CO",countryName:"Colombia",targetCount:1,roles:["Distributor" as const],
+let plan:LeadSearchPlan={...fixturePlan,countryCode:"CO",countryName:"Colombia",targetCount:1,roles:["Distributor"],
   queryLanguage:"es",userRequest:"Synthetic positive-result graph wiring check"};
 const evidenceText="Synthetic official source: networking distributor with Colombian business customers.";
 const evidence={...fixtureCandidate.evidence[0],url:`https://${domain}/`,title:"Positive graph fixture",
@@ -82,13 +87,38 @@ try{
     await client.query("insert into market_workspace(id,owner_id,slug,name,market,country_code,objective) values($1,$2,'global-sales','Positive graph fixture','Global','WW','Synthetic')",
       [workspaceId,userId]);
     await client.query("insert into assistant_conversation(id,user_id,title) values($1,$2,'Positive graph fixture')",[conversationId,userId]);
-    await client.query("insert into assistant_action(id,user_id,conversation_id,action_type,status,payload) values($1,$2,$3,'lead-search','proposed',$4)",
-      [actionId,userId,conversationId,JSON.stringify(plan)]);
-    await client.query("insert into assistant_message(user_id,conversation_id,role,intent,content) values($1,$2,'user','general',$3)",
-      [userId,conversationId,plan.userRequest]);
+    if(!assistantFallback){
+      await client.query("insert into assistant_action(id,user_id,conversation_id,action_type,status,payload) values($1,$2,$3,'lead-search','proposed',$4)",
+        [actionId,userId,conversationId,JSON.stringify(plan)]);
+      await client.query("insert into assistant_message(user_id,conversation_id,role,intent,content) values($1,$2,'user','general',$3)",
+        [userId,conversationId,plan.userRequest]);
+    }
     await client.query("commit");created=true;
   }catch(error){await client.query("rollback");throw error;}finally{client.release();}
   await setSpendBudget(userId,30);
+  if(assistantFallback){
+    const originalKey=process.env.KIMI_API_KEY;
+    delete process.env.KIMI_API_KEY;
+    try{
+      const first=await processAssistantMessage(userId,{conversationId,content:"搜索哥伦比亚2家分销商"});
+      const firstProposed=first.actions.filter(action=>action.status==="proposed");
+      assert.equal(firstProposed.length,1);assert.equal(firstProposed[0].payload.targetCount,2);
+      const second=await processAssistantMessage(userId,{conversationId,content:"请改为搜索哥伦比亚1家分销商"});
+      const proposed=second.actions.filter(action=>action.status==="proposed");
+      assert.equal(proposed.length,1);assert.equal(proposed[0].payload.targetCount,1);
+      assert.equal(proposed[0].payload.countryCode,"CO");
+      assert.deepEqual(proposed[0].payload.roles,["Distributor"]);
+      assert.equal(second.actions.find(action=>action.id===firstProposed[0].id)?.status,"cancelled");
+      const assistantPlans=second.messages.filter(message=>message.role==="assistant"&&message.intent==="lead-search");
+      assert.equal(assistantPlans.length,2);
+      assert.ok(assistantPlans.every(message=>message.metadata.planner?.plannerSource==="deterministic-fallback"));
+      actionId=proposed[0].id;
+      plan={...plan,...proposed[0].payload};
+    }finally{
+      if(originalKey===undefined)delete process.env.KIMI_API_KEY;
+      else process.env.KIMI_API_KEY=originalKey;
+    }
+  }
   const queued=await confirmAndQueueLeadWorkflow(userId,actionId,"inline");
   assert.ok(queued);threadId=queued.graphThreadId;
   await admin.query("insert into lead_search_run(id,workspace_id,provider,target_count,country_code,graph_thread_id,status) values($1,$2,'synthetic-positive-graph',1,'CO',$3,'running')",
@@ -198,7 +228,7 @@ try{
       }
     }finally{await browser.close();}
   }
-  console.log(JSON.stringify({positiveGraphSql:"passed",pauseResume,target:1,accepted:1,stopReason:"target-met",counters,
+  console.log(JSON.stringify({positiveGraphSql:"passed",pauseResume,assistantFallback,target:1,accepted:1,stopReason:"target-met",counters,
     handoffs:state.handoffs.length,companyRows:companies.length,assessmentRows:assessmentRows.length,
     completionReceipts:receipts.length,httpViewports,syntheticReservedMicros:7,allocatedMicros:7,actualPaidCalls:0,
     latencyMs:Date.now()-startedAt}));
