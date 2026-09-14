@@ -1,6 +1,6 @@
 import { z } from "zod";
 import {tariffValidity} from "./tariff-validity";
-import configuration from "../../../config/billing/request-bounds-v1.8.0.json";
+import configuration from "../../../config/billing/request-bounds-v1.9.0.json";
 import {foreignCostBoundSchema,foreignReservationMicros} from "./fx-policy";
 
 export class BudgetDeniedError extends Error {
@@ -29,12 +29,12 @@ export const tariffSchema=z.object({
   // Verified bound must include grounding/tools/reasoning and all automatic server-side work.
   boundDescription:z.string().min(30),reference:z.url(),verifiedAt:z.iso.datetime(),expiresAt:z.iso.datetime(),
   promotionEndsAt:z.iso.datetime().optional(),foreignCostBound:foreignCostBoundSchema.optional(),
-  requestContract:z.enum(["deepseek-nonthinking-text-v1","kimi-cn-text-json-v1","aliyun-beijing-dense-text-v1","brave-web-search-v1","tavily-search-v1","tavily-basic-extract-v1","exa-company-auto-text-v1","google-places-text-enterprise-v1","searchapi-google-bing-v1","openrouter-sol-standard-json-v1","openrouter-sol-openai-playbook-v1"]).optional(),
+  requestContract:z.enum(["deepseek-nonthinking-text-v1","kimi-cn-text-json-v1","aliyun-beijing-dense-text-v1","brave-web-search-v1","tavily-search-v1","tavily-basic-extract-v1","exa-company-auto-text-v1","google-places-text-enterprise-v1","searchapi-google-bing-v1","openrouter-sol-standard-json-v1","openrouter-sol-openai-playbook-v1","openrouter-terra-review-json-v1","openrouter-sol-judge-json-v1"]).optional(),
 }).strict();
 export const billingPolicy=z.object({version:z.string().min(1),rules:z.array(tariffSchema)}).parse(configuration);
 export type RequestBound=z.infer<typeof tariffSchema>;
 export function rateReviewHoldKeys(tariffKey:string):string[]{
-  return tariffKey==="openrouter-sol-openai-playbook-credits"
+  return tariffKey==="openrouter-sol-openai-playbook-credits"||tariffKey==="openrouter-sol-judge-credits-standard-json"
     ?[tariffKey,"openrouter-sol-credits-standard-text-json"]:[tariffKey];
 }
 export function dollarsToMicros(value:string):number {
@@ -44,7 +44,9 @@ export function dollarsToMicros(value:string):number {
 }
 export function quoteRequest(input:{origin:string;pathname:string;model:string;requestBytes:number;outputTokens:number|null},rules=billingPolicy.rules,now=Date.now(),key?:string):RequestBound{
   const matches=rules.filter(rule=>rule.origin===input.origin&&rule.pathname===input.pathname&&rule.model===input.model);
-  const selected=key?matches.filter(rule=>rule.key===key):matches;
+  const selected=key?matches.filter(rule=>rule.key===key):matches.filter(rule=>
+    rule.requestContract!=="openrouter-terra-review-json-v1"
+      &&rule.requestContract!=="openrouter-sol-judge-json-v1");
   // Without an explicit contract selection, overlapping routes keep the highest bound.
   const highest=Math.max(...selected.map(rule=>rule.maximumChargeMicros));
   const conservative=selected.filter(rule=>rule.maximumChargeMicros===highest);

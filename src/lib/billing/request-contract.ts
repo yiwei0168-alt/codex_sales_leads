@@ -27,6 +27,27 @@ export function assertRequestContract(rule:RequestBound,body:Record<string,unkno
       &&record(format.json_schema)&&keys(format.json_schema,["name","strict","schema","description"])
       &&typeof format.json_schema.name==="string"&&format.json_schema.strict===true&&record(format.json_schema.schema);
   }
+  if(rule.requestContract==="openrouter-terra-review-json-v1"
+    ||rule.requestContract==="openrouter-sol-judge-json-v1"){
+    const terra=rule.requestContract==="openrouter-terra-review-json-v1";
+    const format=body.response_format,reasoning=body.reasoning;
+    valid=method==="POST"&&rule.origin==="https://openrouter.ai"
+      &&rule.pathname==="/api/v1/chat/completions"&&query===""
+      &&rule.model===(terra?"openai/gpt-5.6-terra":"openai/gpt-5.6-sol")&&body.model===rule.model
+      &&keys(body,["model","messages","provider","response_format","reasoning","stream","temperature","max_completion_tokens"])
+      &&(body.stream===undefined||body.stream===false)&&body.temperature===0
+      &&Number.isSafeInteger(body.max_completion_tokens)&&(body.max_completion_tokens as number)>0
+      &&(body.max_completion_tokens as number)<=(terra?8192:12000)
+      &&record(reasoning)&&keys(reasoning,["effort"])&&reasoning.effort===(terra?"medium":"high")
+      &&record(body.provider)&&keys(body.provider,["require_parameters","data_collection"])
+      &&body.provider.require_parameters===true&&body.provider.data_collection==="deny"
+      &&Array.isArray(body.messages)&&body.messages.length===2
+      &&textMessage(body.messages[0],"system")&&textMessage(body.messages[1],"user")
+      &&record(format)&&keys(format,["type","json_schema"])&&format.type==="json_schema"
+      &&record(format.json_schema)&&keys(format.json_schema,["name","strict","schema","description"])
+      &&format.json_schema.name===(terra?"lead-review-secondary":"lead-review-judge")
+      &&format.json_schema.strict===true&&record(format.json_schema.schema);
+  }
   if(rule.requestContract==="searchapi-google-bing-v1"){
     const params=new URLSearchParams(query);
     const allowed=["engine","q","location","gl","hl","num"];

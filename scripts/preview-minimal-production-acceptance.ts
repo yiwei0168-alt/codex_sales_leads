@@ -237,8 +237,14 @@ try{
     if(url.username||url.password||url.search)throw new Error("Unexpected endpoint credentials or query");
     try{
       const input={origin:url.origin,pathname:url.pathname,model:probe.model,requestBytes:probe.requestBytes,outputTokens:probe.outputTokens};
-      const bound=(await nativeModelBound(input)??await embeddingModelBound(input))?.rule??(probe.stage==="market-playbook"&&probe.model==="openai/gpt-5.6-sol"
-        ?quoteRequest(input,undefined,Date.now(),"openrouter-sol-openai-playbook-credits"):quoteRequest(input));
+      const explicitKey=probe.stage==="market-playbook"&&probe.model==="openai/gpt-5.6-sol"
+        ?"openrouter-sol-openai-playbook-credits"
+        :probe.stage==="secondary-review"&&probe.model==="openai/gpt-5.6-terra"
+          ?"openrouter-terra-review-credits-standard-json"
+          :probe.stage==="disagreement-judge"&&probe.model==="openai/gpt-5.6-sol"
+            ?"openrouter-sol-judge-credits-standard-json":undefined;
+      const bound=(await nativeModelBound(input)??await embeddingModelBound(input))?.rule
+        ??quoteRequest(input,undefined,Date.now(),explicitKey);
       stages.push({stage:probe.stage,model:probe.model,conditional:Boolean(probe.conditional),tariff:"available",maximumPerCallUsd:bound.maximumChargeMicros/1e6,
         fitsCurrentRemainingBudget:bound.maximumChargeMicros<=Number(budget.budget.remaining_micros),expiresAt:bound.expiresAt});
     }catch(error){

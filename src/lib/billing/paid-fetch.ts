@@ -45,8 +45,15 @@ export function budgetedFetch(transport:typeof fetch=fetch):typeof fetch {
     const attempt=currentModelAttempt();
     const playbookSol=attempt?.task==="lead-playbook"&&quote.origin==="https://openrouter.ai"
       &&quote.pathname==="/api/v1/chat/completions"&&quote.model==="openai/gpt-5.6-sol";
-    const rule=native?.rule??(scope.tariffPolicy?quoteRequest(quote,policy.rules):playbookSol
-      ?quoteRequest(quote,policy.rules,Date.now(),"openrouter-sol-openai-playbook-credits"):quoteRequest(quote));
+    const reviewTerra=attempt?.task==="lead-review-secondary"&&quote.origin==="https://openrouter.ai"
+      &&quote.pathname==="/api/v1/chat/completions"&&quote.model==="openai/gpt-5.6-terra";
+    const judgeSol=attempt?.task==="lead-review-judge"&&quote.origin==="https://openrouter.ai"
+      &&quote.pathname==="/api/v1/chat/completions"&&quote.model==="openai/gpt-5.6-sol";
+    const selectedContract=playbookSol?"openrouter-sol-openai-playbook-credits"
+      :reviewTerra?"openrouter-terra-review-credits-standard-json"
+        :judgeSol?"openrouter-sol-judge-credits-standard-json":undefined;
+    const rule=native?.rule??(scope.tariffPolicy?quoteRequest(quote,policy.rules):selectedContract
+      ?quoteRequest(quote,policy.rules,Date.now(),selectedContract):quoteRequest(quote));
     assertRequestContract(rule,parsed,url.search,request.method,request.headers);
     const modelAttempt=attempt?{
       invocationId:metricIdentifier(attempt.invocationId),provider:metricIdentifier(attempt.provider),

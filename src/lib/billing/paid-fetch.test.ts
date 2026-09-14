@@ -54,6 +54,29 @@ it("uses the S01 tariff only for market-playbook Sol attempts, before transport"
   expect(mocks.quote.mock.calls[1][3]).toBeUndefined();
   expect(mocks.reserve).not.toHaveBeenCalled();expect(transport).not.toHaveBeenCalled();
 });
+it.each([{task:"lead-review-secondary",key:"openrouter-terra-review-credits-standard-json",
+  model:"openai/gpt-5.6-terra",effort:"medium",limit:8192,name:"lead-review-secondary"},
+{task:"lead-review-judge",key:"openrouter-sol-judge-credits-standard-json",
+  model:"openai/gpt-5.6-sol",effort:"high",limit:12000,name:"lead-review-judge"}])
+("selects the approved $task bound only for its attributed model attempt",async entry=>{
+  const rule=billingPolicy.rules.find(item=>item.key===entry.key)!;
+  mocks.quote.mockImplementation((_quote,_rules,_now,key)=>key===entry.key?rule:
+    (()=>{throw new BudgetDeniedError("missing-tariff");})());
+  const body={model:entry.model,temperature:0,reasoning:{effort:entry.effort},
+    max_completion_tokens:entry.limit,provider:{require_parameters:true,data_collection:"deny"},
+    response_format:{type:"json_schema",json_schema:{name:entry.name,strict:true,schema:{type:"object"}}},
+    messages:[{role:"system",content:"synthetic"},{role:"user",content:"synthetic"}]};
+  const transport=vi.fn<typeof fetch>().mockResolvedValue(Response.json({choices:[{finish_reason:"stop",
+    message:{content:"{}"}}]}));
+  await withSpendContext(scope,()=>withModelAttempt({invocationId:`${entry.task}-fixture`,attempt:1,
+    provider:"openrouter-openai-review",task:entry.task,promptVersion:"fixture"},
+  ()=>budgetedFetch(transport)("https://openrouter.ai/api/v1/chat/completions",{
+    method:"POST",body:JSON.stringify(body)})));
+  expect(mocks.quote.mock.calls[0][3]).toBe(entry.key);
+  expect(mocks.reserve.mock.calls[0][1]).toMatchObject({tariffKey:entry.key,
+    maximumChargeMicros:rule.maximumChargeMicros});
+  expect(transport).toHaveBeenCalledOnce();
+});
 it("blocks a repeated admitted search before transport when persistent accounting refuses replay",async()=>{
   const rule=billingPolicy.rules.find(item=>item.requestContract==="brave-web-search-v1")!;
   mocks.quote.mockReturnValue(rule);
