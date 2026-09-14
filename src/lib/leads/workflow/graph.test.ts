@@ -605,6 +605,30 @@ describe("LangGraph lead workflow", () => {
     expect(state.stageMetrics.find(metric=>metric.stage==="score_candidates")?.metadata.reusedCompletedArtifacts).toBe(1);
   });
 
+  it("persists Tavily credit report coverage separately from estimated usage in stage metrics", async () => {
+    const deps = dependencies([]);
+    deps.collectEvidence = vi.fn(async () => ({ candidates: [candidate], creditsUsed: 3, warnings: [],
+      providerMetrics: { provider: "tavily" as const, attempts: 3, retries: 1, latencyMs: 10,
+        reportedCreditCalls: 1, estimatedCreditCalls: 1, reportedCredits: 2,
+        estimatedCredits: 1, unknownCreditAttempts: 1 } }));
+    deps.correctionAgent.correct = vi.fn(async () => ({ candidates: [correctedCandidate], creditsUsed: 1,
+      warnings: [], providerMetrics: { provider: "tavily" as const, attempts: 1, retries: 0,
+        latencyMs: 5, reportedCreditCalls: 0, estimatedCreditCalls: 1, reportedCredits: 0,
+        estimatedCredits: 1, unknownCreditAttempts: 0 } }));
+    deps.loadPlaybookCache = vi.fn(async () => playbook);
+    deps.loadAssessmentCache = vi.fn(async () => new Map([[assessment.candidateId, assessment]]));
+    const state = await buildLeadWorkflowGraph(deps).invoke({ userId: "user-1", actionId: "action-1",
+      graphThreadId: "credit-provenance", workspaceId: "workspace-1", plan, phase: "queued",
+      ragContext: [], candidates: [], assessments: [], assessmentReviews: [], handoffs: [],
+      creditsUsed: 0, modelUsage: [], stageMetrics: [], warnings: [] });
+    expect(state.stageMetrics.find(metric => metric.stage === "collect_evidence")?.metadata).toMatchObject({
+      reportedCreditCalls: 1, estimatedCreditCalls: 1, reportedCredits: 2,
+      estimatedCredits: 1, unknownCreditAttempts: 1 });
+    expect(state.stageMetrics.find(metric => metric.stage === "correct_candidates")?.metadata).toMatchObject({
+      reportedCreditCalls: 0, estimatedCreditCalls: 1, reportedCredits: 0,
+      estimatedCredits: 1, unknownCreditAttempts: 0 });
+  });
+
   it("repeats the production search loop until the requested valid count is reached", async () => {
     const events: string[] = [];
     const deps = dependencies(events);

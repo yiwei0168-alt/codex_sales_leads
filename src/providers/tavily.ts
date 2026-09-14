@@ -82,6 +82,9 @@ export interface TavilySearchResponse {
   results: TavilySearchResult[];
   responseTime?: number;
   creditsUsed: number;
+  /** API credits only; an estimate is never a provider-reported charge or USD settlement. */
+  creditSource?: "provider-report" | "estimate";
+  reportedCredits?: number | null;
   requestId?: string;
   attempts?: number;
   retries?: number;
@@ -97,6 +100,8 @@ export interface TavilyExtractResponse {
   results: TavilyExtractResult[];
   failedUrls: string[];
   creditsUsed: number;
+  creditSource?: "provider-report" | "estimate" | "no-call";
+  reportedCredits?: number | null;
   requestId?: string;
   attempts?: number;
   retries?: number;
@@ -109,6 +114,10 @@ interface TavilyWireResponse {
   response_time?: number;
   request_id?: string;
   usage?: { credits?: number };
+}
+
+function validReportedCredits(value: unknown): number | null {
+  return typeof value === "number" && Number.isSafeInteger(value) && value >= 0 ? value : null;
 }
 
 export class TavilySearchProvider {
@@ -169,6 +178,7 @@ export class TavilySearchProvider {
     }
     if (!response.ok) throw new TavilyProviderUnavailableError(
       new Error(`HTTP ${response.status}: ${JSON.stringify(body.detail ?? body)}`), attempts, Date.now() - startedAt);
+    const reportedCredits = validReportedCredits(body.usage?.credits);
     return {
       query: body.query ?? input.query,
       results: (body.results ?? []).flatMap((item) => item.url && item.title ? [{
@@ -179,7 +189,9 @@ export class TavilySearchProvider {
         rawContent: item.raw_content,
       }] : []),
       responseTime: body.response_time,
-      creditsUsed: body.usage?.credits ?? (depth === "advanced" ? 2 : 1),
+      creditsUsed: reportedCredits ?? (depth === "advanced" ? 2 : 1),
+      creditSource: reportedCredits === null ? "estimate" : "provider-report",
+      reportedCredits,
       requestId: body.request_id,
       attempts,
       retries: Math.max(0, attempts - 1),
@@ -192,6 +204,7 @@ export class TavilySearchProvider {
     const apiKey = process.env.TAVILY_API_KEY?.trim();
     if (!apiKey) throw new TavilyProviderUnavailableError(new Error("TAVILY_API_KEY is not configured"), 0, 0);
     if (urls.length === 0) return { results: [], failedUrls: [], creditsUsed: 0,
+      creditSource: "no-call", reportedCredits: null,
       attempts: 0, retries: 0, latencyMs: 0 };
     let result: { response: Response; attempts: number };
     try {
@@ -230,10 +243,13 @@ export class TavilySearchProvider {
     }
     if (!response.ok) throw new TavilyProviderUnavailableError(
       new Error(`HTTP ${response.status}: ${JSON.stringify(body.detail ?? body)}`), attempts, Date.now() - startedAt);
+    const reportedCredits = validReportedCredits(body.usage?.credits);
     return {
       results: (body.results ?? []).flatMap((item) => item.url ? [{ url: item.url, rawContent: item.raw_content ?? "" }] : []),
       failedUrls: (body.failed_results ?? []).flatMap((item) => typeof item === "string" ? [item] : item.url ? [item.url] : []),
-      creditsUsed: body.usage?.credits ?? Math.ceil((body.results?.length ?? 0) / 5),
+      creditsUsed: reportedCredits ?? Math.ceil((body.results?.length ?? 0) / 5),
+      creditSource: reportedCredits === null ? "estimate" : "provider-report",
+      reportedCredits,
       requestId: body.request_id,
       attempts,
       retries: Math.max(0, attempts - 1),

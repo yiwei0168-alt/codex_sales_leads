@@ -238,7 +238,8 @@ export class LeadEvidenceCorrectionAgent {
 
   private async supplement(candidates: LeadWorkflowCandidate[], plan: LeadSearchPlan) {
     const output = new Array<{ candidate: LeadWorkflowCandidate; credits: number; attempts: number;
-      retries: number; latencyMs: number; warning?: string }>(candidates.length);
+      retries: number; latencyMs: number; warning?: string;
+      creditObservation?: { source: "provider-report" | "estimate"; credits: number } }>(candidates.length);
     let cursor = 0;
     const worker = async () => {
       while (true) {
@@ -276,6 +277,7 @@ export class LeadEvidenceCorrectionAgent {
               evidence: [...new Map([...candidate.evidence, ...added].map((item) => [item.url, item])).values()],
             },
             credits: response.creditsUsed,
+            creditObservation: { source: response.creditSource ?? "estimate", credits: response.creditsUsed },
             attempts: response.attempts ?? 1,
             retries: response.retries ?? 0,
             latencyMs: response.latencyMs ?? 0,
@@ -293,13 +295,22 @@ export class LeadEvidenceCorrectionAgent {
       }
     };
     await Promise.all(Array.from({ length: Math.min(this.searchConcurrency, candidates.length) }, worker));
+    const creditObservations = output.flatMap((item) => item.creditObservation ? [item.creditObservation] : []);
     return {
       candidates: output.map((item) => item.candidate),
       creditsUsed: output.reduce((sum, item) => sum + item.credits, 0),
       providerMetrics: { provider: "tavily" as const,
         attempts: output.reduce((sum, item) => sum + item.attempts, 0),
         retries: output.reduce((sum, item) => sum + item.retries, 0),
-        latencyMs: output.reduce((sum, item) => sum + item.latencyMs, 0) },
+        latencyMs: output.reduce((sum, item) => sum + item.latencyMs, 0),
+        reportedCreditCalls: creditObservations.filter((item) => item.source === "provider-report").length,
+        estimatedCreditCalls: creditObservations.filter((item) => item.source === "estimate").length,
+        reportedCredits: creditObservations.filter((item) => item.source === "provider-report")
+          .reduce((sum, item) => sum + item.credits, 0),
+        estimatedCredits: creditObservations.filter((item) => item.source === "estimate")
+          .reduce((sum, item) => sum + item.credits, 0),
+        unknownCreditAttempts: Math.max(0, output.reduce((sum, item) => sum + item.attempts, 0)
+          - creditObservations.length) },
       warnings: output.flatMap((item) => item.warning ? [item.warning] : []),
     };
   }

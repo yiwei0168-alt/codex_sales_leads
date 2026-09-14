@@ -94,7 +94,9 @@ export interface LeadWorkflowDependencies {
     warnings: string[];
     cacheHits?: number;
     cacheMisses?: number;
-    providerMetrics?: { provider: "tavily"; attempts: number; retries: number; latencyMs: number };
+    providerMetrics?: { provider: "tavily"; attempts: number; retries: number; latencyMs: number;
+      reportedCreditCalls?: number; estimatedCreditCalls?: number;
+      reportedCredits?: number; estimatedCredits?: number; unknownCreditAttempts?: number };
   }> };
   qualificationAgent: Pick<LeadQualificationAgent, "evaluate"> & Partial<Pick<LeadQualificationAgent, "evaluateWithUsage"|"cacheContracts"|"completedCacheContracts"|"phasedCacheContracts">>;
   assessmentReviewAgent: Pick<LeadAssessmentReviewAgent, "review">;
@@ -220,7 +222,12 @@ export function buildLeadWorkflowGraph(
           inputItems:1,outputItems:candidate?.evidence.length??0,paidSearchCredits:output.creditsUsed,
           validArtifacts:valid?1:0,downstreamUsedArtifacts:valid?1:0,
           metadata:{processingRecovery:true,providerAttempts:output.providerMetrics?.attempts??null,
-            retries:output.providerMetrics?.retries??null,providerLatencyMs:output.providerMetrics?.latencyMs??null}})]};
+            retries:output.providerMetrics?.retries??null,providerLatencyMs:output.providerMetrics?.latencyMs??null,
+            reportedCreditCalls:output.providerMetrics?.reportedCreditCalls??null,
+            estimatedCreditCalls:output.providerMetrics?.estimatedCreditCalls??null,
+            reportedCredits:output.providerMetrics?.reportedCredits??null,
+            estimatedCredits:output.providerMetrics?.estimatedCredits??null,
+            unknownCreditAttempts:output.providerMetrics?.unknownCreditAttempts??null}})]};
     })
     .addNode("recover_saved_evidence",async()=>{throw new WorkflowProcessingIncompleteError();})
     .addNode("discover_candidates", async (state) => {
@@ -296,7 +303,12 @@ export function buildLeadWorkflowGraph(
         downstreamUsedArtifacts: validEvidenceCount,
         metadata: { providerAttempts: enriched.providerMetrics?.attempts ?? 0,
           retries: enriched.providerMetrics?.retries ?? 0,
-          providerLatencyMs: enriched.providerMetrics?.latencyMs ?? 0 } });
+          providerLatencyMs: enriched.providerMetrics?.latencyMs ?? 0,
+          reportedCreditCalls: enriched.providerMetrics?.reportedCreditCalls ?? null,
+          estimatedCreditCalls: enriched.providerMetrics?.estimatedCreditCalls ?? null,
+          reportedCredits: enriched.providerMetrics?.reportedCredits ?? null,
+          estimatedCredits: enriched.providerMetrics?.estimatedCredits ?? null,
+          unknownCreditAttempts: enriched.providerMetrics?.unknownCreditAttempts ?? null } });
       return {
         phase: "collecting-evidence" as const,
         candidates: enriched.candidates,
@@ -322,6 +334,11 @@ export function buildLeadWorkflowGraph(
           providerAttempts: corrected.providerMetrics?.attempts ?? 0,
           retries: corrected.providerMetrics?.retries ?? 0,
           providerLatencyMs: corrected.providerMetrics?.latencyMs ?? 0,
+          reportedCreditCalls: corrected.providerMetrics?.reportedCreditCalls ?? null,
+          estimatedCreditCalls: corrected.providerMetrics?.estimatedCreditCalls ?? null,
+          reportedCredits: corrected.providerMetrics?.reportedCredits ?? null,
+          estimatedCredits: corrected.providerMetrics?.estimatedCredits ?? null,
+          unknownCreditAttempts: corrected.providerMetrics?.unknownCreditAttempts ?? null,
           requestPreparations:(corrected.usage??[]).flatMap(usage=>usage.requestPreparation?[usage.requestPreparation]:[]),
           retryRequired, unresolved,
           correctedOutOfRole: valid - inScope } });

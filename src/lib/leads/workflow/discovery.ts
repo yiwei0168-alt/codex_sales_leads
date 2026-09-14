@@ -239,11 +239,13 @@ async function enrichOne(
   tavily: TavilySearchProvider,
   options: LeadEvidenceCollectionOptions,
 ): Promise<{ candidate: LeadWorkflowCandidate; credits: number; requests: number; retries: number;
-  latencyMs: number; warning?: string }> {
+  latencyMs: number; warning?: string;
+  creditObservations?: Array<{ source: "provider-report" | "estimate"; credits: number }> }> {
   let credits = 0;
   let requests = 0;
   let retries = 0;
   let latencyMs = 0;
+  const creditObservations: Array<{ source: "provider-report" | "estimate"; credits: number }> = [];
   try {
     if (!validCompanyDomainIdentity(candidate.domain)) {
       const warning = `Evidence acquisition skipped for invalid or public-suffix-only company domain ${candidate.domain}.`;
@@ -277,6 +279,7 @@ async function enrichOne(
       includeDomains: [candidate.domain],
     }, AbortSignal.timeout(45_000));
     credits += official.creditsUsed;
+    creditObservations.push({ source: official.creditSource ?? "estimate", credits: official.creditsUsed });
     requests += official.attempts ?? 1;
     retries += official.retries ?? 0;
     latencyMs += official.latencyMs ?? 0;
@@ -286,6 +289,8 @@ async function enrichOne(
       const response = await tavily.extract(officialResults.map((item) => item.url), AbortSignal.timeout(45_000));
       extracted = { results: response.results, creditsUsed: response.creditsUsed };
       credits += response.creditsUsed;
+      if (response.creditSource !== "no-call") creditObservations.push({
+        source: response.creditSource ?? "estimate", credits: response.creditsUsed });
       requests += response.attempts ?? 1;
       retries += response.retries ?? 0;
       latencyMs += response.latencyMs ?? 0;
@@ -321,6 +326,7 @@ async function enrichOne(
       requests,
       retries,
       latencyMs,
+      creditObservations,
       warning: added.length === 0 ? `No official-domain evidence was extracted for ${candidate.domain}.` : undefined,
     };
   } catch (error) {
@@ -331,7 +337,7 @@ async function enrichOne(
     latencyMs += failed.latencyMs;
     const warning = `Evidence collection failed for ${candidate.domain}: ${error instanceof Error ? error.message : String(error)}`;
     return { candidate: { ...candidate, evidenceWarnings: [...candidate.evidenceWarnings, warning] }, credits,
-      requests, retries, latencyMs, warning };
+      requests, retries, latencyMs, warning, creditObservations };
   }
 }
 
@@ -347,7 +353,9 @@ export async function collectLeadEvidence(
   plan: LeadSearchPlan,
   inputOptions: LeadEvidenceCollectionOptions = {},
 ): Promise<{ candidates: LeadWorkflowCandidate[]; creditsUsed: number; warnings: string[];
-  providerMetrics?: { provider: "tavily"; attempts: number; retries: number; latencyMs: number } }> {
+  providerMetrics?: { provider: "tavily"; attempts: number; retries: number; latencyMs: number;
+    reportedCreditCalls: number; estimatedCreditCalls: number;
+    reportedCredits: number; estimatedCredits: number; unknownCreditAttempts: number } }> {
   const options = {
     allowReusableEvidence: inputOptions.allowReusableEvidence ?? true,
     persistEvidence: inputOptions.persistEvidence ?? true,
@@ -370,12 +378,21 @@ export async function collectLeadEvidence(
     ?? Number.parseInt(process.env.LEAD_EVIDENCE_CONCURRENCY ?? "8", 10);
   const concurrency = Math.max(1, Math.min(16, Number.isFinite(configuredConcurrency) ? configuredConcurrency : 8));
   await Promise.all(Array.from({ length: Math.min(concurrency, candidates.length) }, () => worker()));
+  const creditObservations = results.flatMap((item) => item.creditObservations ?? []);
   return {
     candidates: results.map((item) => item.candidate),
     creditsUsed: results.reduce((sum, item) => sum + item.credits, 0),
     warnings: results.flatMap((item) => item.warning ? [item.warning] : []),
     providerMetrics: { provider: "tavily", attempts: results.reduce((sum, item) => sum + item.requests, 0),
       retries: results.reduce((sum, item) => sum + item.retries, 0),
-      latencyMs: results.reduce((sum, item) => sum + item.latencyMs, 0) },
+      latencyMs: results.reduce((sum, item) => sum + item.latencyMs, 0),
+      reportedCreditCalls: creditObservations.filter((item) => item.source === "provider-report").length,
+      estimatedCreditCalls: creditObservations.filter((item) => item.source === "estimate").length,
+      reportedCredits: creditObservations.filter((item) => item.source === "provider-report")
+        .reduce((sum, item) => sum + item.credits, 0),
+      estimatedCredits: creditObservations.filter((item) => item.source === "estimate")
+        .reduce((sum, item) => sum + item.credits, 0),
+      unknownCreditAttempts: Math.max(0, results.reduce((sum, item) => sum + item.requests, 0)
+        - creditObservations.length) },
   };
 }

@@ -7,6 +7,38 @@ afterEach(() => {
 });
 
 describe("TavilySearchProvider country scope", () => {
+  it("separates reported Search credits from a missing or malformed credit estimate", async () => {
+    vi.stubEnv("TAVILY_API_KEY", "test-key");
+    const fetchMock = vi.fn()
+      .mockResolvedValueOnce(new Response(JSON.stringify({ usage: { credits: 0 }, results: [] })))
+      .mockResolvedValueOnce(new Response(JSON.stringify({ results: [] })))
+      .mockResolvedValueOnce(new Response(JSON.stringify({ usage: { credits: -4 }, results: [] })));
+    const provider = new TavilySearchProvider({ fetchImplementation: fetchMock });
+    expect(await provider.search({ query: "first" })).toMatchObject({
+      creditsUsed: 0, reportedCredits: 0, creditSource: "provider-report" });
+    expect(await provider.search({ query: "second" })).toMatchObject({
+      creditsUsed: 1, reportedCredits: null, creditSource: "estimate" });
+    expect(await provider.search({ query: "third", searchDepth: "advanced" })).toMatchObject({
+      creditsUsed: 2, reportedCredits: null, creditSource: "estimate" });
+  });
+
+  it("keeps Extract usage estimates and no-call zero distinct from provider reports", async () => {
+    vi.stubEnv("TAVILY_API_KEY", "test-key");
+    const fetchMock = vi.fn()
+      .mockResolvedValueOnce(new Response(JSON.stringify({ usage: { credits: 1 }, results: [{
+        url: "https://example.com/one", raw_content: "one" }] })))
+      .mockResolvedValueOnce(new Response(JSON.stringify({ results: [{
+        url: "https://example.com/two", raw_content: "two" }] })));
+    const provider = new TavilySearchProvider({ fetchImplementation: fetchMock });
+    expect(await provider.extract([])).toMatchObject({ creditsUsed: 0, reportedCredits: null,
+      creditSource: "no-call" });
+    expect(await provider.extract(["https://example.com/one"])).toMatchObject({
+      creditsUsed: 1, reportedCredits: 1, creditSource: "provider-report" });
+    expect(await provider.extract(["https://example.com/two"])).toMatchObject({
+      creditsUsed: 1, reportedCredits: null, creditSource: "estimate" });
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
   it("does not silently default a global request to Mexico", async () => {
     vi.stubEnv("TAVILY_API_KEY", "test-key");
     const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({ results: [], usage: { credits: 1 } }), { status: 200 }));
