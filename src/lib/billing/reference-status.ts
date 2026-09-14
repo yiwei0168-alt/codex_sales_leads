@@ -1,7 +1,7 @@
 import kimi from "../../../config/billing/kimi-text-bounds-v1.0.0.json";
 import embedding from "../../../config/billing/aliyun-embedding-bounds-v1.0.0.json";
 import { tariffValidity } from "./tariff-validity";
-import { foreignCostBoundSchema, foreignReservationMicros } from "./fx-policy";
+import { foreignCostBoundSchema, foreignReservationMicros, PRODUCTION_FX_MAX_AGE_MS } from "./fx-policy";
 import { ECB_REFERENCE_URL } from "./ecb-reference";
 
 export function fxReferenceStatus(value:unknown,now=Date.now()) {
@@ -11,7 +11,8 @@ export function fxReferenceStatus(value:unknown,now=Date.now()) {
     return {status:"invalid" as const,asOf:null,retrievedAt:null,effectiveExpiresAt:null};
   }
   const fx=parsed.data.fx;
-  const dates={asOf:fx.asOf,retrievedAt:fx.retrievedAt,effectiveExpiresAt:new Date(Date.parse(fx.asOf)+72*3600000).toISOString()};
+  const dates={asOf:fx.asOf,retrievedAt:fx.retrievedAt,
+    effectiveExpiresAt:new Date(Date.parse(fx.asOf)+PRODUCTION_FX_MAX_AGE_MS).toISOString()};
   try {foreignReservationMicros(parsed.data,now);return {status:"valid" as const,...dates};}
   catch {return {status:"expired-or-invalid" as const,...dates};}
 }

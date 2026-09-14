@@ -1,4 +1,9 @@
 # 用户确认规则登记表
+
+### A26 — 本地验收固定汇率、USD50 上限及产品每周汇率（2026-09-14，用户明确确认；实现/无付费验收通过，真实闭环待验）
+
+用户原话：“汇率在验证阶段只取一次数值，不过期。真实产品运行时，每周取一次汇率。放宽本次验证上限至50美元或者以默认验证阶段汇率等价的人民币金额。加快验证完成。”本次选择 **USD50**，仅限隔离本地验收账号；不设第二个人民币预算，也不改普通产品用户预算。验收固定一份库内官方 ECB 版本 `ecb-cny-usd-2026-09-11`（USD/EUR `1.1592`、CNY/EUR `7.7762`、2026-09-13 05:47:16 UTC 取回），验证期间不因日历年龄失效、不再次抓取。真实产品共享每周一次官方汇率刷新，失败后按小时退避，普通运行最多使用七天有效参考；原 5% 仅预留缓冲保留。A25 逐请求原子预留及未知单步费用/预算不足/未知付费结果暂停继续有效，原 USD12.324404 历史占用与六笔未知账单不重置。此条覆盖 A01/A10/A25 中旧的本地 USD30、每日/72 小时验收执行值，不追改其历史确认文本；没有批准新模型、搜索路由或费率。实现状态：代码、1,051 项测试/类型/lint/生产构建/安全审计及真实库只读预检通过；隔离额度已改 USD50，未发出的合成预留有追加式零费用核销。真实 A11 闭环和整体验收仍未通过。[证据](A26_WEEKLY_FX_AND_USD50_LOCAL_ACCEPTANCE_2026-09-14.md)。
+
 2026-09-14 stage 230 / A25 observation: the first scheduled official ECB recheck after A25 still returned only the expired Sep 11 reference. Intent-light and knowledge-embedding remain held at their own paid steps, even though a whole-run quote is no longer required. Next stored retry is 13:50:54 UTC. This is not a new user confirmation, tariff, FX rate or real A11 acceptance. [Evidence](FX_A25_DUE_RECHECK_STAGE230_2026-09-14.md).
 ### A25 — 费用验收采用逐步预留（2026-09-14，用户明确确认，预检口径已更新；真实闭环待验收）
 

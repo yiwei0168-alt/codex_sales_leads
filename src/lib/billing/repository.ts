@@ -110,7 +110,8 @@ export async function readSpendBudget(userId:string){
     from user_spend_budget where user_id=$1`,[userId]);
   const usage=await tenantQuery(userId,`select stage,count(*)::int as calls,sum(reserved_micros)::text as reserved_micros,
     ${COST_SUMMARY_SQL},
-    sum(reported_micros)::text as reported_micros,count(*) filter(where reported_micros is null)::int as unknown_bills,
+    sum(reported_micros)::text as reported_micros,
+    count(*) filter(where reported_micros is null and settled_source is distinct from 'verified-unbilled')::int as unknown_bills,
     count(*) filter(where status='reserved')::int as unsettled_calls from paid_call_reservation where user_id=$1 group by stage order by stage`,[userId]);
   return {budget:rows[0]??null,stages:usage,modelUsage:await readProviderUsageSummary(userId)};
 }
@@ -140,7 +141,8 @@ export async function readTaskSpendBudget(userId:string,actionId:string){
   const inheritedTaskLimits=rows.filter(row=>row.action_id!==actionId&&row.limit_micros!==null);
   const stages=await tenantQuery(userId,`select stage,count(*)::int as calls,sum(reserved_micros)::text as reserved_micros,
     ${COST_SUMMARY_SQL},
-    sum(reported_micros)::text as reported_micros,count(*) filter(where reported_micros is null)::int as unknown_bills,
+    sum(reported_micros)::text as reported_micros,
+    count(*) filter(where reported_micros is null and settled_source is distinct from 'verified-unbilled')::int as unknown_bills,
     sum((metrics->>'latencyMs')::bigint)::text as summed_latency_ms
     from paid_call_reservation where user_id=$1 and operation_id=$2 group by stage order by stage`,[userId,actionId]);
   return {taskLimit:ownLimit??null,inheritedTaskLimits,stages,companyCosts:await readCompanyCosts(userId,actionId),modelUsage:await readProviderUsageSummary(userId,actionId)};

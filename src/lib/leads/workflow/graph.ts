@@ -1,6 +1,6 @@
 import { Annotation, END, START, StateGraph, type BaseCheckpointSaver } from "@langchain/langgraph";
 import { PostgresSaver } from "@langchain/langgraph-checkpoint-postgres";
-import { withSpendContext,setSpendStage } from "@/lib/billing/context";
+import { currentSpendContext,withSpendContext,setSpendStage } from "@/lib/billing/context";
 import {companyCostKey,costRoundKey} from "@/lib/billing/company-cost-context";
 
 import type { LeadSearchPlan } from "@/lib/assistant/types";
@@ -742,7 +742,10 @@ export async function runLeadWorkflow(input: {
     await graph.updateState(config,{scoreRecoveryCheckpointAt},"route_candidates");
   }
   if(mode!=='resume')initial.searchExcludeDomains=await continuationExclusions(input.userId,input.actionId);
+  const parent=currentSpendContext();
+  if(parent&&parent.userId!==input.userId)throw new Error("Budget scope owner mismatch");
   const state = await withSpendContext({userId:input.userId,operationId:input.actionId,stage:"lead-workflow",
+    ...(parent?.fixedFxReferenceVersion?{fixedFxReferenceVersion:parent.fixedFxReferenceVersion}:{}),
     costAttribution:{version:"company-cost-attribution-v1",kind:"task-shared",companyKeys:[],roundKey:costRoundKey(input.graphThreadId)}},()=>graph.invoke(mode==='resume'?null:initial,config));
   if (!state.result) throw new Error("LangGraph workflow completed without a result");
   return state.result;

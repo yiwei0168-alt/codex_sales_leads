@@ -1,4 +1,7 @@
 import {z} from "zod";
+import {currentSpendContext} from "./context";
+
+export const PRODUCTION_FX_MAX_AGE_MS=7*24*60*60*1000;
 
 const positiveInteger=z.string().regex(/^[1-9][0-9]{0,17}$/);
 export const foreignCostBoundSchema=z.object({
@@ -11,7 +14,10 @@ export type ForeignCostBound=z.infer<typeof foreignCostBoundSchema>;
 export function foreignReservationMicros(bound:ForeignCostBound,now=Date.now()):number{
   const checked=foreignCostBoundSchema.parse(bound);
   const asOf=Date.parse(checked.fx.asOf),retrieved=Date.parse(checked.fx.retrievedAt);
-  if(asOf>now||retrieved>now||retrieved<asOf||now-asOf>=72*60*60*1000)throw new Error("FX observation expired or invalid");
+  const fixedVersion=currentSpendContext()?.fixedFxReferenceVersion;
+  if(asOf>now||retrieved>now||retrieved<asOf
+    ||(fixedVersion!==checked.fx.version&&now-asOf>=PRODUCTION_FX_MAX_AGE_MS))
+    throw new Error("FX observation expired or invalid");
   // Exact rational conversion + the approved 5% reservation-only FX buffer, rounded UP.
   const numerator=BigInt(checked.maximumNativeMicros)*BigInt(checked.fx.usdNumerator)*BigInt(105);
   const denominator=BigInt(checked.fx.nativeDenominator)*BigInt(100);

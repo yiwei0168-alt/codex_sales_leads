@@ -4,7 +4,9 @@ import type { RequestBound } from "./policy";
 import type { CostAttribution } from "./cost-allocation";
 
 // Server-side acceptance scopes only; never populated from an API request body.
-export interface SpendContext {userId:string;operationId:string;stage:string;costAttribution?:CostAttribution;tariffPolicy?:{version:string;rules:RequestBound[]}}
+export interface SpendContext {userId:string;operationId:string;stage:string;costAttribution?:CostAttribution;tariffPolicy?:{version:string;rules:RequestBound[]};
+  /** Server-side local acceptance only: one already stored official FX snapshot, never API input. */
+  fixedFxReferenceVersion?:string}
 const storage=new AsyncLocalStorage<SpendContext>();
 export function currentSpendContext(){return storage.getStore();}
 export function setSpendStage(stage:string){const context=storage.getStore();if(context)context.stage=stage;}
@@ -15,5 +17,6 @@ export function withProductSpend<T>(userId:string,stage:string,run:()=>T,operati
   if(parent&&parent.userId!==userId)throw new Error("Budget scope owner mismatch");
   return withSpendContext({userId,stage,operationId:operationId??parent?.operationId??randomUUID(),
     ...((!operationId||operationId===parent?.operationId)&&parent?.costAttribution?{costAttribution:parent.costAttribution}:{}),
-    ...(parent?.tariffPolicy?{tariffPolicy:parent.tariffPolicy}:{})},run);
+    ...(parent?.tariffPolicy?{tariffPolicy:parent.tariffPolicy}:{}),
+    ...(parent?.fixedFxReferenceVersion?{fixedFxReferenceVersion:parent.fixedFxReferenceVersion}:{})},run);
 }

@@ -3,6 +3,8 @@ import {readFile} from "node:fs/promises";
 nextEnv.loadEnvConfig(process.cwd());
 const {query,getPool}=await import("../src/lib/rag/db");
 const {readSpendBudget}=await import("../src/lib/billing/repository");
+const {withSpendContext}=await import("../src/lib/billing/context");
+const {readCurrentCnyFxReference}=await import("../src/lib/billing/fx-reference-repository");
 const {quoteRequest,BudgetDeniedError,billingPolicy}=await import("../src/lib/billing/policy");
 const {assertRequestContract}=await import("../src/lib/billing/request-contract");
 const {nativeModelBound}=await import("../src/lib/billing/native-model-bound");
@@ -16,6 +18,7 @@ const {buildHybridSearchRoute,discoveryResultsPerRoute}=await import("../src/lib
 const {readSearchRateStatuses}=await import("../src/lib/billing/search-rate-repository");
 const {DEFAULT_DISCOVERY_MAX_ATTEMPTS,configuredGeminiDiscoveryModel}=await import("../src/providers/discovery");
 const userId="cbee9803-3c43-4609-9228-66086b207012";
+const fixedFxReferenceVersion="ecb-cny-usd-2026-09-11";
 const minimalPlan={countryCode:"CO",countryName:"Colombia",objective:"new-market" as const,
   roles:["Distributor" as const],targetCount:1,queryLanguage:"es",userRequest:"Synthetic acceptance wire only"};
 const firstRoundPool=plannedCandidatePool({targetCount:minimalPlan.targetCount,
@@ -197,7 +200,10 @@ try{
   const identity=await query<{safe:boolean}>("select (email='model-acceptance-20260912@fixture.invalid' and status='disabled' and password_hash is null) as safe from app_user where id=$1",[userId]);
   if(identity[0]?.safe!==true)throw new Error("Acceptance identity differs; no execution allowed");
   const budget=await readSpendBudget(userId);
-  if(!budget.budget||String(budget.budget.limit_micros)!=="30000000")throw new Error("Acceptance ceiling differs");
+  if(!budget.budget||String(budget.budget.limit_micros)!=="50000000")throw new Error("Acceptance ceiling differs");
+  const fixedFx=await withSpendContext({userId,operationId:"local-a26-quote-only",stage:"validation",
+    fixedFxReferenceVersion},()=>readCurrentCnyFxReference());
+  if(!fixedFx||fixedFx.version!==fixedFxReferenceVersion)throw new Error("Pinned official validation FX is missing");
   const rag=getRagConfig();
   const probes:Array<{stage:string;url:string;model:string;outputTokens:number|null;requestBytes:number;
     conditional?:boolean}>=[];
@@ -243,8 +249,9 @@ try{
           ?"openrouter-terra-review-credits-standard-json"
           :probe.stage==="disagreement-judge"&&probe.model==="openai/gpt-5.6-sol"
             ?"openrouter-sol-judge-credits-standard-json":undefined;
-      const bound=(await nativeModelBound(input)??await embeddingModelBound(input))?.rule
-        ??quoteRequest(input,undefined,Date.now(),explicitKey);
+      const bound=await withSpendContext({userId,operationId:"local-a26-quote-only",stage:"validation",
+        fixedFxReferenceVersion},async()=>(await nativeModelBound(input)??await embeddingModelBound(input))?.rule
+          ??quoteRequest(input,undefined,Date.now(),explicitKey));
       stages.push({stage:probe.stage,model:probe.model,conditional:Boolean(probe.conditional),tariff:"available",maximumPerCallUsd:bound.maximumChargeMicros/1e6,
         fitsCurrentRemainingBudget:bound.maximumChargeMicros<=Number(budget.budget.remaining_micros),expiresAt:bound.expiresAt});
     }catch(error){
@@ -311,7 +318,8 @@ try{
     ?Number((scoreBound.maximumPerCallUsd*6).toFixed(6)):null;
   const fourPhaseProWithPlaybook=fourPhaseWithProBound!==null&&playbookBound?.maximumPerCallUsd!==undefined
     ?Number((fourPhaseWithProBound+playbookBound.maximumPerCallUsd).toFixed(6)):null;
-  console.log(JSON.stringify({mode:"read-only-prerequisite-preview",limitUsd:30,occupiedUsd:Number(budget.budget.occupied_micros)/1e6,
+  console.log(JSON.stringify({mode:"read-only-prerequisite-preview",limitUsd:50,fixedFx,
+    occupiedUsd:Number(budget.budget.occupied_micros)/1e6,
     remainingUsd:Number(budget.budget.remaining_micros)/1e6,frozen:budget.budget.frozen,
     firstRoundPoolForOneTarget:firstRoundPool,firstRoundRequestedResults,
     discoveryActionCeiling:{rounds:MAX_DISCOVERY_ROUNDS,routeStepsPerRound:firstRoundRoute.length,
@@ -332,9 +340,9 @@ try{
     allSearchRouteBoundsPresent:searchRoute.every(route=>route.tariffStatus==="static-bound-present"),
     actualRequestContractsChecked:false,
     checkedSingleCallBoundsFit:stages.every(stage=>stage.tariff==="available"&&stage.fitsCurrentRemainingBudget),
-    progressiveAdmission:{rule:"A25",wholeRunBoundRequiredBeforeStarting:false,
-      perRequestQuoteAndAtomicReservationRequired:true,cumulativeLimitUsd:30,
-      unknownSingleCallOrExpiredFxStopsAtThatStep:true,
+    progressiveAdmission:{rule:"A25+A26",wholeRunBoundRequiredBeforeStarting:false,
+      perRequestQuoteAndAtomicReservationRequired:true,cumulativeLimitUsd:50,
+      unknownSingleCallStopsAtThatStep:true,fxMode:"one-pinned-official-snapshot-for-local-validation",
       requiredStageTariffHolds:stages.filter(stage=>!stage.conditional&&stage.tariff!=="available")
         .map(stage=>({stage:stage.stage,tariff:stage.tariff})),
       // Exact bytes, later conditional branches and the actual next request are checked at transport time.
@@ -349,6 +357,6 @@ try{
           :fourPhaseWithPlaybook<=Number(budget.budget.remaining_micros)/1e6,
         fitsCurrentRemainingBudgetWithPro:fourPhaseProWithPlaybook===null?null
           :fourPhaseProWithPlaybook<=Number(budget.budget.remaining_micros)/1e6}},
-    totalRunBoundUsd:null,limitations:"A25 permits progressive single-request reservations under the unchanged USD30 cap; unknown single-call cost, expired FX or exhausted budget pauses at that step. This read-only preview is not an exact request check or a promise of completion. It lists configured minimal-plan discovery, active basic Extract and conditional review tariffs; captures synthetic playbook, Brave, Exa and Tavily Search wires. Provider over-delivery is capped before downstream candidate processing, but these accepted item slots are not unique companies. Real market requests and Extract response, remaining fallback/search/model contracts, conditional Pro escalation, phased scoring call count and total-run bound remain unverified",
+    totalRunBoundUsd:null,limitations:"A25+A26 permit progressive single-request reservations under the isolated USD50 validation cap and one pinned official FX snapshot; unknown single-call cost or exhausted budget pauses at that step. This read-only preview is not an exact request check or a promise of completion. It lists configured minimal-plan discovery, active basic Extract and conditional review tariffs; captures synthetic playbook, Brave, Exa and Tavily Search wires. Provider over-delivery is capped before downstream candidate processing, but these accepted item slots are not unique companies. Real market requests and Extract response, remaining fallback/search/model contracts, conditional Pro escalation, phased scoring call count and total-run bound remain unverified",
     providerCalls:0,accountsModified:0,jobsClaimed:0},null,2));
 }finally{await getPool().end();}

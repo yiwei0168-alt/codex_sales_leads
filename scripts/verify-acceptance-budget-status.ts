@@ -9,7 +9,7 @@ try{
   assert.equal(identity[0]?.safe,true);
   const status=await readSpendBudget(userId);
   assert.ok(status.budget);
-  assert.equal(String(status.budget.limit_micros),"30000000");
+  assert.equal(String(status.budget.limit_micros),"50000000");
   console.log(JSON.stringify({readOnly:true,limitUsd:Number(status.budget.limit_micros)/1e6,
     occupiedUsd:Number(status.budget.occupied_micros)/1e6,remainingUsd:Number(status.budget.remaining_micros)/1e6,
     frozen:status.budget.frozen,unsettledCalls:status.stages.reduce((sum,row)=>sum+Number(row.unsettled_calls),0),

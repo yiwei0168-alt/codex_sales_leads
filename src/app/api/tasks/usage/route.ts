@@ -19,7 +19,7 @@ export async function GET(){
       from product_operation_metric where user_id=$1 and created_at>=now()-interval '30 days' group by stage order by stage`,[session.userId]),
       tenantQuery(session.userId,`select stage,count(*)::int as http_attempts,
       sum(reserved_micros)::text as reserved_micros,sum(reported_micros)::text as reported_micros,
-      count(*) filter(where reported_micros is null)::int as unknown_bills,
+      count(*) filter(where reported_micros is null and settled_source is distinct from 'verified-unbilled')::int as unknown_bills,
       count(*) filter(where status='reserved')::int as unsettled_attempts,
       sum((metrics->>'inputTokens')::bigint)::text as input_tokens,
       sum((metrics->>'outputTokens')::bigint)::text as output_tokens,

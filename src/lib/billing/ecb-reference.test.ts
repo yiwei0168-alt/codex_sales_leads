@@ -12,11 +12,11 @@ it("cross-converts same-date EUR quotes exactly and preserves the native referen
 it("rejects missing/duplicate/invalid rates, ambiguous dates, XML entities, stale or future sources",()=>{
   for(const input of [xml.replace("currency='CNY'","currency='EUR'"),xml.replace("7.7762","0"),xml.replace("7.7762","NaN"),
     xml+"<Cube currency='USD' rate='1.1592'/>",xml+"<Cube time='2026-09-12'/>","<!DOCTYPE fixture>"+xml,
-    xml.replace("2026-09-11","2026-09-09"),xml.replace("2026-09-11","2026-09-14"),xml.replace("2026-09-11","2026-02-31")])
+    xml.replace("2026-09-11","2026-09-03"),xml.replace("2026-09-11","2026-09-14"),xml.replace("2026-09-11","2026-02-31")])
     expect(()=>parseEcbCnyReference(input,now)).toThrow();
-  expect(()=>parseEcbCnyReference(xml,"2026-09-14T00:00:00Z")).toThrow();
-  expect(()=>parseEcbCnyReference(xml,"2026-09-14T00:00:00Z")).toThrow(StaleEcbReferenceError);
-  expect(parseEcbCnyReference(xml,"2026-09-13T23:59:59Z").referenceDate).toBe("2026-09-11");
+  expect(()=>parseEcbCnyReference(xml,"2026-09-18T00:00:00Z")).toThrow();
+  expect(()=>parseEcbCnyReference(xml,"2026-09-18T00:00:00Z")).toThrow(StaleEcbReferenceError);
+  expect(parseEcbCnyReference(xml,"2026-09-17T23:59:59Z").referenceDate).toBe("2026-09-11");
 });
 it("fetches only the fixed credential-free official feed with a bounded response",async()=>{
   const transport=vi.fn<typeof fetch>().mockResolvedValue(new Response(xml));

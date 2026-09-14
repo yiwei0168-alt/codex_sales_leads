@@ -1,14 +1,14 @@
 import {createHash} from "node:crypto";
-import {foreignReservationMicros,type ForeignCostBound} from "./fx-policy";
+import {foreignReservationMicros,PRODUCTION_FX_MAX_AGE_MS,type ForeignCostBound} from "./fx-policy";
 
 export const ECB_REFERENCE_URL="https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml";
 export const ECB_SOURCE_KEY="ecb-cny-usd-reference-v1";
 export const MAX_REFERENCE_BYTES=65536;
 export class StaleEcbReferenceError extends Error {
-  constructor(){super("Official FX reference is past the 72-hour validity window");this.name="StaleEcbReferenceError";}
+  constructor(){super("Official FX reference is past the weekly validity window");this.name="StaleEcbReferenceError";}
 }
 
-/** Date-only source: UTC midnight is deliberately conservative for the 72-hour limit. */
+/** Date-only source: UTC midnight is deliberately conservative for the weekly limit. */
 export function parseEcbCnyReference(xml:string,retrievedAt=new Date().toISOString()){
   if(Buffer.byteLength(xml)>MAX_REFERENCE_BYTES||/<!DOCTYPE|<!ENTITY/i.test(xml))throw new Error("Invalid reference envelope");
   const dates=[...xml.matchAll(/<Cube\b[^>]*\btime=['"]([^'"]+)['"][^>]*>/g)].map(match=>match[1]);
@@ -29,7 +29,7 @@ export function parseEcbCnyReference(xml:string,retrievedAt=new Date().toISOStri
   const usd=rate("USD"),cny=rate("CNY");
   const fx:ForeignCostBound["fx"]={usdNumerator:usd.toString(),nativeDenominator:cny.toString(),asOf,retrievedAt,
     reference:ECB_REFERENCE_URL,version:`ecb-cny-usd-${dates[0]}`};
-  if(Date.parse(retrievedAt)-Date.parse(asOf)>=72*60*60*1000)throw new StaleEcbReferenceError();
+  if(Date.parse(retrievedAt)-Date.parse(asOf)>=PRODUCTION_FX_MAX_AGE_MS)throw new StaleEcbReferenceError();
   foreignReservationMicros({currency:"CNY",maximumNativeMicros:0,fx},Date.parse(retrievedAt));
   return {currency:"CNY" as const,sourceHash:createHash("sha256").update(xml).digest("hex"),referenceDate:dates[0],fx};
 }

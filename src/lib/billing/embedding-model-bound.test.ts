@@ -22,7 +22,7 @@ it("rejects other regions, misleading hosts, paths and models without FX lookup"
 });
 it("fails closed for expired references, missing FX and oversized requests",async()=>{
   await expect(embeddingModelBound(input,now,async()=>null)).rejects.toThrow("expired-tariff");
-  await expect(embeddingModelBound(input,Date.parse("2026-09-14T00:00:00Z"),async()=>fx)).rejects.toThrow("expired-tariff");
+  await expect(embeddingModelBound(input,Date.parse("2026-09-18T00:00:00Z"),async()=>fx)).rejects.toThrow("expired-tariff");
   await expect(embeddingModelBound(input,Date.parse("2026-09-20T00:00:00Z"),async()=>fx)).rejects.toThrow("expired-tariff");
   await expect(embeddingModelBound({...input,requestBytes:1048577},now,async()=>fx)).rejects.toThrow("request-out-of-bounds");
 });
