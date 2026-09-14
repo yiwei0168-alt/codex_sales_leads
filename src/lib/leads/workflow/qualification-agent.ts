@@ -2,6 +2,7 @@ import { compactLeadSingleton } from "@/providers/compact-lead-request";
 import {BudgetDeniedError} from "@/lib/billing/policy";
 import {withCompanyCostAttribution} from "@/lib/billing/company-cost-context";
 import {leadRequestBatches} from "@/providers/lead-request-batches";
+import {LeadRequestTooLargeError} from "@/providers/lead-request-bounds";
 import {validateBatchItems} from "./batch-output";
 import type { AiProvider, StructuredAiResponse } from "@/providers/contracts";
 import { createLeadAiProvider } from "@/providers/resilient-ai";
@@ -403,10 +404,29 @@ export class LeadQualificationAgent {
     return this.includeCooperationPaths ? LEAD_QUALIFICATION_PROMPT_VERSION : LEAD_SCORE_ONLY_PROMPT_VERSION;
   }
 
+  private requestableCandidates(candidates:CorrectedLeadWorkflowCandidate[],playbook:LeadMarketPlaybook,
+    countryCode:string,countryName:string,objective:string){
+    const ready:CorrectedLeadWorkflowCandidate[]=[];
+    const oversized=new Map<string,LeadRequestTooLargeError>();
+    for(const candidate of candidates){
+      try{
+        leadRequestBatches([candidate],items=>this.request(items,playbook,countryCode,countryName,objective,this.routineModel),
+          this.batchSize,this.maxBatchInputCharacters,this.provider.requestBytes?.bind(this.provider));
+        ready.push(candidate);
+      }catch(error){
+        if(!(error instanceof LeadRequestTooLargeError))throw error;
+        oversized.set(candidate.candidateId,error);
+      }
+    }
+    return {ready,oversized};
+  }
+
   cacheContracts(candidates:CorrectedLeadWorkflowCandidate[],playbook:LeadMarketPlaybook,countryCode:string,countryName:string,objective:string):Map<string,string>{
     const result=new Map<string,string>();
     if(!this.provider.cacheIdentity)return result;
-    const batches=leadRequestBatches(candidates.filter(candidate=>roleScoringAnchors(candidate.correction)),items=>this.request(items,playbook,countryCode,countryName,objective,this.routineModel),this.batchSize,this.maxBatchInputCharacters,this.provider.requestBytes?.bind(this.provider));
+    const {ready}=this.requestableCandidates(candidates.filter(candidate=>roleScoringAnchors(candidate.correction)),
+      playbook,countryCode,countryName,objective);
+    const batches=leadRequestBatches(ready,items=>this.request(items,playbook,countryCode,countryName,objective,this.routineModel),this.batchSize,this.maxBatchInputCharacters,this.provider.requestBytes?.bind(this.provider));
     for(const batch of batches){
       const contract=this.provider.cacheIdentity(this.request(batch,playbook,countryCode,countryName,objective,this.routineModel));
       if(contract)for(const candidate of batch)result.set(candidate.candidateId,contract);
@@ -665,9 +685,16 @@ export class LeadQualificationAgent {
 
   private async evaluateWithCollector(candidates: CorrectedLeadWorkflowCandidate[], playbook: LeadMarketPlaybook, countryCode: string, countryName: string, objective: string,
     usageRecords: WorkflowModelUsage[],onBatchCompleted?:(candidates:CorrectedLeadWorkflowCandidate[],assessments:LeadCandidateAssessment[])=>Promise<void>): Promise<LeadCandidateAssessment[]> {
-    const ready = candidates.filter(candidate=>roleScoringAnchors(candidate.correction));
+    const {ready,oversized}=this.requestableCandidates(candidates.filter(candidate=>roleScoringAnchors(candidate.correction)),
+      playbook,countryCode,countryName,objective);
     const deferred = candidates.filter(candidate=>!roleScoringAnchors(candidate.correction)).map(candidate=>
       failedAssessment(candidate, "Primary role family/subtype is incomplete or inconsistent; resolve correction before scoring. No scoring request was sent.", this.promptVersion));
+    for(const candidate of candidates){
+      const error=oversized.get(candidate.candidateId);
+      if(error)deferred.push(failedAssessment(candidate,
+        `Complete scoring request exceeds the approved byte limit (${error.message}); this company remains pending. No scoring request was sent.`,
+        this.promptVersion));
+    }
     const batches=leadRequestBatches(ready,items=>this.request(
       items,playbook,countryCode,countryName,objective,this.routineModel,
     ),this.batchSize,this.maxBatchInputCharacters,this.provider.requestBytes?.bind(this.provider));

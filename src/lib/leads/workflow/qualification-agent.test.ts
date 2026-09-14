@@ -7,7 +7,6 @@ import {companyCostKey} from "@/lib/billing/company-cost-context";
 import type { AiProvider, StructuredAiRequest, StructuredAiResponse } from "@/providers/contracts";
 import {DeepSeekProvider} from "@/providers/deepseek";
 import { leadEvidenceContentHash } from "@/lib/leads/evidence-snapshot";
-import { LeadRequestTooLargeError } from "@/providers/lead-request-bounds";
 
 import { enforceAssessmentEvidenceCaps, LeadQualificationAgent } from "./qualification-agent";
 import {validCachedAssessment} from "./assessment-cache";
@@ -121,6 +120,19 @@ function uniqueFactCandidate(count: number): CorrectedLeadWorkflowCandidate {
       ...extras.map((item, index) => ({ ...candidate.correction.findings[2],
         findingId: `unique-finding-${index}`, statement: `Distinct product and customer fact ${index}: ${item.excerpt.slice(0, 90)}`,
         evidenceIds: [item.id] }))] } };
+}
+
+function incompressibleCandidate():CorrectedLeadWorkflowCandidate{
+  const large=uniqueFactCandidate(150);
+  const extras=large.evidence.slice(1).map((item,index)=>{
+    const excerpt=Array.from({length:9},(_,part)=>createHash("sha256")
+      .update(`independent-${index}-${part}`).digest("hex")).join(" ");
+    return {...item,excerpt,contentHash:leadEvidenceContentHash(excerpt)};
+  });
+  large.evidence=[large.evidence[0],...extras];
+  large.correction.findings=large.correction.findings.map((item,index)=>index<5?item:{...item,
+    statement:`Fact ${index}: ${createHash("sha256").update(`finding-${index}`).digest("hex")}`});
+  return large;
 }
 
 describe("LeadQualificationAgent", () => {
@@ -375,20 +387,37 @@ describe("LeadQualificationAgent", () => {
 
   it("keeps a truly incompressible full-agent singleton incomplete before any model request", async () => {
     const provider=new CacheableFakeProvider();
-    const large=uniqueFactCandidate(150);
-    const extras=large.evidence.slice(1).map((item,index)=>{
-      const excerpt=Array.from({length:9},(_,part)=>createHash("sha256")
-        .update(`independent-${index}-${part}`).digest("hex")).join(" ");
-      return {...item,excerpt,contentHash:leadEvidenceContentHash(excerpt)};
-    });
-    large.evidence=[large.evidence[0],...extras];
-    large.correction.findings=large.correction.findings.map((item,index)=>index<5?item:{...item,
-      statement:`Fact ${index}: ${createHash("sha256").update(`finding-${index}`).digest("hex")}`});
+    const large=incompressibleCandidate();
     const original=JSON.stringify(large);
-    await expect(new LeadQualificationAgent(provider).evaluate([large],playbook,"DE","Germany","new-market"))
-      .rejects.toBeInstanceOf(LeadRequestTooLargeError);
+    const result=await new LeadQualificationAgent(provider).evaluate([large],playbook,"DE","Germany","new-market");
+    expect(result[0]).toMatchObject({candidateId:large.candidateId,eligible:false,
+      scoringStatus:"retry-required",eligibilityStatus:"research-required"});
+    expect(result[0].warnings.join(" ")).toContain("exceeds the approved byte limit");
     expect(provider.calls).toHaveLength(0);
     expect(JSON.stringify(large)).toBe(original);
+  });
+
+  it.each(["oversize-first","oversize-last"])("scores a valid peer beside an %s singleton without contaminating its cache contract",async order=>{
+    const provider=new CacheableFakeProvider();
+    const agent=new LeadQualificationAgent(provider);
+    const large={...incompressibleCandidate(),candidateId:"oversized-peer"};
+    const inputs=order==="oversize-first"?[large,candidate]:[candidate,large];
+    const original=JSON.stringify(inputs);
+    const expected=agent.cacheContracts([candidate],playbook,"DE","Germany","new-market");
+    expect(agent.cacheContracts(inputs,playbook,"DE","Germany","new-market")).toEqual(expected);
+    const published:string[]=[];
+    const result=await agent.evaluateWithUsage(inputs,playbook,"DE","Germany","new-market",async(items)=>{
+      published.push(...items.map(item=>item.candidateId));
+    });
+    expect(result.assessments.map(item=>item.candidateId)).toEqual(inputs.map(item=>item.candidateId));
+    expect(result.assessments.find(item=>item.candidateId===large.candidateId)).toMatchObject({
+      eligible:false,scoringStatus:"retry-required",eligibilityStatus:"research-required"});
+    const valid=result.assessments.find(item=>item.candidateId===candidate.candidateId)!;
+    expect(valid.scoringStatus).toBe("completed");
+    expect(agent.completedCacheContracts([valid])).toEqual(expected);
+    expect(published).toEqual([candidate.candidateId]);
+    expect(provider.calls).toHaveLength(1);
+    expect(JSON.stringify(inputs)).toBe(original);
   });
 
   it("keeps invalid or unresolved roles unscored without contaminating valid batch contracts", async () => {
