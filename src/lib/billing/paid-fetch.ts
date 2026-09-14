@@ -1,5 +1,5 @@
 import {currentSpendContext} from "./context";
-import {createHash} from "node:crypto";
+import {paidRequestFingerprint} from "./paid-request-fingerprint";
 import {billingPolicy,BudgetDeniedError,PaidCallOutcomeUnknownError,quoteRequest} from "./policy";
 import {reservePaidCall,settlePaidCall} from "./repository";
 import {recordBudgetDenial} from "./denial-metrics";
@@ -62,8 +62,8 @@ export function budgetedFetch(transport:typeof fetch=fetch):typeof fetch {
     }:null;
     // Native model adapters without full invocation attribution need the same persistent guard.
     // Preserve existing model hashes; admitted synchronous searches also guard paid replay.
-    const requestFingerprint=attempt||typeof parsed.model==="string"?createHash("sha256").update(JSON.stringify({version:"paid-request-replay-v1",
-      method:request.method,origin:url.origin,pathname:url.pathname,query:url.search,body})).digest("hex"):searchRequestFingerprint(rule,request,parsed);
+    const requestFingerprint=attempt||typeof parsed.model==="string"
+      ?paidRequestFingerprint(request.method,url,body):searchRequestFingerprint(rule,request,parsed);
     const id=await reservePaidCall(scope.userId,{operationId:scope.operationId,stage:scope.stage,tariffKey:rule.key,tariffVersion:native?.version??policy.version,maximumChargeMicros:rule.maximumChargeMicros,requestBytes:bytes,modelAttempt,requestFingerprint,foreignCostBound:rule.foreignCostBound,costAttribution:scope.costAttribution});
     const started=Date.now();let response:Response;
     try{response=await transport(input,{...init,redirect:"error"});}catch{

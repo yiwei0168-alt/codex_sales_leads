@@ -33,7 +33,12 @@ export async function assertUncheckpointedQualificationResponsesAbsent(
         or (stage='scoring' and metrics->'modelAttempt'->>'task' is null))
       and (metrics->>'validOutputItems'='1' or metrics->>'outputIncomplete'='true')
       and (metrics->'costAttribution'->'companyKeys' ?| $4::text[]
-        or metrics->'costAttribution'->>'kind' is distinct from 'company-inputs') limit 1`,
+        or metrics->'costAttribution'->>'kind' is distinct from 'company-inputs')
+      and not (status='reported' and metrics->>'outputIncomplete' is distinct from 'true'
+        and exists(select 1 from lead_qualification_phase_checkpoint c
+          where c.user_id=paid_call_reservation.user_id
+            and c.action_id::text=paid_call_reservation.operation_id
+            and c.paid_request_fingerprint=paid_call_reservation.request_fingerprint)) limit 1`,
     [userId, operationId, checkpointAt, companyKeys]);
   if (rows.length) throw new BudgetDeniedError("paid-request-already-recorded");
 }

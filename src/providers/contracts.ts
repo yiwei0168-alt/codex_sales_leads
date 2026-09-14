@@ -83,6 +83,8 @@ export interface AiProvider {
   requestBytes?(request: StructuredAiRequest<unknown>): number;
   /** Exact primary-route wire contract; absence disables persisted result reuse. Never returns secrets. */
   cacheIdentity?(request:StructuredAiRequest<unknown>):string;
+  /** Exact primary-route paid HTTP replay identity, excluding credentials. */
+  paidRequestFingerprint?(request:StructuredAiRequest<unknown>):string;
   execute<TInput, TOutput>(request: StructuredAiRequest<TInput>, signal?: AbortSignal): Promise<StructuredAiResponse<TOutput>>;
 }
 

@@ -31,6 +31,21 @@ it("resilient identity describes primary only and unavailable contracts fail clo
   const provider=new DeepSeekProvider({baseUrl:"https://example.test"});
   expect(new ResilientAiProvider(provider).cacheIdentity(request)).toBe(provider.cacheIdentity(request));
   expect(new ResilientAiProvider({id:"unknown",execute:vi.fn()}).cacheIdentity(request)).toBe("");
+  expect(new ResilientAiProvider(provider).paidRequestFingerprint(request)).toBe(provider.paidRequestFingerprint(request));
+  expect(new ResilientAiProvider({id:"unknown",execute:vi.fn()}).paidRequestFingerprint(request)).toBe("");
+});
+it.each(["chat-completions","anthropic"])("matches the budget replay fingerprint for %s",transport=>{
+  vi.stubEnv("DEEPSEEK_TRANSPORT",transport==="anthropic"?"anthropic":"chat");
+  const provider=new DeepSeekProvider({apiKey:"fixture-secret",baseUrl:"https://example.test"});
+  const {body,useAnthropicTransport}=deepSeekRequestBody(request,request.modelVersion);
+  const expected=createHash("sha256").update(JSON.stringify({version:"paid-request-replay-v1",
+    method:"POST",origin:"https://example.test",pathname:useAnthropicTransport
+      ?"/anthropic/v1/messages":"/chat/completions",query:"",body})).digest("hex");
+  expect(provider.paidRequestFingerprint(request)).toBe(expected);
+  expect(provider.paidRequestFingerprint(request)).not.toContain("fixture-secret");
+  expect(provider.paidRequestFingerprint({...request,input:{candidates:["changed"]}})).not.toBe(expected);
+  vi.stubEnv("DEEPSEEK_TEMPERATURE","1");
+  expect(provider.paidRequestFingerprint(request)).not.toBe(expected);
 });
 it("invalidates pre-approval Flash cache contracts but leaves Pro contracts unchanged",()=>{
   const endpoint="https://api.deepseek.com";

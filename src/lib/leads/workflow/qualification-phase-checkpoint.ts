@@ -55,28 +55,32 @@ function safeResponse(scope:QualificationPhaseCheckpointScope,request:Structured
 /** Completed only. A miss never grants permission to replay an unknown paid request. */
 export function productQualificationPhaseCheckpoint(scope:QualificationPhaseCheckpointScope){
   return {
-    async load(request:StructuredAiRequest<unknown>,contract:string):Promise<StructuredAiResponse<QualificationPhaseOutput>|null>{
+    async load(request:StructuredAiRequest<unknown>,contract:string,
+      paidFingerprint:string):Promise<StructuredAiResponse<QualificationPhaseOutput>|null>{
       const id=identity(scope,request,contract);
+      if(!/^[a-f0-9]{64}$/.test(paidFingerprint))throw new Error("Invalid qualification phase paid replay identity");
       const rows=await tenantQuery<{response:unknown}>(scope.userId,
         `select response from lead_qualification_phase_checkpoint where user_id=$1 and workspace_id=$2
           and action_id=$3 and country_code=$4 and candidate_id=$5 and source_fingerprint=$6
-          and phase_index=$7 and execution_contract=$8`,
+          and phase_index=$7 and execution_contract=$8 and paid_request_fingerprint=$9`,
         [scope.userId,scope.workspaceId,scope.actionId,scope.countryCode,id.candidateId,
-          id.sourceFingerprint,id.phaseIndex,contract]);
+          id.sourceFingerprint,id.phaseIndex,contract,paidFingerprint]);
       if(!rows[0])return null;
       const parsed=responseSchema.parse(rows[0].response);
       return safeResponse(scope,request,parsed);
     },
-    async save(request:StructuredAiRequest<unknown>,contract:string,response:StructuredAiResponse<unknown>):Promise<void>{
+    async save(request:StructuredAiRequest<unknown>,contract:string,paidFingerprint:string,
+      response:StructuredAiResponse<unknown>):Promise<void>{
       const id=identity(scope,request,contract);
+      if(!/^[a-f0-9]{64}$/.test(paidFingerprint))throw new Error("Invalid qualification phase paid replay identity");
       const safe=safeResponse(scope,request,response);
       await tenantQuery(scope.userId,
         `insert into lead_qualification_phase_checkpoint(user_id,workspace_id,action_id,country_code,
-          candidate_id,source_fingerprint,phase_index,execution_contract,response)
-          values($1,$2,$3,$4,$5,$6,$7,$8,$9::jsonb) on conflict do nothing`,
+          candidate_id,source_fingerprint,phase_index,execution_contract,paid_request_fingerprint,response)
+          values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10::jsonb) on conflict do nothing`,
         [scope.userId,scope.workspaceId,scope.actionId,scope.countryCode,id.candidateId,
-          id.sourceFingerprint,id.phaseIndex,contract,JSON.stringify(safe)]);
-      const stored=await this.load(request,contract);
+          id.sourceFingerprint,id.phaseIndex,contract,paidFingerprint,JSON.stringify(safe)]);
+      const stored=await this.load(request,contract,paidFingerprint);
       if(!isDeepStrictEqual(stored,safe))throw new Error("Qualification phase checkpoint conflict");
     },
   };

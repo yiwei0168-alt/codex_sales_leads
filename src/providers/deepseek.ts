@@ -6,6 +6,7 @@ import type { AiProvider, StructuredAiRequest, StructuredAiResponse } from "./co
 import { ProviderUnavailableError } from "./contracts";
 import {randomUUID,createHash} from "node:crypto";
 import {withModelAttempt,requestScoringVersion} from "@/lib/billing/model-attempt-context";
+import {paidRequestFingerprint} from "@/lib/billing/paid-request-fingerprint";
 
 interface DeepSeekProviderOptions {
   apiKey?: string;
@@ -83,6 +84,13 @@ export class DeepSeekProvider implements AiProvider {
       ? {flashApprovalEpoch:"v4.1-flash-approved-2026-09-13"} : {};
     return createHash("sha256").update(JSON.stringify({version:"deepseek-wire-cache-v1",provider:this.id,
       endpoint:this.baseUrl,...flashApprovalEpoch,...deepSeekRequestBody(request,model)})).digest("hex");
+  }
+
+  paidRequestFingerprint(request:StructuredAiRequest<unknown>):string {
+    const model=request.modelVersion.trim()||this.defaultModel;
+    const {body,useAnthropicTransport}=deepSeekRequestBody(request,model);
+    return paidRequestFingerprint("POST",new URL(useAnthropicTransport
+      ?`${this.baseUrl}/anthropic/v1/messages`:`${this.baseUrl}/chat/completions`),body);
   }
 
   requestBytes(request: StructuredAiRequest<unknown>): number {

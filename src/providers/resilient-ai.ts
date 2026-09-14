@@ -106,6 +106,10 @@ export class ResilientAiProvider implements AiProvider {
     return this.primary.cacheIdentity?.(request)??"";
   }
 
+  paidRequestFingerprint(request:StructuredAiRequest<unknown>):string {
+    return this.primary.paidRequestFingerprint?.(request)??"";
+  }
+
   requestBytes(request: StructuredAiRequest<unknown>): number {
     const bytes = (provider: AiProvider, input: StructuredAiRequest<unknown>) =>
       provider.requestBytes?.(input) ?? Buffer.byteLength(deepSeekRequestBody(input).body, "utf8");
