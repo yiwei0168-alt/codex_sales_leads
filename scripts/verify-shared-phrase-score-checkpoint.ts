@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { randomUUID } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import { spawnSync } from "node:child_process";
 import { PostgresSaver } from "@langchain/langgraph-checkpoint-postgres";
 import nextEnv from "@next/env";
@@ -8,6 +8,7 @@ import { Pool } from "pg";
 import { getPool } from "../src/lib/rag/db";
 import { databaseConnectionString, databaseSslConfiguration } from "../src/lib/rag/database-ssl";
 import { leadEvidenceContentHash } from "../src/lib/leads/evidence-snapshot";
+import { assessmentDependencyFingerprint } from "../src/lib/leads/workflow/assessment-cache";
 import { buildLeadWorkflowGraph, type LeadWorkflowDependencies } from "../src/lib/leads/workflow/graph";
 import { LeadQualificationAgent } from "../src/lib/leads/workflow/qualification-agent";
 import { checkpointInvocation, WorkflowPausedError } from "../src/lib/leads/workflow/pause";
@@ -20,23 +21,39 @@ const mode = process.argv[2];
 const threadId = process.argv[3] ?? `verify-phrase-score:${randomUUID()}`;
 if (!/^verify-phrase-score:[a-f0-9-]{36}$/.test(threadId)) throw new Error("Invalid isolated verification thread");
 if (mode && !["seed", "resume", "sql", "sql-resume"].includes(mode)) throw new Error("Invalid verification phase");
+const foldedVariant = process.env.P06_SYNTHETIC_FOLD_VARIANT === "1";
+const expectedEncoding = foldedVariant ? "supported-excerpt-fold-v1" : "exact-shared-phrase-v1";
+function assertEncoding(value: string | undefined): void {
+  if (foldedVariant) assert.equal(value, expectedEncoding);
+  else assert.match(value ?? "", /exact-shared-phrase-v1/);
+}
+const extraCount = foldedVariant ? 55 : 100;
+const expectedEvidenceCount = extraCount + 1;
+const expectedFindingCount = extraCount + correctedCandidate.correction.findings.length
+  + (foldedVariant ? 0 : 4);
 const saver = new PostgresSaver(getPool(), undefined, { schema: "langgraph" });
 const config = { configurable: { thread_id: threadId } };
 const runId = "synthetic-phrase-score-run";
 const originalEvidence = { ...candidate.evidence[0], evidenceRunId: runId, freshnessStatus: "fresh" as const,
   contentHash: leadEvidenceContentHash(candidate.evidence[0].excerpt) };
-const extraEvidence = Array.from({ length: 100 }, (_, index) => {
-  const excerpt = `Evidence ${index}: ${`independent networking fact ${index} `.repeat(7).trim()}`;
+const extraEvidence = Array.from({ length: extraCount }, (_, index) => {
+  const excerpt = foldedVariant
+    ? Array.from({ length: 9 }, (_, part) => createHash("sha256")
+      .update(`independent-${index}-${part}`).digest("hex")).join(" ")
+    : `Evidence ${index}: ${`independent networking fact ${index} `.repeat(7).trim()}`;
   return { ...originalEvidence, id: `unique-${index}`, url: `https://fixture.invalid/evidence/${index}`,
     title: `Unique source ${index}`, excerpt, contentHash: leadEvidenceContentHash(excerpt) };
 });
 const extraFindings = extraEvidence.map((item, index) => ({ ...correctedCandidate.correction.findings[0],
-  findingId: `unique-finding-${index}`, statement: `Distinct product and customer fact ${index}: ${item.excerpt.slice(0, 90)}`,
+  findingId: `unique-finding-${index}`, statement: foldedVariant
+    ? `Fact ${index + 5}: ${createHash("sha256").update(`finding-${index + 5}`).digest("hex")}`
+    : `Distinct product and customer fact ${index}: ${item.excerpt.slice(0, 90)}`,
+  status: index === 25 && foldedVariant ? "conflicting" as const : "supported" as const,
   evidenceIds: [item.id] }));
 const corrected = { ...correctedCandidate, evidenceSnapshotRunId: runId,
   evidence: [originalEvidence, ...extraEvidence], correction: { ...correctedCandidate.correction,
     findings: [...correctedCandidate.correction.findings,
-      ...Array.from({ length: 4 }, (_, index) => ({ ...correctedCandidate.correction.findings[0],
+      ...Array.from({ length: foldedVariant ? 0 : 4 }, (_, index) => ({ ...correctedCandidate.correction.findings[0],
         findingId: `base-finding-${index}` })), ...extraFindings] } };
 const fullPlan = { ...plan, targetCount: 1 };
 const wire = new DeepSeekProvider({ apiKey: "fixture-never-sent", maxAttempts: 1,
@@ -49,9 +66,21 @@ const provider: AiProvider = {
   execute: async <I, O>(request: StructuredAiRequest<I>): Promise<StructuredAiResponse<O>> => {
     calls.push(request as StructuredAiRequest<unknown>);
     assert.ok(mode === "resume" || mode === "sql-resume");
-    assert.match(request.preparation?.encoding ?? "", /exact-shared-phrase-v1/);
+    assertEncoding(request.preparation?.encoding);
     assert.ok(wire.requestBytes(request) <= 61_440);
     assert.equal(request.preparation?.preparedMaximumWireBytes, wire.requestBytes(request));
+    if (foldedVariant) {
+      assert.ok((request.preparation?.omittedEvidenceExcerpts ?? 0) > 0);
+      assert.deepEqual(request.evidenceIds, corrected.evidence.map(item => item.id));
+      const input = request.input as { candidates: Array<{ findings: typeof corrected.correction.findings;
+        evidence: Array<{ evidenceId: string; url: string; excerpt: string; excerptFolded?: boolean }> }> };
+      assert.deepEqual(input.candidates[0].findings, corrected.correction.findings);
+      assert.deepEqual(input.candidates[0].evidence.map(item => item.evidenceId), corrected.evidence.map(item => item.id));
+      assert.deepEqual(input.candidates[0].evidence.map(item => item.url), corrected.evidence.map(item => item.url));
+      assert.equal(input.candidates[0].evidence.find(item => item.evidenceId === "unique-25")?.excerpt,
+        corrected.evidence.find(item => item.id === "unique-25")?.excerpt);
+      assert.ok(input.candidates[0].evidence.some(item => item.excerptFolded));
+    }
     const dimensionRationales = Object.entries(assessment.dimensions).map(([dimension, score]) => ({
       dimension, score, reason: "Synthetic cited scoring rationale.",
       findingIds: ["finding-distribution"], evidenceIds: [originalEvidence.id], confidence: 85,
@@ -71,6 +100,18 @@ const changedEvidence = [{ ...corrected.evidence[0], excerpt: changedExcerpt,
   contentHash: leadEvidenceContentHash(changedExcerpt) }, ...corrected.evidence.slice(1)];
 assert.notDeepEqual(expectedContract, agent.cacheContracts([{ ...corrected, evidence: changedEvidence }],
   playbook, fullPlan.countryCode, fullPlan.countryName, fullPlan.objective));
+if (foldedVariant) {
+  const source = corrected.evidence.find(item => item.id === "unique-0");
+  assert.ok(source);
+  const excerpt = `${source.excerpt.slice(0, -1)}X`;
+  const revised = corrected.evidence.map(item => item.id === source.id
+    ? { ...item, excerpt, contentHash: leadEvidenceContentHash(excerpt) } : item);
+  const context = { countryCode: fullPlan.countryCode, countryName: fullPlan.countryName,
+    executionContract: expectedContract.get(corrected.candidateId) ?? "" };
+  assert.notEqual(assessmentDependencyFingerprint({ ...corrected, evidence: revised }, playbook,
+    fullPlan.objective, context), assessmentDependencyFingerprint(corrected, playbook,
+    fullPlan.objective, context));
+}
 const counters = { scores: 0, persisted: 0 };
 let finalQualified: number | null = null;
 const forbidden = async (): Promise<never> => { throw new Error("Completed stage replayed"); };
@@ -95,10 +136,10 @@ const deps: LeadWorkflowDependencies = {
   },
   persist: async input => {
     counters.persisted++;
-    assert.equal(input.candidates[0].evidence.length, 101);
-    assert.equal(input.candidates[0].correction.findings.length, 105);
+    assert.equal(input.candidates[0].evidence.length, expectedEvidenceCount);
+    assert.equal(input.candidates[0].correction.findings.length, expectedFindingCount);
     assert.equal(input.creditsUsed, 13);
-    assert.match(input.modelUsage.at(-1)?.requestPreparation?.encoding ?? "", /exact-shared-phrase-v1/);
+    assertEncoding(input.modelUsage.at(-1)?.requestPreparation?.encoding);
     assert.equal(input.assessments.length, 1);
     assert.equal(input.assessments[0].scoringStatus, "completed");
     const accepted = input.assessments.filter(item => item.eligible && item.eligibilityStatus === "eligible").length;
@@ -187,13 +228,13 @@ async function verifyProductSql(): Promise<void> {
     assert.equal(assessments[0].scoring_status, "completed");
     assert.equal(assessments[0].selected, false);
     assert.equal(assessments[0].eligible, false);
-    assert.equal(assessments[0].evidence.length, 101);
-    assert.equal(assessments[0].fact_ledger.length, 105);
+    assert.equal(assessments[0].evidence.length, expectedEvidenceCount);
+    assert.equal(assessments[0].fact_ledger.length, expectedFindingCount);
     assert.deepEqual(assessments[0].evidence, JSON.parse(JSON.stringify(sqlCorrected.evidence)));
     assert.deepEqual(assessments[0].fact_ledger, JSON.parse(JSON.stringify(sqlCorrected.correction.findings)));
     const snapshots = await tenantQuery<{count:string}>(userId,
       "select count(*)::text as count from lead_evidence_snapshot where run_id=$1", [runId]);
-    assert.equal(snapshots[0].count, "101");
+    assert.equal(snapshots[0].count, String(expectedEvidenceCount));
     const run = await tenantQuery<{accepted_count:number;status:string;metadata:Record<string,unknown>}>(userId,
       "select accepted_count,status,metadata from lead_search_run where id=$1", [runId]);
     assert.equal(run[0].accepted_count, 0);
@@ -206,9 +247,11 @@ async function verifyProductSql(): Promise<void> {
     assert.equal(scoreMetrics.length, 1);
     assert.deepEqual([scoreMetrics[0].input_items, scoreMetrics[0].valid_artifacts,
       scoreMetrics[0].downstream_used_artifacts], [1, 1, 1]);
-    const preparations = scoreMetrics[0].metadata.requestPreparations as Array<{encoding:string}>;
+    const preparations = scoreMetrics[0].metadata.requestPreparations as Array<{
+      encoding:string; omittedEvidenceExcerpts?:number}>;
     assert.equal(preparations.length, 1);
-    assert.match(preparations[0].encoding, /exact-shared-phrase-v1/);
+    assertEncoding(preparations[0].encoding);
+    if (foldedVariant) assert.ok((preparations[0].omittedEvidenceExcerpts ?? 0) > 0);
     const usageRows = await tenantQuery<{stage:string;account_cash_cost_usd:string|null}>(userId,
       "select stage,account_cash_cost_usd::text from workflow_model_usage where lead_run_id=$1", [runId]);
     assert.equal(usageRows.length, 1);
@@ -221,7 +264,8 @@ async function verifyProductSql(): Promise<void> {
     assert.equal((await tenantQuery(userId,
       "select id from paid_call_reservation where operation_id=$1", [actionId])).length, 0);
     console.log(JSON.stringify({ crossProcessProductSql: true, scored: 1, accepted: 0,
-      evidenceSnapshots: 101, savedFacts: 105, scoreMetric: 1, modelUsage: 1,
+      encoding: expectedEncoding, evidenceSnapshots: expectedEvidenceCount,
+      savedFacts: expectedFindingCount, scoreMetric: 1, modelUsage: 1,
       otherUserVisibleAssessments: 0,
       fakeModelCalls: resumed.fakeModelCalls, paidProviderCalls: 0 }));
   } finally {
@@ -257,7 +301,8 @@ try {
       process.stdout.write(child.stdout);
     }
     console.log(JSON.stringify({ postgresTwoProcesses: true, fullScoringAgentAfterResume: true,
-      exactSharedPhraseEncoding: true, savedEvidence: 101, savedFindings: 105,
+      encoding: expectedEncoding, savedEvidence: expectedEvidenceCount,
+      savedFindings: expectedFindingCount,
       priorCreditsPreserved: 13, finalQualified: 0, paidProviderCalls: 0,
       businessPersistence: "synthetic-adapter-only" }));
   } else if (mode === "sql") {
@@ -274,10 +319,16 @@ try {
     assert.throws(() => checkpointInvocation(snapshot, randomUUID(), actionId), /ownership/);
     assert.throws(() => checkpointInvocation(snapshot, userId, randomUUID()), /ownership/);
     assert.deepEqual(snapshot.next, ["score_candidates"]);
-    assert.equal(snapshot.values.correctedCandidates[0].evidence.length, 101);
-    assert.equal(snapshot.values.correctedCandidates[0].correction.findings.length, 105);
+    assert.equal(snapshot.values.correctedCandidates[0].evidence.length, expectedEvidenceCount);
+    assert.equal(snapshot.values.correctedCandidates[0].correction.findings.length, expectedFindingCount);
     assert.equal(snapshot.values.creditsUsed, 0);
-    const result = await graph.invoke(null, config);
+    const result = await graph.invoke(null, config).catch(async error => {
+      const failed = await graph.getState(config);
+      throw new Error(`SQL resume graph failed: ${JSON.stringify({ next: failed.next,
+        scoringStatus: failed.values.assessments?.map((item: {scoringStatus?:string}) => item.scoringStatus),
+        warnings: failed.values.assessments?.flatMap((item: {warnings?:string[]}) => item.warnings ?? []),
+        fakeModelCalls: calls.length })}`, { cause: error });
+    });
     assert.equal(result.result?.accepted, 0);
     assert.equal(result.assessments[0].scoringStatus, "completed");
     assert.deepEqual(agent.completedCacheContracts(result.assessments),
@@ -297,7 +348,7 @@ try {
       const snapshot = await graph.getState(config);
       assert.deepEqual(snapshot.next, ["score_candidates"]);
       assert.equal(snapshot.values.creditsUsed, 13);
-      assert.equal(snapshot.values.correctedCandidates[0].correction.findings.length, 105);
+      assert.equal(snapshot.values.correctedCandidates[0].correction.findings.length, expectedFindingCount);
       assert.deepEqual(counters, { scores: 0, persisted: 0 });
     } else {
       const snapshot = await graph.getState(config);
@@ -307,7 +358,13 @@ try {
       assert.deepEqual(snapshot.next, ["score_candidates"]);
       assert.deepEqual(snapshot.values.correctedCandidates[0].evidence, corrected.evidence);
       assert.deepEqual(snapshot.values.correctedCandidates[0].correction.findings, corrected.correction.findings);
-      const result = await graph.invoke(null, config);
+      const result = await graph.invoke(null, config).catch(async error => {
+        const failed = await graph.getState(config);
+        throw new Error(`Resume graph failed: ${JSON.stringify({ next: failed.next,
+          scoringStatus: failed.values.assessments?.map((item: {scoringStatus?:string}) => item.scoringStatus),
+          warnings: failed.values.assessments?.flatMap((item: {warnings?:string[]}) => item.warnings ?? []),
+          fakeModelCalls: calls.length })}`, { cause: error });
+      });
       assert.equal(result.result?.accepted,
         result.assessments.filter(item => item.eligible && item.eligibilityStatus === "eligible").length);
       finalQualified = result.result?.accepted ?? null;
