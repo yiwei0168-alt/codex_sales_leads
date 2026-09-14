@@ -81,6 +81,11 @@ describe("qualification phase synthesis",()=>{
     expect(sources.filter(item=>item.unlinkedPhaseSummary).map(item=>item.evidenceId))
       .toEqual(["synthesis-orphan"]);
     expect(finalInput.candidates[0].findings).toHaveLength(0);
+    const withPaths=new LeadQualificationAgent(wire,{routineModel:market.modelVersion,
+      escalationModel:market.modelVersion,includeCooperationPaths:true})
+      .planPhasedFinalRequest(candidate,playbook,market.countryCode,market.countryName,
+        market.objective,outputs);
+    expect(wire.requestBytes(withPaths.request)).toBeLessThanOrEqual(61_440);
     expect(facts.find(item=>item.findingId==="synthesis-finding-25")?.retainedCorrectedStatement)
       .toBe(candidate.correction.findings.find(item=>item.findingId==="synthesis-finding-25")?.statement);
     const verbose=structuredClone(outputs);

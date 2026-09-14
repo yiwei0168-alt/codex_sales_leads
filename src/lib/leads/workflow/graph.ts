@@ -95,7 +95,7 @@ export interface LeadWorkflowDependencies {
     cacheMisses?: number;
     providerMetrics?: { provider: "tavily"; attempts: number; retries: number; latencyMs: number };
   }> };
-  qualificationAgent: Pick<LeadQualificationAgent, "evaluate"> & Partial<Pick<LeadQualificationAgent, "evaluateWithUsage"|"cacheContracts"|"completedCacheContracts">>;
+  qualificationAgent: Pick<LeadQualificationAgent, "evaluate"> & Partial<Pick<LeadQualificationAgent, "evaluateWithUsage"|"cacheContracts"|"completedCacheContracts"|"phasedCacheContracts">>;
   assessmentReviewAgent: Pick<LeadAssessmentReviewAgent, "review">;
   handoffAssembler: Pick<LeadHandoffAssembler, "assemble">;
   persist: typeof persistLeadWorkflowResult;
@@ -358,11 +358,19 @@ export function buildLeadWorkflowGraph(
       const routing = routeCorrectedCandidates(state.correctedCandidates, state.plan, state.assessments);
       const inScopeCandidates = routing.queued;
       const pendingRoleCount = new Set(routing.routes.filter(route => route.status === "pending-role").map(route => route.companyKey)).size;
+      const initialContracts=dependencies.qualificationAgent.cacheContracts?.(inScopeCandidates,state.playbook,
+        state.plan.countryCode,state.plan.countryName,state.plan.objective)??new Map<string,string>();
+      if(dependencies.loadAssessmentCache&&dependencies.qualificationAgent.phasedCacheContracts){
+        const phased=await dependencies.qualificationAgent.phasedCacheContracts(inScopeCandidates,state.playbook,
+          state.plan.countryCode,state.plan.countryName,state.plan.objective,
+          {userId:state.userId,workspaceId:state.workspaceId,actionId:state.actionId});
+        for(const [id,contract] of phased)initialContracts.set(id,contract);
+      }
       const cached = dependencies.loadAssessmentCache ? await dependencies.loadAssessmentCache({
         userId: state.userId, workspaceId: state.workspaceId, candidates: inScopeCandidates,
         playbook: state.playbook, objective: state.plan.objective,
         countryCode:state.plan.countryCode,countryName:state.plan.countryName,
-        contracts:dependencies.qualificationAgent.cacheContracts?.(inScopeCandidates,state.playbook,state.plan.countryCode,state.plan.countryName,state.plan.objective),
+        contracts:initialContracts,
       }) : new Map<string, LeadCandidateAssessment>();
         const alreadyAssessed = new Map((state.assessments ?? []).map((item) => [item.candidateId, item]));
         // A complete peer may have been checkpointed before a single-candidate repair.
@@ -371,9 +379,17 @@ export function buildLeadWorkflowGraph(
           for(let pass=0;pass<inScopeCandidates.length;pass++){
             const remaining=inScopeCandidates.filter(candidate=>!alreadyAssessed.has(candidate.candidateId)&&!cached.has(candidate.candidateId));
             if(!remaining.length)break;
+            const contracts=dependencies.qualificationAgent.cacheContracts(remaining,state.playbook,
+              state.plan.countryCode,state.plan.countryName,state.plan.objective);
+            if(dependencies.qualificationAgent.phasedCacheContracts){
+              const phased=await dependencies.qualificationAgent.phasedCacheContracts(remaining,state.playbook,
+                state.plan.countryCode,state.plan.countryName,state.plan.objective,
+                {userId:state.userId,workspaceId:state.workspaceId,actionId:state.actionId});
+              for(const [id,contract] of phased)contracts.set(id,contract);
+            }
             const hits=await dependencies.loadAssessmentCache({userId:state.userId,workspaceId:state.workspaceId,candidates:remaining,
               playbook:state.playbook,objective:state.plan.objective,countryCode:state.plan.countryCode,countryName:state.plan.countryName,
-              contracts:dependencies.qualificationAgent.cacheContracts(remaining,state.playbook,state.plan.countryCode,state.plan.countryName,state.plan.objective)});
+              contracts});
             let added=0;for(const candidate of remaining){const hit=hits.get(candidate.candidateId);if(hit){cached.set(candidate.candidateId,hit);added++;}}
             if(!added)break;
           }
@@ -410,7 +426,8 @@ export function buildLeadWorkflowGraph(
       const evaluated = missing.length === 0 ? { assessments: [], usage: [] as WorkflowModelUsage[] }
         : dependencies.qualificationAgent.evaluateWithUsage
           ? await dependencies.qualificationAgent.evaluateWithUsage(
-            missing, state.playbook, state.plan.countryCode, state.plan.countryName, state.plan.objective,saveCompletedBatch)
+            missing, state.playbook, state.plan.countryCode, state.plan.countryName, state.plan.objective,
+            saveCompletedBatch,{userId:state.userId,workspaceId:state.workspaceId,actionId:state.actionId})
           : { assessments: await dependencies.qualificationAgent.evaluate(
             missing, state.playbook, state.plan.countryCode, state.plan.countryName, state.plan.objective),
           usage: [] };

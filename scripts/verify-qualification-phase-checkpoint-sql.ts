@@ -10,6 +10,10 @@ import {databaseConnectionString,databaseSslConfiguration} from "../src/lib/rag/
 import {DeepSeekProvider} from "../src/providers/deepseek";
 import type {StructuredAiRequest,StructuredAiResponse} from "../src/providers/contracts";
 import {qualificationPhaseOutputJsonSchema} from "../src/lib/leads/workflow/qualification-phase-output";
+import {LeadQualificationAgent} from "../src/lib/leads/workflow/qualification-agent";
+import {leadEvidenceContentHash} from "../src/lib/leads/evidence-snapshot";
+import {assessment,correctedCandidate,playbook} from "./workflow-recovery-fixtures";
+import {BudgetDeniedError} from "../src/lib/billing/policy";
 
 nextEnv.loadEnvConfig(process.cwd());
 const appUrl=process.env.DATABASE_URL,migrationUrl=process.env.DATABASE_MIGRATION_URL;
@@ -42,6 +46,52 @@ const response:StructuredAiResponse<unknown>={output:{facts:[{findingId:"fixture
   modelVersion:request.modelVersion,promptVersion:request.promptVersion,latencyMs:7,warnings:[],
   requestedModelVersion:request.modelVersion,actualProviderId:"deepseek",attempts:1,retries:0,
   usage:{promptTokens:30,completionTokens:12,reasoningTokens:0,totalTokens:42}};
+const originalEvidence={...correctedCandidate.evidence[0],evidenceRunId:"run-1",
+  freshnessStatus:"fresh" as const,
+  contentHash:leadEvidenceContentHash(correctedCandidate.evidence[0].excerpt)};
+const agentExtras=Array.from({length:150},(_,index)=>{
+  const excerpt=Array.from({length:9},(_,part)=>createHash("sha256")
+    .update(`agent-sql-phase-${index}-${part}`).digest("hex")).join(" ");
+  return {...originalEvidence,id:`agent-sql-source-${index}`,
+    url:`https://fixture.invalid/agent/${index}`,excerpt,contentHash:leadEvidenceContentHash(excerpt)};
+});
+const agentCandidate={...correctedCandidate,evidence:[originalEvidence,...agentExtras],
+  correction:{...correctedCandidate.correction,findings:[...correctedCandidate.correction.findings,
+    ...agentExtras.map((item,index)=>({...correctedCandidate.correction.findings[0],
+      findingId:`agent-sql-finding-${index}`,kind:"product-family" as const,
+      statement:`Corrected networking fact ${index}: ${createHash("sha256")
+        .update(`agent-fact-${index}`).digest("hex")}`,evidenceIds:[item.id],
+      status:index===25?"conflicting" as const:"supported" as const}))]}};
+function agentProvider(failPhaseAt=0){
+  const calls:StructuredAiRequest<unknown>[]=[];
+  let phaseCalls=0;
+  return {calls,provider:{id:"synthetic-phase-agent",requestBytes:(input:StructuredAiRequest<unknown>)=>wire.requestBytes(input),
+    cacheIdentity:(input:StructuredAiRequest<unknown>)=>wire.cacheIdentity(input),
+    paidRequestFingerprint:(input:StructuredAiRequest<unknown>)=>wire.paidRequestFingerprint(input),
+    execute:async<I,O>(input:StructuredAiRequest<I>):Promise<StructuredAiResponse<O>>=>{
+      calls.push(input as StructuredAiRequest<unknown>);
+      if(input.promptVersion==="qualification-fact-phase-v1"){
+        phaseCalls++;
+        if(phaseCalls===failPhaseAt)throw new BudgetDeniedError("budget-exhausted");
+        const phase=input.input as {candidate:{findings:Array<{findingId:string;evidenceIds:string[]}>};
+          unlinkedEvidenceIds:string[]};
+        return {output:{facts:phase.candidate.findings.map(item=>({findingId:item.findingId,
+          materiality:"material",summary:`Screened ${item.findingId}`,evidenceIds:item.evidenceIds})),
+          sources:phase.unlinkedEvidenceIds.map(id=>({evidenceId:id,materiality:"context",
+            summary:`Screened ${id}`}))} as O,modelVersion:input.modelVersion,
+          promptVersion:input.promptVersion,latencyMs:3,warnings:[],actualProviderId:"synthetic-phase-agent"};
+      }
+      const dimensionRationales=Object.entries(assessment.dimensions).map(([dimension,score])=>({
+        dimension,score,reason:"Synthetic cited scoring rationale.",
+        findingIds:["finding-distribution"],evidenceIds:[originalEvidence.id],confidence:85}));
+      return {output:{assessments:[{...assessment,dimensionRationales,
+        escalation:{required:false,expectedTotalScoreChange:0,criticalStateChanges:[],
+          higherCapabilityCanResolve:false,reason:""}}]} as O,
+        modelVersion:input.modelVersion,promptVersion:input.promptVersion,latencyMs:3,warnings:[],
+        actualProviderId:"synthetic-phase-agent"};
+    }},
+  };
+}
 const mode=process.argv[2];
 if(mode==="probe"){
   const [userId,workspaceId,actionId]=process.argv.slice(3);
@@ -49,6 +99,34 @@ if(mode==="probe"){
     countryCode:"CO",expectedProviderId:"deepseek"}).load(request,contract!,paidFingerprint);
   assert.deepEqual(loaded,response);
   console.log(JSON.stringify({crossProcessPhaseCheckpoint:"passed",modelCalls:0}));
+  await getPool().end();await admin.end();
+}else if(mode==="probe-agent"){
+  const [userId,workspaceId,actionId]=process.argv.slice(3);
+  const {calls,provider}=agentProvider();
+  const agent=new LeadQualificationAgent(provider,{routineModel:"deepseek-v4-pro",
+    escalationModel:"deepseek-v4-pro",includeCooperationPaths:true,batchSize:1,concurrency:1});
+  const contracts=await agent.phasedCacheContracts([agentCandidate],playbook,"CO","Colombia",
+    "new-market",{userId,workspaceId,actionId});
+  assert.match(contracts.get(agentCandidate.candidateId)??"",/^[a-f0-9]{64}$/);
+  assert.equal(calls.length,0);
+  console.log(JSON.stringify({crossProcessAgentPhaseContracts:"passed",modelCalls:0}));
+  await getPool().end();await admin.end();
+}else if(mode==="probe-agent-resume"){
+  const [userId,workspaceId,actionId]=process.argv.slice(3);
+  const {calls,provider}=agentProvider();
+  const agent=new LeadQualificationAgent(provider,{routineModel:"deepseek-v4-pro",
+    escalationModel:"deepseek-v4-pro",includeCooperationPaths:true,batchSize:1,concurrency:1});
+  const result=await agent.evaluateWithUsage([agentCandidate],playbook,"CO","Colombia",
+    "new-market",undefined,{userId,workspaceId,actionId});
+  assert.equal(result.assessments[0].scoringStatus,"completed");
+  assert.ok(calls.length>1);
+  assert.ok(calls.every(item=>item.input!==null));
+  const phases=await tenantQuery<{n:number}>(userId,
+    "select count(*)::int as n from lead_qualification_phase_checkpoint where action_id=$1 and candidate_id=$2",
+    [actionId,agentCandidate.candidateId]);
+  assert.equal(phases[0].n,calls.length);
+  console.log(JSON.stringify({crossProcessAgentResume:"passed",reusedCompletedPhases:1,
+    newPhaseCalls:calls.length-1,finalScoreCalls:1,paidProviderCalls:0}));
   await getPool().end();await admin.end();
 }else if(!mode){
   const userId=randomUUID(),otherUserId=randomUUID(),workspaceId=randomUUID(),otherWorkspaceId=randomUUID();
@@ -128,9 +206,34 @@ if(mode==="probe"){
     await admin.query("update paid_call_reservation set metrics=metrics || '{\"outputIncomplete\":false}'::jsonb where id=$1",
       [reservationId]);
     await guard();
+    const {calls,provider}=agentProvider(2);
+    const agent=new LeadQualificationAgent(provider,{routineModel:"deepseek-v4-pro",
+      escalationModel:"deepseek-v4-pro",includeCooperationPaths:true,batchSize:1,concurrency:1});
+    const agentScope={userId,workspaceId,actionId};
+    await assert.rejects(agent.evaluateWithUsage([agentCandidate],playbook,"CO","Colombia",
+      "new-market",undefined,agentScope),/budget-exhausted/);
+    assert.equal(calls.length,2);
+    assert.equal((await tenantQuery<{n:number}>(userId,
+      "select count(*)::int as n from lead_qualification_phase_checkpoint where action_id=$1 and candidate_id=$2",
+      [actionId,agentCandidate.candidateId]))[0].n,1);
+    const resumeChild=spawnSync(process.execPath,["scripts/run-tsx.cjs",
+      "scripts/verify-qualification-phase-checkpoint-sql.ts","probe-agent-resume",userId,workspaceId,actionId],
+      {cwd:process.cwd(),encoding:"utf8",windowsHide:true,timeout:30_000});
+    assert.equal(resumeChild.status,0,`Cross-process agent resume failed: ${resumeChild.stderr}`);
+    assert.match(resumeChild.stdout,/"crossProcessAgentResume":"passed"/);
+    const agentPhaseRows=(await tenantQuery<{n:number}>(userId,
+      "select count(*)::int as n from lead_qualification_phase_checkpoint where action_id=$1 and candidate_id=$2",
+      [actionId,agentCandidate.candidateId]))[0].n;
+    assert.ok(agentPhaseRows>1);
+    const agentChild=spawnSync(process.execPath,["scripts/run-tsx.cjs",
+      "scripts/verify-qualification-phase-checkpoint-sql.ts","probe-agent",userId,workspaceId,actionId],
+      {cwd:process.cwd(),encoding:"utf8",windowsHide:true,timeout:30_000});
+    assert.equal(agentChild.status,0,`Cross-process agent phase load failed: ${agentChild.stderr}`);
+    assert.match(agentChild.stdout,/"crossProcessAgentPhaseContracts":"passed"/);
     console.log(JSON.stringify({phaseCheckpointSql:"passed",crossProcessLoads:1,completedRows:1,
       duplicateRows:0,foreignReads:0,crossCountryReads:0,mutationDenied:true,
-      replayGuard:"exact reported complete only",paidProviderCalls:0}));
+      replayGuard:"exact reported complete only",agentPhaseRows,
+      crossProcessAgentLoads:1,crossProcessPartialResume:1,paidProviderCalls:0}));
   }finally{
     if(created){
       const client=await admin.connect();

@@ -20,6 +20,7 @@ import { roleScoringAnchors } from "./role-scoring-anchors";
 import {assembleQualificationPhaseSynthesis} from "./qualification-phase-synthesis";
 import type {QualificationPhaseOutput} from "./qualification-phase-output";
 import {planQualificationFactPhases} from "./qualification-phase-plan";
+import {productQualificationPhaseCheckpoint} from "./qualification-phase-checkpoint";
 import { leadAssessmentBatchSchema, leadAssessmentModelSchema, leadAssessmentScoreOnlyBatchSchema,
   leadAssessmentScoreOnlyModelSchema, type LeadAssessmentModelOutput,
   type LeadAssessmentScoreOnlyModelOutput } from "./schemas";
@@ -75,7 +76,10 @@ interface LeadQualificationAgentOptions {
   maxBatchInputCharacters?: number;
   concurrency?: number;
   includeCooperationPaths?: boolean;
+  phaseCheckpointFactory?: typeof productQualificationPhaseCheckpoint;
 }
+
+export interface QualificationPhaseScope {userId:string;workspaceId:string;actionId:string}
 
 function clamp(value: number, maximum: number): number {
   return Math.max(0, Math.min(maximum, Math.round(value)));
@@ -396,6 +400,7 @@ export class LeadQualificationAgent {
   private readonly exactAssessmentContracts=new WeakMap<LeadCandidateAssessment,string>();
   private readonly concurrency: number;
   private readonly includeCooperationPaths: boolean;
+  private readonly phaseCheckpointFactory:typeof productQualificationPhaseCheckpoint;
 
   constructor(private readonly provider: AiProvider = createLeadAiProvider(), options: LeadQualificationAgentOptions = {}) {
     this.routineModel = options.routineModel ?? process.env.DEEPSEEK_MODEL?.trim() ?? "deepseek-v4-flash";
@@ -405,6 +410,7 @@ export class LeadQualificationAgent {
       ?? ACTIVE_LEAD_COST_QUALITY_POLICY.evidencePackets.qualification.maxBatchInputCharacters);
     this.concurrency = Math.max(1, Math.min(8, options.concurrency ?? 2));
     this.includeCooperationPaths = options.includeCooperationPaths ?? true;
+    this.phaseCheckpointFactory=options.phaseCheckpointFactory??productQualificationPhaseCheckpoint;
   }
 
   private get promptVersion(): string {
@@ -462,6 +468,43 @@ export class LeadQualificationAgent {
     const bytes=this.provider.requestBytes(request),limit=leadRequestByteLimit(request);
     if(limit!==null&&bytes>limit)throw new LeadRequestTooLargeError(bytes,limit);
     return {plan,synthesis,request};
+  }
+
+  private phasePlan(candidate:CorrectedLeadWorkflowCandidate,playbook:LeadMarketPlaybook,
+    countryCode:string,countryName:string,objective:string){
+    if(!this.provider.requestBytes)throw new Error("Phase scoring requires an exact provider byte contract");
+    return planQualificationFactPhases({candidate,playbook,countryCode,countryName,objective,
+      modelVersion:this.routineModel,requestBytes:request=>this.provider.requestBytes!(request)});
+  }
+
+  async phasedCacheContracts(candidates:CorrectedLeadWorkflowCandidate[],playbook:LeadMarketPlaybook,
+    countryCode:string,countryName:string,objective:string,scope:QualificationPhaseScope):Promise<Map<string,string>>{
+    const contracts=new Map<string,string>();
+    if(!this.provider.cacheIdentity||!this.provider.paidRequestFingerprint||!this.provider.requestBytes)return contracts;
+    const checkpoint=this.phaseCheckpointFactory({...scope,countryCode,
+      expectedProviderId:this.provider.id.replace(/^resilient:/,"")});
+    const oversized=this.requestableCandidates(candidates,playbook,countryCode,countryName,objective).oversized;
+    for(const candidate of candidates){
+      if(!oversized.has(candidate.candidateId))continue;
+      let plan:ReturnType<typeof planQualificationFactPhases>;
+      try{plan=this.phasePlan(candidate,playbook,countryCode,countryName,objective);}
+      catch(error){if(error instanceof LeadRequestTooLargeError)continue;throw error;}
+      const outputs:QualificationPhaseOutput[]=[];
+      for(const request of plan.phases){
+        const contract=this.provider.cacheIdentity(request),paid=this.provider.paidRequestFingerprint(request);
+        if(!/^[a-f0-9]{64}$/.test(contract)||!/^[a-f0-9]{64}$/.test(paid))break;
+        const hit=await checkpoint.load(request,contract,paid);
+        if(!hit)break;
+        outputs.push(hit.output);
+      }
+      if(outputs.length!==plan.phases.length)continue;
+      try{
+        const final=this.planPhasedFinalRequest(candidate,playbook,countryCode,countryName,objective,outputs);
+        const contract=this.provider.cacheIdentity(final.request);
+        if(/^[a-f0-9]{64}$/.test(contract))contracts.set(candidate.candidateId,contract);
+      }catch(error){if(!(error instanceof LeadRequestTooLargeError))throw error;}
+    }
+    return contracts;
   }
 
   private request(candidates: CorrectedLeadWorkflowCandidate[], playbook: LeadMarketPlaybook, countryCode: string, countryName: string, objective: string, modelVersion: string,
@@ -580,8 +623,8 @@ export class LeadQualificationAgent {
   }
 
   private async invokeBatch(candidates: CorrectedLeadWorkflowCandidate[], playbook: LeadMarketPlaybook, countryCode: string, countryName: string, objective: string, modelVersion: string,
-    usageRecords: WorkflowModelUsage[]) {
-    const request=this.request(candidates,playbook,countryCode,countryName,objective,modelVersion);
+    usageRecords: WorkflowModelUsage[],preparedRequest?:ReturnType<LeadQualificationAgent["request"]>) {
+    const request=preparedRequest??this.request(candidates,playbook,countryCode,countryName,objective,modelVersion);
     const response = await withCompanyCostAttribution(candidates,countryCode,()=>this.provider.execute<LeadAssessmentRequest, unknown>(
       request,
       AbortSignal.timeout(modelVersion === this.escalationModel ? 120_000 : 75_000),
@@ -600,6 +643,69 @@ export class LeadQualificationAgent {
     const parsed={assessments:validated.items,complete:validated.complete};
     usageRecords[usageRecords.length-1].batchValidation={inputItems:candidates.length,validOutputItems:validated.items.length,rejectedOutputItems:validated.rejectedItems,missingOutputItems:validated.missingItems,complete:validated.complete};
     return { response, parsed };
+  }
+
+  private async evaluatePhased(candidate:CorrectedLeadWorkflowCandidate,playbook:LeadMarketPlaybook,
+    countryCode:string,countryName:string,objective:string,scope:QualificationPhaseScope,
+    usageRecords:WorkflowModelUsage[]):Promise<LeadCandidateAssessment>{
+    if(!this.provider.cacheIdentity||!this.provider.paidRequestFingerprint||!this.provider.requestBytes)
+      return failedAssessment(candidate,"Phased scoring has no exact primary request/paid replay contract; no request was sent.",this.promptVersion);
+    let plan:ReturnType<typeof planQualificationFactPhases>;
+    try{plan=this.phasePlan(candidate,playbook,countryCode,countryName,objective);}
+    catch(error){if(error instanceof LeadRequestTooLargeError)return failedAssessment(candidate,
+      `A single fact phase exceeds the approved byte limit (${error.message}); no request was sent.`,this.promptVersion);
+      throw error;}
+    if(!plan.phases.length)return failedAssessment(candidate,"No bounded fact phase can be planned; no request was sent.",this.promptVersion);
+    const checkpoint=this.phaseCheckpointFactory({...scope,countryCode,
+      expectedProviderId:this.provider.id.replace(/^resilient:/,"")});
+    const outputs:QualificationPhaseOutput[]=[];
+    for(const request of plan.phases){
+      const contract=this.provider.cacheIdentity(request),paid=this.provider.paidRequestFingerprint(request);
+      if(!/^[a-f0-9]{64}$/.test(contract)||!/^[a-f0-9]{64}$/.test(paid))
+        throw new Error("Qualification phase primary request identity unavailable; no further paid call is safe");
+      const cached=await checkpoint.load(request,contract,paid);
+      if(cached){outputs.push(cached.output);continue;}
+      const response=await withCompanyCostAttribution([candidate],countryCode,()=>this.provider.execute(
+        request,AbortSignal.timeout(120_000)));
+      usageRecords.push({stage:"qualification",requestedModel:response.requestedModelVersion??request.modelVersion,
+        actualModel:response.modelVersion,providerId:response.actualProviderId,
+        promptTokens:response.usage?.promptTokens??0,completionTokens:response.usage?.completionTokens??0,
+        reasoningTokens:response.usage?.reasoningTokens??0,totalTokens:response.usage?.totalTokens??0,
+        latencyMs:response.latencyMs,fallbackUsed:Boolean(response.requestedModelVersion
+          &&(response.requestedModelVersion!==response.modelVersion||response.actualProviderId!=="deepseek")),
+        attempts:response.attempts,retries:response.retries,accountCashCostUsd:response.usage?.accountCashCostUsd,
+        batchValidation:{inputItems:(request.input as {candidate:{findings:unknown[]};unlinkedEvidenceIds:string[]})
+          .candidate.findings.length+(request.input as {unlinkedEvidenceIds:string[]}).unlinkedEvidenceIds.length,
+          validOutputItems:0,rejectedOutputItems:0,missingOutputItems:0,complete:false}});
+      // A completed row is written before another phase or final score can incur cost.
+      await checkpoint.save(request,contract,paid,response);
+      const completed=await checkpoint.load(request,contract,paid);
+      if(!completed)throw new Error("Completed qualification phase checkpoint could not be read");
+      outputs.push(completed.output);
+      usageRecords[usageRecords.length-1].batchValidation={...usageRecords[usageRecords.length-1].batchValidation!,
+        validOutputItems:completed.output.facts.length+completed.output.sources.length,complete:true};
+    }
+    let final:ReturnType<LeadQualificationAgent["planPhasedFinalRequest"]>;
+    try{final=this.planPhasedFinalRequest(candidate,playbook,countryCode,countryName,objective,outputs);}
+    catch(error){if(error instanceof LeadRequestTooLargeError)return failedAssessment(candidate,
+      `Phase summaries exceed the final approved score request limit (${error.message}); original evidence remains pending.`,this.promptVersion);
+      throw error;}
+    const routine=await this.invokeBatch([candidate],playbook,countryCode,countryName,objective,
+      this.routineModel,usageRecords,final.request);
+    const value=routine.parsed.assessments.find(item=>item.candidateId===candidate.candidateId);
+    if(!value||!routine.parsed.complete)return failedAssessment(candidate,
+      "Phased final score omitted or invalidated the candidate; paid output is retained for investigation, not replayed.",this.promptVersion);
+    const allowOemOdm=/\b(?:oem|odm|private[ -]?label|manufactur(?:e|ing))\b/i.test(objective);
+    const normalized=normalizeAssessment(value,candidate,routine.response,false,allowOemOdm,this.includeCooperationPaths);
+    if(requiresEscalation(candidate,normalized,value)&&this.routineModel!==this.escalationModel)
+      return failedAssessment(candidate,"Phased final score requires material Pro escalation; no oversized request was replayed.",this.promptVersion);
+    const expectedProvider=this.provider.id.replace(/^resilient:/,"");
+    if(routine.response.modelVersion!==this.routineModel||routine.response.actualProviderId!==expectedProvider)
+      return failedAssessment(candidate,"Phased final score used a different provider/model; primary-route cache cannot safely retain it.",this.promptVersion);
+    const contract=this.provider.cacheIdentity(final.request);
+    if(!/^[a-f0-9]{64}$/.test(contract))throw new Error("Phased final score has no reusable contract");
+    if(normalized.scoringStatus==="completed")this.exactAssessmentContracts.set(normalized,contract);
+    return normalized;
   }
 
   private async evaluateBatch(candidates: CorrectedLeadWorkflowCandidate[], playbook: LeadMarketPlaybook, countryCode: string, countryName: string, objective: string,
@@ -723,17 +829,12 @@ export class LeadQualificationAgent {
   }
 
   private async evaluateWithCollector(candidates: CorrectedLeadWorkflowCandidate[], playbook: LeadMarketPlaybook, countryCode: string, countryName: string, objective: string,
-    usageRecords: WorkflowModelUsage[],onBatchCompleted?:(candidates:CorrectedLeadWorkflowCandidate[],assessments:LeadCandidateAssessment[])=>Promise<void>): Promise<LeadCandidateAssessment[]> {
+    usageRecords: WorkflowModelUsage[],onBatchCompleted?:(candidates:CorrectedLeadWorkflowCandidate[],assessments:LeadCandidateAssessment[])=>Promise<void>,
+    phaseScope?:QualificationPhaseScope): Promise<LeadCandidateAssessment[]> {
     const {ready,oversized}=this.requestableCandidates(candidates.filter(candidate=>roleScoringAnchors(candidate.correction)),
       playbook,countryCode,countryName,objective);
     const deferred = candidates.filter(candidate=>!roleScoringAnchors(candidate.correction)).map(candidate=>
       failedAssessment(candidate, "Primary role family/subtype is incomplete or inconsistent; resolve correction before scoring. No scoring request was sent.", this.promptVersion));
-    for(const candidate of candidates){
-      const error=oversized.get(candidate.candidateId);
-      if(error)deferred.push(failedAssessment(candidate,
-        `Complete scoring request exceeds the approved byte limit (${error.message}); this company remains pending. No scoring request was sent.`,
-        this.promptVersion));
-    }
     const batches=leadRequestBatches(ready,items=>this.request(
       items,playbook,countryCode,countryName,objective,this.routineModel,
     ),this.batchSize,this.maxBatchInputCharacters,this.provider.requestBytes?.bind(this.provider));
@@ -759,6 +860,17 @@ export class LeadQualificationAgent {
       }
     }
     await Promise.all(Array.from({ length: Math.min(this.concurrency, batches.length) }, () => worker(this)));
+    for(const candidate of candidates){
+      const error=oversized.get(candidate.candidateId);
+      if(!error)continue;
+      if(!phaseScope||publicationFailed){deferred.push(failedAssessment(candidate,
+        `Complete scoring request exceeds the approved byte limit (${error.message}); this company remains pending. No scoring request was sent.`,
+        this.promptVersion));continue;}
+      const assessed=await this.evaluatePhased(candidate,playbook,countryCode,countryName,objective,
+        phaseScope,usageRecords);
+      deferred.push(assessed);
+      await publish([candidate],[assessed]);
+    }
     const byId = new Map([...deferred, ...results.filter((result):result is LeadCandidateAssessment[]=>Boolean(result)).flat()]
       .map(item=>[item.candidateId,item]));
     return candidates.map(candidate=>byId.get(candidate.candidateId)
@@ -771,9 +883,10 @@ export class LeadQualificationAgent {
 
   async evaluateWithUsage(candidates: CorrectedLeadWorkflowCandidate[], playbook: LeadMarketPlaybook,
     countryCode: string, countryName: string, objective: string,
-    onBatchCompleted?:(candidates:CorrectedLeadWorkflowCandidate[],assessments:LeadCandidateAssessment[])=>Promise<void>) {
+    onBatchCompleted?:(candidates:CorrectedLeadWorkflowCandidate[],assessments:LeadCandidateAssessment[])=>Promise<void>,
+    phaseScope?:QualificationPhaseScope) {
     const usage: WorkflowModelUsage[] = [];
-    const assessments = await this.evaluateWithCollector(candidates, playbook, countryCode, countryName, objective, usage,onBatchCompleted);
+    const assessments = await this.evaluateWithCollector(candidates, playbook, countryCode, countryName, objective, usage,onBatchCompleted,phaseScope);
     return { assessments, usage };
   }
 }

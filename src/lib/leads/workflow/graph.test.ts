@@ -425,6 +425,31 @@ describe("LangGraph lead workflow", () => {
     expect(guard).toHaveBeenCalledTimes(1);
     expect(deps.qualificationAgent.evaluate).not.toHaveBeenCalled();
   });
+  it("loads a completed phased final score before the post-checkpoint paid-response guard",async()=>{
+    const deps=dependencies([]),saver=new MemorySaver();
+    const contract="b".repeat(64);
+    deps.qualificationAgent.cacheContracts=vi.fn(()=>new Map());
+    deps.qualificationAgent.phasedCacheContracts=vi.fn(async()=>new Map([[correctedCandidate.candidateId,contract]]));
+    deps.loadAssessmentCache=vi.fn(async input=>{
+      if(input.contracts.get(correctedCandidate.candidateId)!==contract)return new Map();
+      return new Map([[correctedCandidate.candidateId,assessment]]);
+    });
+    deps.assertScoringRecoverySafe=vi.fn(async()=>{throw new Error("Completed phased score was not loaded");});
+    deps.assessmentReviewAgent.review=vi.fn(async(_items,assessments)=>({assessments,reviews:[],warnings:[]}));
+    const graph=buildLeadWorkflowGraph(deps,saver),config={configurable:{thread_id:"phased-final-cache"}};
+    await graph.updateState(config,{userId:"u",actionId:"a",workspaceId:"w",graphThreadId:"phased-final-cache",
+      runId:"run-1",plan,playbook,phase:"routing",candidates:[candidate],correctedCandidates:[correctedCandidate],
+      assessments:[],creditsUsed:13,ragContext:[],assessmentReviews:[],handoffs:[],modelUsage:[],stageMetrics:[],
+      warnings:[],scoreRecoveryCheckpointAt:"2026-09-14T00:00:00.000Z"},"route_candidates");
+    const state=await graph.invoke(null,config);
+    expect(state.assessments[0]).toEqual(assessment);
+    expect(deps.loadAssessmentCache).toHaveBeenCalledOnce();
+    expect(deps.qualificationAgent.phasedCacheContracts).toHaveBeenCalledWith([correctedCandidate],
+      playbook,plan.countryCode,plan.countryName,plan.objective,
+      {userId:"u",workspaceId:"w",actionId:"a"});
+    expect(deps.assertScoringRecoverySafe).not.toHaveBeenCalled();
+    expect(deps.qualificationAgent.evaluate).not.toHaveBeenCalled();
+  });
   it("does not call the cache writer when a completed score lacks a safe request contract",async()=>{
     const deps=dependencies([]);
     deps.saveAssessmentCache=vi.fn(async()=>undefined);
