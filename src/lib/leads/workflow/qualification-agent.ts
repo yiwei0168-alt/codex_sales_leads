@@ -2,7 +2,7 @@ import { compactLeadSingleton } from "@/providers/compact-lead-request";
 import {BudgetDeniedError} from "@/lib/billing/policy";
 import {withCompanyCostAttribution} from "@/lib/billing/company-cost-context";
 import {leadRequestBatches} from "@/providers/lead-request-batches";
-import {LeadRequestTooLargeError} from "@/providers/lead-request-bounds";
+import {LeadRequestTooLargeError,leadRequestByteLimit} from "@/providers/lead-request-bounds";
 import {validateBatchItems} from "./batch-output";
 import type { AiProvider, StructuredAiResponse } from "@/providers/contracts";
 import { createLeadAiProvider } from "@/providers/resilient-ai";
@@ -17,6 +17,9 @@ import { MODEL_SCORING_POLICY } from '../model-scoring-policy';
 import { ACTIVE_LEAD_COST_QUALITY_POLICY } from "./cost-quality-policy";
 import { buildModelEvidencePacket } from "./evidence-packet";
 import { roleScoringAnchors } from "./role-scoring-anchors";
+import {assembleQualificationPhaseSynthesis} from "./qualification-phase-synthesis";
+import type {QualificationPhaseOutput} from "./qualification-phase-output";
+import {planQualificationFactPhases} from "./qualification-phase-plan";
 import { leadAssessmentBatchSchema, leadAssessmentModelSchema, leadAssessmentScoreOnlyBatchSchema,
   leadAssessmentScoreOnlyModelSchema, type LeadAssessmentModelOutput,
   type LeadAssessmentScoreOnlyModelOutput } from "./schemas";
@@ -37,6 +40,10 @@ function validatedAssessmentSchema(includePaths:boolean):z.ZodType<Qualification
 
 interface LeadAssessmentRequest {
   instructions: string[];
+  phaseScreening?: {
+    version:string;sourceFingerprint:string;
+    factColumns:string[];factRows:unknown[][];sourceColumns:string[];sourceRows:unknown[][];
+  };
   market: { countryCode: string; countryName: string; objective: string };
   cudyFitBrief: {
     marketHypothesis: string;
@@ -441,7 +448,26 @@ export class LeadQualificationAgent {
     }));
   }
 
-  private request(candidates: CorrectedLeadWorkflowCandidate[], playbook: LeadMarketPlaybook, countryCode: string, countryName: string, objective: string, modelVersion: string) {
+  /** Pure preflight: no phase or final provider request is sent. */
+  planPhasedFinalRequest(candidate:CorrectedLeadWorkflowCandidate,playbook:LeadMarketPlaybook,
+    countryCode:string,countryName:string,objective:string,
+    outputs:QualificationPhaseOutput[]){
+    if(!this.provider.requestBytes)throw new Error("Phase scoring requires an exact provider byte contract");
+    const plan=planQualificationFactPhases({candidate,playbook,countryCode,countryName,objective,
+      modelVersion:this.routineModel,requestBytes:request=>this.provider.requestBytes!(request)});
+    const synthesis=assembleQualificationPhaseSynthesis({candidate,playbook,countryCode,countryName,objective,
+      modelVersion:this.routineModel,plan,outputs});
+    const request=this.request([candidate],playbook,countryCode,countryName,objective,
+      this.routineModel,synthesis);
+    const bytes=this.provider.requestBytes(request),limit=leadRequestByteLimit(request);
+    if(limit!==null&&bytes>limit)throw new LeadRequestTooLargeError(bytes,limit);
+    return {plan,synthesis,request};
+  }
+
+  private request(candidates: CorrectedLeadWorkflowCandidate[], playbook: LeadMarketPlaybook, countryCode: string, countryName: string, objective: string, modelVersion: string,
+    synthesis?:ReturnType<typeof assembleQualificationPhaseSynthesis>) {
+    if(synthesis&&(candidates.length!==1||candidates[0].candidateId!==synthesis.candidateId))
+      throw new Error("Phase synthesis must match one scoring candidate");
     const pathInstructions = this.includeCooperationPaths ? [
       "Return at most two evidence-supported cooperation paths using only: Direct Tier-1 Supply, Distributor-Mediated Supply, Direct Downstream Channel Supply, OEM/ODM, or Other.",
       "Score each path semantically with role/structure 0-30, user-stage/supply fit 0-25, product/customer/scenario fit 0-20, procurement/influence 0-15, and execution feasibility 0-10. Do not return a path total or path confidence; code computes and ranks the total.",
@@ -457,6 +483,7 @@ export class LeadQualificationAgent {
       instructions: [
         `Act as an independent role-aware sales-lead qualification${this.includeCooperationPaths ? " and cooperation-path" : ""} agent. Ignore provider scores, discovery order and the original search lane.`,
         "Assess only supplied current-run evidence. Never invent company facts, roles, scale, product fit, relationships, paths or evidence IDs.",
+        ...(synthesis?["The phaseScreening factRows and sourceRows use the matching Columns arrays. Each fact retains its corrected status, original citation IDs and screened summary; critical or non-supported corrected statements are also retained verbatim. Every current source retains its ID and type; source URLs were available in the bounded phases and remain linked by ID outside this final prompt. Phase summaries are bounded interpretations, not raw quotations or independent corroboration. Preserve uncertain, conflicting and negative findings; missing raw excerpts after phase screening are not negative evidence."]:[]),
         "Treat old-run or discovery-only material as a search lead, never as scoring evidence unless it was freshly acquired or revalidated into this run.",
         "Every gate is supported, not-supported, unknown or conflicting. Failed acquisition and missing evidence are unknown, never a negative fact.",
         "The targetCountryPresence gate must follow the supplied correction-stage country-presence finding for this exact candidate and target market; never infer it from an unrelated page or from operations in a different country.",
@@ -474,6 +501,18 @@ export class LeadQualificationAgent {
         "KA is never a tier-1 distributor label. Account tier and recommendation priority are computed deterministically after your assessment and must not influence dimension scores.",
         "Return one assessment for every candidateId. Request escalation only when a higher-capability model can resolve the issue and is expected to change total score by at least 8 points or change a critical identity, eligibility, primary-role, existence, country-presence or networking-relevance state. Top-N position and confidence alone never justify escalation.",
       ],
+      ...(synthesis?{phaseScreening:{version:synthesis.version,sourceFingerprint:synthesis.sourceFingerprint,
+        factColumns:["findingId","kind","status","retainedCorrectedStatement","evidenceIds",
+          "phaseMateriality","phaseSummary","phaseCitedEvidenceIds"],
+        factRows:synthesis.facts.map(item=>[item.findingId,item.kind,item.status,
+          item.status!=="supported"||["identity","country-presence","role"].includes(item.kind)
+            ?item.statement:null,item.evidenceIds,item.screeningMateriality,item.screeningSummary,
+          item.screeningCitedEvidenceIds]),
+        sourceColumns:["evidenceId","sourceType","unlinkedPhaseMateriality",
+          "unlinkedPhaseSummary"],
+        sourceRows:synthesis.sources.map(item=>item.screeningSummary
+          ?[item.evidenceId,item.sourceType,item.screeningMateriality,item.screeningSummary]
+          :[item.evidenceId,item.sourceType])}}:{}),
       market: { countryCode, countryName, objective },
       cudyFitBrief: {
         marketHypothesis: playbook.marketHypothesis,
@@ -491,7 +530,7 @@ export class LeadQualificationAgent {
           return evidenceIds.length > 0 ? [{ ...finding, evidenceIds }] : [];
         });
         const packetPolicy = ACTIVE_LEAD_COST_QUALITY_POLICY.evidencePackets.qualification;
-        const evidencePacket = buildModelEvidencePacket(candidate, {
+        const evidencePacket = synthesis?[]:buildModelEvidencePacket(candidate, {
           requiredEvidenceIds: currentFindings.flatMap((finding) => finding.evidenceIds),
           maxUnlinkedItems: packetPolicy.maxUnlinkedItems,
           maxExcerptCharacters: packetPolicy.maxExcerptCharacters,
@@ -507,7 +546,7 @@ export class LeadQualificationAgent {
           roleScoringAnchors: roleScoringAnchors(candidate.correction),
           correctionReasons: candidate.correction.reasons,
           correctionConfidence: candidate.correction.confidence,
-          findings: currentFindings,
+          findings: synthesis?[]:currentFindings,
           evidence: evidencePacket.map((item) => ({
             evidenceId: item.evidenceId,
             sourceType: item.sourceType,

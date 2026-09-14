@@ -9,6 +9,16 @@ import {qualificationPhaseOutputJsonSchema} from "./qualification-phase-output";
 
 export const QUALIFICATION_FACT_PHASE_VERSION="qualification-fact-phase-v1";
 
+export function qualificationPhaseSourceFingerprint(options:{candidate:CorrectedLeadWorkflowCandidate;
+  playbook:LeadMarketPlaybook;countryCode:string;countryName:string;objective:string;modelVersion:string}):string{
+  const {candidate,playbook,countryCode,countryName,objective,modelVersion}=options;
+  const evidence=candidate.evidence.filter(item=>isCurrentLeadScoringEvidence(item,candidate.evidenceSnapshotRunId));
+  return createHash("sha256").update(JSON.stringify({version:QUALIFICATION_FACT_PHASE_VERSION,
+    candidateId:candidate.candidateId,countryCode,countryName,objective,modelVersion,playbook,
+    candidate:{companyName:candidate.companyName,domain:candidate.domain,
+      correction:candidate.correction,evidence}})).digest("hex");
+}
+
 /** Plans bounded fact-screening inputs; callers must persist and validate outputs before final scoring. */
 export function planQualificationFactPhases(options:{candidate:CorrectedLeadWorkflowCandidate;
   playbook:LeadMarketPlaybook;countryCode:string;countryName:string;objective:string;modelVersion:string;
@@ -23,10 +33,7 @@ export function planQualificationFactPhases(options:{candidate:CorrectedLeadWork
     ...evidence.filter(item=>!linked.has(item.id)).map((item,index)=>({kind:"source" as const,index,
       evidenceIds:[item.id]}))];
   const sourceOnly=evidence.filter(item=>!linked.has(item.id));
-  const sourceFingerprint=createHash("sha256").update(JSON.stringify({version:QUALIFICATION_FACT_PHASE_VERSION,
-    candidateId:candidate.candidateId,
-    countryCode,countryName,objective,modelVersion,playbook,candidate: {companyName:candidate.companyName,
-      domain:candidate.domain,correction:candidate.correction,evidence}})).digest("hex");
+  const sourceFingerprint=qualificationPhaseSourceFingerprint(options);
   const build=(chosen:typeof units,index:number):StructuredAiRequest<unknown>=>{
     const factIndexes=new Set(chosen.filter(item=>item.kind==="finding").map(item=>item.index));
     const sourceIndexes=new Set(chosen.filter(item=>item.kind==="source").map(item=>item.index));
