@@ -70,7 +70,7 @@ it("permits only bounded Exa auto company text search and rejects unsupported or
 });
 
 it("preserves reviewed native contracts while adding narrow search and Sol contracts",()=>{
-  expect(billingPolicy.version).toBe("request-bounds-v1.9.0");
+  expect(billingPolicy.version).toBe("request-bounds-v1.10.0");
   expect(billingPolicy.rules).toHaveLength(12);
   rules.forEach(expected=>{
     const rule=billingPolicy.rules.find(candidate=>candidate.key===expected.key);
@@ -148,13 +148,15 @@ it("selects S01 only by its explicit playbook contract and rejects routing or pa
   const body={model:input.model,messages:[{role:"system",content:"instructions"},{role:"user",content:"facts"}],
     provider:{require_parameters:true,data_collection:"deny",only:["openai"],allow_fallbacks:false},
     response_format:{type:"json_schema",json_schema:{name:"result",strict:true,schema:{type:"object"}}},
-    stream:false,temperature:0,max_completion_tokens:4096};
+    stream:false,max_tokens:4096};
+  expect(pinned.requestContract).toBe("openrouter-sol-openai-playbook-v2");
   expect(()=>assertRequestContract(pinned,body,"")).not.toThrow();
   expect(()=>assertRequestContract(ordinary,body,"")).toThrow("request-out-of-bounds");
   for(const provider of [{...body.provider,only:["azure"]},{...body.provider,only:["openai","azure"]},
     {...body.provider,allow_fallbacks:true},{require_parameters:true,data_collection:"deny"}])
     expect(()=>assertRequestContract(pinned,{...body,provider},"")).toThrow("request-out-of-bounds");
-  for(const change of [{tools:[]},{plugins:[]},{service_tier:"priority"},{max_completion_tokens:4097},
+  for(const change of [{tools:[]},{plugins:[]},{service_tier:"priority"},{max_tokens:4097},
+    {max_completion_tokens:4096},{temperature:0},
     {response_format:{type:"json_object"}},{messages:[...body.messages,{role:"assistant",content:"extra"}]}])
     expect(()=>assertRequestContract(pinned,{...body,...change},"")).toThrow("request-out-of-bounds");
   expect(()=>quoteRequest({...input,requestBytes:61441},undefined,now,pinned.key)).toThrow("request-out-of-bounds");

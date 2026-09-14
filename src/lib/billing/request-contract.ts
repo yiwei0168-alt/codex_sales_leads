@@ -9,17 +9,23 @@ function textMessage(value:unknown,role:string){return record(value)&&keys(value
 export function assertRequestContract(rule:RequestBound,body:Record<string,unknown>,query:string,method="POST",headers?:Headers):void{
   if(!rule.requestContract)return; // Historical independently approved scopes retain their own constraints.
   let valid=false;
-  if(rule.requestContract==="openrouter-sol-standard-json-v1"||rule.requestContract==="openrouter-sol-openai-playbook-v1"){
+  if(rule.requestContract==="openrouter-sol-standard-json-v1"||rule.requestContract==="openrouter-sol-openai-playbook-v1"
+    ||rule.requestContract==="openrouter-sol-openai-playbook-v2"){
+    const playbookV2=rule.requestContract==="openrouter-sol-openai-playbook-v2";
+    const playbookPinned=rule.requestContract==="openrouter-sol-openai-playbook-v1"||playbookV2;
     const format=body.response_format;
     valid=method==="POST"&&rule.origin==="https://openrouter.ai"&&rule.pathname==="/api/v1/chat/completions"&&query===""
       &&rule.model==="openai/gpt-5.6-sol"&&body.model===rule.model
-      &&keys(body,["model","messages","provider","response_format","stream","temperature","max_completion_tokens"])
-      &&body.stream===false&&body.temperature===0
-      &&Number.isSafeInteger(body.max_completion_tokens)&&(body.max_completion_tokens as number)>0&&(body.max_completion_tokens as number)<=4096
-      &&record(body.provider)&&keys(body.provider,rule.requestContract==="openrouter-sol-openai-playbook-v1"
+      &&keys(body,playbookV2?["model","messages","provider","response_format","stream","max_tokens"]
+        :["model","messages","provider","response_format","stream","temperature","max_completion_tokens"])
+      &&body.stream===false&&(playbookV2?body.temperature===undefined:body.temperature===0)
+      &&Number.isSafeInteger(playbookV2?body.max_tokens:body.max_completion_tokens)
+      &&((playbookV2?body.max_tokens:body.max_completion_tokens) as number)>0
+      &&((playbookV2?body.max_tokens:body.max_completion_tokens) as number)<=4096
+      &&record(body.provider)&&keys(body.provider,playbookPinned
         ?["require_parameters","data_collection","only","allow_fallbacks"]:["require_parameters","data_collection"])
       &&body.provider.require_parameters===true&&body.provider.data_collection==="deny"
-      &&(rule.requestContract!=="openrouter-sol-openai-playbook-v1"
+      &&(!playbookPinned
         ||(Array.isArray(body.provider.only)&&body.provider.only.length===1&&body.provider.only[0]==="openai"
           &&body.provider.allow_fallbacks===false))
       &&Array.isArray(body.messages)&&body.messages.length===2&&textMessage(body.messages[0],"system")&&textMessage(body.messages[1],"user")

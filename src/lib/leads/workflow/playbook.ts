@@ -81,11 +81,12 @@ export function buildStandardLeadMarketPlaybook(plan: LeadSearchPlan, citations:
   };
 }
 
-export function playbookRouteIdentity():{model:string;providerOnly:string[]|null;allowFallbacks:boolean}{
+export function playbookRouteIdentity():{model:string;providerOnly:string[]|null;allowFallbacks:boolean;requestContract?:string}{
   const model=resolveOpenRouterModel(process.env.LEAD_PLANNER_MODEL?.trim()
     || process.env.OPENAI_GENERATION_MODEL?.trim() || "gpt-5-mini", "openai");
   return {model,providerOnly:model==="openai/gpt-5.6-sol"?["openai"]:null,
-    allowFallbacks:model!=="openai/gpt-5.6-sol"};
+    allowFallbacks:model!=="openai/gpt-5.6-sol",
+    ...(model==="openai/gpt-5.6-sol"?{requestContract:"openrouter-sol-openai-playbook-v2"}:{})};
 }
 
 function plannerConfiguration(): { apiKey: string; baseUrl: string; defaultHeaders: Record<string, string>;
@@ -135,14 +136,17 @@ function sanitizeModelPlaybook(
 export async function buildLeadMarketPlaybook(plan: LeadSearchPlan, citations: LeadRagCitation[]): Promise<LeadMarketPlaybook> {
   const config = plannerConfiguration();
   if (!config) return buildStandardLeadMarketPlaybook(plan, citations, "OpenRouter lead-planner credentials are not configured.");
+  const pinnedSol=config.model==="openai/gpt-5.6-sol";
   const model = new ChatOpenAI({
     apiKey: config.apiKey,
     model: config.model,
-    temperature: 0,
+    ...(!pinnedSol?{temperature:0}:{}),
+    ...(pinnedSol?{maxTokens:textOutputLimit("lead-playbook")}:{}),
     maxRetries: 2,
     timeout: 90_000,
     streamUsage: false,
-    modelKwargs: { provider: config.providerPreferences,max_completion_tokens:textOutputLimit("lead-playbook") },
+    modelKwargs: { provider: config.providerPreferences,
+      ...(!pinnedSol?{max_completion_tokens:textOutputLimit("lead-playbook")}:{}) },
     configuration: { baseURL: config.baseUrl, defaultHeaders: config.defaultHeaders,fetch:sdkModelFetch() },
   }).withStructuredOutput(leadMarketPlaybookModelSchema, {
     name: "lead_market_playbook",

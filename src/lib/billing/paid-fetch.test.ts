@@ -38,7 +38,7 @@ it("uses the S01 tariff only for market-playbook Sol attempts, before transport"
   const body={model:rule.model,messages:[{role:"system",content:"synthetic"},{role:"user",content:"synthetic"}],
     provider:{require_parameters:true,data_collection:"deny",only:["openai"],allow_fallbacks:false},
     response_format:{type:"json_schema",json_schema:{name:"result",strict:true,schema:{type:"object"}}},
-    stream:false,temperature:0,max_completion_tokens:4096};
+    stream:false,max_tokens:4096};
   mocks.quote.mockImplementation((_quote,_rules,_now,key)=>key===rule.key?rule:old);
   const transport=vi.fn<typeof fetch>();
   await expect(withSpendContext(scope,()=>withModelAttempt({invocationId:"playbook-test",attempt:1,provider:"openrouter",task:"lead-playbook",promptVersion:"v3"},

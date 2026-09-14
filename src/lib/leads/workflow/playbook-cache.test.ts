@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import type { LeadSearchPlan } from "@/lib/assistant/types";
 import type { LeadRagCitation } from "./types";
 import { playbookDependencyFingerprint } from "./playbook-cache";
+import {playbookRouteIdentity} from "./playbook";
 
 const plan: LeadSearchPlan = { countryCode: "DE", countryName: "德国", objective: "new-market",
   roles: ["Distributor", "SI"], targetCount: 20, queryLanguage: "zh-CN", userRequest: "搜索德国渠道" };
@@ -22,8 +23,10 @@ describe("playbook dependency cache", () => {
   });
   it("invalidates when the model or S01 route contract changes", () => {
     vi.stubEnv("LEAD_PLANNER_MODEL", "gpt-5.6-sol");
+    expect(playbookRouteIdentity().requestContract).toBe("openrouter-sol-openai-playbook-v2");
     const pinned=playbookDependencyFingerprint(plan,citations);
     vi.stubEnv("LEAD_PLANNER_MODEL", "gpt-5-mini");
+    expect(playbookRouteIdentity()).not.toHaveProperty("requestContract");
     expect(playbookDependencyFingerprint(plan,citations)).not.toBe(pinned);
   });
   it("is stable across citation order and invalidates content changes", () => {

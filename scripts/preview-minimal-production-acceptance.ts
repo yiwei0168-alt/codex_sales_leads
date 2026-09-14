@@ -47,27 +47,28 @@ async function captureMinimalPlaybookWire(){
     const openAiEndpoint=publicEvidence.models.find((item:{id:string})=>item.id===body.model)?.endpoints
       .find((item:{tag:string})=>item.tag==="openai");
     if(!openAiEndpoint||!Array.isArray(openAiEndpoint.supportedParameters))throw new Error("OpenAI endpoint evidence missing");
-    const constrainedParameters=["max_completion_tokens","response_format","temperature"]
+    const constrainedParameters=["max_tokens","max_completion_tokens","response_format","temperature"]
       .filter(parameter=>Object.hasOwn(body,parameter));
     const publicEndpointParameterEvidence={snapshotCapturedAt:publicEvidence.capturedAt,
       endpointTag:"openai",checkedRequestParameters:constrainedParameters,
       notListedInEndpointMetadata:constrainedParameters.filter(parameter=>!openAiEndpoint.supportedParameters.includes(parameter)),
       providerAcceptanceChecked:false};
+    const outputTokens=body.max_tokens??body.max_completion_tokens;
     const quote={origin:url.origin,pathname:url.pathname,model:body.model,
-      requestBytes:bytes,outputTokens:body.max_completion_tokens};
+      requestBytes:bytes,outputTokens};
     try{
       const rule=body.model==="openai/gpt-5.6-sol"
         ?quoteRequest(quote,undefined,Date.now(),"openrouter-sol-openai-playbook-credits"):quoteRequest(quote);
       assertRequestContract(rule,body,url.search,request.method,request.headers);
       return {status:"contract-valid-synthetic-wire",model:body.model,requestBytes:bytes,
         requestParameterNames:Object.keys(body).sort(),publicEndpointParameterEvidence,
-        outputTokens:body.max_completion_tokens,tariffKey:rule.key,maximumPerCallUsd:rule.maximumChargeMicros/1e6,
+        outputTokens,tariffKey:rule.key,maximumPerCallUsd:rule.maximumChargeMicros/1e6,
         actualMarketContextChecked:false,providerCalls:0};
     }catch(error){
       if(!(error instanceof BudgetDeniedError))throw error;
       return {status:error.code,model:body.model,requestBytes:bytes,
         requestParameterNames:Object.keys(body).sort(),publicEndpointParameterEvidence,
-        outputTokens:body.max_completion_tokens,actualMarketContextChecked:false,providerCalls:0};
+        outputTokens,actualMarketContextChecked:false,providerCalls:0};
     }
   }finally{
     globalThis.fetch=originalFetch;

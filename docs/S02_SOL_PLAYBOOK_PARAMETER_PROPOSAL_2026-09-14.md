@@ -1,6 +1,6 @@
 # S02 候选：保持 S01 路由，修正市场计划请求参数
 
-**状态：待用户按 A11 单独确认；未改产品请求、费率或路由，未做 S02 真实付费调用。**
+**当前状态：用户已明确批准 S02 及继续最小真实验收；v2 请求合同与无付费回归见[阶段237](S02_PLAYBOOK_PARAMETER_ACCEPTANCE_STAGE237_2026-09-14.md)。以下提案写成时的待确认描述保留为历史；S02 真实供应商结果仍待验证。**
 
 阶段232 的隔离本地真实验收先以两轮 Kimi 对话生成并修正计划：哥伦比亚、Distributor、目标 1，第二轮把首次误判的查询语言 `en` 改为 `es`。之后知识检索通过费用门禁；市场计划仍按已批准 S01 路由发送 `openai/gpt-5.6-sol` 至 OpenRouter credits，仅允许 OpenAI 标准端点且禁用供应商回退。该端点返回 HTTP 404：`No endpoints found that can handle the requested parameters`。任务停在市场计划，未搜索、补证、校正、评分或保存新公司。此 404 证明当前完整请求不能被该路由处理，不能单凭响应确定某一个字段为唯一原因。此前 [阶段175 公共参数差异](S01_PUBLIC_ENDPOINT_PARAMETER_GAP_2026-09-14.md)已指出实际请求的 `max_completion_tokens=4096` 与 `temperature=0` 不在 OpenAI 标准端点的公开支持清单里；清单包含 `max_tokens` 与 `response_format`。[OpenRouter 路由说明](https://openrouter.ai/docs/guides/routing/provider-selection)规定 `require_parameters=true` 只选支持请求全部参数的端点，[Chat API](https://openrouter.ai/docs/api/api-reference/chat/create-a-chat-completion)展示 `max_tokens` 请求。这些官方来源加上实测 404 支持提出修订，但仍不能保证新请求一定得到合格模型响应。
 
