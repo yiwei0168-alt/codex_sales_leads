@@ -268,6 +268,13 @@ try{
     publicEvidenceStatus:tavilyState?.status??"not-tracked",publicHold:tavilyState?.hold??null,
     maximumPerCallUsd:tavilyRule?tavilyRule.maximumChargeMicros/1e6:null,
     actualRequestContractChecked:false};
+  const extractRule=billingPolicy.rules.find(item=>item.key==="tavily-basic-extract");
+  const officialEvidenceExtract={provider:"tavily",endpoint:"/extract",tariffKey:extractRule?.key??null,
+    tariffStatus:!extractRule?"missing-strict-contract"
+      :Date.parse(extractRule.expiresAt)<=Date.now()?"expired":"static-bound-present",
+    maximumPerCallUsd:extractRule?extractRule.maximumChargeMicros/1e6:null,
+    officialEvidenceUrlsAtMost:4,contactEnrichmentUrlsAtMost:20,
+    actualRequestContractChecked:false};
   const marketPlaybookWire=await captureMinimalPlaybookWire();
   const braveCoreWire=await captureMinimalBraveWire();
   const exaConditionalWire=await captureMinimalExaWire();
@@ -292,11 +299,12 @@ try{
     discoveryActionCeiling:{rounds:MAX_DISCOVERY_ROUNDS,routeStepsPerRound:firstRoundRoute.length,
       routeActionsAtMost:MAX_DISCOVERY_ROUNDS*firstRoundRoute.length,
       semantics:"one scheduled route step per round, including conditional/skipped steps; provider retries and server-side tools are additional"},
-    stages,searchRoute,supplementalEvidence,marketPlaybookWire,braveCoreWire,
+    stages,searchRoute,supplementalEvidence,officialEvidenceExtract,marketPlaybookWire,braveCoreWire,
     exaConditionalWire,tavilyEvidenceWires,
     checkedTariffsAvailable:stages.every(stage=>stage.tariff==="available")
       &&searchRoute.every(route=>route.tariffStatus==="static-bound-present")
-      &&supplementalEvidence.tariffStatus==="static-bound-present",
+      &&supplementalEvidence.tariffStatus==="static-bound-present"
+      &&officialEvidenceExtract.tariffStatus==="static-bound-present",
     coreSearchBoundPresent:searchRoute.filter(route=>route.trigger==="core")
       .every(route=>route.tariffStatus==="static-bound-present"),
     allSearchRouteBoundsPresent:searchRoute.every(route=>route.tariffStatus==="static-bound-present"),
@@ -312,6 +320,6 @@ try{
           :fourPhaseWithPlaybook<=Number(budget.budget.remaining_micros)/1e6,
         fitsCurrentRemainingBudgetWithPro:fourPhaseProWithPlaybook===null?null
           :fourPhaseProWithPlaybook<=Number(budget.budget.remaining_micros)/1e6}},
-    totalRunBoundUsd:null,limitations:"Lists configured minimal-plan discovery and conditional review routes; captures synthetic playbook, Brave, Exa and Tavily provider wires. Real market requests, provider responses, remaining fallback/search/model contracts, conditional Pro escalation, phased scoring call count and total-run bound remain unverified",
+    totalRunBoundUsd:null,limitations:"Lists configured minimal-plan discovery, evidence Extract and conditional review routes; captures synthetic playbook, Brave, Exa and Tavily Search wires. Real market requests, Extract tariff and response, remaining fallback/search/model contracts, conditional Pro escalation, phased scoring call count and total-run bound remain unverified",
     providerCalls:0,accountsModified:0,jobsClaimed:0},null,2));
 }finally{await getPool().end();}

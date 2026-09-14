@@ -1,4 +1,5 @@
 # Hybrid Lead Search Workflow
+2026-09-14 stage 179: read-only readiness now lists Tavily /extract separately from search-route and supplement-search bounds. Its missing active tariff holds the full workflow but does not classify the market as exhausted. [Evidence](A11_EXTRACT_PREFLIGHT_VISIBILITY_2026-09-14.md).
 2026-09-14 stage 177: Tavily basic /extract is an evidence acquisition dependency, not a discovery engine. Its active paid contract is absent; the proposed USD0.032000 per max-20-URL bound remains inactive pending A11 confirmation. Do not count this technical tariff hold as market exhaustion. [Candidate](TAVILY_EXTRACT_TARIFF_PROPOSAL_2026-09-14.md).
 2026-09-14 stage 176 O03: target completion is now based on qualified post-review assessments, so a review downgrade re-enters the existing bounded route when no incomplete processing or stopping condition applies. Five rounds x four scheduled steps is at most 20 route actions, not a total API-call or USD bound. [Evidence](O03_POST_REVIEW_TARGET_COMPLETION_2026-09-14.md).
 
