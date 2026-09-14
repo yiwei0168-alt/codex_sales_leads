@@ -36,9 +36,15 @@ try{
   const foreign=await tenantQuery(otherUserId,
     "select id from workspace_audit_event where id=$1",[own[0].id]);
   assert.equal(foreign.length,0);
-  const foreignUpdate=await tenantQuery(otherUserId,
-    "update workspace_audit_event set changes=changes where id=$1 returning id",[own[0].id]);
-  assert.equal(foreignUpdate.length,0);
+  await assert.rejects(tenantQuery(otherUserId,
+    "update workspace_audit_event set changes=changes where id=$1 returning id",[own[0].id]),
+  /permission denied/i);
+  await assert.rejects(tenantQuery(userId,
+    "update workspace_audit_event set changes=changes where id=$1 returning id",[own[0].id]),
+  /permission denied/i);
+  await assert.rejects(tenantQuery(userId,
+    "delete from workspace_audit_event where id=$1",[own[0].id]),
+  /permission denied/i);
   await assert.rejects(tenantQuery(otherUserId,
     `insert into workspace_audit_event(workspace_id,actor_user_id,entity_type,entity_id,action,changes)
      values($1,$2,'fixture','foreign','fixture','{}')`,[workspaceId,otherUserId]),
@@ -47,7 +53,8 @@ try{
     `insert into workspace_audit_event(workspace_id,actor_user_id,entity_type,entity_id,action,changes)
      values($1,$2,'fixture','impersonation','fixture','{}')`,[otherWorkspaceId,userId]),
     /row-level security|permission denied/i);
-  console.log(JSON.stringify({workspaceAuditTenantRls:"passed",ownerEvents:1,foreignReads:0,foreignUpdates:0,
+  console.log(JSON.stringify({workspaceAuditTenantRls:"passed",ownerEvents:1,foreignReads:0,foreignUpdates:"denied",
+    ownerUpdates:"denied",ownerDeletes:"denied",
     foreignInsertDenied:true,actorImpersonationDenied:true,actualPaidCalls:0,latencyMs:Date.now()-startedAt}));
 }finally{
   if(created){

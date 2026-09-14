@@ -33,11 +33,23 @@ try{
   assert.deepEqual(rows.rows.filter(row=>['saved','delivery-selected'].includes(row.event_type)).map(row=>row.artifact_count),[1,1]);
   assert.equal(rows.rows.some(row=>['selected','displayed'].includes(row.event_type)),false);
   for(const row of rows.rows){assert.equal(row.metadata.userAdoptedItems,null);assert.equal(row.metadata.uiViewedItems,null);assert.equal(row.metadata.countryCode,'CO');}
+  for(const statement of [
+    'update workflow_artifact_event set artifact_count=artifact_count where lead_run_id=$1',
+    'delete from workflow_artifact_event where lead_run_id=$1',
+  ]){
+    await client.query('savepoint immutable_observation');
+    let denied=false;
+    try{await client.query(statement,[scope.runId]);}
+    catch(error){denied=(error as {code?:string}).code==='42501';}
+    await client.query('rollback to savepoint immutable_observation');
+    assert.equal(denied,true,'Application role could mutate artifact observations');
+  }
   await assert.rejects(saveArtifactObservations(client,scope,events.map(event=>({...event,count:event.count+1}))),/conflicts/);
   await client.query("select set_config('app.current_user_id',$1,true)",[randomUUID()]);
   assert.equal((await client.query('select id from workflow_artifact_event where lead_run_id=$1',[scope.runId])).rowCount,0);
   await client.query('rollback to savepoint fixtures');
   await client.query(process.argv.includes('--apply')?'commit':'rollback');
   console.log(JSON.stringify({idempotentEvents:7,unknownAdoptionAndViews:true,countryAttribution:true,changedObservationRejected:true,
+    ownerUpdateDeleteDenied:true,
     tenantReadIsolation:true,fixtureRolledBack:true,migrationApplied:process.argv.includes('--apply'),paidCalls:0}));
 }catch(error){await client.query('rollback');throw error;}finally{client.release();await pool.end();}
