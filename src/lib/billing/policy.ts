@@ -1,6 +1,6 @@
 import { z } from "zod";
 import {tariffValidity} from "./tariff-validity";
-import configuration from "../../../config/billing/request-bounds-v1.7.0.json";
+import configuration from "../../../config/billing/request-bounds-v1.8.0.json";
 import {foreignCostBoundSchema,foreignReservationMicros} from "./fx-policy";
 
 export class BudgetDeniedError extends Error {

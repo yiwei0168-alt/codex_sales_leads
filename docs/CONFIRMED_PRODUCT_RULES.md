@@ -1,4 +1,13 @@
 # 用户确认规则登记表
+### A24 — Sol 分歧裁决费用合同（2026-09-14，用户明确批准，待实施）
+用户原话：“批准两项合同的实现与无付费验收”。其中 Sol 分歧裁决按 [候选报告](OPENROUTER_SOL_JUDGE_PROPOSAL_2026-09-14.md) 限定为现有 OpenRouter credits、`openai/gpt-5.6-sol`、严格 JSON、`reasoning.effort=high`、总输出最多 12,000 token、五个标准端点范围，单次保守预留 USD27.736500；不得借用 S01 市场计划的 OpenAI-only 合同。只授权实现与无付费验收，不授权真实调用；累计 USD30 与整次费用预检照旧。当前实施/验收：待完成。历史提案时“未确认”保留为旧状态。
+
+### A23 — Terra 条件二次复核费用合同（2026-09-14，用户明确批准，待实施）
+同一用户确认中的 Terra 合同按 [候选报告](OPENROUTER_TERRA_REVIEW_PROPOSAL_2026-09-14.md) 限定为现有 OpenRouter credits、`openai/gpt-5.6-terra`、严格 JSON、`reasoning.effort=medium`、总输出最多 8,192 token、五个标准端点范围，单次保守预留 USD11.019202。只授权实现与无付费验收，不授权真实调用；累计 USD30 与整次费用预检照旧。当前实施/验收：待完成。历史提案时“未确认”保留为旧状态。
+
+### A22 — Tavily basic Extract 费用合同（2026-09-14，用户明确批准，已实施、无付费验收通过）
+用户原话：“批准该合同（推荐）”。仅限 [已审候选](TAVILY_EXTRACT_TARIFF_PROPOSAL_2026-09-14.md) 的现有 basic `POST /extract`、最多 20 个 HTTPS URL、文本输出、单次保守预留 USD0.032000、2026-09-21 00:00 UTC 到期；保留原累计 USD30 和整次预检，不授权真实调用。实施版本 `request-bounds-v1.8.0`；严格请求合同、SQL 预算/去重和无付费回归已通过，真实账单及整体验收仍未完成。[验收证据](TAVILY_EXTRACT_ACTIVE_CONTRACT_ACCEPTANCE_2026-09-14.md)。
+
 2026-09-14 stage 211 / existing acceptance boundary: Google Places, Exa and Brave now cap downstream candidate items at the requested result count, matching Gemini/SearchAPI. This is a verified implementation under the authorized cost/acceptance plan, not a new user confirmation and not D13-O05's role-scoring proposal. The 240 read-only accepted slots are not unique or qualified companies; the whole-run paid bound remains unknown. [Evidence](DISCOVERY_DOWNSTREAM_RESULT_CAP_2026-09-14.md).
 2026-09-14 stage 210 / P06 implementation status: the existing confirmed large-company handling rule now has a pure complete-chunk assembly guard; any uncertain segment remains uncertain and missing/mismatched parts are rejected. Product scoring integration and real acceptance remain open. This is not a new user confirmation. [Evidence](P06_SINGLETON_CHUNK_SYNTHESIS_PREFLIGHT_2026-09-14.md).
 2026-09-14 stage 209 / P06 implementation status: a separate per-unit chunk identity now uses the existing append-only, tenant-scoped phase table and exact paid-request fingerprint. Real SQL checks passed without a migration or provider call. Agent/synthesis integration is still required; this is partial implementation of the existing confirmed recovery rule, not a new user decision or overall acceptance. [Evidence](P06_SINGLETON_CHUNK_CHECKPOINT_2026-09-14.md).

@@ -70,8 +70,8 @@ it("permits only bounded Exa auto company text search and rejects unsupported or
 });
 
 it("preserves reviewed native contracts while adding narrow search and Sol contracts",()=>{
-  expect(billingPolicy.version).toBe("request-bounds-v1.7.0");
-  expect(billingPolicy.rules).toHaveLength(9);
+  expect(billingPolicy.version).toBe("request-bounds-v1.8.0");
+  expect(billingPolicy.rules).toHaveLength(10);
   rules.forEach(expected=>{
     const rule=billingPolicy.rules.find(candidate=>candidate.key===expected.key);
     expect({...rule,boundDescription:expected.boundDescription}).toEqual(expected);
@@ -153,14 +153,20 @@ it("bounds ordinary search requests and rejects other methods, features, duplica
   expect(()=>quoteRequest({origin:tavily.origin,pathname:"/research",model:"",requestBytes:100,outputTokens:null},undefined,now)).toThrow("missing-tariff");
 });
 
-it("prepares and captures the exact Tavily basic Extract wire without activating an unconfirmed tariff",async()=>{
-  expect(billingPolicy.rules.some(rule=>rule.pathname==="/extract")).toBe(false);
+it("admits only the confirmed Tavily basic Extract wire under its expiry and byte bounds",async()=>{
+  expect(billingPolicy.rules.filter(rule=>rule.pathname==="/extract")).toHaveLength(1);
   const proposed=tariffSchema.parse(extractCandidate);
+  const active=billingPolicy.rules.find(rule=>rule.key===proposed.key)!;
+  expect(active).toMatchObject({origin:proposed.origin,pathname:proposed.pathname,model:"",
+    maximumChargeMicros:32000,maximumRequestBytes:32768,maximumOutputTokens:0,
+    requestContract:"tavily-basic-extract-v1",expiresAt:"2026-09-21T00:00:00Z"});
   const body={urls:["https://example.com/a","https://example.com/b"],extract_depth:"basic",
     format:"text",include_images:false,include_usage:true,timeout:20};
   expect(()=>assertRequestContract(proposed,body,"")).not.toThrow();
+  expect(quoteRequest({origin:proposed.origin,pathname:proposed.pathname,model:"",
+    requestBytes:JSON.stringify(body).length,outputTokens:null},undefined,Date.parse(active.verifiedAt))).toBe(active);
   expect(()=>quoteRequest({origin:proposed.origin,pathname:proposed.pathname,model:"",
-    requestBytes:JSON.stringify(body).length,outputTokens:null})).toThrow("missing-tariff");
+    requestBytes:32769,outputTokens:null},undefined,Date.parse(active.verifiedAt))).toThrow("request-out-of-bounds");
   expect(quoteRequest({origin:proposed.origin,pathname:proposed.pathname,model:"",
     requestBytes:JSON.stringify(body).length,outputTokens:null},[proposed],Date.parse(proposed.verifiedAt))).toBe(proposed);
   expect(()=>quoteRequest({origin:proposed.origin,pathname:proposed.pathname,model:"",

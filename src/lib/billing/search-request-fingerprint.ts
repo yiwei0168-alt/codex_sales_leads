@@ -1,7 +1,7 @@
 import {createHash} from "node:crypto";
 import type {RequestBound} from "./policy";
 
-const contracts=new Set<RequestBound["requestContract"]>(["brave-web-search-v1","tavily-search-v1","exa-company-auto-text-v1",
+const contracts=new Set<RequestBound["requestContract"]>(["brave-web-search-v1","tavily-search-v1","tavily-basic-extract-v1","exa-company-auto-text-v1",
   "google-places-text-enterprise-v1","searchapi-google-bing-v1"]);
 function canonical(value:unknown):unknown{
   if(Array.isArray(value))return value.map(canonical);

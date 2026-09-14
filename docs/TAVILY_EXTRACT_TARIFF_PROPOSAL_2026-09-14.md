@@ -1,5 +1,7 @@
 # A11/Tavily Extract candidate contract — stage 177 (2026-09-14)
 
+Current update, 2026-09-14: user approved this exact contract. Stage 212 activated it in `request-bounds-v1.8.0` and completed no-provider SQL/contract regression; see [acceptance evidence](TAVILY_EXTRACT_ACTIVE_CONTRACT_ACCEPTANCE_2026-09-14.md). The original inactive proposal text below records its earlier state. No real paid A11 run was authorized by this approval.
+
 Status: **proposal, inactive**. The active billing policy has no `/extract` rule. `budgetedFetch` therefore rejects a product-scope Tavily Extract request as `missing-tariff` before network transmission. No API credit, budget reservation or provider response was created in this investigation.
 
 ## Why this matters
