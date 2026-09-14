@@ -678,14 +678,30 @@ describe("LeadQualificationAgent", () => {
     class ChunkProvider extends FakeProvider {
       private readonly wire=new DeepSeekProvider({apiKey:"fixture-never-sent",maxAttempts:1,
         fetchImplementation:async()=>{throw new Error("Synthetic chunk test must not use transport");}});
+      private readonly fallbackWire=new OpenAiCompatibleProvider({id:"fallback",
+        apiKey:"fixture-never-sent",baseUrl:"https://fixture.invalid/v1",maxAttempts:1,
+        fetchImplementation:async()=>{throw new Error("Synthetic fallback must not use transport");}});
       failChunkAt=0;chunkAttempts=0;finalTooLarge=false;uncertainChunk=false;
+      approvedFallback=false;fallbackChunkAt=0;
       requestBytes(request:StructuredAiRequest<unknown>){
         if(this.finalTooLarge&&(request.input as {phaseScreening?:unknown}|null)?.phaseScreening)
           return 1_000_000;
-        return this.wire.requestBytes(request);
+        return this.approvedFallback?Math.max(this.wire.requestBytes(request),
+          this.fallbackChunkBytes(request)):this.wire.requestBytes(request);
       }
+      fallbackChunkBytes(request:StructuredAiRequest<unknown>){return this.fallbackWire.requestBytes({
+        ...request,modelVersion:"openai/gpt-4o"});}
       cacheIdentity(request:StructuredAiRequest<unknown>){return this.wire.cacheIdentity(request);}
       paidRequestFingerprint(request:StructuredAiRequest<unknown>){return this.wire.paidRequestFingerprint(request);}
+      executionRoutes(request:StructuredAiRequest<unknown>){
+        const primary={providerId:"fake",request,cacheIdentity:this.cacheIdentity(request),
+          paidRequestFingerprint:this.paidRequestFingerprint(request)};
+        if(!this.approvedFallback)return [primary];
+        const alternate={...request,modelVersion:"openai/gpt-4o"};
+        return [primary,{providerId:"fallback",request:alternate,
+          cacheIdentity:this.fallbackWire.cacheIdentity(alternate),
+          paidRequestFingerprint:this.fallbackWire.paidRequestFingerprint(alternate)}];
+      }
       override async execute<I,O>(request:StructuredAiRequest<I>):Promise<StructuredAiResponse<O>>{
         if(request.promptVersion==="qualification-singleton-chunk-v1"){
           this.chunkAttempts++;
@@ -693,11 +709,15 @@ describe("LeadQualificationAgent", () => {
           this.calls.push(request as StructuredAiRequest<unknown>);
           const input=request.input as {unitKind:"finding"|"evidence";unitId:string;chunkIndex:number;
             evidenceIds:string[]};
+          const fallback=this.approvedFallback&&this.chunkAttempts===this.fallbackChunkAt;
           return {output:{unitKind:input.unitKind,unitId:input.unitId,chunkIndex:input.chunkIndex,
             materiality:this.uncertainChunk?"uncertain":"material",
             summary:`Segment ${input.chunkIndex} screened for role review`,
-            citedEvidenceIds:input.evidenceIds} as O,modelVersion:request.modelVersion,
-            promptVersion:request.promptVersion,actualProviderId:"fake",latencyMs:5,warnings:[]};
+            citedEvidenceIds:input.evidenceIds} as O,
+            modelVersion:fallback?"openai/gpt-4o":request.modelVersion,
+            requestedModelVersion:fallback?request.modelVersion:undefined,
+            promptVersion:request.promptVersion,actualProviderId:fallback?"fallback":"fake",
+            latencyMs:5,warnings:[]};
         }
         if(request.promptVersion==="qualification-fact-phase-v1"){
           this.calls.push(request as StructuredAiRequest<unknown>);
@@ -802,6 +822,25 @@ describe("LeadQualificationAgent", () => {
     expect(chunks.size).toBeGreaterThan(0);
     expect(phases.size).toBe(0);
     expect(finals.size).toBe(0);
+    chunks.clear();phases.clear();finals.clear();
+    const fallbackProvider=new ChunkProvider();fallbackProvider.approvedFallback=true;
+    fallbackProvider.fallbackChunkAt=1;
+    const fallbackAgent=new LeadQualificationAgent(fallbackProvider,{batchSize:1,concurrency:1,
+      routineModel:"deepseek-v4-pro",escalationModel:"deepseek-v4-pro",
+      singletonChunkCheckpointFactory:chunkFactory,phaseCheckpointFactory:phaseFactory,
+      finalCheckpointFactory:finalFactory});
+    const fallback=await fallbackAgent.evaluateWithUsage([long],playbook,"DE","Germany",
+      "new-market",undefined,{...scope,actionId:"fixture-approved-chunk-fallback"});
+    expect(fallback.assessments[0].scoringStatus).toBe("completed");
+    expect(fallback.usage.some(item=>item.providerId==="fallback"&&item.fallbackUsed)).toBe(true);
+    expect(fallbackProvider.calls.filter(item=>item.promptVersion==="qualification-singleton-chunk-v1")
+      .every(item=>fallbackProvider.fallbackChunkBytes(item)<=57_344)).toBe(true);
+    const fallbackCalls=fallbackProvider.calls.length;
+    const fallbackReplay=await fallbackAgent.evaluateWithUsage([long],playbook,"DE","Germany",
+      "new-market",undefined,{...scope,actionId:"fixture-approved-chunk-fallback"});
+    expect(fallbackReplay.assessments[0].scoringStatus).toBe("completed");
+    expect(fallbackReplay.usage).toHaveLength(0);
+    expect(fallbackProvider.calls).toHaveLength(fallbackCalls);
   },15_000);
 
   it("folds only supported-fact source prose while retaining every finding and citation for a large singleton",async()=>{

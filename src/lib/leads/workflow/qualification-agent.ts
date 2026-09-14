@@ -548,7 +548,8 @@ export class LeadQualificationAgent {
           countryName,objective,sourceFingerprint:base,modelVersion:this.routineModel,
           dataClassification:playbook.cooperationPathMemory?.length?"private-workspace":"public",
           tenantScope:playbook.cooperationPathMemory?.length?scope.workspaceId:undefined,
-          unit,requestBytes:request=>this.provider.requestBytes!(request)});
+          unit,requestBytes:request=>Math.max(...this.executionRoutes(request)
+            .map(route=>this.provider.requestBytes!(route.request)))});
         for(const request of plan.requests)this.assertBoundedRoutes(request,57_344);
         planned.push({unit,plan});
         worst.push(assembleQualificationSingletonChunks({plan,unit,

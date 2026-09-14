@@ -7,6 +7,7 @@ import {Pool} from "pg";
 
 import {databaseConnectionString,databaseSslConfiguration} from "../src/lib/rag/database-ssl";
 import {DeepSeekProvider} from "../src/providers/deepseek";
+import {OpenAiCompatibleProvider} from "../src/providers/openai-compatible";
 import {planQualificationSingletonChunks} from "../src/lib/leads/workflow/qualification-singleton-chunks";
 import {productQualificationSingletonChunkCheckpoint} from "../src/lib/leads/workflow/qualification-singleton-checkpoint";
 
@@ -21,15 +22,20 @@ const admin=new Pool({connectionString:databaseConnectionString(migration),
 const {tenantQuery,getPool}=await import("../src/lib/rag/db");
 const wire=new DeepSeekProvider({apiKey:"fixture-never-sent",maxAttempts:1,
   fetchImplementation:async()=>{throw new Error("External transport is forbidden");}});
+const fallbackWire=new OpenAiCompatibleProvider({id:"fixture-chunk-fallback",
+  apiKey:"fixture-never-sent",baseUrl:"https://fixture.invalid/v1",maxAttempts:1,
+  fetchImplementation:async()=>{throw new Error("External fallback transport is forbidden");}});
 const baseFingerprint=createHash("sha256").update("synthetic-critical-source-v1").digest("hex");
 const text="opening 甲β "+"critical evidence with unique middle 𝌆 ".repeat(2_500)+" closing disputed status";
-function plan(workspaceId:string,countryCode="CO"){
+function plan(workspaceId:string,countryCode="CO",includeFallback=false){
   return planQualificationSingletonChunks({candidateId:"synthetic-critical-company",countryCode,
     countryName:countryCode==="CO"?"Colombia":"Mexico",objective:"new-market",
     sourceFingerprint:baseFingerprint,modelVersion:"deepseek-v4-pro",
     dataClassification:"private-workspace",tenantScope:workspaceId,
     unit:{kind:"evidence",id:"source-original",text,evidenceIds:["source-original"]},
-    requestBytes:request=>wire.requestBytes(request)});
+    requestBytes:request=>includeFallback?Math.max(wire.requestBytes(request),
+      fallbackWire.requestBytes({...request,modelVersion:"openai/gpt-4o"}))
+      :wire.requestBytes(request)});
 }
 function response(request:ReturnType<typeof plan>["requests"][number]){
   const index=(request.input as {chunkIndex:number}).chunkIndex;
@@ -51,9 +57,22 @@ if(mode==="probe"){
     assert.deepEqual(stored,response(request));
     console.log(JSON.stringify({crossProcessChunkLoad:"passed",providerCalls:0}));
   }finally{await getPool().end();await admin.end();}
+}else if(mode==="probe-fallback"){
+  const [userId,workspaceId,actionId]=process.argv.slice(3);
+  try{
+    const primary=plan(workspaceId,"CO",true).requests[0];
+    const request={...primary,modelVersion:"openai/gpt-4o"};
+    const stored=await productQualificationSingletonChunkCheckpoint({userId,workspaceId,actionId,
+      countryCode:"CO",expectedProviderId:fallbackWire.id,
+      requestedModelVersion:primary.modelVersion}).load(request,
+      fallbackWire.cacheIdentity(request),fallbackWire.paidRequestFingerprint(request));
+    assert.deepEqual(stored,{...response(primary),modelVersion:request.modelVersion,
+      requestedModelVersion:primary.modelVersion,actualProviderId:fallbackWire.id});
+    console.log(JSON.stringify({crossProcessFallbackChunkLoad:"passed",providerCalls:0}));
+  }finally{await getPool().end();await admin.end();}
 }else if(!mode){
   const userId=randomUUID(),otherUserId=randomUUID(),workspaceId=randomUUID(),otherWorkspaceId=randomUUID();
-  const actionId=randomUUID(),otherActionId=randomUUID();
+  const actionId=randomUUID(),fallbackActionId=randomUUID(),otherActionId=randomUUID();
   const conversationId=randomUUID(),otherConversationId=randomUUID();
   let created=false;
   try{
@@ -70,6 +89,7 @@ if(mode==="probe"){
         "insert into assistant_conversation(id,user_id,title) values($1,$2,'Singleton checkpoint fixture')",
         [conversation,owner]);
       for(const [action,owner,conversation] of [[actionId,userId,conversationId],
+        [fallbackActionId,userId,conversationId],
         [otherActionId,otherUserId,otherConversationId]])await client.query(
         "insert into assistant_action(id,user_id,conversation_id,action_type,status,payload) values($1,$2,$3,'lead-search','running','{}'::jsonb)",
         [action,owner,conversation]);
@@ -87,6 +107,27 @@ if(mode==="probe"){
     {cwd:process.cwd(),encoding:"utf8",windowsHide:true,timeout:30_000});
     assert.equal(child.status,0,`Cross-process singleton load failed: ${child.stderr}`);
     assert.match(child.stdout,/"crossProcessChunkLoad":"passed"/);
+    const fallbackPrimary=plan(workspaceId,"CO",true).requests[0];
+    const fallbackRequest={...fallbackPrimary,modelVersion:"openai/gpt-4o"};
+    const fallbackResponse={...response(fallbackPrimary),modelVersion:fallbackRequest.modelVersion,
+      requestedModelVersion:fallbackPrimary.modelVersion,actualProviderId:fallbackWire.id};
+    const fallback=productQualificationSingletonChunkCheckpoint({userId,workspaceId,
+      actionId:fallbackActionId,countryCode:"CO",expectedProviderId:fallbackWire.id,
+      requestedModelVersion:fallbackPrimary.modelVersion});
+    const fallbackContract=fallbackWire.cacheIdentity(fallbackRequest),
+      fallbackPaid=fallbackWire.paidRequestFingerprint(fallbackRequest);
+    assert.ok(fallbackWire.requestBytes(fallbackRequest)<=57_344);
+    await fallback.save(fallbackRequest,fallbackContract,fallbackPaid,fallbackResponse);
+    assert.deepEqual(await fallback.load(fallbackRequest,fallbackContract,fallbackPaid),fallbackResponse);
+    const fallbackChild=spawnSync(process.execPath,["scripts/run-tsx.cjs",
+      "scripts/verify-qualification-singleton-checkpoint-sql.ts","probe-fallback",
+      userId,workspaceId,fallbackActionId],
+    {cwd:process.cwd(),encoding:"utf8",windowsHide:true,timeout:30_000});
+    assert.equal(fallbackChild.status,0,`Cross-process fallback chunk load failed: ${fallbackChild.stderr}`);
+    assert.match(fallbackChild.stdout,/"crossProcessFallbackChunkLoad":"passed"/);
+    await assert.rejects(fallback.assertNoOtherCompleted(fallbackPrimary,
+      [{contract:wire.cacheIdentity(fallbackPrimary),
+        paidFingerprint:wire.paidRequestFingerprint(fallbackPrimary)}]),/route changed/);
     await assert.rejects(own.assertNoOtherCompleted(first,[{contract:firstContract,
       paidFingerprint:firstPaid}]),/completed concurrently/);
     await assert.rejects(own.assertNoOtherCompleted(first,[{contract:"a".repeat(64),
@@ -124,7 +165,7 @@ if(mode==="probe"){
       "update lead_qualification_phase_checkpoint set response='{}'::jsonb where action_id=$1",
       [actionId]),/permission denied/i);
     console.log(JSON.stringify({singletonCheckpointSql:"passed",chunks:requests.length,
-      crossProcessLoads:1,duplicateRows:0,foreignReads:0,crossCountryReads:0,
+      crossProcessLoads:1,fallbackCrossProcessLoads:1,duplicateRows:0,foreignReads:0,crossCountryReads:0,
       mutationDenied:true,providerCalls:0,paidApiCredits:0}));
   }finally{
     if(created){
