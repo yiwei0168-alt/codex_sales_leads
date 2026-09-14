@@ -20,6 +20,12 @@ describe("playbook dependency cache", () => {
     vi.stubEnv("LEAD_PLAYBOOK_MAX_OUTPUT_TOKENS", "2048");
     expect(playbookDependencyFingerprint(plan, citations)).not.toBe(original);
   });
+  it("invalidates when the model or S01 route contract changes", () => {
+    vi.stubEnv("LEAD_PLANNER_MODEL", "gpt-5.6-sol");
+    const pinned=playbookDependencyFingerprint(plan,citations);
+    vi.stubEnv("LEAD_PLANNER_MODEL", "gpt-5-mini");
+    expect(playbookDependencyFingerprint(plan,citations)).not.toBe(pinned);
+  });
   it("is stable across citation order and invalidates content changes", () => {
     const original = playbookDependencyFingerprint(plan, citations);
     expect(playbookDependencyFingerprint(plan, [...citations].reverse())).toBe(original);

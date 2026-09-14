@@ -1,5 +1,7 @@
 # LangChain / LangGraph 销售线索工作流
 
+2026-09-14 / 阶段134 S01：`buildLeadMarketPlaybook` 使用 Sol 时，实际 LangChain 请求的 `provider` 限定 OpenAI 标准端点并禁用供应商回退；新的 `openrouter-sol-openai-playbook-v1` 费用合同只按该工作流任务选择，其他 Sol 保留原合同。端点错误使计划阶段暂停，旧计划缓存因新增模型/路由身份失效；未完成的工作不被当成有效计划。静态报价 USD10.622880/次须先通过累计 USD30 与整次预检，真实供应商链路尚待验收。[证据](S01_SOL_PLAYBOOK_ROUTING_ACCEPTANCE_2026-09-14.md)。
+
 2026-09-14 / 阶段133：`review_assessment_anomalies` 调用当前复核 Agent 时使用用户/工作区/国家隔离的追加式子调用检查点；Terra 结果校验并保存后才进入 Sol 裁决或下一公司，恢复按完整实际请求键复用并单列复用量。保存故障走非重放暂停，旧费用保留。SQL 跨进程读取与 Agent 合成中断恢复分别验收，真实付费全图仍缺。[验收](REVIEW_SUBCALL_CHECKPOINT_ACCEPTANCE_2026-09-14.md)。
 
 2026-09-14 / 阶段132：当前条件复核 Agent 在合成分歧案例中按序生成 Terra 二次复核及 Sol 匿名 A/B 裁决的完整兼容请求；传输拦截确认无工具、严格 JSON、输出上限与 provider 约束，现行费率报价分别缺失和超界。未更改评分、路由或预算，真实模型/账单和A11闭环仍缺。[请求预检](OPENROUTER_REVIEW_ACTUAL_WIRE_PREFLIGHT_2026-09-14.md)。

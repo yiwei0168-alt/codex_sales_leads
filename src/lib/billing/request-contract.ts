@@ -9,15 +9,19 @@ function textMessage(value:unknown,role:string){return record(value)&&keys(value
 export function assertRequestContract(rule:RequestBound,body:Record<string,unknown>,query:string,method="POST",headers?:Headers):void{
   if(!rule.requestContract)return; // Historical independently approved scopes retain their own constraints.
   let valid=false;
-  if(rule.requestContract==="openrouter-sol-standard-json-v1"){
+  if(rule.requestContract==="openrouter-sol-standard-json-v1"||rule.requestContract==="openrouter-sol-openai-playbook-v1"){
     const format=body.response_format;
     valid=method==="POST"&&rule.origin==="https://openrouter.ai"&&rule.pathname==="/api/v1/chat/completions"&&query===""
       &&rule.model==="openai/gpt-5.6-sol"&&body.model===rule.model
       &&keys(body,["model","messages","provider","response_format","stream","temperature","max_completion_tokens"])
       &&body.stream===false&&body.temperature===0
       &&Number.isSafeInteger(body.max_completion_tokens)&&(body.max_completion_tokens as number)>0&&(body.max_completion_tokens as number)<=4096
-      &&record(body.provider)&&keys(body.provider,["require_parameters","data_collection"])
+      &&record(body.provider)&&keys(body.provider,rule.requestContract==="openrouter-sol-openai-playbook-v1"
+        ?["require_parameters","data_collection","only","allow_fallbacks"]:["require_parameters","data_collection"])
       &&body.provider.require_parameters===true&&body.provider.data_collection==="deny"
+      &&(rule.requestContract!=="openrouter-sol-openai-playbook-v1"
+        ||(Array.isArray(body.provider.only)&&body.provider.only.length===1&&body.provider.only[0]==="openai"
+          &&body.provider.allow_fallbacks===false))
       &&Array.isArray(body.messages)&&body.messages.length===2&&textMessage(body.messages[0],"system")&&textMessage(body.messages[1],"user")
       &&record(format)&&keys(format,["type","json_schema"])&&format.type==="json_schema"
       &&record(format.json_schema)&&keys(format.json_schema,["name","strict","schema","description"])

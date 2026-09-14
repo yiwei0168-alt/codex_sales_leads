@@ -1,6 +1,6 @@
 import { z } from "zod";
 import {tariffValidity} from "./tariff-validity";
-import configuration from "../../../config/billing/request-bounds-v1.6.0.json";
+import configuration from "../../../config/billing/request-bounds-v1.7.0.json";
 import {foreignCostBoundSchema,foreignReservationMicros} from "./fx-policy";
 
 export class BudgetDeniedError extends Error {
@@ -29,19 +29,27 @@ export const tariffSchema=z.object({
   // Verified bound must include grounding/tools/reasoning and all automatic server-side work.
   boundDescription:z.string().min(30),reference:z.url(),verifiedAt:z.iso.datetime(),expiresAt:z.iso.datetime(),
   promotionEndsAt:z.iso.datetime().optional(),foreignCostBound:foreignCostBoundSchema.optional(),
-  requestContract:z.enum(["deepseek-nonthinking-text-v1","kimi-cn-text-json-v1","aliyun-beijing-dense-text-v1","brave-web-search-v1","tavily-search-v1","exa-company-auto-text-v1","google-places-text-enterprise-v1","searchapi-google-bing-v1","openrouter-sol-standard-json-v1"]).optional(),
+  requestContract:z.enum(["deepseek-nonthinking-text-v1","kimi-cn-text-json-v1","aliyun-beijing-dense-text-v1","brave-web-search-v1","tavily-search-v1","exa-company-auto-text-v1","google-places-text-enterprise-v1","searchapi-google-bing-v1","openrouter-sol-standard-json-v1","openrouter-sol-openai-playbook-v1"]).optional(),
 }).strict();
 export const billingPolicy=z.object({version:z.string().min(1),rules:z.array(tariffSchema)}).parse(configuration);
 export type RequestBound=z.infer<typeof tariffSchema>;
+export function rateReviewHoldKeys(tariffKey:string):string[]{
+  return tariffKey==="openrouter-sol-openai-playbook-credits"
+    ?[tariffKey,"openrouter-sol-credits-standard-text-json"]:[tariffKey];
+}
 export function dollarsToMicros(value:string):number {
   if(!/^(0|[1-9]\d{0,6})(\.\d{1,6})?$/.test(value))throw new Error("美元预算须为非负数字，最多六位小数");
   const [whole,fraction=""]=value.split(".");const amount=Number(whole)*1000000+Number(fraction.padEnd(6,"0"));
   if(amount>1000000000000)throw new Error("预算超出可支持范围");return amount;
 }
-export function quoteRequest(input:{origin:string;pathname:string;model:string;requestBytes:number;outputTokens:number|null},rules=billingPolicy.rules,now=Date.now()):RequestBound{
+export function quoteRequest(input:{origin:string;pathname:string;model:string;requestBytes:number;outputTokens:number|null},rules=billingPolicy.rules,now=Date.now(),key?:string):RequestBound{
   const matches=rules.filter(rule=>rule.origin===input.origin&&rule.pathname===input.pathname&&rule.model===input.model);
-  if(matches.length!==1)throw new BudgetDeniedError("missing-tariff");
-  const rule=matches[0];
+  const selected=key?matches.filter(rule=>rule.key===key):matches;
+  // Without an explicit contract selection, overlapping routes keep the highest bound.
+  const highest=Math.max(...selected.map(rule=>rule.maximumChargeMicros));
+  const conservative=selected.filter(rule=>rule.maximumChargeMicros===highest);
+  if(conservative.length!==1)throw new BudgetDeniedError("missing-tariff");
+  const rule=conservative[0];
   // Public SearchAPI plan prices do not establish this account's contracted plan or speed tier.
   // Keep the request validator available, but do not reserve against an unverified account bound.
   if(rule.requestContract==="searchapi-google-bing-v1")throw new BudgetDeniedError("missing-tariff");

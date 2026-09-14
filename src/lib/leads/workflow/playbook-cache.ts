@@ -5,7 +5,7 @@ import { tenantQuery } from "@/lib/rag/db";
 import { textOutputLimit } from "@/lib/billing/text-output-policy";
 
 import type { LeadMarketPlaybook, LeadRagCitation } from "./types";
-import { LEAD_PLAYBOOK_PROMPT_VERSION } from "./playbook";
+import { LEAD_PLAYBOOK_PROMPT_VERSION,playbookRouteIdentity } from "./playbook";
 import { LEAD_WORKFLOW_RUNTIME_VERSION } from "./workflow-telemetry";
 
 function stable(value: unknown): string {
@@ -20,6 +20,7 @@ export function playbookDependencyFingerprint(plan: LeadSearchPlan, citations: L
   return createHash("sha256").update(stable({ runtime: LEAD_WORKFLOW_RUNTIME_VERSION,
     promptVersion: LEAD_PLAYBOOK_PROMPT_VERSION,
     outputContract: { version: "text-completion-v1", maxCompletionTokens: textOutputLimit("lead-playbook") },
+    routeContract:playbookRouteIdentity(),
     plan: { countryCode: plan.countryCode, objective: plan.objective, roles: [...plan.roles].sort(),
       queryLanguage: plan.queryLanguage, userRequest: plan.userRequest.trim() },
     citations: [...citations].sort((left, right) => left.chunkId.localeCompare(right.chunkId))

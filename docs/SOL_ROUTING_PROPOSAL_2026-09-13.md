@@ -1,4 +1,6 @@
-# S01：市场计划 Sol 的 OpenAI 标准路由方案（待确认）
+# S01：市场计划 Sol 的 OpenAI 标准路由方案（已确认并实施）
+
+2026-09-14 用户多次批准同一项 S01，按本报告限定的市场计划范围实施。当前产品合同为 `request-bounds-v1.7.0` 的 `openrouter-sol-openai-playbook-credits`，实际 LangChain 合成传输和费用拒绝路径见 [无付费验收](S01_SOL_PLAYBOOK_ROUTING_ACCEPTANCE_2026-09-14.md)。原 v1.6.0 多供应商合同保留给非市场计划用途；以下提案时文字保留历史决策脉络。真实付费仍须累计 USD30 与整次预检。
 
 阶段72补到新证据：[OpenAI缓存文档](https://developers.openai.com/api/docs/guides/prompt-caching)明确缓存写入不是额外叠加费用，输入分普通、缓存读、缓存写三类费率。[Sol模型页](https://developers.openai.com/api/docs/models/gpt-5.6-sol)确认长上下文价格倍率。此证据尚不单独证明Azure/Bedrock经网关计费的全部细节，不直接将现行多供应商上界改为互斥计算。
 

@@ -22,12 +22,13 @@ it("captures the real LangChain playbook wire without sending a model request",a
   expect(request.url).toBe("https://openrouter.ai/api/v1/chat/completions");expect(request.method).toBe("POST");
   const body=await request.json();
   const tariff=quoteRequest({origin:new URL(request.url).origin,pathname:new URL(request.url).pathname,model:body.model,
-    requestBytes:Buffer.byteLength(JSON.stringify(body)),outputTokens:body.max_completion_tokens},undefined,Date.parse("2026-09-13T13:00:00Z"));
+    requestBytes:Buffer.byteLength(JSON.stringify(body)),outputTokens:body.max_completion_tokens},undefined,Date.parse("2026-09-14T00:00:00Z"),"openrouter-sol-openai-playbook-credits");
+  expect(tariff.maximumChargeMicros).toBe(10622880);
   expect(()=>assertRequestContract(tariff,body,"",request.method,request.headers)).not.toThrow();
   expect(Object.keys(body).sort()).toEqual(["max_completion_tokens","messages","model","provider","response_format","stream","temperature"].sort());
   expect(body.model).toBe("openai/gpt-5.6-sol");
   expect(body.max_completion_tokens).toBe(4096);
-  expect(body.provider).toEqual({require_parameters:true,data_collection:"deny"});
+  expect(body.provider).toEqual({require_parameters:true,data_collection:"deny",only:["openai"],allow_fallbacks:false});
   expect(body.response_format.type).toBe("json_schema");
   expect(body.response_format.json_schema.strict).toBe(true);
   expect(body.messages).toHaveLength(2);

@@ -81,14 +81,23 @@ export function buildStandardLeadMarketPlaybook(plan: LeadSearchPlan, citations:
   };
 }
 
+export function playbookRouteIdentity():{model:string;providerOnly:string[]|null;allowFallbacks:boolean}{
+  const model=resolveOpenRouterModel(process.env.LEAD_PLANNER_MODEL?.trim()
+    || process.env.OPENAI_GENERATION_MODEL?.trim() || "gpt-5-mini", "openai");
+  return {model,providerOnly:model==="openai/gpt-5.6-sol"?["openai"]:null,
+    allowFallbacks:model!=="openai/gpt-5.6-sol"};
+}
+
 function plannerConfiguration(): { apiKey: string; baseUrl: string; defaultHeaders: Record<string, string>;
-  providerPreferences: { require_parameters: true; data_collection: "deny" }; model: string } | null {
+  providerPreferences: { require_parameters: true; data_collection: "deny"; only?: ["openai"]; allow_fallbacks?: false }; model: string } | null {
   if (!process.env.OPENROUTER_API_KEY?.trim()) return null;
   const config = getOpenRouterConfig();
+  const {model}=playbookRouteIdentity();
   return { apiKey: config.apiKey, baseUrl: config.baseUrl, defaultHeaders: config.defaultHeaders,
-    providerPreferences: config.providerPreferences,
-    model: resolveOpenRouterModel(process.env.LEAD_PLANNER_MODEL?.trim()
-      || process.env.OPENAI_GENERATION_MODEL?.trim() || "gpt-5-mini", "openai") };
+    providerPreferences: model==="openai/gpt-5.6-sol"
+      ? {...config.providerPreferences,only:["openai"],allow_fallbacks:false}
+      : config.providerPreferences,
+    model };
 }
 
 function sanitizeModelPlaybook(
@@ -168,6 +177,7 @@ export async function buildLeadMarketPlaybook(plan: LeadSearchPlan, citations: L
     return sanitizeModelPlaybook(output, plan, citations, config.model);
   } catch (error) {
     if(error instanceof BudgetDeniedError)throw error;
+    if(config.model==="openai/gpt-5.6-sol")throw error;
     return buildStandardLeadMarketPlaybook(plan, citations, `LangChain playbook generation degraded safely: ${error instanceof Error ? error.message : String(error)}`);
   }
 }

@@ -1,5 +1,7 @@
 # 当前唯一验收矩阵（更新至 2026-09-14）
 
+阶段134 [S01 市场计划专用 Sol 路由](S01_SOL_PLAYBOOK_ROUTING_ACCEPTANCE_2026-09-14.md)：用户已批准，版本 v1.7.0 的 OpenAI 标准端点单次上界 USD10.622880 与实际 SDK 合成请求、无付费拒绝路径已接通；原多供应商合同保留，端点失败暂停，缓存按路由失效。最新回归 981项/203文件、typecheck/生产构建、全库 lint 0错误/11既有警告、依赖审计0漏洞。此为该单阶段合同验收，非整次付费准入。只读整次预检仍显示 Kimi 两类意图和北京 Embedding 合同到期、Terra 缺合同、Sol 裁决超合同、SearchAPI/Gemini 缺严格上界，`totalRunBoundUsd=null`；当前 A11 最小业务闭环与整体验收未完成。历史阶段文字“S01 待确认”及其测试总数为当时状态。
+
 阶段133 [条件复核逐调用检查点](REVIEW_SUBCALL_CHECKPOINT_ACCEPTANCE_2026-09-14.md)：复核与裁决有效输出按实际请求键及用户/国家/公司持久保存；后续公司或裁决暂停的合成恢复、缓存失效、结构缺项与写故障防重放通过。迁移001–066重复执行、真实SQL跨进程读取/租户隔离及全量976项/203文件通过，0付费。SQL与Agent测试尚非同一条付费业务图；Terra/Sol合同、A11及整体验收未完成。
 
 阶段132 [条件复核实际请求预检](OPENROUTER_REVIEW_ACTUAL_WIRE_PREFLIGHT_2026-09-14.md)：当前复核 Agent 的合成 Terra/Sol 两条序列化请求、匿名 A/B 分歧输入和现行费用拒绝状态通过传输拦截核对；Terra `missing-tariff`、Sol 裁决12,000输出 `request-out-of-bounds`，0真实供应商调用/预留。未准入候选价证，未证明真实端点或A11闭环。

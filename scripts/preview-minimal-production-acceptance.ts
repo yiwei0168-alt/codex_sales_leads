@@ -36,7 +36,8 @@ async function captureMinimalPlaybookWire(){
     const quote={origin:url.origin,pathname:url.pathname,model:body.model,
       requestBytes:bytes,outputTokens:body.max_completion_tokens};
     try{
-      const rule=quoteRequest(quote);
+      const rule=body.model==="openai/gpt-5.6-sol"
+        ?quoteRequest(quote,undefined,Date.now(),"openrouter-sol-openai-playbook-credits"):quoteRequest(quote);
       assertRequestContract(rule,body,url.search,request.method,request.headers);
       return {status:"contract-valid-synthetic-wire",model:body.model,requestBytes:bytes,
         outputTokens:body.max_completion_tokens,tariffKey:rule.key,maximumPerCallUsd:rule.maximumChargeMicros/1e6,
@@ -217,7 +218,8 @@ try{
     if(url.username||url.password||url.search)throw new Error("Unexpected endpoint credentials or query");
     try{
       const input={origin:url.origin,pathname:url.pathname,model:probe.model,requestBytes:probe.requestBytes,outputTokens:probe.outputTokens};
-      const bound=(await nativeModelBound(input)??await embeddingModelBound(input))?.rule??quoteRequest(input);
+      const bound=(await nativeModelBound(input)??await embeddingModelBound(input))?.rule??(probe.stage==="market-playbook"&&probe.model==="openai/gpt-5.6-sol"
+        ?quoteRequest(input,undefined,Date.now(),"openrouter-sol-openai-playbook-credits"):quoteRequest(input));
       stages.push({stage:probe.stage,model:probe.model,conditional:Boolean(probe.conditional),tariff:"available",maximumPerCallUsd:bound.maximumChargeMicros/1e6,
         fitsCurrentRemainingBudget:bound.maximumChargeMicros<=Number(budget.budget.remaining_micros),expiresAt:bound.expiresAt});
     }catch(error){

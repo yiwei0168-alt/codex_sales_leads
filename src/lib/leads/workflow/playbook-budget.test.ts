@@ -14,3 +14,8 @@ it("preserves the existing fallback for ordinary non-budget errors",async()=>{
   vi.stubEnv("OPENROUTER_API_KEY","fixture");invoke.mockRejectedValue(new Error("invalid schema"));
   expect((await buildLeadMarketPlaybook(plan,[])).generatedBy).toBe("deterministic-fallback");
 });
+it("pauses the S01 Sol playbook when the pinned endpoint fails",async()=>{
+  vi.stubEnv("OPENROUTER_API_KEY","fixture");vi.stubEnv("LEAD_PLANNER_MODEL","gpt-5.6-sol");
+  const unavailable=new Error("pinned endpoint unavailable");invoke.mockRejectedValue(unavailable);
+  await expect(buildLeadMarketPlaybook(plan,[])).rejects.toBe(unavailable);
+});

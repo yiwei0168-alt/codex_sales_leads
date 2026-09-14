@@ -1,5 +1,5 @@
 import { tenantQuery,tenantTransaction } from "@/lib/rag/db";
-import { BudgetDeniedError } from "./policy";
+import { BudgetDeniedError,rateReviewHoldKeys } from "./policy";
 import type { ProviderUsageObservation } from "./provider-usage";
 import {readProviderUsageSummary} from "./usage-summary";
 import {createHash} from "node:crypto";
@@ -48,8 +48,8 @@ export async function reservePaidCallInTransaction(client:import("pg").PoolClien
   const reservationAllocation=allocateCompanyCost({basis:"reservation",amountMicros:input.maximumChargeMicros,attribution:costAttribution});
     const budget=await client.query<{limit_micros:string;occupied_micros:string;frozen:boolean;rule_held?:boolean;rate_review_held?:boolean}>(`select limit_micros,occupied_micros,frozen,
       exists(select 1 from paid_rule_hold where user_id=$1 and tariff_key=$2 and tariff_version=$3) as rule_held,
-      exists(select 1 from billing_tariff_refresh_state where tariff_key=$2 and hold) as rate_review_held
-      from user_spend_budget where user_id=$1 for update`,[userId,input.tariffKey,input.tariffVersion]);
+      exists(select 1 from billing_tariff_refresh_state where tariff_key=any($4::text[]) and hold) as rate_review_held
+      from user_spend_budget where user_id=$1 for update`,[userId,input.tariffKey,input.tariffVersion,rateReviewHoldKeys(input.tariffKey)]);
     const row=budget.rows[0];if(!row)throw new BudgetDeniedError("missing-budget");
     if(row.frozen)throw new BudgetDeniedError("budget-frozen");
     if(row.rule_held||row.rate_review_held)throw new BudgetDeniedError("tariff-suspended");

@@ -32,6 +32,28 @@ it("passes the actual Places header into the contract guard before reserving or 
   expect(transport).toHaveBeenCalledOnce();
   expect(JSON.stringify(mocks.reserve.mock.calls)).not.toContain("fixture-private");
 });
+it("uses the S01 tariff only for market-playbook Sol attempts, before transport",async()=>{
+  const rule=billingPolicy.rules.find(item=>item.key==="openrouter-sol-openai-playbook-credits")!;
+  const old=billingPolicy.rules.find(item=>item.key==="openrouter-sol-credits-standard-text-json")!;
+  const body={model:rule.model,messages:[{role:"system",content:"synthetic"},{role:"user",content:"synthetic"}],
+    provider:{require_parameters:true,data_collection:"deny",only:["openai"],allow_fallbacks:false},
+    response_format:{type:"json_schema",json_schema:{name:"result",strict:true,schema:{type:"object"}}},
+    stream:false,temperature:0,max_completion_tokens:4096};
+  mocks.quote.mockImplementation((_quote,_rules,_now,key)=>key===rule.key?rule:old);
+  const transport=vi.fn<typeof fetch>();
+  await expect(withSpendContext(scope,()=>withModelAttempt({invocationId:"playbook-test",attempt:1,provider:"openrouter",task:"lead-playbook",promptVersion:"v3"},
+    ()=>budgetedFetch(transport)(`${rule.origin}${rule.pathname}`,{method:"POST",body:JSON.stringify(body)}))))
+    .rejects.toBeInstanceOf(PaidCallOutcomeUnknownError);
+  expect(mocks.quote.mock.calls[0][3]).toBe(rule.key);
+  expect(mocks.reserve.mock.calls[0][1]).toMatchObject({tariffKey:rule.key,maximumChargeMicros:10622880});
+  expect(transport).toHaveBeenCalledOnce();
+  mocks.reserve.mockClear();transport.mockClear();
+  await expect(withSpendContext(scope,()=>withModelAttempt({invocationId:"judge-test",attempt:1,provider:"openrouter",task:"compatible-judge",promptVersion:"v3"},
+    ()=>budgetedFetch(transport)(`${rule.origin}${rule.pathname}`,{method:"POST",body:JSON.stringify(body)}))))
+    .rejects.toThrow("request-out-of-bounds");
+  expect(mocks.quote.mock.calls[1][3]).toBeUndefined();
+  expect(mocks.reserve).not.toHaveBeenCalled();expect(transport).not.toHaveBeenCalled();
+});
 it("blocks a repeated admitted search before transport when persistent accounting refuses replay",async()=>{
   const rule=billingPolicy.rules.find(item=>item.requestContract==="brave-web-search-v1")!;
   mocks.quote.mockReturnValue(rule);

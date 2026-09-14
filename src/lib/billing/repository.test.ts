@@ -101,5 +101,13 @@ it("blocks a globally held public-rate contract before reserving any user's spen
   query.mockResolvedValueOnce({rows:[{limit_micros:"100",occupied_micros:"10",frozen:false,rate_review_held:true}]});
   await expect(reservePaidCall("owner",input)).rejects.toThrow("tariff-suspended");
   expect(query).toHaveBeenCalledTimes(1);
-  expect(query.mock.calls[0][0]).toContain("billing_tariff_refresh_state where tariff_key=$2 and hold");
+  expect(query.mock.calls[0][0]).toContain("billing_tariff_refresh_state where tariff_key=any($4::text[]) and hold");
+  expect(query.mock.calls[0][1][3]).toEqual(["rule"]);
+});
+it("shares a held public Sol rate with the S01 playbook tariff",async()=>{
+  query.mockResolvedValueOnce({rows:[{limit_micros:"30000000",occupied_micros:"0",frozen:false,rate_review_held:true}]});
+  await expect(reservePaidCall("owner",{...input,tariffKey:"openrouter-sol-openai-playbook-credits"}))
+    .rejects.toThrow("tariff-suspended");
+  expect(query.mock.calls[0][1][3]).toEqual(["openrouter-sol-openai-playbook-credits","openrouter-sol-credits-standard-text-json"]);
+  expect(query).toHaveBeenCalledTimes(1);
 });
