@@ -37,10 +37,15 @@ export function planQualificationSingletonChunks(options:{candidateId:string;cou
       &&(unit.evidenceIds.length!==1||unit.evidenceIds[0]!==unit.id)))
     throw new Error("Singleton chunk identity or citation closure is invalid");
   const points=Array.from(unit.text),contentSha256=createHash("sha256").update(unit.text).digest("hex");
+  // Namespace chunk checkpoints away from ordinary fact phases and other long units.
+  const checkpointFingerprint=createHash("sha256").update(JSON.stringify({
+    version:QUALIFICATION_SINGLETON_CHUNK_VERSION,candidateSourceFingerprint:sourceFingerprint,
+    unitKind:unit.kind,unitId:unit.id,contentSha256})).digest("hex");
   const build=(excerpt:string,chunkIndex:number,chunkCount:number,startCodePoint:number,endCodePoint:number):StructuredAiRequest<unknown>=>({
     task:"lead-qualification",modelVersion,promptVersion:QUALIFICATION_SINGLETON_CHUNK_VERSION,
     dataClassification,tenantScope,evidenceIds:[...unit.evidenceIds],outputSchema:outputJsonSchema,
-    input:{candidateId,market:{countryCode,countryName,objective},sourceFingerprint,
+    input:{candidateId,market:{countryCode,countryName,objective},sourceFingerprint:checkpointFingerprint,
+      candidateSourceFingerprint:sourceFingerprint,
       unitKind:unit.kind,unitId:unit.id,contentSha256,chunkIndex,chunkCount,startCodePoint,endCodePoint,
       excerpt,evidenceIds:[...unit.evidenceIds],instructions:[
         "Screen only this exact segment of one oversized fact or source. This is not a final eligibility or score decision.",
@@ -72,7 +77,8 @@ export function planQualificationSingletonChunks(options:{candidateId:string;cou
     if(bytes>limit)throw new LeadRequestTooLargeError(bytes,limit);
   }
   if(chunks.map(chunk=>chunk.text).join("")!==unit.text)throw new Error("Singleton chunk coverage differs");
-  return {version:QUALIFICATION_SINGLETON_CHUNK_VERSION,contentSha256,sourceFingerprint,
+  return {version:QUALIFICATION_SINGLETON_CHUNK_VERSION,contentSha256,
+    candidateSourceFingerprint:sourceFingerprint,checkpointFingerprint,
     codePointCount:points.length,requests};
 }
 
@@ -83,7 +89,7 @@ export function validateQualificationSingletonChunkOutput(request:StructuredAiRe
   const parsed=qualificationSingletonChunkOutputSchema.parse(output);
   const input=request.input as {unitKind?:unknown;unitId?:unknown;chunkIndex?:unknown;chunkCount?:unknown;
     startCodePoint?:unknown;endCodePoint?:unknown;excerpt?:unknown;contentSha256?:unknown;
-    sourceFingerprint?:unknown;evidenceIds?:unknown}|null;
+    sourceFingerprint?:unknown;candidateSourceFingerprint?:unknown;evidenceIds?:unknown}|null;
   const allowed=Array.isArray(input?.evidenceIds)?input.evidenceIds:[];
   if(parsed.unitKind!==input?.unitKind||parsed.unitId!==input?.unitId||parsed.chunkIndex!==input?.chunkIndex
     ||!Number.isSafeInteger(input?.chunkIndex)||!Number.isSafeInteger(input?.chunkCount)
@@ -94,6 +100,11 @@ export function validateQualificationSingletonChunkOutput(request:StructuredAiRe
     ||Array.from(input.excerpt).length!==(input.endCodePoint as number)-(input.startCodePoint as number)
     ||typeof input?.contentSha256!=="string"||!/^[a-f0-9]{64}$/.test(input.contentSha256)
     ||typeof input?.sourceFingerprint!=="string"||!/^[a-f0-9]{64}$/.test(input.sourceFingerprint)
+    ||typeof input?.candidateSourceFingerprint!=="string"
+    ||!/^[a-f0-9]{64}$/.test(input.candidateSourceFingerprint)
+    ||input.sourceFingerprint!==createHash("sha256").update(JSON.stringify({
+      version:QUALIFICATION_SINGLETON_CHUNK_VERSION,candidateSourceFingerprint:input.candidateSourceFingerprint,
+      unitKind:parsed.unitKind,unitId:parsed.unitId,contentSha256:input.contentSha256})).digest("hex")
     ||allowed.length!==request.evidenceIds.length||allowed.some((id,index)=>id!==request.evidenceIds[index])
     ||new Set(parsed.citedEvidenceIds).size!==parsed.citedEvidenceIds.length
     ||parsed.citedEvidenceIds.some(id=>!allowed.includes(id))

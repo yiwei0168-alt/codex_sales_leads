@@ -19,14 +19,18 @@ describe("qualification singleton chunk preflight",()=>{
     const unit={kind:"finding" as const,id:"finding-critical",text,evidenceIds:["source-original"]};
     const planned=planQualificationSingletonChunks({...base,unit});
     expect(planned.requests.length).toBeGreaterThan(1);
+    expect(planned.checkpointFingerprint).not.toBe(base.sourceFingerprint);
     expect(planned.requests.every(request=>wire.requestBytes(request)<=57_344)).toBe(true);
     const inputs=planned.requests.map(request=>request.input as {excerpt:string;startCodePoint:number;
-      endCodePoint:number;chunkIndex:number;chunkCount:number;contentSha256:string});
+      endCodePoint:number;chunkIndex:number;chunkCount:number;contentSha256:string;
+      sourceFingerprint:string;candidateSourceFingerprint:string});
     expect(inputs.map(input=>input.excerpt).join("")).toBe(text);
     expect(inputs[0].startCodePoint).toBe(0);
     expect(inputs.at(-1)?.endCodePoint).toBe(Array.from(text).length);
     expect(inputs.every((input,index)=>input.chunkIndex===index&&input.chunkCount===inputs.length
       &&input.startCodePoint===(index?inputs[index-1].endCodePoint:0)
+      &&input.sourceFingerprint===planned.checkpointFingerprint
+      &&input.candidateSourceFingerprint===base.sourceFingerprint
       &&input.contentSha256===planned.contentSha256)).toBe(true);
     expect(planned.requests.every(request=>request.evidenceIds[0]==="source-original")).toBe(true);
     const changed=planQualificationSingletonChunks({...base,unit:{...unit,
@@ -35,6 +39,8 @@ describe("qualification singleton chunk preflight",()=>{
     expect(wire.cacheIdentity(changed.requests[0])).not.toBe(wire.cacheIdentity(planned.requests[0]));
     expect(wire.paidRequestFingerprint(changed.requests[0]))
       .not.toBe(wire.paidRequestFingerprint(planned.requests[0]));
+    const otherUnit=planQualificationSingletonChunks({...base,unit:{...unit,id:"other-finding"}});
+    expect(otherUnit.checkpointFingerprint).not.toBe(planned.checkpointFingerprint);
   });
 
   it("rejects a swapped or uncited material segment before it can be used",()=>{
