@@ -220,7 +220,10 @@ try{
       await client.query("delete from user_spend_budget where user_id=$1",[userId]);
       if(httpBase)await client.query("delete from auth_login_attempt where ip_sha256=$1",[hashClientAddress(fixtureAddress)]);
       await client.query("delete from app_user where id=any($1::uuid[])",[[userId,otherUserId]]);
-      await client.query("commit");console.log("Synthetic positive graph fixture removed.");
+      await client.query("delete from sales_company where domain=$1",[domain]);
+      await client.query("commit");
+      assert.equal((await admin.query("select id from sales_company where domain=$1",[domain])).rowCount,0);
+      console.log("Synthetic positive graph fixture removed.");
     }catch(error){await client.query("rollback");throw error;}finally{client.release();}
   }
   await getPool().end();await admin.end();

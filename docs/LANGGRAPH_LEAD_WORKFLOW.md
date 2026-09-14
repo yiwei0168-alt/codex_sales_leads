@@ -1,5 +1,7 @@
 # LangChain / LangGraph 销售线索工作流
 
+2026-09-14 / 阶段140：正结果图→产品SQL验收夹具增加全局`sales_company`清理及清理后断言；初版6条本轮无引用合成残留已删除。此为验收夹具数据卫生修复，原图、费用、角色和评分合同不变，真实业务仍待A11。[证据](POSITIVE_GRAPH_FIXTURE_CLEANUP_2026-09-14.md)。
+
 2026-09-14 / 阶段139：预置正结果图在`score_candidates`入口受控暂停，PostgreSQL保留已校正证据与7 micro-USD夹具预留；同检查点恢复后前置节点不重跑，评分/复核/交接及真实结果SQL各完成1次，生产任务页面双视口刷新一致。越权恢复拒绝，未知在途付费请求与跨进程完整正结果仍须另验。[证据](POSITIVE_GRAPH_SCORING_PAUSE_RECOVERY_2026-09-14.md)。
 
 2026-09-14 / 阶段138：隔离合成正结果经当前图各节点、真实任务认领、PostgreSQL结果持久化与本地生产任务API/两视口页面，最终保存1家且`target-met`，重复完成回执保持1。预置计划和各阶段夹具不代表自然语言或真实供应商判断；真实费用与A11闭环仍缺。[验收](POSITIVE_RESULT_GRAPH_SQL_UI_ACCEPTANCE_2026-09-14.md)。
