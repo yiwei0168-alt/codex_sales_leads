@@ -1,5 +1,7 @@
 # LangChain / LangGraph 销售线索工作流
 
+2026-09-14 / 阶段135：Kimi 自然语言意图与北京 Embedding 在阶段134 S01 后的整次预检因共享 ECB CNY/USD 参考日过72小时而暂停，静态模型合同本身未到期。官方源仍为9月11日参考日；不能将9月14日抓取时间当作新价证。刷新机制等待有效参考日，旧结果/费用不变，真实工作流未启动。[归因](S01_SOL_PLAYBOOK_ROUTING_ACCEPTANCE_2026-09-14.md)。
+
 2026-09-14 / 阶段134 S01：`buildLeadMarketPlaybook` 使用 Sol 时，实际 LangChain 请求的 `provider` 限定 OpenAI 标准端点并禁用供应商回退；新的 `openrouter-sol-openai-playbook-v1` 费用合同只按该工作流任务选择，其他 Sol 保留原合同。端点错误使计划阶段暂停，旧计划缓存因新增模型/路由身份失效；未完成的工作不被当成有效计划。静态报价 USD10.622880/次须先通过累计 USD30 与整次预检，真实供应商链路尚待验收。[证据](S01_SOL_PLAYBOOK_ROUTING_ACCEPTANCE_2026-09-14.md)。
 
 2026-09-14 / 阶段133：`review_assessment_anomalies` 调用当前复核 Agent 时使用用户/工作区/国家隔离的追加式子调用检查点；Terra 结果校验并保存后才进入 Sol 裁决或下一公司，恢复按完整实际请求键复用并单列复用量。保存故障走非重放暂停，旧费用保留。SQL 跨进程读取与 Agent 合成中断恢复分别验收，真实付费全图仍缺。[验收](REVIEW_SUBCALL_CHECKPOINT_ACCEPTANCE_2026-09-14.md)。

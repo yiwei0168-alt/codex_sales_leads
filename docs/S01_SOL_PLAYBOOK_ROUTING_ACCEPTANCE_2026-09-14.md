@@ -10,4 +10,6 @@
 
 验证记录：定向计费、传输、缓存和预算测试通过；全量 **981 项/203 文件**通过，`typecheck`、Next.js 生产构建、相关源码 lint 均通过；全库 lint 为 0 错误/11 条既有警告，生产依赖审计 0 漏洞。只读预算与最小路径预检前后占用一致，0 外发/任务认领。原 v1.6.0 版本文件与历史预留保留，新 v1.7.0 仅供后续请求使用。
 
-本阶段不能证明整次最小业务可付费执行：本次只读数据库重核的 USD30 累计占用为 USD12.324404、余额 USD17.675596，历史未知账单六笔仍须保留。整次只读预检显示：Kimi 两类意图与北京 Embedding 的已审计静态合同已到期；Terra 条件复核缺合同，Sol 12,000 输出裁决超旧合同，SearchAPI/Gemini 缺严格费用上界。故 `checkedTariffsAvailable=false`、`actualRequestContractsChecked=false`、`totalRunBoundUsd=null`，没有启动真实调用。S01 与 Terra 条件复核候选上界之和 USD21.642082 也超过该余额；其他入口实际触发次数仍有缺口。不可由单次 USD10.622880 推断整次可容纳、真实节省、能填满目标或冻结盲审结果改善。当前阶段验收与整体验收分别记录。
+本阶段不能证明整次最小业务可付费执行：本次只读数据库重核的 USD30 累计占用为 USD12.324404、余额 USD17.675596，历史未知账单六笔仍须保留。整次只读预检显示：Kimi 两类意图与北京 Embedding 虽有有效的静态价格合同，但共享 ECB CNY/USD 汇率参考失效；Terra 条件复核缺合同，Sol 12,000 输出裁决超旧合同，SearchAPI/Gemini 缺严格费用上界。故 `checkedTariffsAvailable=false`、`actualRequestContractsChecked=false`、`totalRunBoundUsd=null`，没有启动真实调用。S01 与 Terra 条件复核候选上界之和 USD21.642082 也超过该余额；其他入口实际触发次数仍有缺口。不可由单次 USD10.622880 推断整次可容纳、真实节省、能填满目标或冻结盲审结果改善。当前阶段验收与整体验收分别记录。
+
+2026-09-14 复核澄清：账本状态读取确认 Kimi/北京 Embedding 静态合同有效至 2026-09-20T00:00:00Z；已保存 ECB 参考日为 **2026-09-11T00:00:00Z**，72 小时有效期于 **2026-09-14T00:00:00Z** 结束。官方 ECB 当前免费 XML GET 仍返回参考日 **2026-09-11**，不能把 9 月 14 日的抓取时间当成新参考日。`verify-inline-fx-bound.ts` 如预期以 `expired-tariff` 拒绝；没有改旧快照、静态合同或预算。待 ECB 发布有效的新参考日后按现有每日刷新机制复验，不放宽 72 小时规则。[ECB 官方源](https://www.ecb.europa.eu/stats/eurofxref/eurofxref-daily.xml)。
