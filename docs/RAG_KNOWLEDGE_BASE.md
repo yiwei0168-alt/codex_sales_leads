@@ -1,5 +1,7 @@
 # RAG 知识库指南
 
+2026-09-14 stage 181: two-user product SQL regression verified private outreach memory, private/shared RAG document and mailbox candidate boundaries; the 79-table owner-keyed RLS audit reported zero readable unprotected tables under its filter. Full private HTTP coverage and real answer generation remain open. [Evidence](PRIVATE_KNOWLEDGE_ISOLATION_RECHECK_2026-09-14.md).
+
 ## 数据边界
 
 | 知识库 | 内容 | 固定范围 |
