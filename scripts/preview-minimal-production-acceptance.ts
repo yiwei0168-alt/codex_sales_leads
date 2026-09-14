@@ -14,6 +14,7 @@ const {textOutputLimit}=await import("../src/lib/billing/text-output-policy");
 const {plannedCandidatePool,MAX_DISCOVERY_ROUNDS}=await import("../src/lib/leads/workflow/target-completion-policy");
 const {buildHybridSearchRoute,discoveryResultsPerRoute}=await import("../src/lib/leads/workflow/hybrid-search-policy");
 const {readSearchRateStatuses}=await import("../src/lib/billing/search-rate-repository");
+const {DEFAULT_DISCOVERY_MAX_ATTEMPTS}=await import("../src/providers/discovery");
 const userId="cbee9803-3c43-4609-9228-66086b207012";
 const minimalPlan={countryCode:"CO",countryName:"Colombia",objective:"new-market" as const,
   roles:["Distributor" as const],targetCount:1,queryLanguage:"es",userRequest:"Synthetic acceptance wire only"};
@@ -263,8 +264,8 @@ try{
   const discoveryRouteActionCeilings=searchRoute.map(route=>({
     category:route.category,track:route.track,provider:route.provider,trigger:route.trigger,
     scheduledActionsAtMost:MAX_DISCOVERY_ROUNDS,
-    paidAttemptsAtMost:null as number|null,
-    serverSideToolCallsAtMost:null as number|null,
+    providerHttpAttemptsAtMost:MAX_DISCOVERY_ROUNDS*DEFAULT_DISCOVERY_MAX_ATTEMPTS,
+    billableGoogleSearchToolCallsAtMost:route.provider.startsWith("gemini-")?null:0,
   }));
   const tavilyRule=billingPolicy.rules.find(item=>item.key==="tavily-standard-search");
   const tavilyState=sourceStatus.get("tavily-standard-search");
@@ -305,7 +306,7 @@ try{
     discoveryActionCeiling:{rounds:MAX_DISCOVERY_ROUNDS,routeStepsPerRound:firstRoundRoute.length,
       routeActionsAtMost:MAX_DISCOVERY_ROUNDS*firstRoundRoute.length,
       byRoute:discoveryRouteActionCeilings,
-      semantics:"one scheduled route step per round, including conditional/skipped steps; provider retries and server-side tools are additional"},
+      semantics:`current production default: one scheduled route step per round, including conditional/skipped steps; each executed step has at most ${DEFAULT_DISCOVERY_MAX_ATTEMPTS} provider HTTP attempts; Gemini server-side Google searches are additional`},
     stages,searchRoute,supplementalEvidence,officialEvidenceExtract,marketPlaybookWire,braveCoreWire,
     exaConditionalWire,tavilyEvidenceWires,
     checkedTariffsAvailable:stages.every(stage=>stage.tariff==="available")

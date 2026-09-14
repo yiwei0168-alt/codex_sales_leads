@@ -12,6 +12,7 @@ import type {
 } from "./discovery-contracts";
 
 interface ProviderOptions { fetchImplementation?: typeof fetch; timeoutMs?: number; maxAttempts?: number }
+export const DEFAULT_DISCOVERY_MAX_ATTEMPTS = 2;
 
 export type DiscoveryFailureKind = "authentication" | "quota" | "rate-limit" | "timeout"
   | "transport" | "http" | "invalid-response" | "configuration";
@@ -214,7 +215,7 @@ abstract class BaseProvider {
   constructor(options: ProviderOptions = {}, defaultTimeout = 45_000) {
     this.fetchImplementation = budgetedFetch(options.fetchImplementation ?? fetch);
     this.timeoutMs = options.timeoutMs ?? defaultTimeout;
-    this.maxAttempts = Math.max(1, Math.min(3, options.maxAttempts ?? 2));
+    this.maxAttempts = Math.max(1, Math.min(3, options.maxAttempts ?? DEFAULT_DISCOVERY_MAX_ATTEMPTS));
   }
   protected requestOptions() { return { fetchImplementation: this.fetchImplementation,
     timeoutMs: this.timeoutMs, maxAttempts: this.maxAttempts }; }
