@@ -33,6 +33,9 @@ try{
   await settle(await reserve(root,10),10);
   await link(root,child);
   await assert.rejects(link(root,child),/duplicate key/);
+  const acl=await admin.query<{can_select:boolean;can_insert:boolean;can_update:boolean;can_delete:boolean}>(
+    "select has_table_privilege('network_copilot_app','lead_processing_recovery','SELECT') as can_select, has_table_privilege('network_copilot_app','lead_processing_recovery','INSERT') as can_insert, has_table_privilege('network_copilot_app','lead_processing_recovery','UPDATE') as can_update, has_table_privilege('network_copilot_app','lead_processing_recovery','DELETE') as can_delete");
+  assert.deepEqual(acl.rows[0],{can_select:true,can_insert:true,can_update:false,can_delete:false});
   assert.equal((await tenantQuery(other,"select * from lead_processing_recovery")).length,0);
   await assert.rejects(tenantTransaction(other,c=>c.query("insert into lead_processing_recovery(user_id,parent_action_id,child_action_id) values($1,$2,$3)",[user,child,grandchild])));
   await assert.rejects(tenantTransaction(user,c=>c.query("update lead_processing_recovery set metadata='{}' where user_id=$1",[user])),/permission denied/);
@@ -58,7 +61,7 @@ try{
   await settle(await reserve(root,1),null);
   await assert.rejects(reserve(grandchild,1),/paid-request-already-recorded/);
   assert.equal((await admin.query("select occupied_micros::text from user_spend_budget where user_id=$1",[user])).rows[0].occupied_micros,"29");
-  console.log(JSON.stringify({migration:"055",concurrentReservations:2,successfulReservations:1,ancestorAndChildCaps:true,descendantOccupancyConserved:true,unknownAncestorBlocked:true,tenantIsolation:true,scopeMismatchBlocked:true,immutableLinks:true,providerCalls:0,syntheticMicros:29}));
+  console.log(JSON.stringify({migration:"055+072",concurrentReservations:2,successfulReservations:1,ancestorAndChildCaps:true,descendantOccupancyConserved:true,unknownAncestorBlocked:true,tenantIsolation:true,scopeMismatchBlocked:true,immutableLinks:true,acl:acl.rows[0],providerCalls:0,syntheticMicros:29}));
 }finally{
   if(created){
     const client=await admin.connect();

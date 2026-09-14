@@ -33,6 +33,7 @@ const appendOnlyTables=[
   "paid_cost_observation",
   "paid_rule_hold",
   "spend_budget_change",
+  "lead_processing_recovery",
   "lead_review_checkpoint",
   "lead_qualification_phase_checkpoint",
   "lead_qualification_final_checkpoint",
@@ -59,7 +60,7 @@ try{
     from pg_class c where c.relnamespace='public'::regnamespace
       and c.relname=any($1::text[]) and c.relkind='r'
     order by c.relname`,[[...appendOnlyTables,...mutableStateTables]]);
-  assert.equal(rows.length,appendOnlyTables.length+mutableStateTables.length,"Billing ACL table inventory incomplete");
+  assert.equal(rows.length,appendOnlyTables.length+mutableStateTables.length,"Billing and recovery ACL table inventory incomplete");
   const mutable=new Set<string>(mutableStateTables);
   const unexpected=rows.filter(row=>!row.can_select||!row.can_insert||row.can_update!==mutable.has(row.table_name)
     ||row.can_delete||row.can_truncate||row.can_references||row.can_trigger);
@@ -68,5 +69,5 @@ try{
     update:row.can_update,delete:row.can_delete,truncate:row.can_truncate,
     references:row.can_references,trigger:row.can_trigger})),readOnlyAudit:!process.argv.includes("--apply"),
     businessRowsChanged:0,paidCalls:0}));
-  assert.equal(unexpected.length,0,"Application role has unexpected billing ledger privileges");
+  assert.equal(unexpected.length,0,"Application role has unexpected billing or recovery ledger privileges");
 }finally{await getPool().end();}
