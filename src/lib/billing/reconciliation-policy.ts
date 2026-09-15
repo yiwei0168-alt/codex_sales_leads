@@ -7,6 +7,7 @@ export interface CostObservation {
 }
 export interface CostOccupancy {
   reservedMicros:number;
+  costBoundKnown?:boolean;
   occupiedMicros?:number;
   settledMicros:number|null;
   settledSource:CostObservationKind|null;
@@ -23,8 +24,10 @@ export function planCostReconciliation(current:CostOccupancy,observation:CostObs
     &&observation.complete&&observation.uniquelyMatched
     &&(current.settledSource!=="invoice"||observation.kind==="invoice");
   const settledMicros=canSettle?observation.amountMicros:current.settledMicros;
-  const suspendRule=observation.kind!=="usage-estimate"&&observation.amountMicros!==null&&observation.amountMicros>current.reservedMicros;
-  const after=canSettle?settledMicros!:suspendRule&&current.settledSource!=="invoice"
+  const costBoundKnown=current.costBoundKnown!==false;
+  const suspendRule=costBoundKnown&&observation.kind!=="usage-estimate"&&observation.amountMicros!==null&&observation.amountMicros>current.reservedMicros;
+  const after=canSettle?settledMicros!:!costBoundKnown&&observation.amountMicros!==null
+    ?Math.max(before,observation.amountMicros):suspendRule&&current.settledSource!=="invoice"
     ?Math.max(before,observation.amountMicros!):before;
   return {settledMicros,settledSource:canSettle?observation.kind:current.settledSource,
     occupiedBefore:before,occupiedAfter:after,occupiedDelta:after-before,

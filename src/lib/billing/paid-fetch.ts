@@ -14,6 +14,8 @@ import {textOutputCompletion} from "./text-output-policy";
 import {openRouterInlineCostReport,reportedDollarsToMicros} from "./openrouter-cost-report";
 import {recordVerifiedCostObservation} from "./reconciliation";
 import {searchRequestFingerprint} from "./search-request-fingerprint";
+import {currentStagePaidCallOverride} from "./stage-paid-call-override";
+import {createHash} from "node:crypto";
 
 function object(value:unknown):Record<string,unknown>{return value!==null&&typeof value==="object"&&!Array.isArray(value)?value as Record<string,unknown>:{};}
 function count(value:unknown):number|null{return typeof value==="number"&&Number.isSafeInteger(value)&&value>=0?value:null;}
@@ -60,9 +62,25 @@ export function budgetedFetch(transport:typeof fetch=fetch):typeof fetch {
             ?"openrouter-sol-rag-answer-primary-credits"
             :ragAnswerSol&&ragProvider.length===1&&ragProvider[0]==="amazon-bedrock/us-east-1"
               ?"openrouter-sol-rag-answer-bedrock-fallback-credits":undefined;
-    const rule=native?.rule??(scope.tariffPolicy?quoteRequest(quote,policy.rules):selectedContract
-      ?quoteRequest(quote,policy.rules,Date.now(),selectedContract):quoteRequest(quote));
-    assertRequestContract(rule,parsed,url.search,request.method,request.headers);
+    const admissionOverride=currentStagePaidCallOverride(scope.userId);
+    let rule;
+    let costBoundKnown=true;
+    try{
+      rule=native?.rule??(scope.tariffPolicy?quoteRequest(quote,policy.rules):selectedContract
+        ?quoteRequest(quote,policy.rules,Date.now(),selectedContract):quoteRequest(quote));
+    }catch(error){
+      if(!(error instanceof BudgetDeniedError)||!admissionOverride?.allowFinancialAdmissionBypass)throw error;
+      costBoundKnown=false;
+      const routeHash=createHash("sha256").update(`${quote.origin}\n${quote.pathname}\n${quote.model}`).digest("hex").slice(0,16);
+      rule={key:`a33-unbounded-${routeHash}`,origin:quote.origin,pathname:quote.pathname,model:quote.model,
+        maximumChargeMicros:0,maximumRequestBytes:0,maximumOutputTokens:0,
+        boundDescription:"A33 exact-owner temporary authorization; no reviewed monetary bound is asserted.",
+        reference:"https://example.invalid/a33-owner-observation-mode",verifiedAt:new Date(0).toISOString(),expiresAt:new Date(0).toISOString()};
+    }
+    // Provider/data/tool wire safety is not a financial gate and remains enforced when a contract is known.
+    if(rule.requestContract)assertRequestContract(rule,parsed,url.search,request.method,request.headers);
+    // A33 is observation-only even when a reviewed tariff exists: no pre-call monetary reservation is asserted.
+    if(admissionOverride?.allowFinancialAdmissionBypass)costBoundKnown=false;
     const modelAttempt=attempt?{
       invocationId:metricIdentifier(attempt.invocationId),provider:metricIdentifier(attempt.provider),
       task:metricIdentifier(attempt.task),promptVersion:metricIdentifier(attempt.promptVersion),
@@ -77,9 +95,12 @@ export function budgetedFetch(transport:typeof fetch=fetch):typeof fetch {
     }:null;
     // Native model adapters without full invocation attribution need the same persistent guard.
     // Preserve existing model hashes; admitted synchronous searches also guard paid replay.
-    const requestFingerprint=attempt||typeof parsed.model==="string"
+    const requestFingerprint=!costBoundKnown||attempt||typeof parsed.model==="string"
       ?paidRequestFingerprint(request.method,url,body):searchRequestFingerprint(rule,request,parsed);
-    const id=await reservePaidCall(scope.userId,{operationId:scope.operationId,stage:scope.stage,tariffKey:rule.key,tariffVersion:native?.version??policy.version,maximumChargeMicros:rule.maximumChargeMicros,requestBytes:bytes,modelAttempt,requestFingerprint,foreignCostBound:rule.foreignCostBound,costAttribution:scope.costAttribution});
+    const id=await reservePaidCall(scope.userId,{operationId:scope.operationId,stage:scope.stage,tariffKey:rule.key,
+      tariffVersion:costBoundKnown?(native?.version??policy.version):admissionOverride!.ruleId,
+      maximumChargeMicros:costBoundKnown?rule.maximumChargeMicros:0,costBoundKnown,requestBytes:bytes,modelAttempt,requestFingerprint,
+      foreignCostBound:rule.foreignCostBound,costAttribution:scope.costAttribution});
     const started=Date.now();let response:Response;
     try{response=await transport(input,{...init,redirect:"error"});}catch{
       await settlePaidCall(scope.userId,id,{reportedMicros:null,latencyMs:Date.now()-started,responseBytes:null,inputTokens:null,outputTokens:null,succeeded:false}).catch(()=>undefined);

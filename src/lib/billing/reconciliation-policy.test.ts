@@ -25,3 +25,8 @@ it("holds an incomplete overrun conservatively without superseding a verified in
   expect(planCostReconciliation(initial,{...report,amountMicros:120,complete:false})).toMatchObject({occupiedAfter:120,canSettle:false,suspendRule:true});
   expect(planCostReconciliation({...initial,occupiedMicros:40,settledMicros:40,settledSource:"invoice"},{...report,amountMicros:120,complete:false})).toMatchObject({occupiedAfter:40,canSettle:false,suspendRule:true});
 });
+it("records observed cost for an A33 unbounded call without inventing a tariff overrun",()=>{
+  expect(planCostReconciliation({reservedMicros:0,costBoundKnown:false,settledMicros:null,settledSource:null},
+    {...report,amountMicros:37,complete:false,uniquelyMatched:false}))
+    .toMatchObject({occupiedAfter:37,occupiedDelta:37,canSettle:false,suspendRule:false});
+});

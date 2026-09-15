@@ -754,7 +754,7 @@ flowchart TD
 | `src/lib/assistant/types.ts` | `8ad5cd8f4e0c6bb3eb11191c2f42075523a3931fbc4d2d7caaa990ab06e2f8a8` |
 | `src/lib/assistant/intent.ts` | `cb77a2854f0058d92bf758ce4610d298bc94dde0157ade4f0bd3d05343fad168` |
 | `src/lib/assistant/intent-agent.ts` | `cc14a3432d6fbd0cf50a653892dc20982f2d8652f782055ebdc94163eda65027` |
-| `src/lib/rag/openai-provider.ts` | `30fcfb3b313c29b516895909c9eba397cab21bbb14c16bc228fc14bd4776725e` |
+| `src/lib/rag/openai-provider.ts` | `a0c38fe4c3a3e225041b0f4a473bcc34fa653575b587d17b09ef902016e4f214` |
 | `src/lib/assistant/service.ts` | `191d407fc558253b10df7b57564bb73094808cddaf5f2f8883c57742561eff7e` |
 | `src/lib/assistant/repository.ts` | `5f8a96b484418bc47dc119e5ceb7b7989f0f551915bfd3b9e8068b013bca001b` |
 | `src/lib/leads/workflow/graph.ts` | `cf6f3a91f234b3aa19fcf29777e04d07716bd98b0f26d6211d5d7964dde040c0` |

@@ -51,22 +51,33 @@ export async function assertUncheckpointedQualificationResponsesAbsent(
   if (rows.length) throw new BudgetDeniedError("paid-request-already-recorded");
 }
 
-type ReservationInput={operationId:string;stage:string;tariffKey:string;tariffVersion:string;maximumChargeMicros:number;requestBytes:number;requestFingerprint?:string;foreignCostBound?:ForeignCostBound;costAttribution?:CostAttribution;modelAttempt?:{invocationId:string|null;provider:string|null;task:string|null;promptVersion:string|null;attempt:number|null;requestedModel:string|null;gatewayHost:string|null;endpointKind:string}|null};
+type ReservationInput={operationId:string;stage:string;tariffKey:string;tariffVersion:string;maximumChargeMicros:number;costBoundKnown?:boolean;requestBytes:number;requestFingerprint?:string;foreignCostBound?:ForeignCostBound;costAttribution?:CostAttribution;modelAttempt?:{invocationId:string|null;provider:string|null;task:string|null;promptVersion:string|null;attempt:number|null;requestedModel:string|null;gatewayHost:string|null;endpointKind:string}|null};
 export async function reservePaidCall(userId:string,input:ReservationInput){
   return tenantTransaction(userId,client=>reservePaidCallInTransaction(client,userId,input));
 }
 export async function reservePaidCallInTransaction(client:import("pg").PoolClient,userId:string,input:ReservationInput){
-  if(!Number.isSafeInteger(input.maximumChargeMicros)||input.maximumChargeMicros<=0)throw new BudgetDeniedError("missing-tariff");
+  const costBoundKnown=input.costBoundKnown!==false;
+  if(!Number.isSafeInteger(input.maximumChargeMicros)||(costBoundKnown?input.maximumChargeMicros<=0:input.maximumChargeMicros!==0))throw new BudgetDeniedError("missing-tariff");
   const costAttribution=input.costAttribution?costAttributionSchema.parse(input.costAttribution):null;
-  const reservationAllocation=allocateCompanyCost({basis:"reservation",amountMicros:input.maximumChargeMicros,attribution:costAttribution});
+  const reservationAllocation=allocateCompanyCost({basis:"reservation",amountMicros:costBoundKnown?input.maximumChargeMicros:null,attribution:costAttribution});
   const admissionOverride=currentStagePaidCallOverride(userId);
-    const budget=await client.query<{limit_micros:string;occupied_micros:string;frozen:boolean;rule_held?:boolean;rate_review_held?:boolean}>(`select limit_micros,occupied_micros,frozen,
+    if(!costBoundKnown&&!admissionOverride?.allowFinancialAdmissionBypass)throw new BudgetDeniedError("missing-tariff");
+    type BudgetRow={limit_micros:string;occupied_micros:string;frozen:boolean;rule_held?:boolean;rate_review_held?:boolean};
+    let row:BudgetRow|undefined;
+    if(admissionOverride?.allowFinancialAdmissionBypass){
+      // No budget/rate admission in A33. The owner-scoped lock preserves concurrent replay safety.
+      await client.query("select pg_advisory_xact_lock(hashtextextended($1,0))",[`paid-admission:${userId}`]);
+      row={limit_micros:"0",occupied_micros:"0",frozen:false,rule_held:false,rate_review_held:false};
+    }else{
+      const budget=await client.query<BudgetRow>(`select limit_micros,occupied_micros,frozen,
       exists(select 1 from paid_rule_hold where user_id=$1 and tariff_key=$2 and tariff_version=$3) as rule_held,
       exists(select 1 from billing_tariff_refresh_state where tariff_key=any($4::text[]) and hold) as rate_review_held
       from user_spend_budget where user_id=$1 for update`,[userId,input.tariffKey,input.tariffVersion,rateReviewHoldKeys(input.tariffKey)]);
-    const row=budget.rows[0];if(!row)throw new BudgetDeniedError("missing-budget");
-    if(row.frozen)throw new BudgetDeniedError("budget-frozen");
-    if(row.rule_held||row.rate_review_held)throw new BudgetDeniedError("tariff-suspended");
+      row=budget.rows[0];
+    }
+    if(!row)throw new BudgetDeniedError("missing-budget");
+    if(row.frozen&&!admissionOverride?.allowFinancialAdmissionBypass)throw new BudgetDeniedError("budget-frozen");
+    if((row.rule_held||row.rate_review_held)&&!admissionOverride?.allowFinancialAdmissionBypass)throw new BudgetDeniedError("tariff-suspended");
     if(input.requestFingerprint){
       if(!/^[a-f0-9]{64}$/.test(input.requestFingerprint))throw new BudgetDeniedError("request-out-of-bounds");
       // Same owner lock serializes different workers before either reserves or sends.
@@ -80,12 +91,12 @@ export async function reservePaidCallInTransaction(client:import("pg").PoolClien
     }
     if(!admissionOverride?.allowBudgetOverage&&BigInt(row.occupied_micros)+BigInt(input.maximumChargeMicros)>BigInt(row.limit_micros))throw new BudgetDeniedError("budget-exhausted");
     // The owner lock also serializes task edits and all reservations for this action.
-    const taskLimits=await readRecoveryTaskLimits(client,userId,input.operationId);
+    const taskLimits=admissionOverride?.allowFinancialAdmissionBypass?[]:await readRecoveryTaskLimits(client,userId,input.operationId);
     if(taskLimits.some(task=>admissionOverride?.allowUnknownReplay?task.blocking_non_replayable_request:task.blocking_prior_request))throw new BudgetDeniedError("paid-request-already-recorded");
     if(!admissionOverride?.allowBudgetOverage&&taskLimits.some(task=>task.limit_micros!==null&&BigInt(task.occupied_micros)+BigInt(input.maximumChargeMicros)>BigInt(task.limit_micros)))throw new BudgetDeniedError("task-budget-exhausted");
-    const result=await client.query<{id:string}>(`insert into paid_call_reservation(user_id,operation_id,stage,tariff_key,tariff_version,reserved_micros,status,metrics,request_fingerprint)
-      values($1,$2,$3,$4,$5,$6,'reserved',$7,$8) returning id`,[userId,input.operationId,input.stage,input.tariffKey,input.tariffVersion,input.maximumChargeMicros,JSON.stringify({inputItems:1,inputBytes:input.requestBytes,modelAttempt:input.modelAttempt??null,foreignCostBound:input.foreignCostBound??null,fxReservationBufferPercent:input.foreignCostBound?5:0,costAttribution,reservationAllocation,admissionOverride:admissionOverride?{ruleId:admissionOverride.ruleId,allowBudgetOverage:true,allowUnknownReplay:true}:null,outputBytes:null,validOutputItems:null,downstreamUsedItems:null,inputTokens:null,outputTokens:null,apiCredits:null,retries:0,utilizationEfficiency:null,discardedReasonCounts:{},usageBoundary:"single-http-attempt-reserved-before-network",optimizationOpportunity:"Reuse cached output before reserving another paid attempt"}),input.requestFingerprint??null]);
-    await client.query("update user_spend_budget set occupied_micros=occupied_micros+$2,updated_at=now() where user_id=$1",[userId,input.maximumChargeMicros]);
+    const result=await client.query<{id:string}>(`insert into paid_call_reservation(user_id,operation_id,stage,tariff_key,tariff_version,reserved_micros,cost_bound_known,status,metrics,request_fingerprint)
+      values($1,$2,$3,$4,$5,$6,$7,'reserved',$8,$9) returning id`,[userId,input.operationId,input.stage,input.tariffKey,input.tariffVersion,input.maximumChargeMicros,costBoundKnown,JSON.stringify({inputItems:1,inputBytes:input.requestBytes,modelAttempt:input.modelAttempt??null,foreignCostBound:input.foreignCostBound??null,fxReservationBufferPercent:input.foreignCostBound?5:0,costAttribution,reservationAllocation,costBoundKnown,admissionOverride:admissionOverride?{...admissionOverride}:null,outputBytes:null,validOutputItems:null,downstreamUsedItems:null,inputTokens:null,outputTokens:null,apiCredits:null,retries:0,utilizationEfficiency:null,discardedReasonCounts:{},usageBoundary:costBoundKnown?"single-http-attempt-reserved-before-network":"a33-owner-authorized-unbounded-call-recorded-before-network",optimizationOpportunity:costBoundKnown?"Reuse cached output before reserving another paid attempt":"Obtain a verified tariff and reconcile provider billing without blocking the current owner"}),input.requestFingerprint??null]);
+    if(input.maximumChargeMicros>0)await client.query("update user_spend_budget set occupied_micros=occupied_micros+$2,updated_at=now() where user_id=$1",[userId,input.maximumChargeMicros]);
     return result.rows[0].id;
 }
 export async function settlePaidCall(userId:string,id:string,input:{reportedMicros:number|null;latencyMs:number;responseBytes:number|null;inputTokens:number|null;outputTokens:number|null;succeeded:boolean;outputIncomplete?:boolean;providerUsage?:ProviderUsageObservation}){
@@ -93,13 +104,13 @@ export async function settlePaidCall(userId:string,id:string,input:{reportedMicr
   const cost=input.reportedMicros!==null&&Number.isSafeInteger(input.reportedMicros)&&input.reportedMicros>=0?input.reportedMicros:null;
   await tenantTransaction(userId,async client=>{
     await client.query("select user_id from user_spend_budget where user_id=$1 for update",[userId]);
-    const result=await client.query<{reserved_micros:string;occupied_micros:string|null;settled_micros:string|null;settled_source:CostObservationKind|null;tariff_key:string;tariff_version:string;metrics:unknown}>(`update paid_call_reservation set reported_micros=$3,
-      status=case when $3::bigint>reserved_micros then 'bound-exceeded' when $3::bigint is null then 'unknown' else 'reported' end,
+    const result=await client.query<{reserved_micros:string;cost_bound_known:boolean;occupied_micros:string|null;settled_micros:string|null;settled_source:CostObservationKind|null;tariff_key:string;tariff_version:string;metrics:unknown}>(`update paid_call_reservation set reported_micros=$3,
+      status=case when cost_bound_known and $3::bigint>reserved_micros then 'bound-exceeded' when $3::bigint is null then 'unknown' else 'reported' end,
       provider_request_hash=coalesce($5,provider_request_hash),metrics=metrics || $4::jsonb,updated_at=now()
-      where user_id=$1 and id=$2 and status='reserved' returning reserved_micros,occupied_micros,settled_micros,settled_source,tariff_key,tariff_version,metrics`,
+      where user_id=$1 and id=$2 and status='reserved' returning reserved_micros,cost_bound_known,occupied_micros,settled_micros,settled_source,tariff_key,tariff_version,metrics`,
       [userId,id,cost,JSON.stringify({latencyMs:input.latencyMs,outputBytes:input.responseBytes,inputTokens:input.inputTokens,outputTokens:input.outputTokens,providerUsage:input.providerUsage??null,validOutputItems:input.succeeded?1:0,outputIncomplete:input.outputIncomplete??false,discardedReasonCounts:input.succeeded?{}:input.outputIncomplete?{incompleteModelOutput:1}:{requestFailed:1},usageBoundary:"response-returned-not-downstream-adopted",optimizationOpportunity:"Reconcile invoices before releasing conservative reservations"}),input.providerUsage?.providerRequestHash??null]);
     const row=result.rows[0];if(!row)return;
-    const plan=planCostReconciliation({reservedMicros:Number(row.reserved_micros),occupiedMicros:row.occupied_micros==null?undefined:Number(row.occupied_micros),settledMicros:row.settled_micros==null?null:Number(row.settled_micros),settledSource:row.settled_source??null},{kind:"provider-report",amountMicros:cost,complete:false,uniquelyMatched:false});
+    const plan=planCostReconciliation({reservedMicros:Number(row.reserved_micros),costBoundKnown:row.cost_bound_known,occupiedMicros:row.occupied_micros==null?undefined:Number(row.occupied_micros),settledMicros:row.settled_micros==null?null:Number(row.settled_micros),settledSource:row.settled_source??null},{kind:"provider-report",amountMicros:cost,complete:false,uniquelyMatched:false});
     await client.query(`insert into paid_cost_observation(user_id,reservation_id,kind,amount_micros,source_reference_hash,source_version,complete,uniquely_matched,provider_request_hash,occupied_before,occupied_after,metrics)
       values($1,$2,'provider-report',$3,$4,'http-response-usage-v1',false,false,$5,$6,$7,$8) on conflict do nothing`,
       [userId,id,cost,createHash("sha256").update(`${id}:http-response-v1`).digest("hex"),input.providerUsage?.providerRequestHash??null,plan.occupiedBefore,plan.occupiedAfter,JSON.stringify({inputItems:1,validOutputItems:1,downstreamUsedItems:plan.suspendRule?1:0,inputTokens:0,outputTokens:0,apiCredits:0,retries:0,costAllocation:observationCostAllocation({kind:"provider-report",amountMicros:cost,reservationMetrics:row.metrics,occupiedBefore:plan.occupiedBefore,occupiedAfter:plan.occupiedAfter}),usageBoundary:"cost-observation-not-additional-spend",optimizationOpportunity:"Verify completeness and unique matching before release"})]);

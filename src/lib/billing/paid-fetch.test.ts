@@ -1,4 +1,4 @@
-import {beforeEach,expect,it,vi} from "vitest";
+import {afterEach,beforeEach,expect,it,vi} from "vitest";
 vi.mock("@/lib/billing/denial-metrics",()=>({recordBudgetDenial:vi.fn().mockResolvedValue(undefined)}));
 const mocks=vi.hoisted(()=>({reserve:vi.fn(),settle:vi.fn(),quote:vi.fn(),reconcile:vi.fn()}));
 vi.mock("./repository",()=>({reservePaidCall:mocks.reserve,settlePaidCall:mocks.settle}));
@@ -15,6 +15,7 @@ import {withCompanyCostAttribution,companyCostKey} from "./company-cost-context"
 import {OPENROUTER_COST_REPORT_SOURCE} from "./openrouter-cost-report";
 const scope={userId:"user",operationId:"action",stage:"score"};
 const init={method:"POST",headers:{authorization:"Bearer fixture-secret"},body:JSON.stringify({model:"test",max_tokens:100,messages:[{content:"private company input"}]})};
+afterEach(()=>vi.unstubAllEnvs());
 
 it("passes the actual Places header into the contract guard before reserving or sending",async()=>{
   const rule=billingPolicy.rules.find(item=>item.requestContract==="google-places-text-enterprise-v1")!;
@@ -172,6 +173,15 @@ it("fingerprints native model calls even before full invocation attribution is a
 it("missing prices or budget block the transport entirely",async()=>{
   const transport=vi.fn();mocks.quote.mockImplementation(()=>{throw new BudgetDeniedError("missing-tariff");});
   await expect(withSpendContext(scope,()=>budgetedFetch(transport)("https://example.test/chat",init))).rejects.toThrow("missing-tariff");expect(transport).not.toHaveBeenCalled();
+});
+it("A33 admits the exact owner without tariff or pre-call monetary reservation",async()=>{
+  vi.stubEnv("PAID_CALL_STAGE_OVERRIDE","A33");vi.stubEnv("PAID_CALL_STAGE_OVERRIDE_USER_ID","user");
+  const transport=vi.fn().mockResolvedValue(Response.json({ok:true}));
+  mocks.quote.mockImplementation(()=>{throw new BudgetDeniedError("missing-tariff");});
+  await withSpendContext(scope,()=>budgetedFetch(transport)("https://example.test/chat",init));
+  expect(transport).toHaveBeenCalledOnce();
+  expect(mocks.reserve.mock.calls[0][1]).toMatchObject({maximumChargeMicros:0,costBoundKnown:false,
+    tariffVersion:"A33",requestFingerprint:expect.stringMatching(/^[a-f0-9]{64}$/)});
 });
 it("checks the all-inclusive bound's capability contract before reserving or sending",async()=>{
   mocks.quote.mockReturnValue({key:"flash",origin:"https://api.deepseek.com",pathname:"/chat/completions",model:"deepseek-flash",

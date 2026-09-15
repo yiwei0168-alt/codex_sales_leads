@@ -5,6 +5,8 @@ import { ChatOpenAI } from "@langchain/openai";
 import { getRagConfig } from "./config";
 import type { RetrievedChunk } from "./types";
 import {prepareRagExternalDisclosure} from "./external-disclosure";
+import {currentSpendContext} from "@/lib/billing/context";
+import {currentStagePaidCallOverride} from "@/lib/billing/stage-paid-call-override";
 
 let embeddingClient: OpenAI | undefined;
 type RagAnswerProvider = "openai" | "amazon-bedrock/us-east-1";
@@ -37,8 +39,12 @@ function observedRouteFetch(transport:typeof fetch):typeof fetch{
 function mayUseBedrockFallback(error:unknown):boolean{
   let current:unknown=error;
   for(let depth=0;depth<4;depth++){
-    if(current instanceof RagRouteHttpError)return current.upstreamConfirmed
+    if(current instanceof RagRouteHttpError){
+      const scope=currentSpendContext();
+      const ownerObservationMode=scope?Boolean(currentStagePaidCallOverride(scope.userId)?.allowFinancialAdmissionBypass):false;
+      return (current.upstreamConfirmed||ownerObservationMode)
       &&([401,403,429].includes(current.status)||current.status>=500&&current.status<=599);
+    }
     current=object(current).cause;
   }
   return false;
