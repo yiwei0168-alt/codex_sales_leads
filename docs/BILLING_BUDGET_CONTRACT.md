@@ -1,5 +1,7 @@
 # Budget contract v1.0.0 — 2026-09-12
 
+2026-09-15 stage 243 / A29: the user authorized all paid calls for the current stage, but the currently observed stop is an unknown-cost same-fingerprint Terra replay guard rather than budget remainder. Exact cumulative/per-request limits and whether unknown possibly billed requests may be replayed are not yet specified. No runtime, budget, tariff, request-contract or ledger mutation is made until that replay boundary is explicit; the confirmation is not implementation evidence.
+
 ## 2026-09-13 OpenRouter inline report admission
 
 The trusted transport can append a complete provider report for the fixed HTTPS chat-completions endpoint only. Request and reported model must match; a unique generation ID, consistent token totals, terminal finish reason and explicit `usage.is_byok=false` are required. The SQL reconciler independently verifies unique ownership/request matching before releasing occupancy. `usage.cost` is the credits charge; cost-details components are not additive. Missing/BYOK/expired-source reports retain reservations. Source verification expires 2026-09-20T00:00Z. Financial completion does not validate truncated model output. History is append-only; report-write failure never replays a paid response. No historical charge was released.
