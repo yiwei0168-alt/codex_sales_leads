@@ -58,7 +58,8 @@ export function knowledgeErrorMessage(error: unknown): string {
       if(Number.isInteger(value)&&value>=100&&value<=599)status=value;}
     current="cause" in current?(current as {cause?:unknown}).cause:undefined;
   }
-  if (status === 401 || status === 403) return "知识库检索已成功，但回答模型认证失败。请检查服务端模型网关配置后重试。";
+  if (status === 401) return "知识库检索已成功，但回答模型认证失败。请检查服务端模型密钥后重试。";
+  if (status === 403) return "知识库检索已成功，但回答模型拒绝了请求（可能是地域或访问权限限制）。请检查服务端模型配置后重试。";
   if (status === 429) return "知识库检索已成功，但回答模型当前限流。请稍后重试。";
   if (status && status >= 500) return "知识库检索已成功，但回答模型暂时不可用。请稍后重试。";
   return error instanceof Error ? `知识库查询失败：${error.message}` : "知识库查询失败，请稍后重试。";

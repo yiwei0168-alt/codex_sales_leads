@@ -21,7 +21,7 @@ function dependencies(intentPlan: IntentPlan): AssistantGraphDependencies {
 }
 
 it("classifies a provider status wrapped by the SDK connection error",()=>{
-  expect(knowledgeErrorMessage(Object.assign(new Error("Connection error"),{cause:{status:403}}))).toContain("认证失败");
+  expect(knowledgeErrorMessage(Object.assign(new Error("Connection error"),{cause:{status:403}}))).toContain("地域或访问权限限制");
   expect(knowledgeErrorMessage(Object.assign(new Error("Connection error"),{cause:{status:503}}))).toContain("暂时不可用");
 });
 

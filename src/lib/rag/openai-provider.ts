@@ -1,54 +1,13 @@
 import OpenAI from "openai";
 import {textOutputLimit} from "@/lib/billing/text-output-policy";
 import {sdkModelFetch,withSdkModelCall} from "@/lib/billing/sdk-model-call";
-import { ChatOpenAI } from "@langchain/openai";
 import { getRagConfig } from "./config";
 import type { RetrievedChunk } from "./types";
 import {prepareRagExternalDisclosure} from "./external-disclosure";
-import {currentSpendContext} from "@/lib/billing/context";
-import {currentStagePaidCallOverride} from "@/lib/billing/stage-paid-call-override";
+import {kimiOutputLimit,isKimiK3} from "@/providers/kimi-contract";
+import {z} from "zod";
 
 let embeddingClient: OpenAI | undefined;
-type RagAnswerProvider = "openai" | "amazon-bedrock/us-east-1";
-
-class RagRouteHttpError extends Error {
-  constructor(readonly status:number,readonly upstreamConfirmed:boolean){
-    super(`RAG answer route failed with HTTP ${status}`);
-    this.name="RagRouteHttpError";
-  }
-}
-
-function object(value:unknown):Record<string,unknown>{
-  return value!==null&&typeof value==="object"&&!Array.isArray(value)?value as Record<string,unknown>:{};
-}
-
-function observedRouteFetch(transport:typeof fetch):typeof fetch{
-  return async(input,init)=>{
-    const response=await transport(input,init);
-    if(response.ok)return response;
-    let payload:unknown={};
-    try{payload=await response.clone().json();}catch{/* Only structured routing metadata is inspected. */}
-    const router=object(object(payload).openrouter_metadata);
-    const attempts=Array.isArray(router.attempts)?router.attempts:[];
-    const upstreamConfirmed=(typeof router.attempt==="number"&&Number.isInteger(router.attempt)&&router.attempt>=1)
-      ||attempts.some(value=>typeof object(value).provider==="string"&&typeof object(value).status==="number");
-    throw new RagRouteHttpError(response.status,upstreamConfirmed);
-  };
-}
-
-function mayUseBedrockFallback(error:unknown):boolean{
-  let current:unknown=error;
-  for(let depth=0;depth<4;depth++){
-    if(current instanceof RagRouteHttpError){
-      const scope=currentSpendContext();
-      const ownerObservationMode=scope?Boolean(currentStagePaidCallOverride(scope.userId)?.allowFinancialAdmissionBypass):false;
-      return (current.upstreamConfirmed||ownerObservationMode)
-      &&([401,403,429].includes(current.status)||current.status>=500&&current.status<=599);
-    }
-    current=object(current).cause;
-  }
-  return false;
-}
 
 function getEmbeddingClient(): OpenAI {
   const config = getRagConfig();
@@ -108,29 +67,14 @@ function buildContext(chunks: RetrievedChunk[]): string {
   ].join("\n")).join("\n\n");
 }
 
-export function createGroundedAnswerModel(fetchImplementation:typeof fetch=sdkModelFetch(),maxRetries=0,
-  provider:RagAnswerProvider="openai"){
-  const config = getRagConfig();
-  if (!config.openaiApiKey) throw new Error("OPENROUTER_API_KEY is not configured");
-  return new ChatOpenAI({
-    apiKey: config.openaiApiKey,
-    model: config.generationModel,
-    maxRetries,
-    timeout: 90_000,
-    streamUsage: false,
-    maxTokens:textOutputLimit("rag-answer"),
-    modelKwargs: { provider: {...config.openaiProviderPreferences,only:[provider],allow_fallbacks:false} },
-    configuration: { baseURL: config.openaiBaseUrl,
-      defaultHeaders: {...config.openaiDefaultHeaders,"X-OpenRouter-Metadata":"enabled"},fetch:fetchImplementation },
-  });
+function kimiAnswerEndpoint(baseUrl:string):string{
+  const parsed=new URL(baseUrl);
+  if(parsed.protocol!=="https:"||!["api.moonshot.cn","api.moonshot.ai"].includes(parsed.hostname)
+    ||parsed.username||parsed.password)throw new Error("KIMI_BASE_URL 必须是受信任的 Moonshot HTTPS API 地址");
+  return `${parsed.toString().replace(/\/$/,"")}/chat/completions`;
 }
 
-function answerText(response:Awaited<ReturnType<InstanceType<typeof ChatOpenAI>["invoke"]>>):string{
-  if (typeof response.content === "string") return response.content.trim() || "未能生成回答。";
-  const text = response.content.flatMap((item) => typeof item === "string" ? [item]
-    : item.type === "text" && "text" in item ? [String(item.text)] : []).join("").trim();
-  return text || "未能生成回答。";
-}
+const kimiAnswerSchema=z.object({answer:z.string().trim().min(1)}).strict();
 
 export async function generateGroundedAnswer(question: string, chunks: RetrievedChunk[],transport:typeof fetch=fetch): Promise<string> {
   const disclosure=prepareRagExternalDisclosure(question,chunks);
@@ -152,12 +96,18 @@ export async function generateGroundedAnswer(question: string, chunks: Retrieved
       },
       { role: "user" as const, content: `Question:\n${disclosure.question}\n\nKnowledge-base context:\n${buildContext(disclosure.chunks)}` },
     ];
-  const invoke=async(provider:RagAnswerProvider)=>withSdkModelCall({provider:"openrouter",task:"rag-answer",
-    promptVersion:provider==="openai"?"rag-grounded-answer-primary-v2":"rag-grounded-answer-bedrock-v1"},
-  ()=>createGroundedAnswerModel(observedRouteFetch(sdkModelFetch(transport)),0,provider).invoke(messages));
-  try{return answerText(await invoke("openai"));}
-  catch(error){
-    if(!mayUseBedrockFallback(error))throw error;
-    return answerText(await invoke("amazon-bedrock/us-east-1"));
-  }
+  const config=getRagConfig();
+  if(!config.ragAnswerApiKey)throw new Error("KIMI_API_KEY is not configured");
+  const requestBody=JSON.stringify({model:config.ragAnswerModel,...(isKimiK3(config.ragAnswerModel)?{}:{temperature:1}),
+    response_format:{type:"json_object"},...kimiOutputLimit(config.ragAnswerModel,textOutputLimit("rag-answer")),messages:[
+      {...messages[0],content:`${messages[0].content}\nReturn one JSON object only: {\"answer\":\"complete cited answer\"}.`},messages[1]]});
+  const response=await withSdkModelCall({provider:"kimi",task:"rag-answer",promptVersion:"rag-grounded-answer-kimi-v1"},
+    ()=>sdkModelFetch(transport)(kimiAnswerEndpoint(config.ragAnswerBaseUrl),{method:"POST",headers:{authorization:`Bearer ${config.ragAnswerApiKey}`,
+      "content-type":"application/json"},signal:AbortSignal.timeout(90_000),body:requestBody}));
+  const body=await response.json() as {model?:string;choices?:Array<{message?:{content?:string|null}}>;
+    error?:{message?:string}};
+  if(!response.ok)throw new Error(body.error?.message??`Kimi HTTP ${response.status}`);
+  const content=body.choices?.[0]?.message?.content;if(!content)throw new Error("Kimi returned an empty RAG answer");
+  let parsed:unknown;try{parsed=JSON.parse(content);}catch{throw new Error("Kimi returned invalid RAG answer JSON");}
+  return kimiAnswerSchema.parse(parsed).answer;
 }

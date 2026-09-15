@@ -5,10 +5,10 @@ const {query,tenantQuery,getPool}=await import("../src/lib/rag/db");
 try{
   const config=getRagConfig();
   const endpoint=(value:string|undefined)=>{try{const u=new URL(value||"");return `${u.origin}${u.pathname}`;}catch{return "not-configured";}};
-  console.log(JSON.stringify({models:{embedding:config.embeddingModel,generation:config.generationModel,
+  console.log(JSON.stringify({models:{embedding:config.embeddingModel,generation:config.generationModel,ragAnswer:config.ragAnswerModel,
     intent:process.env.KIMI_INTENT_LIGHT_MODEL||"kimi-k2.6",planning:process.env.KIMI_INTENT_MODEL||process.env.KIMI_MODEL||"kimi-k3",
     deepseek:process.env.DEEPSEEK_MODEL||"deepseek-v4-flash",claude:process.env.CLAUDE_MODEL||"default"},
-    endpoints:{embedding:endpoint(config.embeddingBaseUrl),generation:endpoint(config.openaiBaseUrl),kimi:endpoint(process.env.KIMI_BASE_URL||"https://api.moonshot.cn/v1"),deepseek:endpoint(process.env.DEEPSEEK_BASE_URL||"https://api.deepseek.com")},
+    endpoints:{embedding:endpoint(config.embeddingBaseUrl),generation:endpoint(config.openaiBaseUrl),ragAnswer:endpoint(config.ragAnswerBaseUrl),kimi:endpoint(process.env.KIMI_BASE_URL||"https://api.moonshot.cn/v1"),deepseek:endpoint(process.env.DEEPSEEK_BASE_URL||"https://api.deepseek.com")},
     credentialsPresent:{embedding:Boolean(config.embeddingApiKey),openrouter:Boolean(config.openaiApiKey),kimi:Boolean(process.env.KIMI_API_KEY),deepseek:Boolean(process.env.DEEPSEEK_API_KEY),mailboxEncryption:Boolean(process.env.MAILBOX_CREDENTIAL_KEY)},
     proxyConfigured:Boolean(process.env.HTTPS_PROXY||process.env.HTTP_PROXY)}));
   const users=await query<{id:string}>("select id from app_user where status='active'");

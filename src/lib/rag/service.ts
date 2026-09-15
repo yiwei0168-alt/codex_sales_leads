@@ -32,7 +32,7 @@ async function answerWithRagImpl(userId: string, input: RagQuery): Promise<RagAn
     warnings.push("没有检索到达到置信阈值的知识片段。请补充知识库或放宽过滤条件。");
     return {
       answer: "当前知识库没有足够证据回答这个问题。请补充相关行业、公司或产品资料后重试。",
-      citations: [], grounded: false, model: config.generationModel,
+      citations: [], grounded: false, model: config.ragAnswerModel,
       latencyMs: Date.now() - startedAt, warnings,
     };
   }
@@ -43,7 +43,7 @@ async function answerWithRagImpl(userId: string, input: RagQuery): Promise<RagAn
   if(disclosure.chunks.length===0){
     warnings.push("命中知识没有明确公开来源标记，未发送至外部回答模型。");
     return {answer:"当前命中的知识片段不满足公开来源外发条件，无法调用外部模型生成答案。请使用公开来源资料，或在本地查看原始知识。",
-      citations:[],grounded:false,model:config.generationModel,latencyMs:Date.now()-startedAt,warnings,
+      citations:[],grounded:false,model:config.ragAnswerModel,latencyMs:Date.now()-startedAt,warnings,
       externalDisclosure:{excludedChunks:disclosure.excludedChunks,redactedPatterns:disclosure.redactionCount}};
   }
   const answer = await withProductSpend(userId,"rag-grounded-answer",()=>generateGroundedAnswer(disclosure.question, disclosure.chunks));
@@ -75,11 +75,11 @@ async function answerWithRagImpl(userId: string, input: RagQuery): Promise<RagAn
     queryText: input.question,
     collections: input.filters?.collections ?? ["industry", "company", "product"],
     filters: input.filters ?? {}, chunkIds: chunks.map((chunk) => chunk.id), answer,
-    embeddingModel: config.embeddingModel, generationModel: config.generationModel, latencyMs,
+    embeddingModel: config.embeddingModel, generationModel: config.ragAnswerModel, latencyMs,
   }).catch(() => warnings.push("查询日志写入失败，但不影响本次答案。"));
 
   const grounded = citedIds.size > 0 && citedProductChunks.every((chunk) => chunk.corroborated
     && chunk.retrievalSignals.includes("structured"));
-  return { answer, citations, grounded, model: config.generationModel, latencyMs, warnings,
+  return { answer, citations, grounded, model: config.ragAnswerModel, latencyMs, warnings,
     externalDisclosure:{excludedChunks:disclosure.excludedChunks,redactedPatterns:disclosure.redactionCount} };
 }

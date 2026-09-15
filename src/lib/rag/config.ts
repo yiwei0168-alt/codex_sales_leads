@@ -11,6 +11,9 @@ export interface RagConfig {
   embeddingModel: string;
   embeddingDimensions: number;
   generationModel: string;
+  ragAnswerApiKey: string;
+  ragAnswerBaseUrl: string;
+  ragAnswerModel: string;
   minScore: number;
   maxContextChunks: number;
 }
@@ -35,6 +38,9 @@ export function getRagConfig(): RagConfig {
     embeddingModel: process.env.EMBEDDING_MODEL?.trim() || "text-embedding-v4",
     embeddingDimensions: Number(process.env.EMBEDDING_DIMENSIONS ?? 1536),
     generationModel: resolveOpenRouterModel(openaiModel || "gpt-5-mini", "openai"),
+    ragAnswerApiKey: process.env.KIMI_API_KEY?.trim() ?? "",
+    ragAnswerBaseUrl: (process.env.KIMI_BASE_URL?.trim() || "https://api.moonshot.cn/v1").replace(/\/$/, ""),
+    ragAnswerModel: process.env.KIMI_RAG_MODEL?.trim() || process.env.KIMI_MODEL?.trim() || "kimi-k3",
     minScore: Number(process.env.RAG_MIN_SCORE ?? 0.35),
     maxContextChunks: Number(process.env.RAG_MAX_CONTEXT_CHUNKS ?? 8),
   };
@@ -44,7 +50,7 @@ export function getMissingRagConfig(): string[] {
   const config = getRagConfig();
   return [
     !config.databaseUrl && "DATABASE_URL",
-    !config.openaiApiKey && "OPENROUTER_API_KEY",
+    !config.ragAnswerApiKey && "KIMI_API_KEY",
     !config.embeddingApiKey && "EMBEDDING_API_KEY",
     !config.embeddingBaseUrl && "EMBEDDING_BASE_URL",
   ].filter((value): value is string => Boolean(value));
