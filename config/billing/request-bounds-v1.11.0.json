@@ -1,0 +1,10 @@
+{
+  "version": "request-bounds-v1.11.0",
+  "baseVersion": "request-bounds-v1.10.0",
+  "ruleOverrides": [
+    {
+      "key": "openrouter-terra-review-credits-standard-json",
+      "requestContract": "openrouter-terra-review-json-v2"
+    }
+  ]
+}

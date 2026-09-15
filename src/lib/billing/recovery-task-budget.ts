@@ -8,7 +8,7 @@ const ancestry=`with recursive ancestors(action_id) as (
   union select f.ancestor_id,r.child_action_id from family f join lead_processing_recovery r on r.parent_action_id=f.action_id where r.user_id=$1
 )`;
 
-export interface RecoveryTaskLimit {action_id:string;limit_micros:string|null;occupied_micros:string;blocking_prior_request:boolean}
+export interface RecoveryTaskLimit {action_id:string;limit_micros:string|null;occupied_micros:string;blocking_prior_request:boolean;blocking_non_replayable_request:boolean}
 /** Caller holds user_spend_budget FOR UPDATE when enforcing or editing limits. No reset at a child ID. */
 export async function readRecoveryTaskLimits(client:PoolClient,userId:string,operationId:string){
   const rows=await client.query<RecoveryTaskLimit>(`${ancestry}
@@ -16,7 +16,9 @@ export async function readRecoveryTaskLimits(client:PoolClient,userId:string,ope
       coalesce((select sum(coalesce(r.occupied_micros,r.reserved_micros)) from paid_call_reservation r
         join family f on f.action_id::text=r.operation_id and f.ancestor_id=a.action_id where r.user_id=$1),0)::text as occupied_micros,
       (a.action_id::text<>$2 and exists(select 1 from paid_call_reservation r where r.user_id=$1 and r.operation_id=a.action_id::text
-        and (r.status in ('reserved','bound-exceeded') or (r.status='unknown' and r.settled_micros is null)))) as blocking_prior_request
+        and (r.status in ('reserved','bound-exceeded') or (r.status='unknown' and r.settled_micros is null)))) as blocking_prior_request,
+      (a.action_id::text<>$2 and exists(select 1 from paid_call_reservation r where r.user_id=$1 and r.operation_id=a.action_id::text
+        and (r.status in ('reserved','bound-exceeded') or r.metrics->>'validOutputItems'='1'))) as blocking_non_replayable_request
     from ancestors a left join task_spend_limit t on t.user_id=$1 and t.action_id=a.action_id`,[userId,operationId]);
   return rows.rows;
 }

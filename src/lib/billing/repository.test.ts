@@ -1,15 +1,16 @@
-import {beforeEach,expect,it,vi} from "vitest";
+import {afterEach,beforeEach,expect,it,vi} from "vitest";
 const query=vi.hoisted(()=>vi.fn());
 vi.mock("@/lib/rag/db",()=>({tenantQuery:vi.fn(),tenantTransaction:async(_u:string,run:(c:unknown)=>unknown)=>run({query})}));
 import {reservePaidCall,settlePaidCall,assertProcessingRecoveryCostsKnown,assertUncheckpointedQualificationResponsesAbsent,setTaskSpendBudget} from "./repository";
 import {tenantQuery} from "@/lib/rag/db";
 const input={operationId:"operation",stage:"score",tariffKey:"rule",tariffVersion:"v1",maximumChargeMicros:10,requestBytes:100};
 beforeEach(()=>query.mockReset());
+afterEach(()=>vi.unstubAllEnvs());
 it("blocks repair batch changes while any operation request is unknown and keeps tenant ownership", async () => {
   vi.mocked(tenantQuery).mockResolvedValueOnce([{ id: "unknown" }]).mockResolvedValueOnce([]);
   await expect(assertProcessingRecoveryCostsKnown("owner", "operation")).rejects.toThrow("paid-request-already-recorded");
   await expect(assertProcessingRecoveryCostsKnown("other", "operation")).resolves.toBeUndefined();
-  expect(tenantQuery).toHaveBeenLastCalledWith("other", expect.stringContaining("user_id=$1 and operation_id=$2"), ["other", "operation"]);
+  expect(tenantQuery).toHaveBeenLastCalledWith("other", expect.stringContaining("user_id=$1 and operation_id=$2"), ["other", "operation", false]);
 });
 it("blocks only an uncheckpointed paid score for the missing company and keeps the tenant scope", async()=>{
   const key="a".repeat(64),checkpoint="2026-09-14T00:00:00.000Z";
@@ -31,8 +32,20 @@ it("blocks a duplicate guarded request under the owner lock before creating a se
   query.mockResolvedValueOnce({rows:[{limit_micros:"100",occupied_micros:"10",frozen:false}]}).mockResolvedValueOnce({rows:[{id:"existing"}]});
   await expect(reservePaidCall("owner",{...input,requestFingerprint:"a".repeat(64)})).rejects.toThrow("paid-request-already-recorded");
   expect(query).toHaveBeenCalledTimes(2);
-  expect(query.mock.calls[1][1]).toEqual(["owner","operation","score","a".repeat(64)]);
+  expect(query.mock.calls[1][1]).toEqual(["owner","operation","score","a".repeat(64),false]);
   expect(query.mock.calls.some(([sql])=>String(sql).includes("insert into"))).toBe(false);
+});
+it("audits A29 while allowing owner-scoped unknown replay and budget overage",async()=>{
+  vi.stubEnv("PAID_CALL_STAGE_OVERRIDE","A29");
+  vi.stubEnv("PAID_CALL_STAGE_OVERRIDE_USER_ID","owner");
+  query.mockResolvedValueOnce({rows:[{limit_micros:"100",occupied_micros:"95",frozen:false}]})
+    .mockResolvedValueOnce({rows:[]})
+    .mockResolvedValueOnce({rows:[{action_id:"parent",limit_micros:"96",occupied_micros:"95",blocking_prior_request:true,blocking_non_replayable_request:false}]})
+    .mockResolvedValueOnce({rows:[{id:"override-reserve"}]})
+    .mockResolvedValueOnce({rows:[]});
+  expect(await reservePaidCall("owner",{...input,requestFingerprint:"a".repeat(64)})).toBe("override-reserve");
+  expect(query.mock.calls[1][1]).toEqual(["owner","operation","score","a".repeat(64),true]);
+  expect(JSON.parse(query.mock.calls[3][1][6]).admissionOverride).toEqual({ruleId:"A29",allowBudgetOverage:true,allowUnknownReplay:true});
 });
 it("rejects malformed request fingerprints without writing",async()=>{
   query.mockResolvedValueOnce({rows:[{limit_micros:"100",occupied_micros:"10",frozen:false}]});

@@ -10,12 +10,15 @@ import {allocateCompanyCost,costAttributionSchema,type CostAttribution} from "./
 import {observationCostAllocation} from "./observation-allocation";
 import {readCompanyCosts} from "./company-cost-repository";
 import {readRecoveryTaskLimits} from "./recovery-task-budget";
+import {currentStagePaidCallOverride} from "./stage-paid-call-override";
 
 /** Check the whole operation so changing a repair batch cannot bypass an unknown request fingerprint. */
 export async function assertProcessingRecoveryCostsKnown(userId: string, operationId: string): Promise<void> {
+  const admissionOverride=currentStagePaidCallOverride(userId);
   const rows = await tenantQuery<{ id: string }>(userId,
     `select id from paid_call_reservation where user_id=$1 and operation_id=$2
-      and (status in ('reserved','bound-exceeded') or (status='unknown' and settled_micros is null)) limit 1`, [userId, operationId]);
+      and (status in ('reserved','bound-exceeded') or ($3::boolean=false and status='unknown' and settled_micros is null)) limit 1`,
+    [userId, operationId, Boolean(admissionOverride?.allowUnknownReplay)]);
   if (rows.length) throw new BudgetDeniedError("paid-request-already-recorded");
 }
 
@@ -24,6 +27,7 @@ export async function assertUncheckpointedQualificationResponsesAbsent(
   userId: string, operationId: string, checkpointAt: string, companyKeys: string[],
 ): Promise<void> {
   if (!companyKeys.length) return;
+  if(currentStagePaidCallOverride(userId)?.allowUnknownReplay)return;
   if (!Number.isFinite(Date.parse(checkpointAt)) || companyKeys.some(key => !/^[a-f0-9]{64}$/.test(key)))
     throw new BudgetDeniedError("paid-request-already-recorded");
   const rows = await tenantQuery<{ id: string }>(userId,
@@ -55,6 +59,7 @@ export async function reservePaidCallInTransaction(client:import("pg").PoolClien
   if(!Number.isSafeInteger(input.maximumChargeMicros)||input.maximumChargeMicros<=0)throw new BudgetDeniedError("missing-tariff");
   const costAttribution=input.costAttribution?costAttributionSchema.parse(input.costAttribution):null;
   const reservationAllocation=allocateCompanyCost({basis:"reservation",amountMicros:input.maximumChargeMicros,attribution:costAttribution});
+  const admissionOverride=currentStagePaidCallOverride(userId);
     const budget=await client.query<{limit_micros:string;occupied_micros:string;frozen:boolean;rule_held?:boolean;rate_review_held?:boolean}>(`select limit_micros,occupied_micros,frozen,
       exists(select 1 from paid_rule_hold where user_id=$1 and tariff_key=$2 and tariff_version=$3) as rule_held,
       exists(select 1 from billing_tariff_refresh_state where tariff_key=any($4::text[]) and hold) as rate_review_held
@@ -68,17 +73,18 @@ export async function reservePaidCallInTransaction(client:import("pg").PoolClien
       // Known charged failures may use existing bounded retry; unknown work and HTTP success must not replay.
       const previous=await client.query(`select id from paid_call_reservation where user_id=$1 and operation_id=$2
         and stage=$3 and request_fingerprint=$4 and (status in ('reserved','bound-exceeded')
-          or (status='unknown' and settled_micros is null)
-          or metrics->>'validOutputItems'='1') limit 1`,[userId,input.operationId,input.stage,input.requestFingerprint]);
+          or ($5::boolean=false and status='unknown' and settled_micros is null)
+          or metrics->>'validOutputItems'='1') limit 1`,[userId,input.operationId,input.stage,input.requestFingerprint,
+          Boolean(admissionOverride?.allowUnknownReplay)]);
       if(previous.rows.length)throw new BudgetDeniedError("paid-request-already-recorded");
     }
-    if(BigInt(row.occupied_micros)+BigInt(input.maximumChargeMicros)>BigInt(row.limit_micros))throw new BudgetDeniedError("budget-exhausted");
+    if(!admissionOverride?.allowBudgetOverage&&BigInt(row.occupied_micros)+BigInt(input.maximumChargeMicros)>BigInt(row.limit_micros))throw new BudgetDeniedError("budget-exhausted");
     // The owner lock also serializes task edits and all reservations for this action.
     const taskLimits=await readRecoveryTaskLimits(client,userId,input.operationId);
-    if(taskLimits.some(task=>task.blocking_prior_request))throw new BudgetDeniedError("paid-request-already-recorded");
-    if(taskLimits.some(task=>task.limit_micros!==null&&BigInt(task.occupied_micros)+BigInt(input.maximumChargeMicros)>BigInt(task.limit_micros)))throw new BudgetDeniedError("task-budget-exhausted");
+    if(taskLimits.some(task=>admissionOverride?.allowUnknownReplay?task.blocking_non_replayable_request:task.blocking_prior_request))throw new BudgetDeniedError("paid-request-already-recorded");
+    if(!admissionOverride?.allowBudgetOverage&&taskLimits.some(task=>task.limit_micros!==null&&BigInt(task.occupied_micros)+BigInt(input.maximumChargeMicros)>BigInt(task.limit_micros)))throw new BudgetDeniedError("task-budget-exhausted");
     const result=await client.query<{id:string}>(`insert into paid_call_reservation(user_id,operation_id,stage,tariff_key,tariff_version,reserved_micros,status,metrics,request_fingerprint)
-      values($1,$2,$3,$4,$5,$6,'reserved',$7,$8) returning id`,[userId,input.operationId,input.stage,input.tariffKey,input.tariffVersion,input.maximumChargeMicros,JSON.stringify({inputItems:1,inputBytes:input.requestBytes,modelAttempt:input.modelAttempt??null,foreignCostBound:input.foreignCostBound??null,fxReservationBufferPercent:input.foreignCostBound?5:0,costAttribution,reservationAllocation,outputBytes:null,validOutputItems:null,downstreamUsedItems:null,inputTokens:null,outputTokens:null,apiCredits:null,retries:0,utilizationEfficiency:null,discardedReasonCounts:{},usageBoundary:"single-http-attempt-reserved-before-network",optimizationOpportunity:"Reuse cached output before reserving another paid attempt"}),input.requestFingerprint??null]);
+      values($1,$2,$3,$4,$5,$6,'reserved',$7,$8) returning id`,[userId,input.operationId,input.stage,input.tariffKey,input.tariffVersion,input.maximumChargeMicros,JSON.stringify({inputItems:1,inputBytes:input.requestBytes,modelAttempt:input.modelAttempt??null,foreignCostBound:input.foreignCostBound??null,fxReservationBufferPercent:input.foreignCostBound?5:0,costAttribution,reservationAllocation,admissionOverride:admissionOverride?{ruleId:admissionOverride.ruleId,allowBudgetOverage:true,allowUnknownReplay:true}:null,outputBytes:null,validOutputItems:null,downstreamUsedItems:null,inputTokens:null,outputTokens:null,apiCredits:null,retries:0,utilizationEfficiency:null,discardedReasonCounts:{},usageBoundary:"single-http-attempt-reserved-before-network",optimizationOpportunity:"Reuse cached output before reserving another paid attempt"}),input.requestFingerprint??null]);
     await client.query("update user_spend_budget set occupied_micros=occupied_micros+$2,updated_at=now() where user_id=$1",[userId,input.maximumChargeMicros]);
     return result.rows[0].id;
 }
@@ -113,7 +119,7 @@ export async function readSpendBudget(userId:string){
     sum(reported_micros)::text as reported_micros,
     count(*) filter(where reported_micros is null and settled_source is distinct from 'verified-unbilled')::int as unknown_bills,
     count(*) filter(where status='reserved')::int as unsettled_calls from paid_call_reservation where user_id=$1 group by stage order by stage`,[userId]);
-  return {budget:rows[0]??null,stages:usage,modelUsage:await readProviderUsageSummary(userId)};
+  return {budget:rows[0]??null,stages:usage,modelUsage:await readProviderUsageSummary(userId),stageOverride:currentStagePaidCallOverride(userId)};
 }
 export async function setSpendBudget(userId:string,limitMicros:number){
   if(!Number.isSafeInteger(limitMicros)||limitMicros<0||limitMicros>1000000000000)throw new Error("预算金额无效");

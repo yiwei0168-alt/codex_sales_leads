@@ -31,8 +31,9 @@ try{
       [userId,email,hashPassword(randomBytes(24).toString("hex"))]);
     fixtures.push({userId,email});
     await setSpendBudget(userId,30_000_000);
-    const body={model:entry.model,temperature:0,reasoning:{effort:entry.effort},
-      max_completion_tokens:entry.tokens,provider:{require_parameters:true,data_collection:"deny"},
+    const terra=entry.task==="lead-review-secondary";
+    const body={model:entry.model,...(terra?{}:{temperature:0}),reasoning:{effort:entry.effort},
+      ...(terra?{max_tokens:entry.tokens}:{max_completion_tokens:entry.tokens}),provider:{require_parameters:true,data_collection:"deny"},
       response_format:{type:"json_schema",json_schema:{name:entry.task,strict:true,schema:{type:"object"}}},
       messages:[{role:"system",content:"synthetic instructions"},{role:"user",content:"synthetic fact"}]};
     const operationId=randomUUID();

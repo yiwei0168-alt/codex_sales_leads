@@ -15,6 +15,7 @@
 
 ## 当前验收状态（2026-09-15）
 
+- 阶段 243 已按 A29 启用当前用户临时付费准入。原检查点恢复实际发出 2 次 Terra v1 重放，均无有效输出且费用未知，保守占用增加 USD22.038404、累计为 USD61.908710。当前端点元数据定位旧请求含不受支持的 `temperature`；Terra-only v2 已改用 `max_tokens=8192` 并通过本地/SQL 验证，真实 v2 请求仍需明确授权把该任务工作区证据发送至 OpenRouter。详见[阶段 243 证据](docs/A29_PAID_REPLAY_ADMISSION_STAGE243_2026-09-15.md)。
 - 产品已具备自然语言计划、用户确认、LangGraph 检索/取证/校正/评分/复核、PostgreSQL 检查点、国家结果、任务 API 与桌面/移动页面链路。
 - 阶段 242 已完成阶段 239 规划的受控产品层分层验收：必要复核失败会停在 `processing-incomplete`，不误报市场线索不足、不生成下游 handoff 或国家结果；确认恢复后只重进复核。任务进度新增“待独立复核”，生产 Chrome 桌面/移动共 68 项、1,059 项全量测试、真实 PostgreSQL 反例、TypeScript、lint、生产构建和生产依赖 0 漏洞审计均通过，外部供应商调用为 0。
 - 阶段 241 已在同一个隔离合成动作上贯通上述链路：两轮自然语言把哥伦比亚分销商目标从 2 家改为 1 家，图在评分前暂停并从 PostgreSQL 检查点恢复，实际 Agent 校验逻辑完成盲审，随后 SQL/API/生产 Chrome 桌面与移动端及刷新一致显示最终保存 1 家。盲审输入明确不含主评分，外部供应商调用为 0。
@@ -73,6 +74,8 @@ docs/                    架构、数据、Schema 与 PRD 验收说明
 ## 环境变量
 
 复制 `.env.example` 为 `.env.local`，配置 RDS、Tavily、Embedding 和生成模型。运行时 `DATABASE_URL` 必须使用受限账号；`DATABASE_MIGRATION_URL` 单独使用 owner/migrator 账号。任何密钥不得提交。
+
+临时 A29 付费阶段授权默认关闭。只有在用户明确接受未知费用请求可能二次扣费后，才可在启动进程中同时设置 `PAID_CALL_STAGE_OVERRIDE=A29` 与 `PAID_CALL_STAGE_OVERRIDE_USER_ID=<精确用户 UUID>`；阶段结束后应移除。该授权不会替代单次费率合同或账单核销。
 
 生成单用户密码哈希（PowerShell）：
 

@@ -1,6 +1,6 @@
 # Budget contract v1.0.0 — 2026-09-12
 
-2026-09-15 stage 243 / A29: the user authorized all paid calls for the current stage, but the currently observed stop is an unknown-cost same-fingerprint Terra replay guard rather than budget remainder. Exact cumulative/per-request limits and whether unknown possibly billed requests may be replayed are not yet specified. No runtime, budget, tariff, request-contract or ledger mutation is made until that replay boundary is explicit; the confirmation is not implementation evidence.
+2026-09-15 stage 243 / A29: the owner-scoped override admitted two real Terra v1 attempts beyond the unchanged USD50 display limit. Both remain unknown and reserve USD11.019202 each; occupancy is USD61.908710, not proven cash. Their ledger rows preserve the A29 source. Current endpoint metadata identified an unsupported `temperature` field; `request-bounds-v1.11.0` changes only Terra secondary review to `openrouter-terra-review-json-v2` with no temperature and `max_tokens=8192`. Existing tariffs, freeze/rate holds, successful/concurrent replay protection and history remain enforced. Local and real-SQL synthetic verification pass; v2 provider execution awaits separate authorization for workspace-evidence transmission. [Evidence](A29_PAID_REPLAY_ADMISSION_STAGE243_2026-09-15.md).
 
 ## 2026-09-13 OpenRouter inline report admission
 

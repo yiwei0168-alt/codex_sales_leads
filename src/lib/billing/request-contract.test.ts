@@ -70,7 +70,7 @@ it("permits only bounded Exa auto company text search and rejects unsupported or
 });
 
 it("preserves reviewed native contracts while adding narrow search and Sol contracts",()=>{
-  expect(billingPolicy.version).toBe("request-bounds-v1.10.0");
+  expect(billingPolicy.version).toBe("request-bounds-v1.11.0");
   expect(billingPolicy.rules).toHaveLength(12);
   rules.forEach(expected=>{
     const rule=billingPolicy.rules.find(candidate=>candidate.key===expected.key);
@@ -91,7 +91,7 @@ it("keeps uncapped OpenRouter correction and review routes blocked despite publi
 });
 
 it.each([{model:"openai/gpt-5.6-terra",key:"openrouter-terra-review-credits-standard-json",
-  contract:"openrouter-terra-review-json-v1",maximum:11019202,output:8192,
+  contract:"openrouter-terra-review-json-v2",maximum:11019202,output:8192,
   effort:"medium",name:"lead-review-secondary"},
 {model:"openai/gpt-5.6-sol",key:"openrouter-sol-judge-credits-standard-json",
   contract:"openrouter-sol-judge-json-v1",maximum:27736500,output:12000,
@@ -102,16 +102,18 @@ it.each([{model:"openai/gpt-5.6-terra",key:"openrouter-terra-review-credits-stan
   const rule=quoteRequest(quote,undefined,now,entry.key);
   expect(rule).toMatchObject({requestContract:entry.contract,maximumChargeMicros:entry.maximum,
     maximumOutputTokens:entry.output});
-  const body={model:entry.model,temperature:0,reasoning:{effort:entry.effort},
-    max_completion_tokens:entry.output,
+  const terraV2=entry.contract==="openrouter-terra-review-json-v2";
+  const body={model:entry.model,...(terraV2?{}:{temperature:0}),reasoning:{effort:entry.effort},
+    ...(terraV2?{max_tokens:entry.output}:{max_completion_tokens:entry.output}),
     provider:{require_parameters:true,data_collection:"deny"},
     response_format:{type:"json_schema",json_schema:{name:entry.name,strict:true,schema:{type:"object"}}},
     messages:[{role:"system",content:"instructions"},{role:"user",content:"facts"}]};
   expect(()=>assertRequestContract(rule,body,"")).not.toThrow();
-  for(const change of [{reasoning:{effort:"low"}},{max_completion_tokens:entry.output+1},
+  for(const change of [{reasoning:{effort:"low"}},terraV2?{max_tokens:entry.output+1}:{max_completion_tokens:entry.output+1},
     {response_format:{type:"json_schema",json_schema:{name:"unrelated",strict:true,schema:{type:"object"}}}},
     {provider:{...body.provider,only:["openai"]}},{stream:true},{tools:[]},{plugins:[]},
-    {service_tier:"priority"},{max_tokens:entry.output},{messages:[...body.messages,{role:"assistant",content:"extra"}]}])
+    {service_tier:"priority"},terraV2?{max_completion_tokens:entry.output}:{max_tokens:entry.output},
+    ...(terraV2?[{temperature:0}]:[]),{messages:[...body.messages,{role:"assistant",content:"extra"}]}])
     expect(()=>assertRequestContract(rule,{...body,...change},"")).toThrow("request-out-of-bounds");
   expect(()=>quoteRequest({...quote,requestBytes:61441},undefined,now,entry.key)).toThrow("request-out-of-bounds");
   expect(()=>quoteRequest(quote,undefined,Date.parse(rule.expiresAt),entry.key)).toThrow("expired-tariff");

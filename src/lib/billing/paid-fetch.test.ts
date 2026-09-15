@@ -62,8 +62,9 @@ it.each([{task:"lead-review-secondary",key:"openrouter-terra-review-credits-stan
   const rule=billingPolicy.rules.find(item=>item.key===entry.key)!;
   mocks.quote.mockImplementation((_quote,_rules,_now,key)=>key===entry.key?rule:
     (()=>{throw new BudgetDeniedError("missing-tariff");})());
-  const body={model:entry.model,temperature:0,reasoning:{effort:entry.effort},
-    max_completion_tokens:entry.limit,provider:{require_parameters:true,data_collection:"deny"},
+  const terra=entry.task==="lead-review-secondary";
+  const body={model:entry.model,...(terra?{}:{temperature:0}),reasoning:{effort:entry.effort},
+    ...(terra?{max_tokens:entry.limit}:{max_completion_tokens:entry.limit}),provider:{require_parameters:true,data_collection:"deny"},
     response_format:{type:"json_schema",json_schema:{name:entry.name,strict:true,schema:{type:"object"}}},
     messages:[{role:"system",content:"synthetic"},{role:"user",content:"synthetic"}]};
   const transport=vi.fn<typeof fetch>().mockResolvedValue(Response.json({choices:[{finish_reason:"stop",

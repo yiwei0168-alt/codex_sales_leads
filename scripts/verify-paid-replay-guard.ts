@@ -60,7 +60,18 @@ try{
   const known=await reservePaidCall(created[0],knownInput);
   await settlePaidCall(created[0],known,{reportedMicros:1,latencyMs:1,responseBytes:1,inputTokens:null,outputTokens:null,succeeded:false});
   await reservePaidCall(created[0],knownInput);
-  console.log(JSON.stringify({migration:"051",concurrentSingleReservation:true,unknownReplayBlocked:true,ownerIsolation:true,nonemptyUsageAggregate:true,knownFailureRetryReservation:true,reservationAllocationConserved:true,attributionStoredBeforeNetwork:true,realProviderCalls:0,actualModelCostUsd:0,fixturesOnly:true}));
+  const overrideInput={...input,maximumChargeMicros:40,requestFingerprint:"c".repeat(64)};
+  const unknown=await reservePaidCall(created[0],overrideInput);
+  await settlePaidCall(created[0],unknown,{reportedMicros:null,latencyMs:1,responseBytes:null,inputTokens:null,outputTokens:null,succeeded:false});
+  const priorRule=process.env.PAID_CALL_STAGE_OVERRIDE,priorOwner=process.env.PAID_CALL_STAGE_OVERRIDE_USER_ID;
+  process.env.PAID_CALL_STAGE_OVERRIDE="A29";process.env.PAID_CALL_STAGE_OVERRIDE_USER_ID=created[0];
+  const replay=await reservePaidCall(created[0],overrideInput);
+  if(priorRule===undefined)delete process.env.PAID_CALL_STAGE_OVERRIDE;else process.env.PAID_CALL_STAGE_OVERRIDE=priorRule;
+  if(priorOwner===undefined)delete process.env.PAID_CALL_STAGE_OVERRIDE_USER_ID;else process.env.PAID_CALL_STAGE_OVERRIDE_USER_ID=priorOwner;
+  const overrideRows=await tenantQuery<{metrics:{admissionOverride:unknown}}>(created[0],
+    "select metrics from paid_call_reservation where user_id=$1 and id=$2",[created[0],replay]);
+  assert.deepEqual(overrideRows[0].metrics.admissionOverride,{ruleId:"A29",allowBudgetOverage:true,allowUnknownReplay:true});
+  console.log(JSON.stringify({migration:"051",concurrentSingleReservation:true,unknownReplayBlockedByDefault:true,a29UnknownReplayAndBudgetOverage:true,ownerIsolation:true,nonemptyUsageAggregate:true,knownFailureRetryReservation:true,reservationAllocationConserved:true,attributionStoredBeforeNetwork:true,realProviderCalls:0,actualModelCostUsd:0,fixturesOnly:true}));
 }finally{
   if(created.length){
     const client=await admin.connect();

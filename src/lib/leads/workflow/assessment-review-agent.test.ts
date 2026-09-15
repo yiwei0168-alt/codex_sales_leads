@@ -200,21 +200,22 @@ describe("LeadAssessmentReviewAgent", () => {
       { randomAuditPercent: 100, concurrency: 1 }).review([candidate], [assessment()], playbook, plan);
     expect(result.reviews[0].status).toBe("judge-resolved");
     expect(bodies).toHaveLength(2);
-    expect(bodies[0]).toMatchObject({ model: "openai/gpt-5.6-terra", temperature: 0,
-      reasoning: { effort: "medium" }, max_completion_tokens: 8192,
+    expect(bodies[0]).toMatchObject({ model: "openai/gpt-5.6-terra",
+      reasoning: { effort: "medium" }, max_tokens: 8192,
       provider: { require_parameters: true, data_collection: "deny" } });
     expect(bodies[1]).toMatchObject({ model: "openai/gpt-5.6-sol", temperature: 0,
       reasoning: { effort: "high" }, max_completion_tokens: 12000,
       provider: { require_parameters: true, data_collection: "deny" } });
+    expect(bodies[0]).not.toHaveProperty("temperature");
+    expect(bodies[0]).not.toHaveProperty("max_completion_tokens");
     for (const body of bodies) {
       expect(body).not.toHaveProperty("tools");
       expect(body).not.toHaveProperty("plugins");
-      expect(body).not.toHaveProperty("max_tokens");
       expect(body.response_format).toMatchObject({ type: "json_schema",
         json_schema: { strict: true } });
       const quote = { origin: "https://openrouter.ai", pathname: "/api/v1/chat/completions",
         model: String(body.model), requestBytes: Buffer.byteLength(JSON.stringify(body), "utf8"),
-        outputTokens: Number(body.max_completion_tokens) };
+        outputTokens: Number(body.max_tokens ?? body.max_completion_tokens) };
       expect(quote.requestBytes).toBeLessThanOrEqual(61_440);
       expect(() => quoteRequest(quote, undefined, Date.parse("2026-09-14T00:00:00Z")))
         .toThrow(BudgetDeniedError);
