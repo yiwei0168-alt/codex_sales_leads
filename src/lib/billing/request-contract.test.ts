@@ -70,8 +70,8 @@ it("permits only bounded Exa auto company text search and rejects unsupported or
 });
 
 it("preserves reviewed native contracts while adding narrow search and Sol contracts",()=>{
-  expect(billingPolicy.version).toBe("request-bounds-v1.12.0");
-  expect(billingPolicy.rules).toHaveLength(13);
+  expect(billingPolicy.version).toBe("request-bounds-v1.13.0");
+  expect(billingPolicy.rules).toHaveLength(14);
   rules.forEach(expected=>{
     const rule=billingPolicy.rules.find(candidate=>candidate.key===expected.key);
     expect({...rule,boundDescription:expected.boundDescription}).toEqual(expected);
@@ -79,19 +79,23 @@ it("preserves reviewed native contracts while adding narrow search and Sol contr
   expect(()=>quoteRequest({origin:"https://api.moonshot.cn",pathname:"/v1/chat/completions",model:"kimi-k3",requestBytes:100,outputTokens:100},billingPolicy.rules,Date.parse("2026-09-13T12:00:00Z"))).toThrow("missing-tariff");
 });
 
-it("admits only the dedicated public-source RAG answer wire and bounded OpenAI route",()=>{
-  const now=Date.parse("2026-09-15T06:00:00Z");
+it.each([{key:"openrouter-sol-rag-answer-primary-credits",provider:"openai",maximum:778240,
+  contract:"openrouter-sol-rag-answer-primary-v2"},{key:"openrouter-sol-rag-answer-bedrock-fallback-credits",
+  provider:"amazon-bedrock/us-east-1",maximum:378471,contract:"openrouter-sol-rag-answer-bedrock-v1"}])
+("admits only the dedicated public-source RAG $provider route",entry=>{
+  const now=Date.parse("2026-09-15T06:30:00Z");
   const input={origin:"https://openrouter.ai",pathname:"/api/v1/chat/completions",
-    model:"openai/gpt-5.6-sol",requestBytes:61_440,outputTokens:8192};
-  const rule=quoteRequest(input,undefined,now,"openrouter-sol-rag-answer-credits");
-  expect(rule).toMatchObject({maximumChargeMicros:901120,maximumRequestBytes:61_440,
-    maximumOutputTokens:8192,requestContract:"openrouter-sol-rag-answer-text-v1"});
+    model:"openai/gpt-5.6-sol",requestBytes:61_440,outputTokens:4096};
+  const rule=quoteRequest(input,undefined,now,entry.key);
+  expect(rule).toMatchObject({maximumChargeMicros:entry.maximum,maximumRequestBytes:61_440,
+    maximumOutputTokens:4096,requestContract:entry.contract});
   const body={model:input.model,messages:[{role:"system",content:"instructions"},{role:"user",content:"public facts"}],
-    provider:{require_parameters:true,data_collection:"deny",only:["openai"],allow_fallbacks:false},
-    stream:false,max_tokens:8192};
+    provider:{require_parameters:true,data_collection:"deny",only:[entry.provider],allow_fallbacks:false},
+    stream:false,max_tokens:4096};
   expect(()=>assertRequestContract(rule,body,"")).not.toThrow();
-  for(const change of [{temperature:0},{max_completion_tokens:8192},{max_tokens:8193},{response_format:{type:"json_object"}},
+  for(const change of [{temperature:0},{max_completion_tokens:4096},{max_tokens:4097},{response_format:{type:"json_object"}},
     {tools:[]},{reasoning:{effort:"low"}},{provider:{require_parameters:true,data_collection:"deny"}},
+    {provider:{...body.provider,only:[entry.provider,"azure"]}},{provider:{...body.provider,allow_fallbacks:true}},
     {messages:[...body.messages,{role:"assistant",content:"extra"}]}])
     expect(()=>assertRequestContract(rule,{...body,...change},"")).toThrow("request-out-of-bounds");
   expect(()=>quoteRequest({...input,requestBytes:61_441},undefined,now,rule.key)).toThrow("request-out-of-bounds");

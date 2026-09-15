@@ -54,20 +54,22 @@ it("uses the S01 tariff only for market-playbook Sol attempts, before transport"
   expect(mocks.quote.mock.calls[1][3]).toBeUndefined();
   expect(mocks.reserve).not.toHaveBeenCalled();expect(transport).not.toHaveBeenCalled();
 });
-it("selects the dedicated RAG answer tariff only for the attributed Sol attempt",async()=>{
-  const rule=billingPolicy.rules.find(item=>item.key==="openrouter-sol-rag-answer-credits")!;
+it.each([{key:"openrouter-sol-rag-answer-primary-credits",provider:"openai",maximum:778240},
+  {key:"openrouter-sol-rag-answer-bedrock-fallback-credits",provider:"amazon-bedrock/us-east-1",maximum:378471}])
+("selects the dedicated RAG $provider tariff only for the attributed Sol attempt",async entry=>{
+  const rule=billingPolicy.rules.find(item=>item.key===entry.key)!;
   const body={model:rule.model,messages:[{role:"system",content:"synthetic"},{role:"user",content:"public facts"}],
-    provider:{require_parameters:true,data_collection:"deny",only:["openai"],allow_fallbacks:false},
-    stream:false,max_tokens:8192};
+    provider:{require_parameters:true,data_collection:"deny",only:[entry.provider],allow_fallbacks:false},
+    stream:false,max_tokens:4096};
   mocks.quote.mockImplementation((_quote,_rules,_now,key)=>key===rule.key?rule:
     (()=>{throw new BudgetDeniedError("missing-tariff");})());
   const transport=vi.fn<typeof fetch>().mockResolvedValue(Response.json({choices:[{finish_reason:"stop",
     message:{content:"Grounded answer"}}]}));
   await withSpendContext(scope,()=>withModelAttempt({invocationId:"rag-answer-fixture",attempt:1,
-    provider:"openrouter",task:"rag-answer",promptVersion:"rag-grounded-answer-v1"},()=>budgetedFetch(transport)(
+    provider:"openrouter",task:"rag-answer",promptVersion:"rag-grounded-answer-v2"},()=>budgetedFetch(transport)(
       `${rule.origin}${rule.pathname}`,{method:"POST",body:JSON.stringify(body)})));
   expect(mocks.quote.mock.calls[0][3]).toBe(rule.key);
-  expect(mocks.reserve.mock.calls[0][1]).toMatchObject({tariffKey:rule.key,maximumChargeMicros:901120});
+  expect(mocks.reserve.mock.calls[0][1]).toMatchObject({tariffKey:rule.key,maximumChargeMicros:entry.maximum});
   expect(transport).toHaveBeenCalledOnce();
 });
 it.each([{task:"lead-review-secondary",key:"openrouter-terra-review-credits-standard-json",

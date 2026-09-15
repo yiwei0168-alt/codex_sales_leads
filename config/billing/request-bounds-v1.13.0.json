@@ -1,0 +1,40 @@
+{
+  "version": "request-bounds-v1.13.0",
+  "baseVersion": "request-bounds-v1.10.0",
+  "ruleOverrides": [
+    {
+      "key": "openrouter-terra-review-credits-standard-json",
+      "requestContract": "openrouter-terra-review-json-v2"
+    }
+  ],
+  "additionalRules": [
+    {
+      "key": "openrouter-sol-rag-answer-primary-credits",
+      "origin": "https://openrouter.ai",
+      "pathname": "/api/v1/chat/completions",
+      "model": "openai/gpt-5.6-sol",
+      "maximumChargeMicros": 778240,
+      "maximumRequestBytes": 61440,
+      "maximumOutputTokens": 4096,
+      "requestContract": "openrouter-sol-rag-answer-primary-v2",
+      "boundDescription": "A32 RAG grounded-answer primary only, OpenRouter credits without BYOK, provider.only=openai and allow_fallbacks=false. Two plain-text messages, nonstreaming free text, no tools, plugins, reasoning control, service tier, explicit cache features or response schema. At most 61440 request bytes represented by 65536 billable input tokens at USD 10/M plus 4096 completion tokens at USD 30/M.",
+      "reference": "https://openrouter.ai/api/v1/models/openai/gpt-5.6-sol-20260709/endpoints",
+      "verifiedAt": "2026-09-15T06:28:49.805Z",
+      "expiresAt": "2026-09-22T00:00:00Z"
+    },
+    {
+      "key": "openrouter-sol-rag-answer-bedrock-fallback-credits",
+      "origin": "https://openrouter.ai",
+      "pathname": "/api/v1/chat/completions",
+      "model": "openai/gpt-5.6-sol",
+      "maximumChargeMicros": 378471,
+      "maximumRequestBytes": 61440,
+      "maximumOutputTokens": 4096,
+      "requestContract": "openrouter-sol-rag-answer-bedrock-v1",
+      "boundDescription": "A32 single application-managed RAG fallback only, same Sol model through Amazon Bedrock us-east-1 via OpenRouter credits without BYOK, provider.only=amazon-bedrock/us-east-1 and allow_fallbacks=false. At most 61440 request bytes represented by 65536 input tokens at USD 4.4/M plus 4096 completion tokens at USD 22/M, rounded upward to the next micro-USD; no third route or hidden SDK retry.",
+      "reference": "https://openrouter.ai/api/v1/models/openai/gpt-5.6-sol-20260709/endpoints",
+      "verifiedAt": "2026-09-15T06:28:49.805Z",
+      "expiresAt": "2026-09-22T00:00:00Z"
+    }
+  ]
+}

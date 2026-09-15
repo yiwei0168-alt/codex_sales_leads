@@ -57,16 +57,20 @@ export function assertRequestContract(rule:RequestBound,body:Record<string,unkno
       &&format.json_schema.name===(terra?"lead-review-secondary":"lead-review-judge")
       &&format.json_schema.strict===true&&record(format.json_schema.schema);
   }
-  if(rule.requestContract==="openrouter-sol-rag-answer-text-v1"){
+  if(rule.requestContract==="openrouter-sol-rag-answer-text-v1"
+    ||rule.requestContract==="openrouter-sol-rag-answer-primary-v2"
+    ||rule.requestContract==="openrouter-sol-rag-answer-bedrock-v1"){
     const provider=body.provider;
+    const v1=rule.requestContract==="openrouter-sol-rag-answer-text-v1";
+    const expectedProvider=rule.requestContract==="openrouter-sol-rag-answer-bedrock-v1"?"amazon-bedrock/us-east-1":"openai";
     valid=method==="POST"&&rule.origin==="https://openrouter.ai"&&rule.pathname==="/api/v1/chat/completions"&&query===""
       &&rule.model==="openai/gpt-5.6-sol"&&body.model===rule.model
       &&keys(body,["model","messages","provider","stream","max_tokens"])
       &&body.stream===false&&Number.isSafeInteger(body.max_tokens)&&(body.max_tokens as number)>0
-      &&(body.max_tokens as number)<=8192
+      &&(body.max_tokens as number)<=(v1?8192:4096)
       &&record(provider)&&keys(provider,["require_parameters","data_collection","only","allow_fallbacks"])
       &&provider.require_parameters===true&&provider.data_collection==="deny"
-      &&Array.isArray(provider.only)&&provider.only.length===1&&provider.only[0]==="openai"
+      &&Array.isArray(provider.only)&&provider.only.length===1&&provider.only[0]===expectedProvider
       &&provider.allow_fallbacks===false
       &&Array.isArray(body.messages)&&body.messages.length===2
       &&textMessage(body.messages[0],"system")&&textMessage(body.messages[1],"user");

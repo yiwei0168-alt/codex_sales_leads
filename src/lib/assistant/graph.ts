@@ -51,8 +51,13 @@ const productionDependencies: AssistantGraphDependencies = {
 };
 
 export function knowledgeErrorMessage(error: unknown): string {
-  const status = typeof error === "object" && error !== null && "status" in error
-    ? Number((error as { status?: unknown }).status) : undefined;
+  let status:number|undefined,current=error;
+  for(let depth=0;depth<4&&typeof status!=="number";depth++){
+    if(typeof current!=="object"||current===null)break;
+    if("status" in current){const value=Number((current as {status?:unknown}).status);
+      if(Number.isInteger(value)&&value>=100&&value<=599)status=value;}
+    current="cause" in current?(current as {cause?:unknown}).cause:undefined;
+  }
   if (status === 401 || status === 403) return "知识库检索已成功，但回答模型认证失败。请检查服务端模型网关配置后重试。";
   if (status === 429) return "知识库检索已成功，但回答模型当前限流。请稍后重试。";
   if (status && status >= 500) return "知识库检索已成功，但回答模型暂时不可用。请稍后重试。";

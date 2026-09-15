@@ -12,6 +12,15 @@ it("hashes provider request IDs without retaining the original identifier",()=>{
   expect(JSON.stringify(value)).not.toContain("private-request-identifier");
   expect(providerUsageObservation({}).providerRequestHash).toBeNull();
 });
+it("records only sanitized OpenRouter failure routing metadata",()=>{
+  const value=providerUsageObservation({error:{code:403,message:"private failure body"},openrouter_metadata:{attempt:2,
+    attempts:[{provider:"OpenAI",status:403,body:"private"},{provider:"Amazon Bedrock",status:503}],summary:"private"}},
+  {httpStatus:403,generationId:"generation-private-id"});
+  expect(value).toMatchObject({version:"provider-usage-observation-v2",httpStatus:403,errorCode:403,routerAttempt:2,
+    routerAttempts:[{provider:"openai",status:403},{provider:"amazon-bedrock",status:503}]});
+  expect(value.providerRequestHash).toMatch(/^[a-f0-9]{64}$/);
+  expect(JSON.stringify(value)).not.toContain("private");
+});
 
 it("preserves distinct cache semantics and explicit zero without inventing missing values",()=>{
   const observed=providerUsageObservation({usage:{input_tokens:12,cache_read_input_tokens:90,cache_creation_input_tokens:0}});

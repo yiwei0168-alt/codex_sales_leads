@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { buildAssistantWorkflowGraph, type AssistantGraphDependencies } from "./graph";
+import { buildAssistantWorkflowGraph,knowledgeErrorMessage, type AssistantGraphDependencies } from "./graph";
 import type { IntentPlan } from "./types";
 
 function plan(overrides: Partial<IntentPlan>): IntentPlan {
@@ -19,6 +19,11 @@ function dependencies(intentPlan: IntentPlan): AssistantGraphDependencies {
     missingRagConfig: () => [],
   };
 }
+
+it("classifies a provider status wrapped by the SDK connection error",()=>{
+  expect(knowledgeErrorMessage(Object.assign(new Error("Connection error"),{cause:{status:403}}))).toContain("认证失败");
+  expect(knowledgeErrorMessage(Object.assign(new Error("Connection error"),{cause:{status:503}}))).toContain("暂时不可用");
+});
 
 describe("assistant workflow graph", () => {
   it("returns a budget proposal without retrieval, search or synthesis",async()=>{

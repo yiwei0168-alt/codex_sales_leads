@@ -20,32 +20,37 @@ const {budgetedFetch}=await import("../src/lib/billing/paid-fetch");
 const {billingPolicy}=await import("../src/lib/billing/policy");
 const userId=randomUUID(),email=`rag-contract-${userId}@example.invalid`,operationId=randomUUID();
 let transportCalls=0;
-const body={model:"openai/gpt-5.6-sol",messages:[{role:"system",content:"synthetic instructions"},
+const body=(provider:"openai"|"amazon-bedrock/us-east-1")=>({model:"openai/gpt-5.6-sol",messages:[{role:"system",content:"synthetic instructions"},
   {role:"user",content:"synthetic public product facts"}],provider:{require_parameters:true,data_collection:"deny",
-    only:["openai"],allow_fallbacks:false},stream:false,max_tokens:8192};
-const transport:typeof fetch=async()=>{transportCalls++;return Response.json({model:body.model,
+    only:[provider],allow_fallbacks:false},stream:false,max_tokens:4096});
+const transport:typeof fetch=async()=>{transportCalls++;return Response.json({model:"openai/gpt-5.6-sol",
   choices:[{finish_reason:"stop",message:{content:"Synthetic grounded answer"}}]});};
-const send=(payload:Record<string,unknown>)=>withSpendContext({userId,operationId,stage:"rag-grounded-answer"},()=>
+const send=(payload:Record<string,unknown>,route:string)=>withSpendContext({userId,operationId,stage:"rag-grounded-answer"},()=>
   withModelAttempt({invocationId:"rag-answer-contract-sql",provider:"openrouter",task:"rag-answer",
-    promptVersion:"rag-grounded-answer-v1",attempt:1},()=>budgetedFetch(transport)(
+    promptVersion:`rag-grounded-answer-${route}`,attempt:1},()=>budgetedFetch(transport)(
       "https://openrouter.ai/api/v1/chat/completions",{method:"POST",headers:{"content-type":"application/json",
         authorization:"Bearer synthetic-never-sent"},body:JSON.stringify(payload)})));
 try{
   await admin.query("insert into app_user(id,email,display_name,password_hash,role,status) values($1,$2,'RAG contract fixture',$3,'member','active')",
     [userId,email,hashPassword(randomBytes(24).toString("hex"))]);
   await setSpendBudget(userId,2_000_000);
-  await assert.rejects(send({...body,temperature:0}),{code:"request-out-of-bounds"});
+  const primary=body("openai"),fallback=body("amazon-bedrock/us-east-1");
+  await assert.rejects(send({...primary,temperature:0},"invalid"),{code:"request-out-of-bounds"});
   assert.equal(transportCalls,0);
-  assert.equal((await send(body)).status,200);
+  assert.equal((await send(primary,"primary-v2")).status,200);
+  assert.equal((await send(fallback,"bedrock-v1")).status,200);
   const rows=await tenantQuery<{tariff_key:string;tariff_version:string;reserved_micros:string}>(userId,
-    "select tariff_key,tariff_version,reserved_micros::text from paid_call_reservation where user_id=$1",[userId]);
-  assert.deepEqual(rows,[{tariff_key:"openrouter-sol-rag-answer-credits",tariff_version:billingPolicy.version,
-    reserved_micros:"901120"}]);
+    "select tariff_key,tariff_version,reserved_micros::text from paid_call_reservation where user_id=$1 order by created_at",[userId]);
+  assert.deepEqual(rows,[{tariff_key:"openrouter-sol-rag-answer-primary-credits",tariff_version:billingPolicy.version,
+    reserved_micros:"778240"},{tariff_key:"openrouter-sol-rag-answer-bedrock-fallback-credits",
+    tariff_version:billingPolicy.version,reserved_micros:"378471"}]);
   const budget=await readSpendBudget(userId);
-  assert.equal(budget.budget?.occupied_micros,"901120");
-  await assert.rejects(send(body),{code:"paid-request-already-recorded"});
-  assert.equal(transportCalls,1);
-  console.log(JSON.stringify({version:billingPolicy.version,reservedMicros:901120,invalidWireBlocked:true,
+  assert.equal(budget.budget?.occupied_micros,"1156711");
+  await assert.rejects(send(primary,"primary-v2"),{code:"paid-request-already-recorded"});
+  await assert.rejects(send(fallback,"bedrock-v1"),{code:"paid-request-already-recorded"});
+  assert.equal(transportCalls,2);
+  console.log(JSON.stringify({version:billingPolicy.version,primaryReservedMicros:778240,
+    fallbackReservedMicros:378471,combinedReservedMicros:1156711,invalidWireBlocked:true,
     duplicateBlocked:true,syntheticTransportCalls:transportCalls,realProviderCalls:0}));
 }finally{
   const client=await admin.connect();

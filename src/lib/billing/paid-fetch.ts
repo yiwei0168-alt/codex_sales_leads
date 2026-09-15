@@ -51,10 +51,15 @@ export function budgetedFetch(transport:typeof fetch=fetch):typeof fetch {
       &&quote.pathname==="/api/v1/chat/completions"&&quote.model==="openai/gpt-5.6-sol";
     const ragAnswerSol=attempt?.task==="rag-answer"&&quote.origin==="https://openrouter.ai"
       &&quote.pathname==="/api/v1/chat/completions"&&quote.model==="openai/gpt-5.6-sol";
+    const ragProvider=ragAnswerSol&&Array.isArray(object(parsed.provider).only)
+      ?object(parsed.provider).only as unknown[]:[];
     const selectedContract=playbookSol?"openrouter-sol-openai-playbook-credits"
       :reviewTerra?"openrouter-terra-review-credits-standard-json"
         :judgeSol?"openrouter-sol-judge-credits-standard-json"
-          :ragAnswerSol?"openrouter-sol-rag-answer-credits":undefined;
+          :ragAnswerSol&&ragProvider.length===1&&ragProvider[0]==="openai"
+            ?"openrouter-sol-rag-answer-primary-credits"
+            :ragAnswerSol&&ragProvider.length===1&&ragProvider[0]==="amazon-bedrock/us-east-1"
+              ?"openrouter-sol-rag-answer-bedrock-fallback-credits":undefined;
     const rule=native?.rule??(scope.tariffPolicy?quoteRequest(quote,policy.rules):selectedContract
       ?quoteRequest(quote,policy.rules,Date.now(),selectedContract):quoteRequest(quote));
     assertRequestContract(rule,parsed,url.search,request.method,request.headers);
@@ -91,7 +96,7 @@ export function budgetedFetch(transport:typeof fetch=fetch):typeof fetch {
       const usage=object(result.usage);const reported=reportedDollarsToMicros(usage.cost);
       const outputIncomplete=response.ok&&(textOutputCompletion(attempt?.outputCompletionTask??attempt?.task,result)==="incomplete"
         ||embeddingOutputCompletion(attempt?.task,result,parsed)==="incomplete");
-      await settlePaidCall(scope.userId,id,{reportedMicros:reported,latencyMs:Date.now()-started,responseBytes:Buffer.byteLength(text,"utf8"),inputTokens:count(usage.prompt_tokens??usage.input_tokens),outputTokens:count(usage.completion_tokens??usage.output_tokens),succeeded:response.ok&&!outputIncomplete,outputIncomplete,providerUsage:providerUsageObservation(result)});
+      await settlePaidCall(scope.userId,id,{reportedMicros:reported,latencyMs:Date.now()-started,responseBytes:Buffer.byteLength(text,"utf8"),inputTokens:count(usage.prompt_tokens??usage.input_tokens),outputTokens:count(usage.completion_tokens??usage.output_tokens),succeeded:response.ok&&!outputIncomplete,outputIncomplete,providerUsage:providerUsageObservation(result,{httpStatus:response.status,generationId:response.headers.get("x-generation-id")})});
       const report=openRouterInlineCostReport({url,method:request.method,httpStatus:response.status,request:parsed,response:result});
       if(report)await recordVerifiedCostObservation(scope.userId,id,report);
     }catch{console.warn(JSON.stringify({event:"budget-settlement-unavailable",reservationRetained:true,retry:false}));}

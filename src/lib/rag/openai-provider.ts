@@ -7,6 +7,42 @@ import type { RetrievedChunk } from "./types";
 import {prepareRagExternalDisclosure} from "./external-disclosure";
 
 let embeddingClient: OpenAI | undefined;
+type RagAnswerProvider = "openai" | "amazon-bedrock/us-east-1";
+
+class RagRouteHttpError extends Error {
+  constructor(readonly status:number,readonly upstreamConfirmed:boolean){
+    super(`RAG answer route failed with HTTP ${status}`);
+    this.name="RagRouteHttpError";
+  }
+}
+
+function object(value:unknown):Record<string,unknown>{
+  return value!==null&&typeof value==="object"&&!Array.isArray(value)?value as Record<string,unknown>:{};
+}
+
+function observedRouteFetch(transport:typeof fetch):typeof fetch{
+  return async(input,init)=>{
+    const response=await transport(input,init);
+    if(response.ok)return response;
+    let payload:unknown={};
+    try{payload=await response.clone().json();}catch{/* Only structured routing metadata is inspected. */}
+    const router=object(object(payload).openrouter_metadata);
+    const attempts=Array.isArray(router.attempts)?router.attempts:[];
+    const upstreamConfirmed=(typeof router.attempt==="number"&&Number.isInteger(router.attempt)&&router.attempt>=1)
+      ||attempts.some(value=>typeof object(value).provider==="string"&&typeof object(value).status==="number");
+    throw new RagRouteHttpError(response.status,upstreamConfirmed);
+  };
+}
+
+function mayUseBedrockFallback(error:unknown):boolean{
+  let current:unknown=error;
+  for(let depth=0;depth<4;depth++){
+    if(current instanceof RagRouteHttpError)return current.upstreamConfirmed
+      &&([401,403,429].includes(current.status)||current.status>=500&&current.status<=599);
+    current=object(current).cause;
+  }
+  return false;
+}
 
 function getEmbeddingClient(): OpenAI {
   const config = getRagConfig();
@@ -66,7 +102,8 @@ function buildContext(chunks: RetrievedChunk[]): string {
   ].join("\n")).join("\n\n");
 }
 
-export function createGroundedAnswerModel(fetchImplementation:typeof fetch=sdkModelFetch(),maxRetries=2){
+export function createGroundedAnswerModel(fetchImplementation:typeof fetch=sdkModelFetch(),maxRetries=0,
+  provider:RagAnswerProvider="openai"){
   const config = getRagConfig();
   if (!config.openaiApiKey) throw new Error("OPENROUTER_API_KEY is not configured");
   return new ChatOpenAI({
@@ -76,18 +113,25 @@ export function createGroundedAnswerModel(fetchImplementation:typeof fetch=sdkMo
     timeout: 90_000,
     streamUsage: false,
     maxTokens:textOutputLimit("rag-answer"),
-    modelKwargs: { provider: {...config.openaiProviderPreferences,only:["openai"],allow_fallbacks:false} },
-    configuration: { baseURL: config.openaiBaseUrl, defaultHeaders: config.openaiDefaultHeaders,fetch:fetchImplementation },
+    modelKwargs: { provider: {...config.openaiProviderPreferences,only:[provider],allow_fallbacks:false} },
+    configuration: { baseURL: config.openaiBaseUrl,
+      defaultHeaders: {...config.openaiDefaultHeaders,"X-OpenRouter-Metadata":"enabled"},fetch:fetchImplementation },
   });
 }
 
-export async function generateGroundedAnswer(question: string, chunks: RetrievedChunk[]): Promise<string> {
+function answerText(response:Awaited<ReturnType<InstanceType<typeof ChatOpenAI>["invoke"]>>):string{
+  if (typeof response.content === "string") return response.content.trim() || "未能生成回答。";
+  const text = response.content.flatMap((item) => typeof item === "string" ? [item]
+    : item.type === "text" && "text" in item ? [String(item.text)] : []).join("").trim();
+  return text || "未能生成回答。";
+}
+
+export async function generateGroundedAnswer(question: string, chunks: RetrievedChunk[],transport:typeof fetch=fetch): Promise<string> {
   const disclosure=prepareRagExternalDisclosure(question,chunks);
   if(disclosure.chunks.length===0)throw new Error("RAG external answer requires explicitly public-source knowledge");
-  const model = createGroundedAnswerModel();
-  const response = await withSdkModelCall({provider:"openrouter",task:"rag-answer",promptVersion:"rag-grounded-answer-v1"},()=>model.invoke([
+  const messages=[
       {
-        role: "system",
+        role: "system" as const,
         content: [
           "You are the Network Channel Copilot knowledge assistant.",
           "Answer only from the supplied knowledge-base sources.",
@@ -100,10 +144,14 @@ export async function generateGroundedAnswer(question: string, chunks: Retrieved
           "Reply in the language used by the question.",
         ].join("\n"),
       },
-      { role: "user", content: `Question:\n${disclosure.question}\n\nKnowledge-base context:\n${buildContext(disclosure.chunks)}` },
-    ]));
-  if (typeof response.content === "string") return response.content.trim() || "未能生成回答。";
-  const text = response.content.flatMap((item) => typeof item === "string" ? [item]
-    : item.type === "text" && "text" in item ? [String(item.text)] : []).join("").trim();
-  return text || "未能生成回答。";
+      { role: "user" as const, content: `Question:\n${disclosure.question}\n\nKnowledge-base context:\n${buildContext(disclosure.chunks)}` },
+    ];
+  const invoke=async(provider:RagAnswerProvider)=>withSdkModelCall({provider:"openrouter",task:"rag-answer",
+    promptVersion:provider==="openai"?"rag-grounded-answer-primary-v2":"rag-grounded-answer-bedrock-v1"},
+  ()=>createGroundedAnswerModel(observedRouteFetch(sdkModelFetch(transport)),0,provider).invoke(messages));
+  try{return answerText(await invoke("openai"));}
+  catch(error){
+    if(!mayUseBedrockFallback(error))throw error;
+    return answerText(await invoke("amazon-bedrock/us-east-1"));
+  }
 }
