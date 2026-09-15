@@ -372,7 +372,7 @@ retrieve_knowledge
 
 - 合格阈值：`50`；
 - 高匹配参考阈值：`80`；
-- 最终选择：所有 eligible 候选按 totalScore、confidence 全局降序，取用户请求的 Top N；
+- 最终选择：只有评分完成、eligible 且必要复核状态为 `not-required`、`secondary-confirmed` 或 `judge-resolved` 的候选，才按 totalScore、confidence 全局降序取用户请求的 Top N；复核失败、要求补证或缺少复核记录时保留评估审计但不发布；
 - 不按角色设置硬配额；某角色无合格候选时允许返回 0；
 - `reseller`、`retailer`、`SI` 等角色不命中不是整次任务失败，只会影响角色覆盖与最终匹配；
 - Provider score 只用于搜索阶段内部候选池管理，不进入 Agent 输入或最终分数。
@@ -572,6 +572,7 @@ Content-Type: application/json
 | AC-10 | 工作流中途失败 | 用户点击重试 | 保留原 thread 与审计，重新进入可执行状态 |
 | AC-11 | 联系方式 Provider 关闭 | 用户提交已保存公司 URL | 返回明确 503，不返回模拟联系人 |
 | AC-12 | 用户查询私有邮箱知识 | RAG 检索 | 只能读取当前用户批准的 private chunks |
+| AC-13 | 评分完成且 eligible，但必要复核失败、要求补证或记录缺失 | Persist 节点执行 | assessment 保留，qualified/accepted 均不计数，公司不进入国家结果 |
 
 ## 13.2 分类与评分验收
 

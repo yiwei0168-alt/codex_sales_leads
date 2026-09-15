@@ -376,6 +376,8 @@ POST /api/contact-enrichment/lookup
 
 ## 运维与验收
 
+2026-09-15 阶段 240：`persist_results` 的最终发布筛选现在同时要求评分完成、eligible 和复核完成。允许发布的复核状态仅为 `not-required`、`secondary-confirmed`、`judge-resolved`；`review-failed`、`targeted-research-required` 或缺失复核记录只保留 assessment 审计，不计入 qualified/accepted，也不写入国家公司结果。真实 PostgreSQL 合成回归证明复核失败输入产生 1 条审计、0 条公司结果；外部调用和费用为 0。实际 `LeadAssessmentReviewAgent` 的同任务正结果、反例、双视口与失败进度仍按阶段 239 继续验收。
+
 ```powershell
 npm run db:migrate
 npm run products:ingest

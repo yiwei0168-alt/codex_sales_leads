@@ -11,6 +11,7 @@ import type { CompanyRecord, Evidence } from "@/lib/domain";
 import { tenantQuery, tenantTransaction } from "@/lib/rag/db";
 import { ACTIVE_LEAD_SCORING_POLICY, scoringPolicyChecksum } from "@/lib/leads/scoring-policy";
 import { isCurrentLeadScoringEvidence } from "@/lib/leads/evidence-snapshot";
+import { hasCompletedAssessmentReview } from "./review-acceptance";
 
 import type {
   CorrectedLeadWorkflowCandidate,
@@ -227,7 +228,8 @@ export async function persistLeadWorkflowResult(input: {
   const handoffById = new Map(input.handoffs.map((item) => [item.provenance.candidateId, item]));
   const selected = input.assessments
     .filter((item) => item.scoringStatus === "completed" && item.eligibilityStatus === "eligible"
-      && candidateById.has(item.candidateId))
+      && candidateById.has(item.candidateId)
+      && hasCompletedAssessmentReview(reviewById.get(item.candidateId)))
     .sort((left, right) => right.totalScore - left.totalScore || right.confidence - left.confidence)
     .slice(0, input.requested);
   const selectedIds = new Map(selected.map((item, index) => [item.candidateId, index + 1]));
@@ -393,7 +395,8 @@ export async function persistLeadWorkflowResult(input: {
     discovered: input.candidates.length,
     assessed: input.assessments.length,
     qualified: input.assessments.filter((item) => item.scoringStatus === "completed"
-      && item.eligibilityStatus === "eligible").length,
+      && item.eligibilityStatus === "eligible"
+      && hasCompletedAssessmentReview(reviewById.get(item.candidateId))).length,
     accepted: selected.length,
     creditsUsed: input.creditsUsed,
     ragCitationCount: input.ragContext.length,
