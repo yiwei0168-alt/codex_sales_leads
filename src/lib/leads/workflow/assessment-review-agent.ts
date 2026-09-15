@@ -15,6 +15,7 @@ import { isCurrentLeadScoringEvidence } from "../evidence-snapshot";
 import { normalizeAssessment } from "./qualification-agent";
 import { ACTIVE_LEAD_COST_QUALITY_POLICY } from "./cost-quality-policy";
 import { buildModelEvidencePacket } from "./evidence-packet";
+import { preparePublicReviewDisclosure } from "./public-review-disclosure";
 import {
   leadAssessmentJudgeSchema,
   leadAssessmentModelSchema,
@@ -296,7 +297,7 @@ function evidencePayload(candidate: CorrectedLeadWorkflowCandidate) {
     maxExcerptCharacters: packetPolicy.maxExcerptCharacters,
     relevanceText: currentFindings.map((finding) => finding.statement).join(" "),
   });
-  return {
+  const disclosure = preparePublicReviewDisclosure({
     candidateId: candidate.candidateId,
     companyName: candidate.companyName,
     domain: candidate.domain,
@@ -317,7 +318,8 @@ function evidencePayload(candidate: CorrectedLeadWorkflowCandidate) {
       freshnessStatus: item.freshnessStatus,
       evidenceRunId: item.evidenceRunId,
     })),
-  };
+  });
+  return disclosure.value;
 }
 
 export class LeadAssessmentReviewAgent {
