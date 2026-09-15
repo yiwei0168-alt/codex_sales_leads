@@ -3,7 +3,7 @@ import type { LeadWorkflowCandidate, LeadWorkflowState } from "./types";
 
 export class WorkflowProcessingIncompleteError extends Error {
   constructor() {
-    super("校正或评分未完成；证据、已完成单项和费用已保留。可从检查点恢复；未知付费请求须先核验费用，不能自动重放。");
+    super("校正、评分或独立复核未完成；证据、已完成单项和费用已保留。可从检查点恢复；未知付费请求须先核验费用，不能自动重放。");
     this.name = "WorkflowProcessingIncompleteError";
   }
 }

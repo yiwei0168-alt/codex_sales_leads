@@ -35,11 +35,19 @@ const progressSaver=new PostgresSaver(getPool(),undefined,{schema:"langgraph"});
 // Seed only a checkpoint. No graph node or business dependency is ever executed.
 const seedGraph=buildLeadWorkflowGraph({} as import("../src/lib/leads/workflow/graph").LeadWorkflowDependencies,progressSaver);
 const seedProgress=async(completed=false,owner=userId)=>{
-  const candidates=['a','b'].map(suffix=>({...progressCandidate,candidateId:`progress-${suffix}`,domain:`progress-${suffix}-${userId}.invalid`}));
+  const candidates=['a','b','c'].map(suffix=>({...progressCandidate,candidateId:`progress-${suffix}`,domain:`progress-${suffix}-${userId}.invalid`}));
   const corrected=candidates.map(candidate=>({...progressCorrected,...candidate,correction:{...progressCorrected.correction,originalDomain:candidate.domain}}));
   await seedGraph.updateState({configurable:{thread_id:progressThread}}, {userId:owner,actionId:progressActionId,workspaceId,graphThreadId:progressThread,
     phase:"correcting-evidence",plan:{...progressPlan,countryCode:"GB",countryName:"United Kingdom"},candidates,
-    correctedCandidates:completed?corrected:[corrected[1]],assessments:completed?candidates.map(candidate=>({...progressAssessment,candidateId:candidate.candidateId})):[],
+    correctedCandidates:completed?corrected:[corrected[1],corrected[2]],
+    assessments:completed?candidates.map(candidate=>({...progressAssessment,candidateId:candidate.candidateId}))
+      :[{...progressAssessment,candidateId:candidates[2].candidateId}],
+    assessmentReviews:completed?candidates.map(candidate=>({candidateId:candidate.candidateId,required:false,triggers:[],
+      status:"not-required" as const,primaryModel:progressAssessment.model,primaryScore:progressAssessment.totalScore,
+      finalScore:progressAssessment.totalScore,materialDisagreements:[],rationale:"Synthetic completed review",warnings:[]}))
+      :[{candidateId:candidates[2].candidateId,required:true,triggers:["score-near-threshold"],
+        status:"review-failed" as const,primaryModel:progressAssessment.model,primaryScore:progressAssessment.totalScore,
+        finalScore:progressAssessment.totalScore,materialDisagreements:[],rationale:"Synthetic incomplete review",warnings:["review unavailable"]}],
     creditsUsed:13,modelUsage:[],stageMetrics:[],warnings:[]},"collect_evidence");
 };
 const conversationId=randomUUID(),actionId=randomUUID();
@@ -50,7 +58,7 @@ const completionScenarios=[
   {reason:"maximum-rounds",label:"达到搜索轮次安全上限",accepted:2},
   {reason:"confirmed-exhaustion",label:"历史任务：连续轮次无新增合格，未证明市场耗尽",accepted:2},
   {reason:"no-qualified-progress",label:"连续两轮无新增最终合格，达到停滞安全阈值",accepted:2},
-  {reason:"processing-incomplete",label:"校正或评分未完成，已有结果和费用保留",accepted:2},
+  {reason:"processing-incomplete",label:"校正、评分或独立复核未完成，已有结果和费用保留",accepted:2},
   {reason:"role-unresolved",label:"仍有公司角色待判，未认定市场耗尽",accepted:2},
   {reason:"qualified-shortfall",label:"最终审核或保存后合格数量不足",accepted:2},
   {reason:"budget-blocked",label:"付费调用被费用门禁阻止：budget-exceeded",accepted:2},
@@ -422,7 +430,7 @@ try{
       if(scenario.accepted===null){
         await expect(panel.getByText('运行结束，最终数量未记录 · 目标 5 家',{exact:true})).toBeVisible();
         await expect(panel.getByText(/^缺口 /)).toHaveCount(0);
-        await expect(panel.locator('dl[aria-label="已保存待处理数量"] dd')).toHaveText(['尚无记录','尚无记录']);
+        await expect(panel.locator('dl[aria-label="已保存待处理数量"] dd')).toHaveText(['尚无记录','尚无记录','尚无记录']);
       }else if(scenario.reason==='target-met'){
         await expect(panel.getByText('目标已满足 · 目标 5 家',{exact:true})).toBeVisible();
         await expect(panel.getByText('停止原因：目标已满足',{exact:true})).toBeVisible();
@@ -504,7 +512,7 @@ try{
     await pool.query("update assistant_action set status='running',error_message=null where id=$1 and user_id=$2",[progressActionId,userId]);
     await page.goto(new URL(`/tasks/${progressActionId}?kind=search`,base).href);
     const pending=page.locator('dl[aria-label="已保存待处理数量"]');
-    await expect(pending.locator('dd')).toHaveText(['1','1']);
+    await expect(pending.locator('dd')).toHaveText(['1','1','1']);
     await page.getByRole('button',{name:'在下一安全节点暂停',exact:true}).click();
     await expect(page.getByText('已请求暂停：当前阶段会完成并保存，随后不再启动下一阶段。',{exact:true})).toBeVisible();
     const requestedPause=await (await readLocal(new URL(`/api/assistant/actions/${progressActionId}/progress`,base).href)).json();
@@ -518,21 +526,21 @@ try{
     const stopped=await (await readLocal(new URL(`/api/assistant/actions/${progressActionId}/progress`,base).href)).json();
     expect(stopped.job.status).toBe('cancelled');expect(stopped.job.paused_at).toBeTruthy();
     expect(stopped.progress.creditsUsed).toBe(13);
-    await expect(pending.locator('dd')).toHaveText(['1','1']);
+    await expect(pending.locator('dd')).toHaveText(['1','1','1']);
     expect((await pool.query('select status from assistant_action where id=$1',[progressActionId])).rows[0].status).toBe('cancelled');
     checks.push(`${viewport.width}:ui-pause-production-runner-boundary-checkpoint-cost-retained`);
     await seedProgress(true);
     await page.getByRole('button',{name:'刷新',exact:true}).click();
-    await expect(pending.locator('dd')).toHaveText(['0','0']);
+    await expect(pending.locator('dd')).toHaveText(['0','0','0']);
     const progress=await (await readLocal(new URL(`/api/assistant/actions/${progressActionId}/progress`,base).href)).json();
     expect(progress.progress.creditsUsed).toBe(13);
     await seedProgress(false,randomUUID());
     await page.getByRole('button',{name:'刷新',exact:true}).click();
     await expect(page.getByText('进度读取失败，可刷新重试',{exact:true})).toBeVisible();
-    await expect(pending.locator('dd')).toHaveText(['尚无记录','尚无记录']);
+    await expect(pending.locator('dd')).toHaveText(['尚无记录','尚无记录','尚无记录']);
     await seedProgress(true);
     await page.getByRole('button',{name:'刷新',exact:true}).click();
-    await expect(pending.locator('dd')).toHaveText(['0','0']);
+    await expect(pending.locator('dd')).toHaveText(['0','0','0']);
     await expect(page.getByText('进度读取失败，可刷新重试',{exact:true})).toHaveCount(0);
     expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
     checks.push(`${viewport.width}:saved-pending-counts-refresh-zero-owner-failure-recovery`);

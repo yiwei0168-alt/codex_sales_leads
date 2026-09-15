@@ -7,6 +7,7 @@ import type {
   LeadDevelopmentHandoff,
 } from "./types";
 import { isCurrentLeadScoringEvidence } from "../evidence-snapshot";
+import { hasCompletedAssessmentReview } from "./review-acceptance";
 
 const HANDOFF_BUDGET_BYTES = 16_384;
 
@@ -107,10 +108,9 @@ export class LeadHandoffAssembler {
       .map((finding) => finding.statement), 4);
     const evidenceIds = [...new Set(externallyUsableFacts.flatMap((fact) => fact.evidenceIds))].slice(0, 6);
     const readyForStrategy = assessment.scoringStatus === "completed" && externallyUsableFacts.length > 0
-      && review.status !== "targeted-research-required";
+      && hasCompletedAssessmentReview(review);
     const readyForEmail = readyForStrategy && assessment.eligible && conflicts.length === 0
-      && personalizationHooks.some((hook) => hook.allowedInEmail)
-      && review.status !== "review-failed";
+      && personalizationHooks.some((hook) => hook.allowedInEmail);
     const handoff: LeadDevelopmentHandoff = {
       version: "lead-handoff-v2",
       provenance: {

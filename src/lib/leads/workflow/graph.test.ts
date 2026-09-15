@@ -193,12 +193,12 @@ describe("LangGraph lead workflow", () => {
       phase:"planning",candidates:[candidate,second],correctedCandidates:[],assessments:[],creditsUsed:0,ragContext:[],
       assessmentReviews:[],handoffs:[],modelUsage:[],stageMetrics:[],warnings:[],terminalRecoveryOnly:true,
       savedProcessingRecovery:{sourceActionId:"parent",sourceRunId:"old",sourceFingerprint:"proof",refreshCandidateIds:[candidate.candidateId,"second"]}},"build_playbook");
-    await expect(graph.invoke(null,config)).rejects.toThrow("校正或评分未完成");
+    await expect(graph.invoke(null,config)).rejects.toThrow(WorkflowProcessingIncompleteError);
     const paused=await graph.getState(config);
     expect(paused.next).toEqual(["recover_saved_evidence"]);expect(paused.values.creditsUsed).toBe(4);
     expect(paused.values.savedProcessingRecovery?.refreshCandidateIds).toEqual(["second"]);
     expect(deps.collectEvidence).toHaveBeenCalledTimes(2);
-    await expect(graph.invoke(null,config)).rejects.toThrow("校正或评分未完成");
+    await expect(graph.invoke(null,config)).rejects.toThrow(WorkflowProcessingIncompleteError);
     expect(deps.collectEvidence).toHaveBeenCalledTimes(2);
     failed=false;
     await graph.updateState(config,{savedProcessingRecovery:{...paused.values.savedProcessingRecovery!,evidenceBlocked:false}},"build_playbook");
@@ -334,7 +334,7 @@ describe("LangGraph lead workflow", () => {
     const config = { configurable: { thread_id: "incomplete" } };
     await expect(graph.invoke({ userId: "u", actionId: "a", graphThreadId: "incomplete",
       workspaceId: "w", plan: { ...plan, targetCount: 1 }, phase: "queued", ragContext: [], candidates: [], assessments: [],
-      assessmentReviews: [], handoffs: [], creditsUsed: 0, warnings: [] }, config)).rejects.toThrow("校正或评分未完成");
+      assessmentReviews: [], handoffs: [], creditsUsed: 0, warnings: [] }, config)).rejects.toThrow(WorkflowProcessingIncompleteError);
     const snapshot = await graph.getState(config);
     const state = snapshot.values;
     expect(state.targetCompletionReason).toBe("processing-incomplete");
@@ -346,7 +346,7 @@ describe("LangGraph lead workflow", () => {
     deps.correctionAgent.correct = vi.fn(async () => ({ candidates: [correctedCandidate], creditsUsed: 0, warnings: [] }));
     deps.qualificationAgent.evaluate = vi.fn(async () => [assessment]);
     const resumed = buildLeadWorkflowGraph(deps, saver);
-    await expect(resumed.invoke(null, config)).rejects.toThrow("校正或评分未完成");
+    await expect(resumed.invoke(null, config)).rejects.toThrow(WorkflowProcessingIncompleteError);
     await resumed.updateState(config, { processingRecoveryAuthorized: true }, "score_candidates");
     const completed = await resumed.invoke(null, config);
     expect(completed.targetCompletionReason).toBe("target-met");
@@ -385,7 +385,7 @@ describe("LangGraph lead workflow", () => {
       runId:"run-1",plan,playbook,phase:"routing",candidates:[candidate,second],
       correctedCandidates:[correctedCandidate,correctedSecond],assessments:[],creditsUsed:13,
       ragContext:[],assessmentReviews:[],handoffs:[],modelUsage:[],stageMetrics:[],warnings:[]},"route_candidates");
-    await expect(graph.invoke(null,config)).rejects.toThrow("校正或评分未完成");
+    await expect(graph.invoke(null,config)).rejects.toThrow(WorkflowProcessingIncompleteError);
     const stopped=await graph.getState(config);
     expect(stopped.next).toEqual(["recover_incomplete_processing"]);
     expect(stopped.values.assessments.map((item:LeadCandidateAssessment)=>item.scoringStatus)).toEqual(["completed","retry-required"]);
@@ -398,7 +398,10 @@ describe("LangGraph lead workflow", () => {
       return {assessments:[{...assessment,candidateId:second.candidateId}],usage:[]};
     });
     deps.saveAssessmentCache=vi.fn(async()=>undefined);
-    deps.assessmentReviewAgent.review=vi.fn(async(_items,assessments)=>({assessments,reviews:[],warnings:[]}));
+    deps.assessmentReviewAgent.review=vi.fn(async(_items,assessments)=>({assessments,
+      reviews:assessments.map((item:LeadCandidateAssessment)=>({candidateId:item.candidateId,required:false,triggers:[],
+        status:"not-required" as const,primaryModel:item.model,primaryScore:item.totalScore,
+        finalScore:item.totalScore,materialDisagreements:[],rationale:"No trigger",warnings:[]})),warnings:[]}));
     await graph.updateState(config,{processingRecoveryAuthorized:true},"score_candidates");
     const finished=await graph.invoke(null,config);
     expect(finished.assessments.map(item=>item.scoringStatus)).toEqual(["completed","completed"]);
@@ -435,7 +438,10 @@ describe("LangGraph lead workflow", () => {
       return new Map([[correctedCandidate.candidateId,assessment]]);
     });
     deps.assertScoringRecoverySafe=vi.fn(async()=>{throw new Error("Completed phased score was not loaded");});
-    deps.assessmentReviewAgent.review=vi.fn(async(_items,assessments)=>({assessments,reviews:[],warnings:[]}));
+    deps.assessmentReviewAgent.review=vi.fn(async(_items,assessments)=>({assessments,
+      reviews:assessments.map((item:LeadCandidateAssessment)=>({candidateId:item.candidateId,required:false,triggers:[],
+        status:"not-required" as const,primaryModel:item.model,primaryScore:item.totalScore,
+        finalScore:item.totalScore,materialDisagreements:[],rationale:"No trigger",warnings:[]})),warnings:[]}));
     const graph=buildLeadWorkflowGraph(deps,saver),config={configurable:{thread_id:"phased-final-cache"}};
     await graph.updateState(config,{userId:"u",actionId:"a",workspaceId:"w",graphThreadId:"phased-final-cache",
       runId:"run-1",plan,playbook,phase:"routing",candidates:[candidate],correctedCandidates:[correctedCandidate],
@@ -735,6 +741,57 @@ describe("LangGraph lead workflow", () => {
     expect(snapshot.values.acceptedCandidateCount).toBe(0);
     expect(deps.discover).toHaveBeenCalledTimes(1);
     expect(deps.persist).not.toHaveBeenCalled();
+  });
+  it("keeps a failed necessary review as processing incomplete instead of a market shortfall", async () => {
+    const deps = dependencies([]);
+    deps.discover = vi.fn(async () => ({ runId: "run-1", candidates: [candidate], creditsUsed: 0,
+      warnings: [], callMetrics: [discoveryMetric(1)] }));
+    let reviewAttempt = 0;
+    deps.assessmentReviewAgent.review = vi.fn(async () => {
+      reviewAttempt += 1;
+      return reviewAttempt === 1 ? {
+        assessments: [assessment],
+        reviews: [{ candidateId: candidate.candidateId, required: true, triggers: ["score-near-threshold"],
+          status: "review-failed" as const, primaryModel: assessment.model,
+          primaryScore: assessment.totalScore, finalScore: assessment.totalScore,
+          materialDisagreements: [], rationale: "Synthetic review transport failed", warnings: ["review unavailable"] }],
+        warnings: ["review unavailable"],
+      } : {
+        assessments: [assessment],
+        reviews: [{ candidateId: candidate.candidateId, required: true, triggers: ["score-near-threshold"],
+          status: "secondary-confirmed" as const, primaryModel: assessment.model, secondaryModel: "review-fixture",
+          primaryScore: assessment.totalScore, secondaryScore: assessment.totalScore, finalScore: assessment.totalScore,
+          materialDisagreements: [], rationale: "Synthetic review recovered", warnings: [] }],
+        warnings: [],
+      };
+    });
+    const graph = buildLeadWorkflowGraph(deps, new MemorySaver());
+    const config = { configurable: { thread_id: "review-failed" } };
+    await expect(graph.invoke({ userId: "u", actionId: "a", graphThreadId: "review-failed",
+      workspaceId: "w", plan: { ...plan, targetCount: 1 }, phase: "queued", ragContext: [],
+      candidates: [], correctedCandidates: [], assessments: [], assessmentReviews: [], handoffs: [],
+      creditsUsed: 0, modelUsage: [], stageMetrics: [], warnings: [] }, config))
+      .rejects.toThrow(WorkflowProcessingIncompleteError);
+    const snapshot = await graph.getState(config);
+    expect(snapshot.next).toEqual(["recover_incomplete_processing"]);
+    expect(snapshot.values.targetCompletionReason).toBe("processing-incomplete");
+    expect(snapshot.values.acceptedCandidateCount).toBe(0);
+    expect(snapshot.values.stageMetrics.at(-1)?.metadata).toMatchObject({
+      reviewIncomplete: 1,
+      acceptedCount: 0,
+      targetCompletionReason: "processing-incomplete",
+    });
+    expect(deps.discover).toHaveBeenCalledTimes(1);
+    expect(deps.persist).not.toHaveBeenCalled();
+    await graph.updateState(config, { processingRecoveryAuthorized: true }, "score_candidates");
+    const completed = await graph.invoke(null, config);
+    expect(completed.targetCompletionReason).toBe("target-met");
+    expect(completed.acceptedCandidateCount).toBe(1);
+    expect(deps.discover).toHaveBeenCalledTimes(1);
+    expect(deps.collectEvidence).toHaveBeenCalledTimes(1);
+    expect(deps.correctionAgent.correct).toHaveBeenCalledTimes(1);
+    expect(deps.qualificationAgent.evaluate).toHaveBeenCalledTimes(1);
+    expect(deps.assessmentReviewAgent.review).toHaveBeenCalledTimes(2);
   });
   it("rechecks the remaining exact contract after a partial checkpoint hit without scoring again",async()=>{
     const deps=dependencies([]);

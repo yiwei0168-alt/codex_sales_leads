@@ -74,7 +74,7 @@ describe("LeadHandoffAssembler", () => {
   it("blocks email readiness when review remains unresolved", () => {
     const unresolved = { ...review, status: "review-failed" as const, warnings: ["Review unavailable"] };
     const handoff = new LeadHandoffAssembler().assembleOne(candidate, assessment, unresolved, "run-handoff");
-    expect(handoff.quality.readyForStrategy).toBe(true);
+    expect(handoff.quality.readyForStrategy).toBe(false);
     expect(handoff.quality.readyForEmail).toBe(false);
   });
 });

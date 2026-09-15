@@ -10,6 +10,7 @@ import { collectLeadEvidence, discoverLeadCandidates } from "./discovery";
 import type { DiscoverySessionSnapshot } from "./discovery-session";
 import { LeadAssessmentReviewAgent } from "./assessment-review-agent";
 import { productReviewCheckpoint } from "./review-checkpoint";
+import { hasCompletedAssessmentReview } from "./review-acceptance";
 import { LeadEvidenceCorrectionAgent } from "./evidence-correction-agent";
 import { getGlobalWorkspaceId, persistLeadWorkflowResult, updateWorkflowPhase } from "./persistence";
 import { checkpointInvocation } from "./pause";
@@ -543,9 +544,12 @@ export function buildLeadWorkflowGraph(
         reasoningTokens: usage.usage.reasoningTokens, totalTokens: usage.usage.totalTokens,
         latencyMs: 0, fallbackUsed: false, accountCashCostUsd: usage.usage.accountCashCostUsd,
       }));
-      const valid = reviewed.reviews.filter((review) => review.required&&review.status !== "review-failed").length;
+      const reviewById=new Map(reviewed.reviews.map(review=>[review.candidateId,review]));
+      const valid = reviewed.reviews.filter((review) => review.required
+        && hasCompletedAssessmentReview(review)).length;
       const acceptedCount = reviewed.assessments.filter(item => item.eligible
-        && item.eligibilityStatus === "eligible" && item.scoringStatus === "completed").length;
+        && item.eligibilityStatus === "eligible" && item.scoringStatus === "completed"
+        && hasCompletedAssessmentReview(reviewById.get(item.candidateId))).length;
       const latestScore = [...(state.stageMetrics ?? [])].reverse().find(item => item.stage === "score_candidates");
       const discoveryMetric = [...(state.stageMetrics ?? [])].reverse().find(item => item.stage === "discover_candidates");
       const metricsAvailable = Boolean(discoveryMetric?.metadata && "completedCalls" in discoveryMetric.metadata);
@@ -554,8 +558,10 @@ export function buildLeadWorkflowGraph(
       const correctionIncomplete = Number(latestScore?.metadata.correctionIncomplete ?? 0);
       const scoringIncomplete = Math.max(0, primaryAssessments.length - reviewed.assessments.filter(item =>
         item.scoringStatus === "completed").length);
+      const reviewIncomplete = reviewed.assessments.filter(item => item.scoringStatus === "completed"
+        && !hasCompletedAssessmentReview(reviewById.get(item.candidateId))).length;
       const pendingRoleCount = Number(latestScore?.metadata.pendingRoleCount ?? 0);
-      const hasIncompleteProcessing = correctionIncomplete + scoringIncomplete > 0;
+      const hasIncompleteProcessing = correctionIncomplete + scoringIncomplete + reviewIncomplete > 0;
       const finalEligibleAdded = Math.max(0, acceptedCount - (state.acceptedCandidateCount ?? 0));
       const consecutiveNoFinalRounds = nextNoFinalRoundCount(state.consecutiveNoFinalRounds ?? 0,
         { finalEligibleAdded, completedFreshCalls,
@@ -577,7 +583,7 @@ export function buildLeadWorkflowGraph(
           reusedSecondaryResponses:reviewed.cacheHits?.secondary??0,reusedJudgeResponses:reviewed.cacheHits?.judge??0,
           acceptedCount, finalEligibleAdded, consecutiveNoFinalRounds,
           targetShouldContinue: !targetDecision.complete, targetCompletionReason: targetDecision.reason,
-          scoringIncomplete, usageBoundary:"validated-review-forwarded-not-user-adoption"} });
+          scoringIncomplete,reviewIncomplete,usageBoundary:"validated-review-forwarded-not-user-adoption"} });
       return { phase: "reviewing-scores" as const, assessments: reviewed.assessments,
         acceptedCandidateCount: acceptedCount, consecutiveNoFinalRounds,
         targetShouldContinue: !targetDecision.complete, targetCompletionReason: targetDecision.reason,
@@ -763,11 +769,14 @@ export async function readWorkflowCheckpointProgress(userId:string,actionId:stri
   if(!Object.keys(snapshot.values).length)return null;
   checkpointInvocation(snapshot,userId,actionId);
   const state=snapshot.values as LeadWorkflowState;
+  const reviewById=new Map((state.assessmentReviews??[]).map(review=>[review.candidateId,review]));
   return {phase:state.phase,creditsUsed:state.creditsUsed,stageMetrics:state.stageMetrics,modelUsage:state.modelUsage,
     discovered:state.discoveredUniqueCount,assessed:state.assessments?.length??0,
     accepted:state.acceptedCandidateCount,targetCompletionReason:state.targetCompletionReason,
     pendingCorrection:processingRecoveryWork(state).candidates.length,
     pendingScoring:state.correctedCandidates.filter(candidate=>candidateMatchesRequestedRole(candidate,state.plan)
       &&!state.assessments.some(item=>item.candidateId===candidate.candidateId&&item.scoringStatus==="completed")).length,
+    pendingReview:state.assessments.filter(assessment=>assessment.scoringStatus==="completed"
+      &&!hasCompletedAssessmentReview(reviewById.get(assessment.candidateId))).length,
     warnings:state.warnings,next:snapshot.next};
 }

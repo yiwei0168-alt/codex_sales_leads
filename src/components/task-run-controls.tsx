@@ -12,7 +12,7 @@ export function TaskRunControls({actionId,status,processingRecovery=false}:{acti
   const paused=Boolean(state?.job?.paused_at&&state.job.stop_requested);
   const pendingCount=(key:string)=>{const value=state?.progress?.[key];return typeof value==='number'&&Number.isSafeInteger(value)&&value>=0?value:"尚无记录";};
   return <section><p>阶段：{state?state.job?.phase??"尚未执行":"尚无记录"} · 执行次数 {state?state.job?.attempts??0:"尚无记录"}{paused?" · 已暂停":state?.job?.stop_requested?" · 等待阶段边界暂停":""}</p>
-    <dl aria-label="已保存待处理数量"><div><dt>待校正候选项</dt><dd>{pendingCount('pendingCorrection')}</dd></div><div><dt>待评分候选项</dt><dd>{pendingCount('pendingScoring')}</dd></div></dl>
+    <dl aria-label="已保存待处理数量"><div><dt>待校正候选项</dt><dd>{pendingCount('pendingCorrection')}</dd></div><div><dt>待评分候选项</dt><dd>{pendingCount('pendingScoring')}</dd></div><div><dt>待独立复核候选项</dt><dd>{pendingCount('pendingReview')}</dd></div></dl>
     <p>待处理数量来自已保存检查点，按阶段分别计数，不相加为公司总数；未保存或无法读取时保持未知。</p>
     {status==='proposed'&&!state?.job&&<button disabled={busy||!state} onClick={()=>{if(window.confirm(processingRecovery?'确认仅处理原范围内的缺项公司？必要补证和模型调用可能产生费用，原任务与各级恢复预算同时生效，原结果及费用保留。':'确认当前国家、角色和目标数量，并允许按预算门禁执行模型与搜索调用？'))void action(false);}}>确认计划及费用并开始</button>}
     {state?.job&&["queued","running"].includes(state.job.status)&&<button disabled={busy||state.job.stop_requested} onClick={()=>void action(true)}>在下一安全节点暂停</button>}

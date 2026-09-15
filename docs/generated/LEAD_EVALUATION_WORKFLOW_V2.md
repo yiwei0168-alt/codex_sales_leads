@@ -757,7 +757,7 @@ flowchart TD
 | `src/lib/rag/openai-provider.ts` | `d8d105c5650d1bacdbb48ce652143900afa7d62d505dfd502159f7b09fee1ff2` |
 | `src/lib/assistant/service.ts` | `191d407fc558253b10df7b57564bb73094808cddaf5f2f8883c57742561eff7e` |
 | `src/lib/assistant/repository.ts` | `5f8a96b484418bc47dc119e5ceb7b7989f0f551915bfd3b9e8068b013bca001b` |
-| `src/lib/leads/workflow/graph.ts` | `ddafa875d0dccce0b1a594b004c0d81605452dc88d8a52d259f2404d31207e5a` |
+| `src/lib/leads/workflow/graph.ts` | `cf6f3a91f234b3aa19fcf29777e04d07716bd98b0f26d6211d5d7964dde040c0` |
 | `src/lib/leads/workflow/jobs.ts` | `997af873d880004429b35df27bb1e138e544cb39e70c7d9693929969f91b8db0` |
 | `src/lib/leads/workflow/rag-context.ts` | `1e1ee21e77b90731e849426cd7130de7d1e50ee6aec9f196e44cb642bf81387b` |
 | `src/lib/leads/workflow/playbook.ts` | `0641f1e0715dcb13a0c94bbd002d4c17d9eca2a4f6e62200f8bc939f44ab359c` |
@@ -780,7 +780,7 @@ flowchart TD
 | `src/providers/openrouter.ts` | `b43ba8fdf08602cb7d3567ea88bdc2cfee704de0c1b197cc574abe5e9b89143d` |
 | `db/migrations/034_model_account_cash_cost.sql` | `4790c7ad12eda543e197c84ddd77c4a5ce296b7871ccee799f3aa2262684bdbb` |
 | `src/providers/tavily.ts` | `b02257f8499a16b370ca42493e45bbbf53b7214b9f803203ab5e19ef80969eda` |
-| `src/lib/leads/workflow/handoff-assembler.ts` | `606736bdfcced8f3a476a58808b07c65867b75f948c46b66b21354e5102f3827` |
+| `src/lib/leads/workflow/handoff-assembler.ts` | `9ae8b6c648adad072f934a4fe360d74222ebb604340a1bb96546167d4a621567` |
 | `src/lib/leads/workflow/persistence.ts` | `ea2b7fab0acd3fda816bd520b527d44e96aedab0af86479e30ce07c9f8f5e1db` |
 | `src/lib/sales/repository.ts` | `87900b1507a183d6bf3b9a184a63ce09cf49e2272f813117e8519b321365689a` |
 | `src/lib/outreach/graph.ts` | `47a6fc1d1d634c603f5a429a810f9cd97ff14483694dad76e0b368bf849cb4d2` |
