@@ -376,6 +376,8 @@ POST /api/contact-enrichment/lookup
 
 ## 运维与验收
 
+2026-09-15 阶段 241：受控正结果验收使用实际 `collectLeadEvidence`、`LeadEvidenceCorrectionAgent`、`LeadQualificationAgent`、`LeadAssessmentReviewAgent` 的序列化与验证逻辑，外部传输固定为合成响应。两轮自然语言修改和确认后，图在评分前暂停并从 PostgreSQL 检查点恢复；必要盲审输入不含主评分，得到 `secondary-confirmed` 并保存 1 条复核检查点。随后同一动作在 SQL、任务 API、生产 Chrome 1366/390 视口及刷新中均为目标满足、最终保存 1 家。外部供应商调用为 0；分歧裁决、补证反例、失败进度与真实 Terra 仍待验收。
+
 2026-09-15 阶段 240：`persist_results` 的最终发布筛选现在同时要求评分完成、eligible 和复核完成。允许发布的复核状态仅为 `not-required`、`secondary-confirmed`、`judge-resolved`；`review-failed`、`targeted-research-required` 或缺失复核记录只保留 assessment 审计，不计入 qualified/accepted，也不写入国家公司结果。真实 PostgreSQL 合成回归证明复核失败输入产生 1 条审计、0 条公司结果；外部调用和费用为 0。实际 `LeadAssessmentReviewAgent` 的同任务正结果、反例、双视口与失败进度仍按阶段 239 继续验收。
 
 ```powershell

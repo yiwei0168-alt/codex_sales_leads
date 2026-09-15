@@ -16,9 +16,10 @@
 ## 当前验收状态（2026-09-15）
 
 - 产品已具备自然语言计划、用户确认、LangGraph 检索/取证/校正/评分/复核、PostgreSQL 检查点、国家结果、任务 API 与桌面/移动页面链路。
+- 阶段 241 已在同一个隔离合成动作上贯通上述链路：两轮自然语言把哥伦比亚分销商目标从 2 家改为 1 家，图在评分前暂停并从 PostgreSQL 检查点恢复，实际 Agent 校验逻辑完成盲审，随后 SQL/API/生产 Chrome 桌面与移动端及刷新一致显示最终保存 1 家。盲审输入明确不含主评分，外部供应商调用为 0。
 - 阶段 240 已修复最终发布门禁：评分合格但必要复核为 `review-failed`、`targeted-research-required` 或缺失时，评估审计仍保留，但公司不会计为最终合格或写入国家结果。真实 PostgreSQL 合成回归、1,058 项全量测试、TypeScript、生产构建和生产依赖 0 漏洞审计通过，未调用外部供应商。
 - 真实供应商链仍是部分通过：隔离任务已到 S02 市场计划、Brave/Tavily、DeepSeek 主评分；Terra 复核费用未知且未返回有效输出，因此没有真实最终入库。旧付费请求不会自动重放，完整供应商账单与真实语义质量仍未验收。
-- 当前执行以[阶段 239 恢复计划](docs/RESUME_PRODUCT_ACCEPTANCE_STAGE239_2026-09-14.md)和[当前唯一验收矩阵](docs/CURRENT_ACCEPTANCE_MATRIX_2026-09-13.md)为准；不能把受控传输验收写成真实供应商闭环或原计划整体验收完成。
+- 当前执行以[阶段 241 受控闭环证据](docs/CONTROLLED_ACTUAL_REVIEW_PRODUCT_LOOP_STAGE241_2026-09-15.md)、[阶段 239 恢复计划](docs/RESUME_PRODUCT_ACCEPTANCE_STAGE239_2026-09-14.md)和[当前唯一验收矩阵](docs/CURRENT_ACCEPTANCE_MATRIX_2026-09-13.md)为准；不能把受控传输验收写成真实供应商闭环或原计划整体验收完成。
 
 ## 启动
 

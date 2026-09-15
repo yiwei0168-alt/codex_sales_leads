@@ -19,12 +19,14 @@ import {buildLeadWorkflowGraph,type LeadWorkflowDependencies} from "../src/lib/l
 import {LeadEvidenceCorrectionAgent} from "../src/lib/leads/workflow/evidence-correction-agent";
 import {LeadHandoffAssembler} from "../src/lib/leads/workflow/handoff-assembler";
 import {LeadQualificationAgent} from "../src/lib/leads/workflow/qualification-agent";
+import {LeadAssessmentReviewAgent,type LeadReviewInvoker} from "../src/lib/leads/workflow/assessment-review-agent";
 import {confirmAndQueueLeadWorkflow,claimLeadWorkflowByAction} from "../src/lib/leads/workflow/jobs";
 import {completeWorkflowJob} from "../src/lib/leads/workflow/job-completion";
 import {persistLeadWorkflowResult,updateWorkflowPhase} from "../src/lib/leads/workflow/persistence";
 import {checkpointInvocation,WorkflowPausedError} from "../src/lib/leads/workflow/pause";
 import type {DiscoveryResult} from "../src/lib/leads/workflow/discovery";
 import type {CorrectedLeadWorkflowCandidate,LeadAssessmentReview} from "../src/lib/leads/workflow/types";
+import type {LeadAssessmentModelOutput} from "../src/lib/leads/workflow/schemas";
 import type {AiProvider,StructuredAiRequest,StructuredAiResponse} from "../src/providers/contracts";
 import {DeepSeekProvider} from "../src/providers/deepseek";
 import {TavilySearchProvider} from "../src/providers/tavily";
@@ -32,12 +34,16 @@ import {ragContext,playbook as fixturePlaybook,candidate as fixtureCandidate,
   correctedCandidate as fixtureCorrected,assessment as fixtureAssessment,plan as fixturePlan} from "./workflow-recovery-fixtures";
 
 nextEnv.loadEnvConfig(process.cwd());
-const modes=new Set(process.argv.slice(2));
-if(modes.size!==process.argv.length-2||[...modes].some(mode=>!["--pause-resume","--assistant-fallback","--actual-score-agent","--actual-correction-agent","--actual-evidence-collector"].includes(mode)))
+const cliArgs=process.argv.slice(2);
+const httpBaseArgs=cliArgs.filter(argument=>argument.startsWith("--http-base="));
+if(httpBaseArgs.length>1)throw new Error("Repeated HTTP fixture base");
+const modeArgs=cliArgs.filter(argument=>!argument.startsWith("--http-base="));
+const modes=new Set(modeArgs);
+if(modes.size!==modeArgs.length||[...modes].some(mode=>!["--pause-resume","--assistant-fallback","--actual-score-agent","--actual-correction-agent","--actual-evidence-collector","--actual-review-agent"].includes(mode)))
   throw new Error("Unknown or repeated verification mode");
 const pauseResume=modes.has("--pause-resume"),assistantFallback=modes.has("--assistant-fallback"),
   actualScoreAgent=modes.has("--actual-score-agent"),actualCorrectionAgent=modes.has("--actual-correction-agent"),
-  actualEvidenceCollector=modes.has("--actual-evidence-collector");
+  actualEvidenceCollector=modes.has("--actual-evidence-collector"),actualReviewAgent=modes.has("--actual-review-agent");
 if(actualCorrectionAgent&&!actualScoreAgent)throw new Error("Current correction requires current scoring in this fixture");
 if(actualEvidenceCollector&&!actualCorrectionAgent)throw new Error("Current evidence collection requires current correction in this fixture");
 const app=process.env.DATABASE_URL,migration=process.env.DATABASE_MIGRATION_URL;
@@ -47,7 +53,8 @@ if(appUrl.hostname!==migrationUrl.hostname||(appUrl.port||"5432")!==(migrationUr
   ||appUrl.pathname!==migrationUrl.pathname)throw new Error("Fixture database mismatch");
 const admin=new Pool({connectionString:databaseConnectionString(migration),ssl:databaseSslConfiguration(migration)});
 const saver=new PostgresSaver(getPool(),undefined,{schema:"langgraph"});
-const httpBase=process.env.UI_VERIFY_BASE_URL?new URL(process.env.UI_VERIFY_BASE_URL):null;
+const httpBaseValue=httpBaseArgs[0]?.slice("--http-base=".length)??process.env.UI_VERIFY_BASE_URL;
+const httpBase=httpBaseValue?new URL(httpBaseValue):null;
 if(httpBase&&(httpBase.protocol!=="http:"||!["localhost","127.0.0.1"].includes(httpBase.hostname)))
   throw new Error("HTTP fixture requires a local server");
 const userId=randomUUID(),otherUserId=randomUUID(),workspaceId=randomUUID(),conversationId=randomUUID();
@@ -84,6 +91,7 @@ const wire=new DeepSeekProvider({apiKey:"synthetic-never-sent",maxAttempts:1,
   fetchImplementation:async()=>{throw new Error("External scoring transport is forbidden");}});
 const scoreRequests:StructuredAiRequest<unknown>[]=[];
 const correctionRequests:StructuredAiRequest<unknown>[]=[];
+const reviewRequests:unknown[]=[];
 let supplementalCalls=0;
 let syntheticTavilySearches=0,syntheticTavilyExtracts=0;
 const originalTavilySearch=TavilySearchProvider.prototype.search;
@@ -139,6 +147,19 @@ const correctionProvider:AiProvider={
 const correctionAgent=new LeadEvidenceCorrectionAgent(correctionProvider,{
   search:async()=>{supplementalCalls++;throw new Error("Unexpected supplemental search");},
 },{allowReusableCorrections:false,persistCorrections:false,batchSize:1,concurrency:1});
+function syntheticAssessmentModelOutput():LeadAssessmentModelOutput{
+  const productFinding=currentCorrected.correction.findings.find(finding=>finding.kind==="product-family")?.findingId;
+  const roleFinding=currentCorrected.correction.findings.find(finding=>finding.kind==="role")?.findingId;
+  assert.ok(productFinding&&roleFinding);
+  return {...assessment,
+    cooperationPaths:assessment.cooperationPaths.map(path=>({...path,findingIds:[roleFinding]})),
+    dimensionRationales:(Object.entries(assessment.dimensions) as Array<[
+      keyof typeof assessment.dimensions,number]>).map(([dimension,score])=>({dimension,score,
+      reason:"Synthetic current-run company fact supports this dimension.",findingIds:[productFinding],
+      evidenceIds:[evidence.id],confidence:85})),
+    escalation:{required:false,expectedTotalScoreChange:0,criticalStateChanges:[],
+      higherCapabilityCanResolve:false,reason:""}};
+}
 const scoreProvider:AiProvider={
   id:"synthetic-score-wire",
   requestBytes:request=>wire.requestBytes(request),
@@ -148,21 +169,25 @@ const scoreProvider:AiProvider={
     assert.equal(request.task,"lead-qualification");
     assert.ok(request.evidenceIds.includes(evidence.id));
     assert.ok(wire.requestBytes(request)<=61_440);
-    const productFinding=currentCorrected.correction.findings.find(finding=>finding.kind==="product-family")?.findingId;
-    const roleFinding=currentCorrected.correction.findings.find(finding=>finding.kind==="role")?.findingId;
-    assert.ok(productFinding&&roleFinding);
-    const modelAssessment={...assessment,
-      cooperationPaths:assessment.cooperationPaths.map(path=>({...path,findingIds:[roleFinding]})),
-      dimensionRationales:Object.entries(assessment.dimensions).map(([dimension,score])=>({dimension,score,
-        reason:"Synthetic current-run company fact supports this dimension.",findingIds:[productFinding],
-        evidenceIds:[evidence.id],confidence:85})),
-      escalation:{required:false,expectedTotalScoreChange:0,criticalStateChanges:[],
-        higherCapabilityCanResolve:false,reason:""}};
+    const modelAssessment=syntheticAssessmentModelOutput();
     return {output:{assessments:[modelAssessment]} as O,modelVersion:request.modelVersion,
       promptVersion:request.promptVersion,latencyMs:0,warnings:[]};
   },
 };
 const scoreAgent=new LeadQualificationAgent(scoreProvider,{batchSize:1,concurrency:1});
+const reviewInvoker:LeadReviewInvoker={
+  cacheIdentity:(phase,input)=>createHash("sha256").update(JSON.stringify({phase,input})).digest("hex"),
+  assess:async input=>{
+    reviewRequests.push(input);
+    const serialized=JSON.stringify(input);
+    assert.equal(serialized.includes('"totalScore"'),false);
+    assert.equal(serialized.includes('"primaryScore"'),false);
+    assert.equal(serialized.includes('"primaryAssessment"'),false);
+    return {output:syntheticAssessmentModelOutput(),model:"gpt-5.6-terra-synthetic"};
+  },
+  judge:async()=>{throw new Error("Unexpected judge call for an agreeing blind review");},
+};
+const reviewAgent=new LeadAssessmentReviewAgent(reviewInvoker,{randomAuditPercent:100,concurrency:1});
 const review:LeadAssessmentReview={candidateId:candidate.candidateId,required:false,triggers:[],
   status:"not-required",primaryModel:assessment.model,primaryScore:assessment.totalScore,
   finalScore:assessment.totalScore,materialDisagreements:[],rationale:"Synthetic no-review fixture.",warnings:[]};
@@ -258,7 +283,8 @@ try{
     }:{evaluate:async()=>{counters.score++;return [assessment];}},
     loadAssessmentCache:actualScoreAgent?loadCachedLeadAssessments:undefined,
     saveAssessmentCache:actualScoreAgent?saveCachedLeadAssessments:undefined,
-    assessmentReviewAgent:{review:async(_candidates,assessments)=>{counters.review++;
+    assessmentReviewAgent:actualReviewAgent?{review:async(...args)=>{counters.review++;
+      return reviewAgent.review(...args);}}:{review:async(_candidates,assessments)=>{counters.review++;
       return {assessments,reviews:[{...review,primaryScore:assessments[0].totalScore,
         finalScore:assessments[0].totalScore}],warnings:[]};}},
     handoffAssembler:new LeadHandoffAssembler(),persist:persistLeadWorkflowResult,
@@ -290,6 +316,7 @@ try{
   assert.deepEqual(counters,{rag:1,playbook:1,discover:1,evidence:1,correct:1,score:1,review:1});
   assert.equal(scoreRequests.length,actualScoreAgent?1:0);
   assert.equal(correctionRequests.length,actualCorrectionAgent?1:0);
+  assert.equal(reviewRequests.length,actualReviewAgent?1:0);
   assert.equal(syntheticTavilySearches,actualEvidenceCollector?1:0);
   assert.equal(syntheticTavilyExtracts,actualEvidenceCollector?1:0);
   if(actualEvidenceCollector){
@@ -321,6 +348,11 @@ try{
     assert.equal(scored.dimensionRationales.length,7);
     assert.equal(scoreRequests[0].dataClassification,"public");
   }
+  if(actualReviewAgent){
+    assert.equal(state.assessmentReviews[0].required,true);
+    assert.equal(state.assessmentReviews[0].status,"secondary-confirmed");
+    assert.equal(state.assessmentReviews[0].secondaryModel,"gpt-5.6-terra-synthetic");
+  }
   assert.equal(state.handoffs.length,1);
   await completeWorkflowJob(claim,state.result!);
   await completeWorkflowJob(claim,state.result!);
@@ -339,6 +371,10 @@ try{
   const assessmentRows=await tenantQuery<{candidate_id:string;scoring_status:string}>(userId,
     "select candidate_id,scoring_status from lead_candidate_assessment where run_id=$1",[runId]);
   assert.deepEqual(assessmentRows,[{candidate_id:candidate.candidateId,scoring_status:"completed"}]);
+  const reviewCheckpointRows=await tenantQuery<{phase:string;model:string}>(userId,
+    "select phase,response->>'model' as model from lead_review_checkpoint where workspace_id=$1 and candidate_id=$2 order by phase",
+    [workspaceId,candidate.candidateId]);
+  assert.deepEqual(reviewCheckpointRows,actualReviewAgent?[{phase:"secondary",model:"gpt-5.6-terra-synthetic"}]:[]);
   if(actualScoreAgent){
     const cached=await tenantQuery<{candidate_id:string}>(userId,
       "select candidate_id from lead_assessment_cache where workspace_id=$1",[workspaceId]);
@@ -386,10 +422,11 @@ try{
     }finally{await browser.close();}
   }
   console.log(JSON.stringify({positiveGraphSql:"passed",pauseResume,assistantFallback,actualScoreAgent,
-    actualCorrectionAgent,actualEvidenceCollector,syntheticTavilySearches,syntheticTavilyExtracts,
+    actualCorrectionAgent,actualEvidenceCollector,actualReviewAgent,syntheticTavilySearches,syntheticTavilyExtracts,
     syntheticCorrectionRequests:correctionRequests.length,
     syntheticScoringRequests:scoreRequests.length,target:1,accepted:1,stopReason:"target-met",counters,
     handoffs:state.handoffs.length,companyRows:companies.length,assessmentRows:assessmentRows.length,
+    reviewCheckpointRows:reviewCheckpointRows.length,
     completionReceipts:receipts.length,httpViewports,syntheticReservedMicros:7,allocatedMicros:7,actualPaidCalls:0,
     latencyMs:Date.now()-startedAt}));
 }finally{
