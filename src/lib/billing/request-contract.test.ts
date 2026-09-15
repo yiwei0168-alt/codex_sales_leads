@@ -70,13 +70,32 @@ it("permits only bounded Exa auto company text search and rejects unsupported or
 });
 
 it("preserves reviewed native contracts while adding narrow search and Sol contracts",()=>{
-  expect(billingPolicy.version).toBe("request-bounds-v1.11.0");
-  expect(billingPolicy.rules).toHaveLength(12);
+  expect(billingPolicy.version).toBe("request-bounds-v1.12.0");
+  expect(billingPolicy.rules).toHaveLength(13);
   rules.forEach(expected=>{
     const rule=billingPolicy.rules.find(candidate=>candidate.key===expected.key);
     expect({...rule,boundDescription:expected.boundDescription}).toEqual(expected);
   });
   expect(()=>quoteRequest({origin:"https://api.moonshot.cn",pathname:"/v1/chat/completions",model:"kimi-k3",requestBytes:100,outputTokens:100},billingPolicy.rules,Date.parse("2026-09-13T12:00:00Z"))).toThrow("missing-tariff");
+});
+
+it("admits only the dedicated public-source RAG answer wire and bounded OpenAI route",()=>{
+  const now=Date.parse("2026-09-15T06:00:00Z");
+  const input={origin:"https://openrouter.ai",pathname:"/api/v1/chat/completions",
+    model:"openai/gpt-5.6-sol",requestBytes:61_440,outputTokens:8192};
+  const rule=quoteRequest(input,undefined,now,"openrouter-sol-rag-answer-credits");
+  expect(rule).toMatchObject({maximumChargeMicros:901120,maximumRequestBytes:61_440,
+    maximumOutputTokens:8192,requestContract:"openrouter-sol-rag-answer-text-v1"});
+  const body={model:input.model,messages:[{role:"system",content:"instructions"},{role:"user",content:"public facts"}],
+    provider:{require_parameters:true,data_collection:"deny",only:["openai"],allow_fallbacks:false},
+    stream:false,max_tokens:8192};
+  expect(()=>assertRequestContract(rule,body,"")).not.toThrow();
+  for(const change of [{temperature:0},{max_completion_tokens:8192},{max_tokens:8193},{response_format:{type:"json_object"}},
+    {tools:[]},{reasoning:{effort:"low"}},{provider:{require_parameters:true,data_collection:"deny"}},
+    {messages:[...body.messages,{role:"assistant",content:"extra"}]}])
+    expect(()=>assertRequestContract(rule,{...body,...change},"")).toThrow("request-out-of-bounds");
+  expect(()=>quoteRequest({...input,requestBytes:61_441},undefined,now,rule.key)).toThrow("request-out-of-bounds");
+  expect(()=>quoteRequest(input,undefined,Date.parse(rule.expiresAt),rule.key)).toThrow("expired-tariff");
 });
 
 it("keeps uncapped OpenRouter correction and review routes blocked despite public price metadata",()=>{

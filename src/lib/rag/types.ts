@@ -84,6 +84,7 @@ export interface RagAnswer {
   model: string;
   latencyMs: number;
   warnings: string[];
+  externalDisclosure?: { excludedChunks: number; redactedPatterns: number };
 }
 
 export interface KnowledgeStats {

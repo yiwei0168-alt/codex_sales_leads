@@ -49,9 +49,12 @@ export function budgetedFetch(transport:typeof fetch=fetch):typeof fetch {
       &&quote.pathname==="/api/v1/chat/completions"&&quote.model==="openai/gpt-5.6-terra";
     const judgeSol=attempt?.task==="lead-review-judge"&&quote.origin==="https://openrouter.ai"
       &&quote.pathname==="/api/v1/chat/completions"&&quote.model==="openai/gpt-5.6-sol";
+    const ragAnswerSol=attempt?.task==="rag-answer"&&quote.origin==="https://openrouter.ai"
+      &&quote.pathname==="/api/v1/chat/completions"&&quote.model==="openai/gpt-5.6-sol";
     const selectedContract=playbookSol?"openrouter-sol-openai-playbook-credits"
       :reviewTerra?"openrouter-terra-review-credits-standard-json"
-        :judgeSol?"openrouter-sol-judge-credits-standard-json":undefined;
+        :judgeSol?"openrouter-sol-judge-credits-standard-json"
+          :ragAnswerSol?"openrouter-sol-rag-answer-credits":undefined;
     const rule=native?.rule??(scope.tariffPolicy?quoteRequest(quote,policy.rules):selectedContract
       ?quoteRequest(quote,policy.rules,Date.now(),selectedContract):quoteRequest(quote));
     assertRequestContract(rule,parsed,url.search,request.method,request.headers);

@@ -4,6 +4,7 @@ import {sdkModelFetch,withSdkModelCall} from "@/lib/billing/sdk-model-call";
 import { ChatOpenAI } from "@langchain/openai";
 import { getRagConfig } from "./config";
 import type { RetrievedChunk } from "./types";
+import {prepareRagExternalDisclosure} from "./external-disclosure";
 
 let embeddingClient: OpenAI | undefined;
 
@@ -65,19 +66,25 @@ function buildContext(chunks: RetrievedChunk[]): string {
   ].join("\n")).join("\n\n");
 }
 
-export async function generateGroundedAnswer(question: string, chunks: RetrievedChunk[]): Promise<string> {
+export function createGroundedAnswerModel(fetchImplementation:typeof fetch=sdkModelFetch(),maxRetries=2){
   const config = getRagConfig();
   if (!config.openaiApiKey) throw new Error("OPENROUTER_API_KEY is not configured");
-  const model = new ChatOpenAI({
+  return new ChatOpenAI({
     apiKey: config.openaiApiKey,
     model: config.generationModel,
-    temperature: 0,
-    maxRetries: 2,
+    maxRetries,
     timeout: 90_000,
     streamUsage: false,
-    modelKwargs: { provider: config.openaiProviderPreferences,max_completion_tokens:textOutputLimit("rag-answer") },
-    configuration: { baseURL: config.openaiBaseUrl, defaultHeaders: config.openaiDefaultHeaders,fetch:sdkModelFetch() },
+    maxTokens:textOutputLimit("rag-answer"),
+    modelKwargs: { provider: {...config.openaiProviderPreferences,only:["openai"],allow_fallbacks:false} },
+    configuration: { baseURL: config.openaiBaseUrl, defaultHeaders: config.openaiDefaultHeaders,fetch:fetchImplementation },
   });
+}
+
+export async function generateGroundedAnswer(question: string, chunks: RetrievedChunk[]): Promise<string> {
+  const disclosure=prepareRagExternalDisclosure(question,chunks);
+  if(disclosure.chunks.length===0)throw new Error("RAG external answer requires explicitly public-source knowledge");
+  const model = createGroundedAnswerModel();
   const response = await withSdkModelCall({provider:"openrouter",task:"rag-answer",promptVersion:"rag-grounded-answer-v1"},()=>model.invoke([
       {
         role: "system",
@@ -93,7 +100,7 @@ export async function generateGroundedAnswer(question: string, chunks: Retrieved
           "Reply in the language used by the question.",
         ].join("\n"),
       },
-      { role: "user", content: `Question:\n${question}\n\nKnowledge-base context:\n${buildContext(chunks)}` },
+      { role: "user", content: `Question:\n${disclosure.question}\n\nKnowledge-base context:\n${buildContext(disclosure.chunks)}` },
     ]));
   if (typeof response.content === "string") return response.content.trim() || "未能生成回答。";
   const text = response.content.flatMap((item) => typeof item === "string" ? [item]
