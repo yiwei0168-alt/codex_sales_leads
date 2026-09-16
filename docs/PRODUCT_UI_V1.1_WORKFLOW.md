@@ -1,5 +1,7 @@
 # Product UI v1.1 implementation workflow
 
+> 2026-09-16：`LG01` 确认 LangGraph 独立本地运行边界。独立服务监听 `127.0.0.1:2024`，通过适配图复用现有助手与线索 runner；Next.js 产品、业务 API 和数据库语义暂不迁移。详见[独立 LangGraph 编排服务](STANDALONE_LANGGRAPH_WORKFLOW_2026-09-16.md)。
+
 > 2026-09-16：全站默认表现层已进入 `UI-D12` 深色情报中枢阶段。原有业务工作流、API、DTO、路由、权限、成本门禁和事件语义保持不变；主题通过最后加载的作用域 CSS 覆盖，移动端新增的导航开关不持久化且不发起业务请求。设计、范围、验收及回退边界见 [DEEP_INTELLIGENCE_UI_WORKFLOW_2026-09-16.md](DEEP_INTELLIGENCE_UI_WORKFLOW_2026-09-16.md)。
 
 2026-09-15 阶段 242：任务详情的检查点进度现在分开显示待校正、待评分和待独立复核数量。`processing-incomplete` 文案也包含复核未完成。隔离生产 Chrome 1366×900/390×844 共 68 项验证通过：失败检查点为 `1/1/1`，完成检查点为 `0/0/0`，跨 owner 读取失败显示未知，恢复后回到测得 0；刷新不变。数量按阶段独立记录，不相加为公司总数，不代表用户采用。[证据](LAYERED_QUALITY_AND_FAILURE_PROGRESS_STAGE242_2026-09-15.md)。

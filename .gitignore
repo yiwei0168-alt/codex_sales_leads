@@ -38,3 +38,6 @@ knowledge/industry/*
 knowledge/company/*
 knowledge/product/*
 !knowledge/README.md
+
+# LangGraph API
+.langgraph_api
