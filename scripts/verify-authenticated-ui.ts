@@ -192,8 +192,17 @@ try{
     const signedIn=await (await readLocal(new URL("/api/auth/session",base).href)).json() as {authenticated?:boolean};
     if(!signedIn.authenticated)throw new Error(`Synthetic UI login did not retain its session for ${base.hostname}`);
     await expect(page.locator(".nav-item").filter({hasText:"销售线索"})).toBeVisible({timeout:30_000});
+    const openView=async(label:string)=>{
+      const mobileTrigger=page.getByRole("button",{name:"打开导航菜单",exact:true});
+      if(viewport.width<=980)await mobileTrigger.click();
+      await page.locator(".nav-item").filter({hasText:label}).click();
+      if(viewport.width<=980){
+        await expect(mobileTrigger).toHaveAttribute("aria-expanded","false");
+        await page.waitForTimeout(220);
+      }
+    };
     checks.push(`${viewport.width}:real-login`);
-    await page.getByRole("button",{name:"AI 销售助理",exact:true}).click();
+    await openView("AI 销售助理");
     for(const [reason,label] of [["target-met","目标已满足"],["provider-unavailable","运行结束，目标未填满"],
       ["legacy-unknown","运行结束，最终数量未记录"]]){
       const card=page.locator(".ai-message").filter({hasText:`Synthetic search status ${reason}`}).locator(".ai-action-card");
@@ -294,7 +303,7 @@ try{
       checks.push(`${viewport.width}:${country}:country-detail-map`);
     }
     for(const label of ["任务进程","知识库 & RAG","邮箱学习"]){
-      await page.locator(".nav-item").filter({hasText:label}).click();
+      await openView(label);
       await expect(page.locator(".nav-item.active")).toContainText(label);
     }
     for(const path of ["/api/tasks","/api/tasks/markets","/api/tasks/usage","/api/budget"]){
@@ -316,7 +325,7 @@ try{
     const tariffSnapshot=await (await readLocal(new URL('/api/budget',base).href)).json();
     expect(tariffSnapshot.tariffVerification.scope).toBe('static-request-bounds-only');
     expect(tariffSnapshot.tariffVerification.rules).toHaveLength(tariffSnapshot.configuredRules);
-    await page.locator('.nav-item').filter({hasText:'任务进程'}).click();
+    await openView('任务进程');
     await page.getByText('美元预算与预留（不启动任务）',{exact:true}).click();
     await page.getByText('费用上界核验期限',{exact:true}).click();
     for(const rule of tariffSnapshot.tariffVerification.rules){

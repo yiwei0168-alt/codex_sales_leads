@@ -8,7 +8,7 @@ test.beforeAll(async()=>{
   const bundle=await build({entryPoints:["tests/browser/dialog-fixture.tsx"],bundle:true,write:false,
     platform:"browser",format:"iife",jsx:"automatic",define:{"process.env.NODE_ENV":'"production"',"process.env":"{}"}});
   script=bundle.outputFiles[0].text;
-  css=(await Promise.all(["src/app/globals.css","src/app/ipados.css"].map(path=>readFile(path,"utf8")))).join("\n");
+  css=(await Promise.all(["src/app/globals.css","src/app/ipados.css","src/app/intelligence-theme.css"].map(path=>readFile(path,"utf8")))).join("\n");
 });
 test.beforeEach(async({page})=>{
   page.on("pageerror",error=>{throw error;});
@@ -20,8 +20,39 @@ test.beforeEach(async({page})=>{
     return route.abort("blockedbyclient");
   });
   await page.goto("https://ui.test/");
+  await page.evaluate(()=>document.body.classList.add("intelligence-theme"));
   await page.addStyleTag({content:css});
   await page.addScriptTag({content:script});
+});
+test("mobile navigation traps focus, closes from Escape and backdrop, and restores its trigger",async({page})=>{
+  test.skip(page.viewportSize()!.width>620,"mobile navigation is intentionally hidden on desktop");
+  const trigger=page.getByRole("button",{name:"Open test navigation"});
+  await trigger.click();
+  const drawer=page.getByRole("dialog",{name:"Test navigation"});
+  await expect(drawer.getByRole("button",{name:"Close test navigation"})).toBeFocused();
+  await page.keyboard.press("Shift+Tab");
+  await expect(drawer.getByRole("button",{name:"Second view"})).toBeFocused();
+  await page.keyboard.press("Escape");
+  await expect(drawer).toHaveCount(0);
+  await expect(trigger).toBeFocused();
+  await trigger.click();
+  await page.getByRole("button",{name:"Close test navigation backdrop"}).click({position:{x:380,y:820}});
+  await expect(drawer).toHaveCount(0);
+  await expect(trigger).toBeFocused();
+});
+test("responsive table keeps every field and does not create page-level horizontal overflow",async({page})=>{
+  test.skip(page.viewportSize()!.width>620,"card conversion applies at the mobile breakpoint");
+  const row=page.locator(".responsive-table tbody tr");
+  await expect(row.locator('td[data-label="Company"]')).toHaveText("Fixture Networks");
+  await expect(row.locator('td[data-label="Role"]')).toHaveText("Distributor");
+  await expect(row.locator('td[data-label="Score"]')).toHaveText("88");
+  await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth+1)).toBe(true);
+});
+test("captures isolated legacy and intelligence-theme comparison",async({page})=>{
+  const width=page.viewportSize()!.width;
+  await page.screenshot({path:`tmp/ui-d12-${width}-intelligence.png`,fullPage:true});
+  await page.evaluate(()=>document.body.classList.remove("intelligence-theme"));
+  await page.screenshot({path:`tmp/ui-d12-${width}-legacy.png`,fullPage:true});
 });
 test("company traps Tab, restores focus and closes only topmost modal",async({page})=>{
   const opener=page.getByRole("button",{name:"打开公司",exact:true}); await opener.click();

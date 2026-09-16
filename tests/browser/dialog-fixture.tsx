@@ -21,9 +21,27 @@ function Nested({close}:{close:()=>void}) {
   const ref=useDialogFocus(close);
   return <div className="modal-backdrop"><section ref={ref} tabIndex={-1} role="dialog" aria-modal="true" aria-label="nested"><button onClick={close}>关闭证据</button></section></div>;
 }
+function MobileNavigationFixture() {
+  const [open,setOpen]=useState(false);
+  const ref=useDialogFocus(open?()=>setOpen(false):undefined);
+  return <>
+    <button className="mobile-nav-trigger" aria-label="Open test navigation" aria-controls="test-navigation" aria-expanded={open} onClick={()=>setOpen(true)}><span/><span/><span/></button>
+    {open&&<button className="mobile-nav-backdrop" aria-label="Close test navigation backdrop" onClick={()=>setOpen(false)}/>}
+    <aside ref={ref} hidden={!open} style={{display:open?undefined:"none"}} id="test-navigation" tabIndex={open?-1:undefined} className={`sidebar test-navigation ${open?"mobile-open":""}`} role={open?"dialog":undefined} aria-modal={open?"true":undefined} aria-label={open?"Test navigation":undefined}>
+      <button className="mobile-nav-close" aria-label="Close test navigation" onClick={()=>setOpen(false)}>×</button>
+      <nav><button className="nav-item active">Current view</button><button className="nav-item">Second view</button></nav>
+    </aside>
+  </>;
+}
+function ResponsiveTableFixture() {
+  return <section className="panel results-panel"><div className="table-scroll"><table className="data-table responsive-table">
+    <thead><tr><th>Company</th><th>Role</th><th>Score</th></tr></thead>
+    <tbody><tr><td data-label="Company">Fixture Networks</td><td data-label="Role">Distributor</td><td data-label="Score">88</td></tr></tbody>
+  </table></div></section>;
+}
 function Fixture() {
   const [open,setOpen]=useState(""); const [nested,setNested]=useState(false);const [budget,setBudget]=useState(false);
-  return <><TaskSpendBudget actionId="fixture-action"/><button onClick={()=>setOpen("company")}>打开公司</button><button onClick={()=>setOpen("task")}>打开任务</button>
+  return <><MobileNavigationFixture/><ResponsiveTableFixture/><TaskSpendBudget actionId="fixture-action"/><button onClick={()=>setOpen("company")}>打开公司</button><button onClick={()=>setOpen("task")}>打开任务</button>
     {open==="company"&&<CompanyDetail company={company} onClose={()=>setOpen("")} onUpdate={()=>{}} onEvidence={()=>setNested(true)} onOpenAssistant={()=>{}}/>}
     {open==="task"&&<TaskDetailView id="fixture-task" kind="generation" onClose={()=>setOpen("")}/>}
     <button onClick={()=>setOpen('contact-task')}>打开异常联系人任务</button>{open==='contact-task'&&<TaskDetailView id="fixture-contact-task" kind="contacts" onClose={()=>setOpen('')}/>}
