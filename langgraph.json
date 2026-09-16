@@ -20,7 +20,8 @@
     "cors": {
       "allow_origins": [
         "http://127.0.0.1:3000",
-        "http://localhost:3000"
+        "http://localhost:3000",
+        "https://smith.langchain.com"
       ],
       "allow_methods": ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
       "allow_headers": ["Content-Type", "Authorization", "X-Api-Key"]

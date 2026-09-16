@@ -21,4 +21,8 @@ for (const [graphId, definition] of Object.entries(config.graphs ?? {})) {
 }
 
 if (loaded.length === 0) throw new Error("No LangGraph exports configured");
-console.log(JSON.stringify({ ok: true, graphs: loaded }));
+const allowedOrigins = config.http?.cors?.allow_origins ?? [];
+if (!allowedOrigins.includes("https://smith.langchain.com")) {
+  throw new Error("LangGraph Studio origin is not allowed");
+}
+console.log(JSON.stringify({ ok: true, graphs: loaded, studioOriginAllowed: true }));

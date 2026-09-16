@@ -33,3 +33,7 @@ npm run langgraph:dev
 ### LG02 产品路由验收补充
 
 产品助手入口与已认领线索任务入口已经只调用官方 LangGraph SDK，不再直接导入两个内部 runner，也没有服务失败时的进程内回退。基于已整合 A33/A34 的最新基线，最终零成本路由探测以 3 个 HTTP 请求获得 1 个有效健康结果和 2 个预期输入拒绝，耗时 2,081.40 ms；隔离式生产构建验收在桌面与移动端完成 68/68 项检查，其中两次暂停任务均真实经过独立服务并保留原 `cancelled`、checkpoint 与费用状态。全量 216 个测试文件、1,089 项测试、TypeScript、lint、生产构建、22 项浏览器测试和依赖审计通过；2 项浏览器用例按设计在桌面项目跳过。验证期间模型、搜索、SMTP、付费调用与真实邮件均为 0，临时合成数据已清理，实际用户采用仍未知。
+
+### LG03 Studio 本地连接
+
+Studio 使用 `https://smith.langchain.com/studio/?baseUrl=http://127.0.0.1:2024` 从浏览器直连本机 Agent Server。服务的 CORS 白名单仅在原产品来源之外新增 `https://smith.langchain.com`，监听地址仍为 `127.0.0.1`。启动预加载层在没有显式配置时将 `LANGSMITH_TRACING` 设为 `false`，因此查看本地图不会自动开启云 trace；LangSmith 登录、组织权限和浏览器策略仍由官方 Studio 管理。
