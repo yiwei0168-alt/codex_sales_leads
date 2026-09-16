@@ -110,6 +110,8 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
   const [allowFeedbackMemory, setAllowFeedbackMemory] = useState(false);
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
   const [failedEdit, setFailedEdit] = useState<{ id: string; patch: CompanyEditablePatch } | null>(null);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const mobileNavRef = useDialogFocus(mobileNavOpen ? () => setMobileNavOpen(false) : undefined);
   const saveQueue = useRef<Promise<unknown>>(Promise.resolve());
   const pendingSaves=useRef(0);
   useEffect(()=>{
@@ -301,13 +303,23 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
 
   return (
     <div className="app-shell">
-      <aside className="sidebar">
+      {mobileNavOpen && <button className="mobile-nav-backdrop" aria-label="关闭导航菜单" onClick={() => setMobileNavOpen(false)} />}
+      <aside
+        ref={mobileNavRef}
+        id="primary-navigation"
+        className={`sidebar ${mobileNavOpen ? "mobile-open" : ""}`}
+        role={mobileNavOpen ? "dialog" : undefined}
+        aria-modal={mobileNavOpen ? "true" : undefined}
+        aria-label={mobileNavOpen ? "主导航菜单" : undefined}
+        tabIndex={mobileNavOpen ? -1 : undefined}
+      >
         <div className="brand-mark"><span className="brand-glyph">N</span><div><strong>Network Copilot</strong><small>Channel Intelligence</small></div></div>
+        <button className="mobile-nav-close" aria-label="关闭导航菜单" onClick={() => setMobileNavOpen(false)}><Icon name="close" size={20}/></button>
         <div className="workspace-switcher"><span className="market-flag">◎</span><div><strong>Global · All markets</strong><small>AI sales workspace</small></div><Icon name="chevron" size={14} /></div>
         <nav aria-label="主导航">
           <p className="nav-label">Workspace</p>
           {navItems.map((item) => (
-            <button key={item.id} aria-label={item.label} title={item.label} className={`nav-item ${view === item.id ? "active" : ""}`} onClick={() => setView(item.id)}>
+            <button key={item.id} aria-label={item.label} aria-current={view === item.id ? "page" : undefined} title={item.label} className={`nav-item ${view === item.id ? "active" : ""}`} onClick={() => { setView(item.id); setMobileNavOpen(false); }}>
               <Icon name={item.id} /><span>{item.label}</span>{item.meta && <em>{item.meta}</em>}
             </button>
           ))}
@@ -323,6 +335,7 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
 
       <main className="main-shell">
         <header className="topbar">
+          <button className="mobile-nav-trigger" aria-label="打开导航菜单" aria-controls="primary-navigation" aria-expanded={mobileNavOpen} onClick={() => setMobileNavOpen(true)}><span/><span/><span/></button>
           <div className="breadcrumbs"><span>Workspace</span><Icon name="chevron" size={13}/><strong>Global</strong><Icon name="chevron" size={13}/><span>{navItems.find((item) => item.id === view)?.label}</span></div>
           <div className="top-actions"><button onClick={()=>setRefreshVersion(value=>value+1)}>刷新已保存数据</button><span className={`snapshot-badge ${saveState === "error" ? "save-error" : ""}`}><span className="live-dot"/>{saveState === "saving" ? "正在保存…" : saveState === "saved" ? "已保存到 RDS" : saveState === "error" ? "保存失败，请重试" : `Global workspace · ${searchDate}`}</span><button className="avatar small">{userName.slice(0, 2).toUpperCase()}</button></div>
         </header>
@@ -331,7 +344,7 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
           {failedEdit && <div role="alert">修改尚未保存，原值已保留。<button onClick={() => void updateCompany(failedEdit.id, failedEdit.patch)}>重试保存</button></div>}
           {view !== "home" && <section className="workspace-heading">
             <div>
-              <div className="eyebrow">GLOBAL MARKET / ALL CUDY SALES SEGMENTS</div>
+              <div className="eyebrow">全球市场 / 全部 Cudy 销售分层</div>
               <h1>{view === "overview" ? "全球市场渠道概览" : navItems.find((item) => item.id === view)?.label}</h1>
               <p>{view === "knowledge" ? "统一管理行业、公司和产品知识，以可追溯 RAG 支撑 AI 决策。" : view === "mailbox" ? "只读同步当前用户的邮箱，提取政策、客户信号和开发邮件模板候选。" : view === "tasks" ? "实时查看联系人搜索进度、当前公司、worker 状态和任务产出。" : mode === "new-market" ? "同步建立一级供货能力与下级渠道需求。" : "激活现有供货体系，主动发现未覆盖的下级增长节点。"}</p>
             </div>
@@ -385,20 +398,20 @@ function Results({ companies, query, setQuery, roleFilter, setRoleFilter, tierFi
         <span className="result-count">{companies.length} 个节点</span>
       </div>
       <div className="table-scroll">
-        <table className="data-table">
+        <table className="data-table responsive-table">
           <thead><tr><th aria-label="加入开发名单"/><th>公司</th><th>主角色</th><th>账户等级</th><th>综合评分</th><th>合作路径</th><th>开发阶段</th><th aria-label="操作"/></tr></thead>
           <tbody>{countryGroups.map(([country, countryCompanies]) => <Fragment key={country}>
             <tr className="country-group-row"><td colSpan={8}><strong>{country}</strong><span>{countryCompanies.length} 家公司</span></td></tr>
             {countryCompanies.map((company) => (
             <tr key={company.id} className={company.manuallyEdited ? "manual-row" : ""}>
-              <td><input type="checkbox" checked={company.opportunityStage !== "Discovered" && company.opportunityStage !== "Excluded"} onChange={() => onToggle(company)} aria-label={`切换 ${company.displayName} 的 shortlist 状态`}/></td>
-              <td><button className="company-cell" onClick={() => onSelect(company.id)}><span className="company-avatar">{company.displayName.slice(0, 2).toUpperCase()}</span><span><strong>{company.displayName}</strong><small>{company.city} · {company.domain}</small></span></button></td>
-              <td><StatusTag>{primaryRole(company)}</StatusTag>{evidenceFreshness(company.evidence) === "older-than-year" && <small>超过一年未核实</small>}</td>
-              <td><StatusTag tone={company.accountTier === "KA" ? "amber" : company.accountTier === "Priority" ? "blue" : "neutral"}>{company.accountTier}</StatusTag></td>
-              <td>{company.userAdded && company.assessmentNeedsRefresh ? "尚未评估" : company.assessmentNeedsRefresh ? <span title={`历史评分：${company.fitScore}`}>评分待更新</span> : <ScoreRing value={company.fitScore} compact/>}</td>
-              <td><span className="supply-copy">{company.selectedCooperationPath ?? "未分析"}</span>{company.manuallyEdited && <small className="manual-badge">用户修改</small>}</td>
-              <td><span className={`stage-dot ${company.opportunityStage.toLowerCase().replace(" ", "-")}`}/>{stageLabel(company.opportunityStage)}</td>
-              <td><button className="row-action" onClick={() => onSelect(company.id)} aria-label={`打开 ${company.displayName} 详情`}><Icon name="chevron" size={16}/></button></td>
+              <td data-label="开发名单"><input type="checkbox" checked={company.opportunityStage !== "Discovered" && company.opportunityStage !== "Excluded"} onChange={() => onToggle(company)} aria-label={`切换 ${company.displayName} 的 shortlist 状态`}/></td>
+              <td data-label="公司"><button className="company-cell" onClick={() => onSelect(company.id)}><span className="company-avatar">{company.displayName.slice(0, 2).toUpperCase()}</span><span><strong>{company.displayName}</strong><small>{company.city} · {company.domain}</small></span></button></td>
+              <td data-label="主角色"><StatusTag>{primaryRole(company)}</StatusTag>{evidenceFreshness(company.evidence) === "older-than-year" && <small>超过一年未核实</small>}</td>
+              <td data-label="账户等级"><StatusTag tone={company.accountTier === "KA" ? "amber" : company.accountTier === "Priority" ? "blue" : "neutral"}>{company.accountTier}</StatusTag></td>
+              <td data-label="综合评分">{company.userAdded && company.assessmentNeedsRefresh ? "尚未评估" : company.assessmentNeedsRefresh ? <span title={`历史评分：${company.fitScore}`}>评分待更新</span> : <ScoreRing value={company.fitScore} compact/>}</td>
+              <td data-label="合作路径"><span className="supply-copy">{company.selectedCooperationPath ?? "未分析"}</span>{company.manuallyEdited && <small className="manual-badge">用户修改</small>}</td>
+              <td data-label="开发阶段"><span className={`stage-dot ${company.opportunityStage.toLowerCase().replace(" ", "-")}`}/>{stageLabel(company.opportunityStage)}</td>
+              <td data-label="操作"><button className="row-action" onClick={() => onSelect(company.id)} aria-label={`打开 ${company.displayName} 详情`}><Icon name="chevron" size={16}/></button></td>
             </tr>
           ))}</Fragment>)}{companies.length === 0 && <tr><td colSpan={8}>当前国家或筛选条件下暂无候选公司。</td></tr>}</tbody>
         </table>

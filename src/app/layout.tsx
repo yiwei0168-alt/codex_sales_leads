@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import "./ipados.css";
+import "./intelligence-theme.css";
 
 export const metadata: Metadata = {
   title: "Network Channel Copilot",
@@ -10,7 +11,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="zh-CN">
-      <body>{children}</body>
+      <body className="intelligence-theme">{children}</body>
     </html>
   );
 }
