@@ -36,7 +36,7 @@ const assistantInputSchema = z.object({
 const leadInputSchema = z.object({
   userId: z.string().uuid(),
   actionId: z.string().uuid(),
-  graphThreadId: z.string().uuid(),
+  graphThreadId: z.string().min(1).max(200).regex(/^[^\u0000-\u001f\u007f]+$/),
   plan: leadPlanSchema,
 });
 

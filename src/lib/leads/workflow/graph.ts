@@ -710,7 +710,10 @@ export async function runLeadWorkflow(input: {
     warnings: [],
   };
   const graph=getProductionGraph();
-  const config={configurable:{thread_id:input.graphThreadId},recursionLimit:50};
+  // This workflow can run inside the standalone LangGraph API graph. Pin its
+  // persisted business checkpoint to the root namespace so the outer graph's
+  // task namespace cannot leak into resume lookups.
+  const config={configurable:{thread_id:input.graphThreadId,checkpoint_ns:""},recursionLimit:50};
   const snapshot=await graph.getState(config);
   let mode=checkpointInvocation(snapshot,input.userId,input.actionId,input.plan);
   if(mode==='complete')return snapshot.values.result as LeadWorkflowResult;
@@ -750,9 +753,15 @@ export async function runLeadWorkflow(input: {
   if(mode!=='resume')initial.searchExcludeDomains=await continuationExclusions(input.userId,input.actionId);
   const parent=currentSpendContext();
   if(parent&&parent.userId!==input.userId)throw new Error("Budget scope owner mismatch");
+  // A nested invocation must resume the exact checkpoint selected above. The
+  // outer LangGraph run can otherwise make a thread-only lookup resolve as a
+  // fresh invocation and reject the intentional null resume input.
+  const invocationConfig=mode==='resume'
+    ? {...config,configurable:{...config.configurable,...(await graph.getState(config)).config.configurable}}
+    : config;
   const state = await withSpendContext({userId:input.userId,operationId:input.actionId,stage:"lead-workflow",
     ...(parent?.fixedFxReferenceVersion?{fixedFxReferenceVersion:parent.fixedFxReferenceVersion}:{}),
-    costAttribution:{version:"company-cost-attribution-v1",kind:"task-shared",companyKeys:[],roundKey:costRoundKey(input.graphThreadId)}},()=>graph.invoke(mode==='resume'?null:initial,config));
+    costAttribution:{version:"company-cost-attribution-v1",kind:"task-shared",companyKeys:[],roundKey:costRoundKey(input.graphThreadId)}},()=>graph.invoke(mode==='resume'?null:initial,invocationConfig));
   if (!state.result) throw new Error("LangGraph workflow completed without a result");
   return state.result;
 }

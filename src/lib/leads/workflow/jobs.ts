@@ -4,8 +4,8 @@ import { getAssistantAction, setAssistantActionStatus } from "@/lib/assistant/re
 import type { LeadSearchPlan } from "@/lib/assistant/types";
 import {completeWorkflowJob,failWorkflowJob} from "./job-completion";
 import { query, tenantQuery, tenantTransaction } from "@/lib/rag/db";
+import { invokeLeadWorkflowViaLangGraph } from "@/lib/langgraph/client";
 
-import { runLeadWorkflow } from "./graph";
 import type { LeadWorkflowResult } from "./types";
 
 export type LeadWorkflowExecutionMode = "inline" | "worker";
@@ -124,7 +124,7 @@ export async function requestWorkflowPause(userId:string,actionId:string){
 
 export async function executeClaimedLeadWorkflow(claim: LeadWorkflowJobClaim): Promise<LeadWorkflowResult> {
   try {
-    const result = await runLeadWorkflow({ userId: claim.userId, actionId: claim.actionId,
+    const result = await invokeLeadWorkflowViaLangGraph({ userId: claim.userId, actionId: claim.actionId,
       graphThreadId: claim.graphThreadId, plan: claim.plan });
     await finishJob(claim, result);
     return result;

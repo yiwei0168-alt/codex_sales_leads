@@ -1,7 +1,7 @@
 import {
   appendMessage, cancelProposedLeadSearchActions, createConversation, createLeadSearchAction, getConversation, updateConversation,
 } from "./repository";
-import { runAssistantWorkflow } from "./graph";
+import { invokeAssistantWorkflowViaLangGraph } from "@/lib/langgraph/client";
 import type { AssistantConversationDto } from "./types";
 import { measuredProductActionCompanies } from "./product-actions";
 
@@ -22,7 +22,7 @@ export async function processAssistantMessage(userId: string, input: {
 
   const history = existing.messages.filter((message) => message.role !== "system")
     .map((message) => ({ role: message.role as "user" | "assistant", content: message.content }));
-  const interpreted = await runAssistantWorkflow(userId, input.content, history);
+  const interpreted = await invokeAssistantWorkflowViaLangGraph(userId, input.content, history);
   const planner = interpreted.intentPlan ? {
     confidence: interpreted.intentPlan.confidence,
     plannerModel: interpreted.intentPlan.plannerModel,

@@ -1,5 +1,7 @@
 # Product UI v1.1 implementation workflow
 
+> 2026-09-16：`LG02` 要求产品生产入口只通过独立 LangGraph API 执行助手与线索编排；服务错误明确失败且不回退进程内 runner。实施与验收状态见[独立 LangGraph 编排服务](STANDALONE_LANGGRAPH_WORKFLOW_2026-09-16.md)。
+
 > 2026-09-16：`LG01` 确认 LangGraph 独立本地运行边界。独立服务监听 `127.0.0.1:2024`，通过适配图复用现有助手与线索 runner；Next.js 产品、业务 API 和数据库语义暂不迁移。详见[独立 LangGraph 编排服务](STANDALONE_LANGGRAPH_WORKFLOW_2026-09-16.md)。
 
 > 2026-09-16：全站默认表现层已进入 `UI-D12` 深色情报中枢阶段。原有业务工作流、API、DTO、路由、权限、成本门禁和事件语义保持不变；主题通过最后加载的作用域 CSS 覆盖，移动端新增的导航开关不持久化且不发起业务请求。设计、范围、验收及回退边界见 [DEEP_INTELLIGENCE_UI_WORKFLOW_2026-09-16.md](DEEP_INTELLIGENCE_UI_WORKFLOW_2026-09-16.md)。

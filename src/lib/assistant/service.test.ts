@@ -1,7 +1,7 @@
 import {expect,it,vi} from "vitest";
 const m=vi.hoisted(()=>({get:vi.fn(),append:vi.fn(),create:vi.fn(),cancel:vi.fn(),run:vi.fn(),find:vi.fn()}));
 vi.mock("./repository",()=>({getConversation:m.get,appendMessage:m.append,createConversation:vi.fn(),updateConversation:vi.fn(),createLeadSearchAction:m.create,cancelProposedLeadSearchActions:m.cancel}));
-vi.mock("./graph",()=>({runAssistantWorkflow:m.run}));
+vi.mock("@/lib/langgraph/client",()=>({invokeAssistantWorkflowViaLangGraph:m.run}));
 vi.mock("./product-actions",()=>({measuredProductActionCompanies:m.find}));
 import {processAssistantMessage} from "./service";
 it("persists only a reviewable budget proposal, leaving existing search actions untouched",async()=>{
