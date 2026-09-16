@@ -25,4 +25,7 @@ const allowedOrigins = config.http?.cors?.allow_origins ?? [];
 if (!allowedOrigins.includes("https://smith.langchain.com")) {
   throw new Error("LangGraph Studio origin is not allowed");
 }
+if (config.http?.cors?.allow_headers != null) {
+  throw new Error("Studio request headers must be reflected dynamically for the exact allowed origin");
+}
 console.log(JSON.stringify({ ok: true, graphs: loaded, studioOriginAllowed: true }));

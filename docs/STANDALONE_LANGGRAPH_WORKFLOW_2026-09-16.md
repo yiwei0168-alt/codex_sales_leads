@@ -36,4 +36,4 @@ npm run langgraph:dev
 
 ### LG03 Studio 本地连接
 
-Studio 使用 `https://smith.langchain.com/studio/?baseUrl=http://127.0.0.1:2024` 从浏览器直连本机 Agent Server。服务的 CORS 白名单仅在原产品来源之外新增 `https://smith.langchain.com`，监听地址仍为 `127.0.0.1`。启动预加载层在没有显式配置时将 `LANGSMITH_TRACING` 设为 `false`，因此查看本地图不会自动开启云 trace；LangSmith 登录、组织权限和浏览器策略仍由官方 Studio 管理。
+Studio 使用 `https://smith.langchain.com/studio/?baseUrl=http://127.0.0.1:2024` 从浏览器直连本机 Agent Server。服务的 CORS 白名单仅在原产品来源之外新增 `https://smith.langchain.com`，监听地址仍为 `127.0.0.1`；允许请求头由精确获准的来源预检动态反射，并公开 Studio 分页所需的两个响应头。启动预加载层在没有显式配置时将 `LANGSMITH_TRACING` 设为 `false`，因此查看本地图不会自动开启云 trace。当前官方 JavaScript Studio 流程还要求在 Git 忽略的 `.env.local` 提供 `LANGSMITH_API_KEY`；本机尚未配置，第一次 Studio 页面尝试返回 `Failed to fetch`，完整 Studio 验收等待用户自行创建并保存密钥后继续。

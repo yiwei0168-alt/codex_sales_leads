@@ -24,7 +24,7 @@
         "https://smith.langchain.com"
       ],
       "allow_methods": ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-      "allow_headers": ["Content-Type", "Authorization", "X-Api-Key"]
+      "expose_headers": ["Content-Location", "X-Pagination-Total"]
     }
   }
 }
