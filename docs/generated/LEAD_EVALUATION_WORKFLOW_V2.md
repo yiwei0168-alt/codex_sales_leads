@@ -755,10 +755,10 @@ flowchart TD
 | `src/lib/assistant/intent.ts` | `5501e1e0a9617b34f40d14af6bf65fdae8250f9f9ed714647ec6878eb1179ab3` |
 | `src/lib/assistant/intent-agent.ts` | `cc14a3432d6fbd0cf50a653892dc20982f2d8652f782055ebdc94163eda65027` |
 | `src/lib/rag/openai-provider.ts` | `cbf1be2e745eae74d208bf3c907050fb472f9469d31fdaa6d5d67d9a68273908` |
-| `src/lib/assistant/service.ts` | `191d407fc558253b10df7b57564bb73094808cddaf5f2f8883c57742561eff7e` |
+| `src/lib/assistant/service.ts` | `2efd31f25bea469623b40bcc3ea9f473b57ba48bdbb4bbba12610d0fbaf50d3d` |
 | `src/lib/assistant/repository.ts` | `5f8a96b484418bc47dc119e5ceb7b7989f0f551915bfd3b9e8068b013bca001b` |
-| `src/lib/leads/workflow/graph.ts` | `85ca33945365de6416a4441a414b97a4f775cf9c37d549ca596603afa6574a23` |
-| `src/lib/leads/workflow/jobs.ts` | `aaa6747c17996197d428d111039ac02345681b13bf812e033a0425d8a55eebea` |
+| `src/lib/leads/workflow/graph.ts` | `c2fcddc9686f0ff43862b5b967bcee484b5c520edd10122b1127c3d6ea1568ea` |
+| `src/lib/leads/workflow/jobs.ts` | `03dbd544172f4096425db8636dcc04475c13001cc3d702f5f53c1377836a7de1` |
 | `src/lib/leads/workflow/rag-context.ts` | `1e1ee21e77b90731e849426cd7130de7d1e50ee6aec9f196e44cb642bf81387b` |
 | `src/lib/leads/workflow/playbook.ts` | `7c4bf05b562825b9b3c9d7f0e6a27eff13edc70f3b8ea32d5e98d98f2a1cc3f6` |
 | `src/lib/leads/workflow/playbook-cache.ts` | `2c16be23aa54888be27e6483e2634fa763b07be7bce551bb9199c4d55c66cfa0` |
