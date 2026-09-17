@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import {
   buildAssistantServerGraph,
   buildLeadServerGraph,
+  buildKnowledgeServerGraph,
   buildRuntimeHealthGraph,
 } from "./server";
 
@@ -59,6 +60,25 @@ describe("standalone LangGraph composed workflows", () => {
     expect([...graph.getSubgraphs()].map(([name]) => name)).toContain("lead_business_flow");
   });
 
+  it("executes the shared knowledge business graph behind an expandable subgraph node", async () => {
+    const workflowResult = { kind: "document-links", reasonCode: "ok", answer: "ok" };
+    const executeKnowledgeGraph = vi.fn(async () => workflowResult);
+    const graph = buildKnowledgeServerGraph({ executeKnowledgeGraph: executeKnowledgeGraph as never });
+    const input = {
+      userId: "11111111-1111-4111-8111-111111111111",
+      question: "open the product datasheet",
+      history: [],
+      collections: ["product" as const],
+      entry: "knowledge-page" as const,
+    };
+    const result = await graph.invoke(input);
+    expect(executeKnowledgeGraph).toHaveBeenCalledWith(input.userId, {
+      question: input.question, history: [], collections: ["product"], entry: "knowledge-page",
+    });
+    expect(result.result).toBe(workflowResult);
+    expect([...graph.getSubgraphs()].map(([name]) => name)).toContain("knowledge_business_flow");
+  });
+
   it("rejects malformed server inputs before a business graph is called", async () => {
     const executeLeadGraph = vi.fn();
     const graph = buildLeadServerGraph({ executeLeadGraph: executeLeadGraph as never });
@@ -79,6 +99,9 @@ describe("standalone LangGraph composed workflows", () => {
     const leadNodes = Object.keys((await buildLeadServerGraph({
       executeLeadGraph: vi.fn() as never,
     }).getGraphAsync({ xray: true })).nodes);
+    const knowledgeNodes = Object.keys((await buildKnowledgeServerGraph({
+      executeKnowledgeGraph: vi.fn() as never,
+    }).getGraphAsync({ xray: true })).nodes);
 
     expect(assistantNodes).toEqual(expect.arrayContaining([
       "validate_assistant_request",
@@ -88,7 +111,10 @@ describe("standalone LangGraph composed workflows", () => {
       "assistant_business_flow:respond_lead_plan",
       "assistant_business_flow:respond_general",
       "assistant_business_flow:respond_clarification",
-      "assistant_business_flow:retrieve_internal_knowledge",
+      "assistant_business_flow:retrieve_internal_knowledge:classify_knowledge_request",
+      "assistant_business_flow:retrieve_internal_knowledge:open_registered_document",
+      "assistant_business_flow:retrieve_internal_knowledge:read_verified_facts",
+      "assistant_business_flow:retrieve_internal_knowledge:generate_grounded_explanation",
       "assistant_business_flow:retrieve_hybrid_internal",
       "assistant_business_flow:retrieve_hybrid_external",
       "assistant_business_flow:synthesize_hybrid_answer",
@@ -108,6 +134,14 @@ describe("standalone LangGraph composed workflows", () => {
       "lead_business_flow:assemble_handoff_briefs",
       "lead_business_flow:persist_results",
       "publish_lead_result",
+    ]));
+    expect(knowledgeNodes).toEqual(expect.arrayContaining([
+      "validate_knowledge_request",
+      "knowledge_business_flow:classify_knowledge_request",
+      "knowledge_business_flow:open_registered_document",
+      "knowledge_business_flow:read_verified_facts",
+      "knowledge_business_flow:generate_grounded_explanation",
+      "publish_knowledge_result",
     ]));
   });
 });

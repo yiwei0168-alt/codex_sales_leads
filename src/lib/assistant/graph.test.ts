@@ -14,6 +14,7 @@ function dependencies(intentPlan: IntentPlan): AssistantGraphDependencies {
   return {
     planRequest: vi.fn().mockResolvedValue(intentPlan),
     answerKnowledge: vi.fn(),
+    answerKnowledgeWorkflow: vi.fn(),
     searchExternal: vi.fn(),
     synthesizeHybrid: vi.fn(),
     missingRagConfig: () => [],
@@ -52,15 +53,18 @@ describe("assistant workflow graph", () => {
 
   it("routes internal questions through grounded RAG", async () => {
     const deps = dependencies(plan({ intent: "knowledge-question", internalQuestion: "WR3000 protocols" }));
-    vi.mocked(deps.answerKnowledge).mockResolvedValue({
-      answer: "grounded", citations: [], grounded: true, model: "test", latencyMs: 1, warnings: [],
+    vi.mocked(deps.answerKnowledgeWorkflow).mockResolvedValue({
+      kind: "fact-answer", reasonCode: "ok", answer: "grounded", documents: [], factCitations: [],
+      timings: { totalMs: 1 }, usage: { intentCalls: 0, embeddingCalls: 0, generationCalls: 0 },
     });
     const state = await buildAssistantWorkflowGraph(deps).invoke({
       userId: "user", content: "WR3000 支持哪些协议？", history: [], intent: "general", reply: "", warnings: [],
     });
     expect(state.intent).toBe("knowledge-question");
     expect(state.reply).toBe("grounded");
-    expect(deps.answerKnowledge).toHaveBeenCalledWith("user", { question: "WR3000 protocols", maxChunks: 8 });
+    expect(deps.answerKnowledgeWorkflow).toHaveBeenCalledWith("user", {
+      question: "WR3000 protocols", history: [], entry: "assistant",
+    });
   });
 
   it("runs internal RAG and Gemini before OpenAI synthesis for hybrid research", async () => {

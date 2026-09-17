@@ -98,6 +98,25 @@ export interface RagAnswer {
   latencyMs: number;
   warnings: string[];
   externalDisclosure?: { excludedChunks: number; redactedPatterns: number };
+  kind?: "document-links" | "fact-answer" | "generated-answer" | "clarification" | "insufficient-evidence" | "unavailable";
+  reasonCode?: string;
+  documents?: Array<{
+    assetId: string;
+    title: string;
+    documentType: string;
+    version?: string;
+    mimeType: string;
+    url: string;
+    page?: number;
+  }>;
+  factCitations?: Array<{
+    factId: string;
+    attributeKey: string;
+    assetId: string;
+    version?: string;
+    status: string;
+    rawValue: string;
+  }>;
 }
 
 export interface KnowledgeStats {

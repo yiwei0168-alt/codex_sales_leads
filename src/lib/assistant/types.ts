@@ -1,4 +1,5 @@
-import type { RagCitation } from "@/lib/rag/types";
+import type { RagAnswer, RagCitation } from "@/lib/rag/types";
+import type { KnowledgeResult } from "@/lib/knowledge/response";
 import type { ChannelRole } from "@/lib/domain";
 
 export type AssistantIntent = "knowledge-question" | "hybrid-research" | "lead-search" | "clarification" | "general" | "product-action" | "budget-change";
@@ -33,6 +34,9 @@ export interface IntentPlan {
   intent: AssistantIntent;
   confidence: number;
   internalQuestion?: string;
+  knowledgeAction?: "open-document" | "fact-query" | "compare-facts" | "explain";
+  knowledgeEntities?: string[];
+  knowledgeAttributes?: string[];
   externalQuestions: string[];
   leadPlan?: LeadSearchPlan;
   reply?: string;
@@ -87,6 +91,8 @@ export interface AssistantMessageDto {
     budgetProposal?: BudgetProposal;
     productAction?: ProductActionPlan & {companies:Array<{id:string;name:string;countryCode:string}>;hasMore:boolean};
     citations?: RagCitation[];
+    knowledge?: Pick<KnowledgeResult, "kind" | "reasonCode" | "documents" | "factCitations">;
+    ragAnswer?: Pick<RagAnswer, "model" | "latencyMs">;
     grounded?: boolean;
     warnings?: string[];
     webCitations?: WebCitation[];

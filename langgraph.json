@@ -10,6 +10,10 @@
       "path": "./src/langgraph/server.ts:assistantWorkflowGraph",
       "description": "Complete assistant orchestration with expandable intent, RAG, search, and synthesis nodes."
     },
+    "knowledge_workflow": {
+      "path": "./src/langgraph/server.ts:knowledgeWorkflowGraph",
+      "description": "Shared document access, verified fact answers, and grounded explanation orchestration."
+    },
     "lead_workflow": {
       "path": "./src/langgraph/server.ts:leadWorkflowGraph",
       "description": "Complete lead orchestration with expandable knowledge, discovery, evidence, scoring, review, and persistence nodes."

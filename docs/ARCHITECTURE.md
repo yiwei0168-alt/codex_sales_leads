@@ -1,5 +1,9 @@
 # Architecture
 
+## Shared knowledge orchestration
+
+The standalone LangGraph runtime registers `knowledge_workflow` alongside the assistant and lead graphs. Both the assistant internal-knowledge branch and the knowledge-page HTTP entry use its document, verified-fact, and generated-explanation branches. Document/fact branches enforce database ACL and provenance locally and do not require embedding or answer generation; only complex explanations enter the existing guarded RAG contract. The Next.js API is an SDK client, not a second knowledge runner.
+
 ## Product strategy
 
 The product uses one owner-scoped global workspace with country-partitioned search results. A persistent conversational home routes knowledge questions to private/shared RAG and lead-discovery requests to an explicit confirmation boundary. Historical Mexico assets remain test/reference data and do not constrain runtime markets.

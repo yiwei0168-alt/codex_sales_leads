@@ -4,6 +4,8 @@ import { Annotation, END, START, StateGraph } from "@langchain/langgraph";
 import { getMissingRagConfig } from "@/lib/rag/config";
 import { answerWithRag } from "@/lib/rag/service";
 import type { RagAnswer } from "@/lib/rag/types";
+import { executeKnowledgeWorkflow, knowledgeBusinessGraph } from "@/lib/knowledge/graph";
+import type { KnowledgeResult } from "@/lib/knowledge/response";
 import { searchExternalWithGemini } from "./external-search";
 import { planAssistantRequest } from "./intent-agent";
 import { synthesizeHybridAnswer } from "./synthesis";
@@ -20,6 +22,7 @@ export const AssistantState = Annotation.Root({
   plan: Annotation<LeadSearchPlan | undefined>(),
   reply: Annotation<string>(),
   ragAnswer: Annotation<RagAnswer | undefined>(),
+  knowledgeResult: Annotation<KnowledgeResult | undefined>(),
   externalAnswer: Annotation<ExternalSearchAnswer | undefined>(),
   internalError: Annotation<string | undefined>(),
   externalError: Annotation<string | undefined>(),
@@ -30,6 +33,7 @@ export interface AssistantGraphDependencies {
   recordIntent?: (userId:string,content:string,history:AssistantConversationTurn[],run:()=>Promise<IntentPlan>)=>Promise<IntentPlan>;
   planRequest: typeof planAssistantRequest;
   answerKnowledge: typeof answerWithRag;
+  answerKnowledgeWorkflow: typeof executeKnowledgeWorkflow;
   searchExternal: typeof searchExternalWithGemini;
   synthesizeHybrid: typeof synthesizeHybridAnswer;
   missingRagConfig: typeof getMissingRagConfig;
@@ -47,6 +51,7 @@ const productionDependencies: AssistantGraphDependencies = {
   },
   planRequest: planAssistantRequest,
   answerKnowledge: answerWithRag,
+  answerKnowledgeWorkflow: executeKnowledgeWorkflow,
   searchExternal: searchExternalWithGemini,
   synthesizeHybrid: synthesizeHybridAnswer,
   missingRagConfig: getMissingRagConfig,
@@ -101,16 +106,25 @@ export function buildAssistantWorkflowGraph(dependencies: AssistantGraphDependen
     }))
     .addNode("retrieve_internal_knowledge", async (state) => {
       const internalQuestion = state.intentPlan?.internalQuestion || state.content;
-      const missing = dependencies.missingRagConfig();
-      if (missing.length > 0) {
-        return { reply: `知识问答服务尚未完整配置（缺少 ${missing.join(", ")}）。我没有调用外部搜索，也不会在缺少证据时编造答案。` };
-      }
       try {
-        const ragAnswer = await dependencies.answerKnowledge(state.userId, { question: internalQuestion, maxChunks: 8 });
-        return { reply: ragAnswer.answer, ragAnswer, warnings: [...state.warnings, ...ragAnswer.warnings] };
+        const knowledgeResult = await dependencies.answerKnowledgeWorkflow(state.userId, {
+          question: internalQuestion,
+          history: state.history,
+          entry: "assistant",
+        });
+        const ragAnswer = knowledgeResult.ragAnswer;
+        return {
+          reply: knowledgeResult.answer,
+          knowledgeResult,
+          ragAnswer,
+          warnings: [...state.warnings, ...(ragAnswer?.warnings ?? [])],
+        };
       } catch (error) {
         return { reply: knowledgeErrorMessage(error) };
       }
+    }, {
+      subgraphs: [knowledgeBusinessGraph],
+      metadata: { layer: "business", workflow: "knowledge" },
     })
     .addNode("retrieve_hybrid_internal", async (state) => {
       const internalQuestion = state.intentPlan?.internalQuestion || state.content;

@@ -52,6 +52,16 @@ export async function processAssistantMessage(userId: string, input: {
       role: "assistant", intent: interpreted.intent, content: interpreted.reply,
       metadata: {
         citations: interpreted.ragAnswer?.citations,
+        knowledge: interpreted.knowledgeResult ? {
+          kind: interpreted.knowledgeResult.kind,
+          reasonCode: interpreted.knowledgeResult.reasonCode,
+          documents: interpreted.knowledgeResult.documents,
+          factCitations: interpreted.knowledgeResult.factCitations,
+        } : undefined,
+        ragAnswer: interpreted.ragAnswer ? {
+          model: interpreted.ragAnswer.model,
+          latencyMs: interpreted.ragAnswer.latencyMs,
+        } : undefined,
         webCitations: interpreted.externalAnswer?.citations,
         grounded: interpreted.ragAnswer?.grounded,
         warnings: interpreted.warnings,

@@ -55,6 +55,26 @@ describe("product LangGraph API client", () => {
     expect(wait.mock.calls[0][2]).toMatchObject({ input });
   });
 
+  it("routes knowledge work through the standalone knowledge graph", async () => {
+    const workflowResult = { kind: "fact-answer", reasonCode: "ok", answer: "8" };
+    const wait = vi.fn(async (threadId: null, assistantId: string, payload: {
+      input: Record<string, unknown>; signal?: AbortSignal;
+    }) => {
+      void [threadId, assistantId, payload];
+      return { result: workflowResult };
+    });
+    const invoker = createProductLangGraphInvoker({ runs: { wait }, knowledgeTimeoutMs: 1_000 });
+    const result = await invoker.invokeKnowledge({
+      userId: "11111111-1111-4111-8111-111111111111",
+      question: "How many Ethernet ports?",
+      collections: ["product"],
+      entry: "knowledge-page",
+    });
+    expect(result).toBe(workflowResult);
+    expect(wait.mock.calls[0][1]).toBe("knowledge_workflow");
+    expect(wait.mock.calls[0][2]).toMatchObject({ input: { history: [], collections: ["product"] } });
+  });
+
   it("fails closed without retrying or falling back when the service is unavailable", async () => {
     const wait = vi.fn(async (threadId: null, assistantId: string, payload: {
       input: Record<string, unknown>; signal?: AbortSignal;

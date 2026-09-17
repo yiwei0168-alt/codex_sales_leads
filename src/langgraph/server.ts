@@ -5,6 +5,9 @@ import type { AssistantConversationTurn, LeadSearchPlan } from "@/lib/assistant/
 import { assistantBusinessGraph, executeAssistantWorkflowGraph } from "@/lib/assistant/graph";
 import type { LeadWorkflowResult } from "@/lib/leads/workflow/types";
 import { executeLeadWorkflowGraph, leadBusinessTopologyGraph } from "@/lib/leads/workflow/graph";
+import { executeKnowledgeWorkflow, knowledgeBusinessGraph } from "@/lib/knowledge/graph";
+import type { KnowledgeResult } from "@/lib/knowledge/response";
+import type { KnowledgeBaseType } from "@/lib/rag/types";
 
 const channelRoles = [
   "Distributor", "VAD", "VAR", "Dealer", "Reseller", "Retailer", "E-tailer",
@@ -40,6 +43,17 @@ const leadInputSchema = z.object({
   plan: leadPlanSchema,
 });
 
+const knowledgeInputSchema = z.object({
+  userId: z.string().uuid(),
+  question: z.string().trim().min(3).max(4_000),
+  history: z.array(z.object({
+    role: z.enum(["user", "assistant"]),
+    content: z.string().max(8_000),
+  })).max(50).default([]),
+  collections: z.array(z.enum(["industry", "company", "product"])).max(3).optional(),
+  entry: z.enum(["assistant", "knowledge-page"]),
+});
+
 const RuntimeHealthState = Annotation.Root({
   probe: Annotation<string | undefined>(),
   status: Annotation<"ready" | undefined>(),
@@ -61,14 +75,25 @@ const LeadServerState = Annotation.Root({
   result: Annotation<LeadWorkflowResult | undefined>(),
 });
 
+const KnowledgeServerState = Annotation.Root({
+  userId: Annotation<string>(),
+  question: Annotation<string>(),
+  history: Annotation<AssistantConversationTurn[]>(),
+  collections: Annotation<KnowledgeBaseType[] | undefined>(),
+  entry: Annotation<"assistant" | "knowledge-page">(),
+  result: Annotation<KnowledgeResult | undefined>(),
+});
+
 export interface StandaloneWorkflowDependencies {
   executeAssistantGraph: typeof executeAssistantWorkflowGraph;
   executeLeadGraph: typeof executeLeadWorkflowGraph;
+  executeKnowledgeGraph: typeof executeKnowledgeWorkflow;
 }
 
 const productionDependencies: StandaloneWorkflowDependencies = {
   executeAssistantGraph: executeAssistantWorkflowGraph,
   executeLeadGraph: executeLeadWorkflowGraph,
+  executeKnowledgeGraph: executeKnowledgeWorkflow,
 };
 
 export function buildRuntimeHealthGraph() {
@@ -134,6 +159,40 @@ export function buildLeadServerGraph(
     });
 }
 
+export function buildKnowledgeServerGraph(
+  dependencies: Pick<StandaloneWorkflowDependencies, "executeKnowledgeGraph"> = productionDependencies,
+) {
+  return new StateGraph(KnowledgeServerState)
+    .addNode("validate_knowledge_request", (state) => knowledgeInputSchema.parse(state))
+    .addNode("knowledge_business_flow", async (state) => {
+      const input = knowledgeInputSchema.parse(state);
+      return {
+        result: await dependencies.executeKnowledgeGraph(input.userId, {
+          question: input.question,
+          history: input.history,
+          collections: input.collections,
+          entry: input.entry,
+        }),
+      };
+    }, {
+      subgraphs: [knowledgeBusinessGraph],
+      metadata: { layer: "business", workflow: "knowledge" },
+    })
+    .addNode("publish_knowledge_result", (state) => {
+      if (!state.result) throw new Error("Knowledge business flow completed without a result");
+      return {};
+    })
+    .addEdge(START, "validate_knowledge_request")
+    .addEdge("validate_knowledge_request", "knowledge_business_flow")
+    .addEdge("knowledge_business_flow", "publish_knowledge_result")
+    .addEdge("publish_knowledge_result", END)
+    .compile({
+      name: "knowledge_workflow",
+      description: "Shared document, verified-fact, and generated knowledge orchestration.",
+    });
+}
+
 export const runtimeHealthGraph = buildRuntimeHealthGraph();
 export const assistantWorkflowGraph = buildAssistantServerGraph();
 export const leadWorkflowGraph = buildLeadServerGraph();
+export const knowledgeWorkflowGraph = buildKnowledgeServerGraph();

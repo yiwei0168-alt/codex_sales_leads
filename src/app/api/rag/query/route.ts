@@ -1,7 +1,6 @@
-import { getMissingRagConfig } from "@/lib/rag/config";
-import { answerWithRag } from "@/lib/rag/service";
 import type { KnowledgeBaseType, RagQuery } from "@/lib/rag/types";
 import { requireApiSession } from "@/lib/auth/session";
+import { invokeKnowledgeWorkflowViaLangGraph } from "@/lib/langgraph/client";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -11,9 +10,6 @@ const types: KnowledgeBaseType[] = ["industry", "company", "product"];
 export async function POST(request: Request) {
   const session = await requireApiSession();
   if (session instanceof Response) return session;
-  const missing = getMissingRagConfig();
-  if (missing.length > 0) return Response.json({ error: `RAG 尚未配置：${missing.join(", ")}` }, { status: 503 });
-
   let input: RagQuery;
   try {
     input = await request.json() as RagQuery;
@@ -30,8 +26,24 @@ export async function POST(request: Request) {
   }
 
   try {
-    const answer = await answerWithRag(session.userId, { ...input, question });
-    return Response.json(answer);
+    const result = await invokeKnowledgeWorkflowViaLangGraph({
+      userId: session.userId,
+      question,
+      collections,
+      entry: "knowledge-page",
+    });
+    return Response.json(result.ragAnswer ?? {
+      answer: result.answer,
+      citations: [],
+      grounded: result.kind === "fact-answer",
+      model: result.kind === "fact-answer" ? "local-verified-facts" : "local-document-registry",
+      latencyMs: result.timings.totalMs,
+      warnings: [],
+      kind: result.kind,
+      reasonCode: result.reasonCode,
+      documents: result.documents,
+      factCitations: result.factCitations,
+    });
   } catch (error) {
     return Response.json({ error: error instanceof Error ? error.message : "RAG 查询失败" }, { status: 500 });
   }

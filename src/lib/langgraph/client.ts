@@ -4,6 +4,8 @@ import type { AssistantConversationTurn, LeadSearchPlan } from "@/lib/assistant/
 import type { runAssistantWorkflow } from "@/lib/assistant/graph";
 import type { LeadWorkflowResult } from "@/lib/leads/workflow/types";
 import { WorkflowPausedError } from "@/lib/leads/workflow/pause";
+import type { KnowledgeResult } from "@/lib/knowledge/response";
+import type { KnowledgeBaseType } from "@/lib/rag/types";
 
 export type AssistantWorkflowResult = Awaited<ReturnType<typeof runAssistantWorkflow>>;
 
@@ -29,6 +31,13 @@ export interface ProductLangGraphInvoker {
     history?: AssistantConversationTurn[],
   ): Promise<AssistantWorkflowResult>;
   invokeLead(input: LeadWorkflowInvocation): Promise<LeadWorkflowResult>;
+  invokeKnowledge(input: {
+    userId: string;
+    question: string;
+    history?: AssistantConversationTurn[];
+    collections?: KnowledgeBaseType[];
+    entry: "assistant" | "knowledge-page";
+  }): Promise<KnowledgeResult>;
 }
 
 function configuredDuration(name: string, fallback: number, minimum: number, maximum: number): number {
@@ -78,9 +87,11 @@ export function createProductLangGraphInvoker(options: {
   runs: RunsWaitClient;
   assistantTimeoutMs?: number;
   leadTimeoutMs?: number;
+  knowledgeTimeoutMs?: number;
 }): ProductLangGraphInvoker {
   const assistantTimeoutMs = options.assistantTimeoutMs ?? 300_000;
   const leadTimeoutMs = options.leadTimeoutMs ?? 7_200_000;
+  const knowledgeTimeoutMs = options.knowledgeTimeoutMs ?? 300_000;
   return {
     invokeAssistant: (userId, content, history = []) => invoke<AssistantWorkflowResult>(
       options.runs,
@@ -93,6 +104,12 @@ export function createProductLangGraphInvoker(options: {
       "lead_workflow",
       input as unknown as Record<string, unknown>,
       leadTimeoutMs,
+    ),
+    invokeKnowledge: (input) => invoke<KnowledgeResult>(
+      options.runs,
+      "knowledge_workflow",
+      { ...input, history: input.history ?? [] },
+      knowledgeTimeoutMs,
     ),
   };
 }
@@ -113,6 +130,7 @@ function getProductionInvoker(): ProductLangGraphInvoker {
       runs: client.runs,
       assistantTimeoutMs: configuredDuration("LANGGRAPH_ASSISTANT_TIMEOUT_MS", 300_000, 30_000, 600_000),
       leadTimeoutMs: configuredDuration("LANGGRAPH_LEAD_TIMEOUT_MS", 7_200_000, 60_000, 14_400_000),
+      knowledgeTimeoutMs: configuredDuration("LANGGRAPH_KNOWLEDGE_TIMEOUT_MS", 300_000, 10_000, 600_000),
     });
   }
   return productionInvoker;
@@ -128,4 +146,14 @@ export function invokeAssistantWorkflowViaLangGraph(
 
 export function invokeLeadWorkflowViaLangGraph(input: LeadWorkflowInvocation): Promise<LeadWorkflowResult> {
   return getProductionInvoker().invokeLead(input);
+}
+
+export function invokeKnowledgeWorkflowViaLangGraph(input: {
+  userId: string;
+  question: string;
+  history?: AssistantConversationTurn[];
+  collections?: KnowledgeBaseType[];
+  entry: "assistant" | "knowledge-page";
+}): Promise<KnowledgeResult> {
+  return getProductionInvoker().invokeKnowledge(input);
 }
