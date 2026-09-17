@@ -329,7 +329,7 @@ npm.cmd test -- src/lib/rag src/lib/assistant/intent-agent.test.ts src/lib/assis
 | 阶段 | 状态 | 提交/验收/语料代 |
 |---|---|---|
 | 审查与计划 | 已完成审查，文档交接 | 基线2bd5b19；58已有测试通过；无业务改造 |
-| P0 | 待实施 | — |
+| P0 | 已实施并通过离线/只读验收 | 200条冻结请求；语料SHA `bbafb762…f436`；[证据](KNOWLEDGE_RETRIEVAL_P0_BASELINE_2026-09-17.md) |
 | P1 | 待实施 | — |
 | P2 | 待实施 | — |
 | P3 | 待实施 | — |
