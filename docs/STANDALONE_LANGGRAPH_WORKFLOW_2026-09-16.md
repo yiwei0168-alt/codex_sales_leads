@@ -44,7 +44,7 @@ Studio 使用 `https://smith.langchain.com/studio/?baseUrl=http://127.0.0.1:2024
 
 用户已明确允许 LangGraph trace。本地运行配置启用 `LANGSMITH_TRACING=true`，并把轨迹归入 `network-channel-copilot-local`；同时按官方敏感数据保护配置设置 `LANGSMITH_HIDE_INPUTS=true` 和 `LANGSMITH_HIDE_OUTPUTS=true`。因此 LangSmith 可接收节点层级、父子关系、分支、耗时、状态和错误等调试信号，但不接收工作流输入／输出正文。预加载器在环境变量完全缺失时仍保持 fail-safe 的 tracing 关闭默认值；只有显式配置的环境才上传。开启 trace 不改变模型、搜索、邮件或业务工作流执行，也不授权把 Agent Server 暴露到非回环网络。
 
-本地服务已用新配置重启，健康图和两个预期 schema 拒绝均在本地正常执行；当前受限执行环境阻止该服务访问 LangSmith 443，因此首次批量上传失败，LangSmith 只读检查确认目标项目尚未建立。要完成云端验收，必须在明确理解“即使隐藏输入／输出，节点名、时间、状态和错误等元数据仍会外发”后，另行批准服务的网络访问。不得把配置已启用写成上传已成功。
+首次沙箱内批量上传因 LangSmith 443 网络权限被阻止，目标项目未建立；该结果被保留为失败证据。用户随后在明确理解“即使隐藏输入／输出，节点名、时间、状态和错误等元数据仍会外发”后授权网络访问。服务仍只监听 `127.0.0.1:2024`，在获准环境重启并只执行一次零模型／零搜索健康图。LangSmith 项目回查得到 `LangGraph`、`__start__`、`report_ready` 三个 span，全部 inputs／outputs 为空对象，已知健康探针正文也未出现在 metadata；因此云上传和当前脱敏边界验收通过。
 
 ### LG04 完整图验收补充
 

@@ -1,8 +1,10 @@
 # 用户确认规则登记表
 
-### LG05 — 允许 LangGraph 向 LangSmith 发送脱敏 trace（2026-09-17，用户明确确认；已配置，上传验收进行中）
+### LG05 — 允许 LangGraph 向 LangSmith 发送脱敏 trace（2026-09-17，用户明确确认；已配置并通过云端脱敏验收）
 
-用户原话：“允许LangGraph trace”。范围为本机独立 LangGraph Agent Server 的 `runtime_health`、`assistant_workflow` 和 `lead_workflow` 运行轨迹，可向用户已配置密钥对应的 LangSmith 工作区发送节点／父子 span、分支、状态、耗时和错误类别，并归入 `network-channel-copilot-local` 项目。为继续满足 A30，默认同时强制 `LANGSMITH_HIDE_INPUTS=true` 与 `LANGSMITH_HIDE_OUTPUTS=true`：不向 trace 后端发送用户消息、提示词、对话历史、知识正文、公司证据、业务状态正文或最终答案正文；API 密钥、凭据和本地环境变量值始终不得作为 trace 数据或提交内容。该确认不授权关闭输入／输出隐藏、不授权 SMTP、模型或搜索调用，也不把 Studio 图形查看等同于云 trace 上传成功。Git 忽略的本地配置与无密钥示例配置均已显式启用 tracing 并设置隐藏开关；需在服务重启并产生零外部业务调用的健康 trace 后单独确认上传状态。
+用户先确认“允许LangGraph trace”，在获知即使隐藏正文仍会外发节点名、父子关系、分支、时间、状态和错误类别等元数据后，又明确回复：“我允许 LangGraph 服务向 LangSmith 发送上述 trace 元数据，输入和输出正文继续隐藏。”范围为本机独立 LangGraph Agent Server 的 `runtime_health`、`assistant_workflow` 和 `lead_workflow` 运行轨迹，可向用户已配置密钥对应的 LangSmith 工作区发送上述元数据，并归入 `network-channel-copilot-local` 项目。为继续满足 A30，强制 `LANGSMITH_HIDE_INPUTS=true` 与 `LANGSMITH_HIDE_OUTPUTS=true`：不向 trace 后端发送用户消息、提示词、对话历史、知识正文、公司证据、业务状态正文或最终答案正文；API 密钥、凭据和本地环境变量值始终不得作为 trace 数据或提交内容。该确认不授权关闭输入／输出隐藏，也不授权新的 SMTP、模型或搜索调用。
+
+Git 忽略的本地配置与无密钥示例配置均已显式启用 tracing 并设置隐藏开关。服务以相同回环监听方式在获准网络环境重启后，只运行一次零模型／零搜索健康图；LangSmith 回查得到 `LangGraph`、`__start__`、`report_ready` 三个 span，三者 inputs／outputs 均为空对象，且已知探针正文未出现在 metadata。云 trace 上传和脱敏边界通过；真实业务 trace 的用户采用、业务内容安全抽样与长期费用仍未知。
 
 ### LG04 — 全部既有产品编排节点成为 LangGraph／LangSmith 可展开业务图（2026-09-17，用户明确确认；已实现并通过零外部业务调用验收）
 
