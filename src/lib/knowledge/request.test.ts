@@ -26,6 +26,12 @@ describe("knowledge request parsing", () => {
     expect(result.action).toBe("fact-query");
     expect(result.entityKeys).toEqual(["MODEL-A"]);
     expect(result.attributeKeys).toContain("ethernet_port_count");
+    const poe = await parseKnowledgeRequest("user", {
+      question: "MODEL-A 有几个 PoE 输出口？",
+      entry: "assistant",
+    });
+    expect(poe.action).toBe("fact-query");
+    expect(poe.attributeKeys).toContain("poe_output_port_count");
   });
 
   it("inherits one unambiguous recent entity but refuses ambiguous history", async () => {

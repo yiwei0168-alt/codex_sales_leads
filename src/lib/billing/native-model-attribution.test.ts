@@ -29,7 +29,7 @@ it("attributes the real intent and follow-up adapters without altering requests 
   await expect(planAssistantRequest("Find distributors",[],transport)).rejects.toBe(stopped);
   await expect(generateFollowUp({instructions:"Follow up",originalSubject:"Hello",originalBody:"Dear partner"},transport)).rejects.toBe(stopped);
   expect(calls).toHaveLength(2);
-  expect(calls[0]).toMatchObject({provider:"kimi",promptVersion:"assistant-intent-plan-v1.3",attempt:1});
+  expect(calls[0]).toMatchObject({provider:"kimi",promptVersion:"assistant-intent-plan-v1.4",attempt:1});
   expect(calls[1]).toMatchObject({provider:"kimi",task:"outreach-follow-up",promptVersion:"outreach-follow-up-v1",attempt:1});
   expect(calls[0].invocationId).not.toBe(calls[1].invocationId);
 });

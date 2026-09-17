@@ -8,6 +8,8 @@ Complex retrieval filters tenant/scope before three independent candidate lanes.
 
 Reusable query embeddings and evidence packets are cached only after success. Keys include user scope, filters, active corpus revision, alias version, embedding model and dimensions; cached evidence is authorized again on every hit. Generated prose, failures and empty evidence are not cached. Index generations remain separately validated/active and are switched only by an explicit transactional command with an append-only job record.
 
+P8 release verification keeps provider use opt-in. Product/company/industry verification defaults to lexical/structured SQL and requires `--live` for embeddings. The authenticated product harness exercises document and verified-fact paths through Next.js, the standalone `knowledge_workflow`, PostgreSQL and the rendered UI at desktop/mobile sizes. A 30-request hot-path sample measured P95 793.10 ms with zero embedding/generation calls; complex generated-answer performance remains unverified. The validated v2 generation remains inactive until its 10,871 missing vectors have an explicitly authorized budget and the frozen quality gate passes.
+
 ## Product strategy
 
 The product uses one owner-scoped global workspace with country-partitioned search results. A persistent conversational home routes knowledge questions to private/shared RAG and lead-discovery requests to an explicit confirmation boundary. Historical Mexico assets remain test/reference data and do not constrain runtime markets.

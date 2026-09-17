@@ -54,6 +54,7 @@
     "knowledge:audit-facts-v2": "node scripts/run-tsx.cjs scripts/audit-knowledge-facts-v2.ts",
     "knowledge:reindex": "node scripts/run-tsx.cjs scripts/reindex-knowledge.ts",
     "knowledge:eval": "node scripts/run-tsx.cjs scripts/evaluate-knowledge.ts --offline",
+    "knowledge:verify-ui": "node scripts/run-tsx.cjs scripts/verify-authenticated-knowledge-ui.ts",
     "leads:verify-models": "node --use-env-proxy scripts/run-tsx.cjs scripts/verify-lead-models.ts",
     "leads:verify": "tsx scripts/verify-live-leads.ts",
     "contacts:enrich": "tsx scripts/enrich-lead-contacts.ts",

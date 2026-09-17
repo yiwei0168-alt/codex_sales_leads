@@ -6,6 +6,7 @@ import { Client } from "@langchain/langgraph-sdk";
 import {
   invokeAssistantWorkflowViaLangGraph,
   invokeLeadWorkflowViaLangGraph,
+  invokeKnowledgeWorkflowViaLangGraph,
 } from "../src/lib/langgraph/client";
 
 const apiUrl = process.env.LANGGRAPH_API_URL?.trim() || "http://127.0.0.1:2024";
@@ -23,6 +24,14 @@ const invalidIdentity = "not-a-valid-user-id";
 await assert.rejects(
   invokeAssistantWorkflowViaLangGraph(invalidIdentity, "schema boundary probe"),
   /assistant_workflow/,
+);
+await assert.rejects(
+  invokeKnowledgeWorkflowViaLangGraph({
+    userId: invalidIdentity,
+    question: "schema boundary probe",
+    entry: "knowledge-page",
+  }),
+  /knowledge_workflow/,
 );
 await assert.rejects(
   invokeLeadWorkflowViaLangGraph({
@@ -45,7 +54,7 @@ await assert.rejects(
 console.log(JSON.stringify({
   ok: true,
   apiUrl,
-  requests: 3,
+  requests: 4,
   validHealthOutputs: 1,
   expectedSchemaRejections: 2,
   externalProviderCalls: 0,

@@ -284,6 +284,8 @@
 .intelligence-theme .opportunity-board { scrollbar-color: #42596c var(--night); }
 
 /* AI, knowledge, mailbox and budget views */
+.intelligence-theme .knowledge-layout { grid-template-columns: minmax(0, 1fr); }
+.intelligence-theme .knowledge-layout > * { min-width: 0; grid-column: 1 / -1; }
 .intelligence-theme .ai-home-shell {
   border-color: var(--line);
   border-radius: 6px;
@@ -445,6 +447,18 @@
   .intelligence-theme .top-actions .snapshot-badge { width: 10px; min-width: 10px; height: 10px; min-height: 10px; padding: 0; overflow: hidden; border: 0; background: transparent; color: transparent; }
   .intelligence-theme .top-actions .snapshot-badge .live-dot { flex: 0 0 8px; }
   .intelligence-theme .workspace-content { width: 100%; padding: 20px 12px 40px; overflow-x: clip; }
+  .intelligence-theme .knowledge-layout,
+  .intelligence-theme .kb-main-grid,
+  .intelligence-theme .rag-playground,
+  .intelligence-theme .kb-pipeline { min-width: 0; }
+  .intelligence-theme .kb-main-grid { width: 100%; max-width: 100%; grid-template-columns: minmax(0, 1fr); justify-self: stretch; }
+  .intelligence-theme .rag-playground,
+  .intelligence-theme .kb-pipeline { width: 100%; max-width: 100%; }
+  .intelligence-theme .rag-result { min-width: 0; padding-inline: 12px; }
+  .intelligence-theme .rag-citations a { grid-template-columns: minmax(0, 1fr) auto; }
+  .intelligence-theme .rag-citations a > span { grid-column: 1 / -1; overflow-wrap: anywhere; }
+  .intelligence-theme .rag-citations b,
+  .intelligence-theme .rag-citations small { min-width: 0; white-space: normal; overflow-wrap: anywhere; }
   .intelligence-theme .workspace-heading { align-items: stretch; gap: 18px; }
   .intelligence-theme .workspace-heading h1 { font-size: 26px; }
   .intelligence-theme .heading-actions { align-items: stretch; flex-direction: column; }
