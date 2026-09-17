@@ -1,6 +1,7 @@
 import { embedTextsWithUsage, type EmbeddingCallUsage } from "@/lib/rag/openai-provider";
 import { hybridSearch } from "@/lib/rag/repository";
 import type { LeadSearchPlan } from "@/lib/assistant/types";
+import { selectEvidenceWindow } from "@/lib/knowledge/evidence-window";
 
 import type { LeadRagCitation } from "./types";
 
@@ -65,7 +66,7 @@ export async function retrieveLeadRagContext(userId: string, plan: LeadSearchPla
       chunkId: chunk.id,
       collection: chunk.collection,
       title: chunk.title,
-      content: chunk.content.slice(0, 1_800),
+      content: selectEvidenceWindow(chunk.content, spec.question, 1_800),
       sourceUrl: chunk.sourceUrl,
       score: chunk.score,
       retrievalSignals: chunk.retrievalSignals,

@@ -4,6 +4,7 @@ import { tenantQuery, tenantTransaction } from "@/lib/rag/db";
 import { embedTexts } from "@/lib/rag/openai-provider";
 import type { PoolClient } from "pg";
 import type { OutreachKnowledgeItem } from "./types";
+import { selectEvidenceWindow } from "@/lib/knowledge/evidence-window";
 
 function vectorLiteral(vector: number[]): string {
   return `[${vector.join(",")}]`;
@@ -125,7 +126,7 @@ export async function searchOutreachKnowledge(
       where v.id is not null or k.id is not null order by score desc limit $5`,
     [vectorLiteral(queryEmbedding), question, marketCodes, roles, limit, userId]);
   const mapped = rows.map((row) => ({
-    id: row.id, kind: row.kind, title: row.title, content: row.content.slice(0, 1_200),
+    id: row.id, kind: row.kind, title: row.title, content: selectEvidenceWindow(row.content, question, 1_200),
     marketCodes: row.market_codes, channelRoles: row.channel_roles,
     priorityWeight: row.priority_weight, sourceRefs: row.source_refs, score: row.score,
   }));
@@ -133,7 +134,7 @@ export async function searchOutreachKnowledge(
     id: row.id,
     kind: row.kind === "email-style" ? "feedback-memory" : row.kind,
     title: row.title,
-    content: row.content.slice(0, 1_200),
+    content: selectEvidenceWindow(row.content, question, 1_200),
     marketCodes: row.market_codes,
     channelRoles: row.channel_roles,
     priorityWeight: 3,

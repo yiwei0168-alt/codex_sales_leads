@@ -6,6 +6,7 @@ import type { RagAnswer, RagQuery } from "./types";
 import {trackedOperation} from "@/lib/tracked-operation";
 import {prepareRagExternalDisclosure} from "./external-disclosure";
 import { validateRagEvidence } from "@/lib/knowledge/evidence-validation";
+import { buildControlledLexicalQuery } from "@/lib/knowledge/query-normalizer";
 
 export function extractCitedChunkIds(answer: string): Set<string> {
   return new Set(Array.from(answer.matchAll(/\[KB:([0-9a-f-]{36})\]/gi)).map((match) => match[1].toLowerCase()));
@@ -25,7 +26,10 @@ async function answerWithRagImpl(userId: string, input: RagQuery): Promise<RagAn
   const config = getRagConfig();
   const maxChunks = Math.min(Math.max(input.maxChunks ?? config.maxContextChunks, 1), 12);
   const [embedding] = await withProductSpend(userId,"rag-query-embedding",()=>embedTexts([input.question]));
-  const retrieved = await hybridSearch(userId, input.question, embedding, input.filters, maxChunks);
+  const retrieved = await hybridSearch(userId, input.question, embedding, {
+    ...input.filters,
+    lexicalQuery: buildControlledLexicalQuery(input.question),
+  }, maxChunks);
   const chunks = retrieved.filter((chunk) => chunk.score >= config.minScore);
   const warnings: string[] = [];
 

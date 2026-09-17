@@ -335,7 +335,7 @@ npm.cmd test -- src/lib/rag src/lib/assistant/intent-agent.test.ts src/lib/assis
 | P3 | 已实施影子代并通过结构/视觉抽样验收 | 36源/426成功单元/3待OCR；v2代validated未激活；[证据](KNOWLEDGE_RETRIEVAL_P3_EVIDENCE_2026-09-17.md) |
 | P4 | 已实施影子事实合同并通过真实样本审计 | 43 verified/216 candidate/53 conflicting；错误速率代际0 verified；[证据](KNOWLEDGE_RETRIEVAL_P4_EVIDENCE_2026-09-17.md) |
 | P5 | 已实施并通过共享图/合同离线验收 | 助手与知识页共用独立知识根图；资料/事实快路径0 embedding/生成；[证据](KNOWLEDGE_RETRIEVAL_P5_EVIDENCE_2026-09-17.md) |
-| P6 | 待实施 | — |
+| P6 | 已实施并通过离线/SQL合同回归 | null-vector/关键词/结构化召回、受控同义词、相邻/相关窗口；[证据](KNOWLEDGE_RETRIEVAL_P6_EVIDENCE_2026-09-17.md) |
 | P7 | 待实施 | — |
 | P8 | 待实施 | — |
 

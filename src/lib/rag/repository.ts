@@ -89,7 +89,7 @@ async function upsertKnowledgeDocumentImpl(userId: string, input: KnowledgeDocum
   }, actorRole);
 }
 
-export async function hybridSearch(userId: string, question: string, queryEmbedding: number[], filters: RetrievalFilters = {}, limit = 8): Promise<RetrievedChunk[]> {
+export async function hybridSearch(userId: string, question: string, queryEmbedding: number[] | null, filters: RetrievalFilters = {}, limit = 8): Promise<RetrievedChunk[]> {
   const collections = filters.collections?.length ? filters.collections : ["industry", "company", "product"];
   const structuredQuery = filters.structuredProductTerms?.length
     ? filters.structuredProductTerms.map((term) => `"${term.replace(/["\\]/g, " ").trim()}"`).filter((term) => term !== '""').join(" OR ")
@@ -111,7 +111,7 @@ export async function hybridSearch(userId: string, question: string, queryEmbedd
        from knowledge_chunk ch
        join knowledge_document d on d.id = ch.document_id
        join knowledge_collection c on c.id = d.collection_id
-       where d.status = 'active' and ch.embedding is not null
+       where d.status = 'active'
          and (d.visibility = 'shared' or (d.visibility = 'private' and d.owner_id = $9))
          and c.slug = any($3::text[])
          and ($4::text is null or d.market = $4)
@@ -121,7 +121,9 @@ export async function hybridSearch(userId: string, question: string, queryEmbedd
      ), vector_results as (
        select id, row_number() over (order by embedding <=> $1::vector) as rank,
               (1 - (embedding <=> $1::vector))::float8 as similarity
-       from eligible order by embedding <=> $1::vector limit 30
+       from eligible
+       where $1::vector is not null and embedding is not null
+       order by embedding <=> $1::vector limit 30
      ), keyword_results as (
        select id, row_number() over (order by ts_rank_cd(search_vector, websearch_to_tsquery('simple', $2)) desc) as rank
        from eligible
@@ -159,23 +161,35 @@ export async function hybridSearch(userId: string, question: string, queryEmbedd
          or e.document_metadata->'relatedModels' ? sm.model
        )
        group by e.id
+     ), evidence_windows as (
+       select e.id,
+              left(string_agg(n.content, E'\n\n' order by n.chunk_index), 6000) as content
+       from eligible e
+       join eligible n on n.document_id = e.document_id
+        and n.chunk_index between e.chunk_index - 1 and e.chunk_index + 1
+        and (n.heading_path = e.heading_path or n.id = e.id)
+       group by e.id
      )
-     select e.id, e.document_id, e.collection, e.title, e.content, e.source_url, e.source_type,
+     select e.id, e.document_id, e.collection, e.title, coalesce(w.content, e.content) as content, e.source_url, e.source_type,
             e.visibility,
             e.authority_level, e.captured_at, e.heading_path, v.rank as vector_rank, k.rank as keyword_rank,
             s.rank as structured_rank, coalesce(s.evidence, '[]'::jsonb) as structured_evidence,
             v.similarity as vector_similarity,
-            (greatest(coalesce(v.similarity, 0), 0) * 0.70 +
-             least((coalesce(1.0 / (60 + v.rank), 0) + coalesce(1.0 / (60 + k.rank), 0)
-               + coalesce(1.0 / (60 + s.rank), 0)) * 8, 0.30))::float8 as score,
+            greatest(
+              greatest(coalesce(v.similarity, 0), 0) * 0.65
+                + least((coalesce(1.0 / (60 + v.rank), 0) + coalesce(1.0 / (60 + k.rank), 0)
+                  + coalesce(1.0 / (60 + s.rank), 0)) * 8, 0.25),
+              case when s.id is not null then 0.50 when k.id is not null then 0.42 else 0 end
+            )::float8 as score,
             e.document_metadata as metadata
      from eligible e
      left join vector_results v on v.id = e.id
      left join keyword_results k on k.id = e.id
      left join structured_results s on s.id = e.id
+     left join evidence_windows w on w.id = e.id
      where v.id is not null or k.id is not null or s.id is not null
      order by score desc limit $8`,
-    [vectorLiteral(queryEmbedding), question, collections, filters.market ?? null, filters.companyId ?? null,
+    [queryEmbedding ? vectorLiteral(queryEmbedding) : null, filters.lexicalQuery ?? question, collections, filters.market ?? null, filters.companyId ?? null,
       filters.productId ?? null, filters.minAuthority ?? 1, limit, userId,
       structuredQuery],
   );
@@ -195,7 +209,7 @@ export async function hybridSearch(userId: string, question: string, queryEmbedd
       corroborated: (row.structured_evidence ?? []).some((fact) =>
         fact.status === "verified" && fact.factKey !== "catalog_identity")
         && (retrievalSignals.includes("vector") || retrievalSignals.includes("keyword")),
-      score: Math.max(0, Math.min(row.score, 1)), visibility: row.visibility,
+      score: Math.max(0, Math.min(row.score, 1)), rankingScore: Math.max(0, Math.min(row.score, 1)), visibility: row.visibility,
       metadata: { ...row.metadata, visibility: row.visibility, vectorSimilarity: row.vector_similarity,
         structuredFacts: row.structured_evidence ?? [] },
     };

@@ -48,6 +48,8 @@ export interface RetrievalFilters {
   minAuthority?: number;
   /** Canonical catalog terms used by the structured product retrieval lane. */
   structuredProductTerms?: string[];
+  /** Controlled lexical expansion generated from the versioned attribute registry. */
+  lexicalQuery?: string;
 }
 
 export interface RetrievedChunk {
@@ -67,6 +69,8 @@ export interface RetrievedChunk {
   retrievalSignals: Array<"vector" | "keyword" | "structured">;
   corroborated: boolean;
   score: number;
+  /** Retrieval ordering score; it is not an answer-confidence probability. */
+  rankingScore?: number;
   metadata: Record<string, unknown>;
   visibility: KnowledgeVisibility;
 }

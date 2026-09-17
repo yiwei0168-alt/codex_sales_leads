@@ -29,6 +29,19 @@ describe("RAG tenant isolation", () => {
     expect(sql).toContain("d.visibility = 'private' and d.owner_id = $9");
     expect(parameters[8]).toBe("user-b");
     expect(sql).not.toContain("e.document_metadata->>'category' = sm.category");
+    expect(sql).not.toContain("d.status = 'active' and ch.embedding is not null");
+    expect(sql).toContain("$1::vector is not null and embedding is not null");
+    expect(sql).toContain("case when s.id is not null then 0.50 when k.id is not null then 0.42");
+    expect(sql).toContain("n.chunk_index between e.chunk_index - 1 and e.chunk_index + 1");
+  });
+
+  it("keeps keyword and structured retrieval available for null-vector chunks", async () => {
+    queryMock.mockResolvedValue([]);
+    await hybridSearch("user-b", "MODEL-A ports", null, { lexicalQuery: '"MODEL-A" ("ports" OR "网口")' }, 4);
+    const [, sql, parameters] = queryMock.mock.calls[0] as [string, string, unknown[]];
+    expect(parameters[0]).toBeNull();
+    expect(parameters[1]).toContain("MODEL-A");
+    expect(sql).toContain("from eligible\n       where search_vector");
   });
 
   it("treats source metadata changes separately from content embeddings",()=>{
