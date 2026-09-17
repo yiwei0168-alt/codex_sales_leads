@@ -331,7 +331,7 @@ npm.cmd test -- src/lib/rag src/lib/assistant/intent-agent.test.ts src/lib/assis
 | 审查与计划 | 已完成审查，文档交接 | 基线2bd5b19；58已有测试通过；无业务改造 |
 | P0 | 已实施并通过离线/只读验收 | 200条冻结请求；语料SHA `bbafb762…f436`；[证据](KNOWLEDGE_RETRIEVAL_P0_BASELINE_2026-09-17.md) |
 | P1 | 已实施并通过离线/只读验收 | 通用提取4类反例、引用/冲突/错型号拒绝；64条旧事实候选仅审计未改写；[证据](KNOWLEDGE_RETRIEVAL_P1_EVIDENCE_2026-09-17.md) |
-| P2 | 已实施并通过登记/权限边界验收 | 281个受控asset关系，缺失/未登记文件0，embedding调用0；[证据](KNOWLEDGE_RETRIEVAL_P2_EVIDENCE_2026-09-17.md) |
+| P2 | 已实施并通过登记/权限/二进制上传作业验收 | 281个受控asset关系，缺失/未登记文件0；PDF/PPTX/XLSX独立上传与本地异步提取作业已补齐，真实44页PDF提取44/44成功，embedding调用0；[证据](KNOWLEDGE_RETRIEVAL_P2_EVIDENCE_2026-09-17.md) |
 | P3 | 已实施影子代并通过结构/视觉抽样验收 | 扩展样本43输入/454成功单元/3待OCR；102文档关系/10,871块；v2代validated未激活；[证据](KNOWLEDGE_RETRIEVAL_P3_EVIDENCE_2026-09-17.md) |
 | P4 | 已实施影子事实合同并通过真实样本审计 | 43 verified/216 candidate/53 conflicting；错误速率代际0 verified；[证据](KNOWLEDGE_RETRIEVAL_P4_EVIDENCE_2026-09-17.md) |
 | P5 | 已实施并通过共享图/合同离线验收 | 助手与知识页共用独立知识根图；资料/事实快路径0 embedding/生成；[证据](KNOWLEDGE_RETRIEVAL_P5_EVIDENCE_2026-09-17.md) |

@@ -48,6 +48,7 @@
     "knowledge:audit": "node scripts/run-tsx.cjs scripts/audit-knowledge-corpus.ts",
     "knowledge:audit-facts": "node scripts/run-tsx.cjs scripts/audit-product-fact-quality.ts",
     "knowledge:register-assets": "node scripts/run-tsx.cjs scripts/register-knowledge-assets.ts",
+    "knowledge:process-uploads": "node scripts/run-tsx.cjs scripts/process-knowledge-upload-jobs.ts",
     "knowledge:extract-shadow": "python scripts/build-knowledge-shadow-v2.py",
     "knowledge:ingest-shadow": "node scripts/run-tsx.cjs scripts/ingest-knowledge-shadow-v2.ts",
     "knowledge:build-facts": "node scripts/run-tsx.cjs scripts/build-knowledge-facts-v2.ts",

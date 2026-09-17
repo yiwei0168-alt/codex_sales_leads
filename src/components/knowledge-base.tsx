@@ -29,6 +29,11 @@ interface MailboxKnowledgeItem {
   reviewed_at: string;
 }
 
+interface KnowledgeUploadJob {
+  id:string;collection:KnowledgeBaseType;status:"pending"|"running"|"extracted"|"failed";title:string;
+  originalFilename:string;documentType:string;byteSize:string;errorCode:string|null;createdAt:string;updatedAt:string;
+}
+
 const mailboxKindLabels: Record<MailboxKnowledgeItem["kind"], string> = {
   "company-policy": "公司政策",
   "customer-signal": "客户信号",
@@ -51,6 +56,7 @@ export function KnowledgeBase() {
   const [adminToken, setAdminToken] = useState("");
   const [uploading, setUploading] = useState(false);
   const [uploadMessage, setUploadMessage] = useState("");
+  const [uploadJobs,setUploadJobs]=useState<KnowledgeUploadJob[]>([]);
   const [mailboxKnowledge, setMailboxKnowledge] = useState<MailboxKnowledgeItem[]>([]);
   const [mailboxKnowledgeError, setMailboxKnowledgeError] = useState("");
 
@@ -70,6 +76,14 @@ export function KnowledgeBase() {
       .catch((reason: Error) => setStats({ ...emptyStats, error: reason.message }))
       .finally(() => setLoading(false));
   }, []);
+
+  useEffect(()=>{
+    let disposed=false;let timer:ReturnType<typeof setTimeout>|undefined;
+    async function load(){try{const response=await fetch("/api/knowledge/uploads",{cache:"no-store"});const body=await response.json() as {jobs?:KnowledgeUploadJob[]};
+      if(!disposed&&response.ok){const jobs=body.jobs??[];setUploadJobs(jobs);if(jobs.some(job=>job.status==="pending"||job.status==="running"))timer=setTimeout(load,5000);}}
+      catch{/* Upload-job status is supplementary to the existing knowledge page. */}}
+    void load();return()=>{disposed=true;if(timer)clearTimeout(timer);};
+  },[uploadMessage]);
 
   useEffect(() => {
     fetch("/api/knowledge/mailbox", { cache: "no-store" })
@@ -106,6 +120,16 @@ export function KnowledgeBase() {
     if (!uploadFile || !uploadTitle.trim()) return;
     setUploading(true); setUploadMessage("");
     try {
+      const binary=/\.(pdf|pptx|xlsx)$/i.test(uploadFile.name);
+      if(binary){
+        const form=new FormData();form.set("file",uploadFile);form.set("collection",uploadType);form.set("title",uploadTitle.trim());
+        form.set("sourceUrl",uploadSource.trim());form.set("visibility","private");form.set("entityKey",entityId.trim());
+        const response=await fetch("/api/knowledge/uploads",{method:"POST",headers:adminToken?{authorization:`Bearer ${adminToken}`}:{},body:form});
+        const body=await response.json() as {id?:string;status?:string;error?:string};if(!response.ok)throw new Error(body.error??"二进制资料上传失败");
+        setUploadMessage(`上传成功：原件已保存，提取作业 ${body.id?.slice(0,8)??""} 等待本地 worker。`);
+        setUploadFile(null);setUploadTitle("");setUploadSource("");setEntityId("");
+        const input=document.getElementById("kb-file") as HTMLInputElement|null;if(input)input.value="";return;
+      }
       const content = await uploadFile.text();
       if (!content.trim()) throw new Error("文件没有可读取的文本内容");
       const fileSlug = uploadFile.name.replace(/\.[^.]+$/, "").toLowerCase().replace(/[^a-z0-9\u4e00-\u9fff]+/g, "-");
@@ -204,9 +228,10 @@ export function KnowledgeBase() {
           {uploadType === "product" && <label>产品型号 / SKU<input value={entityId} onChange={(event) => setEntityId(event.target.value)} placeholder="例如：WR3000"/></label>}
           {uploadType === "industry" && <label>市场 / 范围（可选）<input value={entityId} onChange={(event) => setEntityId(event.target.value)} placeholder="例如：Global、Germany、EMEA"/></label>}
           {uploadType === "company" && <label>品牌方公司<input value="Cudy Technology" readOnly/></label>}
-          <label>知识文件<input id="kb-file" type="file" accept=".md,.txt,.csv,.json,text/plain,text/markdown,text/csv,application/json" onChange={(event) => setUploadFile(event.target.files?.[0] ?? null)}/><small>当前支持 UTF-8 Markdown、TXT、CSV、JSON；单文档最多 2 MB。</small></label>
+          <label>知识文件<input id="kb-file" type="file" accept=".md,.txt,.csv,.json,.pdf,.pptx,.xlsx,text/plain,text/markdown,text/csv,application/json,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange={(event) => setUploadFile(event.target.files?.[0] ?? null)}/><small>文本最多 2 MB并直接索引；PDF、PPTX、XLSX 最多25 MB，先保存原件并进入本地异步提取，不自动公开或向量化。</small></label>
           <label>管理 Token<input type="password" value={adminToken} onChange={(event) => setAdminToken(event.target.value)} placeholder="KNOWLEDGE_ADMIN_TOKEN（本地开发可留空）"/></label>
-          <div className="kb-upload-action"><span className={uploadMessage.startsWith("上传成功") ? "success" : ""}>{uploadMessage}</span><button className="primary-button" disabled={uploading || !uploadFile || !uploadTitle.trim() || (uploadType === "product" && !entityId.trim()) || !stats.configured} onClick={upload}>{uploading ? "分块与向量化中…" : "上传并建立索引"}</button></div>
+          <div className="kb-upload-action"><span className={uploadMessage.startsWith("上传成功") ? "success" : ""}>{uploadMessage}</span><button className="primary-button" disabled={uploading || !uploadFile || !uploadTitle.trim() || (uploadType === "product" && !entityId.trim()) || !stats.configured} onClick={upload}>{uploading ? "正在提交…" : /\.(pdf|pptx|xlsx)$/i.test(uploadFile?.name??"") ? "上传并创建提取作业" : "上传并建立索引"}</button></div>
+          {uploadJobs.length>0&&<div className="kb-upload-jobs"><strong>最近提取作业</strong>{uploadJobs.slice(0,6).map(job=><p key={job.id}><span className={`tag ${job.status==="extracted"?"green":job.status==="failed"?"red":"neutral"}`}>{job.status}</span> {job.title} · {job.documentType} · {Math.ceil(Number(job.byteSize)/1024)} KB{job.errorCode?` · ${job.errorCode}`:""}</p>)}</div>}
         </div>
       </div>
     </section>

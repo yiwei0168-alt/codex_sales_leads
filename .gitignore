@@ -37,6 +37,7 @@ backups/
 knowledge/industry/*
 knowledge/company/*
 knowledge/product/*
+knowledge/uploads/*
 !knowledge/README.md
 
 # LangGraph API
