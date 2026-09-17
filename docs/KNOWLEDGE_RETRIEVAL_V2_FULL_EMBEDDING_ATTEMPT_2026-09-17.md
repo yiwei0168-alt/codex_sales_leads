@@ -4,6 +4,6 @@
 
 用户明确确认：“我允许将剩余10861个知识库切片正文发送到阿里云百炼，并接受可能产生的费用”。确切范围为 generation `3917a242-724e-4e36-a1da-04c496a9df2d` 当时缺失的10,861个切片、阿里云百炼及可能费用；不授权其他供应商、模型或绕过预算/失败停止门禁。
 
-全量可恢复任务启动后，第一个批次收到阿里云百炼 HTTP 403：`AccessDenied.Unpurchased`（`Access to model denied. Please make sure you are eligible for using the model.`）。任务立即停止，未自动重试，未激活影子代。此前成功写入的10个向量保留；本次全量任务没有新增有效或下游向量。该批请求是否产生供应商最小费用以百炼账单为准，本地不能把现金费用写为零。
+全量可恢复任务成功完成265个十项批次后，下一批收到阿里云百炼 HTTP 403：`AccessDenied.Unpurchased`（`Access to model denied. Please make sure you are eligible for using the model.`）。任务随即停止，未自动重试，未激活影子代。本次新增2,650个有效且写入的1536维向量，供应商报告累计637,480输入tokens和216,463ms调用延迟；与此前10个合计现有2,660个向量，剩余8,211个，估算还需822次请求。现金费用仍以百炼账单为准，不能写为零。
 
-恢复条件：在当前北京 workspace 购买/开通 `text-embedding-v4` 使用资格，确认 endpoint 与 API key 属于同一已开通 workspace，再重新执行只读缺失量检查和十项探针。不能通过换到未审查模型、忽略403或自动循环重试来推进。
+恢复条件：核对当前北京 workspace 的 `text-embedding-v4` 资格/额度为何在265批后转为 `AccessDenied.Unpurchased`，并确认 endpoint 与 API key 属于同一已开通 workspace；修复后从缺失向量集合继续，不重算已写入的2,660个向量。不能通过换到未审查模型、忽略403或自动循环重试来推进。
