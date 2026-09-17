@@ -59,6 +59,8 @@
     "knowledge:v3:verify-schema": "node scripts/run-tsx.cjs scripts/verify-knowledge-v3-schema.ts",
     "knowledge:v3:verify-db": "node scripts/run-tsx.cjs scripts/verify-knowledge-v3-db.ts",
     "knowledge:v3:plan-release": "node scripts/run-tsx.cjs scripts/plan-knowledge-release-v3.ts --dry-run",
+    "knowledge:v3:verify-docling": ".venv-docling-v3\\Scripts\\python.exe scripts/verify_docling_v3_environment.py",
+    "knowledge:v3:pilot-docling": ".venv-docling-v3\\Scripts\\python.exe scripts/run_docling_v3_pilot.py",
     "knowledge:verify-ui": "node scripts/run-tsx.cjs scripts/verify-authenticated-knowledge-ui.ts",
     "leads:verify-models": "node --use-env-proxy scripts/run-tsx.cjs scripts/verify-lead-models.ts",
     "leads:verify": "tsx scripts/verify-live-leads.ts",

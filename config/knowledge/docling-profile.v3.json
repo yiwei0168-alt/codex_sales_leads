@@ -1,0 +1,45 @@
+{
+  "profileKey": "docling-standard-v3.0.0",
+  "runtime": {
+    "python": "3.11.9",
+    "docling": "2.126.0",
+    "docling-core": "2.97.0",
+    "docling-slim": "2.126.0",
+    "docling-parse": "7.20.0",
+    "docling-ibm-models": "4.0.2",
+    "rapidocr": "3.9.2",
+    "onnxruntime": "1.30.0",
+    "torch": "2.14.0",
+    "transformers": "5.17.0"
+  },
+  "packageArtifacts": {
+    "docling-2.126.0-py3-none-any.whl": "ce4515a2817b46bf62c8f00ababd5fc51851e8e4f435206f56c88169c2eac6dd",
+    "rapidocr-3.9.2-py3-none-any.whl": "04d6b8d151f823d930bd91910555f57bea897c0c44fa6794267b94cf9c1ef9a0"
+  },
+  "pipeline": "standard",
+  "pdfBackend": "docling_parse_single_threaded",
+  "enableRemoteServices": false,
+  "tableMode": "accurate",
+  "ocr": {
+    "engine": "rapidocr",
+    "backend": "onnxruntime",
+    "languageModel": "chinese",
+    "languageCoverage": ["zh", "en"],
+    "textScore": 0.5
+  },
+  "chunking": {
+    "strategy": "hybrid",
+    "maxTokens": 500,
+    "mergePeers": true,
+    "repeatTableHeader": true,
+    "tokenizer": "sentence-transformers/all-MiniLM-L6-v2"
+  },
+  "modelArtifacts": {
+    "directory": ".models/docling-v3",
+    "status": "downloaded-and-verified",
+    "tableFormerRevision": "v2.3.0/fc0f2d45e2218ea24bce5045f58a389aed16dc23",
+    "fileCountExcludingCaches": 38,
+    "bytesExcludingCaches": 943416223,
+    "aggregateSha256": "4b210e541e4d72b25c13b6027d4e92f737acedd0c0a569b9076a9273c4f8f6a3"
+  }
+}
