@@ -50,6 +50,8 @@
     "knowledge:register-assets": "node scripts/run-tsx.cjs scripts/register-knowledge-assets.ts",
     "knowledge:extract-shadow": "python scripts/build-knowledge-shadow-v2.py",
     "knowledge:ingest-shadow": "node scripts/run-tsx.cjs scripts/ingest-knowledge-shadow-v2.ts",
+    "knowledge:build-facts": "node scripts/run-tsx.cjs scripts/build-knowledge-facts-v2.ts",
+    "knowledge:audit-facts-v2": "node scripts/run-tsx.cjs scripts/audit-knowledge-facts-v2.ts",
     "knowledge:eval": "node scripts/run-tsx.cjs scripts/evaluate-knowledge.ts --offline",
     "leads:verify-models": "node --use-env-proxy scripts/run-tsx.cjs scripts/verify-lead-models.ts",
     "leads:verify": "tsx scripts/verify-live-leads.ts",

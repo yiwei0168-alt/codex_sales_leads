@@ -1,0 +1,9 @@
+{
+  "version":"entity-aliases-v1",
+  "aliases":[
+    {"canonical":"access-point","values":["access point","ap","无线接入点"]},
+    {"canonical":"customer-premises-equipment","values":["cpe","客户终端设备"]},
+    {"canonical":"power-over-ethernet","values":["poe","power over ethernet","以太网供电"]},
+    {"canonical":"ethernet-port","values":["rj45 port","ethernet port","网口","以太网口"]}
+  ]
+}

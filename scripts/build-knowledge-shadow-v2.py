@@ -6,7 +6,9 @@ product=json.loads(Path("knowledge/product/processed/product-catalog.json").read
 company=json.loads(Path("knowledge/company/processed/company-manifest.json").read_text(encoding="utf-8"))
 industry=json.loads(Path("knowledge/industry/processed/industry-manifest.json").read_text(encoding="utf-8"))
 sources=[]
-for item in product["datasheets"][:22]: sources.append(f"knowledge/product/{item['sourceFile']}")
+acceptance_models={"AP3000","HS105","GS1010PE","LT700","WU650","RE1200"}
+selected=product["datasheets"][:22]+[item for item in product["datasheets"] if acceptance_models.intersection(item.get("relatedModels",[]))]
+for item in selected: sources.append(f"knowledge/product/{item['sourceFile']}")
 sources += [f"knowledge/product/{item['sourceFile']}" for item in product["references"][:3]]
 sources.append("knowledge/product/Cudy products list.xlsx")
 sources += [f"knowledge/company/{item['sourceFile']}" for item in company["documents"]]
