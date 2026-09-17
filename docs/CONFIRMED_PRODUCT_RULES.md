@@ -10,6 +10,10 @@
 
 用户明确确认：“我明确允许将这10个知识库切片正文发送到阿里云百炼生成向量，并接受可能产生的费用”。确切范围仅为本次十个切片、阿里云百炼 `text-embedding-v4`、1536维向量及其可能费用；不自动扩展为剩余语料或其他供应商/模型。执行结果为10个输入、10个有效且写入的向量、1次embedding调用、1,567输入tokens、847ms供应商调用延迟、零重试；现金费用仍未知。影子代保持validated且未激活，剩余10,861个向量需要另行明确授权。详见[十项批次证据](KNOWLEDGE_RETRIEVAL_V2_EMBEDDING_BATCH_2026-09-17.md)。
 
+### KQ03 — 允许剩余10,861个知识库切片发送至阿里云百炼（2026-09-17，用户明确确认；执行被供应商权限阻止）
+
+用户明确确认：“我允许将剩余10861个知识库切片正文发送到阿里云百炼，并接受可能产生的费用”。范围不含其他供应商或模型，也不取消预算、费用、证据与失败停止门禁。执行在首个全量批次收到百炼 `403 AccessDenied.Unpurchased` 后停止，未自动重试、未新增有效向量、未激活；此前10个成功向量保留。恢复须先为当前北京workspace开通 `text-embedding-v4` 使用资格，详见[全量尝试证据](KNOWLEDGE_RETRIEVAL_V2_FULL_EMBEDDING_ATTEMPT_2026-09-17.md)。
+
 ### LG05 — 允许 LangGraph 向 LangSmith 发送脱敏 trace（2026-09-17，用户明确确认；已配置并通过云端脱敏验收）
 
 用户先确认“允许LangGraph trace”，在获知即使隐藏正文仍会外发节点名、父子关系、分支、时间、状态和错误类别等元数据后，又明确回复：“我允许 LangGraph 服务向 LangSmith 发送上述 trace 元数据，输入和输出正文继续隐藏。”范围为本机独立 LangGraph Agent Server 的 `runtime_health`、`assistant_workflow` 和 `lead_workflow` 运行轨迹，可向用户已配置密钥对应的 LangSmith 工作区发送上述元数据，并归入 `network-channel-copilot-local` 项目。为继续满足 A30，强制 `LANGSMITH_HIDE_INPUTS=true` 与 `LANGSMITH_HIDE_OUTPUTS=true`：不向 trace 后端发送用户消息、提示词、对话历史、知识正文、公司证据、业务状态正文或最终答案正文；API 密钥、凭据和本地环境变量值始终不得作为 trace 数据或提交内容。该确认不授权关闭输入／输出隐藏，也不授权新的 SMTP、模型或搜索调用。
