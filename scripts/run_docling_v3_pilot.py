@@ -73,6 +73,7 @@ def main() -> None:
         "validAssets": sum(item["conversionStatus"] in ("success", "partial_success") for item in results),
         "units": sum(len(item["units"]) for item in results),
         "blankUnits": sum(sum(unit["status"] == "blank" for unit in item["units"]) for item in results),
+        "reviewRequiredUnits": sum(sum(unit["status"] == "review-required" for unit in item["units"]) for item in results),
         "chunks": sum(len(item["chunks"]) for item in results),
         "latencyMs": sum(item["metrics"]["latencyMs"] for item in results),
         "retries": 0,
