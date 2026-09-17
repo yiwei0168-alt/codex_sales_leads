@@ -2,9 +2,9 @@ import { Annotation, END, START, StateGraph } from "@langchain/langgraph";
 import { z } from "zod";
 
 import type { AssistantConversationTurn, LeadSearchPlan } from "@/lib/assistant/types";
-import { runAssistantWorkflow } from "@/lib/assistant/graph";
+import { assistantBusinessGraph, executeAssistantWorkflowGraph } from "@/lib/assistant/graph";
 import type { LeadWorkflowResult } from "@/lib/leads/workflow/types";
-import { runLeadWorkflow } from "@/lib/leads/workflow/graph";
+import { executeLeadWorkflowGraph, leadBusinessTopologyGraph } from "@/lib/leads/workflow/graph";
 
 const channelRoles = [
   "Distributor", "VAD", "VAR", "Dealer", "Reseller", "Retailer", "E-tailer",
@@ -50,7 +50,7 @@ const AssistantServerState = Annotation.Root({
   userId: Annotation<string>(),
   content: Annotation<string>(),
   history: Annotation<AssistantConversationTurn[]>(),
-  result: Annotation<Awaited<ReturnType<typeof runAssistantWorkflow>> | undefined>(),
+  result: Annotation<Awaited<ReturnType<typeof executeAssistantWorkflowGraph>> | undefined>(),
 });
 
 const LeadServerState = Annotation.Root({
@@ -62,13 +62,13 @@ const LeadServerState = Annotation.Root({
 });
 
 export interface StandaloneWorkflowDependencies {
-  runAssistant: typeof runAssistantWorkflow;
-  runLead: typeof runLeadWorkflow;
+  executeAssistantGraph: typeof executeAssistantWorkflowGraph;
+  executeLeadGraph: typeof executeLeadWorkflowGraph;
 }
 
 const productionDependencies: StandaloneWorkflowDependencies = {
-  runAssistant: runAssistantWorkflow,
-  runLead: runLeadWorkflow,
+  executeAssistantGraph: executeAssistantWorkflowGraph,
+  executeLeadGraph: executeLeadWorkflowGraph,
 };
 
 export function buildRuntimeHealthGraph() {
@@ -83,29 +83,55 @@ export function buildRuntimeHealthGraph() {
 }
 
 export function buildAssistantServerGraph(
-  dependencies: Pick<StandaloneWorkflowDependencies, "runAssistant"> = productionDependencies,
+  dependencies: Pick<StandaloneWorkflowDependencies, "executeAssistantGraph"> = productionDependencies,
 ) {
   return new StateGraph(AssistantServerState)
-    .addNode("run_assistant_workflow", async (state) => {
+    .addNode("validate_assistant_request", (state) => assistantInputSchema.parse(state))
+    .addNode("assistant_business_flow", async (state) => {
       const input = assistantInputSchema.parse(state);
-      return { result: await dependencies.runAssistant(input.userId, input.content, input.history) };
+      return { result: await dependencies.executeAssistantGraph(input.userId, input.content, input.history) };
+    }, {
+      subgraphs: [assistantBusinessGraph],
+      metadata: { layer: "business", workflow: "assistant" },
     })
-    .addEdge(START, "run_assistant_workflow")
-    .addEdge("run_assistant_workflow", END)
-    .compile();
+    .addNode("publish_assistant_result", (state) => {
+      if (!state.result) throw new Error("Assistant business flow completed without a result");
+      return {};
+    })
+    .addEdge(START, "validate_assistant_request")
+    .addEdge("validate_assistant_request", "assistant_business_flow")
+    .addEdge("assistant_business_flow", "publish_assistant_result")
+    .addEdge("publish_assistant_result", END)
+    .compile({
+      name: "assistant_workflow",
+      description: "Complete product assistant orchestration with an expandable business-flow subgraph.",
+    });
 }
 
 export function buildLeadServerGraph(
-  dependencies: Pick<StandaloneWorkflowDependencies, "runLead"> = productionDependencies,
+  dependencies: Pick<StandaloneWorkflowDependencies, "executeLeadGraph"> = productionDependencies,
 ) {
   return new StateGraph(LeadServerState)
-    .addNode("run_lead_workflow", async (state) => {
+    .addNode("validate_lead_request", (state) => leadInputSchema.parse(state))
+    .addNode("lead_business_flow", async (state) => {
       const input = leadInputSchema.parse(state);
-      return { result: await dependencies.runLead(input) };
+      return { result: await dependencies.executeLeadGraph(input) };
+    }, {
+      subgraphs: [leadBusinessTopologyGraph],
+      metadata: { layer: "business", workflow: "lead" },
     })
-    .addEdge(START, "run_lead_workflow")
-    .addEdge("run_lead_workflow", END)
-    .compile();
+    .addNode("publish_lead_result", (state) => {
+      if (!state.result) throw new Error("Lead business flow completed without a result");
+      return {};
+    })
+    .addEdge(START, "validate_lead_request")
+    .addEdge("validate_lead_request", "lead_business_flow")
+    .addEdge("lead_business_flow", "publish_lead_result")
+    .addEdge("publish_lead_result", END)
+    .compile({
+      name: "lead_workflow",
+      description: "Complete product lead orchestration with an expandable checkpointed business-flow subgraph.",
+    });
 }
 
 export const runtimeHealthGraph = buildRuntimeHealthGraph();

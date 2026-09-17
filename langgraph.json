@@ -8,11 +8,11 @@
     },
     "assistant_workflow": {
       "path": "./src/langgraph/server.ts:assistantWorkflowGraph",
-      "description": "Adapter for the existing budgeted assistant workflow."
+      "description": "Complete assistant orchestration with expandable intent, RAG, search, and synthesis nodes."
     },
     "lead_workflow": {
       "path": "./src/langgraph/server.ts:leadWorkflowGraph",
-      "description": "Adapter for the existing tenant-scoped lead workflow and PostgreSQL checkpoints."
+      "description": "Complete lead orchestration with expandable knowledge, discovery, evidence, scoring, review, and persistence nodes."
     }
   },
   "env": ".env.local",

@@ -754,11 +754,11 @@ flowchart TD
 | `src/lib/assistant/types.ts` | `8ad5cd8f4e0c6bb3eb11191c2f42075523a3931fbc4d2d7caaa990ab06e2f8a8` |
 | `src/lib/assistant/intent.ts` | `cb77a2854f0058d92bf758ce4610d298bc94dde0157ade4f0bd3d05343fad168` |
 | `src/lib/assistant/intent-agent.ts` | `cc14a3432d6fbd0cf50a653892dc20982f2d8652f782055ebdc94163eda65027` |
-| `src/lib/rag/openai-provider.ts` | `cbf1be2e745eae74d208bf3c907050fb472f9469d31fdaa6d5d67d9a68273908` |
-| `src/lib/assistant/service.ts` | `191d407fc558253b10df7b57564bb73094808cddaf5f2f8883c57742561eff7e` |
+| `src/lib/rag/openai-provider.ts` | `fa55855ea611c744e41d1b297a968a841d965d4fadb5447f17a0c2e4d5a18c10` |
+| `src/lib/assistant/service.ts` | `7cdb098c2081aec0ce6496a6fa808addc753695ed1f9618d59f7cdf14f0b962a` |
 | `src/lib/assistant/repository.ts` | `5f8a96b484418bc47dc119e5ceb7b7989f0f551915bfd3b9e8068b013bca001b` |
-| `src/lib/leads/workflow/graph.ts` | `cf6f3a91f234b3aa19fcf29777e04d07716bd98b0f26d6211d5d7964dde040c0` |
-| `src/lib/leads/workflow/jobs.ts` | `997af873d880004429b35df27bb1e138e544cb39e70c7d9693929969f91b8db0` |
+| `src/lib/leads/workflow/graph.ts` | `82da74c3a1c23e3a3c7bbea00dd4b8090171865485b93165accdebff03d4530f` |
+| `src/lib/leads/workflow/jobs.ts` | `571596be71410650544716b4acd26e3e3cc84aa176ab1b057a13e66bd452d81a` |
 | `src/lib/leads/workflow/rag-context.ts` | `1e1ee21e77b90731e849426cd7130de7d1e50ee6aec9f196e44cb642bf81387b` |
 | `src/lib/leads/workflow/playbook.ts` | `0641f1e0715dcb13a0c94bbd002d4c17d9eca2a4f6e62200f8bc939f44ab359c` |
 | `src/lib/leads/workflow/playbook-cache.ts` | `2c16be23aa54888be27e6483e2634fa763b07be7bce551bb9199c4d55c66cfa0` |

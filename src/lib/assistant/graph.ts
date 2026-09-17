@@ -11,7 +11,7 @@ import { startOperation,finishOperation,bestEffortMetric } from "@/lib/operation
 import { intentMetrics } from "./intent-metrics";
 import type { AssistantConversationTurn, AssistantIntent, ExternalSearchAnswer, IntentPlan, LeadSearchPlan } from "./types";
 
-const AssistantState = Annotation.Root({
+export const AssistantState = Annotation.Root({
   userId: Annotation<string>(),
   content: Annotation<string>(),
   history: Annotation<AssistantConversationTurn[]>(),
@@ -21,6 +21,8 @@ const AssistantState = Annotation.Root({
   reply: Annotation<string>(),
   ragAnswer: Annotation<RagAnswer | undefined>(),
   externalAnswer: Annotation<ExternalSearchAnswer | undefined>(),
+  internalError: Annotation<string | undefined>(),
+  externalError: Annotation<string | undefined>(),
   warnings: Annotation<string[]>(),
 });
 
@@ -80,71 +82,116 @@ export function buildAssistantWorkflowGraph(dependencies: AssistantGraphDependen
       const intentPlan = await (dependencies.recordIntent?dependencies.recordIntent(state.userId,state.content,state.history??[],run):run());
       return { intent: intentPlan.intent, intentPlan, plan: intentPlan.leadPlan, reply: intentPlan.reply ?? "", warnings: intentPlan.warnings };
     })
-    .addNode("resolve_request", async (state) => {
-      if(state.intent==="budget-change")return {reply:"已解析预算修改提案，请核对范围和累计美元上限后在下方确认；没有修改预算或启动任务。"};
-      if(state.intent==="product-action")return {reply:"正在查询当前账号已保存的候选公司；没有添加搜索或生成邮件。"};
-      if (state.intent === "lead-search" && state.plan) {
-        const objective = state.plan.objective === "new-market" ? "新市场并行开发" : "已有分销体系增长";
-        return { reply: `我已生成 ${state.plan.countryName} 的销售线索搜索计划。目标为 ${state.plan.targetCount} 家，采用“${objective}”模式。确认后，LangGraph 会先执行产品、Cudy 公司与行业知识 RAG；其中产品知识通过向量、全文与结构化事实三路融合并进行置信度校验，再生成 Market Playbook、按候选类别调用混合搜索与轻量门禁；Tavily 仅用于后续定向补证，最后由独立评分 Agent 复核后保存。你也可以直接回复修改国家、数量或渠道类型。` };
-      }
-      if (state.intent === "general") {
-        return { reply: state.reply || "我可以查询 Cudy 内部知识、结合实时网页信息回答，也可以先设计并等待你确认销售线索搜索计划。" };
-      }
-      if (state.intent === "clarification") {
-        return { reply: state.reply || "我还不能可靠判断你的目标。请补充你要查询的对象、市场和期望结果，我会继续确认。" };
-      }
-
+    .addNode("respond_budget_change", () => ({
+      reply: "已解析预算修改提案，请核对范围和累计美元上限后在下方确认；没有修改预算或启动任务。",
+    }))
+    .addNode("respond_product_action", () => ({
+      reply: "正在查询当前账号已保存的候选公司；没有添加搜索或生成邮件。",
+    }))
+    .addNode("respond_lead_plan", (state) => {
+      if (!state.plan) throw new Error("Lead-search intent completed without a plan");
+      const objective = state.plan.objective === "new-market" ? "新市场并行开发" : "已有分销体系增长";
+      return { reply: `我已生成 ${state.plan.countryName} 的销售线索搜索计划。目标为 ${state.plan.targetCount} 家，采用“${objective}”模式。确认后，LangGraph 会先执行产品、Cudy 公司与行业知识 RAG；其中产品知识通过向量、全文与结构化事实三路融合并进行置信度校验，再生成 Market Playbook、按候选类别调用混合搜索与轻量门禁；Tavily 仅用于后续定向补证，最后由独立评分 Agent 复核后保存。你也可以直接回复修改国家、数量或渠道类型。` };
+    })
+    .addNode("respond_general", (state) => ({
+      reply: state.reply || "我可以查询 Cudy 内部知识、结合实时网页信息回答，也可以先设计并等待你确认销售线索搜索计划。",
+    }))
+    .addNode("respond_clarification", (state) => ({
+      reply: state.reply || "我还不能可靠判断你的目标。请补充你要查询的对象、市场和期望结果，我会继续确认。",
+    }))
+    .addNode("retrieve_internal_knowledge", async (state) => {
       const internalQuestion = state.intentPlan?.internalQuestion || state.content;
       const missing = dependencies.missingRagConfig();
-      if (state.intent === "knowledge-question") {
-        if (missing.length > 0) {
-          return { reply: `知识问答服务尚未完整配置（缺少 ${missing.join(", ")}）。我没有调用外部搜索，也不会在缺少证据时编造答案。` };
-        }
-        try {
-          const ragAnswer = await dependencies.answerKnowledge(state.userId, { question: internalQuestion, maxChunks: 8 });
-          return { reply: ragAnswer.answer, ragAnswer, warnings: [...state.warnings, ...ragAnswer.warnings] };
-        } catch (error) {
-          return { reply: knowledgeErrorMessage(error) };
-        }
+      if (missing.length > 0) {
+        return { reply: `知识问答服务尚未完整配置（缺少 ${missing.join(", ")}）。我没有调用外部搜索，也不会在缺少证据时编造答案。` };
       }
-
-      const externalQuestions = state.intentPlan?.externalQuestions ?? [];
-      const internalPromise = missing.length === 0
-        ? dependencies.answerKnowledge(state.userId, { question: internalQuestion, maxChunks: 8 })
-        : Promise.reject(new Error(`内部 RAG 缺少配置：${missing.join(", ")}`));
-      const [internalResult, externalResult] = await Promise.allSettled([
-        internalPromise,
-        dependencies.searchExternal(externalQuestions),
-      ]);
-      const ragAnswer = internalResult.status === "fulfilled" ? internalResult.value
-        : emptyInternalAnswer(knowledgeErrorMessage(internalResult.reason));
-      if (externalResult.status === "rejected") {
-        const warning = externalErrorMessage(externalResult.reason);
+      try {
+        const ragAnswer = await dependencies.answerKnowledge(state.userId, { question: internalQuestion, maxChunks: 8 });
+        return { reply: ragAnswer.answer, ragAnswer, warnings: [...state.warnings, ...ragAnswer.warnings] };
+      } catch (error) {
+        return { reply: knowledgeErrorMessage(error) };
+      }
+    })
+    .addNode("retrieve_hybrid_internal", async (state) => {
+      const internalQuestion = state.intentPlan?.internalQuestion || state.content;
+      const missing = dependencies.missingRagConfig();
+      try {
+        if (missing.length > 0) throw new Error(`内部 RAG 缺少配置：${missing.join(", ")}`);
+        return { ragAnswer: await dependencies.answerKnowledge(state.userId, { question: internalQuestion, maxChunks: 8 }) };
+      } catch (error) {
+        const internalError = knowledgeErrorMessage(error);
+        return { ragAnswer: emptyInternalAnswer(internalError), internalError };
+      }
+    })
+    .addNode("retrieve_hybrid_external", async (state) => {
+      try {
+        return { externalAnswer: await dependencies.searchExternal(state.intentPlan?.externalQuestions ?? []) };
+      } catch (error) {
+        return { externalError: externalErrorMessage(error) };
+      }
+    })
+    .addNode("synthesize_hybrid_answer", async (state) => {
+      const ragAnswer = state.ragAnswer ?? emptyInternalAnswer(state.internalError ?? "内部知识库本次没有返回可用证据。");
+      if (state.externalError || !state.externalAnswer) {
+        const warning = state.externalError ?? "外部网页检索失败：未返回可用结果";
         return {
-          reply: internalResult.status === "fulfilled" ? `${ragAnswer.answer}\n\n${warning}` : `${ragAnswer.warnings[0]}\n${warning}`,
+          reply: state.internalError ? `${ragAnswer.warnings[0]}\n${warning}` : `${ragAnswer.answer}\n\n${warning}`,
           ragAnswer, warnings: [...state.warnings, ...ragAnswer.warnings, warning],
         };
       }
       try {
-        const reply = await dependencies.synthesizeHybrid(state.content, ragAnswer, externalResult.value);
-        return { reply, ragAnswer, externalAnswer: externalResult.value, warnings: [...state.warnings, ...ragAnswer.warnings] };
+        const reply = await dependencies.synthesizeHybrid(state.content, ragAnswer, state.externalAnswer);
+        return { reply, ragAnswer, warnings: [...state.warnings, ...ragAnswer.warnings] };
       } catch (error) {
         const warning = `OpenAI 证据整合失败：${error instanceof Error ? error.message : "unknown error"}`;
         return {
-          reply: `${ragAnswer.answer}\n\n外部检索结果：\n${externalResult.value.answer}\n\n${warning}`,
-          ragAnswer, externalAnswer: externalResult.value,
+          reply: `${ragAnswer.answer}\n\n外部检索结果：\n${state.externalAnswer.answer}\n\n${warning}`,
+          ragAnswer,
           warnings: [...state.warnings, ...ragAnswer.warnings, warning],
         };
       }
     })
     .addEdge(START, "plan_request")
-    .addEdge("plan_request", "resolve_request")
-    .addEdge("resolve_request", END)
-    .compile();
+    .addConditionalEdges("plan_request", (state) => {
+      if (state.intent === "budget-change") return "respond_budget_change";
+      if (state.intent === "product-action") return "respond_product_action";
+      if (state.intent === "lead-search") return "respond_lead_plan";
+      if (state.intent === "general") return "respond_general";
+      if (state.intent === "clarification") return "respond_clarification";
+      if (state.intent === "knowledge-question") return "retrieve_internal_knowledge";
+      return ["retrieve_hybrid_internal", "retrieve_hybrid_external"];
+    })
+    .addEdge("respond_budget_change", END)
+    .addEdge("respond_product_action", END)
+    .addEdge("respond_lead_plan", END)
+    .addEdge("respond_general", END)
+    .addEdge("respond_clarification", END)
+    .addEdge("retrieve_internal_knowledge", END)
+    .addEdge(["retrieve_hybrid_internal", "retrieve_hybrid_external"], "synthesize_hybrid_answer")
+    .addEdge("synthesize_hybrid_answer", END)
+    .compile({
+      name: "assistant_business_flow",
+      description: "Intent planning, grounded knowledge resolution, external research, and answer synthesis.",
+    });
 }
 
-const productionGraph = buildAssistantWorkflowGraph();
+export const assistantBusinessGraph = buildAssistantWorkflowGraph();
+
+export async function executeAssistantWorkflowGraph(
+  userId: string,
+  content: string,
+  history: AssistantConversationTurn[] = [],
+) {
+  return withProductSpend(userId, "assistant", () => assistantBusinessGraph.invoke({
+    userId,
+    content,
+    history,
+    intent: "general",
+    reply: "",
+    warnings: [],
+  }));
+}
 
 export async function runAssistantWorkflow(userId: string, content: string, history: AssistantConversationTurn[] = []) {
-  return withProductSpend(userId,"assistant",()=>productionGraph.invoke({ userId, content, history, intent: "general", reply: "", warnings: [] }));
+  return executeAssistantWorkflowGraph(userId, content, history);
 }

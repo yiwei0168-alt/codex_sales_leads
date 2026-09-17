@@ -47,7 +47,7 @@ import type {
   WorkflowModelUsage,
 } from "./types";
 
-const WorkflowAnnotation = Annotation.Root({
+export const WorkflowAnnotation = Annotation.Root({
   userId: Annotation<string>(),
   actionId: Annotation<string>(),
   graphThreadId: Annotation<string>(),
@@ -668,12 +668,21 @@ export function buildLeadWorkflowGraph(
     })
     .addEdge("assemble_handoff_briefs", "persist_results")
     .addEdge("persist_results", END);
-  return graph.compile(checkpointer ? { checkpointer } : undefined);
+  return graph.compile({
+    ...(checkpointer ? { checkpointer } : {}),
+    name: "lead_business_flow",
+    description: "Knowledge, playbook, discovery, evidence, correction, routing, scoring, review, handoff, and persistence.",
+  });
 }
+
+// The standalone service advertises this checkpoint-free instance as the
+// expandable business topology. Execution uses the identical graph compiled
+// with the production PostgreSQL checkpointer below.
+export const leadBusinessTopologyGraph = buildLeadWorkflowGraph();
 
 let productionGraph: ReturnType<typeof buildLeadWorkflowGraph> | undefined;
 
-function getProductionGraph() {
+export function getProductionLeadWorkflowGraph() {
   if (!productionGraph) {
     const checkpointer = new PostgresSaver(getPool(), undefined, { schema: "langgraph" });
     productionGraph = buildLeadWorkflowGraph(productionDependencies, checkpointer);
@@ -681,7 +690,7 @@ function getProductionGraph() {
   return productionGraph;
 }
 
-export async function runLeadWorkflow(input: {
+export async function executeLeadWorkflowGraph(input: {
   userId: string;
   actionId: string;
   graphThreadId: string;
@@ -709,7 +718,7 @@ export async function runLeadWorkflow(input: {
     stageMetrics: [],
     warnings: [],
   };
-  const graph=getProductionGraph();
+  const graph=getProductionLeadWorkflowGraph();
   // This workflow can run inside the standalone LangGraph API graph. Pin its
   // persisted business checkpoint to the root namespace so the outer graph's
   // task namespace cannot leak into resume lookups.
@@ -766,15 +775,24 @@ export async function runLeadWorkflow(input: {
   return state.result;
 }
 
+export async function runLeadWorkflow(input: {
+  userId: string;
+  actionId: string;
+  graphThreadId: string;
+  plan: LeadSearchPlan;
+}): Promise<LeadWorkflowResult> {
+  return executeLeadWorkflowGraph(input);
+}
+
 export async function readSavedWorkflowRecoveryCheckpoint(userId:string,actionId:string,graphThreadId:string,plan:LeadSearchPlan){
-  const snapshot=await getProductionGraph().getState({configurable:{thread_id:graphThreadId}});
+  const snapshot=await getProductionLeadWorkflowGraph().getState({configurable:{thread_id:graphThreadId}});
   if(checkpointInvocation(snapshot,userId,actionId,plan)!=="complete")throw new Error("Saved recovery requires a terminal completed checkpoint");
   return {values:snapshot.values as Record<string,unknown>,next:snapshot.next,
     checkpointId:typeof snapshot.config.configurable?.checkpoint_id==="string"?snapshot.config.configurable.checkpoint_id:null};
 }
 
 export async function readWorkflowCheckpointProgress(userId:string,actionId:string,graphThreadId:string){
-  const snapshot=await getProductionGraph().getState({configurable:{thread_id:graphThreadId}});
+  const snapshot=await getProductionLeadWorkflowGraph().getState({configurable:{thread_id:graphThreadId}});
   if(!Object.keys(snapshot.values).length)return null;
   checkpointInvocation(snapshot,userId,actionId);
   const state=snapshot.values as LeadWorkflowState;

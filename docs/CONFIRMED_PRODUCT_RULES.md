@@ -1,8 +1,18 @@
 # 用户确认规则登记表
 
-### LG03 — 使用 LangGraph Studio 查看本地图与运行轨迹（2026-09-16，用户明确确认；本地服务配置已实现，等待用户配置 LangSmith API Key 完成 Studio 验收）
+### LG05 — 允许 LangGraph 向 LangSmith 发送脱敏 trace（2026-09-17，用户明确确认；已配置，上传验收进行中）
 
-用户在“LangGraph Studio 或本地静态图”两种方案中明确回复“我选1”。范围为允许托管于 `https://smith.langchain.com` 的 LangGraph Studio 页面从浏览器直连本机 `http://127.0.0.1:2024`，查看三个已注册图、节点关系、本地运行状态与调试信息；独立服务仍只监听回环地址，不开放局域网或公网。`LANGSMITH_TRACING` 默认设为 `false`，不因接入 Studio 自动上传执行 trace；用户未来显式启用云追踪时才覆盖该默认值。此确认不授权模型、搜索、SMTP、付费调用或云部署。配置加载、精确来源 CORS 预检、本地信息接口和定向回归已经通过；第一次 Studio 页面连接返回 `Failed to fetch`，排查确认本机尚未配置官方当前流程要求的 `LANGSMITH_API_KEY`，因此不得把本地接口通过视为 Studio 端到端验收。
+用户原话：“允许LangGraph trace”。范围为本机独立 LangGraph Agent Server 的 `runtime_health`、`assistant_workflow` 和 `lead_workflow` 运行轨迹，可向用户已配置密钥对应的 LangSmith 工作区发送节点／父子 span、分支、状态、耗时和错误类别，并归入 `network-channel-copilot-local` 项目。为继续满足 A30，默认同时强制 `LANGSMITH_HIDE_INPUTS=true` 与 `LANGSMITH_HIDE_OUTPUTS=true`：不向 trace 后端发送用户消息、提示词、对话历史、知识正文、公司证据、业务状态正文或最终答案正文；API 密钥、凭据和本地环境变量值始终不得作为 trace 数据或提交内容。该确认不授权关闭输入／输出隐藏、不授权 SMTP、模型或搜索调用，也不把 Studio 图形查看等同于云 trace 上传成功。Git 忽略的本地配置与无密钥示例配置均已显式启用 tracing 并设置隐藏开关；需在服务重启并产生零外部业务调用的健康 trace 后单独确认上传状态。
+
+### LG04 — 全部既有产品编排节点成为 LangGraph／LangSmith 可展开业务图（2026-09-17，用户明确确认；已实现并通过零外部业务调用验收）
+
+用户原话：“深度改造，把所有产品节点都搬到LangGraph上，要能在LangSmith上编排完整业务流程”。范围是当前产品已经存在的两条生产编排链，而不是把普通 CRUD、页面渲染或单次数据库读取虚构成工作流节点：`assistant_workflow` 必须公开输入校验、意图规划、预算响应、产品动作响应、线索计划响应、普通／澄清响应、内部知识检索、混合检索的内部与外部分支、证据综合和结果发布；`lead_workflow` 必须公开输入校验、知识检索、市场计划、候选发现、证据收集、证据校正、角色路由、评分、未完成处理恢复、异常复核、交接摘要、持久化和结果发布，并保留已保存证据恢复分支。两条图必须由独立 LangGraph 服务注册为可展开的组合图，LangSmith Studio 通过 `xray`／subgraph 看到真实节点与条件边，产品仍只通过官方 SDK 调用服务，不回退到 Next.js 进程。
+
+改造不得复制或绕开现有业务执行：助手成本上下文、线索租户／动作／计划身份校验、费用观察、暂停、防重放、恢复及 PostgreSQL `langgraph` checkpoint 继续由同一生产业务图执行；兼容导出的 `runAssistantWorkflow`／`runLeadWorkflow` 仅供既有内部测试和工具调用，独立服务不再把它们注册成单节点黑盒。普通 API、DTO、数据库结构、权限和供应商合同不变；本确认不授权新的模型、搜索、SMTP、付费调用或云部署；云 trace 后由 LG05 单独授权。当前实现的本地 Agent Server `xray=true` 已返回助手 15 个可见节点／23 条边和线索 17 个可见节点／23 条边；1,090 项测试、TypeScript、生产构建、lint 和 22 项浏览器用例通过（另有 2 项按设计跳过）。Studio 页面刷新后的用户采用与真实业务质量仍未知，不能用图结构通过替代。
+
+### LG03 — 使用 LangGraph Studio 查看本地图与运行轨迹（2026-09-16，用户明确确认；本地连接配置已实现）
+
+用户在“LangGraph Studio 或本地静态图”两种方案中明确回复“我选1”。范围为允许托管于 `https://smith.langchain.com` 的 LangGraph Studio 页面从浏览器直连本机 `http://127.0.0.1:2024`，查看三个已注册图、节点关系、本地运行状态与调试信息；独立服务仍只监听回环地址，不开放局域网或公网。`LANGSMITH_TRACING` 默认设为 `false`，不因接入 Studio 自动上传执行 trace；用户未来显式启用云追踪时才覆盖该默认值。此确认不授权模型、搜索、SMTP、付费调用或云部署。配置加载、精确来源 CORS 预检、本地信息接口和定向回归已经通过；第一次 Studio 页面连接的 `Failed to fetch` 已在用户把所需 key 写入 Git 忽略的本地环境文件并重启服务后排除。密钥值不得写入规则、日志或提交；LG04 另行约束 Studio 中完整业务图的可见性。
 ### A34 — RAG 回答底层模型切换为 Kimi（2026-09-15，用户明确确认；已实施并通过公开合成实测）
 
 用户原话：“把这一步使用的底层模型换成Kimi”。“这一步”承接刚定位的知识库检索成功、回答生成失败环节，因此范围仅为知识库检索后的 grounded answer，不改变 Qwen embedding、知识检索/排序、Gemini 外部网页检索、混合答案综合、线索评分复核、开发策略或邮箱模型。实现使用现有 Moonshot 受信任直连端点和 `KIMI_RAG_MODEL`（默认 `kimi-k3`），单次非流式 JSON 回答，`kimi-k3` 使用 `max_completion_tokens=4096`，无 OpenRouter、Bedrock、第二模型、SDK 自动重试或应用层备用。A30 的公开来源与敏感信息脱敏边界、引用要求及不足时明确说明继续执行；A33 当前用户观察模式不做金额预留，响应未给现金金额时保持费用未知。一次真实公开合成调用返回 HTTP 200、有效引用回答，证明密钥/地域/请求线形可用；这不等于真实用户知识问题的语义质量或现金账单已完成验收。[阶段证据](A34_KIMI_RAG_ANSWER_STAGE248_2026-09-15.md)。
@@ -14,7 +24,7 @@
 
 ### LG02 — 产品只通过独立 LangGraph 服务执行编排（2026-09-16，用户明确确认；已实现并通过无付费跨进程验收）
 
-用户原话：“让产品改为通过LangGraph而不是仍旧调用内部runner”。范围为生产助手消息编排与已认领销售线索任务编排：Next.js/worker 必须通过官方 LangGraph SDK 调用 `LANGGRAPH_API_URL`（本地默认 `http://127.0.0.1:2024`）的 `assistant_workflow` / `lead_workflow`；产品入口不得直接导入或调用进程内 `runAssistantWorkflow` / `runLeadWorkflow`。独立服务内部继续复用这两个既有受控 runner，从而保留租户、预算、费用、防重放、恢复和 PostgreSQL checkpoint 语义。SDK 对编排 POST 禁止自动重试，服务不可用、超时或响应缺失时明确失败，不静默回退到产品进程；助手默认超时 300,000 ms、线索默认 7,200,000 ms，可由环境变量在限定范围内覆盖。确认不授权新的模型、搜索、邮件或付费调用。实现已通过三次零外部调用 HTTP 路由探测、68 项隔离式登录 UI/HTTP/SQL 验收以及全量自动化检查；实际用户采用仍未知。
+用户原话：“让产品改为通过LangGraph而不是仍旧调用内部runner”。范围为生产助手消息编排与已认领销售线索任务编排：Next.js/worker 必须通过官方 LangGraph SDK 调用 `LANGGRAPH_API_URL`（本地默认 `http://127.0.0.1:2024`）的 `assistant_workflow` / `lead_workflow`；产品入口不得直接导入或调用进程内 `runAssistantWorkflow` / `runLeadWorkflow`。SDK 对编排 POST 禁止自动重试，服务不可用、超时或响应缺失时明确失败，不静默回退到产品进程；助手默认超时 300,000 ms、线索默认 7,200,000 ms，可由环境变量在限定范围内覆盖。确认不授权新的模型、搜索、邮件或付费调用。最初独立服务内部复用两个受控 runner 的实现已由后续 LG04 深化为可展开的组合业务图，同时保留原租户、预算、费用、防重放、恢复和 PostgreSQL checkpoint 语义；LG02 的产品跨进程边界与失败策略未被取代。实现已通过三次零外部调用 HTTP 路由探测、68 项隔离式登录 UI/HTTP/SQL 验收以及全量自动化检查；实际用户采用仍未知。
 
 ### LG01 — LangGraph 独立本地运行（2026-09-16，用户明确确认；已实现并通过无外部调用验收）
 

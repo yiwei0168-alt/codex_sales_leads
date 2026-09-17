@@ -6,13 +6,15 @@
 
 `LG02` 将产品执行边界迁移到独立服务：助手消息与已认领线索任务通过官方 SDK 调用 `assistant_workflow` / `lead_workflow`，产品进程不再直接运行这两个生产 runner。SDK 禁止自动重试编排 POST；独立服务不可用、超时或响应缺少结果时明确失败，不回退到产品进程。图实现、单元测试和离线验证仍可直接构建内部图，不属于生产入口。
 
+`LG04` 将最初的单节点适配器深化为组合业务图。独立服务的根图承担输入合同和结果合同，真实生产业务图作为可展开 subgraph 注册；Studio 请求 `xray=true` 时必须返回全部现有助手与线索业务节点和条件边。兼容 runner 仅保留给既有测试／工具，服务注册入口直接绑定业务图执行函数和对应 subgraph 拓扑。
+
 独立服务导出三个图：
 
 - `runtime_health`：零模型、零搜索、零邮件、零数据库写入的运行时健康图。
-- `assistant_workflow`：校验输入后委托现有 `runAssistantWorkflow`，保留原成本上下文和回答合同。
-- `lead_workflow`：校验输入后委托现有 `runLeadWorkflow`，保留租户作用域、动作身份、预算门禁、恢复规则及 PostgreSQL `langgraph` schema checkpoint。
+- `assistant_workflow`：输入校验 → `assistant_business_flow` → 结果合同。业务子图公开意图规划、五类确定性响应、内部知识检索、并行内部／外部混合检索与证据综合。
+- `lead_workflow`：输入校验 → `lead_business_flow` → 结果合同。业务子图公开知识、计划、发现、证据、校正、角色路由、评分、恢复、复核、交接和持久化的完整条件图。
 
-适配图不复制业务节点。独立 API 的调用方仍必须提供产品已有的用户、动作和图线程 UUID；不存在或不匹配的身份由原业务与数据库边界拒绝。开发服务只允许产品的两个本地 Origin 进行浏览器 CORS 访问；这不是生产身份认证，因此不得把当前开发命令改成 `0.0.0.0` 或直接公网部署。
+组合图不复制业务节点；Studio 拓扑和实际执行复用同一图构建器。线索的可视拓扑实例不带 checkpointer，只用于 subgraph 发现；运行实例由相同构建器绑定 PostgreSQL `langgraph` schema checkpointer，避免 Agent Server 用开发期内存 checkpointer 覆盖业务恢复语义。独立 API 的调用方仍必须提供产品已有的用户、动作和图线程 UUID；不存在或不匹配的身份由原业务与数据库边界拒绝。开发服务只允许产品的两个本地 Origin 和精确的 Studio Origin 进行浏览器 CORS 访问；这不是生产身份认证，因此不得把当前开发命令改成 `0.0.0.0` 或直接公网部署。
 
 ## 本地运行
 
@@ -36,4 +38,14 @@ npm run langgraph:dev
 
 ### LG03 Studio 本地连接
 
-Studio 使用 `https://smith.langchain.com/studio/?baseUrl=http://127.0.0.1:2024` 从浏览器直连本机 Agent Server。服务的 CORS 白名单仅在原产品来源之外新增 `https://smith.langchain.com`，监听地址仍为 `127.0.0.1`；允许请求头由精确获准的来源预检动态反射，并公开 Studio 分页所需的两个响应头。启动预加载层在没有显式配置时将 `LANGSMITH_TRACING` 设为 `false`，因此查看本地图不会自动开启云 trace。当前官方 JavaScript Studio 流程还要求在 Git 忽略的 `.env.local` 提供 `LANGSMITH_API_KEY`；本机尚未配置，第一次 Studio 页面尝试返回 `Failed to fetch`，完整 Studio 验收等待用户自行创建并保存密钥后继续。
+Studio 使用 `https://smith.langchain.com/studio/?baseUrl=http://127.0.0.1:2024` 从浏览器直连本机 Agent Server。服务的 CORS 白名单仅在原产品来源之外新增 `https://smith.langchain.com`，监听地址仍为 `127.0.0.1`；允许请求头由精确获准的来源预检动态反射，并公开 Studio 分页所需的两个响应头。当前官方 JavaScript Studio 流程要求在 Git 忽略的 `.env.local` 提供 `LANGSMITH_API_KEY`；用户已完成本地写入，密钥值从未进入输出或版本库。LG04 更新服务后，在 Studio 重新连接或刷新图，选择 `assistant_workflow`／`lead_workflow` 并展开 `assistant_business_flow`／`lead_business_flow` 即可查看完整节点；本地 API 的 `graph?xray=true` 是相同拓扑的自动化验收入口。Studio 是代码定义图的可视化、调试和运行界面，不是任意拖拽后自动改写仓库代码的低代码编辑器。
+
+### LG05 脱敏云 trace
+
+用户已明确允许 LangGraph trace。本地运行配置启用 `LANGSMITH_TRACING=true`，并把轨迹归入 `network-channel-copilot-local`；同时按官方敏感数据保护配置设置 `LANGSMITH_HIDE_INPUTS=true` 和 `LANGSMITH_HIDE_OUTPUTS=true`。因此 LangSmith 可接收节点层级、父子关系、分支、耗时、状态和错误等调试信号，但不接收工作流输入／输出正文。预加载器在环境变量完全缺失时仍保持 fail-safe 的 tracing 关闭默认值；只有显式配置的环境才上传。开启 trace 不改变模型、搜索、邮件或业务工作流执行，也不授权把 Agent Server 暴露到非回环网络。
+
+本地服务已用新配置重启，健康图和两个预期 schema 拒绝均在本地正常执行；当前受限执行环境阻止该服务访问 LangSmith 443，因此首次批量上传失败，LangSmith 只读检查确认目标项目尚未建立。要完成云端验收，必须在明确理解“即使隐藏输入／输出，节点名、时间、状态和错误等元数据仍会外发”后，另行批准服务的网络访问。不得把配置已启用写成上传已成功。
+
+### LG04 完整图验收补充
+
+本地 Agent Server 的 `xray=true` 返回 `assistant_workflow` 15 个节点／23 条边、`lead_workflow` 17 个节点／23 条边；定向测试检查了每个产品编排节点名称和 subgraph 注册。零外部业务调用路由探测完成 3 个请求（1 个健康结果、2 个预期 schema 拒绝），耗时 1,801.72 ms。全量 216 个测试文件／1,090 项测试、TypeScript、生产构建、lint（0 错误、11 条既有 warning）及浏览器 22 项通过，2 项按设计跳过。模型、搜索、SMTP、真实业务写入、token、API credits 和现金费用均为 0；用户在 Studio 刷新后对完整图的采用仍未知。
