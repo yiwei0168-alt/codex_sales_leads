@@ -1,10 +1,11 @@
 {
-  "version": "attribute-registry-v1.0.1",
+  "version": "attribute-registry-v1.1.0",
   "attributes": [
     {"key":"ethernet_port_count","type":"integer","unit":"port","aliases":["ethernet ports","rj45 ports","网口","以太网口","有线端口"],"categories":["router","switch","access-point","mesh","cpe"]},
     {"key":"lan_port_count","type":"integer","unit":"port","aliases":["lan ports","lan口","局域网口"],"categories":["router","cpe"]},
     {"key":"wan_port_count","type":"integer","unit":"port","aliases":["wan ports","wan口","广域网口"],"categories":["router","cpe"]},
     {"key":"poe_output_port_count","type":"integer","unit":"port","aliases":["poe ports","poe output ports","poe供电口","poe 供电口","poe输出口","poe 输出口"],"categories":["switch"]},
+    {"key":"poe_capability","type":"boolean","aliases":["poe support","supports poe","support poe","poe capability","支持 poe","支持poe","poe 支持"],"categories":["router","switch","access-point","mesh","cpe","injector"]},
     {"key":"uplink_port_count","type":"integer","unit":"port","aliases":["uplink ports","上联口"],"categories":["switch"]},
     {"key":"ethernet_speed","type":"number-set","unit":"Gbps","aliases":["ethernet speed","link rate","网口速率","端口速率"],"categories":["router","switch","access-point","mesh","cpe"]},
     {"key":"sfp_port_count","type":"integer","unit":"port","aliases":["sfp ports","sfp口"],"categories":["switch","accessory"]},

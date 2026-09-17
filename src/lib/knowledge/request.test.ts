@@ -49,4 +49,33 @@ describe("knowledge request parsing", () => {
     });
     expect(ambiguous.entityKeys).toEqual([]);
   });
+
+  it.each(["区别", "差异", "不同", "对比", "比较", "versus", "vs", "difference"])(
+    "recognizes %s as a comparison signal and selects the default profile",
+    async (signal) => {
+      const result = await parseKnowledgeRequest("user", {
+        question: `MODEL-A ${signal} MODEL-A-PRO`,
+        entry: "assistant",
+      });
+      expect(result).toMatchObject({
+        action: "compare-facts",
+        entityKeys: ["MODEL-A", "MODEL-A-PRO"],
+        comparisonMode: "default-profile",
+        comparisonProfile: "category-default",
+      });
+    },
+  );
+
+  it("keeps an explicit comparison attribute and parses a requested version", async () => {
+    const result = await parseKnowledgeRequest("user", {
+      question: "比较 MODEL-A 和 MODEL-A-PRO version 2.0 的网口",
+      entry: "knowledge-page",
+    });
+    expect(result.comparisonMode).toBe("explicit-attributes");
+    expect(result.attributeKeys).toContain("ethernet_port_count");
+    expect(result.parsedEntities).toEqual([
+      { canonicalKey: "MODEL-A", version: "2.0" },
+      { canonicalKey: "MODEL-A-PRO", version: "2.0" },
+    ]);
+  });
 });

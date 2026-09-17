@@ -2,6 +2,8 @@ import { buildKnowledgeEvaluationCorpus, knowledgeEvaluationCorpusHash } from ".
 import { interpretAssistantRequest } from "../src/lib/assistant/intent";
 import { extractStructuredProductFacts } from "../src/lib/rag/product-facts";
 import { chunkDocument, chunkDocumentV2 } from "../src/lib/rag/chunker";
+import { classifyKnowledgeRequest } from "../src/lib/knowledge/request";
+import { exactModelMentions } from "../src/lib/knowledge/query-normalizer";
 
 if (process.argv.includes("--live")) {
   throw new Error("The offline evaluator does not authorize live model/search calls");
@@ -9,6 +11,20 @@ if (process.argv.includes("--live")) {
 
 const corpus = buildKnowledgeEvaluationCorpus();
 const routedAsKnowledge = corpus.cases.filter((item) => interpretAssistantRequest(item.query).intent === "knowledge-question").length;
+const entityDictionary = [...new Set(corpus.cases.flatMap((item) => item.expectedEntities))];
+const closedLoopRoutes = corpus.cases.map((item) => {
+  const entityKeys = exactModelMentions(item.query, entityDictionary);
+  const parsed = classifyKnowledgeRequest({ question: item.query, entityKeys, entry: "knowledge-page" });
+  return {
+    id: item.id,
+    expectedAction: item.expectedAction,
+    actualAction: parsed.action,
+    actionMatch: parsed.action === item.expectedAction,
+    entityMatch: JSON.stringify([...parsed.entityKeys].sort()) === JSON.stringify([...item.expectedEntities].sort()),
+  };
+});
+const baseRoutes = closedLoopRoutes.filter((route) => corpus.cases.find((item) => item.id === route.id)?.group === "base");
+const wrRegression = closedLoopRoutes.find((route) => route.id === "base-15-compare");
 
 function facts(description: string) {
   return extractStructuredProductFacts({
@@ -43,6 +59,11 @@ const report = {
     base: corpus.cases.filter((item) => item.group === "base").length,
     boundary: corpus.cases.filter((item) => item.group === "boundary").length,
     entities: new Set(corpus.cases.flatMap((item) => item.expectedEntities)).size,
+    splits: Object.fromEntries(["development", "validation", "holdout"].map((split) => [
+      split, corpus.cases.filter((item) => item.split === split).length,
+    ])),
+    humanAnswerReviewed: corpus.cases.filter((item) => item.goldStatus === "pending-human-answer-review"
+      && item.expectedAnswer && item.expectedSources?.length).length,
   },
   currentBaseline: {
     topLevelKnowledgeRoutes: routedAsKnowledge,
@@ -50,12 +71,20 @@ const report = {
     factExtractionProbes: probes,
     shortSectionHeadingDefectObserved: headingDefectObserved,
     shadowV2ShortSectionFixed: v2HeadingFixed,
+    parsedKnowledgeActionMatches: closedLoopRoutes.filter((item) => item.actionMatch).length,
+    parsedEntityMatches: closedLoopRoutes.filter((item) => item.entityMatch).length,
+    baseActionMatches: baseRoutes.filter((item) => item.actionMatch).length,
+    baseEntityMatches: baseRoutes.filter((item) => item.entityMatch).length,
+    wr3000Wr6500hRegression: wrRegression,
+    routeMismatches: closedLoopRoutes.filter((item) => !item.actionMatch || !item.entityMatch).slice(0, 20),
   },
   externalCalls: { model: 0, embedding: 0, search: 0, smtp: 0 },
-  interpretation: "P1 fact defects are absent; the active v1 chunker remains unchanged while the P3 shadow v2 fixes short-section ownership.",
+  interpretation: "R0 executes deterministic knowledge action/entity parsing for the frozen corpus. Answer/source gold remains pending human review, so this is not retrieval, answer, citation, or Recall@8 acceptance.",
 };
 
-if (corpus.cases.length !== 200 || probes.some((item) => item.knownDefectObserved) || !headingDefectObserved || !v2HeadingFixed) {
+if (corpus.cases.length !== 300 || baseRoutes.some((item) => !item.actionMatch || !item.entityMatch)
+  || !wrRegression?.actionMatch || !wrRegression.entityMatch
+  || probes.some((item) => item.knownDefectObserved) || !headingDefectObserved || !v2HeadingFixed) {
   throw new Error(`P1 extraction gate failed: ${JSON.stringify(report)}`);
 }
 console.log(JSON.stringify(report, null, 2));

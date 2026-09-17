@@ -43,6 +43,22 @@ Natural-language request → Assistant StateGraph
 
 ## RAG knowledge architecture
 
+KQ04 v3 is being built as a shadow release and is not active yet. The currently active runtime still reads the legacy `knowledge_chunk` path; the v2 generation is retained as rollback evidence. The target production path is:
+
+```text
+registered knowledge_asset
+  → local Docling standard pipeline / accurate tables / local RapidOCR
+  → source revision + page/slide/sheet terminal status
+  → canonical parent/child chunks + row-scoped entity bindings
+  → deterministic facts and review queue
+  → exact facts + PostgreSQL FTS + Qwen V4 1536 + local BGE-M3 1024
+  → ACL/entity/version hard filters → RRF → evidence windows
+  → LangGraph fact / comparison / explanation nodes
+  → release-bound citations and original-file coordinates
+```
+
+Each embedding is bound to a versioned profile, model revision, dimensions and chunk content hash. Shared catalog rows bind only the model named by that row. Activation requires complete per-scope manifests and occurs by a short pointer transaction; a private owner's incomplete corpus cannot block or contaminate another scope. RAGFlow is not a production dependency. Until the v3 migration, extraction, dual-index and evaluation gates pass, the diagram below describes the legacy service rather than the v3 target.
+
 ```text
 User upload (industry / Cudy company / Cudy product)
   → authority and source metadata

@@ -2,13 +2,14 @@ import { describe, expect, it } from "vitest";
 import { buildKnowledgeEvaluationCorpus, knowledgeEvaluationCorpusHash } from "./corpus";
 
 describe("knowledge evaluation corpus", () => {
-  it("freezes 160 base and 40 boundary cases without one-model concentration", () => {
+  it("freezes 250 base and 50 boundary cases across at least 50 catalog models", () => {
     const corpus = buildKnowledgeEvaluationCorpus();
-    expect(corpus.cases.filter((item) => item.group === "base")).toHaveLength(160);
-    expect(corpus.cases.filter((item) => item.group === "boundary")).toHaveLength(40);
-    expect(new Set(corpus.cases.map((item) => item.id)).size).toBe(200);
+    expect(corpus.cases.filter((item) => item.group === "base")).toHaveLength(250);
+    expect(corpus.cases.filter((item) => item.group === "boundary")).toHaveLength(50);
+    expect(new Set(corpus.cases.map((item) => item.id)).size).toBe(300);
     expect(corpus.cases.filter((item) => item.expectedEntities.includes("WR3000")).length).toBeLessThanOrEqual(10);
-    expect(new Set(corpus.cases.flatMap((item) => item.expectedEntities))).toHaveLength(34);
+    expect(new Set(corpus.cases.filter((item) => item.group === "base").flatMap((item) => item.expectedEntities)).size).toBeGreaterThanOrEqual(50);
+    expect(corpus.cases.filter((item) => item.tags.includes("regression-wr3000-wr6500h"))).toHaveLength(1);
   });
 
   it("is deterministic and includes every target action and safety outcome", () => {
@@ -21,5 +22,8 @@ describe("knowledge evaluation corpus", () => {
     expect(first.cases.some((item) => item.expectedOutcome === "deny")).toBe(true);
     expect(first.cases.some((item) => item.tags.includes("negation"))).toBe(true);
     expect(first.cases.some((item) => item.tags.includes("unit-boundary"))).toBe(true);
+    for (const sourceGroup of new Set(first.cases.filter((item) => item.group === "base").map((item) => item.sourceGroup))) {
+      expect(new Set(first.cases.filter((item) => item.sourceGroup === sourceGroup).map((item) => item.split))).toHaveLength(1);
+    }
   });
 });
