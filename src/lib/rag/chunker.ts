@@ -1,5 +1,5 @@
 import { createHash } from "node:crypto";
-import type { TextChunk } from "./types";
+import type { StructuredKnowledgeBlock, TextChunk, TextChunkV2 } from "./types";
 
 export interface ChunkOptions {
   maxCharacters?: number;
@@ -102,4 +102,17 @@ export function chunkDocument(input: string, options: ChunkOptions = {}): TextCh
       contentSha256: sha256(content),
     };
   });
+}
+
+export function chunkDocumentV2(blocks: readonly StructuredKnowledgeBlock[],options:{maxTokens?:300|500|800}={}):TextChunkV2[]{
+  const maxTokens=options.maxTokens??500;const maxChars=Math.floor(maxTokens*3.2);const output:TextChunkV2[]=[];
+  for(const block of blocks){
+    if(block.quality!=="success"||(!block.text.trim()&&!block.table))continue;
+    const parentKey=`${block.unitType}:${block.unitIndex}:${block.section??block.id}`;const headings=block.headingPath??(block.section?[block.section]:[]);
+    if(block.table){const header=block.table.headers.join(" | ");let rows:string[]=[];let rowStart=block.table.startRow??1;
+      const flush=()=>{if(!rows.length)return;const content=[headings.join(" > "),header,...rows,...(block.table?.footnotes??[])].filter(Boolean).join("\n");output.push({index:output.length,parentKey,blockType:"table-row",sourceLocation:{unitType:block.unitType,unitIndex:block.unitIndex,rowStart,rowEnd:rowStart+rows.length-1},headingPath:headings,content,tokenEstimate:Math.ceil(content.length/3.2),contentSha256:sha256(content)});rowStart+=rows.length;rows=[];};
+      for(const row of block.table.rows){const line=row.join(" | ");if(rows.length&&[headings.join(" > "),header,...rows,line,...(block.table.footnotes??[])].join("\n").length>maxChars)flush();rows.push(line);}flush();continue;}
+    const pieces=splitLongText(block.text,maxChars,0);for(const piece of pieces){const content=[headings.join(" > "),piece].filter(Boolean).join("\n\n");output.push({index:output.length,parentKey,blockType:block.blockType,sourceLocation:{unitType:block.unitType,unitIndex:block.unitIndex},headingPath:headings,content,tokenEstimate:Math.ceil(content.length/3.2),contentSha256:sha256(content)});}
+  }
+  return output;
 }

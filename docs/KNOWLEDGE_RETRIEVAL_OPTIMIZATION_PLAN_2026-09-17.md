@@ -332,7 +332,7 @@ npm.cmd test -- src/lib/rag src/lib/assistant/intent-agent.test.ts src/lib/assis
 | P0 | 已实施并通过离线/只读验收 | 200条冻结请求；语料SHA `bbafb762…f436`；[证据](KNOWLEDGE_RETRIEVAL_P0_BASELINE_2026-09-17.md) |
 | P1 | 已实施并通过离线/只读验收 | 通用提取4类反例、引用/冲突/错型号拒绝；64条旧事实候选仅审计未改写；[证据](KNOWLEDGE_RETRIEVAL_P1_EVIDENCE_2026-09-17.md) |
 | P2 | 已实施并通过登记/权限边界验收 | 281个受控asset关系，缺失/未登记文件0，embedding调用0；[证据](KNOWLEDGE_RETRIEVAL_P2_EVIDENCE_2026-09-17.md) |
-| P3 | 待实施 | — |
+| P3 | 已实施影子代并通过结构/视觉抽样验收 | 36源/426成功单元/3待OCR；v2代validated未激活；[证据](KNOWLEDGE_RETRIEVAL_P3_EVIDENCE_2026-09-17.md) |
 | P4 | 待实施 | — |
 | P5 | 待实施 | — |
 | P6 | 待实施 | — |

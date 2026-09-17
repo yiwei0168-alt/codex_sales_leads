@@ -1,7 +1,7 @@
 import { buildKnowledgeEvaluationCorpus, knowledgeEvaluationCorpusHash } from "../src/lib/knowledge/evaluation/corpus";
 import { interpretAssistantRequest } from "../src/lib/assistant/intent";
 import { extractStructuredProductFacts } from "../src/lib/rag/product-facts";
-import { chunkDocument } from "../src/lib/rag/chunker";
+import { chunkDocument, chunkDocumentV2 } from "../src/lib/rag/chunker";
 
 if (process.argv.includes("--live")) {
   throw new Error("The offline evaluator does not authorize live model/search calls");
@@ -30,6 +30,10 @@ const probes = [
 const chunks = chunkDocument(`# Alpha\n\n${"A".repeat(100)}\n\n## Beta\n\nImportant short fact.`);
 const headingDefectObserved = chunks.some((chunk) => chunk.content.includes("Important short fact")
   && !chunk.headingPath.includes("Beta"));
+const v2HeadingFixed = chunkDocumentV2([
+  { id:"alpha",unitType:"document",unitIndex:1,section:"Alpha",blockType:"paragraph",text:"A".repeat(100),extractorVersion:"layout-v2.0.0",quality:"success" },
+  { id:"beta",unitType:"document",unitIndex:1,section:"Beta",blockType:"paragraph",text:"Important short fact.",extractorVersion:"layout-v2.0.0",quality:"success" },
+]).some((chunk)=>chunk.content.includes("Important short fact")&&chunk.headingPath.includes("Beta"));
 const report = {
   mode: "offline",
   corpus: {
@@ -45,12 +49,13 @@ const report = {
     topLevelKnowledgeRouteRate: routedAsKnowledge / corpus.cases.length,
     factExtractionProbes: probes,
     shortSectionHeadingDefectObserved: headingDefectObserved,
+    shadowV2ShortSectionFixed: v2HeadingFixed,
   },
   externalCalls: { model: 0, embedding: 0, search: 0, smtp: 0 },
-  interpretation: "Fact extraction defects must be absent after P1; the chunk-heading probe remains expected until P3.",
+  interpretation: "P1 fact defects are absent; the active v1 chunker remains unchanged while the P3 shadow v2 fixes short-section ownership.",
 };
 
-if (corpus.cases.length !== 200 || probes.some((item) => item.knownDefectObserved) || !headingDefectObserved) {
+if (corpus.cases.length !== 200 || probes.some((item) => item.knownDefectObserved) || !headingDefectObserved || !v2HeadingFixed) {
   throw new Error(`P1 extraction gate failed: ${JSON.stringify(report)}`);
 }
 console.log(JSON.stringify(report, null, 2));

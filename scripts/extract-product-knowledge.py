@@ -6,6 +6,7 @@ import sys
 from openpyxl import load_workbook
 from pypdf import PdfReader
 from pptx import Presentation
+from knowledge_extraction_v2 import EXTRACTOR_VERSION
 
 ROOT = Path("knowledge/product")
 PROCESSED_DIR = ROOT / "processed"
@@ -200,7 +201,7 @@ def main():
     }, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps({
         "catalogProducts": len(products), "categories": len(catalog_documents),
-        "datasheets": len(datasheets), "references": len(references), "output": str(CATALOG_PATH),
+        "datasheets": len(datasheets), "references": len(references), "output": str(CATALOG_PATH), "shadowExtractorVersion": EXTRACTOR_VERSION,
     }, ensure_ascii=False))
 
 

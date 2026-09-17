@@ -7,6 +7,7 @@ import zipfile
 from xml.etree import ElementTree
 
 from pypdf import PdfReader
+from knowledge_extraction_v2 import EXTRACTOR_VERSION
 
 sys.stdout.reconfigure(encoding="utf-8")
 
@@ -83,7 +84,7 @@ def main():
             "capturedAt": datetime.fromtimestamp(path.stat().st_mtime, tz=timezone.utc).isoformat(),
         })
     MANIFEST_PATH.write_text(json.dumps({"documents": documents}, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(json.dumps({"documents": len(documents), "pages": sum(item["pageCount"] for item in documents), "manifest": str(MANIFEST_PATH)}, ensure_ascii=False))
+    print(json.dumps({"documents": len(documents), "pages": sum(item["pageCount"] for item in documents), "manifest": str(MANIFEST_PATH), "shadowExtractorVersion": EXTRACTOR_VERSION}, ensure_ascii=False))
 
 
 if __name__ == "__main__":

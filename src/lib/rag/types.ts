@@ -27,6 +27,19 @@ export interface TextChunk {
   contentSha256: string;
 }
 
+export type KnowledgeBlockType = "heading"|"paragraph"|"table"|"table-row"|"list"|"note"|"pending-ocr";
+export type ExtractionQuality = "success"|"blank"|"pending-ocr"|"failed";
+export interface StructuredKnowledgeBlock {
+  id: string; assetId?: string; unitType: "page"|"slide"|"sheet"|"document"; unitIndex: number;
+  section?: string; blockType: KnowledgeBlockType; text: string; headingPath?: string[];
+  table?: { headers: string[]; rows: string[][]; footnotes?: string[]; startRow?: number };
+  bbox?: [number,number,number,number]; extractorVersion: string; quality: ExtractionQuality;
+}
+export interface TextChunkV2 extends TextChunk {
+  parentKey: string; blockType: KnowledgeBlockType; sourceLocation: {unitType:StructuredKnowledgeBlock["unitType"];unitIndex:number;rowStart?:number;rowEnd?:number};
+  normalizedText?: string;
+}
+
 export interface RetrievalFilters {
   collections?: KnowledgeBaseType[];
   market?: string;
