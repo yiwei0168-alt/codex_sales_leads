@@ -6,6 +6,8 @@ The standalone LangGraph runtime registers `knowledge_workflow` alongside the as
 
 Complex retrieval filters tenant/scope before three independent candidate lanes. Vector candidates require compatible vectors, while keyword and structured candidates may include null-vector chunks. A versioned attribute registry supplies bounded multilingual lexical expansion; ranking score is not exposed as answer confidence. Evidence assembly adds same-heading neighbors and question-relevant windows while rechecking the original eligible set.
 
+Reusable query embeddings and evidence packets are cached only after success. Keys include user scope, filters, active corpus revision, alias version, embedding model and dimensions; cached evidence is authorized again on every hit. Generated prose, failures and empty evidence are not cached. Index generations remain separately validated/active and are switched only by an explicit transactional command with an append-only job record.
+
 ## Product strategy
 
 The product uses one owner-scoped global workspace with country-partitioned search results. A persistent conversational home routes knowledge questions to private/shared RAG and lead-discovery requests to an explicit confirmation boundary. Historical Mexico assets remain test/reference data and do not constrain runtime markets.

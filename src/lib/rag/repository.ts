@@ -216,6 +216,24 @@ export async function hybridSearch(userId: string, question: string, queryEmbedd
   });
 }
 
+export async function knowledgeRevisionToken(userId: string): Promise<string> {
+  const rows = await tenantQuery<{ token: string }>(userId, `select concat_ws(':',
+      coalesce(max(d.updated_at)::text, 'none'),
+      coalesce(string_agg(distinct d.active_generation_id::text, ',' order by d.active_generation_id::text), 'v1')) as token
+    from knowledge_document d
+   where d.status='active' and (d.visibility='shared' or d.owner_id=$1)`, [userId]);
+  return rows[0]?.token ?? "none:v1";
+}
+
+export async function authorizedKnowledgeChunkIds(userId: string, chunkIds: string[]): Promise<Set<string>> {
+  if (!chunkIds.length) return new Set();
+  const rows = await tenantQuery<{ id: string }>(userId, `select ch.id
+      from knowledge_chunk ch join knowledge_document d on d.id=ch.document_id
+     where ch.id=any($1::uuid[]) and d.status='active'
+       and (d.visibility='shared' or d.owner_id=$2)`, [chunkIds, userId]);
+  return new Set(rows.map((row) => row.id));
+}
+
 export async function getKnowledgeStats(userId: string): Promise<KnowledgeStats> {
   const rows = await tenantQuery<{
     type: KnowledgeBaseType; document_count: string; chunk_count: string; embedded_count: string; last_updated: string | null;

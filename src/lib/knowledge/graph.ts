@@ -8,6 +8,7 @@ import type { KnowledgeBaseType } from "@/lib/rag/types";
 import { resolveVerifiedFacts } from "./fact-repository";
 import { parseKnowledgeRequest, type KnowledgeRequest } from "./request";
 import { baseKnowledgeResult, type KnowledgeResult } from "./response";
+import { trackedOperation } from "@/lib/tracked-operation";
 
 const KnowledgeState = Annotation.Root({
   userId: Annotation<string>(),
@@ -149,7 +150,21 @@ export const knowledgeBusinessGraph = buildKnowledgeGraph();
 export async function executeKnowledgeWorkflow(userId: string, input: {
   question: string; history?: AssistantConversationTurn[]; collections?: KnowledgeBaseType[]; entry: "assistant" | "knowledge-page";
 }) {
-  const state = await knowledgeBusinessGraph.invoke({ userId, ...input, history: input.history ?? [], started: Date.now() });
-  if (!state.result) throw new Error("Knowledge workflow returned no result");
-  return state.result;
+  return trackedOperation(userId, "knowledge-workflow", 1, input.question.length, async () => {
+    const state = await knowledgeBusinessGraph.invoke({ userId, ...input, history: input.history ?? [], started: Date.now() });
+    if (!state.result) throw new Error("Knowledge workflow returned no result");
+    return state.result;
+  }, (result) => ({
+    outputItems: 1,
+    validOutputItems: result.reasonCode === "ok" ? 1 : 0,
+    downstreamUsedItems: null,
+    inputTokens: result.usage.intentCalls ? null : 0,
+    outputTokens: result.usage.generationCalls ? null : 0,
+    retries: 0,
+    reasonCode: result.reasonCode,
+    cacheHit: result.ragAnswer?.cache?.embeddingHit || result.ragAnswer?.cache?.evidenceHit || false,
+    discardedReasonCounts: result.reasonCode === "ok" ? {} : { [result.reasonCode]: 1 },
+    usageBoundary: "knowledge-result-returned-user-adoption-unknown",
+    optimizationOpportunity: "Reuse version-scoped local facts, embeddings, and evidence without caching generated prose",
+  }));
 }

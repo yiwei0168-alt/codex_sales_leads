@@ -102,6 +102,7 @@ export interface RagAnswer {
   latencyMs: number;
   warnings: string[];
   externalDisclosure?: { excludedChunks: number; redactedPatterns: number };
+  cache?: { embeddingHit: boolean; evidenceHit: boolean };
   kind?: "document-links" | "fact-answer" | "generated-answer" | "clarification" | "insufficient-evidence" | "unavailable";
   reasonCode?: string;
   documents?: Array<{

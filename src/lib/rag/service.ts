@@ -1,12 +1,13 @@
 import {withProductSpend} from "@/lib/billing/context";
 import { getRagConfig } from "./config";
 import { embedTexts, generateGroundedAnswer } from "./openai-provider";
-import { hybridSearch, logRagQuery } from "./repository";
+import { authorizedKnowledgeChunkIds, hybridSearch, knowledgeRevisionToken, logRagQuery } from "./repository";
 import type { RagAnswer, RagQuery } from "./types";
 import {trackedOperation} from "@/lib/tracked-operation";
 import {prepareRagExternalDisclosure} from "./external-disclosure";
 import { validateRagEvidence } from "@/lib/knowledge/evidence-validation";
-import { buildControlledLexicalQuery } from "@/lib/knowledge/query-normalizer";
+import { ATTRIBUTE_REGISTRY_VERSION, buildControlledLexicalQuery, normalizeKnowledgeText } from "@/lib/knowledge/query-normalizer";
+import { knowledgeCacheKey, withSuccessfulKnowledgeCache } from "@/lib/knowledge/cache";
 
 export function extractCitedChunkIds(answer: string): Set<string> {
   return new Set(Array.from(answer.matchAll(/\[KB:([0-9a-f-]{36})\]/gi)).map((match) => match[1].toLowerCase()));
@@ -25,11 +26,32 @@ async function answerWithRagImpl(userId: string, input: RagQuery): Promise<RagAn
   const startedAt = Date.now();
   const config = getRagConfig();
   const maxChunks = Math.min(Math.max(input.maxChunks ?? config.maxContextChunks, 1), 12);
-  const [embedding] = await withProductSpend(userId,"rag-query-embedding",()=>embedTexts([input.question]));
-  const retrieved = await hybridSearch(userId, input.question, embedding, {
+  const revision = await knowledgeRevisionToken(userId);
+  const embeddingResult = await withSuccessfulKnowledgeCache({
+    key: knowledgeCacheKey("query-embedding", {
+      userId, question: normalizeKnowledgeText(input.question), filters: input.filters ?? {}, revision,
+      aliases: ATTRIBUTE_REGISTRY_VERSION, model: config.embeddingModel, dimensions: config.embeddingDimensions,
+    }),
+    ttlMs: 10 * 60_000,
+    load: async () => (await withProductSpend(userId,"rag-query-embedding",()=>embedTexts([input.question])))[0],
+  });
+  const evidenceResult = await withSuccessfulKnowledgeCache({
+    key: knowledgeCacheKey("evidence", {
+      userId, question: normalizeKnowledgeText(input.question), filters: input.filters ?? {}, maxChunks,
+      revision, aliases: ATTRIBUTE_REGISTRY_VERSION, model: config.embeddingModel,
+    }),
+    ttlMs: 2 * 60_000,
+    load: () => hybridSearch(userId, input.question, embeddingResult.value, {
     ...input.filters,
     lexicalQuery: buildControlledLexicalQuery(input.question),
-  }, maxChunks);
+    }, maxChunks),
+    shouldCache: (value) => value.length > 0,
+  });
+  let retrieved = evidenceResult.value;
+  if (evidenceResult.cacheHit) {
+    const authorized = await authorizedKnowledgeChunkIds(userId, retrieved.map((chunk) => chunk.id));
+    retrieved = retrieved.filter((chunk) => authorized.has(chunk.id));
+  }
   const chunks = retrieved.filter((chunk) => chunk.score >= config.minScore);
   const warnings: string[] = [];
 
@@ -39,6 +61,7 @@ async function answerWithRagImpl(userId: string, input: RagQuery): Promise<RagAn
       answer: "当前知识库没有足够证据回答这个问题。请补充相关行业、公司或产品资料后重试。",
       citations: [], grounded: false, model: config.ragAnswerModel,
       latencyMs: Date.now() - startedAt, warnings,
+      cache: { embeddingHit: embeddingResult.cacheHit, evidenceHit: evidenceResult.cacheHit },
     };
   }
 
@@ -49,7 +72,8 @@ async function answerWithRagImpl(userId: string, input: RagQuery): Promise<RagAn
     warnings.push("命中知识没有明确公开来源标记，未发送至外部回答模型。");
     return {answer:"当前命中的知识片段不满足公开来源外发条件，无法调用外部模型生成答案。请使用公开来源资料，或在本地查看原始知识。",
       citations:[],grounded:false,model:config.ragAnswerModel,latencyMs:Date.now()-startedAt,warnings,
-      externalDisclosure:{excludedChunks:disclosure.excludedChunks,redactedPatterns:disclosure.redactionCount}};
+      externalDisclosure:{excludedChunks:disclosure.excludedChunks,redactedPatterns:disclosure.redactionCount},
+      cache:{embeddingHit:embeddingResult.cacheHit,evidenceHit:evidenceResult.cacheHit}};
   }
   const answer = await withProductSpend(userId,"rag-grounded-answer",()=>generateGroundedAnswer(disclosure.question, disclosure.chunks));
   const citedIds = extractCitedChunkIds(answer);
@@ -91,5 +115,6 @@ async function answerWithRagImpl(userId: string, input: RagQuery): Promise<RagAn
 
   const grounded = validation.grounded;
   return { answer, citations, grounded, model: config.ragAnswerModel, latencyMs, warnings,
-    externalDisclosure:{excludedChunks:disclosure.excludedChunks,redactedPatterns:disclosure.redactionCount} };
+    externalDisclosure:{excludedChunks:disclosure.excludedChunks,redactedPatterns:disclosure.redactionCount},
+    cache:{embeddingHit:embeddingResult.cacheHit,evidenceHit:evidenceResult.cacheHit} };
 }

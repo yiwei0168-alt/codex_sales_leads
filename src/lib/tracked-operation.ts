@@ -1,6 +1,6 @@
 import {startOperation,finishOperation,bestEffortMetric,type OperationMetrics} from "./operation-metrics";
 import {currentSpendContext,withProductSpend} from "./billing/context";
-type Outcome=Pick<OperationMetrics,"outputItems"|"validOutputItems"|"downstreamUsedItems"|"usageBoundary"|"optimizationOpportunity">&Partial<Pick<OperationMetrics,"costUsd"|"inputTokens"|"outputTokens"|"retries"|"discardedReasonCounts">>;
+type Outcome=Pick<OperationMetrics,"outputItems"|"validOutputItems"|"downstreamUsedItems"|"usageBoundary"|"optimizationOpportunity">&Partial<Pick<OperationMetrics,"costUsd"|"inputTokens"|"outputTokens"|"retries"|"discardedReasonCounts"|"reasonCode"|"cacheHit"|"generationId">>;
 /** Only aggregate projections, never result bodies. HTTP billing is a separate, overlapping ledger. */
 export async function trackedOperation<T>(userId:string,stage:string,inputItems:number,inputCharacters:number,run:()=>Promise<T>,describe:(value:T)=>Outcome):Promise<T>{
   const parent=currentSpendContext();
@@ -20,6 +20,9 @@ export async function trackedOperation<T>(userId:string,stage:string,inputItems:
         utilizationEfficiency:outcome&&outcome.outputItems>0?outcome.validOutputItems/outcome.outputItems:null,
         usageBoundary:outcome?.usageBoundary??"failed-or-unsettled-operation-not-zero-cost",
         optimizationOpportunity:outcome?.optimizationOpportunity??"Inspect existing output and transport accounting before an explicit retry",
+        reasonCode:outcome?.reasonCode,
+        cacheHit:outcome?.cacheHit,
+        generationId:outcome?.generationId,
       });
     });}
   });

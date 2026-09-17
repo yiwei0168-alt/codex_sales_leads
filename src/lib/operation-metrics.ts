@@ -7,6 +7,7 @@ export interface OperationMetrics {
   outputTokens:number|null; apiCredits:number|null; costUsd:number|null; latencyMs:number;
   retries:number|null; discardedReasonCounts:Record<string,number>;
   utilizationEfficiency:number|null; usageBoundary:string; optimizationOpportunity:string;
+  reasonCode?:string; cacheHit?:boolean; generationId?:string;
   modelCalls?:Array<{requestedModel:string;actualModel:string;inputTokens:number|null;cachedInputTokens:number|null;outputTokens:number|null;latencyMs:number;attempts:number;retries:number;succeeded:boolean|null}>;
 }
 
