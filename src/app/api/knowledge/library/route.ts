@@ -13,8 +13,9 @@ export async function GET(request:Request){
       left join lateral(select content from public_evidence.chunk where document_version_id=d.id order by chunk_index limit 1)c on true
       where s.sharing_status='public' and d.freshness_status<>'invalid' and ($1='' or d.title ilike '%'||$1||'%' or s.canonical_url ilike '%'||$1||'%')
       order by d.last_verified_at desc,d.id limit 51 offset $2`,[p.query,p.offset]):await tenantQuery(session.userId,`select d.id,d.title,d.source_url as "sourceUrl",d.updated_at::text as "updatedAt",d.status,d.visibility as scope,c.slug as collection,
-      left(k.content,1500) as excerpt from knowledge_document d join knowledge_collection c on c.id=d.collection_id
+      left(k.content,1500) as excerpt,a.id as "assetId",a.document_type as "documentType",a.document_version as version from knowledge_document d join knowledge_collection c on c.id=d.collection_id
       left join lateral(select content from knowledge_chunk where document_id=d.id order by chunk_index limit 1) k on true
+      left join lateral(select id,document_type,document_version from knowledge_asset where document_id=d.id and registration_status='registered' order by updated_at desc,id limit 1) a on true
       where d.visibility=$2 and ($2='shared' or d.owner_id=$1) and ($3='' or d.title ilike '%'||$3||'%') order by d.updated_at desc,d.id limit 51 offset $4`,[session.userId,p.scope,p.query,p.offset]);
     uiEfficiency("knowledge-library-read",started,rows.length,Math.min(rows.length,50));return Response.json({items:rows.slice(0,50),hasMore:rows.length>50},{headers:{"Cache-Control":"private, no-store"}});
   }catch{uiEfficiency("knowledge-library-read",started,1,0,true);return Response.json({error:"知识库记录读取失败"},{status:503});}

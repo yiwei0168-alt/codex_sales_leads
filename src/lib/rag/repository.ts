@@ -11,6 +11,9 @@ function vectorLiteral(vector: number[]): string {
 }
 
 export class KnowledgeConflictError extends Error {constructor(){super("知识版本已变化，请重新检查后确认覆盖");}}
+export function knowledgeMetadataChanged(current:{source_url:string|null;source_type:string;authority_level:number;language:string;market:string|null;company_id:string|null;product_id:string|null;metadata:Record<string,unknown>},input:KnowledgeDocumentInput):boolean{
+  return current.source_url!==(input.sourceUrl??null)||current.source_type!==input.sourceType||current.authority_level!==input.authorityLevel||current.language!==(input.language??"zh-CN")||current.market!==(input.market??null)||current.company_id!==(input.companyId??null)||current.product_id!==(input.productId??null)||JSON.stringify(current.metadata)!==JSON.stringify(input.metadata??{});
+}
 export async function upsertKnowledgeDocument(userId: string, input: KnowledgeDocumentInput, actorRole: AppDatabaseRole = "member",expectedHash?:string|null): Promise<{ documentId: string; chunks: number; skipped: boolean }> {
   return trackedOperation(userId,"knowledge-document-save",1,input.content.length,()=>upsertKnowledgeDocumentImpl(userId,input,actorRole,expectedHash),result=>({
     outputItems:result.chunks,validOutputItems:result.chunks,downstreamUsedItems:result.chunks,
@@ -22,13 +25,16 @@ export async function upsertKnowledgeDocument(userId: string, input: KnowledgeDo
 async function upsertKnowledgeDocumentImpl(userId: string, input: KnowledgeDocumentInput, actorRole: AppDatabaseRole,expectedHash?:string|null): Promise<{ documentId: string; chunks: number; skipped: boolean }> {
   const contentHash = sha256(input.content);
   const visibility = input.visibility ?? "private";
-  const existing = await tenantQuery<{ id: string; content_sha256: string; visibility: KnowledgeVisibility }>(userId,
-    `select d.id, d.content_sha256, d.visibility from knowledge_document d
+  const existing = await tenantQuery<{ id: string; content_sha256: string; visibility: KnowledgeVisibility; source_url:string|null;source_type:string;authority_level:number;language:string;market:string|null;company_id:string|null;product_id:string|null;metadata:Record<string,unknown> }>(userId,
+    `select d.id, d.content_sha256, d.visibility,d.source_url,d.source_type,d.authority_level,d.language,d.market,d.company_id,d.product_id,d.metadata from knowledge_document d
      join knowledge_collection c on c.id = d.collection_id
      where c.slug = $1 and d.external_id = $2 and d.owner_id = $3`,
     [input.collection, input.externalId, userId],
   );
   if (existing[0]?.content_sha256 === contentHash && existing[0]?.visibility === visibility) {
+    const current=existing[0];
+    const metadataChanged=knowledgeMetadataChanged(current,input);
+    if(metadataChanged)await tenantQuery(userId,`update knowledge_document set title=$2,source_url=$3,source_type=$4,authority_level=$5,language=$6,market=$7,company_id=$8,product_id=$9,metadata=$10,updated_at=now() where id=$1`,[current.id,input.title,input.sourceUrl??null,input.sourceType,input.authorityLevel,input.language??"zh-CN",input.market??null,input.companyId??null,input.productId??null,JSON.stringify(input.metadata??{})],actorRole);
     const count = await tenantQuery<{ count: string }>(userId, "select count(*) from knowledge_chunk where document_id = $1", [existing[0].id], actorRole);
     return { documentId: existing[0].id, chunks: Number(count[0]?.count ?? 0), skipped: true };
   }

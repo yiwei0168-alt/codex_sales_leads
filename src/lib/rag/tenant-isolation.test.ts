@@ -5,7 +5,7 @@ const { queryMock } = vi.hoisted(() => ({ queryMock: vi.fn() }));
 vi.mock("./db", () => ({ tenantQuery: queryMock, tenantTransaction: vi.fn() }));
 vi.mock("./openai-provider", () => ({ embedTexts: vi.fn() }));
 
-import { getKnowledgeStats, hybridSearch } from "./repository";
+import { getKnowledgeStats, hybridSearch, knowledgeMetadataChanged } from "./repository";
 
 describe("RAG tenant isolation", () => {
   beforeEach(() => queryMock.mockReset());
@@ -29,5 +29,12 @@ describe("RAG tenant isolation", () => {
     expect(sql).toContain("d.visibility = 'private' and d.owner_id = $9");
     expect(parameters[8]).toBe("user-b");
     expect(sql).not.toContain("e.document_metadata->>'category' = sm.category");
+  });
+
+  it("treats source metadata changes separately from content embeddings",()=>{
+    const current={source_url:null,source_type:"text",authority_level:3,language:"zh-CN",market:null,company_id:null,product_id:null,metadata:{version:"1"}};
+    const input={collection:"product" as const,externalId:"x",title:"x",content:"same",sourceType:"text",authorityLevel:3 as const,metadata:{version:"2"}};
+    expect(knowledgeMetadataChanged(current,input)).toBe(true);
+    expect(knowledgeMetadataChanged({...current,metadata:{version:"2"}},input)).toBe(false);
   });
 });
