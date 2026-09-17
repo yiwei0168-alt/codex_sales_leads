@@ -6,6 +6,10 @@
 
 已形成并执行[通用知识优化实施交接计划](KNOWLEDGE_RETRIEVAL_OPTIMIZATION_PLAN_2026-09-17.md)。P0–P8已完成评测、证据边界、受控原件、结构化影子代、verified 事实合同、共享知识图、检索修复、版本绑定缓存/遥测/回退命令及本地发布回归，详见[P8发布证据](KNOWLEDGE_RETRIEVAL_P8_RELEASE_2026-09-17.md)。真实 dry-run 显示 v2 仍需 10,871 个向量且费用未知，因此没有激活或付费重建。用户随后明确回复“开始”，授权启动 v2 向量生成及验证通过后的原子激活；配置完成后首批请求先被 `missing-budget` 拦截，预算放行后的十项批次又在供应商响应前进入 `paid-outcome-unknown`，预留保留且禁止自动重试，详见[v2启动预检](KNOWLEDGE_RETRIEVAL_V2_EMBEDDING_PREFLIGHT_2026-09-17.md)。历史事实未删除、影子代未激活，不能宣称全库已纠正；复杂 live 语义质量、供应商账单和实际用户采用仍未知。计划默认保留 C14 的轻量意图识别；完全本地优先意图的例外尚未确认。A30/A33/A34及LG02/LG04/LG05继续有效。
 
+### KQ02 — 允许十个知识库切片发送至阿里云百炼生成向量（2026-09-17，用户明确确认；已执行并验证）
+
+用户明确确认：“我明确允许将这10个知识库切片正文发送到阿里云百炼生成向量，并接受可能产生的费用”。确切范围仅为本次十个切片、阿里云百炼 `text-embedding-v4`、1536维向量及其可能费用；不自动扩展为剩余语料或其他供应商/模型。执行结果为10个输入、10个有效且写入的向量、1次embedding调用、1,567输入tokens、847ms供应商调用延迟、零重试；现金费用仍未知。影子代保持validated且未激活，剩余10,861个向量需要另行明确授权。详见[十项批次证据](KNOWLEDGE_RETRIEVAL_V2_EMBEDDING_BATCH_2026-09-17.md)。
+
 ### LG05 — 允许 LangGraph 向 LangSmith 发送脱敏 trace（2026-09-17，用户明确确认；已配置并通过云端脱敏验收）
 
 用户先确认“允许LangGraph trace”，在获知即使隐藏正文仍会外发节点名、父子关系、分支、时间、状态和错误类别等元数据后，又明确回复：“我允许 LangGraph 服务向 LangSmith 发送上述 trace 元数据，输入和输出正文继续隐藏。”范围为本机独立 LangGraph Agent Server 的 `runtime_health`、`assistant_workflow` 和 `lead_workflow` 运行轨迹，可向用户已配置密钥对应的 LangSmith 工作区发送上述元数据，并归入 `network-channel-copilot-local` 项目。为继续满足 A30，强制 `LANGSMITH_HIDE_INPUTS=true` 与 `LANGSMITH_HIDE_OUTPUTS=true`：不向 trace 后端发送用户消息、提示词、对话历史、知识正文、公司证据、业务状态正文或最终答案正文；API 密钥、凭据和本地环境变量值始终不得作为 trace 数据或提交内容。该确认不授权关闭输入／输出隐藏，也不授权新的 SMTP、模型或搜索调用。
