@@ -332,12 +332,12 @@ npm.cmd test -- src/lib/rag src/lib/assistant/intent-agent.test.ts src/lib/assis
 | P0 | 已实施并通过离线/只读验收 | 200条冻结请求；语料SHA `bbafb762…f436`；[证据](KNOWLEDGE_RETRIEVAL_P0_BASELINE_2026-09-17.md) |
 | P1 | 已实施并通过离线/只读验收 | 通用提取4类反例、引用/冲突/错型号拒绝；64条旧事实候选仅审计未改写；[证据](KNOWLEDGE_RETRIEVAL_P1_EVIDENCE_2026-09-17.md) |
 | P2 | 已实施并通过登记/权限/二进制上传作业验收 | 281个受控asset关系，缺失/未登记文件0；PDF/PPTX/XLSX独立上传与本地异步提取作业已补齐，真实44页PDF提取44/44成功，embedding调用0；[证据](KNOWLEDGE_RETRIEVAL_P2_EVIDENCE_2026-09-17.md) |
-| P3 | 已实施影子代并通过结构/视觉抽样验收 | 扩展样本43输入/454成功单元/3待OCR；102文档关系/10,871块；v2代validated未激活；[证据](KNOWLEDGE_RETRIEVAL_P3_EVIDENCE_2026-09-17.md) |
+| P3 | 已实施并通过结构/视觉抽样验收，后续已激活 | 扩展样本43输入/454成功单元/3待OCR；102文档关系/10,871块；v2代在P7/P8门禁及完整向量构建后active；[证据](KNOWLEDGE_RETRIEVAL_P3_EVIDENCE_2026-09-17.md) |
 | P4 | 已实施影子事实合同并通过真实样本审计 | 43 verified/216 candidate/53 conflicting；错误速率代际0 verified；[证据](KNOWLEDGE_RETRIEVAL_P4_EVIDENCE_2026-09-17.md) |
 | P5 | 已实施并通过共享图/合同离线验收 | 助手与知识页共用独立知识根图；资料/事实快路径0 embedding/生成；[证据](KNOWLEDGE_RETRIEVAL_P5_EVIDENCE_2026-09-17.md) |
 | P6 | 已实施并通过离线/SQL合同回归 | null-vector/关键词/结构化召回、受控同义词、相邻/相关窗口；[证据](KNOWLEDGE_RETRIEVAL_P6_EVIDENCE_2026-09-17.md) |
-| P7 | 已实施并通过缓存/迁移/dry-run验收；受控执行路径已就绪 | 成功缓存绑定ACL与版本且命中重鉴权；`embed-generation` 每批可恢复且激活拒绝缺向量代；首批因 `missing-budget` 在网络前停止，10,871向量仍未激活；[证据](KNOWLEDGE_RETRIEVAL_P7_EVIDENCE_2026-09-17.md) |
-| P8 | 已实施并通过离线/本地发布回归 | 10/10 SQL语义检查、30次热态快路径P95 793.10ms、双视口知识闭环、68/68全站隔离检查、1,123/1,123单测；v2仍未激活，复杂live质量/账单/用户采用未知；[证据](KNOWLEDGE_RETRIEVAL_P8_RELEASE_2026-09-17.md) |
+| P7 | 已实施并通过缓存/迁移/可恢复重建验收 | 成功缓存绑定ACL与版本且命中重鉴权；10,871/10,871向量完整，失败后只续建缺失项，激活拒绝缺向量代；[证据](KNOWLEDGE_RETRIEVAL_P7_EVIDENCE_2026-09-17.md) |
+| P8 | 已实施并通过离线/本地发布回归，v2已激活 | 10/10 SQL语义检查、30次热态快路径P95 793.10ms、双视口知识闭环、68/68全站隔离检查、1,123/1,123单测；激活前200/200冻结评测、48项知识/RAG测试及类型检查通过；复杂live质量/账单/用户采用未知；[证据](KNOWLEDGE_RETRIEVAL_P8_RELEASE_2026-09-17.md) |
 
 ## 10. 方法参考
 
