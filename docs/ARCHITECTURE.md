@@ -57,7 +57,7 @@ registered knowledge_asset
   → release-bound citations and original-file coordinates
 ```
 
-Each embedding is bound to a versioned profile, model revision, dimensions and chunk content hash. Shared catalog rows bind only the model named by that row. Activation requires complete per-scope manifests and occurs by a short pointer transaction; a private owner's incomplete corpus cannot block or contaminate another scope. RAGFlow is not a production dependency. Until the v3 migration, extraction, dual-index and evaluation gates pass, the diagram below describes the legacy service rather than the v3 target.
+Migration 083 now provides the inactive v3 storage contract: scoped releases and manifests, source/unit terminal states, parent chunks, row-scoped entities, separate 1,536/1,024-vector columns and partial HNSW indexes, typed facts, review queue, release pointers and a guarded activation function. Every v3 table has forced RLS. Each embedding is bound to a versioned profile, model revision, dimensions and chunk content hash. Shared catalog rows bind only the model named by that row. Activation requires complete per-scope manifests and occurs by a short pointer transaction; a private owner's incomplete corpus cannot block or contaminate another scope. RAGFlow is not a production dependency. No v3 release exists yet, so the diagram below still describes the live legacy service.
 
 ```text
 User upload (industry / Cudy company / Cudy product)
