@@ -336,7 +336,7 @@ npm.cmd test -- src/lib/rag src/lib/assistant/intent-agent.test.ts src/lib/assis
 | P4 | 已实施影子事实合同并通过真实样本审计 | 43 verified/216 candidate/53 conflicting；错误速率代际0 verified；[证据](KNOWLEDGE_RETRIEVAL_P4_EVIDENCE_2026-09-17.md) |
 | P5 | 已实施并通过共享图/合同离线验收 | 助手与知识页共用独立知识根图；资料/事实快路径0 embedding/生成；[证据](KNOWLEDGE_RETRIEVAL_P5_EVIDENCE_2026-09-17.md) |
 | P6 | 已实施并通过离线/SQL合同回归 | null-vector/关键词/结构化召回、受控同义词、相邻/相关窗口；[证据](KNOWLEDGE_RETRIEVAL_P6_EVIDENCE_2026-09-17.md) |
-| P7 | 已实施并通过缓存/迁移/dry-run验收 | 成功缓存绑定ACL与版本且命中重鉴权；10,871向量费用未知未激活；[证据](KNOWLEDGE_RETRIEVAL_P7_EVIDENCE_2026-09-17.md) |
+| P7 | 已实施并通过缓存/迁移/dry-run验收；受控执行路径已就绪 | 成功缓存绑定ACL与版本且命中重鉴权；`embed-generation` 每批可恢复且激活拒绝缺向量代；首批因 `missing-budget` 在网络前停止，10,871向量仍未激活；[证据](KNOWLEDGE_RETRIEVAL_P7_EVIDENCE_2026-09-17.md) |
 | P8 | 已实施并通过离线/本地发布回归 | 10/10 SQL语义检查、30次热态快路径P95 793.10ms、双视口知识闭环、68/68全站隔离检查、1,123/1,123单测；v2仍未激活，复杂live质量/账单/用户采用未知；[证据](KNOWLEDGE_RETRIEVAL_P8_RELEASE_2026-09-17.md) |
 
 ## 10. 方法参考
