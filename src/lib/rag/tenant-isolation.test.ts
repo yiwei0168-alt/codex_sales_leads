@@ -28,5 +28,6 @@ describe("RAG tenant isolation", () => {
     expect(sql).toContain("d.visibility = 'shared'");
     expect(sql).toContain("d.visibility = 'private' and d.owner_id = $9");
     expect(parameters[8]).toBe("user-b");
+    expect(sql).not.toContain("e.document_metadata->>'category' = sm.category");
   });
 });

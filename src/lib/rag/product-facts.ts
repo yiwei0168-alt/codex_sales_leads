@@ -36,19 +36,19 @@ const RULES: FactRule[] = [
   { group: "wireless", key: "frequency_band", value: "6 GHz", pattern: /\b6\s*ghz\b/i },
   { group: "wireless", key: "frequency_band", value: "5 GHz", pattern: /\b5\s*ghz\b/i },
   { group: "wireless", key: "frequency_band", value: "2.4 GHz", pattern: /\b2\.4\s*ghz\b/i },
-  { group: "network", key: "cellular_generation", value: "5G", pattern: /\b5g\b/i },
-  { group: "network", key: "cellular_generation", value: "4G LTE", pattern: /\b(?:4g|lte)\b/i },
+  { group: "network", key: "cellular_generation", value: "5G", pattern: /(?<![\d.])5g\b/i },
+  { group: "network", key: "cellular_generation", value: "4G LTE", pattern: /(?<![\d.])(?:4g|lte)\b/i },
   { group: "network", key: "pon_standard", value: "GPON", pattern: /\bgpon\b/i },
   { group: "network", key: "pon_standard", value: "XGS-PON", pattern: /\bxgs-?pon\b/i },
   { group: "interface", key: "ethernet_speed", value: "10 Gbps", pattern: /\b10\s*g(?:bps|igabit)?\b/i },
   { group: "interface", key: "ethernet_speed", value: "2.5 Gbps", pattern: /\b2\.5\s*g(?:bps|igabit)?\b/i },
   { group: "interface", key: "ethernet_speed", value: "1 Gbps", pattern: /\b(?:1\s*g(?:bps|igabit)?|10\/100\/1000\s*mbps|gigabit)\b/i },
-  { group: "interface", key: "interface_type", value: "SFP+", pattern: /\bsfp\+\b/i },
-  { group: "interface", key: "interface_type", value: "SFP", pattern: /\bsfp\b/i },
+  { group: "interface", key: "interface_type", value: "SFP+", pattern: /(?<![a-z0-9])sfp\+(?![a-z0-9])/i },
+  { group: "interface", key: "interface_type", value: "SFP", pattern: /\bsfp\b(?!\+)/i },
   { group: "interface", key: "interface_type", value: "USB 3.0", pattern: /\busb\s*3\.0\b/i },
   { group: "interface", key: "interface_type", value: "USB", pattern: /\busb\b/i },
-  { group: "network", key: "poe_standard", value: "802.3at", pattern: /\b802\.3at\b/i },
-  { group: "network", key: "poe_standard", value: "802.3af", pattern: /\b802\.3af\b/i },
+  { group: "network", key: "poe_standard", value: "802.3at", pattern: /\b802\.3(?:at|af\s*\/\s*at)\b/i },
+  { group: "network", key: "poe_standard", value: "802.3af", pattern: /\b802\.3(?:af|at\s*\/\s*af)\b/i },
   { group: "network", key: "poe_capability", value: "PoE", pattern: /\bpoe\b/i },
   { group: "protocol", key: "vpn_protocol", value: "WireGuard", pattern: /\bwireguard\b/i },
   { group: "protocol", key: "vpn_protocol", value: "OpenVPN", pattern: /\bopenvpn\b/i },
@@ -80,6 +80,11 @@ function excerptFor(description: string, match: RegExpMatchArray | null): string
   return description.slice(start, Math.min(description.length, match.index + match[0].length + 150)).trim();
 }
 
+function isNegated(description: string, match: RegExpMatchArray): boolean {
+  const prefix = description.slice(Math.max(0, (match.index ?? 0) - 80), match.index ?? 0);
+  return /(?:\bno\b|\bnot\b|\bwithout\b|\b(?:does|do)\s+not\s+support\b|\bunsupported\b|不支持|不含|未配备|无)\s*(?:[a-z0-9.+/-]+\s*){0,5}$/i.test(prefix);
+}
+
 function makeFact(input: Omit<StructuredProductFact, "factHash">): StructuredProductFact {
   return {
     ...input,
@@ -105,7 +110,7 @@ export function extractStructuredProductFacts(product: ProductFactInput): Struct
 
   const extracted = RULES.flatMap((rule) => {
     const match = product.description.match(rule.pattern);
-    if (!match) return [];
+    if (!match || isNegated(product.description, match)) return [];
     return [makeFact({
       factGroup: rule.group,
       factKey: rule.key,
@@ -129,8 +134,23 @@ export function extractStructuredProductFacts(product: ProductFactInput): Struct
     });
   });
 
+  const poeBudgets = Array.from(product.description.matchAll(/\b(\d+(?:\.\d+)?)\s*W\b/gi)).flatMap((match) => {
+    const context = excerptFor(product.description, match);
+    if (!/\bpoe\b/i.test(context) || !/\b(?:budget|output|max(?:imum)?)\b/i.test(context)) return [];
+    const numericValue = Number(match[1]);
+    return [makeFact({
+      factGroup: "network",
+      factKey: "poe_power_budget",
+      factValue: `${numericValue} W`,
+      normalizedValue: `${numericValue}-w`,
+      numericValue,
+      unit: "W",
+      evidenceExcerpt: context,
+    })];
+  });
+
   const unique = new Map<string, StructuredProductFact>();
-  for (const fact of [...identityFacts, ...extracted, ...speeds]) {
+  for (const fact of [...identityFacts, ...extracted, ...speeds, ...poeBudgets]) {
     unique.set(`${fact.factKey}:${fact.normalizedValue}`, fact);
   }
   return [...unique.values()];

@@ -151,7 +151,6 @@ export async function hybridSearch(userId: string, question: string, queryEmbedd
        join structured_matches sm on e.collection = 'product' and (
          e.product_id = sm.model
          or e.document_metadata->'relatedModels' ? sm.model
-         or e.document_metadata->>'category' = sm.category
        )
        group by e.id
      )
@@ -187,7 +186,9 @@ export async function hybridSearch(userId: string, question: string, queryEmbedd
       keywordRank: row.keyword_rank ? Number(row.keyword_rank) : undefined,
       structuredRank: row.structured_rank ? Number(row.structured_rank) : undefined,
       retrievalSignals,
-      corroborated: retrievalSignals.length >= 2,
+      corroborated: (row.structured_evidence ?? []).some((fact) =>
+        fact.status === "verified" && fact.factKey !== "catalog_identity")
+        && (retrievalSignals.includes("vector") || retrievalSignals.includes("keyword")),
       score: Math.max(0, Math.min(row.score, 1)), visibility: row.visibility,
       metadata: { ...row.metadata, visibility: row.visibility, vectorSimilarity: row.vector_similarity,
         structuredFacts: row.structured_evidence ?? [] },

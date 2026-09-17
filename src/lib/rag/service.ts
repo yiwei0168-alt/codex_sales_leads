@@ -5,6 +5,7 @@ import { hybridSearch, logRagQuery } from "./repository";
 import type { RagAnswer, RagQuery } from "./types";
 import {trackedOperation} from "@/lib/tracked-operation";
 import {prepareRagExternalDisclosure} from "./external-disclosure";
+import { validateRagEvidence } from "@/lib/knowledge/evidence-validation";
 
 export function extractCitedChunkIds(answer: string): Set<string> {
   return new Set(Array.from(answer.matchAll(/\[KB:([0-9a-f-]{36})\]/gi)).map((match) => match[1].toLowerCase()));
@@ -48,11 +49,17 @@ async function answerWithRagImpl(userId: string, input: RagQuery): Promise<RagAn
   }
   const answer = await withProductSpend(userId,"rag-grounded-answer",()=>generateGroundedAnswer(disclosure.question, disclosure.chunks));
   const citedIds = extractCitedChunkIds(answer);
-  if (citedIds.size === 0) {
-    warnings.push("模型答案缺少有效 chunk 引用，请人工复核。");
-    warnings.push("回答已降级为未充分溯源状态。");
-  }
-  const citations = disclosure.chunks.filter((chunk) => citedIds.has(chunk.id)).map((chunk) => ({
+  const validation = validateRagEvidence({
+    citedIds,
+    availableChunks: disclosure.chunks,
+    expectedProductId: input.filters?.productId,
+  });
+  if (validation.reasons.includes("empty-citations")) warnings.push("模型答案缺少有效 chunk 引用，请人工复核。");
+  if (validation.reasons.includes("unknown-citation")) warnings.push("模型答案包含不在本次证据集中的引用，已拒绝视为已溯源。");
+  if (validation.reasons.includes("missing-verified-property")) warnings.push("产品引用仅含身份或未验证事实，不能证明所问属性。");
+  if (validation.reasons.includes("wrong-product")) warnings.push("产品引用与请求型号不一致，已拒绝视为已验证规格。");
+  if (!validation.grounded) warnings.push("回答已降级为未充分溯源状态。");
+  const citations = validation.citedChunks.map((chunk) => ({
     chunkId: chunk.id, documentTitle: chunk.title, sourceUrl: chunk.sourceUrl,
     excerpt: chunk.content.slice(0, 260), score: chunk.score, collection: chunk.collection,
     visibility: chunk.visibility,
@@ -61,7 +68,7 @@ async function answerWithRagImpl(userId: string, input: RagQuery): Promise<RagAn
     structuredFacts: Array.isArray(chunk.metadata.structuredFacts)
       ? chunk.metadata.structuredFacts as RagAnswer["citations"][number]["structuredFacts"] : [],
   }));
-  const citedProductChunks = disclosure.chunks.filter((chunk) => chunk.collection === "product" && citedIds.has(chunk.id));
+  const citedProductChunks = validation.citedChunks.filter((chunk) => chunk.collection === "product");
   if (citedProductChunks.some((chunk) => !chunk.corroborated || !chunk.retrievalSignals.includes("structured"))) {
     warnings.push("部分产品结论缺少结构化事实交叉印证，已标记为低置信度，不能视为已验证规格。");
   }
@@ -78,8 +85,7 @@ async function answerWithRagImpl(userId: string, input: RagQuery): Promise<RagAn
     embeddingModel: config.embeddingModel, generationModel: config.ragAnswerModel, latencyMs,
   }).catch(() => warnings.push("查询日志写入失败，但不影响本次答案。"));
 
-  const grounded = citedIds.size > 0 && citedProductChunks.every((chunk) => chunk.corroborated
-    && chunk.retrievalSignals.includes("structured"));
+  const grounded = validation.grounded;
   return { answer, citations, grounded, model: config.ragAnswerModel, latencyMs, warnings,
     externalDisclosure:{excludedChunks:disclosure.excludedChunks,redactedPatterns:disclosure.redactionCount} };
 }

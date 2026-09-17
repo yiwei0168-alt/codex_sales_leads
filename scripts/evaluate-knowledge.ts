@@ -4,7 +4,7 @@ import { extractStructuredProductFacts } from "../src/lib/rag/product-facts";
 import { chunkDocument } from "../src/lib/rag/chunker";
 
 if (process.argv.includes("--live")) {
-  throw new Error("P0 does not authorize live model/search evaluation; use the later bounded live harness after offline acceptance");
+  throw new Error("The offline evaluator does not authorize live model/search calls");
 }
 
 const corpus = buildKnowledgeEvaluationCorpus();
@@ -47,10 +47,10 @@ const report = {
     shortSectionHeadingDefectObserved: headingDefectObserved,
   },
   externalCalls: { model: 0, embedding: 0, search: 0, smtp: 0 },
-  interpretation: "Known defects are expected in P0 and become regression requirements for later phases.",
+  interpretation: "Fact extraction defects must be absent after P1; the chunk-heading probe remains expected until P3.",
 };
 
-if (corpus.cases.length !== 200 || probes.some((item) => !item.knownDefectObserved) || !headingDefectObserved) {
-  throw new Error(`P0 baseline drifted unexpectedly: ${JSON.stringify(report)}`);
+if (corpus.cases.length !== 200 || probes.some((item) => item.knownDefectObserved) || !headingDefectObserved) {
+  throw new Error(`P1 extraction gate failed: ${JSON.stringify(report)}`);
 }
 console.log(JSON.stringify(report, null, 2));
