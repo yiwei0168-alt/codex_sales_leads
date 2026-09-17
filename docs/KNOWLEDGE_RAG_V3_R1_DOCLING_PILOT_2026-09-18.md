@@ -17,7 +17,7 @@ WR3000 与 WR6500H 均为 7/7 页非空，分别生成 13 和 15 个 chunk。复
 
 ## 视觉复核与未通过项
 
-- 已将 13 个 PDF 页面和 16 个 PPTX slide 全部渲染检查。29/29 均含有规格表、网络拓扑、认证说明、产品图或封面内容，真实空白为 0；它们是 extraction incomplete，而不是 blank。通用 extractor v3.0.1 对 PDF 使用低分辨率可见像素检测，对 PPTX/XLSX 使用结构内容检测，将“无文本但非空”的 unit 标为 `review-required`。该自动分类不等于用户人工确认，schema 激活函数仍会阻止它们静默激活。
+- 已将 13 个 PDF 页面和 16 个 PPTX slide 全部渲染检查。29/29 均含有规格表、网络拓扑、认证说明、产品图或封面内容，真实空白为 0；它们是 extraction incomplete，而不是 blank。通用 extractor v3.0.2 对 PDF 使用低分辨率可见像素检测，对 PPTX/XLSX 使用结构内容检测，将“无文本但非空”的 unit 标为 `review-required`，随后用同一固定 RapidOCR 模型进行本地高分辨率二次识别。26/29 unit 共恢复 9,068 字符候选证据，三项未恢复内容是装饰封面/logo；P5 页面恢复出 `4 x Gigabit Ethernet Ports`。所有二次 OCR 内容仍标记 candidate，该自动分类不等于用户人工确认，schema 激活函数仍会阻止它们静默激活。
 - 复杂 catalog 有 23 个 chunk 超过目标 500 tokens，最大 509；这是“约 500”边界证据，仍需在表格完整性与检索粒度之间人工验收。
 - 还没有完成与旧 PyMuPDF 结果的逐页视觉对照，也没有对字段、行列、单位、标题和阅读顺序评分。因此不能把 30/30 conversion success 写成 R1 质量通过，更不能据此启动全库 embedding。
 

@@ -24,6 +24,7 @@ def main() -> None:
     if workspace not in output_dir.parents:
         raise SystemExit("Pilot output must remain inside the workspace")
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    profile = json.loads(Path("config/knowledge/docling-profile.v3.json").read_text(encoding="utf-8"))
     assets = manifest["assets"][: args.limit] if args.limit else manifest["assets"]
     if len(set(assets)) != len(assets):
         raise SystemExit("Pilot manifest contains duplicate physical files")
@@ -39,7 +40,7 @@ def main() -> None:
         artifact = output_dir / f"{index:02d}-{source_hash[:12]}.json"
         if artifact.is_file():
             parsed = json.loads(artifact.read_text(encoding="utf-8"))
-            if parsed.get("sourceSha256") == source_hash:
+            if parsed.get("sourceSha256") == source_hash and parsed.get("extractorVersion") == profile["extractorVersion"]:
                 print(json.dumps({"index": index, "status": "checkpoint", "storageKey": storage_key}), flush=True)
                 results.append(parsed)
                 continue

@@ -9,11 +9,17 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+from io import BytesIO
 from pathlib import Path
+from pathlib import PurePosixPath
 from time import perf_counter
 from zipfile import ZipFile
+import xml.etree.ElementTree as ET
 
+import numpy as np
 import pypdfium2
+from PIL import Image
+from rapidocr import EngineType, LangRec, RapidOCR
 from docling.chunking import HybridChunker
 from docling.backend.docling_parse_backend import DoclingParseDocumentBackend
 from docling.datamodel.base_models import ConversionStatus, InputFormat
@@ -22,7 +28,8 @@ from docling.document_converter import DocumentConverter, PdfFormatOption
 from docling_core.transforms.chunker.tokenizer.huggingface import HuggingFaceTokenizer
 from transformers import AutoTokenizer
 
-EXTRACTOR_VERSION = "docling-v3.0.1"
+EXTRACTOR_VERSION = "docling-v3.0.2"
+_OCR_ENGINE: RapidOCR | None = None
 
 
 def sha256_bytes(value: bytes) -> str:
@@ -63,12 +70,72 @@ def classify_empty_unit(source: Path, unit_index: int) -> tuple[str, str | None,
     return "review-required", "unclassified-empty-document-unit", None
 
 
+def local_ocr_engine(artifacts: Path) -> RapidOCR:
+    global _OCR_ENGINE
+    if _OCR_ENGINE is None:
+        models = artifacts / "RapidOcr"
+        _OCR_ENGINE = RapidOCR(params={
+            "Det.model_path": models / "PP-OCRv6_det_small.onnx",
+            "Cls.model_path": models / "ch_ppocr_mobile_v2.0_cls_mobile.onnx",
+            "Rec.model_path": models / "PP-OCRv6_rec_small.onnx",
+            "Det.engine_type": EngineType.ONNXRUNTIME,
+            "Cls.engine_type": EngineType.ONNXRUNTIME,
+            "Rec.engine_type": EngineType.ONNXRUNTIME,
+            "Rec.lang_type": LangRec.CH,
+            "Global.text_score": 0.35,
+        })
+    return _OCR_ENGINE
+
+
+def recover_local_ocr_text(source: Path, unit_index: int, artifacts: Path) -> str:
+    """Recover candidate text locally while keeping the unit review-required."""
+    images: list[Image.Image] = []
+    if source.suffix.lower() == ".pdf":
+        document = pypdfium2.PdfDocument(source)
+        images.append(document[unit_index - 1].render(scale=2.5).to_pil().convert("RGB"))
+        document.close()
+    elif source.suffix.lower() == ".pptx":
+        with ZipFile(source) as archive:
+            slide_name = f"ppt/slides/slide{unit_index}.xml"
+            rels_name = f"ppt/slides/_rels/slide{unit_index}.xml.rels"
+            slide = ET.fromstring(archive.read(slide_name))
+            relationships = ET.fromstring(archive.read(rels_name))
+            rel_targets = {
+                rel.attrib["Id"]: rel.attrib["Target"]
+                for rel in relationships
+                if rel.attrib.get("Target")
+            }
+            relationship_ns = "{http://schemas.openxmlformats.org/officeDocument/2006/relationships}embed"
+            for blip in slide.iter("{http://schemas.openxmlformats.org/drawingml/2006/main}blip"):
+                rel_id = blip.attrib.get(relationship_ns)
+                if not rel_id or rel_id not in rel_targets:
+                    continue
+                media_name = (PurePosixPath("ppt/slides") / rel_targets[rel_id]).as_posix()
+                media_name = str(PurePosixPath(media_name))
+                while "/../" in media_name:
+                    head, tail = media_name.split("/../", 1)
+                    media_name = f"{head.rsplit('/', 1)[0]}/{tail}"
+                try:
+                    images.append(Image.open(BytesIO(archive.read(media_name))).convert("RGB"))
+                except (KeyError, OSError):
+                    continue
+    if not images:
+        return ""
+    engine = local_ocr_engine(artifacts)
+    texts: list[str] = []
+    for image in images:
+        result = engine(np.asarray(image), text_score=0.35)
+        texts.extend(text.strip() for text in (result.txts or ()) if text and text.strip())
+    return "\n".join(texts)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--input", required=True)
     parser.add_argument("--output", required=True)
     parser.add_argument("--profile", default="config/knowledge/docling-profile.v3.json")
     parser.add_argument("--allow-model-download", action="store_true")
+    parser.add_argument("--force-full-page-ocr", action="store_true")
     args = parser.parse_args()
 
     source = Path(args.input).resolve()
@@ -100,6 +167,7 @@ def main() -> None:
             lang=[profile["ocr"]["languageModel"]],
             backend=profile["ocr"]["backend"],
             text_score=float(profile["ocr"]["textScore"]),
+            force_full_page_ocr=args.force_full_page_ocr,
         ),
     )
     pdf_options.table_structure_options.mode = TableFormerMode.ACCURATE
@@ -119,7 +187,7 @@ def main() -> None:
 
     started = perf_counter()
     result = converter.convert(source, raises_on_error=False)
-    elapsed_ms = round((perf_counter() - started) * 1000)
+    docling_elapsed_ms = round((perf_counter() - started) * 1000)
     if result.status not in (ConversionStatus.SUCCESS, ConversionStatus.PARTIAL_SUCCESS):
         raise SystemExit(f"Docling conversion failed: {result.status}: {result.errors}")
 
@@ -132,11 +200,18 @@ def main() -> None:
             items_by_unit.setdefault(page_number(item), []).append(text.strip())
     unit_count = len(result.document.pages) if getattr(result.document, "pages", None) else max(items_by_unit.keys(), default=1)
     units = []
+    recovered_text_by_unit: dict[int, str] = {}
     for index in range(1, unit_count + 1):
         text = "\n".join(items_by_unit.get(index, []))
         status, review_reason, visual_ratio = (
             ("success", None, None) if text.strip() else classify_empty_unit(source, index)
         )
+        if status == "review-required":
+            recovered = recover_local_ocr_text(source, index, artifacts)
+            if recovered:
+                recovered_text_by_unit[index] = recovered
+                text = recovered
+                review_reason = "local-ocr-candidate-requires-review"
         units.append({
             "unitType": unit_type,
             "unitIndex": index,
@@ -166,7 +241,35 @@ def main() -> None:
             "canonicalEmbeddingText": embed_text,
             "tokenEstimate": chunk_tokenizer.count_tokens(embed_text),
             "contentSha256": sha256_bytes(chunk.text.encode("utf-8")),
+            "evidenceStatus": "candidate" if unit_index in recovered_text_by_unit else "parsed",
         })
+    for unit_index, recovered_text in recovered_text_by_unit.items():
+        current_lines: list[str] = []
+        for line in [*recovered_text.splitlines(), ""]:
+            proposed = "\n".join([*current_lines, line]).strip()
+            if current_lines and chunk_tokenizer.count_tokens(proposed) > int(profile["chunking"]["maxTokens"]):
+                content = "\n".join(current_lines).strip()
+                chunks.append({
+                    "index": len(chunks), "headingPath": ["OCR review required"],
+                    "unitType": unit_type, "unitIndex": unit_index, "content": content,
+                    "canonicalEmbeddingText": content,
+                    "tokenEstimate": chunk_tokenizer.count_tokens(content),
+                    "contentSha256": sha256_bytes(content.encode("utf-8")),
+                    "evidenceStatus": "candidate",
+                })
+                current_lines = []
+            if line:
+                current_lines.append(line)
+        if current_lines:
+            content = "\n".join(current_lines).strip()
+            chunks.append({
+                "index": len(chunks), "headingPath": ["OCR review required"],
+                "unitType": unit_type, "unitIndex": unit_index, "content": content,
+                "canonicalEmbeddingText": content,
+                "tokenEstimate": chunk_tokenizer.count_tokens(content),
+                "contentSha256": sha256_bytes(content.encode("utf-8")),
+                "evidenceStatus": "candidate",
+            })
 
     artifact = {
         "schemaVersion": "knowledge-docling-v3.0.0",
@@ -180,8 +283,12 @@ def main() -> None:
         "chunks": chunks,
         "metrics": {
             "inputAssets": 1, "validAssets": 1, "units": len(units), "chunks": len(chunks),
-            "latencyMs": elapsed_ms, "retries": 0, "modelCalls": 0, "embeddingCalls": 0,
+            "latencyMs": round((perf_counter() - started) * 1000),
+            "doclingLatencyMs": docling_elapsed_ms,
+            "retries": 0, "modelCalls": 0, "embeddingCalls": 0,
             "externalDocumentCalls": 0,
+            "localOcrModelCalls": len(recovered_text_by_unit),
+            "localOcrRecoveredUnits": len(recovered_text_by_unit),
         },
     }
     output.parent.mkdir(parents=True, exist_ok=True)
