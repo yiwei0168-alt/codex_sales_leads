@@ -271,18 +271,21 @@ grant execute on function activate_knowledge_release_v3(uuid) to network_copilot
 
 alter table knowledge_release_v3 enable row level security;
 alter table knowledge_release_v3 force row level security;
+drop policy if exists knowledge_release_v3_acl on knowledge_release_v3;
 create policy knowledge_release_v3_acl on knowledge_release_v3 using(
   scope_kind='shared' or owner_id=app_current_user_id())
   with check(app_current_user_role()='admin' and (scope_kind='shared' or owner_id=app_current_user_id()));
 
 alter table knowledge_release_asset_v3 enable row level security;
 alter table knowledge_release_asset_v3 force row level security;
+drop policy if exists knowledge_release_asset_v3_acl on knowledge_release_asset_v3;
 create policy knowledge_release_asset_v3_acl on knowledge_release_asset_v3 using(exists(
   select 1 from knowledge_release_v3 r where r.id=release_id and (r.scope_kind='shared' or r.owner_id=app_current_user_id())))
   with check(app_current_user_role()='admin');
 
 alter table knowledge_source_revision_v3 enable row level security;
 alter table knowledge_source_revision_v3 force row level security;
+drop policy if exists knowledge_source_revision_v3_acl on knowledge_source_revision_v3;
 create policy knowledge_source_revision_v3_acl on knowledge_source_revision_v3 using(exists(
   select 1 from knowledge_asset a join knowledge_document d on d.id=a.document_id
   where a.id=asset_id and (d.visibility='shared' or d.owner_id=app_current_user_id())))
@@ -290,39 +293,47 @@ create policy knowledge_source_revision_v3_acl on knowledge_source_revision_v3 u
 
 alter table knowledge_source_unit_v3 enable row level security;
 alter table knowledge_source_unit_v3 force row level security;
+drop policy if exists knowledge_source_unit_v3_acl on knowledge_source_unit_v3;
 create policy knowledge_source_unit_v3_acl on knowledge_source_unit_v3 using(exists(
   select 1 from knowledge_source_revision_v3 r where r.id=source_revision_id))
   with check(app_current_user_role()='admin');
 
 alter table knowledge_chunk_v3 enable row level security;
 alter table knowledge_chunk_v3 force row level security;
+drop policy if exists knowledge_chunk_v3_acl on knowledge_chunk_v3;
 create policy knowledge_chunk_v3_acl on knowledge_chunk_v3 using(exists(
   select 1 from knowledge_document d where d.id=document_id and (d.visibility='shared' or d.owner_id=app_current_user_id())))
   with check(app_current_user_role()='admin');
 
 alter table knowledge_chunk_entity_v3 enable row level security;
 alter table knowledge_chunk_entity_v3 force row level security;
+drop policy if exists knowledge_chunk_entity_v3_acl on knowledge_chunk_entity_v3;
 create policy knowledge_chunk_entity_v3_acl on knowledge_chunk_entity_v3 using(exists(
   select 1 from knowledge_chunk_v3 c where c.id=chunk_id)) with check(app_current_user_role()='admin');
 
 alter table knowledge_embedding_profile_v3 enable row level security;
 alter table knowledge_embedding_profile_v3 force row level security;
+drop policy if exists knowledge_embedding_profile_v3_read on knowledge_embedding_profile_v3;
 create policy knowledge_embedding_profile_v3_read on knowledge_embedding_profile_v3 for select using(true);
+drop policy if exists knowledge_embedding_profile_v3_write on knowledge_embedding_profile_v3;
 create policy knowledge_embedding_profile_v3_write on knowledge_embedding_profile_v3 for all
   using(app_current_user_role()='admin') with check(app_current_user_role()='admin');
 
 alter table knowledge_chunk_embedding_v3 enable row level security;
 alter table knowledge_chunk_embedding_v3 force row level security;
+drop policy if exists knowledge_chunk_embedding_v3_acl on knowledge_chunk_embedding_v3;
 create policy knowledge_chunk_embedding_v3_acl on knowledge_chunk_embedding_v3 using(exists(
   select 1 from knowledge_chunk_v3 c where c.id=chunk_id)) with check(app_current_user_role()='admin');
 
 alter table knowledge_fact_v3 enable row level security;
 alter table knowledge_fact_v3 force row level security;
+drop policy if exists knowledge_fact_v3_acl on knowledge_fact_v3;
 create policy knowledge_fact_v3_acl on knowledge_fact_v3 using(exists(
   select 1 from knowledge_chunk_v3 c where c.id=chunk_id)) with check(app_current_user_role()='admin');
 
 alter table knowledge_review_queue_v3 enable row level security;
 alter table knowledge_review_queue_v3 force row level security;
+drop policy if exists knowledge_review_queue_v3_acl on knowledge_review_queue_v3;
 create policy knowledge_review_queue_v3_acl on knowledge_review_queue_v3 using(exists(
   select 1 from knowledge_asset a join knowledge_document d on d.id=a.document_id
   where a.id=asset_id and (d.visibility='shared' or d.owner_id=app_current_user_id())))
@@ -330,5 +341,6 @@ create policy knowledge_review_queue_v3_acl on knowledge_review_queue_v3 using(e
 
 alter table knowledge_release_pointer_v3 enable row level security;
 alter table knowledge_release_pointer_v3 force row level security;
+drop policy if exists knowledge_release_pointer_v3_acl on knowledge_release_pointer_v3;
 create policy knowledge_release_pointer_v3_acl on knowledge_release_pointer_v3 using(
   scope_kind='shared' or owner_id=app_current_user_id()) with check(app_current_user_role()='admin');

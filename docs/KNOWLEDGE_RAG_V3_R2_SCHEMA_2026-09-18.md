@@ -24,3 +24,10 @@ Migration 083 新增独立 v3 release、按 shared/owner 隔离的资产 manifes
 ## 未完成边界
 
 全量 221 个物理源仍在本地抽取，source unit/release/chunk 尚未写库；事实和双向量均未完成。profile 中的 BGE 模型 revision 是构建前占位值，激活前必须替换为精确 revision/hash。migration、manifest 和单文件探针成功不代表 ACL 交叉用户夹具、恢复、回滚或生产查询已验收。
+# R3/R5 partial implementation addendum — 2026-09-18
+
+- The fact registry now covers default comparison profiles for routers, switches, APs, Mesh, CPE and accessories through generic deterministic rules, without model-specific answers.
+- Comparison requests use a dedicated LangGraph node and return differences first plus a complete attribute table; unknown, candidate, conflict and version mismatch remain distinct.
+- When a v3 pointer is active, facts and retrieval read only that release. ACL/entity filtering precedes four-lane RRF, and citations retain lane ranks and source coordinates.
+- BGE-M3 is pinned to official revision `5617a9f61b028005a4858fdac845db406aefb181`. Its local service binds only `127.0.0.1`, refuses remote model URLs/runtime downloads and does not log body text.
+- Qwen/BGE query vectors are cached and degraded independently; fact/full-text retrieval remains available if either or both vector lanes fail. Full release, vector, Recall@8 and activation gates remain pending.

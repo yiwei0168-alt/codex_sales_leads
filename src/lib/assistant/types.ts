@@ -91,7 +91,7 @@ export interface AssistantMessageDto {
     budgetProposal?: BudgetProposal;
     productAction?: ProductActionPlan & {companies:Array<{id:string;name:string;countryCode:string}>;hasMore:boolean};
     citations?: RagCitation[];
-    knowledge?: Pick<KnowledgeResult, "kind" | "reasonCode" | "documents" | "factCitations">;
+    knowledge?: Pick<KnowledgeResult, "kind" | "reasonCode" | "documents" | "factCitations" | "comparison">;
     ragAnswer?: Pick<RagAnswer, "model" | "latencyMs">;
     grounded?: boolean;
     warnings?: string[];

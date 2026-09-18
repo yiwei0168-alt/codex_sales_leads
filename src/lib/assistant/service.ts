@@ -57,6 +57,7 @@ export async function processAssistantMessage(userId: string, input: {
           reasonCode: interpreted.knowledgeResult.reasonCode,
           documents: interpreted.knowledgeResult.documents,
           factCitations: interpreted.knowledgeResult.factCitations,
+          comparison: interpreted.knowledgeResult.comparison,
         } : undefined,
         ragAnswer: interpreted.ragAnswer ? {
           model: interpreted.ragAnswer.model,

@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import type { StructuredKnowledgeBlock } from "@/lib/rag/types";
 import { extractKnowledgeFacts } from "./fact-extractor";
-import { buildControlledLexicalQuery, exactModelMentions, resolveAttributeCandidates } from "./query-normalizer";
+import { buildControlledLexicalQuery, defaultComparisonAttributes, exactModelMentions, inferComparisonCategory, resolveAttributeCandidates } from "./query-normalizer";
 
 const block = (text: string, id = "b"): StructuredKnowledgeBlock => ({
   id, unitType: "page", unitIndex: 1, blockType: "paragraph", text,
@@ -27,6 +27,17 @@ describe("versioned knowledge facts", () => {
   it("keeps negated standards negative", () => expect(
     extractKnowledgeFacts([block("Does not support 802.3at")]).find((item) => item.attributeKey === "poe_standard")?.polarity,
   ).toBe("negative"));
+  it("extracts category comparison fields without model-specific branches", () => {
+    const facts = extractKnowledgeFacts([block("Wi-Fi 6E tri-band 2.4 GHz / 5 GHz / 6 GHz; 2.5 Gbps Ethernet; VPN Client and VPN Server; Net weight: 1.2 kg; supports PoE-in")]);
+    expect(facts).toEqual(expect.arrayContaining([
+      expect.objectContaining({ attributeKey: "wifi_generation", typedValue: "Wi-Fi 6E" }),
+      expect.objectContaining({ attributeKey: "frequency_band", typedValue: ["2.4 GHz", "5 GHz", "6 GHz"] }),
+      expect.objectContaining({ attributeKey: "ethernet_speed", typedValue: ["2.5"] }),
+      expect.objectContaining({ attributeKey: "vpn_role", typedValue: ["client", "server"] }),
+      expect.objectContaining({ attributeKey: "weight", typedValue: 1200, unit: "g" }),
+      expect.objectContaining({ attributeKey: "poe_input", typedValue: true }),
+    ]));
+  });
   it("pairs same-row coordinate blocks without flattening the whole page", () => {
     const facts = extractKnowledgeFacts([
       { ...block("10/100 Mbps RJ45 Ports", "label"), bbox: [100, 100, 250, 120] },
@@ -45,5 +56,11 @@ describe("versioned knowledge facts", () => {
     expect(query).toContain('"网口"');
     expect(query).toMatch(/ethernet/i);
     expect(buildControlledLexicalQuery("explain channel strategy")).toBe("explain channel strategy");
+  });
+  it("loads category comparison profiles from registered source paths",()=>{
+    expect(inferComparisonCategory(["knowledge/product/Wi-Fi Router/AB.pdf"])).toBe("router");
+    expect(inferComparisonCategory(["knowledge/product/5G LTE Router/P5.pdf"])).toBe("cpe");
+    expect(defaultComparisonAttributes(["router"])).toContain("wifi_generation");
+    expect(defaultComparisonAttributes(["router"])).toContain("ethernet_port_count");
   });
 });

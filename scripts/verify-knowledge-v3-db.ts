@@ -9,6 +9,7 @@ const tables = [
   "knowledge_source_unit_v3", "knowledge_chunk_v3", "knowledge_chunk_entity_v3",
   "knowledge_embedding_profile_v3", "knowledge_chunk_embedding_v3", "knowledge_fact_v3",
   "knowledge_review_queue_v3", "knowledge_release_pointer_v3",
+  "knowledge_embedding_run_v3",
 ];
 const catalog = await tenantQuery<{ name: string; rls: boolean; forced: boolean }>(OWNER_USER_ID,
   `select c.relname as name,c.relrowsecurity as rls,c.relforcerowsecurity as forced
@@ -30,7 +31,8 @@ if (catalog.length !== tables.length || catalog.some((row) => !row.rls || !row.f
 }
 if (profiles.length !== 2
   || !profiles.some((row) => row.model === "text-embedding-v4" && row.dimensions === 1536)
-  || !profiles.some((row) => row.model === "BAAI/bge-m3" && row.dimensions === 1024)) {
+  || !profiles.some((row) => row.model === "BAAI/bge-m3" && row.dimensions === 1024
+    && row.revision === "5617a9f61b028005a4858fdac845db406aefb181")) {
   throw new Error(`v3 embedding profile mismatch: ${JSON.stringify(profiles)}`);
 }
 if (indexes.length !== 2 || functions[0]?.count !== 1) throw new Error("v3 index or activation function missing");

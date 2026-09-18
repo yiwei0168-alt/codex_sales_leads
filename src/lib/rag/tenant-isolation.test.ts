@@ -13,7 +13,7 @@ describe("RAG tenant isolation", () => {
   it("scopes knowledge statistics to the authenticated user", async () => {
     queryMock.mockResolvedValue([]);
     await getKnowledgeStats("user-a");
-    const [tenant, sql, parameters] = queryMock.mock.calls[0] as [string, string, unknown[]];
+    const [tenant, sql, parameters] = queryMock.mock.calls[1] as [string, string, unknown[]];
     expect(tenant).toBe("user-a");
     expect(sql).toContain("d.visibility = 'shared'");
     expect(sql).toContain("d.visibility = 'private' and d.owner_id = $1");
@@ -23,7 +23,7 @@ describe("RAG tenant isolation", () => {
   it("places the user predicate inside the eligible vector set", async () => {
     queryMock.mockResolvedValue([]);
     await hybridSearch("user-b", "router policy", [0.1, 0.2], {}, 4);
-    const [tenant, sql, parameters] = queryMock.mock.calls[0] as [string, string, unknown[]];
+    const [tenant, sql, parameters] = queryMock.mock.calls[1] as [string, string, unknown[]];
     expect(tenant).toBe("user-b");
     expect(sql).toContain("d.visibility = 'shared'");
     expect(sql).toContain("d.visibility = 'private' and d.owner_id = $9");
@@ -38,10 +38,25 @@ describe("RAG tenant isolation", () => {
   it("keeps keyword and structured retrieval available for null-vector chunks", async () => {
     queryMock.mockResolvedValue([]);
     await hybridSearch("user-b", "MODEL-A ports", null, { lexicalQuery: '"MODEL-A" ("ports" OR "网口")' }, 4);
-    const [, sql, parameters] = queryMock.mock.calls[0] as [string, string, unknown[]];
+    const [, sql, parameters] = queryMock.mock.calls[1] as [string, string, unknown[]];
     expect(parameters[0]).toBeNull();
     expect(parameters[1]).toContain("MODEL-A");
     expect(sql).toContain("from eligible\n       where search_vector");
+  });
+
+  it("uses only the active v3 release and applies ACL/entity filters before all four lanes",async()=>{
+    queryMock.mockResolvedValueOnce([{id:"release-v3"}]).mockResolvedValueOnce([]);
+    await hybridSearch("user-c","MODEL-A ports",[0.1],{collections:["product"],structuredProductTerms:["MODEL-A"]},4,[0.2]);
+    const [tenant,sql,parameters]=queryMock.mock.calls[1] as [string,string,unknown[]];
+    expect(tenant).toBe("user-c");
+    expect(sql).toContain("c.release_id=$1");
+    expect(sql).toContain("d.visibility='shared' or(d.visibility='private' and d.owner_id=$2)");
+    expect(sql).toContain("qwen_results");
+    expect(sql).toContain("bge_results");
+    expect(sql).toContain("keyword_results");
+    expect(sql).toContain("fact_results");
+    expect(parameters[0]).toBe("release-v3");
+    expect(parameters[1]).toBe("user-c");
   });
 
   it("treats source metadata changes separately from content embeddings",()=>{

@@ -1,0 +1,3 @@
+# Isolated RAG v3 local embedding runtime. Install only in .venv-bge-v3.
+sentence-transformers==5.1.1
+torch==2.8.0

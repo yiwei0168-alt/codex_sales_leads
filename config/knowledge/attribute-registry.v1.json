@@ -1,5 +1,5 @@
 {
-  "version": "attribute-registry-v1.1.0",
+  "version": "attribute-registry-v1.2.0",
   "attributes": [
     {"key":"ethernet_port_count","type":"integer","unit":"port","aliases":["ethernet ports","rj45 ports","网口","以太网口","有线端口"],"categories":["router","switch","access-point","mesh","cpe"]},
     {"key":"lan_port_count","type":"integer","unit":"port","aliases":["lan ports","lan口","局域网口"],"categories":["router","cpe"]},
@@ -24,5 +24,13 @@
     {"key":"weight","type":"number","unit":"g","aliases":["weight","重量"],"categories":["router","switch","access-point","mesh","cpe","accessory"]},
     {"key":"channel_role_definition","type":"text","aliases":["channel role","渠道角色","角色定义"],"categories":["company","industry"]},
     {"key":"policy_condition","type":"text","aliases":["policy condition","policy applies","政策条件","适用条件"],"categories":["company","industry"]}
-  ]
+  ],
+  "defaultComparisonProfiles": {
+    "router": ["wifi_generation","frequency_band","ethernet_port_count","ethernet_speed","wan_port_count","lan_port_count","vpn_role","usb_version","poe_input","dimensions","weight"],
+    "switch": ["ethernet_port_count","ethernet_speed","poe_output_port_count","poe_standard","poe_power_budget","uplink_port_count","sfp_port_count","sfp_plus_port_count","dimensions","weight"],
+    "access-point": ["wifi_generation","frequency_band","ethernet_port_count","ethernet_speed","poe_input","dimensions","weight"],
+    "mesh": ["wifi_generation","frequency_band","ethernet_port_count","ethernet_speed","poe_input","dimensions","weight"],
+    "cpe": ["cellular_generation","sim_count","wifi_generation","frequency_band","ethernet_port_count","ethernet_speed","vpn_role","dimensions","weight"],
+    "accessory": ["ethernet_speed","usb_version","sfp_port_count","sfp_plus_port_count","poe_standard","dimensions","weight"]
+  }
 }

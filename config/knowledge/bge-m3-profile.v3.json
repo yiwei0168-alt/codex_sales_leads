@@ -1,0 +1,16 @@
+{
+  "profileKey": "bge-m3-1024",
+  "model": "BAAI/bge-m3",
+  "revision": "5617a9f61b028005a4858fdac845db406aefb181",
+  "dimensions": 1024,
+  "distanceMetric": "cosine",
+  "pooling": "cls",
+  "normalizeEmbeddings": true,
+  "bindHost": "127.0.0.1",
+  "port": 8765,
+  "batchLimit": 64,
+  "runtimeNetworkAccess": false,
+  "apiCashCost": 0,
+  "infrastructureCost": "unknown",
+  "source": "https://huggingface.co/BAAI/bge-m3/commit/5617a9f61b028005a4858fdac845db406aefb181"
+}

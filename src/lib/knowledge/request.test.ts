@@ -78,4 +78,13 @@ describe("knowledge request parsing", () => {
       { canonicalKey: "MODEL-A-PRO", version: "2.0" },
     ]);
   });
+  it("materializes the default comparison attributes from registered categories",async()=>{
+    mocks.tenantQuery.mockResolvedValue([
+      {key:"MODEL-A",storageKeys:["knowledge/product/Wi-Fi Router/MODEL-A.pdf"]},
+      {key:"MODEL-A-PRO",storageKeys:["knowledge/product/Wi-Fi Router/MODEL-A-PRO.pdf"]},
+    ]);
+    const result=await parseKnowledgeRequest("user",{question:"compare MODEL-A and MODEL-A-PRO",entry:"assistant"});
+    expect(result.comparisonProfile).toBe("router");
+    expect(result.attributeKeys).toEqual(expect.arrayContaining(["wifi_generation","ethernet_port_count","vpn_role"]));
+  });
 });

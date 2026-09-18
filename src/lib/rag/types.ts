@@ -92,6 +92,9 @@ export interface RagCitation {
   retrievalSignals: Array<"vector" | "keyword" | "structured">;
   corroborated: boolean;
   structuredFacts: Array<{ model: string; factKey: string; factValue: string; status: string }>;
+  releaseId?: string;
+  sourceLocation?: Record<string, unknown>;
+  laneRanks?: { facts: number | null; fulltext: number | null; qwen: number | null; bge: number | null };
 }
 
 export interface RagAnswer {
@@ -101,6 +104,8 @@ export interface RagAnswer {
   model: string;
   latencyMs: number;
   warnings: string[];
+  degradedLanes?: Array<"qwen" | "bge">;
+  generationUsed?: boolean;
   externalDisclosure?: { excludedChunks: number; redactedPatterns: number };
   cache?: { embeddingHit: boolean; evidenceHit: boolean };
   kind?: "document-links" | "fact-answer" | "generated-answer" | "clarification" | "insufficient-evidence" | "unavailable";
@@ -122,6 +127,7 @@ export interface RagAnswer {
     status: string;
     rawValue: string;
   }>;
+  comparison?: import("@/lib/knowledge/response").KnowledgeComparison;
 }
 
 export interface KnowledgeStats {

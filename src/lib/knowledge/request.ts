@@ -1,7 +1,7 @@
 import { tenantQuery } from "@/lib/rag/db";
 import type { AssistantConversationTurn } from "@/lib/assistant/types";
 import type { KnowledgeBaseType } from "@/lib/rag/types";
-import { exactModelMentions, resolveAttributeCandidates } from "./query-normalizer";
+import { defaultComparisonAttributes, exactModelMentions, inferComparisonCategory, resolveAttributeCandidates } from "./query-normalizer";
 
 export type KnowledgeAction = "open-document" | "fact-query" | "compare-facts" | "explain";
 export type KnowledgeComparisonMode = "explicit-attributes" | "default-profile";
@@ -67,8 +67,13 @@ export async function parseKnowledgeRequest(userId: string, input: {
   collections?: KnowledgeBaseType[];
   entry: KnowledgeRequest["entry"];
 }): Promise<KnowledgeRequest> {
-  const models = await tenantQuery<{ key: string }>(userId,
-    "select canonical_key as key from knowledge_entity where entity_type='product' order by length(canonical_key) desc", []);
+  const models = await tenantQuery<{ key: string; storageKeys?: string[] }>(userId,
+    `select e.canonical_key as key,array_remove(array_agg(distinct a.storage_key),null) as "storageKeys"
+       from knowledge_entity e
+       left join knowledge_document_entity de on de.entity_id=e.id
+       left join knowledge_document d on d.id=de.document_id and (d.visibility='shared' or d.owner_id=$1)
+       left join knowledge_asset a on a.document_id=d.id and a.registration_status='registered'
+      where e.entity_type='product' group by e.id order by length(e.canonical_key) desc`, [userId]);
   let entityKeys = exactModelMentions(input.question, models.map((row) => row.key));
   if (!entityKeys.length) {
     for (const turn of [...(input.history ?? [])].reverse().slice(0, 6)) {
@@ -80,5 +85,10 @@ export async function parseKnowledgeRequest(userId: string, input: {
       }
     }
   }
-  return classifyKnowledgeRequest({ question: input.question, entityKeys, collections: input.collections, entry: input.entry });
+  const request=classifyKnowledgeRequest({ question: input.question, entityKeys, collections: input.collections, entry: input.entry });
+  if(request.action==="compare-facts"&&request.comparisonMode==="default-profile"){
+    const categories=entityKeys.map(key=>inferComparisonCategory(models.find(model=>model.key.toLowerCase()===key.toLowerCase())?.storageKeys??[]));
+    if(categories.every((category):category is NonNullable<typeof category>=>Boolean(category))){request.attributeKeys=defaultComparisonAttributes(categories);request.comparisonProfile=[...new Set(categories)].join("+");}
+  }
+  return request;
 }

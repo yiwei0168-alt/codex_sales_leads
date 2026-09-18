@@ -43,6 +43,7 @@ export async function POST(request: Request) {
       reasonCode: result.reasonCode,
       documents: result.documents,
       factCitations: result.factCitations,
+      comparison: result.comparison,
     });
   } catch (error) {
     return Response.json({ error: error instanceof Error ? error.message : "RAG 查询失败" }, { status: 500 });

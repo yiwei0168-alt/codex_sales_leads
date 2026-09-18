@@ -89,7 +89,52 @@ async function upsertKnowledgeDocumentImpl(userId: string, input: KnowledgeDocum
   }, actorRole);
 }
 
-export async function hybridSearch(userId: string, question: string, queryEmbedding: number[] | null, filters: RetrievalFilters = {}, limit = 8): Promise<RetrievedChunk[]> {
+async function activeV3Release(userId:string):Promise<string|undefined>{const rows=await tenantQuery<{id:string}>(userId,`select release_id as id from knowledge_release_pointer_v3 where scope_kind='shared' order by activated_at desc limit 1`);return rows[0]?.id;}
+
+async function hybridSearchV3(userId:string,releaseId:string,question:string,qwenEmbedding:number[]|null,bgeEmbedding:number[]|null,filters:RetrievalFilters,limit:number):Promise<RetrievedChunk[]>{
+  const collections=filters.collections?.length?filters.collections:["industry","company","product"];
+  const entities=filters.structuredProductTerms?.filter(Boolean)??[];
+  const rows=await tenantQuery<{id:string;documentId:string;collection:KnowledgeBaseType;title:string;content:string;sourceUrl:string;sourceType:string;authorityLevel:number;capturedAt:string|null;visibility:KnowledgeVisibility;headingPath:string[];qwenRank:string|null;bgeRank:string|null;keywordRank:string|null;factRank:string|null;rankingScore:number;metadata:Record<string,unknown>;structuredFacts:Array<{model:string;factKey:string;factValue:string;status:string}>}>(userId,`
+    with eligible as(
+      select c.*,d.title,d.source_url,d.source_type,d.authority_level,d.captured_at,d.visibility,d.metadata as document_metadata,
+        kc.slug collection,a.id asset_id
+      from knowledge_chunk_v3 c join knowledge_document d on d.id=c.document_id
+      join knowledge_collection kc on kc.id=d.collection_id join knowledge_source_revision_v3 sr on sr.id=c.source_revision_id
+      join knowledge_asset a on a.id=sr.asset_id
+      where c.release_id=$1 and d.status='active' and(d.visibility='shared' or(d.visibility='private' and d.owner_id=$2))
+        and kc.slug=any($3::text[]) and($4::text is null or d.market=$4) and($5::text is null or d.company_id=$5)
+        and($6::text is null or d.product_id=$6) and d.authority_level >= $7
+        and(cardinality($8::text[])=0 or exists(select 1 from knowledge_chunk_entity_v3 ce join knowledge_entity e on e.id=ce.entity_id where ce.chunk_id=c.id and lower(e.canonical_key) in(select lower(x) from unnest($8::text[]) as requested(x))))
+    ),qwen_results as(
+      select e.id,row_number() over(order by emb.qwen_embedding <=> $9::vector) rank
+      from eligible e join knowledge_chunk_embedding_v3 emb on emb.chunk_id=e.id join knowledge_embedding_profile_v3 p on p.id=emb.profile_id and p.profile_key='qwen-v4-1536'
+      where $9::vector is not null and emb.qwen_embedding is not null order by emb.qwen_embedding <=> $9::vector limit 40
+    ),bge_results as(
+      select e.id,row_number() over(order by emb.bge_embedding <=> $10::vector) rank
+      from eligible e join knowledge_chunk_embedding_v3 emb on emb.chunk_id=e.id join knowledge_embedding_profile_v3 p on p.id=emb.profile_id and p.profile_key='bge-m3-1024'
+      where $10::vector is not null and emb.bge_embedding is not null order by emb.bge_embedding <=> $10::vector limit 40
+    ),keyword_results as(
+      select id,row_number() over(order by ts_rank_cd(search_vector,websearch_to_tsquery('simple',$11)) desc)rank from eligible
+      where search_vector@@websearch_to_tsquery('simple',$11) order by ts_rank_cd(search_vector,websearch_to_tsquery('simple',$11)) desc limit 40
+    ),fact_candidates as(
+      select e.id,jsonb_agg(jsonb_build_object('model',ke.canonical_key,'factKey',f.attribute_key,'factValue',f.raw_value,'status',f.verification_status) order by f.attribute_key) evidence,
+        max(greatest(ts_rank_cd(to_tsvector('simple',f.raw_field_name||' '||f.raw_value),websearch_to_tsquery('simple',$11)),case when cardinality($8::text[])>0 and lower(ke.canonical_key) in(select lower(x) from unnest($8::text[]) as requested(x)) then 1 else 0 end)) relevance
+      from eligible e join knowledge_fact_v3 f on f.chunk_id=e.id join knowledge_entity ke on ke.id=f.entity_id
+      where f.verification_status in('verified','candidate','conflicting') and(to_tsvector('simple',f.raw_field_name||' '||f.raw_value)@@websearch_to_tsquery('simple',$11) or(cardinality($8::text[])>0 and lower(ke.canonical_key) in(select lower(x) from unnest($8::text[]) as requested(x))))
+      group by e.id
+    ),fact_results as(select id,evidence,row_number() over(order by relevance desc,id)rank from fact_candidates order by relevance desc,id limit 40),
+    ranked as(select e.*,q.rank qwen_rank,b.rank bge_rank,k.rank keyword_rank,f.rank fact_rank,coalesce(f.evidence,'[]'::jsonb)structured_facts,
+      ((coalesce(1.0/(60+f.rank),0)*1.4+coalesce(1.0/(60+k.rank),0)+coalesce(1.0/(60+q.rank),0)+coalesce(1.0/(60+b.rank),0)*1.1)/0.074)::float8 ranking_score
+      from eligible e left join qwen_results q on q.id=e.id left join bge_results b on b.id=e.id left join keyword_results k on k.id=e.id left join fact_results f on f.id=e.id
+      where q.id is not null or b.id is not null or k.id is not null or f.id is not null),
+    windows as(select r.id,left(string_agg(n.content,E'\n\n' order by n.chunk_index),6000)content from ranked r join eligible n on n.document_id=r.document_id and n.chunk_index between r.chunk_index-1 and r.chunk_index+1 and(n.heading_path=r.heading_path or n.id=r.id)group by r.id)
+    select r.id,r.document_id as "documentId",r.collection,r.title,coalesce(w.content,r.content)content,('/api/knowledge/assets/'||r.asset_id)::text as "sourceUrl",r.source_type as "sourceType",r.authority_level as "authorityLevel",r.captured_at::text as "capturedAt",r.visibility,r.heading_path as "headingPath",r.qwen_rank as "qwenRank",r.bge_rank as "bgeRank",r.keyword_rank as "keywordRank",r.fact_rank as "factRank",r.ranking_score as "rankingScore",r.document_metadata as metadata,r.structured_facts as "structuredFacts" from ranked r left join windows w on w.id=r.id order by r.ranking_score desc limit $12
+  `,[releaseId,userId,collections,filters.market??null,filters.companyId??null,filters.productId??null,filters.minAuthority??1,entities,qwenEmbedding?vectorLiteral(qwenEmbedding):null,bgeEmbedding?vectorLiteral(bgeEmbedding):null,filters.lexicalQuery??question,limit]);
+  return rows.map(row=>{const signals:RetrievedChunk["retrievalSignals"]=[];if(row.qwenRank||row.bgeRank)signals.push("vector");if(row.keywordRank)signals.push("keyword");if(row.factRank)signals.push("structured");return{id:row.id,documentId:row.documentId,collection:row.collection,title:row.title,content:row.content,sourceUrl:row.sourceUrl,sourceType:row.sourceType,authorityLevel:row.authorityLevel,capturedAt:row.capturedAt??undefined,headingPath:row.headingPath,vectorRank:row.qwenRank?Number(row.qwenRank):row.bgeRank?Number(row.bgeRank):undefined,keywordRank:row.keywordRank?Number(row.keywordRank):undefined,structuredRank:row.factRank?Number(row.factRank):undefined,retrievalSignals:signals,corroborated:Boolean(row.factRank)&&(Boolean(row.qwenRank)||Boolean(row.bgeRank)||Boolean(row.keywordRank)),score:row.rankingScore,rankingScore:row.rankingScore,visibility:row.visibility,metadata:{...row.metadata,releaseId,sourceLocation:row.metadata?.sourceLocation,laneRanks:{facts:row.factRank?Number(row.factRank):null,fulltext:row.keywordRank?Number(row.keywordRank):null,qwen:row.qwenRank?Number(row.qwenRank):null,bge:row.bgeRank?Number(row.bgeRank):null},structuredFacts:row.structuredFacts??[]}};});
+}
+
+export async function hybridSearch(userId: string, question: string, queryEmbedding: number[] | null, filters: RetrievalFilters = {}, limit = 8, bgeQueryEmbedding: number[] | null = null): Promise<RetrievedChunk[]> {
+  const releaseId=await activeV3Release(userId);if(releaseId)return hybridSearchV3(userId,releaseId,question,queryEmbedding,bgeQueryEmbedding,filters,limit);
   const collections = filters.collections?.length ? filters.collections : ["industry", "company", "product"];
   const structuredQuery = filters.structuredProductTerms?.length
     ? filters.structuredProductTerms.map((term) => `"${term.replace(/["\\]/g, " ").trim()}"`).filter((term) => term !== '""').join(" OR ")
@@ -217,6 +262,7 @@ export async function hybridSearch(userId: string, question: string, queryEmbedd
 }
 
 export async function knowledgeRevisionToken(userId: string): Promise<string> {
+  const releaseId=await activeV3Release(userId);if(releaseId)return`v3:${releaseId}`;
   const rows = await tenantQuery<{ token: string }>(userId, `select concat_ws(':',
       coalesce(max(d.updated_at)::text, 'none'),
       coalesce(string_agg(distinct d.active_generation_id::text, ',' order by d.active_generation_id::text), 'v1')) as token
@@ -227,6 +273,7 @@ export async function knowledgeRevisionToken(userId: string): Promise<string> {
 
 export async function authorizedKnowledgeChunkIds(userId: string, chunkIds: string[]): Promise<Set<string>> {
   if (!chunkIds.length) return new Set();
+  const releaseId=await activeV3Release(userId);if(releaseId){const rows=await tenantQuery<{id:string}>(userId,`select c.id from knowledge_chunk_v3 c join knowledge_document d on d.id=c.document_id where c.release_id=$1 and c.id=any($2::uuid[]) and d.status='active' and(d.visibility='shared' or d.owner_id=$3)`,[releaseId,chunkIds,userId]);return new Set(rows.map(row=>row.id));}
   const rows = await tenantQuery<{ id: string }>(userId, `select ch.id
       from knowledge_chunk ch join knowledge_document d on d.id=ch.document_id
      where ch.id=any($1::uuid[]) and d.status='active'
@@ -235,6 +282,7 @@ export async function authorizedKnowledgeChunkIds(userId: string, chunkIds: stri
 }
 
 export async function getKnowledgeStats(userId: string): Promise<KnowledgeStats> {
+  const releaseId=await activeV3Release(userId);if(releaseId){const rows=await tenantQuery<{type:KnowledgeBaseType;document_count:string;chunk_count:string;embedded_count:string;last_updated:string|null}>(userId,`select kc.slug type,count(distinct d.id)document_count,count(distinct c.id)chunk_count,count(distinct case when q.chunk_id is not null and b.chunk_id is not null then c.id end)embedded_count,max(r.activated_at)::text last_updated from knowledge_collection kc left join knowledge_document d on d.collection_id=kc.id and d.status='active' and(d.visibility='shared' or d.owner_id=$2) left join knowledge_chunk_v3 c on c.document_id=d.id and c.release_id=$1 left join knowledge_chunk_embedding_v3 q on q.chunk_id=c.id and q.qwen_embedding is not null left join knowledge_chunk_embedding_v3 b on b.chunk_id=c.id and b.bge_embedding is not null left join knowledge_release_v3 r on r.id=c.release_id group by kc.slug order by kc.slug`,[releaseId,userId]);return{configured:true,provider:"PostgreSQL + pgvector · RAG v3 dual index",collections:rows.map(row=>({type:row.type,documentCount:Number(row.document_count),chunkCount:Number(row.chunk_count),embeddedCount:Number(row.embedded_count),lastUpdated:row.last_updated??undefined}))};}
   const rows = await tenantQuery<{
     type: KnowledgeBaseType; document_count: string; chunk_count: string; embedded_count: string; last_updated: string | null;
   }>(userId,

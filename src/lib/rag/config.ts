@@ -51,7 +51,5 @@ export function getMissingRagConfig(): string[] {
   return [
     !config.databaseUrl && "DATABASE_URL",
     !config.ragAnswerApiKey && "KIMI_API_KEY",
-    !config.embeddingApiKey && "EMBEDDING_API_KEY",
-    !config.embeddingBaseUrl && "EMBEDDING_BASE_URL",
   ].filter((value): value is string => Boolean(value));
 }

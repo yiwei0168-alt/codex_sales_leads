@@ -5,9 +5,9 @@ import { getMissingRagConfig } from "@/lib/rag/config";
 import { tenantQuery } from "@/lib/rag/db";
 import { answerWithRag } from "@/lib/rag/service";
 import type { KnowledgeBaseType } from "@/lib/rag/types";
-import { resolveVerifiedFacts } from "./fact-repository";
+import { resolveVerifiedFacts, type ResolvedKnowledgeFact } from "./fact-repository";
 import { parseKnowledgeRequest, type KnowledgeRequest } from "./request";
-import { baseKnowledgeResult, type KnowledgeResult } from "./response";
+import { baseKnowledgeResult, type KnowledgeComparisonValue, type KnowledgeFactCitation, type KnowledgeResult } from "./response";
 import { trackedOperation } from "@/lib/tracked-operation";
 
 const KnowledgeState = Annotation.Root({
@@ -60,6 +60,29 @@ async function documentResult(userId: string, request: KnowledgeRequest, started
       version: row.version ?? undefined, mimeType: row.mimeType, url: `/api/knowledge/assets/${row.assetId}`,
     })),
   });
+}
+
+function factCitation(item:ResolvedKnowledgeFact):KnowledgeFactCitation{return{factId:item.id,attributeKey:item.attributeKey,assetId:item.assetId,version:item.documentVersion??undefined,status:item.status,rawValue:item.rawValue,releaseId:item.releaseId,chunkId:item.chunkId,sourceLocation:item.sourceLocation};}
+
+export function comparisonValue(items:ResolvedKnowledgeFact[]):KnowledgeComparisonValue{
+  const citations=items.map(factCitation);const conflicting=items.filter(item=>item.status==="conflicting");
+  const verified=items.filter(item=>item.status==="verified");const values=[...new Set(verified.map(item=>JSON.stringify(item.typedValue)))];
+  if(conflicting.length||values.length>1)return{status:"conflicting",citations};
+  if(verified.length)return{status:"verified",value:verified[0].typedValue,unit:verified[0].unit??undefined,citations};
+  if(items.some(item=>item.status==="candidate"))return{status:"candidate",citations};
+  return{status:"unknown",citations:[]};
+}
+
+async function comparisonResult(userId:string,request:KnowledgeRequest,started:number):Promise<KnowledgeResult>{
+  if(request.entityKeys.length!==2)return baseKnowledgeResult(started,{kind:"clarification",reasonCode:request.entityKeys.length?"entity-ambiguous":"entity-missing",answer:"请明确两个需要比较的型号。"});
+  if(!request.attributeKeys.length)return baseKnowledgeResult(started,{kind:"clarification",reasonCode:"attribute-missing",answer:"没有找到适用于这两个型号的默认比较字段。"});
+  const [leftFacts,rightFacts]=await Promise.all(request.entityKeys.map(entity=>resolveVerifiedFacts(userId,entity,request.attributeKeys)));
+  const attributes=request.attributeKeys.map(attributeKey=>{const left=comparisonValue(leftFacts.filter(item=>item.attributeKey===attributeKey));const right=comparisonValue(rightFacts.filter(item=>item.attributeKey===attributeKey));return{attributeKey,left,right,isDifference:left.status==="verified"&&right.status==="verified"?JSON.stringify(left.value)!==JSON.stringify(right.value):null};});
+  const differences=attributes.filter(item=>item.isDifference===true);const citations=[...leftFacts,...rightFacts].map(factCitation);
+  const anyEvidence=attributes.some(item=>item.left.status!=="unknown"||item.right.status!=="unknown");
+  const onlyCandidate=anyEvidence&&attributes.every(item=>[item.left.status,item.right.status].every(status=>status==="unknown"||status==="candidate"));
+  const summary=differences.length?`关键差异：${differences.map(item=>item.attributeKey).join("、")}。下方为完整共同属性表。`:`未发现双方均有已验证证据的确定差异；下方保留完整属性及未知、冲突或待复核状态。`;
+  return baseKnowledgeResult(started,{kind:anyEvidence?"fact-answer":"insufficient-evidence",reasonCode:anyEvidence?onlyCandidate?"ocr-review-required":"ok":"retrieval-no-match",answer:summary,factCitations:citations,comparison:{entities:[{key:request.entityKeys[0],version:request.parsedEntities[0]?.version},{key:request.entityKeys[1],version:request.parsedEntities[1]?.version}],profile:request.comparisonProfile,differences,attributes}});
 }
 
 async function factResult(userId: string, request: KnowledgeRequest, started: number): Promise<KnowledgeResult> {
@@ -115,6 +138,7 @@ export function buildKnowledgeGraph() {
     }))
     .addNode("open_registered_document", async (state) => ({ result: await documentResult(state.userId, state.request!, state.started) }))
     .addNode("read_verified_facts", async (state) => ({ result: await factResult(state.userId, state.request!, state.started) }))
+    .addNode("compare_verified_facts", async (state) => ({ result: await comparisonResult(state.userId, state.request!, state.started) }))
     .addNode("generate_grounded_explanation", async (state) => {
       const missing = getMissingRagConfig();
       if (missing.length) {
@@ -123,21 +147,27 @@ export function buildKnowledgeGraph() {
         }) };
       }
       const rag = await answerWithRag(state.userId, {
-        question: state.question, filters: { collections: state.collections }, maxChunks: 8,
+        question: state.question, filters: { collections: state.collections, structuredProductTerms: state.request?.entityKeys }, maxChunks: 8,
       });
       return { result: baseKnowledgeResult(state.started, {
-        kind: "generated-answer", reasonCode: rag.grounded ? "ok" : "fact-not-verified",
-        answer: rag.answer, ragAnswer: rag, usage: { intentCalls: 0, embeddingCalls: 1, generationCalls: 1 },
+        kind: "generated-answer", reasonCode: (rag.reasonCode as KnowledgeResult["reasonCode"] | undefined) ?? (rag.grounded ? "ok" : "fact-not-verified"),
+        answer: rag.answer, ragAnswer: rag, usage: {
+          intentCalls: 0,
+          embeddingCalls: 2 - (rag.degradedLanes?.length ?? 0),
+          generationCalls: rag.generationUsed ? 1 : 0,
+        },
       }) };
     })
     .addEdge(START, "classify_knowledge_request")
     .addConditionalEdges("classify_knowledge_request", (state) => {
       if (state.request?.action === "open-document") return "open_registered_document";
-      if (state.request?.action === "fact-query" || state.request?.action === "compare-facts") return "read_verified_facts";
+      if (state.request?.action === "compare-facts") return "compare_verified_facts";
+      if (state.request?.action === "fact-query") return "read_verified_facts";
       return "generate_grounded_explanation";
     })
     .addEdge("open_registered_document", END)
     .addEdge("read_verified_facts", END)
+    .addEdge("compare_verified_facts", END)
     .addEdge("generate_grounded_explanation", END)
     .compile({
       name: "knowledge_business_flow",
