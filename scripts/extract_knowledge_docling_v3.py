@@ -17,6 +17,7 @@ from zipfile import ZipFile
 import xml.etree.ElementTree as ET
 
 import numpy as np
+import openpyxl
 import pypdfium2
 from PIL import Image
 from rapidocr import EngineType, LangRec, RapidOCR
@@ -28,7 +29,7 @@ from docling.document_converter import DocumentConverter, PdfFormatOption
 from docling_core.transforms.chunker.tokenizer.huggingface import HuggingFaceTokenizer
 from transformers import AutoTokenizer
 
-EXTRACTOR_VERSION = "docling-v3.0.2"
+EXTRACTOR_VERSION = "docling-v3.0.3"
 _OCR_ENGINE: RapidOCR | None = None
 
 
@@ -129,6 +130,30 @@ def recover_local_ocr_text(source: Path, unit_index: int, artifacts: Path) -> st
     return "\n".join(texts)
 
 
+def extract_spreadsheet_rows(source: Path) -> list[dict]:
+    """Preserve exact sheet/row/cell coordinates for row-scoped entity binding."""
+    if source.suffix.lower() != ".xlsx":
+        return []
+    workbook = openpyxl.load_workbook(source, read_only=True, data_only=True)
+    rows: list[dict] = []
+    for sheet_index, sheet in enumerate(workbook.worksheets, start=1):
+        for row_index, values in enumerate(sheet.iter_rows(values_only=True), start=1):
+            cells = [
+                {"columnIndex": column_index, "value": str(value).strip()}
+                for column_index, value in enumerate(values, start=1)
+                if value is not None and str(value).strip()
+            ]
+            if cells:
+                rows.append({
+                    "sheetIndex": sheet_index,
+                    "sheetName": sheet.title,
+                    "rowIndex": row_index,
+                    "cells": cells,
+                })
+    workbook.close()
+    return rows
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--input", required=True)
@@ -198,7 +223,9 @@ def main() -> None:
         text = getattr(item, "text", None)
         if isinstance(text, str) and text.strip():
             items_by_unit.setdefault(page_number(item), []).append(text.strip())
-    unit_count = len(result.document.pages) if getattr(result.document, "pages", None) else max(items_by_unit.keys(), default=1)
+    spreadsheet_rows = extract_spreadsheet_rows(source)
+    spreadsheet_sheets = max((row["sheetIndex"] for row in spreadsheet_rows), default=0)
+    unit_count = spreadsheet_sheets or (len(result.document.pages) if getattr(result.document, "pages", None) else max(items_by_unit.keys(), default=1))
     units = []
     recovered_text_by_unit: dict[int, str] = {}
     for index in range(1, unit_count + 1):
@@ -281,6 +308,7 @@ def main() -> None:
         "unitType": unit_type,
         "units": units,
         "chunks": chunks,
+        "spreadsheetRows": spreadsheet_rows,
         "metrics": {
             "inputAssets": 1, "validAssets": 1, "units": len(units), "chunks": len(chunks),
             "latencyMs": round((perf_counter() - started) * 1000),

@@ -1,6 +1,6 @@
 {
   "profileKey": "docling-standard-v3.0.0",
-  "extractorVersion": "docling-v3.0.2",
+  "extractorVersion": "docling-v3.0.3",
   "runtime": {
     "python": "3.11.9",
     "docling": "2.126.0",
