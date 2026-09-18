@@ -28,6 +28,12 @@
 - Qwen 全量付费调用必须获得 dry-run 后的独立明确授权并达到 3,008/3,008；当前 Qwen 为 0/3,008，BGE 已为 3,008/3,008。
 - release 状态仍为 `building`，活动 pointer 为 0，旧生产 release 继续服务。
 
+## 后续用户确认（2026-09-18）
+
+用户已把此前的全量视觉建议精确确认为 33 个 candidate 与 13 个装饰页，并授权当前 release 的 2,980 个新 Qwen `text-embedding-v4` 输入。机读决定与此前试点合并后为 59 candidate、16 decorative；该确认不改变 candidate 的非 verified 状态，也不允许坐标或文件版本继承。Qwen 实际调用量、成功数、tokens、延迟、重试和现金费用须以执行账本为准，完成前 release 继续保持未激活。
+
+决定重放后，影子语料增至 3,062 chunks，unit open review 为 0，BGE 已补齐 3,062/3,062；事实为 3,053 条并保留 1,808 个 fact review。由于新增合法证据令完整 Qwen 需求变为 3,034 条，执行器把本次授权硬限制为 2,980 条。首次请求在 16 ms 的本地 DNS `ENOTFOUND` 前置失败，未连接供应商、未获得响应、未写入供应商向量；对应保守预留以追加审计方式核销为 verified-unbilled。沙箱外网络执行审批拒绝了后续尝试，因此没有绕过或第二次请求，当前仅有 28 条旧向量复用。
+
 ## 成本与效率
 
 外部文档、模型、搜索、SMTP 调用均为 0；Docling/RapidOCR/BGE 均在本机运行。BGE API 现金成本为 0，模型下载、磁盘、CPU、RAM、电力和基础设施成本未知。Qwen 现金成本保持未知，不用 token 估算冒充账单。优化机会：保持 SHA checkpoint、只对零/低文本单元做高分辨率 rescue、按内容哈希复用 28 个旧 Qwen 向量，并把本地 BGE 批次固定在已实测不会 timeout 的大小。

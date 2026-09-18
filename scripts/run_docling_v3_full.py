@@ -23,7 +23,7 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
-def load_decisions(path: Path) -> tuple[dict[tuple[str, int], str], str]:
+def load_decisions(path: Path) -> tuple[dict[tuple[str, int], str], str, str]:
     payload = json.loads(path.read_text(encoding="utf-8"))
     decisions: dict[tuple[str, int], str] = {}
     for source in payload["sources"]:
@@ -32,10 +32,15 @@ def load_decisions(path: Path) -> tuple[dict[tuple[str, int], str], str]:
             decisions[(sha, int(unit))] = "accept-candidate"
         for unit in source["decorativeUnits"]:
             decisions[(sha, int(unit))] = "decorative-no-body"
-    return decisions, payload["confirmedAt"]
+    return decisions, payload["confirmedAt"], payload["decisionSet"]
 
 
-def apply_decisions(artifact: dict, decisions: dict[tuple[str, int], str], confirmed_at: str) -> None:
+def apply_decisions(
+    artifact: dict,
+    decisions: dict[tuple[str, int], str],
+    confirmed_at: str,
+    decision_set: str = "docling-v3-full-review-2026-09-18",
+) -> None:
     source_sha = artifact["sourceSha256"]
     for unit in artifact["units"]:
         key = (source_sha, int(unit["unitIndex"]))
@@ -56,7 +61,7 @@ def apply_decisions(artifact: dict, decisions: dict[tuple[str, int], str], confi
                 "contentSha256": None,
                 "textLength": 0,
             })
-    artifact["reviewDecisionSet"] = "docling-v3-pilot-review-2026-09-18"
+    artifact["reviewDecisionSet"] = decision_set
 
 
 def main() -> None:
@@ -75,7 +80,7 @@ def main() -> None:
         raise SystemExit("Full extraction output must remain inside the workspace")
     manifest = json.loads(Path(args.manifest).read_text(encoding="utf-8"))
     profile = json.loads(Path("config/knowledge/docling-profile.v3.json").read_text(encoding="utf-8"))
-    decisions, confirmed_at = load_decisions(Path(args.decisions))
+    decisions, confirmed_at, decision_set = load_decisions(Path(args.decisions))
     if args.shard_count < 1 or args.shard_index < 0 or args.shard_index >= args.shard_count:
         raise SystemExit("Shard index must be within [0, shard-count)")
     all_sources = manifest["sources"][: args.limit] if args.limit else manifest["sources"]
@@ -98,7 +103,7 @@ def main() -> None:
             parsed = json.loads(artifact_path.read_text(encoding="utf-8"))
             if parsed.get("sourceSha256") == expected_sha and parsed.get("extractorVersion") == profile["extractorVersion"]:
                 try:
-                    apply_decisions(parsed, decisions, confirmed_at)
+                    apply_decisions(parsed, decisions, confirmed_at, decision_set)
                 except ValueError as error:
                     failures.append({"index": index, "storageKey": storage_key, "reason": "review-decision-mismatch", "detail": str(error)})
                     artifact_path.unlink(missing_ok=True)
@@ -123,7 +128,7 @@ def main() -> None:
             continue
         parsed = json.loads(artifact_path.read_text(encoding="utf-8"))
         try:
-            apply_decisions(parsed, decisions, confirmed_at)
+            apply_decisions(parsed, decisions, confirmed_at, decision_set)
         except ValueError as error:
             failures.append({"index": index, "storageKey": storage_key, "reason": "review-decision-mismatch", "detail": str(error)})
             artifact_path.unlink(missing_ok=True)

@@ -1,6 +1,7 @@
 {
   "recommendationSet": "docling-v3-full-visual-recommendation-2026-09-18",
-  "status": "recommendation-only-not-human-confirmed",
+  "status": "human-confirmed-and-copied-to-decision-set",
+  "confirmedAt": "2026-09-18",
   "reviewBasis": "Local visual inspection of exact rendered source SHA-256 and unit coordinates; no future or changed source inherits a recommendation.",
   "sources": [
     {"sourceSha256":"000f5d36e7ff7eb7a07140b8442cf36e41da0446e66941eb94eed0b72d246fba","storageKey":"knowledge/product/Managed Gigabit Switch/GS2024S2_V1.0_Datasheet.pdf","candidateUnits":[3,4,5],"decorativeUnits":[]},

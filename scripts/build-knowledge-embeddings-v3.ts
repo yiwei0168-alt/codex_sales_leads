@@ -49,9 +49,22 @@ try {
   const missingQwen = counts.chunks - counts.qwenVectors;
   const missingBge = counts.chunks - counts.bgeVectors;
   if (!write) {
+    const qwenToCall = Math.max(0, missingQwen-counts.reusableQwen);
+    const boundedQwen = maxChunks === undefined ? qwenToCall : Math.min(qwenToCall,maxChunks);
+    const bounded = maxChunks === undefined ? null : (await tenantQuery<{items:string;estimatedTokens:string}>(OWNER_USER_ID,
+      `select count(*)::text items,coalesce(sum(selected.token_estimate),0)::text as "estimatedTokens" from(
+        select c.token_estimate from knowledge_chunk_v3 c where c.release_id=$1
+          and not exists(select 1 from knowledge_chunk_embedding_v3 e join knowledge_embedding_profile_v3 p on p.id=e.profile_id
+            where e.chunk_id=c.id and p.profile_key='qwen-v4-1536')
+          and not exists(select 1 from knowledge_chunk_v2 old join knowledge_index_generation g on g.id=old.generation_id
+            where old.content_sha256=encode(digest(c.canonical_embedding_text,'sha256'),'hex') and old.embedding is not null
+              and g.embedding_model='text-embedding-v4' and g.embedding_dimensions=1536)
+        order by c.id limit $2)selected`,[release.id,boundedQwen],"admin"))[0];
     console.log(JSON.stringify({ mode:"dry-run", release, ...counts, missingQwen, missingBge,
-      qwenToCall: Math.max(0, missingQwen-counts.reusableQwen),
-      estimatedQwenRequests: Math.ceil(Math.max(0, missingQwen-counts.reusableQwen)/10),
+      qwenToCall, estimatedQwenRequests: Math.ceil(qwenToCall/10),
+      authorizationBound:maxChunks??null,boundedQwenToCall:boundedQwen,
+      boundedEstimatedTokens:bounded?Number(bounded.estimatedTokens):counts.estimatedTokens,
+      boundedEstimatedQwenRequests:Math.ceil(boundedQwen/10),
       estimatedBgeBatches: Math.ceil(missingBge/bgeBatchSize), bgeBatchSize, qwenCashCost:"unknown",
       bgeApiCashCost:0, bgeInfrastructureCost:"unknown", writes:0 }, null, 2));
     process.exitCode = 0;
