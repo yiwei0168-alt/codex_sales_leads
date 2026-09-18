@@ -13,7 +13,7 @@ describe("RAG tenant isolation", () => {
   it("scopes knowledge statistics to the authenticated user", async () => {
     queryMock.mockResolvedValue([]);
     await getKnowledgeStats("user-a");
-    const [tenant, sql, parameters] = queryMock.mock.calls[1] as [string, string, unknown[]];
+    const [tenant, sql, parameters] = queryMock.mock.calls[2] as [string, string, unknown[]];
     expect(tenant).toBe("user-a");
     expect(sql).toContain("d.visibility = 'shared'");
     expect(sql).toContain("d.visibility = 'private' and d.owner_id = $1");

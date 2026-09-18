@@ -63,6 +63,8 @@ The implemented v3 runtime boundary resolves an active release pointer before re
 
 The local BGE inference artifact is 2,293,315,801 bytes with aggregate manifest SHA-256 `4f2ef0a2c9b4250206e9ddc202a2bbe01718aacd2a06f87e3e09887b2a076c28`. Startup verifies every manifest file before loading and never permits model download or an external endpoint during inference. The isolated Python dependency closure is version-locked separately from Docling.
 
+The authenticated knowledge status API also exposes the latest shared v3 release's manifest, dual-vector and review/fact counters while continuing to report live legacy collection statistics until the pointer is active. The UI labels this as shadow state; it cannot activate a release.
+
 ```text
 User upload (industry / Cudy company / Cudy product)
   → authority and source metadata

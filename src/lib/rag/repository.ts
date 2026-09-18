@@ -282,7 +282,23 @@ export async function authorizedKnowledgeChunkIds(userId: string, chunkIds: stri
 }
 
 export async function getKnowledgeStats(userId: string): Promise<KnowledgeStats> {
-  const releaseId=await activeV3Release(userId);if(releaseId){const rows=await tenantQuery<{type:KnowledgeBaseType;document_count:string;chunk_count:string;embedded_count:string;last_updated:string|null}>(userId,`select kc.slug type,count(distinct d.id)document_count,count(distinct c.id)chunk_count,count(distinct case when q.chunk_id is not null and b.chunk_id is not null then c.id end)embedded_count,max(r.activated_at)::text last_updated from knowledge_collection kc left join knowledge_document d on d.collection_id=kc.id and d.status='active' and(d.visibility='shared' or d.owner_id=$2) left join knowledge_chunk_v3 c on c.document_id=d.id and c.release_id=$1 left join knowledge_chunk_embedding_v3 q on q.chunk_id=c.id and q.qwen_embedding is not null left join knowledge_chunk_embedding_v3 b on b.chunk_id=c.id and b.bge_embedding is not null left join knowledge_release_v3 r on r.id=c.release_id group by kc.slug order by kc.slug`,[releaseId,userId]);return{configured:true,provider:"PostgreSQL + pgvector · RAG v3 dual index",collections:rows.map(row=>({type:row.type,documentCount:Number(row.document_count),chunkCount:Number(row.chunk_count),embeddedCount:Number(row.embedded_count),lastUpdated:row.last_updated??undefined}))};}
+  const releaseId=await activeV3Release(userId);
+  const releaseRows=await tenantQuery<{id:string;key:string;status:string;active:boolean;registeredAssets:string;completeAssets:string;chunks:string;qwenEmbeddings:string;bgeEmbeddings:string;openReviews:string;ocrReviews:string;candidateFacts:string;conflictFacts:string}>(userId,`select r.id,r.release_key as key,r.status,
+      exists(select 1 from knowledge_release_pointer_v3 p where p.release_id=r.id)active,
+      (select count(*) from knowledge_release_asset_v3 m where m.release_id=r.id)::text as "registeredAssets",
+      (select count(*) from knowledge_release_asset_v3 m where m.release_id=r.id and m.processing_status<>'pending'
+        and m.expected_units=m.actual_units and m.expected_chunks=m.actual_chunks and m.resolution_status<>'pending')::text as "completeAssets",
+      (select count(*) from knowledge_chunk_v3 c where c.release_id=r.id)::text chunks,
+      (select count(*) from knowledge_chunk_embedding_v3 e join knowledge_chunk_v3 c on c.id=e.chunk_id where c.release_id=r.id and e.qwen_embedding is not null)::text as "qwenEmbeddings",
+      (select count(*) from knowledge_chunk_embedding_v3 e join knowledge_chunk_v3 c on c.id=e.chunk_id where c.release_id=r.id and e.bge_embedding is not null)::text as "bgeEmbeddings",
+      (select count(*) from knowledge_review_queue_v3 q where q.release_id=r.id and q.status='open')::text as "openReviews",
+      (select count(*) from knowledge_review_queue_v3 q where q.release_id=r.id and q.status='open' and q.reason='ocr')::text as "ocrReviews",
+      (select count(*) from knowledge_fact_v3 f where f.release_id=r.id and f.verification_status='candidate')::text as "candidateFacts",
+      (select count(*) from knowledge_fact_v3 f where f.release_id=r.id and f.verification_status='conflicting')::text as "conflictFacts"
+    from knowledge_release_v3 r where r.scope_kind='shared'
+    order by exists(select 1 from knowledge_release_pointer_v3 p where p.release_id=r.id)desc,r.created_at desc limit 1`,[]);
+  const release=releaseRows[0]?{...releaseRows[0],registeredAssets:Number(releaseRows[0].registeredAssets),completeAssets:Number(releaseRows[0].completeAssets),chunks:Number(releaseRows[0].chunks),qwenEmbeddings:Number(releaseRows[0].qwenEmbeddings),bgeEmbeddings:Number(releaseRows[0].bgeEmbeddings),openReviews:Number(releaseRows[0].openReviews),ocrReviews:Number(releaseRows[0].ocrReviews),candidateFacts:Number(releaseRows[0].candidateFacts),conflictFacts:Number(releaseRows[0].conflictFacts)}:undefined;
+  if(releaseId){const rows=await tenantQuery<{type:KnowledgeBaseType;document_count:string;chunk_count:string;embedded_count:string;last_updated:string|null}>(userId,`select kc.slug type,count(distinct d.id)document_count,count(distinct c.id)chunk_count,count(distinct case when q.chunk_id is not null and b.chunk_id is not null then c.id end)embedded_count,max(r.activated_at)::text last_updated from knowledge_collection kc left join knowledge_document d on d.collection_id=kc.id and d.status='active' and(d.visibility='shared' or d.owner_id=$2) left join knowledge_chunk_v3 c on c.document_id=d.id and c.release_id=$1 left join knowledge_chunk_embedding_v3 q on q.chunk_id=c.id and q.qwen_embedding is not null left join knowledge_chunk_embedding_v3 b on b.chunk_id=c.id and b.bge_embedding is not null left join knowledge_release_v3 r on r.id=c.release_id group by kc.slug order by kc.slug`,[releaseId,userId]);return{configured:true,provider:"PostgreSQL + pgvector · RAG v3 dual index",release,collections:rows.map(row=>({type:row.type,documentCount:Number(row.document_count),chunkCount:Number(row.chunk_count),embeddedCount:Number(row.embedded_count),lastUpdated:row.last_updated??undefined}))};}
   const rows = await tenantQuery<{
     type: KnowledgeBaseType; document_count: string; chunk_count: string; embedded_count: string; last_updated: string | null;
   }>(userId,
@@ -298,6 +314,7 @@ export async function getKnowledgeStats(userId: string): Promise<KnowledgeStats>
   return {
     configured: true,
     provider: "PostgreSQL + pgvector",
+    release,
     collections: rows.map((row) => ({
       type: row.type, documentCount: Number(row.document_count), chunkCount: Number(row.chunk_count),
       embeddedCount: Number(row.embedded_count), lastUpdated: row.last_updated ?? undefined,

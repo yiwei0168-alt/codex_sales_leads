@@ -39,7 +39,7 @@ try {
       count(*) filter(where exists(select 1 from knowledge_chunk_embedding_v3 e join knowledge_embedding_profile_v3 p on p.id=e.profile_id where e.chunk_id=c.id and p.profile_key='bge-m3-1024'))::text as "bgeVectors",
       count(*) filter(where not exists(select 1 from knowledge_chunk_embedding_v3 e join knowledge_embedding_profile_v3 p on p.id=e.profile_id where e.chunk_id=c.id and p.profile_key='qwen-v4-1536') and exists(
         select 1 from knowledge_chunk_v2 old join knowledge_index_generation g on g.id=old.generation_id
-        where old.content_sha256=c.content_sha256 and old.embedding is not null
+        where old.content_sha256=encode(digest(c.canonical_embedding_text,'sha256'),'hex') and old.embedding is not null
           and g.embedding_model='text-embedding-v4' and g.embedding_dimensions=1536))::text as "reusableQwen",
       coalesce(sum(c.token_estimate),0)::text as "estimatedTokens"
     from knowledge_chunk_v3 c where c.release_id=$1`, [release.id], "admin"))[0];
@@ -65,12 +65,26 @@ try {
       `insert into knowledge_embedding_run_v3(release_id,profile_id,status,cash_cost_status,metrics)
        values($1,$2,'running',$3,$4) returning id`, [release.id,profile.id,lane === "bge" ? "zero" : "unknown",
         JSON.stringify({lane,modelRevision:profile.modelRevision,dimensions:profile.dimensions,maxChunks:maxChunks??null})])).rows[0], "admin");
-    let processed=0,inputTokens=0,requestCount=0,latencyMs=0,lastId:string|null=null;
+    let processed=0,reusedVectors=0,inputTokens=0,requestCount=0,latencyMs=0,lastId:string|null=null;
     try {
+      if(lane==="qwen"){
+        const reused=await tenantQuery<{id:string}>(OWNER_USER_ID,`insert into knowledge_chunk_embedding_v3(
+            chunk_id,profile_id,content_sha256,qwen_embedding,bge_embedding,input_tokens,latency_ms,retry_count)
+          select c.id,$2,encode(digest(c.canonical_embedding_text,'sha256'),'hex'),source.embedding,null,0,0,0 from knowledge_chunk_v3 c
+          join lateral(select old.embedding from knowledge_chunk_v2 old join knowledge_index_generation g on g.id=old.generation_id
+            where old.content_sha256=encode(digest(c.canonical_embedding_text,'sha256'),'hex') and old.embedding is not null
+              and g.embedding_model='text-embedding-v4' and g.embedding_dimensions=1536
+            order by(g.status='active')desc,g.created_at desc limit 1)source on true
+          where c.release_id=$1 and not exists(select 1 from knowledge_chunk_embedding_v3 e where e.chunk_id=c.id and e.profile_id=$2)
+          on conflict(chunk_id,profile_id)do nothing returning chunk_id as id`,[release.id,profile.id],"admin");
+        reusedVectors=reused.length;
+        await tenantQuery(OWNER_USER_ID,`update knowledge_embedding_run_v3 set metrics=metrics||$2::jsonb,updated_at=now() where id=$1`,
+          [run.id,JSON.stringify({reusedVectors})],"admin");
+      }
       while (maxChunks === undefined || processed < maxChunks) {
         const limit=Math.min(batchSize,maxChunks===undefined?batchSize:maxChunks-processed);
-        const chunks=await tenantQuery<{id:string;text:string;contentSha256:string}>(OWNER_USER_ID,
-          `select c.id,c.canonical_embedding_text as text,c.content_sha256 as "contentSha256" from knowledge_chunk_v3 c
+        const chunks=await tenantQuery<{id:string;text:string;embeddingTextSha256:string}>(OWNER_USER_ID,
+          `select c.id,c.canonical_embedding_text as text,encode(digest(c.canonical_embedding_text,'sha256'),'hex') as "embeddingTextSha256" from knowledge_chunk_v3 c
            where c.release_id=$1 and not exists(select 1 from knowledge_chunk_embedding_v3 e where e.chunk_id=c.id and e.profile_id=$2)
              and($3::uuid is null or c.id>$3) order by c.id limit $4`,[release.id,profile.id,lastId,limit],"admin");
         if(!chunks.length)break;
@@ -85,7 +99,7 @@ try {
           for(const [index,chunk] of chunks.entries())await client.query(
             `insert into knowledge_chunk_embedding_v3(chunk_id,profile_id,content_sha256,qwen_embedding,bge_embedding,input_tokens,latency_ms)
              values($1,$2,$3,$4::vector,$5::vector,$6,$7) on conflict(chunk_id,profile_id) do nothing`,
-            [chunk.id,profile.id,chunk.contentSha256,lane==="qwen"?vectorLiteral(result.embeddings[index]):null,lane==="bge"?vectorLiteral(result.embeddings[index]):null,
+            [chunk.id,profile.id,chunk.embeddingTextSha256,lane==="qwen"?vectorLiteral(result.embeddings[index]):null,lane==="bge"?vectorLiteral(result.embeddings[index]):null,
              lane==="qwen"?result.usage.flatMap(item=>Array(item.inputItems).fill(Math.ceil(item.inputTokens/item.inputItems)))[index]??null:null,Math.ceil((Date.now()-started)/chunks.length)]);
           processed+=chunks.length;lastId=chunks.at(-1)?.id??lastId;
           await client.query(`update knowledge_embedding_run_v3 set resume_after=$2,input_items=$3,valid_vectors=$3,input_tokens=$4,request_count=$5,latency_ms=$6,updated_at=now() where id=$1`,[run.id,lastId,processed,inputTokens,requestCount,latencyMs]);
@@ -100,7 +114,7 @@ try {
             left join knowledge_chunk_embedding_v3 e on e.chunk_id=c.id left join knowledge_embedding_profile_v3 p on p.id=e.profile_id
             where sr.release_id=$1 group by sr.asset_id)x where m.release_id=$1 and m.asset_id=x.asset_id`,[release.id]);
       },"admin");
-      console.log(JSON.stringify({mode:"write",lane,releaseId:release.id,runId:run.id,processed,inputTokens,requestCount,latencyMs,
+      console.log(JSON.stringify({mode:"write",lane,releaseId:release.id,runId:run.id,processed,reusedVectors,inputTokens,requestCount,latencyMs,
         retries:0,cashCost:lane==="bge"?0:"unknown",infrastructureCost:lane==="bge"?"unknown":undefined},null,2));
     }catch(error){await tenantQuery(OWNER_USER_ID,`update knowledge_embedding_run_v3 set status='failed',failure_code=$2,updated_at=now() where id=$1`,[run.id,error instanceof Error?error.name:"unknown"],"admin").catch(()=>undefined);throw error;}
   }

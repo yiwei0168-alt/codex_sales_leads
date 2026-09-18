@@ -140,5 +140,11 @@ export interface KnowledgeStats {
     embeddedCount: number;
     lastUpdated?: string;
   }>;
+  release?: {
+    id: string; key: string; status: string; active: boolean;
+    registeredAssets: number; completeAssets: number; chunks: number;
+    qwenEmbeddings: number; bgeEmbeddings: number; openReviews: number;
+    ocrReviews: number; candidateFacts: number; conflictFacts: number;
+  };
   error?: string;
 }
