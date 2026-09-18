@@ -122,3 +122,9 @@ npm run products:ingest
 - `POST /api/rag/query`：执行混合检索与基于证据的生成。
 
 Embedding 接入参考阿里云百炼 `text-embedding-v4` 的 OpenAI 兼容接口；生成接入使用 OpenAI SDK 的兼容服务端点。
+
+## RAG v3 影子重建状态（2026-09-18）
+
+生产查询继续使用既有活动索引；v3 release `rag-v3-shadow-2026-09-18` 仍为未激活的 `building` 状态。其确定性请求分类器已在冻结的 300 条记录上达到 action 300/300、entity 300/300，包括无实体的比较边界、事实问法、原始 PDF/策略文件请求以及术语解释。此结果只验收路由，不替代人工答案、引用、Recall@8、ACL 或故障边界 gold。
+
+v3 的事实快路径、全文检索、Qwen 1536 维与本地 BGE-M3 1024 维是相互独立的通道。付费 Qwen 全量构建仍受单独授权门禁约束；本地 BGE 允许可恢复批处理。只有双向量、复核、人工 gold、ACL、缓存失效、恢复/回滚和真实 UI 链路全部通过，才可原子切换活动 release。

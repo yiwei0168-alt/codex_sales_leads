@@ -751,11 +751,11 @@ flowchart TD
 | `config/lead-workflow/cost-quality-policy-v3.0.0.json` | `24bf881bff19bfd053d1c58ab127b62aeee17785b1fe7cdf86b478ed59516c59` |
 | `config/lead-workflow/runtime-policy-v3.0.0.json` | `38a184c9c01db605402b3d279c1e50f72b1cf61953f0fd71aae191dd0bcb154d` |
 | `src/app/api/assistant/messages/route.ts` | `04bec90cc3d3f336195e8ab97a5ad4b1ec1e05b95606064225e098e94ed7a5cd` |
-| `src/lib/assistant/types.ts` | `652b9c0f6b7a0a27d505f0fe35aa93561e824430aedb96473e7040ee63069621` |
+| `src/lib/assistant/types.ts` | `b8ff64b11cefc24e4693121db90d2a74861025fedd685c4bde03236703971206` |
 | `src/lib/assistant/intent.ts` | `cb77a2854f0058d92bf758ce4610d298bc94dde0157ade4f0bd3d05343fad168` |
 | `src/lib/assistant/intent-agent.ts` | `4b1e05ac12bc9017cf707cb69af18a15f3331234e73bbaae007b607756a1b901` |
 | `src/lib/rag/openai-provider.ts` | `fa55855ea611c744e41d1b297a968a841d965d4fadb5447f17a0c2e4d5a18c10` |
-| `src/lib/assistant/service.ts` | `68ff8e65e30bf22f45859cf05c828336e661a31a2143e25c3a9a1d246f36d3c0` |
+| `src/lib/assistant/service.ts` | `9ee893bf60d2bb1bad06fe0c9a2acfd6890ab6ca1362db226d3164f382b295d2` |
 | `src/lib/assistant/repository.ts` | `5f8a96b484418bc47dc119e5ceb7b7989f0f551915bfd3b9e8068b013bca001b` |
 | `src/lib/leads/workflow/graph.ts` | `82da74c3a1c23e3a3c7bbea00dd4b8090171865485b93165accdebff03d4530f` |
 | `src/lib/leads/workflow/jobs.ts` | `571596be71410650544716b4acd26e3e3cc84aa176ab1b057a13e66bd452d81a` |

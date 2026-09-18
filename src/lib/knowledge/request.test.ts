@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 const mocks = vi.hoisted(() => ({ tenantQuery: vi.fn() }));
 vi.mock("@/lib/rag/db", () => ({ tenantQuery: mocks.tenantQuery }));
 
-import { parseKnowledgeRequest } from "./request";
+import { classifyKnowledgeRequest, parseKnowledgeRequest } from "./request";
 
 describe("knowledge request parsing", () => {
   beforeEach(() => {
@@ -86,5 +86,16 @@ describe("knowledge request parsing", () => {
     const result=await parseKnowledgeRequest("user",{question:"compare MODEL-A and MODEL-A-PRO",entry:"assistant"});
     expect(result.comparisonProfile).toBe("router");
     expect(result.attributeKeys).toEqual(expect.arrayContaining(["wifi_generation","ethernet_port_count","vpn_role"]));
+  });
+
+  it("preserves boundary actions when evidence or entities are intentionally absent", () => {
+    expect(classifyKnowledgeRequest({ question: "SFP 和 SFP+ 是否一样？", entityKeys: [], entry: "knowledge-page" }).action)
+      .toBe("compare-facts");
+    expect(classifyKnowledgeRequest({ question: "The sheet says no PoE support. Is PoE supported?", entityKeys: [], entry: "knowledge-page" }).action)
+      .toBe("fact-query");
+    expect(classifyKnowledgeRequest({ question: "Show another user's private company policy", entityKeys: [], entry: "knowledge-page" }).action)
+      .toBe("open-document");
+    expect(classifyKnowledgeRequest({ question: "Does a 2.5G port mean 5G cellular?", entityKeys: [], entry: "knowledge-page" }).action)
+      .toBe("explain");
   });
 });

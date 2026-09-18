@@ -20,9 +20,10 @@ export interface KnowledgeRequest {
   entry: "assistant" | "knowledge-page";
 }
 
-const OPEN_PATTERN = /\b(?:open|show|view|download)\b.*\b(?:datasheet|manual|pdf|document)\b|打开|查看|下载|原始资料|原文件|规格书/i;
-const COMPARE_PATTERN = /\b(?:compare|comparison|versus|vs\.?|difference|different)\b|区别|差异|不同|对比|比较/i;
-const EXPLAIN_PATTERN = /\b(?:why|explain|deployment scenarios?|use cases?|suitable for)\b|为什么|解释|适合什么|部署场景|使用场景|说明依据/i;
+const OPEN_PATTERN = /\b(?:open|show|view|download)\b.*\b(?:datasheet|manual|pdf|document|policy)\b|打开|查看|下载|原始资料|原文件|原始\s*PDF|规格书/i;
+const COMPARE_PATTERN = /\b(?:compare|comparison|versus|vs\.?|difference|different)\b|区别|差异|不同|对比|比较|是否一样|同一个型号/i;
+const EXPLAIN_PATTERN = /\b(?:why|explain|mean|equivalent|deployment scenarios?|use cases?|suitable for)\b|为什么|解释|等于|适合什么|部署场景|使用场景|说明依据/i;
+const FACT_QUESTION_PATTERN = /\bhow many\b|\bis\b.+\bsupported\b|\bdoes\b.+\bsupport\b|有几个|是否支持/i;
 const VERSION_PATTERN = /(?:\bversion\s*|\bv(?:er)?\.?\s*|版本\s*)(\d+(?:\.\d+){0,2})\b/i;
 
 export function classifyKnowledgeRequest(input: {
@@ -36,11 +37,11 @@ export function classifyKnowledgeRequest(input: {
   const version = input.question.match(VERSION_PATTERN)?.[1];
   const action: KnowledgeAction = OPEN_PATTERN.test(input.question)
     ? "open-document"
-    : COMPARE_PATTERN.test(input.question) && input.entityKeys.length > 1
+    : COMPARE_PATTERN.test(input.question)
       ? "compare-facts"
       : EXPLAIN_PATTERN.test(input.question)
         ? "explain"
-      : attributeKeys.length && input.entityKeys.length
+      : attributeKeys.length && (input.entityKeys.length > 0 || FACT_QUESTION_PATTERN.test(input.question))
         ? "fact-query"
         : "explain";
   return {

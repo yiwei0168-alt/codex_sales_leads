@@ -688,3 +688,5 @@ KQ04 BGE 实施证据：官方固定 revision 的本地推理文件为 2,293,315
 KQ04 管理可见性实施状态：知识状态接口与知识页现在显示最新 v3 release 的活动状态、资产完成度、chunk、Qwen/BGE 完成数、open/OCR review 和 candidate/conflict fact 数。影子 release 明确标注为未激活，并提示生产仍使用既有索引；该显示不绕过激活门禁，也不把 building 状态写成可用。
 
 KQ04 单元终态实施状态：普通全成功资产可直接标记处理完成；任何未人工确认的 `blank`、`review-required` 或 `failed` 单元都必须创建 open review 并使资产保持 pending。只有精确清单中的 `accept-candidate`/`decorative-no-body` 决定可以关闭对应异常单元；`failed` 优先于 review/blank 作为资产状态。该状态机已通过 4 项聚焦断言，但实际全库 open review 数仍需 shadow 入库后核验。
+
+KQ04 路由验收状态：版本化属性注册表 `attribute-registry-v1.2.1` 补充通用端口同义词，比较、事实、原文件和解释分类器覆盖无实体边界问法；冻结的 300 条评测记录现为 action 300/300、entity 300/300。该结果只证明确定性意图/实体路由，不代表答案正确性、来源 Recall@8 或人工 gold 验收；`humanAnswerReviewed` 仍为 0，release 仍不得激活。
