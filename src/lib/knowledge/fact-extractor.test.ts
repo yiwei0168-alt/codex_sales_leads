@@ -27,6 +27,24 @@ describe("versioned knowledge facts", () => {
   it("keeps negated standards negative", () => expect(
     extractKnowledgeFacts([block("Does not support 802.3at")]).find((item) => item.attributeKey === "poe_standard")?.polarity,
   ).toBe("negative"));
+  it("normalizes cellular aliases while preserving 4G and 5G as separate set members", () => {
+    expect(extractKnowledgeFacts([block("4G LTE fallback")])).toEqual(expect.arrayContaining([
+      expect.objectContaining({ attributeKey:"cellular_generation", typedValue:"4G" }),
+    ]));
+    expect(extractKnowledgeFacts([block("5G NR modem")])).toEqual(expect.arrayContaining([
+      expect.objectContaining({ attributeKey:"cellular_generation", typedValue:"5G" }),
+    ]));
+  });
+  it("keeps package dimensions separate from device dimensions", () => {
+    const facts = extractKnowledgeFacts([
+      block("Dimensions: 100 x 80 x 20 mm", "device"),
+      {...block("Package dimensions: 130 x 100 x 40 mm", "package"),headingPath:["Packaging"]},
+    ]);
+    expect(facts).toEqual(expect.arrayContaining([
+      expect.objectContaining({attributeKey:"dimensions",typedValue:["100","80","20"]}),
+      expect.objectContaining({attributeKey:"package_dimensions",typedValue:["130","100","40"]}),
+    ]));
+  });
   it("extracts category comparison fields without model-specific branches", () => {
     const facts = extractKnowledgeFacts([block("Wi-Fi 6E tri-band 2.4 GHz / 5 GHz / 6 GHz; 2.5 Gbps Ethernet; VPN Client and VPN Server; Net weight: 1.2 kg; supports PoE-in")]);
     expect(facts).toEqual(expect.arrayContaining([
