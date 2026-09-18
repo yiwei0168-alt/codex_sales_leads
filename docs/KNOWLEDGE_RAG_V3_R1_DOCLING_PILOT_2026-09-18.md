@@ -2,6 +2,10 @@
 
 日期：2026-09-18。状态：30 份固定样本已完成结构化解析；R1 质量门禁仍为未通过。
 
+## 用户复核处置
+
+用户已确认固定试点的逐单元处置：26 个已恢复 OCR 文字的单元可以作为 `candidate` / `review-required` 证据进入未激活影子 release，但不能自动 `verified`；3 个 logo/装饰封面人工确认为无需正文的 `blank`。决定通过 source SHA-256 和 unit 坐标固定在 `config/knowledge/docling-review-decisions.v3.json`，不扩展到变化后的文件或未来发现的单元。该确认关闭这 29 个单元的“能否进入影子数据层”问题，但不代表复杂表格、阅读顺序、事实质量或 R1 整体门禁通过。
+
 ## 固定运行合同
 
 - 隔离环境固定 Docling 2.126.0、Docling Core 2.97.0、Docling Parse 7.20.0、RapidOCR 3.9.2、ONNX Runtime 1.30.0、Torch 2.14.0 与 Transformers 5.17.0。

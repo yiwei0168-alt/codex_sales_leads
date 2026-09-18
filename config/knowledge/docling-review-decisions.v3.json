@@ -1,0 +1,24 @@
+{
+  "decisionSet": "docling-v3-pilot-review-2026-09-18",
+  "confirmedAt": "2026-09-18",
+  "scope": "Only the exact source SHA-256 and unit coordinates listed below; no future or changed source inherits these decisions.",
+  "candidatePolicy": "May enter an inactive shadow release as candidate evidence with unit status review-required; never auto-verified and never eligible for the verified-fact fast path.",
+  "decorativePolicy": "Human-confirmed decorative cover/logo with no body text required; record as blank with a human decision, without synthesizing text.",
+  "sources": [
+    {"pilotIndex": 1, "sourceSha256": "759fa673dfc294ab6768e748420b3e68315138ab6a0b434aa5d96f5db8a1c941", "candidateUnits": [26], "decorativeUnits": [1]},
+    {"pilotIndex": 2, "sourceSha256": "c1ff9bc9b4572d14ff78bea887a3edd1dcbbf2bc4cffce5c956df1d989bbbec9", "candidateUnits": [3], "decorativeUnits": []},
+    {"pilotIndex": 3, "sourceSha256": "0e475ad2da06b9b119e4509873c930a8810050d22fac669973e979b7a619cae0", "candidateUnits": [12, 33], "decorativeUnits": []},
+    {"pilotIndex": 4, "sourceSha256": "9b4f6e4a744f5a16fa16afab2ece2f2537290859dd081f12af3d5ea7aff02cd1", "candidateUnits": [3, 9, 11, 13], "decorativeUnits": []},
+    {"pilotIndex": 10, "sourceSha256": "4c1e27dce534a5066aa80f0d2fc67bd57cde7e37fbdf69056178c389946fbea5", "candidateUnits": [3], "decorativeUnits": []},
+    {"pilotIndex": 18, "sourceSha256": "441501e61366c96b225a64e6bb6cc06b1d7078e7660e347b0220fa31285f2e56", "candidateUnits": [2], "decorativeUnits": []},
+    {"pilotIndex": 19, "sourceSha256": "16d80b089040322def0d233bc10af9fcd8f8a6f7fd15f5b4743d0b2cf6808286", "candidateUnits": [3, 4], "decorativeUnits": []},
+    {"pilotIndex": 22, "sourceSha256": "c1be7fd95ef91885e3fb11e11fc3ee23439c5775517a21416fc3483356c5ed01", "candidateUnits": [], "decorativeUnits": [1]},
+    {"pilotIndex": 23, "sourceSha256": "06428c0842aa08f908c4c84e86d16e3e948b43aca12dc2c225295907072d093d", "candidateUnits": [], "decorativeUnits": [1]},
+    {"pilotIndex": 25, "sourceSha256": "1c5a3ff833b533fb0f632cde54ead5e78a9b1bcae4477907b1010c88de7c6329", "candidateUnits": [1, 4, 15, 22, 25, 26, 32, 33], "decorativeUnits": []},
+    {"pilotIndex": 26, "sourceSha256": "b51a3899e4e15e08f7185d651b2896a6f1848cb80fbe18af018ea7a3215d85a0", "candidateUnits": [1], "decorativeUnits": []},
+    {"pilotIndex": 27, "sourceSha256": "a06b4583fc3f05160747aa077b00f7a616f33ea77f9612cc2a136afdbfaedf47", "candidateUnits": [1], "decorativeUnits": []},
+    {"pilotIndex": 28, "sourceSha256": "21b0775d71422b7f22ee076bca44d1f5f35faf66c8d6c185c9e0706ca61544f3", "candidateUnits": [1, 15], "decorativeUnits": []},
+    {"pilotIndex": 29, "sourceSha256": "33b2bf674abe393923c74e081cacf7bd02c62e56ec6b51cf16712942ff1f2c7a", "candidateUnits": [1, 23], "decorativeUnits": []}
+  ],
+  "totals": {"candidateReviewRequired": 26, "decorativeNoBody": 3}
+}
