@@ -40,4 +40,24 @@ apply_decisions(unknown, decisions, confirmed_at)
 if "humanReviewDecision" in unknown["units"][0]:
     raise SystemExit("An unlisted unit inherited a review decision")
 
-print(json.dumps({"candidateReviewRequired": len(candidate), "decorativeNoBody": len(decorative), "unknownInherited": 0}))
+recommendations = json.loads(Path("config/knowledge/docling-review-recommendations.v3.json").read_text(encoding="utf-8"))
+recommended_candidate = {
+    (source["sourceSha256"], int(unit))
+    for source in recommendations["sources"] for unit in source["candidateUnits"]
+}
+recommended_decorative = {
+    (source["sourceSha256"], int(unit))
+    for source in recommendations["sources"] for unit in source["decorativeUnits"]
+}
+if recommendations["status"] != "recommendation-only-not-human-confirmed":
+    raise SystemExit("Full review recommendations were mislabeled as confirmed")
+if len(recommended_candidate) != 33 or len(recommended_decorative) != 13:
+    raise SystemExit("Full review recommendation cardinality changed")
+if recommended_candidate & recommended_decorative or (recommended_candidate | recommended_decorative) & (candidate | decorative):
+    raise SystemExit("Review recommendation coordinates overlap or inherited a pilot decision")
+
+print(json.dumps({
+    "candidateReviewRequired": len(candidate), "decorativeNoBody": len(decorative), "unknownInherited": 0,
+    "unconfirmedCandidateRecommendations": len(recommended_candidate),
+    "unconfirmedDecorativeRecommendations": len(recommended_decorative),
+}))

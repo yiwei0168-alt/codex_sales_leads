@@ -11,12 +11,17 @@ export function bgeServiceBaseUrl(): string {
   return parsed.origin;
 }
 
-export async function embedTextsWithBge(inputs: string[], transport: typeof fetch = fetch): Promise<number[][]> {
+export async function embedTextsWithBge(
+  inputs: string[],
+  transport: typeof fetch = fetch,
+  timeoutMs = 30_000,
+): Promise<number[][]> {
   if (!inputs.length) return [];
   if (inputs.length > 64 || inputs.some((input) => !input.trim())) throw new Error("BGE batch is invalid");
+  if (!Number.isSafeInteger(timeoutMs) || timeoutMs < 1_000 || timeoutMs > 300_000) throw new Error("BGE timeout is invalid");
   const response = await transport(`${bgeServiceBaseUrl()}/embed`, {
     method: "POST", headers: { "content-type": "application/json" },
-    body: JSON.stringify({ inputs }), signal: AbortSignal.timeout(30_000),
+    body: JSON.stringify({ inputs }), signal: AbortSignal.timeout(timeoutMs),
   });
   if (!response.ok) throw new Error(`BGE-M3 service HTTP ${response.status}`);
   const body = await response.json() as { revision?: string; dimensions?: number; embeddings?: number[][] };

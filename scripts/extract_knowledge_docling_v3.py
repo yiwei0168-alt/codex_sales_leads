@@ -88,12 +88,19 @@ def local_ocr_engine(artifacts: Path) -> RapidOCR:
     return _OCR_ENGINE
 
 
-def recover_local_ocr_text(source: Path, unit_index: int, artifacts: Path) -> str:
+def recover_local_ocr_text(
+    source: Path,
+    unit_index: int,
+    artifacts: Path,
+    *,
+    pdf_scale: float = 2.5,
+    text_score: float = 0.35,
+) -> str:
     """Recover candidate text locally while keeping the unit review-required."""
     images: list[Image.Image] = []
     if source.suffix.lower() == ".pdf":
         document = pypdfium2.PdfDocument(source)
-        images.append(document[unit_index - 1].render(scale=2.5).to_pil().convert("RGB"))
+        images.append(document[unit_index - 1].render(scale=pdf_scale).to_pil().convert("RGB"))
         document.close()
     elif source.suffix.lower() == ".pptx":
         with ZipFile(source) as archive:
@@ -125,7 +132,7 @@ def recover_local_ocr_text(source: Path, unit_index: int, artifacts: Path) -> st
     engine = local_ocr_engine(artifacts)
     texts: list[str] = []
     for image in images:
-        result = engine(np.asarray(image), text_score=0.35)
+        result = engine(np.asarray(image), text_score=text_score)
         texts.extend(text.strip() for text in (result.txts or ()) if text and text.strip())
     return "\n".join(texts)
 

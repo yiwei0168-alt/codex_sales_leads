@@ -20,6 +20,7 @@ export type RegisteredAssetBinding = {
     canonicalKey: string;
     displayName: string;
     relationType: "about" | "applies-to" | "mentions";
+    bindingMethod?: "registered-document-entity" | "datasheet-title-exact-normalized";
   }>;
 };
 
@@ -60,6 +61,44 @@ export function buildPhysicalSourceManifest(rows: RegisteredAssetBinding[]): Phy
       bindings: source.bindings.toSorted((left, right) => left.documentId.localeCompare(right.documentId)),
     }))
     .toSorted((left, right) => left.storageKey.localeCompare(right.storageKey));
+}
+
+export type ManifestProductEntity = {
+  entityId: string;
+  canonicalKey: string;
+  displayName: string;
+};
+
+const normalizeExactModel = (value: string): string =>
+  value.normalize("NFKC").trim().replace(/\s+/g, " ").toUpperCase();
+
+export function attachExactDatasheetEntities(
+  rows: RegisteredAssetBinding[],
+  catalog: ManifestProductEntity[],
+): { rows: RegisteredAssetBinding[]; inferredBindings: number } {
+  const byExactName = new Map<string, ManifestProductEntity[]>();
+  for (const entity of catalog) {
+    for (const value of new Set([entity.canonicalKey, entity.displayName])) {
+      const key = normalizeExactModel(value);
+      byExactName.set(key, [...(byExactName.get(key) ?? []), entity]);
+    }
+  }
+  let inferredBindings = 0;
+  const enriched = rows.map((row) => {
+    if (row.entities.length || !/datasheet/i.test(`${row.title} ${row.storageKey}`)) return row;
+    const match = row.title.match(/^(.+?)\s+Datasheet(?:\s+(?:V?[0-9]|Unknown)|$)/i);
+    if (!match || normalizeExactModel(match[1]) === "CUDY") return row;
+    const matches = byExactName.get(normalizeExactModel(match[1])) ?? [];
+    const unique = [...new Map(matches.map((entity) => [entity.entityId, entity])).values()];
+    if (unique.length !== 1) return row;
+    inferredBindings++;
+    return {
+      ...row,
+      entities: [{ ...unique[0], entityType: "product" as const, relationType: "about" as const,
+        bindingMethod: "datasheet-title-exact-normalized" as const }],
+    };
+  });
+  return { rows: enriched, inferredBindings };
 }
 
 export function assertManifestScope(rows: RegisteredAssetBinding[], sources: PhysicalSourceManifest[]): void {

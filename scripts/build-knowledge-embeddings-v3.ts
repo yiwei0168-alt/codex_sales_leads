@@ -14,6 +14,7 @@ const write = args.get("write") === "true";
 const confirmPaidQwen = args.get("confirm-paid-qwen") === "true";
 const releaseId = args.get("release-id");
 const maxChunks = args.has("max-chunks") ? Number(args.get("max-chunks")) : undefined;
+const bgeBatchSize = args.has("bge-batch-size") ? Number(args.get("bge-batch-size")) : 16;
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 if (lane && !["qwen", "bge"].includes(lane)) throw new Error("--lane must be qwen or bge");
 if (releaseId && !uuid.test(releaseId)) throw new Error("--release-id must be a UUID");
@@ -22,6 +23,7 @@ if (write && lane === "qwen" && !confirmPaidQwen) {
   throw new Error("Qwen writes require explicit --confirm-paid-qwen after review of this release dry-run");
 }
 if (maxChunks !== undefined && (!Number.isSafeInteger(maxChunks) || maxChunks < 1)) throw new Error("--max-chunks must be positive");
+if (!Number.isSafeInteger(bgeBatchSize) || bgeBatchSize < 1 || bgeBatchSize > 64) throw new Error("--bge-batch-size must be within 1..64");
 
 function vectorLiteral(vector: number[]): string { return `[${vector.join(",")}]`; }
 
@@ -50,7 +52,7 @@ try {
     console.log(JSON.stringify({ mode:"dry-run", release, ...counts, missingQwen, missingBge,
       qwenToCall: Math.max(0, missingQwen-counts.reusableQwen),
       estimatedQwenRequests: Math.ceil(Math.max(0, missingQwen-counts.reusableQwen)/10),
-      estimatedBgeBatches: Math.ceil(missingBge/64), qwenCashCost:"unknown",
+      estimatedBgeBatches: Math.ceil(missingBge/bgeBatchSize), bgeBatchSize, qwenCashCost:"unknown",
       bgeApiCashCost:0, bgeInfrastructureCost:"unknown", writes:0 }, null, 2));
     process.exitCode = 0;
   } else {
@@ -60,7 +62,7 @@ try {
     const profile = profiles[0]; if (!profile) throw new Error(`Enabled profile ${profileKey} not found`);
     if (lane === "bge" && profile.modelRevision !== "5617a9f61b028005a4858fdac845db406aefb181") throw new Error("BGE profile revision is not pinned");
     if (lane === "bge" && profile.artifactSha256 !== "4f2ef0a2c9b4250206e9ddc202a2bbe01718aacd2a06f87e3e09887b2a076c28") throw new Error("BGE profile artifact hash is not pinned");
-    const batchSize = lane === "qwen" ? 10 : 64;
+    const batchSize = lane === "qwen" ? 10 : bgeBatchSize;
     const run = await tenantTransaction(OWNER_USER_ID, async (client) => (await client.query<{id:string}>(
       `insert into knowledge_embedding_run_v3(release_id,profile_id,status,cash_cost_status,metrics)
        values($1,$2,'running',$3,$4) returning id`, [release.id,profile.id,lane === "bge" ? "zero" : "unknown",
@@ -90,7 +92,7 @@ try {
         if(!chunks.length)break;
         const started=Date.now();
         const result=lane==="bge"
-          ? {embeddings:await embedTextsWithBge(chunks.map(chunk=>chunk.text)),usage:[]}
+          ? {embeddings:await embedTextsWithBge(chunks.map(chunk=>chunk.text),fetch,120_000),usage:[]}
           : await withProductSpend(OWNER_USER_ID,"knowledge-v3-qwen-embedding",()=>embedTextsWithUsage(chunks.map(chunk=>chunk.text)),run.id);
         latencyMs+=Date.now()-started;requestCount+=lane==="qwen"?Math.ceil(chunks.length/10):1;
         inputTokens+=result.usage.reduce((sum,item)=>sum+item.inputTokens,0);

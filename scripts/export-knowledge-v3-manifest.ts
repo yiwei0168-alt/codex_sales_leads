@@ -6,7 +6,9 @@ import { OWNER_USER_ID } from "../src/lib/auth/config";
 import { getPool, tenantQuery } from "../src/lib/rag/db";
 import {
   assertManifestScope,
+  attachExactDatasheetEntities,
   buildPhysicalSourceManifest,
+  type ManifestProductEntity,
   type RegisteredAssetBinding,
 } from "../src/lib/knowledge/manifest-v3";
 
@@ -15,7 +17,7 @@ const outputFlag = process.argv.find((value) => value.startsWith("--output="));
 const outputPath = outputFlag?.slice("--output=".length) ?? "tmp/knowledge-v3-manifest.json";
 const shouldWrite = process.argv.includes("--write");
 
-const rows = await tenantQuery<RegisteredAssetBinding>(OWNER_USER_ID, `
+const registeredRows = await tenantQuery<RegisteredAssetBinding>(OWNER_USER_ID, `
   select a.id as "assetId",a.document_id as "documentId",d.visibility,d.owner_id as "ownerId",d.title,
     a.storage_key as "storageKey",a.source_sha256 as "sourceSha256",a.byte_size::text as "byteSize",
     a.mime_type as "mimeType",a.document_type as "documentType",a.document_version as "documentVersion",
@@ -29,6 +31,11 @@ const rows = await tenantQuery<RegisteredAssetBinding>(OWNER_USER_ID, `
   where a.registration_status='registered' and (d.visibility='shared' or d.owner_id=$1)
   order by a.storage_key,a.id
 `, [OWNER_USER_ID], "admin");
+const productEntities = await tenantQuery<ManifestProductEntity>(OWNER_USER_ID, `
+  select id as "entityId",canonical_key as "canonicalKey",display_name as "displayName"
+  from knowledge_entity where entity_type='product'
+`, [], "admin");
+const { rows, inferredBindings } = attachExactDatasheetEntities(registeredRows, productEntities);
 
 const sources = buildPhysicalSourceManifest(rows);
 assertManifestScope(rows, sources);
@@ -55,6 +62,7 @@ const manifest = {
   registeredAssets: rows.length,
   physicalSources: sources.length,
   rowScopedSources: sources.filter((source) => source.bindingMode === "row-scoped-required").length,
+  inferredDatasheetBindings: inferredBindings,
   registeredBytes: rows.reduce((sum, row) => sum + BigInt(row.byteSize), BigInt(0)).toString(),
   uniquePhysicalBytes: sources.reduce((sum, source) => sum + BigInt(source.byteSize), BigInt(0)).toString(),
   sources,

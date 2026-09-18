@@ -7,6 +7,8 @@ import { getPool, tenantQuery, tenantTransaction } from "../src/lib/rag/db";
 import type { PhysicalSourceManifest, RegisteredAssetBinding } from "../src/lib/knowledge/manifest-v3";
 import { buildRowScopedSpreadsheetChunks, type SpreadsheetArtifactRow } from "../src/lib/knowledge/spreadsheet-row-binding-v3";
 import { deriveReleaseAssetState } from "../src/lib/knowledge/release-ingest-state-v3";
+import { filterAcceptedCandidateChunks } from "../src/lib/knowledge/candidate-chunk-gate-v3";
+import { findExactModelEntities, type ExactChunkEntity } from "../src/lib/knowledge/chunk-entity-binding-v3";
 
 nextEnv.loadEnvConfig(process.cwd());
 const write = process.argv.includes("--write");
@@ -51,16 +53,30 @@ function buildSpreadsheetChunks(artifact: Artifact, binding: RegisteredAssetBind
   });
 }
 
-function buildChunks(source: PhysicalSourceManifest, artifact: Artifact, binding: RegisteredAssetBinding): BuiltChunk[] {
+function buildChunks(source: PhysicalSourceManifest, artifact: Artifact, binding: RegisteredAssetBinding, productEntities: ExactChunkEntity[]): BuiltChunk[] {
   if (source.bindingMode === "row-scoped-required") return buildSpreadsheetChunks(artifact, binding);
-  return artifact.chunks.map((chunk) => ({
-    ...chunk, blockType: "hybrid", entityIds: binding.entities.map((entity) => entity.entityId),
-    bindingMethod: "registered-document-entity",
-  }));
+  return filterAcceptedCandidateChunks(artifact.units, artifact.chunks)
+    .map((chunk) => {
+      const registeredEntityIds = binding.entities.map((entity) => entity.entityId);
+      const exactMentionIds = registeredEntityIds.length ? [] : findExactModelEntities(
+        `${chunk.headingPath.join("\n")}\n${chunk.content}`, productEntities,
+      );
+      return {
+        ...chunk, blockType: "hybrid", entityIds: registeredEntityIds.length ? registeredEntityIds : exactMentionIds,
+        bindingMethod: registeredEntityIds.length
+          ? binding.entities.some((entity) => entity.bindingMethod === "datasheet-title-exact-normalized")
+            ? "datasheet-title-exact-normalized" : "registered-document-entity"
+          : exactMentionIds.length ? "chunk-exact-model-token" : "unbound-general-evidence",
+      };
+    });
 }
 
 const manifest = JSON.parse(await readFile("tmp/knowledge-v3-manifest.json", "utf8")) as Manifest;
 const artifactDir = resolve("tmp/rag-v3-full");
+const productEntities = await tenantQuery<ExactChunkEntity>(OWNER_USER_ID, `
+  select id as "entityId",canonical_key as "canonicalKey",display_name as "displayName"
+  from knowledge_entity where entity_type='product'
+`, [], "admin");
 const sourceInputs: Array<{ source: PhysicalSourceManifest; artifact: Artifact; artifactSha256: string }> = [];
 const missingArtifacts: string[] = [];
 for (const source of manifest.sources) {
@@ -78,16 +94,19 @@ let logicalAssets = 0;
 let units = 0;
 let chunks = 0;
 let candidateChunks = 0;
+let withheldCandidateChunks = 0;
 let openReviewItems = 0;
 let acceptedReviewItems = 0;
 let rowEntityBindings = 0;
 for (const { source, artifact } of sourceInputs) {
   for (const binding of source.bindings) {
-    const built = buildChunks(source, artifact, binding);
+    const built = buildChunks(source, artifact, binding, productEntities);
     logicalAssets++;
     units += artifact.units.length;
     chunks += built.length;
     candidateChunks += built.filter((chunk) => chunk.evidenceStatus === "candidate").length;
+    withheldCandidateChunks += artifact.chunks.filter((chunk) => chunk.evidenceStatus === "candidate").length
+      - built.filter((chunk) => chunk.evidenceStatus === "candidate").length;
     rowEntityBindings += built.filter((chunk) => chunk.bindingMethod === "xlsx-model-cell-exact-normalized").length;
     for (const unit of artifact.units) {
       if (unit.status === "review-required" || unit.humanReviewDecision === "decorative-no-body") {
@@ -102,7 +121,7 @@ const report = {
   mode: write ? "shadow-write" : "dry-run-read-only",
   releaseKey, registeredAssets: manifest.registeredAssets, physicalSources: manifest.physicalSources,
   artifactsPresent: sourceInputs.length, missingArtifacts: missingArtifacts.length, logicalAssets,
-  units, chunks, candidateChunks, rowEntityBindings, openReviewItems, acceptedReviewItems,
+  units, chunks, candidateChunks, withheldCandidateChunks, rowEntityBindings, openReviewItems, acceptedReviewItems,
   qwenEmbeddings: 0, bgeEmbeddings: 0, verifiedFacts: 0,
   externalCalls: { document: 0, model: 0, embedding: 0, search: 0, smtp: 0 },
 };
@@ -128,7 +147,7 @@ const releaseId = releases[0].id;
 
 for (const { source, artifact, artifactSha256 } of sourceInputs) {
   for (const binding of source.bindings) {
-    const built = buildChunks(source, artifact, binding);
+    const built = buildChunks(source, artifact, binding, productEntities);
     await tenantTransaction(OWNER_USER_ID, async (client) => {
       const revisionResult = await client.query<{ id: string }>(`
         insert into knowledge_source_revision_v3(release_id,asset_id,source_sha256,artifact_sha256,extractor_profile,parser_status,quality_summary)
@@ -148,16 +167,18 @@ for (const { source, artifact, artifactSha256 } of sourceInputs) {
             content_sha256=excluded.content_sha256,review_note=excluded.review_note,reviewed_at=excluded.reviewed_at,metrics=excluded.metrics
           returning id
         `, [revisionId, unit.unitType, unit.unitIndex, unit.status, unit.contentSha256,
-          unit.reviewReason ?? null, unit.reviewedAt ?? null,
-          JSON.stringify({ textLength: unit.textLength, visualContentRatio: unit.visualContentRatio ?? null, humanReviewDecision: unit.humanReviewDecision ?? null })]);
+          unit.humanReviewDecision ? unit.reviewReason ?? unit.humanReviewDecision : null,
+          unit.reviewedAt ?? null,
+          JSON.stringify({ textLength: unit.textLength, visualContentRatio: unit.visualContentRatio ?? null,
+            extractionReviewReason: unit.reviewReason ?? null, humanReviewDecision: unit.humanReviewDecision ?? null })]);
         unitIds.set(`${unit.unitType}:${unit.unitIndex}`, unitResult.rows[0].id);
       }
       await client.query(`delete from knowledge_review_queue_v3 where release_id=$1 and asset_id=$2`, [releaseId, binding.assetId]);
       await client.query(`delete from knowledge_chunk_entity_v3 where chunk_id in(
-        select id from knowledge_chunk_v3 where release_id=$1 and document_id=$2
-      )`, [releaseId, binding.documentId]);
-      await client.query(`delete from knowledge_chunk_v3 where release_id=$1 and document_id=$2 and chunk_index >= $3`,
-        [releaseId, binding.documentId, built.length]);
+        select id from knowledge_chunk_v3 where release_id=$1 and source_revision_id=$2
+      )`, [releaseId, revisionId]);
+      await client.query(`delete from knowledge_chunk_v3 where release_id=$1 and source_revision_id=$2 and chunk_index >= $3`,
+        [releaseId, revisionId, built.length]);
       const relationByEntity = new Map(binding.entities.map((entity) => [entity.entityId, entity.relationType]));
       for (const chunk of built) {
         const sourceUnitId = unitIds.get(`${chunk.unitType}:${chunk.unitIndex}`) ?? null;
@@ -166,7 +187,7 @@ for (const { source, artifact, artifactSha256 } of sourceInputs) {
           insert into knowledge_chunk_v3(release_id,document_id,source_revision_id,source_unit_id,parent_chunk_id,chunk_index,
             block_type,heading_path,source_location,content,canonical_embedding_text,token_estimate,content_sha256,metadata)
           values($1,$2,$3,$4,null,$5,$6,$7,$8::jsonb,$9,$10,$11,$12,$13::jsonb)
-          on conflict(release_id,document_id,chunk_index) do update set source_revision_id=excluded.source_revision_id,
+          on conflict(release_id,source_revision_id,chunk_index) do update set document_id=excluded.document_id,
             source_unit_id=excluded.source_unit_id,block_type=excluded.block_type,heading_path=excluded.heading_path,
             source_location=excluded.source_location,content=excluded.content,canonical_embedding_text=excluded.canonical_embedding_text,
             token_estimate=excluded.token_estimate,content_sha256=excluded.content_sha256,metadata=excluded.metadata

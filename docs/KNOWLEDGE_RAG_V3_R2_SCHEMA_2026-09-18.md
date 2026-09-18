@@ -32,3 +32,7 @@ Migration 083 新增独立 v3 release、按 shared/owner 隔离的资产 manifes
 - BGE-M3 is pinned to official revision `5617a9f61b028005a4858fdac845db406aefb181`. Its local service binds only `127.0.0.1`, refuses remote model URLs/runtime downloads and does not log body text.
 - Qwen/BGE query vectors are cached and degraded independently; fact/full-text retrieval remains available if either or both vector lanes fail. Full release, vector, Recall@8 and activation gates remain pending.
 - BGE local inference has now passed a real 1,024-dimensional normalized-vector probe using a 2,293,315,801-byte snapshot. The exact aggregate artifact hash is `4f2ef0a2c9b4250206e9ddc202a2bbe01718aacd2a06f87e3e09887b2a076c28`; migrations 084/086 pin both revision and artifact hash. Full-corpus BGE generation remains pending the completed shadow release.
+
+# R2 full extraction addendum — 2026-09-18
+
+The resumable run has completed 221/221 registered source paths with zero conversion failures. The inactive building release contains 281 source revisions, 1,820 logical units and 3,008/3,008 chunks; no active pointer exists. Migration 087 changes chunk identity to exact source revision so multiple registered revisions cannot overwrite one another. Unconfirmed OCR chunks are withheld at ingest (`unacceptedCandidateChunks=0`). Exact counts, retry evidence, fact totals, local BGE status and remaining gates are recorded in [the full extraction evidence](KNOWLEDGE_RAG_V3_R2_FULL_EXTRACTION_2026-09-18.md).
