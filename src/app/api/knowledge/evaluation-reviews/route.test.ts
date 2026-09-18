@@ -1,0 +1,10 @@
+import {beforeEach,describe,expect,it,vi} from "vitest";
+const mocks=vi.hoisted(()=>({session:vi.fn(),list:vi.fn(),save:vi.fn(),unlock:vi.fn()}));
+vi.mock("@/lib/auth/session",()=>({requireApiSession:mocks.session}));
+vi.mock("@/lib/knowledge/review-repository",()=>({listGoldReviews:mocks.list,saveGoldReview:mocks.save,unlockGoldHoldout:mocks.unlock}));
+import {GET,PATCH} from "./route";
+describe("knowledge gold review API",()=>{beforeEach(()=>{vi.clearAllMocks();mocks.session.mockResolvedValue({userId:"owner",role:"admin"});mocks.list.mockResolvedValue({items:[],total:300,reviewed:0,counts:{},holdoutUnlocked:false});});
+  it("does not expose gold to members",async()=>{mocks.session.mockResolvedValue({userId:"member",role:"member"});expect((await GET(new Request("http://local/api/knowledge/evaluation-reviews"))).status).toBe(403);});
+  it("validates source coordinates before saving",async()=>{const response=await PATCH(new Request("http://local/api/knowledge/evaluation-reviews",{method:"PATCH",body:JSON.stringify({action:"save",caseId:"base-01-open",caseSha256:"a".repeat(64),expectedAnswer:"answer",expectedSources:[{assetSha256:"bad",unitIndex:0}],reviewNote:""})}));expect(response.status).toBe(400);expect(mocks.save).not.toHaveBeenCalled();});
+  it("requires explicit confirmation to unlock holdout",async()=>{expect((await PATCH(new Request("http://local/api/knowledge/evaluation-reviews",{method:"PATCH",body:JSON.stringify({action:"unlock-holdout",confirmed:true})}))).status).toBe(200);expect(mocks.unlock).toHaveBeenCalledWith("owner",true);});
+});

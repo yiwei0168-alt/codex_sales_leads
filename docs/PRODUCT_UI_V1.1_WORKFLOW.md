@@ -542,6 +542,10 @@ Stage 1b implemented: role/account/path editing saves owner-scoped JSON override
 4. Unified task center, memory management, mailbox learning and final integration.
 
 All stages must update the PRD status and efficiency ledger, inspect diffs, run appropriate checks and push verified commits. No customer email is sent during implementation testing.
+
+## 2026-09-18 KQ04 R6: RAG v3 管理端复核中心
+
+“知识库 & RAG”在 shadow release 状态卡后提供管理员复核中心。事实页签以队列、证据、决定三栏处理 candidate/conflict，可打开 ACL 保护的原件并保存确认、保留、拒绝或纠正；Gold 页签按 development、validation、holdout 展示 300 条冻结问题，保存人工答案和精确来源坐标。开发与验证未完成时 holdout 同时在 UI、API 和数据库激活门禁中锁定。审核操作不触发模型或 embedding，普通成员无读写权限。当前事实 0/1,029、Gold 0/300，功能完成不等于审核完成或 release 可激活。详见 [R6 验收](KNOWLEDGE_RAG_V3_R6_REVIEW_CENTER_2026-09-18.md)。
 ## 2026-09-11 completion continuation: persisted UI and safe recovery
 
 Country opportunities now have independent URLs. Global overview uses actual company counts, not fabricated coverage percentages. Lead partitions/advanced score, path, stage and freshness filters reuse stored records. Bulk changes serialize owner-checked existing mutation calls; failed rows remain selected, and next-action forms stay open on failure. Company detail has overview, historical scoring policy/dimensions/evidence and development tabs. Saved strategy is loaded without generation; asynchronous generation responses cannot overwrite another selected company. Legacy placeholder overview/drawer and notification counts were removed. Relationship map adds role grouping visibility, zoom and evidence freshness.

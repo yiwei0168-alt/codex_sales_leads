@@ -23,6 +23,11 @@ export function evaluateV3ReleaseGate(input: {
   registeredAssetIds: string[];
   assets: V3ReleaseAssetGateInput[];
   openReviewItems: number;
+  goldReviewed: number;
+  goldTotal: number;
+  holdoutReviewed: number;
+  holdoutTotal: number;
+  holdoutUnlocked: boolean;
 }): V3ReleaseGateResult {
   const reasons: V3ReleaseGateResult["reasons"] = [];
   const byAsset = new Map(input.assets.map((asset) => [asset.assetId, asset]));
@@ -44,5 +49,8 @@ export function evaluateV3ReleaseGate(input: {
     }
   }
   if (input.openReviewItems > 0) reasons.push({ code: "open-review-items" });
+  if (input.goldReviewed !== input.goldTotal) reasons.push({ code: "gold-review-incomplete" });
+  if (!input.holdoutUnlocked) reasons.push({ code: "holdout-locked" });
+  if (input.holdoutReviewed !== input.holdoutTotal) reasons.push({ code: "holdout-review-incomplete" });
   return { ready: reasons.length === 0, reasons };
 }

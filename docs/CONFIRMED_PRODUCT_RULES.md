@@ -21,6 +21,7 @@
 最终 Qwen 授权实施状态：沙箱外批处理成功生成 3,034/3,034 个新向量，连同 28 个内容哈希一致的复用向量达到 Qwen 3,062/3,062；BGE 同为 3,062/3,062，双向量缺失均为 0。Qwen 运行 `cbe5af40-82b2-4356-ad3e-8faf9b381660` 实际记录 581,005 输入 tokens、304 请求、157,515 ms 累计调用延迟、0 重试、3,034 valid vectors；现金费用仍未知，304 个 HTTP 账本条目均有有效输出但未返回可核销现金金额，保守预留总额 USD1.949248 不是实际账单。发现百炼原始 usage 只给 `total_tokens` 时逐调用账本未记 input tokens，适配器已补充该安全 fallback 并新增回归测试；本次真实总 tokens 仍由 embedding run 完整保存。release 仍为 `building`、活动指针 0，因 1,808 个事实复核项和人工答案/来源 gold 等门禁未完成而不得激活。
 
 KQ04 事实冲突实现修正：冲突身份现在严格包含实体、文档版本、市场和属性；注册表类型为 `*-set` 的属性再包含具体集合成员。因此不同版本/市场显示为版本差异而非冲突，`frequency_band`、`poe_standard`、`vpn_role`、`ethernet_speed`、`cellular_generation` 和 `policy_condition` 等合法多值集合不会互相冲突，同一版本/市场/集合成员的极性矛盾仍保留。设备尺寸与包装尺寸分别登记为 `dimensions` 和 `package_dimensions`，避免把包装规格当成设备冲突。通用重建后 3,053 条事实为 1,953 verified、1,091 candidate、9 conflicting，open fact review 从 1,808 降为 1,029；其中 1,020 条低置信度和 9 条真实冲突均未被自动确认，release 仍为 `building`、活动指针为 0。
+2026-09-18 用户回复“好的，按照你的建议实现”，确认 KQ04 管理端复核中心的精确落点与边界：入口位于现有“知识库 & RAG”页面的 RAG v3 release 状态卡之后；包含“事实复核”和“Gold 审核”两个页签；事实复核显示原文、型号、版本、页/slide/sheet/表格坐标并支持确认、保留 candidate、拒绝和纠正；Gold 覆盖 300 条问题并记录正确答案、正确来源及坐标；development/validation 完成并冻结检索配置前不得打开 holdout；所有决定记录审核人、时间、备注和版本，且普通成员不可读写共享审核。实施状态：migration 088、管理员 API、双栏工作台、Gold 版本记录和激活硬门禁已实现并通过真实数据库及桌面/移动浏览器验收；实际审核仍为事实 0/1,029、Gold 0/300、holdout 锁定，因此不构成 release 激活确认。[证据](KNOWLEDGE_RAG_V3_R6_REVIEW_CENTER_2026-09-18.md)
 
 ### KQ01 — 知识问答与资料访问按通用问题分阶段优化（2026-09-17，用户明确范围与实施授权；P0–P8已实施并完成本地发布验收）
 

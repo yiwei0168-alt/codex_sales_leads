@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { PersonalMemory } from "./personal-memory";
 import { KnowledgeLibrary } from "./knowledge-library";
+import { KnowledgeReviewCenter } from "./knowledge-review-center";
 import type { KnowledgeBaseType, KnowledgeStats, RagAnswer } from "@/lib/rag/types";
 
 const labels: Record<KnowledgeBaseType, { title: string; eyebrow: string; description: string }> = {
@@ -193,6 +194,7 @@ export function KnowledgeBase() {
     </section>
 
     {stats.release&&<section className="panel rag-release-status"><div className="panel-header"><div><span className="section-kicker">RAG V3 RELEASE</span><h2>{stats.release.key}</h2></div><span className={`tag ${stats.release.active?"green":"neutral"}`}>{stats.release.active?"active":stats.release.status}</span></div><div className="kb-counts"><strong>{stats.release.completeAssets}/{stats.release.registeredAssets}<small>资产完成</small></strong><strong>{stats.release.chunks}<small>Chunks</small></strong><strong>{stats.release.qwenEmbeddings}<small>Qwen</small></strong><strong>{stats.release.bgeEmbeddings}<small>BGE</small></strong><strong>{stats.release.openReviews}<small>待复核</small></strong><strong>{stats.release.conflictFacts}<small>冲突事实</small></strong></div>{!stats.release.active&&<p className="subtle">影子 release 尚未激活；当前生产查询继续使用既有索引。</p>}</section>}
+    {stats.release&&<KnowledgeReviewCenter/>}
 
     <section className="panel mailbox-knowledge-panel">
       <div className="panel-header"><div><span className="section-kicker">PRIVATE MAILBOX KNOWLEDGE</span><h2>邮箱学习知识</h2><p>仅当前账号可见；已批准内容会参与私有 RAG 检索。</p></div><span className="tag violet">{mailboxKnowledge.length} 条</span></div>

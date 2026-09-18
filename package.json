@@ -75,6 +75,7 @@
     "knowledge:v3:bge-service": ".venv-bge-v3\\Scripts\\python.exe scripts/bge_m3_service.py",
     "knowledge:v3:download-bge": ".venv-bge-v3\\Scripts\\python.exe scripts/download_bge_m3.py",
     "knowledge:verify-ui": "node scripts/run-tsx.cjs scripts/verify-authenticated-knowledge-ui.ts",
+    "knowledge:verify-review-ui": "node scripts/run-tsx.cjs scripts/verify-knowledge-review-center.ts",
     "leads:verify-models": "node --use-env-proxy scripts/run-tsx.cjs scripts/verify-lead-models.ts",
     "leads:verify": "tsx scripts/verify-live-leads.ts",
     "contacts:enrich": "tsx scripts/enrich-lead-contacts.ts",

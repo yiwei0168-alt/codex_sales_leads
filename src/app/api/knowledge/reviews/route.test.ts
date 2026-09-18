@@ -1,0 +1,10 @@
+import {beforeEach,describe,expect,it,vi} from "vitest";
+const mocks=vi.hoisted(()=>({session:vi.fn(),list:vi.fn(),decide:vi.fn()}));
+vi.mock("@/lib/auth/session",()=>({requireApiSession:mocks.session}));
+vi.mock("@/lib/knowledge/review-repository",()=>({listFactReviews:mocks.list,decideFactReview:mocks.decide}));
+import {GET,PATCH} from "./route";
+describe("knowledge fact review API",()=>{beforeEach(()=>{vi.clearAllMocks();mocks.session.mockResolvedValue({userId:"owner",role:"admin"});mocks.list.mockResolvedValue({items:[],total:0,offset:0,limit:25,counts:{}});});
+  it("requires an administrator",async()=>{mocks.session.mockResolvedValue({userId:"member",role:"member"});expect((await GET(new Request("http://local/api/knowledge/reviews"))).status).toBe(403);expect(mocks.list).not.toHaveBeenCalled();});
+  it("lists a bounded authenticated queue",async()=>{expect((await GET(new Request("http://local/api/knowledge/reviews?reason=conflict&limit=25"))).status).toBe(200);expect(mocks.list).toHaveBeenCalledWith("owner",expect.objectContaining({reason:"conflict",limit:25,status:"open"}));});
+  it("rejects incomplete corrections and accepts explicit decisions",async()=>{const invalid=await PATCH(new Request("http://local/api/knowledge/reviews",{method:"PATCH",body:JSON.stringify({reviewId:"00000000-0000-4000-8000-000000000001",decision:"correct"})}));expect(invalid.status).toBe(400);expect(mocks.decide).not.toHaveBeenCalled();const response=await PATCH(new Request("http://local/api/knowledge/reviews",{method:"PATCH",body:JSON.stringify({reviewId:"00000000-0000-4000-8000-000000000001",decision:"verify",note:"source checked"})}));expect(response.status).toBe(200);expect(mocks.decide).toHaveBeenCalledOnce();});
+});

@@ -23,6 +23,9 @@ type Verification = {
   qwenEmbeddings: number;
   bgeEmbeddings: number;
   activePointers: number;
+  goldReviewed: number;
+  goldHoldoutReviewed: number;
+  holdoutUnlocked: boolean;
 };
 
 const rows = await tenantQuery<Verification>(OWNER_USER_ID, `
@@ -44,7 +47,10 @@ const rows = await tenantQuery<Verification>(OWNER_USER_ID, `
       join knowledge_embedding_profile_v3 p on p.id=e.profile_id where c.release_id=r.id and p.profile_key='qwen-v4-1536') as "qwenEmbeddings",
     (select count(*)::int from knowledge_chunk_embedding_v3 e join knowledge_chunk_v3 c on c.id=e.chunk_id
       join knowledge_embedding_profile_v3 p on p.id=e.profile_id where c.release_id=r.id and p.profile_key='bge-m3-1024') as "bgeEmbeddings",
-    (select count(*)::int from knowledge_release_pointer_v3 p where p.release_id=r.id) as "activePointers"
+    (select count(*)::int from knowledge_release_pointer_v3 p where p.release_id=r.id) as "activePointers",
+    (select count(*)::int from knowledge_evaluation_review_v3 e where e.corpus_version='knowledge-eval-v3-baseline') as "goldReviewed",
+    (select count(*)::int from knowledge_evaluation_review_v3 e where e.corpus_version='knowledge-eval-v3-baseline' and e.split='holdout') as "goldHoldoutReviewed",
+    exists(select 1 from knowledge_evaluation_holdout_gate_v3 g where g.corpus_version='knowledge-eval-v3-baseline') as "holdoutUnlocked"
   from knowledge_release_v3 r where r.release_key=$1
 `, [releaseKey], "admin");
 if (!rows[0]) throw new Error(`Release not found: ${releaseKey}`);
@@ -54,7 +60,8 @@ const violations = [
   result.sourceRevisions !== result.releaseAssets ? `revision/asset mismatch ${result.sourceRevisions}/${result.releaseAssets}` : null,
   result.chunks !== result.expectedChunks ? `chunk count mismatch ${result.chunks}/${result.expectedChunks}` : null,
 ].filter(Boolean);
-console.log(JSON.stringify({ mode: "read-only", releaseKey, ...result, violations,
+const activationBlockers=[result.openReviews?`${result.openReviews} unresolved review items`:null,result.goldReviewed!==300?`${300-result.goldReviewed} gold cases remain`:null,!result.holdoutUnlocked?"gold holdout is locked":null,result.goldHoldoutReviewed!==50?`${50-result.goldHoldoutReviewed} holdout cases remain`:null].filter(Boolean);
+console.log(JSON.stringify({ mode: "read-only", releaseKey, ...result, violations,activationBlockers,
   externalCalls: { model: 0, embedding: 0, search: 0, smtp: 0 } }, null, 2));
 await getPool().end();
 if (violations.length) process.exitCode = 2;
