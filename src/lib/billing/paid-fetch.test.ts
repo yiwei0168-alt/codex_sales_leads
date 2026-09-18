@@ -197,6 +197,11 @@ it("reserves before sending and persists no credentials or raw content",async()=
   expect(mocks.settle.mock.calls[0][2]).toMatchObject({reportedMicros:10,succeeded:true});
   expect(JSON.stringify([...mocks.reserve.mock.calls,...mocks.settle.mock.calls])).not.toMatch(/fixture-secret|private company input/);
 });
+it("uses embedding total_tokens when the provider omits prompt_tokens",async()=>{
+  const transport=vi.fn().mockResolvedValue(Response.json({data:[{index:0,embedding:[1]}],usage:{total_tokens:37}}));
+  await withSpendContext(scope,()=>budgetedFetch(transport)("https://example.test/embeddings",init));
+  expect(mocks.settle.mock.calls[0][2]).toMatchObject({inputTokens:37,outputTokens:null,succeeded:true});
+});
 it("unknown transport outcome retains reservation, never releases or automatically repeats",async()=>{
   const transport=vi.fn().mockRejectedValue(new Error("timeout"));
   await expect(withSpendContext(scope,()=>budgetedFetch(transport)("https://example.test/chat",init))).rejects.toBeInstanceOf(PaidCallOutcomeUnknownError);

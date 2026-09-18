@@ -117,7 +117,7 @@ export function budgetedFetch(transport:typeof fetch=fetch):typeof fetch {
       const usage=object(result.usage);const reported=reportedDollarsToMicros(usage.cost);
       const outputIncomplete=response.ok&&(textOutputCompletion(attempt?.outputCompletionTask??attempt?.task,result)==="incomplete"
         ||embeddingOutputCompletion(attempt?.task,result,parsed)==="incomplete");
-      await settlePaidCall(scope.userId,id,{reportedMicros:reported,latencyMs:Date.now()-started,responseBytes:Buffer.byteLength(text,"utf8"),inputTokens:count(usage.prompt_tokens??usage.input_tokens),outputTokens:count(usage.completion_tokens??usage.output_tokens),succeeded:response.ok&&!outputIncomplete,outputIncomplete,providerUsage:providerUsageObservation(result,{httpStatus:response.status,generationId:response.headers.get("x-generation-id")})});
+      await settlePaidCall(scope.userId,id,{reportedMicros:reported,latencyMs:Date.now()-started,responseBytes:Buffer.byteLength(text,"utf8"),inputTokens:count(usage.prompt_tokens??usage.input_tokens??usage.total_tokens),outputTokens:count(usage.completion_tokens??usage.output_tokens),succeeded:response.ok&&!outputIncomplete,outputIncomplete,providerUsage:providerUsageObservation(result,{httpStatus:response.status,generationId:response.headers.get("x-generation-id")})});
       const report=openRouterInlineCostReport({url,method:request.method,httpStatus:response.status,request:parsed,response:result});
       if(report)await recordVerifiedCostObservation(scope.userId,id,report);
     }catch{console.warn(JSON.stringify({event:"budget-settlement-unavailable",reservationRetained:true,retry:false}));}
