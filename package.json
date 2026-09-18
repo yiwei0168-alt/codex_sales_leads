@@ -70,6 +70,7 @@
     "knowledge:v3:recover-ocr": ".venv-docling-v3\\Scripts\\python.exe scripts/recover_docling_v3_unresolved_ocr.py",
     "knowledge:v3:ingest-release": "node scripts/run-tsx.cjs scripts/ingest-knowledge-release-v3.ts",
     "knowledge:v3:verify-release": "node scripts/run-tsx.cjs scripts/verify-knowledge-v3-release.ts",
+    "knowledge:v3:activate": "node scripts/run-tsx.cjs scripts/activate-knowledge-release-v3.ts",
     "knowledge:v3:build-facts": "node scripts/run-tsx.cjs scripts/build-knowledge-facts-v3.ts",
     "knowledge:v3:build-embeddings": "node scripts/run-tsx.cjs scripts/build-knowledge-embeddings-v3.ts",
     "knowledge:v3:bge-service": ".venv-bge-v3\\Scripts\\python.exe scripts/bge_m3_service.py",

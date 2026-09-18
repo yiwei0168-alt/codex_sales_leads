@@ -120,7 +120,9 @@ async function hybridSearchV3(userId:string,releaseId:string,question:string,qwe
       select e.id,jsonb_agg(jsonb_build_object('model',ke.canonical_key,'factKey',f.attribute_key,'factValue',f.raw_value,'status',f.verification_status) order by f.attribute_key) evidence,
         max(greatest(ts_rank_cd(to_tsvector('simple',f.raw_field_name||' '||f.raw_value),websearch_to_tsquery('simple',$11)),case when cardinality($8::text[])>0 and lower(ke.canonical_key) in(select lower(x) from unnest($8::text[]) as requested(x)) then 1 else 0 end)) relevance
       from eligible e join knowledge_fact_v3 f on f.chunk_id=e.id join knowledge_entity ke on ke.id=f.entity_id
-      where f.verification_status in('verified','candidate','conflicting') and(to_tsvector('simple',f.raw_field_name||' '||f.raw_value)@@websearch_to_tsquery('simple',$11) or(cardinality($8::text[])>0 and lower(ke.canonical_key) in(select lower(x) from unnest($8::text[]) as requested(x))))
+      where f.verification_status='verified'
+        and not exists(select 1 from knowledge_review_queue_v3 rq where rq.release_id=f.release_id and rq.fact_id=f.id and rq.status='open')
+        and(to_tsvector('simple',f.raw_field_name||' '||f.raw_value)@@websearch_to_tsquery('simple',$11) or(cardinality($8::text[])>0 and lower(ke.canonical_key) in(select lower(x) from unnest($8::text[]) as requested(x))))
       group by e.id
     ),fact_results as(select id,evidence,row_number() over(order by relevance desc,id)rank from fact_candidates order by relevance desc,id limit 40),
     ranked as(select e.*,q.rank qwen_rank,b.rank bge_rank,k.rank keyword_rank,f.rank fact_rank,coalesce(f.evidence,'[]'::jsonb)structured_facts,

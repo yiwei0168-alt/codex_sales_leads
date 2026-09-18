@@ -546,6 +546,10 @@ All stages must update the PRD status and efficiency ledger, inspect diffs, run 
 ## 2026-09-18 KQ04 R6: RAG v3 管理端复核中心
 
 “知识库 & RAG”在 shadow release 状态卡后提供管理员复核中心。事实页签以队列、证据、决定三栏处理 candidate/conflict，可打开 ACL 保护的原件并保存确认、保留、拒绝或纠正；Gold 页签按 development、validation、holdout 展示 300 条冻结问题，保存人工答案和精确来源坐标。开发与验证未完成时 holdout 同时在 UI、API 和数据库激活门禁中锁定。审核操作不触发模型或 embedding，普通成员无读写权限。当前事实 0/1,029、Gold 0/300，功能完成不等于审核完成或 release 可激活。详见 [R6 验收](KNOWLEDGE_RAG_V3_R6_REVIEW_CENTER_2026-09-18.md)。
+
+## 2026-09-19 KQ04 R7: 隔离未决事实后激活 RAG v3
+
+用户确认用“完整数据门禁＋未决事实硬隔离”替代“等待全部事实与 Gold 完成才激活”。migration 089 保留 manifest、文档/OCR、chunk、双向量与 ACL 硬门禁，只允许 fact-linked open review 留在队列；运行时 verified fact 查询与四路检索的 fact lane 都排除 open review，candidate/conflicting 未决值不能成为确定性答案。release `889a1b5b-9b45-4695-a9b1-e2f2415a028f` 已从 building 经 validated 在同一事务激活，shared pointer=1。上线后 Gold 为 11/300、holdout 仍锁定；这两项显示为持续质量工作，不伪装成发布验收完成。真实桌面/移动 UI、原件 ACL、事实 LangGraph→SQL→UI 均通过，30 次热路径 P50 674.7ms、P95 771.4ms。详见 [激活证据](KNOWLEDGE_RAG_V3_ACTIVATION_2026-09-19.md)。
 ## 2026-09-11 completion continuation: persisted UI and safe recovery
 
 Country opportunities now have independent URLs. Global overview uses actual company counts, not fabricated coverage percentages. Lead partitions/advanced score, path, stage and freshness filters reuse stored records. Bulk changes serialize owner-checked existing mutation calls; failed rows remain selected, and next-action forms stay open on failure. Company detail has overview, historical scoring policy/dimensions/evidence and development tabs. Saved strategy is loaded without generation; asynchronous generation responses cannot overwrite another selected company. Legacy placeholder overview/drawer and notification counts were removed. Relationship map adds role grouping visibility, zoom and evidence freshness.

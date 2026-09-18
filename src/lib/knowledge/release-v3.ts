@@ -22,7 +22,8 @@ export interface V3ReleaseGateResult {
 export function evaluateV3ReleaseGate(input: {
   registeredAssetIds: string[];
   assets: V3ReleaseAssetGateInput[];
-  openReviewItems: number;
+  openDocumentReviewItems: number;
+  quarantinedFactReviewItems: number;
   goldReviewed: number;
   goldTotal: number;
   holdoutReviewed: number;
@@ -48,9 +49,6 @@ export function evaluateV3ReleaseGate(input: {
       reasons.push({ assetId: asset.assetId, code: "human-resolution-required" });
     }
   }
-  if (input.openReviewItems > 0) reasons.push({ code: "open-review-items" });
-  if (input.goldReviewed !== input.goldTotal) reasons.push({ code: "gold-review-incomplete" });
-  if (!input.holdoutUnlocked) reasons.push({ code: "holdout-locked" });
-  if (input.holdoutReviewed !== input.holdoutTotal) reasons.push({ code: "holdout-review-incomplete" });
+  if (input.openDocumentReviewItems > 0) reasons.push({ code: "open-document-review-items" });
   return { ready: reasons.length === 0, reasons };
 }

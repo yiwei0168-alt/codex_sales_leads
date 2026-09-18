@@ -60,8 +60,9 @@ const violations = [
   result.sourceRevisions !== result.releaseAssets ? `revision/asset mismatch ${result.sourceRevisions}/${result.releaseAssets}` : null,
   result.chunks !== result.expectedChunks ? `chunk count mismatch ${result.chunks}/${result.expectedChunks}` : null,
 ].filter(Boolean);
-const activationBlockers=[result.openReviews?`${result.openReviews} unresolved review items`:null,result.goldReviewed!==300?`${300-result.goldReviewed} gold cases remain`:null,!result.holdoutUnlocked?"gold holdout is locked":null,result.goldHoldoutReviewed!==50?`${50-result.goldHoldoutReviewed} holdout cases remain`:null].filter(Boolean);
-console.log(JSON.stringify({ mode: "read-only", releaseKey, ...result, violations,activationBlockers,
+const activationBlockers=[result.unitOpenReviews?`${result.unitOpenReviews} unresolved document review items`:null].filter(Boolean);
+const postActivationWork=[result.factOpenReviews?`${result.factOpenReviews} quarantined fact reviews`:null,result.goldReviewed!==300?`${300-result.goldReviewed} gold cases remain`:null,!result.holdoutUnlocked?"gold holdout is locked":null,result.goldHoldoutReviewed!==50?`${50-result.goldHoldoutReviewed} holdout cases remain`:null].filter(Boolean);
+console.log(JSON.stringify({ mode: "read-only", releaseKey, ...result, violations,activationBlockers,postActivationWork,
   externalCalls: { model: 0, embedding: 0, search: 0, smtp: 0 } }, null, 2));
 await getPool().end();
 if (violations.length) process.exitCode = 2;

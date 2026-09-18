@@ -55,6 +55,8 @@ describe("RAG tenant isolation", () => {
     expect(sql).toContain("bge_results");
     expect(sql).toContain("keyword_results");
     expect(sql).toContain("fact_results");
+    expect(sql).toContain("f.verification_status='verified'");
+    expect(sql).toContain("rq.fact_id=f.id and rq.status='open'");
     expect(parameters[0]).toBe("release-v3");
     expect(parameters[1]).toBe("user-c");
   });
