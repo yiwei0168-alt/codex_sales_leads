@@ -4,7 +4,7 @@ import { prepareRagExternalDisclosure } from "./external-disclosure";
 import type { RetrievedChunk } from "./types";
 
 function chunk(sourceType:string,content:string):RetrievedChunk{
-  return {id:crypto.randomUUID(),documentId:crypto.randomUUID(),collection:"product",title:"Fixture",content,
+  return {id:`chunk-${sourceType}`,documentId:`document-${sourceType}`,collection:"product",title:"Fixture",content,
     sourceType,authorityLevel:5,headingPath:[],retrievalSignals:["vector"],corroborated:false,score:0.8,
     metadata:{},visibility:"shared"};
 }
