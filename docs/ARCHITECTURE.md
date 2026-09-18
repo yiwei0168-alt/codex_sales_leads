@@ -65,6 +65,8 @@ The local BGE inference artifact is 2,293,315,801 bytes with aggregate manifest 
 
 The authenticated knowledge status API also exposes the latest shared v3 release's manifest, dual-vector and review/fact counters while continuing to report live legacy collection statistics until the pointer is active. The UI labels this as shadow state; it cannot activate a release.
 
+The read-only query diagnostic reports parsed action/entities/default comparison profile and candidate IDs/source coordinates separately for legacy facts/full text and the latest v3 fact/full-text lanes. Qwen remains disabled in this diagnostic; `--with-bge` opt-in uses only the loopback service and records no body text. Qwen vector reuse during release construction is permitted only when the exact canonical embedding text SHA-256 matches an existing `text-embedding-v4`/1,536-dimension generation.
+
 ```text
 User upload (industry / Cudy company / Cudy product)
   → authority and source metadata
