@@ -684,3 +684,5 @@ KQ04 继续实施状态：型号比较意图现已进入独立 `compare_verified
 KQ04 BGE 实施证据：官方固定 revision 的本地推理文件为 2,293,315,801 bytes，逐文件清单的聚合 SHA-256 为 `4f2ef0a2c9b4250206e9ddc202a2bbe01718aacd2a06f87e3e09887b2a076c28`。服务启动前逐文件复核大小与 SHA，且只从 `BGE_M3_MODEL_PATH` 指定的本地目录加载。真实本地探针得到 1,024 维归一化向量；这证明本地 lane 可运行，但不代表全库 BGE 向量已生成或 release 已可激活。
 
 KQ04 管理可见性实施状态：知识状态接口与知识页现在显示最新 v3 release 的活动状态、资产完成度、chunk、Qwen/BGE 完成数、open/OCR review 和 candidate/conflict fact 数。影子 release 明确标注为未激活，并提示生产仍使用既有索引；该显示不绕过激活门禁，也不把 building 状态写成可用。
+
+KQ04 单元终态实施状态：普通全成功资产可直接标记处理完成；任何未人工确认的 `blank`、`review-required` 或 `failed` 单元都必须创建 open review 并使资产保持 pending。只有精确清单中的 `accept-candidate`/`decorative-no-body` 决定可以关闭对应异常单元；`failed` 优先于 review/blank 作为资产状态。该状态机已通过 4 项聚焦断言，但实际全库 open review 数仍需 shadow 入库后核验。

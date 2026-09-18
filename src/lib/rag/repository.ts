@@ -287,7 +287,8 @@ export async function getKnowledgeStats(userId: string): Promise<KnowledgeStats>
       exists(select 1 from knowledge_release_pointer_v3 p where p.release_id=r.id)active,
       (select count(*) from knowledge_release_asset_v3 m where m.release_id=r.id)::text as "registeredAssets",
       (select count(*) from knowledge_release_asset_v3 m where m.release_id=r.id and m.processing_status<>'pending'
-        and m.expected_units=m.actual_units and m.expected_chunks=m.actual_chunks and m.resolution_status<>'pending')::text as "completeAssets",
+        and m.expected_units=m.actual_units and m.expected_chunks=m.actual_chunks
+        and(m.processing_status='success'or m.resolution_status<>'pending'))::text as "completeAssets",
       (select count(*) from knowledge_chunk_v3 c where c.release_id=r.id)::text chunks,
       (select count(*) from knowledge_chunk_embedding_v3 e join knowledge_chunk_v3 c on c.id=e.chunk_id where c.release_id=r.id and e.qwen_embedding is not null)::text as "qwenEmbeddings",
       (select count(*) from knowledge_chunk_embedding_v3 e join knowledge_chunk_v3 c on c.id=e.chunk_id where c.release_id=r.id and e.bge_embedding is not null)::text as "bgeEmbeddings",

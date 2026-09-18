@@ -6,6 +6,7 @@ import { OWNER_USER_ID } from "../src/lib/auth/config";
 import { getPool, tenantQuery, tenantTransaction } from "../src/lib/rag/db";
 import type { PhysicalSourceManifest, RegisteredAssetBinding } from "../src/lib/knowledge/manifest-v3";
 import { buildRowScopedSpreadsheetChunks, type SpreadsheetArtifactRow } from "../src/lib/knowledge/spreadsheet-row-binding-v3";
+import { deriveReleaseAssetState } from "../src/lib/knowledge/release-ingest-state-v3";
 
 nextEnv.loadEnvConfig(process.cwd());
 const write = process.argv.includes("--write");
@@ -183,10 +184,10 @@ for (const { source, artifact, artifactSha256 } of sourceInputs) {
         }
       }
       for (const unit of artifact.units) {
-        if (unit.status !== "review-required" && unit.humanReviewDecision !== "decorative-no-body") continue;
+        if (!["review-required","blank","failed"].includes(unit.status) && !unit.humanReviewDecision) continue;
         const sourceUnitId = unitIds.get(`${unit.unitType}:${unit.unitIndex}`)!;
         const accepted = Boolean(unit.humanReviewDecision);
-        const reason = unit.reviewReason?.includes("ocr") ? "ocr" : "layout";
+        const reason = unit.status === "failed" ? "source-damaged" : unit.reviewReason?.includes("ocr") ? "ocr" : "layout";
         await client.query(`
           insert into knowledge_review_queue_v3(release_id,asset_id,source_unit_id,reason,status,resolution_note,reviewed_by,reviewed_at)
           select $1,$2,$3,$4,$5,$6,$7,$8
@@ -194,11 +195,8 @@ for (const { source, artifact, artifactSha256 } of sourceInputs) {
         `, [releaseId, binding.assetId, sourceUnitId, reason, accepted ? "accepted" : "open",
           accepted ? unit.humanReviewDecision : null, accepted ? OWNER_USER_ID : null, accepted ? unit.reviewedAt : null]);
       }
-      const reviewRequired = artifact.units.some((unit) => unit.status === "review-required");
-      const allBlank = artifact.units.every((unit) => unit.status === "blank");
-      const allReviewResolved = artifact.units.filter((unit) => unit.status === "review-required").every((unit) => Boolean(unit.humanReviewDecision));
-      const processingStatus = reviewRequired ? "review-required" : allBlank ? "blank" : "success";
-      const resolutionStatus = reviewRequired && allReviewResolved ? "accepted" : "pending";
+      const exceptionalUnits = artifact.units.filter((unit) => ["review-required","blank","failed"].includes(unit.status));
+      const {processingStatus,resolutionStatus}=deriveReleaseAssetState(artifact.units);
       await client.query(`
         insert into knowledge_release_asset_v3(release_id,asset_id,processing_status,resolution_status,expected_units,actual_units,
           expected_chunks,actual_chunks,qwen_embeddings,bge_embeddings,verified_facts,candidate_facts,conflict_facts,human_decision_at,metrics)
@@ -207,7 +205,7 @@ for (const { source, artifact, artifactSha256 } of sourceInputs) {
           expected_units=excluded.expected_units,actual_units=excluded.actual_units,expected_chunks=excluded.expected_chunks,
           actual_chunks=excluded.actual_chunks,human_decision_at=excluded.human_decision_at,metrics=excluded.metrics,updated_at=now()
       `, [releaseId, binding.assetId, processingStatus, resolutionStatus, artifact.units.length, built.length,
-        resolutionStatus === "accepted" ? new Date().toISOString() : null,
+        exceptionalUnits.length && resolutionStatus === "accepted" ? new Date().toISOString() : null,
         JSON.stringify({ sourceSha256: source.sourceSha256, artifactSha256, candidateChunks: built.filter((chunk) => chunk.evidenceStatus === "candidate").length })]);
     }, "admin");
   }
