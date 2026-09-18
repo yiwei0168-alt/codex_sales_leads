@@ -22,6 +22,7 @@ create index if not exists knowledge_embedding_run_v3_release_idx
 grant select,insert,update on knowledge_embedding_run_v3 to network_copilot_app;
 alter table knowledge_embedding_run_v3 enable row level security;
 alter table knowledge_embedding_run_v3 force row level security;
+drop policy if exists knowledge_embedding_run_v3_acl on knowledge_embedding_run_v3;
 create policy knowledge_embedding_run_v3_acl on knowledge_embedding_run_v3 using(exists(
   select 1 from knowledge_release_v3 r where r.id=release_id
     and (r.scope_kind='shared' or r.owner_id=app_current_user_id())))

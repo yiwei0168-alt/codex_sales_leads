@@ -1,3 +1,4 @@
 # Isolated RAG v3 local embedding runtime. Install only in .venv-bge-v3.
+# The fully resolved environment is frozen in requirements-bge-v3.lock.txt.
 sentence-transformers==5.1.1
 torch==2.8.0

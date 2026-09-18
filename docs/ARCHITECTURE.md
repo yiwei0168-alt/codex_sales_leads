@@ -61,6 +61,8 @@ Migration 083 now provides the inactive v3 storage contract: scoped releases and
 
 The implemented v3 runtime boundary resolves an active release pointer before retrieval. It fuses release-scoped deterministic facts, PostgreSQL full text, Qwen V4 dense and local BGE-M3 dense candidates after ACL/entity filtering. Qwen and BGE query embeddings have independent cache identities and failure states; either or both vector lanes may be unavailable while fact/full-text retrieval continues. Local BGE uses the pinned official revision `5617a9f61b028005a4858fdac845db406aefb181` through a loopback-only service. This is shadow-path implementation evidence, not proof that the inactive release is complete or eligible for activation.
 
+The local BGE inference artifact is 2,293,315,801 bytes with aggregate manifest SHA-256 `4f2ef0a2c9b4250206e9ddc202a2bbe01718aacd2a06f87e3e09887b2a076c28`. Startup verifies every manifest file before loading and never permits model download or an external endpoint during inference. The isolated Python dependency closure is version-locked separately from Docling.
+
 ```text
 User upload (industry / Cudy company / Cudy product)
   → authority and source metadata

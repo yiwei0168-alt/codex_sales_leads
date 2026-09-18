@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 import os
+import hashlib
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any
@@ -17,6 +18,32 @@ PORT = int(os.environ.get("BGE_M3_PORT", "8765"))
 EXPECTED_DIMENSIONS = 1024
 MAX_BATCH = 64
 MODEL_REVISION = "5617a9f61b028005a4858fdac845db406aefb181"
+EXPECTED_ARTIFACT_SHA256 = "4f2ef0a2c9b4250206e9ddc202a2bbe01718aacd2a06f87e3e09887b2a076c28"
+
+
+def _sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for block in iter(lambda: stream.read(8 * 1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def _verify_snapshot(model_path: Path) -> None:
+    manifest_path = model_path / "bge-m3-artifact-manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if manifest.get("revision") != MODEL_REVISION or manifest.get("artifactSha256") != EXPECTED_ARTIFACT_SHA256:
+        raise RuntimeError("BGE-M3 snapshot manifest does not match the pinned profile")
+    files = manifest.get("files")
+    if not isinstance(files, list) or not files:
+        raise RuntimeError("BGE-M3 snapshot manifest has no files")
+    for item in files:
+        path = (model_path / item["path"]).resolve(strict=True)
+        if model_path not in path.parents or path.stat().st_size != item["bytes"] or _sha256(path) != item["sha256"]:
+            raise RuntimeError("BGE-M3 snapshot file verification failed")
+    canonical = json.dumps(files, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    if hashlib.sha256(canonical).hexdigest() != EXPECTED_ARTIFACT_SHA256:
+        raise RuntimeError("BGE-M3 aggregate artifact hash verification failed")
 
 
 def _load_model() -> Any:
@@ -26,6 +53,7 @@ def _load_model() -> Any:
     model_path = Path(model_path_value).resolve(strict=True)
     if not model_path.is_dir():
         raise RuntimeError("BGE_M3_MODEL_PATH must be a local directory")
+    _verify_snapshot(model_path)
     from sentence_transformers import SentenceTransformer
 
     return SentenceTransformer(str(model_path), local_files_only=True)

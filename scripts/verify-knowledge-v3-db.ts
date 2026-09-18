@@ -14,8 +14,8 @@ const tables = [
 const catalog = await tenantQuery<{ name: string; rls: boolean; forced: boolean }>(OWNER_USER_ID,
   `select c.relname as name,c.relrowsecurity as rls,c.relforcerowsecurity as forced
      from pg_class c where c.relname=any($1::text[]) order by c.relname`, [tables]);
-const profiles = await tenantQuery<{ key: string; provider: string; model: string; revision: string; dimensions: number }>(OWNER_USER_ID,
-  `select profile_key as key,provider,model,model_revision as revision,dimensions
+const profiles = await tenantQuery<{ key: string; provider: string; model: string; revision: string; dimensions: number; artifactSha256:string|null }>(OWNER_USER_ID,
+  `select profile_key as key,provider,model,model_revision as revision,dimensions,artifact_sha256 as "artifactSha256"
      from knowledge_embedding_profile_v3 order by dimensions`, []);
 const indexes = await tenantQuery<{ name: string }>(OWNER_USER_ID,
   `select indexname as name from pg_indexes where schemaname=current_schema()
@@ -32,7 +32,8 @@ if (catalog.length !== tables.length || catalog.some((row) => !row.rls || !row.f
 if (profiles.length !== 2
   || !profiles.some((row) => row.model === "text-embedding-v4" && row.dimensions === 1536)
   || !profiles.some((row) => row.model === "BAAI/bge-m3" && row.dimensions === 1024
-    && row.revision === "5617a9f61b028005a4858fdac845db406aefb181")) {
+    && row.revision === "5617a9f61b028005a4858fdac845db406aefb181"
+    && row.artifactSha256 === "4f2ef0a2c9b4250206e9ddc202a2bbe01718aacd2a06f87e3e09887b2a076c28")) {
   throw new Error(`v3 embedding profile mismatch: ${JSON.stringify(profiles)}`);
 }
 if (indexes.length !== 2 || functions[0]?.count !== 1) throw new Error("v3 index or activation function missing");

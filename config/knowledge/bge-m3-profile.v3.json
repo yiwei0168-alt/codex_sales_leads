@@ -2,6 +2,7 @@
   "profileKey": "bge-m3-1024",
   "model": "BAAI/bge-m3",
   "revision": "5617a9f61b028005a4858fdac845db406aefb181",
+  "artifactSha256": "4f2ef0a2c9b4250206e9ddc202a2bbe01718aacd2a06f87e3e09887b2a076c28",
   "dimensions": 1024,
   "distanceMetric": "cosine",
   "pooling": "cls",

@@ -55,10 +55,11 @@ try {
     process.exitCode = 0;
   } else {
     const profileKey = lane === "qwen" ? "qwen-v4-1536" : "bge-m3-1024";
-    const profiles = await tenantQuery<{id:string;modelRevision:string;dimensions:number}>(OWNER_USER_ID,
-      `select id,model_revision as "modelRevision",dimensions from knowledge_embedding_profile_v3 where profile_key=$1 and enabled`, [profileKey], "admin");
+    const profiles = await tenantQuery<{id:string;modelRevision:string;dimensions:number;artifactSha256:string|null}>(OWNER_USER_ID,
+      `select id,model_revision as "modelRevision",dimensions,artifact_sha256 as "artifactSha256" from knowledge_embedding_profile_v3 where profile_key=$1 and enabled`, [profileKey], "admin");
     const profile = profiles[0]; if (!profile) throw new Error(`Enabled profile ${profileKey} not found`);
     if (lane === "bge" && profile.modelRevision !== "5617a9f61b028005a4858fdac845db406aefb181") throw new Error("BGE profile revision is not pinned");
+    if (lane === "bge" && profile.artifactSha256 !== "4f2ef0a2c9b4250206e9ddc202a2bbe01718aacd2a06f87e3e09887b2a076c28") throw new Error("BGE profile artifact hash is not pinned");
     const batchSize = lane === "qwen" ? 10 : 64;
     const run = await tenantTransaction(OWNER_USER_ID, async (client) => (await client.query<{id:string}>(
       `insert into knowledge_embedding_run_v3(release_id,profile_id,status,cash_cost_status,metrics)
