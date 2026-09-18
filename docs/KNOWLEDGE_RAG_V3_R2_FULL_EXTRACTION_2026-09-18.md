@@ -1,6 +1,6 @@
 # KQ04 RAG v3 R2 全量抽取与影子 release 证据
 
-日期：2026-09-18。状态：全量本地抽取、影子入库、事实重建和 Qwen dry-run 已完成；本地 BGE 全量生成进行中。release 保持 `building` 且未激活。
+日期：2026-09-18。状态：全量本地抽取、影子入库、事实重建、Qwen dry-run 和本地 BGE 全量生成已完成。release 保持 `building` 且未激活。
 
 ## 已完成结果
 
@@ -13,6 +13,7 @@
 - 未确认 OCR candidate 在入库前按 unit 决定硬过滤；验证结果为 `unacceptedCandidateChunks=0`。原已确认 26 个单元产生 29 个 candidate chunk，3 个装饰页保持带人工决定的 blank。新增 46 个单元只进入 open review；视觉建议为 33 candidate＋13 装饰页，尚未获得用户精确确认。
 - 事实写入 3,000 条：1,180 verified、822 candidate、998 conflicting。WR3000 与 WR6500H 均有 verified/candidate/conflicting 事实和双方精确页/行引用；conflicting 不进入确定值快路径。
 - Qwen dry-run：3,008 chunk、28 个内容哈希/模型/维数完全一致的旧向量可复用、2,980 个新调用输入、约 484,344 tokens、298 个十项请求，现金费用未知。未调用 Qwen。
+- BGE 全量结果：3,008/3,008 个 chunk 均具有固定 revision 的 1,024 维本地向量，缺失 0。本次可恢复续跑处理 2,991 个输入、94 个批请求、1,785,049 ms、0 重试；其余 17 个来自成功的 1 项/16 项校准。API 现金成本为 0，本地 CPU/RAM/磁盘/电力与基础设施成本未知。
 
 ## 失败、重试与修复
 
@@ -24,9 +25,16 @@
 
 - 46 个新增 source-unit 复核建议仍需用户确认；当前建议文件不是确认记录。
 - 事实 candidate/conflicting 复核队列、至少 300 条独立人工 gold、Recall@8、比较答案、ACL、缓存失效、恢复/回滚与真实 UI 链路尚未完成。
-- BGE 必须达到 3,008/3,008；Qwen 全量付费调用必须获得 dry-run 后的独立明确授权并达到 3,008/3,008。
+- Qwen 全量付费调用必须获得 dry-run 后的独立明确授权并达到 3,008/3,008；当前 Qwen 为 0/3,008，BGE 已为 3,008/3,008。
 - release 状态仍为 `building`，活动 pointer 为 0，旧生产 release 继续服务。
 
 ## 成本与效率
 
 外部文档、模型、搜索、SMTP 调用均为 0；Docling/RapidOCR/BGE 均在本机运行。BGE API 现金成本为 0，模型下载、磁盘、CPU、RAM、电力和基础设施成本未知。Qwen 现金成本保持未知，不用 token 估算冒充账单。优化机会：保持 SHA checkpoint、只对零/低文本单元做高分辨率 rescue、按内容哈希复用 28 个旧 Qwen 向量，并把本地 BGE 批次固定在已实测不会 timeout 的大小。
+
+## 本阶段验证
+
+- 全量 Vitest：233 files、1,171 tests 通过；一个使用随机 UUID 的披露清洗夹具曾被卡号正则随机命中，改用固定非敏感 ID 后全量串行复跑通过。
+- TypeScript、lint、Next.js 生产 build、LangGraph 配置/零外部调用路由探针、知识审计和 Playwright 浏览器套件通过；浏览器套件为 22 passed、2 designed skips。
+- 隔离真实知识 UI 验证覆盖 1,366/390 两个视口、登录、原件授权访问/随机原件 404/匿名 401、事实/原件 API 与 LangGraph→SQL→UI。30 次热路径样本 p50 694.50 ms、p95 771.20 ms、max 774.50 ms；付费调用 0、外部网络 0。
+- v3 完整性复核为 281 revisions、1,820 units、3,008 chunks、3,008 BGE、0 Qwen、0 active pointers、0 unaccepted candidate chunks、0 verifier violations。该结果不放宽 46 个 unit review、1,803 个 fact review、人工答案 gold 和 Qwen 门禁。
