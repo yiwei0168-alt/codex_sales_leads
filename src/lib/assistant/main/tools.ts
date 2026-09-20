@@ -11,7 +11,7 @@ import { result, type ExecutionContext, type ProductTool } from "./contracts";
 import { listRuns } from "./repository";
 import { addManualCompany, manualCompanySchema } from "@/lib/sales/manual-company";
 import {updateCompanyState} from "@/lib/sales/repository";
-import {companyStatePatchSchema} from "@/lib/sales/company-state-input";
+import {companyStatePatchSchema,safeCompanyRevision} from "@/lib/sales/company-state-input";
 import { updateDevelopmentDraft } from "@/lib/outreach/repository";
 import { runDevelopmentStrategyAgent } from "@/lib/outreach/graph";
 import { listMailboxConnections, getMailboxMessageForReview } from "@/lib/mailbox/repository";
@@ -91,9 +91,10 @@ export const productTools: ProductTool[] = [
     execute: async (i, c) => result(await findProductActionCompanies(c.userId, { kind: "library", companyQuery: i.query, countryCode: i.countryCode }), { cost: "known" }) }),
   defineTool({ id: "company_read", description: "Read the account's company/market state and saved evidence, without generating a score or re-running discovery.",
     input: z.object({ candidateId: z.string().min(1).max(200) }).strict(),
-    execute: async (i, c) => result(await tenantQuery(c.userId, `select wc.candidate_id,wc.market_country_code,wc.record,wc.updated_at,locked.revision
+    execute: async (i, c) => {const rows=await tenantQuery<{revision:string}>(c.userId, `select wc.candidate_id,wc.market_country_code,wc.record,wc.updated_at,locked.revision
       from user_company_market wc join market_workspace w on w.id=wc.workspace_id join workspace_company_market locked on locked.workspace_id=wc.workspace_id and locked.candidate_id=wc.candidate_id
-      where w.owner_id=$1 and wc.candidate_id=$2 limit 10`, [c.userId, i.candidateId]), { cost: "known" }) }),
+      where w.owner_id=$1 and wc.candidate_id=$2 limit 10`, [c.userId, i.candidateId]);
+      return result(rows.map(row=>({...row,revision:safeCompanyRevision(row.revision)})),{cost:"known"});} }),
   defineTool({id:"company_state_update",description:"Update explicitly selected fields of an owned company using the revision returned by company_read. A concurrent page or task edit rejects this update so the Agent can reread and replan; this does not publish a formal score.",
     input:z.object({externalId:z.string().min(1).max(180),expectedRevision:z.number().int().min(0),patch:companyStatePatchSchema}).strict(),effect:"reversible",recovery:"idempotent",
     execute:async(i,c)=>{try{return result({company:await updateCompanyState(i.externalId,i.patch,c.userId,i.expectedRevision)},{cost:"known"});}

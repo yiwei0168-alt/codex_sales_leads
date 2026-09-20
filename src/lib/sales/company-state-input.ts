@@ -15,3 +15,9 @@ export const companyStatePatchSchema=z.object({
   selectedPathId:z.string().max(80),
   nextActionDueAt:date,
 }).partial().strict().refine(value=>Object.keys(value).length>0,"At least one company field required");
+
+export function safeCompanyRevision(value:string|number):number{
+  const revision=Number(value);
+  if(!Number.isSafeInteger(revision)||revision<0)throw new Error("Company revision is outside safe integer range");
+  return revision;
+}
