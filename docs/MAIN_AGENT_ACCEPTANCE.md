@@ -1,5 +1,9 @@
 # Main Agent acceptance log
 
+## P5 historical memory context - 2026-09-20 (partial)
+
+The main graph and `memory_read` include existing active shared distribution policies; the new `memory_history_search` exposes private historical guidance without copying it across accounts or promoting it to mandatory policy. Ninety-three real PostgreSQL fixture assertions passed, including 13 new checks for vectorless retrieval, provenance/usage preservation, tenant isolation, market aliases, company/role filtering, archive exclusion and immediate policy edits. The first test attempt exposed fixture parameter typing; the second reached all assertions but failed account cleanup because the legacy memory audit trigger requires its account parent. Explicit memory-first cleanup fixed the harness, the final run exited 0, and both leftover synthetic accounts were separately removed after identity checks. No customer data, model/search call or SMTP send occurred. Full regression: 252 files / 1,267 assertions, 27.52s; TypeScript, scoped lint, production build and 54 catalog schemas passed. This is read integration, not full memory lifecycle, semantic retrieval, live-model acceptance or P5/P6 completion.
+
 ## P5 memory undo lineage - 2026-09-20 (partial)
 
 New memory versions store `previousVersion` and `previousActive` in their immutable snapshot. Undo restores the actual predecessor's content, scope, source kind and active state. This handles version 1 → version 2 → undo to 1 → version 3 → undo to 1, and reactivation after a first-version undo. Old snapshots without predecessor metadata use the existing sequential fallback; their past branch cannot be inferred. Eighty real PostgreSQL fixture assertions passed, including ten new lineage/history/stale-notification checks. TypeScript and scoped lint passed. No migration, customer-memory write, model/search call or send occurred. Full P5 and release acceptance remain pending.

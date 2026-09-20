@@ -49,7 +49,7 @@ Current independently registered adapters and schema validation are generated in
 | `/api/knowledge/library` | GET,DELETE | knowledge business adapter pending | `src/app/api/knowledge/library/route.ts` |
 | `/api/knowledge/mailbox` | GET | knowledge business adapter pending | `src/app/api/knowledge/mailbox/route.ts` |
 | `/api/knowledge/memories/history` | GET | knowledge business adapter pending | `src/app/api/knowledge/memories/history/route.ts` |
-| `/api/knowledge/memories` | POST,GET,PATCH | knowledge business adapter pending | `src/app/api/knowledge/memories/route.ts` |
+| `/api/knowledge/memories` | POST,GET,PATCH | Historical reads: `memory_history_search`; legacy mutation lifecycle adapter still pending | `src/app/api/knowledge/memories/route.ts` |
 | `/api/knowledge/reviews` | GET,PATCH | `knowledge_fact_review_list` / `knowledge_fact_review_decide`; shared input validation and repository, admin-only, exact approval for a decision | `src/app/api/knowledge/reviews/route.ts` |
 | `/api/knowledge/status` | GET | knowledge business adapter pending | `src/app/api/knowledge/status/route.ts` |
 | `/api/knowledge/uploads` | GET,POST | knowledge business adapter pending | `src/app/api/knowledge/uploads/route.ts` |

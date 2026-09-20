@@ -1,5 +1,7 @@
 # 用户确认规则登记表
 
+> 2026-09-20 MA07 implementation update: the main Agent now reads active historical shared distribution policies as scoped defaults and can search account historical preferences/company decisions with original provenance and usage restrictions. This does not create new mandatory policies or assert historical human confirmation. Ninety-three isolated database checks and 1,267 regression assertions passed; complete P5/P6 acceptance remains pending. [Evidence](MAIN_AGENT_ACCEPTANCE.md).
+
 
 ## MA - Main Agent product rules (confirmed 2026-09-20)
 

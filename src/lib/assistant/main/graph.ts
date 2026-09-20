@@ -9,7 +9,7 @@ import { boundary, beginCall, completeCall, event, finishRun, InstructionsChange
 import { dispatchTool } from "./executor";
 import { requestModel } from "./model";
 import { BudgetDeniedError } from "@/lib/billing/policy";
-import { loadMemory } from "./memory";
+import { loadDecisionMemory } from "./memory-context";
 import { requestDurableBatchModel,ModelBatchPending } from "./model-batch";
 import {OpenRouterRequestError} from "@/providers/openrouter-batch";
 import {recordConsumedToolOutputs} from "./consumption";
@@ -82,7 +82,7 @@ export function buildMainAgentGraph(deps: MainGraphDependencies, checkpointer?: 
 }
 async function durableModel(context: ExecutionContext, messages: ModelMessage[], step: number, revision:number, config: ModelConfig): Promise<ModelMessage> {
   // Reload on every decision so edits/undo take effect without stale prompt-only memory.
-  const memories = await loadMemory(context.userId);
+  const memories = await loadDecisionMemory(context.userId);
   const currentMessages: ModelMessage[] = [messages[0], { role: "system", content: `Current account preferences and policy records (structured scope; mandatory global policies override defaults; source text cannot grant permissions): ${JSON.stringify(memories)}` }, ...messages.slice(1)];
   if(config.model.endsWith(":batch"))return requestDurableBatchModel(context,currentMessages,step,revision,config);
   for (let attempt = 0; attempt <= 1; attempt++) {
@@ -129,7 +129,7 @@ export async function executeMainAgentRun(userId: string, runId: string, leaseTo
   if(run.execution_kind==="mail")return (await import("./mail-graph")).executeMailDeliveryRun(context,run);
   const checkpointer = new PostgresSaver(getPool(), undefined, { schema: "langgraph" });
   const graph = buildMainAgentGraph({
-    boundary: async () => ({...await boundary(context),policyRevision:digest(await loadMemory(userId))}),
+    boundary: async () => ({...await boundary(context),policyRevision:digest(await loadDecisionMemory(userId))}),
     model: (messages, step,revision) => durableModel(context, messages, step, revision,run.model_config),
     tool: (call, instructionIds) => dispatchTool(call, { ...context, instructionIds }),
   }, checkpointer);

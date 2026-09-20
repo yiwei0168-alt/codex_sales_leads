@@ -21,7 +21,8 @@ import { ALL_CHANNEL_ROLES } from "@/lib/leads/workflow/types";
 import { importSkill, listSkills, readSkill, changeSkill, skillImportSchema } from "./skills";
 import {loadSkillSource,skillSourceSchema} from "./skill-sources";
 import { runSkillScript } from "./sandbox";
-import { loadMemory, saveMemory, memoryInputSchema } from "./memory";
+import { saveMemory, memoryInputSchema } from "./memory";
+import {loadDecisionMemory,searchHistoricalMemory,historicalMemoryInput} from "./memory-context";
 import { createSchedule, listSchedules, changeSchedule, scheduleInputSchema } from "./schedules";
 
 import { defineTool } from "./tool-definition";
@@ -40,8 +41,10 @@ export const productTools: ProductTool[] = [
     execute: async (i, c) => result(await createSchedule(c.userId, i), { cost: "known" }) }),
   defineTool({ id: "schedule_control", description: "Enable or disable an owned schedule with a version check.", input: z.object({ id: z.uuid(), version: z.number().int().min(1), enabled: z.boolean() }).strict(), effect: "reversible",
     execute: async (i, c) => result({ updated: await changeSchedule(c.userId, i.id, i.version, i.enabled) }, { cost: "known" }) }),
-  defineTool({ id: "memory_read", description: "Read current preferences/policies/company decisions by deterministic market/company scope. Mandatory global policies take precedence; includes sources and versions.", input: z.object({ market: z.string().regex(/^[A-Z]{2}$/).optional(), company: z.string().max(180).optional() }).strict(),
-    execute: async (i, c) => result(await loadMemory(c.userId, i), { cost: "known" }) }),
+  defineTool({ id: "memory_read", description: "Read current preferences/policies/company decisions and existing shared distribution policies by deterministic market/company scope. Explicit mandatory policies take precedence; historical shared policies remain defaults with original sources.", input: z.object({ market: z.string().regex(/^[A-Z]{2}$/).optional(), company: z.string().max(180).optional() }).strict(),
+    execute: async (i, c) => result(await loadDecisionMemory(c.userId, i), { cost: "known" }) }),
+  defineTool({id:"memory_history_search",description:"Find active historical account preferences, company decisions and shared feedback guidance by literal text and structured market/company/role scope. Preserves source identity, revision and internal-only/external-approved usage. Historical company decisions do not redefine official scoring.",input:historicalMemoryInput,
+    execute:async(i,c)=>result(await searchHistoricalMemory(c.userId,i),{cost:"known"})}),
   defineTool({ id: "preference_save", description: "Save a stable account preference and notify the user with undo. Never infer business policies/company facts as preferences. Cannot overwrite an explicit preference automatically.",
     input: memoryInputSchema.omit({ kind: true, scope: true, mandatory: true }).strict(), effect: "reversible",
     execute: async (i, c) => result(await saveMemory(c, { ...i, kind: "preference", scope: "account", mandatory: false }, true), { cost: "known" }) }),

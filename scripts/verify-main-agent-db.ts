@@ -14,6 +14,7 @@ import { executeMailBatch,mailBatchSchema } from "../src/lib/assistant/main/mail
 import { productTools } from "../src/lib/assistant/main/tools";
 import { importSkill, listSkills, readSkill, changeSkill } from "../src/lib/assistant/main/skills";
 import { saveMemory, loadMemory, undoMemory } from "../src/lib/assistant/main/memory";
+import { loadDecisionMemory, searchHistoricalMemory } from "../src/lib/assistant/main/memory-context";
 import { createSchedule, listSchedules, changeSchedule, dispatchDueSchedule } from "../src/lib/assistant/main/schedules";
 import { queueReviewedMail } from "../src/lib/assistant/main/reviewed-mail";
 
@@ -26,6 +27,7 @@ if (process.env.DATABASE_URL) {
 }
 const admin = new Pool({ connectionString: databaseConnectionString(url), ssl: databaseSslConfiguration(url) });
 const owners = [randomUUID(), randomUUID()];
+const historicalPolicyId=randomUUID();
 let checks = 0;
 try {
   if (process.argv.includes("--apply")) for (const migration of ["090_main_agent_runtime.sql", "091_agent_approvals.sql", "092_independent_outbound_mail.sql", "093_agent_skills.sql", "094_agent_memory.sql", "095_agent_schedules.sql", "096_agent_mail_execution.sql", "097_agent_model_batch.sql"]) await admin.query(await readFile(`db/migrations/${migration}`, "utf8"));
@@ -142,6 +144,34 @@ try {
   assert((await loadMemory(owners[1], { market: "DE" })).some(m => m.id === policy.id)); checks++;
   assert(!(await loadMemory(owners[1], { market: "FR" })).some(m => m.id === policy.id)); checks++;
   await assert.rejects(saveMemory(context, { ...preference, kind: "policy" }, true)); checks++;
+  const historyId=randomUUID();
+  await tenantQuery(owners[0],`insert into user_outreach_memory(id,user_id,kind,external_id,title,content,market_codes,channel_roles,context)
+    values($1::uuid,$2,'email-style',$1::text,'Synthetic literal %_ preference','Synthetic historical style',array['UK'],array['distributor'],$3::jsonb)`,
+    [historyId,owners[0],JSON.stringify({companyExternalId:'synthetic-company',sourceMessage:'synthetic-source'})]);
+  const search=(userId:string,extra:Record<string,unknown>={})=>searchHistoricalMemory(userId,{query:'%_',offset:0,limit:20,...extra});
+  const history=await search(owners[0],{market:'GB',company:'synthetic-company',role:'distributor'});
+  assert(history.items.some(m=>m.id===historyId));checks++;
+  const original=history.items.find(m=>m.id===historyId)!;
+  assert.equal(original.source_store,'user_outreach_memory');assert.equal(original.usage_scope,'internal-learning');assert.equal(original.mandatory,false);checks++;
+  assert.equal((original.source_refs as {sourceMessage:string}).sourceMessage,'synthetic-source');checks++;
+  assert(!(await search(owners[1])).items.some(m=>m.id===historyId));checks++;
+  assert(!(await search(owners[0],{market:'FR'})).items.some(m=>m.id===historyId));checks++;
+  assert(!(await search(owners[0],{company:'other-company'})).items.some(m=>m.id===historyId));checks++;
+  assert(!(await search(owners[0],{role:'retailer'})).items.some(m=>m.id===historyId));checks++;
+  await tenantQuery(owners[0],"update user_outreach_memory set status='archived' where id=$1",[historyId]);
+  assert(!(await search(owners[0])).items.some(m=>m.id===historyId));checks++;
+  await admin.query(`insert into outreach_knowledge_item(id,visibility,kind,external_id,title,content,market_codes,source_refs,approval_status)
+    values($1::uuid,'shared','distribution-policy',$1::text,'Synthetic policy','Synthetic default policy',array['BENELUX'],$2::jsonb,'active')`,
+    [historicalPolicyId,JSON.stringify({companyExternalId:'synthetic-company'})]);
+  const inherited=(await loadDecisionMemory(owners[1],{market:'NL',company:'synthetic-company'})).find(m=>m.id===historicalPolicyId)!;
+  assert(inherited);assert.equal(inherited.mandatory,false);assert.equal(inherited.source_kind,'legacy-active');checks++;
+  assert(!(await loadDecisionMemory(owners[1],{market:'DE'})).some(m=>m.id===historicalPolicyId));checks++;
+  assert(!(await loadDecisionMemory(owners[1],{market:'NL',company:'other-company'})).some(m=>m.id===historicalPolicyId));checks++;
+  await admin.query("update outreach_knowledge_item set content='Revised synthetic default',updated_at=now() where id=$1",[historicalPolicyId]);
+  const revised=(await loadDecisionMemory(owners[1],{market:'NL',company:'synthetic-company'})).find(m=>m.id===historicalPolicyId)!;
+  assert.notEqual(JSON.stringify(revised),JSON.stringify(inherited));checks++;
+  await admin.query("update outreach_knowledge_item set approval_status='archived' where id=$1",[historicalPolicyId]);
+  assert(!(await loadDecisionMemory(owners[1])).some(m=>m.id===historicalPolicyId));checks++;
   const schedule = await createSchedule(owners[0], { title: "Synthetic schedule", content: "Synthetic task with no provider calls", plan: { kind: "interval", minutes: 60 } });
   assert.equal(schedule.timezone, "Asia/Shanghai"); checks++;
   assert(!(await listSchedules(owners[1])).some(s => s.id === schedule.id)); checks++;
@@ -177,6 +207,7 @@ try {
   assert.equal((await admin.query("select id from outbound_mail where user_id=any($1::uuid[])",[owners])).rowCount,0);checks++;
   console.log(JSON.stringify({ passed: checks, synthetic: true, modelCalls: 0, searchCalls: 0, sends: 0, customerDataModified: false }));
 } finally {
+  await admin.query("delete from outreach_knowledge_item where id=$1",[historicalPolicyId]);
   await admin.query("delete from agent_schedule where user_id=any($1::uuid[])", [owners]);
   await admin.query("delete from agent_memory_version where memory_id in(select id from agent_memory where owner_id=any($1::uuid[]))", [owners]);
   await admin.query("delete from agent_memory where owner_id=any($1::uuid[])", [owners]);
@@ -184,6 +215,8 @@ try {
   await admin.query("delete from agent_skill_version where skill_id in(select id from agent_skill where owner_id=any($1::uuid[]))", [owners]);
   await admin.query("delete from agent_skill where owner_id=any($1::uuid[])", [owners]);
   for (const id of owners) {
+    // The legacy audit trigger needs its parent account alive during DELETE.
+    await admin.query("delete from user_outreach_memory where user_id=$1",[id]);
     await admin.query("delete from agent_run_event where user_id=$1", [id]);
     await admin.query("delete from agent_tool_call where user_id=$1", [id]);
     await admin.query("delete from agent_approval where user_id=$1", [id]);

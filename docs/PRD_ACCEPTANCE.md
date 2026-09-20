@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+> 2026-09-20 P5 partial: current main-Agent policy context now includes historical shared distribution defaults; account historical preferences/company decisions are searchable with original identity and usage scope. Ninety-three PostgreSQL checks and 1,267 regression assertions passed. Historical write unification, semantic retrieval and complete P5/P6 release acceptance are still open. [Evidence](MAIN_AGENT_ACCEPTANCE.md).
+
 > 2026-09-20 P5 partial: new memory versions preserve the actual predecessor and active state for undo after branching or reactivation. Eighty isolated PostgreSQL checks passed; older snapshots retain historical fallback and full P5 acceptance is open. [Evidence](MAIN_AGENT_ACCEPTANCE.md).
 
 > 2026-09-20: MA01-MA09 confirmed; see [main Agent implementation workflow](MAIN_AGENT_WORKFLOW.md). These are new targets, not completed implementation or release evidence.
