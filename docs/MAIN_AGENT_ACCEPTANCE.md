@@ -8,6 +8,8 @@ Local verification: 47 focused assertions and 13 isolated batch-database asserti
 
 A separate real main-Agent flow initially misclassified OpenRouter's dated canonical model as an admission mismatch. Its original submitted batch was reconciled by exact custom ID and reused without repurchase. The correction accepts only the same model plus a date and preserves valid acknowledgement IDs even if other fields change. This was an implementation defect found during live acceptance, not a GLM provider failure. The resumed public synthetic run then completed capability discovery and final synthesis: 6,948 input / 668 output tokens, US$0.00632807 provider-reported cost across two batches, with 801,109 and 1,220,529 ms recorded latencies. Both outputs were used by the graph; no private input, external send or unexpected action occurred. This is a single live flow, not the 120-case quality or release acceptance.
 
+MA05 reconciliation follow-up: an isolated account with no `user_spend_budget` row completed a synthetic batch and appended a distinct provider-report observation to its owned reservation. The original 13 batch database checks increased to 15; full regression remained 249 files / 1,248 assertions. Strict financial policy still requires its budget owner. No real provider call was made in this follow-up.
+
 ## Durable legacy mail admission and safe recovery - 2026-09-20
 
 Migration 096 adds deterministic mail execution to the same persistent queue. The authenticated final-send form stores exact approval before releasing its task; the worker uses LangGraph and the shared per-item executor without a language-model call. A status endpoint and composer polling report actual settlement. No actual SMTP acceptance is claimed.

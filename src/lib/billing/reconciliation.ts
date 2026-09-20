@@ -1,6 +1,7 @@
 import {tenantTransaction} from "@/lib/rag/db";
 import {planCostReconciliation,type CostObservationKind} from "./reconciliation-policy";
 import {observationCostAllocation} from "./observation-allocation";
+import {currentStagePaidCallOverride} from "./stage-paid-call-override";
 
 interface VerifiedObservationInput {
   kind:CostObservationKind;
@@ -21,7 +22,9 @@ export async function recordVerifiedCostObservation(userId:string,reservationId:
   if(!["usage-estimate","provider-report","invoice","verified-unbilled"].includes(input.kind))throw new Error("Invalid observation kind");
   return tenantTransaction(userId,async client=>{
     const budget=await client.query("select user_id from user_spend_budget where user_id=$1 for update",[userId]);
-    if(!budget.rows.length)throw new Error("Budget owner missing");
+    // MA05 treats the legacy budget as advisory. A new account may have no
+    // budget row while its paid reservation and provider report are valid.
+    if(!budget.rows.length&&currentStagePaidCallOverride(userId)?.ruleId!=="MA05")throw new Error("Budget owner missing");
     const rows=await client.query<{reserved_micros:string;cost_bound_known:boolean;occupied_micros:string|null;settled_micros:string|null;settled_source:CostObservationKind|null;provider_request_hash:string|null;tariff_key:string;tariff_version:string;metrics:unknown}>(
       "select reserved_micros::text,cost_bound_known,occupied_micros::text,settled_micros::text,settled_source,provider_request_hash,tariff_key,tariff_version,metrics from paid_call_reservation where user_id=$1 and id=$2 for update",[userId,reservationId]);
     const row=rows.rows[0];if(!row)throw new Error("Reservation not owned or missing");
@@ -45,7 +48,7 @@ export async function recordVerifiedCostObservation(userId:string,reservationId:
       invoice_micros=case when $3='invoice' and $8 then $4::bigint else invoice_micros end,
       settled_micros=$5,settled_source=$6,occupied_micros=$7,updated_at=now() where user_id=$1 and id=$2`,
       [userId,reservationId,input.kind,input.amountMicros,plan.settledMicros,plan.settledSource,plan.occupiedAfter,plan.canSettle]);
-    if(plan.occupiedDelta!==0)await client.query("update user_spend_budget set occupied_micros=occupied_micros+$2,updated_at=now() where user_id=$1",[userId,plan.occupiedDelta]);
+    if(plan.occupiedDelta!==0&&budget.rows.length)await client.query("update user_spend_budget set occupied_micros=occupied_micros+$2,updated_at=now() where user_id=$1",[userId,plan.occupiedDelta]);
     if(plan.suspendRule)await client.query("insert into paid_rule_hold(user_id,tariff_key,tariff_version,reason) values($1,$2,$3,'reported-charge-above-bound') on conflict do nothing",[userId,row.tariff_key,row.tariff_version]);
     return {duplicate:false,...plan};
   });

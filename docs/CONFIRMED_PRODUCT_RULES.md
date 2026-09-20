@@ -7,6 +7,8 @@ Latest explicit decision, MA10 (2026-09-20): user said “改用Openrouter网关
 
 MA10 implementation update: the code default, example configuration and local non-secret main-model/provider configuration now select GLM/Fireworks. Migration 097 and the durable batch transport/poller are implemented. The real two-item public batch passed text and exact tool-argument checks (199 input / 22 output tokens, reported US$0.00018314, 680 seconds). Unit/database recovery checks passed. A separate real public synthetic main-Agent flow completed both discovery and final synthesis turns after exact-ID recovery, using 6,948 input / 668 output tokens at reported US$0.00632807; private inputs and sends were zero. The P0–P6 release gates remain pending. See [route evidence](MAIN_AGENT_MODEL_ROUTE_2026-09-20.md).
 
+MA05 implementation follow-up (not a new rule): in observation mode, an owned paid call can record a later verified cost observation even if the account has never created a legacy budget row. Isolated PostgreSQL verification passed; the remaining MA05 acceptance and release gates are still pending.
+
 Source: the complete P0-P6 plan supplied by the user for implementation. Confirmation is NOT implementation or acceptance evidence. Historical rules remain below; only the explicit supersessions in this table apply. See [implementation workflow](MAIN_AGENT_WORKFLOW.md).
 
 MA06/MA08 implementation update: original mail-page final confirmation now persists exact approval before enqueueing deterministic LangGraph delivery. Per-leaf locked instruction checks and safe-boundary restart are implemented. 70 isolated database assertions and 1,239 local regression assertions passed; actual SMTP acceptance remains pending.

@@ -1,11 +1,12 @@
 import assert from "node:assert/strict";
-import {randomUUID} from "node:crypto";
+import {randomUUID,createHash} from "node:crypto";
 import {Pool} from "pg";
 import {databaseConnectionString,databaseSslConfiguration} from "../src/lib/rag/database-ssl";
 import {getPool,tenantQuery} from "../src/lib/rag/db";
 import {enqueueRun,finishRun} from "../src/lib/assistant/main/repository";
 import {requestDurableBatchModel,pollDueModelBatch,ModelBatchPending} from "../src/lib/assistant/main/model-batch";
 import {withProductSpend} from "../src/lib/billing/context";
+import {recordVerifiedCostObservation} from "../src/lib/billing/reconciliation";
 import type {ExecutionContext,ModelMessage} from "../src/lib/assistant/main/contracts";
 const url=process.env.DATABASE_MIGRATION_URL||process.env.DATABASE_URL;if(!url)throw new Error("Database required");
 const parsed=new URL(url),runtime=new URL(process.env.DATABASE_URL!);
@@ -42,6 +43,9 @@ try {
   assert.equal((await invoke()).content,"Synthetic result");assert.equal(submissions,1);checks++;
   const settled=(await tenantQuery<{status:string;reported_micros:string;metrics:{inputTokens:number;validOutputItems:number}}>(owners[0],"select status,reported_micros::text,metrics from paid_call_reservation where user_id=$1 and id=$2",[owners[0],jobs[0].reservation_id]))[0];
   assert.equal(settled.status,"reported");assert.equal(settled.reported_micros,"36");assert.equal(settled.metrics.inputTokens,20);checks++;
+  assert.equal((await tenantQuery(owners[0],"select user_id from user_spend_budget where user_id=$1",[owners[0]])).length,0);checks++;
+  const observation=await recordVerifiedCostObservation(owners[0],jobs[0].reservation_id,{kind:"provider-report",amountMicros:36,complete:false,sourceReferenceHash:createHash("sha256").update(`${jobs[0].reservation_id}:supplemental-report`).digest("hex"),sourceVersion:"synthetic-ma05-no-budget-v1"});
+  assert.equal(observation.duplicate,false);checks++;
   assert.equal(await pollDueModelBatch(jobs[0].id,async()=>{throw new Error("Must not poll terminal batch");}),false);checks++;
   // Second submitted step is cancelled locally. Its late final usage still gets
   // saved, while no model planning or tool execution is resumed.
