@@ -9,6 +9,8 @@ MA10 implementation update: the code default, example configuration and local no
 
 MA05 implementation follow-up (not a new rule): in observation mode, an owned paid call can record a later verified cost observation even if the account has never created a legacy budget row. Isolated PostgreSQL verification passed; the remaining MA05 acceptance and release gates are still pending.
 
+MA04 implementation follow-up (not a new rule): the standard digest-pinned Docker sandbox image now builds and passes real isolated Python and Node script tests. Playwright, external browser control and remaining Skill import modes are still pending; this is not P4 acceptance.
+
 Source: the complete P0-P6 plan supplied by the user for implementation. Confirmation is NOT implementation or acceptance evidence. Historical rules remain below; only the explicit supersessions in this table apply. See [implementation workflow](MAIN_AGENT_WORKFLOW.md).
 
 MA06/MA08 implementation update: original mail-page final confirmation now persists exact approval before enqueueing deterministic LangGraph delivery. Per-leaf locked instruction checks and safe-boundary restart are implemented. 70 isolated database assertions and 1,239 local regression assertions passed; actual SMTP acceptance remains pending.

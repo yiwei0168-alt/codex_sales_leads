@@ -2,9 +2,9 @@ import assert from "node:assert/strict";
 import { readdir } from "node:fs/promises";
 import { runSkillScript } from "../src/lib/assistant/main/sandbox";
 
-// This cached Linux image is a diagnostic fixture with Python, not the full
-// Node/Python/Playwright production image. Never mount the repository itself.
-process.env.AGENT_SANDBOX_IMAGE = "codex-agent-sandbox:diagnostic";
+// Exercise the standard deployable Node/Python image. Browser dependencies
+// remain a separate acceptance gate. Never mount the repository itself.
+process.env.AGENT_SANDBOX_IMAGE = "codex-agent-sandbox:1";
 const script = `import json, os, socket
 from pathlib import Path
 input_data=json.loads(Path('/input/task-input.json').read_text())
