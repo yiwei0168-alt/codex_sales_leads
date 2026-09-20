@@ -1,5 +1,13 @@
 # Main Agent acceptance log
 
+## MA10 GLM batch transport - 2026-09-20
+
+User-selected main default changed to `z-ai/glm-5.3:batch` / `fireworks`. Migration 097 adds tenant-isolated batch receipts, delayed task eligibility and independent result polling. Text and exact tool arguments passed in one real two-item batch: 199 input / 22 output tokens, US$0.00018314 provider report, 680 seconds. The comparison models returned explicit regional 403 errors. [Detailed provider evidence](MAIN_AGENT_MODEL_ROUTE_2026-09-20.md).
+
+Local verification: 47 focused assertions and 13 isolated batch-database assertions; the original 70-database suite also passed with migration 097. These cover no resubmission after recovery, pending acknowledgements, tenant isolation, final cost recording, cancellation/late receipts, policy revisions and canonical dated model matching. Final full regression: 249 files / 1,248 assertions, 27.25s. Typecheck, scoped lint, production build, all five LangGraph exports and the generated 49-tool catalog passed.
+
+A separate real main-Agent flow initially misclassified OpenRouter's dated canonical model as an admission mismatch. Its original submitted batch was reconciled by exact custom ID and reused without repurchase. The correction accepts only the same model plus a date and preserves valid acknowledgement IDs even if other fields change. This was an implementation defect found during live acceptance, not a GLM provider failure. The resumed public synthetic run then completed capability discovery and final synthesis: 6,948 input / 668 output tokens, US$0.00632807 provider-reported cost across two batches, with 801,109 and 1,220,529 ms recorded latencies. Both outputs were used by the graph; no private input, external send or unexpected action occurred. This is a single live flow, not the 120-case quality or release acceptance.
+
 ## Durable legacy mail admission and safe recovery - 2026-09-20
 
 Migration 096 adds deterministic mail execution to the same persistent queue. The authenticated final-send form stores exact approval before releasing its task; the worker uses LangGraph and the shared per-item executor without a language-model call. A status endpoint and composer polling report actual settlement. No actual SMTP acceptance is claimed.

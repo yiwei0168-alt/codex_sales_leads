@@ -2,6 +2,7 @@ import { z } from "zod";
 import { getOpenRouterConfig } from "@/providers/openrouter";
 import { budgetedFetch } from "@/lib/billing/paid-fetch";
 import type { ModelConfig, ModelMessage } from "./contracts";
+import { assertOpenRouterResponse } from "@/providers/openrouter-batch";
 
 export const modelReplySchema = z.object({
   role: z.literal("assistant"), content: z.string().nullable().optional(),
@@ -14,6 +15,7 @@ export const modelFunctions = [
   { type: "function", function: { name: "execute_tool", description: "Execute a described capability under server-injected account permissions", parameters: { type: "object", properties: { tool: { type: "string" }, arguments: { type: "object", additionalProperties: true } }, required: ["tool", "arguments"], additionalProperties: false } } },
 ];
 export async function requestModel(messages: ModelMessage[], config: ModelConfig, transport: typeof fetch = fetch) {
+  if(config.model.endsWith(":batch"))throw new Error("Batch model requires the durable asynchronous transport");
   const route = getOpenRouterConfig();
   const response = await budgetedFetch(transport)(`${route.baseUrl}/chat/completions`, {
     method: "POST", headers: { ...route.defaultHeaders, Authorization: `Bearer ${route.apiKey}`, "Content-Type": "application/json" },
@@ -21,10 +23,13 @@ export async function requestModel(messages: ModelMessage[], config: ModelConfig
       max_completion_tokens: 16_384, provider: { ...route.providerPreferences, only: config.providers, allow_fallbacks: false } }),
     signal: AbortSignal.timeout(180_000), redirect: "error",
   });
-  if (!response.ok) throw new Error(`Main model HTTP ${response.status}`);
+  await assertOpenRouterResponse(response);
+  return parseModelResponse(await response.json());
+}
+export function parseModelResponse(value:unknown) {
   const body = z.object({ choices: z.array(z.object({ message: modelReplySchema, finish_reason: z.string() })).min(1),
     usage: z.object({ prompt_tokens: z.number().optional(), completion_tokens: z.number().optional(), cost: z.number().optional() }).optional(),
-  }).parse(await response.json());
+  }).parse(value);
   if (!["stop", "tool_calls"].includes(body.choices[0].finish_reason)) throw new Error("Main model output incomplete");
   const reply = body.choices[0].message;
   if (!reply.content?.trim() && !reply.tool_calls?.length) throw new Error("Main model returned no content");

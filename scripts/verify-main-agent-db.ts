@@ -28,7 +28,7 @@ const admin = new Pool({ connectionString: databaseConnectionString(url), ssl: d
 const owners = [randomUUID(), randomUUID()];
 let checks = 0;
 try {
-  if (process.argv.includes("--apply")) for (const migration of ["090_main_agent_runtime.sql", "091_agent_approvals.sql", "092_independent_outbound_mail.sql", "093_agent_skills.sql", "094_agent_memory.sql", "095_agent_schedules.sql", "096_agent_mail_execution.sql"]) await admin.query(await readFile(`db/migrations/${migration}`, "utf8"));
+  if (process.argv.includes("--apply")) for (const migration of ["090_main_agent_runtime.sql", "091_agent_approvals.sql", "092_independent_outbound_mail.sql", "093_agent_skills.sql", "094_agent_memory.sql", "095_agent_schedules.sql", "096_agent_mail_execution.sql", "097_agent_model_batch.sql"]) await admin.query(await readFile(`db/migrations/${migration}`, "utf8"));
   for (const id of owners) await admin.query("insert into app_user(id,email,display_name) values($1,$2,'Synthetic main Agent test')", [id, `${id}@example.invalid`]);
   const input = { content: "Synthetic isolated task, no provider calls", requestKey: randomUUID(), attachments: [] };
   const run = await enqueueRun(owners[0], input, defaultModelConfig());

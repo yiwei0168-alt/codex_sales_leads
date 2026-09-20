@@ -84,10 +84,10 @@ export async function controlRun(userId: string, id: string, action: "pause" | "
     if (["completed", "cancelled"].includes(run.status)) throw new Error("Task is terminal; create a new task");
     if (action === "instruct") {
       if (!content?.trim()) throw new Error("Instruction required");
-      await client.query("update agent_run set instructions=instructions||$3::jsonb,status=case when status='waiting_user' then 'queued' else status end,updated_at=now() where user_id=$1 and id=$2", [userId, id, JSON.stringify([{ id: randomUUID(), content }])]);
+      await client.query("update agent_run set instructions=instructions||$3::jsonb,status=case when status='waiting_user' then 'queued' else status end,next_attempt_at=now(),updated_at=now() where user_id=$1 and id=$2", [userId, id, JSON.stringify([{ id: randomUUID(), content }])]);
     } else if (action === "resume") {
       if (run.status === "running") throw new Error("Task is already running");
-      await client.query("update agent_run set status='queued',control=null,lease_token=null,lease_until=null,updated_at=now() where user_id=$1 and id=$2", [userId, id]);
+      await client.query("update agent_run set status='queued',control=null,lease_token=null,lease_until=null,next_attempt_at=now(),updated_at=now() where user_id=$1 and id=$2", [userId, id]);
     } else if (run.status === "running") {
       await client.query("update agent_run set control=$3,updated_at=now() where user_id=$1 and id=$2", [userId, id, action]);
     } else {
@@ -113,7 +113,7 @@ export async function finishRun(context: ExecutionContext, status: RunStatus, re
       if (ready.rowCount) changed.rows[0].status = "queued";
     }
     await client.query("insert into agent_run_event(user_id,run_id,kind,payload) values($1,$2,'status',$3)", [context.userId, context.runId, JSON.stringify({ status: changed.rows[0].status, reply })]);
-    if (reply) await client.query(`insert into assistant_message(user_id,conversation_id,role,intent,content,metadata)
+    if (reply&&status!=="queued") await client.query(`insert into assistant_message(user_id,conversation_id,role,intent,content,metadata)
       values($1,$2,'assistant','general',$3,$4)`, [context.userId, changed.rows[0].conversation_id, reply, JSON.stringify({ runId: context.runId, status: changed.rows[0].status })]);
     await client.query("update assistant_conversation set updated_at=now() where user_id=$1 and id=$2", [context.userId, changed.rows[0].conversation_id]);
   });

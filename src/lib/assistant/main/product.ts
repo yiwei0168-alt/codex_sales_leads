@@ -1,10 +1,10 @@
 import type { ModelConfig, ProductTool } from "./contracts";
 
-export const PRODUCT_VERSION = "main-agent-product-v1";
+export const PRODUCT_VERSION = "main-agent-product-v2-glm-batch";
 export function defaultModelConfig(): ModelConfig {
-  const model = process.env.MAIN_AGENT_MODEL?.trim() || "openai/gpt-5.6-sol";
-  const providers = (process.env.MAIN_AGENT_PROVIDERS || "openai").split(",").map(s => s.trim()).filter(Boolean);
-  if (!/^[a-z0-9._/-]{1,160}$/i.test(model) || providers.some(p => !/^[a-z0-9._/-]{1,100}$/i.test(p))) throw new Error("Invalid main model route");
+  const model = process.env.MAIN_AGENT_MODEL?.trim() || "z-ai/glm-5.3:batch";
+  const providers = (process.env.MAIN_AGENT_PROVIDERS || (model==="z-ai/glm-5.3:batch"?"fireworks":"openai")).split(",").map(s => s.trim()).filter(Boolean);
+  if (!/^[a-z0-9._/-]+(?::[a-z0-9_-]+)?$/i.test(model) ||model.length>160||!providers.length||providers.some(p => !/^[a-z0-9._/-]{1,100}$/i.test(p))) throw new Error("Invalid main model route");
   return { model, providers, version: PRODUCT_VERSION };
 }
 export function mainAgentEnabled(role: "admin" | "member"): boolean {

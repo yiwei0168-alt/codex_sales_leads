@@ -4,6 +4,7 @@ import { Client } from "@langchain/langgraph-sdk";
 import { claimRun, heartbeat, finishRun } from "../src/lib/assistant/main/repository";
 import type { ExecutionContext } from "../src/lib/assistant/main/contracts";
 import { dispatchDueSchedule } from "../src/lib/assistant/main/schedules";
+import {pollDueModelBatch} from "../src/lib/assistant/main/model-batch";
 
 nextEnv.loadEnvConfig(process.cwd());
 const client = new Client({ apiUrl: process.env.LANGGRAPH_API_URL || "http://127.0.0.1:2024", apiKey: null, callerOptions: { maxRetries: 0 } });
@@ -12,6 +13,7 @@ let stopping = false;
 process.on("SIGINT", () => { stopping = true; });
 process.on("SIGTERM", () => { stopping = true; });
 do {
+  await pollDueModelBatch();
   await dispatchDueSchedule();
   const run = await claimRun(workerId);
   if (!run) {

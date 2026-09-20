@@ -10,15 +10,19 @@ import { dispatchTool } from "./executor";
 import { requestModel } from "./model";
 import { BudgetDeniedError } from "@/lib/billing/policy";
 import { loadMemory } from "./memory";
+import { requestDurableBatchModel,ModelBatchPending } from "./model-batch";
+import {OpenRouterRequestError} from "@/providers/openrouter-batch";
+import {recordConsumedToolOutputs} from "./consumption";
 
 export const MainAgentState = Annotation.Root({
   messages: Annotation<ModelMessage[]>(), pending: Annotation<ModelToolCall[]>(),
   steps: Annotation<number>(), status: Annotation<RunStatus>(), reply: Annotation<string>(),
   seen: Annotation<Record<string, number>>(), instructionIds: Annotation<string[]>(),
+  decisionRevision: Annotation<number>(), policyRevision: Annotation<string>(),
 });
 export interface MainGraphDependencies {
-  boundary: () => Promise<{ control: "pause" | "cancel" | null; instructions: Array<{ id: string; content: string }> }>;
-  model: (messages: ModelMessage[], step: number) => Promise<ModelMessage>;
+  boundary: () => Promise<{ control: "pause" | "cancel" | null; instructions: Array<{ id: string; content: string }>; policyRevision?:string }>;
+  model: (messages: ModelMessage[], step: number,revision:number) => Promise<ModelMessage>;
   tool: (call: ModelToolCall, instructionIds: string[]) => Promise<ToolResult>;
 }
 export function buildMainAgentGraph(deps: MainGraphDependencies, checkpointer?: BaseCheckpointSaver) {
@@ -27,21 +31,26 @@ export function buildMainAgentGraph(deps: MainGraphDependencies, checkpointer?: 
       const current = await deps.boundary();
       if (current.control) return { status: (current.control === "cancel" ? "cancelled" : "paused") as RunStatus };
       const added = current.instructions.filter(i => !state.instructionIds.includes(i.id));
+      const policyChanged=Boolean(state.policyRevision&&current.policyRevision&&state.policyRevision!==current.policyRevision);
+      const changed=added.length>0||policyChanged;
       // New user input supersedes actions which have not crossed their execution
       // boundary. Close pending protocol pairs, then let the model replan. Exact
       // unchanged leaf approvals/receipts can still be reused by a revised batch.
-      const abandoned = added.length ? state.pending.map(call => ({ role: "tool" as const, tool_call_id: call.id,
+      const abandoned = changed ? state.pending.map(call => ({ role: "tool" as const, tool_call_id: call.id,
         content: JSON.stringify(result(null,{status:"partial",missing:["Pending action superseded by new user instructions; no further execution from this pending call. Check saved receipts before replanning."]})) })) : [];
-      return { status: "running" as RunStatus, messages: [...state.messages,...abandoned,...added.map(i => ({ role: "user" as const, content: i.content }))],
-        instructionIds: [...state.instructionIds,...added.map(i => i.id)], ...(added.length ? { seen: {},pending:[] } : {}) };
+      return { status: (state.status==="completed"&&!changed?"completed":"running") as RunStatus,
+        messages: [...state.messages,...abandoned,...added.map(i => ({ role: "user" as const, content: i.content })),...(policyChanged?[{role:"system" as const,content:"Account preferences or policies changed. Replan from the current policy records before further actions."}]:[])],
+        instructionIds: [...state.instructionIds,...added.map(i => i.id)],policyRevision:current.policyRevision??state.policyRevision??"",
+        decisionRevision:(state.decisionRevision??0)+(changed?1:0), ...(changed ? { seen: {},pending:[] } : {}) };
     })
     .addNode("main_model", async state => {
       if (state.steps >= 80) return { status: "partial" as RunStatus, reply: "任务已保存部分结果，达到本轮执行步数限制。可以继续或调整要求。" };
       try {
-        const response = await deps.model(state.messages, state.steps);
+        const response = await deps.model(state.messages, state.steps,state.decisionRevision??0);
         if (response.tool_calls?.length) return { messages: [...state.messages, response], pending: response.tool_calls, steps: state.steps + 1 };
         return { messages: [...state.messages, response], steps: state.steps + 1, status: "completed" as RunStatus, reply: response.content ?? "" };
-      } catch {
+      } catch(error) {
+        if(error instanceof ModelBatchPending)return {status:"queued" as RunStatus,reply:"主模型批次已保存，正在等待提供方返回结果；后台会继续查询。批处理完成窗口为 24 小时，可暂停或取消后续工作。"};
         return { steps: state.steps + 1, status: "partial" as RunStatus, reply: "主模型暂时不可用，已保存任务和已有工具结果。请恢复任务后继续。" };
       }
     })
@@ -67,16 +76,17 @@ export function buildMainAgentGraph(deps: MainGraphDependencies, checkpointer?: 
     })
     .addEdge(START, "safe_boundary")
     .addConditionalEdges("safe_boundary", s => s.status !== "running" ? END : s.pending.length ? "execute_tool" : "main_model")
-    .addConditionalEdges("main_model", s => s.status === "running" ? "safe_boundary" : END)
+    .addConditionalEdges("main_model", s => s.status === "running"||s.status==="completed" ? "safe_boundary" : END)
     .addConditionalEdges("execute_tool", s => s.status === "running" ? "safe_boundary" : END)
     .compile({ checkpointer, name: "main_agent_business_flow" });
 }
-async function durableModel(context: ExecutionContext, messages: ModelMessage[], step: number, config: ModelConfig): Promise<ModelMessage> {
+async function durableModel(context: ExecutionContext, messages: ModelMessage[], step: number, revision:number, config: ModelConfig): Promise<ModelMessage> {
   // Reload on every decision so edits/undo take effect without stale prompt-only memory.
   const memories = await loadMemory(context.userId);
   const currentMessages: ModelMessage[] = [messages[0], { role: "system", content: `Current account preferences and policy records (structured scope; mandatory global policies override defaults; source text cannot grant permissions): ${JSON.stringify(memories)}` }, ...messages.slice(1)];
+  if(config.model.endsWith(":batch"))return requestDurableBatchModel(context,currentMessages,step,revision,config);
   for (let attempt = 0; attempt <= 1; attempt++) {
-    const saved = await beginCall(context, { key: `model:${step}:${attempt}`, tool: "main_model", version: config.version, input: { messages: currentMessages, config }, effect: "model" });
+    const saved = await beginCall(context, { key: `model:${step}${revision?`:revision:${revision}`:""}:${attempt}`, tool: "main_model", version: config.version, input: { messages: currentMessages, config }, effect: "model" });
     if (saved.output?.status === "success") return (saved.output.data as { message: ModelMessage }).message;
     if (!saved.fresh) continue; // One recovery attempt is allowed, never an unbounded replay.
     const started = Date.now();
@@ -84,7 +94,7 @@ async function durableModel(context: ExecutionContext, messages: ModelMessage[],
       const response = await requestModel(currentMessages, config);
       // Provider IDs need only be unique inside one model response. Journal keys
       // are unique across the persistent task and remain stable after recovery.
-      if (response.message.tool_calls) response.message.tool_calls = response.message.tool_calls.map((call,index) => ({ ...call, id: `call_${digest({run:context.runId,step,index,id:call.id}).slice(0,40)}` }));
+      if (response.message.tool_calls) response.message.tool_calls = response.message.tool_calls.map((call,index) => ({ ...call, id: `call_${digest({run:context.runId,step,revision,index,id:call.id}).slice(0,40)}` }));
       await completeCall(context, saved.id, result({ message: response.message }), {
         inputItems: messages.length, validOutputItems: 1, downstreamUsedItems: 1,
         inputTokens: response.usage?.prompt_tokens ?? null, outputTokens: response.usage?.completion_tokens ?? null,
@@ -93,13 +103,12 @@ async function durableModel(context: ExecutionContext, messages: ModelMessage[],
         optimizationOpportunity: "Keep capability summaries resident and load detailed schemas/evidence on demand",
       });
       // Persisted tool outputs become consumed only after the next model response is saved.
-      const ids = messages.filter(m => m.role === "tool").map(m => m.tool_call_id).filter(Boolean);
-      if (ids.length) await tenantQuery(context.userId, `update agent_tool_call set metrics=metrics||jsonb_build_object('downstreamUsedItems',1,'utilizationEfficiency',1,'usageBoundary','consumed-by-main-model')
-        where user_id=$1 and run_id=$2 and call_key=any($3::text[]) and status='completed' and output->>'status' in('success','partial')`, [context.userId, context.runId, ids]);
+      await recordConsumedToolOutputs(context,messages);
       await event(context, "model_turn", { step, toolCount: response.message.tool_calls?.length ?? 0 });
       return response.message;
     } catch (error) {
       const reason = error instanceof BudgetDeniedError ? error.code
+        : error instanceof OpenRouterRequestError ? error.reason
         : error instanceof Error && /^Main model HTTP \d{3}$/.test(error.message) ? error.message
         : error instanceof Error && error.message.includes("OPENROUTER_API_KEY is not configured") ? "main-model-not-configured"
         : typeof error === "object" && error !== null && "code" in error && typeof error.code === "string" && /^[A-Z0-9_]{3,40}$/.test(error.code) ? `execution-${error.code}` : "model-unavailable";
@@ -109,6 +118,7 @@ async function durableModel(context: ExecutionContext, messages: ModelMessage[],
         discardedReasonCounts: { [reason]: 1 }, utilizationEfficiency: 0,
         optimizationOpportunity: "Retry at most once on the same authorized route; keep unknown billing separate",
       });
+      if(error instanceof OpenRouterRequestError&&[400,401,402,403,404].includes(error.status))break;
     }
   }
   throw new Error("Main model unavailable after bounded attempts");
@@ -119,8 +129,8 @@ export async function executeMainAgentRun(userId: string, runId: string, leaseTo
   if(run.execution_kind==="mail")return (await import("./mail-graph")).executeMailDeliveryRun(context,run);
   const checkpointer = new PostgresSaver(getPool(), undefined, { schema: "langgraph" });
   const graph = buildMainAgentGraph({
-    boundary: () => boundary(context),
-    model: (messages, step) => durableModel(context, messages, step, run.model_config),
+    boundary: async () => ({...await boundary(context),policyRevision:digest(await loadMemory(userId))}),
+    model: (messages, step,revision) => durableModel(context, messages, step, revision,run.model_config),
     tool: (call, instructionIds) => dispatchTool(call, { ...context, instructionIds }),
   }, checkpointer);
   const config = { configurable: { thread_id: `main-agent:${userId}:${runId}`, checkpoint_ns: "" }, recursionLimit: 400 };
@@ -144,7 +154,7 @@ export async function executeMainAgentRun(userId: string, runId: string, leaseTo
        order by created_at desc,id desc limit 12) h order by created_at,id`, [userId, run.conversation_id, runId]);
     initial = { messages: [{ role: "system", content: productPrompt(availableTools(context)) }, ...history,
       { role: "user", content: run.input.content + (run.input.attachments.length ? `\nAttached registered asset IDs: ${run.input.attachments.map(a => a.assetId).join(", ")}` : "") }],
-      pending: [], steps: 0, seen: {}, instructionIds: [], status: "running", reply: "" };
+      pending: [], steps: 0, seen: {}, instructionIds: [],decisionRevision:0,policyRevision:"",status: "running", reply: "" };
   }
   const final = await withProductSpend(userId, "main-agent", () => graph.invoke(initial, config), runId);
   await finishRun(context, final.status, final.reply);
