@@ -10,6 +10,9 @@ import { result, type ExecutionContext } from "../src/lib/assistant/main/contrac
 import { defaultModelConfig } from "../src/lib/assistant/main/product";
 import { requestApproval, decideApproval, listApprovals } from "../src/lib/assistant/main/approvals";
 import { productTools } from "../src/lib/assistant/main/tools";
+import { importSkill, listSkills, readSkill, changeSkill } from "../src/lib/assistant/main/skills";
+import { saveMemory, loadMemory, undoMemory } from "../src/lib/assistant/main/memory";
+import { createSchedule, listSchedules, changeSchedule, dispatchDueSchedule } from "../src/lib/assistant/main/schedules";
 
 nextEnv.loadEnvConfig(process.cwd());
 const url = process.env.DATABASE_MIGRATION_URL || process.env.DATABASE_URL;
@@ -22,7 +25,7 @@ const admin = new Pool({ connectionString: databaseConnectionString(url), ssl: d
 const owners = [randomUUID(), randomUUID()];
 let checks = 0;
 try {
-  if (process.argv.includes("--apply")) for (const migration of ["090_main_agent_runtime.sql", "091_agent_approvals.sql", "092_independent_outbound_mail.sql"]) await admin.query(await readFile(`db/migrations/${migration}`, "utf8"));
+  if (process.argv.includes("--apply")) for (const migration of ["090_main_agent_runtime.sql", "091_agent_approvals.sql", "092_independent_outbound_mail.sql", "093_agent_skills.sql", "094_agent_memory.sql", "095_agent_schedules.sql"]) await admin.query(await readFile(`db/migrations/${migration}`, "utf8"));
   for (const id of owners) await admin.query("insert into app_user(id,email,display_name) values($1,$2,'Synthetic main Agent test')", [id, `${id}@example.invalid`]);
   const input = { content: "Synthetic isolated task, no provider calls", requestKey: randomUUID(), attachments: [] };
   const run = await enqueueRun(owners[0], input, defaultModelConfig());
@@ -59,12 +62,57 @@ try {
   await decideApproval(owners[0], second.id, second.parameter_hash, "approve");
   await decideApproval(owners[0], second.id, second.parameter_hash, "revoke");
   await assert.rejects(beginCall(context, { ...sendCall, key: "smtp-revoked", input: { ...mail, to: "second@example.invalid" }, approvalId: second.id })); checks++;
+  const privateSkill = await importSkill(context, { name: "Private synthetic", source: "synthetic", files: { "SKILL.md": "Account method" }, dependencies: [] });
+  assert(!(await listSkills(owners[1])).some(s => s.id === privateSkill.id)); checks++;
+  const globalContext = { ...context, role: "admin" as const };
+  const shared = await importSkill(globalContext, { name: "Global synthetic", source: "synthetic", files: { "SKILL.md": "Version one" }, dependencies: [] });
+  assert(!(await listSkills(owners[1])).some(s => s.id === shared.id)); checks++;
+  await changeSkill(globalContext, { id: shared.id, version: 1, operation: "publish" });
+  assert((await listSkills(owners[1])).some(s => s.id === shared.id)); checks++;
+  const secondRun = await enqueueRun(owners[1], { ...input, requestKey: randomUUID() }, defaultModelConfig());
+  const otherContext = { ...context, userId: owners[1], runId: secondRun.id };
+  assert.equal((await readSkill(otherContext, shared.id))?.version, 1); checks++;
+  await importSkill(globalContext, { skillId: shared.id, expectedVersion: 1, name: "Global synthetic", source: "synthetic", files: { "SKILL.md": "Version two" }, dependencies: [] });
+  assert.equal((await readSkill(otherContext, shared.id))?.version, 1); checks++;
+  await assert.rejects(tenantQuery(owners[1], "insert into agent_run_skill(user_id,run_id,skill_id,version) values($1,$2,$3,1)", [owners[1], secondRun.id, privateSkill.id])); checks++;
+  const preference = { key: "language", content: "English", kind: "preference" as const, scope: "account" as const, mandatory: false, markets: [], companies: [] };
+  const memory = await saveMemory(context, preference, true);
+  assert(!(await loadMemory(owners[1])).some(m => m.id === memory.id)); checks++;
+  assert.equal(await undoMemory(owners[1], memory.id, 1), false); checks++;
+  assert.equal(await undoMemory(owners[0], memory.id, 1), true); checks++;
+  assert(!(await loadMemory(owners[0])).some(m => m.id === memory.id)); checks++;
+  await saveMemory(context, { ...preference, content: "Chinese", expectedVersion: 1 }, false);
+  assert.equal((await saveMemory(context, { ...preference, expectedVersion: 2 }, true)).saved, false); checks++;
+  const policy = await saveMemory(globalContext, { ...preference, key: "market-policy", content: "Synthetic mandatory rule", kind: "policy", scope: "global", mandatory: true, markets: ["DE"] }, false);
+  assert((await loadMemory(owners[1], { market: "DE" })).some(m => m.id === policy.id)); checks++;
+  assert(!(await loadMemory(owners[1], { market: "FR" })).some(m => m.id === policy.id)); checks++;
+  await assert.rejects(saveMemory(context, { ...preference, kind: "policy" }, true)); checks++;
+  const schedule = await createSchedule(owners[0], { title: "Synthetic schedule", content: "Synthetic task with no provider calls", plan: { kind: "interval", minutes: 60 } });
+  assert.equal(schedule.timezone, "Asia/Shanghai"); checks++;
+  assert(!(await listSchedules(owners[1])).some(s => s.id === schedule.id)); checks++;
+  assert.equal(await changeSchedule(owners[1], schedule.id as string, 1, false), false); checks++;
+  assert.equal(await changeSchedule(owners[0], schedule.id as string, 2, false), false); checks++;
+  await tenantQuery(owners[0], "update agent_schedule set next_run_at=now()-interval '3 days' where id=$1 and user_id=$2", [schedule.id, owners[0]]);
+  assert.equal(await dispatchDueSchedule(schedule.id as string), true); checks++;
+  const scheduled = (await listSchedules(owners[0])).find(s => s.id === schedule.id)!;
+  assert(scheduled.active_run_id && new Date(scheduled.next_run_at as string).getTime() > Date.now()); checks++;
+  await tenantQuery(owners[0], "update agent_schedule set next_run_at=now()-interval '1 hour' where id=$1 and user_id=$2", [schedule.id, owners[0]]);
+  assert.equal(await dispatchDueSchedule(schedule.id as string), false); checks++;
+  await controlRun(owners[0], scheduled.active_run_id as string, "cancel");
+  assert.equal(await dispatchDueSchedule(schedule.id as string), true); checks++;
+  assert.notEqual((await listSchedules(owners[0])).find(s => s.id === schedule.id)?.active_run_id, scheduled.active_run_id); checks++;
   await controlRun(owners[0], run.id, "cancel");
   await assert.rejects(beginCall(context, { ...args, key: "tool:two" })); checks++;
   const tables = await admin.query<{ forced: boolean }>("select relforcerowsecurity as forced from pg_class where relname=any($1::text[])", [["agent_run", "agent_run_event", "agent_tool_call"]]);
   assert.equal(tables.rows.length, 3); assert(tables.rows.every(t => t.forced)); checks++;
   console.log(JSON.stringify({ passed: checks, synthetic: true, modelCalls: 0, searchCalls: 0, sends: 0, customerDataModified: false }));
 } finally {
+  await admin.query("delete from agent_schedule where user_id=any($1::uuid[])", [owners]);
+  await admin.query("delete from agent_memory_version where memory_id in(select id from agent_memory where owner_id=any($1::uuid[]))", [owners]);
+  await admin.query("delete from agent_memory where owner_id=any($1::uuid[])", [owners]);
+  await admin.query("delete from agent_run_skill where user_id=any($1::uuid[])", [owners]);
+  await admin.query("delete from agent_skill_version where skill_id in(select id from agent_skill where owner_id=any($1::uuid[]))", [owners]);
+  await admin.query("delete from agent_skill where owner_id=any($1::uuid[])", [owners]);
   for (const id of owners) {
     await admin.query("delete from agent_run_event where user_id=$1", [id]);
     await admin.query("delete from agent_tool_call where user_id=$1", [id]);

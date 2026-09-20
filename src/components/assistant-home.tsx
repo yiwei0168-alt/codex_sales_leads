@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { AgentRuns } from "./agent-runs";
+import { AgentLibrary } from "./agent-library";
 import { TaskDetailView } from "./task-detail-view";
 import {BudgetProposalCard} from "./budget-proposal";
 import type {
@@ -180,6 +181,7 @@ export function AssistantHome({ userName, onOpenResults,onOpenCompany }: { userN
     <section className="ai-chat-panel">
       <header><div className="ai-orb">✦</div><div><strong>Network Copilot</strong><span>知识问答 · 全球线索 · 销售策略</span></div><i>在线</i></header>
       <div className="ai-message-stream" ref={scrollRef}>
+        <AgentLibrary />
         {activeId && <AgentRuns conversationId={activeId} onUpdated={refreshAgentConversation} />}
         {messages.length === 0 && <div className="ai-welcome">
           <span className="ai-welcome-icon">✦</span><p>{greeting}，{userName}</p><h1>今天想推进哪个市场？</h1>

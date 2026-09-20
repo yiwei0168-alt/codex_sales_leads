@@ -18,6 +18,8 @@ Baseline: `a65bc74` on `delivery/deep-intelligence-ui`, equal to local origin/ma
 
 ## API coverage
 
+Current independently registered adapters and schema validation are generated in [MAIN_AGENT_TOOL_CATALOG.md](MAIN_AGENT_TOOL_CATALOG.md). There are 30 adapters at the P4/P5 foundation stage. The assignments below remain a migration inventory, not a declaration that all routes have been implemented as tools.
+
 | Current API | Methods | Migration assignment | Source |
 |---|---|---|---|
 | `/api/assistant/actions/[id]/confirm` | POST | protocol/compatibility entry | `src/app/api/assistant/actions/[id]/confirm/route.ts` |

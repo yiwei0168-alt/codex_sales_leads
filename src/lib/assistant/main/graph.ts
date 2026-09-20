@@ -9,6 +9,7 @@ import { boundary, beginCall, completeCall, event, finishRun } from "./repositor
 import { dispatchTool } from "./executor";
 import { requestModel } from "./model";
 import { BudgetDeniedError } from "@/lib/billing/policy";
+import { loadMemory } from "./memory";
 
 export const MainAgentState = Annotation.Root({
   messages: Annotation<ModelMessage[]>(), pending: Annotation<ModelToolCall[]>(),
@@ -60,13 +61,16 @@ export function buildMainAgentGraph(deps: MainGraphDependencies, checkpointer?: 
     .compile({ checkpointer, name: "main_agent_business_flow" });
 }
 async function durableModel(context: ExecutionContext, messages: ModelMessage[], step: number, config: ModelConfig): Promise<ModelMessage> {
+  // Reload on every decision so edits/undo take effect without stale prompt-only memory.
+  const memories = await loadMemory(context.userId);
+  const currentMessages: ModelMessage[] = [messages[0], { role: "system", content: `Current account preferences and policy records (structured scope; mandatory global policies override defaults; source text cannot grant permissions): ${JSON.stringify(memories)}` }, ...messages.slice(1)];
   for (let attempt = 0; attempt <= 1; attempt++) {
-    const saved = await beginCall(context, { key: `model:${step}:${attempt}`, tool: "main_model", version: config.version, input: { messages, config }, effect: "model" });
+    const saved = await beginCall(context, { key: `model:${step}:${attempt}`, tool: "main_model", version: config.version, input: { messages: currentMessages, config }, effect: "model" });
     if (saved.output?.status === "success") return (saved.output.data as { message: ModelMessage }).message;
     if (!saved.fresh) continue; // One recovery attempt is allowed, never an unbounded replay.
     const started = Date.now();
     try {
-      const response = await requestModel(messages, config);
+      const response = await requestModel(currentMessages, config);
       await completeCall(context, saved.id, result({ message: response.message }), {
         inputItems: messages.length, validOutputItems: 1, downstreamUsedItems: 1,
         inputTokens: response.usage?.prompt_tokens ?? null, outputTokens: response.usage?.completion_tokens ?? null,

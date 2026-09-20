@@ -40,7 +40,13 @@ export async function getRun(userId: string, id: string): Promise<AgentRun | nul
 }
 export async function listRuns(userId: string, conversationId?: string) {
   return tenantQuery<Pick<AgentRun, "id" | "status" | "conversation_id" | "result">>(userId,
-    "select id,status,conversation_id,result from agent_run where user_id=$1 and ($2::uuid is null or conversation_id=$2) order by created_at desc limit 50", [userId, conversationId ?? null]);
+    `select r.id,r.status,r.conversation_id,r.result,
+      coalesce((select jsonb_agg(jsonb_build_object('id',a.id,'tool_id',a.tool_id,'parameter_hash',a.parameter_hash,'payload',a.payload,'status',a.status))
+        from agent_approval a where a.user_id=r.user_id and a.run_id=r.id and a.status in('pending','approved') and a.expires_at>now()),'[]') as approvals,
+      coalesce((select jsonb_agg(jsonb_build_object('id',m.id,'key',m.memory_key,'version',m.current_version))
+        from agent_memory m join agent_memory_version v on v.memory_id=m.id and v.version=m.current_version
+        where m.owner_id=r.user_id and m.active and m.source_kind='automatic' and v.source_run_id=r.id),'[]') as memories
+     from agent_run r where r.user_id=$1 and ($2::uuid is null or r.conversation_id=$2) order by r.created_at desc limit 50`, [userId, conversationId ?? null]);
 }
 export async function readEvents(userId: string, runId: string, after: string) {
   return tenantQuery<{ id: string; kind: string; payload: Record<string, unknown> }>(userId,
