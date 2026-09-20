@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+> 2026-09-20 P2 partial: the Agent now browses the knowledge library and private revision history, reads upload-job state and can request exact-approved deletion of one owned private document at an observed content hash. Ten isolated database checks passed (130 total); binary upload, shared publishing and release acceptance remain open. [Evidence](MAIN_AGENT_ACCEPTANCE.md).
+
 > 2026-09-20 MA06/MA08 partial: standalone outbound mail now appears in the account task feed and detail with no invented company association. Five isolated database assertions passed, bringing the main suite to 120; actual SMTP/reconciliation and release acceptance remain open. [Evidence](MAIN_AGENT_ACCEPTANCE.md).
 
 > 2026-09-20 P2 partial: saved formal company assessments and associated mail metadata are now independent main-Agent reads shared with their page services. Eight real PostgreSQL checks passed with owner isolation and no mail body in list output. Complete P2/P6 acceptance is still open. [Evidence](MAIN_AGENT_ACCEPTANCE.md).

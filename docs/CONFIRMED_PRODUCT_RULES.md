@@ -1,5 +1,7 @@
 # 用户确认规则登记表
 
+> 2026-09-20 MA02/MA06 implementation follow-up: the Agent can browse private/shared/public-evidence library items, read private document revisions and upload-job states, and request exact-approved deletion of one owned private document bound to its current content hash. The legacy page and Agent now share the library/revision/deletion service; the page still uses its previous confirmation flow. Ten new isolated database checks passed (130 total); full P2/P6 acceptance remains pending. [Evidence](MAIN_AGENT_ACCEPTANCE.md).
+
 > 2026-09-20 MA06/MA08 implementation follow-up: task list and task detail now retain standalone outbound mail with no company or market link, showing a null company instead of inventing one. Five new isolated database checks passed (120 total); no SMTP send occurred. This closes a visibility defect, not the remaining mail/recovery or release acceptance. [Evidence](MAIN_AGENT_ACCEPTANCE.md).
 
 > 2026-09-20 MA02 implementation follow-up: the main Agent can read a saved formal company assessment with its scoring policy version and list that company's linked mail metadata through the same owner-scoped services used by the existing pages. Reading does not publish a score or disclose the mail body. Eight isolated PostgreSQL fixture checks passed; P2/P6 acceptance remains open. [Evidence](MAIN_AGENT_ACCEPTANCE.md).

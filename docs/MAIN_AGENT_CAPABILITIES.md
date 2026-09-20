@@ -18,7 +18,7 @@ Baseline: `a65bc74` on `delivery/deep-intelligence-ui`, equal to local origin/ma
 
 ## API coverage
 
-Current independently registered adapters and schema validation are generated in [MAIN_AGENT_TOOL_CATALOG.md](MAIN_AGENT_TOOL_CATALOG.md). There are 62 adapters after the company-detail read stage. The assignments below remain a migration inventory, not a declaration that all routes have been implemented as tools. New research artifacts compose through owned server call IDs, independently of legacy workflow positions. Formal publication, uploaded-material scoring, other knowledge administration, contact verification, other company write paths, private/non-GitHub Skill repositories and external-connection operations remain outstanding.
+Current independently registered adapters and schema validation are generated in [MAIN_AGENT_TOOL_CATALOG.md](MAIN_AGENT_TOOL_CATALOG.md). There are 66 adapters after the knowledge-library stage. The assignments below remain a migration inventory, not a declaration that all routes have been implemented as tools. New research artifacts compose through owned server call IDs, independently of legacy workflow positions. Formal publication, uploaded-material scoring, other knowledge administration, contact verification, other company write paths, private/non-GitHub Skill repositories and external-connection operations remain outstanding.
 
 | Current API | Methods | Migration assignment | Source |
 |---|---|---|---|
@@ -45,14 +45,14 @@ Current independently registered adapters and schema validation are generated in
 | `/api/knowledge/assets/[assetId]` | GET | knowledge business adapter pending | `src/app/api/knowledge/assets/[assetId]/route.ts` |
 | `/api/knowledge/documents` | POST | knowledge business adapter pending | `src/app/api/knowledge/documents/route.ts` |
 | `/api/knowledge/evaluation-reviews` | GET,PATCH | knowledge business adapter pending | `src/app/api/knowledge/evaluation-reviews/route.ts` |
-| `/api/knowledge/library/history` | GET | knowledge business adapter pending | `src/app/api/knowledge/library/history/route.ts` |
-| `/api/knowledge/library` | GET,DELETE | knowledge business adapter pending | `src/app/api/knowledge/library/route.ts` |
+| `/api/knowledge/library/history` | GET | `knowledge_revision_list` shares the owner-scoped revision service | `src/app/api/knowledge/library/history/route.ts` |
+| `/api/knowledge/library` | GET,DELETE | `knowledge_library_list` and exact-approved `knowledge_private_delete` share the page service; page deletion confirmation remains separate | `src/app/api/knowledge/library/route.ts` |
 | `/api/knowledge/mailbox` | GET | knowledge business adapter pending | `src/app/api/knowledge/mailbox/route.ts` |
 | `/api/knowledge/memories/history` | GET | Historical audit remains in the existing page; Agent history search exposes active guidance but not the complete audit timeline | `src/app/api/knowledge/memories/history/route.ts` |
 | `/api/knowledge/memories` | POST,GET,PATCH | Historical reads: `memory_history_search`; `legacy_memory_set_active` and exact-approved `legacy_memory_delete` share the page service, while historical manual create/edit remains page-only | `src/app/api/knowledge/memories/route.ts` |
 | `/api/knowledge/reviews` | GET,PATCH | `knowledge_fact_review_list` / `knowledge_fact_review_decide`; shared input validation and repository, admin-only, exact approval for a decision | `src/app/api/knowledge/reviews/route.ts` |
 | `/api/knowledge/status` | GET | knowledge business adapter pending | `src/app/api/knowledge/status/route.ts` |
-| `/api/knowledge/uploads` | GET,POST | knowledge business adapter pending | `src/app/api/knowledge/uploads/route.ts` |
+| `/api/knowledge/uploads` | GET,POST | `knowledge_upload_jobs` covers status reads; binary upload/processing adapter remains pending | `src/app/api/knowledge/uploads/route.ts` |
 | `/api/mailbox/candidates/[id]` | PATCH | mailbox business adapter pending | `src/app/api/mailbox/candidates/[id]/route.ts` |
 | `/api/mailbox/candidates` | GET | mailbox business adapter pending | `src/app/api/mailbox/candidates/route.ts` |
 | `/api/mailbox/connections/[id]` | PATCH,DELETE | mailbox business adapter pending | `src/app/api/mailbox/connections/[id]/route.ts` |

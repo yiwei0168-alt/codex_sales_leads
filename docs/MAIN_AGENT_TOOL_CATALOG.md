@@ -1,6 +1,6 @@
 # Registered main Agent tools
 
-Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/generate-main-agent-catalog.ts --check` to detect drift. These 62 tools are implemented adapters; registration is not real-provider acceptance. The complete migration inventory remains in [MAIN_AGENT_CAPABILITIES.md](MAIN_AGENT_CAPABILITIES.md).
+Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/generate-main-agent-catalog.ts --check` to detect drift. These 66 tools are implemented adapters; registration is not real-provider acceptance. The complete migration inventory remains in [MAIN_AGENT_CAPABILITIES.md](MAIN_AGENT_CAPABILITIES.md).
 
 | Tool | Version | Role | Effect | Cost | Purpose |
 |---|---|---|---|---|---|
@@ -43,6 +43,10 @@ Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/ge
 | knowledge_search | 1 | member | read | known | Search accessible knowledge evidence using lexical and structured lanes, without another answer model. Returns chunks and source coordinates; v3 remains authoritative. |
 | knowledge_facts | 1 | member | read | known | Read verified facts for an entity and explicit attribute keys. Missing facts stay unknown; quarantined facts are not formal evidence. |
 | knowledge_status | 1 | member | read | known | Read accessible knowledge coverage and counts. |
+| knowledge_library_list | 1 | member | read | known | Browse the account's private knowledge, shared knowledge or public company evidence by title with bounded pagination. Private and shared documents include their current content hash for versioned actions. |
+| knowledge_revision_list | 1 | member | read | known | Read the account's saved original text revisions for one private document, including hash and reconstruction flag. Revisions remain read-only provenance. |
+| knowledge_upload_jobs | 1 | member | read | known | Read current account upload/extraction job states without retrying ingestion or exposing local file paths. |
+| knowledge_private_delete | 1 | member | destructive | known | Permanently delete one owned private knowledge document and dependent local records after exact human confirmation of document ID and current content hash. Shared knowledge cannot be deleted here. |
 | knowledge_fact_review_list | 1 | admin | read | known | Read the administrator's existing shared-knowledge fact review queue with source coordinates and current statuses. Does not alter RAG v3 data. |
 | knowledge_fact_review_decide | 1 | admin | publish | known | Apply an exact administrator decision to one open shared-knowledge fact review. Verify, retain candidate, reject or correct using the existing attribute registry validation. Requires human confirmation of this decision and corrected content. |
 | knowledge_originals | 1 | member | read | known | Find accessible original documents by title or asset ID; return authenticated download links, never host paths. |

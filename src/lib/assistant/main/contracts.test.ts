@@ -60,4 +60,11 @@ describe("main Agent contracts", () => {
     expect(needsApproval(decision)).toBe(true);
     expect(needsApproval(productTools.find(tool=>tool.id==="legacy_memory_set_active")!)).toBe(true);
   });
+  it("binds private knowledge deletion to a document hash and exact approval",()=>{
+    const deletion=productTools.find(tool=>tool.id==="knowledge_private_delete")!;
+    expect(needsApproval(deletion)).toBe(true);
+    expect(deletion.effect).toBe("destructive");
+    expect(deletion.input.safeParse({documentId:"11111111-1111-4111-8111-111111111111",expectedHash:"a".repeat(64)}).success).toBe(true);
+    expect(deletion.input.safeParse({documentId:"11111111-1111-4111-8111-111111111111",expectedHash:"bad"}).success).toBe(false);
+  });
 });

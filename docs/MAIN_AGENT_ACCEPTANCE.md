@@ -1,5 +1,9 @@
 # Main Agent acceptance log
 
+## P2 knowledge library and revision adapters - 2026-09-20 (partial)
+
+Four independent tools expose library browsing, private document revisions, upload-job status and precisely approved private-document deletion, raising the registry to 66. The existing page and Agent share these SQL services. Ten new isolated PostgreSQL fixture assertions passed (130 total): private owner isolation, shared read visibility, private revision isolation, rejection of cross-account/shared/stale-hash deletion, successful current-hash deletion and revision cascade. One contract test verifies destructive classification and strict hash input. Synthetic documents and revisions were cleaned; no RAG v3 rebuild, paid provider call or customer data mutation occurred. Full regression passed 252 files / 1,270 assertions in 34.58 seconds; TypeScript, scoped lint, production build and 66 catalog schemas passed. Full P2/P6 acceptance remains pending.
+
 ## P3/P5 standalone mail task visibility - 2026-09-20 (partial)
 
 Task list and detail previously excluded the independently supported no-company outbound mail because both queries joined company and workspace as required rows. They now return the owned record without inventing a company. Five new isolated PostgreSQL checks (120 total) verify the synthetic unknown-status record appears in its owner's task feed, can be read in detail, retains a null company, and is invisible to another account. Fixture cleanup succeeded; no SMTP send, paid model call or customer-data mutation occurred. Full regression passed 252 files / 1,269 assertions in 29.91 seconds; TypeScript, scoped lint and production build passed. Broader mail recovery and P6 acceptance remain pending.

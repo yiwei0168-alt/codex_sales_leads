@@ -3,6 +3,8 @@ import { tenantQuery } from "@/lib/rag/db";
 import { hybridSearch, getKnowledgeStats } from "@/lib/rag/repository";
 import { resolveVerifiedFacts } from "@/lib/knowledge/fact-repository";
 import {factReviewDecisionSchema,factReviewListSchema} from "@/lib/knowledge/review-input";
+import {listKnowledgeLibrary,listKnowledgeRevisions,deletePrivateKnowledgeDocument} from "@/lib/knowledge/library-service";
+import {listKnowledgeUploadJobs} from "@/lib/knowledge/upload";
 import { findProductActionCompanies } from "../product-actions";
 import { listMemories,changeMemory } from "@/lib/outreach/memory-management";
 import { taskFeedSql, type TaskFeedItem } from "../task-feed";
@@ -78,6 +80,17 @@ export const productTools: ProductTool[] = [
     execute: async (i, c) => result(await resolveVerifiedFacts(c.userId, i.entity, i.attributes), { cost: "known" }) }),
   defineTool({ id: "knowledge_status", description: "Read accessible knowledge coverage and counts.", input: empty,
     execute: async (_, c) => result(await getKnowledgeStats(c.userId), { cost: "known" }) }),
+  defineTool({id:"knowledge_library_list",description:"Browse the account's private knowledge, shared knowledge or public company evidence by title with bounded pagination. Private and shared documents include their current content hash for versioned actions.",
+    input:z.object({scope:z.enum(["private","shared","evidence"]),query:z.string().max(200).default(""),offset:z.number().int().min(0).max(100000).default(0)}).strict(),
+    execute:async(i,c)=>{const {fetched:_fetched,...page}=await listKnowledgeLibrary(c.userId,i.scope,i.query,i.offset);void _fetched;return result(page,{cost:"known"});}}),
+  defineTool({id:"knowledge_revision_list",description:"Read the account's saved original text revisions for one private document, including hash and reconstruction flag. Revisions remain read-only provenance.",
+    input:z.object({documentId:z.uuid(),offset:z.number().int().min(0).max(100000).default(0)}).strict(),
+    execute:async(i,c)=>{const {fetched:_fetched,...page}=await listKnowledgeRevisions(c.userId,i.documentId,i.offset);void _fetched;return result(page,{cost:"known"});}}),
+  defineTool({id:"knowledge_upload_jobs",description:"Read current account upload/extraction job states without retrying ingestion or exposing local file paths.",input:empty,
+    execute:async(_,c)=>result(await listKnowledgeUploadJobs(c.userId),{cost:"known"})}),
+  defineTool({id:"knowledge_private_delete",description:"Permanently delete one owned private knowledge document and dependent local records after exact human confirmation of document ID and current content hash. Shared knowledge cannot be deleted here.",
+    input:z.object({documentId:z.uuid(),expectedHash:z.string().regex(/^[0-9a-f]{64}$/)}).strict(),effect:"destructive",recovery:"reconcile",
+    execute:async(i,c)=>{const deleted=await deletePrivateKnowledgeDocument(c.userId,i.documentId,i.expectedHash);return deleted?result({deleted:true},{cost:"known"}):result(null,{status:"missing_input",missing:["Owned private document with matching current hash; reread and reconfirm"],cost:"known"});}}),
   defineTool({ id: "knowledge_fact_review_list", description: "Read the administrator's existing shared-knowledge fact review queue with source coordinates and current statuses. Does not alter RAG v3 data.", input: factReviewListSchema, role: "admin",
     execute: async (i,c) => {const {listFactReviews}=await import("@/lib/knowledge/review-repository");return result(await listFactReviews(c.userId,i),{cost:"known"});} }),
   defineTool({ id: "knowledge_fact_review_decide", description: "Apply an exact administrator decision to one open shared-knowledge fact review. Verify, retain candidate, reject or correct using the existing attribute registry validation. Requires human confirmation of this decision and corrected content.", input: factReviewDecisionSchema, role: "admin", effect: "publish", recovery: "idempotent",

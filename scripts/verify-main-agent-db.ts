@@ -22,6 +22,7 @@ import { queueReviewedMail } from "../src/lib/assistant/main/reviewed-mail";
 import {encryptMailboxContent} from "../src/lib/mailbox/crypto";
 import {readTaskDetail} from "../src/lib/assistant/task-detail";
 import {taskFeedSql} from "../src/lib/assistant/task-feed";
+import {listKnowledgeLibrary,listKnowledgeRevisions,deletePrivateKnowledgeDocument} from "../src/lib/knowledge/library-service";
 
 nextEnv.loadEnvConfig(process.cwd());
 const url = process.env.DATABASE_MIGRATION_URL || process.env.DATABASE_URL;
@@ -33,6 +34,7 @@ if (process.env.DATABASE_URL) {
 const admin = new Pool({ connectionString: databaseConnectionString(url), ssl: databaseSslConfiguration(url) });
 const owners = [randomUUID(), randomUUID()];
 const historicalPolicyId=randomUUID();
+const privateDocumentId=randomUUID(),sharedDocumentId=randomUUID();
 let checks = 0;
 try {
   if (process.argv.includes("--apply")) for (const migration of ["090_main_agent_runtime.sql", "091_agent_approvals.sql", "092_independent_outbound_mail.sql", "093_agent_skills.sql", "094_agent_memory.sql", "095_agent_schedules.sql", "096_agent_mail_execution.sql", "097_agent_model_batch.sql"]) await admin.query(await readFile(`db/migrations/${migration}`, "utf8"));
@@ -170,6 +172,24 @@ try {
   const policyAction={id:accountPolicy.id,version:accountPolicyRow.current_version,expectedUpdatedAt:accountPolicyRow.updatedAt,active:false};
   assert.equal(await setAgentMemoryActive(context,policyAction),"forbidden");checks++;
   assert.equal(await setAgentMemoryActive(context,policyAction,"decision"),"updated");checks++;
+  const collection=(await admin.query<{id:string}>("select id from knowledge_collection where slug='product'")).rows[0];
+  assert(collection,"Product knowledge collection required");
+  const uniqueTitle=`Synthetic library ${privateDocumentId}`;
+  await admin.query(`insert into knowledge_document(id,collection_id,external_id,title,source_type,content_sha256,owner_id,visibility)
+    values($1,$2,$3,$4,'synthetic',$5,$6,'private'),($7,$2,$8,$9,'synthetic',$5,$6,'shared')`,
+    [privateDocumentId,collection.id,`synthetic:${privateDocumentId}`,uniqueTitle,"a".repeat(64),owners[0],sharedDocumentId,`synthetic:${sharedDocumentId}`,`Shared ${uniqueTitle}`]);
+  await admin.query(`insert into knowledge_document_revision(document_id,user_id,content_sha256,title,content)
+    values($1,$2,$3,$4,'Synthetic old content')`,[privateDocumentId,owners[0],"b".repeat(64),uniqueTitle]);
+  assert((await listKnowledgeLibrary(owners[0],"private",uniqueTitle,0)).items.some(item=>item.id===privateDocumentId));checks++;
+  assert(!(await listKnowledgeLibrary(owners[1],"private",uniqueTitle,0)).items.some(item=>item.id===privateDocumentId));checks++;
+  assert((await listKnowledgeLibrary(owners[1],"shared",uniqueTitle,0)).items.some(item=>item.id===sharedDocumentId));checks++;
+  assert.equal((await listKnowledgeRevisions(owners[0],privateDocumentId,0)).items.length,1);checks++;
+  assert.equal((await listKnowledgeRevisions(owners[1],privateDocumentId,0)).items.length,0);checks++;
+  assert.equal(await deletePrivateKnowledgeDocument(owners[1],privateDocumentId,"a".repeat(64)),false);checks++;
+  assert.equal(await deletePrivateKnowledgeDocument(owners[0],privateDocumentId,"b".repeat(64)),false);checks++;
+  assert.equal(await deletePrivateKnowledgeDocument(owners[0],sharedDocumentId,"a".repeat(64)),false);checks++;
+  assert.equal(await deletePrivateKnowledgeDocument(owners[0],privateDocumentId,"a".repeat(64)),true);checks++;
+  assert.equal((await listKnowledgeRevisions(owners[0],privateDocumentId,0)).items.length,0);checks++;
   const historyId=randomUUID();
   await tenantQuery(owners[0],`insert into user_outreach_memory(id,user_id,kind,external_id,title,content,market_codes,channel_roles,context)
     values($1::uuid,$2,'email-style',$1::text,'Synthetic literal %_ preference','Synthetic historical style',array['UK'],array['distributor'],$3::jsonb)`,
@@ -254,6 +274,7 @@ try {
   assert(!otherFeed.some(item=>item.id===standaloneMailId));checks++;
   console.log(JSON.stringify({ passed: checks, synthetic: true, modelCalls: 0, searchCalls: 0, sends: 0, customerDataModified: false }));
 } finally {
+  await admin.query("delete from knowledge_document where id=any($1::uuid[])",[[privateDocumentId,sharedDocumentId]]);
   await admin.query("delete from outbound_mail where user_id=any($1::uuid[])",[owners]);
   await admin.query("delete from outreach_knowledge_item where id=$1",[historicalPolicyId]);
   await admin.query("delete from agent_schedule where user_id=any($1::uuid[])", [owners]);
