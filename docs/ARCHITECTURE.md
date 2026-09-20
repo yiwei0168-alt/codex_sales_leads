@@ -1,5 +1,7 @@
 # Architecture
 
+> 2026-09-20: MA01-MA09 confirmed; see [main Agent implementation workflow](MAIN_AGENT_WORKFLOW.md). These are new targets, not completed implementation or release evidence.
+
 ## Shared knowledge orchestration
 
 The standalone LangGraph runtime registers `knowledge_workflow` alongside the assistant and lead graphs. Both the assistant internal-knowledge branch and the knowledge-page HTTP entry use its document, verified-fact, and generated-explanation branches. Document/fact branches enforce database ACL and provenance locally and do not require embedding or answer generation; only complex explanations enter the existing guarded RAG contract. The Next.js API is an SDK client, not a second knowledge runner.

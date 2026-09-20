@@ -1,5 +1,7 @@
 # Network Channel Copilot PRD v1.1
 
+> 2026-09-20: MA01-MA09 confirmed; see [main Agent implementation workflow](docs/MAIN_AGENT_WORKFLOW.md). These are new targets, not completed implementation or release evidence.
+
 2026-09-14 阶段136 / B07、B26：超界评分在图检查点暂停，已校正公司、证据及前置额度保留；同检查点模拟恢复仅执行评分。单公司无损压缩与技术暂停已有合成证据，不可压缩大单项的分阶段完成和真实模型验收仍缺。[P06验收](docs/P06_OVERSIZED_SCORE_GRAPH_CHECKPOINT_2026-09-14.md)。
 
 2026-09-14 阶段134 / S01：用户已批准市场计划 Sol 仅经 OpenRouter credits 的 OpenAI 标准端点、禁止供应商 fallback；单次保守费用上界 USD10.622880，旧多供应商 Sol 合同留给其他阶段。模型/路由加入计划缓存身份，端点不可用暂停。累计 USD30 与整次费用预检不变；真实业务尚被过期的 ECB 汇率参考及其他缺失/超界合同阻止。[无付费验收](docs/S01_SOL_PLAYBOOK_ROUTING_ACCEPTANCE_2026-09-14.md)。
