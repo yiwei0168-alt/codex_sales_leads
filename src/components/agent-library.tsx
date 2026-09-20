@@ -6,6 +6,7 @@ type Schedule = { id: string; title: string; content: string; timezone: string; 
 export function AgentLibrary() {
   const [skills, setSkills] = useState<Skill[]>([]), [memories, setMemories] = useState<Memory[]>([]), [schedules, setSchedules] = useState<Schedule[]>([]);
   const [name, setName] = useState(""), [instructions, setInstructions] = useState("");
+  const [sourceName, setSourceName] = useState(""), [sourceKind, setSourceKind] = useState<"url" | "github">("url"), [sourceUrl, setSourceUrl] = useState(""), [sourceRef, setSourceRef] = useState("main"), [sourceDirectory, setSourceDirectory] = useState("");
   const [title, setTitle] = useState(""), [content, setContent] = useState(""), [minutes, setMinutes] = useState(1440);
   const [error, setError] = useState(""), [notice, setNotice] = useState(""), [busy, setBusy] = useState(false);
   async function load() {
@@ -22,7 +23,8 @@ export function AgentLibrary() {
       const response = await fetch(`/api/assistant/${path}`, { method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || "内容或版本已变化，请刷新后重试");
-      setNotice(success); await load();
+      const validation = result?.validation ? `说明：${result.validation.instructions}；脚本：${result.validation.scripts}；依赖：${result.validation.dependencies}。` : "";
+      setNotice(`${success}${validation}`); await load();
     } catch (e) { setError(e instanceof Error ? e.message : "保存失败"); }
     finally { setBusy(false); }
   }
@@ -48,6 +50,16 @@ export function AgentLibrary() {
         catch { setError("文件不是有效 JSON Skill 包"); }
         e.target.value = "";
       }} /></label>
+      <form onSubmit={e => { e.preventDefault(); void save("skills", "POST", sourceKind === "url"
+        ? { kind: "url", name: sourceName, url: sourceUrl }
+        : { kind: "github", name: sourceName, repository: sourceUrl, ref: sourceRef, directory: sourceDirectory }, "公开 Skill 来源已导入；请检查脚本和依赖状态。 "); }}>
+        <label>导入方式<select value={sourceKind} onChange={e => { setSourceKind(e.target.value as "url" | "github"); setSourceUrl(""); }}><option value="url">SKILL.md 网址</option><option value="github">GitHub 仓库</option></select></label>
+        <label>来源 Skill 名称<input required maxLength={120} value={sourceName} onChange={e => setSourceName(e.target.value)} /></label>
+        <label>{sourceKind === "url" ? "公开 SKILL.md 的 HTTPS 网址" : "公开 GitHub 仓库网址"}<input required type="url" maxLength={1000} value={sourceUrl} onChange={e => setSourceUrl(e.target.value)} /></label>
+        {sourceKind === "github" && <><label>分支、标签或提交<input required maxLength={120} value={sourceRef} onChange={e => setSourceRef(e.target.value)} /></label>
+          <label>仓库内 Skill 目录（留空表示根目录）<input maxLength={180} value={sourceDirectory} onChange={e => setSourceDirectory(e.target.value)} /></label></>}
+        <button disabled={busy}>从公开来源导入</button>
+      </form>
       <h3>当前记忆与政策</h3>
       {memories.length === 0 && <p>尚无统一记忆；历史开发信记忆仍保留在原知识管理页面。</p>}
       {memories.map(m => <article key={m.id}><strong>{m.memory_key}</strong><small>{m.scope === "global" ? "全局" : "个人"} · {m.mandatory ? "强制政策" : m.kind} · v{m.current_version}</small><p>{m.content}</p>

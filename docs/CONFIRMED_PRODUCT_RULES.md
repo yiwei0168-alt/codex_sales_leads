@@ -11,6 +11,8 @@ MA05 implementation follow-up (not a new rule): in observation mode, an owned pa
 
 MA04 implementation follow-up (not a new rule): the standard digest-pinned Docker sandbox image now builds and passes real isolated Python and Node script tests. Playwright, external browser control and remaining Skill import modes are still pending; this is not P4 acceptance.
 
+MA04 source-import follow-up (not a new rule): public HTTPS `SKILL.md` URLs and public GitHub repository directories now use a bounded, DNS-pinned fetcher; Git refs resolve to commit SHA and each downloaded blob is verified before immutable version storage. Existing account/global scope and publication confirmation apply. Private or non-GitHub repositories, browser and MCP are still pending, so P4 remains incomplete.
+
 Source: the complete P0-P6 plan supplied by the user for implementation. Confirmation is NOT implementation or acceptance evidence. Historical rules remain below; only the explicit supersessions in this table apply. See [implementation workflow](MAIN_AGENT_WORKFLOW.md).
 
 MA06/MA08 implementation update: original mail-page final confirmation now persists exact approval before enqueueing deterministic LangGraph delivery. Per-leaf locked instruction checks and safe-boundary restart are implemented. 70 isolated database assertions and 1,239 local regression assertions passed; actual SMTP acceptance remains pending.

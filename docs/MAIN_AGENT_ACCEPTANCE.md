@@ -1,5 +1,11 @@
 # Main Agent acceptance log
 
+## P4 public Skill source import - 2026-09-20 (partial)
+
+The new `skill_import_source` adapter and management form accept a public HTTPS `SKILL.md` URL or a public GitHub repository plus ref and directory. The downloader rejects local/private DNS answers, credentials, non-HTTPS, custom ports, URL queries and redirect escapes; it pins the checked address to TLS. Git refs resolve to an exact commit and each selected text blob must match Git's blob hash. Existing package limits, credential-pattern checks, tenant storage, version pinning and admin publication approval remain in force. Private repositories and non-GitHub Git hosts require a future account-scoped connection; scripts are not executed during import.
+
+Verification: 11 focused source tests, a real read-only public OpenAI Skill fetch (one direct file and 13 GitHub directory files, pinned commit `49f948faa9258a0c61caceaf225e179651397431`), and seven isolated PostgreSQL assertions proving stored source, undeclared-dependency status and cross-account non-visibility. Full regression passed 250 files / 1,259 assertions; TypeScript, scoped lint, production build and all 50 catalog schemas passed. Authenticated production-build browser verification passed the source-import form at 1366×900 and 390×844 with zero overflow and zero external fetches, paid calls or sends. No third-party Skill was installed in a real account and no script was executed. Overall P4/P6 acceptance remains pending.
+
 ## MA10 GLM batch transport - 2026-09-20
 
 User-selected main default changed to `z-ai/glm-5.3:batch` / `fireworks`. Migration 097 adds tenant-isolated batch receipts, delayed task eligibility and independent result polling. Text and exact tool arguments passed in one real two-item batch: 199 input / 22 output tokens, US$0.00018314 provider report, 680 seconds. The comparison models returned explicit regional 403 errors. [Detailed provider evidence](MAIN_AGENT_MODEL_ROUTE_2026-09-20.md).

@@ -19,7 +19,7 @@ export const skillImportSchema = z.object({
 export async function importSkill(context: Pick<ExecutionContext, "userId" | "role">, input: z.infer<typeof skillImportSchema>) {
   const p = skillImportSchema.parse(input);
   const scripts = Object.keys(p.files).filter(f => /\.(py|js|mjs)$/.test(f));
-  const validation = { instructions: "available", scripts: scripts.length ? "unverified-requires-sandbox" : "none", dependencies: p.dependencies.length ? "not-installed" : "none",
+  const validation = { instructions: "available", scripts: scripts.length ? "unverified-requires-sandbox" : "none", dependencies: p.dependencies.length ? "not-installed" : /^(?:github:|https:\/\/)/.test(p.source) ? "not-declared" : "none",
     warnings: Object.values(p.files).some(text => /docker\.sock|\.env|OAuth.?Token|API.?KEY|host filesystem/i.test(text)) ? ["Package references sensitive resources; such access is not granted"] : [] };
   return tenantTransaction(context.userId, async client => {
     let id = p.skillId, version = 1;
