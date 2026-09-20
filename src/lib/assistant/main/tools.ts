@@ -2,6 +2,7 @@ import { z } from "zod";
 import { tenantQuery } from "@/lib/rag/db";
 import { hybridSearch, getKnowledgeStats } from "@/lib/rag/repository";
 import { resolveVerifiedFacts } from "@/lib/knowledge/fact-repository";
+import {factReviewDecisionSchema,factReviewListSchema} from "@/lib/knowledge/review-input";
 import { findProductActionCompanies } from "../product-actions";
 import { listMemories } from "@/lib/outreach/memory-management";
 import { taskFeedSql, type TaskFeedItem } from "../task-feed";
@@ -71,6 +72,10 @@ export const productTools: ProductTool[] = [
     execute: async (i, c) => result(await resolveVerifiedFacts(c.userId, i.entity, i.attributes), { cost: "known" }) }),
   defineTool({ id: "knowledge_status", description: "Read accessible knowledge coverage and counts.", input: empty,
     execute: async (_, c) => result(await getKnowledgeStats(c.userId), { cost: "known" }) }),
+  defineTool({ id: "knowledge_fact_review_list", description: "Read the administrator's existing shared-knowledge fact review queue with source coordinates and current statuses. Does not alter RAG v3 data.", input: factReviewListSchema, role: "admin",
+    execute: async (i,c) => {const {listFactReviews}=await import("@/lib/knowledge/review-repository");return result(await listFactReviews(c.userId,i),{cost:"known"});} }),
+  defineTool({ id: "knowledge_fact_review_decide", description: "Apply an exact administrator decision to one open shared-knowledge fact review. Verify, retain candidate, reject or correct using the existing attribute registry validation. Requires human confirmation of this decision and corrected content.", input: factReviewDecisionSchema, role: "admin", effect: "publish", recovery: "idempotent",
+    execute: async (i,c) => {const {decideFactReview}=await import("@/lib/knowledge/review-repository");await decideFactReview(c.userId,i);return result({updated:true,reviewId:i.reviewId,decision:i.decision},{cost:"known"});} }),
   defineTool({ id: "knowledge_originals", description: "Find accessible original documents by title or asset ID; return authenticated download links, never host paths.",
     input: z.object({ query: z.string().max(180).default(""), assetId: z.uuid().optional() }).strict(),
     execute: async (i, c) => {

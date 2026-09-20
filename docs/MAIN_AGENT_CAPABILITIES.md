@@ -18,7 +18,7 @@ Baseline: `a65bc74` on `delivery/deep-intelligence-ui`, equal to local origin/ma
 
 ## API coverage
 
-Current independently registered adapters and schema validation are generated in [MAIN_AGENT_TOOL_CATALOG.md](MAIN_AGENT_TOOL_CATALOG.md). There are 50 adapters after the public Skill-source stage. The assignments below remain a migration inventory, not a declaration that all routes have been implemented as tools. New research artifacts compose through owned server call IDs, independently of legacy workflow positions. Formal publication, uploaded-material scoring, full knowledge administration, contact verification, custom company patch versioning, private/non-GitHub Skill repositories and external-connection operations remain outstanding.
+Current independently registered adapters and schema validation are generated in [MAIN_AGENT_TOOL_CATALOG.md](MAIN_AGENT_TOOL_CATALOG.md). There are 52 adapters after the administrator fact-review stage. The assignments below remain a migration inventory, not a declaration that all routes have been implemented as tools. New research artifacts compose through owned server call IDs, independently of legacy workflow positions. Formal publication, uploaded-material scoring, other knowledge administration, contact verification, custom company patch versioning, private/non-GitHub Skill repositories and external-connection operations remain outstanding.
 
 | Current API | Methods | Migration assignment | Source |
 |---|---|---|---|
@@ -50,7 +50,7 @@ Current independently registered adapters and schema validation are generated in
 | `/api/knowledge/mailbox` | GET | knowledge business adapter pending | `src/app/api/knowledge/mailbox/route.ts` |
 | `/api/knowledge/memories/history` | GET | knowledge business adapter pending | `src/app/api/knowledge/memories/history/route.ts` |
 | `/api/knowledge/memories` | POST,GET,PATCH | knowledge business adapter pending | `src/app/api/knowledge/memories/route.ts` |
-| `/api/knowledge/reviews` | GET,PATCH | knowledge business adapter pending | `src/app/api/knowledge/reviews/route.ts` |
+| `/api/knowledge/reviews` | GET,PATCH | `knowledge_fact_review_list` / `knowledge_fact_review_decide`; shared input validation and repository, admin-only, exact approval for a decision | `src/app/api/knowledge/reviews/route.ts` |
 | `/api/knowledge/status` | GET | knowledge business adapter pending | `src/app/api/knowledge/status/route.ts` |
 | `/api/knowledge/uploads` | GET,POST | knowledge business adapter pending | `src/app/api/knowledge/uploads/route.ts` |
 | `/api/mailbox/candidates/[id]` | PATCH | mailbox business adapter pending | `src/app/api/mailbox/candidates/[id]/route.ts` |

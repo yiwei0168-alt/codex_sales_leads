@@ -1,5 +1,9 @@
 # Main Agent acceptance log
 
+## P2 administrator fact-review adapters - 2026-09-20 (partial)
+
+Two independent tools expose the existing RAG v3 fact-review queue and one precise review decision to administrators. The page and Agent share the same validation and persistence path; the legacy page has not yet migrated to central approval. The Agent decision is a `publish` effect: the central approval binds its exact review ID, decision, note and correction before execution. The existing repository rejects stale reviews and invalid correction types. Contract tests check admin discovery, approval classification, forged identity, correction requirements and generated schema; existing repository tests check status mapping and stale rejection. Full regression passed 250 files / 1,260 assertions. TypeScript, scoped lint, production build and all 52 catalog schemas passed. No release activation, formal scoring change, customer knowledge mutation or paid model call was part of this check. Remaining knowledge indexing/publication and other product adapters still block full capability coverage and P2/P6 acceptance.
+
 ## P4 public Skill source import - 2026-09-20 (partial)
 
 The new `skill_import_source` adapter and management form accept a public HTTPS `SKILL.md` URL or a public GitHub repository plus ref and directory. The downloader rejects local/private DNS answers, credentials, non-HTTPS, custom ports, URL queries and redirect escapes; it pins the checked address to TLS. Git refs resolve to an exact commit and each selected text blob must match Git's blob hash. Existing package limits, credential-pattern checks, tenant storage, version pinning and admin publication approval remain in force. Private repositories and non-GitHub Git hosts require a future account-scoped connection; scripts are not executed during import.

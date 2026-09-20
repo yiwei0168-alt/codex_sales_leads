@@ -1,6 +1,6 @@
 # Registered main Agent tools
 
-Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/generate-main-agent-catalog.ts --check` to detect drift. These 50 tools are implemented adapters; registration is not real-provider acceptance. The complete migration inventory remains in [MAIN_AGENT_CAPABILITIES.md](MAIN_AGENT_CAPABILITIES.md).
+Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/generate-main-agent-catalog.ts --check` to detect drift. These 52 tools are implemented adapters; registration is not real-provider acceptance. The complete migration inventory remains in [MAIN_AGENT_CAPABILITIES.md](MAIN_AGENT_CAPABILITIES.md).
 
 | Tool | Version | Role | Effect | Cost | Purpose |
 |---|---|---|---|---|---|
@@ -40,6 +40,8 @@ Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/ge
 | knowledge_search | 1 | member | read | known | Search accessible knowledge evidence using lexical and structured lanes, without another answer model. Returns chunks and source coordinates; v3 remains authoritative. |
 | knowledge_facts | 1 | member | read | known | Read verified facts for an entity and explicit attribute keys. Missing facts stay unknown; quarantined facts are not formal evidence. |
 | knowledge_status | 1 | member | read | known | Read accessible knowledge coverage and counts. |
+| knowledge_fact_review_list | 1 | admin | read | known | Read the administrator's existing shared-knowledge fact review queue with source coordinates and current statuses. Does not alter RAG v3 data. |
+| knowledge_fact_review_decide | 1 | admin | publish | known | Apply an exact administrator decision to one open shared-knowledge fact review. Verify, retain candidate, reject or correct using the existing attribute registry validation. Requires human confirmation of this decision and corrected content. |
 | knowledge_originals | 1 | member | read | known | Find accessible original documents by title or asset ID; return authenticated download links, never host paths. |
 | company_search | 1 | member | read | known | Query saved account companies by literal name/domain and optional market; no discovery prerequisite. |
 | company_read | 1 | member | read | known | Read the account's company/market state and saved evidence, without generating a score or re-running discovery. |
