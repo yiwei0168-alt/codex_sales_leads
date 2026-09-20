@@ -16,6 +16,7 @@ import { DISCOVERY_PROVIDER_IDS, SEARCH_CATEGORY_IDS } from "@/lib/leads/workflo
 import { loadDevelopmentContext } from "@/lib/outreach/repository";
 import { generateDevelopmentStrategyPlanWithKimi, generateDevelopmentStrategyWithKimi } from "@/lib/outreach/kimi-agent";
 import {readSavedCompanyAssessment,listCompanyCorrespondence} from "@/lib/sales/company-detail-read";
+import {readTaskUsage} from "../task-usage";
 
 const companyId = z.string().min(1).max(180), country = z.string().regex(/^[A-Z]{2}$/);
 const developmentInput = z.object({ companyExternalId: companyId, language: z.string().max(20).optional(), instructions: z.string().max(2000).optional() }).strict();
@@ -41,6 +42,8 @@ export const businessTools = [
   } }),
   defineTool({ id: "mail_sync", description: "Synchronize owned mailbox messages for the requested date/folder scope; stores messages without sending.", input: mailboxSyncSchema, effect: "reversible", cost: "unknown", connections: ["mailbox"], execute: async (i,c) => result(await syncAliMail(c.userId,i.connectionId,i)) }),
   defineTool({ id: "budget_read", description: "Read legacy account budget as reference data, not an MA05 spending limit. Unknown bills remain unknown.", input: z.object({}).strict(), execute: async (_,c) => result(await readSpendBudget(c.userId)) }),
+  defineTool({id:"task_usage_read",description:"Read the account's last 30 days of operational efficiency and provider billing observations. Tables overlap and totals must not be added; unknown bills and adoption remain unknown.",
+    input:z.object({}).strict(),execute:async(_,c)=>result(await readTaskUsage(c.userId))}),
   defineTool({ id: "run_read", description: "Read an owned Agent task and saved event receipts, including partial outcomes. Does not resume it.", input: z.object({ id:z.uuid(), after:z.string().regex(/^\d+$/).default("0") }).strict(), execute: async (i,c) => {
     const run=await getRun(c.userId,i.id); return run?result({run,events:await readEvents(c.userId,i.id,i.after)}):result(null,{status:"unavailable",missing:["Owned Agent task"]});
   } }),

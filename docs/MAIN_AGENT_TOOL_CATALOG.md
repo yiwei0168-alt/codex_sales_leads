@@ -1,6 +1,6 @@
 # Registered main Agent tools
 
-Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/generate-main-agent-catalog.ts --check` to detect drift. These 66 tools are implemented adapters; registration is not real-provider acceptance. The complete migration inventory remains in [MAIN_AGENT_CAPABILITIES.md](MAIN_AGENT_CAPABILITIES.md).
+Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/generate-main-agent-catalog.ts --check` to detect drift. These 67 tools are implemented adapters; registration is not real-provider acceptance. The complete migration inventory remains in [MAIN_AGENT_CAPABILITIES.md](MAIN_AGENT_CAPABILITIES.md).
 
 | Tool | Version | Role | Effect | Cost | Purpose |
 |---|---|---|---|---|---|
@@ -12,6 +12,7 @@ Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/ge
 | contacts_lookup | 1 | member | reversible | unknown | Discover and save contacts for one account company using the configured contact provider. No scoring prerequisite. Missing connection is reported explicitly. |
 | mail_sync | 1 | member | reversible | unknown | Synchronize owned mailbox messages for the requested date/folder scope; stores messages without sending. |
 | budget_read | 1 | member | read | known | Read legacy account budget as reference data, not an MA05 spending limit. Unknown bills remain unknown. |
+| task_usage_read | 1 | member | read | known | Read the account's last 30 days of operational efficiency and provider billing observations. Tables overlap and totals must not be added; unknown bills and adoption remain unknown. |
 | run_read | 1 | member | read | known | Read an owned Agent task and saved event receipts, including partial outcomes. Does not resume it. |
 | run_control | 1 | member | reversible | known | Pause, resume, cancel or append requirements to an owned Agent task at its next safe boundary. Completed work and costs remain recorded. |
 | search_connections | 1 | member | read | known | Discover configured public search capabilities without exposing credentials. |

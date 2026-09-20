@@ -1,5 +1,9 @@
 # Main Agent acceptance log
 
+## P3 task usage read adapter - 2026-09-21 (partial)
+
+One new account-scoped `task_usage_read` tool shares the existing page's four usage queries and explanatory notice, making 67 registered tools. Four additional isolated PostgreSQL checks passed (134 total): an owned operation with reported tokens but no cost remains an unknown-cost operation; another account cannot read it; total cost completeness remains false. The synthetic operation was removed by account fixture cleanup; model/search/SMTP calls were zero. Full regression passed 252 files / 1,270 assertions in 35.85 seconds; TypeScript, scoped lint, production build and 67 catalog schemas passed. This is usage visibility, not completion of MA05 billing reconciliation or P6 acceptance.
+
 ## P2 knowledge library and revision adapters - 2026-09-20 (partial)
 
 Four independent tools expose library browsing, private document revisions, upload-job status and precisely approved private-document deletion, raising the registry to 66. The existing page and Agent share these SQL services. Ten new isolated PostgreSQL fixture assertions passed (130 total): private owner isolation, shared read visibility, private revision isolation, rejection of cross-account/shared/stale-hash deletion, successful current-hash deletion and revision cascade. One contract test verifies destructive classification and strict hash input. Synthetic documents and revisions were cleaned; no RAG v3 rebuild, paid provider call or customer data mutation occurred. Full regression passed 252 files / 1,270 assertions in 34.58 seconds; TypeScript, scoped lint, production build and 66 catalog schemas passed. Full P2/P6 acceptance remains pending.

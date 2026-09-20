@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+> 2026-09-21 P3 partial: the main Agent can read the same account usage and cost observations as the task-usage page, with unknown costs and overlapping ledgers labeled. Four new isolated database checks passed (134 total); full MA05/P6 acceptance remains open. [Evidence](MAIN_AGENT_ACCEPTANCE.md).
+
 > 2026-09-20 P2 partial: the Agent now browses the knowledge library and private revision history, reads upload-job state and can request exact-approved deletion of one owned private document at an observed content hash. Ten isolated database checks passed (130 total); binary upload, shared publishing and release acceptance remain open. [Evidence](MAIN_AGENT_ACCEPTANCE.md).
 
 > 2026-09-20 MA06/MA08 partial: standalone outbound mail now appears in the account task feed and detail with no invented company association. Five isolated database assertions passed, bringing the main suite to 120; actual SMTP/reconciliation and release acceptance remain open. [Evidence](MAIN_AGENT_ACCEPTANCE.md).

@@ -1,5 +1,7 @@
 # 用户确认规则登记表
 
+> 2026-09-21 MA05/MA09 implementation follow-up: the main Agent and existing task-usage page now share a read-only 30-day account usage service. It reports operational, HTTP reservation and workflow/model observations as overlapping ledgers, preserving unknown bills and unknown customer adoption. Four new isolated PostgreSQL checks passed (134 total); complete cost/release acceptance remains pending. [Evidence](MAIN_AGENT_ACCEPTANCE.md).
+
 > 2026-09-20 MA02/MA06 implementation follow-up: the Agent can browse private/shared/public-evidence library items, read private document revisions and upload-job states, and request exact-approved deletion of one owned private document bound to its current content hash. The legacy page and Agent now share the library/revision/deletion service; the page still uses its previous confirmation flow. Ten new isolated database checks passed (130 total); full P2/P6 acceptance remains pending. [Evidence](MAIN_AGENT_ACCEPTANCE.md).
 
 > 2026-09-20 MA06/MA08 implementation follow-up: task list and task detail now retain standalone outbound mail with no company or market link, showing a null company instead of inventing one. Five new isolated database checks passed (120 total); no SMTP send occurred. This closes a visibility defect, not the remaining mail/recovery or release acceptance. [Evidence](MAIN_AGENT_ACCEPTANCE.md).

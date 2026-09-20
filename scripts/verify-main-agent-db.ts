@@ -23,6 +23,7 @@ import {encryptMailboxContent} from "../src/lib/mailbox/crypto";
 import {readTaskDetail} from "../src/lib/assistant/task-detail";
 import {taskFeedSql} from "../src/lib/assistant/task-feed";
 import {listKnowledgeLibrary,listKnowledgeRevisions,deletePrivateKnowledgeDocument} from "../src/lib/knowledge/library-service";
+import {readTaskUsage} from "../src/lib/assistant/task-usage";
 
 nextEnv.loadEnvConfig(process.cwd());
 const url = process.env.DATABASE_MIGRATION_URL || process.env.DATABASE_URL;
@@ -272,6 +273,14 @@ try {
   assert(ownedFeed.some(item=>item.id===standaloneMailId&&item.title.includes("自定义邮件")));checks++;
   const otherFeed=await tenantQuery<{id:string}>(owners[1],taskFeedSql,[owners[1],"all","all","all",0]);
   assert(!otherFeed.some(item=>item.id===standaloneMailId));checks++;
+  await admin.query("insert into product_operation_metric(id,user_id,stage,status,metrics) values($1,$2,'synthetic-agent-usage','completed',$3::jsonb)",
+    [randomUUID(),owners[0],JSON.stringify({inputTokens:7,outputTokens:3,latencyMs:11,retries:1})]);
+  const ownedUsage=await readTaskUsage(owners[0]);
+  const usageStage=ownedUsage.stages.find(row=>row.stage==="synthetic-agent-usage")!;
+  assert.equal(usageStage.unknown_cost_operations,1);checks++;
+  assert.equal(Number(usageStage.reported_input_tokens),7);checks++;
+  assert.equal(ownedUsage.totalCostComplete,false);checks++;
+  assert(!(await readTaskUsage(owners[1])).stages.some(row=>row.stage==="synthetic-agent-usage"));checks++;
   console.log(JSON.stringify({ passed: checks, synthetic: true, modelCalls: 0, searchCalls: 0, sends: 0, customerDataModified: false }));
 } finally {
   await admin.query("delete from knowledge_document where id=any($1::uuid[])",[[privateDocumentId,sharedDocumentId]]);
