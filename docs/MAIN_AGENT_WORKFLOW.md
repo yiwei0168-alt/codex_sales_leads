@@ -1,5 +1,9 @@
 # 产品主 Agent 与开放式工具架构
 
+## P2 independent follow-up drafts - 2026-09-21 (partial)
+
+The existing follow-up page and new `follow_up_list`/`follow_up_generate` tools use a common service. An owned sent parent message supplies bounded thread, inbound and style context; generation records an encrypted draft and usage receipt, without sending. The tool can be chosen without rerunning a development strategy. The current context service still requires a company-linked parent; unassociated mail returns a concrete missing-context result and needs a separate extension. [Verification](MAIN_AGENT_ACCEPTANCE.md).
+
 ## P2 mailbox candidate review - 2026-09-21 (partial)
 
 `mailbox_candidate_list` reads only pending candidates owned by the current account, including the private content and its hash. The page uses the same read service. `mailbox_candidate_review` accepts a candidate ID, observed content hash and approve/reject decision; central confirmation is required before this tool can publish private knowledge, and the row-locked review service rejects changed content. The existing page still makes its own direct review call. An unknown embedding result during approval remains recoverable under the existing service rules; no live embedding was invoked in this stage. [Verification](MAIN_AGENT_ACCEPTANCE.md).

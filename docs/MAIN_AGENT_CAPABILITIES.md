@@ -18,7 +18,7 @@ Baseline: `a65bc74` on `delivery/deep-intelligence-ui`, equal to local origin/ma
 
 ## API coverage
 
-Current independently registered adapters and schema validation are generated in [MAIN_AGENT_TOOL_CATALOG.md](MAIN_AGENT_TOOL_CATALOG.md). There are 71 adapters after account-owned mailbox candidate review. The assignments below remain a migration inventory, not a declaration that all routes have been implemented as tools. New research artifacts compose through owned server call IDs, independently of legacy workflow positions. Formal publication, uploaded-material scoring, other knowledge administration, contact verification, other company write paths, private/non-GitHub Skill repositories and external-connection operations remain outstanding.
+Current independently registered adapters and schema validation are generated in [MAIN_AGENT_TOOL_CATALOG.md](MAIN_AGENT_TOOL_CATALOG.md). There are 73 adapters after independent follow-up draft reads and generation. The assignments below remain a migration inventory, not a declaration that all routes have been implemented as tools. New research artifacts compose through owned server call IDs, independently of legacy workflow positions. Formal publication, uploaded-material scoring, other knowledge administration, contact verification, other company write paths, private/non-GitHub Skill repositories and external-connection operations remain outstanding.
 
 | Current API | Methods | Migration assignment | Source |
 |---|---|---|---|
@@ -59,7 +59,7 @@ Current independently registered adapters and schema validation are generated in
 | `/api/mailbox/connections` | GET,POST | mailbox business adapter pending | `src/app/api/mailbox/connections/route.ts` |
 | `/api/mailbox/messages/[id]/learning` | POST | mailbox business adapter pending | `src/app/api/mailbox/messages/[id]/learning/route.ts` |
 | `/api/mailbox/messages/[id]` | GET,PATCH,DELETE | mailbox business adapter pending | `src/app/api/mailbox/messages/[id]/route.ts` |
-| `/api/mailbox/outbound/follow-up` | GET,POST | mailbox business adapter pending | `src/app/api/mailbox/outbound/follow-up/route.ts` |
+| `/api/mailbox/outbound/follow-up` | GET,POST | `follow_up_list` and `follow_up_generate` share the existing page's owned draft/history service; generation never sends | `src/app/api/mailbox/outbound/follow-up/route.ts` |
 | `/api/mailbox/outbound` | PATCH,GET,POST | mailbox business adapter pending | `src/app/api/mailbox/outbound/route.ts` |
 | `/api/mailbox/screening` | POST | mailbox business adapter pending | `src/app/api/mailbox/screening/route.ts` |
 | `/api/mailbox/status` | GET | mailbox business adapter pending | `src/app/api/mailbox/status/route.ts` |

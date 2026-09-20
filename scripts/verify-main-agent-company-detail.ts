@@ -7,15 +7,16 @@ import {getPool} from "../src/lib/rag/db";
 import {encryptMailboxContent} from "../src/lib/mailbox/crypto";
 import {readSavedCompanyAssessment,listCompanyCorrespondence} from "../src/lib/sales/company-detail-read";
 import {listPendingMailboxCandidates,reviewMailboxCandidate} from "../src/lib/mailbox/candidate-review";
+import {createFollowUpDraft,listSavedFollowUps} from "../src/lib/outreach/follow-up-service";
 
 nextEnv.loadEnvConfig(process.cwd());
 const url=process.env.DATABASE_MIGRATION_URL||process.env.DATABASE_URL;
 if(!url)throw new Error("Database configuration required");
 if(process.env.DATABASE_URL){const a=new URL(url),b=new URL(process.env.DATABASE_URL);assert.equal(`${a.hostname}:${a.port||"5432"}${a.pathname}`,`${b.hostname}:${b.port||"5432"}${b.pathname}`);}
 const admin=new Pool({connectionString:databaseConnectionString(url),ssl:databaseSslConfiguration(url)});
-const users=[randomUUID(),randomUUID()],workspace=randomUUID(),company=randomUUID(),run=randomUUID(),connection=randomUUID(),message=randomUUID(),candidate=randomUUID();
+const users=[randomUUID(),randomUUID()],workspace=randomUUID(),company=randomUUID(),run=randomUUID(),connection=randomUUID(),message=randomUUID(),candidate=randomUUID(),outbound=randomUUID();
 const external=`synthetic-${randomUUID()}`,domain=`synthetic-${randomUUID()}.invalid`;
-let created=false,checks=0;
+let created=false,checks=0,followUp:string|undefined;
 try{
   const client=await admin.connect();
   try{
@@ -34,6 +35,10 @@ try{
       values($1,$2,$3,'INBOX','fixture',1,'inbound','synthetic',$4,now())`,[message,users[0],connection,ciphertext]);
     await client.query("insert into mailbox_message_company(user_id,message_id,company_id,source) values($1,$2,$3,'user-confirmed')",[users[0],message,company]);
     await client.query("insert into mailbox_artifact_candidate(id,user_id,message_id,kind,title,content) values($1,$2,$3,'company-policy','Synthetic candidate','Private candidate content')",[candidate,users[0],message]);
+    await client.query(`insert into outbound_mail(id,user_id,workspace_id,company_id,connection_id,idempotency_key,request_hash,message_id,content_ciphertext,status,market_country_code,sent_at)
+      values($1,$2,$3,$4,$5,$6,$7,$8,$9,'sent','DE',now())`,[outbound,users[0],workspace,company,connection,randomUUID(),randomUUID(),`synthetic-${randomUUID()}`,encryptMailboxContent(users[0],{subject:"Original synthetic subject",bodyText:"Original synthetic mail",sender:[{address:"synthetic@example.invalid"}],recipients:[{address:"recipient@example.invalid"}]})]);
+    const savedFollowUp=await client.query<{id:string}>("insert into workspace_audit_event(workspace_id,actor_user_id,entity_type,entity_id,action,changes) values($1,$2,'outbound-mail',$3,'follow-up.generated',$4) returning id",[workspace,users[0],outbound,JSON.stringify({draftCiphertext:encryptMailboxContent(users[0],{subject:"Synthetic follow-up",bodyText:"Synthetic follow-up body",sender:[],recipients:[]})})]);
+    followUp=savedFollowUp.rows[0].id;
     await client.query("commit");created=true;
   }catch(error){await client.query("rollback");throw error;}finally{client.release();}
   const own=await readSavedCompanyAssessment(users[0],external);
@@ -52,12 +57,17 @@ try{
   assert.equal((await listPendingMailboxCandidates(users[1])).some(item=>item.id===candidate),false);checks++;
   assert.deepEqual(await reviewMailboxCandidate(users[0],candidate,"approved","a".repeat(64)),{kind:"conflict"});checks++;
   assert.equal((await admin.query("select review_status from mailbox_artifact_candidate where id=$1",[candidate])).rows[0].review_status,"pending");checks++;
+  assert.equal((await listSavedFollowUps(users[0],outbound))[0]?.subject,"Synthetic follow-up");checks++;
+  assert.equal((await listSavedFollowUps(users[1],outbound)).length,0);checks++;
+  assert.equal(await createFollowUpDraft(users[1],{parentId:outbound,instructions:"Please follow up"}),null);checks++;
   console.log(JSON.stringify({passed:checks,synthetic:true,modelCalls:0,searchCalls:0,sends:0,customerDataModified:false}));
 }finally{
   if(created){const client=await admin.connect();try{
     await client.query("begin");
     const verified=await client.query("select id from app_user where id=any($1::uuid[]) and display_name='Synthetic company detail' and email=id::text||'@example.invalid' for update",[users]);
     if(verified.rowCount!==2)throw new Error("Fixture identity mismatch");
+    if(followUp)await client.query("delete from workspace_audit_event where id=$1 and actor_user_id=$2",[followUp,users[0]]);
+    await client.query("delete from outbound_mail where id=$1 and user_id=$2",[outbound,users[0]]);
     await client.query("delete from mailbox_message where id=$1 and user_id=$2",[message,users[0]]);
     await client.query("delete from mailbox_connection where id=$1 and user_id=$2",[connection,users[0]]);
     await client.query("delete from market_workspace where id=$1 and owner_id=$2",[workspace,users[0]]);

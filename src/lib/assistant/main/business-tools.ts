@@ -17,6 +17,7 @@ import { loadDevelopmentContext } from "@/lib/outreach/repository";
 import { generateDevelopmentStrategyPlanWithKimi, generateDevelopmentStrategyWithKimi } from "@/lib/outreach/kimi-agent";
 import {readSavedCompanyAssessment,listCompanyCorrespondence} from "@/lib/sales/company-detail-read";
 import {readTaskUsage} from "../task-usage";
+import {createFollowUpDraft,listSavedFollowUps} from "@/lib/outreach/follow-up-service";
 
 const companyId = z.string().min(1).max(180), country = z.string().regex(/^[A-Z]{2}$/);
 const developmentInput = z.object({ companyExternalId: companyId, language: z.string().max(20).optional(), instructions: z.string().max(2000).optional() }).strict();
@@ -58,4 +59,10 @@ export const businessTools = [
   } }),
   defineTool({ id:"development_strategy",description:"Generate only a saved company's development strategy with the current evidence/handoff. Does not generate or send an email. Returns a saved task research result.",input:developmentInput,cost:"unknown",connections:["outreach-model"],execute:async(i,c)=>result(await generateDevelopmentStrategyPlanWithKimi(await loadDevelopmentContext(c.userId,i),i)) }),
   defineTool({ id:"draft_generate",description:"Generate a company's draft directly from current evidence and user instructions without the separate strategy-plan step. Produces a task draft; never sends or changes official company qualification.",input:developmentInput,cost:"unknown",connections:["outreach-model"],execute:async(i,c)=>result(await generateDevelopmentStrategyWithKimi(await loadDevelopmentContext(c.userId,i),i)) }),
+  defineTool({id:"follow_up_list",description:"Read up to ten saved follow-up drafts for one owned sent parent message. Does not regenerate or send.",input:z.object({parentId:z.uuid()}).strict(),
+    execute:async(i,c)=>result(await listSavedFollowUps(c.userId,i.parentId),{cost:"known"})}),
+  defineTool({id:"follow_up_generate",description:"Generate and save a follow-up draft for an owned, company-linked sent message using bounded thread and style context. This never sends; a standalone message currently reports missing context.",
+    input:z.object({parentId:z.uuid(),instructions:z.string().trim().min(2).max(2000)}).strict(),effect:"reversible",cost:"unknown",connections:["outreach-model"],
+    execute:async(i,c)=>{const draft=await createFollowUpDraft(c.userId,i);
+      return draft?result(draft,{cost:"unknown"}):result(null,{status:"missing_input",missing:["Owned sent parent message with company context"],cost:"known"});}}),
 ];

@@ -1,5 +1,9 @@
 # Main Agent acceptance log
 
+## P2 independent follow-up drafts - 2026-09-21 (partial)
+
+Two tools expand the registry to 73. The page and Agent share follow-up list/generation logic, and generation does not grant mail sending. Three new isolated PostgreSQL checks (16 in the company-detail fixture) confirmed owned encrypted draft reads, cross-account exclusion and no model call for an inaccessible parent; the fixture was cleaned. A contract assertion requires generation to be reversible and rejects recipient injection in its input. Full regression passed 252 files / 1,274 assertions; typecheck, scoped lint, production build and 73 catalog schemas passed. No generation provider call or SMTP send occurred; real model output and unassociated-parent follow-up remain open.
+
 ## P2 mailbox candidate read/review - 2026-09-21 (partial)
 
 The registry has 71 tools. The page and Agent share the pending-candidate read and review services; the Agent's publish-classified review requires central exact approval bound to the candidate ID, decision and current content hash. Five new isolated PostgreSQL assertions passed (13 in this verifier) for account visibility, hash projection and rejection of a stale content hash before knowledge persistence. Focused contract and review tests passed 19 assertions, including forged-identity rejection and a no-write hash conflict. Full regression passed 252 files / 1,273 assertions; typecheck, scoped lint, production build and 71 generated schemas passed. No candidate was approved or embedded in the fixture; no provider call, SMTP send or customer mutation occurred. Live approved embedding and full release acceptance remain separate gates.

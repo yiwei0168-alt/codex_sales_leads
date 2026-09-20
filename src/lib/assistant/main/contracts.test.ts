@@ -90,4 +90,13 @@ describe("main Agent contracts", () => {
     expect(review.input.safeParse({candidateId,decision:"approved"}).success).toBe(false);
     expect(review.input.safeParse({candidateId,decision:"approved",expectedHash:"a".repeat(64),userId:"forged"}).success).toBe(false);
   });
+  it("keeps follow-up generation separate from mail sending",()=>{
+    const generation=productTools.find(tool=>tool.id==="follow_up_generate")!;
+    const parentId="11111111-1111-4111-8111-111111111111";
+    expect(generation.effect).toBe("reversible");
+    expect(needsApproval(generation)).toBe(false);
+    expect(generation.input.safeParse({parentId,instructions:"Please follow up"}).success).toBe(true);
+    expect(generation.input.safeParse({parentId,instructions:"x"}).success).toBe(false);
+    expect(generation.input.safeParse({parentId,instructions:"Please follow up",recipient:"attacker@example.com"}).success).toBe(false);
+  });
 });

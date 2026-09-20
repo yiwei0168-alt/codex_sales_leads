@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+> 2026-09-21 P2 partial: follow-up draft history and generation are independent Agent tools sharing the existing page service. Three new isolated database checks passed with no provider call or send. Unassociated-parent follow-up, live generation and complete P2/P6 release acceptance remain open. [Evidence](MAIN_AGENT_ACCEPTANCE.md).
+
 > 2026-09-21 P2 partial: account-owned mailbox candidate reading and exact-approved, content-hash-bound review are callable by the main Agent using existing page services. Five new isolated database checks passed; actual approved embedding and full P2/P6 release acceptance remain open. [Evidence](MAIN_AGENT_ACCEPTANCE.md).
 
 > 2026-09-21 P2 partial: the main Agent reads the current draft revision, and draft edit/internal approval share a row-locked, revision-bound service with the existing page. Fifteen isolated database assertions, 1,271 regression assertions and 68 authenticated desktop/mobile browser checks passed; no sending occurred. Other outreach adapters and complete P2/P6 acceptance remain open. [Evidence](MAIN_AGENT_ACCEPTANCE.md).

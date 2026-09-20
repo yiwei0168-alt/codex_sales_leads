@@ -1,6 +1,6 @@
 # Registered main Agent tools
 
-Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/generate-main-agent-catalog.ts --check` to detect drift. These 71 tools are implemented adapters; registration is not real-provider acceptance. The complete migration inventory remains in [MAIN_AGENT_CAPABILITIES.md](MAIN_AGENT_CAPABILITIES.md).
+Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/generate-main-agent-catalog.ts --check` to detect drift. These 73 tools are implemented adapters; registration is not real-provider acceptance. The complete migration inventory remains in [MAIN_AGENT_CAPABILITIES.md](MAIN_AGENT_CAPABILITIES.md).
 
 | Tool | Version | Role | Effect | Cost | Purpose |
 |---|---|---|---|---|---|
@@ -20,6 +20,8 @@ Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/ge
 | search_channel | 1 | member | publish | unknown | Run one configured discovery channel from a supplied public query, independently of market planning and knowledge retrieval. Exact public query scope requires review; raw provider payloads are not returned. |
 | development_strategy | 1 | member | read | unknown | Generate only a saved company's development strategy with the current evidence/handoff. Does not generate or send an email. Returns a saved task research result. |
 | draft_generate | 1 | member | read | unknown | Generate a company's draft directly from current evidence and user instructions without the separate strategy-plan step. Produces a task draft; never sends or changes official company qualification. |
+| follow_up_list | 1 | member | read | known | Read up to ten saved follow-up drafts for one owned sent parent message. Does not regenerate or send. |
+| follow_up_generate | 1 | member | reversible | unknown | Generate and save a follow-up draft for an owned, company-linked sent message using bounded thread and style context. This never sends; a standalone message currently reports missing context. |
 | company_research | 1 | member | read | known | Start or revisit one nominated company using existing public evidence, without market discovery or a model call. Returns a reusable research artifact; supplied names/domains remain user nominations, not verified identity. |
 | evidence_collect | 1 | member | reversible | unknown | Collect targeted public evidence for one saved research company, reusing existing evidence. No market planning/discovery/score prerequisite. Stored research remains available on provider failure. |
 | role_correct | 1 | member | read | unknown | Independently interpret company identity/role using saved public evidence. Does not automatically supplement evidence or run scoring. Missing evidence remains unresolved; provider failure is not business disqualification. |
