@@ -108,18 +108,20 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
   const [developmentFeedback, setDevelopmentFeedback] = useState("");
   const [feedbackMessage, setFeedbackMessage] = useState("");
   const [allowFeedbackMemory, setAllowFeedbackMemory] = useState(false);
-  const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error" | "conflict">("idle");
   const [failedEdit, setFailedEdit] = useState<{ id: string; patch: CompanyEditablePatch } | null>(null);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const mobileNavRef = useDialogFocus(mobileNavOpen ? () => setMobileNavOpen(false) : undefined);
   const saveQueue = useRef<Promise<unknown>>(Promise.resolve());
   const pendingSaves=useRef(0);
+  const refreshAfterSave=useRef(false);
+  const companyRevision=useRef(new Map((initialWorkspace?.companies??[]).flatMap(company=>company.stateRevision===undefined?[]:[[company.id,company.stateRevision] as const])));
   useEffect(()=>{
     if(!["results","map","opportunities","overview"].includes(view))return;
     const controller=new AbortController();let pending=false;
     async function refresh(){if(pending||document.hidden||pendingSaves.current)return;pending=true;const version=workspaceRevision.current;
       try{const response=await fetch("/api/workspaces/current",{signal:controller.signal,cache:"no-store"});if(!response.ok)throw new Error();const workspace=await response.json() as MarketWorkspaceDto;
-        if(!controller.signal.aborted&&version===workspaceRevision.current&&!pendingSaves.current){setCompanies(workspace.companies);setContactsByCompanyId(workspace.contactsByCompanyId);}
+        if(!controller.signal.aborted&&version===workspaceRevision.current&&!pendingSaves.current){companyRevision.current=new Map(workspace.companies.flatMap(company=>company.stateRevision===undefined?[]:[[company.id,company.stateRevision] as const]));setCompanies(workspace.companies);setContactsByCompanyId(workspace.contactsByCompanyId);}
       }catch{if(!controller.signal.aborted)setSaveState("error");}finally{pending=false;}}
     void refresh();const timer=window.setInterval(()=>void refresh(),30000);return()=>{controller.abort();window.clearInterval(timer);};
   },[view,refreshVersion]);
@@ -153,18 +155,22 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
 
   function updateCompany(id: string, patch: CompanyEditablePatch): Promise<boolean> {
     workspaceRevision.current++;pendingSaves.current++;
-    const pending=saveQueue.current.then(()=>persistCompany(id,patch)).finally(()=>{pendingSaves.current--;});
+    const pending=saveQueue.current.then(()=>persistCompany(id,patch)).finally(()=>{pendingSaves.current--;if(!pendingSaves.current&&refreshAfterSave.current){refreshAfterSave.current=false;setRefreshVersion(value=>value+1);}});
     saveQueue.current=pending;
     return pending;
   }
   async function persistCompany(id: string, patch: CompanyEditablePatch): Promise<boolean> {
     setSaveState("saving");
     try {
+      const expectedRevision=companyRevision.current.get(id);
+      if(expectedRevision===undefined){refreshAfterSave.current=true;setSaveState("conflict");setFailedEdit(null);return false;}
       const response = await fetch(`/api/workspaces/current/companies/${encodeURIComponent(id)}`, {
-        method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify(patch),
+        method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify({...patch,expectedRevision}),
       });
+      if(response.status===409){refreshAfterSave.current=true;setSaveState("conflict");setFailedEdit(null);return false;}
       if (!response.ok) throw new Error("保存失败");
       const result = await response.json() as { company: CompanyRecord };
+      if(result.company.stateRevision!==undefined)companyRevision.current.set(id,result.company.stateRevision);
       setCompanies((items) => items.map((item) => item.id === id ? {...item,...result.company} : item));
       if(patch.primaryBusinessRole!==undefined||patch.accountTier!==undefined||patch.selectedPathId!==undefined||patch.selectedCooperationPath!==undefined||patch.supplyModel!==undefined)setDevelopmentResult(current=>current?.companyExternalId===id?{...current,contextReview:"changed"}:current);
       setFailedEdit(null);
@@ -337,7 +343,7 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
         <header className="topbar">
           <button className="mobile-nav-trigger" aria-label="打开导航菜单" aria-controls="primary-navigation" aria-expanded={mobileNavOpen} onClick={() => setMobileNavOpen(true)}><span/><span/><span/></button>
           <div className="breadcrumbs"><span>Workspace</span><Icon name="chevron" size={13}/><strong>Global</strong><Icon name="chevron" size={13}/><span>{navItems.find((item) => item.id === view)?.label}</span></div>
-          <div className="top-actions"><button onClick={()=>setRefreshVersion(value=>value+1)}>刷新已保存数据</button><span className={`snapshot-badge ${saveState === "error" ? "save-error" : ""}`}><span className="live-dot"/>{saveState === "saving" ? "正在保存…" : saveState === "saved" ? "已保存到 RDS" : saveState === "error" ? "保存失败，请重试" : `Global workspace · ${searchDate}`}</span><button className="avatar small">{userName.slice(0, 2).toUpperCase()}</button></div>
+          <div className="top-actions"><button onClick={()=>setRefreshVersion(value=>value+1)}>刷新已保存数据</button><span className={`snapshot-badge ${saveState === "error"||saveState==="conflict" ? "save-error" : ""}`}><span className="live-dot"/>{saveState === "saving" ? "正在保存…" : saveState === "saved" ? "已保存到 RDS" : saveState === "error" ? "保存失败，请重试" : saveState==="conflict"?"公司已被更新，请检查刷新后的状态":`Global workspace · ${searchDate}`}</span><button className="avatar small">{userName.slice(0, 2).toUpperCase()}</button></div>
         </header>
 
         <div className="workspace-content">

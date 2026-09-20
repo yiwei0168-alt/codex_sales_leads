@@ -96,6 +96,7 @@ export interface CompanyRecord {
   assessmentEligible?:boolean|null;
   recordCreatedAt?:string;
   updatedAt?:string;
+  stateRevision?:number;
   userAdded?: boolean;
   nextActionDueAt?: string;
   outreachSummary?: { firstSentAt: string | null; lastSentAt: string | null; sentCount: number; followUpCount: number };

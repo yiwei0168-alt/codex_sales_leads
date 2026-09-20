@@ -1,5 +1,6 @@
 import type { CompanyRecord } from "@/lib/domain";
 import { companyOverride } from "./company-overrides";
+import {safeCompanyRevision} from "./company-state-input";
 import { tenantQuery, tenantTransaction } from "@/lib/rag/db";
 import type {
   CompanyContactDetailsDto,
@@ -34,11 +35,11 @@ export async function getCurrentWorkspace(userId: string): Promise<MarketWorkspa
       record: CompanyRecord; account_tier: CompanyRecord["accountTier"]; supply_model: CompanyRecord["supplyModel"];
       brand_involvement: CompanyRecord["brandInvolvement"]; opportunity_stage: CompanyRecord["opportunityStage"];
       priority: CompanyRecord["priority"]; owner_name: string | null; next_action: string | null; manually_edited: boolean;
-      selected_path_id: string | null; selected_path_type: CompanyRecord["selectedCooperationPath"] | null;
+      selected_path_id: string | null; selected_path_type: CompanyRecord["selectedCooperationPath"] | null; revision:string;
     }>(userId,
       `select wc.record || jsonb_build_object('assessmentEligible',case when wc.record->>'assessmentNeedsRefresh'='true' then null else a.eligible end) as record, wc.account_tier, wc.supply_model, wc.brand_involvement, wc.opportunity_stage,
               wc.priority, wc.owner_name, wc.next_action, wc.manually_edited,
-              wc.selected_path_id, wc.selected_path_type
+              wc.selected_path_id, wc.selected_path_type,wc.revision
        from user_company_market wc join sales_company c on c.id = wc.company_id
        left join lateral(select a.eligible from lead_candidate_assessment a where a.run_id=wc.search_run_id and a.user_id=$2 and lower(a.domain)=lower(c.domain) order by a.updated_at desc limit 1) a on true
        where wc.workspace_id = $1 order by c.canonical_name`,
@@ -165,6 +166,7 @@ export async function getCurrentWorkspace(userId: string): Promise<MarketWorkspa
     objective: workspace.objective,
     companies: rows.map((row) => ({
       ...row.record,
+      stateRevision:safeCompanyRevision(row.revision),
       outreachSummary: sentSummaries.find(item=>item.external_id===row.record.id),
       accountTier: row.account_tier,
       supplyModel: row.supply_model,
@@ -223,7 +225,7 @@ export async function updateCompanyState(externalId: string, patch: CompanyEdita
     );
     const row = current.rows[0];
     if (!row) throw new Error("Company not found in current workspace");
-    if (expectedRevision !== undefined && Number(row.revision) !== expectedRevision) throw new Error("Company state changed; read the latest revision before updating");
+    if (expectedRevision !== undefined && safeCompanyRevision(row.revision) !== expectedRevision) throw new Error("Company state changed; read the latest revision before updating");
     const overrides = companyOverride({ ...row.record, accountTier: row.account_tier as CompanyRecord["accountTier"] }, patch);
     const selectedPath = patch.selectedPathId === undefined ? undefined
       : row.record.cooperationPaths?.find((path) => path.pathId === patch.selectedPathId);
@@ -301,7 +303,7 @@ export async function updateCompanyState(externalId: string, patch: CompanyEdita
           retries: 0, discardedReasonCounts: {}, utilizationEfficiency: 1,
           optimizationOpportunity: "Reuse confirmed company overrides without a model call" } })],
     );
-    return { ...row.record, ...patch, ...overrides, accountTier: next.accountTier as CompanyRecord["accountTier"],
+    return { ...row.record, ...patch, ...overrides, stateRevision:safeCompanyRevision(row.revision)+1, accountTier: next.accountTier as CompanyRecord["accountTier"],
       supplyModel: next.supplyModel as CompanyRecord["supplyModel"],
       brandInvolvement: next.brandInvolvement as CompanyRecord["brandInvolvement"],
       opportunityStage: next.opportunityStage as CompanyRecord["opportunityStage"],

@@ -17,6 +17,8 @@ MA02 implementation follow-up (not a new rule): existing administrator fact-revi
 
 MA02/MA08 company-state implementation follow-up (not a new rule): `company_read` now returns the saved market-state revision; `company_state_update` validates selected editable fields and checks that revision while holding the company row lock. A concurrent edit causes a stale-result error before any update. The legacy page shares field validation and service but does not yet submit its own expected revision, so this is only Agent-side concurrency protection, not full P2/P5 acceptance.
 
+MA02/MA08 page follow-up (not a new rule): the existing company editing page now receives the market-state revision, submits it with each patch, and refreshes without blind replay on HTTP 409. The shared service returns the next revision after a successful write. This supersedes the immediately preceding implementation gap for the page; other company write paths and full P2/P5 acceptance remain unverified.
+
 Source: the complete P0-P6 plan supplied by the user for implementation. Confirmation is NOT implementation or acceptance evidence. Historical rules remain below; only the explicit supersessions in this table apply. See [implementation workflow](MAIN_AGENT_WORKFLOW.md).
 
 MA06/MA08 implementation update: original mail-page final confirmation now persists exact approval before enqueueing deterministic LangGraph delivery. Per-leaf locked instruction checks and safe-boundary restart are implemented. 70 isolated database assertions and 1,239 local regression assertions passed; actual SMTP acceptance remains pending.
