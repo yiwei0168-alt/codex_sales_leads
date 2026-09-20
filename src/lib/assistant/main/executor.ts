@@ -45,8 +45,9 @@ export async function executeRegisteredTool(tool: ProductTool, input: unknown, c
   catch (error) {
     if (error instanceof LeaseLostError) throw error;
     // Provider error bodies can contain private input or credentials. Persist a safe code only.
-    output = result(null, { status: "unavailable", missing: ["Tool failed; saved prior results remain available"], cost: tool.cost });
+    output = result(null, { status: tool.effect === "send" || tool.effect === "destructive" ? "unknown" : "unavailable", missing: ["Tool failed; saved prior results remain available. Reconcile any uncertain side effect before repeating."], cost: tool.cost });
   }
+  output.callId = saved.id;
   const valid = output.status === "success" || output.status === "partial";
   await completeCall(context, saved.id, output, {
     inputItems: 1, validOutputItems: valid ? 1 : 0, downstreamUsedItems: null,

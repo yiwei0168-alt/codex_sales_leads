@@ -1,9 +1,27 @@
 # Registered main Agent tools
 
-Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/generate-main-agent-catalog.ts --check` to detect drift. These 30 tools are implemented adapters; registration is not real-provider acceptance. The complete migration inventory remains in [MAIN_AGENT_CAPABILITIES.md](MAIN_AGENT_CAPABILITIES.md).
+Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/generate-main-agent-catalog.ts --check` to detect drift. These 48 tools are implemented adapters; registration is not real-provider acceptance. The complete migration inventory remains in [MAIN_AGENT_CAPABILITIES.md](MAIN_AGENT_CAPABILITIES.md).
 
 | Tool | Version | Role | Effect | Cost | Purpose |
 |---|---|---|---|---|---|
+| relationship_list | 1 | member | read | known | Read saved company relationships for an account market. |
+| relationship_save | 1 | member | reversible | known | Save an evidenced relationship between two account companies independently of search or scoring. |
+| relationship_analyze | 1 | member | reversible | unknown | Analyze one pair of saved companies with the existing specialist; does not require full discovery. |
+| contacts_lookup | 1 | member | reversible | unknown | Discover and save contacts for one account company using the configured contact provider. No scoring prerequisite. Missing connection is reported explicitly. |
+| mail_sync | 1 | member | reversible | unknown | Synchronize owned mailbox messages for the requested date/folder scope; stores messages without sending. |
+| budget_read | 1 | member | read | known | Read legacy account budget as reference data, not an MA05 spending limit. Unknown bills remain unknown. |
+| run_read | 1 | member | read | known | Read an owned Agent task and saved event receipts, including partial outcomes. Does not resume it. |
+| run_control | 1 | member | reversible | known | Pause, resume, cancel or append requirements to an owned Agent task at its next safe boundary. Completed work and costs remain recorded. |
+| search_connections | 1 | member | read | known | Discover configured public search capabilities without exposing credentials. |
+| web_search | 1 | member | publish | unknown | Research public questions with Gemini Google grounding and citations. Only public queries may leave the account; first review the exact query scope. Do not include private documents, mail, credentials or policy text. |
+| search_channel | 1 | member | publish | unknown | Run one configured discovery channel from a supplied public query, independently of market planning and knowledge retrieval. Exact public query scope requires review; raw provider payloads are not returned. |
+| development_strategy | 1 | member | read | unknown | Generate only a saved company's development strategy with the current evidence/handoff. Does not generate or send an email. Returns a saved task research result. |
+| draft_generate | 1 | member | read | unknown | Generate a company's draft directly from current evidence and user instructions without the separate strategy-plan step. Produces a task draft; never sends or changes official company qualification. |
+| company_research | 1 | member | read | known | Start or revisit one nominated company using existing public evidence, without market discovery or a model call. Returns a reusable research artifact; supplied names/domains remain user nominations, not verified identity. |
+| evidence_collect | 1 | member | reversible | unknown | Collect targeted public evidence for one saved research company, reusing existing evidence. No market planning/discovery/score prerequisite. Stored research remains available on provider failure. |
+| role_correct | 1 | member | read | unknown | Independently interpret company identity/role using saved public evidence. Does not automatically supplement evidence or run scoring. Missing evidence remains unresolved; provider failure is not business disqualification. |
+| company_score | 1 | member | read | unknown | Score an existing corrected evidence artifact using the unchanged official rubric/arithmetic/citation contracts. No discovery, extra research or independent review is forced. Saves a research result; official company publication is a separate operation. |
+| score_review | 1 | member | read | unknown | Independently review a saved scored research artifact on explicit selection. Uses the existing review/judge contracts and preserves unresolved disagreements. Does not rediscover or publish the company. |
 | schedule_list | 1 | member | read | known | Read this account's explicit scheduled tasks and next occurrence times. |
 | schedule_create | 1 | member | publish | known | Create an explicitly requested one-time, interval or weekly recurring task with timezone. Recurrence does not grant future mail approval; runs do not overlap or replay every missed occurrence. |
 | schedule_control | 1 | member | reversible | known | Enable or disable an owned schedule with a version check. |

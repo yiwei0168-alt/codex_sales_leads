@@ -13,6 +13,7 @@ export const toolResultSchema = z.object({
   missing: z.array(z.string()).default([]),
   cost: z.enum(["known", "estimated", "unknown"]).default("unknown"),
   receipt: z.string().optional(),
+  callId: z.uuid().optional(),
 });
 export type ToolResult = z.infer<typeof toolResultSchema>;
 export interface ProductTool {

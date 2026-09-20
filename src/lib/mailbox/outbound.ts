@@ -56,7 +56,7 @@ export async function listOutbound(userId:string,companyExternalId:string,offset
      left join user_company_market wc on wc.company_id=m.company_id and wc.workspace_id=m.workspace_id
      where m.user_id=$1 and (($2='' and m.company_id is null) or (wc.candidate_id=$2 and (m.market_country_code=wc.market_country_code or m.market_country_code is null)))
      order by m.created_at desc,m.id desc limit $3 offset $4`,[userId,companyExternalId,Math.min(101,Math.max(1,limit)),Math.max(0,offset)]);
-  return rows.map(row=>({id:row.id,status:row.status,sentAt:row.sent_at,createdAt:row.created_at,parentId:row.parent_id,marketCountry:row.market_country_code,countryUnassigned:row.market_country_code===null,reconciledByUser:row.error_code?.startsWith("USER_CONFIRMED_")??false,
+  return rows.map(row=>({id:row.id,status:row.status,sentAt:row.sent_at,createdAt:row.created_at,parentId:row.parent_id,marketCountry:row.market_country_code,countryUnassigned:Boolean(companyExternalId)&&row.market_country_code===null,reconciledByUser:row.error_code?.startsWith("USER_CONFIRMED_")??false,
     ...decryptMailboxContent(userId,row.content_ciphertext)}));
 }
 
@@ -64,13 +64,13 @@ export const reconcileMailSchema=z.object({id:z.uuid(),outcome:z.enum(["sent","n
   sentAt:z.iso.datetime({offset:true}).optional()}).strict().refine(input=>input.outcome!=="sent"||Boolean(input.sentAt&&Date.parse(input.sentAt)<=Date.now()),{message:"需要实际发送时间，且不能是未来"});
 export async function reconcileOutbound(userId:string,input:z.infer<typeof reconcileMailSchema>){
   return tenantTransaction(userId,async client=>{
-    const rows=await client.query<{id:string;workspace_id:string;company_id:string;status:string;eligible:boolean;market_country_code:string|null}>(`select id,workspace_id,company_id,status,market_country_code,
+    const rows=await client.query<{id:string;workspace_id:string|null;company_id:string|null;status:string;eligible:boolean;market_country_code:string|null}>(`select id,workspace_id,company_id,status,market_country_code,
       (status='unknown' or (status='sending' and created_at<now()-interval '10 minutes')) as eligible
       from outbound_mail where user_id=$1 and id=$2 for update`,[userId,input.id]);
     const row=rows.rows[0];if(!row||!row.eligible)throw new Error("仅可核实结果不确定或超过十分钟无回执的发送，已确认记录不能覆盖");
     await client.query("update outbound_mail set status=$3,sent_at=$4,error_code=$5 where user_id=$1 and id=$2",[userId,input.id,input.outcome==="sent"?"sent":"failed",input.outcome==="sent"?input.sentAt:null,input.outcome==="sent"?"USER_CONFIRMED_SENT":"USER_CONFIRMED_NOT_SENT"]);
-    if(input.outcome==="sent")await markMarketContacted(client,row.workspace_id,row.company_id,row.market_country_code);
-    await client.query(`insert into workspace_audit_event(workspace_id,actor_user_id,entity_type,entity_id,action,changes)
+    if(input.outcome==="sent"&&row.workspace_id&&row.company_id)await markMarketContacted(client,row.workspace_id,row.company_id,row.market_country_code);
+    if(row.workspace_id)await client.query(`insert into workspace_audit_event(workspace_id,actor_user_id,entity_type,entity_id,action,changes)
       values($1,$2,'outbound-mail',$3,'mail.user-reconciled',$4)`,[row.workspace_id,userId,input.id,JSON.stringify({previousStatus:row.status,outcome:input.outcome,sentAt:input.sentAt??null,
       evidenceSource:"user-confirmed-external-mailbox",inputItems:1,validOutputItems:1,downstreamUsedItems:1,inputTokens:0,outputTokens:0,apiCredits:0,costUsd:0,retries:0,discardedReasonCounts:{},utilizationEfficiency:1,
       optimizationOpportunity:"Reconcile the existing receipt without any SMTP replay"})]);

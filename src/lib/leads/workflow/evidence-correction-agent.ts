@@ -49,6 +49,7 @@ interface CorrectionRequest {
 }
 
 interface EvidenceCorrectionAgentOptions {
+  supplementEvidence?: boolean;
   routineModel?: string;
   escalationModel?: string;
   batchSize?: number;
@@ -210,6 +211,7 @@ function needsSupplement(candidate: LeadWorkflowCandidate): boolean {
 }
 
 export class LeadEvidenceCorrectionAgent {
+  private readonly supplementEvidence: boolean;
   private readonly routineModel: string;
   private readonly escalationModel: string;
   private readonly batchSize: number;
@@ -225,6 +227,7 @@ export class LeadEvidenceCorrectionAgent {
     private readonly searchProvider: SupplementalSearch = new TavilySearchProvider({ maxAttempts: 3 }),
     options: EvidenceCorrectionAgentOptions = {},
   ) {
+    this.supplementEvidence = options.supplementEvidence ?? true;
     this.routineModel = options.routineModel ?? process.env.DEEPSEEK_MODEL?.trim() ?? "deepseek-v4-flash";
     this.escalationModel = options.escalationModel ?? process.env.DEEPSEEK_ESCALATION_MODEL?.trim() ?? "deepseek-v4-pro";
     this.batchSize = Math.max(1, Math.min(5, options.batchSize ?? 5));
@@ -237,6 +240,10 @@ export class LeadEvidenceCorrectionAgent {
   }
 
   private async supplement(candidates: LeadWorkflowCandidate[], plan: LeadSearchPlan) {
+    if (!this.supplementEvidence) return { candidates, creditsUsed: 0, warnings: [], providerMetrics: {
+      provider: "tavily" as const, attempts: 0, retries: 0, latencyMs: 0,
+      reportedCreditCalls: 0, estimatedCreditCalls: 0, reportedCredits: 0, estimatedCredits: 0, unknownCreditAttempts: 0,
+    } };
     const output = new Array<{ candidate: LeadWorkflowCandidate; credits: number; attempts: number;
       retries: number; latencyMs: number; warning?: string;
       creditObservation?: { source: "provider-report" | "estimate"; credits: number } }>(candidates.length);

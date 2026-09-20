@@ -81,6 +81,14 @@ const candidate: LeadWorkflowCandidate = {
 };
 
 describe("LeadEvidenceCorrectionAgent", () => {
+  it("can correct existing evidence without hidden supplemental search",async()=>{
+    const provider=new FakeCorrectionProvider(), search=vi.spyOn(searchProvider,"search");
+    const corrected=await new LeadEvidenceCorrectionAgent(provider,searchProvider,{supplementEvidence:false,allowReusableCorrections:false,persistCorrections:false})
+      .correct([candidate],{countryCode:"DE",countryName:"Germany",objective:"new-market",roles:["Distributor"],targetCount:1,queryLanguage:"en",userRequest:"Only interpret supplied evidence"});
+    expect(search).not.toHaveBeenCalled();
+    expect(corrected.providerMetrics).toMatchObject({attempts:0,retries:0,unknownCreditAttempts:0});
+    expect(corrected.candidates).toHaveLength(1);
+  });
   it("pauses before search or model work when a completed-correction cache read is unavailable",async()=>{
     vi.spyOn(roleCache,"loadPublicRoleCorrection")
       .mockRejectedValueOnce(new Error("Synthetic cache read outage"))

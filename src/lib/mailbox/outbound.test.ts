@@ -43,6 +43,13 @@ it("sends user-confirmed unassociated mail without inventing a company or market
   expect(saved?.[1].slice(1,3)).toEqual([null,null]);
   expect(mocks.send).toHaveBeenCalledOnce();
 });
+it("reconciles an unassociated receipt without inventing workspace state or resending",async()=>{
+  mocks.query.mockResolvedValue({rows:[{id:input.connectionId,workspace_id:null,company_id:null,status:"unknown",eligible:true,market_country_code:null}]});
+  expect(await reconcileOutbound("user",{id:input.connectionId,outcome:"sent",confirmed:true,sentAt:"2025-01-01T00:00:00Z"})).toEqual({updated:true});
+  expect(mocks.query.mock.calls.some(([sql])=>String(sql).includes("workspace_audit_event"))).toBe(false);
+  expect(mocks.query.mock.calls.some(([sql])=>String(sql).includes("update workspace_company_market"))).toBe(false);
+  expect(mocks.send).not.toHaveBeenCalled();
+});
 it("rejects inaccessible attachments before SMTP",async()=>{
   await expect(sendOutbound("user",{...input,attachments:[{assetId:input.connectionId,sha256:"0".repeat(64),filename:"offer.pdf"}]})).rejects.toThrow("Attachment");
   expect(mocks.send).not.toHaveBeenCalled();

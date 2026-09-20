@@ -6,7 +6,7 @@ import { findProductActionCompanies } from "../product-actions";
 import { listMemories } from "@/lib/outreach/memory-management";
 import { taskFeedSql, type TaskFeedItem } from "../task-feed";
 import { readTaskDetail } from "../task-detail";
-import { result, toolResultSchema, type ExecutionContext, type ProductTool, type ToolResult } from "./contracts";
+import { result, type ExecutionContext, type ProductTool } from "./contracts";
 import { listRuns } from "./repository";
 import { randomUUID } from "node:crypto";
 import { addManualCompany, manualCompanySchema } from "@/lib/sales/manual-company";
@@ -21,15 +21,14 @@ import { runSkillScript } from "./sandbox";
 import { loadMemory, saveMemory, memoryInputSchema } from "./memory";
 import { createSchedule, listSchedules, changeSchedule, scheduleInputSchema } from "./schedules";
 
-export function defineTool<T extends z.ZodType>(options: {
-  id: string; description: string; input: T;
-  execute: (input: z.infer<T>, context: ExecutionContext) => Promise<ToolResult>;
-} & Partial<Pick<ProductTool, "role" | "effect" | "dependencies" | "connections" | "cost" | "recovery">>): ProductTool {
-  return { version: "1", role: "member", effect: "read", dependencies: [], connections: [], cost: "known", recovery: "read-retry",
-    ...options, output: toolResultSchema, execute: (input, context) => options.execute(options.input.parse(input), context) };
-}
+import { defineTool } from "./tool-definition";
+import { businessTools } from "./business-tools";
+import { researchTools } from "./research-tools";
+export { defineTool } from "./tool-definition";
 const empty = z.object({}).strict();
 export const productTools: ProductTool[] = [
+  ...businessTools,
+  ...researchTools,
   defineTool({ id: "schedule_list", description: "Read this account's explicit scheduled tasks and next occurrence times.", input: empty,
     execute: async (_, c) => result(await listSchedules(c.userId), { cost: "known" }) }),
   defineTool({ id: "schedule_create", description: "Create an explicitly requested one-time, interval or weekly recurring task with timezone. Recurrence does not grant future mail approval; runs do not overlap or replay every missed occurrence.", input: scheduleInputSchema, effect: "publish",
