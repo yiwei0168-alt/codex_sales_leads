@@ -231,12 +231,12 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
     try {
       const response = await fetch(`/api/development-strategies/${developmentResult.id}`, {
         method: "PATCH", headers: { "content-type": "application/json" },
-        body: JSON.stringify({ body: draft, approve: true }),
+        body: JSON.stringify({ body: draft, approve: true, expectedRevision:developmentResult.revision }),
       });
-      const payload = await response.json() as { error?: string };
+      const payload = await response.json() as { error?: string;revision?:number };
       if (!response.ok) throw new Error(payload.error || "草稿批准失败");
       if(requestId!==draftRequest.current)return;
-      setDevelopmentResult({ ...developmentResult, status: "approved", draft: { ...developmentResult.draft, body: draft } });
+      setDevelopmentResult({ ...developmentResult, status: "approved",revision:payload.revision??developmentResult.revision, draft: { ...developmentResult.draft, body: draft } });
       setDevelopmentState("approved");
     } catch (error) {
       if(requestId!==draftRequest.current)return;

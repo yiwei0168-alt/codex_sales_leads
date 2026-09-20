@@ -158,23 +158,36 @@ export async function persistDevelopmentDraft(
 }
 
 export async function updateDevelopmentDraft(userId: string, draftId: string, input: { body?: string; approve?: boolean }): Promise<boolean> {
+  return (await updateDevelopmentDraftResult(userId,draftId,input)).status==="updated";
+}
+export async function updateDevelopmentDraftVersioned(userId:string,draftId:string,input:{body?:string;approve?:boolean;expectedRevision:number}){
+  return updateDevelopmentDraftResult(userId,draftId,input);
+}
+export async function readDevelopmentDraft(userId:string,draftId:string){
+  const rows=await tenantQuery<{id:string;company_id:string;language:string;subject_options:string[];body:string;revision:number;status:string;updated_at:string}>(userId,
+    `select id,company_id,language,subject_options,coalesce(manual_body,body) as body,revision,status,updated_at::text
+       from outreach_draft where id=$1 and user_id=$2 and status in ('generated','approved','sent')`,[draftId,userId]);
+  return rows[0]??null;
+}
+async function updateDevelopmentDraftResult(userId: string, draftId: string, input: { body?: string; approve?: boolean; expectedRevision?:number }) {
   const startedAt=Date.now();
   return tenantTransaction(userId, async (client) => {
     const current = await client.query<{ workspace_id: string; revision: number; effective_body: string; status:string;market_country_code:string }>(
       `select workspace_id, revision, status, market_country_code, coalesce(manual_body, body) as effective_body
          from outreach_draft where id=$1 and user_id=$2 and status in ('generated','approved') for update`,
       [draftId, userId]);
-    if (!current.rows[0]) return false;
+    if (!current.rows[0]) return {status:"not-found" as const};
+    if(input.expectedRevision!==undefined&&input.expectedRevision!==current.rows[0].revision)return {status:"conflict" as const};
     const revisedBody = input.body?.slice(0, 30_000);
     const bodyChanged=revisedBody!==undefined&&revisedBody!==current.rows[0].effective_body;
     const newApproval=input.approve===true&&(current.rows[0].status!=='approved'||bodyChanged);
-    if(!bodyChanged&&!newApproval)return true;
-    const rows = await client.query<{ id: string }>(
+    if(!bodyChanged&&!newApproval)return {status:"updated" as const,revision:current.rows[0].revision,draftStatus:current.rows[0].status};
+    const rows = await client.query<{ id: string;revision:number;status:string }>(
       `update outreach_draft set manual_body=coalesce($3, manual_body),
          status=case when $4 then 'approved' when $3::text is not null then 'generated' else status end,
          approved_at=case when $4 then now() when $3::text is not null then null else approved_at end,
          revision=case when $3::text is null then revision else revision+1 end, updated_at=now()
-       where id=$1 and user_id=$2 and status in ('generated','approved') returning id`,
+       where id=$1 and user_id=$2 and status in ('generated','approved') returning id,revision,status`,
       [draftId, userId, bodyChanged?revisedBody:null, input.approve ?? false]);
     if (rows.rows[0] && revisedBody !== undefined && revisedBody !== current.rows[0].effective_body) {
       await client.query(
@@ -196,7 +209,7 @@ export async function updateDevelopmentDraft(userId: string, draftId: string, in
         retries:0,latencyMs:Date.now()-startedAt,discardedReasonCounts:{},utilizationEfficiency:1,
         optimizationOpportunity:'Reuse approved draft; repeated identical approval is a no-op'})]);
     }
-    return Boolean(rows.rows[0]);
+    return rows.rows[0]?{status:"updated" as const,revision:rows.rows[0].revision,draftStatus:rows.rows[0].status}:{status:"not-found" as const};
   });
 }
 

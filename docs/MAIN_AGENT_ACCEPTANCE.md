@@ -1,5 +1,9 @@
 # Main Agent acceptance log
 
+## P2 version-bound draft edit and approval - 2026-09-21 (partial)
+
+The 69-tool registry adds `draft_read` and `draft_approve`; `draft_edit` and the page PATCH require an observed draft revision. The shared update service checks the revision under a row lock and returns the new status/revision. Fifteen isolated PostgreSQL assertions passed for owner-scoped reads, edit/approval, stale overwrite rejection, cross-account isolation, repeat approval, approval withdrawal on later edit and zero sends. Nine focused contract tests and the full 252-file / 1,271-assertion regression passed; typecheck, scoped lint, production build and 69 generated schemas passed. An authenticated production-build browser fixture passed 68/68 desktop/mobile checks, including saved-draft edit, approval, repeat approval and refresh. Synthetic fixtures were removed; no paid model/search call, SMTP send or customer-data modification occurred. P2/P6 acceptance remains open.
+
 ## P3 task usage read adapter - 2026-09-21 (partial)
 
 One new account-scoped `task_usage_read` tool shares the existing page's four usage queries and explanatory notice, making 67 registered tools. Four additional isolated PostgreSQL checks passed (134 total): an owned operation with reported tokens but no cost remains an unknown-cost operation; another account cannot read it; total cost completeness remains false. The synthetic operation was removed by account fixture cleanup; model/search/SMTP calls were zero. Full regression passed 252 files / 1,270 assertions in 35.85 seconds; TypeScript, scoped lint, production build and 67 catalog schemas passed. This is usage visibility, not completion of MA05 billing reconciliation or P6 acceptance.

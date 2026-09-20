@@ -1,6 +1,6 @@
 # Registered main Agent tools
 
-Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/generate-main-agent-catalog.ts --check` to detect drift. These 67 tools are implemented adapters; registration is not real-provider acceptance. The complete migration inventory remains in [MAIN_AGENT_CAPABILITIES.md](MAIN_AGENT_CAPABILITIES.md).
+Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/generate-main-agent-catalog.ts --check` to detect drift. These 69 tools are implemented adapters; registration is not real-provider acceptance. The complete migration inventory remains in [MAIN_AGENT_CAPABILITIES.md](MAIN_AGENT_CAPABILITIES.md).
 
 | Tool | Version | Role | Effect | Cost | Purpose |
 |---|---|---|---|---|---|
@@ -64,7 +64,9 @@ Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/ge
 | legacy_memory_set_active | 1 | member | publish | known | Archive or restore one account-owned historical outreach memory after reading its update revision. Source-managed company classifications must be changed through company state. |
 | legacy_memory_delete | 1 | member | destructive | known | Permanently delete one account-owned historical outreach memory after exact human confirmation of its ID and update revision. Source-managed company classifications cannot be deleted here. |
 | company_add | 1 | member | reversible | known | Add a user-nominated company directly, without discovery or scoring prerequisites. It remains unverified until separately assessed. |
-| draft_edit | 1 | member | reversible | known | Replace an existing editable draft body without rerunning the strategy Agent or sending mail. |
+| draft_read | 1 | member | read | known | Read an owned saved draft body, subject options, status and current revision before editing or approving. This never regenerates or sends mail. |
+| draft_edit | 1 | member | reversible | known | Replace an existing editable draft body at its current revision without rerunning the strategy Agent or sending mail. A stale revision requires rereading the draft. |
+| draft_approve | 1 | member | reversible | known | Mark an owned draft approved at its current revision, optionally with final body edits. This saves a draft approval, never sends mail; a stale revision must be reread. |
 | development_workflow | 1 | member | reversible | unknown | Optional existing complete development strategy and draft workflow for a saved company; creates a draft, never sends. |
 | market_plan | 1 | member | read | unknown | Generate a market plan directly from the user's market and roles. No mandatory product/company/industry retrieval; retrieve only task-relevant facts first. |
 | mail_connections | 1 | member | read | known | List current account mailbox identities and connection states; no credentials. |

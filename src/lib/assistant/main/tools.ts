@@ -14,7 +14,7 @@ import { listRuns } from "./repository";
 import { addManualCompany, manualCompanySchema } from "@/lib/sales/manual-company";
 import {updateCompanyState} from "@/lib/sales/repository";
 import {companyStatePatchSchema,safeCompanyRevision} from "@/lib/sales/company-state-input";
-import { updateDevelopmentDraft } from "@/lib/outreach/repository";
+import { readDevelopmentDraft, updateDevelopmentDraftVersioned } from "@/lib/outreach/repository";
 import { runDevelopmentStrategyAgent } from "@/lib/outreach/graph";
 import { listMailboxConnections, getMailboxMessageForReview } from "@/lib/mailbox/repository";
 import { listOutbound } from "@/lib/mailbox/outbound";
@@ -144,9 +144,18 @@ export const productTools: ProductTool[] = [
   defineTool({ id: "company_add", description: "Add a user-nominated company directly, without discovery or scoring prerequisites. It remains unverified until separately assessed.",
     input: manualCompanySchema, effect: "reversible", recovery: "idempotent",
     execute: async (i, c) => result(await addManualCompany(c.userId, i), { cost: "known" }) }),
-  defineTool({ id: "draft_edit", description: "Replace an existing editable draft body without rerunning the strategy Agent or sending mail.",
-    input: z.object({ draftId: z.uuid(), body: z.string().min(1).max(30_000) }).strict(), effect: "reversible", recovery: "idempotent",
-    execute: async (i, c) => result({ updated: await updateDevelopmentDraft(c.userId, i.draftId, { body: i.body }) }, { cost: "known" }) }),
+  defineTool({id:"draft_read",description:"Read an owned saved draft body, subject options, status and current revision before editing or approving. This never regenerates or sends mail.",
+    input:z.object({draftId:z.uuid()}).strict(),effect:"read",cost:"known",
+    execute:async(i,c)=>{const draft=await readDevelopmentDraft(c.userId,i.draftId);
+      return draft?result({draft},{cost:"known"}):result({draft:null},{status:"unavailable",missing:["Owned saved draft"],cost:"known"});}}),
+  defineTool({ id: "draft_edit", description: "Replace an existing editable draft body at its current revision without rerunning the strategy Agent or sending mail. A stale revision requires rereading the draft.",
+    input: z.object({ draftId: z.uuid(), body: z.string().min(1).max(30_000),expectedRevision:z.number().int().min(1) }).strict(), effect: "reversible", recovery: "idempotent",
+    execute: async (i, c) => {const updated=await updateDevelopmentDraftVersioned(c.userId,i.draftId,{body:i.body,expectedRevision:i.expectedRevision});
+      return updated.status==="updated"?result(updated,{cost:"known"}):result(updated,{status:updated.status==="conflict"?"missing_input":"unavailable",missing:[updated.status==="conflict"?"Draft revision changed; reread before editing":"Owned editable draft"],cost:"known"});} }),
+  defineTool({id:"draft_approve",description:"Mark an owned draft approved at its current revision, optionally with final body edits. This saves a draft approval, never sends mail; a stale revision must be reread.",
+    input:z.object({draftId:z.uuid(),expectedRevision:z.number().int().min(1),body:z.string().min(1).max(30_000).optional()}).strict(),effect:"reversible",recovery:"idempotent",
+    execute:async(i,c)=>{const updated=await updateDevelopmentDraftVersioned(c.userId,i.draftId,{body:i.body,approve:true,expectedRevision:i.expectedRevision});
+      return updated.status==="updated"?result(updated,{cost:"known"}):result(updated,{status:updated.status==="conflict"?"missing_input":"unavailable",missing:[updated.status==="conflict"?"Draft revision changed; reread before approving":"Owned editable draft"],cost:"known"});}}),
   defineTool({ id: "development_workflow", description: "Optional existing complete development strategy and draft workflow for a saved company; creates a draft, never sends.",
     input: z.object({ companyExternalId: z.string().min(1).max(180), language: z.string().max(20).optional(), instructions: z.string().max(2000).optional() }).strict(), effect: "reversible", cost: "unknown", connections: ["specialist-models"],
     execute: async (i, c) => result(await runDevelopmentStrategyAgent(c.userId, i)) }),

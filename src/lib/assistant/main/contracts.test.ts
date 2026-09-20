@@ -40,6 +40,21 @@ describe("main Agent contracts", () => {
     expect(update!.input.safeParse({externalId:"c1",patch:{nextAction:"Call"}}).success).toBe(false);
     expect(update!.input.safeParse({externalId:"c1",expectedRevision:3,patch:{fitScore:100}}).success).toBe(false);
   });
+  it("binds draft edits and approval to a read revision without sending",()=>{
+    const draftId="11111111-1111-4111-8111-111111111111";
+    const read=productTools.find(tool=>tool.id==="draft_read")!;
+    const edit=productTools.find(tool=>tool.id==="draft_edit")!;
+    const approve=productTools.find(tool=>tool.id==="draft_approve")!;
+    expect(edit.input.safeParse({draftId,body:"Revised draft",expectedRevision:2}).success).toBe(true);
+    expect(edit.input.safeParse({draftId,body:"Revised draft"}).success).toBe(false);
+    expect(approve.input.safeParse({draftId,expectedRevision:2}).success).toBe(true);
+    expect(approve.input.safeParse({draftId,expectedRevision:2,userId:"forged"}).success).toBe(false);
+    expect(edit.effect).toBe("reversible");
+    expect(approve.effect).toBe("reversible");
+    expect(read.effect).toBe("read");
+    expect(read.input.safeParse({draftId}).success).toBe(true);
+    expect(read.input.safeParse({draftId,userId:"forged"}).success).toBe(false);
+  });
   it("requires exact approval and a read revision for historical memory deletion",()=>{
     const deletion=productTools.find(tool=>tool.id==="legacy_memory_delete")!;
     const id="11111111-1111-4111-8111-111111111111";

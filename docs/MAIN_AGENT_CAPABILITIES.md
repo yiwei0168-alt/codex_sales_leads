@@ -18,7 +18,7 @@ Baseline: `a65bc74` on `delivery/deep-intelligence-ui`, equal to local origin/ma
 
 ## API coverage
 
-Current independently registered adapters and schema validation are generated in [MAIN_AGENT_TOOL_CATALOG.md](MAIN_AGENT_TOOL_CATALOG.md). There are 67 adapters after the task-usage read stage. The assignments below remain a migration inventory, not a declaration that all routes have been implemented as tools. New research artifacts compose through owned server call IDs, independently of legacy workflow positions. Formal publication, uploaded-material scoring, other knowledge administration, contact verification, other company write paths, private/non-GitHub Skill repositories and external-connection operations remain outstanding.
+Current independently registered adapters and schema validation are generated in [MAIN_AGENT_TOOL_CATALOG.md](MAIN_AGENT_TOOL_CATALOG.md). There are 69 adapters after owned draft reads and version-bound editing and approval. The assignments below remain a migration inventory, not a declaration that all routes have been implemented as tools. New research artifacts compose through owned server call IDs, independently of legacy workflow positions. Formal publication, uploaded-material scoring, other knowledge administration, contact verification, other company write paths, private/non-GitHub Skill repositories and external-connection operations remain outstanding.
 
 | Current API | Methods | Migration assignment | Source |
 |---|---|---|---|
@@ -40,7 +40,7 @@ Current independently registered adapters and schema validation are generated in
 | `/api/contact-enrichment/lookup` | POST | contact-enrichment business adapter pending | `src/app/api/contact-enrichment/lookup/route.ts` |
 | `/api/contact-enrichment/runs/latest` | GET | contact-enrichment business adapter pending | `src/app/api/contact-enrichment/runs/latest/route.ts` |
 | `/api/development-strategies/[id]/feedback` | POST | development-strategies business adapter pending | `src/app/api/development-strategies/[id]/feedback/route.ts` |
-| `/api/development-strategies/[id]` | PATCH | development-strategies business adapter pending | `src/app/api/development-strategies/[id]/route.ts` |
+| `/api/development-strategies/[id]` | PATCH | `draft_edit` and `draft_approve` share the version-bound update service with the page; neither sends mail | `src/app/api/development-strategies/[id]/route.ts` |
 | `/api/development-strategies` | GET,POST | development-strategies business adapter pending | `src/app/api/development-strategies/route.ts` |
 | `/api/knowledge/assets/[assetId]` | GET | knowledge business adapter pending | `src/app/api/knowledge/assets/[assetId]/route.ts` |
 | `/api/knowledge/documents` | POST | knowledge business adapter pending | `src/app/api/knowledge/documents/route.ts` |

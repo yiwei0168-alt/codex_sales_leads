@@ -484,10 +484,10 @@ try{
     await openSavedDraft();
     await page.getByRole('button',{name:'确认并批准',exact:true}).click();
     await expect(page.getByRole('button',{name:'已批准',exact:true})).toBeDisabled();
-    const repeatStatuses=await page.evaluate(async({path,body})=>Promise.all([1,2].map(async()=>{
-      const response=await fetch(path,{method:'PATCH',headers:{'content-type':'application/json'},body:JSON.stringify({body,approve:true})});
+    const repeatStatuses=await page.evaluate(async({path,body,revision})=>Promise.all([1,2].map(async()=>{
+      const response=await fetch(path,{method:'PATCH',headers:{'content-type':'application/json'},body:JSON.stringify({body,approve:true,expectedRevision:revision})});
       return response.status;
-    })),{path:approvePath,body:manualBody});
+    })),{path:approvePath,body:manualBody,revision:2});
     expect(repeatStatuses).toEqual([200,200]);
     await openSavedDraft();
     await pool.query("insert into user_outreach_memory(user_id,workspace_id,kind,external_id,title,content,market_codes) values($1,$2,'email-style',$3,'Fixture style','Synthetic style update',ARRAY['GB'])",[userId,workspaceId,`ui-draft-${viewport.width}`]);
