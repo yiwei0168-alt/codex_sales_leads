@@ -15,10 +15,20 @@ import { createDiscoveryProvider, discoveryEnvironmentStatus } from "@/providers
 import { DISCOVERY_PROVIDER_IDS, SEARCH_CATEGORY_IDS } from "@/lib/leads/workflow/hybrid-search-policy";
 import { loadDevelopmentContext } from "@/lib/outreach/repository";
 import { generateDevelopmentStrategyPlanWithKimi, generateDevelopmentStrategyWithKimi } from "@/lib/outreach/kimi-agent";
+import {readSavedCompanyAssessment,listCompanyCorrespondence} from "@/lib/sales/company-detail-read";
 
 const companyId = z.string().min(1).max(180), country = z.string().regex(/^[A-Z]{2}$/);
 const developmentInput = z.object({ companyExternalId: companyId, language: z.string().max(20).optional(), instructions: z.string().max(2000).optional() }).strict();
 export const businessTools = [
+  defineTool({id:"company_assessment_read",description:"Read the latest saved formal assessment and its scoring policy version for one owned company. Does not score, alter qualification or treat research as formal evidence.",
+    input:z.object({companyExternalId:companyId}).strict(),execute:async(i,c)=>{
+      const assessment=await readSavedCompanyAssessment(c.userId,i.companyExternalId);
+      return assessment?result({assessment}):result({assessment:null},{status:"missing_input",missing:["Saved formal assessment for this owned company"]});
+    }}),
+  defineTool({id:"company_correspondence_list",description:"List linked inbound/outbound message metadata for one owned company. Read a specific account message separately for its body; links come from saved domain match or user confirmation.",
+    input:z.object({companyExternalId:companyId,offset:z.number().int().min(0).max(100000).default(0)}).strict(),
+    execute:async(i,c)=>{const {fetched:_fetched,companyFound,...page}=await listCompanyCorrespondence(c.userId,i.companyExternalId,i.offset);void _fetched;
+      return companyFound?result(page):result(null,{status:"missing_input",missing:["Owned company in the current workspace"]});}}),
   defineTool({ id: "relationship_list", description: "Read saved company relationships for an account market.", input: z.object({ country }).strict(), execute: async (i,c) => result(await listRelationships(c.userId,i.country)) }),
   defineTool({ id: "relationship_save", description: "Save an evidenced relationship between two account companies independently of search or scoring.", input: relationshipSchema, effect: "reversible", execute: async (i,c) => result({ id: await saveRelationship(c.userId,i) }) }),
   defineTool({ id: "relationship_analyze", description: "Analyze one pair of saved companies with the existing specialist; does not require full discovery.", input: z.object({ country, from: companyId, to: companyId }).strict().refine(i=>i.from!==i.to), cost: "unknown", effect: "reversible", connections: ["relationship-model"], execute: async (i,c) => result(await analyzeStoredRelationship(c.userId,i.country,i.from,i.to)) }),

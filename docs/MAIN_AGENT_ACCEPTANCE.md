@@ -1,5 +1,9 @@
 # Main Agent acceptance log
 
+## P2 saved assessment and correspondence adapters - 2026-09-20 (partial)
+
+Two independent read tools expose the existing company detail page's saved formal assessment and linked mail metadata. Both pages and tools use the same owner-scoped service. A real PostgreSQL synthetic fixture passed eight checks: positive assessment and scoring policy version, owner/wrong-company isolation, positive encrypted-subject projection, body omission and pagination. The fixture and ciphertext were removed; model/search/SMTP calls and customer modifications were zero. Full regression passed 252 files / 1,269 assertions in 33.27 seconds; TypeScript, scoped lint, production build and 62 catalog schemas passed. Full product tool coverage and P6 acceptance remain open.
+
 ## P5 memory lifecycle tool adapters - 2026-09-20 (partial)
 
 Six new tools expose owned versioned-memory inventory and preference activation, exact-approved account decision/global policy activation, historical archive/restore and exact-approved historical deletion, making 60 registered tools. The page and Agent use the same historical lifecycle service. Twenty-two additional real PostgreSQL fixture assertions passed, making 115 total: owner isolation, stale revision rejection, deactivation, restoration, downgraded global-policy denial, historical restore and deletion with stale-copy protection. Contract tests require the deletion tool to be classified destructive, reject missing revision and reject forged identity/confirmation fields. No customer memory, paid model/search call or SMTP send occurred. Full regression passed 252 files / 1,269 assertions in 32.39 seconds; TypeScript, scoped lint, production build and 60 generated schemas passed. Full P5/P6 acceptance remains pending.

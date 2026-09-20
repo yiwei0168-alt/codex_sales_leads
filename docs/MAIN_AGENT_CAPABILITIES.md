@@ -18,7 +18,7 @@ Baseline: `a65bc74` on `delivery/deep-intelligence-ui`, equal to local origin/ma
 
 ## API coverage
 
-Current independently registered adapters and schema validation are generated in [MAIN_AGENT_TOOL_CATALOG.md](MAIN_AGENT_TOOL_CATALOG.md). There are 60 adapters after the memory lifecycle stage. The assignments below remain a migration inventory, not a declaration that all routes have been implemented as tools. New research artifacts compose through owned server call IDs, independently of legacy workflow positions. Formal publication, uploaded-material scoring, other knowledge administration, contact verification, other company write paths, private/non-GitHub Skill repositories and external-connection operations remain outstanding.
+Current independently registered adapters and schema validation are generated in [MAIN_AGENT_TOOL_CATALOG.md](MAIN_AGENT_TOOL_CATALOG.md). There are 62 adapters after the company-detail read stage. The assignments below remain a migration inventory, not a declaration that all routes have been implemented as tools. New research artifacts compose through owned server call IDs, independently of legacy workflow positions. Formal publication, uploaded-material scoring, other knowledge administration, contact verification, other company write paths, private/non-GitHub Skill repositories and external-connection operations remain outstanding.
 
 | Current API | Methods | Migration assignment | Source |
 |---|---|---|---|
@@ -70,8 +70,8 @@ Current independently registered adapters and schema validation are generated in
 | `/api/tasks/markets` | GET | tasks business adapter pending | `src/app/api/tasks/markets/route.ts` |
 | `/api/tasks` | GET | tasks business adapter pending | `src/app/api/tasks/route.ts` |
 | `/api/tasks/usage` | GET | tasks business adapter pending | `src/app/api/tasks/usage/route.ts` |
-| `/api/workspaces/current/companies/[externalId]/assessment` | GET | workspaces business adapter pending | `src/app/api/workspaces/current/companies/[externalId]/assessment/route.ts` |
-| `/api/workspaces/current/companies/[externalId]/correspondence` | GET | workspaces business adapter pending | `src/app/api/workspaces/current/companies/[externalId]/correspondence/route.ts` |
+| `/api/workspaces/current/companies/[externalId]/assessment` | GET | `company_assessment_read` shares the owned saved-score service and policy-version projection | `src/app/api/workspaces/current/companies/[externalId]/assessment/route.ts` |
+| `/api/workspaces/current/companies/[externalId]/correspondence` | GET | `company_correspondence_list` shares the owned linked-mail metadata service | `src/app/api/workspaces/current/companies/[externalId]/correspondence/route.ts` |
 | `/api/workspaces/current/companies/[externalId]` | PATCH | `company_state_update` and the page share validation, repository and required current revision; stale writes return 409 | `src/app/api/workspaces/current/companies/[externalId]/route.ts` |
 | `/api/workspaces/current/companies` | POST | workspaces business adapter pending | `src/app/api/workspaces/current/companies/route.ts` |
 | `/api/workspaces/current` | GET,PATCH | workspaces business adapter pending | `src/app/api/workspaces/current/route.ts` |

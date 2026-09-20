@@ -1,9 +1,11 @@
 # Registered main Agent tools
 
-Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/generate-main-agent-catalog.ts --check` to detect drift. These 60 tools are implemented adapters; registration is not real-provider acceptance. The complete migration inventory remains in [MAIN_AGENT_CAPABILITIES.md](MAIN_AGENT_CAPABILITIES.md).
+Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/generate-main-agent-catalog.ts --check` to detect drift. These 62 tools are implemented adapters; registration is not real-provider acceptance. The complete migration inventory remains in [MAIN_AGENT_CAPABILITIES.md](MAIN_AGENT_CAPABILITIES.md).
 
 | Tool | Version | Role | Effect | Cost | Purpose |
 |---|---|---|---|---|---|
+| company_assessment_read | 1 | member | read | known | Read the latest saved formal assessment and its scoring policy version for one owned company. Does not score, alter qualification or treat research as formal evidence. |
+| company_correspondence_list | 1 | member | read | known | List linked inbound/outbound message metadata for one owned company. Read a specific account message separately for its body; links come from saved domain match or user confirmation. |
 | relationship_list | 1 | member | read | known | Read saved company relationships for an account market. |
 | relationship_save | 1 | member | reversible | known | Save an evidenced relationship between two account companies independently of search or scoring. |
 | relationship_analyze | 1 | member | reversible | unknown | Analyze one pair of saved companies with the existing specialist; does not require full discovery. |
