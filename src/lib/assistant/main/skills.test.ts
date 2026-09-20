@@ -13,6 +13,7 @@ describe("Skill package and sandbox boundary", () => {
     const args = sandboxArguments({ directory: "F:/workspace/tmp/agent-sandbox/task-abc", entry: "scripts/check.py", image: "codex-agent-sandbox:1" });
     expect(args).toContain("--network=none"); expect(args).toContain("--read-only"); expect(args).toContain("--cap-drop=ALL");
     expect(args).toContain("--user=65534:65534"); expect(args.filter(v => v.includes("source="))).toHaveLength(1);
+    expect(args).toContain("--entrypoint=timeout");
     expect(args.join(" ")).not.toContain("docker.sock"); expect(args).not.toContain("--env-file");
   });
 });
