@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+> 2026-09-20 P5 partial: new memory versions preserve the actual predecessor and active state for undo after branching or reactivation. Eighty isolated PostgreSQL checks passed; older snapshots retain historical fallback and full P5 acceptance is open. [Evidence](MAIN_AGENT_ACCEPTANCE.md).
+
 > 2026-09-20: MA01-MA09 confirmed; see [main Agent implementation workflow](MAIN_AGENT_WORKFLOW.md). These are new targets, not completed implementation or release evidence.
 > Later MA10 supersedes the main-model default with OpenRouter `z-ai/glm-5.3:batch` / `fireworks`. The async batch transport, waiting/recovery state, provider checks and one real public synthetic two-turn main-Agent flow passed; 120-case quality acceptance and release remain pending. [Model route evidence](MAIN_AGENT_MODEL_ROUTE_2026-09-20.md).
 > 2026-09-20 P4 partial: public HTTPS and GitHub Skill source import, exact Git commit/blob verification, tenant storage and the management form passed focused, public-network and isolated-database checks. Private connections, browser/MCP and overall P4/P6 acceptance remain pending. [Detailed acceptance](MAIN_AGENT_ACCEPTANCE.md).

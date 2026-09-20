@@ -1,5 +1,9 @@
 # Main Agent acceptance log
 
+## P5 memory undo lineage - 2026-09-20 (partial)
+
+New memory versions store `previousVersion` and `previousActive` in their immutable snapshot. Undo restores the actual predecessor's content, scope, source kind and active state. This handles version 1 → version 2 → undo to 1 → version 3 → undo to 1, and reactivation after a first-version undo. Old snapshots without predecessor metadata use the existing sequential fallback; their past branch cannot be inferred. Eighty real PostgreSQL fixture assertions passed, including ten new lineage/history/stale-notification checks. TypeScript and scoped lint passed. No migration, customer-memory write, model/search call or send occurred. Full P5 and release acceptance remain pending.
+
 ## P2 company page concurrency follow-up - 2026-09-20 (partial)
 
 The existing page now receives `stateRevision` from the workspace read, sends it with each company patch and carries forward the returned revision for queued edits. A stale or absent version returns 409 before any write; the UI does not blindly retry an old patch and refreshes after its save queue drains. Three focused route tests cover required version, stale rejection and returned version. Full regression passed 252 files / 1,267 assertions, TypeScript, scoped lint, production build and 53 catalog schemas passed. The authenticated production-build desktop/mobile fixture completed its page-edit and persistence checks, reported `authenticatedUi: passed`, and removed its synthetic user/workspace/company. The first run stayed alive on repeated LangSmith capability-fetch warnings after cleanup; a repeat with tracing disabled completed with exit code 0. No paid calls or real mail sends occurred. A direct two-session conflict UI check and other company write paths remain to be verified.
