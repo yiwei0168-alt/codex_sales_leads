@@ -52,7 +52,7 @@ Current independently registered adapters and schema validation are generated in
 | `/api/knowledge/memories` | POST,GET,PATCH | Historical reads: `memory_history_search`; `legacy_memory_set_active` and exact-approved `legacy_memory_delete` share the page service, while historical manual create/edit remains page-only | `src/app/api/knowledge/memories/route.ts` |
 | `/api/knowledge/reviews` | GET,PATCH | `knowledge_fact_review_list` / `knowledge_fact_review_decide`; shared input validation and repository, admin-only, exact approval for a decision | `src/app/api/knowledge/reviews/route.ts` |
 | `/api/knowledge/status` | GET | knowledge business adapter pending | `src/app/api/knowledge/status/route.ts` |
-| `/api/knowledge/uploads` | GET,POST | `knowledge_upload_jobs` covers status reads; binary upload/processing adapter remains pending | `src/app/api/knowledge/uploads/route.ts` |
+| `/api/knowledge/uploads` | GET,POST | `knowledge_upload_jobs` covers status reads; authenticated private binary upload is available from the composer, while shared upload retains administrator authorization and Agent-side binary processing remains pending | `src/app/api/knowledge/uploads/route.ts` |
 | `/api/mailbox/candidates/[id]` | PATCH | `mailbox_candidate_review` shares the page review service; the Agent additionally binds exact approval to observed content hash | `src/app/api/mailbox/candidates/[id]/route.ts` |
 | `/api/mailbox/candidates` | GET | `mailbox_candidate_list` shares the page owner-scoped pending-candidate read service | `src/app/api/mailbox/candidates/route.ts` |
 | `/api/mailbox/connections/[id]` | PATCH,DELETE | mailbox business adapter pending | `src/app/api/mailbox/connections/[id]/route.ts` |

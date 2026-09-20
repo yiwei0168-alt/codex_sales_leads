@@ -1,5 +1,9 @@
 # Main Agent acceptance log
 
+## P2/P5 private task attachment entry - 2026-09-21 (partial)
+
+The authenticated composer now presents registered account-accessible original assets and a private binary upload entry. The upload route accepts a member's private file without a shared administrator token, but still rejects a member's shared upload. Two new route assertions passed; full regression passed 252 files / 1,276 assertions, with TypeScript, scoped lint and production build passing. An authenticated production-build browser fixture passed 70/70 desktop/mobile checks, including opening the picker and verifying no horizontal overflow. The fixture did not upload a real file or submit a model task with an attachment. Existing server-side task admission still validates asset ownership and registration. No paid provider call, SMTP send or customer-data modification occurred; actual extraction completion, attachment consumption and full P2/P5/P6 acceptance remain open.
+
 ## P2 independent follow-up drafts - 2026-09-21 (partial)
 
 Two tools expand the registry to 73. The page and Agent share follow-up list/generation logic, and generation does not grant mail sending. Three new isolated PostgreSQL checks (16 in the company-detail fixture) confirmed owned encrypted draft reads, cross-account exclusion and no model call for an inaccessible parent; the fixture was cleaned. A contract assertion requires generation to be reversible and rejects recipient injection in its input. Full regression passed 252 files / 1,274 assertions; typecheck, scoped lint, production build and 73 catalog schemas passed. No generation provider call or SMTP send occurred; real model output and unassociated-parent follow-up remain open.

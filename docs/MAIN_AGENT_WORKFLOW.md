@@ -1,5 +1,9 @@
 # 产品主 Agent 与开放式工具架构
 
+## P2/P5 private task attachment entry - 2026-09-21 (partial)
+
+An authenticated account can queue a **private** PDF/PPTX/XLSX extraction job without the shared-upload administrator token. Shared uploads still require the administrator role and token. The main composer lists only already registered private/shared original assets, passes selected IDs to the existing server-side owner/registration check and retains the user's text on send failure. Newly uploaded files are clearly pending until local extraction and registration; they are not silently attached. Legacy conversation mode explicitly rejects a selected attachment instead of ignoring it. The picker currently shows the first 50 assets per scope; text-file import and processing-state refresh inside the composer remain open. [Verification](MAIN_AGENT_ACCEPTANCE.md).
+
 ## P2 independent follow-up drafts - 2026-09-21 (partial)
 
 The existing follow-up page and new `follow_up_list`/`follow_up_generate` tools use a common service. An owned sent parent message supplies bounded thread, inbound and style context; generation records an encrypted draft and usage receipt, without sending. The tool can be chosen without rerunning a development strategy. The current context service still requires a company-linked parent; unassociated mail returns a concrete missing-context result and needs a separate extension. [Verification](MAIN_AGENT_ACCEPTANCE.md).

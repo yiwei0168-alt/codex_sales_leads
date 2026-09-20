@@ -25,4 +25,19 @@ describe("binary knowledge upload route",()=>{
     const response=await POST(new Request("http://local/api/knowledge/uploads",{method:"POST",headers:{authorization:"Bearer test-token"},body:form}));
     expect(response.status).toBe(202);expect(mocks.create).toHaveBeenCalledWith("00000000-0000-4000-8000-000000000001",expect.objectContaining({collection:"product",entityKey:"MODEL-X",visibility:"private"}));
   });
+  it("allows an authenticated member to queue a private file without an admin token",async()=>{
+    mocks.session.mockResolvedValue({userId:"00000000-0000-4000-8000-000000000002",displayName:"Member",role:"member"});
+    const form=new FormData();form.set("collection","company");form.set("title","Private brief");
+    form.set("file",new File(["%PDF-1.7"],"private.pdf",{type:"application/pdf"}));
+    const response=await POST(new Request("http://local/api/knowledge/uploads",{method:"POST",body:form}));
+    expect(response.status).toBe(202);
+    expect(mocks.create).toHaveBeenCalledWith("00000000-0000-4000-8000-000000000002",expect.objectContaining({visibility:"private"}));
+  });
+  it("does not let a member publish a shared upload",async()=>{
+    mocks.session.mockResolvedValue({userId:"00000000-0000-4000-8000-000000000002",displayName:"Member",role:"member"});
+    const form=new FormData();form.set("collection","company");form.set("title","Shared brief");form.set("visibility","shared");
+    form.set("file",new File(["%PDF-1.7"],"shared.pdf",{type:"application/pdf"}));
+    const response=await POST(new Request("http://local/api/knowledge/uploads",{method:"POST",headers:{authorization:"Bearer test-token"},body:form}));
+    expect(response.status).toBe(403);expect(mocks.create).not.toHaveBeenCalled();
+  });
 });

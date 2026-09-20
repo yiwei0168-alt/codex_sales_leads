@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+> 2026-09-21 P2/P5 partial: authenticated members can queue private binary material without an administrator upload token, and the main composer can select already registered accessible originals. Pending files are not treated as attached. Two route assertions, 1,276 regression assertions and 70 authenticated desktop/mobile browser checks passed; real file extraction and Agent consumption are unverified. [Evidence](MAIN_AGENT_ACCEPTANCE.md).
+
 > 2026-09-21 P2 partial: follow-up draft history and generation are independent Agent tools sharing the existing page service. Three new isolated database checks passed with no provider call or send. Unassociated-parent follow-up, live generation and complete P2/P6 release acceptance remain open. [Evidence](MAIN_AGENT_ACCEPTANCE.md).
 
 > 2026-09-21 P2 partial: account-owned mailbox candidate reading and exact-approved, content-hash-bound review are callable by the main Agent using existing page services. Five new isolated database checks passed; actual approved embedding and full P2/P6 release acceptance remain open. [Evidence](MAIN_AGENT_ACCEPTANCE.md).

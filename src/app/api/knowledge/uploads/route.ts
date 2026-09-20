@@ -19,7 +19,6 @@ export async function GET(){
 
 export async function POST(request:Request){
   const session=await requireApiSession();if(session instanceof Response)return session;
-  if(!authorized(request))return Response.json({error:"Unauthorized"},{status:401});
   const declaredBytes=Number(request.headers.get("content-length")??0);
   if(Number.isFinite(declaredBytes)&&declaredBytes>MAX_KNOWLEDGE_BINARY_BYTES+128_000)return Response.json({error:"二进制资料上限为25 MB"},{status:413});
   let form:FormData;try{form=await request.formData();}catch{return Response.json({error:"请求必须是 multipart/form-data"},{status:400});}
@@ -28,7 +27,7 @@ export async function POST(request:Request){
     entityKey:z.string().trim().max(200).default("")}).safeParse({collection:form.get("collection"),title:form.get("title"),
       sourceUrl:form.get("sourceUrl")??"",visibility:form.get("visibility")??"private",entityKey:form.get("entityKey")??""});
   if(!parsed.success)return Response.json({error:"上传字段无效"},{status:400});
-  if(parsed.data.visibility==="shared"&&session.role!=="admin")return Response.json({error:"只有管理员可以上传共享资料"},{status:403});
+  if(parsed.data.visibility==="shared"&&(session.role!=="admin"||!authorized(request)))return Response.json({error:"只有具备共享上传授权的管理员可以上传共享资料"},{status:403});
   if(parsed.data.collection==="product"&&!parsed.data.entityKey)return Response.json({error:"产品资料必须提供型号 / SKU"},{status:400});
   const file=form.get("file");if(!(file instanceof File))return Response.json({error:"缺少二进制资料文件"},{status:400});
   try{

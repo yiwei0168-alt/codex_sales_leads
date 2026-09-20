@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { AgentRuns } from "./agent-runs";
+import {AgentAttachments} from "./agent-attachments";
 import { AgentLibrary } from "./agent-library";
 import { TaskDetailView } from "./task-detail-view";
 import {BudgetProposalCard} from "./budget-proposal";
@@ -28,6 +29,7 @@ export function AssistantHome({ userName, onOpenResults,onOpenCompany }: { userN
   const [activeId, setActiveId] = useState<string>();
   const [conversation, setConversation] = useState<AssistantConversationDto>();
   const [input, setInput] = useState("");
+  const [attachments,setAttachments]=useState<string[]>([]);
   const [busy, setBusy] = useState(false);
   const [confirmingId, setConfirmingId] = useState<string>();
   const [error, setError] = useState("");
@@ -108,13 +110,14 @@ export function AssistantHome({ userName, onOpenResults,onOpenCompany }: { userN
     try {
       const response = await fetch("/api/assistant/messages", {
         method: "POST", headers: { "content-type": "application/json" },
-        body: JSON.stringify({ conversationId: activeId, content: message, requestKey: crypto.randomUUID() }),
+        body: JSON.stringify({ conversationId: activeId, content: message, requestKey: crypto.randomUUID(),attachments:attachments.map(assetId=>({assetId})) }),
       });
       const body = await response.json() as { conversation?: AssistantConversationDto; error?: string };
       if (!response.ok || !body.conversation) throw new Error(body.error ?? "消息处理失败");
       setConversation(body.conversation); setActiveId(body.conversation.id);
+      setAttachments([]);
       await loadList(body.conversation.id);
-    } catch (reason) { setError(reason instanceof Error ? reason.message : "消息处理失败"); }
+    } catch (reason) { setInput(message);setError(reason instanceof Error ? reason.message : "消息处理失败"); }
     finally { setBusy(false); }
   }
 
@@ -122,7 +125,7 @@ export function AssistantHome({ userName, onOpenResults,onOpenCompany }: { userN
 
   async function newConversation() {
     conversationRequest.current++;
-    setActiveId(undefined); setConversation(undefined); setInput(""); setError("");
+    setActiveId(undefined); setConversation(undefined); setInput(""); setAttachments([]);setError("");
   }
 
   async function renameConversation(item: AssistantConversationSummary) {
@@ -216,7 +219,7 @@ export function AssistantHome({ userName, onOpenResults,onOpenCompany }: { userN
         {busy && <article className="ai-message assistant"><div className="ai-message-avatar">✦</div><div className="ai-thinking"><i/><i/><i/></div></article>}
       </div>
       {error && <div className="ai-chat-error">{error}</div>}
-      <form className="ai-composer" onSubmit={submit}><textarea value={input} onChange={(event) => setInput(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter" && !event.shiftKey) { event.preventDefault(); void send(input); } }} placeholder="询问产品、结合网页调研，或描述销售线索目标…" rows={1}/><div><span>支持多轮纠正 · 线索搜索执行前需确认</span><button disabled={busy || !input.trim()} aria-label="发送">↑</button></div></form>
+      <form className="ai-composer" onSubmit={submit}><AgentAttachments selected={attachments} onChange={setAttachments}/><textarea value={input} onChange={(event) => setInput(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter" && !event.shiftKey) { event.preventDefault(); void send(input); } }} placeholder="询问产品、结合网页调研，或描述销售线索目标…" rows={1}/><div><span>支持多轮纠正 · 线索搜索执行前需确认</span><button disabled={busy || !input.trim()} aria-label="发送">↑</button></div></form>
     </section>
     {taskId&&<TaskDetailView key={taskId} id={taskId} kind="search" onClose={()=>setTaskId(undefined)}/>}
   </div>;

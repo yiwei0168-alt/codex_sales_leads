@@ -203,6 +203,13 @@ try{
     };
     checks.push(`${viewport.width}:real-login`);
     await openView("AI 销售助理");
+    const attachmentButton=page.locator(".ai-composer").getByRole("button",{name:/^资料/});
+    await attachmentButton.click();
+    await expect(page.getByText("本次任务资料",{exact:true})).toBeVisible();
+    await expect(page.getByText("上传私有原件",{exact:true})).toBeVisible();
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+    await attachmentButton.click();
+    checks.push(`${viewport.width}:main-agent-attachment-picker-private-upload-entry`);
     for(const [reason,label] of [["target-met","目标已满足"],["provider-unavailable","运行结束，目标未填满"],
       ["legacy-unknown","运行结束，最终数量未记录"]]){
       const card=page.locator(".ai-message").filter({hasText:`Synthetic search status ${reason}`}).locator(".ai-action-card");

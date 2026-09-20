@@ -25,6 +25,9 @@ export async function POST(request: Request) {
       return Response.json({ error: "任务入队失败；请检查对话、附件或重复请求内容" }, { status: 409 });
     }
   }
+  if (Array.isArray((parsed as Record<string,unknown>).attachments) && ((parsed as Record<string,unknown>).attachments as unknown[]).length > 0) {
+    return Response.json({error:"当前账户尚未启用主 Agent 附件任务；资料已保留，请启用后重试"},{status:409});
+  }
   const body = parsed as { conversationId?: string; content?: string };
   const content = typeof body.content === "string" ? body.content.trim() : "";
   if (!content || content.length < 2 || content.length > 4000) return Response.json({ error: "消息长度必须在 2–4000 字符之间" }, { status: 400 });
