@@ -17,6 +17,7 @@
     "db:migrate": "node scripts/run-tsx.cjs scripts/migrate.ts",
     "leads:publish-scoring-policy": "node scripts/run-tsx.cjs scripts/publish-lead-scoring-policy.ts",
     "assistant:verify": "tsx scripts/verify-assistant-workspace.ts",
+    "assistant:worker": "node scripts/run-tsx.cjs scripts/run-main-agent-worker.ts",
     "assistant:verify-models": "node --use-env-proxy scripts/run-tsx.cjs scripts/verify-assistant-models.ts",
     "outreach:verify": "node --use-env-proxy scripts/run-tsx.cjs scripts/verify-development-strategy-agent.ts",
     "outreach:ingest": "node scripts/run-tsx.cjs scripts/ingest-outreach-knowledge.ts",

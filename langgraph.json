@@ -2,6 +2,10 @@
   "node_version": "24",
   "node_loader": "tsx/esm",
   "graphs": {
+    "main_agent_workflow": {
+      "path": "./src/lib/assistant/main/server.ts:mainAgentWorkflowGraph",
+      "description": "Durable open-ended main Agent with account-scoped tool journal and PostgreSQL checkpoints."
+    },
     "runtime_health": {
       "path": "./src/langgraph/server.ts:runtimeHealthGraph",
       "description": "Zero-cost local health graph for the standalone LangGraph runtime."

@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from "react";
+import { AgentRuns } from "./agent-runs";
 import { TaskDetailView } from "./task-detail-view";
 import {BudgetProposalCard} from "./budget-proposal";
 import type {
@@ -30,6 +31,13 @@ export function AssistantHome({ userName, onOpenResults,onOpenCompany }: { userN
   const [confirmingId, setConfirmingId] = useState<string>();
   const [error, setError] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
+  const refreshAgentConversation = useCallback(() => {
+    if (!activeId) return;
+    void fetch(`/api/assistant/conversations/${activeId}`, { cache: "no-store" })
+      .then(r => r.json()).then((data: { conversation?: AssistantConversationDto }) => {
+        if (data.conversation) setConversation(data.conversation);
+      }).catch(() => undefined);
+  }, [activeId]);
 
   async function loadList(preferredId?: string) {
     const response = await fetch("/api/assistant/conversations", { cache: "no-store" });
@@ -99,7 +107,7 @@ export function AssistantHome({ userName, onOpenResults,onOpenCompany }: { userN
     try {
       const response = await fetch("/api/assistant/messages", {
         method: "POST", headers: { "content-type": "application/json" },
-        body: JSON.stringify({ conversationId: activeId, content: message }),
+        body: JSON.stringify({ conversationId: activeId, content: message, requestKey: crypto.randomUUID() }),
       });
       const body = await response.json() as { conversation?: AssistantConversationDto; error?: string };
       if (!response.ok || !body.conversation) throw new Error(body.error ?? "消息处理失败");
@@ -172,6 +180,7 @@ export function AssistantHome({ userName, onOpenResults,onOpenCompany }: { userN
     <section className="ai-chat-panel">
       <header><div className="ai-orb">✦</div><div><strong>Network Copilot</strong><span>知识问答 · 全球线索 · 销售策略</span></div><i>在线</i></header>
       <div className="ai-message-stream" ref={scrollRef}>
+        {activeId && <AgentRuns conversationId={activeId} onUpdated={refreshAgentConversation} />}
         {messages.length === 0 && <div className="ai-welcome">
           <span className="ai-welcome-icon">✦</span><p>{greeting}，{userName}</p><h1>今天想推进哪个市场？</h1>
           <small>我可以查询产品与公司知识、分析邮箱学习内容，或在你确认后搜索任何国家的销售线索。</small>
