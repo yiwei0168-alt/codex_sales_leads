@@ -1,5 +1,7 @@
 # 用户确认规则登记表
 
+> 2026-09-20 MA07 implementation follow-up: account-owned versioned memories can be inventoried, deactivated and restored with version/update-revision checks; historical private outreach memories can be archived/restored and deleted through their existing audited service with an update-revision check. Main-Agent historical deletion has a destructive effect and requires exact central approval; model input cannot supply the server confirmation flag. Twenty-two new isolated database checks passed (115 total). Account business decisions and global policies use separate exact-approval tools, with global changes restricted to administrators. This is partial lifecycle coverage; full MA07/P5 acceptance remains open.
+
 > 2026-09-20 MA07 implementation update: the main Agent now reads active historical shared distribution policies as scoped defaults and can search account historical preferences/company decisions with original provenance and usage restrictions. This does not create new mandatory policies or assert historical human confirmation. Ninety-three isolated database checks and 1,267 regression assertions passed; complete P5/P6 acceptance remains pending. [Evidence](MAIN_AGENT_ACCEPTANCE.md).
 
 

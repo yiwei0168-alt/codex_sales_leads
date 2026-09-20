@@ -1,6 +1,6 @@
 # Registered main Agent tools
 
-Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/generate-main-agent-catalog.ts --check` to detect drift. These 54 tools are implemented adapters; registration is not real-provider acceptance. The complete migration inventory remains in [MAIN_AGENT_CAPABILITIES.md](MAIN_AGENT_CAPABILITIES.md).
+Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/generate-main-agent-catalog.ts --check` to detect drift. These 60 tools are implemented adapters; registration is not real-provider acceptance. The complete migration inventory remains in [MAIN_AGENT_CAPABILITIES.md](MAIN_AGENT_CAPABILITIES.md).
 
 | Tool | Version | Role | Effect | Cost | Purpose |
 |---|---|---|---|---|---|
@@ -50,6 +50,12 @@ Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/ge
 | task_list | 1 | member | read | known | Read existing business task status and new Agent runs for this account. |
 | task_detail | 1 | member | read | known | Read saved business task detail, progress and receipts. |
 | memory_list | 1 | member | read | known | Read the account's existing sourced preferences and policies. Retains historical memory identities. |
+| agent_memory_inventory | 1 | member | read | known | List this account's current versioned memories, including inactive ones, their source pointers and update revision. Use the revision before changing active state. |
+| agent_memory_set_active | 1 | member | reversible | known | Deactivate or restore one owned account preference using its current version and update revision. Policies and company decisions require separate exact confirmation. |
+| decision_memory_set_active | 1 | member | publish | known | Deactivate or restore an owned account business policy or company decision after confirmation of its exact ID, version, update revision and desired state. |
+| global_policy_set_active | 1 | admin | publish | known | Deactivate or restore an owned global policy after administrator confirmation of its exact ID, version, current update revision and desired state. |
+| legacy_memory_set_active | 1 | member | publish | known | Archive or restore one account-owned historical outreach memory after reading its update revision. Source-managed company classifications must be changed through company state. |
+| legacy_memory_delete | 1 | member | destructive | known | Permanently delete one account-owned historical outreach memory after exact human confirmation of its ID and update revision. Source-managed company classifications cannot be deleted here. |
 | company_add | 1 | member | reversible | known | Add a user-nominated company directly, without discovery or scoring prerequisites. It remains unverified until separately assessed. |
 | draft_edit | 1 | member | reversible | known | Replace an existing editable draft body without rerunning the strategy Agent or sending mail. |
 | development_workflow | 1 | member | reversible | unknown | Optional existing complete development strategy and draft workflow for a saved company; creates a draft, never sends. |

@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+> 2026-09-20 P5 partial: the main Agent can inventory, deactivate and restore owned versioned memory and manage historical private-memory lifecycle using the same page service. Historical deletion requires central exact approval and a current update revision. A total of 115 isolated database checks passed; the complete unified memory and release gate are still open. [Evidence](MAIN_AGENT_ACCEPTANCE.md).
+
 > 2026-09-20 P5 partial: current main-Agent policy context now includes historical shared distribution defaults; account historical preferences/company decisions are searchable with original identity and usage scope. Ninety-three PostgreSQL checks and 1,267 regression assertions passed. Historical write unification, semantic retrieval and complete P5/P6 release acceptance are still open. [Evidence](MAIN_AGENT_ACCEPTANCE.md).
 
 > 2026-09-20 P5 partial: new memory versions preserve the actual predecessor and active state for undo after branching or reactivation. Eighty isolated PostgreSQL checks passed; older snapshots retain historical fallback and full P5 acceptance is open. [Evidence](MAIN_AGENT_ACCEPTANCE.md).

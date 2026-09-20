@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { tenantQuery, tenantTransaction } from "@/lib/rag/db";
 
-export const memoryChangeSchema=z.object({id:z.uuid(),operation:z.enum(["activate","archive","delete"]),confirmed:z.literal(true)}).strict();
+export const memoryChangeSchema=z.object({id:z.uuid(),operation:z.enum(["activate","archive","delete"]),confirmed:z.literal(true),expectedUpdatedAt:z.string().optional()}).strict();
 export interface MemoryItem {
   id:string;kind:string;title:string;content:string;status:"active"|"archived";
   marketCodes:string[];channelRoles:string[];usageScope:string;updatedAt:string;
@@ -14,9 +14,10 @@ export async function listMemories(userId:string,offset:number) {
 export async function changeMemory(userId:string,input:z.infer<typeof memoryChangeSchema>) {
   const startedAt=Date.now();
   return tenantTransaction(userId,async client=>{
-    const found=await client.query<{kind:string;workspace_id:string|null}>(
-      "select kind,workspace_id from user_outreach_memory where user_id=$1 and id=$2 for update",[userId,input.id]);
+    const found=await client.query<{kind:string;workspace_id:string|null;updated_at:string}>(
+      "select kind,workspace_id,updated_at::text from user_outreach_memory where user_id=$1 and id=$2 for update",[userId,input.id]);
     if(!found.rows[0])return "not-found";
+    if(input.expectedUpdatedAt && found.rows[0].updated_at!==input.expectedUpdatedAt)return "conflict";
     // This record mirrors authoritative company state, not a reusable preference.
     if(found.rows[0].kind==="company-classification")return "source-managed";
     if(input.operation==="delete")await client.query("delete from user_outreach_memory where user_id=$1 and id=$2",[userId,input.id]);

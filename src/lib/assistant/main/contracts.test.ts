@@ -40,4 +40,24 @@ describe("main Agent contracts", () => {
     expect(update!.input.safeParse({externalId:"c1",patch:{nextAction:"Call"}}).success).toBe(false);
     expect(update!.input.safeParse({externalId:"c1",expectedRevision:3,patch:{fitScore:100}}).success).toBe(false);
   });
+  it("requires exact approval and a read revision for historical memory deletion",()=>{
+    const deletion=productTools.find(tool=>tool.id==="legacy_memory_delete")!;
+    const id="11111111-1111-4111-8111-111111111111";
+    expect(deletion.effect).toBe("destructive");
+    expect(needsApproval(deletion)).toBe(true);
+    expect(deletion.input.safeParse({id,expectedUpdatedAt:"revision"}).success).toBe(true);
+    expect(deletion.input.safeParse({id}).success).toBe(false);
+    expect(deletion.input.safeParse({id,expectedUpdatedAt:"revision",confirmed:true}).success).toBe(false);
+    expect(deletion.input.safeParse({id,expectedUpdatedAt:"revision",userId:"forged"}).success).toBe(false);
+  });
+  it("routes global policy changes through administrator-only exact confirmation",()=>{
+    const admin=productTools.find(tool=>tool.id==="global_policy_set_active")!;
+    expect(availableTools({role:"member"}).map(tool=>tool.id)).not.toContain(admin.id);
+    expect(admin.effect).toBe("publish");
+    expect(needsApproval(admin)).toBe(true);
+    expect(admin.input.safeParse({id:"11111111-1111-4111-8111-111111111111",version:1,expectedUpdatedAt:"revision",active:false}).success).toBe(true);
+    const decision=productTools.find(tool=>tool.id==="decision_memory_set_active")!;
+    expect(needsApproval(decision)).toBe(true);
+    expect(needsApproval(productTools.find(tool=>tool.id==="legacy_memory_set_active")!)).toBe(true);
+  });
 });

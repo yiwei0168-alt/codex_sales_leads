@@ -4,7 +4,7 @@ import { hybridSearch, getKnowledgeStats } from "@/lib/rag/repository";
 import { resolveVerifiedFacts } from "@/lib/knowledge/fact-repository";
 import {factReviewDecisionSchema,factReviewListSchema} from "@/lib/knowledge/review-input";
 import { findProductActionCompanies } from "../product-actions";
-import { listMemories } from "@/lib/outreach/memory-management";
+import { listMemories,changeMemory } from "@/lib/outreach/memory-management";
 import { taskFeedSql, type TaskFeedItem } from "../task-feed";
 import { readTaskDetail } from "../task-detail";
 import { result, type ExecutionContext, type ProductTool } from "./contracts";
@@ -23,6 +23,7 @@ import {loadSkillSource,skillSourceSchema} from "./skill-sources";
 import { runSkillScript } from "./sandbox";
 import { saveMemory, memoryInputSchema } from "./memory";
 import {loadDecisionMemory,searchHistoricalMemory,historicalMemoryInput} from "./memory-context";
+import {listAgentMemory,setAgentMemoryActive} from "./memory-management";
 import { createSchedule, listSchedules, changeSchedule, scheduleInputSchema } from "./schedules";
 
 import { defineTool } from "./tool-definition";
@@ -109,6 +110,24 @@ export const productTools: ProductTool[] = [
     execute: async (i, c) => result(await readTaskDetail(c.userId, i.id, i.kind), { cost: "known" }) }),
   defineTool({ id: "memory_list", description: "Read the account's existing sourced preferences and policies. Retains historical memory identities.", input: empty,
     execute: async (_, c) => result(await listMemories(c.userId, 0), { cost: "known" }) }),
+  defineTool({id:"agent_memory_inventory",description:"List this account's current versioned memories, including inactive ones, their source pointers and update revision. Use the revision before changing active state.",
+    input:z.object({offset:z.number().int().min(0).max(100000).default(0)}).strict(),
+    execute:async(i,c)=>{const rows=await listAgentMemory(c.userId,i.offset);return result({items:rows.slice(0,50),hasMore:rows.length>50},{cost:"known"});}}),
+  defineTool({id:"agent_memory_set_active",description:"Deactivate or restore one owned account preference using its current version and update revision. Policies and company decisions require separate exact confirmation.",
+    input:z.object({id:z.uuid(),version:z.number().int().min(1),expectedUpdatedAt:z.string().min(1),active:z.boolean()}).strict(),effect:"reversible",recovery:"idempotent",
+    execute:async(i,c)=>{const status=await setAgentMemoryActive(c,i);return status==="updated"||status==="unchanged"?result({status},{cost:"known"}):result({status},{status:status==="conflict"?"missing_input":"unavailable",missing:[status==="conflict"?"Memory revision changed; read current memory inventory":"Owned memory or required administrator permission unavailable"],cost:"known"});}}),
+  defineTool({id:"decision_memory_set_active",description:"Deactivate or restore an owned account business policy or company decision after confirmation of its exact ID, version, update revision and desired state.",
+    input:z.object({id:z.uuid(),version:z.number().int().min(1),expectedUpdatedAt:z.string().min(1),active:z.boolean()}).strict(),effect:"publish",recovery:"idempotent",
+    execute:async(i,c)=>{const status=await setAgentMemoryActive(c,i,"decision");return status==="updated"||status==="unchanged"?result({status},{cost:"known"}):result({status},{status:status==="conflict"?"missing_input":"unavailable",missing:[status==="conflict"?"Decision revision changed; reread and reconfirm":"Owned policy or company decision unavailable"],cost:"known"});}}),
+  defineTool({id:"global_policy_set_active",description:"Deactivate or restore an owned global policy after administrator confirmation of its exact ID, version, current update revision and desired state.",
+    input:z.object({id:z.uuid(),version:z.number().int().min(1),expectedUpdatedAt:z.string().min(1),active:z.boolean()}).strict(),role:"admin",effect:"publish",recovery:"idempotent",
+    execute:async(i,c)=>{const status=await setAgentMemoryActive(c,i,"global");return status==="updated"||status==="unchanged"?result({status},{cost:"known"}):result({status},{status:status==="conflict"?"missing_input":"unavailable",missing:[status==="conflict"?"Global policy revision changed; reread and reconfirm":"Owned global policy or administrator permission unavailable"],cost:"known"});}}),
+  defineTool({id:"legacy_memory_set_active",description:"Archive or restore one account-owned historical outreach memory after reading its update revision. Source-managed company classifications must be changed through company state.",
+    input:z.object({id:z.uuid(),expectedUpdatedAt:z.string().min(1),active:z.boolean()}).strict(),effect:"publish",recovery:"idempotent",
+    execute:async(i,c)=>{const status=await changeMemory(c.userId,{id:i.id,operation:i.active?"activate":"archive",expectedUpdatedAt:i.expectedUpdatedAt,confirmed:true});return status==="ok"?result({status},{cost:"known"}):result({status},{status:status==="conflict"?"missing_input":"unavailable",missing:[status==="conflict"?"Historical memory revision changed; reread before updating":"Historical memory missing or source-managed"],cost:"known"});}}),
+  defineTool({id:"legacy_memory_delete",description:"Permanently delete one account-owned historical outreach memory after exact human confirmation of its ID and update revision. Source-managed company classifications cannot be deleted here.",
+    input:z.object({id:z.uuid(),expectedUpdatedAt:z.string().min(1)}).strict(),effect:"destructive",recovery:"reconcile",
+    execute:async(i,c)=>{const status=await changeMemory(c.userId,{id:i.id,operation:"delete",expectedUpdatedAt:i.expectedUpdatedAt,confirmed:true});return status==="ok"?result({status},{cost:"known"}):result({status},{status:status==="conflict"?"missing_input":"unavailable",missing:[status==="conflict"?"Historical memory revision changed; reread and reconfirm":"Historical memory missing or source-managed"],cost:"known"});}}),
   defineTool({ id: "company_add", description: "Add a user-nominated company directly, without discovery or scoring prerequisites. It remains unverified until separately assessed.",
     input: manualCompanySchema, effect: "reversible", recovery: "idempotent",
     execute: async (i, c) => result(await addManualCompany(c.userId, i), { cost: "known" }) }),

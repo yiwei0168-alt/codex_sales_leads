@@ -15,6 +15,8 @@ import { productTools } from "../src/lib/assistant/main/tools";
 import { importSkill, listSkills, readSkill, changeSkill } from "../src/lib/assistant/main/skills";
 import { saveMemory, loadMemory, undoMemory } from "../src/lib/assistant/main/memory";
 import { loadDecisionMemory, searchHistoricalMemory } from "../src/lib/assistant/main/memory-context";
+import {listAgentMemory,setAgentMemoryActive} from "../src/lib/assistant/main/memory-management";
+import {changeMemory,listMemories} from "../src/lib/outreach/memory-management";
 import { createSchedule, listSchedules, changeSchedule, dispatchDueSchedule } from "../src/lib/assistant/main/schedules";
 import { queueReviewedMail } from "../src/lib/assistant/main/reviewed-mail";
 
@@ -144,6 +146,27 @@ try {
   assert((await loadMemory(owners[1], { market: "DE" })).some(m => m.id === policy.id)); checks++;
   assert(!(await loadMemory(owners[1], { market: "FR" })).some(m => m.id === policy.id)); checks++;
   await assert.rejects(saveMemory(context, { ...preference, kind: "policy" }, true)); checks++;
+  const activeMemory=(await listAgentMemory(owners[0],0)).find(m=>m.id===memory.id)!;
+  assert(activeMemory?.active);checks++;
+  assert(!(await listAgentMemory(owners[1],0)).some(m=>m.id===memory.id));checks++;
+  assert.equal(await setAgentMemoryActive({...context,userId:owners[1]},{id:memory.id,version:activeMemory.current_version,expectedUpdatedAt:activeMemory.updatedAt,active:false}),"not-found");checks++;
+  assert.equal(await setAgentMemoryActive(context,{id:memory.id,version:activeMemory.current_version,expectedUpdatedAt:"stale",active:false}),"conflict");checks++;
+  assert.equal(await setAgentMemoryActive(context,{id:memory.id,version:activeMemory.current_version,expectedUpdatedAt:activeMemory.updatedAt,active:false}),"updated");checks++;
+  assert(!(await loadMemory(owners[0])).some(m=>m.id===memory.id));checks++;
+  assert.equal(await setAgentMemoryActive(context,{id:memory.id,version:activeMemory.current_version,expectedUpdatedAt:activeMemory.updatedAt,active:true}),"conflict");checks++;
+  const inactiveMemory=(await listAgentMemory(owners[0],0)).find(m=>m.id===memory.id)!;
+  assert.equal(await setAgentMemoryActive(context,{id:memory.id,version:inactiveMemory.current_version,expectedUpdatedAt:inactiveMemory.updatedAt,active:true}),"updated");checks++;
+  assert((await loadMemory(owners[0])).some(m=>m.id===memory.id));checks++;
+  const globalMemory=(await listAgentMemory(owners[0],0)).find(m=>m.id===policy.id)!;
+  assert.equal(await setAgentMemoryActive(context,{id:policy.id,version:globalMemory.current_version,expectedUpdatedAt:globalMemory.updatedAt,active:false}),"forbidden");checks++;
+  assert.equal(await setAgentMemoryActive(globalContext,{id:policy.id,version:globalMemory.current_version,expectedUpdatedAt:globalMemory.updatedAt,active:false}),"forbidden");checks++;
+  assert.equal(await setAgentMemoryActive(globalContext,{id:policy.id,version:globalMemory.current_version,expectedUpdatedAt:globalMemory.updatedAt,active:false},"global"),"updated");checks++;
+  assert(!(await loadMemory(owners[1],{market:"DE"})).some(m=>m.id===policy.id));checks++;
+  const accountPolicy=await saveMemory(context,{...preference,key:"account-policy",kind:"policy",content:"Synthetic account policy"},false);
+  const accountPolicyRow=(await listAgentMemory(owners[0],0)).find(m=>m.id===accountPolicy.id)!;
+  const policyAction={id:accountPolicy.id,version:accountPolicyRow.current_version,expectedUpdatedAt:accountPolicyRow.updatedAt,active:false};
+  assert.equal(await setAgentMemoryActive(context,policyAction),"forbidden");checks++;
+  assert.equal(await setAgentMemoryActive(context,policyAction,"decision"),"updated");checks++;
   const historyId=randomUUID();
   await tenantQuery(owners[0],`insert into user_outreach_memory(id,user_id,kind,external_id,title,content,market_codes,channel_roles,context)
     values($1::uuid,$2,'email-style',$1::text,'Synthetic literal %_ preference','Synthetic historical style',array['UK'],array['distributor'],$3::jsonb)`,
@@ -159,6 +182,15 @@ try {
   assert(!(await search(owners[0],{company:'other-company'})).items.some(m=>m.id===historyId));checks++;
   assert(!(await search(owners[0],{role:'retailer'})).items.some(m=>m.id===historyId));checks++;
   await tenantQuery(owners[0],"update user_outreach_memory set status='archived' where id=$1",[historyId]);
+  assert(!(await search(owners[0])).items.some(m=>m.id===historyId));checks++;
+  const oldRevision=(await listMemories(owners[0],0)).find(m=>m.id===historyId)!.updatedAt;
+  assert.equal(await changeMemory(owners[1],{id:historyId,operation:"delete",confirmed:true,expectedUpdatedAt:oldRevision}),"not-found");checks++;
+  assert.equal(await changeMemory(owners[0],{id:historyId,operation:"activate",confirmed:true,expectedUpdatedAt:"stale"}),"conflict");checks++;
+  assert.equal(await changeMemory(owners[0],{id:historyId,operation:"activate",confirmed:true,expectedUpdatedAt:oldRevision}),"ok");checks++;
+  assert((await search(owners[0])).items.some(m=>m.id===historyId));checks++;
+  assert.equal(await changeMemory(owners[0],{id:historyId,operation:"delete",confirmed:true,expectedUpdatedAt:oldRevision}),"conflict");checks++;
+  const newRevision=(await listMemories(owners[0],0)).find(m=>m.id===historyId)!.updatedAt;
+  assert.equal(await changeMemory(owners[0],{id:historyId,operation:"delete",confirmed:true,expectedUpdatedAt:newRevision}),"ok");checks++;
   assert(!(await search(owners[0])).items.some(m=>m.id===historyId));checks++;
   await admin.query(`insert into outreach_knowledge_item(id,visibility,kind,external_id,title,content,market_codes,source_refs,approval_status)
     values($1::uuid,'shared','distribution-policy',$1::text,'Synthetic policy','Synthetic default policy',array['BENELUX'],$2::jsonb,'active')`,
