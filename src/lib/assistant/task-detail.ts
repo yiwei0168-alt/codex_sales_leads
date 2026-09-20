@@ -37,7 +37,7 @@ export async function readTaskDetail(userId:string,id:string,kind:string,offset=
   }
   if(kind==="send"){
     const rows=await tenantQuery<{content_ciphertext:string;[key:string]:unknown}>(userId,`select m.id,c.canonical_name as company,m.market_country_code,m.status,m.error_code,m.created_at,m.sent_at,m.parent_id,m.content_ciphertext
-      from outbound_mail m join sales_company c on c.id=m.company_id where m.user_id=$1 and m.id=$2`,[userId,id]);
+      from outbound_mail m left join sales_company c on c.id=m.company_id where m.user_id=$1 and m.id=$2`,[userId,id]);
     if(!rows[0])return null;const {content_ciphertext,...metadata}=rows[0];return {kind,details:{...metadata,...decryptMailboxContent(userId,content_ciphertext)}};
   }
   return null;

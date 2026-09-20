@@ -1,5 +1,7 @@
 # 用户确认规则登记表
 
+> 2026-09-20 MA06/MA08 implementation follow-up: task list and task detail now retain standalone outbound mail with no company or market link, showing a null company instead of inventing one. Five new isolated database checks passed (120 total); no SMTP send occurred. This closes a visibility defect, not the remaining mail/recovery or release acceptance. [Evidence](MAIN_AGENT_ACCEPTANCE.md).
+
 > 2026-09-20 MA02 implementation follow-up: the main Agent can read a saved formal company assessment with its scoring policy version and list that company's linked mail metadata through the same owner-scoped services used by the existing pages. Reading does not publish a score or disclose the mail body. Eight isolated PostgreSQL fixture checks passed; P2/P6 acceptance remains open. [Evidence](MAIN_AGENT_ACCEPTANCE.md).
 
 > 2026-09-20 MA07 implementation follow-up: account-owned versioned memories can be inventoried, deactivated and restored with version/update-revision checks; historical private outreach memories can be archived/restored and deleted through their existing audited service with an update-revision check. Main-Agent historical deletion has a destructive effect and requires exact central approval; model input cannot supply the server confirmation flag. Twenty-two new isolated database checks passed (115 total). Account business decisions and global policies use separate exact-approval tools, with global changes restricted to administrators. This is partial lifecycle coverage; full MA07/P5 acceptance remains open.

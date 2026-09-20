@@ -19,6 +19,9 @@ import {listAgentMemory,setAgentMemoryActive} from "../src/lib/assistant/main/me
 import {changeMemory,listMemories} from "../src/lib/outreach/memory-management";
 import { createSchedule, listSchedules, changeSchedule, dispatchDueSchedule } from "../src/lib/assistant/main/schedules";
 import { queueReviewedMail } from "../src/lib/assistant/main/reviewed-mail";
+import {encryptMailboxContent} from "../src/lib/mailbox/crypto";
+import {readTaskDetail} from "../src/lib/assistant/task-detail";
+import {taskFeedSql} from "../src/lib/assistant/task-feed";
 
 nextEnv.loadEnvConfig(process.cwd());
 const url = process.env.DATABASE_MIGRATION_URL || process.env.DATABASE_URL;
@@ -237,8 +240,21 @@ try {
   assert.equal((await queueReviewedMail(owners[0],"member",reviewed)).runId,queued.runId);checks++;
   await assert.rejects(queueReviewedMail(owners[0],"member",{...reviewed,body:"Changed after confirmation"}),/different content/);checks++;
   assert.equal((await admin.query("select id from outbound_mail where user_id=any($1::uuid[])",[owners])).rowCount,0);checks++;
+  const standaloneMailId=randomUUID();
+  const standaloneCipher=encryptMailboxContent(owners[0],{subject:"Synthetic standalone",bodyText:"Synthetic private mail body",sender:["sender@example.invalid"],recipients:["recipient@example.invalid"]});
+  await admin.query(`insert into outbound_mail(id,user_id,connection_id,idempotency_key,request_hash,message_id,content_ciphertext,status)
+    values($1::uuid,$2,$3,$1::uuid,'synthetic-standalone-receipt',$1::uuid::text,$4,'unknown')`,[standaloneMailId,owners[0],sender.rows[0].id,standaloneCipher]);
+  const ownedMail=await readTaskDetail(owners[0],standaloneMailId,"send");
+  assert.equal((ownedMail?.details as {company:string|null}).company,null);checks++;
+  assert.equal((ownedMail?.details as {bodyText:string}).bodyText,"Synthetic private mail body");checks++;
+  assert.equal(await readTaskDetail(owners[1],standaloneMailId,"send"),null);checks++;
+  const ownedFeed=await tenantQuery<{id:string;title:string}>(owners[0],taskFeedSql,[owners[0],"all","all","all",0]);
+  assert(ownedFeed.some(item=>item.id===standaloneMailId&&item.title.includes("自定义邮件")));checks++;
+  const otherFeed=await tenantQuery<{id:string}>(owners[1],taskFeedSql,[owners[1],"all","all","all",0]);
+  assert(!otherFeed.some(item=>item.id===standaloneMailId));checks++;
   console.log(JSON.stringify({ passed: checks, synthetic: true, modelCalls: 0, searchCalls: 0, sends: 0, customerDataModified: false }));
 } finally {
+  await admin.query("delete from outbound_mail where user_id=any($1::uuid[])",[owners]);
   await admin.query("delete from outreach_knowledge_item where id=$1",[historicalPolicyId]);
   await admin.query("delete from agent_schedule where user_id=any($1::uuid[])", [owners]);
   await admin.query("delete from agent_memory_version where memory_id in(select id from agent_memory where owner_id=any($1::uuid[]))", [owners]);

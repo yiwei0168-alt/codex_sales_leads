@@ -1,5 +1,9 @@
 # Main Agent acceptance log
 
+## P3/P5 standalone mail task visibility - 2026-09-20 (partial)
+
+Task list and detail previously excluded the independently supported no-company outbound mail because both queries joined company and workspace as required rows. They now return the owned record without inventing a company. Five new isolated PostgreSQL checks (120 total) verify the synthetic unknown-status record appears in its owner's task feed, can be read in detail, retains a null company, and is invisible to another account. Fixture cleanup succeeded; no SMTP send, paid model call or customer-data mutation occurred. Full regression passed 252 files / 1,269 assertions in 29.91 seconds; TypeScript, scoped lint and production build passed. Broader mail recovery and P6 acceptance remain pending.
+
 ## P2 saved assessment and correspondence adapters - 2026-09-20 (partial)
 
 Two independent read tools expose the existing company detail page's saved formal assessment and linked mail metadata. Both pages and tools use the same owner-scoped service. A real PostgreSQL synthetic fixture passed eight checks: positive assessment and scoring policy version, owner/wrong-company isolation, positive encrypted-subject projection, body omission and pagination. The fixture and ciphertext were removed; model/search/SMTP calls and customer modifications were zero. Full regression passed 252 files / 1,269 assertions in 33.27 seconds; TypeScript, scoped lint, production build and 62 catalog schemas passed. Full product tool coverage and P6 acceptance remain open.
