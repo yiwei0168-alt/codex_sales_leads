@@ -2,10 +2,38 @@ import { describe, expect, it, vi } from "vitest";
 import { MemorySaver } from "@langchain/langgraph";
 import { buildMainAgentGraph } from "./graph";
 import { result, type ModelMessage, type ModelToolCall } from "./contracts";
+import { InstructionsChangedError } from "./repository";
 
 const call = (id: string, tool: string): ModelToolCall => ({ id, type: "function", function: { name: "execute_tool", arguments: JSON.stringify({ tool, arguments: {} }) } });
 const initial = () => ({ messages: [{ role: "user" as const, content: "先查现有资料，再对照保存的公司决定，指出差异" }], pending: [], steps: 0, status: "running" as const, reply: "", seen: {}, instructionIds: [] });
 describe("open main Agent graph", () => {
+  it("replans a composite stopped between leaf actions after new input",async()=>{
+    let instructions:Array<{id:string;content:string}>=[];
+    const action=call("batch","mail_batch_send");
+    const tool=vi.fn(async()=>{
+      instructions=[{id:"change",content:"Stop the remaining emails"}];
+      throw new InstructionsChangedError();
+    });
+    const model=vi.fn(async(messages:ModelMessage[]):Promise<ModelMessage> => messages.some(m=>m.content==="Stop the remaining emails")
+      ? {role:"assistant",content:"Stopped remaining items; prior receipts retained"}
+      : {role:"assistant",content:null,tool_calls:[action]});
+    const graph=buildMainAgentGraph({boundary:async()=>({control:null,instructions}),model,tool});
+    const out=await graph.invoke(initial());
+    expect(out.status).toBe("completed");expect(tool).toHaveBeenCalledOnce();
+    expect(out.messages.find(m=>m.tool_call_id==="batch")?.content).toContain("superseded");
+  });
+  it("re-enters the safe boundary after process loss before a pending node",async()=>{
+    const saver=new MemorySaver(),config={configurable:{thread_id:"crashed:pending"}};
+    const tool=vi.fn(async()=>{throw new Error("synthetic process loss");});
+    const first=buildMainAgentGraph({boundary:async()=>({control:null,instructions:[]}),model:async()=>({role:"assistant",content:null,tool_calls:[call("send","mail_send")]}),tool},saver);
+    await expect(first.invoke(initial(),config)).rejects.toThrow("synthetic process loss");
+    const snapshot=await first.getState(config);
+    expect(snapshot.next).toEqual(["execute_tool"]);
+    const resumed=buildMainAgentGraph({boundary:async()=>({control:null,instructions:[{id:"new",content:"Do not send"}]}),model:async()=>({role:"assistant",content:"Stopped"}),tool},saver);
+    const out=await resumed.invoke({...snapshot.values,status:"running",reply:""},config);
+    expect(out.status).toBe("completed");expect(tool).toHaveBeenCalledOnce();
+    expect(out.messages.some(m=>m.content==="Do not send")).toBe(true);
+  });
   it("replans pending sends when new instructions arrive before execution",async()=>{
     const action=call("old-send","mail_send"),tool=vi.fn();
     const model=vi.fn(async(messages:ModelMessage[])=>{

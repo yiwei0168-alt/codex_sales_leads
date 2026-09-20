@@ -11,6 +11,18 @@ export function OutboundComposer({companyId,draft,onSent}:{companyId:string;draf
   const [key,setKey]=useState(()=>crypto.randomUUID());const [revision,setRevision]=useState(0);
   const [offset,setOffset]=useState(0);const [hasMore,setHasMore]=useState(false);
   const [followUpDraftId,setFollowUpDraftId]=useState<string>();
+  const [deliveryRun,setDeliveryRun]=useState<string>();
+  useEffect(()=>{
+    if(!deliveryRun)return;const controller=new AbortController();let pending=false;
+    const read=async()=>{if(pending)return;pending=true;try{
+      const response=await fetch(`/api/assistant/runs/${deliveryRun}`,{signal:controller.signal,cache:"no-store"});if(!response.ok)return;
+      const data=await response.json();if(!["queued","running"].includes(data.status)){
+        setNotice(data.result?.reply||"任务状态已变化，请在 AI 助理中核对。");setRevision(v=>v+1);setDeliveryRun(undefined);
+        if(data.status==="completed")onSent();
+      }
+    }catch{/* Restore status on the next poll; never resubmit a send. */}finally{pending=false;}};
+    void read();const timer=setInterval(()=>void read(),2000);return()=>{controller.abort();clearInterval(timer);};
+  },[deliveryRun,onSent]);
   const [savedFollowUps,setSavedFollowUps]=useState<Array<{id:string;subject:string;bodyText:string;createdAt:string}>>([]);
   useEffect(()=>{if(!parent)return;const controller=new AbortController();
     fetch(`/api/mailbox/outbound/follow-up?parentId=${parent.id}`,{signal:controller.signal,cache:"no-store"}).then(async response=>{if(!response.ok)throw new Error();return response.json();}).then(data=>{if(!controller.signal.aborted)setSavedFollowUps(data.drafts);}).catch(()=>{if(!controller.signal.aborted)setNotice("已保存跟进草稿读取失败，可重选原邮件重试。");});return()=>controller.abort();},[parent,revision]);
@@ -26,8 +38,9 @@ export function OutboundComposer({companyId,draft,onSent}:{companyId:string;draf
   async function verify(){setBusy(true);try{await post("/api/mailbox/outbound",{action:"verify",connectionId});setVerified(true);setNotice("发信连接验证成功");}catch(error){setNotice(String(error));}finally{setBusy(false);}}
   async function send(){if(!confirmed||locked)return;setBusy(true);setLocked(true);
     try{const data=await post("/api/mailbox/outbound",{connectionId,companyExternalId:companyId,to,subject,body,idempotencyKey:key,parentId:parent?.id,followUpDraftId,confirmed:true});
-      setNotice(data.status==="sent"?"邮件已提交给发信服务器，发送时间已保存。":"发送未成功确认，请核实记录；本次草稿锁定以避免重复发送。");
+      setNotice(data.status==="queued"?"已保存本封邮件的精确确认，后台正在发送。可在 AI 助理的对应任务中查看进度，关闭页面不会取消。":data.status==="sent"?"邮件已提交给发信服务器，发送时间已保存。":"发送未成功确认，请核实记录；本次草稿锁定以避免重复发送。");
       if(data.status==="sent")onSent();
+      if(data.status==="queued"&&typeof data.runId==="string")setDeliveryRun(data.runId);
     }catch(error){setNotice(`${String(error)} 请先核实发送状态。`);}finally{setRevision(value=>value+1);setBusy(false);}}
   async function generate(){if(!parent)return;setBusy(true);try{const data=await post("/api/mailbox/outbound/follow-up",{parentId:parent.id,instructions});setSubject(data.draft.subject);setBody(data.draft.body);setFollowUpDraftId(data.draftId);setRevision(value=>value+1);setConfirmed(false);}catch(error){setNotice(String(error));}finally{setBusy(false);}}
   async function assignMarket(mail:Mail){

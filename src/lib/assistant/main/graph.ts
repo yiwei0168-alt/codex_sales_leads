@@ -5,7 +5,7 @@ import { withProductSpend } from "@/lib/billing/context";
 import { availableTools } from "./tools";
 import { productPrompt } from "./product";
 import { digest, result, type ExecutionContext, type ModelMessage, type ModelToolCall, type RunStatus, type ToolResult, type ModelConfig } from "./contracts";
-import { boundary, beginCall, completeCall, event, finishRun } from "./repository";
+import { boundary, beginCall, completeCall, event, finishRun, InstructionsChangedError } from "./repository";
 import { dispatchTool } from "./executor";
 import { requestModel } from "./model";
 import { BudgetDeniedError } from "@/lib/billing/policy";
@@ -19,7 +19,7 @@ export const MainAgentState = Annotation.Root({
 export interface MainGraphDependencies {
   boundary: () => Promise<{ control: "pause" | "cancel" | null; instructions: Array<{ id: string; content: string }> }>;
   model: (messages: ModelMessage[], step: number) => Promise<ModelMessage>;
-  tool: (call: ModelToolCall) => Promise<ToolResult>;
+  tool: (call: ModelToolCall, instructionIds: string[]) => Promise<ToolResult>;
 }
 export function buildMainAgentGraph(deps: MainGraphDependencies, checkpointer?: BaseCheckpointSaver) {
   return new StateGraph(MainAgentState)
@@ -50,7 +50,14 @@ export function buildMainAgentGraph(deps: MainGraphDependencies, checkpointer?: 
       const key = digest(call.function);
       const count = (state.seen[key] ?? 0) + 1;
       if (count > 2) return { status: "partial" as RunStatus, reply: "相同动作重复执行且没有新输入，已保存结果。请补充要求后继续。" };
-      const output = await deps.tool(call);
+      let output: ToolResult;
+      try { output = await deps.tool(call, state.instructionIds); }
+      catch (error) {
+        // A composite can stop between leaf actions. Preserve pending protocol
+        // state so the safe boundary can close it and incorporate the new input.
+        if (error instanceof InstructionsChangedError) return { status: "running" as RunStatus };
+        throw error;
+      }
       if (output.status === "waiting_approval") return { status: "waiting_user" as RunStatus, reply: "请核对下方操作的实际内容并确认。确认前任务会保留在当前步骤。" };
       const content = JSON.stringify(output);
       // Do not silently truncate evidence into apparently complete results.
@@ -109,22 +116,25 @@ async function durableModel(context: ExecutionContext, messages: ModelMessage[],
 export async function executeMainAgentRun(userId: string, runId: string, leaseToken: string) {
   const context: ExecutionContext = { userId, runId, leaseToken, role: "member" };
   const run = await boundary(context);
+  if(run.execution_kind==="mail")return (await import("./mail-graph")).executeMailDeliveryRun(context,run);
   const checkpointer = new PostgresSaver(getPool(), undefined, { schema: "langgraph" });
   const graph = buildMainAgentGraph({
     boundary: () => boundary(context),
     model: (messages, step) => durableModel(context, messages, step, run.model_config),
-    tool: call => dispatchTool(call, context),
+    tool: (call, instructionIds) => dispatchTool(call, { ...context, instructionIds }),
   }, checkpointer);
   const config = { configurable: { thread_id: `main-agent:${userId}:${runId}`, checkpoint_ns: "" }, recursionLimit: 400 };
   const snapshot = await graph.getState(config);
   const old = snapshot.values as Partial<typeof MainAgentState.State>;
-  let initial: Partial<typeof MainAgentState.State> | null;
-  if (snapshot.next.length) initial = null;
-  else if (old.messages?.length) {
-    if (old.status === "completed" || old.status === "cancelled") {
+  let initial: Partial<typeof MainAgentState.State>;
+  if (old.messages?.length) {
+    if (!snapshot.next.length && (old.status === "completed" || old.status === "cancelled")) {
       await finishRun(context, old.status, old.reply ?? "");
       return { status: old.status };
     }
+    // A new lease always enters START -> safe_boundary. Resuming a pending node
+    // with null would skip controls/instructions recorded since process loss.
+    // Completed effects remain protected by the independent durable call journal.
     initial = { ...old, status: "running", reply: "" };
   } else {
     const history = await tenantQuery<{ role: "user" | "assistant"; content: string }>(userId,

@@ -4,7 +4,7 @@ import { z } from "zod";
 export const runStatuses = ["queued", "running", "waiting_user", "paused", "partial", "completed", "failed", "cancelled"] as const;
 export type RunStatus = typeof runStatuses[number];
 export type Effect = "read" | "reversible" | "send" | "destructive" | "publish";
-export interface ExecutionContext { userId: string; runId: string; leaseToken: string; role: "admin" | "member"; callId?: string }
+export interface ExecutionContext { userId: string; runId: string; leaseToken: string; role: "admin" | "member"; callId?: string; instructionIds?: readonly string[] }
 export const toolResultSchema = z.object({
   status: z.enum(["success", "partial", "missing_input", "waiting_approval", "unavailable", "unknown"]),
   data: z.unknown().optional(),
@@ -46,6 +46,7 @@ export interface AgentRun {
   input: MessageInput; result: { reply: string } | null; model_config: ModelConfig;
   instructions: Array<{ id: string; content: string }>; control: "pause" | "cancel" | null;
   lease_token: string | null;
+  execution_kind?: "main-agent" | "mail"; execution_spec?: unknown;
 }
 export interface ModelToolCall { id: string; type: "function"; function: { name: string; arguments: string } }
 export interface ModelMessage {

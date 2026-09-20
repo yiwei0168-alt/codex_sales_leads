@@ -1,5 +1,13 @@
 # Main Agent acceptance log
 
+## Durable legacy mail admission and safe recovery - 2026-09-20
+
+Migration 096 adds deterministic mail execution to the same persistent queue. The authenticated final-send form stores exact approval before releasing its task; the worker uses LangGraph and the shared per-item executor without a language-model call. A status endpoint and composer polling report actual settlement. No actual SMTP acceptance is claimed.
+
+New instructions are checked within the locked begin-call transaction and between batch leaves. Recovery re-enters the safe boundary instead of jumping into a pending tool node. Graph tests cover crash/restart with new instructions, interruption within a composite, cancellation and unknown results. Database checks verify unchanged approvals, blocked new sends and reviewed-mail enqueue/idempotency with disabled synthetic accounts and no provider transport.
+
+Verified: 38 focused assertions, 70 real PostgreSQL assertions; full regression 247 files / 1,239 assertions passed in 26.96s. Typecheck, scoped lint, production build and generated 49-tool catalog consistency passed. Fixtures cleaned; customer data modifications, SMTP and paid model calls in these checks were zero. Model-route diagnostics are separate from mail acceptance.
+
 ## P0 baseline - 2026-09-20
 
 Commit a65bc74; 53 API routes inventoried. Pre-change Vitest: 238 files passed, 1 failed; 1191 tests passed, 2 failed; duration 28.82 seconds. Failures: billing/product-boundaries.test.ts expects missing-tariff but receives expired-tariff as real time advanced. No external model, search or mail calls performed by this verification. Docker API access denied in the restricted process; runtime availability remains unverified. RAG v3 remains active and unchanged. Live main-model/tools, 120-case evaluation and production rollout not performed.

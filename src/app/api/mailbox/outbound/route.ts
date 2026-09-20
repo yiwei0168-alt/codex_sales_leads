@@ -1,5 +1,6 @@
 import { requireApiSession } from "@/lib/auth/session";
-import { listOutbound,sendMailSchema,sendOutbound,verifyOutbound,reconcileMailSchema,reconcileOutbound } from "@/lib/mailbox/outbound";
+import { listOutbound,sendMailSchema,verifyOutbound,reconcileMailSchema,reconcileOutbound } from "@/lib/mailbox/outbound";
+import { queueReviewedMail } from "@/lib/assistant/main/reviewed-mail";
 import { assignMailMarket,assignMailMarketSchema } from "@/lib/mailbox/outbound";
 export const runtime="nodejs";
 export async function PATCH(request:Request){const session=await requireApiSession();if(session instanceof Response)return session;
@@ -23,6 +24,6 @@ export async function POST(request:Request){const session=await requireApiSessio
     catch{return Response.json({error:"SMTP连接验证失败，请检查客户端授权与邮箱站点配置"},{status:400});}
   }
   const input=sendMailSchema.safeParse(body);if(!input.success)return Response.json({error:"请确认发件邮箱、单一收件人、主题和正文"},{status:400});
-  try{return Response.json(await sendOutbound(session.userId,input.data));}
+  try{return Response.json(await queueReviewedMail(session.userId,session.role,input.data),{status:202});}
   catch{return Response.json({error:"发送未完成。请查看发送记录并核实状态，不要直接重复发送。"},{status:400});}
 }

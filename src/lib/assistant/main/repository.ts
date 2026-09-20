@@ -4,10 +4,10 @@ import type { AgentRun, ExecutionContext, MessageInput, ModelConfig, RunStatus, 
 import { digest } from "./contracts";
 import { approvalDigest } from "./approvals";
 
-export async function enqueueRun(userId: string, input: MessageInput, model: ModelConfig): Promise<AgentRun> {
+export async function enqueueRun(userId: string, input: MessageInput, model: ModelConfig, serverOptions?: { kind:"mail"; spec:unknown; paused:true }): Promise<AgentRun> {
   return tenantTransaction(userId, async client => {
     await client.query("select pg_advisory_xact_lock(hashtextextended($1,0))", [`agent-request:${userId}:${input.requestKey}`]);
-    const hash = digest(input);
+    const hash = digest(serverOptions?{input,execution:serverOptions}:input);
     const existing = await client.query<AgentRun & { request_hash: string }>("select * from agent_run where user_id=$1 and request_key=$2", [userId, input.requestKey]);
     if (existing.rows[0]) {
       if (existing.rows[0].request_hash !== hash) throw new Error("Request key already used with different content");
@@ -26,8 +26,8 @@ export async function enqueueRun(userId: string, input: MessageInput, model: Mod
         where a.id=$1 and (d.owner_id=$2 or d.visibility='shared') and a.registration_status='registered'`, [attachment.assetId, userId]);
       if (!asset.rowCount) throw new Error("Attachment unavailable");
     }
-    const saved = await client.query<AgentRun>(`insert into agent_run(user_id,conversation_id,request_key,request_hash,input,model_config)
-      values($1,$2,$3,$4,$5,$6) returning *`, [userId, conversationId, input.requestKey, hash, JSON.stringify(input), JSON.stringify(model)]);
+    const saved = await client.query<AgentRun>(`insert into agent_run(user_id,conversation_id,request_key,request_hash,input,model_config,execution_kind,execution_spec,status)
+      values($1,$2,$3,$4,$5,$6,$7,$8,$9) returning *`, [userId, conversationId, input.requestKey, hash, JSON.stringify(input), JSON.stringify(model),serverOptions?.kind??"main-agent",serverOptions?JSON.stringify(serverOptions.spec):null,serverOptions?.paused?"paused":"queued"]);
     const run = saved.rows[0];
     await client.query("insert into assistant_message(user_id,conversation_id,role,intent,content,metadata) values($1,$2,'user','general',$3,$4)", [userId, conversationId, input.content, JSON.stringify({ runId: run.id })]);
     await client.query("insert into agent_run_event(user_id,run_id,kind,payload) values($1,$2,'queued','{}')", [userId, run.id]);
@@ -64,6 +64,10 @@ export async function heartbeat(context: ExecutionContext) {
   return rows.length === 1;
 }
 export class LeaseLostError extends Error { constructor() { super("Agent lease lost"); } }
+export class InstructionsChangedError extends Error { constructor() { super("New instructions require replanning"); } }
+export function assertCurrentInstructions(context: ExecutionContext, instructions: AgentRun["instructions"]) {
+  if (context.instructionIds && instructions.some(i => !context.instructionIds!.includes(i.id))) throw new InstructionsChangedError();
+}
 export async function boundary(context: ExecutionContext) {
   const rows = await tenantQuery<AgentRun & { role: "admin" | "member" }>(context.userId,
     `select r.*,u.role from agent_run r join app_user u on u.id=r.user_id
@@ -118,9 +122,10 @@ export async function beginCall(context: ExecutionContext, call: { key: string; 
   await boundary(context);
   return tenantTransaction(context.userId, async client => {
     // Serialize with controls and lease claims. A stale worker cannot start a new action.
-    const lease = await client.query(`select id from agent_run where user_id=$1 and id=$2 and lease_token=$3
+    const lease = await client.query<{instructions: AgentRun["instructions"]}>(`select id,instructions from agent_run where user_id=$1 and id=$2 and lease_token=$3
       and status='running' and control is null and lease_until>now() for update`, [context.userId, context.runId, context.leaseToken]);
     if (!lease.rowCount) throw new LeaseLostError();
+    assertCurrentInstructions(context, lease.rows[0].instructions);
     const previous = await client.query<{id:string}>("select id from agent_tool_call where user_id=$1 and run_id=$2 and (call_key=$3 or ($4::uuid is not null and approval_id=$4))", [context.userId, context.runId, call.key,call.approvalId??null]);
     if(previous.rows.length>1)throw new Error("Conflicting call/approval identity");
     if (!previous.rowCount && ["send", "destructive", "publish"].includes(call.effect)) {

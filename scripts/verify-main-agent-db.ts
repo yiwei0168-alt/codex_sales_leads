@@ -15,6 +15,7 @@ import { productTools } from "../src/lib/assistant/main/tools";
 import { importSkill, listSkills, readSkill, changeSkill } from "../src/lib/assistant/main/skills";
 import { saveMemory, loadMemory, undoMemory } from "../src/lib/assistant/main/memory";
 import { createSchedule, listSchedules, changeSchedule, dispatchDueSchedule } from "../src/lib/assistant/main/schedules";
+import { queueReviewedMail } from "../src/lib/assistant/main/reviewed-mail";
 
 nextEnv.loadEnvConfig(process.cwd());
 const url = process.env.DATABASE_MIGRATION_URL || process.env.DATABASE_URL;
@@ -27,7 +28,7 @@ const admin = new Pool({ connectionString: databaseConnectionString(url), ssl: d
 const owners = [randomUUID(), randomUUID()];
 let checks = 0;
 try {
-  if (process.argv.includes("--apply")) for (const migration of ["090_main_agent_runtime.sql", "091_agent_approvals.sql", "092_independent_outbound_mail.sql", "093_agent_skills.sql", "094_agent_memory.sql", "095_agent_schedules.sql"]) await admin.query(await readFile(`db/migrations/${migration}`, "utf8"));
+  if (process.argv.includes("--apply")) for (const migration of ["090_main_agent_runtime.sql", "091_agent_approvals.sql", "092_independent_outbound_mail.sql", "093_agent_skills.sql", "094_agent_memory.sql", "095_agent_schedules.sql", "096_agent_mail_execution.sql"]) await admin.query(await readFile(`db/migrations/${migration}`, "utf8"));
   for (const id of owners) await admin.query("insert into app_user(id,email,display_name) values($1,$2,'Synthetic main Agent test')", [id, `${id}@example.invalid`]);
   const input = { content: "Synthetic isolated task, no provider calls", requestKey: randomUUID(), attachments: [] };
   const run = await enqueueRun(owners[0], input, defaultModelConfig());
@@ -93,6 +94,14 @@ try {
   const revisedItems=await listApprovals(owners[0],run.id);
   assert.equal(revisedItems.find(a=>a.id===originalItems.find(a=>(a.payload as {to:string}).to==="edit-a@example.invalid")?.id)?.status,"revoked");checks++;
   assert.equal(revisedItems.find(a=>a.id===originalItems.find(a=>(a.payload as {to:string}).to==="edit-b@example.invalid")?.id)?.status,"approved");checks++;
+  const beforeInstructions={...context,instructionIds:[]};
+  await controlRun(owners[0],run.id,"instruct","Stop remaining synthetic sends");
+  const unstarted=await requestApproval(context,sendTool,{...mail,to:"blocked-after-instruction@example.invalid"});
+  await decideApproval(owners[0],unstarted.id,unstarted.parameter_hash,"approve");
+  await assert.rejects(beginCall(beforeInstructions,{...sendCall,key:"new-instruction-boundary",input:{...mail,to:"blocked-after-instruction@example.invalid"},approvalId:unstarted.id}),/New instructions/);checks++;
+  assert.equal((await listApprovals(owners[0],run.id)).find(a=>a.id===unstarted.id)?.status,"approved");checks++;
+  await assert.rejects(executeRegisteredTool(simulatedTool,{...mail,to:"blocked-after-instruction@example.invalid"},"instruction-leaf",beforeInstructions),/New instructions/);checks++;
+  assert.equal(syntheticSends,1);checks++;
   const privateSkill = await importSkill(context, { name: "Private synthetic", source: "synthetic", files: { "SKILL.md": "Account method" }, dependencies: [] });
   assert(!(await listSkills(owners[1])).some(s => s.id === privateSkill.id)); checks++;
   const globalContext = { ...context, role: "admin" as const };
@@ -136,6 +145,21 @@ try {
   await assert.rejects(beginCall(context, { ...args, key: "tool:two" })); checks++;
   const tables = await admin.query<{ forced: boolean }>("select relforcerowsecurity as forced from pg_class where relname=any($1::text[])", [["agent_run", "agent_run_event", "agent_tool_call"]]);
   assert.equal(tables.rows.length, 3); assert(tables.rows.every(t => t.forced)); checks++;
+  // Disabled fixture accounts cannot be claimed by any real background worker.
+  // The unusable ciphertext is never decrypted and SMTP is never invoked.
+  await admin.query("update app_user set status='disabled' where id=$1",[owners[0]]);
+  const sender=await admin.query<{id:string}>("insert into mailbox_connection(user_id,provider,email,credential_ciphertext,smtp_verified_at) values($1,'alimail-imap','sender@example.invalid','synthetic-unusable',now()) returning id",[owners[0]]);
+  const reviewed={connectionId:sender.rows[0].id,to:"human-reviewed@example.invalid",subject:"Exact human confirmation",body:"Synthetic final body",confirmed:true as const,idempotencyKey:randomUUID()};
+  const queued=await queueReviewedMail(owners[0],"member",reviewed);
+  assert.equal(queued.status,"queued");checks++;
+  const queuedRun=await getRun(owners[0],queued.runId);
+  assert.equal(queuedRun?.execution_kind,"mail");assert.equal(queuedRun?.status,"queued");checks++;
+  const reviewApprovals=await listApprovals(owners[0],queued.runId);
+  assert.equal(reviewApprovals.length,1);assert.equal(reviewApprovals[0].status,"approved");checks++;
+  assert.equal((reviewApprovals[0].payload as {body:string}).body,reviewed.body);checks++;
+  assert.equal((await queueReviewedMail(owners[0],"member",reviewed)).runId,queued.runId);checks++;
+  await assert.rejects(queueReviewedMail(owners[0],"member",{...reviewed,body:"Changed after confirmation"}),/different content/);checks++;
+  assert.equal((await admin.query("select id from outbound_mail where user_id=any($1::uuid[])",[owners])).rowCount,0);checks++;
   console.log(JSON.stringify({ passed: checks, synthetic: true, modelCalls: 0, searchCalls: 0, sends: 0, customerDataModified: false }));
 } finally {
   await admin.query("delete from agent_schedule where user_id=any($1::uuid[])", [owners]);

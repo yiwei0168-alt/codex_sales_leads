@@ -1,9 +1,10 @@
 import { result, type ExecutionContext, type ProductTool, type ToolResult } from "./contracts";
-import { beginCall, completeCall, event, boundary, LeaseLostError } from "./repository";
+import { beginCall, completeCall, event, boundary, LeaseLostError, InstructionsChangedError, assertCurrentInstructions } from "./repository";
 import { needsApproval, requestApproval } from "./approvals";
 export async function executeRegisteredTool(tool: ProductTool, input: unknown, callKey: string, context: ExecutionContext): Promise<ToolResult> {
   const current = await boundary(context);
   if (current.control) throw new LeaseLostError();
+  assertCurrentInstructions(context, current.instructions);
   if (tool.role === "admin" && context.role !== "admin") return result(null, { status: "unavailable", missing: ["Administrator permission"] });
   let approvalId: string | undefined;
   if (needsApproval(tool)) {
@@ -24,7 +25,7 @@ export async function executeRegisteredTool(tool: ProductTool, input: unknown, c
   let output: ToolResult;
   try { output = tool.output.parse(await tool.execute(input, {...context,callId:saved.id})); }
   catch (error) {
-    if (error instanceof LeaseLostError) throw error;
+    if (error instanceof LeaseLostError || error instanceof InstructionsChangedError) throw error;
     // Provider error bodies can contain private input or credentials. Persist a safe code only.
     output = result(null, { status: tool.effect === "send" || tool.effect === "destructive" ? "unknown" : "unavailable", missing: ["Tool failed; saved prior results remain available. Reconcile any uncertain side effect before repeating."], cost: tool.cost });
   }
