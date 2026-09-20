@@ -1,6 +1,6 @@
 # Registered main Agent tools
 
-Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/generate-main-agent-catalog.ts --check` to detect drift. These 48 tools are implemented adapters; registration is not real-provider acceptance. The complete migration inventory remains in [MAIN_AGENT_CAPABILITIES.md](MAIN_AGENT_CAPABILITIES.md).
+Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/generate-main-agent-catalog.ts --check` to detect drift. These 49 tools are implemented adapters; registration is not real-provider acceptance. The complete migration inventory remains in [MAIN_AGENT_CAPABILITIES.md](MAIN_AGENT_CAPABILITIES.md).
 
 | Tool | Version | Role | Effect | Cost | Purpose |
 |---|---|---|---|---|---|
@@ -22,6 +22,8 @@ Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/ge
 | role_correct | 1 | member | read | unknown | Independently interpret company identity/role using saved public evidence. Does not automatically supplement evidence or run scoring. Missing evidence remains unresolved; provider failure is not business disqualification. |
 | company_score | 1 | member | read | unknown | Score an existing corrected evidence artifact using the unchanged official rubric/arithmetic/citation contracts. No discovery, extra research or independent review is forced. Saves a research result; official company publication is a separate operation. |
 | score_review | 1 | member | read | unknown | Independently review a saved scored research artifact on explicit selection. Uses the existing review/judge contracts and preserves unresolved disagreements. Does not rediscover or publish the company. |
+| mail_send | 1 | member | send | unknown | Send final custom mail with optional company linkage and hash-bound registered attachments. Always requires exact user approval; unknown SMTP receipts are not retried. |
+| mail_batch_send | 1 | member | read | unknown | Send an exact reviewed batch. Keep batchId and each itemId stable when revising the batch. Separate final recipient/body/attachment approvals bind each item; changed/removed items revoke only their prior unused approval. Unchanged sent items reuse receipts. All sends use mail_send's central execution hook. |
 | schedule_list | 1 | member | read | known | Read this account's explicit scheduled tasks and next occurrence times. |
 | schedule_create | 1 | member | publish | known | Create an explicitly requested one-time, interval or weekly recurring task with timezone. Recurrence does not grant future mail approval; runs do not overlap or replay every missed occurrence. |
 | schedule_control | 1 | member | reversible | known | Enable or disable an owned schedule with a version check. |
@@ -50,5 +52,4 @@ Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/ge
 | mail_connections | 1 | member | read | known | List current account mailbox identities and connection states; no credentials. |
 | mail_history | 1 | member | read | known | Read outbound history for a company, or unassociated account mail when company is omitted. |
 | mail_read | 1 | member | read | known | Read one account-owned imported message for the current task. This private content must not be sent to web search or unrelated external tools. |
-| mail_send | 1 | member | send | unknown | Send final custom mail with optional company linkage and hash-bound registered attachments. Always requires exact user approval; unknown SMTP receipts are not retried. |
 | plan_confirmation | 1 | member | publish | known | Obtain user approval for a large/batch/uncertain paid plan before executing it. Explain scale; include rough cost only if the user asked. Does not itself spend or authorize email contents. |

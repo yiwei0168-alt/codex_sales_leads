@@ -18,7 +18,7 @@ Baseline: `a65bc74` on `delivery/deep-intelligence-ui`, equal to local origin/ma
 
 ## API coverage
 
-Current independently registered adapters and schema validation are generated in [MAIN_AGENT_TOOL_CATALOG.md](MAIN_AGENT_TOOL_CATALOG.md). There are 48 adapters after the independent-business stage. The assignments below remain a migration inventory, not a declaration that all routes have been implemented as tools. New research artifacts compose through owned server call IDs, independently of legacy workflow positions. Formal publication, uploaded-material scoring, full knowledge administration, contact verification, custom company patch versioning and external-connection operations remain outstanding.
+Current independently registered adapters and schema validation are generated in [MAIN_AGENT_TOOL_CATALOG.md](MAIN_AGENT_TOOL_CATALOG.md). There are 49 adapters after the independent-business stage. The assignments below remain a migration inventory, not a declaration that all routes have been implemented as tools. New research artifacts compose through owned server call IDs, independently of legacy workflow positions. Formal publication, uploaded-material scoring, full knowledge administration, contact verification, custom company patch versioning and external-connection operations remain outstanding.
 
 | Current API | Methods | Migration assignment | Source |
 |---|---|---|---|

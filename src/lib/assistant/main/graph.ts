@@ -27,9 +27,13 @@ export function buildMainAgentGraph(deps: MainGraphDependencies, checkpointer?: 
       const current = await deps.boundary();
       if (current.control) return { status: (current.control === "cancel" ? "cancelled" : "paused") as RunStatus };
       const added = current.instructions.filter(i => !state.instructionIds.includes(i.id));
-      // Keep tool-call/result pairs contiguous; apply instructions after the current tool batch.
-      const apply = state.pending.length ? [] : added;
-      return { status: "running" as RunStatus, messages: [...state.messages, ...apply.map(i => ({ role: "user" as const, content: i.content }))], instructionIds: [...state.instructionIds, ...apply.map(i => i.id)], ...(apply.length ? { seen: {} } : {}) };
+      // New user input supersedes actions which have not crossed their execution
+      // boundary. Close pending protocol pairs, then let the model replan. Exact
+      // unchanged leaf approvals/receipts can still be reused by a revised batch.
+      const abandoned = added.length ? state.pending.map(call => ({ role: "tool" as const, tool_call_id: call.id,
+        content: JSON.stringify(result(null,{status:"partial",missing:["Pending action superseded by new user instructions; no further execution from this pending call. Check saved receipts before replanning."]})) })) : [];
+      return { status: "running" as RunStatus, messages: [...state.messages,...abandoned,...added.map(i => ({ role: "user" as const, content: i.content }))],
+        instructionIds: [...state.instructionIds,...added.map(i => i.id)], ...(added.length ? { seen: {},pending:[] } : {}) };
     })
     .addNode("main_model", async state => {
       if (state.steps >= 80) return { status: "partial" as RunStatus, reply: "任务已保存部分结果，达到本轮执行步数限制。可以继续或调整要求。" };

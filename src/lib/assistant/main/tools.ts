@@ -8,12 +8,11 @@ import { taskFeedSql, type TaskFeedItem } from "../task-feed";
 import { readTaskDetail } from "../task-detail";
 import { result, type ExecutionContext, type ProductTool } from "./contracts";
 import { listRuns } from "./repository";
-import { randomUUID } from "node:crypto";
 import { addManualCompany, manualCompanySchema } from "@/lib/sales/manual-company";
 import { updateDevelopmentDraft } from "@/lib/outreach/repository";
 import { runDevelopmentStrategyAgent } from "@/lib/outreach/graph";
 import { listMailboxConnections, getMailboxMessageForReview } from "@/lib/mailbox/repository";
-import { sendMailSchema, sendOutbound, listOutbound } from "@/lib/mailbox/outbound";
+import { listOutbound } from "@/lib/mailbox/outbound";
 import { buildLeadMarketPlaybook } from "@/lib/leads/workflow/playbook";
 import { ALL_CHANNEL_ROLES } from "@/lib/leads/workflow/types";
 import { importSkill, listSkills, readSkill, changeSkill, skillImportSchema } from "./skills";
@@ -24,11 +23,13 @@ import { createSchedule, listSchedules, changeSchedule, scheduleInputSchema } fr
 import { defineTool } from "./tool-definition";
 import { businessTools } from "./business-tools";
 import { researchTools } from "./research-tools";
+import { mailSendTool, mailBatchTool } from "./mail-tools";
 export { defineTool } from "./tool-definition";
 const empty = z.object({}).strict();
 export const productTools: ProductTool[] = [
   ...businessTools,
   ...researchTools,
+  mailSendTool, mailBatchTool,
   defineTool({ id: "schedule_list", description: "Read this account's explicit scheduled tasks and next occurrence times.", input: empty,
     execute: async (_, c) => result(await listSchedules(c.userId), { cost: "known" }) }),
   defineTool({ id: "schedule_create", description: "Create an explicitly requested one-time, interval or weekly recurring task with timezone. Recurrence does not grant future mail approval; runs do not overlap or replay every missed occurrence.", input: scheduleInputSchema, effect: "publish",
@@ -109,12 +110,6 @@ export const productTools: ProductTool[] = [
     execute: async (i, c) => result(await listOutbound(c.userId, i.companyExternalId ?? "", i.offset, 20), { cost: "known" }) }),
   defineTool({ id: "mail_read", description: "Read one account-owned imported message for the current task. This private content must not be sent to web search or unrelated external tools.",
     input: z.object({ messageId: z.uuid() }).strict(), execute: async (i, c) => result(await getMailboxMessageForReview(c.userId, i.messageId), { cost: "known" }) }),
-  defineTool({ id: "mail_send", description: "Send final custom mail with optional company linkage and hash-bound registered attachments. Always requires exact user approval; unknown SMTP receipts are not retried.",
-    input: sendMailSchema.omit({ confirmed: true, idempotencyKey: true }).strict(), effect: "send", recovery: "reconcile", cost: "unknown", connections: ["mailbox"],
-    execute: async (i, c) => {
-      const receipt = await sendOutbound(c.userId, { ...i, confirmed: true, idempotencyKey: randomUUID() });
-      return result(receipt, { status: receipt.status === "sent" ? "success" : receipt.status === "failed" ? "unavailable" : "unknown", receipt: receipt.id });
-    } }),
   defineTool({ id: "plan_confirmation", description: "Obtain user approval for a large/batch/uncertain paid plan before executing it. Explain scale; include rough cost only if the user asked. Does not itself spend or authorize email contents.",
     input: z.object({ plan: z.string().min(1).max(8000), scale: z.string().min(1).max(1000), uncertainty: z.string().max(2000), requestedEstimate: z.string().max(1000).optional() }).strict(), effect: "publish", recovery: "idempotent",
     execute: async i => result({ approvedPlan: i }, { cost: "known" }) }),

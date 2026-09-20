@@ -80,7 +80,7 @@ export async function controlRun(userId: string, id: string, action: "pause" | "
     if (["completed", "cancelled"].includes(run.status)) throw new Error("Task is terminal; create a new task");
     if (action === "instruct") {
       if (!content?.trim()) throw new Error("Instruction required");
-      await client.query("update agent_run set instructions=instructions||$3::jsonb,updated_at=now() where user_id=$1 and id=$2", [userId, id, JSON.stringify([{ id: randomUUID(), content }])]);
+      await client.query("update agent_run set instructions=instructions||$3::jsonb,status=case when status='waiting_user' then 'queued' else status end,updated_at=now() where user_id=$1 and id=$2", [userId, id, JSON.stringify([{ id: randomUUID(), content }])]);
     } else if (action === "resume") {
       if (run.status === "running") throw new Error("Task is already running");
       await client.query("update agent_run set status='queued',control=null,lease_token=null,lease_until=null,updated_at=now() where user_id=$1 and id=$2", [userId, id]);
@@ -121,7 +121,8 @@ export async function beginCall(context: ExecutionContext, call: { key: string; 
     const lease = await client.query(`select id from agent_run where user_id=$1 and id=$2 and lease_token=$3
       and status='running' and control is null and lease_until>now() for update`, [context.userId, context.runId, context.leaseToken]);
     if (!lease.rowCount) throw new LeaseLostError();
-    const previous = await client.query("select id from agent_tool_call where user_id=$1 and run_id=$2 and call_key=$3", [context.userId, context.runId, call.key]);
+    const previous = await client.query<{id:string}>("select id from agent_tool_call where user_id=$1 and run_id=$2 and (call_key=$3 or ($4::uuid is not null and approval_id=$4))", [context.userId, context.runId, call.key,call.approvalId??null]);
+    if(previous.rows.length>1)throw new Error("Conflicting call/approval identity");
     if (!previous.rowCount && ["send", "destructive", "publish"].includes(call.effect)) {
       if (!call.approvalId) throw new Error("Exact approval required");
       const approved = await client.query(`update agent_approval set status='consumed' where id=$1 and user_id=$2 and run_id=$3
@@ -129,11 +130,11 @@ export async function beginCall(context: ExecutionContext, call: { key: string; 
       [call.approvalId, context.userId, context.runId, call.tool, call.version, approvalDigest({ id: call.tool, version: call.version }, call.input)]);
       if (!approved.rowCount) throw new Error("Approval changed, expired, revoked or consumed");
     }
-    const inserted = await client.query(`insert into agent_tool_call(user_id,run_id,call_key,tool_id,tool_version,input_hash,input,effect,status)
+    const inserted = previous.rowCount ? {rowCount:0} : await client.query(`insert into agent_tool_call(user_id,run_id,call_key,tool_id,tool_version,input_hash,input,effect,status)
       values($1,$2,$3,$4,$5,$6,$7,$8,'started') on conflict(user_id,run_id,call_key) do nothing returning id`,
     [context.userId, context.runId, call.key, call.tool, call.version, digest(call.input), JSON.stringify(call.input), call.effect]);
     const stored = await client.query<{ id: string; input_hash: string; tool_id: string; tool_version: string; status: string; output: ToolResult | null }>(
-      "select * from agent_tool_call where user_id=$1 and run_id=$2 and call_key=$3", [context.userId, context.runId, call.key]);
+      "select * from agent_tool_call where user_id=$1 and run_id=$2 and (call_key=$3 or id=$4::uuid)", [context.userId, context.runId, call.key,previous.rows[0]?.id??null]);
     const row = stored.rows[0];
     if (row.input_hash !== digest(call.input) || row.tool_id !== call.tool || row.tool_version !== call.version) throw new Error("Persisted call identity mismatch");
     if (inserted.rowCount && call.approvalId) await client.query("update agent_tool_call set approval_id=$2 where id=$1", [row.id, call.approvalId]);

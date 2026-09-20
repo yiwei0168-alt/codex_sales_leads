@@ -6,6 +6,17 @@ import { result, type ModelMessage, type ModelToolCall } from "./contracts";
 const call = (id: string, tool: string): ModelToolCall => ({ id, type: "function", function: { name: "execute_tool", arguments: JSON.stringify({ tool, arguments: {} }) } });
 const initial = () => ({ messages: [{ role: "user" as const, content: "先查现有资料，再对照保存的公司决定，指出差异" }], pending: [], steps: 0, status: "running" as const, reply: "", seen: {}, instructionIds: [] });
 describe("open main Agent graph", () => {
+  it("replans pending sends when new instructions arrive before execution",async()=>{
+    const action=call("old-send","mail_send"),tool=vi.fn();
+    const model=vi.fn(async(messages:ModelMessage[])=>{
+      expect(messages.at(-1)?.content).toBe("Change the first recipient before sending");
+      expect(messages.some(m=>m.role==="tool"&&m.tool_call_id==="old-send")).toBe(true);
+      return {role:"assistant" as const,content:"Revised draft requires fresh review"};
+    });
+    const graph=buildMainAgentGraph({boundary:async()=>({control:null,instructions:[{id:"new",content:"Change the first recipient before sending"}]}),model,tool});
+    const state={...initial(),messages:[...initial().messages,{role:"assistant" as const,content:null,tool_calls:[action]}],pending:[action]};
+    expect((await graph.invoke(state)).status).toBe("completed");expect(tool).not.toHaveBeenCalled();
+  });
   it("composes tools in the model-selected order without intent labels", async () => {
     const tool = vi.fn(async () => result({ evidence: "saved" }));
     const replies: ModelMessage[] = [

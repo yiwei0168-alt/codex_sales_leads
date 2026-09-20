@@ -27,7 +27,10 @@ try {
   const context = { userId, runId: run.id, leaseToken: randomUUID(), role: "member" as const };
   await saveMemory(context, { key: "format", content: "Use a short bullet list", kind: "preference", scope: "account", mandatory: false, markets: [], companies: [] }, true);
   await requestApproval(context, productTools.find(t => t.id === "plan_confirmation")!, { plan: "Synthetic plan with zero external execution", scale: "one fixture", uncertainty: "none" });
-  await pool.query("update agent_run set status='waiting_user' where id=$1 and user_id=$2", [run.id, userId]);
+  for(const recipient of ["batch-one@example.invalid","batch-two@example.invalid"]) await requestApproval(context,productTools.find(t=>t.id==="mail_send")!,{connectionId:randomUUID(),to:recipient,subject:"Reviewed fixture",body:"Synthetic final content; no send is executed"});
+  // Keep the fixture paused even after approval so a separate worker can never
+  // pick up this UI-only task. No send tool is invoked by this verifier.
+  await pool.query("update agent_run set status='paused' where id=$1 and user_id=$2", [run.id, userId]);
   await mkdir("tmp", { recursive: true });
   for (const viewport of [{ width: 1366, height: 900 }, { width: 390, height: 844 }]) {
     const browserContext = await browser.newContext({ viewport });
@@ -60,9 +63,14 @@ try {
     if (viewport.width === 1366) {
       await page.getByRole("button", { name: "撤销", exact: true }).last().click();
       await expect(page.getByText("已记住偏好：format", { exact: false })).toHaveCount(0);
+      await page.getByRole("button",{name:"确认以上全部邮件（2 封）",exact:true}).click();
+      await expect(page.getByRole("button",{name:"确认以上全部邮件（2 封）",exact:true})).toHaveCount(0);
+      const approved=await pool.query("select count(*)::int n from agent_approval where user_id=$1 and run_id=$2 and tool_id='mail_send' and status='approved'",[userId,run.id]);
+      expect(approved.rows[0].n).toBe(2);
+      expect((await pool.query("select status from agent_run where id=$1 and user_id=$2",[run.id,userId])).rows[0].status).toBe("paused");
     }
     await page.screenshot({ path: `tmp/main-agent-runs-${viewport.width}.png`, fullPage: true });
-    checks.push(`${viewport.width}:authenticated-import-schedule-refresh-approval-no-overflow`);
+    checks.push(`${viewport.width}:authenticated-import-schedule-refresh-exact-batch-approval-no-overflow`);
     await browserContext.close();
   }
   expect((await pool.query("select count(*)::int n from paid_call_reservation where user_id=$1", [userId])).rows[0].n).toBe(0);

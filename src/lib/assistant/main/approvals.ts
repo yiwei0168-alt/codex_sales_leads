@@ -37,3 +37,19 @@ export async function decideApproval(userId: string, id: string, hash: string, d
     return true;
   });
 }
+class BatchApprovalChanged extends Error {}
+/** Atomic human approval of the exact mail items currently displayed, never a blanket send grant. */
+export async function decideMailBatch(userId:string,items:Array<{id:string;parameterHash:string}>) {
+  if(!items.length||items.length>50||new Set(items.map(i=>i.id)).size!==items.length)return false;
+  try {return await tenantTransaction(userId,async client=>{
+    let runId:string|undefined;
+    for(const item of [...items].sort((a,b)=>a.id<b.id?-1:1)) {
+      const rows=await client.query<{run_id:string}>(`update agent_approval set status='approved',decided_at=now()
+        where user_id=$1 and id=$2 and parameter_hash=$3 and tool_id='mail_send' and status='pending' and expires_at>now() returning run_id`,[userId,item.id,item.parameterHash]);
+      const row=rows.rows[0];if(!row||(runId&&row.run_id!==runId))throw new BatchApprovalChanged();runId=row.run_id;
+      await client.query("insert into agent_run_event(user_id,run_id,kind,payload) values($1,$2,'approval_decision',$3)",[userId,runId,JSON.stringify({approvalId:item.id,decision:"approve",scope:"exact-mail-batch-item"})]);
+    }
+    await client.query("update agent_run set status='queued',control=null,lease_token=null,lease_until=null,updated_at=now() where user_id=$1 and id=$2 and status='waiting_user'",[userId,runId]);
+    return true;
+  });}catch(error){if(error instanceof BatchApprovalChanged)return false;throw error;}
+}

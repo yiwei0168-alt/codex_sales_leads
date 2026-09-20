@@ -4,7 +4,7 @@ import { z } from "zod";
 export const runStatuses = ["queued", "running", "waiting_user", "paused", "partial", "completed", "failed", "cancelled"] as const;
 export type RunStatus = typeof runStatuses[number];
 export type Effect = "read" | "reversible" | "send" | "destructive" | "publish";
-export interface ExecutionContext { userId: string; runId: string; leaseToken: string; role: "admin" | "member" }
+export interface ExecutionContext { userId: string; runId: string; leaseToken: string; role: "admin" | "member"; callId?: string }
 export const toolResultSchema = z.object({
   status: z.enum(["success", "partial", "missing_input", "waiting_approval", "unavailable", "unknown"]),
   data: z.unknown().optional(),
@@ -22,7 +22,7 @@ export interface ProductTool {
   role: "member" | "admin"; effect: Effect;
   dependencies: string[]; connections: string[];
   cost: "known" | "estimated" | "unknown";
-  recovery: "read-retry" | "idempotent" | "reconcile";
+  recovery: "read-retry" | "idempotent" | "reconcile" | "composite";
   execute: (input: unknown, context: ExecutionContext) => Promise<ToolResult>;
 }
 export function result(data: unknown, extra: Partial<ToolResult> = {}): ToolResult {
