@@ -1,6 +1,6 @@
 # Registered main Agent tools
 
-Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/generate-main-agent-catalog.ts --check` to detect drift. These 52 tools are implemented adapters; registration is not real-provider acceptance. The complete migration inventory remains in [MAIN_AGENT_CAPABILITIES.md](MAIN_AGENT_CAPABILITIES.md).
+Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/generate-main-agent-catalog.ts --check` to detect drift. These 53 tools are implemented adapters; registration is not real-provider acceptance. The complete migration inventory remains in [MAIN_AGENT_CAPABILITIES.md](MAIN_AGENT_CAPABILITIES.md).
 
 | Tool | Version | Role | Effect | Cost | Purpose |
 |---|---|---|---|---|---|
@@ -45,6 +45,7 @@ Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/ge
 | knowledge_originals | 1 | member | read | known | Find accessible original documents by title or asset ID; return authenticated download links, never host paths. |
 | company_search | 1 | member | read | known | Query saved account companies by literal name/domain and optional market; no discovery prerequisite. |
 | company_read | 1 | member | read | known | Read the account's company/market state and saved evidence, without generating a score or re-running discovery. |
+| company_state_update | 1 | member | reversible | known | Update explicitly selected fields of an owned company using the revision returned by company_read. A concurrent page or task edit rejects this update so the Agent can reread and replan; this does not publish a formal score. |
 | task_list | 1 | member | read | known | Read existing business task status and new Agent runs for this account. |
 | task_detail | 1 | member | read | known | Read saved business task detail, progress and receipts. |
 | memory_list | 1 | member | read | known | Read the account's existing sourced preferences and policies. Retains historical memory identities. |

@@ -10,6 +10,8 @@ import { readTaskDetail } from "../task-detail";
 import { result, type ExecutionContext, type ProductTool } from "./contracts";
 import { listRuns } from "./repository";
 import { addManualCompany, manualCompanySchema } from "@/lib/sales/manual-company";
+import {updateCompanyState} from "@/lib/sales/repository";
+import {companyStatePatchSchema} from "@/lib/sales/company-state-input";
 import { updateDevelopmentDraft } from "@/lib/outreach/repository";
 import { runDevelopmentStrategyAgent } from "@/lib/outreach/graph";
 import { listMailboxConnections, getMailboxMessageForReview } from "@/lib/mailbox/repository";
@@ -89,8 +91,13 @@ export const productTools: ProductTool[] = [
     execute: async (i, c) => result(await findProductActionCompanies(c.userId, { kind: "library", companyQuery: i.query, countryCode: i.countryCode }), { cost: "known" }) }),
   defineTool({ id: "company_read", description: "Read the account's company/market state and saved evidence, without generating a score or re-running discovery.",
     input: z.object({ candidateId: z.string().min(1).max(200) }).strict(),
-    execute: async (i, c) => result(await tenantQuery(c.userId, `select wc.candidate_id,wc.market_country_code,wc.record,wc.updated_at
-      from user_company_market wc join market_workspace w on w.id=wc.workspace_id where w.owner_id=$1 and wc.candidate_id=$2 limit 10`, [c.userId, i.candidateId]), { cost: "known" }) }),
+    execute: async (i, c) => result(await tenantQuery(c.userId, `select wc.candidate_id,wc.market_country_code,wc.record,wc.updated_at,locked.revision
+      from user_company_market wc join market_workspace w on w.id=wc.workspace_id join workspace_company_market locked on locked.workspace_id=wc.workspace_id and locked.candidate_id=wc.candidate_id
+      where w.owner_id=$1 and wc.candidate_id=$2 limit 10`, [c.userId, i.candidateId]), { cost: "known" }) }),
+  defineTool({id:"company_state_update",description:"Update explicitly selected fields of an owned company using the revision returned by company_read. A concurrent page or task edit rejects this update so the Agent can reread and replan; this does not publish a formal score.",
+    input:z.object({externalId:z.string().min(1).max(180),expectedRevision:z.number().int().min(0),patch:companyStatePatchSchema}).strict(),effect:"reversible",recovery:"idempotent",
+    execute:async(i,c)=>{try{return result({company:await updateCompanyState(i.externalId,i.patch,c.userId,i.expectedRevision)},{cost:"known"});}
+      catch(error){if(error instanceof Error&&error.message.startsWith("Company state changed"))return result(null,{status:"missing_input",missing:["Company revision changed; call company_read again before updating"]});throw error;}}}),
   defineTool({ id: "task_list", description: "Read existing business task status and new Agent runs for this account.", input: empty,
     execute: async (_, c) => result({ agentRuns: await listRuns(c.userId), legacy: await tenantQuery<TaskFeedItem>(c.userId, taskFeedSql, [c.userId, "all", "all", "all", 0]) }, { cost: "known" }) }),
   defineTool({ id: "task_detail", description: "Read saved business task detail, progress and receipts.",

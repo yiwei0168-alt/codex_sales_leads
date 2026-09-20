@@ -33,4 +33,11 @@ describe("main Agent contracts", () => {
     expect(decision!.input.safeParse({reviewId:"11111111-1111-4111-8111-111111111111",decision:"correct",correctedValue:8,correctedRawValue:"8 ports"}).success).toBe(true);
     expect(describeTool(decision!).inputSchema).toHaveProperty("additionalProperties",false);
   });
+  it("requires a read revision and a supported patch for company changes",()=>{
+    const update=productTools.find(tool=>tool.id==="company_state_update");
+    expect(update).toBeDefined();
+    expect(update!.input.safeParse({externalId:"c1",expectedRevision:3,patch:{nextAction:"Call"}}).success).toBe(true);
+    expect(update!.input.safeParse({externalId:"c1",patch:{nextAction:"Call"}}).success).toBe(false);
+    expect(update!.input.safeParse({externalId:"c1",expectedRevision:3,patch:{fitScore:100}}).success).toBe(false);
+  });
 });

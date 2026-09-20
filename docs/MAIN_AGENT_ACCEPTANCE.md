@@ -1,5 +1,9 @@
 # Main Agent acceptance log
 
+## P2 versioned company-state adapter - 2026-09-20 (partial)
+
+`company_read` returns each account-owned market state's revision. `company_state_update` accepts only the existing editable fields and requires the exact revision read before updating. The service compares it under the existing company row lock; a stale revision exits before any write and the tool asks for a fresh read. The existing page and tool now share field validation. The page has not yet been changed to supply a revision, so cross-page concurrency and full P2 acceptance remain open. Focused tests cover stale lock behavior, rejected unsupported fields, missing revision and valid patches. Full regression passed 251 files / 1,263 assertions; TypeScript, scoped lint and all 53 generated catalog schemas passed. No customer company was modified.
+
 ## P2 administrator fact-review adapters - 2026-09-20 (partial)
 
 Two independent tools expose the existing RAG v3 fact-review queue and one precise review decision to administrators. The page and Agent share the same validation and persistence path; the legacy page has not yet migrated to central approval. The Agent decision is a `publish` effect: the central approval binds its exact review ID, decision, note and correction before execution. The existing repository rejects stale reviews and invalid correction types. Contract tests check admin discovery, approval classification, forged identity, correction requirements and generated schema; existing repository tests check status mapping and stale rejection. Full regression passed 250 files / 1,260 assertions. TypeScript, scoped lint, production build and all 52 catalog schemas passed. No release activation, formal scoring change, customer knowledge mutation or paid model call was part of this check. Remaining knowledge indexing/publication and other product adapters still block full capability coverage and P2/P6 acceptance.

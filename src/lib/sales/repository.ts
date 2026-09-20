@@ -203,18 +203,18 @@ export async function updateWorkspaceMode(mode: "new-market" | "growth", userId:
   });
 }
 
-export async function updateCompanyState(externalId: string, patch: CompanyEditablePatch, userId: string): Promise<CompanyRecord> {
+export async function updateCompanyState(externalId: string, patch: CompanyEditablePatch, userId: string, expectedRevision?: number): Promise<CompanyRecord> {
   const startedAt = Date.now();
   return tenantTransaction(userId, async (client) => {
     const current = await client.query<{
       workspace_id: string; company_id: string; account_tier: string; supply_model: string; brand_involvement: string;
       opportunity_stage: string; priority: string; owner_name: string | null; next_action: string | null;
       selected_path_id: string | null; selected_path_type: string | null; record: CompanyRecord;
-      country_code: string; mode: string; objective: string;
+      country_code: string; mode: string; objective: string; revision: number;
     }>(
       `select wc.workspace_id, wc.company_id, wc.account_tier, wc.supply_model, wc.brand_involvement,
               wc.opportunity_stage, wc.priority, wc.owner_name, wc.next_action,
-              wc.selected_path_id, wc.selected_path_type, wc.record, wc.market_country_code as country_code, w.mode, w.objective
+              wc.selected_path_id, wc.selected_path_type, wc.record, wc.market_country_code as country_code, w.mode, w.objective, locked.revision
        from user_company_market wc join market_workspace w on w.id = wc.workspace_id
        join sales_company c on c.id = wc.company_id
        join workspace_company_market locked on locked.workspace_id=wc.workspace_id and locked.candidate_id=wc.candidate_id
@@ -223,6 +223,7 @@ export async function updateCompanyState(externalId: string, patch: CompanyEdita
     );
     const row = current.rows[0];
     if (!row) throw new Error("Company not found in current workspace");
+    if (expectedRevision !== undefined && Number(row.revision) !== expectedRevision) throw new Error("Company state changed; read the latest revision before updating");
     const overrides = companyOverride({ ...row.record, accountTier: row.account_tier as CompanyRecord["accountTier"] }, patch);
     const selectedPath = patch.selectedPathId === undefined ? undefined
       : row.record.cooperationPaths?.find((path) => path.pathId === patch.selectedPathId);

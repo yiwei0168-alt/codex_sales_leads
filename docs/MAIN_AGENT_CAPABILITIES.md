@@ -18,7 +18,7 @@ Baseline: `a65bc74` on `delivery/deep-intelligence-ui`, equal to local origin/ma
 
 ## API coverage
 
-Current independently registered adapters and schema validation are generated in [MAIN_AGENT_TOOL_CATALOG.md](MAIN_AGENT_TOOL_CATALOG.md). There are 52 adapters after the administrator fact-review stage. The assignments below remain a migration inventory, not a declaration that all routes have been implemented as tools. New research artifacts compose through owned server call IDs, independently of legacy workflow positions. Formal publication, uploaded-material scoring, other knowledge administration, contact verification, custom company patch versioning, private/non-GitHub Skill repositories and external-connection operations remain outstanding.
+Current independently registered adapters and schema validation are generated in [MAIN_AGENT_TOOL_CATALOG.md](MAIN_AGENT_TOOL_CATALOG.md). There are 53 adapters after the versioned company-state stage. The assignments below remain a migration inventory, not a declaration that all routes have been implemented as tools. New research artifacts compose through owned server call IDs, independently of legacy workflow positions. Formal publication, uploaded-material scoring, other knowledge administration, contact verification, legacy page concurrency, private/non-GitHub Skill repositories and external-connection operations remain outstanding.
 
 | Current API | Methods | Migration assignment | Source |
 |---|---|---|---|
@@ -72,7 +72,7 @@ Current independently registered adapters and schema validation are generated in
 | `/api/tasks/usage` | GET | tasks business adapter pending | `src/app/api/tasks/usage/route.ts` |
 | `/api/workspaces/current/companies/[externalId]/assessment` | GET | workspaces business adapter pending | `src/app/api/workspaces/current/companies/[externalId]/assessment/route.ts` |
 | `/api/workspaces/current/companies/[externalId]/correspondence` | GET | workspaces business adapter pending | `src/app/api/workspaces/current/companies/[externalId]/correspondence/route.ts` |
-| `/api/workspaces/current/companies/[externalId]` | PATCH | workspaces business adapter pending | `src/app/api/workspaces/current/companies/[externalId]/route.ts` |
+| `/api/workspaces/current/companies/[externalId]` | PATCH | `company_state_update` shares validation and repository; Agent requires the current company revision; legacy page does not yet supply revision | `src/app/api/workspaces/current/companies/[externalId]/route.ts` |
 | `/api/workspaces/current/companies` | POST | workspaces business adapter pending | `src/app/api/workspaces/current/companies/route.ts` |
 | `/api/workspaces/current` | GET,PATCH | workspaces business adapter pending | `src/app/api/workspaces/current/route.ts` |
 
