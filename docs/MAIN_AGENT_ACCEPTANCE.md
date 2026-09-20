@@ -1,5 +1,9 @@
 # Main Agent acceptance log
 
+## P5 historical manual memory save - 2026-09-21 (partial)
+
+The 74th tool exposes the existing manual-memory save path under central exact approval. Four new real PostgreSQL fixture assertions passed (138 total): another account cannot edit, stale revision is rejected, an unchanged-body metadata edit succeeds and the updated title is visible. This used the existing vector without a provider call. Contract tests reject missing edit revision and forged identity. Full regression passed 252 files / 1,277 assertions; typecheck, scoped lint, production build and 74 catalog schemas passed. The synthetic memory was deleted after verification; no customer memory, model/search call or SMTP send was involved. Provider-backed changed-content save and full P5/P6 acceptance remain open.
+
 ## P2/P5 private task attachment entry - 2026-09-21 (partial)
 
 The authenticated composer now presents registered account-accessible original assets and a private binary upload entry. The upload route accepts a member's private file without a shared administrator token, but still rejects a member's shared upload. Two new route assertions passed; full regression passed 252 files / 1,276 assertions, with TypeScript, scoped lint and production build passing. An authenticated production-build browser fixture passed 70/70 desktop/mobile checks, including opening the picker and verifying no horizontal overflow. The fixture did not upload a real file or submit a model task with an attachment. Existing server-side task admission still validates asset ownership and registration. No paid provider call, SMTP send or customer-data modification occurred; actual extraction completion, attachment consumption and full P2/P5/P6 acceptance remain open.

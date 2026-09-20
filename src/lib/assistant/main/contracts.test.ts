@@ -65,6 +65,14 @@ describe("main Agent contracts", () => {
     expect(deletion.input.safeParse({id,expectedUpdatedAt:"revision",confirmed:true}).success).toBe(false);
     expect(deletion.input.safeParse({id,expectedUpdatedAt:"revision",userId:"forged"}).success).toBe(false);
   });
+  it("requires exact confirmation and a revision for historical memory edits",()=>{
+    const save=productTools.find(tool=>tool.id==="legacy_memory_save")!;
+    const base={id:"11111111-1111-4111-8111-111111111111",mode:"edit",kind:"email-style",title:"Style",content:"Short messages",marketCodes:["GB"],channelRoles:["Distributor"],externalUseApproved:false,confirmed:true};
+    expect(needsApproval(save)).toBe(true);
+    expect(save.input.safeParse({...base,expectedUpdatedAt:"revision"}).success).toBe(true);
+    expect(save.input.safeParse(base).success).toBe(false);
+    expect(save.input.safeParse({...base,expectedUpdatedAt:"revision",userId:"forged"}).success).toBe(false);
+  });
   it("routes global policy changes through administrator-only exact confirmation",()=>{
     const admin=productTools.find(tool=>tool.id==="global_policy_set_active")!;
     expect(availableTools({role:"member"}).map(tool=>tool.id)).not.toContain(admin.id);

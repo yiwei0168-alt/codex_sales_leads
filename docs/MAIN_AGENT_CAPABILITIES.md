@@ -18,7 +18,7 @@ Baseline: `a65bc74` on `delivery/deep-intelligence-ui`, equal to local origin/ma
 
 ## API coverage
 
-Current independently registered adapters and schema validation are generated in [MAIN_AGENT_TOOL_CATALOG.md](MAIN_AGENT_TOOL_CATALOG.md). There are 73 adapters after independent follow-up draft reads and generation. The assignments below remain a migration inventory, not a declaration that all routes have been implemented as tools. New research artifacts compose through owned server call IDs, independently of legacy workflow positions. Formal publication, uploaded-material scoring, other knowledge administration, contact verification, other company write paths, private/non-GitHub Skill repositories and external-connection operations remain outstanding.
+Current independently registered adapters and schema validation are generated in [MAIN_AGENT_TOOL_CATALOG.md](MAIN_AGENT_TOOL_CATALOG.md). There are 74 adapters after owner-scoped historical memory saving. The assignments below remain a migration inventory, not a declaration that all routes have been implemented as tools. New research artifacts compose through owned server call IDs, independently of legacy workflow positions. Formal publication, uploaded-material scoring, other knowledge administration, contact verification, other company write paths, private/non-GitHub Skill repositories and external-connection operations remain outstanding.
 
 | Current API | Methods | Migration assignment | Source |
 |---|---|---|---|
@@ -49,7 +49,7 @@ Current independently registered adapters and schema validation are generated in
 | `/api/knowledge/library` | GET,DELETE | `knowledge_library_list` and exact-approved `knowledge_private_delete` share the page service; page deletion confirmation remains separate | `src/app/api/knowledge/library/route.ts` |
 | `/api/knowledge/mailbox` | GET | knowledge business adapter pending | `src/app/api/knowledge/mailbox/route.ts` |
 | `/api/knowledge/memories/history` | GET | Historical audit remains in the existing page; Agent history search exposes active guidance but not the complete audit timeline | `src/app/api/knowledge/memories/history/route.ts` |
-| `/api/knowledge/memories` | POST,GET,PATCH | Historical reads: `memory_history_search`; `legacy_memory_set_active` and exact-approved `legacy_memory_delete` share the page service, while historical manual create/edit remains page-only | `src/app/api/knowledge/memories/route.ts` |
+| `/api/knowledge/memories` | POST,GET,PATCH | `memory_history_search`, exact-approved `legacy_memory_save`, `legacy_memory_set_active` and exact-approved `legacy_memory_delete` share the page services; source-managed company facts remain protected | `src/app/api/knowledge/memories/route.ts` |
 | `/api/knowledge/reviews` | GET,PATCH | `knowledge_fact_review_list` / `knowledge_fact_review_decide`; shared input validation and repository, admin-only, exact approval for a decision | `src/app/api/knowledge/reviews/route.ts` |
 | `/api/knowledge/status` | GET | knowledge business adapter pending | `src/app/api/knowledge/status/route.ts` |
 | `/api/knowledge/uploads` | GET,POST | `knowledge_upload_jobs` covers status reads; authenticated private binary upload is available from the composer, while shared upload retains administrator authorization and Agent-side binary processing remains pending | `src/app/api/knowledge/uploads/route.ts` |

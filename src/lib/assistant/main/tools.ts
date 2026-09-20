@@ -7,6 +7,8 @@ import {listKnowledgeLibrary,listKnowledgeRevisions,deletePrivateKnowledgeDocume
 import {listKnowledgeUploadJobs} from "@/lib/knowledge/upload";
 import { findProductActionCompanies } from "../product-actions";
 import { listMemories,changeMemory } from "@/lib/outreach/memory-management";
+import {memoryEditorSchema} from "@/lib/outreach/memory-editor";
+import {saveManualMemory} from "@/lib/outreach/memory-save";
 import { taskFeedSql, type TaskFeedItem } from "../task-feed";
 import { readTaskDetail } from "../task-detail";
 import { result, type ExecutionContext, type ProductTool } from "./contracts";
@@ -49,6 +51,10 @@ export const productTools: ProductTool[] = [
     execute: async (i, c) => result(await loadDecisionMemory(c.userId, i), { cost: "known" }) }),
   defineTool({id:"memory_history_search",description:"Find active historical account preferences, company decisions and shared feedback guidance by literal text and structured market/company/role scope. Preserves source identity, revision and internal-only/external-approved usage. Historical company decisions do not redefine official scoring.",input:historicalMemoryInput,
     execute:async(i,c)=>result(await searchHistoricalMemory(c.userId,i),{cost:"known"})}),
+  defineTool({id:"legacy_memory_save",description:"Create or edit an account-owned manual email style or explicitly approved marketing claim in the historical memory store. Exact human confirmation and the observed update revision are required; embeddings are generated only when content changes.",
+    input:memoryEditorSchema,effect:"publish",cost:"unknown",connections:["embedding-model"],
+    execute:async(i,c)=>{const saved=await saveManualMemory(c.userId,i);
+      return saved==="ok"||saved==="already-exists"?result({status:saved},{cost:"unknown"}):result({status:saved},{status:saved==="conflict"?"missing_input":"unavailable",missing:[`Historical memory ${saved}; reread before saving`],cost:"known"});}}),
   defineTool({ id: "preference_save", description: "Save a stable account preference and notify the user with undo. Never infer business policies/company facts as preferences. Cannot overwrite an explicit preference automatically.",
     input: memoryInputSchema.omit({ kind: true, scope: true, mandatory: true }).strict(), effect: "reversible",
     execute: async (i, c) => result(await saveMemory(c, { ...i, kind: "preference", scope: "account", mandatory: false }, true), { cost: "known" }) }),

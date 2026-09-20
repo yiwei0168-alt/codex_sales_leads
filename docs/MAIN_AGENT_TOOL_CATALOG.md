@@ -1,6 +1,6 @@
 # Registered main Agent tools
 
-Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/generate-main-agent-catalog.ts --check` to detect drift. These 73 tools are implemented adapters; registration is not real-provider acceptance. The complete migration inventory remains in [MAIN_AGENT_CAPABILITIES.md](MAIN_AGENT_CAPABILITIES.md).
+Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/generate-main-agent-catalog.ts --check` to detect drift. These 74 tools are implemented adapters; registration is not real-provider acceptance. The complete migration inventory remains in [MAIN_AGENT_CAPABILITIES.md](MAIN_AGENT_CAPABILITIES.md).
 
 | Tool | Version | Role | Effect | Cost | Purpose |
 |---|---|---|---|---|---|
@@ -34,6 +34,7 @@ Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/ge
 | schedule_control | 1 | member | reversible | known | Enable or disable an owned schedule with a version check. |
 | memory_read | 1 | member | read | known | Read current preferences/policies/company decisions and existing shared distribution policies by deterministic market/company scope. Explicit mandatory policies take precedence; historical shared policies remain defaults with original sources. |
 | memory_history_search | 1 | member | read | known | Find active historical account preferences, company decisions and shared feedback guidance by literal text and structured market/company/role scope. Preserves source identity, revision and internal-only/external-approved usage. Historical company decisions do not redefine official scoring. |
+| legacy_memory_save | 1 | member | publish | unknown | Create or edit an account-owned manual email style or explicitly approved marketing claim in the historical memory store. Exact human confirmation and the observed update revision are required; embeddings are generated only when content changes. |
 | preference_save | 1 | member | reversible | known | Save a stable account preference and notify the user with undo. Never infer business policies/company facts as preferences. Cannot overwrite an explicit preference automatically. |
 | policy_save | 1 | member | publish | known | Save an explicit policy or company decision with provenance and applicable scope; requires exact user confirmation. Global mandatory policy is administrator-only. |
 | skill_list | 1 | member | read | known | Discover enabled account Skills and published global Skills; instructions are loaded on demand. |

@@ -17,6 +17,7 @@ import { saveMemory, loadMemory, undoMemory } from "../src/lib/assistant/main/me
 import { loadDecisionMemory, searchHistoricalMemory } from "../src/lib/assistant/main/memory-context";
 import {listAgentMemory,setAgentMemoryActive} from "../src/lib/assistant/main/memory-management";
 import {changeMemory,listMemories} from "../src/lib/outreach/memory-management";
+import {saveManualMemory} from "../src/lib/outreach/memory-save";
 import { createSchedule, listSchedules, changeSchedule, dispatchDueSchedule } from "../src/lib/assistant/main/schedules";
 import { queueReviewedMail } from "../src/lib/assistant/main/reviewed-mail";
 import {encryptMailboxContent} from "../src/lib/mailbox/crypto";
@@ -214,7 +215,13 @@ try {
   assert((await search(owners[0])).items.some(m=>m.id===historyId));checks++;
   assert.equal(await changeMemory(owners[0],{id:historyId,operation:"delete",confirmed:true,expectedUpdatedAt:oldRevision}),"conflict");checks++;
   const newRevision=(await listMemories(owners[0],0)).find(m=>m.id===historyId)!.updatedAt;
-  assert.equal(await changeMemory(owners[0],{id:historyId,operation:"delete",confirmed:true,expectedUpdatedAt:newRevision}),"ok");checks++;
+  const manualEdit={id:historyId,mode:"edit" as const,kind:"email-style" as const,title:"Synthetic updated style",content:"Synthetic historical style",marketCodes:["UK"],channelRoles:["Distributor" as const],externalUseApproved:false,confirmed:true as const};
+  assert.equal(await saveManualMemory(owners[1],{...manualEdit,expectedUpdatedAt:newRevision}),"not-found");checks++;
+  assert.equal(await saveManualMemory(owners[0],{...manualEdit,expectedUpdatedAt:"stale"}),"conflict");checks++;
+  assert.equal(await saveManualMemory(owners[0],{...manualEdit,expectedUpdatedAt:newRevision}),"ok");checks++;
+  assert.equal((await listMemories(owners[0],0)).find(m=>m.id===historyId)?.title,"Synthetic updated style");checks++;
+  const savedRevision=(await listMemories(owners[0],0)).find(m=>m.id===historyId)!.updatedAt;
+  assert.equal(await changeMemory(owners[0],{id:historyId,operation:"delete",confirmed:true,expectedUpdatedAt:savedRevision}),"ok");checks++;
   assert(!(await search(owners[0])).items.some(m=>m.id===historyId));checks++;
   await admin.query(`insert into outreach_knowledge_item(id,visibility,kind,external_id,title,content,market_codes,source_refs,approval_status)
     values($1::uuid,'shared','distribution-policy',$1::text,'Synthetic policy','Synthetic default policy',array['BENELUX'],$2::jsonb,'active')`,
