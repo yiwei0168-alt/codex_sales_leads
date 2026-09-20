@@ -49,4 +49,13 @@ describe("open main Agent graph", () => {
     const graph = buildMainAgentGraph({ boundary: async () => ({ control: "cancel", instructions: [] }), model, tool });
     expect((await graph.invoke(initial())).status).toBe("cancelled"); expect(model).not.toHaveBeenCalled(); expect(tool).not.toHaveBeenCalled();
   });
+  it("retains the exact pending tool while waiting for human approval", async () => {
+    const action = call("send-one", "mail_send");
+    const graph = buildMainAgentGraph({ boundary: async () => ({ control: null, instructions: [] }),
+      model: async () => ({ role: "assistant", content: null, tool_calls: [action] }),
+      tool: async () => result({ approvalId: "human-only" }, { status: "waiting_approval" }) });
+    const out = await graph.invoke(initial());
+    expect(out.status).toBe("waiting_user"); expect(out.pending).toEqual([action]);
+    expect(out.messages.some(m => m.role === "tool")).toBe(false);
+  });
 });

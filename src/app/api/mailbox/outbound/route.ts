@@ -8,7 +8,7 @@ export async function PATCH(request:Request){const session=await requireApiSessi
 }
 export async function GET(request:Request){const session=await requireApiSession();if(session instanceof Response)return session;
   const params=new URL(request.url).searchParams;const company=params.get("company")??"";const offset=Number(params.get("offset")??0);
-  if(!company||company.length>180||!Number.isSafeInteger(offset)||offset<0||offset>1000000)return Response.json({error:"邮件历史参数无效"},{status:400});
+  if(company.length>180||!Number.isSafeInteger(offset)||offset<0||offset>1000000)return Response.json({error:"邮件历史参数无效"},{status:400});
   const rows=await listOutbound(session.userId,company,offset,51);
   return Response.json({messages:rows.slice(0,50),hasMore:rows.length>50},{headers:{"Cache-Control":"private, no-store"}});
 }

@@ -17,6 +17,23 @@ const scope={userId:"user",operationId:"action",stage:"score"};
 const init={method:"POST",headers:{authorization:"Bearer fixture-secret"},body:JSON.stringify({model:"test",max_tokens:100,messages:[{content:"private company input"}]})};
 afterEach(()=>vi.unstubAllEnvs());
 
+it.each(["missing-tariff","expired-tariff"] as const)("MA05 records %s without denying ordinary transport",async code=>{
+  vi.stubEnv("PRODUCT_FINANCIAL_POLICY","observe");
+  mocks.quote.mockImplementation(()=>{throw new BudgetDeniedError(code);});
+  const transport=vi.fn<typeof fetch>().mockResolvedValue(Response.json({choices:[{message:{content:"ok"},finish_reason:"stop"}]}));
+  await withSpendContext(scope,()=>budgetedFetch(transport)("https://openrouter.ai/api/v1/chat/completions",init));
+  expect(transport).toHaveBeenCalledOnce();
+  expect(mocks.reserve.mock.calls[0][1]).toMatchObject({costBoundKnown:false,maximumChargeMicros:0,tariffVersion:"MA05"});
+});
+
+it("MA05 does not bypass unsafe request contracts",async()=>{
+  vi.stubEnv("PRODUCT_FINANCIAL_POLICY","observe");
+  mocks.quote.mockImplementation(()=>{throw new BudgetDeniedError("request-out-of-bounds");});
+  const transport=vi.fn();
+  await expect(withSpendContext(scope,()=>budgetedFetch(transport)("https://openrouter.ai/api/v1/chat/completions",init))).rejects.toThrow("request-out-of-bounds");
+  expect(transport).not.toHaveBeenCalled();
+});
+
 it("passes the actual Places header into the contract guard before reserving or sending",async()=>{
   const rule=billingPolicy.rules.find(item=>item.requestContract==="google-places-text-enterprise-v1")!;
   mocks.quote.mockReturnValue(rule);

@@ -1,7 +1,8 @@
 import { z } from "zod";
 import { availableTools, describeTool, productTools } from "./tools";
-import { digest, result, type ExecutionContext, type ModelToolCall, type ProductTool, type ToolResult } from "./contracts";
+import { result, type ExecutionContext, type ModelToolCall, type ProductTool, type ToolResult } from "./contracts";
 import { beginCall, completeCall, event, boundary, LeaseLostError } from "./repository";
+import { needsApproval, requestApproval } from "./approvals";
 
 const invocation = z.object({ tool: z.string().max(120), arguments: z.record(z.string(), z.unknown()) }).strict();
 export async function dispatchTool(call: ModelToolCall, context: ExecutionContext, tools = productTools): Promise<ToolResult> {
@@ -26,9 +27,14 @@ export async function executeRegisteredTool(tool: ProductTool, input: unknown, c
   const current = await boundary(context);
   if (current.control) throw new LeaseLostError();
   if (tool.role === "admin" && context.role !== "admin") return result(null, { status: "unavailable", missing: ["Administrator permission"] });
-  // No write tool can bypass this hook. Exact approval storage is added in P3.
-  if (tool.effect !== "read") return result(null, { status: "waiting_approval", missing: ["Exact action approval", digest({ tool: tool.id, version: tool.version, input })] });
-  const saved = await beginCall(context, { key: callKey, tool: tool.id, version: tool.version, input, effect: tool.effect });
+  let approvalId: string | undefined;
+  if (needsApproval(tool)) {
+    const approval = await requestApproval(context, tool, input);
+    if (["denied", "revoked", "expired"].includes(approval.status)) return result(null, { status: "unavailable", missing: [`Action approval ${approval.status}; do not resubmit unchanged work`] });
+    if (approval.status === "pending") return result({ approvalId: approval.id }, { status: "waiting_approval", missing: ["User review of exact parameters required"] });
+    approvalId = approval.id;
+  }
+  const saved = await beginCall(context, { key: callKey, tool: tool.id, version: tool.version, input, effect: tool.effect, approvalId });
   if (saved.output) return tool.output.parse(saved.output);
   // A started call may have reached a provider before process loss. Never silently replay it.
   if (!saved.fresh) return result({ callId: saved.id }, { status: "unknown", missing: ["Previous execution has no saved receipt; reconcile before repeating"] });

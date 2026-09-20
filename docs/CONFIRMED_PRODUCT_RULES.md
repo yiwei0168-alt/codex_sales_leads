@@ -5,6 +5,8 @@
 
 Source: the complete P0-P6 plan supplied by the user for implementation. Confirmation is NOT implementation or acceptance evidence. Historical rules remain below; only the explicit supersessions in this table apply. See [implementation workflow](MAIN_AGENT_WORKFLOW.md).
 
+Implementation update (2026-09-20): MA01/MA03/MA08 have an opt-in persistent main-loop/read-tool foundation; MA02 has partial tool coverage; MA05/MA06 have shared observation mode, exact single-action approval and unassociated attachment mail foundations. These are **partial implementations**, not phase acceptance. MA04/MA07 and remaining MA08 scope are pending. MA09 release gate is not met: the real configured main-model route returned HTTP 403. Detailed local/DB/provider evidence is in [acceptance log](MAIN_AGENT_ACCEPTANCE.md).
+
 | ID | Exact confirmed behavior and scope | Supersession | Implementation / acceptance |
 |---|---|---|---|
 | MA01 | Open-ended product main Agent; no business-scenario allowlist. Quality-first unified main model defaults to OpenRouter `openai/gpt-5.6-sol`, administrator configurable. Remove lightweight intent classification, complexity escalation and regex reclassification from the main path. LangGraph remains the sole business orchestration runtime. | Replaces fixed top-level intent branches; preserves LG runtime and redacted trace boundaries. Specialist models may remain. | Confirmed; pending implementation and acceptance |

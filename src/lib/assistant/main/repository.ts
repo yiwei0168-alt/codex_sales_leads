@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import { tenantQuery, tenantTransaction, query } from "@/lib/rag/db";
 import type { AgentRun, ExecutionContext, MessageInput, ModelConfig, RunStatus, ToolResult } from "./contracts";
 import { digest } from "./contracts";
+import { approvalDigest } from "./approvals";
 
 export async function enqueueRun(userId: string, input: MessageInput, model: ModelConfig): Promise<AgentRun> {
   return tenantTransaction(userId, async client => {
@@ -94,19 +95,34 @@ export async function finishRun(context: ExecutionContext, status: RunStatus, re
       where user_id=$1 and id=$2 and lease_token=$3 and status='running' and lease_until>now() returning conversation_id,status`,
     [context.userId, context.runId, context.leaseToken, status, JSON.stringify({ reply })]);
     if (!changed.rows[0]) throw new LeaseLostError();
+    if (changed.rows[0].status === "waiting_user") {
+      // Approval can arrive between tool return and task settlement.
+      const ready = await client.query(`update agent_run r set status='queued' where r.user_id=$1 and r.id=$2
+        and exists(select 1 from agent_approval a where a.user_id=r.user_id and a.run_id=r.id and a.status in('approved','denied','revoked'))
+        and not exists(select 1 from agent_approval a where a.user_id=r.user_id and a.run_id=r.id and a.status='pending') returning id`, [context.userId, context.runId]);
+      if (ready.rowCount) changed.rows[0].status = "queued";
+    }
     await client.query("insert into agent_run_event(user_id,run_id,kind,payload) values($1,$2,'status',$3)", [context.userId, context.runId, JSON.stringify({ status: changed.rows[0].status, reply })]);
     if (reply) await client.query(`insert into assistant_message(user_id,conversation_id,role,intent,content,metadata)
       values($1,$2,'assistant','general',$3,$4)`, [context.userId, changed.rows[0].conversation_id, reply, JSON.stringify({ runId: context.runId, status: changed.rows[0].status })]);
     await client.query("update assistant_conversation set updated_at=now() where user_id=$1 and id=$2", [context.userId, changed.rows[0].conversation_id]);
   });
 }
-export async function beginCall(context: ExecutionContext, call: { key: string; tool: string; version: string; input: unknown; effect: string }) {
+export async function beginCall(context: ExecutionContext, call: { key: string; tool: string; version: string; input: unknown; effect: string; approvalId?: string }) {
   await boundary(context);
   return tenantTransaction(context.userId, async client => {
     // Serialize with controls and lease claims. A stale worker cannot start a new action.
     const lease = await client.query(`select id from agent_run where user_id=$1 and id=$2 and lease_token=$3
       and status='running' and control is null and lease_until>now() for update`, [context.userId, context.runId, context.leaseToken]);
     if (!lease.rowCount) throw new LeaseLostError();
+    const previous = await client.query("select id from agent_tool_call where user_id=$1 and run_id=$2 and call_key=$3", [context.userId, context.runId, call.key]);
+    if (!previous.rowCount && ["send", "destructive", "publish"].includes(call.effect)) {
+      if (!call.approvalId) throw new Error("Exact approval required");
+      const approved = await client.query(`update agent_approval set status='consumed' where id=$1 and user_id=$2 and run_id=$3
+        and tool_id=$4 and tool_version=$5 and parameter_hash=$6 and status='approved' and expires_at>now() returning id`,
+      [call.approvalId, context.userId, context.runId, call.tool, call.version, approvalDigest({ id: call.tool, version: call.version }, call.input)]);
+      if (!approved.rowCount) throw new Error("Approval changed, expired, revoked or consumed");
+    }
     const inserted = await client.query(`insert into agent_tool_call(user_id,run_id,call_key,tool_id,tool_version,input_hash,input,effect,status)
       values($1,$2,$3,$4,$5,$6,$7,$8,'started') on conflict(user_id,run_id,call_key) do nothing returning id`,
     [context.userId, context.runId, call.key, call.tool, call.version, digest(call.input), JSON.stringify(call.input), call.effect]);
@@ -114,6 +130,7 @@ export async function beginCall(context: ExecutionContext, call: { key: string; 
       "select * from agent_tool_call where user_id=$1 and run_id=$2 and call_key=$3", [context.userId, context.runId, call.key]);
     const row = stored.rows[0];
     if (row.input_hash !== digest(call.input) || row.tool_id !== call.tool || row.tool_version !== call.version) throw new Error("Persisted call identity mismatch");
+    if (inserted.rowCount && call.approvalId) await client.query("update agent_tool_call set approval_id=$2 where id=$1", [row.id, call.approvalId]);
     return { ...row, fresh: Boolean(inserted.rowCount) };
   });
 }

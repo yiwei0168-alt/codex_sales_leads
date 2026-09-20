@@ -8,6 +8,8 @@ import { getPool, tenantQuery } from "../src/lib/rag/db";
 import { enqueueRun, getRun, beginCall, completeCall, readEvents, boundary, controlRun } from "../src/lib/assistant/main/repository";
 import { result, type ExecutionContext } from "../src/lib/assistant/main/contracts";
 import { defaultModelConfig } from "../src/lib/assistant/main/product";
+import { requestApproval, decideApproval, listApprovals } from "../src/lib/assistant/main/approvals";
+import { productTools } from "../src/lib/assistant/main/tools";
 
 nextEnv.loadEnvConfig(process.cwd());
 const url = process.env.DATABASE_MIGRATION_URL || process.env.DATABASE_URL;
@@ -20,7 +22,7 @@ const admin = new Pool({ connectionString: databaseConnectionString(url), ssl: d
 const owners = [randomUUID(), randomUUID()];
 let checks = 0;
 try {
-  if (process.argv.includes("--apply")) await admin.query(await readFile("db/migrations/090_main_agent_runtime.sql", "utf8"));
+  if (process.argv.includes("--apply")) for (const migration of ["090_main_agent_runtime.sql", "091_agent_approvals.sql", "092_independent_outbound_mail.sql"]) await admin.query(await readFile(`db/migrations/${migration}`, "utf8"));
   for (const id of owners) await admin.query("insert into app_user(id,email,display_name) values($1,$2,'Synthetic main Agent test')", [id, `${id}@example.invalid`]);
   const input = { content: "Synthetic isolated task, no provider calls", requestKey: randomUUID(), attachments: [] };
   const run = await enqueueRun(owners[0], input, defaultModelConfig());
@@ -41,6 +43,22 @@ try {
   const events = await readEvents(owners[0], run.id, "0"); assert.equal(events.length, 1); checks++;
   assert.equal((await readEvents(owners[0], run.id, events[0].id)).length, 0); checks++;
   assert.equal((await readEvents(owners[1], run.id, "0")).length, 0); checks++;
+  const sendTool = productTools.find(t => t.id === "mail_send")!;
+  const mail = { to: "synthetic@example.invalid", body: "Reviewed final body" };
+  const approval = await requestApproval(context, sendTool, mail);
+  assert.equal((await listApprovals(owners[1], run.id)).length, 0); checks++;
+  assert.equal(await decideApproval(owners[1], approval.id, approval.parameter_hash, "approve"), false); checks++;
+  assert.equal(await decideApproval(owners[0], approval.id, "0".repeat(64), "approve"), false); checks++;
+  const sendCall = { key: "smtp-one", tool: sendTool.id, version: sendTool.version, input: mail, effect: "send", approvalId: approval.id };
+  await assert.rejects(beginCall(context, sendCall)); checks++;
+  assert.equal(await decideApproval(owners[0], approval.id, approval.parameter_hash, "approve"), true); checks++;
+  await assert.rejects(beginCall(context, { ...sendCall, input: { ...mail, body: "Tampered" } })); checks++;
+  const authorized = await beginCall(context, sendCall); assert(authorized.fresh); checks++;
+  await assert.rejects(beginCall(context, { ...sendCall, key: "smtp-repeat" })); checks++;
+  const second = await requestApproval(context, sendTool, { ...mail, to: "second@example.invalid" });
+  await decideApproval(owners[0], second.id, second.parameter_hash, "approve");
+  await decideApproval(owners[0], second.id, second.parameter_hash, "revoke");
+  await assert.rejects(beginCall(context, { ...sendCall, key: "smtp-revoked", input: { ...mail, to: "second@example.invalid" }, approvalId: second.id })); checks++;
   await controlRun(owners[0], run.id, "cancel");
   await assert.rejects(beginCall(context, { ...args, key: "tool:two" })); checks++;
   const tables = await admin.query<{ forced: boolean }>("select relforcerowsecurity as forced from pg_class where relname=any($1::text[])", [["agent_run", "agent_run_event", "agent_tool_call"]]);
@@ -50,6 +68,7 @@ try {
   for (const id of owners) {
     await admin.query("delete from agent_run_event where user_id=$1", [id]);
     await admin.query("delete from agent_tool_call where user_id=$1", [id]);
+    await admin.query("delete from agent_approval where user_id=$1", [id]);
     await admin.query("delete from agent_run where user_id=$1", [id]);
     await admin.query("delete from assistant_message where user_id=$1", [id]);
     await admin.query("delete from assistant_conversation where user_id=$1", [id]);

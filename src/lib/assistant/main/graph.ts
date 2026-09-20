@@ -8,6 +8,7 @@ import { digest, result, type ExecutionContext, type ModelMessage, type ModelToo
 import { boundary, beginCall, completeCall, event, finishRun } from "./repository";
 import { dispatchTool } from "./executor";
 import { requestModel } from "./model";
+import { BudgetDeniedError } from "@/lib/billing/policy";
 
 export const MainAgentState = Annotation.Root({
   messages: Annotation<ModelMessage[]>(), pending: Annotation<ModelToolCall[]>(),
@@ -45,6 +46,7 @@ export function buildMainAgentGraph(deps: MainGraphDependencies, checkpointer?: 
       const count = (state.seen[key] ?? 0) + 1;
       if (count > 2) return { status: "partial" as RunStatus, reply: "相同动作重复执行且没有新输入，已保存结果。请补充要求后继续。" };
       const output = await deps.tool(call);
+      if (output.status === "waiting_approval") return { status: "waiting_user" as RunStatus, reply: "请核对下方操作的实际内容并确认。确认前任务会保留在当前步骤。" };
       const content = JSON.stringify(output);
       // Do not silently truncate evidence into apparently complete results.
       const projected = content.length <= 100_000 ? content : JSON.stringify(result(null, { status: "partial", missing: ["Result too large for this turn; narrow the query or retrieve a specific document"], artifacts: output.artifacts, sources: output.sources }));
@@ -78,11 +80,15 @@ async function durableModel(context: ExecutionContext, messages: ModelMessage[],
         where user_id=$1 and run_id=$2 and call_key=any($3::text[]) and status='completed' and output->>'status' in('success','partial')`, [context.userId, context.runId, ids]);
       await event(context, "model_turn", { step, toolCount: response.message.tool_calls?.length ?? 0 });
       return response.message;
-    } catch {
+    } catch (error) {
+      const reason = error instanceof BudgetDeniedError ? error.code
+        : error instanceof Error && /^Main model HTTP \d{3}$/.test(error.message) ? error.message
+        : error instanceof Error && error.message.includes("OPENROUTER_API_KEY is not configured") ? "main-model-not-configured"
+        : typeof error === "object" && error !== null && "code" in error && typeof error.code === "string" && /^[A-Z0-9_]{3,40}$/.test(error.code) ? `execution-${error.code}` : "model-unavailable";
       await completeCall(context, saved.id, result(null, { status: "unavailable", missing: ["Main model request failed"] }), {
         inputItems: messages.length, validOutputItems: 0, downstreamUsedItems: 0, inputTokens: null, outputTokens: null,
         apiCredits: null, costUsd: null, latencyMs: Date.now() - started, retries: attempt,
-        discardedReasonCounts: { modelUnavailable: 1 }, utilizationEfficiency: 0,
+        discardedReasonCounts: { [reason]: 1 }, utilizationEfficiency: 0,
         optimizationOpportunity: "Retry at most once on the same authorized route; keep unknown billing separate",
       });
     }
@@ -113,7 +119,7 @@ export async function executeMainAgentRun(userId: string, runId: string, leaseTo
     const history = await tenantQuery<{ role: "user" | "assistant"; content: string }>(userId,
       `select role,content from (select role,content,created_at,id from assistant_message
        where user_id=$1 and conversation_id=$2 and role in('user','assistant') and (metadata->>'runId' is null or metadata->>'runId'<>$3)
-       and created_at < (select created_at from agent_run where id=$3 and user_id=$1)
+       and created_at < (select created_at from agent_run where id=$3::uuid and user_id=$1)
        order by created_at desc,id desc limit 12) h order by created_at,id`, [userId, run.conversation_id, runId]);
     initial = { messages: [{ role: "system", content: productPrompt(availableTools(context)) }, ...history,
       { role: "user", content: run.input.content + (run.input.attachments.length ? `\nAttached registered asset IDs: ${run.input.attachments.map(a => a.assetId).join(", ")}` : "") }],

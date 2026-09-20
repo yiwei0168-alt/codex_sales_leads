@@ -43,7 +43,7 @@ export function budgetedFetch(transport:typeof fetch=fetch):typeof fetch {
     const bytes=Buffer.byteLength(body,"utf8")+Buffer.byteLength(url.search,"utf8");
     const policy=scope.tariffPolicy??billingPolicy;
     const quote={origin:url.origin,pathname:url.pathname,model:typeof parsed.model==="string"?parsed.model:"",requestBytes:bytes,outputTokens};
-    const native=!scope.tariffPolicy?(await nativeModelBound(quote)??await embeddingModelBound(quote)):null;
+    let native: Awaited<ReturnType<typeof nativeModelBound>> = null;
     const attempt=currentModelAttempt();
     const playbookSol=attempt?.task==="lead-playbook"&&quote.origin==="https://openrouter.ai"
       &&quote.pathname==="/api/v1/chat/completions"&&quote.model==="openai/gpt-5.6-sol";
@@ -66,10 +66,13 @@ export function budgetedFetch(transport:typeof fetch=fetch):typeof fetch {
     let rule;
     let costBoundKnown=true;
     try{
+      native=!scope.tariffPolicy?(await nativeModelBound(quote)??await embeddingModelBound(quote)):null;
       rule=native?.rule??(scope.tariffPolicy?quoteRequest(quote,policy.rules):selectedContract
         ?quoteRequest(quote,policy.rules,Date.now(),selectedContract):quoteRequest(quote));
     }catch(error){
       if(!(error instanceof BudgetDeniedError)||!admissionOverride?.allowFinancialAdmissionBypass)throw error;
+      // MA05 removes monetary uncertainty gates, not malformed/unsafe wire contracts.
+      if(admissionOverride.ruleId==="MA05"&&error.code==="request-out-of-bounds")throw error;
       costBoundKnown=false;
       const routeHash=createHash("sha256").update(`${quote.origin}\n${quote.pathname}\n${quote.model}`).digest("hex").slice(0,16);
       rule={key:`a33-unbounded-${routeHash}`,origin:quote.origin,pathname:quote.pathname,model:quote.model,

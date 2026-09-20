@@ -34,6 +34,19 @@ it("sends once and marks sent only after provider acceptance",async()=>{
   expect(mocks.send).toHaveBeenCalledTimes(1);
   expect(mocks.query.mock.calls.some(([sql])=>String(sql).includes("status='sent'"))).toBe(true);
 });
+it("sends user-confirmed unassociated mail without inventing a company or market",async()=>{
+  const custom={...input,companyExternalId:undefined};
+  expect(sendMailSchema.safeParse(custom).success).toBe(true);
+  expect(await sendOutbound("user",custom)).toMatchObject({status:"sent"});
+  expect(mocks.query.mock.calls.some(([sql])=>String(sql).includes("select c.id"))).toBe(false);
+  const saved=mocks.query.mock.calls.find(([sql])=>String(sql).includes("insert into outbound_mail"));
+  expect(saved?.[1].slice(1,3)).toEqual([null,null]);
+  expect(mocks.send).toHaveBeenCalledOnce();
+});
+it("rejects inaccessible attachments before SMTP",async()=>{
+  await expect(sendOutbound("user",{...input,attachments:[{assetId:input.connectionId,sha256:"0".repeat(64),filename:"offer.pdf"}]})).rejects.toThrow("Attachment");
+  expect(mocks.send).not.toHaveBeenCalled();
+});
 it("records timeout as unknown and never retries SMTP",async()=>{
   mocks.send.mockRejectedValue(Object.assign(new Error("timeout"),{code:"ETIMEDOUT"}));
   expect(await sendOutbound("user",input)).toMatchObject({status:"unknown"});

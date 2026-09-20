@@ -5,10 +5,13 @@ import type { PoolClient } from "pg";
 import { tenantQuery,tenantTransaction } from "@/lib/rag/db";
 import { connectionPassword,getMailboxConnection } from "./repository";
 import { decryptMailboxContent,encryptMailboxContent } from "./crypto";
+import { loadMailAttachments, mailAttachmentSchema } from "./attachments";
+import { bestEffortMetric, startOperation, finishOperation } from "@/lib/operation-metrics";
 
-export const sendMailSchema=z.object({connectionId:z.uuid(),companyExternalId:z.string().min(1).max(180),
+export const sendMailSchema=z.object({connectionId:z.uuid(),companyExternalId:z.string().min(1).max(180).optional(),
   to:z.email(),subject:z.string().trim().min(1).max(300).refine(value=>!/[\r\n]/.test(value)),
-  body:z.string().trim().min(1).max(30000),idempotencyKey:z.uuid(),parentId:z.uuid().optional(),followUpDraftId:z.uuid().optional(),confirmed:z.literal(true)}).strict();
+  body:z.string().trim().min(1).max(30000),idempotencyKey:z.uuid(),parentId:z.uuid().optional(),followUpDraftId:z.uuid().optional(),confirmed:z.literal(true),
+  attachments:z.array(mailAttachmentSchema).max(10).optional()}).strict();
 type SendInput=z.infer<typeof sendMailSchema>;
 
 async function markMarketContacted(client:PoolClient,workspaceId:string,companyId:string,country:string|null){
@@ -50,8 +53,8 @@ export async function verifyOutbound(userId:string,connectionId:string) {
 export async function listOutbound(userId:string,companyExternalId:string,offset=0,limit=51) {
   const rows=await tenantQuery<{id:string;status:string;sent_at:string|null;created_at:string;content_ciphertext:string;parent_id:string|null;error_code:string|null;market_country_code:string|null}>(userId,
     `select m.id,m.status,m.sent_at::text,m.created_at::text,m.content_ciphertext,m.parent_id,m.error_code,m.market_country_code from outbound_mail m
-     join user_company_market wc on wc.company_id=m.company_id and wc.workspace_id=m.workspace_id
-     where m.user_id=$1 and wc.candidate_id=$2 and (m.market_country_code=wc.market_country_code or m.market_country_code is null)
+     left join user_company_market wc on wc.company_id=m.company_id and wc.workspace_id=m.workspace_id
+     where m.user_id=$1 and (($2='' and m.company_id is null) or (wc.candidate_id=$2 and (m.market_country_code=wc.market_country_code or m.market_country_code is null)))
      order by m.created_at desc,m.id desc limit $3 offset $4`,[userId,companyExternalId,Math.min(101,Math.max(1,limit)),Math.max(0,offset)]);
   return rows.map(row=>({id:row.id,status:row.status,sentAt:row.sent_at,createdAt:row.created_at,parentId:row.parent_id,marketCountry:row.market_country_code,countryUnassigned:row.market_country_code===null,reconciledByUser:row.error_code?.startsWith("USER_CONFIRMED_")??false,
     ...decryptMailboxContent(userId,row.content_ciphertext)}));
@@ -77,9 +80,23 @@ export async function reconcileOutbound(userId:string,input:z.infer<typeof recon
 
 export async function sendOutbound(userId:string,input:SendInput) {
   const startedAt=Date.now();
+  // Attachment bytes are checked before reserving or connecting to SMTP.
+  const attachments=await loadMailAttachments(userId,input.attachments??[]);
   async function recordUsage(id:string,status:string,reused:boolean){
+    if(!input.companyExternalId){
+      await bestEffortMetric(async()=>{
+        const metric=await startOperation(userId,"standalone-mail-send",1,input.subject.length+input.body.length);
+        await finishOperation(userId,metric,status==="sent"?"completed":"failed",{
+          inputItems:1,inputCharacters:input.subject.length+input.body.length,outputItems:1,validOutputItems:status==="sent"?1:0,downstreamUsedItems:status==="sent"?1:0,
+          inputTokens:0,cachedInputTokens:0,outputTokens:0,apiCredits:0,costUsd:null,latencyMs:Date.now()-startedAt,retries:0,
+          discardedReasonCounts:status==="sent"?{}:{[status]:1},utilizationEfficiency:status==="sent"?1:0,
+          cacheHit:reused,usageBoundary:"account-mail-receipt-not-company-state",optimizationOpportunity:"Reuse exact receipt; never retry uncertain SMTP delivery",
+        });
+      });
+      return;
+    }
     await tenantQuery(userId,`insert into workspace_audit_event(workspace_id,actor_user_id,entity_type,entity_id,action,changes)
-      select workspace_id,user_id,'outbound-mail',id::text,'mail.send-metered',$3::jsonb from outbound_mail where id=$1 and user_id=$2`,
+      select workspace_id,user_id,'outbound-mail',id::text,'mail.send-metered',$3::jsonb from outbound_mail where id=$1 and user_id=$2 and workspace_id is not null`,
       [id,userId,JSON.stringify({version:"outbound-v1",inputItems:1,inputCharacters:input.subject.length+input.body.length,
         validOutputItems:status==="sent"?1:0,downstreamUsedItems:status==="sent"?1:0,inputTokens:0,outputTokens:0,
         paidSearchCredits:0,modelCostUsd:0,mailboxCostUsd:null,mailboxCostState:"existing-mailbox-plan-not-allocated",
@@ -88,18 +105,18 @@ export async function sendOutbound(userId:string,input:SendInput) {
         optimizationOpportunity:"Reuse stored receipt; never retry an uncertain SMTP delivery"})]);
   }
   const hash=createHash("sha256").update(JSON.stringify({connectionId:input.connectionId,company:input.companyExternalId,to:input.to,
-    subject:input.subject,body:input.body,parentId:input.parentId??null})).digest("hex");
+    subject:input.subject,body:input.body,parentId:input.parentId??null,...(input.attachments?.length?{attachments:input.attachments}:{})})).digest("hex");
   const reserved=await tenantTransaction(userId,async client=>{
-    const company=await client.query<{id:string;workspace_id:string;country:string}>(`select c.id,w.id as workspace_id,wc.market_country_code as country from sales_company c
+    const company=input.companyExternalId?await client.query<{id:string|null;workspace_id:string|null;country:string|null}>(`select c.id,w.id as workspace_id,wc.market_country_code as country from sales_company c
       join user_company_market wc on wc.company_id=c.id join market_workspace w on w.id=wc.workspace_id
-      where wc.candidate_id=$1 and w.owner_id=$2 and w.slug='global-sales'`,[input.companyExternalId,userId]);
+      where wc.candidate_id=$1 and w.owner_id=$2 and w.slug='global-sales'`,[input.companyExternalId,userId]):{rows:[{id:null,workspace_id:null,country:null}]};
     if(!company.rows[0])throw new Error("公司不属于当前工作区");
     const connection=await client.query<{email:string}>(`select email from mailbox_connection where id=$1 and user_id=$2 and status='active' and smtp_verified_at is not null`,[input.connectionId,userId]);
     if(!connection.rows[0])throw new Error("请先验证发信连接");
     let replyTo:string|undefined;
     if(input.followUpDraftId){const draft=await client.query("select id from workspace_audit_event where id=$1 and actor_user_id=$2 and entity_id=$3 and action='follow-up.generated'",[input.followUpDraftId,userId,input.parentId??""]);if(!draft.rows[0])throw new Error("跟进草稿不属于当前原邮件");}
     if(input.parentId){const parent=await client.query<{message_id:string;content_ciphertext:string}>(`select message_id,content_ciphertext from outbound_mail
-      where id=$1 and user_id=$2 and company_id=$3 and connection_id=$4 and status='sent' and market_country_code=$5`,[input.parentId,userId,company.rows[0].id,input.connectionId,company.rows[0].country]);
+      where id=$1 and user_id=$2 and company_id is not distinct from $3::uuid and connection_id=$4 and status='sent' and market_country_code is not distinct from $5::text`,[input.parentId,userId,company.rows[0].id,input.connectionId,company.rows[0].country]);
       if(!parent.rows[0])throw new Error("原邮件不存在或不属于此公司与发件邮箱");
       const content=decryptMailboxContent(userId,parent.rows[0].content_ciphertext);
       if(content.recipients[0]!==input.to)throw new Error("跟进邮件必须对应同一收件人");
@@ -108,8 +125,8 @@ export async function sendOutbound(userId:string,input:SendInput) {
     const messageId=`<${randomUUID()}@${connection.rows[0].email.split("@")[1]}>`;
     const encrypted=encryptMailboxContent(userId,{subject:input.subject,bodyText:input.body,sender:[connection.rows[0].email],recipients:[input.to]});
     const saved=await client.query<{id:string}>(`insert into outbound_mail(user_id,workspace_id,company_id,connection_id,idempotency_key,
-      request_hash,message_id,parent_id,content_ciphertext,status,market_country_code) values($1,$2,$3,$4,$5,$6,$7,$8,$9,'sending',$10)
-      on conflict do nothing returning id`,[userId,company.rows[0].workspace_id,company.rows[0].id,input.connectionId,input.idempotencyKey,hash,messageId,input.parentId??null,encrypted,company.rows[0].country]);
+      request_hash,message_id,parent_id,content_ciphertext,status,market_country_code,attachments) values($1,$2,$3,$4,$5,$6,$7,$8,$9,'sending',$10,$11)
+      on conflict do nothing returning id`,[userId,company.rows[0].workspace_id,company.rows[0].id,input.connectionId,input.idempotencyKey,hash,messageId,input.parentId??null,encrypted,company.rows[0].country,JSON.stringify(input.attachments??[])]);
     if(!saved.rows[0]){const prior=await client.query<{id:string;status:string;request_hash:string}>("select id,status,request_hash from outbound_mail where user_id=$1 and (idempotency_key=$2 or request_hash=$3) order by (idempotency_key=$2) desc limit 1",[userId,input.idempotencyKey,hash]);
       if(prior.rows[0].request_hash!==hash)throw new Error("此发送操作内容已变化，请重新审核");
       return {id:prior.rows[0].id,status:prior.rows[0].status,reused:true,messageId,replyTo};}
@@ -123,7 +140,7 @@ export async function sendOutbound(userId:string,input:SendInput) {
     const {connection,mailer}=await transport(userId,input.connectionId);
     try {
       const receipt=await mailer.sendMail({from:connection.email,to:input.to,subject:input.subject,text:input.body,
-        messageId:reserved.messageId,inReplyTo:reserved.replyTo,references:reserved.replyTo?[reserved.replyTo]:undefined});
+        messageId:reserved.messageId,inReplyTo:reserved.replyTo,references:reserved.replyTo?[reserved.replyTo]:undefined,attachments});
       smtpAccepted=receipt.accepted.length>0;
       if(!smtpAccepted)throw new Error("Recipient not accepted");
     }finally{mailer.close();}

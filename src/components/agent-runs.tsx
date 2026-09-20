@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import type { RunStatus } from "@/lib/assistant/main/contracts";
+import { AgentApprovals } from "./agent-approvals";
 type Run = { id: string; status: RunStatus; result: { reply: string } | null };
 const labels: Record<RunStatus, string> = { queued: "排队中", running: "执行中", waiting_user: "等待确认", paused: "已暂停", partial: "部分完成", completed: "已完成", failed: "失败", cancelled: "已取消" };
 export function AgentRuns({ conversationId, onUpdated }: { conversationId: string; onUpdated: () => void }) {
@@ -42,6 +43,7 @@ export function AgentRuns({ conversationId, onUpdated }: { conversationId: strin
         {["paused", "partial", "failed"].includes(run.status) && <button type="button" onClick={() => void control(run.id, "resume")}>继续</button>}
         {!["completed", "cancelled"].includes(run.status) && <button type="button" onClick={() => void control(run.id, "cancel")}>取消</button>}
       </div>
+      <AgentApprovals runId={run.id} />
       {!["completed", "cancelled"].includes(run.status) && <div className="flex gap-2"><input aria-label="追加任务要求" value={instruction} onChange={e => setInstruction(e.target.value)} placeholder="追加要求，在下个安全执行边界生效" className="min-w-0 flex-1 rounded bg-slate-900 p-2" /><button type="button" disabled={!instruction.trim()} onClick={() => void control(run.id, "instruct")}>追加</button></div>}
     </div>)}
     {error && <p role="alert">{error}</p>}
