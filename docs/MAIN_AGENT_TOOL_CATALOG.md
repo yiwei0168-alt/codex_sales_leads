@@ -1,6 +1,6 @@
 # Registered main Agent tools
 
-Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/generate-main-agent-catalog.ts --check` to detect drift. These 69 tools are implemented adapters; registration is not real-provider acceptance. The complete migration inventory remains in [MAIN_AGENT_CAPABILITIES.md](MAIN_AGENT_CAPABILITIES.md).
+Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/generate-main-agent-catalog.ts --check` to detect drift. These 71 tools are implemented adapters; registration is not real-provider acceptance. The complete migration inventory remains in [MAIN_AGENT_CAPABILITIES.md](MAIN_AGENT_CAPABILITIES.md).
 
 | Tool | Version | Role | Effect | Cost | Purpose |
 |---|---|---|---|---|---|
@@ -72,4 +72,6 @@ Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/ge
 | mail_connections | 1 | member | read | known | List current account mailbox identities and connection states; no credentials. |
 | mail_history | 1 | member | read | known | Read outbound history for a company, or unassociated account mail when company is omitted. |
 | mail_read | 1 | member | read | known | Read one account-owned imported message for the current task. This private content must not be sent to web search or unrelated external tools. |
+| mailbox_candidate_list | 1 | member | read | known | Read account-owned pending knowledge/template candidates extracted from imported mail, including their content hashes. Private content stays in the configured main model context. |
+| mailbox_candidate_review | 1 | member | publish | unknown | Approve or reject one pending mailbox-derived knowledge/template candidate at its observed content hash. Approval may add private searchable knowledge; requires exact human confirmation. |
 | plan_confirmation | 1 | member | publish | known | Obtain user approval for a large/batch/uncertain paid plan before executing it. Explain scale; include rough cost only if the user asked. Does not itself spend or authorize email contents. |

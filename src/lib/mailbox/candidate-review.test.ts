@@ -34,6 +34,11 @@ describe("mailbox candidate review",()=>{
     query.mockResolvedValueOnce({rows:[{locked:true}]}).mockResolvedValueOnce({rows:[{review_status:"rejected"}]});
     expect(await reviewMailboxCandidate("owner","candidate","approved")).toEqual({kind:"conflict"});expect(save).not.toHaveBeenCalled();
   });
+  it("refuses a candidate whose content changed after exact approval was prepared",async()=>{
+    expect(await reviewMailboxCandidate("owner","candidate","approved","a".repeat(64))).toEqual({kind:"conflict"});
+    expect(save).not.toHaveBeenCalled();
+    expect(query).toHaveBeenCalledTimes(2);
+  });
   it("keeps a partially persisted approval recoverable",async()=>{
     query.mockResolvedValueOnce({rows:[{locked:true}]}).mockResolvedValueOnce({rows:[{review_status:"pending"}]}).mockResolvedValueOnce({rows:[{id:"doc"}],rowCount:1});
     expect(await reviewMailboxCandidate("owner","candidate","rejected")).toEqual({kind:"approval-incomplete"});

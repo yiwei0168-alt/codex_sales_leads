@@ -82,4 +82,12 @@ describe("main Agent contracts", () => {
     expect(deletion.input.safeParse({documentId:"11111111-1111-4111-8111-111111111111",expectedHash:"a".repeat(64)}).success).toBe(true);
     expect(deletion.input.safeParse({documentId:"11111111-1111-4111-8111-111111111111",expectedHash:"bad"}).success).toBe(false);
   });
+  it("requires exact approval and a candidate content hash for mailbox learning",()=>{
+    const review=productTools.find(tool=>tool.id==="mailbox_candidate_review")!;
+    const candidateId="11111111-1111-4111-8111-111111111111";
+    expect(needsApproval(review)).toBe(true);
+    expect(review.input.safeParse({candidateId,decision:"approved",expectedHash:"a".repeat(64)}).success).toBe(true);
+    expect(review.input.safeParse({candidateId,decision:"approved"}).success).toBe(false);
+    expect(review.input.safeParse({candidateId,decision:"approved",expectedHash:"a".repeat(64),userId:"forged"}).success).toBe(false);
+  });
 });

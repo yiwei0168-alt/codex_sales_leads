@@ -17,6 +17,7 @@ import {companyStatePatchSchema,safeCompanyRevision} from "@/lib/sales/company-s
 import { readDevelopmentDraft, updateDevelopmentDraftVersioned } from "@/lib/outreach/repository";
 import { runDevelopmentStrategyAgent } from "@/lib/outreach/graph";
 import { listMailboxConnections, getMailboxMessageForReview } from "@/lib/mailbox/repository";
+import {listPendingMailboxCandidates,reviewMailboxCandidate} from "@/lib/mailbox/candidate-review";
 import { listOutbound } from "@/lib/mailbox/outbound";
 import { buildLeadMarketPlaybook } from "@/lib/leads/workflow/playbook";
 import { ALL_CHANNEL_ROLES } from "@/lib/leads/workflow/types";
@@ -170,6 +171,12 @@ export const productTools: ProductTool[] = [
     execute: async (i, c) => result(await listOutbound(c.userId, i.companyExternalId ?? "", i.offset, 20), { cost: "known" }) }),
   defineTool({ id: "mail_read", description: "Read one account-owned imported message for the current task. This private content must not be sent to web search or unrelated external tools.",
     input: z.object({ messageId: z.uuid() }).strict(), execute: async (i, c) => result(await getMailboxMessageForReview(c.userId, i.messageId), { cost: "known" }) }),
+  defineTool({id:"mailbox_candidate_list",description:"Read account-owned pending knowledge/template candidates extracted from imported mail, including their content hashes. Private content stays in the configured main model context.",input:empty,
+    execute:async(_,c)=>result(await listPendingMailboxCandidates(c.userId),{cost:"known"})}),
+  defineTool({id:"mailbox_candidate_review",description:"Approve or reject one pending mailbox-derived knowledge/template candidate at its observed content hash. Approval may add private searchable knowledge; requires exact human confirmation.",
+    input:z.object({candidateId:z.uuid(),decision:z.enum(["approved","rejected"]),expectedHash:z.string().regex(/^[0-9a-f]{64}$/)}).strict(),effect:"publish",cost:"unknown",
+    execute:async(i,c)=>{const reviewed=await reviewMailboxCandidate(c.userId,i.candidateId,i.decision,i.expectedHash);
+      return reviewed.kind==="saved"?result(reviewed,{cost:"unknown"}):result(reviewed,{status:reviewed.kind==="conflict"?"missing_input":"unavailable",missing:[`Mailbox candidate review: ${reviewed.kind}`],cost:"unknown"});}}),
   defineTool({ id: "plan_confirmation", description: "Obtain user approval for a large/batch/uncertain paid plan before executing it. Explain scale; include rough cost only if the user asked. Does not itself spend or authorize email contents.",
     input: z.object({ plan: z.string().min(1).max(8000), scale: z.string().min(1).max(1000), uncertainty: z.string().max(2000), requestedEstimate: z.string().max(1000).optional() }).strict(), effect: "publish", recovery: "idempotent",
     execute: async i => result({ approvedPlan: i }, { cost: "known" }) }),

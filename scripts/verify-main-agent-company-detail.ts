@@ -6,13 +6,14 @@ import {databaseConnectionString,databaseSslConfiguration} from "../src/lib/rag/
 import {getPool} from "../src/lib/rag/db";
 import {encryptMailboxContent} from "../src/lib/mailbox/crypto";
 import {readSavedCompanyAssessment,listCompanyCorrespondence} from "../src/lib/sales/company-detail-read";
+import {listPendingMailboxCandidates,reviewMailboxCandidate} from "../src/lib/mailbox/candidate-review";
 
 nextEnv.loadEnvConfig(process.cwd());
 const url=process.env.DATABASE_MIGRATION_URL||process.env.DATABASE_URL;
 if(!url)throw new Error("Database configuration required");
 if(process.env.DATABASE_URL){const a=new URL(url),b=new URL(process.env.DATABASE_URL);assert.equal(`${a.hostname}:${a.port||"5432"}${a.pathname}`,`${b.hostname}:${b.port||"5432"}${b.pathname}`);}
 const admin=new Pool({connectionString:databaseConnectionString(url),ssl:databaseSslConfiguration(url)});
-const users=[randomUUID(),randomUUID()],workspace=randomUUID(),company=randomUUID(),run=randomUUID(),connection=randomUUID(),message=randomUUID();
+const users=[randomUUID(),randomUUID()],workspace=randomUUID(),company=randomUUID(),run=randomUUID(),connection=randomUUID(),message=randomUUID(),candidate=randomUUID();
 const external=`synthetic-${randomUUID()}`,domain=`synthetic-${randomUUID()}.invalid`;
 let created=false,checks=0;
 try{
@@ -32,6 +33,7 @@ try{
     await client.query(`insert into mailbox_message(id,user_id,connection_id,folder_path,uid_validity,message_uid,direction,content_sha256,content_ciphertext,sent_at)
       values($1,$2,$3,'INBOX','fixture',1,'inbound','synthetic',$4,now())`,[message,users[0],connection,ciphertext]);
     await client.query("insert into mailbox_message_company(user_id,message_id,company_id,source) values($1,$2,$3,'user-confirmed')",[users[0],message,company]);
+    await client.query("insert into mailbox_artifact_candidate(id,user_id,message_id,kind,title,content) values($1,$2,$3,'company-policy','Synthetic candidate','Private candidate content')",[candidate,users[0],message]);
     await client.query("commit");created=true;
   }catch(error){await client.query("rollback");throw error;}finally{client.release();}
   const own=await readSavedCompanyAssessment(users[0],external);
@@ -44,6 +46,12 @@ try{
   assert.equal((await listCompanyCorrespondence(users[1],external,0)).messages.length,0);checks++;
   assert.equal((await listCompanyCorrespondence(users[0],"other-company",0)).companyFound,false);checks++;
   assert.equal((await listCompanyCorrespondence(users[0],external,1)).messages.length,0);checks++;
+  const pending=await listPendingMailboxCandidates(users[0]);
+  assert.equal(pending.find(item=>item.id===candidate)?.content,"Private candidate content");checks++;
+  assert.match(pending.find(item=>item.id===candidate)?.contentHash??"",/^[0-9a-f]{64}$/);checks++;
+  assert.equal((await listPendingMailboxCandidates(users[1])).some(item=>item.id===candidate),false);checks++;
+  assert.deepEqual(await reviewMailboxCandidate(users[0],candidate,"approved","a".repeat(64)),{kind:"conflict"});checks++;
+  assert.equal((await admin.query("select review_status from mailbox_artifact_candidate where id=$1",[candidate])).rows[0].review_status,"pending");checks++;
   console.log(JSON.stringify({passed:checks,synthetic:true,modelCalls:0,searchCalls:0,sends:0,customerDataModified:false}));
 }finally{
   if(created){const client=await admin.connect();try{

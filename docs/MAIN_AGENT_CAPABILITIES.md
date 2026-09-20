@@ -18,7 +18,7 @@ Baseline: `a65bc74` on `delivery/deep-intelligence-ui`, equal to local origin/ma
 
 ## API coverage
 
-Current independently registered adapters and schema validation are generated in [MAIN_AGENT_TOOL_CATALOG.md](MAIN_AGENT_TOOL_CATALOG.md). There are 69 adapters after owned draft reads and version-bound editing and approval. The assignments below remain a migration inventory, not a declaration that all routes have been implemented as tools. New research artifacts compose through owned server call IDs, independently of legacy workflow positions. Formal publication, uploaded-material scoring, other knowledge administration, contact verification, other company write paths, private/non-GitHub Skill repositories and external-connection operations remain outstanding.
+Current independently registered adapters and schema validation are generated in [MAIN_AGENT_TOOL_CATALOG.md](MAIN_AGENT_TOOL_CATALOG.md). There are 71 adapters after account-owned mailbox candidate review. The assignments below remain a migration inventory, not a declaration that all routes have been implemented as tools. New research artifacts compose through owned server call IDs, independently of legacy workflow positions. Formal publication, uploaded-material scoring, other knowledge administration, contact verification, other company write paths, private/non-GitHub Skill repositories and external-connection operations remain outstanding.
 
 | Current API | Methods | Migration assignment | Source |
 |---|---|---|---|
@@ -53,8 +53,8 @@ Current independently registered adapters and schema validation are generated in
 | `/api/knowledge/reviews` | GET,PATCH | `knowledge_fact_review_list` / `knowledge_fact_review_decide`; shared input validation and repository, admin-only, exact approval for a decision | `src/app/api/knowledge/reviews/route.ts` |
 | `/api/knowledge/status` | GET | knowledge business adapter pending | `src/app/api/knowledge/status/route.ts` |
 | `/api/knowledge/uploads` | GET,POST | `knowledge_upload_jobs` covers status reads; binary upload/processing adapter remains pending | `src/app/api/knowledge/uploads/route.ts` |
-| `/api/mailbox/candidates/[id]` | PATCH | mailbox business adapter pending | `src/app/api/mailbox/candidates/[id]/route.ts` |
-| `/api/mailbox/candidates` | GET | mailbox business adapter pending | `src/app/api/mailbox/candidates/route.ts` |
+| `/api/mailbox/candidates/[id]` | PATCH | `mailbox_candidate_review` shares the page review service; the Agent additionally binds exact approval to observed content hash | `src/app/api/mailbox/candidates/[id]/route.ts` |
+| `/api/mailbox/candidates` | GET | `mailbox_candidate_list` shares the page owner-scoped pending-candidate read service | `src/app/api/mailbox/candidates/route.ts` |
 | `/api/mailbox/connections/[id]` | PATCH,DELETE | mailbox business adapter pending | `src/app/api/mailbox/connections/[id]/route.ts` |
 | `/api/mailbox/connections` | GET,POST | mailbox business adapter pending | `src/app/api/mailbox/connections/route.ts` |
 | `/api/mailbox/messages/[id]/learning` | POST | mailbox business adapter pending | `src/app/api/mailbox/messages/[id]/learning/route.ts` |

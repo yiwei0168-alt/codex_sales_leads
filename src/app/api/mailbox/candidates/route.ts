@@ -1,5 +1,5 @@
 import { requireApiSession } from "@/lib/auth/session";
-import { tenantQuery } from "@/lib/rag/db";
+import {listPendingMailboxCandidates} from "@/lib/mailbox/candidate-review";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -7,16 +7,5 @@ export const dynamic = "force-dynamic";
 export async function GET() {
   const session = await requireApiSession();
   if (session instanceof Response) return session;
-  const rows = await tenantQuery<{
-    id: string; message_id: string; kind: string; title: string; content: string; excerpt: string; structured_data: Record<string, unknown>;
-    review_status: string; created_at: string; confidence: number | null; rationale: string | null; model: string | null;
-  }>(session.userId,
-    `select id, message_id, kind, title, content, left(content, 1200) as excerpt, structured_data,
-            review_status, confidence, rationale, model, created_at::text
-     from mailbox_artifact_candidate
-     where user_id = $1 and review_status = 'pending'
-     order by created_at desc limit 50`,
-    [session.userId],
-  );
-  return Response.json({ candidates: rows });
+  return Response.json({ candidates: await listPendingMailboxCandidates(session.userId) });
 }

@@ -1,5 +1,9 @@
 # Main Agent acceptance log
 
+## P2 mailbox candidate read/review - 2026-09-21 (partial)
+
+The registry has 71 tools. The page and Agent share the pending-candidate read and review services; the Agent's publish-classified review requires central exact approval bound to the candidate ID, decision and current content hash. Five new isolated PostgreSQL assertions passed (13 in this verifier) for account visibility, hash projection and rejection of a stale content hash before knowledge persistence. Focused contract and review tests passed 19 assertions, including forged-identity rejection and a no-write hash conflict. Full regression passed 252 files / 1,273 assertions; typecheck, scoped lint, production build and 71 generated schemas passed. No candidate was approved or embedded in the fixture; no provider call, SMTP send or customer mutation occurred. Live approved embedding and full release acceptance remain separate gates.
+
 ## P2 version-bound draft edit and approval - 2026-09-21 (partial)
 
 The 69-tool registry adds `draft_read` and `draft_approve`; `draft_edit` and the page PATCH require an observed draft revision. The shared update service checks the revision under a row lock and returns the new status/revision. Fifteen isolated PostgreSQL assertions passed for owner-scoped reads, edit/approval, stale overwrite rejection, cross-account isolation, repeat approval, approval withdrawal on later edit and zero sends. Nine focused contract tests and the full 252-file / 1,271-assertion regression passed; typecheck, scoped lint, production build and 69 generated schemas passed. An authenticated production-build browser fixture passed 68/68 desktop/mobile checks, including saved-draft edit, approval, repeat approval and refresh. Synthetic fixtures were removed; no paid model/search call, SMTP send or customer-data modification occurred. P2/P6 acceptance remains open.

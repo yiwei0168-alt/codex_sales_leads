@@ -1,11 +1,25 @@
 import {tenantTransaction} from "@/lib/rag/db";
+import {tenantQuery} from "@/lib/rag/db";
+import {createHash} from "node:crypto";
 import {upsertKnowledgeDocument} from "@/lib/rag/repository";
 import {trackedOperation} from "@/lib/tracked-operation";
 
 export type ReviewStatus = "approved" | "rejected";
+type CandidateContent={kind:string;title:string;content:string;structured_data:Record<string,unknown>};
+function candidateHash(candidate:CandidateContent){
+  return createHash("sha256").update(JSON.stringify({kind:candidate.kind,title:candidate.title,content:candidate.content,structuredData:candidate.structured_data})).digest("hex");
+}
+export async function listPendingMailboxCandidates(userId:string){
+  const rows=await tenantQuery<{
+    id:string;message_id:string;kind:string;title:string;content:string;structured_data:Record<string,unknown>;
+    review_status:string;created_at:string;confidence:number|null;rationale:string|null;model:string|null;
+  }>(userId,`select id,message_id,kind,title,content,structured_data,review_status,confidence,rationale,model,created_at::text
+      from mailbox_artifact_candidate where user_id=$1 and review_status='pending' order by created_at desc limit 50`,[userId]);
+  return rows.map(row=>({...row,excerpt:row.content.slice(0,1200),contentHash:candidateHash(row)}));
+}
 
-export async function reviewMailboxCandidate(userId:string,id:string,status:ReviewStatus){
-  return trackedOperation(userId,"mailbox-candidate-review",1,0,()=>reviewLocked(userId,id,status),result=>({
+export async function reviewMailboxCandidate(userId:string,id:string,status:ReviewStatus,expectedHash?:string){
+  return trackedOperation(userId,"mailbox-candidate-review",1,0,()=>reviewLocked(userId,id,status,expectedHash),result=>({
     outputItems:result.kind==="saved"&&!result.reused?1:0,
     validOutputItems:result.kind==="saved"&&!result.reused?1:0,downstreamUsedItems:null,
     costUsd:result.kind==="saved"&&!result.reused&&status==="approved"?null:0,
@@ -16,16 +30,17 @@ export async function reviewMailboxCandidate(userId:string,id:string,status:Revi
   }));
 }
 
-async function reviewLocked(userId:string,id:string,status:ReviewStatus){
+async function reviewLocked(userId:string,id:string,status:ReviewStatus,expectedHash?:string){
   return tenantTransaction(userId,async client=>{
     // Do not queue concurrent clicks while holding all available pool connections.
     const lock=await client.query<{locked:boolean}>(
       "select pg_try_advisory_xact_lock(hashtextextended($1,0)) as locked",[`mailbox-review:${userId}:${id}`]);
     if(!lock.rows[0]?.locked)return {kind:"busy"} as const;
-    const result=await client.query<{id:string;kind:string;title:string;content:string;review_status:string}>(
-      "select id,kind,title,content,review_status from mailbox_artifact_candidate where id=$1 and user_id=$2 for update",[id,userId]);
+    const result=await client.query<{id:string;kind:string;title:string;content:string;structured_data:Record<string,unknown>;review_status:string}>(
+      "select id,kind,title,content,structured_data,review_status from mailbox_artifact_candidate where id=$1 and user_id=$2 for update",[id,userId]);
     const candidate=result.rows[0];
     if(!candidate)return {kind:"missing"} as const;
+    if(expectedHash&&candidateHash(candidate)!==expectedHash)return {kind:"conflict"} as const;
     if(candidate.review_status===status)return {kind:"saved",status,reused:true} as const;
     if(candidate.review_status!=="pending")return {kind:"conflict"} as const;
     const externalId=`mailbox-artifact:${id}`;
