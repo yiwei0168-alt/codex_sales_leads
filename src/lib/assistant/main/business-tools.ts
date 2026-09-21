@@ -6,23 +6,31 @@ import { listRelationships, relationshipSchema, saveRelationship } from "@/lib/s
 import { analyzeStoredRelationship } from "@/lib/sales/relationship-analysis";
 import { contactLookupProvider } from "@/providers/contact-lookup-factory";
 import { lookupAndStoreContacts } from "@/lib/contacts/lookup-service";
-import { syncAliMail } from "@/lib/mailbox/service";
+import { reviewMailboxMessageForLearning, syncAliMail } from "@/lib/mailbox/service";
 import { mailboxSyncSchema } from "@/lib/mailbox/sync-options";
+import { deleteMailboxConnectionData, deleteMailboxMessage, disconnectMailbox, screenStoredMailboxMessages } from "@/lib/mailbox/repository";
 import { readSpendBudget } from "@/lib/billing/repository";
 import { controlRun, getRun, readEvents } from "./repository";
 import { searchExternalWithGemini } from "../external-search";
 import { createDiscoveryProvider, discoveryEnvironmentStatus } from "@/providers/discovery";
 import { DISCOVERY_PROVIDER_IDS, SEARCH_CATEGORY_IDS } from "@/lib/leads/workflow/hybrid-search-policy";
 import { loadDevelopmentContext } from "@/lib/outreach/repository";
+import { runDevelopmentFeedbackAgent } from "@/lib/outreach/graph";
 import { generateDevelopmentStrategyPlanWithKimi, generateDevelopmentStrategyWithKimi } from "@/lib/outreach/kimi-agent";
 import {readSavedCompanyAssessment,listCompanyCorrespondence} from "@/lib/sales/company-detail-read";
 import {readTaskUsage} from "../task-usage";
 import {createFollowUpDraft,listSavedFollowUps} from "@/lib/outreach/follow-up-service";
 import { queueAgentLeadWorkflow } from "@/lib/leads/workflow/agent-launch";
 import { ALL_CHANNEL_ROLES } from "@/lib/leads/workflow/types";
+import { updateWorkspaceMode } from "@/lib/sales/repository";
+import { setMessageCompany } from "@/lib/mailbox/company-links";
+import { reconcileContactLookup } from "@/lib/contacts/reconcile-lookup";
+import { reconcileRelationshipAnalysis } from "@/lib/sales/reconcile-relationship";
+import { listApprovedMailboxKnowledge } from "@/lib/mailbox/knowledge-overview";
 
 const companyId = z.string().min(1).max(180), country = z.string().regex(/^[A-Z]{2}$/);
 const developmentInput = z.object({ companyExternalId: companyId, language: z.string().max(20).optional(), instructions: z.string().max(2000).optional() }).strict();
+const goldSource = z.object({ assetSha256:z.string().regex(/^[0-9a-f]{64}$/), unitIndex:z.number().int().min(1), row:z.number().int().min(1).optional(), version:z.string().trim().max(120).optional() }).strict();
 export const businessTools = [
   defineTool({ id: "lead_workflow", description: "Queue the existing complete sales-lead workflow as an optional account task. Requires exact approval of the market, role, count and public search scope. Returns the saved action/job receipt and current state; queued is not completed. Never launches a second job for the same Agent call.",
     input: z.object({ countryCode: country, countryName: z.string().min(2).max(120), objective: z.enum(["new-market", "existing-distributor-growth"]),
@@ -55,6 +63,39 @@ export const businessTools = [
     return result(await lookupAndStoreContacts(c.userId,company.workspace_id,{ companyId:company.id,companyName:company.canonical_name,websiteUrl:`https://${company.domain}/`,domain:company.domain,countryCode:company.country_code,targetRoles:["Owner","Procurement","Channel","Technical"] },provider,i.refresh));
   } }),
   defineTool({ id: "mail_sync", description: "Synchronize owned mailbox messages for the requested date/folder scope; stores messages without sending.", input: mailboxSyncSchema, effect: "reversible", cost: "unknown", connections: ["mailbox"], execute: async (i,c) => result(await syncAliMail(c.userId,i.connectionId,i)) }),
+  defineTool({id:"workspace_mode_update",description:"Change the current account market workspace between new-market and growth mode using the existing page service.",
+    input:z.object({mode:z.enum(["new-market","growth"])}).strict(),effect:"reversible",recovery:"idempotent",
+    execute:async(i,c)=>{await updateWorkspaceMode(i.mode,c.userId);return result({updated:true,mode:i.mode});}}),
+  defineTool({id:"development_feedback_generate",description:"Apply explicit feedback to one owned saved development draft at its observed revision and save the regenerated version. This never sends mail.",
+    input:z.object({draftId:z.uuid(),feedback:z.string().trim().min(3).max(4000),currentBody:z.string().trim().min(40).max(30000),sourceRevision:z.number().int().min(1),allowMemory:z.boolean().default(false)}).strict(),
+    effect:"reversible",cost:"unknown",connections:["outreach-model"],execute:async(i,c)=>result(await runDevelopmentFeedbackAgent(c.userId,i))}),
+  defineTool({id:"mailbox_rescreen",description:"Re-run the existing local deterministic screening over stored account mailbox messages. Does not send private mail to a model.",
+    input:z.object({}).strict(),effect:"reversible",execute:async(_,c)=>result(await screenStoredMailboxMessages(c.userId))}),
+  defineTool({id:"mailbox_learning_review",description:"Authorize one owned message for the existing redacted Kimi learning review, or skip it. Authorization requires exact approval because private message-derived content leaves the local mailbox boundary.",
+    input:z.object({messageId:z.uuid(),action:z.enum(["authorize","skip"])}).strict(),effect:"publish",cost:"unknown",connections:["kimi"],
+    execute:async(i,c)=>{if(i.action==="authorize"&&!process.env.KIMI_API_KEY?.trim())return result(null,{status:"unavailable",missing:["Configured Kimi connection"]});return result(await reviewMailboxMessageForLearning(c.userId,i.messageId,i.action));}}),
+  defineTool({id:"mail_message_company_update",description:"Set or clear the user-confirmed company association for one owned mailbox message. This changes saved business context but never sends mail.",
+    input:z.object({messageId:z.uuid(),companyExternalId:companyId.nullable()}).strict(),effect:"publish",recovery:"idempotent",
+    execute:async(i,c)=>{const updated=await setMessageCompany(c.userId,i.messageId,i.companyExternalId);return updated?result({updated:true}):result(null,{status:"unavailable",missing:["Owned mailbox message"]});}}),
+  defineTool({id:"mail_message_delete",description:"Permanently delete one owned local mailbox message when it is not being analyzed. Requires exact destructive approval and does not delete the provider mailbox copy.",
+    input:z.object({messageId:z.uuid()}).strict(),effect:"destructive",recovery:"reconcile",
+    execute:async(i,c)=>await deleteMailboxMessage(c.userId,i.messageId)?result({deleted:true}):result(null,{status:"unavailable",missing:["Owned local mailbox message not currently being analyzed"]})}),
+  defineTool({id:"mail_connection_control",description:"Disconnect or permanently delete one owned mailbox connection. Deletion may optionally remove derived private knowledge and always requires exact destructive approval; credentials never enter model context.",
+    input:z.object({connectionId:z.uuid(),action:z.enum(["disconnect","delete"]),deleteKnowledge:z.boolean().default(false)}).strict(),effect:"destructive",recovery:"reconcile",
+    execute:async(i,c)=>{try{const changed=i.action==="disconnect"?await disconnectMailbox(c.userId,i.connectionId):await deleteMailboxConnectionData(c.userId,i.connectionId,i.deleteKnowledge);return changed?result({action:i.action,updated:true}):result(null,{status:"unavailable",missing:["Owned mailbox connection"]});}catch{return result(null,{status:"unavailable",missing:["Mailbox connection without an active synchronization"]});}}}),
+  defineTool({id:"task_reconcile",description:"Close one stale or failed local contact/relationship operation using its saved receipt. This does not retry the provider or claim an external refund.",
+    input:z.object({id:z.uuid(),kind:z.enum(["contacts","relationship"])}).strict(),effect:"publish",recovery:"reconcile",
+    execute:async(i,c)=>result(i.kind==="contacts"?await reconcileContactLookup(c.userId,i.id):await reconcileRelationshipAnalysis(c.userId,i.id))}),
+  defineTool({id:"knowledge_gold_review_list",description:"Read the administrator's existing RAG Gold review queue. Unreviewed and holdout cases remain non-authoritative.",role:"admin",
+    input:z.object({offset:z.number().int().min(0).max(100000).default(0),limit:z.number().int().min(1).max(50).default(25),split:z.enum(["development","validation","holdout"]).optional(),reviewed:z.boolean().optional()}).strict(),
+    execute:async(i,c)=>{const {listGoldReviews}=await import("@/lib/knowledge/review-repository");return result(await listGoldReviews(c.userId,i));}}),
+  defineTool({id:"knowledge_gold_review_save",description:"Save an administrator-reviewed expected answer and exact source coordinates for one current RAG Gold case. Requires exact publication approval and rejects a changed case hash.",role:"admin",effect:"publish",recovery:"idempotent",
+    input:z.object({caseId:z.string().min(1).max(120),caseSha256:z.string().regex(/^[0-9a-f]{64}$/),expectedAnswer:z.string().trim().min(1).max(12000),expectedSources:z.array(goldSource).max(20),reviewNote:z.string().trim().max(2000).default("")}).strict(),
+    execute:async(i,c)=>{const {saveGoldReview}=await import("@/lib/knowledge/review-repository");await saveGoldReview(c.userId,i);return result({saved:true,caseId:i.caseId});}}),
+  defineTool({id:"knowledge_gold_holdout_unlock",description:"Unlock the administrator RAG Gold holdout only after the existing development/validation review gate passes and exact approval is granted.",role:"admin",effect:"publish",recovery:"idempotent",
+    input:z.object({}).strict(),execute:async(_,c)=>{const {unlockGoldHoldout}=await import("@/lib/knowledge/review-repository");await unlockGoldHoldout(c.userId,true);return result({unlocked:true});}}),
+  defineTool({id:"mailbox_knowledge_list",description:"Read approved account-owned knowledge and template candidates learned from mailbox review. Private content remains in the configured main-model context.",
+    input:z.object({offset:z.number().int().min(0).max(100000).default(0)}).strict(),execute:async(i,c)=>result(await listApprovedMailboxKnowledge(c.userId,i.offset,50))}),
   defineTool({ id: "budget_read", description: "Read legacy account budget as reference data, not an MA05 spending limit. Unknown bills remain unknown.", input: z.object({}).strict(), execute: async (_,c) => result(await readSpendBudget(c.userId)) }),
   defineTool({id:"task_usage_read",description:"Read the account's last 30 days of operational efficiency and provider billing observations. Tables overlap and totals must not be added; unknown bills and adoption remain unknown.",
     input:z.object({}).strict(),execute:async(_,c)=>result(await readTaskUsage(c.userId))}),

@@ -77,7 +77,7 @@ async function poll() {
   const state = JSON.parse(await readFile(batchFile, "utf8")) as BatchState;
   assert.equal(state.database, replayState.database);
   assert.equal(state.manifestHash, replayState.manifestHash);
-  const permitted = new Set(["knowledge_library_list", "knowledge_originals", "mail_read", "company_read", "company_assessment_read", "task_list", "task_detail", "run_read", "draft_read", "mail_connections"]);
+  const permitted = new Set(["knowledge_library_list", "knowledge_originals", "knowledge_revision_list", "mail_read", "company_read", "company_assessment_read", "task_list", "task_detail", "run_read", "draft_read", "mail_connections"]);
   const registered = new Set(productTools.map(tool => tool.id));
   for (const item of state.cases) {
     const jobs = await tenantQuery<{ id: string; status: string }>(item.userId,
@@ -198,7 +198,8 @@ async function writeResults(state: BatchState) {
       modelTurns: calls.filter(call => call.tool_id === "main_model").length,
       modelSelections,
       selectedTools: calls.filter(call => call.tool_id !== "main_model").map(call => ({ tool: call.tool_id, status: call.output?.status ?? call.status, receipt: Boolean(call.output?.receipt) })),
-      batches, hasFinalReply: Boolean(run?.result?.reply), finalReplyCharacters: run?.result?.reply?.length ?? 0 });
+      batches, hasFinalReply: run?.status === "completed" && Boolean(run.result?.reply),
+      finalReplyCharacters: run?.status === "completed" ? run.result?.reply?.length ?? 0 : 0 });
   }
   const output = { mode: "actual-configured-glm-batch-isolated-data", manifestHash: state.manifestHash,
     submittedTasks: state.cases.length, distinctRemoteReceipts: new Set(remoteIds).size,

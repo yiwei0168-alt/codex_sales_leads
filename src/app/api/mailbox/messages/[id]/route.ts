@@ -1,7 +1,6 @@
 import { requireApiSession } from "@/lib/auth/session";
-import { getMailboxMessageForReview } from "@/lib/mailbox/repository";
+import { deleteMailboxMessage, getMailboxMessageForReview } from "@/lib/mailbox/repository";
 import { messageCompanyLink,setMessageCompany } from "@/lib/mailbox/company-links";
-import { tenantQuery } from "@/lib/rag/db";
 import { z } from "zod";
 import { uiEfficiency } from "@/lib/ui-efficiency";
 
@@ -26,6 +25,6 @@ export async function PATCH(request:Request,{params}:{params:Promise<{id:string}
 export async function DELETE(request:Request,{params}:{params:Promise<{id:string}>}){
   const session=await requireApiSession();if(session instanceof Response)return session;const {id}=await params;const body=await request.json().catch(()=>null);
   if(!z.uuid().safeParse(id).success||body?.confirmed!==true)return Response.json({error:"缺少删除确认"},{status:400});
-  const started=Date.now();const rows=await tenantQuery(session.userId,"delete from mailbox_message where user_id=$1 and id=$2 and learning_status<>'analyzing' returning id",[session.userId,id]);
-  uiEfficiency("local-mail-delete",started,1,rows.length);return rows.length?Response.json({deleted:true}):Response.json({error:"邮件不存在或正在学习中"},{status:409});
+  const started=Date.now();const deleted=await deleteMailboxMessage(session.userId,id);
+  uiEfficiency("local-mail-delete",started,1,deleted?1:0);return deleted?Response.json({deleted:true}):Response.json({error:"邮件不存在或正在学习中"},{status:409});
 }

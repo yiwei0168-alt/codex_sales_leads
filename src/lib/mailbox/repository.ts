@@ -46,6 +46,13 @@ export async function listMailboxConnections(userId: string): Promise<Array<Omit
   }));
 }
 
+export async function deleteMailboxMessage(userId:string,messageId:string){
+  const rows=await tenantQuery<{id:string}>(userId,
+    "delete from mailbox_message where user_id=$1 and id=$2 and learning_status<>'analyzing' returning id",
+    [userId,messageId]);
+  return Boolean(rows[0]);
+}
+
 export async function getMailboxConnection(userId: string, connectionId: string): Promise<MailboxConnectionRecord | null> {
   const rows = await tenantQuery<{
     id: string; user_id: string; email: string; status: MailboxConnectionRecord["status"];

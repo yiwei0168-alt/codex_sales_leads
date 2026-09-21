@@ -1,6 +1,6 @@
 # Registered main Agent tools
 
-Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/generate-main-agent-catalog.ts --check` to detect drift. These 75 tools are implemented adapters; registration is not real-provider acceptance. The complete migration inventory remains in [MAIN_AGENT_CAPABILITIES.md](MAIN_AGENT_CAPABILITIES.md).
+Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/generate-main-agent-catalog.ts --check` to detect drift. These 87 tools are implemented adapters; registration is not real-provider acceptance. The complete migration inventory remains in [MAIN_AGENT_CAPABILITIES.md](MAIN_AGENT_CAPABILITIES.md).
 
 | Tool | Version | Role | Effect | Cost | Purpose |
 |---|---|---|---|---|---|
@@ -12,6 +12,18 @@ Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/ge
 | relationship_analyze | 1 | member | reversible | unknown | Analyze one pair of saved companies with the existing specialist; does not require full discovery. |
 | contacts_lookup | 1 | member | reversible | unknown | Discover and save contacts for one account company using the configured contact provider. No scoring prerequisite. Missing connection is reported explicitly. |
 | mail_sync | 1 | member | reversible | unknown | Synchronize owned mailbox messages for the requested date/folder scope; stores messages without sending. |
+| workspace_mode_update | 1 | member | reversible | known | Change the current account market workspace between new-market and growth mode using the existing page service. |
+| development_feedback_generate | 1 | member | reversible | unknown | Apply explicit feedback to one owned saved development draft at its observed revision and save the regenerated version. This never sends mail. |
+| mailbox_rescreen | 1 | member | reversible | known | Re-run the existing local deterministic screening over stored account mailbox messages. Does not send private mail to a model. |
+| mailbox_learning_review | 1 | member | publish | unknown | Authorize one owned message for the existing redacted Kimi learning review, or skip it. Authorization requires exact approval because private message-derived content leaves the local mailbox boundary. |
+| mail_message_company_update | 1 | member | publish | known | Set or clear the user-confirmed company association for one owned mailbox message. This changes saved business context but never sends mail. |
+| mail_message_delete | 1 | member | destructive | known | Permanently delete one owned local mailbox message when it is not being analyzed. Requires exact destructive approval and does not delete the provider mailbox copy. |
+| mail_connection_control | 1 | member | destructive | known | Disconnect or permanently delete one owned mailbox connection. Deletion may optionally remove derived private knowledge and always requires exact destructive approval; credentials never enter model context. |
+| task_reconcile | 1 | member | publish | known | Close one stale or failed local contact/relationship operation using its saved receipt. This does not retry the provider or claim an external refund. |
+| knowledge_gold_review_list | 1 | admin | read | known | Read the administrator's existing RAG Gold review queue. Unreviewed and holdout cases remain non-authoritative. |
+| knowledge_gold_review_save | 1 | admin | publish | known | Save an administrator-reviewed expected answer and exact source coordinates for one current RAG Gold case. Requires exact publication approval and rejects a changed case hash. |
+| knowledge_gold_holdout_unlock | 1 | admin | publish | known | Unlock the administrator RAG Gold holdout only after the existing development/validation review gate passes and exact approval is granted. |
+| mailbox_knowledge_list | 1 | member | read | known | Read approved account-owned knowledge and template candidates learned from mailbox review. Private content remains in the configured main-model context. |
 | budget_read | 1 | member | read | known | Read legacy account budget as reference data, not an MA05 spending limit. Unknown bills remain unknown. |
 | task_usage_read | 1 | member | read | known | Read the account's last 30 days of operational efficiency and provider billing observations. Tables overlap and totals must not be added; unknown bills and adoption remain unknown. |
 | run_read | 1 | member | read | known | Read an owned Agent task and saved event receipts, including partial outcomes. Does not resume it. |

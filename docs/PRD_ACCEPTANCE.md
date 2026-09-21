@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+> 2026-09-21 MA11/P2 partial: the main Agent catalog now has 87 tools after adding 12 existing-page workflow adapters for workspace, development feedback, mailbox review/lifecycle, task reconciliation and administrator Gold review. Credentials remain page-only, and remaining shared-knowledge, enrichment-status, formal-score, contact-verification and unassociated-follow-up gaps still block complete workflow coverage. [Evidence](MAIN_AGENT_ACCEPTANCE.md).
+
 > 2026-09-21 MA13: development now prioritizes complete product flows and result quality. Development cost/efficiency ledger updates and automatic expense reports stop from this point. Historical records and raw receipts needed for recovery/idempotency remain; cost analysis is produced only on explicit request. This is a confirmed priority change, not evidence that remaining P2/P5/P6 flows are complete.
 
 > 2026-09-21 P5 partial: the main Agent can request exact-approved manual historical-memory creation/edit through the same service as the page, with revision checks and source-managed facts protected. Four isolated database checks passed (138 total); changed-content embedding and full P5/P6 acceptance remain open. [Evidence](MAIN_AGENT_ACCEPTANCE.md).

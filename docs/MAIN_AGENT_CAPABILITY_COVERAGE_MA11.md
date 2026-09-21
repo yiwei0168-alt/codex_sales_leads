@@ -1,6 +1,6 @@
 # MA11 主 Agent 能力覆盖核对
 
-本表从可执行工具注册表生成。基线为原有 74 项；`lead_workflow` 是本轮新增的第 75 项。`可调用`只表示工具有注册的 schema、账户/角色门禁和服务适配器，不代表外部连接可用、业务结果已生成或真实模型已选中。具体用途见 [工具目录](MAIN_AGENT_TOOL_CATALOG.md)。
+本表从可执行工具注册表生成。基线为原有 74 项；`lead_workflow` 和本轮补齐的页面共用服务适配器使当前目录达到 87 项。`可调用`只表示工具有注册的 schema、账户/角色门禁和服务适配器，不代表外部连接可用、业务结果已生成或真实模型已选中。具体用途见 [工具目录](MAIN_AGENT_TOOL_CATALOG.md)。
 
 | 工具 | 状态 | 角色 | 效果 | 费用状态 |
 |---|---|---|---|---|
@@ -12,6 +12,18 @@
 | `relationship_analyze` | 可调用 | member | reversible | unknown |
 | `contacts_lookup` | 可调用 | member | reversible | unknown |
 | `mail_sync` | 可调用 | member | reversible | unknown |
+| `workspace_mode_update` | 可调用 | member | reversible | known |
+| `development_feedback_generate` | 可调用 | member | reversible | unknown |
+| `mailbox_rescreen` | 可调用 | member | reversible | known |
+| `mailbox_learning_review` | 可调用 | member | publish | unknown |
+| `mail_message_company_update` | 可调用 | member | publish | known |
+| `mail_message_delete` | 可调用 | member | destructive | known |
+| `mail_connection_control` | 可调用 | member | destructive | known |
+| `task_reconcile` | 可调用 | member | publish | known |
+| `knowledge_gold_review_list` | 可调用 | admin | read | known |
+| `knowledge_gold_review_save` | 可调用 | admin | publish | known |
+| `knowledge_gold_holdout_unlock` | 可调用 | admin | publish | known |
+| `mailbox_knowledge_list` | 可调用 | member | read | known |
 | `budget_read` | 可调用 | member | read | known |
 | `task_usage_read` | 可调用 | member | read | known |
 | `run_read` | 可调用 | member | read | known |
@@ -85,14 +97,9 @@
 | 领域 | 动作 | 页面入口与 Agent 差距 |
 |---|---|---|
 | 知识 | 管理共享文档正文、二进制入库与发布 | `/api/knowledge/documents`, `/api/knowledge/uploads`；上传入口已在对话附件选择器，Agent 无审核后发布工具 |
-| 知识 | RAG 质量集审核与邮箱知识概览 | `/api/knowledge/evaluation-reviews`, `/api/knowledge/mailbox`；检索/事实工具不代替审核 |
-| 公司与市场 | 修改市场工作区模式 | `/api/workspaces/current` PATCH；公司增改和关系工具已可调用 |
 | 联系人 | 查询最近一次联系人补全运行 | `/api/contact-enrichment/runs/latest`；发现与保存用 `contacts_lookup` |
-| 开发信 | 对已有策略提交人工反馈并再生成 | `/api/development-strategies/[id]/feedback`；直接生成和版本化编辑可调用 |
-| 邮箱 | 创建、更新、删除邮箱连接 | `/api/mailbox/connections`；连接列表和同步可调用，凭证不得进入模型上下文 |
-| 邮箱 | 邮件本地筛选、学习决定及消息生命周期 | `/api/mailbox/screening`, `/api/mailbox/messages/[id]/learning`, `/api/mailbox/messages/[id]` |
-| 任务 | 对未知外发或旧任务执行人工对账 | `/api/tasks/[id]/reconcile`；`task_detail`/`run_read` 只读回执 |
-| 管理 | 更改旧预算参考值 | `/api/budget` PUT；`budget_read` 只读，MA05 观察模式仍保留旧页面 |
+| 邮箱 | 创建或重新录入邮箱凭证 | `/api/mailbox/connections`；连接列表、同步、停用和删除可调用，凭证不得进入模型上下文，故仍由页面安全输入 |
+| 管理 | 更改旧预算参考值 | `/api/budget` PUT；MA13 后不作为本轮流程与质量目标，旧页面继续保留 |
 
 ## 缺实现或明确后续阶段
 
