@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
-import { readFile, writeFile } from "node:fs/promises";
+import { open, readFile, unlink, writeFile } from "node:fs/promises";
+import { setTimeout as delay } from "node:timers/promises";
 import nextEnv from "@next/env";
 
 nextEnv.loadEnvConfig(process.cwd());
@@ -145,6 +146,32 @@ async function reconcileAdmission() {
   console.log(JSON.stringify({ mode: "read-only-admission-reconciliation", noNewSubmissions: true, observations }));
 }
 
+async function watch() {
+  if (!process.argv.includes("--allow-private-provider-data")) throw new Error("Explicit private account data transfer authorization flag required for background continuation");
+  const started = Date.now();
+  const lockPath = "tmp/ma11-batch-watcher.json";
+  const lock = await open(lockPath, "wx");
+  try {
+    await lock.writeFile(JSON.stringify({ pid: process.pid, startedAt: new Date(started).toISOString(),
+      database: replayState.database, manifestHash: replayState.manifestHash }));
+    // Batch completion can take up to 24 hours. Stop after 48 hours instead of
+    // leaving an unbounded verifier process or submitting beyond the eight cases.
+    while (Date.now() - started < 48 * 60 * 60 * 1000) {
+      await poll();
+      const report = JSON.parse(await readFile(reportFile, "utf8")) as { cases: Array<{ status: string }> };
+      if (report.cases.length === 8 && report.cases.every(item => ["completed", "partial", "failed", "cancelled"].includes(item.status))) {
+        console.log(JSON.stringify({ watch: "all-terminal", elapsedMs: Date.now() - started }));
+        return;
+      }
+      await delay(Math.min(120_000, Math.max(0, 48 * 60 * 60 * 1000 - (Date.now() - started))));
+    }
+    console.log(JSON.stringify({ watch: "48-hour-limit", elapsedMs: Date.now() - started }));
+  } finally {
+    await lock.close();
+    await unlink(lockPath);
+  }
+}
+
 async function report(state: BatchState) {
   const cases = [];
   const remoteIds: string[] = [];
@@ -203,7 +230,8 @@ async function report(state: BatchState) {
 
 try {
   if (process.argv.includes("--start")) await start();
+  else if (process.argv.includes("--watch")) await watch();
   else if (process.argv.includes("--poll")) await poll();
   else if (process.argv.includes("--reconcile")) await reconcileAdmission();
-  else throw new Error("Specify --start, --poll or --reconcile");
+  else throw new Error("Specify --start, --watch, --poll or --reconcile");
 } finally { await getPool().end(); }
