@@ -18,10 +18,23 @@ import { generateDevelopmentStrategyPlanWithKimi, generateDevelopmentStrategyWit
 import {readSavedCompanyAssessment,listCompanyCorrespondence} from "@/lib/sales/company-detail-read";
 import {readTaskUsage} from "../task-usage";
 import {createFollowUpDraft,listSavedFollowUps} from "@/lib/outreach/follow-up-service";
+import { queueAgentLeadWorkflow } from "@/lib/leads/workflow/agent-launch";
+import { ALL_CHANNEL_ROLES } from "@/lib/leads/workflow/types";
 
 const companyId = z.string().min(1).max(180), country = z.string().regex(/^[A-Z]{2}$/);
 const developmentInput = z.object({ companyExternalId: companyId, language: z.string().max(20).optional(), instructions: z.string().max(2000).optional() }).strict();
 export const businessTools = [
+  defineTool({ id: "lead_workflow", description: "Queue the existing complete sales-lead workflow as an optional account task. Requires exact approval of the market, role, count and public search scope. Returns the saved action/job receipt and current state; queued is not completed. Never launches a second job for the same Agent call.",
+    input: z.object({ countryCode: country, countryName: z.string().min(2).max(120), objective: z.enum(["new-market", "existing-distributor-growth"]),
+      roles: z.array(z.enum(ALL_CHANNEL_ROLES)).min(1).max(10), targetCount: z.number().int().min(1).max(100), queryLanguage: z.string().min(2).max(80), userRequest: z.string().min(2).max(4000),
+      opportunityTargets: z.array(z.literal("OEM/ODM")).max(1).optional(), coverageMode: z.enum(["auto", "local", "national", "mixed"]).optional(), verifiedOnly: z.boolean().optional() }).strict(),
+    effect: "publish", recovery: "composite", cost: "unknown", connections: ["lead-workflow-worker", "configured-search-providers"],
+    execute: async (plan, context) => {
+      if (!context.callId) return result(null, { status: "unavailable", missing: ["Persisted Agent call ID"] });
+      const launch = await queueAgentLeadWorkflow(context.userId, context.runId, context.callId, plan);
+      if (!launch?.jobId) return result(launch, { status: "unavailable", missing: ["Owned Agent call and successfully queued existing lead workflow"] });
+      return result(launch, { artifacts: [{ id: launch.actionId, title: "销售线索工作流", url: `/tasks/${launch.actionId}?kind=search` }], receipt: launch.jobId, cost: "unknown" });
+    } }),
   defineTool({id:"company_assessment_read",description:"Read the latest saved formal assessment and its scoring policy version for one owned company. Does not score, alter qualification or treat research as formal evidence.",
     input:z.object({companyExternalId:companyId}).strict(),execute:async(i,c)=>{
       const assessment=await readSavedCompanyAssessment(c.userId,i.companyExternalId);

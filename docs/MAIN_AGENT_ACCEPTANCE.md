@@ -1,5 +1,9 @@
 # Main Agent acceptance log
 
+## MA11 optional existing lead workflow entry and coverage inventory - 2026-09-21 (partial)
+
+The executable registry adds `lead_workflow` as tool 75. An exact plan approval precedes queueing; the adapter binds one legacy action to the persisted Agent call ID and reuses its existing worker/Graph job on re-entry. It returns the actual action/job IDs and queue state, never a fabricated completed lead list. The existing page path remains available. Migration 098 adds the unique call binding; a read-only schema check passed. Three focused unit checks passed for unchanged-call reuse, account/call refusal and changed-plan refusal. The generated catalog validates 75 schemas. [Coverage matrix](MAIN_AGENT_CAPABILITY_COVERAGE_MA11.md) identifies nine remaining page-only action groups and four missing/later capability groups. No real lead job was queued, no provider call occurred and no model selected this new tool during this check. Isolated Graph/worker replay and 38/40 locked acceptance remain open.
+
 ## MA11 conversation entry and durable progress - 2026-09-21 (partial)
 
 The root now opens a new conversation; an owned `/c/[id]` opens its saved messages and run state. The one application sidebar holds history, new conversation and existing feature navigation. Agent Skill/memory/schedule management is a separate settings view. The chat reads saved run events from cursor zero after refresh and advances the cursor through pages; it shows tool status, missing items, sources, artifacts and execution receipts without presenting a provider acknowledgement as an answer. The latest Batch state and elapsed time come from the saved account run. The palette is MA11's specified light palette. Exact approval cards still display final mail recipients/body/attachments.

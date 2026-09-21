@@ -1,9 +1,10 @@
 # Registered main Agent tools
 
-Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/generate-main-agent-catalog.ts --check` to detect drift. These 74 tools are implemented adapters; registration is not real-provider acceptance. The complete migration inventory remains in [MAIN_AGENT_CAPABILITIES.md](MAIN_AGENT_CAPABILITIES.md).
+Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/generate-main-agent-catalog.ts --check` to detect drift. These 75 tools are implemented adapters; registration is not real-provider acceptance. The complete migration inventory remains in [MAIN_AGENT_CAPABILITIES.md](MAIN_AGENT_CAPABILITIES.md).
 
 | Tool | Version | Role | Effect | Cost | Purpose |
 |---|---|---|---|---|---|
+| lead_workflow | 1 | member | publish | unknown | Queue the existing complete sales-lead workflow as an optional account task. Requires exact approval of the market, role, count and public search scope. Returns the saved action/job receipt and current state; queued is not completed. Never launches a second job for the same Agent call. |
 | company_assessment_read | 1 | member | read | known | Read the latest saved formal assessment and its scoring policy version for one owned company. Does not score, alter qualification or treat research as formal evidence. |
 | company_correspondence_list | 1 | member | read | known | List linked inbound/outbound message metadata for one owned company. Read a specific account message separately for its body; links come from saved domain match or user confirmation. |
 | relationship_list | 1 | member | read | known | Read saved company relationships for an account market. |

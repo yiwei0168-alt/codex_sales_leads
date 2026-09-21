@@ -1,5 +1,7 @@
 # Main Agent capability migration inventory
 
+MA11 update (2026-09-21): the registered catalog now has 75 tools, including an exact-approved `lead_workflow` adapter that queues the existing complete lead search in its worker/Graph path and returns a saved action/job ID. This is a queue receipt, not a completed search or model-selection success. The per-tool callable/page-only/missing matrix is [here](MAIN_AGENT_CAPABILITY_COVERAGE_MA11.md); the original 74-tool baseline and earlier migration notes below remain historical.
+
 Baseline: `a65bc74` on `delivery/deep-intelligence-ui`, equal to local origin/main. Existing untracked experiment artifacts are excluded. Inventory covers all 53 API routes; assignment does not claim callable implementation.
 
 | Domain | Existing services | Migration / implicit dependency | External side effect |
