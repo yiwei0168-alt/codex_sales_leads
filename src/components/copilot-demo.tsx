@@ -13,6 +13,8 @@ import { stageLabel } from "@/lib/sales/opportunity-stages";
 import { evidenceFreshness } from "@/lib/sales/evidence-freshness";
 import { marketCode, marketHref, marketLabel } from "@/lib/sales/market-navigation";
 import { AssistantHome } from "@/components/assistant-home";
+import { ConversationHistory } from "@/components/conversation-history";
+import { AgentLibrary } from "@/components/agent-library";
 import { KnowledgeBase } from "@/components/knowledge-base";
 import { TaskCenter } from "@/components/task-center";
 import { MailboxIntegration } from "@/components/mailbox-integration";
@@ -29,7 +31,7 @@ import type {
 } from "@/lib/sales/types";
 import type { DevelopmentStrategyDto } from "@/lib/outreach/types";
 
-type View = "home" | "overview" | "results" | "map" | "opportunities" | "assistant" | "tasks" | "knowledge" | "mailbox";
+type View = "home" | "overview" | "results" | "map" | "opportunities" | "assistant" | "tasks" | "knowledge" | "mailbox" | "settings";
 type Mode = "new-market" | "growth";
 type SearchState = "idle" | "retrieving" | "complete";
 
@@ -50,6 +52,7 @@ const icons: Record<string, React.ReactNode> = {
   tasks: <><path d="M5 4h14v16H5zM8 8h8M8 12h5M8 16h3"/><path d="m15 16 1.5 1.5L20 14"/></>,
   knowledge: <><path d="M4 5c3-1.4 5.7-1.2 8 .6V20c-2.3-1.8-5-2-8-.6V5Zm16 0c-3-1.4-5.7-1.2-8 .6V20c2.3-1.8 5-2 8-.6V5Z"/><path d="M8 9h1m-1 3h1m6-3h1m-1 3h1"/></>,
   mailbox: <><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></>,
+  settings: <><circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3M5 5l2 2m10 10 2 2M19 5l-2 2M7 17l-2 2"/></>,
   spark: <><path d="m12 2 1.6 5.4L19 9l-5.4 1.6L12 16l-1.6-5.4L5 9l5.4-1.6L12 2Zm7 13 .8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8L19 15Z"/></>,
   external: <><path d="M14 4h6v6m0-6-9 9M18 13v7H4V6h7" /></>,
   check: <><path d="m5 12 4 4L19 6" /></>,
@@ -77,14 +80,29 @@ function StatusTag({ children, tone = "neutral" }: { children: React.ReactNode; 
 }
 
 
-export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", initialCountry = "all", initialView = "home" }: { initialWorkspace?: MarketWorkspaceDto; userName?: string; initialCountry?: string; initialView?: View }) {
+export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", initialCountry = "all", initialView = "home", initialConversationId }: { initialWorkspace?: MarketWorkspaceDto; userName?: string; initialCountry?: string; initialView?: View; initialConversationId?: string }) {
   const router = useRouter();
   const [view, setViewState] = useState<View>(initialView);
+  const [conversationId, setConversationId] = useState(initialConversationId);
+  const [historyVersion, setHistoryVersion] = useState(0);
+  const [newConversationVersion, setNewConversationVersion] = useState(0);
+  useEffect(() => {
+    if (initialConversationId) sessionStorage.setItem("lastConversationId", initialConversationId);
+  }, [initialConversationId]);
   const country = marketCode(initialCountry);
   function setView(next: View) {
     if (next === "results" || next === "map" || next === "opportunities") {
       router.push(marketHref(country, next === "results" ? "leads" : next === "map" ? "channel-map" : "opportunities"));
+    } else if (next === "home" && initialView !== "home") {
+      const lastId = conversationId ?? sessionStorage.getItem("lastConversationId");
+      router.push(lastId ? `/c/${lastId}` : "/");
     } else setViewState(next);
+  }
+  function openConversation(id: string) {
+    setConversationId(id); setMobileNavOpen(false); setViewState("home"); router.push(`/c/${id}`);
+  }
+  function openNewConversation() {
+    setConversationId(undefined); setNewConversationVersion(value => value + 1); setMobileNavOpen(false); setViewState("home"); router.push("/");
   }
   const [mode, setMode] = useState<Mode>(initialWorkspace?.mode ?? "new-market");
   const [companies, setCompanies] = useState<CompanyRecord[]>(initialWorkspace?.companies ?? []);
@@ -296,7 +314,7 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
   }
 
   const navItems: Array<{ id: View; label: string; meta?: string }> = [
-    { id: "home", label: "AI 销售助理" },
+    { id: "home", label: "对话" },
     { id: "overview", label: "全球市场概览" },
     { id: "results", label: "销售线索", meta: String(filteredCompanies.length) },
     { id: "map", label: "渠道关系图" },
@@ -305,6 +323,7 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
     { id: "tasks", label: "任务进程" },
     { id: "knowledge", label: "知识库 & RAG" },
     { id: "mailbox", label: "邮箱学习" },
+    { id: "settings", label: "Agent 设置" },
   ];
 
   return (
@@ -323,6 +342,7 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
         <button className="mobile-nav-close" aria-label="关闭导航菜单" onClick={() => setMobileNavOpen(false)}><Icon name="close" size={20}/></button>
         <div className="workspace-switcher"><span className="market-flag">◎</span><div><strong>Global · All markets</strong><small>AI sales workspace</small></div><Icon name="chevron" size={14} /></div>
         <nav aria-label="主导航">
+          <button className="nav-new-conversation" onClick={openNewConversation}><Icon name="plus" />新对话</button>
           <p className="nav-label">Workspace</p>
           {navItems.map((item) => (
             <button key={item.id} aria-label={item.label} aria-current={view === item.id ? "page" : undefined} title={item.label} className={`nav-item ${view === item.id ? "active" : ""}`} onClick={() => { setView(item.id); setMobileNavOpen(false); }}>
@@ -330,6 +350,7 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
             </button>
           ))}
         </nav>
+        <ConversationHistory activeId={conversationId} refreshKey={historyVersion} onSelect={openConversation} onNew={openNewConversation}/>
         <div className="sidebar-spacer" />
         <div className="snapshot-card">
           <div className="snapshot-title"><span className="live-dot" /> Global intelligence</div>
@@ -366,7 +387,7 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
           {searchState === "complete" && <div className="inline-notice success"><Icon name="check"/><span>当前工作区包含 {companies.length} 个已存储候选、{sourceCount} 条证据；请在公司详情查看各自的评分版本与核实状态。</span><button onClick={() => setSearchState("idle")} aria-label="关闭"><Icon name="close" size={15}/></button></div>}
 
           {(view === "results" || view === "map") && <div className="results-toolbar"><label className="select-field">国家<select aria-label="选择国家" value={country} onChange={(event) => router.push(marketHref(event.target.value, view === "map" ? "channel-map" : "leads"))}><option value="all">{view === "map" ? "请选择国家" : "全部国家"}</option>{countries.sort().map((code) => <option key={code} value={code}>{marketLabel(code)} · {companies.filter((company) => marketCode(company.country) === code).length}</option>)}</select></label></div>}
-          {view === "home" && <AssistantHome userName={userName} onOpenResults={(code) => router.push(marketHref(code, "leads"))} onOpenCompany={(id,kind)=>{selectCompany(id,kind==="library");if(kind!=="library")setView("assistant");}} />}
+          {view === "home" && <AssistantHome key={`${initialConversationId ?? "new"}:${newConversationVersion}`} initialConversationId={initialConversationId} userName={userName} onConversationChange={id=>{setConversationId(id);setHistoryVersion(value=>value+1);if(id){sessionStorage.setItem("lastConversationId",id);router.replace(`/c/${id}`);}}} onOpenResults={(code) => router.push(marketHref(code, "leads"))} onOpenCompany={(id,kind)=>{selectCompany(id,kind==="library");if(kind!=="library")setView("assistant");}} />}
           {view === "opportunities" && <label>国家<select value={country} onChange={event=>router.push(marketHref(event.target.value,"opportunities"))}><option value="all">全部国家</option>{countries.sort().map(code=><option key={code} value={code}>{marketLabel(code)}</option>)}</select></label>}
           {view === "overview" && <GlobalMarketOverview companies={companies} />}
           {view === "results" && <LeadFilters companies={filteredCompanies} onUpdate={updateCompany}>{items=><Results companies={items} query={query} setQuery={setQuery} roleFilter={roleFilter} setRoleFilter={setRoleFilter} tierFilter={tierFilter} setTierFilter={setTierFilter} onSelect={selectCompany} onToggle={(company) => updateCompany(company.id, { opportunityStage: company.opportunityStage === "Discovered" ? "Qualified" : "Discovered" })} />}</LeadFilters>}
@@ -377,6 +398,7 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
           {view === "tasks" && <TaskCenter />}
           {view === "knowledge" && <KnowledgeBase />}
           {view === "mailbox" && <MailboxIntegration />}
+          {view === "settings" && <AgentLibrary />}
         </div>
       </main>
 

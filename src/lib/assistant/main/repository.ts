@@ -41,6 +41,8 @@ export async function getRun(userId: string, id: string): Promise<AgentRun | nul
 export async function listRuns(userId: string, conversationId?: string) {
   return tenantQuery<Pick<AgentRun, "id" | "status" | "conversation_id" | "result">>(userId,
     `select r.id,r.status,r.conversation_id,r.result,
+      (select jsonb_build_object('status',b.status,'providerStatus',b.provider_status,'submittedAt',b.submitted_at,'pollCount',b.poll_count)
+        from agent_model_batch b where b.user_id=r.user_id and b.run_id=r.id order by b.submitted_at desc limit 1) as batch,
       coalesce((select jsonb_agg(jsonb_build_object('id',a.id,'tool_id',a.tool_id,'parameter_hash',a.parameter_hash,'payload',a.payload,'status',a.status))
         from agent_approval a where a.user_id=r.user_id and a.run_id=r.id and a.status in('pending','approved') and a.expires_at>now()),'[]') as approvals,
       coalesce((select jsonb_agg(jsonb_build_object('id',m.id,'key',m.memory_key,'version',m.current_version))

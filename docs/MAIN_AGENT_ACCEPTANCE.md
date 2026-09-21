@@ -1,5 +1,11 @@
 # Main Agent acceptance log
 
+## MA11 conversation entry and durable progress - 2026-09-21 (partial)
+
+The root now opens a new conversation; an owned `/c/[id]` opens its saved messages and run state. The one application sidebar holds history, new conversation and existing feature navigation. Agent Skill/memory/schedule management is a separate settings view. The chat reads saved run events from cursor zero after refresh and advances the cursor through pages; it shows tool status, missing items, sources, artifacts and execution receipts without presenting a provider acknowledgement as an answer. The latest Batch state and elapsed time come from the saved account run. The palette is MA11's specified light palette. Exact approval cards still display final mail recipients/body/attachments.
+
+Verification: 253 test files / 1,279 assertions, TypeScript, scoped lint, production build, 74 generated tool schemas and 138 isolated PostgreSQL assertions passed. A production-build synthetic browser fixture passed on 1366px desktop and 390px mobile for new conversation, settings, history deep link, exact approval, refresh, event recovery, detail-to-chat navigation, market deep link return, closeable mobile navigation and no horizontal overflow. It created one isolated account/run and three exact approval records, then cleaned them. Model/search/SMTP calls and customer-data changes were zero. This verifies the UI and persisted-event boundary, not the 120-case replay, eight real GLM Batch tasks, business answer quality or the 38/40 MA11 gate.
+
 ## P5 historical manual memory save - 2026-09-21 (partial)
 
 The 74th tool exposes the existing manual-memory save path under central exact approval. Four new real PostgreSQL fixture assertions passed (138 total): another account cannot edit, stale revision is rejected, an unchanged-body metadata edit succeeds and the updated title is visible. This used the existing vector without a provider call. Contract tests reject missing edit revision and forged identity. Full regression passed 252 files / 1,277 assertions; typecheck, scoped lint, production build and 74 catalog schemas passed. The synthetic memory was deleted after verification; no customer memory, model/search call or SMTP send was involved. Provider-backed changed-content save and full P5/P6 acceptance remain open.

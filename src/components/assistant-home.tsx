@@ -3,11 +3,10 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { AgentRuns } from "./agent-runs";
 import {AgentAttachments} from "./agent-attachments";
-import { AgentLibrary } from "./agent-library";
 import { TaskDetailView } from "./task-detail-view";
 import {BudgetProposalCard} from "./budget-proposal";
 import type {
-  AssistantActionDto, AssistantConversationDto, AssistantConversationSummary, AssistantMessageDto,
+  AssistantActionDto, AssistantConversationDto, AssistantMessageDto,
 } from "@/lib/assistant/types";
 import {searchTaskStatusLabel,taskCounts} from "@/lib/assistant/task-summary";
 
@@ -22,11 +21,9 @@ function actionForMessage(message: AssistantMessageDto, actions: AssistantAction
   return message.metadata.actionId ? actions.find((action) => action.id === message.metadata.actionId) : undefined;
 }
 
-export function AssistantHome({ userName, onOpenResults,onOpenCompany }: { userName: string; onOpenResults: (countryCode: string) => void;onOpenCompany:(id:string,kind:"library"|"strategy"|"follow-up")=>void }) {
+export function AssistantHome({ userName, initialConversationId, onConversationChange, onOpenResults,onOpenCompany }: { userName: string; initialConversationId?: string; onConversationChange: (id?: string) => void; onOpenResults: (countryCode: string) => void;onOpenCompany:(id:string,kind:"library"|"strategy"|"follow-up")=>void }) {
   const [taskId,setTaskId]=useState<string>();
-  const conversationRequest=useRef(0);
-  const [conversations, setConversations] = useState<AssistantConversationSummary[]>([]);
-  const [activeId, setActiveId] = useState<string>();
+  const [activeId, setActiveId] = useState<string | undefined>(initialConversationId);
   const [conversation, setConversation] = useState<AssistantConversationDto>();
   const [input, setInput] = useState("");
   const [attachments,setAttachments]=useState<string[]>([]);
@@ -42,48 +39,20 @@ export function AssistantHome({ userName, onOpenResults,onOpenCompany }: { userN
       }).catch(() => undefined);
   }, [activeId]);
 
-  async function loadList(preferredId?: string) {
-    const response = await fetch("/api/assistant/conversations", { cache: "no-store" });
-    const body = await response.json() as { conversations?: AssistantConversationSummary[]; error?: string };
-    if (!response.ok) throw new Error(body.error ?? "对话列表读取失败");
-    const list = body.conversations ?? [];
-    setConversations(list);
-    const nextId = preferredId ?? activeId ?? list[0]?.id;
-    if (nextId) await openConversation(nextId);
-  }
-
-  async function openConversation(id: string) {
-    const requestId=++conversationRequest.current;
-    setActiveId(id); setError("");
-    const response = await fetch(`/api/assistant/conversations/${id}`, { cache: "no-store" });
-    const body = await response.json() as { conversation?: AssistantConversationDto; error?: string };
-    if (!response.ok || !body.conversation) throw new Error(body.error ?? "对话读取失败");
-    if(requestId===conversationRequest.current)setConversation(body.conversation);
-  }
-
   useEffect(() => {
+    if (!initialConversationId) return;
     const controller = new AbortController();
-    void fetch("/api/assistant/conversations", { cache: "no-store", signal: controller.signal })
+    void fetch(`/api/assistant/conversations/${initialConversationId}`, { cache: "no-store", signal: controller.signal })
       .then(async (response) => {
-        const body = await response.json() as { conversations?: AssistantConversationSummary[]; error?: string };
-        if (!response.ok) throw new Error(body.error ?? "对话列表读取失败");
-        return body.conversations ?? [];
-      })
-      .then(async (list) => {
-        setConversations(list);
-        const firstId = list[0]?.id;
-        if (!firstId) return;
-        const response = await fetch(`/api/assistant/conversations/${firstId}`, { cache: "no-store", signal: controller.signal });
         const body = await response.json() as { conversation?: AssistantConversationDto; error?: string };
         if (!response.ok || !body.conversation) throw new Error(body.error ?? "对话读取失败");
-        setActiveId(firstId);
-        setConversation(body.conversation);
+        if (!controller.signal.aborted) setConversation(body.conversation);
       })
       .catch((reason: Error) => {
         if (reason.name !== "AbortError") setError(reason.message);
       });
     return () => controller.abort();
-  }, []);
+  }, [initialConversationId]);
   useEffect(() => { scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" }); }, [conversation?.messages.length]);
   const workflowActive = conversation?.actions.some((action) => action.status === "confirmed" || action.status === "running") ?? false;
   useEffect(() => {
@@ -116,35 +85,12 @@ export function AssistantHome({ userName, onOpenResults,onOpenCompany }: { userN
       if (!response.ok || !body.conversation) throw new Error(body.error ?? "消息处理失败");
       setConversation(body.conversation); setActiveId(body.conversation.id);
       setAttachments([]);
-      await loadList(body.conversation.id);
+      onConversationChange(body.conversation.id);
     } catch (reason) { setInput(message);setError(reason instanceof Error ? reason.message : "消息处理失败"); }
     finally { setBusy(false); }
   }
 
   async function submit(event: FormEvent) { event.preventDefault(); await send(input); }
-
-  async function newConversation() {
-    conversationRequest.current++;
-    setActiveId(undefined); setConversation(undefined); setInput(""); setAttachments([]);setError("");
-  }
-
-  async function renameConversation(item: AssistantConversationSummary) {
-    const title = window.prompt("重命名对话", item.title)?.trim();
-    if (!title || title === item.title) return;
-    const response = await fetch(`/api/assistant/conversations/${item.id}`, {
-      method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify({ title }),
-    });
-    if (!response.ok) { setError("重命名失败"); return; }
-    await loadList(item.id);
-  }
-
-  async function removeConversation(item: AssistantConversationSummary) {
-    if (!window.confirm(`删除对话“${item.title}”？相关待确认搜索计划也会删除。`)) return;
-    const response = await fetch(`/api/assistant/conversations/${item.id}`, { method: "DELETE" });
-    if (!response.ok) { setError("删除对话失败"); return; }
-    setActiveId(undefined); setConversation(undefined);
-    await loadList();
-  }
 
   async function confirmSearch(actionId: string) {
     const retrying = conversation?.actions.find((action) => action.id === actionId)?.status === "failed";
@@ -157,7 +103,7 @@ export function AssistantHome({ userName, onOpenResults,onOpenCompany }: { userN
       const body = await response.json() as { conversation?: AssistantConversationDto; error?: string };
       if (body.conversation) {
         setConversation(body.conversation);
-        await loadList(body.conversation.id);
+        onConversationChange(body.conversation.id);
       }
       if (!response.ok) throw new Error(body.error ?? "搜索执行失败");
     } catch (reason) { setError(reason instanceof Error ? reason.message : "搜索执行失败"); }
@@ -169,22 +115,9 @@ export function AssistantHome({ userName, onOpenResults,onOpenCompany }: { userN
   const greeting = useMemo(() => new Date().getHours() < 12 ? "早上好" : new Date().getHours() < 18 ? "下午好" : "晚上好", []);
 
   return <div className="ai-home-shell">
-    <aside className="ai-session-panel">
-      <div className="ai-session-head"><div><span>CONVERSATIONS</span><strong>对话记录</strong></div><button onClick={newConversation} aria-label="新建对话">＋</button></div>
-      <div className="ai-session-list">
-        {conversations.map((item) => <article key={item.id} className={activeId === item.id ? "active" : ""}>
-          <button className="ai-session-main" onClick={() => void openConversation(item.id)}><strong>{item.title}</strong><small>{item.messageCount} 条消息 · {item.updatedAt.slice(0, 10)}</small></button>
-          <div><button onClick={() => void renameConversation(item)} aria-label="重命名">✎</button><button onClick={() => void removeConversation(item)} aria-label="删除">×</button></div>
-        </article>)}
-        {conversations.length === 0 && <p>你的对话会安全地保存在当前账号下。</p>}
-      </div>
-      <div className="ai-privacy-note"><span>◉</span><p><strong>Private workspace</strong>知识检索和对话记录按用户隔离。</p></div>
-    </aside>
-
     <section className="ai-chat-panel">
-      <header><div className="ai-orb">✦</div><div><strong>Network Copilot</strong><span>知识问答 · 全球线索 · 销售策略</span></div><i>在线</i></header>
+      <header><div className="ai-orb">N</div><div><strong>销售工作台</strong><span>对话、证据与任务回执</span></div></header>
       <div className="ai-message-stream" ref={scrollRef}>
-        <AgentLibrary />
         {activeId && <AgentRuns conversationId={activeId} onUpdated={refreshAgentConversation} />}
         {messages.length === 0 && <div className="ai-welcome">
           <span className="ai-welcome-icon">✦</span><p>{greeting}，{userName}</p><h1>今天想推进哪个市场？</h1>
@@ -216,7 +149,7 @@ export function AssistantHome({ userName, onOpenResults,onOpenCompany }: { userN
             </div>
           </article>;
         })}
-        {busy && <article className="ai-message assistant"><div className="ai-message-avatar">✦</div><div className="ai-thinking"><i/><i/><i/></div></article>}
+        {busy && <p className="ai-submit-state" role="status">正在保存任务…</p>}
       </div>
       {error && <div className="ai-chat-error">{error}</div>}
       <form className="ai-composer" onSubmit={submit}><AgentAttachments selected={attachments} onChange={setAttachments}/><textarea value={input} onChange={(event) => setInput(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter" && !event.shiftKey) { event.preventDefault(); void send(input); } }} placeholder="询问产品、结合网页调研，或描述销售线索目标…" rows={1}/><div><span>支持多轮纠正 · 线索搜索执行前需确认</span><button disabled={busy || !input.trim()} aria-label="发送">↑</button></div></form>

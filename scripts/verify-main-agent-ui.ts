@@ -39,6 +39,9 @@ try {
     await page.goto(base);
     await page.getByLabel("登录邮箱").fill(email); await page.getByLabel("密码", { exact: true }).fill(password);
     await page.getByRole("button", { name: "登录", exact: true }).click();
+    await expect(page.getByRole("heading", { name: "今天想推进哪个市场？" })).toBeVisible();
+    if (viewport.width < 800) await page.getByRole("button", { name: "打开导航菜单" }).click();
+    await page.getByRole("button", { name: "Agent 设置" }).click();
     await expect(page.getByText("Skill、记忆与定时任务", { exact: true })).toBeVisible();
     await page.getByText("Skill、记忆与定时任务", { exact: true }).click();
     await page.getByLabel("方法名称").fill(`Fixture ${viewport.width}`);
@@ -62,16 +65,26 @@ try {
     await page.getByRole("button", { name: "创建周期任务", exact: true }).click();
     await expect(page.getByText(`Schedule ${viewport.width}`, { exact: true })).toBeVisible();
     await page.reload();
+    if (viewport.width < 800) await page.getByRole("button", { name: "打开导航菜单" }).click();
+    await page.getByRole("button", { name: "Agent 设置" }).click();
     await page.getByText("Skill、记忆与定时任务", { exact: true }).click();
     await expect(page.getByText(`Fixture ${viewport.width}`, { exact: true })).toBeVisible();
     await expect(page.getByText(`Schedule ${viewport.width}`, { exact: true })).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
     await page.screenshot({ path: `tmp/main-agent-library-${viewport.width}.png`, fullPage: true });
     await page.getByText("Skill、记忆与定时任务", { exact: true }).click();
-    // Opening persisted conversation must show exact approval and current memory notices.
-    // The latest conversation is loaded automatically, including on mobile where
-    // the conversation sidebar is collapsed.
+    // The root is a new conversation. History lives in the one application sidebar.
+    if (viewport.width < 800) await page.getByRole("button", { name: "打开导航菜单" }).click();
+    await page.getByRole("region", { name: "对话历史" }).locator(".conversation-history-select").filter({ hasText: "Synthetic review task" }).click();
+    await expect(page).toHaveURL(new RegExp(`/c/${run.conversation_id}$`));
+    await page.reload();
+    if (viewport.width < 800) {
+      await page.getByRole("button", { name: "打开导航菜单" }).click();
+      await page.getByRole("dialog", { name: "主导航菜单" }).getByRole("button", { name: "关闭导航菜单" }).click();
+      await expect(page.locator("#primary-navigation")).not.toHaveClass(/mobile-open/);
+    }
     await expect(page.getByText("确认操作 · plan_confirmation", { exact: true })).toBeVisible();
+    await expect(page.getByText(/执行记录 · \d+ 条已保存事件/)).toBeVisible();
     if (viewport.width === 1366) {
       await page.getByRole("button", { name: "撤销", exact: true }).last().click();
       await expect(page.getByText("已记住偏好：format", { exact: false })).toHaveCount(0);
@@ -82,6 +95,20 @@ try {
       expect((await pool.query("select status from agent_run where id=$1 and user_id=$2",[run.id,userId])).rows[0].status).toBe("paused");
     }
     await page.screenshot({ path: `tmp/main-agent-runs-${viewport.width}.png`, fullPage: true });
+    if (viewport.width < 800) await expect(page.locator("#primary-navigation")).not.toHaveClass(/mobile-open/);
+    if (viewport.width < 800) await page.getByRole("button", { name: "打开导航菜单" }).click();
+    await page.getByRole("button", { name: "知识库 & RAG" }).click();
+    await expect(page.getByRole("heading", { name: "知识库 & RAG" })).toBeVisible();
+    if (viewport.width < 800) await page.getByRole("button", { name: "打开导航菜单" }).click();
+    await page.getByRole("button", { name: "对话", exact: true }).click();
+    await expect(page.getByText("确认操作 · plan_confirmation", { exact: true })).toBeVisible();
+    if (viewport.width < 800) await page.getByRole("button", { name: "打开导航菜单" }).click();
+    await page.getByRole("button", { name: "销售线索" }).click();
+    await expect(page).toHaveURL(/\/markets\/all\/leads$/);
+    if (viewport.width < 800) await page.getByRole("button", { name: "打开导航菜单" }).click();
+    await page.getByRole("button", { name: "对话", exact: true }).click();
+    await expect(page).toHaveURL(new RegExp(`/c/${run.conversation_id}$`));
+    await expect(page.getByText("确认操作 · plan_confirmation", { exact: true })).toBeVisible();
     checks.push(`${viewport.width}:authenticated-import-source-form-schedule-refresh-exact-batch-approval-no-overflow`);
     await browserContext.close();
   }

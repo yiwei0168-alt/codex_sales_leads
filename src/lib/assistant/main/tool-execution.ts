@@ -41,6 +41,6 @@ export async function executeRegisteredTool(tool: ProductTool, input: unknown, c
     latencyMs: Date.now() - started, retries: 0, discardedReasonCounts: valid ? {} : { [output.status]: 1 },
     utilizationEfficiency: null, usageBoundary: "persisted-tool-output-not-yet-consumed", optimizationOpportunity: "Reuse stored evidence and call outputs before invoking providers again",
   });
-  await event(context, "tool_result", { tool: tool.id, callId: saved.id, status: output.status, sources: output.sources, artifacts: output.artifacts });
+  await event(context, "tool_result", { tool: tool.id, callId: saved.id, status: output.status, sources: output.sources, artifacts: output.artifacts, missing: output.missing, receipt: output.receipt });
   return output;
 }
