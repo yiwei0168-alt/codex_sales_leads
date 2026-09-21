@@ -1,5 +1,9 @@
 # PRD v0.3 Acceptance Report
 
+> **MA14, 2026-09-21:** 当前 MA11 剩余产品流程以本地隔离数据和受控替身模拟验收；暂不设置工作账户真实评分、联系人核验、发信或新知识发布的业务结果门槛。模拟验收须核对权限、版本/哈希、持久化、回执与重复执行，不把合成结果写成真实模型或外发质量。[确认规则](CONFIRMED_PRODUCT_RULES.md)；[执行证据](MAIN_AGENT_ACCEPTANCE.md)。
+
+> MA14 模拟验收结果：原有 80/80 开发任务、40/40 锁定任务及四项关键边界通过；本地克隆再通过正式评分、联系人发布、独立邮件跟进、共享二进制登记与既有知识发布复用检查。二进制向量及跟进文本使用本地替身，所有夹具已清理；真实模型答案、SMTP 与新 release 激活不计入本阶段门槛。[明细](MAIN_AGENT_ACCEPTANCE.md)。
+
 > 2026-09-21 MA11/P2 continuation: the 96-tool Agent registry now includes administrator release preflight and exact-approved atomic activation for an already built shared RAG v3 release. Six focused tests and type checks passed; the configured local source gate reads an existing active 281-asset release with no document blockers. No new release was built or activated. New binary assets still require the existing build, dual-embedding and review workflow. [Evidence](MAIN_AGENT_ACCEPTANCE.md).
 
 > 2026-09-21 MA11/P2 partial continuation: an exact-approved tool can now publish an eligible independently reviewed research score into the formal versioned assessment and company market state. The isolated real PostgreSQL fixture passed publication, replay, owner isolation and stale-revision checks; no live scoring model was called. [Evidence](MAIN_AGENT_ACCEPTANCE.md).

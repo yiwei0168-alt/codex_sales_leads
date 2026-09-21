@@ -5,6 +5,18 @@ import { businessTools } from "./business-tools";
 const byId = new Map(businessTools.map(tool => [tool.id, tool]));
 
 describe("existing page workflow tool contracts", () => {
+  it("keeps locally simulated publication flows behind exact approval inputs", () => {
+    for (const id of ["company_score_publish","contacts_verify_evaluate","contacts_verify_publish","knowledge_shared_binary_register","knowledge_shared_release_activate"]) {
+      expect(byId.get(id)?.effect).toBe("publish");
+    }
+    for (const id of ["knowledge_shared_binary_register","knowledge_shared_release_gate","knowledge_shared_release_activate"]) {
+      expect(byId.get(id)?.role).toBe("admin");
+    }
+    expect(byId.get("knowledge_shared_release_activate")!.input.safeParse({releaseKey:"fixture",releaseId:"00000000-0000-4000-8000-000000000001",expectedManifestHash:"a".repeat(64)}).success).toBe(true);
+    expect(byId.get("knowledge_shared_release_activate")!.input.safeParse({releaseKey:"fixture",releaseId:"00000000-0000-4000-8000-000000000001"}).success).toBe(false);
+    expect(byId.get("contacts_verify_publish")!.input.safeParse({decisionId:"00000000-0000-4000-8000-000000000001",email:"fixture@example.com",category:"Official",activeStatus:"Verified",expectedCurrentDecisionId:null}).success).toBe(false);
+    expect(byId.get("follow_up_generate")?.effect).toBe("reversible");
+  });
   it("registers new shared-service adapters with the required approval classes", () => {
     expect(byId.get("workspace_mode_update")?.effect).toBe("reversible");
     expect(byId.get("development_feedback_generate")?.effect).toBe("reversible");
