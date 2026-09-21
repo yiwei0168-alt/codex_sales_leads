@@ -6,9 +6,11 @@ Development stages now spend engineering and model effort on completing product 
 
 ## MA11 current milestone (confirmed 2026-09-21)
 
+Current MA12 checkpoint: all eight authorized GLM Batch tasks completed with saved final replies. The read paths and answer review are reported separately from the 80/40 isolated replay in [acceptance](MAIN_AGENT_ACCEPTANCE.md). Six answers were clear at the requested record/state level; two reproduced more private text than needed. These outcomes do not complete the remaining workflow adapters or authorize broad release.
+
 The current deliverable is a verifiable main-Agent architecture using existing product business workflows. New MCP, network-browser and private-Git connections are later work. Preserve existing detailed pages, formal scoring, RAG v3 and account ACL. The chat becomes the single `/` entry with owned `/c/[id]` deep links, one navigation sidebar, durable event-cursor progress and exact final-action approvals. GLM Batch waiting shows queue/execution and elapsed time. The palette and acceptance values are recorded exactly in [MA11](CONFIRMED_PRODUCT_RULES.md).
 
-Coverage continuation: the registry now exposes 88 tools. The latest shared-service adapters cover workspace mode, feedback regeneration, mailbox screening/learning/lifecycle, mailbox connection shutdown/deletion, stale-operation reconciliation, administrator Gold review, approved mailbox knowledge and exact-approved shared-text knowledge publication. Credentials never enter tool inputs, and publish/destructive effects retain central approval. [The capability matrix](MAIN_AGENT_CAPABILITY_COVERAGE_MA11.md) lists the smaller remaining current-scope gaps and separates later MCP/browser/private-Git work.
+Coverage continuation: the registry now exposes 89 tools. The latest shared-service adapters cover workspace mode, feedback regeneration, mailbox screening/learning/lifecycle, mailbox connection shutdown/deletion, stale-operation reconciliation, administrator Gold review, approved mailbox knowledge, exact-approved shared-text knowledge publication and persisted contact-enrichment status. Credentials never enter tool inputs, and publish/destructive effects retain central approval. [The capability matrix](MAIN_AGENT_CAPABILITY_COVERAGE_MA11.md) lists the remaining current-scope gaps and separates later MCP/browser/private-Git work.
 
 Stage evidence is separate: confirmation here is neither a tool implementation nor a passing replay. The 120 isolated data-copy replays exercise Graph, worker, tools and persistence; controlled external-send substitutes cannot count as real model planning. Eight configured GLM Batch tasks are reported separately. Locked architecture/workflow acceptance requires at least 38/40 plus every specified critical boundary. The entry remains configuration controlled and passing this milestone does not imply full release. The original MA09 gate stays in version history.
 
@@ -36,7 +38,11 @@ An authenticated account can queue a **private** PDF/PPTX/XLSX extraction job wi
 
 ## P2 independent follow-up drafts - 2026-09-21 (partial)
 
-The existing follow-up page and new `follow_up_list`/`follow_up_generate` tools use a common service. An owned sent parent message supplies bounded thread, inbound and style context; generation records an encrypted draft and usage receipt, without sending. The tool can be chosen without rerunning a development strategy. The current context service still requires a company-linked parent; unassociated mail returns a concrete missing-context result and needs a separate extension. [Verification](MAIN_AGENT_ACCEPTANCE.md).
+The existing follow-up page and new `follow_up_list`/`follow_up_generate` tools use a common service. An owned sent parent message supplies bounded thread, inbound and style context; generation records an encrypted account-owned UUID draft, without sending. The tool can be chosen without rerunning a development strategy. An unassociated parent is supported with nullable-safe ancestor checks and bounded account inbound messages filtered by exact addresses after decryption. Migration 099 must be applied before deployment; live generation and SMTP remain unverified. [Verification](MAIN_AGENT_ACCEPTANCE.md).
+
+## P2 contact enrichment status - 2026-09-21 (partial)
+
+`contacts_enrichment_latest` and the existing page route now read one account-scoped service for the latest persisted run, per-company phase/errors and workspace coverage. The tool never starts a provider call. Unit/schema/type checks passed; live-run and database-isolation checks remain open. [Verification](MAIN_AGENT_ACCEPTANCE.md).
 
 ## P2 mailbox candidate review - 2026-09-21 (partial)
 

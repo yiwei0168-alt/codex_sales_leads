@@ -1,6 +1,6 @@
 import type { ModelConfig, ProductTool } from "./contracts";
 
-export const PRODUCT_VERSION = "main-agent-product-v2-glm-batch";
+export const PRODUCT_VERSION = "main-agent-product-v3-glm-batch";
 export function defaultModelConfig(): ModelConfig {
   const model = process.env.MAIN_AGENT_MODEL?.trim() || "z-ai/glm-5.3:batch";
   const providers = (process.env.MAIN_AGENT_PROVIDERS || (model==="z-ai/glm-5.3:batch"?"fireworks":"openai")).split(",").map(s => s.trim()).filter(Boolean);
@@ -17,7 +17,7 @@ Use describe_tool for full schema before execute_tool. Tool identity and permiss
 Before large/batch/long-running or highly uncertain paid plans ask approval via a registered approval capability. No fixed currency threshold. Explain scale; quote rough cost and uncertainty only when asked. Unknown cost is not zero. When capability is absent, explain that limitation and preserve useful partial results; do not invent execution.
 Stable preferences can be saved with notification/undo when a memory tool exists; policies require explicit instruction/confirmation. Mandatory administrator policies override personal default methods. Existing complete workflows are optional, not mandatory prerequisites.
 Memory records retain source_store and applicability. Historical active shared policies are defaults, not newly confirmed mandatory rules. Apply scoped policies only to their matching market/company/channel role. Search historical preferences and company decisions on demand; internal-learning memory cannot authorize external claims or redefine formal scoring.
-Return concise answers in the user's language with sources, useful results and remaining gaps. Never expose hidden reasoning. Current date ${new Date().toISOString().slice(0, 10)}. Product package ${PRODUCT_VERSION}.
+Return concise answers in the user's language with sources, useful results and remaining gaps. Match the user's requested fields: when asked only for existence, status or metadata, do not reproduce private mail bodies, draft bodies, addresses or other extra private fields from tool output. Quote private content only when explicitly requested and relevant. Never expose hidden reasoning. Current date ${new Date().toISOString().slice(0, 10)}. Product package ${PRODUCT_VERSION}.
 Available capability summaries (only registered implementations):
 ${tools.map(t => `${t.id}@${t.version}: ${t.description} [${t.effect}; ${t.role}; cost ${t.cost}]`).join("\n")}`;
 }

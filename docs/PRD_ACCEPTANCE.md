@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+> 2026-09-21 MA11/P2 partial continuation: the shared page/Agent service now reads the latest account contact-enrichment run, and account-encrypted UUID follow-up drafts support sent mail without a company link. The catalog has 89 tools. Unit/type checks passed; migration 099, live generation/send and final workflow acceptance remain open. [Evidence](MAIN_AGENT_ACCEPTANCE.md).
+
 > 2026-09-21 MA11/P2 partial: the main Agent catalog now has 88 tools after adding 13 existing-page workflow adapters for workspace, development feedback, mailbox review/lifecycle, task reconciliation, administrator Gold review and shared-text knowledge publication. Credentials remain page-only, and remaining shared-binary-knowledge, enrichment-status, formal-score, contact-verification and unassociated-follow-up gaps still block complete workflow coverage. [Evidence](MAIN_AGENT_ACCEPTANCE.md).
 
 > 2026-09-21 MA13: development now prioritizes complete product flows and result quality. Development cost/efficiency ledger updates and automatic expense reports stop from this point. Historical records and raw receipts needed for recovery/idempotency remain; cost analysis is produced only on explicit request. This is a confirmed priority change, not evidence that remaining P2/P5/P6 flows are complete.

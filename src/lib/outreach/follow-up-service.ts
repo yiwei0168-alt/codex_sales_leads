@@ -5,10 +5,10 @@ import {generateFollowUp} from "./kimi-agent";
 import {trackedOperation} from "@/lib/tracked-operation";
 
 export async function listSavedFollowUps(userId:string,parentId:string){
-  const rows=await tenantQuery<{id:string;created_at:string;changes:{draftCiphertext:string}}>(userId,`select e.id,e.created_at::text,e.changes from workspace_audit_event e
-    join outbound_mail m on m.id::text=e.entity_id and m.user_id=e.actor_user_id
-    where e.actor_user_id=$1 and m.id=$2 and e.action='follow-up.generated' order by e.created_at desc,e.id desc limit 10`,[userId,parentId]);
-  return rows.filter(row=>row.changes.draftCiphertext).map(row=>({id:row.id,createdAt:row.created_at,...decryptMailboxContent(userId,row.changes.draftCiphertext)}));
+  const rows=await tenantQuery<{id:string;created_at:string;draft_ciphertext:string}>(userId,`select d.id,d.created_at::text,d.draft_ciphertext from account_follow_up_draft d
+    join outbound_mail m on m.id=d.parent_id and m.user_id=d.user_id
+    where d.user_id=$1 and d.parent_id=$2 order by d.created_at desc,d.id desc limit 10`,[userId,parentId]);
+  return rows.map(row=>({id:row.id,createdAt:row.created_at,...decryptMailboxContent(userId,row.draft_ciphertext)}));
 }
 
 export async function createFollowUpDraft(userId:string,input:{parentId:string;instructions:string}){
@@ -21,9 +21,9 @@ export async function createFollowUpDraft(userId:string,input:{parentId:string;i
       inputTokens:value.metrics?.promptTokens??null,outputTokens:value.metrics?.completionTokens??null,
       usageBoundary:"draft-generated-not-yet-reviewed-or-sent; tokens-from-final-response-only",
       optimizationOpportunity:"Reuse prior drafts and bounded correspondence before generating another version"}));
-  const saved=await tenantQuery<{id:string}>(userId,`insert into workspace_audit_event(workspace_id,actor_user_id,entity_type,entity_id,action,changes)
-    values($1,$2,'outbound-mail',$3,'follow-up.generated',$4) returning id`,[context.workspaceId,userId,input.parentId,JSON.stringify({promptVersion:"follow-up-v2",model:generated.model,metrics:generated.metrics,threadMessages:thread.length,styleMemoryIds:stylePreferences.map(item=>item.id),threadTruncated,
-    draftCiphertext:encryptMailboxContent(userId,{subject:generated.draft.subject,bodyText:generated.draft.body,sender:original.sender,recipients:original.recipients}),
-    inputItems:1+thread.length+inbound.length+stylePreferences.length,inboundMessages:inbound.length,validOutputItems:1,downstreamUsedItems:0,usageState:"awaiting-user-review",optimizationOpportunity:"Reuse salutation without regenerating strategy; exclude duplicate parent from thread"})]);
+  const saved=await tenantQuery<{id:string}>(userId,`insert into account_follow_up_draft(user_id,parent_id,draft_ciphertext,metadata)
+    values($1,$2,$3,$4) returning id`,[userId,input.parentId,
+    encryptMailboxContent(userId,{subject:generated.draft.subject,bodyText:generated.draft.body,sender:original.sender,recipients:original.recipients}),
+    JSON.stringify({promptVersion:"follow-up-v2",model:generated.model,threadMessages:thread.length,styleMemoryIds:stylePreferences.map(item=>item.id),threadTruncated,inboundMessages:inbound.length})]);
   return {...generated,draftId:saved[0].id};
 }

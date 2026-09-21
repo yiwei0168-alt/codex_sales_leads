@@ -114,7 +114,7 @@ export async function sendOutbound(userId:string,input:SendInput) {
     const connection=await client.query<{email:string}>(`select email from mailbox_connection where id=$1 and user_id=$2 and status='active' and smtp_verified_at is not null`,[input.connectionId,userId]);
     if(!connection.rows[0])throw new Error("请先验证发信连接");
     let replyTo:string|undefined;
-    if(input.followUpDraftId){const draft=await client.query("select id from workspace_audit_event where id=$1 and actor_user_id=$2 and entity_id=$3 and action='follow-up.generated'",[input.followUpDraftId,userId,input.parentId??""]);if(!draft.rows[0])throw new Error("跟进草稿不属于当前原邮件");}
+    if(input.followUpDraftId){const draft=await client.query("select id from account_follow_up_draft where id=$1 and user_id=$2 and parent_id=$3",[input.followUpDraftId,userId,input.parentId??null]);if(!draft.rows[0])throw new Error("跟进草稿不属于当前原邮件");}
     if(input.parentId){const parent=await client.query<{message_id:string;content_ciphertext:string}>(`select message_id,content_ciphertext from outbound_mail
       where id=$1 and user_id=$2 and company_id is not distinct from $3::uuid and connection_id=$4 and status='sent' and market_country_code is not distinct from $5::text`,[input.parentId,userId,company.rows[0].id,input.connectionId,company.rows[0].country]);
       if(!parent.rows[0])throw new Error("原邮件不存在或不属于此公司与发件邮箱");
@@ -130,7 +130,7 @@ export async function sendOutbound(userId:string,input:SendInput) {
     if(!saved.rows[0]){const prior=await client.query<{id:string;status:string;request_hash:string}>("select id,status,request_hash from outbound_mail where user_id=$1 and (idempotency_key=$2 or request_hash=$3) order by (idempotency_key=$2) desc limit 1",[userId,input.idempotencyKey,hash]);
       if(prior.rows[0].request_hash!==hash)throw new Error("此发送操作内容已变化，请重新审核");
       return {id:prior.rows[0].id,status:prior.rows[0].status,reused:true,messageId,replyTo};}
-    if(input.followUpDraftId)await client.query(`insert into workspace_audit_event(workspace_id,actor_user_id,entity_type,entity_id,action,changes)
+    if(input.followUpDraftId&&company.rows[0].workspace_id)await client.query(`insert into workspace_audit_event(workspace_id,actor_user_id,entity_type,entity_id,action,changes)
       values($1,$2,'outbound-mail',$3,'follow-up.used',$4)`,[company.rows[0].workspace_id,userId,saved.rows[0].id,JSON.stringify({draftId:input.followUpDraftId,parentId:input.parentId,inputItems:1,validOutputItems:1,downstreamUsedItems:1,usageBoundary:"send-reserved-not-delivery",inputTokens:0,outputTokens:0,costUsd:0,apiCredits:0,retries:0,utilizationEfficiency:1,discardedReasonCounts:{},optimizationOpportunity:"Reuse reviewed draft instead of regenerating"})]);
     return {id:saved.rows[0].id,status:"sending",reused:false,messageId,replyTo};
   });

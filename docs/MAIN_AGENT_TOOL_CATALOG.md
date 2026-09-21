@@ -1,6 +1,6 @@
 # Registered main Agent tools
 
-Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/generate-main-agent-catalog.ts --check` to detect drift. These 88 tools are implemented adapters; registration is not real-provider acceptance. The complete migration inventory remains in [MAIN_AGENT_CAPABILITIES.md](MAIN_AGENT_CAPABILITIES.md).
+Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/generate-main-agent-catalog.ts --check` to detect drift. These 89 tools are implemented adapters; registration is not real-provider acceptance. The complete migration inventory remains in [MAIN_AGENT_CAPABILITIES.md](MAIN_AGENT_CAPABILITIES.md).
 
 | Tool | Version | Role | Effect | Cost | Purpose |
 |---|---|---|---|---|---|
@@ -11,6 +11,7 @@ Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/ge
 | relationship_save | 1 | member | reversible | known | Save an evidenced relationship between two account companies independently of search or scoring. |
 | relationship_analyze | 1 | member | reversible | unknown | Analyze one pair of saved companies with the existing specialist; does not require full discovery. |
 | contacts_lookup | 1 | member | reversible | unknown | Discover and save contacts for one account company using the configured contact provider. No scoring prerequisite. Missing connection is reported explicitly. |
+| contacts_enrichment_latest | 1 | member | read | known | Read the latest saved contact enrichment run and item progress for the current account. This is a read of persisted state, not a new lookup. |
 | mail_sync | 1 | member | reversible | unknown | Synchronize owned mailbox messages for the requested date/folder scope; stores messages without sending. |
 | workspace_mode_update | 1 | member | reversible | known | Change the current account market workspace between new-market and growth mode using the existing page service. |
 | development_feedback_generate | 1 | member | reversible | unknown | Apply explicit feedback to one owned saved development draft at its observed revision and save the regenerated version. This never sends mail. |
@@ -35,7 +36,7 @@ Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/ge
 | development_strategy | 1 | member | read | unknown | Generate only a saved company's development strategy with the current evidence/handoff. Does not generate or send an email. Returns a saved task research result. |
 | draft_generate | 1 | member | read | unknown | Generate a company's draft directly from current evidence and user instructions without the separate strategy-plan step. Produces a task draft; never sends or changes official company qualification. |
 | follow_up_list | 1 | member | read | known | Read up to ten saved follow-up drafts for one owned sent parent message. Does not regenerate or send. |
-| follow_up_generate | 1 | member | reversible | unknown | Generate and save a follow-up draft for an owned, company-linked sent message using bounded thread and style context. This never sends; a standalone message currently reports missing context. |
+| follow_up_generate | 1 | member | reversible | unknown | Generate and save a follow-up draft for an owned sent message using bounded thread and style context, including mail without company linkage. This never sends. |
 | company_research | 1 | member | read | known | Start or revisit one nominated company using existing public evidence, without market discovery or a model call. Returns a reusable research artifact; supplied names/domains remain user nominations, not verified identity. |
 | evidence_collect | 1 | member | reversible | unknown | Collect targeted public evidence for one saved research company, reusing existing evidence. No market planning/discovery/score prerequisite. Stored research remains available on provider failure. |
 | role_correct | 1 | member | read | unknown | Independently interpret company identity/role using saved public evidence. Does not automatically supplement evidence or run scoring. Missing evidence remains unresolved; provider failure is not business disqualification. |

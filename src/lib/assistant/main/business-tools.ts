@@ -28,6 +28,7 @@ import { reconcileContactLookup } from "@/lib/contacts/reconcile-lookup";
 import { reconcileRelationshipAnalysis } from "@/lib/sales/reconcile-relationship";
 import { listApprovedMailboxKnowledge } from "@/lib/mailbox/knowledge-overview";
 import { upsertKnowledgeDocument } from "@/lib/rag/repository";
+import { readLatestEnrichmentRun } from "@/lib/contacts/enrichment-run-read";
 
 const companyId = z.string().min(1).max(180), country = z.string().regex(/^[A-Z]{2}$/);
 const developmentInput = z.object({ companyExternalId: companyId, language: z.string().max(20).optional(), instructions: z.string().max(2000).optional() }).strict();
@@ -63,6 +64,7 @@ export const businessTools = [
     const provider=contactLookupProvider(); if(!provider.isConfigured())return result(null,{status:"unavailable",missing:[`Configured ${provider.id} contact connection`]});
     return result(await lookupAndStoreContacts(c.userId,company.workspace_id,{ companyId:company.id,companyName:company.canonical_name,websiteUrl:`https://${company.domain}/`,domain:company.domain,countryCode:company.country_code,targetRoles:["Owner","Procurement","Channel","Technical"] },provider,i.refresh));
   } }),
+  defineTool({id:"contacts_enrichment_latest",description:"Read the latest saved contact enrichment run and item progress for the current account. This is a read of persisted state, not a new lookup.",input:z.object({}).strict(),execute:async(_,c)=>result(await readLatestEnrichmentRun(c.userId))}),
   defineTool({ id: "mail_sync", description: "Synchronize owned mailbox messages for the requested date/folder scope; stores messages without sending.", input: mailboxSyncSchema, effect: "reversible", cost: "unknown", connections: ["mailbox"], execute: async (i,c) => result(await syncAliMail(c.userId,i.connectionId,i)) }),
   defineTool({id:"workspace_mode_update",description:"Change the current account market workspace between new-market and growth mode using the existing page service.",
     input:z.object({mode:z.enum(["new-market","growth"])}).strict(),effect:"reversible",recovery:"idempotent",
@@ -120,8 +122,8 @@ export const businessTools = [
   defineTool({ id:"draft_generate",description:"Generate a company's draft directly from current evidence and user instructions without the separate strategy-plan step. Produces a task draft; never sends or changes official company qualification.",input:developmentInput,cost:"unknown",connections:["outreach-model"],execute:async(i,c)=>result(await generateDevelopmentStrategyWithKimi(await loadDevelopmentContext(c.userId,i),i)) }),
   defineTool({id:"follow_up_list",description:"Read up to ten saved follow-up drafts for one owned sent parent message. Does not regenerate or send.",input:z.object({parentId:z.uuid()}).strict(),
     execute:async(i,c)=>result(await listSavedFollowUps(c.userId,i.parentId),{cost:"known"})}),
-  defineTool({id:"follow_up_generate",description:"Generate and save a follow-up draft for an owned, company-linked sent message using bounded thread and style context. This never sends; a standalone message currently reports missing context.",
+  defineTool({id:"follow_up_generate",description:"Generate and save a follow-up draft for an owned sent message using bounded thread and style context, including mail without company linkage. This never sends.",
     input:z.object({parentId:z.uuid(),instructions:z.string().trim().min(2).max(2000)}).strict(),effect:"reversible",cost:"unknown",connections:["outreach-model"],
     execute:async(i,c)=>{const draft=await createFollowUpDraft(c.userId,i);
-      return draft?result(draft,{cost:"unknown"}):result(null,{status:"missing_input",missing:["Owned sent parent message with company context"],cost:"known"});}}),
+      return draft?result(draft,{cost:"unknown"}):result(null,{status:"missing_input",missing:["Owned sent parent message"],cost:"known"});}}),
 ];

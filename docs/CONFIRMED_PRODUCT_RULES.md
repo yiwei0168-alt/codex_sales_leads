@@ -2,7 +2,7 @@
 
 > 2026-09-21 MA13 confirmation: from this decision onward, development stops tracking cost and maintaining the efficiency ledger, and no expense report is generated automatically. Product-flow completion and result quality become the primary engineering and compute priorities. Historical records remain historical evidence; implementation and acceptance are separate.
 
-> 2026-09-21 MA11 implementation follow-up: the executable catalog now contains 88 tools after adding 13 adapters over existing workspace, development-feedback, mailbox, task-reconciliation, Gold-review and shared-text knowledge services. This is verified implementation evidence, not a new rule or complete workflow acceptance; remaining gaps stay explicit in the capability matrix.
+> 2026-09-21 MA11 implementation follow-up: the executable catalog now contains 89 tools after adding a persisted contact-enrichment run reader and extending account-owned follow-up drafts. This is implementation evidence, not a new rule or complete workflow acceptance; remaining gaps stay explicit in the capability matrix.
 
 > 2026-09-21 MA11 confirmation: this milestone verifies the main Agent architecture and existing product workflows. It supersedes MA09's **current P6 acceptance and release scope only**; MA09 remains in history. Implementation and acceptance evidence are tracked separately in [the workflow](MAIN_AGENT_WORKFLOW.md) and [acceptance log](MAIN_AGENT_ACCEPTANCE.md).
 

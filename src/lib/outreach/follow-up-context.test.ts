@@ -21,8 +21,16 @@ it("compares actual ancestor addresses instead of object string representations"
     .mockResolvedValueOnce([]).mockResolvedValueOnce([]);
   const result=await followUpContext("u","p");
   expect(result?.thread.map(item=>item.subject)).toEqual(["Alex@Example.com"]);
-  expect(m.query.mock.calls[1][1]).toContain("p.workspace_id=$5");
+  expect(m.query.mock.calls[1][1]).toContain("p.workspace_id is not distinct from $5::uuid");
   expect(m.query.mock.calls[1][2]).toEqual(["u","p","c","GB","w"]);
+});
+it("uses account correspondence for a sent message without a linked company",async()=>{
+  m.query.mockResolvedValueOnce([{id:"p",workspace_id:null,company_id:null,content_ciphertext:content,country_code:null,role:null}])
+    .mockResolvedValueOnce([]).mockResolvedValueOnce([]).mockResolvedValueOnce([{id:"reply",sent_at:"2026-09-01",content_ciphertext:JSON.stringify({subject:"Re: Hello",bodyText:"Interested",sender:["alex@example.com"],recipients:["sender@example.com"]})}]);
+  const result=await followUpContext("u","p");
+  expect(result?.workspaceId).toBeNull();
+  expect(result?.inbound).toHaveLength(1);
+  expect(m.query.mock.calls[3][2]).toEqual(["u",null]);
 });
 it("restricts style to active tenant/workspace/market/role and thread to the same recipient",async()=>{
   m.query.mockResolvedValueOnce([{id:"p",workspace_id:"w",company_id:"c",content_ciphertext:content,country_code:"CO",role:"SI"}])
