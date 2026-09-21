@@ -2,6 +2,8 @@
 
 ## MA11 independent formal score publication - 2026-09-21 (partial)
 
+Migrations 099–102 were also applied transactionally to the configured local source database after isolated clone checks. The main entry remains configuration controlled; applying the schema does not publish data, start a provider call or authorize account-wide release.
+
 The `company_score_publish` tool publishes only a saved `score_review` output with an eligible completed score, completed review, current policy version/checksum and cited source hashes no older than 30 days. It requires the exact observed company revision, domain and score in the approval payload. One isolated PostgreSQL fixture executed the real tenant service and persistence transaction: the formal assessment was saved and linked, retry reused its run, another account could not publish it, and a stale company revision was refused. The fixture and its market state were restored; no specialist model or search provider was called. The scoring policy and manual override behavior continue to use the existing services. Full regression passed 258 files / 1,297 assertions; TypeScript, scoped lint, 94-schema catalog and production build passed. This proves the publication boundary, not real scoring answer quality or full release.
 
 ## MA11 independent contact verification - 2026-09-21 (partial)

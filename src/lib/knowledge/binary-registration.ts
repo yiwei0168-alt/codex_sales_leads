@@ -20,6 +20,8 @@ function renderBlock(block:Block):string{
 }
 
 export async function registerExtractedSharedBinary(userId:string,input:{jobId:string;sourceSha256:string;language:string;authorityLevel:1|2|3|4|5}){
+  const [actor]=await tenantQuery<{role:string}>(userId,"select role from app_user where id=$1 and status='active'",[userId]);
+  if(actor?.role!=="admin")return {status:"missing_input" as const,missing:["Active administrator account"]};
   const [job]=await tenantQuery<Job>(userId,`select id,collection_slug,status,title,storage_key,extraction_artifact_key,source_sha256,source_url,entity_key,metrics,published_document_id,published_asset_id
     from knowledge_upload_job where id=$1 and user_id=$2`,[input.jobId,userId],"admin");
   if(!job)return {status:"missing_input" as const,missing:["Owned extracted upload job"]};
