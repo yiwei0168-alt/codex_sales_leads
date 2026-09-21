@@ -1,6 +1,17 @@
 import {tenantQuery} from "@/lib/rag/db";
 
 export type LibraryScope="private"|"shared"|"evidence";
+/** Read the complete saved text with the same ownership boundary as the list. */
+export async function readKnowledgeLibraryItem(userId:string,id:string,scope:LibraryScope){
+  const rows=scope==="evidence"?await tenantQuery(userId,`select d.id,d.title,
+    (select string_agg(content,E'\n\n' order by chunk_index) from public_evidence.chunk where document_version_id=d.id) as content
+    from public_evidence.document_version d join public_evidence.source s on s.id=d.source_id
+    where d.id=$1 and s.sharing_status='public' and d.freshness_status<>'invalid'`,[id])
+    :await tenantQuery(userId,`select d.id,d.title,
+      (select string_agg(content,E'\n\n' order by chunk_index) from knowledge_chunk where document_id=d.id) as content
+      from knowledge_document d where d.id=$1 and d.visibility=$2 and ($2='shared' or d.owner_id=$3)`,[id,scope,userId]);
+  return rows[0]??null;
+}
 export async function listKnowledgeLibrary(userId:string,scope:LibraryScope,query:string,offset:number){
   const rows=scope==="evidence"?await tenantQuery(userId,`select d.id,d.title,s.canonical_url as "sourceUrl",d.last_verified_at::text as "updatedAt",d.freshness_status as status,'public-evidence' as scope,
       left(c.content,1500) as excerpt from public_evidence.document_version d join public_evidence.source s on s.id=d.source_id

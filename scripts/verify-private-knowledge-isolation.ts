@@ -74,6 +74,14 @@ try{
       [documentIds[0],`mailbox-artifact:${candidateId}`,createHash('sha256').update('Synthetic isolation token').digest('hex')]);
     await client.query("commit");created=true;
   }catch(error){await client.query("rollback");throw error;}finally{client.release();}
+  const {readKnowledgeLibraryItem}=await import("../src/lib/knowledge/library-service");
+  assert.equal((await readKnowledgeLibraryItem(users[0],documentIds[0],"private"))?.content,"Synthetic isolation token");
+  assert.equal(await readKnowledgeLibraryItem(users[1],documentIds[0],"private"),null);
+  assert.equal(await readKnowledgeLibraryItem(users[1],documentIds[0],"shared"),null);
+  assert.equal((await readKnowledgeLibraryItem(users[0],documentIds[3],"shared"))?.content,"Synthetic isolation token");
+  if (process.argv.includes("--library-only")) {
+    console.log("Knowledge library full-text: owner read, foreign read denied, scope spoof denied, shared read passed.");
+  } else {
   const privateIds=async(owner:number,country:string,role="SI")=>(await searchOutreachKnowledge(users[owner],"Synthetic isolation token",vector,[country],[role],5))
     .filter(item=>item.sourceRefs.privateUserMemory===true).map(item=>item.id);
   assert.deepEqual(await privateIds(0,"GB"),[ids[0]]);
@@ -119,6 +127,7 @@ try{
     userCountryRoleStatusAndUsageScope:true,classificationExcluded:true,rlsEnforced:true,genericRagIsolation:true,
     sharedKnowledgeVisible:true,optionalCountryFilterVerified:true,fixtureDocuments:5,mailboxCandidates:2,
     reviewLockAndConcurrentIdempotency:true,interruptedApprovalRecovered:true,realEmbeddingCalls:0,paidCalls:0}));
+  }
 }finally{
   if(created){
     const client=await admin.connect();

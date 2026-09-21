@@ -13,7 +13,7 @@ import { OutboundComposer } from "@/components/outbound-composer";
 import { stageLabel } from "@/lib/sales/opportunity-stages";
 import { evidenceFreshness } from "@/lib/sales/evidence-freshness";
 import { marketCode, marketHref, marketLabel } from "@/lib/sales/market-navigation";
-import { AssistantHome } from "@/components/assistant-home";
+import { AssistantHome, clearPendingConversationInputs } from "@/components/assistant-home";
 import { ConversationHistory } from "@/components/conversation-history";
 import { AgentLibrary } from "@/components/agent-library";
 import { KnowledgeBase } from "@/components/knowledge-base";
@@ -313,6 +313,9 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
 
   async function logout() {
     await fetch("/api/auth/logout", { method: "POST" });
+    clearPendingConversationInputs();
+    sessionStorage.removeItem("lastConversationId");
+    router.replace("/");
     router.refresh();
   }
 
@@ -384,6 +387,7 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
           {view === "results" && <LeadFilters companies={filteredCompanies} onUpdate={updateCompany}>{items=><Results companies={items} query={query} setQuery={setQuery} roleFilter={roleFilter} setRoleFilter={setRoleFilter} tierFilter={tierFilter} setTierFilter={setTierFilter} onSelect={selectCompany} onToggle={(company) => updateCompany(company.id, { opportunityStage: company.opportunityStage === "Discovered" ? "Qualified" : "Discovered" })} />}</LeadFilters>}
           {view === "map" && (country === "all" ? <p className="subtle">请选择国家以查看渠道节点与关系。</p> : <UserChannelMap key={country} country={country} companies={countryCompanies} onSelect={selectCompany} onAdded={(company)=>setCompanies(items=>[...items,company])} />)}
           {view === "opportunities" && <OpportunityWorkspace companies={shortlist} onSelect={selectCompany} onUpdate={updateCompany} onOpenMail={(id)=>{selectCompany(id,false);setView("assistant");}} />}
+          {view === "assistant" && <label className="company-picker">选择公司<select aria-label="选择开发公司" value={selectedId} onChange={event=>{selectCompany(event.target.value,false);router.push(viewHref("assistant",country,event.target.value));}}><option value="">请选择公司</option>{countryCompanies.map(company=><option value={company.id} key={company.id}>{company.displayName}</option>)}</select>{!selectedCompany && <p>选择公司后查看开发策略和邮件草稿，也可以先到销售线索中寻找公司。</p>}</label>}
           {view === "assistant" && selectedCompany && <DevelopmentAssistant company={selectedCompany} result={developmentResult} draft={draft} setDraft={value=>{setDraft(value);if(developmentState==='approved')setDevelopmentState('ready');}} state={developmentState} error={developmentError} feedback={developmentFeedback} setFeedback={setDevelopmentFeedback} feedbackMessage={feedbackMessage} allowMemory={allowFeedbackMemory} setAllowMemory={setAllowFeedbackMemory} onGenerate={() => void generateDevelopment()} onRevise={() => void reviseDevelopmentDraft()} onApprove={() => void approveDevelopmentDraft()} onEvidence={setEvidenceOpen} onChoose={() => document.querySelector<HTMLSelectElement>('[aria-label="选择开发公司"]')?.focus()} />}
           {view === "assistant" && selectedCompany && <OutboundComposer key={selectedCompany.id} companyId={selectedCompany.id} draft={draft} onSent={()=>{void fetch("/api/workspaces/current",{cache:"no-store"}).then(async response=>{if(response.ok){const workspace=await response.json() as MarketWorkspaceDto;setCompanies(workspace.companies);}});}}/>}
           {view === "tasks" && <TaskCenter key={refreshVersion} />}
@@ -391,7 +395,6 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
           {view === "mailbox" && <MailboxIntegration key={refreshVersion} />}
           {view === "settings" && <><section className="account-summary"><strong>{userName}</strong><button className="secondary-button" onClick={logout}>退出登录</button></section><AgentLibrary key={refreshVersion} /></>}
           {view === "help" && <section className="panel help-copy"><h2>从一个问题开始</h2><p>点击“新对话”描述目标，发送第一条消息后保存对话。当前任务进度、异常和待批准操作留在对应对话中。</p><h2>找到业务资料</h2><p>在“市场与线索”切换国家、查看已保存线索与渠道关系。在“客户开发”选择公司，查看机会、准备开发信并管理邮箱。“知识库”提供资料、知识问答和按权限展示的审核。</p><h2>核对后执行</h2><p>执行前请阅读批准卡上的最终内容。发送邮件和删除等操作需要明确批准；批准后的真实执行结果显示在对话中。</p><button className="secondary-button" onClick={()=>setView("tasks")}>查看任务记录</button></section>}
-          {view === "assistant" && <label className="company-picker">选择公司<select aria-label="选择开发公司" value={selectedId} onChange={event=>{selectCompany(event.target.value,false);router.push(viewHref("assistant",country,event.target.value));}}><option value="">请选择公司</option>{countryCompanies.map(company=><option value={company.id} key={company.id}>{company.displayName}</option>)}</select>{!selectedCompany && <p>选择公司后查看开发策略和邮件草稿，也可以先到销售线索中寻找公司。</p>}</label>}
         </div>
       </main>
 

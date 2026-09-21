@@ -1,4 +1,4 @@
-> MA15 变更：采用已确认的半透明紫色视觉、三个业务入口及资料默认页；基础外壳与全局模式退场已实现，模式兼容/隔离回归通过；页面完整验收尚未完成。精确规则与状态见 [规则](CONFIRMED_PRODUCT_RULES.md) 和 [工作流](FRONTEND_SIMPLIFICATION_PLAN_2026-09-21.md)。
+> MA15 变更：采用已确认的半透明紫色视觉、三个业务入口及资料默认页；基础外壳、全局模式退场和页面重排已实现，模式/资料隔离回归通过；完整视觉与端到端验收进行中。精确规则与状态见 [规则](CONFIRMED_PRODUCT_RULES.md) 和 [工作流](FRONTEND_SIMPLIFICATION_PLAN_2026-09-21.md)。
 
 # 产品主 Agent 与开放式工具架构
 

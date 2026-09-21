@@ -17,5 +17,5 @@ export default async function ConversationPage({ params }: { params: Promise<{ i
   const conversation = await getConversation(session.userId, id);
   if (!conversation || conversation.status !== "active") notFound();
   const workspace = await getCurrentWorkspace(session.userId);
-  return <CopilotDemo initialConversationId={id} initialWorkspace={workspace ?? undefined} userName={session.displayName} />;
+  return <CopilotDemo key={id} initialConversationId={id} initialWorkspace={workspace ?? undefined} userName={session.displayName} />;
 }

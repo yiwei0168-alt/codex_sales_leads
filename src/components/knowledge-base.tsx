@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { PersonalMemory } from "./personal-memory";
 import { KnowledgeLibrary } from "./knowledge-library";
@@ -47,7 +48,14 @@ const mailboxKindLabels: Record<MailboxKnowledgeItem["kind"], string> = {
   "email-template": "邮件模板",
 };
 
-export function KnowledgeBase({ initialTab: _initialTab }: { initialTab?: string } = {}) {
+export function KnowledgeBase({ initialTab }: { initialTab?: string } = {}) {
+  const router=useRouter(), params=useSearchParams();
+  const tab=initialTab==="questions"||initialTab==="review"?initialTab:"materials";
+  const [canReview,setCanReview]=useState(false);
+  const [uploadOpen,setUploadOpen]=useState(false);
+  useEffect(()=>{const controller=new AbortController();fetch("/api/auth/session",{signal:controller.signal,cache:"no-store"}).then(r=>r.json()).then(data=>{if(!controller.signal.aborted)setCanReview(data.user?.role==="admin");}).catch(()=>{});return()=>controller.abort();},[]);
+  function selectTab(value:string){const query=new URLSearchParams(params.toString());query.set("tab",value);router.push(`/knowledge?${query}`);}
+
   const [stats, setStats] = useState<KnowledgeStats>(emptyStats);
   const [loading, setLoading] = useState(true);
   const [question, setQuestion] = useState("基于现有产品组合，进入一个新市场时应该优先开发哪些渠道节点？为什么？");
@@ -176,10 +184,12 @@ export function KnowledgeBase({ initialTab: _initialTab }: { initialTab?: string
   }
 
   return <div className="knowledge-layout">
+    <div className="business-toolbar"><nav className="page-tabs" aria-label="知识库页签"><button aria-current={tab==="materials"?"page":undefined} onClick={()=>selectTab("materials")}>资料</button><button aria-current={tab==="questions"?"page":undefined} onClick={()=>selectTab("questions")}>知识问答</button>{canReview&&<button aria-current={tab==="review"?"page":undefined} onClick={()=>selectTab("review")}>审核</button>}</nav>{tab==="materials"&&<button className="primary-button" aria-expanded={uploadOpen} onClick={()=>setUploadOpen(value=>!value)}>{uploadOpen?"收起上传":"上传资料"}</button>}</div>
+    {tab==="materials"&&<KnowledgeLibrary />}
+    {tab==="review"&&!canReview&&<p>共享知识审核仅对管理员开放。请选择资料或知识问答。</p>}
+    {tab==="review"&&canReview&&<>
     <PersonalMemory />
-    <KnowledgeLibrary />
-    {!loading && !stats.configured && <div className="kb-config-banner"><span>!</span><div><strong>RAG 尚未完成运行配置</strong><p>{stats.error ?? "请配置 PostgreSQL、pgvector 与 OpenAI API Key。"}</p></div><code>docker compose up -d → npm run db:migrate → npm run kb:seed</code></div>}
-
+    {!loading && !stats.configured && <p role="status">{stats.error??"知识服务暂不可用，请稍后重试。"}</p>}
     <section className="kb-stats-grid">
       {stats.collections.map((collection) => {
         const meta = labels[collection.type];
@@ -196,7 +206,8 @@ export function KnowledgeBase({ initialTab: _initialTab }: { initialTab?: string
     {stats.release&&<section className="panel rag-release-status"><div className="panel-header"><div><span className="section-kicker">RAG V3 RELEASE</span><h2>{stats.release.key}</h2></div><span className={`tag ${stats.release.active?"green":"neutral"}`}>{stats.release.active?"active":stats.release.status}</span></div><div className="kb-counts"><strong>{stats.release.completeAssets}/{stats.release.registeredAssets}<small>资产完成</small></strong><strong>{stats.release.chunks}<small>Chunks</small></strong><strong>{stats.release.qwenEmbeddings}<small>Qwen</small></strong><strong>{stats.release.bgeEmbeddings}<small>BGE</small></strong><strong>{stats.release.openReviews}<small>待复核</small></strong><strong>{stats.release.conflictFacts}<small>冲突事实</small></strong></div>{!stats.release.active&&<p className="subtle">影子 release 尚未激活；当前生产查询继续使用既有索引。</p>}</section>}
     {stats.release&&<KnowledgeReviewCenter/>}
 
-    <section className="panel mailbox-knowledge-panel">
+    </>}
+    {tab==="materials"&&<details className="panel mailbox-knowledge-panel"><summary>已批准的邮箱知识</summary>
       <div className="panel-header"><div><span className="section-kicker">PRIVATE MAILBOX KNOWLEDGE</span><h2>邮箱学习知识</h2><p>仅当前账号可见；已批准内容会参与私有 RAG 检索。</p></div><span className="tag violet">{mailboxKnowledge.length} 条</span></div>
       {mailboxKnowledgeError && <div className="rag-error">{mailboxKnowledgeError}</div>}
       <div className="mailbox-knowledge-list">
@@ -206,29 +217,23 @@ export function KnowledgeBase({ initialTab: _initialTab }: { initialTab?: string
         </details>)}
         {!mailboxKnowledgeError && mailboxKnowledge.length === 0 && <p className="subtle">暂无已批准的邮箱学习知识。请先在“邮箱学习”中批准候选。</p>}
       </div>
-    </section>
+    </details>}
 
-    <div className="kb-main-grid">
+    {tab==="questions"&&<div className="kb-main-grid">
       <section className="panel rag-playground">
-        <div className="panel-header"><div><span className="section-kicker">GROUNDED RAG PLAYGROUND</span><h2>基于知识库提问</h2></div><span className={`kb-provider ${stats.configured ? "ready" : ""}`}><i/>{stats.provider}</span></div>
+        <div className="panel-header"><div><span className="section-kicker">GROUNDED RAG PLAYGROUND</span><h2>基于知识库提问</h2></div></div>
         <div className="rag-controls">
           <label>检索范围</label><div className="kb-filter-row">{(["industry", "company", "product"] as KnowledgeBaseType[]).map((type) => <button key={type} className={selected.includes(type) ? "active" : ""} onClick={() => toggle(type)}><span>{selected.includes(type) ? "✓" : "+"}</span>{labels[type].title}</button>)}</div>
           <label htmlFor="rag-question">问题</label><textarea id="rag-question" value={question} onChange={(event) => setQuestion(event.target.value)} placeholder="询问市场、公司、产品或跨知识库问题…"/>
-          <div className="rag-submit-row"><span>资料和已验证事实走本地快速路径；复杂问题才进入检索与生成。</span><button className="primary-button" disabled={querying || selected.length === 0} onClick={ask}>{querying ? "知识工作流运行中…" : "运行知识工作流"}</button></div>
+          <div className="rag-submit-row"><span>资料和已验证事实走本地快速路径；复杂问题才进入检索与生成。</span><button className="primary-button" disabled={querying || selected.length === 0} onClick={ask}>{querying ? "正在查找答案…" : "提问"}</button></div>
         </div>
         {error && <div className="rag-error">{error}</div>}
-        {answer && <div className="rag-result"><div className="rag-result-meta"><span className={answer.grounded ? "grounded" : "ungrounded"}>{answer.kind ?? (answer.grounded ? "Grounded" : "Needs review")}</span><span>{answer.reasonCode ?? answer.model}</span><span>{answer.latencyMs} ms</span></div><div className="rag-answer">{answer.answer}</div>{answer.comparison&&<ComparisonTable comparison={answer.comparison}/>} {answer.warnings.map((warning) => <p className="rag-warning" key={warning}>⚠ {warning}</p>)}{(answer.documents?.length ?? 0) > 0 && <div className="rag-citations"><strong>原始资料 · {answer.documents?.length}</strong>{answer.documents?.map((document) => <a key={document.assetId} href={document.url} target="_blank" rel="noreferrer"><span>{document.documentType}</span><div><b>{document.title}</b><small>{document.version ?? "未标注版本"}</small></div></a>)}</div>}{(answer.factCitations?.length ?? 0) > 0 && <div className="rag-citations"><strong>事实证据 · {answer.factCitations?.length}</strong>{answer.factCitations?.map((citation) => <a key={citation.factId} href={`/api/knowledge/assets/${citation.assetId}`} target="_blank" rel="noreferrer"><span>{citation.attributeKey}</span><div><b>{citation.rawValue}</b><small>{citation.version ?? citation.status}</small></div></a>)}</div>}<div className="rag-citations"><strong>检索证据 · {answer.citations.length}</strong>{answer.citations.map((citation) => <a key={citation.chunkId} href={citation.sourceUrl} target="_blank" rel="noreferrer"><span>[KB:{citation.chunkId.slice(0, 8)}…]</span><div><b>{citation.documentTitle} · {citation.visibility === "private" ? "私有" : "共享"}</b><small>{citation.excerpt}</small></div><em>{Math.round(citation.score * 100)}%</em></a>)}</div></div>}
+        {answer && <div className="rag-result"><details className="rag-result-meta"><summary>回答详情</summary><span className={answer.grounded ? "grounded" : "ungrounded"}>{answer.kind ?? (answer.grounded ? "Grounded" : "Needs review")}</span><span>{answer.reasonCode ?? answer.model}</span><span>{answer.latencyMs} ms</span></details><div className="rag-answer">{answer.answer}</div>{answer.comparison&&<ComparisonTable comparison={answer.comparison}/>} {answer.warnings.map((warning) => <p className="rag-warning" key={warning}>⚠ {warning}</p>)}<details className="answer-sources"><summary>查看引用与来源</summary>{(answer.documents?.length ?? 0) > 0 && <div className="rag-citations"><strong>原始资料 · {answer.documents?.length}</strong>{answer.documents?.map((document) => <a key={document.assetId} href={document.url} target="_blank" rel="noreferrer"><span>{document.documentType}</span><div><b>{document.title}</b><small>{document.version ?? "未标注版本"}</small></div></a>)}</div>}{(answer.factCitations?.length ?? 0) > 0 && <div className="rag-citations"><strong>事实证据 · {answer.factCitations?.length}</strong>{answer.factCitations?.map((citation) => <a key={citation.factId} href={`/api/knowledge/assets/${citation.assetId}`} target="_blank" rel="noreferrer"><span>{citation.attributeKey}</span><div><b>{citation.rawValue}</b><small>{citation.version ?? citation.status}</small></div></a>)}</div>}<div className="rag-citations"><strong>检索证据 · {answer.citations.length}</strong>{answer.citations.map((citation) => <a key={citation.chunkId} href={citation.sourceUrl} target="_blank" rel="noreferrer"><span>[KB:{citation.chunkId.slice(0, 8)}…]</span><div><b>{citation.documentTitle} · {citation.visibility === "private" ? "私有" : "共享"}</b><small>{citation.excerpt}</small></div><em>{Math.round(citation.score * 100)}%</em></a>)}</div></details></div>}
       </section>
 
-      <aside className="panel kb-pipeline">
-        <div className="panel-header"><div><span className="section-kicker">INGESTION PIPELINE</span><h2>知识进入路径</h2></div></div>
-        <ol><li><span>01</span><div><strong>Source validation</strong><p>记录来源、权限、时间和权威等级</p></div></li><li><span>02</span><div><strong>Semantic chunking</strong><p>保留标题路径，约 500 tokens / chunk</p></div></li><li><span>03</span><div><strong>Embedding</strong><p>text-embedding-3-small · 1536 维</p></div></li><li><span>04</span><div><strong>Hybrid retrieval</strong><p>HNSW vector + FTS + RRF</p></div></li><li><span>05</span><div><strong>Grounded answer</strong><p>Responses API · store false · 强制引用</p></div></li></ol>
-        <div className="kb-command"><span>导入单个文件</span><code>npm run kb:ingest -- --type=industry --file=research.md</code></div>
-        <div className="kb-guardrails"><strong>知识治理边界</strong><p>无证据不回答 · 推断显式标记 · 产品规格缺失时返回 Unknown · 管理写入需 Token</p></div>
-      </aside>
-    </div>
+    </div>}
 
-    <section className="panel kb-upload-panel">
+    {tab==="materials"&&uploadOpen&&<section className="panel kb-upload-panel">
       <div className="panel-header"><div><span className="section-kicker">KNOWLEDGE INGESTION</span><h2>上传你的知识资料</h2></div><span className="subtle">内容不会提交到 GitHub</span></div>
       <div className="kb-upload-body">
         <div className="kb-upload-intro"><strong>选择知识库</strong><p>{uploadType === "industry" ? "行业知识、渠道结构、主要品牌、市场研究等。" : uploadType === "company" ? "Cudy Technology 公司简介、产品线、当前业务情况、战略与经营资料。" : "Cudy Technology 产品信息、技术规格、兼容性、认证和使用限制。"}</p><div className="kb-upload-types">{(["industry", "company", "product"] as KnowledgeBaseType[]).map((type) => <button key={type} className={uploadType === type ? "active" : ""} onClick={() => setUploadType(type)}>{labels[type].title}</button>)}</div></div>
@@ -244,6 +249,7 @@ export function KnowledgeBase({ initialTab: _initialTab }: { initialTab?: string
           {uploadJobs.length>0&&<div className="kb-upload-jobs"><strong>最近提取作业</strong>{uploadJobs.slice(0,6).map(job=><p key={job.id}><span className={`tag ${job.status==="extracted"||job.status==="registered"?"green":job.status==="failed"?"red":"neutral"}`}>{job.status==="registered"?"已登记（RAG v3 待发布）":job.status}</span> {job.title} · {job.documentType} · {Math.ceil(Number(job.byteSize)/1024)} KB{job.errorCode?` · ${job.errorCode}`:""}</p>)}</div>}
         </div>
       </div>
-    </section>
+    </section>}
+    {tab==="materials"&&uploadJobs.length>0&&<section className="upload-progress" aria-label="资料处理进度"><h2>资料处理进度</h2>{uploadJobs.slice(0,6).map(job=><p key={job.id}>{job.title} · {job.status}{job.errorCode?` · ${job.errorCode}`:""}</p>)}</section>}
   </div>;
 }

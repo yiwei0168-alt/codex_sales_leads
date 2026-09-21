@@ -5,5 +5,5 @@ export const dynamic = "force-dynamic";
 
 export async function GET() {
   const session = await getSession();
-  return Response.json({ authenticated: Boolean(session), user: session ? { displayName: session.displayName } : null });
+  return Response.json({ authenticated: Boolean(session), user: session ? { displayName: session.displayName, role: session.role } : null });
 }

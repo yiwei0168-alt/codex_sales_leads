@@ -11,6 +11,7 @@ import type {
 import {searchTaskStatusLabel,taskCounts} from "@/lib/assistant/task-summary";
 
 const pendingInputs = new Map<string, string>();
+export function clearPendingConversationInputs() { pendingInputs.clear(); }
 
 const suggestions = [
   "帮我制定进入德国网络设备市场的渠道开发计划",
