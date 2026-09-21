@@ -1,5 +1,9 @@
 # Main Agent acceptance log
 
+## MA12 eight private-data Batch admissions - 2026-09-21 (provider processing)
+
+After MA12's explicit authorization, the verifier cloned the same frozen source snapshot (manifest SHA-256 `477ffc168c5da4672190fea40180add812841ec21eb386ea26c39a8343d88570`) and submitted eight representative tasks to the configured OpenRouter `z-ai/glm-5.3:batch` / Fireworks route. All eight have distinct persisted remote Batch IDs and are currently `in_progress`. The first admission HTTP latencies total 12,278 ms across eight requests; there were no admission retries. This is **eight accepted Batch submissions, zero model outputs and zero completed Agent tasks** at this checkpoint. Tokens, provider charges, model tool choices and answer quality remain unknown. The isolated clone and ignored local state remain available for receipt-only polling; production account data was not mutated and no SMTP send occurred.
+
 ## MA11 eight-task GLM Batch gate - 2026-09-21 (blocked before private-data submission)
 
 `scripts/verify-main-agent-ma11-batch.ts` prepares eight distinct saved-record tasks in a temporary database clone: single knowledge/mail/company reads, company plus formal assessment, saved task receipt, draft plus mailbox state, missing assessment and partial mail read. It records Batch identity, model-selected tool names, tool outcomes, tokens, reported cost, unknown bills and latency separately from deterministic replay; `--start` and `--poll` require `--allow-private-provider-data` because later model turns can include private tool output.

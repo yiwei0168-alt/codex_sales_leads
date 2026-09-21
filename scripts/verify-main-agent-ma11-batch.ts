@@ -83,6 +83,11 @@ async function poll() {
     for (const job of jobs) if (job.status === "pending") await pollDueModelBatch(job.id);
     const run = await getRun(item.userId, item.runId);
     if (!run || run.status !== "queued") continue;
+    if (jobs.length >= 8) {
+      await tenantQuery(item.userId, "update agent_run set status='partial',control='cancel',result=$3 where user_id=$1 and id=$2 and status='queued'",
+        [item.userId, item.runId, JSON.stringify({ reply: "MA11 verification stopped after eight saved Batch turns; inspect existing receipts before continuing." })]);
+      continue;
+    }
     const outputs = await tenantQuery<{ output: { data?: { message?: { tool_calls?: Array<{ function: { name: string; arguments: string } }> } } } }>(item.userId,
       "select output from agent_tool_call where user_id=$1 and run_id=$2 and tool_id='main_model' and status='completed' order by created_at", [item.userId, item.runId]);
     let unsafe = false;
@@ -141,10 +146,13 @@ async function reconcileAdmission() {
 
 async function report(state: BatchState) {
   const cases = [];
+  const remoteIds: string[] = [];
   for (const item of state.cases) {
     const run = await getRun(item.userId, item.runId);
-    const batches = await tenantQuery<{ status: string; provider_status: string; poll_count: number; http_latency_ms: string }>(item.userId,
-      "select status,provider_status,poll_count,http_latency_ms from agent_model_batch where user_id=$1 and run_id=$2 order by submitted_at", [item.userId, item.runId]);
+    const savedBatches = await tenantQuery<{ status: string; provider_status: string; poll_count: number; http_latency_ms: string; remote_id: string | null }>(item.userId,
+      "select status,provider_status,poll_count,http_latency_ms,remote_id from agent_model_batch where user_id=$1 and run_id=$2 order by submitted_at", [item.userId, item.runId]);
+    remoteIds.push(...savedBatches.flatMap(batch => batch.remote_id ? [batch.remote_id] : []));
+    const batches = savedBatches.map(({ remote_id, ...batch }) => ({ ...batch, hasRemoteReceipt: Boolean(remote_id) }));
     const calls = await tenantQuery<{ tool_id: string; status: string; output: { status?: string; receipt?: string; data?: unknown } | null; metrics: Record<string, unknown> }>(item.userId,
       "select tool_id,status,output,metrics from agent_tool_call where user_id=$1 and run_id=$2 order by created_at", [item.userId, item.runId]);
     const modelCalls = calls.filter(call => call.tool_id === "main_model");
@@ -168,9 +176,15 @@ async function report(state: BatchState) {
       latencyMs: calls.reduce((n, call) => n + (Number(call.metrics.latencyMs) || 0), 0) });
   }
   const output = { mode: "actual-configured-glm-batch-isolated-data", manifestHash: state.manifestHash,
-    submittedTasks: state.cases.length, completedTasks: cases.filter(row => row.status === "completed").length, cases };
+    submittedTasks: state.cases.length, distinctRemoteReceipts: new Set(remoteIds).size,
+    completedTasks: cases.filter(row => row.status === "completed").length, cases };
   await writeFile(reportFile, JSON.stringify(output, null, 2));
-  console.log(JSON.stringify(output));
+  console.log(JSON.stringify({ mode: output.mode, manifestHash: output.manifestHash, submittedTasks: output.submittedTasks,
+    distinctRemoteReceipts: output.distinctRemoteReceipts, completedTasks: output.completedTasks,
+    providerStatuses: cases.map(row => ({ id: row.id, status: row.status,
+      batches: row.batches.map(batch => batch.provider_status), modelSelections: row.modelSelections })),
+    knownReportedCostUsd: cases.reduce((sum, row) => sum + row.knownReportedCostUsd, 0),
+    unknownCostCalls: cases.reduce((sum, row) => sum + row.unknownCostCalls, 0), privateReport: reportFile }));
 }
 
 try {

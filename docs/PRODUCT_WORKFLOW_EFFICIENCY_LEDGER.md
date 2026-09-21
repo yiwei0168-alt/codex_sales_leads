@@ -1,5 +1,8 @@
 # 产品工作流效率台账
 
+2026-09-21 MA12 eight-Batch admission checkpoint: aggregate input volume was eight representative saved-record tasks from the frozen private manifest; eight initial provider requests produced eight distinct, valid remote Batch acknowledgements, all downstream-used solely for receipt polling. Valid **model** output volume and downstream-used model output volume are both zero while the provider reports `in_progress`. First admission HTTP latency summed to 12,278 ms; retries and discarded provider outputs were zero. Input/output tokens, API credits and cash cost remain unknown, not zero; no send or customer-facing result occurred. Admission utilization is 8/8, while model/tool-result utilization is not yet measurable. Optimization opportunity: poll only due saved receipt IDs and reuse completed model turns instead of resubmitting inference; stop the verifier after a bounded number of turns.
+
+
 2026-09-21 MA12 private-data Batch authorization stage: explicit user input volume was one confirmation of the eight private-data verification tasks to configured OpenRouter/Fireworks GLM Batch. Valid output was one stable rule plus linked PRD/workflow scope, all downstream-used as the execution boundary. This confirmation made zero new provider requests, model tokens, API credits, valid model outputs or customer-facing actions; provider cost and task latency for the upcoming calls remain unknown. Retries and discarded outputs at this confirmation stage were zero. Optimization opportunity: reuse the frozen eight-case source manifest and saved Batch receipts, then separate provider and tool utilization from the already completed deterministic replay.
 
 
