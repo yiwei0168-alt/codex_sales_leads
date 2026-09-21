@@ -22,9 +22,9 @@ if (replayState.cleaned || !/^ma11_replay_[a-f0-9]{12}$/.test(replayState.databa
 url.pathname = `/${replayState.database}`;
 process.env.DATABASE_URL = url.toString();
 process.env.DATABASE_MIGRATION_URL = url.toString();
-const [{ enqueueRun, getRun }, { tenantQuery, getPool }, { executeMainAgentRun }, { defaultModelConfig }, { pollDueModelBatch }] = await Promise.all([
+const [{ enqueueRun, getRun }, { tenantQuery, getPool }, { executeMainAgentRun }, { defaultModelConfig }, { pollDueModelBatch }, { productTools }] = await Promise.all([
   import("../src/lib/assistant/main/repository"), import("../src/lib/rag/db"), import("../src/lib/assistant/main/graph"),
-  import("../src/lib/assistant/main/product"), import("../src/lib/assistant/main/model-batch") ]);
+  import("../src/lib/assistant/main/product"), import("../src/lib/assistant/main/model-batch"), import("../src/lib/assistant/main/tools") ]);
 const model = defaultModelConfig();
 assert.equal(model.model, "z-ai/glm-5.3:batch");
 assert.deepEqual(model.providers, ["fireworks"]);
@@ -76,7 +76,8 @@ async function poll() {
   const state = JSON.parse(await readFile(batchFile, "utf8")) as BatchState;
   assert.equal(state.database, replayState.database);
   assert.equal(state.manifestHash, replayState.manifestHash);
-  const permitted = new Set(["discover_tools", "describe_tool", "knowledge_library_list", "mail_read", "company_read", "company_assessment_read", "task_detail", "draft_read", "mail_connections"]);
+  const permitted = new Set(["knowledge_library_list", "knowledge_originals", "mail_read", "company_read", "company_assessment_read", "task_detail", "run_read", "draft_read", "mail_connections"]);
+  const registered = new Set(productTools.map(tool => tool.id));
   for (const item of state.cases) {
     const jobs = await tenantQuery<{ id: string; status: string }>(item.userId,
       "select id,status from agent_model_batch where user_id=$1 and run_id=$2 order by submitted_at", [item.userId, item.runId]);
@@ -95,8 +96,8 @@ async function poll() {
       if (call.function.name === "execute_tool") {
         let tool = "";
         try { tool = JSON.parse(call.function.arguments).tool; } catch { /* reject below */ }
-        if (!permitted.has(tool)) unsafe = true;
-      } else if (!permitted.has(call.function.name)) unsafe = true;
+        if (registered.has(tool) && !permitted.has(tool)) unsafe = true;
+      }
     }
     if (unsafe) {
       await tenantQuery(item.userId, "update agent_run set status='cancelled',control='cancel' where user_id=$1 and id=$2", [item.userId, item.runId]);
@@ -157,9 +158,19 @@ async function report(state: BatchState) {
       "select tool_id,status,output,metrics from agent_tool_call where user_id=$1 and run_id=$2 order by created_at", [item.userId, item.runId]);
     const modelCalls = calls.filter(call => call.tool_id === "main_model");
     const unknownCostCalls = modelCalls.filter(call => call.metrics.costUsd == null).length;
+    const metricSum = (key: string) => calls.reduce((sum, call) => sum + (Number(call.metrics[key]) || 0), 0);
+    const discardedReasonCounts: Record<string, number> = {};
+    for (const call of calls) for (const [reason, count] of Object.entries(
+      (call.metrics.discardedReasonCounts && typeof call.metrics.discardedReasonCounts === "object"
+        ? call.metrics.discardedReasonCounts : {}) as Record<string, unknown>)) {
+      discardedReasonCounts[reason] = (discardedReasonCounts[reason] ?? 0) + (Number(count) || 0);
+    }
     const modelSelections = modelCalls.flatMap(call => {
       const message = (call.output?.data as { message?: { tool_calls?: Array<{ function: { name: string; arguments: string } }> } } | undefined)?.message;
       return (message?.tool_calls ?? []).map(choice => {
+        if (choice.function.name === "describe_tool") {
+          try { return `describe_tool:${JSON.parse(choice.function.arguments).tool}`; } catch { return "describe_tool:invalid-arguments"; }
+        }
         if (choice.function.name !== "execute_tool") return choice.function.name;
         try { return `execute_tool:${JSON.parse(choice.function.arguments).tool}`; } catch { return "execute_tool:invalid-arguments"; }
       });
@@ -168,12 +179,15 @@ async function report(state: BatchState) {
       modelTurns: calls.filter(call => call.tool_id === "main_model").length,
       modelSelections,
       selectedTools: calls.filter(call => call.tool_id !== "main_model").map(call => ({ tool: call.tool_id, status: call.output?.status ?? call.status, receipt: Boolean(call.output?.receipt) })),
-      batches, inputTokens: calls.reduce((n, call) => n + (Number(call.metrics.inputTokens) || 0), 0),
-      outputTokens: calls.reduce((n, call) => n + (Number(call.metrics.outputTokens) || 0), 0),
+      batches, inputItems: metricSum("inputItems"), validOutputItems: metricSum("validOutputItems"),
+      knownDownstreamUsedItems: metricSum("downstreamUsedItems"),
+      unknownDownstreamUseCalls: calls.filter(call => call.metrics.downstreamUsedItems == null).length,
+      inputTokens: metricSum("inputTokens"), outputTokens: metricSum("outputTokens"),
+      knownApiCredits: metricSum("apiCredits"), unknownApiCreditCalls: modelCalls.filter(call => call.metrics.apiCredits == null).length,
       knownReportedCostUsd: modelCalls.reduce((n, call) => n + (Number(call.metrics.costUsd) || 0), 0),
       costComplete: unknownCostCalls === 0,
       unknownCostCalls,
-      latencyMs: calls.reduce((n, call) => n + (Number(call.metrics.latencyMs) || 0), 0) });
+      latencyMs: metricSum("latencyMs"), retries: metricSum("retries"), discardedReasonCounts });
   }
   const output = { mode: "actual-configured-glm-batch-isolated-data", manifestHash: state.manifestHash,
     submittedTasks: state.cases.length, distinctRemoteReceipts: new Set(remoteIds).size,
