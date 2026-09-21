@@ -781,7 +781,7 @@ flowchart TD
 | `db/migrations/034_model_account_cash_cost.sql` | `4790c7ad12eda543e197c84ddd77c4a5ce296b7871ccee799f3aa2262684bdbb` |
 | `src/providers/tavily.ts` | `b02257f8499a16b370ca42493e45bbbf53b7214b9f803203ab5e19ef80969eda` |
 | `src/lib/leads/workflow/handoff-assembler.ts` | `007cf0814e962e59d94b76466606275ff3594b107255c098f2e0941f3f048ccc` |
-| `src/lib/leads/workflow/persistence.ts` | `1039fef57d781d0f184209999fd3991cadf27dc4981afc3e8eb2c5dcdf6de993` |
+| `src/lib/leads/workflow/persistence.ts` | `93287f60fdd5bdf9c6aefcad8fc66cb58e43e014f98c711b78c04dfee6d87067` |
 | `src/lib/sales/repository.ts` | `b5328ebd5f1a36a8926de05ee316b4db3007611ccf166c8f3222ce7a4046a38c` |
 | `src/lib/outreach/graph.ts` | `7ea69592ef40da9efa91fc06e90fd194017ad9f6af2c6361afaedf4f78772af6` |
 | `src/lib/outreach/kimi-agent.ts` | `7e4b1dabd294294702bdb0c20c653b60741462527aa941db3299b7df4c3b7540` |
