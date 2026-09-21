@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { PersonalMemory } from "./personal-memory";
 import { KnowledgeLibrary } from "./knowledge-library";
 import { KnowledgeReviewCenter } from "./knowledge-review-center";
-import type { KnowledgeBaseType, KnowledgeStats, RagAnswer } from "@/lib/rag/types";
+import type { KnowledgeBaseType, KnowledgeStats } from "@/lib/rag/types";
 
 const labels: Record<KnowledgeBaseType, { title: string; eyebrow: string; description: string }> = {
   industry: { title: "行业知识库", eyebrow: "INDUSTRY", description: "渠道模型、市场结构、术语、规则与研究" },
@@ -36,12 +36,6 @@ interface KnowledgeUploadJob {
   originalFilename:string;documentType:string;byteSize:string;errorCode:string|null;createdAt:string;updatedAt:string;
 }
 
-function ComparisonTable({comparison}:{comparison:NonNullable<RagAnswer["comparison"]>}) {
-  const statusLabel={verified:"已验证",unknown:"未知",conflicting:"冲突",candidate:"待复核","version-mismatch":"版本不一致"} as const;
-  const format=(value:typeof comparison.attributes[number]["left"]):string=>value.status==="verified"?`${typeof value.value==="string"?value.value:JSON.stringify(value.value)}${value.unit?` ${value.unit}`:""}`:statusLabel[value.status];
-  return <div className="rag-comparison"><h3>关键差异</h3>{comparison.differences.length?<ul>{comparison.differences.map(row=><li key={row.attributeKey}><strong>{row.attributeKey}</strong><span>{format(row.left)}</span><i>→</i><span>{format(row.right)}</span></li>)}</ul>:<p>暂无双方均有已验证证据的确定差异。</p>}<h3>完整共同属性</h3><div className="rag-comparison-table" role="table"><div className="head" role="row"><b>属性</b><b>{comparison.entities[0].key}</b><b>{comparison.entities[1].key}</b></div>{comparison.attributes.map(row=><div role="row" key={row.attributeKey} className={row.isDifference?"different":""}><strong>{row.attributeKey}</strong><span data-status={row.left.status}>{format(row.left)}</span><span data-status={row.right.status}>{format(row.right)}</span></div>)}</div></div>;
-}
-
 const mailboxKindLabels: Record<MailboxKnowledgeItem["kind"], string> = {
   "company-policy": "公司政策",
   "customer-signal": "客户信号",
@@ -60,7 +54,6 @@ export function KnowledgeBase({ initialTab }: { initialTab?: string } = {}) {
   const [loading, setLoading] = useState(true);
   const [question, setQuestion] = useState("基于现有产品组合，进入一个新市场时应该优先开发哪些渠道节点？为什么？");
   const [selected, setSelected] = useState<KnowledgeBaseType[]>(["industry", "company", "product"]);
-  const [answer, setAnswer] = useState<RagAnswer | null>(null);
   const [querying, setQuerying] = useState(false);
   const [error, setError] = useState("");
   const [uploadType, setUploadType] = useState<KnowledgeBaseType>("industry");
@@ -116,18 +109,18 @@ export function KnowledgeBase({ initialTab }: { initialTab?: string } = {}) {
 
   async function ask() {
     if (!question.trim() || selected.length === 0) return;
-    setQuerying(true); setError(""); setAnswer(null);
+    setQuerying(true); setError("");
     try {
-      const response = await fetch("/api/rag/query", {
+      const response = await fetch("/api/assistant/messages", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ question, filters: { collections: selected }, maxChunks: 8 }),
+        body: JSON.stringify({ content: question.trim(), knowledgeScope: selected, attachments: [] }),
       });
-      const body = await response.json() as RagAnswer & { error?: string };
-      if (!response.ok) throw new Error(body.error ?? "查询失败");
-      setAnswer(body);
+      const body = await response.json() as { conversation?: { id: string }; error?: string };
+      if (!response.ok || !body.conversation?.id) throw new Error(body.error ?? "知识问答任务创建失败");
+      router.push(`/c/${encodeURIComponent(body.conversation.id)}`);
     } catch (reason) {
-      setError(reason instanceof Error ? reason.message : "查询失败");
+      setError(reason instanceof Error ? reason.message : "知识问答任务创建失败");
     } finally { setQuerying(false); }
   }
 
@@ -221,14 +214,13 @@ export function KnowledgeBase({ initialTab }: { initialTab?: string } = {}) {
 
     {tab==="questions"&&<div className="kb-main-grid">
       <section className="panel rag-playground">
-        <div className="panel-header"><div><span className="section-kicker">GROUNDED RAG PLAYGROUND</span><h2>基于知识库提问</h2></div></div>
+        <div className="panel-header"><div><h2>基于知识库提问</h2></div></div>
         <div className="rag-controls">
           <label>检索范围</label><div className="kb-filter-row">{(["industry", "company", "product"] as KnowledgeBaseType[]).map((type) => <button key={type} className={selected.includes(type) ? "active" : ""} onClick={() => toggle(type)}><span>{selected.includes(type) ? "✓" : "+"}</span>{labels[type].title}</button>)}</div>
           <label htmlFor="rag-question">问题</label><textarea id="rag-question" value={question} onChange={(event) => setQuestion(event.target.value)} placeholder="询问市场、公司、产品或跨知识库问题…"/>
-          <div className="rag-submit-row"><span>资料和已验证事实走本地快速路径；复杂问题才进入检索与生成。</span><button className="primary-button" disabled={querying || selected.length === 0} onClick={ask}>{querying ? "正在查找答案…" : "提问"}</button></div>
+          <div className="rag-submit-row"><span>问题会交给主 Agent，任务进度、答案和来源保存在对话中。</span><button className="primary-button" disabled={querying || selected.length === 0} onClick={ask}>{querying ? "正在创建任务…" : "提问"}</button></div>
         </div>
         {error && <div className="rag-error">{error}</div>}
-        {answer && <div className="rag-result"><details className="rag-result-meta"><summary>回答详情</summary><span className={answer.grounded ? "grounded" : "ungrounded"}>{answer.kind ?? (answer.grounded ? "Grounded" : "Needs review")}</span><span>{answer.reasonCode ?? answer.model}</span><span>{answer.latencyMs} ms</span></details><div className="rag-answer">{answer.answer}</div>{answer.comparison&&<ComparisonTable comparison={answer.comparison}/>} {answer.warnings.map((warning) => <p className="rag-warning" key={warning}>⚠ {warning}</p>)}<details className="answer-sources"><summary>查看引用与来源</summary>{(answer.documents?.length ?? 0) > 0 && <div className="rag-citations"><strong>原始资料 · {answer.documents?.length}</strong>{answer.documents?.map((document) => <a key={document.assetId} href={document.url} target="_blank" rel="noreferrer"><span>{document.documentType}</span><div><b>{document.title}</b><small>{document.version ?? "未标注版本"}</small></div></a>)}</div>}{(answer.factCitations?.length ?? 0) > 0 && <div className="rag-citations"><strong>事实证据 · {answer.factCitations?.length}</strong>{answer.factCitations?.map((citation) => <a key={citation.factId} href={`/api/knowledge/assets/${citation.assetId}`} target="_blank" rel="noreferrer"><span>{citation.attributeKey}</span><div><b>{citation.rawValue}</b><small>{citation.version ?? citation.status}</small></div></a>)}</div>}<div className="rag-citations"><strong>检索证据 · {answer.citations.length}</strong>{answer.citations.map((citation) => <a key={citation.chunkId} href={citation.sourceUrl} target="_blank" rel="noreferrer"><span>[KB:{citation.chunkId.slice(0, 8)}…]</span><div><b>{citation.documentTitle} · {citation.visibility === "private" ? "私有" : "共享"}</b><small>{citation.excerpt}</small></div><em>{Math.round(citation.score * 100)}%</em></a>)}</div></details></div>}
       </section>
 
     </div>}

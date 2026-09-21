@@ -484,3 +484,10 @@ DeepSeek/兼容模型/搜索/补证/主评分/复核捕获预算拒绝后向上�
 | 任务、知识与邮箱管理 | 五类任务共同抽屉/独立地址、搜索/联系人明细分页、安全checkpoint暂停恢复已实现；知识分区/冲突/内容版本、记忆管理、邮箱范围同步/断开/本地删除/公司关联已实现；完整预算、失败尝试及持久成本遥测仍待补 |
 | AI首页与概览 | Kimi多轮库内查询/策略/跟进入口已接，不自动生成或发送；真实公司统计已接，运行任务数及预算修改未完成 |
 | 全流程联调与验收 | 479项自动测试与数据库读/隔离检查通过；登录后响应式/键盘/视觉验收、指定邮箱实投尚未完成。2026-09-11按用户要求暂停，详见 docs/RESUME_PRODUCT_UI_2026-09-11.md |
+
+
+## MA16 unified main-Agent entry (2026-09-21)
+
+All product conversation entry points, including new/history chat and the knowledge-base question form, enqueue the durable main Agent for administrators and members. The former Kimi intent route is retired; the dedicated knowledge-answer endpoint is a compatibility adapter that queues the main Agent. Selected knowledge collections are stored on the run and enforced by the search tool; answers, sources, progress and errors live in the owned conversation. MA16 explicitly supersedes MA11 configuration-controlled entry, while workflow quality and real provider outcomes remain separate acceptance evidence. See [confirmed rule](docs/CONFIRMED_PRODUCT_RULES.md) and [workflow](docs/MAIN_AGENT_WORKFLOW.md).
+
+MA16 implementation and isolated validation: [acceptance evidence](docs/MA16_MAIN_AGENT_ENTRY_ACCEPTANCE_2026-09-21.md). Real model-answer quality remains separate.

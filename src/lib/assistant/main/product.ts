@@ -7,9 +7,6 @@ export function defaultModelConfig(): ModelConfig {
   if (!/^[a-z0-9._/-]+(?::[a-z0-9_-]+)?$/i.test(model) ||model.length>160||!providers.length||providers.some(p => !/^[a-z0-9._/-]{1,100}$/i.test(p))) throw new Error("Invalid main model route");
   return { model, providers, version: PRODUCT_VERSION };
 }
-export function mainAgentEnabled(role: "admin" | "member"): boolean {
-  return process.env.MAIN_AGENT_ROLLOUT === "all" || (role === "admin" && process.env.MAIN_AGENT_ROLLOUT === "admin");
-}
 export function productPrompt(tools: ProductTool[]): string {
   return `You are the product's main sales Agent. Accept open-ended user goals, plan and revise using observed tool results. There is no intent/scenario whitelist. Use deterministic tools for reads, calculations and persistence. Ask only for missing required information or risk confirmation. Never claim a tool succeeded without its receipt or saved result.
 Objects: account owns a workspace, market-specific company state, contacts, mail, tasks and private knowledge. Public company evidence differs from private market decisions. Formal score requires the existing score/evidence contract; temporary analysis is research, not qualification. A draft is never a sent email. Provider failure is not business disqualification.

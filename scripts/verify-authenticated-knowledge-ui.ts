@@ -1,3 +1,5 @@
+// Historical direct-RAG acceptance for the retired synchronous knowledge UI.
+// Current product checks use knowledge:verify-ui and assistant:verify-entry.
 import nextEnv from "@next/env";
 import { randomBytes, randomUUID } from "node:crypto";
 import { mkdir } from "node:fs/promises";

@@ -126,6 +126,7 @@ async function durableModel(context: ExecutionContext, messages: ModelMessage[],
 export async function executeMainAgentRun(userId: string, runId: string, leaseToken: string) {
   const context: ExecutionContext = { userId, runId, leaseToken, role: "member" };
   const run = await boundary(context);
+  context.knowledgeScope = run.input.knowledgeScope;
   if(run.execution_kind==="mail")return (await import("./mail-graph")).executeMailDeliveryRun(context,run);
   const checkpointer = new PostgresSaver(getPool(), undefined, { schema: "langgraph" });
   const graph = buildMainAgentGraph({
@@ -152,7 +153,10 @@ export async function executeMainAgentRun(userId: string, runId: string, leaseTo
        where user_id=$1 and conversation_id=$2 and role in('user','assistant') and (metadata->>'runId' is null or metadata->>'runId'<>$3)
        and created_at < (select created_at from agent_run where id=$3::uuid and user_id=$1)
        order by created_at desc,id desc limit 12) h order by created_at,id`, [userId, run.conversation_id, runId]);
-    initial = { messages: [{ role: "system", content: productPrompt(availableTools(context)) }, ...history,
+    const knowledgeScope = run.input.knowledgeScope;
+    initial = { messages: [{ role: "system", content: productPrompt(availableTools(context)) },
+      ...(knowledgeScope?.length ? [{ role: "system" as const, content: `This question came from the knowledge base. Search and cite only these selected knowledge collections: ${knowledgeScope.join(", ")}. Pass this exact list as knowledge_search.collections. Answer in the user's language and distinguish missing evidence from verified facts.` }] : []),
+      ...history,
       { role: "user", content: run.input.content + (run.input.attachments.length ? `\nAttached registered asset IDs: ${run.input.attachments.map(a => a.assetId).join(", ")}` : "") }],
       pending: [], steps: 0, seen: {}, instructionIds: [],decisionRevision:0,policyRevision:"",status: "running", reply: "" };
   }

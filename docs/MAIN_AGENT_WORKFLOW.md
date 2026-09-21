@@ -188,3 +188,10 @@ MA05 的观察模式也允许没有旧预算记录的新账户记入已验证费
 P1：应用迁移 090；启动原 `npm run langgraph:dev` 和新增 `npm run assistant:worker`；通过部署环境设置 `MAIN_AGENT_ROLLOUT=admin` 先开放管理员（`all` 为全账户，空值回退）。主模型/接收方通过 `MAIN_AGENT_MODEL` / `MAIN_AGENT_PROVIDERS` 配置，新任务固定该配置。运行 `node scripts/run-tsx.cjs scripts/verify-main-agent-db.ts` 验证数据库。该验证仅清理自己创建的合成账户，不调用供应商。真实发信/脚本/浏览器工具尚未开放。
 
 P2/P3 基础：继续应用 091/092；配置 `PRODUCT_FINANCIAL_POLICY=observe` 在页面和工具共用费用层启用 MA05。主 Agent 的发信工具进入精确批准，脚本/浏览器未开放。`verify-main-agent-live.ts --live` 是显式真实调用检查，保留费用/调用记录；当前路由 HTTP 403，不能切换为默认入口或宣称 P6 达标。
+
+
+## MA16 unified product entry (2026-09-21)
+
+The authenticated message API always validates and enqueues a durable main-Agent run, regardless of account role or rollout environment variable. The knowledge-base question form submits the same run with its selected industry/company/product collections and opens the owned conversation; the search tool uses the saved scope. The former direct knowledge query API now queues the main Agent and returns a task receipt and the synchronous Kimi intent branch is unreachable from product chat. Historical conversations remain readable and can receive new main-Agent runs. The assistant worker and standalone LangGraph service must both run for queued work to advance. This implementation follows [MA16](CONFIRMED_PRODUCT_RULES.md); tests and production smoke results are recorded separately.
+
+MA16 implementation and isolated validation: [acceptance evidence](MA16_MAIN_AGENT_ENTRY_ACCEPTANCE_2026-09-21.md). Real model-answer quality remains separate.

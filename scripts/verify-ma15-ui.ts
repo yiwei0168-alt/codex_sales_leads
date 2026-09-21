@@ -5,8 +5,8 @@ import { chromium, expect, type Page } from "@playwright/test";
 import { Pool } from "pg";
 import { hashPassword } from "../src/lib/auth/password";
 import { getPool } from "../src/lib/rag/db";
-import { enqueueRun } from "../src/lib/assistant/main/repository";
 import { defaultModelConfig } from "../src/lib/assistant/main/product";
+import { digest } from "../src/lib/assistant/main/contracts";
 import { requestApproval } from "../src/lib/assistant/main/approvals";
 import { productTools } from "../src/lib/assistant/main/tools";
 import { addManualCompany } from "../src/lib/sales/manual-company";
@@ -32,8 +32,12 @@ try {
   const company=await addManualCompany(owner,{name:"MA15 Fixture Networks",country:"DE",website:`https://${owner}.invalid`,role:"Distributor"});
   await pool.query("insert into knowledge_document(id,collection_id,external_id,title,source_type,content_sha256,owner_id,visibility) values($1,(select id from knowledge_collection where slug='industry'),$2,'笔记本阅读与渠道开发资料','fixture',$2,$3,'private')",[doc,doc,owner]);
   await pool.query("insert into knowledge_chunk(document_id,chunk_index,content,token_estimate,content_sha256) values($1::uuid,0,$2,200,($1::uuid)::text)",[doc,"这是一份用于阅读验收的隔离资料。\n\n"+"渠道开发需要核对来源、公司角色和明确的业务目标。".repeat(160)+"\n\n资料末尾标记：完整正文已读取。\n\n| 渠道 | 联系方式 | 来源 |\n| --- | --- | --- |\n| 分销商 | 保存的联系方式 | "+"长来源内容".repeat(50)+" |"]);
-  const run=await enqueueRun(owner,{content:"MA15 待审核开发计划",requestKey:randomUUID(),attachments:[]},defaultModelConfig());
-  await pool.query("update agent_run set status='paused',control='pause' where id=$1",[run.id]);
+  // Create the paused fixture atomically; a live worker must never claim this synthetic task.
+  const fixtureInput={content:"MA15 待审核开发计划",requestKey:randomUUID(),attachments:[]};
+  const fixtureConversation=(await pool.query<{id:string}>("insert into assistant_conversation(user_id,title) values($1,$2) returning id",[owner,fixtureInput.content])).rows[0];
+  const run=(await pool.query<{id:string;conversation_id:string}>(`insert into agent_run(user_id,conversation_id,request_key,request_hash,input,model_config,status,control)
+    values($1,$2,$3,$4,$5,$6,'paused','pause') returning id,conversation_id`,[owner,fixtureConversation.id,fixtureInput.requestKey,digest(fixtureInput),JSON.stringify(fixtureInput),JSON.stringify(defaultModelConfig())])).rows[0];
+  await pool.query("insert into assistant_message(user_id,conversation_id,role,intent,content,metadata) values($1,$2,'user','general',$3,$4)",[owner,fixtureConversation.id,fixtureInput.content,JSON.stringify({runId:run.id})]);
   const context={userId:owner,runId:run.id,leaseToken:randomUUID(),role:"member" as const};
   await requestApproval(context,productTools.find(t=>t.id==="mail_send")!,{connectionId:randomUUID(),to:"review@example.invalid",subject:"开发合作提议",body:"这封邮件仅用于批准卡阅读验收，不会发送。\n\n"+"我们希望了解贵公司的渠道合作需求。".repeat(35),attachments:[{filename:"渠道合作资料.pdf",sha256:"a".repeat(64)}]});
   await requestApproval(context,productTools.find(t=>t.id==="mail_message_delete")!,{messageId:randomUUID()});
@@ -58,8 +62,8 @@ try {
     await expect(page.locator(".library-body")).toHaveCSS("font-size","16px");await expect(page.getByRole("region",{name:"资料表格"})).toBeVisible();await noOverflow(page,"reader");await page.evaluate(()=>window.scrollTo(0,0));await page.screenshot({path:`tmp/ma15/reader-${size.width}-${zoom}.png`,fullPage:true});await page.getByRole("button",{name:"返回资料列表"}).click();
     await page.getByRole("button",{name:"上传资料",exact:true}).click();await expect(page.getByLabel("文档标题")).toBeVisible();await noOverflow(page,"upload");await page.getByRole("button",{name:"收起上传"}).click();
     await page.getByRole("button",{name:"知识问答",exact:true}).click();await expect(page).toHaveURL(/tab=questions/);await page.reload();await expect(page.getByLabel("问题",{exact:true})).toBeVisible();
-    await page.route("**/api/rag/query",route=>route.fulfill({json:{answer:"已保存证据支持以下渠道判断。".repeat(70),grounded:true,model:"isolated-fixture",latencyMs:0,warnings:[],citations:[{chunkId:doc,documentTitle:"隔离来源",sourceUrl:"https://example.invalid/source",visibility:"private",excerpt:"来源正文".repeat(50),score:.9}],comparison:{entities:[{key:"A"},{key:"B"}],differences:[],attributes:[{attributeKey:"规格对照",left:{status:"verified",value:"长规格内容".repeat(40)},right:{status:"verified",value:"另一个长规格内容".repeat(40)},isDifference:false}]}}}));
-    await page.getByRole("button",{name:"提问",exact:true}).click();await expect(page.locator(".rag-answer")).toBeVisible();await expect(page.locator(".answer-sources")).not.toHaveAttribute("open","");await page.getByText("查看引用与来源",{exact:true}).click();await noOverflow(page,"answer-table");await page.evaluate(()=>window.scrollTo(0,0));await page.screenshot({path:`tmp/ma15/answer-${size.width}-${zoom}.png`,fullPage:true});
+    let knowledgeRequest: {knowledgeScope?:string[]} | undefined; await page.route("**/api/assistant/messages", async route=>{knowledgeRequest=route.request().postDataJSON();await route.fulfill({status:202,json:{conversation:{id:run.conversation_id}}});});
+    await page.getByRole("button",{name:"\u63d0\u95ee",exact:true}).click();await expect(page).toHaveURL(new RegExp(`/c/${run.conversation_id}$`));expect(knowledgeRequest?.knowledgeScope).toEqual(["industry","company","product"]);await noOverflow(page,"knowledge-question-handoff");
     await nav("客户开发");await page.getByRole("button",{name:"开发信",exact:true}).click();await expect(page.getByLabel("选择开发公司")).toBeVisible();await page.getByLabel("选择开发公司").selectOption(company.externalId);await expect(page).toHaveURL(/company=/);await page.getByLabel("选择国家").selectOption("DE");await page.getByRole("button",{name:"邮箱",exact:true}).click();await expect(page).toHaveURL(/country=DE.*company=.*tab=mailbox/);await page.getByRole("button",{name:"开发信",exact:true}).click();await expect(page.getByLabel("选择开发公司")).toHaveValue(company.externalId);await noOverflow(page,"development");
     await nav("市场与线索");await page.getByRole("button",{name:"销售线索",exact:true}).click();await expect(page).toHaveURL(/markets\/DE\/leads/);await page.getByRole("button",{name:"渠道关系",exact:true}).click();await page.goBack();await expect(page.getByLabel("选择国家")).toHaveValue("DE");await noOverflow(page,"market");
     await page.getByRole("button",{name:"返回对话",exact:true}).click();await expect(page).toHaveURL(new RegExp(`/c/${run.conversation_id}$`));await expect(page.getByText("确认发送邮件",{exact:true})).toBeVisible();await expect(page.getByText("渠道合作资料.pdf",{exact:false})).toBeVisible();await expect(page.getByText("确认删除本地邮件",{exact:true})).toBeVisible();await noOverflow(page,"approval");await page.evaluate(()=>window.scrollTo(0,0));await page.screenshot({path:`tmp/ma15/approval-${size.width}-${zoom}.png`,fullPage:true});
@@ -68,7 +72,7 @@ try {
     if(viewport.width<960)await page.getByRole("button",{name:"打开导航菜单"}).click();await expect(page.getByRole("button",{name:"新对话",exact:true})).toHaveCount(1);await page.getByRole("button",{name:"帮助",exact:true}).click();await page.getByRole("button",{name:"任务记录",exact:true}).click();await expect(page).toHaveURL(/\/tasks/);await expect(page.locator(".agent-task-history")).toContainText("已暂停");await expect(page.locator(".agent-task-history")).toContainText("MA15 待审核开发计划");await noOverflow(page,"tasks");
     await nav("新对话");await expect(page).toHaveURL(base+"/");await expect(page.getByRole("heading",{name:"今天想推进哪个市场？"})).toBeVisible();
     expect((await pool.query("select count(*)::int n from assistant_conversation where user_id=$1",[owner])).rows[0].n).toBe(1);
-    expect(errors).toEqual([]);checks.push(`${size.width}x${size.height} @ ${zoom*100}%: navigation, URLs, drafts, library, answer/table, company context, approvals, no overflow`);
+    expect(errors).toEqual([]);checks.push(`${size.width}x${size.height} @ ${zoom*100}%: navigation, URLs, drafts, library, knowledge question handoff, company context, approvals, no overflow`);
     await ctx.close();
   }
   const ctx=await browser.newContext();const page=await ctx.newPage();await page.goto(base);await page.getByLabel("登录邮箱").fill(adminEmail);await page.getByLabel("密码",{exact:true}).fill(password);await page.getByRole("button",{name:"登录",exact:true}).click();await page.getByRole("button",{name:"知识库",exact:true}).click();await expect(page.getByRole("button",{name:"审核",exact:true})).toBeVisible();await page.getByRole("button",{name:"审核",exact:true}).click();await expect(page).toHaveURL(/tab=review/);checks.push("Administrator review entry visible; member review hidden");await ctx.close();

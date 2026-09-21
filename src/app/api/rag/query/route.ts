@@ -1,51 +1,32 @@
-import type { KnowledgeBaseType, RagQuery } from "@/lib/rag/types";
 import { requireApiSession } from "@/lib/auth/session";
-import { invokeKnowledgeWorkflowViaLangGraph } from "@/lib/langgraph/client";
+import { getConversation } from "@/lib/assistant/repository";
+import { enqueueRun } from "@/lib/assistant/main/repository";
+import { messageInputSchema } from "@/lib/assistant/main/contracts";
+import { defaultModelConfig } from "@/lib/assistant/main/product";
+import { randomUUID } from "node:crypto";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const types: KnowledgeBaseType[] = ["industry", "company", "product"];
-
 export async function POST(request: Request) {
   const session = await requireApiSession();
   if (session instanceof Response) return session;
-  let input: RagQuery;
+  const body = await request.json().catch(() => null) as { question?: unknown; filters?: { collections?: unknown } } | null;
+  const collections = body?.filters?.collections ?? ["industry", "company", "product"];
+  const input = messageInputSchema.safeParse({
+    content: body?.question,
+    knowledgeScope: collections,
+    requestKey: randomUUID(),
+    attachments: [],
+  });
+  if (!input.success || input.data.content.length < 3 || input.data.content.length > 4000) {
+    return Response.json({ error: "问题或检索范围无效" }, { status: 400 });
+  }
   try {
-    input = await request.json() as RagQuery;
+    const run = await enqueueRun(session.userId, input.data, defaultModelConfig());
+    return Response.json({ conversation: await getConversation(session.userId, run.conversation_id),
+      run: { id: run.id, status: run.status } }, { status: 202 });
   } catch {
-    return Response.json({ error: "请求体必须是 JSON" }, { status: 400 });
-  }
-  const question = input.question?.trim();
-  if (!question || question.length < 3 || question.length > 4000) {
-    return Response.json({ error: "问题长度必须在 3–4000 字符之间" }, { status: 400 });
-  }
-  const collections = input.filters?.collections;
-  if (collections?.some((type) => !types.includes(type))) {
-    return Response.json({ error: "知识库类型无效" }, { status: 400 });
-  }
-
-  try {
-    const result = await invokeKnowledgeWorkflowViaLangGraph({
-      userId: session.userId,
-      question,
-      collections,
-      entry: "knowledge-page",
-    });
-    return Response.json(result.ragAnswer ?? {
-      answer: result.answer,
-      citations: [],
-      grounded: result.kind === "fact-answer",
-      model: result.kind === "fact-answer" ? "local-verified-facts" : "local-document-registry",
-      latencyMs: result.timings.totalMs,
-      warnings: [],
-      kind: result.kind,
-      reasonCode: result.reasonCode,
-      documents: result.documents,
-      factCitations: result.factCitations,
-      comparison: result.comparison,
-    });
-  } catch (error) {
-    return Response.json({ error: error instanceof Error ? error.message : "RAG 查询失败" }, { status: 500 });
+    return Response.json({ error: "知识问答任务入队失败" }, { status: 409 });
   }
 }

@@ -80,8 +80,9 @@ export const productTools: ProductTool[] = [
       return result(output, { status: output.status, missing: "missing" in output ? output.missing : [] });
     } }),
   defineTool({ id: "knowledge_search", description: "Search accessible knowledge evidence using lexical and structured lanes, without another answer model. Returns chunks and source coordinates; v3 remains authoritative.",
-    input: z.object({ query: z.string().min(2).max(4000), limit: z.number().int().min(1).max(20).default(8) }).strict(),
-    execute: async (i, c) => result(await hybridSearch(c.userId, i.query, null, {}, i.limit), { cost: "known" }) }),
+    input: z.object({ query: z.string().min(2).max(4000), limit: z.number().int().min(1).max(20).default(8),
+      collections: z.array(z.enum(["industry", "company", "product"])).min(1).max(3).optional() }).strict(),
+    execute: async (i, c) => result(await hybridSearch(c.userId, i.query, null, { collections: c.knowledgeScope ?? i.collections }, i.limit), { cost: "known" }) }),
   defineTool({ id: "knowledge_facts", description: "Read verified facts for an entity and explicit attribute keys. Missing facts stay unknown; quarantined facts are not formal evidence.",
     input: z.object({ entity: z.string().min(1).max(180), attributes: z.array(z.string().max(120)).min(1).max(30) }).strict(),
     execute: async (i, c) => result(await resolveVerifiedFacts(c.userId, i.entity, i.attributes), { cost: "known" }) }),
@@ -187,8 +188,9 @@ export const productTools: ProductTool[] = [
     input: z.object({ plan: z.string().min(1).max(8000), scale: z.string().min(1).max(1000), uncertainty: z.string().max(2000), requestedEstimate: z.string().max(1000).optional() }).strict(), effect: "publish", recovery: "idempotent",
     execute: async i => result({ approvedPlan: i }, { cost: "known" }) }),
 ];
-export function availableTools(context: Pick<ExecutionContext, "role">, tools = productTools) {
-  return tools.filter(t => t.role === "member" || context.role === "admin");
+export function availableTools(context: Pick<ExecutionContext, "role" | "knowledgeScope">, tools = productTools) {
+  return tools.filter(t => (t.role === "member" || context.role === "admin")
+    && (!context.knowledgeScope?.length || t.id === "knowledge_search" || t.id === "knowledge_status"));
 }
 export function describeTool(tool: ProductTool) {
   const { execute: _execute, input, output, ...metadata } = tool;

@@ -4,7 +4,7 @@ import { z } from "zod";
 export const runStatuses = ["queued", "running", "waiting_user", "paused", "partial", "completed", "failed", "cancelled"] as const;
 export type RunStatus = typeof runStatuses[number];
 export type Effect = "read" | "reversible" | "send" | "destructive" | "publish";
-export interface ExecutionContext { userId: string; runId: string; leaseToken: string; role: "admin" | "member"; callId?: string; instructionIds?: readonly string[] }
+export interface ExecutionContext { userId: string; runId: string; leaseToken: string; role: "admin" | "member"; callId?: string; instructionIds?: readonly string[]; knowledgeScope?: Array<"industry" | "company" | "product"> }
 export const toolResultSchema = z.object({
   status: z.enum(["success", "partial", "missing_input", "waiting_approval", "unavailable", "unknown"]),
   data: z.unknown().optional(),
@@ -38,6 +38,7 @@ export const messageInputSchema = z.object({
   conversationId: z.uuid().optional(), content: z.string().trim().min(2).max(100_000),
   requestKey: z.string().min(8).max(120),
   attachments: z.array(z.object({ assetId: z.uuid() }).strict()).max(20).default([]),
+  knowledgeScope: z.array(z.enum(["industry", "company", "product"])).min(1).max(3).optional(),
 }).strict();
 export type MessageInput = z.infer<typeof messageInputSchema>;
 export interface ModelConfig { model: string; providers: string[]; version: string }
