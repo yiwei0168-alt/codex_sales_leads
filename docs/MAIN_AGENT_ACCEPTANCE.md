@@ -1,5 +1,9 @@
 # Main Agent acceptance log
 
+## MA11 shared RAG v3 release tools - 2026-09-21 (partial)
+
+The 96-tool registry now exposes administrator `knowledge_shared_release_gate` and exact-approved `knowledge_shared_release_activate`. Both check the account's stored active administrator role inside the database transaction. Activation is bound to the observed release ID and manifest SHA-256, checks manifest coverage, processed assets, chunks, both embedding profiles and document review state, then calls the existing atomic activation function. Active-pointer reuse returns a receipt without invoking activation again, and newly registered assets prevent a stale active release from claiming complete coverage. Seven focused tests cover role refusal, gate read, changed manifest, ready activation, active reuse, incomplete vectors and new-asset exclusion. Full regression passed 259 files / 1,305 assertions; TypeScript, scoped lint, 96-schema catalog and production build passed. A real read-only preflight on the configured local source returned an already active shared release with 281/281 manifest assets, zero document blockers, 1,029 quarantined fact reviews and 11 reviewed Gold cases. These counts are a point-in-time local observation, not a new release activation or end-to-end retrieval-quality gate. No new release was built, embedded or activated in this stage; a newly registered binary must enter a complete next release first.
+
 ## MA11 independent formal score publication - 2026-09-21 (partial)
 
 Migrations 099–102 were also applied transactionally to the configured local source database after isolated clone checks. The main entry remains configuration controlled; applying the schema does not publish data, start a provider call or authorize account-wide release.

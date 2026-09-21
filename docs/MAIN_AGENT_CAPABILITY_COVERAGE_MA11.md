@@ -1,6 +1,6 @@
 # MA11 主 Agent 能力覆盖核对
 
-本表从可执行工具注册表生成。基线为原有 74 项；`lead_workflow` 和本轮补齐的页面共用服务适配器使当前目录达到 94 项。`可调用`只表示工具有注册的 schema、账户/角色门禁和服务适配器，不代表外部连接可用、业务结果已生成或真实模型已选中。具体用途见 [工具目录](MAIN_AGENT_TOOL_CATALOG.md)。
+本表从可执行工具注册表生成。基线为原有 74 项；`lead_workflow` 和本轮补齐的页面共用服务适配器使当前目录达到 96 项。`可调用`只表示工具有注册的 schema、账户/角色门禁和服务适配器，不代表外部连接可用、业务结果已生成或真实模型已选中。具体用途见 [工具目录](MAIN_AGENT_TOOL_CATALOG.md)。
 
 | 工具 | 状态 | 角色 | 效果 | 费用状态 |
 |---|---|---|---|---|
@@ -31,6 +31,8 @@
 | `mailbox_knowledge_list` | 可调用 | member | read | known |
 | `knowledge_shared_text_upsert` | 可调用 | admin | publish | unknown |
 | `knowledge_shared_binary_register` | 可调用 | admin | publish | unknown |
+| `knowledge_shared_release_gate` | 可调用 | admin | read | known |
+| `knowledge_shared_release_activate` | 可调用 | admin | publish | known |
 | `budget_read` | 可调用 | member | read | known |
 | `task_usage_read` | 可调用 | member | read | known |
 | `run_read` | 可调用 | member | read | known |
@@ -113,8 +115,8 @@
 |---|---|
 | 独立正式评分的真实模型结果 | `company_score_publish` 已可将当前政策下完成复核的研究产物写成正式评估；真实专家评分及答案质量仍待验收 |
 | 独立联系人核验的真实结果 | 已有候选读取、影子核验与精确批准发布工具；真实 DeepSeek 调用与正式状态变更仍待验收 |
-| 共享二进制进入活跃 RAG v3 | `knowledge_shared_binary_register` 登记共享文档与原件，返回 `pending-release`；不可变 release 的完整清单、双向量和激活门禁仍需既有管理员流程 |
-| 未关联公司邮件的跟进草稿 | 已接入账户级加密草稿；迁移 099 与真实生成/发送仍待部署验收 |
+| 共享二进制进入活跃 RAG v3 | `knowledge_shared_binary_register` 登记共享文档与原件，返回 `pending-release`；`knowledge_shared_release_gate` 可读发布门槛，`knowledge_shared_release_activate` 经精确批准并复核清单哈希后调用既有原子激活函数。新资产仍需先由既有构建流程纳入新 release、完成双向量及文档复核；本轮没有激活新 release。 |
+| 未关联公司邮件的跟进草稿 | 已接入账户级加密草稿，迁移 099 已应用于配置的本地源库；真实生成/发送仍待工作账户验收 |
 | MCP/API 连接、联网浏览器、私有 Git 连接 | MA11 后续阶段；当前注册工具不声称这些连接可用 |
 
 发布、外发及重要删除仍以实际工具效果触发精确批准。管理员工具只有当前角色为管理员时才可执行。每项返回的数据、缺项、连接状态及真实回执须分别验收；本盘点本身不是 120 条回放或 8 条真实 GLM Batch 的证据。

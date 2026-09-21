@@ -1,5 +1,7 @@
 # 用户确认规则登记表
 
+> 2026-09-21 MA11 implementation follow-up: the existing shared RAG v3 release preflight and atomic activation are now exposed as administrator Agent tools with exact approval, an observed release ID and manifest hash. The executable catalog has 96 tools. The configured local source currently has an active 281-asset release; this stage did not build or activate a new release. This is implementation and read-only gate evidence under MA11, not a new confirmation or full product acceptance.
+
 > 2026-09-21 MA13 confirmation: from this decision onward, development stops tracking cost and maintaining the efficiency ledger, and no expense report is generated automatically. Product-flow completion and result quality become the primary engineering and compute priorities. Historical records remain historical evidence; implementation and acceptance are separate.
 
 > 2026-09-21 MA11 implementation follow-up: the executable catalog now contains 94 tools after adding persisted contact-enrichment reading, exact-approved shared binary registration, staged contact verification and standalone formal score publication, and extending account-owned follow-up drafts. This is implementation evidence, not a new rule or complete workflow acceptance; active RAG v3 release and live quality gaps stay explicit in the capability matrix.

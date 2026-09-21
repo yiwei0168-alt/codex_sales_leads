@@ -1,6 +1,6 @@
 # Registered main Agent tools
 
-Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/generate-main-agent-catalog.ts --check` to detect drift. These 94 tools are implemented adapters; registration is not real-provider acceptance. The complete migration inventory remains in [MAIN_AGENT_CAPABILITIES.md](MAIN_AGENT_CAPABILITIES.md).
+Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/generate-main-agent-catalog.ts --check` to detect drift. These 96 tools are implemented adapters; registration is not real-provider acceptance. The complete migration inventory remains in [MAIN_AGENT_CAPABILITIES.md](MAIN_AGENT_CAPABILITIES.md).
 
 | Tool | Version | Role | Effect | Cost | Purpose |
 |---|---|---|---|---|---|
@@ -31,6 +31,8 @@ Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/ge
 | mailbox_knowledge_list | 1 | member | read | known | Read approved account-owned knowledge and template candidates learned from mailbox review. Private content remains in the configured main-model context. |
 | knowledge_shared_text_upsert | 1 | admin | publish | unknown | Create or replace one administrator-owned shared text knowledge document after exact approval. A changed existing document requires its observed content hash; this does not accept binary files or rebuild RAG v3. |
 | knowledge_shared_binary_register | 1 | admin | publish | unknown | After exact administrator approval, verify an owned uploaded binary and its local extraction hashes, then register the original asset and extracted text in the shared library. Returns RAG v3 release pending; never claims active-release publication. |
+| knowledge_shared_release_gate | 1 | admin | read | known | Read the current completeness blockers and manifest hash for one administrator-accessible shared RAG v3 release. Does not build or activate it. |
+| knowledge_shared_release_activate | 1 | admin | publish | known | After exact administrator approval, activate an existing built shared RAG v3 release only if its observed ID/manifest and the original completeness/review/dual-embedding gates still pass. This does not start extraction or paid embedding. |
 | budget_read | 1 | member | read | known | Read legacy account budget as reference data, not an MA05 spending limit. Unknown bills remain unknown. |
 | task_usage_read | 1 | member | read | known | Read the account's last 30 days of operational efficiency and provider billing observations. Tables overlap and totals must not be added; unknown bills and adoption remain unknown. |
 | run_read | 1 | member | read | known | Read an owned Agent task and saved event receipts, including partial outcomes. Does not resume it. |

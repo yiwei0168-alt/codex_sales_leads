@@ -32,6 +32,7 @@ import { readLatestEnrichmentRun } from "@/lib/contacts/enrichment-run-read";
 import { registerExtractedSharedBinary } from "@/lib/knowledge/binary-registration";
 import {contactVerificationConfigured,evaluateSavedContact,publishSavedContactDecision} from "@/lib/contacts/verification/saved-service";
 import {publishReviewedStandaloneScore} from "@/lib/leads/workflow/standalone-score-publication";
+import {readSharedReleaseGate,activateSharedRelease} from "@/lib/knowledge/release-activation";
 
 const companyId = z.string().min(1).max(180), country = z.string().regex(/^[A-Z]{2}$/);
 const developmentInput = z.object({ companyExternalId: companyId, language: z.string().max(20).optional(), instructions: z.string().max(2000).optional() }).strict();
@@ -126,6 +127,10 @@ export const businessTools = [
   defineTool({id:"knowledge_shared_binary_register",description:"After exact administrator approval, verify an owned uploaded binary and its local extraction hashes, then register the original asset and extracted text in the shared library. Returns RAG v3 release pending; never claims active-release publication.",role:"admin",effect:"publish",recovery:"idempotent",cost:"unknown",connections:["knowledge-embedding"],
     input:z.object({jobId:z.uuid(),sourceSha256:z.string().regex(/^[0-9a-f]{64}$/),language:z.string().trim().min(2).max(30).default("zh-CN"),authorityLevel:z.union([z.literal(1),z.literal(2),z.literal(3),z.literal(4),z.literal(5)]).default(3)}).strict(),
     execute:async(i,c)=>{const registered=await registerExtractedSharedBinary(c.userId,i);return registered.status==="registered"?result(registered,{receipt:registered.assetId}):result(null,{status:"missing_input",missing:registered.missing});}}),
+  defineTool({id:"knowledge_shared_release_gate",description:"Read the current completeness blockers and manifest hash for one administrator-accessible shared RAG v3 release. Does not build or activate it.",role:"admin",
+    input:z.object({releaseKey:z.string().min(1).max(160)}).strict(),execute:async(i,c)=>{const gate=await readSharedReleaseGate(c.userId,i.releaseKey);return gate?result(gate):result(null,{status:"missing_input",missing:["Existing shared release key"]});}}),
+  defineTool({id:"knowledge_shared_release_activate",description:"After exact administrator approval, activate an existing built shared RAG v3 release only if its observed ID/manifest and the original completeness/review/dual-embedding gates still pass. This does not start extraction or paid embedding.",role:"admin",effect:"publish",recovery:"idempotent",
+    input:z.object({releaseKey:z.string().min(1).max(160),releaseId:z.uuid(),expectedManifestHash:z.string().regex(/^[0-9a-f]{64}$/)}).strict(),execute:async(i,c)=>result(await activateSharedRelease(c.userId,i),{receipt:i.releaseId})}),
   defineTool({ id: "budget_read", description: "Read legacy account budget as reference data, not an MA05 spending limit. Unknown bills remain unknown.", input: z.object({}).strict(), execute: async (_,c) => result(await readSpendBudget(c.userId)) }),
   defineTool({id:"task_usage_read",description:"Read the account's last 30 days of operational efficiency and provider billing observations. Tables overlap and totals must not be added; unknown bills and adoption remain unknown.",
     input:z.object({}).strict(),execute:async(_,c)=>result(await readTaskUsage(c.userId))}),

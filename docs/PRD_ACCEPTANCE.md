@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+> 2026-09-21 MA11/P2 continuation: the 96-tool Agent registry now includes administrator release preflight and exact-approved atomic activation for an already built shared RAG v3 release. Six focused tests and type checks passed; the configured local source gate reads an existing active 281-asset release with no document blockers. No new release was built or activated. New binary assets still require the existing build, dual-embedding and review workflow. [Evidence](MAIN_AGENT_ACCEPTANCE.md).
+
 > 2026-09-21 MA11/P2 partial continuation: an exact-approved tool can now publish an eligible independently reviewed research score into the formal versioned assessment and company market state. The isolated real PostgreSQL fixture passed publication, replay, owner isolation and stale-revision checks; no live scoring model was called. [Evidence](MAIN_AGENT_ACCEPTANCE.md).
 
 > 2026-09-21 MA11/P2 partial continuation: the Agent can now read owned email candidates, save a specialist shadow contact decision after exact model-disclosure approval, and publish the reviewed result only after a second exact approval with source/version checks. Migration 101 and five focused tests passed; no live specialist call or real contact mutation has been verified. [Evidence](MAIN_AGENT_ACCEPTANCE.md).
