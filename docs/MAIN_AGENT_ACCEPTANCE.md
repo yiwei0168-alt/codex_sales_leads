@@ -1,5 +1,11 @@
 # Main Agent acceptance log
 
+## MA11 eight-task GLM Batch gate - 2026-09-21 (blocked before private-data submission)
+
+`scripts/verify-main-agent-ma11-batch.ts` prepares eight distinct saved-record tasks in a temporary database clone: single knowledge/mail/company reads, company plus formal assessment, saved task receipt, draft plus mailbox state, missing assessment and partial mail read. It records Batch identity, model-selected tool names, tool outcomes, tokens, reported cost, unknown bills and latency separately from deterministic replay; `--start` and `--poll` require `--allow-private-provider-data` because later model turns can include private tool output.
+
+One sandboxed first-task submission attempt produced a local `submission-unknown` journal entry in 32 ms, with zero valid model outputs and unknown billing. A read-only provider listing from an allowed network context found zero batches in the submission window, but did not establish a final billing receipt. Automatic approval review then rejected the eight-task external submission before process start because the planned prompts and follow-up tool outputs could transmit private knowledge, mailbox and draft content to OpenRouter/Fireworks without specific destination/payload authorization. No second submission occurred; the temporary clone was dropped. Eight real model selections, costs/latencies and answer quality are therefore **not measured**. The 40/40 deterministic replay is not full MA11 acceptance.
+
 ## MA11 isolated deterministic replay - 2026-09-21 (architecture check, not model planning)
 
 The local PostgreSQL source was cloned into a temporary database. A private, ignored manifest froze 120 tasks (80 development, 40 locked) with source IDs, update versions and content hashes; its SHA-256 is `477ffc168c5da4672190fea40180add812841ec21eb386ea26c39a8343d88570`. It sampled 56 account-private knowledge documents, 50 account mail messages, six company market records, two saved drafts and two saved search tasks. Four locked boundary cases covered cross-account mail access, unapproved send, duplicate send and receipt integrity. No private body or manifest is committed. Only source identity/hash, saved state, tool call counts and receipts were machine judged; the 11 reviewed RAG Gold and old holdout were not used as answer keys.
