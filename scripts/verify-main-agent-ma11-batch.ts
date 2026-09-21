@@ -10,7 +10,7 @@ process.env.LANGSMITH_TRACING = "false";
 process.env.PRODUCT_FINANCIAL_POLICY = "observe";
 const stateFile = "tmp/ma11-replay-state.json";
 const batchFile = "tmp/ma11-batch-state.json";
-const reportFile = "tmp/ma11-batch-report.json";
+const resultsFile = "tmp/ma11-batch-results.json";
 type SourceCase = { kind: string; userId: string; sourceId: string; task: string };
 type BatchCase = { id: string; userId: string; runId: string; sourceKind: string; purpose: string };
 type BatchState = { manifestHash: string; database: string; cases: BatchCase[] };
@@ -69,7 +69,7 @@ async function start() {
       break;
     }
   }
-  await report(state);
+  await writeResults(state);
 }
 
 async function poll() {
@@ -77,7 +77,7 @@ async function poll() {
   const state = JSON.parse(await readFile(batchFile, "utf8")) as BatchState;
   assert.equal(state.database, replayState.database);
   assert.equal(state.manifestHash, replayState.manifestHash);
-  const permitted = new Set(["knowledge_library_list", "knowledge_originals", "mail_read", "company_read", "company_assessment_read", "task_detail", "run_read", "draft_read", "mail_connections"]);
+  const permitted = new Set(["knowledge_library_list", "knowledge_originals", "mail_read", "company_read", "company_assessment_read", "task_list", "task_detail", "run_read", "draft_read", "mail_connections"]);
   const registered = new Set(productTools.map(tool => tool.id));
   for (const item of state.cases) {
     const jobs = await tenantQuery<{ id: string; status: string }>(item.userId,
@@ -108,7 +108,7 @@ async function poll() {
     await tenantQuery(item.userId, "update agent_run set status='running',lease_token=$3,lease_until=now()+interval '5 minutes' where user_id=$1 and id=$2 and status='queued'", [item.userId, item.runId, token]);
     await executeMainAgentRun(item.userId, item.runId, token);
   }
-  await report(state);
+  await writeResults(state);
 }
 
 async function reconcileAdmission() {
@@ -158,8 +158,8 @@ async function watch() {
     // leaving an unbounded verifier process or submitting beyond the eight cases.
     while (Date.now() - started < 48 * 60 * 60 * 1000) {
       await poll();
-      const report = JSON.parse(await readFile(reportFile, "utf8")) as { cases: Array<{ status: string }> };
-      if (report.cases.length === 8 && report.cases.every(item => ["completed", "partial", "failed", "cancelled"].includes(item.status))) {
+      const results = JSON.parse(await readFile(resultsFile, "utf8")) as { cases: Array<{ status: string }> };
+      if (results.cases.length === 8 && results.cases.every(item => ["completed", "partial", "failed", "cancelled"].includes(item.status))) {
         console.log(JSON.stringify({ watch: "all-terminal", elapsedMs: Date.now() - started }));
         return;
       }
@@ -172,26 +172,18 @@ async function watch() {
   }
 }
 
-async function report(state: BatchState) {
+async function writeResults(state: BatchState) {
   const cases = [];
   const remoteIds: string[] = [];
   for (const item of state.cases) {
     const run = await getRun(item.userId, item.runId);
-    const savedBatches = await tenantQuery<{ status: string; provider_status: string; poll_count: number; http_latency_ms: string; remote_id: string | null }>(item.userId,
-      "select status,provider_status,poll_count,http_latency_ms,remote_id from agent_model_batch where user_id=$1 and run_id=$2 order by submitted_at", [item.userId, item.runId]);
+    const savedBatches = await tenantQuery<{ status: string; provider_status: string; remote_id: string | null }>(item.userId,
+      "select status,provider_status,remote_id from agent_model_batch where user_id=$1 and run_id=$2 order by submitted_at", [item.userId, item.runId]);
     remoteIds.push(...savedBatches.flatMap(batch => batch.remote_id ? [batch.remote_id] : []));
     const batches = savedBatches.map(({ remote_id, ...batch }) => ({ ...batch, hasRemoteReceipt: Boolean(remote_id) }));
-    const calls = await tenantQuery<{ tool_id: string; status: string; output: { status?: string; receipt?: string; data?: unknown } | null; metrics: Record<string, unknown> }>(item.userId,
-      "select tool_id,status,output,metrics from agent_tool_call where user_id=$1 and run_id=$2 order by created_at", [item.userId, item.runId]);
+    const calls = await tenantQuery<{ tool_id: string; status: string; output: { status?: string; receipt?: string; data?: unknown } | null }>(item.userId,
+      "select tool_id,status,output from agent_tool_call where user_id=$1 and run_id=$2 order by created_at", [item.userId, item.runId]);
     const modelCalls = calls.filter(call => call.tool_id === "main_model");
-    const unknownCostCalls = modelCalls.filter(call => call.metrics.costUsd == null).length;
-    const metricSum = (key: string) => calls.reduce((sum, call) => sum + (Number(call.metrics[key]) || 0), 0);
-    const discardedReasonCounts: Record<string, number> = {};
-    for (const call of calls) for (const [reason, count] of Object.entries(
-      (call.metrics.discardedReasonCounts && typeof call.metrics.discardedReasonCounts === "object"
-        ? call.metrics.discardedReasonCounts : {}) as Record<string, unknown>)) {
-      discardedReasonCounts[reason] = (discardedReasonCounts[reason] ?? 0) + (Number(count) || 0);
-    }
     const modelSelections = modelCalls.flatMap(call => {
       const message = (call.output?.data as { message?: { tool_calls?: Array<{ function: { name: string; arguments: string } }> } } | undefined)?.message;
       return (message?.tool_calls ?? []).map(choice => {
@@ -206,26 +198,17 @@ async function report(state: BatchState) {
       modelTurns: calls.filter(call => call.tool_id === "main_model").length,
       modelSelections,
       selectedTools: calls.filter(call => call.tool_id !== "main_model").map(call => ({ tool: call.tool_id, status: call.output?.status ?? call.status, receipt: Boolean(call.output?.receipt) })),
-      batches, inputItems: metricSum("inputItems"), validOutputItems: metricSum("validOutputItems"),
-      knownDownstreamUsedItems: metricSum("downstreamUsedItems"),
-      unknownDownstreamUseCalls: calls.filter(call => call.metrics.downstreamUsedItems == null).length,
-      inputTokens: metricSum("inputTokens"), outputTokens: metricSum("outputTokens"),
-      knownApiCredits: metricSum("apiCredits"), unknownApiCreditCalls: modelCalls.filter(call => call.metrics.apiCredits == null).length,
-      knownReportedCostUsd: modelCalls.reduce((n, call) => n + (Number(call.metrics.costUsd) || 0), 0),
-      costComplete: unknownCostCalls === 0,
-      unknownCostCalls,
-      latencyMs: metricSum("latencyMs"), retries: metricSum("retries"), discardedReasonCounts });
+      batches, hasFinalReply: Boolean(run?.result?.reply), finalReplyCharacters: run?.result?.reply?.length ?? 0 });
   }
   const output = { mode: "actual-configured-glm-batch-isolated-data", manifestHash: state.manifestHash,
     submittedTasks: state.cases.length, distinctRemoteReceipts: new Set(remoteIds).size,
     completedTasks: cases.filter(row => row.status === "completed").length, cases };
-  await writeFile(reportFile, JSON.stringify(output, null, 2));
+  await writeFile(resultsFile, JSON.stringify(output, null, 2));
   console.log(JSON.stringify({ mode: output.mode, manifestHash: output.manifestHash, submittedTasks: output.submittedTasks,
     distinctRemoteReceipts: output.distinctRemoteReceipts, completedTasks: output.completedTasks,
     providerStatuses: cases.map(row => ({ id: row.id, status: row.status,
       batches: row.batches.map(batch => batch.provider_status), modelSelections: row.modelSelections })),
-    knownReportedCostUsd: cases.reduce((sum, row) => sum + row.knownReportedCostUsd, 0),
-    unknownCostCalls: cases.reduce((sum, row) => sum + row.unknownCostCalls, 0), privateReport: reportFile }));
+    privateResults: resultsFile }));
 }
 
 try {

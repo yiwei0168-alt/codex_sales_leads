@@ -6,9 +6,9 @@
 - Push completed commits to `origin/main` so files, code, and progress remain synchronized with GitHub.
 - Never commit secrets, credentials, local environment files, or generated dependency directories.
 - Before committing, inspect the diff and run the most relevant available checks.
-- Treat product cost reduction as a permanent product objective, not a one-off optimization task.
-- Every product workflow stage must record aggregate input volume, valid output volume, downstream-used output volume, token/API-credit cost, latency, retries, discarded-output reasons, utilization efficiency, and concrete optimization opportunities without committing secrets or personal data.
-- Any workflow implementation or optimization must update the versioned GitHub efficiency ledger and its relevant end-to-end workflow documentation in the same verified development stage.
+- From MA13 onward, prioritize completing product workflows and improving result quality. Do not maintain a development cost/efficiency ledger, calculate stage efficiency metrics, or automatically generate expense reports.
+- Preserve historical ledgers and raw provider receipts needed for task recovery, duplicate-effect prevention, and explicit user-requested reconciliation. Produce cost analysis only when the user explicitly requests it.
+- Continue updating the relevant product rule, PRD, workflow, and acceptance evidence for verified behavior changes; the historical efficiency ledger is no longer a required stage artifact.
 
 
 <!-- BEGIN:nextjs-agent-rules -->

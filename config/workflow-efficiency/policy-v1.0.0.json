@@ -1,7 +1,9 @@
 {
   "policyKey": "product-workflow-efficiency",
   "version": "1.0.0",
-  "status": "active",
+  "status": "superseded",
+  "supersededBy": "MA13",
+  "supersededAt": "2026-09-21",
   "objective": "Continuously reduce product workflow cost while preserving output quality and downstream utility.",
   "requiredStageMetrics": [
     "inputUnits",

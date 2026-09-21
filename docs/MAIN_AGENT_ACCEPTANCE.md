@@ -1,5 +1,9 @@
 # Main Agent acceptance log
 
+## MA13 reporting-priority change - 2026-09-21
+
+The project working agreement, PRD and main-Agent workflow now stop mandatory development efficiency-ledger updates and automatic expense reporting. The running eight-task verifier is changed to write only workflow/result status: saved receipts, provider/run states, model tool choices, selected tool outcomes and whether a final reply exists. It no longer aggregates or emits cost, token, latency, retry, utilization or optimization metrics. Existing historical reports are retained as historical evidence. During the switch, the verifier incorrectly cancelled the saved-task case because the relevant read-only `task_list` tool was absent from its narrow allowlist; the allowlist was corrected and that isolated run was resumed from its saved state without resubmitting completed turns. This implements the reporting change only; it does not complete the remaining Agent tools or the eight-task quality review.
+
 ## MA12 bounded background continuation - 2026-09-21 11:11 CST (partial)
 
 The eight authorized isolated tasks are continuing under a single background verifier limited to their saved run IDs, eight model turns per task and 48 hours of receipt polling. It resumes from persisted remote Batch receipts every 120 seconds; it does not create a second copy of an already submitted turn. At this checkpoint, 18 distinct receipts exist, one Agent task has completed, seven are waiting for provider turns, and two account-scoped business reads have succeeded. Completed calls report 90,065 input tokens, 2,297 output tokens and US$0.06808351; seven in-progress calls still have unknown tokens and charges. The current private report remains under ignored `tmp/ma11-batch-report.json`, and the isolated clone remains until all tasks reach a terminal state. No final eight-task model acceptance or business-answer quality claim is made yet.
