@@ -1,3 +1,5 @@
+> MA15 变更：采用已确认的半透明紫色视觉、三个业务入口及资料默认页；阶段一基础外壳已实现，完整验收尚未完成。精确规则与状态见 [规则](CONFIRMED_PRODUCT_RULES.md) 和 [工作流](FRONTEND_SIMPLIFICATION_PLAN_2026-09-21.md)。
+
 # Product UI v1.1 implementation workflow
 
 > 2026-09-16：`LG02` 要求产品生产入口只通过独立 LangGraph API 执行助手与线索编排；服务错误明确失败且不回退进程内 runner。实施与验收状态见[独立 LangGraph 编排服务](STANDALONE_LANGGRAPH_WORKFLOW_2026-09-16.md)。

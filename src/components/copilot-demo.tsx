@@ -1,6 +1,7 @@
 "use client";
 
 import { Fragment, useState, useEffect, useRef } from "react";
+import { viewHref, type AppView } from "@/lib/sales/app-navigation";
 import { GlobalMarketOverview } from "./global-market-overview";
 import { LeadFilters } from "./lead-filters";
 import { CompanyDetail } from "./company-detail";
@@ -31,8 +32,7 @@ import type {
 } from "@/lib/sales/types";
 import type { DevelopmentStrategyDto } from "@/lib/outreach/types";
 
-type View = "home" | "overview" | "results" | "map" | "opportunities" | "assistant" | "tasks" | "knowledge" | "mailbox" | "settings";
-type Mode = "new-market" | "growth";
+type View = AppView;
 type SearchState = "idle" | "retrieving" | "complete";
 
 const roleOptions: ChannelRole[] = [
@@ -80,7 +80,7 @@ function StatusTag({ children, tone = "neutral" }: { children: React.ReactNode; 
 }
 
 
-export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", initialCountry = "all", initialView = "home", initialConversationId }: { initialWorkspace?: MarketWorkspaceDto; userName?: string; initialCountry?: string; initialView?: View; initialConversationId?: string }) {
+export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", initialCountry = "all", initialView = "home", initialConversationId, initialCompanyId, initialTab }: { initialWorkspace?: MarketWorkspaceDto; userName?: string; initialCountry?: string; initialView?: View; initialConversationId?: string; initialCompanyId?: string; initialTab?: string }) {
   const router = useRouter();
   const [view, setViewState] = useState<View>(initialView);
   const [conversationId, setConversationId] = useState(initialConversationId);
@@ -91,12 +91,17 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
   }, [initialConversationId]);
   const country = marketCode(initialCountry);
   function setView(next: View) {
-    if (next === "results" || next === "map" || next === "opportunities") {
-      router.push(marketHref(country, next === "results" ? "leads" : next === "map" ? "channel-map" : "opportunities"));
-    } else if (next === "home" && initialView !== "home") {
-      const lastId = conversationId ?? sessionStorage.getItem("lastConversationId");
-      router.push(lastId ? `/c/${lastId}` : "/");
-    } else setViewState(next);
+    setMobileNavOpen(false);
+    if (next === "home") { void returnToConversation(); return; }
+    router.push(viewHref(next, country, selectedIdRef.current));
+  }
+  async function returnToConversation() {
+    let lastId = conversationId ?? sessionStorage.getItem("lastConversationId");
+    if (!lastId) {
+      const response = await fetch("/api/assistant/conversations", {cache:"no-store"});
+      if (response.ok) lastId = (await response.json()).conversations?.[0]?.id;
+    }
+    router.push(lastId ? `/c/${encodeURIComponent(lastId)}` : "/");
   }
   function openConversation(id: string) {
     setConversationId(id); setMobileNavOpen(false); setViewState("home"); router.push(`/c/${id}`);
@@ -104,7 +109,6 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
   function openNewConversation() {
     setConversationId(undefined); setNewConversationVersion(value => value + 1); setMobileNavOpen(false); setViewState("home"); router.push("/");
   }
-  const [mode, setMode] = useState<Mode>(initialWorkspace?.mode ?? "new-market");
   const [companies, setCompanies] = useState<CompanyRecord[]>(initialWorkspace?.companies ?? []);
   const [contactsByCompanyId,setContactsByCompanyId]=useState(initialWorkspace?.contactsByCompanyId??{});
   const workspaceRevision=useRef(0);
@@ -112,7 +116,17 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
   const countries = [...new Set([...companies.map((company) => marketCode(company.country)), ...(initialWorkspace?.taskCountries ?? [])])];
   if (country !== "all" && !countries.includes(country)) countries.push(country);
   const countryCompanies = companies.filter((company) => country === "all" || marketCode(company.country) === country);
-  const [selectedId, setSelectedId] = useState("syscom");
+  const [selectedId, setSelectedId] = useState(initialCompanyId ?? "");
+  const selectedIdRef = useRef(initialCompanyId);
+  const [collapsed, setCollapsed] = useState(false);
+  const [footerMenu, setFooterMenu] = useState<"help" | "account" | null>(null);
+  const footerRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    function close(event: MouseEvent) { if (!footerRef.current?.contains(event.target as Node)) setFooterMenu(null); }
+    function escape(event: KeyboardEvent) { if (event.key === "Escape") setFooterMenu(null); }
+    document.addEventListener("click", close); document.addEventListener("keydown", escape);
+    return () => { document.removeEventListener("click", close); document.removeEventListener("keydown", escape); };
+  }, []);
   const [detailOpen, setDetailOpen] = useState(false);
   const [evidenceOpen, setEvidenceOpen] = useState<Evidence | null>(null);
   const [query, setQuery] = useState("");
@@ -144,9 +158,8 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
     void refresh();const timer=window.setInterval(()=>void refresh(),30000);return()=>{controller.abort();window.clearInterval(timer);};
   },[view,refreshVersion]);
   const sourceCount = companies.reduce((total, company) => total + company.evidence.length, 0);
-  const searchDate = initialWorkspace?.latestSearch?.finishedAt?.slice(0, 10) ?? "Not searched";
 
-  const selectedCompany = companies.find((item) => item.id === selectedId) ?? countryCompanies[0];
+  const selectedCompany = companies.find((item) => item.id === selectedId);
   const draftRequest = useRef(0);
   const selectedCompanyId=selectedCompany?.id;
   useEffect(()=>{
@@ -205,6 +218,7 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
   function selectCompany(id: string, openDrawer = true) {
     draftRequest.current++;
     setSelectedId(id);
+    selectedIdRef.current = id;
     setDraft("");
     setDevelopmentResult(null);
     setDevelopmentState("idle");
@@ -297,37 +311,25 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
     setSearchState("complete");
   }
 
-  async function chooseMode(nextMode: Mode) {
-    setMode(nextMode);
-    setSearchState("idle");
-    setSaveState("saving");
-    try {
-      const response = await fetch("/api/workspaces/current", { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify({ mode: nextMode }) });
-      if (!response.ok) throw new Error("保存失败");
-      setSaveState("saved"); window.setTimeout(() => setSaveState("idle"), 1600);
-    } catch { setSaveState("error"); }
-  }
-
   async function logout() {
     await fetch("/api/auth/logout", { method: "POST" });
     router.refresh();
   }
 
-  const navItems: Array<{ id: View; label: string; meta?: string }> = [
-    { id: "home", label: "对话" },
-    { id: "overview", label: "全球市场概览" },
-    { id: "results", label: "销售线索", meta: String(filteredCompanies.length) },
-    { id: "map", label: "渠道关系图" },
-    { id: "opportunities", label: "机会工作区", meta: String(shortlist.length) },
-    { id: "assistant", label: "开发助手" },
-    { id: "tasks", label: "任务进程" },
-    { id: "knowledge", label: "知识库 & RAG" },
-    { id: "mailbox", label: "邮箱学习" },
-    { id: "settings", label: "Agent 设置" },
+  const marketViews: View[] = ["overview", "results", "map"];
+  const developmentViews: View[] = ["opportunities", "assistant", "mailbox"];
+  const isMarket = marketViews.includes(view), isDevelopment = developmentViews.includes(view);
+  const navItems: Array<{ id: View; label: string; active: boolean }> = [
+    { id: "overview", label: "市场与线索", active: isMarket },
+    { id: "opportunities", label: "客户开发", active: isDevelopment },
+    { id: "knowledge", label: "知识库", active: view === "knowledge" },
   ];
+  const title = isMarket ? "市场与线索" : isDevelopment ? "客户开发" : ({home:"对话", knowledge:"知识库", tasks:"任务记录", settings:"账户与设置", help:"使用说明"} as Partial<Record<View,string>>)[view];
+  const tabs: Array<{id:View;label:string}> = isMarket ? [{id:"overview",label:"市场概览"},{id:"results",label:"销售线索"},{id:"map",label:"渠道关系"}]
+    : isDevelopment ? [{id:"opportunities",label:"机会"},{id:"assistant",label:"开发信"},{id:"mailbox",label:"邮箱"}] : [];
 
   return (
-    <div className="app-shell">
+    <div className={`app-shell ${collapsed ? "sidebar-collapsed" : ""}`}>
       {mobileNavOpen && <button className="mobile-nav-backdrop" aria-label="关闭导航菜单" onClick={() => setMobileNavOpen(false)} />}
       <aside
         ref={mobileNavRef}
@@ -338,67 +340,58 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
         aria-label={mobileNavOpen ? "主导航菜单" : undefined}
         tabIndex={mobileNavOpen ? -1 : undefined}
       >
-        <div className="brand-mark"><span className="brand-glyph">N</span><div><strong>Network Copilot</strong><small>Channel Intelligence</small></div></div>
+        <div className="brand-mark"><span className="brand-glyph">N</span><strong>Network Copilot</strong><button className="sidebar-collapse" aria-label="收起侧栏" onClick={()=>setCollapsed(true)}>‹</button></div>
         <button className="mobile-nav-close" aria-label="关闭导航菜单" onClick={() => setMobileNavOpen(false)}><Icon name="close" size={20}/></button>
-        <div className="workspace-switcher"><span className="market-flag">◎</span><div><strong>Global · All markets</strong><small>AI sales workspace</small></div><Icon name="chevron" size={14} /></div>
         <nav aria-label="主导航">
           <button className="nav-new-conversation" onClick={openNewConversation}><Icon name="plus" />新对话</button>
-          <p className="nav-label">Workspace</p>
           {navItems.map((item) => (
-            <button key={item.id} aria-label={item.label} aria-current={view === item.id ? "page" : undefined} title={item.label} className={`nav-item ${view === item.id ? "active" : ""}`} onClick={() => { setView(item.id); setMobileNavOpen(false); }}>
-              <Icon name={item.id} /><span>{item.label}</span>{item.meta && <em>{item.meta}</em>}
+            <button key={item.id} aria-label={item.label} aria-current={item.active ? "page" : undefined} title={item.label} className={`nav-item ${item.active ? "active" : ""}`} onClick={() => { setView(item.id); setMobileNavOpen(false); }}>
+              <Icon name={item.id} /><span>{item.label}</span>
             </button>
           ))}
         </nav>
         <ConversationHistory activeId={conversationId} refreshKey={historyVersion} onSelect={openConversation} onNew={openNewConversation}/>
         <div className="sidebar-spacer" />
-        <div className="snapshot-card">
-          <div className="snapshot-title"><span className="live-dot" /> Global intelligence</div>
-          <strong>{companies.length} leads · {sourceCount} sources</strong>
-          <small>Last run {searchDate} · {initialWorkspace?.latestSearch?.creditsUsed ?? 0} credits</small>
+        <div className="sidebar-footer" ref={footerRef}>
+          <button aria-expanded={footerMenu === "help"} onClick={()=>setFooterMenu(footerMenu === "help" ? null : "help")}>帮助</button>
+          <button aria-expanded={footerMenu === "account"} onClick={()=>setFooterMenu(footerMenu === "account" ? null : "account")}>账户与设置</button>
+          {footerMenu && <div className="footer-menu">
+            {footerMenu === "help" ? <><button onClick={()=>{setFooterMenu(null);setView("tasks");}}>任务记录</button><button onClick={()=>{setFooterMenu(null);setView("help");}}>使用说明</button></>
+              : <><strong>{userName}</strong><button onClick={()=>{setFooterMenu(null);setView("settings");}}>账户信息与 Agent 设置</button><button onClick={logout}>退出登录</button></>}
+          </div>}
         </div>
-        <div className="user-row"><span className="avatar">{userName.slice(0, 2).toUpperCase()}</span><div><strong>{userName}</strong><small>Private workspace</small></div><button aria-label="退出登录" onClick={logout}>退出</button></div>
       </aside>
 
       <main className="main-shell">
         <header className="topbar">
           <button className="mobile-nav-trigger" aria-label="打开导航菜单" aria-controls="primary-navigation" aria-expanded={mobileNavOpen} onClick={() => setMobileNavOpen(true)}><span/><span/><span/></button>
-          <div className="breadcrumbs"><span>Workspace</span><Icon name="chevron" size={13}/><strong>Global</strong><Icon name="chevron" size={13}/><span>{navItems.find((item) => item.id === view)?.label}</span></div>
-          <div className="top-actions"><button onClick={()=>setRefreshVersion(value=>value+1)}>刷新已保存数据</button><span className={`snapshot-badge ${saveState === "error"||saveState==="conflict" ? "save-error" : ""}`}><span className="live-dot"/>{saveState === "saving" ? "正在保存…" : saveState === "saved" ? "已保存到 RDS" : saveState === "error" ? "保存失败，请重试" : saveState==="conflict"?"公司已被更新，请检查刷新后的状态":`Global workspace · ${searchDate}`}</span><button className="avatar small">{userName.slice(0, 2).toUpperCase()}</button></div>
+          {collapsed && <button className="sidebar-expand" aria-label="展开侧栏" onClick={()=>setCollapsed(false)}>☰</button>}
+          <div className="breadcrumbs">{view !== "home" ? <button onClick={()=>setView("home")}>返回对话</button> : <strong>销售工作台</strong>}</div>
+          <div className="top-actions">{view !== "home" && <button onClick={()=>{setRefreshVersion(value=>value+1);router.refresh();}}>刷新当前页面</button>}</div>
         </header>
 
         <div className="workspace-content">
           {failedEdit && <div role="alert">修改尚未保存，原值已保留。<button onClick={() => void updateCompany(failedEdit.id, failedEdit.patch)}>重试保存</button></div>}
-          {view !== "home" && <section className="workspace-heading">
-            <div>
-              <div className="eyebrow">全球市场 / 全部 Cudy 销售分层</div>
-              <h1>{view === "overview" ? "全球市场渠道概览" : navItems.find((item) => item.id === view)?.label}</h1>
-              <p>{view === "knowledge" ? "统一管理行业、公司和产品知识，以可追溯 RAG 支撑 AI 决策。" : view === "mailbox" ? "只读同步当前用户的邮箱，提取政策、客户信号和开发邮件模板候选。" : view === "tasks" ? "实时查看联系人搜索进度、当前公司、worker 状态和任务产出。" : mode === "new-market" ? "同步建立一级供货能力与下级渠道需求。" : "激活现有供货体系，主动发现未覆盖的下级增长节点。"}</p>
-            </div>
-            <div className="heading-actions">
-              <div className="segmented" aria-label="市场开发模式">
-                <button className={mode === "new-market" ? "active" : ""} onClick={() => chooseMode("new-market")}>新市场并行开发</button>
-                <button className={mode === "growth" ? "active" : ""} onClick={() => chooseMode("growth")}>已有分销商增长</button>
-              </div>
-              <button className="primary-button" onClick={() => { setView("results"); showLiveResults(); }}><Icon name="spark" />查看实时线索</button>
-            </div>
-          </section>}
-
+          {saveState !== "idle" && <p role={saveState === "error" ? "alert" : "status"} className="save-status">{saveState === "saving" ? "正在保存…" : saveState === "saved" ? "已保存" : saveState === "error" ? "数据读取或保存失败，请重试" : "公司已被更新，请检查刷新后的状态"}<button onClick={()=>setRefreshVersion(value=>value+1)}>重试读取</button></p>}
+          {view !== "home" && <section className="workspace-heading"><h1>{title}</h1>{isMarket && view === "overview" && <button className="secondary-button" onClick={()=>{setView("results");showLiveResults();}}>查看已保存线索</button>}</section>}
+          {tabs.length > 0 && <div className="business-toolbar"><nav className="page-tabs" aria-label={`${title}页签`}>{tabs.map(tab=><button key={tab.id} aria-current={view===tab.id?"page":undefined} onClick={()=>setView(tab.id)}>{tab.label}</button>)}</nav>
+            <label className="select-field">国家<select aria-label="选择国家" value={country} onChange={event=>router.push(viewHref(view,event.target.value,selectedIdRef.current))}><option value="all">全部国家</option>{countries.sort().map(code=><option key={code} value={code}>{marketLabel(code)}</option>)}</select></label>
+          </div>}
           {searchState === "complete" && <div className="inline-notice success"><Icon name="check"/><span>当前工作区包含 {companies.length} 个已存储候选、{sourceCount} 条证据；请在公司详情查看各自的评分版本与核实状态。</span><button onClick={() => setSearchState("idle")} aria-label="关闭"><Icon name="close" size={15}/></button></div>}
 
-          {(view === "results" || view === "map") && <div className="results-toolbar"><label className="select-field">国家<select aria-label="选择国家" value={country} onChange={(event) => router.push(marketHref(event.target.value, view === "map" ? "channel-map" : "leads"))}><option value="all">{view === "map" ? "请选择国家" : "全部国家"}</option>{countries.sort().map((code) => <option key={code} value={code}>{marketLabel(code)} · {companies.filter((company) => marketCode(company.country) === code).length}</option>)}</select></label></div>}
           {view === "home" && <AssistantHome key={`${initialConversationId ?? "new"}:${newConversationVersion}`} initialConversationId={initialConversationId} userName={userName} onConversationChange={id=>{setConversationId(id);setHistoryVersion(value=>value+1);if(id){sessionStorage.setItem("lastConversationId",id);router.replace(`/c/${id}`);}}} onOpenResults={(code) => router.push(marketHref(code, "leads"))} onOpenCompany={(id,kind)=>{selectCompany(id,kind==="library");if(kind!=="library")setView("assistant");}} />}
-          {view === "opportunities" && <label>国家<select value={country} onChange={event=>router.push(marketHref(event.target.value,"opportunities"))}><option value="all">全部国家</option>{countries.sort().map(code=><option key={code} value={code}>{marketLabel(code)}</option>)}</select></label>}
-          {view === "overview" && <GlobalMarketOverview companies={companies} />}
+          {view === "overview" && <GlobalMarketOverview companies={countryCompanies} />}
           {view === "results" && <LeadFilters companies={filteredCompanies} onUpdate={updateCompany}>{items=><Results companies={items} query={query} setQuery={setQuery} roleFilter={roleFilter} setRoleFilter={setRoleFilter} tierFilter={tierFilter} setTierFilter={setTierFilter} onSelect={selectCompany} onToggle={(company) => updateCompany(company.id, { opportunityStage: company.opportunityStage === "Discovered" ? "Qualified" : "Discovered" })} />}</LeadFilters>}
           {view === "map" && (country === "all" ? <p className="subtle">请选择国家以查看渠道节点与关系。</p> : <UserChannelMap key={country} country={country} companies={countryCompanies} onSelect={selectCompany} onAdded={(company)=>setCompanies(items=>[...items,company])} />)}
           {view === "opportunities" && <OpportunityWorkspace companies={shortlist} onSelect={selectCompany} onUpdate={updateCompany} onOpenMail={(id)=>{selectCompany(id,false);setView("assistant");}} />}
-          {view === "assistant" && selectedCompany && <DevelopmentAssistant company={selectedCompany} result={developmentResult} draft={draft} setDraft={value=>{setDraft(value);if(developmentState==='approved')setDevelopmentState('ready');}} state={developmentState} error={developmentError} feedback={developmentFeedback} setFeedback={setDevelopmentFeedback} feedbackMessage={feedbackMessage} allowMemory={allowFeedbackMemory} setAllowMemory={setAllowFeedbackMemory} onGenerate={() => void generateDevelopment()} onRevise={() => void reviseDevelopmentDraft()} onApprove={() => void approveDevelopmentDraft()} onEvidence={setEvidenceOpen} onChoose={() => setDetailOpen(true)} />}
+          {view === "assistant" && selectedCompany && <DevelopmentAssistant company={selectedCompany} result={developmentResult} draft={draft} setDraft={value=>{setDraft(value);if(developmentState==='approved')setDevelopmentState('ready');}} state={developmentState} error={developmentError} feedback={developmentFeedback} setFeedback={setDevelopmentFeedback} feedbackMessage={feedbackMessage} allowMemory={allowFeedbackMemory} setAllowMemory={setAllowFeedbackMemory} onGenerate={() => void generateDevelopment()} onRevise={() => void reviseDevelopmentDraft()} onApprove={() => void approveDevelopmentDraft()} onEvidence={setEvidenceOpen} onChoose={() => document.querySelector<HTMLSelectElement>('[aria-label="选择开发公司"]')?.focus()} />}
           {view === "assistant" && selectedCompany && <OutboundComposer key={selectedCompany.id} companyId={selectedCompany.id} draft={draft} onSent={()=>{void fetch("/api/workspaces/current",{cache:"no-store"}).then(async response=>{if(response.ok){const workspace=await response.json() as MarketWorkspaceDto;setCompanies(workspace.companies);}});}}/>}
-          {view === "tasks" && <TaskCenter />}
-          {view === "knowledge" && <KnowledgeBase />}
-          {view === "mailbox" && <MailboxIntegration />}
-          {view === "settings" && <AgentLibrary />}
+          {view === "tasks" && <TaskCenter key={refreshVersion} />}
+          {view === "knowledge" && <KnowledgeBase key={refreshVersion} initialTab={initialTab} />}
+          {view === "mailbox" && <MailboxIntegration key={refreshVersion} />}
+          {view === "settings" && <><section className="account-summary"><strong>{userName}</strong><button className="secondary-button" onClick={logout}>退出登录</button></section><AgentLibrary key={refreshVersion} /></>}
+          {view === "help" && <section className="panel help-copy"><h2>从一个问题开始</h2><p>点击“新对话”描述目标，发送第一条消息后保存对话。当前任务进度、异常和待批准操作留在对应对话中。</p><h2>找到业务资料</h2><p>在“市场与线索”切换国家、查看已保存线索与渠道关系。在“客户开发”选择公司，查看机会、准备开发信并管理邮箱。“知识库”提供资料、知识问答和按权限展示的审核。</p><h2>核对后执行</h2><p>执行前请阅读批准卡上的最终内容。发送邮件和删除等操作需要明确批准；批准后的真实执行结果显示在对话中。</p><button className="secondary-button" onClick={()=>setView("tasks")}>查看任务记录</button></section>}
+          {view === "assistant" && <label className="company-picker">选择公司<select aria-label="选择开发公司" value={selectedId} onChange={event=>{selectCompany(event.target.value,false);router.push(viewHref("assistant",country,event.target.value));}}><option value="">请选择公司</option>{countryCompanies.map(company=><option value={company.id} key={company.id}>{company.displayName}</option>)}</select>{!selectedCompany && <p>选择公司后查看开发策略和邮件草稿，也可以先到销售线索中寻找公司。</p>}</label>}
         </div>
       </main>
 

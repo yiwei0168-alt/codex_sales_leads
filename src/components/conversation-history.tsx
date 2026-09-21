@@ -40,7 +40,7 @@ export function ConversationHistory({ activeId, refreshKey, onSelect, onNew }: {
     if (item.id === activeId) onNew();
   }
   return <section className="conversation-history" aria-label="对话历史">
-    <div className="conversation-history-head"><strong>对话历史</strong><button type="button" onClick={onNew}>新对话</button></div>
+    <div className="conversation-history-head"><strong>对话历史</strong></div>
     {error && <p role="status">{error}</p>}
     <div className="conversation-history-list">
       {items.map(item => <div className={`conversation-history-item ${item.id === activeId ? "active" : ""}`} key={item.id}>

@@ -10,6 +10,8 @@ import type {
 } from "@/lib/assistant/types";
 import {searchTaskStatusLabel,taskCounts} from "@/lib/assistant/task-summary";
 
+const pendingInputs = new Map<string, string>();
+
 const suggestions = [
   "帮我制定进入德国网络设备市场的渠道开发计划",
   "搜索阿联酋 20 家分销商和系统集成商",
@@ -25,7 +27,9 @@ export function AssistantHome({ userName, initialConversationId, onConversationC
   const [taskId,setTaskId]=useState<string>();
   const [activeId, setActiveId] = useState<string | undefined>(initialConversationId);
   const [conversation, setConversation] = useState<AssistantConversationDto>();
-  const [input, setInput] = useState("");
+  const draftKey = initialConversationId ?? "new";
+  const [input, updateInput] = useState(() => pendingInputs.get(draftKey) ?? "");
+  function setInput(value: string) { pendingInputs.set(draftKey, value); updateInput(value); }
   const [attachments,setAttachments]=useState<string[]>([]);
   const [busy, setBusy] = useState(false);
   const [confirmingId, setConfirmingId] = useState<string>();
@@ -116,7 +120,6 @@ export function AssistantHome({ userName, initialConversationId, onConversationC
 
   return <div className="ai-home-shell">
     <section className="ai-chat-panel">
-      <header><div className="ai-orb">N</div><div><strong>销售工作台</strong><span>对话、证据与任务回执</span></div></header>
       <div className="ai-message-stream" ref={scrollRef}>
         {activeId && <AgentRuns conversationId={activeId} onUpdated={refreshAgentConversation} />}
         {messages.length === 0 && <div className="ai-welcome">

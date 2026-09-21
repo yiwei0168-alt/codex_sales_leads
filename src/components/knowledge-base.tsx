@@ -47,7 +47,7 @@ const mailboxKindLabels: Record<MailboxKnowledgeItem["kind"], string> = {
   "email-template": "邮件模板",
 };
 
-export function KnowledgeBase() {
+export function KnowledgeBase({ initialTab: _initialTab }: { initialTab?: string } = {}) {
   const [stats, setStats] = useState<KnowledgeStats>(emptyStats);
   const [loading, setLoading] = useState(true);
   const [question, setQuestion] = useState("基于现有产品组合，进入一个新市场时应该优先开发哪些渠道节点？为什么？");
