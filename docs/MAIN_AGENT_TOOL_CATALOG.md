@@ -1,6 +1,6 @@
 # Registered main Agent tools
 
-Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/generate-main-agent-catalog.ts --check` to detect drift. These 89 tools are implemented adapters; registration is not real-provider acceptance. The complete migration inventory remains in [MAIN_AGENT_CAPABILITIES.md](MAIN_AGENT_CAPABILITIES.md).
+Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/generate-main-agent-catalog.ts --check` to detect drift. These 90 tools are implemented adapters; registration is not real-provider acceptance. The complete migration inventory remains in [MAIN_AGENT_CAPABILITIES.md](MAIN_AGENT_CAPABILITIES.md).
 
 | Tool | Version | Role | Effect | Cost | Purpose |
 |---|---|---|---|---|---|
@@ -26,6 +26,7 @@ Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/ge
 | knowledge_gold_holdout_unlock | 1 | admin | publish | known | Unlock the administrator RAG Gold holdout only after the existing development/validation review gate passes and exact approval is granted. |
 | mailbox_knowledge_list | 1 | member | read | known | Read approved account-owned knowledge and template candidates learned from mailbox review. Private content remains in the configured main-model context. |
 | knowledge_shared_text_upsert | 1 | admin | publish | unknown | Create or replace one administrator-owned shared text knowledge document after exact approval. A changed existing document requires its observed content hash; this does not accept binary files or rebuild RAG v3. |
+| knowledge_shared_binary_register | 1 | admin | publish | unknown | After exact administrator approval, verify an owned uploaded binary and its local extraction hashes, then register the original asset and extracted text in the shared library. Returns RAG v3 release pending; never claims active-release publication. |
 | budget_read | 1 | member | read | known | Read legacy account budget as reference data, not an MA05 spending limit. Unknown bills remain unknown. |
 | task_usage_read | 1 | member | read | known | Read the account's last 30 days of operational efficiency and provider billing observations. Tables overlap and totals must not be added; unknown bills and adoption remain unknown. |
 | run_read | 1 | member | read | known | Read an owned Agent task and saved event receipts, including partial outcomes. Does not resume it. |

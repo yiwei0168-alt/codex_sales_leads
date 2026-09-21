@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+> 2026-09-21 MA11/P2 partial continuation: the upload worker now processes every active account under its own RLS context. An exact-approved administrator tool can hash-check and register an extracted binary into the shared document library with its original asset. The response explicitly keeps immutable RAG v3 activation pending. Migration 100, focused tests and type checks passed on an isolated clone; live extraction/embedding and release activation remain open. [Evidence](MAIN_AGENT_ACCEPTANCE.md).
+
 > 2026-09-21 MA11/P2 partial continuation: the shared page/Agent service now reads the latest account contact-enrichment run, and account-encrypted UUID follow-up drafts support sent mail without a company link. The catalog has 89 tools. Unit/type checks passed; migration 099, live generation/send and final workflow acceptance remain open. [Evidence](MAIN_AGENT_ACCEPTANCE.md).
 
 > 2026-09-21 MA11/P2 partial: the main Agent catalog now has 88 tools after adding 13 existing-page workflow adapters for workspace, development feedback, mailbox review/lifecycle, task reconciliation, administrator Gold review and shared-text knowledge publication. Credentials remain page-only, and remaining shared-binary-knowledge, enrichment-status, formal-score, contact-verification and unassociated-follow-up gaps still block complete workflow coverage. [Evidence](MAIN_AGENT_ACCEPTANCE.md).

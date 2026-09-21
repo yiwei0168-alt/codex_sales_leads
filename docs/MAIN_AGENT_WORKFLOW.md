@@ -10,7 +10,7 @@ Current MA12 checkpoint: all eight authorized GLM Batch tasks completed with sav
 
 The current deliverable is a verifiable main-Agent architecture using existing product business workflows. New MCP, network-browser and private-Git connections are later work. Preserve existing detailed pages, formal scoring, RAG v3 and account ACL. The chat becomes the single `/` entry with owned `/c/[id]` deep links, one navigation sidebar, durable event-cursor progress and exact final-action approvals. GLM Batch waiting shows queue/execution and elapsed time. The palette and acceptance values are recorded exactly in [MA11](CONFIRMED_PRODUCT_RULES.md).
 
-Coverage continuation: the registry now exposes 89 tools. The latest shared-service adapters cover workspace mode, feedback regeneration, mailbox screening/learning/lifecycle, mailbox connection shutdown/deletion, stale-operation reconciliation, administrator Gold review, approved mailbox knowledge, exact-approved shared-text knowledge publication and persisted contact-enrichment status. Credentials never enter tool inputs, and publish/destructive effects retain central approval. [The capability matrix](MAIN_AGENT_CAPABILITY_COVERAGE_MA11.md) lists the remaining current-scope gaps and separates later MCP/browser/private-Git work.
+Coverage continuation: the registry now exposes 90 tools. The latest shared-service adapters cover workspace mode, feedback regeneration, mailbox screening/learning/lifecycle, mailbox connection shutdown/deletion, stale-operation reconciliation, administrator Gold review, approved mailbox knowledge, exact-approved shared-text knowledge publication, hash-verified shared binary registration and persisted contact-enrichment status. Credentials never enter tool inputs, and publish/destructive effects retain central approval. [The capability matrix](MAIN_AGENT_CAPABILITY_COVERAGE_MA11.md) lists the remaining current-scope gaps and separates later MCP/browser/private-Git work.
 
 Stage evidence is separate: confirmation here is neither a tool implementation nor a passing replay. The 120 isolated data-copy replays exercise Graph, worker, tools and persistence; controlled external-send substitutes cannot count as real model planning. Eight configured GLM Batch tasks are reported separately. Locked architecture/workflow acceptance requires at least 38/40 plus every specified critical boundary. The entry remains configuration controlled and passing this milestone does not imply full release. The original MA09 gate stays in version history.
 
@@ -43,6 +43,10 @@ The existing follow-up page and new `follow_up_list`/`follow_up_generate` tools 
 ## P2 contact enrichment status - 2026-09-21 (partial)
 
 `contacts_enrichment_latest` and the existing page route now read one account-scoped service for the latest persisted run, per-company phase/errors and workspace coverage. The tool never starts a provider call. Unit/schema/type checks passed; live-run and database-isolation checks remain open. [Verification](MAIN_AGENT_ACCEPTANCE.md).
+
+## P2 shared binary registration - 2026-09-21 (partial)
+
+The upload worker now scans active account IDs and claims each pending job under that account's RLS context; extraction artifacts are saved under the job owner's directory. Administrator tool `knowledge_shared_binary_register` accepts an owned extracted job ID and observed original SHA-256 after exact approval. It verifies both the original and extraction artifact hashes, rejects pending OCR/failed units, stores extracted text as a shared document and registers the original binary asset. Migration 100 records the document/asset receipt and status. The response says `ragV3: pending-release`: an active immutable RAG v3 release still requires its existing build/review/activation workflow. Browser file input remains the appropriate boundary for raw bytes. [Verification](MAIN_AGENT_ACCEPTANCE.md).
 
 ## P2 mailbox candidate review - 2026-09-21 (partial)
 

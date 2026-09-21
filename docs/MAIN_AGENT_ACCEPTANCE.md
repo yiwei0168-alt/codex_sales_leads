@@ -1,5 +1,9 @@
 # Main Agent acceptance log
 
+## MA11 shared binary registration - 2026-09-21 (partial)
+
+The account upload worker now enumerates active users and claims pending jobs inside the matching tenant transaction, fixing member uploads that the former owner-only worker could not reach. The administrator `knowledge_shared_binary_register` tool requires exact approval and an observed upload hash. It rejects changed originals/artifacts or incomplete extraction, and registers the original plus extracted text with a durable job receipt. Unit checks cover inaccessible jobs, stale hashes, repeat registration without embedding and the positive hash-matched path. Migration 100 applied twice on the isolated clone; the existing owner RLS stayed forced. Full regression passed 257 files / 1,292 assertions; TypeScript, scoped lint, 90-schema catalog and production build passed. These checks did not call a provider or activate an RAG v3 release. Active-release publication remains separate and unverified.
+
 ## MA12 eight live GLM Batch tasks - terminal review, 2026-09-21
 
 All eight authorized tasks reached saved `completed` state with a final reply. The model selected and executed account-scoped reads in every case: knowledge library/revisions (B1), one mail (B2), one company (B3), company plus absent formal assessment (B4), legacy task feed/detail after an unavailable Agent-run read (B5), draft plus mailbox state (B6), absent assessment (B7), and present plus missing mail (B8). This is actual GLM Batch planning, separate from the 80/40 deterministic replay. No SMTP send, publication or deletion occurred. The private prompt, bodies and tool outputs remain in the ignored clone/report, outside Git.

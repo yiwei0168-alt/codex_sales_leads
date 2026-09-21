@@ -29,6 +29,7 @@ import { reconcileRelationshipAnalysis } from "@/lib/sales/reconcile-relationshi
 import { listApprovedMailboxKnowledge } from "@/lib/mailbox/knowledge-overview";
 import { upsertKnowledgeDocument } from "@/lib/rag/repository";
 import { readLatestEnrichmentRun } from "@/lib/contacts/enrichment-run-read";
+import { registerExtractedSharedBinary } from "@/lib/knowledge/binary-registration";
 
 const companyId = z.string().min(1).max(180), country = z.string().regex(/^[A-Z]{2}$/);
 const developmentInput = z.object({ companyExternalId: companyId, language: z.string().max(20).optional(), instructions: z.string().max(2000).optional() }).strict();
@@ -103,6 +104,9 @@ export const businessTools = [
     role:"admin",effect:"publish",recovery:"idempotent",cost:"unknown",connections:["knowledge-embedding"],
     input:z.object({collection:z.enum(["industry","company","product"]),externalId:z.string().trim().min(1).max(300),title:z.string().trim().min(1).max(300),content:z.string().trim().min(1).max(2_000_000),sourceType:z.string().trim().min(1).max(120),sourceUrl:z.url().optional(),authorityLevel:z.union([z.literal(1),z.literal(2),z.literal(3),z.literal(4),z.literal(5)]).default(3),language:z.string().trim().min(2).max(30).default("zh-CN"),market:z.string().trim().max(120).optional(),companyId:z.string().trim().max(200).optional(),productId:z.string().trim().max(200).optional(),expectedContentHash:z.string().regex(/^[0-9a-f]{64}$/).optional()}).strict(),
     execute:async(i,c)=>{const {expectedContentHash,...document}=i;return result(await upsertKnowledgeDocument(c.userId,{...document,visibility:"shared",companyId:i.collection==="company"?"cudy-technology":i.companyId,productId:i.collection==="product"?(i.productId??i.externalId):i.productId,metadata:{}},c.role,expectedContentHash??null));}}),
+  defineTool({id:"knowledge_shared_binary_register",description:"After exact administrator approval, verify an owned uploaded binary and its local extraction hashes, then register the original asset and extracted text in the shared library. Returns RAG v3 release pending; never claims active-release publication.",role:"admin",effect:"publish",recovery:"idempotent",cost:"unknown",connections:["knowledge-embedding"],
+    input:z.object({jobId:z.uuid(),sourceSha256:z.string().regex(/^[0-9a-f]{64}$/),language:z.string().trim().min(2).max(30).default("zh-CN"),authorityLevel:z.union([z.literal(1),z.literal(2),z.literal(3),z.literal(4),z.literal(5)]).default(3)}).strict(),
+    execute:async(i,c)=>{const registered=await registerExtractedSharedBinary(c.userId,i);return registered.status==="registered"?result(registered,{receipt:registered.assetId}):result(null,{status:"missing_input",missing:registered.missing});}}),
   defineTool({ id: "budget_read", description: "Read legacy account budget as reference data, not an MA05 spending limit. Unknown bills remain unknown.", input: z.object({}).strict(), execute: async (_,c) => result(await readSpendBudget(c.userId)) }),
   defineTool({id:"task_usage_read",description:"Read the account's last 30 days of operational efficiency and provider billing observations. Tables overlap and totals must not be added; unknown bills and adoption remain unknown.",
     input:z.object({}).strict(),execute:async(_,c)=>result(await readTaskUsage(c.userId))}),
