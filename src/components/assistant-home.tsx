@@ -11,6 +11,7 @@ import type {
 import {searchTaskStatusLabel,taskCounts} from "@/lib/assistant/task-summary";
 
 const pendingInputs = new Map<string, string>();
+export function startNewConversationInput() { pendingInputs.delete("new"); }
 export function clearPendingConversationInputs() { pendingInputs.clear(); }
 
 const suggestions = [

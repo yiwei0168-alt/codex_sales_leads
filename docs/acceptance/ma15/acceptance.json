@@ -1,0 +1,13 @@
+{
+  "checks": [
+    "1366x768 @ 100%: navigation, URLs, drafts, library, answer/table, company context, approvals, no overflow",
+    "1366x768 @ 125%: navigation, URLs, drafts, library, answer/table, company context, approvals, no overflow",
+    "1440x900 @ 100%: navigation, URLs, drafts, library, answer/table, company context, approvals, no overflow",
+    "1440x900 @ 125%: navigation, URLs, drafts, library, answer/table, company context, approvals, no overflow",
+    "390x844 @ 100%: navigation, URLs, drafts, library, answer/table, company context, approvals, no overflow",
+    "390x844 @ 125%: navigation, URLs, drafts, library, answer/table, company context, approvals, no overflow",
+    "Administrator review entry visible; member review hidden"
+  ],
+  "zoomMethod": "layout viewport / zoom and deviceScaleFactor; equivalent geometry, not native toolbar zoom",
+  "externalActions": 0
+}

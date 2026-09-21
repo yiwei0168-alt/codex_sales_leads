@@ -1,5 +1,6 @@
 "use client";
 import { useEffect,useState } from "react";
+import { SavedKnowledgeText } from "./saved-knowledge-text";
 import { KnowledgeRevisions } from "./knowledge-revisions";
 type Item={id:string;title:string;sourceUrl?:string;assetId?:string;documentType?:string;version?:string;updatedAt:string;status:string;scope:string;excerpt?:string};
 export function KnowledgeLibrary(){
@@ -18,7 +19,7 @@ export function KnowledgeLibrary(){
   },[selected,scope,revision]);
   function sources(item:Item){return <div className="library-links">{item.assetId&&<a href={`/api/knowledge/assets/${item.assetId}`} target="_blank" rel="noreferrer">打开原始资料</a>}{item.sourceUrl&&/^https?:\/\//i.test(item.sourceUrl)&&<a href={item.sourceUrl} target="_blank" rel="noreferrer">查看来源</a>}{scope==="private"&&<KnowledgeRevisions documentId={item.id}/>}</div>;}
   return <section className="knowledge-library" aria-label="资料列表">
-    {selected ? <article className="library-reader"><button className="secondary-button" onClick={()=>{setSelected(null);setContent(null);setError("");}}>返回资料列表</button><h2>{selected.title}</h2>{sources(selected)}{reading&&<p role="status">正在读取资料…</p>}{error&&<p role="alert">{error}<button onClick={()=>{setReading(true);setRevision(value=>value+1);}}>重试</button></p>}<p className="subtle">正文按已保存的检索片段顺序展示，可能含重叠内容；原始排版请查看原始资料。</p><div className="library-body">{content}</div></article> : <>
+    {selected ? <article className="library-reader"><button className="secondary-button" onClick={()=>{setSelected(null);setContent(null);setError("");}}>返回资料列表</button><h2>{selected.title}</h2>{sources(selected)}{reading&&<p role="status">正在读取资料…</p>}{error&&<p role="alert">{error}<button onClick={()=>{setReading(true);setRevision(value=>value+1);}}>重试</button></p>}<p className="subtle">正文按已保存的检索片段顺序展示，可能含重叠内容；原始排版请查看原始资料。</p><div className="library-body">{content&&<SavedKnowledgeText text={content}/>}</div></article> : <>
     <div className="library-toolbar"><label>范围<select aria-label="知识范围" value={scope} onChange={event=>{setScope(event.target.value);setOffset(0);setItems([]);}}><option value="private">我的私有知识</option><option value="shared">共享知识（只读）</option><option value="evidence">公共证据库（只读）</option></select></label>
     <form onSubmit={event=>{event.preventDefault();setFilter(query);setOffset(0);}}><input aria-label="搜索资料" maxLength={200} placeholder="搜索名称或证据网址" value={query} onChange={event=>setQuery(event.target.value)}/><button className="secondary-button">搜索</button></form><button onClick={()=>setRevision(value=>value+1)}>刷新资料</button></div>
     {error&&<p role="alert">{error}<button onClick={()=>setRevision(value=>value+1)}>重试</button></p>}

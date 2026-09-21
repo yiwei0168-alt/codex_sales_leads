@@ -103,7 +103,7 @@ export function AgentRuns({ conversationId, onUpdated }: { conversationId: strin
       {run.batch && <p className="agent-batch-state" role="status">{run.batch.status === "pending" ? `GLM Batch ${run.batch.providerStatus === "in_progress" ? "执行中" : "排队或等待结果"}` : run.batch.status === "completed" ? "GLM Batch 结果已保存" : `GLM Batch ${run.batch.status}，请核对`}{` · 已经过 ${elapsed(run.batch.submittedAt, now)} · 查询 ${run.batch.pollCount} 次`}</p>}
       <AgentApprovals items={run.approvals ?? []} />
       {run.memories?.map(memory => <p key={memory.id} className="text-sm">已记住偏好：{memory.key} <button type="button" onClick={() => void undo(memory.id, memory.version)}>撤销</button></p>)}
-      {(eventsByRun[run.id]?.length ?? 0) > 0 && <details className="agent-run-timeline" open={run.status !== "completed"}><summary>执行记录 · {eventsByRun[run.id].length} 条已保存事件</summary><ol>{eventsByRun[run.id].slice(-16).map(event => <EventReceipt key={event.id} event={event}/>)}</ol></details>}
+      {(eventsByRun[run.id]?.length ?? 0) > 0 && <details className="agent-run-timeline"><summary>执行记录 · {eventsByRun[run.id].length} 条已保存事件</summary><ol>{eventsByRun[run.id].slice(-16).map(event => <EventReceipt key={event.id} event={event}/>)}</ol></details>}
       {run.result?.reply && <p className="agent-run-result">{run.result.reply}</p>}
       {!["completed", "cancelled"].includes(run.status) && <div className="agent-run-actions"><input aria-label="追加任务要求" value={instruction} onChange={event => setInstruction(event.target.value)} placeholder="追加要求，在下个安全边界生效" /><button type="button" disabled={!instruction.trim()} onClick={() => void control(run.id, "instruct")}>追加</button></div>}
     </article>)}

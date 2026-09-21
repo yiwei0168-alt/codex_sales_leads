@@ -2,12 +2,12 @@
 import { useEffect,useState } from "react";
 import type { CompanyRecord } from "@/lib/domain";
 import { marketCode,marketHref,marketLabel } from "@/lib/sales/market-navigation";
-export function GlobalMarketOverview({companies}:{companies:CompanyRecord[]}){
+export function GlobalMarketOverview({companies,country="all"}:{companies:CompanyRecord[];country?:string}){
   const [tasks,setTasks]=useState<Array<{country:string;active:number}>|null>(null);const [error,setError]=useState(false);
   useEffect(()=>{const controller=new AbortController();let pending=false;
     async function read(){if(pending||document.hidden)return;pending=true;try{const response=await fetch("/api/tasks/markets",{signal:controller.signal,cache:"no-store"});if(!response.ok)throw new Error();const data=await response.json();if(!controller.signal.aborted){setTasks(data.markets);setError(false);}}catch{if(!controller.signal.aborted)setError(true);}finally{pending=false;}}
     void read();const timer=window.setInterval(()=>void read(),30000);return()=>{controller.abort();window.clearInterval(timer);};},[]);
-  const codes=[...new Set([...companies.map(company=>marketCode(company.country)),...(tasks??[]).map(item=>item.country).filter(code=>code!=="unknown")])].sort();
+  const codes=[...new Set([...companies.map(company=>marketCode(company.country)),...(tasks??[]).map(item=>item.country).filter(code=>code!=="unknown")])].filter(code=>country==="all"||code===country).sort();
   const today=new Date().toISOString().slice(0,10);
   return <section className="panel"><h2>已保存市场概览</h2><p>仅统计当前用户数据库记录；不推断市场覆盖率或未搜索地区的机会。</p>
     {error&&<p role="status">运行任务统计读取失败；旧计数暂不显示，稍后自动重试。</p>}

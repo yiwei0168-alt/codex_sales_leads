@@ -186,9 +186,9 @@ export function KnowledgeBase({ initialTab }: { initialTab?: string } = {}) {
   return <div className="knowledge-layout">
     <div className="business-toolbar"><nav className="page-tabs" aria-label="知识库页签"><button aria-current={tab==="materials"?"page":undefined} onClick={()=>selectTab("materials")}>资料</button><button aria-current={tab==="questions"?"page":undefined} onClick={()=>selectTab("questions")}>知识问答</button>{canReview&&<button aria-current={tab==="review"?"page":undefined} onClick={()=>selectTab("review")}>审核</button>}</nav>{tab==="materials"&&<button className="primary-button" aria-expanded={uploadOpen} onClick={()=>setUploadOpen(value=>!value)}>{uploadOpen?"收起上传":"上传资料"}</button>}</div>
     {tab==="materials"&&<KnowledgeLibrary />}
+    {tab==="materials"&&<details className="panel personal-memory-entry"><summary>个人长期记忆</summary><PersonalMemory /></details>}
     {tab==="review"&&!canReview&&<p>共享知识审核仅对管理员开放。请选择资料或知识问答。</p>}
     {tab==="review"&&canReview&&<>
-    <PersonalMemory />
     {!loading && !stats.configured && <p role="status">{stats.error??"知识服务暂不可用，请稍后重试。"}</p>}
     <section className="kb-stats-grid">
       {stats.collections.map((collection) => {

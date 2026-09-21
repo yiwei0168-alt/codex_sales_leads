@@ -13,7 +13,7 @@ import { OutboundComposer } from "@/components/outbound-composer";
 import { stageLabel } from "@/lib/sales/opportunity-stages";
 import { evidenceFreshness } from "@/lib/sales/evidence-freshness";
 import { marketCode, marketHref, marketLabel } from "@/lib/sales/market-navigation";
-import { AssistantHome, clearPendingConversationInputs } from "@/components/assistant-home";
+import { AssistantHome, clearPendingConversationInputs, startNewConversationInput } from "@/components/assistant-home";
 import { ConversationHistory } from "@/components/conversation-history";
 import { AgentLibrary } from "@/components/agent-library";
 import { KnowledgeBase } from "@/components/knowledge-base";
@@ -90,23 +90,32 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
     if (initialConversationId) sessionStorage.setItem("lastConversationId", initialConversationId);
   }, [initialConversationId]);
   const country = marketCode(initialCountry);
+  const countryRef = useRef(country);
   function setView(next: View) {
     setMobileNavOpen(false);
     if (next === "home") { void returnToConversation(); return; }
-    router.push(viewHref(next, country, selectedIdRef.current));
+    router.push(viewHref(next, countryRef.current, selectedIdRef.current));
   }
+  const [navigationError,setNavigationError]=useState("");
   async function returnToConversation() {
-    let lastId = conversationId ?? sessionStorage.getItem("lastConversationId");
-    if (!lastId) {
+    try {
+      setNavigationError("");
+      const lastId = conversationId ?? sessionStorage.getItem("lastConversationId");
       const response = await fetch("/api/assistant/conversations", {cache:"no-store"});
-      if (response.ok) lastId = (await response.json()).conversations?.[0]?.id;
-    }
-    router.push(lastId ? `/c/${encodeURIComponent(lastId)}` : "/");
+      if(!response.ok)throw Error("对话列表读取失败，请重试");
+      const items=(await response.json()).conversations as Array<{id:string}>;
+      let target=items.find(item=>item.id===lastId)?.id;
+      if(!target&&lastId){const saved=await fetch(`/api/assistant/conversations/${encodeURIComponent(lastId)}`,{cache:"no-store"});if(saved.ok)target=lastId;else if(saved.status!==404)throw Error("原对话读取失败，请重试");}
+      target ??= items[0]?.id;
+      if(target)sessionStorage.setItem("lastConversationId",target);else sessionStorage.removeItem("lastConversationId");
+      router.push(target ? `/c/${encodeURIComponent(target)}` : "/");
+    } catch(reason){setNavigationError(reason instanceof Error?reason.message:"对话暂不可用，请重试");}
   }
   function openConversation(id: string) {
     setConversationId(id); setMobileNavOpen(false); setViewState("home"); router.push(`/c/${id}`);
   }
   function openNewConversation() {
+    startNewConversationInput();
     setConversationId(undefined); setNewConversationVersion(value => value + 1); setMobileNavOpen(false); setViewState("home"); router.push("/");
   }
   const [companies, setCompanies] = useState<CompanyRecord[]>(initialWorkspace?.companies ?? []);
@@ -121,9 +130,10 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
   const [collapsed, setCollapsed] = useState(false);
   const [footerMenu, setFooterMenu] = useState<"help" | "account" | null>(null);
   const footerRef = useRef<HTMLDivElement>(null);
+  const footerTrigger = useRef<HTMLButtonElement|null>(null);
   useEffect(() => {
     function close(event: MouseEvent) { if (!footerRef.current?.contains(event.target as Node)) setFooterMenu(null); }
-    function escape(event: KeyboardEvent) { if (event.key === "Escape") setFooterMenu(null); }
+    function escape(event: KeyboardEvent) { if (event.key === "Escape" && footerRef.current?.querySelector('[aria-expanded="true"]')) { setFooterMenu(null); footerTrigger.current?.focus(); } }
     document.addEventListener("click", close); document.addEventListener("keydown", escape);
     return () => { document.removeEventListener("click", close); document.removeEventListener("keydown", escape); };
   }, []);
@@ -143,13 +153,13 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error" | "conflict">("idle");
   const [failedEdit, setFailedEdit] = useState<{ id: string; patch: CompanyEditablePatch } | null>(null);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
-  const mobileNavRef = useDialogFocus(mobileNavOpen ? () => setMobileNavOpen(false) : undefined);
+  const mobileNavRef = useDialogFocus(mobileNavOpen ? () => {setMobileNavOpen(false);setFooterMenu(null);} : undefined);
   const saveQueue = useRef<Promise<unknown>>(Promise.resolve());
   const pendingSaves=useRef(0);
   const refreshAfterSave=useRef(false);
   const companyRevision=useRef(new Map((initialWorkspace?.companies??[]).flatMap(company=>company.stateRevision===undefined?[]:[[company.id,company.stateRevision] as const])));
   useEffect(()=>{
-    if(!["results","map","opportunities","overview"].includes(view))return;
+    if(!["results","map","opportunities","overview","assistant"].includes(view))return;
     const controller=new AbortController();let pending=false;
     async function refresh(){if(pending||document.hidden||pendingSaves.current)return;pending=true;const version=workspaceRevision.current;
       try{const response=await fetch("/api/workspaces/current",{signal:controller.signal,cache:"no-store"});if(!response.ok)throw new Error();const workspace=await response.json() as MarketWorkspaceDto;
@@ -171,7 +181,7 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
         if(result){setDevelopmentResult(result);setDraft(result.draft.body);setDevelopmentState(result.status==="approved"?"approved":"ready");}})
       .catch(()=>{if(!controller.signal.aborted)setDevelopmentError("已有草稿读取失败，请切换页面重试；未自动生成新版本。");});
     return()=>controller.abort();
-  },[view,selectedCompanyId]);
+  },[view,selectedCompanyId,refreshVersion]);
   const shortlist = countryCompanies.filter((company) => !["Discovered", "Excluded"].includes(company.opportunityStage));
 
   const filteredCompanies = (() => {
@@ -333,7 +343,7 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
 
   return (
     <div className={`app-shell ${collapsed ? "sidebar-collapsed" : ""}`}>
-      {mobileNavOpen && <button className="mobile-nav-backdrop" aria-label="关闭导航菜单" onClick={() => setMobileNavOpen(false)} />}
+      {mobileNavOpen && <button className="mobile-nav-backdrop" aria-label="关闭导航菜单" onClick={() => {setMobileNavOpen(false);setFooterMenu(null);}} />}
       <aside
         ref={mobileNavRef}
         id="primary-navigation"
@@ -344,7 +354,7 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
         tabIndex={mobileNavOpen ? -1 : undefined}
       >
         <div className="brand-mark"><span className="brand-glyph">N</span><strong>Network Copilot</strong><button className="sidebar-collapse" aria-label="收起侧栏" onClick={()=>setCollapsed(true)}>‹</button></div>
-        <button className="mobile-nav-close" aria-label="关闭导航菜单" onClick={() => setMobileNavOpen(false)}><Icon name="close" size={20}/></button>
+        <button className="mobile-nav-close" aria-label="关闭导航菜单" onClick={() => {setMobileNavOpen(false);setFooterMenu(null);}}><Icon name="close" size={20}/></button>
         <nav aria-label="主导航">
           <button className="nav-new-conversation" onClick={openNewConversation}><Icon name="plus" />新对话</button>
           {navItems.map((item) => (
@@ -356,8 +366,8 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
         <ConversationHistory activeId={conversationId} refreshKey={historyVersion} onSelect={openConversation} onNew={openNewConversation}/>
         <div className="sidebar-spacer" />
         <div className="sidebar-footer" ref={footerRef}>
-          <button aria-expanded={footerMenu === "help"} onClick={()=>setFooterMenu(footerMenu === "help" ? null : "help")}>帮助</button>
-          <button aria-expanded={footerMenu === "account"} onClick={()=>setFooterMenu(footerMenu === "account" ? null : "account")}>账户与设置</button>
+          <button aria-expanded={footerMenu === "help"} onClick={event=>{footerTrigger.current=event.currentTarget;setFooterMenu(footerMenu === "help" ? null : "help");}}>帮助</button>
+          <button aria-expanded={footerMenu === "account"} onClick={event=>{footerTrigger.current=event.currentTarget;setFooterMenu(footerMenu === "account" ? null : "account");}}>账户与设置</button>
           {footerMenu && <div className="footer-menu">
             {footerMenu === "help" ? <><button onClick={()=>{setFooterMenu(null);setView("tasks");}}>任务记录</button><button onClick={()=>{setFooterMenu(null);setView("help");}}>使用说明</button></>
               : <><strong>{userName}</strong><button onClick={()=>{setFooterMenu(null);setView("settings");}}>账户信息与 Agent 设置</button><button onClick={logout}>退出登录</button></>}
@@ -374,16 +384,17 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
         </header>
 
         <div className="workspace-content">
+          {navigationError&&<p role="alert">{navigationError}<button onClick={()=>void returnToConversation()}>重试返回对话</button></p>}
           {failedEdit && <div role="alert">修改尚未保存，原值已保留。<button onClick={() => void updateCompany(failedEdit.id, failedEdit.patch)}>重试保存</button></div>}
           {saveState !== "idle" && <p role={saveState === "error" ? "alert" : "status"} className="save-status">{saveState === "saving" ? "正在保存…" : saveState === "saved" ? "已保存" : saveState === "error" ? "数据读取或保存失败，请重试" : "公司已被更新，请检查刷新后的状态"}<button onClick={()=>setRefreshVersion(value=>value+1)}>重试读取</button></p>}
           {view !== "home" && <section className="workspace-heading"><h1>{title}</h1>{isMarket && view === "overview" && <button className="secondary-button" onClick={()=>{setView("results");showLiveResults();}}>查看已保存线索</button>}</section>}
           {tabs.length > 0 && <div className="business-toolbar"><nav className="page-tabs" aria-label={`${title}页签`}>{tabs.map(tab=><button key={tab.id} aria-current={view===tab.id?"page":undefined} onClick={()=>setView(tab.id)}>{tab.label}</button>)}</nav>
-            <label className="select-field">国家<select aria-label="选择国家" value={country} onChange={event=>router.push(viewHref(view,event.target.value,selectedIdRef.current))}><option value="all">全部国家</option>{countries.sort().map(code=><option key={code} value={code}>{marketLabel(code)}</option>)}</select></label>
+            <label className="select-field">国家<select aria-label="选择国家" value={country} onChange={event=>{countryRef.current=event.target.value;router.push(viewHref(view,event.target.value,selectedIdRef.current));}}><option value="all">全部国家</option>{countries.sort().map(code=><option key={code} value={code}>{marketLabel(code)}</option>)}</select></label>
           </div>}
           {searchState === "complete" && <div className="inline-notice success"><Icon name="check"/><span>当前工作区包含 {companies.length} 个已存储候选、{sourceCount} 条证据；请在公司详情查看各自的评分版本与核实状态。</span><button onClick={() => setSearchState("idle")} aria-label="关闭"><Icon name="close" size={15}/></button></div>}
 
           {view === "home" && <AssistantHome key={`${initialConversationId ?? "new"}:${newConversationVersion}`} initialConversationId={initialConversationId} userName={userName} onConversationChange={id=>{setConversationId(id);setHistoryVersion(value=>value+1);if(id){sessionStorage.setItem("lastConversationId",id);router.replace(`/c/${id}`);}}} onOpenResults={(code) => router.push(marketHref(code, "leads"))} onOpenCompany={(id,kind)=>{selectCompany(id,kind==="library");if(kind!=="library")setView("assistant");}} />}
-          {view === "overview" && <GlobalMarketOverview companies={countryCompanies} />}
+          {view === "overview" && <GlobalMarketOverview key={refreshVersion} country={country} companies={countryCompanies} />}
           {view === "results" && <LeadFilters companies={filteredCompanies} onUpdate={updateCompany}>{items=><Results companies={items} query={query} setQuery={setQuery} roleFilter={roleFilter} setRoleFilter={setRoleFilter} tierFilter={tierFilter} setTierFilter={setTierFilter} onSelect={selectCompany} onToggle={(company) => updateCompany(company.id, { opportunityStage: company.opportunityStage === "Discovered" ? "Qualified" : "Discovered" })} />}</LeadFilters>}
           {view === "map" && (country === "all" ? <p className="subtle">请选择国家以查看渠道节点与关系。</p> : <UserChannelMap key={country} country={country} companies={countryCompanies} onSelect={selectCompany} onAdded={(company)=>setCompanies(items=>[...items,company])} />)}
           {view === "opportunities" && <OpportunityWorkspace companies={shortlist} onSelect={selectCompany} onUpdate={updateCompany} onOpenMail={(id)=>{selectCompany(id,false);setView("assistant");}} />}
