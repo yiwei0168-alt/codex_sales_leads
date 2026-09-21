@@ -15,6 +15,8 @@ describe("existing page workflow tool contracts", () => {
     expect(byId.get("task_reconcile")?.recovery).toBe("reconcile");
     expect(byId.get("knowledge_gold_review_save")?.role).toBe("admin");
     expect(byId.get("knowledge_gold_holdout_unlock")?.role).toBe("admin");
+    expect(byId.get("knowledge_shared_text_upsert")?.role).toBe("admin");
+    expect(byId.get("knowledge_shared_text_upsert")?.effect).toBe("publish");
   });
 
   it("keeps credentials and model-supplied confirmation flags out of tool inputs", () => {

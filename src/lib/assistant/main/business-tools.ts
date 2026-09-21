@@ -27,6 +27,7 @@ import { setMessageCompany } from "@/lib/mailbox/company-links";
 import { reconcileContactLookup } from "@/lib/contacts/reconcile-lookup";
 import { reconcileRelationshipAnalysis } from "@/lib/sales/reconcile-relationship";
 import { listApprovedMailboxKnowledge } from "@/lib/mailbox/knowledge-overview";
+import { upsertKnowledgeDocument } from "@/lib/rag/repository";
 
 const companyId = z.string().min(1).max(180), country = z.string().regex(/^[A-Z]{2}$/);
 const developmentInput = z.object({ companyExternalId: companyId, language: z.string().max(20).optional(), instructions: z.string().max(2000).optional() }).strict();
@@ -96,6 +97,10 @@ export const businessTools = [
     input:z.object({}).strict(),execute:async(_,c)=>{const {unlockGoldHoldout}=await import("@/lib/knowledge/review-repository");await unlockGoldHoldout(c.userId,true);return result({unlocked:true});}}),
   defineTool({id:"mailbox_knowledge_list",description:"Read approved account-owned knowledge and template candidates learned from mailbox review. Private content remains in the configured main-model context.",
     input:z.object({offset:z.number().int().min(0).max(100000).default(0)}).strict(),execute:async(i,c)=>result(await listApprovedMailboxKnowledge(c.userId,i.offset,50))}),
+  defineTool({id:"knowledge_shared_text_upsert",description:"Create or replace one administrator-owned shared text knowledge document after exact approval. A changed existing document requires its observed content hash; this does not accept binary files or rebuild RAG v3.",
+    role:"admin",effect:"publish",recovery:"idempotent",cost:"unknown",connections:["knowledge-embedding"],
+    input:z.object({collection:z.enum(["industry","company","product"]),externalId:z.string().trim().min(1).max(300),title:z.string().trim().min(1).max(300),content:z.string().trim().min(1).max(2_000_000),sourceType:z.string().trim().min(1).max(120),sourceUrl:z.url().optional(),authorityLevel:z.union([z.literal(1),z.literal(2),z.literal(3),z.literal(4),z.literal(5)]).default(3),language:z.string().trim().min(2).max(30).default("zh-CN"),market:z.string().trim().max(120).optional(),companyId:z.string().trim().max(200).optional(),productId:z.string().trim().max(200).optional(),expectedContentHash:z.string().regex(/^[0-9a-f]{64}$/).optional()}).strict(),
+    execute:async(i,c)=>{const {expectedContentHash,...document}=i;return result(await upsertKnowledgeDocument(c.userId,{...document,visibility:"shared",companyId:i.collection==="company"?"cudy-technology":i.companyId,productId:i.collection==="product"?(i.productId??i.externalId):i.productId,metadata:{}},c.role,expectedContentHash??null));}}),
   defineTool({ id: "budget_read", description: "Read legacy account budget as reference data, not an MA05 spending limit. Unknown bills remain unknown.", input: z.object({}).strict(), execute: async (_,c) => result(await readSpendBudget(c.userId)) }),
   defineTool({id:"task_usage_read",description:"Read the account's last 30 days of operational efficiency and provider billing observations. Tables overlap and totals must not be added; unknown bills and adoption remain unknown.",
     input:z.object({}).strict(),execute:async(_,c)=>result(await readTaskUsage(c.userId))}),

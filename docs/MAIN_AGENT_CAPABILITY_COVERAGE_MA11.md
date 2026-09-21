@@ -1,6 +1,6 @@
 # MA11 主 Agent 能力覆盖核对
 
-本表从可执行工具注册表生成。基线为原有 74 项；`lead_workflow` 和本轮补齐的页面共用服务适配器使当前目录达到 87 项。`可调用`只表示工具有注册的 schema、账户/角色门禁和服务适配器，不代表外部连接可用、业务结果已生成或真实模型已选中。具体用途见 [工具目录](MAIN_AGENT_TOOL_CATALOG.md)。
+本表从可执行工具注册表生成。基线为原有 74 项；`lead_workflow` 和本轮补齐的页面共用服务适配器使当前目录达到 88 项。`可调用`只表示工具有注册的 schema、账户/角色门禁和服务适配器，不代表外部连接可用、业务结果已生成或真实模型已选中。具体用途见 [工具目录](MAIN_AGENT_TOOL_CATALOG.md)。
 
 | 工具 | 状态 | 角色 | 效果 | 费用状态 |
 |---|---|---|---|---|
@@ -24,6 +24,7 @@
 | `knowledge_gold_review_save` | 可调用 | admin | publish | known |
 | `knowledge_gold_holdout_unlock` | 可调用 | admin | publish | known |
 | `mailbox_knowledge_list` | 可调用 | member | read | known |
+| `knowledge_shared_text_upsert` | 可调用 | admin | publish | unknown |
 | `budget_read` | 可调用 | member | read | known |
 | `task_usage_read` | 可调用 | member | read | known |
 | `run_read` | 可调用 | member | read | known |
@@ -96,7 +97,7 @@
 
 | 领域 | 动作 | 页面入口与 Agent 差距 |
 |---|---|---|
-| 知识 | 管理共享文档正文、二进制入库与发布 | `/api/knowledge/documents`, `/api/knowledge/uploads`；上传入口已在对话附件选择器，Agent 无审核后发布工具 |
+| 知识 | 共享二进制入库与发布 | `/api/knowledge/uploads`；共享文本已有管理员精确批准工具，二进制凭证化上传仍由页面处理 |
 | 联系人 | 查询最近一次联系人补全运行 | `/api/contact-enrichment/runs/latest`；发现与保存用 `contacts_lookup` |
 | 邮箱 | 创建或重新录入邮箱凭证 | `/api/mailbox/connections`；连接列表、同步、停用和删除可调用，凭证不得进入模型上下文，故仍由页面安全输入 |
 | 管理 | 更改旧预算参考值 | `/api/budget` PUT；MA13 后不作为本轮流程与质量目标，旧页面继续保留 |
