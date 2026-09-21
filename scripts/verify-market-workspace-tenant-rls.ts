@@ -14,7 +14,7 @@ if(a.hostname!==m.hostname||(a.port||"5432")!==(m.port||"5432")||a.pathname!==m.
   throw new Error("Fixture database mismatch");
 const admin=new Pool({connectionString:databaseConnectionString(migration),ssl:databaseSslConfiguration(migration)});
 const {getPool,tenantQuery}=await import("../src/lib/rag/db");
-const {getCurrentWorkspace,updateWorkspaceMode}=await import("../src/lib/sales/repository");
+const {getCurrentWorkspace}=await import("../src/lib/sales/repository");
 const {resolveTargetWorkspace}=await import("./resolve-target-workspace");
 const userId=randomUUID(),otherUserId=randomUUID(),workspaceId=randomUUID(),otherWorkspaceId=randomUUID();
 const email=`workspace-rls-${userId}@fixture.invalid`,otherEmail=`workspace-rls-${otherUserId}@fixture.invalid`;
@@ -36,12 +36,12 @@ try{
   assert.equal(resolved.id,workspaceId);assert.equal(resolved.ownerId,userId);
   const current=await getCurrentWorkspace(userId);
   assert.equal(current?.id,workspaceId);
-  await updateWorkspaceMode("growth",userId);
-  const own=await tenantQuery<{mode:string}>(userId,"select mode from market_workspace where id=$1",[workspaceId]);
-  assert.equal(own[0]?.mode,"growth");
+  assert.equal(Object.hasOwn(current!,"mode"),false);
+  const own=await tenantQuery<{mode:string|null}>(userId,"select mode from market_workspace where id=$1",[workspaceId]);
+  assert.equal(own[0]?.mode,null);
   assert.equal((await tenantQuery(otherUserId,"select id from market_workspace where id=$1",[workspaceId])).length,0);
   assert.equal((await tenantQuery(otherUserId,
-    "update market_workspace set mode=mode where id=$1 returning id",[workspaceId])).length,0);
+    "update market_workspace set name=name where id=$1 returning id",[workspaceId])).length,0);
   await assert.rejects(tenantQuery(otherUserId,
     `insert into market_workspace(owner_id,slug,name,market,country_code,objective)
      values($1,$2,'Foreign fixture','Global','WW','Denied')`,[userId,`foreign-${randomUUID()}`]),

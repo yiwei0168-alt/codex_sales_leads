@@ -54,7 +54,6 @@ export interface MarketWorkspaceDto {
   market: string;
   countryCode: string;
   taskCountries?: string[];
-  mode: "new-market" | "growth";
   objective: string;
   companies: CompanyRecord[];
   contactsByCompanyId: Record<string, CompanyContactDetailsDto>;

@@ -12,7 +12,6 @@ if(a.hostname!==m.hostname||(a.port||"5432")!==(m.port||"5432")||a.pathname!==m.
   throw new Error("Fixture database mismatch");
 const admin=new Pool({connectionString:databaseConnectionString(migration),ssl:databaseSslConfiguration(migration)});
 const {getPool,tenantQuery}=await import("../src/lib/rag/db");
-const {updateWorkspaceMode}=await import("../src/lib/sales/repository");
 const userId=randomUUID(),otherUserId=randomUUID(),workspaceId=randomUUID(),otherWorkspaceId=randomUUID();
 let created=false;
 const startedAt=Date.now();
@@ -28,8 +27,15 @@ try{
       [id,owner]);
     await client.query("commit");created=true;
   }catch(error){await client.query("rollback");throw error;}finally{client.release();}
-  await updateWorkspaceMode("new-market",userId);
-  await updateWorkspaceMode("growth",otherUserId);
+  // Historical audit fixtures are seeded directly: the removed service is never called.
+  for (const [owner, workspace, mode] of [[userId,workspaceId,"new-market"],[otherUserId,otherWorkspaceId,"growth"]]) {
+    await admin.query("update market_workspace set mode=$1 where id=$2",[mode,workspace]);
+    await admin.query(`insert into workspace_audit_event(workspace_id,actor_user_id,entity_type,entity_id,action,changes)
+      values($1,$2,'workspace',$3,'mode.updated',$4)`,[workspace,owner,workspace,JSON.stringify({mode})]);
+  }
+  const {readFile}=await import("node:fs/promises");
+  await admin.query(await readFile("db/migrations/103_retire_workspace_mode.sql","utf8"));
+  assert.equal((await admin.query("select mode from market_workspace where id=$1",[workspaceId])).rows[0].mode,"new-market");
   const own=await tenantQuery<{id:string;actor_user_id:string;changes:{mode:string}}>(userId,
     "select id::text,actor_user_id,changes from workspace_audit_event where workspace_id=$1",[workspaceId]);
   assert.equal(own.length,1);assert.equal(own[0].actor_user_id,userId);assert.equal(own[0].changes.mode,"new-market");

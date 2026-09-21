@@ -1,6 +1,6 @@
 # Registered main Agent tools
 
-Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/generate-main-agent-catalog.ts --check` to detect drift. These 96 tools are implemented adapters; registration is not real-provider acceptance. The complete migration inventory remains in [MAIN_AGENT_CAPABILITIES.md](MAIN_AGENT_CAPABILITIES.md).
+Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/generate-main-agent-catalog.ts --check` to detect drift. These 95 tools are implemented adapters; registration is not real-provider acceptance. The complete migration inventory remains in [MAIN_AGENT_CAPABILITIES.md](MAIN_AGENT_CAPABILITIES.md).
 
 | Tool | Version | Role | Effect | Cost | Purpose |
 |---|---|---|---|---|---|
@@ -17,7 +17,6 @@ Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/ge
 | contacts_verify_evaluate | 1 | member | publish | unknown | After exact approval of this candidate and DeepSeek disclosure, independently evaluate one owned saved email candidate against saved public contact evidence. Save a shadow decision only; never mark the contact or email verified. Do not retry an uncertain model attempt. |
 | contacts_verify_publish | 1 | member | publish | known | Publish one saved shadow contact decision after exact approval of email, category, resulting status and observed current decision. Reject changed source evidence or candidate state; no model call or outbound email. |
 | mail_sync | 1 | member | reversible | unknown | Synchronize owned mailbox messages for the requested date/folder scope; stores messages without sending. |
-| workspace_mode_update | 1 | member | reversible | known | Change the current account market workspace between new-market and growth mode using the existing page service. |
 | development_feedback_generate | 1 | member | reversible | unknown | Apply explicit feedback to one owned saved development draft at its observed revision and save the regenerated version. This never sends mail. |
 | mailbox_rescreen | 1 | member | reversible | known | Re-run the existing local deterministic screening over stored account mailbox messages. Does not send private mail to a model. |
 | mailbox_learning_review | 1 | member | publish | unknown | Authorize one owned message for the existing redacted Kimi learning review, or skip it. Authorization requires exact approval because private message-derived content leaves the local mailbox boundary. |

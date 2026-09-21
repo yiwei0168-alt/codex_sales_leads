@@ -17,7 +17,6 @@
 | `contacts_verify_evaluate` | 可调用 | member | publish | unknown |
 | `contacts_verify_publish` | 可调用 | member | publish | known |
 | `mail_sync` | 可调用 | member | reversible | unknown |
-| `workspace_mode_update` | 可调用 | member | reversible | known |
 | `development_feedback_generate` | 可调用 | member | reversible | unknown |
 | `mailbox_rescreen` | 可调用 | member | reversible | known |
 | `mailbox_learning_review` | 可调用 | member | publish | unknown |
@@ -120,3 +119,5 @@
 | MCP/API 连接、联网浏览器、私有 Git 连接 | MA11 后续阶段；当前注册工具不声称这些连接可用 |
 
 发布、外发及重要删除仍以实际工具效果触发精确批准。管理员工具只有当前角色为管理员时才可执行。每项返回的数据、缺项、连接状态及真实回执须分别验收；本盘点本身不是 120 条回放或 8 条真实 GLM Batch 的证据。
+
+MA15：全局市场模式能力已移除，不再属于页面或 Agent 可用能力；历史调用返回 capability_removed。

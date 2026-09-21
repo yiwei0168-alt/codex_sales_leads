@@ -22,7 +22,6 @@ import {readTaskUsage} from "../task-usage";
 import {createFollowUpDraft,listSavedFollowUps} from "@/lib/outreach/follow-up-service";
 import { queueAgentLeadWorkflow } from "@/lib/leads/workflow/agent-launch";
 import { ALL_CHANNEL_ROLES } from "@/lib/leads/workflow/types";
-import { updateWorkspaceMode } from "@/lib/sales/repository";
 import { setMessageCompany } from "@/lib/mailbox/company-links";
 import { reconcileContactLookup } from "@/lib/contacts/reconcile-lookup";
 import { reconcileRelationshipAnalysis } from "@/lib/sales/reconcile-relationship";
@@ -87,9 +86,6 @@ export const businessTools = [
     input:z.object({decisionId:z.uuid(),decisionHash:z.string().regex(/^[0-9a-f]{64}$/),email:z.email(),category:z.enum(["Official","HighConfidence","NeedsReview"]),activeStatus:z.enum(["Public","Verified","Pattern-guessed","Unknown","Invalid"]),expectedCurrentDecisionId:z.uuid().nullable()}).strict(),
     effect:"publish",recovery:"idempotent",execute:async(i,c)=>result(await publishSavedContactDecision(c.userId,i),{receipt:i.decisionId})}),
   defineTool({ id: "mail_sync", description: "Synchronize owned mailbox messages for the requested date/folder scope; stores messages without sending.", input: mailboxSyncSchema, effect: "reversible", cost: "unknown", connections: ["mailbox"], execute: async (i,c) => result(await syncAliMail(c.userId,i.connectionId,i)) }),
-  defineTool({id:"workspace_mode_update",description:"Change the current account market workspace between new-market and growth mode using the existing page service.",
-    input:z.object({mode:z.enum(["new-market","growth"])}).strict(),effect:"reversible",recovery:"idempotent",
-    execute:async(i,c)=>{await updateWorkspaceMode(i.mode,c.userId);return result({updated:true,mode:i.mode});}}),
   defineTool({id:"development_feedback_generate",description:"Apply explicit feedback to one owned saved development draft at its observed revision and save the regenerated version. This never sends mail.",
     input:z.object({draftId:z.uuid(),feedback:z.string().trim().min(3).max(4000),currentBody:z.string().trim().min(40).max(30000),sourceRevision:z.number().int().min(1),allowMemory:z.boolean().default(false)}).strict(),
     effect:"reversible",cost:"unknown",connections:["outreach-model"],execute:async(i,c)=>result(await runDevelopmentFeedbackAgent(c.userId,i))}),

@@ -18,7 +18,7 @@ describe("existing page workflow tool contracts", () => {
     expect(byId.get("follow_up_generate")?.effect).toBe("reversible");
   });
   it("registers new shared-service adapters with the required approval classes", () => {
-    expect(byId.get("workspace_mode_update")?.effect).toBe("reversible");
+    expect(byId.has("workspace_mode_update")).toBe(false);
     expect(byId.get("development_feedback_generate")?.effect).toBe("reversible");
     expect(byId.get("mailbox_learning_review")?.effect).toBe("publish");
     expect(byId.get("mail_message_company_update")?.effect).toBe("publish");

@@ -1,5 +1,5 @@
 import { requireApiSession } from "@/lib/auth/session";
-import { getCurrentWorkspace, updateWorkspaceMode } from "@/lib/sales/repository";
+import { getCurrentWorkspace } from "@/lib/sales/repository";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -11,12 +11,8 @@ export async function GET() {
   return workspace ? Response.json(workspace) : Response.json({ error: "Workspace not found" }, { status: 404 });
 }
 
-export async function PATCH(request: Request) {
+export async function PATCH() {
   const session = await requireApiSession();
   if (session instanceof Response) return session;
-  let body: { mode?: string };
-  try { body = await request.json() as { mode?: string }; } catch { return Response.json({ error: "请求体必须是 JSON" }, { status: 400 }); }
-  if (body.mode !== "new-market" && body.mode !== "growth") return Response.json({ error: "Invalid workspace mode" }, { status: 400 });
-  await updateWorkspaceMode(body.mode, session.userId);
-  return Response.json({ updated: true });
+  return Response.json({ code: "capability_removed", error: "全局市场模式能力已移除；请在具体任务中描述业务目标。" }, { status: 410 });
 }

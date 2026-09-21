@@ -14,9 +14,9 @@ const WORKSPACE_SLUG = "global-sales";
 
 export async function getCurrentWorkspace(userId: string): Promise<MarketWorkspaceDto | null> {
   const workspaces = await tenantQuery<{
-    id: string; slug: string; name: string; market: string; country_code: string; mode: "new-market" | "growth"; objective: string;
+    id: string; slug: string; name: string; market: string; country_code: string; objective: string;
   }>(userId,
-    `select id, slug, name, market, country_code, mode, objective from market_workspace
+    `select id, slug, name, market, country_code, objective from market_workspace
      where owner_id = $1 and slug = $2 and status = 'active'`,
     [userId, WORKSPACE_SLUG],
   );
@@ -162,7 +162,6 @@ export async function getCurrentWorkspace(userId: string): Promise<MarketWorkspa
     market: workspace.market,
     countryCode: workspace.country_code,
     taskCountries: taskMarkets.map((item) => item.code),
-    mode: workspace.mode,
     objective: workspace.objective,
     companies: rows.map((row) => ({
       ...row.record,
@@ -189,22 +188,6 @@ export async function getCurrentWorkspace(userId: string): Promise<MarketWorkspa
   };
 }
 
-export async function updateWorkspaceMode(mode: "new-market" | "growth", userId: string): Promise<void> {
-  await tenantTransaction(userId, async (client) => {
-    const result = await client.query<{ id: string }>(
-      `update market_workspace set mode = $1, updated_at = now()
-       where owner_id = $2 and slug = $3 returning id`,
-      [mode, userId, WORKSPACE_SLUG],
-    );
-    if (!result.rows[0]) throw new Error("Workspace not found");
-    await client.query(
-      `insert into workspace_audit_event (workspace_id, actor_user_id, entity_type, entity_id, action, changes)
-       values ($1, $2, 'workspace', $3, 'mode.updated', $4)`,
-      [result.rows[0].id, userId, result.rows[0].id, JSON.stringify({ mode })],
-    );
-  });
-}
-
 export async function updateCompanyState(externalId: string, patch: CompanyEditablePatch, userId: string, expectedRevision?: number): Promise<CompanyRecord> {
   const startedAt = Date.now();
   return tenantTransaction(userId, async (client) => {
@@ -212,11 +195,11 @@ export async function updateCompanyState(externalId: string, patch: CompanyEdita
       workspace_id: string; company_id: string; account_tier: string; supply_model: string; brand_involvement: string;
       opportunity_stage: string; priority: string; owner_name: string | null; next_action: string | null;
       selected_path_id: string | null; selected_path_type: string | null; record: CompanyRecord;
-      country_code: string; mode: string; objective: string; revision: number;
+      country_code: string; objective: string | null; revision: number;
     }>(
       `select wc.workspace_id, wc.company_id, wc.account_tier, wc.supply_model, wc.brand_involvement,
               wc.opportunity_stage, wc.priority, wc.owner_name, wc.next_action,
-              wc.selected_path_id, wc.selected_path_type, wc.record, wc.market_country_code as country_code, w.mode, w.objective, locked.revision
+              wc.selected_path_id, wc.selected_path_type, wc.record, wc.market_country_code as country_code, w.objective, locked.revision
        from user_company_market wc join market_workspace w on w.id = wc.workspace_id
        join sales_company c on c.id = wc.company_id
        join workspace_company_market locked on locked.workspace_id=wc.workspace_id and locked.candidate_id=wc.candidate_id
@@ -264,7 +247,7 @@ export async function updateCompanyState(externalId: string, patch: CompanyEdita
         [userId, row.workspace_id, row.company_id, row.selected_path_id, row.selected_path_type,
           selectedPath.pathId, selectedPath.pathType, row.record.primaryBusinessRole ?? null,
           (row.record as CompanyRecord & { companyScaleClass?: string }).companyScaleClass ?? null,
-          row.country_code, `${row.mode}:${row.objective}`, JSON.stringify(row.record.cooperationPaths ?? [])],
+          row.country_code, row.objective?.trim() || null, JSON.stringify(row.record.cooperationPaths ?? [])],
       );
       await client.query(
         `insert into user_outreach_memory (
@@ -277,7 +260,7 @@ export async function updateCompanyState(externalId: string, patch: CompanyEdita
           [row.country_code], [selectedPath.candidateRole], JSON.stringify({ companyExternalId: externalId,
             primaryBusinessRole: row.record.primaryBusinessRole, selectedPathId: selectedPath.pathId,
             selectedPathType: selectedPath.pathType, previousPathId: row.selected_path_id,
-            previousPathType: row.selected_path_type, developmentStage: `${row.mode}:${row.objective}` })],
+            previousPathType: row.selected_path_type, developmentStage: row.objective?.trim() || null })],
       );
     }
     if (patch.primaryBusinessRole !== undefined || patch.accountTier !== undefined || patch.selectedCooperationPath !== undefined) await client.query(

@@ -1,4 +1,4 @@
-> MA15 变更：采用已确认的半透明紫色视觉、三个业务入口及资料默认页；阶段一基础外壳已实现，完整验收尚未完成。精确规则与状态见 [规则](docs/CONFIRMED_PRODUCT_RULES.md) 和 [工作流](docs/FRONTEND_SIMPLIFICATION_PLAN_2026-09-21.md)。
+> MA15 变更：采用已确认的半透明紫色视觉、三个业务入口及资料默认页；基础外壳与全局模式退场已实现，模式兼容/隔离回归通过；页面完整验收尚未完成。精确规则与状态见 [规则](docs/CONFIRMED_PRODUCT_RULES.md) 和 [工作流](docs/FRONTEND_SIMPLIFICATION_PLAN_2026-09-21.md)。
 
 # Network Channel Copilot PRD v1.1
 

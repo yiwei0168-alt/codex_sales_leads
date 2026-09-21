@@ -5,7 +5,6 @@ const path = "docs/MAIN_AGENT_CAPABILITY_COVERAGE_MA11.md";
 const pageOnly: Array<[string, string, string]> = [
   ["知识", "管理共享文档正文、二进制入库与发布", "`/api/knowledge/documents`, `/api/knowledge/uploads`；上传入口已在对话附件选择器，Agent 无审核后发布工具"],
   ["知识", "RAG 质量集审核与邮箱知识概览", "`/api/knowledge/evaluation-reviews`, `/api/knowledge/mailbox`；检索/事实工具不代替审核"],
-  ["公司与市场", "修改市场工作区模式", "`/api/workspaces/current` PATCH；公司增改和关系工具已可调用"],
   ["联系人", "查询最近一次联系人补全运行", "`/api/contact-enrichment/runs/latest`；发现与保存用 `contacts_lookup`"],
   ["开发信", "对已有策略提交人工反馈并再生成", "`/api/development-strategies/[id]/feedback`；直接生成和版本化编辑可调用"],
   ["邮箱", "创建、更新、删除邮箱连接", "`/api/mailbox/connections`；连接列表和同步可调用，凭证不得进入模型上下文"],
