@@ -13,8 +13,9 @@ import { LeadAssessmentReviewAgent } from "@/lib/leads/workflow/assessment-revie
 import { buildStandardLeadMarketPlaybook } from "@/lib/leads/workflow/playbook";
 import { validCompanyDomainIdentity } from "@/lib/leads/workflow/candidate-registry";
 import { isCurrentLeadScoringEvidence } from "@/lib/leads/evidence-snapshot";
+import { ACTIVE_LEAD_SCORING_POLICY,scoringPolicyChecksum } from "@/lib/leads/scoring-policy";
 
-type Research = { candidate: LeadWorkflowCandidate | CorrectedLeadWorkflowCandidate; plan: LeadSearchPlan; assessment?: LeadCandidateAssessment; publication: "research-only" };
+type Research = { candidate: LeadWorkflowCandidate | CorrectedLeadWorkflowCandidate; plan: LeadSearchPlan; assessment?: LeadCandidateAssessment; scoringPolicyVersion?:string;scoringPolicyChecksum?:string; publication: "research-only" };
 const references = ["company_research", "evidence_collect", "role_correct", "company_score", "score_review"];
 const referenceSchema = z.object({ sourceCallId: z.uuid() }).strict();
 /** Read server-produced artifacts. Model-supplied scores/corrections are never accepted as receipts. */
@@ -49,7 +50,7 @@ export const researchTools = [
     const data=await loadResearch(c,i.sourceCallId);if(!data)return missingReference();
     if(!corrected(data.candidate))return result(data,{status:"missing_input",missing:["Evidence-backed role interpretation; use an existing corrected artifact or role_correct"]});
     const response=await new LeadQualificationAgent(undefined,{includeCooperationPaths:false,concurrency:1}).evaluateWithUsage([data.candidate],buildStandardLeadMarketPlaybook(data.plan,[]),data.plan.countryCode,data.plan.countryName,data.plan.objective);
-    return result({...data,assessment:response.assessments[0],usage:response.usage},{status:response.assessments[0]?.scoringStatus==="completed"?"success":"partial"});
+    return result({...data,assessment:response.assessments[0],scoringPolicyVersion:ACTIVE_LEAD_SCORING_POLICY.version,scoringPolicyChecksum:scoringPolicyChecksum(),usage:response.usage},{status:response.assessments[0]?.scoringStatus==="completed"?"success":"partial"});
   }}),
   defineTool({id:"score_review",description:"Independently review a saved scored research artifact on explicit selection. Uses the existing review/judge contracts and preserves unresolved disagreements. Does not rediscover or publish the company.",input:referenceSchema,cost:"unknown",connections:["lead-review-models"],execute:async(i,c)=>{
     const data=await loadResearch(c,i.sourceCallId);if(!data)return missingReference();

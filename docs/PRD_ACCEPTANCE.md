@@ -1,5 +1,9 @@
 # PRD v0.3 Acceptance Report
 
+> 2026-09-21 MA11/P2 partial continuation: an exact-approved tool can now publish an eligible independently reviewed research score into the formal versioned assessment and company market state. The isolated real PostgreSQL fixture passed publication, replay, owner isolation and stale-revision checks; no live scoring model was called. [Evidence](MAIN_AGENT_ACCEPTANCE.md).
+
+> 2026-09-21 MA11/P2 partial continuation: the Agent can now read owned email candidates, save a specialist shadow contact decision after exact model-disclosure approval, and publish the reviewed result only after a second exact approval with source/version checks. Migration 101 and five focused tests passed; no live specialist call or real contact mutation has been verified. [Evidence](MAIN_AGENT_ACCEPTANCE.md).
+
 > 2026-09-21 MA11/P2 partial continuation: the upload worker now processes every active account under its own RLS context. An exact-approved administrator tool can hash-check and register an extracted binary into the shared document library with its original asset. The response explicitly keeps immutable RAG v3 activation pending. Migration 100, focused tests and type checks passed on an isolated clone; live extraction/embedding and release activation remain open. [Evidence](MAIN_AGENT_ACCEPTANCE.md).
 
 > 2026-09-21 MA11/P2 partial continuation: the shared page/Agent service now reads the latest account contact-enrichment run, and account-encrypted UUID follow-up drafts support sent mail without a company link. The catalog has 89 tools. Unit/type checks passed; migration 099, live generation/send and final workflow acceptance remain open. [Evidence](MAIN_AGENT_ACCEPTANCE.md).

@@ -1,17 +1,21 @@
 # Registered main Agent tools
 
-Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/generate-main-agent-catalog.ts --check` to detect drift. These 90 tools are implemented adapters; registration is not real-provider acceptance. The complete migration inventory remains in [MAIN_AGENT_CAPABILITIES.md](MAIN_AGENT_CAPABILITIES.md).
+Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/generate-main-agent-catalog.ts --check` to detect drift. These 94 tools are implemented adapters; registration is not real-provider acceptance. The complete migration inventory remains in [MAIN_AGENT_CAPABILITIES.md](MAIN_AGENT_CAPABILITIES.md).
 
 | Tool | Version | Role | Effect | Cost | Purpose |
 |---|---|---|---|---|---|
 | lead_workflow | 1 | member | publish | unknown | Queue the existing complete sales-lead workflow as an optional account task. Requires exact approval of the market, role, count and public search scope. Returns the saved action/job receipt and current state; queued is not completed. Never launches a second job for the same Agent call. |
 | company_assessment_read | 1 | member | read | known | Read the latest saved formal assessment and its scoring policy version for one owned company. Does not score, alter qualification or treat research as formal evidence. |
+| company_score_publish | 1 | member | publish | known | Publish one saved, eligible and independently reviewed standalone score as this owned company's formal assessment after exact approval of domain, score, policy version and market revision. Rechecks cited fresh evidence and preserves manual company decisions; no new research or model call. |
 | company_correspondence_list | 1 | member | read | known | List linked inbound/outbound message metadata for one owned company. Read a specific account message separately for its body; links come from saved domain match or user confirmation. |
 | relationship_list | 1 | member | read | known | Read saved company relationships for an account market. |
 | relationship_save | 1 | member | reversible | known | Save an evidenced relationship between two account companies independently of search or scoring. |
 | relationship_analyze | 1 | member | reversible | unknown | Analyze one pair of saved companies with the existing specialist; does not require full discovery. |
 | contacts_lookup | 1 | member | reversible | unknown | Discover and save contacts for one account company using the configured contact provider. No scoring prerequisite. Missing connection is reported explicitly. |
 | contacts_enrichment_latest | 1 | member | read | known | Read the latest saved contact enrichment run and item progress for the current account. This is a read of persisted state, not a new lookup. |
+| contacts_candidate_list | 1 | member | read | known | Read saved email candidate IDs, addresses, attribution and verification state for one owned company before any independent verification. |
+| contacts_verify_evaluate | 1 | member | publish | unknown | After exact approval of this candidate and DeepSeek disclosure, independently evaluate one owned saved email candidate against saved public contact evidence. Save a shadow decision only; never mark the contact or email verified. Do not retry an uncertain model attempt. |
+| contacts_verify_publish | 1 | member | publish | known | Publish one saved shadow contact decision after exact approval of email, category, resulting status and observed current decision. Reject changed source evidence or candidate state; no model call or outbound email. |
 | mail_sync | 1 | member | reversible | unknown | Synchronize owned mailbox messages for the requested date/folder scope; stores messages without sending. |
 | workspace_mode_update | 1 | member | reversible | known | Change the current account market workspace between new-market and growth mode using the existing page service. |
 | development_feedback_generate | 1 | member | reversible | unknown | Apply explicit feedback to one owned saved development draft at its observed revision and save the regenerated version. This never sends mail. |

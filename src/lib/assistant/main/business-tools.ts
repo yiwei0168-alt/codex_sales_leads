@@ -30,6 +30,8 @@ import { listApprovedMailboxKnowledge } from "@/lib/mailbox/knowledge-overview";
 import { upsertKnowledgeDocument } from "@/lib/rag/repository";
 import { readLatestEnrichmentRun } from "@/lib/contacts/enrichment-run-read";
 import { registerExtractedSharedBinary } from "@/lib/knowledge/binary-registration";
+import {contactVerificationConfigured,evaluateSavedContact,publishSavedContactDecision} from "@/lib/contacts/verification/saved-service";
+import {publishReviewedStandaloneScore} from "@/lib/leads/workflow/standalone-score-publication";
 
 const companyId = z.string().min(1).max(180), country = z.string().regex(/^[A-Z]{2}$/);
 const developmentInput = z.object({ companyExternalId: companyId, language: z.string().max(20).optional(), instructions: z.string().max(2000).optional() }).strict();
@@ -51,6 +53,10 @@ export const businessTools = [
       const assessment=await readSavedCompanyAssessment(c.userId,i.companyExternalId);
       return assessment?result({assessment}):result({assessment:null},{status:"missing_input",missing:["Saved formal assessment for this owned company"]});
     }}),
+  defineTool({id:"company_score_publish",description:"Publish one saved, eligible and independently reviewed standalone score as this owned company's formal assessment after exact approval of domain, score, policy version and market revision. Rechecks cited fresh evidence and preserves manual company decisions; no new research or model call.",
+    input:z.object({sourceCallId:z.uuid(),companyExternalId:companyId,expectedRevision:z.number().int().min(0),expectedDomain:z.string().min(3).max(253),expectedTotalScore:z.number().int().min(0).max(100),expectedPolicyVersion:z.string().min(1).max(120)}).strict(),
+    effect:"publish",recovery:"idempotent",execute:async(i,c)=>{const published=await publishReviewedStandaloneScore(c.userId,i);
+      return published.status==="published"?result(published,{receipt:published.runId}):result(null,{status:"missing_input",missing:published.missing});}}),
   defineTool({id:"company_correspondence_list",description:"List linked inbound/outbound message metadata for one owned company. Read a specific account message separately for its body; links come from saved domain match or user confirmation.",
     input:z.object({companyExternalId:companyId,offset:z.number().int().min(0).max(100000).default(0)}).strict(),
     execute:async(i,c)=>{const {fetched:_fetched,companyFound,...page}=await listCompanyCorrespondence(c.userId,i.companyExternalId,i.offset);void _fetched;
@@ -66,6 +72,19 @@ export const businessTools = [
     return result(await lookupAndStoreContacts(c.userId,company.workspace_id,{ companyId:company.id,companyName:company.canonical_name,websiteUrl:`https://${company.domain}/`,domain:company.domain,countryCode:company.country_code,targetRoles:["Owner","Procurement","Channel","Technical"] },provider,i.refresh));
   } }),
   defineTool({id:"contacts_enrichment_latest",description:"Read the latest saved contact enrichment run and item progress for the current account. This is a read of persisted state, not a new lookup.",input:z.object({}).strict(),execute:async(_,c)=>result(await readLatestEnrichmentRun(c.userId))}),
+  defineTool({id:"contacts_candidate_list",description:"Read saved email candidate IDs, addresses, attribution and verification state for one owned company before any independent verification.",
+    input:z.object({companyExternalId:companyId}).strict(),execute:async(i,c)=>result(await tenantQuery(c.userId,`select em.id,em.email,em.source_status as "sourceStatus",em.status,em.contact_id as "contactId",ct.full_name as "fullName",ct.job_title as "jobTitle",em.source_url as "sourceUrl",em.verification_decision_id as "currentDecisionId"
+      from company_email_candidate em join user_company_market wc on wc.company_id=em.company_id and wc.workspace_id=em.workspace_id
+      join market_workspace w on w.id=wc.workspace_id and w.owner_id=$1 and w.slug='global-sales'
+      left join company_contact ct on ct.id=em.contact_id and ct.company_id=em.company_id and ct.workspace_id=em.workspace_id
+      where wc.candidate_id=$2 order by em.last_seen_at desc,em.id desc limit 50`,[c.userId,i.companyExternalId]))}),
+  defineTool({id:"contacts_verify_evaluate",description:"After exact approval of this candidate and DeepSeek disclosure, independently evaluate one owned saved email candidate against saved public contact evidence. Save a shadow decision only; never mark the contact or email verified. Do not retry an uncertain model attempt.",
+    input:z.object({emailCandidateId:z.uuid(),expectedEmail:z.email()}).strict(),effect:"publish",recovery:"reconcile",cost:"unknown",connections:["deepseek-contact-verification"],
+    execute:async(i,c)=>{if(!c.callId)return result(null,{status:"unavailable",missing:["Persisted Agent call ID"]});if(!contactVerificationConfigured())return result(null,{status:"unavailable",missing:["Configured DeepSeek contact-verification connection"]});
+      const evaluated=await evaluateSavedContact(c.userId,i.emailCandidateId,i.expectedEmail,c.callId);return evaluated.status==="evaluated"?result(evaluated,{receipt:evaluated.decisionId}):result(null,{status:evaluated.status,missing:evaluated.missing});}}),
+  defineTool({id:"contacts_verify_publish",description:"Publish one saved shadow contact decision after exact approval of email, category, resulting status and observed current decision. Reject changed source evidence or candidate state; no model call or outbound email.",
+    input:z.object({decisionId:z.uuid(),decisionHash:z.string().regex(/^[0-9a-f]{64}$/),email:z.email(),category:z.enum(["Official","HighConfidence","NeedsReview"]),activeStatus:z.enum(["Public","Verified","Pattern-guessed","Unknown","Invalid"]),expectedCurrentDecisionId:z.uuid().nullable()}).strict(),
+    effect:"publish",recovery:"idempotent",execute:async(i,c)=>result(await publishSavedContactDecision(c.userId,i),{receipt:i.decisionId})}),
   defineTool({ id: "mail_sync", description: "Synchronize owned mailbox messages for the requested date/folder scope; stores messages without sending.", input: mailboxSyncSchema, effect: "reversible", cost: "unknown", connections: ["mailbox"], execute: async (i,c) => result(await syncAliMail(c.userId,i.connectionId,i)) }),
   defineTool({id:"workspace_mode_update",description:"Change the current account market workspace between new-market and growth mode using the existing page service.",
     input:z.object({mode:z.enum(["new-market","growth"])}).strict(),effect:"reversible",recovery:"idempotent",

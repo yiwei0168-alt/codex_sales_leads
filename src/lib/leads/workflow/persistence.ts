@@ -77,7 +77,7 @@ function companyEvidence(candidate: CorrectedLeadWorkflowCandidate, assessment: 
   }));
 }
 
-function companyRecord(
+export function companyRecord(
   candidate: CorrectedLeadWorkflowCandidate,
   assessment: LeadCandidateAssessment,
   countryCode: string,
@@ -156,10 +156,10 @@ function freshnessDays(kinds: string[]): number {
   return values.length > 0 ? Math.min(...values) : 90;
 }
 
-async function saveEvidenceSnapshots(client: PoolClient, userId: string, runId: string,
+export async function saveEvidenceSnapshots(client: PoolClient, userId: string, runId: string,
   candidate: CorrectedLeadWorkflowCandidate): Promise<void> {
   for (const item of candidate.evidence) {
-    if (!isCurrentLeadScoringEvidence(item, runId)) continue;
+    if (!isCurrentLeadScoringEvidence(item, candidate.evidenceSnapshotRunId)) continue;
     const kinds = evidenceKinds(candidate, item.id);
     const days = freshnessDays(kinds);
     await client.query(
@@ -177,7 +177,7 @@ async function saveEvidenceSnapshots(client: PoolClient, userId: string, runId: 
          public_chunk_ids=excluded.public_chunk_ids`,
       [userId, runId, candidate.candidateId, item.url, canonicalUrl(item.url), item.sourceType, kinds,
         item.freshnessStatus, item.capturedAt, days, item.contentHash, item.excerpt, item.priorRunId ?? null,
-        JSON.stringify({ provider: item.provider, title: item.title, scoringEligible: true }),
+        JSON.stringify({ provider: item.provider, title: item.title, scoringEligible: true, sourceEvidenceRunId:candidate.evidenceSnapshotRunId }),
         item.publicDocumentVersionId ?? null, item.publicChunkId ? [item.publicChunkId] : []],
     );
   }
