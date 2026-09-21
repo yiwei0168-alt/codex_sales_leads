@@ -3,6 +3,8 @@
 > 2026-09-20: MA01-MA09 confirmed; see [main Agent implementation workflow](docs/MAIN_AGENT_WORKFLOW.md). These are new targets, not completed implementation or release evidence.
 
 > 2026-09-21: MA11 sets the current main-Agent milestone to architecture and existing-workflow verification. Its 80 development + 40 locked isolated replays and 8 separate real GLM Batch tasks use a 38/40 locked architecture/workflow gate with all critical security and send boundaries passing. Answer quality is reported separately; this does not release the Agent to all work accounts. See [confirmed rule](docs/CONFIRMED_PRODUCT_RULES.md), [workflow](docs/MAIN_AGENT_WORKFLOW.md) and [acceptance evidence](docs/MAIN_AGENT_ACCEPTANCE.md).
+>
+> 2026-09-21: MA12 explicitly authorizes private knowledge, mail, draft and tool-result context for the eight MA11 verification tasks to reach configured OpenRouter / Fireworks GLM Batch. This confirmation permits execution of that test scope; provider receipts, cost and outcomes remain separate acceptance evidence.
 
 2026-09-14 阶段136 / B07、B26：超界评分在图检查点暂停，已校正公司、证据及前置额度保留；同检查点模拟恢复仅执行评分。单公司无损压缩与技术暂停已有合成证据，不可压缩大单项的分阶段完成和真实模型验收仍缺。[P06验收](docs/P06_OVERSIZED_SCORE_GRAPH_CHECKPOINT_2026-09-14.md)。
 
