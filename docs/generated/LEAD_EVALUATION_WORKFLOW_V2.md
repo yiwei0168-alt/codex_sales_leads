@@ -750,7 +750,7 @@ flowchart TD
 | `config/lead-search/hybrid-search-v1.0.0.json` | `0ae76780ca18ef85c2538250f76ed5213d06f61ff777c791336182e3f74096bd` |
 | `config/lead-workflow/cost-quality-policy-v3.0.0.json` | `24bf881bff19bfd053d1c58ab127b62aeee17785b1fe7cdf86b478ed59516c59` |
 | `config/lead-workflow/runtime-policy-v3.0.0.json` | `38a184c9c01db605402b3d279c1e50f72b1cf61953f0fd71aae191dd0bcb154d` |
-| `src/app/api/assistant/messages/route.ts` | `5e207beb9a991a974202f5bd4f92518e2f8f5b49c60feeb2e72d20509124ecdd` |
+| `src/app/api/assistant/messages/route.ts` | `2b9f16acd9296267cbd1836044343735123db4470ff577f89eb216f496f00b34` |
 | `src/lib/assistant/types.ts` | `b3b83071a26ae0b6ac65c7cd4800ebaae72176abe9068f2363d6212db464caac` |
 | `src/lib/assistant/intent.ts` | `5501e1e0a9617b34f40d14af6bf65fdae8250f9f9ed714647ec6878eb1179ab3` |
 | `src/lib/assistant/intent-agent.ts` | `4b1e05ac12bc9017cf707cb69af18a15f3331234e73bbaae007b607756a1b901` |
