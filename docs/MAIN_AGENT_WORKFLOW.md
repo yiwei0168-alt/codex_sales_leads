@@ -1,5 +1,7 @@
 # 产品主 Agent 与开放式工具架构
 
+前端精简与可读性改造按 [MA15 计划](FRONTEND_SIMPLIFICATION_PLAN_2026-09-21.md) 推进；当前仅完成代码审查和用户取舍确认，页面、全局市场模式及数据兼容尚未实施。
+
 本地页面运行故障及恢复验证见 [2026-09-21 本地 UI 静态资源事件](LOCAL_UI_RUNTIME_INCIDENT_2026-09-21.md)。停止旧服务后再构建，启动时只保留一个服务，并先检查静态资源，再运行登录后的桌面与移动端浏览器流程。
 
 ## MA14 local simulation acceptance (confirmed 2026-09-21)

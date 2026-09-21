@@ -1,5 +1,7 @@
 # 用户确认规则登记表
 
+> **MA15 — 2026-09-21 confirmed UI simplification scope.** 用户要求删减无实际意义的全局显示（包括无动作的 `Global · All markets` 和对话前固定 `Global`）、移除重复出现的市场模式切换、从主侧栏移走“任务进程”、将“知识库 & RAG”命名为“知识库”、扩大知识内容阅读区域并提高全站字号。随后明确选择：**完全移除**“新市场并行开发 / 已有分销商增长”全局模式；保持浅色基调但**允许调整** MA11 的六个既定颜色值；当前任务状态留在对话内，历史任务从**帮助菜单中的任务记录**进入。范围为产品前端与对应全局模式数据/API/Agent 入口；已有历史业务记录须保持可读，权限、审批和回执边界不变。新的具体色值与字级目前只是[设计提案](FRONTEND_SIMPLIFICATION_PLAN_2026-09-21.md)，未经单独确认；“对话/新对话”去重方案同样先列为计划。确认状态：上述范围已确认；实现状态：未实施；验收状态：未验收。MA11 原配色与布局决定保留历史记录，在本轮允许调整的范围内由 MA15 覆盖。
+
 > **MA14 — 2026-09-21 confirmed acceptance scope.** 用户原话：“暂不设置真实业务结果验收，用本地数据模拟验收”。适用范围为当前 MA11 主 Agent 剩余产品流程的阶段验收：暂不要求工作账户产生真实评分、联系人核验、发信或新知识发布等业务结果，改用本地隔离数据、合成产物和受控外部效果替身验证实际服务、工具、权限、持久化、回执、缺项与重复执行边界。不得把模拟输出称为真实模型质量、真实外发或工作账户发布；既有八条 GLM Batch 记录和历史门槛证据保留。确认状态：已确认；实现状态：本地模拟路径已接入；模拟验收状态：本地克隆的评分、联系人、跟进、二进制登记及既有知识发布边界已通过，80/40 历史回放保持通过，详见 [工作流](MAIN_AGENT_WORKFLOW.md) 和 [验收记录](MAIN_AGENT_ACCEPTANCE.md)。
 
 > 2026-09-21 MA11 implementation follow-up: the existing shared RAG v3 release preflight and atomic activation are now exposed as administrator Agent tools with exact approval, an observed release ID and manifest hash. The executable catalog has 96 tools. The configured local source currently has an active 281-asset release; this stage did not build or activate a new release. This is implementation and read-only gate evidence under MA11, not a new confirmation or full product acceptance.
