@@ -1,5 +1,7 @@
 # 产品主 Agent 与开放式工具架构
 
+本地页面运行故障及恢复验证见 [2026-09-21 本地 UI 静态资源事件](LOCAL_UI_RUNTIME_INCIDENT_2026-09-21.md)。停止旧服务后再构建，启动时只保留一个服务，并先检查静态资源，再运行登录后的桌面与移动端浏览器流程。
+
 ## MA14 local simulation acceptance (confirmed 2026-09-21)
 
 For the current MA11 milestone, remaining product flows are accepted using isolated local records, synthetic model outputs and controlled send/publish substitutes. A working account's real scoring, contact classification, SMTP delivery or new RAG release is not an acceptance prerequisite at this stage. The local checks must still exercise the real account service, tool contract and persistence boundary where applicable, and report source ownership, version/hash checks, approval, missing-input honesty and replay safety. Simulated outputs are labeled as such. The local clone passed formal score and contact publication, standalone encrypted follow-up, synthetic binary registration with local embeddings and existing release-gate reuse; see the exact checks and limits in [the acceptance log](MAIN_AGENT_ACCEPTANCE.md). The earlier 80/40 Graph replay and eight authorized GLM Batch calls remain separate evidence; this scope change does not turn either into proof of a different flow. [Rule](CONFIRMED_PRODUCT_RULES.md).

@@ -36,9 +36,19 @@ try {
     const browserContext = await browser.newContext({ viewport });
     await browserContext.route("**/*", route => ["127.0.0.1", "localhost"].includes(new URL(route.request().url()).hostname) ? route.continue() : route.abort());
     const page = await browserContext.newPage();
+    const browserErrors: string[] = [];
+    page.on("pageerror", error => browserErrors.push(`page: ${error.message}`));
+    page.on("console", message => { if (message.type() === "error") browserErrors.push(`console: ${message.text()}`); });
+    page.on("response", response => { if (response.status() >= 400) browserErrors.push(`HTTP ${response.status()}: ${new URL(response.url()).pathname}`); });
     await page.goto(base);
     await page.getByLabel("登录邮箱").fill(email); await page.getByLabel("密码", { exact: true }).fill(password);
+    const loginResponsePromise = page.waitForResponse(response => response.url().endsWith("/api/auth/login") && response.request().method() === "POST", { timeout: 5000 });
     await page.getByRole("button", { name: "登录", exact: true }).click();
+    const loginResponse = await loginResponsePromise.catch(() => { throw new Error(`Login request never sent. Browser errors: ${browserErrors.join(" | ")}`); });
+    if (!loginResponse.ok()) {
+      const detail = await loginResponse.json().catch(() => ({})) as { error?: string };
+      throw new Error(`Synthetic login failed: HTTP ${loginResponse.status()} ${detail.error ?? "unknown"}`);
+    }
     await expect(page.getByRole("heading", { name: "今天想推进哪个市场？" })).toBeVisible();
     if (viewport.width < 800) await page.getByRole("button", { name: "打开导航菜单" }).click();
     await page.getByRole("button", { name: "Agent 设置" }).click();
