@@ -2,6 +2,10 @@
 
 # 产品主 Agent 与开放式工具架构
 
+## MA19 外部 HTTP API 网络路径（2026-09-22 已确认）
+
+固定的 Google Places、Exa、Brave、SearchAPI 和 Tavily 请求使用本机 `MODEL_PROXY_URL`；Gemini 继续使用 `GEMINI_PROXY_URL`。OpenRouter 请求按模型选择：GLM、DeepSeek、Kimi 直连，其余模型及没有明确模型的网关请求走本机代理。独立的 DeepSeek/Kimi API 与阿里云百炼兼容接口保持直连；IMAP/SMTP、本地服务和按需条件连接不改。代理必需的路径缺少有效本机地址时明确失败，不回退直连。实际可用性仍取决于各服务的密钥及提供方状态。[精确规则](CONFIRMED_PRODUCT_RULES.md)与[验收记录](MA19_API_NETWORK_ROUTE_ACCEPTANCE_2026-09-22.md)分别记录决策和验证。
+
 ## MA18 模型网络路径（2026-09-22 已确认）
 
 主 Agent 默认的 OpenRouter GLM 5.3 请求直连；通过同一 OpenRouter 网关调用 OpenAI 或 Claude 模型时按请求中的模型 ID 使用 `MODEL_PROXY_URL`。Gemini Google API 使用 `GEMINI_PROXY_URL`，包括主 Agent 网页搜索和产品线索发现。需要代理的模型在本地代理未配置或无效时明确失败，不回退直连。批次提交及按保存模型读取收据遵循相同路径；其他提供方和元数据读取路径不变。[精确规则](CONFIRMED_PRODUCT_RULES.md)及[验收证据](MA18_MODEL_NETWORK_ROUTE_ACCEPTANCE_2026-09-22.md)分别记录确认、实现与实际检查。

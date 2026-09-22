@@ -1,5 +1,13 @@
 # 用户确认规则登记表
 
+> **MA19 — 2026-09-22 外部 HTTP API 网络路径（已确认）。** 用户明确要求：“除了GLM,Kimi,Deepseek,阿里云百炼兼容接口以及非HTTP API和需要按需条件连接的，其他都改为经过本地代理连接”。MA18 的模型专属分流仍作为历史决策保留；本规则扩展固定外部 API 的代理范围。
+
+| ID | 确认的精确规则与范围 | 实现状态 | 验收状态 |
+| --- | --- | --- | --- |
+| MA19-01 | 产品运行时固定外部 HTTP API 中，GLM、Kimi、DeepSeek 和阿里云百炼兼容接口保持直连；其余连接经本机代理。非 HTTP API 及需要按需条件连接的公开网页、Skill 来源、可选联系人与观测服务不纳入本次改路由。OpenRouter 按实际模型区分：`z-ai/glm-*`、`deepseek/*`、`moonshotai/*` 直连，其他模型及无法确定模型的网关请求走代理。Gemini 使用 `GEMINI_PROXY_URL`，其余固定搜索、证据及 OpenRouter API 使用 `MODEL_PROXY_URL`；代理缺失或无效时不得静默直连。 | 已实现统一传输层、固定搜索/证据服务和历史 Batch 回执分流；本地代理地址仍只在未跟踪环境文件中。 | 77 项相关单测、TypeScript、定向 Lint、diff 检查通过；未进行付费调用或各提供方真实连通性重测。 |
+
+[MA19 acceptance evidence](MA19_API_NETWORK_ROUTE_ACCEPTANCE_2026-09-22.md).
+
 > **MA18 — 2026-09-22 模型网络路径（已确认）。** 用户明确要求：“默认调用GLM模型是直连，调用Gemini、Claude、Openai模型时通过代理。”本规则适用于产品运行时模型调用；OpenRouter 网关的请求按所选模型区分，不因共用网关而统一走一条路径。
 
 | ID | 确认的精确规则与范围 | 实现状态 | 验收状态 |

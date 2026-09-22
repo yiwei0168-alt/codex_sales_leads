@@ -53,7 +53,7 @@ export async function readOpenRouterBatch(id:string,transport:typeof fetch=fetch
   batchIdSchema.parse(id);const route=getOpenRouterConfig();
   const url=`${route.baseUrl}/batches/${id}`;
   const init={headers:openRouterRequestHeaders(route),signal:AbortSignal.timeout(30000),redirect:"error" as const};
-  const routed=model?modelRoutedTransport(transport,url,{body:JSON.stringify({model})}):transport;
+  const routed=modelRoutedTransport(transport,url,model?{body:JSON.stringify({model})}:undefined);
   const response=await routed(url,init);
   await assertOpenRouterResponse(response);
   const batch=batchResponseSchema.parse(await response.json());

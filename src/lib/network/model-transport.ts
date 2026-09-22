@@ -27,13 +27,18 @@ export function modelProxyEnvironment(input: RequestInfo | URL, init?: RequestIn
   if (url.hostname === "generativelanguage.googleapis.com") return "GEMINI_PROXY_URL";
   if (url.hostname === "api.openai.com" || url.hostname === "api.anthropic.com") return "MODEL_PROXY_URL";
   const model = requestedModel(init);
-  if (url.hostname === "openrouter.ai" && /^(?:openai|anthropic)\//i.test(model ?? "")) return "MODEL_PROXY_URL";
+  if (url.hostname === "openrouter.ai") {
+    if (/^(?:z-ai\/glm-|deepseek\/|moonshotai\/)/i.test(model ?? "")) return null;
+    return "MODEL_PROXY_URL";
+  }
+  if (["places.googleapis.com", "api.exa.ai", "api.search.brave.com", "www.searchapi.io",
+    "api.tavily.com"].includes(url.hostname)) return "MODEL_PROXY_URL";
   return null;
 }
 
 function localProxyUrl(name: ProxyEnvironment): string {
   const configured = process.env[name]?.trim();
-  if (!configured) throw new Error(`${name} is required for this model route`);
+  if (!configured) throw new Error(`${name} is required for this API route`);
   const parsed = new URL(configured);
   if (parsed.protocol !== "http:" || !["127.0.0.1", "localhost", "[::1]"].includes(parsed.hostname)
     || parsed.username || parsed.password || parsed.pathname !== "/" || parsed.search || parsed.hash) {
