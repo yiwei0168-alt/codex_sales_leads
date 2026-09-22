@@ -1,4 +1,5 @@
 import {budgetedFetch} from "@/lib/billing/paid-fetch";
+import { fetch as undiciFetch, ProxyAgent } from "undici";
 import type { ExternalSearchAnswer, WebCitation } from "./types";
 
 interface GeminiContentBlock {
@@ -30,6 +31,17 @@ function geminiInteractionsUrl(): string {
   parsed.pathname = parsed.pathname.replace(/\/openai(?:\/v1)?\/?$/i, "").replace(/\/$/, "");
   if (!/\/v1(?:beta)?$/i.test(parsed.pathname)) parsed.pathname = `${parsed.pathname}/v1beta`;
   parsed.pathname = `${parsed.pathname}/interactions`;
+  return parsed.toString();
+}
+
+function geminiProxyUrl(): string | null {
+  const configured = process.env.GEMINI_PROXY_URL?.trim();
+  if (!configured) return null;
+  const parsed = new URL(configured);
+  if (parsed.protocol !== "http:" || !["127.0.0.1", "localhost", "[::1]"].includes(parsed.hostname)
+    || parsed.username || parsed.password || parsed.pathname !== "/" || parsed.search || parsed.hash) {
+    throw new Error("GEMINI_PROXY_URL must be a local HTTP proxy without credentials");
+  }
   return parsed.toString();
 }
 
@@ -84,22 +96,34 @@ export async function searchExternalWithGemini(
       tools: [{ type: "google_search" }],
       generation_config: { thinking_level: "low", max_output_tokens: 12_000 },
     });
+  const proxyUrl = fetchImplementation === fetch ? geminiProxyUrl() : null;
+  const proxy = proxyUrl ? new ProxyAgent(proxyUrl) : null;
+  const transport: typeof fetch = proxy
+    ? (input, init) => undiciFetch(input as Parameters<typeof undiciFetch>[0], {
+      ...init,
+      dispatcher: proxy,
+    } as Parameters<typeof undiciFetch>[1]) as unknown as Promise<Response>
+    : fetchImplementation;
   let body: GeminiInteractionResponse = {};
   let status = 500;
-  for (let attempt = 0; attempt < 3; attempt += 1) {
-    const response = await budgetedFetch(fetchImplementation)(geminiInteractionsUrl(), {
-      method: "POST",
-      headers: { "x-goog-api-key": apiKey, "content-type": "application/json" },
-      signal: AbortSignal.timeout(Number(process.env.GEMINI_SEARCH_TIMEOUT_MS ?? 90_000)),
-      body: requestBody,
-    });
-    status = response.status;
-    body = await response.json() as GeminiInteractionResponse;
-    if (response.ok) break;
-    const transient = response.status === 429 || response.status >= 500 || /high demand|overload|temporar/i.test(body.error?.message ?? "");
-    if (!transient || attempt === 2) throw new Error(body.error?.message ?? `Gemini HTTP ${response.status}`);
-    await new Promise((resolve) => setTimeout(resolve, 750 * (attempt + 1)));
+  try {
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      const response = await budgetedFetch(transport)(geminiInteractionsUrl(), {
+        method: "POST",
+        headers: { "x-goog-api-key": apiKey, "content-type": "application/json" },
+        signal: AbortSignal.timeout(Number(process.env.GEMINI_SEARCH_TIMEOUT_MS ?? 90_000)),
+        body: requestBody,
+      });
+      status = response.status;
+      body = await response.json() as GeminiInteractionResponse;
+      if (response.ok) break;
+      const transient = response.status === 429 || response.status >= 500 || /high demand|overload|temporar/i.test(body.error?.message ?? "");
+      if (!transient || attempt === 2) throw new Error(body.error?.message ?? `Gemini HTTP ${response.status}`);
+      await new Promise((resolve) => setTimeout(resolve, 750 * (attempt + 1)));
+    }
+    if (status < 200 || status >= 300) throw new Error(body.error?.message ?? `Gemini HTTP ${status}`);
+    return parseGeminiInteraction(body, model, startedAt);
+  } finally {
+    await proxy?.close();
   }
-  if (status < 200 || status >= 300) throw new Error(body.error?.message ?? `Gemini HTTP ${status}`);
-  return parseGeminiInteraction(body, model, startedAt);
 }
