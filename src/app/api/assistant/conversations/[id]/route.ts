@@ -36,5 +36,8 @@ export async function DELETE(_request: Request, { params }: { params: Promise<{ 
   if (session instanceof Response) return session;
   const { id } = await params;
   if (!uuid.test(id)) return Response.json({ error: "对话 ID 无效" }, { status: 400 });
-  return await deleteConversation(session.userId, id) ? Response.json({ deleted: true }) : Response.json({ error: "对话不存在" }, { status: 404 });
+  const outcome = await deleteConversation(session.userId, id);
+  return outcome === "deleted" ? Response.json({ deleted: true, taskHistoryRetained: true })
+    : outcome === "active-task" ? Response.json({ error: "对话仍有进行中或暂停的任务，请先完成或取消任务" }, { status: 409 })
+      : Response.json({ error: "对话不存在" }, { status: 404 });
 }

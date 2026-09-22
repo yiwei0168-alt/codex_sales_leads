@@ -1,10 +1,19 @@
 import { describe, expect, it, vi } from "vitest";
 vi.mock("@/lib/knowledge/review-repository",()=>({listGoldReviews:vi.fn(),saveGoldReview:vi.fn(),unlockGoldHoldout:vi.fn()}));
 import { businessTools } from "./business-tools";
+import { needsApproval } from "./approvals";
 
 const byId = new Map(businessTools.map(tool => [tool.id, tool]));
 
 describe("existing page workflow tool contracts", () => {
+  it("runs ordinary public searches without an action approval", () => {
+    for (const id of ["web_search", "search_channel"]) {
+      expect(byId.get(id)?.effect).toBe("read");
+      expect(needsApproval(byId.get(id)!)).toBe(false);
+    }
+    expect(needsApproval(byId.get("lead_workflow")!)).toBe(true);
+    expect(needsApproval(byId.get("company_score_publish")!)).toBe(true);
+  });
   it("keeps locally simulated publication flows behind exact approval inputs", () => {
     for (const id of ["company_score_publish","contacts_verify_evaluate","contacts_verify_publish","knowledge_shared_binary_register","knowledge_shared_release_activate"]) {
       expect(byId.get(id)?.effect).toBe("publish");

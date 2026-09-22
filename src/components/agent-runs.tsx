@@ -6,7 +6,7 @@ import { parseRunEventPage, type RunEvent } from "@/lib/assistant/main/run-event
 import { AgentApprovals } from "./agent-approvals";
 import type { AgentApproval } from "@/lib/assistant/main/approvals";
 
-type Run = { id: string; status: RunStatus; result: { reply: string } | null; approvals?: AgentApproval[];
+type Run = { id: string; conversation_id: string; status: RunStatus; result: { reply: string } | null; approvals?: AgentApproval[];
   memories?: Array<{ id: string; key: string; version: number }>;
   batch?: { status: string; providerStatus: string | null; submittedAt: string; pollCount: number } | null };
 const labels: Record<RunStatus, string> = { queued: "排队中", running: "执行中", waiting_user: "等待确认", paused: "已暂停", partial: "部分完成", completed: "已完成", failed: "失败", cancelled: "已取消" };
@@ -25,7 +25,7 @@ function eventText(event: RunEvent) {
   if (event.kind === "status") return `任务状态 · ${labels[p.status as RunStatus] ?? String(p.status ?? "已更新")}`;
   return event.kind.replaceAll("_", " ");
 }
-function EventReceipt({ event }: { event: RunEvent }) {
+export function EventReceipt({ event }: { event: RunEvent }) {
   const p = event.payload;
   const sources = Array.isArray(p.sources) ? p.sources as Array<{ title?: string; url?: string }> : [];
   const artifacts = Array.isArray(p.artifacts) ? p.artifacts as Array<{ id?: string; title?: string; url?: string }> : [];
@@ -40,12 +40,13 @@ function EventReceipt({ event }: { event: RunEvent }) {
     </div>}
   </li>;
 }
-export function AgentRuns({ conversationId, onUpdated }: { conversationId: string; onUpdated: () => void }) {
+export function useAgentRuns(conversationId: string | undefined, onUpdated: () => void) {
   const [runs, setRuns] = useState<Run[]>([]);
   const [eventsByRun, setEventsByRun] = useState<Record<string, RunEvent[]>>({});
-  const [error, setError] = useState(""), [instruction, setInstruction] = useState("");
+  const [error, setError] = useState("");
   const [now, setNow] = useState(0);
   useEffect(() => {
+    if (!conversationId) return;
     const controller = new AbortController(), cursors = new Map<string, string>();
     let prior = "", pending = false;
     const load = async () => {
@@ -79,12 +80,12 @@ export function AgentRuns({ conversationId, onUpdated }: { conversationId: strin
     const timer = window.setInterval(() => void load(), 2500), clock = window.setInterval(() => setNow(Date.now()), 1000);
     return () => { controller.abort(); window.clearInterval(timer); window.clearInterval(clock); };
   }, [conversationId, onUpdated]);
-  async function control(id: string, action: string) {
+  async function control(id: string, action: string, instruction?: string) {
     setError("");
     try {
       const response = await fetch(`/api/assistant/runs/${id}/control`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action, ...(action === "instruct" ? { content: instruction } : {}) }) });
       if (!response.ok) throw new Error("操作失败，请刷新状态后重试");
-      if (action === "instruct") setInstruction(""); onUpdated();
+      onUpdated();
     } catch (reason) { setError(reason instanceof Error ? reason.message : "操作失败"); }
   }
   async function undo(id: string, version: number) {
@@ -92,21 +93,24 @@ export function AgentRuns({ conversationId, onUpdated }: { conversationId: strin
       if (!response.ok) throw new Error("偏好已变化，请刷新后核对"); setError(""); onUpdated();
     } catch (reason) { setError(reason instanceof Error ? reason.message : "撤销失败，请重试"); }
   }
-  if (!runs.length) return null;
-  return <section aria-label="Agent 任务" className="agent-runs">
-    {runs.map(run => <article key={run.id} className="agent-run">
-      <div className="agent-run-actions"><strong>{labels[run.status]}</strong><small>任务 {run.id.slice(0, 8)}</small>
-        {["running", "queued"].includes(run.status) && <button type="button" onClick={() => void control(run.id, "pause")}>暂停</button>}
-        {["paused", "partial", "failed"].includes(run.status) && <button type="button" onClick={() => void control(run.id, "resume")}>继续</button>}
-        {!["completed", "cancelled"].includes(run.status) && <button type="button" onClick={() => void control(run.id, "cancel")}>取消</button>}
+  return { runs: runs.filter(run => run.conversation_id === conversationId), eventsByRun, error, now, control, undo };
+}
+
+export function AgentRunCard({run, events = [], now, onControl, onUndo}: {run: Run; events?: RunEvent[]; now: number;
+  onControl: (id: string, action: string, instruction?: string) => Promise<void>;
+  onUndo: (id: string, version: number) => Promise<void>}) {
+  const [instruction, setInstruction] = useState("");
+  if (["completed", "cancelled"].includes(run.status) && !run.memories?.length) return null;
+  return <section id={`agent-run-${run.id}`} aria-label="当前任务" className="agent-runs ai-run-inline"><article className="agent-run">
+      <div className="agent-run-actions"><strong>{labels[run.status]}</strong>
+        {["running", "queued"].includes(run.status) && <button type="button" onClick={() => void onControl(run.id, "pause")}>暂停</button>}
+        {["paused", "partial", "failed"].includes(run.status) && <button type="button" onClick={() => void onControl(run.id, "resume")}>继续</button>}
+        {!["completed", "cancelled"].includes(run.status) && <button type="button" onClick={() => void onControl(run.id, "cancel")}>取消</button>}
       </div>
       {run.batch && <p className="agent-batch-state" role="status">{run.batch.status === "pending" ? `GLM Batch ${run.batch.providerStatus === "in_progress" ? "执行中" : "排队或等待结果"}` : run.batch.status === "completed" ? "GLM Batch 结果已保存" : `GLM Batch ${run.batch.status}，请核对`}{` · 已经过 ${elapsed(run.batch.submittedAt, now)} · 查询 ${run.batch.pollCount} 次`}</p>}
       <AgentApprovals items={run.approvals ?? []} />
-      {run.memories?.map(memory => <p key={memory.id} className="text-sm">已记住偏好：{memory.key} <button type="button" onClick={() => void undo(memory.id, memory.version)}>撤销</button></p>)}
-      {(eventsByRun[run.id]?.length ?? 0) > 0 && <details className="agent-run-timeline"><summary>执行记录 · {eventsByRun[run.id].length} 条已保存事件</summary><ol>{eventsByRun[run.id].slice(-16).map(event => <EventReceipt key={event.id} event={event}/>)}</ol></details>}
-      {run.result?.reply && <p className="agent-run-result">{run.result.reply}</p>}
-      {!["completed", "cancelled"].includes(run.status) && <div className="agent-run-actions"><input aria-label="追加任务要求" value={instruction} onChange={event => setInstruction(event.target.value)} placeholder="追加要求，在下个安全边界生效" /><button type="button" disabled={!instruction.trim()} onClick={() => void control(run.id, "instruct")}>追加</button></div>}
-    </article>)}
-    {error && <p role="status">{error}</p>}
-  </section>;
+      {run.memories?.map(memory => <p key={memory.id} className="text-sm">已记住偏好：{memory.key} <button type="button" onClick={() => void onUndo(memory.id, memory.version)}>撤销</button></p>)}
+      {events.length > 0 && <details className="agent-run-timeline"><summary>查看执行详情</summary><ol>{events.slice(-16).map(event => <EventReceipt key={event.id} event={event}/>)}</ol></details>}
+      {["running", "queued", "paused", "partial", "failed"].includes(run.status) && <div className="agent-run-actions"><input aria-label="追加任务要求" value={instruction} onChange={event => setInstruction(event.target.value)} placeholder="追加要求，在下个安全边界生效" /><button type="button" disabled={!instruction.trim()} onClick={() => { void onControl(run.id, "instruct", instruction).then(() => setInstruction("")); }}>追加</button></div>}
+    </article></section>;
 }

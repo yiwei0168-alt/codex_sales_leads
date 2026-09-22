@@ -15,7 +15,7 @@ export async function enqueueRun(userId: string, input: MessageInput, model: Mod
     }
     let conversationId = input.conversationId;
     if (conversationId) {
-      const c = await client.query("select id from assistant_conversation where user_id=$1 and id=$2 and status='active'", [userId, conversationId]);
+      const c = await client.query("select id from assistant_conversation where user_id=$1 and id=$2 and status='active' for update", [userId, conversationId]);
       if (!c.rowCount) throw new Error("Conversation unavailable");
     } else {
       const c = await client.query<{ id: string }>("insert into assistant_conversation(user_id,title) values($1,$2) returning id", [userId, input.content.slice(0, 38)]);

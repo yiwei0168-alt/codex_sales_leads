@@ -98,6 +98,8 @@ export interface AssistantMessageDto {
     webCitations?: WebCitation[];
     planner?: Pick<IntentPlan, "confidence" | "plannerModel" | "plannerSource">;
     actionId?: string;
+    runId?: string;
+    status?: string;
     searchResult?: Record<string, unknown>;
   };
   createdAt: string;

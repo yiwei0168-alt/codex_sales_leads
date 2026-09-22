@@ -1,7 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from "react";
-import { AgentRuns } from "./agent-runs";
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from "react";
+import { AgentRunCard, useAgentRuns } from "./agent-runs";
 import {AgentAttachments} from "./agent-attachments";
 import { TaskDetailView } from "./task-detail-view";
 import {BudgetProposalCard} from "./budget-proposal";
@@ -44,6 +44,14 @@ export function AssistantHome({ userName, initialConversationId, onConversationC
         if (data.conversation) setConversation(data.conversation);
       }).catch(() => undefined);
   }, [activeId]);
+  const agentRuns = useAgentRuns(activeId, refreshAgentConversation);
+  const runById = new Map(agentRuns.runs.map(run => [run.id, run]));
+  const attentionRunId = agentRuns.runs.find(run => run.status === "waiting_user" && run.approvals?.some(approval => approval.status === "pending"))?.id;
+  useEffect(() => {
+    if (!attentionRunId) return;
+    const frame = window.requestAnimationFrame(() => document.getElementById(`agent-run-${attentionRunId}`)?.scrollIntoView({ block: "start", behavior: "smooth" }));
+    return () => window.cancelAnimationFrame(frame);
+  }, [attentionRunId]);
 
   useEffect(() => {
     if (!initialConversationId) return;
@@ -99,10 +107,6 @@ export function AssistantHome({ userName, initialConversationId, onConversationC
   async function submit(event: FormEvent) { event.preventDefault(); await send(input); }
 
   async function confirmSearch(actionId: string) {
-    const retrying = conversation?.actions.find((action) => action.id === actionId)?.status === "failed";
-    if (!window.confirm(retrying
-      ? "从已保留的 checkpoint 重试该工作流？"
-      : "确认执行 LangGraph 销售线索工作流？系统会先调用三类知识 RAG，再按候选类别执行混合搜索和轻量门禁；Tavily 仅用于定向补证，最后由独立评分 Agent 评估候选。")) return;
     setConfirmingId(actionId); setError("");
     try {
       const response = await fetch(`/api/assistant/actions/${actionId}/confirm`, { method: "POST" });
@@ -118,12 +122,12 @@ export function AssistantHome({ userName, initialConversationId, onConversationC
 
   const messages = conversation?.messages ?? [];
   const actions = conversation?.actions ?? [];
+  const anchoredRunIds = new Set(messages.filter(message => message.role === "user").map(message => message.metadata.runId).filter((id): id is string => Boolean(id)));
   const greeting = useMemo(() => new Date().getHours() < 12 ? "早上好" : new Date().getHours() < 18 ? "下午好" : "晚上好", []);
 
   return <div className="ai-home-shell">
     <section className="ai-chat-panel">
       <div className="ai-message-stream" ref={scrollRef}>
-        {activeId && <AgentRuns conversationId={activeId} onUpdated={refreshAgentConversation} />}
         {messages.length === 0 && <div className="ai-welcome">
           <span className="ai-welcome-icon">✦</span><p>{greeting}，{userName}</p><h1>今天想推进哪个市场？</h1>
           <small>我可以查询产品与公司知识、分析邮箱学习内容，或在你确认后搜索任何国家的销售线索。</small>
@@ -131,7 +135,8 @@ export function AssistantHome({ userName, initialConversationId, onConversationC
         </div>}
         {messages.map((message) => {
           const action = actionForMessage(message, actions);
-          return <article key={message.id} className={`ai-message ${message.role}`}>
+          const run = message.role === "user" && message.metadata.runId ? runById.get(message.metadata.runId) : undefined;
+          return <Fragment key={message.id}><article className={`ai-message ${message.role}`}>
             <div className="ai-message-avatar">{message.role === "user" ? userName.slice(0, 1).toUpperCase() : "✦"}</div>
             <div className="ai-message-body"><div className="ai-message-meta"><strong>{message.role === "user" ? userName : "Network Copilot"}</strong><span>{new Date(message.createdAt).toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" })}</span></div>
               <div className="ai-message-copy">{message.content}</div>
@@ -152,8 +157,10 @@ export function AssistantHome({ userName, initialConversationId, onConversationC
               {(message.metadata.webCitations?.length ?? 0) > 0 && <div className="ai-citations"><strong>外部网页证据</strong>{message.metadata.webCitations?.map((citation, index) => <a key={citation.url} href={citation.url} target="_blank" rel="noreferrer"><span>[WEB:{index + 1}]</span><b>{citation.title}</b></a>)}</div>}
               {message.metadata.grounded === false && <small className="ai-evidence-warning">回答尚未获得充分引用，请人工复核。</small>}
             </div>
-          </article>;
+          </article>{run && <AgentRunCard run={run} events={agentRuns.eventsByRun[run.id]} now={agentRuns.now} onControl={agentRuns.control} onUndo={agentRuns.undo}/>}</Fragment>;
         })}
+        {agentRuns.runs.filter(run => !anchoredRunIds.has(run.id)).map(run => <AgentRunCard key={run.id} run={run} events={agentRuns.eventsByRun[run.id]} now={agentRuns.now} onControl={agentRuns.control} onUndo={agentRuns.undo}/>)}
+        {agentRuns.error && <p className="ai-submit-state" role="status">{agentRuns.error}</p>}
         {busy && <p className="ai-submit-state" role="status">正在保存任务…</p>}
       </div>
       {error && <div className="ai-chat-error">{error}</div>}

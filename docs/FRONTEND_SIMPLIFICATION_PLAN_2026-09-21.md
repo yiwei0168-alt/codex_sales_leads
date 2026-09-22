@@ -2,6 +2,10 @@
 
 确认范围与精确值见 [MA15-01 至 MA15-07](CONFIRMED_PRODUCT_RULES.md)。本文件替代此前未确认的颜色和导航候选；历史方案保留在 Git。
 
+MA20 后续对话交互规则：消息流是主线。每个当前任务、待确认卡和必要异常按保存的 `runId` 跟在其用户消息后面；完成任务不常驻技术卡，执行事件只在展开详情时查看。确认减法的具体后端范围见 [主 Agent 工作流](MAIN_AGENT_WORKFLOW.md)，实现与验收分别见 [MA20 记录](MA20_CONVERSATION_APPROVAL_ACCEPTANCE_2026-09-22.md)。
+
+MA21 对话历史补充：每条历史记录右侧只有一个更多按钮，展开重命名、查看技术流水、删除对话；当前对话用透明浅紫色选中态。技术流水在独立只读弹窗按任务加载，不占主消息流。删除二次确认后从历史隐藏，运行中任务不可删；详见 [MA21 验收记录](MA21_CONVERSATION_HISTORY_ACCEPTANCE_2026-09-22.md)。
+
 ## 视觉与布局
 
 淡紫半透明侧栏和页签用于定位，白色内容用于阅读。Segoe UI / Microsoft YaHei / PingFang SC 承载正文，内容左对齐。避免把任务、工具和知识证据全部拆成同等卡片；只有待批准动作突出边界。颜色、字级、控件统一从 globals.css 的变量读取，conversation-theme.css 管理应用布局。

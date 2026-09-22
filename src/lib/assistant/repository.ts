@@ -27,7 +27,7 @@ export async function listConversations(userId: string): Promise<AssistantConver
 
 export async function getConversation(userId: string, conversationId: string): Promise<AssistantConversationDto | null> {
   const conversations = await tenantQuery<{ id: string; title: string; status: "active" | "archived" }>(userId,
-    `select id, title, status from assistant_conversation where id = $1 and user_id = $2 limit 1`,
+    `select id, title, status from assistant_conversation where id = $1 and user_id = $2 and status <> 'deleted' limit 1`,
     [conversationId, userId],
   );
   if (!conversations[0]) return null;
@@ -140,16 +140,24 @@ export async function setAssistantActionStatus(userId: string, actionId: string,
 export async function updateConversation(userId: string, conversationId: string, input: { title?: string; status?: "active" | "archived" }): Promise<boolean> {
   const rows = await tenantQuery<{ id: string }>(userId,
     `update assistant_conversation set title = coalesce($3, title), status = coalesce($4, status), updated_at = now()
-     where id = $1 and user_id = $2 returning id`,
+     where id = $1 and user_id = $2 and status <> 'deleted' returning id`,
     [conversationId, userId, input.title?.slice(0, 120) ?? null, input.status ?? null],
   );
   return Boolean(rows[0]);
 }
 
-export async function deleteConversation(userId: string, conversationId: string): Promise<boolean> {
+export async function deleteConversation(userId: string, conversationId: string): Promise<"deleted" | "active-task" | "missing"> {
   const rows = await tenantQuery<{ id: string }>(userId,
-    `delete from assistant_conversation where id = $1 and user_id = $2 returning id`,
-    [conversationId, userId],
-  );
-  return Boolean(rows[0]);
+    `update assistant_conversation c set status='deleted',updated_at=now()
+     where c.id=$1 and c.user_id=$2 and c.status<>'deleted'
+       and not exists(select 1 from agent_run r where r.user_id=$2 and r.conversation_id=c.id
+         and r.status in('queued','running','waiting_user','paused'))
+       and not exists(select 1 from assistant_action a where a.user_id=$2 and a.conversation_id=c.id
+         and a.status in('confirmed','running'))
+     returning c.id`, [conversationId, userId]);
+  if (rows[0]) return "deleted";
+  const active = await tenantQuery<{ id: string }>(userId,
+    `select c.id from assistant_conversation c where c.id=$1 and c.user_id=$2 and c.status<>'deleted'`,
+    [conversationId, userId]);
+  return active[0] ? "active-task" : "missing";
 }

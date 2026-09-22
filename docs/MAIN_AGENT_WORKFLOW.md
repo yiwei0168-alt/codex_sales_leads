@@ -2,6 +2,14 @@
 
 # 产品主 Agent 与开放式工具架构
 
+## MA20 对话内状态和精确确认（2026-09-22 已确认）
+
+任务状态与待批准内容按 `runId` 附在发起任务的用户消息下方；运行完成后回答保留在普通对话消息中，详细事件仅在需要时展开。普通公开网页检索及单渠道查询属于只读调用，不单独创建动作批准；同一任务的最终精确批准可覆盖相同范围的付费计划，Agent 不重复索取计划确认。发送邮件、删除、正式发布、私有邮件学习授权及大规模/不确定付费计划仍依照现有边界确认。旧线索卡的“确认并开始搜索”按钮本身表达用户决定，不再叠加浏览器确认框。[规则](CONFIRMED_PRODUCT_RULES.md)、[界面方案](FRONTEND_SIMPLIFICATION_PLAN_2026-09-21.md)与[验收记录](MA20_CONVERSATION_APPROVAL_ACCEPTANCE_2026-09-22.md)分别记录确认、实现与检查。
+
+## MA21 对话历史操作（2026-09-22 已确认）
+
+对话历史当前项使用透明浅紫色标识；每条右侧更多菜单提供重命名、查看技术流水和删除。流水从同一账户的已保存主 Agent 任务与事件读取，在独立只读弹窗中按需展开。删除先确认，再将对话标记为 `deleted` 并从历史与普通对话读取中隐藏；有 queued/running/waiting_user/paused 任务或已确认待执行动作时拒绝删除。保留原有任务、消息和审计回执用于恢复及重复副作用防护。跨账户仍由 RLS 与用户过滤隔离。见[规则](CONFIRMED_PRODUCT_RULES.md)和[验收记录](MA21_CONVERSATION_HISTORY_ACCEPTANCE_2026-09-22.md)。
+
 ## MA19 外部 HTTP API 网络路径（2026-09-22 已确认）
 
 固定的 Google Places、Exa、Brave、SearchAPI 和 Tavily 请求使用本机 `MODEL_PROXY_URL`；Gemini 继续使用 `GEMINI_PROXY_URL`。OpenRouter 请求按模型选择：GLM、DeepSeek、Kimi 直连，其余模型及没有明确模型的网关请求走本机代理。独立的 DeepSeek/Kimi API 与阿里云百炼兼容接口保持直连；IMAP/SMTP、本地服务和按需条件连接不改。代理必需的路径缺少有效本机地址时明确失败，不回退直连。实际可用性仍取决于各服务的密钥及提供方状态。[精确规则](CONFIRMED_PRODUCT_RULES.md)与[验收记录](MA19_API_NETWORK_ROUTE_ACCEPTANCE_2026-09-22.md)分别记录决策和验证。
