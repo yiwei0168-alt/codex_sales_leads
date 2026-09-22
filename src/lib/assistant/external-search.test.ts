@@ -7,6 +7,7 @@ afterEach(() => vi.unstubAllEnvs());
 describe("Gemini grounded web search", () => {
   it("requires an observed search call and extracts URL citations", async () => {
     vi.stubEnv("GEMINI_API_KEY", "test-key");
+    vi.stubEnv("GEMINI_BASE_URL", "https://generativelanguage.googleapis.com/v1beta");
     const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({
       model: "gemini-3.6-flash",
       steps: [
@@ -15,6 +16,7 @@ describe("Gemini grounded web search", () => {
       ],
     }), { status: 200 }));
     const result = await searchExternalWithGemini(["current Wi-Fi 7 market"], fetchMock);
+    expect(fetchMock.mock.calls[0][0]).toBe("https://generativelanguage.googleapis.com/v1beta/interactions");
     expect(result.searchQueries).toEqual(["Wi-Fi 7 market 2026"]);
     expect(result.citations[0]).toMatchObject({ title: "Wi-Fi Alliance" });
     const request = JSON.parse(fetchMock.mock.calls[0][1].body as string);
