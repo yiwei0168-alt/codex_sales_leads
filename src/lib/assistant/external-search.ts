@@ -34,9 +34,9 @@ function geminiInteractionsUrl(): string {
   return parsed.toString();
 }
 
-function geminiProxyUrl(): string | null {
+function geminiProxyUrl(): string {
   const configured = process.env.GEMINI_PROXY_URL?.trim();
-  if (!configured) return null;
+  if (!configured) throw new Error("GEMINI_PROXY_URL is required for Gemini search");
   const parsed = new URL(configured);
   if (parsed.protocol !== "http:" || !["127.0.0.1", "localhost", "[::1]"].includes(parsed.hostname)
     || parsed.username || parsed.password || parsed.pathname !== "/" || parsed.search || parsed.hash) {

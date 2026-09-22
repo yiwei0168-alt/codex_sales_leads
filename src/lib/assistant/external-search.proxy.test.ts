@@ -42,4 +42,10 @@ describe("Gemini local proxy", () => {
     await expect(searchExternalWithGemini(["public test"])).rejects.toThrow("local HTTP proxy");
     expect(mocked.fetch).not.toHaveBeenCalled();
   });
+
+  it("does not fall back to direct Gemini traffic when the proxy is missing", async () => {
+    vi.stubEnv("GEMINI_PROXY_URL", "");
+    await expect(searchExternalWithGemini(["public test"])).rejects.toThrow("GEMINI_PROXY_URL is required");
+    expect(mocked.fetch).not.toHaveBeenCalled();
+  });
 });

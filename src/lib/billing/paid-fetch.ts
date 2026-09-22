@@ -16,15 +16,17 @@ import {recordVerifiedCostObservation} from "./reconciliation";
 import {searchRequestFingerprint} from "./search-request-fingerprint";
 import {currentStagePaidCallOverride} from "./stage-paid-call-override";
 import {createHash} from "node:crypto";
+import {modelRoutedTransport} from "@/lib/network/model-transport";
 
 function object(value:unknown):Record<string,unknown>{return value!==null&&typeof value==="object"&&!Array.isArray(value)?value as Record<string,unknown>:{};}
 function count(value:unknown):number|null{return typeof value==="number"&&Number.isSafeInteger(value)&&value>=0?value:null;}
 /** Install at a provider transport boundary, including every retry. No headers/body/URL query are persisted. */
 export function budgetedFetch(transport:typeof fetch=fetch):typeof fetch {
   return async(input,init)=>{
+    const routedTransport=modelRoutedTransport(transport,input,init);
     const scope=currentSpendContext();
     // CLI experiments retain their separately approved accounting. Product entry points establish a scope.
-    if(!scope)return transport(input,init);
+    if(!scope)return routedTransport(input,init);
     const checkedAt=Date.now();
     try {
     const request=new Request(input,init);const url=new URL(request.url);
@@ -105,7 +107,7 @@ export function budgetedFetch(transport:typeof fetch=fetch):typeof fetch {
       maximumChargeMicros:costBoundKnown?rule.maximumChargeMicros:0,costBoundKnown,requestBytes:bytes,modelAttempt,requestFingerprint,
       foreignCostBound:rule.foreignCostBound,costAttribution:scope.costAttribution});
     const started=Date.now();let response:Response;
-    try{response=await transport(input,{...init,redirect:"error"});}catch{
+    try{response=await routedTransport(input,{...init,redirect:"error"});}catch{
       await settlePaidCall(scope.userId,id,{reportedMicros:null,latencyMs:Date.now()-started,responseBytes:null,inputTokens:null,outputTokens:null,succeeded:false}).catch(()=>undefined);
       throw new PaidCallOutcomeUnknownError();
     }

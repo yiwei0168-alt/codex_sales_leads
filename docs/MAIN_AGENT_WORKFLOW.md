@@ -2,6 +2,10 @@
 
 # 产品主 Agent 与开放式工具架构
 
+## MA18 模型网络路径（2026-09-22 已确认）
+
+主 Agent 默认的 OpenRouter GLM 5.3 请求直连；通过同一 OpenRouter 网关调用 OpenAI 或 Claude 模型时按请求中的模型 ID 使用 `MODEL_PROXY_URL`。Gemini Google API 使用 `GEMINI_PROXY_URL`，包括主 Agent 网页搜索和产品线索发现。需要代理的模型在本地代理未配置或无效时明确失败，不回退直连。批次提交及按保存模型读取收据遵循相同路径；其他提供方和元数据读取路径不变。[精确规则](CONFIRMED_PRODUCT_RULES.md)及[验收证据](MA18_MODEL_NETWORK_ROUTE_ACCEPTANCE_2026-09-22.md)分别记录确认、实现与实际检查。
+
 前端精简与可读性改造按 [MA15 计划](FRONTEND_SIMPLIFICATION_PLAN_2026-09-21.md) 推进；基础视觉、导航、模式退场与页面重排已实现；本地验收和明确边界见 MA15 验收记录。
 
 本地页面运行故障及恢复验证见 [2026-09-21 本地 UI 静态资源事件](LOCAL_UI_RUNTIME_INCIDENT_2026-09-21.md)。停止旧服务后再构建，启动时只保留一个服务，并先检查静态资源，再运行登录后的桌面与移动端浏览器流程。

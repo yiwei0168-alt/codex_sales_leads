@@ -87,7 +87,7 @@ export async function pollDueModelBatch(id?:string,transport:typeof fetch=fetch)
   const job=(await tenantQuery<BatchRow>(claim.user_id,"select * from agent_model_batch where user_id=$1 and id=$2 and poll_token=$3",[claim.user_id,claim.id,claim.poll_token]))[0];
   if(!job?.remote_id)return false;
   const started=Date.now();let batch:OpenRouterBatch;
-  try {batch=await readOpenRouterBatch(job.remote_id,transport);}
+  try {batch=await readOpenRouterBatch(job.remote_id,transport,job.model);}
   catch {
     await tenantQuery(job.user_id,"update agent_model_batch set poll_count=poll_count+1,poll_failures=poll_failures+1,poll_lease_until=null,next_poll_at=now()+least(600,30*power(2,least(poll_failures,4))) * interval '1 second',http_latency_ms=http_latency_ms+$4 where user_id=$1 and id=$2 and poll_token=$3",[job.user_id,job.id,claim.poll_token,Date.now()-started]);
     return true;

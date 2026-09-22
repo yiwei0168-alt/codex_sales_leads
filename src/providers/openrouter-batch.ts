@@ -1,5 +1,6 @@
 import { z } from "zod";
 import {getOpenRouterConfig,openRouterRequestHeaders} from "./openrouter";
+import {modelRoutedTransport} from "@/lib/network/model-transport";
 
 export const batchIdSchema=z.string().regex(/^[a-zA-Z0-9_-]{1,200}$/);
 export const batchResponseSchema=z.object({
@@ -38,7 +39,9 @@ export function batchPayload(model:string,provider:string,customId:string,body:R
 }
 export async function submitOpenRouterBatch(payload:ReturnType<typeof batchPayload>,transport:typeof fetch=fetch) {
   const route=getOpenRouterConfig();
-  const response=await transport(`${route.baseUrl}/batches`,{method:"POST",headers:openRouterRequestHeaders(route),body:JSON.stringify(payload),signal:AbortSignal.timeout(60000),redirect:"error"});
+  const url=`${route.baseUrl}/batches`;
+  const init={method:"POST",headers:openRouterRequestHeaders(route),body:JSON.stringify(payload),signal:AbortSignal.timeout(60000),redirect:"error" as const};
+  const response=await modelRoutedTransport(transport,url,init)(url,init);
   await assertOpenRouterResponse(response);
   const raw=await response.json();
   // Preserve a valid acknowledgement identity even if optional provider
@@ -46,9 +49,12 @@ export async function submitOpenRouterBatch(payload:ReturnType<typeof batchPaylo
   const id=batchIdSchema.parse(raw?.id);
   try{return batchResponseSchema.parse(raw);}catch{throw new BatchAdmissionResponseError(id);}
 }
-export async function readOpenRouterBatch(id:string,transport:typeof fetch=fetch) {
+export async function readOpenRouterBatch(id:string,transport:typeof fetch=fetch,model?:string) {
   batchIdSchema.parse(id);const route=getOpenRouterConfig();
-  const response=await transport(`${route.baseUrl}/batches/${id}`,{headers:openRouterRequestHeaders(route),signal:AbortSignal.timeout(30000),redirect:"error"});
+  const url=`${route.baseUrl}/batches/${id}`;
+  const init={headers:openRouterRequestHeaders(route),signal:AbortSignal.timeout(30000),redirect:"error" as const};
+  const routed=model?modelRoutedTransport(transport,url,{body:JSON.stringify({model})}):transport;
+  const response=await routed(url,init);
   await assertOpenRouterResponse(response);
   const batch=batchResponseSchema.parse(await response.json());
   if(batch.id!==id)throw new Error("Batch receipt identity mismatch");
