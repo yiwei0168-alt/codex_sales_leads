@@ -17,10 +17,12 @@ export const modelFunctions = [
 export async function requestModel(messages: ModelMessage[], config: ModelConfig, transport: typeof fetch = fetch) {
   if(config.model.endsWith(":batch"))throw new Error("Batch model requires the durable asynchronous transport");
   const route = getOpenRouterConfig();
+  const glmSync = config.model === "z-ai/glm-5.3";
   const response = await budgetedFetch(transport)(`${route.baseUrl}/chat/completions`, {
     method: "POST", headers: { ...route.defaultHeaders, Authorization: `Bearer ${route.apiKey}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ model: config.model, messages, tools: modelFunctions, tool_choice: "auto", parallel_tool_calls: false,
-      max_completion_tokens: 16_384, provider: { ...route.providerPreferences, only: config.providers, allow_fallbacks: false } }),
+    body: JSON.stringify({ model: config.model, messages, tools: modelFunctions, tool_choice: "auto",
+      ...(glmSync ? { max_tokens: 16_384 } : { max_completion_tokens: 16_384, parallel_tool_calls: false }),
+      provider: { ...route.providerPreferences, only: config.providers, allow_fallbacks: false } }),
     signal: AbortSignal.timeout(180_000), redirect: "error",
   });
   await assertOpenRouterResponse(response);

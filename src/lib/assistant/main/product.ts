@@ -1,9 +1,9 @@
 import type { ModelConfig, ProductTool } from "./contracts";
 
-export const PRODUCT_VERSION = "main-agent-product-v3-glm-batch";
+export const PRODUCT_VERSION = "main-agent-product-v4-glm-sync";
 export function defaultModelConfig(): ModelConfig {
-  const model = process.env.MAIN_AGENT_MODEL?.trim() || "z-ai/glm-5.3:batch";
-  const providers = (process.env.MAIN_AGENT_PROVIDERS || (model==="z-ai/glm-5.3:batch"?"fireworks":"openai")).split(",").map(s => s.trim()).filter(Boolean);
+  const model = process.env.MAIN_AGENT_MODEL?.trim() || "z-ai/glm-5.3";
+  const providers = (process.env.MAIN_AGENT_PROVIDERS || (model==="z-ai/glm-5.3"||model==="z-ai/glm-5.3:batch"?"fireworks":"openai")).split(",").map(s => s.trim()).filter(Boolean);
   if (!/^[a-z0-9._/-]+(?::[a-z0-9_-]+)?$/i.test(model) ||model.length>160||!providers.length||providers.some(p => !/^[a-z0-9._/-]{1,100}$/i.test(p))) throw new Error("Invalid main model route");
   return { model, providers, version: PRODUCT_VERSION };
 }

@@ -7,8 +7,10 @@ afterEach(()=>vi.unstubAllEnvs());
 const expected={model:"z-ai/glm-5.3:batch",customId:"one"};
 const receipt={id:"batch_one",model:"z-ai/glm-5.3",endpoint:"/v1/chat/completions",status:"completed",request_counts:{total:1,completed:1,failed:0},
   usage:{prompt_tokens:20,completion_tokens:10,cost:0.000036},results:[{custom_id:"one",response:{status_code:200,body:{choices:[{message:{role:"assistant",content:"OK"},finish_reason:"stop"}]}}}]};
-it("makes the explicit GLM batch decision the default without modifying old pinned configurations",()=>{
+it("makes synchronous GLM the default without modifying old pinned batch configurations",()=>{
   vi.stubEnv("MAIN_AGENT_MODEL","");vi.stubEnv("MAIN_AGENT_PROVIDERS","");
+  expect(defaultModelConfig()).toMatchObject({model:"z-ai/glm-5.3",providers:["fireworks"]});
+  vi.stubEnv("MAIN_AGENT_MODEL",expected.model);
   expect(defaultModelConfig()).toMatchObject({model:expected.model,providers:["fireworks"]});
   vi.stubEnv("MAIN_AGENT_MODEL","openai/gpt-5.6-sol");vi.stubEnv("MAIN_AGENT_PROVIDERS","openai");
   expect(defaultModelConfig()).toMatchObject({model:"openai/gpt-5.6-sol",providers:["openai"]});

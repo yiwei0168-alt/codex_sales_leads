@@ -491,3 +491,7 @@ DeepSeek/兼容模型/搜索/补证/主评分/复核捕获预算拒绝后向上�
 All product conversation entry points, including new/history chat and the knowledge-base question form, enqueue the durable main Agent for administrators and members. The former Kimi intent route is retired; the dedicated knowledge-answer endpoint is a compatibility adapter that queues the main Agent. Selected knowledge collections are stored on the run and enforced by the search tool; answers, sources, progress and errors live in the owned conversation. MA16 explicitly supersedes MA11 configuration-controlled entry, while workflow quality and real provider outcomes remain separate acceptance evidence. See [confirmed rule](docs/CONFIRMED_PRODUCT_RULES.md) and [workflow](docs/MAIN_AGENT_WORKFLOW.md).
 
 MA16 implementation and isolated validation: [acceptance evidence](docs/MA16_MAIN_AGENT_ENTRY_ACCEPTANCE_2026-09-21.md). Real model-answer quality remains separate.
+
+## MA17 interactive model route (2026-09-22)
+
+New product-chat main-Agent runs use synchronous OpenRouter `z-ai/glm-5.3` with the configured Fireworks provider. Existing Batch runs keep their pinned route and receipts. Reducing the tool-description round trip is under design discussion; inline selected schemas and a small pre-routing model are alternatives, not confirmed behavior. See [MA17 acceptance evidence](docs/MA17_GLM_SYNC_ACCEPTANCE_2026-09-22.md).

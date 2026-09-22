@@ -24,7 +24,7 @@ describe("assistant message entry", () => {
     expect(mocks.enqueue).toHaveBeenCalledWith(
       "00000000-0000-4000-8000-000000000001",
       expect.objectContaining({ content: "请查看现有线索", attachments: [] }),
-      expect.objectContaining({ model: "z-ai/glm-5.3:batch" }),
+      expect.objectContaining({ model: "z-ai/glm-5.3" }),
     );
     expect((await response.json()).run).toEqual({ id: "run-1", status: "queued" });
   });
