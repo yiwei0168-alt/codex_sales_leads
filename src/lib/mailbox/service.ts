@@ -3,7 +3,7 @@ import { readAliMailMessages, verifyAliMailCredentials } from "./alimail-imap";
 import { kimiMailboxModel, learnMailboxMessageWithKimi } from "./kimi";
 import { prepareMailboxDisclosure } from "./privacy";
 import { tenantQuery } from "@/lib/rag/db";
-import { mailboxRange } from "./sync-options";
+import { DEFAULT_MAILBOX_LOOKBACK_DAYS, MAX_MAILBOX_MESSAGES_PER_SYNC, mailboxRange } from "./sync-options";
 import {
   blockMailboxMessageLearning, completeMailboxImport, connectionPassword, failMailboxMessageLearning,
   failMailboxSyncRun, finishMailboxOutboundAudit, getMailboxConnection, getMailboxCursors,
@@ -30,8 +30,8 @@ export async function syncAliMail(userId: string, connectionId: string, options:
   try {
     const retentionDays = Math.min(Math.max(Number(process.env.MAILBOX_RAW_RETENTION_DAYS ?? 365) || 365, 30), 3650);
     await purgeExpiredMailboxContent(userId, connectionId, retentionDays);
-    const lookbackDays = Math.min(Math.max(options.lookbackDays ?? 365, 1), 3650);
-    const maxMessages = Math.min(Math.max(options.maxMessages ?? 200, 1), 1000);
+    const lookbackDays = Math.min(Math.max(options.lookbackDays ?? DEFAULT_MAILBOX_LOOKBACK_DAYS, 1), DEFAULT_MAILBOX_LOOKBACK_DAYS);
+    const maxMessages = Math.min(Math.max(options.maxMessages ?? MAX_MAILBOX_MESSAGES_PER_SYNC, 1), MAX_MAILBOX_MESSAGES_PER_SYNC);
     const range=mailboxRange({...options,lookbackDays});
     const existing=options.from?await tenantQuery<{folder_path:string;uid_validity:string;message_uid:string}>(userId,
       "select folder_path,uid_validity,message_uid::text from mailbox_message where user_id=$1 and connection_id=$2",[userId,connectionId]):[];

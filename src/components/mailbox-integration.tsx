@@ -197,7 +197,7 @@ export function MailboxIntegration() {
     try {
       const response = await fetch("/api/mailbox/sync", {
         method: "POST", headers: { "content-type": "application/json" },
-        body: JSON.stringify({ connectionId, lookbackDays: 365, maxMessages: 200,folderScope,from:from||undefined,through:through||undefined }),
+        body: JSON.stringify({ connectionId,folderScope,from:from||undefined,through:through||undefined }),
       });
       const body = await response.json() as { error?: string; imported?: number; skipped?: number; awaitingReview?: number };
       if (!response.ok) throw new Error(body.error ?? "同步失败");
@@ -370,10 +370,10 @@ export function MailboxIntegration() {
       <p className="mailbox-description">本地筛选根据你发出的邮件、互动线程、产品与认证命中以及自动群发特征评分，不调用外部模型。只有你逐封或最多五封明确授权后，系统才会脱敏并发送给 Kimi；提取结果仍需第二次批准才进入私有知识库。</p>
       {status && !status.kimiConfigured && <div className="login-config-error"><strong>Kimi 学习服务未配置</strong><p>请先设置 <code>KIMI_API_KEY</code>，再启动邮箱学习。</p></div>}
       <div className="mailbox-connections">
-        <div className="results-toolbar"><label>导入范围<select value={folderScope} disabled={busy!==null} onChange={event=>setFolderScope(event.target.value)}><option value="both">收件箱及已发送</option><option value="inbox">仅收件箱</option><option value="sent">仅已发送</option></select></label><label>开始日期<input type="date" value={from} disabled={busy!==null} onChange={event=>setFrom(event.target.value)}/></label><label>结束日期（含当天）<input type="date" min={from} value={through} disabled={busy!==null} onChange={event=>setThrough(event.target.value)}/></label><small>日期留空默认最近一年，每次最多200封；指定历史范围会跳过已导入邮件，不改变增量游标。</small></div>
+        <div className="results-toolbar"><label>导入范围<select value={folderScope} disabled={busy!==null} onChange={event=>setFolderScope(event.target.value)}><option value="both">收件箱及已发送</option><option value="inbox">仅收件箱</option><option value="sent">仅已发送</option></select></label><label>开始日期<input type="date" value={from} disabled={busy!==null} onChange={event=>setFrom(event.target.value)}/></label><label>结束日期（含当天）<input type="date" min={from} value={through} disabled={busy!==null} onChange={event=>setThrough(event.target.value)}/></label><small>日期留空默认最近 180 天，每次最多 100 封；指定历史范围会跳过已导入邮件，不改变增量游标。</small></div>
         {connections.map((connection) => <article key={connection.id}>
           <div><strong>{connection.email}</strong><small>{connection.status === "active" ? "连接有效" : connection.lastError ?? connection.status}</small></div>
-          <div className="mailbox-connection-actions"><button className="secondary-button" disabled={connection.status==="disabled" || busy !== null || deletingId !== null || run?.status === "running"} onClick={() => sync(connection.id)}>{busy === "sync" || run?.status === "running" ? "本地同步中…" : "仅本地同步最近一年"}</button><button className="secondary-button mailbox-delete-button" disabled={busy !== null || deletingId !== null || run?.status === "running"} onClick={() => deleteConnection(connection)}>{deletingId === connection.id ? "删除中…" : "删除邮箱数据"}</button><button className="secondary-button" disabled={connection.status==="disabled"||busy!==null||deletingId!==null||run?.status==="running"} onClick={()=>void disconnect(connection)}>断开连接（保留数据）</button></div>
+          <div className="mailbox-connection-actions"><button className="secondary-button" disabled={connection.status==="disabled" || busy !== null || deletingId !== null || run?.status === "running"} onClick={() => sync(connection.id)}>{busy === "sync" || run?.status === "running" ? "本地同步中…" : from ? "仅本地同步指定日期" : "仅本地同步最近半年"}</button><button className="secondary-button mailbox-delete-button" disabled={busy !== null || deletingId !== null || run?.status === "running"} onClick={() => deleteConnection(connection)}>{deletingId === connection.id ? "删除中…" : "删除邮箱数据"}</button><button className="secondary-button" disabled={connection.status==="disabled"||busy!==null||deletingId!==null||run?.status==="running"} onClick={()=>void disconnect(connection)}>断开连接（保留数据）</button></div>
         </article>)}
         {connections.length === 0 && <p className="subtle">尚未连接邮箱。</p>}
       </div>
