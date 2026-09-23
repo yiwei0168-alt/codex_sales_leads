@@ -1,8 +1,9 @@
 import {tenantQuery} from "@/lib/rag/db";
 
-export type LibraryScope="private"|"shared"|"evidence";
+export type LibraryScope="all"|"private"|"shared"|"evidence";
 /** Read the complete saved text with the same ownership boundary as the list. */
 export async function readKnowledgeLibraryItem(userId:string,id:string,scope:LibraryScope){
+  if(scope==="all")throw new Error("读取资料时必须指定来源范围");
   const rows=scope==="evidence"?await tenantQuery(userId,`select d.id,d.title,
     (select string_agg(content,E'\n\n' order by chunk_index) from public_evidence.chunk where document_version_id=d.id) as content
     from public_evidence.document_version d join public_evidence.source s on s.id=d.source_id
@@ -12,17 +13,40 @@ export async function readKnowledgeLibraryItem(userId:string,id:string,scope:Lib
       from knowledge_document d where d.id=$1 and d.visibility=$2 and ($2='shared' or d.owner_id=$3)`,[id,scope,userId]);
   return rows[0]??null;
 }
-export async function listKnowledgeLibrary(userId:string,scope:LibraryScope,query:string,offset:number){
+export async function listKnowledgeLibrary(userId:string,scope:LibraryScope,query:string,offset:number,limit=50){
+  const pageSize=Math.min(Math.max(limit,1),50);
+  if(scope==="all"){
+    const rows=await tenantQuery(userId,`with records as (
+      select d.id,d.title,d.source_url as "sourceUrl",d.updated_at::text as "updatedAt",d.updated_at as sort_time,
+        d.status::text as status,d.visibility::text as scope,left(k.content,1500) as excerpt,a.id as "assetId",
+        a.document_type as "documentType",a.document_version as version
+      from knowledge_document d
+      left join lateral(select content from knowledge_chunk where document_id=d.id order by chunk_index limit 1) k on true
+      left join lateral(select id,document_type,document_version from knowledge_asset where document_id=d.id and registration_status='registered' order by updated_at desc,id limit 1) a on true
+      where (d.visibility='shared' or (d.visibility='private' and d.owner_id=$1))
+        and ($2='' or d.title ilike '%'||$2||'%' or d.source_url ilike '%'||$2||'%')
+      union all
+      select d.id,d.title,s.canonical_url as "sourceUrl",d.last_verified_at::text as "updatedAt",d.last_verified_at as sort_time,
+        d.freshness_status::text as status,'public-evidence'::text as scope,left(c.content,1500) as excerpt,
+        null::uuid as "assetId",null::text as "documentType",null::text as version
+      from public_evidence.document_version d join public_evidence.source s on s.id=d.source_id
+      left join lateral(select content from public_evidence.chunk where document_version_id=d.id order by chunk_index limit 1)c on true
+      where s.sharing_status='public' and d.freshness_status<>'invalid'
+        and ($2='' or d.title ilike '%'||$2||'%' or s.canonical_url ilike '%'||$2||'%')
+    ) select id,title,"sourceUrl","updatedAt",status,scope,excerpt,"assetId","documentType",version
+      from records order by sort_time desc nulls last,id limit $3 offset $4`,[userId,query,pageSize+1,offset]);
+    return {items:rows.slice(0,pageSize),hasMore:rows.length>pageSize,fetched:rows.length};
+  }
   const rows=scope==="evidence"?await tenantQuery(userId,`select d.id,d.title,s.canonical_url as "sourceUrl",d.last_verified_at::text as "updatedAt",d.freshness_status as status,'public-evidence' as scope,
       left(c.content,1500) as excerpt from public_evidence.document_version d join public_evidence.source s on s.id=d.source_id
       left join lateral(select content from public_evidence.chunk where document_version_id=d.id order by chunk_index limit 1)c on true
       where s.sharing_status='public' and d.freshness_status<>'invalid' and ($1='' or d.title ilike '%'||$1||'%' or s.canonical_url ilike '%'||$1||'%')
-      order by d.last_verified_at desc,d.id limit 51 offset $2`,[query,offset]):await tenantQuery(userId,`select d.id,d.title,d.source_url as "sourceUrl",d.updated_at::text as "updatedAt",d.status,d.visibility as scope,d.content_sha256 as hash,c.slug as collection,
+      order by d.last_verified_at desc,d.id limit $3 offset $2`,[query,offset,pageSize+1]):await tenantQuery(userId,`select d.id,d.title,d.source_url as "sourceUrl",d.updated_at::text as "updatedAt",d.status,d.visibility as scope,d.content_sha256 as hash,c.slug as collection,
       left(k.content,1500) as excerpt,a.id as "assetId",a.document_type as "documentType",a.document_version as version from knowledge_document d join knowledge_collection c on c.id=d.collection_id
       left join lateral(select content from knowledge_chunk where document_id=d.id order by chunk_index limit 1) k on true
       left join lateral(select id,document_type,document_version from knowledge_asset where document_id=d.id and registration_status='registered' order by updated_at desc,id limit 1) a on true
-      where d.visibility=$2 and ($2='shared' or d.owner_id=$1) and ($3='' or d.title ilike '%'||$3||'%') order by d.updated_at desc,d.id limit 51 offset $4`,[userId,scope,query,offset]);
-  return {items:rows.slice(0,50),hasMore:rows.length>50,fetched:rows.length};
+      where d.visibility=$2 and ($2='shared' or d.owner_id=$1) and ($3='' or d.title ilike '%'||$3||'%') order by d.updated_at desc,d.id limit $5 offset $4`,[userId,scope,query,offset,pageSize+1]);
+  return {items:rows.slice(0,pageSize),hasMore:rows.length>pageSize,fetched:rows.length};
 }
 
 export async function listKnowledgeRevisions(userId:string,documentId:string,offset:number){

@@ -17,7 +17,7 @@ function commandName(value: unknown): string | undefined {
 }
 
 export function mailboxConnectionErrorMessage(error: unknown): string {
-  if (!(error instanceof Error)) return "阿里邮箱连接失败";
+  if (!(error instanceof Error)) return "邮箱连接失败";
 
   const imapError = error as ImapCommandError;
   const status = typeof imapError.responseStatus === "string"
@@ -28,14 +28,14 @@ export function mailboxConnectionErrorMessage(error: unknown): string {
 
   if (error.name === "AuthenticationFailure" || command === "LOGIN" || command === "AUTHENTICATE") {
     return responseText
-      ? `阿里邮箱拒绝登录：${responseText}`
-      : "阿里邮箱拒绝登录，请检查第三方客户端权限、安全密码和完整邮箱地址";
+      ? `邮箱服务器拒绝登录：${responseText}`
+      : "邮箱服务器拒绝登录，请检查 IMAP 权限、客户端专用密码和完整邮箱地址";
   }
 
   if (status || responseText || command) {
     const context = [command ? `命令 ${command}` : undefined, status].filter(Boolean).join(" / ");
-    return `阿里邮箱拒绝 IMAP 请求${context ? `（${context}）` : ""}${responseText ? `：${responseText}` : ""}`;
+    return `邮箱服务器拒绝 IMAP 请求${context ? `（${context}）` : ""}${responseText ? `：${responseText}` : ""}`;
   }
 
-  return error.message || "阿里邮箱连接失败";
+  return error.message || "邮箱连接失败";
 }

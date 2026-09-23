@@ -1,7 +1,7 @@
 import { beforeEach,expect,it,vi } from "vitest";
 const mocks=vi.hoisted(()=>({query:vi.fn(),outside:vi.fn(),send:vi.fn(),close:vi.fn()}));
 vi.mock("@/lib/rag/db",()=>({tenantQuery:mocks.outside,tenantTransaction:async(_user:string,work:(client:unknown)=>unknown)=>work({query:mocks.query})}));
-vi.mock("./repository",()=>({getMailboxConnection:async()=>({email:"sender@example.com",status:"active"}),connectionPassword:()=>"test-only"}));
+vi.mock("./repository",()=>({getMailboxConnection:async()=>({email:"sender@example.com",status:"active",accessMode:"send-enabled",smtpHost:"smtp.example.com",smtpPort:465}),smtpConnectionPassword:()=>"test-only"}));
 vi.mock("./crypto",()=>({encryptMailboxContent:()=>"encrypted-test-content",decryptMailboxContent:()=>({recipients:["recipient@example.com"]})}));
 vi.mock("nodemailer",()=>({default:{createTransport:()=>({sendMail:mocks.send,close:mocks.close})}}));
 import { sendOutbound,sendMailSchema,reconcileMailSchema,reconcileOutbound,assignMailMarket,assignMailMarketSchema,listOutbound } from "./outbound";

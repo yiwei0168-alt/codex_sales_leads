@@ -11,7 +11,7 @@ import { mailSendTool,mailBatchSchema } from "./mail-tools";
 export async function queueReviewedMail(userId:string,role:"admin"|"member",input:z.infer<typeof sendMailSchema>) {
   const parsed=sendMailSchema.parse(input);
   const {confirmed:_confirmed,idempotencyKey,...mail}=parsed;void _confirmed;
-  const connection=await tenantQuery(userId,"select id from mailbox_connection where user_id=$1 and id=$2 and status='active' and smtp_verified_at is not null",[userId,mail.connectionId]);
+  const connection=await tenantQuery(userId,"select id from mailbox_connection where user_id=$1 and id=$2 and status='active' and access_mode='send-enabled' and smtp_verified_at is not null",[userId,mail.connectionId]);
   if(!connection.length)throw new Error("Verified owned sender connection required");
   await loadMailAttachments(userId,mail.attachments??[]);
   const spec=mailBatchSchema.parse({batchId:"reviewed-mail",items:[{...mail,itemId:"mail"}]});

@@ -11,7 +11,7 @@ describe("mailboxConnectionErrorMessage", () => {
 
     const message = mailboxConnectionErrorMessage(error);
 
-    expect(message).toBe("阿里邮箱拒绝登录：LOGIN failed");
+    expect(message).toBe("邮箱服务器拒绝登录：LOGIN failed");
     expect(message).not.toContain("user@example.com");
     expect(message).not.toContain("super-secret");
   });
@@ -23,6 +23,6 @@ describe("mailboxConnectionErrorMessage", () => {
       responseText: " unsupported\r\ncommand ",
     });
 
-    expect(mailboxConnectionErrorMessage(error)).toBe("阿里邮箱拒绝 IMAP 请求（命令 NAMESPACE / BAD）：unsupported command");
+    expect(mailboxConnectionErrorMessage(error)).toBe("邮箱服务器拒绝 IMAP 请求（命令 NAMESPACE / BAD）：unsupported command");
   });
 });

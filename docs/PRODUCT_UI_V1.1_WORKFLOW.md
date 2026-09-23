@@ -591,3 +591,11 @@ Saved strategy responses compare a business-context fingerprint (role, tier, cho
 Follow-up excludes the repeated parent from ancestor excerpts. Up to four same-contact incoming messages are selected from the latest 50 encrypted, company-associated inbound records; these are correspondence, not guaranteed replies to the chosen thread. Private style remains scoped/bounded. Generation does not trigger mailbox sync. Older unassociated messages may need manual association.
 
 Paused at user request. See `RESUME_PRODUCT_UI_2026-09-11.md`. Regression: 479 tests / 110 files and application-role local-lookup/task SQL plus cache/analysis RLS passed. No paid inference, live SMTP delivery or authenticated visual QA performed.
+# MA23 邮箱工作台与全宽布局补充（2026-09-23）
+
+- 邮箱入口：顶部显示已连接邮箱名称及权限，展开管理弹层后可添加阿里邮箱预设或其他标准 IMAP/SMTP 邮箱，并为每个地址指定名称、只读或可发信；SMTP 需验证。多个邮箱分别同步，默认近 180 天、每次最多 100 封。OAuth 不在当前阶段。
+- 学习与审核：视口固定的双页签工作台，学习邮件与候选各按 8 条分页且在列表内部滚动。邮件批量外发学习最多 5 封并明确确认；候选批量批准/拒绝限当前页，逐条返回结果，不把部分成功写成全部成功。
+- 市场概览：国家筛选仅保留单个“全部国家”下拉；边栏隐藏时，非对话工作区取消 1440px 宽度上限，利用视口并保留 16–32px 边距。
+- 追加前端硬约束：不允许无限向下滑动；长列表需要固定工作区、内部滚动与明确分页。知识库“资料”改为资料列表、邮箱知识、个人记忆、上传四分区，不再全部纵向堆叠。资料/记忆每页 12 条，邮箱知识每页 8 条。其他既有页面仍需逐页审计；当前不可宣称全站符合。
+- 侧栏三项主导航使用统一的 20px 图标列和文字垂直居中，避免不同文字高度造成视觉错位。
+- 资料列表的“全部”范围合并当前用户私有知识、共享知识、公共证据库；已批准邮箱知识归入私有知识，个人长期记忆仍在单独分区。合并结果统一按更新时间分页与搜索，标明来源并沿用各自阅读/删除权限。

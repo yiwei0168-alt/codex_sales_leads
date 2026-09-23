@@ -6,10 +6,11 @@ export interface MemoryItem {
   id:string;kind:string;title:string;content:string;status:"active"|"archived";
   marketCodes:string[];channelRoles:string[];usageScope:string;updatedAt:string;
 }
-export async function listMemories(userId:string,offset:number) {
+export async function listMemories(userId:string,offset:number,limit=50) {
+  const pageSize=Math.min(Math.max(limit,1),50);
   return tenantQuery<MemoryItem>(userId,`select id,kind,title,content,status,market_codes as "marketCodes",
     channel_roles as "channelRoles",usage_scope as "usageScope",updated_at::text as "updatedAt"
-    from user_outreach_memory where user_id=$1 order by updated_at desc,id desc limit 51 offset $2`,[userId,offset]);
+    from user_outreach_memory where user_id=$1 order by updated_at desc,id desc limit $3 offset $2`,[userId,offset,pageSize+1]);
 }
 export async function changeMemory(userId:string,input:z.infer<typeof memoryChangeSchema>) {
   const startedAt=Date.now();

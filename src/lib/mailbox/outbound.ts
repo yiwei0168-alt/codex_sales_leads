@@ -3,7 +3,7 @@ import {createSmtpTransport} from "./smtp-transport";
 import { z } from "zod";
 import type { PoolClient } from "pg";
 import { tenantQuery,tenantTransaction } from "@/lib/rag/db";
-import { connectionPassword,getMailboxConnection } from "./repository";
+import { smtpConnectionPassword,getMailboxConnection } from "./repository";
 import { decryptMailboxContent,encryptMailboxContent } from "./crypto";
 import { loadMailAttachments, mailAttachmentSchema } from "./attachments";
 import { bestEffortMetric, startOperation, finishOperation } from "@/lib/operation-metrics";
@@ -40,8 +40,8 @@ export async function assignMailMarket(userId:string,input:z.infer<typeof assign
 
 async function transport(userId:string,connectionId:string) {
   const connection=await getMailboxConnection(userId,connectionId);
-  if(!connection||connection.status!=="active")throw new Error("请选择有效的已连接邮箱");
-  return {connection,mailer:createSmtpTransport({user:connection.email,pass:connectionPassword(connection)})};
+  if(!connection||connection.status!=="active"||connection.accessMode!=="send-enabled"||!connection.smtpHost)throw new Error("请选择已启用发信的邮箱");
+  return {connection,mailer:createSmtpTransport({user:connection.email,pass:smtpConnectionPassword(connection)},{host:connection.smtpHost,port:connection.smtpPort})};
 }
 
 export async function verifyOutbound(userId:string,connectionId:string) {
@@ -111,7 +111,7 @@ export async function sendOutbound(userId:string,input:SendInput) {
       join user_company_market wc on wc.company_id=c.id join market_workspace w on w.id=wc.workspace_id
       where wc.candidate_id=$1 and w.owner_id=$2 and w.slug='global-sales'`,[input.companyExternalId,userId]):{rows:[{id:null,workspace_id:null,country:null}]};
     if(!company.rows[0])throw new Error("公司不属于当前工作区");
-    const connection=await client.query<{email:string}>(`select email from mailbox_connection where id=$1 and user_id=$2 and status='active' and smtp_verified_at is not null`,[input.connectionId,userId]);
+    const connection=await client.query<{email:string}>(`select email from mailbox_connection where id=$1 and user_id=$2 and status='active' and access_mode='send-enabled' and smtp_verified_at is not null`,[input.connectionId,userId]);
     if(!connection.rows[0])throw new Error("请先验证发信连接");
     let replyTo:string|undefined;
     if(input.followUpDraftId){const draft=await client.query("select id from account_follow_up_draft where id=$1 and user_id=$2 and parent_id=$3",[input.followUpDraftId,userId,input.parentId??null]);if(!draft.rows[0])throw new Error("跟进草稿不属于当前原邮件");}

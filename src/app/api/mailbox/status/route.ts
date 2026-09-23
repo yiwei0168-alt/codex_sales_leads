@@ -1,6 +1,5 @@
 import { requireApiSession } from "@/lib/auth/session";
 import { tenantQuery } from "@/lib/rag/db";
-import { listMailboxMessagesForReview } from "@/lib/mailbox/repository";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -41,7 +40,6 @@ export async function GET() {
   ]);
   const count = counts[0];
   const run = latestRun[0] ?? null;
-  const recentMessages = run ? await listMailboxMessagesForReview(session.userId, run.id, 40) : [];
   return Response.json({
     configured: Boolean(process.env.MAILBOX_CREDENTIAL_KEY?.trim()),
     kimiConfigured: Boolean(process.env.KIMI_API_KEY?.trim()),
@@ -60,6 +58,5 @@ export async function GET() {
       unscreened: count?.screening_unscreened ?? 0,
     },
     latestRun: run,
-    recentMessages,
   });
 }

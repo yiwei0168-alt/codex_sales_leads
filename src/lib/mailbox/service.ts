@@ -1,5 +1,7 @@
 import {withProductSpend} from "@/lib/billing/context";
 import { readAliMailMessages, verifyAliMailCredentials } from "./alimail-imap";
+import { mailboxConnectionSchema, type MailboxConnectionInput } from "./connection-config";
+import { createSmtpTransport } from "./smtp-transport";
 import { kimiMailboxModel, learnMailboxMessageWithKimi } from "./kimi";
 import { prepareMailboxDisclosure } from "./privacy";
 import { tenantQuery } from "@/lib/rag/db";
@@ -11,10 +13,28 @@ import {
   persistMailboxLearning, purgeExpiredMailboxContent, recordMailboxOutboundStart, skipMailboxMessageLearning, startMailboxSyncRun,
   updateMailboxSyncProgress, upsertMailboxConnection,
 } from "./repository";
+import { smtpConnectionPassword } from "./repository";
 
-export async function connectAliMail(userId: string, email: string, password: string): Promise<string> {
-  await verifyAliMailCredentials(email, password);
-  return upsertMailboxConnection(userId, email, password);
+export async function connectMailbox(userId: string, details: MailboxConnectionInput): Promise<string> {
+  const input = mailboxConnectionSchema.parse(details);
+  await verifyAliMailCredentials(input.email, input.securityPassword, input.imapHost, input.imapPort);
+  if (input.accessMode === "send-enabled") {
+    const mailer = createSmtpTransport({user:input.email,pass:input.smtpPassword ?? input.securityPassword},
+      {host:input.smtpHost,port:input.smtpPort});
+    try { await mailer.verify(); } finally { mailer.close(); }
+  }
+  return upsertMailboxConnection(userId, input);
+}
+
+export async function verifyMailboxSendCapability(userId:string,connectionId:string):Promise<void>{
+  const connection=await getMailboxConnection(userId,connectionId);
+  if(!connection||connection.status!=="active")throw new Error("邮箱连接不存在或已断开");
+  if(!connection.smtpHost)throw new Error("此邮箱没有 SMTP 配置，请重新连接并选择可发信");
+  if(connection.accessMode==="send-enabled"&&connection.smtpVerifiedAt)return;
+  const mailer=createSmtpTransport({user:connection.email,pass:smtpConnectionPassword(connection)},
+    {host:connection.smtpHost,port:connection.smtpPort});
+  try{await mailer.verify();}finally{mailer.close();}
+  await tenantQuery(userId,"update mailbox_connection set smtp_verified_at=now() where user_id=$1 and id=$2 and status='active'",[userId,connectionId]);
 }
 
 export async function syncAliMail(userId: string, connectionId: string, options: {
@@ -38,6 +58,7 @@ export async function syncAliMail(userId: string, connectionId: string, options:
     const result = await readAliMailMessages({
       email: connection.email,
       password: connectionPassword(connection),
+      host:connection.imapHost,port:connection.imapPort,
       cursors: options.from?new Map():await getMailboxCursors(userId, connectionId),
       ...range,folderScope:options.folderScope,
       knownMessages:new Set(existing.map(item=>`${item.folder_path}:${item.uid_validity}:${item.message_uid}`)),

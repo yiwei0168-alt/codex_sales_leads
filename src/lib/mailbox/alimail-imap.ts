@@ -1,6 +1,7 @@
 import { ImapFlow, type FetchMessageObject, type ListResponse } from "imapflow";
 import { simpleParser, type AddressObject } from "mailparser";
 import { createHash } from "node:crypto";
+import { publicMailAddresses } from "./connection-config";
 
 export const ALIMAIL_IMAP_HOST = "imap.qiye.aliyun.com";
 export const ALIMAIL_IMAP_PORT = 993;
@@ -36,11 +37,13 @@ export interface MailboxReadProgress {
   currentSubject?: string;
 }
 
-function clientFor(email: string, password: string, verifyOnly = false): ImapFlow {
+async function clientFor(email: string, password: string, host: string, port: number, verifyOnly = false): Promise<ImapFlow> {
+  const addresses = await publicMailAddresses(host);
   return new ImapFlow({
-    host: ALIMAIL_IMAP_HOST,
-    port: ALIMAIL_IMAP_PORT,
+    host: addresses[0],
+    port,
     secure: true,
+    tls: { servername: host, rejectUnauthorized: true },
     auth: { user: email, pass: password },
     verifyOnly,
     includeMailboxes: verifyOnly,
@@ -54,8 +57,8 @@ function clientFor(email: string, password: string, verifyOnly = false): ImapFlo
   });
 }
 
-export async function verifyAliMailCredentials(email: string, password: string): Promise<void> {
-  const client = clientFor(email, password, true);
+export async function verifyAliMailCredentials(email: string, password: string, host = ALIMAIL_IMAP_HOST, port = ALIMAIL_IMAP_PORT): Promise<void> {
+  const client = await clientFor(email, password, host, port, true);
   client.on("error", () => undefined);
   try {
     await client.connect();
@@ -125,6 +128,8 @@ async function parseMessage(message: FetchMessageObject, folder: ListResponse, u
 export async function readAliMailMessages(input: {
   email: string;
   password: string;
+  host?: string;
+  port?: number;
   cursors: Map<string, MailboxCursor>;
   since: Date;
   before?:Date;
@@ -133,7 +138,7 @@ export async function readAliMailMessages(input: {
   maxMessages: number;
   onProgress?: (progress: MailboxReadProgress) => void | Promise<void>;
 }): Promise<{ messages: ImportedMailboxMessage[]; cursors: MailboxCursor[]; folders: number; discovered: number }> {
-  const client = clientFor(input.email, input.password);
+  const client = await clientFor(input.email, input.password, input.host ?? ALIMAIL_IMAP_HOST, input.port ?? ALIMAIL_IMAP_PORT);
   client.on("error", () => undefined);
   const messages: ImportedMailboxMessage[] = [];
   const cursors: MailboxCursor[] = [];

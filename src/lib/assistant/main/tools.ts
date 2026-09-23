@@ -172,7 +172,7 @@ export const productTools: ProductTool[] = [
       roles: z.array(z.enum(ALL_CHANNEL_ROLES)).min(1).max(13), targetCount: z.number().int().min(1).max(200), queryLanguage: z.string().min(2).max(20), userRequest: z.string().min(1).max(8000) }).strict(),
     cost: "unknown", connections: ["openrouter"], execute: async i => result(await buildLeadMarketPlaybook(i, [])) }),
   defineTool({ id: "mail_connections", description: "List current account mailbox identities and connection states; no credentials.", input: empty,
-    execute: async (_, c) => result((await listMailboxConnections(c.userId)).map(v => ({ id: v.id, email: v.email, status: v.status })), { cost: "known" }) }),
+    execute: async (_, c) => result((await listMailboxConnections(c.userId)).map(v => ({ id: v.id, email: v.email, displayName:v.displayName, accessMode:v.accessMode, status: v.status })), { cost: "known" }) }),
   defineTool({ id: "mail_history", description: "Read outbound history for a company, or unassociated account mail when company is omitted.",
     input: z.object({ companyExternalId: z.string().max(180).optional(), offset: z.number().int().min(0).max(100000).default(0) }).strict(),
     execute: async (i, c) => result(await listOutbound(c.userId, i.companyExternalId ?? "", i.offset, 20), { cost: "known" }) }),

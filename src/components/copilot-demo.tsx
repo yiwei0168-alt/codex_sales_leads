@@ -18,7 +18,7 @@ import { ConversationHistory } from "@/components/conversation-history";
 import { AgentLibrary } from "@/components/agent-library";
 import { KnowledgeBase } from "@/components/knowledge-base";
 import { TaskCenter } from "@/components/task-center";
-import { MailboxIntegration } from "@/components/mailbox-integration";
+import { MailboxWorkspace } from "@/components/mailbox-workspace";
 import {
   primaryRole,
   type AccountTier,
@@ -389,7 +389,7 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
           {saveState !== "idle" && <p role={saveState === "error" ? "alert" : "status"} className="save-status">{saveState === "saving" ? "正在保存…" : saveState === "saved" ? "已保存" : saveState === "error" ? "数据读取或保存失败，请重试" : "公司已被更新，请检查刷新后的状态"}<button onClick={()=>setRefreshVersion(value=>value+1)}>重试读取</button></p>}
           {view !== "home" && <section className="workspace-heading"><h1>{title}</h1>{isMarket && view === "overview" && <button className="secondary-button" onClick={()=>{setView("results");showLiveResults();}}>查看已保存线索</button>}</section>}
           {tabs.length > 0 && <div className="business-toolbar"><nav className="page-tabs" aria-label={`${title}页签`}>{tabs.map(tab=><button key={tab.id} aria-current={view===tab.id?"page":undefined} onClick={()=>setView(tab.id)}>{tab.label}</button>)}</nav>
-            <label className="select-field">国家<select aria-label="选择国家" value={country} onChange={event=>{countryRef.current=event.target.value;router.push(viewHref(view,event.target.value,selectedIdRef.current));}}><option value="all">全部国家</option>{countries.sort().map(code=><option key={code} value={code}>{marketLabel(code)}</option>)}</select></label>
+            <select className="country-select" aria-label="选择国家" value={country} onChange={event=>{countryRef.current=event.target.value;router.push(viewHref(view,event.target.value,selectedIdRef.current));}}><option value="all">全部国家</option>{countries.sort().map(code=><option key={code} value={code}>{marketLabel(code)}</option>)}</select>
           </div>}
           {searchState === "complete" && <div className="inline-notice success"><Icon name="check"/><span>当前工作区包含 {companies.length} 个已存储候选、{sourceCount} 条证据；请在公司详情查看各自的评分版本与核实状态。</span><button onClick={() => setSearchState("idle")} aria-label="关闭"><Icon name="close" size={15}/></button></div>}
 
@@ -403,7 +403,7 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
           {view === "assistant" && selectedCompany && <OutboundComposer key={selectedCompany.id} companyId={selectedCompany.id} draft={draft} onSent={()=>{void fetch("/api/workspaces/current",{cache:"no-store"}).then(async response=>{if(response.ok){const workspace=await response.json() as MarketWorkspaceDto;setCompanies(workspace.companies);}});}}/>}
           {view === "tasks" && <TaskCenter key={refreshVersion} />}
           {view === "knowledge" && <KnowledgeBase key={refreshVersion} initialTab={initialTab} />}
-          {view === "mailbox" && <MailboxIntegration key={refreshVersion} />}
+          {view === "mailbox" && <MailboxWorkspace key={refreshVersion} />}
           {view === "settings" && <><section className="account-summary"><strong>{userName}</strong><button className="secondary-button" onClick={logout}>退出登录</button></section><AgentLibrary key={refreshVersion} /></>}
           {view === "help" && <section className="panel help-copy"><h2>从一个问题开始</h2><p>点击“新对话”描述目标，发送第一条消息后保存对话。当前任务进度、异常和待批准操作留在对应对话中。</p><h2>找到业务资料</h2><p>在“市场与线索”切换国家、查看已保存线索与渠道关系。在“客户开发”选择公司，查看机会、准备开发信并管理邮箱。“知识库”提供资料、知识问答和按权限展示的审核。</p><h2>核对后执行</h2><p>执行前请阅读批准卡上的最终内容。发送邮件和删除等操作需要明确批准；批准后的真实执行结果显示在对话中。</p><button className="secondary-button" onClick={()=>setView("tasks")}>查看任务记录</button></section>}
         </div>

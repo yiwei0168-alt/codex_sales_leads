@@ -9,12 +9,12 @@ type CandidateContent={kind:string;title:string;content:string;structured_data:R
 function candidateHash(candidate:CandidateContent){
   return createHash("sha256").update(JSON.stringify({kind:candidate.kind,title:candidate.title,content:candidate.content,structuredData:candidate.structured_data})).digest("hex");
 }
-export async function listPendingMailboxCandidates(userId:string){
+export async function listPendingMailboxCandidates(userId:string,offset=0,limit=50){
   const rows=await tenantQuery<{
     id:string;message_id:string;kind:string;title:string;content:string;structured_data:Record<string,unknown>;
     review_status:string;created_at:string;confidence:number|null;rationale:string|null;model:string|null;
   }>(userId,`select id,message_id,kind,title,content,structured_data,review_status,confidence,rationale,model,created_at::text
-      from mailbox_artifact_candidate where user_id=$1 and review_status='pending' order by created_at desc limit 50`,[userId]);
+      from mailbox_artifact_candidate where user_id=$1 and review_status='pending' order by created_at desc limit $2 offset $3`,[userId,Math.min(Math.max(limit,1),50),Math.max(offset,0)]);
   return rows.map(row=>({...row,excerpt:row.content.slice(0,1200),contentHash:candidateHash(row)}));
 }
 

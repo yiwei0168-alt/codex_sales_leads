@@ -2,7 +2,7 @@
 import { useEffect,useState } from "react";
 type Mail={id:string;status:string;subject:string;bodyText:string;sender:string[];recipients:string[];sentAt:string|null;createdAt:string;reconciledByUser?:boolean;countryUnassigned?:boolean;marketCountry?:string|null};
 export function OutboundComposer({companyId,draft,onSent}:{companyId:string;draft:string;onSent:()=>void}) {
-  const [connections,setConnections]=useState<Array<{id:string;email:string;status:string}>>([]);
+  const [connections,setConnections]=useState<Array<{id:string;email:string;displayName:string;status:string;accessMode:string;smtpVerifiedAt?:string}>>([]);
   const [connectionId,setConnectionId]=useState("");const [verified,setVerified]=useState(false);
   const [to,setTo]=useState("");const [subject,setSubject]=useState("");const [body,setBody]=useState("");
   const [messages,setMessages]=useState<Mail[]>([]);const [parent,setParent]=useState<Mail|null>(null);
@@ -30,7 +30,7 @@ export function OutboundComposer({companyId,draft,onSent}:{companyId:string;draf
     const controller=new AbortController();
     Promise.all([fetch("/api/mailbox/connections",{signal:controller.signal}),fetch(`/api/mailbox/outbound?company=${encodeURIComponent(companyId)}&offset=${offset}`,{signal:controller.signal,cache:"no-store"})])
       .then(async responses=>{if(responses.some(response=>!response.ok))throw new Error();return Promise.all(responses.map(response=>response.json()));})
-      .then(([mailboxes,history])=>{if(controller.signal.aborted)return;setConnections(mailboxes.connections.filter((item:{status:string})=>item.status==="active"));setMessages(history.messages);setHasMore(history.hasMore);})
+      .then(([mailboxes,history])=>{if(controller.signal.aborted)return;setConnections(mailboxes.connections.filter((item:{status:string;accessMode:string;smtpVerifiedAt?:string})=>item.status==="active"&&item.accessMode==="send-enabled"&&Boolean(item.smtpVerifiedAt)));setMessages(history.messages);setHasMore(history.hasMore);})
       .catch(()=>{if(!controller.signal.aborted)setNotice("邮件连接或发送历史读取失败，请刷新重试");});
     return()=>controller.abort();
   },[companyId,revision,offset]);
@@ -63,7 +63,7 @@ export function OutboundComposer({companyId,draft,onSent}:{companyId:string;draf
     setBusy(true);try{const response=await fetch("/api/mailbox/outbound",{method:"PATCH",headers:{"content-type":"application/json"},body:JSON.stringify({id:mail.id,outcome,sentAt,confirmed:true})});const data=await response.json();if(!response.ok)throw new Error(data.error);setRevision(value=>value+1);if(outcome==="sent")onSent();setNotice("已保存用户核实结果，没有重发邮件。");}catch(error){setNotice(String(error));}finally{setBusy(false);}
   }
   return <section className="panel"><h2>邮件发送与跟进</h2>{notice&&<p role="status">{notice}</p>}
-    <label>发件邮箱<select disabled={busy||locked} value={connectionId} onChange={event=>{setConnectionId(event.target.value);setVerified(false);setConfirmed(false);}}><option value="">选择已连接邮箱</option>{connections.map(item=><option key={item.id} value={item.id}>{item.email}</option>)}</select></label>
+    <label>发件邮箱<select disabled={busy||locked} value={connectionId} onChange={event=>{setConnectionId(event.target.value);setVerified(false);setConfirmed(false);}}><option value="">选择已验证的可发信邮箱</option>{connections.map(item=><option key={item.id} value={item.id}>{item.displayName} · {item.email}</option>)}</select></label>
     <button disabled={!connectionId||busy||locked} onClick={verify}>{verified?"发信连接已验证":"验证发信连接"}</button>
     <details><summary>发送历史 · 第 {offset/50+1} 页 · 本页本国已发送 {messages.filter(mail=>mail.status==="sent"&&!mail.countryUnassigned).length} 封</summary>{messages.map(mail=><article key={mail.id}>
       <strong>{mail.subject}</strong><p>{mail.recipients.join(", ")} · {mail.sentAt??mail.createdAt} · {mail.status}{mail.reconciledByUser?"（用户核实）":""}</p>

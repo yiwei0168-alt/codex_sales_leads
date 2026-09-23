@@ -15,7 +15,7 @@ export async function GET(request:Request){
   const session=await requireApiSession();if(session instanceof Response)return session;
   const offset=Number(new URL(request.url).searchParams.get("offset")??0);
   if(!Number.isSafeInteger(offset)||offset<0||offset>100000)return Response.json({error:"分页参数无效"},{status:400});
-  try {const rows=await listMemories(session.userId,offset);return Response.json({items:rows.slice(0,50),hasMore:rows.length>50},{headers:{"Cache-Control":"private, no-store"}});}
+  try {const rows=await listMemories(session.userId,offset,12);return Response.json({items:rows.slice(0,12),hasMore:rows.length>12},{headers:{"Cache-Control":"private, no-store"}});}
   catch{return Response.json({error:"个人记忆读取失败"},{status:503});}
 }
 export async function PATCH(request:Request){

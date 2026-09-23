@@ -36,6 +36,6 @@ export function PersonalMemory(){
       {["email-style","user-approved-marketing-claim"].includes(item.kind)&&<button disabled={busy} onClick={()=>{setEditing(item);setPending(null);}}>编辑内容与范围</button>}
       {item.kind==="company-classification"?<p>此项是当前公司事实镜像，请到公司详情或关系图维护。</p>:<><button disabled={busy} onClick={()=>setPending({item,operation:item.status==="active"?"archive":"activate"})}>{item.status==="active"?"停用":"启用"}</button><button disabled={busy} onClick={()=>setPending({item,operation:"delete"})}>删除记忆</button></>}
     </article>)}
-    <button disabled={busy||loading||offset===0} onClick={()=>page(Math.max(0,offset-50))}>上一页</button><span>第 {offset/50+1} 页</span><button disabled={busy||loading||!hasMore} onClick={()=>page(offset+50)}>下一页</button>
+    <button disabled={busy||loading||offset===0} onClick={()=>page(Math.max(0,offset-12))}>上一页</button><span>第 {offset/12+1} 页 · 每页 12 条</span><button disabled={busy||loading||!hasMore} onClick={()=>page(offset+12)}>下一页</button>
   </section>;
 }

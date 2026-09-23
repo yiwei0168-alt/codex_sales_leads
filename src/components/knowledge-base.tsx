@@ -46,7 +46,9 @@ export function KnowledgeBase({ initialTab }: { initialTab?: string } = {}) {
   const router=useRouter(), params=useSearchParams();
   const tab=initialTab==="questions"||initialTab==="review"?initialTab:"materials";
   const [canReview,setCanReview]=useState(false);
-  const [uploadOpen,setUploadOpen]=useState(false);
+  const [materialView,setMaterialView]=useState<"library"|"mailbox"|"memory"|"upload">("library");
+  const [mailboxKnowledgePage,setMailboxKnowledgePage]=useState(1);
+  const [mailboxKnowledgeMore,setMailboxKnowledgeMore]=useState(false);
   useEffect(()=>{const controller=new AbortController();fetch("/api/auth/session",{signal:controller.signal,cache:"no-store"}).then(r=>r.json()).then(data=>{if(!controller.signal.aborted)setCanReview(data.user?.role==="admin");}).catch(()=>{});return()=>controller.abort();},[]);
   function selectTab(value:string){const query=new URLSearchParams(params.toString());query.set("tab",value);router.push(`/knowledge?${query}`);}
 
@@ -94,14 +96,15 @@ export function KnowledgeBase({ initialTab }: { initialTab?: string } = {}) {
   },[uploadMessage]);
 
   useEffect(() => {
-    fetch("/api/knowledge/mailbox", { cache: "no-store" })
+    fetch(`/api/knowledge/mailbox?page=${mailboxKnowledgePage}`, { cache: "no-store" })
       .then(async (response) => {
-        const body = await response.json() as { items?: MailboxKnowledgeItem[]; error?: string };
+        const body = await response.json() as { items?: MailboxKnowledgeItem[]; hasMore?:boolean; error?: string };
         if (!response.ok) throw new Error(body.error ?? "邮箱知识读取失败");
         setMailboxKnowledge(body.items ?? []);
+        setMailboxKnowledgeMore(Boolean(body.hasMore));
       })
       .catch((reason: Error) => setMailboxKnowledgeError(reason.message));
-  }, []);
+  }, [mailboxKnowledgePage]);
 
   function toggle(type: KnowledgeBaseType) {
     setSelected((current) => current.includes(type) ? current.filter((item) => item !== type) : [...current, type]);
@@ -176,10 +179,11 @@ export function KnowledgeBase({ initialTab }: { initialTab?: string } = {}) {
     } finally { setUploading(false); }
   }
 
-  return <div className="knowledge-layout">
-    <div className="business-toolbar"><nav className="page-tabs" aria-label="知识库页签"><button aria-current={tab==="materials"?"page":undefined} onClick={()=>selectTab("materials")}>资料</button><button aria-current={tab==="questions"?"page":undefined} onClick={()=>selectTab("questions")}>知识问答</button>{canReview&&<button aria-current={tab==="review"?"page":undefined} onClick={()=>selectTab("review")}>审核</button>}</nav>{tab==="materials"&&<button className="primary-button" aria-expanded={uploadOpen} onClick={()=>setUploadOpen(value=>!value)}>{uploadOpen?"收起上传":"上传资料"}</button>}</div>
-    {tab==="materials"&&<KnowledgeLibrary />}
-    {tab==="materials"&&<details className="panel personal-memory-entry"><summary>个人长期记忆</summary><PersonalMemory /></details>}
+  return <div className={`knowledge-layout ${tab==="materials"?"knowledge-materials-layout":""}`}>
+    <div className="business-toolbar"><nav className="page-tabs" aria-label="知识库页签"><button aria-current={tab==="materials"?"page":undefined} onClick={()=>selectTab("materials")}>资料</button><button aria-current={tab==="questions"?"page":undefined} onClick={()=>selectTab("questions")}>知识问答</button>{canReview&&<button aria-current={tab==="review"?"page":undefined} onClick={()=>selectTab("review")}>审核</button>}</nav>{tab==="materials"&&<button className="primary-button" aria-expanded={materialView==="upload"} onClick={()=>setMaterialView(value=>value==="upload"?"library":"upload")}>{materialView==="upload"?"返回资料":"上传资料"}</button>}</div>
+    {tab==="materials"&&<nav className="knowledge-material-nav" aria-label="资料分区"><button aria-current={materialView==="library"?"page":undefined} onClick={()=>setMaterialView("library")}>资料列表</button><button aria-current={materialView==="mailbox"?"page":undefined} onClick={()=>setMaterialView("mailbox")}>邮箱知识</button><button aria-current={materialView==="memory"?"page":undefined} onClick={()=>setMaterialView("memory")}>个人记忆</button></nav>}
+    {tab==="materials"&&materialView==="library"&&<KnowledgeLibrary />}
+    {tab==="materials"&&materialView==="memory"&&<div className="knowledge-material-scroll"><PersonalMemory /></div>}
     {tab==="review"&&!canReview&&<p>共享知识审核仅对管理员开放。请选择资料或知识问答。</p>}
     {tab==="review"&&canReview&&<>
     {!loading && !stats.configured && <p role="status">{stats.error??"知识服务暂不可用，请稍后重试。"}</p>}
@@ -200,7 +204,7 @@ export function KnowledgeBase({ initialTab }: { initialTab?: string } = {}) {
     {stats.release&&<KnowledgeReviewCenter/>}
 
     </>}
-    {tab==="materials"&&<details className="panel mailbox-knowledge-panel"><summary>已批准的邮箱知识</summary>
+    {tab==="materials"&&materialView==="mailbox"&&<section className="panel mailbox-knowledge-panel">
       <div className="panel-header"><div><span className="section-kicker">PRIVATE MAILBOX KNOWLEDGE</span><h2>邮箱学习知识</h2><p>仅当前账号可见；已批准内容会参与私有 RAG 检索。</p></div><span className="tag violet">{mailboxKnowledge.length} 条</span></div>
       {mailboxKnowledgeError && <div className="rag-error">{mailboxKnowledgeError}</div>}
       <div className="mailbox-knowledge-list">
@@ -210,7 +214,8 @@ export function KnowledgeBase({ initialTab }: { initialTab?: string } = {}) {
         </details>)}
         {!mailboxKnowledgeError && mailboxKnowledge.length === 0 && <p className="subtle">暂无已批准的邮箱学习知识。请先在“邮箱学习”中批准候选。</p>}
       </div>
-    </details>}
+      <div className="library-pagination"><button disabled={mailboxKnowledgePage===1} onClick={()=>setMailboxKnowledgePage(page=>page-1)}>上一页</button><span>第 {mailboxKnowledgePage} 页 · 每页 8 条</span><button disabled={!mailboxKnowledgeMore} onClick={()=>setMailboxKnowledgePage(page=>page+1)}>下一页</button></div>
+    </section>}
 
     {tab==="questions"&&<div className="kb-main-grid">
       <section className="panel rag-playground">
@@ -225,7 +230,7 @@ export function KnowledgeBase({ initialTab }: { initialTab?: string } = {}) {
 
     </div>}
 
-    {tab==="materials"&&uploadOpen&&<section className="panel kb-upload-panel">
+    {tab==="materials"&&materialView==="upload"&&<section className="panel kb-upload-panel knowledge-material-scroll">
       <div className="panel-header"><div><span className="section-kicker">KNOWLEDGE INGESTION</span><h2>上传你的知识资料</h2></div><span className="subtle">内容不会提交到 GitHub</span></div>
       <div className="kb-upload-body">
         <div className="kb-upload-intro"><strong>选择知识库</strong><p>{uploadType === "industry" ? "行业知识、渠道结构、主要品牌、市场研究等。" : uploadType === "company" ? "Cudy Technology 公司简介、产品线、当前业务情况、战略与经营资料。" : "Cudy Technology 产品信息、技术规格、兼容性、认证和使用限制。"}</p><div className="kb-upload-types">{(["industry", "company", "product"] as KnowledgeBaseType[]).map((type) => <button key={type} className={uploadType === type ? "active" : ""} onClick={() => setUploadType(type)}>{labels[type].title}</button>)}</div></div>
@@ -242,6 +247,5 @@ export function KnowledgeBase({ initialTab }: { initialTab?: string } = {}) {
         </div>
       </div>
     </section>}
-    {tab==="materials"&&uploadJobs.length>0&&<section className="upload-progress" aria-label="资料处理进度"><h2>资料处理进度</h2>{uploadJobs.slice(0,6).map(job=><p key={job.id}>{job.title} · {job.status}{job.errorCode?` · ${job.errorCode}`:""}</p>)}</section>}
   </div>;
 }

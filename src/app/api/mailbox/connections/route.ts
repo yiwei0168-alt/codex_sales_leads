@@ -1,6 +1,7 @@
 import { requireApiSession } from "@/lib/auth/session";
-import { isValidEmail, normalizeEmail } from "@/lib/auth/users";
-import { connectAliMail } from "@/lib/mailbox/service";
+import { normalizeEmail } from "@/lib/auth/users";
+import { connectMailbox } from "@/lib/mailbox/service";
+import { mailboxConnectionSchema } from "@/lib/mailbox/connection-config";
 import { listMailboxConnections } from "@/lib/mailbox/repository";
 import { mailboxConnectionErrorMessage } from "@/lib/mailbox/errors";
 
@@ -19,14 +20,12 @@ export async function POST(request: Request) {
   if (!process.env.MAILBOX_CREDENTIAL_KEY?.trim()) {
     return Response.json({ error: "MAILBOX_CREDENTIAL_KEY 尚未配置" }, { status: 503 });
   }
-  let body: { email?: string; securityPassword?: string };
-  try { body = await request.json() as typeof body; } catch { return Response.json({ error: "请求体必须是 JSON" }, { status: 400 }); }
-  const email = normalizeEmail(body.email ?? "");
-  const password = body.securityPassword ?? "";
-  if (!isValidEmail(email)) return Response.json({ error: "请输入有效的阿里邮箱地址" }, { status: 400 });
-  if (password.length < 6 || password.length > 1024) return Response.json({ error: "请输入有效的第三方客户端安全密码" }, { status: 400 });
+  let body: Record<string,unknown>;
+  try { body = await request.json() as Record<string,unknown>; } catch { return Response.json({ error: "请求体必须是 JSON" }, { status: 400 }); }
+  const parsed = mailboxConnectionSchema.safeParse({...body,email:normalizeEmail(String(body.email??""))});
+  if (!parsed.success) return Response.json({ error: parsed.error.issues[0]?.message ?? "邮箱配置无效" }, { status: 400 });
   try {
-    const connectionId = await connectAliMail(session.userId, email, password);
+    const connectionId = await connectMailbox(session.userId, parsed.data);
     return Response.json({ connectionId, connected: true }, { status: 201 });
   } catch (error) {
     return Response.json({ error: mailboxConnectionErrorMessage(error) }, { status: 502 });

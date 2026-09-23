@@ -1,6 +1,7 @@
 import { tenantQuery, tenantTransaction } from "@/lib/rag/db";
 import { decryptMailboxContent, decryptMailboxCredential, encryptMailboxContent, encryptMailboxCredential } from "./crypto";
-import { ALIMAIL_IMAP_HOST, ALIMAIL_IMAP_PORT, type ImportedMailboxMessage, type MailboxCursor } from "./alimail-imap";
+import { type ImportedMailboxMessage, type MailboxCursor } from "./alimail-imap";
+import { ALIMAIL_IMAP_HOST, type MailboxConnectionInput } from "./connection-config";
 import type { KimiMailboxLearningResult } from "./kimi";
 import { screenMailboxMessage, type MailboxScreeningBucket } from "./screening";
 import { matchImportedCompany } from "./company-links";
@@ -9,39 +10,55 @@ export interface MailboxConnectionRecord {
   id: string;
   userId: string;
   email: string;
+  displayName: string;
+  accessMode: "read-only" | "send-enabled";
+  imapHost: string;
+  imapPort: number;
+  smtpHost: string | null;
+  smtpPort: number;
+  smtpVerifiedAt?: string;
+  smtpCredentialCiphertext: string | null;
   status: "active" | "error" | "disabled";
   credentialCiphertext: string;
   lastVerifiedAt?: string;
   lastError?: string;
 }
 
-export async function upsertMailboxConnection(userId: string, email: string, password: string): Promise<string> {
-  const encrypted = encryptMailboxCredential(password);
+export async function upsertMailboxConnection(userId: string, input: MailboxConnectionInput): Promise<string> {
+  const encrypted = encryptMailboxCredential(input.securityPassword);
+  const smtpEncrypted = input.smtpPassword ? encryptMailboxCredential(input.smtpPassword) : null;
   const rows = await tenantQuery<{ id: string }>(userId,
     `insert into mailbox_connection
-       (user_id, provider, email, host, port, credential_ciphertext, status, last_verified_at, last_error)
-     values ($1, 'alimail-imap', $2, $3, $4, $5, 'active', now(), null)
+       (user_id, provider, email, display_name, access_mode, host, port, smtp_host, smtp_port, credential_ciphertext, smtp_credential_ciphertext, status, last_verified_at, last_error, smtp_verified_at)
+     values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, 'active', now(), null, $12)
      on conflict (user_id, email) do update set credential_ciphertext = excluded.credential_ciphertext,
-       host = excluded.host, port = excluded.port, status = 'active', last_verified_at = now(), smtp_verified_at = null,
+       provider = excluded.provider, display_name = excluded.display_name, access_mode = excluded.access_mode,
+       host = excluded.host, port = excluded.port, smtp_host = excluded.smtp_host, smtp_port = excluded.smtp_port,
+       smtp_credential_ciphertext = excluded.smtp_credential_ciphertext,
+       status = 'active', last_verified_at = now(), smtp_verified_at = excluded.smtp_verified_at,
        last_error = null, updated_at = now()
      returning id`,
-    [userId, email, ALIMAIL_IMAP_HOST, ALIMAIL_IMAP_PORT, encrypted],
+    [userId, input.imapHost === ALIMAIL_IMAP_HOST ? "alimail-imap" : "standard-imap", input.email, input.displayName, input.accessMode,
+      input.imapHost, input.imapPort, input.smtpHost ?? null, input.smtpPort, encrypted, smtpEncrypted,
+      input.accessMode === "send-enabled" ? new Date().toISOString() : null],
   );
   if (!rows[0]) throw new Error("邮箱连接未能保存");
   return rows[0].id;
 }
 
-export async function listMailboxConnections(userId: string): Promise<Array<Omit<MailboxConnectionRecord, "credentialCiphertext">>> {
+export async function listMailboxConnections(userId: string): Promise<Array<Omit<MailboxConnectionRecord, "credentialCiphertext" | "smtpCredentialCiphertext">>> {
   const rows = await tenantQuery<{
     id: string; user_id: string; email: string; status: MailboxConnectionRecord["status"];
+    display_name:string;access_mode:MailboxConnectionRecord["accessMode"];host:string;port:number;smtp_host:string|null;smtp_port:number;smtp_verified_at:string|null;
     last_verified_at: string | null; last_error: string | null;
   }>(userId,
-    `select id, user_id, email, status, last_verified_at::text, last_error
+    `select id, user_id, email, display_name, access_mode, host, port, smtp_host, smtp_port, smtp_verified_at::text, status, last_verified_at::text, last_error
      from mailbox_connection where user_id = $1 order by created_at`,
     [userId],
   );
   return rows.map((row) => ({
-    id: row.id, userId: row.user_id, email: row.email, status: row.status,
+    id: row.id, userId: row.user_id, email: row.email, displayName:row.display_name,accessMode:row.access_mode,
+    imapHost:row.host,imapPort:row.port,smtpHost:row.smtp_host,smtpPort:row.smtp_port,smtpVerifiedAt:row.smtp_verified_at??undefined,status: row.status,
     lastVerifiedAt: row.last_verified_at ?? undefined, lastError: row.last_error ?? undefined,
   }));
 }
@@ -56,15 +73,18 @@ export async function deleteMailboxMessage(userId:string,messageId:string){
 export async function getMailboxConnection(userId: string, connectionId: string): Promise<MailboxConnectionRecord | null> {
   const rows = await tenantQuery<{
     id: string; user_id: string; email: string; status: MailboxConnectionRecord["status"];
+    display_name:string;access_mode:MailboxConnectionRecord["accessMode"];host:string;port:number;smtp_host:string|null;smtp_port:number;smtp_verified_at:string|null;smtp_credential_ciphertext:string|null;
     credential_ciphertext: string; last_verified_at: string | null; last_error: string | null;
   }>(userId,
-    `select id, user_id, email, status, credential_ciphertext, last_verified_at::text, last_error
+    `select id, user_id, email, display_name, access_mode, host, port, smtp_host, smtp_port, smtp_verified_at::text, status, credential_ciphertext, smtp_credential_ciphertext, last_verified_at::text, last_error
      from mailbox_connection where user_id = $1 and id = $2 limit 1`,
     [userId, connectionId],
   );
   const row = rows[0];
   return row ? {
-    id: row.id, userId: row.user_id, email: row.email, status: row.status,
+    id: row.id, userId: row.user_id, email: row.email, displayName:row.display_name,accessMode:row.access_mode,
+    imapHost:row.host,imapPort:row.port,smtpHost:row.smtp_host,smtpPort:row.smtp_port,smtpVerifiedAt:row.smtp_verified_at??undefined,
+    smtpCredentialCiphertext:row.smtp_credential_ciphertext,status: row.status,
     credentialCiphertext: row.credential_ciphertext,
     lastVerifiedAt: row.last_verified_at ?? undefined, lastError: row.last_error ?? undefined,
   } : null;
@@ -72,6 +92,19 @@ export async function getMailboxConnection(userId: string, connectionId: string)
 
 export function connectionPassword(connection: MailboxConnectionRecord): string {
   return decryptMailboxCredential(connection.credentialCiphertext);
+}
+
+export function smtpConnectionPassword(connection: MailboxConnectionRecord): string {
+  return connection.smtpCredentialCiphertext ? decryptMailboxCredential(connection.smtpCredentialCiphertext) : connectionPassword(connection);
+}
+
+export async function updateMailboxConnectionSettings(userId:string,id:string,displayName:string,accessMode:MailboxConnectionRecord["accessMode"]){
+  const rows=await tenantQuery<{id:string}>(userId,
+    `update mailbox_connection set display_name=$3, access_mode=$4,
+       smtp_verified_at=case when $4='read-only' then null else smtp_verified_at end, updated_at=now()
+     where user_id=$1 and id=$2 and status='active' and ($4='read-only' or (smtp_host is not null and smtp_verified_at is not null)) returning id`,
+    [userId,id,displayName,accessMode]);
+  return Boolean(rows[0]);
 }
 
 export async function getMailboxCursors(userId: string, connectionId: string): Promise<Map<string, MailboxCursor>> {
@@ -416,6 +449,25 @@ export async function listMailboxMessagesForReview(userId: string, runId: string
   });
 }
 
+export async function listMailboxLearningQueue(userId:string,offset=0,limit=8):Promise<{messages:MailboxMessageReviewItem[];total:number}>{
+  const [count,rows]=await Promise.all([
+    tenantQuery<{total:number}>(userId,"select count(*)::int as total from mailbox_message where user_id=$1 and learning_status in ('pending','failed')",[userId]),
+    tenantQuery<{id:string;subject:string;body_text:string;content_ciphertext:string|null;direction:ImportedMailboxMessage["direction"];
+      learning_status:StoredMailboxMessage["learningStatus"];learning_error:string|null;updated_at:string;thread_key:string|null;
+      screening_score:number;screening_bucket:MailboxScreeningBucket;screening_reasons:string[]}>(userId,
+      `select id,subject,body_text,content_ciphertext,direction,learning_status,learning_error,updated_at::text,thread_key,
+              screening_score,screening_bucket,screening_reasons from mailbox_message
+       where user_id=$1 and learning_status in ('pending','failed') order by screening_score desc,updated_at desc limit $2 offset $3`,
+      [userId,Math.min(Math.max(limit,1),20),Math.max(offset,0)]),
+  ]);
+  return {total:count[0]?.total??0,messages:rows.map(row=>{
+    const content=row.content_ciphertext?decryptMailboxContent(userId,row.content_ciphertext):{subject:row.subject,bodyText:row.body_text};
+    return {id:row.id,subject:content.subject,excerpt:content.bodyText.slice(0,600),direction:row.direction,
+      learning_status:row.learning_status,learning_error:row.learning_error,updated_at:row.updated_at,thread_key:row.thread_key,
+      screening_score:row.screening_score,screening_bucket:row.screening_bucket,screening_reasons:row.screening_reasons};
+  })};
+}
+
 export async function screenStoredMailboxMessages(userId: string): Promise<{
   total: number; recommended: number; review: number; ignored: number;
 }> {
@@ -499,7 +551,7 @@ export async function deleteMailboxConnectionData(userId: string, connectionId: 
     await client.query("delete from mailbox_sync_cursor where user_id=$1 and connection_id=$2",[userId,connectionId]);
     await client.query("delete from mailbox_sync_run where user_id=$1 and connection_id=$2",[userId,connectionId]);
     // Retain the disabled identity for immutable outbound receipts and their parent links.
-    await client.query("update mailbox_connection set status='disabled',credential_ciphertext='',smtp_verified_at=null,updated_at=now() where user_id=$1 and id=$2",[userId,connectionId]);
+    await client.query("update mailbox_connection set status='disabled',credential_ciphertext='',smtp_credential_ciphertext=null,smtp_verified_at=null,updated_at=now() where user_id=$1 and id=$2",[userId,connectionId]);
     return true;
   });
 }
@@ -510,7 +562,7 @@ export async function disconnectMailbox(userId:string,connectionId:string){
     if(!connection.rowCount)return false;
     const running=await client.query("select id from mailbox_sync_run where user_id=$1 and connection_id=$2 and status='running'",[userId,connectionId]);
     if(running.rowCount)throw new Error("同步进行中，请在结束后断开");
-    await client.query("update mailbox_connection set status='disabled',credential_ciphertext='',smtp_verified_at=null,updated_at=now() where user_id=$1 and id=$2",[userId,connectionId]);
+    await client.query("update mailbox_connection set status='disabled',credential_ciphertext='',smtp_credential_ciphertext=null,smtp_verified_at=null,updated_at=now() where user_id=$1 and id=$2",[userId,connectionId]);
     return true;
   });
 }

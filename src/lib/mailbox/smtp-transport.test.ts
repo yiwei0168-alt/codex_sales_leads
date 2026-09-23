@@ -5,14 +5,14 @@ vi.mock("node:dns/promises",()=>({lookup:m.lookup}));
 vi.mock("node:tls",()=>({connect:m.connect}));
 vi.mock("nodemailer",()=>({default:{createTransport:m.create}}));
 import {connectSmtpTls,createSmtpTransport} from "./smtp-transport";
-beforeEach(()=>{vi.resetAllMocks();m.lookup.mockResolvedValue([{address:"192.0.2.1"},{address:"192.0.2.2"}]);});
+beforeEach(()=>{vi.resetAllMocks();m.lookup.mockResolvedValue([{address:"8.8.8.1"},{address:"8.8.8.2"}]);});
 afterEach(()=>vi.useRealTimers());
 function socket(error?:string){const s=Object.assign(new EventEmitter(),{destroy:vi.fn()});queueMicrotask(()=>s.emit(error?"error":"secureConnect",error?Object.assign(new Error("fixture"),{code:error}):undefined));return s;}
 it("uses system addresses with original hostname validation and retries only before handoff",async()=>{
   m.connect.mockImplementationOnce(()=>socket("ECONNREFUSED")).mockImplementationOnce(()=>socket());
   await connectSmtpTls("smtp.example.test");
   expect(m.lookup).toHaveBeenCalledWith("smtp.example.test",{all:true});
-  expect(m.connect.mock.calls.map(c=>c[0].host)).toEqual(["192.0.2.1","192.0.2.2"]);
+  expect(m.connect.mock.calls.map(c=>c[0].host)).toEqual(["8.8.8.1","8.8.8.2"]);
   expect(m.connect.mock.calls[1][0]).toMatchObject({servername:"smtp.example.test",rejectUnauthorized:true,port:465});
 });
 it("never bypasses a certificate failure",async()=>{
@@ -20,7 +20,7 @@ it("never bypasses a certificate failure",async()=>{
   await expect(connectSmtpTls("smtp.example.test")).rejects.toMatchObject({code:"ERR_TLS_CERT_ALTNAME_INVALID"});expect(m.connect).toHaveBeenCalledTimes(1);
 });
 it("deduplicates and bounds address attempts to four",async()=>{
-  m.lookup.mockResolvedValue(Array.from({length:10},(_,i)=>({address:`192.0.2.${Math.floor(i/2)}`})));
+  m.lookup.mockResolvedValue(Array.from({length:10},(_,i)=>({address:`8.8.8.${Math.floor(i/2)+1}`})));
   m.connect.mockImplementation(()=>socket("ECONNRESET"));
   await expect(connectSmtpTls("smtp.example.test")).rejects.toMatchObject({code:"ECONNRESET"});expect(m.connect).toHaveBeenCalledTimes(4);
 });
@@ -34,4 +34,8 @@ it("hands a secured socket to nodemailer once, without authenticating in the con
   const options=m.create.mock.calls[0][0];const callback=vi.fn();
   options.getSocket({},callback);await vi.waitFor(()=>expect(callback).toHaveBeenCalledTimes(1));
   expect(callback.mock.calls[0][1].secured).toBe(true);expect(options.tls.rejectUnauthorized).toBe(true);expect(options.debug).toBe(false);
+});
+it("requires STARTTLS before authentication on port 587",()=>{
+  createSmtpTransport({user:"fixture",pass:"fixture"},{host:"smtp.example.test",port:587});
+  expect(m.create.mock.calls[0][0]).toMatchObject({port:587,secure:false,requireTLS:true});
 });
