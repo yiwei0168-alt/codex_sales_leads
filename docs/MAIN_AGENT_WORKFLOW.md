@@ -224,3 +224,5 @@ New main-Agent runs pin the synchronous OpenRouter `z-ai/glm-5.3` / `fireworks` 
 `preference_save` 保存既有自动偏好版本时，在同一事务中写入新观察和 outbox；来源收据绑定 run、用户消息、旧记忆版本及调用 ID。版本更新建立更正关系；撤销时同时恢复或停用旧版 Agent 偏好，并追加观察历史。多市场/公司范围按原工具输入保留，未知的业务生效时间仍为空。
 
 主 Agent `finishRun` 仅在实际结算状态为 `completed` 时，同事务写入本地记忆抽取队列；邮件运行与其他终态不入队。队列 worker 尚未启用，模型不可用时保持排队，不调用外部模型。
+
+独立本地 worker 按任务收据读取账户内用户消息，先检查回环 Ollama 和精确 `qwen3:8b`，再以结构化 Schema 提取最多三条明确偏好。原文引文不匹配、提示注入或 Schema 不符时不写记忆，任务延后重试；租约与幂等键保障重启。`ENABLE_LOCAL_MEMORY_EXTRACTION=0` 是当前默认配置，真实模型和样本测试前不运行消费循环。
