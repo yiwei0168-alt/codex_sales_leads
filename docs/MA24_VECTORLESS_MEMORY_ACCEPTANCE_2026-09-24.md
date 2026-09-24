@@ -43,7 +43,9 @@ Graphiti 本机预检补充：隔离环境已安装 Graphiti 0.30.2 的依赖及
 
 图谱 outbox 接线补充：迁移 113 添加租约令牌、租约时间和下次尝试时间；worker 收据只带账户与观察 ID，随后在账户 RLS 下读取原观察。Python 投影器仅使用本地 Graphiti 节点/关系接口、回环 Neo4j 和固定摘要的 `nomic-embed-text`，在导入前关闭遥测；账户与观察节点、`OBSERVED` 边采用稳定 UUID，失败不标记送达。`verify-memory-graph-projection-local.py` 连续投影同一合成观察两次后仅有 1 条边，分组清理成功；Node→Python 实际调用重放也仅留 1 条边，测试后清理为 0。本机 PostgreSQL 回滚探针验证 outbox 收据、租约排他及跨账户拒绝，3 项聚焦单测和类型/Lint 检查通过。`ENABLE_MEMORY_GRAPH_PROJECTION=0` 维持关闭；真实 outbox 消费、进程崩溃恢复、图谱候选回库校验和 Neo4j 停机回退尚未验收。
 
-图谱候选回读补充：本机合成观察经 Node→Python 调用链查询只输出观察 UUID，其他账户分组返回空；`searchMemoryWithGraph` 按 PostgreSQL RLS 重新校验账户、业务生效/系统已知时间、市场/公司范围、失效关系和原文命中，最多返回 12 条。缺少业务起始时间的观察返回 `business_validity=unknown`，不伪称当前有效。Neo4j 报错或候选已失效时走 PostgreSQL 原文搜索。4 项聚焦测试通过，含图谱失败与陈旧候选回退；这是内部接口的合成验证，主 Agent 尚未接入，真实停机端到端与回答质量仍待验收。
+图谱候选回读补充：本机合成观察经 Node→Python 调用链查询只输出观察 UUID，其他账户分组返回空；`searchMemoryWithGraph` 按 PostgreSQL RLS 重新校验账户、业务生效/系统已知时间、市场/公司范围、失效关系和原文命中，最多返回 12 条。缺少业务起始时间的观察返回 `business_validity=unknown`，不伪称当前有效。Neo4j 报错或候选已失效时走 PostgreSQL 原文搜索。4 项聚焦测试通过，含图谱失败与陈旧候选回退；这是内部接口的合成验证，主 Agent 尚未接入，真实投影停机端到端与回答质量仍待验收。
+
+实际服务停机补充：通过独立 Compose 仅停止本机 Neo4j，`verify-memory-graph-fallback-local.ts` 返回 `graphUnavailable=true,postgresFallback=true`；`finally` 恢复容器后 `verify-graphiti-local.py` 再次返回 Neo4j 已连接、模型摘要匹配、遥测关闭。未清理其他容器或数据。该探针验证只读路径的实际故障回退，不覆盖 worker 投影中断后的重放或真实回答质量。
 
 ## 验证记录
 
