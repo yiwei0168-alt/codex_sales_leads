@@ -84,4 +84,9 @@ async def main():
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except Exception as error:
+        # Never echo private observation text or provider response bodies.
+        print(json.dumps({"errorType": type(error).__name__}), file=sys.stderr)
+        sys.exit(1)

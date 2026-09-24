@@ -19,7 +19,7 @@ export async function projectMemoryObservation(observation:GraphObservation){
     NODE_ENV:process.env.NODE_ENV,
     PATH:process.env.PATH,SystemRoot:process.env.SystemRoot,USERPROFILE:process.env.USERPROFILE,
     APPDATA:process.env.APPDATA,LOCALAPPDATA:process.env.LOCALAPPDATA,
-    TEMP:process.env.TEMP,TMP:process.env.TMP,PYTHONNOUSERSITE:"1",
+    TEMP:process.env.TEMP,TMP:process.env.TMP,PYTHONNOUSERSITE:"1",PYTHONUTF8:"1",
     GRAPHITI_TELEMETRY_ENABLED:"false",NO_PROXY:"127.0.0.1,localhost,::1",
   };
   await new Promise<void>((accept,reject)=>{

@@ -60,6 +60,8 @@
     "knowledge:verify-pageindex-isolated-local": ".venv-pageindex-local\\Scripts\\python.exe scripts/verify-pageindex-isolated-local.py",
     "memory:verify-graph-clone-outbox-local": "node scripts/run-tsx.cjs scripts/verify-memory-graph-clone-outbox-local.ts",
     "memory:verify-graph-real-outbox-local": "node scripts/run-tsx.cjs scripts/verify-memory-graph-real-outbox-local.ts",
+    "memory:audit-legacy-local": "node scripts/run-tsx.cjs scripts/audit-legacy-memory-local.ts",
+    "memory:backfill-legacy-outreach-local": "node scripts/run-tsx.cjs scripts/backfill-legacy-outreach-memory-local.ts",
     "knowledge:extract-shadow": "python scripts/build-knowledge-shadow-v2.py",
     "knowledge:ingest-shadow": "node scripts/run-tsx.cjs scripts/ingest-knowledge-shadow-v2.ts",
     "knowledge:build-facts": "node scripts/run-tsx.cjs scripts/build-knowledge-facts-v2.ts",

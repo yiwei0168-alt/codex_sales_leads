@@ -14,7 +14,7 @@ export async function graphObservationIds(userId:string,query:string):Promise<st
   const env:NodeJS.ProcessEnv={NODE_ENV:process.env.NODE_ENV,PATH:process.env.PATH,
     SystemRoot:process.env.SystemRoot,USERPROFILE:process.env.USERPROFILE,
     APPDATA:process.env.APPDATA,LOCALAPPDATA:process.env.LOCALAPPDATA,
-    TEMP:process.env.TEMP,TMP:process.env.TMP,PYTHONNOUSERSITE:"1",
+    TEMP:process.env.TEMP,TMP:process.env.TMP,PYTHONNOUSERSITE:"1",PYTHONUTF8:"1",
     GRAPHITI_TELEMETRY_ENABLED:"false",NO_PROXY:"127.0.0.1,localhost,::1"};
   return new Promise<string[]>((accept,reject)=>{
     const child=spawn(python,[script],{cwd:process.cwd(),env,stdio:["pipe","pipe","pipe"],windowsHide:true});
