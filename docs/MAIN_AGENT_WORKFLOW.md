@@ -228,3 +228,5 @@ New main-Agent runs pin the synchronous OpenRouter `z-ai/glm-5.3` / `fireworks` 
 独立本地 worker 按任务收据读取账户内用户消息，先检查回环 Ollama 与固定摘要的 `qwen3:8b`，再以结构化 Schema 提取最多三条明确偏好。原文引文不匹配或 Schema 不符时不写记忆并延后重试；不符合明确偏好条件或包含指令覆盖的候选直接丢弃。租约与幂等键保障重启。本机 Ollama 真实模型的五类合成样本契约已通过，2 条真实任务消息只读测试均为空结果；`ENABLE_LOCAL_MEMORY_EXTRACTION=0` 仍是默认配置，真实偏好召回与安全验收完成前不运行消费循环。本地服务可用 `docker compose -f docker-compose.ollama.yml up -d ollama` 启动，模型需另行在容器内拉取并核对摘要；模型文件保存在本机 Docker volume，不入 Git。
 
 Graphiti 0.30.2 的隔离依赖与本地 `nomic-embed-text` 已安装。`scripts/verify-graphiti-local.py` 只读预检先关闭 Graphiti 默认遥测，再核对本地模型和 Neo4j；`--direct` 使用本地嵌入向量验证结构化节点/关系写入、账户分组回读和清理，已通过。`--episode` 仅处理合成自由文本，当前抽取质量和时延未过门槛。生产 outbox 不消费，图谱查询不参与回答；PostgreSQL 保持权威来源。
+
+迁移 113 为图谱 outbox 增加租约、到期重试和只返回账户/观察 ID 的 worker 收据。`run-memory-graph-worker.ts` 只有显式设置 `ENABLE_MEMORY_GRAPH_PROJECTION=1` 才消费；按账户 RLS 读取 PostgreSQL 原观察，经本地子进程调用 Graphiti 节点/关系保存接口，观察 ID 决定图 UUID，重放不重复建边。子进程只接收单条观察，关闭遥测，使用回环 Neo4j 与固定摘要的本地嵌入模型。投影成功后带租约令牌标记送达；失败只延期重试，不影响 PostgreSQL 任务。当前开关为 0，尚不从图谱给任务提供候选；日后图谱候选必须按账户、时间、权限回 PostgreSQL 核验。
