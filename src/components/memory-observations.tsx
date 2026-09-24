@@ -1,16 +1,18 @@
 "use client";
 import {useEffect,useState} from "react";
+import {MemorySkills} from "./memory-skills";
 
-type View="current"|"timeline"|"conflicts"|"notices";
+type View="current"|"timeline"|"conflicts"|"notices"|"skills";
 type Item={id?:string;observation_id?:string;kind?:string;content?:string;recorded_at?:string;valid_from?:string|null;valid_until?:string|null;
   source_receipt?:Record<string,unknown>;invalidates_id?:string|null;is_invalidated?:boolean;earlier_content?:string;later_content?:string;created_at?:string;read_at?:string|null};
-const labels:Record<View,string>={current:"当前有效",timeline:"历史时间轴",conflicts:"冲突待处理",notices:"学习通知"};
+const labels:Record<View,string>={current:"当前有效",timeline:"历史时间轴",conflicts:"冲突待处理",notices:"学习通知",skills:"Skill"};
 
 export function MemoryObservations(){
   const [view,setView]=useState<View>("current"),[offset,setOffset]=useState(0),[revision,setRevision]=useState(0);
   const [items,setItems]=useState<Item[]>([]),[hasMore,setHasMore]=useState(false),[loading,setLoading]=useState(true);
   const [error,setError]=useState(""),[busy,setBusy]=useState(false);
   useEffect(()=>{
+    if(view==="skills")return;
     const controller=new AbortController();
     fetch(`/api/knowledge/observations?view=${view}&offset=${offset}`,{cache:"no-store",signal:controller.signal})
       .then(async response=>{if(!response.ok)throw new Error("读取失败");return response.json();})
@@ -29,6 +31,7 @@ export function MemoryObservations(){
   return <section className="panel" aria-label="学习记忆">
     <h3>学习记忆</h3><p>带来源的内部工作记忆。业务生效时间未知的记录保留在历史时间轴；正式事实仍需核验。</p>
     <nav className="knowledge-material-nav" aria-label="学习记忆分区">{(Object.keys(labels) as View[]).map(key=><button key={key} type="button" aria-current={view===key?"page":undefined} onClick={()=>changeView(key)}>{labels[key]}</button>)}</nav>
+    {view==="skills"?<MemorySkills/>:<>
     {loading&&<p>正在读取…</p>}{error&&<p role="alert">{error}</p>}
     {!loading&&!error&&!items.length&&<p>当前分区暂无记录。</p>}
     {items.map((item,index)=><article className="opportunity-card" key={item.id??item.observation_id??index}>
@@ -39,5 +42,6 @@ export function MemoryObservations(){
           {item.id&&!item.invalidates_id&&!item.is_invalidated&&view!=="notices"&&<button type="button" disabled={busy} onClick={()=>void undo(item.id!)}>撤销这条记忆</button>}</>}
     </article>)}
     <div><button type="button" disabled={loading||offset===0} onClick={()=>{setOffset(Math.max(0,offset-12));setLoading(true);}}>上一页</button><span>第 {offset/12+1} 页</span><button type="button" disabled={loading||!hasMore} onClick={()=>{setOffset(offset+12);setLoading(true);}}>下一页</button></div>
+    </>}
   </section>;
 }

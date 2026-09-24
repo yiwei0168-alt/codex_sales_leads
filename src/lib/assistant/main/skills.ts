@@ -29,16 +29,29 @@ export async function importSkill(context: Pick<ExecutionContext, "userId" | "ro
       const latest = await client.query<{ next: number }>("select coalesce(max(version),0)+1 as next from agent_skill_version where skill_id=$1", [id]);
       version = latest.rows[0].next;
     } else {
-      id = (await client.query<{ id: string }>("insert into agent_skill(owner_id,name,scope) values($1,$2,$3) returning id", [context.userId, p.name, context.role === "admin" ? "global" : "account"])).rows[0].id;
+      id = (await client.query<{ id: string }>("insert into agent_skill(owner_id,name,scope,enabled) values($1,$2,$3,$4) returning id", [context.userId, p.name, context.role === "admin" ? "global" : "account",scripts.length===0&&p.dependencies.length===0])).rows[0].id;
     }
     await client.query("insert into agent_skill_version(skill_id,version,content_hash,source,files,dependencies,validation) values($1,$2,$3,$4,$5,$6,$7)", [id, version, digest(p.files), p.source, JSON.stringify(p.files), JSON.stringify(p.dependencies), JSON.stringify(validation)]);
     // Global updates become unpublished until exact publication confirmation. Pinned running versions are retained.
-    await client.query("update agent_skill set name=$3,current_version=$4,published=case when scope='global' then false else published end,updated_at=now() where id=$1 and owner_id=$2", [id, context.userId, p.name, version]);
+    await client.query("update agent_skill set name=$3,current_version=$4,enabled=enabled and $5,published=case when scope='global' then false else published end,updated_at=now() where id=$1 and owner_id=$2", [id, context.userId, p.name, version,scripts.length===0&&p.dependencies.length===0]);
     return { id, version, validation, scope: context.role === "admin" ? "global-pending-publication" : "account" };
   }, context.role);
 }
 export async function listSkills(userId: string) {
   return tenantQuery(userId, "select id,name,scope,current_version,enabled,published,owner_id=$1 as owned from agent_skill order by name,id", [userId]);
+}
+export async function listSkillsPage(userId:string,offset:number){
+  const rows=await tenantQuery<{id:string;name:string;scope:string;current_version:number;enabled:boolean;published:boolean;owned:boolean;
+    source:string;validation:Record<string,unknown>;created_at:string}>(userId,`select s.id,s.name,s.scope,s.current_version,s.enabled,s.published,s.owner_id=$1 as owned,
+    v.source,v.validation,v.created_at::text from agent_skill s join agent_skill_version v
+      on v.skill_id=s.id and v.version=s.current_version
+    order by s.updated_at desc,s.id limit 13 offset $2`,[userId,offset]);
+  return {items:rows.slice(0,12),hasMore:rows.length>12};
+}
+export async function listOwnedSkillVersions(userId:string,skillId:string){
+  return tenantQuery<{version:number;source:string;validation:Record<string,unknown>;created_at:string}>(userId,`select v.version,v.source,v.validation,v.created_at::text
+    from agent_skill_version v join agent_skill s on s.id=v.skill_id
+    where s.id=$1 and s.owner_id=$2 order by v.version desc limit 30`,[skillId,userId]);
 }
 export async function readSkill(context: ExecutionContext, skillId: string) {
   return tenantTransaction(context.userId, async client => {
@@ -49,11 +62,14 @@ export async function readSkill(context: ExecutionContext, skillId: string) {
     return (await client.query("select v.* from agent_skill_version v join agent_run_skill p on p.skill_id=v.skill_id and p.version=v.version where p.user_id=$1 and p.run_id=$2 and p.skill_id=$3", [context.userId, context.runId, skillId])).rows[0] ?? null;
   }, context.role);
 }
-export async function changeSkill(context: Pick<ExecutionContext, "userId" | "role">, input: { id: string; version: number; operation: "enable" | "disable" | "publish" | "rollback" }) {
+export async function changeSkill(context: Pick<ExecutionContext, "userId" | "role">, input: { id: string; version: number; operation: "enable" | "disable" | "publish" | "rollback" },humanInitiated=false) {
   if (input.operation === "publish" && context.role !== "admin") throw new Error("Administrator required");
   return tenantTransaction(context.userId, async client => {
-    const version = await client.query("select s.id from agent_skill s join agent_skill_version v on v.skill_id=s.id where s.id=$1 and s.owner_id=$2 and v.version=$3 for update of s", [input.id, context.userId, input.version]);
+    const version = await client.query<{validation:{scripts?:string;dependencies?:string}}>("select v.validation from agent_skill s join agent_skill_version v on v.skill_id=s.id where s.id=$1 and s.owner_id=$2 and v.version=$3 for update of s", [input.id, context.userId, input.version]);
     if (!version.rowCount) throw new Error("Skill/version not owned");
+    if(!humanInitiated&&["enable","rollback"].includes(input.operation)
+      &&(version.rows[0].validation.scripts!=="none"||version.rows[0].validation.dependencies!=="none"))
+      throw new Error("Script or dependency Skill requires human approval");
     if (input.operation === "publish") {
       const published = await client.query("update agent_skill set published=true,enabled=true,updated_at=now() where id=$1 and owner_id=$2 and scope='global' and current_version=$3", [input.id, context.userId, input.version]);
       if (!published.rowCount) throw new Error("Global Skill version changed; publication requires a new confirmation");

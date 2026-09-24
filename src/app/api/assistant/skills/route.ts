@@ -1,16 +1,22 @@
 import { requireApiSession } from "@/lib/auth/session";
-import { skillImportSchema, importSkill, listSkills, changeSkill } from "@/lib/assistant/main/skills";
+import { skillImportSchema, importSkill, listSkills, listSkillsPage, listOwnedSkillVersions, changeSkill } from "@/lib/assistant/main/skills";
 import {loadSkillSource,skillSourceSchema} from "@/lib/assistant/main/skill-sources";
 import { z } from "zod";
-export async function GET() {
+export async function GET(request:Request) {
   const session = await requireApiSession(); if (session instanceof Response) return session;
+  const params=new URL(request.url).searchParams;
+  const skillId=params.get("id");
+  if(skillId){if(!z.uuid().safeParse(skillId).success)return Response.json({error:"Invalid Skill ID"},{status:400});
+    return Response.json({versions:await listOwnedSkillVersions(session.userId,skillId)},{headers:{"Cache-Control":"private, no-store"}});}
+  if(params.has("offset")){const offset=Number(params.get("offset"));if(!Number.isSafeInteger(offset)||offset<0||offset>100000)return Response.json({error:"Invalid offset"},{status:400});
+    return Response.json(await listSkillsPage(session.userId,offset),{headers:{"Cache-Control":"private, no-store"}});}
   return Response.json({ skills: await listSkills(session.userId) }, { headers: { "Cache-Control": "private, no-store" } });
 }
 export async function PATCH(request: Request) {
   const session = await requireApiSession(); if (session instanceof Response) return session;
   const p = z.object({ id: z.uuid(), version: z.number().int().min(1), operation: z.enum(["enable", "disable", "rollback"]) }).strict().safeParse(await request.json().catch(() => null));
   if (!p.success) return Response.json({ error: "Skill 操作参数无效" }, { status: 400 });
-  try { return Response.json(await changeSkill(session, p.data)); }
+  try { return Response.json(await changeSkill(session, p.data,true)); }
   catch { return Response.json({ error: "Skill 已变化或不属于当前账户" }, { status: 409 }); }
 }
 export async function POST(request: Request) {

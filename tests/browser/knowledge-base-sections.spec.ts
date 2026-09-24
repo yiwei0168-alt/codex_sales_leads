@@ -20,6 +20,12 @@ test("materials switch between list, mailbox knowledge, memory, and upload witho
     if(url.pathname==="/api/knowledge/library")return route.fulfill({json:{items:[{id:"doc",title:"资料一",updatedAt:"2026-09-23",status:"active",scope:"private",excerpt:"摘要"}],hasMore:false}});
     if(url.pathname==="/api/knowledge/memories")return route.fulfill({json:{items:[],hasMore:false}});
     if(url.pathname==="/api/knowledge/observations")return route.fulfill({json:{items:[],hasMore:false}});
+    if(url.pathname==="/api/assistant/skills"){
+      if(url.searchParams.has("id"))return route.fulfill({json:{versions:[{version:2,source:"Account instruction editor",created_at:"2026-09-24"},{version:1,source:"Account instruction editor",created_at:"2026-09-23"}]}});
+      const offset=Number(url.searchParams.get("offset")??0);
+      return route.fulfill({json:{items:offset===0?Array.from({length:12},(_,index)=>({id:`skill-${index}`,name:`Method ${index+1}`,scope:"account",current_version:2,enabled:true,published:false,owned:true,source:"Account instruction editor",validation:{scripts:"none"},created_at:"2026-09-24"})):
+        [{id:"skill-13",name:"Method 13",scope:"account",current_version:1,enabled:false,published:false,owned:true,source:"Account instruction editor",validation:{scripts:"none"},created_at:"2026-09-24"}],hasMore:offset===0}});
+    }
     return route.abort("blockedbyclient");
   });
   await page.goto("https://ui.test/");await page.addStyleTag({content:css});await page.addScriptTag({content:script});
@@ -30,6 +36,11 @@ test("materials switch between list, mailbox knowledge, memory, and upload witho
   await expect(page.getByText("资料一",{exact:true})).toHaveCount(0);
   await page.getByRole("button",{name:"个人记忆"}).click();
   await expect(page.getByRole("heading",{name:"学习记忆"})).toBeVisible();
+  await page.getByRole("button",{name:"Skill",exact:true}).click();
+  await expect(page.getByText("Method 1",{exact:true})).toBeVisible();
+  await page.locator(".memory-skills").getByRole("button",{name:"下一页"}).click();
+  await expect(page.getByText("Method 13",{exact:true})).toBeVisible();
+  expect(await page.evaluate(()=>document.documentElement.scrollHeight<=innerHeight+2)).toBe(true);
   await page.getByRole("button",{name:"原有记忆"}).click();
   await expect(page.getByRole("heading",{name:"个人长期记忆"})).toBeVisible();
   await page.getByRole("button",{name:"上传资料"}).click();
