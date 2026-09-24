@@ -2,6 +2,8 @@
 
 # Network Channel Copilot PRD v1.1
 
+> MA24 规划：RAG 新主路使用有权限的文档集合、结构树和原文证据；旧 v3/pgvector 保留为候选补充与回滚。长期记忆采用入库时间与业务有效时间两轴，自动观察仅作内部上下文。Skill 自动启用限账户级、纯指令、无新权限且经过回放与影子验证。当前仅底座部分实现，生产检索未切换。精确边界及状态见 [确认规则](docs/CONFIRMED_PRODUCT_RULES.md)和[验收记录](docs/MA24_VECTORLESS_MEMORY_ACCEPTANCE_2026-09-24.md)。
+
 > 2026-09-20: MA01-MA09 confirmed; see [main Agent implementation workflow](docs/MAIN_AGENT_WORKFLOW.md). These are new targets, not completed implementation or release evidence.
 
 > 2026-09-21: MA11 sets the current main-Agent milestone to architecture and existing-workflow verification. Its 80 development + 40 locked isolated replays and 8 separate real GLM Batch tasks use a 38/40 locked architecture/workflow gate with all critical security and send boundaries passing. Answer quality is reported separately; this does not release the Agent to all work accounts. See [confirmed rule](docs/CONFIRMED_PRODUCT_RULES.md), [workflow](docs/MAIN_AGENT_WORKFLOW.md) and [acceptance evidence](docs/MAIN_AGENT_ACCEPTANCE.md).

@@ -3,11 +3,14 @@ alter table mailbox_connection add constraint mailbox_connection_provider_check 
 alter table mailbox_connection add column if not exists display_name text;
 update mailbox_connection set display_name = email where display_name is null;
 alter table mailbox_connection alter column display_name set not null;
+alter table mailbox_connection drop constraint if exists mailbox_connection_display_name_check;
 alter table mailbox_connection add constraint mailbox_connection_display_name_check check (length(trim(display_name)) between 1 and 80);
 alter table mailbox_connection add column if not exists access_mode text not null default 'read-only';
+alter table mailbox_connection drop constraint if exists mailbox_connection_access_mode_check;
 alter table mailbox_connection add constraint mailbox_connection_access_mode_check check (access_mode in ('read-only', 'send-enabled'));
 alter table mailbox_connection add column if not exists smtp_host text;
 alter table mailbox_connection add column if not exists smtp_port integer not null default 465 check (smtp_port between 1 and 65535);
 alter table mailbox_connection add column if not exists smtp_credential_ciphertext text;
 update mailbox_connection set smtp_host = 'smtp.qiye.aliyun.com' where provider = 'alimail-imap' and smtp_host is null;
+alter table mailbox_connection drop constraint if exists mailbox_connection_send_config_check;
 alter table mailbox_connection add constraint mailbox_connection_send_config_check check (access_mode = 'read-only' or smtp_host is not null);

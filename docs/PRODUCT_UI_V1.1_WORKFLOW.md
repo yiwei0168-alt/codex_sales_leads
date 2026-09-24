@@ -2,6 +2,8 @@
 
 # Product UI v1.1 implementation workflow
 
+> MA24 工作流目标：上传与本地抽取 → 逐文档树影子构建 → 完整性校验后切换该文档可检索版本 → 无向量只读对照 → Gold/锁定集验收 → 小范围启用。记忆观察先写 PostgreSQL，再由 outbox 投影本机图谱；图谱故障回库读取。资料与个人记忆分区，记忆中心使用固定工作区及分页。本阶段 UI 尚未实施，详见 [验收记录](MA24_VECTORLESS_MEMORY_ACCEPTANCE_2026-09-24.md)。
+
 > 2026-09-23：邮箱页面与主 Agent 的 `mail_sync` 共用默认最近 180 天、单次最多 100 封；显式历史日期范围仍可选，数量上限不变。见 [邮箱接入](MAILBOX_INTEGRATION.md) 与 [确认规则 MA22-01](CONFIRMED_PRODUCT_RULES.md)。
 
 > 2026-09-16：`LG02` 要求产品生产入口只通过独立 LangGraph API 执行助手与线索编排；服务错误明确失败且不回退进程内 runner。实施与验收状态见[独立 LangGraph 编排服务](STANDALONE_LANGGRAPH_WORKFLOW_2026-09-16.md)。
