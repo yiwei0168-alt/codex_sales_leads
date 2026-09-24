@@ -35,6 +35,23 @@ function extract(source:string,artifact:string):Promise<Record<string,unknown>>{
       try{done(JSON.parse(output.trim()) as Record<string,unknown>);}catch{reject(new Error("extractor-invalid-json"));}});
   });
 }
+function recoverWithWorker(jobId:string,expectedCompleted=1):Promise<void>{
+  return new Promise((done,reject)=>{
+    const child=spawn(process.execPath,["scripts/run-tsx.cjs","scripts/process-knowledge-upload-jobs.ts",`--job-id=${jobId}`,"--limit=1"],
+      {cwd:process.cwd(),windowsHide:true,stdio:["ignore","pipe","pipe"]});
+    let output="",errors="";
+    child.stdout.on("data",chunk=>{output+=String(chunk);});
+    child.stderr.on("data",chunk=>{errors+=String(chunk);});
+    child.once("error",reject);
+    child.once("exit",code=>{
+      if(code!==0)return reject(new Error(errors.slice(-500)||`worker-exit-${code}`));
+      try{const result=JSON.parse(output) as {completed:number;failed:number};
+        if(result.completed!==expectedCompleted||result.failed!==0)throw new Error(`Unexpected worker claim: ${output}`);
+        done();
+      }catch(error){reject(error);}
+    });
+  });
+}
 try{
   const results=[];
   for(const sample of samples){
@@ -42,14 +59,28 @@ try{
     const job=await createKnowledgeUploadJob(OWNER_USER_ID,{collection:"industry",title:`MA24 local ${sample.unit} ${randomUUID()}`,
       originalFilename:sample.path.split("/").at(-1)!,mimeType:sample.type,bytes,visibility:"private"});
     const source=resolve(accountRoot,`${job.id}.${sample.path.split(".").at(-1)}`);
-    const artifact=resolve(accountRoot,`${job.id}.extraction.json`);
+    let artifact=resolve(accountRoot,`${job.id}.extraction.json`);
     if(!source.startsWith(accountRoot+"\\")||!artifact.startsWith(accountRoot+"\\"))throw new Error("Unexpected upload path");
     created.push({id:job.id,source,artifact});
-    const output=await extract(source,artifact);
-    const artifactBytes=await readFile(artifact);
-    await tenantQuery(OWNER_USER_ID,`update knowledge_upload_job set status='extracted',extraction_artifact_key=$2,extractor_version=$3,
-      metrics=metrics||$4::jsonb where id=$1`,[job.id,`knowledge/uploads/${OWNER_USER_ID}/${job.id}.extraction.json`,
-      String(output.extractorVersion),JSON.stringify({artifactSha256:digest(artifactBytes),qualitySummary:output.qualitySummary})]);
+    let output:Record<string,unknown>;
+    if(sample.unit==="page"){
+      await tenantQuery(OWNER_USER_ID,`update knowledge_upload_job set status='running',lease_token=$2,
+        lease_until=now()+interval '4 minutes' where id=$1`,[job.id,randomUUID()]);
+      await recoverWithWorker(job.id,0);
+      await tenantQuery(OWNER_USER_ID,"update knowledge_upload_job set lease_until=now()-interval '1 second' where id=$1",[job.id]);
+      await recoverWithWorker(job.id);
+      const [saved]=await tenantQuery<{extraction_artifact_key:string;metrics:{validOutputItems:number}}>(OWNER_USER_ID,
+        "select extraction_artifact_key,metrics from knowledge_upload_job where id=$1",[job.id]);
+      artifact=resolve(saved.extraction_artifact_key);
+      created[created.length-1].artifact=artifact;
+      output={blocks:saved.metrics.validOutputItems};
+    }else{
+      output=await extract(source,artifact);
+      const artifactBytes=await readFile(artifact);
+      await tenantQuery(OWNER_USER_ID,`update knowledge_upload_job set status='extracted',extraction_artifact_key=$2,extractor_version=$3,
+        metrics=metrics||$4::jsonb where id=$1`,[job.id,`knowledge/uploads/${OWNER_USER_ID}/${job.id}.extraction.json`,
+        String(output.extractorVersion),JSON.stringify({artifactSha256:digest(artifactBytes),qualitySummary:output.qualitySummary})]);
+    }
     const registered=await registerVectorlessUpload(OWNER_USER_ID,job.id,{language:"und",authorityLevel:2,expectedSourceSha256:job.sourceSha256});
     if(registered.treeStatus!=="searchable")throw new Error(`${sample.unit}: ${registered.treeError}`);
     const replay=await registerVectorlessUpload(OWNER_USER_ID,job.id,{language:"und",authorityLevel:2});
