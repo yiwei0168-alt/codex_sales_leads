@@ -4,6 +4,7 @@ import { tenantQuery, tenantTransaction, type AppDatabaseRole } from "./db";
 import { sha256, chunkDocument } from "./chunker";
 import { embedTexts } from "./openai-provider";
 import {trackedOperation} from "@/lib/tracked-operation";
+import {indexTextRevision} from "@/lib/knowledge/text-tree";
 import type { KnowledgeBaseType, KnowledgeDocumentInput, KnowledgeStats, KnowledgeVisibility, RetrievedChunk, RetrievalFilters } from "./types";
 
 function vectorLiteral(vector: number[]): string {
@@ -85,6 +86,7 @@ async function upsertKnowledgeDocumentImpl(userId: string, input: KnowledgeDocum
           chunk.contentSha256, vectorLiteral(embeddings[index]), JSON.stringify({})],
       );
     }
+    await indexTextRevision(client,documentId,input.content,contentHash,input.title);
     return { documentId, chunks: chunks.length, skipped: false };
   }, actorRole);
 }

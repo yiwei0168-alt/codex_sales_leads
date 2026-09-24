@@ -50,3 +50,4 @@ Graphiti 本机预检补充：隔离环境已安装 Graphiti 0.30.2 的依赖及
 ## 验证记录
 
 2026-09-24：`tsc --noEmit` 通过；`node node_modules/vitest/vitest.mjs run src/lib/knowledge/vectorless.test.ts` 的 4 项安全/抽取用例通过；所改 TypeScript 文件 ESLint 通过；`npm run db:migrate` 在修复既有迁移 105 的可重复执行性后完整通过到迁移 106。数据库只读核查显示 4/4 新表启用并强制 RLS，当时树版本 0，人工 Gold 11/300、holdout 0/50。随后迁移 107 和 13 项相关测试通过，`verify-vectorless-upload-local.ts` 的本机合成端到端通过并清理测试资料；真实资料仍未进入新树。未运行的门槛不得记为通过。
+2026-09-24 文本增量证据：迁移 114 通过；`verify-vectorless-text-local.ts` 验证 Unicode 精确区间、当前修订回读、跨账号拒绝、更新后旧节点禁引和删除后禁引；原二进制上传探针回归通过。存量本机回填 dry-run 11 份，apply 11 份成功、0 失败，重复 dry-run 为 0，过程无新增外部调用。TypeScript 与局部 ESLint 通过。此证据不证明新文本实际旧 embedding 通道没有历史外发，也不替代真实文件引用质量、300/50 Gold 或主 Agent 切换验收。

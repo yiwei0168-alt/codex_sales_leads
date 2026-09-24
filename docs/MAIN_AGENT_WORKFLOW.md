@@ -234,3 +234,4 @@ Graphiti 0.30.2 的隔离依赖与本地 `nomic-embed-text` 已安装。`scripts
 内部 `searchMemoryWithGraph` 现在可从本机图谱取得最多 24 个账户分组内的观察 ID，但返回内容始终重新查询 PostgreSQL，校验账户、业务有效时间、系统已知时间、市场/公司范围、失效关系和原文命中。业务起始时间缺失的结果明确标为 `unknown`，不能表述为当前有效事实。Neo4j 不可用或候选已失效时改由 PostgreSQL 原文搜索。该接口尚未进入主 Agent 任务路径，不能把合成回退测试当作真实记忆质量验收。
 
 本机独立 Neo4j 容器短暂停机时，`verify-memory-graph-fallback-local.ts` 已确认内部检索改走 PostgreSQL；容器恢复后 Graphiti 连接预检通过。此验证不覆盖 worker 投影中断后的真实 outbox 重放，也不表示主 Agent 已使用图谱。
+2026-09-24 / MA24 文本资料工作流：`upsertKnowledgeDocument` 保存精确修订及旧 chunk 后，在相同事务中建立 `inline-text-v1` 树并切换指针；失败则事务回滚。`backfill-vectorless-text.ts` 只处理本机已有的、活动且有精确未重构修订的无附件文本；重复运行不重建。检索仍是影子路径，主 Agent 继续使用 v3，直到人工 Gold 和对照达标。
