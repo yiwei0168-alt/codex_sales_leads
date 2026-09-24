@@ -4,9 +4,14 @@ const mock=vi.hoisted(()=>({query:vi.fn(),transaction:vi.fn(),read:vi.fn()}));
 vi.mock("@/lib/rag/db",()=>({tenantQuery:mock.query,tenantTransaction:mock.transaction}));
 vi.mock("./document-repository",()=>({safeKnowledgeStorageKey:(key:string)=>key,assertResolvedInsideKnowledgeRoot:vi.fn()}));
 vi.mock("node:fs/promises",()=>({readFile:mock.read}));
-import {evidenceText,indexExtractedDocument} from "./vectorless";
+import {evidenceText,indexExtractedDocument,modelTokensInQuery} from "./vectorless";
 const sha=(bytes:Uint8Array)=>createHash("sha256").update(bytes).digest("hex");
 beforeEach(()=>{mock.query.mockReset();mock.transaction.mockReset();mock.read.mockReset();});
+it("keeps exact model suffixes and distinct models for document narrowing",()=>{
+  expect(modelTokensInQuery("比较 WR3000和WR6500H 的端口")).toEqual(["wr3000","wr6500h"]);
+  expect(modelTokensInQuery("AP3000_P 和 AP3000 是否相同？")).toEqual(["ap3000_p","ap3000"]);
+  expect(modelTokensInQuery("Open another user's private policy")).toEqual([]);
+});
 it("keeps table rows and headers as original evidence",()=>{
   expect(evidenceText({id:"table-1",unitType:"sheet",unitIndex:1,blockType:"table",quality:"success",table:{headers:["Model","Ports"],rows:[["A","8"],["B","16"]]}}))
     .toBe("Model\tPorts\nA\t8\nB\t16");
