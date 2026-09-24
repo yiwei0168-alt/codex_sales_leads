@@ -3,6 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { PersonalMemory } from "./personal-memory";
+import { MemoryObservations } from "./memory-observations";
 import { KnowledgeLibrary } from "./knowledge-library";
 import { KnowledgeReviewCenter } from "./knowledge-review-center";
 import type { KnowledgeBaseType, KnowledgeStats } from "@/lib/rag/types";
@@ -47,6 +48,7 @@ export function KnowledgeBase({ initialTab }: { initialTab?: string } = {}) {
   const tab=initialTab==="questions"||initialTab==="review"?initialTab:"materials";
   const [canReview,setCanReview]=useState(false);
   const [materialView,setMaterialView]=useState<"library"|"mailbox"|"memory"|"upload">("library");
+  const [memoryView,setMemoryView]=useState<"observations"|"legacy">("observations");
   const [mailboxKnowledgePage,setMailboxKnowledgePage]=useState(1);
   const [mailboxKnowledgeMore,setMailboxKnowledgeMore]=useState(false);
   useEffect(()=>{const controller=new AbortController();fetch("/api/auth/session",{signal:controller.signal,cache:"no-store"}).then(r=>r.json()).then(data=>{if(!controller.signal.aborted)setCanReview(data.user?.role==="admin");}).catch(()=>{});return()=>controller.abort();},[]);
@@ -183,7 +185,7 @@ export function KnowledgeBase({ initialTab }: { initialTab?: string } = {}) {
     <div className="business-toolbar"><nav className="page-tabs" aria-label="知识库页签"><button aria-current={tab==="materials"?"page":undefined} onClick={()=>selectTab("materials")}>资料</button><button aria-current={tab==="questions"?"page":undefined} onClick={()=>selectTab("questions")}>知识问答</button>{canReview&&<button aria-current={tab==="review"?"page":undefined} onClick={()=>selectTab("review")}>审核</button>}</nav>{tab==="materials"&&<button className="primary-button" aria-expanded={materialView==="upload"} onClick={()=>setMaterialView(value=>value==="upload"?"library":"upload")}>{materialView==="upload"?"返回资料":"上传资料"}</button>}</div>
     {tab==="materials"&&<nav className="knowledge-material-nav" aria-label="资料分区"><button aria-current={materialView==="library"?"page":undefined} onClick={()=>setMaterialView("library")}>资料列表</button><button aria-current={materialView==="mailbox"?"page":undefined} onClick={()=>setMaterialView("mailbox")}>邮箱知识</button><button aria-current={materialView==="memory"?"page":undefined} onClick={()=>setMaterialView("memory")}>个人记忆</button></nav>}
     {tab==="materials"&&materialView==="library"&&<KnowledgeLibrary />}
-    {tab==="materials"&&materialView==="memory"&&<div className="knowledge-material-scroll"><PersonalMemory /></div>}
+    {tab==="materials"&&materialView==="memory"&&<><nav className="knowledge-material-nav" aria-label="记忆来源"><button aria-current={memoryView==="observations"?"page":undefined} onClick={()=>setMemoryView("observations")}>学习记忆</button><button aria-current={memoryView==="legacy"?"page":undefined} onClick={()=>setMemoryView("legacy")}>原有记忆</button></nav><div className="knowledge-material-scroll">{memoryView==="observations"?<MemoryObservations/>:<PersonalMemory/>}</div></>}
     {tab==="review"&&!canReview&&<p>共享知识审核仅对管理员开放。请选择资料或知识问答。</p>}
     {tab==="review"&&canReview&&<>
     {!loading && !stats.configured && <p role="status">{stats.error??"知识服务暂不可用，请稍后重试。"}</p>}

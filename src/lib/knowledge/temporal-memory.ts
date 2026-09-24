@@ -1,4 +1,5 @@
 import {createHash} from "node:crypto";
+import type {PoolClient} from "pg";
 import {tenantQuery,tenantTransaction} from "@/lib/rag/db";
 
 export type MemoryObservationInput={kind:"preference"|"experience"|"business-fact"|"method";content:string;sourceReceipt:Record<string,unknown>;memoryKey?:string;idempotencyKey?:string;marketCode?:string;companyId?:string;validFrom?:string|null;validUntil?:string|null;confidence?:number;correctsId?:string;invalidatesId?:string};
@@ -11,6 +12,12 @@ function stableJson(value:unknown):string {
 
 /** Automatic observations remain private internal context; they never publish policy or score facts. */
 export async function observeMemory(userId:string,input:MemoryObservationInput){
+  if(!input.content.trim()||!Object.keys(input.sourceReceipt).length)throw new Error("Memory requires content and source receipt");
+  return tenantTransaction(userId,client=>observeMemoryInTransaction(client,userId,input));
+}
+
+/** Caller must already be inside a transaction with this tenant's RLS context. */
+export async function observeMemoryInTransaction(client:PoolClient,userId:string,input:MemoryObservationInput){
   const content=input.content.trim();
   const memoryKey=input.memoryKey?.trim()||null;
   if(!content||!Object.keys(input.sourceReceipt).length)throw new Error("Memory requires content and source receipt");
@@ -22,7 +29,7 @@ export async function observeMemory(userId:string,input:MemoryObservationInput){
     companyId:input.companyId??null,validFrom:input.validFrom??null,validUntil:input.validUntil??null,
     correctsId:input.correctsId??null,invalidatesId:input.invalidatesId??null,
   })).digest("hex");
-  return tenantTransaction(userId,async client=>{
+  {
     if(memoryKey)await client.query("select pg_advisory_xact_lock(hashtextextended($1,0))",[`${userId}:${input.kind}:${memoryKey}:${input.marketCode??""}:${input.companyId??""}`]);
     for(const targetId of [input.correctsId,input.invalidatesId].filter(Boolean)){
       const target=await client.query("select id from agent_memory_observation where id=$1 and owner_id=$2",[targetId,userId]);
@@ -57,7 +64,7 @@ export async function observeMemory(userId:string,input:MemoryObservationInput){
         [userId,id,input.kind,memoryKey,input.marketCode??null,input.companyId??null,content,input.validFrom??null,input.validUntil??null]);
     }
     return id;
-  });
+  }
 }
 
 /** Undo is an immutable invalidation and remains visible on the historical timeline. */
@@ -67,7 +74,7 @@ export async function undoMemory(userId:string,targetId:string){
 }
 
 /** Two clocks: business validity and the system's knowledge at an earlier instant. */
-export async function memoryAt(userId:string,businessAt:string,knownAt:string,scope:{marketCode?:string;companyId?:string}={}){
+export async function memoryAt(userId:string,businessAt:string,knownAt:string,scope:{marketCode?:string;companyId?:string}={},limit=100,offset=0){
   return tenantQuery<{id:string;kind:string;content:string;recorded_at:string;valid_from:string|null;valid_until:string|null;source_receipt:Record<string,unknown>}>(userId,`
     select m.id,m.kind,m.content,m.recorded_at,m.valid_from,m.valid_until,m.source_receipt
     from agent_memory_observation m where m.owner_id=$1 and m.recorded_at<=$2::timestamptz
@@ -76,24 +83,27 @@ export async function memoryAt(userId:string,businessAt:string,knownAt:string,sc
       and (m.valid_until is null or m.valid_until>$3::timestamptz)
       and not exists(select 1 from agent_memory_observation correction where correction.owner_id=$1
         and correction.recorded_at<=$2::timestamptz and (correction.corrects_id=m.id or correction.invalidates_id=m.id))
-    order by m.recorded_at desc limit 100`,[userId,knownAt,businessAt,scope.marketCode??null,scope.companyId??null]);
+    order by m.recorded_at desc limit $6 offset $7`,[userId,knownAt,businessAt,scope.marketCode??null,scope.companyId??null,Math.max(1,Math.min(100,limit)),Math.max(0,offset)]);
 }
 
-export async function memoryTimeline(userId:string,limit=50){
-  return tenantQuery<{id:string;kind:string;content:string;recorded_at:string;valid_from:string|null;valid_until:string|null;corrects_id:string|null;invalidates_id:string|null;source_receipt:Record<string,unknown>}>(userId,
-    `select id,kind,content,recorded_at,valid_from,valid_until,corrects_id,invalidates_id,source_receipt
-     from agent_memory_observation where owner_id=$1 order by recorded_at desc,id desc limit $2`,[userId,Math.max(1,Math.min(100,limit))]);
+export async function memoryTimeline(userId:string,limit=12,offset=0){
+  return tenantQuery<{id:string;kind:string;content:string;recorded_at:string;valid_from:string|null;valid_until:string|null;corrects_id:string|null;invalidates_id:string|null;is_invalidated:boolean;source_receipt:Record<string,unknown>}>(userId,
+    `select m.id,m.kind,m.content,m.recorded_at,m.valid_from,m.valid_until,m.corrects_id,m.invalidates_id,m.source_receipt,
+       exists(select 1 from agent_memory_observation r where r.owner_id=$1 and (r.corrects_id=m.id or r.invalidates_id=m.id)) as is_invalidated
+     from agent_memory_observation m where m.owner_id=$1 order by m.recorded_at desc,m.id desc limit $2 offset $3`,[userId,Math.max(1,Math.min(100,limit)),Math.max(0,offset)]);
 }
 
-export async function memoryNotices(userId:string,limit=50){
+export async function memoryNotices(userId:string,limit=12,offset=0){
   return tenantQuery<{observation_id:string;created_at:string;read_at:string|null;kind:string;content:string}>(userId,
     `select n.observation_id,n.created_at,n.read_at,m.kind,m.content from agent_memory_notice n
      join agent_memory_observation m on m.id=n.observation_id where n.owner_id=$1
-     order by n.created_at desc limit $2`,[userId,Math.max(1,Math.min(100,limit))]);
+     order by n.created_at desc limit $2 offset $3`,[userId,Math.max(1,Math.min(100,limit)),Math.max(0,offset)]);
 }
 
-export async function memoryConflicts(userId:string,limit=50){
-  return tenantQuery<{id:string;earlier_id:string;later_id:string;status:string;created_at:string}>(userId,
-    `select id,earlier_id,later_id,status,created_at from agent_memory_conflict
-     where owner_id=$1 and status='open' order by created_at desc limit $2`,[userId,Math.max(1,Math.min(100,limit))]);
+export async function memoryConflicts(userId:string,limit=12,offset=0){
+  return tenantQuery<{id:string;earlier_id:string;later_id:string;earlier_content:string;later_content:string;status:string;created_at:string}>(userId,
+    `select c.id,c.earlier_id,c.later_id,a.content as earlier_content,b.content as later_content,c.status,c.created_at
+     from agent_memory_conflict c join agent_memory_observation a on a.id=c.earlier_id
+     join agent_memory_observation b on b.id=c.later_id
+     where c.owner_id=$1 and c.status='open' order by c.created_at desc limit $2 offset $3`,[userId,Math.max(1,Math.min(100,limit)),Math.max(0,offset)]);
 }

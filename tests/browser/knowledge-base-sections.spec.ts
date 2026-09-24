@@ -19,6 +19,7 @@ test("materials switch between list, mailbox knowledge, memory, and upload witho
     if(url.pathname==="/api/knowledge/mailbox")return route.fulfill({json:{items:[{id:"one",message_id:"mail",kind:"company-policy",title:"邮箱知识一",content:"私有知识",confidence:null,rationale:null,model:null,reviewed_at:"2026-09-23"}],hasMore:false}});
     if(url.pathname==="/api/knowledge/library")return route.fulfill({json:{items:[{id:"doc",title:"资料一",updatedAt:"2026-09-23",status:"active",scope:"private",excerpt:"摘要"}],hasMore:false}});
     if(url.pathname==="/api/knowledge/memories")return route.fulfill({json:{items:[],hasMore:false}});
+    if(url.pathname==="/api/knowledge/observations")return route.fulfill({json:{items:[],hasMore:false}});
     return route.abort("blockedbyclient");
   });
   await page.goto("https://ui.test/");await page.addStyleTag({content:css});await page.addScriptTag({content:script});
@@ -28,6 +29,8 @@ test("materials switch between list, mailbox knowledge, memory, and upload witho
   await expect(page.getByText("邮箱知识一")).toBeVisible();
   await expect(page.getByText("资料一",{exact:true})).toHaveCount(0);
   await page.getByRole("button",{name:"个人记忆"}).click();
+  await expect(page.getByRole("heading",{name:"学习记忆"})).toBeVisible();
+  await page.getByRole("button",{name:"原有记忆"}).click();
   await expect(page.getByRole("heading",{name:"个人长期记忆"})).toBeVisible();
   await page.getByRole("button",{name:"上传资料"}).click();
   await expect(page.getByRole("heading",{name:"上传你的知识资料"})).toBeVisible();

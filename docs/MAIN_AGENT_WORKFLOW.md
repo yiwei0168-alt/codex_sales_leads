@@ -218,3 +218,5 @@ New main-Agent runs pin the synchronous OpenRouter `z-ai/glm-5.3` / `fireworks` 
 # MA24 记忆观察流程补充（已确认，部分实现）
 
 任务完成、用户纠正或可靠工具收据产生后，候选记忆必须附来源收据与账户范围；业务生效时间未知时保持空值。当前 `observeMemory` 在 PostgreSQL 事务中写不可覆写观察、幂等键、图谱 outbox 和用户通知，同主题冲突单独记录；`undoMemory` 追加失效观察。自动自由文本抽取尚未接入任务执行；Graphiti 投影未就绪时直接查询 PostgreSQL 记忆，不能自动转用云模型。正式事实、评分和外发内容继续走原确认/核验流程。
+
+知识库记忆分区通过会话鉴权的只读查询展示观察时间轴、当前有效项、冲突和通知；撤销仅追加失效观察。此查询不自动扩大主 Agent 的事实发布权限。
