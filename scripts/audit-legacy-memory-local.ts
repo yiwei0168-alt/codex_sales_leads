@@ -26,8 +26,9 @@ try{
     left join agent_memory_graph_outbox o on o.observation_id=m.id
     left join agent_memory_notice n on n.observation_id=m.id`);
   console.log(JSON.stringify({legacyMirror:mirrored.rows[0]}));
-  const pending=await pool.query<{pending:number;activeOwners:number;unscopedLegacyFields:number;withinGraphLimit:number}>(`
+  const pending=await pool.query<{pending:number;delivered:number;activeOwners:number;unscopedLegacyFields:number;withinGraphLimit:number}>(`
     select count(*) filter(where o.delivered_at is null and o.next_attempt_at<=now())::int pending,
+      count(*) filter(where o.delivered_at is not null)::int delivered,
       count(*) filter(where u.status='active')::int "activeOwners",
       count(*) filter(where m.market_code is null and m.company_id is null)::int "unscopedLegacyFields",
       count(*) filter(where length(m.content)<=12000)::int "withinGraphLimit"
