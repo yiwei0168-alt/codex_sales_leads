@@ -59,3 +59,5 @@ Graphiti 本机预检补充：隔离环境已安装 Graphiti 0.30.2 的依赖及
 2026-09-24 真实新文件上传补充：`knowledge:verify-tree-real-uploads-local` 在本机 PostgreSQL 上将现有 93,637 B PDF、89,844 B PPTX、42,001 B XLSX 各复制为一个临时私有上传作业，调用现有 Python 本地解析器，再逐份登记、建树并回读。分别得到 60/255/1 个抽取块；每类均找到页、幻灯片或工作表节点及含块 ID 的原文坐标，重复登记复用同一版本，跨账号读取被拒，撤销附件后原证据不可引用。脚本在 `finally` 中清理测试作业、文档和上传副本；原始样本未修改。测试过程没有 embedding 或外部调用。该验证覆盖真实容器与登记路径，不代表页/行引用人工精度或 300/50 Gold 已验收。
 
 2026-09-24 worker 重启恢复补充：迁移 115 给上传作业增加租约令牌和到期时间；本地 worker 只领取待处理或租约已过期的运行作业，并以令牌及有效期约束抽取结果写回，每次尝试写独立解析产物文件。真实 PDF 探针先模拟仍有效的运行租约并验证 worker 不领取，再将租约置为过期并由实际 worker 重新领取，最后达到“可检索”、回读原文和重复登记复用。该探针没有实际杀死进程，仍未覆盖持久故障、旧版回退和质量门槛。
+
+2026-09-24 图谱 outbox 端到端补充：本机 `verify-graphiti-local.py` 预检 Graphiti、Neo4j 和固定本地模型通过。权威库的 `verify-memory-graph-real-outbox-local.ts` 返回 `eligible=false`，没有待投影的合格真实观察，因此未伪称真实数据已验收。`verify-memory-graph-clone-outbox-local.ts` 在现有隔离 PostgreSQL 克隆库补齐迁移后创建合成偏好，实际调用 outbox 消费函数并投影到本机 Graphiti；图候选回读、跨账户隔离、PostgreSQL 原文/时间回校、已交付收据和重复消费拒绝通过，`attemptCount=1`、外部调用 0。探针按观察 ID 清理克隆库记录和图节点。生产真实观察、主 Agent 召回及长时运行仍待验收。
