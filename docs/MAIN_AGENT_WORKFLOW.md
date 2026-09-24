@@ -222,3 +222,5 @@ New main-Agent runs pin the synchronous OpenRouter `z-ai/glm-5.3` / `fireworks` 
 知识库记忆分区通过会话鉴权的只读查询展示观察时间轴、当前有效项、冲突和通知；撤销仅追加失效观察。此查询不自动扩大主 Agent 的事实发布权限。
 
 `preference_save` 保存既有自动偏好版本时，在同一事务中写入新观察和 outbox；来源收据绑定 run、用户消息、旧记忆版本及调用 ID。版本更新建立更正关系；撤销时同时恢复或停用旧版 Agent 偏好，并追加观察历史。多市场/公司范围按原工具输入保留，未知的业务生效时间仍为空。
+
+主 Agent `finishRun` 仅在实际结算状态为 `completed` 时，同事务写入本地记忆抽取队列；邮件运行与其他终态不入队。队列 worker 尚未启用，模型不可用时保持排队，不调用外部模型。
