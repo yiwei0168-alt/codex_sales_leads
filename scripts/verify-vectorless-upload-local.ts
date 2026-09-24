@@ -7,6 +7,7 @@ import {OWNER_USER_ID} from "../src/lib/auth/config";
 import {getPool,tenantQuery} from "../src/lib/rag/db";
 import {registerVectorlessUpload} from "../src/lib/knowledge/vectorless-registration";
 import {browseTree,readEvidence,searchDocuments} from "../src/lib/knowledge/vectorless";
+import {aggregateSessionDocuments,browseSessionTree,filterSessionDocuments,readSessionEvidence,searchSessionDocuments,startVectorlessSession} from "../src/lib/knowledge/vectorless-session";
 import {listKnowledgeUploadJobs} from "../src/lib/knowledge/upload";
 
 nextEnv.loadEnvConfig(process.cwd());
@@ -21,7 +22,7 @@ const source=Buffer.from("%PDF-1.7\nMA24 synthetic local source\n");
 const sha=(value:Uint8Array)=>createHash("sha256").update(value).digest("hex");
 const artifact=Buffer.from(JSON.stringify({documents:[{sourceSha256:sha(source),extractorVersion:"layout-v2.0.0",
   blocks:[{id:"page-1-block-1",unitType:"page",unitIndex:1,blockType:"paragraph",text:"MA24 synthetic ports: eight.",quality:"success",bbox:[1,2,3,4]}]}]}));
-let documentId:string|undefined;
+let documentId:string|undefined,sessionId:string|undefined;
 try{
   await mkdir(directory,{recursive:true});
   await writeFile(resolve(sourceKey),source);await writeFile(resolve(artifactKey),artifact);
@@ -39,14 +40,30 @@ try{
   const leaves=await browseTree(OWNER_USER_ID,documentId,units[0]?.id??null);
   const evidence=await readEvidence(OWNER_USER_ID,leaves[0]?.id??randomUUID());
   const listed=(await listKnowledgeUploadJobs(OWNER_USER_ID)).find(job=>job.id===id);
+  sessionId=await startVectorlessSession(OWNER_USER_ID,"MA24");
+  const candidates=await searchSessionDocuments(OWNER_USER_ID,sessionId);
+  if(candidates.status!=="ok"||!candidates.documents.some(item=>item.documentId===documentId))throw new Error("Session search failed");
+  const navigation=await browseSessionTree(OWNER_USER_ID,sessionId,documentId);
+  const cited=await readSessionEvidence(OWNER_USER_ID,sessionId,leaves[0].id);
+  const counted=await aggregateSessionDocuments(OWNER_USER_ID,sessionId,[documentId]);
+  const filtered=await filterSessionDocuments(OWNER_USER_ID,sessionId,[documentId],{collection:"industry"});
+  if(navigation.status!=="ok"||cited.status!=="ok"||cited.evidence?.id!==leaves[0].id||counted.status!=="ok"||counted.count!==1
+    ||filtered.status!=="ok"||filtered.count!==1)throw new Error("Session receipt workflow failed");
+  for(let step=0;step<5;step++)await browseSessionTree(OWNER_USER_ID,sessionId,documentId);
+  const overBudget=await browseSessionTree(OWNER_USER_ID,sessionId,documentId);
+  if(overBudget.status!=="partial")throw new Error("Navigation budget did not stop");
+  for(let step=0;step<7;step++)await readSessionEvidence(OWNER_USER_ID,sessionId,leaves[0].id);
+  const evidenceOverBudget=await readSessionEvidence(OWNER_USER_ID,sessionId,leaves[0].id);
+  if(evidenceOverBudget.status!=="partial")throw new Error("Evidence budget did not stop");
   if(!second.reused||!documents.some(doc=>doc.documentId===documentId)||denied.some(doc=>doc.documentId===documentId)
     ||evidence?.content!=="MA24 synthetic ports: eight."||listed?.treeStatus!=="searchable")throw new Error("Registration or tenant evidence check failed");
   await tenantQuery(OWNER_USER_ID,"update knowledge_asset set registration_status='withdrawn' where id=$1",[first.assetId]);
   if(await readEvidence(OWNER_USER_ID,leaves[0].id))throw new Error("Withdrawn source remained citable");
   console.log(JSON.stringify({local:true,embeddingCalls:0,externalCalls:0,registered:true,replayed:true,treeSearch:true,sourceLocation:evidence.source_location,
-    crossAccountDenied:true,withdrawnCitationDenied:true}));
+    crossAccountDenied:true,withdrawnCitationDenied:true,sessionBudgetEnforced:true}));
 }finally{
   try{
+    if(sessionId){await cleanup.query("delete from knowledge_retrieval_step where session_id=$1",[sessionId]);await cleanup.query("delete from knowledge_retrieval_session where id=$1",[sessionId]);}
     await cleanup.query("delete from knowledge_upload_job where id=$1",[id]);
     const rows=await cleanup.query<{id:string}>("select id from knowledge_document where owner_id=$1 and external_id=$2",[OWNER_USER_ID,`upload:${id}`]);
     for(const row of rows.rows){

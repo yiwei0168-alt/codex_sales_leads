@@ -78,7 +78,7 @@ export async function indexExtractedDocument(userId:string,jobId:string){
 }
 
 export async function searchDocuments(userId:string,query:string,filters:{market?:string;companyId?:string;productId?:string}={}){
-  return tenantQuery<{documentId:string;title:string;versionId:string;reason:string}>(userId,`select d.id as "documentId",d.title,v.id as "versionId",
+  return tenantQuery<{documentId:string;title:string;versionId:string;reason:string;totalCount:number}>(userId,`select d.id as "documentId",d.title,v.id as "versionId",count(*) over()::int as "totalCount",
     case when n.id is not null then 'fulltext' else 'title' end as reason
     from knowledge_document d join knowledge_tree_version v on v.id=d.current_tree_version_id
     join knowledge_asset a on a.id=v.asset_id and a.registration_status='registered' and a.source_sha256=v.source_sha256
@@ -114,5 +114,20 @@ export async function aggregateDocumentSet(userId:string,documentIds:string[]){
     where d.id=any($1::uuid[]) and d.status='active' and d.metadata->>'sourceSha256'=v.source_sha256
       and v.status='ready' and a.registration_status='registered'
       and (d.owner_id=$2 or d.visibility='shared') order by d.id`,[ids,userId]);
+  return {documentIds:rows.map(row=>row.documentId),count:rows.length,truncated:documentIds.length>24};
+}
+export async function filterDocumentSet(userId:string,documentIds:string[],filters:{market?:string;companyId?:string;productId?:string;collection?:string;capturedFrom?:string;capturedBefore?:string}){
+  const ids=[...new Set(documentIds)].slice(0,24);
+  const rows=await tenantQuery<{documentId:string}>(userId,`select d.id as "documentId" from knowledge_document d
+    join knowledge_tree_version v on v.id=d.current_tree_version_id join knowledge_asset a on a.id=v.asset_id
+    join knowledge_collection c on c.id=d.collection_id
+    where d.id=any($1::uuid[]) and d.status='active' and d.metadata->>'sourceSha256'=v.source_sha256
+      and v.status='ready' and a.registration_status='registered' and a.source_sha256=v.source_sha256
+      and (d.owner_id=$2 or d.visibility='shared') and ($3::text is null or d.market=$3)
+      and ($4::text is null or d.company_id=$4) and ($5::text is null or d.product_id=$5)
+      and ($6::text is null or c.slug=$6) and ($7::timestamptz is null or d.captured_at >= $7)
+      and ($8::timestamptz is null or d.captured_at < $8) order by d.id`,
+    [ids,userId,filters.market??null,filters.companyId??null,filters.productId??null,filters.collection??null,
+      filters.capturedFrom??null,filters.capturedBefore??null]);
   return {documentIds:rows.map(row=>row.documentId),count:rows.length,truncated:documentIds.length>24};
 }

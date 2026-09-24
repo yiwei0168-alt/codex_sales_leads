@@ -6,6 +6,8 @@
 
 > MA24 接入进度：二进制私有上传已走本地抽取、无向量登记与逐文档建树；共享资料仍须管理员登记。生产主路和质量切换门槛不变。
 
+> MA24 检索进度：只读影子会话提供 24 份候选、8 次导航、8 组证据上限和可审计步骤收据；达到上限时保留部分结果与未查范围。主 Agent 尚未切换。
+
 > 2026-09-20: MA01-MA09 confirmed; see [main Agent implementation workflow](docs/MAIN_AGENT_WORKFLOW.md). These are new targets, not completed implementation or release evidence.
 
 > 2026-09-21: MA11 sets the current main-Agent milestone to architecture and existing-workflow verification. Its 80 development + 40 locked isolated replays and 8 separate real GLM Batch tasks use a 38/40 locked architecture/workflow gate with all critical security and send boundaries passing. Answer quality is reported separately; this does not release the Agent to all work accounts. See [confirmed rule](docs/CONFIRMED_PRODUCT_RULES.md), [workflow](docs/MAIN_AGENT_WORKFLOW.md) and [acceptance evidence](docs/MAIN_AGENT_ACCEPTANCE.md).
