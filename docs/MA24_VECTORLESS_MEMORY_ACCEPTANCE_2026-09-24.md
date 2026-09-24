@@ -61,3 +61,7 @@ Graphiti 本机预检补充：隔离环境已安装 Graphiti 0.30.2 的依赖及
 2026-09-24 worker 重启恢复补充：迁移 115 给上传作业增加租约令牌和到期时间；本地 worker 只领取待处理或租约已过期的运行作业，并以令牌及有效期约束抽取结果写回，每次尝试写独立解析产物文件。真实 PDF 探针先模拟仍有效的运行租约并验证 worker 不领取，再将租约置为过期并由实际 worker 重新领取，最后达到“可检索”、回读原文和重复登记复用。该探针没有实际杀死进程，仍未覆盖持久故障、旧版回退和质量门槛。
 
 2026-09-24 图谱 outbox 端到端补充：本机 `verify-graphiti-local.py` 预检 Graphiti、Neo4j 和固定本地模型通过。权威库的 `verify-memory-graph-real-outbox-local.ts` 返回 `eligible=false`，没有待投影的合格真实观察，因此未伪称真实数据已验收。`verify-memory-graph-clone-outbox-local.ts` 在现有隔离 PostgreSQL 克隆库补齐迁移后创建合成偏好，实际调用 outbox 消费函数并投影到本机 Graphiti；图候选回读、跨账户隔离、PostgreSQL 原文/时间回校、已交付收据和重复消费拒绝通过，`attemptCount=1`、外部调用 0。探针按观察 ID 清理克隆库记录和图节点。生产真实观察、主 Agent 召回及长时运行仍待验收。
+
+2026-09-24 PageIndex 隔离试验：参考 [PageIndex 开源仓库](https://github.com/VectifyAI/PageIndex)与[本地 SDK 配置](https://docs.pageindex.ai/sdk/client)，在 Git 忽略的 `.venv-pageindex-local` 安装 `pageindex==0.2.19`，只对脚本即时生成的两页合成 PDF 试验。`verify-pageindex-isolated-local.py` 将所有运行期非回环网络连接阻断，使用本机 `qwen3:8b` 和回环 Ollama OpenAI 兼容端点；两个公开 tiktoken 文件先经本地代理下载至隔离环境，并按 SHA-256 校验。完整 SDK 索引成功，`get_document_structure` 返回 2 个节点；LLM-free Flash 也返回 2 个页节点；运行期阻断目标与外部连接均为 0，临时 PDF/索引随脚本清理。首次缺少公开 tokenizer 缓存时 SDK 摘要失败且被网络护栏阻断，缓存补齐后通过。PageIndex 的页级结构仅作导航参考，未写入 PostgreSQL、未处理私有资料，也不能作为正式引用或质量对照。PPTX/XLSX 继续走本产品树。
+
+复现隔离试验需先在 `.venv-pageindex-local` 安装精确 `pageindex==0.2.19`，并将公开 `cl100k_base.tiktoken`、`o200k_base.tiktoken` 经本地代理下载到脚本预检的两个缓存文件名；脚本会拒绝哈希不符的缓存。其余生产服务不依赖该虚拟环境。

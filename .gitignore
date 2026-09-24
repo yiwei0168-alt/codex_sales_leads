@@ -10,6 +10,7 @@ __pycache__/
 .venv-docling-v3/
 .venv-bge-v3/
 .venv-graphiti-local/
+.venv-pageindex-local/
 .models/docling-v3/
 .models/bge-m3/
 venv/
