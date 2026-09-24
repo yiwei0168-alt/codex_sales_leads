@@ -1,7 +1,7 @@
 import {randomUUID} from "node:crypto";
 import nextEnv from "@next/env";
 import {OWNER_USER_ID} from "../src/lib/auth/config";
-import {tenantTransaction,tenantQuery} from "../src/lib/rag/db";
+import {getPool,tenantTransaction,tenantQuery} from "../src/lib/rag/db";
 import {observeMemoryInTransaction} from "../src/lib/knowledge/temporal-memory";
 
 nextEnv.loadEnvConfig(process.cwd());
@@ -12,15 +12,21 @@ let completed=false;
 try{
   await tenantTransaction(OWNER_USER_ID,async client=>{
     const first=await observeMemoryInTransaction(client,OWNER_USER_ID,{kind:"preference",content:"Use concise answers",memoryKey:`style:${marker}`,
-      sourceReceipt:{type:"local-test",marker,step:1},idempotencyKey:`${marker}:1`,validFrom:"2026-01-01T00:00:00Z"});
+      sourceReceipt:{type:"local-test",marker,step:1},idempotencyKey:`${marker}:1`,validFrom:"2026-01-01T00:00:00Z",marketCodes:["FR","DE","DE"],companyIds:["company-1"]});
     const replay=await observeMemoryInTransaction(client,OWNER_USER_ID,{kind:"preference",content:"Use concise answers",memoryKey:`style:${marker}`,
-      sourceReceipt:{type:"local-test",marker,step:1},idempotencyKey:`${marker}:1`,validFrom:"2026-01-01T00:00:00Z"});
+      sourceReceipt:{type:"local-test",marker,step:1},idempotencyKey:`${marker}:1`,validFrom:"2026-01-01T00:00:00Z",marketCodes:["DE","FR"],companyIds:["company-1"]});
     const later=await observeMemoryInTransaction(client,OWNER_USER_ID,{kind:"preference",content:"Use detailed answers",memoryKey:`style:${marker}`,
-      sourceReceipt:{type:"local-test",marker,step:2},idempotencyKey:`${marker}:2`,validFrom:"2026-01-01T00:00:00Z"});
+      sourceReceipt:{type:"local-test",marker,step:2},idempotencyKey:`${marker}:2`,validFrom:"2026-01-01T00:00:00Z",marketCodes:["DE","FR"],companyIds:["company-1"]});
     const conflict=await client.query("select id from agent_memory_conflict where owner_id=$1 and earlier_id=$2 and later_id=$3",[OWNER_USER_ID,first,later]);
     const notices=await client.query("select count(*)::int as count from agent_memory_notice where owner_id=$1 and observation_id=any($2::uuid[])",[OWNER_USER_ID,[first,later]]);
     const outbox=await client.query("select count(*)::int as count from agent_memory_graph_outbox where observation_id=any($1::uuid[])",[[first,later]]);
     if(first!==replay||conflict.rowCount!==1||notices.rows[0].count!==2||outbox.rows[0].count!==2)throw new Error("Memory replay, conflict, notice or outbox failed");
+    const scoped=await client.query<{market_codes:string[];company_ids:string[]}>("select market_codes,company_ids from agent_memory_observation where id=$1",[first]);
+    if(scoped.rows[0].market_codes.join(",")!=="DE,FR"||scoped.rows[0].company_ids.join(",")!=="company-1")throw new Error("Scoped observation changed");
+    await client.query("select set_config('app.current_user_id',$1,true)",[randomUUID()]);
+    const denied=await client.query("select id from agent_memory_observation where id=$1",[first]);
+    await client.query("select set_config('app.current_user_id',$1,true)",[OWNER_USER_ID]);
+    if(denied.rowCount!==0)throw new Error("Cross-account observation read succeeded");
     const invalidated=await observeMemoryInTransaction(client,OWNER_USER_ID,{kind:"experience",content:"Undo test memory",
       sourceReceipt:{type:"local-test",marker,step:3},invalidatesId:first,idempotencyKey:`${marker}:undo`});
     const evidence=await client.query("select count(*)::int as count from agent_memory_observation where owner_id=$1 and (id=$2 or id=$3 or id=$4)",[OWNER_USER_ID,first,later,invalidated]);
@@ -34,4 +40,5 @@ try{
 if(!completed)throw new Error("Test transaction did not finish");
 const leaked=await tenantQuery(OWNER_USER_ID,"select id from agent_memory_observation where owner_id=$1 and idempotency_key=$2",[OWNER_USER_ID,`${marker}:1`]);
 if(leaked.length)throw new Error("Test data remained after rollback");
-console.log(JSON.stringify({local:true,idempotency:true,conflict:true,notice:true,outbox:true,undo:true,unknownTargetDenied:true,rolledBack:true}));
+console.log(JSON.stringify({local:true,idempotency:true,conflict:true,notice:true,outbox:true,undo:true,unknownTargetDenied:true,crossAccountDenied:true,multiScope:true,rolledBack:true}));
+await getPool().end();
