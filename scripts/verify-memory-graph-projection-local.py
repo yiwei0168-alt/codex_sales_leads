@@ -1,6 +1,7 @@
 """Exercise the production projector with synthetic input and remove its graph nodes."""
 
 import json
+import os
 import subprocess
 import sys
 from datetime import datetime, timezone
@@ -41,8 +42,16 @@ try:
         ).single()
         if not row or (row["edges"], row["accounts"], row["observations"]) != (1, 1, 1):
             raise RuntimeError("Graph replay or account namespace failed")
+    for search_owner, expected in ((owner_id, [observation_id]), (str(uuid4()), [])):
+        searched = subprocess.run(
+            ["node", "scripts/run-tsx.cjs", "scripts/verify-memory-graph-search-local.ts"],
+            text=True, capture_output=True, timeout=30, cwd=ROOT, check=False,
+            env={**os.environ, "MA24_SYNTH_OWNER": search_owner},
+        )
+        if searched.returncode or json.loads(searched.stdout).get("ids") != expected:
+            raise RuntimeError("Graph candidate account boundary failed")
     print(json.dumps({"local": True, "projected": True, "replayDeduplicated": True,
-                      "groupScoped": True, "synthetic": True}))
+                      "groupScoped": True, "candidateIdsOnly": True, "synthetic": True}))
 finally:
     with driver.session() as session:
         session.run("MATCH (n {group_id:$owner}) DETACH DELETE n", owner=owner_id).consume()

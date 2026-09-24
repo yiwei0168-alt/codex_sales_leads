@@ -230,3 +230,5 @@ New main-Agent runs pin the synchronous OpenRouter `z-ai/glm-5.3` / `fireworks` 
 Graphiti 0.30.2 的隔离依赖与本地 `nomic-embed-text` 已安装。`scripts/verify-graphiti-local.py` 只读预检先关闭 Graphiti 默认遥测，再核对本地模型和 Neo4j；`--direct` 使用本地嵌入向量验证结构化节点/关系写入、账户分组回读和清理，已通过。`--episode` 仅处理合成自由文本，当前抽取质量和时延未过门槛。生产 outbox 不消费，图谱查询不参与回答；PostgreSQL 保持权威来源。
 
 迁移 113 为图谱 outbox 增加租约、到期重试和只返回账户/观察 ID 的 worker 收据。`run-memory-graph-worker.ts` 只有显式设置 `ENABLE_MEMORY_GRAPH_PROJECTION=1` 才消费；按账户 RLS 读取 PostgreSQL 原观察，经本地子进程调用 Graphiti 节点/关系保存接口，观察 ID 决定图 UUID，重放不重复建边。子进程只接收单条观察，关闭遥测，使用回环 Neo4j 与固定摘要的本地嵌入模型。投影成功后带租约令牌标记送达；失败只延期重试，不影响 PostgreSQL 任务。当前开关为 0，尚不从图谱给任务提供候选；日后图谱候选必须按账户、时间、权限回 PostgreSQL 核验。
+
+内部 `searchMemoryWithGraph` 现在可从本机图谱取得最多 24 个账户分组内的观察 ID，但返回内容始终重新查询 PostgreSQL，校验账户、业务有效时间、系统已知时间、市场/公司范围、失效关系和原文命中。业务起始时间缺失的结果明确标为 `unknown`，不能表述为当前有效事实。Neo4j 不可用或候选已失效时改由 PostgreSQL 原文搜索。该接口尚未进入主 Agent 任务路径，不能把合成回退测试当作真实记忆质量验收。

@@ -43,6 +43,8 @@ Graphiti 本机预检补充：隔离环境已安装 Graphiti 0.30.2 的依赖及
 
 图谱 outbox 接线补充：迁移 113 添加租约令牌、租约时间和下次尝试时间；worker 收据只带账户与观察 ID，随后在账户 RLS 下读取原观察。Python 投影器仅使用本地 Graphiti 节点/关系接口、回环 Neo4j 和固定摘要的 `nomic-embed-text`，在导入前关闭遥测；账户与观察节点、`OBSERVED` 边采用稳定 UUID，失败不标记送达。`verify-memory-graph-projection-local.py` 连续投影同一合成观察两次后仅有 1 条边，分组清理成功；Node→Python 实际调用重放也仅留 1 条边，测试后清理为 0。本机 PostgreSQL 回滚探针验证 outbox 收据、租约排他及跨账户拒绝，3 项聚焦单测和类型/Lint 检查通过。`ENABLE_MEMORY_GRAPH_PROJECTION=0` 维持关闭；真实 outbox 消费、进程崩溃恢复、图谱候选回库校验和 Neo4j 停机回退尚未验收。
 
+图谱候选回读补充：本机合成观察经 Node→Python 调用链查询只输出观察 UUID，其他账户分组返回空；`searchMemoryWithGraph` 按 PostgreSQL RLS 重新校验账户、业务生效/系统已知时间、市场/公司范围、失效关系和原文命中，最多返回 12 条。缺少业务起始时间的观察返回 `business_validity=unknown`，不伪称当前有效。Neo4j 报错或候选已失效时走 PostgreSQL 原文搜索。4 项聚焦测试通过，含图谱失败与陈旧候选回退；这是内部接口的合成验证，主 Agent 尚未接入，真实停机端到端与回答质量仍待验收。
+
 ## 验证记录
 
 2026-09-24：`tsc --noEmit` 通过；`node node_modules/vitest/vitest.mjs run src/lib/knowledge/vectorless.test.ts` 的 4 项安全/抽取用例通过；所改 TypeScript 文件 ESLint 通过；`npm run db:migrate` 在修复既有迁移 105 的可重复执行性后完整通过到迁移 106。数据库只读核查显示 4/4 新表启用并强制 RLS，当时树版本 0，人工 Gold 11/300、holdout 0/50。随后迁移 107 和 13 项相关测试通过，`verify-vectorless-upload-local.ts` 的本机合成端到端通过并清理测试资料；真实资料仍未进入新树。未运行的门槛不得记为通过。
