@@ -48,5 +48,12 @@ export async function createKnowledgeUploadJob(userId:string,input:KnowledgeUplo
 }
 
 export async function listKnowledgeUploadJobs(userId:string){
-  return tenantQuery<{id:string;collection:string;status:string;title:string;originalFilename:string;documentType:string;byteSize:string;errorCode:string|null;createdAt:string;updatedAt:string}>(userId,`select id,collection_slug as collection,status,title,original_filename as "originalFilename",upper(ltrim(substring(original_filename from '\\.[^.]+$'),'.')) as "documentType",byte_size::text as "byteSize",error_code as "errorCode",created_at::text as "createdAt",updated_at::text as "updatedAt" from knowledge_upload_job where user_id=$1 order by created_at desc limit 30`,[userId]);
+  return tenantQuery<{id:string;collection:string;status:string;treeStatus:string;currentVersionId:string|null;sourceSha256:string;title:string;originalFilename:string;documentType:string;byteSize:string;errorCode:string|null;createdAt:string;updatedAt:string}>(userId,`select j.id,j.collection_slug as collection,j.status,j.title,j.original_filename as "originalFilename",
+    upper(ltrim(substring(j.original_filename from '\\.[^.]+$'),'.')) as "documentType",j.byte_size::text as "byteSize",
+    j.source_sha256 as "sourceSha256",j.error_code as "errorCode",j.created_at::text as "createdAt",j.updated_at::text as "updatedAt",
+    v.id as "currentVersionId",case when v.id is not null and v.status='ready' and d.metadata->>'sourceSha256'=j.source_sha256 then 'searchable'
+      when j.error_code='tree-index-failed' then 'failed' when j.status='registered' then 'indexing' else j.status end as "treeStatus"
+    from knowledge_upload_job j left join knowledge_document d on d.id=j.published_document_id
+    left join knowledge_tree_version v on v.id=d.current_tree_version_id
+    where j.user_id=$1 order by j.created_at desc limit 30`,[userId]);
 }

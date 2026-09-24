@@ -15,7 +15,7 @@ test("materials switch between list, mailbox knowledge, memory, and upload witho
     if(url.pathname==="/")return route.fulfill({contentType:"text/html",body:'<!doctype html><meta charset="utf-8"><div id="root"></div>'});
     if(url.pathname==="/api/auth/session")return route.fulfill({json:{user:{role:"member"}}});
     if(url.pathname==="/api/knowledge/status")return route.fulfill({json:{configured:true,provider:"PostgreSQL",collections:[]}});
-    if(url.pathname==="/api/knowledge/uploads")return route.fulfill({json:{jobs:[]}});
+    if(url.pathname==="/api/knowledge/uploads")return route.fulfill({json:{jobs:[{id:"fixture",collection:"industry",status:"registered",treeStatus:"searchable",currentVersionId:"12345678-0000-4000-8000-000000000000",sourceSha256:"a".repeat(64),title:"本地资料",originalFilename:"fixture.pdf",documentType:"PDF",byteSize:"1024",errorCode:null,createdAt:"2026-09-24",updatedAt:"2026-09-24"}]}});
     if(url.pathname==="/api/knowledge/mailbox")return route.fulfill({json:{items:[{id:"one",message_id:"mail",kind:"company-policy",title:"邮箱知识一",content:"私有知识",confidence:null,rationale:null,model:null,reviewed_at:"2026-09-23"}],hasMore:false}});
     if(url.pathname==="/api/knowledge/library")return route.fulfill({json:{items:[{id:"doc",title:"资料一",updatedAt:"2026-09-23",status:"active",scope:"private",excerpt:"摘要"}],hasMore:false}});
     if(url.pathname==="/api/knowledge/memories")return route.fulfill({json:{items:[],hasMore:false}});
@@ -31,5 +31,7 @@ test("materials switch between list, mailbox knowledge, memory, and upload witho
   await expect(page.getByRole("heading",{name:"个人长期记忆"})).toBeVisible();
   await page.getByRole("button",{name:"上传资料"}).click();
   await expect(page.getByRole("heading",{name:"上传你的知识资料"})).toBeVisible();
+  await expect(page.getByText("可检索",{exact:true})).toBeVisible();
+  await expect(page.getByText(/版本 12345678/)).toBeVisible();
   expect(await page.evaluate(()=>document.documentElement.scrollHeight<=innerHeight+2)).toBe(true);
 });

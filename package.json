@@ -53,6 +53,7 @@
     "knowledge:process-uploads": "node scripts/run-tsx.cjs scripts/process-knowledge-upload-jobs.ts",
     "knowledge:index-tree": "node scripts/run-tsx.cjs scripts/index-knowledge-tree.ts",
     "knowledge:verify-tree-foundation": "node scripts/run-tsx.cjs scripts/verify-vectorless-foundation.ts",
+    "knowledge:verify-tree-upload-local": "node scripts/run-tsx.cjs scripts/verify-vectorless-upload-local.ts",
     "knowledge:extract-shadow": "python scripts/build-knowledge-shadow-v2.py",
     "knowledge:ingest-shadow": "node scripts/run-tsx.cjs scripts/ingest-knowledge-shadow-v2.ts",
     "knowledge:build-facts": "node scripts/run-tsx.cjs scripts/build-knowledge-facts-v2.ts",

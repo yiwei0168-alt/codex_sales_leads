@@ -26,8 +26,8 @@ it("rejects incomplete extraction before a tree transaction",async()=>{
   await expect(indexExtractedDocument("owner","job")).rejects.toThrow("Unresolved extraction units");
   expect(mock.transaction).not.toHaveBeenCalled();
 });
-it("rejects a member before reading any source file",async()=>{
-  mock.query.mockResolvedValueOnce([{role:"member"}]);
-  await expect(indexExtractedDocument("member","job")).rejects.toThrow("Active administrator required");
+it("rejects an inactive account before reading any source file",async()=>{
+  mock.query.mockResolvedValueOnce([]);
+  await expect(indexExtractedDocument("member","job")).rejects.toThrow("Active account required");
   expect(mock.read).not.toHaveBeenCalled();
 });

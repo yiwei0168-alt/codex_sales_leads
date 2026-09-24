@@ -32,7 +32,7 @@ interface MailboxKnowledgeItem {
 }
 
 interface KnowledgeUploadJob {
-  id:string;collection:KnowledgeBaseType;status:"pending"|"running"|"extracted"|"registered"|"failed";title:string;
+  id:string;collection:KnowledgeBaseType;status:"pending"|"running"|"extracted"|"registered"|"failed";treeStatus:string;currentVersionId:string|null;sourceSha256:string;title:string;
   originalFilename:string;documentType:string;byteSize:string;errorCode:string|null;createdAt:string;updatedAt:string;
 }
 
@@ -243,7 +243,7 @@ export function KnowledgeBase({ initialTab }: { initialTab?: string } = {}) {
           <label>知识文件<input id="kb-file" type="file" accept=".md,.txt,.csv,.json,.pdf,.pptx,.xlsx,text/plain,text/markdown,text/csv,application/json,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange={(event) => setUploadFile(event.target.files?.[0] ?? null)}/><small>文本最多 2 MB并直接索引；PDF、PPTX、XLSX 最多25 MB，先保存原件并进入本地异步提取，不自动公开或向量化。</small></label>
           <label>管理 Token<input type="password" value={adminToken} onChange={(event) => setAdminToken(event.target.value)} placeholder="KNOWLEDGE_ADMIN_TOKEN（本地开发可留空）"/></label>
           <div className="kb-upload-action"><span className={uploadMessage.startsWith("上传成功") ? "success" : ""}>{uploadMessage}</span><button className="primary-button" disabled={uploading || !uploadFile || !uploadTitle.trim() || (uploadType === "product" && !entityId.trim()) || !stats.configured} onClick={upload}>{uploading ? "正在提交…" : /\.(pdf|pptx|xlsx)$/i.test(uploadFile?.name??"") ? "上传并创建提取作业" : "上传并建立索引"}</button></div>
-          {uploadJobs.length>0&&<div className="kb-upload-jobs"><strong>最近提取作业</strong>{uploadJobs.slice(0,6).map(job=><p key={job.id}><span className={`tag ${job.status==="extracted"||job.status==="registered"?"green":job.status==="failed"?"red":"neutral"}`}>{job.status==="registered"?"已登记（RAG v3 待发布）":job.status}</span> {job.title} · {job.documentType} · {Math.ceil(Number(job.byteSize)/1024)} KB{job.errorCode?` · ${job.errorCode}`:""}</p>)}</div>}
+          {uploadJobs.length>0&&<div className="kb-upload-jobs"><strong>最近提取作业</strong>{uploadJobs.slice(0,6).map(job=><p key={job.id}><span className={`tag ${job.treeStatus==="searchable"?"green":job.treeStatus==="failed"?"red":"neutral"}`}>{job.treeStatus==="searchable"?"可检索":job.treeStatus==="extracted"?"已抽取，待登记":job.treeStatus==="registered"||job.treeStatus==="indexing"?"建立索引中":job.treeStatus==="failed"?"处理失败":job.treeStatus==="running"?"提取中":"待提取"}</span> {job.title} · {job.documentType} · {Math.ceil(Number(job.byteSize)/1024)} KB{job.currentVersionId?` · 版本 ${job.currentVersionId.slice(0,8)}`:""}<span title={`来源 SHA-256：${job.sourceSha256}`}> · 来源 {job.sourceSha256.slice(0,8)}</span>{job.errorCode?` · ${job.errorCode}`:""}</p>)}</div>}
         </div>
       </div>
     </section>}

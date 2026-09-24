@@ -2,6 +2,8 @@
 
 > MA24 新增无向量逐文档树和原文读取影子底座，当前 v3 仍服务生产。逐文档版本通过来源 SHA-256 与抽取器版本去重，完整建树后原子切换；正式引用须回读当前原文、来源坐标并再次校验权限。范围和质量切换门槛见 [MA24 验收记录](MA24_VECTORLESS_MEMORY_ACCEPTANCE_2026-09-24.md)。旧 v3 双向量激活规则继续适用于 v3 release。
 
+> MA24 增量入口：PDF/PPTX/XLSX 上传先在本地抽取；私有资料抽取成功后自动登记并建树，共享资料仍由管理员明确登记。该新路径不调用 embedding；上传列表的“可检索”表示当前树版本已完整提交，不能据此推断答案质量。
+
 2026-09-14 stage 181: two-user product SQL regression verified private outreach memory, private/shared RAG document and mailbox candidate boundaries; the 79-table owner-keyed RLS audit reported zero readable unprotected tables under its filter. Full private HTTP coverage and real answer generation remain open. [Evidence](PRIVATE_KNOWLEDGE_ISOLATION_RECHECK_2026-09-14.md).
 
 ## 数据边界

@@ -19,11 +19,12 @@ export function evidenceText(block:Block):string{
 /** Build one approved document in a single transaction. Any failure leaves its old pointer intact. */
 export async function indexExtractedDocument(userId:string,jobId:string){
   const [actor]=await tenantQuery<{role:string}>(userId,"select role from app_user where id=$1 and status='active'",[userId]);
-  if(actor?.role!=="admin")throw new Error("Active administrator required");
-  const [job]=await tenantQuery<{id:string;status:string;published_document_id:string;published_asset_id:string;source_sha256:string;extractor_version:string;storage_key:string;extraction_artifact_key:string;metrics:{artifactSha256?:string}}>(userId,
-    `select id,status,published_document_id,published_asset_id,source_sha256,extractor_version,storage_key,extraction_artifact_key,metrics
-     from knowledge_upload_job where id=$1 and user_id=$2`,[jobId,userId],"admin");
+  if(actor?.role!=="admin"&&actor?.role!=="member")throw new Error("Active account required");
+  const [job]=await tenantQuery<{id:string;status:string;visibility:string;published_document_id:string;published_asset_id:string;source_sha256:string;extractor_version:string;storage_key:string;extraction_artifact_key:string;metrics:{artifactSha256?:string}}>(userId,
+    `select id,status,visibility,published_document_id,published_asset_id,source_sha256,extractor_version,storage_key,extraction_artifact_key,metrics
+     from knowledge_upload_job where id=$1 and user_id=$2`,[jobId,userId]);
   if(!job||job.status!=="registered"||!job.published_document_id||!job.published_asset_id||!job.extraction_artifact_key)throw new Error("Registered extracted document required");
+  if(job.visibility==="shared"&&actor.role!=="admin")throw new Error("Shared tree requires administrator");
   const sourcePath=resolve(safeKnowledgeStorageKey(job.storage_key));assertResolvedInsideKnowledgeRoot(sourcePath);
   const artifactPath=resolve(safeKnowledgeStorageKey(job.extraction_artifact_key));assertResolvedInsideKnowledgeRoot(artifactPath);
   const [sourceBytes,artifactBytes]=await Promise.all([readFile(sourcePath),readFile(artifactPath)]);
@@ -73,7 +74,7 @@ export async function indexExtractedDocument(userId:string,jobId:string){
     await client.query("update knowledge_tree_version set status='ready',ready_at=now(),error_code=null where id=$1",[version.id]);
     await client.query("update knowledge_document set current_tree_version_id=$2 where id=$1",[job.published_document_id,version.id]);
     return {versionId:version.id,reused:false,nodes:blocks.length+units.length};
-  },"admin");
+  },actor.role);
 }
 
 export async function searchDocuments(userId:string,query:string,filters:{market?:string;companyId?:string;productId?:string}={}){
