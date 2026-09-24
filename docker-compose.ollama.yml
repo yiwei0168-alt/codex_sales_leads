@@ -1,0 +1,11 @@
+services:
+  ollama:
+    image: ollama/ollama:0.12.9
+    ports:
+      - "127.0.0.1:11434:11434"
+    volumes:
+      - network_copilot_ollama_data:/root/.ollama
+    restart: unless-stopped
+
+volumes:
+  network_copilot_ollama_data:

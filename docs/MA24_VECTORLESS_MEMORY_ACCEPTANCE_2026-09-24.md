@@ -35,6 +35,8 @@
 
 新主路当前处于影子底座阶段。还需完成所有入口的逐文档增量处理、任务收据与 8 组证据/8 次导航预算、v3 候选回读、Graphiti 本机部署与 PostgreSQL 回退、记忆通知/撤销、Skill 影子测试及固定分页 UI。300 题人工答案与精确来源 Gold 和锁定 50 题未完成前不得切换生产主路。切换要求锁定集答案和引用正确数均不低于 v3，且长文档、跨文档、新增资料有可复核改善，正式事实和无答案题不得退步。权限泄漏或未确认正式事实发布阻断上线。
 
+本机真实模型契约补充：独立 `docker-compose.ollama.yml` 以回环端口运行 Ollama 0.12.9，Docker volume 保存 `qwen3:8b` 本地模型，不向 Git 提交模型文件。`/api/tags` 返回模型摘要 `500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41`；worker 除精确模型名外还校验此摘要，不匹配时任务保持排队。真实模型通过 JSON Schema 与精确引文探针：英文偏好 1 条、中文偏好 1 条、临时请求 0 条、业务事实 0 条、指令覆盖 0 条。2 条现有已完成主 Agent 真实用户消息的只读抽取均为空，Schema 拒绝 0、持久化 0；这仅验证输入输出契约，不能证明真实偏好召回质量。提示词已要求完整句子引文，温度为 0；非明确偏好及指令覆盖候选被丢弃。`ENABLE_LOCAL_MEMORY_EXTRACTION=0` 保持关闭。Graphiti 依赖与投影、真实任务正样本、业务事实抽取及图谱停机回退尚未验收。
+
 ## 验证记录
 
 2026-09-24：`tsc --noEmit` 通过；`node node_modules/vitest/vitest.mjs run src/lib/knowledge/vectorless.test.ts` 的 4 项安全/抽取用例通过；所改 TypeScript 文件 ESLint 通过；`npm run db:migrate` 在修复既有迁移 105 的可重复执行性后完整通过到迁移 106。数据库只读核查显示 4/4 新表启用并强制 RLS，当时树版本 0，人工 Gold 11/300、holdout 0/50。随后迁移 107 和 13 项相关测试通过，`verify-vectorless-upload-local.ts` 的本机合成端到端通过并清理测试资料；真实资料仍未进入新树。未运行的门槛不得记为通过。
