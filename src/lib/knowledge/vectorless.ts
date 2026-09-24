@@ -106,6 +106,21 @@ export async function searchDocuments(userId:string,query:string,filters:{market
       order by (m.id is not null) desc,(cm.id is not null) desc,(t.token is not null) desc,(n.id is not null) desc,d.title limit 24`,
     [query,userId,filters.market??null,filters.companyId??null,filters.productId??null,modelTokens]);
 }
+/** Revalidate legacy candidate IDs against the current PostgreSQL tree and source. */
+export async function currentCandidateDocuments(userId:string,documentIds:string[]){
+  const ids=[...new Set(documentIds)].slice(0,40);
+  if(!ids.length)return [];
+  return tenantQuery<{documentId:string;title:string;versionId:string;reason:"v3-candidate"}>(userId,`select d.id as "documentId",d.title,v.id as "versionId",'v3-candidate' as reason
+    from knowledge_document d join knowledge_tree_version v on v.id=d.current_tree_version_id
+    left join knowledge_asset a on a.id=v.asset_id and a.document_id=d.id
+      and a.registration_status='registered' and a.source_sha256=v.source_sha256
+    where d.id=any($1::uuid[]) and d.status='active' and v.status='ready'
+      and (d.owner_id=$2 or d.visibility='shared')
+      and ((a.id is not null) or (v.asset_id is null and d.content_sha256=v.source_sha256
+        and exists(select 1 from knowledge_document_revision r where r.document_id=d.id
+          and r.content_sha256=v.source_sha256 and r.reconstructed=false)))
+    order by array_position($1::uuid[],d.id)`,[ids,userId]);
+}
 export async function browseTree(userId:string,documentId:string,parentId:string|null=null,offset=0,limit=200){
   return tenantQuery<{id:string;title:string;node_kind:string;unit_type:string;unit_index:number;source_location:Record<string,unknown>}>(userId,`select n.id,n.title,n.node_kind,n.unit_type,n.unit_index,n.source_location from knowledge_tree_node n
     join knowledge_tree_version v on v.id=n.version_id join knowledge_document d on d.current_tree_version_id=v.id

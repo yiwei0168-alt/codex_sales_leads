@@ -6,7 +6,7 @@ import {Pool} from "pg";
 import {OWNER_USER_ID} from "../src/lib/auth/config";
 import {getPool,tenantQuery} from "../src/lib/rag/db";
 import {registerVectorlessUpload} from "../src/lib/knowledge/vectorless-registration";
-import {browseTree,readEvidence,searchDocuments} from "../src/lib/knowledge/vectorless";
+import {browseTree,currentCandidateDocuments,readEvidence,searchDocuments} from "../src/lib/knowledge/vectorless";
 import {aggregateSessionDocuments,browseSessionTree,filterSessionDocuments,readSessionEvidence,searchSessionDocuments,startVectorlessSession} from "../src/lib/knowledge/vectorless-session";
 import {listKnowledgeUploadJobs} from "../src/lib/knowledge/upload";
 
@@ -36,6 +36,8 @@ try{
   const second=await registerVectorlessUpload(OWNER_USER_ID,id,{language:"en",authorityLevel:2});
   const documents=await searchDocuments(OWNER_USER_ID,"MA24");
   const denied=await searchDocuments(otherUser,"MA24");
+  const fallbackOwned=await currentCandidateDocuments(OWNER_USER_ID,[documentId]);
+  const fallbackDenied=await currentCandidateDocuments(otherUser,[documentId]);
   const units=await browseTree(OWNER_USER_ID,documentId);
   const leaves=await browseTree(OWNER_USER_ID,documentId,units[0]?.id??null);
   const evidence=await readEvidence(OWNER_USER_ID,leaves[0]?.id??randomUUID());
@@ -56,9 +58,11 @@ try{
   const evidenceOverBudget=await readSessionEvidence(OWNER_USER_ID,sessionId,leaves[0].id);
   if(evidenceOverBudget.status!=="partial")throw new Error("Evidence budget did not stop");
   if(!second.reused||!documents.some(doc=>doc.documentId===documentId)||denied.some(doc=>doc.documentId===documentId)
+    ||fallbackOwned.length!==1||fallbackDenied.length!==0
     ||evidence?.content!=="MA24 synthetic ports: eight."||listed?.treeStatus!=="searchable")throw new Error("Registration or tenant evidence check failed");
   await tenantQuery(OWNER_USER_ID,"update knowledge_asset set registration_status='withdrawn' where id=$1",[first.assetId]);
   if(await readEvidence(OWNER_USER_ID,leaves[0].id))throw new Error("Withdrawn source remained citable");
+  if((await currentCandidateDocuments(OWNER_USER_ID,[documentId])).length)throw new Error("Withdrawn source remained a fallback candidate");
   console.log(JSON.stringify({local:true,embeddingCalls:0,externalCalls:0,registered:true,replayed:true,treeSearch:true,sourceLocation:evidence.source_location,
     crossAccountDenied:true,withdrawnCitationDenied:true,sessionBudgetEnforced:true}));
 }finally{

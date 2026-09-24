@@ -1,6 +1,7 @@
 import {createHash} from "node:crypto";
 import {tenantQuery} from "@/lib/rag/db";
-import {aggregateDocumentSet,browseTree,filterDocumentSet,readEvidence,searchDocuments} from "./vectorless";
+import {hybridSearch} from "@/lib/rag/repository";
+import {aggregateDocumentSet,browseTree,currentCandidateDocuments,filterDocumentSet,modelTokensInQuery,readEvidence,searchDocuments} from "./vectorless";
 
 type Session={id:string;candidate_ids:string[];matched_count:number;search_used:number;navigation_used:number;evidence_used:number};
 type Partial={status:"partial";reason:string;unsearchedDocumentIds:string[];beyondCandidateCount:number};
@@ -51,6 +52,37 @@ export async function searchSessionDocuments(userId:string,sessionId:string,filt
     {candidateIds:ids,matchedCount,unsearchedDocuments:Math.max(0,matchedCount-ids.length)});
   return {status:"ok" as const,documents,matchedCount,partial:matchedCount>ids.length,
     unsearchedDocuments:Math.max(0,matchedCount-ids.length),candidateLimit:24,sessionId:current.id};
+}
+/** Use the active v3 release only to propose more document IDs; never return its chunk text as evidence. */
+export async function supplementSessionFromV3(userId:string,sessionId:string){
+  const current=await session(userId,sessionId);
+  if(current.search_used!==1)throw new Error("Search this session before requesting fallback candidates");
+  const claimed=await tenantQuery<{id:string}>(userId,`update knowledge_retrieval_session set fallback_used=true
+    where id=$1 and owner_id=$2 and fallback_used=false returning id`,[sessionId,userId]);
+  if(!claimed[0])return limit(userId,sessionId,"v3 candidate fallback already used");
+  const activeRelease=await tenantQuery<{release_id:string}>(userId,`select release_id from knowledge_release_pointer_v3
+    where scope_kind='shared' order by activated_at desc limit 1`);
+  if(!activeRelease.length){
+    await receipt(userId,sessionId,"v3-candidate",{activeRelease:false},{proposedChunkIds:[],validatedDocumentIds:[],addedDocumentIds:[]});
+    return {status:"ok" as const,documents:[],sessionId,partial:false,unsearchedDocuments:0,candidateLimit:24,v3CandidateOnly:true};
+  }
+  const [record]=await tenantQuery<{question:string}>(userId,"select question from knowledge_retrieval_session where id=$1",[sessionId]);
+  const chunks=await hybridSearch(userId,record.question,null,
+    {structuredProductTerms:modelTokensInQuery(record.question),lexicalQuery:record.question},40);
+  const proposed=[...new Set(chunks.map(chunk=>chunk.documentId))];
+  const validated=await currentCandidateDocuments(userId,proposed);
+  const extra=validated.filter(document=>!current.candidate_ids.includes(document.documentId));
+  const remaining=Math.max(0,24-current.candidate_ids.length);
+  const added=extra.slice(0,remaining);
+  const candidateIds=[...current.candidate_ids,...added.map(document=>document.documentId)];
+  const matchedCount=current.matched_count+extra.length;
+  await tenantQuery(userId,`update knowledge_retrieval_session set candidate_ids=$2::uuid[],matched_count=$3
+    where id=$1 and owner_id=$4`,[sessionId,candidateIds,matchedCount,userId]);
+  await receipt(userId,sessionId,"v3-candidate",{questionSha256:digest(record.question)},
+    {proposedChunkIds:chunks.map(chunk=>chunk.id),validatedDocumentIds:validated.map(document=>document.documentId),
+      addedDocumentIds:added.map(document=>document.documentId),unsearchedDocuments:Math.max(0,matchedCount-candidateIds.length)});
+  return {status:"ok" as const,documents:added,sessionId,partial:matchedCount>candidateIds.length,
+    unsearchedDocuments:Math.max(0,matchedCount-candidateIds.length),candidateLimit:24,v3CandidateOnly:true};
 }
 export async function browseSessionTree(userId:string,sessionId:string,documentId:string,parentId:string|null=null){
   const current=await session(userId,sessionId);

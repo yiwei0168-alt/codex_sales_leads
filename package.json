@@ -55,6 +55,8 @@
     "knowledge:verify-tree-foundation": "node scripts/run-tsx.cjs scripts/verify-vectorless-foundation.ts",
     "knowledge:verify-tree-upload-local": "node scripts/run-tsx.cjs scripts/verify-vectorless-upload-local.ts",
     "knowledge:verify-tree-real-uploads-local": "node scripts/run-tsx.cjs scripts/verify-vectorless-real-uploads-local.ts",
+    "knowledge:verify-v3-candidate-fallback-local": "node scripts/run-tsx.cjs scripts/verify-vectorless-v3-fallback-local.ts",
+    "knowledge:diagnose-v3-candidate-fallback": "node scripts/run-tsx.cjs scripts/diagnose-vectorless-v3-fallback.ts",
     "knowledge:verify-pageindex-isolated-local": ".venv-pageindex-local\\Scripts\\python.exe scripts/verify-pageindex-isolated-local.py",
     "memory:verify-graph-clone-outbox-local": "node scripts/run-tsx.cjs scripts/verify-memory-graph-clone-outbox-local.ts",
     "memory:verify-graph-real-outbox-local": "node scripts/run-tsx.cjs scripts/verify-memory-graph-real-outbox-local.ts",
