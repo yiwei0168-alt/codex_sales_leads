@@ -235,3 +235,4 @@ Graphiti 0.30.2 的隔离依赖与本地 `nomic-embed-text` 已安装。`scripts
 
 本机独立 Neo4j 容器短暂停机时，`verify-memory-graph-fallback-local.ts` 已确认内部检索改走 PostgreSQL；容器恢复后 Graphiti 连接预检通过。此验证不覆盖 worker 投影中断后的真实 outbox 重放，也不表示主 Agent 已使用图谱。
 2026-09-24 / MA24 文本资料工作流：`upsertKnowledgeDocument` 保存精确修订及旧 chunk 后，在相同事务中建立 `inline-text-v1` 树并切换指针；失败则事务回滚。`backfill-vectorless-text.ts` 只处理本机已有的、活动且有精确未重构修订的无附件文本；重复运行不重建。检索仍是影子路径，主 Agent 继续使用 v3，直到人工 Gold 和对照达标。
+2026-09-24 / MA24 存量共享资料：`backfill-v3-document-trees.ts` 只读取本机活动 v3 release 的已登记共享附件与 Docling 抽取产物，逐份在事务内建树并切换该文档指针；失败不改变旧版本。检索回读重新校验树所关联附件属于同文档、已登记且 SHA-256 一致。281 份完成，重复 dry-run 无待办；主 Agent 仍使用 v3。
