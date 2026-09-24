@@ -46,13 +46,13 @@ export function AgentLibrary() {
       <label>导入 Skill JSON 包<input type="file" accept="application/json,.json" disabled={busy} onChange={async e => {
         const file = e.target.files?.[0]; if (!file) return;
         if (file.size > 1_100_000) { setError("Skill 包不能超过 1 MB"); return; }
-        try { await save("skills", "POST", JSON.parse(await file.text()), "Skill 包已导入，脚本依赖状态可在对话中检查。"); }
+        try { await save("skills", "POST", JSON.parse(await file.text()), "Skill 包已保存为未启用草案；请在记忆中心检查版本和验证状态。"); }
         catch { setError("文件不是有效 JSON Skill 包"); }
         e.target.value = "";
       }} /></label>
       <form onSubmit={e => { e.preventDefault(); void save("skills", "POST", sourceKind === "url"
         ? { kind: "url", name: sourceName, url: sourceUrl }
-        : { kind: "github", name: sourceName, repository: sourceUrl, ref: sourceRef, directory: sourceDirectory }, "公开 Skill 来源已导入；请检查脚本和依赖状态。 "); }}>
+        : { kind: "github", name: sourceName, repository: sourceUrl, ref: sourceRef, directory: sourceDirectory }, "公开 Skill 来源已保存为未启用草案；请检查验证状态。 "); }}>
         <label>导入方式<select value={sourceKind} onChange={e => { setSourceKind(e.target.value as "url" | "github"); setSourceUrl(""); }}><option value="url">SKILL.md 网址</option><option value="github">GitHub 仓库</option></select></label>
         <label>来源 Skill 名称<input required maxLength={120} value={sourceName} onChange={e => setSourceName(e.target.value)} /></label>
         <label>{sourceKind === "url" ? "公开 SKILL.md 的 HTTPS 网址" : "公开 GitHub 仓库网址"}<input required type="url" maxLength={1000} value={sourceUrl} onChange={e => setSourceUrl(e.target.value)} /></label>

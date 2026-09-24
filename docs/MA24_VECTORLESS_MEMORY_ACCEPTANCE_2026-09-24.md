@@ -65,3 +65,5 @@ Graphiti 本机预检补充：隔离环境已安装 Graphiti 0.30.2 的依赖及
 2026-09-24 PageIndex 隔离试验：参考 [PageIndex 开源仓库](https://github.com/VectifyAI/PageIndex)与[本地 SDK 配置](https://docs.pageindex.ai/sdk/client)，在 Git 忽略的 `.venv-pageindex-local` 安装 `pageindex==0.2.19`，只对脚本即时生成的两页合成 PDF 试验。`verify-pageindex-isolated-local.py` 将所有运行期非回环网络连接阻断，使用本机 `qwen3:8b` 和回环 Ollama OpenAI 兼容端点；两个公开 tiktoken 文件先经本地代理下载至隔离环境，并按 SHA-256 校验。完整 SDK 索引成功，`get_document_structure` 返回 2 个节点；LLM-free Flash 也返回 2 个页节点；运行期阻断目标与外部连接均为 0，临时 PDF/索引随脚本清理。首次缺少公开 tokenizer 缓存时 SDK 摘要失败且被网络护栏阻断，缓存补齐后通过。PageIndex 的页级结构仅作导航参考，未写入 PostgreSQL、未处理私有资料，也不能作为正式引用或质量对照。PPTX/XLSX 继续走本产品树。
 
 复现隔离试验需先在 `.venv-pageindex-local` 安装精确 `pageindex==0.2.19`，并将公开 `cl100k_base.tiktoken`、`o200k_base.tiktoken` 经本地代理下载到脚本预检的两个缓存文件名；脚本会拒绝哈希不符的缓存。其余生产服务不依赖该虚拟环境。
+
+2026-09-24 Skill 门槛修正：此前纯指令 Skill 导入会立即启用、Agent 可在没有回放/影子证据时启用，违反 MA24-06。现在所有新导入版本先停用，更新版本也停用；非人工 `skill_manage` 仅允许账户级、无脚本/依赖且 `validation.autoEnable=passed` 的版本启用或回滚。现阶段没有评测器写入通过标记，所以自动启用保持关闭。记忆中心给停用纯指令草案显示“待验证”，脚本/依赖显示“待审核”，按钮区分“手动启用”。`skill-activation.test.ts` 4 项、TypeScript 与局部 ESLint 通过；历史任务回放、提示注入、影子质量和真正的自动启用仍未验收。
