@@ -1,0 +1,14 @@
+services:
+  neo4j:
+    image: neo4j:5.26
+    environment:
+      NEO4J_AUTH: ${NEO4J_AUTH:?Set NEO4J_AUTH in a local, untracked env file}
+    ports:
+      - "127.0.0.1:7474:7474"
+      - "127.0.0.1:7687:7687"
+    volumes:
+      - network_copilot_neo4j_data:/data
+    restart: unless-stopped
+
+volumes:
+  network_copilot_neo4j_data:

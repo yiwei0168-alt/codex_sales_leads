@@ -215,3 +215,6 @@ MA16 implementation and isolated validation: [acceptance evidence](MA16_MAIN_AGE
 ## MA17 interactive GLM route (2026-09-22)
 
 New main-Agent runs pin the synchronous OpenRouter `z-ai/glm-5.3` / `fireworks` configuration. Previously submitted `z-ai/glm-5.3:batch` runs retain their saved configuration, remote receipts and recovery behavior. The chat-completions transport remains inside the product spend and journal boundaries; the local MA05 observation policy is still a separate deployment setting. The user is considering inline tool schemas versus a small routing model; neither tool-selection strategy is confirmed or implemented in MA17. See [acceptance evidence](MA17_GLM_SYNC_ACCEPTANCE_2026-09-22.md).
+# MA24 记忆观察流程补充（已确认，部分实现）
+
+任务完成、用户纠正或可靠工具收据产生后，候选记忆必须附来源收据与账户范围；业务生效时间未知时保持空值。当前 `observeMemory` 在 PostgreSQL 事务中写不可覆写观察、幂等键、图谱 outbox 和用户通知，同主题冲突单独记录；`undoMemory` 追加失效观察。自动自由文本抽取尚未接入任务执行；Graphiti 投影未就绪时直接查询 PostgreSQL 记忆，不能自动转用云模型。正式事实、评分和外发内容继续走原确认/核验流程。
