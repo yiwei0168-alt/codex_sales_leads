@@ -3,6 +3,7 @@ import type {PoolClient} from "pg";
 import {buildKnowledgeEvaluationCorpus} from "./evaluation/corpus";
 import {correctedFactValueIsValid,evaluationCaseSha256,goldReviewIsPrecise,goldSourcesRequired,retrievalProfileSha256,RAG_V3_RETRIEVAL_PROFILE,type FactReviewDecision,type GoldSourceCoordinate,type KnowledgeFactReviewResponse,type KnowledgeGoldReviewResponse} from "./review-types";
 import {tenantQuery,tenantTransaction} from "@/lib/rag/db";
+import {listGoldSourceEvidence,normalizeGoldExcerpt} from "./gold-source";
 
 const corpus=buildKnowledgeEvaluationCorpus();
 
@@ -75,6 +76,12 @@ export async function saveGoldReview(userId:string,input:{caseId:string;caseSha2
       where p.scope_kind='shared' and a.source_sha256=any($1::text[])
         and a.registration_status='registered' and d.status='active' and d.visibility='shared'`,[hashes],"admin");
     if(current.length!==hashes.length)throw new Error("source-unavailable");
+    for(const source of input.expectedSources){
+      const blocks=await listGoldSourceEvidence(userId,source.assetSha256,source.unitIndex);
+      if(!blocks.some(block=>(!source.blockId||block.blockId===source.blockId)
+        &&normalizeGoldExcerpt(block.content).includes(normalizeGoldExcerpt(source.excerpt??""))))
+        throw new Error("source-excerpt-mismatch");
+    }
   }
   await tenantQuery(userId,`insert into knowledge_evaluation_review_v3(corpus_version,case_id,case_sha256,split,expected_answer,expected_sources,review_note,reviewed_by) values($1,$2,$3,$4,$5,$6::jsonb,$7,$8) on conflict(corpus_version,case_id) do update set case_sha256=excluded.case_sha256,split=excluded.split,expected_answer=excluded.expected_answer,expected_sources=excluded.expected_sources,review_note=excluded.review_note,reviewed_by=excluded.reviewed_by,reviewed_at=now(),revision=knowledge_evaluation_review_v3.revision+1`,[corpus.version,item.id,input.caseSha256,item.split,input.expectedAnswer,JSON.stringify(input.expectedSources),input.reviewNote||null,userId],"admin");
 }
@@ -88,5 +95,16 @@ export async function unlockGoldHoldout(userId:string,confirmed:boolean):Promise
   if(nonHoldout.some(item=>reviewed.get(item.id)!==evaluationCaseSha256(item)
     ||!goldReviewIsPrecise(item,byCase.get(item.id)?.expectedSources??[],byCase.get(item.id)?.reviewNote??"")))
     throw new Error("development-review-incomplete");
+  const evidenceByUnit=new Map<string,Awaited<ReturnType<typeof listGoldSourceEvidence>>>();
+  for(const row of rows){
+    for(const source of row.expectedSources){
+      const key=`${source.assetSha256}:${source.unitIndex}`;
+      let blocks=evidenceByUnit.get(key);
+      if(!blocks){blocks=await listGoldSourceEvidence(userId,source.assetSha256,source.unitIndex);evidenceByUnit.set(key,blocks);}
+      if(!blocks.some(block=>(!source.blockId||block.blockId===source.blockId)
+        &&normalizeGoldExcerpt(block.content).includes(normalizeGoldExcerpt(source.excerpt??""))))
+        throw new Error("development-review-incomplete");
+    }
+  }
   await tenantQuery(userId,`insert into knowledge_evaluation_holdout_gate_v3(corpus_version,retrieval_profile_key,retrieval_profile_sha256,frozen_by) values($1,$2,$3,$4) on conflict(corpus_version) do nothing`,[corpus.version,RAG_V3_RETRIEVAL_PROFILE.key,retrievalProfileSha256(),userId],"admin");
 }

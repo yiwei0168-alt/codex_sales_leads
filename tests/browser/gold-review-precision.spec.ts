@@ -31,6 +31,11 @@ test("human Gold editor preserves precise excerpts and permits documented no-ans
         counts:{development:{total:190,reviewed:11,precise:0},validation:{total:60,reviewed:0,precise:0},holdout:{total:50,reviewed:0,precise:0}},
         holdoutUnlocked:false,retrievalProfileKey:"rag-v3-rrf-v1.0.0",retrievalProfileSha256:"d".repeat(64)}});
     }
+    if(url.pathname==="/api/knowledge/evaluation-reviews/source"){
+      expect(url.searchParams.get("assetSha256")).toBe("a".repeat(64));
+      expect(url.searchParams.get("unitIndex")).toBe("2");
+      return route.fulfill({json:{blocks:[{blockId:"page-2-block-1",content:"WR3000 original specification",unitIndex:2}],truncated:false}});
+    }
     return route.abort("blockedbyclient");
   });
   await page.goto("https://ui.test/");await page.addStyleTag({content:css});await page.addScriptTag({content:script});
@@ -42,8 +47,10 @@ test("human Gold editor preserves precise excerpts and permits documented no-ans
   await page.getByLabel("正确答案").fill("WR3000 source opened");
   await page.getByRole("button",{name:/WR3000 Datasheet/}).click();
   await page.getByLabel("页/slide/sheet").fill("2");
-  await page.getByLabel("原文块 ID（可选）").fill("page-2-block-1");
-  await page.getByLabel("原文短引").fill("WR3000 original specification");
+  await page.getByRole("button",{name:"读取该页原文"}).click();
+  await page.getByRole("button",{name:/page-2-block-1/}).click();
+  await expect(page.getByLabel("原文块 ID（可选）")).toHaveValue("page-2-block-1");
+  await expect(page.getByLabel("原文短引")).toHaveValue("WR3000 original specification");
   await page.getByRole("button",{name:"保存此条 Gold"}).click();
   await expect.poll(()=>saved.length).toBe(1);
   expect(saved[0].expectedSources).toEqual([{assetSha256:"a".repeat(64),unitIndex:2,version:"V2",blockId:"page-2-block-1",excerpt:"WR3000 original specification"}]);

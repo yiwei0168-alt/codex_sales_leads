@@ -4,7 +4,7 @@ vi.mock("server-only",()=>({}));
 vi.mock("@/lib/rag/db",()=>({tenantQuery:mocks.query,tenantTransaction:mocks.transaction}));
 import {buildKnowledgeEvaluationCorpus} from "./evaluation/corpus";
 import {evaluationCaseSha256} from "./review-types";
-import {decideFactReview,saveGoldReview} from "./review-repository";
+import {decideFactReview,saveGoldReview,unlockGoldHoldout} from "./review-repository";
 
 describe("fact review persistence",()=>{beforeEach(()=>{vi.clearAllMocks();mocks.transaction.mockImplementation(async(_user:string,run:(client:{query:typeof mocks.query})=>unknown)=>run({query:mocks.query}));});
   it.each([
@@ -30,5 +30,29 @@ describe("human Gold evidence gate",()=>{beforeEach(()=>{vi.clearAllMocks();});
     await saveGoldReview("admin",{caseId:item.id,caseSha256:evaluationCaseSha256(item),expectedAnswer:"No verified answer",
       expectedSources:[],reviewNote:"Checked all active source documents."});
     expect(mocks.query.mock.calls.some(call=>String(call[1]).includes("insert into knowledge_evaluation_review_v3"))).toBe(true);
+  });
+  it("checks the quote against the current page and block before saving",async()=>{
+    const item=buildKnowledgeEvaluationCorpus().cases.find(candidate=>candidate.expectedOutcome==="route"&&candidate.split!=="holdout")!;
+    const source={assetSha256:"a".repeat(64),unitIndex:2,blockId:"block-2",excerpt:"Verified original words"};
+    mocks.query.mockResolvedValueOnce([]).mockResolvedValueOnce([{source_sha256:source.assetSha256}])
+      .mockResolvedValueOnce([{blockId:"block-2",content:"Different words",unitIndex:2}]);
+    await expect(saveGoldReview("admin",{caseId:item.id,caseSha256:evaluationCaseSha256(item),expectedAnswer:"Reviewed answer",expectedSources:[source],reviewNote:""}))
+      .rejects.toThrow("source-excerpt-mismatch");
+    expect(mocks.query.mock.calls.some(call=>String(call[1]).includes("insert into knowledge_evaluation_review_v3"))).toBe(false);
+    mocks.query.mockReset();
+    mocks.query.mockResolvedValueOnce([]).mockResolvedValueOnce([{source_sha256:source.assetSha256}])
+      .mockResolvedValueOnce([{blockId:"block-2",content:"Verified original\n words appear here",unitIndex:2}])
+      .mockResolvedValueOnce([]);
+    await saveGoldReview("admin",{caseId:item.id,caseSha256:evaluationCaseSha256(item),expectedAnswer:"Reviewed answer",expectedSources:[source],reviewNote:""});
+    expect(mocks.query.mock.calls.some(call=>String(call[1]).includes("insert into knowledge_evaluation_review_v3"))).toBe(true);
+  });
+  it("rechecks every saved source before unlocking the holdout",async()=>{
+    const rows=buildKnowledgeEvaluationCorpus().cases.filter(item=>item.split!=="holdout").map(item=>({
+      caseId:item.id,caseSha256:evaluationCaseSha256(item),reviewNote:"Checked all active source documents.",
+      expectedSources:item.expectedOutcome==="route"?[{assetSha256:"a".repeat(64),unitIndex:1,excerpt:"Original quote"}]:[],
+    }));
+    mocks.query.mockResolvedValueOnce(rows).mockResolvedValueOnce([]);
+    await expect(unlockGoldHoldout("admin",true)).rejects.toThrow("development-review-incomplete");
+    expect(mocks.query.mock.calls.some(call=>String(call[1]).includes("insert into knowledge_evaluation_holdout_gate_v3"))).toBe(false);
   });
 });
