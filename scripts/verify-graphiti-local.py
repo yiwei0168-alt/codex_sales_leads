@@ -27,7 +27,9 @@ from graphiti_core.llm_client.config import LLMConfig  # noqa: E402
 from graphiti_core.llm_client.openai_generic_client import (  # noqa: E402
     OpenAIGenericClient,
 )
-from graphiti_core.nodes import EpisodeType  # noqa: E402
+from graphiti_core.driver.neo4j_driver import Neo4jDriver  # noqa: E402
+from graphiti_core.edges import EntityEdge  # noqa: E402
+from graphiti_core.nodes import EntityNode, EpisodeType  # noqa: E402
 from neo4j import AsyncGraphDatabase  # noqa: E402
 
 
@@ -56,8 +58,43 @@ async def main():
     group_id = f"ma24-synthetic-{uuid4()}"
     driver = AsyncGraphDatabase.driver(neo4j_uri, auth=("neo4j", password))
     graphiti = None
+    direct_driver = None
     try:
         await driver.verify_connectivity()
+        if "--direct" in sys.argv:
+            direct_driver = await asyncio.to_thread(Neo4jDriver, neo4j_uri, "neo4j", password)
+            embedder = OpenAIEmbedder(config=OpenAIEmbedderConfig(
+                api_key="ollama", embedding_model="nomic-embed-text",
+                embedding_dim=768, base_url=f"{OLLAMA_URL}/v1"))
+            now = datetime.now(timezone.utc)
+            account = EntityNode(name="MA24 synthetic account", group_id=group_id,
+                                 name_embedding=await embedder.create("MA24 synthetic account"))
+            memory = EntityNode(name="MA24 synthetic observation", group_id=group_id,
+                                name_embedding=await embedder.create("MA24 synthetic observation"))
+            await account.save(direct_driver)
+            await memory.save(direct_driver)
+            edge = EntityEdge(
+                group_id=group_id, source_node_uuid=account.uuid,
+                target_node_uuid=memory.uuid, created_at=now,
+                name="OBSERVED", fact="Synthetic account prefers short answers",
+                fact_embedding=await embedder.create("Synthetic account prefers short answers"),
+                valid_at=now,
+            )
+            await edge.save(direct_driver)
+            async with driver.session() as session:
+                record = await (await session.run(
+                    "MATCH (a:Entity {uuid:$account})-[r:RELATES_TO]->(m:Entity {uuid:$memory}) "
+                    "RETURN a.group_id AS account_group,m.group_id AS memory_group,"
+                    "r.group_id AS edge_group,r.fact AS fact",
+                    account=account.uuid, memory=memory.uuid,
+                )).single()
+            if (not record or any(record[key] != group_id for key in
+                                  ("account_group", "memory_group", "edge_group")) or
+                    record["fact"] != edge.fact):
+                raise RuntimeError("Structured Graphiti projection or namespace failed")
+            print(json.dumps({"local": True, "structuredProjection": True,
+                              "groupScoped": True, "telemetry": False}))
+            return
         if "--episode" not in sys.argv:
             print(json.dumps({"local": True, "graphitiImported": True,
                               "neo4jConnected": True, "modelsPinned": True,
@@ -97,6 +134,8 @@ async def main():
         async with driver.session() as session:
             await session.run("MATCH (n {group_id: $group_id}) DETACH DELETE n", group_id=group_id)
         await driver.close()
+        if direct_driver is not None:
+            await direct_driver.close()
         if graphiti is not None:
             await graphiti.close()
 

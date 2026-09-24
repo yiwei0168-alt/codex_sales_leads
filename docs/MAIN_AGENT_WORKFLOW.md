@@ -227,4 +227,4 @@ New main-Agent runs pin the synchronous OpenRouter `z-ai/glm-5.3` / `fireworks` 
 
 独立本地 worker 按任务收据读取账户内用户消息，先检查回环 Ollama 与固定摘要的 `qwen3:8b`，再以结构化 Schema 提取最多三条明确偏好。原文引文不匹配或 Schema 不符时不写记忆并延后重试；不符合明确偏好条件或包含指令覆盖的候选直接丢弃。租约与幂等键保障重启。本机 Ollama 真实模型的五类合成样本契约已通过，2 条真实任务消息只读测试均为空结果；`ENABLE_LOCAL_MEMORY_EXTRACTION=0` 仍是默认配置，真实偏好召回与安全验收完成前不运行消费循环。本地服务可用 `docker compose -f docker-compose.ollama.yml up -d ollama` 启动，模型需另行在容器内拉取并核对摘要；模型文件保存在本机 Docker volume，不入 Git。
 
-Graphiti 0.30.2 的隔离依赖与本地 `nomic-embed-text` 已安装。`scripts/verify-graphiti-local.py` 只读预检先关闭 Graphiti 默认遥测，再核对本地模型和 Neo4j；`--episode` 仅处理合成内容，并清理测试分组。当前合成 episode 尚未产生可验收的实体关系，因此生产 outbox 不消费，图谱查询不参与回答；PostgreSQL 保持权威来源。
+Graphiti 0.30.2 的隔离依赖与本地 `nomic-embed-text` 已安装。`scripts/verify-graphiti-local.py` 只读预检先关闭 Graphiti 默认遥测，再核对本地模型和 Neo4j；`--direct` 使用本地嵌入向量验证结构化节点/关系写入、账户分组回读和清理，已通过。`--episode` 仅处理合成自由文本，当前抽取质量和时延未过门槛。生产 outbox 不消费，图谱查询不参与回答；PostgreSQL 保持权威来源。

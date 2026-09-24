@@ -39,6 +39,8 @@
 
 Graphiti 本机预检补充：隔离环境已安装 Graphiti 0.30.2 的依赖及其运行时缺失的 `httpx`，`pip check` 无冲突；Ollama 中另有本地 `nomic-embed-text`。`verify-graphiti-local.py` 在导入 Graphiti 前设置 `GRAPHITI_TELEMETRY_ENABLED=false`，仅使用回环地址的 Neo4j、qwen3 与嵌入模型。只读预检返回 Graphiti 可导入、Neo4j 可连接、模型摘要匹配。首次合成 episode 写入成功，但返回实体 0、关系 0；第二次更明确的虚构关系样本在数分钟后仍无最终结果，已中止，合成分组残留节点数为 0。故 Graphiti 抽取质量、时延、outbox 投影和回库校验均未通过；不读取生产记忆投影。
 
+结构化路径补充：`verify-graphiti-local.py --direct` 使用 Graphiti 的 `EntityNode`/`EntityEdge` 保存接口及本地嵌入模型，合成账户和观察各写 1 个节点、写 1 条 `OBSERVED` 关系，并按 UUID 回读账户分组及事实文本，结果通过；清理后合成分组节点为 0。这验证结构化投影机制可用，不代表 PostgreSQL outbox 已消费，也不代表图谱候选已回库校验。
+
 ## 验证记录
 
 2026-09-24：`tsc --noEmit` 通过；`node node_modules/vitest/vitest.mjs run src/lib/knowledge/vectorless.test.ts` 的 4 项安全/抽取用例通过；所改 TypeScript 文件 ESLint 通过；`npm run db:migrate` 在修复既有迁移 105 的可重复执行性后完整通过到迁移 106。数据库只读核查显示 4/4 新表启用并强制 RLS，当时树版本 0，人工 Gold 11/300、holdout 0/50。随后迁移 107 和 13 项相关测试通过，`verify-vectorless-upload-local.ts` 的本机合成端到端通过并清理测试资料；真实资料仍未进入新树。未运行的门槛不得记为通过。
