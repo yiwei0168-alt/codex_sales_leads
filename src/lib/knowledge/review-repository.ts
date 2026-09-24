@@ -1,7 +1,7 @@
 import "server-only";
 import type {PoolClient} from "pg";
 import {buildKnowledgeEvaluationCorpus} from "./evaluation/corpus";
-import {correctedFactValueIsValid,evaluationCaseSha256,goldSourcesRequired,retrievalProfileSha256,RAG_V3_RETRIEVAL_PROFILE,type FactReviewDecision,type GoldSourceCoordinate,type KnowledgeFactReviewResponse,type KnowledgeGoldReviewResponse} from "./review-types";
+import {correctedFactValueIsValid,evaluationCaseSha256,goldReviewIsPrecise,goldSourcesRequired,retrievalProfileSha256,RAG_V3_RETRIEVAL_PROFILE,type FactReviewDecision,type GoldSourceCoordinate,type KnowledgeFactReviewResponse,type KnowledgeGoldReviewResponse} from "./review-types";
 import {tenantQuery,tenantTransaction} from "@/lib/rag/db";
 
 const corpus=buildKnowledgeEvaluationCorpus();
@@ -47,14 +47,14 @@ export async function listGoldReviews(userId:string,input:{offset:number;limit:n
   const [rows,gates,suggestions]=await Promise.all([
     tenantQuery<GoldRow>(userId,`select case_id as "caseId",case_sha256 as "caseSha256",expected_answer as "expectedAnswer",expected_sources as "expectedSources",review_note as "reviewNote",reviewed_at::text as "reviewedAt",revision from knowledge_evaluation_review_v3 where corpus_version=$1`,[corpus.version],"admin"),
     tenantQuery<{corpusVersion:string}>(userId,`select corpus_version as "corpusVersion" from knowledge_evaluation_holdout_gate_v3 where corpus_version=$1`,[corpus.version],"admin"),
-    tenantQuery<SuggestionRow>(userId,`select distinct e.canonical_key as "entityKey",a.id as "assetId",a.source_sha256 as "assetSha256",d.title,a.document_version as version from knowledge_release_v3 r join knowledge_chunk_v3 c on c.release_id=r.id join knowledge_chunk_entity_v3 ce on ce.chunk_id=c.id join knowledge_entity e on e.id=ce.entity_id join knowledge_source_revision_v3 sr on sr.id=c.source_revision_id join knowledge_asset a on a.id=sr.asset_id join knowledge_document d on d.id=a.document_id where r.scope_kind='shared' and r.status in('building','validated','active') order by e.canonical_key,d.title`,[],"admin"),
+    tenantQuery<SuggestionRow>(userId,`select distinct e.canonical_key as "entityKey",a.id as "assetId",a.source_sha256 as "assetSha256",d.title,a.document_version as version from knowledge_release_pointer_v3 p join knowledge_chunk_v3 c on c.release_id=p.release_id join knowledge_chunk_entity_v3 ce on ce.chunk_id=c.id join knowledge_entity e on e.id=ce.entity_id join knowledge_source_revision_v3 sr on sr.id=c.source_revision_id join knowledge_asset a on a.id=sr.asset_id join knowledge_document d on d.id=a.document_id where p.scope_kind='shared' and d.status='active' and d.visibility='shared' and a.registration_status='registered' order by e.canonical_key,d.title`,[],"admin"),
   ]);
   const byId=new Map(rows.map(row=>[row.caseId,row]));const holdoutUnlocked=Boolean(gates[0]);
   const sourceByEntity=new Map<string,SuggestionRow[]>();for(const item of suggestions){const list=sourceByEntity.get(item.entityKey.toLowerCase())??[];list.push(item);sourceByEntity.set(item.entityKey.toLowerCase(),list);}
-  let items=corpus.cases.filter(item=>!input.split||item.split===input.split).map(item=>{const row=byId.get(item.id);const reviewed=Boolean(row&&row.caseSha256===evaluationCaseSha256(item));return{...item,caseSha256:evaluationCaseSha256(item),expectedAnswer:reviewed?row!.expectedAnswer:"",expectedSources:reviewed?row!.expectedSources:[],reviewNote:reviewed?row!.reviewNote??"":"",reviewed,reviewedAt:reviewed?row!.reviewedAt:null,revision:reviewed?row!.revision:0,locked:item.split==="holdout"&&!holdoutUnlocked,sourceSuggestions:[...new Map(item.expectedEntities.flatMap(entity=>sourceByEntity.get(entity.toLowerCase())??[]).map(source=>[source.assetSha256,{assetId:source.assetId,assetSha256:source.assetSha256,title:source.title,version:source.version,url:`/api/knowledge/assets/${source.assetId}`}])).values()]};});
+  let items=corpus.cases.filter(item=>!input.split||item.split===input.split).map(item=>{const row=byId.get(item.id);const reviewed=Boolean(row&&row.caseSha256===evaluationCaseSha256(item));return{...item,caseSha256:evaluationCaseSha256(item),expectedAnswer:reviewed?row!.expectedAnswer:"",expectedSources:reviewed?row!.expectedSources:[],reviewNote:reviewed?row!.reviewNote??"":"",reviewed,precisionComplete:reviewed&&goldReviewIsPrecise(item,row!.expectedSources,row!.reviewNote??""),reviewedAt:reviewed?row!.reviewedAt:null,revision:reviewed?row!.revision:0,locked:item.split==="holdout"&&!holdoutUnlocked,sourceSuggestions:[...new Map(item.expectedEntities.flatMap(entity=>sourceByEntity.get(entity.toLowerCase())??[]).map(source=>[source.assetSha256,{assetId:source.assetId,assetSha256:source.assetSha256,title:source.title,version:source.version,url:`/api/knowledge/assets/${source.assetId}`}])).values()]};});
   if(input.reviewed!==undefined)items=items.filter(item=>item.reviewed===input.reviewed);
   const total=items.length;items=items.slice(input.offset,input.offset+input.limit);
-  const counts=Object.fromEntries((["development","validation","holdout"] as const).map(split=>{const cases=corpus.cases.filter(item=>item.split===split);return[split,{total:cases.length,reviewed:cases.filter(item=>{const row=byId.get(item.id);return Boolean(row&&row.caseSha256===evaluationCaseSha256(item));}).length}];}));
+  const counts=Object.fromEntries((["development","validation","holdout"] as const).map(split=>{const cases=corpus.cases.filter(item=>item.split===split);return[split,{total:cases.length,reviewed:cases.filter(item=>{const row=byId.get(item.id);return Boolean(row&&row.caseSha256===evaluationCaseSha256(item));}).length,precise:cases.filter(item=>{const row=byId.get(item.id);return Boolean(row&&row.caseSha256===evaluationCaseSha256(item)&&goldReviewIsPrecise(item,row.expectedSources,row.reviewNote??""));}).length}];}));
   return{corpusVersion:corpus.version,items,total,offset:input.offset,limit:input.limit,reviewed:rows.filter(row=>corpus.cases.some(item=>item.id===row.caseId&&row.caseSha256===evaluationCaseSha256(item))).length,counts,holdoutUnlocked,retrievalProfileKey:RAG_V3_RETRIEVAL_PROFILE.key,retrievalProfileSha256:retrievalProfileSha256()};
 }
 
@@ -64,14 +64,29 @@ export async function saveGoldReview(userId:string,input:{caseId:string;caseSha2
   const gates=await tenantQuery<{ok:number}>(userId,`select 1 ok from knowledge_evaluation_holdout_gate_v3 where corpus_version=$1`,[corpus.version],"admin");
   if(item.split==="holdout"&&!gates[0])throw new Error("holdout-locked");
   if(goldSourcesRequired(item)&&input.expectedSources.length===0)throw new Error("sources-required");
+  if(item.expectedOutcome==="insufficient-evidence"&&input.expectedSources.length===0&&input.reviewNote.trim().length<12)throw new Error("no-answer-review-note-required");
+  if(input.expectedSources.some(source=>!source.excerpt?.trim()))throw new Error("source-excerpt-required");
+  const hashes=[...new Set(input.expectedSources.map(source=>source.assetSha256))];
+  if(hashes.length){
+    const current=await tenantQuery<{source_sha256:string}>(userId,`select distinct a.source_sha256
+      from knowledge_release_pointer_v3 p join knowledge_chunk_v3 c on c.release_id=p.release_id
+      join knowledge_source_revision_v3 sr on sr.id=c.source_revision_id
+      join knowledge_asset a on a.id=sr.asset_id join knowledge_document d on d.id=a.document_id
+      where p.scope_kind='shared' and a.source_sha256=any($1::text[])
+        and a.registration_status='registered' and d.status='active' and d.visibility='shared'`,[hashes],"admin");
+    if(current.length!==hashes.length)throw new Error("source-unavailable");
+  }
   await tenantQuery(userId,`insert into knowledge_evaluation_review_v3(corpus_version,case_id,case_sha256,split,expected_answer,expected_sources,review_note,reviewed_by) values($1,$2,$3,$4,$5,$6::jsonb,$7,$8) on conflict(corpus_version,case_id) do update set case_sha256=excluded.case_sha256,split=excluded.split,expected_answer=excluded.expected_answer,expected_sources=excluded.expected_sources,review_note=excluded.review_note,reviewed_by=excluded.reviewed_by,reviewed_at=now(),revision=knowledge_evaluation_review_v3.revision+1`,[corpus.version,item.id,input.caseSha256,item.split,input.expectedAnswer,JSON.stringify(input.expectedSources),input.reviewNote||null,userId],"admin");
 }
 
 export async function unlockGoldHoldout(userId:string,confirmed:boolean):Promise<void>{
   if(!confirmed)throw new Error("confirmation-required");
   const nonHoldout=corpus.cases.filter(item=>item.split!=="holdout");
-  const rows=await tenantQuery<{caseId:string;caseSha256:string}>(userId,`select case_id as "caseId",case_sha256 as "caseSha256" from knowledge_evaluation_review_v3 where corpus_version=$1 and split<>'holdout'`,[corpus.version],"admin");
+  const rows=await tenantQuery<{caseId:string;caseSha256:string;expectedSources:GoldSourceCoordinate[];reviewNote:string|null}>(userId,`select case_id as "caseId",case_sha256 as "caseSha256",expected_sources as "expectedSources",review_note as "reviewNote" from knowledge_evaluation_review_v3 where corpus_version=$1 and split<>'holdout'`,[corpus.version],"admin");
   const reviewed=new Map(rows.map(row=>[row.caseId,row.caseSha256]));
-  if(nonHoldout.some(item=>reviewed.get(item.id)!==evaluationCaseSha256(item)))throw new Error("development-review-incomplete");
+  const byCase=new Map(rows.map(row=>[row.caseId,row]));
+  if(nonHoldout.some(item=>reviewed.get(item.id)!==evaluationCaseSha256(item)
+    ||!goldReviewIsPrecise(item,byCase.get(item.id)?.expectedSources??[],byCase.get(item.id)?.reviewNote??"")))
+    throw new Error("development-review-incomplete");
   await tenantQuery(userId,`insert into knowledge_evaluation_holdout_gate_v3(corpus_version,retrieval_profile_key,retrieval_profile_sha256,frozen_by) values($1,$2,$3,$4) on conflict(corpus_version) do nothing`,[corpus.version,RAG_V3_RETRIEVAL_PROFILE.key,retrievalProfileSha256(),userId],"admin");
 }

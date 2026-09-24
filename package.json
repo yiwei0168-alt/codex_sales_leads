@@ -57,6 +57,7 @@
     "knowledge:verify-tree-real-uploads-local": "node scripts/run-tsx.cjs scripts/verify-vectorless-real-uploads-local.ts",
     "knowledge:verify-v3-candidate-fallback-local": "node scripts/run-tsx.cjs scripts/verify-vectorless-v3-fallback-local.ts",
     "knowledge:diagnose-v3-candidate-fallback": "node scripts/run-tsx.cjs scripts/diagnose-vectorless-v3-fallback.ts",
+    "knowledge:audit-gold-precision-local": "node scripts/run-tsx.cjs scripts/audit-gold-precision-local.ts",
     "knowledge:verify-pageindex-isolated-local": ".venv-pageindex-local\\Scripts\\python.exe scripts/verify-pageindex-isolated-local.py",
     "memory:verify-graph-clone-outbox-local": "node scripts/run-tsx.cjs scripts/verify-memory-graph-clone-outbox-local.ts",
     "memory:verify-graph-real-outbox-local": "node scripts/run-tsx.cjs scripts/verify-memory-graph-real-outbox-local.ts",

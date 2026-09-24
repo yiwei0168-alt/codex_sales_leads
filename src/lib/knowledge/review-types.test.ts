@@ -1,6 +1,6 @@
 import {describe,expect,it} from "vitest";
 import {buildKnowledgeEvaluationCorpus} from "./evaluation/corpus";
-import {correctedFactValueIsValid,evaluationCaseSha256,goldSourcesRequired,retrievalProfileSha256,stableJson} from "./review-types";
+import {correctedFactValueIsValid,evaluationCaseSha256,goldReviewIsPrecise,goldSourcesRequired,retrievalProfileSha256,stableJson} from "./review-types";
 
 describe("knowledge review contracts",()=>{
   it("hashes cases and the frozen retrieval profile deterministically",()=>{
@@ -10,11 +10,15 @@ describe("knowledge review contracts",()=>{
     expect(retrievalProfileSha256()).toMatch(/^[0-9a-f]{64}$/);
     expect(stableJson({b:1,a:2})).toBe('{"a":2,"b":1}');
   });
-  it("requires sources for evidence-bearing outcomes but not clarify or deny",()=>{
+  it("requires precise sources for routed answers and a search note for no-answer cases",()=>{
     expect(goldSourcesRequired({expectedOutcome:"route"})).toBe(true);
-    expect(goldSourcesRequired({expectedOutcome:"insufficient-evidence"})).toBe(true);
+    expect(goldSourcesRequired({expectedOutcome:"insufficient-evidence"})).toBe(false);
     expect(goldSourcesRequired({expectedOutcome:"clarify"})).toBe(false);
     expect(goldSourcesRequired({expectedOutcome:"deny"})).toBe(false);
+    expect(goldReviewIsPrecise({expectedOutcome:"route"},[{assetSha256:"a".repeat(64),unitIndex:2}],"")).toBe(false);
+    expect(goldReviewIsPrecise({expectedOutcome:"route"},[{assetSha256:"a".repeat(64),unitIndex:2,excerpt:"The source text."}],"")).toBe(true);
+    expect(goldReviewIsPrecise({expectedOutcome:"insufficient-evidence"},[],"Checked all registered datasheets.")).toBe(true);
+    expect(goldReviewIsPrecise({expectedOutcome:"insufficient-evidence"},[],"")).toBe(false);
   });
   it("validates human corrections against the versioned attribute type and unit",()=>{
     expect(correctedFactValueIsValid("ethernet_port_count",8,"port")).toBe(true);

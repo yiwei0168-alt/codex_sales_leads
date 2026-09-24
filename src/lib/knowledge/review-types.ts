@@ -20,18 +20,19 @@ export interface KnowledgeFactReviewResponse {
 
 export interface GoldSourceCoordinate {
   assetSha256:string; unitIndex:number; row?:number; version?:string;
+  blockId?:string; excerpt?:string;
 }
 
 export interface KnowledgeGoldReviewItem extends KnowledgeEvaluationCase {
   caseSha256:string; expectedAnswer:string; expectedSources:GoldSourceCoordinate[];
   reviewNote:string; reviewed:boolean; reviewedAt:string|null; revision:number;
-  locked:boolean;
+  locked:boolean; precisionComplete:boolean;
   sourceSuggestions:Array<{assetId:string;assetSha256:string;title:string;version:string|null;url:string}>;
 }
 
 export interface KnowledgeGoldReviewResponse {
   corpusVersion:string; items:KnowledgeGoldReviewItem[]; total:number; offset:number; limit:number;
-  reviewed:number; counts:Record<string,{total:number;reviewed:number}>;
+  reviewed:number; counts:Record<string,{total:number;reviewed:number;precise:number}>;
   holdoutUnlocked:boolean; retrievalProfileKey:string; retrievalProfileSha256:string;
 }
 
@@ -55,7 +56,18 @@ export function retrievalProfileSha256():string {
 }
 
 export function goldSourcesRequired(item:Pick<KnowledgeEvaluationCase,"expectedOutcome">):boolean {
-  return item.expectedOutcome==="route"||item.expectedOutcome==="insufficient-evidence";
+  return item.expectedOutcome==="route";
+}
+
+export function goldSourceIsPrecise(source:GoldSourceCoordinate):boolean {
+  return /^[0-9a-f]{64}$/.test(source.assetSha256)&&Number.isSafeInteger(source.unitIndex)&&source.unitIndex>=1
+    &&Boolean(source.excerpt?.trim());
+}
+
+export function goldReviewIsPrecise(item:Pick<KnowledgeEvaluationCase,"expectedOutcome">,sources:GoldSourceCoordinate[],note:string):boolean {
+  if(item.expectedOutcome==="route")return sources.length>0&&sources.every(goldSourceIsPrecise);
+  if(item.expectedOutcome==="insufficient-evidence"&&sources.length===0)return note.trim().length>=12;
+  return sources.every(goldSourceIsPrecise);
 }
 
 export function correctedFactValueIsValid(attributeKey:string,value:unknown,unit:string|null|undefined):boolean {
