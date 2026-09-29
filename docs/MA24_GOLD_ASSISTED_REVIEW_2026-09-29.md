@@ -26,6 +26,8 @@
 | `base-04-open`：Open the original datasheet for AP11000 | 用户明确选择“确认答案和来源” | 当前 r1；题目哈希 `4c73d751d2c77277fbd02027c2f628795afd17e377a44076ca6766ad475c5adb`；答案与来源数据库回读一致 | AP11000 Datasheet V1.0 第 1 页，SHA-256 同第十四题，块 `c8f790cd-cb49-440d-a21b-bbf031bf43e6`，短引 `Model: AP11000`；封面原件与登记哈希已核对 |
 | `base-04-ports`：How many physical Ethernet ports does AP11000 have? | 用户明确选择“确认答案和来源” | 当前 r1；题目哈希 `71a209c145d93f24cb330cdb0259152cab512850b7e45a09cc1c3daa74e9ed72`；数据库回读 2 条来源坐标 | AP11000 第 3 页块 `60465d7b-f656-4272-9d97-8aa45845def2` 的 RJ45/SFP+ 数量及 accepts PoE powering；第 2 页块 `cc3241ae-27ef-4cc2-8ebf-9aacce32834f` 的 PoE In 标注；整页原件已核对 |
 | `base-04-poe`：Does AP11000 support PoE? | 用户明确选择“确认答案和来源” | 当前 r1；题目哈希 `18fd62d2dcca796522eb1fea98386c08b532f2e57a9e9a481bdacc26cb8a9bcc`；数据库回读 2 条来源坐标 | AP11000 第 2 页块 `cc3241ae-27ef-4cc2-8ebf-9aacce32834f` 的 PoE In 标注；第 3 页块 `60465d7b-f656-4272-9d97-8aa45845def2` 的 Power Input/802.3at/48~57V 原文；不额外推定 802.3af 或设备 PoE 输出 |
+| `base-04-compare`：Compare the interfaces and power options of AP11000 and AP6500 | 用户明确选择“确认答案和来源” | 当前 r1；题目哈希 `3efc4cc234c44b71d69a26fc4fd664b04fa0c07d4d8984f11f584d30990137b0`；数据库回读 8 条来源坐标 | 两份 V1.0 原件，与第十四题相同的 8 条接口、PoE 方向、输入供电及最大设备功耗坐标；重新通过当前来源/版本/短引校验 |
+| `base-04-explain`：Which deployment scenarios fit AP11000, and why? | 用户明确选择“确认答案和来源” | 当前 r1；题目哈希 `a7dfd37b74680037a94cddb50b4b6c45d95b4f02ba7ca1502036dd4a1267f823`；数据库回读 4 条来源坐标 | AP11000 第 2 页 Highlights 块 `cc3241ae-27ef-4cc2-8ebf-9aacce32834f` 与 Range 块 `aa6217b6-5d85-4872-8acb-15a2c6d442ca`；第 3 页 Installation 块 `167d7dbc-6b43-483d-8a96-afa6e548aa55`；第 4 页 Mesh/Wired Backhaul 块 `a497e2f8-8767-4fd4-ab3f-f8094324bfaa`；相关整页已核对，明确场景判断是根据规格推断 |
 
 该题已确认答案：找到并展示 AP3000 的原始 Datasheet PDF，提供打开或下载入口。已登记原件《AP3000_P / AP3000 Datasheet V1.0》包含 AP3000，可作为正确结果；不以 AP3000S 或 AP3000 Wall 等其他型号替代，也不把请求改成参数问答。
 
@@ -69,12 +71,16 @@
 
 第十八题已确认答案（保持英文）：Yes. AP11000 (V1.0) supports PoE input through its 2.5GbE RJ45 Ethernet port. Its datasheet lists IEEE 802.3at PoE and 48–57V Passive PoE input. The cited original does not list 802.3af, so its support should not be inferred. Adapter output specifications do not establish PoE output capability of the AP itself.
 
+第十九题已确认答案（保持英文）：Using their V1.0 datasheets, both AP11000 and AP6500 have one 2.5GbE RJ45 port for PoE input and one 10G SFP+ slot, not two RJ45 ports. AP11000 has a 12V/2A DC input and a maximum device power consumption of 20W; its PoE input specifications list IEEE 802.3at and 48–57V Passive PoE. AP6500 has a 12V/1.5A DC input and a maximum device power consumption of 18W; its PoE input specifications list IEEE 802.3at/af and 48–57V Passive PoE. AP11000’s cited original does not list 802.3af, so its support should not be inferred. Adapter output specifications do not establish PoE output capability of either AP.
+
+第二十题已确认答案（保持英文）：Based on its documented features, AP11000 (V1.0) fits indoor wall/ceiling deployments that need tri-band Wi-Fi 7, multi-gigabit wired connectivity, or Mesh with wired backhaul. The datasheet lists 6-stream tri-band Wi-Fi 7, one 10G SFP+ slot, one 2.5GbE PoE input port, wall/ceiling mounting, and Cudy Mesh with wired backhaul. This is a feature-based deployment assessment; the cited pages do not explicitly name particular industries or sites. Actual indoor coverage depends on layout and wall materials, so stated range and client figures should not be treated as guaranteed capacity.
+
 ## 原件补充与逐题更正
 
 准备第 10 题时完整读取 AP3600 第 3 页，发现 Highlights 明确列出 `1× Shielded GbE PoE Out`。随后核对两份本地 PDF SHA-256 与已登记哈希一致，并渲染查看两份原件完整第 3、4 页，确认输出说明、接口数量与输入供电/设备功耗。此前第 4、8、9 题只引用接口表与供电表，遗漏了概述中的输出口证据；其“不据此确定输出”的结尾需要补充。用户分别明确确认第 8、9、4 题修订后均保存为 r3，原 r2 决定保留在本记录。此次补充已完成；精确来源计数仍不替代剩余题目的人工答案与质量对照。
 
 ## 验证与进度
 
-本机保存通过当前来源/版本/短引校验，第 4、8、9 题当前 r3，其他前十一题当前 r2，第十二至十八题当前 r1。第十八题保存后的只读审计为 development 已保存 18/190、精确来源 18/190；validation 0/60；holdout 0/50。前十一题补充历史记录，随后七题为新增审核。第十九题候选已提出，等待用户逐题确认，未写入 Gold。
+本机保存通过当前来源/版本/短引校验，第 4、8、9 题当前 r3，其他前十一题当前 r2，第十二至二十题当前 r1。第二十题保存后的只读审计为 development 已保存 20/190、精确来源 20/190；validation 0/60；holdout 0/50。前十一题补充历史记录，随后九题为新增审核。下一题为 GS108 原件，尚未写入 Gold。
 
 审核发现存量共享树用 `v3ChunkId` 而非新上传的 `blockId`。预览与保存现在统一优先 `blockId`、其次 `v3ChunkId`、最后当前节点 ID；本机原文探针、9 项复核单测与局部 ESLint 通过。此兼容修复不修改来源内容或重建树。
