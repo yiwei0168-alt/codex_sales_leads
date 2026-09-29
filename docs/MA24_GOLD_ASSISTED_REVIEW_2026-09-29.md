@@ -28,6 +28,9 @@
 | `base-04-poe`：Does AP11000 support PoE? | 用户明确选择“确认答案和来源” | 当前 r1；题目哈希 `18fd62d2dcca796522eb1fea98386c08b532f2e57a9e9a481bdacc26cb8a9bcc`；数据库回读 2 条来源坐标 | AP11000 第 2 页块 `cc3241ae-27ef-4cc2-8ebf-9aacce32834f` 的 PoE In 标注；第 3 页块 `60465d7b-f656-4272-9d97-8aa45845def2` 的 Power Input/802.3at/48~57V 原文；不额外推定 802.3af 或设备 PoE 输出 |
 | `base-04-compare`：Compare the interfaces and power options of AP11000 and AP6500 | 用户明确选择“确认答案和来源” | 当前 r1；题目哈希 `3efc4cc234c44b71d69a26fc4fd664b04fa0c07d4d8984f11f584d30990137b0`；数据库回读 8 条来源坐标 | 两份 V1.0 原件，与第十四题相同的 8 条接口、PoE 方向、输入供电及最大设备功耗坐标；重新通过当前来源/版本/短引校验 |
 | `base-04-explain`：Which deployment scenarios fit AP11000, and why? | 用户明确选择“确认答案和来源” | 当前 r1；题目哈希 `a7dfd37b74680037a94cddb50b4b6c45d95b4f02ba7ca1502036dd4a1267f823`；数据库回读 4 条来源坐标 | AP11000 第 2 页 Highlights 块 `cc3241ae-27ef-4cc2-8ebf-9aacce32834f` 与 Range 块 `aa6217b6-5d85-4872-8acb-15a2c6d442ca`；第 3 页 Installation 块 `167d7dbc-6b43-483d-8a96-afa6e548aa55`；第 4 页 Mesh/Wired Backhaul 块 `a497e2f8-8767-4fd4-ab3f-f8094324bfaa`；相关整页已核对，明确场景判断是根据规格推断 |
+| `base-05-open`：打开 GS108 的 datasheet | 用户明确选择“确认答案和来源” | 当前 r1；题目哈希 `7edfb6cf1a812f7d0892e344d2b8e86f15709dad0cc2f2b3715faa48e12db559`；答案与来源数据库回读一致 | GS108 Datasheet V5.0 第 1 页，来源 SHA-256 `87b2d44905b2d3f85fee9c89940cc461057c0d9568297e4b9eaa43a2b440704b`，块 `0f8f16e1-1429-48a4-9ca1-87a8df069ddd`，短引 `Model: GS108`；封面原件与登记哈希已核对 |
+| `base-05-ports`：GS108 有几个物理网口？ | 用户明确选择“确认答案和来源” | 当前 r1；题目哈希 `e49f784a248c7d977c4810499e3bdd676c7328ef859cb26beda1e8e7e7b02385`；数据库回读 2 条来源坐标 | GS108 第 2 页 Features 块 `322b34be-5987-48de-91b9-d66517c45865` 与规格表块 `eca2c0cd-0d72-4ffc-95ea-c2991c76635c` 的 8×10/100/1000Mbps、自动协商及 Auto-MDI/MDIX 原文；原件两页与封面设备图已核对 |
+| `base-05-poe`：GS108 是否支持 PoE？ | 用户先选择“修改答案或来源”，随后明确修改：“未声明是否支持POE就是不支持” | 当前 r1；题目哈希 `ae0a16249c71267aeb39f4d83a03dbe55616c523ed6db2d2011acd5ff365783c`；数据库回读 2 条来源坐标 | GS108 第 2 页规格表块 `eca2c0cd-0d72-4ffc-95ea-c2991c76635c`，短引 `Power. Power, 2 = DC 5V / 0.55 A.` 及协议栏 `IEEE 802.3, 802.3i/u/x/ab`；两页原件无 PoE 声明，按用户 MA24-09 口径判定不支持 |
 
 该题已确认答案：找到并展示 AP3000 的原始 Datasheet PDF，提供打开或下载入口。已登记原件《AP3000_P / AP3000 Datasheet V1.0》包含 AP3000，可作为正确结果；不以 AP3000S 或 AP3000 Wall 等其他型号替代，也不把请求改成参数问答。
 
@@ -75,12 +78,22 @@
 
 第二十题已确认答案（保持英文）：Based on its documented features, AP11000 (V1.0) fits indoor wall/ceiling deployments that need tri-band Wi-Fi 7, multi-gigabit wired connectivity, or Mesh with wired backhaul. The datasheet lists 6-stream tri-band Wi-Fi 7, one 10G SFP+ slot, one 2.5GbE PoE input port, wall/ceiling mounting, and Cudy Mesh with wired backhaul. This is a feature-based deployment assessment; the cited pages do not explicitly name particular industries or sites. Actual indoor coverage depends on layout and wall materials, so stated range and client figures should not be treated as guaranteed capacity.
 
+第二十一题已确认答案：找到并展示 GS108 的原始 Datasheet PDF，提供打开或下载入口。已登记的《GS108 Datasheet V5.0》是正确匹配的原件；不以 GS108D、GS108E、GS108ES2 或 GS108U 等其他型号替代，也不把打开资料的请求改成参数问答。
+
+第二十二题已确认答案：GS108（V5.0）有 8 个物理以太网口，均支持 10/100/1000Mbps 速率、自动协商及 Auto-MDI/MDIX。DC 电源插孔不计作网口。
+
+第二十三题用户明确修改后保存的答案：不支持。GS108（V5.0）采用 DC 5V/0.55A 供电，其 Datasheet 未声明 PoE 输入或输出支持。
+
 ## 原件补充与逐题更正
 
 准备第 10 题时完整读取 AP3600 第 3 页，发现 Highlights 明确列出 `1× Shielded GbE PoE Out`。随后核对两份本地 PDF SHA-256 与已登记哈希一致，并渲染查看两份原件完整第 3、4 页，确认输出说明、接口数量与输入供电/设备功耗。此前第 4、8、9 题只引用接口表与供电表，遗漏了概述中的输出口证据；其“不据此确定输出”的结尾需要补充。用户分别明确确认第 8、9、4 题修订后均保存为 r3，原 r2 决定保留在本记录。此次补充已完成；精确来源计数仍不替代剩余题目的人工答案与质量对照。
 
+## PoE 审核口径更正
+
+第二十三题最初候选只表述“原件未声明支持，不能答支持”，未写入 Gold。用户选择修改并明确要求“未声明是否支持POE就是不支持”，因此直接按其明确修改保存“不支持”的 r1，不将其误记为点击确认原候选。MA24-09 记录本轮 PoE 能力 Gold 的判定口径；GS108 两页完整原件及真实短引保留，否定结论不冒充原件逐字引文，也不表示进行过硬件测试。
+
 ## 验证与进度
 
-本机保存通过当前来源/版本/短引校验，第 4、8、9 题当前 r3，其他前十一题当前 r2，第十二至二十题当前 r1。第二十题保存后的只读审计为 development 已保存 20/190、精确来源 20/190；validation 0/60；holdout 0/50。前十一题补充历史记录，随后九题为新增审核。下一题为 GS108 原件，尚未写入 Gold。
+本机保存通过当前来源/版本/短引校验，第 4、8、9 题当前 r3，其他前十一题当前 r2，第十二至二十三题当前 r1。第二十三题保存后的只读审计为 development 已保存 23/190、精确来源 23/190；validation 0/60；holdout 0/50。前十一题补充历史记录，随后十二题为新增审核。下一题为 GS108/GS108D 比较，尚未写入 Gold。
 
 审核发现存量共享树用 `v3ChunkId` 而非新上传的 `blockId`。预览与保存现在统一优先 `blockId`、其次 `v3ChunkId`、最后当前节点 ID；本机原文探针、9 项复核单测与局部 ESLint 通过。此兼容修复不修改来源内容或重建树。
