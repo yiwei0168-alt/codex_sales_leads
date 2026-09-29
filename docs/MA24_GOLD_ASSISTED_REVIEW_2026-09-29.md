@@ -22,6 +22,10 @@
 | `base-03-ports`：AP6500 有几个物理网口？ | 用户明确选择“确认答案和来源” | 当前 r1；题目哈希 `8d64a087078f5e72ff5993fdb37d8e71f4a299601b0a1411030af71363d833d1`；数据库回读 2 条来源坐标 | AP6500 同一原件第 3 页，表格块 `cb78feb9-9476-4797-8067-53690bfdca49` 的 RJ45/SFP+ 数量；概述块 `cb3f1394-1dc4-48a9-9f37-c3a3e8bb2023` 短引 `1× Shielded 2.5GbE PoE IN, 10G SFP+ Slot`；整页原件已核对 |
 | `base-03-poe`：AP6500 是否支持 PoE？ | 用户明确选择“确认答案和来源” | 当前 r1；题目哈希 `2f06d3737998aa20e0250d577f450fc0511becde2600687054dddee2a7cb8132`；数据库回读 2 条来源坐标 | AP6500 第 3 页概述块 `cb3f1394-1dc4-48a9-9f37-c3a3e8bb2023` 的 PoE IN 标注；第 4 页表格块 `f354957f-436a-4e93-813a-3c26ac8a7b52` 的 Power Input/802.3at/af/48-57V 原文；不把适配器 Output 当作设备输出 |
 | `base-03-compare`：比较 AP6500 和 AP11000 的接口与供电规格 | 用户明确选择“确认答案和来源” | 当前 r1；题目哈希 `a253a1f53b055d1a137f21b96b8bee1debef0ab800deb1b8e18a28bff90a8156`；数据库回读 8 条来源坐标 | AP6500 同一原件第 3、4 页的接口、PoE IN、输入供电与 18W 原文；AP11000 Datasheet V1.0，SHA-256 `40120eb39aad69e586784f6cec7b0c5caf40331fa24e4bb4525badeb706879e4`，第 2 页块 `cc3241ae-27ef-4cc2-8ebf-9aacce32834f` 的 PoE In、第 3 页块 `60465d7b-f656-4272-9d97-8aa45845def2` 的接口/供电/20W 原文；相关整页与登记哈希均已核对 |
+| `base-03-explain`：AP6500 适合什么部署场景？请说明依据 | 用户明确选择“确认答案和来源” | 当前 r1；题目哈希 `a4395881a42748c736c97efa8a3b516cb39a39b2bc6b7b331bc69e9c175c77e7`；数据库回读 2 条来源坐标 | AP6500 第 3 页概述块 `cb3f1394-1dc4-48a9-9f37-c3a3e8bb2023` 的场景/安装/接口/功能原文；表格块 `cb78feb9-9476-4797-8067-53690bfdca49` 的开放空间测试及布局/墙材条件；整页原件已核对 |
+| `base-04-open`：Open the original datasheet for AP11000 | 用户明确选择“确认答案和来源” | 当前 r1；题目哈希 `4c73d751d2c77277fbd02027c2f628795afd17e377a44076ca6766ad475c5adb`；答案与来源数据库回读一致 | AP11000 Datasheet V1.0 第 1 页，SHA-256 同第十四题，块 `c8f790cd-cb49-440d-a21b-bbf031bf43e6`，短引 `Model: AP11000`；封面原件与登记哈希已核对 |
+| `base-04-ports`：How many physical Ethernet ports does AP11000 have? | 用户明确选择“确认答案和来源” | 当前 r1；题目哈希 `71a209c145d93f24cb330cdb0259152cab512850b7e45a09cc1c3daa74e9ed72`；数据库回读 2 条来源坐标 | AP11000 第 3 页块 `60465d7b-f656-4272-9d97-8aa45845def2` 的 RJ45/SFP+ 数量及 accepts PoE powering；第 2 页块 `cc3241ae-27ef-4cc2-8ebf-9aacce32834f` 的 PoE In 标注；整页原件已核对 |
+| `base-04-poe`：Does AP11000 support PoE? | 用户明确选择“确认答案和来源” | 当前 r1；题目哈希 `18fd62d2dcca796522eb1fea98386c08b532f2e57a9e9a481bdacc26cb8a9bcc`；数据库回读 2 条来源坐标 | AP11000 第 2 页块 `cc3241ae-27ef-4cc2-8ebf-9aacce32834f` 的 PoE In 标注；第 3 页块 `60465d7b-f656-4272-9d97-8aa45845def2` 的 Power Input/802.3at/48~57V 原文；不额外推定 802.3af 或设备 PoE 输出 |
 
 该题已确认答案：找到并展示 AP3000 的原始 Datasheet PDF，提供打开或下载入口。已登记原件《AP3000_P / AP3000 Datasheet V1.0》包含 AP3000，可作为正确结果；不以 AP3000S 或 AP3000 Wall 等其他型号替代，也不把请求改成参数问答。
 
@@ -57,12 +61,20 @@
 
 第十四题已确认答案：两者均按 V1.0 Datasheet。两者均有 1 个 2.5GbE RJ45 网口（PoE 输入）和 1 个 10G SFP+ 插槽，不能写成 2 个 RJ45 网口。AP6500：DC 输入 12V/1.5A，最大设备功耗 18W；PoE 输入规格列出 802.3at/af 和 48～57V Passive PoE。AP11000：DC 输入 12V/2A，最大设备功耗 20W；PoE 输入规格列出 802.3at 和 48～57V Passive PoE。该原件未列出 802.3af，不额外推定其支持情况。适配器的 Output 参数不代表设备具有 PoE 输出能力。
 
+第十五题已确认答案：AP6500（V1.0）适合酒店等接待服务、教育和交通场所的高需求无线部署，支持墙面或吸顶安装。依据是 Datasheet 明确列出这些场景，并提供六流双频 Wi-Fi 7、1 个 10G SFP+ 插槽、1 个 2.5GbE PoE IN 网口，以及多 AP 管理、Captive Portal 和 VLAN SSID。实际覆盖受布局和墙体材料影响，不能把标称距离或连接设备数当作保证的部署容量。
+
+第十六题已确认答案（保持英文）：Find and display the original AP11000 Datasheet PDF, with an open or download link. The registered “AP11000 Datasheet V1.0” is a valid matching original. Do not substitute AP6500 or another model, or turn this request into a specification answer.
+
+第十七题已确认答案（保持英文）：AP11000 (V1.0) has one 2.5GbE RJ45 Ethernet port that accepts PoE input, plus one 10G SFP+ slot. The RJ45 port count is 1; counting the SFP+ slot as a physical network interface gives 2 interfaces in total. It does not have two RJ45 ports.
+
+第十八题已确认答案（保持英文）：Yes. AP11000 (V1.0) supports PoE input through its 2.5GbE RJ45 Ethernet port. Its datasheet lists IEEE 802.3at PoE and 48–57V Passive PoE input. The cited original does not list 802.3af, so its support should not be inferred. Adapter output specifications do not establish PoE output capability of the AP itself.
+
 ## 原件补充与逐题更正
 
 准备第 10 题时完整读取 AP3600 第 3 页，发现 Highlights 明确列出 `1× Shielded GbE PoE Out`。随后核对两份本地 PDF SHA-256 与已登记哈希一致，并渲染查看两份原件完整第 3、4 页，确认输出说明、接口数量与输入供电/设备功耗。此前第 4、8、9 题只引用接口表与供电表，遗漏了概述中的输出口证据；其“不据此确定输出”的结尾需要补充。用户分别明确确认第 8、9、4 题修订后均保存为 r3，原 r2 决定保留在本记录。此次补充已完成；精确来源计数仍不替代剩余题目的人工答案与质量对照。
 
 ## 验证与进度
 
-本机保存通过当前来源/版本/短引校验，第 4、8、9 题当前 r3，其他前十一题当前 r2，第十二至十四题当前 r1。第十四题保存后的只读审计为 development 已保存 14/190、精确来源 14/190；validation 0/60；holdout 0/50。前十一题补充历史记录，随后三题为新增审核。第十五题候选已提出，等待用户逐题确认，未写入 Gold。
+本机保存通过当前来源/版本/短引校验，第 4、8、9 题当前 r3，其他前十一题当前 r2，第十二至十八题当前 r1。第十八题保存后的只读审计为 development 已保存 18/190、精确来源 18/190；validation 0/60；holdout 0/50。前十一题补充历史记录，随后七题为新增审核。第十九题候选已提出，等待用户逐题确认，未写入 Gold。
 
 审核发现存量共享树用 `v3ChunkId` 而非新上传的 `blockId`。预览与保存现在统一优先 `blockId`、其次 `v3ChunkId`、最后当前节点 ID；本机原文探针、9 项复核单测与局部 ESLint 通过。此兼容修复不修改来源内容或重建树。
