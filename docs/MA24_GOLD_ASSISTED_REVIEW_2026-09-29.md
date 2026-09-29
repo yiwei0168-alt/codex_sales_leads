@@ -44,6 +44,7 @@
 | `base-07-compare`：比较 GS1010PE 和 HS105 的接口与供电规格 | 用户明确选择“确认答案和来源” | 当前 r1；题目哈希 `dd08455f460ccd7280f0d0ed84aed21184333be1ae91f15c72c92eab3085ba61`；数据库回读 6 条来源坐标 | GS1010PE 第 3 页原接口/供电块；HS105 Datasheet V3.0，来源 SHA-256 `5168176fedc4136543dd6b965f71845b946880ee9694e772b00cf9caba0e6c92`，第 4 页块 `d4ace3d5-b615-476e-9b0d-4b665886fdb8` 的 5 个 2.5Gbps RJ45 口、DC 12V/1A 与适配器输入/输出；两份完整原件已核对，HS105 PoE 按 MA24-09 判定 |
 | `base-07-explain`：GS1010PE 适合什么部署场景？请说明依据 | 用户明确选择“确认答案和来源” | 当前 r1；题目哈希 `f886a74c40fddbfcdb2e9111f331c754b03438c4766a8982b6f136be15594827`；数据库回读 6 条来源坐标 | 第 1 页供电/数据块 `42ff851d-533e-447d-8218-ac2b5336e913`；第 2 页 Extend 块 `4618abe7-d302-41ef-a5b8-8093e87e9efa`、Watchdog 块 `1abb4f7a-9023-4d49-bbb0-aff03dcc7964`；第 3 页接口/电源/距离表；第 4 页安装原文；保留 250 米仅 10Mbps、在线自动升级禁用 Watchdog、支架不随箱和总供电限制 |
 | `base-08-open`：Open the original datasheet for HS105 | 用户明确选择“确认答案和来源” | 当前 r1；题目哈希 `4a2cab6ccad422dd00a04cee02c0416d8d978e251016e907193ec6af15900dab`；答案与来源数据库回读一致 | HS105 Datasheet V3.0，来源 SHA-256 同第三十四题；第 4 页 Package Content 块 `eae18a29-098a-400b-98ac-aabef235ebe6`，短引 `HS105 / Power Adapter / Installation Guide`；封面型号和完整六页原件已核对 |
+| `base-08-ports`：How many physical Ethernet ports does HS105 have? | 用户明确选择“确认答案和来源” | 当前 r1；题目哈希 `8aeaadb030ee1d5ae87770016461a694387a4a1bc37ecda5b9a0583c9e0d7b6a`；数据库回读 3 条来源坐标 | HS105 第 4 页接口表块 `d4ace3d5-b615-476e-9b0d-4b665886fdb8` 与 Highlights 块 `c361f382-279e-4468-8493-5c84d59eb225` 的 5 个 RJ45 口；第 2 页块 `9810b166-6c6e-4af1-88d3-92e8b7929e77` 的 10/100/1000/2500Mbps 速率原文；DC 接口不计入网口 |
 
 该题已确认答案：找到并展示 AP3000 的原始 Datasheet PDF，提供打开或下载入口。已登记原件《AP3000_P / AP3000 Datasheet V1.0》包含 AP3000，可作为正确结果；不以 AP3000S 或 AP3000 Wall 等其他型号替代，也不把请求改成参数问答。
 
@@ -123,6 +124,8 @@
 
 第三十六题已确认答案（保持英文）：Find and display the original HS105 Datasheet PDF, with an open or download link. The registered “HS105 Datasheet V3.0” is a valid matching original. Do not substitute HS105U or another model, or turn this request into a specification answer.
 
+第三十七题已确认答案（保持英文）：HS105 (V3.0) has 5 physical RJ45 Ethernet ports, each supporting 10/100/1000/2500Mbps. The DC power connector is not an Ethernet port.
+
 ## 原件补充与逐题更正
 
 准备第 10 题时完整读取 AP3600 第 3 页，发现 Highlights 明确列出 `1× Shielded GbE PoE Out`。随后核对两份本地 PDF SHA-256 与已登记哈希一致，并渲染查看两份原件完整第 3、4 页，确认输出说明、接口数量与输入供电/设备功耗。此前第 4、8、9 题只引用接口表与供电表，遗漏了概述中的输出口证据；其“不据此确定输出”的结尾需要补充。用户分别明确确认第 8、9、4 题修订后均保存为 r3，原 r2 决定保留在本记录。此次补充已完成；精确来源计数仍不替代剩余题目的人工答案与质量对照。
@@ -133,6 +136,6 @@
 
 ## 验证与进度
 
-本机保存通过当前来源/版本/短引校验，第 4、8、9 题当前 r3，其他前十一题当前 r2，第十二至三十六题当前 r1。第三十六题保存后的只读审计为 development 已保存 36/190、精确来源 36/190；validation 0/60；holdout 0/50。前十一题补充历史记录，随后二十五题为新增审核。第三十七题候选已提出，等待用户逐题确认，未写入 Gold。
+本机保存通过当前来源/版本/短引校验，第 4、8、9 题当前 r3，其他前十一题当前 r2，第十二至三十七题当前 r1。第三十七题保存后的只读审计为 development 已保存 37/190、精确来源 37/190；validation 0/60；holdout 0/50。前十一题补充历史记录，随后二十六题为新增审核。第三十八题候选已提出，等待用户逐题确认，未写入 Gold。
 
 审核发现存量共享树用 `v3ChunkId` 而非新上传的 `blockId`。预览与保存现在统一优先 `blockId`、其次 `v3ChunkId`、最后当前节点 ID；本机原文探针、9 项复核单测与局部 ESLint 通过。此兼容修复不修改来源内容或重建树。
