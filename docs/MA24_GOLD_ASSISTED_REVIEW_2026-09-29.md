@@ -48,6 +48,8 @@
 | `base-08-poe`：Does HS105 support PoE? | 用户明确选择“确认答案和来源” | 当前 r1；题目哈希 `0b905d0b8e58c44bd1dd56ff0018a39c661f72721fd947cbc98d52d78814504a`；数据库回读 3 条来源坐标 | HS105 第 4 页供电/适配器块 `d4ace3d5-b615-476e-9b0d-4b665886fdb8`，第 5 页协议块 `6a2138ec-9b2a-4f3b-afa7-e2009a327512`；完整六页无 PoE 声明，按 MA24-09 判定不支持输入或输出，不将适配器参数当作设备 PoE 能力 |
 | `base-08-compare`：Compare the interfaces and power options of HS105 and GS1010PE | 用户明确选择“确认答案和来源” | 当前 r1；题目哈希 `93a9d860cc154a4bffd1a041f20e3f2a1b134cc08ba75c3a023119d84468db38`；数据库回读 6 条来源坐标 | 与第三十四题相同的两份原件及 6 条接口、设备输入、电源/适配器原文坐标；重新通过当前来源和短引校验，按题目保存确认的完整英文答案 |
 | `base-08-explain`：Which deployment scenarios fit HS105, and why? | 用户明确选择“确认答案和来源” | 当前 r1；题目哈希 `5e5c9e1d3575ab8ebf4ebc2ccaa5f1f2921cef62a06face4cb8713ebce6fedd2`；数据库回读 4 条来源坐标 | HS105 第 4 页 Highlights 块 `c361f382-279e-4468-8493-5c84d59eb225` 的 NAS/高带宽、接口、管理和安装原文；第 5 页 Port Management 块 `6a2138ec-9b2a-4f3b-afa7-e2009a327512` 的静态聚合/镜像；第 4 页供电和距离块 `d4ace3d5-b615-476e-9b0d-4b665886fdb8`；保留 250 米须配置 10Mbps，PoE 按 MA24-09 判定 |
+| `base-09-open`：打开 LT400 的 datasheet | 用户明确选择“确认答案和来源” | 当前 r1；题目哈希 `d2ae0dbb67957612995318c691aa974cc1c7b814acabbd581b473c7805b3916b`；答案与来源数据库回读一致 | LT400 Datasheet V2.1，来源 SHA-256 `43f99a717b2c9165a567eb10b369f2f6d3068906d4ff268afbfbf2ce623a4840`；第 1 页封面块 `3e16657c-f71a-4067-a185-1ba58bf9ffce`，短引 `Model: LT400`；封面原件与登记哈希已核对，不以 LT400V 或 LT400-Outdoor 替代 |
+| `base-09-ports`：LT400 有几个物理网口？ | 用户明确选择“确认答案和来源” | 当前 r1；题目哈希 `ebbcea220d7e0d288dcae673be8ffbc6f6e293ca5c627f73a62d38e59485f96f`；数据库回读 2 条来源坐标 | LT400 同一原件第 3 页 Interfaces 块 `ecd1b930-82ba-4223-b470-943bfe67691a` 的 1 个 WAN/LAN 加 3 个 LAN 口；第 6 页块 `c587fbea-3f8f-425f-910f-a0015e948e29` 的 4 个 10/100Mbps RJ45 口；WAN/LAN 不重复计数，电源和 SIM 卡槽不计入 |
 
 该题已确认答案：找到并展示 AP3000 的原始 Datasheet PDF，提供打开或下载入口。已登记原件《AP3000_P / AP3000 Datasheet V1.0》包含 AP3000，可作为正确结果；不以 AP3000S 或 AP3000 Wall 等其他型号替代，也不把请求改成参数问答。
 
@@ -135,6 +137,10 @@
 
 第四十题已确认答案（保持英文）：HS105 (V3.0) is suited to 2.5Gbps wired network expansion for NAS or other bandwidth-intensive uses, with desktop or wall mounting. Its datasheet lists five 2.5Gbps RJ45 ports, web management, VLAN, QoS, static port aggregation, port mirroring and loop prevention. It uses DC 12V/1A and does not support PoE input or output. For the stated 250m transmission mode, the port speed must be configured to 10Mbps; do not describe it as 250m at 2.5Gbps.
 
+第四十一题已确认答案：找到并展示 LT400 的原始 Datasheet PDF，提供打开或下载入口。已登记的《LT400 Datasheet V2.1》是正确匹配的原件；不以LT400V或LT400-Outdoor等其他型号替代，也不把打开资料的请求改成参数问答。
+
+第四十二题已确认答案：LT400（V2.1）有4个10/100Mbps RJ45物理以太网口：1个可配置为WAN或LAN的端口，加上3个LAN口。WAN/LAN是同一个物理端口，不能重复计数；电源插孔和Nano SIM卡槽不计作网口。这些是百兆口，不是千兆口。
+
 ## 原件补充与逐题更正
 
 准备第 10 题时完整读取 AP3600 第 3 页，发现 Highlights 明确列出 `1× Shielded GbE PoE Out`。随后核对两份本地 PDF SHA-256 与已登记哈希一致，并渲染查看两份原件完整第 3、4 页，确认输出说明、接口数量与输入供电/设备功耗。此前第 4、8、9 题只引用接口表与供电表，遗漏了概述中的输出口证据；其“不据此确定输出”的结尾需要补充。用户分别明确确认第 8、9、4 题修订后均保存为 r3，原 r2 决定保留在本记录。此次补充已完成；精确来源计数仍不替代剩余题目的人工答案与质量对照。
@@ -145,6 +151,6 @@
 
 ## 验证与进度
 
-本机保存通过当前来源/版本/短引校验，第 4、8、9 题当前 r3，其他前十一题当前 r2，第十二至四十题当前 r1。第四十题保存后的只读审计为 development 已保存 40/190、精确来源 40/190；validation 0/60；holdout 0/50。前十一题补充历史记录，随后二十九题为新增审核。第四十一题候选已提出，等待用户逐题确认，未写入 Gold。
+本机保存通过当前来源/版本/短引校验，第 4、8、9 题当前 r3，其他前十一题当前 r2，第十二至四十二题当前 r1。第四十二题保存后的只读审计为 development 已保存 42/190、精确来源 42/190；validation 0/60；holdout 0/50。前十一题补充历史记录，随后三十一题为新增审核。第四十三题候选已提出，等待用户逐题确认，未写入 Gold。
 
 审核发现存量共享树用 `v3ChunkId` 而非新上传的 `blockId`。预览与保存现在统一优先 `blockId`、其次 `v3ChunkId`、最后当前节点 ID；本机原文探针、9 项复核单测与局部 ESLint 通过。此兼容修复不修改来源内容或重建树。
