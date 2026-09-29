@@ -34,6 +34,9 @@
 | `base-05-compare`：比较 GS108 和 GS108D 的接口与供电规格 | 用户明确选择“确认答案和来源” | 当前 r1；题目哈希 `ec88d4813e93d5249cdd7e35c6601aa1b7178b548f33e37c41fe5f9eb5ff5ef9`；数据库回读 6 条来源坐标 | GS108 同一原件第 2 页接口/供电/功耗；GS108D Datasheet V5.0，来源 SHA-256 `7ddd8a2345ff52e07b5091deaa1341eaa4f6afb7fce1e69a7dc0e96dea063cf5`，第 2 页规格表块 `52180363-c68a-4962-82c6-c7804acc4c3a` 与 Features 块 `051ca744-6e56-45f0-b4ed-a5af8c770d00`；两份完整原件与哈希已核对，PoE 按 MA24-09 判为不支持 |
 | `base-05-explain`：GS108 适合什么部署场景？请说明依据 | 用户明确选择“确认答案和来源” | 当前 r1；题目哈希 `8430699b724ef7b96587d6ea1cc3c46ab227b49641dc374dd2945f47cb2ab15c`；数据库回读 2 条来源坐标 | GS108 第 2 页 Features 块 `322b34be-5987-48de-91b9-d66517c45865` 的接口、安装、流控、IGMP、环路和功耗原文；规格表块 `eca2c0cd-0d72-4ffc-95ea-c2991c76635c` 的 DC 供电原文；部署判断注明来自规格，PoE 按 MA24-09 判定 |
 | `base-06-open`：Open the original datasheet for GS108D | 用户明确选择“确认答案和来源” | 当前 r1；题目哈希 `1b6769748fa5a4fbb584090d427f8ff57949911b286df120b2d7ed88550603c8`；答案与来源数据库回读一致 | GS108D Datasheet V5.0 第 2 页，来源 SHA-256 同第二十四题，规格表块 `52180363-c68a-4962-82c6-c7804acc4c3a`，短引 `Product Model. Product Model, 2 = GS108D.`；封面型号可见但无对应抽取块，使用第 2 页真实块坐标 |
+| `base-06-ports`：How many physical Ethernet ports does GS108D have? | 用户明确选择“确认答案和来源” | 当前 r1；题目哈希 `2ad9cfc38eb0a3dabb989a47d5e186bcbec2080125d7ef9c84748f190d08923f`；数据库回读 2 条来源坐标 | GS108D 同一原件第 2 页 Features 块 `051ca744-6e56-45f0-b4ed-a5af8c770d00` 与规格表块 `52180363-c68a-4962-82c6-c7804acc4c3a` 的 8×10/100/1000Mbps、自动协商及 Auto-MDI/MDIX 原文；独立 DC 插孔不计入网口 |
+| `base-06-poe`：Does GS108D support PoE? | 用户明确选择“确认答案和来源” | 当前 r1；题目哈希 `214b9ff37fa75f39c90d238c5bc3ed98ca0dcdc5b5e7e0886021f5f2681204d7`；数据库回读 2 条来源坐标 | GS108D 同一原件第 2 页规格表块 `52180363-c68a-4962-82c6-c7804acc4c3a` 的 Input Voltage/DC 5V/0.55A 和协议原文；两页原件无 PoE 声明，按已确认 MA24-09 判定不支持输入或输出 |
+| `base-06-compare`：Compare the interfaces and power options of GS108D and GS108 | 用户明确选择“确认答案和来源” | 当前 r1；题目哈希 `4b1b6a404cbfc6b314c8e1b7d2c4770f2f514b1b4d297bb0ef4d9b2a1b80ef1e`；数据库回读 6 条来源坐标 | 两份 V5.0 原件，与第二十四题相同的第 2 页接口、供电及功耗原文块，按英文题目保存确认的英文答案；全部重新通过当前来源/短引校验 |
 
 该题已确认答案：找到并展示 AP3000 的原始 Datasheet PDF，提供打开或下载入口。已登记原件《AP3000_P / AP3000 Datasheet V1.0》包含 AP3000，可作为正确结果；不以 AP3000S 或 AP3000 Wall 等其他型号替代，也不把请求改成参数问答。
 
@@ -93,6 +96,12 @@
 
 第二十六题已确认答案（保持英文）：Find and display the original GS108D Datasheet PDF, with an open or download link. The registered “GS108D Datasheet V5.0” is a valid matching original. Do not substitute GS108 or another model, or turn this request into a specification answer.
 
+第二十七题已确认答案（保持英文）：GS108D (V5.0) has 8 physical Ethernet ports, all supporting 10/100/1000Mbps, auto-negotiation and Auto-MDI/MDIX. The DC power jack is not an Ethernet port.
+
+第二十八题已确认答案（保持英文）：No. GS108D (V5.0) uses a DC 5V/0.55A power supply and does not support PoE input or output. Its datasheet does not declare PoE support.
+
+第二十九题已确认答案（保持英文）：Using their V5.0 datasheets, both GS108D and GS108 have 8 physical 10/100/1000Mbps Ethernet ports with auto-negotiation and Auto-MDI/MDIX. Both use a DC 5V/0.55A power supply, with a stated maximum power consumption of 1.8W and idle consumption of 0.3W. Neither supports PoE input or output.
+
 ## 原件补充与逐题更正
 
 准备第 10 题时完整读取 AP3600 第 3 页，发现 Highlights 明确列出 `1× Shielded GbE PoE Out`。随后核对两份本地 PDF SHA-256 与已登记哈希一致，并渲染查看两份原件完整第 3、4 页，确认输出说明、接口数量与输入供电/设备功耗。此前第 4、8、9 题只引用接口表与供电表，遗漏了概述中的输出口证据；其“不据此确定输出”的结尾需要补充。用户分别明确确认第 8、9、4 题修订后均保存为 r3，原 r2 决定保留在本记录。此次补充已完成；精确来源计数仍不替代剩余题目的人工答案与质量对照。
@@ -103,6 +112,6 @@
 
 ## 验证与进度
 
-本机保存通过当前来源/版本/短引校验，第 4、8、9 题当前 r3，其他前十一题当前 r2，第十二至二十六题当前 r1。第二十六题保存后的只读审计为 development 已保存 26/190、精确来源 26/190；validation 0/60；holdout 0/50。前十一题补充历史记录，随后十五题为新增审核。第二十七题候选已提出，等待用户逐题确认，未写入 Gold。
+本机保存通过当前来源/版本/短引校验，第 4、8、9 题当前 r3，其他前十一题当前 r2，第十二至二十九题当前 r1。第二十九题保存后的只读审计为 development 已保存 29/190、精确来源 29/190；validation 0/60；holdout 0/50。前十一题补充历史记录，随后十八题为新增审核。第三十题候选已提出，等待用户逐题确认，未写入 Gold。
 
 审核发现存量共享树用 `v3ChunkId` 而非新上传的 `blockId`。预览与保存现在统一优先 `blockId`、其次 `v3ChunkId`、最后当前节点 ID；本机原文探针、9 项复核单测与局部 ESLint 通过。此兼容修复不修改来源内容或重建树。
