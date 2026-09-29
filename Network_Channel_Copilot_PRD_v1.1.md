@@ -8,7 +8,7 @@
 
 > MA24 检索进度：只读影子会话提供 24 份候选、8 次导航、8 组证据上限和可审计步骤收据；达到上限时保留部分结果与未查范围。主 Agent 尚未切换。
 
-> 2026-09-29 / MA24 Gold 审核：按 MA24-08，助手在当前对话逐题提出来源核对后的候选，用户逐题确认或明确修改后保存，仍保留界面审核入口与 holdout 锁定门槛。按 MA24-09，完整核对匹配型号/版本的原件后，未声明 PoE 支持判为不支持；未找到资料或未读完整原件不能当作未声明。当前 23 题已保存并通过精确来源字段校验，GS108 PoE 答案按用户明确修改记录；生产自动判定、300 题 Gold 与锁定 50 题质量对照仍未验收。[逐题证据](docs/MA24_GOLD_ASSISTED_REVIEW_2026-09-29.md)。
+> 2026-09-29 / MA24 Gold 审核：按 MA24-08，助手在当前对话逐题提出来源核对后的候选，用户逐题确认或明确修改后保存，仍保留界面审核入口与 holdout 锁定门槛。按 MA24-09，完整核对匹配型号/版本的原件后，未声明 PoE 支持判为不支持；未找到资料或未读完整原件不能当作未声明。该规则登记时 23 题已保存并通过精确来源字段校验，GS108 PoE 答案按用户明确修改记录；逐题最新进度见证据记录，生产自动判定、300 题 Gold 与锁定 50 题质量对照仍未验收。[逐题证据](docs/MA24_GOLD_ASSISTED_REVIEW_2026-09-29.md)。
 
 > 2026-09-20: MA01-MA09 confirmed; see [main Agent implementation workflow](docs/MAIN_AGENT_WORKFLOW.md). These are new targets, not completed implementation or release evidence.
 
