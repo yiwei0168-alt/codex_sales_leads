@@ -31,7 +31,11 @@ for(const entry of manifest.entries){
   const type=entry.caseId.match(/^base-\d+-(open|ports|poe|compare|explain)$/)?.[1];
   const baseMatch=entry.pattern===type&&entry.caseId!=="base-15-compare";
   const clarificationMatch=entry.pattern==="clarify-datasheet-model"&&/^boundary-[1-4]-0[12]$/.test(entry.caseId);
-  if(!baseMatch&&!clarificationMatch)throw new Error(`Pattern not approved: ${entry.caseId}`);
+  const variantMatch=entry.pattern==="model-package-variant"&&/^boundary-[1-4]-03$/.test(entry.caseId);
+  const unitMatch=entry.pattern==="ethernet-cellular-distinction"&&/^boundary-[1-4]-04$/.test(entry.caseId);
+  const sfpMatch=entry.pattern==="sfp-interface-compatibility"&&/^boundary-[1-4]-05$/.test(entry.caseId);
+  const negationMatch=entry.pattern==="negative-claim-missing-source"&&/^boundary-[1-4]-06$/.test(entry.caseId);
+  if(!baseMatch&&!clarificationMatch&&!variantMatch&&!unitMatch&&!sfpMatch&&!negationMatch)throw new Error(`Pattern not approved: ${entry.caseId}`);
   if(!entry.expectedAnswer.trim()||!entry.reviewNote.includes("MA24-10"))throw new Error(`Missing answer/authorization receipt: ${entry.caseId}`);
 }
 try{

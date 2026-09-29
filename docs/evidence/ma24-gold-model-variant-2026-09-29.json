@@ -1,0 +1,98 @@
+{
+  "policyId": "MA24-10",
+  "corpusVersion": "knowledge-eval-v3-baseline",
+  "entries": [
+    {
+      "caseId": "boundary-1-03",
+      "caseSha256": "ecd55e2c93128b643fc807d9b1027e084dc229633c329c83f4b2c0a0400223d1",
+      "pattern": "model-package-variant",
+      "expectedAnswer": "两者属于同一AP3000系列，由同一份V1.0 Datasheet覆盖，但不能把完整型号和套装配置视为完全相同。原件明确区分：AP3000不随箱附电源适配器；AP3000_P随箱附PoE适配器，其输出为48V Passive PoE。共同列出的AP供电规格不代表只有_P才支持PoE，也不能把适配器输出当作AP的PoE输出能力。",
+      "expectedSources": [
+        {
+          "assetSha256": "88447950d61dbdb5b2d2ed370fc30fa60db5cf68f323e3161d02fbdde58a8bff",
+          "version": "V1.0",
+          "unitIndex": 1,
+          "blockId": "c66fe6e0-d27b-4aa7-a46b-cafc14032be7",
+          "excerpt": "Model: AP3000/AP3000_P"
+        },
+        {
+          "assetSha256": "88447950d61dbdb5b2d2ed370fc30fa60db5cf68f323e3161d02fbdde58a8bff",
+          "version": "V1.0",
+          "unitIndex": 4,
+          "blockId": "fe66d7bf-29ae-44fa-96f5-cfb47caff0a2",
+          "excerpt": "Power Adapter in the Box. , 2 = AP3000 | No adapter in the box. , 1 = . , 2 = AP3000_P | PoE adapter in the box:. , 1 = . , 2 = Input: 100 ~ 240 V, 50/60 Hz AC. , 1 = . , 2 = Output: 48V Passive PoE."
+        }
+      ],
+      "reviewNote": "2026-09-29 用户明确选择“确认此类答案”。MA24-10类型授权；第1、4页原件与哈希已核对，区分AP系列、套装适配器和AP自身PoE输入。"
+    },
+    {
+      "caseId": "boundary-2-03",
+      "caseSha256": "9d817c252f598bfe7bc4647a575b7336786663b32574d9b6b04095ab36f97e77",
+      "pattern": "model-package-variant",
+      "expectedAnswer": "两者属于同一AP3000系列，由同一份V1.0 Datasheet覆盖，但不能把完整型号和套装配置视为完全相同。原件明确区分：AP3000不随箱附电源适配器；AP3000_P随箱附PoE适配器，其输出为48V Passive PoE。共同列出的AP供电规格不代表只有_P才支持PoE，也不能把适配器输出当作AP的PoE输出能力。",
+      "expectedSources": [
+        {
+          "assetSha256": "88447950d61dbdb5b2d2ed370fc30fa60db5cf68f323e3161d02fbdde58a8bff",
+          "version": "V1.0",
+          "unitIndex": 1,
+          "blockId": "c66fe6e0-d27b-4aa7-a46b-cafc14032be7",
+          "excerpt": "Model: AP3000/AP3000_P"
+        },
+        {
+          "assetSha256": "88447950d61dbdb5b2d2ed370fc30fa60db5cf68f323e3161d02fbdde58a8bff",
+          "version": "V1.0",
+          "unitIndex": 4,
+          "blockId": "fe66d7bf-29ae-44fa-96f5-cfb47caff0a2",
+          "excerpt": "Power Adapter in the Box. , 2 = AP3000 | No adapter in the box. , 1 = . , 2 = AP3000_P | PoE adapter in the box:. , 1 = . , 2 = Input: 100 ~ 240 V, 50/60 Hz AC. , 1 = . , 2 = Output: 48V Passive PoE."
+        }
+      ],
+      "reviewNote": "2026-09-29 按MA24-10用户授权自动采纳同类Gold；model-package-variant类型，以用户明确确认的boundary-1-03为依据。同原件与精确短引重新校验，不冒充逐题人工确认。"
+    },
+    {
+      "caseId": "boundary-3-03",
+      "caseSha256": "25d523045bac791a1533143fb761a3c68adcd668b60312e110a8ee8bb3e07d55",
+      "pattern": "model-package-variant",
+      "expectedAnswer": "两者属于同一AP3000系列，由同一份V1.0 Datasheet覆盖，但不能把完整型号和套装配置视为完全相同。原件明确区分：AP3000不随箱附电源适配器；AP3000_P随箱附PoE适配器，其输出为48V Passive PoE。共同列出的AP供电规格不代表只有_P才支持PoE，也不能把适配器输出当作AP的PoE输出能力。",
+      "expectedSources": [
+        {
+          "assetSha256": "88447950d61dbdb5b2d2ed370fc30fa60db5cf68f323e3161d02fbdde58a8bff",
+          "version": "V1.0",
+          "unitIndex": 1,
+          "blockId": "c66fe6e0-d27b-4aa7-a46b-cafc14032be7",
+          "excerpt": "Model: AP3000/AP3000_P"
+        },
+        {
+          "assetSha256": "88447950d61dbdb5b2d2ed370fc30fa60db5cf68f323e3161d02fbdde58a8bff",
+          "version": "V1.0",
+          "unitIndex": 4,
+          "blockId": "fe66d7bf-29ae-44fa-96f5-cfb47caff0a2",
+          "excerpt": "Power Adapter in the Box. , 2 = AP3000 | No adapter in the box. , 1 = . , 2 = AP3000_P | PoE adapter in the box:. , 1 = . , 2 = Input: 100 ~ 240 V, 50/60 Hz AC. , 1 = . , 2 = Output: 48V Passive PoE."
+        }
+      ],
+      "reviewNote": "2026-09-29 按MA24-10用户授权自动采纳同类Gold；model-package-variant类型，以用户明确确认的boundary-1-03为依据。同原件与精确短引重新校验，不冒充逐题人工确认。"
+    },
+    {
+      "caseId": "boundary-4-03",
+      "caseSha256": "cccffe98e5c4b0884c1a6493ce5d6838be6cf816c29a554ad90f53c8da992cab",
+      "pattern": "model-package-variant",
+      "expectedAnswer": "两者属于同一AP3000系列，由同一份V1.0 Datasheet覆盖，但不能把完整型号和套装配置视为完全相同。原件明确区分：AP3000不随箱附电源适配器；AP3000_P随箱附PoE适配器，其输出为48V Passive PoE。共同列出的AP供电规格不代表只有_P才支持PoE，也不能把适配器输出当作AP的PoE输出能力。",
+      "expectedSources": [
+        {
+          "assetSha256": "88447950d61dbdb5b2d2ed370fc30fa60db5cf68f323e3161d02fbdde58a8bff",
+          "version": "V1.0",
+          "unitIndex": 1,
+          "blockId": "c66fe6e0-d27b-4aa7-a46b-cafc14032be7",
+          "excerpt": "Model: AP3000/AP3000_P"
+        },
+        {
+          "assetSha256": "88447950d61dbdb5b2d2ed370fc30fa60db5cf68f323e3161d02fbdde58a8bff",
+          "version": "V1.0",
+          "unitIndex": 4,
+          "blockId": "fe66d7bf-29ae-44fa-96f5-cfb47caff0a2",
+          "excerpt": "Power Adapter in the Box. , 2 = AP3000 | No adapter in the box. , 1 = . , 2 = AP3000_P | PoE adapter in the box:. , 1 = . , 2 = Input: 100 ~ 240 V, 50/60 Hz AC. , 1 = . , 2 = Output: 48V Passive PoE."
+        }
+      ],
+      "reviewNote": "2026-09-29 按MA24-10用户授权自动采纳同类Gold；model-package-variant类型，以用户明确确认的boundary-1-03为依据。同原件与精确短引重新校验，不冒充逐题人工确认。"
+    }
+  ]
+}

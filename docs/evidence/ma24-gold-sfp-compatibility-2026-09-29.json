@@ -1,0 +1,90 @@
+{
+  "policyId": "MA24-10",
+  "corpusVersion": "knowledge-eval-v3-baseline",
+  "entries": [
+    {
+      "caseId": "boundary-1-05",
+      "caseSha256": "a7e26b42c8d594793bc0c6b751a5787fef8a609fca1c8b0e2e7ccf2986a38110",
+      "pattern": "sfp-interface-compatibility",
+      "expectedAnswer": "不一样，不能把两者作为相同规格或默认互换。已登记目录中，SFP 用于 SM220 的千兆、SM25G 的 2.5GbE 等模块；SFP+ 用于 SM10G 系列的 10G 模块。因此也不能简单说“所有 SFP 都只有 1G”。能否使用具体模块，须核对设备端口支持的速率、模块类型及兼容性，不能只凭名称相似推断。",
+      "expectedSources": [
+        {
+          "assetSha256": "7c558f62758520936744ce56ca860d55f44d8359af81d3c4a164a561bc80d897",
+          "unitIndex": 8,
+          "blockId": "df519a88-dd13-4886-9252-9fd4e7d6df3e",
+          "excerpt": "\nModels, RJ45 to SFP Transceivers = SM220. Models, RJ45 to SFP Transceivers = SM25G. Models, RJ45 to Fiber Transceivers = SM100GMA-05. Models, RJ45 to Fiber Transceivers = SM100GSA-20. Models, RJ45 to Fiber Transceivers = SM100GSA-40. Models, RJ45 to Fiber BiDi Transceivers = SM100GSB-3AB. Models, RJ45 to Fiber BiDi Transceivers = SM100GSB-20AB. Images, RJ45 to SFP Transceivers = . Images, RJ45 to SFP Transceivers = . Images, RJ45 to Fiber Transceivers = . Images, RJ45 to Fiber Transceivers = . Images, RJ45 to Fiber Transceivers = . Images, RJ45 to Fiber BiDi Transceivers = . Images, RJ45 to Fiber BiDi Transceivers = . SFP Interfaces, RJ45 to SFP Transceivers = SFP. SFP Interfaces, RJ45 to SFP Transceivers = SFP. SFP Interfaces, RJ45 to Fiber Transceivers = SFP. SFP Interfaces, RJ45 to Fiber Transceivers = SFP. SFP Interfaces, RJ45 to Fiber Transceivers = SFP. SFP Interfaces, RJ45 to Fiber BiDi Transceivers = SFP. SFP Interfaces, RJ45 to Fiber BiDi Transceivers = SFP. Copper Ports, RJ45 to SFP Transceivers = 1 × GbE. Copper Ports, RJ45 to SFP Transceivers = 1 × 2.5GbE. Copper Ports, RJ45 to Fiber Transceivers = -. Copper Ports, RJ45 to Fiber Transceivers = -. Copper Ports, RJ45 to Fiber Transceivers = -. Copper Ports, RJ45 to Fiber BiDi Transceivers = -. Copper Ports, RJ45 to Fiber BiDi Transceivers = -. "
+        },
+        {
+          "assetSha256": "7c558f62758520936744ce56ca860d55f44d8359af81d3c4a164a561bc80d897",
+          "unitIndex": 9,
+          "blockId": "74f1eec1-c0da-4d87-aa73-00b9968e3ab7",
+          "excerpt": "\nModels, 10G Transceivers = SM10GMA-03. Models, 10G Transceivers = SM10GMA-03H. Models, 10G Transceivers = SM10GSA-10. Models, 10G Transceivers = SM10GSA-10H. Models, 25G Transceivers = SM25GMA-01. Models, 25G Transceivers = SM25GSA-10. Models, 25G Transceivers = SM25GSA-10S. Models, 25G BiDi Transceivers = SM25GSB-10AB. Images, 10G Transceivers = . Images, 10G Transceivers = . Images, 10G Transceivers = . Images, 10G Transceivers = . Images, 25G Transceivers = . Images, 25G Transceivers = . Images, 25G Transceivers = . Images, 25G BiDi Transceivers = . SFP Interfaces, 10G Transceivers = SFP+. SFP Interfaces, 10G Transceivers = SFP+. SFP Interfaces, 10G Transceivers = SFP+. SFP Interfaces, 10G Transceivers = SFP+. SFP Interfaces, 25G Transceivers = SFP28. SFP Interfaces, 25G Transceivers = SFP28. SFP Interfaces, 25G Transceivers = SFP28. SFP Interfaces, 25G BiDi Transceivers = SFP28. "
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：用户明确选择“确认此类答案”，代表题人工确认。已核对本机目录第8/9页、SHA-256、型号列与活动原文坐标。"
+    },
+    {
+      "caseId": "boundary-2-05",
+      "caseSha256": "7358334d560651905cdb713d3696be01e03f51865def48617dda1f72166a1dbc",
+      "pattern": "sfp-interface-compatibility",
+      "expectedAnswer": "不一样，不能把两者作为相同规格或默认互换。已登记目录中，SFP 用于 SM220 的千兆、SM25G 的 2.5GbE 等模块；SFP+ 用于 SM10G 系列的 10G 模块。因此也不能简单说“所有 SFP 都只有 1G”。能否使用具体模块，须核对设备端口支持的速率、模块类型及兼容性，不能只凭名称相似推断。",
+      "expectedSources": [
+        {
+          "assetSha256": "7c558f62758520936744ce56ca860d55f44d8359af81d3c4a164a561bc80d897",
+          "unitIndex": 8,
+          "blockId": "df519a88-dd13-4886-9252-9fd4e7d6df3e",
+          "excerpt": "\nModels, RJ45 to SFP Transceivers = SM220. Models, RJ45 to SFP Transceivers = SM25G. Models, RJ45 to Fiber Transceivers = SM100GMA-05. Models, RJ45 to Fiber Transceivers = SM100GSA-20. Models, RJ45 to Fiber Transceivers = SM100GSA-40. Models, RJ45 to Fiber BiDi Transceivers = SM100GSB-3AB. Models, RJ45 to Fiber BiDi Transceivers = SM100GSB-20AB. Images, RJ45 to SFP Transceivers = . Images, RJ45 to SFP Transceivers = . Images, RJ45 to Fiber Transceivers = . Images, RJ45 to Fiber Transceivers = . Images, RJ45 to Fiber Transceivers = . Images, RJ45 to Fiber BiDi Transceivers = . Images, RJ45 to Fiber BiDi Transceivers = . SFP Interfaces, RJ45 to SFP Transceivers = SFP. SFP Interfaces, RJ45 to SFP Transceivers = SFP. SFP Interfaces, RJ45 to Fiber Transceivers = SFP. SFP Interfaces, RJ45 to Fiber Transceivers = SFP. SFP Interfaces, RJ45 to Fiber Transceivers = SFP. SFP Interfaces, RJ45 to Fiber BiDi Transceivers = SFP. SFP Interfaces, RJ45 to Fiber BiDi Transceivers = SFP. Copper Ports, RJ45 to SFP Transceivers = 1 × GbE. Copper Ports, RJ45 to SFP Transceivers = 1 × 2.5GbE. Copper Ports, RJ45 to Fiber Transceivers = -. Copper Ports, RJ45 to Fiber Transceivers = -. Copper Ports, RJ45 to Fiber Transceivers = -. Copper Ports, RJ45 to Fiber BiDi Transceivers = -. Copper Ports, RJ45 to Fiber BiDi Transceivers = -. "
+        },
+        {
+          "assetSha256": "7c558f62758520936744ce56ca860d55f44d8359af81d3c4a164a561bc80d897",
+          "unitIndex": 9,
+          "blockId": "74f1eec1-c0da-4d87-aa73-00b9968e3ab7",
+          "excerpt": "\nModels, 10G Transceivers = SM10GMA-03. Models, 10G Transceivers = SM10GMA-03H. Models, 10G Transceivers = SM10GSA-10. Models, 10G Transceivers = SM10GSA-10H. Models, 25G Transceivers = SM25GMA-01. Models, 25G Transceivers = SM25GSA-10. Models, 25G Transceivers = SM25GSA-10S. Models, 25G BiDi Transceivers = SM25GSB-10AB. Images, 10G Transceivers = . Images, 10G Transceivers = . Images, 10G Transceivers = . Images, 10G Transceivers = . Images, 25G Transceivers = . Images, 25G Transceivers = . Images, 25G Transceivers = . Images, 25G BiDi Transceivers = . SFP Interfaces, 10G Transceivers = SFP+. SFP Interfaces, 10G Transceivers = SFP+. SFP Interfaces, 10G Transceivers = SFP+. SFP Interfaces, 10G Transceivers = SFP+. SFP Interfaces, 25G Transceivers = SFP28. SFP Interfaces, 25G Transceivers = SFP28. SFP Interfaces, 25G Transceivers = SFP28. SFP Interfaces, 25G BiDi Transceivers = SFP28. "
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按已确认的SFP接口规格与兼容性题型自动采纳，同义表达未逐题人工确认。已核对本机目录第8/9页、SHA-256、型号列与活动原文坐标。"
+    },
+    {
+      "caseId": "boundary-3-05",
+      "caseSha256": "e0db743291b1de9626c7a2f75726e33e4e75d71687b29ce3529a3aa598fd4db9",
+      "pattern": "sfp-interface-compatibility",
+      "expectedAnswer": "不一样，不能把两者作为相同规格或默认互换。已登记目录中，SFP 用于 SM220 的千兆、SM25G 的 2.5GbE 等模块；SFP+ 用于 SM10G 系列的 10G 模块。因此也不能简单说“所有 SFP 都只有 1G”。能否使用具体模块，须核对设备端口支持的速率、模块类型及兼容性，不能只凭名称相似推断。",
+      "expectedSources": [
+        {
+          "assetSha256": "7c558f62758520936744ce56ca860d55f44d8359af81d3c4a164a561bc80d897",
+          "unitIndex": 8,
+          "blockId": "df519a88-dd13-4886-9252-9fd4e7d6df3e",
+          "excerpt": "\nModels, RJ45 to SFP Transceivers = SM220. Models, RJ45 to SFP Transceivers = SM25G. Models, RJ45 to Fiber Transceivers = SM100GMA-05. Models, RJ45 to Fiber Transceivers = SM100GSA-20. Models, RJ45 to Fiber Transceivers = SM100GSA-40. Models, RJ45 to Fiber BiDi Transceivers = SM100GSB-3AB. Models, RJ45 to Fiber BiDi Transceivers = SM100GSB-20AB. Images, RJ45 to SFP Transceivers = . Images, RJ45 to SFP Transceivers = . Images, RJ45 to Fiber Transceivers = . Images, RJ45 to Fiber Transceivers = . Images, RJ45 to Fiber Transceivers = . Images, RJ45 to Fiber BiDi Transceivers = . Images, RJ45 to Fiber BiDi Transceivers = . SFP Interfaces, RJ45 to SFP Transceivers = SFP. SFP Interfaces, RJ45 to SFP Transceivers = SFP. SFP Interfaces, RJ45 to Fiber Transceivers = SFP. SFP Interfaces, RJ45 to Fiber Transceivers = SFP. SFP Interfaces, RJ45 to Fiber Transceivers = SFP. SFP Interfaces, RJ45 to Fiber BiDi Transceivers = SFP. SFP Interfaces, RJ45 to Fiber BiDi Transceivers = SFP. Copper Ports, RJ45 to SFP Transceivers = 1 × GbE. Copper Ports, RJ45 to SFP Transceivers = 1 × 2.5GbE. Copper Ports, RJ45 to Fiber Transceivers = -. Copper Ports, RJ45 to Fiber Transceivers = -. Copper Ports, RJ45 to Fiber Transceivers = -. Copper Ports, RJ45 to Fiber BiDi Transceivers = -. Copper Ports, RJ45 to Fiber BiDi Transceivers = -. "
+        },
+        {
+          "assetSha256": "7c558f62758520936744ce56ca860d55f44d8359af81d3c4a164a561bc80d897",
+          "unitIndex": 9,
+          "blockId": "74f1eec1-c0da-4d87-aa73-00b9968e3ab7",
+          "excerpt": "\nModels, 10G Transceivers = SM10GMA-03. Models, 10G Transceivers = SM10GMA-03H. Models, 10G Transceivers = SM10GSA-10. Models, 10G Transceivers = SM10GSA-10H. Models, 25G Transceivers = SM25GMA-01. Models, 25G Transceivers = SM25GSA-10. Models, 25G Transceivers = SM25GSA-10S. Models, 25G BiDi Transceivers = SM25GSB-10AB. Images, 10G Transceivers = . Images, 10G Transceivers = . Images, 10G Transceivers = . Images, 10G Transceivers = . Images, 25G Transceivers = . Images, 25G Transceivers = . Images, 25G Transceivers = . Images, 25G BiDi Transceivers = . SFP Interfaces, 10G Transceivers = SFP+. SFP Interfaces, 10G Transceivers = SFP+. SFP Interfaces, 10G Transceivers = SFP+. SFP Interfaces, 10G Transceivers = SFP+. SFP Interfaces, 25G Transceivers = SFP28. SFP Interfaces, 25G Transceivers = SFP28. SFP Interfaces, 25G Transceivers = SFP28. SFP Interfaces, 25G BiDi Transceivers = SFP28. "
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按已确认的SFP接口规格与兼容性题型自动采纳，同义表达未逐题人工确认。已核对本机目录第8/9页、SHA-256、型号列与活动原文坐标。"
+    },
+    {
+      "caseId": "boundary-4-05",
+      "caseSha256": "5fef8209efdb77ad9a020817376b362992318988273778ca0fddc7e2f65d0337",
+      "pattern": "sfp-interface-compatibility",
+      "expectedAnswer": "不一样，不能把两者作为相同规格或默认互换。已登记目录中，SFP 用于 SM220 的千兆、SM25G 的 2.5GbE 等模块；SFP+ 用于 SM10G 系列的 10G 模块。因此也不能简单说“所有 SFP 都只有 1G”。能否使用具体模块，须核对设备端口支持的速率、模块类型及兼容性，不能只凭名称相似推断。",
+      "expectedSources": [
+        {
+          "assetSha256": "7c558f62758520936744ce56ca860d55f44d8359af81d3c4a164a561bc80d897",
+          "unitIndex": 8,
+          "blockId": "df519a88-dd13-4886-9252-9fd4e7d6df3e",
+          "excerpt": "\nModels, RJ45 to SFP Transceivers = SM220. Models, RJ45 to SFP Transceivers = SM25G. Models, RJ45 to Fiber Transceivers = SM100GMA-05. Models, RJ45 to Fiber Transceivers = SM100GSA-20. Models, RJ45 to Fiber Transceivers = SM100GSA-40. Models, RJ45 to Fiber BiDi Transceivers = SM100GSB-3AB. Models, RJ45 to Fiber BiDi Transceivers = SM100GSB-20AB. Images, RJ45 to SFP Transceivers = . Images, RJ45 to SFP Transceivers = . Images, RJ45 to Fiber Transceivers = . Images, RJ45 to Fiber Transceivers = . Images, RJ45 to Fiber Transceivers = . Images, RJ45 to Fiber BiDi Transceivers = . Images, RJ45 to Fiber BiDi Transceivers = . SFP Interfaces, RJ45 to SFP Transceivers = SFP. SFP Interfaces, RJ45 to SFP Transceivers = SFP. SFP Interfaces, RJ45 to Fiber Transceivers = SFP. SFP Interfaces, RJ45 to Fiber Transceivers = SFP. SFP Interfaces, RJ45 to Fiber Transceivers = SFP. SFP Interfaces, RJ45 to Fiber BiDi Transceivers = SFP. SFP Interfaces, RJ45 to Fiber BiDi Transceivers = SFP. Copper Ports, RJ45 to SFP Transceivers = 1 × GbE. Copper Ports, RJ45 to SFP Transceivers = 1 × 2.5GbE. Copper Ports, RJ45 to Fiber Transceivers = -. Copper Ports, RJ45 to Fiber Transceivers = -. Copper Ports, RJ45 to Fiber Transceivers = -. Copper Ports, RJ45 to Fiber BiDi Transceivers = -. Copper Ports, RJ45 to Fiber BiDi Transceivers = -. "
+        },
+        {
+          "assetSha256": "7c558f62758520936744ce56ca860d55f44d8359af81d3c4a164a561bc80d897",
+          "unitIndex": 9,
+          "blockId": "74f1eec1-c0da-4d87-aa73-00b9968e3ab7",
+          "excerpt": "\nModels, 10G Transceivers = SM10GMA-03. Models, 10G Transceivers = SM10GMA-03H. Models, 10G Transceivers = SM10GSA-10. Models, 10G Transceivers = SM10GSA-10H. Models, 25G Transceivers = SM25GMA-01. Models, 25G Transceivers = SM25GSA-10. Models, 25G Transceivers = SM25GSA-10S. Models, 25G BiDi Transceivers = SM25GSB-10AB. Images, 10G Transceivers = . Images, 10G Transceivers = . Images, 10G Transceivers = . Images, 10G Transceivers = . Images, 25G Transceivers = . Images, 25G Transceivers = . Images, 25G Transceivers = . Images, 25G BiDi Transceivers = . SFP Interfaces, 10G Transceivers = SFP+. SFP Interfaces, 10G Transceivers = SFP+. SFP Interfaces, 10G Transceivers = SFP+. SFP Interfaces, 10G Transceivers = SFP+. SFP Interfaces, 25G Transceivers = SFP28. SFP Interfaces, 25G Transceivers = SFP28. SFP Interfaces, 25G Transceivers = SFP28. SFP Interfaces, 25G BiDi Transceivers = SFP28. "
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按已确认的SFP接口规格与兼容性题型自动采纳，同义表达未逐题人工确认。已核对本机目录第8/9页、SHA-256、型号列与活动原文坐标。"
+    }
+  ]
+}

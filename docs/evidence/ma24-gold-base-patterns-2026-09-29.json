@@ -1,0 +1,1734 @@
+{
+  "policyId": "MA24-10",
+  "corpusVersion": "knowledge-eval-v3-baseline",
+  "entries": [
+    {
+      "caseId": "base-09-compare",
+      "caseSha256": "f5c940600653d3b875ced0481e1ac61f409d0131837a18c1f76c27eeddce3bd5",
+      "pattern": "compare",
+      "expectedAnswer": "LT400 (V2.1): 4个百兆RJ45口（1个WAN/LAN加3个LAN），另有Nano SIM卡槽。 DC 12V/1A输入；适配器输入100～240V AC、50/60Hz，输出12V/1A DC；不支持PoE。\nLT500 (V3.0): 4个百兆RJ45口（1个WAN/LAN加3个LAN），另有Nano SIM卡槽。 原件列出Power Jack和随箱Power Adapter，但未给出额定输入电压/电流；不能从LT400或其他版本补造。完整原件未声明PoE，判为不支持。",
+      "expectedSources": [
+        {
+          "assetSha256": "43f99a717b2c9165a567eb10b369f2f6d3068906d4ff268afbfbf2ce623a4840",
+          "unitIndex": 3,
+          "blockId": "ecd1b930-82ba-4223-b470-943bfe67691a",
+          "excerpt": "- 1× 10/100 Mbps WAN/LAN Port\n- 3× 10/100 Mbps LAN Ports\n- 1× Power Jack\n- 1× Nano SIM Card Slot",
+          "version": "V2.1"
+        },
+        {
+          "assetSha256": "43f99a717b2c9165a567eb10b369f2f6d3068906d4ff268afbfbf2ce623a4840",
+          "unitIndex": 6,
+          "blockId": "544a5c62-9f65-433b-bd7f-b92cf9f6d1d4",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = DC. , 1 = DC. , 2 = 12V 1A. , 1 = Power Adapter. , 2 = Input: 100 ~ 240 V, 50/60 Hz AC. , 1 = . , 2 = Output: 12V 1A DC.",
+          "version": "V2.1"
+        },
+        {
+          "assetSha256": "c8a10f12b4ae4044343c3d5696de43eb92b9131b7ddee3c0bed16e83e8bb6485",
+          "unitIndex": 3,
+          "blockId": "26e4b196-a1ee-44dc-a84b-6afcbe0cb269",
+          "excerpt": "- 1 x 10/100Mbps WAN/LAN Port\n- 3 x 10/100Mbps LAN Ports\n- 1 x Power Jack\n- 1 x SIM Card Slot",
+          "version": "V3.0"
+        },
+        {
+          "assetSha256": "c8a10f12b4ae4044343c3d5696de43eb92b9131b7ddee3c0bed16e83e8bb6485",
+          "unitIndex": 6,
+          "blockId": "f345caf0-75a9-49b4-afa3-06601c7eaf70",
+          "excerpt": "Package, 1 = 4G LTE WiFi Router. Contents, 1 = Power Adapter. , 1 = RJ45 Ethernet Cable. , 1 = Quick Installation Guide.",
+          "version": "V3.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有compare题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-09-explain",
+      "caseSha256": "e0dd41f8382e9ba8b0436ee18517a973bc8400b93c7a68b4a46f18da34cf6d20",
+      "pattern": "explain",
+      "expectedAnswer": "LT400 (V2.1): 适合家庭、办公室、监控、展会和房车等需要灵活4G联网的场景。原件明确列举这些场景，并提供Nano SIM、4G Cat.4、300Mbps Wi-Fi和4个百兆网口；实际连接性能受运营商网络及现场条件影响。",
+      "expectedSources": [
+        {
+          "assetSha256": "43f99a717b2c9165a567eb10b369f2f6d3068906d4ff268afbfbf2ce623a4840",
+          "unitIndex": 5,
+          "blockId": "c9161b7f-396b-4134-bf1b-c5f6926eddcc",
+          "excerpt": "A 4G WiFi router with a nano-SIM slot and four Ethernet ports, providing easy-to-install flexible networks for home, office, surveillance, exhibitions, and RV scenarios.\n-   4G Cat. 4 with Max 150 Mbps DL\n-   300 Mbps Wi-Fi\n-   4× Fast Ethernet Ports\n-   1× Nano SIM Slot\n-   VPN Server and Client\n- Cudy App",
+          "version": "V2.1"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有explain题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-10-open",
+      "caseSha256": "d649caa05aa32eaaa424b099ab584474b67e1e2bc0db438ffd722d4aaa721b67",
+      "pattern": "open",
+      "expectedAnswer": "Find and display the registered original “LT500 Datasheet V3.0” PDF, with an open or download link. It is a valid match for LT500; do not substitute another model or turn the request into a specification answer.",
+      "expectedSources": [
+        {
+          "assetSha256": "c8a10f12b4ae4044343c3d5696de43eb92b9131b7ddee3c0bed16e83e8bb6485",
+          "unitIndex": 1,
+          "blockId": "038ffcfb-216a-4673-866b-fda2f9a81f89",
+          "excerpt": "Model: LT500",
+          "version": "V3.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有open题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-10-ports",
+      "caseSha256": "2d7e97c4cca5750d7f7b2860e628bbc68d0a98a8485bebb8fc697476af9a7c67",
+      "pattern": "ports",
+      "expectedAnswer": "LT500 (V3.0): 4 physical 10/100Mbps RJ45 ports: one configurable WAN/LAN port and three LAN ports. Count physical Ethernet connectors once; SIM slots, USB and power connectors are not Ethernet ports.",
+      "expectedSources": [
+        {
+          "assetSha256": "c8a10f12b4ae4044343c3d5696de43eb92b9131b7ddee3c0bed16e83e8bb6485",
+          "unitIndex": 3,
+          "blockId": "26e4b196-a1ee-44dc-a84b-6afcbe0cb269",
+          "excerpt": "- 1 x 10/100Mbps WAN/LAN Port\n- 3 x 10/100Mbps LAN Ports\n- 1 x Power Jack\n- 1 x SIM Card Slot",
+          "version": "V3.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有ports题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-10-poe",
+      "caseSha256": "1c61cbba29e717fd82c6997441ffe8d30bc8336852c18656d508346a59054db2",
+      "pattern": "poe",
+      "expectedAnswer": "No. LT500 (V3.0) does not support PoE input or output. The complete matching original does not declare PoE support, under the user-confirmed MA24-09 review rule. The original lists a power jack and an included power adapter but gives no rated input voltage/current. Do not copy those values from LT400 or another version. The complete original declares no PoE support, so PoE is unsupported.",
+      "expectedSources": [
+        {
+          "assetSha256": "c8a10f12b4ae4044343c3d5696de43eb92b9131b7ddee3c0bed16e83e8bb6485",
+          "unitIndex": 3,
+          "blockId": "26e4b196-a1ee-44dc-a84b-6afcbe0cb269",
+          "excerpt": "- 1 x 10/100Mbps WAN/LAN Port\n- 3 x 10/100Mbps LAN Ports\n- 1 x Power Jack\n- 1 x SIM Card Slot",
+          "version": "V3.0"
+        },
+        {
+          "assetSha256": "c8a10f12b4ae4044343c3d5696de43eb92b9131b7ddee3c0bed16e83e8bb6485",
+          "unitIndex": 6,
+          "blockId": "f345caf0-75a9-49b4-afa3-06601c7eaf70",
+          "excerpt": "Package, 1 = 4G LTE WiFi Router. Contents, 1 = Power Adapter. , 1 = RJ45 Ethernet Cable. , 1 = Quick Installation Guide.",
+          "version": "V3.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有poe题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。未声明PoE的判断基于完整原件核对及MA24-09，不基于检索片段或PPPoE字样。"
+    },
+    {
+      "caseId": "base-10-compare",
+      "caseSha256": "2545ff6ca1903c504125877d5e323cf770a5a94970f53fba98e3c6b843f13aa8",
+      "pattern": "compare",
+      "expectedAnswer": "LT500 (V3.0): Four Fast Ethernet RJ45 ports (one WAN/LAN and three LAN), plus a Nano SIM slot. The original lists a power jack and an included power adapter but gives no rated input voltage/current. Do not copy those values from LT400 or another version. The complete original declares no PoE support, so PoE is unsupported.\nLT400 (V2.1): Four Fast Ethernet RJ45 ports (one WAN/LAN and three LAN), plus a Nano SIM slot. DC 12V/1A input; the adapter accepts 100–240V AC, 50/60Hz and outputs 12V/1A DC. No PoE support.",
+      "expectedSources": [
+        {
+          "assetSha256": "c8a10f12b4ae4044343c3d5696de43eb92b9131b7ddee3c0bed16e83e8bb6485",
+          "unitIndex": 3,
+          "blockId": "26e4b196-a1ee-44dc-a84b-6afcbe0cb269",
+          "excerpt": "- 1 x 10/100Mbps WAN/LAN Port\n- 3 x 10/100Mbps LAN Ports\n- 1 x Power Jack\n- 1 x SIM Card Slot",
+          "version": "V3.0"
+        },
+        {
+          "assetSha256": "c8a10f12b4ae4044343c3d5696de43eb92b9131b7ddee3c0bed16e83e8bb6485",
+          "unitIndex": 6,
+          "blockId": "f345caf0-75a9-49b4-afa3-06601c7eaf70",
+          "excerpt": "Package, 1 = 4G LTE WiFi Router. Contents, 1 = Power Adapter. , 1 = RJ45 Ethernet Cable. , 1 = Quick Installation Guide.",
+          "version": "V3.0"
+        },
+        {
+          "assetSha256": "43f99a717b2c9165a567eb10b369f2f6d3068906d4ff268afbfbf2ce623a4840",
+          "unitIndex": 3,
+          "blockId": "ecd1b930-82ba-4223-b470-943bfe67691a",
+          "excerpt": "- 1× 10/100 Mbps WAN/LAN Port\n- 3× 10/100 Mbps LAN Ports\n- 1× Power Jack\n- 1× Nano SIM Card Slot",
+          "version": "V2.1"
+        },
+        {
+          "assetSha256": "43f99a717b2c9165a567eb10b369f2f6d3068906d4ff268afbfbf2ce623a4840",
+          "unitIndex": 6,
+          "blockId": "544a5c62-9f65-433b-bd7f-b92cf9f6d1d4",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = DC. , 1 = DC. , 2 = 12V 1A. , 1 = Power Adapter. , 2 = Input: 100 ~ 240 V, 50/60 Hz AC. , 1 = . , 2 = Output: 12V 1A DC.",
+          "version": "V2.1"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有compare题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-10-explain",
+      "caseSha256": "0fbe3efeecca127eebe312a9a90a1a9026db7d73c672ff08ed275290e8ba934e",
+      "pattern": "explain",
+      "expectedAnswer": "LT500 (V3.0): Based on its features, suitable for 4G networking or wired WAN plus 4G connectivity. Evidence includes the integrated LTE modem, Nano SIM slot, configurable WAN/LAN port and dual-band Wi-Fi; the listed 4G watchdog can redial after disconnection. Advertised cellular speeds are not guaranteed throughput.",
+      "expectedSources": [
+        {
+          "assetSha256": "c8a10f12b4ae4044343c3d5696de43eb92b9131b7ddee3c0bed16e83e8bb6485",
+          "unitIndex": 3,
+          "blockId": "eba220b4-d0d5-4ce6-af72-63ef37291286",
+          "excerpt": "With an integrated 4G LTE modem and a built-in SIM card slot, all you need to do is insert a nano SIM card and turn on the router. Enjoying fast, stable Wi-Fi on a 4G LTE network has never been easier.",
+          "version": "V3.0"
+        },
+        {
+          "assetSha256": "c8a10f12b4ae4044343c3d5696de43eb92b9131b7ddee3c0bed16e83e8bb6485",
+          "unitIndex": 5,
+          "blockId": "684fccb6-e5a4-4c5f-9d3b-1a6731fb3a3c",
+          "excerpt": "-  Up to 150Mbps / 50Mbps LTE speed\n-  Up to 867Mbps on 5GHz + 300 Mbps on 2.4GHz WiFi speed\n-  SMS function support send and receive message on webpage\n-  OpenVPN/WireGuard/IPSec/PPTP/L2TP/Zerotier VPN\n-  DNS encryption over Cloudflare, NextDNS or Google protect privacy\n-  Support 15+ DDNS for remote management\n-  4G watchdog can automatically redial when disconnected\n-  WiFi schedule supports configuration of available WiFi time\n-  Flexible WAN/LAN port for dual connectivity",
+          "version": "V3.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有explain题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-11-open",
+      "caseSha256": "f7baeec51e92776d0f626aca041fb8c170f703765746cef0572b78183fd8ad00",
+      "pattern": "open",
+      "expectedAnswer": "找到并展示已登记的原始《LT700 Datasheet V2.0》PDF，提供打开或下载入口。这份原件匹配LT700，不以其他型号替代，也不把打开资料请求改成参数问答。",
+      "expectedSources": [
+        {
+          "assetSha256": "6933f9798a3ed2d9766e831e6440507027795d499f0a02c91c0c400e91944329",
+          "unitIndex": 2,
+          "blockId": "38efb055-ae4a-4b2e-a68f-d2fed991f57a",
+          "excerpt": "cudy\nLightning-fast 4G LTE Cat.6 Connectivity\nCellular\nWPS\nCellular\nCellular\nCellular\nDIV\nMIMO2\nMAIN\nNano\nNano\nMIMO1\nSIM1\nSIM2\nRESET\nPOWER\nON/OFF\nWAN/LAN4 LAN3\nLAN2\nLAN1\n4 x Cellular Antenna\n4 x Gigabit Ethernet Ports\n2 x SIM card slot\nConnectors\nCat.6\nAC1200\nWAN Internet\nNano\nNano\nLightning-fast 4G LTE Cat.6 Connectivity\nHigh speed Dual Band WiFi\n4G Backup\nSIM 1\nSIM 2\nWAN/LAN\nSIM\nVPN\nFuture-Proof Remote Management with\nWHOLE HOME\nMESH\nTR-069\nTR-069\nBuilt-in VPN Server and Client\nDatasheet 4G LTE CAT 6 Wi-Fi Router | LT700",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有open题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-11-ports",
+      "caseSha256": "fa3c7fcbf49f4b2e0657a378e66171b5885e264ce3802a59493d72c3750cd8be",
+      "pattern": "ports",
+      "expectedAnswer": "LT700 (V2.0): 4个千兆物理网口：1个WAN/LAN复用口和3个LAN口。 物理网口只计一次；SIM槽、USB及电源接口不计作以太网口。",
+      "expectedSources": [
+        {
+          "assetSha256": "6933f9798a3ed2d9766e831e6440507027795d499f0a02c91c0c400e91944329",
+          "unitIndex": 4,
+          "blockId": "38997561-0725-48e8-b3e2-4e391d4f888c",
+          "excerpt": "Ethernet Ports, 1 = 1 GbE WAN/LAN + 3 GbE LAN. SIM card slot, 1 = 2 x SIM Slots (Nano).",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有ports题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-11-poe",
+      "caseSha256": "ae4a307ad2dd0a47298025e0c6c310eb26a4c2a5dbf30860b59429b821eb003e",
+      "pattern": "poe",
+      "expectedAnswer": "不支持。LT700 (V2.0)不支持PoE输入或输出。完整匹配原件未声明PoE支持，按用户确认的MA24-09口径判定。DC 12V/1.5A桶形插头输入；适配器输入90～260V AC，输出12V/1.5A；不支持PoE。",
+      "expectedSources": [
+        {
+          "assetSha256": "6933f9798a3ed2d9766e831e6440507027795d499f0a02c91c0c400e91944329",
+          "unitIndex": 4,
+          "blockId": "38997561-0725-48e8-b3e2-4e391d4f888c",
+          "excerpt": "Ethernet Ports, 1 = 1 GbE WAN/LAN + 3 GbE LAN. SIM card slot, 1 = 2 x SIM Slots (Nano).",
+          "version": "V2.0"
+        },
+        {
+          "assetSha256": "6933f9798a3ed2d9766e831e6440507027795d499f0a02c91c0c400e91944329",
+          "unitIndex": 5,
+          "blockId": "8f854a63-0d31-488d-aaf3-3cffee39bcee",
+          "excerpt": "Power, 1 = AC Power Adapter: Input: 90~260V Output: 12V, 1.5A DC input (12V-1.5A) Barrel Plug.",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有poe题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。未声明PoE的判断基于完整原件核对及MA24-09，不基于检索片段或PPPoE字样。"
+    },
+    {
+      "caseId": "base-11-compare",
+      "caseSha256": "5d219a5572128d48f1fb5657ab261b86b78432e42bada14cf057ed088fe26bfa",
+      "pattern": "compare",
+      "expectedAnswer": "LT700 (V2.0): 4个千兆网口（1个WAN/LAN加3个LAN），另有2个Nano SIM卡槽。 DC 12V/1.5A桶形插头输入；适配器输入90～260V AC，输出12V/1.5A；不支持PoE。\nRE1200 (V2.0): 1个百兆RJ45口；电源采用插座式AC插头。 直接使用100～240V AC输入；对应区域版本提供EU、US或UK插头；不支持PoE。",
+      "expectedSources": [
+        {
+          "assetSha256": "6933f9798a3ed2d9766e831e6440507027795d499f0a02c91c0c400e91944329",
+          "unitIndex": 4,
+          "blockId": "38997561-0725-48e8-b3e2-4e391d4f888c",
+          "excerpt": "Ethernet Ports, 1 = 1 GbE WAN/LAN + 3 GbE LAN. SIM card slot, 1 = 2 x SIM Slots (Nano).",
+          "version": "V2.0"
+        },
+        {
+          "assetSha256": "6933f9798a3ed2d9766e831e6440507027795d499f0a02c91c0c400e91944329",
+          "unitIndex": 5,
+          "blockId": "8f854a63-0d31-488d-aaf3-3cffee39bcee",
+          "excerpt": "Power, 1 = AC Power Adapter: Input: 90~260V Output: 12V, 1.5A DC input (12V-1.5A) Barrel Plug.",
+          "version": "V2.0"
+        },
+        {
+          "assetSha256": "85fa37e8750d0b4be2add09f688fde4aa1ee8eb1f30fdc97e565f8a8f53e3121",
+          "unitIndex": 4,
+          "blockId": "88689aa6-3135-4d12-97ca-0410881be1f0",
+          "excerpt": "Interfaces, 1 = 10/100 Mbps RJ45 Ports. Interfaces, 2 = 1.",
+          "version": "V2.0"
+        },
+        {
+          "assetSha256": "85fa37e8750d0b4be2add09f688fde4aa1ee8eb1f30fdc97e565f8a8f53e3121",
+          "unitIndex": 4,
+          "blockId": "b87ef5b7-d9b0-43de-9577-57f7cbd51ba8",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = AC. , 1 = AC. , 2 = 100V ~ 240V.",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有compare题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-11-explain",
+      "caseSha256": "de18078cf56a6eb8fd672fbb49e32571baf9a00d3fe1a0de19bdeb469169c29a",
+      "pattern": "explain",
+      "expectedAnswer": "LT700 (V2.0): 根据规格，适合需要4G LTE Cat.6、双SIM或有线WAN故障切换的联网部署。依据是双Nano SIM、4个千兆网口、双频AC1200 Wi-Fi及VPN服务器/客户端；具体SIM切换与运营商兼容性需按实际配置确认。",
+      "expectedSources": [
+        {
+          "assetSha256": "6933f9798a3ed2d9766e831e6440507027795d499f0a02c91c0c400e91944329",
+          "unitIndex": 4,
+          "blockId": "2062d026-ff6b-4bfb-b225-36ec3c5c9f61",
+          "excerpt": "-  4G LTE Cat.6 Modem Inside\n-  AC1200 Dual Band Wi-Fi\n-  4× Gigabit Ethernet Ports (WAN Failover)\n-  4× Detachable Cellular Antennas\n-  Dual Nano SIM Card Slots\n-  Built-in VPN Server and Client",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有explain题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-12-open",
+      "caseSha256": "91ae78b08b9a3ba7b9c85a1bd6689e1ecff5bee68eaab23a50be0990e1c35151",
+      "pattern": "open",
+      "expectedAnswer": "Find and display the registered original “RE1200 Datasheet V2.0” PDF, with an open or download link. It is a valid match for RE1200; do not substitute another model or turn the request into a specification answer.",
+      "expectedSources": [
+        {
+          "assetSha256": "85fa37e8750d0b4be2add09f688fde4aa1ee8eb1f30fdc97e565f8a8f53e3121",
+          "unitIndex": 1,
+          "blockId": "64165daa-f311-490f-a023-27f259885dbe",
+          "excerpt": "Model: RE1200",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有open题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-12-ports",
+      "caseSha256": "ec25ed8cbf6f3382419d54e0ff28c0487903c8181fa5e24e1c10b1a1db450ef3",
+      "pattern": "ports",
+      "expectedAnswer": "RE1200 (V2.0): 1 physical 10/100Mbps RJ45 Ethernet port. Count physical Ethernet connectors once; SIM slots, USB and power connectors are not Ethernet ports.",
+      "expectedSources": [
+        {
+          "assetSha256": "85fa37e8750d0b4be2add09f688fde4aa1ee8eb1f30fdc97e565f8a8f53e3121",
+          "unitIndex": 4,
+          "blockId": "88689aa6-3135-4d12-97ca-0410881be1f0",
+          "excerpt": "Interfaces, 1 = 10/100 Mbps RJ45 Ports. Interfaces, 2 = 1.",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有ports题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-12-poe",
+      "caseSha256": "6845f2d223d6d8f59315e23163b40e870a1aab0f835b59e10f0526b1fe572b6a",
+      "pattern": "poe",
+      "expectedAnswer": "No. RE1200 (V2.0) does not support PoE input or output. The complete matching original does not declare PoE support, under the user-confirmed MA24-09 review rule. Direct 100–240V AC input; regional versions provide EU, US or UK plugs. No PoE support.",
+      "expectedSources": [
+        {
+          "assetSha256": "85fa37e8750d0b4be2add09f688fde4aa1ee8eb1f30fdc97e565f8a8f53e3121",
+          "unitIndex": 4,
+          "blockId": "88689aa6-3135-4d12-97ca-0410881be1f0",
+          "excerpt": "Interfaces, 1 = 10/100 Mbps RJ45 Ports. Interfaces, 2 = 1.",
+          "version": "V2.0"
+        },
+        {
+          "assetSha256": "85fa37e8750d0b4be2add09f688fde4aa1ee8eb1f30fdc97e565f8a8f53e3121",
+          "unitIndex": 4,
+          "blockId": "b87ef5b7-d9b0-43de-9577-57f7cbd51ba8",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = AC. , 1 = AC. , 2 = 100V ~ 240V.",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有poe题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。未声明PoE的判断基于完整原件核对及MA24-09，不基于检索片段或PPPoE字样。"
+    },
+    {
+      "caseId": "base-12-compare",
+      "caseSha256": "868a5cc2a76afe08509d24d9b3b1b46a811becd4b1e0c979ab86bfe010297e57",
+      "pattern": "compare",
+      "expectedAnswer": "RE1200 (V2.0): One Fast Ethernet RJ45 port, with a plug-in AC power connection. Direct 100–240V AC input; regional versions provide EU, US or UK plugs. No PoE support.\nLT700 (V2.0): Four Gigabit ports (one WAN/LAN and three LAN), plus two Nano SIM slots. DC 12V/1.5A barrel input; the adapter accepts 90–260V AC and outputs 12V/1.5A. No PoE support.",
+      "expectedSources": [
+        {
+          "assetSha256": "85fa37e8750d0b4be2add09f688fde4aa1ee8eb1f30fdc97e565f8a8f53e3121",
+          "unitIndex": 4,
+          "blockId": "88689aa6-3135-4d12-97ca-0410881be1f0",
+          "excerpt": "Interfaces, 1 = 10/100 Mbps RJ45 Ports. Interfaces, 2 = 1.",
+          "version": "V2.0"
+        },
+        {
+          "assetSha256": "85fa37e8750d0b4be2add09f688fde4aa1ee8eb1f30fdc97e565f8a8f53e3121",
+          "unitIndex": 4,
+          "blockId": "b87ef5b7-d9b0-43de-9577-57f7cbd51ba8",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = AC. , 1 = AC. , 2 = 100V ~ 240V.",
+          "version": "V2.0"
+        },
+        {
+          "assetSha256": "6933f9798a3ed2d9766e831e6440507027795d499f0a02c91c0c400e91944329",
+          "unitIndex": 4,
+          "blockId": "38997561-0725-48e8-b3e2-4e391d4f888c",
+          "excerpt": "Ethernet Ports, 1 = 1 GbE WAN/LAN + 3 GbE LAN. SIM card slot, 1 = 2 x SIM Slots (Nano).",
+          "version": "V2.0"
+        },
+        {
+          "assetSha256": "6933f9798a3ed2d9766e831e6440507027795d499f0a02c91c0c400e91944329",
+          "unitIndex": 5,
+          "blockId": "8f854a63-0d31-488d-aaf3-3cffee39bcee",
+          "excerpt": "Power, 1 = AC Power Adapter: Input: 90~260V Output: 12V, 1.5A DC input (12V-1.5A) Barrel Plug.",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有compare题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-12-explain",
+      "caseSha256": "cbfebaa29f0005346653ef079c7b748064afb495e257680a1e7c9b001f1158b0",
+      "pattern": "explain",
+      "expectedAnswer": "RE1200 (V2.0): Suitable for extending an existing Wi-Fi network. Evidence includes dual-band Wi-Fi 5, WPS setup, one Fast Ethernet port and Cudy Mesh Satellite support; the original lists compatibility with any Wi-Fi router. Actual coverage depends on layout and wall materials.",
+      "expectedSources": [
+        {
+          "assetSha256": "85fa37e8750d0b4be2add09f688fde4aa1ee8eb1f30fdc97e565f8a8f53e3121",
+          "unitIndex": 2,
+          "blockId": "73750e75-b718-4710-b17f-b2a9dc9d0439",
+          "excerpt": "A range extender featuring AC1200 WiFi and an Ethernet port. Press its WPS buttons to expand the existing Wi-Fi instantly.\n-   Works with Any Wi-Fi Router\n-   Dual-Band Wi-Fi 5\n-   1× Fast Ethernet Port\n-   30 Connected Devices\n-   Cudy Mesh Satellite\n-   Multi-Band Simultaneous Backhaul",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有explain题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-13-open",
+      "caseSha256": "574394aef380a598dbcbeecfc15cef8fc35d62eda6e8b67f2452fa13e92d7b4f",
+      "pattern": "open",
+      "expectedAnswer": "找到并展示已登记的原始《WU650 Datasheet V2.0》PDF，提供打开或下载入口。这份原件匹配WU650，不以其他型号替代，也不把打开资料请求改成参数问答。",
+      "expectedSources": [
+        {
+          "assetSha256": "19b13a098e34f0dc215cd8a789586b15c664a2e81135982d0cc6c0ec18f45f1a",
+          "unitIndex": 2,
+          "blockId": "b7206e80-7691-4c4d-ad31-d51cda1c570b",
+          "excerpt": "-  2.4 GHz 200 Mbps + 5 GHz 433 Mbps Wi-Fi Speeds\n-  Compatible with 802.11ac/n/b/g standard\n-  Selectable dual-band connections for lag-free HD video streaming and gaming\n-  Supports 64/128 WEP, WPA/WPA2, WPA-PSK/WPA2-PSK (TKIP/AES) Security\n-  Free driver and auto installation\n-  Supports Windows, macOS, Linux\n-  Supports Soft AP\nProduct Name, 1 = AC650 Wireless Dual Band Mini USB Adapter. Product Model, 1 = WU650. Antenna, 1 = Built in 2dBi Antenna. USB Port, 1 = USB 2.0. Wireless Frequency, 1 = 2.4~2.484 GHz, 5.180~5.825 GHz. Wireless Standard, 1 = IEEE802.11a, IEEE802.11b, IEEE802.11g, IEEE802.11n, IEEE802.11ac. Transmission Rate, 1 = 11b: 1/2/5.5/11Mbps; 11g: 6/9/12/18/24/36/48/54Mbps; 11n: 200 Mbps; 11ac: 433 Mbps. Transmit Power, 1 = 18dBm (max). Encryption, 1 = WPA-PSK/WPA2-PSK; W",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有open题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-13-ports",
+      "caseSha256": "91f2755746d336ba697912757dfb00aaede6f9a0eae791e4f5f2ba31002cf997",
+      "pattern": "ports",
+      "expectedAnswer": "WU650 (V2.0): 0个RJ45以太网口。它是USB 2.0无线网卡，USB接口不计作以太网口。 物理网口只计一次；SIM槽、USB及电源接口不计作以太网口。",
+      "expectedSources": [
+        {
+          "assetSha256": "19b13a098e34f0dc215cd8a789586b15c664a2e81135982d0cc6c0ec18f45f1a",
+          "unitIndex": 2,
+          "blockId": "b7206e80-7691-4c4d-ad31-d51cda1c570b",
+          "excerpt": "Product Name, 1 = AC650 Wireless Dual Band Mini USB Adapter. Product Model, 1 = WU650. Antenna, 1 = Built in 2dBi Antenna. USB Port, 1 = USB 2.0.",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有ports题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-13-poe",
+      "caseSha256": "bbf2fa561216628882080776bb0bfde9933327ae2f98cbb3b50d63b9f7060b66",
+      "pattern": "poe",
+      "expectedAnswer": "不支持。WU650 (V2.0)不支持PoE输入或输出。完整匹配原件未声明PoE支持，按用户确认的MA24-09口径判定。通过USB连接主机；原件未单列额定供电电压/电流。不支持PoE输入或输出，不能把USB或无线速率当作PoE能力。",
+      "expectedSources": [
+        {
+          "assetSha256": "19b13a098e34f0dc215cd8a789586b15c664a2e81135982d0cc6c0ec18f45f1a",
+          "unitIndex": 2,
+          "blockId": "b7206e80-7691-4c4d-ad31-d51cda1c570b",
+          "excerpt": "Product Name, 1 = AC650 Wireless Dual Band Mini USB Adapter. Product Model, 1 = WU650. Antenna, 1 = Built in 2dBi Antenna. USB Port, 1 = USB 2.0.",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有poe题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。未声明PoE的判断基于完整原件核对及MA24-09，不基于检索片段或PPPoE字样。"
+    },
+    {
+      "caseId": "base-13-compare",
+      "caseSha256": "269c18c11604122d0f29c68c5fbdd7175537941c167315cdd1401af01af7677c",
+      "pattern": "compare",
+      "expectedAnswer": "WU650 (V2.0): USB 2.0无线网卡，无RJ45以太网口。 通过USB连接主机；原件未单列额定供电电压/电流。不支持PoE输入或输出，不能把USB或无线速率当作PoE能力。\nM3000 (V2.0): 每台1个2.5GbE WAN口和1个千兆LAN口。 DC 12V/1A输入，最大设备功耗11.5W；适配器输入100～240V AC、50/60Hz，输出12V/1A DC；不支持PoE。",
+      "expectedSources": [
+        {
+          "assetSha256": "19b13a098e34f0dc215cd8a789586b15c664a2e81135982d0cc6c0ec18f45f1a",
+          "unitIndex": 2,
+          "blockId": "b7206e80-7691-4c4d-ad31-d51cda1c570b",
+          "excerpt": "Product Name, 1 = AC650 Wireless Dual Band Mini USB Adapter. Product Model, 1 = WU650. Antenna, 1 = Built in 2dBi Antenna. USB Port, 1 = USB 2.0.",
+          "version": "V2.0"
+        },
+        {
+          "assetSha256": "79f1c288f9e1ca2545c32241c11b75445f235077aa986a19ed9408bff7e99a2e",
+          "unitIndex": 8,
+          "blockId": "fd38e814-b813-485f-80a6-35c21a48f55f",
+          "excerpt": "Interfaces, 1 = 2.5G RJ45 Ports. Interfaces, 2 = 1. Interfaces, 1 = Gigabit RJ45 Ports. Interfaces, 2 = 1. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = The 2.5G port is the WAN port, the Gigabit port is. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = LAN port.",
+          "version": "V2.0"
+        },
+        {
+          "assetSha256": "79f1c288f9e1ca2545c32241c11b75445f235077aa986a19ed9408bff7e99a2e",
+          "unitIndex": 8,
+          "blockId": "fd38e814-b813-485f-80a6-35c21a48f55f",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = DC. Power, 1 = DC. Power, 2 = 12V 1A. Power, 1 = Power Adapter. Power, 2 = Input: 100 ~ 240 V, 50/60 Hz AC. Power, 1 = Power Adapter. Power, 2 = Output: 12V 1A DC. Power, 1 = Max Power Consumption (W). Power, 2 = 11.5W. Power, 1 = Idle Power Consumption (W). Power, 2 = 4.2W",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有compare题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-13-explain",
+      "caseSha256": "63017e395a31ddb489853c9b03640f246ac6ee3c500a97f743009cf95bdf6154",
+      "pattern": "explain",
+      "expectedAnswer": "WU650 (V2.0): 适合给受支持的计算机增加双频Wi-Fi连接或使用Soft AP。依据是USB 2.0、2.4GHz 200Mbps与5GHz 433Mbps、Soft AP及列出的Windows/macOS/Linux支持；须核对原件中的操作系统版本范围，不能声称兼容所有新版本。",
+      "expectedSources": [
+        {
+          "assetSha256": "19b13a098e34f0dc215cd8a789586b15c664a2e81135982d0cc6c0ec18f45f1a",
+          "unitIndex": 2,
+          "blockId": "b7206e80-7691-4c4d-ad31-d51cda1c570b",
+          "excerpt": "-  2.4 GHz 200 Mbps + 5 GHz 433 Mbps Wi-Fi Speeds\n-  Compatible with 802.11ac/n/b/g standard\n-  Selectable dual-band connections for lag-free HD video streaming and gaming\n-  Supports 64/128 WEP, WPA/WPA2, WPA-PSK/WPA2-PSK (TKIP/AES) Security\n-  Free driver and auto installation\n-  Supports Windows, macOS, Linux\n-  Supports Soft AP\nProduct Name, 1 = AC650 Wireless Dual Band Mini USB Adapter. Product Model, 1 = WU650. Antenna, 1 = Built in 2dBi Antenna. USB Port, 1 = USB 2.0. Wireless Frequency, 1 = 2.4~2.484 GHz, 5.180~5.825 GHz. Wireless Standard, 1 = IEEE802.11a, IEEE802.11b, IEEE802.11g, IEEE802.11n, IEEE802.11ac. Transmission Rate, 1 = 11b: 1/2/5.5/11Mbps; 11g: 6/9/12/18/24/36/48/54Mbps; 11n: 200 Mbps; 11ac: 433 Mbps. Transmit Power, 1 = 18dBm (max). Encryption, 1 = WPA-PSK/WPA2-PSK; WPA/WPA2; WEP. Other Function, 1 = Free Driver, Support Soft AP. Physical Features, 1 = Size: 20×15×8",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有explain题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-14-open",
+      "caseSha256": "605409032336ce49d08827633351aaa777d513ddd81ab1be252cdc47aa26bfa8",
+      "pattern": "open",
+      "expectedAnswer": "Find and display the registered original “M3000 Datasheet V2.0” PDF, with an open or download link. It is a valid match for M3000; do not substitute another model or turn the request into a specification answer.",
+      "expectedSources": [
+        {
+          "assetSha256": "79f1c288f9e1ca2545c32241c11b75445f235077aa986a19ed9408bff7e99a2e",
+          "unitIndex": 1,
+          "blockId": "4777df3a-a095-476b-842f-308544d46e95",
+          "excerpt": "Model: M3000",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有open题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-14-ports",
+      "caseSha256": "3e2e0b45d1179731177ca4ae807a70cb3599424c361366bc25dec9a8e4b4a04e",
+      "pattern": "ports",
+      "expectedAnswer": "M3000 (V2.0): 2 physical RJ45 ports per unit: one 2.5GbE WAN port and one Gigabit LAN port. Pack size does not change the port count per unit. Count physical Ethernet connectors once; SIM slots, USB and power connectors are not Ethernet ports.",
+      "expectedSources": [
+        {
+          "assetSha256": "79f1c288f9e1ca2545c32241c11b75445f235077aa986a19ed9408bff7e99a2e",
+          "unitIndex": 8,
+          "blockId": "fd38e814-b813-485f-80a6-35c21a48f55f",
+          "excerpt": "Interfaces, 1 = 2.5G RJ45 Ports. Interfaces, 2 = 1. Interfaces, 1 = Gigabit RJ45 Ports. Interfaces, 2 = 1. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = The 2.5G port is the WAN port, the Gigabit port is. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = LAN port.",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有ports题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-14-poe",
+      "caseSha256": "9cabe29040502a19a89e11e964f01a8c1191872651b5fe11f614bf9380373113",
+      "pattern": "poe",
+      "expectedAnswer": "No. M3000 (V2.0) does not support PoE input or output. The complete matching original does not declare PoE support, under the user-confirmed MA24-09 review rule. DC 12V/1A input and 11.5W maximum device consumption; the adapter accepts 100–240V AC, 50/60Hz and outputs 12V/1A DC. No PoE support.",
+      "expectedSources": [
+        {
+          "assetSha256": "79f1c288f9e1ca2545c32241c11b75445f235077aa986a19ed9408bff7e99a2e",
+          "unitIndex": 8,
+          "blockId": "fd38e814-b813-485f-80a6-35c21a48f55f",
+          "excerpt": "Interfaces, 1 = 2.5G RJ45 Ports. Interfaces, 2 = 1. Interfaces, 1 = Gigabit RJ45 Ports. Interfaces, 2 = 1. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = The 2.5G port is the WAN port, the Gigabit port is. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = LAN port.",
+          "version": "V2.0"
+        },
+        {
+          "assetSha256": "79f1c288f9e1ca2545c32241c11b75445f235077aa986a19ed9408bff7e99a2e",
+          "unitIndex": 8,
+          "blockId": "fd38e814-b813-485f-80a6-35c21a48f55f",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = DC. Power, 1 = DC. Power, 2 = 12V 1A. Power, 1 = Power Adapter. Power, 2 = Input: 100 ~ 240 V, 50/60 Hz AC. Power, 1 = Power Adapter. Power, 2 = Output: 12V 1A DC. Power, 1 = Max Power Consumption (W). Power, 2 = 11.5W. Power, 1 = Idle Power Consumption (W). Power, 2 = 4.2W",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有poe题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。未声明PoE的判断基于完整原件核对及MA24-09，不基于检索片段或PPPoE字样。"
+    },
+    {
+      "caseId": "base-14-compare",
+      "caseSha256": "fdaf4c6412bb7b8742d9b175e439c14685329c4ffe6a89bdd2f5e318d5eb35bd",
+      "pattern": "compare",
+      "expectedAnswer": "M3000 (V2.0): One 2.5GbE WAN port and one Gigabit LAN port per unit. DC 12V/1A input and 11.5W maximum device consumption; the adapter accepts 100–240V AC, 50/60Hz and outputs 12V/1A DC. No PoE support.\nWU650 (V2.0): A USB 2.0 wireless adapter with no RJ45 Ethernet port. Connects through USB; the original gives no separate rated supply voltage/current. No PoE input/output support; USB or Wi-Fi speeds do not establish PoE capability.",
+      "expectedSources": [
+        {
+          "assetSha256": "79f1c288f9e1ca2545c32241c11b75445f235077aa986a19ed9408bff7e99a2e",
+          "unitIndex": 8,
+          "blockId": "fd38e814-b813-485f-80a6-35c21a48f55f",
+          "excerpt": "Interfaces, 1 = 2.5G RJ45 Ports. Interfaces, 2 = 1. Interfaces, 1 = Gigabit RJ45 Ports. Interfaces, 2 = 1. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = The 2.5G port is the WAN port, the Gigabit port is. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = LAN port.",
+          "version": "V2.0"
+        },
+        {
+          "assetSha256": "79f1c288f9e1ca2545c32241c11b75445f235077aa986a19ed9408bff7e99a2e",
+          "unitIndex": 8,
+          "blockId": "fd38e814-b813-485f-80a6-35c21a48f55f",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = DC. Power, 1 = DC. Power, 2 = 12V 1A. Power, 1 = Power Adapter. Power, 2 = Input: 100 ~ 240 V, 50/60 Hz AC. Power, 1 = Power Adapter. Power, 2 = Output: 12V 1A DC. Power, 1 = Max Power Consumption (W). Power, 2 = 11.5W. Power, 1 = Idle Power Consumption (W). Power, 2 = 4.2W",
+          "version": "V2.0"
+        },
+        {
+          "assetSha256": "19b13a098e34f0dc215cd8a789586b15c664a2e81135982d0cc6c0ec18f45f1a",
+          "unitIndex": 2,
+          "blockId": "b7206e80-7691-4c4d-ad31-d51cda1c570b",
+          "excerpt": "Product Name, 1 = AC650 Wireless Dual Band Mini USB Adapter. Product Model, 1 = WU650. Antenna, 1 = Built in 2dBi Antenna. USB Port, 1 = USB 2.0.",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有compare题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-14-explain",
+      "caseSha256": "b4f6cc3db396b72144a011bc222d532b36991198e83bb71d2a5706feb6afd2f3",
+      "pattern": "explain",
+      "expectedAnswer": "M3000 (V2.0): Suitable for large-home Mesh networking, 4K streaming and gaming. The original names these scenarios and lists dual-band Wi-Fi 6, fast roaming and simultaneous multi-band backhaul. Pack coverage figures are references, not guaranteed site coverage.",
+      "expectedSources": [
+        {
+          "assetSha256": "79f1c288f9e1ca2545c32241c11b75445f235077aa986a19ed9408bff7e99a2e",
+          "unitIndex": 7,
+          "blockId": "b09b909e-c6ec-4b40-9496-6d808c390b99",
+          "excerpt": "A mesh WiFi 6 system with five antennas to provide a super-fast network for large homes with 4K streaming and gaming demands. Suitable for internet access up to 2.5 Gbps.\n-  1.3 GHz Dual-Core CPU\n-  4-Stream Dual-Band Wi-Fi 6\n-  2402 Mbps + 574 Mbps Wi-Fi\n-  200 Connected Devices\n-  Fast Roaming\n-  Cudy Mesh, VPN Server and Client\n-  Multi-Band Simultaneous Backhaul\n-  Cudy App, Cloud Control",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有explain题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-15-open",
+      "caseSha256": "d493253175b251709a1f0a837d56ca52da3bcc791f2cd228211c6af9cc041978",
+      "pattern": "open",
+      "expectedAnswer": "找到并展示已登记的原始《WR3000 Datasheet V2.0》PDF，提供打开或下载入口。这份原件匹配WR3000，不以其他型号替代，也不把打开资料请求改成参数问答。",
+      "expectedSources": [
+        {
+          "assetSha256": "6cf2a9b8bab679b2b43c714114fcfe7e15fc6cfd2a2250310b3a2068b4c90588",
+          "unitIndex": 1,
+          "blockId": "cd1f762f-e614-40c6-93ae-acf281effe53",
+          "excerpt": "WR3000\nUp to 3.0 Gbps Wi-Fi 6 Speed: Enjoy smooth streaming, downloading, and gaming with extremely fast Wi-Fi 6 Speed.",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有open题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-15-ports",
+      "caseSha256": "2cedb67a09624d2adfbd16fab09ede0dbb25ec983d1877692c1d14ac7565595b",
+      "pattern": "ports",
+      "expectedAnswer": "WR3000 (V2.0): 4个千兆RJ45物理网口：1个WAN口和3个LAN口。 物理网口只计一次；SIM槽、USB及电源接口不计作以太网口。",
+      "expectedSources": [
+        {
+          "assetSha256": "6cf2a9b8bab679b2b43c714114fcfe7e15fc6cfd2a2250310b3a2068b4c90588",
+          "unitIndex": 4,
+          "blockId": "ef619871-dbdf-4bdc-a2a4-11b46c7200a6",
+          "excerpt": "Interfaces, 1 = Gigabit WAN Ports. Interfaces, 2 = 1. Interfaces, 1 = Gigabit LAN Ports. Interfaces, 2 = 3.",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有ports题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-15-poe",
+      "caseSha256": "1e7d676230c9f6602c3163485790a9db978044ba9d8bcaca8a12351e25eeea90",
+      "pattern": "poe",
+      "expectedAnswer": "不支持。WR3000 (V2.0)不支持PoE输入或输出。完整匹配原件未声明PoE支持，按用户确认的MA24-09口径判定。DC 12V/1A输入，最大设备功耗8.8W；适配器输入100～240V AC、50/60Hz，输出12V/1A DC；不支持PoE。",
+      "expectedSources": [
+        {
+          "assetSha256": "6cf2a9b8bab679b2b43c714114fcfe7e15fc6cfd2a2250310b3a2068b4c90588",
+          "unitIndex": 4,
+          "blockId": "ef619871-dbdf-4bdc-a2a4-11b46c7200a6",
+          "excerpt": "Interfaces, 1 = Gigabit WAN Ports. Interfaces, 2 = 1. Interfaces, 1 = Gigabit LAN Ports. Interfaces, 2 = 3.",
+          "version": "V2.0"
+        },
+        {
+          "assetSha256": "6cf2a9b8bab679b2b43c714114fcfe7e15fc6cfd2a2250310b3a2068b4c90588",
+          "unitIndex": 4,
+          "blockId": "ef619871-dbdf-4bdc-a2a4-11b46c7200a6",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = DC. Power, 1 = DC. Power, 2 = 12V 1A. Power, 1 = Power Adapter. Power, 2 = Input: 100 ~ 240 V, 50/60 Hz AC. Power, 1 = Power Adapter. Power, 2 = Output: 12V 1A DC. Power, 1 = Max Power Consumption (W). Power, 2 = 8.8W. Power, 1 = Idle Power Consumption (W). Power, 2 = 2.5W.",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有poe题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。未声明PoE的判断基于完整原件核对及MA24-09，不基于检索片段或PPPoE字样。"
+    },
+    {
+      "caseId": "base-15-explain",
+      "caseSha256": "b0525a739184db848483c2217952f402f80af0d48e66ca759a6e0517b58662d9",
+      "pattern": "explain",
+      "expectedAnswer": "WR3000 (V2.0): 适合家庭千兆互联网与多设备无线接入。原件明确给出家庭场景，依据是双频Wi-Fi 6、4个千兆网口及Cudy Mesh、VPN服务器/客户端；覆盖面积和设备数量是标称参考，不保证实际吞吐或容量。",
+      "expectedSources": [
+        {
+          "assetSha256": "6cf2a9b8bab679b2b43c714114fcfe7e15fc6cfd2a2250310b3a2068b4c90588",
+          "unitIndex": 3,
+          "blockId": "1b68950d-e88c-4c83-a496-86fe67d426ba",
+          "excerpt": "A WiFi 6 router with four Gigabit ports, suitable for home internet up to 1000 Mbps, connecting many devices, and reducing latency.\n- 4-Stream Dual-Band Wi-Fi 6\n- 2402 Mbps + 574 Mbps Wi-Fi\n- 4× Gigabit Ethernet Ports\n- 70 Connected Devices\n- Supports Multicast IPTV with Bridge / Tag VLAN\n- Covers 120 m² (1,300 ft²)\n- Cudy Mesh, VPN Server and Client\n- Cudy App, Cloud Control",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有explain题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-16-open",
+      "caseSha256": "8828207386e1b1d43bb3208001db82df241cb244e359c40f8e4a17db5524fe62",
+      "pattern": "open",
+      "expectedAnswer": "Find and display the registered original “WR6500H Datasheet V1.0” PDF, with an open or download link. It is a valid match for WR6500H; do not substitute another model or turn the request into a specification answer.",
+      "expectedSources": [
+        {
+          "assetSha256": "28be140490c4507d22aeed634ab988404223e5c0dd3587861f0d949fa3303cb4",
+          "unitIndex": 1,
+          "blockId": "e21eee2b-cf85-4d77-9136-1ce4d4443f56",
+          "excerpt": "Model: WR6500H",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有open题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-16-ports",
+      "caseSha256": "719c42a0f0f9ac0606656a775a3c5e7954e677d12e15c97eac56375bb96a62c1",
+      "pattern": "ports",
+      "expectedAnswer": "WR6500H (V1.0): 5 physical RJ45 ports: one 2.5GbE WAN port and four Gigabit LAN ports. Count physical Ethernet connectors once; SIM slots, USB and power connectors are not Ethernet ports.",
+      "expectedSources": [
+        {
+          "assetSha256": "28be140490c4507d22aeed634ab988404223e5c0dd3587861f0d949fa3303cb4",
+          "unitIndex": 3,
+          "blockId": "08248ec1-fe8c-464f-a292-f06a8763280f",
+          "excerpt": "- 1× 2.5GbE and 4× GbE",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有ports题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-16-poe",
+      "caseSha256": "3fcd3a6962f52e171c380dd46a8015d4e5a24d2e6c0c22885465eba0ee07d3f6",
+      "pattern": "poe",
+      "expectedAnswer": "No. WR6500H (V1.0) does not support PoE input or output. The complete matching original does not declare PoE support, under the user-confirmed MA24-09 review rule. DC 12V/1.5A input and 17W maximum device consumption; the adapter accepts 100–240V AC, 50/60Hz and outputs 12V/1.5A DC. No PoE support.",
+      "expectedSources": [
+        {
+          "assetSha256": "28be140490c4507d22aeed634ab988404223e5c0dd3587861f0d949fa3303cb4",
+          "unitIndex": 3,
+          "blockId": "08248ec1-fe8c-464f-a292-f06a8763280f",
+          "excerpt": "- 1× 2.5GbE and 4× GbE",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "28be140490c4507d22aeed634ab988404223e5c0dd3587861f0d949fa3303cb4",
+          "unitIndex": 4,
+          "blockId": "c201b4f7-6ff0-46a1-8fec-2ff8252a9d35",
+          "excerpt": "Input: 100 ~ 240 V, 50/60 Hz AC\nOutput: 12V 1.5A DC\n17W",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有poe题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。未声明PoE的判断基于完整原件核对及MA24-09，不基于检索片段或PPPoE字样。"
+    },
+    {
+      "caseId": "base-16-compare",
+      "caseSha256": "0956a056ec5a83cfac24f2c6a4d64e56a1edf85059057ab6d411a6c3d822a790",
+      "pattern": "compare",
+      "expectedAnswer": "WR6500H (V1.0): One 2.5GbE WAN port and four Gigabit LAN ports, five RJ45 ports in total. DC 12V/1.5A input and 17W maximum device consumption; the adapter accepts 100–240V AC, 50/60Hz and outputs 12V/1.5A DC. No PoE support.\nWR3000 (V2.0): One Gigabit WAN port and three Gigabit LAN ports, four RJ45 ports in total. DC 12V/1A input and 8.8W maximum device consumption; the adapter accepts 100–240V AC, 50/60Hz and outputs 12V/1A DC. No PoE support.",
+      "expectedSources": [
+        {
+          "assetSha256": "28be140490c4507d22aeed634ab988404223e5c0dd3587861f0d949fa3303cb4",
+          "unitIndex": 3,
+          "blockId": "08248ec1-fe8c-464f-a292-f06a8763280f",
+          "excerpt": "- 1× 2.5GbE and 4× GbE",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "28be140490c4507d22aeed634ab988404223e5c0dd3587861f0d949fa3303cb4",
+          "unitIndex": 4,
+          "blockId": "c201b4f7-6ff0-46a1-8fec-2ff8252a9d35",
+          "excerpt": "Input: 100 ~ 240 V, 50/60 Hz AC\nOutput: 12V 1.5A DC\n17W",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "6cf2a9b8bab679b2b43c714114fcfe7e15fc6cfd2a2250310b3a2068b4c90588",
+          "unitIndex": 4,
+          "blockId": "ef619871-dbdf-4bdc-a2a4-11b46c7200a6",
+          "excerpt": "Interfaces, 1 = Gigabit WAN Ports. Interfaces, 2 = 1. Interfaces, 1 = Gigabit LAN Ports. Interfaces, 2 = 3.",
+          "version": "V2.0"
+        },
+        {
+          "assetSha256": "6cf2a9b8bab679b2b43c714114fcfe7e15fc6cfd2a2250310b3a2068b4c90588",
+          "unitIndex": 4,
+          "blockId": "ef619871-dbdf-4bdc-a2a4-11b46c7200a6",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = DC. Power, 1 = DC. Power, 2 = 12V 1A. Power, 1 = Power Adapter. Power, 2 = Input: 100 ~ 240 V, 50/60 Hz AC. Power, 1 = Power Adapter. Power, 2 = Output: 12V 1A DC. Power, 1 = Max Power Consumption (W). Power, 2 = 8.8W. Power, 1 = Idle Power Consumption (W). Power, 2 = 2.5W.",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有compare题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-16-explain",
+      "caseSha256": "2f1cfebb63788e1d8272fc83bc7a36ea578d9ee9cebf05c82ec3d788cc502129",
+      "pattern": "explain",
+      "expectedAnswer": "WR6500H (V1.0): Suitable for high-bandwidth internet, gaming and entertainment with dual-band Wi-Fi 7. The original names these scenarios and lists one 2.5GbE uplink and four Gigabit LAN ports. Coverage and client capacity depend on conditions; the overview and table differ on the stated 5GHz rate, so do not present an unresolved single value.",
+      "expectedSources": [
+        {
+          "assetSha256": "28be140490c4507d22aeed634ab988404223e5c0dd3587861f0d949fa3303cb4",
+          "unitIndex": 3,
+          "blockId": "08248ec1-fe8c-464f-a292-f06a8763280f",
+          "excerpt": "A dual-band WiFi 7 router with an aggregate of 6.5 Gbps speed, and five Gigabit ports, catering to super-fast internet access, gaming, and entertainment scenarios.\n- Broadcom 2 GHz Quad-Core CPU\n-   6-Stream Dual-Band Wi-Fi 7\n- 5760 Mbps + 688 Mbps Wi-Fi\n- 1× 2.5GbE and 4× GbE\n- 200 Connected Devices\n- Covers 140 m² (1,500 ft²)\n- Cudy Mesh, VPN Server and Client\n- Cudy App, Cloud Control",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有explain题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-17-open",
+      "caseSha256": "bb4070b345cbcd67c33ed099ee512020cf5816f9d9385cc273e207391389da79",
+      "pattern": "open",
+      "expectedAnswer": "找到并展示已登记的原始《WR1500 Datasheet V1.0》PDF，提供打开或下载入口。这份原件匹配WR1500，不以其他型号替代，也不把打开资料请求改成参数问答。",
+      "expectedSources": [
+        {
+          "assetSha256": "f40d72d36646ef4bc1900607d052f8e88669e9aeeb0688b322a9f069b53bfd7d",
+          "unitIndex": 1,
+          "blockId": "e5032c4c-814c-47b3-96c4-0ba64b42e42e",
+          "excerpt": "WR1500\ncudy\n(·))\nDual-Band",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有open题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-17-ports",
+      "caseSha256": "e68f69ff0b07932facc935ba17d7cde8ec07bd5858804f2aef782578fd389447",
+      "pattern": "ports",
+      "expectedAnswer": "WR1500 (V1.0): 4个千兆RJ45网口：1个WAN和3个LAN。 物理网口只计一次；SIM槽、USB及电源接口不计作以太网口。",
+      "expectedSources": [
+        {
+          "assetSha256": "f40d72d36646ef4bc1900607d052f8e88669e9aeeb0688b322a9f069b53bfd7d",
+          "unitIndex": 5,
+          "blockId": "fddf7101-1c3a-4ffc-be71-8911aa3aa0e5",
+          "excerpt": "Interfaces, 1 = Gigabit RJ45 Ports. Interfaces, 2 = 4. , 1 = Ethernet Notes. , 2 = 1× WAN port, the rest are LAN ports. , 1 = LED. , 2 = System. , 1 = Physical Buttons. , 2 = WPS Button. , 1 = . , 2 = Reset Button. , 1 = Power Input. , 2 = DC Jack.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有ports题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-17-poe",
+      "caseSha256": "289210c9876e1b4f86d892f143e3ffd61f198381020269edae6375dfcb7f8aa0",
+      "pattern": "poe",
+      "expectedAnswer": "不支持。WR1500 (V1.0)不支持PoE输入或输出。完整匹配原件未声明PoE支持，按用户确认的MA24-09口径判定。DC 12V/1A输入，最大功耗10W；不支持PoE。",
+      "expectedSources": [
+        {
+          "assetSha256": "f40d72d36646ef4bc1900607d052f8e88669e9aeeb0688b322a9f069b53bfd7d",
+          "unitIndex": 5,
+          "blockId": "fddf7101-1c3a-4ffc-be71-8911aa3aa0e5",
+          "excerpt": "Interfaces, 1 = Gigabit RJ45 Ports. Interfaces, 2 = 4. , 1 = Ethernet Notes. , 2 = 1× WAN port, the rest are LAN ports. , 1 = LED. , 2 = System. , 1 = Physical Buttons. , 2 = WPS Button. , 1 = . , 2 = Reset Button. , 1 = Power Input. , 2 = DC Jack.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "f40d72d36646ef4bc1900607d052f8e88669e9aeeb0688b322a9f069b53bfd7d",
+          "unitIndex": 5,
+          "blockId": "fddf7101-1c3a-4ffc-be71-8911aa3aa0e5",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = DC. , 1 = DC. , 2 = 12V 1A. , 1 = Power Adapter. , 2 = Input: 100 ~ 240 V, 50/60 Hz AC. , 1 = . , 2 = Output: 12V 1A DC. , 1 = Max Power Consumption (W). , 2 = 10W.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有poe题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。未声明PoE的判断基于完整原件核对及MA24-09，不基于检索片段或PPPoE字样。"
+    },
+    {
+      "caseId": "base-17-compare",
+      "caseSha256": "1b854ed5a2b05418b494760454404b3de079dd8e0c94f6ae54419e697b70620b",
+      "pattern": "compare",
+      "expectedAnswer": "WR1500 (V1.0): 1个千兆WAN和3个千兆LAN，共4个RJ45口。 DC 12V/1A输入，最大功耗10W；不支持PoE。\nWR3000S (V1.0): 1个千兆WAN和4个千兆LAN，共5个RJ45口。 12V/1A供电；不支持PoE。",
+      "expectedSources": [
+        {
+          "assetSha256": "f40d72d36646ef4bc1900607d052f8e88669e9aeeb0688b322a9f069b53bfd7d",
+          "unitIndex": 5,
+          "blockId": "fddf7101-1c3a-4ffc-be71-8911aa3aa0e5",
+          "excerpt": "Interfaces, 1 = Gigabit RJ45 Ports. Interfaces, 2 = 4. , 1 = Ethernet Notes. , 2 = 1× WAN port, the rest are LAN ports. , 1 = LED. , 2 = System. , 1 = Physical Buttons. , 2 = WPS Button. , 1 = . , 2 = Reset Button. , 1 = Power Input. , 2 = DC Jack.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "f40d72d36646ef4bc1900607d052f8e88669e9aeeb0688b322a9f069b53bfd7d",
+          "unitIndex": 5,
+          "blockId": "fddf7101-1c3a-4ffc-be71-8911aa3aa0e5",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = DC. , 1 = DC. , 2 = 12V 1A. , 1 = Power Adapter. , 2 = Input: 100 ~ 240 V, 50/60 Hz AC. , 1 = . , 2 = Output: 12V 1A DC. , 1 = Max Power Consumption (W). , 2 = 10W.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "fcacec9f72d2642fa2c6422c6afdbd800e1c0b7255384237f059acc7b8d7f52f",
+          "unitIndex": 4,
+          "blockId": "2798486b-2746-43b4-b35e-f00d9ea8ac4a",
+          "excerpt": "Ethernet Ports, 1 = 1× 10/100/1000 Mbps WAN Port 4× 10/100/1000 Mbps LAN Ports.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "fcacec9f72d2642fa2c6422c6afdbd800e1c0b7255384237f059acc7b8d7f52f",
+          "unitIndex": 4,
+          "blockId": "2798486b-2746-43b4-b35e-f00d9ea8ac4a",
+          "excerpt": "Power Supply, 1 = 12 V / 1A.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有compare题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-17-explain",
+      "caseSha256": "38a2561484eb96033e1c93aa58600e61a0d164d92cf316769f6387d072d51e8b",
+      "pattern": "explain",
+      "expectedAnswer": "WR1500 (V1.0): 适合家庭千兆有线与Wi-Fi 6接入。原件列出家庭联网、4个千兆网口、双频Wi-Fi 6、Cudy Mesh和VPN客户端；覆盖和客户端数量为标称参考。",
+      "expectedSources": [
+        {
+          "assetSha256": "f40d72d36646ef4bc1900607d052f8e88669e9aeeb0688b322a9f069b53bfd7d",
+          "unitIndex": 4,
+          "blockId": "4268a594-c88a-4983-99cd-75a2ca69489b",
+          "excerpt": "A Gigabit WiFi 6 router with 4 Gigabit ports, suitable for home internet up to 1000 Mbps, connecting many devices, and reducing latency.\n-   4-Stream Dual-Band Wi-Fi 6\n-   1201 Mbps + 300 Mbps Wi-Fi\n-   4× Gigabit Ethernet Ports\n-   Beamforming\n-   60 Connected Devices\n-   Covers 100m² (1,100 ft²)\n-   Cudy Mesh, VPN Client\n- Cudy App, Cloud Control",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有explain题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-18-open",
+      "caseSha256": "5c547afca97bd5fce8936f827550d3f4b955948065b6e920c9cb81d0667f690f",
+      "pattern": "open",
+      "expectedAnswer": "Find and display the registered original “WR3000S Datasheet V1.0” PDF, with an open or download link. It is a valid match for WR3000S; do not substitute another model or turn the request into a specification answer.",
+      "expectedSources": [
+        {
+          "assetSha256": "fcacec9f72d2642fa2c6422c6afdbd800e1c0b7255384237f059acc7b8d7f52f",
+          "unitIndex": 1,
+          "blockId": "e6b42c92-0bfe-4192-be73-5060695fe80b",
+          "excerpt": "Model: WR3000S",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有open题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-18-ports",
+      "caseSha256": "269130bf5aa23087128b1c82a3619aa494832e61e7bd07630c2e5d5e1c9b1e92",
+      "pattern": "ports",
+      "expectedAnswer": "WR3000S (V1.0): 5 Gigabit RJ45 ports: one WAN and four LAN ports. Count physical Ethernet connectors once; SIM slots, USB and power connectors are not Ethernet ports.",
+      "expectedSources": [
+        {
+          "assetSha256": "fcacec9f72d2642fa2c6422c6afdbd800e1c0b7255384237f059acc7b8d7f52f",
+          "unitIndex": 4,
+          "blockId": "2798486b-2746-43b4-b35e-f00d9ea8ac4a",
+          "excerpt": "Ethernet Ports, 1 = 1× 10/100/1000 Mbps WAN Port 4× 10/100/1000 Mbps LAN Ports.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有ports题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-18-poe",
+      "caseSha256": "fbd20ad6f75d1d95099db8cb419925a28b36d46be5e1bd62675b77361fb682af",
+      "pattern": "poe",
+      "expectedAnswer": "No. WR3000S (V1.0) does not support PoE input or output. The complete matching original does not declare PoE support, under the user-confirmed MA24-09 review rule. 12V/1A supply; no PoE support.",
+      "expectedSources": [
+        {
+          "assetSha256": "fcacec9f72d2642fa2c6422c6afdbd800e1c0b7255384237f059acc7b8d7f52f",
+          "unitIndex": 4,
+          "blockId": "2798486b-2746-43b4-b35e-f00d9ea8ac4a",
+          "excerpt": "Ethernet Ports, 1 = 1× 10/100/1000 Mbps WAN Port 4× 10/100/1000 Mbps LAN Ports.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "fcacec9f72d2642fa2c6422c6afdbd800e1c0b7255384237f059acc7b8d7f52f",
+          "unitIndex": 4,
+          "blockId": "2798486b-2746-43b4-b35e-f00d9ea8ac4a",
+          "excerpt": "Power Supply, 1 = 12 V / 1A.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有poe题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。未声明PoE的判断基于完整原件核对及MA24-09，不基于检索片段或PPPoE字样。"
+    },
+    {
+      "caseId": "base-18-compare",
+      "caseSha256": "ca69892a314a4fd39fd19391f21c168be0a7a09d3ea8505dce087c4e3dcd559d",
+      "pattern": "compare",
+      "expectedAnswer": "WR3000S (V1.0): One Gigabit WAN and four Gigabit LAN ports, five RJ45 ports in total. 12V/1A supply; no PoE support.\nWR1500 (V1.0): One Gigabit WAN and three Gigabit LAN ports, four RJ45 ports in total. DC 12V/1A input, 10W maximum consumption; no PoE support.",
+      "expectedSources": [
+        {
+          "assetSha256": "fcacec9f72d2642fa2c6422c6afdbd800e1c0b7255384237f059acc7b8d7f52f",
+          "unitIndex": 4,
+          "blockId": "2798486b-2746-43b4-b35e-f00d9ea8ac4a",
+          "excerpt": "Ethernet Ports, 1 = 1× 10/100/1000 Mbps WAN Port 4× 10/100/1000 Mbps LAN Ports.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "fcacec9f72d2642fa2c6422c6afdbd800e1c0b7255384237f059acc7b8d7f52f",
+          "unitIndex": 4,
+          "blockId": "2798486b-2746-43b4-b35e-f00d9ea8ac4a",
+          "excerpt": "Power Supply, 1 = 12 V / 1A.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "f40d72d36646ef4bc1900607d052f8e88669e9aeeb0688b322a9f069b53bfd7d",
+          "unitIndex": 5,
+          "blockId": "fddf7101-1c3a-4ffc-be71-8911aa3aa0e5",
+          "excerpt": "Interfaces, 1 = Gigabit RJ45 Ports. Interfaces, 2 = 4. , 1 = Ethernet Notes. , 2 = 1× WAN port, the rest are LAN ports. , 1 = LED. , 2 = System. , 1 = Physical Buttons. , 2 = WPS Button. , 1 = . , 2 = Reset Button. , 1 = Power Input. , 2 = DC Jack.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "f40d72d36646ef4bc1900607d052f8e88669e9aeeb0688b322a9f069b53bfd7d",
+          "unitIndex": 5,
+          "blockId": "fddf7101-1c3a-4ffc-be71-8911aa3aa0e5",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = DC. , 1 = DC. , 2 = 12V 1A. , 1 = Power Adapter. , 2 = Input: 100 ~ 240 V, 50/60 Hz AC. , 1 = . , 2 = Output: 12V 1A DC. , 1 = Max Power Consumption (W). , 2 = 10W.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有compare题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-18-explain",
+      "caseSha256": "082d337aebf95ae3eada5f355289a1296e2a9de8117dcfd2fa10a49b9fbdf9f5",
+      "pattern": "explain",
+      "expectedAnswer": "WR3000S (V1.0): Based on its specifications, suitable for streaming, downloads, gaming and multiple Wi-Fi 6 devices. Evidence includes AX3000 dual-band Wi-Fi 6, five Gigabit ports, 160MHz bandwidth, OFDMA, MU-MIMO and beamforming. Stated wireless rates are not guaranteed throughput.",
+      "expectedSources": [
+        {
+          "assetSha256": "fcacec9f72d2642fa2c6422c6afdbd800e1c0b7255384237f059acc7b8d7f52f",
+          "unitIndex": 4,
+          "blockId": "2e45de1a-24f8-4d97-96e7-0d78683c924e",
+          "excerpt": "- 1.3 GHz Dual-Core Cortex-A53 Processor\n- Extremely Fast AX3000 Wi-Fi 6 Technology\n- 5× 10/100/1000Mbps Ethernet Ports\n- 4× External High-Gain Antennas\n- 20/40/80/160 MHz Bandwidth Supported\n- OFDMA, Beamforming , and MU-MIMO\n- IPv4/IPv6, TR069/TR098/TR181/TR111",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "fcacec9f72d2642fa2c6422c6afdbd800e1c0b7255384237f059acc7b8d7f52f",
+          "unitIndex": 3,
+          "blockId": "05199c81-7495-4c00-98ca-6ce8cb9d0cac",
+          "excerpt": "Up to 3.0Gbps Wi-Fi 6 Speed: Enjoy smooth streaming, downloading, and gaming with extremely fast Wi-Fi 6 Speed.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有explain题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-19-open",
+      "caseSha256": "36ba07eb1e55d2f561bbf99cb26a9fddcd9796530efe976dfe53915a844fd6a0",
+      "pattern": "open",
+      "expectedAnswer": "找到并展示已登记的原始《WR3000P Datasheet V1.0》PDF，提供打开或下载入口。这份原件匹配WR3000P，不以其他型号替代，也不把打开资料请求改成参数问答。",
+      "expectedSources": [
+        {
+          "assetSha256": "cc088b063379fc78227dd8847bb2e1fa045a6472128bd93cba68ecbf422cef49",
+          "unitIndex": 3,
+          "blockId": "f24f34e3-0f94-4482-bb0c-daddef17f861",
+          "excerpt": "-   WR3000P\n-   Power Adapter\n-   Ethernet Cable\n-   Installation Guide",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有open题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-19-ports",
+      "caseSha256": "7c94386b143ef35c443917454f81cb2ad85b6c3974cbc0ae24b7e376d8829727",
+      "pattern": "ports",
+      "expectedAnswer": "WR3000P (V1.0): 5个RJ45网口：1个2.5GbE WAN（PoE输入）和4个千兆LAN。USB-A口不计作网口。 物理网口只计一次；SIM槽、USB及电源接口不计作以太网口。",
+      "expectedSources": [
+        {
+          "assetSha256": "cc088b063379fc78227dd8847bb2e1fa045a6472128bd93cba68ecbf422cef49",
+          "unitIndex": 4,
+          "blockId": "62f5e79e-fbee-4b25-b2e6-f328e24d4f16",
+          "excerpt": "Interfaces, 1 = 2.5G RJ45 Ports. Interfaces, 2 = 1. Interfaces, 1 = Gigabit RJ45 Ports. Interfaces, 2 = 4. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = The 2.5G port is WAN port and accepts PoE powering, the Gigabit ports are LAN ports. Interfaces, 1 = USB-A 2.0 Ports. Interfaces, 2 = 1.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有ports题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-19-poe",
+      "caseSha256": "72220e677bc5fd73982f449b8e9c91b5760ed3168c736f6b312739bebaef24ba",
+      "pattern": "poe",
+      "expectedAnswer": "WR3000P (V1.0): 支持。2.5GbE WAN口支持802.3at/af和48～57V Passive PoE输入；不能据此声称LAN口有PoE输出。",
+      "expectedSources": [
+        {
+          "assetSha256": "cc088b063379fc78227dd8847bb2e1fa045a6472128bd93cba68ecbf422cef49",
+          "unitIndex": 4,
+          "blockId": "62f5e79e-fbee-4b25-b2e6-f328e24d4f16",
+          "excerpt": "Interfaces, 1 = 2.5G RJ45 Ports. Interfaces, 2 = 1. Interfaces, 1 = Gigabit RJ45 Ports. Interfaces, 2 = 4. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = The 2.5G port is WAN port and accepts PoE powering, the Gigabit ports are LAN ports. Interfaces, 1 = USB-A 2.0 Ports. Interfaces, 2 = 1.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "cc088b063379fc78227dd8847bb2e1fa045a6472128bd93cba68ecbf422cef49",
+          "unitIndex": 4,
+          "blockId": "62f5e79e-fbee-4b25-b2e6-f328e24d4f16",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = DC. Power, 1 = Power Methods. Power, 2 = 802.3at/af PoE. Power, 1 = Power Methods. Power, 2 = Passive PoE. Power, 1 = DC. Power, 2 = 12V 1.5A. Power, 1 = Passive PoE. Power, 2 = 48~57V",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "cc088b063379fc78227dd8847bb2e1fa045a6472128bd93cba68ecbf422cef49",
+          "unitIndex": 4,
+          "blockId": "68c56662-5d68-4d58-a6db-66ac30b1ab0a",
+          "excerpt": "Power, 1 = Power Adapter. Power, 2 = Input: 100 ~ 240 V, 50/60 Hz AC. Power, 1 = Power Adapter. Power, 2 = Output: 12V 1.5A DC. Power, 1 = Max Power Consumption (W). Power, 2 = 9W.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有poe题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-19-compare",
+      "caseSha256": "4ea159165d7e806a8fd6b02f8491ee71962ed8b58dba5d941073edcf4d5e37ec",
+      "pattern": "compare",
+      "expectedAnswer": "WR3000P (V1.0): 1个2.5GbE WAN PoE IN、4个千兆LAN和1个USB-A 2.0口。 支持DC 12V/1.5A、802.3at/af PoE输入及48～57V Passive PoE输入；最大设备功耗9W。原件未建立PoE输出能力。\nWR3000H (V1.0): 1个2.5GbE WAN、4个千兆LAN；USB 2.0与PoE-IN标为Optional，See WR3000P，不可视为所有WR3000H的标配。 供电规格12V/1.5A；802.3at/af及48～57V Passive PoE via WAN均标为可选并指向WR3000P，需确认具体配置。",
+      "expectedSources": [
+        {
+          "assetSha256": "cc088b063379fc78227dd8847bb2e1fa045a6472128bd93cba68ecbf422cef49",
+          "unitIndex": 4,
+          "blockId": "62f5e79e-fbee-4b25-b2e6-f328e24d4f16",
+          "excerpt": "Interfaces, 1 = 2.5G RJ45 Ports. Interfaces, 2 = 1. Interfaces, 1 = Gigabit RJ45 Ports. Interfaces, 2 = 4. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = The 2.5G port is WAN port and accepts PoE powering, the Gigabit ports are LAN ports. Interfaces, 1 = USB-A 2.0 Ports. Interfaces, 2 = 1.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "cc088b063379fc78227dd8847bb2e1fa045a6472128bd93cba68ecbf422cef49",
+          "unitIndex": 4,
+          "blockId": "62f5e79e-fbee-4b25-b2e6-f328e24d4f16",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = DC. Power, 1 = Power Methods. Power, 2 = 802.3at/af PoE. Power, 1 = Power Methods. Power, 2 = Passive PoE. Power, 1 = DC. Power, 2 = 12V 1.5A. Power, 1 = Passive PoE. Power, 2 = 48~57V",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "cc088b063379fc78227dd8847bb2e1fa045a6472128bd93cba68ecbf422cef49",
+          "unitIndex": 4,
+          "blockId": "68c56662-5d68-4d58-a6db-66ac30b1ab0a",
+          "excerpt": "Power, 1 = Power Adapter. Power, 2 = Input: 100 ~ 240 V, 50/60 Hz AC. Power, 1 = Power Adapter. Power, 2 = Output: 12V 1.5A DC. Power, 1 = Max Power Consumption (W). Power, 2 = 9W.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "83ad1bce75d674779b5a2e379dbd13efa15cf8f455941f2ea5bde975a4578742",
+          "unitIndex": 4,
+          "blockId": "d3f1da3c-f2a9-4a27-a0c4-c5d22bd47e8d",
+          "excerpt": "Ethernet Port, 1 = 1 × 2.5Gbps WAN Port. Ethernet Port, 1 = (PoE-IN Optional , See WR3000P ). Ethernet Port, 1 = 4 × Gigabit LAN Ports. USB, 1 = 1 × USB 2.0 (Optiona l, See WR3000P ). Antennas, 1 = 4 × 5dBi Antennas. Buttons, 1 = 1 × Power ON/OFF Button. Buttons, 1 = 1 × Reset Button. Buttons, 1 = 1 × WPS(Mesh) Button. LEDs, 1 = Power, Internet, 2.4G Wi-Fi, 5G Wi-Fi, WPS,. LEDs, 1 = WAN, LAN, VPN, USB (Optional).",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "83ad1bce75d674779b5a2e379dbd13efa15cf8f455941f2ea5bde975a4578742",
+          "unitIndex": 4,
+          "blockId": "d3f1da3c-f2a9-4a27-a0c4-c5d22bd47e8d",
+          "excerpt": "Power Supply Options, 1 = 12V / 1 .5 A. Power Supply Options, 1 = 802.3at/af PoE via WAN (Optional , See WR3000P ). Power Supply Options, 1 = 48~57V Passive PoE via WAN (Optional , See WR3000P )",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有compare题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-19-explain",
+      "caseSha256": "6e5a3b757bd19a5f01e0e77e0228177afb35d4ee6bee4f0471cfee4479c9b6f5",
+      "pattern": "explain",
+      "expectedAnswer": "WR3000P (V1.0): 适合需要2.5Gbps上联、PoE供电及多设备接入的Wi-Fi 6部署。原件列出PoE供电、2.5Gbps联网、低延迟、多设备及USB文件共享；USB供电不等于PoE输出，标称客户端数量不保证现场容量。",
+      "expectedSources": [
+        {
+          "assetSha256": "cc088b063379fc78227dd8847bb2e1fa045a6472128bd93cba68ecbf422cef49",
+          "unitIndex": 3,
+          "blockId": "f46a0c98-31c5-4b2f-8019-a64ccbb3f23f",
+          "excerpt": "A PoE-powered WiFi 6 router with 2.5 Gbps internet connectivity, ideal for connecting a large number of devices and reducing latency. It features a USB ports, enabling fire sharing or third-party device powering.\n-   1.3 GHz Dual-Core CPU\n-   512 MB RAM\n-   4-Stream Dual-Band Wi-Fi 6\n-   2402 Mbps + 574 Mbps Wi-Fi\n-   1× 2.5GbE and 4× GbE\n-   1× USB 2.0\n-   802.3at/af, Passive PoE, DC\n-   Covers 130 m² (1,400 ft²)\n-   200 Connected Devices\n-   Cudy App, Cloud Control\n-   EasyMesh",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有explain题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-20-open",
+      "caseSha256": "eba0bdc4fc573f3d68cbf2445f09c2f903ed460d73631327aba0431ae8ed3a2f",
+      "pattern": "open",
+      "expectedAnswer": "Find and display the registered original “WR3000H Datasheet V1.0” PDF, with an open or download link. It is a valid match for WR3000H; do not substitute another model or turn the request into a specification answer.",
+      "expectedSources": [
+        {
+          "assetSha256": "83ad1bce75d674779b5a2e379dbd13efa15cf8f455941f2ea5bde975a4578742",
+          "unitIndex": 1,
+          "blockId": "23e1afe6-8288-4bba-9a97-48071684db72",
+          "excerpt": "Model: WR3000H",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有open题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-20-ports",
+      "caseSha256": "a0d131f9187e270d3a6702ab8e1a6522d46bbb813448a62917ebdebf16239f35",
+      "pattern": "ports",
+      "expectedAnswer": "WR3000H (V1.0): 5 RJ45 ports: one 2.5GbE WAN and four Gigabit LAN ports. PoE-IN and USB are optional configurations in the original. Count physical Ethernet connectors once; SIM slots, USB and power connectors are not Ethernet ports.",
+      "expectedSources": [
+        {
+          "assetSha256": "83ad1bce75d674779b5a2e379dbd13efa15cf8f455941f2ea5bde975a4578742",
+          "unitIndex": 4,
+          "blockId": "d3f1da3c-f2a9-4a27-a0c4-c5d22bd47e8d",
+          "excerpt": "Ethernet Port, 1 = 1 × 2.5Gbps WAN Port. Ethernet Port, 1 = (PoE-IN Optional , See WR3000P ). Ethernet Port, 1 = 4 × Gigabit LAN Ports. USB, 1 = 1 × USB 2.0 (Optiona l, See WR3000P ). Antennas, 1 = 4 × 5dBi Antennas. Buttons, 1 = 1 × Power ON/OFF Button. Buttons, 1 = 1 × Reset Button. Buttons, 1 = 1 × WPS(Mesh) Button. LEDs, 1 = Power, Internet, 2.4G Wi-Fi, 5G Wi-Fi, WPS,. LEDs, 1 = WAN, LAN, VPN, USB (Optional).",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有ports题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-20-poe",
+      "caseSha256": "e96e2246fefa156f4a2cf1e3638828833eb6df8e0e3fa06a02829d1ff9a7590c",
+      "pattern": "poe",
+      "expectedAnswer": "WR3000H (V1.0): It depends on the configuration. The V1.0 original marks WAN PoE-IN, 802.3at/af and 48–57V Passive PoE as Optional, See WR3000P. Do not claim all WR3000H units support PoE or none do, and do not infer PoE output.",
+      "expectedSources": [
+        {
+          "assetSha256": "83ad1bce75d674779b5a2e379dbd13efa15cf8f455941f2ea5bde975a4578742",
+          "unitIndex": 4,
+          "blockId": "d3f1da3c-f2a9-4a27-a0c4-c5d22bd47e8d",
+          "excerpt": "Ethernet Port, 1 = 1 × 2.5Gbps WAN Port. Ethernet Port, 1 = (PoE-IN Optional , See WR3000P ). Ethernet Port, 1 = 4 × Gigabit LAN Ports. USB, 1 = 1 × USB 2.0 (Optiona l, See WR3000P ). Antennas, 1 = 4 × 5dBi Antennas. Buttons, 1 = 1 × Power ON/OFF Button. Buttons, 1 = 1 × Reset Button. Buttons, 1 = 1 × WPS(Mesh) Button. LEDs, 1 = Power, Internet, 2.4G Wi-Fi, 5G Wi-Fi, WPS,. LEDs, 1 = WAN, LAN, VPN, USB (Optional).",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "83ad1bce75d674779b5a2e379dbd13efa15cf8f455941f2ea5bde975a4578742",
+          "unitIndex": 4,
+          "blockId": "d3f1da3c-f2a9-4a27-a0c4-c5d22bd47e8d",
+          "excerpt": "Power Supply Options, 1 = 12V / 1 .5 A. Power Supply Options, 1 = 802.3at/af PoE via WAN (Optional , See WR3000P ). Power Supply Options, 1 = 48~57V Passive PoE via WAN (Optional , See WR3000P )",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有poe题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-20-compare",
+      "caseSha256": "f347b63714d704a2e93cdfca340de23e6dc8dedb843c17879811d5b5e24b579f",
+      "pattern": "compare",
+      "expectedAnswer": "WR3000H (V1.0): One 2.5GbE WAN and four Gigabit LAN ports. USB 2.0 and PoE-IN are marked Optional, See WR3000P; they are not established standard features of every WR3000H. 12V/1.5A supply; 802.3at/af and 48–57V Passive PoE via WAN are both optional and refer to WR3000P. Confirm the actual configuration.\nWR3000P (V1.0): One 2.5GbE WAN PoE IN, four Gigabit LAN ports and one USB-A 2.0 port. Supports DC 12V/1.5A, 802.3at/af PoE input and 48–57V Passive PoE input; maximum device consumption is 9W. The original does not establish PoE output capability.",
+      "expectedSources": [
+        {
+          "assetSha256": "83ad1bce75d674779b5a2e379dbd13efa15cf8f455941f2ea5bde975a4578742",
+          "unitIndex": 4,
+          "blockId": "d3f1da3c-f2a9-4a27-a0c4-c5d22bd47e8d",
+          "excerpt": "Ethernet Port, 1 = 1 × 2.5Gbps WAN Port. Ethernet Port, 1 = (PoE-IN Optional , See WR3000P ). Ethernet Port, 1 = 4 × Gigabit LAN Ports. USB, 1 = 1 × USB 2.0 (Optiona l, See WR3000P ). Antennas, 1 = 4 × 5dBi Antennas. Buttons, 1 = 1 × Power ON/OFF Button. Buttons, 1 = 1 × Reset Button. Buttons, 1 = 1 × WPS(Mesh) Button. LEDs, 1 = Power, Internet, 2.4G Wi-Fi, 5G Wi-Fi, WPS,. LEDs, 1 = WAN, LAN, VPN, USB (Optional).",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "83ad1bce75d674779b5a2e379dbd13efa15cf8f455941f2ea5bde975a4578742",
+          "unitIndex": 4,
+          "blockId": "d3f1da3c-f2a9-4a27-a0c4-c5d22bd47e8d",
+          "excerpt": "Power Supply Options, 1 = 12V / 1 .5 A. Power Supply Options, 1 = 802.3at/af PoE via WAN (Optional , See WR3000P ). Power Supply Options, 1 = 48~57V Passive PoE via WAN (Optional , See WR3000P )",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "cc088b063379fc78227dd8847bb2e1fa045a6472128bd93cba68ecbf422cef49",
+          "unitIndex": 4,
+          "blockId": "62f5e79e-fbee-4b25-b2e6-f328e24d4f16",
+          "excerpt": "Interfaces, 1 = 2.5G RJ45 Ports. Interfaces, 2 = 1. Interfaces, 1 = Gigabit RJ45 Ports. Interfaces, 2 = 4. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = The 2.5G port is WAN port and accepts PoE powering, the Gigabit ports are LAN ports. Interfaces, 1 = USB-A 2.0 Ports. Interfaces, 2 = 1.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "cc088b063379fc78227dd8847bb2e1fa045a6472128bd93cba68ecbf422cef49",
+          "unitIndex": 4,
+          "blockId": "62f5e79e-fbee-4b25-b2e6-f328e24d4f16",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = DC. Power, 1 = Power Methods. Power, 2 = 802.3at/af PoE. Power, 1 = Power Methods. Power, 2 = Passive PoE. Power, 1 = DC. Power, 2 = 12V 1.5A. Power, 1 = Passive PoE. Power, 2 = 48~57V",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "cc088b063379fc78227dd8847bb2e1fa045a6472128bd93cba68ecbf422cef49",
+          "unitIndex": 4,
+          "blockId": "68c56662-5d68-4d58-a6db-66ac30b1ab0a",
+          "excerpt": "Power, 1 = Power Adapter. Power, 2 = Input: 100 ~ 240 V, 50/60 Hz AC. Power, 1 = Power Adapter. Power, 2 = Output: 12V 1.5A DC. Power, 1 = Max Power Consumption (W). Power, 2 = 9W.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有compare题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-20-explain",
+      "caseSha256": "c291d6bb8f97de0da5475322b77e461b0298799c569a4fe7a36d7e503eb7e504",
+      "pattern": "explain",
+      "expectedAnswer": "WR3000H (V1.0): Based on its specifications, suitable for dual-band Wi-Fi 6 deployments needing a 2.5Gbps uplink and multiple operation modes. Evidence includes a 2.5GbE WAN, four Gigabit LAN ports, AX3000, Router/AP/RE/WISP/Mesh modes and VPN. Confirm optional PoE or USB configuration rather than copying WR3000P features.",
+      "expectedSources": [
+        {
+          "assetSha256": "83ad1bce75d674779b5a2e379dbd13efa15cf8f455941f2ea5bde975a4578742",
+          "unitIndex": 4,
+          "blockId": "53881353-27f0-48fe-8a0b-7037f7b4cfe9",
+          "excerpt": "- AX3000 High Speed Wi-Fi 6\n- 2.5 Gbps Multi-Gigabit WAN Port\n- 1.3 GHz Dual-core ARM Cortex A53 Processor\n- 5-In-1 Multi-Mode Wi-Fi 6 Router\n- PPTP/L2TP/OpenVPN/WireGuard/IPsec VPN\n- TR069 / TR098 / TR111 / TR181\n- EasyMesh* / Cudy Mesh Ready\n*Easy Mesh is optional for service provider orders",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "83ad1bce75d674779b5a2e379dbd13efa15cf8f455941f2ea5bde975a4578742",
+          "unitIndex": 4,
+          "blockId": "d3f1da3c-f2a9-4a27-a0c4-c5d22bd47e8d",
+          "excerpt": "Ethernet Port, 1 = 1 × 2.5Gbps WAN Port. Ethernet Port, 1 = (PoE-IN Optional , See WR3000P ). Ethernet Port, 1 = 4 × Gigabit LAN Ports. USB, 1 = 1 × USB 2.0 (Optiona l, See WR3000P ). Antennas, 1 = 4 × 5dBi Antennas. Buttons, 1 = 1 × Power ON/OFF Button. Buttons, 1 = 1 × Reset Button. Buttons, 1 = 1 × WPS(Mesh) Button. LEDs, 1 = Power, Internet, 2.4G Wi-Fi, 5G Wi-Fi, WPS,. LEDs, 1 = WAN, LAN, VPN, USB (Optional). Power Supply Options, 1 = 12V / 1 .5 A. Power Supply Options, 1 = 802.3at/af PoE via WAN (Optional , See WR3000P ). Power Supply Options, 1 = 48~57V Passive PoE via WAN (Optional , See WR3000P )",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有explain题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-21-open",
+      "caseSha256": "6ed6ab9780f82fd914259e4aa62ee93d6377662be671fa446a8a0707ec2d8f5b",
+      "pattern": "open",
+      "expectedAnswer": "找到并展示已登记的原始《WR3000E Datasheet V2.0》PDF，提供打开或下载入口。这份原件匹配WR3000E，不以其他型号替代，也不把打开资料请求改成参数问答。",
+      "expectedSources": [
+        {
+          "assetSha256": "fb0ccf94e75f0597323c18e2365010a014909ee9541c138d2fea261b3b83156d",
+          "unitIndex": 1,
+          "blockId": "67f68b93-ae71-49f5-b005-f63780fa4669",
+          "excerpt": "Model: WR3000E",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有open题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-21-ports",
+      "caseSha256": "53b41ae022e4a8462ada10933c109c84da1d6768c1d79472aca37543a2949529",
+      "pattern": "ports",
+      "expectedAnswer": "WR3000E (V2.0): 5个千兆RJ45网口：1个WAN和4个LAN。 物理网口只计一次；SIM槽、USB及电源接口不计作以太网口。",
+      "expectedSources": [
+        {
+          "assetSha256": "fb0ccf94e75f0597323c18e2365010a014909ee9541c138d2fea261b3b83156d",
+          "unitIndex": 3,
+          "blockId": "89114515-e9fd-4cd6-b515-4f5fbe2ad2e6",
+          "excerpt": "Interfaces, 1 = Gigabit RJ45 Ports. Interfaces, 2 = 5. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = 1× WAN port, the rest are LAN ports.",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有ports题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-21-poe",
+      "caseSha256": "9d025d3bf0ca673eb1d8d7c566ec3710dc4a10f751110048b32ea6e89e2bea48",
+      "pattern": "poe",
+      "expectedAnswer": "不支持。WR3000E (V2.0)不支持PoE输入或输出。完整匹配原件未声明PoE支持，按用户确认的MA24-09口径判定。DC 12V/1A输入，最大设备功耗8.8W；不支持PoE。",
+      "expectedSources": [
+        {
+          "assetSha256": "fb0ccf94e75f0597323c18e2365010a014909ee9541c138d2fea261b3b83156d",
+          "unitIndex": 3,
+          "blockId": "89114515-e9fd-4cd6-b515-4f5fbe2ad2e6",
+          "excerpt": "Interfaces, 1 = Gigabit RJ45 Ports. Interfaces, 2 = 5. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = 1× WAN port, the rest are LAN ports.",
+          "version": "V2.0"
+        },
+        {
+          "assetSha256": "fb0ccf94e75f0597323c18e2365010a014909ee9541c138d2fea261b3b83156d",
+          "unitIndex": 3,
+          "blockId": "89114515-e9fd-4cd6-b515-4f5fbe2ad2e6",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = DC. Power, 1 = DC Input. Power, 2 = 12V 1A. Power, 1 = Power Adapter. Power, 2 = Input: 100 ~ 240 V, 50/60 Hz AC. Power, 1 = . Power, 2 = Output: 12V 1A DC. Power, 1 = Max Power Consumption (W). Power, 2 = 8.8w. Power, 1 = Idle Power Consumption (W). Power, 2 = 2.5w.",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有poe题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。未声明PoE的判断基于完整原件核对及MA24-09，不基于检索片段或PPPoE字样。"
+    },
+    {
+      "caseId": "base-21-compare",
+      "caseSha256": "7d49f605c4027e84e1d65bd3c6be4bf4594d41cdfd58401a50c77a2a4ea48f5e",
+      "pattern": "compare",
+      "expectedAnswer": "WR3000E (V2.0): 1个千兆WAN和4个千兆LAN，共5个RJ45口。 DC 12V/1A输入，最大设备功耗8.8W；不支持PoE。\nTR3000 (V1.0): 1个2.5GbE WAN、1个千兆LAN、1个USB-A 3.0和USB-C供电口。 通过USB-C接受DC/PD 5V/3A供电，最大设备功耗11.5W；不支持PoE。",
+      "expectedSources": [
+        {
+          "assetSha256": "fb0ccf94e75f0597323c18e2365010a014909ee9541c138d2fea261b3b83156d",
+          "unitIndex": 3,
+          "blockId": "89114515-e9fd-4cd6-b515-4f5fbe2ad2e6",
+          "excerpt": "Interfaces, 1 = Gigabit RJ45 Ports. Interfaces, 2 = 5. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = 1× WAN port, the rest are LAN ports.",
+          "version": "V2.0"
+        },
+        {
+          "assetSha256": "fb0ccf94e75f0597323c18e2365010a014909ee9541c138d2fea261b3b83156d",
+          "unitIndex": 3,
+          "blockId": "89114515-e9fd-4cd6-b515-4f5fbe2ad2e6",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = DC. Power, 1 = DC Input. Power, 2 = 12V 1A. Power, 1 = Power Adapter. Power, 2 = Input: 100 ~ 240 V, 50/60 Hz AC. Power, 1 = . Power, 2 = Output: 12V 1A DC. Power, 1 = Max Power Consumption (W). Power, 2 = 8.8w. Power, 1 = Idle Power Consumption (W). Power, 2 = 2.5w.",
+          "version": "V2.0"
+        },
+        {
+          "assetSha256": "280d9f5b499a34ff8fa87bf340b228c08608bb2d27e31f5d7365a3162572a0e7",
+          "unitIndex": 6,
+          "blockId": "891724d0-9bb4-4e26-a976-87a7903bbffa",
+          "excerpt": "Interfaces, 1 = 2.5 Gbps RJ45 WAN Ports. Interfaces, 2 = 1. Interfaces, 1 = Gigabit LAN Ports. Interfaces, 2 = 1. Interfaces, 1 = USB-A 3.0 Ports. Interfaces, 2 = 1.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "280d9f5b499a34ff8fa87bf340b228c08608bb2d27e31f5d7365a3162572a0e7",
+          "unitIndex": 6,
+          "blockId": "891724d0-9bb4-4e26-a976-87a7903bbffa",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = DC/PD. Power, 1 = DC. Power, 2 = 5V 3A. Power, 1 = Power Adapter. Power, 2 = Input: 100 ~ 240 V, 50/60 Hz AC. Power, 1 = . Power, 2 = Output: 5V 3A DC. Power, 1 = Max Power Consumption (W). Power, 2 = 11.5W. Power, 1 = Idle Power Consumption (W). Power, 2 = 4.2W.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有compare题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-21-explain",
+      "caseSha256": "17de15731c97e4b5a480a32970d3cfaea7d1fceddd012cebd77228f4e129c8c8",
+      "pattern": "explain",
+      "expectedAnswer": "WR3000E (V2.0): 适合家庭千兆联网及多设备Wi-Fi 6接入。原件列出5个千兆口、双频Wi-Fi 6、Cudy Mesh和VPN服务器/客户端；覆盖面积、客户端数量与无线速率为参考，不保证实际容量。",
+      "expectedSources": [
+        {
+          "assetSha256": "fb0ccf94e75f0597323c18e2365010a014909ee9541c138d2fea261b3b83156d",
+          "unitIndex": 2,
+          "blockId": "e7cc2902-cc98-4dc2-8678-5d0d0b198fb8",
+          "excerpt": "A WiFi 6 router with five Gigabit ports, suitable for home internet up to 1000 Mbps, connecting many devices, and reducing latency.\n-  1. 2 GHz Dual-Core CPU\n- 4-Stream Dual-Band Wi-Fi 6\n-   2402 Mbps + 574 Mbps Wi-Fi\n-   5× Gigabit Ethernet Ports\n- 70 C onnected Devices\n- Covers 130 m² (1,400 ft²)\n-   Cudy Mesh, VPN Server and Client\n-   Cudy App, Cloud Control",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有explain题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-22-open",
+      "caseSha256": "5c55fe453de886dd334df1cd8016e4ff9f81ccbd8d0c5a736abb38a84b728a04",
+      "pattern": "open",
+      "expectedAnswer": "Find and display the registered original “TR3000 Datasheet V1.0” PDF, with an open or download link. It is a valid match for TR3000; do not substitute another model or turn the request into a specification answer.",
+      "expectedSources": [
+        {
+          "assetSha256": "280d9f5b499a34ff8fa87bf340b228c08608bb2d27e31f5d7365a3162572a0e7",
+          "unitIndex": 1,
+          "blockId": "4cd78111-5e46-4e39-9d1f-560f4fea9bc4",
+          "excerpt": "Model: TR3000",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有open题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-22-ports",
+      "caseSha256": "fbfdc30ffffa9e2e0cadfc4cf2dfc76839083e5c835732a301f79798ff7aac57",
+      "pattern": "ports",
+      "expectedAnswer": "TR3000 (V1.0): 2 RJ45 ports: one 2.5GbE WAN and one Gigabit LAN port; USB-A and USB-C are not Ethernet ports. Count physical Ethernet connectors once; SIM slots, USB and power connectors are not Ethernet ports.",
+      "expectedSources": [
+        {
+          "assetSha256": "280d9f5b499a34ff8fa87bf340b228c08608bb2d27e31f5d7365a3162572a0e7",
+          "unitIndex": 6,
+          "blockId": "891724d0-9bb4-4e26-a976-87a7903bbffa",
+          "excerpt": "Interfaces, 1 = 2.5 Gbps RJ45 WAN Ports. Interfaces, 2 = 1. Interfaces, 1 = Gigabit LAN Ports. Interfaces, 2 = 1. Interfaces, 1 = USB-A 3.0 Ports. Interfaces, 2 = 1.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有ports题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-22-poe",
+      "caseSha256": "b212f7742eabcc4e86ae3e79280a78273bec604a9497a1234e8429af645c8479",
+      "pattern": "poe",
+      "expectedAnswer": "No. TR3000 (V1.0) does not support PoE input or output. The complete matching original does not declare PoE support, under the user-confirmed MA24-09 review rule. DC/PD 5V/3A input through USB-C, 11.5W maximum device consumption; no PoE support.",
+      "expectedSources": [
+        {
+          "assetSha256": "280d9f5b499a34ff8fa87bf340b228c08608bb2d27e31f5d7365a3162572a0e7",
+          "unitIndex": 6,
+          "blockId": "891724d0-9bb4-4e26-a976-87a7903bbffa",
+          "excerpt": "Interfaces, 1 = 2.5 Gbps RJ45 WAN Ports. Interfaces, 2 = 1. Interfaces, 1 = Gigabit LAN Ports. Interfaces, 2 = 1. Interfaces, 1 = USB-A 3.0 Ports. Interfaces, 2 = 1.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "280d9f5b499a34ff8fa87bf340b228c08608bb2d27e31f5d7365a3162572a0e7",
+          "unitIndex": 6,
+          "blockId": "891724d0-9bb4-4e26-a976-87a7903bbffa",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = DC/PD. Power, 1 = DC. Power, 2 = 5V 3A. Power, 1 = Power Adapter. Power, 2 = Input: 100 ~ 240 V, 50/60 Hz AC. Power, 1 = . Power, 2 = Output: 5V 3A DC. Power, 1 = Max Power Consumption (W). Power, 2 = 11.5W. Power, 1 = Idle Power Consumption (W). Power, 2 = 4.2W.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有poe题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。未声明PoE的判断基于完整原件核对及MA24-09，不基于检索片段或PPPoE字样。"
+    },
+    {
+      "caseId": "base-22-compare",
+      "caseSha256": "68b5213cf784b580309a331dc6c836890990cc853aed9aa9f8a3861c0c0230aa",
+      "pattern": "compare",
+      "expectedAnswer": "TR3000 (V1.0): One 2.5GbE WAN, one Gigabit LAN, one USB-A 3.0 port and a USB-C power input. DC/PD 5V/3A input through USB-C, 11.5W maximum device consumption; no PoE support.\nWR3000E (V2.0): One Gigabit WAN and four Gigabit LAN ports, five RJ45 ports in total. DC 12V/1A input, 8.8W maximum device consumption; no PoE support.",
+      "expectedSources": [
+        {
+          "assetSha256": "280d9f5b499a34ff8fa87bf340b228c08608bb2d27e31f5d7365a3162572a0e7",
+          "unitIndex": 6,
+          "blockId": "891724d0-9bb4-4e26-a976-87a7903bbffa",
+          "excerpt": "Interfaces, 1 = 2.5 Gbps RJ45 WAN Ports. Interfaces, 2 = 1. Interfaces, 1 = Gigabit LAN Ports. Interfaces, 2 = 1. Interfaces, 1 = USB-A 3.0 Ports. Interfaces, 2 = 1.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "280d9f5b499a34ff8fa87bf340b228c08608bb2d27e31f5d7365a3162572a0e7",
+          "unitIndex": 6,
+          "blockId": "891724d0-9bb4-4e26-a976-87a7903bbffa",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = DC/PD. Power, 1 = DC. Power, 2 = 5V 3A. Power, 1 = Power Adapter. Power, 2 = Input: 100 ~ 240 V, 50/60 Hz AC. Power, 1 = . Power, 2 = Output: 5V 3A DC. Power, 1 = Max Power Consumption (W). Power, 2 = 11.5W. Power, 1 = Idle Power Consumption (W). Power, 2 = 4.2W.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "fb0ccf94e75f0597323c18e2365010a014909ee9541c138d2fea261b3b83156d",
+          "unitIndex": 3,
+          "blockId": "89114515-e9fd-4cd6-b515-4f5fbe2ad2e6",
+          "excerpt": "Interfaces, 1 = Gigabit RJ45 Ports. Interfaces, 2 = 5. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = 1× WAN port, the rest are LAN ports.",
+          "version": "V2.0"
+        },
+        {
+          "assetSha256": "fb0ccf94e75f0597323c18e2365010a014909ee9541c138d2fea261b3b83156d",
+          "unitIndex": 3,
+          "blockId": "89114515-e9fd-4cd6-b515-4f5fbe2ad2e6",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = DC. Power, 1 = DC Input. Power, 2 = 12V 1A. Power, 1 = Power Adapter. Power, 2 = Input: 100 ~ 240 V, 50/60 Hz AC. Power, 1 = . Power, 2 = Output: 12V 1A DC. Power, 1 = Max Power Consumption (W). Power, 2 = 8.8w. Power, 1 = Idle Power Consumption (W). Power, 2 = 2.5w.",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有compare题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-22-explain",
+      "caseSha256": "5ae3f2fbc8cdf75a712775d21513b2934e1482750008fee2d7514b58dbcec352",
+      "pattern": "explain",
+      "expectedAnswer": "TR3000 (V1.0): Suitable for travel Wi-Fi sharing, VPN connections back to the office and a small file server. The original names these uses and lists USB-C power, Wi-Fi 6, 2.5GbE plus Gigabit ports, USB 3.0 and VPN server/client support. Actual use requires suitable connectivity and VPN configuration.",
+      "expectedSources": [
+        {
+          "assetSha256": "280d9f5b499a34ff8fa87bf340b228c08608bb2d27e31f5d7365a3162572a0e7",
+          "unitIndex": 5,
+          "blockId": "2c064e22-c762-4b56-9ba7-6fb471bc83c3",
+          "excerpt": "A USB-C powered mini WiFi 6 router ideal for encrypt connections back to the office, sharing paid WiFi, and hosting a file server.\n- ° 1.3 GHz Dual-Core CPU\n- ° 4-Stream Dual-Band Wi-Fi 6\n- ° 2402 Mbps + 574 Mbps Wi-Fi\n- ° 1× 2.5GbE and 1× GbE\n- ° 1× USB 3.0 Port\n- ° Powering via USB-C\n- ° 160 g (5.64 oz.)\n- ° Cudy Mesh, VPN Server and Client\n- ° Cudy App, Cloud Control",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有explain题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-23-open",
+      "caseSha256": "80628f008bfcf3d5490112d6e396a014f45870186fdfc87a70326deda4b69bc0",
+      "pattern": "open",
+      "expectedAnswer": "找到并展示已登记的原始《P5 Datasheet V2.0》PDF，提供打开或下载入口。这份原件匹配P5，不以其他型号替代，也不把打开资料请求改成参数问答。",
+      "expectedSources": [
+        {
+          "assetSha256": "4c1e27dce534a5066aa80f0d2fc67bd57cde7e37fbdf69056178c389946fbea5",
+          "unitIndex": 1,
+          "blockId": "21bf9b87-9aa4-4cb2-b8e7-388ab55a2ea7",
+          "excerpt": "Model: P5",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有open题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-23-ports",
+      "caseSha256": "d767c1822412b5db730f54e19390a3f06749dc39c0388efc7e692ac37429e1c2",
+      "pattern": "ports",
+      "expectedAnswer": "P5 (V2.0): 4个千兆RJ45网口：1个WAN/LAN复用口和3个LAN；另有2个Nano SIM槽，不计作网口。 物理网口只计一次；SIM槽、USB及电源接口不计作以太网口。",
+      "expectedSources": [
+        {
+          "assetSha256": "4c1e27dce534a5066aa80f0d2fc67bd57cde7e37fbdf69056178c389946fbea5",
+          "unitIndex": 6,
+          "blockId": "684575bf-1a77-4ca0-86f4-f611adabe3a0",
+          "excerpt": "Ethernet, 1 = 1 GbE WAN/LAN + 3 GbE LAN. SIM Card Slots, 1 = 2× Nano SIM Slots.",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有ports题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-23-poe",
+      "caseSha256": "acfacef41f25b847e3ebac5ae4375c4a0c340f44fa5cd2e1c8000f090d87bf07",
+      "pattern": "poe",
+      "expectedAnswer": "不支持。P5 (V2.0)不支持PoE输入或输出。完整匹配原件未声明PoE支持，按用户确认的MA24-09口径判定。DC 12V/2.5A桶形插头输入；适配器输入90～260V AC、输出12V/2.5A；不支持PoE。",
+      "expectedSources": [
+        {
+          "assetSha256": "4c1e27dce534a5066aa80f0d2fc67bd57cde7e37fbdf69056178c389946fbea5",
+          "unitIndex": 6,
+          "blockId": "684575bf-1a77-4ca0-86f4-f611adabe3a0",
+          "excerpt": "Ethernet, 1 = 1 GbE WAN/LAN + 3 GbE LAN. SIM Card Slots, 1 = 2× Nano SIM Slots.",
+          "version": "V2.0"
+        },
+        {
+          "assetSha256": "4c1e27dce534a5066aa80f0d2fc67bd57cde7e37fbdf69056178c389946fbea5",
+          "unitIndex": 8,
+          "blockId": "049529fb-deb9-4775-86e1-c974bf2ff0c8",
+          "excerpt": "Power, 1 = AC Power Adapter: Input: 90~260 V Output: 12 V, 2.5 A DC Input (12 V- 2.5 A) Barrel Plug.",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有poe题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。未声明PoE的判断基于完整原件核对及MA24-09，不基于检索片段或PPPoE字样。"
+    },
+    {
+      "caseId": "base-23-compare",
+      "caseSha256": "a1368674f55d3371782f5172632bc23829684ed47d11e9758d83c0f3feebd3d5",
+      "pattern": "compare",
+      "expectedAnswer": "P5 (V2.0): 4个千兆口（1个WAN/LAN加3个LAN）和2个Nano SIM槽；原件涵盖EU V2.0与US V1.0，蜂窝频段须按区域区分。 DC 12V/2.5A桶形插头输入；适配器输入90～260V AC、输出12V/2.5A；不支持PoE。\nAP1300 (V2.0): 1个千兆RJ45 PoE IN口及DC输入插孔。 DC 12V/1A、802.3at/af PoE或24～57V Passive PoE输入；最大功耗PoE 11W、DC 7.5W。不能据此声称PoE输出。",
+      "expectedSources": [
+        {
+          "assetSha256": "4c1e27dce534a5066aa80f0d2fc67bd57cde7e37fbdf69056178c389946fbea5",
+          "unitIndex": 6,
+          "blockId": "684575bf-1a77-4ca0-86f4-f611adabe3a0",
+          "excerpt": "Ethernet, 1 = 1 GbE WAN/LAN + 3 GbE LAN. SIM Card Slots, 1 = 2× Nano SIM Slots.",
+          "version": "V2.0"
+        },
+        {
+          "assetSha256": "4c1e27dce534a5066aa80f0d2fc67bd57cde7e37fbdf69056178c389946fbea5",
+          "unitIndex": 8,
+          "blockId": "049529fb-deb9-4775-86e1-c974bf2ff0c8",
+          "excerpt": "Power, 1 = AC Power Adapter: Input: 90~260 V Output: 12 V, 2.5 A DC Input (12 V- 2.5 A) Barrel Plug.",
+          "version": "V2.0"
+        },
+        {
+          "assetSha256": "73aab9428d54af6a2f5f2031acbbad11e4355ac832c16121e892c3a8b170f374",
+          "unitIndex": 4,
+          "blockId": "a17540ee-2002-40ce-85c6-f48ef429db46",
+          "excerpt": "Interfaces, 1 = Gigabit RJ45 Ports. Interfaces, 2 = 1. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = Accepts PoE powering.",
+          "version": "V2.0"
+        },
+        {
+          "assetSha256": "73aab9428d54af6a2f5f2031acbbad11e4355ac832c16121e892c3a8b170f374",
+          "unitIndex": 4,
+          "blockId": "a17540ee-2002-40ce-85c6-f48ef429db46",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = DC. Power, 1 = . Power, 2 = Passive PoE. Power, 1 = . Power, 2 = 802.3at/af PoE. Power, 1 = Power Input. Power, 2 = DC: 12V ⎓ 1A. Power, 1 = . Power, 2 = Passive PoE: 24-57V ⎓. Power, 1 = . Power, 2 = PoE: 802.3at/af. Power, 1 = Max Power Consumption (W). Power, 2 = Max (PoE): 11 W. Power, 1 = . Power, 2 = Max (DC): 7.5 W. Power, 1 = Idle Power Consumption (W). Power, 2 = 4 W.",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有compare题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-23-explain",
+      "caseSha256": "764b80e1593b3d2c34c14a4636536860587a1fe7a1531a302b1a3a6efc3d6b1f",
+      "pattern": "explain",
+      "expectedAnswer": "P5 (V2.0): 根据规格，适合需要5G移动联网、双SIM冗余或有线WAN故障切换的部署。依据是5G NR SA/NSA、AX3000 Wi-Fi 6、双Nano SIM和4个千兆口；选型须核对区域版本及运营商频段，不能把有线口速率当作5G速率。",
+      "expectedSources": [
+        {
+          "assetSha256": "4c1e27dce534a5066aa80f0d2fc67bd57cde7e37fbdf69056178c389946fbea5",
+          "unitIndex": 6,
+          "blockId": "33416218-faf7-4e3f-b24c-be33211911b1",
+          "excerpt": "-  5G NR SA/NSA Wi-Fi Router\n-  AX3000 Dual-Band Wi-Fi 6\n-  Qualcomm Chipset\n-  Dual Nano SIM slots Redundant SIM\n-  4× Gigabit Ethernet Ports (WAN Failover)\n-  4× Detachable Cellular Antennas\n-  PPTP/L2TP/OpenVPN/WireGuard/IPSec/Zerotier VPN",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有explain题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-24-open",
+      "caseSha256": "65031e5f351c5ba5caac3d8398daa0d27829d25489a4ac5c63a2bbd1ea77e2a3",
+      "pattern": "open",
+      "expectedAnswer": "Find and display the registered original “AP1300 Datasheet V2.0” PDF, with an open or download link. It is a valid match for AP1300; do not substitute another model or turn the request into a specification answer.",
+      "expectedSources": [
+        {
+          "assetSha256": "73aab9428d54af6a2f5f2031acbbad11e4355ac832c16121e892c3a8b170f374",
+          "unitIndex": 1,
+          "blockId": "0889114f-eb1c-4e93-b8f4-f5f90052c803",
+          "excerpt": "Model: AP1300",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有open题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-24-ports",
+      "caseSha256": "eb16c07a5886a6ff9ab5b668df61a69bde20154524cf17b2d43c2ec15460678d",
+      "pattern": "ports",
+      "expectedAnswer": "AP1300 (V2.0): 1 Gigabit RJ45 port, accepting PoE input. Count physical Ethernet connectors once; SIM slots, USB and power connectors are not Ethernet ports.",
+      "expectedSources": [
+        {
+          "assetSha256": "73aab9428d54af6a2f5f2031acbbad11e4355ac832c16121e892c3a8b170f374",
+          "unitIndex": 4,
+          "blockId": "a17540ee-2002-40ce-85c6-f48ef429db46",
+          "excerpt": "Interfaces, 1 = Gigabit RJ45 Ports. Interfaces, 2 = 1. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = Accepts PoE powering.",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有ports题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-24-poe",
+      "caseSha256": "b55809b50458af1da851c4026e1deac2b8bbb34b8f054244408eac37be1927df",
+      "pattern": "poe",
+      "expectedAnswer": "AP1300 (V2.0): Yes, for input. The Gigabit RJ45 port accepts 802.3at/af or 24–57V Passive PoE; the original does not establish PoE output.",
+      "expectedSources": [
+        {
+          "assetSha256": "73aab9428d54af6a2f5f2031acbbad11e4355ac832c16121e892c3a8b170f374",
+          "unitIndex": 4,
+          "blockId": "a17540ee-2002-40ce-85c6-f48ef429db46",
+          "excerpt": "Interfaces, 1 = Gigabit RJ45 Ports. Interfaces, 2 = 1. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = Accepts PoE powering.",
+          "version": "V2.0"
+        },
+        {
+          "assetSha256": "73aab9428d54af6a2f5f2031acbbad11e4355ac832c16121e892c3a8b170f374",
+          "unitIndex": 4,
+          "blockId": "a17540ee-2002-40ce-85c6-f48ef429db46",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = DC. Power, 1 = . Power, 2 = Passive PoE. Power, 1 = . Power, 2 = 802.3at/af PoE. Power, 1 = Power Input. Power, 2 = DC: 12V ⎓ 1A. Power, 1 = . Power, 2 = Passive PoE: 24-57V ⎓. Power, 1 = . Power, 2 = PoE: 802.3at/af. Power, 1 = Max Power Consumption (W). Power, 2 = Max (PoE): 11 W. Power, 1 = . Power, 2 = Max (DC): 7.5 W. Power, 1 = Idle Power Consumption (W). Power, 2 = 4 W.",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有poe题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-24-compare",
+      "caseSha256": "1afe6fa9ba0f1a7b5b20dd4fb8e30ecd5f3d48c3ea28d513a15ac8268381291d",
+      "pattern": "compare",
+      "expectedAnswer": "AP1300 (V2.0): One Gigabit RJ45 PoE IN port and a DC input jack. DC 12V/1A, 802.3at/af PoE or 24–57V Passive PoE input; maximum consumption is 11W with PoE or 7.5W with DC. This does not establish PoE output.\nP5 (V2.0): Four Gigabit ports (one WAN/LAN and three LAN) and two Nano SIM slots. The original covers EU V2.0 and US V1.0; cellular bands are region-specific. DC 12V/2.5A barrel input; the adapter accepts 90–260V AC and outputs 12V/2.5A. No PoE support.",
+      "expectedSources": [
+        {
+          "assetSha256": "73aab9428d54af6a2f5f2031acbbad11e4355ac832c16121e892c3a8b170f374",
+          "unitIndex": 4,
+          "blockId": "a17540ee-2002-40ce-85c6-f48ef429db46",
+          "excerpt": "Interfaces, 1 = Gigabit RJ45 Ports. Interfaces, 2 = 1. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = Accepts PoE powering.",
+          "version": "V2.0"
+        },
+        {
+          "assetSha256": "73aab9428d54af6a2f5f2031acbbad11e4355ac832c16121e892c3a8b170f374",
+          "unitIndex": 4,
+          "blockId": "a17540ee-2002-40ce-85c6-f48ef429db46",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = DC. Power, 1 = . Power, 2 = Passive PoE. Power, 1 = . Power, 2 = 802.3at/af PoE. Power, 1 = Power Input. Power, 2 = DC: 12V ⎓ 1A. Power, 1 = . Power, 2 = Passive PoE: 24-57V ⎓. Power, 1 = . Power, 2 = PoE: 802.3at/af. Power, 1 = Max Power Consumption (W). Power, 2 = Max (PoE): 11 W. Power, 1 = . Power, 2 = Max (DC): 7.5 W. Power, 1 = Idle Power Consumption (W). Power, 2 = 4 W.",
+          "version": "V2.0"
+        },
+        {
+          "assetSha256": "4c1e27dce534a5066aa80f0d2fc67bd57cde7e37fbdf69056178c389946fbea5",
+          "unitIndex": 6,
+          "blockId": "684575bf-1a77-4ca0-86f4-f611adabe3a0",
+          "excerpt": "Ethernet, 1 = 1 GbE WAN/LAN + 3 GbE LAN. SIM Card Slots, 1 = 2× Nano SIM Slots.",
+          "version": "V2.0"
+        },
+        {
+          "assetSha256": "4c1e27dce534a5066aa80f0d2fc67bd57cde7e37fbdf69056178c389946fbea5",
+          "unitIndex": 8,
+          "blockId": "049529fb-deb9-4775-86e1-c974bf2ff0c8",
+          "excerpt": "Power, 1 = AC Power Adapter: Input: 90~260 V Output: 12 V, 2.5 A DC Input (12 V- 2.5 A) Barrel Plug.",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有compare题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-24-explain",
+      "caseSha256": "7d442cc0bedfff768d6694984d0ab07181b9689c7deda638a3825f71c4571e0e",
+      "pattern": "explain",
+      "expectedAnswer": "AP1300 (V2.0): Suitable for wall/ceiling Wi-Fi coverage in offices, classrooms, hotels and SOHO. The original names these scenarios and lists dual-band Wi-Fi 5, a Gigabit port, PoE and DC input. Coverage and client figures are references; assess site layout and wall materials.",
+      "expectedSources": [
+        {
+          "assetSha256": "73aab9428d54af6a2f5f2031acbbad11e4355ac832c16121e892c3a8b170f374",
+          "unitIndex": 3,
+          "blockId": "02aaff86-c5ca-4be4-9918-eba804e45e20",
+          "excerpt": "A compact wall/ceiling-mounted WiFi AP designed for offices, classrooms, hotels, and SOHO.\n- 4-Stream Dual-Band Wi-Fi 5\n- 867 Mbps + 300 Mbps Wi-Fi\n- Gigabit Ethernet RJ45 Port\n- 802.3at/af, Passive PoE, DC\n-   100 Connected Devices\n- Covers 100m² (1,100 ft²)\n- Φ 171.4×41 mm ( Φ 6.75×1.61\")",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有explain题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-25-open",
+      "caseSha256": "36121c085808cdd5c30bf1bd3bd9efcc5685fc783de726bce95db01c80292866",
+      "pattern": "open",
+      "expectedAnswer": "找到并展示已登记的原始《AP1200 Datasheet V1.0》PDF，提供打开或下载入口。这份原件匹配AP1200，不以其他型号替代，也不把打开资料请求改成参数问答。",
+      "expectedSources": [
+        {
+          "assetSha256": "3b635e407c5ab9ec720fd32eb6da43209468b6a6447d2e1decffaf56646d7c66",
+          "unitIndex": 1,
+          "blockId": "9fef2257-482e-4acd-a2b8-419eef0635ae",
+          "excerpt": "Model: AP1200",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有open题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-25-ports",
+      "caseSha256": "712cd88c044081575dba87065b2102267990758cfde5655e2f8847af2f04f63a",
+      "pattern": "ports",
+      "expectedAnswer": "AP1200 (V1.0): 1个10/100Mbps RJ45网口，支持PoE输入；不是千兆口。 物理网口只计一次；SIM槽、USB及电源接口不计作以太网口。",
+      "expectedSources": [
+        {
+          "assetSha256": "3b635e407c5ab9ec720fd32eb6da43209468b6a6447d2e1decffaf56646d7c66",
+          "unitIndex": 3,
+          "blockId": "2c6d90aa-57aa-424d-bad8-40d576e5df2f",
+          "excerpt": "Interfaces, 1 = 10/100 Mbps RJ45 Ports. Interfaces, 2 = 1. , 1 = Ethernet Notes. , 2 = Accepts PoE powering.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有ports题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-25-poe",
+      "caseSha256": "0cd01f94cfaff351641f5d5a1c2973bf6b99c2735c5a787920691c35a24ea08e",
+      "pattern": "poe",
+      "expectedAnswer": "AP1200 (V1.0): 支持PoE输入。百兆RJ45口接受802.3at/af和24V Passive PoE；不能据适配器输出条目推断AP支持PoE输出。",
+      "expectedSources": [
+        {
+          "assetSha256": "3b635e407c5ab9ec720fd32eb6da43209468b6a6447d2e1decffaf56646d7c66",
+          "unitIndex": 3,
+          "blockId": "2c6d90aa-57aa-424d-bad8-40d576e5df2f",
+          "excerpt": "Interfaces, 1 = 10/100 Mbps RJ45 Ports. Interfaces, 2 = 1. , 1 = Ethernet Notes. , 2 = Accepts PoE powering.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "3b635e407c5ab9ec720fd32eb6da43209468b6a6447d2e1decffaf56646d7c66",
+          "unitIndex": 4,
+          "blockId": "bc16ec05-a65f-4901-bad2-2104a5f1a8fe",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = DC. , 1 = . , 2 = Passive PoE. , 1 = . , 2 = 802.3at/af PoE. , 1 = DC Input. , 2 = 12V 1A. , 1 = Passive PoE Input. , 2 = 24V. , 1 = Power Adapter. , 2 = AP1200 | Without DC Adapter:. , 1 = . , 2 = Input: 100 ~ 240 V, 50/60 Hz AC. , 1 = . , 2 = Output: 12V 1A DC. , 1 = . , 2 = AP1200P | PoE Adapter in the box:. , 1 = . , 2 = Input: 100 ~ 240 V, 50/60 Hz AC. , 1 = . , 2 = Output: 24V Passive PoE. , 1 = Max Power Consumption (W). , 2 = 12 W. , 1 = Idle Power Consumption (W). , 2 = 2.5 W.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有poe题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-25-explain",
+      "caseSha256": "1664084f5e7e440040346bcca968e39af05a59dc96dfda718fdaf13e1aaa374e",
+      "pattern": "explain",
+      "expectedAnswer": "AP1200 (V1.0): 适合小型办公室和教室的墙面或吸顶无线覆盖。原件明确列出这些场景，并提供双频Wi-Fi 5、百兆PoE输入口和DC输入；有线口为百兆，标称无线速率不能保证有线吞吐或覆盖范围。",
+      "expectedSources": [
+        {
+          "assetSha256": "3b635e407c5ab9ec720fd32eb6da43209468b6a6447d2e1decffaf56646d7c66",
+          "unitIndex": 3,
+          "blockId": "906d0407-6cd6-4050-a349-0f78a80b9e99",
+          "excerpt": "A wall/ceiling-mounted WiFi AP designed for small-sized offices and classrooms.\n-   4-Stream Dual-Band Wi-Fi 5\n-   867 Mbps + 300 Mbps Wi-Fi\n-   1× Fast Ethernet Port (PoE In)\n-   802.3at/af, Passive PoE, DC\n-   Covers 140 m² (1,500 ft²)\n-   50 Connected Devices",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有explain题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    }
+  ]
+}

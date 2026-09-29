@@ -1,0 +1,38 @@
+{
+  "policyId": "MA24-10",
+  "corpusVersion": "knowledge-eval-v3-baseline",
+  "entries": [
+    {
+      "caseId": "boundary-1-06",
+      "caseSha256": "a4767d21b76af40e27a28d7d71efaefbc71879cf81d9480314c5bcfd62fdc41c",
+      "pattern": "negative-claim-missing-source",
+      "expectedAnswer": "No—if the matching datasheet explicitly says “no PoE support”, that statement must not be reversed into support. This question does not identify the model, version or document, so ask for them before making a model-specific claim or citation. Do not invent a source coordinate.",
+      "expectedSources": [],
+      "reviewNote": "2026-09-29 MA24-10：用户明确选择“确认此类答案”，代表题人工确认。此题未提供具体型号、版本或原件；审核否定理解与证据不足时请求补充的行为，不伪造来源坐标，不作具体设备事实核验。"
+    },
+    {
+      "caseId": "boundary-2-06",
+      "caseSha256": "6013f93136533e99f19eed63546c1a331b80f4fcbbac063c061f69cdec7bdb25",
+      "pattern": "negative-claim-missing-source",
+      "expectedAnswer": "No—if the matching datasheet explicitly says “no PoE support”, that statement must not be reversed into support. This question does not identify the model, version or document, so ask for them before making a model-specific claim or citation. Do not invent a source coordinate.",
+      "expectedSources": [],
+      "reviewNote": "2026-09-29 MA24-10：按用户确认的否定理解与缺少来源题型自动采纳，同义题未逐题人工确认。本题无具体型号、版本或原件，来源坐标为空；仅审核条件性解释及请求补充行为，不作具体设备事实核验。"
+    },
+    {
+      "caseId": "boundary-3-06",
+      "caseSha256": "6136021e43a19a29cb32da0fed8a081519221675b2224b5457734cefbce1b0c1",
+      "pattern": "negative-claim-missing-source",
+      "expectedAnswer": "No—if the matching datasheet explicitly says “no PoE support”, that statement must not be reversed into support. This question does not identify the model, version or document, so ask for them before making a model-specific claim or citation. Do not invent a source coordinate.",
+      "expectedSources": [],
+      "reviewNote": "2026-09-29 MA24-10：按用户确认的否定理解与缺少来源题型自动采纳，同义题未逐题人工确认。本题无具体型号、版本或原件，来源坐标为空；仅审核条件性解释及请求补充行为，不作具体设备事实核验。"
+    },
+    {
+      "caseId": "boundary-4-06",
+      "caseSha256": "d679efbf3d972a6a971ec20b0c1ecb9e1f3623602f27b19ce1cf0b25845de96b",
+      "pattern": "negative-claim-missing-source",
+      "expectedAnswer": "No—if the matching datasheet explicitly says “no PoE support”, that statement must not be reversed into support. This question does not identify the model, version or document, so ask for them before making a model-specific claim or citation. Do not invent a source coordinate.",
+      "expectedSources": [],
+      "reviewNote": "2026-09-29 MA24-10：按用户确认的否定理解与缺少来源题型自动采纳，同义题未逐题人工确认。本题无具体型号、版本或原件，来源坐标为空；仅审核条件性解释及请求补充行为，不作具体设备事实核验。"
+    }
+  ]
+}

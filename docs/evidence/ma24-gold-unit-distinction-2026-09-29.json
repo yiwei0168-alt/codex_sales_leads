@@ -1,0 +1,98 @@
+{
+  "policyId": "MA24-10",
+  "corpusVersion": "knowledge-eval-v3-baseline",
+  "entries": [
+    {
+      "caseId": "boundary-1-04",
+      "caseSha256": "9c5b7638c7637e5cfa076c938cedef1207352c18849872d9675008671c2683bc",
+      "pattern": "ethernet-cellular-distinction",
+      "expectedAnswer": "No. A 2.5G Ethernet port means a 2.5Gbps wired Ethernet link, not 5G cellular. That port alone does not establish a 5G modem, SIM capability or cellular-band support.",
+      "expectedSources": [
+        {
+          "assetSha256": "88447950d61dbdb5b2d2ed370fc30fa60db5cf68f323e3161d02fbdde58a8bff",
+          "version": "V1.0",
+          "unitIndex": 3,
+          "blockId": "4c614802-2bbb-45af-bbdd-1e94afd635fb",
+          "excerpt": "1× Shielded 2.5GbE PoE IN"
+        },
+        {
+          "assetSha256": "4c1e27dce534a5066aa80f0d2fc67bd57cde7e37fbdf69056178c389946fbea5",
+          "version": "V2.0",
+          "unitIndex": 6,
+          "blockId": "33416218-faf7-4e3f-b24c-be33211911b1",
+          "excerpt": "-  5G NR SA/NSA Wi-Fi Router"
+        }
+      ],
+      "reviewNote": "2026-09-29 用户在本对话明确选择“确认此类答案”，确认接口速率与蜂窝制式区别。MA24-10代表题人工确认；本地原件及活动坐标已核对。"
+    },
+    {
+      "caseId": "boundary-2-04",
+      "caseSha256": "5252cd2c3fe8a8510e867991ef0a8d2da127f7980824d29f7633befbd805dc33",
+      "pattern": "ethernet-cellular-distinction",
+      "expectedAnswer": "No. A 2.5G Ethernet port means a 2.5Gbps wired Ethernet link, not 5G cellular. That port alone does not establish a 5G modem, SIM capability or cellular-band support.",
+      "expectedSources": [
+        {
+          "assetSha256": "88447950d61dbdb5b2d2ed370fc30fa60db5cf68f323e3161d02fbdde58a8bff",
+          "version": "V1.0",
+          "unitIndex": 3,
+          "blockId": "4c614802-2bbb-45af-bbdd-1e94afd635fb",
+          "excerpt": "1× Shielded 2.5GbE PoE IN"
+        },
+        {
+          "assetSha256": "4c1e27dce534a5066aa80f0d2fc67bd57cde7e37fbdf69056178c389946fbea5",
+          "version": "V2.0",
+          "unitIndex": 6,
+          "blockId": "33416218-faf7-4e3f-b24c-be33211911b1",
+          "excerpt": "-  5G NR SA/NSA Wi-Fi Router"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户已确认的接口速率与蜂窝制式区别题型自动采纳，同义表达未逐题人工确认；本地原件及活动坐标已核对。"
+    },
+    {
+      "caseId": "boundary-3-04",
+      "caseSha256": "d72dda524bfc7e6bd1bd07920a52e804ffaa59b166a4677f91572984f1b1370f",
+      "pattern": "ethernet-cellular-distinction",
+      "expectedAnswer": "No. A 2.5G Ethernet port means a 2.5Gbps wired Ethernet link, not 5G cellular. That port alone does not establish a 5G modem, SIM capability or cellular-band support.",
+      "expectedSources": [
+        {
+          "assetSha256": "88447950d61dbdb5b2d2ed370fc30fa60db5cf68f323e3161d02fbdde58a8bff",
+          "version": "V1.0",
+          "unitIndex": 3,
+          "blockId": "4c614802-2bbb-45af-bbdd-1e94afd635fb",
+          "excerpt": "1× Shielded 2.5GbE PoE IN"
+        },
+        {
+          "assetSha256": "4c1e27dce534a5066aa80f0d2fc67bd57cde7e37fbdf69056178c389946fbea5",
+          "version": "V2.0",
+          "unitIndex": 6,
+          "blockId": "33416218-faf7-4e3f-b24c-be33211911b1",
+          "excerpt": "-  5G NR SA/NSA Wi-Fi Router"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户已确认的接口速率与蜂窝制式区别题型自动采纳，同义表达未逐题人工确认；本地原件及活动坐标已核对。"
+    },
+    {
+      "caseId": "boundary-4-04",
+      "caseSha256": "53f72588592c611d4c1c2a6757c324a873faa01212ed5395327435b853ae251c",
+      "pattern": "ethernet-cellular-distinction",
+      "expectedAnswer": "No. A 2.5G Ethernet port means a 2.5Gbps wired Ethernet link, not 5G cellular. That port alone does not establish a 5G modem, SIM capability or cellular-band support.",
+      "expectedSources": [
+        {
+          "assetSha256": "88447950d61dbdb5b2d2ed370fc30fa60db5cf68f323e3161d02fbdde58a8bff",
+          "version": "V1.0",
+          "unitIndex": 3,
+          "blockId": "4c614802-2bbb-45af-bbdd-1e94afd635fb",
+          "excerpt": "1× Shielded 2.5GbE PoE IN"
+        },
+        {
+          "assetSha256": "4c1e27dce534a5066aa80f0d2fc67bd57cde7e37fbdf69056178c389946fbea5",
+          "version": "V2.0",
+          "unitIndex": 6,
+          "blockId": "33416218-faf7-4e3f-b24c-be33211911b1",
+          "excerpt": "-  5G NR SA/NSA Wi-Fi Router"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户已确认的接口速率与蜂窝制式区别题型自动采纳，同义表达未逐题人工确认；本地原件及活动坐标已核对。"
+    }
+  ]
+}
