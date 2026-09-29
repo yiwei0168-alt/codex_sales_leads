@@ -46,6 +46,7 @@
 | `base-08-open`：Open the original datasheet for HS105 | 用户明确选择“确认答案和来源” | 当前 r1；题目哈希 `4a2cab6ccad422dd00a04cee02c0416d8d978e251016e907193ec6af15900dab`；答案与来源数据库回读一致 | HS105 Datasheet V3.0，来源 SHA-256 同第三十四题；第 4 页 Package Content 块 `eae18a29-098a-400b-98ac-aabef235ebe6`，短引 `HS105 / Power Adapter / Installation Guide`；封面型号和完整六页原件已核对 |
 | `base-08-ports`：How many physical Ethernet ports does HS105 have? | 用户明确选择“确认答案和来源” | 当前 r1；题目哈希 `8aeaadb030ee1d5ae87770016461a694387a4a1bc37ecda5b9a0583c9e0d7b6a`；数据库回读 3 条来源坐标 | HS105 第 4 页接口表块 `d4ace3d5-b615-476e-9b0d-4b665886fdb8` 与 Highlights 块 `c361f382-279e-4468-8493-5c84d59eb225` 的 5 个 RJ45 口；第 2 页块 `9810b166-6c6e-4af1-88d3-92e8b7929e77` 的 10/100/1000/2500Mbps 速率原文；DC 接口不计入网口 |
 | `base-08-poe`：Does HS105 support PoE? | 用户明确选择“确认答案和来源” | 当前 r1；题目哈希 `0b905d0b8e58c44bd1dd56ff0018a39c661f72721fd947cbc98d52d78814504a`；数据库回读 3 条来源坐标 | HS105 第 4 页供电/适配器块 `d4ace3d5-b615-476e-9b0d-4b665886fdb8`，第 5 页协议块 `6a2138ec-9b2a-4f3b-afa7-e2009a327512`；完整六页无 PoE 声明，按 MA24-09 判定不支持输入或输出，不将适配器参数当作设备 PoE 能力 |
+| `base-08-compare`：Compare the interfaces and power options of HS105 and GS1010PE | 用户明确选择“确认答案和来源” | 当前 r1；题目哈希 `93a9d860cc154a4bffd1a041f20e3f2a1b134cc08ba75c3a023119d84468db38`；数据库回读 6 条来源坐标 | 与第三十四题相同的两份原件及 6 条接口、设备输入、电源/适配器原文坐标；重新通过当前来源和短引校验，按题目保存确认的完整英文答案 |
 
 该题已确认答案：找到并展示 AP3000 的原始 Datasheet PDF，提供打开或下载入口。已登记原件《AP3000_P / AP3000 Datasheet V1.0》包含 AP3000，可作为正确结果；不以 AP3000S 或 AP3000 Wall 等其他型号替代，也不把请求改成参数问答。
 
@@ -129,6 +130,8 @@
 
 第三十八题已确认答案（保持英文）：No. HS105 (V3.0) does not support PoE input or output. It uses a DC 12V/1A power input. Its datasheet does not declare PoE support; the included adapter's AC input and DC output specifications are not PoE capability of the switch.
 
+第三十九题已确认答案（保持英文）：HS105 (V3.0) has five 2.5Gbps RJ45 ports and does not support PoE input or output. It accepts DC 12V/1A; its included adapter accepts 100–240V AC, 50/60Hz and outputs DC 12V/1A. GS1010PE (V2.0) has ten Gigabit ports: eight IEEE 802.3at/af PoE output ports (up to 30W each) and two non-PoE uplink ports. It accepts 100–240V AC, 50/60Hz and has an internal 120W power supply. Do not infer that all eight PoE ports can deliver 30W simultaneously, or treat HS105's rated input as a declared maximum actual power consumption.
+
 ## 原件补充与逐题更正
 
 准备第 10 题时完整读取 AP3600 第 3 页，发现 Highlights 明确列出 `1× Shielded GbE PoE Out`。随后核对两份本地 PDF SHA-256 与已登记哈希一致，并渲染查看两份原件完整第 3、4 页，确认输出说明、接口数量与输入供电/设备功耗。此前第 4、8、9 题只引用接口表与供电表，遗漏了概述中的输出口证据；其“不据此确定输出”的结尾需要补充。用户分别明确确认第 8、9、4 题修订后均保存为 r3，原 r2 决定保留在本记录。此次补充已完成；精确来源计数仍不替代剩余题目的人工答案与质量对照。
@@ -139,6 +142,6 @@
 
 ## 验证与进度
 
-本机保存通过当前来源/版本/短引校验，第 4、8、9 题当前 r3，其他前十一题当前 r2，第十二至三十八题当前 r1。第三十八题保存后的只读审计为 development 已保存 38/190、精确来源 38/190；validation 0/60；holdout 0/50。前十一题补充历史记录，随后二十七题为新增审核。第三十九题候选已提出，等待用户逐题确认，未写入 Gold。
+本机保存通过当前来源/版本/短引校验，第 4、8、9 题当前 r3，其他前十一题当前 r2，第十二至三十九题当前 r1。第三十九题保存后的只读审计为 development 已保存 39/190、精确来源 39/190；validation 0/60；holdout 0/50。前十一题补充历史记录，随后二十八题为新增审核。第四十题候选已提出，等待用户逐题确认，未写入 Gold。
 
 审核发现存量共享树用 `v3ChunkId` 而非新上传的 `blockId`。预览与保存现在统一优先 `blockId`、其次 `v3ChunkId`、最后当前节点 ID；本机原文探针、9 项复核单测与局部 ESLint 通过。此兼容修复不修改来源内容或重建树。
