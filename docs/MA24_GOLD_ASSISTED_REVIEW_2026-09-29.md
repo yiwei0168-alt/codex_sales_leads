@@ -32,6 +32,8 @@
 | `base-05-ports`：GS108 有几个物理网口？ | 用户明确选择“确认答案和来源” | 当前 r1；题目哈希 `e49f784a248c7d977c4810499e3bdd676c7328ef859cb26beda1e8e7e7b02385`；数据库回读 2 条来源坐标 | GS108 第 2 页 Features 块 `322b34be-5987-48de-91b9-d66517c45865` 与规格表块 `eca2c0cd-0d72-4ffc-95ea-c2991c76635c` 的 8×10/100/1000Mbps、自动协商及 Auto-MDI/MDIX 原文；原件两页与封面设备图已核对 |
 | `base-05-poe`：GS108 是否支持 PoE？ | 用户先选择“修改答案或来源”，随后明确修改：“未声明是否支持POE就是不支持” | 当前 r1；题目哈希 `ae0a16249c71267aeb39f4d83a03dbe55616c523ed6db2d2011acd5ff365783c`；数据库回读 2 条来源坐标 | GS108 第 2 页规格表块 `eca2c0cd-0d72-4ffc-95ea-c2991c76635c`，短引 `Power. Power, 2 = DC 5V / 0.55 A.` 及协议栏 `IEEE 802.3, 802.3i/u/x/ab`；两页原件无 PoE 声明，按用户 MA24-09 口径判定不支持 |
 | `base-05-compare`：比较 GS108 和 GS108D 的接口与供电规格 | 用户明确选择“确认答案和来源” | 当前 r1；题目哈希 `ec88d4813e93d5249cdd7e35c6601aa1b7178b548f33e37c41fe5f9eb5ff5ef9`；数据库回读 6 条来源坐标 | GS108 同一原件第 2 页接口/供电/功耗；GS108D Datasheet V5.0，来源 SHA-256 `7ddd8a2345ff52e07b5091deaa1341eaa4f6afb7fce1e69a7dc0e96dea063cf5`，第 2 页规格表块 `52180363-c68a-4962-82c6-c7804acc4c3a` 与 Features 块 `051ca744-6e56-45f0-b4ed-a5af8c770d00`；两份完整原件与哈希已核对，PoE 按 MA24-09 判为不支持 |
+| `base-05-explain`：GS108 适合什么部署场景？请说明依据 | 用户明确选择“确认答案和来源” | 当前 r1；题目哈希 `8430699b724ef7b96587d6ea1cc3c46ab227b49641dc374dd2945f47cb2ab15c`；数据库回读 2 条来源坐标 | GS108 第 2 页 Features 块 `322b34be-5987-48de-91b9-d66517c45865` 的接口、安装、流控、IGMP、环路和功耗原文；规格表块 `eca2c0cd-0d72-4ffc-95ea-c2991c76635c` 的 DC 供电原文；部署判断注明来自规格，PoE 按 MA24-09 判定 |
+| `base-06-open`：Open the original datasheet for GS108D | 用户明确选择“确认答案和来源” | 当前 r1；题目哈希 `1b6769748fa5a4fbb584090d427f8ff57949911b286df120b2d7ed88550603c8`；答案与来源数据库回读一致 | GS108D Datasheet V5.0 第 2 页，来源 SHA-256 同第二十四题，规格表块 `52180363-c68a-4962-82c6-c7804acc4c3a`，短引 `Product Model. Product Model, 2 = GS108D.`；封面型号可见但无对应抽取块，使用第 2 页真实块坐标 |
 
 该题已确认答案：找到并展示 AP3000 的原始 Datasheet PDF，提供打开或下载入口。已登记原件《AP3000_P / AP3000 Datasheet V1.0》包含 AP3000，可作为正确结果；不以 AP3000S 或 AP3000 Wall 等其他型号替代，也不把请求改成参数问答。
 
@@ -87,6 +89,10 @@
 
 第二十四题已确认答案：两者均按 V5.0 Datasheet。两者均有 8 个 10/100/1000Mbps 物理以太网口，支持自动协商及 Auto-MDI/MDIX；输入供电均为 DC 5V/0.55A，原件标称最大功耗 1.8W、空闲功耗 0.3W。两者均不支持 PoE 输入或输出。
 
+第二十五题已确认答案：根据规格判断，GS108（V5.0）适合需要扩展千兆有线端口的桌面或壁挂部署。依据是 8 个 10/100/1000Mbps 网口、自动协商及 Auto-MDI/MDIX、桌面/壁挂安装、802.3x 流控、IGMP 多播支持和环路自动检测与阻断；原件标称最大功耗 1.8W、空闲功耗 0.3W。设备采用 DC 5V/0.55A 供电，不支持 PoE。原件未明确列举特定行业，上述部署判断来自接口与功能。
+
+第二十六题已确认答案（保持英文）：Find and display the original GS108D Datasheet PDF, with an open or download link. The registered “GS108D Datasheet V5.0” is a valid matching original. Do not substitute GS108 or another model, or turn this request into a specification answer.
+
 ## 原件补充与逐题更正
 
 准备第 10 题时完整读取 AP3600 第 3 页，发现 Highlights 明确列出 `1× Shielded GbE PoE Out`。随后核对两份本地 PDF SHA-256 与已登记哈希一致，并渲染查看两份原件完整第 3、4 页，确认输出说明、接口数量与输入供电/设备功耗。此前第 4、8、9 题只引用接口表与供电表，遗漏了概述中的输出口证据；其“不据此确定输出”的结尾需要补充。用户分别明确确认第 8、9、4 题修订后均保存为 r3，原 r2 决定保留在本记录。此次补充已完成；精确来源计数仍不替代剩余题目的人工答案与质量对照。
@@ -97,6 +103,6 @@
 
 ## 验证与进度
 
-本机保存通过当前来源/版本/短引校验，第 4、8、9 题当前 r3，其他前十一题当前 r2，第十二至二十四题当前 r1。第二十四题保存后的只读审计为 development 已保存 24/190、精确来源 24/190；validation 0/60；holdout 0/50。前十一题补充历史记录，随后十三题为新增审核。第二十五题候选已提出，等待用户逐题确认，未写入 Gold。
+本机保存通过当前来源/版本/短引校验，第 4、8、9 题当前 r3，其他前十一题当前 r2，第十二至二十六题当前 r1。第二十六题保存后的只读审计为 development 已保存 26/190、精确来源 26/190；validation 0/60；holdout 0/50。前十一题补充历史记录，随后十五题为新增审核。第二十七题候选已提出，等待用户逐题确认，未写入 Gold。
 
 审核发现存量共享树用 `v3ChunkId` 而非新上传的 `blockId`。预览与保存现在统一优先 `blockId`、其次 `v3ChunkId`、最后当前节点 ID；本机原文探针、9 项复核单测与局部 ESLint 通过。此兼容修复不修改来源内容或重建树。
