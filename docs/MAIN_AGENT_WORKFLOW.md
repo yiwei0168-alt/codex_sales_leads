@@ -250,3 +250,5 @@ Graphiti 0.30.2 的隔离依赖与本地 `nomic-embed-text` 已安装。`scripts
 2026-09-24 / MA24 图谱 outbox 探针：`memory:verify-graph-clone-outbox-local` 在隔离数据库运行真实 outbox 消费函数及本机 Graphiti 投影，检查只返回观察 ID 的图候选、账户隔离、PostgreSQL 重新校验和重放；按精确观察 ID 清理合成图节点及克隆库记录。`memory:verify-graph-real-outbox-local` 仅在权威库存在合格待办时消费一条；本次无合格待办。主 Agent 仍使用 OpenRouter，私有证据原文不得因新工具直接转入其上下文；新检索保持影子路径。
 2026-09-24 / MA24 PageIndex 隔离试验：`.venv-pageindex-local` 与生产解析环境隔离；`knowledge:verify-pageindex-isolated-local` 生成合成 PDF、限制运行期 socket 仅回环、以本机 Ollama 的 `qwen3:8b` 进行 SDK 索引，再与无需模型的 Flash 结构比较。两条路径各返回 2 个页节点；所有临时内容与索引自动清理。PageIndex 摘要只供结构导航参考，不替代 `readEvidence` 的原文和坐标，也不处理 PDF 以外本阶段格式。
 2026-09-24 / MA24 Skill 启用门槛：`skill_import` 及用户导入都先保存停用版本；新版本替换当前版本时也先停用。`skill_manage` 由 Agent 调用启用或回滚时，先核对账户范围、无脚本/依赖和 `validation.autoEnable=passed`；未通过回放与影子验收则拒绝。账户页面的手动启用保留用户显式操作，导入提示改为草案，记忆中心区分待验证与待审核。
+
+2026-09-29 / MA24-10 同类 Gold 授权：用户要求已审核同类直接采纳助手的 Gold，只将不同类交用户审核。助手仍逐条读取匹配原件、保存题目哈希与精确来源；审核备注明确记录“按类型授权自动采纳”和代表题，不写成用户逐题确认。新类型确认后应用于同类表达，已保存决定不覆盖；development/validation 完成与配置冻结前不打开 holdout。[执行证据](MA24_GOLD_PATTERN_REVIEW_2026-09-29.md)。

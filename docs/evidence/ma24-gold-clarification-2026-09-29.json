@@ -1,0 +1,70 @@
+{
+  "policyId": "MA24-10",
+  "corpusVersion": "knowledge-eval-v3-baseline",
+  "entries": [
+    {
+      "caseId": "boundary-1-01",
+      "caseSha256": "b164e793c5404d4d3647a3b2e18ce59148fdd7ef8523f93ae42fc648499b1140",
+      "pattern": "clarify-datasheet-model",
+      "expectedAnswer": "当前请求没有明确型号，且本题未提供可解析的前文。应先询问具体型号，以及“新版”指哪个版本或是否要查找最新已登记版本；用户补充后再提供对应原件。不能猜测型号、版本或声称已打开新版资料。",
+      "expectedSources": [],
+      "reviewNote": "2026-09-29 用户明确选择“确认此类答案”，确认当前题的澄清候选。MA24-10授权同类表达自动采纳。题目未提供型号或前文，属于澄清行为，无资料引用。"
+    },
+    {
+      "caseId": "boundary-1-02",
+      "caseSha256": "4a85eafd6052d4cdd6dda34b1fd304555c99ab8dd312738ba4151f98b168d78d",
+      "pattern": "clarify-datasheet-model",
+      "expectedAnswer": "Ask which model the user wants the original datasheet for; request a version if needed. The case supplies no identifiable model or usable prior context. Do not guess the model, fabricate a source, or claim to have opened a document.",
+      "expectedSources": [],
+      "reviewNote": "2026-09-29 按MA24-10用户授权自动采纳同类Gold；类型clarify-datasheet-model，以用户明确确认的boundary-1-01为依据。当前题缺少型号或前文，不伪造来源，不冒充逐题人工确认。"
+    },
+    {
+      "caseId": "boundary-2-01",
+      "caseSha256": "63c035ccc57d15f621300309d90e5593f4d139ada6bfb4a15b2a0bdc95d1e07e",
+      "pattern": "clarify-datasheet-model",
+      "expectedAnswer": "当前请求没有明确型号，且本题未提供可解析的前文。应先询问具体型号，以及“新版”指哪个版本或是否要查找最新已登记版本；用户补充后再提供对应原件。不能猜测型号、版本或声称已打开新版资料。",
+      "expectedSources": [],
+      "reviewNote": "2026-09-29 按MA24-10用户授权自动采纳同类Gold；类型clarify-datasheet-model，以用户明确确认的boundary-1-01为依据。当前题缺少型号或前文，不伪造来源，不冒充逐题人工确认。"
+    },
+    {
+      "caseId": "boundary-2-02",
+      "caseSha256": "82906dc44355a1e9156a020c886c0a7585a27b74cf8bfc82d109da2d4067c03b",
+      "pattern": "clarify-datasheet-model",
+      "expectedAnswer": "Ask which model the user wants the original datasheet for; request a version if needed. The case supplies no identifiable model or usable prior context. Do not guess the model, fabricate a source, or claim to have opened a document.",
+      "expectedSources": [],
+      "reviewNote": "2026-09-29 按MA24-10用户授权自动采纳同类Gold；类型clarify-datasheet-model，以用户明确确认的boundary-1-01为依据。当前题缺少型号或前文，不伪造来源，不冒充逐题人工确认。"
+    },
+    {
+      "caseId": "boundary-3-01",
+      "caseSha256": "8eae3d314fb597ea4f055702d5f4122a904a41fca746e17f57f532b20a1c99eb",
+      "pattern": "clarify-datasheet-model",
+      "expectedAnswer": "当前请求没有明确型号，且本题未提供可解析的前文。应先询问具体型号，以及“新版”指哪个版本或是否要查找最新已登记版本；用户补充后再提供对应原件。不能猜测型号、版本或声称已打开新版资料。",
+      "expectedSources": [],
+      "reviewNote": "2026-09-29 按MA24-10用户授权自动采纳同类Gold；类型clarify-datasheet-model，以用户明确确认的boundary-1-01为依据。当前题缺少型号或前文，不伪造来源，不冒充逐题人工确认。"
+    },
+    {
+      "caseId": "boundary-3-02",
+      "caseSha256": "f8031fce2ee31d445516f37f5cb063d7f61da004066344eefaf8d3aefdf7e407",
+      "pattern": "clarify-datasheet-model",
+      "expectedAnswer": "Ask which model the user wants the original datasheet for; request a version if needed. The case supplies no identifiable model or usable prior context. Do not guess the model, fabricate a source, or claim to have opened a document.",
+      "expectedSources": [],
+      "reviewNote": "2026-09-29 按MA24-10用户授权自动采纳同类Gold；类型clarify-datasheet-model，以用户明确确认的boundary-1-01为依据。当前题缺少型号或前文，不伪造来源，不冒充逐题人工确认。"
+    },
+    {
+      "caseId": "boundary-4-01",
+      "caseSha256": "45301bce9cc3e8f199864e8b110c45f877961d34f6cdcbb508fea1a266dfed2f",
+      "pattern": "clarify-datasheet-model",
+      "expectedAnswer": "当前请求没有明确型号，且本题未提供可解析的前文。应先询问具体型号，以及“新版”指哪个版本或是否要查找最新已登记版本；用户补充后再提供对应原件。不能猜测型号、版本或声称已打开新版资料。",
+      "expectedSources": [],
+      "reviewNote": "2026-09-29 按MA24-10用户授权自动采纳同类Gold；类型clarify-datasheet-model，以用户明确确认的boundary-1-01为依据。当前题缺少型号或前文，不伪造来源，不冒充逐题人工确认。"
+    },
+    {
+      "caseId": "boundary-4-02",
+      "caseSha256": "4397ae166c2c4f7b0683b96e2c6b3fae51132144f2e3660bf8405679d3ec6d4e",
+      "pattern": "clarify-datasheet-model",
+      "expectedAnswer": "Ask which model the user wants the original datasheet for; request a version if needed. The case supplies no identifiable model or usable prior context. Do not guess the model, fabricate a source, or claim to have opened a document.",
+      "expectedSources": [],
+      "reviewNote": "2026-09-29 按MA24-10用户授权自动采纳同类Gold；类型clarify-datasheet-model，以用户明确确认的boundary-1-01为依据。当前题缺少型号或前文，不伪造来源，不冒充逐题人工确认。"
+    }
+  ]
+}
