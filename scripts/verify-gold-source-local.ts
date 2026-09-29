@@ -6,7 +6,7 @@ import {listGoldSourceEvidence} from "../src/lib/knowledge/gold-source";
 nextEnv.loadEnvConfig(process.cwd());
 try{
   const [sample]=await tenantQuery<{sha:string;unitIndex:number;blockId:string;content:string}>(OWNER_USER_ID,`
-    select a.source_sha256 as sha,n.unit_index as "unitIndex",n.source_location->>'blockId' as "blockId",n.content
+    select a.source_sha256 as sha,n.unit_index as "unitIndex",coalesce(n.source_location->>'blockId',n.source_location->>'v3ChunkId',n.id::text) as "blockId",n.content
     from knowledge_release_pointer_v3 p join knowledge_chunk_v3 c on c.release_id=p.release_id
     join knowledge_source_revision_v3 sr on sr.id=c.source_revision_id
     join knowledge_asset a on a.id=sr.asset_id join knowledge_document d on d.id=a.document_id

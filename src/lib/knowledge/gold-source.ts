@@ -4,7 +4,7 @@ export type GoldSourceEvidence={blockId:string;content:string;unitIndex:number};
 export const normalizeGoldExcerpt=(value:string)=>value.replace(/\s+/g," ").trim();
 
 export async function listGoldSourceEvidence(userId:string,assetSha256:string,unitIndex:number):Promise<GoldSourceEvidence[]>{
-  return tenantQuery<GoldSourceEvidence>(userId,`select n.source_location->>'blockId' as "blockId",n.content,n.unit_index as "unitIndex"
+  return tenantQuery<GoldSourceEvidence>(userId,`select coalesce(n.source_location->>'blockId',n.source_location->>'v3ChunkId',n.id::text) as "blockId",n.content,n.unit_index as "unitIndex"
     from knowledge_release_pointer_v3 p join knowledge_chunk_v3 c on c.release_id=p.release_id
     join knowledge_source_revision_v3 sr on sr.id=c.source_revision_id
     join knowledge_asset a on a.id=sr.asset_id join knowledge_document d on d.id=a.document_id
