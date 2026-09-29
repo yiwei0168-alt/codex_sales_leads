@@ -1,0 +1,322 @@
+{
+  "local": true,
+  "corpusVersion": "knowledge-eval-v3-baseline",
+  "holdoutSkipped": 50,
+  "groups": {
+    "open-document": {
+      "cases": 58,
+      "candidateHits": 41,
+      "reviewed": 58,
+      "sourceHits": 41
+    },
+    "fact-query": {
+      "cases": 92,
+      "candidateHits": 82,
+      "reviewed": 92,
+      "sourceHits": 82
+    },
+    "compare-facts": {
+      "cases": 49,
+      "candidateHits": 45,
+      "reviewed": 49,
+      "sourceHits": 45
+    },
+    "explain": {
+      "cases": 50,
+      "candidateHits": 41,
+      "reviewed": 50,
+      "sourceHits": 41
+    }
+  },
+  "outcomes": {
+    "route": {
+      "cases": 225,
+      "candidateHits": 209
+    },
+    "clarify": {
+      "cases": 12,
+      "candidateHits": 0
+    },
+    "insufficient-evidence": {
+      "cases": 8,
+      "candidateHits": 0
+    },
+    "deny": {
+      "cases": 4,
+      "candidateHits": 0
+    }
+  },
+  "misses": [
+    {
+      "caseId": "base-33-open",
+      "reason": "no-candidates"
+    },
+    {
+      "caseId": "base-33-open",
+      "reason": "reviewed-source-missed"
+    },
+    {
+      "caseId": "base-33-ports",
+      "reason": "no-candidates"
+    },
+    {
+      "caseId": "base-33-ports",
+      "reason": "reviewed-source-missed"
+    },
+    {
+      "caseId": "base-33-poe",
+      "reason": "no-candidates"
+    },
+    {
+      "caseId": "base-33-poe",
+      "reason": "reviewed-source-missed"
+    },
+    {
+      "caseId": "base-33-explain",
+      "reason": "no-candidates"
+    },
+    {
+      "caseId": "base-33-explain",
+      "reason": "reviewed-source-missed"
+    },
+    {
+      "caseId": "boundary-1-01",
+      "reason": "no-candidates"
+    },
+    {
+      "caseId": "boundary-1-02",
+      "reason": "no-candidates"
+    },
+    {
+      "caseId": "boundary-1-04",
+      "reason": "no-candidates"
+    },
+    {
+      "caseId": "boundary-1-04",
+      "reason": "reviewed-source-missed"
+    },
+    {
+      "caseId": "boundary-1-05",
+      "reason": "no-candidates"
+    },
+    {
+      "caseId": "boundary-1-05",
+      "reason": "reviewed-source-missed"
+    },
+    {
+      "caseId": "boundary-1-06",
+      "reason": "no-candidates"
+    },
+    {
+      "caseId": "boundary-1-07",
+      "reason": "no-candidates"
+    },
+    {
+      "caseId": "boundary-1-07",
+      "reason": "reviewed-source-missed"
+    },
+    {
+      "caseId": "boundary-1-08",
+      "reason": "no-candidates"
+    },
+    {
+      "caseId": "boundary-1-09",
+      "reason": "no-candidates"
+    },
+    {
+      "caseId": "boundary-1-10",
+      "reason": "no-candidates"
+    },
+    {
+      "caseId": "boundary-2-01",
+      "reason": "no-candidates"
+    },
+    {
+      "caseId": "boundary-2-02",
+      "reason": "no-candidates"
+    },
+    {
+      "caseId": "boundary-2-04",
+      "reason": "no-candidates"
+    },
+    {
+      "caseId": "boundary-2-04",
+      "reason": "reviewed-source-missed"
+    },
+    {
+      "caseId": "boundary-2-05",
+      "reason": "no-candidates"
+    },
+    {
+      "caseId": "boundary-2-05",
+      "reason": "reviewed-source-missed"
+    },
+    {
+      "caseId": "boundary-2-06",
+      "reason": "no-candidates"
+    },
+    {
+      "caseId": "boundary-2-07",
+      "reason": "no-candidates"
+    },
+    {
+      "caseId": "boundary-2-07",
+      "reason": "reviewed-source-missed"
+    },
+    {
+      "caseId": "boundary-2-08",
+      "reason": "no-candidates"
+    }
+  ],
+  "missedCount": 56,
+  "reviewedMisses": [
+    {
+      "caseId": "base-33-open",
+      "entities": [
+        "SM10G"
+      ],
+      "candidateIds": [],
+      "expectedHashes": [
+        "7c558f62758520936744ce56ca860d55f44d8359af81d3c4a164a561bc80d897"
+      ]
+    },
+    {
+      "caseId": "base-33-ports",
+      "entities": [
+        "SM10G"
+      ],
+      "candidateIds": [],
+      "expectedHashes": [
+        "7c558f62758520936744ce56ca860d55f44d8359af81d3c4a164a561bc80d897"
+      ]
+    },
+    {
+      "caseId": "base-33-poe",
+      "entities": [
+        "SM10G"
+      ],
+      "candidateIds": [],
+      "expectedHashes": [
+        "7c558f62758520936744ce56ca860d55f44d8359af81d3c4a164a561bc80d897",
+        "7c558f62758520936744ce56ca860d55f44d8359af81d3c4a164a561bc80d897"
+      ]
+    },
+    {
+      "caseId": "base-33-explain",
+      "entities": [
+        "SM10G"
+      ],
+      "candidateIds": [],
+      "expectedHashes": [
+        "7c558f62758520936744ce56ca860d55f44d8359af81d3c4a164a561bc80d897",
+        "7c558f62758520936744ce56ca860d55f44d8359af81d3c4a164a561bc80d897",
+        "7c558f62758520936744ce56ca860d55f44d8359af81d3c4a164a561bc80d897"
+      ]
+    },
+    {
+      "caseId": "boundary-1-04",
+      "entities": [],
+      "candidateIds": [],
+      "expectedHashes": [
+        "88447950d61dbdb5b2d2ed370fc30fa60db5cf68f323e3161d02fbdde58a8bff",
+        "4c1e27dce534a5066aa80f0d2fc67bd57cde7e37fbdf69056178c389946fbea5"
+      ]
+    },
+    {
+      "caseId": "boundary-1-05",
+      "entities": [],
+      "candidateIds": [],
+      "expectedHashes": [
+        "7c558f62758520936744ce56ca860d55f44d8359af81d3c4a164a561bc80d897",
+        "7c558f62758520936744ce56ca860d55f44d8359af81d3c4a164a561bc80d897"
+      ]
+    },
+    {
+      "caseId": "boundary-1-07",
+      "entities": [],
+      "candidateIds": [],
+      "expectedHashes": [
+        "73aab9428d54af6a2f5f2031acbbad11e4355ac832c16121e892c3a8b170f374"
+      ]
+    },
+    {
+      "caseId": "boundary-2-04",
+      "entities": [],
+      "candidateIds": [],
+      "expectedHashes": [
+        "88447950d61dbdb5b2d2ed370fc30fa60db5cf68f323e3161d02fbdde58a8bff",
+        "4c1e27dce534a5066aa80f0d2fc67bd57cde7e37fbdf69056178c389946fbea5"
+      ]
+    },
+    {
+      "caseId": "boundary-2-05",
+      "entities": [],
+      "candidateIds": [],
+      "expectedHashes": [
+        "7c558f62758520936744ce56ca860d55f44d8359af81d3c4a164a561bc80d897",
+        "7c558f62758520936744ce56ca860d55f44d8359af81d3c4a164a561bc80d897"
+      ]
+    },
+    {
+      "caseId": "boundary-2-07",
+      "entities": [],
+      "candidateIds": [],
+      "expectedHashes": [
+        "73aab9428d54af6a2f5f2031acbbad11e4355ac832c16121e892c3a8b170f374"
+      ]
+    },
+    {
+      "caseId": "boundary-3-04",
+      "entities": [],
+      "candidateIds": [],
+      "expectedHashes": [
+        "88447950d61dbdb5b2d2ed370fc30fa60db5cf68f323e3161d02fbdde58a8bff",
+        "4c1e27dce534a5066aa80f0d2fc67bd57cde7e37fbdf69056178c389946fbea5"
+      ]
+    },
+    {
+      "caseId": "boundary-3-05",
+      "entities": [],
+      "candidateIds": [],
+      "expectedHashes": [
+        "7c558f62758520936744ce56ca860d55f44d8359af81d3c4a164a561bc80d897",
+        "7c558f62758520936744ce56ca860d55f44d8359af81d3c4a164a561bc80d897"
+      ]
+    },
+    {
+      "caseId": "boundary-3-07",
+      "entities": [],
+      "candidateIds": [],
+      "expectedHashes": [
+        "73aab9428d54af6a2f5f2031acbbad11e4355ac832c16121e892c3a8b170f374"
+      ]
+    },
+    {
+      "caseId": "boundary-4-04",
+      "entities": [],
+      "candidateIds": [],
+      "expectedHashes": [
+        "88447950d61dbdb5b2d2ed370fc30fa60db5cf68f323e3161d02fbdde58a8bff",
+        "4c1e27dce534a5066aa80f0d2fc67bd57cde7e37fbdf69056178c389946fbea5"
+      ]
+    },
+    {
+      "caseId": "boundary-4-05",
+      "entities": [],
+      "candidateIds": [],
+      "expectedHashes": [
+        "7c558f62758520936744ce56ca860d55f44d8359af81d3c4a164a561bc80d897",
+        "7c558f62758520936744ce56ca860d55f44d8359af81d3c4a164a561bc80d897"
+      ]
+    },
+    {
+      "caseId": "boundary-4-07",
+      "entities": [],
+      "candidateIds": [],
+      "expectedHashes": [
+        "73aab9428d54af6a2f5f2031acbbad11e4355ac832c16121e892c3a8b170f374"
+      ]
+    }
+  ],
+  "externalCalls": 0
+}

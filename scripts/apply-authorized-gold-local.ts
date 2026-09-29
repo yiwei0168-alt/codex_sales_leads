@@ -35,7 +35,11 @@ for(const entry of manifest.entries){
   const unitMatch=entry.pattern==="ethernet-cellular-distinction"&&/^boundary-[1-4]-04$/.test(entry.caseId);
   const sfpMatch=entry.pattern==="sfp-interface-compatibility"&&/^boundary-[1-4]-05$/.test(entry.caseId);
   const negationMatch=entry.pattern==="negative-claim-missing-source"&&/^boundary-[1-4]-06$/.test(entry.caseId);
-  if(!baseMatch&&!clarificationMatch&&!variantMatch&&!unitMatch&&!sfpMatch&&!negationMatch)throw new Error(`Pattern not approved: ${entry.caseId}`);
+  const vpnMatch=entry.pattern==="vpn-roles"&&/^boundary-[1-4]-07$/.test(entry.caseId);
+  const comboMatch=entry.pattern==="shared-combo-count"&&/^boundary-[1-4]-08$/.test(entry.caseId);
+  const missingMatch=entry.pattern==="missing-original-document"&&/^boundary-[1-4]-09$/.test(entry.caseId);
+  const privateMatch=entry.pattern==="deny-private-cross-account"&&/^boundary-[1-4]-10$/.test(entry.caseId);
+  if(!baseMatch&&!clarificationMatch&&!variantMatch&&!unitMatch&&!sfpMatch&&!negationMatch&&!vpnMatch&&!comboMatch&&!missingMatch&&!privateMatch)throw new Error(`Pattern not approved: ${entry.caseId}`);
   if(!entry.expectedAnswer.trim()||!entry.reviewNote.includes("MA24-10"))throw new Error(`Missing answer/authorization receipt: ${entry.caseId}`);
 }
 try{

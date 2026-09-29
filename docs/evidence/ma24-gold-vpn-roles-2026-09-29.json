@@ -1,0 +1,70 @@
+{
+  "policyId": "MA24-10",
+  "corpusVersion": "knowledge-eval-v3-baseline",
+  "entries": [
+    {
+      "caseId": "boundary-1-07",
+      "caseSha256": "d39d62f84cc376ba45d33ad41a1888823f093279a2df5cae782b05340a63be00",
+      "pattern": "vpn-roles",
+      "expectedAnswer": "不等于。VPN passthrough 允许或协助终端的 VPN 流量通过路由器；VPN server 是由设备自身提供 VPN 服务、接受客户端连接。仅有 passthrough 不能证明支持 VPN server；具体协议及服务器能力应单独查证。",
+      "expectedSources": [
+        {
+          "assetSha256": "73aab9428d54af6a2f5f2031acbbad11e4355ac832c16121e892c3a8b170f374",
+          "version": "V2.0",
+          "unitIndex": 6,
+          "blockId": "a05e8c42-1585-4542-aa84-eace0c8c5f94",
+          "excerpt": "Network, 1 = Application Layer Gateway. Network, 2 = IPSec Passthrough. , 1 = . , 2 = L2TP Passthrough. , 1 = . , 2 = PPTP Passthrough. , 1 = . , 2 = FTP Passthrough. , 1 = . , 2 = TFTP Passthrough. , 1 = . , 2 = H323 Passthrough. , 1 = . , 2 = SIP Passthrough. , 1 = . , 2 = RTSP Passthrough. Utilities, 1 = Captive Portal. Utilities, 2 = True. , 1 = VPN Server. , 2 = WireGuard. , 1 = . , 2 = OpenVPN. , 1 = . , 2 = IPsec. , 1 = . , 2 = Zerotier. , 1 = . , 2 = PPTP. , 1 = . , 2 = L2TP. , 1 = VPN Client. , 2 = WireGuard. , 1 = . , 2 = OpenVPN. , 1 = . , 2 = IPsec. , 1 = . , 2 = Zerotier. , 1 = . , 2 = PPTP. , 1 = . , 2 = L2TP."
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：用户在本对话明确选择“确认此类答案”，代表题人工确认。AP1300第6页真实原件与活动坐标已核对，区分各功能角色。"
+    },
+    {
+      "caseId": "boundary-2-07",
+      "caseSha256": "5a40bbaa04d58f8461fe8b6d4e532812d00fa0df09b19ffd0d867c2a1bec52f8",
+      "pattern": "vpn-roles",
+      "expectedAnswer": "不等于。VPN passthrough 允许或协助终端的 VPN 流量通过路由器；VPN server 是由设备自身提供 VPN 服务、接受客户端连接。仅有 passthrough 不能证明支持 VPN server；具体协议及服务器能力应单独查证。",
+      "expectedSources": [
+        {
+          "assetSha256": "73aab9428d54af6a2f5f2031acbbad11e4355ac832c16121e892c3a8b170f374",
+          "version": "V2.0",
+          "unitIndex": 6,
+          "blockId": "a05e8c42-1585-4542-aa84-eace0c8c5f94",
+          "excerpt": "Network, 1 = Application Layer Gateway. Network, 2 = IPSec Passthrough. , 1 = . , 2 = L2TP Passthrough. , 1 = . , 2 = PPTP Passthrough. , 1 = . , 2 = FTP Passthrough. , 1 = . , 2 = TFTP Passthrough. , 1 = . , 2 = H323 Passthrough. , 1 = . , 2 = SIP Passthrough. , 1 = . , 2 = RTSP Passthrough. Utilities, 1 = Captive Portal. Utilities, 2 = True. , 1 = VPN Server. , 2 = WireGuard. , 1 = . , 2 = OpenVPN. , 1 = . , 2 = IPsec. , 1 = . , 2 = Zerotier. , 1 = . , 2 = PPTP. , 1 = . , 2 = L2TP. , 1 = VPN Client. , 2 = WireGuard. , 1 = . , 2 = OpenVPN. , 1 = . , 2 = IPsec. , 1 = . , 2 = Zerotier. , 1 = . , 2 = PPTP. , 1 = . , 2 = L2TP."
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户已确认的vpn-roles题型自动采纳，同义题未逐题人工确认；AP1300第6页真实原件与活动坐标已核对。"
+    },
+    {
+      "caseId": "boundary-3-07",
+      "caseSha256": "2112e6363679e50202f987a4ee4521c73304bd30c8ed886427661cc0d6e31ff7",
+      "pattern": "vpn-roles",
+      "expectedAnswer": "不等于。VPN passthrough 允许或协助终端的 VPN 流量通过路由器；VPN server 是由设备自身提供 VPN 服务、接受客户端连接。仅有 passthrough 不能证明支持 VPN server；具体协议及服务器能力应单独查证。",
+      "expectedSources": [
+        {
+          "assetSha256": "73aab9428d54af6a2f5f2031acbbad11e4355ac832c16121e892c3a8b170f374",
+          "version": "V2.0",
+          "unitIndex": 6,
+          "blockId": "a05e8c42-1585-4542-aa84-eace0c8c5f94",
+          "excerpt": "Network, 1 = Application Layer Gateway. Network, 2 = IPSec Passthrough. , 1 = . , 2 = L2TP Passthrough. , 1 = . , 2 = PPTP Passthrough. , 1 = . , 2 = FTP Passthrough. , 1 = . , 2 = TFTP Passthrough. , 1 = . , 2 = H323 Passthrough. , 1 = . , 2 = SIP Passthrough. , 1 = . , 2 = RTSP Passthrough. Utilities, 1 = Captive Portal. Utilities, 2 = True. , 1 = VPN Server. , 2 = WireGuard. , 1 = . , 2 = OpenVPN. , 1 = . , 2 = IPsec. , 1 = . , 2 = Zerotier. , 1 = . , 2 = PPTP. , 1 = . , 2 = L2TP. , 1 = VPN Client. , 2 = WireGuard. , 1 = . , 2 = OpenVPN. , 1 = . , 2 = IPsec. , 1 = . , 2 = Zerotier. , 1 = . , 2 = PPTP. , 1 = . , 2 = L2TP."
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户已确认的vpn-roles题型自动采纳，同义题未逐题人工确认；AP1300第6页真实原件与活动坐标已核对。"
+    },
+    {
+      "caseId": "boundary-4-07",
+      "caseSha256": "df404ba3d4a3b0655135e7be0a953ac92e5770def2ef901c6deb9789aea12993",
+      "pattern": "vpn-roles",
+      "expectedAnswer": "不等于。VPN passthrough 允许或协助终端的 VPN 流量通过路由器；VPN server 是由设备自身提供 VPN 服务、接受客户端连接。仅有 passthrough 不能证明支持 VPN server；具体协议及服务器能力应单独查证。",
+      "expectedSources": [
+        {
+          "assetSha256": "73aab9428d54af6a2f5f2031acbbad11e4355ac832c16121e892c3a8b170f374",
+          "version": "V2.0",
+          "unitIndex": 6,
+          "blockId": "a05e8c42-1585-4542-aa84-eace0c8c5f94",
+          "excerpt": "Network, 1 = Application Layer Gateway. Network, 2 = IPSec Passthrough. , 1 = . , 2 = L2TP Passthrough. , 1 = . , 2 = PPTP Passthrough. , 1 = . , 2 = FTP Passthrough. , 1 = . , 2 = TFTP Passthrough. , 1 = . , 2 = H323 Passthrough. , 1 = . , 2 = SIP Passthrough. , 1 = . , 2 = RTSP Passthrough. Utilities, 1 = Captive Portal. Utilities, 2 = True. , 1 = VPN Server. , 2 = WireGuard. , 1 = . , 2 = OpenVPN. , 1 = . , 2 = IPsec. , 1 = . , 2 = Zerotier. , 1 = . , 2 = PPTP. , 1 = . , 2 = L2TP. , 1 = VPN Client. , 2 = WireGuard. , 1 = . , 2 = OpenVPN. , 1 = . , 2 = IPsec. , 1 = . , 2 = Zerotier. , 1 = . , 2 = PPTP. , 1 = . , 2 = L2TP."
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户已确认的vpn-roles题型自动采纳，同义题未逐题人工确认；AP1300第6页真实原件与活动坐标已核对。"
+    }
+  ]
+}

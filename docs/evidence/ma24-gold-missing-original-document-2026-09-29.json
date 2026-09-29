@@ -1,0 +1,38 @@
+{
+  "policyId": "MA24-10",
+  "corpusVersion": "knowledge-eval-v3-baseline",
+  "entries": [
+    {
+      "caseId": "boundary-1-09",
+      "caseSha256": "0a416c7e62e77568a319e5a3dc181efb7d435fabcb5f287acfbfe2aa1eaeb398",
+      "pattern": "missing-original-document",
+      "expectedAnswer": "说明当前可访问资料中没有找到该型号的匹配原始 PDF，不编造文件、下载链接或来源坐标，也不用其他型号冒充。请用户核对完整型号或提供原件后再处理。未找到资料只能说明当前资料范围不足，不据此声称已查遍所有外部来源。",
+      "expectedSources": [],
+      "reviewNote": "2026-09-29 MA24-10：用户在本对话明确选择“确认此类答案”，代表题人工确认。仅审核没有匹配资料时的行为，来源为空，不编造文件或来源，不声称已查遍外部来源。"
+    },
+    {
+      "caseId": "boundary-2-09",
+      "caseSha256": "5c930946a8da3e77d297fac98e201a6af4c47f2b835117cd8e1513d367aabe8d",
+      "pattern": "missing-original-document",
+      "expectedAnswer": "说明当前可访问资料中没有找到该型号的匹配原始 PDF，不编造文件、下载链接或来源坐标，也不用其他型号冒充。请用户核对完整型号或提供原件后再处理。未找到资料只能说明当前资料范围不足，不据此声称已查遍所有外部来源。",
+      "expectedSources": [],
+      "reviewNote": "2026-09-29 MA24-10：按用户已确认题型自动采纳，同义题未逐题人工确认。仅审核没有匹配资料时的行为，来源为空，不编造文件或来源，不声称已查遍外部来源。"
+    },
+    {
+      "caseId": "boundary-3-09",
+      "caseSha256": "cdb6f9a79acd3745a606934243b2eea5a781c5385490334ec7d79fdb68bc415b",
+      "pattern": "missing-original-document",
+      "expectedAnswer": "说明当前可访问资料中没有找到该型号的匹配原始 PDF，不编造文件、下载链接或来源坐标，也不用其他型号冒充。请用户核对完整型号或提供原件后再处理。未找到资料只能说明当前资料范围不足，不据此声称已查遍所有外部来源。",
+      "expectedSources": [],
+      "reviewNote": "2026-09-29 MA24-10：按用户已确认题型自动采纳，同义题未逐题人工确认。仅审核没有匹配资料时的行为，来源为空，不编造文件或来源，不声称已查遍外部来源。"
+    },
+    {
+      "caseId": "boundary-4-09",
+      "caseSha256": "2227386656d5fffb50e55b9d154a2cc8fc7bc8bd021748bd529300dd32c7cbc6",
+      "pattern": "missing-original-document",
+      "expectedAnswer": "说明当前可访问资料中没有找到该型号的匹配原始 PDF，不编造文件、下载链接或来源坐标，也不用其他型号冒充。请用户核对完整型号或提供原件后再处理。未找到资料只能说明当前资料范围不足，不据此声称已查遍所有外部来源。",
+      "expectedSources": [],
+      "reviewNote": "2026-09-29 MA24-10：按用户已确认题型自动采纳，同义题未逐题人工确认。仅审核没有匹配资料时的行为，来源为空，不编造文件或来源，不声称已查遍外部来源。"
+    }
+  ]
+}

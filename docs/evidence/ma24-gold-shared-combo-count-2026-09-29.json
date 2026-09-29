@@ -1,0 +1,38 @@
+{
+  "policyId": "MA24-10",
+  "corpusVersion": "knowledge-eval-v3-baseline",
+  "entries": [
+    {
+      "caseId": "boundary-1-08",
+      "caseSha256": "542e1d8af3d8d4002ae77996309d75ee74a9998051b64a97b47bdc777e413328",
+      "pattern": "shared-combo-count",
+      "expectedAnswer": "Please provide the exact model and its interface diagram or datasheet. Report physical connectors separately from independently usable ports: a shared combo pair may expose two connectors but share one port resource, so it must not be counted as two simultaneous ports. Without the model and sharing rules, do not invent a total.",
+      "expectedSources": [],
+      "reviewNote": "2026-09-29 MA24-10：用户在本对话明确选择“确认此类答案”，代表题人工确认。此题未给具体型号及共享规则，来源坐标为空，仅审核澄清与计数口径行为，不伪造总数。"
+    },
+    {
+      "caseId": "boundary-2-08",
+      "caseSha256": "b6568a5f03cf5e16331a481f8c9f1254d347de003b1789327cf698ad28409448",
+      "pattern": "shared-combo-count",
+      "expectedAnswer": "Please provide the exact model and its interface diagram or datasheet. Report physical connectors separately from independently usable ports: a shared combo pair may expose two connectors but share one port resource, so it must not be counted as two simultaneous ports. Without the model and sharing rules, do not invent a total.",
+      "expectedSources": [],
+      "reviewNote": "2026-09-29 MA24-10：按用户已确认的shared-combo-count题型自动采纳，同义题未逐题人工确认；来源坐标为空，本题缺少具体型号及共享规则，仅审核澄清与计数口径行为。"
+    },
+    {
+      "caseId": "boundary-3-08",
+      "caseSha256": "a43c5c7e7f0b79daedddc1d851666c6296e76d1270aea30152678fa288f27a88",
+      "pattern": "shared-combo-count",
+      "expectedAnswer": "Please provide the exact model and its interface diagram or datasheet. Report physical connectors separately from independently usable ports: a shared combo pair may expose two connectors but share one port resource, so it must not be counted as two simultaneous ports. Without the model and sharing rules, do not invent a total.",
+      "expectedSources": [],
+      "reviewNote": "2026-09-29 MA24-10：按用户已确认的shared-combo-count题型自动采纳，同义题未逐题人工确认；来源坐标为空，本题缺少具体型号及共享规则，仅审核澄清与计数口径行为。"
+    },
+    {
+      "caseId": "boundary-4-08",
+      "caseSha256": "0e5884c8d72bf348140bc880889e27eab76bbd6f28e06b05bf8ae8d7637f5c87",
+      "pattern": "shared-combo-count",
+      "expectedAnswer": "Please provide the exact model and its interface diagram or datasheet. Report physical connectors separately from independently usable ports: a shared combo pair may expose two connectors but share one port resource, so it must not be counted as two simultaneous ports. Without the model and sharing rules, do not invent a total.",
+      "expectedSources": [],
+      "reviewNote": "2026-09-29 MA24-10：按用户已确认的shared-combo-count题型自动采纳，同义题未逐题人工确认；来源坐标为空，本题缺少具体型号及共享规则，仅审核澄清与计数口径行为。"
+    }
+  ]
+}

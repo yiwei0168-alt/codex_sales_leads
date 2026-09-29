@@ -1,0 +1,2113 @@
+{
+  "policyId": "MA24-10",
+  "corpusVersion": "knowledge-eval-v3-baseline",
+  "entries": [
+    {
+      "caseId": "base-25-compare",
+      "caseSha256": "2dd843aa5232c3c74e8d103542874ca278573f73cb9b68c47dfd5f7d31286951",
+      "pattern": "compare",
+      "expectedAnswer": "AP1200 (V1.0): 1个百兆RJ45 PoE IN口及DC输入插孔。 DC 12V/1A、802.3at/af PoE或24V Passive PoE输入，最大设备功耗12W；适配器输出不是AP的PoE输出能力。\nFS105D (V5.0): 5个百兆RJ45口和USB-C供电输入。 USB-C接受DC 5V/0.1A输入，最大功耗0.5W、空闲0.32W；不支持PoE。",
+      "expectedSources": [
+        {
+          "assetSha256": "3b635e407c5ab9ec720fd32eb6da43209468b6a6447d2e1decffaf56646d7c66",
+          "unitIndex": 3,
+          "blockId": "2c6d90aa-57aa-424d-bad8-40d576e5df2f",
+          "excerpt": "Interfaces, 1 = 10/100 Mbps RJ45 Ports. Interfaces, 2 = 1. , 1 = Ethernet Notes. , 2 = Accepts PoE powering.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "3b635e407c5ab9ec720fd32eb6da43209468b6a6447d2e1decffaf56646d7c66",
+          "unitIndex": 4,
+          "blockId": "bc16ec05-a65f-4901-bad2-2104a5f1a8fe",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = DC. , 1 = . , 2 = Passive PoE. , 1 = . , 2 = 802.3at/af PoE. , 1 = DC Input. , 2 = 12V 1A. , 1 = Passive PoE Input. , 2 = 24V. , 1 = Power Adapter. , 2 = AP1200 | Without DC Adapter:. , 1 = . , 2 = Input: 100 ~ 240 V, 50/60 Hz AC. , 1 = . , 2 = Output: 12V 1A DC. , 1 = . , 2 = AP1200P | PoE Adapter in the box:. , 1 = . , 2 = Input: 100 ~ 240 V, 50/60 Hz AC. , 1 = . , 2 = Output: 24V Passive PoE. , 1 = Max Power Consumption (W). , 2 = 12 W. , 1 = Idle Power Consumption (W). , 2 = 2.5 W.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "7ad7223232afef735113dd08e0a216cae0190b5b1a6b006aeac8c537355c1890",
+          "unitIndex": 3,
+          "blockId": "7b2873e8-180e-44d7-af86-0e726e94eb69",
+          "excerpt": "Interfaces, Chipset = 10/100 Mbps RJ45 Ports. Interfaces, High-Efficiency Chipset = 5. Interfaces, Chipset = LED. Interfaces, High-Efficiency Chipset = Power. Interfaces, Chipset = LED. Interfaces, High-Efficiency Chipset = Link/ACT of Each Ethernet Port. Interfaces, Chipset = Power Input. Interfaces, High-Efficiency Chipset = USB-C Port.",
+          "version": "V5.0"
+        },
+        {
+          "assetSha256": "7ad7223232afef735113dd08e0a216cae0190b5b1a6b006aeac8c537355c1890",
+          "unitIndex": 3,
+          "blockId": "7b2873e8-180e-44d7-af86-0e726e94eb69",
+          "excerpt": "Power, Chipset = Power Methods. Power, High-Efficiency Chipset = DC via USB-C Input. Power, Chipset = DC. Power, High-Efficiency Chipset = 5V 0.1A. Power, Chipset = Max Power Consumption. Power, High-Efficiency Chipset = 0.5W. Power, Chipset = Idle Power Consumption. Power, High-Efficiency Chipset = 0.32W.",
+          "version": "V5.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有compare题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-26-open",
+      "caseSha256": "9aaab0f509ca690942d53fa7f44cabb66aa1c2aa6cb4d9a6c5b90e562339fd5c",
+      "pattern": "open",
+      "expectedAnswer": "Find and display the registered original “FS105D Datasheet V5.0” PDF, with an open or download link. It is a valid match for FS105D; do not substitute another model or turn the request into a specification answer.",
+      "expectedSources": [
+        {
+          "assetSha256": "7ad7223232afef735113dd08e0a216cae0190b5b1a6b006aeac8c537355c1890",
+          "unitIndex": 2,
+          "blockId": "061f23cf-29dd-4368-a3e3-712eb07d40c3",
+          "excerpt": "- FS105D\n- USB-A to USB-C Power Cable\n- Installation Guide",
+          "version": "V5.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有open题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-26-ports",
+      "caseSha256": "62b548bfbbc0b1c7a855b343a4916245485f07c436bd06c9a3f48ca550ac99fe",
+      "pattern": "ports",
+      "expectedAnswer": "FS105D (V5.0): 5 physical 10/100Mbps RJ45 ports. The USB-C power input is not an Ethernet port. Count physical Ethernet connectors once; SIM slots, USB and power connectors are not Ethernet ports.",
+      "expectedSources": [
+        {
+          "assetSha256": "7ad7223232afef735113dd08e0a216cae0190b5b1a6b006aeac8c537355c1890",
+          "unitIndex": 3,
+          "blockId": "7b2873e8-180e-44d7-af86-0e726e94eb69",
+          "excerpt": "Interfaces, Chipset = 10/100 Mbps RJ45 Ports. Interfaces, High-Efficiency Chipset = 5. Interfaces, Chipset = LED. Interfaces, High-Efficiency Chipset = Power. Interfaces, Chipset = LED. Interfaces, High-Efficiency Chipset = Link/ACT of Each Ethernet Port. Interfaces, Chipset = Power Input. Interfaces, High-Efficiency Chipset = USB-C Port.",
+          "version": "V5.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有ports题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-26-poe",
+      "caseSha256": "05349b9ae4b90ad346cf23a527eac1ccf89445dfda47bbb2952a0b729ff62574",
+      "pattern": "poe",
+      "expectedAnswer": "No. FS105D (V5.0) does not support PoE input or output. The complete matching original does not declare PoE support, under the user-confirmed MA24-09 review rule. DC 5V/0.1A input through USB-C; maximum consumption 0.5W, idle 0.32W. No PoE support.",
+      "expectedSources": [
+        {
+          "assetSha256": "7ad7223232afef735113dd08e0a216cae0190b5b1a6b006aeac8c537355c1890",
+          "unitIndex": 3,
+          "blockId": "7b2873e8-180e-44d7-af86-0e726e94eb69",
+          "excerpt": "Interfaces, Chipset = 10/100 Mbps RJ45 Ports. Interfaces, High-Efficiency Chipset = 5. Interfaces, Chipset = LED. Interfaces, High-Efficiency Chipset = Power. Interfaces, Chipset = LED. Interfaces, High-Efficiency Chipset = Link/ACT of Each Ethernet Port. Interfaces, Chipset = Power Input. Interfaces, High-Efficiency Chipset = USB-C Port.",
+          "version": "V5.0"
+        },
+        {
+          "assetSha256": "7ad7223232afef735113dd08e0a216cae0190b5b1a6b006aeac8c537355c1890",
+          "unitIndex": 3,
+          "blockId": "7b2873e8-180e-44d7-af86-0e726e94eb69",
+          "excerpt": "Power, Chipset = Power Methods. Power, High-Efficiency Chipset = DC via USB-C Input. Power, Chipset = DC. Power, High-Efficiency Chipset = 5V 0.1A. Power, Chipset = Max Power Consumption. Power, High-Efficiency Chipset = 0.5W. Power, Chipset = Idle Power Consumption. Power, High-Efficiency Chipset = 0.32W.",
+          "version": "V5.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有poe题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。未声明PoE的判断基于完整原件核对及MA24-09，不基于检索片段或PPPoE字样。"
+    },
+    {
+      "caseId": "base-26-compare",
+      "caseSha256": "01d27dcdf5f440c20842c3013ea03c99595bec0381ebe4667cd5ddf23680fe7f",
+      "pattern": "compare",
+      "expectedAnswer": "FS105D (V5.0): 5 Fast Ethernet RJ45 ports and a USB-C power input. DC 5V/0.1A input through USB-C; maximum consumption 0.5W, idle 0.32W. No PoE support.\nAP1200 (V1.0): One Fast Ethernet RJ45 PoE IN port and a DC input jack. DC 12V/1A, 802.3at/af PoE or 24V Passive PoE input, 12W maximum device consumption. Adapter output is not PoE output capability of the AP.",
+      "expectedSources": [
+        {
+          "assetSha256": "7ad7223232afef735113dd08e0a216cae0190b5b1a6b006aeac8c537355c1890",
+          "unitIndex": 3,
+          "blockId": "7b2873e8-180e-44d7-af86-0e726e94eb69",
+          "excerpt": "Interfaces, Chipset = 10/100 Mbps RJ45 Ports. Interfaces, High-Efficiency Chipset = 5. Interfaces, Chipset = LED. Interfaces, High-Efficiency Chipset = Power. Interfaces, Chipset = LED. Interfaces, High-Efficiency Chipset = Link/ACT of Each Ethernet Port. Interfaces, Chipset = Power Input. Interfaces, High-Efficiency Chipset = USB-C Port.",
+          "version": "V5.0"
+        },
+        {
+          "assetSha256": "7ad7223232afef735113dd08e0a216cae0190b5b1a6b006aeac8c537355c1890",
+          "unitIndex": 3,
+          "blockId": "7b2873e8-180e-44d7-af86-0e726e94eb69",
+          "excerpt": "Power, Chipset = Power Methods. Power, High-Efficiency Chipset = DC via USB-C Input. Power, Chipset = DC. Power, High-Efficiency Chipset = 5V 0.1A. Power, Chipset = Max Power Consumption. Power, High-Efficiency Chipset = 0.5W. Power, Chipset = Idle Power Consumption. Power, High-Efficiency Chipset = 0.32W.",
+          "version": "V5.0"
+        },
+        {
+          "assetSha256": "3b635e407c5ab9ec720fd32eb6da43209468b6a6447d2e1decffaf56646d7c66",
+          "unitIndex": 3,
+          "blockId": "2c6d90aa-57aa-424d-bad8-40d576e5df2f",
+          "excerpt": "Interfaces, 1 = 10/100 Mbps RJ45 Ports. Interfaces, 2 = 1. , 1 = Ethernet Notes. , 2 = Accepts PoE powering.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "3b635e407c5ab9ec720fd32eb6da43209468b6a6447d2e1decffaf56646d7c66",
+          "unitIndex": 4,
+          "blockId": "bc16ec05-a65f-4901-bad2-2104a5f1a8fe",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = DC. , 1 = . , 2 = Passive PoE. , 1 = . , 2 = 802.3at/af PoE. , 1 = DC Input. , 2 = 12V 1A. , 1 = Passive PoE Input. , 2 = 24V. , 1 = Power Adapter. , 2 = AP1200 | Without DC Adapter:. , 1 = . , 2 = Input: 100 ~ 240 V, 50/60 Hz AC. , 1 = . , 2 = Output: 12V 1A DC. , 1 = . , 2 = AP1200P | PoE Adapter in the box:. , 1 = . , 2 = Input: 100 ~ 240 V, 50/60 Hz AC. , 1 = . , 2 = Output: 24V Passive PoE. , 1 = Max Power Consumption (W). , 2 = 12 W. , 1 = Idle Power Consumption (W). , 2 = 2.5 W.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有compare题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-26-explain",
+      "caseSha256": "3cb1bf220e3baae47ac58724dc487af0ea6f9ba0b58172d6d2347744d326f9f8",
+      "pattern": "explain",
+      "expectedAnswer": "FS105D (V5.0): Suitable for desktop or wall-mounted Fast Ethernet expansion. The original lists 5 Fast Ethernet ports, USB-C power and 0.5W maximum consumption. It is not a Gigabit or PoE switch.",
+      "expectedSources": [
+        {
+          "assetSha256": "7ad7223232afef735113dd08e0a216cae0190b5b1a6b006aeac8c537355c1890",
+          "unitIndex": 2,
+          "blockId": "5b9ce8fe-7c7a-4b92-9c0c-013737496eb7",
+          "excerpt": "A super power-efficient Ethernet switch powered by USB-C, ideal for sharing a wired network on a desktop.\n- 5× Fast Ethernet Ports\n- Powering via USB-C\n- Power-Efficient max 0.5W, idle 0.32W\n- Desktop, Wall-Mount\n- 88×52.5×24 mm (3.46×2.07×0.94″)\n- 47 g (1.64 oz.)",
+          "version": "V5.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有explain题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-27-open",
+      "caseSha256": "30ef82dcbd8edda392ba916fc88ebbf4dd877fa961865f907099e5c5362475ca",
+      "pattern": "open",
+      "expectedAnswer": "找到并展示已登记的原始《FS108D Datasheet V5.0》PDF，提供打开或下载入口。这份原件匹配FS108D，不以其他型号替代，也不把打开资料请求改成参数问答。",
+      "expectedSources": [
+        {
+          "assetSha256": "79bdc3117454057bd692f1595fcd9efb52251e48d05a32f8d290e89dea501a7d",
+          "unitIndex": 2,
+          "blockId": "79444f67-1a01-4fbb-8cd7-309e08805508",
+          "excerpt": "-   FS108D\n-   USB-A to USB-C Power Cable\n-   Installation Guide",
+          "version": "V5.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有open题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-27-ports",
+      "caseSha256": "b30f26a2f10dde10ec3944921c264bd6c8032ecc1e582e5c293657c547735499",
+      "pattern": "ports",
+      "expectedAnswer": "FS108D (V5.0): 8个10/100Mbps RJ45网口。USB-C供电口不是网口。 物理网口只计一次；SIM槽、USB及电源接口不计作以太网口。",
+      "expectedSources": [
+        {
+          "assetSha256": "79bdc3117454057bd692f1595fcd9efb52251e48d05a32f8d290e89dea501a7d",
+          "unitIndex": 3,
+          "blockId": "7a32c592-10cf-4e26-8fe2-a39725f97c65",
+          "excerpt": "Interfaces, Chipset = 10/100 Mbps RJ45 Ports. Interfaces, High-Efficiency Chipset = 8. Interfaces, Chipset = LED. Interfaces, High-Efficiency Chipset = Power. Interfaces, Chipset = LED. Interfaces, High-Efficiency Chipset = Link/ACT of Each Ethernet Port. Interfaces, Chipset = Power Input. Interfaces, High-Efficiency Chipset = USB-C Port.",
+          "version": "V5.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有ports题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-27-poe",
+      "caseSha256": "36b8a65f81796d9cbd5ffe402e6c16f7d14d64fe5c7dca20b8c600cf6b1f7308",
+      "pattern": "poe",
+      "expectedAnswer": "不支持。FS108D (V5.0)不支持PoE输入或输出。完整匹配原件未声明PoE支持，按用户确认的MA24-09口径判定。USB-C接受DC 5V/0.15A输入，最大功耗0.75W、空闲0.4W；不支持PoE。",
+      "expectedSources": [
+        {
+          "assetSha256": "79bdc3117454057bd692f1595fcd9efb52251e48d05a32f8d290e89dea501a7d",
+          "unitIndex": 3,
+          "blockId": "7a32c592-10cf-4e26-8fe2-a39725f97c65",
+          "excerpt": "Interfaces, Chipset = 10/100 Mbps RJ45 Ports. Interfaces, High-Efficiency Chipset = 8. Interfaces, Chipset = LED. Interfaces, High-Efficiency Chipset = Power. Interfaces, Chipset = LED. Interfaces, High-Efficiency Chipset = Link/ACT of Each Ethernet Port. Interfaces, Chipset = Power Input. Interfaces, High-Efficiency Chipset = USB-C Port.",
+          "version": "V5.0"
+        },
+        {
+          "assetSha256": "79bdc3117454057bd692f1595fcd9efb52251e48d05a32f8d290e89dea501a7d",
+          "unitIndex": 3,
+          "blockId": "7a32c592-10cf-4e26-8fe2-a39725f97c65",
+          "excerpt": "Power, Chipset = Power Methods. Power, High-Efficiency Chipset = DC via USB-C Input. Power, Chipset = DC. Power, High-Efficiency Chipset = 5V 0.15A. Power, Chipset = Max Power Consumption. Power, High-Efficiency Chipset = 0.75W. Power, Chipset = Idle Power Consumption. Power, High-Efficiency Chipset = 0.4W.",
+          "version": "V5.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有poe题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。未声明PoE的判断基于完整原件核对及MA24-09，不基于检索片段或PPPoE字样。"
+    },
+    {
+      "caseId": "base-27-compare",
+      "caseSha256": "900357c94d2de80abc6b6069a628a9898fddf18bc9e0f04647c8d4f6cd8b40d3",
+      "pattern": "compare",
+      "expectedAnswer": "FS108D (V5.0): 8个百兆RJ45口和USB-C供电输入。 USB-C接受DC 5V/0.15A输入，最大功耗0.75W、空闲0.4W；不支持PoE。\nCH67 (V1.0): 无RJ45；概述和示意图为2个USB-C及1个USB-A，但同页Ports栏写1×USB-C，与概述存在冲突，不能隐去。 AC输入100～240V、50/60Hz、1.5A；USB-C单口最高67W、USB-A单口最高18W，多口按分配表共享功率，不能声称各口同时达到单口上限；不支持PoE。",
+      "expectedSources": [
+        {
+          "assetSha256": "79bdc3117454057bd692f1595fcd9efb52251e48d05a32f8d290e89dea501a7d",
+          "unitIndex": 3,
+          "blockId": "7a32c592-10cf-4e26-8fe2-a39725f97c65",
+          "excerpt": "Interfaces, Chipset = 10/100 Mbps RJ45 Ports. Interfaces, High-Efficiency Chipset = 8. Interfaces, Chipset = LED. Interfaces, High-Efficiency Chipset = Power. Interfaces, Chipset = LED. Interfaces, High-Efficiency Chipset = Link/ACT of Each Ethernet Port. Interfaces, Chipset = Power Input. Interfaces, High-Efficiency Chipset = USB-C Port.",
+          "version": "V5.0"
+        },
+        {
+          "assetSha256": "79bdc3117454057bd692f1595fcd9efb52251e48d05a32f8d290e89dea501a7d",
+          "unitIndex": 3,
+          "blockId": "7a32c592-10cf-4e26-8fe2-a39725f97c65",
+          "excerpt": "Power, Chipset = Power Methods. Power, High-Efficiency Chipset = DC via USB-C Input. Power, Chipset = DC. Power, High-Efficiency Chipset = 5V 0.15A. Power, Chipset = Max Power Consumption. Power, High-Efficiency Chipset = 0.75W. Power, Chipset = Idle Power Consumption. Power, High-Efficiency Chipset = 0.4W.",
+          "version": "V5.0"
+        },
+        {
+          "assetSha256": "a9e2a1624e0d6ca3d335bf68294f6defb202940e5f0c4d0129f2ecae822d4ca3",
+          "unitIndex": 2,
+          "blockId": "0e3dde3b-ffdb-431e-bab1-bf43af1c7bc7",
+          "excerpt": "A 67W charger for charging multiple mobile devices simultaneously.\n- 2× USB-C and 1× USB-A Charging\n- Max 67W USB-C\n- Max 18W USB-A\n- PD 3.0, PPS, QC 3.0 Fast Charge\n- GaN Tech\n- For Laptops, Tablets, and Phones",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "a9e2a1624e0d6ca3d335bf68294f6defb202940e5f0c4d0129f2ecae822d4ca3",
+          "unitIndex": 2,
+          "blockId": "2773341e-a387-432c-89cb-b31e30044bc8",
+          "excerpt": "Charging, 1 = Ports. Charging, 2 = 1× USB-C.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "a9e2a1624e0d6ca3d335bf68294f6defb202940e5f0c4d0129f2ecae822d4ca3",
+          "unitIndex": 2,
+          "blockId": "2773341e-a387-432c-89cb-b31e30044bc8",
+          "excerpt": "Charging, 1 = Multi-Port Power Allocation. Charging, 2 = USB-C1/C2 Only: 5.0V-3.0A 15.0W / 9.0V-3.0A. Charging, 1 = . Charging, 2 = 27.0W / 12.0V-3.0A 36.0W / 15.0V-3.0A 45.0W /. Charging, 1 = . Charging, 2 = 20.0V-3.35A 67.0W / PPS: 5.0~21.0V-3.35A 67.0W Max. Charging, 1 = . Charging, 2 = USB-A Only: 5.0V-3.0A 15.0W / 9.0V-2.0A 18.0W /. Charging, 1 = . Charging, 2 = 12.0V-1.5A 18.0W Max. Charging, 1 = . Charging, 2 = C1+C2: 65.0W Max. Charging, 1 = . Charging, 2 = C1 + USB-A: 63.0W Max. Charging, 1 = . Charging, 2 = C2+USB-A: 17.5W Max. Charging, 1 = . Charging, 2 = C1+C2+USB-A: 62.5W Max.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "a9e2a1624e0d6ca3d335bf68294f6defb202940e5f0c4d0129f2ecae822d4ca3",
+          "unitIndex": 2,
+          "blockId": "2773341e-a387-432c-89cb-b31e30044bc8",
+          "excerpt": "AC Input. , 2 = 100-240V~ 50/60Hz 1.5A",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有compare题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-27-explain",
+      "caseSha256": "cac322893e2c6788dfbbe4d1ea24ffb5f85bedc363cde24302e34242eaa625b8",
+      "pattern": "explain",
+      "expectedAnswer": "FS108D (V5.0): 适合桌面或壁挂百兆有线端口扩展。原件列出8个百兆口、USB-C供电及最大0.75W低功耗；不是千兆或PoE交换机。",
+      "expectedSources": [
+        {
+          "assetSha256": "79bdc3117454057bd692f1595fcd9efb52251e48d05a32f8d290e89dea501a7d",
+          "unitIndex": 2,
+          "blockId": "ae422122-fc6e-46d1-bcf5-eef8bb068b41",
+          "excerpt": "A super-power efficient Ethernet switch powered by USB-C, ideal for sharing a wired network on a desktop, wall, or in a distribution box.\n-   Powering via USB-C, USB-A to USB-C Cable Included\n-   8× 10/100M Ethernet Ports\n- Power Efficient, Max 0.75W, Idle 0.4W\n- Desktop, Wall-Mount\n- 138×61.5×24 mm (5.43×2.42×0.94'')\n- 77 g (2.71 oz.)",
+          "version": "V5.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有explain题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-28-open",
+      "caseSha256": "f98a8ee58e2486d64b2661fe471643e638e0cb4bd7ca92b59d106178f363677e",
+      "pattern": "open",
+      "expectedAnswer": "Find and display the registered original “CH67 Datasheet V1.0” PDF, with an open or download link. It is a valid match for CH67; do not substitute another model or turn the request into a specification answer.",
+      "expectedSources": [
+        {
+          "assetSha256": "a9e2a1624e0d6ca3d335bf68294f6defb202940e5f0c4d0129f2ecae822d4ca3",
+          "unitIndex": 2,
+          "blockId": "0e3dde3b-ffdb-431e-bab1-bf43af1c7bc7",
+          "excerpt": "A 67W charger for charging multiple mobile devices simultaneously.\n- 2× USB-C and 1× USB-A Charging\n- Max 67W USB-C\n- Max 18W USB-A\n- PD 3.0, PPS, QC 3.0 Fast Charge\n- GaN Tech\n- For Laptops, Tablets, and Phones",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有open题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。封面型号已目视核对；现有抽取未保存封面型号块，引用同哈希原件第2页真实规格块与登记附件身份，不伪造封面Model引文。"
+    },
+    {
+      "caseId": "base-28-ports",
+      "caseSha256": "579923445855b056d8c74082b12d18d6dfe3d1d313816c260a73a9ee5b20446e",
+      "pattern": "ports",
+      "expectedAnswer": "CH67 (V1.0): 0 RJ45 Ethernet ports. It is a USB charger; charging ports are not Ethernet ports. Count physical Ethernet connectors once; SIM slots, USB and power connectors are not Ethernet ports.",
+      "expectedSources": [
+        {
+          "assetSha256": "a9e2a1624e0d6ca3d335bf68294f6defb202940e5f0c4d0129f2ecae822d4ca3",
+          "unitIndex": 2,
+          "blockId": "0e3dde3b-ffdb-431e-bab1-bf43af1c7bc7",
+          "excerpt": "A 67W charger for charging multiple mobile devices simultaneously.\n- 2× USB-C and 1× USB-A Charging\n- Max 67W USB-C\n- Max 18W USB-A\n- PD 3.0, PPS, QC 3.0 Fast Charge\n- GaN Tech\n- For Laptops, Tablets, and Phones",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "a9e2a1624e0d6ca3d335bf68294f6defb202940e5f0c4d0129f2ecae822d4ca3",
+          "unitIndex": 2,
+          "blockId": "2773341e-a387-432c-89cb-b31e30044bc8",
+          "excerpt": "Charging, 1 = Ports. Charging, 2 = 1× USB-C.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有ports题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-28-poe",
+      "caseSha256": "566f7732efe87d39a19aef827247865eba6bf5caa3d2c4d63e38474e920af1de",
+      "pattern": "poe",
+      "expectedAnswer": "No. CH67 (V1.0) does not support PoE input or output. The complete matching original does not declare PoE support, under the user-confirmed MA24-09 review rule. AC input 100–240V, 50/60Hz, 1.5A. USB-C alone up to 67W, USB-A alone up to 18W; simultaneous output follows the allocation table, not each single-port maximum. No PoE support.",
+      "expectedSources": [
+        {
+          "assetSha256": "a9e2a1624e0d6ca3d335bf68294f6defb202940e5f0c4d0129f2ecae822d4ca3",
+          "unitIndex": 2,
+          "blockId": "0e3dde3b-ffdb-431e-bab1-bf43af1c7bc7",
+          "excerpt": "A 67W charger for charging multiple mobile devices simultaneously.\n- 2× USB-C and 1× USB-A Charging\n- Max 67W USB-C\n- Max 18W USB-A\n- PD 3.0, PPS, QC 3.0 Fast Charge\n- GaN Tech\n- For Laptops, Tablets, and Phones",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "a9e2a1624e0d6ca3d335bf68294f6defb202940e5f0c4d0129f2ecae822d4ca3",
+          "unitIndex": 2,
+          "blockId": "2773341e-a387-432c-89cb-b31e30044bc8",
+          "excerpt": "Charging, 1 = Ports. Charging, 2 = 1× USB-C.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "a9e2a1624e0d6ca3d335bf68294f6defb202940e5f0c4d0129f2ecae822d4ca3",
+          "unitIndex": 2,
+          "blockId": "2773341e-a387-432c-89cb-b31e30044bc8",
+          "excerpt": "Charging, 1 = Multi-Port Power Allocation. Charging, 2 = USB-C1/C2 Only: 5.0V-3.0A 15.0W / 9.0V-3.0A. Charging, 1 = . Charging, 2 = 27.0W / 12.0V-3.0A 36.0W / 15.0V-3.0A 45.0W /. Charging, 1 = . Charging, 2 = 20.0V-3.35A 67.0W / PPS: 5.0~21.0V-3.35A 67.0W Max. Charging, 1 = . Charging, 2 = USB-A Only: 5.0V-3.0A 15.0W / 9.0V-2.0A 18.0W /. Charging, 1 = . Charging, 2 = 12.0V-1.5A 18.0W Max. Charging, 1 = . Charging, 2 = C1+C2: 65.0W Max. Charging, 1 = . Charging, 2 = C1 + USB-A: 63.0W Max. Charging, 1 = . Charging, 2 = C2+USB-A: 17.5W Max. Charging, 1 = . Charging, 2 = C1+C2+USB-A: 62.5W Max.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "a9e2a1624e0d6ca3d335bf68294f6defb202940e5f0c4d0129f2ecae822d4ca3",
+          "unitIndex": 2,
+          "blockId": "2773341e-a387-432c-89cb-b31e30044bc8",
+          "excerpt": "AC Input. , 2 = 100-240V~ 50/60Hz 1.5A",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有poe题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。未声明PoE的判断基于完整原件核对及MA24-09，不基于检索片段或PPPoE字样。"
+    },
+    {
+      "caseId": "base-28-compare",
+      "caseSha256": "a29d99ba85aef8d68ccf90a9f8fbfdf25714523a6419c51e0f8887dffc3b8a13",
+      "pattern": "compare",
+      "expectedAnswer": "CH67 (V1.0): No RJ45. The overview and diagram show two USB-C and one USB-A, while the same page Ports row says 1×USB-C. Preserve this conflict. AC input 100–240V, 50/60Hz, 1.5A. USB-C alone up to 67W, USB-A alone up to 18W; simultaneous output follows the allocation table, not each single-port maximum. No PoE support.\nFS108D (V5.0): 8 Fast Ethernet RJ45 ports and a USB-C power input. DC 5V/0.15A input through USB-C; maximum consumption 0.75W, idle 0.4W. No PoE support.",
+      "expectedSources": [
+        {
+          "assetSha256": "a9e2a1624e0d6ca3d335bf68294f6defb202940e5f0c4d0129f2ecae822d4ca3",
+          "unitIndex": 2,
+          "blockId": "0e3dde3b-ffdb-431e-bab1-bf43af1c7bc7",
+          "excerpt": "A 67W charger for charging multiple mobile devices simultaneously.\n- 2× USB-C and 1× USB-A Charging\n- Max 67W USB-C\n- Max 18W USB-A\n- PD 3.0, PPS, QC 3.0 Fast Charge\n- GaN Tech\n- For Laptops, Tablets, and Phones",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "a9e2a1624e0d6ca3d335bf68294f6defb202940e5f0c4d0129f2ecae822d4ca3",
+          "unitIndex": 2,
+          "blockId": "2773341e-a387-432c-89cb-b31e30044bc8",
+          "excerpt": "Charging, 1 = Ports. Charging, 2 = 1× USB-C.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "a9e2a1624e0d6ca3d335bf68294f6defb202940e5f0c4d0129f2ecae822d4ca3",
+          "unitIndex": 2,
+          "blockId": "2773341e-a387-432c-89cb-b31e30044bc8",
+          "excerpt": "Charging, 1 = Multi-Port Power Allocation. Charging, 2 = USB-C1/C2 Only: 5.0V-3.0A 15.0W / 9.0V-3.0A. Charging, 1 = . Charging, 2 = 27.0W / 12.0V-3.0A 36.0W / 15.0V-3.0A 45.0W /. Charging, 1 = . Charging, 2 = 20.0V-3.35A 67.0W / PPS: 5.0~21.0V-3.35A 67.0W Max. Charging, 1 = . Charging, 2 = USB-A Only: 5.0V-3.0A 15.0W / 9.0V-2.0A 18.0W /. Charging, 1 = . Charging, 2 = 12.0V-1.5A 18.0W Max. Charging, 1 = . Charging, 2 = C1+C2: 65.0W Max. Charging, 1 = . Charging, 2 = C1 + USB-A: 63.0W Max. Charging, 1 = . Charging, 2 = C2+USB-A: 17.5W Max. Charging, 1 = . Charging, 2 = C1+C2+USB-A: 62.5W Max.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "a9e2a1624e0d6ca3d335bf68294f6defb202940e5f0c4d0129f2ecae822d4ca3",
+          "unitIndex": 2,
+          "blockId": "2773341e-a387-432c-89cb-b31e30044bc8",
+          "excerpt": "AC Input. , 2 = 100-240V~ 50/60Hz 1.5A",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "79bdc3117454057bd692f1595fcd9efb52251e48d05a32f8d290e89dea501a7d",
+          "unitIndex": 3,
+          "blockId": "7a32c592-10cf-4e26-8fe2-a39725f97c65",
+          "excerpt": "Interfaces, Chipset = 10/100 Mbps RJ45 Ports. Interfaces, High-Efficiency Chipset = 8. Interfaces, Chipset = LED. Interfaces, High-Efficiency Chipset = Power. Interfaces, Chipset = LED. Interfaces, High-Efficiency Chipset = Link/ACT of Each Ethernet Port. Interfaces, Chipset = Power Input. Interfaces, High-Efficiency Chipset = USB-C Port.",
+          "version": "V5.0"
+        },
+        {
+          "assetSha256": "79bdc3117454057bd692f1595fcd9efb52251e48d05a32f8d290e89dea501a7d",
+          "unitIndex": 3,
+          "blockId": "7a32c592-10cf-4e26-8fe2-a39725f97c65",
+          "excerpt": "Power, Chipset = Power Methods. Power, High-Efficiency Chipset = DC via USB-C Input. Power, Chipset = DC. Power, High-Efficiency Chipset = 5V 0.15A. Power, Chipset = Max Power Consumption. Power, High-Efficiency Chipset = 0.75W. Power, Chipset = Idle Power Consumption. Power, High-Efficiency Chipset = 0.4W.",
+          "version": "V5.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有compare题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-28-explain",
+      "caseSha256": "ee509e9166c76ac09a1849d925c3ce21c39acc6957d318e7b0c9f98b5879b57e",
+      "pattern": "explain",
+      "expectedAnswer": "CH67 (V1.0): Suitable for charging compatible laptops, tablets and phones. The original lists GaN, PD 3.0/PPS/QC 3.0 and USB power allocation. Charging depends on device, cable and port combination; 67W is not simultaneous output from every port.",
+      "expectedSources": [
+        {
+          "assetSha256": "a9e2a1624e0d6ca3d335bf68294f6defb202940e5f0c4d0129f2ecae822d4ca3",
+          "unitIndex": 2,
+          "blockId": "0e3dde3b-ffdb-431e-bab1-bf43af1c7bc7",
+          "excerpt": "A 67W charger for charging multiple mobile devices simultaneously.\n- 2× USB-C and 1× USB-A Charging\n- Max 67W USB-C\n- Max 18W USB-A\n- PD 3.0, PPS, QC 3.0 Fast Charge\n- GaN Tech\n- For Laptops, Tablets, and Phones",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有explain题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-29-open",
+      "caseSha256": "8ba9f8487025f93e1957263a5a670875a917d077731d74866c22738e5f35f260",
+      "pattern": "open",
+      "expectedAnswer": "找到并展示已登记的原始《CH70 Datasheet V1.0》PDF，提供打开或下载入口。这份原件匹配CH70，不以其他型号替代，也不把打开资料请求改成参数问答。",
+      "expectedSources": [
+        {
+          "assetSha256": "2fb58214d469a0b23f6d5d64b8df0fe6f5f540bae9dbc0979535453edce45658",
+          "unitIndex": 2,
+          "blockId": "010807c5-4edc-4564-96af-ad2da7ee7515",
+          "excerpt": "A 65W charger with three USB-C and one USB-A for charging multiple mobile devices simultaneously.\n-   3× USB-C and 1× USB-A Charging\n-   Max 65W USB-C\n-   Max 30W USB-A\n-   PD 3.0, PPS, QC 3.0 Fast Charge\n-   GaN Tech\n-   For Laptops, Tablets, and Phones",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有open题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。封面型号已目视核对；现有抽取未保存封面型号块，引用同哈希原件第2页真实规格块与登记附件身份，不伪造封面Model引文。"
+    },
+    {
+      "caseId": "base-29-ports",
+      "caseSha256": "c1c6273ff0a659c75fbbf23e9361780c5fbf670023782226bcde0d11424cc6f0",
+      "pattern": "ports",
+      "expectedAnswer": "CH70 (V1.0): 0个RJ45以太网口。它有USB充电口，不能当作以太网口。 物理网口只计一次；SIM槽、USB及电源接口不计作以太网口。",
+      "expectedSources": [
+        {
+          "assetSha256": "2fb58214d469a0b23f6d5d64b8df0fe6f5f540bae9dbc0979535453edce45658",
+          "unitIndex": 2,
+          "blockId": "010807c5-4edc-4564-96af-ad2da7ee7515",
+          "excerpt": "A 65W charger with three USB-C and one USB-A for charging multiple mobile devices simultaneously.\n-   3× USB-C and 1× USB-A Charging\n-   Max 65W USB-C\n-   Max 30W USB-A\n-   PD 3.0, PPS, QC 3.0 Fast Charge\n-   GaN Tech\n-   For Laptops, Tablets, and Phones",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "2fb58214d469a0b23f6d5d64b8df0fe6f5f540bae9dbc0979535453edce45658",
+          "unitIndex": 2,
+          "blockId": "6d5a821e-395a-45f2-bad7-20b394f8d388",
+          "excerpt": "Charging, 1 = Ports. Charging, 2 = 3× USB-C, 1× USB-A.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有ports题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-29-poe",
+      "caseSha256": "758d9e94bf306e9b74ba95274a8e76b5cfe76c9d5071f9319d832512ae317823",
+      "pattern": "poe",
+      "expectedAnswer": "不支持。CH70 (V1.0)不支持PoE输入或输出。完整匹配原件未声明PoE支持，按用户确认的MA24-09口径判定。AC输入100～240V、50/60Hz、1.5A；USB-C单口最高65W、USB-A单口最高30W，多口按分配表共享功率；不支持PoE。",
+      "expectedSources": [
+        {
+          "assetSha256": "2fb58214d469a0b23f6d5d64b8df0fe6f5f540bae9dbc0979535453edce45658",
+          "unitIndex": 2,
+          "blockId": "010807c5-4edc-4564-96af-ad2da7ee7515",
+          "excerpt": "A 65W charger with three USB-C and one USB-A for charging multiple mobile devices simultaneously.\n-   3× USB-C and 1× USB-A Charging\n-   Max 65W USB-C\n-   Max 30W USB-A\n-   PD 3.0, PPS, QC 3.0 Fast Charge\n-   GaN Tech\n-   For Laptops, Tablets, and Phones",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "2fb58214d469a0b23f6d5d64b8df0fe6f5f540bae9dbc0979535453edce45658",
+          "unitIndex": 2,
+          "blockId": "6d5a821e-395a-45f2-bad7-20b394f8d388",
+          "excerpt": "Charging, 1 = Ports. Charging, 2 = 3× USB-C, 1× USB-A.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "2fb58214d469a0b23f6d5d64b8df0fe6f5f540bae9dbc0979535453edce45658",
+          "unitIndex": 3,
+          "blockId": "c063c8c2-a5d2-4ddd-a92a-06b3545256df",
+          "excerpt": "Charging, 1 = AC Input. Charging, 2 = 100-240V~ 50/60Hz 1.5A.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有poe题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。未声明PoE的判断基于完整原件核对及MA24-09，不基于检索片段或PPPoE字样。"
+    },
+    {
+      "caseId": "base-29-compare",
+      "caseSha256": "fafabb86be4ef687239b0869a877f365b06b933ac63192d006dba187d0ba0ed9",
+      "pattern": "compare",
+      "expectedAnswer": "CH70 (V1.0): 3个USB-C和1个USB-A充电口，无RJ45。 AC输入100～240V、50/60Hz、1.5A；USB-C单口最高65W、USB-A单口最高30W，多口按分配表共享功率；不支持PoE。\nIR02 (V1.0): 2个百兆RJ45、双SIM、7-PIN IO/串口及2-PIN DC输入；RS232/RS485不是以太网口，双RS485仅定制型号。 2-PIN DC端子接受5～36V输入；不支持PoE。",
+      "expectedSources": [
+        {
+          "assetSha256": "2fb58214d469a0b23f6d5d64b8df0fe6f5f540bae9dbc0979535453edce45658",
+          "unitIndex": 2,
+          "blockId": "010807c5-4edc-4564-96af-ad2da7ee7515",
+          "excerpt": "A 65W charger with three USB-C and one USB-A for charging multiple mobile devices simultaneously.\n-   3× USB-C and 1× USB-A Charging\n-   Max 65W USB-C\n-   Max 30W USB-A\n-   PD 3.0, PPS, QC 3.0 Fast Charge\n-   GaN Tech\n-   For Laptops, Tablets, and Phones",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "2fb58214d469a0b23f6d5d64b8df0fe6f5f540bae9dbc0979535453edce45658",
+          "unitIndex": 2,
+          "blockId": "6d5a821e-395a-45f2-bad7-20b394f8d388",
+          "excerpt": "Charging, 1 = Ports. Charging, 2 = 3× USB-C, 1× USB-A.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "2fb58214d469a0b23f6d5d64b8df0fe6f5f540bae9dbc0979535453edce45658",
+          "unitIndex": 3,
+          "blockId": "c063c8c2-a5d2-4ddd-a92a-06b3545256df",
+          "excerpt": "Charging, 1 = AC Input. Charging, 2 = 100-240V~ 50/60Hz 1.5A.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "a66398800cdbc16c6218b361d210c4d7732116b218129452050eaf099715b799",
+          "unitIndex": 5,
+          "blockId": "5e3fff41-20d2-4ffc-a96c-6926333a6d37",
+          "excerpt": "Interfaces, 1 = Physical Buttons. Interfaces, 2 = Reset Button. , 1 = 10/100 Mbps RJ45 Ports. , 2 = 2. , 1 = Ethernet Notes. , 2 = Port 1 is WAN/LAN configurable, and the rest. , 1 = . , 2 = are LAN ports. , 1 = Industrial Sockets. , 2 = 1× 7-PIN IO / Serial, 1× 2-PIN DC Input. , 1 = IO. , 2 = 1× Digital Galvanically Isolated Input (0-4V for state 0 | 9-30V for state 1). , 1 = . , 2 = 1× Normally Open contacts of the internal. , 1 = . , 2 = Non-Latching Relay (Max. 30V ⎓ 250mA). , 1 = . , 2 = 1× GND for Digital Input / Digital Output. , 1 = 7-PIN Serial Protocols. , 2 = RS232. , 1 = . , 2 = RS485. , 1 = . , 2 = 2× RS485 (Only for Customized Model). , 1 = LED. , 2 = Power. , 1 = . , 2 = Cellular. , 1 = . , 2 = Cellular Signal Strength. , 1 = . , 2 = Link/ACT of Each Ethernet Port. , 1 = Power Input. , 2 = 2-Pin DC",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "a66398800cdbc16c6218b361d210c4d7732116b218129452050eaf099715b799",
+          "unitIndex": 4,
+          "blockId": "0ce24aff-fb04-486d-9a7f-6e8f96280f0e",
+          "excerpt": "A compact cellular Wi-Fi router designed for branch connectivity scenarios such as vending machines, ATMs, chain stores, franchise outlets, highway toll stations, and logistics machines.\n-   4G Cat. 4 with Max 150 Mbps DL\n-   Level 3 EMC Protection\n-   IP30, -40~75°C (-40~167°F)\n-  Shock and Vibration Resistant\n-   Serial (RS232/485), IO\n-   150 Mbps Wi-Fi\n-   2× 10/100M RJ45\n-   2× SIM Slots\n-   2-PIN DC Input (5-36V)\n- Wall-Mount",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有compare题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-29-explain",
+      "caseSha256": "bf0e08d74843deb3f521d1156928b40327740828de8944b77730e273a0983330",
+      "pattern": "explain",
+      "expectedAnswer": "CH70 (V1.0): 适合为兼容的笔记本、平板和手机同时充电。依据是3个USB-C和1个USB-A、GaN、PD 3.0/PPS/QC 3.0及多口分配表；不能把65W当作各口同时输出，也不能保证所有终端的快充兼容性。",
+      "expectedSources": [
+        {
+          "assetSha256": "2fb58214d469a0b23f6d5d64b8df0fe6f5f540bae9dbc0979535453edce45658",
+          "unitIndex": 2,
+          "blockId": "010807c5-4edc-4564-96af-ad2da7ee7515",
+          "excerpt": "A 65W charger with three USB-C and one USB-A for charging multiple mobile devices simultaneously.\n-   3× USB-C and 1× USB-A Charging\n-   Max 65W USB-C\n-   Max 30W USB-A\n-   PD 3.0, PPS, QC 3.0 Fast Charge\n-   GaN Tech\n-   For Laptops, Tablets, and Phones",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有explain题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-30-open",
+      "caseSha256": "215e5149c1bed1bee10b47c054cdaad85d73a63ec1964da41178ad224453f75a",
+      "pattern": "open",
+      "expectedAnswer": "Find and display the registered original “IR02 Datasheet V1.0” PDF, with an open or download link. It is a valid match for IR02; do not substitute another model or turn the request into a specification answer.",
+      "expectedSources": [
+        {
+          "assetSha256": "a66398800cdbc16c6218b361d210c4d7732116b218129452050eaf099715b799",
+          "unitIndex": 3,
+          "blockId": "a88d929d-9d08-40bb-adbb-23bbc6728822",
+          "excerpt": "-   IR02\n-   Power Adapter\n-  Power Cable (DC to Terminal)\n-  1× Detachable Wi-Fi Antenna\n-  2× Detachable Cellular Antennas\n-   2-PIN Connector\n-   7-PIN Connector\n-   Ethernet Cable\n-   Mounting Kit\n- Installation Guide\nPower Grid Management",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有open题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-30-ports",
+      "caseSha256": "34ec20009ce8807776da7f9dd9546b0954ee1fb3a84bb936967a0424ae5a492d",
+      "pattern": "ports",
+      "expectedAnswer": "IR02 (V1.0): 2 10/100Mbps RJ45 ports: one configurable WAN/LAN port and one LAN port. Serial, IO, SIM and power terminals are not Ethernet ports. Count physical Ethernet connectors once; SIM slots, USB and power connectors are not Ethernet ports.",
+      "expectedSources": [
+        {
+          "assetSha256": "a66398800cdbc16c6218b361d210c4d7732116b218129452050eaf099715b799",
+          "unitIndex": 5,
+          "blockId": "5e3fff41-20d2-4ffc-a96c-6926333a6d37",
+          "excerpt": "Interfaces, 1 = Physical Buttons. Interfaces, 2 = Reset Button. , 1 = 10/100 Mbps RJ45 Ports. , 2 = 2. , 1 = Ethernet Notes. , 2 = Port 1 is WAN/LAN configurable, and the rest. , 1 = . , 2 = are LAN ports. , 1 = Industrial Sockets. , 2 = 1× 7-PIN IO / Serial, 1× 2-PIN DC Input. , 1 = IO. , 2 = 1× Digital Galvanically Isolated Input (0-4V for state 0 | 9-30V for state 1). , 1 = . , 2 = 1× Normally Open contacts of the internal. , 1 = . , 2 = Non-Latching Relay (Max. 30V ⎓ 250mA). , 1 = . , 2 = 1× GND for Digital Input / Digital Output. , 1 = 7-PIN Serial Protocols. , 2 = RS232. , 1 = . , 2 = RS485. , 1 = . , 2 = 2× RS485 (Only for Customized Model). , 1 = LED. , 2 = Power. , 1 = . , 2 = Cellular. , 1 = . , 2 = Cellular Signal Strength. , 1 = . , 2 = Link/ACT of Each Ethernet Port. , 1 = Power Input. , 2 = 2-Pin DC",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有ports题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-30-poe",
+      "caseSha256": "e26d22e8ffe02310981cbd4c42fe70baf0aa7d8ae19f0ac1b75ef10b5792fce9",
+      "pattern": "poe",
+      "expectedAnswer": "No. IR02 (V1.0) does not support PoE input or output. The complete matching original does not declare PoE support, under the user-confirmed MA24-09 review rule. 5–36V input through a 2-PIN DC terminal; no PoE support.",
+      "expectedSources": [
+        {
+          "assetSha256": "a66398800cdbc16c6218b361d210c4d7732116b218129452050eaf099715b799",
+          "unitIndex": 5,
+          "blockId": "5e3fff41-20d2-4ffc-a96c-6926333a6d37",
+          "excerpt": "Interfaces, 1 = Physical Buttons. Interfaces, 2 = Reset Button. , 1 = 10/100 Mbps RJ45 Ports. , 2 = 2. , 1 = Ethernet Notes. , 2 = Port 1 is WAN/LAN configurable, and the rest. , 1 = . , 2 = are LAN ports. , 1 = Industrial Sockets. , 2 = 1× 7-PIN IO / Serial, 1× 2-PIN DC Input. , 1 = IO. , 2 = 1× Digital Galvanically Isolated Input (0-4V for state 0 | 9-30V for state 1). , 1 = . , 2 = 1× Normally Open contacts of the internal. , 1 = . , 2 = Non-Latching Relay (Max. 30V ⎓ 250mA). , 1 = . , 2 = 1× GND for Digital Input / Digital Output. , 1 = 7-PIN Serial Protocols. , 2 = RS232. , 1 = . , 2 = RS485. , 1 = . , 2 = 2× RS485 (Only for Customized Model). , 1 = LED. , 2 = Power. , 1 = . , 2 = Cellular. , 1 = . , 2 = Cellular Signal Strength. , 1 = . , 2 = Link/ACT of Each Ethernet Port. , 1 = Power Input. , 2 = 2-Pin DC",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "a66398800cdbc16c6218b361d210c4d7732116b218129452050eaf099715b799",
+          "unitIndex": 4,
+          "blockId": "0ce24aff-fb04-486d-9a7f-6e8f96280f0e",
+          "excerpt": "A compact cellular Wi-Fi router designed for branch connectivity scenarios such as vending machines, ATMs, chain stores, franchise outlets, highway toll stations, and logistics machines.\n-   4G Cat. 4 with Max 150 Mbps DL\n-   Level 3 EMC Protection\n-   IP30, -40~75°C (-40~167°F)\n-  Shock and Vibration Resistant\n-   Serial (RS232/485), IO\n-   150 Mbps Wi-Fi\n-   2× 10/100M RJ45\n-   2× SIM Slots\n-   2-PIN DC Input (5-36V)\n- Wall-Mount",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有poe题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。未声明PoE的判断基于完整原件核对及MA24-09，不基于检索片段或PPPoE字样。"
+    },
+    {
+      "caseId": "base-30-compare",
+      "caseSha256": "c747dddaadeecf5cb6e3323dfa2cd81ded3ef47037ec9abc82df4c2625201e48",
+      "pattern": "compare",
+      "expectedAnswer": "IR02 (V1.0): Two Fast Ethernet RJ45 ports, dual SIM, 7-PIN IO/serial and 2-PIN DC input. RS232/RS485 are not Ethernet ports; dual RS485 is customized-model-only. 5–36V input through a 2-PIN DC terminal; no PoE support.\nCH70 (V1.0): Three USB-C and one USB-A charging ports, no RJ45. AC input 100–240V, 50/60Hz, 1.5A. USB-C alone up to 65W, USB-A alone up to 30W; multiple ports share power under the allocation table. No PoE support.",
+      "expectedSources": [
+        {
+          "assetSha256": "a66398800cdbc16c6218b361d210c4d7732116b218129452050eaf099715b799",
+          "unitIndex": 5,
+          "blockId": "5e3fff41-20d2-4ffc-a96c-6926333a6d37",
+          "excerpt": "Interfaces, 1 = Physical Buttons. Interfaces, 2 = Reset Button. , 1 = 10/100 Mbps RJ45 Ports. , 2 = 2. , 1 = Ethernet Notes. , 2 = Port 1 is WAN/LAN configurable, and the rest. , 1 = . , 2 = are LAN ports. , 1 = Industrial Sockets. , 2 = 1× 7-PIN IO / Serial, 1× 2-PIN DC Input. , 1 = IO. , 2 = 1× Digital Galvanically Isolated Input (0-4V for state 0 | 9-30V for state 1). , 1 = . , 2 = 1× Normally Open contacts of the internal. , 1 = . , 2 = Non-Latching Relay (Max. 30V ⎓ 250mA). , 1 = . , 2 = 1× GND for Digital Input / Digital Output. , 1 = 7-PIN Serial Protocols. , 2 = RS232. , 1 = . , 2 = RS485. , 1 = . , 2 = 2× RS485 (Only for Customized Model). , 1 = LED. , 2 = Power. , 1 = . , 2 = Cellular. , 1 = . , 2 = Cellular Signal Strength. , 1 = . , 2 = Link/ACT of Each Ethernet Port. , 1 = Power Input. , 2 = 2-Pin DC",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "a66398800cdbc16c6218b361d210c4d7732116b218129452050eaf099715b799",
+          "unitIndex": 4,
+          "blockId": "0ce24aff-fb04-486d-9a7f-6e8f96280f0e",
+          "excerpt": "A compact cellular Wi-Fi router designed for branch connectivity scenarios such as vending machines, ATMs, chain stores, franchise outlets, highway toll stations, and logistics machines.\n-   4G Cat. 4 with Max 150 Mbps DL\n-   Level 3 EMC Protection\n-   IP30, -40~75°C (-40~167°F)\n-  Shock and Vibration Resistant\n-   Serial (RS232/485), IO\n-   150 Mbps Wi-Fi\n-   2× 10/100M RJ45\n-   2× SIM Slots\n-   2-PIN DC Input (5-36V)\n- Wall-Mount",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "2fb58214d469a0b23f6d5d64b8df0fe6f5f540bae9dbc0979535453edce45658",
+          "unitIndex": 2,
+          "blockId": "010807c5-4edc-4564-96af-ad2da7ee7515",
+          "excerpt": "A 65W charger with three USB-C and one USB-A for charging multiple mobile devices simultaneously.\n-   3× USB-C and 1× USB-A Charging\n-   Max 65W USB-C\n-   Max 30W USB-A\n-   PD 3.0, PPS, QC 3.0 Fast Charge\n-   GaN Tech\n-   For Laptops, Tablets, and Phones",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "2fb58214d469a0b23f6d5d64b8df0fe6f5f540bae9dbc0979535453edce45658",
+          "unitIndex": 2,
+          "blockId": "6d5a821e-395a-45f2-bad7-20b394f8d388",
+          "excerpt": "Charging, 1 = Ports. Charging, 2 = 3× USB-C, 1× USB-A.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "2fb58214d469a0b23f6d5d64b8df0fe6f5f540bae9dbc0979535453edce45658",
+          "unitIndex": 3,
+          "blockId": "c063c8c2-a5d2-4ddd-a92a-06b3545256df",
+          "excerpt": "Charging, 1 = AC Input. Charging, 2 = 100-240V~ 50/60Hz 1.5A.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有compare题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-30-explain",
+      "caseSha256": "eae5d30075b5e7258008194afc66ed311688b23ed765600e01d700b5e88e4ef6",
+      "pattern": "explain",
+      "expectedAnswer": "IR02 (V1.0): Suitable for branch connectivity such as vending machines, ATMs, chain stores, toll stations and logistics equipment. The original names these scenarios and lists 4G Cat.4, dual SIM, Fast Ethernet, RS232/RS485, IO and 5–36V DC input. IP30 does not establish outdoor waterproofing.",
+      "expectedSources": [
+        {
+          "assetSha256": "a66398800cdbc16c6218b361d210c4d7732116b218129452050eaf099715b799",
+          "unitIndex": 4,
+          "blockId": "0ce24aff-fb04-486d-9a7f-6e8f96280f0e",
+          "excerpt": "A compact cellular Wi-Fi router designed for branch connectivity scenarios such as vending machines, ATMs, chain stores, franchise outlets, highway toll stations, and logistics machines.\n-   4G Cat. 4 with Max 150 Mbps DL\n-   Level 3 EMC Protection\n-   IP30, -40~75°C (-40~167°F)\n-  Shock and Vibration Resistant\n-   Serial (RS232/485), IO\n-   150 Mbps Wi-Fi\n-   2× 10/100M RJ45\n-   2× SIM Slots\n-   2-PIN DC Input (5-36V)\n- Wall-Mount",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有explain题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-31-open",
+      "caseSha256": "2ce10fb83e96bd4cf1cc3606bb264f93687f729ede43017b5a722fa177bf988a",
+      "pattern": "open",
+      "expectedAnswer": "找到并展示已登记的原始《M1500 Datasheet V1.0》PDF，提供打开或下载入口。这份原件匹配M1500，不以其他型号替代，也不把打开资料请求改成参数问答。",
+      "expectedSources": [
+        {
+          "assetSha256": "1667a4762253ccffb2715bebb6d8bc3042683dbf39e8f6fa368ce2a93d5cfdd6",
+          "unitIndex": 1,
+          "blockId": "10968fa1-2719-4353-a1b0-41b48aba1fa0",
+          "excerpt": "Model: M1500",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有open题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-31-ports",
+      "caseSha256": "57e7ac18424e3bea08145670d64694707ec3fda92a38cd6d43b6b51cb365b038",
+      "pattern": "ports",
+      "expectedAnswer": "M1500 (V1.0): 每台3个千兆RJ45网口：1个WAN和2个LAN；套装台数不改变单台端口数量。 物理网口只计一次；SIM槽、USB及电源接口不计作以太网口。",
+      "expectedSources": [
+        {
+          "assetSha256": "1667a4762253ccffb2715bebb6d8bc3042683dbf39e8f6fa368ce2a93d5cfdd6",
+          "unitIndex": 6,
+          "blockId": "80c82aa7-5519-4cdc-8308-2f379400d3ae",
+          "excerpt": "Interfaces, 1 = Gigabit RJ45 Ports. Interfaces, 2 = 3. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = 1× WAN port, the rest are LAN ports.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有ports题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-31-poe",
+      "caseSha256": "4d103cb8e2083e4ddc4d917baed96f0b6edc146d4f07a29fb3d54de6abc02e34",
+      "pattern": "poe",
+      "expectedAnswer": "不支持。M1500 (V1.0)不支持PoE输入或输出。完整匹配原件未声明PoE支持，按用户确认的MA24-09口径判定。DC 12V/1A输入，最大设备功耗10W；不支持PoE。",
+      "expectedSources": [
+        {
+          "assetSha256": "1667a4762253ccffb2715bebb6d8bc3042683dbf39e8f6fa368ce2a93d5cfdd6",
+          "unitIndex": 6,
+          "blockId": "80c82aa7-5519-4cdc-8308-2f379400d3ae",
+          "excerpt": "Interfaces, 1 = Gigabit RJ45 Ports. Interfaces, 2 = 3. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = 1× WAN port, the rest are LAN ports.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "1667a4762253ccffb2715bebb6d8bc3042683dbf39e8f6fa368ce2a93d5cfdd6",
+          "unitIndex": 6,
+          "blockId": "80c82aa7-5519-4cdc-8308-2f379400d3ae",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = DC. Power, 1 = DC. Power, 2 = 12V 1A. Power, 1 = Power Adapter. Power, 2 = Input: 100 ~ 240 V, 50/60 Hz AC. Power, 1 = . Power, 2 = Output: 12V 1A DC. Power, 1 = Max Power Consumption (W). Power, 2 = 10W.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有poe题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。未声明PoE的判断基于完整原件核对及MA24-09，不基于检索片段或PPPoE字样。"
+    },
+    {
+      "caseId": "base-31-compare",
+      "caseSha256": "117d5b45d768320e3de23ff1e57502a9808144c25b84bf844ccef7b9e002f981",
+      "pattern": "compare",
+      "expectedAnswer": "M1500 (V1.0): 每台1个千兆WAN和2个千兆LAN。 DC 12V/1A输入，最大设备功耗10W；不支持PoE。\nPOE40 (V2.0): 1个千兆PoE IN和4个千兆PoE OUT，共5个网口。 输入802.3bt/at/af，最高60W；输出802.3at/af，功率表为2×25.5W或4×12.95W，设备最大功耗2W。不能把4口每口25.5W宣传视为同时输出102W。",
+      "expectedSources": [
+        {
+          "assetSha256": "1667a4762253ccffb2715bebb6d8bc3042683dbf39e8f6fa368ce2a93d5cfdd6",
+          "unitIndex": 6,
+          "blockId": "80c82aa7-5519-4cdc-8308-2f379400d3ae",
+          "excerpt": "Interfaces, 1 = Gigabit RJ45 Ports. Interfaces, 2 = 3. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = 1× WAN port, the rest are LAN ports.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "1667a4762253ccffb2715bebb6d8bc3042683dbf39e8f6fa368ce2a93d5cfdd6",
+          "unitIndex": 6,
+          "blockId": "80c82aa7-5519-4cdc-8308-2f379400d3ae",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = DC. Power, 1 = DC. Power, 2 = 12V 1A. Power, 1 = Power Adapter. Power, 2 = Input: 100 ~ 240 V, 50/60 Hz AC. Power, 1 = . Power, 2 = Output: 12V 1A DC. Power, 1 = Max Power Consumption (W). Power, 2 = 10W.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "95f9095f1b65542e297201f8d3a217255d5d688f7249a15ce2aaa91b6eb01533",
+          "unitIndex": 3,
+          "blockId": "097ed703-19e7-4634-bd15-09fc1f4ceefe",
+          "excerpt": "PoE, 1 = PoE In. PoE, 2 = 1× GbE, 802.3bt/at/af. , 1 = PoE Out. , 2 = 4× GbE, 802.3at/af. , 1 = Pin Assignment. , 2 = 1/2 (-), 3/6 (+) and 7/8 (-), 4/5 (+). , 1 = Transimission Distance. , 2 = Class 1 (Extra 100m).",
+          "version": "V2.0"
+        },
+        {
+          "assetSha256": "95f9095f1b65542e297201f8d3a217255d5d688f7249a15ce2aaa91b6eb01533",
+          "unitIndex": 3,
+          "blockId": "097ed703-19e7-4634-bd15-09fc1f4ceefe",
+          "excerpt": "Power, 1 = Max Power Input. Power, 2 = 60W. , 1 = Max Power Output. , 2 = 2× 25.5W or 4× 12.95W. , 1 = Max Power Consumption (W). , 2 = 2W.",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有compare题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-31-explain",
+      "caseSha256": "d6f846cea3e822f283c9994ff7088d87d3216ae73dfafaa8cb7bbc2694db50df",
+      "pattern": "explain",
+      "expectedAnswer": "M1500 (V1.0): 适合大住宅的Mesh组网、4K流媒体与游戏。原件明确列出这些用途，并提供3个千兆口、快速漫游、多频同时回程和VPN客户端；覆盖与标称无线速率不保证实际性能。",
+      "expectedSources": [
+        {
+          "assetSha256": "1667a4762253ccffb2715bebb6d8bc3042683dbf39e8f6fa368ce2a93d5cfdd6",
+          "unitIndex": 5,
+          "blockId": "9d5a9a4c-9d0a-4b32-a865-3bf243344513",
+          "excerpt": "A mesh Wi-Fi system ideal for large homes with 4K streaming and gaming demands, Installation is easy-set up one unit and auto-sync the rest.\n- 1201 Mbps + 300 Mbps Wi-Fi\n- 3× Gigabit Ethernet Ports\n- Fast Roaming\n- Beamforming\n- Cudy Mesh and VPN Client\n- Multi-Band Simultaneous Backhaul\n- Cudy App, Cloud Control",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有explain题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-32-open",
+      "caseSha256": "ce0ea837b8f79d7a676895861a5dfffc5d507c482141bf0fbd407faa3d81c90e",
+      "pattern": "open",
+      "expectedAnswer": "Find and display the registered original “POE40 Datasheet V2.0” PDF, with an open or download link. It is a valid match for POE40; do not substitute another model or turn the request into a specification answer.",
+      "expectedSources": [
+        {
+          "assetSha256": "95f9095f1b65542e297201f8d3a217255d5d688f7249a15ce2aaa91b6eb01533",
+          "unitIndex": 3,
+          "blockId": "90dfc6d3-de58-4882-b166-5ab635b11949",
+          "excerpt": "- ° POE40\n- ° Mounting Kit\n- ° Installation Guide",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有open题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-32-ports",
+      "caseSha256": "00ec10d5c1d6346ca35f44a16760c96cae1ba0897a5d3d26dcb1516afe0c55a6",
+      "pattern": "ports",
+      "expectedAnswer": "POE40 (V2.0): 5 physical Gigabit ports: one PoE input and four PoE output ports. Four-channel denotes outputs, not the total count. Count physical Ethernet connectors once; SIM slots, USB and power connectors are not Ethernet ports.",
+      "expectedSources": [
+        {
+          "assetSha256": "95f9095f1b65542e297201f8d3a217255d5d688f7249a15ce2aaa91b6eb01533",
+          "unitIndex": 3,
+          "blockId": "097ed703-19e7-4634-bd15-09fc1f4ceefe",
+          "excerpt": "PoE, 1 = PoE In. PoE, 2 = 1× GbE, 802.3bt/at/af. , 1 = PoE Out. , 2 = 4× GbE, 802.3at/af. , 1 = Pin Assignment. , 2 = 1/2 (-), 3/6 (+) and 7/8 (-), 4/5 (+). , 1 = Transimission Distance. , 2 = Class 1 (Extra 100m).",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有ports题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-32-poe",
+      "caseSha256": "d872fd0282debf6ce1b5afb6b431acaa48df16353b0ebb068eb8fb41b45dee77",
+      "pattern": "poe",
+      "expectedAnswer": "POE40 (V2.0): Yes, input and output: one Gigabit 802.3bt/at/af input up to 60W, and four Gigabit 802.3at/af outputs. Allocation is 2×25.5W or 4×12.95W, not simultaneous 25.5W at all four outputs.",
+      "expectedSources": [
+        {
+          "assetSha256": "95f9095f1b65542e297201f8d3a217255d5d688f7249a15ce2aaa91b6eb01533",
+          "unitIndex": 3,
+          "blockId": "097ed703-19e7-4634-bd15-09fc1f4ceefe",
+          "excerpt": "PoE, 1 = PoE In. PoE, 2 = 1× GbE, 802.3bt/at/af. , 1 = PoE Out. , 2 = 4× GbE, 802.3at/af. , 1 = Pin Assignment. , 2 = 1/2 (-), 3/6 (+) and 7/8 (-), 4/5 (+). , 1 = Transimission Distance. , 2 = Class 1 (Extra 100m).",
+          "version": "V2.0"
+        },
+        {
+          "assetSha256": "95f9095f1b65542e297201f8d3a217255d5d688f7249a15ce2aaa91b6eb01533",
+          "unitIndex": 3,
+          "blockId": "097ed703-19e7-4634-bd15-09fc1f4ceefe",
+          "excerpt": "Power, 1 = Max Power Input. Power, 2 = 60W. , 1 = Max Power Output. , 2 = 2× 25.5W or 4× 12.95W. , 1 = Max Power Consumption (W). , 2 = 2W.",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有poe题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-32-compare",
+      "caseSha256": "92bb70c061189fc033f3dd462025a74df93772779ef87529ad3e0bcc3e614943",
+      "pattern": "compare",
+      "expectedAnswer": "POE40 (V2.0): One Gigabit PoE IN and four Gigabit PoE OUT ports, five ports in total. 802.3bt/at/af input up to 60W; 802.3at/af output. The allocation table specifies 2×25.5W or 4×12.95W, with 2W maximum device consumption. Do not turn the four-port individual 25.5W statement into simultaneous 102W output.\nM1500 (V1.0): One Gigabit WAN and two Gigabit LAN ports per unit. DC 12V/1A input, 10W maximum device consumption; no PoE support.",
+      "expectedSources": [
+        {
+          "assetSha256": "95f9095f1b65542e297201f8d3a217255d5d688f7249a15ce2aaa91b6eb01533",
+          "unitIndex": 3,
+          "blockId": "097ed703-19e7-4634-bd15-09fc1f4ceefe",
+          "excerpt": "PoE, 1 = PoE In. PoE, 2 = 1× GbE, 802.3bt/at/af. , 1 = PoE Out. , 2 = 4× GbE, 802.3at/af. , 1 = Pin Assignment. , 2 = 1/2 (-), 3/6 (+) and 7/8 (-), 4/5 (+). , 1 = Transimission Distance. , 2 = Class 1 (Extra 100m).",
+          "version": "V2.0"
+        },
+        {
+          "assetSha256": "95f9095f1b65542e297201f8d3a217255d5d688f7249a15ce2aaa91b6eb01533",
+          "unitIndex": 3,
+          "blockId": "097ed703-19e7-4634-bd15-09fc1f4ceefe",
+          "excerpt": "Power, 1 = Max Power Input. Power, 2 = 60W. , 1 = Max Power Output. , 2 = 2× 25.5W or 4× 12.95W. , 1 = Max Power Consumption (W). , 2 = 2W.",
+          "version": "V2.0"
+        },
+        {
+          "assetSha256": "1667a4762253ccffb2715bebb6d8bc3042683dbf39e8f6fa368ce2a93d5cfdd6",
+          "unitIndex": 6,
+          "blockId": "80c82aa7-5519-4cdc-8308-2f379400d3ae",
+          "excerpt": "Interfaces, 1 = Gigabit RJ45 Ports. Interfaces, 2 = 3. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = 1× WAN port, the rest are LAN ports.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "1667a4762253ccffb2715bebb6d8bc3042683dbf39e8f6fa368ce2a93d5cfdd6",
+          "unitIndex": 6,
+          "blockId": "80c82aa7-5519-4cdc-8308-2f379400d3ae",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = DC. Power, 1 = DC. Power, 2 = 12V 1A. Power, 1 = Power Adapter. Power, 2 = Input: 100 ~ 240 V, 50/60 Hz AC. Power, 1 = . Power, 2 = Output: 12V 1A DC. Power, 1 = Max Power Consumption (W). Power, 2 = 10W.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有compare题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-32-explain",
+      "caseSha256": "ffb19333c07f0042087cf8434f614170006c01c3d2f81d9a44d216e803ad6bfd",
+      "pattern": "explain",
+      "expectedAnswer": "POE40 (V2.0): Suitable for extending PoE data and power distance, stated as an extra 100m, with desktop or wall mounting. Evidence includes a Gigabit input, four Gigabit outputs and PoE protection. Size the endpoints to the power budget; do not promise unlimited chaining or simultaneous 25.5W at every output.",
+      "expectedSources": [
+        {
+          "assetSha256": "95f9095f1b65542e297201f8d3a217255d5d688f7249a15ce2aaa91b6eb01533",
+          "unitIndex": 3,
+          "blockId": "5d7aba5d-ecf1-4a0c-afbb-85cbcde3a41d",
+          "excerpt": "A 4-channel PoE extender that extends the PoE distance by 100m.\n- ° GbE In, 4× GbE Out\n- ° 802.3bt/at/af Max 60W Input\n- ° 4× 802.3at/af Max 25.5W Output\n- ° Desktop or Wall-Mount",
+          "version": "V2.0"
+        },
+        {
+          "assetSha256": "95f9095f1b65542e297201f8d3a217255d5d688f7249a15ce2aaa91b6eb01533",
+          "unitIndex": 3,
+          "blockId": "097ed703-19e7-4634-bd15-09fc1f4ceefe",
+          "excerpt": "Power, 1 = Max Power Input. Power, 2 = 60W. , 1 = Max Power Output. , 2 = 2× 25.5W or 4× 12.95W. , 1 = Max Power Consumption (W). , 2 = 2W.",
+          "version": "V2.0"
+        },
+        {
+          "assetSha256": "95f9095f1b65542e297201f8d3a217255d5d688f7249a15ce2aaa91b6eb01533",
+          "unitIndex": 3,
+          "blockId": "097ed703-19e7-4634-bd15-09fc1f4ceefe",
+          "excerpt": "Reliability, 1 = Client Protection. Reliability, 2 = Polarity Protection. , 1 = . , 2 = Overvoltage Protection. , 1 = . , 2 = Short-Circuit Protection. , 1 = . , 2 = Automatic Voltage Regulation. , 1 = Lightning/Surge Protection. , 2 = 6kV. , 1 = ESD Contact Protection. , 2 = 6kV. , 1 = ESD Air Protection. , 2 = 8kV. , 1 = Grounding Methods. , 2 = Grounding Point. , 1 = Environment. , 2 = Operating Temp: 0~45 ℃ (32~113 ℉). , 1 = . , 2 = Storage Temp: -40~70 ℃ (-40~158 ℉). , 1 = . , 2 = Operating Rh: 10%~95% non-condensing. , 1 = . , 2 = Storage Rh: 5%~95% non-condensing. Certifications, 1 = FCC, CE. Certifications, 2 = . Mechanical, 1 = Install in a Daisy Chain. Mechanical, 2 = Up to 3 extenders in a chain. , 1 = Installation. , 2 = Desktop, Wall-mount. , 1 = Casing Material. , 2 = Metal. , 1 = Dimension. , 2 = 119×85×28 mm 4.69×3.35×1.1'",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有explain题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-33-open",
+      "caseSha256": "f94efe991971c0be19d3f9c73a68fbed8afad18815996fa373718e018e153316",
+      "pattern": "open",
+      "expectedAnswer": "找到并展示已登记的《Cudy Media Converters and Optical Modules》原始PDF，提供打开/下载入口及第9页SM10G系列位置。原件涵盖SM10GMA-03/03H、SM10GSA-10/10H；不编造单独名为SM10G的Datasheet，也不以MC转换器替代，具体变体需完整后缀。",
+      "expectedSources": [
+        {
+          "assetSha256": "7c558f62758520936744ce56ca860d55f44d8359af81d3c4a164a561bc80d897",
+          "unitIndex": 9,
+          "blockId": "74f1eec1-c0da-4d87-aa73-00b9968e3ab7",
+          "excerpt": "\nModels, 10G Transceivers = SM10GMA-03. Models, 10G Transceivers = SM10GMA-03H. Models, 10G Transceivers = SM10GSA-10. Models, 10G Transceivers = SM10GSA-10H. Models, 25G Transceivers = SM25GMA-01. Models, 25G Transceivers = SM25GSA-10. Models, 25G Transceivers = SM25GSA-10S. Models, 25G BiDi Transceivers = SM25GSB-10AB. Images, 10G Transceivers = . Images, 10G Transceivers = . Images, 10G Transceivers = . Images, 10G Transceivers = . Images, 25G Transceivers = . Images, 25G Transceivers = . Images, 25G Transceivers = . Images, 25G BiDi Transceivers = . SFP Interfaces, 10G Transceivers = SFP+. SFP Interfaces, 10G Transceivers = SFP+. SFP Interfaces, 10G Transceivers = SFP+. SFP Interfaces, 10G Transceivers = SFP+. SFP Interfaces, 25G Transceivers = SFP28. SFP Interfaces, 25G Transceivers ="
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有open题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-33-ports",
+      "caseSha256": "8168fa1e23651df51247554a60c5eaca73861a5112f41208035196b2ae433d18",
+      "pattern": "ports",
+      "expectedAnswer": "SM10G系列（已登记目录）: 以已登记目录的SM10G系列为范围：0个RJ45网口；各模块提供LC Duplex光连接并接入SFP+宿主槽，不是多口交换机。具体选型需完整后缀。 物理网口只计一次；SIM槽、USB及电源接口不计作以太网口。",
+      "expectedSources": [
+        {
+          "assetSha256": "7c558f62758520936744ce56ca860d55f44d8359af81d3c4a164a561bc80d897",
+          "unitIndex": 9,
+          "blockId": "74f1eec1-c0da-4d87-aa73-00b9968e3ab7",
+          "excerpt": "Models, 10G Transceivers = SM10GMA-03. Models, 10G Transceivers = SM10GMA-03H. Models, 10G Transceivers = SM10GSA-10. Models, 10G Transceivers = SM10GSA-10H. Models, 25G Transceivers = SM25GMA-01. Models, 25G Transceivers = SM25GSA-10. Models, 25G Transceivers = SM25GSA-10S. Models, 25G BiDi Transceivers = SM25GSB-10AB. Images, 10G Transceivers = . Images, 10G Transceivers = . Images, 10G Transceivers = . Images, 10G Transceivers = . Images, 25G Transceivers = . Images, 25G Transceivers = . Images, 25G Transceivers = . Images, 25G BiDi Transceivers = . SFP Interfaces, 10G Transceivers = SFP+. SFP Interfaces, 10G Transceivers = SFP+. SFP Interfaces, 10G Transceivers = SFP+. SFP Interfaces, 10G Transceivers = SFP+. SFP Interfaces, 25G Transceivers = SFP28. SFP Interfaces, 25G Transceivers = SFP28. SFP Interfaces, 25G Transceivers = SFP28. SFP Interfaces, 25G BiDi Transceivers = SFP28. Optical Ports, 10G Transceivers = LC Duplex. Optical Ports, 10G Transceivers = LC Duplex. Optical Ports, 10G Transceivers = LC Duplex. Optical Ports, 10G Transceivers = LC Duplex. Optical Ports, 25G Transceivers = LC Duplex. Optical Ports, 25G Transceivers = LC Duplex. Optical Ports, 25G Transceivers = LC Duplex. Optical Ports, 25G BiDi Transceivers = LC Simplex."
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有ports题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-33-poe",
+      "caseSha256": "fe4b49ece5b36edd0fd4a458e7b076136832a52db8f9c74d1433f9582a386248",
+      "pattern": "poe",
+      "expectedAnswer": "SM10G系列（已登记目录）: 不支持。以目录第9页SM10GMA-03/03H、SM10GSA-10/10H的10G SFP+光模块为范围，它们无RJ45口、未声明PoE输入或输出，按MA24-09判定；同目录MC220P转换器的PoE能力不属于SM10G系列。",
+      "expectedSources": [
+        {
+          "assetSha256": "7c558f62758520936744ce56ca860d55f44d8359af81d3c4a164a561bc80d897",
+          "unitIndex": 9,
+          "blockId": "74f1eec1-c0da-4d87-aa73-00b9968e3ab7",
+          "excerpt": "Models, 10G Transceivers = SM10GMA-03. Models, 10G Transceivers = SM10GMA-03H. Models, 10G Transceivers = SM10GSA-10. Models, 10G Transceivers = SM10GSA-10H. Models, 25G Transceivers = SM25GMA-01. Models, 25G Transceivers = SM25GSA-10. Models, 25G Transceivers = SM25GSA-10S. Models, 25G BiDi Transceivers = SM25GSB-10AB. Images, 10G Transceivers = . Images, 10G Transceivers = . Images, 10G Transceivers = . Images, 10G Transceivers = . Images, 25G Transceivers = . Images, 25G Transceivers = . Images, 25G Transceivers = . Images, 25G BiDi Transceivers = . SFP Interfaces, 10G Transceivers = SFP+. SFP Interfaces, 10G Transceivers = SFP+. SFP Interfaces, 10G Transceivers = SFP+. SFP Interfaces, 10G Transceivers = SFP+. SFP Interfaces, 25G Transceivers = SFP28. SFP Interfaces, 25G Transceivers = SFP28. SFP Interfaces, 25G Transceivers = SFP28. SFP Interfaces, 25G BiDi Transceivers = SFP28. Optical Ports, 10G Transceivers = LC Duplex. Optical Ports, 10G Transceivers = LC Duplex. Optical Ports, 10G Transceivers = LC Duplex. Optical Ports, 10G Transceivers = LC Duplex. Optical Ports, 25G Transceivers = LC Duplex. Optical Ports, 25G Transceivers = LC Duplex. Optical Ports, 25G Transceivers = LC Duplex. Optical Ports, 25G BiDi Transceivers = LC Simplex."
+        },
+        {
+          "assetSha256": "7c558f62758520936744ce56ca860d55f44d8359af81d3c4a164a561bc80d897",
+          "unitIndex": 9,
+          "blockId": "95552c0c-3a85-4135-b94f-7526b6d021d3",
+          "excerpt": "Power Consumption, 10G Transceivers = 1.05W. Power Consumption, 10G Transceivers = 1.05W. Power Consumption, 10G Transceivers = 1.05W. Power Consumption, 10G Transceivers = 1.05W."
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有poe题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-33-compare",
+      "caseSha256": "d0b8a5ccc61ea7359fe4300f83f7a83aae3be580d6047b1fb2508a60bf82c902",
+      "pattern": "compare",
+      "expectedAnswer": "SM10G系列（已登记目录）: SM10GMA-03/03H、SM10GSA-10/10H为10G SFP+模块，光口LC Duplex，无RJ45；不能把目录中的MC转换器接口算给它。 上述4款目录标称功耗均1.05W，未给独立DC/AC输入额定值；不支持PoE，不能借用同目录MC220P的PoE条目。\nFS1016 (V1.0): 16个百兆RJ45口和AC输入插座。 AC 90～260V、50/60Hz输入；不支持PoE。",
+      "expectedSources": [
+        {
+          "assetSha256": "7c558f62758520936744ce56ca860d55f44d8359af81d3c4a164a561bc80d897",
+          "unitIndex": 9,
+          "blockId": "74f1eec1-c0da-4d87-aa73-00b9968e3ab7",
+          "excerpt": "Models, 10G Transceivers = SM10GMA-03. Models, 10G Transceivers = SM10GMA-03H. Models, 10G Transceivers = SM10GSA-10. Models, 10G Transceivers = SM10GSA-10H. Models, 25G Transceivers = SM25GMA-01. Models, 25G Transceivers = SM25GSA-10. Models, 25G Transceivers = SM25GSA-10S. Models, 25G BiDi Transceivers = SM25GSB-10AB. Images, 10G Transceivers = . Images, 10G Transceivers = . Images, 10G Transceivers = . Images, 10G Transceivers = . Images, 25G Transceivers = . Images, 25G Transceivers = . Images, 25G Transceivers = . Images, 25G BiDi Transceivers = . SFP Interfaces, 10G Transceivers = SFP+. SFP Interfaces, 10G Transceivers = SFP+. SFP Interfaces, 10G Transceivers = SFP+. SFP Interfaces, 10G Transceivers = SFP+. SFP Interfaces, 25G Transceivers = SFP28. SFP Interfaces, 25G Transceivers = SFP28. SFP Interfaces, 25G Transceivers = SFP28. SFP Interfaces, 25G BiDi Transceivers = SFP28. Optical Ports, 10G Transceivers = LC Duplex. Optical Ports, 10G Transceivers = LC Duplex. Optical Ports, 10G Transceivers = LC Duplex. Optical Ports, 10G Transceivers = LC Duplex. Optical Ports, 25G Transceivers = LC Duplex. Optical Ports, 25G Transceivers = LC Duplex. Optical Ports, 25G Transceivers = LC Duplex. Optical Ports, 25G BiDi Transceivers = LC Simplex."
+        },
+        {
+          "assetSha256": "7c558f62758520936744ce56ca860d55f44d8359af81d3c4a164a561bc80d897",
+          "unitIndex": 9,
+          "blockId": "95552c0c-3a85-4135-b94f-7526b6d021d3",
+          "excerpt": "Power Consumption, 10G Transceivers = 1.05W. Power Consumption, 10G Transceivers = 1.05W. Power Consumption, 10G Transceivers = 1.05W. Power Consumption, 10G Transceivers = 1.05W."
+        },
+        {
+          "assetSha256": "d53aeab69175c350a049960b60bfb4a76f0e176808538191d6f9dbcf894417bc",
+          "unitIndex": 2,
+          "blockId": "0018b4a0-0a55-4093-9cc7-a7454dd7c85b",
+          "excerpt": "Interfaces, 1 = Physical Buttons. Interfaces, 2 = VLAN/Default/Extend DIP Switch. , 1 = 10/100 Mbps RJ45 Ports. , 2 = 16. , 1 = Extend Mode Ports. , 2 = #1~#14. , 1 = LED. , 2 = Power. , 1 = . , 2 = Link/ACT of Each Ethernet Ports. , 1 = Power Input. , 2 = AC Inlet\n|",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "d53aeab69175c350a049960b60bfb4a76f0e176808538191d6f9dbcf894417bc",
+          "unitIndex": 2,
+          "blockId": "0018b4a0-0a55-4093-9cc7-a7454dd7c85b",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = AC. Power, 1 = AC. Power, 2 = 90~260V 50/60Hz.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有compare题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-33-explain",
+      "caseSha256": "115b68ffff3488714d93dc124e71f3255f9ec597239051d397986c02e6e1f381",
+      "pattern": "explain",
+      "expectedAnswer": "SM10G系列（已登记目录）: 适合兼容SFP+设备之间的10G光纤连接。目录中MA-03/03H为850nm多模、300米；SA-10/10H为1310nm单模、10公里，H后缀另列Works with HP。需按后缀、光纤和宿主兼容性选择，不能把所有SM10G当成同一款。",
+      "expectedSources": [
+        {
+          "assetSha256": "7c558f62758520936744ce56ca860d55f44d8359af81d3c4a164a561bc80d897",
+          "unitIndex": 9,
+          "blockId": "74f1eec1-c0da-4d87-aa73-00b9968e3ab7",
+          "excerpt": "Models, 10G Transceivers = SM10GMA-03. Models, 10G Transceivers = SM10GMA-03H. Models, 10G Transceivers = SM10GSA-10. Models, 10G Transceivers = SM10GSA-10H. Models, 25G Transceivers = SM25GMA-01. Models, 25G Transceivers = SM25GSA-10. Models, 25G Transceivers = SM25GSA-10S. Models, 25G BiDi Transceivers = SM25GSB-10AB. Images, 10G Transceivers = . Images, 10G Transceivers = . Images, 10G Transceivers = . Images, 10G Transceivers = . Images, 25G Transceivers = . Images, 25G Transceivers = . Images, 25G Transceivers = . Images, 25G BiDi Transceivers = . SFP Interfaces, 10G Transceivers = SFP+. SFP Interfaces, 10G Transceivers = SFP+. SFP Interfaces, 10G Transceivers = SFP+. SFP Interfaces, 10G Transceivers = SFP+. SFP Interfaces, 25G Transceivers = SFP28. SFP Interfaces, 25G Transceivers = SFP28. SFP Interfaces, 25G Transceivers = SFP28. SFP Interfaces, 25G BiDi Transceivers = SFP28. Optical Ports, 10G Transceivers = LC Duplex. Optical Ports, 10G Transceivers = LC Duplex. Optical Ports, 10G Transceivers = LC Duplex. Optical Ports, 10G Transceivers = LC Duplex. Optical Ports, 25G Transceivers = LC Duplex. Optical Ports, 25G Transceivers = LC Duplex. Optical Ports, 25G Transceivers = LC Duplex. Optical Ports, 25G BiDi Transceivers = LC Simplex."
+        },
+        {
+          "assetSha256": "7c558f62758520936744ce56ca860d55f44d8359af81d3c4a164a561bc80d897",
+          "unitIndex": 9,
+          "blockId": "74f1eec1-c0da-4d87-aa73-00b9968e3ab7",
+          "excerpt": "Wavelength, 10G Transceivers = TX/RX: 850 nm. Wavelength, 10G Transceivers = TX/RX: 850 nm. Wavelength, 10G Transceivers = TX/RX:"
+        },
+        {
+          "assetSha256": "7c558f62758520936744ce56ca860d55f44d8359af81d3c4a164a561bc80d897",
+          "unitIndex": 9,
+          "blockId": "95552c0c-3a85-4135-b94f-7526b6d021d3",
+          "excerpt": "1310 nm. Wavelength, 10G Transceivers = TX/RX: 1310 nm. Wavelength, 25G Transceivers = TX/RX: 850 nm. Wavelength, 25G Transceivers = TX/RX: 1310 nm. Wavelength, 25G Transceivers = TX/RX: 1310 nm. Wavelength, 25G BiDi Transceivers = A: TX/RX: 1270/1330 nm B: TX/RX: 1330/1270 nm. Fiber Type, 10G Transceivers = Multi-Mode. Fiber Type, 10G Transceivers = Multi-Mode. Fiber Type, 10G Transceivers = Single-Mode. Fiber Type, 10G Transceivers = Single-Mode. Fiber Type, 25G Transceivers = Multi-Mode. Fiber Type, 25G Transceivers = Single-Mode. Fiber Type, 25G Transceivers = Single-Mode. Fiber Type, 25G BiDi Transceivers = Single-Mode. Optical Distance, 10G Transceivers = 300 m. Optical Distance, 10G Transceivers = 300 m. Optical Distance, 10G Transceivers = 10 km. Optical Distance, 10G Transceivers = 10 km. Optical Distance, 25G Transceivers = 100 m. Optical Distance, 25G Transceivers = 10 km. Optical Distance, 25G Transceivers = 10km. Optical Distance, 25G BiDi Transceivers = 10 km. Others, 10G Transceivers = . Others, 10G Transceivers = Works with HP. Others, 10G Transceivers = . Others, 10G Transceivers = Works with HP. Others, 25G Transceivers = . Others, 25G Transceivers = . Others, 25G Transceivers = Industrial Grade -40 to +85 ° C Ambient Temp.. Others, 25G BiDi Transceivers = . Power Consumption, 10G Transceivers = 1.05W. Power Consumption, 10G Transceivers = 1.05W. Power Consumption, 10G Transceivers = 1.05W. Power Consumption, 10G Transceivers = 1.05W."
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有explain题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-34-open",
+      "caseSha256": "1816e138d555f49742ca60da2637fb30e67d6b8042ad0023ad3ed787c4acb4b6",
+      "pattern": "open",
+      "expectedAnswer": "Find and display the registered original “FS1016 Datasheet V1.0” PDF, with an open or download link. It is a valid match for FS1016; do not substitute another model or turn the request into a specification answer.",
+      "expectedSources": [
+        {
+          "assetSha256": "d53aeab69175c350a049960b60bfb4a76f0e176808538191d6f9dbcf894417bc",
+          "unitIndex": 2,
+          "blockId": "00bfae2e-3a8d-4a5c-818d-4ab1f1072508",
+          "excerpt": "-  Comply with IEEE802.3, IEEE 802.3u, IEEE802.3x Ethernet standards\n-  16x 10/100Mbps Auto-Negotiation RJ45 Ports MDI/MDIX\n-  Supports IEEE802.3x flow control for Full-duplex Mode and backpressure for Half-duplex Mode\n-  8K entry MAC address table of the switch with auto-learning and auto-aging\n-  Extend/Normal/VLAN DIP Switch for 250 meters transmission or improved expansion security\n-  LED indicators for monitoring Port Link / Activity\n-  External power supply\n-  Desktop or Rack-Mounting",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有open题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。封面型号已目视核对；现有抽取未保存封面型号块，引用同哈希原件第2页真实规格块与登记附件身份，不伪造封面Model引文。"
+    },
+    {
+      "caseId": "base-34-ports",
+      "caseSha256": "629c93e5ed68202591ed2c23533e37526ca04837ddf241181095bbcc52767227",
+      "pattern": "ports",
+      "expectedAnswer": "FS1016 (V1.0): 16 physical 10/100Mbps RJ45 ports, not Gigabit ports. Count physical Ethernet connectors once; SIM slots, USB and power connectors are not Ethernet ports.",
+      "expectedSources": [
+        {
+          "assetSha256": "d53aeab69175c350a049960b60bfb4a76f0e176808538191d6f9dbcf894417bc",
+          "unitIndex": 2,
+          "blockId": "0018b4a0-0a55-4093-9cc7-a7454dd7c85b",
+          "excerpt": "Interfaces, 1 = Physical Buttons. Interfaces, 2 = VLAN/Default/Extend DIP Switch. , 1 = 10/100 Mbps RJ45 Ports. , 2 = 16. , 1 = Extend Mode Ports. , 2 = #1~#14. , 1 = LED. , 2 = Power. , 1 = . , 2 = Link/ACT of Each Ethernet Ports. , 1 = Power Input. , 2 = AC Inlet\n|",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有ports题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-34-poe",
+      "caseSha256": "af8286586c6eec2d6bc1deec0b4af674751691317e9c77affd2d282e0d383de2",
+      "pattern": "poe",
+      "expectedAnswer": "No. FS1016 (V1.0) does not support PoE input or output. The complete matching original does not declare PoE support, under the user-confirmed MA24-09 review rule. AC 90–260V, 50/60Hz input; no PoE support.",
+      "expectedSources": [
+        {
+          "assetSha256": "d53aeab69175c350a049960b60bfb4a76f0e176808538191d6f9dbcf894417bc",
+          "unitIndex": 2,
+          "blockId": "0018b4a0-0a55-4093-9cc7-a7454dd7c85b",
+          "excerpt": "Interfaces, 1 = Physical Buttons. Interfaces, 2 = VLAN/Default/Extend DIP Switch. , 1 = 10/100 Mbps RJ45 Ports. , 2 = 16. , 1 = Extend Mode Ports. , 2 = #1~#14. , 1 = LED. , 2 = Power. , 1 = . , 2 = Link/ACT of Each Ethernet Ports. , 1 = Power Input. , 2 = AC Inlet\n|",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "d53aeab69175c350a049960b60bfb4a76f0e176808538191d6f9dbcf894417bc",
+          "unitIndex": 2,
+          "blockId": "0018b4a0-0a55-4093-9cc7-a7454dd7c85b",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = AC. Power, 1 = AC. Power, 2 = 90~260V 50/60Hz.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有poe题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。未声明PoE的判断基于完整原件核对及MA24-09，不基于检索片段或PPPoE字样。"
+    },
+    {
+      "caseId": "base-34-compare",
+      "caseSha256": "7dcfb6160712e9e0d2080c3c31d65bb33f0d4be0ab72a86a23e4765dfad45a5f",
+      "pattern": "compare",
+      "expectedAnswer": "FS1016 (V1.0): Sixteen Fast Ethernet RJ45 ports and an AC inlet. AC 90–260V, 50/60Hz input; no PoE support.\nSM10G family (registered catalog): SM10GMA-03/03H and SM10GSA-10/10H are 10G SFP+ modules with LC Duplex optical connectivity, no RJ45. Do not assign MC media-converter ports to these modules. The four listed models each have stated 1.05W consumption; no independent DC/AC input rating is given. No PoE support; MC220P PoE entries in the same catalog do not apply.",
+      "expectedSources": [
+        {
+          "assetSha256": "d53aeab69175c350a049960b60bfb4a76f0e176808538191d6f9dbcf894417bc",
+          "unitIndex": 2,
+          "blockId": "0018b4a0-0a55-4093-9cc7-a7454dd7c85b",
+          "excerpt": "Interfaces, 1 = Physical Buttons. Interfaces, 2 = VLAN/Default/Extend DIP Switch. , 1 = 10/100 Mbps RJ45 Ports. , 2 = 16. , 1 = Extend Mode Ports. , 2 = #1~#14. , 1 = LED. , 2 = Power. , 1 = . , 2 = Link/ACT of Each Ethernet Ports. , 1 = Power Input. , 2 = AC Inlet\n|",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "d53aeab69175c350a049960b60bfb4a76f0e176808538191d6f9dbcf894417bc",
+          "unitIndex": 2,
+          "blockId": "0018b4a0-0a55-4093-9cc7-a7454dd7c85b",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = AC. Power, 1 = AC. Power, 2 = 90~260V 50/60Hz.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "7c558f62758520936744ce56ca860d55f44d8359af81d3c4a164a561bc80d897",
+          "unitIndex": 9,
+          "blockId": "74f1eec1-c0da-4d87-aa73-00b9968e3ab7",
+          "excerpt": "Models, 10G Transceivers = SM10GMA-03. Models, 10G Transceivers = SM10GMA-03H. Models, 10G Transceivers = SM10GSA-10. Models, 10G Transceivers = SM10GSA-10H. Models, 25G Transceivers = SM25GMA-01. Models, 25G Transceivers = SM25GSA-10. Models, 25G Transceivers = SM25GSA-10S. Models, 25G BiDi Transceivers = SM25GSB-10AB. Images, 10G Transceivers = . Images, 10G Transceivers = . Images, 10G Transceivers = . Images, 10G Transceivers = . Images, 25G Transceivers = . Images, 25G Transceivers = . Images, 25G Transceivers = . Images, 25G BiDi Transceivers = . SFP Interfaces, 10G Transceivers = SFP+. SFP Interfaces, 10G Transceivers = SFP+. SFP Interfaces, 10G Transceivers = SFP+. SFP Interfaces, 10G Transceivers = SFP+. SFP Interfaces, 25G Transceivers = SFP28. SFP Interfaces, 25G Transceivers = SFP28. SFP Interfaces, 25G Transceivers = SFP28. SFP Interfaces, 25G BiDi Transceivers = SFP28. Optical Ports, 10G Transceivers = LC Duplex. Optical Ports, 10G Transceivers = LC Duplex. Optical Ports, 10G Transceivers = LC Duplex. Optical Ports, 10G Transceivers = LC Duplex. Optical Ports, 25G Transceivers = LC Duplex. Optical Ports, 25G Transceivers = LC Duplex. Optical Ports, 25G Transceivers = LC Duplex. Optical Ports, 25G BiDi Transceivers = LC Simplex."
+        },
+        {
+          "assetSha256": "7c558f62758520936744ce56ca860d55f44d8359af81d3c4a164a561bc80d897",
+          "unitIndex": 9,
+          "blockId": "95552c0c-3a85-4135-b94f-7526b6d021d3",
+          "excerpt": "Power Consumption, 10G Transceivers = 1.05W. Power Consumption, 10G Transceivers = 1.05W. Power Consumption, 10G Transceivers = 1.05W. Power Consumption, 10G Transceivers = 1.05W."
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有compare题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-34-explain",
+      "caseSha256": "fc978c41f3cbd7a21fef9e71df592b25fb0e0e164560486e92c553a0da0f04b9",
+      "pattern": "explain",
+      "expectedAnswer": "FS1016 (V1.0): Based on its specifications, suitable for desktop or rack-mounted multi-device Fast Ethernet access. Evidence includes sixteen Fast Ethernet ports, flow control, a VLAN/Default/Extend DIP switch and desktop/rack mounting. Ports 1–14 are Extend mode ports; Extend is not PoE capability.",
+      "expectedSources": [
+        {
+          "assetSha256": "d53aeab69175c350a049960b60bfb4a76f0e176808538191d6f9dbcf894417bc",
+          "unitIndex": 2,
+          "blockId": "00bfae2e-3a8d-4a5c-818d-4ab1f1072508",
+          "excerpt": "-  Comply with IEEE802.3, IEEE 802.3u, IEEE802.3x Ethernet standards\n-  16x 10/100Mbps Auto-Negotiation RJ45 Ports MDI/MDIX\n-  Supports IEEE802.3x flow control for Full-duplex Mode and backpressure for Half-duplex Mode\n-  8K entry MAC address table of the switch with auto-learning and auto-aging\n-  Extend/Normal/VLAN DIP Switch for 250 meters transmission or improved expansion security\n-  LED indicators for monitoring Port Link / Activity\n-  External power supply\n-  Desktop or Rack-Mounting",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "d53aeab69175c350a049960b60bfb4a76f0e176808538191d6f9dbcf894417bc",
+          "unitIndex": 2,
+          "blockId": "0018b4a0-0a55-4093-9cc7-a7454dd7c85b",
+          "excerpt": "Interfaces, 1 = Physical Buttons. Interfaces, 2 = VLAN/Default/Extend DIP Switch. , 1 = 10/100 Mbps RJ45 Ports. , 2 = 16. , 1 = Extend Mode Ports. , 2 = #1~#14. , 1 = LED. , 2 = Power. , 1 = . , 2 = Link/ACT of Each Ethernet Ports. , 1 = Power Input. , 2 = AC Inlet\n|",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有explain题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-35-open",
+      "caseSha256": "de32a7ab1c627e317bc27416c7b92e08216fd58071bb5b86efc61e12ee0d0cdd",
+      "pattern": "open",
+      "expectedAnswer": "找到并展示已登记的原始《FS1024 Datasheet V1.0》PDF，提供打开或下载入口。这份原件匹配FS1024，不以其他型号替代，也不把打开资料请求改成参数问答。",
+      "expectedSources": [
+        {
+          "assetSha256": "5c2b68290576fe59c1bc5ca5ac3351452ff77b99ef503e8aee7e7310e434dc32",
+          "unitIndex": 3,
+          "blockId": "15556cb1-519e-4ec7-98e3-0c77686c8f93",
+          "excerpt": "- FS1024\n- Power Cord\n- Installation Guide\n- Mounting Kit",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有open题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-35-ports",
+      "caseSha256": "c940e3a9738c0bea860acb2dce1eeaa654a9d8ea1a3fb328698b15387f0f842d",
+      "pattern": "ports",
+      "expectedAnswer": "FS1024 (V1.0): 24个10/100Mbps RJ45物理网口，不是千兆口。 物理网口只计一次；SIM槽、USB及电源接口不计作以太网口。",
+      "expectedSources": [
+        {
+          "assetSha256": "5c2b68290576fe59c1bc5ca5ac3351452ff77b99ef503e8aee7e7310e434dc32",
+          "unitIndex": 2,
+          "blockId": "18ae1455-4a77-4052-9c09-94764a118337",
+          "excerpt": "Interfaces, 1 = Physical Buttons. Interfaces, 2 = VLAN/Default/Extend DIP Switch. Interfaces, 1 = 10/100 Mbps RJ45 Ports. Interfaces, 2 = 24. Interfaces, 1 = VLAN Mode Ports. Interfaces, 2 = #1~#22. Interfaces, 1 = Extend Mode Ports. Interfaces, 2 = #1~#22. Interfaces, 1 = LED. Interfaces, 2 = Power. Interfaces, 1 = LED. Interfaces, 2 = Link/ACT of Each Ethernet Ports. Interfaces, 1 = Power Input. Interfaces, 2 = AC Inlet",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有ports题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-35-poe",
+      "caseSha256": "add9ed354cf1f43c5b3546526a4a0c0b28a87fbfc4c2bb7b7c073ae0157613c1",
+      "pattern": "poe",
+      "expectedAnswer": "不支持。FS1024 (V1.0)不支持PoE输入或输出。完整匹配原件未声明PoE支持，按用户确认的MA24-09口径判定。AC 90～260V、50/60Hz输入；不支持PoE。",
+      "expectedSources": [
+        {
+          "assetSha256": "5c2b68290576fe59c1bc5ca5ac3351452ff77b99ef503e8aee7e7310e434dc32",
+          "unitIndex": 2,
+          "blockId": "18ae1455-4a77-4052-9c09-94764a118337",
+          "excerpt": "Interfaces, 1 = Physical Buttons. Interfaces, 2 = VLAN/Default/Extend DIP Switch. Interfaces, 1 = 10/100 Mbps RJ45 Ports. Interfaces, 2 = 24. Interfaces, 1 = VLAN Mode Ports. Interfaces, 2 = #1~#22. Interfaces, 1 = Extend Mode Ports. Interfaces, 2 = #1~#22. Interfaces, 1 = LED. Interfaces, 2 = Power. Interfaces, 1 = LED. Interfaces, 2 = Link/ACT of Each Ethernet Ports. Interfaces, 1 = Power Input. Interfaces, 2 = AC Inlet",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "5c2b68290576fe59c1bc5ca5ac3351452ff77b99ef503e8aee7e7310e434dc32",
+          "unitIndex": 2,
+          "blockId": "20bad42d-e781-499e-a38e-fd5112fc8a4e",
+          "excerpt": "Power, 1 = Software Power Saving. Power, 2 = Default. , 1 = Power Methods. , 2 = AC. , 1 = AC. , 2 = 90~260V 50/60Hz.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有poe题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。未声明PoE的判断基于完整原件核对及MA24-09，不基于检索片段或PPPoE字样。"
+    },
+    {
+      "caseId": "base-35-compare",
+      "caseSha256": "5661374f0e2efe690407dec39c3d6232adf1468d7a4a904ba7bfab6ef8bdb4b2",
+      "pattern": "compare",
+      "expectedAnswer": "FS1024 (V1.0): 24个百兆RJ45口和AC输入插座。 AC 90～260V、50/60Hz输入；不支持PoE。\nHS105U (V1.0): 5个2.5Gbps RJ45口和USB-C输入口。 USB-C接受DC 4.8～18V输入，最大功耗6W、空闲1.6W；不支持PoE。",
+      "expectedSources": [
+        {
+          "assetSha256": "5c2b68290576fe59c1bc5ca5ac3351452ff77b99ef503e8aee7e7310e434dc32",
+          "unitIndex": 2,
+          "blockId": "18ae1455-4a77-4052-9c09-94764a118337",
+          "excerpt": "Interfaces, 1 = Physical Buttons. Interfaces, 2 = VLAN/Default/Extend DIP Switch. Interfaces, 1 = 10/100 Mbps RJ45 Ports. Interfaces, 2 = 24. Interfaces, 1 = VLAN Mode Ports. Interfaces, 2 = #1~#22. Interfaces, 1 = Extend Mode Ports. Interfaces, 2 = #1~#22. Interfaces, 1 = LED. Interfaces, 2 = Power. Interfaces, 1 = LED. Interfaces, 2 = Link/ACT of Each Ethernet Ports. Interfaces, 1 = Power Input. Interfaces, 2 = AC Inlet",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "5c2b68290576fe59c1bc5ca5ac3351452ff77b99ef503e8aee7e7310e434dc32",
+          "unitIndex": 2,
+          "blockId": "20bad42d-e781-499e-a38e-fd5112fc8a4e",
+          "excerpt": "Power, 1 = Software Power Saving. Power, 2 = Default. , 1 = Power Methods. , 2 = AC. , 1 = AC. , 2 = 90~260V 50/60Hz.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "4e6ff650acdbea7a956a8cb9cd3019ab5f12ba1b4c0656008410bbf6b36308c5",
+          "unitIndex": 4,
+          "blockId": "49805603-df58-42c0-963b-9756635350e8",
+          "excerpt": "Interfaces, 1 = 2.5 Gbps RJ45 Ports. Interfaces, 2 = 5. , 1 = Extend Mode Ports. , 2 = Configurable. , 1 = VLAN Mode Ports. , 2 = Configurable. , 1 = LED. , 2 = Power. , 1 = . , 2 = Link/Act of Each Ethernet Port. , 1 = Power Input. , 2 = USB-C Input.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "4e6ff650acdbea7a956a8cb9cd3019ab5f12ba1b4c0656008410bbf6b36308c5",
+          "unitIndex": 4,
+          "blockId": "49805603-df58-42c0-963b-9756635350e8",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = DC. , 1 = Power Input. , 2 = 4.8-18V ⎓ , max. 6W. , 1 = Power Consumption. , 2 = Max. 6W, Idle. 1.6W",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有compare题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-35-explain",
+      "caseSha256": "bd358190dcbeaa49e0f9ecbf10fc635a16144f329d4ab0ad0ea0aa4e72d33952",
+      "pattern": "explain",
+      "expectedAnswer": "FS1024 (V1.0): 适合需要24个百兆口、客户端隔离及远距离有线接入的桌面或机架部署。依据是VLAN/Extend开关、无风扇及安装规格；Extend端口1～22的250米模式为10Mbps，不是250米百兆或PoE供电。",
+      "expectedSources": [
+        {
+          "assetSha256": "5c2b68290576fe59c1bc5ca5ac3351452ff77b99ef503e8aee7e7310e434dc32",
+          "unitIndex": 2,
+          "blockId": "2ed0e7f7-1d13-40a5-bfe0-71c366d41785",
+          "excerpt": "A 24-FE switch with VLAN/Extend functions and a fanless cooling system.\n- RTL8324E-CG + RTL8208D\n- 24× Fast Ethernet Ports\n- Fanless Cooling\n- Default/VLAN/Extend DIP Switch\n- Extend for 250 Meters Transmission\n- VLAN for Clients Isolation",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "5c2b68290576fe59c1bc5ca5ac3351452ff77b99ef503e8aee7e7310e434dc32",
+          "unitIndex": 2,
+          "blockId": "20bad42d-e781-499e-a38e-fd5112fc8a4e",
+          "excerpt": "Performance, 1 = Copper Speed and Distance. Performance, 2 = Cat. 3 or higher cable: 100 meters at. , 1 = . , 2 = 10 Mbps; Cat. 5 or higher cable:. , 1 = . , 2 = 100 meters at 100 Mbps, 250 meters. , 1 = . , 2 = at 10 Mbps. , 1 = Copper Speed and Distance Note. , 2 = 250-meter transmission is only available. , 1 = . , 2 = on the Extend Mode ports.. , 1 = MAC Address Table. , 2 = 8K. , 1 = Max Switching Capcity. , 2 = 4.8 Gbps. , 1 = Max Forwading Rate. , 2 = 3.571 Mpps. , 1 = Jumbo Frame. , 2 = 2 KB. , 1 = Packet Buffer. , 2 = 2 Mbit.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "5c2b68290576fe59c1bc5ca5ac3351452ff77b99ef503e8aee7e7310e434dc32",
+          "unitIndex": 2,
+          "blockId": "20bad42d-e781-499e-a38e-fd5112fc8a4e",
+          "excerpt": "Mechanical, 1 = Installation. Mechanical, 2 = Desktop. , 1 = . , 2 = Rack-Mounting. , 1 = Dimension. , 2 = 270×182×44 mm. , 1 = . , 2 = 10.63×7.17×1.73 inches",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有explain题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-36-open",
+      "caseSha256": "488c6f267a89a5657b6490cb2f206eadc1ef793129cb6a6c09cd59451cc9d00f",
+      "pattern": "open",
+      "expectedAnswer": "Find and display the registered original “HS105U Datasheet V1.0” PDF, with an open or download link. It is a valid match for HS105U; do not substitute another model or turn the request into a specification answer.",
+      "expectedSources": [
+        {
+          "assetSha256": "4e6ff650acdbea7a956a8cb9cd3019ab5f12ba1b4c0656008410bbf6b36308c5",
+          "unitIndex": 4,
+          "blockId": "8ad99f65-ce20-4de6-af8e-5f6ec4dd79e0",
+          "excerpt": "- ° HS105U\n- ° USB-C to USB-C Cable\n- ° Installation Guide",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有open题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-36-ports",
+      "caseSha256": "eadde5d7806fff3370f51538eb8513e24cd3f5bad78eacaa249835e993430d23",
+      "pattern": "ports",
+      "expectedAnswer": "HS105U (V1.0): 5 physical 2.5Gbps RJ45 ports; the USB-C power input is not an Ethernet port. Count physical Ethernet connectors once; SIM slots, USB and power connectors are not Ethernet ports.",
+      "expectedSources": [
+        {
+          "assetSha256": "4e6ff650acdbea7a956a8cb9cd3019ab5f12ba1b4c0656008410bbf6b36308c5",
+          "unitIndex": 4,
+          "blockId": "49805603-df58-42c0-963b-9756635350e8",
+          "excerpt": "Interfaces, 1 = 2.5 Gbps RJ45 Ports. Interfaces, 2 = 5. , 1 = Extend Mode Ports. , 2 = Configurable. , 1 = VLAN Mode Ports. , 2 = Configurable. , 1 = LED. , 2 = Power. , 1 = . , 2 = Link/Act of Each Ethernet Port. , 1 = Power Input. , 2 = USB-C Input.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有ports题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-36-poe",
+      "caseSha256": "4fdfaca524097b74f225387565053ed4832f5504ed3dafd4c4cbd682f5ade9be",
+      "pattern": "poe",
+      "expectedAnswer": "No. HS105U (V1.0) does not support PoE input or output. The complete matching original does not declare PoE support, under the user-confirmed MA24-09 review rule. DC 4.8–18V input through USB-C; maximum consumption 6W, idle 1.6W. No PoE support.",
+      "expectedSources": [
+        {
+          "assetSha256": "4e6ff650acdbea7a956a8cb9cd3019ab5f12ba1b4c0656008410bbf6b36308c5",
+          "unitIndex": 4,
+          "blockId": "49805603-df58-42c0-963b-9756635350e8",
+          "excerpt": "Interfaces, 1 = 2.5 Gbps RJ45 Ports. Interfaces, 2 = 5. , 1 = Extend Mode Ports. , 2 = Configurable. , 1 = VLAN Mode Ports. , 2 = Configurable. , 1 = LED. , 2 = Power. , 1 = . , 2 = Link/Act of Each Ethernet Port. , 1 = Power Input. , 2 = USB-C Input.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "4e6ff650acdbea7a956a8cb9cd3019ab5f12ba1b4c0656008410bbf6b36308c5",
+          "unitIndex": 4,
+          "blockId": "49805603-df58-42c0-963b-9756635350e8",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = DC. , 1 = Power Input. , 2 = 4.8-18V ⎓ , max. 6W. , 1 = Power Consumption. , 2 = Max. 6W, Idle. 1.6W",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有poe题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。未声明PoE的判断基于完整原件核对及MA24-09，不基于检索片段或PPPoE字样。"
+    },
+    {
+      "caseId": "base-36-compare",
+      "caseSha256": "e062a0485658ce3e3fa1d857906b0d10640483f5850262759be61cd4fb00bba4",
+      "pattern": "compare",
+      "expectedAnswer": "HS105U (V1.0): Five 2.5Gbps RJ45 ports and a USB-C input. DC 4.8–18V input through USB-C; maximum consumption 6W, idle 1.6W. No PoE support.\nFS1024 (V1.0): Twenty-four Fast Ethernet RJ45 ports and an AC inlet. AC 90–260V, 50/60Hz input; no PoE support.",
+      "expectedSources": [
+        {
+          "assetSha256": "4e6ff650acdbea7a956a8cb9cd3019ab5f12ba1b4c0656008410bbf6b36308c5",
+          "unitIndex": 4,
+          "blockId": "49805603-df58-42c0-963b-9756635350e8",
+          "excerpt": "Interfaces, 1 = 2.5 Gbps RJ45 Ports. Interfaces, 2 = 5. , 1 = Extend Mode Ports. , 2 = Configurable. , 1 = VLAN Mode Ports. , 2 = Configurable. , 1 = LED. , 2 = Power. , 1 = . , 2 = Link/Act of Each Ethernet Port. , 1 = Power Input. , 2 = USB-C Input.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "4e6ff650acdbea7a956a8cb9cd3019ab5f12ba1b4c0656008410bbf6b36308c5",
+          "unitIndex": 4,
+          "blockId": "49805603-df58-42c0-963b-9756635350e8",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = DC. , 1 = Power Input. , 2 = 4.8-18V ⎓ , max. 6W. , 1 = Power Consumption. , 2 = Max. 6W, Idle. 1.6W",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "5c2b68290576fe59c1bc5ca5ac3351452ff77b99ef503e8aee7e7310e434dc32",
+          "unitIndex": 2,
+          "blockId": "18ae1455-4a77-4052-9c09-94764a118337",
+          "excerpt": "Interfaces, 1 = Physical Buttons. Interfaces, 2 = VLAN/Default/Extend DIP Switch. Interfaces, 1 = 10/100 Mbps RJ45 Ports. Interfaces, 2 = 24. Interfaces, 1 = VLAN Mode Ports. Interfaces, 2 = #1~#22. Interfaces, 1 = Extend Mode Ports. Interfaces, 2 = #1~#22. Interfaces, 1 = LED. Interfaces, 2 = Power. Interfaces, 1 = LED. Interfaces, 2 = Link/ACT of Each Ethernet Ports. Interfaces, 1 = Power Input. Interfaces, 2 = AC Inlet",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "5c2b68290576fe59c1bc5ca5ac3351452ff77b99ef503e8aee7e7310e434dc32",
+          "unitIndex": 2,
+          "blockId": "20bad42d-e781-499e-a38e-fd5112fc8a4e",
+          "excerpt": "Power, 1 = Software Power Saving. Power, 2 = Default. , 1 = Power Methods. , 2 = AC. , 1 = AC. , 2 = 90~260V 50/60Hz.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有compare题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-36-explain",
+      "caseSha256": "f52ad9f39026672fbeb0f9b980bf82f222e4cc387198b2d401696ccf5de00c6d",
+      "pattern": "explain",
+      "expectedAnswer": "HS105U (V1.0): Suitable for 2.5Gbps expansion for NAS, gaming PCs and creator PCs. The original names these scenarios and lists web management, VLAN/QoS/Port Trunk, loop detection and USB-C power. The 250m mode requires setting the port to 10Mbps in software, not 2.5Gbps.",
+      "expectedSources": [
+        {
+          "assetSha256": "4e6ff650acdbea7a956a8cb9cd3019ab5f12ba1b4c0656008410bbf6b36308c5",
+          "unitIndex": 4,
+          "blockId": "10841c1a-64c1-402a-b6b7-01625dd3d56b",
+          "excerpt": "A 5-Port 2.5G switch with management features and USB-C power input, ideal for 2.5 Gbps wired network expansion for NAS, gaming PC, and creator PC.\n- ° Powering via USB-C\n- ° 5× 2.5G Ethernet Ports\n- ° Web Management\n- ° VLAN, QoS, Port Trunk, etc\n- ° Loop Detection and Prevention\n- ° Desktop, Wall-Mount\n- ° 119×85×28 mm (4.69×3.35×1.1\")",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "4e6ff650acdbea7a956a8cb9cd3019ab5f12ba1b4c0656008410bbf6b36308c5",
+          "unitIndex": 4,
+          "blockId": "49805603-df58-42c0-963b-9756635350e8",
+          "excerpt": "Performance, 1 = Copper Speed. Performance, 2 = Cat . 3 or higher cable: 100 meters at 10 Mbps. , 1 = and Distance. , 2 = Cat . 5 or higher cable: 100 meters at 100 Mbps. , 1 = . , 2 = Cat . 5e or higher cable: 100 meters at 2.5 Gbps. , 1 = . , 2 = Cat . 5e or higher cable: 250 meters at 10 Mbps. , 1 = Copper Speed. , 2 = 250-meter transmission is available when the. , 1 = and Distance Note. , 2 = port speed is set at 10 Mbps in the software.. , 1 = MAC Address Table. , 2 = 4096. , 1 = Max Switching Capacity. , 2 = 25 Gbps. , 1 = Max Forwarding Rate. , 2 = 18.6 Mpps. , 1 = Jumbo Frame. , 2 = 9 KB. , 1 = Packet Buffer. , 2 = 4 Mbit.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有explain题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-37-open",
+      "caseSha256": "81a824963b6d4eaebbd1fbc07ac941b3ae219930047d78795bd1836ea92c9d9f",
+      "pattern": "open",
+      "expectedAnswer": "找到并展示已登记的原始《HS108ES1 Datasheet V1.0》PDF，提供打开或下载入口。这份原件匹配HS108ES1，不以其他型号替代，也不把打开资料请求改成参数问答。",
+      "expectedSources": [
+        {
+          "assetSha256": "3374cb028dd7be5148bb31c5410a0cca96adabba58ab872e612c0ab64f569b88",
+          "unitIndex": 4,
+          "blockId": "67b46bee-6685-4d54-8d1b-5a30fcbc1e95",
+          "excerpt": "- HS108ES1\n- Power Adapter\n- Installation Guide",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有open题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-37-ports",
+      "caseSha256": "370df5963c5476a1e70c167d5e3764841304004dd3c145a30bd157334558f031",
+      "pattern": "ports",
+      "expectedAnswer": "HS108ES1 (V1.0): 8个2.5Gbps RJ45网口，另有1个10G SFP+槽；按RJ45统计8个，计入SFP+则9个物理网络接口，不能写成9个RJ45。 物理网口只计一次；SIM槽、USB及电源接口不计作以太网口。",
+      "expectedSources": [
+        {
+          "assetSha256": "3374cb028dd7be5148bb31c5410a0cca96adabba58ab872e612c0ab64f569b88",
+          "unitIndex": 4,
+          "blockId": "dd0f74f7-93a8-4109-8126-dc0961ae1783",
+          "excerpt": "Interfaces, 1 = 10G SFP+ Slots. Interfaces, 2 = 1. Interfaces, 1 = 2.5G RJ45 Ports. Interfaces, 2 = 8. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = SFP+ supports 10G/2.5G/1G speeds..",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有ports题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-37-poe",
+      "caseSha256": "9abd5f1a8740e24ae5d903532fd59139db3ab19efbd5ee4a0da78dfd92e35f74",
+      "pattern": "poe",
+      "expectedAnswer": "不支持。HS108ES1 (V1.0)不支持PoE输入或输出。完整匹配原件未声明PoE支持，按用户确认的MA24-09口径判定。DC 12V/1A输入；最大功耗按模块分别10W（SFP-RJ45）或9W（SFP-SC），空闲3.7W；不支持PoE。",
+      "expectedSources": [
+        {
+          "assetSha256": "3374cb028dd7be5148bb31c5410a0cca96adabba58ab872e612c0ab64f569b88",
+          "unitIndex": 4,
+          "blockId": "dd0f74f7-93a8-4109-8126-dc0961ae1783",
+          "excerpt": "Interfaces, 1 = 10G SFP+ Slots. Interfaces, 2 = 1. Interfaces, 1 = 2.5G RJ45 Ports. Interfaces, 2 = 8. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = SFP+ supports 10G/2.5G/1G speeds..",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "3374cb028dd7be5148bb31c5410a0cca96adabba58ab872e612c0ab64f569b88",
+          "unitIndex": 5,
+          "blockId": "394b3238-38ed-4517-96b4-fa7e5631b583",
+          "excerpt": "Power, 1 = Power Input Type. Power, 2 = DC Jack. Power, 1 = Power Methods. Power, 2 = DC. Power, 1 = Power Input. Power, 2 = 12V ⎓ 1A. Power, 1 = Power Adapter in the Box. Power, 2 = Input: 100-240V~, 50/60Hz. Power, 1 = Power Adapter in the Box. Power, 2 = Output: 12V ⎓ 1A. Power, 1 = Max Power Consumption. Power, 2 = 10W (with SFP-RJ45 Module). Power, 1 = Max Power Consumption. Power, 2 = 9W (with SFP-SC Module). Power, 1 = Idle Power Consumption. Power, 2 = 3.7W.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有poe题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。未声明PoE的判断基于完整原件核对及MA24-09，不基于检索片段或PPPoE字样。"
+    },
+    {
+      "caseId": "base-37-compare",
+      "caseSha256": "138b355f8073acdbcbdff8c275e49bdd7e29c7d3bc5b6e37cf935fa1331d2726",
+      "pattern": "compare",
+      "expectedAnswer": "HS108ES1 (V1.0): 8个2.5Gbps RJ45及1个SFP+槽，SFP+列支持10G/2.5G/1G。 DC 12V/1A输入；最大功耗按模块分别10W（SFP-RJ45）或9W（SFP-SC），空闲3.7W；不支持PoE。\nLT400V (V1.0): 4个百兆RJ45、1个Nano SIM及VoLTE RJ11电话接口。 DC 12V/1A输入；不支持PoE。",
+      "expectedSources": [
+        {
+          "assetSha256": "3374cb028dd7be5148bb31c5410a0cca96adabba58ab872e612c0ab64f569b88",
+          "unitIndex": 4,
+          "blockId": "dd0f74f7-93a8-4109-8126-dc0961ae1783",
+          "excerpt": "Interfaces, 1 = 10G SFP+ Slots. Interfaces, 2 = 1. Interfaces, 1 = 2.5G RJ45 Ports. Interfaces, 2 = 8. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = SFP+ supports 10G/2.5G/1G speeds..",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "3374cb028dd7be5148bb31c5410a0cca96adabba58ab872e612c0ab64f569b88",
+          "unitIndex": 5,
+          "blockId": "394b3238-38ed-4517-96b4-fa7e5631b583",
+          "excerpt": "Power, 1 = Power Input Type. Power, 2 = DC Jack. Power, 1 = Power Methods. Power, 2 = DC. Power, 1 = Power Input. Power, 2 = 12V ⎓ 1A. Power, 1 = Power Adapter in the Box. Power, 2 = Input: 100-240V~, 50/60Hz. Power, 1 = Power Adapter in the Box. Power, 2 = Output: 12V ⎓ 1A. Power, 1 = Max Power Consumption. Power, 2 = 10W (with SFP-RJ45 Module). Power, 1 = Max Power Consumption. Power, 2 = 9W (with SFP-SC Module). Power, 1 = Idle Power Consumption. Power, 2 = 3.7W.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "2e0e8cd5984fe47d78f72e67c6962f6f58762c4ac51f66d1301f4819d4b60769",
+          "unitIndex": 4,
+          "blockId": "18b600e8-3945-41ee-a503-f34198b4fdee",
+          "excerpt": "Ethernet Ports, 1 = 1× 10/100 Mbps WAN/LAN + 3× 10/100 Mbps LAN. SIM Card Slot, 1 = 1× Nano SIM Slots.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "2e0e8cd5984fe47d78f72e67c6962f6f58762c4ac51f66d1301f4819d4b60769",
+          "unitIndex": 4,
+          "blockId": "d9277a4f-5cbe-402e-a819-27367e6f54cc",
+          "excerpt": "-  4G LTE Cat. 4 Up to 150 Mbps Download\n-  Up to 300 Mbps WiFi speed\n-  Voice over LTE via a RJ11 Port\n-  Four 10/100 Mbps Ethernet Ports (WAN Failover)\n-  VPN Server and Client",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "2e0e8cd5984fe47d78f72e67c6962f6f58762c4ac51f66d1301f4819d4b60769",
+          "unitIndex": 5,
+          "blockId": "98071e80-0f09-4d44-9055-4adc9fd1557a",
+          "excerpt": "Power, 1 = 12 V / 1 A DC.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有compare题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-37-explain",
+      "caseSha256": "d8f13e1fcdccb84b38731d84bb6c789251479fb27542a315394745246f4068f4",
+      "pattern": "explain",
+      "expectedAnswer": "HS108ES1 (V1.0): 适合楼宇或楼层间10G上联与2.5G终端接入，包括AP、NAS及高带宽PC。原件明确列出这些场景，依据是8个2.5G口、1个SFP+、Web管理及VLAN/QoS/Port Trunk；光链路距离取决于所装模块，不能保证任意光模块兼容或PoE供电。",
+      "expectedSources": [
+        {
+          "assetSha256": "3374cb028dd7be5148bb31c5410a0cca96adabba58ab872e612c0ab64f569b88",
+          "unitIndex": 2,
+          "blockId": "0a8eea74-16f7-445f-847d-816aea721827",
+          "excerpt": "A reliable easy-managed switch with a 10G uplink and 2.5G downlinks for lightning-fast network distribution across buildings or floors. Designed for 2.5G access points, NAS, and high-bandwidth PC networking demand.\nProvide 2.5G Business Wi-Fi for Customers\nBuild 2.5G Networks for Demanding Tasks\nSave Spaves with Wallmounting",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "3374cb028dd7be5148bb31c5410a0cca96adabba58ab872e612c0ab64f569b88",
+          "unitIndex": 4,
+          "blockId": "c9041580-d9ad-4676-8871-af41b317072f",
+          "excerpt": "- 8× 2.5GbE, 1× 10G SFP+\n- Web Management\n- VLAN, QoS, Port Trunk, etc\n- Loop Detection and Prevention\n- EEE (802.3az Power Saving)\n- Desktop, Wall-Mount\n- 190×100×28 mm (7.48×3.94×1.1\")",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "3374cb028dd7be5148bb31c5410a0cca96adabba58ab872e612c0ab64f569b88",
+          "unitIndex": 4,
+          "blockId": "dd0f74f7-93a8-4109-8126-dc0961ae1783",
+          "excerpt": "Performance, 1 = Optical Spec and Distance. Performance, 2 = Depends on the Installed Optical Module.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有explain题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-38-open",
+      "caseSha256": "45ed6aa26176dc5120a018afb8cbcbc44ceace2d3558c4e66893b5284f3b7cbe",
+      "pattern": "open",
+      "expectedAnswer": "Find and display the registered original “LT400V Datasheet V1.0” PDF, with an open or download link. It is a valid match for LT400V; do not substitute another model or turn the request into a specification answer.",
+      "expectedSources": [
+        {
+          "assetSha256": "2e0e8cd5984fe47d78f72e67c6962f6f58762c4ac51f66d1301f4819d4b60769",
+          "unitIndex": 1,
+          "blockId": "60a9545a-6b5f-4b81-8d7d-77364e8018bb",
+          "excerpt": "Model: LT400V",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有open题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-38-ports",
+      "caseSha256": "078ffa1dba21bf10683fb68ab14328b1373a5fd5157647e84507f61871f8731b",
+      "pattern": "ports",
+      "expectedAnswer": "LT400V (V1.0): 4 Fast Ethernet RJ45 ports: one configurable WAN/LAN and three LAN ports. The VoLTE RJ11 telephone port is not an Ethernet port. Count physical Ethernet connectors once; SIM slots, USB and power connectors are not Ethernet ports.",
+      "expectedSources": [
+        {
+          "assetSha256": "2e0e8cd5984fe47d78f72e67c6962f6f58762c4ac51f66d1301f4819d4b60769",
+          "unitIndex": 4,
+          "blockId": "18b600e8-3945-41ee-a503-f34198b4fdee",
+          "excerpt": "Ethernet Ports, 1 = 1× 10/100 Mbps WAN/LAN + 3× 10/100 Mbps LAN. SIM Card Slot, 1 = 1× Nano SIM Slots.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "2e0e8cd5984fe47d78f72e67c6962f6f58762c4ac51f66d1301f4819d4b60769",
+          "unitIndex": 4,
+          "blockId": "d9277a4f-5cbe-402e-a819-27367e6f54cc",
+          "excerpt": "-  4G LTE Cat. 4 Up to 150 Mbps Download\n-  Up to 300 Mbps WiFi speed\n-  Voice over LTE via a RJ11 Port\n-  Four 10/100 Mbps Ethernet Ports (WAN Failover)\n-  VPN Server and Client",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有ports题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-38-poe",
+      "caseSha256": "0f76be5c4ef317e4d6653c5c414250431a5ca6592b9ffa370eb6501b6ffe0d71",
+      "pattern": "poe",
+      "expectedAnswer": "No. LT400V (V1.0) does not support PoE input or output. The complete matching original does not declare PoE support, under the user-confirmed MA24-09 review rule. DC 12V/1A input; no PoE support.",
+      "expectedSources": [
+        {
+          "assetSha256": "2e0e8cd5984fe47d78f72e67c6962f6f58762c4ac51f66d1301f4819d4b60769",
+          "unitIndex": 4,
+          "blockId": "18b600e8-3945-41ee-a503-f34198b4fdee",
+          "excerpt": "Ethernet Ports, 1 = 1× 10/100 Mbps WAN/LAN + 3× 10/100 Mbps LAN. SIM Card Slot, 1 = 1× Nano SIM Slots.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "2e0e8cd5984fe47d78f72e67c6962f6f58762c4ac51f66d1301f4819d4b60769",
+          "unitIndex": 4,
+          "blockId": "d9277a4f-5cbe-402e-a819-27367e6f54cc",
+          "excerpt": "-  4G LTE Cat. 4 Up to 150 Mbps Download\n-  Up to 300 Mbps WiFi speed\n-  Voice over LTE via a RJ11 Port\n-  Four 10/100 Mbps Ethernet Ports (WAN Failover)\n-  VPN Server and Client",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "2e0e8cd5984fe47d78f72e67c6962f6f58762c4ac51f66d1301f4819d4b60769",
+          "unitIndex": 5,
+          "blockId": "98071e80-0f09-4d44-9055-4adc9fd1557a",
+          "excerpt": "Power, 1 = 12 V / 1 A DC.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有poe题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。未声明PoE的判断基于完整原件核对及MA24-09，不基于检索片段或PPPoE字样。"
+    },
+    {
+      "caseId": "base-38-compare",
+      "caseSha256": "2cb2b61111fec963e2304cc93cc171af34bb1ddc79d243e62bd6983286ec7e59",
+      "pattern": "compare",
+      "expectedAnswer": "LT400V (V1.0): Four Fast Ethernet RJ45 ports, a Nano SIM slot and a VoLTE RJ11 telephone interface. DC 12V/1A input; no PoE support.\nHS108ES1 (V1.0): Eight 2.5Gbps RJ45 ports and one SFP+ slot supporting 10G/2.5G/1G. DC 12V/1A input; stated maximum consumption is 10W with an SFP-RJ45 module or 9W with an SFP-SC module, idle 3.7W. No PoE support.",
+      "expectedSources": [
+        {
+          "assetSha256": "2e0e8cd5984fe47d78f72e67c6962f6f58762c4ac51f66d1301f4819d4b60769",
+          "unitIndex": 4,
+          "blockId": "18b600e8-3945-41ee-a503-f34198b4fdee",
+          "excerpt": "Ethernet Ports, 1 = 1× 10/100 Mbps WAN/LAN + 3× 10/100 Mbps LAN. SIM Card Slot, 1 = 1× Nano SIM Slots.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "2e0e8cd5984fe47d78f72e67c6962f6f58762c4ac51f66d1301f4819d4b60769",
+          "unitIndex": 4,
+          "blockId": "d9277a4f-5cbe-402e-a819-27367e6f54cc",
+          "excerpt": "-  4G LTE Cat. 4 Up to 150 Mbps Download\n-  Up to 300 Mbps WiFi speed\n-  Voice over LTE via a RJ11 Port\n-  Four 10/100 Mbps Ethernet Ports (WAN Failover)\n-  VPN Server and Client",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "2e0e8cd5984fe47d78f72e67c6962f6f58762c4ac51f66d1301f4819d4b60769",
+          "unitIndex": 5,
+          "blockId": "98071e80-0f09-4d44-9055-4adc9fd1557a",
+          "excerpt": "Power, 1 = 12 V / 1 A DC.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "3374cb028dd7be5148bb31c5410a0cca96adabba58ab872e612c0ab64f569b88",
+          "unitIndex": 4,
+          "blockId": "dd0f74f7-93a8-4109-8126-dc0961ae1783",
+          "excerpt": "Interfaces, 1 = 10G SFP+ Slots. Interfaces, 2 = 1. Interfaces, 1 = 2.5G RJ45 Ports. Interfaces, 2 = 8. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = SFP+ supports 10G/2.5G/1G speeds..",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "3374cb028dd7be5148bb31c5410a0cca96adabba58ab872e612c0ab64f569b88",
+          "unitIndex": 5,
+          "blockId": "394b3238-38ed-4517-96b4-fa7e5631b583",
+          "excerpt": "Power, 1 = Power Input Type. Power, 2 = DC Jack. Power, 1 = Power Methods. Power, 2 = DC. Power, 1 = Power Input. Power, 2 = 12V ⎓ 1A. Power, 1 = Power Adapter in the Box. Power, 2 = Input: 100-240V~, 50/60Hz. Power, 1 = Power Adapter in the Box. Power, 2 = Output: 12V ⎓ 1A. Power, 1 = Max Power Consumption. Power, 2 = 10W (with SFP-RJ45 Module). Power, 1 = Max Power Consumption. Power, 2 = 9W (with SFP-SC Module). Power, 1 = Idle Power Consumption. Power, 2 = 3.7W.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有compare题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-38-explain",
+      "caseSha256": "37f454ce873d2b3ea1ede90165ffd92451fafd3be0ddb5b25db0af7b387bda27",
+      "pattern": "explain",
+      "expectedAnswer": "LT400V (V1.0): Suitable for 4G networking in homes, offices, villas and RVs, including streaming/surveillance. The original names these uses and lists 4G Cat.4, 300Mbps Wi-Fi, four Fast Ethernet ports and VoLTE RJ11. Voice service and bands must match the carrier; stated rates do not guarantee throughput.",
+      "expectedSources": [
+        {
+          "assetSha256": "2e0e8cd5984fe47d78f72e67c6962f6f58762c4ac51f66d1301f4819d4b60769",
+          "unitIndex": 2,
+          "blockId": "55aedce9-18f1-4c9f-9207-507ff95a2c5f",
+          "excerpt": "Simply plug in a SIM card to enjoy a smooth Wi-Fi connection and wired connectivity from four Ethernet ports, providing convenient and stable network for home, office, villa, and RV scenario.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "2e0e8cd5984fe47d78f72e67c6962f6f58762c4ac51f66d1301f4819d4b60769",
+          "unitIndex": 4,
+          "blockId": "d9277a4f-5cbe-402e-a819-27367e6f54cc",
+          "excerpt": "-  4G LTE Cat. 4 Up to 150 Mbps Download\n-  Up to 300 Mbps WiFi speed\n-  Voice over LTE via a RJ11 Port\n-  Four 10/100 Mbps Ethernet Ports (WAN Failover)\n-  VPN Server and Client",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有explain题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-39-open",
+      "caseSha256": "588c953217eb5485f80678ed2cbb01505110a8db525d65c49fcd33e3a68537c8",
+      "pattern": "open",
+      "expectedAnswer": "找到并展示已登记的原始《LT500D Datasheet V3.0》PDF，提供打开或下载入口。这份原件匹配LT500D，不以其他型号替代，也不把打开资料请求改成参数问答。",
+      "expectedSources": [
+        {
+          "assetSha256": "2a7466d4d034bbbf8c5668413671ff29c83086e22245d5f1fd1e9e2d58a20f8c",
+          "unitIndex": 1,
+          "blockId": "e854556d-ef7c-4f01-a6c0-d068eec2abb0",
+          "excerpt": "Model: LT500D",
+          "version": "V3.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有open题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-39-ports",
+      "caseSha256": "231b03e8a89be1046496a2bd06e2d675929d4b686400f4c6aba05ebc0e96279c",
+      "pattern": "ports",
+      "expectedAnswer": "LT500D (V3.0): 4个百兆RJ45网口：1个WAN/LAN复用口和3个LAN，另有1个Nano SIM槽。 物理网口只计一次；SIM槽、USB及电源接口不计作以太网口。",
+      "expectedSources": [
+        {
+          "assetSha256": "2a7466d4d034bbbf8c5668413671ff29c83086e22245d5f1fd1e9e2d58a20f8c",
+          "unitIndex": 3,
+          "blockId": "80f9f0e3-d30d-43b6-9dd4-d0603494c5d5",
+          "excerpt": "- 1× 10/100 Mbps WAN/LAN Port\n- 3× 10/100 Mbps LAN Ports\n- 1× Power Jack\n- 1× Reset Button\n- 1× WPS Button\n- 1× Nano SIM Card Slot\nRESET\nPOWER",
+          "version": "V3.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有ports题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-39-poe",
+      "caseSha256": "579e1eff5a77f56a358deff4516079997c955e817113ccd5f6abce056ba9c050",
+      "pattern": "poe",
+      "expectedAnswer": "不支持。LT500D (V3.0)不支持PoE输入或输出。完整匹配原件未声明PoE支持，按用户确认的MA24-09口径判定。原件列出Power Jack及随箱Power Adapter，但未给额定供电电压/电流，不能从LT500E补造；不支持PoE。",
+      "expectedSources": [
+        {
+          "assetSha256": "2a7466d4d034bbbf8c5668413671ff29c83086e22245d5f1fd1e9e2d58a20f8c",
+          "unitIndex": 3,
+          "blockId": "80f9f0e3-d30d-43b6-9dd4-d0603494c5d5",
+          "excerpt": "- 1× 10/100 Mbps WAN/LAN Port\n- 3× 10/100 Mbps LAN Ports\n- 1× Power Jack\n- 1× Reset Button\n- 1× WPS Button\n- 1× Nano SIM Card Slot\nRESET\nPOWER",
+          "version": "V3.0"
+        },
+        {
+          "assetSha256": "2a7466d4d034bbbf8c5668413671ff29c83086e22245d5f1fd1e9e2d58a20f8c",
+          "unitIndex": 6,
+          "blockId": "30ae48fc-041a-4200-b772-7579a77312e3",
+          "excerpt": "Package, 1 = 4G LTE WiFi Router. Content, 1 = Power Adapter RJ45 Ethernet Cable Quick Installation Guide.",
+          "version": "V3.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有poe题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。未声明PoE的判断基于完整原件核对及MA24-09，不基于检索片段或PPPoE字样。"
+    },
+    {
+      "caseId": "base-39-compare",
+      "caseSha256": "b5b582e1370916c2394b971b2c67cc0fb983a53c647181a836d244c7d4e345e9",
+      "pattern": "compare",
+      "expectedAnswer": "LT500D (V3.0): 4个百兆RJ45口、1个Nano SIM槽和电源插孔。 原件列出Power Jack及随箱Power Adapter，但未给额定供电电压/电流，不能从LT500E补造；不支持PoE。\nLT500E (V1.0): 4个RJ45（1个WAN/LAN和3个LAN）及1个Nano SIM；硬件表10/100Mbps与概述Gigabit矛盾，速率须进一步核实。 DC 12V/1A输入；不支持PoE。",
+      "expectedSources": [
+        {
+          "assetSha256": "2a7466d4d034bbbf8c5668413671ff29c83086e22245d5f1fd1e9e2d58a20f8c",
+          "unitIndex": 3,
+          "blockId": "80f9f0e3-d30d-43b6-9dd4-d0603494c5d5",
+          "excerpt": "- 1× 10/100 Mbps WAN/LAN Port\n- 3× 10/100 Mbps LAN Ports\n- 1× Power Jack\n- 1× Reset Button\n- 1× WPS Button\n- 1× Nano SIM Card Slot\nRESET\nPOWER",
+          "version": "V3.0"
+        },
+        {
+          "assetSha256": "2a7466d4d034bbbf8c5668413671ff29c83086e22245d5f1fd1e9e2d58a20f8c",
+          "unitIndex": 6,
+          "blockId": "30ae48fc-041a-4200-b772-7579a77312e3",
+          "excerpt": "Package, 1 = 4G LTE WiFi Router. Content, 1 = Power Adapter RJ45 Ethernet Cable Quick Installation Guide.",
+          "version": "V3.0"
+        },
+        {
+          "assetSha256": "e7a420e374471409871e4d40a01e969aa634f4cbb3e40d3b2de3341ff74fb21c",
+          "unitIndex": 4,
+          "blockId": "5d3dcb90-9850-4542-913f-6d9c15fd7b48",
+          "excerpt": "Ethernet Ports, 1 = 1× 10/100 Mbps WAN/LAN + 3× 10/100 Mbps LAN. SIM Card Slot, 1 = 1× Nano SIM Slots.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "e7a420e374471409871e4d40a01e969aa634f4cbb3e40d3b2de3341ff74fb21c",
+          "unitIndex": 4,
+          "blockId": "8f653572-6987-49e6-9ed4-7a0025201f24",
+          "excerpt": "-  4G LTE Cat. 4 Up to 150 Mbps Download\n-  AC1200 Dual Band Wi-Fi\n-  Four Gigabit Ethernet Ports (WAN Failover)\n-  VPN Server and Client",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "e7a420e374471409871e4d40a01e969aa634f4cbb3e40d3b2de3341ff74fb21c",
+          "unitIndex": 5,
+          "blockId": "5a1fe97d-6a26-4595-896a-c52532b444c9",
+          "excerpt": "Power, 1 = 12 V / 1 A DC.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有compare题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-39-explain",
+      "caseSha256": "5831e970be5ce7dde95a7201153739d66a60f25a46ad52b35354f2fd6c131d1f",
+      "pattern": "explain",
+      "expectedAnswer": "LT500D (V3.0): 适合家庭或远程工作的4G和有线WAN接入。原件明确列出家庭/远程工作，并说明WAN/LAN可配置、有线优先和4G双连接；依据还包括Nano SIM与AC1200双频Wi-Fi，实际性能须按运营商和配置评估。",
+      "expectedSources": [
+        {
+          "assetSha256": "2a7466d4d034bbbf8c5668413671ff29c83086e22245d5f1fd1e9e2d58a20f8c",
+          "unitIndex": 2,
+          "blockId": "ac14fd03-1cb4-461d-95a7-c8dff89577be",
+          "excerpt": "Tested in the field for years to ensure universal compatibility with 4 advanced antennas to deliver a smooth connection. Simply plug in a SIM card and power on this elegant piece of technology to utilize fast and stable Wi-Fi, whether you're at home or working remote.",
+          "version": "V3.0"
+        },
+        {
+          "assetSha256": "2a7466d4d034bbbf8c5668413671ff29c83086e22245d5f1fd1e9e2d58a20f8c",
+          "unitIndex": 3,
+          "blockId": "85c5c6a8-08e3-4b50-9146-395ca83821d3",
+          "excerpt": "The WAN/LAN port can be configured as a WAN or LAN port. When working on LAN mode, LT500D is just a normal 4G LTE router. While working on WAN mode, LT500D can maintain 4G and WAN connections at the same time, and provide Internet preferentially from wired ports to reduce 4G mobile data fees.",
+          "version": "V3.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有explain题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-40-open",
+      "caseSha256": "8b2fc34780b1edf1f85e5665133d6c8e3df7c7c7bc431bfaae758c59efe360ff",
+      "pattern": "open",
+      "expectedAnswer": "Find and display the registered original “LT500E Datasheet V1.0” PDF, with an open or download link. It is a valid match for LT500E; do not substitute another model or turn the request into a specification answer.",
+      "expectedSources": [
+        {
+          "assetSha256": "e7a420e374471409871e4d40a01e969aa634f4cbb3e40d3b2de3341ff74fb21c",
+          "unitIndex": 1,
+          "blockId": "fc93e7b8-25e3-4ebb-92b2-ebe7c3a47903",
+          "excerpt": "Model: LT500E",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有open题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-40-ports",
+      "caseSha256": "d3984ceb77a8087a0c4eaae2f4dfb15bd447badddb3c6eadead8ffab0f572a24",
+      "pattern": "ports",
+      "expectedAnswer": "LT500E (V1.0): 4 RJ45 ports: one configurable WAN/LAN and three LAN ports. The hardware table and cover list 10/100Mbps, but the overview says Four Gigabit; preserve the unresolved rate conflict. Count physical Ethernet connectors once; SIM slots, USB and power connectors are not Ethernet ports.",
+      "expectedSources": [
+        {
+          "assetSha256": "e7a420e374471409871e4d40a01e969aa634f4cbb3e40d3b2de3341ff74fb21c",
+          "unitIndex": 4,
+          "blockId": "5d3dcb90-9850-4542-913f-6d9c15fd7b48",
+          "excerpt": "Ethernet Ports, 1 = 1× 10/100 Mbps WAN/LAN + 3× 10/100 Mbps LAN. SIM Card Slot, 1 = 1× Nano SIM Slots.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "e7a420e374471409871e4d40a01e969aa634f4cbb3e40d3b2de3341ff74fb21c",
+          "unitIndex": 4,
+          "blockId": "8f653572-6987-49e6-9ed4-7a0025201f24",
+          "excerpt": "-  4G LTE Cat. 4 Up to 150 Mbps Download\n-  AC1200 Dual Band Wi-Fi\n-  Four Gigabit Ethernet Ports (WAN Failover)\n-  VPN Server and Client",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有ports题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-40-poe",
+      "caseSha256": "7b561b8653e1a179a006c2887f749c9394c51650afef548721eaa00f6d5b93e0",
+      "pattern": "poe",
+      "expectedAnswer": "No. LT500E (V1.0) does not support PoE input or output. The complete matching original does not declare PoE support, under the user-confirmed MA24-09 review rule. DC 12V/1A input; no PoE support.",
+      "expectedSources": [
+        {
+          "assetSha256": "e7a420e374471409871e4d40a01e969aa634f4cbb3e40d3b2de3341ff74fb21c",
+          "unitIndex": 4,
+          "blockId": "5d3dcb90-9850-4542-913f-6d9c15fd7b48",
+          "excerpt": "Ethernet Ports, 1 = 1× 10/100 Mbps WAN/LAN + 3× 10/100 Mbps LAN. SIM Card Slot, 1 = 1× Nano SIM Slots.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "e7a420e374471409871e4d40a01e969aa634f4cbb3e40d3b2de3341ff74fb21c",
+          "unitIndex": 4,
+          "blockId": "8f653572-6987-49e6-9ed4-7a0025201f24",
+          "excerpt": "-  4G LTE Cat. 4 Up to 150 Mbps Download\n-  AC1200 Dual Band Wi-Fi\n-  Four Gigabit Ethernet Ports (WAN Failover)\n-  VPN Server and Client",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "e7a420e374471409871e4d40a01e969aa634f4cbb3e40d3b2de3341ff74fb21c",
+          "unitIndex": 5,
+          "blockId": "5a1fe97d-6a26-4595-896a-c52532b444c9",
+          "excerpt": "Power, 1 = 12 V / 1 A DC.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有poe题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。未声明PoE的判断基于完整原件核对及MA24-09，不基于检索片段或PPPoE字样。"
+    },
+    {
+      "caseId": "base-40-compare",
+      "caseSha256": "71ba38dda5aea9e574b42c8a527e9d4935f4cb10567b9534565f8e2ed2ee8392",
+      "pattern": "compare",
+      "expectedAnswer": "LT500E (V1.0): Four RJ45 ports (one WAN/LAN and three LAN) and one Nano SIM. The table says 10/100Mbps while the overview says Gigabit; the rate needs further verification. DC 12V/1A input; no PoE support.\nLT500D (V3.0): Four Fast Ethernet RJ45 ports, one Nano SIM slot and a power jack. The original lists a power jack and an included adapter but gives no rated supply voltage/current. Do not copy it from LT500E. No PoE support.",
+      "expectedSources": [
+        {
+          "assetSha256": "e7a420e374471409871e4d40a01e969aa634f4cbb3e40d3b2de3341ff74fb21c",
+          "unitIndex": 4,
+          "blockId": "5d3dcb90-9850-4542-913f-6d9c15fd7b48",
+          "excerpt": "Ethernet Ports, 1 = 1× 10/100 Mbps WAN/LAN + 3× 10/100 Mbps LAN. SIM Card Slot, 1 = 1× Nano SIM Slots.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "e7a420e374471409871e4d40a01e969aa634f4cbb3e40d3b2de3341ff74fb21c",
+          "unitIndex": 4,
+          "blockId": "8f653572-6987-49e6-9ed4-7a0025201f24",
+          "excerpt": "-  4G LTE Cat. 4 Up to 150 Mbps Download\n-  AC1200 Dual Band Wi-Fi\n-  Four Gigabit Ethernet Ports (WAN Failover)\n-  VPN Server and Client",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "e7a420e374471409871e4d40a01e969aa634f4cbb3e40d3b2de3341ff74fb21c",
+          "unitIndex": 5,
+          "blockId": "5a1fe97d-6a26-4595-896a-c52532b444c9",
+          "excerpt": "Power, 1 = 12 V / 1 A DC.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "2a7466d4d034bbbf8c5668413671ff29c83086e22245d5f1fd1e9e2d58a20f8c",
+          "unitIndex": 3,
+          "blockId": "80f9f0e3-d30d-43b6-9dd4-d0603494c5d5",
+          "excerpt": "- 1× 10/100 Mbps WAN/LAN Port\n- 3× 10/100 Mbps LAN Ports\n- 1× Power Jack\n- 1× Reset Button\n- 1× WPS Button\n- 1× Nano SIM Card Slot\nRESET\nPOWER",
+          "version": "V3.0"
+        },
+        {
+          "assetSha256": "2a7466d4d034bbbf8c5668413671ff29c83086e22245d5f1fd1e9e2d58a20f8c",
+          "unitIndex": 6,
+          "blockId": "30ae48fc-041a-4200-b772-7579a77312e3",
+          "excerpt": "Package, 1 = 4G LTE WiFi Router. Content, 1 = Power Adapter RJ45 Ethernet Cable Quick Installation Guide.",
+          "version": "V3.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有compare题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-40-explain",
+      "caseSha256": "50e9a292a5482a85184824bfbf26cd2160dc336ff98be57a171969ab5ef347e9",
+      "pattern": "explain",
+      "expectedAnswer": "LT500E (V1.0): Suitable for streaming or surveillance deployments needing 4G cellular and dual-band Wi-Fi. The original lists these uses, 4G Cat.4, AC1200, Nano SIM and WAN failover. The Ethernet-rate conflict prevents a confirmed Gigabit claim; cellular rates and coverage are not guarantees.",
+      "expectedSources": [
+        {
+          "assetSha256": "e7a420e374471409871e4d40a01e969aa634f4cbb3e40d3b2de3341ff74fb21c",
+          "unitIndex": 2,
+          "blockId": "eb59d846-1eba-4b2b-a3a1-5d61acbf19bf",
+          "excerpt": "LT500E is equipped with 4G LTE Cat. 4 standard with maxmium speed of 150/50 Mbps (DL/UL). Enjoy the convenience of plug and play for network everywhere provided by 4G LTE. Suitable for streaming and surveilance.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "e7a420e374471409871e4d40a01e969aa634f4cbb3e40d3b2de3341ff74fb21c",
+          "unitIndex": 4,
+          "blockId": "8f653572-6987-49e6-9ed4-7a0025201f24",
+          "excerpt": "-  4G LTE Cat. 4 Up to 150 Mbps Download\n-  AC1200 Dual Band Wi-Fi\n-  Four Gigabit Ethernet Ports (WAN Failover)\n-  VPN Server and Client",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "e7a420e374471409871e4d40a01e969aa634f4cbb3e40d3b2de3341ff74fb21c",
+          "unitIndex": 4,
+          "blockId": "5d3dcb90-9850-4542-913f-6d9c15fd7b48",
+          "excerpt": "Ethernet Ports, 1 = 1× 10/100 Mbps WAN/LAN + 3× 10/100 Mbps LAN. SIM Card Slot, 1 = 1× Nano SIM Slots.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有explain题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-41-open",
+      "caseSha256": "367497fb4cd8bb14dc4819bdc4849d8c65c3eb0c638bd56bc4e73952b6236a26",
+      "pattern": "open",
+      "expectedAnswer": "找到并展示已登记的原始《LT700E Datasheet V1.0》PDF，提供打开或下载入口。这份原件匹配LT700E，不以其他型号替代，也不把打开资料请求改成参数问答。",
+      "expectedSources": [
+        {
+          "assetSha256": "9111e06b5e14620f40f3a2ffdf26c317f8c04992b168498c9d5456a7e14d07b4",
+          "unitIndex": 2,
+          "blockId": "e2a34a05-c0d8-4609-8c67-36a367bc07f5",
+          "excerpt": "Enjoy Blazing Fast 4G LTE and Wi-Fi Speed. LT700E uses the latest generation 4G LTE technology to reach speeds of up to 300Mbps in download and 50Mbps in upload. It also allows you to connect via Wi-Fi with a maximum speed of 867Mbps on 5GHz and 300Mbps on 2.4GHz to enjoy gaming, streaming, and much more.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有open题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-41-ports",
+      "caseSha256": "245b83543d766466e980ae278009daf51e2b26cb33e8e3b5298eb5adffc44a25",
+      "pattern": "ports",
+      "expectedAnswer": "LT700E (V1.0): 4个千兆RJ45网口：1个WAN/LAN复用口和3个LAN；另有1个Nano SIM槽，不是LT700的双SIM配置。 物理网口只计一次；SIM槽、USB及电源接口不计作以太网口。",
+      "expectedSources": [
+        {
+          "assetSha256": "9111e06b5e14620f40f3a2ffdf26c317f8c04992b168498c9d5456a7e14d07b4",
+          "unitIndex": 4,
+          "blockId": "20ac822f-f94c-4c58-8832-1e5182a949b0",
+          "excerpt": "Ethernet Ports, 1 = 1 GbE WAN/LAN + 3 GbE LAN. SIM Card slot, 1 = 1 x SIM Slot (Nano).",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有ports题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-41-poe",
+      "caseSha256": "7fc65598a78bfcc6929fac236217b9d4aaf99837dccc77cc968085938c26e3b9",
+      "pattern": "poe",
+      "expectedAnswer": "不支持。LT700E (V1.0)不支持PoE输入或输出。完整匹配原件未声明PoE支持，按用户确认的MA24-09口径判定。DC 12V/1.5A桶形插头输入；适配器输入90～260V AC，输出12V/1.5A；不支持PoE。",
+      "expectedSources": [
+        {
+          "assetSha256": "9111e06b5e14620f40f3a2ffdf26c317f8c04992b168498c9d5456a7e14d07b4",
+          "unitIndex": 4,
+          "blockId": "20ac822f-f94c-4c58-8832-1e5182a949b0",
+          "excerpt": "Ethernet Ports, 1 = 1 GbE WAN/LAN + 3 GbE LAN. SIM Card slot, 1 = 1 x SIM Slot (Nano).",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "9111e06b5e14620f40f3a2ffdf26c317f8c04992b168498c9d5456a7e14d07b4",
+          "unitIndex": 5,
+          "blockId": "9915cbeb-9cd9-44b0-a2ab-52271c96f395",
+          "excerpt": "Power, 1 = AC Power Adapter: Input: 90~260V Output: 12V, 1.5A DC input (12V-1.5A) Barrel Plug.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有poe题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。未声明PoE的判断基于完整原件核对及MA24-09，不基于检索片段或PPPoE字样。"
+    },
+    {
+      "caseId": "base-41-compare",
+      "caseSha256": "98bb51c34cfd95ed0307be8c13df01567ec37e5ece2e08d37fcf7696765b8b77",
+      "pattern": "compare",
+      "expectedAnswer": "LT700E (V1.0): 4个千兆RJ45（1个WAN/LAN和3个LAN）与1个Nano SIM槽。 DC 12V/1.5A桶形插头输入；适配器输入90～260V AC，输出12V/1.5A；不支持PoE。\nP2 (V2.0): 2个千兆RJ45（1个WAN/LAN和1个LAN）及1个Nano SIM；RJ11 VoNR/VoLTE仅ISP订单可选。 DC 12V/1.5A输入；适配器输入100～240V AC、50/60Hz，输出12V/1.5A DC；不支持PoE。",
+      "expectedSources": [
+        {
+          "assetSha256": "9111e06b5e14620f40f3a2ffdf26c317f8c04992b168498c9d5456a7e14d07b4",
+          "unitIndex": 4,
+          "blockId": "20ac822f-f94c-4c58-8832-1e5182a949b0",
+          "excerpt": "Ethernet Ports, 1 = 1 GbE WAN/LAN + 3 GbE LAN. SIM Card slot, 1 = 1 x SIM Slot (Nano).",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "9111e06b5e14620f40f3a2ffdf26c317f8c04992b168498c9d5456a7e14d07b4",
+          "unitIndex": 5,
+          "blockId": "9915cbeb-9cd9-44b0-a2ab-52271c96f395",
+          "excerpt": "Power, 1 = AC Power Adapter: Input: 90~260V Output: 12V, 1.5A DC input (12V-1.5A) Barrel Plug.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "ece4f6e50f11c40e3f0135fe7141281f5b5f8a05248d12b6b52bc385772e555b",
+          "unitIndex": 4,
+          "blockId": "dfc26f18-5bd8-4da7-ad08-6a938c765257",
+          "excerpt": "Interfaces, 1 = Gigabit RJ45 Ports. Interfaces, 2 = 2. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = One WAN/LAN, one LAN. Interfaces, 1 = FXS Ports. Interfaces, 2 = 1× RJ11 (VoNR/VoLTE) (Optional for ISP order)",
+          "version": "V2.0"
+        },
+        {
+          "assetSha256": "ece4f6e50f11c40e3f0135fe7141281f5b5f8a05248d12b6b52bc385772e555b",
+          "unitIndex": 4,
+          "blockId": "393a2362-1a07-4ddd-b34c-4fab9caec6bc",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = DC. Power, 1 = DC. Power, 2 = 12V 1.5A. Power, 1 = Power Adapter. Power, 2 = Input: 100 ~ 240 V, 50/60 Hz AC. Power, 1 = Power Adapter. Power, 2 = Output: 12V 1.5A DC.",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有compare题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-41-explain",
+      "caseSha256": "3fca3ec72e42bf801fe917805c8cec821b98cfaa3c818bc78838b40f8e58309b",
+      "pattern": "explain",
+      "expectedAnswer": "LT700E (V1.0): 适合家庭或远程工作的4G联网、游戏和流媒体。原件列出这些场景，依据是LTE Cat.6、AC1200双频Wi-Fi、4个千兆口、WAN故障切换和VPN服务器/客户端；只有1个Nano SIM槽，频段需按区域版本核对。",
+      "expectedSources": [
+        {
+          "assetSha256": "9111e06b5e14620f40f3a2ffdf26c317f8c04992b168498c9d5456a7e14d07b4",
+          "unitIndex": 2,
+          "blockId": "e2a34a05-c0d8-4609-8c67-36a367bc07f5",
+          "excerpt": "Enjoy Blazing Fast 4G LTE and Wi-Fi Speed. LT700E uses the latest generation 4G LTE technology to reach speeds of up to 300Mbps in download and 50Mbps in upload. It also allows you to connect via Wi-Fi with a maximum speed of 867Mbps on 5GHz and 300Mbps on 2.4GHz to enjoy gaming, streaming, and much more.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "9111e06b5e14620f40f3a2ffdf26c317f8c04992b168498c9d5456a7e14d07b4",
+          "unitIndex": 2,
+          "blockId": "9591aa00-329f-49c1-890d-2f54b5f8f8be",
+          "excerpt": "Tested in the field for years to ensure universal compatibility with 4 advanced antennas to deliver a smooth connection. Simply plug in a SIM card and power on this elegant piece of technology to utilize fast and stable Wi-Fi, whether you're at home or working remote.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "9111e06b5e14620f40f3a2ffdf26c317f8c04992b168498c9d5456a7e14d07b4",
+          "unitIndex": 4,
+          "blockId": "a1885fec-bf5b-4717-a145-4f2b074ede45",
+          "excerpt": "-  4G LTE Advanced Cat. 6\n-  AC1200 Dual Band Wi-Fi\n-  4× Gigabit Ethernet Ports (WAN Failover)\n-  Built-in VPN Server and Client",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有explain题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-42-open",
+      "caseSha256": "89cead11d0d847c847ea900a77ebf1070dd8621c6621a313b8f92dfdc206c74a",
+      "pattern": "open",
+      "expectedAnswer": "Find and display the registered original “P2 Datasheet V2.0” PDF, with an open or download link. It is a valid match for P2; do not substitute another model or turn the request into a specification answer.",
+      "expectedSources": [
+        {
+          "assetSha256": "ece4f6e50f11c40e3f0135fe7141281f5b5f8a05248d12b6b52bc385772e555b",
+          "unitIndex": 3,
+          "blockId": "c6d47815-1ae6-4790-8bd8-05043308cc17",
+          "excerpt": "- ° P2\n- ° Power Adapter\n- ° Ethernet Cable\n- ° Installation Guide",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有open题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-42-ports",
+      "caseSha256": "545a0a8ec5bf015637ac36f957834f5e86f23e505c4cb7b8d075826af5e08bd4",
+      "pattern": "ports",
+      "expectedAnswer": "P2 (V2.0): 2 Gigabit RJ45 ports: one configurable WAN/LAN and one LAN port. Nano SIM and optional RJ11 voice ports are not Ethernet ports. Count physical Ethernet connectors once; SIM slots, USB and power connectors are not Ethernet ports.",
+      "expectedSources": [
+        {
+          "assetSha256": "ece4f6e50f11c40e3f0135fe7141281f5b5f8a05248d12b6b52bc385772e555b",
+          "unitIndex": 4,
+          "blockId": "dfc26f18-5bd8-4da7-ad08-6a938c765257",
+          "excerpt": "Interfaces, 1 = Gigabit RJ45 Ports. Interfaces, 2 = 2. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = One WAN/LAN, one LAN. Interfaces, 1 = FXS Ports. Interfaces, 2 = 1× RJ11 (VoNR/VoLTE) (Optional for ISP order)",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有ports题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-42-poe",
+      "caseSha256": "57ed20c4288630d76a4c63fd7ae693fd8f63aa80397330db3332d42cdce583f6",
+      "pattern": "poe",
+      "expectedAnswer": "No. P2 (V2.0) does not support PoE input or output. The complete matching original does not declare PoE support, under the user-confirmed MA24-09 review rule. DC 12V/1.5A input; adapter input 100–240V AC, 50/60Hz, output 12V/1.5A DC. No PoE support.",
+      "expectedSources": [
+        {
+          "assetSha256": "ece4f6e50f11c40e3f0135fe7141281f5b5f8a05248d12b6b52bc385772e555b",
+          "unitIndex": 4,
+          "blockId": "dfc26f18-5bd8-4da7-ad08-6a938c765257",
+          "excerpt": "Interfaces, 1 = Gigabit RJ45 Ports. Interfaces, 2 = 2. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = One WAN/LAN, one LAN. Interfaces, 1 = FXS Ports. Interfaces, 2 = 1× RJ11 (VoNR/VoLTE) (Optional for ISP order)",
+          "version": "V2.0"
+        },
+        {
+          "assetSha256": "ece4f6e50f11c40e3f0135fe7141281f5b5f8a05248d12b6b52bc385772e555b",
+          "unitIndex": 4,
+          "blockId": "393a2362-1a07-4ddd-b34c-4fab9caec6bc",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = DC. Power, 1 = DC. Power, 2 = 12V 1.5A. Power, 1 = Power Adapter. Power, 2 = Input: 100 ~ 240 V, 50/60 Hz AC. Power, 1 = Power Adapter. Power, 2 = Output: 12V 1.5A DC.",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有poe题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。未声明PoE的判断基于完整原件核对及MA24-09，不基于检索片段或PPPoE字样。"
+    },
+    {
+      "caseId": "base-42-compare",
+      "caseSha256": "e3d771a33b0bf5c02088da802ca77564923de8b41b32b6e935f186a24a4dba78",
+      "pattern": "compare",
+      "expectedAnswer": "P2 (V2.0): Two Gigabit RJ45 ports (one WAN/LAN and one LAN) and one Nano SIM. RJ11 VoNR/VoLTE is optional for ISP orders. DC 12V/1.5A input; adapter input 100–240V AC, 50/60Hz, output 12V/1.5A DC. No PoE support.\nLT700E (V1.0): Four Gigabit RJ45 ports (one WAN/LAN and three LAN) and one Nano SIM slot. DC 12V/1.5A barrel input; adapter input 90–260V AC, output 12V/1.5A. No PoE support.",
+      "expectedSources": [
+        {
+          "assetSha256": "ece4f6e50f11c40e3f0135fe7141281f5b5f8a05248d12b6b52bc385772e555b",
+          "unitIndex": 4,
+          "blockId": "dfc26f18-5bd8-4da7-ad08-6a938c765257",
+          "excerpt": "Interfaces, 1 = Gigabit RJ45 Ports. Interfaces, 2 = 2. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = One WAN/LAN, one LAN. Interfaces, 1 = FXS Ports. Interfaces, 2 = 1× RJ11 (VoNR/VoLTE) (Optional for ISP order)",
+          "version": "V2.0"
+        },
+        {
+          "assetSha256": "ece4f6e50f11c40e3f0135fe7141281f5b5f8a05248d12b6b52bc385772e555b",
+          "unitIndex": 4,
+          "blockId": "393a2362-1a07-4ddd-b34c-4fab9caec6bc",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = DC. Power, 1 = DC. Power, 2 = 12V 1.5A. Power, 1 = Power Adapter. Power, 2 = Input: 100 ~ 240 V, 50/60 Hz AC. Power, 1 = Power Adapter. Power, 2 = Output: 12V 1.5A DC.",
+          "version": "V2.0"
+        },
+        {
+          "assetSha256": "9111e06b5e14620f40f3a2ffdf26c317f8c04992b168498c9d5456a7e14d07b4",
+          "unitIndex": 4,
+          "blockId": "20ac822f-f94c-4c58-8832-1e5182a949b0",
+          "excerpt": "Ethernet Ports, 1 = 1 GbE WAN/LAN + 3 GbE LAN. SIM Card slot, 1 = 1 x SIM Slot (Nano).",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "9111e06b5e14620f40f3a2ffdf26c317f8c04992b168498c9d5456a7e14d07b4",
+          "unitIndex": 5,
+          "blockId": "9915cbeb-9cd9-44b0-a2ab-52271c96f395",
+          "excerpt": "Power, 1 = AC Power Adapter: Input: 90~260V Output: 12V, 1.5A DC input (12V-1.5A) Barrel Plug.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有compare题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    },
+    {
+      "caseId": "base-42-explain",
+      "caseSha256": "214e4568c9a5e7f494f8351dd5ad76667e620dbc8095b9eba892d1943374be37",
+      "pattern": "explain",
+      "expectedAnswer": "P2 (V2.0): Based on its specifications, suitable for deployments needing 5G cellular and AX3000 Wi-Fi 6. Evidence includes 5G/4G dual connectivity, one Nano SIM, two Gigabit ports, Cudy Mesh and VPN server/client support. RJ11 voice is optional for ISP orders; maximum download speed is not guaranteed, and bands must match the carrier.",
+      "expectedSources": [
+        {
+          "assetSha256": "ece4f6e50f11c40e3f0135fe7141281f5b5f8a05248d12b6b52bc385772e555b",
+          "unitIndex": 3,
+          "blockId": "3f3190c2-a526-405d-a526-0527c5d4d422",
+          "excerpt": "A 5G WiFi 6 router with a max 2.6 Gbps download speed. It features one SIM slot, a high-capacity AX3000 WiFi 6 for high-speed internet. The ISP clients can add a RJ11 port for VoIP/VoNR service.\n- ° 5G Rel. 15 with Max 2.6 Gbps DL\n- ° 5G/4G Dual Connectivity, 4×4 MIMO\n- ° 4-Stream Dual-Band Wi-Fi 6\n- ° 2402 Mbps + 574 Mbps Wi-Fi\n- ° 2× Gigabit Ethernet Ports\n- ° 1× Nano SIM Slot\n- ° Cudy Mesh, VPN Server and Client\n- ° Cudy App, Cloud Control",
+          "version": "V2.0"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：按用户对既有explain题型的授权自动采纳助手Gold，非逐题人工确认。已读取匹配型号原件、核对本地SHA-256及活动原文块坐标；限定登记版本，缺失参数不补造，条件或区域差异保留。"
+    }
+  ]
+}
