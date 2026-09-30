@@ -29,6 +29,7 @@ const expectedBlindHash="711ed12f970c54d7d3a73bd5d824946aa7c89cb3c9995b2976445c8
 const sha=(value:string)=>createHash("sha256").update(value).digest("hex");
 const args=process.argv.slice(2);
 const dryRun=args.includes("--dry-run");
+const repairOpen=args.includes("--repair-open-pilot");
 const limitArgument=args.find(arg=>arg.startsWith("--limit="));
 const limit=limitArgument?Number(limitArgument.slice(8)):50;
 if(!Number.isSafeInteger(limit)||limit<1||limit>50)throw new Error("--limit must be between 1 and 50");
@@ -39,6 +40,7 @@ type State={blindSha256:string;operationId:string;profileSha256:string;fxVersion
 const modelTokens=(query:string)=>modelTokensInQuery(query);
 const publicSource=(type:string)=>type.startsWith("public-")||["official-website","official-platform-profile","independent-public"].includes(type);
 const citationIds=(answer:string)=>[...new Set([...answer.matchAll(/\[KB:([0-9a-f-]{36})\]/g)].map(match=>match[1]))];
+const isOpenRequest=(query:string)=>/(?:打开|open\b)/i.test(query)&&/datasheet/i.test(query);
 const excerpt=(value:string)=>value.trim().replace(/\s+/g," ").slice(0,180);
 const stageName=(caseId:string,kind:"qwen"|"v3"|"vectorless")=>`ma24-holdout:${caseId}:${kind}`;
 const rowReceipts=(ledger:Ledger[],stage:string)=>ledger.filter(row=>row.stage===stage).map(row=>row.id);
@@ -121,6 +123,32 @@ function fitEvidence(question:string,evidence:Evidence[]){
   while(selected.length&&Buffer.byteLength(groundedAnswerRequestBody(question,selected.map(item=>item.chunk)),"utf8")
     >HOLDOUT_PAID_SCOPE.maximumKimiRequestBytes)selected.pop();
   return selected;
+}
+async function originalLinkCandidate(caseId:string,path:"v3"|"vectorless",question:string,
+  evidence:Evidence[],receiptIds:string[],profileSha256:string):Promise<AnswerCandidate|null>{
+  const models=modelTokens(question);
+  const chosen=evidence.find(item=>/datasheet/i.test(item.chunk.title)
+    &&(!models.length||models.some(model=>item.chunk.title.toLowerCase().includes(model))));
+  if(!chosen)return null;
+  const assetId=chosen.chunk.sourceUrl?.match(/^\/api\/knowledge\/assets\/([0-9a-f-]{36})$/)?.[1];
+  if(!assetId)return null;
+  const [cover]=await tenantQuery<{content:string;source_sha256:string;document_version:string|null;mime_type:string}>(OWNER_USER_ID,
+    `select n.content,a.source_sha256,a.document_version,a.mime_type from knowledge_tree_node n
+      join knowledge_tree_version v on v.id=n.version_id join knowledge_document d on d.current_tree_version_id=v.id
+      join knowledge_asset a on a.id=v.asset_id and a.source_sha256=v.source_sha256
+      where d.id=$1 and a.id=$2 and d.status='active' and d.visibility='shared'
+        and a.registration_status='registered' and a.externally_disclosable and v.status='ready'
+        and n.node_kind='evidence' and n.unit_index=1 order by n.ordinal limit 1`,
+    [chosen.chunk.documentId,assetId],"admin");
+  if(!cover||cover.mime_type!=="application/pdf"||cover.source_sha256!==chosen.source.assetSha256)
+    return null;
+  const link=`/api/knowledge/assets/${assetId}`;
+  const answer=/[\p{Script=Han}]/u.test(question)
+    ?`已找到《${chosen.chunk.title}》原始 PDF：[打开或下载](${link})。`
+    :`Original PDF found: [open or download ${chosen.chunk.title}](${link}).`;
+  return{caseId,path,answer,citations:[{assetSha256:cover.source_sha256,unitIndex:1,
+    ...(cover.document_version?{version:cover.document_version}:{}),excerpt:excerpt(cover.content)}],
+    receiptIds,modelId:"local-original-link-v1",retrievalProfileSha256:profileSha256};
 }
 async function vectorlessEvidence(question:string):Promise<{evidence:Evidence[];sessionId:string;partial:boolean}> {
   const sessionId=await startVectorlessSession(OWNER_USER_ID,question);
@@ -234,6 +262,17 @@ try{
   const currentLedger=await ledger(operationId);
   if(currentLedger.length&&state.candidates.length===0&&Object.keys(state.vectors).length===0)
     throw new Error("Paid ledger exists without recoverable local run state; inspect before proceeding");
+  if(repairOpen){
+    const pilot=state.candidates.filter(candidate=>candidate.caseId===manifest.cases[0].caseId
+      &&isOpenRequest(manifest.cases[0].query)&&candidate.modelId==="kimi-k3");
+    if(pilot.length!==2)throw new Error("Expected exactly two original pilot answers to archive");
+    const archive=`${root}/open-pilot-original-candidates.json`;
+    try{await readFile(archive,"utf8");throw new Error("Pilot archive already exists");}
+    catch(error){if((error as NodeJS.ErrnoException).code!=="ENOENT")throw error;}
+    await writeFile(archive,JSON.stringify({blindManifestSha256:blindSha256,candidates:pilot},null,2),"utf8");
+    state.candidates=state.candidates.filter(candidate=>!pilot.includes(candidate));
+    await persist(state);
+  }
   if(!dryRun)await embedTextsWithBge(["holdout BGE health probe"]);
   const selected=manifest.cases.slice(0,limit);
   for(const item of selected){
@@ -250,7 +289,7 @@ try{
     for(const path of ["v3","vectorless"] as const){
       if(state.candidates.some(candidate=>candidate.caseId===item.caseId&&candidate.path===path))continue;
       const stage=stageName(item.caseId,path);
-      if((await ledger(operationId)).some(row=>row.stage===stage)){
+      if(!isOpenRequest(item.query)&&(await ledger(operationId)).some(row=>row.stage===stage)){
         state.errors.push({caseId:item.caseId,stage,reason:"Prior paid attempt has no saved answer; no retry"});
         await persist(state);continue;
       }
@@ -273,6 +312,12 @@ try{
           :item.query;
         const fitted=fitEvidence(evaluatedQuestion,evidence);
         partial||=fitted.length<evidence.length||excluded>0;
+        if(isOpenRequest(item.query)&&fitted.length){
+          const local=await originalLinkCandidate(item.caseId,path,item.query,fitted,receiptIds,manifest.profileSha256);
+          if(local){if(dryRun){console.log(JSON.stringify({caseId:item.caseId,path,localOriginalLink:true}));continue;}
+            state.candidates.push(local);await persist(state);
+            console.log(JSON.stringify({caseId:item.caseId,path,localOriginalLink:true}));continue;}
+        }
         if(!fitted.length){
           if(dryRun){console.log(JSON.stringify({caseId:item.caseId,path,approvedEvidence:0,excluded,partial}));continue;}
           const answer=/[\p{Script=Han}]/u.test(item.query)
