@@ -76,7 +76,8 @@ function kimiAnswerEndpoint(baseUrl:string):string{
 
 const kimiAnswerSchema=z.object({answer:z.string().trim().min(1)}).strict();
 
-export async function generateGroundedAnswer(question: string, chunks: RetrievedChunk[],transport:typeof fetch=fetch): Promise<string> {
+/** Exact body inspection lets a scoped evaluation fail before a payable request. */
+export function groundedAnswerRequestBody(question:string,chunks:RetrievedChunk[]):string{
   const disclosure=prepareRagExternalDisclosure(question,chunks);
   if(disclosure.chunks.length===0)throw new Error("RAG external answer requires explicitly public-source knowledge");
   const messages=[
@@ -97,10 +98,15 @@ export async function generateGroundedAnswer(question: string, chunks: Retrieved
       { role: "user" as const, content: `Question:\n${disclosure.question}\n\nKnowledge-base context:\n${buildContext(disclosure.chunks)}` },
     ];
   const config=getRagConfig();
-  if(!config.ragAnswerApiKey)throw new Error("KIMI_API_KEY is not configured");
-  const requestBody=JSON.stringify({model:config.ragAnswerModel,...(isKimiK3(config.ragAnswerModel)?{}:{temperature:1}),
+  return JSON.stringify({model:config.ragAnswerModel,...(isKimiK3(config.ragAnswerModel)?{}:{temperature:1}),
     response_format:{type:"json_object"},...kimiOutputLimit(config.ragAnswerModel,textOutputLimit("rag-answer")),messages:[
       {...messages[0],content:`${messages[0].content}\nReturn one JSON object only: {\"answer\":\"complete cited answer\"}.`},messages[1]]});
+}
+
+export async function generateGroundedAnswer(question: string, chunks: RetrievedChunk[],transport:typeof fetch=fetch): Promise<string> {
+  const requestBody=groundedAnswerRequestBody(question,chunks);
+  const config=getRagConfig();
+  if(!config.ragAnswerApiKey)throw new Error("KIMI_API_KEY is not configured");
   const response=await withSdkModelCall({provider:"kimi",task:"rag-answer",promptVersion:"rag-grounded-answer-kimi-v1"},
     ()=>sdkModelFetch(transport)(kimiAnswerEndpoint(config.ragAnswerBaseUrl),{method:"POST",headers:{authorization:`Bearer ${config.ragAnswerApiKey}`,
       "content-type":"application/json"},signal:AbortSignal.timeout(90_000),body:requestBody}));
