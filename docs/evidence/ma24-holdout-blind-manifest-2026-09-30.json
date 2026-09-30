@@ -1,0 +1,18 @@
+{
+  "date": "2026-09-30",
+  "script": "scripts/prepare-holdout-answer-evaluation-local.ts",
+  "corpusVersion": "knowledge-eval-v3-baseline",
+  "holdoutCases": 50,
+  "routeCases": 44,
+  "profileKey": "rag-v3-rrf-v1.0.0",
+  "profileSha256": "37d58b9f3c768f48d45679b6a172246b1a0d7ebe7e25c6043cba6cfad7c31752",
+  "goldSnapshotSha256": "2490c2412e71ebca86d30b73aafb42af883856746db26fcb1548087bd57c4cda",
+  "blindManifestSha256": "711ed12f970c54d7d3a73bd5d824946aa7c89cb3c9995b2976445c88bc017d70",
+  "localOutput": "tmp/ma24-holdout-evaluation/blind-questions.json",
+  "containsGoldAnswers": false,
+  "containsGoldSources": false,
+  "databaseWrites": 0,
+  "externalCalls": 0,
+  "answerQualityValidated": false,
+  "preciseCitationValidated": false
+}
