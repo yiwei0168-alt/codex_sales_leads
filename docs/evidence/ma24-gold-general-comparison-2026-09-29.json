@@ -1,0 +1,57 @@
+{
+  "policyId": "MA24-10",
+  "corpusVersion": "knowledge-eval-v3-baseline",
+  "entries": [
+    {
+      "caseId": "base-15-compare",
+      "caseSha256": "451e143cbd64a30db47cb9f7423cfbd92b32d5053b43750e5a84a05700ed22c3",
+      "pattern": "general-model-comparison",
+      "expectedAnswer": "按已登记原件，WR3000（V2.0）是四流双频 Wi-Fi 6，4 个千兆网口（1 WAN＋3 LAN），DC 12V/1A，最大功耗 8.8W。WR6500H（V1.0）是六流双频 Wi-Fi 7，5 个网口（1 个 2.5GbE WAN＋4 个千兆 LAN），DC 12V/1.5A，最大功耗 17W。两者均支持 Cudy Mesh、VPN Server/Client，均不支持 PoE。WR6500H 的 5GHz 速率在概述写 5760Mbps、硬件表写 5765Mbps，保留此原件冲突；标称无线速率不能当作实际吞吐保证。",
+      "expectedSources": [
+        {
+          "assetSha256": "6cf2a9b8bab679b2b43c714114fcfe7e15fc6cfd2a2250310b3a2068b4c90588",
+          "version": "V2.0",
+          "unitIndex": 3,
+          "blockId": "1b68950d-e88c-4c83-a496-86fe67d426ba",
+          "excerpt": "A WiFi 6 router with four Gigabit ports, suitable for home internet up to 1000 Mbps, connecting many devices, and reducing latency.\n- 4-Stream Dual-Band Wi-Fi 6\n- 2402 Mbps + 574 Mbps Wi-Fi\n- 4× Gigabit Ethernet Ports\n- 70 Connected Devices\n- Supports Multicast IPTV with Bridge / Tag VLAN\n- Covers 120 m² (1,300 ft²)\n- Cudy Mesh, VPN Server and Client\n- Cudy App, Cloud Control"
+        },
+        {
+          "assetSha256": "6cf2a9b8bab679b2b43c714114fcfe7e15fc6cfd2a2250310b3a2068b4c90588",
+          "version": "V2.0",
+          "unitIndex": 4,
+          "blockId": "ef619871-dbdf-4bdc-a2a4-11b46c7200a6",
+          "excerpt": "Interfaces, 1 = Gigabit WAN Ports. Interfaces, 2 = 1. Interfaces, 1 = Gigabit LAN Ports. Interfaces, 2 = 3. Interfaces, 1 = LED. Interfaces, 2 = System, Internet, WAN, LAN,. Interfaces, 1 = LED. Interfaces, 2 = 2.4 GHz Wi-Fi, 5 GHz Wi-Fi. Interfaces, 1 = Physical Buttons. Interfaces, 2 = WPS Button. Interfaces, 1 = Physical Buttons. Interfaces, 2 = Reset Button. Interfaces, 1 = Power Input. Interfaces, 2 = DC Jack. Power, 1 = Power Methods. Power, 2 = DC. Power, 1 = DC. Power, 2 = 12V 1A. Power, 1 = Power Adapter. Power, 2 = Input: 100 ~ 240 V, 50/60 Hz AC. Power, 1 = Power Adapter. Power, 2 = Output: 12V 1A DC. Power, 1 = Max Power Consumption (W). Power, 2 = 8.8W. Power, 1 = Idle Power Consumption (W). Power, 2 = 2.5W."
+        },
+        {
+          "assetSha256": "28be140490c4507d22aeed634ab988404223e5c0dd3587861f0d949fa3303cb4",
+          "version": "V1.0",
+          "unitIndex": 3,
+          "blockId": "08248ec1-fe8c-464f-a292-f06a8763280f",
+          "excerpt": "A dual-band WiFi 7 router with an aggregate of 6.5 Gbps speed, and five Gigabit ports, catering to super-fast internet access, gaming, and entertainment scenarios.\n- Broadcom 2 GHz Quad-Core CPU\n-   6-Stream Dual-Band Wi-Fi 7\n- 5760 Mbps + 688 Mbps Wi-Fi\n- 1× 2.5GbE and 4× GbE\n- 200 Connected Devices\n- Covers 140 m² (1,500 ft²)\n- Cudy Mesh, VPN Server and Client\n- Cudy App, Cloud Control"
+        },
+        {
+          "assetSha256": "28be140490c4507d22aeed634ab988404223e5c0dd3587861f0d949fa3303cb4",
+          "version": "V1.0",
+          "unitIndex": 3,
+          "blockId": "d69665cd-4c18-4532-b7a1-6761f0153e99",
+          "excerpt": "Wireless, 1 = 5 GHz Wi-Fi Speed. Wireless, 2 = 5765 Mbps. , 1 = 2.4 GHz Wi-Fi Speed. , 2 = 688 Mbps. , 1 = 5 GHz Wi-Fi Streams. , 2 = 4T4R (4×4 MIMO). , 1 = 2.4 GHz Wi-Fi Streams. , 2 = 2T2R (2×2 MIMO)."
+        },
+        {
+          "assetSha256": "28be140490c4507d22aeed634ab988404223e5c0dd3587861f0d949fa3303cb4",
+          "version": "V1.0",
+          "unitIndex": 3,
+          "blockId": "d69665cd-4c18-4532-b7a1-6761f0153e99",
+          "excerpt": "Interfaces\nPower\n2.5G RJ45 Ports\nGigabit RJ45 Ports\nEthernet Notes\nLED\nPhysical Buttons\nPower Input\nPower Methods\nDC\nPower Adapter\nMax Power Consumption (W)\n1\n4\nThe 2.5G port is WAN port,\nthe Gigabit ports are LAN ports\nSystem\nInternet\nWi-Fi\nWPS\nPower On/Off Button\nWPS Button\nReset Button\nDC Jack\nDC\n12V 1.5A"
+        },
+        {
+          "assetSha256": "28be140490c4507d22aeed634ab988404223e5c0dd3587861f0d949fa3303cb4",
+          "version": "V1.0",
+          "unitIndex": 4,
+          "blockId": "c201b4f7-6ff0-46a1-8fec-2ff8252a9d35",
+          "excerpt": "Input: 100 ~ 240 V, 50/60 Hz AC\nOutput: 12V 1.5A DC\n17W"
+        }
+      ],
+      "reviewNote": "2026-09-29 MA24-10：用户在本对话明确选择“确认答案和来源”，开放式型号差异题逐题人工确认。两份完整原件及 SHA-256 已核对，PoE 按 MA24-09 判断；保存真实块及短引，不把未声明结论伪造为逐字引文。精确坐标为 WR3000 第3页特性、第4页接口/供电，WR6500H 第3页特性/硬件表/接口和第4页17W供电续表；保留5760/5765冲突。此保存不冻结检索配置、不解除holdout锁定。"
+    }
+  ]
+}

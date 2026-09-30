@@ -1,4 +1,4 @@
-/** Read-only MA24 audit; never reads locked case answers or unlocks the gate. */
+/** Read-only MA24 audit; holdout inspection requires the frozen profile gate. */
 import nextEnv from "@next/env";
 import {registerHooks} from "node:module";
 import {readFileSync} from "node:fs";
@@ -18,9 +18,14 @@ registerHooks({resolve(specifier,context,next){
 type Review={case_id:string;case_sha256:string;revision:number;expected_answer:string;expected_sources:GoldSourceCoordinate[];review_note:string|null};
 try{
   const corpus=buildKnowledgeEvaluationCorpus();
-  const cases=corpus.cases.filter(item=>item.split!=="holdout");
+  const [gate]=await tenantQuery<{retrieval_profile_key:string;retrieval_profile_sha256:string}>(OWNER_USER_ID,
+    "select retrieval_profile_key,retrieval_profile_sha256 from knowledge_evaluation_holdout_gate_v3 where corpus_version=$1",[corpus.version],"admin");
+  const includeHoldout=process.argv.includes("--include-holdout");
+  if(includeHoldout&&(gate?.retrieval_profile_key!==RAG_V3_RETRIEVAL_PROFILE.key
+    ||gate.retrieval_profile_sha256!==retrievalProfileSha256()))throw new Error("Holdout profile gate missing or changed");
+  const cases=corpus.cases.filter(item=>includeHoldout||item.split!=="holdout");
   const rows=await tenantQuery<Review>(OWNER_USER_ID,`select case_id,case_sha256,revision,expected_answer,expected_sources,review_note
-    from knowledge_evaluation_review_v3 where corpus_version=$1 and split<>'holdout'`,[corpus.version],"admin");
+    from knowledge_evaluation_review_v3 where corpus_version=$1 and ($2::boolean or split<>'holdout')`,[corpus.version,includeHoldout],"admin");
   const byId=new Map(rows.map(row=>[row.case_id,row]));
   const cache=new Map<string,Awaited<ReturnType<typeof listGoldSourceEvidence>>>();
   const missing:string[]=[];
@@ -51,9 +56,7 @@ try{
     }
     preserved=snapshot.saved.length;
   }
-  const [gate]=await tenantQuery<{retrieval_profile_key:string;retrieval_profile_sha256:string}>(OWNER_USER_ID,
-    "select retrieval_profile_key,retrieval_profile_sha256 from knowledge_evaluation_holdout_gate_v3 where corpus_version=$1",[corpus.version],"admin");
-  console.log(JSON.stringify({local:true,readOnly:true,corpusVersion:corpus.version,reviewed:rows.length,total:cases.length,
+  console.log(JSON.stringify({local:true,readOnly:true,corpusVersion:corpus.version,includeHoldout,reviewed:rows.length,total:cases.length,
     sourceCoordinates:coordinates,distinctSourceUnits:cache.size,priorDecisionsPreserved:preserved,missing,
     holdoutUnlocked:Boolean(gate),profile:RAG_V3_RETRIEVAL_PROFILE,profileSha256:retrievalProfileSha256(),
     existingGate:gate??null,externalCalls:0,answerQualityValidated:false}));

@@ -1,0 +1,32 @@
+{
+  "local": true,
+  "readOnly": true,
+  "corpusVersion": "knowledge-eval-v3-baseline",
+  "includeHoldout": true,
+  "reviewed": 300,
+  "total": 300,
+  "sourceCoordinates": 604,
+  "distinctSourceUnits": 135,
+  "priorDecisionsPreserved": 43,
+  "missing": [],
+  "holdoutUnlocked": true,
+  "profile": {
+    "key": "rag-v3-rrf-v1.0.0",
+    "candidateLimitPerLane": 40,
+    "rrfK": 60,
+    "weights": {
+      "facts": 1.4,
+      "fulltext": 1,
+      "qwen": 1,
+      "bge": 1.1
+    },
+    "resultLimit": 8
+  },
+  "profileSha256": "37d58b9f3c768f48d45679b6a172246b1a0d7ebe7e25c6043cba6cfad7c31752",
+  "existingGate": {
+    "retrieval_profile_key": "rag-v3-rrf-v1.0.0",
+    "retrieval_profile_sha256": "37d58b9f3c768f48d45679b6a172246b1a0d7ebe7e25c6043cba6cfad7c31752"
+  },
+  "externalCalls": 0,
+  "answerQualityValidated": false
+}

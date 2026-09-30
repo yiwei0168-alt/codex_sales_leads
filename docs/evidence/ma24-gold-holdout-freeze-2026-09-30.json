@@ -1,0 +1,14 @@
+{
+  "corpusVersion": "knowledge-eval-v3-baseline",
+  "userConfirmed": true,
+  "confirmedChoice": "确认冻结并解锁",
+  "confirmationScope": "Freeze the existing v3 retrieval profile and unlock 50 holdout Gold reviews; no production retrieval switch",
+  "profile": {"key":"rag-v3-rrf-v1.0.0","candidateLimitPerLane":40,"rrfK":60,"weights":{"facts":1.4,"fulltext":1,"qwen":1,"bge":1.1},"resultLimit":8},
+  "profileSha256": "37d58b9f3c768f48d45679b6a172246b1a0d7ebe7e25c6043cba6cfad7c31752",
+  "nonHoldoutAtFreeze": 250,
+  "holdoutAtFreeze": 0,
+  "gateReadback": {"retrieval_profile_key":"rag-v3-rrf-v1.0.0","retrieval_profile_sha256":"37d58b9f3c768f48d45679b6a172246b1a0d7ebe7e25c6043cba6cfad7c31752"},
+  "holdoutAfterReview": 50,
+  "externalCalls": 0,
+  "answerQualityValidated": false
+}

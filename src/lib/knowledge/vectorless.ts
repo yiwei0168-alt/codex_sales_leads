@@ -83,9 +83,10 @@ export function modelTokensInQuery(query:string){
 }
 export async function searchDocuments(userId:string,query:string,filters:{market?:string;companyId?:string;productId?:string}={}){
   const modelTokens=modelTokensInQuery(query);
+  const prefixTokens=modelTokens.filter(token=>/^[a-z0-9]+$/.test(token));
   return tenantQuery<{documentId:string;title:string;versionId:string;reason:string;totalCount:number}>(userId,`select d.id as "documentId",d.title,v.id as "versionId",count(*) over()::int as "totalCount",
     case when m.id is not null then 'registered-entity' when cm.id is not null then 'release-chunk-entity'
-      when t.token is not null then 'model-in-title'
+      when t.token is not null then 'model-in-title' when pref.token is not null then 'model-prefix-in-content'
       when n.id is not null then 'fulltext' else 'title' end as reason
     from knowledge_document d join knowledge_tree_version v on v.id=d.current_tree_version_id
     left join knowledge_asset a on a.id=v.asset_id and a.document_id=d.id and a.registration_status='registered' and a.source_sha256=v.source_sha256
@@ -95,6 +96,8 @@ export async function searchDocuments(userId:string,query:string,filters:{market
       join knowledge_entity e on e.id=ce.entity_id join knowledge_release_pointer_v3 p on p.release_id=c.release_id and p.scope_kind='shared'
       where c.document_id=d.id and e.entity_type='product' and lower(e.canonical_key)=any($6::text[]) limit 1)cm on true
     left join lateral(select token from unnest($6::text[]) token where d.title ilike '%'||token||'%' limit 1)t on true
+    left join lateral(select token from unnest($7::text[]) token where exists(select 1 from knowledge_tree_node pn
+      where pn.version_id=v.id and pn.node_kind='evidence' and pn.search_vector @@ to_tsquery('simple',token||':*')) limit 1)pref on true
     left join lateral(select id from knowledge_tree_node where version_id=v.id and node_kind='evidence'
       and search_vector @@ websearch_to_tsquery('simple',$1) limit 1)n on true
     where d.status='active' and v.status='ready' and ((a.id is not null)
@@ -102,9 +105,9 @@ export async function searchDocuments(userId:string,query:string,filters:{market
         where r.document_id=d.id and r.content_sha256=v.source_sha256 and r.reconstructed=false)))
       and (d.owner_id=$2 or d.visibility='shared')
       and ($3::text is null or d.market=$3) and ($4::text is null or d.company_id=$4) and ($5::text is null or d.product_id=$5)
-      and (m.id is not null or cm.id is not null or t.token is not null or n.id is not null or d.title ilike '%'||$1||'%')
-      order by (m.id is not null) desc,(cm.id is not null) desc,(t.token is not null) desc,(n.id is not null) desc,d.title limit 24`,
-    [query,userId,filters.market??null,filters.companyId??null,filters.productId??null,modelTokens]);
+      and (m.id is not null or cm.id is not null or t.token is not null or pref.token is not null or n.id is not null or d.title ilike '%'||$1||'%')
+      order by (m.id is not null) desc,(cm.id is not null) desc,(t.token is not null) desc,(pref.token is not null) desc,(n.id is not null) desc,d.title limit 24`,
+    [query,userId,filters.market??null,filters.companyId??null,filters.productId??null,modelTokens,prefixTokens]);
 }
 /** Revalidate legacy candidate IDs against the current PostgreSQL tree and source. */
 export async function currentCandidateDocuments(userId:string,documentIds:string[]){

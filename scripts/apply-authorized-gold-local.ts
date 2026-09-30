@@ -5,7 +5,7 @@ import {readFileSync} from "node:fs";
 import {getPool,tenantQuery} from "../src/lib/rag/db";
 import {OWNER_USER_ID} from "../src/lib/auth/config";
 import {buildKnowledgeEvaluationCorpus} from "../src/lib/knowledge/evaluation/corpus";
-import {evaluationCaseSha256,goldReviewIsPrecise,stableJson,type GoldSourceCoordinate} from "../src/lib/knowledge/review-types";
+import {evaluationCaseSha256,goldReviewIsPrecise,retrievalProfileSha256,RAG_V3_RETRIEVAL_PROFILE,stableJson,type GoldSourceCoordinate} from "../src/lib/knowledge/review-types";
 import {listGoldSourceEvidence,normalizeGoldExcerpt} from "../src/lib/knowledge/gold-source";
 
 nextEnv.loadEnvConfig(process.cwd());
@@ -25,24 +25,31 @@ if(manifest.policyId!=="MA24-10"||manifest.corpusVersion!==corpus.version)throw 
 const seen=new Set<string>();
 for(const entry of manifest.entries){
   const item=corpus.cases.find(c=>c.id===entry.caseId);
-  if(!item||item.split==="holdout"||evaluationCaseSha256(item)!==entry.caseSha256)throw new Error(`Locked, missing or changed case: ${entry.caseId}`);
+  if(!item||evaluationCaseSha256(item)!==entry.caseSha256)throw new Error(`Missing or changed case: ${entry.caseId}`);
   if(seen.has(entry.caseId))throw new Error(`Duplicate case: ${entry.caseId}`);
   seen.add(entry.caseId);
   const type=entry.caseId.match(/^base-\d+-(open|ports|poe|compare|explain)$/)?.[1];
   const baseMatch=entry.pattern===type&&entry.caseId!=="base-15-compare";
-  const clarificationMatch=entry.pattern==="clarify-datasheet-model"&&/^boundary-[1-4]-0[12]$/.test(entry.caseId);
-  const variantMatch=entry.pattern==="model-package-variant"&&/^boundary-[1-4]-03$/.test(entry.caseId);
-  const unitMatch=entry.pattern==="ethernet-cellular-distinction"&&/^boundary-[1-4]-04$/.test(entry.caseId);
-  const sfpMatch=entry.pattern==="sfp-interface-compatibility"&&/^boundary-[1-4]-05$/.test(entry.caseId);
-  const negationMatch=entry.pattern==="negative-claim-missing-source"&&/^boundary-[1-4]-06$/.test(entry.caseId);
-  const vpnMatch=entry.pattern==="vpn-roles"&&/^boundary-[1-4]-07$/.test(entry.caseId);
-  const comboMatch=entry.pattern==="shared-combo-count"&&/^boundary-[1-4]-08$/.test(entry.caseId);
-  const missingMatch=entry.pattern==="missing-original-document"&&/^boundary-[1-4]-09$/.test(entry.caseId);
-  const privateMatch=entry.pattern==="deny-private-cross-account"&&/^boundary-[1-4]-10$/.test(entry.caseId);
-  if(!baseMatch&&!clarificationMatch&&!variantMatch&&!unitMatch&&!sfpMatch&&!negationMatch&&!vpnMatch&&!comboMatch&&!missingMatch&&!privateMatch)throw new Error(`Pattern not approved: ${entry.caseId}`);
+  const clarificationMatch=entry.pattern==="clarify-datasheet-model"&&/^boundary-[1-5]-0[12]$/.test(entry.caseId);
+  const variantMatch=entry.pattern==="model-package-variant"&&/^boundary-[1-5]-03$/.test(entry.caseId);
+  const unitMatch=entry.pattern==="ethernet-cellular-distinction"&&/^boundary-[1-5]-04$/.test(entry.caseId);
+  const sfpMatch=entry.pattern==="sfp-interface-compatibility"&&/^boundary-[1-5]-05$/.test(entry.caseId);
+  const negationMatch=entry.pattern==="negative-claim-missing-source"&&/^boundary-[1-5]-06$/.test(entry.caseId);
+  const vpnMatch=entry.pattern==="vpn-roles"&&/^boundary-[1-5]-07$/.test(entry.caseId);
+  const comboMatch=entry.pattern==="shared-combo-count"&&/^boundary-[1-5]-08$/.test(entry.caseId);
+  const missingMatch=entry.pattern==="missing-original-document"&&/^boundary-[1-5]-09$/.test(entry.caseId);
+  const privateMatch=entry.pattern==="deny-private-cross-account"&&/^boundary-[1-5]-10$/.test(entry.caseId);
+  const generalCompareMatch=entry.pattern==="general-model-comparison"&&entry.caseId==="base-15-compare";
+  if(!baseMatch&&!clarificationMatch&&!variantMatch&&!unitMatch&&!sfpMatch&&!negationMatch&&!vpnMatch&&!comboMatch&&!missingMatch&&!privateMatch&&!generalCompareMatch)throw new Error(`Pattern not approved: ${entry.caseId}`);
   if(!entry.expectedAnswer.trim()||!entry.reviewNote.includes("MA24-10"))throw new Error(`Missing answer/authorization receipt: ${entry.caseId}`);
 }
 try{
+  if(manifest.entries.some(entry=>corpus.cases.find(item=>item.id===entry.caseId)?.split==="holdout")){
+    const [gate]=await tenantQuery<{retrieval_profile_key:string;retrieval_profile_sha256:string}>(OWNER_USER_ID,
+      "select retrieval_profile_key,retrieval_profile_sha256 from knowledge_evaluation_holdout_gate_v3 where corpus_version=$1",[corpus.version],"admin");
+    if(gate?.retrieval_profile_key!==RAG_V3_RETRIEVAL_PROFILE.key||gate.retrieval_profile_sha256!==retrievalProfileSha256())
+      throw new Error("Holdout profile is not frozen to the current approved hash");
+  }
   const {saveGoldReview}=await import("../src/lib/knowledge/review-repository");
   const rows=await tenantQuery<{case_id:string;case_sha256:string;expected_answer:string;expected_sources:GoldSourceCoordinate[];review_note:string|null}>(OWNER_USER_ID,
     "select case_id,case_sha256,expected_answer,expected_sources,review_note from knowledge_evaluation_review_v3 where corpus_version=$1",[corpus.version],"admin");

@@ -1,0 +1,1031 @@
+{
+  "policyId": "MA24-10",
+  "corpusVersion": "knowledge-eval-v3-baseline",
+  "entries": [
+    {
+      "caseId": "base-43-open",
+      "caseSha256": "50a5d1ddd283b7e854fc013f1f84875e95d5bd82d74a2d768206bebd86a5e2f6",
+      "pattern": "open",
+      "expectedAnswer": "找到并展示已登记的P4原始Datasheet PDF，提供打开或下载入口；不以其他型号替代，也不把打开资料请求改成参数问答。已登记EU原件未标注版本。",
+      "expectedSources": [
+        {
+          "assetSha256": "19ed5588c2a495e6c8b405d143e91c8b4acb132b11d605c100fc3641e8cd84c0",
+          "unitIndex": 3,
+          "blockId": "f66814d0-3d03-4b91-ad04-099122dd5b10",
+          "excerpt": "- ° P4\n- ° Power Adapter\n- ° Ethernet Cable\n- ° Installation Guide"
+        }
+      ],
+      "reviewNote": "2026-09-30 MA24-10：用户已确认同类Gold自动采纳，本题按已批准open题型采纳，非逐题人工确认。holdout在用户明确冻结rag-v3-rrf-v1.0.0和SHA-256后处理；已逐份核对原件SHA-256、全部PDF页面及活动原文坐标。P4已登记EU原件无版本，不虚构版本。封面型号视觉核对，但当前树封面块未包含型号，改引同哈希原件中真实型号块，不伪造封面短引。"
+    },
+    {
+      "caseId": "base-43-ports",
+      "caseSha256": "ecd0eae0a3f90a9bf881f9109734c5ad0458ba42e6da010012165120ffe05814",
+      "pattern": "ports",
+      "expectedAnswer": "P4 (已登记EU原件，版本未标注)：3个千兆RJ45网口：1个可配置为WAN/LAN，另2个为LAN；Nano SIM槽不计为网口。",
+      "expectedSources": [
+        {
+          "assetSha256": "19ed5588c2a495e6c8b405d143e91c8b4acb132b11d605c100fc3641e8cd84c0",
+          "unitIndex": 4,
+          "blockId": "7d85e23f-4479-40fc-b6d8-eae0a0a2cfa1",
+          "excerpt": "Interfaces, 1 = Gigabit RJ45 Ports. Interfaces, 2 = 3. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = One port supports WAN/LAN configuration, and the rest are LAN ports"
+        },
+        {
+          "assetSha256": "19ed5588c2a495e6c8b405d143e91c8b4acb132b11d605c100fc3641e8cd84c0",
+          "unitIndex": 3,
+          "blockId": "f479c733-faf6-46e7-9b15-1228afa4abbc",
+          "excerpt": "SIM Options. , 2 = 1× Nano SIM Slot, eSIM (optional). , 1 = Available Versions. , 2 = EU, US. EU Version, 1 = Suitable Region. EU Version, 2 = Europe, Middle East, Africa,. Cellular, 1 = . Cellular, 2 = Asia-Pacific (Exc. JP, CN), Brazil."
+        }
+      ],
+      "reviewNote": "2026-09-30 MA24-10：用户已确认同类Gold自动采纳，本题按已批准ports题型采纳，非逐题人工确认。holdout在用户明确冻结rag-v3-rrf-v1.0.0和SHA-256后处理；已逐份核对原件SHA-256、全部PDF页面及活动原文坐标。P4已登记EU原件无版本，不虚构版本。"
+    },
+    {
+      "caseId": "base-43-poe",
+      "caseSha256": "8dbe2b096795bdfdc6869359093df0b176e6e515dcbe04523ed783e6cac0c14e",
+      "pattern": "poe",
+      "expectedAnswer": "不支持。P4 (已登记EU原件，版本未标注)不支持PoE输入或输出。完整匹配原件未声明PoE支持，按用户确认的MA24-09口径判定。DC 12V/2.5A输入，随箱适配器输入100～240V AC、50/60Hz、输出12V/2.5A DC；完整原件未声明PoE，按MA24-09判为不支持。",
+      "expectedSources": [
+        {
+          "assetSha256": "19ed5588c2a495e6c8b405d143e91c8b4acb132b11d605c100fc3641e8cd84c0",
+          "unitIndex": 4,
+          "blockId": "7d85e23f-4479-40fc-b6d8-eae0a0a2cfa1",
+          "excerpt": "Interfaces, 1 = Gigabit RJ45 Ports. Interfaces, 2 = 3. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = One port supports WAN/LAN configuration, and the rest are LAN ports"
+        },
+        {
+          "assetSha256": "19ed5588c2a495e6c8b405d143e91c8b4acb132b11d605c100fc3641e8cd84c0",
+          "unitIndex": 3,
+          "blockId": "f479c733-faf6-46e7-9b15-1228afa4abbc",
+          "excerpt": "SIM Options. , 2 = 1× Nano SIM Slot, eSIM (optional). , 1 = Available Versions. , 2 = EU, US. EU Version, 1 = Suitable Region. EU Version, 2 = Europe, Middle East, Africa,. Cellular, 1 = . Cellular, 2 = Asia-Pacific (Exc. JP, CN), Brazil."
+        },
+        {
+          "assetSha256": "19ed5588c2a495e6c8b405d143e91c8b4acb132b11d605c100fc3641e8cd84c0",
+          "unitIndex": 4,
+          "blockId": "55c0ec94-1602-422a-906f-37edc47c8836",
+          "excerpt": "Interfaces, 1 = Power Input. Interfaces, 2 = DC Jack. Power, 1 = Power Methods. Power, 2 = DC. Power, 1 = DC. Power, 2 = 12V 2.5A. Power, 1 = Power Adapter. Power, 2 = Input: 100 ~ 240 V, 50/60 Hz AC. Power, 1 = Power Adapter. Power, 2 = Output: 12V 2.5A DC."
+        }
+      ],
+      "reviewNote": "2026-09-30 MA24-10：用户已确认同类Gold自动采纳，本题按已批准poe题型采纳，非逐题人工确认。holdout在用户明确冻结rag-v3-rrf-v1.0.0和SHA-256后处理；已逐份核对原件SHA-256、全部PDF页面及活动原文坐标。P4已登记EU原件无版本，不虚构版本。未声明PoE判断依MA24-09完整原件，不将否定结论伪作原文逐字引文。"
+    },
+    {
+      "caseId": "base-43-compare",
+      "caseSha256": "3800babc40006190742614b52c9b311ffd62b87a58855073cbb986e17b8c6289",
+      "pattern": "compare",
+      "expectedAnswer": "P4 (已登记EU原件，版本未标注)：3个千兆RJ45网口（1个WAN/LAN、2个LAN），另有1个Nano SIM槽；eSIM为可选配置。 DC 12V/2.5A输入，随箱适配器输入100～240V AC、50/60Hz、输出12V/2.5A DC；完整原件未声明PoE，按MA24-09判为不支持。\nC200P (V1.0)：5个千兆RJ45口（1 WAN、4 LAN），4个LAN为802.3at/af PoE输出；另有USB-A 3.0口。 电源方式表列DC 54V/1.11A、802.3at/af PoE及24/48V Passive PoE；原件未指明PoE输入使用哪个网口。总功耗上限60W，PoE分配55W，插入USB设备时PoE分配50W；单输出口最高30W，不能推断4口可同时各输出30W。",
+      "expectedSources": [
+        {
+          "assetSha256": "19ed5588c2a495e6c8b405d143e91c8b4acb132b11d605c100fc3641e8cd84c0",
+          "unitIndex": 4,
+          "blockId": "7d85e23f-4479-40fc-b6d8-eae0a0a2cfa1",
+          "excerpt": "Interfaces, 1 = Gigabit RJ45 Ports. Interfaces, 2 = 3. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = One port supports WAN/LAN configuration, and the rest are LAN ports"
+        },
+        {
+          "assetSha256": "19ed5588c2a495e6c8b405d143e91c8b4acb132b11d605c100fc3641e8cd84c0",
+          "unitIndex": 3,
+          "blockId": "f479c733-faf6-46e7-9b15-1228afa4abbc",
+          "excerpt": "SIM Options. , 2 = 1× Nano SIM Slot, eSIM (optional). , 1 = Available Versions. , 2 = EU, US. EU Version, 1 = Suitable Region. EU Version, 2 = Europe, Middle East, Africa,. Cellular, 1 = . Cellular, 2 = Asia-Pacific (Exc. JP, CN), Brazil."
+        },
+        {
+          "assetSha256": "19ed5588c2a495e6c8b405d143e91c8b4acb132b11d605c100fc3641e8cd84c0",
+          "unitIndex": 4,
+          "blockId": "55c0ec94-1602-422a-906f-37edc47c8836",
+          "excerpt": "Interfaces, 1 = Power Input. Interfaces, 2 = DC Jack. Power, 1 = Power Methods. Power, 2 = DC. Power, 1 = DC. Power, 2 = 12V 2.5A. Power, 1 = Power Adapter. Power, 2 = Input: 100 ~ 240 V, 50/60 Hz AC. Power, 1 = Power Adapter. Power, 2 = Output: 12V 2.5A DC."
+        },
+        {
+          "assetSha256": "191439fe02332195e07cb97355ad3c57d5e1dce683e601a1f798123ecbf886f1",
+          "unitIndex": 4,
+          "blockId": "635bdcd5-1416-4c42-81a4-be6a1edcbfe1",
+          "excerpt": "Interfaces, 1 = Gigabit RJ45 Ports. Interfaces, 2 = 5. Interfaces, 1 = Gigabit RJ45 PoE Ports. Interfaces, 2 = #2~#5. Interfaces, 1 = Max Power on a Single PoE Ports. Interfaces, 2 = 30W. Interfaces, 1 = PoE Ports Notes. Interfaces, 2 = The PoE ports comply with. Interfaces, 1 = . Interfaces, 2 = IEEE 802.3at/af standards.. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = 1×WAN Port, 4× LAN Ports. Interfaces, 1 = USB-A 3.0 Ports. Interfaces, 2 = 1. Interfaces, 1 = LED. Interfaces, 2 = · System. Interfaces, 1 = . Interfaces, 2 = · PoE Max Status. Interfaces, 1 = . Interfaces, 2 = · Link/ACT/PoE Status of Each PoE Port. Interfaces, 1 = Physical Buttons. Interfaces, 2 = Reset Button. Interfaces, 1 = Power Input. Interfaces, 2 = DC Jack.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "191439fe02332195e07cb97355ad3c57d5e1dce683e601a1f798123ecbf886f1",
+          "unitIndex": 4,
+          "blockId": "635bdcd5-1416-4c42-81a4-be6a1edcbfe1",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = DC. Power, 1 = . Power, 2 = 802.3at/af PoE. Power, 1 = . Power, 2 = Passive PoE. Power, 1 = DC. Power, 2 = 54V 1.11A. Power, 1 = Passive PoE. Power, 2 = 24/48V. Power, 1 = Power Adapter. Power, 2 = Input: 100 ~ 240 V, 50 Hz AC. Power, 1 = . Power, 2 = Output: 54V 1.11A DC",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "191439fe02332195e07cb97355ad3c57d5e1dce683e601a1f798123ecbf886f1",
+          "unitIndex": 4,
+          "blockId": "137c29f0-3a19-4a9b-8710-1cfadad92211",
+          "excerpt": "Max Power Consumption (W). , 2 = Total: 60W. , 1 = . , 2 = PoE: 55W. , 1 = . , 2 = PoE (when USB Device is plugged in): 50W. , 1 = . , 2 = No PoE: 5W. , 1 = Idle Power Consumption (W). , 2 = 2W.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-30 MA24-10：用户已确认同类Gold自动采纳，本题按已批准compare题型采纳，非逐题人工确认。holdout在用户明确冻结rag-v3-rrf-v1.0.0和SHA-256后处理；已逐份核对原件SHA-256、全部PDF页面及活动原文坐标。P4已登记EU原件无版本，不虚构版本。"
+    },
+    {
+      "caseId": "base-43-explain",
+      "caseSha256": "0268ce78b1d79e7d153258c2587efafcf7c29b7bfe8fae581ace0188ca9002bb",
+      "pattern": "explain",
+      "expectedAnswer": "P4 (已登记EU原件，版本未标注)：适合有5G蜂窝网络覆盖、需要Wi-Fi 6与有线WAN/5G备份的家庭、办公或移动场景。依据是5G SA/NSA、Nano SIM、双频Wi-Fi 6、3个千兆口及WAN/LAN和5G故障切换；实际速率和运营商频段兼容性须按地区及网络核对，eSIM并非标配。",
+      "expectedSources": [
+        {
+          "assetSha256": "19ed5588c2a495e6c8b405d143e91c8b4acb132b11d605c100fc3641e8cd84c0",
+          "unitIndex": 2,
+          "blockId": "73bae44a-bb80-445e-b2c5-b99512a89db7",
+          "excerpt": "Set the WAN/LAN port to WAN and connect to internet via broadband, then back up your network with the 5G connection to have a more reliable connection.v"
+        },
+        {
+          "assetSha256": "19ed5588c2a495e6c8b405d143e91c8b4acb132b11d605c100fc3641e8cd84c0",
+          "unitIndex": 3,
+          "blockId": "17477450-0ccf-49b9-a7a6-b2291d1caef4",
+          "excerpt": "A 5G WiFi 6 router employing the 3GPP Release 16 standard, with a max 3.4 Gbps download speed. It features dual Qualcomm chipsets, one SIM slot, and a high-capacity AX3000 WiFi 6.\n- ° 5G Rel. 16 with Max 3.4 Gbps DL\n- ° UL/DL 4CA, 4×4 MIMO\n- ° 4-Stream Dual-Band Wi-Fi 6\n- ° 2402 Mbps + 574 Mbps Wi-Fi\n- ° 3× Gigabit Ethernet Ports\n- ° 1× Nano SIM Slot\n- ° Cudy Mesh, VPN Server and Client\n- ° Cudy App, Cloud Control"
+        }
+      ],
+      "reviewNote": "2026-09-30 MA24-10：用户已确认同类Gold自动采纳，本题按已批准explain题型采纳，非逐题人工确认。holdout在用户明确冻结rag-v3-rrf-v1.0.0和SHA-256后处理；已逐份核对原件SHA-256、全部PDF页面及活动原文坐标。P4已登记EU原件无版本，不虚构版本。"
+    },
+    {
+      "caseId": "base-44-open",
+      "caseSha256": "096c0527692d092e9edf89bb832bce7e772ca049a0649108acba83202d5b04ec",
+      "pattern": "open",
+      "expectedAnswer": "Find and display the registered original C200P Datasheet PDF, with an open or download link. Do not substitute another model or turn this request into a specification answer.",
+      "expectedSources": [
+        {
+          "assetSha256": "191439fe02332195e07cb97355ad3c57d5e1dce683e601a1f798123ecbf886f1",
+          "unitIndex": 2,
+          "blockId": "0e3fc60f-1642-450e-a9c9-54079d9f09f2",
+          "excerpt": "- C200P\n- Power Adapter\n- Ethernet Cable\n- Installation Guide\n- Mounting Kit",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-30 MA24-10：用户已确认同类Gold自动采纳，本题按已批准open题型采纳，非逐题人工确认。holdout在用户明确冻结rag-v3-rrf-v1.0.0和SHA-256后处理；已逐份核对原件SHA-256、全部PDF页面及活动原文坐标。封面型号视觉核对，但当前树封面块未包含型号，改引同哈希原件中真实型号块，不伪造封面短引。"
+    },
+    {
+      "caseId": "base-44-ports",
+      "caseSha256": "ba5e860da09d8d9c64da0487ea94d357f50b6eb64bab0de49231cee1d01493e9",
+      "pattern": "ports",
+      "expectedAnswer": "C200P (V1.0)：5 Gigabit RJ45 ports: one WAN and four LAN, with PoE output on LAN ports #2–#5. Its USB-A 3.0 port is not Ethernet.",
+      "expectedSources": [
+        {
+          "assetSha256": "191439fe02332195e07cb97355ad3c57d5e1dce683e601a1f798123ecbf886f1",
+          "unitIndex": 4,
+          "blockId": "635bdcd5-1416-4c42-81a4-be6a1edcbfe1",
+          "excerpt": "Interfaces, 1 = Gigabit RJ45 Ports. Interfaces, 2 = 5. Interfaces, 1 = Gigabit RJ45 PoE Ports. Interfaces, 2 = #2~#5. Interfaces, 1 = Max Power on a Single PoE Ports. Interfaces, 2 = 30W. Interfaces, 1 = PoE Ports Notes. Interfaces, 2 = The PoE ports comply with. Interfaces, 1 = . Interfaces, 2 = IEEE 802.3at/af standards.. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = 1×WAN Port, 4× LAN Ports. Interfaces, 1 = USB-A 3.0 Ports. Interfaces, 2 = 1. Interfaces, 1 = LED. Interfaces, 2 = · System. Interfaces, 1 = . Interfaces, 2 = · PoE Max Status. Interfaces, 1 = . Interfaces, 2 = · Link/ACT/PoE Status of Each PoE Port. Interfaces, 1 = Physical Buttons. Interfaces, 2 = Reset Button. Interfaces, 1 = Power Input. Interfaces, 2 = DC Jack.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-30 MA24-10：用户已确认同类Gold自动采纳，本题按已批准ports题型采纳，非逐题人工确认。holdout在用户明确冻结rag-v3-rrf-v1.0.0和SHA-256后处理；已逐份核对原件SHA-256、全部PDF页面及活动原文坐标。"
+    },
+    {
+      "caseId": "base-44-poe",
+      "caseSha256": "c0d725a95a0d4dc60091e7f35e6997544e6cdd50e4105b221e0810e2f79428d8",
+      "pattern": "poe",
+      "expectedAnswer": "C200P (V1.0)：Yes. Four LAN ports #2–#5 provide 802.3at/af PoE output, up to 30W per port. The power-method table also lists 802.3at/af and 24/48V Passive PoE input methods without naming the input port. Total consumption is 60W; PoE allocation is 55W, or 50W with a USB device, not 4×30W simultaneously.",
+      "expectedSources": [
+        {
+          "assetSha256": "191439fe02332195e07cb97355ad3c57d5e1dce683e601a1f798123ecbf886f1",
+          "unitIndex": 4,
+          "blockId": "635bdcd5-1416-4c42-81a4-be6a1edcbfe1",
+          "excerpt": "Interfaces, 1 = Gigabit RJ45 Ports. Interfaces, 2 = 5. Interfaces, 1 = Gigabit RJ45 PoE Ports. Interfaces, 2 = #2~#5. Interfaces, 1 = Max Power on a Single PoE Ports. Interfaces, 2 = 30W. Interfaces, 1 = PoE Ports Notes. Interfaces, 2 = The PoE ports comply with. Interfaces, 1 = . Interfaces, 2 = IEEE 802.3at/af standards.. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = 1×WAN Port, 4× LAN Ports. Interfaces, 1 = USB-A 3.0 Ports. Interfaces, 2 = 1. Interfaces, 1 = LED. Interfaces, 2 = · System. Interfaces, 1 = . Interfaces, 2 = · PoE Max Status. Interfaces, 1 = . Interfaces, 2 = · Link/ACT/PoE Status of Each PoE Port. Interfaces, 1 = Physical Buttons. Interfaces, 2 = Reset Button. Interfaces, 1 = Power Input. Interfaces, 2 = DC Jack.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "191439fe02332195e07cb97355ad3c57d5e1dce683e601a1f798123ecbf886f1",
+          "unitIndex": 4,
+          "blockId": "635bdcd5-1416-4c42-81a4-be6a1edcbfe1",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = DC. Power, 1 = . Power, 2 = 802.3at/af PoE. Power, 1 = . Power, 2 = Passive PoE. Power, 1 = DC. Power, 2 = 54V 1.11A. Power, 1 = Passive PoE. Power, 2 = 24/48V. Power, 1 = Power Adapter. Power, 2 = Input: 100 ~ 240 V, 50 Hz AC. Power, 1 = . Power, 2 = Output: 54V 1.11A DC",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "191439fe02332195e07cb97355ad3c57d5e1dce683e601a1f798123ecbf886f1",
+          "unitIndex": 4,
+          "blockId": "137c29f0-3a19-4a9b-8710-1cfadad92211",
+          "excerpt": "Max Power Consumption (W). , 2 = Total: 60W. , 1 = . , 2 = PoE: 55W. , 1 = . , 2 = PoE (when USB Device is plugged in): 50W. , 1 = . , 2 = No PoE: 5W. , 1 = Idle Power Consumption (W). , 2 = 2W.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-30 MA24-10：用户已确认同类Gold自动采纳，本题按已批准poe题型采纳，非逐题人工确认。holdout在用户明确冻结rag-v3-rrf-v1.0.0和SHA-256后处理；已逐份核对原件SHA-256、全部PDF页面及活动原文坐标。"
+    },
+    {
+      "caseId": "base-44-compare",
+      "caseSha256": "7424fd4687eec90f6efe5a5c7947c57eb0029cbe722d8d9cb7a351c0a7fc9552",
+      "pattern": "compare",
+      "expectedAnswer": "C200P (V1.0)：Five Gigabit RJ45 ports (one WAN, four LAN), with 802.3at/af PoE output on the four LAN ports, plus USB-A 3.0. Power methods list DC 54V/1.11A, 802.3at/af PoE and 24/48V Passive PoE; the sheet does not identify which port accepts PoE input. Stated limits are 60W total, 55W PoE or 50W PoE with a USB device. Each output port is rated up to 30W, not 30W simultaneously on all four.\nP4 (registered EU original; version unstated)：Three Gigabit RJ45 ports (one WAN/LAN and two LAN), plus one Nano SIM slot; eSIM is optional. DC 12V/2.5A input; the included adapter accepts 100–240V AC, 50/60Hz and outputs 12V/2.5A DC. The complete original declares no PoE, so it is unsupported under MA24-09.",
+      "expectedSources": [
+        {
+          "assetSha256": "191439fe02332195e07cb97355ad3c57d5e1dce683e601a1f798123ecbf886f1",
+          "unitIndex": 4,
+          "blockId": "635bdcd5-1416-4c42-81a4-be6a1edcbfe1",
+          "excerpt": "Interfaces, 1 = Gigabit RJ45 Ports. Interfaces, 2 = 5. Interfaces, 1 = Gigabit RJ45 PoE Ports. Interfaces, 2 = #2~#5. Interfaces, 1 = Max Power on a Single PoE Ports. Interfaces, 2 = 30W. Interfaces, 1 = PoE Ports Notes. Interfaces, 2 = The PoE ports comply with. Interfaces, 1 = . Interfaces, 2 = IEEE 802.3at/af standards.. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = 1×WAN Port, 4× LAN Ports. Interfaces, 1 = USB-A 3.0 Ports. Interfaces, 2 = 1. Interfaces, 1 = LED. Interfaces, 2 = · System. Interfaces, 1 = . Interfaces, 2 = · PoE Max Status. Interfaces, 1 = . Interfaces, 2 = · Link/ACT/PoE Status of Each PoE Port. Interfaces, 1 = Physical Buttons. Interfaces, 2 = Reset Button. Interfaces, 1 = Power Input. Interfaces, 2 = DC Jack.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "191439fe02332195e07cb97355ad3c57d5e1dce683e601a1f798123ecbf886f1",
+          "unitIndex": 4,
+          "blockId": "635bdcd5-1416-4c42-81a4-be6a1edcbfe1",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = DC. Power, 1 = . Power, 2 = 802.3at/af PoE. Power, 1 = . Power, 2 = Passive PoE. Power, 1 = DC. Power, 2 = 54V 1.11A. Power, 1 = Passive PoE. Power, 2 = 24/48V. Power, 1 = Power Adapter. Power, 2 = Input: 100 ~ 240 V, 50 Hz AC. Power, 1 = . Power, 2 = Output: 54V 1.11A DC",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "191439fe02332195e07cb97355ad3c57d5e1dce683e601a1f798123ecbf886f1",
+          "unitIndex": 4,
+          "blockId": "137c29f0-3a19-4a9b-8710-1cfadad92211",
+          "excerpt": "Max Power Consumption (W). , 2 = Total: 60W. , 1 = . , 2 = PoE: 55W. , 1 = . , 2 = PoE (when USB Device is plugged in): 50W. , 1 = . , 2 = No PoE: 5W. , 1 = Idle Power Consumption (W). , 2 = 2W.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "19ed5588c2a495e6c8b405d143e91c8b4acb132b11d605c100fc3641e8cd84c0",
+          "unitIndex": 4,
+          "blockId": "7d85e23f-4479-40fc-b6d8-eae0a0a2cfa1",
+          "excerpt": "Interfaces, 1 = Gigabit RJ45 Ports. Interfaces, 2 = 3. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = One port supports WAN/LAN configuration, and the rest are LAN ports"
+        },
+        {
+          "assetSha256": "19ed5588c2a495e6c8b405d143e91c8b4acb132b11d605c100fc3641e8cd84c0",
+          "unitIndex": 3,
+          "blockId": "f479c733-faf6-46e7-9b15-1228afa4abbc",
+          "excerpt": "SIM Options. , 2 = 1× Nano SIM Slot, eSIM (optional). , 1 = Available Versions. , 2 = EU, US. EU Version, 1 = Suitable Region. EU Version, 2 = Europe, Middle East, Africa,. Cellular, 1 = . Cellular, 2 = Asia-Pacific (Exc. JP, CN), Brazil."
+        },
+        {
+          "assetSha256": "19ed5588c2a495e6c8b405d143e91c8b4acb132b11d605c100fc3641e8cd84c0",
+          "unitIndex": 4,
+          "blockId": "55c0ec94-1602-422a-906f-37edc47c8836",
+          "excerpt": "Interfaces, 1 = Power Input. Interfaces, 2 = DC Jack. Power, 1 = Power Methods. Power, 2 = DC. Power, 1 = DC. Power, 2 = 12V 2.5A. Power, 1 = Power Adapter. Power, 2 = Input: 100 ~ 240 V, 50/60 Hz AC. Power, 1 = Power Adapter. Power, 2 = Output: 12V 2.5A DC."
+        }
+      ],
+      "reviewNote": "2026-09-30 MA24-10：用户已确认同类Gold自动采纳，本题按已批准compare题型采纳，非逐题人工确认。holdout在用户明确冻结rag-v3-rrf-v1.0.0和SHA-256后处理；已逐份核对原件SHA-256、全部PDF页面及活动原文坐标。"
+    },
+    {
+      "caseId": "base-44-explain",
+      "caseSha256": "1dbcc02cc8f291ef437aaaf50c1605ceba807cf26a4ed1f26f0174a3dab25f3d",
+      "pattern": "explain",
+      "expectedAnswer": "C200P (V1.0)：Suitable for home or small-office routing and centralized management of Cudy APs, with PoE output on four LAN ports. The datasheet lists router/AP-controller roles, captive portal and Multi-SSID. Observe PoE power limits and AP-management scale.",
+      "expectedSources": [
+        {
+          "assetSha256": "191439fe02332195e07cb97355ad3c57d5e1dce683e601a1f798123ecbf886f1",
+          "unitIndex": 2,
+          "blockId": "d3c4ab80-cd31-4ce5-ba5b-c51ee3231601",
+          "excerpt": "A Gigabit router working as the controller of Cudy Access Points in whole-home Wi-Fi demands, feautring four PoE outputs.\n- 4× GbE with 802.3at/af Mode A PoE\n- 1× Gigabit Ethernet Port\n- 1× USB 3.0 Port\n- 60W Power Supply\n- Captive Portal\n- VPN Server and Client",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "191439fe02332195e07cb97355ad3c57d5e1dce683e601a1f798123ecbf886f1",
+          "unitIndex": 3,
+          "blockId": "2a357a93-b406-4b68-9724-20fe467dd3c9",
+          "excerpt": "C200P combines the functionality of router and AP controller,  enabling centralized management of multiple APs and streamlining network topology. It can also be used solely as AP controller to accommodate diverse networking needs.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "191439fe02332195e07cb97355ad3c57d5e1dce683e601a1f798123ecbf886f1",
+          "unitIndex": 3,
+          "blockId": "ea26548e-c333-45af-ade0-1bd843f84852",
+          "excerpt": "Provide centralized control for Cudy Access Points through a unified management interface.\nQuick Setup\nAP Management\nMulti-SSID\nCaptive Portal",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-30 MA24-10：用户已确认同类Gold自动采纳，本题按已批准explain题型采纳，非逐题人工确认。holdout在用户明确冻结rag-v3-rrf-v1.0.0和SHA-256后处理；已逐份核对原件SHA-256、全部PDF页面及活动原文坐标。"
+    },
+    {
+      "caseId": "base-45-open",
+      "caseSha256": "1317aa73b85832493eba8669a49da22c662413e3c4b31c100bdd9740cbb9a17c",
+      "pattern": "open",
+      "expectedAnswer": "找到并展示已登记的BU530C原始Datasheet PDF，提供打开或下载入口；不以其他型号替代，也不把打开资料请求改成参数问答。",
+      "expectedSources": [
+        {
+          "assetSha256": "a2aadf741068958e825212d7c6d9e9f900787ff25d72972bcd59586a817d737f",
+          "unitIndex": 2,
+          "blockId": "808b04af-2031-4f07-9557-12025e1ad82f",
+          "excerpt": "-  BU530C\n-  Quick Installation Guide",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-30 MA24-10：用户已确认同类Gold自动采纳，本题按已批准open题型采纳，非逐题人工确认。holdout在用户明确冻结rag-v3-rrf-v1.0.0和SHA-256后处理；已逐份核对原件SHA-256、全部PDF页面及活动原文坐标。封面型号视觉核对，但当前树封面块未包含型号，改引同哈希原件中真实型号块，不伪造封面短引。"
+    },
+    {
+      "caseId": "base-45-ports",
+      "caseSha256": "7c7d556ad1d97a6b236e7b85739ca49b25a83a269abd23f0e4ccb56fc8638824",
+      "pattern": "ports",
+      "expectedAnswer": "BU530C (V1.0)：0个RJ45以太网口；这是USB-C蓝牙5.3适配器，USB-C不计为网口。",
+      "expectedSources": [
+        {
+          "assetSha256": "a2aadf741068958e825212d7c6d9e9f900787ff25d72972bcd59586a817d737f",
+          "unitIndex": 2,
+          "blockId": "96db717e-bf24-46d5-ad55-f043eb2622c7",
+          "excerpt": "A Bluetooth USB-C adapter for equipping your PC with Bluetooth 5.3 connectivity, connecting peripherals at longer distance, higher rate, and lower latency.\n-   Bluetooth 5.3\n-   Requires USB 2.0 or Higher Port\n-   Works on Windows 7/8/8.1/10/11\n-   Nano Size",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "a2aadf741068958e825212d7c6d9e9f900787ff25d72972bcd59586a817d737f",
+          "unitIndex": 2,
+          "blockId": "e9bd12f0-e648-4b97-8204-39300e829e67",
+          "excerpt": "Reliability, Upstream Connection = Environment. Reliability, USB-C = Operating Temperature: 0 ℃ ~40 ℃ (32 ℉ ~104 ℉ ) Operating Humidity: 10%~90% non-condensing. Requirements, Upstream Connection = Hardware Requirement Compatible OS. Requirements, USB-C = Storage Temperature:-30 ℃ ~70 ℃ Storage Humidity: 5%~90% non-condensing Requires a USB 2.0 or higher standard USB port for full speed Windows 11/10/8.1/7 Linux. Certifications, Upstream Connection = Driver Installation. Certifications, USB-C = Auto driver installation on Windows 10/11. Manual driver installation for other OS.. , Upstream Connection = FCC, CE. , USB-C = .",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-30 MA24-10：用户已确认同类Gold自动采纳，本题按已批准ports题型采纳，非逐题人工确认。holdout在用户明确冻结rag-v3-rrf-v1.0.0和SHA-256后处理；已逐份核对原件SHA-256、全部PDF页面及活动原文坐标。"
+    },
+    {
+      "caseId": "base-45-poe",
+      "caseSha256": "be736dfe9b55d1708e2bbdfd45e6e5e2b578ad9e95f577e344713ede9e7f6795",
+      "pattern": "poe",
+      "expectedAnswer": "不支持。BU530C (V1.0)不支持PoE输入或输出。完整匹配原件未声明PoE支持，按用户确认的MA24-09口径判定。通过主机USB-C连接；原件未列独立DC输入电压/电流。不支持PoE输入或输出。",
+      "expectedSources": [
+        {
+          "assetSha256": "a2aadf741068958e825212d7c6d9e9f900787ff25d72972bcd59586a817d737f",
+          "unitIndex": 2,
+          "blockId": "96db717e-bf24-46d5-ad55-f043eb2622c7",
+          "excerpt": "A Bluetooth USB-C adapter for equipping your PC with Bluetooth 5.3 connectivity, connecting peripherals at longer distance, higher rate, and lower latency.\n-   Bluetooth 5.3\n-   Requires USB 2.0 or Higher Port\n-   Works on Windows 7/8/8.1/10/11\n-   Nano Size",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "a2aadf741068958e825212d7c6d9e9f900787ff25d72972bcd59586a817d737f",
+          "unitIndex": 2,
+          "blockId": "e9bd12f0-e648-4b97-8204-39300e829e67",
+          "excerpt": "Reliability, Upstream Connection = Environment. Reliability, USB-C = Operating Temperature: 0 ℃ ~40 ℃ (32 ℉ ~104 ℉ ) Operating Humidity: 10%~90% non-condensing. Requirements, Upstream Connection = Hardware Requirement Compatible OS. Requirements, USB-C = Storage Temperature:-30 ℃ ~70 ℃ Storage Humidity: 5%~90% non-condensing Requires a USB 2.0 or higher standard USB port for full speed Windows 11/10/8.1/7 Linux. Certifications, Upstream Connection = Driver Installation. Certifications, USB-C = Auto driver installation on Windows 10/11. Manual driver installation for other OS.. , Upstream Connection = FCC, CE. , USB-C = .",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-30 MA24-10：用户已确认同类Gold自动采纳，本题按已批准poe题型采纳，非逐题人工确认。holdout在用户明确冻结rag-v3-rrf-v1.0.0和SHA-256后处理；已逐份核对原件SHA-256、全部PDF页面及活动原文坐标。未声明PoE判断依MA24-09完整原件，不将否定结论伪作原文逐字引文。"
+    },
+    {
+      "caseId": "base-45-compare",
+      "caseSha256": "139254567fdb4a824a2ec499cb86fa8179687bb7154d5962821938cdb618ac3b",
+      "pattern": "compare",
+      "expectedAnswer": "BU530C (V1.0)：USB-C蓝牙5.3适配器，没有RJ45网口。 通过主机USB-C连接；原件未列独立DC输入电压/电流。不支持PoE输入或输出。\nBU530H (V1.0)：USB-A蓝牙适配器，带可调高增益天线，没有RJ45网口。 通过主机USB-A连接；原件未列独立DC输入电压/电流。不支持PoE输入或输出。",
+      "expectedSources": [
+        {
+          "assetSha256": "a2aadf741068958e825212d7c6d9e9f900787ff25d72972bcd59586a817d737f",
+          "unitIndex": 2,
+          "blockId": "96db717e-bf24-46d5-ad55-f043eb2622c7",
+          "excerpt": "A Bluetooth USB-C adapter for equipping your PC with Bluetooth 5.3 connectivity, connecting peripherals at longer distance, higher rate, and lower latency.\n-   Bluetooth 5.3\n-   Requires USB 2.0 or Higher Port\n-   Works on Windows 7/8/8.1/10/11\n-   Nano Size",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "a2aadf741068958e825212d7c6d9e9f900787ff25d72972bcd59586a817d737f",
+          "unitIndex": 2,
+          "blockId": "e9bd12f0-e648-4b97-8204-39300e829e67",
+          "excerpt": "Reliability, Upstream Connection = Environment. Reliability, USB-C = Operating Temperature: 0 ℃ ~40 ℃ (32 ℉ ~104 ℉ ) Operating Humidity: 10%~90% non-condensing. Requirements, Upstream Connection = Hardware Requirement Compatible OS. Requirements, USB-C = Storage Temperature:-30 ℃ ~70 ℃ Storage Humidity: 5%~90% non-condensing Requires a USB 2.0 or higher standard USB port for full speed Windows 11/10/8.1/7 Linux. Certifications, Upstream Connection = Driver Installation. Certifications, USB-C = Auto driver installation on Windows 10/11. Manual driver installation for other OS.. , Upstream Connection = FCC, CE. , USB-C = .",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "08c510be477dfd62c8a342d05a070bd7e3a14d527827cecdcdaacc6fcb828bec",
+          "unitIndex": 2,
+          "blockId": "94c18c70-cec1-4b4c-951a-83fbe1e92933",
+          "excerpt": "A Bluetooth 5.3 adapter with an adjustable high-gain antenna. Provides extended range and stable connections.\n-   Bluetooth 5.3\n-   1× USB 2.0\n-   Works on Windows 7/8/8.1/10/11",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "08c510be477dfd62c8a342d05a070bd7e3a14d527827cecdcdaacc6fcb828bec",
+          "unitIndex": 2,
+          "blockId": "b065d71b-1c4d-48aa-9242-e45589b6364c",
+          "excerpt": "Wireless, 1 = Wi-Fi Antennas. Wireless, 2 = 1× External. Interfaces, 1 = Upstream Connection. Interfaces, 2 = USB-A.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-30 MA24-10：用户已确认同类Gold自动采纳，本题按已批准compare题型采纳，非逐题人工确认。holdout在用户明确冻结rag-v3-rrf-v1.0.0和SHA-256后处理；已逐份核对原件SHA-256、全部PDF页面及活动原文坐标。"
+    },
+    {
+      "caseId": "base-45-explain",
+      "caseSha256": "d23ab4b4342512481560a1df418f391f91e11767bc33e65b26bc4dcb6870234f",
+      "pattern": "explain",
+      "expectedAnswer": "BU530C (V1.0)：适合给具有相容USB端口的PC增加蓝牙5.3连接。原件列出USB-C、Windows 7/8/8.1/10/11及Linux兼容范围；Windows 10/11自动安装驱动，其他系统需手动安装。它不提供以太网连接。",
+      "expectedSources": [
+        {
+          "assetSha256": "a2aadf741068958e825212d7c6d9e9f900787ff25d72972bcd59586a817d737f",
+          "unitIndex": 2,
+          "blockId": "96db717e-bf24-46d5-ad55-f043eb2622c7",
+          "excerpt": "A Bluetooth USB-C adapter for equipping your PC with Bluetooth 5.3 connectivity, connecting peripherals at longer distance, higher rate, and lower latency.\n-   Bluetooth 5.3\n-   Requires USB 2.0 or Higher Port\n-   Works on Windows 7/8/8.1/10/11\n-   Nano Size",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "a2aadf741068958e825212d7c6d9e9f900787ff25d72972bcd59586a817d737f",
+          "unitIndex": 2,
+          "blockId": "e9bd12f0-e648-4b97-8204-39300e829e67",
+          "excerpt": "Reliability, Upstream Connection = Environment. Reliability, USB-C = Operating Temperature: 0 ℃ ~40 ℃ (32 ℉ ~104 ℉ ) Operating Humidity: 10%~90% non-condensing. Requirements, Upstream Connection = Hardware Requirement Compatible OS. Requirements, USB-C = Storage Temperature:-30 ℃ ~70 ℃ Storage Humidity: 5%~90% non-condensing Requires a USB 2.0 or higher standard USB port for full speed Windows 11/10/8.1/7 Linux. Certifications, Upstream Connection = Driver Installation. Certifications, USB-C = Auto driver installation on Windows 10/11. Manual driver installation for other OS.. , Upstream Connection = FCC, CE. , USB-C = .",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-30 MA24-10：用户已确认同类Gold自动采纳，本题按已批准explain题型采纳，非逐题人工确认。holdout在用户明确冻结rag-v3-rrf-v1.0.0和SHA-256后处理；已逐份核对原件SHA-256、全部PDF页面及活动原文坐标。"
+    },
+    {
+      "caseId": "base-46-open",
+      "caseSha256": "bf0ef51c18b4e3317407d60f4f907b01086475df2f386e9e3e02e62d4ac4cef3",
+      "pattern": "open",
+      "expectedAnswer": "Find and display the registered original BU530H Datasheet PDF, with an open or download link. Do not substitute another model or turn this request into a specification answer.",
+      "expectedSources": [
+        {
+          "assetSha256": "08c510be477dfd62c8a342d05a070bd7e3a14d527827cecdcdaacc6fcb828bec",
+          "unitIndex": 2,
+          "blockId": "b8b42473-a2b4-4ffb-9399-ae0ca0e6b842",
+          "excerpt": "-  BU530H\n-  Quick Installation Guide",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-30 MA24-10：用户已确认同类Gold自动采纳，本题按已批准open题型采纳，非逐题人工确认。holdout在用户明确冻结rag-v3-rrf-v1.0.0和SHA-256后处理；已逐份核对原件SHA-256、全部PDF页面及活动原文坐标。封面型号视觉核对，但当前树封面块未包含型号，改引同哈希原件中真实型号块，不伪造封面短引。"
+    },
+    {
+      "caseId": "base-46-ports",
+      "caseSha256": "a1e54e708f3accf0447e536b83d8c3b181e446949b9d00a36738a4c5c8c46cf1",
+      "pattern": "ports",
+      "expectedAnswer": "BU530H (V1.0)：0 RJ45 Ethernet ports. This USB-A Bluetooth 5.3 adapter has no Ethernet connector.",
+      "expectedSources": [
+        {
+          "assetSha256": "08c510be477dfd62c8a342d05a070bd7e3a14d527827cecdcdaacc6fcb828bec",
+          "unitIndex": 2,
+          "blockId": "94c18c70-cec1-4b4c-951a-83fbe1e92933",
+          "excerpt": "A Bluetooth 5.3 adapter with an adjustable high-gain antenna. Provides extended range and stable connections.\n-   Bluetooth 5.3\n-   1× USB 2.0\n-   Works on Windows 7/8/8.1/10/11",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "08c510be477dfd62c8a342d05a070bd7e3a14d527827cecdcdaacc6fcb828bec",
+          "unitIndex": 2,
+          "blockId": "b065d71b-1c4d-48aa-9242-e45589b6364c",
+          "excerpt": "Wireless, 1 = Wi-Fi Antennas. Wireless, 2 = 1× External. Interfaces, 1 = Upstream Connection. Interfaces, 2 = USB-A.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-30 MA24-10：用户已确认同类Gold自动采纳，本题按已批准ports题型采纳，非逐题人工确认。holdout在用户明确冻结rag-v3-rrf-v1.0.0和SHA-256后处理；已逐份核对原件SHA-256、全部PDF页面及活动原文坐标。"
+    },
+    {
+      "caseId": "base-46-poe",
+      "caseSha256": "f06b8d245c3eddd534c41371cf435e3555acd53d5ca140cc1dd4e5ced9fee33e",
+      "pattern": "poe",
+      "expectedAnswer": "No. BU530H (V1.0) does not support PoE input or output. After checking the complete matching original, no PoE support is declared; under the user-confirmed MA24-09 rule it is unsupported. It connects through the host USB-A port; the original gives no separate rated DC input. It has no PoE input or output.",
+      "expectedSources": [
+        {
+          "assetSha256": "08c510be477dfd62c8a342d05a070bd7e3a14d527827cecdcdaacc6fcb828bec",
+          "unitIndex": 2,
+          "blockId": "94c18c70-cec1-4b4c-951a-83fbe1e92933",
+          "excerpt": "A Bluetooth 5.3 adapter with an adjustable high-gain antenna. Provides extended range and stable connections.\n-   Bluetooth 5.3\n-   1× USB 2.0\n-   Works on Windows 7/8/8.1/10/11",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "08c510be477dfd62c8a342d05a070bd7e3a14d527827cecdcdaacc6fcb828bec",
+          "unitIndex": 2,
+          "blockId": "b065d71b-1c4d-48aa-9242-e45589b6364c",
+          "excerpt": "Wireless, 1 = Wi-Fi Antennas. Wireless, 2 = 1× External. Interfaces, 1 = Upstream Connection. Interfaces, 2 = USB-A.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-30 MA24-10：用户已确认同类Gold自动采纳，本题按已批准poe题型采纳，非逐题人工确认。holdout在用户明确冻结rag-v3-rrf-v1.0.0和SHA-256后处理；已逐份核对原件SHA-256、全部PDF页面及活动原文坐标。未声明PoE判断依MA24-09完整原件，不将否定结论伪作原文逐字引文。"
+    },
+    {
+      "caseId": "base-46-compare",
+      "caseSha256": "0d6ac01307475fd6062926fd9927460f7a561ff1959efba07f98bc75977d1dd1",
+      "pattern": "compare",
+      "expectedAnswer": "BU530H (V1.0)：USB-A Bluetooth adapter with an adjustable high-gain antenna and no RJ45 port. It connects through the host USB-A port; the original gives no separate rated DC input. It has no PoE input or output.\nBU530C (V1.0)：A USB-C Bluetooth 5.3 adapter with no RJ45 Ethernet port. It connects through the host USB-C port; the original does not give a separate rated DC input. It has no PoE input or output.",
+      "expectedSources": [
+        {
+          "assetSha256": "08c510be477dfd62c8a342d05a070bd7e3a14d527827cecdcdaacc6fcb828bec",
+          "unitIndex": 2,
+          "blockId": "94c18c70-cec1-4b4c-951a-83fbe1e92933",
+          "excerpt": "A Bluetooth 5.3 adapter with an adjustable high-gain antenna. Provides extended range and stable connections.\n-   Bluetooth 5.3\n-   1× USB 2.0\n-   Works on Windows 7/8/8.1/10/11",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "08c510be477dfd62c8a342d05a070bd7e3a14d527827cecdcdaacc6fcb828bec",
+          "unitIndex": 2,
+          "blockId": "b065d71b-1c4d-48aa-9242-e45589b6364c",
+          "excerpt": "Wireless, 1 = Wi-Fi Antennas. Wireless, 2 = 1× External. Interfaces, 1 = Upstream Connection. Interfaces, 2 = USB-A.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "a2aadf741068958e825212d7c6d9e9f900787ff25d72972bcd59586a817d737f",
+          "unitIndex": 2,
+          "blockId": "96db717e-bf24-46d5-ad55-f043eb2622c7",
+          "excerpt": "A Bluetooth USB-C adapter for equipping your PC with Bluetooth 5.3 connectivity, connecting peripherals at longer distance, higher rate, and lower latency.\n-   Bluetooth 5.3\n-   Requires USB 2.0 or Higher Port\n-   Works on Windows 7/8/8.1/10/11\n-   Nano Size",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "a2aadf741068958e825212d7c6d9e9f900787ff25d72972bcd59586a817d737f",
+          "unitIndex": 2,
+          "blockId": "e9bd12f0-e648-4b97-8204-39300e829e67",
+          "excerpt": "Reliability, Upstream Connection = Environment. Reliability, USB-C = Operating Temperature: 0 ℃ ~40 ℃ (32 ℉ ~104 ℉ ) Operating Humidity: 10%~90% non-condensing. Requirements, Upstream Connection = Hardware Requirement Compatible OS. Requirements, USB-C = Storage Temperature:-30 ℃ ~70 ℃ Storage Humidity: 5%~90% non-condensing Requires a USB 2.0 or higher standard USB port for full speed Windows 11/10/8.1/7 Linux. Certifications, Upstream Connection = Driver Installation. Certifications, USB-C = Auto driver installation on Windows 10/11. Manual driver installation for other OS.. , Upstream Connection = FCC, CE. , USB-C = .",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-30 MA24-10：用户已确认同类Gold自动采纳，本题按已批准compare题型采纳，非逐题人工确认。holdout在用户明确冻结rag-v3-rrf-v1.0.0和SHA-256后处理；已逐份核对原件SHA-256、全部PDF页面及活动原文坐标。"
+    },
+    {
+      "caseId": "base-46-explain",
+      "caseSha256": "594eb8f8532fa61f54d663f784b322ab4ecddc591cc0adaff1da01c4caecd7e7",
+      "pattern": "explain",
+      "expectedAnswer": "BU530H (V1.0)：Suitable for adding Bluetooth 5.3 to a supported PC when an adjustable high-gain antenna is useful. The sheet lists USB-A, an external 5dBi antenna and Windows/Linux support. Actual range depends on conditions; “Long Range” is not a guaranteed distance.",
+      "expectedSources": [
+        {
+          "assetSha256": "08c510be477dfd62c8a342d05a070bd7e3a14d527827cecdcdaacc6fcb828bec",
+          "unitIndex": 1,
+          "blockId": "7c7138fe-68f4-424a-9d55-f9d65679b649",
+          "excerpt": "Long Range USB Adapter\nBluetooth 5.3 Stable Connection\n(j))\n5dBi High-Gain Antenna\nWindows 11/10/8.1/7, Linux",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "08c510be477dfd62c8a342d05a070bd7e3a14d527827cecdcdaacc6fcb828bec",
+          "unitIndex": 2,
+          "blockId": "94c18c70-cec1-4b4c-951a-83fbe1e92933",
+          "excerpt": "A Bluetooth 5.3 adapter with an adjustable high-gain antenna. Provides extended range and stable connections.\n-   Bluetooth 5.3\n-   1× USB 2.0\n-   Works on Windows 7/8/8.1/10/11",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "08c510be477dfd62c8a342d05a070bd7e3a14d527827cecdcdaacc6fcb828bec",
+          "unitIndex": 2,
+          "blockId": "b065d71b-1c4d-48aa-9242-e45589b6364c",
+          "excerpt": "Wireless, 1 = Wi-Fi Antennas. Wireless, 2 = 1× External. Interfaces, 1 = Upstream Connection. Interfaces, 2 = USB-A.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-30 MA24-10：用户已确认同类Gold自动采纳，本题按已批准explain题型采纳，非逐题人工确认。holdout在用户明确冻结rag-v3-rrf-v1.0.0和SHA-256后处理；已逐份核对原件SHA-256、全部PDF页面及活动原文坐标。"
+    },
+    {
+      "caseId": "base-47-open",
+      "caseSha256": "8771d2201fa2b3c0edd462988865ff4b1a4c42f80948ff147ac35407da421386",
+      "pattern": "open",
+      "expectedAnswer": "找到并展示已登记的AP3000S原始Datasheet PDF，提供打开或下载入口；不以其他型号替代，也不把打开资料请求改成参数问答。",
+      "expectedSources": [
+        {
+          "assetSha256": "0482b897b5b3ef25f42023b26d8e87a455328d236e1401814a23a62ceacb9b0e",
+          "unitIndex": 1,
+          "blockId": "3e0ffcae-c286-4a79-9c19-fc45fd75054e",
+          "excerpt": "Model: AP3000S",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-30 MA24-10：用户已确认同类Gold自动采纳，本题按已批准open题型采纳，非逐题人工确认。holdout在用户明确冻结rag-v3-rrf-v1.0.0和SHA-256后处理；已逐份核对原件SHA-256、全部PDF页面及活动原文坐标。"
+    },
+    {
+      "caseId": "base-47-ports",
+      "caseSha256": "8e8a303a69d62bbd941ec675b249b76dcc9b4d90ec721cfc4e89018bd402b2c9",
+      "pattern": "ports",
+      "expectedAnswer": "AP3000S (V1.0)：1个千兆RJ45物理网口，支持PoE输入；DC插孔不计为网口。",
+      "expectedSources": [
+        {
+          "assetSha256": "0482b897b5b3ef25f42023b26d8e87a455328d236e1401814a23a62ceacb9b0e",
+          "unitIndex": 4,
+          "blockId": "4060808d-8452-47d3-bac1-f2b9abeed99b",
+          "excerpt": "Interfaces, 1 = Gigabit RJ45 Ports. Interfaces, 2 = 1. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = Accepts PoE powering. Interfaces, 1 = LED. Interfaces, 2 = System. Interfaces, 1 = Physical Buttons. Interfaces, 2 = Reset Button. Interfaces, 1 = Power Interfaces. Interfaces, 2 = DC Jack. Interfaces, 1 = . Interfaces, 2 = PoE via Ethernet Port.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-30 MA24-10：用户已确认同类Gold自动采纳，本题按已批准ports题型采纳，非逐题人工确认。holdout在用户明确冻结rag-v3-rrf-v1.0.0和SHA-256后处理；已逐份核对原件SHA-256、全部PDF页面及活动原文坐标。"
+    },
+    {
+      "caseId": "base-47-poe",
+      "caseSha256": "a888098351266c2a86faf2654e6332c24493527792848c0adb6852c754fc636f",
+      "pattern": "poe",
+      "expectedAnswer": "AP3000S (V1.0)：支持从千兆RJ45口接受802.3at/af或48V Passive PoE输入，也支持DC供电。PoE下设备最大功耗12W，DC下8.8W；原件未列PoE输出。",
+      "expectedSources": [
+        {
+          "assetSha256": "0482b897b5b3ef25f42023b26d8e87a455328d236e1401814a23a62ceacb9b0e",
+          "unitIndex": 4,
+          "blockId": "4060808d-8452-47d3-bac1-f2b9abeed99b",
+          "excerpt": "Interfaces, 1 = Gigabit RJ45 Ports. Interfaces, 2 = 1. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = Accepts PoE powering. Interfaces, 1 = LED. Interfaces, 2 = System. Interfaces, 1 = Physical Buttons. Interfaces, 2 = Reset Button. Interfaces, 1 = Power Interfaces. Interfaces, 2 = DC Jack. Interfaces, 1 = . Interfaces, 2 = PoE via Ethernet Port.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "0482b897b5b3ef25f42023b26d8e87a455328d236e1401814a23a62ceacb9b0e",
+          "unitIndex": 4,
+          "blockId": "4060808d-8452-47d3-bac1-f2b9abeed99b",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = DC. Power, 1 = . Power, 2 = Passive PoE. Power, 1 = . Power, 2 = 802.3at/af PoE. Power, 1 = Power Input. Power, 2 = DC: 12V ⎓ 1A. Power, 1 = . Power, 2 = Passive PoE: 48V ⎓. Power, 1 = . Power, 2 = PoE: 802.3at/af. Power, 1 = Max Power Consumption (W). Power, 2 = Max (PoE): 12 W. Power, 1 = . Power, 2 = Max (DC): 8.8 W. Power, 1 = Idle Power Consumption (W). Power, 2 = 2.5 W.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-30 MA24-10：用户已确认同类Gold自动采纳，本题按已批准poe题型采纳，非逐题人工确认。holdout在用户明确冻结rag-v3-rrf-v1.0.0和SHA-256后处理；已逐份核对原件SHA-256、全部PDF页面及活动原文坐标。"
+    },
+    {
+      "caseId": "base-47-compare",
+      "caseSha256": "b428c25c82484575fd9c5500907c6431f5242122c2505b3f6d270d69502f1748",
+      "pattern": "compare",
+      "expectedAnswer": "AP3000S (V1.0)：1个千兆RJ45口用于有线上联及PoE输入。 可通过DC 12V/1A、48V Passive PoE或802.3at/af PoE输入供电。设备最大功耗：PoE供电12W、DC供电8.8W；不据此声称PoE输出。\nAP1300D (V1.0)：1个千兆RJ45口用于有线上联和PoE输入。 DC 12V/1A、12～57V Passive PoE或802.3at/af PoE输入。最大设备功耗PoE下11W、DC下8.5W，不表示PoE输出。",
+      "expectedSources": [
+        {
+          "assetSha256": "0482b897b5b3ef25f42023b26d8e87a455328d236e1401814a23a62ceacb9b0e",
+          "unitIndex": 4,
+          "blockId": "4060808d-8452-47d3-bac1-f2b9abeed99b",
+          "excerpt": "Interfaces, 1 = Gigabit RJ45 Ports. Interfaces, 2 = 1. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = Accepts PoE powering. Interfaces, 1 = LED. Interfaces, 2 = System. Interfaces, 1 = Physical Buttons. Interfaces, 2 = Reset Button. Interfaces, 1 = Power Interfaces. Interfaces, 2 = DC Jack. Interfaces, 1 = . Interfaces, 2 = PoE via Ethernet Port.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "0482b897b5b3ef25f42023b26d8e87a455328d236e1401814a23a62ceacb9b0e",
+          "unitIndex": 4,
+          "blockId": "4060808d-8452-47d3-bac1-f2b9abeed99b",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = DC. Power, 1 = . Power, 2 = Passive PoE. Power, 1 = . Power, 2 = 802.3at/af PoE. Power, 1 = Power Input. Power, 2 = DC: 12V ⎓ 1A. Power, 1 = . Power, 2 = Passive PoE: 48V ⎓. Power, 1 = . Power, 2 = PoE: 802.3at/af. Power, 1 = Max Power Consumption (W). Power, 2 = Max (PoE): 12 W. Power, 1 = . Power, 2 = Max (DC): 8.8 W. Power, 1 = Idle Power Consumption (W). Power, 2 = 2.5 W.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "876a210d492037ab00cb11e5e54ea7b2ce0fc86e70d3ebd8af3311020fd1acb6",
+          "unitIndex": 4,
+          "blockId": "98a5a9e5-da81-496f-a426-1d625964b2da",
+          "excerpt": "Interfaces, 1 = Gigabit RJ45 Ports. Interfaces, 2 = 1. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = Accepts PoE powering. Interfaces, 1 = LED. Interfaces, 2 = • 5 GHz Wi-Fi. Interfaces, 1 = . Interfaces, 2 = • 2.4 GHz Wi-Fi. Interfaces, 1 = . Interfaces, 2 = • WPS. Interfaces, 1 = . Interfaces, 2 = • LAN. Interfaces, 1 = . Interfaces, 2 = • Internet. Interfaces, 1 = . Interfaces, 2 = • Power. Interfaces, 1 = Physical Buttons. Interfaces, 2 = • Reset Button. Interfaces, 1 = . Interfaces, 2 = • Power On/Off Button. Interfaces, 1 = Power Input. Interfaces, 2 = DC Jack, PoE via Ethernet Port.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "876a210d492037ab00cb11e5e54ea7b2ce0fc86e70d3ebd8af3311020fd1acb6",
+          "unitIndex": 4,
+          "blockId": "98a5a9e5-da81-496f-a426-1d625964b2da",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = • DC. Power, 1 = . Power, 2 = • Passive PoE. Power, 1 = . Power, 2 = • 802.3at/af PoE. Power, 1 = DC. Power, 2 = 12V 1A. Power, 1 = Passive PoE. Power, 2 = 12 ~ 57V. , 1 = Power Adapter. , 2 = AP1300D | DC Adapter in the box:. , 1 = . , 2 = Input: 100 ~ 240 V, 50/60 Hz AC. , 1 = . , 2 = Output: 12V 1A DC. , 1 = Max Power Consumption (W). , 2 = Max (PoE): 11 W. , 1 = . , 2 = Max (DC): 8.5 W",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-30 MA24-10：用户已确认同类Gold自动采纳，本题按已批准compare题型采纳，非逐题人工确认。holdout在用户明确冻结rag-v3-rrf-v1.0.0和SHA-256后处理；已逐份核对原件SHA-256、全部PDF页面及活动原文坐标。"
+    },
+    {
+      "caseId": "base-47-explain",
+      "caseSha256": "a0bda59f77a9550b19f7d3a4b16047b50a3c507c67fceae11e95c954ce94b7a6",
+      "pattern": "explain",
+      "expectedAnswer": "AP3000S (V1.0)：适合小企业或SOHO的室内墙面/吸顶Wi-Fi 6接入。原件明确列这些场景与安装方式，提供千兆PoE上联、双频四流Wi-Fi 6及Cudy Mesh/多AP管理；实际覆盖随布局和墙体变化。",
+      "expectedSources": [
+        {
+          "assetSha256": "0482b897b5b3ef25f42023b26d8e87a455328d236e1401814a23a62ceacb9b0e",
+          "unitIndex": 3,
+          "blockId": "554e3d48-1a8d-4cb9-aeee-c1b5b5f0ee56",
+          "excerpt": "A compact wall/ceiling-mounted Wi-Fi 6 AP, featuring a Gigabit Ethernet port, designed for small businesses and SOHO.\n- 4-Stream Dual-Band Wi-Fi 6\n- 2402 Mbps + 574 Mbps Wi-Fi\n- 1× Gigabit Ethernet RJ45 Port\n- 802.3at/af, Passive PoE, DC\n- Multi-AP Management\n- Captive Portal, Multi-SSID\n- 120 Connected Devices\n- �  Φ 171.4×41 mm ( Φ 6.75×1.61\")",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "0482b897b5b3ef25f42023b26d8e87a455328d236e1401814a23a62ceacb9b0e",
+          "unitIndex": 2,
+          "blockId": "75db887d-f77f-484d-ba54-39af57fb945e",
+          "excerpt": "With 160 MHz channel bandwidth, AP3000S delivers Wi-Fi 6 speeds up to 2976 Mbps, supporting fast data transmission and stable performance for SMBs and smart home environments.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "0482b897b5b3ef25f42023b26d8e87a455328d236e1401814a23a62ceacb9b0e",
+          "unitIndex": 4,
+          "blockId": "4060808d-8452-47d3-bac1-f2b9abeed99b",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = DC. Power, 1 = . Power, 2 = Passive PoE. Power, 1 = . Power, 2 = 802.3at/af PoE. Power, 1 = Power Input. Power, 2 = DC: 12V ⎓ 1A. Power, 1 = . Power, 2 = Passive PoE: 48V ⎓. Power, 1 = . Power, 2 = PoE: 802.3at/af. Power, 1 = Max Power Consumption (W). Power, 2 = Max (PoE): 12 W. Power, 1 = . Power, 2 = Max (DC): 8.8 W. Power, 1 = Idle Power Consumption (W). Power, 2 = 2.5 W.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-30 MA24-10：用户已确认同类Gold自动采纳，本题按已批准explain题型采纳，非逐题人工确认。holdout在用户明确冻结rag-v3-rrf-v1.0.0和SHA-256后处理；已逐份核对原件SHA-256、全部PDF页面及活动原文坐标。"
+    },
+    {
+      "caseId": "base-48-open",
+      "caseSha256": "a9677ccc49e9d8c9bcafae884a71ca56001b1b3b11337dcd43c5092387a916ae",
+      "pattern": "open",
+      "expectedAnswer": "Find and display the registered original AP1300D Datasheet PDF, with an open or download link. Do not substitute another model or turn this request into a specification answer.",
+      "expectedSources": [
+        {
+          "assetSha256": "876a210d492037ab00cb11e5e54ea7b2ce0fc86e70d3ebd8af3311020fd1acb6",
+          "unitIndex": 1,
+          "blockId": "f6956d99-91c4-4b83-8675-f5d15027c4bc",
+          "excerpt": "Model: AP1300D",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-30 MA24-10：用户已确认同类Gold自动采纳，本题按已批准open题型采纳，非逐题人工确认。holdout在用户明确冻结rag-v3-rrf-v1.0.0和SHA-256后处理；已逐份核对原件SHA-256、全部PDF页面及活动原文坐标。"
+    },
+    {
+      "caseId": "base-48-ports",
+      "caseSha256": "f01c2ff19509ccd48b12e632d5f3763a7fa0b57dba29afa595cfea4018fed6ad",
+      "pattern": "ports",
+      "expectedAnswer": "AP1300D (V1.0)：1 Gigabit RJ45 physical Ethernet port accepting PoE input; the DC jack is not Ethernet.",
+      "expectedSources": [
+        {
+          "assetSha256": "876a210d492037ab00cb11e5e54ea7b2ce0fc86e70d3ebd8af3311020fd1acb6",
+          "unitIndex": 4,
+          "blockId": "98a5a9e5-da81-496f-a426-1d625964b2da",
+          "excerpt": "Interfaces, 1 = Gigabit RJ45 Ports. Interfaces, 2 = 1. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = Accepts PoE powering. Interfaces, 1 = LED. Interfaces, 2 = • 5 GHz Wi-Fi. Interfaces, 1 = . Interfaces, 2 = • 2.4 GHz Wi-Fi. Interfaces, 1 = . Interfaces, 2 = • WPS. Interfaces, 1 = . Interfaces, 2 = • LAN. Interfaces, 1 = . Interfaces, 2 = • Internet. Interfaces, 1 = . Interfaces, 2 = • Power. Interfaces, 1 = Physical Buttons. Interfaces, 2 = • Reset Button. Interfaces, 1 = . Interfaces, 2 = • Power On/Off Button. Interfaces, 1 = Power Input. Interfaces, 2 = DC Jack, PoE via Ethernet Port.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-30 MA24-10：用户已确认同类Gold自动采纳，本题按已批准ports题型采纳，非逐题人工确认。holdout在用户明确冻结rag-v3-rrf-v1.0.0和SHA-256后处理；已逐份核对原件SHA-256、全部PDF页面及活动原文坐标。"
+    },
+    {
+      "caseId": "base-48-poe",
+      "caseSha256": "014c061a29df53ebc436e9347e8ff5b718318e56c8daa90153170fb5ce6763fb",
+      "pattern": "poe",
+      "expectedAnswer": "AP1300D (V1.0)：Yes. It accepts 802.3at/af or 12–57V Passive PoE input through its Gigabit RJ45 port, or DC 12V/1A. Maximum device consumption is 11W on PoE and 8.5W on DC; no PoE output follows.",
+      "expectedSources": [
+        {
+          "assetSha256": "876a210d492037ab00cb11e5e54ea7b2ce0fc86e70d3ebd8af3311020fd1acb6",
+          "unitIndex": 4,
+          "blockId": "98a5a9e5-da81-496f-a426-1d625964b2da",
+          "excerpt": "Interfaces, 1 = Gigabit RJ45 Ports. Interfaces, 2 = 1. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = Accepts PoE powering. Interfaces, 1 = LED. Interfaces, 2 = • 5 GHz Wi-Fi. Interfaces, 1 = . Interfaces, 2 = • 2.4 GHz Wi-Fi. Interfaces, 1 = . Interfaces, 2 = • WPS. Interfaces, 1 = . Interfaces, 2 = • LAN. Interfaces, 1 = . Interfaces, 2 = • Internet. Interfaces, 1 = . Interfaces, 2 = • Power. Interfaces, 1 = Physical Buttons. Interfaces, 2 = • Reset Button. Interfaces, 1 = . Interfaces, 2 = • Power On/Off Button. Interfaces, 1 = Power Input. Interfaces, 2 = DC Jack, PoE via Ethernet Port.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "876a210d492037ab00cb11e5e54ea7b2ce0fc86e70d3ebd8af3311020fd1acb6",
+          "unitIndex": 4,
+          "blockId": "98a5a9e5-da81-496f-a426-1d625964b2da",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = • DC. Power, 1 = . Power, 2 = • Passive PoE. Power, 1 = . Power, 2 = • 802.3at/af PoE. Power, 1 = DC. Power, 2 = 12V 1A. Power, 1 = Passive PoE. Power, 2 = 12 ~ 57V. , 1 = Power Adapter. , 2 = AP1300D | DC Adapter in the box:. , 1 = . , 2 = Input: 100 ~ 240 V, 50/60 Hz AC. , 1 = . , 2 = Output: 12V 1A DC. , 1 = Max Power Consumption (W). , 2 = Max (PoE): 11 W. , 1 = . , 2 = Max (DC): 8.5 W",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-30 MA24-10：用户已确认同类Gold自动采纳，本题按已批准poe题型采纳，非逐题人工确认。holdout在用户明确冻结rag-v3-rrf-v1.0.0和SHA-256后处理；已逐份核对原件SHA-256、全部PDF页面及活动原文坐标。"
+    },
+    {
+      "caseId": "base-48-compare",
+      "caseSha256": "9d37b06309690daae05d9cd9b9388bb311198dc867e8cd5859664b9fcbced8ec",
+      "pattern": "compare",
+      "expectedAnswer": "AP1300D (V1.0)：One Gigabit RJ45 port for wired uplink and PoE input. DC 12V/1A, 12–57V Passive PoE or 802.3at/af PoE input. Maximum device consumption is 11W on PoE and 8.5W on DC; these are not PoE output ratings.\nAP3000S (V1.0)：One Gigabit RJ45 port for wired uplink and PoE input. Accepts DC 12V/1A, 48V Passive PoE or 802.3at/af PoE input. Maximum device consumption is 12W on PoE and 8.8W on DC; this does not establish PoE output.",
+      "expectedSources": [
+        {
+          "assetSha256": "876a210d492037ab00cb11e5e54ea7b2ce0fc86e70d3ebd8af3311020fd1acb6",
+          "unitIndex": 4,
+          "blockId": "98a5a9e5-da81-496f-a426-1d625964b2da",
+          "excerpt": "Interfaces, 1 = Gigabit RJ45 Ports. Interfaces, 2 = 1. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = Accepts PoE powering. Interfaces, 1 = LED. Interfaces, 2 = • 5 GHz Wi-Fi. Interfaces, 1 = . Interfaces, 2 = • 2.4 GHz Wi-Fi. Interfaces, 1 = . Interfaces, 2 = • WPS. Interfaces, 1 = . Interfaces, 2 = • LAN. Interfaces, 1 = . Interfaces, 2 = • Internet. Interfaces, 1 = . Interfaces, 2 = • Power. Interfaces, 1 = Physical Buttons. Interfaces, 2 = • Reset Button. Interfaces, 1 = . Interfaces, 2 = • Power On/Off Button. Interfaces, 1 = Power Input. Interfaces, 2 = DC Jack, PoE via Ethernet Port.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "876a210d492037ab00cb11e5e54ea7b2ce0fc86e70d3ebd8af3311020fd1acb6",
+          "unitIndex": 4,
+          "blockId": "98a5a9e5-da81-496f-a426-1d625964b2da",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = • DC. Power, 1 = . Power, 2 = • Passive PoE. Power, 1 = . Power, 2 = • 802.3at/af PoE. Power, 1 = DC. Power, 2 = 12V 1A. Power, 1 = Passive PoE. Power, 2 = 12 ~ 57V. , 1 = Power Adapter. , 2 = AP1300D | DC Adapter in the box:. , 1 = . , 2 = Input: 100 ~ 240 V, 50/60 Hz AC. , 1 = . , 2 = Output: 12V 1A DC. , 1 = Max Power Consumption (W). , 2 = Max (PoE): 11 W. , 1 = . , 2 = Max (DC): 8.5 W",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "0482b897b5b3ef25f42023b26d8e87a455328d236e1401814a23a62ceacb9b0e",
+          "unitIndex": 4,
+          "blockId": "4060808d-8452-47d3-bac1-f2b9abeed99b",
+          "excerpt": "Interfaces, 1 = Gigabit RJ45 Ports. Interfaces, 2 = 1. Interfaces, 1 = Ethernet Notes. Interfaces, 2 = Accepts PoE powering. Interfaces, 1 = LED. Interfaces, 2 = System. Interfaces, 1 = Physical Buttons. Interfaces, 2 = Reset Button. Interfaces, 1 = Power Interfaces. Interfaces, 2 = DC Jack. Interfaces, 1 = . Interfaces, 2 = PoE via Ethernet Port.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "0482b897b5b3ef25f42023b26d8e87a455328d236e1401814a23a62ceacb9b0e",
+          "unitIndex": 4,
+          "blockId": "4060808d-8452-47d3-bac1-f2b9abeed99b",
+          "excerpt": "Power, 1 = Power Methods. Power, 2 = DC. Power, 1 = . Power, 2 = Passive PoE. Power, 1 = . Power, 2 = 802.3at/af PoE. Power, 1 = Power Input. Power, 2 = DC: 12V ⎓ 1A. Power, 1 = . Power, 2 = Passive PoE: 48V ⎓. Power, 1 = . Power, 2 = PoE: 802.3at/af. Power, 1 = Max Power Consumption (W). Power, 2 = Max (PoE): 12 W. Power, 1 = . Power, 2 = Max (DC): 8.8 W. Power, 1 = Idle Power Consumption (W). Power, 2 = 2.5 W.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-30 MA24-10：用户已确认同类Gold自动采纳，本题按已批准compare题型采纳，非逐题人工确认。holdout在用户明确冻结rag-v3-rrf-v1.0.0和SHA-256后处理；已逐份核对原件SHA-256、全部PDF页面及活动原文坐标。"
+    },
+    {
+      "caseId": "base-48-explain",
+      "caseSha256": "42797cc8cc28089e0d7af41785f7fbedee9cd50e415000bc5898d2f841187f14",
+      "pattern": "explain",
+      "expectedAnswer": "AP1300D (V1.0)：Suitable for desktop or wall-mounted wireless access in offices, hotels and studios. The sheet names those scenarios and lists four-stream dual-band Wi-Fi 5, Gigabit PoE input, captive portal and Multi-SSID. Actual coverage depends on the site.",
+      "expectedSources": [
+        {
+          "assetSha256": "876a210d492037ab00cb11e5e54ea7b2ce0fc86e70d3ebd8af3311020fd1acb6",
+          "unitIndex": 3,
+          "blockId": "9c01531a-591d-4bbc-be9e-9540e962da25",
+          "excerpt": "A desktop/wall-mounted WiFi AP for offices, hotels, and studios.\n- 4-Stream Dual-Band Wi-Fi 5\n- 867 Mbps + 300 Mbps Wi-Fi 1\n- 1× Gigabit Ethernet Port (PoE In)\n- 802.3at/af, Passive PoE, DC\n- 4× High-Gain Antennas\n- Multi-SSID\n- Captive Portal",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "876a210d492037ab00cb11e5e54ea7b2ce0fc86e70d3ebd8af3311020fd1acb6",
+          "unitIndex": 5,
+          "blockId": "579e6671-0fc8-4eaf-b5e4-4b5d5a891483",
+          "excerpt": "General, 1 = Operation Modes. General, 2 = • Access Point. General, 1 = Operation Modes. General, 2 = • Range Extender. General, 1 = Operation Modes. General, 2 = • Client. General, 1 = Mesh. General, 2 = Cudy Mesh. General, 1 = Mesh Backhaul. General, 2 = • Wireless Backhaul. General, 1 = Mesh Backhaul. General, 2 = • Wired Backhaul. General, 1 = Multi-Band Backhaul. General, 2 = true. Network, 1 = DHCP. Network, 2 = Server. Network, 1 = IP Versions. Network, 2 = IPv4. Network, 1 = IGMP. Network, 2 = IGMP Snooping. Utilities, 1 = Captive Portal. Utilities, 2 = True. Utilities, 1 = Captive Portal Providers. Utilities, 2 = HotspotSystem, Iron Wi-Fi, ObiFi, Vulacoin,. Utilities, 1 = Captive Portal Providers. Utilities, 2 = WorldSpot.net, WiFiMAX, Manual. Utilities, 1 = Wake on LAN. Utilities, 2 = True.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-30 MA24-10：用户已确认同类Gold自动采纳，本题按已批准explain题型采纳，非逐题人工确认。holdout在用户明确冻结rag-v3-rrf-v1.0.0和SHA-256后处理；已逐份核对原件SHA-256、全部PDF页面及活动原文坐标。"
+    },
+    {
+      "caseId": "base-49-open",
+      "caseSha256": "82ab5a8b977337ff198d3dfd3022aab78b6422eecc281c1c4306ac76102c67c3",
+      "pattern": "open",
+      "expectedAnswer": "找到并展示已登记的IG1005ES1原始Datasheet PDF，提供打开或下载入口；不以其他型号替代，也不把打开资料请求改成参数问答。",
+      "expectedSources": [
+        {
+          "assetSha256": "b72abe98d554943319681ce11f4262ca821d5c6be12edabed1ef04249d2b269c",
+          "unitIndex": 3,
+          "blockId": "fb46df72-5120-4618-b7cf-1e2790153a5e",
+          "excerpt": "-   IG1005ES1\n-   Installation Guide",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-30 MA24-10：用户已确认同类Gold自动采纳，本题按已批准open题型采纳，非逐题人工确认。holdout在用户明确冻结rag-v3-rrf-v1.0.0和SHA-256后处理；已逐份核对原件SHA-256、全部PDF页面及活动原文坐标。封面型号视觉核对，但当前树封面块未包含型号，改引同哈希原件中真实型号块，不伪造封面短引。"
+    },
+    {
+      "caseId": "base-49-ports",
+      "caseSha256": "ce4918663291fe077b1f37ce4ad9270dd1827ba7a24ca0c28f3d95bdfd0ef958",
+      "pattern": "ports",
+      "expectedAnswer": "IG1005ES1 (V1.0)：5个千兆RJ45物理网口，另有1个1.25G SFP插槽；按RJ45统计为5个，连同光口则有6个网络接口。",
+      "expectedSources": [
+        {
+          "assetSha256": "b72abe98d554943319681ce11f4262ca821d5c6be12edabed1ef04249d2b269c",
+          "unitIndex": 4,
+          "blockId": "3b507e73-886b-42dc-b2ad-353be50c7929",
+          "excerpt": "Interfaces\n1.25G SFP Slots, 1 = 1. Gigabit RJ45 Ports, 1 = 5. Extend Mode Ports, 1 = #1~#4 by default, configurable when. Extend Mode Ports, 1 = the Web mode is activated. VLAN Mode Ports, 1 = #1~#4 by default, configurable when. VLAN Mode Ports, 1 = the Web mode is activated. LED, 1 = Power 1. LED, 1 = Power 2. LED, 1 = Link/ACT of Each Ethernet Port.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-30 MA24-10：用户已确认同类Gold自动采纳，本题按已批准ports题型采纳，非逐题人工确认。holdout在用户明确冻结rag-v3-rrf-v1.0.0和SHA-256后处理；已逐份核对原件SHA-256、全部PDF页面及活动原文坐标。"
+    },
+    {
+      "caseId": "base-49-poe",
+      "caseSha256": "fbef9f79775bec4e20ff3409e5d50541407d72fb3adecea6f046c7335749cf0d",
+      "pattern": "poe",
+      "expectedAnswer": "不支持。IG1005ES1 (V1.0)不支持PoE输入或输出。完整匹配原件未声明PoE支持，按用户确认的MA24-09口径判定。双路端子排DC输入，9.6～60V DC；最大设备功耗3.1W、空闲0.64W。完整原件未声明PoE，按MA24-09判为不支持。",
+      "expectedSources": [
+        {
+          "assetSha256": "b72abe98d554943319681ce11f4262ca821d5c6be12edabed1ef04249d2b269c",
+          "unitIndex": 4,
+          "blockId": "3b507e73-886b-42dc-b2ad-353be50c7929",
+          "excerpt": "Interfaces\n1.25G SFP Slots, 1 = 1. Gigabit RJ45 Ports, 1 = 5. Extend Mode Ports, 1 = #1~#4 by default, configurable when. Extend Mode Ports, 1 = the Web mode is activated. VLAN Mode Ports, 1 = #1~#4 by default, configurable when. VLAN Mode Ports, 1 = the Web mode is activated. LED, 1 = Power 1. LED, 1 = Power 2. LED, 1 = Link/ACT of Each Ethernet Port.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "b72abe98d554943319681ce11f4262ca821d5c6be12edabed1ef04249d2b269c",
+          "unitIndex": 4,
+          "blockId": "3b507e73-886b-42dc-b2ad-353be50c7929",
+          "excerpt": "Power Input, 1 = Dual-Input Terminal Block. Physical Buttons, 1 = Reset Button. Physical Buttons, 1 = Web On/Off. Physical Buttons, 1 = VLAN On/Off. Physical Buttons, 1 = Broadcast Storm Prevention On/Off. Physical Buttons, 1 = Extend On/Off. Physical Buttons Note, 1 = When Web On/Off is enabled, the. Physical Buttons Note, 1 = other On/Off toggles will be ignored by. Physical Buttons Note, 1 = the system.\nPerformance, 1 = Copper Speed and Distance. Performance, 2 = Cat. 3 or higher cable: 100 meters at 10 Mbps Cat. 5 or higher cable: 100 meters at 100 Mbps Cat. 5e or higher cable: 100 meters at Gigabit. , 1 = Optical Spec and Distance Max Switching Capacity. , 2 = Depends on the Installed Optical Module 2048 12.5 Gbps 8.929 Mpps. , 1 = Copper Speed and Distance Note. , 2 = Cat. 5e or higher cable: 250 meters at 10 Mbps 250-meter transmission is available on the Extend Mode ports when th",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "b72abe98d554943319681ce11f4262ca821d5c6be12edabed1ef04249d2b269c",
+          "unitIndex": 4,
+          "blockId": "3b507e73-886b-42dc-b2ad-353be50c7929",
+          "excerpt": "Power Methods Power Redundancy. Power, 2 = 1 Mbit DC via Terminal Block. , 1 = DC Max Power Consumption Idle Power Consumption. , 2 = Dual Inputs 9.6-60V ⎓. , 1 = . , 2 = 3.1W. , 1 = . , 2 = 0.64W. , 1 = Polarity Reverse Protection. , 2 = . , 1 = . , 2 = True. , 1 = Short Circuit Protection. , 2 = True",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-30 MA24-10：用户已确认同类Gold自动采纳，本题按已批准poe题型采纳，非逐题人工确认。holdout在用户明确冻结rag-v3-rrf-v1.0.0和SHA-256后处理；已逐份核对原件SHA-256、全部PDF页面及活动原文坐标。未声明PoE判断依MA24-09完整原件，不将否定结论伪作原文逐字引文。"
+    },
+    {
+      "caseId": "base-49-compare",
+      "caseSha256": "955b0d255d32a04f4749109f8f4f44785a594856f357d1ac0ac31fae775056e7",
+      "pattern": "compare",
+      "expectedAnswer": "IG1005ES1 (V1.0)：5个千兆RJ45口加1个1.25G SFP插槽，未标PoE输出。 双路端子排DC输入，9.6～60V DC；最大设备功耗3.1W、空闲0.64W。完整原件未声明PoE，按MA24-09判为不支持。\nGS1016EPS2 (V1.0)：16个千兆PoE输出RJ45口，另有2个1.25G SFP插槽。 设备从100～240V AC、50/60Hz输入，原件列200W电源及不含PoE的设备最大功耗14W。每个PoE输出口上限30W；不能把200W电源或16×30W直接当作保证的总PoE输出预算。",
+      "expectedSources": [
+        {
+          "assetSha256": "b72abe98d554943319681ce11f4262ca821d5c6be12edabed1ef04249d2b269c",
+          "unitIndex": 4,
+          "blockId": "3b507e73-886b-42dc-b2ad-353be50c7929",
+          "excerpt": "Interfaces\n1.25G SFP Slots, 1 = 1. Gigabit RJ45 Ports, 1 = 5. Extend Mode Ports, 1 = #1~#4 by default, configurable when. Extend Mode Ports, 1 = the Web mode is activated. VLAN Mode Ports, 1 = #1~#4 by default, configurable when. VLAN Mode Ports, 1 = the Web mode is activated. LED, 1 = Power 1. LED, 1 = Power 2. LED, 1 = Link/ACT of Each Ethernet Port.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "b72abe98d554943319681ce11f4262ca821d5c6be12edabed1ef04249d2b269c",
+          "unitIndex": 4,
+          "blockId": "3b507e73-886b-42dc-b2ad-353be50c7929",
+          "excerpt": "Power Input, 1 = Dual-Input Terminal Block. Physical Buttons, 1 = Reset Button. Physical Buttons, 1 = Web On/Off. Physical Buttons, 1 = VLAN On/Off. Physical Buttons, 1 = Broadcast Storm Prevention On/Off. Physical Buttons, 1 = Extend On/Off. Physical Buttons Note, 1 = When Web On/Off is enabled, the. Physical Buttons Note, 1 = other On/Off toggles will be ignored by. Physical Buttons Note, 1 = the system.\nPerformance, 1 = Copper Speed and Distance. Performance, 2 = Cat. 3 or higher cable: 100 meters at 10 Mbps Cat. 5 or higher cable: 100 meters at 100 Mbps Cat. 5e or higher cable: 100 meters at Gigabit. , 1 = Optical Spec and Distance Max Switching Capacity. , 2 = Depends on the Installed Optical Module 2048 12.5 Gbps 8.929 Mpps. , 1 = Copper Speed and Distance Note. , 2 = Cat. 5e or higher cable: 250 meters at 10 Mbps 250-meter transmission is available on the Extend Mode ports when th",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "b72abe98d554943319681ce11f4262ca821d5c6be12edabed1ef04249d2b269c",
+          "unitIndex": 4,
+          "blockId": "3b507e73-886b-42dc-b2ad-353be50c7929",
+          "excerpt": "Power Methods Power Redundancy. Power, 2 = 1 Mbit DC via Terminal Block. , 1 = DC Max Power Consumption Idle Power Consumption. , 2 = Dual Inputs 9.6-60V ⎓. , 1 = . , 2 = 3.1W. , 1 = . , 2 = 0.64W. , 1 = Polarity Reverse Protection. , 2 = . , 1 = . , 2 = True. , 1 = Short Circuit Protection. , 2 = True",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "f6b5f6180ba8a5ba626a32e51870ad0b3a5851ed99bbb729e71971feb0a72209",
+          "unitIndex": 3,
+          "blockId": "f66388b7-440b-4bef-9591-fa871c6570d4",
+          "excerpt": "Interfaces\n1.25G SFP Slots, 1 = 2. Gigabit RJ45 Ports, 1 = 16. Gigabit RJ45 PoE Ports, 1 = #1~#16. Max Power on a Single PoE Port 30W, 1 = . PoE Port Notes, 1 = The PoE ports comply with. , 1 = IEEE 802.3at/af standards.. Intelligent Power Management (PoE), 1 = Automatically disconnect the lastly. , 1 = powered device when power. , 1 = exceeds budget.. Shielded RJ45 Port, 1 = True. Extend Mode Ports, 1 = Configurable. VLAN Mode Ports, 1 = Configurable. LED, 1 = Power. , 1 = PoE Status of Each PoE Port. , 1 = Link/ACT of Each Ethernet Port. , 1 = PoE Max Status. Power Input, 1 = AC Inlet. Physical Buttons, 1 = Reset Button. Watchdog Note, 1 = The PoE Watchdog will attempt to reboot. , 1 = the plugged-in clients that have been. , 1 = inactive for 5 minutes. Do not turn it on for. , 1 = clients with online auto-upgrade feature.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "f6b5f6180ba8a5ba626a32e51870ad0b3a5851ed99bbb729e71971feb0a72209",
+          "unitIndex": 3,
+          "blockId": "ee6884ce-2917-44de-b112-1306787b147f",
+          "excerpt": "Power Methods. Power, 2 = AC. Power, 1 = AC. Power, 2 = 100-240V~, 50/60Hz. Power, 1 = Power Supply. Power, 2 = 200W. Power, 1 = Max Power Excluding PoE. Power, 2 = 14W",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-30 MA24-10：用户已确认同类Gold自动采纳，本题按已批准compare题型采纳，非逐题人工确认。holdout在用户明确冻结rag-v3-rrf-v1.0.0和SHA-256后处理；已逐份核对原件SHA-256、全部PDF页面及活动原文坐标。"
+    },
+    {
+      "caseId": "base-49-explain",
+      "caseSha256": "b51ead0cf4f0a95515a95c82d85516b5b340ed941726956f25bd0ae016b49110",
+      "pattern": "explain",
+      "expectedAnswer": "IG1005ES1 (V1.0)：适合制造、运输等恶劣工业环境的DIN导轨网络接入。依据是5个千兆口、1个SFP、双路9.6～60V DC输入、IP40、-40～75°C、VLAN/BSP/Extend开关及工业抗浪涌设计。IP40不等于户外防水。",
+      "expectedSources": [
+        {
+          "assetSha256": "b72abe98d554943319681ce11f4262ca821d5c6be12edabed1ef04249d2b269c",
+          "unitIndex": 3,
+          "blockId": "34f447e3-fb11-4810-b26a-18fe60776742",
+          "excerpt": "A 5-GbE 1-SFP industrial switch with management feature for networking in harsh conditions such as manufacturing, transportation, maritime, oil & gas, and mining.\n-   5× GbE, Shielded, ±6kV Surge Resistant\n-   1× 1.25G SFP\n-   Dual DC Inputs, Requires 9.6~60V Power\n-   IP40, -40~75°C (-40~167°F)\n-   Polarity Reverse Protection\n-   Short Circuit Protection\n-   Broadcast Storm Prevention On/Off\n-   VLAN/BSP/Extend On/Off\n-   Integrated DIN-Rail Bracket",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "b72abe98d554943319681ce11f4262ca821d5c6be12edabed1ef04249d2b269c",
+          "unitIndex": 4,
+          "blockId": "3b507e73-886b-42dc-b2ad-353be50c7929",
+          "excerpt": "Power Methods Power Redundancy. Power, 2 = 1 Mbit DC via Terminal Block. , 1 = DC Max Power Consumption Idle Power Consumption. , 2 = Dual Inputs 9.6-60V ⎓. , 1 = . , 2 = 3.1W. , 1 = . , 2 = 0.64W. , 1 = Polarity Reverse Protection. , 2 = . , 1 = . , 2 = True. , 1 = Short Circuit Protection. , 2 = True",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "b72abe98d554943319681ce11f4262ca821d5c6be12edabed1ef04249d2b269c",
+          "unitIndex": 6,
+          "blockId": "84cfce90-917c-47cf-9a71-4e2c6f2d5a47",
+          "excerpt": "Reliability, 1 = Grounding Methods. Reliability, 2 = Grounding Point. , 1 = Safety. , 2 = IEC/EN 62368. , 1 = EMC. , 2 = EN55032 Class A. , 1 = . , 2 = EN55035 Class A. , 1 = EMI. , 2 = FCC 47 CFR Part 15B Class A. , 1 = Shock. , 2 = IEC 60068-2-27. , 1 = Vibration. , 2 = IEC 60068-2-6. , 1 = Free Fall. , 2 = IEC 60068-2-32. , 1 = Environment. , 2 = Operating Temperature:. , 1 = . , 2 = -40 ℃ ~ 75 ℃ (-40 ℉ ~167 ℉ ). , 1 = . , 2 = Storage Temperature:. , 1 = . , 2 = -40 ℃ ~ 85 ℃ (-40 ℉ ~ 185 ℉ ). , 1 = . , 2 = Operating Humidity: 5% ~ 95% non-condensing. Mechanical, 1 = Dimension. Mechanical, 2 = Storage Humidity: 5% ~ 95% non-condensing 144×103×47.5 mm. , 1 = . , 2 = 5.67×4.06×1.87 inches. , 1 = Casing Material. , 2 = Aluminum. , 1 = Ingress Protection. , 2 = IP40. , 1 = Installation. , 2 = DIN-Rail",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-30 MA24-10：用户已确认同类Gold自动采纳，本题按已批准explain题型采纳，非逐题人工确认。holdout在用户明确冻结rag-v3-rrf-v1.0.0和SHA-256后处理；已逐份核对原件SHA-256、全部PDF页面及活动原文坐标。"
+    },
+    {
+      "caseId": "base-50-open",
+      "caseSha256": "80a7cf7c74c396700fa79775ce34d0823a5cc91f95678b9d673d56c7e40f7f03",
+      "pattern": "open",
+      "expectedAnswer": "Find and display the registered original GS1016EPS2 Datasheet PDF, with an open or download link. Do not substitute another model or turn this request into a specification answer.",
+      "expectedSources": [
+        {
+          "assetSha256": "f6b5f6180ba8a5ba626a32e51870ad0b3a5851ed99bbb729e71971feb0a72209",
+          "unitIndex": 2,
+          "blockId": "64de3349-8e23-41ea-82c1-6573b287f6ea",
+          "excerpt": "- GS1016EPS2\n- Power Cord\n- Installation Guide\nConfigure PoE priority, set power limit for each port or the whole system, or customize the PoE watchdog (auto recovery) period. The panel gives you full control over the PoE management.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-30 MA24-10：用户已确认同类Gold自动采纳，本题按已批准open题型采纳，非逐题人工确认。holdout在用户明确冻结rag-v3-rrf-v1.0.0和SHA-256后处理；已逐份核对原件SHA-256、全部PDF页面及活动原文坐标。封面型号视觉核对，但当前树封面块未包含型号，改引同哈希原件中真实型号块，不伪造封面短引。"
+    },
+    {
+      "caseId": "base-50-ports",
+      "caseSha256": "f2cf557ed65d5b41ec753f693ba76dec476e6ce71bf71e18928a6c050cfff4ed",
+      "pattern": "ports",
+      "expectedAnswer": "GS1016EPS2 (V1.0)：16 Gigabit RJ45 physical ports, all offering PoE output, plus two 1.25G SFP slots: 16 RJ45 ports or 18 network interfaces including SFP.",
+      "expectedSources": [
+        {
+          "assetSha256": "f6b5f6180ba8a5ba626a32e51870ad0b3a5851ed99bbb729e71971feb0a72209",
+          "unitIndex": 3,
+          "blockId": "f66388b7-440b-4bef-9591-fa871c6570d4",
+          "excerpt": "Interfaces\n1.25G SFP Slots, 1 = 2. Gigabit RJ45 Ports, 1 = 16. Gigabit RJ45 PoE Ports, 1 = #1~#16. Max Power on a Single PoE Port 30W, 1 = . PoE Port Notes, 1 = The PoE ports comply with. , 1 = IEEE 802.3at/af standards.. Intelligent Power Management (PoE), 1 = Automatically disconnect the lastly. , 1 = powered device when power. , 1 = exceeds budget.. Shielded RJ45 Port, 1 = True. Extend Mode Ports, 1 = Configurable. VLAN Mode Ports, 1 = Configurable. LED, 1 = Power. , 1 = PoE Status of Each PoE Port. , 1 = Link/ACT of Each Ethernet Port. , 1 = PoE Max Status. Power Input, 1 = AC Inlet. Physical Buttons, 1 = Reset Button. Watchdog Note, 1 = The PoE Watchdog will attempt to reboot. , 1 = the plugged-in clients that have been. , 1 = inactive for 5 minutes. Do not turn it on for. , 1 = clients with online auto-upgrade feature.",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-30 MA24-10：用户已确认同类Gold自动采纳，本题按已批准ports题型采纳，非逐题人工确认。holdout在用户明确冻结rag-v3-rrf-v1.0.0和SHA-256后处理；已逐份核对原件SHA-256、全部PDF页面及活动原文坐标。"
+    },
+    {
+      "caseId": "base-50-poe",
+      "caseSha256": "ed64ae0400482620169f7c58502d93cbfb0fbb2711b42b8ea1e8981b1b4132ec",
+      "pattern": "poe",
+      "expectedAnswer": "GS1016EPS2 (V1.0)：Yes. All 16 Gigabit RJ45 ports provide 802.3at/af PoE output, up to 30W each. The switch itself accepts 100–240V AC and has a 200W supply; no PoE input is listed, and 16×30W simultaneous output is not established.",
+      "expectedSources": [
+        {
+          "assetSha256": "f6b5f6180ba8a5ba626a32e51870ad0b3a5851ed99bbb729e71971feb0a72209",
+          "unitIndex": 3,
+          "blockId": "f66388b7-440b-4bef-9591-fa871c6570d4",
+          "excerpt": "Interfaces\n1.25G SFP Slots, 1 = 2. Gigabit RJ45 Ports, 1 = 16. Gigabit RJ45 PoE Ports, 1 = #1~#16. Max Power on a Single PoE Port 30W, 1 = . PoE Port Notes, 1 = The PoE ports comply with. , 1 = IEEE 802.3at/af standards.. Intelligent Power Management (PoE), 1 = Automatically disconnect the lastly. , 1 = powered device when power. , 1 = exceeds budget.. Shielded RJ45 Port, 1 = True. Extend Mode Ports, 1 = Configurable. VLAN Mode Ports, 1 = Configurable. LED, 1 = Power. , 1 = PoE Status of Each PoE Port. , 1 = Link/ACT of Each Ethernet Port. , 1 = PoE Max Status. Power Input, 1 = AC Inlet. Physical Buttons, 1 = Reset Button. Watchdog Note, 1 = The PoE Watchdog will attempt to reboot. , 1 = the plugged-in clients that have been. , 1 = inactive for 5 minutes. Do not turn it on for. , 1 = clients with online auto-upgrade feature.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "f6b5f6180ba8a5ba626a32e51870ad0b3a5851ed99bbb729e71971feb0a72209",
+          "unitIndex": 3,
+          "blockId": "ee6884ce-2917-44de-b112-1306787b147f",
+          "excerpt": "Power Methods. Power, 2 = AC. Power, 1 = AC. Power, 2 = 100-240V~, 50/60Hz. Power, 1 = Power Supply. Power, 2 = 200W. Power, 1 = Max Power Excluding PoE. Power, 2 = 14W",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-30 MA24-10：用户已确认同类Gold自动采纳，本题按已批准poe题型采纳，非逐题人工确认。holdout在用户明确冻结rag-v3-rrf-v1.0.0和SHA-256后处理；已逐份核对原件SHA-256、全部PDF页面及活动原文坐标。"
+    },
+    {
+      "caseId": "base-50-compare",
+      "caseSha256": "441b011da46ac5f2110fc41f5a1435d2f533c93db2fc27e2fbae29dd37ff59e2",
+      "pattern": "compare",
+      "expectedAnswer": "GS1016EPS2 (V1.0)：Sixteen Gigabit RJ45 PoE output ports plus two 1.25G SFP slots. The unit accepts 100–240V AC, 50/60Hz. The sheet lists a 200W supply and 14W maximum device consumption excluding PoE. Each PoE output port is rated up to 30W; neither the 200W supply nor 16×30W is a guaranteed aggregate PoE output budget.\nIG1005ES1 (V1.0)：Five Gigabit RJ45 ports plus one 1.25G SFP slot, with no PoE output listed. Redundant terminal-block DC inputs at 9.6–60V DC; 3.1W maximum and 0.64W idle device consumption. The complete original declares no PoE, so it is unsupported under MA24-09.",
+      "expectedSources": [
+        {
+          "assetSha256": "f6b5f6180ba8a5ba626a32e51870ad0b3a5851ed99bbb729e71971feb0a72209",
+          "unitIndex": 3,
+          "blockId": "f66388b7-440b-4bef-9591-fa871c6570d4",
+          "excerpt": "Interfaces\n1.25G SFP Slots, 1 = 2. Gigabit RJ45 Ports, 1 = 16. Gigabit RJ45 PoE Ports, 1 = #1~#16. Max Power on a Single PoE Port 30W, 1 = . PoE Port Notes, 1 = The PoE ports comply with. , 1 = IEEE 802.3at/af standards.. Intelligent Power Management (PoE), 1 = Automatically disconnect the lastly. , 1 = powered device when power. , 1 = exceeds budget.. Shielded RJ45 Port, 1 = True. Extend Mode Ports, 1 = Configurable. VLAN Mode Ports, 1 = Configurable. LED, 1 = Power. , 1 = PoE Status of Each PoE Port. , 1 = Link/ACT of Each Ethernet Port. , 1 = PoE Max Status. Power Input, 1 = AC Inlet. Physical Buttons, 1 = Reset Button. Watchdog Note, 1 = The PoE Watchdog will attempt to reboot. , 1 = the plugged-in clients that have been. , 1 = inactive for 5 minutes. Do not turn it on for. , 1 = clients with online auto-upgrade feature.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "f6b5f6180ba8a5ba626a32e51870ad0b3a5851ed99bbb729e71971feb0a72209",
+          "unitIndex": 3,
+          "blockId": "ee6884ce-2917-44de-b112-1306787b147f",
+          "excerpt": "Power Methods. Power, 2 = AC. Power, 1 = AC. Power, 2 = 100-240V~, 50/60Hz. Power, 1 = Power Supply. Power, 2 = 200W. Power, 1 = Max Power Excluding PoE. Power, 2 = 14W",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "b72abe98d554943319681ce11f4262ca821d5c6be12edabed1ef04249d2b269c",
+          "unitIndex": 4,
+          "blockId": "3b507e73-886b-42dc-b2ad-353be50c7929",
+          "excerpt": "Interfaces\n1.25G SFP Slots, 1 = 1. Gigabit RJ45 Ports, 1 = 5. Extend Mode Ports, 1 = #1~#4 by default, configurable when. Extend Mode Ports, 1 = the Web mode is activated. VLAN Mode Ports, 1 = #1~#4 by default, configurable when. VLAN Mode Ports, 1 = the Web mode is activated. LED, 1 = Power 1. LED, 1 = Power 2. LED, 1 = Link/ACT of Each Ethernet Port.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "b72abe98d554943319681ce11f4262ca821d5c6be12edabed1ef04249d2b269c",
+          "unitIndex": 4,
+          "blockId": "3b507e73-886b-42dc-b2ad-353be50c7929",
+          "excerpt": "Power Input, 1 = Dual-Input Terminal Block. Physical Buttons, 1 = Reset Button. Physical Buttons, 1 = Web On/Off. Physical Buttons, 1 = VLAN On/Off. Physical Buttons, 1 = Broadcast Storm Prevention On/Off. Physical Buttons, 1 = Extend On/Off. Physical Buttons Note, 1 = When Web On/Off is enabled, the. Physical Buttons Note, 1 = other On/Off toggles will be ignored by. Physical Buttons Note, 1 = the system.\nPerformance, 1 = Copper Speed and Distance. Performance, 2 = Cat. 3 or higher cable: 100 meters at 10 Mbps Cat. 5 or higher cable: 100 meters at 100 Mbps Cat. 5e or higher cable: 100 meters at Gigabit. , 1 = Optical Spec and Distance Max Switching Capacity. , 2 = Depends on the Installed Optical Module 2048 12.5 Gbps 8.929 Mpps. , 1 = Copper Speed and Distance Note. , 2 = Cat. 5e or higher cable: 250 meters at 10 Mbps 250-meter transmission is available on the Extend Mode ports when th",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "b72abe98d554943319681ce11f4262ca821d5c6be12edabed1ef04249d2b269c",
+          "unitIndex": 4,
+          "blockId": "3b507e73-886b-42dc-b2ad-353be50c7929",
+          "excerpt": "Power Methods Power Redundancy. Power, 2 = 1 Mbit DC via Terminal Block. , 1 = DC Max Power Consumption Idle Power Consumption. , 2 = Dual Inputs 9.6-60V ⎓. , 1 = . , 2 = 3.1W. , 1 = . , 2 = 0.64W. , 1 = Polarity Reverse Protection. , 2 = . , 1 = . , 2 = True. , 1 = Short Circuit Protection. , 2 = True",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-30 MA24-10：用户已确认同类Gold自动采纳，本题按已批准compare题型采纳，非逐题人工确认。holdout在用户明确冻结rag-v3-rrf-v1.0.0和SHA-256后处理；已逐份核对原件SHA-256、全部PDF页面及活动原文坐标。"
+    },
+    {
+      "caseId": "base-50-explain",
+      "caseSha256": "6990516f7b3f284496290e1db11f33834357a323c66cbe4a3d587aac4659b7d7",
+      "pattern": "explain",
+      "expectedAnswer": "GS1016EPS2 (V1.0)：Suitable for rack-mounted wired access with managed power to multiple PoE clients. The sheet lists 16 Gigabit PoE ports, two SFP slots, web/SNMP and per-port PoE management, VLAN/QoS and loop prevention. The 250m mode requires 10Mbps, not Gigabit.",
+      "expectedSources": [
+        {
+          "assetSha256": "f6b5f6180ba8a5ba626a32e51870ad0b3a5851ed99bbb729e71971feb0a72209",
+          "unitIndex": 2,
+          "blockId": "d98cc96f-2562-42ad-bec4-e31ab2999db0",
+          "excerpt": "A cloud-managed rack-mounted 16-GbE, 2-SFP PoE switch with a 200W power supply and management features.\n-   16× GbE with 802.3at/af Mode A PoE\n-   2× 1.25G SFP\n-   200W Power Supply\n-   PoE Max Status LED\n-   Per-Port PoE Management\n-   Web Management, SNMP\n-   VLAN (802.1Q/MTU/Port-Based)\n-   QoS (802.1p/DSCP/Port-Based)\n-   Port Mirror, Static Aggregation, etc\n-   Loop Prevention\n-   DHCP Snooping, IGMP Snooping\n-   440×220×44 mm (17.32×8.66×1.73\")",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "f6b5f6180ba8a5ba626a32e51870ad0b3a5851ed99bbb729e71971feb0a72209",
+          "unitIndex": 3,
+          "blockId": "f66388b7-440b-4bef-9591-fa871c6570d4",
+          "excerpt": "Interfaces\n1.25G SFP Slots, 1 = 2. Gigabit RJ45 Ports, 1 = 16. Gigabit RJ45 PoE Ports, 1 = #1~#16. Max Power on a Single PoE Port 30W, 1 = . PoE Port Notes, 1 = The PoE ports comply with. , 1 = IEEE 802.3at/af standards.. Intelligent Power Management (PoE), 1 = Automatically disconnect the lastly. , 1 = powered device when power. , 1 = exceeds budget.. Shielded RJ45 Port, 1 = True. Extend Mode Ports, 1 = Configurable. VLAN Mode Ports, 1 = Configurable. LED, 1 = Power. , 1 = PoE Status of Each PoE Port. , 1 = Link/ACT of Each Ethernet Port. , 1 = PoE Max Status. Power Input, 1 = AC Inlet. Physical Buttons, 1 = Reset Button. Watchdog Note, 1 = The PoE Watchdog will attempt to reboot. , 1 = the plugged-in clients that have been. , 1 = inactive for 5 minutes. Do not turn it on for. , 1 = clients with online auto-upgrade feature.",
+          "version": "V1.0"
+        },
+        {
+          "assetSha256": "f6b5f6180ba8a5ba626a32e51870ad0b3a5851ed99bbb729e71971feb0a72209",
+          "unitIndex": 3,
+          "blockId": "ee6884ce-2917-44de-b112-1306787b147f",
+          "excerpt": "Copper Speed and Distance Note. Performance, 2 = 250-meter transmission is available. Performance, 1 = Copper Speed and Distance Note. Performance, 2 = when the port speed is set at 10 Mbps. Performance, 1 = Copper Speed and Distance Note. Performance, 2 = in the management system.. Performance, 1 = Optical Spec and Distance. Performance, 2 = Depends on the Installed Optical. Performance, 1 = MAC Address Table. Performance, 2 = 8192. Performance, 1 = Max Switching Capacity. Performance, 2 = 36 Gbps. Performance, 1 = Max Forwarding Rate. Performance, 2 = 26.78 Mpps. Performance, 1 = Jumbo Frame. Performance, 2 = 15 KB. Performance, 1 = Packet Buffer. Performance, 2 = 4 Mbit. Power, 1 = Power Methods. Power, 2 = AC. Power, 1 = AC. Power, 2 = 100-240V~, 50/60Hz. Power, 1 = Power Supply. Power, 2 = 200W. Power, 1 = Max Power Excluding PoE. Power, 2 = 14W",
+          "version": "V1.0"
+        }
+      ],
+      "reviewNote": "2026-09-30 MA24-10：用户已确认同类Gold自动采纳，本题按已批准explain题型采纳，非逐题人工确认。holdout在用户明确冻结rag-v3-rrf-v1.0.0和SHA-256后处理；已逐份核对原件SHA-256、全部PDF页面及活动原文坐标。"
+    }
+  ]
+}
