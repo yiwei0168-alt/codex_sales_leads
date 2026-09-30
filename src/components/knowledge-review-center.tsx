@@ -2,11 +2,12 @@
 
 import {useCallback,useEffect,useState} from "react";
 import type {FactReviewDecision,GoldSourceCoordinate,KnowledgeFactReviewItem,KnowledgeFactReviewResponse,KnowledgeGoldReviewItem,KnowledgeGoldReviewResponse} from "@/lib/knowledge/review-types";
+import {HoldoutAnswerWorkbench} from "./holdout-answer-workbench";
 
 async function readJson<T>(response:Response):Promise<T>{const body=await response.json() as T&{error?:string};if(!response.ok)throw new Error(body.error??"请求失败");return body;}
 
-export function KnowledgeReviewCenter(){const[open,setOpen]=useState(false);const[tab,setTab]=useState<"facts"|"gold">("facts");
-  return <section className={`panel knowledge-review-center ${open?"open":""}`}><div className="review-center-entry"><div><h2>复核中心</h2><p>逐项核对事实证据与 Gold 答案。所有决定保留审核人、时间和版本。</p></div><button className="primary-button" onClick={()=>setOpen(value=>!value)}>{open?"收起复核中心":"进入复核中心"}</button></div>{open&&<><div className="review-tabs" role="tablist" aria-label="知识复核类型"><button role="tab" aria-selected={tab==="facts"} className={tab==="facts"?"active":""} onClick={()=>setTab("facts")}>事实复核</button><button role="tab" aria-selected={tab==="gold"} className={tab==="gold"?"active":""} onClick={()=>setTab("gold")}>Gold 审核</button></div>{tab==="facts"?<FactReviewWorkbench/>:<GoldReviewWorkbench/>}</>}</section>;
+export function KnowledgeReviewCenter(){const[open,setOpen]=useState(false);const[tab,setTab]=useState<"facts"|"gold"|"holdout">("facts");
+  return <div className="intelligence-theme knowledge-review-theme"><section className={`panel knowledge-review-center ${open?"open":""}`}><div className="review-center-entry"><div><h2>复核中心</h2><p>逐项核对事实证据、Gold 答案与冻结集候选。所有决定保留审核人、时间和版本。</p></div><button className="primary-button" onClick={()=>setOpen(value=>!value)}>{open?"收起复核中心":"进入复核中心"}</button></div>{open&&<><div className="review-tabs" role="tablist" aria-label="知识复核类型"><button role="tab" aria-selected={tab==="facts"} className={tab==="facts"?"active":""} onClick={()=>setTab("facts")}>事实复核</button><button role="tab" aria-selected={tab==="gold"} className={tab==="gold"?"active":""} onClick={()=>setTab("gold")}>Gold 审核</button><button role="tab" aria-selected={tab==="holdout"} className={tab==="holdout"?"active":""} onClick={()=>setTab("holdout")}>冻结集对照</button></div>{tab==="facts"?<FactReviewWorkbench/>:tab==="gold"?<GoldReviewWorkbench/>:<HoldoutAnswerWorkbench/>}</>}</section></div>;
 }
 
 function FactReviewWorkbench(){const[data,setData]=useState<KnowledgeFactReviewResponse|null>(null);const[selectedId,setSelectedId]=useState("");const[reason,setReason]=useState("");const[query,setQuery]=useState("");const[offset,setOffset]=useState(0);const[loading,setLoading]=useState(false);const[message,setMessage]=useState("");

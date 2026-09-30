@@ -92,6 +92,7 @@
     "knowledge:verify-ui": "node scripts/run-tsx.cjs scripts/verify-ma15-ui.ts",
     "assistant:verify-entry": "node scripts/run-tsx.cjs scripts/verify-ma16-main-entry.ts",
     "knowledge:verify-review-ui": "node scripts/run-tsx.cjs scripts/verify-knowledge-review-center.ts",
+    "knowledge:verify-holdout-review-ui": "node scripts/run-tsx.cjs scripts/verify-holdout-answer-workbench.ts",
     "leads:verify-models": "node --use-env-proxy scripts/run-tsx.cjs scripts/verify-lead-models.ts",
     "leads:verify": "tsx scripts/verify-live-leads.ts",
     "contacts:enrich": "tsx scripts/enrich-lead-contacts.ts",

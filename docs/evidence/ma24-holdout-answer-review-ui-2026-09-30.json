@@ -1,0 +1,30 @@
+{
+  "date": "2026-09-30",
+  "scope": "Local frozen 50-case answer and precise-citation human review UI",
+  "frozenProfile": "rag-v3-rrf-v1.0.0",
+  "candidateCount": 100,
+  "humanVerdictsBeforeAndAfterProbe": 0,
+  "checks": [
+    "Unauthenticated GET rejected with HTTP 401",
+    "Authenticated admin GET returned 50 cases and both candidate paths for each sampled case",
+    "Frozen Gold answer and source coordinates displayed beside v3 and vectorless candidates",
+    "Answer and precise citation verdicts start unselected; save is disabled until both are chosen",
+    "Changed candidate SHA-256 rejected with HTTP 409 without a verdict write",
+    "Desktop 1366x900 and mobile 390x844 rendered without horizontal document overflow",
+    "Existing fact and Gold review browser checks remained passing at both viewport sizes"
+  ],
+  "verification": [
+    "npm run typecheck",
+    "eslint on changed TypeScript and TSX files",
+    "npm run knowledge:verify-review-ui",
+    "node scripts/run-tsx.cjs scripts/verify-holdout-answer-workbench.ts"
+  ],
+  "externalModelCalls": 0,
+  "productionRetrievalSwitched": false,
+  "qualityGatePassed": false,
+  "limitations": [
+    "No human answer or precise-citation verdicts have been supplied yet",
+    "The local-only review endpoint needs frozen candidate files and local PostgreSQL",
+    "Provider invoice reconciliation and production cutover remain separate gates"
+  ]
+}

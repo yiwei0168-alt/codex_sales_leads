@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import "./ipados.css";
 import "./conversation-theme.css";
+import "./intelligence-theme.css";
 
 export const metadata: Metadata = {
   title: "Network Channel Copilot",
