@@ -54,9 +54,10 @@ async function ledger(operationId:string){return tenantQuery<Ledger>(OWNER_USER_
 async function admit(operationId:string,stage:string,kind:HoldoutPaidKind){
   const rows=await ledger(operationId);
   if(rows.some(row=>row.stage===stage))throw new Error(`Paid stage already attempted: ${stage}`);
-  if(rows.some(row=>row.status==="reserved"||row.status==="bound-exceeded"
-    ||(row.settled_source===null&&(row.valid_output_items!==1||row.output_incomplete))))
-    throw new Error("Unsettled, failed or unknown paid outcome; stop before another call");
+  // A completed HTTP transport can lack a provider bill. An interrupted transport also
+  // consumes its full conservative CNY bound, but its exact stage is never replayed.
+  if(rows.some(row=>row.status==="reserved"||row.status==="bound-exceeded"))
+    throw new Error("Unsettled or bound-exceeded paid outcome; stop before another call");
   assertHoldoutPaidCapacity(rows.map(row=>({tariffKey:row.tariff_key,
     maximumNativeMicros:Number(row.native_micros)} satisfies HoldoutReservation)),kind);
 }
