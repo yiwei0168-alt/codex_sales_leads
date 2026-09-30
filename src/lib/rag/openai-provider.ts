@@ -103,13 +103,15 @@ export function groundedAnswerRequestBody(question:string,chunks:RetrievedChunk[
       {...messages[0],content:`${messages[0].content}\nReturn one JSON object only: {\"answer\":\"complete cited answer\"}.`},messages[1]]});
 }
 
-export async function generateGroundedAnswer(question: string, chunks: RetrievedChunk[],transport:typeof fetch=fetch): Promise<string> {
+export async function generateGroundedAnswer(question: string, chunks: RetrievedChunk[],transport:typeof fetch=fetch,
+  timeoutMs=90_000): Promise<string> {
+  if(!Number.isSafeInteger(timeoutMs)||timeoutMs<1_000||timeoutMs>180_000)throw new Error("RAG answer timeout is out of bounds");
   const requestBody=groundedAnswerRequestBody(question,chunks);
   const config=getRagConfig();
   if(!config.ragAnswerApiKey)throw new Error("KIMI_API_KEY is not configured");
   const response=await withSdkModelCall({provider:"kimi",task:"rag-answer",promptVersion:"rag-grounded-answer-kimi-v1"},
     ()=>sdkModelFetch(transport)(kimiAnswerEndpoint(config.ragAnswerBaseUrl),{method:"POST",headers:{authorization:`Bearer ${config.ragAnswerApiKey}`,
-      "content-type":"application/json"},signal:AbortSignal.timeout(90_000),body:requestBody}));
+      "content-type":"application/json"},signal:AbortSignal.timeout(timeoutMs),body:requestBody}));
   const body=await response.json() as {model?:string;choices?:Array<{message?:{content?:string|null}}>;
     error?:{message?:string}};
   if(!response.ok)throw new Error(body.error?.message??`Kimi HTTP ${response.status}`);

@@ -29,6 +29,7 @@ const expectedBlindHash="711ed12f970c54d7d3a73bd5d824946aa7c89cb3c9995b2976445c8
 const sha=(value:string)=>createHash("sha256").update(value).digest("hex");
 const args=process.argv.slice(2);
 const dryRun=args.includes("--dry-run");
+const recoverMissing=args.includes("--recover-missing");
 const repairOpenCase=args.includes("--repair-open-pilot")?"base-43-open"
   :args.find(arg=>arg.startsWith("--repair-open-case="))?.slice("--repair-open-case=".length);
 const limitArgument=args.find(arg=>arg.startsWith("--limit="));
@@ -239,7 +240,7 @@ async function answer(question:string,evidence:Evidence[],stage:string,operation
   await admit(operationId,stage,"kimi");
   return withSpendContext({userId:OWNER_USER_ID,operationId,stage,
     tariffPolicy:{version:HOLDOUT_PAID_SCOPE.version,rules},fixedFxReferenceVersion:fxVersion},
-  ()=>generateGroundedAnswer(question,evidence.map(item=>item.chunk)));
+  ()=>generateGroundedAnswer(question,evidence.map(item=>item.chunk),fetch,recoverMissing?180_000:90_000));
 }
 
 const lockClient=await getPool().connect();let locked=false;
@@ -292,10 +293,19 @@ try{
     for(const path of ["v3","vectorless"] as const){
       if(state.candidates.some(candidate=>candidate.caseId===item.caseId&&candidate.path===path))continue;
       const stage=stageName(item.caseId,path);
-      if(!isOpenRequest(item.query)&&(await ledger(operationId)).some(row=>row.stage===stage)){
-        state.errors.push({caseId:item.caseId,stage,reason:"Prior paid attempt has no saved answer; no retry"});
-        await persist(state);continue;
+      const prior=(await ledger(operationId)).find(row=>row.stage===stage);
+      const recovery=Boolean(!isOpenRequest(item.query)&&prior&&recoverMissing
+        &&prior.status==="unknown"&&prior.valid_output_items!==1);
+      const paidStage=recovery?`${stage}:recovery1`:stage;
+      if(!isOpenRequest(item.query)&&prior&&!recovery){
+        if(!state.errors.some(error=>error.caseId===item.caseId&&error.stage===stage
+          &&error.reason==="Prior paid attempt has no saved answer; no retry")){
+          state.errors.push({caseId:item.caseId,stage,reason:"Prior paid attempt has no saved answer; no retry"});
+          await persist(state);
+        }
+        continue;
       }
+      if(recovery&&(await ledger(operationId)).some(row=>row.stage===paidStage))continue;
       let evidence:Evidence[]=[],receiptIds:string[]=[],partial=false,excluded=0;
       try{
         if(path==="v3"){
@@ -310,9 +320,11 @@ try{
           const result=await vectorlessEvidence(item.query);
           evidence=result.evidence;partial=result.partial;receiptIds=[result.sessionId];
         }
-        const evaluatedQuestion=partial||excluded>0
+        if(recovery)receiptIds.push(...rowReceipts(await ledger(operationId),stage));
+        const evaluatedQuestionBase=partial||excluded>0
           ?`${item.query}\n\nRetrieval notice: only part of the accessible document range or evidence fits this run. State any unsearched scope; do not claim exhaustive coverage.`
           :item.query;
+        const evaluatedQuestion=recovery?`${evaluatedQuestionBase}\n`:evaluatedQuestionBase;
         const fitted=fitEvidence(evaluatedQuestion,evidence);
         partial||=fitted.length<evidence.length||excluded>0;
         if(isOpenRequest(item.query)&&fitted.length){
@@ -333,8 +345,8 @@ try{
         if(dryRun){console.log(JSON.stringify({caseId:item.caseId,path,approvedEvidence:fitted.length,
           excluded,partial,requestBytes:Buffer.byteLength(groundedAnswerRequestBody(evaluatedQuestion,fitted.map(row=>row.chunk)))}));
           continue;}
-        const generated=await answer(evaluatedQuestion,fitted,stage,operationId,fx.version,rules);
-        receiptIds.push(...rowReceipts(await ledger(operationId),stage));
+        const generated=await answer(evaluatedQuestion,fitted,paidStage,operationId,fx.version,rules);
+        receiptIds.push(...rowReceipts(await ledger(operationId),paidStage));
         const candidate:AnswerCandidate={caseId:item.caseId,path,answer:generated,
           citations:coordinates(generated,fitted),receiptIds,modelId:"kimi-k3",
           retrievalProfileSha256:manifest.profileSha256};
@@ -342,7 +354,7 @@ try{
         state.candidates.push(candidate);await persist(state);
         console.log(JSON.stringify({caseId:item.caseId,path,answerSaved:true,citations:candidate.citations.length,
           evidenceSent:fitted.length,excluded,partial}));
-      }catch(error){state.errors.push({caseId:item.caseId,stage,reason:String(error)});await persist(state);break;}
+      }catch(error){state.errors.push({caseId:item.caseId,stage:paidStage,reason:String(error)});await persist(state);break;}
     }
   }
   const finalLedger=await ledger(operationId);
