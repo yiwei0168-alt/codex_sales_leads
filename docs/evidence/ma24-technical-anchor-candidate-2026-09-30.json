@@ -1,0 +1,24 @@
+{
+  "date": "2026-09-30",
+  "scope": "read-only local PostgreSQL retrieval diagnostics",
+  "change": "When the primary document search has no candidate and the query has no model token, use at least two explicit technical literal anchors to search current evidence text; reject anchors inside hyphenated identifiers.",
+  "developmentValidation": {
+    "routeWithAnyCandidate": "226/226",
+    "routeWithAllGoldDocuments": "222/226",
+    "clarifyWithCandidate": 0,
+    "insufficientEvidenceWithCandidate": 0,
+    "denyWithCandidate": 0,
+    "remainingPartialGoldSources": "four wording variants of 2.5G versus 5G"
+  },
+  "holdoutReadOnlyCheck": {
+    "routeWithAllGoldDocuments": "43/44",
+    "remainingPartialGoldSources": "one 2.5G versus 5G case",
+    "degradedV3WithAllGoldDocuments": "40/44",
+    "degradedV3QueryVectors": 0
+  },
+  "unitTests": "7/7",
+  "externalCalls": 0,
+  "answerQualityValidated": false,
+  "preciseCitationValidated": false,
+  "productionRetrievalSwitched": false
+}

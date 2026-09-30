@@ -89,6 +89,11 @@ export function cjkQueryFragments(query:string){
   }
   return [...new Set(fragments)].slice(0,32);
 }
+/** Technical comparisons without a model name need bounded literal anchors. */
+export function technicalQueryAnchors(query:string){
+  const anchors=query.match(/(?<![A-Za-z0-9_-])(?:[A-Z]{2,}\+?|\d+(?:\.\d+)?G|passthrough|server)(?![A-Za-z0-9_-])/g)??[];
+  return [...new Set(anchors.map(anchor=>anchor.toLowerCase()))].slice(0,8);
+}
 export async function searchDocuments(userId:string,query:string,filters:{market?:string;companyId?:string;productId?:string}={}){
   const modelTokens=modelTokensInQuery(query);
   const prefixTokens=modelTokens.filter(token=>/^[a-z0-9]+$/.test(token));
@@ -117,6 +122,24 @@ export async function searchDocuments(userId:string,query:string,filters:{market
       order by (m.id is not null) desc,(cm.id is not null) desc,(t.token is not null) desc,(pref.token is not null) desc,(n.id is not null) desc,d.title limit 24`,
     [query,userId,filters.market??null,filters.companyId??null,filters.productId??null,modelTokens,prefixTokens]);
   if(documents.length||modelTokens.length)return documents;
+  const anchors=technicalQueryAnchors(query);
+  if(anchors.length>=2){
+    const technical=await tenantQuery<{documentId:string;title:string;versionId:string;reason:string;totalCount:number}>(userId,`select d.id as "documentId",d.title,v.id as "versionId",count(*) over()::int as "totalCount",
+      'technical-anchor' as reason
+      from knowledge_document d join knowledge_tree_version v on v.id=d.current_tree_version_id
+      left join knowledge_asset a on a.id=v.asset_id and a.document_id=d.id and a.registration_status='registered' and a.source_sha256=v.source_sha256
+      join lateral(select count(*)::int as hits from unnest($5::text[]) anchor where exists(
+        select 1 from knowledge_tree_node n where n.version_id=v.id and n.node_kind='evidence'
+          and position(anchor in lower(n.content))>0)) matched on matched.hits>0
+      where d.status='active' and v.status='ready' and ((a.id is not null)
+        or (v.asset_id is null and d.content_sha256=v.source_sha256 and exists(select 1 from knowledge_document_revision r
+          where r.document_id=d.id and r.content_sha256=v.source_sha256 and r.reconstructed=false)))
+        and (d.owner_id=$1 or d.visibility='shared')
+        and ($2::text is null or d.market=$2) and ($3::text is null or d.company_id=$3) and ($4::text is null or d.product_id=$4)
+      order by matched.hits desc,d.title limit 24`,
+      [userId,filters.market??null,filters.companyId??null,filters.productId??null,anchors]);
+    if(technical.length)return technical;
+  }
   const fragments=cjkQueryFragments(query);
   if(!fragments.length)return documents;
   return tenantQuery<{documentId:string;title:string;versionId:string;reason:string;totalCount:number}>(userId,`select d.id as "documentId",d.title,v.id as "versionId",count(*) over()::int as "totalCount",

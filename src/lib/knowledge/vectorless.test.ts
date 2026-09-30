@@ -4,7 +4,7 @@ const mock=vi.hoisted(()=>({query:vi.fn(),transaction:vi.fn(),read:vi.fn()}));
 vi.mock("@/lib/rag/db",()=>({tenantQuery:mock.query,tenantTransaction:mock.transaction}));
 vi.mock("./document-repository",()=>({safeKnowledgeStorageKey:(key:string)=>key,assertResolvedInsideKnowledgeRoot:vi.fn()}));
 vi.mock("node:fs/promises",()=>({readFile:mock.read}));
-import {cjkQueryFragments,evidenceText,indexExtractedDocument,modelTokensInQuery} from "./vectorless";
+import {cjkQueryFragments,evidenceText,indexExtractedDocument,modelTokensInQuery,technicalQueryAnchors} from "./vectorless";
 const sha=(bytes:Uint8Array)=>createHash("sha256").update(bytes).digest("hex");
 beforeEach(()=>{mock.query.mockReset();mock.transaction.mockReset();mock.read.mockReset();});
 it("keeps exact model suffixes and distinct models for document narrowing",()=>{
@@ -16,6 +16,13 @@ it("derives bounded Chinese evidence fragments without including punctuation",()
   expect(cjkQueryFragments("Cudy 无线路由器有哪五种工作模式？")).toContain("工作模式");
   expect(cjkQueryFragments("VPN passthrough 等于 VPN server 吗？")).toEqual([]);
   expect(cjkQueryFragments(Array.from({length:100},(_,i)=>String.fromCodePoint(0x4e00+i)).join(""))).toHaveLength(32);
+});
+it("uses multiple explicit technical anchors without broadening a lone unsupported claim",()=>{
+  expect(technicalQueryAnchors("Does a 2.5G port mean 5G cellular?")).toEqual(["2.5g","5g"]);
+  expect(technicalQueryAnchors("SFP 和 SFP+ 是否一样？")).toEqual(["sfp","sfp+"]);
+  expect(technicalQueryAnchors("VPN passthrough 等于 VPN server 吗？")).toEqual(["vpn","passthrough","server"]);
+  expect(technicalQueryAnchors("The sheet says no PoE support. Is PoE supported?")).toEqual([]);
+  expect(technicalQueryAnchors("给我不存在型号 ZZ-DOES-NOT-EXIST 的原始PDF")).toEqual(["pdf"]);
 });
 it("keeps table rows and headers as original evidence",()=>{
   expect(evidenceText({id:"table-1",unitType:"sheet",unitIndex:1,blockType:"table",quality:"success",table:{headers:["Model","Ports"],rows:[["A","8"],["B","16"]]}}))
