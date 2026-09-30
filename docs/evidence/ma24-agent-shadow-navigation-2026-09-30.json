@@ -1,0 +1,24 @@
+{
+  "date": "2026-09-30",
+  "scope": "main Agent shadow tool registration only",
+  "featureFlag": "ENABLE_VECTORLESS_AGENT_SHADOW=1",
+  "defaultEnabled": false,
+  "tools": [
+    "vectorless_start",
+    "vectorless_search",
+    "vectorless_browse",
+    "vectorless_read",
+    "vectorless_aggregate",
+    "vectorless_filter",
+    "vectorless_v3_candidates"
+  ],
+  "knowledgePageScopedRunsExcluded": true,
+  "disabledDispatchRejected": true,
+  "budgetsProvidedByExistingSession": {"candidates": 24, "navigation": 8, "evidence": 8},
+  "focusedTests": "4/4 knowledge scope and dispatch; 21/21 Agent contracts and graph",
+  "typecheck": "passed",
+  "lint": "passed",
+  "realModelShadowComparison": false,
+  "productionMainRouteSwitched": false,
+  "externalCalls": 0
+}

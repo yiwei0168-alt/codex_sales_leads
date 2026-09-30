@@ -35,11 +35,13 @@ import { defineTool } from "./tool-definition";
 import { businessTools } from "./business-tools";
 import { researchTools } from "./research-tools";
 import { mailSendTool, mailBatchTool } from "./mail-tools";
+import {vectorlessTools} from "./vectorless-tools";
 export { defineTool } from "./tool-definition";
 const empty = z.object({}).strict();
 export const productTools: ProductTool[] = [
   ...businessTools,
   ...researchTools,
+  ...vectorlessTools,
   mailSendTool, mailBatchTool,
   defineTool({ id: "schedule_list", description: "Read this account's explicit scheduled tasks and next occurrence times.", input: empty,
     execute: async (_, c) => result(await listSchedules(c.userId), { cost: "known" }) }),
@@ -190,6 +192,7 @@ export const productTools: ProductTool[] = [
 ];
 export function availableTools(context: Pick<ExecutionContext, "role" | "knowledgeScope">, tools = productTools) {
   return tools.filter(t => (t.role === "member" || context.role === "admin")
+    && (!t.id.startsWith("vectorless_") || (process.env.ENABLE_VECTORLESS_AGENT_SHADOW==="1" && !context.knowledgeScope?.length))
     && (!context.knowledgeScope?.length || t.id === "knowledge_search" || t.id === "knowledge_status"));
 }
 export function describeTool(tool: ProductTool) {
