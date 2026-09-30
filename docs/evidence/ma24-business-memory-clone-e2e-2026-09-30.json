@@ -1,0 +1,26 @@
+{
+  "date": "2026-09-30",
+  "scope": "isolated-local-postgresql-clone",
+  "script": "scripts/verify-local-business-memory-clone.ts",
+  "source": "synthetic completed main-agent task receipt with one explicit user business statement",
+  "model": "local qwen3:8b with pinned digest",
+  "checks": {
+    "internalBusinessObservation": true,
+    "exactSourceQuoteAndMessageReceipt": true,
+    "confidenceAtMostPointSeven": true,
+    "businessValidityUnknown": true,
+    "oneNotice": true,
+    "oneGraphOutboxReceipt": true,
+    "crossAccountReadDenied": true,
+    "readyJobReplayDoesNotReprocess": true,
+    "formalFactAndScoringTableCountsUnchanged": true,
+    "fixtureCleaned": true
+  },
+  "externalModelCalls": 0,
+  "limitations": [
+    "Synthetic task content, not a naturally completed customer task",
+    "Outbox was written but not projected by this probe",
+    "Continuous extraction worker remains disabled",
+    "Task experience and user correction extraction remain incomplete"
+  ]
+}
