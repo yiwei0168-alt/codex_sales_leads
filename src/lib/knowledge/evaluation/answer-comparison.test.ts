@@ -39,10 +39,16 @@ describe("holdout answer comparison",()=>{
     expect(result.holdoutNonRegression).toBe(false);
     expect(result.totals.vectorless.answerCorrect).toBe(49);
   });
-  it("rejects unreviewed extra sources on non-answer cases",()=>{
-    expect(()=>scoreAnswerComparison({manifest,candidates:candidates.map(row=>
-      row.caseId==="case-49"&&row.path==="v3"?{...row,citations:[{assetSha256:"x",unitIndex:1}]}:row),verdicts}))
-      .toThrow("Unexpected citation");
+  it("retains a wrong non-answer candidate for review but forbids a precise-citation pass",()=>{
+    const changed=candidates.map(row=>row.caseId==="case-49"&&row.path==="v3"?
+      {...row,citations:[{assetSha256:"d".repeat(64),unitIndex:1,excerpt:"wrongly cited source"}]}:row);
+    const reviewed=verdicts.map(row=>row.caseId==="case-49"&&row.path==="v3"?
+      {...row,candidateSha256:answerCandidateSha256(changed.find(candidate=>candidate.caseId===row.caseId
+        &&candidate.path===row.path)!),answerCorrect:false,preciseCitationCorrect:false}:row);
+    expect(scoreAnswerComparison({manifest,candidates:changed,verdicts:reviewed}).complete).toBe(true);
+    expect(()=>scoreAnswerComparison({manifest,candidates:changed,verdicts:reviewed.map(row=>
+      row.caseId==="case-49"&&row.path==="v3"?{...row,preciseCitationCorrect:true}:row)}))
+      .toThrow("Unexpected citation cannot be marked precise");
   });
   it("cannot label a missing route citation precise",()=>{
     expect(()=>scoreAnswerComparison({manifest,candidates:candidates.map(row=>

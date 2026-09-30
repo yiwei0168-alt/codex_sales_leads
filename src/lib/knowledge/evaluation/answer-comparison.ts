@@ -26,7 +26,6 @@ export function scoreAnswerComparison(input:ComparisonInput){
     if(candidate.retrievalProfileSha256!==manifest.profileSha256)throw new Error(`Profile drift: ${candidate.caseId}:${candidate.path}`);
     if(!candidate.modelId.trim()||!candidate.answer.trim()||candidate.receiptIds.length===0
       ||candidate.receiptIds.some(receipt=>!receipt.trim()))throw new Error(`Incomplete candidate ${candidate.caseId}:${candidate.path}`);
-    if(item.expectedOutcome!=="route"&&candidate.citations.length>0)throw new Error(`Unexpected citation for ${candidate.caseId}:${candidate.path}`);
     const id=key(candidate.caseId,candidate.path);
     if(candidateMap.has(id))throw new Error(`Duplicate candidate ${id}`);
     candidateMap.set(id,candidate);
@@ -44,6 +43,8 @@ export function scoreAnswerComparison(input:ComparisonInput){
     if(verdict.preciseCitationCorrect&&cases.get(verdict.caseId)?.expectedOutcome==="route"
       &&(candidate.citations.length===0||candidate.citations.some(source=>!goldSourceIsPrecise(source))))
       throw new Error(`Precise citation verdict lacks precise coordinates ${id}`);
+    if(verdict.preciseCitationCorrect&&cases.get(verdict.caseId)?.expectedOutcome!=="route"
+      &&candidate.citations.length>0)throw new Error(`Unexpected citation cannot be marked precise ${id}`);
     verdictMap.set(id,verdict);
   }
   const missingCandidates:string[]=[];
