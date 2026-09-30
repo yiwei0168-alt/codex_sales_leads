@@ -1,0 +1,50 @@
+{
+  "status": "assistant-source-checked-supplemental",
+  "scope": "PPTX/XLSX current-source answer and coordinate samples outside the frozen 300-case corpus",
+  "cases": [
+    {
+      "id": "ma24-pptx-modes",
+      "query": "Cudy 无线路由器有哪五种工作模式？",
+      "expectedAnswer": "培训材料列出五种工作模式：无线路由、AP、扩展器、WISP 和 Client。该页是通用功能培训资料，不能据此断言每个具体型号都支持全部五种模式。",
+      "file": "knowledge/product/产品通用功能_Ivy.pptx",
+      "sourceSha256": "c1be7fd95ef91885e3fb11e11fc3ee23439c5775517a21416fc3483356c5ed01",
+      "documentId": "66e3ae09-7d70-42c6-bca1-f0ce9b58149f",
+      "sources": [
+        {
+          "nodeId": "28ef648f-69e7-490d-b5e3-1025886f7725",
+          "unitType": "slide",
+          "unitIndex": 12,
+          "quote": "Cudy无线路由器具有五种工作模式：无线路由，AP，扩展器, WISP, Client模式。"
+        }
+      ]
+    },
+    {
+      "id": "ma24-xlsx-sm10g",
+      "query": "SM10GMA-03H 与 SM10GMA-03 有什么区别？",
+      "expectedAnswer": "两者在这张产品表中都标为 10G SFP+、LC 多模光纤、300 米、850nm；SM10GMA-03H 的描述另有“Compatible with HP”。这只证明表中标注了 HP 兼容性，不能推断其他设备或厂商的兼容性。",
+      "file": "knowledge/product/Cudy products list.xlsx",
+      "sourceSha256": "88db1592483886dba5ef9ac070e8d762e9601b635208383d15ac80f6cfcda68a",
+      "documentId": "568d7025-915f-428d-bdfd-42cff6cda533",
+      "sources": [
+        {
+          "nodeId": "aefcb732-e8cc-4b34-9ee8-f6a5ddafee26",
+          "unitType": "sheet",
+          "unitIndex": 1,
+          "sheetName": "Price List",
+          "rowStart": 329,
+          "rowEnd": 329,
+          "quote": "Model No.: SM10GMA-03\nProduct name: 10G SFP+\nDescription: SFP+, 10Gbps,LC MMF,300M  850nm"
+        },
+        {
+          "nodeId": "7dc23e3a-780d-41fe-8ff3-5d1255b0542a",
+          "unitType": "sheet",
+          "unitIndex": 1,
+          "sheetName": "Price List",
+          "rowStart": 330,
+          "rowEnd": 330,
+          "quote": "Model No.: SM10GMA-03H\nProduct name: 10G SFP+\nDescription: SFP+, 10Gbps,LC MMF,300M  850nm, Compatible with HP"
+        }
+      ]
+    }
+  ]
+}

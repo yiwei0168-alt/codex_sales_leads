@@ -81,10 +81,18 @@ export function modelTokensInQuery(query:string){
   return [...new Set((query.match(/(?<![A-Za-z0-9_])[A-Za-z]{1,6}[0-9][A-Za-z0-9_+-]{0,15}(?![A-Za-z0-9_])/g)??[])
     .map(token=>token.toLowerCase()))].slice(0,8);
 }
+/** PostgreSQL's simple text search does not split continuous Chinese text. */
+export function cjkQueryFragments(query:string){
+  const fragments:string[]=[];
+  for(const run of query.match(/[\p{Script=Han}]{4,}/gu)??[]){
+    for(let i=0;i<=run.length-4;i++)fragments.push(run.slice(i,i+4));
+  }
+  return [...new Set(fragments)].slice(0,32);
+}
 export async function searchDocuments(userId:string,query:string,filters:{market?:string;companyId?:string;productId?:string}={}){
   const modelTokens=modelTokensInQuery(query);
   const prefixTokens=modelTokens.filter(token=>/^[a-z0-9]+$/.test(token));
-  return tenantQuery<{documentId:string;title:string;versionId:string;reason:string;totalCount:number}>(userId,`select d.id as "documentId",d.title,v.id as "versionId",count(*) over()::int as "totalCount",
+  const documents=await tenantQuery<{documentId:string;title:string;versionId:string;reason:string;totalCount:number}>(userId,`select d.id as "documentId",d.title,v.id as "versionId",count(*) over()::int as "totalCount",
     case when m.id is not null then 'registered-entity' when cm.id is not null then 'release-chunk-entity'
       when t.token is not null then 'model-in-title' when pref.token is not null then 'model-prefix-in-content'
       when n.id is not null then 'fulltext' else 'title' end as reason
@@ -108,6 +116,23 @@ export async function searchDocuments(userId:string,query:string,filters:{market
       and (m.id is not null or cm.id is not null or t.token is not null or pref.token is not null or n.id is not null or d.title ilike '%'||$1||'%')
       order by (m.id is not null) desc,(cm.id is not null) desc,(t.token is not null) desc,(pref.token is not null) desc,(n.id is not null) desc,d.title limit 24`,
     [query,userId,filters.market??null,filters.companyId??null,filters.productId??null,modelTokens,prefixTokens]);
+  if(documents.length||modelTokens.length)return documents;
+  const fragments=cjkQueryFragments(query);
+  if(!fragments.length)return documents;
+  return tenantQuery<{documentId:string;title:string;versionId:string;reason:string;totalCount:number}>(userId,`select d.id as "documentId",d.title,v.id as "versionId",count(*) over()::int as "totalCount",
+    'cjk-fragment' as reason
+    from knowledge_document d join knowledge_tree_version v on v.id=d.current_tree_version_id
+    left join knowledge_asset a on a.id=v.asset_id and a.document_id=d.id and a.registration_status='registered' and a.source_sha256=v.source_sha256
+    join lateral(select count(*)::int as hits from unnest($5::text[]) fragment where exists(
+      select 1 from knowledge_tree_node n where n.version_id=v.id and n.node_kind='evidence'
+        and position(fragment in n.content)>0)) matched on matched.hits>0
+    where d.status='active' and v.status='ready' and ((a.id is not null)
+      or (v.asset_id is null and d.content_sha256=v.source_sha256 and exists(select 1 from knowledge_document_revision r
+        where r.document_id=d.id and r.content_sha256=v.source_sha256 and r.reconstructed=false)))
+      and (d.owner_id=$1 or d.visibility='shared')
+      and ($2::text is null or d.market=$2) and ($3::text is null or d.company_id=$3) and ($4::text is null or d.product_id=$4)
+    order by matched.hits desc,d.title limit 24`,
+    [userId,filters.market??null,filters.companyId??null,filters.productId??null,fragments]);
 }
 /** Revalidate legacy candidate IDs against the current PostgreSQL tree and source. */
 export async function currentCandidateDocuments(userId:string,documentIds:string[]){

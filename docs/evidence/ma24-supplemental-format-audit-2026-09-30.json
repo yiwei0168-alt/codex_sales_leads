@@ -1,0 +1,33 @@
+{
+  "local": true,
+  "readOnly": true,
+  "supplementalCases": 2,
+  "results": [
+    {
+      "id": "ma24-pptx-modes",
+      "candidateCountBeforeChineseFallback": 0,
+      "candidateCountAfterChineseFallback": 9,
+      "sourceCoordinates": 1,
+      "originalHashMatches": true,
+      "currentEvidenceMatches": true,
+      "originalSlideTextChecked": true
+    },
+    {
+      "id": "ma24-xlsx-sm10g",
+      "candidateCountBeforeChineseFallback": 2,
+      "candidateCountAfterChineseFallback": 2,
+      "sourceCoordinates": 2,
+      "originalHashMatches": true,
+      "currentEvidenceMatches": true,
+      "originalRowsChecked": true
+    }
+  ],
+  "frozenCorpusDocumentCandidateAllSourceHits": {
+    "development": "163/172",
+    "validation": "51/54",
+    "holdout": "41/44"
+  },
+  "nonRouteCandidateHits": 0,
+  "externalCalls": 0,
+  "answerGenerationCompared": false
+}
