@@ -1,0 +1,20 @@
+{
+  "date": "2026-09-30",
+  "migration": "db/migrations/117_vectorless_agent_run_budget.sql",
+  "scope": "one vectorless shadow retrieval session per owned main Agent run",
+  "checks": {
+    "isolatedCloneMigration": "passed",
+    "primaryLocalMigration": "passed twice",
+    "sameRunSameQuestionReturnsSameSession": true,
+    "sameRunQuestionChangeDenied": true,
+    "anotherRunSessionReuseDenied": true,
+    "legacyUnboundSessionsPreserved": true,
+    "fixtureCleaned": true
+  },
+  "candidateLimitPerRun": 24,
+  "navigationLimitPerRun": 8,
+  "evidenceLimitPerRun": 8,
+  "externalCalls": 0,
+  "shadowFlagEnabled": false,
+  "productionRetrievalSwitched": false
+}

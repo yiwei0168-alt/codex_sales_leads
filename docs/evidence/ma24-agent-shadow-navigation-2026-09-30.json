@@ -15,6 +15,7 @@
   "knowledgePageScopedRunsExcluded": true,
   "disabledDispatchRejected": true,
   "budgetsProvidedByExistingSession": {"candidates": 24, "navigation": 8, "evidence": 8},
+  "followup": "Migration 117 binds at most one shadow session to each Agent run; see ma24-agent-session-budget-2026-09-30.json",
   "focusedTests": "4/4 knowledge scope and dispatch; 21/21 Agent contracts and graph",
   "typecheck": "passed",
   "lint": "passed",
