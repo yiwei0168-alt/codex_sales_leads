@@ -15,6 +15,7 @@
 > 2026-09-30 / MA24 Gold 更新：开放式型号比较题获逐题确认；用户显式确认冻结 `rag-v3-rrf-v1.0.0` 的 SHA-256 并解锁 holdout。Gold 已保存 300/300（53 条逐题确认、247 条类型授权自动采纳），604 条当前来源坐标复核通过。v3/无向量主路的锁定集回答与精确引用对照，以及 PPTX/XLSX、新增资料样本仍待验收；生产检索未切换。[锁定集记录](docs/MA24_GOLD_LOCKED_REVIEW_2026-09-30.md)。
 > 2026-09-30 / MA24-02 来源边界补强：文档集合计数与筛选对文本资料要求当前哈希对应不可重建的原始修订；本机验证缺失修订、旧哈希及跨账号文本不进入集合。生产检索仍未切换。[验收收据](docs/evidence/ma24-document-set-source-boundary-2026-09-30.json)。
 > 2026-09-30 / MA24-03 补充格式样本：PPTX 幻灯片的五种工作模式与 XLSX 工作表的 SM10G 两行比较，均已核对原件、当前树原文及稳定坐标。中文问法漏检由受限原文片段回查修复，冻结 300 题的文档候选结果未退步；生成答案与精确引用质量仍待对照。[补充验收](docs/MA24_SUPPLEMENTAL_FORMAT_REVIEW_2026-09-30.md)。
+> 2026-09-30 / MA24-01 锁定集只读预检：44 道需路由题中，无向量候选 41 道覆盖全部所需原件；v3 在无 Qwen/BGE 查询向量的降级状态为 40 道。该结果不构成同等配置的答案/引用质量基线，生产主路仍保持 v3。[预检记录](docs/MA24_HOLDOUT_RETRIEVAL_PREFLIGHT_2026-09-30.md)。
 
 > 2026-09-20: MA01-MA09 confirmed; see [main Agent implementation workflow](docs/MAIN_AGENT_WORKFLOW.md). These are new targets, not completed implementation or release evidence.
 
