@@ -28,6 +28,7 @@ import {loadSkillSource,skillSourceSchema} from "./skill-sources";
 import { runSkillScript } from "./sandbox";
 import { saveMemory, memoryInputSchema } from "./memory";
 import {loadDecisionMemory,searchHistoricalMemory,historicalMemoryInput} from "./memory-context";
+import {searchMemoryWithGraph} from "@/lib/knowledge/memory-graph-search";
 import {listAgentMemory,setAgentMemoryActive} from "./memory-management";
 import { createSchedule, listSchedules, changeSchedule, scheduleInputSchema } from "./schedules";
 
@@ -53,6 +54,14 @@ export const productTools: ProductTool[] = [
     execute: async (i, c) => result(await loadDecisionMemory(c.userId, i), { cost: "known" }) }),
   defineTool({id:"memory_history_search",description:"Find active historical account preferences, company decisions and shared feedback guidance by literal text and structured market/company/role scope. Preserves source identity, revision and internal-only/external-approved usage. Historical company decisions do not redefine official scoring.",input:historicalMemoryInput,
     execute:async(i,c)=>result(await searchHistoricalMemory(c.userId,i),{cost:"known"})}),
+  defineTool({id:"memory_observation_search",description:"Shadow search this account's versioned private observations at explicit business and knowledge times. Graphiti only proposes IDs; PostgreSQL rechecks account, scope, time and revocation, with PostgreSQL fallback. Preferences, experiences and unverified business facts are internal context, never formal scoring evidence or external claims.",
+    input:z.object({query:z.string().trim().min(1).max(200),businessAt:z.iso.datetime().optional(),
+      knownAt:z.iso.datetime().optional(),marketCode:z.string().regex(/^[A-Z]{2}$/).optional(),
+      companyId:z.string().min(1).max(180).optional()}).strict(),
+    execute:async(i,c)=>{const now=new Date().toISOString();
+      const found=await searchMemoryWithGraph(c.userId,i.query,i.businessAt??now,i.knownAt??now,
+        {marketCode:i.marketCode,companyId:i.companyId});
+      return result({...found,boundary:"Internal working memory only; verify original facts before external use."},{cost:"known"});}}),
   defineTool({id:"legacy_memory_save",description:"Create or edit an account-owned manual email style or explicitly approved marketing claim in the historical memory store. Exact human confirmation and the observed update revision are required; embeddings are generated only when content changes.",
     input:memoryEditorSchema,effect:"publish",cost:"unknown",connections:["embedding-model"],
     execute:async(i,c)=>{const saved=await saveManualMemory(c.userId,i);
@@ -193,6 +202,7 @@ export const productTools: ProductTool[] = [
 export function availableTools(context: Pick<ExecutionContext, "role" | "knowledgeScope">, tools = productTools) {
   return tools.filter(t => (t.role === "member" || context.role === "admin")
     && (!t.id.startsWith("vectorless_") || (process.env.ENABLE_VECTORLESS_AGENT_SHADOW==="1" && !context.knowledgeScope?.length))
+    && (t.id!=="memory_observation_search" || (process.env.ENABLE_MEMORY_GRAPH_AGENT_SHADOW==="1" && !context.knowledgeScope?.length))
     && (!context.knowledgeScope?.length || t.id === "knowledge_search" || t.id === "knowledge_status"));
 }
 export function describeTool(tool: ProductTool) {

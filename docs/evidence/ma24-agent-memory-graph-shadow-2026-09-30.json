@@ -1,0 +1,21 @@
+{
+  "date": "2026-09-30",
+  "scope": "Main Agent read-only shadow access to local Graphiti memory candidates",
+  "defaultEnabled": false,
+  "enableFlag": "ENABLE_MEMORY_GRAPH_AGENT_SHADOW=1",
+  "checks": [
+    "Feature-off tool discovery and guessed execution are rejected",
+    "Knowledge-page scoped questions cannot discover or invoke the memory tool",
+    "When enabled, account ID, business time, knowledge time, market and company scope are passed to the existing PostgreSQL-checked graph search",
+    "Existing graph search tests preserve PostgreSQL fallback and account isolation"
+  ],
+  "verification": [
+    "vitest: memory-graph-agent, knowledge-scope and memory-graph-search (11 passed)",
+    "npm run typecheck",
+    "eslint on changed TypeScript files"
+  ],
+  "realModelShadowComparison": false,
+  "productionAgentEnabled": false,
+  "externalModelCalls": 0,
+  "formalFactPublication": false
+}
