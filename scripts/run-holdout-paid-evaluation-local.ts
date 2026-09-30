@@ -30,6 +30,7 @@ const sha=(value:string)=>createHash("sha256").update(value).digest("hex");
 const args=process.argv.slice(2);
 const dryRun=args.includes("--dry-run");
 const recoverMissing=args.includes("--recover-missing");
+const recoverLast=args.includes("--recover-last-p4-explain");
 const repairOpenCase=args.includes("--repair-open-pilot")?"base-43-open"
   :args.find(arg=>arg.startsWith("--repair-open-case="))?.slice("--repair-open-case=".length);
 const limitArgument=args.find(arg=>arg.startsWith("--limit="));
@@ -240,7 +241,8 @@ async function answer(question:string,evidence:Evidence[],stage:string,operation
   await admit(operationId,stage,"kimi");
   return withSpendContext({userId:OWNER_USER_ID,operationId,stage,
     tariffPolicy:{version:HOLDOUT_PAID_SCOPE.version,rules},fixedFxReferenceVersion:fxVersion},
-  ()=>generateGroundedAnswer(question,evidence.map(item=>item.chunk),fetch,recoverMissing?180_000:90_000));
+  ()=>generateGroundedAnswer(question,evidence.map(item=>item.chunk),fetch,
+    recoverMissing||recoverLast?180_000:90_000));
 }
 
 const lockClient=await getPool().connect();let locked=false;
@@ -296,8 +298,12 @@ try{
       const prior=(await ledger(operationId)).find(row=>row.stage===stage);
       const recovery=Boolean(!isOpenRequest(item.query)&&prior&&recoverMissing
         &&prior.status==="unknown"&&prior.valid_output_items!==1);
-      const paidStage=recovery?`${stage}:recovery1`:stage;
-      if(!isOpenRequest(item.query)&&prior&&!recovery){
+      const previousRecovery=(await ledger(operationId)).find(row=>row.stage===`${stage}:recovery1`);
+      const lastRecovery=Boolean(recoverLast&&item.caseId==="base-43-explain"&&path==="v3"
+        &&prior?.status==="unknown"&&prior.valid_output_items!==1
+        &&previousRecovery?.status==="unknown"&&previousRecovery.valid_output_items!==1);
+      const paidStage=lastRecovery?`${stage}:recovery2`:recovery?`${stage}:recovery1`:stage;
+      if(!isOpenRequest(item.query)&&prior&&!recovery&&!lastRecovery){
         if(!state.errors.some(error=>error.caseId===item.caseId&&error.stage===stage
           &&error.reason==="Prior paid attempt has no saved answer; no retry")){
           state.errors.push({caseId:item.caseId,stage,reason:"Prior paid attempt has no saved answer; no retry"});
@@ -305,7 +311,7 @@ try{
         }
         continue;
       }
-      if(recovery&&(await ledger(operationId)).some(row=>row.stage===paidStage))continue;
+      if((recovery||lastRecovery)&&(await ledger(operationId)).some(row=>row.stage===paidStage))continue;
       let evidence:Evidence[]=[],receiptIds:string[]=[],partial=false,excluded=0;
       try{
         if(path==="v3"){
@@ -314,6 +320,7 @@ try{
             {structuredProductTerms:modelTokens(item.query),lexicalQuery:buildControlledLexicalQuery(item.query)},8,bge);
           const validated=await validatedV3Chunks(chunks);
           evidence=validated.chunks.map(chunk=>({chunk,source:validated.sources.get(chunk.id)!}));
+          if(lastRecovery)evidence=evidence.slice(0,4);
           excluded=validated.excluded;
           receiptIds=rowReceipts(await ledger(operationId),vectorStage);
         }else{
@@ -321,10 +328,13 @@ try{
           evidence=result.evidence;partial=result.partial;receiptIds=[result.sessionId];
         }
         if(recovery)receiptIds.push(...rowReceipts(await ledger(operationId),stage));
+        if(lastRecovery)receiptIds.push(...rowReceipts(await ledger(operationId),stage),
+          ...rowReceipts(await ledger(operationId),`${stage}:recovery1`));
         const evaluatedQuestionBase=partial||excluded>0
           ?`${item.query}\n\nRetrieval notice: only part of the accessible document range or evidence fits this run. State any unsearched scope; do not claim exhaustive coverage.`
           :item.query;
-        const evaluatedQuestion=recovery?`${evaluatedQuestionBase}\n`:evaluatedQuestionBase;
+        const evaluatedQuestion=lastRecovery?`${evaluatedQuestionBase}\n\n`
+          :recovery?`${evaluatedQuestionBase}\n`:evaluatedQuestionBase;
         const fitted=fitEvidence(evaluatedQuestion,evidence);
         partial||=fitted.length<evidence.length||excluded>0;
         if(isOpenRequest(item.query)&&fitted.length){
