@@ -1,0 +1,28 @@
+{
+  "localModel": "qwen3:8b",
+  "modelDigest": "500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41",
+  "preferenceContract": {
+    "englishPreference": 1,
+    "chinesePreference": 1,
+    "temporaryRequest": 0,
+    "businessFactAsPreference": 0,
+    "injection": 0
+  },
+  "businessFactContract": {
+    "englishOwnedFact": 1,
+    "chineseOwnedFact": 1,
+    "question": 0,
+    "hypothetical": 0,
+    "request": 0,
+    "thirdParty": 0,
+    "unconfirmedPolicy": 0
+  },
+  "unitTestsPassed": 8,
+  "sourceQuoteRequired": true,
+  "businessFactConfidenceCap": 0.7,
+  "businessValidityInferred": false,
+  "businessFactUsage": "unverified-internal-only",
+  "externalCalls": 0,
+  "productionWorkerEnabled": false,
+  "realPositiveTaskReceiptsValidated": false
+}
