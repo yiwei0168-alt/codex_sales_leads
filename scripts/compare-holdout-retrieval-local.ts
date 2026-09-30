@@ -1,4 +1,4 @@
-/** Read-only retrieval preflight. Null embeddings mean this cannot satisfy the full frozen v3 quality gate. */
+/** Read-only retrieval preflight. Optional local BGE still cannot satisfy the full frozen v3 quality gate. */
 import nextEnv from "@next/env";
 import {OWNER_USER_ID} from "../src/lib/auth/config";
 import {getPool,tenantQuery} from "../src/lib/rag/db";
@@ -7,11 +7,13 @@ import {evaluationCaseSha256,retrievalProfileSha256,RAG_V3_RETRIEVAL_PROFILE,typ
 import {modelTokensInQuery,searchDocuments} from "../src/lib/knowledge/vectorless";
 import {hybridSearch} from "../src/lib/rag/repository";
 import {buildControlledLexicalQuery} from "../src/lib/knowledge/query-normalizer";
+import {embedTextsWithBge} from "../src/lib/rag/bge-client";
 
 nextEnv.loadEnvConfig(process.cwd());
 const url=process.env.DATABASE_URL;
 if(!url||!["localhost","127.0.0.1","::1"].includes(new URL(url).hostname))throw new Error("Local PostgreSQL required");
 const corpus=buildKnowledgeEvaluationCorpus();
+const includeLocalBge=process.argv.includes("--bge-only");
 type Review={case_id:string;case_sha256:string;expected_sources:GoldSourceCoordinate[]};
 try{
   const [gate]=await tenantQuery<{retrieval_profile_key:string;retrieval_profile_sha256:string}>(OWNER_USER_ID,
@@ -23,8 +25,9 @@ try{
   const byId=new Map(reviews.map(row=>[row.case_id,row]));
   if(reviews.length!==50)throw new Error("All 50 Gold must be frozen before retrieval preflight");
   const cases=corpus.cases.filter(item=>item.split==="holdout"&&item.expectedOutcome==="route");
+  const bgeVectors=includeLocalBge?await embedTextsWithBge(cases.map(item=>item.query)):[];
   const outcomes=[];
-  for(const item of cases){
+  for(const [index,item] of cases.entries()){
     const review=byId.get(item.id);
     if(!review||review.case_sha256!==evaluationCaseSha256(item)||!review.expected_sources.length)
       throw new Error(`Gold changed: ${item.id}`);
@@ -40,15 +43,29 @@ try{
       from knowledge_chunk_v3 c join knowledge_source_revision_v3 r on r.id=c.source_revision_id
       join knowledge_asset a on a.id=r.asset_id where c.id=any($1::uuid[])`,[chunks.map(chunk=>chunk.id)],"admin");
     const v3=new Set(chunkSources.map(row=>row.source_sha256));
+    let v3BgeOnlyAllExpected:boolean|null=null;
+    let v3BgeOnlyChunks:number|null=null;
+    if(includeLocalBge){
+      const bgeChunks=await hybridSearch(OWNER_USER_ID,item.query,null,
+        {structuredProductTerms:modelTokensInQuery(item.query),lexicalQuery:buildControlledLexicalQuery(item.query)},8,bgeVectors[index]);
+      const bgeSources=await tenantQuery<{source_sha256:string}>(OWNER_USER_ID,`select distinct a.source_sha256
+        from knowledge_chunk_v3 c join knowledge_source_revision_v3 r on r.id=c.source_revision_id
+        join knowledge_asset a on a.id=r.asset_id where c.id=any($1::uuid[])`,[bgeChunks.map(chunk=>chunk.id)],"admin");
+      const hashes=new Set(bgeSources.map(row=>row.source_sha256));
+      v3BgeOnlyAllExpected=expected.every(hash=>hashes.has(hash));
+      v3BgeOnlyChunks=bgeChunks.length;
+    }
     outcomes.push({caseId:item.id,expectedDocuments:expected.length,
       vectorlessCandidateDocuments:primary.length,vectorlessAllExpected:expected.every(hash=>vectorless.has(hash)),
       v3DegradedChunks:chunks.length,v3DegradedAllExpected:expected.every(hash=>v3.has(hash)),
-      v3VectorSignalCount:chunks.filter(chunk=>chunk.retrievalSignals.includes("vector")).length});
+      v3VectorSignalCount:chunks.filter(chunk=>chunk.retrievalSignals.includes("vector")).length,
+      v3BgeOnlyChunks,v3BgeOnlyAllExpected});
   }
   console.log(JSON.stringify({local:true,readOnly:true,corpusVersion:corpus.version,profileKey:gate.retrieval_profile_key,
     profileSha256:gate.retrieval_profile_sha256,holdoutRouteCases:cases.length,
     vectorlessAllExpected:outcomes.filter(item=>item.vectorlessAllExpected).length,
     v3DegradedAllExpected:outcomes.filter(item=>item.v3DegradedAllExpected).length,
-    qwenQueryEmbeddings:false,bgeQueryEmbeddings:false,answerQualityValidated:false,
+    v3BgeOnlyAllExpected:includeLocalBge?outcomes.filter(item=>item.v3BgeOnlyAllExpected).length:null,
+    qwenQueryEmbeddings:false,bgeQueryEmbeddings:includeLocalBge,answerQualityValidated:false,
     preciseCitationValidated:false,externalCalls:0,outcomes}));
 }finally{await getPool().end();}

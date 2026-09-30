@@ -1,0 +1,26 @@
+{
+  "date": "2026-09-30",
+  "scope": "read-only holdout source-document candidate preflight",
+  "profileSha256": "37d58b9f3c768f48d45679b6a172246b1a0d7ebe7e25c6043cba6cfad7c31752",
+  "bgeModelRevision": "5617a9f61b028005a4858fdac845db406aefb181",
+  "bgeArtifactSha256": "4f2ef0a2c9b4250206e9ddc202a2bbe01718aacd2a06f87e3e09887b2a076c28",
+  "bgeService": {
+    "binding": "127.0.0.1:8765",
+    "healthReady": true,
+    "sampleVectorDimensions": 1024,
+    "sampleVectorFinite": true,
+    "stoppedAfterProbe": true
+  },
+  "holdoutRouteCases": 44,
+  "allRequiredDocumentHashesInCandidates": {
+    "vectorless": 43,
+    "v3FactsAndFulltextOnly": 40,
+    "v3WithLocalBgeAndNoQwen": 42
+  },
+  "v3BgeOnlyMisses": ["boundary-5-03", "boundary-5-04"],
+  "qwenQueryEmbeddings": false,
+  "answerQualityValidated": false,
+  "preciseCitationValidated": false,
+  "externalCalls": 0,
+  "productionRetrievalSwitched": false
+}
