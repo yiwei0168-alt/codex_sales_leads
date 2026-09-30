@@ -1,5 +1,7 @@
 # MA24 长期记忆与无向量 RAG：实施与验收记录
 
+2026-09-30 Gold 页面回归：启动本地产品后，现有 `verify-knowledge-review-center.ts` 因旧“知识库 & RAG”导航名称失败；探针更新为当前“知识库 → 审核 → 复核中心”后，在 1366×900 与 390×844 视口通过。页面/API 显示 Gold 300/300、holdout 已解锁，事实待复核队列 1029，整页无横向溢出；临时测试账号清理，外部调用 0。该测试不验证回答正确性或精确引用判分。[浏览器收据](evidence/ma24-gold-review-ui-2026-09-30.json)。
+
 2026-09-30 锁定集盲测输入：`prepare-holdout-answer-evaluation-local.ts` 在已确认的冻结配置 SHA-256 门禁下，复核 50/50 条 Gold 题目哈希、答案存在性和来源字段精度，记录 Gold 快照 SHA-256，再将 50 题导出到 Git 忽略的本地题单；其中 44 道需资料路由。题单不含 Gold 答案、来源和复核备注，重复运行要求字节一致，否则拒绝覆盖。数据库只读、外部调用 0；仍未生成 v3 与新主路的同题答案或精确引用质量结论。[机器收据](evidence/ma24-holdout-blind-manifest-2026-09-30.json)。
 
 2026-09-30 本地业务记忆任务链路补充：`verify-local-business-memory-clone.ts` 只在隔离 PostgreSQL 克隆库创建一条合成的已完成主 Agent 任务和用户原句，真实本地 `qwen3:8b` 消费队列后生成 1 条内部业务观察、1 条通知与 1 条图谱 outbox。原句/消息收据匹配、置信度上限 0.7、生效起止未知、跨账号读取拒绝及 ready job 重放通过；正式事实与评分策略表前后计数一致，夹具清理。此处的“真实”指实际本地模型与数据库链路，不指自然发生的客户任务；未消费 outbox、未启动持续 worker、未验证经验与纠正抽取。[机器收据](evidence/ma24-business-memory-clone-e2e-2026-09-30.json)。

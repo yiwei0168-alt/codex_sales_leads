@@ -1,0 +1,21 @@
+{
+  "date": "2026-09-30",
+  "script": "scripts/verify-knowledge-review-center.ts",
+  "baseUrl": "http://localhost:3018",
+  "viewports": ["1366x900", "390x844"],
+  "checks": [
+    "current knowledge navigation and review tab",
+    "fact review API and queue",
+    "Gold review API and visible progress",
+    "300 of 300 Gold saved",
+    "holdout unlocked and enabled",
+    "no horizontal page overflow"
+  ],
+  "factReviewQueueCount": 1029,
+  "goldReviewed": 300,
+  "goldTotal": 300,
+  "holdoutUnlocked": true,
+  "temporaryAccountCleaned": true,
+  "externalCalls": 0,
+  "answerQualityValidated": false
+}
