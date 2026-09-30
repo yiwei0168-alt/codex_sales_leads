@@ -1,0 +1,12 @@
+{
+  "local": true,
+  "source": "immutable-text-revision",
+  "rangeCount": 2,
+  "crossAccountDenied": true,
+  "documentSetDeniedMissingRevision": true,
+  "documentSetDeniedStaleRevision": true,
+  "oldRevisionDenied": true,
+  "deleteDenied": true,
+  "temporaryFixturesCleaned": true,
+  "productionRetrievalSwitched": false
+}

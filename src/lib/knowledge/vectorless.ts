@@ -154,7 +154,8 @@ export async function aggregateDocumentSet(userId:string,documentIds:string[]){
       and a.document_id=d.id and a.registration_status='registered' and a.source_sha256=v.source_sha256
     where d.id=any($1::uuid[]) and d.status='active' and v.status='ready'
       and ((a.id is not null)
-        or (v.asset_id is null and d.content_sha256=v.source_sha256))
+        or (v.asset_id is null and d.content_sha256=v.source_sha256 and exists(select 1 from knowledge_document_revision r
+          where r.document_id=d.id and r.content_sha256=v.source_sha256 and r.reconstructed=false)))
       and (d.owner_id=$2 or d.visibility='shared') order by d.id`,[ids,userId]);
   return {documentIds:rows.map(row=>row.documentId),count:rows.length,truncated:documentIds.length>24};
 }
@@ -166,7 +167,8 @@ export async function filterDocumentSet(userId:string,documentIds:string[],filte
     join knowledge_collection c on c.id=d.collection_id
     where d.id=any($1::uuid[]) and d.status='active' and v.status='ready'
       and ((a.id is not null)
-        or (v.asset_id is null and d.content_sha256=v.source_sha256))
+        or (v.asset_id is null and d.content_sha256=v.source_sha256 and exists(select 1 from knowledge_document_revision r
+          where r.document_id=d.id and r.content_sha256=v.source_sha256 and r.reconstructed=false)))
       and (d.owner_id=$2 or d.visibility='shared') and ($3::text is null or d.market=$3)
       and ($4::text is null or d.company_id=$4) and ($5::text is null or d.product_id=$5)
       and ($6::text is null or c.slug=$6) and ($7::timestamptz is null or d.captured_at >= $7)
