@@ -1,0 +1,28 @@
+{
+  "date": "2026-09-30",
+  "scope": "isolated PostgreSQL clone and local Neo4j Graphiti projection",
+  "script": "scripts/verify-local-business-memory-clone.ts",
+  "source": "one synthetic completed main-Agent task with an explicit business statement",
+  "model": "local pinned qwen3:8b",
+  "checks": {
+    "internalBusinessObservation": true,
+    "exactSourceReceipt": true,
+    "validityUnknown": true,
+    "confidenceAtMostPointSeven": true,
+    "noticeAndOutbox": true,
+    "graphProjected": true,
+    "accountScopedGraphCandidate": true,
+    "postgresqlRevalidatedGraphRead": true,
+    "postgresqlFallbackWhenGraphLookupFails": true,
+    "crossAccountDenied": true,
+    "extractionReplayDenied": true,
+    "formalFactAndScoringTableWrites": 0,
+    "fixtureCleaned": true
+  },
+  "externalModelCalls": 0,
+  "limitations": [
+    "Synthetic source task, not a natural customer task",
+    "Continuous extraction and graph workers remain disabled by default",
+    "Task experience and user correction extraction remain incomplete"
+  ]
+}

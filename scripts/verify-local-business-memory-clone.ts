@@ -1,10 +1,14 @@
 import {randomUUID} from "node:crypto";
+import {spawn} from "node:child_process";
 import {readFile} from "node:fs/promises";
+import {resolve} from "node:path";
 import nextEnv from "@next/env";
 import {Pool} from "pg";
 import {OWNER_USER_ID} from "../src/lib/auth/config";
 import {getPool,tenantQuery,tenantTransaction} from "../src/lib/rag/db";
 import {processLocalMemoryExtraction} from "../src/lib/knowledge/local-memory-extraction";
+import {processMemoryGraphOutbox} from "../src/lib/knowledge/memory-graph-outbox";
+import {graphObservationIds,searchMemoryWithGraph} from "../src/lib/knowledge/memory-graph-search";
 
 nextEnv.loadEnvConfig(process.cwd());
 const base=process.env.DATABASE_MIGRATION_URL||process.env.DATABASE_URL;
@@ -19,6 +23,20 @@ const quote="Our distributor signed a contract in 2024.";
 let conversationId="";
 let messageId="";
 let observationIds:string[]=[];
+async function cleanGraph(observationId:string):Promise<void>{
+  const python=resolve(".venv-graphiti-local",process.platform==="win32"?"Scripts/python.exe":"bin/python");
+  await new Promise<void>((done,reject)=>{
+    const child=spawn(python,["scripts/cleanup-memory-graph-probe.py"],{cwd:process.cwd(),windowsHide:true,stdio:["pipe","pipe","pipe"]});
+    let output="";
+    child.stdout.on("data",chunk=>{output+=String(chunk);});
+    child.once("error",reject);
+    child.once("close",code=>{
+      try{if(code!==0||JSON.parse(output).observationId!==observationId)throw new Error("Graph cleanup failed");done();}
+      catch(error){reject(error);}
+    });
+    child.stdin.end(JSON.stringify({ownerId:OWNER_USER_ID,observationId}));
+  });
+}
 async function formalCounts(){
   const result=await pool.query<{product_fact:string;knowledge_fact:string;knowledge_fact_v3:string;lead_scoring_policy:string}>(
     `select (select count(*) from product_fact)::text as product_fact,
@@ -55,6 +73,16 @@ try{
     `select (select count(*) from agent_memory_notice where observation_id=$1)::text as notice_count,
       (select count(*) from agent_memory_graph_outbox where observation_id=$1)::text as outbox_count`,[item.id]);
   if(effects.notice_count!=="1"||effects.outbox_count!=="1")throw new Error("Notice/outbox missing");
+  const graphStatus=await processMemoryGraphOutbox(OWNER_USER_ID,item.id);
+  if(graphStatus!=="delivered")throw new Error(`Business memory graph delivery failed: ${graphStatus}`);
+  const term="distributor";
+  if(!(await graphObservationIds(OWNER_USER_ID,term)).includes(item.id))throw new Error("Business memory graph candidate missing");
+  if((await graphObservationIds(randomUUID(),term)).includes(item.id))throw new Error("Cross-account graph candidate leaked");
+  const now=new Date().toISOString();
+  const graphRead=await searchMemoryWithGraph(OWNER_USER_ID,term,now,now);
+  if(graphRead.path!=="graph"||!graphRead.rows.some(row=>row.id===item.id))throw new Error("Business memory graph read failed");
+  const postgresRead=await searchMemoryWithGraph(OWNER_USER_ID,term,now,now,{},async()=>{throw new Error("graph-offline-probe");});
+  if(postgresRead.path!=="postgres"||!postgresRead.rows.some(row=>row.id===item.id))throw new Error("PostgreSQL graph fallback failed");
   const other=await tenantQuery(randomUUID(),"select id from agent_memory_observation where id=$1",[item.id]);
   if(other.length)throw new Error("Cross-account observation read succeeded");
   const replay=await processLocalMemoryExtraction(OWNER_USER_ID,runId);
@@ -64,8 +92,11 @@ try{
   if(JSON.stringify(await formalCounts())!==JSON.stringify(beforeFormal))throw new Error("Formal fact or scoring table changed");
   console.log(JSON.stringify({clone:true,localModel:"qwen3:8b",completedTask:true,internalBusinessFact:true,
     unknownBusinessValidity:true,confidenceCap:true,sourceReceipt:true,notice:true,graphOutbox:true,
+    graphProjected:true,graphSearch:true,postgresFallback:true,
     crossAccountDenied:true,replayDenied:true,formalFactOrScoreWrites:0}));
 }finally{
+  let graphCleanupError:unknown=null;
+  for(const id of observationIds)try{await cleanGraph(id);}catch(error){graphCleanupError=error;}
   const client=await pool.connect();
   try{
     await client.query("begin");
@@ -83,4 +114,5 @@ try{
     await client.query("commit");
   }catch(error){await client.query("rollback");throw error;}
   finally{client.release();await pool.end();await getPool().end();}
+  if(graphCleanupError)throw graphCleanupError;
 }
