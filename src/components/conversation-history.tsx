@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import type { AssistantConversationSummary } from "@/lib/assistant/types";
 import { ConversationTrace } from "./conversation-trace";
+import { WorkspaceDialog } from "./workspace-dialog";
 
 export function ConversationHistory({ activeId, refreshKey, onSelect, onNew }: {
   activeId?: string;
@@ -13,6 +14,9 @@ export function ConversationHistory({ activeId, refreshKey, onSelect, onNew }: {
 }) {
   const [items, setItems] = useState<AssistantConversationSummary[]>([]);
   const [error, setError] = useState("");
+  const [deleting, setDeleting] = useState<AssistantConversationSummary>();
+  const [deleteError, setDeleteError] = useState("");
+  const [deleteBusy, setDeleteBusy] = useState(false);
   const [localVersion, setLocalVersion] = useState(0);
   const [openMenu, setOpenMenu] = useState<string>();
   const [menuPosition, setMenuPosition] = useState({top:0,left:0});
@@ -57,12 +61,16 @@ export function ConversationHistory({ activeId, refreshKey, onSelect, onNew }: {
     setLocalVersion(version => version + 1);
   }
   async function remove(item: AssistantConversationSummary) {
-    setOpenMenu(undefined);
-    if (!window.confirm(`从历史中删除对话“${item.title}”？已完成任务和必要审计记录会保留；进行中的任务不能删除。`)) return;
+    if(deleteBusy)return;
+    setDeleteBusy(true);setDeleteError("");
+    try {
     const response = await fetch(`/api/assistant/conversations/${item.id}`, { method: "DELETE" });
-    if (!response.ok) { const body = await response.json().catch(() => null) as {error?:string}|null; setError(body?.error ?? "删除失败，请刷新后重试"); return; }
+    if (!response.ok) { const body = await response.json().catch(() => null) as {error?:string}|null; throw new Error(body?.error ?? "删除失败，请重试"); }
     setLocalVersion(version => version + 1);
+    setDeleting(undefined);
     if (item.id === activeId) { sessionStorage.removeItem("lastConversationId"); onNew(); }
+    } catch(reason) {setDeleteError(reason instanceof Error?reason.message:"连接中断，请刷新历史核实是否已删除后再重试");}
+    finally {setDeleteBusy(false);}
   }
   return <section className="conversation-history" aria-label="对话历史">
     <div className="conversation-history-head"><strong>对话历史</strong></div>
@@ -81,8 +89,14 @@ export function ConversationHistory({ activeId, refreshKey, onSelect, onNew }: {
     {openMenu && items.find(item => item.id === openMenu) && createPortal(<div ref={menuRef} role="menu" aria-label={`${items.find(item => item.id === openMenu)!.title} 操作`} className="conversation-history-menu" style={menuPosition}>
       <button type="button" role="menuitem" onClick={() => void rename(items.find(item => item.id === openMenu)!)}>重命名</button>
       <button type="button" role="menuitem" onClick={() => { setTrace(items.find(item => item.id === openMenu)!); setOpenMenu(undefined); }}>查看技术流水</button>
-      <button type="button" role="menuitem" className="danger" onClick={() => void remove(items.find(item => item.id === openMenu)!)}>删除对话</button>
+      <button type="button" role="menuitem" className="danger" onClick={() => {setDeleting(items.find(item => item.id === openMenu)!);setDeleteError("");setOpenMenu(undefined);}}>删除对话</button>
     </div>, document.body)}
     {trace && <ConversationTrace key={trace.id} conversationId={trace.id} title={trace.title} onClose={() => setTrace(undefined)}/>}
+    {deleting&&<WorkspaceDialog title="删除对话" busy={deleteBusy} onClose={()=>setDeleting(undefined)}>
+      <p>从历史中删除“<strong>{deleting.title}</strong>”？</p>
+      <p>对话将从历史列表移除，界面不提供撤销。已完成任务和必要审计记录会保留；进行中的任务不能删除。</p>
+      {deleteError&&<p className="workspace-error" role="alert">{deleteError}</p>}
+      <footer className="workspace-dialog-actions"><button className="secondary-button" disabled={deleteBusy} onClick={()=>setDeleting(undefined)}>取消</button><button className="primary-button destructive-button" disabled={deleteBusy} onClick={()=>void remove(deleting)}>{deleteBusy?"正在删除…":"删除对话"}</button></footer>
+    </WorkspaceDialog>}
   </section>;
 }

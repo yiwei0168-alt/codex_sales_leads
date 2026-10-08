@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState, type FormEvent } from "react";
+import { WorkspaceDialog } from "./workspace-dialog";
 import { MailCompanyLink } from "./mail-company-link";
 
 type AccessMode="read-only"|"send-enabled";
@@ -21,8 +22,9 @@ function Pager({page,total,onPage}:{page:number;total:number;onPage:(page:number
 function OriginalMail({messageId,onChanged}:{messageId:string;onChanged:()=>void}){
   const [content,setContent]=useState<MailContent|null>(null);
   const [error,setError]=useState("");
-  async function load(){if(content)return;try{const response=await fetch(`/api/mailbox/messages/${messageId}`,{cache:"no-store"});const body=await response.json();if(!response.ok)throw new Error(body.error??"原文读取失败");setContent(body.message);}catch(reason){setError(reason instanceof Error?reason.message:"原文读取失败");}}
-  return <details className="mailbox-disclosure" onToggle={event=>{if(event.currentTarget.open)void load();}}><summary>查看邮件原文</summary>{error&&<p role="alert">{error}</p>}{content&&<div className="mailbox-message-content"><p><strong>{content.subject||"无主题"}</strong></p><p>发件：{content.sender.map(item=>item.address).join("、")}</p><p>收件：{content.recipients.map(item=>item.address).join("、")}</p><pre>{content.bodyText}</pre><MailCompanyLink messageId={messageId} onChanged={onChanged}/></div>}</details>;
+  const [loading,setLoading]=useState(false);
+  async function load(){if(content||loading)return;setLoading(true);setError("");try{const response=await fetch(`/api/mailbox/messages/${messageId}`,{cache:"no-store"});const body=await response.json();if(!response.ok)throw new Error(body.error??"原文读取失败");setContent(body.message);}catch(reason){setError(reason instanceof Error?reason.message:"原文读取失败");}finally{setLoading(false);}}
+  return <details className="mailbox-disclosure" onToggle={event=>{if(event.currentTarget.open)void load();}}><summary>查看邮件原文</summary>{loading&&<p role="status">正在读取原文…</p>}{error&&<p role="alert">{error} <button onClick={()=>void load()}>重试</button></p>}{content&&<div className="mailbox-message-content"><p><strong>{content.subject||"无主题"}</strong></p><p>发件：{content.sender.map(item=>item.address).join("、")}</p><p>收件：{content.recipients.map(item=>item.address).join("、")}</p><pre>{content.bodyText}</pre><MailCompanyLink messageId={messageId} onChanged={onChanged}/></div>}</details>;
 }
 
 export function MailboxWorkspace(){
@@ -44,7 +46,7 @@ export function MailboxWorkspace(){
   const [imapHost,setImapHost]=useState("imap.qiye.aliyun.com");const [imapPort,setImapPort]=useState(993);
   const [smtpHost,setSmtpHost]=useState("smtp.qiye.aliyun.com");const [smtpPort,setSmtpPort]=useState(465);
   const [folderScope,setFolderScope]=useState("both");const [from,setFrom]=useState("");const [through,setThrough]=useState("");
-  const [busy,setBusy]=useState("");const [message,setMessage]=useState("");
+  const [busy,setBusy]=useState("");const [message,setMessage]=useState("");const [noticeError,setNoticeError]=useState(false);
 
   const refresh=useCallback(async()=>{
     const [c,s,q,r]=await Promise.all([
@@ -60,7 +62,7 @@ export function MailboxWorkspace(){
   useEffect(()=>{if(status?.latestRun?.status!=="running")return;const timer=window.setInterval(()=>void refresh(),1500);return()=>window.clearInterval(timer);},[status?.latestRun?.status,refresh]);
 
   async function request(url:string,method:"POST"|"PATCH"|"DELETE",body:unknown){const response=await fetch(url,{method,headers:{"content-type":"application/json"},body:JSON.stringify(body)});const result=await response.json();if(!response.ok)throw new Error(result.error??"操作失败");return result;}
-  async function perform(label:string,operation:()=>Promise<string>){setBusy(label);setMessage("");try{setMessage(await operation());await refresh();}catch(error){setMessage(error instanceof Error?error.message:"操作失败");}finally{setBusy("");}}
+  async function perform(label:string,operation:()=>Promise<string>){setBusy(label);setMessage("");setNoticeError(false);try{setMessage(await operation());await refresh();}catch(error){setNoticeError(true);setMessage(error instanceof Error?error.message:"操作失败");}finally{setBusy("");}}
   async function connect(event:FormEvent<HTMLFormElement>){event.preventDefault();await perform("connect",async()=>{
     await request("/api/mailbox/connections","POST",{email,displayName:displayName.trim()||email,securityPassword,accessMode,imapHost,imapPort,smtpHost:provider==="ali"||accessMode==="send-enabled"?smtpHost:undefined,smtpPort,smtpPassword:smtpPassword||undefined});
     setSecurityPassword("");setSmtpPassword("");return `“${displayName||email}”连接成功；${accessMode==="send-enabled"?"SMTP 已验证，可用于已确认的发信":"保持只读"}。`;
@@ -89,7 +91,11 @@ export function MailboxWorkspace(){
       <div className="mailbox-top-title"><span className="section-kicker">PRIVATE MAILBOX</span><strong>邮箱工作台</strong><small>{connections.filter(item=>item.status==="active").length} 个邮箱已连接</small></div>
       <div className="mailbox-account-chips">{connections.slice(0,4).map(item=><span key={item.id} className={`mailbox-account-chip ${item.status}`} title={item.email}><b>{item.displayName}</b><small>{accessLabel[item.accessMode]}</small></span>)}{connections.length>4&&<span className="mailbox-account-chip">+{connections.length-4}</span>}</div>
       <button className="secondary-button" aria-expanded={managerOpen} onClick={()=>setManagerOpen(value=>!value)}>{managerOpen?"收起邮箱管理":"管理 / 连接邮箱"}</button>
-      {managerOpen&&<div className="mailbox-manager" role="region" aria-label="邮箱管理">
+      {managerOpen&&<WorkspaceDialog title="管理 / 连接邮箱" drawer onClose={()=>setManagerOpen(false)}><div className="mailbox-manager">
+        {message&&<p role={noticeError?"alert":"status"} className={noticeError?"workspace-error":""}>{message}</p>}
+
+        <div className="mailbox-sync-options"><label>同步范围<select value={folderScope} onChange={event=>setFolderScope(event.target.value)}><option value="both">收件箱及已发送</option><option value="inbox">仅收件箱</option><option value="sent">仅已发送</option></select></label><label>开始日期<input type="date" value={from} onChange={event=>setFrom(event.target.value)}/></label><label>结束日期<input type="date" min={from} value={through} onChange={event=>setThrough(event.target.value)}/></label><small>留空默认近 180 天，每次最多 100 封。</small></div>
+        <div className="mailbox-manager-list"><strong>已添加邮箱</strong>{connections.map(item=><ConnectionSettings key={`${item.id}:${item.displayName}:${item.accessMode}`} connection={item} busy={Boolean(busy)} onSave={saveSettings} onSync={sync} onDisconnect={disconnect} onRemove={remove}/>)}{!connections.length&&<p className="subtle">尚未连接邮箱。</p>}</div>
         <div className="mailbox-manager-head"><strong>连接邮箱</strong><small>支持标准 IMAP/SMTP 和客户端专用密码；OAuth 邮箱暂不支持。</small></div>
         {!status?.configured&&<p className="login-config-error">服务端未配置 MAILBOX_CREDENTIAL_KEY。</p>}
         <form className="mailbox-form mailbox-connect-form" onSubmit={connect}>
@@ -103,11 +109,10 @@ export function MailboxWorkspace(){
           {accessMode==="send-enabled"&&<><label>SMTP 服务器<input value={smtpHost} onChange={event=>setSmtpHost(event.target.value)} placeholder="smtp.example.com" required/></label><label>SMTP 端口<input type="number" min={1} max={65535} value={smtpPort} onChange={event=>setSmtpPort(Number(event.target.value))} required/></label><label>SMTP 专用密码（可选）<input type="password" value={smtpPassword} onChange={event=>setSmtpPassword(event.target.value)} placeholder="留空则与 IMAP 相同" autoComplete="new-password"/></label></>}
           <button className="primary-button" disabled={Boolean(busy)||!status?.configured}>{busy==="connect"?"正在验证…":"验证并连接"}</button>
         </form>
-        <div className="mailbox-manager-list"><strong>已添加邮箱</strong>{connections.map(item=><ConnectionSettings key={`${item.id}:${item.displayName}:${item.accessMode}`} connection={item} busy={Boolean(busy)} onSave={saveSettings} onSync={sync} onDisconnect={disconnect} onRemove={remove}/>)}{!connections.length&&<p className="subtle">尚未连接邮箱。</p>}</div>
-        <div className="mailbox-sync-options"><label>同步范围<select value={folderScope} onChange={event=>setFolderScope(event.target.value)}><option value="both">收件箱及已发送</option><option value="inbox">仅收件箱</option><option value="sent">仅已发送</option></select></label><label>开始日期<input type="date" value={from} onChange={event=>setFrom(event.target.value)}/></label><label>结束日期<input type="date" min={from} value={through} onChange={event=>setThrough(event.target.value)}/></label><small>留空默认近 180 天，每次最多 100 封。</small></div>
-      </div>}
+
+      </div></WorkspaceDialog>}
     </header>
-    {message&&<div className="mailbox-notice" role="status"><span>{message}</span><button aria-label="关闭提示" onClick={()=>setMessage("")}>×</button></div>}
+    {message&&<div className={`mailbox-notice ${noticeError?"workspace-error":""}`} role={noticeError?"alert":"status"}><span>{message}</span><button aria-label="关闭提示" onClick={()=>setMessage("")}>×</button></div>}
     <section className="mailbox-main panel">
       <div className="mailbox-summary"><span><b>{status?.messages??0}</b> 已保存邮件</span><span><b>{queueTotal}</b> 待学习</span><span><b>{status?.pendingCandidates??0}</b> 待审核内容</span>{status?.latestRun&&<span className="mailbox-run-state" title={status.latestRun.error_message??undefined}>最近同步：{status.latestRun.status==="running"?`进行中 ${status.latestRun.processed_count}/${status.latestRun.discovered_count}`:status.latestRun.status==="failed"?"失败 · 查看邮箱管理后重试":`已完成 · 新增 ${status.latestRun.imported_count} 封`}</span>}</div>
       <div className="mailbox-tabs" role="tablist" aria-label="邮箱工作区"><button role="tab" aria-selected={tab==="learning"} onClick={()=>setTab("learning")}>私有学习候选 <em>{queueTotal}</em></button><button role="tab" aria-selected={tab==="review"} onClick={()=>setTab("review")}>待审核内容 <em>{status?.pendingCandidates??0}</em></button></div>

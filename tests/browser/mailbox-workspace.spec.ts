@@ -29,11 +29,11 @@ test("mailbox uses a fixed, paginated work area and top account manager",async({
   expect(main!.width).toBeGreaterThan(viewport.width*0.84);
   expect(await page.evaluate(()=>document.documentElement.scrollHeight<=innerHeight+2)).toBe(true);
   await page.getByRole("button",{name:"管理 / 连接邮箱"}).click();
-  await expect(page.getByRole("region",{name:"邮箱管理"})).toBeVisible();
+  await expect(page.getByRole("dialog",{name:"管理 / 连接邮箱"})).toBeVisible();
   await expect(page.getByText("欧洲销售").first()).toBeVisible();
   await page.getByLabel("邮箱类型").selectOption("custom");
   await expect(page.getByLabel("IMAP 服务器")).toHaveValue("");
-  await page.getByRole("button",{name:"收起邮箱管理"}).click();
+  await page.getByRole("dialog").getByRole("button",{name:"关闭窗口"}).click();
   await page.getByRole("button",{name:"下一页"}).click();
   await expect(page.getByText("客户邮件 9")).toBeVisible();
   await page.getByRole("tab",{name:/待审核内容/}).click();
