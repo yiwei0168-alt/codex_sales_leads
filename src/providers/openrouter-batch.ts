@@ -23,14 +23,14 @@ export class BatchAdmissionResponseError extends Error {
   constructor(readonly remoteId:string){super("Batch acknowledgement schema changed; saved identity must be reconciled");}
 }
 export class OpenRouterRequestError extends Error {
-  constructor(readonly status:number,readonly reason:"region-unavailable"|"request-rejected"|"provider-unavailable") {super(`OpenRouter HTTP ${status}: ${reason}`);}
+  constructor(readonly status:number,readonly reason:"region-unavailable"|"request-rejected"|"provider-unavailable"|"rate-limited") {super(`OpenRouter HTTP ${status}: ${reason}`);}
 }
 export async function assertOpenRouterResponse(response:Response) {
   if(response.ok)return;
   const body=await response.json().catch(()=>null);
   // Raw provider bodies may echo task contents. Only retain classified codes.
   const region=response.status===403&&typeof body?.error?.message==="string"&&/not available in your region/i.test(body.error.message);
-  throw new OpenRouterRequestError(response.status,region?"region-unavailable":response.status>=500?"provider-unavailable":"request-rejected");
+  throw new OpenRouterRequestError(response.status,response.status===429?"rate-limited":region?"region-unavailable":response.status>=500?"provider-unavailable":"request-rejected");
 }
 export function batchPayload(model:string,provider:string,customId:string,body:Record<string,unknown>) {
   if(!model.endsWith(":batch")||!/^[-a-z0-9._/]+:batch$/i.test(model)||!/^[-a-z0-9._/]+$/i.test(provider))throw new Error("Explicit batch model/provider required");

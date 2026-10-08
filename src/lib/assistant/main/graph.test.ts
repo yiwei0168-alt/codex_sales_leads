@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { MemorySaver } from "@langchain/langgraph";
 import { buildMainAgentGraph } from "./graph";
+import { assertOpenRouterResponse, OpenRouterRequestError } from "@/providers/openrouter-batch";
 import { result, type ModelMessage, type ModelToolCall } from "./contracts";
 import { InstructionsChangedError } from "./repository";
 
@@ -76,6 +77,15 @@ describe("open main Agent graph", () => {
   it("delivers partial state on provider failure instead of disqualifying a company", async () => {
     const graph = buildMainAgentGraph({ boundary: async () => ({ control: null, instructions: [] }), model: async () => { throw new Error("provider"); }, tool: async () => result(null) });
     const out = await graph.invoke(initial()); expect(out.status).toBe("partial"); expect(out.messages).toHaveLength(1);
+  });
+  it("reports rate limiting without exposing provider text or executing tools", async () => {
+    const tool=vi.fn();
+    const model=vi.fn(async()=>{await assertOpenRouterResponse(new Response(JSON.stringify({error:{message:'private echoed contents'}}),{status:429}));throw new Error('unreachable');});
+    const graph=buildMainAgentGraph({boundary:async()=>({control:null,instructions:[]}),model,tool});
+    const out=await graph.invoke(initial());
+    expect(out.status).toBe('partial');expect(out.reply).toContain('HTTP 429');
+    expect(out.reply).not.toContain('private');expect(model).toHaveBeenCalledOnce();expect(tool).not.toHaveBeenCalled();
+    await expect(assertOpenRouterResponse(new Response('{}',{status:429}))).rejects.toEqual(new OpenRouterRequestError(429,'rate-limited'));
   });
   it("halts repeated unchanged calls and preserves already valid outputs", async () => {
     let calls = 0;

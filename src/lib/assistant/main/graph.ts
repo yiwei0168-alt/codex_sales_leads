@@ -51,6 +51,7 @@ export function buildMainAgentGraph(deps: MainGraphDependencies, checkpointer?: 
         return { messages: [...state.messages, response], steps: state.steps + 1, status: "completed" as RunStatus, reply: response.content ?? "" };
       } catch(error) {
         if(error instanceof ModelBatchPending)return {status:"queued" as RunStatus,reply:"主模型批次已保存，正在等待提供方返回结果；后台会继续查询。批处理完成窗口为 24 小时，可暂停或取消后续工作。"};
+        if(error instanceof OpenRouterRequestError&&error.status===429)return {steps:state.steps+1,status:"partial" as RunStatus,reply:"模型服务返回 HTTP 429：请求受到限流或配额限制。本次已停止立即重试，任务和已有结果已保存；请稍后恢复任务。"};
         return { steps: state.steps + 1, status: "partial" as RunStatus, reply: "主模型暂时不可用，已保存任务和已有工具结果。请恢复任务后继续。" };
       }
     })
@@ -118,6 +119,7 @@ async function durableModel(context: ExecutionContext, messages: ModelMessage[],
         discardedReasonCounts: { [reason]: 1 }, utilizationEfficiency: 0,
         optimizationOpportunity: "Retry at most once on the same authorized route; keep unknown billing separate",
       });
+      if(error instanceof OpenRouterRequestError&&error.status===429)throw error;
       if(error instanceof OpenRouterRequestError&&[400,401,402,403,404].includes(error.status))break;
     }
   }
