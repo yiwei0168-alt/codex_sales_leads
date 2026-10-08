@@ -98,7 +98,7 @@ async function parseMessage(message: FetchMessageObject, folder: ListResponse, u
   });
   const bodyText = (parsed.text ?? "").replace(/\u0000/g, "").trim().slice(0, MAX_BODY_CHARACTERS);
   const sender = addresses(parsed.from);
-  const recipients = [...addresses(parsed.to), ...addresses(parsed.cc), ...addresses(parsed.bcc)];
+  const recipients = [...addresses(parsed.to).map(item=>({...item,role:'To'})), ...addresses(parsed.cc).map(item=>({...item,role:'Cc'})), ...addresses(parsed.bcc).map(item=>({...item,role:'Bcc'}))];
   return {
     folderPath: folder.path,
     uidValidity,

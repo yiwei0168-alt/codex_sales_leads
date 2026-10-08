@@ -1,6 +1,7 @@
 import { query,tenantQuery,tenantTransaction } from "@/lib/rag/db";
 import { reviewMailboxMessageForLearning,syncAliMail } from "./service";
 import { mailboxSyncSchema } from "./sync-options";
+import {extractTimelineNote} from './timeline-local';
 
 export async function enqueueLearning(userId:string,ids:string[]) {
   return tenantTransaction(userId,async client=>{
@@ -47,7 +48,9 @@ export async function processMailboxWork(){
     where user_id=$1 and id=$2 and lease_token=$3 and status='running'`,params).catch(()=>undefined),20000);
   try{
     let result:unknown;
-    if(row.kind==='learn'){
+    if(row.kind==='timeline'){
+      result=await extractTimelineNote(job.user_id,row.target_id,String(row.payload.contentSha256));
+    }else if(row.kind==='learn'){
       const [m]=await tenantQuery<{content_sha256:string}>(job.user_id,"select content_sha256 from mailbox_message where user_id=$1 and id=$2",[job.user_id,row.target_id]);
       if(!m||m.content_sha256!==row.payload.contentSha256||row.payload.consent!==true)throw new Error("授权原文已变化或删除，请重新核对");
       result=await reviewMailboxMessageForLearning(job.user_id,row.target_id,'authorize');

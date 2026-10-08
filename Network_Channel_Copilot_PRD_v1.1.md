@@ -522,6 +522,8 @@ MA16 implementation and isolated validation: [acceptance evidence](docs/MA16_MAI
 
 后续用户确认整套方案实施：第一阶段展开层/删除窗口、第二阶段批量队列已完成代码与隔离验证；其他能力继续实施，见 [阶段证据](docs/MAILCRM_IMPLEMENTATION_2026-10-08.md)。
 
+阶段 3 已实现客户列表、公司级时间线、本机 qwen3:8b 结构化摘要及账号 Skill。私有邮件处理继续遵循原权限；公司与国家候选需要用户确认，备注只作用于该公司上下文。验证范围与真实邮箱待验收项见阶段证据，不将模型合成样本测试视为真实内容质量已通过。
+
 运行环境补充（2026-10-08 / MA19-02）：默认所有连接不依赖 TUN，使用既定直连或显式代理；只有确认必要时才考虑 TUN。保留原模型分流和 GitHub 本地代理规则。此约束已确认，全部外部连接的无 TUN 验收尚未完成。
 
 New product-chat main-Agent runs use synchronous OpenRouter `z-ai/glm-5.3` with the configured Fireworks provider. Existing Batch runs keep their pinned route and receipts. Reducing the tool-description round trip is under design discussion; inline selected schemas and a small pre-routing model are alternatives, not confirmed behavior. See [MA17 acceptance evidence](docs/MA17_GLM_SYNC_ACCEPTANCE_2026-09-22.md).

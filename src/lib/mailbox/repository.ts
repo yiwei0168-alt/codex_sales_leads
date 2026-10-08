@@ -624,12 +624,18 @@ export async function finishMailboxOutboundAudit(auditId: string, userId: string
 }
 
 export async function skipMailboxMessageLearning(userId: string, messageId: string): Promise<boolean> {
-  const rows = await tenantQuery<{ id: string }>(userId,
+  return tenantTransaction(userId,async client=>{
+  await client.query('select id from mailbox_message where user_id=$1 and id=$2 for update',[userId,messageId]);
+  const active=await client.query("select id from mailbox_work_job where user_id=$1 and target_id=$2 and kind='learn' and status in ('running','uncertain')",[userId,messageId]);
+  if(active.rowCount)throw new Error('邮件正在学习或结果待核实，不能标记为未发送的跳过');
+  const result = await client.query<{ id: string }>(
     `update mailbox_message set learning_status = 'skipped', learning_error = null, learned_at = now(), updated_at = now()
      where id = $1 and user_id = $2 and learning_status in ('pending', 'failed') returning id`,
     [messageId, userId],
   );
-  return Boolean(rows[0]);
+  if(result.rowCount)await client.query("update mailbox_work_job set status='cancelled',updated_at=now() where user_id=$1 and target_id=$2 and kind='learn' and status='queued'",[userId,messageId]);
+  return Boolean(result.rows[0]);
+  });
 }
 
 export async function blockMailboxMessageLearning(userId: string, messageId: string, reason: string): Promise<void> {

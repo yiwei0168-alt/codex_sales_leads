@@ -100,7 +100,7 @@ export function AgentRunCard({run, events = [], now, onControl, onUndo}: {run: R
   onControl: (id: string, action: string, instruction?: string) => Promise<void>;
   onUndo: (id: string, version: number) => Promise<void>}) {
   const [instruction, setInstruction] = useState("");
-  if (["completed", "cancelled"].includes(run.status) && !run.memories?.length) return null;
+  const [eventCount,setEventCount]=useState(16);
   return <section id={`agent-run-${run.id}`} aria-label="当前任务" className="agent-runs ai-run-inline"><article className="agent-run">
       <div className="agent-run-actions"><strong>{labels[run.status]}</strong>
         {["running", "queued"].includes(run.status) && <button type="button" onClick={() => void onControl(run.id, "pause")}>暂停</button>}
@@ -110,7 +110,7 @@ export function AgentRunCard({run, events = [], now, onControl, onUndo}: {run: R
       {run.batch && <p className="agent-batch-state" role="status">{run.batch.status === "pending" ? `GLM Batch ${run.batch.providerStatus === "in_progress" ? "执行中" : "排队或等待结果"}` : run.batch.status === "completed" ? "GLM Batch 结果已保存" : `GLM Batch ${run.batch.status}，请核对`}{` · 已经过 ${elapsed(run.batch.submittedAt, now)} · 查询 ${run.batch.pollCount} 次`}</p>}
       <AgentApprovals items={run.approvals ?? []} />
       {run.memories?.map(memory => <p key={memory.id} className="text-sm">已记住偏好：{memory.key} <button type="button" onClick={() => void onUndo(memory.id, memory.version)}>撤销</button></p>)}
-      {events.length > 0 && <details className="agent-run-timeline"><summary>查看执行详情</summary><ol>{events.slice(-16).map(event => <EventReceipt key={event.id} event={event}/>)}</ol></details>}
+      {events.length > 0 && <details className="agent-run-timeline"><summary>查看执行详情（{events.length} 条）</summary>{events.length>eventCount&&<button onClick={()=>setEventCount(v=>v+32)}>加载更早记录（剩余 {events.length-eventCount} 条）</button>}<ol>{events.slice(-eventCount).map(event => <EventReceipt key={event.id} event={event}/>)}</ol></details>}
       {["running", "queued", "paused", "partial", "failed"].includes(run.status) && <div className="agent-run-actions"><input aria-label="追加任务要求" value={instruction} onChange={event => setInstruction(event.target.value)} placeholder="追加要求，在下个安全边界生效" /><button type="button" disabled={!instruction.trim()} onClick={() => { void onControl(run.id, "instruct", instruction).then(() => setInstruction("")); }}>追加</button></div>}
     </article></section>;
 }

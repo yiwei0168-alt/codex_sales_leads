@@ -22,5 +22,10 @@ try{
  await client.query('savepoint denied');
  await assert.rejects(client.query("insert into mailbox_work_job(user_id,kind,target_id) values($1,'sync',$2)",[a,randomUUID()]),/row-level security/);
  await client.query('rollback to savepoint denied');
+ const customer=randomUUID();
+ await client.query("insert into mailbox_customer(id,user_id,identity_key,name) values($1,$2,'test:synthetic','Synthetic')",[customer,b]);
+ await client.query("select set_config('app.current_user_id',$1,true)",[a]);
+ assert.equal((await client.query('select id from mailbox_customer where id=$1',[customer])).rowCount,0);
+ assert.equal((await client.query("update mailbox_customer set notes='denied' where id=$1 returning id",[customer])).rowCount,0);
  console.log('PASS: owner isolation, write denial, active-job deduplication; synthetic transaction rolled back.');
 }finally{await client.query('rollback');client.release();await pool.end();}

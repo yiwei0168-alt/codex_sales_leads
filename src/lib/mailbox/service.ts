@@ -94,7 +94,7 @@ export async function reviewMailboxMessageForLearning(userId: string, messageId:
   const message = await getMailboxMessageForLearning(userId, messageId);
   if (!message) throw new Error("待处理邮件不存在或已完成处理");
   if (action === "skip") {
-    await skipMailboxMessageLearning(userId, messageId);
+    if(!await skipMailboxMessageLearning(userId, messageId))throw new Error('邮件状态已变化，请刷新后重试');
     await recordMailboxOutboundStart({
       userId, messageId, model: kimiMailboxModel(), decision: "skipped", status: "not-sent",
       originalCharCount: 0, disclosedCharCount: 0, redactionCounts: {},

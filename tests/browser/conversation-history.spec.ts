@@ -45,8 +45,14 @@ test("history menu shows trace and removes a finished conversation", async ({pag
   await page.keyboard.press("Escape");
   await expect(trace).toHaveCount(0);
   await more.click();
-  page.once("dialog",dialog => dialog.accept());
   await menu.getByRole("menuitem",{name:"删除对话"}).click();
+  const confirmation=page.getByRole('dialog',{name:'删除对话',exact:true});
+  await expect(confirmation).toContainText('德国渠道计划');
+  await expect(confirmation).toContainText('必要审计记录会保留');
+  await confirmation.getByRole('button',{name:'取消',exact:true}).click();
+  expect(deleted).toBe(false);
+  await more.click();await menu.getByRole('menuitem',{name:'删除对话'}).click();
+  await confirmation.getByRole('button',{name:'删除对话',exact:true}).click();
   await expect(page.getByText("还没有已保存的对话")).toBeVisible();
   expect(deleted).toBe(true);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1)).toBe(true);

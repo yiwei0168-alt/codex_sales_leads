@@ -4,6 +4,7 @@ type Skill = { id: string; name: string; scope: string; current_version: number;
 type Memory = { id: string; memory_key: string; content: string; kind: string; scope: string; current_version: number; mandatory: boolean; owned: boolean };
 type Schedule = { id: string; title: string; content: string; timezone: string; enabled: boolean; version: number; next_run_at: string; active_run_id: string | null };
 export function AgentLibrary() {
+  const [pane,setPane]=useState("skills");
   const [skills, setSkills] = useState<Skill[]>([]), [memories, setMemories] = useState<Memory[]>([]), [schedules, setSchedules] = useState<Schedule[]>([]);
   const [name, setName] = useState(""), [instructions, setInstructions] = useState("");
   const [sourceName, setSourceName] = useState(""), [sourceKind, setSourceKind] = useState<"url" | "github">("url"), [sourceUrl, setSourceUrl] = useState(""), [sourceRef, setSourceRef] = useState("main"), [sourceDirectory, setSourceDirectory] = useState("");
@@ -14,7 +15,7 @@ export function AgentLibrary() {
       const responses = await Promise.all(["skills", "memory", "schedules"].map(path => fetch(`/api/assistant/${path}`, { cache: "no-store" })));
       if (responses.some(r => !r.ok)) throw new Error("管理数据加载失败，请重试");
       const [s, m, t] = await Promise.all(responses.map(r => r.json()));
-      setSkills(s.skills); setMemories(m.memories); setSchedules(t.schedules);
+      setError("");setSkills(s.skills); setMemories(m.memories); setSchedules(t.schedules);
     } catch (e) { setError(e instanceof Error ? e.message : "加载失败"); }
   }
   async function save(path: string, method: string, body: unknown, success: string) {
@@ -33,7 +34,7 @@ export function AgentLibrary() {
     <div className="agent-library-body">
       <button type="button" disabled={busy} onClick={() => void load()}>刷新</button>
       {error && <p role="alert">{error}</p>}{notice && <p role="status">{notice}</p>}
-      <h3>Skill</h3>
+      <nav className="agent-library-tabs" aria-label="Agent management"><button aria-pressed={pane==="skills"} onClick={()=>setPane("skills")}>Skill</button><button aria-pressed={pane==="memory"} onClick={()=>setPane("memory")}>记忆</button><button aria-pressed={pane==="schedules"} onClick={()=>setPane("schedules")}>定时任务</button></nav><section hidden={pane!=="skills"}><h3>Skill</h3>
       <p>个人方法仅本账户可用。管理员导入的方法须在对话中确认发布后全局可用。</p>
       {skills.map(s => <article key={s.id}><strong>{s.name}</strong><small>{s.scope === "global" ? "全局" : "个人"} · v{s.current_version} · {s.enabled ? s.scope === "global" && !s.published ? "待发布" : "启用" : "停用"}</small>
         {s.owned && <button type="button" disabled={busy} onClick={() => void save("skills", "PATCH", { id: s.id, version: s.current_version, operation: s.enabled ? "disable" : "enable" }, "Skill 状态已更新；全局方法重新启用后仍需确认发布。")}>{s.enabled ? "停用" : "启用"}</button>}
@@ -60,12 +61,12 @@ export function AgentLibrary() {
           <label>仓库内 Skill 目录（留空表示根目录）<input maxLength={180} value={sourceDirectory} onChange={e => setSourceDirectory(e.target.value)} /></label></>}
         <button disabled={busy}>从公开来源导入</button>
       </form>
-      <h3>当前记忆与政策</h3>
+      </section><section hidden={pane!=="memory"}><h3>当前记忆与政策</h3>
       {memories.length === 0 && <p>尚无统一记忆；历史开发信记忆仍保留在原知识管理页面。</p>}
       {memories.map(m => <article key={m.id}><strong>{m.memory_key}</strong><small>{m.scope === "global" ? "全局" : "个人"} · {m.mandatory ? "强制政策" : m.kind} · v{m.current_version}</small><p>{m.content}</p>
         {m.owned && m.scope === "account" && <button type="button" disabled={busy} onClick={() => void save("memory", "PATCH", { id: m.id, version: m.current_version, action: "undo" }, "已撤销此版本，来源记录保留。")}>撤销此版本</button>}
       </article>)}
-      <h3>定时任务</h3><p>任务使用账户时区，默认 Asia/Shanghai。已有任务未结束时不重叠执行；邮件每次仍需确认最终内容。</p>
+      </section><section hidden={pane!=="schedules"}><h3>定时任务</h3><p>任务使用账户时区，默认 Asia/Shanghai。已有任务未结束时不重叠执行；邮件每次仍需确认最终内容。</p>
       {schedules.map(s => <article key={s.id}><strong>{s.title}</strong><small>{s.enabled ? `下次：${new Date(s.next_run_at).toLocaleString("zh-CN", { timeZone: s.timezone })} (${s.timezone})` : "已停用"}</small><p>{s.content}</p>
         <button type="button" disabled={busy} onClick={() => void save("schedules", "PATCH", { id: s.id, version: s.version, enabled: !s.enabled }, "定时任务已更新；已开始的任务可在对话中控制。")}>{s.enabled ? "停用" : "启用"}</button>
       </article>)}
@@ -75,6 +76,6 @@ export function AgentLibrary() {
         <label>间隔（分钟）<input required type="number" min={1} max={525600} value={minutes} onChange={e => setMinutes(Number(e.target.value))} /></label>
         <button disabled={busy}>创建周期任务</button>
       </form>
-    </div>
+    </section></div>
   </details>;
 }
