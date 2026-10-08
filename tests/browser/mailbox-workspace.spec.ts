@@ -17,6 +17,7 @@ test("mailbox uses a fixed, paginated work area and top account manager",async({
     if(url.pathname==="/")return route.fulfill({contentType:"text/html",body:'<!doctype html><meta charset="utf-8"><div id="root"></div>'});
     if(url.pathname==="/api/mailbox/connections")return route.fulfill({json:{connections:[{id:"22222222-2222-4222-8222-222222222222",email:"sales@example.com",displayName:"欧洲销售",accessMode:"read-only",imapHost:"imap.example.com",imapPort:993,smtpHost:null,smtpPort:465,status:"active"}]}});
     if(url.pathname==="/api/mailbox/status")return route.fulfill({json:{configured:true,kimiConfigured:true,messages:100,pendingCandidates:16,screening:{recommended:12,review:0,ignored:0,unscreened:0},latestRun:null}});
+    if(url.pathname==='/api/mailbox/jobs')return route.fulfill({json:{jobs:[],counts:[]}});
     if(url.pathname==="/api/mailbox/learning-queue"){const start=(Number(url.searchParams.get("page"))-1)*8;return route.fulfill({json:{messages:Array.from({length:8},(_,index)=>makeMessage(start+index+1)),total:16,pageSize:8}});}
     if(url.pathname==="/api/mailbox/candidates"){const start=(Number(url.searchParams.get("page"))-1)*8;return route.fulfill({json:{candidates:Array.from({length:8},(_,index)=>makeCandidate(start+index+1)),pageSize:8}});}
     return route.abort("blockedbyclient");
@@ -30,12 +31,21 @@ test("mailbox uses a fixed, paginated work area and top account manager",async({
   expect(await page.evaluate(()=>document.documentElement.scrollHeight<=innerHeight+2)).toBe(true);
   await page.getByRole("button",{name:"管理 / 连接邮箱"}).click();
   await expect(page.getByRole("dialog",{name:"管理 / 连接邮箱"})).toBeVisible();
+  expect(await page.getByRole('dialog').evaluate(node=>getComputedStyle(node).backgroundColor)).not.toBe('rgba(0, 0, 0, 0)');
+  await page.setViewportSize({width:viewport.width,height:480});
+  const scroll=page.locator('.workspace-dialog-body');
+  await scroll.hover();await page.mouse.wheel(0,800);
+  await expect.poll(()=>scroll.evaluate(node=>node.scrollTop)).toBeGreaterThan(0);
+  await page.setViewportSize(viewport);
   await expect(page.getByText("欧洲销售").first()).toBeVisible();
   await page.getByLabel("邮箱类型").selectOption("custom");
   await expect(page.getByLabel("IMAP 服务器")).toHaveValue("");
   await page.getByRole("dialog").getByRole("button",{name:"关闭窗口"}).click();
+  await page.getByLabel('选择当前页').check();
+  await expect(page.getByRole('button',{name:'授权所选 8'})).toBeEnabled();
   await page.getByRole("button",{name:"下一页"}).click();
   await expect(page.getByText("客户邮件 9")).toBeVisible();
+  await expect(page.getByRole('button',{name:'授权所选 8'})).toBeEnabled();
   await page.getByRole("tab",{name:/待审核内容/}).click();
   await expect(page.getByText("客户信号 1")).toBeVisible();
   await page.locator(".mailbox-review-list .mailbox-review-card").first().locator('input[type="checkbox"]').check();

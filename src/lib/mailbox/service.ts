@@ -112,12 +112,12 @@ export async function reviewMailboxMessageForLearning(userId: string, messageId:
     });
     return { status: "blocked" as const, candidates: 0, reason };
   }
+  await markMailboxMessageAnalyzing(userId, messageId);
   const auditId = await recordMailboxOutboundStart({
     userId, messageId, model: kimiMailboxModel(), decision: "authorized", status: "started",
     inputSha256: disclosure.inputSha256, originalCharCount: disclosure.originalCharCount,
     disclosedCharCount: disclosure.disclosedCharCount, redactionCounts: disclosure.redactionCounts,
   });
-  await markMailboxMessageAnalyzing(userId, messageId);
   try {
     const learning = await withProductSpend(userId,"mailbox-learning",()=>learnMailboxMessageWithKimi(disclosure.message),auditId);
     const candidates = await persistMailboxLearning({ userId, messageId, message: disclosure.message, learning });

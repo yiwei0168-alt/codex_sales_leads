@@ -1,6 +1,7 @@
 import { requireApiSession } from "@/lib/auth/session";
 import { screenStoredMailboxMessages } from "@/lib/mailbox/repository";
 import { reviewMailboxMessageForLearning } from "@/lib/mailbox/service";
+import { enqueueLearning } from "@/lib/mailbox/work-queue";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -19,16 +20,19 @@ export async function POST(request: Request) {
     return Response.json({ error: "action 无效" }, { status: 400 });
   }
   if (!Array.isArray(body.messageIds)) return Response.json({ error: "messageIds 必须是数组" }, { status: 400 });
-  const limit = body.action === "authorize" ? 5 : 50;
   const messageIds = [...new Set(body.messageIds)].filter((id): id is string => typeof id === "string" && /^[0-9a-f-]{36}$/i.test(id));
-  if (messageIds.length === 0 || messageIds.length > limit || messageIds.length !== body.messageIds.length) {
-    return Response.json({ error: `一次最多处理 ${limit} 封有效邮件` }, { status: 400 });
+  if (messageIds.length === 0 || messageIds.length !== body.messageIds.length) {
+    return Response.json({ error: "请选择有效且不重复的邮件" }, { status: 400 });
   }
   if (body.action === "authorize" && body.consent !== true) {
     return Response.json({ error: "必须明确同意这些邮件脱敏后发送给 Kimi" }, { status: 400 });
   }
   if (body.action === "authorize" && !process.env.KIMI_API_KEY?.trim()) {
     return Response.json({ error: "KIMI_API_KEY 尚未配置" }, { status: 503 });
+  }
+  if(body.action==='authorize'){
+    try{return Response.json(await enqueueLearning(session.userId,messageIds),{status:202});}
+    catch(error){return Response.json({error:error instanceof Error?error.message:'排队失败'},{status:409});}
   }
 
   const results: Array<{ id: string; status: string; candidates: number; error?: string }> = [];

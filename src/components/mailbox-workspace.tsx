@@ -29,6 +29,8 @@ function OriginalMail({messageId,onChanged}:{messageId:string;onChanged:()=>void
 
 export function MailboxWorkspace(){
   const [connections,setConnections]=useState<Connection[]>([]);
+  const [jobs,setJobs]=useState<Array<{id:string;kind:string;status:string;error?:string}>>([]);
+  const [jobCounts,setJobCounts]=useState<Array<{status:string;count:number}>>([]);
   const [status,setStatus]=useState<Status|null>(null);
   const [queue,setQueue]=useState<Message[]>([]);
   const [queueTotal,setQueueTotal]=useState(0);
@@ -49,17 +51,20 @@ export function MailboxWorkspace(){
   const [busy,setBusy]=useState("");const [message,setMessage]=useState("");const [noticeError,setNoticeError]=useState(false);
 
   const refresh=useCallback(async()=>{
-    const [c,s,q,r]=await Promise.all([
+    const [c,s,q,r,j]=await Promise.all([
       fetch("/api/mailbox/connections",{cache:"no-store"}),fetch("/api/mailbox/status",{cache:"no-store"}),
       fetch(`/api/mailbox/learning-queue?page=${queuePage}`,{cache:"no-store"}),fetch(`/api/mailbox/candidates?page=${reviewPage}`,{cache:"no-store"}),
+      fetch('/api/mailbox/jobs',{cache:'no-store'}),
     ]);
+    if(![c,s,q,r,j].every(response=>response.ok)){setNoticeError(true);setMessage('部分邮箱数据读取失败，请刷新重试');}
+    if(j.ok){const data=await j.json();setJobs(data.jobs);setJobCounts(data.counts);}
     if(c.ok)setConnections((await c.json()).connections);
     if(s.ok)setStatus(await s.json());
     if(q.ok){const body=await q.json();setQueue(body.messages);setQueueTotal(body.total);if(queuePage>1&&body.total<=(queuePage-1)*PAGE_SIZE)setQueuePage(queuePage-1);}
     if(r.ok){const body=await r.json();setCandidates(body.candidates);if(reviewPage>1&&body.candidates.length===0)setReviewPage(reviewPage-1);}
   },[queuePage,reviewPage]);
   useEffect(()=>{const timer=window.setTimeout(()=>void refresh(),0);return()=>window.clearTimeout(timer);},[refresh]);
-  useEffect(()=>{if(status?.latestRun?.status!=="running")return;const timer=window.setInterval(()=>void refresh(),1500);return()=>window.clearInterval(timer);},[status?.latestRun?.status,refresh]);
+  useEffect(()=>{const timer=window.setInterval(()=>void refresh().catch(()=>{setNoticeError(true);setMessage('连接中断，正在重试读取进度');}),5000);return()=>window.clearInterval(timer);},[refresh]);
 
   async function request(url:string,method:"POST"|"PATCH"|"DELETE",body:unknown){const response=await fetch(url,{method,headers:{"content-type":"application/json"},body:JSON.stringify(body)});const result=await response.json();if(!response.ok)throw new Error(result.error??"操作失败");return result;}
   async function perform(label:string,operation:()=>Promise<string>){setBusy(label);setMessage("");setNoticeError(false);try{setMessage(await operation());await refresh();}catch(error){setNoticeError(true);setMessage(error instanceof Error?error.message:"操作失败");}finally{setBusy("");}}
@@ -67,15 +72,14 @@ export function MailboxWorkspace(){
     await request("/api/mailbox/connections","POST",{email,displayName:displayName.trim()||email,securityPassword,accessMode,imapHost,imapPort,smtpHost:provider==="ali"||accessMode==="send-enabled"?smtpHost:undefined,smtpPort,smtpPassword:smtpPassword||undefined});
     setSecurityPassword("");setSmtpPassword("");return `“${displayName||email}”连接成功；${accessMode==="send-enabled"?"SMTP 已验证，可用于已确认的发信":"保持只读"}。`;
   });}
-  async function sync(id:string){await perform("sync",async()=>{const result=await request("/api/mailbox/sync","POST",{connectionId:id,folderScope,from:from||undefined,through:through||undefined});return `本地同步完成：新增 ${result.imported??0} 封，待授权 ${result.awaitingReview??0} 封。`;});}
+  async function sync(id:string){await perform("sync",async()=>{await request("/api/mailbox/sync","POST",{connectionId:id,folderScope,from:from||undefined,through:through||undefined});return '同步已排队，后台将分批读取所选日期范围。关闭页面不影响同步。';});}
   async function saveSettings(connection:Connection,mode:AccessMode,name:string){await perform(`settings:${connection.id}`,async()=>{await request(`/api/mailbox/connections/${connection.id}`,"PATCH",{action:"settings",displayName:name,accessMode:mode});return "邮箱名称和权限已保存。";});}
   async function disconnect(connection:Connection){if(!window.confirm(`断开 ${connection.displayName}？本地已导入数据保留，凭据将清除。`))return;await perform(`disconnect:${connection.id}`,async()=>{await request(`/api/mailbox/connections/${connection.id}`,"PATCH",{action:"disconnect"});return "连接已断开，数据保留。";});}
   async function remove(connection:Connection){if(!window.confirm(`永久删除 ${connection.displayName} 的本地导入邮件和待审候选？此操作不可撤销，远程邮箱不受影响。`))return;await perform(`remove:${connection.id}`,async()=>{await request(`/api/mailbox/connections/${connection.id}`,"DELETE",{confirm:"DELETE_MAILBOX_DATA"});return "本地邮箱数据已删除。";});}
   async function decideMessages(ids:string[],action:"authorize"|"skip"){
     if(!ids.length)return;
-    if(action==="authorize"&&ids.length>5){setMessage("每批最多授权 5 封，请减少选择。");return;}
     if(action==="authorize"&&!window.confirm(`将所选 ${ids.length} 封邮件分别脱敏后发送给 Kimi？每封都有独立外发审计。`))return;
-    await perform(`messages:${action}`,async()=>{const result=await request("/api/mailbox/screening","POST",{action,messageIds:ids,consent:action==="authorize"});setSelectedMessages([]);return `处理 ${result.processed??0} 封，失败 ${result.failed??0} 封。`;});
+    await perform(`messages:${action}`,async()=>{const result=await request("/api/mailbox/screening","POST",{action,messageIds:ids,consent:action==="authorize"});const failedIds=(result.results??[]).filter((item:{status:string})=>item.status==='failed').map((item:{id:string})=>item.id);setSelectedMessages(failedIds);return action==='authorize'?`已排队 ${result.queued} 封，后台逐封处理；每封保留独立授权记录。`:`处理 ${result.processed??0} 封，失败 ${result.failed??0} 封，失败项保留选择。`;});
   }
   async function decideCandidates(items:Candidate[],action:"approved"|"rejected"){
     if(!items.length)return;
@@ -83,7 +87,7 @@ export function MailboxWorkspace(){
     await perform(`candidates:${action}`,async()=>{const result=await request("/api/mailbox/candidates/batch","POST",{items:items.map(item=>({id:item.id,contentHash:item.contentHash})),status:action,confirmed:action==="approved"});setSelectedCandidates([]);return `审核成功 ${result.processed??0} 条，失败 ${result.failed??0} 条。`;});
   }
   const selectedCandidateItems=candidates.filter(item=>selectedCandidates.includes(item.id));
-  function changeQueuePage(page:number){setSelectedMessages([]);setQueuePage(page);}
+  function changeQueuePage(page:number){setQueuePage(page);}
   function changeReviewPage(page:number){setSelectedCandidates([]);setReviewPage(page);}
 
   return <div className="mailbox-workspace">
@@ -94,7 +98,7 @@ export function MailboxWorkspace(){
       {managerOpen&&<WorkspaceDialog title="管理 / 连接邮箱" drawer onClose={()=>setManagerOpen(false)}><div className="mailbox-manager">
         {message&&<p role={noticeError?"alert":"status"} className={noticeError?"workspace-error":""}>{message}</p>}
 
-        <div className="mailbox-sync-options"><label>同步范围<select value={folderScope} onChange={event=>setFolderScope(event.target.value)}><option value="both">收件箱及已发送</option><option value="inbox">仅收件箱</option><option value="sent">仅已发送</option></select></label><label>开始日期<input type="date" value={from} onChange={event=>setFrom(event.target.value)}/></label><label>结束日期<input type="date" min={from} value={through} onChange={event=>setThrough(event.target.value)}/></label><small>留空默认近 180 天，每次最多 100 封。</small></div>
+        <div className="mailbox-sync-options"><label>同步范围<select value={folderScope} onChange={event=>setFolderScope(event.target.value)}><option value="both">收件箱及已发送</option><option value="inbox">仅收件箱</option><option value="sent">仅已发送</option></select></label><label>开始日期<input type="date" value={from} onChange={event=>setFrom(event.target.value)}/></label><label>结束日期<input type="date" min={from} value={through} onChange={event=>setThrough(event.target.value)}/></label><small>留空默认近 180 天，后台分批同步全部范围。</small></div>
         <div className="mailbox-manager-list"><strong>已添加邮箱</strong>{connections.map(item=><ConnectionSettings key={`${item.id}:${item.displayName}:${item.accessMode}`} connection={item} busy={Boolean(busy)} onSave={saveSettings} onSync={sync} onDisconnect={disconnect} onRemove={remove}/>)}{!connections.length&&<p className="subtle">尚未连接邮箱。</p>}</div>
         <div className="mailbox-manager-head"><strong>连接邮箱</strong><small>支持标准 IMAP/SMTP 和客户端专用密码；OAuth 邮箱暂不支持。</small></div>
         {!status?.configured&&<p className="login-config-error">服务端未配置 MAILBOX_CREDENTIAL_KEY。</p>}
@@ -114,11 +118,12 @@ export function MailboxWorkspace(){
     </header>
     {message&&<div className={`mailbox-notice ${noticeError?"workspace-error":""}`} role={noticeError?"alert":"status"}><span>{message}</span><button aria-label="关闭提示" onClick={()=>setMessage("")}>×</button></div>}
     <section className="mailbox-main panel">
+      {jobCounts.length>0&&<details className="mailbox-job-progress"><summary>后台任务：{jobCounts.map(item=>`${({queued:'排队',running:'处理中',completed:'完成',failed:'失败',uncertain:'待核实',cancelled:'已取消'} as Record<string,string>)[item.status]??item.status} ${item.count}`).join(' / ')}</summary><p>处理中邮件不会因刷新页面重复外发。结果未明时先核对原收据，不自动重试。</p><button disabled={Boolean(busy)} onClick={()=>void perform('cancel',async()=>{const result=await request('/api/mailbox/jobs','POST',{action:'cancel-queued'});return `已取消 ${result.cancelled} 项排队任务，已开始的任务继续完成。`;})}>取消尚未开始的任务</button>{jobs.filter(item=>item.error).map(item=><p role="status" key={item.id}>{item.kind==='learn'?'学习':'同步'}：{item.error}</p>)}</details>}
       <div className="mailbox-summary"><span><b>{status?.messages??0}</b> 已保存邮件</span><span><b>{queueTotal}</b> 待学习</span><span><b>{status?.pendingCandidates??0}</b> 待审核内容</span>{status?.latestRun&&<span className="mailbox-run-state" title={status.latestRun.error_message??undefined}>最近同步：{status.latestRun.status==="running"?`进行中 ${status.latestRun.processed_count}/${status.latestRun.discovered_count}`:status.latestRun.status==="failed"?"失败 · 查看邮箱管理后重试":`已完成 · 新增 ${status.latestRun.imported_count} 封`}</span>}</div>
       <div className="mailbox-tabs" role="tablist" aria-label="邮箱工作区"><button role="tab" aria-selected={tab==="learning"} onClick={()=>setTab("learning")}>私有学习候选 <em>{queueTotal}</em></button><button role="tab" aria-selected={tab==="review"} onClick={()=>setTab("review")}>待审核内容 <em>{status?.pendingCandidates??0}</em></button></div>
       {tab==="learning"?<div className="mailbox-tab-content" role="tabpanel">
-        <div className="mailbox-actionbar"><div><strong>待学习邮件</strong><small>先本地筛选，再逐封或最多 5 封明确授权脱敏外发。</small></div><div className="mailbox-actions"><button className="secondary-button" disabled={Boolean(busy)||!status?.screening.unscreened} onClick={()=>void perform("rescreen",async()=>{await request("/api/mailbox/screening","POST",{action:"rescreen"});return "本地筛选已完成。";})}>本地重新筛选</button><button className="secondary-button" disabled={Boolean(busy)||!selectedMessages.length} onClick={()=>void decideMessages(selectedMessages,"skip")}>跳过所选</button><button className="primary-button" disabled={Boolean(busy)||!selectedMessages.length||selectedMessages.length>5||!status?.kimiConfigured} onClick={()=>void decideMessages(selectedMessages,"authorize")}>授权所选 {selectedMessages.length}/5</button></div></div>
-        <div className="mailbox-selectbar"><label><input type="checkbox" checked={queue.length>0&&queue.every(item=>selectedMessages.includes(item.id))} onChange={event=>setSelectedMessages(event.target.checked?queue.map(item=>item.id):[])}/> 选择当前页</label><span>仅对勾选邮件操作；授权批次不能超过 5 封。</span></div>
+        <div className="mailbox-actionbar"><div><strong>待学习邮件</strong><small>先本地筛选，选择后明确授权，后台逐封处理。</small></div><div className="mailbox-actions"><button className="secondary-button" disabled={Boolean(busy)||!status?.screening.unscreened} onClick={()=>void perform("rescreen",async()=>{await request("/api/mailbox/screening","POST",{action:"rescreen"});return "本地筛选已完成。";})}>本地重新筛选</button><button className="secondary-button" disabled={Boolean(busy)||!selectedMessages.length} onClick={()=>void decideMessages(selectedMessages,"skip")}>跳过所选</button><button className="primary-button" disabled={Boolean(busy)||!selectedMessages.length||!status?.kimiConfigured} onClick={()=>void decideMessages(selectedMessages,"authorize")}>授权所选 {selectedMessages.length}</button></div></div>
+        <div className="mailbox-selectbar"><label><input type="checkbox" checked={queue.length>0&&queue.every(item=>selectedMessages.includes(item.id))} onChange={event=>setSelectedMessages(event.target.checked?[...new Set([...selectedMessages,...queue.map(item=>item.id)])]:selectedMessages.filter(id=>!queue.some(item=>item.id===id)))}/> 选择当前页</label><span>已选 {selectedMessages.length} 封，支持跨页选择，不限批次数量。</span></div>
         <div className="mailbox-scroll-list">{queue.map(item=><article className="mailbox-row" key={item.id}><label className="mailbox-row-check"><input type="checkbox" checked={selectedMessages.includes(item.id)} onChange={event=>setSelectedMessages(ids=>event.target.checked?[...ids,item.id]:ids.filter(id=>id!==item.id))}/><span className={`mail-screening-state ${item.screening_bucket}`}>{item.screening_bucket==="recommended"?"推荐":item.screening_bucket==="review"?"待确认":"低优先"} {item.screening_score}</span></label><div className="mailbox-row-main"><strong>{item.subject||"无主题邮件"}</strong><p>{item.excerpt||"无正文预览"}</p><small>{item.direction==="inbound"?"收件":"已发送"} · {item.learning_status==="failed"?"上次学习失败":"待授权"}{item.learning_error&&` · ${item.learning_error}`}</small><OriginalMail messageId={item.id} onChanged={()=>void refresh()}/></div><div className="mailbox-row-actions"><button className="secondary-button" disabled={Boolean(busy)} onClick={()=>void decideMessages([item.id],"skip")}>跳过</button><button className="primary-button" disabled={Boolean(busy)||!status?.kimiConfigured} onClick={()=>void decideMessages([item.id],"authorize")}>授权学习</button></div></article>)}{!queue.length&&<div className="mailbox-empty">当前没有待学习邮件。连接邮箱并同步后，新邮件会出现在这里。</div>}</div>
         <Pager page={queuePage} total={queueTotal} onPage={changeQueuePage}/>
       </div>:<div className="mailbox-tab-content" role="tabpanel">

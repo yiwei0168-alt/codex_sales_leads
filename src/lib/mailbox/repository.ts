@@ -252,11 +252,12 @@ export async function persistMailboxImport(input: {
 }
 
 export async function markMailboxMessageAnalyzing(userId: string, messageId: string): Promise<void> {
-  await tenantQuery(userId,
+  const claimed=await tenantQuery(userId,
     `update mailbox_message set learning_status = 'analyzing', learning_error = null, updated_at = now()
-     where id = $1 and user_id = $2`,
+     where id = $1 and user_id = $2 and learning_status in ('pending','failed') returning id`,
     [messageId, userId],
   );
+  if(!claimed.length)throw new Error("邮件已被其他任务领取，请刷新状态");
 }
 
 export async function persistMailboxLearning(input: {

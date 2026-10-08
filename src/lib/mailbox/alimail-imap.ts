@@ -147,6 +147,7 @@ export async function readAliMailMessages(input: {
     await input.onProgress?.({ phase: "connecting", folders: 0, discovered: 0, processed: 0 });
     await client.connect();
     const folders = selectedFolders(await client.list()).filter(folder=>!input.folderScope||input.folderScope==="both"||(input.folderScope==="sent"?isSentFolder(folder):folder.path.toUpperCase()==="INBOX"));
+    if(input.folderScope==='sent'&&!folders.length)throw new Error('服务器未找到已发送文件夹，请检查客户端是否将发件保存到 IMAP 服务器');
     await input.onProgress?.({ phase: "discovering", folders: folders.length, discovered: 0, processed: 0 });
     for (const folder of folders) {
       if (messages.length >= input.maxMessages) break;

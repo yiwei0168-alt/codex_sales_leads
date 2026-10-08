@@ -520,6 +520,8 @@ MA16 implementation and isolated validation: [acceptance evidence](docs/MA16_MAI
 
 2026-10-08 / MAILCRM-01～04：新增删除对话确认窗口优化、参考 Outlook 的近期收发邮件同步、公司级沟通时间线 Skill，以及按国家组织的客户列表。用户可确认、备注、删除公司并选择“已合作客户/询盘客户/在谈客户”；备注供 Agent 理解。需求已确认，具体设计与开源复用选型待确认，尚未实施验收。见 [完整提案与项目来源](docs/MAILBOX_CUSTOMER_TIMELINE_PROPOSAL_2026-10-08.md)。
 
+后续用户确认整套方案实施：第一阶段展开层/删除窗口、第二阶段批量队列已完成代码与隔离验证；其他能力继续实施，见 [阶段证据](docs/MAILCRM_IMPLEMENTATION_2026-10-08.md)。
+
 运行环境补充（2026-10-08 / MA19-02）：默认所有连接不依赖 TUN，使用既定直连或显式代理；只有确认必要时才考虑 TUN。保留原模型分流和 GitHub 本地代理规则。此约束已确认，全部外部连接的无 TUN 验收尚未完成。
 
 New product-chat main-Agent runs use synchronous OpenRouter `z-ai/glm-5.3` with the configured Fireworks provider. Existing Batch runs keep their pinned route and receipts. Reducing the tool-description round trip is under design discussion; inline selected schemas and a small pre-routing model are alternatives, not confirmed behavior. See [MA17 acceptance evidence](docs/MA17_GLM_SYNC_ACCEPTANCE_2026-09-22.md).
