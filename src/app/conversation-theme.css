@@ -194,3 +194,32 @@
 .conversation-theme .rag-submit-row>span{color:var(--muted);font-size:14px}.conversation-theme .rag-submit-row .primary-button{white-space:nowrap;flex-shrink:0}.personal-memory-entry{padding:20px}.personal-memory-entry>summary{cursor:pointer}
 
 .conversation-theme .data-table td{font-size:16px;line-height:1.6}.conversation-theme .data-table th{font-size:14px}.conversation-theme label{font-size:14px}
+
+/* MAILUX-02: reserve fixed workspace height for reading, not repeated headings. */
+.conversation-theme .main-shell:has(.mailbox-workspace),.conversation-theme .main-shell:has(.knowledge-materials-layout){display:flex;flex-direction:column}
+.conversation-theme .main-shell:has(.mailbox-workspace)>.topbar,.conversation-theme .main-shell:has(.knowledge-materials-layout)>.topbar{height:44px;min-height:44px;flex:none;padding:4px 16px}
+.conversation-theme .workspace-content:has(.mailbox-workspace),.conversation-theme .workspace-content:has(.knowledge-materials-layout){flex:1;height:auto;padding-top:12px}
+.conversation-theme .workspace-content:has(.mailbox-workspace)>.business-toolbar{flex:none;margin-bottom:8px}
+.conversation-theme .workspace-content:has(.mailbox-workspace)>.workspace-heading,
+.conversation-theme .workspace-content:has(.knowledge-materials-layout)>.workspace-heading{margin-bottom:10px}
+.conversation-theme .mailbox-workspace{gap:8px}
+.conversation-theme .mailbox-topbar{padding:6px 12px;gap:12px;flex-wrap:nowrap;min-height:44px}
+.mailbox-connection-label{flex:1;min-width:0;font-size:13px;color:var(--muted)}
+.conversation-theme .mailbox-topbar>button{flex:none;margin:0;min-height:36px;padding:6px 10px}
+.conversation-theme .mailbox-tabs{padding:0 8px;gap:0}
+.conversation-theme .mailbox-tabs button{min-height:40px;padding:8px 12px;font-size:14px}
+.conversation-theme .mail-reader>aside>.mailbox-actionbar{flex-direction:row;align-items:center;padding:6px 12px;font-size:13px}
+.mail-reader-back{display:none}
+.conversation-theme .customer-timeline header h3{margin:0 0 4px}
+.conversation-theme .customer-timeline header p{margin:6px 0}
+.customer-context{margin:10px 0;font-size:13px}.customer-context summary{cursor:pointer;color:var(--primary);padding:4px 0}
+@media(max-width:700px){
+ .conversation-theme .mailbox-tabs button{font-size:13px;padding:8px 10px}
+ .conversation-theme .mail-reader,.conversation-theme .customer-columns{grid-template-rows:minmax(0,1fr)}
+ .mail-reader:not(.has-selection)>.mail-reader-body,.customer-columns:not(.has-selection)>.customer-timeline{display:none}
+ .mail-reader.has-selection>aside,.customer-columns.has-selection>aside{display:none}
+ .mail-reader-back{display:block;min-height:40px;margin:0 0 10px;padding:6px 10px;border:1px solid var(--line);border-radius:6px}
+ .customer-workspace:has(.customer-columns.has-selection)>.mailbox-actionbar{display:none}
+ .conversation-theme .customer-timeline .mailbox-actions{display:flex;width:auto;gap:6px}
+ .conversation-theme .mailbox-topbar{gap:6px}
+}

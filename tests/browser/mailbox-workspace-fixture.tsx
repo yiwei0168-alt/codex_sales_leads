@@ -1,4 +1,4 @@
 import { createRoot } from "react-dom/client";
 import { MailboxWorkspace } from "../../src/components/mailbox-workspace";
 
-createRoot(document.getElementById("root")!).render(<div className="conversation-theme"><div className="app-shell sidebar-collapsed"><main className="main-shell"><div className="workspace-content"><section className="workspace-heading"><h1>客户开发 · 邮箱</h1></section><MailboxWorkspace/></div></main></div></div>);
+createRoot(document.getElementById("root")!).render(<div className="conversation-theme"><div className="app-shell sidebar-collapsed"><main className="main-shell"><header className="topbar"><button className="mobile-nav-trigger" aria-label="打开导航菜单"><span/><span/><span/></button><button className="sidebar-expand" aria-label="展开侧栏">☰</button><div className="breadcrumbs"><button>返回对话</button><strong> · 客户开发 / 邮箱</strong></div><div className="top-actions"><button aria-label="刷新当前页面">刷新</button></div></header><div className="workspace-content"><div className="business-toolbar"><nav className="page-tabs"><button>机会</button><button>开发信</button><button aria-current="page">邮箱</button></nav></div><MailboxWorkspace/></div></main></div></div>);

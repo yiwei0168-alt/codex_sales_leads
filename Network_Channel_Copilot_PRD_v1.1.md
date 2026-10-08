@@ -527,3 +527,6 @@ MA16 implementation and isolated validation: [acceptance evidence](docs/MA16_MAI
 运行环境补充（2026-10-08 / MA19-02）：默认所有连接不依赖 TUN，使用既定直连或显式代理；只有确认必要时才考虑 TUN。保留原模型分流和 GitHub 本地代理规则。此约束已确认，全部外部连接的无 TUN 验收尚未完成。
 
 New product-chat main-Agent runs use synchronous OpenRouter `z-ai/glm-5.3` with the configured Fireworks provider. Existing Batch runs keep their pinned route and receipts. Reducing the tool-description round trip is under design discussion; inline selected schemas and a small pre-routing model are alternatives, not confirmed behavior. See [MA17 acceptance evidence](docs/MA17_GLM_SYNC_ACCEPTANCE_2026-09-22.md).
+# MAILUX-02 补充：阅读空间优先（2026-10-08）
+
+邮箱顶部避免重复标题和统计层；统计/后台任务通过管理窗口查看，异常摘要保留。手机阅读邮件或公司时间线时正文独占内容区，可返回分页列表。知识资料按全局导航后的剩余高度布局。已实现及验证边界见 `docs/READING_SPACE_AUDIT_2026-10-08.md`；其他导航重组建议尚未实施。

@@ -6,7 +6,7 @@ let script:string,css:string;
 test.beforeAll(async()=>{
   const bundle=await build({entryPoints:["tests/browser/knowledge-materials-fixture.tsx"],bundle:true,write:false,platform:"browser",format:"iife",jsx:"automatic",define:{"process.env.NODE_ENV":'"production"',"process.env":"{}"}});
   script=bundle.outputFiles[0].text;
-  css=(await Promise.all(["src/app/globals.css","src/app/conversation-theme.css"].map(path=>readFile(path,"utf8")))).join("\n");
+  css=(await Promise.all(["src/app/globals.css","src/app/ipados.css","src/app/conversation-theme.css","src/app/intelligence-theme.css"].map(path=>readFile(path,"utf8")))).join("\n");
 });
 
 test("materials remain in a fixed workspace with pages and aligned navigation",async({page},testInfo)=>{

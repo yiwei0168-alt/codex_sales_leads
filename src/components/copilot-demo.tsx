@@ -379,17 +379,17 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
         <header className="topbar">
           <button className="mobile-nav-trigger" aria-label="打开导航菜单" aria-controls="primary-navigation" aria-expanded={mobileNavOpen} onClick={() => setMobileNavOpen(true)}><span/><span/><span/></button>
           {collapsed && <button className="sidebar-expand" aria-label="展开侧栏" onClick={()=>setCollapsed(false)}>☰</button>}
-          <div className="breadcrumbs">{view !== "home" ? <button onClick={()=>setView("home")}>返回对话</button> : <strong>销售工作台</strong>}</div>
-          <div className="top-actions">{view !== "home" && <button onClick={()=>{setRefreshVersion(value=>value+1);router.refresh();}}>刷新当前页面</button>}</div>
+          <div className="breadcrumbs">{view !== "home" ? <><button onClick={()=>setView("home")}>返回对话</button>{view==="mailbox"&&<strong> · 客户开发 / 邮箱</strong>}</> : <strong>销售工作台</strong>}</div>
+          <div className="top-actions">{view !== "home" && <button onClick={()=>{setRefreshVersion(value=>value+1);router.refresh();}} aria-label="刷新当前页面">{view==="mailbox"?"刷新":"刷新当前页面"}</button>}</div>
         </header>
 
         <div className="workspace-content">
           {navigationError&&<p role="alert">{navigationError}<button onClick={()=>void returnToConversation()}>重试返回对话</button></p>}
           {failedEdit && <div role="alert">修改尚未保存，原值已保留。<button onClick={() => void updateCompany(failedEdit.id, failedEdit.patch)}>重试保存</button></div>}
           {saveState !== "idle" && <p role={saveState === "error" ? "alert" : "status"} className="save-status">{saveState === "saving" ? "正在保存…" : saveState === "saved" ? "已保存" : saveState === "error" ? "数据读取或保存失败，请重试" : "公司已被更新，请检查刷新后的状态"}<button onClick={()=>setRefreshVersion(value=>value+1)}>重试读取</button></p>}
-          {view !== "home" && <section className="workspace-heading"><h1>{title}</h1>{isMarket && view === "overview" && <button className="secondary-button" onClick={()=>{setView("results");showLiveResults();}}>查看已保存线索</button>}</section>}
+          {view !== "home" && view !== "mailbox" && <section className="workspace-heading"><h1>{title}</h1>{isMarket && view === "overview" && <button className="secondary-button" onClick={()=>{setView("results");showLiveResults();}}>查看已保存线索</button>}</section>}
           {tabs.length > 0 && <div className="business-toolbar"><nav className="page-tabs" aria-label={`${title}页签`}>{tabs.map(tab=><button key={tab.id} aria-current={view===tab.id?"page":undefined} onClick={()=>setView(tab.id)}>{tab.label}</button>)}</nav>
-            <select className="country-select" aria-label="选择国家" value={country} onChange={event=>{countryRef.current=event.target.value;router.push(viewHref(view,event.target.value,selectedIdRef.current));}}><option value="all">全部国家</option>{countries.sort().map(code=><option key={code} value={code}>{marketLabel(code)}</option>)}</select>
+            {view!=="mailbox"&&<select className="country-select" aria-label="选择国家" value={country} onChange={event=>{countryRef.current=event.target.value;router.push(viewHref(view,event.target.value,selectedIdRef.current));}}><option value="all">全部国家</option>{countries.sort().map(code=><option key={code} value={code}>{marketLabel(code)}</option>)}</select>}
           </div>}
           {searchState === "complete" && <div className="inline-notice success"><Icon name="check"/><span>当前工作区包含 {companies.length} 个已存储候选、{sourceCount} 条证据；请在公司详情查看各自的评分版本与核实状态。</span><button onClick={() => setSearchState("idle")} aria-label="关闭"><Icon name="close" size={15}/></button></div>}
 
