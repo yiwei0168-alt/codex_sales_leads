@@ -1,6 +1,7 @@
 import { lookup } from "node:dns/promises";
 import { BlockList, isIP } from "node:net";
 import { z } from "zod";
+import { modelRoutedTransport } from "@/lib/network/model-transport";
 
 export const ALIMAIL_IMAP_HOST = "imap.qiye.aliyun.com";
 export const ALIMAIL_SMTP_HOST = "smtp.qiye.aliyun.com";
@@ -29,9 +30,32 @@ for (const [network,prefix] of [["::",128],["::1",128],["fc00::",7],["fe80::",10
 /** Resolve before connecting so user-supplied hosts cannot redirect IMAP/SMTP to local services. */
 export async function publicMailAddresses(host: string): Promise<string[]> {
   if (!hostname.safeParse(host).success) throw new Error("邮件服务器必须是公网域名");
-  const addresses = await lookup(host, { all: true });
+  const mode=process.env.MAILBOX_DNS_MODE?.trim()||"system";
+  if(!["system","alidns-doh"].includes(mode))throw new Error("Invalid MAILBOX_DNS_MODE");
+  const addresses = mode==="alidns-doh"?await resolveMailOverHttps(host):await lookup(host, { all: true });
   if (!addresses.length || addresses.some(({address,family}) => blocked.check(address,family === 6 ? "ipv6" : "ipv4") || address.startsWith("::ffff:"))) {
     throw new Error("邮件服务器解析到了非公网地址");
   }
   return [...new Set(addresses.map(item => item.address))].slice(0,4);
+}
+
+/** Explicit alternative for fake-IP DNS environments; only DNS names leave the process. */
+async function resolveMailOverHttps(host:string):Promise<Array<{address:string;family:number}>>{
+  const url=new URL("https://dns.alidns.com/resolve");
+  url.searchParams.set("name",host);url.searchParams.set("type","A");
+  const init:RequestInit={method:"GET",redirect:"error",signal:AbortSignal.timeout(4000)};
+  const response=await modelRoutedTransport(fetch,url,init)(url,init);
+  if(!response.ok)throw new Error("邮件 DNS 查询失败");
+  const body=z.object({Status:z.literal(0),TC:z.boolean().optional(),Question:z.object({name:z.string(),type:z.literal(1)}),
+    Answer:z.array(z.object({name:z.string(),type:z.number(),data:z.string().max(253)})).max(64)}).parse(await response.json());
+  const normalize=(value:string)=>value.toLowerCase().replace(/\.$/,"");
+  if(body.TC||normalize(body.Question.name)!==normalize(host))throw new Error("邮件 DNS 响应不匹配");
+  const names=new Set([normalize(host)]);
+  for(let step=0;step<body.Answer.length;step++)for(const item of body.Answer){
+    if(item.type===5&&names.has(normalize(item.name)))names.add(normalize(item.data));
+  }
+  return body.Answer.filter(item=>item.type===1&&names.has(normalize(item.name))).map(item=>{
+    if(isIP(item.data)!==4)throw new Error("邮件 DNS 地址无效");
+    return{address:item.data,family:4};
+  });
 }

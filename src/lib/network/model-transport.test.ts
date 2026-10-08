@@ -42,6 +42,7 @@ describe("product external API network routes", () => {
   it("routes fixed search and evidence APIs through the local proxy", async () => {
     vi.stubEnv("MODEL_PROXY_URL", "http://127.0.0.1:7892");
     for (const url of [
+      "https://dns.alidns.com/resolve",
       "https://places.googleapis.com/v1/places:searchText",
       "https://api.exa.ai/search",
       "https://api.search.brave.com/res/v1/web/search",
@@ -54,7 +55,7 @@ describe("product external API network routes", () => {
       expect(modelProxyEnvironment(url)).toBe("MODEL_PROXY_URL");
       await modelRoutedTransport(fetch, url)(url);
     }
-    expect(mocked.fetch).toHaveBeenCalledTimes(8);
+    expect(mocked.fetch).toHaveBeenCalledTimes(9);
     expect(mocked.fetch.mock.calls.every((call) => call[1].dispatcher)).toBe(true);
   });
 

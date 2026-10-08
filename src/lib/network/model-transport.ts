@@ -31,7 +31,7 @@ export function modelProxyEnvironment(input: RequestInfo | URL, init?: RequestIn
     if (/^(?:z-ai\/glm-|deepseek\/|moonshotai\/)/i.test(model ?? "")) return null;
     return "MODEL_PROXY_URL";
   }
-  if (["places.googleapis.com", "api.exa.ai", "api.search.brave.com", "www.searchapi.io",
+  if (["dns.alidns.com", "places.googleapis.com", "api.exa.ai", "api.search.brave.com", "www.searchapi.io",
     "api.tavily.com"].includes(url.hostname)) return "MODEL_PROXY_URL";
   return null;
 }
