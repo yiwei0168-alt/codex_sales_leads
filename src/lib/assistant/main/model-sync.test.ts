@@ -1,6 +1,20 @@
 import { afterEach, expect, it, vi } from "vitest";
 import { defaultModelConfig } from "./product";
-import { requestModel } from "./model";
+import { requestModel, transportMessages } from "./model";
+import type { ModelMessage } from "./contracts";
+
+it("encodes malformed historical tool arguments without changing executable state or receipt pairing", () => {
+  const messages: ModelMessage[] = [
+    {role:"assistant",content:null,tool_calls:[{id:"bad",type:"function",function:{name:"execute_tool",arguments:'{"tool":broken'}}]},
+    {role:"tool",tool_call_id:"bad",content:'{"status":"missing_input"}'},
+  ];
+  const snapshot=JSON.stringify(messages);
+  const wire=transportMessages(messages);
+  expect(JSON.parse(wire[0].tool_calls![0].function.arguments)._invalid_json_arguments).toBe('{"tool":broken');
+  expect(wire[0].tool_calls![0].id).toBe(wire[1].tool_call_id);
+  expect(wire[1]).toEqual(messages[1]);
+  expect(JSON.stringify(messages)).toBe(snapshot);
+});
 
 afterEach(() => vi.unstubAllEnvs());
 

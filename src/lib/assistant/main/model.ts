@@ -20,13 +20,31 @@ export async function requestModel(messages: ModelMessage[], config: ModelConfig
   const glmSync = config.model === "z-ai/glm-5.3";
   const response = await budgetedFetch(transport)(`${route.baseUrl}/chat/completions`, {
     method: "POST", headers: { ...route.defaultHeaders, Authorization: `Bearer ${route.apiKey}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ model: config.model, messages, tools: modelFunctions, tool_choice: "auto",
+    body: JSON.stringify({ model: config.model, messages: transportMessages(messages), tools: modelFunctions, tool_choice: "auto",
       ...(glmSync ? { max_tokens: 16_384 } : { max_completion_tokens: 16_384, parallel_tool_calls: false }),
       provider: { ...route.providerPreferences, only: config.providers, allow_fallbacks: false } }),
     signal: AbortSignal.timeout(180_000), redirect: "error",
   });
   await assertOpenRouterResponse(response);
   return parseModelResponse(await response.json());
+}
+
+/** Repair only the wire representation of rejected historical calls, never executable state. */
+export function transportMessages(messages: ModelMessage[]): ModelMessage[] {
+  return messages.map(message => !message.tool_calls ? message : {
+    ...message,
+    tool_calls: message.tool_calls.map(call => {
+      try { JSON.parse(call.function.arguments); return call; }
+      catch {
+        // dispatchTool already rejects malformed JSON. Preserve that failure's paired
+        // result and identity while making the subsequent provider request valid JSON.
+        return { ...call, function: { ...call.function, arguments: JSON.stringify({
+          _invalid_json_arguments: call.function.arguments,
+          _history_only: "Malformed original arguments; this is not an executable replacement.",
+        }) } };
+      }
+    }),
+  });
 }
 export function parseModelResponse(value:unknown) {
   const body = z.object({ choices: z.array(z.object({ message: modelReplySchema, finish_reason: z.string() })).min(1),
