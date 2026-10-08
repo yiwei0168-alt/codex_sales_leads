@@ -1,5 +1,11 @@
 # 本地 LangGraph 网络权限恢复
 
+## 后续：worker 请求忽略 NO_PROXY
+
+2026-10-08 设置用户级代理变量后，`scripts/run-tsx.cjs` 与 `scripts/patch-node-user.cjs` 的无条件 ProxyAgent 把本地 LangGraph 请求强制送入代理。受影响账号最新任务于 05:50:53Z 创建，约 1.4 秒后成为 partial，工具收据数为 0。相同 worker 启动链请求 `/ok` 复现 HTTP 502，普通 Node 直连为 200。
+
+两处改用 EnvHttpProxyAgent，尊重现有 NO_PROXY。相同启动链复测 HTTP 200，LangGraph 调度验证通过：4 请求、1 健康结果、2 预期 Schema 拒绝、0 外部模型调用；脚本 ESLint 通过。两类后台 worker 重启载入修复，历史中断任务未自动重放。本次修复无需 TUN，未修改提供方专用传输规则，也不代表业务任务已成功。
+
 2026-10-08，用户反馈产品显示“主模型暂时不可用”。在用户指定账号范围内检查当天任务：两次主模型尝试均记录 `paid-outcome-unknown`，任务保留为 `partial`，尚未执行邮件工具。
 
 同机对照检查发现，受限执行环境请求 OpenRouter 公共模型列表失败，底层代码为 `EACCES`；正常权限下同一只读请求返回 HTTP 200，配置的 `z-ai/glm-5.3` 仍在列表。正常权限下密钥检查也返回 HTTP 200，未打印密钥或响应内容。此前“必须改走代理”的初步判断已纠正；MA18/MA19 的 GLM 直连规则继续适用。

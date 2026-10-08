@@ -7,8 +7,8 @@ if (typeof process.geteuid !== "function") {
 }
 
 if (process.env.HTTPS_PROXY || process.env.HTTP_PROXY) {
-  const { ProxyAgent, fetch, setGlobalDispatcher } = require("undici");
-  const proxyAgent = new ProxyAgent(process.env.HTTPS_PROXY || process.env.HTTP_PROXY);
+  const { EnvHttpProxyAgent, fetch, setGlobalDispatcher } = require("undici");
+  const proxyAgent = new EnvHttpProxyAgent();
   setGlobalDispatcher(proxyAgent);
   globalThis.fetch = fetch;
 }

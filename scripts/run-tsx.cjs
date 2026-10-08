@@ -14,8 +14,9 @@ if (!process.env.NODE_OPTIONS?.includes(preloadPath)) {
 
 if (process.env.RUN_TSX_ENV_READY === "1") {
   if (process.env.HTTPS_PROXY || process.env.HTTP_PROXY) {
-    const { ProxyAgent, fetch, setGlobalDispatcher } = require("undici");
-    setGlobalDispatcher(new ProxyAgent(process.env.HTTPS_PROXY || process.env.HTTP_PROXY));
+    const { EnvHttpProxyAgent, fetch, setGlobalDispatcher } = require("undici");
+    // Honor NO_PROXY: local LangGraph calls must not be forced through the external proxy.
+    setGlobalDispatcher(new EnvHttpProxyAgent());
     globalThis.fetch = fetch;
   }
   try {
