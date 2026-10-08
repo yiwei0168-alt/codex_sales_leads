@@ -516,6 +516,8 @@ MA16 implementation and isolated validation: [acceptance evidence](docs/MA16_MAI
 
 ## MA17 interactive model route (2026-09-22)
 
+2026-10-08 / MA23-03：用户要求取消邮箱学习授权的 5 封批次数量上限，折叠与其他前端优化须先提供方案再确认实施。目标已确认但尚未开发；详见 [前端审查](docs/FRONTEND_DISCLOSURE_AUDIT_2026-10-08.md)。
+
 运行环境补充（2026-10-08 / MA19-02）：默认所有连接不依赖 TUN，使用既定直连或显式代理；只有确认必要时才考虑 TUN。保留原模型分流和 GitHub 本地代理规则。此约束已确认，全部外部连接的无 TUN 验收尚未完成。
 
 New product-chat main-Agent runs use synchronous OpenRouter `z-ai/glm-5.3` with the configured Fireworks provider. Existing Batch runs keep their pinned route and receipts. Reducing the tool-description round trip is under design discussion; inline selected schemas and a small pre-routing model are alternatives, not confirmed behavior. See [MA17 acceptance evidence](docs/MA17_GLM_SYNC_ACCEPTANCE_2026-09-22.md).
