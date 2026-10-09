@@ -1,0 +1,494 @@
+{
+  "scope": "Eight synthetic requests, one per model, current modelFunctions and parseModelResponse; auto tool choice; describe_tool knowledge_search; no tool execution, no retries, no private data; max_tokens 1024, timeout 60s, Luna effort none and others low; provider require_parameters=true,data_collection=deny,allow_fallbacks=false",
+  "attempts": [
+    {
+      "model": "anthropic/claude-haiku-5.5",
+      "at": "2026-10-09T07:26:48.285Z",
+      "elapsedMs": 3255,
+      "status": 200,
+      "provider": "Claude Platform on AWS",
+      "reportedModel": "anthropic/claude-haiku-5.5",
+      "id": "gen-1791530807-lZQLjvZiwKnKlSMAC2XB",
+      "choices": [
+        {
+          "index": 0,
+          "logprobs": null,
+          "finish_reason": "tool_calls",
+          "native_finish_reason": "tool_use",
+          "message": {
+            "role": "assistant",
+            "content": null,
+            "refusal": null,
+            "reasoning": null,
+            "tool_calls": [
+              {
+                "type": "function",
+                "index": 0,
+                "id": "toolu_01AfscD5TY8WscHFWp6RdMdf",
+                "function": {
+                  "name": "describe_tool",
+                  "arguments": "{\"tool\": \"knowledge_search\"}"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 631,
+        "completion_tokens": 55,
+        "total_tokens": 686,
+        "cost": 0.0000906,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.0000906,
+          "upstream_inference_prompt_cost": 0.0000631,
+          "upstream_inference_completions_cost": 0.0000275
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "passed": true,
+      "error": null
+    },
+    {
+      "model": "anthropic/claude-opus-5.5",
+      "at": "2026-10-09T07:26:57.233Z",
+      "elapsedMs": 3213,
+      "status": 200,
+      "provider": "Claude Platform on AWS",
+      "reportedModel": "anthropic/claude-opus-5.5",
+      "id": "gen-1791530814-os3tlAlO0SngY9MN0w9k",
+      "choices": [
+        {
+          "index": 0,
+          "logprobs": null,
+          "finish_reason": "tool_calls",
+          "native_finish_reason": "tool_use",
+          "message": {
+            "role": "assistant",
+            "content": null,
+            "refusal": null,
+            "reasoning": null,
+            "tool_calls": [
+              {
+                "type": "function",
+                "index": 0,
+                "id": "toolu_01WzU2hjZHQLMQfqqYKNkkVD",
+                "function": {
+                  "name": "describe_tool",
+                  "arguments": "{\"tool\": \"knowledge_search\"}"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 631,
+        "completion_tokens": 55,
+        "total_tokens": 686,
+        "cost": 0.003624,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.003624,
+          "upstream_inference_prompt_cost": 0.002524,
+          "upstream_inference_completions_cost": 0.0011
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "passed": true,
+      "error": null
+    },
+    {
+      "model": "anthropic/claude-sonnet-5.5",
+      "at": "2026-10-09T07:26:51.045Z",
+      "elapsedMs": 2755,
+      "status": 200,
+      "provider": "Claude Platform on AWS",
+      "reportedModel": "anthropic/claude-sonnet-5.5",
+      "id": "gen-1791530808-9QrtkxrJqMO5E4DW2O60",
+      "choices": [
+        {
+          "index": 0,
+          "logprobs": null,
+          "finish_reason": "tool_calls",
+          "native_finish_reason": "tool_use",
+          "message": {
+            "role": "assistant",
+            "content": null,
+            "refusal": null,
+            "reasoning": null,
+            "tool_calls": [
+              {
+                "type": "function",
+                "index": 0,
+                "id": "toolu_01MBeAXcY7wa8XdzdQZnST1U",
+                "function": {
+                  "name": "describe_tool",
+                  "arguments": "{\"tool\": \"knowledge_search\"}"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 631,
+        "completion_tokens": 55,
+        "total_tokens": 686,
+        "cost": 0.001812,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.001812,
+          "upstream_inference_prompt_cost": 0.001262,
+          "upstream_inference_completions_cost": 0.00055
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "passed": true,
+      "error": null
+    },
+    {
+      "model": "google/gemini-3.8-flash",
+      "at": "2026-10-09T07:26:51.106Z",
+      "elapsedMs": 2817,
+      "status": 200,
+      "provider": "Google",
+      "reportedModel": "google/gemini-3.8-flash",
+      "id": "gen-1791530808-0xdZAlJRld5g1FQvQXzy",
+      "choices": [
+        {
+          "index": 0,
+          "logprobs": null,
+          "finish_reason": "tool_calls",
+          "native_finish_reason": "STOP",
+          "message": {
+            "role": "assistant",
+            "content": null,
+            "refusal": null,
+            "reasoning": null,
+            "tool_calls": [
+              {
+                "type": "function",
+                "index": 0,
+                "id": "call_194935",
+                "function": {
+                  "name": "describe_tool",
+                  "arguments": "{\"tool\":\"knowledge_search\"}"
+                }
+              }
+            ],
+            "reasoning_details": [
+              {
+                "type": "reasoning.encrypted",
+                "data": "AY89a187fWNTMHBRMqaxa8KFCVCk+RzFaYmkhOTMEsvVr7JsVhRmX1N8gN3zry0iOs0KMx5v+hQ4XwRroFeTXKfzOuqVdzS1Do4kV2gLBen//G191A6C",
+                "format": "google-gemini-v1",
+                "id": "call_194935",
+                "index": 0
+              }
+            ]
+          }
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 120,
+        "completion_tokens": 18,
+        "total_tokens": 138,
+        "cost": 0.0001575,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.0001575,
+          "upstream_inference_prompt_cost": 0.00009,
+          "upstream_inference_completions_cost": 0.0000675
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "passed": true,
+      "error": null
+    },
+    {
+      "model": "moonshotai/kimi-k3",
+      "at": "2026-10-09T07:26:53.141Z",
+      "elapsedMs": 2021,
+      "status": 200,
+      "provider": "Relace",
+      "reportedModel": "moonshotai/kimi-k3",
+      "id": "gen-1791530811-EyeXkf5ozGMILHXjOH6x",
+      "choices": [
+        {
+          "index": 0,
+          "logprobs": null,
+          "finish_reason": "tool_calls",
+          "native_finish_reason": "tool_calls",
+          "message": {
+            "role": "assistant",
+            "content": null,
+            "refusal": null,
+            "reasoning": "Call describe_tool exactly once with tool set to knowledge_search. No other function. No prose. Need satisfy: call functions.describe_tool. No prose. Do it.",
+            "tool_calls": [
+              {
+                "type": "function",
+                "index": 0,
+                "id": "describe_tool:0",
+                "function": {
+                  "name": "describe_tool",
+                  "arguments": "{\"tool\": \"knowledge_search\"}"
+                }
+              }
+            ],
+            "reasoning_details": [
+              {
+                "type": "reasoning.text",
+                "text": "Call describe_tool exactly once with tool set to knowledge_search. No other function. No prose. Need satisfy: call functions.describe_tool. No prose. Do it.",
+                "format": "unknown",
+                "index": 0
+              }
+            ]
+          }
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 310,
+        "completion_tokens": 80,
+        "total_tokens": 390,
+        "cost": 0.0011919,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.0011919,
+          "upstream_inference_prompt_cost": 0.0001519,
+          "upstream_inference_completions_cost": 0.00104
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 39,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "passed": true,
+      "error": null
+    },
+    {
+      "model": "openai/gpt-6-luna",
+      "at": "2026-10-09T07:26:48.100Z",
+      "elapsedMs": 3090,
+      "status": 200,
+      "provider": "OpenAI",
+      "reportedModel": "openai/gpt-6-luna",
+      "id": "gen-1791530806-f7PMPzPxFys2gtKBgMKl",
+      "choices": [
+        {
+          "index": 0,
+          "logprobs": null,
+          "finish_reason": "tool_calls",
+          "native_finish_reason": "completed",
+          "message": {
+            "role": "assistant",
+            "content": null,
+            "refusal": null,
+            "reasoning": null,
+            "tool_calls": [
+              {
+                "type": "function",
+                "index": 0,
+                "id": "call_BCuaprW7m1d5QPKysoP6mhcc",
+                "function": {
+                  "name": "describe_tool",
+                  "arguments": "{\"tool\":\"knowledge_search\"}"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 130,
+        "completion_tokens": 19,
+        "total_tokens": 149,
+        "cost": 0.0000225,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.0000225,
+          "upstream_inference_prompt_cost": 0.000013,
+          "upstream_inference_completions_cost": 0.0000095
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "passed": true,
+      "error": null
+    },
+    {
+      "model": "openai/gpt-6.1-sol",
+      "at": "2026-10-09T07:26:54.012Z",
+      "elapsedMs": 2890,
+      "status": 200,
+      "provider": "OpenAI",
+      "reportedModel": "openai/gpt-6.1-sol",
+      "id": "gen-1791530811-wWJklu5TIEeGztixuNT4",
+      "choices": [
+        {
+          "index": 0,
+          "logprobs": null,
+          "finish_reason": "tool_calls",
+          "native_finish_reason": "completed",
+          "message": {
+            "role": "assistant",
+            "content": null,
+            "refusal": null,
+            "reasoning": null,
+            "tool_calls": [
+              {
+                "type": "function",
+                "index": 0,
+                "id": "call_BQ4FrYZzL0t1nYiO1IB6Lj1M",
+                "function": {
+                  "name": "describe_tool",
+                  "arguments": "{\"tool\":\"knowledge_search\"}"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 130,
+        "completion_tokens": 19,
+        "total_tokens": 149,
+        "cost": 0.00045,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.00045,
+          "upstream_inference_prompt_cost": 0.00026,
+          "upstream_inference_completions_cost": 0.00019
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "passed": true,
+      "error": null
+    },
+    {
+      "model": "z-ai/glm-5.3",
+      "at": "2026-10-09T07:26:57.269Z",
+      "elapsedMs": 3251,
+      "status": 200,
+      "provider": "Relace",
+      "reportedModel": "z-ai/glm-5.3",
+      "id": "gen-1791530814-l7C73Hvj7CvJfGKGWlER",
+      "choices": [
+        {
+          "index": 0,
+          "logprobs": null,
+          "finish_reason": "tool_calls",
+          "native_finish_reason": "tool_calls",
+          "message": {
+            "role": "assistant",
+            "content": null,
+            "refusal": null,
+            "reasoning": null,
+            "tool_calls": [
+              {
+                "type": "function",
+                "index": 0,
+                "id": "call_1a318856f41a414a91f96784",
+                "function": {
+                  "name": "describe_tool",
+                  "arguments": "{\"tool\": \"knowledge_search\"}"
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 313,
+        "completion_tokens": 13,
+        "total_tokens": 326,
+        "cost": 0.0000669656,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.0000669656,
+          "upstream_inference_prompt_cost": 0.0000097656,
+          "upstream_inference_completions_cost": 0.0000572
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "passed": true,
+      "error": null
+    }
+  ]
+}

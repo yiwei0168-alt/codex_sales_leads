@@ -2,6 +2,8 @@
 
 # Network Channel Copilot PRD v1.1
 
+> MODESEL-09：八个主备候选单步工具调用格式均通过产品解析器；尚未验证多轮工具执行或自动备用切换，生产路由未改。[证据](docs/evidence/mode-tool-contract-2026-10-09.json)。
+
 > MODESEL-08：八个不同主备候选模型的合成文本连通性已通过（OpenRouter，逐模型一次）；不代表工具契约、自动切换或真实业务已验收。生产路由未改，证据见 [连通性记录](docs/evidence/mode-connectivity-2026-10-09.json)。
 
 > MODESEL-07：深入研究第二备用采用 GLM 5.3（`z-ai/glm-5.3`），替换 DeepSeek V4 Pro 0813 候选；其他模型槽位仍为建议。已确认该槽位、待实现及上游验证，全部云端调用继续统一 OpenRouter。

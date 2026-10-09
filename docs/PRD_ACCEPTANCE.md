@@ -2,6 +2,10 @@
 
 ## 2026-10-09：MODESEL-01 设计阶段
 
+MODESEL-09 本地回归：`npm.cmd test -- src/lib/assistant/main/model-sync.test.ts src/lib/assistant/main/graph.test.ts`，2 文件、12 测试通过，覆盖现有模型请求及图执行故障保护；这是现有行为回归，不是尚未实现的自动备用切换测试。
+
+MODESEL-09：八个候选各一次合成工具格式测试，HTTP 200、tool_calls、describe_tool 名称及 JSON 参数均符合要求，产品现有解析器 8/8 通过。无实际业务工具执行；多轮工具回传、全部 Schema、高思考参数及自动备用切换尚未验收。当前代码无新模式备用切换实现。[收据](evidence/mode-tool-contract-2026-10-09.json)。
+
 MODESEL-08：北京时间 15:21 对八个不同主备候选各调用一次，仅合成文本，全部 HTTP 200 且正常完成。Luna/Haiku/Flash/Sonnet/Sol/Kimi/Opus/GLM 均返回 OK 或 OK.，耗时 1.47～5.62 秒。GLM/Kimi 上游为 Relace，Claude 为 Claude Platform on AWS，OpenAI 为 OpenAI，Flash 为 Google。不包含工具调用、长任务、故障切换或私有资料验收，未改变生产路由。[原始供应商收据](evidence/mode-connectivity-2026-10-09.json)。
 
 MODESEL-07：按用户要求将深入研究第二备用候选改为 GLM 5.3，记录确认范围及其他槽位待定状态。仅完成文档 diff 检查，未发起模型调用，未验证 GLM 上游恢复或备用切换。
