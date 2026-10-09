@@ -1,5 +1,10 @@
 # 用户确认规则登记表
 
+## MODESEL-08 — 全部候选主备模型连通性测试（2026-10-09）
+
+- 用户明确要求“现在测试所有主模型和备用模型的连通性”。按当前九个槽位的八个不同模型各执行一次 OpenRouter 合成请求；不含私有资料、不调用工具、不重试、不备用切换，输出上限 512 token，最长等待 60 秒。
+- 已执行：八个模型均 HTTP 200、finish_reason=stop 并返回文本；Sonnet 为 `OK.`，其余为 `OK`。此次授权范围已完成，不等于确认全部选型、工具契约或生产切换。GLM 实际上游为 Relace，不证明原 Fireworks 路由已恢复。收据见 [连通性记录](evidence/mode-connectivity-2026-10-09.json)。
+
 ## MODESEL-07 — 深入研究第二备用改为 GLM（2026-10-09）
 
 - 用户明确要求“用GLM替代Deepseek V4 Pro”。对应本轮候选表的深入研究第二备用槽位，采用已讨论的 GLM 5.3（OpenRouter ID：`z-ai/glm-5.3`），替换 DeepSeek V4 Pro 0813 候选。

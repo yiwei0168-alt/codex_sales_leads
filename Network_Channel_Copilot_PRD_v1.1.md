@@ -2,6 +2,8 @@
 
 # Network Channel Copilot PRD v1.1
 
+> MODESEL-08：八个不同主备候选模型的合成文本连通性已通过（OpenRouter，逐模型一次）；不代表工具契约、自动切换或真实业务已验收。生产路由未改，证据见 [连通性记录](docs/evidence/mode-connectivity-2026-10-09.json)。
+
 > MODESEL-07：深入研究第二备用采用 GLM 5.3（`z-ai/glm-5.3`），替换 DeepSeek V4 Pro 0813 候选；其他模型槽位仍为建议。已确认该槽位、待实现及上游验证，全部云端调用继续统一 OpenRouter。
 
 > MODESEL-06：统一 OpenRouter 的范围为所有云端模型；BGE 向量、Qwen 记忆抽取等本地模型继续本地运行，保留现有私有资料处理边界。本地故障不自动转云端；本条明确 MODESEL-05 的范围，云端迁移仍待实施。

@@ -1,0 +1,293 @@
+{
+  "scope": "User-authorized synthetic connectivity only; no tools or private data; one attempt per unique model; no retry or fallback; provider require_parameters=true,data_collection=deny; max_tokens=512; Luna effort none, others low",
+  "attempts": [
+    {
+      "model": "anthropic/claude-haiku-5.5",
+      "at": "2026-10-09T07:21:40.252Z",
+      "elapsedMs": 2339,
+      "status": 200,
+      "provider": "Claude Platform on AWS",
+      "reportedModel": "anthropic/claude-haiku-5.5",
+      "id": "gen-1791530498-Y5KHFQ4GuX31qOAkGSMv",
+      "finishReason": "stop",
+      "content": "OK",
+      "usage": {
+        "prompt_tokens": 18,
+        "completion_tokens": 4,
+        "total_tokens": 22,
+        "cost": 0.0000038,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.0000038,
+          "upstream_inference_prompt_cost": 0.0000018,
+          "upstream_inference_completions_cost": 0.000002
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "error": null,
+      "retryAfter": null
+    },
+    {
+      "model": "anthropic/claude-opus-5.5",
+      "at": "2026-10-09T07:21:50.725Z",
+      "elapsedMs": 5624,
+      "status": 200,
+      "provider": "Claude Platform on AWS",
+      "reportedModel": "anthropic/claude-opus-5.5",
+      "id": "gen-1791530505-npBNEqAZcbRKuvjUli4w",
+      "finishReason": "stop",
+      "content": "OK",
+      "usage": {
+        "prompt_tokens": 18,
+        "completion_tokens": 4,
+        "total_tokens": 22,
+        "cost": 0.000152,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.000152,
+          "upstream_inference_prompt_cost": 0.000072,
+          "upstream_inference_completions_cost": 0.00008
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "error": null,
+      "retryAfter": null
+    },
+    {
+      "model": "anthropic/claude-sonnet-5.5",
+      "at": "2026-10-09T07:21:42.855Z",
+      "elapsedMs": 2319,
+      "status": 200,
+      "provider": "Claude Platform on AWS",
+      "reportedModel": "anthropic/claude-sonnet-5.5",
+      "id": "gen-1791530500-pUS8QFn5k9ngduhBtif5",
+      "finishReason": "stop",
+      "content": "OK.",
+      "usage": {
+        "prompt_tokens": 18,
+        "completion_tokens": 5,
+        "total_tokens": 23,
+        "cost": 0.000086,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.000086,
+          "upstream_inference_prompt_cost": 0.000036,
+          "upstream_inference_completions_cost": 0.00005
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "error": null,
+      "retryAfter": null
+    },
+    {
+      "model": "google/gemini-3.8-flash",
+      "at": "2026-10-09T07:21:42.999Z",
+      "elapsedMs": 2464,
+      "status": 200,
+      "provider": "Google",
+      "reportedModel": "google/gemini-3.8-flash",
+      "id": "gen-1791530500-yQy9KLgzpjjCEpTmwDB4",
+      "finishReason": "stop",
+      "content": "OK",
+      "usage": {
+        "prompt_tokens": 5,
+        "completion_tokens": 1,
+        "total_tokens": 6,
+        "cost": 0.0000075,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.0000075,
+          "upstream_inference_prompt_cost": 0.00000375,
+          "upstream_inference_completions_cost": 0.00000375
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "error": null,
+      "retryAfter": null
+    },
+    {
+      "model": "moonshotai/kimi-k3",
+      "at": "2026-10-09T07:21:44.486Z",
+      "elapsedMs": 1468,
+      "status": 200,
+      "provider": "Relace",
+      "reportedModel": "moonshotai/kimi-k3",
+      "id": "gen-1791530503-lOSAN43v6tSOot1Utu3U",
+      "finishReason": "stop",
+      "content": "OK",
+      "usage": {
+        "prompt_tokens": 91,
+        "completion_tokens": 40,
+        "total_tokens": 131,
+        "cost": 0.00056459,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.00056459,
+          "upstream_inference_prompt_cost": 0.00004459,
+          "upstream_inference_completions_cost": 0.00052
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 27,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "error": null,
+      "retryAfter": null
+    },
+    {
+      "model": "openai/gpt-6-luna",
+      "at": "2026-10-09T07:21:40.531Z",
+      "elapsedMs": 2633,
+      "status": 200,
+      "provider": "OpenAI",
+      "reportedModel": "openai/gpt-6-luna",
+      "id": "gen-1791530499-KusQeSNrHM7gc9XIhP9y",
+      "finishReason": "stop",
+      "content": "OK",
+      "usage": {
+        "prompt_tokens": 11,
+        "completion_tokens": 5,
+        "total_tokens": 16,
+        "cost": 0.0000036,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.0000036,
+          "upstream_inference_prompt_cost": 0.0000011,
+          "upstream_inference_completions_cost": 0.0000025
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "error": null,
+      "retryAfter": null
+    },
+    {
+      "model": "openai/gpt-6.1-sol",
+      "at": "2026-10-09T07:21:45.095Z",
+      "elapsedMs": 2080,
+      "status": 200,
+      "provider": "OpenAI",
+      "reportedModel": "openai/gpt-6.1-sol",
+      "id": "gen-1791530503-J4WXX0S1CKhHnzW0WBQp",
+      "finishReason": "stop",
+      "content": "OK",
+      "usage": {
+        "prompt_tokens": 11,
+        "completion_tokens": 5,
+        "total_tokens": 16,
+        "cost": 0.000072,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.000072,
+          "upstream_inference_prompt_cost": 0.000022,
+          "upstream_inference_completions_cost": 0.00005
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "error": null,
+      "retryAfter": null
+    },
+    {
+      "model": "z-ai/glm-5.3",
+      "at": "2026-10-09T07:21:47.319Z",
+      "elapsedMs": 2217,
+      "status": 200,
+      "provider": "Relace",
+      "reportedModel": "z-ai/glm-5.3",
+      "id": "gen-1791530505-rVkXtvdQJjrRXjM51Xuv",
+      "finishReason": "stop",
+      "content": "OK",
+      "usage": {
+        "prompt_tokens": 17,
+        "completion_tokens": 3,
+        "total_tokens": 20,
+        "cost": 0.0000137304,
+        "is_byok": false,
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "cost_details": {
+          "upstream_inference_cost": 0.0000137304,
+          "upstream_inference_prompt_cost": 5.304e-7,
+          "upstream_inference_completions_cost": 0.0000132
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "image_tokens": 0,
+          "audio_tokens": 0
+        }
+      },
+      "error": null,
+      "retryAfter": null
+    }
+  ]
+}

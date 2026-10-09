@@ -2,6 +2,8 @@
 
 ## 2026-10-09：MODESEL-01 设计阶段
 
+MODESEL-08：北京时间 15:21 对八个不同主备候选各调用一次，仅合成文本，全部 HTTP 200 且正常完成。Luna/Haiku/Flash/Sonnet/Sol/Kimi/Opus/GLM 均返回 OK 或 OK.，耗时 1.47～5.62 秒。GLM/Kimi 上游为 Relace，Claude 为 Claude Platform on AWS，OpenAI 为 OpenAI，Flash 为 Google。不包含工具调用、长任务、故障切换或私有资料验收，未改变生产路由。[原始供应商收据](evidence/mode-connectivity-2026-10-09.json)。
+
 MODESEL-07：按用户要求将深入研究第二备用候选改为 GLM 5.3，记录确认范围及其他槽位待定状态。仅完成文档 diff 检查，未发起模型调用，未验证 GLM 上游恢复或备用切换。
 
 MODESEL-06：云端统一 OpenRouter、本地 BGE/Qwen 保留已确认；MODESEL-05 的本地范围待定项已关闭。仅同步设计并检查文档 diff，未执行模型调用、迁移或服务验收。
