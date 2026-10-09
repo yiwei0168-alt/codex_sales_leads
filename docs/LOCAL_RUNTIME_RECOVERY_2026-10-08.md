@@ -1,5 +1,13 @@
 # 本地 LangGraph 网络权限恢复
 
+## 18:02 确认具体原因：Fireworks 上游临时限流
+
+只读检查：OpenRouter 密钥有效、非免费账户、无密钥消费限额、未过期；余额为正。当前账号近 10 分钟主模型请求仅 1 次，实际任务配置为 `z-ai/glm-5.3` + `providers:["fireworks"]`，代码 `allow_fallbacks:false`。不能用账户低频率否定上游共享容量限流。
+
+用户按 MODELDIAG-01 明确批准一次最小诊断。2026-10-08T10:02:20Z 发出仅含 `Reply OK` 的请求，max_tokens=32，使用既有隐私参数及 Fireworks 固定路由，无私有资料、无重试。响应 HTTP 429，metadata.provider_name 为 Fireworks，metadata.raw 明确说明该模型 temporarily rate-limited upstream，Retry-After=5。因此本次具体阻碍确认为 Fireworks 上游临时限流；不是根据通用 429 猜测账户欠费。5 秒仅为重试建议，不保证届时解除；此前多次用户任务跨分钟也遇到限流。
+
+一次诊断授权已消耗，未继续调用、未切换供应商或设置 BYOK。合成诊断收据保存在本机忽略目录 `tmp/glm-once-diagnostic-receipt.json`，不提交凭据。可继续等待原路由恢复；新增供应商路由须先确认其隐私/价格与用户授权。
+
 ## 17:43 后续：实际模型返回 HTTP 429
 
 正常权限重启后，当前账号新任务于 09:43:01Z、09:43:04Z 两次收到 HTTP 429，耗时约 2.7s、1.3s；与此前没有 HTTP 响应的传输失败不同。网关拒绝已由持久回执的 httpStatus/errorCode 确认，但未保存的原始错误正文无法用于判断短时限流还是持续配额限制。

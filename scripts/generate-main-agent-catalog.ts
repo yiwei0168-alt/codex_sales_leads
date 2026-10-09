@@ -1,6 +1,8 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { productTools, describeTool } from "../src/lib/assistant/main/tools";
 const path = "docs/MAIN_AGENT_TOOL_CATALOG.md";
+const definitionsPath = "docs/MAIN_AGENT_TOOL_DEFINITIONS.json";
+const definitions = JSON.stringify({ note: "Registry snapshot for mode design; no tool executions. Visibility still depends on account, knowledge scope and feature flags.", tools: productTools.map(describeTool) }, null, 2) + "\n";
 const ids = new Set<string>();
 const rows = productTools.map(tool => {
   if (ids.has(tool.id)) throw new Error(`Duplicate tool ${tool.id}`);
@@ -10,5 +12,9 @@ const rows = productTools.map(tool => {
 const output = `# Registered main Agent tools\n\nGenerated from the executable registry. Run \`node scripts/run-tsx.cjs scripts/generate-main-agent-catalog.ts --check\` to detect drift. These ${rows.length} tools are implemented adapters; registration is not real-provider acceptance. The complete migration inventory remains in [MAIN_AGENT_CAPABILITIES.md](MAIN_AGENT_CAPABILITIES.md).\n\n| Tool | Version | Role | Effect | Cost | Purpose |\n|---|---|---|---|---|---|\n${rows.join("\n")}\n`;
 if (process.argv.includes("--check")) {
   if (await readFile(path, "utf8") !== output) throw new Error("Tool catalog differs from registry");
-} else await writeFile(path, output, "utf8");
+  if (await readFile(definitionsPath, "utf8") !== definitions) throw new Error("Tool definitions differ from registry");
+} else {
+  await writeFile(path, output, "utf8");
+  await writeFile(definitionsPath, definitions, "utf8");
+}
 console.log(JSON.stringify({ registered: rows.length, schemas: "valid", catalog: "consistent" }));
