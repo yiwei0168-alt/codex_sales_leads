@@ -2,6 +2,8 @@
 
 ## 2026-10-09：MODESEL-01 设计阶段
 
+MODESEL-10：明确错误的顺序备用、每模型一次、三路失败保存及已执行工具不重放已获确认。仅同步并检查设计文档；自动切换、重复效果保护和排队/超时行为尚未按新规则实施验收。
+
 MODESEL-09 本地回归：`npm.cmd test -- src/lib/assistant/main/model-sync.test.ts src/lib/assistant/main/graph.test.ts`，2 文件、12 测试通过，覆盖现有模型请求及图执行故障保护；这是现有行为回归，不是尚未实现的自动备用切换测试。
 
 MODESEL-09：八个候选各一次合成工具格式测试，HTTP 200、tool_calls、describe_tool 名称及 JSON 参数均符合要求，产品现有解析器 8/8 通过。无实际业务工具执行；多轮工具回传、全部 Schema、高思考参数及自动备用切换尚未验收。当前代码无新模式备用切换实现。[收据](evidence/mode-tool-contract-2026-10-09.json)。

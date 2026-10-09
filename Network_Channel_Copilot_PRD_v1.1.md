@@ -2,6 +2,8 @@
 
 # Network Channel Copilot PRD v1.1
 
+> MODESEL-10：明确 429、可重试 5xx 或连接失败时依次尝试两个备用模型；同一轮每模型最多一次，三路失败保存任务，已执行工具不重复执行。已确认、待实现；排队和超时阈值另定。
+
 > MODESEL-09：八个主备候选单步工具调用格式均通过产品解析器；尚未验证多轮工具执行或自动备用切换，生产路由未改。[证据](docs/evidence/mode-tool-contract-2026-10-09.json)。
 
 > MODESEL-08：八个不同主备候选模型的合成文本连通性已通过（OpenRouter，逐模型一次）；不代表工具契约、自动切换或真实业务已验收。生产路由未改，证据见 [连通性记录](docs/evidence/mode-connectivity-2026-10-09.json)。
