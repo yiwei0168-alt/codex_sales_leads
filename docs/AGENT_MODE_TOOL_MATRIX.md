@@ -1,20 +1,22 @@
 # 逐工具模式建议（待确认）
 
+MODESEL-02 已确认快速模式包括已保存邮件、客户记录和时间线只读查询。下表已补入对应读取工具；具体按需展示策略仍为建议。mail_sync、写入、生成流程和新调查继续禁用，不能仅凭 effect=read 判断可用。
+
 2026-10-09：覆盖代码注册的 104 个工具。字段带 * 表示顶层必填；嵌套字段、类型、约束及输出见 [完整定义](MAIN_AGENT_TOOL_DEFINITIONS.json)，工具用途见 [目录](MAIN_AGENT_TOOL_CATALOG.md)。默认/按需/禁用的含义见 [设计稿](AGENT_MODE_DESIGN_2026-10-09.md)。本表不是已上线权限配置。原角色、影子开关和知识范围限制始终优先。
 
 | 工具 | 分组 | 输入字段 | 快速 | 标准 | 深入 | 原角色 / 作用 |
 |---|---|---|---|---|---|---|
-| customer_timeline | 日常业务 | customerId, country, offset* | 禁用 | 默认 | 默认 | member / read |
+| customer_timeline | 日常业务 | customerId, country, offset* | 默认 | 默认 | 默认 | member / read |
 | lead_workflow | 研究与评估 | countryCode*, countryName*, objective*, roles*, targetCount*, queryLanguage*, userRequest*, opportunityTargets, coverageMode, verifiedOnly | 禁用 | 禁用 | 默认 | member / publish |
-| company_assessment_read | 日常业务 | companyExternalId* | 禁用 | 默认 | 默认 | member / read |
+| company_assessment_read | 日常业务 | companyExternalId* | 默认 | 默认 | 默认 | member / read |
 | company_score_publish | 按意图加载的管理/动作 | sourceCallId*, companyExternalId*, expectedRevision*, expectedDomain*, expectedTotalScore*, expectedPolicyVersion* | 禁用 | 按需 | 按需 | member / publish |
-| company_correspondence_list | 日常业务 | companyExternalId*, offset* | 禁用 | 默认 | 默认 | member / read |
-| relationship_list | 日常业务 | country* | 禁用 | 默认 | 默认 | member / read |
+| company_correspondence_list | 日常业务 | companyExternalId*, offset* | 默认 | 默认 | 默认 | member / read |
+| relationship_list | 日常业务 | country* | 默认 | 默认 | 默认 | member / read |
 | relationship_save | 按意图加载的管理/动作 | country*, from*, to*, type*, status*, basis*, sourceUrl*, selection | 禁用 | 按需 | 按需 | member / reversible |
 | relationship_analyze | 研究与评估 | country*, from*, to* | 禁用 | 禁用 | 默认 | member / reversible |
 | contacts_lookup | 研究与评估 | companyExternalId*, refresh* | 禁用 | 禁用 | 默认 | member / reversible |
 | contacts_enrichment_latest | 日常业务 | 无 | 禁用 | 默认 | 默认 | member / read |
-| contacts_candidate_list | 日常业务 | companyExternalId* | 禁用 | 默认 | 默认 | member / read |
+| contacts_candidate_list | 日常业务 | companyExternalId* | 默认 | 默认 | 默认 | member / read |
 | contacts_verify_evaluate | 研究与评估 | emailCandidateId*, expectedEmail* | 禁用 | 禁用 | 默认 | member / publish |
 | contacts_verify_publish | 按意图加载的管理/动作 | decisionId*, decisionHash*, email*, category*, activeStatus*, expectedCurrentDecisionId* | 禁用 | 按需 | 按需 | member / publish |
 | mail_sync | 日常业务 | connectionId*, lookbackDays, maxMessages, folderScope*, from, through | 禁用 | 默认 | 默认 | member / reversible |
@@ -28,7 +30,7 @@
 | knowledge_gold_review_list | 按意图加载的管理/动作 | offset*, limit*, split, reviewed | 禁用 | 按需 | 按需 | admin / read |
 | knowledge_gold_review_save | 按意图加载的管理/动作 | caseId*, caseSha256*, expectedAnswer*, expectedSources*, reviewNote* | 禁用 | 按需 | 按需 | admin / publish |
 | knowledge_gold_holdout_unlock | 按意图加载的管理/动作 | 无 | 禁用 | 按需 | 按需 | admin / publish |
-| mailbox_knowledge_list | 日常业务 | offset* | 禁用 | 默认 | 默认 | member / read |
+| mailbox_knowledge_list | 日常业务 | offset* | 默认 | 默认 | 默认 | member / read |
 | knowledge_shared_text_upsert | 按意图加载的管理/动作 | collection*, externalId*, title*, content*, sourceType*, sourceUrl, authorityLevel*, language*, market, companyId, productId, expectedContentHash | 禁用 | 按需 | 按需 | admin / publish |
 | knowledge_shared_binary_register | 按意图加载的管理/动作 | jobId*, sourceSha256*, language*, authorityLevel* | 禁用 | 按需 | 按需 | admin / publish |
 | knowledge_shared_release_gate | 按意图加载的管理/动作 | releaseKey* | 禁用 | 按需 | 按需 | admin / read |
@@ -84,8 +86,8 @@
 | knowledge_fact_review_list | 按意图加载的管理/动作 | offset*, limit*, reason*, query*, status* | 禁用 | 按需 | 按需 | admin / read |
 | knowledge_fact_review_decide | 按意图加载的管理/动作 | reviewId*, decision*, note*, correctedValue, correctedRawValue, correctedUnit | 禁用 | 按需 | 按需 | admin / publish |
 | knowledge_originals | 资料与记忆读取 | query*, assetId | 默认 | 默认 | 默认 | member / read |
-| company_search | 日常业务 | query*, countryCode | 禁用 | 默认 | 默认 | member / read |
-| company_read | 日常业务 | candidateId* | 禁用 | 默认 | 默认 | member / read |
+| company_search | 日常业务 | query*, countryCode | 默认 | 默认 | 默认 | member / read |
+| company_read | 日常业务 | candidateId* | 默认 | 默认 | 默认 | member / read |
 | company_state_update | 按意图加载的管理/动作 | externalId*, expectedRevision*, patch* | 禁用 | 按需 | 按需 | member / reversible |
 | task_list | 日常业务 | 无 | 禁用 | 默认 | 默认 | member / read |
 | task_detail | 日常业务 | id*, kind* | 禁用 | 默认 | 默认 | member / read |
@@ -103,8 +105,8 @@
 | development_workflow | 日常业务 | companyExternalId*, language, instructions | 禁用 | 默认 | 默认 | member / reversible |
 | market_plan | 研究与评估 | countryCode*, countryName*, objective*, roles*, targetCount*, queryLanguage*, userRequest* | 禁用 | 禁用 | 默认 | member / read |
 | mail_connections | 日常业务 | 无 | 禁用 | 默认 | 默认 | member / read |
-| mail_history | 日常业务 | companyExternalId, offset* | 禁用 | 默认 | 默认 | member / read |
-| mail_read | 日常业务 | messageId* | 禁用 | 默认 | 默认 | member / read |
+| mail_history | 日常业务 | companyExternalId, offset* | 默认 | 默认 | 默认 | member / read |
+| mail_read | 日常业务 | messageId* | 默认 | 默认 | 默认 | member / read |
 | mailbox_candidate_list | 按意图加载的管理/动作 | 无 | 禁用 | 按需 | 按需 | member / read |
 | mailbox_candidate_review | 按意图加载的管理/动作 | candidateId*, decision*, expectedHash* | 禁用 | 按需 | 按需 | member / publish |
 | plan_confirmation | 按意图加载的管理/动作 | plan*, scale*, uncertainty*, requestedEstimate | 禁用 | 按需 | 按需 | member / publish |
