@@ -5,6 +5,7 @@ import {skillSourcesCurrent,type SourcedSkillVersion} from './skill-source-guard
 import {assertCurrentKnowledgeMessages} from './knowledge-message-guard';
 import {skillReplaySuiteSchema,runSkillReplay,type ReplayPair} from './skill-replay';
 import {localReplayModel} from './skill-replay-local';
+import {runGraphSkillReplay,type GraphReplayPair} from './skill-graph-replay';
 
 export const historicalSkillReplayInput=z.object({skillId:z.uuid(),version:z.number().int().positive(),
   runIds:z.array(z.uuid()).min(1).max(20).refine(ids=>new Set(ids).size===ids.length)}).strict();
@@ -70,7 +71,7 @@ export async function prepareHistoricalSkillReplay(context:Pick<ExecutionContext
 /** Revalidate before/after every model call and before persisting a pair. Never consumes a disk-supplied snapshot. */
 export async function runHistoricalSkillReplay(context:Pick<ExecutionContext,'userId'>,input:SnapshotInput,
   persistManifest:(snapshot:Awaited<ReturnType<typeof prepareHistoricalSkillReplay>>)=>Promise<void>,
-  persistPair:(pair:ReplayPair)=>Promise<void>){
+  persistPair:(pair:ReplayPair|GraphReplayPair)=>Promise<void>,engine:'receipts'|'main-graph'='receipts'){
   const original=await prepareHistoricalSkillReplay(context,input);
   await persistManifest(original);
   const assertCurrent=async()=>{
@@ -80,6 +81,11 @@ export async function runHistoricalSkillReplay(context:Pick<ExecutionContext,'us
   const local=await localReplayModel(process.env.OLLAMA_LOCAL_URL||'http://127.0.0.1:11434',model.digest);
   let invalidated=false;
   try{
+    if(engine==='main-graph'){
+      return await runGraphSkillReplay(original.suite,local.generateAgent,assertCurrent,async pair=>{
+        await assertCurrent();await persistPair(pair);
+      });
+    }
     const result=await runSkillReplay(original.suite,async messages=>{
       if(invalidated)throw new Error('Historical snapshot changed');
       try{await assertCurrent();}catch(error){invalidated=true;throw error;}

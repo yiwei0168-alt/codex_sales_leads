@@ -1,16 +1,17 @@
 import {beforeEach,expect,it,vi} from 'vitest';
 import {digest} from './contracts';
-const mocks=vi.hoisted(()=>({query:vi.fn(),guard:vi.fn(),sources:vi.fn(),generate:vi.fn(),close:vi.fn()}));
+const mocks=vi.hoisted(()=>({query:vi.fn(),guard:vi.fn(),sources:vi.fn(),generate:vi.fn(),generateAgent:vi.fn(),close:vi.fn()}));
 vi.mock('@/lib/rag/db',()=>({tenantTransaction:async(_u:string,f:(client:unknown)=>unknown)=>f({query:mocks.query})}));
 vi.mock('./skill-source-guard',()=>({skillSourcesCurrent:mocks.sources}));
 vi.mock('./knowledge-message-guard',()=>({assertCurrentKnowledgeMessages:mocks.guard}));
-vi.mock('./skill-replay-local',()=>({localReplayModel:async()=>({generate:mocks.generate,close:mocks.close})}));
+vi.mock('./skill-replay-local',()=>({localReplayModel:async()=>({generate:mocks.generate,generateAgent:mocks.generateAgent,close:mocks.close})}));
 import {prepareHistoricalSkillReplay,runHistoricalSkillReplay} from './skill-replay-snapshot';
 const id=(n:number)=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
 const context={userId:id(1)},input={skillId:id(2),version:1,runIds:[id(3)]};
 let version:Record<string,unknown>,run:Record<string,unknown>,calls:Array<Record<string,unknown>>;
 beforeEach(()=>{
   vi.clearAllMocks();mocks.sources.mockResolvedValue(true);mocks.guard.mockResolvedValue(undefined);mocks.generate.mockResolvedValue({kind:'answer',text:'Synthetic answer'});
+  mocks.generateAgent.mockResolvedValue({role:'assistant',content:'Synthetic native answer'});
   const files={'SKILL.md':'Check original evidence.'};
   version={files,content_hash:digest(files),dependencies:[],source:'user',validation:{},scope:'account',owner_id:context.userId};
   run={content:'How many ports?',message_id:id(4),input:{content:'How many ports?'}};
@@ -54,4 +55,9 @@ it('persists an unchanged pair as pending review with no activation',async()=>{
   const persist=vi.fn(async()=>{}),result=await runHistoricalSkillReplay(context,input,async()=>{},persist);
   expect(persist).toHaveBeenCalledTimes(1);expect(result.autoEnable).toBe(false);expect(result.productionAgentEquivalent).toBe(false);
   expect(mocks.guard.mock.calls.length).toBeGreaterThanOrEqual(7);
+});
+it('routes the explicit graph engine through the native message adapter and source checks',async()=>{
+  const persist=vi.fn(async()=>{}),output=await runHistoricalSkillReplay(context,input,async()=>{},persist,'main-graph');
+  expect(output).toMatchObject({productionGraphReused:true,productionAgentEquivalent:false});
+  expect(mocks.generate).not.toHaveBeenCalled();expect(mocks.generateAgent).toHaveBeenCalledTimes(2);expect(persist).toHaveBeenCalledTimes(1);
 });

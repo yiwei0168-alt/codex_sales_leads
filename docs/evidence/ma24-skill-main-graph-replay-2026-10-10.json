@@ -1,0 +1,46 @@
+{
+  "date": "2026-10-10",
+  "scope": "main-agent-graph-historical-replay-adapter",
+  "regression": {
+    "files": 6,
+    "passed": 57,
+    "typescript": "passed",
+    "focusedEslint": "passed"
+  },
+  "localModelContract": {
+    "model": "qwen3:8b",
+    "cases": 1,
+    "calls": 2,
+    "passed": false,
+    "baseline": {
+      "status": "partial",
+      "reason": "model-or-schema-error"
+    },
+    "candidate": {
+      "status": "paused",
+      "reason": "invalid-execution-input",
+      "requestedFunction": "knowledge_compare"
+    },
+    "review": "pending"
+  },
+  "hashes": {
+    "suite": "bc31b2e4ea44f1bf8d93ef6125138e41babd68b00f300bb670e9d9ce348e9024",
+    "prompt": "178dd25b345df4ae89b61a349bb73a84e058e7f4e558bb795c8dc41707e8a517",
+    "config": "91c6145b93ea995c64f6d983469d24fbc5c448bbb7b51c665e8dc1041850834b",
+    "tools": "81ef15525d5fa478beb693a5f5aa72b844b584712833b367e87c0f7850b81bfd",
+    "pairs": "b974a8f61afa77e80bc7e8de4e99bd8adeee6817bc0282ab606588e2988a1bd3"
+  },
+  "realToolExecutions": 0,
+  "cloudModelCalls": 0,
+  "productionGraphReused": true,
+  "productionAgentEquivalent": false,
+  "liveShadow": false,
+  "autoEnable": false,
+  "independentQualityAccepted": false,
+  "productionServicesRestarted": false,
+  "remaining": [
+    "Local native message contract did not pass",
+    "Full policy/history/mode model transport not replayed",
+    "Review grading and activation evidence gate pending"
+  ]
+}

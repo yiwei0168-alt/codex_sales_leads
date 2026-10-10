@@ -617,6 +617,15 @@ MODESEL-16 的文档召回诊断单独记录实际配置与冻结参考配置，
 
 验收：6 文件 72 项回归、TypeScript、定向 ESLint 通过。隔离数据库覆盖完整 worker 入口、消息哈希、新旧关系、通知/outbox、重试、撤销、多重匹配、范围、冲突、越权与失效租约；界面更正的双时间和并发数据库探针、结构化收据离线探针均复测通过。无模型或外部请求，生产自动学习仍关闭。本轮没有生产数据回填或服务重启；尚需一般自然语言纠正的本地模型质量验证、自然任务持续学习及 Skill 回放/影子质量验收。收据：docs/evidence/ma24-message-memory-correction-2026-10-10.json。
 
+### MA24-07 / MA24-14 — 复用主 Agent 图的历史回放适配（2026-10-10）
+
+已新增 skill-graph-replay.ts；本机历史回放命令可显式选择 --main-graph。复用生产 buildMainAgentGraph 的安全边界、模型/工具节点、重复动作保护及停止状态；使用真实 productPrompt、三种知识工具目录与输入输出 Schema。模型按 discover_tools / describe_tool / execute_tool 结构交互，执行器要求先描述、再按 Schema 匹配完全相同的历史参数，仅返回已保存收据。没有生产 dispatchTool、真实工具执行、任务写入或检查点写入。每路最多 8 次模型请求；来源复核沿用上阶段，失效时不能保存为完整评测对。
+
+本地适配将产品的字符串参数/调用 ID 转为 Ollama 历史参数对象/工具名；仍是本地结构化输出适配，不等于原生产供应商模型。结果保存完整消息、工具调用/收据哈希、Prompt/工具 Schema 与配置哈希；标记 productionGraphReused=true、productionAgentEquivalent=false、liveShadow=false、autoEnable=false。未重放账户动态政策、原完整对话和生产模式备用模型，也不宣称完成真实在线影子验收。
+
+验证：6 文件 57 项回归、TypeScript、定向 ESLint 通过；涵盖发现→描述→读取→回答、越权工具阻断、缺少描述/不匹配收据、重复动作停止、来源变化不保存及历史入口选择图执行器。另以真实本机 qwen3 运行一道合成开发题，共 2 次调用：基线路径首轮 model-or-schema-error；候选路径将 knowledge_compare 误作顶层函数，被 invalid-execution-input 阻断。该模型契约检查未通过，失败原样保存，无实际工具或云模型调用。不得将共用图的测试通过写成本地模型多轮通过或质量非退步。下一步需修复/验证本地消息协议适配，并补正式模型影子、审核判分与启用证据门禁。生产服务和开关未变。证据：docs/evidence/ma24-skill-main-graph-replay-2026-10-10.json。
+
+
 ### MA24-07 / MA24-14 — 账户历史收据快照与回放前复核（2026-10-10）
 
 已实现内部历史回放入口 prepareHistoricalSkillReplay / runHistoricalSkillReplay，及操作者本地命令 scripts/run-historical-skill-replay.ts。账户由受信调用方或本机操作者明确指定，不作为 Agent 工具或未认证 HTTP 接口。只接受活动账号拥有的账户级纯指令 Skill 和已完成主 Agent 任务；保存的首条用户消息须与任务 input.content 一致。首批只接受 version=1、completed/read 的 knowledge_search、knowledge_compare、vectorless_read，任务含任何其他工具、非只读/未完成调用或超过 24 条收据即拒绝，不静默省略。
