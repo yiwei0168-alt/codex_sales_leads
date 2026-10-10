@@ -1,0 +1,480 @@
+{
+  "readOnlyDatabase": true,
+  "externalCalls": 0,
+  "blindManifestSha256": "711ed12f970c54d7d3a73bd5d824946aa7c89cb3c9995b2976445c88bc017d70",
+  "candidatesSha256": "7c238898ac8f4f96d8338992ff023fbe2af3cbed2fefa41ba587e5db60f9ee08",
+  "verdictsSha256": "7065329ffc4057d0f18f6249a5754aeade4a8c0fb9e1e18b313fd7600d771218",
+  "corpusVersion": "knowledge-eval-v3-baseline",
+  "profileSha256": "37d58b9f3c768f48d45679b6a172246b1a0d7ebe7e25c6043cba6cfad7c31752",
+  "goldSnapshotSha256": "2490c2412e71ebca86d30b73aafb42af883856746db26fcb1548087bd57c4cda",
+  "complete": true,
+  "holdoutNonRegression": true,
+  "missingCandidates": [],
+  "missingVerdicts": [],
+  "totals": {
+    "v3": {
+      "total": 50,
+      "reviewed": 50,
+      "answerCorrect": 31,
+      "preciseCitationCorrect": 4
+    },
+    "vectorless": {
+      "total": 50,
+      "reviewed": 50,
+      "answerCorrect": 36,
+      "preciseCitationCorrect": 12
+    }
+  },
+  "byGroup": {
+    "base": {
+      "v3": {
+        "total": 40,
+        "reviewed": 40,
+        "answerCorrect": 28,
+        "preciseCitationCorrect": 4
+      },
+      "vectorless": {
+        "total": 40,
+        "reviewed": 40,
+        "answerCorrect": 30,
+        "preciseCitationCorrect": 6
+      }
+    },
+    "boundary": {
+      "v3": {
+        "total": 10,
+        "reviewed": 10,
+        "answerCorrect": 3,
+        "preciseCitationCorrect": 0
+      },
+      "vectorless": {
+        "total": 10,
+        "reviewed": 10,
+        "answerCorrect": 6,
+        "preciseCitationCorrect": 6
+      }
+    }
+  },
+  "byTag": {
+    "2.5g": {
+      "v3": {
+        "total": 1,
+        "reviewed": 1,
+        "answerCorrect": 1,
+        "preciseCitationCorrect": 0
+      },
+      "vectorless": {
+        "total": 1,
+        "reviewed": 1,
+        "answerCorrect": 1,
+        "preciseCitationCorrect": 0
+      }
+    },
+    "5g": {
+      "v3": {
+        "total": 1,
+        "reviewed": 1,
+        "answerCorrect": 1,
+        "preciseCitationCorrect": 0
+      },
+      "vectorless": {
+        "total": 1,
+        "reviewed": 1,
+        "answerCorrect": 1,
+        "preciseCitationCorrect": 0
+      }
+    },
+    "comparison": {
+      "v3": {
+        "total": 8,
+        "reviewed": 8,
+        "answerCorrect": 4,
+        "preciseCitationCorrect": 0
+      },
+      "vectorless": {
+        "total": 8,
+        "reviewed": 8,
+        "answerCorrect": 2,
+        "preciseCitationCorrect": 0
+      }
+    },
+    "context": {
+      "v3": {
+        "total": 1,
+        "reviewed": 1,
+        "answerCorrect": 0,
+        "preciseCitationCorrect": 0
+      },
+      "vectorless": {
+        "total": 1,
+        "reviewed": 1,
+        "answerCorrect": 1,
+        "preciseCitationCorrect": 1
+      }
+    },
+    "derivation": {
+      "v3": {
+        "total": 1,
+        "reviewed": 1,
+        "answerCorrect": 0,
+        "preciseCitationCorrect": 0
+      },
+      "vectorless": {
+        "total": 1,
+        "reviewed": 1,
+        "answerCorrect": 1,
+        "preciseCitationCorrect": 1
+      }
+    },
+    "document": {
+      "v3": {
+        "total": 8,
+        "reviewed": 8,
+        "answerCorrect": 8,
+        "preciseCitationCorrect": 2
+      },
+      "vectorless": {
+        "total": 8,
+        "reviewed": 8,
+        "answerCorrect": 8,
+        "preciseCitationCorrect": 2
+      }
+    },
+    "entity-boundary": {
+      "v3": {
+        "total": 1,
+        "reviewed": 1,
+        "answerCorrect": 0,
+        "preciseCitationCorrect": 0
+      },
+      "vectorless": {
+        "total": 1,
+        "reviewed": 1,
+        "answerCorrect": 0,
+        "preciseCitationCorrect": 0
+      }
+    },
+    "explanation": {
+      "v3": {
+        "total": 8,
+        "reviewed": 8,
+        "answerCorrect": 6,
+        "preciseCitationCorrect": 0
+      },
+      "vectorless": {
+        "total": 8,
+        "reviewed": 8,
+        "answerCorrect": 6,
+        "preciseCitationCorrect": 0
+      }
+    },
+    "fact": {
+      "v3": {
+        "total": 16,
+        "reviewed": 16,
+        "answerCorrect": 10,
+        "preciseCitationCorrect": 2
+      },
+      "vectorless": {
+        "total": 16,
+        "reviewed": 16,
+        "answerCorrect": 14,
+        "preciseCitationCorrect": 4
+      }
+    },
+    "generation-eligible": {
+      "v3": {
+        "total": 8,
+        "reviewed": 8,
+        "answerCorrect": 6,
+        "preciseCitationCorrect": 0
+      },
+      "vectorless": {
+        "total": 8,
+        "reviewed": 8,
+        "answerCorrect": 6,
+        "preciseCitationCorrect": 0
+      }
+    },
+    "interface": {
+      "v3": {
+        "total": 1,
+        "reviewed": 1,
+        "answerCorrect": 0,
+        "preciseCitationCorrect": 0
+      },
+      "vectorless": {
+        "total": 1,
+        "reviewed": 1,
+        "answerCorrect": 0,
+        "preciseCitationCorrect": 0
+      }
+    },
+    "missing-entity": {
+      "v3": {
+        "total": 1,
+        "reviewed": 1,
+        "answerCorrect": 0,
+        "preciseCitationCorrect": 0
+      },
+      "vectorless": {
+        "total": 1,
+        "reviewed": 1,
+        "answerCorrect": 1,
+        "preciseCitationCorrect": 1
+      }
+    },
+    "multi-entity": {
+      "v3": {
+        "total": 8,
+        "reviewed": 8,
+        "answerCorrect": 4,
+        "preciseCitationCorrect": 0
+      },
+      "vectorless": {
+        "total": 8,
+        "reviewed": 8,
+        "answerCorrect": 2,
+        "preciseCitationCorrect": 0
+      }
+    },
+    "negation": {
+      "v3": {
+        "total": 1,
+        "reviewed": 1,
+        "answerCorrect": 0,
+        "preciseCitationCorrect": 0
+      },
+      "vectorless": {
+        "total": 1,
+        "reviewed": 1,
+        "answerCorrect": 0,
+        "preciseCitationCorrect": 1
+      }
+    },
+    "no-invented-link": {
+      "v3": {
+        "total": 1,
+        "reviewed": 1,
+        "answerCorrect": 0,
+        "preciseCitationCorrect": 0
+      },
+      "vectorless": {
+        "total": 1,
+        "reviewed": 1,
+        "answerCorrect": 1,
+        "preciseCitationCorrect": 1
+      }
+    },
+    "original-source": {
+      "v3": {
+        "total": 8,
+        "reviewed": 8,
+        "answerCorrect": 8,
+        "preciseCitationCorrect": 2
+      },
+      "vectorless": {
+        "total": 8,
+        "reviewed": 8,
+        "answerCorrect": 8,
+        "preciseCitationCorrect": 2
+      }
+    },
+    "poe": {
+      "v3": {
+        "total": 8,
+        "reviewed": 8,
+        "answerCorrect": 3,
+        "preciseCitationCorrect": 0
+      },
+      "vectorless": {
+        "total": 8,
+        "reviewed": 8,
+        "answerCorrect": 6,
+        "preciseCitationCorrect": 0
+      }
+    },
+    "polarity": {
+      "v3": {
+        "total": 8,
+        "reviewed": 8,
+        "answerCorrect": 3,
+        "preciseCitationCorrect": 0
+      },
+      "vectorless": {
+        "total": 8,
+        "reviewed": 8,
+        "answerCorrect": 6,
+        "preciseCitationCorrect": 0
+      }
+    },
+    "ports": {
+      "v3": {
+        "total": 8,
+        "reviewed": 8,
+        "answerCorrect": 7,
+        "preciseCitationCorrect": 2
+      },
+      "vectorless": {
+        "total": 8,
+        "reviewed": 8,
+        "answerCorrect": 8,
+        "preciseCitationCorrect": 4
+      }
+    },
+    "private": {
+      "v3": {
+        "total": 1,
+        "reviewed": 1,
+        "answerCorrect": 1,
+        "preciseCitationCorrect": 0
+      },
+      "vectorless": {
+        "total": 1,
+        "reviewed": 1,
+        "answerCorrect": 0,
+        "preciseCitationCorrect": 1
+      }
+    },
+    "role": {
+      "v3": {
+        "total": 1,
+        "reviewed": 1,
+        "answerCorrect": 1,
+        "preciseCitationCorrect": 0
+      },
+      "vectorless": {
+        "total": 1,
+        "reviewed": 1,
+        "answerCorrect": 1,
+        "preciseCitationCorrect": 0
+      }
+    },
+    "sfp-plus": {
+      "v3": {
+        "total": 1,
+        "reviewed": 1,
+        "answerCorrect": 0,
+        "preciseCitationCorrect": 0
+      },
+      "vectorless": {
+        "total": 1,
+        "reviewed": 1,
+        "answerCorrect": 0,
+        "preciseCitationCorrect": 0
+      }
+    },
+    "shared-port": {
+      "v3": {
+        "total": 1,
+        "reviewed": 1,
+        "answerCorrect": 0,
+        "preciseCitationCorrect": 0
+      },
+      "vectorless": {
+        "total": 1,
+        "reviewed": 1,
+        "answerCorrect": 1,
+        "preciseCitationCorrect": 1
+      }
+    },
+    "suffix": {
+      "v3": {
+        "total": 1,
+        "reviewed": 1,
+        "answerCorrect": 0,
+        "preciseCitationCorrect": 0
+      },
+      "vectorless": {
+        "total": 1,
+        "reviewed": 1,
+        "answerCorrect": 0,
+        "preciseCitationCorrect": 0
+      }
+    },
+    "tenant": {
+      "v3": {
+        "total": 1,
+        "reviewed": 1,
+        "answerCorrect": 1,
+        "preciseCitationCorrect": 0
+      },
+      "vectorless": {
+        "total": 1,
+        "reviewed": 1,
+        "answerCorrect": 0,
+        "preciseCitationCorrect": 1
+      }
+    },
+    "unit-boundary": {
+      "v3": {
+        "total": 1,
+        "reviewed": 1,
+        "answerCorrect": 1,
+        "preciseCitationCorrect": 0
+      },
+      "vectorless": {
+        "total": 1,
+        "reviewed": 1,
+        "answerCorrect": 1,
+        "preciseCitationCorrect": 0
+      }
+    },
+    "unknown-entity": {
+      "v3": {
+        "total": 1,
+        "reviewed": 1,
+        "answerCorrect": 0,
+        "preciseCitationCorrect": 0
+      },
+      "vectorless": {
+        "total": 1,
+        "reviewed": 1,
+        "answerCorrect": 1,
+        "preciseCitationCorrect": 1
+      }
+    },
+    "variant-5": {
+      "v3": {
+        "total": 10,
+        "reviewed": 10,
+        "answerCorrect": 3,
+        "preciseCitationCorrect": 0
+      },
+      "vectorless": {
+        "total": 10,
+        "reviewed": 10,
+        "answerCorrect": 6,
+        "preciseCitationCorrect": 6
+      }
+    },
+    "version": {
+      "v3": {
+        "total": 1,
+        "reviewed": 1,
+        "answerCorrect": 0,
+        "preciseCitationCorrect": 0
+      },
+      "vectorless": {
+        "total": 1,
+        "reviewed": 1,
+        "answerCorrect": 1,
+        "preciseCitationCorrect": 1
+      }
+    },
+    "vpn": {
+      "v3": {
+        "total": 1,
+        "reviewed": 1,
+        "answerCorrect": 1,
+        "preciseCitationCorrect": 0
+      },
+      "vectorless": {
+        "total": 1,
+        "reviewed": 1,
+        "answerCorrect": 1,
+        "preciseCitationCorrect": 0
+      }
+    }
+  }
+}
