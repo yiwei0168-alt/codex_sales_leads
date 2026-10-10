@@ -15,3 +15,11 @@
 新增 `knowledge_compare`，输入两个不同的明确产品型号及 1～6 个属性键或字段名称。每对象、每字段独立执行本地全文/事实查询，轮流保留各字段命中，每对象最多 4 块、共 8 块；返回每对象的已核实事实、原文、缺项、冲突与未搜索范围。字段只有唯一的已核实值才标 verified；原文匹配不自动成为正式事实。返回前统一回校账号、当前来源和版本，失效事实及原文剔除。工具不新增模型调用，三个模式均可按既有角色/资料范围读取；不包含 product 的范围不提供该工具。
 
 验证：41 项相关测试、TypeScript、ESLint 通过；真实本机 PostgreSQL 对开发型号 AP3000 / GS108 只读检查分别返回 4 / 3 块，未核实字段保持 missing，HTTP 被脚本禁止，数据库无写入。目录生成检查覆盖 105 个工具。此验证只证明读取、范围与结构契约，不证明生成答案质量；后续保留完整坐标收据并加载服务。
+
+## 3. 独立开发收据与准确原文坐标
+
+发现并修复 v3 原文返回的坐标问题：以前把相邻块合并并裁到 6000 字符，却保留单一块 ID，且 metadata 取自文档而非块。现在检索排序不变，返回各块自身的完整 content、source_location、来源/内容 SHA-256、assetId、sourceRevisionId 和 releaseId；需要更多上下文必须另取证据。证据缓存增加 `exact-v3-block-v1` 身份，避免复用旧投影。
+
+新增 `scripts/capture-knowledge-development-local.ts <development-case.json> <authorized-user-uuid>`：仅允许 development 输入和本机数据库，HTTP 硬禁用，只执行原件/比较只读工具，不调用回答模型。收据记录问题/输出哈希、Prompt 版本、明确的结果类型、完整原文及稳定坐标；内容哈希不符、缺坐标、悬空引用或拒绝结果附无关引用时失败。输出固定到忽略的 `tmp/ma24-development-receipts/<随机ID>.json`，独占创建，不可指定历史输出目录。deny、clarification、insufficient-evidence 分开保存，完整收据不自动视作精确引用或答案正确，semanticReview 固定 pending、releaseEligible 固定 false。
+
+26 项针对性回归、TypeScript、ESLint 通过。开发型号 AP3000/GS108 的真实读取保存 7 个独立完整块，内容哈希及页码验证通过；零模型调用。历史冻结脚本/候选/Gold/判决均未修改。该流程用于开发取证验收；真实生成答案的语义复核及新的独立冻结评测仍是发布前置条件。

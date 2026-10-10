@@ -61,7 +61,7 @@ async function answerWithRagImpl(userId: string, input: RagQuery): Promise<RagAn
     key: knowledgeCacheKey("evidence", {
       userId, question: normalizeKnowledgeText(input.question), filters: input.filters ?? {}, maxChunks,
       revision, aliases: ATTRIBUTE_REGISTRY_VERSION, profile: LOCAL_RETRIEVAL_PROFILE,
-      bgeAvailable: Boolean(bgeEmbedding),
+      bgeAvailable: Boolean(bgeEmbedding), evidenceFormat: 'exact-v3-block-v1',
     }),
     ttlMs: 2 * 60_000,
     load: () => hybridSearch(userId, input.question, null, {
