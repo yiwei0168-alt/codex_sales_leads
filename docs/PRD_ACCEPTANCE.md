@@ -634,3 +634,6 @@ MODELDIAG-01：获准的单次合成 GLM/Fireworks 诊断已执行；真实响�
 # 2026-10-10：旧意图识别停用验收
 
 MODESEL-15：53 项本地测试通过。旧入口仅返回停用提示，配置密钥也不会产生分类调用或下游工具调用；新版模式回归通过，无新增付费调用。[证据](LEGACY_INTENT_DISABLED_2026-10-10.md)。
+# 2026-10-10：DeepSeek 业务网关验收
+
+研究/评分/联系人核验适配器迁至 OpenRouter，106 项 provider 与业务回归、类型检查、聚焦 lint 通过。缓存和付费指纹按真实网关请求计算；未新增付费调用。详见 [记录](OPENROUTER_DEEPSEEK_MIGRATION_2026-10-10.md)。

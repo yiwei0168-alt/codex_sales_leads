@@ -572,3 +572,6 @@ MODESEL-05/06 覆盖旧意图规划 Kimi 主选及 DeepSeek 等价备用；调�
 # 2026-10-10：停用旧意图识别
 
 按用户明确要求 MODESEL-15，停用旧 Kimi 分类、复杂度升级和 DeepSeek 备用。只保留兼容提示和历史记录；新版三模式主 Agent 继续工作。此前旧意图网关迁移不作为启用依据。[验收记录](docs/LEGACY_INTENT_DISABLED_2026-10-10.md)。
+# 2026-10-10：业务 DeepSeek 统一网关
+
+MODESEL-05/06 扩展至研究/评分/联系人核验共用适配器，主路和已配置备用统一网关连接；评分规则和授权门槛保留。缓存与调用收据区分旧直连和新网关。旧意图停用，Google grounding 与远程向量待迁移。[验收记录](docs/OPENROUTER_DEEPSEEK_MIGRATION_2026-10-10.md)。

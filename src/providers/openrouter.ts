@@ -13,7 +13,7 @@ export interface OpenRouterConfig {
 const DEFAULT_BASE_URL = "https://openrouter.ai/api/v1";
 const DEFAULT_APP_TITLE = "Cudy Network Channel Copilot";
 
-function validatedBaseUrl(value: string | undefined): string {
+export function validatedOpenRouterBaseUrl(value: string | undefined): string {
   const parsed = new URL(value?.trim() || DEFAULT_BASE_URL);
   if (parsed.protocol !== "https:" || parsed.hostname !== "openrouter.ai"
     || parsed.username || parsed.password) {
@@ -42,14 +42,14 @@ export function resolveOpenRouterModel(model: string, family: OpenRouterModelFam
   return `anthropic/${normalized}`;
 }
 
-export function getOpenRouterConfig(): OpenRouterConfig {
-  const apiKey = process.env.OPENROUTER_API_KEY?.trim() || "";
+export function getOpenRouterConfig(overrides: { apiKey?: string; baseUrl?: string } = {}): OpenRouterConfig {
+  const apiKey = (overrides.apiKey ?? process.env.OPENROUTER_API_KEY)?.trim() || "";
   if (!apiKey) throw new Error("OPENROUTER_API_KEY is not configured");
   const referer = optionalReferer(process.env.OPENROUTER_HTTP_REFERER);
   const title = process.env.OPENROUTER_APP_TITLE?.trim() || DEFAULT_APP_TITLE;
   return {
     apiKey,
-    baseUrl: validatedBaseUrl(process.env.OPENROUTER_BASE_URL),
+    baseUrl: validatedOpenRouterBaseUrl(overrides.baseUrl ?? process.env.OPENROUTER_BASE_URL),
     defaultHeaders: {
       ...(referer ? { "HTTP-Referer": referer } : {}),
       "X-OpenRouter-Title": title,

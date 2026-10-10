@@ -162,7 +162,7 @@ export class ResilientAiProvider implements AiProvider {
       try {
         const response = await this.primary.execute<TInput, TOutput>(request, signal);
         this.circuits.delete(this.primary.id);
-        return { ...response, requestedModelVersion: requestedModel, actualProviderId: this.primary.id };
+        return { ...response, requestedModelVersion: requestedModel, actualProviderId: response.actualProviderId ?? this.primary.id };
       } catch (error) {
         if(error instanceof BudgetDeniedError)throw error;
         primaryError = error;
@@ -222,17 +222,19 @@ export class ResilientAiProvider implements AiProvider {
 
 function fallbackRoute(index: 1 | 2): AiFallbackRoute | null {
   const prefix = `LEAD_AI_FALLBACK_${index}`;
-  const apiKey = process.env[`${prefix}_API_KEY`]?.trim();
-  const baseUrl = process.env[`${prefix}_BASE_URL`]?.trim();
+  const apiKey = process.env.OPENROUTER_API_KEY?.trim();
+  const baseUrl = process.env.OPENROUTER_BASE_URL?.trim() || "https://openrouter.ai/api/v1";
   const routineModel = process.env[`${prefix}_ROUTINE_MODEL`]?.trim();
   const escalationModel = process.env[`${prefix}_ESCALATION_MODEL`]?.trim();
   const privacyApproved = process.env[`${prefix}_DATA_PERMISSION_APPROVED`]?.trim().toLowerCase() === "true";
   if (!apiKey || !baseUrl || !privacyApproved || (!routineModel && !escalationModel)) return null;
+  const config = getOpenRouterConfig();
   const classifications = (process.env[`${prefix}_DATA_CLASSIFICATIONS`] ?? "public")
     .split(",").map((value) => value.trim()).filter((value): value is AiDataClassification =>
       value === "public" || value === "private-workspace");
   return { provider: new OpenAiCompatibleProvider({ id: process.env[`${prefix}_PROVIDER_ID`]?.trim()
-    || `lead-fallback-${index}`, apiKey, baseUrl }), routineModel, escalationModel,
+    || `lead-fallback-${index}`, apiKey:config.apiKey, baseUrl:config.baseUrl,
+    defaultHeaders:config.defaultHeaders,extraBody:{provider:{...config.providerPreferences,allow_fallbacks:false}} }), routineModel, escalationModel,
   approvedDataClassifications: classifications };
 }
 
@@ -245,7 +247,7 @@ function openRouterDeepSeekFallbackRoute(): AiFallbackRoute | null {
       apiKey: config.apiKey,
       baseUrl: config.baseUrl,
       defaultHeaders: config.defaultHeaders,
-      extraBody: { provider: config.providerPreferences, reasoning: { effort: "none" } },
+      extraBody: { provider: {...config.providerPreferences,allow_fallbacks:false}, reasoning: { effort: "none" } },
     }),
     routineModel: process.env.OPENROUTER_DEEPSEEK_ROUTINE_MODEL?.trim()
       || "deepseek/deepseek-v4-flash",
@@ -265,7 +267,7 @@ function openRouterOpenAiPeerRoute(): AiFallbackRoute | null {
       apiKey: config.apiKey,
       baseUrl: config.baseUrl,
       defaultHeaders: config.defaultHeaders,
-      extraBody: { provider: config.providerPreferences },
+      extraBody: { provider: {...config.providerPreferences,allow_fallbacks:false} },
     }),
     routineModel: process.env.OPENROUTER_OPENAI_ROUTINE_MODEL?.trim() || "openai/gpt-4o-mini",
     escalationModel: process.env.OPENROUTER_OPENAI_ESCALATION_MODEL?.trim() || "openai/gpt-4o",
@@ -275,7 +277,7 @@ function openRouterOpenAiPeerRoute(): AiFallbackRoute | null {
 }
 
 export function createLeadAiProvider(primary: AiProvider = new DeepSeekProvider()): AiProvider {
-  const fallbacks = ([openRouterDeepSeekFallbackRoute(), openRouterOpenAiPeerRoute(), fallbackRoute(1),
+  const fallbacks = ([primary instanceof DeepSeekProvider ? null : openRouterDeepSeekFallbackRoute(), openRouterOpenAiPeerRoute(), fallbackRoute(1),
     fallbackRoute(2)]).filter((route): route is AiFallbackRoute => Boolean(route)).slice(0, 4);
   return new ResilientAiProvider(primary, { fallbacks });
 }

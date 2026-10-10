@@ -10,7 +10,7 @@ import {deepSeekRequestBody} from "./deepseek-request";
 afterEach(()=>vi.unstubAllEnvs());
 const request:StructuredAiRequest<unknown>={task:"lead-evidence-correction",modelVersion:"deepseek-v4-flash",promptVersion:"v1",input:{candidates:["a","b"]},evidenceIds:["ev-a","ev-b"],outputSchema:{type:"object"}};
 it("binds complete payload, order, model, transport and generation settings without exposing credentials",()=>{
-  const provider=new DeepSeekProvider({apiKey:"fixture-secret",baseUrl:"https://example.test"});
+  const provider=new DeepSeekProvider({apiKey:"fixture-secret",baseUrl:"https://openrouter.ai/api/v1"});
   const original=provider.cacheIdentity(request);
   expect(original).toMatch(/^[a-f0-9]{64}$/);
   expect(provider.cacheIdentity({...request})).toBe(original);
@@ -22,15 +22,15 @@ it("binds complete payload, order, model, transport and generation settings with
     {...request,promptVersion:"v2"},
     {...request,outputSchema:{type:"array"}},
   ])expect(provider.cacheIdentity(changed)).not.toBe(original);
-  expect(new DeepSeekProvider({baseUrl:"https://other.test"}).cacheIdentity(request)).not.toBe(original);
+  expect(()=>new DeepSeekProvider({baseUrl:"https://other.test"})).toThrow("OpenRouter HTTPS");
   vi.stubEnv("DEEPSEEK_TEMPERATURE","1");
   expect(provider.cacheIdentity(request)).not.toBe(original);
   vi.stubEnv("DEEPSEEK_TEMPERATURE","0");
   vi.stubEnv("DEEPSEEK_TRANSPORT","anthropic");
-  expect(provider.cacheIdentity(request)).not.toBe(original);
+  expect(provider.cacheIdentity(request)).toBe(original);
 });
 it("resilient identity describes primary only and unavailable contracts fail closed",()=>{
-  const provider=new DeepSeekProvider({baseUrl:"https://example.test"});
+  const provider=new DeepSeekProvider({baseUrl:"https://openrouter.ai/api/v1"});
   expect(new ResilientAiProvider(provider).cacheIdentity(request)).toBe(provider.cacheIdentity(request));
   expect(new ResilientAiProvider({id:"unknown",execute:vi.fn()}).cacheIdentity(request)).toBe("");
   expect(new ResilientAiProvider(provider).paidRequestFingerprint(request)).toBe(provider.paidRequestFingerprint(request));
@@ -38,26 +38,25 @@ it("resilient identity describes primary only and unavailable contracts fail clo
 });
 it.each(["chat-completions","anthropic"])("matches the budget replay fingerprint for %s",transport=>{
   vi.stubEnv("DEEPSEEK_TRANSPORT",transport==="anthropic"?"anthropic":"chat");
-  const provider=new DeepSeekProvider({apiKey:"fixture-secret",baseUrl:"https://example.test"});
+  const provider=new DeepSeekProvider({apiKey:"fixture-secret",baseUrl:"https://openrouter.ai/api/v1"});
   const {body,useAnthropicTransport}=deepSeekRequestBody(request,request.modelVersion);
   const expected=createHash("sha256").update(JSON.stringify({version:"paid-request-replay-v1",
-    method:"POST",origin:"https://example.test",pathname:useAnthropicTransport
-      ?"/anthropic/v1/messages":"/chat/completions",query:"",body})).digest("hex");
+    method:"POST",origin:"https://openrouter.ai",pathname:useAnthropicTransport
+      ?"/anthropic/v1/messages":"/api/v1/chat/completions",query:"",body})).digest("hex");
   expect(provider.paidRequestFingerprint(request)).toBe(expected);
   expect(provider.paidRequestFingerprint(request)).not.toContain("fixture-secret");
   expect(provider.paidRequestFingerprint({...request,input:{candidates:["changed"]}})).not.toBe(expected);
   vi.stubEnv("DEEPSEEK_TEMPERATURE","1");
   expect(provider.paidRequestFingerprint(request)).not.toBe(expected);
 });
-it("invalidates pre-approval Flash cache contracts but leaves Pro contracts unchanged",()=>{
-  const endpoint="https://api.deepseek.com";
+it("invalidates all old native cache contracts",()=>{
+  const endpoint="https://openrouter.ai/api/v1";
   const provider=new DeepSeekProvider({baseUrl:endpoint});
   for(const model of ["deepseek-v4-flash","deepseek-flash","deepseek-v4-pro"]){
     const input={...request,modelVersion:model};
     const before=createHash("sha256").update(JSON.stringify({version:"deepseek-wire-cache-v1",provider:"deepseek",
       endpoint,...deepSeekRequestBody(input,model)})).digest("hex");
-    if(model.includes("pro"))expect(provider.cacheIdentity(input)).toBe(before);
-    else expect(provider.cacheIdentity(input)).not.toBe(before);
+    expect(provider.cacheIdentity(input)).not.toBe(before);
   }
 });
 it("matches the paid HTTP replay identity for the actual compatible route",()=>{
@@ -83,7 +82,7 @@ it("matches the paid HTTP replay identity for the actual compatible route",()=>{
   });
 });
 it("enumerates only approved actual route contracts without changing the primary identity",()=>{
-  const primary=new DeepSeekProvider({apiKey:"fixture-secret",baseUrl:"https://example.test"});
+  const primary=new DeepSeekProvider({apiKey:"fixture-secret",baseUrl:"https://openrouter.ai/api/v1"});
   const fallback=new OpenAiCompatibleProvider({id:"fixture-peer",apiKey:"fixture-secret",
     baseUrl:"https://peer.test/v1"});
   const resilient=new ResilientAiProvider(primary,{fallbacks:[{provider:fallback,

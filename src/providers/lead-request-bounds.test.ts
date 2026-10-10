@@ -40,7 +40,7 @@ it("wire serializer exactly matches both DeepSeek transports without changing ou
       expect(init?.body).toBe(expected.body);
       const parsed=JSON.parse(String(init?.body));
       expect(parsed.max_tokens).toBe(8192);
-      return Response.json(mode==="anthropic"?{stop_reason:"end_turn",content:[{type:"text",text:"{}"}]}:{choices:[{finish_reason:"stop",message:{content:"{}"}}]});
+      return Response.json({choices:[{finish_reason:"stop",message:{content:"{}"}}]});
     });
     await new DeepSeekProvider({apiKey:"fixture",fetchImplementation:transport,maxAttempts:1}).execute(request);
   }

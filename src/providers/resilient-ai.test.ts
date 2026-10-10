@@ -3,6 +3,15 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import type { AiProvider, StructuredAiRequest, StructuredAiResponse } from "./contracts";
 import { createLeadAiProvider, ResilientAiProvider } from "./resilient-ai";
 import {BudgetDeniedError} from "@/lib/billing/policy";
+import {DeepSeekProvider} from "./deepseek";
+
+it("does not add the old duplicate DeepSeek gateway fallback to the migrated primary",()=>{
+  vi.stubEnv("OPENROUTER_API_KEY","gateway-fixture");
+  const provider=createLeadAiProvider(new DeepSeekProvider({apiKey:"gateway-fixture"}));
+  const routes=provider.executionRoutes!(request);
+  expect(routes.map(route=>route.providerId)).not.toContain("openrouter-deepseek");
+  expect(routes[0].providerId).toBe("deepseek");
+});
 
 class FakeAiProvider implements AiProvider {
   calls: StructuredAiRequest<unknown>[] = [];

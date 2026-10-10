@@ -1,6 +1,7 @@
+import { getOpenRouterConfig, validatedOpenRouterBaseUrl } from "./openrouter";
 import {BudgetDeniedError} from "@/lib/billing/policy";
 import { budgetedFetch } from "@/lib/billing/paid-fetch";
-import {deepSeekRequestBody} from "./deepseek-request";
+import {deepSeekRequestBody,deepSeekGatewayModel} from "./deepseek-request";
 import {assertLeadRequestBytes} from "./lead-request-bounds";
 import type { AiProvider, StructuredAiRequest, StructuredAiResponse } from "./contracts";
 import { ProviderUnavailableError } from "./contracts";
@@ -32,14 +33,6 @@ interface DeepSeekWireResponse {
   error?: { message?: string };
 }
 
-interface DeepSeekAnthropicResponse {
-  id?: string;
-  model?: string;
-  stop_reason?: string;
-  content?: Array<{ type?: string; text?: string }>;
-  usage?: { input_tokens?: number; output_tokens?: number };
-  error?: { message?: string };
-}
 
 class DeepSeekRequestError extends Error {
   constructor(message: string, readonly retryable: boolean) {
@@ -61,12 +54,14 @@ export class DeepSeekProvider implements AiProvider {
   private readonly apiKey: string;
   private readonly baseUrl: string;
   private readonly defaultModel: string;
+  private readonly defaultHeaders: Record<string,string>;
   private readonly fetchImplementation: typeof fetch;
   private readonly maxAttempts: number;
 
   constructor(options: DeepSeekProviderOptions = {}) {
-    this.apiKey = options.apiKey?.trim() ?? process.env.DEEPSEEK_API_KEY?.trim() ?? "";
-    this.baseUrl = (options.baseUrl?.trim() || process.env.DEEPSEEK_BASE_URL?.trim() || "https://api.deepseek.com").replace(/\/$/, "");
+    this.apiKey = options.apiKey?.trim() ?? process.env.OPENROUTER_API_KEY?.trim() ?? "";
+    this.baseUrl = validatedOpenRouterBaseUrl(options.baseUrl ?? process.env.OPENROUTER_BASE_URL);
+    this.defaultHeaders = this.apiKey ? getOpenRouterConfig({apiKey:this.apiKey,baseUrl:this.baseUrl}).defaultHeaders : {};
     this.defaultModel = options.defaultModel?.trim() || process.env.DEEPSEEK_MODEL?.trim() || "deepseek-v4-flash";
     this.fetchImplementation = budgetedFetch(options.fetchImplementation ?? fetch);
     this.maxAttempts = Math.max(1, options.maxAttempts ?? 3);
@@ -80,17 +75,16 @@ export class DeepSeekProvider implements AiProvider {
     const model=request.modelVersion.trim()||this.defaultModel;
     // An approval epoch, not a claim that a mutable hosted alias is revision-pinned.
     // Invalidate old Flash snapshots even when an explicit caller retains the alias.
-    const flashApprovalEpoch = ["deepseek-flash", "deepseek-v4-flash"].includes(model)
+    const flashApprovalEpoch = ["deepseek-flash", "deepseek-v4-flash"].includes(model.replace(/^deepseek\//,""))
       ? {flashApprovalEpoch:"v4.1-flash-approved-2026-09-13"} : {};
-    return createHash("sha256").update(JSON.stringify({version:"deepseek-wire-cache-v1",provider:this.id,
+    return createHash("sha256").update(JSON.stringify({version:"deepseek-openrouter-cache-v2",provider:this.id,
       endpoint:this.baseUrl,...flashApprovalEpoch,...deepSeekRequestBody(request,model)})).digest("hex");
   }
 
   paidRequestFingerprint(request:StructuredAiRequest<unknown>):string {
     const model=request.modelVersion.trim()||this.defaultModel;
-    const {body,useAnthropicTransport}=deepSeekRequestBody(request,model);
-    return paidRequestFingerprint("POST",new URL(useAnthropicTransport
-      ?`${this.baseUrl}/anthropic/v1/messages`:`${this.baseUrl}/chat/completions`),body);
+    const {body}=deepSeekRequestBody(request,model);
+    return paidRequestFingerprint("POST",new URL(`${this.baseUrl}/chat/completions`),body);
   }
 
   requestBytes(request: StructuredAiRequest<unknown>): number {
@@ -101,32 +95,28 @@ export class DeepSeekProvider implements AiProvider {
     request: StructuredAiRequest<TInput>,
     signal?: AbortSignal,
   ): Promise<StructuredAiResponse<TOutput>> {
-    if (!this.apiKey) throw new ProviderUnavailableError(this.id, new Error("DEEPSEEK_API_KEY is not configured"));
-    const model = request.modelVersion.trim() || this.defaultModel;
+    if (!this.apiKey) throw new ProviderUnavailableError(this.id, new Error("OPENROUTER_API_KEY is not configured"));
+    const model = deepSeekGatewayModel(request.modelVersion.trim() || this.defaultModel);
     const startedAt = performance.now();
     let lastError: unknown;
     let attemptsMade = 0;
     const invocationId = randomUUID();
-    const {body:wireBody,useAnthropicTransport}=deepSeekRequestBody(request,model);
+    const {body:wireBody}=deepSeekRequestBody(request,model);
     assertLeadRequestBytes(request,wireBody);
 
     for (let attempt = 0; attempt < this.maxAttempts; attempt += 1) {
       attemptsMade = attempt + 1;
       try {
-        const response = await withModelAttempt({invocationId,provider:this.id,task:request.task,promptVersion:request.promptVersion,attempt:attempt+1,scoringVersion:requestScoringVersion(request.input)},()=>this.fetchImplementation(useAnthropicTransport
-          ? `${this.baseUrl}/anthropic/v1/messages` : `${this.baseUrl}/chat/completions`, {
+        const response = await withModelAttempt({invocationId,provider:"openrouter",task:request.task,promptVersion:request.promptVersion,attempt:attempt+1,scoringVersion:requestScoringVersion(request.input)},()=>this.fetchImplementation(`${this.baseUrl}/chat/completions`, {
           method: "POST",
-          headers: useAnthropicTransport ? {
-            "x-api-key": this.apiKey,
-            "anthropic-version": "2023-06-01",
-            "content-type": "application/json",
-          } : { authorization: `Bearer ${this.apiKey}`, "content-type": "application/json" },
+          headers: { authorization: `Bearer ${this.apiKey}`, "content-type": "application/json", ...this.defaultHeaders },
+          redirect: "error",
           body: wireBody,
           signal,
         }));
-        const body = await response.json() as DeepSeekWireResponse & DeepSeekAnthropicResponse;
+        const body = response.ok ? await response.json() as DeepSeekWireResponse : {};
         if (!response.ok) {
-          const error = new DeepSeekRequestError(body.error?.message ?? `DeepSeek HTTP ${response.status}`, retryableStatus(response.status));
+          const error = new DeepSeekRequestError(`OpenRouter DeepSeek HTTP ${response.status}`, retryableStatus(response.status));
           if (retryableStatus(response.status) && attempt < this.maxAttempts - 1) {
             lastError = error;
             await delay(250 * (2 ** attempt));
@@ -136,12 +126,10 @@ export class DeepSeekProvider implements AiProvider {
         }
 
         const choice = body.choices?.[0];
-        const content = (useAnthropicTransport
-          ? body.content?.filter((item) => item.type === "text").map((item) => item.text ?? "").join("")
-          : choice?.message?.content)?.trim();
+        const content = choice?.message?.content?.trim();
         if (!content) throw new Error("DeepSeek returned empty JSON content");
-        const finishReason = useAnthropicTransport ? body.stop_reason : choice?.finish_reason;
-        if (finishReason === "length" || finishReason === "max_tokens") throw new Error("DeepSeek JSON output was truncated");
+        const finishReason = choice?.finish_reason;
+        if (finishReason !== "stop") throw new DeepSeekRequestError("DeepSeek returned incomplete JSON output", false);
         let output: TOutput;
         try {
           output = JSON.parse(content) as TOutput;
@@ -152,7 +140,8 @@ export class DeepSeekProvider implements AiProvider {
         const warnings = finishReason && !["stop", "end_turn"].includes(finishReason) ? [`finish_reason:${finishReason}`] : [];
         return {
           output,
-          modelVersion: body.model ?? model,
+          modelVersion: body.model ?? deepSeekGatewayModel(model),
+          actualProviderId: "openrouter",
           promptVersion: request.promptVersion,
           latencyMs: Math.round(performance.now() - startedAt),
           warnings,
@@ -160,11 +149,11 @@ export class DeepSeekProvider implements AiProvider {
           attempts: attempt + 1,
           retries: attempt,
           usage: body.usage ? {
-            promptTokens: body.usage.prompt_tokens ?? body.usage.input_tokens ?? 0,
-            completionTokens: body.usage.completion_tokens ?? body.usage.output_tokens ?? 0,
+            promptTokens: body.usage.prompt_tokens ?? 0,
+            completionTokens: body.usage.completion_tokens ?? 0,
             reasoningTokens: body.usage.completion_tokens_details?.reasoning_tokens ?? 0,
             totalTokens: body.usage.total_tokens
-              ?? (body.usage.input_tokens ?? 0) + (body.usage.output_tokens ?? 0),
+              ?? (body.usage.prompt_tokens ?? 0) + (body.usage.completion_tokens ?? 0),
           } : undefined,
         };
       } catch (error) {
