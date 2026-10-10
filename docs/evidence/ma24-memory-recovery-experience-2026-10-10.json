@@ -1,0 +1,36 @@
+{
+  "date": "2026-10-10",
+  "implementationCommits": ["99df5e3", "38b0d98"],
+  "migration": {"id": 121, "isolatedCloneVerified": true, "localProductApplied": true},
+  "regression": {"files": 8, "passed": 69, "typescript": "passed", "focusedEslint": "passed"},
+  "isolatedDatabase": {
+    "workerKilledAndRestarted": true,
+    "expiredLeaseRecovered": true,
+    "cancelledQueueSkipped": true,
+    "singleObservationNoticeOutbox": true,
+    "conflictIsolationAndTwoClocks": true,
+    "undoAndGraphFallback": true,
+    "tenantIsolation": true,
+    "repeatedReportsCreateDisabledAccountDraft": true,
+    "draftReplayIdempotent": true,
+    "unreviewedAutomaticActivationDenied": true,
+    "fixturesRemoved": true,
+    "model": "loopback-stub-not-quality-evaluation"
+  },
+  "localModelContract": {
+    "model": "qwen3:8b",
+    "syntheticSamples": 6,
+    "passed": 6,
+    "persisted": 0,
+    "observedSuccessItems": 1,
+    "observedFailureItems": 1,
+    "proposalQuotedBypassBusinessFactItems": 0
+  },
+  "deployment": {"nextBuild": "passed", "productHttp": 200, "langgraphHttp": 200, "staticAssetsPassed": 10, "mailWorkerInterrupted": false},
+  "paidModelCalls": 0,
+  "automaticLearningEnabled": false,
+  "naturalTaskQualityAccepted": false,
+  "skillReplayAndShadowAccepted": false,
+  "independentRagEvaluationCompleted": false,
+  "retrievalMainPathSwitched": false
+}
