@@ -16,6 +16,7 @@ import { loadDecisionMemory } from "./memory-context";
 import { requestDurableBatchModel,ModelBatchPending } from "./model-batch";
 import {OpenRouterRequestError} from "@/providers/openrouter-batch";
 import {recordConsumedToolOutputs} from "./consumption";
+import {assertCurrentKnowledgeMessages,KnowledgeSourceChangedError,SOURCE_CHANGED_REPLY} from './knowledge-message-guard';
 
 export const MainAgentState = Annotation.Root({
   messages: Annotation<ModelMessage[]>(), pending: Annotation<ModelToolCall[]>(),
@@ -24,6 +25,7 @@ export const MainAgentState = Annotation.Root({
   decisionRevision: Annotation<number>(), policyRevision: Annotation<string>(),
 });
 export interface MainGraphDependencies {
+  validateEvidence?: (messages:ModelMessage[])=>Promise<void>;
   boundary: () => Promise<{ control: "pause" | "cancel" | null; instructions: Array<{ id: string; content: string }>; policyRevision?:string }>;
   model: (messages: ModelMessage[], step: number,revision:number) => Promise<ModelMessage>;
   tool: (call: ModelToolCall, instructionIds: string[]) => Promise<ToolResult>;
@@ -49,10 +51,13 @@ export function buildMainAgentGraph(deps: MainGraphDependencies, checkpointer?: 
     .addNode("main_model", async state => {
       if (state.steps >= 80) return { status: "partial" as RunStatus, reply: "任务已保存部分结果，达到本轮执行步数限制。可以继续或调整要求。" };
       try {
+        await deps.validateEvidence?.(state.messages);
         const response = await deps.model(state.messages, state.steps,state.decisionRevision??0);
+        await deps.validateEvidence?.(state.messages);
         if (response.tool_calls?.length) return { messages: [...state.messages, response], pending: response.tool_calls, steps: state.steps + 1 };
         return { messages: [...state.messages, response], steps: state.steps + 1, status: "completed" as RunStatus, reply: response.content ?? "" };
       } catch(error) {
+        if(error instanceof KnowledgeSourceChangedError)return {status:'partial' as RunStatus,reply:SOURCE_CHANGED_REPLY,pending:[]};
         if(error instanceof ModeModelsUnavailable)return {steps:state.steps+1,status:'partial' as RunStatus,reply:'当前模式的模型尝试已结束，任务和已有工具结果已保存。请查看执行详情；结果不明的请求需先核对，已执行的操作不会自动重做。'};
         if(error instanceof ModelBatchPending)return {status:"queued" as RunStatus,reply:"主模型批次已保存，正在等待提供方返回结果；后台会继续查询。批处理完成窗口为 24 小时，可暂停或取消后续工作。"};
         if(error instanceof OpenRouterRequestError&&error.status===429)return {steps:state.steps+1,status:"partial" as RunStatus,reply:"模型服务返回 HTTP 429：请求受到限流或配额限制。本次已停止立即重试，任务和已有结果已保存；请稍后恢复任务。"};
@@ -65,8 +70,9 @@ export function buildMainAgentGraph(deps: MainGraphDependencies, checkpointer?: 
       const count = (state.seen[key] ?? 0) + 1;
       if (count > 2) return { status: "partial" as RunStatus, reply: "相同动作重复执行且没有新输入，已保存结果。请补充要求后继续。" };
       let output: ToolResult;
-      try { output = await deps.tool(call, state.instructionIds); }
+      try { await deps.validateEvidence?.(state.messages); output = await deps.tool(call, state.instructionIds); }
       catch (error) {
+        if(error instanceof KnowledgeSourceChangedError)return {status:'partial' as RunStatus,reply:SOURCE_CHANGED_REPLY,pending:[]};
         // A composite can stop between leaf actions. Preserve pending protocol
         // state so the safe boundary can close it and incorporate the new input.
         if (error instanceof InstructionsChangedError) return { status: "running" as RunStatus };
@@ -164,6 +170,7 @@ export async function executeMainAgentRun(userId: string, runId: string, leaseTo
   if(run.execution_kind==="mail")return (await import("./mail-graph")).executeMailDeliveryRun(context,run);
   const checkpointer = new PostgresSaver(getPool(), undefined, { schema: "langgraph" });
   const graph = buildMainAgentGraph({
+    validateEvidence:messages=>assertCurrentKnowledgeMessages(userId,messages),
     boundary: async () => ({...await boundary(context),policyRevision:digest(await loadDecisionMemory(userId))}),
     model: (messages, step,revision) => durableModel(context, messages, step, revision,run.model_config),
     tool: (call, instructionIds) => dispatchTool(call, { ...context, instructionIds }),
@@ -174,6 +181,9 @@ export async function executeMainAgentRun(userId: string, runId: string, leaseTo
   let initial: Partial<typeof MainAgentState.State>;
   if (old.messages?.length) {
     if (!snapshot.next.length && (old.status === "completed" || old.status === "cancelled")) {
+      if(old.status==='completed')try{await assertCurrentKnowledgeMessages(userId,old.messages);}catch{
+        await finishRun(context,'partial',SOURCE_CHANGED_REPLY);return {status:'partial'};
+      }
       await finishRun(context, old.status, old.reply ?? "");
       return { status: old.status };
     }
@@ -197,6 +207,9 @@ export async function executeMainAgentRun(userId: string, runId: string, leaseTo
       pending: [], steps: 0, seen: {}, instructionIds: [],decisionRevision:0,policyRevision:"",status: "running", reply: "" };
   }
   const final = await withProductSpend(userId, "main-agent", () => graph.invoke(initial, config), runId);
+  if(final.status==='completed')try{await assertCurrentKnowledgeMessages(userId,final.messages);}catch{
+    await finishRun(context,'partial',SOURCE_CHANGED_REPLY);return {status:'partial'};
+  }
   await finishRun(context, final.status, final.reply);
   return { status: final.status };
 }

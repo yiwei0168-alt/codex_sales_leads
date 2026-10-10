@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { modeAllowsTool } from './mode-tools';
 import { tenantQuery } from "@/lib/rag/db";
-import { hybridSearch, getKnowledgeStats } from "@/lib/rag/repository";
+import { hybridSearch, getKnowledgeStats, authorizedKnowledgeChunkIds } from "@/lib/rag/repository";
 import { resolveVerifiedFacts } from "@/lib/knowledge/fact-repository";
 import {factReviewDecisionSchema,factReviewListSchema} from "@/lib/knowledge/review-input";
 import {listKnowledgeLibrary,listKnowledgeRevisions,deletePrivateKnowledgeDocument} from "@/lib/knowledge/library-service";
@@ -96,10 +96,18 @@ export const productTools: ProductTool[] = [
   defineTool({ id: "knowledge_search", description: "Search accessible knowledge evidence using lexical and structured lanes, without another answer model. Returns chunks and source coordinates; v3 remains authoritative.",
     input: z.object({ query: z.string().min(2).max(4000), limit: z.number().int().min(1).max(20).default(8),
       collections: z.array(z.enum(["industry", "company", "product"])).min(1).max(3).optional() }).strict(),
-    execute: async (i, c) => result(await hybridSearch(c.userId, i.query, null, { collections: c.knowledgeScope ?? i.collections }, i.limit), { cost: "known" }) }),
+    execute: async (i, c) => {
+      const chunks=await hybridSearch(c.userId,i.query,null,{collections:c.knowledgeScope??i.collections},i.limit);
+      const allowed=await authorizedKnowledgeChunkIds(c.userId,chunks.map(chunk=>chunk.id));
+      return result(chunks.filter(chunk=>allowed.has(chunk.id)),{cost:'known'});
+    } }),
   defineTool({ id: "knowledge_facts", description: "Read verified facts for an entity and explicit attribute keys. Missing facts stay unknown; quarantined facts are not formal evidence.",
     input: z.object({ entity: z.string().min(1).max(180), attributes: z.array(z.string().max(120)).min(1).max(30) }).strict(),
-    execute: async (i, c) => result(await resolveVerifiedFacts(c.userId, i.entity, i.attributes), { cost: "known" }) }),
+    execute: async (i, c) => {
+      const facts=await resolveVerifiedFacts(c.userId,i.entity,i.attributes);
+      const allowed=await authorizedKnowledgeChunkIds(c.userId,facts.flatMap(f=>f.chunkId?[f.chunkId]:[]));
+      return result(facts.filter(f=>f.status==='verified'&&f.chunkId&&allowed.has(f.chunkId)),{cost:'known'});
+    } }),
   defineTool({ id: "knowledge_status", description: "Read accessible knowledge coverage and counts.", input: empty,
     execute: async (_, c) => result(await getKnowledgeStats(c.userId), { cost: "known" }) }),
   defineTool({id:"knowledge_library_list",description:"Browse the account's private knowledge, shared knowledge or public company evidence by title with bounded pagination. Private and shared documents include their current content hash for versioned actions.",

@@ -275,10 +275,16 @@ export async function knowledgeRevisionToken(userId: string): Promise<string> {
 }
 
 export async function authorizedKnowledgeChunkIds(userId: string, chunkIds: string[]): Promise<Set<string>> {
-  if (!chunkIds.length) return new Set();
+  return new Set((await currentKnowledgeChunkEvidence(userId,chunkIds)).map(row=>row.id));
+}
+
+/** Current source check also exposes exact text for resumed Agent evidence validation. */
+export interface CurrentKnowledgeEvidence {id:string;content:string;documentId?:string;releaseId?:string;sourceLocation?:unknown;sourceSha256?:string;}
+export async function currentKnowledgeChunkEvidence(userId:string,chunkIds:string[]):Promise<CurrentKnowledgeEvidence[]> {
+  if (!chunkIds.length) return [];
   const releaseId=await activeV3Release(userId);
   if(releaseId){
-    const rows=await tenantQuery<{id:string}>(userId,`select c.id from knowledge_chunk_v3 c
+    const rows=await tenantQuery<CurrentKnowledgeEvidence>(userId,`select c.id,c.content,c.document_id as "documentId",c.release_id as "releaseId",c.source_location as "sourceLocation",sr.source_sha256 as "sourceSha256" from knowledge_chunk_v3 c
       join knowledge_document d on d.id=c.document_id
       join knowledge_source_revision_v3 sr on sr.id=c.source_revision_id and sr.release_id=c.release_id
       join knowledge_asset a on a.id=sr.asset_id and a.document_id=d.id
@@ -288,13 +294,13 @@ export async function authorizedKnowledgeChunkIds(userId: string, chunkIds: stri
         and a.registration_status='registered' and a.source_sha256=sr.source_sha256
         and (d.current_tree_version_id is null or
           (v.status='ready' and v.asset_id=a.id and v.source_sha256=sr.source_sha256))`,[releaseId,chunkIds,userId]);
-    return new Set(rows.map(row=>row.id));
+    return rows;
   }
-  const rows = await tenantQuery<{ id: string }>(userId, `select ch.id
+  const rows = await tenantQuery<CurrentKnowledgeEvidence>(userId, `select ch.id,ch.content,ch.document_id as "documentId"
       from knowledge_chunk ch join knowledge_document d on d.id=ch.document_id
      where ch.id=any($1::uuid[]) and d.status='active'
        and (d.visibility='shared' or d.owner_id=$2)`, [chunkIds, userId]);
-  return new Set(rows.map((row) => row.id));
+  return rows;
 }
 
 export async function getKnowledgeStats(userId: string): Promise<KnowledgeStats> {
