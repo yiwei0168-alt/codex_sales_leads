@@ -773,11 +773,11 @@ flowchart TD
 | `src/lib/leads/workflow/qualification-agent.ts` | `c1fbe6054c6c713f1db8f2ea96b208005e693f92684e6efaa6a9469f1a63a56d` |
 | `src/lib/leads/workflow/assessment-cache.ts` | `fd85ce372411429490cd1f272575f337a91a543bdd2b0c06cb04c362842c4df4` |
 | `src/lib/leads/workflow/assessment-review-agent.ts` | `e4ab294e1641670bfae34778fe3ce81d46c838994751f86b891a4ce750095564` |
-| `src/providers/deepseek.ts` | `1854d05d89a8a6717d730119249782c1ddb9243c0789f787619b032b6237c6f5` |
+| `src/providers/deepseek.ts` | `d72ee42bdeccfee5bd6079a47262f786312b11c78f0b27d48b6f7d5b26f9b373` |
 | `src/providers/discovery-contracts.ts` | `fa2f8b32bb6b7b2dae7a09835b4976810483ddbf789bcedd6968a0a646d88e2f` |
 | `src/providers/discovery.ts` | `acb27469ea9c27bc6f24dff56160b8d4b26dedfff84bb386390c6a8dcc21fc2f` |
-| `src/providers/resilient-ai.ts` | `f56ca8b73891f37b8e20a5c604360a318aee951a8c486afa65e98b9d37534fd7` |
-| `src/providers/openrouter.ts` | `b43ba8fdf08602cb7d3567ea88bdc2cfee704de0c1b197cc574abe5e9b89143d` |
+| `src/providers/resilient-ai.ts` | `cb22f39085dcdd301655e7c748c6f31477de7f8a5aa1139db561938103716811` |
+| `src/providers/openrouter.ts` | `5c6db9671958ece7bf9272ba1bfa48cb9da058ac8160db446682ab071294d472` |
 | `db/migrations/034_model_account_cash_cost.sql` | `4790c7ad12eda543e197c84ddd77c4a5ce296b7871ccee799f3aa2262684bdbb` |
 | `src/providers/tavily.ts` | `b02257f8499a16b370ca42493e45bbbf53b7214b9f803203ab5e19ef80969eda` |
 | `src/lib/leads/workflow/handoff-assembler.ts` | `007cf0814e962e59d94b76466606275ff3594b107255c098f2e0941f3f048ccc` |
