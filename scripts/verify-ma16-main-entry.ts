@@ -3,6 +3,7 @@ import { randomBytes, randomUUID } from "node:crypto";
 import { chromium, expect } from "@playwright/test";
 import { Pool } from "pg";
 import { hashPassword } from "../src/lib/auth/password";
+import { modeModelConfig } from "../src/lib/assistant/main/mode-config";
 
 nextEnv.loadEnvConfig(process.cwd());
 if (process.env.MA16_ISOLATED_WORKER_STOPPED !== "1") {
@@ -33,6 +34,10 @@ try {
   await page.locator('input[type="password"]').fill(password);
   await page.getByRole("button", { name: "登录", exact: true }).click();
   await expect(page.locator(".ai-composer textarea")).toBeVisible();
+  const selector=page.getByRole('combobox',{name:'任务模式'});
+  await expect(selector).toHaveValue('standard');
+  await selector.selectOption('quick');
+  await expect(page.locator('.ai-composer textarea')).toHaveAttribute('placeholder','查询已有资料、邮件或客户记录…');
   async function post(path: string, data: unknown) {
     return page.evaluate(async ({ path, data }) => {
       const response = await fetch(path, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(data) });
@@ -43,7 +48,7 @@ try {
   expect(first.status).toBe(202);
   const firstBody = first.body as { conversation: { id: string }; run: { id: string; status: string } };
   expect(firstBody.run.status).toBe("queued");
-  const second = await post("/api/assistant/messages", { conversationId: firstBody.conversation.id, content: "请继续说明来源" });
+  const second = await post("/api/assistant/messages", { conversationId: firstBody.conversation.id, content: "请继续说明来源", mode:'deep' });
   expect(second.status).toBe(202);
   const secondBody = second.body as { conversation: { id: string }; run: { id: string; status: string } };
   expect(secondBody.conversation.id).toBe(firstBody.conversation.id);
@@ -59,13 +64,17 @@ try {
   const legacy = await post("/api/rag/query", { question: "通过旧入口提问", filters: { collections: ["product"] } });
   expect(legacy.status).toBe(202);
 
-  const saved = await pool.query("select id,execution_kind,status,input from agent_run where user_id=$1 order by created_at", [userId]);
+  const saved = await pool.query("select id,execution_kind,status,input,model_config from agent_run where user_id=$1 order by created_at", [userId]);
   expect(saved.rows).toHaveLength(3);
   expect(saved.rows.every(run => run.execution_kind === "main-agent" && run.status === "queued")).toBe(true);
   expect(saved.rows[0].input.knowledgeScope).toEqual(["product"]);
   expect(saved.rows[2].input.knowledgeScope).toEqual(["product"]);
+  expect(saved.rows.map(row=>row.model_config.profile.mode)).toEqual(['standard','deep','quick']);
+  for(const row of saved.rows)expect(row.model_config).toEqual(modeModelConfig(row.model_config.profile.mode));
+  await selector.selectOption('deep');
+  expect((await pool.query('select model_config from agent_run where id=$1 and user_id=$2',[firstBody.run.id,userId])).rows[0].model_config.profile.mode).toBe('standard');
   expect((await pool.query("select count(*)::int n from paid_call_reservation where user_id=$1", [userId])).rows[0].n).toBe(0);
-  console.log(JSON.stringify({ ok: true, queuedRuns: 3, conversationRestored: true, knowledgeScope: ["product"], legacyQueryStatus: 202, paidCalls: 0 }));
+  console.log(JSON.stringify({ ok: true, queuedRuns: 3, conversationRestored: true, knowledgeScope: ["product"], modes:['standard','deep','quick'],profilePinned:true, legacyQueryStatus: 202, paidCalls: 0 }));
   await context.close();
 } finally {
   await browser.close();

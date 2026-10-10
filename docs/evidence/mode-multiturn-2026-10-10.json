@@ -1,0 +1,289 @@
+{
+  "rule": "MODESEL-14",
+  "maxRequests": 16,
+  "maxOutputTokens": 1024,
+  "privateData": false,
+  "realToolExecutions": 0,
+  "attempts": [
+    {
+      "model": "openai/gpt-6-luna",
+      "mode": "quick",
+      "effort": "none",
+      "round": 1,
+      "status": "passed",
+      "startedAt": "2026-10-10T01:27:10.540Z",
+      "httpStatus": 200,
+      "provider": "OpenAI",
+      "generationId": "gen-1791595630-pwZI6gORi85zGxQawZ3A",
+      "usage": {
+        "prompt_tokens": 141,
+        "completion_tokens": 19,
+        "cost": 0.0000236
+      },
+      "tool": "describe_tool",
+      "elapsedMs": 2069
+    },
+    {
+      "model": "openai/gpt-6-luna",
+      "mode": "quick",
+      "effort": "none",
+      "round": 2,
+      "status": "passed",
+      "startedAt": "2026-10-10T01:27:12.616Z",
+      "httpStatus": 200,
+      "provider": "OpenAI",
+      "generationId": "gen-1791595632-4UNsUQy5emjwXCdVDlaA",
+      "usage": {
+        "prompt_tokens": 199,
+        "completion_tokens": 7,
+        "cost": 0.0000234
+      },
+      "elapsedMs": 1350
+    },
+    {
+      "model": "anthropic/claude-haiku-5.5",
+      "mode": "quick",
+      "effort": "low",
+      "round": 1,
+      "status": "passed",
+      "startedAt": "2026-10-10T01:27:13.970Z",
+      "httpStatus": 200,
+      "provider": "Claude Platform on AWS",
+      "generationId": "gen-1791595633-xABfjdBbBQGPccZ4fMJd",
+      "usage": {
+        "prompt_tokens": 653,
+        "completion_tokens": 55,
+        "cost": 0.0000928
+      },
+      "tool": "describe_tool",
+      "elapsedMs": 1481
+    },
+    {
+      "model": "anthropic/claude-haiku-5.5",
+      "mode": "quick",
+      "effort": "low",
+      "round": 2,
+      "status": "passed",
+      "startedAt": "2026-10-10T01:27:15.455Z",
+      "httpStatus": 200,
+      "provider": "Claude Platform on AWS",
+      "generationId": "gen-1791595635-0O8KthuX6xkqm95UaEhQ",
+      "usage": {
+        "prompt_tokens": 770,
+        "completion_tokens": 11,
+        "cost": 0.0000825
+      },
+      "elapsedMs": 1102
+    },
+    {
+      "model": "google/gemini-3.8-flash",
+      "mode": "quick",
+      "effort": "low",
+      "round": 1,
+      "status": "passed",
+      "startedAt": "2026-10-10T01:27:16.562Z",
+      "httpStatus": 200,
+      "provider": "Google",
+      "generationId": "gen-1791595636-xXIiACANUxIRkHMWZI7m",
+      "usage": {
+        "prompt_tokens": 129,
+        "completion_tokens": 18,
+        "cost": 0.00016425
+      },
+      "tool": "describe_tool",
+      "elapsedMs": 2337
+    },
+    {
+      "model": "google/gemini-3.8-flash",
+      "mode": "quick",
+      "effort": "low",
+      "round": 2,
+      "status": "passed",
+      "startedAt": "2026-10-10T01:27:18.906Z",
+      "httpStatus": 200,
+      "provider": "Google",
+      "generationId": "gen-1791595638-nCK7LNyDfFBJx3p4NJyz",
+      "usage": {
+        "prompt_tokens": 168,
+        "completion_tokens": 5,
+        "cost": 0.00014475
+      },
+      "elapsedMs": 1736
+    },
+    {
+      "model": "anthropic/claude-sonnet-5.5",
+      "mode": "standard",
+      "effort": "low",
+      "round": 1,
+      "status": "passed",
+      "startedAt": "2026-10-10T01:27:20.655Z",
+      "httpStatus": 200,
+      "provider": "Claude Platform on AWS",
+      "generationId": "gen-1791595640-aHf8eVi0Fap3sFqGWfX0",
+      "usage": {
+        "prompt_tokens": 653,
+        "completion_tokens": 55,
+        "cost": 0.001856
+      },
+      "tool": "describe_tool",
+      "elapsedMs": 1786
+    },
+    {
+      "model": "anthropic/claude-sonnet-5.5",
+      "mode": "standard",
+      "effort": "low",
+      "round": 2,
+      "status": "passed",
+      "startedAt": "2026-10-10T01:27:22.443Z",
+      "httpStatus": 200,
+      "provider": "Claude Platform on AWS",
+      "generationId": "gen-1791595642-CbjnY7AEAMUJIna1FQGo",
+      "usage": {
+        "prompt_tokens": 770,
+        "completion_tokens": 11,
+        "cost": 0.00165
+      },
+      "elapsedMs": 1426
+    },
+    {
+      "model": "openai/gpt-6.1-sol",
+      "mode": "deep",
+      "effort": "high",
+      "round": 1,
+      "status": "passed",
+      "startedAt": "2026-10-10T01:27:23.872Z",
+      "httpStatus": 200,
+      "provider": "OpenAI",
+      "generationId": "gen-1791595643-JjAPXvjpprQoBpagTB2a",
+      "usage": {
+        "prompt_tokens": 141,
+        "completion_tokens": 19,
+        "cost": 0.000472
+      },
+      "tool": "describe_tool",
+      "elapsedMs": 1997
+    },
+    {
+      "model": "openai/gpt-6.1-sol",
+      "mode": "deep",
+      "effort": "high",
+      "round": 2,
+      "status": "passed",
+      "startedAt": "2026-10-10T01:27:25.874Z",
+      "httpStatus": 200,
+      "provider": "OpenAI",
+      "generationId": "gen-1791595645-ZCMldnlROqoHXMjrYPEd",
+      "usage": {
+        "prompt_tokens": 199,
+        "completion_tokens": 7,
+        "cost": 0.000468
+      },
+      "elapsedMs": 1700
+    },
+    {
+      "model": "moonshotai/kimi-k3",
+      "mode": "standard",
+      "effort": "low",
+      "round": 1,
+      "status": "passed",
+      "startedAt": "2026-10-10T01:27:27.577Z",
+      "httpStatus": 200,
+      "provider": "Wafer",
+      "generationId": "gen-1791595647-C3kMyFjKa4c0MU9JTjW9",
+      "usage": {
+        "prompt_tokens": 328,
+        "completion_tokens": 128,
+        "cost": 0.0021496
+      },
+      "tool": "describe_tool",
+      "elapsedMs": 3788
+    },
+    {
+      "model": "moonshotai/kimi-k3",
+      "mode": "standard",
+      "effort": "low",
+      "round": 2,
+      "status": "passed",
+      "startedAt": "2026-10-10T01:27:31.368Z",
+      "httpStatus": 200,
+      "provider": "Wafer",
+      "generationId": "gen-1791595651-ufvLeTi7dsxZBBRuAbMp",
+      "usage": {
+        "prompt_tokens": 519,
+        "completion_tokens": 52,
+        "cost": 0.0010633
+      },
+      "elapsedMs": 1422
+    },
+    {
+      "model": "anthropic/claude-opus-5.5",
+      "mode": "deep",
+      "effort": "high",
+      "round": 1,
+      "status": "passed",
+      "startedAt": "2026-10-10T01:27:32.794Z",
+      "httpStatus": 200,
+      "provider": "Claude Platform on AWS",
+      "generationId": "gen-1791595652-iJTwG8rvMIaHjaHVcn8g",
+      "usage": {
+        "prompt_tokens": 653,
+        "completion_tokens": 55,
+        "cost": 0.003712
+      },
+      "tool": "describe_tool",
+      "elapsedMs": 6245
+    },
+    {
+      "model": "anthropic/claude-opus-5.5",
+      "mode": "deep",
+      "effort": "high",
+      "round": 2,
+      "status": "passed",
+      "startedAt": "2026-10-10T01:27:39.045Z",
+      "httpStatus": 200,
+      "provider": "Claude Platform on AWS",
+      "generationId": "gen-1791595658-jOu68lAEkfFoIYURpDNx",
+      "usage": {
+        "prompt_tokens": 770,
+        "completion_tokens": 11,
+        "cost": 0.0033
+      },
+      "elapsedMs": 3198
+    },
+    {
+      "model": "z-ai/glm-5.3",
+      "mode": "deep",
+      "effort": "high",
+      "round": 1,
+      "status": "passed",
+      "startedAt": "2026-10-10T01:27:42.246Z",
+      "httpStatus": 200,
+      "provider": "Wafer",
+      "generationId": "gen-1791595662-WxwwugSvbv1bRLNzV3gZ",
+      "usage": {
+        "prompt_tokens": 353,
+        "completion_tokens": 120,
+        "cost": 0.000733767
+      },
+      "tool": "describe_tool",
+      "elapsedMs": 2305
+    },
+    {
+      "model": "z-ai/glm-5.3",
+      "mode": "deep",
+      "effort": "high",
+      "round": 2,
+      "status": "passed",
+      "startedAt": "2026-10-10T01:27:44.553Z",
+      "httpStatus": 200,
+      "provider": "Wafer",
+      "generationId": "gen-1791595664-dD6j3Yxdxmc5tyCW1HFW",
+      "usage": {
+        "prompt_tokens": 506,
+        "completion_tokens": 40,
+        "cost": 0.000259734
+      },
+      "elapsedMs": 1723
+    }
+  ]
+}
