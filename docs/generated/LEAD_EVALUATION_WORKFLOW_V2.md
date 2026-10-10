@@ -753,8 +753,8 @@ flowchart TD
 | `src/app/api/assistant/messages/route.ts` | `2618a9fd029c24b50341de5bf925649ee77d6e5d48e175f4770cfe0a4339ac54` |
 | `src/lib/assistant/types.ts` | `486d6ee9ef161c871a12f68cc1782de243b98e47d4bcf3ed84cb1a68fa80f792` |
 | `src/lib/assistant/intent.ts` | `5501e1e0a9617b34f40d14af6bf65fdae8250f9f9ed714647ec6878eb1179ab3` |
-| `src/lib/assistant/intent-agent.ts` | `4b1e05ac12bc9017cf707cb69af18a15f3331234e73bbaae007b607756a1b901` |
-| `src/lib/rag/openai-provider.ts` | `a53859927846996667e5bcdbbee7ed7d3c7056d9145b55ccb3740f0a4a2caf45` |
+| `src/lib/assistant/intent-agent.ts` | `49b1f3e38bf5359f68225809aeadc0f53d3d6345b574edb42e0b8d097bce1b1d` |
+| `src/lib/rag/openai-provider.ts` | `7103875b8630f6772e73b87c56f4d9ae520fd9f39884cd9bdff2c255c42d96f7` |
 | `src/lib/assistant/service.ts` | `6059cedefd26fe46758d2ddfbbc80803fb77c6a26cd433d57584f28b55ad06eb` |
 | `src/lib/assistant/repository.ts` | `131493d90fece7c35ecc04df309c08e8185e779b2c5bbb8360a49beb364e28e1` |
 | `src/lib/leads/workflow/graph.ts` | `e4036e6db6eba79332d89e85d8997a4c77c95f1101cdddc2526f0e26c56dd307` |
