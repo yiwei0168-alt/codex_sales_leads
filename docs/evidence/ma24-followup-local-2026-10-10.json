@@ -1,0 +1,17 @@
+{
+  "date": "2026-10-10",
+  "scope": "MA24-13 engineering and local deployment acceptance",
+  "unitRegression": {"files": 10, "passed": 73, "failed": 0},
+  "databaseBoundary": {"script": "scripts/verify-knowledge-response-boundary-local.ts", "checks": 7, "passed": true, "fixturesCleaned": true},
+  "developmentCapture": {"tool": "knowledge_compare", "entities": ["AP3000", "GS108"], "evidenceBlocks": 7, "fullTextHashAndCoordinatesValid": true, "semanticReview": "pending"},
+  "productionBuild": "passed",
+  "typecheck": "passed",
+  "focusedLint": "passed",
+  "browser": {"script": "scripts/verify-ma16-main-entry.ts", "passed": true, "syntheticQueuedRuns": 3, "profilesPinned": true, "knowledgeScope": ["product"], "fixturesCleaned": true, "staticAssetsPassed": 10},
+  "runtime": {"product3018": 200, "langgraph2024": 200, "bge8765": 200, "workers": ["main-agent", "lead-workflow", "mailbox"], "serviceErrorLogsEmpty": true},
+  "additionalPaidModelCalls": 0,
+  "historicalFrozenResultsModified": false,
+  "productionRetrievalSwitched": false,
+  "newAnswerQualityValidated": false,
+  "releaseEligible": false
+}

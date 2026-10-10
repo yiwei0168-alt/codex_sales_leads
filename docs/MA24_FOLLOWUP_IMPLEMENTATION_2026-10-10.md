@@ -1,5 +1,7 @@
 # MA24-13 按序修复记录
 
+最终状态：本轮四步工程修复、部署和本地验收已完成。当前产品 http://localhost:3018，LangGraph 与三个 worker 已加载新代码，BGE 保持本地运行；旧意图识别与无向量生产切换均未开启。真实模型生成质量和新的独立冻结评测尚未完成，不能据此宣布原长期记忆/RAG 总计划全部验收或切换主路。
+
 ## 1. 权限拒绝与澄清
 
 新三模式任务固定 `agent-mode-prompts-v1.1.0`，明确未经授权的跨账号私有请求必须拒绝，不得替换成资料不足。缺型号/标题/唯一上下文指代时先澄清，版本歧义须说明；没有增加意图分类模型或恢复旧意图路由。已保存 v1.0.0 配置仍可解析并取得旧 Prompt，恢复中的消息快照保持不变。
@@ -23,3 +25,14 @@
 新增 `scripts/capture-knowledge-development-local.ts <development-case.json> <authorized-user-uuid>`：仅允许 development 输入和本机数据库，HTTP 硬禁用，只执行原件/比较只读工具，不调用回答模型。收据记录问题/输出哈希、Prompt 版本、明确的结果类型、完整原文及稳定坐标；内容哈希不符、缺坐标、悬空引用或拒绝结果附无关引用时失败。输出固定到忽略的 `tmp/ma24-development-receipts/<随机ID>.json`，独占创建，不可指定历史输出目录。deny、clarification、insufficient-evidence 分开保存，完整收据不自动视作精确引用或答案正确，semanticReview 固定 pending、releaseEligible 固定 false。
 
 26 项针对性回归、TypeScript、ESLint 通过。开发型号 AP3000/GS108 的真实读取保存 7 个独立完整块，内容哈希及页码验证通过；零模型调用。历史冻结脚本/候选/Gold/判决均未修改。该流程用于开发取证验收；真实生成答案的语义复核及新的独立冻结评测仍是发布前置条件。
+
+## 4. 本地验收与服务加载
+
+- 综合回归：10 文件、73 项通过；合成用例覆盖模式权限、资料范围、空目标、失效来源、完整引用、系统引用标识、开发/冻结收据隔离。
+- `scripts/verify-knowledge-response-boundary-local.ts`：真实 PostgreSQL/RLS 的 7 项检查通过。临时账号可读自己的合成原件，另一账号无法读正文/标题；未知 ID 与无权 ID 返回相同拒绝；空目标、范围无命中和拒绝分别返回；撤销后所有者也不能再读取；company 范围不能调用 product 比较。临时数据已清理，HTTP 禁止，付费收据为 0。初次夹具因 UUID/text 参数类型冲突失败，显式转换后通过，无产品数据变更。
+- 生产构建通过，包含 TypeScript 和 22 个静态页面。首次将旧构建移入 tmp 导致生成的类型被项目通配扫描；备份移至 TypeScript 已排除的 `node_modules/.cache/ma24-next-before-20261010` 后重新构建通过。未修改 tsconfig，不删除旧构建。
+- 重载前检查 agent_run、mailbox_work_job、lead_workflow_job 无 queued/running；按端口和即时进程命令确认后重载本地产品及 LangGraph。浏览器验收期间 worker 暂停，隔离账号创建的 3 个任务只入队，验证新 Prompt/三个模式固定、资料范围、会话恢复和旧入口转新主 Agent，未调用模型，测试数据清理后恢复 worker。
+- 浏览器 `verify-ma16-main-entry.ts` 通过；10 个页面静态资源全部可读取。3018、2024/ok、8765/health 均 HTTP 200；三个 worker 的进程树均存在，五项服务错误日志为空。
+- 外网使用显式 `127.0.0.1:7892` 代理，localhost/127.0.0.1/::1 直连；没有修改 TUN。GitHub 按同一代理逐阶段推送。
+
+验收摘要见 [机器记录](evidence/ma24-followup-local-2026-10-10.json)。本轮未消费新的模型调用授权，未发送邮件、修改正式评分、回写 Gold、删除旧索引或切换生产检索主路。
