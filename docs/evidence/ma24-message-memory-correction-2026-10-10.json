@@ -1,0 +1,23 @@
+{
+  "date": "2026-10-10",
+  "scope": "exact-explicit-message-corrections",
+  "regression": {"files": 6, "passed": 72, "typescript": "passed", "focusedEslint": "passed"},
+  "isolatedDatabase": {
+    "completeWorkerEntry": true,
+    "messageHashBound": true,
+    "unknownDatesPreserved": true,
+    "noticeOutboxIdempotent": true,
+    "undoNotResurrected": true,
+    "ambiguousScopedConflictedAndUnsafePending": true,
+    "tenantAndLeaseIsolation": true,
+    "existingUiCorrectionAndReceiptLearningRegressions": true,
+    "fixturesRemoved": true
+  },
+  "modelCalls": 0,
+  "externalRequests": 0,
+  "productionServicesRestarted": false,
+  "automaticLearningEnabled": false,
+  "generalNaturalLanguageCorrectionAccepted": false,
+  "independentQualityAccepted": false,
+  "retrievalMainPathSwitched": false
+}

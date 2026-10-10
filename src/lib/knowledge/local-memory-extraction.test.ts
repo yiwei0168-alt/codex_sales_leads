@@ -1,16 +1,17 @@
 import {afterEach,beforeEach,expect,it,vi} from "vitest";
 
-const mock=vi.hoisted(()=>({query:vi.fn(),transaction:vi.fn(),observe:vi.fn(),receipts:vi.fn()}));
+const mock=vi.hoisted(()=>({query:vi.fn(),transaction:vi.fn(),observe:vi.fn(),receipts:vi.fn(),correction:vi.fn()}));
 vi.mock("@/lib/rag/db",()=>({tenantQuery:mock.query,tenantTransaction:mock.transaction}));
 vi.mock("./temporal-memory",()=>({observeMemoryInTransaction:mock.observe}));
 vi.mock('./experience-skill-draft',()=>({proposeExperienceSkillInTransaction:vi.fn()}));
 vi.mock('./tool-receipt-memory',()=>({learnToolReceiptMemories:mock.receipts}));
+vi.mock('./memory-correction',()=>({processMessageMemoryCorrection:mock.correction}));
 import {extractLocalBusinessFacts,extractLocalPreferences,extractLocalExperiences,processLocalMemoryExtraction} from "./local-memory-extraction";
 
 const job={status:"queued",updated_at:"2026-09-24",next_attempt_at:"2026-09-24",message_id:"message-1",message_content:"I prefer concise answers for my work."};
 const model={name:"qwen3:8b",digest:"500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41"};
 const response=(value:unknown,ok=true)=>({ok,json:async()=>value}) as Response;
-beforeEach(()=>{mock.query.mockReset();mock.transaction.mockReset();mock.observe.mockReset();mock.receipts.mockReset().mockResolvedValue({owned:true,observations:0,limited:false});delete process.env.OLLAMA_LOCAL_URL;});
+beforeEach(()=>{mock.query.mockReset();mock.transaction.mockReset();mock.observe.mockReset();mock.receipts.mockReset().mockResolvedValue({owned:true,observations:0,limited:false});mock.correction.mockReset().mockResolvedValue({owned:true,handled:false});delete process.env.OLLAMA_LOCAL_URL;});
 afterEach(()=>{delete process.env.OLLAMA_LOCAL_URL;});
 
 it("keeps the job queued when the exact local model is absent",async()=>{
@@ -89,6 +90,12 @@ it('learns server receipts before checking model readiness',async()=>{
   mock.query.mockResolvedValueOnce([job]).mockResolvedValueOnce([{run_id:'run-1'}]).mockResolvedValueOnce([{run_id:'run-1'}]);
   const fetcher=vi.fn(async()=>{expect(mock.receipts).toHaveBeenCalledWith('user-1','run-1',expect.any(String));return response({models:[]});});
   expect(await processLocalMemoryExtraction('user-1','run-1',fetcher)).toBe('queued');
+});
+it('handles an explicit correction without contacting a model',async()=>{
+  mock.query.mockResolvedValueOnce([job]).mockResolvedValueOnce([{run_id:'run-1'}]);
+  mock.correction.mockResolvedValueOnce({owned:true,handled:true});const fetcher=vi.fn();
+  expect(await processLocalMemoryExtraction('user-1','run-1',fetcher)).toBe('ready');
+  expect(mock.correction).toHaveBeenCalledWith('user-1','run-1',expect.any(String));expect(fetcher).not.toHaveBeenCalled();
 });
 it('does not start a model call when receipt learning loses ownership or fails',async()=>{
   const fetcher=vi.fn();

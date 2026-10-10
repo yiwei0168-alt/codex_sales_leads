@@ -4,6 +4,7 @@ import {tenantQuery,tenantTransaction} from "@/lib/rag/db";
 import {observeMemoryInTransaction} from "./temporal-memory";
 import {proposeExperienceSkillInTransaction} from './experience-skill-draft';
 import {learnToolReceiptMemories} from './tool-receipt-memory';
+import {processMessageMemoryCorrection} from './memory-correction';
 
 const itemSchema=z.object({
   memoryKey:z.string().trim().min(3).max(160),
@@ -143,6 +144,9 @@ export async function processLocalMemoryExtraction(userId:string,runId:string,fe
       return changed.length?'failed':'busy';
     }
     if(job.message_content.length>12000)return await defer('source_too_long',86400);
+    const correction=await processMessageMemoryCorrection(userId,runId,lease);
+    if(!correction.owned)return 'busy';
+    if(correction.handled)return 'ready';
     phase='local_model';
     if(!await modelReady(base,fetcher))return await defer('local_model_unavailable',600);
     const preferences=await extract(job.message_content,base,fetcher);
