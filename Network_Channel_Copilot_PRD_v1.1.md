@@ -569,3 +569,6 @@ MODESEL-05/06 扩展至旧版 RAG Kimi 回答入口，继续仅向模型发送�
 # 2026-10-10：旧意图分类主备迁移
 
 MODESEL-05/06 覆盖旧意图规划 Kimi 主选及 DeepSeek 等价备用；调用统一 OpenRouter，保留旧流程业务约束，补齐备用提示与失败收据。其他专用模型统一网关仍未完成。[验收记录](docs/OPENROUTER_INTENT_MIGRATION_2026-10-10.md)。
+# 2026-10-10：停用旧意图识别
+
+按用户明确要求 MODESEL-15，停用旧 Kimi 分类、复杂度升级和 DeepSeek 备用。只保留兼容提示和历史记录；新版三模式主 Agent 继续工作。此前旧意图网关迁移不作为启用依据。[验收记录](docs/LEGACY_INTENT_DISABLED_2026-10-10.md)。

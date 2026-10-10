@@ -9,8 +9,6 @@ import type { KnowledgeResult } from "@/lib/knowledge/response";
 import { searchExternalWithGemini } from "./external-search";
 import { planAssistantRequest } from "./intent-agent";
 import { synthesizeHybridAnswer } from "./synthesis";
-import { startOperation,finishOperation,bestEffortMetric } from "@/lib/operation-metrics";
-import { intentMetrics } from "./intent-metrics";
 import type { AssistantConversationTurn, AssistantIntent, ExternalSearchAnswer, IntentPlan, LeadSearchPlan } from "./types";
 
 export const AssistantState = Annotation.Root({
@@ -40,15 +38,6 @@ export interface AssistantGraphDependencies {
 }
 
 const productionDependencies: AssistantGraphDependencies = {
-  recordIntent:async(userId,content,history,run)=>{
-    const started=Date.now();const turns=history.slice(-8);const inputItems=turns.length+1;
-    const inputCharacters=content.slice(0,8000).length+turns.reduce((sum,turn)=>sum+turn.content.slice(0,4000).length,0);
-    // Reserve before invoking the provider: process loss remains running/unsettled, never zero cost.
-    const id=await startOperation(userId,"assistant-intent",inputItems,inputCharacters);
-    try{const result=await run();const saved=await bestEffortMetric(()=>finishOperation(userId,id,"completed",intentMetrics(result,inputItems,inputCharacters,Date.now()-started)));
-      if(!saved)result.warnings.push("意图识别已完成，但用量记录未结算；不要为修复统计而重复调用模型。");return result;
-    }catch(error){await bestEffortMetric(()=>finishOperation(userId,id,"failed",intentMetrics(undefined,inputItems,inputCharacters,Date.now()-started)));throw error;}
-  },
   planRequest: planAssistantRequest,
   answerKnowledge: answerWithRag,
   answerKnowledgeWorkflow: executeKnowledgeWorkflow,

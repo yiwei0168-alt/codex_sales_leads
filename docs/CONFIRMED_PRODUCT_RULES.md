@@ -1035,3 +1035,8 @@ KQ04 管理可见性实施状态：知识状态接口与知识页现在显示最
 KQ04 单元终态实施状态：普通全成功资产可直接标记处理完成；任何未人工确认的 `blank`、`review-required` 或 `failed` 单元都必须创建 open review 并使资产保持 pending。只有精确清单中的 `accept-candidate`/`decorative-no-body` 决定可以关闭对应异常单元；`failed` 优先于 review/blank 作为资产状态。该状态机已通过 4 项聚焦断言，但实际全库 open review 数仍需 shadow 入库后核验。
 
 KQ04 路由验收状态：版本化属性注册表 `attribute-registry-v1.2.1` 补充通用端口同义词，比较、事实、原文件和解释分类器覆盖无实体边界问法；冻结的 300 条评测记录现为 action 300/300、entity 300/300。该结果只证明确定性意图/实体路由，不代表答案正确性、来源 Recall@8 或人工 gold 验收；`humanAnswerReviewed` 仍为 0，release 仍不得激活。
+## MODESEL-15 — 停用旧意图识别（2026-10-10）
+
+- 用户明确确认：“好的，不启用这一套旧意图识别。继续任务”。范围：旧 Kimi 轻量识别、复杂度自动升级 K3、DeepSeek 等价备用及确定性分类兜底均不再执行；新版快速/标准/深入模式继续运行。
+- 实现：旧分类模块仅返回停用提示，plannerSource=disabled、plannerModel=none、plannerCalls=[]；旧生产图不记录分类模型计费操作，不启动检索或搜索。没有环境开关自动恢复这套旧流程。历史模型调用和任务记录保留；此前网关迁移记录是历史实现，不构成重新启用授权。
+- 验收：53 项本地测试通过，涵盖已配置密钥时零调用、生产旧图停止、新图/模式及计费边界回归。详见 `LEGACY_INTENT_DISABLED_2026-10-10.md`。

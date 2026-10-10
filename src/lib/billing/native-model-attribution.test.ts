@@ -18,7 +18,7 @@ it("shares one native invocation ID across actual attempts and isolates another 
 });
 
 it("attributes the real intent and follow-up adapters without altering requests or swallowing budget stops",async()=>{
-  vi.stubEnv("KIMI_API_KEY","fixture");
+  vi.stubEnv("OPENROUTER_API_KEY","fixture");
   const stopped=new BudgetDeniedError("missing-tariff");
   const calls:ModelAttemptContext[]=[];
   const transport=vi.fn<typeof fetch>(async(_url,init)=>{
@@ -26,10 +26,8 @@ it("attributes the real intent and follow-up adapters without altering requests 
     expect(String(init?.body)).not.toContain("invocationId");
     throw stopped;
   });
-  await expect(planAssistantRequest("Find distributors",[],transport)).rejects.toBe(stopped);
+  await expect(planAssistantRequest("Find distributors",[])).resolves.toMatchObject({plannerSource:"disabled",plannerCalls:[]});
   await expect(generateFollowUp({instructions:"Follow up",originalSubject:"Hello",originalBody:"Dear partner"},transport)).rejects.toBe(stopped);
-  expect(calls).toHaveLength(2);
-  expect(calls[0]).toMatchObject({provider:"kimi",promptVersion:"assistant-intent-plan-v1.4",attempt:1});
-  expect(calls[1]).toMatchObject({provider:"kimi",task:"outreach-follow-up",promptVersion:"outreach-follow-up-v1",attempt:1});
-  expect(calls[0].invocationId).not.toBe(calls[1].invocationId);
+  expect(calls).toHaveLength(1);
+  expect(calls[0]).toMatchObject({provider:"openrouter",task:"outreach-follow-up",promptVersion:"outreach-follow-up-v1",attempt:1});
 });

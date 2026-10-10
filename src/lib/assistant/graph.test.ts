@@ -27,6 +27,17 @@ it("classifies a provider status wrapped by the SDK connection error",()=>{
 });
 
 describe("assistant workflow graph", () => {
+  it("ends the production legacy entry without classification, retrieval or paid metrics", async () => {
+    const state = await buildAssistantWorkflowGraph().invoke({
+      userId: "nonexistent-user-no-database", content: "搜索德国经销商", history: [],
+      intent: "general", reply: "", warnings: [],
+    });
+    expect(state.intentPlan).toMatchObject({ plannerSource: "disabled", plannerCalls: [] });
+    expect(state.reply).toContain("旧版任务入口已停用");
+    expect(state.plan).toBeUndefined();
+    expect(state.ragAnswer).toBeUndefined();
+    expect(state.externalAnswer).toBeUndefined();
+  });
   it("returns a budget proposal without retrieval, search or synthesis",async()=>{
     const deps=dependencies(plan({intent:"budget-change",budgetProposal:{scope:"user",limitUsd:"20"}}));
     const state=await buildAssistantWorkflowGraph(deps).invoke({userId:"user",content:"总预算20美元",history:[],intent:"general",reply:"",warnings:[]});
