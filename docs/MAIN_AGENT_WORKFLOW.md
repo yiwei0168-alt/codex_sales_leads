@@ -395,3 +395,6 @@ compare-holdout-retrieval-local 的 local-document-recall-v2 收据分别记录 
 ### MA24-07 / MA24-14 实施补充：Skill 自动启用包校验（2026-10-10）
 
 修复脚本识别只覆盖 py/js/mjs 的缺口。自动启用或回滚在读取目标版本时重新检查真实文件与依赖；仅 MD/TXT 指令文件可进入后续自动评测门槛，未知文件类型、无扩展名脚本、PowerShell/批处理/TypeScript、shebang 或显式可执行代码块均需人工审核。历史 validation 写“无脚本”不能绕过检查。人工管理路径保留，已启用历史 Skill 未批量变更。33 项 Skill 回归、TypeScript 和定向 ESLint 通过；重复成功经验生成草案与回放/影子评测器仍未完成，不把此静态检查当作质量验收。
+### 2026-10-10 本机加载证据
+
+本轮三个修复提交 `2f240bf`、`a1e94a4`、`b856736` 已经通过本地代理推送至 origin/main。Next 生产构建、52 项知识回归、33 项 Skill 回归、类型与定向 Lint 通过；3018 网页与 2024 LangGraph 已重新加载，HTTP 均为 200，10 项网页静态资源全部成功。主 Agent 队列为空时更新，邮件 worker 未停止，更新后继续处理任务。未新增付费模型调用；独立测评、连续记忆/Skill 影子质量及主路发布仍未完成。[机器收据](evidence/ma24-runtime-guards-2026-10-10.json)。
