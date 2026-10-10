@@ -1,3 +1,5 @@
+import { getOpenRouterConfig, openRouterChatCompletionsUrl, openRouterRequestHeaders } from "@/providers/openrouter";
+import { kimiOpenRouterModel } from "@/providers/kimi-openrouter";
 import {BudgetDeniedError} from "@/lib/billing/policy";
 import {budgetedFetch} from "@/lib/billing/paid-fetch";
 import {modelAttemptSequence} from "@/lib/billing/model-attempt-context";
@@ -65,12 +67,6 @@ export interface KimiDevelopmentResult {
   generationMetrics: DevelopmentStrategyDto["generationMetrics"];
 }
 
-function baseUrl(): string {
-  const parsed = new URL(process.env.KIMI_BASE_URL?.trim() || "https://api.moonshot.cn/v1");
-  if (parsed.protocol !== "https:" || !["api.moonshot.cn", "api.moonshot.ai"].includes(parsed.hostname)
-    || parsed.username || parsed.password) throw new Error("KIMI_BASE_URL 必须是受信任的 Moonshot HTTPS API 地址");
-  return parsed.toString().replace(/\/$/, "");
-}
 
 async function invokeKimiJson(
   messages: Array<{ role: "system" | "user"; content: string }>,
@@ -78,13 +74,13 @@ async function invokeKimiJson(
   maxTokens?: number,
   attribution={task:"outreach-strategy",promptVersion:PROMPT_VERSION},
 ): Promise<{ value: unknown; model: string; metrics: DevelopmentStrategyDto["generationMetrics"] }> {
-  const recordAttempt=modelAttemptSequence({provider:"kimi",...attribution});
+  const recordAttempt=modelAttemptSequence({provider:"openrouter",...attribution});
   const startedAt = Date.now();
-  const apiKey = process.env.KIMI_API_KEY?.trim();
-  if (!apiKey) throw new Error("KIMI_API_KEY is not configured");
-  const model = process.env.KIMI_OUTREACH_MODEL?.trim() || process.env.KIMI_MODEL?.trim() || "kimi-k3";
+  const config = getOpenRouterConfig();
+  const model = kimiOpenRouterModel(process.env.KIMI_OUTREACH_MODEL?.trim() || process.env.KIMI_MODEL);
   const requestBody = JSON.stringify({
     model, ...(isKimiK3(model)?{}:{temperature:Number(process.env.KIMI_OUTREACH_TEMPERATURE ?? 1)}),
+    provider: { ...config.providerPreferences, allow_fallbacks: false },
     response_format: { type: "json_object" },
     ...kimiOutputLimit(model,maxTokens ?? Number(process.env.KIMI_OUTREACH_MAX_TOKENS ?? 12_000)), messages,
   });
@@ -93,8 +89,8 @@ async function invokeKimiJson(
   for (let attempt = 0; attempt < 2; attempt += 1) {
     let response: Response;
     try {
-      response = await recordAttempt(()=>budgetedFetch(fetchImplementation)(`${baseUrl()}/chat/completions`, {
-        method: "POST", headers: { authorization: `Bearer ${apiKey}`, "content-type": "application/json" },
+      response = await recordAttempt(()=>budgetedFetch(fetchImplementation)(openRouterChatCompletionsUrl(config), {
+        method: "POST", headers: openRouterRequestHeaders(config), redirect: "error",
         signal: AbortSignal.timeout(Number(process.env.KIMI_OUTREACH_TIMEOUT_MS ?? 180_000)), body: requestBody,
       }));
     } catch (error) {
@@ -105,13 +101,13 @@ async function invokeKimiJson(
       continue;
     }
     status = response.status;
-    body = await response.json() as KimiResponse;
+    body = response.ok ? await response.json() as KimiResponse : {};
     if (response.ok) break;
-    const transient = response.status === 429 || response.status >= 500 || /overload|temporar/i.test(body.error?.message ?? "");
-    if (!transient || attempt === 1) throw new Error(body.error?.message ?? `Kimi HTTP ${response.status}`);
+    const transient = response.status === 429 || response.status >= 500;
+    if (!transient || attempt === 1) throw new Error(`OpenRouter Kimi HTTP ${response.status}`);
     await new Promise((resolve) => setTimeout(resolve, 500 * (attempt + 1)));
   }
-  if (status < 200 || status >= 300) throw new Error(body.error?.message ?? `Kimi HTTP ${status}`);
+  if (status < 200 || status >= 300) throw new Error(`OpenRouter Kimi HTTP ${status}`);
   const content = body.choices?.[0]?.message?.content;
   if (!content) {
     const finishReason = body.choices?.[0]?.finish_reason ?? "unknown";

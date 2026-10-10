@@ -30,7 +30,7 @@ afterEach(() => vi.unstubAllEnvs());
 
 describe("Kimi development strategy agent", () => {
   it("generates strategy and draft in one call and strips validated internal citation markers", async () => {
-    vi.stubEnv("KIMI_API_KEY", "test-key");
+    vi.stubEnv("OPENROUTER_API_KEY", "test-key");
     const responseValue = { strategy: {
         objective: "Develop an SI partnership", personalizationAngle: "Integration delivery fit", valuePropositions: ["Simpler delivery"],
         recommendedProducts: ["Cudy access points"], targetTitles: ["Solutions Director"], likelyObjections: ["Vendor overlap"],
@@ -48,13 +48,18 @@ describe("Kimi development strategy agent", () => {
     expect(result.draft.body).not.toContain("[EVIDENCE:");
     expect(result.evidenceIds).toEqual(["ev-1"]);
     const request = JSON.parse(fetchMock.mock.calls[0][1].body as string);
+    expect(fetchMock.mock.calls[0][0]).toBe("https://openrouter.ai/api/v1/chat/completions");
+    expect(fetchMock.mock.calls[0][1].headers.authorization).toBe("Bearer test-key");
+    expect(fetchMock.mock.calls[0][1].redirect).toBe("error");
+    expect(request.model).toBe("moonshotai/kimi-k3");
+    expect(request.provider).toEqual({ require_parameters: true, data_collection: "deny", allow_fallbacks: false });
     expect(request.temperature).toBeUndefined();
     expect(request.max_completion_tokens).toBeGreaterThan(0);
     expect(request.max_tokens).toBeUndefined();
   });
 
   it("falls back safely when the draft invents an evidence ID", async () => {
-    vi.stubEnv("KIMI_API_KEY", "test-key");
+    vi.stubEnv("OPENROUTER_API_KEY", "test-key");
     const responseValue = { strategy: {
         objective: "Develop an SI partnership", personalizationAngle: "Integration delivery fit", valuePropositions: ["Fit"],
         recommendedProducts: [], targetTitles: ["Director"], likelyObjections: [], callToAction: "Call",
@@ -70,7 +75,7 @@ describe("Kimi development strategy agent", () => {
   });
 
   it("gives internal interpretations only to strategy and validates fact-level email citations", async () => {
-    vi.stubEnv("KIMI_API_KEY", "test-key");
+    vi.stubEnv("OPENROUTER_API_KEY", "test-key");
     const handoffContext: DevelopmentContext = { ...context, handoff: {
       version: "lead-handoff-v2", provenance: { candidateId: "lead-1", runId: "run-1",
         evidenceSnapshotHash: "hash", correctionModel: "corrector", scoringModel: "scorer", reviewStatus: "secondary-confirmed" },

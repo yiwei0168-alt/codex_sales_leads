@@ -560,3 +560,6 @@ New product-chat main-Agent runs use synchronous OpenRouter `z-ai/glm-5.3` with 
 # MAILUX-02 补充：阅读空间优先（2026-10-08）
 
 邮箱顶部避免重复标题和统计层；统计/后台任务通过管理窗口查看，异常摘要保留。手机阅读邮件或公司时间线时正文独占内容区，可返回分页列表。知识资料按全局导航后的剩余高度布局。已实现及验证边界见 `docs/READING_SPACE_AUDIT_2026-10-08.md`；其他导航重组建议尚未实施。
+# 2026-10-10：Kimi 邮件与外联网关迁移
+
+MODESEL-05/06 已覆盖主 Agent 及邮件学习、开发策略/邮件/跟进生成。邮箱显式授权经由 OpenRouter，后端就绪检查与网关配置一致，保留本地处理边界。其他专用模型迁移未完成；实现与验收见 [迁移记录](docs/OPENROUTER_KIMI_MIGRATION_2026-10-10.md)。

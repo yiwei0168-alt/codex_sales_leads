@@ -1,3 +1,4 @@
+import { kimiGatewayConfigured } from "@/providers/kimi-openrouter";
 import { requireApiSession } from "@/lib/auth/session";
 import { reviewMailboxMessageForLearning } from "@/lib/mailbox/service";
 
@@ -13,7 +14,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ id:
   try { body = await request.json() as typeof body; } catch { return Response.json({ error: "请求体必须是 JSON" }, { status: 400 }); }
   if (body.action !== "authorize" && body.action !== "skip") return Response.json({ error: "action 无效" }, { status: 400 });
   if (body.action === "authorize" && body.consent !== true) return Response.json({ error: "必须明确同意脱敏后发送给 Kimi" }, { status: 400 });
-  if (body.action === "authorize" && !process.env.KIMI_API_KEY?.trim()) return Response.json({ error: "KIMI_API_KEY 尚未配置" }, { status: 503 });
+  if (body.action === "authorize" && !kimiGatewayConfigured()) return Response.json({ error: "OpenRouter Kimi 网关尚未正确配置" }, { status: 503 });
   try {
     return Response.json(await reviewMailboxMessageForLearning(session.userId, id, body.action));
   } catch (error) {

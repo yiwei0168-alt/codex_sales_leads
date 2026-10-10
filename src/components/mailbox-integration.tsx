@@ -245,7 +245,7 @@ export function MailboxIntegration() {
       .filter((item) => item.screening_bucket === bucket && (item.learning_status === "pending" || item.learning_status === "failed"))
       .slice(0, limit).map((item) => item.id) ?? [];
     if (ids.length === 0) { setMessage("当前列表没有可批量处理的邮件。"); return; }
-    if (action === "authorize" && !window.confirm(`将 ${ids.length} 封推荐邮件分别脱敏后发送给 Kimi？每封都会保留独立外发审计。`)) return;
+    if (action === "authorize" && !window.confirm(`将 ${ids.length} 封推荐邮件分别脱敏后通过 OpenRouter 发送给 Kimi？每封都会保留独立外发审计。`)) return;
     setScreeningBusy(true); setMessage("");
     try {
       const response = await fetch("/api/mailbox/screening", {
@@ -368,7 +368,7 @@ export function MailboxIntegration() {
         </div>}
       </div>}
       <p className="mailbox-description">本地筛选根据你发出的邮件、互动线程、产品与认证命中以及自动群发特征评分，不调用外部模型。只有你逐封或最多五封明确授权后，系统才会脱敏并发送给 Kimi；提取结果仍需第二次批准才进入私有知识库。</p>
-      {status && !status.kimiConfigured && <div className="login-config-error"><strong>Kimi 学习服务未配置</strong><p>请先设置 <code>KIMI_API_KEY</code>，再启动邮箱学习。</p></div>}
+      {status && !status.kimiConfigured && <div className="login-config-error"><strong>Kimi 学习服务未配置</strong><p>请先配置 OpenRouter 网关，再启动邮箱学习。</p></div>}
       <div className="mailbox-connections">
         <div className="results-toolbar"><label>导入范围<select value={folderScope} disabled={busy!==null} onChange={event=>setFolderScope(event.target.value)}><option value="both">收件箱及已发送</option><option value="inbox">仅收件箱</option><option value="sent">仅已发送</option></select></label><label>开始日期<input type="date" value={from} disabled={busy!==null} onChange={event=>setFrom(event.target.value)}/></label><label>结束日期（含当天）<input type="date" min={from} value={through} disabled={busy!==null} onChange={event=>setThrough(event.target.value)}/></label><small>日期留空默认最近 180 天，每次最多 100 封；指定历史范围会跳过已导入邮件，不改变增量游标。</small></div>
         {connections.map((connection) => <article key={connection.id}>

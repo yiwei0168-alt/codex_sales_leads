@@ -79,7 +79,7 @@ export function MailboxWorkspace(){
   async function remove(connection:Connection){if(!window.confirm(`永久删除 ${connection.displayName} 的本地导入邮件和待审候选？此操作不可撤销，远程邮箱不受影响。`))return;await perform(`remove:${connection.id}`,async()=>{await request(`/api/mailbox/connections/${connection.id}`,"DELETE",{confirm:"DELETE_MAILBOX_DATA"});return "本地邮箱数据已删除。";});}
   async function decideMessages(ids:string[],action:"authorize"|"skip"){
     if(!ids.length)return;
-    if(action==="authorize"&&!window.confirm(`将所选 ${ids.length} 封邮件分别脱敏后发送给 Kimi？每封都有独立外发审计。`))return;
+    if(action==="authorize"&&!window.confirm(`将所选 ${ids.length} 封邮件分别脱敏后通过 OpenRouter 发送给 Kimi？每封都有独立外发审计。`))return;
     await perform(`messages:${action}`,async()=>{const result=await request("/api/mailbox/screening","POST",{action,messageIds:ids,consent:action==="authorize"});const failedIds=(result.results??[]).filter((item:{status:string})=>item.status==='failed').map((item:{id:string})=>item.id);setSelectedMessages(failedIds);return action==='authorize'?`已排队 ${result.queued} 封，后台逐封处理；每封保留独立授权记录。`:`处理 ${result.processed??0} 封，失败 ${result.failed??0} 封，失败项保留选择。`;});
   }
   async function decideCandidates(items:Candidate[],action:"approved"|"rejected"){

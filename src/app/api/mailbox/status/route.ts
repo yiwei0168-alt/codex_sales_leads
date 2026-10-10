@@ -1,3 +1,4 @@
+import { kimiGatewayConfigured } from "@/providers/kimi-openrouter";
 import { requireApiSession } from "@/lib/auth/session";
 import { tenantQuery } from "@/lib/rag/db";
 
@@ -42,7 +43,7 @@ export async function GET() {
   const run = latestRun[0] ?? null;
   return Response.json({
     configured: Boolean(process.env.MAILBOX_CREDENTIAL_KEY?.trim()),
-    kimiConfigured: Boolean(process.env.KIMI_API_KEY?.trim()),
+    kimiConfigured: kimiGatewayConfigured(),
     kimiModel: process.env.KIMI_MODEL?.trim() || "kimi-k3",
     messages: count?.message_count ?? 0,
     pendingCandidates: count?.pending_count ?? 0,

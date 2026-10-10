@@ -1,3 +1,5 @@
+import { getOpenRouterConfig, openRouterChatCompletionsUrl, openRouterRequestHeaders } from "@/providers/openrouter";
+import { kimiOpenRouterModel } from "@/providers/kimi-openrouter";
 import {budgetedFetch} from "@/lib/billing/paid-fetch";
 import {modelAttemptSequence} from "@/lib/billing/model-attempt-context";
 import {kimiOutputLimit} from "@/providers/kimi-contract";
@@ -35,17 +37,11 @@ const PROMPT_VERSION = "mailbox-learning-v1";
 const KINDS = new Set<MailboxArtifactKind>(["company-policy", "customer-signal", "email-template"]);
 
 export function kimiApiBaseUrl(): string {
-  const configured = process.env.KIMI_BASE_URL?.trim() || "https://api.moonshot.cn/v1";
-  const url = new URL(configured);
-  const allowedHosts = new Set(["api.moonshot.cn", "api.moonshot.ai"]);
-  if (url.protocol !== "https:" || !allowedHosts.has(url.hostname) || url.username || url.password) {
-    throw new Error("KIMI_BASE_URL 必须是受信任的 Moonshot HTTPS API 地址");
-  }
-  return url.toString().replace(/\/$/, "");
+  return getOpenRouterConfig().baseUrl;
 }
 
 export function kimiMailboxModel(): string {
-  return process.env.KIMI_MODEL?.trim() || "kimi-k3";
+  return kimiOpenRouterModel();
 }
 
 function cleanText(value: unknown, maxLength: number): string {
@@ -65,16 +61,17 @@ export async function learnMailboxMessagesWithKimi(
 ): Promise<KimiMailboxLearningResult[]> {
   if (messages.length === 0) return [];
   if (messages.length > 5) throw new Error("Kimi mailbox batch is limited to 5 messages");
-  const apiKey = process.env.KIMI_API_KEY?.trim();
-  if (!apiKey) throw new Error("KIMI_API_KEY is not configured");
-  const baseUrl = kimiApiBaseUrl();
+  const config = getOpenRouterConfig();
   const model = kimiMailboxModel();
-  const recordAttempt=modelAttemptSequence({provider:"kimi",task:"mailbox-learning",promptVersion:PROMPT_VERSION});
-  const response = await recordAttempt(()=>budgetedFetch(fetchImplementation)(`${baseUrl}/chat/completions`, {
+  const recordAttempt=modelAttemptSequence({provider:"openrouter",task:"mailbox-learning",promptVersion:PROMPT_VERSION});
+  const response = await recordAttempt(()=>budgetedFetch(fetchImplementation)(openRouterChatCompletionsUrl(config), {
     method: "POST",
-    headers: { authorization: `Bearer ${apiKey}`, "content-type": "application/json" },
+    headers: openRouterRequestHeaders(config),
+    redirect: "error",
+    signal: AbortSignal.timeout(180_000),
     body: JSON.stringify({
       model,
+      provider: { ...config.providerPreferences, allow_fallbacks: false },
       response_format: { type: "json_object" },
       ...kimiOutputLimit(model,8_000),
       messages: [
@@ -110,8 +107,8 @@ export async function learnMailboxMessagesWithKimi(
       ],
     }),
   }));
+  if (!response.ok) throw new Error(`OpenRouter Kimi HTTP ${response.status}`);
   const body = await response.json() as KimiResponse;
-  if (!response.ok) throw new Error(body.error?.message ?? `Kimi HTTP ${response.status}`);
   const content = body.choices?.[0]?.message?.content;
   if (!content) throw new Error("Kimi returned empty mailbox analysis");
   const parsed = parseJsonObject(content);

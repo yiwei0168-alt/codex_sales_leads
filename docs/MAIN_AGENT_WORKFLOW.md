@@ -333,3 +333,6 @@ MODELDIAG-01 诊断结果：已明确是 Fireworks 上游临时限流，账户�
 运行时补充：LangGraph 启动对公开模型目录进行无凭据网络预检；系统拒绝外网权限时阻断启动。不要仅凭 localhost `/ok` 判断主模型可达。见 `LOCAL_RUNTIME_RECOVERY_2026-10-08.md`。
 
 邮箱入口 → 收件箱/已发送 → 选择邮件阅读；手机通过“返回邮件列表”回到原分页。公司时间线同样支持返回公司列表。统计、后台任务明细和收据核对从“管理 / 连接邮箱”进入，主界面保留异常/处理中提示。布局验收见 `READING_SPACE_AUDIT_2026-10-08.md`。
+# 2026-10-10：专用 Kimi 工具调用路径
+
+邮件学习与外联生成改用 OpenRouter；执行前继续检查原权限、邮件授权与付费准入。网关缺少配置时不得回退 Moonshot 直连；调用收据归属 openrouter，Kimi 模型 ID 带 moonshotai/ 前缀。现有三种主 Agent 模式不改变专用工具内部的输出上限。验收及后续缺口见 [迁移记录](OPENROUTER_KIMI_MIGRATION_2026-10-10.md)。

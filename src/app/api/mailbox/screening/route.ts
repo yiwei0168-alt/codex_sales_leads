@@ -1,3 +1,4 @@
+import { kimiGatewayConfigured } from "@/providers/kimi-openrouter";
 import { requireApiSession } from "@/lib/auth/session";
 import { screenStoredMailboxMessages } from "@/lib/mailbox/repository";
 import { reviewMailboxMessageForLearning } from "@/lib/mailbox/service";
@@ -27,8 +28,8 @@ export async function POST(request: Request) {
   if (body.action === "authorize" && body.consent !== true) {
     return Response.json({ error: "必须明确同意这些邮件脱敏后发送给 Kimi" }, { status: 400 });
   }
-  if (body.action === "authorize" && !process.env.KIMI_API_KEY?.trim()) {
-    return Response.json({ error: "KIMI_API_KEY 尚未配置" }, { status: 503 });
+  if (body.action === "authorize" && !kimiGatewayConfigured()) {
+    return Response.json({ error: "OpenRouter Kimi 网关尚未正确配置" }, { status: 503 });
   }
   if(body.action==='authorize'){
     try{return Response.json(await enqueueLearning(session.userId,messageIds),{status:202});}
