@@ -1,6 +1,8 @@
-# 三模式 Prompt v0.1（待共同审阅）
+# 三模式 Prompt v1.0.0（已确认）
 
-状态：讨论草案，未启用。基于 `src/lib/assistant/main/product.ts` 与 MODESEL-01～11；既有权限、政策、来源、批准和恢复边界继续有效。新增表达风格、停止条件及上下文装配策略为本稿建议，不能当成用户已确认规则。
+状态：2026-10-10 用户确认采用第一版（MODESEL-12），未启用生产模式路由。基于 `src/lib/assistant/main/product.ts` 与 MODESEL-01～11；既有权限、政策、来源、批准和恢复边界继续有效。保留原文件名以维持历史链接，v0.1 草案保留在 Git 历史中。
+
+代码版本为 `agent-mode-prompts-v1.0.0`。`scripts/generate-mode-prompt-content.cjs` 原样导出 A～D 正文到 `mode-prompt-content.json`，`--check` 检查文档与代码漂移；`mode-prompts.ts` 只装配静态规则，不代替运行权限和上下文授权。10 项聚焦测试通过，未接入生产任务，也未验证真实模式行为。
 
 ## 装配方式
 
