@@ -343,9 +343,6 @@
   box-shadow: none;
 }
 .intelligence-theme .ai-suggestion-grid button:hover { transform: none; border-color: var(--action); }
-.intelligence-theme .agent-mode-select { display: flex; align-items: center; gap: 8px; width: fit-content; color: var(--fog-muted); font-size: 12px; margin-bottom: 6px; }
-.intelligence-theme .agent-mode-select select { color: var(--fog-strong); background: var(--night-raised); border: 1px solid var(--line-strong); border-radius: 4px; padding: 5px 24px 5px 8px; min-height: 32px; font: inherit; }
-.intelligence-theme .agent-mode-select select:focus-visible { outline: 2px solid var(--action); outline-offset: 2px; }
 .intelligence-theme .ai-suggestion-grid span { color: #8fb6ff; background: var(--action-soft); border-radius: 2px; }
 .intelligence-theme .ai-message.user .ai-message-copy { color: var(--fog-strong); background: #15345c; border-color: #315c91; }
 .intelligence-theme .ai-action-head { border-color: var(--line); }

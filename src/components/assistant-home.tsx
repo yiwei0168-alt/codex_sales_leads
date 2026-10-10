@@ -10,6 +10,7 @@ import type {
 } from "@/lib/assistant/types";
 import {searchTaskStatusLabel,taskCounts} from "@/lib/assistant/task-summary";
 import type { AgentMode } from '@/lib/assistant/main/mode-prompts';
+import {AgentModePicker,agentModeDescriptions} from './agent-mode-picker';
 
 const pendingInputs = new Map<string, string>();
 export function startNewConversationInput() { pendingInputs.delete("new"); }
@@ -167,14 +168,13 @@ export function AssistantHome({ userName, initialConversationId, onConversationC
       </div>
       {error && <div className="ai-chat-error">{error}</div>}
       <form className="ai-composer" onSubmit={submit}>
-        <AgentAttachments selected={attachments} onChange={setAttachments}/>
-        <label className="agent-mode-select">本次任务
-          <select aria-label="任务模式" value={mode} disabled={busy} onChange={event=>setMode(event.target.value as AgentMode)}>
-            <option value="quick">快速问答 · 只读</option><option value="standard">标准工作</option><option value="deep">深入研究</option>
-          </select>
-        </label>
         <textarea value={input} onChange={(event) => setInput(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter" && !event.shiftKey) { event.preventDefault(); void send(input); } }} placeholder={mode==='quick'?'查询已有资料、邮件或客户记录…':mode==='deep'?'描述调查对象、范围和需要的结果…':'描述邮件、客户或资料任务…'} rows={1}/>
-        <div><span>模式只作用于新任务，已有任务沿用原配置</span><button disabled={busy || !input.trim()} aria-label="发送">↑</button></div>
+        <div className="ai-composer-toolbar">
+          <AgentAttachments selected={attachments} onChange={setAttachments}/>
+          <AgentModePicker value={mode} onChange={setMode} disabled={busy} describedBy="agent-mode-hint"/>
+          <button className="ai-composer-send" disabled={busy || !input.trim()} aria-label="发送">↑</button>
+        </div>
+        <p className="agent-mode-hint" id="agent-mode-hint" aria-live="polite">{agentModeDescriptions[mode]}<span>仅用于新任务</span></p>
       </form>
     </section>
     {taskId&&<TaskDetailView key={taskId} id={taskId} kind="search" onClose={()=>setTaskId(undefined)}/>}

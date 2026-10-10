@@ -1,0 +1,25 @@
+.conversation-theme .ai-composer > .ai-composer-toolbar { display:flex; align-items:center; gap:10px; padding:6px 12px; }
+.conversation-theme .ai-composer-toolbar > .ai-attachment-control { flex:0 0 auto; padding:0; }
+.conversation-theme .ai-composer-toolbar .ai-attachment-control > button { min-height:40px; padding:6px 10px; background:transparent; color:var(--muted); }
+.conversation-theme .ai-composer-toolbar .ai-attachment-control > button:hover { color:var(--ink); background:var(--violet-soft); }
+.conversation-theme .agent-mode-picker { display:flex; flex:0 1 auto; min-width:0; margin:0; padding:3px; gap:2px; border:1px solid var(--line); border-radius:9px; background:var(--surface-2); }
+.conversation-theme .agent-mode-legend { position:absolute; width:1px; height:1px; padding:0; overflow:hidden; clip-path:inset(50%); white-space:nowrap; }
+.conversation-theme .agent-mode-option { position:relative; display:flex; min-width:0; cursor:pointer; }
+.conversation-theme .agent-mode-option input { position:absolute; width:1px; height:1px; opacity:0; }
+.conversation-theme .agent-mode-option > span { display:flex; align-items:center; justify-content:center; min-height:34px; padding:0 12px; border:1px solid transparent; border-radius:6px; color:var(--muted); font-size:13px; line-height:1.25; white-space:nowrap; }
+.conversation-theme .agent-mode-option:hover > span { color:var(--ink); background:var(--surface-2); }
+.conversation-theme .agent-mode-option input:checked + span { color:var(--ink); background:var(--violet-soft); border-color:var(--violet); font-weight:600; }
+.conversation-theme .agent-mode-option input:focus-visible + span { outline:2px solid var(--ink); outline-offset:2px; }
+.conversation-theme .agent-mode-picker:disabled { opacity:.55; }
+.conversation-theme .agent-mode-picker:disabled .agent-mode-option { cursor:wait; }
+.conversation-theme .ai-composer-toolbar > .ai-composer-send { flex:0 0 38px; width:38px; height:38px; margin-left:auto; }
+.conversation-theme .ai-composer > .agent-mode-hint { margin:0; padding:2px 15px 10px; color:var(--muted); font-size:12px; line-height:1.5; }
+.conversation-theme .agent-mode-hint > span { margin-left:10px; padding-left:10px; border-left:1px solid var(--line-strong); color:var(--muted); font-size:12px; white-space:nowrap; }
+@media(max-width:600px) {
+  .conversation-theme .ai-composer > .ai-composer-toolbar { flex-wrap:wrap; gap:6px; padding:4px 10px; }
+  .conversation-theme .agent-mode-picker { order:-1; flex:1 0 100%; }
+  .conversation-theme .agent-mode-option { flex:1; }
+  .conversation-theme .agent-mode-option > span { width:100%; min-height:40px; padding:0 7px; font-size:14px; }
+  .conversation-theme .ai-composer-toolbar > .ai-composer-send { width:40px; height:40px; flex-basis:40px; }
+  .conversation-theme .ai-composer > .agent-mode-hint { padding:2px 12px 9px; }
+}
