@@ -1,0 +1,40 @@
+{
+  "date": "2026-10-10",
+  "scope": "owned-historical-knowledge-receipt-replay",
+  "regression": {
+    "files": 5,
+    "passed": 56,
+    "typescript": "passed",
+    "focusedEslint": "passed"
+  },
+  "isolatedDatabase": {
+    "actualReadOnlyComparison": true,
+    "syntheticAccountRunAndSkill": true,
+    "currentSourcesChecked": true,
+    "stableHashes": true,
+    "crossAccountDenied": true,
+    "cancelledRunDenied": true,
+    "nonReadReceiptDenied": true,
+    "inputTamperingDenied": true,
+    "changedEvidenceDenied": true,
+    "fixturesRemoved": true
+  },
+  "serviceTests": {
+    "revalidateBeforeAndAfterGeneration": true,
+    "discardOutputAfterRevocation": true,
+    "closeLocalTransport": true,
+    "noAutomaticEnable": true
+  },
+  "modelCalls": 0,
+  "externalRequests": 0,
+  "productionDataExported": false,
+  "productionServicesRestarted": false,
+  "automaticLearningEnabled": false,
+  "productionAgentEquivalent": false,
+  "independentQualityAccepted": false,
+  "limitations": [
+    "Three knowledge tools only; unsupported runs rejected",
+    "Not full conversation or dynamic production Agent replay",
+    "No live-shadow or grading/activation evidence store yet"
+  ]
+}
