@@ -5,10 +5,12 @@ import {spawn,type ChildProcess} from 'node:child_process';
 import {createServer} from 'node:http';
 import nextEnv from '@next/env';
 import {Pool} from 'pg';
-import {getPool} from '../src/lib/rag/db';
+import {getPool,tenantTransaction} from '../src/lib/rag/db';
 import {observeMemory,memoryAt,memoryConflicts,undoMemory} from '../src/lib/knowledge/temporal-memory';
 import {searchMemoryWithGraph} from '../src/lib/knowledge/memory-graph-search';
 import {processLocalMemoryExtraction} from '../src/lib/knowledge/local-memory-extraction';
+import {proposeExperienceSkillInTransaction} from '../src/lib/knowledge/experience-skill-draft';
+import {changeSkill} from '../src/lib/assistant/main/skills';
 
 nextEnv.loadEnvConfig(process.cwd());
 const base=process.env.DATABASE_MIGRATION_URL||process.env.DATABASE_URL;
@@ -96,13 +98,33 @@ try{
   assert.equal((await memoryConflicts(owner)).length,0);
   assert.equal((await searchMemoryWithGraph(owner,marker,business,afterUndo,{},async()=>{throw new Error('Graph offline');})).rows[0].id,earlier);
   assert.equal((await searchMemoryWithGraph(randomUUID(),marker,business,afterUndo,{},graph)).rows.length,0);
-  console.log(JSON.stringify({clone:true,model:'loopback-stub-not-quality-evaluation',cancelledQueueSkipped:true,workerKilledAndRestarted:true,expiredLeaseRecovered:true,attempts:2,chatCalls,oneObservationNoticeOutbox:true,replayNoModel:true,conflictIsolated:true,knownAtPreserved:true,businessIntervalPreserved:true,undoRestoresSurvivor:true,graphFallbackAndTenantIsolation:true,externalCalls:0}));
+  const experience='I found comparing original tables reduced errors.',experienceKey=`method-${marker}`;
+  let draftId='';
+  for(let i=0;i<2;i++){
+    const reportRun=randomUUID(),messageId=randomUUID();
+    await pool.query(`insert into agent_run(id,user_id,conversation_id,request_key,request_hash,input,model_config,status,execution_kind)
+      values($1,$2,$3,$1::uuid::text,$1::uuid::text,$4,'{}','completed','main-agent')`,[reportRun,owner,conversation,JSON.stringify({content:experience,requestKey:reportRun,attachments:[]})]);
+    await pool.query("insert into assistant_message(id,user_id,conversation_id,role,intent,content,metadata) values($1,$2,$3,'user','general',$4,$5)",[messageId,owner,conversation,experience,JSON.stringify({runId:reportRun})]);
+    await observeMemory(owner,{kind:'experience',memoryKey:experienceKey,content:experience,sourceReceipt:{type:'local-qwen3-extraction',usage:'unverified-user-experience',sourceQuote:experience,runId:reportRun,messageId}});
+    const candidate=await tenantTransaction(owner,client=>proposeExperienceSkillInTransaction(client,owner,experienceKey,experience));
+    if(i===0)assert.equal(candidate,null);else{assert(candidate?.created);draftId=candidate.id;}
+  }
+  const draft=(await pool.query('select scope,enabled,published from agent_skill where id=$1',[draftId])).rows[0];
+  assert.deepEqual(draft,{scope:'account',enabled:false,published:false});
+  const replayDraft=await tenantTransaction(owner,client=>proposeExperienceSkillInTransaction(client,owner,experienceKey,experience));
+  assert.equal(replayDraft?.id,draftId);assert.equal(replayDraft?.created,false);
+  await assert.rejects(()=>changeSkill({userId:owner,role:'member'},{id:draftId,version:1,operation:'enable'}),/replay and shadow/);
+  assert.equal((await pool.query('select count(*)::int n from agent_skill where owner_id=$1',[owner])).rows[0].n,1);
+  console.log(JSON.stringify({clone:true,model:'loopback-stub-not-quality-evaluation',cancelledQueueSkipped:true,workerKilledAndRestarted:true,expiredLeaseRecovered:true,attempts:2,chatCalls,oneObservationNoticeOutbox:true,replayNoModel:true,conflictIsolated:true,knownAtPreserved:true,businessIntervalPreserved:true,undoRestoresSurvivor:true,graphFallbackAndTenantIsolation:true,repeatedExperienceDraft:true,draftReplayIdempotent:true,unreviewedAutoActivationDenied:true,externalCalls:0}));
 }finally{
   for(const child of children)if(child.exitCode===null)child.kill();
   server.closeAllConnections();await new Promise<void>(done=>server.close(()=>done()));
   const client=await pool.connect();
   try{
     await client.query('begin');await client.query('set local session_replication_role=replica');
+    await client.query('delete from agent_skill_version where skill_id in(select id from agent_skill where owner_id=$1)',[owner]);
+    await client.query('delete from agent_skill where owner_id=$1',[owner]);
+    await client.query('delete from agent_run_event where user_id=$1',[owner]);
     await client.query('delete from agent_memory_conflict where owner_id=$1',[owner]);
     await client.query('delete from agent_memory_notice where owner_id=$1',[owner]);
     await client.query('delete from agent_memory_graph_outbox where observation_id in(select id from agent_memory_observation where owner_id=$1)',[owner]);

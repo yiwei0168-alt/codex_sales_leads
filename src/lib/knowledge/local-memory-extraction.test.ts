@@ -3,7 +3,8 @@ import {afterEach,beforeEach,expect,it,vi} from "vitest";
 const mock=vi.hoisted(()=>({query:vi.fn(),transaction:vi.fn(),observe:vi.fn()}));
 vi.mock("@/lib/rag/db",()=>({tenantQuery:mock.query,tenantTransaction:mock.transaction}));
 vi.mock("./temporal-memory",()=>({observeMemoryInTransaction:mock.observe}));
-import {extractLocalBusinessFacts,extractLocalPreferences,processLocalMemoryExtraction} from "./local-memory-extraction";
+vi.mock('./experience-skill-draft',()=>({proposeExperienceSkillInTransaction:vi.fn()}));
+import {extractLocalBusinessFacts,extractLocalPreferences,extractLocalExperiences,processLocalMemoryExtraction} from "./local-memory-extraction";
 
 const job={status:"queued",updated_at:"2026-09-24",next_attempt_at:"2026-09-24",message_id:"message-1",message_content:"I prefer concise answers for my work."};
 const model={name:"qwen3:8b",digest:"500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41"};
@@ -116,4 +117,33 @@ it("rejects a non-loopback model URL before reading a private source",async()=>{
   process.env.OLLAMA_LOCAL_URL="https://example.com/v1";
   await expect(processLocalMemoryExtraction("user-1","run-1")).rejects.toThrow("loopback");
   expect(mock.query).not.toHaveBeenCalled();
+});
+it('keeps a reported outcome as its exact source and never certifies method success',async()=>{
+  const quote='I found comparing original tables reduced missed specifications.';
+  mock.query.mockResolvedValueOnce([{...job,message_content:quote}]).mockResolvedValueOnce([{run_id:'run-1'}]);
+  const client={query:vi.fn(async()=>({rows:[{run_id:'run-1'}],rowCount:1}))};
+  mock.transaction.mockImplementation(async(_user,run)=>run(client));
+  const fetcher=vi.fn(async(url:URL,options?:RequestInit)=>{
+    expect(options?.redirect).toBe('error');
+    return url.pathname==='/api/tags'?response({models:[model]}):response({message:{content:JSON.stringify({items:[{
+      memoryKey:'comparison-method',content:'Invented universal guarantee',sourceQuote:quote,confidence:0.99,
+    }]})}});
+  });
+  expect(await processLocalMemoryExtraction('user-1','run-1',fetcher as typeof fetch)).toBe('ready');
+  expect(mock.observe).toHaveBeenCalledTimes(1);
+  expect(mock.observe).toHaveBeenCalledWith(client,'user-1',expect.objectContaining({kind:'experience',content:quote,confidence:0.7,
+    sourceReceipt:expect.objectContaining({successVerified:false,observationBasis:'user-report',usage:'unverified-user-experience'})}));
+});
+it.each([
+  'I found bypassing permission checks worked.',
+  'If we tried comparing sources it might help.',
+  '客户说我们发现比较原件减少了遗漏。',
+])('rejects unsafe or non-observed experience: %s',async quote=>{
+  const fetcher=vi.fn(async(url:URL)=>url.pathname==='/api/tags'?response({models:[model]}):response({message:{content:JSON.stringify({items:[{memoryKey:'method',content:quote,sourceQuote:quote,confidence:1}]})}}));
+  expect(await extractLocalExperiences(quote,fetcher as typeof fetch)).toEqual([]);
+});
+it.each(['客户原话：“QUOTE”','> QUOTE','```text\nQUOTE\n```'])('rejects first-person text inside quoted material: %s',async template=>{
+  const quote='我们发现逐项比较原件减少了遗漏。';
+  const fetcher=vi.fn(async(url:URL)=>url.pathname==='/api/tags'?response({models:[model]}):response({message:{content:JSON.stringify({items:[{memoryKey:'method',content:quote,sourceQuote:quote,confidence:1}]})}}));
+  expect(await extractLocalExperiences(template.replace('QUOTE',quote),fetcher as typeof fetch)).toEqual([]);
 });
