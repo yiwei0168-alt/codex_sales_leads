@@ -275,7 +275,20 @@ export async function knowledgeRevisionToken(userId: string): Promise<string> {
 
 export async function authorizedKnowledgeChunkIds(userId: string, chunkIds: string[]): Promise<Set<string>> {
   if (!chunkIds.length) return new Set();
-  const releaseId=await activeV3Release(userId);if(releaseId){const rows=await tenantQuery<{id:string}>(userId,`select c.id from knowledge_chunk_v3 c join knowledge_document d on d.id=c.document_id where c.release_id=$1 and c.id=any($2::uuid[]) and d.status='active' and(d.visibility='shared' or d.owner_id=$3)`,[releaseId,chunkIds,userId]);return new Set(rows.map(row=>row.id));}
+  const releaseId=await activeV3Release(userId);
+  if(releaseId){
+    const rows=await tenantQuery<{id:string}>(userId,`select c.id from knowledge_chunk_v3 c
+      join knowledge_document d on d.id=c.document_id
+      join knowledge_source_revision_v3 sr on sr.id=c.source_revision_id and sr.release_id=c.release_id
+      join knowledge_asset a on a.id=sr.asset_id and a.document_id=d.id
+      left join knowledge_tree_version v on v.id=d.current_tree_version_id
+      where c.release_id=$1 and c.id=any($2::uuid[]) and d.status='active'
+        and(d.visibility='shared' or d.owner_id=$3)
+        and a.registration_status='registered' and a.source_sha256=sr.source_sha256
+        and (d.current_tree_version_id is null or
+          (v.status='ready' and v.asset_id=a.id and v.source_sha256=sr.source_sha256))`,[releaseId,chunkIds,userId]);
+    return new Set(rows.map(row=>row.id));
+  }
   const rows = await tenantQuery<{ id: string }>(userId, `select ch.id
       from knowledge_chunk ch join knowledge_document d on d.id=ch.document_id
      where ch.id=any($1::uuid[]) and d.status='active'
