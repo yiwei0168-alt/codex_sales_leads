@@ -1,10 +1,10 @@
 import { z } from 'zod';
-import { parseAgentMode, MODE_PROMPT_VERSION, type AgentMode } from './mode-prompts';
+import { parseAgentMode, MODE_PROMPT_VERSION, LEGACY_MODE_PROMPT_VERSION, type AgentMode } from './mode-prompts';
 import type { ModelConfig } from './contracts';
 
 export const modeConfigSchema = z.object({
   mode: z.enum(['quick','standard','deep']), version: z.literal('agent-modes-v1'),
-  promptVersion: z.literal(MODE_PROMPT_VERSION),
+  promptVersion: z.enum([MODE_PROMPT_VERSION,LEGACY_MODE_PROMPT_VERSION]),
   firstOutputMs: z.number().int().min(1000).max(300000), totalMs: z.number().int().min(1000).max(900000),
   routes: z.array(z.object({model:z.string().min(1),effort:z.enum(['none','low','medium','high'])}).strict()).length(3),
 }).strict().refine(v=>v.firstOutputMs<=v.totalMs&&new Set(v.routes.map(r=>r.model)).size===3);

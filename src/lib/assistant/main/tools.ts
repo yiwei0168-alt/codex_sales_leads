@@ -38,6 +38,7 @@ import { businessTools } from "./business-tools";
 import { researchTools } from "./research-tools";
 import { mailSendTool, mailBatchTool } from "./mail-tools";
 import {vectorlessTools} from "./vectorless-tools";
+import {knowledgeOriginalsTool} from './knowledge-originals-tool';
 export { defineTool } from "./tool-definition";
 const empty = z.object({}).strict();
 export const productTools: ProductTool[] = [
@@ -115,14 +116,7 @@ export const productTools: ProductTool[] = [
     execute: async (i,c) => {const {listFactReviews}=await import("@/lib/knowledge/review-repository");return result(await listFactReviews(c.userId,i),{cost:"known"});} }),
   defineTool({ id: "knowledge_fact_review_decide", description: "Apply an exact administrator decision to one open shared-knowledge fact review. Verify, retain candidate, reject or correct using the existing attribute registry validation. Requires human confirmation of this decision and corrected content.", input: factReviewDecisionSchema, role: "admin", effect: "publish", recovery: "idempotent",
     execute: async (i,c) => {const {decideFactReview}=await import("@/lib/knowledge/review-repository");await decideFactReview(c.userId,i);return result({updated:true,reviewId:i.reviewId,decision:i.decision},{cost:"known"});} }),
-  defineTool({ id: "knowledge_originals", description: "Find accessible original documents by title or asset ID; return authenticated download links, never host paths.",
-    input: z.object({ query: z.string().max(180).default(""), assetId: z.uuid().optional() }).strict(),
-    execute: async (i, c) => {
-      const rows = await tenantQuery<{ id: string; title: string; mime: string; sha256: string }>(c.userId, `select a.id,d.title,a.mime_type as mime,a.source_sha256 as sha256 from knowledge_asset a join knowledge_document d on d.id=a.document_id
-        where (d.visibility='shared' or d.owner_id=$1) and a.registration_status='registered' and ($2::uuid is null or a.id=$2)
-        and d.title ilike $3 escape E'\\\\' order by a.updated_at desc limit 20`, [c.userId, i.assetId ?? null, `%${i.query.replace(/[\\%_]/g, "\\$&")}%`]);
-      return result(rows, { artifacts: rows.map(r => ({ id: r.id, title: r.title, url: `/api/knowledge/assets/${r.id}` })), cost: "known" });
-    } }),
+  knowledgeOriginalsTool,
   defineTool({ id: "company_search", description: "Query saved account companies by literal name/domain and optional market; no discovery prerequisite.",
     input: z.object({ query: z.string().max(180), countryCode: z.string().regex(/^[A-Z]{2}$/).optional() }).strict(),
     execute: async (i, c) => result(await findProductActionCompanies(c.userId, { kind: "library", companyQuery: i.query, countryCode: i.countryCode }), { cost: "known" }) }),

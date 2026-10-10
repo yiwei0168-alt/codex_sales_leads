@@ -189,7 +189,7 @@ export async function executeMainAgentRun(userId: string, runId: string, leaseTo
        order by created_at desc,id desc limit 12) h order by created_at,id`, [userId, run.conversation_id, runId]);
     const knowledgeScope = run.input.knowledgeScope;
     initial = { messages: [{ role: "system", content: context.mode
-      ? `${modePromptRules(context.mode)}\n\n当前可用能力（完整参数执行前 describe_tool）：\n${availableTools(context).map(t=>`${t.id}: ${t.description}`).join('\n')}`
+      ? `${modePromptRules(context.mode,run.model_config.profile?.promptVersion)}\n\n当前可用能力（完整参数执行前 describe_tool）：\n${availableTools(context).map(t=>`${t.id}: ${t.description}`).join('\n')}`
       : productPrompt(availableTools(context)) },
       ...(knowledgeScope?.length ? [{ role: "system" as const, content: `This question came from the knowledge base. Search and cite only these selected knowledge collections: ${knowledgeScope.join(", ")}. Pass this exact list as knowledge_search.collections. Answer in the user's language and distinguish missing evidence from verified facts.` }] : []),
       ...history,
