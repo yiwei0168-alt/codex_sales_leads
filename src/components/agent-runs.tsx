@@ -15,6 +15,9 @@ const safeHref = (url: unknown) => typeof url === "string" && (/^https?:\/\//i.t
 function elapsed(start: string, now: number) { const seconds = Math.max(0, Math.floor((now - new Date(start).getTime()) / 1000)); return seconds < 60 ? `${seconds} 秒` : `${Math.floor(seconds / 60)} 分 ${seconds % 60} 秒`; }
 function eventText(event: RunEvent) {
   const p = event.payload;
+  if(event.kind==='model_attempt')return `${Number(p.index)===0?'主模型':'备用模型 '+String(p.index)} ${String(p.model??'')} · 正在请求`;
+  if(event.kind==='model_selected')return `${String(p.model??'')} · 已返回${p.provider?`（${String(p.provider)}）`:''}`;
+  if(event.kind==='model_attempt_failed')return `${String(p.model??'')} · ${p.retryable?'本次未完成，检查下一备用':'已保存，请核对失败原因'}${p.reason?`（${String(p.reason)}）`:''}`;
   if (event.kind === "tool_started") return `${String(p.tool ?? "工具")} · 已开始`;
   if (event.kind === "tool_result") return `${String(p.tool ?? "工具")} · ${outcomeLabels[String(p.status)] ?? String(p.status ?? "已返回")}`;
   if (event.kind === "model_batch_submitted") return `${String(p.model ?? "GLM Batch")} · 已提交批次，等待供应商结果`;

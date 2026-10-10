@@ -3,12 +3,53 @@ import { getOpenRouterConfig } from "@/providers/openrouter";
 import { budgetedFetch } from "@/lib/billing/paid-fetch";
 import type { ModelConfig, ModelMessage } from "./contracts";
 import { assertOpenRouterResponse } from "@/providers/openrouter-batch";
+import { matchesBatchModel } from '@/providers/openrouter-batch';
+import { modelRoutedTransport } from '@/lib/network/model-transport';
+import { collectModelStream, withModeStream, ModelWaitError, ModelReceiptError } from './model-stream';
+import type { ModeConfig } from './mode-config';
 
 export const modelReplySchema = z.object({
   role: z.literal("assistant"), content: z.string().nullable().optional(),
+  reasoning: z.string().optional(), reasoning_details: z.array(z.record(z.string(),z.unknown())).optional(),
   tool_calls: z.array(z.object({ id: z.string().min(1).max(200), type: z.literal("function"),
     function: z.object({ name: z.string().max(100), arguments: z.string().max(100_000) }) })).max(12).optional(),
 });
+
+export async function requestModeModel(messages:ModelMessage[],profile:ModeConfig,index:number,transport:typeof fetch=fetch){
+  const candidate=profile.routes[index];if(!candidate)throw new Error('Invalid model attempt');
+  const route=getOpenRouterConfig(),controller=new AbortController();
+  let transportError:unknown;
+  const first=setTimeout(()=>controller.abort(new ModelWaitError('first-output')),profile.firstOutputMs);
+  const total=setTimeout(()=>controller.abort(new ModelWaitError('total')),profile.totalMs);
+  let rejectAbort:()=>void=()=>{};
+  const aborted=new Promise<never>((_,reject)=>{rejectAbort=()=>reject(controller.signal.reason);controller.signal.addEventListener('abort',rejectAbort,{once:true});});
+  void aborted.catch(()=>undefined); // A deadline can fire while admission is still awaiting storage.
+  const adapted:typeof fetch=async(input,init)=>{
+    try{
+      controller.signal.throwIfAborted();
+      const response=await Promise.race([modelRoutedTransport(transport,input,init)(input,init),aborted]);
+      if(!response.ok){clearTimeout(first);return response;}
+      return await collectModelStream(response,controller.signal,()=>clearTimeout(first));
+    }catch(error){transportError=error;throw error;}
+  };
+  try{
+    const response=await withModeStream(()=>budgetedFetch(adapted)(`${route.baseUrl}/chat/completions`,{
+      method:'POST',headers:{...route.defaultHeaders,Authorization:`Bearer ${route.apiKey}`,'Content-Type':'application/json'},
+      body:JSON.stringify({model:candidate.model,messages:transportMessages(messages),tools:modelFunctions,tool_choice:'auto',stream:true,
+        max_tokens:16384,reasoning:{effort:candidate.effort},provider:{...route.providerPreferences,allow_fallbacks:false}}),
+      signal:controller.signal,redirect:'error',
+    }));
+    await assertOpenRouterResponse(response);
+    const body=await response.json();
+    if(typeof body.model!=='string'||!matchesBatchModel(body.model,candidate.model))throw new Error('Model route identity mismatch');
+    return {...parseModelResponse(body),provider:typeof body.provider==='string'?body.provider:null,generationId:typeof body.id==='string'?body.id:null};
+  }catch(error){
+    if(error instanceof ModelReceiptError)throw error;
+    if(controller.signal.aborted)throw controller.signal.reason;
+    if(transportError)throw transportError;
+    throw error;
+  }finally{clearTimeout(first);clearTimeout(total);controller.signal.removeEventListener('abort',rejectAbort);controller.abort();}
+}
 export const modelFunctions = [
   { type: "function", function: { name: "discover_tools", description: "List accessible product capabilities", parameters: { type: "object", properties: {}, additionalProperties: false } } },
   { type: "function", function: { name: "describe_tool", description: "Load a tool's full input/output schema and execution contract", parameters: { type: "object", properties: { tool: { type: "string" } }, required: ["tool"], additionalProperties: false } } },

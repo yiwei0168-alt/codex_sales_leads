@@ -1,10 +1,12 @@
 import { result, type ExecutionContext, type ProductTool, type ToolResult } from "./contracts";
 import { beginCall, completeCall, event, boundary, LeaseLostError, InstructionsChangedError, assertCurrentInstructions } from "./repository";
 import { needsApproval, requestApproval } from "./approvals";
+import { modeAllowsTool } from './mode-tools';
 export async function executeRegisteredTool(tool: ProductTool, input: unknown, callKey: string, context: ExecutionContext): Promise<ToolResult> {
   const current = await boundary(context);
   if (current.control) throw new LeaseLostError();
   assertCurrentInstructions(context, current.instructions);
+  if (!modeAllowsTool(context.mode,tool.id)) return result(null,{status:'unavailable',missing:['当前模式不支持此操作，请切换模式。']});
   if (tool.role === "admin" && context.role !== "admin") return result(null, { status: "unavailable", missing: ["Administrator permission"] });
   let approvalId: string | undefined;
   if (needsApproval(tool)) {

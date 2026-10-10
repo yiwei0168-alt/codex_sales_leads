@@ -1,5 +1,7 @@
 # 逐工具模式建议（待确认）
 
+2026-10-10 运行接入：快速模式采用显式只读列表，标准模式排除研究/评分，并为防止间接越界排除 `skill_script`、`schedule_create`、`schedule_control`；原角色、知识范围及影子开关继续生效。标准模式同时排除 `company_score_publish`、`contacts_verify_publish`，与下表历史“按需”建议不同。下表保留为设计建议，实际代码见 `mode-tools.ts`。MODESEL-13：暂不新增模式级搜索次数/问题数量限制；现有 Schema 保留。
+
 MODESEL-03 已确认标准模式按需使用公开网页搜索补充单个事实；web_search/search_channel 的“按需”不代表任意规模搜索。批量爬取、公司调查与评分限深入模式；具体次数/页数/时限待定，服务端参数及累计调用边界尚未实现。
 
 MODESEL-02 已确认快速模式包括已保存邮件、客户记录和时间线只读查询。下表已补入对应读取工具；具体按需展示策略仍为建议。mail_sync、写入、生成流程和新调查继续禁用，不能仅凭 effect=read 判断可用。

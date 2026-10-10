@@ -1,10 +1,12 @@
 import { createHash } from "node:crypto";
 import { z } from "zod";
+import type { AgentMode } from './mode-prompts';
+import type { ModeConfig } from './mode-config';
 
 export const runStatuses = ["queued", "running", "waiting_user", "paused", "partial", "completed", "failed", "cancelled"] as const;
 export type RunStatus = typeof runStatuses[number];
 export type Effect = "read" | "reversible" | "send" | "destructive" | "publish";
-export interface ExecutionContext { userId: string; runId: string; leaseToken: string; role: "admin" | "member"; callId?: string; instructionIds?: readonly string[]; knowledgeScope?: Array<"industry" | "company" | "product"> }
+export interface ExecutionContext { userId: string; runId: string; leaseToken: string; role: "admin" | "member"; mode?: AgentMode; callId?: string; instructionIds?: readonly string[]; knowledgeScope?: Array<"industry" | "company" | "product"> }
 export const toolResultSchema = z.object({
   status: z.enum(["success", "partial", "missing_input", "waiting_approval", "unavailable", "unknown"]),
   data: z.unknown().optional(),
@@ -39,9 +41,10 @@ export const messageInputSchema = z.object({
   requestKey: z.string().min(8).max(120),
   attachments: z.array(z.object({ assetId: z.uuid() }).strict()).max(20).default([]),
   knowledgeScope: z.array(z.enum(["industry", "company", "product"])).min(1).max(3).optional(),
+  mode: z.enum(['quick','standard','deep']).optional(),
 }).strict();
 export type MessageInput = z.infer<typeof messageInputSchema>;
-export interface ModelConfig { model: string; providers: string[]; version: string }
+export interface ModelConfig { model: string; providers: string[]; version: string; profile?: ModeConfig }
 export interface AgentRun {
   id: string; user_id: string; conversation_id: string; status: RunStatus;
   input: MessageInput; result: { reply: string } | null; model_config: ModelConfig;
@@ -52,5 +55,6 @@ export interface AgentRun {
 export interface ModelToolCall { id: string; type: "function"; function: { name: string; arguments: string } }
 export interface ModelMessage {
   role: "system" | "user" | "assistant" | "tool"; content: string | null;
+  reasoning?: string; reasoning_details?: Array<Record<string,unknown>>;
   tool_call_id?: string; tool_calls?: ModelToolCall[];
 }

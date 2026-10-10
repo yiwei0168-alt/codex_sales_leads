@@ -11,6 +11,15 @@ import {dispatchTool} from "./executor";
 afterEach(()=>vi.unstubAllEnvs());
 
 describe("knowledge question scope", () => {
+  it('rejects guessed mode-forbidden tools before loading or executing them',async()=>{
+    const context={userId:'owner',runId:'run',leaseToken:'lease',role:'member' as const,mode:'quick' as const};
+    for(const name of ['discover_tools','describe_tool','execute_tool']){
+      const output=await dispatchTool({id:'fixture',type:'function',function:{name,arguments:JSON.stringify(name==='discover_tools'?{}:{tool:'mail_sync',arguments:{}})}},context);
+      if(name==='discover_tools')expect(JSON.stringify(output.data)).not.toContain('mail_sync');
+      else expect(output.status).toBe('unavailable');
+    }
+    expect(availableTools({...context,knowledgeScope:['product']}).map(t=>t.id)).toEqual(['knowledge_search','knowledge_status']);
+  });
   it("exposes only knowledge tools to a scoped question", () => {
     expect(availableTools({ role: "member", knowledgeScope: ["product"] }).map(tool => tool.id))
       .toEqual(["knowledge_search", "knowledge_status"]);

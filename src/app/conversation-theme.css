@@ -68,6 +68,9 @@
 .conversation-theme .ai-composer button { background: var(--blue); }
 .conversation-theme .ai-composer button:disabled { color: var(--muted); background: #E8EFF2; }
 .conversation-theme .ai-composer .ai-attachment-control button { color: var(--blue); background: var(--violet-soft); }
+.conversation-theme .agent-mode-select { display: flex; align-items: center; gap: 8px; width: fit-content; margin-bottom: 6px; color: var(--muted); font-size: 12px; }
+.conversation-theme .agent-mode-select select { color: var(--ink); background: var(--surface, #fff); border: 1px solid var(--line-strong); border-radius: 6px; padding: 5px 24px 5px 8px; min-height: 32px; font: inherit; }
+.conversation-theme .agent-mode-select select:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
 .conversation-theme .ai-submit-state { max-width: 760px; margin: 0 auto 18px; color: var(--muted); font-size: var(--text-secondary); }
 .conversation-theme .agent-runs { max-width: 760px; margin: 0 auto 26px; padding: 0; border: 0; background: transparent; }
 .conversation-theme .agent-run { display: grid; gap: 12px; margin-bottom: 12px; padding: 17px; border: 1px solid var(--line); border-radius: 12px; background: #FFFFFF; }

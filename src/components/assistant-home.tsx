@@ -9,6 +9,7 @@ import type {
   AssistantActionDto, AssistantConversationDto, AssistantMessageDto,
 } from "@/lib/assistant/types";
 import {searchTaskStatusLabel,taskCounts} from "@/lib/assistant/task-summary";
+import type { AgentMode } from '@/lib/assistant/main/mode-prompts';
 
 const pendingInputs = new Map<string, string>();
 export function startNewConversationInput() { pendingInputs.delete("new"); }
@@ -34,6 +35,7 @@ export function AssistantHome({ userName, initialConversationId, onConversationC
   function setInput(value: string) { pendingInputs.set(draftKey, value); updateInput(value); }
   const [attachments,setAttachments]=useState<string[]>([]);
   const [busy, setBusy] = useState(false);
+  const [mode,setMode]=useState<AgentMode>('standard');
   const [confirmingId, setConfirmingId] = useState<string>();
   const [error, setError] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -93,7 +95,7 @@ export function AssistantHome({ userName, initialConversationId, onConversationC
     try {
       const response = await fetch("/api/assistant/messages", {
         method: "POST", headers: { "content-type": "application/json" },
-        body: JSON.stringify({ conversationId: activeId, content: message, requestKey: crypto.randomUUID(),attachments:attachments.map(assetId=>({assetId})) }),
+        body: JSON.stringify({ conversationId: activeId, content: message, mode, requestKey: crypto.randomUUID(),attachments:attachments.map(assetId=>({assetId})) }),
       });
       const body = await response.json() as { conversation?: AssistantConversationDto; error?: string };
       if (!response.ok || !body.conversation) throw new Error(body.error ?? "消息处理失败");
@@ -164,7 +166,16 @@ export function AssistantHome({ userName, initialConversationId, onConversationC
         {busy && <p className="ai-submit-state" role="status">正在保存任务…</p>}
       </div>
       {error && <div className="ai-chat-error">{error}</div>}
-      <form className="ai-composer" onSubmit={submit}><AgentAttachments selected={attachments} onChange={setAttachments}/><textarea value={input} onChange={(event) => setInput(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter" && !event.shiftKey) { event.preventDefault(); void send(input); } }} placeholder="询问产品、结合网页调研，或描述销售线索目标…" rows={1}/><div><span>支持多轮纠正 · 线索搜索执行前需确认</span><button disabled={busy || !input.trim()} aria-label="发送">↑</button></div></form>
+      <form className="ai-composer" onSubmit={submit}>
+        <AgentAttachments selected={attachments} onChange={setAttachments}/>
+        <label className="agent-mode-select">本次任务
+          <select aria-label="任务模式" value={mode} disabled={busy} onChange={event=>setMode(event.target.value as AgentMode)}>
+            <option value="quick">快速问答 · 只读</option><option value="standard">标准工作</option><option value="deep">深入研究</option>
+          </select>
+        </label>
+        <textarea value={input} onChange={(event) => setInput(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter" && !event.shiftKey) { event.preventDefault(); void send(input); } }} placeholder={mode==='quick'?'查询已有资料、邮件或客户记录…':mode==='deep'?'描述调查对象、范围和需要的结果…':'描述邮件、客户或资料任务…'} rows={1}/>
+        <div><span>模式只作用于新任务，已有任务沿用原配置</span><button disabled={busy || !input.trim()} aria-label="发送">↑</button></div>
+      </form>
     </section>
     {taskId&&<TaskDetailView key={taskId} id={taskId} kind="search" onClose={()=>setTaskId(undefined)}/>}
   </div>;

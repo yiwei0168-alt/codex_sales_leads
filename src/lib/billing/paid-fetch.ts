@@ -17,6 +17,7 @@ import {searchRequestFingerprint} from "./search-request-fingerprint";
 import {currentStagePaidCallOverride} from "./stage-paid-call-override";
 import {createHash} from "node:crypto";
 import {modelRoutedTransport} from "@/lib/network/model-transport";
+import {isModeStreamRequest,ModelReceiptError} from '@/lib/assistant/main/model-stream';
 
 function object(value:unknown):Record<string,unknown>{return value!==null&&typeof value==="object"&&!Array.isArray(value)?value as Record<string,unknown>:{};}
 function count(value:unknown):number|null{return typeof value==="number"&&Number.isSafeInteger(value)&&value>=0?value:null;}
@@ -39,8 +40,9 @@ export function budgetedFetch(transport:typeof fetch=fetch):typeof fetch {
         if(["model","stream","max_tokens","max_completion_tokens"].some(key=>form.has(key)))throw new BudgetDeniedError("request-out-of-bounds");
       }else{try{parsed=object(JSON.parse(body));}catch{throw new BudgetDeniedError("request-out-of-bounds");}}
     }
-    if(parsed.stream===true)throw new BudgetDeniedError("request-out-of-bounds");
-    if(typeof parsed.model==="string"&&isKimiK3(parsed.model)&&!count(parsed.max_completion_tokens))throw new BudgetDeniedError("request-out-of-bounds");
+    const modeStream=isModeStreamRequest(url,parsed);
+    if(parsed.stream===true&&!modeStream)throw new BudgetDeniedError("request-out-of-bounds");
+    if(!modeStream&&typeof parsed.model==="string"&&isKimiK3(parsed.model)&&!count(parsed.max_completion_tokens))throw new BudgetDeniedError("request-out-of-bounds");
     const outputTokens=count(parsed.max_completion_tokens??parsed.max_tokens??object(parsed.generation_config).max_output_tokens);
     const bytes=Buffer.byteLength(body,"utf8")+Buffer.byteLength(url.search,"utf8");
     const policy=scope.tariffPolicy??billingPolicy;
@@ -108,7 +110,7 @@ export function budgetedFetch(transport:typeof fetch=fetch):typeof fetch {
       foreignCostBound:rule.foreignCostBound,costAttribution:scope.costAttribution});
     const started=Date.now();let response:Response;
     try{response=await routedTransport(input,{...init,redirect:"error"});}catch{
-      await settlePaidCall(scope.userId,id,{reportedMicros:null,latencyMs:Date.now()-started,responseBytes:null,inputTokens:null,outputTokens:null,succeeded:false}).catch(()=>undefined);
+      await settlePaidCall(scope.userId,id,{reportedMicros:null,latencyMs:Date.now()-started,responseBytes:null,inputTokens:null,outputTokens:null,succeeded:false}).catch(()=>{if(modeStream)throw new ModelReceiptError();});
       throw new PaidCallOutcomeUnknownError();
     }
     let responseText:string;

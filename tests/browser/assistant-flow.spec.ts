@@ -43,3 +43,20 @@ test("places the pending approval below its user message in the conversation", a
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1)).toBe(true);
   await page.screenshot({path:`tmp/assistant-flow-${page.viewportSize()!.width}.png`,fullPage:true});
 });
+test('selects a mode for a new task without changing an existing run',async({page})=>{
+  const selector=page.getByRole('combobox',{name:'任务模式'});
+  await expect(selector).toHaveValue('standard');
+  await selector.selectOption('quick');
+  await expect(page.locator('.ai-composer textarea')).toHaveAttribute('placeholder','查询已有资料、邮件或客户记录…');
+  await page.route('**/api/assistant/messages',async route=>{
+    expect(route.request().postDataJSON()).toMatchObject({mode:'quick',content:'查询已有记录'});
+    await route.fulfill({status:409,json:{error:'fixture saved request'}});
+  });
+  await page.locator('.ai-composer textarea').fill('查询已有记录');
+  await page.getByRole('button',{name:'发送',exact:true}).click();
+  await expect(page.getByText('fixture saved request')).toBeVisible();
+  await expect(page.getByRole('region',{name:'当前任务'})).toBeVisible();
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+  const box=await selector.boundingBox();expect(box!.height).toBeLessThanOrEqual(40);
+  await page.screenshot({path:`tmp/assistant-mode-${page.viewportSize()!.width}.png`,fullPage:true});
+});

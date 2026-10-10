@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { modeAllowsTool } from './mode-tools';
 import { tenantQuery } from "@/lib/rag/db";
 import { hybridSearch, getKnowledgeStats } from "@/lib/rag/repository";
 import { resolveVerifiedFacts } from "@/lib/knowledge/fact-repository";
@@ -199,8 +200,9 @@ export const productTools: ProductTool[] = [
     input: z.object({ plan: z.string().min(1).max(8000), scale: z.string().min(1).max(1000), uncertainty: z.string().max(2000), requestedEstimate: z.string().max(1000).optional() }).strict(), effect: "publish", recovery: "idempotent",
     execute: async i => result({ approvedPlan: i }, { cost: "known" }) }),
 ];
-export function availableTools(context: Pick<ExecutionContext, "role" | "knowledgeScope">, tools = productTools) {
+export function availableTools(context: Pick<ExecutionContext, "role" | "knowledgeScope" | "mode">, tools = productTools) {
   return tools.filter(t => (t.role === "member" || context.role === "admin")
+    && modeAllowsTool(context.mode,t.id)
     && (!t.id.startsWith("vectorless_") || (process.env.ENABLE_VECTORLESS_AGENT_SHADOW==="1" && !context.knowledgeScope?.length))
     && (t.id!=="memory_observation_search" || (process.env.ENABLE_MEMORY_GRAPH_AGENT_SHADOW==="1" && !context.knowledgeScope?.length))
     && (!context.knowledgeScope?.length || t.id === "knowledge_search" || t.id === "knowledge_status"));

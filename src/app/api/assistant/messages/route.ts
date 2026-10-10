@@ -2,7 +2,7 @@ import { requireApiSession } from "@/lib/auth/session";
 import { getConversation } from "@/lib/assistant/repository";
 import { enqueueRun } from "@/lib/assistant/main/repository";
 import { messageInputSchema } from "@/lib/assistant/main/contracts";
-import { defaultModelConfig } from "@/lib/assistant/main/product";
+import { modeModelConfig } from "@/lib/assistant/main/mode-config";
 import { randomUUID } from "node:crypto";
 
 export const runtime = "nodejs";
@@ -17,7 +17,7 @@ export async function POST(request: Request) {
   const input = messageInputSchema.safeParse({ requestKey: randomUUID(), ...parsed });
   if (!input.success) return Response.json({ error: "消息或附件参数无效" }, { status: 400 });
   try {
-    const run = await enqueueRun(session.userId, input.data, defaultModelConfig());
+    const run = await enqueueRun(session.userId, input.data, modeModelConfig(input.data.mode));
     return Response.json({ conversation: await getConversation(session.userId, run.conversation_id), run: { id: run.id, status: run.status } }, { status: 202 });
   } catch {
     return Response.json({ error: "任务入队失败；请检查对话、附件或重复请求内容" }, { status: 409 });

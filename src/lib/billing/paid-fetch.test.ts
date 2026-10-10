@@ -5,6 +5,7 @@ vi.mock("./repository",()=>({reservePaidCall:mocks.reserve,settlePaidCall:mocks.
 vi.mock("./reconciliation",()=>({recordVerifiedCostObservation:mocks.reconcile}));
 vi.mock("./policy",async original=>({...await original<typeof import("./policy")>(),quoteRequest:mocks.quote}));
 import {budgetedFetch} from "./paid-fetch";
+import {withModeStream,ModelWaitError,ModelReceiptError} from '@/lib/assistant/main/model-stream';
 import {withSpendContext} from "./context";
 import {billingPolicy,BudgetDeniedError,PaidCallOutcomeUnknownError} from "./policy";
 import {DeepSeekProvider} from "@/providers/deepseek";
@@ -15,6 +16,23 @@ import {withCompanyCostAttribution,companyCostKey} from "./company-cost-context"
 import {OPENROUTER_COST_REPORT_SOURCE} from "./openrouter-cost-report";
 const scope={userId:"user",operationId:"action",stage:"score"};
 const init={method:"POST",headers:{authorization:"Bearer fixture-secret"},body:JSON.stringify({model:"test",max_tokens:100,messages:[{content:"private company input"}]})};
+const modeInit={method:'POST',body:JSON.stringify({model:'openai/gpt-6-luna',stream:true,max_tokens:100,provider:{data_collection:'deny',require_parameters:true,allow_fallbacks:false}})};
+it('records buffered mode stream usage through the paid-call journal',async()=>{
+  const transport=vi.fn<typeof fetch>().mockResolvedValue(Response.json({id:'gen-fixture',provider:'fixture',usage:{prompt_tokens:20,completion_tokens:10,cost:0.001},choices:[{message:{content:'OK'},finish_reason:'stop'}]}));
+  await withSpendContext(scope,()=>withModeStream(()=>budgetedFetch(transport)('https://openrouter.ai/api/v1/chat/completions',modeInit)));
+  expect(mocks.reserve).toHaveBeenCalledOnce();
+  expect(mocks.settle.mock.calls[0][2]).toMatchObject({succeeded:true,inputTokens:20,outputTokens:10,reportedMicros:1000});
+});
+it('awaits recording an uncertain streaming attempt before surfacing failure',async()=>{
+  const order:string[]=[];
+  mocks.settle.mockImplementation(async()=>{await Promise.resolve();order.push('settled');});
+  await expect(withSpendContext(scope,()=>withModeStream(()=>budgetedFetch(async()=>{throw new ModelWaitError('total');})('https://openrouter.ai/api/v1/chat/completions',modeInit)))).rejects.toBeInstanceOf(PaidCallOutcomeUnknownError);
+  order.push('returned');expect(order).toEqual(['settled','returned']);
+});
+it('blocks mode fallback when failed-attempt accounting cannot be saved',async()=>{
+  mocks.settle.mockRejectedValue(new Error('storage unavailable'));
+  await expect(withSpendContext(scope,()=>withModeStream(()=>budgetedFetch(async()=>{throw new ModelWaitError('total');})('https://openrouter.ai/api/v1/chat/completions',modeInit)))).rejects.toBeInstanceOf(ModelReceiptError);
+});
 afterEach(()=>vi.unstubAllEnvs());
 
 it.each(["missing-tariff","expired-tariff"] as const)("MA05 records %s without denying ordinary transport",async code=>{
