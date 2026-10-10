@@ -5,7 +5,7 @@ const db=vi.hoisted(()=>({queries:[] as Array<{sql:string;args:unknown[]}>,
 vi.mock("@/lib/rag/db",()=>({tenantQuery:vi.fn(),tenantTransaction:async(_userId:string,run:(client:{query:(sql:string,args:unknown[])=>Promise<unknown>})=>Promise<unknown>)=>run({
   query:async(sql:string,args:unknown[])=>{db.queries.push({sql,args});
     if(sql.startsWith("insert into agent_skill("))return {rows:[{id:"00000000-0000-4000-8000-000000000001"}],rowCount:1};
-    if(sql.startsWith("select v.validation"))return {rows:[{validation:db.validation,scope:db.scope,files:db.files,dependencies:db.dependencies}],rowCount:1};
+    if(sql.startsWith("select v.validation"))return {rows:[{validation:db.validation,scope:db.scope,files:db.files,dependencies:db.dependencies,source:'user'}],rowCount:1};
     return {rows:[],rowCount:1};},
 })}));
 import {changeSkill,importSkill} from "./skills";

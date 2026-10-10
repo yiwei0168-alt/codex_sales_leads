@@ -1,0 +1,31 @@
+{
+  "date": "2026-10-10",
+  "scope": "experience-skill-source-revalidation",
+  "regression": {
+    "files": 4,
+    "passed": 40,
+    "typescript": "passed",
+    "focusedEslint": "passed"
+  },
+  "isolatedDatabase": {
+    "candidateCreated": true,
+    "unreviewedAutoActivationDenied": true,
+    "pinnedConflictDenied": true,
+    "resolvedConflictReadable": true,
+    "pinnedRevocationDenied": true,
+    "humanAndAgentReactivationDenied": true,
+    "disableAvailable": true,
+    "historyRetained": true,
+    "fixturesRemoved": true
+  },
+  "modelCalls": 0,
+  "externalRequests": 0,
+  "productionServicesRestarted": false,
+  "automaticLearningEnabled": false,
+  "independentQualityAccepted": false,
+  "retrievalMainPathSwitched": false,
+  "limitations": [
+    "Already loaded task context is not yet purged per model turn",
+    "Replay and shadow quality evaluator pending"
+  ]
+}

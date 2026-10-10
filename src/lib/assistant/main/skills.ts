@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { tenantQuery, tenantTransaction } from "@/lib/rag/db";
 import { digest, type ExecutionContext } from "./contracts";
+import {skillSourcesCurrent,type SourcedSkillVersion} from './skill-source-guard';
 
 export function safeSkillPath(path: string) {
   return path.length <= 180 && /^[a-z0-9_.\-/]+$/i.test(path) && !path.startsWith("/") && path.split("/").every(p => p !== ".." && p !== "." && p !== "" && !/^(\.env(?:\..*)?|\.git|node_modules|id_rsa|id_ed25519)$/i.test(p)) && !path.startsWith("-");
@@ -66,14 +67,18 @@ export async function readSkill(context: ExecutionContext, skillId: string) {
     if (!accessible.rows[0]) return null;
     const pinned = await client.query("select version from agent_run_skill where user_id=$1 and run_id=$2 and skill_id=$3", [context.userId, context.runId, skillId]);
     if (!pinned.rowCount) await client.query("insert into agent_run_skill(user_id,run_id,skill_id,version) values($1,$2,$3,$4) on conflict do nothing", [context.userId, context.runId, skillId, accessible.rows[0].current_version]);
-    return (await client.query("select v.* from agent_skill_version v join agent_run_skill p on p.skill_id=v.skill_id and p.version=v.version where p.user_id=$1 and p.run_id=$2 and p.skill_id=$3", [context.userId, context.runId, skillId])).rows[0] ?? null;
+    const selected=(await client.query<SourcedSkillVersion&{version:number}>("select v.*,s.owner_id,s.scope from agent_skill_version v join agent_skill s on s.id=v.skill_id join agent_run_skill p on p.skill_id=v.skill_id and p.version=v.version where p.user_id=$1 and p.run_id=$2 and p.skill_id=$3", [context.userId, context.runId, skillId])).rows[0];
+    if(!selected||!await skillSourcesCurrent(client,context.userId,selected))return null;
+    return selected;
   }, context.role);
 }
 export async function changeSkill(context: Pick<ExecutionContext, "userId" | "role">, input: { id: string; version: number; operation: "enable" | "disable" | "publish" | "rollback" },humanInitiated=false) {
   if (input.operation === "publish" && context.role !== "admin") throw new Error("Administrator required");
   return tenantTransaction(context.userId, async client => {
-    const version = await client.query<{validation:{scripts?:string;dependencies?:string;autoEnable?:string};scope:string;files:unknown;dependencies:unknown}>("select v.validation,s.scope,v.files,v.dependencies from agent_skill s join agent_skill_version v on v.skill_id=s.id where s.id=$1 and s.owner_id=$2 and v.version=$3 for update of s", [input.id, context.userId, input.version]);
+    const version = await client.query<SourcedSkillVersion&{validation:{scripts?:string;dependencies?:string;autoEnable?:string};dependencies:unknown}>("select v.validation,s.scope,v.files,v.dependencies,v.source,v.content_hash,s.owner_id from agent_skill s join agent_skill_version v on v.skill_id=s.id where s.id=$1 and s.owner_id=$2 and v.version=$3 for update of s", [input.id, context.userId, input.version]);
     if (!version.rowCount) throw new Error("Skill/version not owned");
+    if(input.operation!=="disable"&&!await skillSourcesCurrent(client,context.userId,version.rows[0]))
+      throw new Error("Skill experience sources changed; review a new version before activation");
     if(!humanInitiated&&["enable","rollback"].includes(input.operation)){
       const selected=version.rows[0];
       if(selected.scope!=="account"||selected.validation.scripts!=="none"||selected.validation.dependencies!=="none"
