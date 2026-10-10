@@ -775,7 +775,7 @@ flowchart TD
 | `src/lib/leads/workflow/assessment-review-agent.ts` | `e4ab294e1641670bfae34778fe3ce81d46c838994751f86b891a4ce750095564` |
 | `src/providers/deepseek.ts` | `d72ee42bdeccfee5bd6079a47262f786312b11c78f0b27d48b6f7d5b26f9b373` |
 | `src/providers/discovery-contracts.ts` | `fa2f8b32bb6b7b2dae7a09835b4976810483ddbf789bcedd6968a0a646d88e2f` |
-| `src/providers/discovery.ts` | `acb27469ea9c27bc6f24dff56160b8d4b26dedfff84bb386390c6a8dcc21fc2f` |
+| `src/providers/discovery.ts` | `284de4f0cba7d1241d4588a365638b3ab68dd081007c4c2d79aef93d80167c9b` |
 | `src/providers/resilient-ai.ts` | `cb22f39085dcdd301655e7c748c6f31477de7f8a5aa1139db561938103716811` |
 | `src/providers/openrouter.ts` | `5c6db9671958ece7bf9272ba1bfa48cb9da058ac8160db446682ab071294d472` |
 | `db/migrations/034_model_account_cash_cost.sql` | `4790c7ad12eda543e197c84ddd77c4a5ce296b7871ccee799f3aa2262684bdbb` |
