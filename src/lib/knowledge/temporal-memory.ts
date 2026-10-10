@@ -36,6 +36,7 @@ export async function observeMemoryInTransaction(client:PoolClient,userId:string
   {
     if(memoryKey)await client.query("select pg_advisory_xact_lock(hashtextextended($1,0))",[`${userId}:${input.kind}:${memoryKey}:${input.marketCode??""}:${input.companyId??""}:${marketCodes.join(",")}:${companyIds.join(",")}`]);
     for(const targetId of [input.correctsId,input.invalidatesId].filter(Boolean)){
+      await client.query('select pg_advisory_xact_lock(hashtextextended($1,0))',[`memory-target:${userId}:${targetId}`]);
       const target=await client.query("select id from agent_memory_observation where id=$1 and owner_id=$2",[targetId,userId]);
       if(target.rowCount!==1)throw new Error("Memory target is unavailable");
     }
@@ -79,6 +80,10 @@ export async function undoMemory(userId:string,targetId:string){
       "select source_receipt from agent_memory_observation where id=$1 and owner_id=$2",[targetId,userId]);
     if(!target.rows[0])throw new Error("Memory target is unavailable");
     const receipt=target.rows[0].source_receipt;
+    // Legacy undo locks its original version first; keep the same order as saveMemory.
+    if(receipt.type!=='agent-memory-version')await client.query('select pg_advisory_xact_lock(hashtextextended($1,0))',[`memory-target:${userId}:${targetId}`]);
+    const corrected=await client.query('select id from agent_memory_observation where owner_id=$1 and corrects_id=$2 limit 1',[userId,targetId]);
+    if(corrected.rows.length)throw new Error('Memory version changed');
     if(receipt.type==="agent-memory-version"&&typeof receipt.memoryId==="string"&&Number.isSafeInteger(receipt.version)){
       const {undoMemoryInTransaction}=await import("@/lib/assistant/main/memory");
       await undoMemoryInTransaction(client,userId,receipt.memoryId,Number(receipt.version));

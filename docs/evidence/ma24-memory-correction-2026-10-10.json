@@ -1,0 +1,33 @@
+{
+  "date": "2026-10-10",
+  "scope": "explicit-user-memory-correction",
+  "regression": {"files": 5, "passed": 29, "typescript": "passed", "focusedEslint": "passed"},
+  "isolatedDatabase": {
+    "script": "scripts/verify-memory-correction-clone.ts",
+    "correctionAndReplay": true,
+    "singleNoticeAndOutbox": true,
+    "concurrentCorrectionAndUndo": true,
+    "crossAccountDenied": true,
+    "scopePreserved": true,
+    "unknownDatesPreserved": true,
+    "knownAtPreserved": true,
+    "graphStaleCandidateRejected": true,
+    "fixturesRemoved": true
+  },
+  "browser": {
+    "script": "scripts/verify-memory-correction-ui.ts",
+    "type": "real-component-with-synthetic-http-receipts",
+    "widths": [1366, 390, 320],
+    "cancelNoWrite": true,
+    "staleEditPreserved": true,
+    "saveAndRefresh": true,
+    "focusScrollAndNoOverflow": true
+  },
+  "deployment": {"nextProductionBuild": "passed", "productHttp": 200, "langgraphHttp": 200, "mailWorkerInterrupted": false},
+  "modelCalls": 0,
+  "automaticTextCorrectionAccepted": false,
+  "structuredToolLearningAccepted": false,
+  "independentQualityAccepted": false,
+  "automaticLearningEnabled": false,
+  "retrievalMainPathSwitched": false
+}
