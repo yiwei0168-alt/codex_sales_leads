@@ -12,17 +12,17 @@ beforeEach(()=>{mock.query.mockReset();mock.transaction.mockReset();mock.observe
 afterEach(()=>{delete process.env.OLLAMA_LOCAL_URL;});
 
 it("keeps the job queued when the exact local model is absent",async()=>{
-  mock.query.mockResolvedValueOnce([job]).mockResolvedValueOnce([]);
+  mock.query.mockResolvedValueOnce([job]).mockResolvedValueOnce([{run_id:'run-1'}]).mockResolvedValueOnce([{run_id:'run-1'}]);
   const fetcher=vi.fn(async()=>response({models:[{name:"different-model"}]}));
   expect(await processLocalMemoryExtraction("user-1","run-1",fetcher as typeof fetch)).toBe("queued");
   expect(fetcher).toHaveBeenCalledTimes(1);
-  expect(mock.query).toHaveBeenCalledTimes(2);
-  expect(mock.query).toHaveBeenCalledWith("user-1",expect.stringContaining("local_model_unavailable"),["user-1","run-1"]);
+  expect(mock.query).toHaveBeenCalledTimes(3);
+  expect(mock.query).toHaveBeenCalledWith("user-1",expect.stringContaining("lease_token=$3"),expect.arrayContaining(['local_model_unavailable',600]));
   expect(mock.transaction).not.toHaveBeenCalled();
 });
 
 it("rejects a different artifact under the same model name",async()=>{
-  mock.query.mockResolvedValueOnce([job]).mockResolvedValueOnce([]);
+  mock.query.mockResolvedValueOnce([job]).mockResolvedValueOnce([{run_id:'run-1'}]).mockResolvedValueOnce([{run_id:'run-1'}]);
   const fetcher=vi.fn(async()=>response({models:[{name:"qwen3:8b",digest:"different"}]}));
   expect(await processLocalMemoryExtraction("user-1","run-1",fetcher as typeof fetch)).toBe("queued");
   expect(mock.transaction).not.toHaveBeenCalled();
@@ -44,14 +44,43 @@ it("stores only schema-valid preferences with exact source quotes and marks read
 });
 
 it("requeues invalid output without writing memory",async()=>{
-  mock.query.mockResolvedValueOnce([job]).mockResolvedValueOnce([{run_id:"run-1"}]).mockResolvedValueOnce([]);
+  mock.query.mockResolvedValueOnce([job]).mockResolvedValueOnce([{run_id:"run-1"}]).mockResolvedValueOnce([{run_id:'run-1'}]);
   const fetcher=vi.fn(async(url:URL)=>url.pathname==="/api/tags"?response({models:[model]}):
     response({message:{content:JSON.stringify({items:[{memoryKey:"answer-style",content:"Invented preference",
       sourceQuote:"not in source",confidence:0.9}]})}}));
   expect(await processLocalMemoryExtraction("user-1","run-1",fetcher as typeof fetch)).toBe("queued");
   expect(mock.observe).not.toHaveBeenCalled();
-  expect(mock.query).toHaveBeenCalledWith("user-1",expect.stringContaining("next_attempt_at=now()+interval '10 minutes'"),
+  expect(mock.query).toHaveBeenCalledWith("user-1",expect.stringContaining("next_attempt_at=now()+make_interval"),
     expect.arrayContaining(["schema_invalid"]));
+});
+
+it('does not contact the local model until an eligible job has been claimed',async()=>{
+  const fetcher=vi.fn();
+  mock.query.mockResolvedValueOnce([{...job,next_attempt_at:'2999-01-01'}]);
+  expect(await processLocalMemoryExtraction('user-1','run-1',fetcher)).toBe('queued');
+  mock.query.mockResolvedValueOnce([job]).mockResolvedValueOnce([]);
+  expect(await processLocalMemoryExtraction('user-1','run-1',fetcher)).toBe('busy');
+  expect(fetcher).not.toHaveBeenCalled();
+});
+it('releases an expired claim with backoff when the local model is offline',async()=>{
+  mock.query.mockResolvedValueOnce([{...job,status:'processing'}]).mockResolvedValueOnce([{run_id:'run-1'}]).mockResolvedValueOnce([{run_id:'run-1'}]);
+  const fetcher=vi.fn(async(_url:unknown,options?:RequestInit)=>{
+    expect(options?.redirect).toBe('error');throw new Error('offline');
+  });
+  expect(await processLocalMemoryExtraction('user-1','run-1',fetcher)).toBe('queued');
+  expect(mock.query.mock.calls[2][2]).toEqual(['user-1','run-1',expect.any(String),'local_model_unavailable',600]);
+});
+it('does not overwrite a new lease after a failed model request',async()=>{
+  mock.query.mockResolvedValueOnce([job]).mockResolvedValueOnce([{run_id:'run-1'}]).mockResolvedValueOnce([]);
+  expect(await processLocalMemoryExtraction('user-1','run-1',vi.fn(async()=>response({models:[]})))).toBe('busy');
+  expect(mock.transaction).not.toHaveBeenCalled();
+});
+it('requeues a failed memory transaction rather than leaving its lease processing',async()=>{
+  mock.query.mockResolvedValueOnce([job]).mockResolvedValueOnce([{run_id:'run-1'}]).mockResolvedValueOnce([{run_id:'run-1'}]);
+  mock.transaction.mockRejectedValue(new Error('database failure'));
+  const fetcher=vi.fn(async(url:URL)=>url.pathname==='/api/tags'?response({models:[model]}):response({message:{content:'{"items":[]}'}}));
+  expect(await processLocalMemoryExtraction('user-1','run-1',fetcher as typeof fetch)).toBe('queued');
+  expect(mock.query.mock.calls[2][2]).toEqual(['user-1','run-1',expect.any(String),'local_model_error',600]);
 });
 
 it("does not learn an instruction override as an account preference",async()=>{

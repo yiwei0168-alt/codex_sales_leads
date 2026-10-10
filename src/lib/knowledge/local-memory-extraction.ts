@@ -35,7 +35,7 @@ function localModelUrl():URL{
 
 async function modelReady(base:URL,fetcher:Fetcher):Promise<boolean>{
   try{
-    const response=await fetcher(new URL("/api/tags",base),{signal:AbortSignal.timeout(3000)});
+    const response=await fetcher(new URL("/api/tags",base),{signal:AbortSignal.timeout(3000),redirect:'error'});
     if(!response.ok)return false;
     const body=await response.json() as {models?:Array<{name?:string;digest?:string}>};
     return body.models?.some(model=>model.name==="qwen3:8b"&&model.digest===QWEN3_8B_DIGEST)??false;
@@ -46,7 +46,7 @@ async function extractItems(text:string,base:URL,fetcher:Fetcher,prompt:string){
   const schema={type:"object",properties:{items:{type:"array",maxItems:3,items:{type:"object",additionalProperties:false,
     properties:{memoryKey:{type:"string"},content:{type:"string"},sourceQuote:{type:"string"},confidence:{type:"number"}},
     required:["memoryKey","content","sourceQuote","confidence"]}}},required:["items"],additionalProperties:false};
-  const response=await fetcher(new URL("/api/chat",base),{method:"POST",headers:{"content-type":"application/json"},
+  const response=await fetcher(new URL("/api/chat",base),{method:"POST",redirect:'error',headers:{"content-type":"application/json"},
     body:JSON.stringify({model:"qwen3:8b",stream:false,think:false,options:{temperature:0},format:schema,messages:[
       {role:"system",content:prompt},
       {role:"user",content:text},
@@ -85,6 +85,7 @@ export async function processLocalMemoryExtraction(userId:string,runId:string,fe
   const base=localModelUrl();
   const rows=await tenantQuery<Job>(userId,`select j.status,j.updated_at,j.next_attempt_at,m.id as message_id,m.content as message_content
     from agent_memory_extraction_job j join agent_run r on r.user_id=j.owner_id and r.id=j.run_id
+    join app_user u on u.id=j.owner_id and u.status='active'
     left join lateral(select id,content from assistant_message where user_id=j.owner_id and conversation_id=r.conversation_id
       and metadata->>'runId'=j.run_id::text and role='user' order by created_at asc limit 1) m on true
     where j.owner_id=$1 and j.run_id=$2 and r.status='completed' and r.execution_kind='main-agent'`,[userId,runId]);
@@ -92,30 +93,32 @@ export async function processLocalMemoryExtraction(userId:string,runId:string,fe
   if(!job)return "unavailable";
   if(job.status==="ready"||job.status==="failed")return job.status;
   if(job.status==="processing"&&Date.now()-new Date(job.updated_at).getTime()<5*60*1000)return "busy";
-  if(!job.message_id||!job.message_content){
-    await tenantQuery(userId,"update agent_memory_extraction_job set status='failed',lease_token=null,error_code='missing_source',updated_at=now() where owner_id=$1 and run_id=$2 and status in('queued','processing')",[userId,runId]);
-    return "failed";
-  }
-  if(job.message_content.length>12000){
-    await tenantQuery(userId,"update agent_memory_extraction_job set error_code='source_too_long',next_attempt_at=now()+interval '1 day',updated_at=now() where owner_id=$1 and run_id=$2 and status='queued'",[userId,runId]);
-    return "queued";
-  }
-  if(!await modelReady(base,fetcher)){
-    await tenantQuery(userId,"update agent_memory_extraction_job set error_code='local_model_unavailable',next_attempt_at=now()+interval '10 minutes',updated_at=now() where owner_id=$1 and run_id=$2 and status='queued'",[userId,runId]);
-    return "queued";
-  }
+  if(job.status==='queued'&&new Date(job.next_attempt_at).getTime()>Date.now())return 'queued';
   const lease=randomUUID();
   const claim=await tenantQuery<{run_id:string}>(userId,`update agent_memory_extraction_job set status='processing',lease_token=$3,
     attempt_count=attempt_count+1,updated_at=now() where owner_id=$1 and run_id=$2
     and ((status='queued' and next_attempt_at<=now()) or (status='processing' and updated_at<now()-interval '5 minutes'))
     returning run_id`,[userId,runId,lease]);
   if(!claim.length)return "busy";
+  const defer=async(code:string,seconds:number)=>{
+    const changed=await tenantQuery(userId,`update agent_memory_extraction_job set status='queued',lease_token=null,error_code=$4,
+      next_attempt_at=now()+make_interval(secs=>$5),updated_at=now()
+      where owner_id=$1 and run_id=$2 and status='processing' and lease_token=$3 returning run_id`,[userId,runId,lease,code,seconds]);
+    return changed.length?'queued' as const:'busy' as const;
+  };
   try{
+    if(!job.message_id||!job.message_content){
+      const changed=await tenantQuery(userId,`update agent_memory_extraction_job set status='failed',lease_token=null,
+        error_code='missing_source',updated_at=now() where owner_id=$1 and run_id=$2 and status='processing' and lease_token=$3 returning run_id`,[userId,runId,lease]);
+      return changed.length?'failed':'busy';
+    }
+    if(job.message_content.length>12000)return await defer('source_too_long',86400);
+    if(!await modelReady(base,fetcher))return await defer('local_model_unavailable',600);
     const preferences=await extract(job.message_content,base,fetcher);
     const facts=explicitBusinessFact(job.message_content)?await extractBusinessFacts(job.message_content,base,fetcher):[];
     const items=[...preferences.map(item=>({...item,kind:"preference" as const})),
       ...facts.map(item=>({...item,kind:"business-fact" as const}))];
-    return tenantTransaction(userId,async client=>{
+    return await tenantTransaction(userId,async client=>{
       const locked=await client.query("select run_id from agent_memory_extraction_job where owner_id=$1 and run_id=$2 and status='processing' and lease_token=$3 for update",[userId,runId,lease]);
       if(!locked.rowCount)return "busy";
       for(const item of items){
@@ -131,8 +134,6 @@ export async function processLocalMemoryExtraction(userId:string,runId:string,fe
     });
   }catch(error){
     const code=error instanceof Error&&error.message==="schema_invalid"?"schema_invalid":"local_model_error";
-    await tenantQuery(userId,`update agent_memory_extraction_job set status='queued',lease_token=null,error_code=$4,
-      next_attempt_at=now()+interval '10 minutes',updated_at=now() where owner_id=$1 and run_id=$2 and lease_token=$3`,[userId,runId,lease,code]);
-    return "queued";
+    return defer(code,600);
   }
 }

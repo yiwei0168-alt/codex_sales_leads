@@ -1,6 +1,7 @@
 import {createHash} from "node:crypto";
 import type {PoolClient} from "pg";
 import {tenantQuery,tenantTransaction} from "@/lib/rag/db";
+import {memoryConflictExclusionSql} from './memory-conflict-sql';
 
 export type MemoryObservationInput={kind:"preference"|"experience"|"business-fact"|"method";content:string;sourceReceipt:Record<string,unknown>;memoryKey?:string;idempotencyKey?:string;marketCode?:string;companyId?:string;marketCodes?:string[];companyIds?:string[];validFrom?:string|null;validUntil?:string|null;confidence?:number;correctsId?:string;invalidatesId?:string};
 
@@ -97,6 +98,8 @@ export async function memoryAt(userId:string,businessAt:string,knownAt:string,sc
       and (cardinality(m.company_ids)=0 or $5=any(m.company_ids))
       and m.valid_from is not null and m.valid_from<=$3::timestamptz
       and (m.valid_until is null or m.valid_until>$3::timestamptz)
+      and m.invalidates_id is null
+      ${memoryConflictExclusionSql}
       and not exists(select 1 from agent_memory_observation correction where correction.owner_id=$1
         and correction.recorded_at<=$2::timestamptz and (correction.corrects_id=m.id or correction.invalidates_id=m.id))
     order by m.recorded_at desc limit $6 offset $7`,[userId,knownAt,businessAt,scope.marketCode??null,scope.companyId??null,Math.max(1,Math.min(100,limit)),Math.max(0,offset)]);
@@ -121,5 +124,8 @@ export async function memoryConflicts(userId:string,limit=12,offset=0){
     `select c.id,c.earlier_id,c.later_id,a.content as earlier_content,b.content as later_content,c.status,c.created_at
      from agent_memory_conflict c join agent_memory_observation a on a.id=c.earlier_id
      join agent_memory_observation b on b.id=c.later_id
-     where c.owner_id=$1 and c.status='open' order by c.created_at desc limit $2 offset $3`,[userId,Math.max(1,Math.min(100,limit)),Math.max(0,offset)]);
+     where c.owner_id=$1 and c.status='open'
+       and not exists(select 1 from agent_memory_observation r where r.owner_id=$1
+         and (r.corrects_id in(a.id,b.id) or r.invalidates_id in(a.id,b.id)))
+     order by c.created_at desc limit $2 offset $3`,[userId,Math.max(1,Math.min(100,limit)),Math.max(0,offset)]);
 }

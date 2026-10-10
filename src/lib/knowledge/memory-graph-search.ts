@@ -2,6 +2,7 @@ import {existsSync} from "node:fs";
 import {spawn} from "node:child_process";
 import {resolve} from "node:path";
 import {tenantQuery} from "@/lib/rag/db";
+import {memoryConflictExclusionSql} from './memory-conflict-sql';
 
 type MemoryRow={id:string;kind:string;content:string;recorded_at:Date;valid_from:Date|null;valid_until:Date|null;business_validity:"effective"|"unknown"};
 type GraphLookup=(userId:string,query:string)=>Promise<string[]>;
@@ -52,6 +53,8 @@ export async function searchMemoryWithGraph(userId:string,query:string,businessA
     from agent_memory_observation m where m.owner_id=$1 and m.recorded_at<=$2::timestamptz
       and (m.valid_from is null or m.valid_from<=$3::timestamptz)
       and (m.valid_until is null or m.valid_until>$3::timestamptz)
+      and m.invalidates_id is null
+      ${memoryConflictExclusionSql}
       and (m.market_code is null or m.market_code=$4) and (m.company_id is null or m.company_id=$5)
       and (cardinality(m.market_codes)=0 or $4=any(m.market_codes))
       and (cardinality(m.company_ids)=0 or $5=any(m.company_ids))
