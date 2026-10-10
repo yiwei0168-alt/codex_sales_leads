@@ -1,4 +1,3 @@
-import OpenAI from "openai";
 import {textOutputLimit} from "@/lib/billing/text-output-policy";
 import {sdkModelFetch,withSdkModelCall} from "@/lib/billing/sdk-model-call";
 import { getRagConfig } from "./config";
@@ -7,16 +6,7 @@ import {prepareRagExternalDisclosure} from "./external-disclosure";
 import {kimiOutputLimit,isKimiK3} from "@/providers/kimi-contract";
 import {z} from "zod";
 import { getOpenRouterConfig, openRouterChatCompletionsUrl, openRouterRequestHeaders } from "@/providers/openrouter";
-
-let embeddingClient: OpenAI | undefined;
-
-function getEmbeddingClient(): OpenAI {
-  const config = getRagConfig();
-  if (!config.embeddingApiKey) throw new Error("EMBEDDING_API_KEY is not configured");
-  if (!config.embeddingBaseUrl) throw new Error("EMBEDDING_BASE_URL is not configured");
-  embeddingClient ??= new OpenAI({ apiKey: config.embeddingApiKey, baseURL: config.embeddingBaseUrl,fetch:sdkModelFetch() });
-  return embeddingClient;
-}
+import { RemoteEmbeddingRetiredError } from "./embedding-contract";
 
 export async function embedTexts(inputs: string[]): Promise<number[][]> {
   return (await embedTextsWithUsage(inputs)).embeddings;
@@ -30,31 +20,13 @@ export interface EmbeddingCallUsage {
   latencyMs: number;
 }
 
-export async function embedTextsWithUsage(inputs: string[]): Promise<{
+export async function embedTextsWithUsage(inputs: string[], transport: typeof fetch = fetch): Promise<{
   embeddings: number[][];
   usage: EmbeddingCallUsage[];
 }> {
   if (inputs.length === 0) return { embeddings: [], usage: [] };
-  const config = getRagConfig();
-  const embeddings: number[][] = [];
-  const usage: EmbeddingCallUsage[] = [];
-  // Alibaba Cloud text-embedding-v4 accepts at most 10 inputs per synchronous request.
-  for (let offset = 0; offset < inputs.length; offset += 10) {
-    const startedAt = Date.now();
-    const batch = inputs.slice(offset, offset + 10);
-    const response = await withSdkModelCall({provider:"embedding-configured",task:"rag-embedding",promptVersion:"rag-embedding-input-v1"},()=>getEmbeddingClient().embeddings.create({
-      model: config.embeddingModel,
-      input: batch,
-      dimensions: config.embeddingDimensions,
-      encoding_format: "float",
-    }));
-    embeddings.push(...response.data.sort((a, b) => a.index - b.index).map((item) => item.embedding));
-    usage.push({ model: response.model || config.embeddingModel, inputItems: batch.length,
-      inputTokens: response.usage?.prompt_tokens ?? response.usage?.total_tokens ?? 0,
-      totalTokens: response.usage?.total_tokens ?? response.usage?.prompt_tokens ?? 0,
-      latencyMs: Date.now() - startedAt });
-  }
-  return { embeddings, usage };
+  void transport;
+  throw new RemoteEmbeddingRetiredError();
 }
 
 function buildContext(chunks: RetrievedChunk[]): string {

@@ -1,8 +1,6 @@
-import {withProductSpend} from "@/lib/billing/context";
 import type { PoolClient } from "pg";
 import { tenantQuery, tenantTransaction, type AppDatabaseRole } from "./db";
 import { sha256, chunkDocument } from "./chunker";
-import { embedTexts } from "./openai-provider";
 import {trackedOperation} from "@/lib/tracked-operation";
 import {indexTextRevision} from "@/lib/knowledge/text-tree";
 import type { KnowledgeBaseType, KnowledgeDocumentInput, KnowledgeStats, KnowledgeVisibility, RetrievedChunk, RetrievalFilters } from "./types";
@@ -42,7 +40,7 @@ async function upsertKnowledgeDocumentImpl(userId: string, input: KnowledgeDocum
 
   const chunks = chunkDocument(input.content);
   if (chunks.length === 0) throw new Error(`Document ${input.externalId} has no ingestible content`);
-  const embeddings = await withProductSpend(userId,"knowledge-ingestion",()=>embedTexts(chunks.map((chunk) => chunk.content)));
+  // MODESEL-16: text/tree indexing is local; never put BGE vectors into the legacy 1536-dimension column.
 
   return tenantTransaction(userId, async (client: PoolClient) => {
     await client.query("select pg_advisory_xact_lock(hashtextextended($1,0))",[`${userId}:${input.collection}:${input.externalId}`]);
@@ -76,14 +74,14 @@ async function upsertKnowledgeDocumentImpl(userId: string, input: KnowledgeDocum
     const documentId = result.rows[0].id;
     await client.query("insert into knowledge_document_revision(document_id,user_id,content_sha256,title,content,reconstructed) values($1,$2,$3,$4,$5,false) on conflict do nothing",[documentId,userId,contentHash,input.title,input.content]);
     await client.query("delete from knowledge_chunk where document_id = $1", [documentId]);
-    for (const [index, chunk] of chunks.entries()) {
+    for (const chunk of chunks) {
       await client.query(
         `insert into knowledge_chunk (
           document_id, chunk_index, heading_path, content, token_estimate,
           content_sha256, embedding, metadata
         ) values ($1, $2, $3, $4, $5, $6, $7::vector, $8)`,
         [documentId, chunk.index, chunk.headingPath, chunk.content, chunk.tokenEstimate,
-          chunk.contentSha256, vectorLiteral(embeddings[index]), JSON.stringify({})],
+          chunk.contentSha256, null, JSON.stringify({embeddingStatus:"remote-retired"})],
       );
     }
     await indexTextRevision(client,documentId,input.content,contentHash,input.title);

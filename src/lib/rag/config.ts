@@ -34,8 +34,8 @@ export function getRagConfig(): RagConfig {
     openaiDefaultHeaders: openRouter?.defaultHeaders ?? {},
     openaiProviderPreferences: openRouter?.providerPreferences
       ?? { require_parameters: true, data_collection: "deny" },
-    embeddingApiKey: process.env.EMBEDDING_API_KEY?.trim() ?? "",
-    embeddingBaseUrl: process.env.EMBEDDING_BASE_URL?.trim() ?? "",
+    embeddingApiKey: "", // MODESEL-16: retired remote lane, including legacy CLI preflights.
+    embeddingBaseUrl: "",
     embeddingModel: process.env.EMBEDDING_MODEL?.trim() || "text-embedding-v4",
     embeddingDimensions: Number(process.env.EMBEDDING_DIMENSIONS ?? 1536),
     generationModel: resolveOpenRouterModel(openaiModel || "gpt-5-mini", "openai"),

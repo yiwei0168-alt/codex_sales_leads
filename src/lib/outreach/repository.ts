@@ -1,7 +1,6 @@
 import {withProductSpend} from "@/lib/billing/context";
 import {createHash} from "node:crypto";
 import { tenantQuery, tenantTransaction } from "@/lib/rag/db";
-import { embedTexts } from "@/lib/rag/openai-provider";
 import type { CompanyRecord } from "@/lib/domain";
 import { listRelationships } from "@/lib/sales/relationships";
 import { developmentContextVersion } from "./context-version";
@@ -113,12 +112,11 @@ export async function loadDevelopmentContext(userId: string, options: Developmen
   const language = options.language?.trim() || "en";
   const query = [`Cudy company strengths, distribution partnership policy and market proof`,
     `${row.record.roles.join(" ")} partner in ${row.record.country}`, row.record.summary].join(". ");
-  const [embedding] = await withProductSpend(userId,"development-context-embedding",()=>embedTexts([query]));
   const countryCode = row.country_code.toUpperCase();
   const marketCodes = [countryCode, row.record.country.toUpperCase()];
   if (["NL", "BE", "LU"].includes(countryCode)) marketCodes.push("BENELUX");
   if (countryCode === "GB") marketCodes.push("UK");
-  const knowledge = await searchOutreachKnowledge(userId, query, embedding, marketCodes, row.record.roles, 4);
+  const knowledge = await searchOutreachKnowledge(userId, query, null, marketCodes, row.record.roles, 4);
   const [templates, recipient] = await Promise.all([
     loadTemplates(userId, row.record.roles, language),
     loadRecipient(userId, row.workspace_id, row.company_id, options.contactId),

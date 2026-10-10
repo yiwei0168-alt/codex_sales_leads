@@ -1,4 +1,6 @@
-import { embedTextsWithUsage, type EmbeddingCallUsage } from "@/lib/rag/openai-provider";
+import { embedTextsWithBge } from "@/lib/rag/bge-client";
+import { localKeywordQuery } from "@/lib/rag/embedding-contract";
+import type { EmbeddingCallUsage } from "@/lib/rag/openai-provider";
 import { hybridSearch } from "@/lib/rag/repository";
 import type { LeadSearchPlan } from "@/lib/assistant/types";
 import { selectEvidenceWindow } from "@/lib/knowledge/evidence-window";
@@ -47,21 +49,22 @@ function questions(plan: LeadSearchPlan): Array<{ collection: LeadRagCitation["c
 export async function retrieveLeadRagContext(userId: string, plan: LeadSearchPlan,
   options: { onEmbeddingUsage?: (usage: EmbeddingCallUsage[]) => void | Promise<void> } = {}): Promise<LeadRagCitation[]> {
   const specs = questions(plan);
-  const embedded = await embedTextsWithUsage(specs.map((item) => item.question));
-  await options.onEmbeddingUsage?.(embedded.usage);
-  const embeddings = embedded.embeddings;
+  const embeddings = await embedTextsWithBge(specs.map((item) => item.question)).catch(() => []);
+  await options.onEmbeddingUsage?.([]);
   const groups = await Promise.all(specs.map(async (spec, index) => {
-    const chunks = await hybridSearch(userId, spec.question, embeddings[index], {
+    const chunks = await hybridSearch(userId, spec.question, null, {
       collections: [spec.collection],
+      lexicalQuery: localKeywordQuery(spec.question),
       market: spec.collection === "industry" ? plan.countryCode : undefined,
       minAuthority: 1,
       structuredProductTerms: spec.collection === "product" ? structuredProductTerms(plan) : undefined,
-    }, spec.limit);
+    }, spec.limit, embeddings[index] ?? null);
     // Market-specific industry material is optional. Retry without the market
     // filter when a new country has no dedicated documents yet.
     const usable = chunks.length > 0 || spec.collection !== "industry"
       ? chunks
-      : await hybridSearch(userId, spec.question, embeddings[index], { collections: [spec.collection], minAuthority: 1 }, spec.limit);
+      : await hybridSearch(userId, spec.question, null, { collections: [spec.collection], minAuthority: 1,
+        lexicalQuery: localKeywordQuery(spec.question) }, spec.limit, embeddings[index] ?? null);
     return usable.map((chunk): LeadRagCitation => ({
       chunkId: chunk.id,
       collection: chunk.collection,

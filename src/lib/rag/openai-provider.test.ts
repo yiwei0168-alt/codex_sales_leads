@@ -43,11 +43,11 @@ it("requires the gateway key despite legacy direct credentials",async()=>{
   expect(transport).not.toHaveBeenCalled();
 });
 
-it("does not change the existing embedding configuration",()=>{
+it("retains historical model identity but does not expose a callable remote connection",()=>{
   configure();vi.stubEnv("EMBEDDING_BASE_URL","http://127.0.0.1:9999/v1");
   vi.stubEnv("EMBEDDING_MODEL","fixture-local");vi.stubEnv("EMBEDDING_DIMENSIONS","1536");
   expect(getRagConfig()).toMatchObject({ragAnswerModel:"moonshotai/kimi-k3",
-    ragAnswerBaseUrl:"https://openrouter.ai/api/v1",embeddingBaseUrl:"http://127.0.0.1:9999/v1",
+    ragAnswerBaseUrl:"https://openrouter.ai/api/v1",embeddingBaseUrl:"",embeddingApiKey:"",
     embeddingModel:"fixture-local",embeddingDimensions:1536});
 });
 

@@ -1,6 +1,7 @@
+import { LOCAL_RETRIEVAL_PROFILE } from "./embedding-contract";
 import {withProductSpend} from "@/lib/billing/context";
 import { getRagConfig } from "./config";
-import { embedTexts, generateGroundedAnswer } from "./openai-provider";
+import { generateGroundedAnswer } from "./openai-provider";
 import { authorizedKnowledgeChunkIds, hybridSearch, knowledgeRevisionToken, logRagQuery } from "./repository";
 import type { RagAnswer, RagQuery } from "./types";
 import {trackedOperation} from "@/lib/tracked-operation";
@@ -43,15 +44,6 @@ async function answerWithRagImpl(userId: string, input: RagQuery): Promise<RagAn
   const config = getRagConfig();
   const maxChunks = Math.min(Math.max(input.maxChunks ?? config.maxContextChunks, 1), 12);
   const revision = await knowledgeRevisionToken(userId);
-  const qwenEmbedding = config.embeddingApiKey && config.embeddingBaseUrl
-    ? await withSuccessfulKnowledgeCache({
-    key: knowledgeCacheKey("query-embedding-qwen", {
-      userId, question: normalizeKnowledgeText(input.question), filters: input.filters ?? {}, revision,
-      aliases: ATTRIBUTE_REGISTRY_VERSION, model: config.embeddingModel, dimensions: config.embeddingDimensions,
-    }),
-    ttlMs: 10 * 60_000,
-    load: async () => (await withProductSpend(userId,"rag-query-embedding",()=>embedTexts([input.question])))[0],
-  }).catch(() => null) : null;
   const bgeEmbedding = await withSuccessfulKnowledgeCache({
     key: knowledgeCacheKey("query-embedding-bge", {
       userId, question: normalizeKnowledgeText(input.question), filters: input.filters ?? {}, releaseRevision: revision,
@@ -62,16 +54,15 @@ async function answerWithRagImpl(userId: string, input: RagQuery): Promise<RagAn
     load: async () => (await embedTextsWithBge([input.question]))[0],
   }).catch(() => null);
   const degradedLanes: Array<"qwen" | "bge"> = [];
-  if (!qwenEmbedding) degradedLanes.push("qwen");
   if (!bgeEmbedding) degradedLanes.push("bge");
   const evidenceResult = await withSuccessfulKnowledgeCache({
     key: knowledgeCacheKey("evidence", {
       userId, question: normalizeKnowledgeText(input.question), filters: input.filters ?? {}, maxChunks,
-      revision, aliases: ATTRIBUTE_REGISTRY_VERSION, model: config.embeddingModel,
-      qwenAvailable: Boolean(qwenEmbedding), bgeAvailable: Boolean(bgeEmbedding),
+      revision, aliases: ATTRIBUTE_REGISTRY_VERSION, profile: LOCAL_RETRIEVAL_PROFILE,
+      bgeAvailable: Boolean(bgeEmbedding),
     }),
     ttlMs: 2 * 60_000,
-    load: () => hybridSearch(userId, input.question, qwenEmbedding?.value ?? null, {
+    load: () => hybridSearch(userId, input.question, null, {
     ...input.filters,
     lexicalQuery: buildControlledLexicalQuery(input.question),
     }, maxChunks, bgeEmbedding?.value ?? null),
@@ -93,8 +84,8 @@ async function answerWithRagImpl(userId: string, input: RagQuery): Promise<RagAn
       citations: [], grounded: false, model: config.ragAnswerModel,
       latencyMs: Date.now() - startedAt, warnings,
       degradedLanes, generationUsed: false,
-      reasonCode: degradedLanes.length === 2 ? "embedding-lane-unavailable" : "retrieval-no-match",
-      cache: { embeddingHit: Boolean(qwenEmbedding?.cacheHit || bgeEmbedding?.cacheHit), evidenceHit: evidenceResult.cacheHit },
+      reasonCode: degradedLanes.includes("bge") ? "embedding-lane-unavailable" : "retrieval-no-match",
+      cache: { embeddingHit: Boolean(bgeEmbedding?.cacheHit), evidenceHit: evidenceResult.cacheHit },
     };
   }
 
@@ -107,7 +98,7 @@ async function answerWithRagImpl(userId: string, input: RagQuery): Promise<RagAn
       citations:chunks.map(citationFromChunk),grounded:false,model:config.ragAnswerModel,latencyMs:Date.now()-startedAt,warnings,
       externalDisclosure:{excludedChunks:disclosure.excludedChunks,redactedPatterns:disclosure.redactionCount},
       degradedLanes,generationUsed:false,reasonCode:"external-disclosure-blocked",
-      cache:{embeddingHit:Boolean(qwenEmbedding?.cacheHit||bgeEmbedding?.cacheHit),evidenceHit:evidenceResult.cacheHit}};
+      cache:{embeddingHit:Boolean(bgeEmbedding?.cacheHit),evidenceHit:evidenceResult.cacheHit}};
   }
   const answer = await withProductSpend(userId,"rag-grounded-answer",()=>generateGroundedAnswer(disclosure.question, disclosure.chunks));
   const citedIds = extractCitedChunkIds(answer);
@@ -136,12 +127,12 @@ async function answerWithRagImpl(userId: string, input: RagQuery): Promise<RagAn
     queryText: input.question,
     collections: input.filters?.collections ?? ["industry", "company", "product"],
     filters: input.filters ?? {}, chunkIds: chunks.map((chunk) => chunk.id), answer,
-    embeddingModel: config.embeddingModel, generationModel: config.ragAnswerModel, latencyMs,
+    embeddingModel: "BAAI/bge-m3", generationModel: config.ragAnswerModel, latencyMs,
   }).catch(() => warnings.push("查询日志写入失败，但不影响本次答案。"));
 
   const grounded = validation.grounded;
   return { answer, citations, grounded, model: config.ragAnswerModel, latencyMs, warnings, degradedLanes,
     generationUsed:true,reasonCode:grounded?"ok":"fact-not-verified",
     externalDisclosure:{excludedChunks:disclosure.excludedChunks,redactedPatterns:disclosure.redactionCount},
-    cache:{embeddingHit:Boolean(qwenEmbedding?.cacheHit||bgeEmbedding?.cacheHit),evidenceHit:evidenceResult.cacheHit} };
+    cache:{embeddingHit:Boolean(bgeEmbedding?.cacheHit),evidenceHit:evidenceResult.cacheHit} };
 }

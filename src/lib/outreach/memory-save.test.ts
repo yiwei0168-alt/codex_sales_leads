@@ -20,10 +20,12 @@ it("scope-only edits reuse vector and preserve archived status",async()=>{
 it("rejects stale revisions before embedding",async()=>{
   expect(await saveManualMemory("owner",{...input,expectedUpdatedAt:"old"})).toBe("conflict");expect(mocks.embed).not.toHaveBeenCalled();
 });
-it("embedding failure never writes changed content",async()=>{
-  mocks.embed.mockRejectedValue(new Error("unavailable"));
-  await expect(saveManualMemory("owner",{...input,content:"Changed content"})).rejects.toThrow("unavailable");
-  expect(mocks.query.mock.calls.some(([sql])=>sql.startsWith("update"))).toBe(false);
+it("changed private memory saves locally and invalidates the historical vector",async()=>{
+  mocks.embed.mockRejectedValue(new Error("must not call"));
+  expect(await saveManualMemory("owner",{...input,content:"Changed content"})).toBe("ok");
+  expect(mocks.embed).not.toHaveBeenCalled();
+  const update=mocks.query.mock.calls.find(([sql])=>sql.startsWith("update user_outreach_memory"));
+  expect(update?.[1][8]).toBe(true); expect(update?.[1][9]).toBeNull();
 });
 it("duplicate creates avoid another embedding",async()=>{
   expect(await saveManualMemory("owner",{...input,mode:"create"})).toBe("already-exists");expect(mocks.embed).not.toHaveBeenCalled();
@@ -33,4 +35,13 @@ it("private RAG enforces market and role scope, not just ranking",async()=>{
   const sql=mocks.read.mock.calls[1][1];
   expect(sql).toContain("cardinality(market_codes)=0 or market_codes && $3::text[]");
   expect(sql).toContain("cardinality(channel_roles)=0 or channel_roles && $4::text[]");
+});
+it("local keyword retrieval includes memory with no legacy vector",async()=>{
+  mocks.read.mockResolvedValue([]);await searchOutreachKnowledge("owner","query",null,["GB"],["SI"]);
+  for(const call of mocks.read.mock.calls){
+    expect(call[2][0]).toBeNull();
+    const eligible=call[1].split(")")[0];
+    expect(eligible).not.toContain("embedding is not null");
+    expect(call[1]).toContain("where $1::vector is not null and embedding is not null");
+  }
 });

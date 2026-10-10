@@ -352,3 +352,7 @@ MODELDIAG-01 诊断结果：已明确是 Fireworks 上游临时限流，账户�
 ## MODESEL-06 公开事实搜索迁移（2026-10-10）
 
 public_fact_search 改用 OpenRouter 的 Gemini 原生 web 搜索，采用完整回答及有效 URL annotations。实际 Google 搜索词不可见时明确保存 not-provided，不以用户问题或引用数量冒充搜索记录；执行次数限制保持既有规则。使用 MODEL_PROXY_URL 显式本地代理，缺失时停止，不依赖 TUN 或静默直连。39 项本地回归、类型检查、lint、构建通过，无新增付费验收。客户发现及远程向量仍待迁移，详见 OPENROUTER_PUBLIC_SEARCH_MIGRATION_2026-10-10.md。
+
+## MODESEL-16 向量工作流（2026-10-10）
+
+已确认停用远程 Qwen。RAG 与研究上下文采用本地 BGE、全文和已核实事实；旧意图保持停用，RAG 主路指针不变。BGE 停机不触发云端向量回退。文本入库、外联知识与私有记忆取消远程 embedding 依赖，保留全文检索及原权限条件；历史向量不批量删除。详见 MODESEL16_LOCAL_RETRIEVAL_2026-10-10.md，冻结集召回对照与答案验收分开记录。
