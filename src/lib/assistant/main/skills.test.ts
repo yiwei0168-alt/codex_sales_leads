@@ -1,7 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { safeSkillPath, skillImportSchema } from "./skills";
+import { safeSkillPath, skillImportSchema,instructionOnlySkill } from "./skills";
 import { sandboxArguments } from "./sandbox";
 describe("Skill package and sandbox boundary", () => {
+  it('limits automatic eligibility to instruction files without embedded runnable examples',()=>{
+    expect(instructionOnlySkill({'SKILL.md':'Read evidence','references/guide.txt':'Compare originals'})).toBe(true);
+    expect(instructionOnlySkill({'SKILL.md':'```powershell\nStart-Process app\n```'})).toBe(false);
+    expect(instructionOnlySkill({'SKILL.md':'#!/bin/sh\necho run'})).toBe(false);
+    expect(instructionOnlySkill({})).toBe(false);
+  });
   it.each(["../secrets", "/etc/passwd", "C:/secret", "refs/../../a", "a\\b", ".env", "node_modules/pkg/index.js"])("rejects unsafe package path %s", path => {
     expect(safeSkillPath(path)).toBe(false);
   });

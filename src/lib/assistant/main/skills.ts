@@ -5,6 +5,14 @@ import { digest, type ExecutionContext } from "./contracts";
 export function safeSkillPath(path: string) {
   return path.length <= 180 && /^[a-z0-9_.\-/]+$/i.test(path) && !path.startsWith("/") && path.split("/").every(p => p !== ".." && p !== "." && p !== "" && !/^(\.env(?:\..*)?|\.git|node_modules|id_rsa|id_ed25519)$/i.test(p)) && !path.startsWith("-");
 }
+/** Auto activation accepts instruction text only. Unknown file types require human review. */
+export function instructionOnlySkill(files:unknown):boolean {
+  const parsed=z.record(z.string(),z.string()).safeParse(files);
+  if(!parsed.success||!parsed.data['SKILL.md']?.trim())return false;
+  return Object.entries(parsed.data).every(([path,content])=>safeSkillPath(path)&&/\.(md|txt)$/i.test(path)
+    && !/^\s*#!/.test(content)
+    && !/```\s*(?:bash|sh|shell|powershell|ps1|cmd|bat|python|py|javascript|js|typescript|ts)\b/i.test(content));
+}
 export const skillImportSchema = z.object({
   skillId: z.uuid().optional(), expectedVersion: z.number().int().min(1).optional(),
   name: z.string().min(1).max(120), source: z.string().max(1000),
@@ -18,8 +26,7 @@ export const skillImportSchema = z.object({
 });
 export async function importSkill(context: Pick<ExecutionContext, "userId" | "role">, input: z.infer<typeof skillImportSchema>) {
   const p = skillImportSchema.parse(input);
-  const scripts = Object.keys(p.files).filter(f => /\.(py|js|mjs)$/.test(f));
-  const validation = { instructions: "available", autoEnable: "pending-replay-and-shadow", scripts: scripts.length ? "unverified-requires-sandbox" : "none", dependencies: p.dependencies.length ? "not-installed" : /^(?:github:|https:\/\/)/.test(p.source) ? "not-declared" : "none",
+  const validation = { instructions: "available", autoEnable: "pending-replay-and-shadow", scripts: instructionOnlySkill(p.files) ? "none" : "unverified-requires-sandbox", dependencies: p.dependencies.length ? "not-installed" : /^(?:github:|https:\/\/)/.test(p.source) ? "not-declared" : "none",
     warnings: Object.values(p.files).some(text => /docker\.sock|\.env|OAuth.?Token|API.?KEY|host filesystem/i.test(text)) ? ["Package references sensitive resources; such access is not granted"] : [] };
   return tenantTransaction(context.userId, async client => {
     let id = p.skillId, version = 1;
@@ -65,11 +72,12 @@ export async function readSkill(context: ExecutionContext, skillId: string) {
 export async function changeSkill(context: Pick<ExecutionContext, "userId" | "role">, input: { id: string; version: number; operation: "enable" | "disable" | "publish" | "rollback" },humanInitiated=false) {
   if (input.operation === "publish" && context.role !== "admin") throw new Error("Administrator required");
   return tenantTransaction(context.userId, async client => {
-    const version = await client.query<{validation:{scripts?:string;dependencies?:string;autoEnable?:string};scope:string}>("select v.validation,s.scope from agent_skill s join agent_skill_version v on v.skill_id=s.id where s.id=$1 and s.owner_id=$2 and v.version=$3 for update of s", [input.id, context.userId, input.version]);
+    const version = await client.query<{validation:{scripts?:string;dependencies?:string;autoEnable?:string};scope:string;files:unknown;dependencies:unknown}>("select v.validation,s.scope,v.files,v.dependencies from agent_skill s join agent_skill_version v on v.skill_id=s.id where s.id=$1 and s.owner_id=$2 and v.version=$3 for update of s", [input.id, context.userId, input.version]);
     if (!version.rowCount) throw new Error("Skill/version not owned");
     if(!humanInitiated&&["enable","rollback"].includes(input.operation)){
       const selected=version.rows[0];
-      if(selected.scope!=="account"||selected.validation.scripts!=="none"||selected.validation.dependencies!=="none")
+      if(selected.scope!=="account"||selected.validation.scripts!=="none"||selected.validation.dependencies!=="none"
+        ||!instructionOnlySkill(selected.files)||!Array.isArray(selected.dependencies)||selected.dependencies.length)
         throw new Error("Script, dependency or global Skill requires human approval");
       if(selected.validation.autoEnable!=="passed")throw new Error("Skill replay and shadow acceptance required before Agent activation");
     }
