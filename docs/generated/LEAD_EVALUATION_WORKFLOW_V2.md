@@ -784,7 +784,7 @@ flowchart TD
 | `src/lib/leads/workflow/persistence.ts` | `93287f60fdd5bdf9c6aefcad8fc66cb58e43e014f98c711b78c04dfee6d87067` |
 | `src/lib/sales/repository.ts` | `cec19d120f945ebea8031bb60a80043b7dea5d6002ab2aa2bca9193dfc7ca287` |
 | `src/lib/outreach/graph.ts` | `7ea69592ef40da9efa91fc06e90fd194017ad9f6af2c6361afaedf4f78772af6` |
-| `src/lib/outreach/kimi-agent.ts` | `7e4b1dabd294294702bdb0c20c653b60741462527aa941db3299b7df4c3b7540` |
+| `src/lib/outreach/kimi-agent.ts` | `866d39c7b0b9a1436502e4da3f8f82aac601a1482928da14394734f0e144cdee` |
 | `src/lib/outreach/claude-agent.ts` | `4866ce8accb25a24540fb927e617808c4508eaf469ce7936990ac51497955a20` |
 | `src/lib/outreach/repository.ts` | `e64169b33087c1e7d2a833319a27f3f1762e2a36e182cf0ab96af56e9322d0ee` |
 | `src/lib/outreach/knowledge-repository.ts` | `06fae134c522715a8f2b076317a3d74c1935d515c16eed5612b4122f4e9aaf5e` |
