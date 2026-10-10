@@ -1046,3 +1046,7 @@ KQ04 路由验收状态：版本化属性注册表 `attribute-registry-v1.2.1` �
 ## MODESEL-06 第五批实施状态（2026-10-10）
 
 公开事实搜索入口改用 OpenRouter；本批为已确认统一网关规则的实现，不新增用户决策。Gemini 原生搜索固定 native，采用网关引用收据，搜索词未提供明确记录未知。39 项本地回归、类型检查、lint 与构建通过，无新增付费调用。客户发现及远程向量未迁移；旧意图依 MODESEL-15 停用。详见 OPENROUTER_PUBLIC_SEARCH_MIGRATION_2026-10-10.md。
+
+## MODESEL-06 第六批实施状态（2026-10-10）
+
+客户发现 gemini-full/product 已迁至 OpenRouter 原生搜索，恢复契约升级，候选仅采用网关引用；未提供的 Google 实际查询次数记为 unknown。87 项本地测试、类型检查及 lint 通过，无新增付费模型调用。向量兼容迁移及真实搜索质量仍未完成；本条是既有确认规则的实现进展，不新增产品决定。详见 OPENROUTER_DISCOVERY_MIGRATION_2026-10-10.md。

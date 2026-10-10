@@ -17,14 +17,14 @@ it("preserves task-level dedup, failures and recovery cooldown through a JSON ch
   expect(session.excludedDomains.size).toBe(1);
 });
 it("invalidates country, request, task and provider configuration without silently restarting paid work", () => {
-  vi.stubEnv("GEMINI_DISCOVERY_MODEL", "fixture-model");
+  vi.stubEnv("GEMINI_DISCOVERY_MODEL", "gemini-fixture-model");
   const dependency = discoverySessionDependency(plan, "thread");
   const snapshot = snapshotDiscoverySession(createHybridDiscoverySession(), dependency);
   for (const changed of [discoverySessionDependency({ ...plan, countryCode: "CO" }, "thread"),
     discoverySessionDependency({ ...plan, roles: ["SI"] }, "thread"), discoverySessionDependency(plan, "other")]) {
     expect(() => restoreDiscoverySession(snapshot, changed)).toThrow("dependencies changed");
   }
-  vi.stubEnv("GEMINI_DISCOVERY_MODEL", "new-model");
+  vi.stubEnv("GEMINI_DISCOVERY_MODEL", "gemini-new-model");
   expect(() => restoreDiscoverySession(snapshot, discoverySessionDependency(plan, "thread"))).toThrow("dependencies changed");
 });
 it("invalidates paid discovery recovery when a blank primary override resolves to a changed fallback model", () => {
@@ -59,4 +59,17 @@ it("retains purchased search items without retaining the provider raw envelope",
   const snapshot = snapshotDiscoverySession(session, "fixture");
   expect(JSON.stringify(snapshot)).not.toContain("raw-envelope");
   expect(restoreDiscoverySession(JSON.parse(JSON.stringify(snapshot)), "fixture").completedCalls.get("request")?.usage.paidSearchCredits).toBe(1);
+});
+
+it("invalidates old transport and changed gateway accounts without replaying paid work", () => {
+  vi.stubEnv("OPENROUTER_API_KEY", "gateway-account-a");
+  const dependency = discoverySessionDependency(plan, "thread");
+  const snapshot = snapshotDiscoverySession(createHybridDiscoverySession(), dependency);
+  vi.stubEnv("GEMINI_API_KEY", "irrelevant-old-key");
+  vi.stubEnv("GEMINI_BASE_URL", "https://legacy.invalid");
+  expect(discoverySessionDependency(plan, "thread")).toBe(dependency);
+  vi.stubEnv("OPENROUTER_API_KEY", "gateway-account-b");
+  expect(() => restoreDiscoverySession(snapshot, discoverySessionDependency(plan, "thread"))).toThrow("dependencies changed");
+  expect(() => restoreDiscoverySession({ ...snapshot, dependency: "old-native-contract" }, dependency)).toThrow("dependencies changed");
+  expect(JSON.stringify(snapshot)).not.toContain("gateway-account-a");
 });

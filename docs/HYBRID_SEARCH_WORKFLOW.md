@@ -267,3 +267,7 @@ The first MX Retail cell improved final fill from the historical 6/30 to 15/30, 
 - Provider contribution was Brave 16.5 fractional finals/$0.550, Gemini Full 12.5/$5.754, Exa 5/$2.117, Places 5/$1.505 and SearchAPI 0/$0.288. Category routing must remain conditional: Places contributed only in Retail; Exa contributed in Distribution/SI but not Retail/Resale; Gemini was costly but supplied five Distribution and five Resale finals.
 - Product returned only 39/200 requested results: 14 Retail, 13 Distribution, five SI/MSP and seven Resale. SI/MSP and Resale remain recall/role-resolution priorities even though Product quality utility exceeded control.
 - The next work item is a no-new-search score/role calibration on frozen evidence. Do not purchase another market search merely to tune an unstable scoring yardstick.
+
+## 2026-10-10 Gemini 网关执行更新
+
+gemini-full/product 均通过 OpenRouter 原生 web 插件执行，使用网关密钥与规范化 google/ 模型标识。只将有效 URL annotations 转成待核验候选，未知搜索次数保留 unknown。恢复契约 discovery-request-v5-gemini-openrouter-native 不接受旧直连任务依赖，须核对历史已付费工作；不会自动重做。其他搜索服务的路由和查询范围不变。87 项本地回归通过，无真实搜索验收，详见 OPENROUTER_DISCOVERY_MIGRATION_2026-10-10.md。

@@ -7,9 +7,14 @@ import { createDiscoveryProvider, DiscoveryProviderError, discoveryEnvironmentSt
 const baseQuery: DiscoveryQuery = { query: "WLAN Systemhaus Germany", countryCode: "DE", countryName: "Germany",
   languageCode: "de", maxResults: 3, category: "si-msp", track: "local-smb", engine: "google",
   mechanism: "web-serp" };
-const keyByProvider: Record<DiscoveryProviderId, string> = { "gemini-full": "GEMINI_API_KEY",
-  "gemini-product": "GEMINI_API_KEY", searchapi: "SEARCHAPI_API_KEY", "google-places": "GOOGLE_PLACES_API_KEY",
+const keyByProvider: Record<DiscoveryProviderId, string> = { "gemini-full": "OPENROUTER_API_KEY",
+  "gemini-product": "OPENROUTER_API_KEY", searchapi: "SEARCHAPI_API_KEY", "google-places": "GOOGLE_PLACES_API_KEY",
   brave: "BRAVE_SEARCH_API_KEY", exa: "EXA_API_KEY" };
+function grounded(finish = "stop", urls = ["https://example.de/"]) {
+  return { choices: [{ finish_reason: finish, message: { content: "Example https://uncited.example/", annotations:
+    urls.map(url => ({ type: "url_citation", url_citation: { url, title: "Example" } })) } }],
+    usage: { prompt_tokens: 10, completion_tokens: 5 } };
+}
 function configured(provider: DiscoveryProviderId) { vi.stubEnv(keyByProvider[provider], "test-key"); }
 
 afterEach(() => vi.unstubAllEnvs());
@@ -18,10 +23,10 @@ it("uses the same trimmed model fallback for the actual Gemini request and recov
   configured("gemini-full");
   vi.stubEnv("GEMINI_DISCOVERY_MODEL","  ");
   vi.stubEnv("GEMINI_SEARCH_MODEL","gemini-2.5-flash");
-  const transport=vi.fn<typeof fetch>(async()=>Response.json({status:"completed",steps:[]}));
+  const transport=vi.fn<typeof fetch>(async()=>Response.json(grounded()));
   await createDiscoveryProvider("gemini-full",{fetchImplementation:transport,maxAttempts:1})
     .search({...baseQuery,engine:"google-grounded",mechanism:"planning"});
-  expect(configuredGeminiDiscoveryModel()).toBe("gemini-2.5-flash");
+  expect(configuredGeminiDiscoveryModel()).toBe("google/gemini-2.5-flash");
   expect(JSON.parse(String(transport.mock.calls[0][1]?.body)).model).toBe(configuredGeminiDiscoveryModel());
 });
 
@@ -82,41 +87,67 @@ describe("production discovery providers", () => {
 
   it.each(["gemini-full", "gemini-product"] as const)("uses Google Search for %s", async (providerId) => {
     configured(providerId);
-    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({ steps: [
-      { type: "google_search_result", result: { url: "https://example.de/" } },
-      { type: "model_output", content: [{ type: "text", text: "Example https://example.de/" }] },
-    ], usage: { input_tokens: 10, output_tokens: 5 } }), { status: 200 }));
+    const fetchMock = vi.fn().mockResolvedValue(Response.json(grounded()));
     const output = await createDiscoveryProvider(providerId, { fetchImplementation: fetchMock, maxAttempts: 1 })
       .search({ ...baseQuery, engine: "google-grounded", mechanism: providerId === "gemini-full" ? "planning" : "fixed-grounded-query" });
     const request = JSON.parse(fetchMock.mock.calls[0][1].body as string);
-    expect(request.tools).toEqual([{ type: "google_search" }]);
-    expect(request.generation_config).toEqual({ thinking_level: "low", max_output_tokens: 12_000 });
+    expect(fetchMock.mock.calls[0][0]).toBe("https://openrouter.ai/api/v1/chat/completions");
+    expect(fetchMock.mock.calls[0][1]).toMatchObject({ redirect: "error", headers: { authorization: "Bearer test-key" } });
+    expect(request).toMatchObject({ plugins: [{ id: "web", engine: "native" }], max_tokens: 12000,
+      reasoning: { effort: "low" }, provider: { data_collection: "deny", require_parameters: true, allow_fallbacks: false } });
+    expect(output.sourceUrls).not.toContain("https://uncited.example/");
     expect(output.items[0].url).toBe("https://example.de/");
     expect(output.usage.totalTokens).toBe(15);
   });
 
-  it("uses Gemini's reported Google Search count when steps show fewer queries", async () => {
+  it("keeps query counts unknown instead of deriving them from citations or old fields", async () => {
     configured("gemini-full");
-    const fetchMock = vi.fn().mockResolvedValue(Response.json({ status: "completed",
-      steps: [{ type: "google_search_call", arguments: { queries: ["first search"] } }],
-      usage: { grounding_tool_count: [{ type: "google_search", count: 3 }] } }));
-    const output = await createDiscoveryProvider("gemini-full", { fetchImplementation: fetchMock,
-      maxAttempts: 1 }).search({ ...baseQuery, engine: "google-grounded", mechanism: "planning" });
-    expect(output.usage).toMatchObject({ groundingQueries: 3, groundingCountSource: "provider-usage" });
+    const fetchMock = vi.fn().mockResolvedValue(Response.json({ ...grounded(),
+      steps: [{ type: "google_search_call", arguments: { queries: ["old field"] } }] }));
+    const output = await createDiscoveryProvider("gemini-full", { fetchImplementation: fetchMock, maxAttempts: 1 }).search(baseQuery);
+    expect(output.usage.groundingQueries).toBeUndefined();
+    expect(output.usage.groundingCountSource).toBe("unknown");
   });
 
-  it("retains unknown Gemini search usage and only derives unique queries from complete steps", async () => {
+  it("bounds cited discovery candidates and does not follow generated links", async () => {
     configured("gemini-full");
-    const fetchMock = vi.fn().mockResolvedValueOnce(Response.json({ status: "completed",
-      steps: [{ type: "google_search_call", arguments: { queries: ["same", ""] } },
-        { type: "google_search_call", arguments: { queries: ["same"] } }] }))
-      .mockResolvedValueOnce(Response.json({ status: "completed", usage: { input_tokens: 5 } }));
-    const provider = createDiscoveryProvider("gemini-full", { fetchImplementation: fetchMock, maxAttempts: 1 });
-    const fromSteps = await provider.search({ ...baseQuery, engine: "google-grounded", mechanism: "planning" });
-    expect(fromSteps.usage).toMatchObject({ groundingQueries: 1, groundingCountSource: "response-steps" });
-    const unknown = await provider.search({ ...baseQuery, engine: "google-grounded", mechanism: "planning" });
-    expect(unknown.usage.groundingQueries).toBeUndefined();
-    expect(unknown.usage.groundingCountSource).toBe("unknown");
+    const transport = vi.fn().mockResolvedValue(Response.json(grounded("stop", Array.from({ length: 5 }, (_, i) => `https://company-${i}.example/`))));
+    const output = await createDiscoveryProvider("gemini-full", { fetchImplementation: transport }).search(baseQuery);
+    expect(output.items).toHaveLength(3);
+    expect(output.providerReturnedItems).toBe(5);
+    expect(output.providerOverdeliveredItems).toBe(2);
+    expect(transport).toHaveBeenCalledOnce();
+  });
+
+  it("requires gateway credentials even when a legacy Google key exists", async () => {
+    vi.stubEnv("GEMINI_API_KEY", "legacy-secret"); vi.stubEnv("OPENROUTER_API_KEY", "");
+    const transport = vi.fn();
+    await expect(createDiscoveryProvider("gemini-full", { fetchImplementation: transport }).search(baseQuery)).rejects.toThrow("OPENROUTER_API_KEY");
+    expect(transport).not.toHaveBeenCalled();
+  });
+
+  it("rejects an untrusted gateway before transmitting credentials", async () => {
+    configured("gemini-full");
+    vi.stubEnv("OPENROUTER_BASE_URL", "https://other.example/api/v1");
+    const transport = vi.fn();
+    await expect(createDiscoveryProvider("gemini-full", { fetchImplementation: transport }).search(baseQuery)).rejects.toThrow("OpenRouter HTTPS");
+    expect(transport).not.toHaveBeenCalled();
+  });
+
+  it("keeps authentication errors redacted and does not try the old Google endpoint", async () => {
+    configured("gemini-full");
+    const transport = vi.fn().mockResolvedValue(new Response("private provider diagnostic", { status: 401 }));
+    await expect(createDiscoveryProvider("gemini-full", { fetchImplementation: transport }).search(baseQuery))
+      .rejects.toMatchObject({ message: "gemini-full HTTP 401", details: { kind: "authentication", attempts: 1 } });
+    expect(transport).toHaveBeenCalledOnce();
+  });
+
+  it("rejects uncited output without retry and keeps invalid-response telemetry", async () => {
+    configured("gemini-full");
+    const transport = vi.fn().mockResolvedValue(Response.json(grounded("stop", [])));
+    await expect(createDiscoveryProvider("gemini-full", { fetchImplementation: transport }).search(baseQuery))
+      .rejects.toMatchObject({ details: { kind: "invalid-response", attempts: 1, retryable: false } });
+    expect(transport).toHaveBeenCalledOnce();
   });
 
   it("selects Google or Bing explicitly in SearchAPI", async () => {
@@ -135,13 +166,10 @@ describe("production discovery providers", () => {
 
   it("does not treat a truncated paid Gemini discovery response as completed candidates", async () => {
     configured("gemini-full");
-    const fetchMock = vi.fn().mockResolvedValue(Response.json({ status: "incomplete", steps: [
-      { type: "google_search_result", result: { url: "https://example.de/" } },
-      { type: "model_output", content: [{ type: "text", text: "Partial example" }] },
-    ] }));
+    const fetchMock = vi.fn().mockResolvedValue(Response.json(grounded("length")));
     await expect(createDiscoveryProvider("gemini-full", { fetchImplementation: fetchMock, maxAttempts: 1 })
       .search({ ...baseQuery, engine: "google-grounded", mechanism: "planning" }))
-      .rejects.toThrow("output incomplete");
+      .rejects.toThrow("output invalid or incomplete");
     expect(fetchMock).toHaveBeenCalledOnce();
   });
 

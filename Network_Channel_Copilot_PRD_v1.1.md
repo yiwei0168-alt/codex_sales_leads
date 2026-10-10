@@ -580,3 +580,7 @@ MODESEL-05/06 扩展至研究/评分/联系人核验共用适配器，主路和�
 主 Agent 的 public_fact_search 使用 Gemini 经 OpenRouter 原生 web 插件检索公开问题，固定 engine=native，不自动转 Exa；旧意图保持停用。网关返回的 URL annotations 是来源收据，实际 Google 搜索词未提供，保存为空数组并标记 searchQueryStatus=not-provided、groundingSource=openrouter-url-annotations，不能解释为零搜索。完整结束与有效引用均为采用条件。
 
 39 项本地回归、类型检查、聚焦 lint 和生产构建通过；未进行新增付费调用，真实网关搜索质量尚未验收。客户发现 Gemini 适配器及旧远程向量入口仍待迁移，不能标记全部云端迁移完成。详见 docs/OPENROUTER_PUBLIC_SEARCH_MIGRATION_2026-10-10.md。
+
+## MODESEL-06 客户发现搜索迁移（2026-10-10）
+
+gemini-full/product 使用 OpenRouter 原生 web 搜索，候选仅来自完整回答的有效引用。搜索次数未知时明确记录 unknown，旧任务恢复契约变化时暂停核对、不自动重复调用。保留市场、候选上限及后续核验要求。87 项本地回归通过，无新增付费验收；旧向量迁移与真实候选质量验收仍待完成。详见 docs/OPENROUTER_DISCOVERY_MIGRATION_2026-10-10.md。

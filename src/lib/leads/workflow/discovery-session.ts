@@ -25,7 +25,7 @@ export function discoverySessionDependency(plan: LeadSearchPlan, graphThreadId: 
     return [config.id,connection.apiKey,connection.baseUrl];
   });
   return createHash("sha256").update(JSON.stringify({ graphThreadId, plan,
-    policy: ACTIVE_HYBRID_SEARCH_POLICY, requestContract: "discovery-request-v4-searchapi-google-limit", providers,
+    policy: ACTIVE_HYBRID_SEARCH_POLICY, requestContract: "discovery-request-v5-gemini-openrouter-native", providers,
     model: configuredGeminiDiscoveryModel() })).digest("hex");
 }
 

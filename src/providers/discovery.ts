@@ -1,3 +1,5 @@
+import { geminiGatewayModel, geminiGroundedRequest, parseGeminiGroundedCompletion } from "./gemini-openrouter";
+import { getOpenRouterConfig, openRouterChatCompletionsUrl, openRouterRequestHeaders, validatedOpenRouterBaseUrl } from "./openrouter";
 import {BudgetDeniedError} from "@/lib/billing/policy";
 import { budgetedFetch } from "@/lib/billing/paid-fetch";
 import type { DiscoveryProviderId } from "@/lib/leads/workflow/hybrid-search-policy";
@@ -14,8 +16,8 @@ import type {
 interface ProviderOptions { fetchImplementation?: typeof fetch; timeoutMs?: number; maxAttempts?: number }
 export const DEFAULT_DISCOVERY_MAX_ATTEMPTS = 2;
 export function configuredGeminiDiscoveryModel():string {
-  return process.env.GEMINI_DISCOVERY_MODEL?.trim()
-    || process.env.GEMINI_SEARCH_MODEL?.trim() || "gemini-3.6-flash";
+  return geminiGatewayModel(process.env.GEMINI_DISCOVERY_MODEL?.trim()
+    || process.env.GEMINI_SEARCH_MODEL?.trim());
 }
 
 export type DiscoveryFailureKind = "authentication" | "quota" | "rate-limit" | "timeout"
@@ -31,10 +33,10 @@ export class DiscoveryProviderError extends Error {
 }
 
 export const DISCOVERY_PROVIDER_ENVIRONMENTS: DiscoveryProviderEnvironment[] = [
-  { id: "gemini-full", apiKeyEnv: "GEMINI_API_KEY", baseUrlEnv: "GEMINI_BASE_URL",
-    defaultBaseUrl: "https://generativelanguage.googleapis.com/v1beta", purpose: "Planned Google-grounded discovery" },
-  { id: "gemini-product", apiKeyEnv: "GEMINI_API_KEY", baseUrlEnv: "GEMINI_BASE_URL",
-    defaultBaseUrl: "https://generativelanguage.googleapis.com/v1beta", purpose: "Fixed-query Google-grounded discovery" },
+  { id: "gemini-full", apiKeyEnv: "OPENROUTER_API_KEY", baseUrlEnv: "OPENROUTER_BASE_URL",
+    defaultBaseUrl: "https://openrouter.ai/api/v1", purpose: "Planned Google-grounded discovery" },
+  { id: "gemini-product", apiKeyEnv: "OPENROUTER_API_KEY", baseUrlEnv: "OPENROUTER_BASE_URL",
+    defaultBaseUrl: "https://openrouter.ai/api/v1", purpose: "Fixed-query Google-grounded discovery" },
   { id: "google-places", apiKeyEnv: "GOOGLE_PLACES_API_KEY", baseUrlEnv: "GOOGLE_PLACES_BASE_URL",
     defaultBaseUrl: "https://places.googleapis.com/v1", purpose: "Local business discovery" },
   { id: "exa", apiKeyEnv: "EXA_API_KEY", baseUrlEnv: "EXA_BASE_URL",
@@ -53,7 +55,8 @@ function apiKeyFor(config: DiscoveryProviderEnvironment): string | undefined {
 
 /** Actual provider connection identity; keep the key inside the request or a one-way recovery digest. */
 export function resolveDiscoveryProviderConnection(config:DiscoveryProviderEnvironment){
-  return {apiKey:apiKeyFor(config),baseUrl:process.env[config.baseUrlEnv]?.trim() || config.defaultBaseUrl};
+  return {apiKey:apiKeyFor(config),baseUrl:config.id.startsWith("gemini-") ? validatedOpenRouterBaseUrl(process.env[config.baseUrlEnv])
+    : process.env[config.baseUrlEnv]?.trim() || config.defaultBaseUrl};
 }
 
 function environment(id: DiscoveryProviderId): DiscoveryProviderEnvironment {
@@ -94,7 +97,7 @@ async function requestJson<T>(provider: string, url: string, init: RequestInit, 
         const transient = response.status === 408 || response.status === 429 || response.status >= 500;
         const kind: DiscoveryFailureKind = response.status === 401 || response.status === 403 ? "authentication"
           : response.status === 402 ? "quota" : response.status === 429 ? "rate-limit" : "http";
-        const failure = new DiscoveryProviderError(`${provider} HTTP ${response.status}: ${text.slice(0, 500)}`, {
+        const failure = new DiscoveryProviderError(`${provider} HTTP ${response.status}`, {
           provider, kind, attempts: attempt, latencyMs: Date.now() - startedAt, retryable: transient,
           circuitScope: [401, 402, 403].includes(response.status) ? "provider" : "route", statusCode: response.status,
         });
@@ -148,29 +151,6 @@ function webQueryWithDomainExclusions(query: DiscoveryQuery): string {
 }
 function language(value: string): string { return value.toLowerCase().split(/[-_]/)[0] || "en"; }
 
-function publicUrls(value: unknown): string[] {
-  const urls = new Set<string>();
-  const visit = (item: unknown): void => {
-    if (typeof item === "string") {
-      for (const match of item.matchAll(/https?:\/\/[^\s<>()\]"']+/g)) {
-        try {
-          const url = new URL(match[0].replace(/[.,;:!?，。；：！？）】]+$/, ""));
-          if (url.protocol === "https:" || url.protocol === "http:") urls.add(url.toString());
-        } catch { /* Ignore malformed provider URLs. */ }
-      }
-      return;
-    }
-    if (Array.isArray(item)) return item.forEach(visit);
-    if (item && typeof item === "object") Object.values(item as Record<string, unknown>).forEach(visit);
-  };
-  visit(value);
-  return [...urls].filter((value) => {
-    const parsed = new URL(value);
-    if (/^(?:www\.)?w3\.org$/i.test(parsed.hostname) && /\/(?:2000\/svg|1999\/xhtml)/i.test(parsed.pathname)) return false;
-    return !(/^(?:www\.)?google\.[a-z.]+$/i.test(parsed.hostname) && parsed.pathname === "/search");
-  });
-}
-
 function usage(value: Record<string, unknown> | undefined, paidSearchCredits = 1): DiscoveryUsage {
   const number = (keys: string[]): number => {
     for (const key of keys) if (typeof value?.[key] === "number") return Math.max(0, value[key] as number);
@@ -180,31 +160,6 @@ function usage(value: Record<string, unknown> | undefined, paidSearchCredits = 1
   const outputTokens = number(["output_tokens", "completion_tokens", "outputTokenCount"]);
   return { paidSearchCredits, inputTokens, outputTokens,
     totalTokens: number(["total_tokens", "totalTokenCount"]) || inputTokens + outputTokens };
-}
-
-function groundingQueries(value: unknown): { count?: number; source: "provider-usage" | "response-steps" | "unknown" } {
-  const body = value as { usage?: { grounding_tool_count?: unknown };
-    steps?: Array<{ type?: string; arguments?: { queries?: unknown[] } }> };
-  const reported = body.usage?.grounding_tool_count;
-  if (Array.isArray(reported)) {
-    let count = 0;
-    let valid = true;
-    for (const item of reported) {
-      if (!item || typeof item !== "object" || (item as { type?: unknown }).type !== "google_search") continue;
-      const amount = (item as { count?: unknown }).count;
-      if (typeof amount !== "number" || !Number.isSafeInteger(amount) || amount < 0
-        || !Number.isSafeInteger(count + amount)) { valid = false; break; }
-      count += amount;
-    }
-    if (valid) return { count, source: "provider-usage" };
-  }
-  if (!Array.isArray(body.steps)) return { source: "unknown" };
-  const calls = body.steps.filter((step) => step.type === "google_search_call");
-  if (calls.some((step) => !Array.isArray(step.arguments?.queries))) return { source: "unknown" };
-  const queries = new Set(calls.flatMap((step) => step.arguments!.queries!)
-    .filter((query): query is string => typeof query === "string" && query.trim().length > 0)
-    .map((query) => query.trim()));
-  return { count: queries.size, source: "response-steps" };
 }
 
 function item(providerId: DiscoveryProviderId, value: Omit<DiscoveryItem, "providerId" | "rank">,
@@ -235,9 +190,8 @@ class GeminiDiscoveryProvider extends BaseProvider implements DiscoveryProvider 
   constructor(id: "gemini-full" | "gemini-product", options: ProviderOptions = {}) { super(options, 120_000); this.id = id; }
   async search(query: DiscoveryQuery, signal?: AbortSignal): Promise<DiscoveryProviderResult> {
     const startedAt = Date.now();
-    const { apiKey, baseUrl } = credentials(this.id);
-    const url = trustedDiscoveryEndpoint(baseUrl.replace(/\/openai(?:\/v1)?\/?$/i, ""),
-      ["generativelanguage.googleapis.com"], "interactions");
+    const config = getOpenRouterConfig();
+    const url = openRouterChatCompletionsUrl(config);
     const input = this.id === "gemini-full" ? [
       "Plan and execute this bounded company-discovery task using Google Search.", query.query,
       `Market: ${query.countryName} (${query.countryCode}). Return at most ${boundedResults(query.maxResults)} real companies.`,
@@ -247,26 +201,27 @@ class GeminiDiscoveryProvider extends BaseProvider implements DiscoveryProvider 
       `Market: ${query.countryName} (${query.countryCode}). Use local terminology where useful.`,
       "Use Google Search. Return company names, official URLs and short matching signals only.",
     ].join("\n");
-    const response = await requestJson<{ status?: string; steps?: Array<{ type?: string; content?: Array<{ type?: string; text?: string }> }>;
-      usage?: Record<string, unknown> }>(this.id, url, { method: "POST",
-      headers: { "x-goog-api-key": apiKey, "content-type": "application/json" },
-      body: JSON.stringify({ model: configuredGeminiDiscoveryModel(), input,
-      tools: [{ type: "google_search" }], generation_config: { thinking_level: "low", max_output_tokens: 12_000 } }) }, this.requestOptions(), signal);
-    if (response.body.status && response.body.status !== "completed")
-      throw new Error(`Gemini discovery output ${response.body.status === "incomplete" ? "incomplete" : "not completed"}; paid result requires recovery`);
-    const answerText = (response.body.steps ?? []).filter((step) => step.type === "model_output")
-      .flatMap((step) => step.content ?? []).filter((content) => content.type === "text")
-      .map((content) => content.text ?? "").join("").trim();
-    const urls = publicUrls(response.body);
+    const response = await requestJson<{ usage?: Record<string, unknown> }>(this.id, url, {
+      method: "POST", headers: openRouterRequestHeaders(config), redirect: "error",
+      body: JSON.stringify(geminiGroundedRequest(input, configuredGeminiDiscoveryModel())),
+    }, this.requestOptions(), signal);
+    let grounded: ReturnType<typeof parseGeminiGroundedCompletion>;
+    try { grounded = parseGeminiGroundedCompletion(response.body, configuredGeminiDiscoveryModel()); }
+    catch {
+      throw new DiscoveryProviderError("Gemini discovery output invalid or incomplete; paid result requires recovery", {
+        provider: this.id, kind: "invalid-response", attempts: response.attempts,
+        latencyMs: Date.now() - startedAt, retryable: false, circuitScope: "route",
+      });
+    }
+    const answerText = grounded.answer;
+    const urls = grounded.citations.map(citation => citation.url);
     const items = urls.slice(0, boundedResults(query.maxResults)).map((urlValue, index) => item(this.id, {
       title: new URL(urlValue).hostname.replace(/^www\./, ""), url: urlValue,
       snippet: answerText.slice(0, 2_000), sourceKind: "grounded-answer",
     }, index));
-    const grounding = groundingQueries(response.body);
     return result(this.id, query, startedAt, items, response.attempts, { answerText, sourceUrls: urls,
       providerReturnedItems:urls.length,providerOverdeliveredItems:Math.max(0,urls.length-boundedResults(query.maxResults)),
-      usage: { ...usage(response.body.usage), groundingQueries: grounding.count,
-        groundingCountSource: grounding.source },
+      usage: { ...usage(response.body.usage), groundingCountSource: "unknown" },
       rawResponse: response.body });
   }
 }
