@@ -170,7 +170,7 @@ export async function executeMainAgentRun(userId: string, runId: string, leaseTo
   if(run.execution_kind==="mail")return (await import("./mail-graph")).executeMailDeliveryRun(context,run);
   const checkpointer = new PostgresSaver(getPool(), undefined, { schema: "langgraph" });
   const graph = buildMainAgentGraph({
-    validateEvidence:messages=>assertCurrentKnowledgeMessages(userId,messages),
+    validateEvidence:messages=>assertCurrentKnowledgeMessages(userId,messages,context.knowledgeScope),
     boundary: async () => ({...await boundary(context),policyRevision:digest(await loadDecisionMemory(userId))}),
     model: (messages, step,revision) => durableModel(context, messages, step, revision,run.model_config),
     tool: (call, instructionIds) => dispatchTool(call, { ...context, instructionIds }),
@@ -181,7 +181,7 @@ export async function executeMainAgentRun(userId: string, runId: string, leaseTo
   let initial: Partial<typeof MainAgentState.State>;
   if (old.messages?.length) {
     if (!snapshot.next.length && (old.status === "completed" || old.status === "cancelled")) {
-      if(old.status==='completed')try{await assertCurrentKnowledgeMessages(userId,old.messages);}catch{
+      if(old.status==='completed')try{await assertCurrentKnowledgeMessages(userId,old.messages,context.knowledgeScope);}catch{
         await finishRun(context,'partial',SOURCE_CHANGED_REPLY);return {status:'partial'};
       }
       await finishRun(context, old.status, old.reply ?? "");
@@ -207,7 +207,7 @@ export async function executeMainAgentRun(userId: string, runId: string, leaseTo
       pending: [], steps: 0, seen: {}, instructionIds: [],decisionRevision:0,policyRevision:"",status: "running", reply: "" };
   }
   const final = await withProductSpend(userId, "main-agent", () => graph.invoke(initial, config), runId);
-  if(final.status==='completed')try{await assertCurrentKnowledgeMessages(userId,final.messages);}catch{
+  if(final.status==='completed')try{await assertCurrentKnowledgeMessages(userId,final.messages,context.knowledgeScope);}catch{
     await finishRun(context,'partial',SOURCE_CHANGED_REPLY);return {status:'partial'};
   }
   await finishRun(context, final.status, final.reply);

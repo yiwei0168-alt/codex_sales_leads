@@ -8,6 +8,7 @@ const digest=(value:Uint8Array|string)=>createHash("sha256").update(value).diges
 type Block={id:string;unitType:"page"|"slide"|"sheet"|"document";unitIndex:number;blockType:string;quality:string;text?:string;section?:string;bbox?:number[];table?:{headers?:unknown[];rows?:unknown[][];startRow?:number}};
 type Artifact={documents?:Array<{sourceSha256:string;extractorVersion:string;blocks:Block[]}>};
 const unitKey=(block:Block)=>`${block.unitType}:${block.unitIndex}`;
+export type KnowledgeCollections=Array<'industry'|'company'|'product'>;
 export function evidenceText(block:Block):string{
   if(block.blockType==="table"&&block.table){
     const rows=[block.table.headers??[],...(block.table.rows??[])];
@@ -94,7 +95,7 @@ export function technicalQueryAnchors(query:string){
   const anchors=query.match(/(?<![A-Za-z0-9_-])(?:[A-Z]{2,}\+?|\d+(?:\.\d+)?G|passthrough|server)(?![A-Za-z0-9_-])/g)??[];
   return [...new Set(anchors.map(anchor=>anchor.toLowerCase()))].slice(0,8);
 }
-export async function searchDocuments(userId:string,query:string,filters:{market?:string;companyId?:string;productId?:string}={}){
+export async function searchDocuments(userId:string,query:string,filters:{market?:string;companyId?:string;productId?:string;collections?:KnowledgeCollections}={}){
   const modelTokens=modelTokensInQuery(query);
   const prefixTokens=modelTokens.filter(token=>/^[a-z0-9]+$/.test(token));
   const documents=await tenantQuery<{documentId:string;title:string;versionId:string;reason:string;totalCount:number}>(userId,`select d.id as "documentId",d.title,v.id as "versionId",count(*) over()::int as "totalCount",
@@ -117,10 +118,11 @@ export async function searchDocuments(userId:string,query:string,filters:{market
       or (v.asset_id is null and d.content_sha256=v.source_sha256 and exists(select 1 from knowledge_document_revision r
         where r.document_id=d.id and r.content_sha256=v.source_sha256 and r.reconstructed=false)))
       and (d.owner_id=$2 or d.visibility='shared')
+      and ($8::text[] is null or exists(select 1 from knowledge_collection kc where kc.id=d.collection_id and kc.slug=any($8)))
       and ($3::text is null or d.market=$3) and ($4::text is null or d.company_id=$4) and ($5::text is null or d.product_id=$5)
       and (m.id is not null or cm.id is not null or t.token is not null or pref.token is not null or n.id is not null or d.title ilike '%'||$1||'%')
       order by (m.id is not null) desc,(cm.id is not null) desc,(t.token is not null) desc,(pref.token is not null) desc,(n.id is not null) desc,d.title limit 24`,
-    [query,userId,filters.market??null,filters.companyId??null,filters.productId??null,modelTokens,prefixTokens]);
+    [query,userId,filters.market??null,filters.companyId??null,filters.productId??null,modelTokens,prefixTokens,filters.collections??null]);
   if(documents.length||modelTokens.length)return documents;
   const anchors=technicalQueryAnchors(query);
   if(anchors.length>=2){
@@ -135,9 +137,10 @@ export async function searchDocuments(userId:string,query:string,filters:{market
         or (v.asset_id is null and d.content_sha256=v.source_sha256 and exists(select 1 from knowledge_document_revision r
           where r.document_id=d.id and r.content_sha256=v.source_sha256 and r.reconstructed=false)))
         and (d.owner_id=$1 or d.visibility='shared')
+        and ($6::text[] is null or exists(select 1 from knowledge_collection kc where kc.id=d.collection_id and kc.slug=any($6)))
         and ($2::text is null or d.market=$2) and ($3::text is null or d.company_id=$3) and ($4::text is null or d.product_id=$4)
       order by matched.hits desc,d.title limit 24`,
-      [userId,filters.market??null,filters.companyId??null,filters.productId??null,anchors]);
+      [userId,filters.market??null,filters.companyId??null,filters.productId??null,anchors,filters.collections??null]);
     if(technical.length)return technical;
   }
   const fragments=cjkQueryFragments(query);
@@ -153,12 +156,13 @@ export async function searchDocuments(userId:string,query:string,filters:{market
       or (v.asset_id is null and d.content_sha256=v.source_sha256 and exists(select 1 from knowledge_document_revision r
         where r.document_id=d.id and r.content_sha256=v.source_sha256 and r.reconstructed=false)))
       and (d.owner_id=$1 or d.visibility='shared')
+      and ($6::text[] is null or exists(select 1 from knowledge_collection kc where kc.id=d.collection_id and kc.slug=any($6)))
       and ($2::text is null or d.market=$2) and ($3::text is null or d.company_id=$3) and ($4::text is null or d.product_id=$4)
     order by matched.hits desc,d.title limit 24`,
-    [userId,filters.market??null,filters.companyId??null,filters.productId??null,fragments]);
+    [userId,filters.market??null,filters.companyId??null,filters.productId??null,fragments,filters.collections??null]);
 }
 /** Revalidate legacy candidate IDs against the current PostgreSQL tree and source. */
-export async function currentCandidateDocuments(userId:string,documentIds:string[]){
+export async function currentCandidateDocuments(userId:string,documentIds:string[],collections?:KnowledgeCollections){
   const ids=[...new Set(documentIds)].slice(0,40);
   if(!ids.length)return [];
   return tenantQuery<{documentId:string;title:string;versionId:string;reason:"v3-candidate"}>(userId,`select d.id as "documentId",d.title,v.id as "versionId",'v3-candidate' as reason
@@ -167,12 +171,13 @@ export async function currentCandidateDocuments(userId:string,documentIds:string
       and a.registration_status='registered' and a.source_sha256=v.source_sha256
     where d.id=any($1::uuid[]) and d.status='active' and v.status='ready'
       and (d.owner_id=$2 or d.visibility='shared')
+      and ($3::text[] is null or exists(select 1 from knowledge_collection kc where kc.id=d.collection_id and kc.slug=any($3)))
       and ((a.id is not null) or (v.asset_id is null and d.content_sha256=v.source_sha256
         and exists(select 1 from knowledge_document_revision r where r.document_id=d.id
           and r.content_sha256=v.source_sha256 and r.reconstructed=false)))
-    order by array_position($1::uuid[],d.id)`,[ids,userId]);
+    order by array_position($1::uuid[],d.id)`,[ids,userId,collections??null]);
 }
-export async function browseTree(userId:string,documentId:string,parentId:string|null=null,offset=0,limit=200){
+export async function browseTree(userId:string,documentId:string,parentId:string|null=null,offset=0,limit=200,collections?:KnowledgeCollections){
   return tenantQuery<{id:string;title:string;node_kind:string;unit_type:string;unit_index:number;source_location:Record<string,unknown>}>(userId,`select n.id,n.title,n.node_kind,n.unit_type,n.unit_index,n.source_location from knowledge_tree_node n
     join knowledge_tree_version v on v.id=n.version_id join knowledge_document d on d.current_tree_version_id=v.id
     left join knowledge_asset a on a.id=v.asset_id and a.document_id=d.id and a.registration_status='registered' and a.source_sha256=v.source_sha256
@@ -180,9 +185,10 @@ export async function browseTree(userId:string,documentId:string,parentId:string
       or (v.asset_id is null and d.content_sha256=v.source_sha256 and exists(select 1 from knowledge_document_revision r
         where r.document_id=d.id and r.content_sha256=v.source_sha256 and r.reconstructed=false)))
       and (d.owner_id=$2 or d.visibility='shared')
-      and n.parent_id is not distinct from $3::uuid order by n.ordinal limit $4 offset $5`,[documentId,userId,parentId,Math.min(200,Math.max(1,limit)),Math.max(0,offset)]);
+      and ($6::text[] is null or exists(select 1 from knowledge_collection kc where kc.id=d.collection_id and kc.slug=any($6)))
+      and n.parent_id is not distinct from $3::uuid order by n.ordinal limit $4 offset $5`,[documentId,userId,parentId,Math.min(200,Math.max(1,limit)),Math.max(0,offset),collections??null]);
 }
-export async function readEvidence(userId:string,nodeId:string){
+export async function readEvidence(userId:string,nodeId:string,collections?:KnowledgeCollections){
   const rows=await tenantQuery<{id:string;documentId:string;content:string;source_location:Record<string,unknown>;source_sha256:string}>(userId,`select n.id,d.id as "documentId",n.content,n.source_location,v.source_sha256
     from knowledge_tree_node n join knowledge_tree_version v on v.id=n.version_id join knowledge_document d on d.current_tree_version_id=v.id
     left join knowledge_asset a on a.id=v.asset_id and a.document_id=d.id and a.registration_status='registered' and a.source_sha256=v.source_sha256
@@ -192,10 +198,11 @@ export async function readEvidence(userId:string,nodeId:string){
           where r.document_id=d.id and r.content_sha256=v.source_sha256 and r.reconstructed=false
             and r.id=(n.source_location->>'revisionId')::uuid and substring(r.content from (n.source_location->>'start')::int+1
               for (n.source_location->>'end')::int-(n.source_location->>'start')::int)=n.content)))
-      and (d.owner_id=$2 or d.visibility='shared')`,[nodeId,userId]);
+      and (d.owner_id=$2 or d.visibility='shared')
+      and ($3::text[] is null or exists(select 1 from knowledge_collection kc where kc.id=d.collection_id and kc.slug=any($3)))`,[nodeId,userId,collections??null]);
   return rows[0]??null;
 }
-export async function aggregateDocumentSet(userId:string,documentIds:string[]){
+export async function aggregateDocumentSet(userId:string,documentIds:string[],collections?:KnowledgeCollections){
   const ids=[...new Set(documentIds)].slice(0,24);
   const rows=await tenantQuery<{documentId:string}>(userId,`select d.id as "documentId" from knowledge_document d
     join knowledge_tree_version v on v.id=d.current_tree_version_id left join knowledge_asset a on a.id=v.asset_id
@@ -204,10 +211,11 @@ export async function aggregateDocumentSet(userId:string,documentIds:string[]){
       and ((a.id is not null)
         or (v.asset_id is null and d.content_sha256=v.source_sha256 and exists(select 1 from knowledge_document_revision r
           where r.document_id=d.id and r.content_sha256=v.source_sha256 and r.reconstructed=false)))
-      and (d.owner_id=$2 or d.visibility='shared') order by d.id`,[ids,userId]);
+      and (d.owner_id=$2 or d.visibility='shared')
+      and ($3::text[] is null or exists(select 1 from knowledge_collection kc where kc.id=d.collection_id and kc.slug=any($3))) order by d.id`,[ids,userId,collections??null]);
   return {documentIds:rows.map(row=>row.documentId),count:rows.length,truncated:documentIds.length>24};
 }
-export async function filterDocumentSet(userId:string,documentIds:string[],filters:{market?:string;companyId?:string;productId?:string;collection?:string;capturedFrom?:string;capturedBefore?:string}){
+export async function filterDocumentSet(userId:string,documentIds:string[],filters:{market?:string;companyId?:string;productId?:string;collection?:string;capturedFrom?:string;capturedBefore?:string},collections?:KnowledgeCollections){
   const ids=[...new Set(documentIds)].slice(0,24);
   const rows=await tenantQuery<{documentId:string}>(userId,`select d.id as "documentId" from knowledge_document d
     join knowledge_tree_version v on v.id=d.current_tree_version_id left join knowledge_asset a on a.id=v.asset_id
@@ -220,8 +228,8 @@ export async function filterDocumentSet(userId:string,documentIds:string[],filte
       and (d.owner_id=$2 or d.visibility='shared') and ($3::text is null or d.market=$3)
       and ($4::text is null or d.company_id=$4) and ($5::text is null or d.product_id=$5)
       and ($6::text is null or c.slug=$6) and ($7::timestamptz is null or d.captured_at >= $7)
-      and ($8::timestamptz is null or d.captured_at < $8) order by d.id`,
+      and ($8::timestamptz is null or d.captured_at < $8) and ($9::text[] is null or c.slug=any($9)) order by d.id`,
     [ids,userId,filters.market??null,filters.companyId??null,filters.productId??null,filters.collection??null,
-      filters.capturedFrom??null,filters.capturedBefore??null]);
+      filters.capturedFrom??null,filters.capturedBefore??null,collections??null]);
   return {documentIds:rows.map(row=>row.documentId),count:rows.length,truncated:documentIds.length>24};
 }

@@ -204,13 +204,15 @@ export const productTools: ProductTool[] = [
     input: z.object({ plan: z.string().min(1).max(8000), scale: z.string().min(1).max(1000), uncertainty: z.string().max(2000), requestedEstimate: z.string().max(1000).optional() }).strict(), effect: "publish", recovery: "idempotent",
     execute: async i => result({ approvedPlan: i }, { cost: "known" }) }),
 ];
-export function availableTools(context: Pick<ExecutionContext, "role" | "knowledgeScope" | "mode">, tools = productTools) {
+export function availableTools(context: Pick<ExecutionContext, "role" | "knowledgeScope" | "mode"> & Partial<Pick<ExecutionContext,'userId'>>, tools = productTools) {
+  const scopedShadow=Boolean(context.userId&&(process.env.VECTORLESS_AGENT_SHADOW_USER_IDS??'').split(',').map(id=>id.trim()).includes(context.userId));
   return tools.filter(t => (t.role === "member" || context.role === "admin")
     && modeAllowsTool(context.mode,t.id)
-    && (!t.id.startsWith("vectorless_") || (process.env.ENABLE_VECTORLESS_AGENT_SHADOW==="1" && !context.knowledgeScope?.length))
+    && (!t.id.startsWith("vectorless_") || (process.env.ENABLE_VECTORLESS_AGENT_SHADOW==="1" && (!context.knowledgeScope?.length||scopedShadow)))
     && (t.id!=="memory_observation_search" || (process.env.ENABLE_MEMORY_GRAPH_AGENT_SHADOW==="1" && !context.knowledgeScope?.length))
     && (!context.knowledgeScope?.length || t.id === "knowledge_search" || t.id === "knowledge_status"
-      || t.id === "knowledge_originals" || (t.id === "knowledge_compare" && context.knowledgeScope.includes("product"))));
+      || t.id === "knowledge_originals" || (t.id === "knowledge_compare" && context.knowledgeScope.includes("product"))
+      || (scopedShadow&&t.id.startsWith('vectorless_'))));
 }
 export function describeTool(tool: ProductTool) {
   const { execute: _execute, input, output, ...metadata } = tool;

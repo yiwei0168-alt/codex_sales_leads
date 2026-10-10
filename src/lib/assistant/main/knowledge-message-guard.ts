@@ -1,7 +1,7 @@
 import {z} from 'zod';
 import {tenantQuery} from '@/lib/rag/db';
 import {currentKnowledgeChunkEvidence} from '@/lib/rag/repository';
-import {readEvidence} from '@/lib/knowledge/vectorless';
+import {readEvidence,type KnowledgeCollections} from '@/lib/knowledge/vectorless';
 import {digest,type ModelMessage} from './contracts';
 
 export const SOURCE_CHANGED_REPLY='资料的权限、版本或核验状态已变化，或暂时无法复核。本次未返回受影响的回答，也未继续执行后续操作。请重新发起查询以读取当前资料。';
@@ -12,7 +12,7 @@ const id=(value:unknown)=>z.uuid().parse(value);
 const guardedTools=new Set(['knowledge_search','knowledge_facts','knowledge_compare','knowledge_originals','vectorless_read']);
 
 /** Only server tool messages paired to actual tool calls count as evidence, never user text. */
-export async function assertCurrentKnowledgeMessages(userId:string,messages:ModelMessage[]){
+export async function assertCurrentKnowledgeMessages(userId:string,messages:ModelMessage[],collections?:KnowledgeCollections){
  try{
   const calls=new Map<string,string>();
   for(const message of messages)if(message.role==='assistant')for(const call of message.tool_calls??[]){
@@ -52,7 +52,7 @@ export async function assertCurrentKnowledgeMessages(userId:string,messages:Mode
       and (d.current_tree_version_id is null or (v.status='ready' and v.asset_id=a.id and v.source_sha256=a.source_sha256))`,[[...new Set(assets.map(a=>id(a.id)))],userId]);
     for(const asset of assets)if(!rows.some(row=>row.id===asset.id&&row.sha256===asset.sha256))throw new KnowledgeSourceChangedError();
   }
-  for(const node of nodes){const now=await readEvidence(userId,id(node.id));
+  for(const node of nodes){const now=await readEvidence(userId,id(node.id),collections);
     if(!now||now.content!==node.content||now.source_sha256!==node.source_sha256||digest(now.source_location)!==digest(node.source_location))throw new KnowledgeSourceChangedError();}
  }catch{throw new KnowledgeSourceChangedError();}
 }

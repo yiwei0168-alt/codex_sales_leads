@@ -1,16 +1,21 @@
 import {createHash} from "node:crypto";
+import {z} from 'zod';
 import {tenantQuery,tenantTransaction} from "@/lib/rag/db";
 import {hybridSearch} from "@/lib/rag/repository";
 import {aggregateDocumentSet,browseTree,currentCandidateDocuments,filterDocumentSet,modelTokensInQuery,readEvidence,searchDocuments} from "./vectorless";
 
-type Session={id:string;candidate_ids:string[];matched_count:number;search_used:number;navigation_used:number;evidence_used:number};
+type Session={id:string;candidate_ids:string[];matched_count:number;search_used:number;navigation_used:number;evidence_used:number;agent_run_id?:string;run_id?:string;knowledge_scope?:unknown};
+const scopeSchema=z.array(z.enum(['industry','company','product'])).min(1).max(3).optional();
 type Partial={status:"partial";reason:string;unsearchedDocumentIds:string[];beyondCandidateCount:number};
 const digest=(value:string)=>createHash("sha256").update(value).digest("hex");
 async function session(userId:string,sessionId:string){
-  const [current]=await tenantQuery<Session>(userId,`select id,candidate_ids,matched_count,search_used,navigation_used,evidence_used
-    from knowledge_retrieval_session where id=$1 and owner_id=$2`,[sessionId,userId]);
+  const [current]=await tenantQuery<Session>(userId,`select s.id,s.candidate_ids,s.matched_count,s.search_used,s.navigation_used,s.evidence_used,
+      s.agent_run_id,r.id as run_id,r.input->'knowledgeScope' as knowledge_scope
+    from knowledge_retrieval_session s left join agent_run r on r.id=s.agent_run_id and r.user_id=s.owner_id
+    where s.id=$1 and s.owner_id=$2`,[sessionId,userId]);
   if(!current)throw new Error("Owned retrieval session required");
-  return current;
+  if(current.agent_run_id&&!current.run_id)throw new Error('Owned Agent run no longer available');
+  return {...current,collections:scopeSchema.parse(current.knowledge_scope??undefined)};
 }
 async function receipt(userId:string,sessionId:string,operation:string,request:Record<string,unknown>,result:Record<string,unknown>){
   await tenantQuery(userId,`insert into knowledge_retrieval_step(session_id,operation,request,result) values($1,$2,$3,$4)`,
@@ -59,11 +64,12 @@ export async function searchSessionDocuments(userId:string,sessionId:string,filt
   const current=await session(userId,sessionId);
   if(!await reserve(userId,sessionId,"search"))return limit(userId,sessionId,"search budget exhausted");
   const [record]=await tenantQuery<{question:string}>(userId,"select question from knowledge_retrieval_session where id=$1",[sessionId]);
-  const documents=await searchDocuments(userId,record.question,filters);
+  const scopedFilters={...filters,collections:current.collections};
+  const documents=await searchDocuments(userId,record.question,scopedFilters);
   const ids=documents.map(document=>document.documentId);
   const matchedCount=documents[0]?.totalCount??0;
   await tenantQuery(userId,`update knowledge_retrieval_session set candidate_ids=$2::uuid[],matched_count=$3 where id=$1`,[sessionId,ids,matchedCount]);
-  await receipt(userId,sessionId,"search",{filters,questionSha256:digest(record.question)},
+  await receipt(userId,sessionId,"search",{filters:scopedFilters,questionSha256:digest(record.question)},
     {candidateIds:ids,matchedCount,unsearchedDocuments:Math.max(0,matchedCount-ids.length)});
   return {status:"ok" as const,documents,matchedCount,partial:matchedCount>ids.length,
     unsearchedDocuments:Math.max(0,matchedCount-ids.length),candidateLimit:24,sessionId:current.id};
@@ -83,9 +89,9 @@ export async function supplementSessionFromV3(userId:string,sessionId:string){
   }
   const [record]=await tenantQuery<{question:string}>(userId,"select question from knowledge_retrieval_session where id=$1",[sessionId]);
   const chunks=await hybridSearch(userId,record.question,null,
-    {structuredProductTerms:modelTokensInQuery(record.question),lexicalQuery:record.question},40);
+    {structuredProductTerms:modelTokensInQuery(record.question),lexicalQuery:record.question,collections:current.collections},40);
   const proposed=[...new Set(chunks.map(chunk=>chunk.documentId))];
-  const validated=await currentCandidateDocuments(userId,proposed);
+  const validated=await currentCandidateDocuments(userId,proposed,current.collections);
   const extra=validated.filter(document=>!current.candidate_ids.includes(document.documentId));
   const remaining=Math.max(0,24-current.candidate_ids.length);
   const added=extra.slice(0,remaining);
@@ -103,14 +109,14 @@ export async function browseSessionTree(userId:string,sessionId:string,documentI
   const current=await session(userId,sessionId);
   if(!current.candidate_ids.includes(documentId))throw new Error("Document is outside this session's candidate set");
   if(!await reserve(userId,sessionId,"navigation"))return limit(userId,sessionId,"navigation budget exhausted");
-  const nodes=await browseTree(userId,documentId,parentId);
+  const nodes=await browseTree(userId,documentId,parentId,0,200,current.collections);
   await receipt(userId,sessionId,"browse",{documentId,parentId},{nodeIds:nodes.map(node=>node.id),count:nodes.length});
   return {status:"ok" as const,nodes,partial:nodes.length===200};
 }
 export async function readSessionEvidence(userId:string,sessionId:string,nodeId:string){
   const current=await session(userId,sessionId);
   if(!await reserve(userId,sessionId,"evidence"))return limit(userId,sessionId,"evidence budget exhausted");
-  const evidence=await readEvidence(userId,nodeId);
+  const evidence=await readEvidence(userId,nodeId,current.collections);
   const authorized=evidence&&current.candidate_ids.includes(evidence.documentId)?evidence:null;
   await receipt(userId,sessionId,"read",{nodeId},{found:Boolean(authorized),documentId:authorized?.documentId??null,
     sourceSha256:authorized?.source_sha256??null,sourceLocation:authorized?.source_location??null,
@@ -121,7 +127,7 @@ export async function aggregateSessionDocuments(userId:string,sessionId:string,d
   const current=await session(userId,sessionId);
   if(documentIds.some(id=>!current.candidate_ids.includes(id)))throw new Error("Document is outside this session's candidate set");
   if(!await reserve(userId,sessionId,"navigation"))return limit(userId,sessionId,"navigation budget exhausted");
-  const result=await aggregateDocumentSet(userId,documentIds);
+  const result=await aggregateDocumentSet(userId,documentIds,current.collections);
   await receipt(userId,sessionId,"aggregate",{documentIds},{...result});
   return {status:"ok" as const,...result};
 }
@@ -129,7 +135,7 @@ export async function filterSessionDocuments(userId:string,sessionId:string,docu
   const current=await session(userId,sessionId);
   if(documentIds.some(id=>!current.candidate_ids.includes(id)))throw new Error("Document is outside this session's candidate set");
   if(!await reserve(userId,sessionId,"navigation"))return limit(userId,sessionId,"navigation budget exhausted");
-  const result=await filterDocumentSet(userId,documentIds,filters);
+  const result=await filterDocumentSet(userId,documentIds,filters,current.collections);
   await receipt(userId,sessionId,"filter",{documentIds,filters},{...result});
   return {status:"ok" as const,...result};
 }

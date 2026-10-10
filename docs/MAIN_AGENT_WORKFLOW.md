@@ -388,3 +388,7 @@ public_fact_search 改用 OpenRouter 的 Gemini 原生 web 搜索，采用完整
 ### MODESEL-16 验收脚本身份（2026-10-10）
 
 compare-holdout-retrieval-local 的 local-document-recall-v2 收据分别记录 frozenReferenceProfile 与 evaluatedProfile，并核对运行前后 Gold、资料、权限、事实审核和 release 状态。此为文档召回诊断，不能替代答案与精确引用判分，不能据此调优已冻结题。旧候选和判决不改写；详见 LOCAL_RETRIEVAL_RECEIPT_2026-10-10.md。
+
+### MA24-01 / MA24-02 / MA24-14 实施状态补充 — 主任务来源及范围（2026-10-10）
+
+主 Agent 来源复核已覆盖模型前后、后续工具、完成保存及 checkpoint 恢复；默认关闭的无向量工具现可按指定账号进入知识页影子流程，范围取自任务保存值，并在每次原文和集合 SQL 中重查。52 项相关回归、类型/Lint 与隔离数据库范围验证通过；此为工程证据，持续服务加载与独立质量验收另记，未切换生产主路。见 [分阶段记录](MA24_REMAINING_PLAN_2026-10-10.md)。

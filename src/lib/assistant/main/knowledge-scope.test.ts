@@ -50,4 +50,14 @@ describe("knowledge question scope", () => {
     vi.stubEnv("ENABLE_VECTORLESS_AGENT_SHADOW","1");
     expect((await dispatchTool(call,{...context,knowledgeScope:["product"] as const as ["product"]})).status).toBe("unavailable");
   });
+  it('allows scoped shadow tools only for explicitly selected accounts with the feature on',()=>{
+    const context={role:'member' as const,userId:'pilot',knowledgeScope:['product' as const],mode:'quick' as const};
+    vi.stubEnv('VECTORLESS_AGENT_SHADOW_USER_IDS','pilot');
+    expect(availableTools(context).some(t=>t.id.startsWith('vectorless_'))).toBe(false);
+    vi.stubEnv('ENABLE_VECTORLESS_AGENT_SHADOW','1');
+    const tools=availableTools(context);
+    expect(tools.filter(t=>t.id.startsWith('vectorless_'))).toHaveLength(7);
+    expect(tools.every(t=>t.effect==='read')).toBe(true);
+    expect(availableTools({...context,userId:'other'}).some(t=>t.id.startsWith('vectorless_'))).toBe(false);
+  });
 });
