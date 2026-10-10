@@ -575,3 +575,8 @@ MODESEL-05/06 覆盖旧意图规划 Kimi 主选及 DeepSeek 等价备用；调�
 # 2026-10-10：业务 DeepSeek 统一网关
 
 MODESEL-05/06 扩展至研究/评分/联系人核验共用适配器，主路和已配置备用统一网关连接；评分规则和授权门槛保留。缓存与调用收据区分旧直连和新网关。旧意图停用，Google grounding 与远程向量待迁移。[验收记录](docs/OPENROUTER_DEEPSEEK_MIGRATION_2026-10-10.md)。
+## MODESEL-06 公开事实搜索迁移（2026-10-10）
+
+主 Agent 的 public_fact_search 使用 Gemini 经 OpenRouter 原生 web 插件检索公开问题，固定 engine=native，不自动转 Exa；旧意图保持停用。网关返回的 URL annotations 是来源收据，实际 Google 搜索词未提供，保存为空数组并标记 searchQueryStatus=not-provided、groundingSource=openrouter-url-annotations，不能解释为零搜索。完整结束与有效引用均为采用条件。
+
+39 项本地回归、类型检查、聚焦 lint 和生产构建通过；未进行新增付费调用，真实网关搜索质量尚未验收。客户发现 Gemini 适配器及旧远程向量入口仍待迁移，不能标记全部云端迁移完成。详见 docs/OPENROUTER_PUBLIC_SEARCH_MIGRATION_2026-10-10.md。

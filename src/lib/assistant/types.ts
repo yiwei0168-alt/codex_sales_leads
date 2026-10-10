@@ -70,6 +70,9 @@ export interface ExternalSearchAnswer {
   answer: string;
   citations: WebCitation[];
   searchQueries: string[];
+  /** Empty queries with this status means unavailable, not zero searches. */
+  searchQueryStatus?: "not-provided";
+  groundingSource?: "openrouter-url-annotations";
   model: string;
   latencyMs: number;
 }
