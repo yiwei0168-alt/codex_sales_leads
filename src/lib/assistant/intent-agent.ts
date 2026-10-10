@@ -5,11 +5,12 @@ import { z } from "zod";
 import {kimiOutputLimit} from "@/providers/kimi-contract";
 
 import type { ChannelRole } from "@/lib/domain";
-import { DeepSeekProvider } from "@/providers/deepseek";
+import { getOpenRouterConfig, openRouterChatCompletionsUrl, openRouterRequestHeaders, type OpenRouterConfig } from "@/providers/openrouter";
+import { kimiOpenRouterModel } from "@/providers/kimi-openrouter";
 import { interpretAssistantRequest, resolveCountry } from "./intent";
 import type { AssistantConversationTurn, IntentPlan, LeadSearchPlan } from "./types";
 
-const PROMPT_VERSION = "assistant-intent-plan-v1.4";
+const PROMPT_VERSION = "assistant-intent-plan-v1.5-gateway";
 const CHANNEL_ROLES = [
   "Distributor", "VAD", "VAR", "Dealer", "Reseller", "Retailer", "E-tailer", "SI", "Installer", "MSP", "ISP",
   "Agent", "Brand Owner",
@@ -85,7 +86,7 @@ const rawPlanSchema = z.object({
 
 interface KimiResponse {
   model?: string;
-  choices?: Array<{ message?: { content?: string | null } }>;
+  choices?: Array<{ finish_reason?: string; message?: { content?: string | null } }>;
   usage?: {
     prompt_tokens?: number;
     completion_tokens?: number;
@@ -98,20 +99,12 @@ interface KimiResponse {
 type PlannerCall = NonNullable<IntentPlan["plannerCalls"]>[number];
 
 class KimiIntentInvocationError extends Error {
-  constructor(message: string, readonly call: PlannerCall) {
+  constructor(message: string, readonly call: PlannerCall, readonly allowFallback = true) {
     super(message);
     this.name = "KimiIntentInvocationError";
   }
 }
 
-function kimiBaseUrl(): string {
-  const parsed = new URL(process.env.KIMI_BASE_URL?.trim() || "https://api.moonshot.cn/v1");
-  if (parsed.protocol !== "https:" || !["api.moonshot.cn", "api.moonshot.ai"].includes(parsed.hostname)
-    || parsed.username || parsed.password) {
-    throw new Error("KIMI_BASE_URL 必须是受信任的 Moonshot HTTPS API 地址");
-  }
-  return parsed.toString().replace(/\/$/, "");
-}
 
 function parseJson(content: string): unknown {
   return JSON.parse(content.trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, ""));
@@ -208,16 +201,20 @@ async function invokeKimiIntent(options: {
   content: string;
   history: AssistantConversationTurn[];
   model: string;
-  apiKey: string;
+  config: OpenRouterConfig;
+  fallback?: boolean;
   fetchImplementation: typeof fetch;
   complexityCheck: boolean;
 }): Promise<{ raw: z.infer<typeof rawPlanSchema>; body: KimiResponse; call: NonNullable<IntentPlan["plannerCalls"]>[number] }> {
-  const recordAttempt=modelAttemptSequence({provider:"kimi",task:options.complexityCheck?"intent-complexity-check":"intent-plan",promptVersion:PROMPT_VERSION});
+  const recordAttempt=modelAttemptSequence({provider:"openrouter",task:options.fallback?"assistant-intent":options.complexityCheck?"intent-complexity-check":"intent-plan",promptVersion:PROMPT_VERSION});
   const startedAt = Date.now();
   const requestBody = JSON.stringify({
     model: options.model,
+    provider: {...options.config.providerPreferences, allow_fallbacks:false},
+    ...(options.fallback ? {reasoning:{enabled:false}} : {}),
     response_format: { type: "json_object" },
-    ...kimiOutputLimit(options.model,4_000),
+    ...kimiOutputLimit(options.model,options.fallback
+      ? Math.max(1_024,Math.min(16_384,Number(process.env.DEEPSEEK_MAX_OUTPUT_TOKENS ?? 8_192)||8_192)) : 4_000),
     messages: [
       {
         role: "system",
@@ -273,23 +270,24 @@ async function invokeKimiIntent(options: {
     latencyMs: Date.now() - startedAt,
     attempts: Math.max(1, attempts),
     retries: Math.max(0, attempts - 1),
-    providerId: "kimi",
-    fallbackUsed: false,
+    providerId: "openrouter",
+    fallbackUsed: Boolean(options.fallback),
     succeeded,
     usageAvailable: anyUsage,
     ...(failureReason ? { failureReason: failureReason.slice(0, 300) } : {}),
   });
   try {
-    for (let attempt = 0; attempt < 3; attempt += 1) {
+    for (let attempt = 0; attempt < (options.fallback ? 2 : 3); attempt += 1) {
       attempts = attempt + 1;
-      const response = await recordAttempt(()=>budgetedFetch(options.fetchImplementation)(`${kimiBaseUrl()}/chat/completions`, {
+      const response = await recordAttempt(()=>budgetedFetch(options.fetchImplementation)(openRouterChatCompletionsUrl(options.config), {
         method: "POST",
-        headers: { authorization: `Bearer ${options.apiKey}`, "content-type": "application/json" },
+        headers: openRouterRequestHeaders(options.config),
+        redirect: "error",
         signal: AbortSignal.timeout(Number(process.env.KIMI_INTENT_TIMEOUT_MS ?? 120_000)),
         body: requestBody,
       }));
       status = response.status;
-      body = await response.json() as KimiResponse;
+      body = response.ok ? await response.json() as KimiResponse : {};
       if (body.usage) {
         anyUsage = true;
         aggregateInputTokens += body.usage.prompt_tokens ?? 0;
@@ -300,6 +298,9 @@ async function invokeKimiIntent(options: {
       }
       if (response.ok) {
         try {
+          if (["length","max_tokens"].includes(body.choices?.[0]?.finish_reason ?? "")) {
+            throw new Error("Intent JSON output was truncated");
+          }
           const parsed = parseJson(body.choices?.[0]?.message?.content ?? "");
           const validated = rawPlanSchema.safeParse(parsed);
           if (!validated.success) {
@@ -320,54 +321,26 @@ async function invokeKimiIntent(options: {
           throw error;
         }
       }
-      const transient = response.status === 429 || response.status >= 500 || /overload|temporar/i.test(body.error?.message ?? "");
-      if (!transient || attempt === 2) throw new Error(body.error?.message ?? `Kimi HTTP ${response.status}`);
+      const transient = response.status === 429 || response.status >= 500;
+      if (!transient || attempt === (options.fallback ? 1 : 2)) throw new Error(`OpenRouter intent HTTP ${response.status}`);
       await new Promise((resolve) => setTimeout(resolve, 500 * (attempt + 1)));
     }
-    if (status < 200 || status >= 300) throw new Error(body.error?.message ?? `Kimi HTTP ${status}`);
+    if (status < 200 || status >= 300) throw new Error(`OpenRouter intent HTTP ${status}`);
     throw new Error("Kimi exhausted bounded structured-output retries");
   } catch (error) {
     if (error instanceof BudgetDeniedError) throw error;
     const detail = error instanceof Error ? error.message : "unknown Kimi invocation error";
-    throw new KimiIntentInvocationError(detail, buildCall(false, detail));
+    throw new KimiIntentInvocationError(detail, buildCall(false, detail), status !== 401 && status !== 403);
   }
 }
 
 async function invokeEquivalentIntentFallback(options: { content: string; history: AssistantConversationTurn[];
-  fetchImplementation: typeof fetch }): Promise<{ raw: z.infer<typeof rawPlanSchema>; model: string; call: PlannerCall }> {
-  const requestedModel = process.env.KIMI_INTENT_FALLBACK_MODEL?.trim() || "deepseek-v4-flash";
-  const provider = new DeepSeekProvider({ defaultModel: requestedModel,
-    fetchImplementation: options.fetchImplementation, maxAttempts: 2 });
-  const startedAt = Date.now();
-  const response = await provider.execute({ task: "assistant-intent", modelVersion: requestedModel,
-    promptVersion: `${PROMPT_VERSION}-equivalent-provider-fallback`, evidenceIds: [],
-    dataClassification: "private-workspace", tenantScope: "assistant-intent", reasoningEffort: "low",
-    input: {
-      instructions: [
-        "Classify and plan the Cudy request. Return the same top-level fields used by the Kimi intent planner.",
-        "Use lead_search only for company or sales-lead discovery. Copy every explicit country, numeric target count and named role/category exactly; never broaden named roles.",
-        "Agent, Brand Owner and OEM/ODM customer opportunities are explicit-only. Never search for OEM/ODM suppliers to Cudy.",
-        "Set requires_k3_planning only for materially complex tasks. Keep reply and planning_reason concise.",
-      ],
-      allowedRoles: CHANNEL_ROLES,
-      requiredTopLevelKeys: ["intent", "confidence", "internal_question", "external_questions", "reply",
-        "lead_plan", "requires_k3_planning", "planning_reason"],
-      recentConversation: options.history.slice(-8).map((turn) => ({ role: turn.role,
-        content: turn.content.slice(0, 4_000) })),
-      currentUserMessage: options.content.slice(0, 8_000),
-    } });
-  const validated = rawPlanSchema.safeParse(response.output);
-  if (!validated.success) {
-    throw new Error(`Equivalent intent fallback schema invalid: ${validated.error.issues[0]?.message ?? "unknown"}`);
-  }
-  const usage = response.usage;
-  return { raw: validated.data, model: response.modelVersion,
-    call: { requestedModel, actualModel: response.modelVersion,
-      providerId: response.actualProviderId ?? provider.id, fallbackUsed: true,
-      inputTokens: usage?.promptTokens ?? 0, cachedInputTokens: usage?.cachedPromptTokens ?? 0,
-      outputTokens: usage?.completionTokens ?? 0, totalTokens: usage?.totalTokens ?? 0,
-      latencyMs: response.latencyMs || Date.now() - startedAt, attempts: response.attempts ?? 1,
-      retries: response.retries ?? 0, succeeded: true, usageAvailable: Boolean(usage) } };
+  config: OpenRouterConfig; fetchImplementation: typeof fetch }): Promise<{ raw: z.infer<typeof rawPlanSchema>; model: string; call: PlannerCall }> {
+  const configured = process.env.KIMI_INTENT_FALLBACK_MODEL?.trim() || "deepseek-v4-flash";
+  const model = configured.startsWith("deepseek/") ? configured : `deepseek/${configured}`;
+  if (!/^deepseek\/deepseek-[a-z0-9.-]+$/i.test(model)) throw new Error("Intent fallback requires a DeepSeek OpenRouter model ID");
+  const result = await invokeKimiIntent({...options, model, complexityCheck:false, fallback:true});
+  return {raw:result.raw, model:result.body.model ?? model, call:result.call};
 }
 
 export async function planAssistantRequest(
@@ -375,21 +348,21 @@ export async function planAssistantRequest(
   history: AssistantConversationTurn[] = [],
   fetchImplementation: typeof fetch = fetch,
 ): Promise<IntentPlan> {
-  const apiKey = process.env.KIMI_API_KEY?.trim();
-  if (!apiKey) return fallbackPlan(content);
-  const lightModel = process.env.KIMI_INTENT_LIGHT_MODEL?.trim() || "kimi-k2.6";
-  const complexModel = process.env.KIMI_INTENT_MODEL?.trim() || process.env.KIMI_MODEL?.trim() || "kimi-k3";
+  if (!process.env.OPENROUTER_API_KEY?.trim()) return fallbackPlan(content);
   const completedCalls: PlannerCall[] = [];
   try {
+    const config = getOpenRouterConfig();
+    const lightModel = kimiOpenRouterModel(process.env.KIMI_INTENT_LIGHT_MODEL?.trim() || "kimi-k2.6");
+    const complexModel = kimiOpenRouterModel(process.env.KIMI_INTENT_MODEL?.trim() || process.env.KIMI_MODEL);
     let raw: z.infer<typeof rawPlanSchema>;
     let model: string;
     let plannerSource: IntentPlan["plannerSource"];
     try {
-      const light = await invokeKimiIntent({ content, history, model: lightModel, apiKey, fetchImplementation,
+      const light = await invokeKimiIntent({ content, history, model: lightModel, config, fetchImplementation,
         complexityCheck: true });
       completedCalls.push(light.call);
       const selected = light.raw.requires_k3_planning && light.raw.intent!=="budget_change" && lightModel !== complexModel
-        ? await invokeKimiIntent({ content, history, model: complexModel, apiKey, fetchImplementation,
+        ? await invokeKimiIntent({ content, history, model: complexModel, config, fetchImplementation,
           complexityCheck: false }) : light;
       if (selected !== light) completedCalls.push(selected.call);
       raw = selected.raw;
@@ -397,8 +370,11 @@ export async function planAssistantRequest(
       plannerSource = selected === light ? "kimi-light" : "kimi-k3";
     } catch (error) {
       if (error instanceof BudgetDeniedError) throw error;
-      if (error instanceof KimiIntentInvocationError) completedCalls.push(error.call);
-      const fallback = await invokeEquivalentIntentFallback({ content, history, fetchImplementation });
+      if (error instanceof KimiIntentInvocationError) {
+        if (!error.allowFallback) throw error;
+        completedCalls.push(error.call);
+      }
+      const fallback = await invokeEquivalentIntentFallback({ content, history, config, fetchImplementation });
       completedCalls.push(fallback.call);
       raw = fallback.raw;
       model = fallback.model;

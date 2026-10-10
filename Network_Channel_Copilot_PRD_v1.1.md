@@ -566,3 +566,6 @@ MODESEL-05/06 已覆盖主 Agent 及邮件学习、开发策略/邮件/跟进生
 # 2026-10-10：RAG 网关迁移增量
 
 MODESEL-05/06 扩展至旧版 RAG Kimi 回答入口，继续仅向模型发送允许外发的公开资料；本地模型、检索配置与冻结集历史条件保留。未切换 RAG 主路，其他专用入口未完成。详见 [实现与验收](docs/OPENROUTER_RAG_MIGRATION_2026-10-10.md)。
+# 2026-10-10：旧意图分类主备迁移
+
+MODESEL-05/06 覆盖旧意图规划 Kimi 主选及 DeepSeek 等价备用；调用统一 OpenRouter，保留旧流程业务约束，补齐备用提示与失败收据。其他专用模型统一网关仍未完成。[验收记录](docs/OPENROUTER_INTENT_MIGRATION_2026-10-10.md)。

@@ -1,31 +1,67 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { planAssistantRequest } from "./intent-agent";
+import { currentModelAttempt } from "@/lib/billing/model-attempt-context";
 
 afterEach(() => vi.unstubAllEnvs());
 
 describe("Kimi intent and planning agent", () => {
+  it("does not adopt truncated JSON from either gateway model",async()=>{
+    vi.stubEnv("OPENROUTER_API_KEY","gateway-test");
+    const transport=vi.fn<typeof fetch>().mockImplementation(async()=>Response.json({choices:[{
+      finish_reason:"length",message:{content:JSON.stringify({intent:"general",confidence:0.9,reply:"Truncated fixture"})}}]}));
+    const result=await planAssistantRequest("Find 2 distributors in Canada",[],transport);
+    expect(result.plannerSource).toBe("deterministic-fallback");
+    expect(transport).toHaveBeenCalledTimes(4);
+    expect(result.plannerCalls).toHaveLength(2);
+    expect(result.plannerCalls?.every(call=>!call.succeeded)).toBe(true);
+  });
+  it.each([401,403])("does not switch models after gateway authorization failure %s",async(status)=>{
+    vi.stubEnv("OPENROUTER_API_KEY","gateway-test");
+    vi.stubEnv("KIMI_API_KEY","legacy-test");vi.stubEnv("DEEPSEEK_API_KEY","legacy-fallback");
+    const transport=vi.fn<typeof fetch>().mockImplementation(async(input,init)=>{
+      expect(String(input)).toBe("https://openrouter.ai/api/v1/chat/completions");
+      expect(new Headers(init?.headers).get("authorization")).toBe("Bearer gateway-test");
+      expect(currentModelAttempt()).toMatchObject({provider:"openrouter",attempt:1});
+      return new Response("private provider diagnostic",{status});
+    });
+    const result=await planAssistantRequest("Find 2 distributors in Canada",[],transport);
+    expect(transport).toHaveBeenCalledOnce();
+    expect(result.plannerSource).toBe("deterministic-fallback");
+    expect(result.plannerCalls).toHaveLength(1);
+    expect(result.warnings.join(" ")).not.toContain("private provider diagnostic");
+  });
+
+  it("blocks an untrusted gateway without trying a native credential",async()=>{
+    vi.stubEnv("OPENROUTER_API_KEY","gateway-test");
+    vi.stubEnv("OPENROUTER_BASE_URL","https://untrusted.example/api/v1");
+    vi.stubEnv("KIMI_API_KEY","legacy-test");
+    const transport=vi.fn<typeof fetch>();
+    const result=await planAssistantRequest("Find 2 distributors in Canada",[],transport);
+    expect(result.plannerSource).toBe("deterministic-fallback");
+    expect(transport).not.toHaveBeenCalled();
+  });
   it("uses Kimi multi-turn budget proposals without choosing a task or invoking another model",async()=>{
-    vi.stubEnv("KIMI_API_KEY","test-key");
+    vi.stubEnv("OPENROUTER_API_KEY","test-key");
     const fetchMock=vi.fn().mockResolvedValue(new Response(JSON.stringify({choices:[{message:{content:JSON.stringify({intent:"budget_change",confidence:0.95,budget_change:{scope:"task",limit_usd:"20.50",currency:"USD",actionId:"untrusted"},requires_k3_planning:true,external_questions:["unneeded"]})}}]})));
     const result=await planAssistantRequest("把它改成20.50美元",[{role:"user",content:"修改任务的累计预算"}],fetchMock);
     expect(result).toMatchObject({intent:"budget-change",budgetProposal:{scope:"task",limitUsd:"20.50"},externalQuestions:[]});
     expect(result.budgetProposal).not.toHaveProperty("actionId");expect(fetchMock).toHaveBeenCalledTimes(1);
   });
   it.each([{scope:"user",limit_usd:"20",currency:"MXN"},{scope:"task",limit_usd:"-1",currency:"USD"},{limit_usd:"20",currency:"USD"}])("clarifies incomplete or invalid budget without search: %j",async proposal=>{
-    vi.stubEnv("KIMI_API_KEY","test-key");
+    vi.stubEnv("OPENROUTER_API_KEY","test-key");
     const fetchMock=vi.fn().mockResolvedValue(new Response(JSON.stringify({choices:[{message:{content:JSON.stringify({intent:"budget_change",confidence:0.95,budget_change:proposal})}}]})));
     const result=await planAssistantRequest("修改预算",[],fetchMock);
     expect(result.intent).toBe("clarification");expect(result.budgetProposal).toBeUndefined();expect(fetchMock).toHaveBeenCalledTimes(1);
   });
   it("uses Kimi multi-turn routing for saved-library actions",async()=>{
-    vi.stubEnv("KIMI_API_KEY","test-key");
+    vi.stubEnv("OPENROUTER_API_KEY","test-key");
     const fetchMock=vi.fn().mockResolvedValue(new Response(JSON.stringify({choices:[{message:{content:JSON.stringify({intent:"product_action",confidence:0.95,product_action:{kind:"follow-up",company_query:"Example",country_code:"GB"}})}}]})));
     const result=await planAssistantRequest("给它写跟进",[{role:"user",content:"Example 公司"}],fetchMock);
     expect(result).toMatchObject({intent:"product-action",productAction:{kind:"follow-up",companyQuery:"Example",countryCode:"GB"},externalQuestions:[]});expect(fetchMock).toHaveBeenCalledTimes(1);
   });
   it("passes recent turns and returns a validated revised lead plan", async () => {
-    vi.stubEnv("KIMI_API_KEY", "test-key");
+    vi.stubEnv("OPENROUTER_API_KEY", "test-key");
     const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({
       model: "kimi-k3",
       usage: { prompt_tokens: 100, completion_tokens: 20, total_tokens: 120,
@@ -44,16 +80,16 @@ describe("Kimi intent and planning agent", () => {
     expect(result.leadPlan).toMatchObject({ countryCode: "FR", targetCount: 30, roles: ["Reseller"],
       objective: "new-market", coverageMode: "national" });
     const request = JSON.parse(fetchMock.mock.calls[0][1].body as string);
-    expect(request.model).toBe("kimi-k2.6");
+    expect(request.model).toBe("moonshotai/kimi-k2.6");
     expect(request.messages[1].content).toContain("已生成德国计划");
     expect(result.plannerSource).toBe("kimi-light");
-    expect(result.plannerCalls).toEqual([expect.objectContaining({ requestedModel: "kimi-k2.6",
+    expect(result.plannerCalls).toEqual([expect.objectContaining({ requestedModel: "moonshotai/kimi-k2.6",
       actualModel: "kimi-k3", inputTokens: 100, cachedInputTokens: 40, outputTokens: 20, totalTokens: 120,
       attempts: 1, retries: 0, succeeded: true, usageAvailable: true })]);
   });
 
   it("turns low-confidence classifications into a follow-up question", async () => {
-    vi.stubEnv("KIMI_API_KEY", "test-key");
+    vi.stubEnv("OPENROUTER_API_KEY", "test-key");
     const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({
       choices: [{ message: { content: JSON.stringify({ intent: "general", confidence: 0.2, reply: "你希望我查询资料还是搜索客户？" }) } }],
     }), { status: 200 }));
@@ -62,13 +98,13 @@ describe("Kimi intent and planning agent", () => {
   });
 
   it("uses a deterministic safe fallback when Kimi is unavailable", async () => {
-    vi.stubEnv("KIMI_API_KEY", "");
+    vi.stubEnv("OPENROUTER_API_KEY", "");
     const result = await planAssistantRequest("WR3000 支持哪些无线协议？");
     expect(result).toMatchObject({ intent: "knowledge-question", plannerSource: "deterministic-fallback" });
   });
 
   it("normalizes existing-channel objective synonyms", async () => {
-    vi.stubEnv("KIMI_API_KEY", "test-key");
+    vi.stubEnv("OPENROUTER_API_KEY", "test-key");
     const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({
       choices: [{ message: { content: JSON.stringify({ intent: "lead_search", confidence: 0.9,
         lead_plan: { country: "Germany", country_code: "DE", objective: "existing_channel_growth",
@@ -79,20 +115,22 @@ describe("Kimi intent and planning agent", () => {
   });
 
   it("preserves failed-call telemetry when Kimi falls back", async () => {
-    vi.stubEnv("KIMI_API_KEY", "test-key");
+    vi.stubEnv("OPENROUTER_API_KEY", "test-key");
     const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({
-      model: "kimi-k2.6", error: { message: "diagnostic failure" },
+      model: "kimi-k2.6", error: { message: "OpenRouter intent HTTP 400" },
     }), { status: 400 }));
     const result = await planAssistantRequest("Find 2 distributors in Canada", [], fetchMock);
     expect(result).toMatchObject({ plannerSource: "deterministic-fallback",
-      plannerCalls: [expect.objectContaining({ requestedModel: "kimi-k2.6", actualModel: "kimi-k2.6",
+      plannerCalls: [expect.objectContaining({ requestedModel: "moonshotai/kimi-k2.6", actualModel: "moonshotai/kimi-k2.6",
         succeeded: false, usageAvailable: false, attempts: 1, retries: 0,
-        failureReason: "diagnostic failure" })] });
-    expect(result.warnings.join(" ")).toContain("diagnostic failure");
+        failureReason: "OpenRouter intent HTTP 400" }), expect.objectContaining({
+          requestedModel: "deepseek/deepseek-v4-flash", providerId: "openrouter", fallbackUsed: true,
+          succeeded: false, attempts: 1, failureReason: "OpenRouter intent HTTP 400" })] });
+    expect(result.warnings.join(" ")).toContain("OpenRouter intent HTTP 400");
   });
 
   it("normalizes descriptive confidence and falls back to deterministic count for nonnumeric model output", async () => {
-    vi.stubEnv("KIMI_API_KEY", "test-key");
+    vi.stubEnv("OPENROUTER_API_KEY", "test-key");
     const fetchMock = vi.fn(async () => new Response(JSON.stringify({ model: "kimi-k2.6", choices: [{ message: {
       content: JSON.stringify({ intent: "lead_search", confidence: "high", internal_question: "",
         external_questions: [], reply: "", requires_k3_planning: false, planning_reason: "standard",
@@ -106,7 +144,7 @@ describe("Kimi intent and planning agent", () => {
   });
 
   it("uses K3 only when the light Kimi model identifies a materially complex planning task", async () => {
-    vi.stubEnv("KIMI_API_KEY", "test-key");
+    vi.stubEnv("OPENROUTER_API_KEY", "test-key");
     const response = (value: Record<string, unknown>, model: string) => new Response(JSON.stringify({ model,
       choices: [{ message: { content: JSON.stringify(value) } }] }), { status: 200 });
     const fetchMock = vi.fn()
@@ -118,13 +156,13 @@ describe("Kimi intent and planning agent", () => {
           objective: "new-market", query_language: "en" } }, "kimi-k3"));
     const result = await planAssistantRequest("比较德国和法国后按约束制定法国计划", [], fetchMock);
     expect(fetchMock).toHaveBeenCalledTimes(2);
-    expect(JSON.parse(fetchMock.mock.calls[0][1].body as string).model).toBe("kimi-k2.6");
-    expect(JSON.parse(fetchMock.mock.calls[1][1].body as string).model).toBe("kimi-k3");
+    expect(JSON.parse(fetchMock.mock.calls[0][1].body as string).model).toBe("moonshotai/kimi-k2.6");
+    expect(JSON.parse(fetchMock.mock.calls[1][1].body as string).model).toBe("moonshotai/kimi-k3");
     expect(result).toMatchObject({ plannerSource: "kimi-k3", leadPlan: { countryCode: "FR", targetCount: 40 } });
   });
 
   it("removes special roles hallucinated by Kimi unless the user explicitly requests them", async () => {
-    vi.stubEnv("KIMI_API_KEY", "test-key");
+    vi.stubEnv("OPENROUTER_API_KEY", "test-key");
     const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({
       choices: [{ message: { content: JSON.stringify({ intent: "lead_search", confidence: 0.95,
         lead_plan: { country: "Germany", country_code: "DE", roles: ["Distributor", "Agent", "Brand Owner"],
@@ -139,7 +177,7 @@ describe("Kimi intent and planning agent", () => {
     "Find and evaluate 2 companies in Canada whose primary role is Distributor/VAD. Do not search for contacts, agents, brand owners or OEM/ODM opportunities.",
     "Busca y evalúa 2 empresas en Canadá cuya función principal sea Distributor/VAD. No busques contactos, agentes, propietarios de marcas ni oportunidades OEM/ODM.",
   ])("gives explicit exclusions priority over special-role mentions: %s", async (request) => {
-    vi.stubEnv("KIMI_API_KEY", "test-key");
+    vi.stubEnv("OPENROUTER_API_KEY", "test-key");
     const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({
       choices: [{ message: { content: JSON.stringify({ intent: "lead_search", confidence: 0.95,
         lead_plan: { country: "Canada", country_code: "CA", roles: ["Distributor", "VAD", "Agent", "Brand Owner"],
@@ -151,7 +189,7 @@ describe("Kimi intent and planning agent", () => {
   });
 
   it("allows special roles and OEM/ODM only when positively requested", async () => {
-    vi.stubEnv("KIMI_API_KEY", "test-key");
+    vi.stubEnv("OPENROUTER_API_KEY", "test-key");
     const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({
       choices: [{ message: { content: JSON.stringify({ intent: "lead_search", confidence: 0.95,
         lead_plan: { country: "Germany", country_code: "DE", roles: ["Agent", "Brand Owner"],
@@ -163,7 +201,7 @@ describe("Kimi intent and planning agent", () => {
   });
 
   it("retries one invalid Kimi structured response and aggregates all attempt usage", async () => {
-    vi.stubEnv("KIMI_API_KEY", "test-key");
+    vi.stubEnv("OPENROUTER_API_KEY", "test-key");
     const valid = { intent: "lead_search", confidence: 0.95, internal_question: "",
       external_questions: [], reply: "", requires_k3_planning: false, planning_reason: "standard",
       lead_plan: { country: "Colombia", country_code: "CO", objective: "new-market",
@@ -179,12 +217,12 @@ describe("Kimi intent and planning agent", () => {
     expect(fetchMock).toHaveBeenCalledTimes(2);
     expect(result).toMatchObject({ plannerSource: "kimi-light", leadPlan: { countryCode: "CO",
       targetCount: 50, roles: ["Retailer", "E-tailer"] }, plannerCalls: [expect.objectContaining({
-      providerId: "kimi", inputTokens: 21, outputTokens: 41, totalTokens: 62, attempts: 2, retries: 1,
+      providerId: "openrouter", inputTokens: 21, outputTokens: 41, totalTokens: 62, attempts: 2, retries: 1,
       succeeded: true })] });
   });
 
   it("uses a disclosed equivalent provider after bounded Kimi structured failures", async () => {
-    vi.stubEnv("KIMI_API_KEY", "test-key");
+    vi.stubEnv("OPENROUTER_API_KEY", "test-key");
     vi.stubEnv("DEEPSEEK_API_KEY", "fallback-key");
     const fallback = { intent: "lead_search", confidence: 0.9, internal_question: "",
       external_questions: [], reply: "", requires_k3_planning: false, planning_reason: "standard",
@@ -201,8 +239,20 @@ describe("Kimi intent and planning agent", () => {
     expect(fetchMock).toHaveBeenCalledTimes(3);
     expect(result).toMatchObject({ plannerSource: "provider-fallback", plannerModel: "deepseek-v4-flash",
       leadPlan: { countryCode: "CO", targetCount: 50, roles: ["Retailer", "E-tailer"] },
-      plannerCalls: [expect.objectContaining({ providerId: "kimi", succeeded: false, attempts: 2 }),
-        expect.objectContaining({ providerId: "deepseek", fallbackUsed: true, succeeded: true })] });
+      plannerCalls: [expect.objectContaining({ providerId: "openrouter", succeeded: false, attempts: 2 }),
+        expect.objectContaining({ providerId: "openrouter", fallbackUsed: true, succeeded: true })] });
     expect(result.warnings.join(" ")).toContain("temporary equivalent provider");
+    for(const [url,init] of fetchMock.mock.calls){
+      expect(url).toBe("https://openrouter.ai/api/v1/chat/completions");
+      expect(init.headers.authorization).toBe("Bearer test-key");
+      expect(init.redirect).toBe("error");
+      expect(JSON.parse(init.body).provider).toEqual({require_parameters:true,data_collection:"deny",allow_fallbacks:false});
+    }
+    const fallbackBody=JSON.parse(fetchMock.mock.calls[2][1].body);
+    expect(fallbackBody.model).toBe("deepseek/deepseek-v4-flash");
+    expect(fallbackBody.reasoning).toEqual({enabled:false});
+    expect(fallbackBody.max_tokens).toBe(8192);
+    expect(fallbackBody.messages[0].content).toContain("Choose budget_change");
+    expect(fallbackBody.messages[0].content).toContain("Choose product_action");
   });
 });
