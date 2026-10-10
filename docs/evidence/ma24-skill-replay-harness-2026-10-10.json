@@ -1,0 +1,53 @@
+{
+  "date": "2026-10-10",
+  "scope": "synthetic-paired-receipt-replay",
+  "protocol": "skill-paired-replay-v2",
+  "regression": {
+    "files": 4,
+    "passed": 43,
+    "typescript": "passed",
+    "focusedEslint": "passed"
+  },
+  "localModel": {
+    "name": "qwen3:8b",
+    "digest": "500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41",
+    "totalDevelopmentCalls": 14,
+    "rounds": [
+      {
+        "protocol": "v1",
+        "calls": 4,
+        "result": "read argument shape mismatch; permission responses completed"
+      },
+      {
+        "protocol": "v1.1",
+        "calls": 4,
+        "result": "read argument shape mismatch retained"
+      },
+      {
+        "protocol": "v2",
+        "calls": 6,
+        "cases": 2,
+        "armsCompleted": 4,
+        "review": "pending"
+      }
+    ]
+  },
+  "finalHashes": {
+    "suite": "a0e4b86a8f8470d65e29ceb02e2f25401b6a979f28da82d4cc9007f49d33b28b",
+    "prompt": "66b3deaf5d525efc92ca353aca676f2e759d1b07fc804c2d9a8135fcdb035099",
+    "config": "17e9b066d292b1ae12122fd435362b4138ac3e41c96492f56bda39bf5bf73f41",
+    "pairs": "85248778bdd3053a78ce03b6c255df7589679809f6d32f44dfc366e01de5f050"
+  },
+  "externalModelCalls": 0,
+  "realToolExecutions": 0,
+  "productionServicesRestarted": false,
+  "automaticLearningEnabled": false,
+  "productionAgentEquivalent": false,
+  "independentQualityAccepted": false,
+  "limitations": [
+    "CLI accepts synthetic cases only until authorized snapshot exporter exists",
+    "No historical or live production task comparison",
+    "No human judgment stored",
+    "No automatic Skill activation eligibility"
+  ]
+}
