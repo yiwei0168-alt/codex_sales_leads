@@ -1137,6 +1137,17 @@ KQ04 路由验收状态：版本化属性注册表 `attribute-registry-v1.2.1` �
 
 验收：6 文件 72 项回归、TypeScript、定向 ESLint 通过。隔离数据库覆盖完整 worker 入口、消息哈希、新旧关系、通知/outbox、重试、撤销、多重匹配、范围、冲突、越权与失效租约；界面更正的双时间和并发数据库探针、结构化收据离线探针均复测通过。无模型或外部请求，生产自动学习仍关闭。本轮没有生产数据回填或服务重启；尚需一般自然语言纠正的本地模型质量验证、自然任务持续学习及 Skill 回放/影子质量验收。收据：docs/evidence/ma24-message-memory-correction-2026-10-10.json。
 
+### MA24-07 / MA24-14 — 本地原生工具协议修复与合成复测（2026-10-10）
+
+修复上轮把整个 assistant 工具消息作为普通结构化 JSON 正文生成的适配。原生图回放改用 Ollama tools / message.tool_calls，传入产品已有的 discover_tools、describe_tool、execute_tool 定义；对象参数与产品字符串参数双向转换，生成稳定且唯一的调用 ID。工具结果按 tool_name 配对。只有实际成功的 describe_tool 收据出现后，本地适配才向模型提供 execute_tool，服务端仍逐项检查工具、描述状态、参数 Schema 与原始收据。未生成虚假的描述成功收据，也未改生产模型的工具提供策略。[协议依据](https://docs.ollama.com/capabilities/tool-calling)。
+
+错误分别记录 local-timeout、local-transport、local-http、local-json、local-incomplete、local-schema；不回显原始错误正文。原生图回放等待上限调整为单次 120 秒，每路最多 8 次，1024 输出 token，不自动重试、不走云回退；旧固定编号回放保持 45 秒。该上限是本地开发执行参数，不修改三种生产模式阈值。配置哈希包含本地等待、生成参数和分阶段工具提供规则。
+
+验证：6 文件 63 项回归、TypeScript、定向 ESLint 通过。本轮真实 qwen3 合成开发共 13 次调用：v2 两路各 1 次，跳过描述被阻断；v3 基线 3 次完成、候选 2 次后 local-timeout；v4 最终两路各 3 次完整完成描述→读取→回答，各绑定同一条收据。两路均答 Synthetic A 为 2 个 RJ45（第 3 页）、B 为 3 个（第 4 页），与合成原文一致。旧失败记录保留，不回改为通过；最终协议检查通过不等于独立质量或真实 Skill 效果通过。验证脚本后续若任一路未完成或未消费原文收据，返回非零退出码。
+
+结果仍待审核，不启用 Skill，不切检索主路，不重启生产服务。本轮仅合成数据、无云模型或真实工具执行。后续仍需审核判分与启用证据门禁、真实任务非退步及正式模型影子验收。证据：docs/evidence/ma24-skill-native-tool-protocol-2026-10-10.json。
+
+
 ### MA24-07 / MA24-14 — 复用主 Agent 图的历史回放适配（2026-10-10）
 
 已新增 skill-graph-replay.ts；本机历史回放命令可显式选择 --main-graph。复用生产 buildMainAgentGraph 的安全边界、模型/工具节点、重复动作保护及停止状态；使用真实 productPrompt、三种知识工具目录与输入输出 Schema。模型按 discover_tools / describe_tool / execute_tool 结构交互，执行器要求先描述、再按 Schema 匹配完全相同的历史参数，仅返回已保存收据。没有生产 dispatchTool、真实工具执行、任务写入或检查点写入。每路最多 8 次模型请求；来源复核沿用上阶段，失效时不能保存为完整评测对。

@@ -55,5 +55,5 @@ it('does not persist a pair if sources change while the model runs',async()=>{
 });
 it('captures malformed native model output as a failed arm',async()=>{
   const output=await runGraphSkillReplay(fixture(),async()=>({role:'user',content:'bad'}),async()=>{});
-  expect(output.pairs[0].candidate).toMatchObject({status:'partial',stopReason:'model-or-schema-error'});
+  expect(output.pairs[0].candidate).toMatchObject({status:'partial',stopReason:'invalid-model-schema'});
 });

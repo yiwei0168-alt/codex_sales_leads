@@ -1,0 +1,49 @@
+{
+  "date": "2026-10-10",
+  "scope": "local-native-tool-protocol",
+  "protocol": "skill-main-graph-replay-v4-native-local-deadline",
+  "reference": "https://docs.ollama.com/capabilities/tool-calling",
+  "regression": {
+    "files": 6,
+    "passed": 63,
+    "typescript": "passed",
+    "focusedEslint": "passed"
+  },
+  "localModel": {
+    "model": "qwen3:8b",
+    "calls": 13,
+    "rounds": [
+      {
+        "protocol": "v2",
+        "calls": 2,
+        "result": "both tool-not-described"
+      },
+      {
+        "protocol": "v3",
+        "calls": 5,
+        "result": "baseline completed; candidate local-timeout"
+      },
+      {
+        "protocol": "v4",
+        "calls": 6,
+        "result": "both completed; each consumed one exact receipt"
+      }
+    ],
+    "finalSyntheticProtocolPassed": true,
+    "humanQualityReview": "pending"
+  },
+  "finalHashes": {
+    "suite": "bc31b2e4ea44f1bf8d93ef6125138e41babd68b00f300bb670e9d9ce348e9024",
+    "prompt": "0ea5a1bf6c7e93d882c72e349774a16aea00132c664afb47a5ba7d10c0c1ff8d",
+    "config": "2177625de567e50e6708c8d9435b0207ec8907edeb5360718c167cfdd7114c65",
+    "tools": "81ef15525d5fa478beb693a5f5aa72b844b584712833b367e87c0f7850b81bfd",
+    "pairs": "13e7f0d51473de17c1568c317d374be297a53ab4dd909de7dfefb5461cd8f536"
+  },
+  "cloudModelCalls": 0,
+  "realToolExecutions": 0,
+  "productionServicesRestarted": false,
+  "productionAgentEquivalent": false,
+  "liveShadow": false,
+  "autoEnable": false,
+  "independentQualityAccepted": false
+}

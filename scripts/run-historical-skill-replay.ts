@@ -16,7 +16,7 @@ const directory=path.resolve('tmp','skill-replay',randomUUID());await mkdir(dire
 let completed=0;
 try{
   const result=await runHistoricalSkillReplay({userId},input,async snapshot=>{
-    const codeFiles=['scripts/run-historical-skill-replay.ts','src/lib/assistant/main/skill-replay.ts','src/lib/assistant/main/skill-replay-local.ts','src/lib/assistant/main/skill-replay-snapshot.ts','src/lib/assistant/main/knowledge-message-guard.ts','src/lib/assistant/main/skill-graph-replay.ts','src/lib/assistant/main/graph.ts','src/lib/assistant/main/product.ts','src/lib/assistant/main/tools.ts'];
+    const codeFiles=['scripts/run-historical-skill-replay.ts','src/lib/assistant/main/skill-replay.ts','src/lib/assistant/main/skill-replay-local.ts','src/lib/assistant/main/skill-replay-errors.ts','src/lib/assistant/main/skill-replay-snapshot.ts','src/lib/assistant/main/knowledge-message-guard.ts','src/lib/assistant/main/skill-graph-replay.ts','src/lib/assistant/main/graph.ts','src/lib/assistant/main/product.ts','src/lib/assistant/main/tools.ts'];
     const codeHashes=Object.fromEntries(await Promise.all(codeFiles.map(async file=>[file,digest(await readFile(file,'utf8'))])));
     const config=engine==='main-graph'?SKILL_GRAPH_REPLAY_CONFIG:SKILL_REPLAY_CONFIG;
     await writeFile(path.join(directory,'manifest.json'),JSON.stringify({...snapshot,engine,

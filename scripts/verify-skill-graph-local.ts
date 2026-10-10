@@ -16,8 +16,16 @@ await writeFile(path.join(directory,'suite.json'),JSON.stringify(suite,null,2),{
 console.log(JSON.stringify({output:directory,maximumLocalModelCalls:16,realToolExecutions:0}));
 const local=await localReplayModel(process.env.OLLAMA_LOCAL_URL||'http://127.0.0.1:11434',model.digest);
 try{
-  const output=await runGraphSkillReplay(suite,local.generateAgent,async()=>{});
-  await writeFile(path.join(directory,'result.json'),JSON.stringify(output,null,2),{flag:'wx'});
+  let calls=0;
+  const output=await runGraphSkillReplay(suite,async messages=>{
+    const call=++calls;console.log(JSON.stringify({call,status:'started'}));
+    try{const reply=await local.generateAgent(messages);console.log(JSON.stringify({call,status:'returned'}));return reply;}
+    catch(error){console.log(JSON.stringify({call,status:'failed'}));throw error;}
+  },async()=>{});
+  const protocolContractPassed=output.pairs.every(p=>[p.baseline,p.candidate].every(arm=>arm.status==='completed'
+    &&arm.calls.some(call=>Boolean(call.receiptHash))));
+  await writeFile(path.join(directory,'result.json'),JSON.stringify({...output,protocolContractPassed},null,2),{flag:'wx'});
   console.log(JSON.stringify(output.pairs.map(p=>({baseline:{status:p.baseline.status,calls:p.baseline.modelCalls,stop:p.baseline.stopReason},
     candidate:{status:p.candidate.status,calls:p.candidate.modelCalls,stop:p.candidate.stopReason},review:p.review}))));
+  if(!protocolContractPassed)process.exitCode=1;
 }finally{await local.close();}
