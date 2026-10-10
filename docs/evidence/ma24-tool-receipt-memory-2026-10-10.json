@@ -1,0 +1,24 @@
+{
+  "date": "2026-10-10",
+  "supportedTools": ["knowledge_compare:1", "vectorless_aggregate:1"],
+  "regression": {"files": 4, "passed": 46, "typescript": "passed", "focusedEslint": "passed"},
+  "isolatedDatabase": {
+    "realReadOnlyComparison": true,
+    "offlineModelReceiptSaved": true,
+    "textRemainsQueued": true,
+    "tamperedAndUnsupportedRejected": true,
+    "persistedJsonHashBound": true,
+    "noticeOutboxIdempotent": true,
+    "undoNotResurrected": true,
+    "tenantAndLeaseIsolation": true,
+    "fixturesRemoved": true
+  },
+  "recoveryRegression": {"actualWorkerKilledAndRestarted": true, "model": "loopback-stub", "passed": true},
+  "actualModelCalls": 0,
+  "externalRequests": 0,
+  "productionServicesRestarted": false,
+  "automaticLearningEnabled": false,
+  "successQualityVerified": false,
+  "independentQualityAccepted": false,
+  "retrievalMainPathSwitched": false
+}

@@ -1,15 +1,16 @@
 import {afterEach,beforeEach,expect,it,vi} from "vitest";
 
-const mock=vi.hoisted(()=>({query:vi.fn(),transaction:vi.fn(),observe:vi.fn()}));
+const mock=vi.hoisted(()=>({query:vi.fn(),transaction:vi.fn(),observe:vi.fn(),receipts:vi.fn()}));
 vi.mock("@/lib/rag/db",()=>({tenantQuery:mock.query,tenantTransaction:mock.transaction}));
 vi.mock("./temporal-memory",()=>({observeMemoryInTransaction:mock.observe}));
 vi.mock('./experience-skill-draft',()=>({proposeExperienceSkillInTransaction:vi.fn()}));
+vi.mock('./tool-receipt-memory',()=>({learnToolReceiptMemories:mock.receipts}));
 import {extractLocalBusinessFacts,extractLocalPreferences,extractLocalExperiences,processLocalMemoryExtraction} from "./local-memory-extraction";
 
 const job={status:"queued",updated_at:"2026-09-24",next_attempt_at:"2026-09-24",message_id:"message-1",message_content:"I prefer concise answers for my work."};
 const model={name:"qwen3:8b",digest:"500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41"};
 const response=(value:unknown,ok=true)=>({ok,json:async()=>value}) as Response;
-beforeEach(()=>{mock.query.mockReset();mock.transaction.mockReset();mock.observe.mockReset();delete process.env.OLLAMA_LOCAL_URL;});
+beforeEach(()=>{mock.query.mockReset();mock.transaction.mockReset();mock.observe.mockReset();mock.receipts.mockReset().mockResolvedValue({owned:true,observations:0,limited:false});delete process.env.OLLAMA_LOCAL_URL;});
 afterEach(()=>{delete process.env.OLLAMA_LOCAL_URL;});
 
 it("keeps the job queued when the exact local model is absent",async()=>{
@@ -81,7 +82,21 @@ it('requeues a failed memory transaction rather than leaving its lease processin
   mock.transaction.mockRejectedValue(new Error('database failure'));
   const fetcher=vi.fn(async(url:URL)=>url.pathname==='/api/tags'?response({models:[model]}):response({message:{content:'{"items":[]}'}}));
   expect(await processLocalMemoryExtraction('user-1','run-1',fetcher as typeof fetch)).toBe('queued');
-  expect(mock.query.mock.calls[2][2]).toEqual(['user-1','run-1',expect.any(String),'local_model_error',600]);
+  expect(mock.query.mock.calls[2][2]).toEqual(['user-1','run-1',expect.any(String),'memory_storage_error',600]);
+});
+
+it('learns server receipts before checking model readiness',async()=>{
+  mock.query.mockResolvedValueOnce([job]).mockResolvedValueOnce([{run_id:'run-1'}]).mockResolvedValueOnce([{run_id:'run-1'}]);
+  const fetcher=vi.fn(async()=>{expect(mock.receipts).toHaveBeenCalledWith('user-1','run-1',expect.any(String));return response({models:[]});});
+  expect(await processLocalMemoryExtraction('user-1','run-1',fetcher)).toBe('queued');
+});
+it('does not start a model call when receipt learning loses ownership or fails',async()=>{
+  const fetcher=vi.fn();
+  mock.query.mockResolvedValueOnce([job]).mockResolvedValueOnce([{run_id:'run-1'}]);mock.receipts.mockResolvedValueOnce({owned:false});
+  expect(await processLocalMemoryExtraction('user-1','run-1',fetcher)).toBe('busy');
+  mock.query.mockResolvedValueOnce([job]).mockResolvedValueOnce([{run_id:'run-1'}]).mockResolvedValueOnce([{run_id:'run-1'}]);mock.receipts.mockRejectedValueOnce(new Error('storage'));
+  expect(await processLocalMemoryExtraction('user-1','run-1',fetcher)).toBe('queued');
+  expect(mock.query.mock.calls.at(-1)?.[2]).toContain('receipt_storage_error');expect(fetcher).not.toHaveBeenCalled();
 });
 
 it("does not learn an instruction override as an account preference",async()=>{

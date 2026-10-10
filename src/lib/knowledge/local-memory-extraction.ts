@@ -3,6 +3,7 @@ import {z} from "zod";
 import {tenantQuery,tenantTransaction} from "@/lib/rag/db";
 import {observeMemoryInTransaction} from "./temporal-memory";
 import {proposeExperienceSkillInTransaction} from './experience-skill-draft';
+import {learnToolReceiptMemories} from './tool-receipt-memory';
 
 const itemSchema=z.object({
   memoryKey:z.string().trim().min(3).max(160),
@@ -131,13 +132,18 @@ export async function processLocalMemoryExtraction(userId:string,runId:string,fe
       where owner_id=$1 and run_id=$2 and status='processing' and lease_token=$3 returning run_id`,[userId,runId,lease,code,seconds]);
     return changed.length?'queued' as const:'busy' as const;
   };
+  let phase='receipt_storage';
   try{
+    const receipts=await learnToolReceiptMemories(userId,runId,lease);
+    if(!receipts.owned)return 'busy';
+    phase='memory_storage';
     if(!job.message_id||!job.message_content){
       const changed=await tenantQuery(userId,`update agent_memory_extraction_job set status='failed',lease_token=null,
         error_code='missing_source',updated_at=now() where owner_id=$1 and run_id=$2 and status='processing' and lease_token=$3 returning run_id`,[userId,runId,lease]);
       return changed.length?'failed':'busy';
     }
     if(job.message_content.length>12000)return await defer('source_too_long',86400);
+    phase='local_model';
     if(!await modelReady(base,fetcher))return await defer('local_model_unavailable',600);
     const preferences=await extract(job.message_content,base,fetcher);
     const facts=explicitBusinessFact(job.message_content)?await extractBusinessFacts(job.message_content,base,fetcher):[];
@@ -145,6 +151,7 @@ export async function processLocalMemoryExtraction(userId:string,runId:string,fe
     const items=[...preferences.map(item=>({...item,kind:"preference" as const})),
       ...facts.map(item=>({...item,kind:"business-fact" as const})),
       ...experiences.map(item=>({...item,kind:'experience' as const}))];
+    phase='memory_storage';
     return await tenantTransaction(userId,async client=>{
       const locked=await client.query("select run_id from agent_memory_extraction_job where owner_id=$1 and run_id=$2 and status='processing' and lease_token=$3 for update",[userId,runId,lease]);
       if(!locked.rowCount)return "busy";
@@ -162,7 +169,7 @@ export async function processLocalMemoryExtraction(userId:string,runId:string,fe
       return "ready";
     });
   }catch(error){
-    const code=error instanceof Error&&error.message==="schema_invalid"?"schema_invalid":"local_model_error";
+    const code=error instanceof Error&&error.message==="schema_invalid"?"schema_invalid":`${phase}_error`;
     return defer(code,600);
   }
 }
