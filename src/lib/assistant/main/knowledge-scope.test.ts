@@ -18,11 +18,11 @@ describe("knowledge question scope", () => {
       if(name==='discover_tools')expect(JSON.stringify(output.data)).not.toContain('mail_sync');
       else expect(output.status).toBe('unavailable');
     }
-    expect(availableTools({...context,knowledgeScope:['product']}).map(t=>t.id)).toEqual(['knowledge_search','knowledge_status']);
+    expect(availableTools({...context,knowledgeScope:['product']}).map(t=>t.id)).toEqual(['knowledge_search','knowledge_status','knowledge_originals','knowledge_compare']);
   });
   it("exposes only knowledge tools to a scoped question", () => {
     expect(availableTools({ role: "member", knowledgeScope: ["product"] }).map(tool => tool.id))
-      .toEqual(["knowledge_search", "knowledge_status"]);
+      .toEqual(["knowledge_search", "knowledge_status", "knowledge_originals", "knowledge_compare"]);
   });
   it("enforces the saved knowledge-page scope even if a model requests other collections", async () => {
     const search = productTools.find(tool => tool.id === "knowledge_search")!;
@@ -40,7 +40,7 @@ describe("knowledge question scope", () => {
       "vectorless_start","vectorless_search","vectorless_browse","vectorless_read",
       "vectorless_aggregate","vectorless_filter","vectorless_v3_candidates"]);
     expect(availableTools({role:"member",knowledgeScope:["product"]}).map(tool=>tool.id))
-      .toEqual(["knowledge_search","knowledge_status"]);
+      .toEqual(["knowledge_search","knowledge_status","knowledge_originals","knowledge_compare"]);
   });
   it("rejects a saved or guessed shadow invocation when the feature is off or scoped",async()=>{
     const call={id:"call-1",type:"function" as const,function:{name:"execute_tool",arguments:JSON.stringify({

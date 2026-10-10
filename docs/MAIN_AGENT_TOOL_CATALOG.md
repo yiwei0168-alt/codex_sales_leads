@@ -1,6 +1,6 @@
 # Registered main Agent tools
 
-Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/generate-main-agent-catalog.ts --check` to detect drift. These 104 tools are implemented adapters; registration is not real-provider acceptance. The complete migration inventory remains in [MAIN_AGENT_CAPABILITIES.md](MAIN_AGENT_CAPABILITIES.md).
+Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/generate-main-agent-catalog.ts --check` to detect drift. These 105 tools are implemented adapters; registration is not real-provider acceptance. The complete migration inventory remains in [MAIN_AGENT_CAPABILITIES.md](MAIN_AGENT_CAPABILITIES.md).
 
 | Tool | Version | Role | Effect | Cost | Purpose |
 |---|---|---|---|---|---|
@@ -83,7 +83,8 @@ Generated from the executable registry. Run `node scripts/run-tsx.cjs scripts/ge
 | knowledge_private_delete | 1 | member | destructive | known | Permanently delete one owned private knowledge document and dependent local records after exact human confirmation of document ID and current content hash. Shared knowledge cannot be deleted here. |
 | knowledge_fact_review_list | 1 | admin | read | known | Read the administrator's existing shared-knowledge fact review queue with source coordinates and current statuses. Does not alter RAG v3 data. |
 | knowledge_fact_review_decide | 1 | admin | publish | known | Apply an exact administrator decision to one open shared-knowledge fact review. Verify, retain candidate, reject or correct using the existing attribute registry validation. Requires human confirmation of this decision and corrected content. |
-| knowledge_originals | 1 | member | read | known | Find accessible original documents by title or asset ID; return authenticated download links, never host paths. |
+| knowledge_originals | 1 | member | read | known | Find an explicitly identified original by title/model or asset ID. Ask for a missing or ambiguous target first; never use the first search hit as the intended model. Access denial and no match are distinct outcomes. No query can expand account permissions. |
+| knowledge_compare | 1 | member | read | known | Read two explicit product entities independently for up to six requested attribute keys or field names. Returns a per-entity field matrix, verifiedFacts and separate full raw evidence. Missing or conflicting verified fields remain unresolved; raw retrieval is not verification. Uses local lexical/fact queries, max four evidence blocks per entity, eight total. Ask for unclear entities first. Only product collection; never infers absent specifications. |
 | company_search | 1 | member | read | known | Query saved account companies by literal name/domain and optional market; no discovery prerequisite. |
 | company_read | 1 | member | read | known | Read the account's company/market state and saved evidence, without generating a score or re-running discovery. |
 | company_state_update | 1 | member | reversible | known | Update explicitly selected fields of an owned company using the revision returned by company_read. A concurrent page or task edit rejects this update so the Agent can reread and replan; this does not publish a formal score. |

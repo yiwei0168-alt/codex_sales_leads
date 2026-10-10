@@ -10868,7 +10868,7 @@
       "cost": "known",
       "recovery": "read-retry",
       "id": "knowledge_originals",
-      "description": "Find accessible original documents by title or asset ID; return authenticated download links, never host paths.",
+      "description": "Find an explicitly identified original by title/model or asset ID. Ask for a missing or ambiguous target first; never use the first search hit as the intended model. Access denial and no match are distinct outcomes. No query can expand account permissions.",
       "inputSchema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "type": "object",
@@ -10886,6 +10886,141 @@
         },
         "required": [
           "query"
+        ],
+        "additionalProperties": false
+      },
+      "outputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "success",
+              "partial",
+              "missing_input",
+              "waiting_approval",
+              "unavailable",
+              "unknown"
+            ]
+          },
+          "data": {},
+          "sources": {
+            "default": [],
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "title",
+                "url"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "artifacts": {
+            "default": [],
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "title"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "missing": {
+            "default": [],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "cost": {
+            "default": "unknown",
+            "type": "string",
+            "enum": [
+              "known",
+              "estimated",
+              "unknown"
+            ]
+          },
+          "receipt": {
+            "type": "string"
+          },
+          "callId": {
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          }
+        },
+        "required": [
+          "status",
+          "sources",
+          "artifacts",
+          "missing",
+          "cost"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "version": "1",
+      "role": "member",
+      "effect": "read",
+      "dependencies": [],
+      "connections": [],
+      "cost": "known",
+      "recovery": "read-retry",
+      "id": "knowledge_compare",
+      "description": "Read two explicit product entities independently for up to six requested attribute keys or field names. Returns a per-entity field matrix, verifiedFacts and separate full raw evidence. Missing or conflicting verified fields remain unresolved; raw retrieval is not verification. Uses local lexical/fact queries, max four evidence blocks per entity, eight total. Ask for unclear entities first. Only product collection; never infers absent specifications.",
+      "inputSchema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "entities": {
+            "minItems": 2,
+            "maxItems": 2,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 180
+            }
+          },
+          "attributes": {
+            "minItems": 1,
+            "maxItems": 6,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 120
+            }
+          }
+        },
+        "required": [
+          "entities",
+          "attributes"
         ],
         "additionalProperties": false
       },

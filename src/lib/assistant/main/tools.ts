@@ -39,6 +39,7 @@ import { researchTools } from "./research-tools";
 import { mailSendTool, mailBatchTool } from "./mail-tools";
 import {vectorlessTools} from "./vectorless-tools";
 import {knowledgeOriginalsTool} from './knowledge-originals-tool';
+import {knowledgeCompareTool} from './knowledge-compare-tool';
 export { defineTool } from "./tool-definition";
 const empty = z.object({}).strict();
 export const productTools: ProductTool[] = [
@@ -117,6 +118,7 @@ export const productTools: ProductTool[] = [
   defineTool({ id: "knowledge_fact_review_decide", description: "Apply an exact administrator decision to one open shared-knowledge fact review. Verify, retain candidate, reject or correct using the existing attribute registry validation. Requires human confirmation of this decision and corrected content.", input: factReviewDecisionSchema, role: "admin", effect: "publish", recovery: "idempotent",
     execute: async (i,c) => {const {decideFactReview}=await import("@/lib/knowledge/review-repository");await decideFactReview(c.userId,i);return result({updated:true,reviewId:i.reviewId,decision:i.decision},{cost:"known"});} }),
   knowledgeOriginalsTool,
+  knowledgeCompareTool,
   defineTool({ id: "company_search", description: "Query saved account companies by literal name/domain and optional market; no discovery prerequisite.",
     input: z.object({ query: z.string().max(180), countryCode: z.string().regex(/^[A-Z]{2}$/).optional() }).strict(),
     execute: async (i, c) => result(await findProductActionCompanies(c.userId, { kind: "library", companyQuery: i.query, countryCode: i.countryCode }), { cost: "known" }) }),
@@ -199,7 +201,8 @@ export function availableTools(context: Pick<ExecutionContext, "role" | "knowled
     && modeAllowsTool(context.mode,t.id)
     && (!t.id.startsWith("vectorless_") || (process.env.ENABLE_VECTORLESS_AGENT_SHADOW==="1" && !context.knowledgeScope?.length))
     && (t.id!=="memory_observation_search" || (process.env.ENABLE_MEMORY_GRAPH_AGENT_SHADOW==="1" && !context.knowledgeScope?.length))
-    && (!context.knowledgeScope?.length || t.id === "knowledge_search" || t.id === "knowledge_status"));
+    && (!context.knowledgeScope?.length || t.id === "knowledge_search" || t.id === "knowledge_status"
+      || t.id === "knowledge_originals" || (t.id === "knowledge_compare" && context.knowledgeScope.includes("product"))));
 }
 export function describeTool(tool: ProductTool) {
   const { execute: _execute, input, output, ...metadata } = tool;
