@@ -563,3 +563,6 @@ New product-chat main-Agent runs use synchronous OpenRouter `z-ai/glm-5.3` with 
 # 2026-10-10：Kimi 邮件与外联网关迁移
 
 MODESEL-05/06 已覆盖主 Agent 及邮件学习、开发策略/邮件/跟进生成。邮箱显式授权经由 OpenRouter，后端就绪检查与网关配置一致，保留本地处理边界。其他专用模型迁移未完成；实现与验收见 [迁移记录](docs/OPENROUTER_KIMI_MIGRATION_2026-10-10.md)。
+# 2026-10-10：RAG 网关迁移增量
+
+MODESEL-05/06 扩展至旧版 RAG Kimi 回答入口，继续仅向模型发送允许外发的公开资料；本地模型、检索配置与冻结集历史条件保留。未切换 RAG 主路，其他专用入口未完成。详见 [实现与验收](docs/OPENROUTER_RAG_MIGRATION_2026-10-10.md)。

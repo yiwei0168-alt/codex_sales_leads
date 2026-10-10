@@ -336,3 +336,6 @@ MODELDIAG-01 诊断结果：已明确是 Fireworks 上游临时限流，账户�
 # 2026-10-10：专用 Kimi 工具调用路径
 
 邮件学习与外联生成改用 OpenRouter；执行前继续检查原权限、邮件授权与付费准入。网关缺少配置时不得回退 Moonshot 直连；调用收据归属 openrouter，Kimi 模型 ID 带 moonshotai/ 前缀。现有三种主 Agent 模式不改变专用工具内部的输出上限。验收及后续缺口见 [迁移记录](OPENROUTER_KIMI_MIGRATION_2026-10-10.md)。
+# 2026-10-10：旧 RAG 回答入口网关统一
+
+旧 RAG 服务生成 Kimi 回答时使用 OpenRouter，先过滤与脱敏明确公开的资料，再执行原付费准入并保存网关调用收据。缺少网关配置时不直连回退，失败和截断输出不作为完整答案。旧意图分类与其他专用入口仍待迁移；[验收记录](OPENROUTER_RAG_MIGRATION_2026-10-10.md)。

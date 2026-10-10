@@ -1,4 +1,5 @@
 import { getOpenRouterConfig, resolveOpenRouterModel } from "@/providers/openrouter";
+import { kimiOpenRouterModel } from "@/providers/kimi-openrouter";
 
 export interface RagConfig {
   databaseUrl: string;
@@ -38,9 +39,9 @@ export function getRagConfig(): RagConfig {
     embeddingModel: process.env.EMBEDDING_MODEL?.trim() || "text-embedding-v4",
     embeddingDimensions: Number(process.env.EMBEDDING_DIMENSIONS ?? 1536),
     generationModel: resolveOpenRouterModel(openaiModel || "gpt-5-mini", "openai"),
-    ragAnswerApiKey: process.env.KIMI_API_KEY?.trim() ?? "",
-    ragAnswerBaseUrl: (process.env.KIMI_BASE_URL?.trim() || "https://api.moonshot.cn/v1").replace(/\/$/, ""),
-    ragAnswerModel: process.env.KIMI_RAG_MODEL?.trim() || process.env.KIMI_MODEL?.trim() || "kimi-k3",
+    ragAnswerApiKey: openRouterApiKey,
+    ragAnswerBaseUrl: normalizeGenerationBaseUrl(openRouter?.baseUrl ?? ""),
+    ragAnswerModel: kimiOpenRouterModel(process.env.KIMI_RAG_MODEL?.trim() || process.env.KIMI_MODEL),
     minScore: Number(process.env.RAG_MIN_SCORE ?? 0.35),
     maxContextChunks: Number(process.env.RAG_MAX_CONTEXT_CHUNKS ?? 8),
   };
@@ -50,6 +51,6 @@ export function getMissingRagConfig(): string[] {
   const config = getRagConfig();
   return [
     !config.databaseUrl && "DATABASE_URL",
-    !config.ragAnswerApiKey && "KIMI_API_KEY",
+    !config.ragAnswerApiKey && "OPENROUTER_API_KEY",
   ].filter((value): value is string => Boolean(value));
 }

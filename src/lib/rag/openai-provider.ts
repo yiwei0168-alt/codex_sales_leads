@@ -6,6 +6,7 @@ import type { RetrievedChunk } from "./types";
 import {prepareRagExternalDisclosure} from "./external-disclosure";
 import {kimiOutputLimit,isKimiK3} from "@/providers/kimi-contract";
 import {z} from "zod";
+import { getOpenRouterConfig, openRouterChatCompletionsUrl, openRouterRequestHeaders } from "@/providers/openrouter";
 
 let embeddingClient: OpenAI | undefined;
 
@@ -67,13 +68,6 @@ function buildContext(chunks: RetrievedChunk[]): string {
   ].join("\n")).join("\n\n");
 }
 
-function kimiAnswerEndpoint(baseUrl:string):string{
-  const parsed=new URL(baseUrl);
-  if(parsed.protocol!=="https:"||!["api.moonshot.cn","api.moonshot.ai"].includes(parsed.hostname)
-    ||parsed.username||parsed.password)throw new Error("KIMI_BASE_URL 必须是受信任的 Moonshot HTTPS API 地址");
-  return `${parsed.toString().replace(/\/$/,"")}/chat/completions`;
-}
-
 const kimiAnswerSchema=z.object({answer:z.string().trim().min(1)}).strict();
 
 /** Exact body inspection lets a scoped evaluation fail before a payable request. */
@@ -99,6 +93,7 @@ export function groundedAnswerRequestBody(question:string,chunks:RetrievedChunk[
     ];
   const config=getRagConfig();
   return JSON.stringify({model:config.ragAnswerModel,...(isKimiK3(config.ragAnswerModel)?{}:{temperature:1}),
+    provider:{...config.openaiProviderPreferences,allow_fallbacks:false},
     response_format:{type:"json_object"},...kimiOutputLimit(config.ragAnswerModel,textOutputLimit("rag-answer")),messages:[
       {...messages[0],content:`${messages[0].content}\nReturn one JSON object only: {\"answer\":\"complete cited answer\"}.`},messages[1]]});
 }
@@ -107,14 +102,14 @@ export async function generateGroundedAnswer(question: string, chunks: Retrieved
   timeoutMs=90_000): Promise<string> {
   if(!Number.isSafeInteger(timeoutMs)||timeoutMs<1_000||timeoutMs>180_000)throw new Error("RAG answer timeout is out of bounds");
   const requestBody=groundedAnswerRequestBody(question,chunks);
-  const config=getRagConfig();
-  if(!config.ragAnswerApiKey)throw new Error("KIMI_API_KEY is not configured");
-  const response=await withSdkModelCall({provider:"kimi",task:"rag-answer",promptVersion:"rag-grounded-answer-kimi-v1"},
-    ()=>sdkModelFetch(transport)(kimiAnswerEndpoint(config.ragAnswerBaseUrl),{method:"POST",headers:{authorization:`Bearer ${config.ragAnswerApiKey}`,
-      "content-type":"application/json"},signal:AbortSignal.timeout(timeoutMs),body:requestBody}));
-  const body=await response.json() as {model?:string;choices?:Array<{message?:{content?:string|null}}>;
+  const config=getOpenRouterConfig();
+  const response=await withSdkModelCall({provider:"openrouter",task:"rag-answer",promptVersion:"rag-grounded-answer-kimi-v1"},
+    ()=>sdkModelFetch(transport)(openRouterChatCompletionsUrl(config),{method:"POST",headers:openRouterRequestHeaders(config),
+      redirect:"error",signal:AbortSignal.timeout(timeoutMs),body:requestBody}));
+  if(!response.ok)throw new Error(`OpenRouter Kimi HTTP ${response.status}`);
+  const body=await response.json() as {model?:string;choices?:Array<{finish_reason?:string;message?:{content?:string|null}}>;
     error?:{message?:string}};
-  if(!response.ok)throw new Error(body.error?.message??`Kimi HTTP ${response.status}`);
+  if(body.choices?.[0]?.finish_reason!=="stop")throw new Error("Kimi returned an incomplete RAG answer");
   const content=body.choices?.[0]?.message?.content;if(!content)throw new Error("Kimi returned an empty RAG answer");
   let parsed:unknown;try{parsed=JSON.parse(content);}catch{throw new Error("Kimi returned invalid RAG answer JSON");}
   return kimiAnswerSchema.parse(parsed).answer;
