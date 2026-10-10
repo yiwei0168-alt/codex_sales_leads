@@ -1,0 +1,24 @@
+{
+  "synthetic": true,
+  "model": "scripted-local",
+  "graph": "production LangGraph factory",
+  "database": "local PostgreSQL with application RLS",
+  "checks": [
+    "quick-owned-encrypted-mail",
+    "quick-cross-account-denied",
+    "quick-writes-and-sync-blocked",
+    "graph-result-persisted-and-isolated",
+    "standard-draft-edit",
+    "durable-tool-receipt-reused",
+    "stale-draft-revision-rejected",
+    "standard-research-blocked",
+    "deep-saved-evidence-research",
+    "deep-send-still-requires-approval",
+    "fallback-journal-recovery-no-repeated-request",
+    "zero-paid-reservations"
+  ],
+  "passed": 12,
+  "externalCalls": 0,
+  "realMailSent": 0,
+  "fixtureCleaned": true
+}

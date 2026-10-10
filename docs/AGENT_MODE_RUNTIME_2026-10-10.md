@@ -1,5 +1,18 @@
 # 三模式运行接入（2026-10-10）
 
+## 本地业务工具与持久收据验收
+
+`scripts/verify-mode-business-local.ts`：12 组检查通过，使用生产 LangGraph 图工厂、工具执行器和真实 PostgreSQL/RLS，模型决策由本地脚本提供。两名临时账号、加密合成邮件和草稿均已清理。测试任务使用有效租约和专用 `mode-local-fixture` 执行版本，并检查实际认领函数仅处理 `main-agent-v1`，避免租约过期后被正常 worker 误领；队列认领/HTTP worker 不在本轮覆盖内，入口验证见下节。
+
+- 快速：读取自己的加密邮件成功；读取另一夹具账号同 ID 邮件返回空；草稿修改与邮件同步均被模式限制；图输出写入正式结果存储，跨账号不可读。
+- 标准：草稿真实更新到 revision 2；相同工具调用再次执行复用原 callId、没有第二次写入；旧 revision 修改被拒绝；公司调查入口被模式限制。
+- 深入：从已有证据入口建立 research-only 收据，无联网采集；发送请求停在 waiting_approval，outbound_mail 为零。
+- 备用：模拟首路超时、第二路成功，真实调用表保存两份收据；重新运行决策直接复用结果，请求计数仍为 2。paid_call_reservation 为零。
+
+早期失败均为测试夹具：缺少邮箱 display_name、UUID/text 参数类型、子域名不符合主域名契约；事务回滚或身份校验后清理。首次通过后，测试进程因 LangSmith 追踪重试未退出，所有 HTTP 均被验收脚本拦截；仅在验收进程禁用追踪后重跑，12 组通过且退出码 0。未修改产品追踪配置。脚本 ESLint、TypeScript 通过。[收据](evidence/mode-business-local-2026-10-10.json)。
+
+本轮没有真实模型、用户邮箱同步、SMTP 发送或公开网页调用，不能宣称真实模型完成了端到端业务任务。
+
 ## 后续部署与真实网关合成验收
 
 2026-10-10 09:27（北京时间）：此前 Docker、数据库、产品和 LangGraph 均未运行。启动原 Docker Desktop/数据卷及 PostgreSQL（healthy），部署现有 `1342380` 生产构建到 `127.0.0.1:3018`，LangGraph 在 `127.0.0.1:2024/ok` 返回 200；已有 Neo4j/Ollama 随 Docker 恢复。未启用或修改 TUN。
