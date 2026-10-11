@@ -46,7 +46,7 @@ async function load(context:{userId:string},input:Selection){
  const first=chain.requests[0];if(!first)throw new Error('Candidate original request unavailable');
  const snapshot:Snapshot={...saved,context:{userId:context.userId,role:first.accountRole,mode:first.profile.mode,knowledgeScope:first.knowledgeScope},
   initialMessages:first.body.messages,profile:first.profile};
- return {snapshot,sourceHash:digest({chain,saved})};
+ return {snapshot,sourceHash:digest({chain,saved}),taskInputHash:chain.taskInputHash,modelConfigHash:chain.modelConfigHash};
 }
 
 /** Snapshot remains private to this invocation. Every graph boundary reloads authoritative sources. */
@@ -56,7 +56,7 @@ export async function runRecordedSkillCandidateArm(context:{userId:string},input
  const validate=async()=>{if((await load(context,input)).sourceHash!==saved.sourceHash)throw new Error('Candidate sources changed during execution');};
  await validate();
  const output=await runSkillCandidateArm(saved.snapshot,arm,model,validate,maximumModelCalls);
- return {...output,serverSnapshotHash:saved.sourceHash,serverSnapshotRevalidated:true,
+ return {...output,serverSnapshotHash:saved.sourceHash,taskInputHash:saved.taskInputHash,modelConfigHash:saved.modelConfigHash,serverSnapshotRevalidated:true,
   productionAgentEquivalent:false,collectorProvenanceVerified:false,automaticActivation:false};
 }
 
@@ -68,7 +68,7 @@ export async function runDurableRecordedSkillCandidateArm(context:{userId:string
  const durable=createDurableSkillCandidateModel({ownerId:context.userId,snapshotHash:saved.sourceHash,arm},collector,validate);
  await validate();
  const output=await runSkillCandidateArm(saved.snapshot,arm,durable.model,validate,maximumModelCalls);
- return {...output,evaluationId:collector.evaluationId,sourceKind:collector.sourceKind,serverSnapshotHash:saved.sourceHash,
+ return {...output,evaluationId:collector.evaluationId,sourceKind:collector.sourceKind,serverSnapshotHash:saved.sourceHash,taskInputHash:saved.taskInputHash,modelConfigHash:saved.modelConfigHash,
   modelAttemptReceipts:durable.receipts,serverSnapshotRevalidated:true,
   productionAgentEquivalent:false,collectorProvenanceVerified:false,automaticActivation:false};
 }

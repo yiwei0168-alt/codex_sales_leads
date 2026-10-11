@@ -1,0 +1,11 @@
+{
+ "date":"2026-10-11",
+ "scope":"stored historical candidate observation compared with reconstructed server model journal and original baseline",
+ "tests":{"newAdapterCases":15,"totalRelatedPassed":41,"typecheck":"passed","eslint":"passed"},
+ "cloneCommand":"node --require ./scripts/patch-node-user.cjs --import tsx scripts/verify-recorded-model-source-clone.ts",
+ "cloneExitCode":0,
+ "checks":{"storedCandidateAndBaselineBound":true,"syntheticKindRetained":true,"recoveryWithoutAdditionalRequests":true,"fullPriorRegression":true,"fixtureCleanup":true},
+ "syntheticCandidateRequests":6,"actualModelCalls":0,"productionDeployed":false,
+ "limitations":["v1 single-model observation rejects mixed successful routes","clone owner inserted synthetic bundle, not production collector","paid request admission and final activation transaction not connected"],
+ "collectorProvenanceVerified":false,"productionAgentEquivalent":false,"automaticActivation":false
+}

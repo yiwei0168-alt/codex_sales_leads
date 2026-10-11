@@ -45,9 +45,11 @@ export async function auditDurableSkillCandidate(context:{userId:string},input:{
  if(digest(await read())!==digest(rows))throw new Error('Candidate model journal changed during audit');
  const projection={protocol:'skill-candidate-journal-audit-v1',ownerId:context.userId,evaluationId:input.evaluationId,arm:input.arm,
   sourceKind:prepared.sourceKind,serverSnapshotHash:prepared.snapshotHash,journalHash:prepared.journalHash,
+  taskInputHash:replay.taskInputHash,modelConfigHash:replay.modelConfigHash,
+  evidenceHash:digest(replay.trace.filter(row=>row.receiptHash).map(row=>row.receiptHash)),
   answerHash:digest(replay.reply),messagesHash:digest(replay.messages),traceHash:digest(replay.trace),candidateSkillUsed:replay.candidateSkillUsed,
   modelAttemptReceipts:prepared.ordered.map(row=>({id:row.id,hash:digest(row)})),
-  selectedModels:prepared.selected.map(item=>({step:item.row.step,model:item.request.originalResponse.model,provider:item.request.originalResponse.provider,requestHash:item.request.requestHash})),
+  selectedModels:prepared.selected.map(item=>({step:item.row.step,requestedModel:item.request.selectedRoute.model,model:item.request.originalResponse.model,provider:item.request.originalResponse.provider,requestHash:item.request.requestHash,toolSchemaHash:digest(item.request.body.tools)})),
  };
  return {projection,projectionHash:digest(projection),completeModelJournalVerified:true,graphReconstructed:true,actualModelCalls:0,
   productionAgentEquivalent:false,collectorProvenanceVerified:false,automaticActivation:false};
