@@ -1,0 +1,62 @@
+{
+  "actualComponent": true,
+  "productionStyles": true,
+  "syntheticApi": true,
+  "results": [
+    {
+      "width": 1366,
+      "height": 900,
+      "loadingFailureRetry": true,
+      "pagination": true,
+      "selfExcluded": true,
+      "dirtyBlocked": true,
+      "reopenClearsSelection": true,
+      "targetTimeline": true,
+      "opaque": true,
+      "noOverflow": true
+    },
+    {
+      "width": 1366,
+      "height": 360,
+      "loadingFailureRetry": true,
+      "pagination": true,
+      "selfExcluded": true,
+      "dirtyBlocked": true,
+      "reopenClearsSelection": true,
+      "targetTimeline": true,
+      "opaque": true,
+      "noOverflow": true
+    },
+    {
+      "width": 390,
+      "height": 760,
+      "loadingFailureRetry": true,
+      "pagination": true,
+      "selfExcluded": true,
+      "dirtyBlocked": true,
+      "reopenClearsSelection": true,
+      "targetTimeline": true,
+      "opaque": true,
+      "noOverflow": true
+    },
+    {
+      "width": 320,
+      "height": 480,
+      "loadingFailureRetry": true,
+      "pagination": true,
+      "selfExcluded": true,
+      "dirtyBlocked": true,
+      "reopenClearsSelection": true,
+      "targetTimeline": true,
+      "opaque": true,
+      "noOverflow": true
+    }
+  ],
+  "date": "2026-10-11",
+  "typecheck": true,
+  "eslint": true,
+  "productionDeployed": false,
+  "privateDataRead": false,
+  "modelCalls": 0,
+  "internalOverflowChecked": true
+}

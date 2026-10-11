@@ -367,7 +367,7 @@ a { color: inherit; }
 .customer-timeline h3{margin-top:0}.customer-timeline ol{list-style:none;margin:20px 0;padding-left:16px;border-left:2px solid var(--line-strong)}
 .customer-timeline li{position:relative;padding:0 0 24px 12px}.customer-timeline li:before{content:'';position:absolute;left:-22px;top:5px;width:10px;height:10px;border-radius:50%;background:var(--primary)}
 .customer-timeline h4{margin:8px 0}.customer-timeline time{color:var(--muted)}.customer-timeline blockquote{margin:8px 0;padding:8px 12px;background:var(--surface-2);border-left:3px solid var(--line-strong)}
-.customer-edit{display:grid;gap:14px}.customer-edit label{display:grid;gap:6px}.customer-edit input,.customer-edit select,.customer-edit textarea{padding:9px;border:1px solid var(--line-strong);border-radius:6px;background:var(--surface-2);color:var(--ink)}
+.customer-edit{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}.customer-edit label{display:grid;min-width:0;gap:6px}.customer-edit input,.customer-edit select,.customer-edit textarea{box-sizing:border-box;min-width:0;max-width:100%;padding:9px;border:1px solid var(--line-strong);border-radius:6px;background:var(--surface-2);color:var(--ink)}
 .customer-list nav,.mail-reader nav,.customer-timeline nav{display:flex;justify-content:space-between;gap:8px;padding:10px}
 .mailbox-tabs{overflow-x:auto;flex-shrink:0}.mailbox-tabs button{white-space:nowrap}
 .mailbox-main{display:flex;flex-direction:column}.mailbox-summary,.mailbox-tabs{flex-shrink:0}.mailbox-tab-content{flex:1;overflow:hidden}.mailbox-tabs button{flex-shrink:0}
