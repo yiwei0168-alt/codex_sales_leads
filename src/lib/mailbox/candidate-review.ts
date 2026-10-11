@@ -1,7 +1,7 @@
 import {tenantTransaction} from "@/lib/rag/db";
 import {tenantQuery} from "@/lib/rag/db";
 import {createHash} from "node:crypto";
-import {upsertKnowledgeDocument} from "@/lib/rag/repository";
+import {saveKnowledgeDocumentInTransaction} from "@/lib/rag/repository";
 import {trackedOperation} from "@/lib/tracked-operation";
 
 export type ReviewStatus = "approved" | "rejected";
@@ -50,7 +50,7 @@ async function reviewLocked(userId:string,id:string,status:ReviewStatus,expected
       const saved=await client.query("select id from knowledge_document where owner_id=$1 and external_id=$2 limit 1",[userId,externalId]);
       if(saved.rowCount)return {kind:"approval-incomplete"} as const;
     }else{
-      await upsertKnowledgeDocument(userId,{
+      await saveKnowledgeDocumentInTransaction(client,userId,{
         collection:"company",externalId,title:candidate.title,content:candidate.content,
         sourceType:"private-mailbox-approved",authorityLevel:4,language:"auto",companyId:"cudy-technology",
         capturedAt:new Date().toISOString(),metadata:{mailboxArtifactKind:candidate.kind,privateToUser:true},visibility:"private",

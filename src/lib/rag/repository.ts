@@ -22,35 +22,33 @@ export async function upsertKnowledgeDocument(userId: string, input: KnowledgeDo
   }));
 }
 async function upsertKnowledgeDocumentImpl(userId: string, input: KnowledgeDocumentInput, actorRole: AppDatabaseRole,expectedHash?:string|null): Promise<{ documentId: string; chunks: number; skipped: boolean }> {
-  const contentHash = sha256(input.content);
-  const visibility = input.visibility ?? "private";
-  const existing = await tenantQuery<{ id: string; content_sha256: string; visibility: KnowledgeVisibility; source_url:string|null;source_type:string;authority_level:number;language:string;market:string|null;company_id:string|null;product_id:string|null;metadata:Record<string,unknown> }>(userId,
-    `select d.id, d.content_sha256, d.visibility,d.source_url,d.source_type,d.authority_level,d.language,d.market,d.company_id,d.product_id,d.metadata from knowledge_document d
-     join knowledge_collection c on c.id = d.collection_id
-     where c.slug = $1 and d.external_id = $2 and d.owner_id = $3`,
-    [input.collection, input.externalId, userId],
-  );
-  if (existing[0]?.content_sha256 === contentHash && existing[0]?.visibility === visibility) {
-    const current=existing[0];
-    const metadataChanged=knowledgeMetadataChanged(current,input);
-    if(metadataChanged)await tenantQuery(userId,`update knowledge_document set title=$2,source_url=$3,source_type=$4,authority_level=$5,language=$6,market=$7,company_id=$8,product_id=$9,metadata=$10,updated_at=now() where id=$1`,[current.id,input.title,input.sourceUrl??null,input.sourceType,input.authorityLevel,input.language??"zh-CN",input.market??null,input.companyId??null,input.productId??null,JSON.stringify(input.metadata??{})],actorRole);
-    const count = await tenantQuery<{ count: string }>(userId, "select count(*) from knowledge_chunk where document_id = $1", [existing[0].id], actorRole);
-    return { documentId: existing[0].id, chunks: Number(count[0]?.count ?? 0), skipped: true };
+  return tenantTransaction(userId, client => saveKnowledgeDocumentInTransaction(client,userId,input,expectedHash),actorRole);
+}
+
+/** Caller must supply its authenticated tenant transaction; never opens a second transaction. */
+export async function saveKnowledgeDocumentInTransaction(client:PoolClient,userId:string,input:KnowledgeDocumentInput,expectedHash?:string|null):Promise<{documentId:string;chunks:number;skipped:boolean}>{
+  const contentHash=sha256(input.content),visibility=input.visibility??"private";
+  await client.query("select pg_advisory_xact_lock(hashtextextended($1,0))",[`${userId}:${input.collection}:${input.externalId}`]);
+  const result=await client.query<{id:string;content_sha256:string;visibility:KnowledgeVisibility;status:string;title:string;source_url:string|null;source_type:string;authority_level:number;language:string;market:string|null;company_id:string|null;product_id:string|null;metadata:Record<string,unknown>}>(`select d.* from knowledge_document d
+    join knowledge_collection c on c.id=d.collection_id where c.slug=$1 and d.external_id=$2 and d.owner_id=$3 for update of d`,[input.collection,input.externalId,userId]);
+  const current=result.rows[0];
+  if(expectedHash!==undefined&&(current?.content_sha256??null)!==expectedHash)throw new KnowledgeConflictError();
+  if(current&&current.status!=="active")throw new KnowledgeConflictError();
+  if(current?.content_sha256===contentHash&&current.visibility===visibility){
+    if(current.title!==input.title||knowledgeMetadataChanged(current,input))await client.query(`update knowledge_document set title=$2,source_url=$3,source_type=$4,authority_level=$5,language=$6,market=$7,company_id=$8,product_id=$9,metadata=$10,updated_at=now() where id=$1`,[current.id,input.title,input.sourceUrl??null,input.sourceType,input.authorityLevel,input.language??"zh-CN",input.market??null,input.companyId??null,input.productId??null,JSON.stringify(input.metadata??{})]);
+    // Also repairs an interrupted legacy registration with a missing current tree.
+    await client.query("insert into knowledge_document_revision(document_id,user_id,content_sha256,title,content,reconstructed) values($1,$2,$3,$4,$5,false) on conflict do nothing",[current.id,userId,contentHash,input.title,input.content]);
+    await indexTextRevision(client,current.id,input.content,contentHash,input.title);
+    const count=await client.query<{count:string}>("select count(*) from knowledge_chunk where document_id=$1",[current.id]);
+    return {documentId:current.id,chunks:Number(count.rows[0]?.count??0),skipped:true};
   }
-
-  const chunks = chunkDocument(input.content);
-  if (chunks.length === 0) throw new Error(`Document ${input.externalId} has no ingestible content`);
-  // MODESEL-16: text/tree indexing is local; never put BGE vectors into the legacy 1536-dimension column.
-
-  return tenantTransaction(userId, async (client: PoolClient) => {
-    await client.query("select pg_advisory_xact_lock(hashtextextended($1,0))",[`${userId}:${input.collection}:${input.externalId}`]);
-    if(expectedHash!==undefined){const current=await client.query<{content_sha256:string}>(`select d.content_sha256 from knowledge_document d join knowledge_collection c on c.id=d.collection_id where d.owner_id=$1 and c.slug=$2 and d.external_id=$3 for update of d`,[userId,input.collection,input.externalId]);
-      if((current.rows[0]?.content_sha256??null)!==expectedHash)throw new KnowledgeConflictError();}
+  const chunks=chunkDocument(input.content);
+  if(!chunks.length)throw new Error(`Document ${input.externalId} has no ingestible content`);
     await client.query(`insert into knowledge_document_revision(document_id,user_id,content_sha256,title,content,reconstructed)
       select d.id,d.owner_id,d.content_sha256,d.title,coalesce(string_agg(k.content,E'\n\n' order by k.chunk_index),''),true
       from knowledge_document d join knowledge_collection c on c.id=d.collection_id left join knowledge_chunk k on k.document_id=d.id
       where d.owner_id=$1 and c.slug=$2 and d.external_id=$3 and d.content_sha256<>$4 group by d.id on conflict do nothing`,[userId,input.collection,input.externalId,contentHash]);
-    const result = await client.query<{ id: string }>(
+    const saved = await client.query<{ id: string }>(
       `insert into knowledge_document (
         collection_id, external_id, title, source_url, source_type, authority_level,
         language, market, company_id, product_id, content_sha256, metadata, status,
@@ -71,7 +69,7 @@ async function upsertKnowledgeDocumentImpl(userId: string, input: KnowledgeDocum
         input.productId ?? null, contentHash, JSON.stringify(input.metadata ?? {}),
         input.capturedAt ?? null, input.publishedAt ?? null, userId, visibility],
     );
-    const documentId = result.rows[0].id;
+    const documentId = saved.rows[0].id;
     await client.query("insert into knowledge_document_revision(document_id,user_id,content_sha256,title,content,reconstructed) values($1,$2,$3,$4,$5,false) on conflict do nothing",[documentId,userId,contentHash,input.title,input.content]);
     await client.query("delete from knowledge_chunk where document_id = $1", [documentId]);
     for (const chunk of chunks) {
@@ -86,7 +84,6 @@ async function upsertKnowledgeDocumentImpl(userId: string, input: KnowledgeDocum
     }
     await indexTextRevision(client,documentId,input.content,contentHash,input.title);
     return { documentId, chunks: chunks.length, skipped: false };
-  }, actorRole);
 }
 
 async function activeV3Release(userId:string):Promise<string|undefined>{const rows=await tenantQuery<{id:string}>(userId,`select release_id as id from knowledge_release_pointer_v3 where scope_kind='shared' order by activated_at desc limit 1`);return rows[0]?.id;}

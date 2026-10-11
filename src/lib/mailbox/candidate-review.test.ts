@@ -1,7 +1,7 @@
 import {beforeEach,describe,expect,it,vi} from "vitest";
 const {query,save,transaction}=vi.hoisted(()=>({query:vi.fn(),save:vi.fn(),transaction:vi.fn()}));
 vi.mock("@/lib/rag/db",()=>({tenantTransaction:transaction}));
-vi.mock("@/lib/rag/repository",()=>({upsertKnowledgeDocument:save}));
+vi.mock("@/lib/rag/repository",()=>({saveKnowledgeDocumentInTransaction:save}));
 vi.mock("@/lib/tracked-operation",()=>({trackedOperation:async(_user:unknown,_stage:unknown,_items:unknown,_chars:unknown,run:()=>Promise<unknown>)=>run()}));
 import {reviewMailboxCandidate} from "./candidate-review";
 describe("mailbox candidate review",()=>{
@@ -16,7 +16,7 @@ describe("mailbox candidate review",()=>{
   });
   it("saves approved content privately with the authenticated owner before marking reviewed",async()=>{
     expect(await reviewMailboxCandidate("owner","candidate","approved")).toEqual({kind:"saved",status:"approved",reused:false});
-    expect(save).toHaveBeenCalledWith("owner",expect.objectContaining({visibility:"private",externalId:"mailbox-artifact:candidate",content:"Fixture"}));
+    expect(save).toHaveBeenCalledWith(expect.objectContaining({query}),"owner",expect.objectContaining({visibility:"private",externalId:"mailbox-artifact:candidate",content:"Fixture"}));
     expect(query).toHaveBeenCalledWith(expect.stringContaining("user_id=$2 for update"),["candidate","owner"]);
     expect(save.mock.invocationCallOrder[0]).toBeLessThan(query.mock.invocationCallOrder.at(-1)!);
   });

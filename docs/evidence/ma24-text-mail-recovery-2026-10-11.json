@@ -1,0 +1,29 @@
+{
+  "cloneOnly": true,
+  "modelCalls": 0,
+  "concurrentTextWrites": 8,
+  "treeVersionsPerIdenticalContent": 1,
+  "staleIdenticalContentRejected": true,
+  "titleUpdated": true,
+  "competingRevisionSingleWinner": true,
+  "processKillsBeforeCommit": 2,
+  "textOldVersionRetainedOnCrash": true,
+  "mailApprovalAtomic": true,
+  "mailRetryReused": true,
+  "missingTreeRepaired": true,
+  "emptyInputKeepsOld": true,
+  "withdrawnNotReactivated": true,
+  "crossAccountDenied": true,
+  "otherDocumentsUnchanged": true,
+  "v3Unchanged": true,
+  "date": "2026-10-11",
+  "stage": "G05 text and approved mail transaction recovery",
+  "unitTests": 14,
+  "typecheck": "passed",
+  "lint": "passed",
+  "productionLoaded": false,
+  "limitations": [
+    "Synthetic recovery verification, not natural learning quality",
+    "Deployment pending"
+  ]
+}
