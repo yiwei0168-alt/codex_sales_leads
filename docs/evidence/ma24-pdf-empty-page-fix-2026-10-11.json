@@ -1,0 +1,43 @@
+{
+  "schema": "pdf-empty-page-review-v1",
+  "sourceSha256": "67b852d766ea8c97ed947c1d3aab215d5d18ee4db49a0fcd563f4cb64fdcbe05",
+  "extractorVersion": "layout-v2.0.3",
+  "artifactSha256": "92922419d21d4e85412bf7d8f46394b9e001faf0e7adb3b03aa563ed21f5acba",
+  "summary": {
+    "success": 258,
+    "blank": 4,
+    "pending-ocr": 0,
+    "failed": 0
+  },
+  "blocks": 4277,
+  "visualReview": {
+    "reviewer": "codex-assistant",
+    "renderer": "PyMuPDF",
+    "blankPages": [
+      2,
+      6,
+      16,
+      261
+    ],
+    "nativeTextContentsPages": [
+      8,
+      10,
+      11,
+      13,
+      14,
+      15
+    ],
+    "scope": "Page type and blankness, not full transcription or table validation"
+  },
+  "regressionTestsPassed": 3,
+  "productionWrites": 0,
+  "newModelCalls": 0,
+  "qualityAccepted": false,
+  "sourceNowDevelopmentExposed": true,
+  "limitations": [
+    "PDF now used for development and excluded from independent holdout.",
+    "258 text-bearing pages do not establish complete chart/table semantics.",
+    "Prior Docling warning-bearing artifacts retained; no manual or independent quality pass.",
+    "Only empty content streams without images/annotations/widgets are certified blank; painted/scanned pages still require review."
+  ]
+}

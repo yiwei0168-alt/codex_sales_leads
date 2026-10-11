@@ -4,6 +4,7 @@ from tempfile import TemporaryDirectory
 import unittest
 
 from openpyxl import Workbook
+import pymupdf
 from knowledge_extraction_v2 import extract_file
 
 
@@ -51,6 +52,25 @@ class SpreadsheetCoordinatesTest(unittest.TestCase):
             artifact = extract_file(path, "zero.xlsx")
             self.assertEqual(artifact["qualitySummary"]["success"], 1)
             self.assertEqual(artifact["blocks"][0]["table"]["headers"], ["0"])
+
+
+class PdfBlankPageTest(unittest.TestCase):
+    def test_only_structurally_empty_pages_are_blank(self):
+        with TemporaryDirectory() as directory:
+            path = Path(directory) / "pages.pdf"
+            document = pymupdf.open()
+            document.new_page()  # No page content.
+            document.new_page().insert_text((50, 50), "Original text")
+            page = document.new_page()
+            page.draw_rect(pymupdf.Rect(10, 10, 100, 100), color=(0, 0, 0))
+            document.new_page().add_text_annot((50, 50), "Visible annotation")
+            document.save(path)
+            document.close()
+            artifact = extract_file(path, "pages.pdf")
+            self.assertEqual(artifact["qualitySummary"], {
+                "success": 1, "blank": 1, "pending-ocr": 2, "failed": 0})
+            self.assertEqual(artifact["blocks"][0]["quality"], "blank")
+            self.assertEqual(artifact["blocks"][0]["unitIndex"], 1)
 
 
 if __name__ == "__main__":

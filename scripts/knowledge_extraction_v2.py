@@ -7,7 +7,7 @@ from pptx import Presentation
 from openpyxl import load_workbook
 from openpyxl.utils import get_column_letter
 
-EXTRACTOR_VERSION = "layout-v2.0.2"
+EXTRACTOR_VERSION = "layout-v2.0.3"
 
 def _clean(value):
     return " ".join(str("" if value is None else value).replace("\x00", "").split()).strip()
@@ -28,6 +28,13 @@ def extract_pdf(path: Path):
             if page_blocks:
                 blocks.extend(page_blocks)
                 statuses.append("success")
+            elif (all(not page.parent.xref_stream(ref).strip() for ref in page.get_contents())
+                  and not page.get_images() and not list(page.annots() or [])
+                  and not list(page.widgets() or [])):
+                # Only certify structurally empty pages. Image/painted/annotated
+                # pages still need OCR/review, even if text extraction is empty.
+                blocks.append(_block(f"page-{index}-blank","page",index,"blank","",quality="blank"))
+                statuses.append("blank")
             else:
                 blocks.append(_block(f"page-{index}-ocr","page",index,"pending-ocr","",quality="pending-ocr"))
                 statuses.append("pending-ocr")
