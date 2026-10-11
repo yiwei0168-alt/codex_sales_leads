@@ -70,7 +70,7 @@ export async function createKnowledgeUploadJob(userId:string,input:KnowledgeUplo
         and coalesce(j.extractor_version,j.metrics->>'requestedExtractorVersion')=$7
         and ((j.revision_target_document_id is not distinct from $8::uuid and j.revision_base_version_id is not distinct from $9::uuid)
           or (j.published_document_id=$8 and j.status='registered'))
-        and j.status in('pending','running','extracted','registered') and j.error_code is null
+        and j.status in('pending','running','extracted','registered') and (j.error_code is null or (j.status='extracted' and j.error_code='extraction-review-required'))
         and (j.published_document_id is null or exists(select 1 from knowledge_document d join knowledge_asset a
           on a.id=j.published_asset_id and a.document_id=d.id where d.id=j.published_document_id
           and d.owner_id=$1 and d.status='active' and d.metadata->>'sourceSha256'=$6
@@ -100,6 +100,7 @@ export async function listKnowledgeUploadJobs(userId:string,offset=0,limit=30){
     v.id as "currentVersionId",case when j.status='registered' and (d.status<>'active' or a.registration_status<>'registered') then 'unavailable'
       when j.status='registered' and v.status='ready' and a.registration_status='registered' and d.status='active' and d.metadata->>'sourceSha256'=j.source_sha256 then 'searchable'
       when j.status='registered' and v.status='ready' and d.metadata->>'sourceSha256'<>j.source_sha256 then 'historical'
+      when j.status='extracted' and j.error_code='extraction-review-required' then 'review-required'
       when j.error_code='tree-index-failed' then 'failed' when j.status='registered' then 'indexing' else j.status end as "treeStatus"
     from knowledge_upload_job j left join knowledge_document d on d.id=coalesce(j.published_document_id,j.revision_target_document_id)
     left join knowledge_tree_version v on v.id=d.current_tree_version_id

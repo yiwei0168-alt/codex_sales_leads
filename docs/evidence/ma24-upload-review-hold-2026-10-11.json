@@ -1,0 +1,26 @@
+{
+  "cloneOnly": true,
+  "formats": [
+    "PPTX"
+  ],
+  "privateAndSharedHeld": true,
+  "unresolvedBlocksPerJob": 63,
+  "dedupReused": true,
+  "restartDoesNotReclaim": true,
+  "otherAccountHidden": true,
+  "directRegistrationRejected": true,
+  "noDocumentsPublished": true,
+  "v3PointersUnchanged": true,
+  "externalCalls": 0,
+  "modelCalls": 0,
+  "date": "2026-10-11",
+  "rule": "MA24-16",
+  "goal": "G05",
+  "testsPassed": 18,
+  "typecheck": "passed",
+  "eslint": "passed",
+  "runtimeDeployed": false,
+  "reviewDecisionsImplemented": false,
+  "qualityAccepted": false,
+  "historicalFailedJobsChanged": false
+}

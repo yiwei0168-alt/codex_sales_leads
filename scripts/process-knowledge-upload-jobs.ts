@@ -1,11 +1,12 @@
 import { spawn } from "node:child_process";
 import { randomUUID } from "node:crypto";
-import { mkdir } from "node:fs/promises";
+import { mkdir, readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import nextEnv from "@next/env";
 import { getPool, query, tenantQuery, tenantTransaction } from "../src/lib/rag/db";
 import { assertResolvedInsideKnowledgeRoot, safeKnowledgeStorageKey } from "../src/lib/knowledge/document-repository";
 import { registerVectorlessUpload } from "../src/lib/knowledge/vectorless-registration";
+import { extractionReadiness } from "../src/lib/knowledge/extraction-readiness";
 
 nextEnv.loadEnvConfig(process.cwd());
 const limit=Math.min(100,Math.max(1,Number(process.argv.find(value=>value.startsWith("--limit="))?.split("=")[1]??10)));
@@ -22,7 +23,7 @@ function runPython(source:string,artifact:string):Promise<Record<string,unknown>
   });
 }
 
-let completed=0;let failed=0;
+let completed=0;let failed=0;let awaitingReview=0;
 try{
   const accounts=await query<{id:string}>("select id from app_user where status='active' order by id");
   for(let index=0;index<limit;index++){
@@ -59,6 +60,22 @@ try{
         and lease_token=$6 and lease_until>now() returning id`,[job.id,artifactKey,String(output.extractorVersion??"unknown"),JSON.stringify({validOutputItems:Number(output.blocks??0),downstreamUsedItems:0,latencyMs:Date.now()-started,retries:0,qualitySummary:output.qualitySummary??{},artifactSha256:output.artifactSha256??null,usageBoundary:"local-extraction-awaiting-review-and-indexing",optimizationOpportunity:"Review extracted units before indexing"}),job.userId,job.leaseToken]);
       if(!saved[0])throw new Error("Upload lease expired or changed");
       }
+      if(job.status!=='registered'){
+        const [stored]=await tenantQuery<{artifactKey:string;artifactSha256:string;sourceSha256:string;extractorVersion:string}>(job.userId,
+          `select extraction_artifact_key as "artifactKey",metrics->>'artifactSha256' as "artifactSha256",source_sha256 as "sourceSha256",extractor_version as "extractorVersion"
+            from knowledge_upload_job where id=$1 and user_id=$2 and status='extracted' and lease_token=$3 and lease_until>now()`,[job.id,job.userId,job.leaseToken]);
+        if(!stored)throw new Error('Upload lease expired or changed');
+        const storedPath=resolve(safeKnowledgeStorageKey(stored.artifactKey));assertResolvedInsideKnowledgeRoot(storedPath);
+        const readiness=extractionReadiness(await readFile(storedPath),stored);
+        if(readiness.reviewRequired){
+          const held=await tenantQuery<{id:string}>(job.userId,`update knowledge_upload_job set error_code='extraction-review-required',
+            lease_token=null,lease_until=null,updated_at=now(),metrics=metrics||$4::jsonb
+            where id=$1 and user_id=$2 and status='extracted' and lease_token=$3 and lease_until>now() returning id`,
+            [job.id,job.userId,job.leaseToken,JSON.stringify({unresolvedBlocks:readiness.unresolvedBlocks})]);
+          if(!held[0])throw new Error('Upload lease expired or changed');
+          awaitingReview++;continue;
+        }
+      }
       if(job.visibility==="private"){
         const registration=await registerVectorlessUpload(job.userId,job.id,{language:"und",authorityLevel:2,leaseToken:job.leaseToken});
         if(registration.treeStatus!=="searchable")throw new Error("Private tree indexing failed");
@@ -70,5 +87,5 @@ try{
       where id=$1 and user_id=$4 and lease_token=$5 and lease_until>now()`,
       [job.id,error instanceof Error?error.name:"unknown",JSON.stringify({latencyMs:Date.now()-started,discardedReasonCounts:{processingFailed:1}}),job.userId,job.leaseToken]);failed++;}
   }
-  console.log(JSON.stringify({inputJobs:completed+failed,completed,failed,embeddingCalls:0,modelCalls:0,externalCalls:0},null,2));
+  console.log(JSON.stringify({inputJobs:completed+failed+awaitingReview,completed,failed,awaitingReview,embeddingCalls:0,modelCalls:0,externalCalls:0},null,2));
 }finally{await getPool().end();}

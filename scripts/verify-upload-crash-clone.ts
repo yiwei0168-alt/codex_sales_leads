@@ -46,7 +46,7 @@ function worker(job:string,phase?:string,marker?:string){
 }
 async function normal(job:string,completed:number,failed=0){
  const result=await worker(job).exited;assert.equal(result.code,0,result.stderr.slice(-1000));
- assert.deepEqual(JSON.parse(result.stdout),{inputJobs:completed+failed,completed,failed,embeddingCalls:0,modelCalls:0,externalCalls:0});
+ assert.deepEqual(JSON.parse(result.stdout),{inputJobs:completed+failed,completed,failed,awaitingReview:0,embeddingCalls:0,modelCalls:0,externalCalls:0});
 }
 async function crash(job:string,phase:string){
  const marker=resolve(markerRoot,`${randomUUID()}.json`),run=worker(job,phase,marker);

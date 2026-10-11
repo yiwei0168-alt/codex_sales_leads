@@ -95,7 +95,7 @@ export function KnowledgeBase({ initialTab }: { initialTab?: string } = {}) {
   useEffect(()=>{
     let disposed=false;let timer:ReturnType<typeof setTimeout>|undefined;
     async function load(){try{const response=await fetch(`/api/knowledge/uploads?offset=${uploadJobsPage*6}&limit=7`,{cache:"no-store"});const body=await response.json() as {jobs?:KnowledgeUploadJob[]};
-      if(!disposed&&response.ok){const jobs=body.jobs??[];setUploadJobs(jobs);if(jobs.some(job=>job.status==="pending"||job.status==="running"||(job.visibility==="private"&&job.status==="extracted")||job.treeStatus==="indexing"))timer=setTimeout(load,5000);}}
+      if(!disposed&&response.ok){const jobs=body.jobs??[];setUploadJobs(jobs);if(jobs.some(job=>job.status==="pending"||job.status==="running"||(job.visibility==="private"&&job.status==="extracted"&&job.treeStatus!=="review-required")||job.treeStatus==="indexing"))timer=setTimeout(load,5000);}}
       catch{/* Upload-job status is supplementary to the existing knowledge page. */}}
     void load();return()=>{disposed=true;if(timer)clearTimeout(timer);};
   },[uploadMessage,uploadJobsPage]);
@@ -259,9 +259,9 @@ export function KnowledgeBase({ initialTab }: { initialTab?: string } = {}) {
           <label>管理 Token<input type="password" value={adminToken} onChange={(event) => setAdminToken(event.target.value)} placeholder="KNOWLEDGE_ADMIN_TOKEN（本地开发可留空）"/></label>
           <div className="kb-upload-action"><span className={uploadMessage.startsWith("上传成功") ? "success" : ""}>{uploadMessage}</span><button className="primary-button" disabled={uploading || !uploadFile || !uploadTitle.trim() || (uploadType === "product" && !entityId.trim()) || !stats.configured} onClick={upload}>{uploading ? "正在提交…" : uploadRevision ? "提交新版" : /\.(pdf|pptx|xlsx)$/i.test(uploadFile?.name??"") ? "上传并创建提取作业" : "上传并建立索引"}</button></div>
           {(uploadJobs.length>0||uploadJobsPage>0)&&<div className="kb-upload-jobs"><strong>提取作业</strong>{uploadJobs.slice(0,6).map(job=><p key={job.id}>
-            <span className={`tag ${job.treeStatus==='searchable'?'green':job.treeStatus==='failed'?'red':'neutral'}`}>{({searchable:'可检索',historical:'历史版本',unavailable:'已停用',extracted:'已抽取，待登记',registered:'建立索引中',indexing:'建立索引中',failed:'处理失败',running:'提取中'} as Record<string,string>)[job.treeStatus]??'待提取'}</span> {job.title} · {job.documentType} · {Math.ceil(Number(job.byteSize)/1024)} KB
+            <span className={`tag ${job.treeStatus==='searchable'?'green':job.treeStatus==='failed'?'red':'neutral'}`}>{({'review-required':'待审核抽取内容',searchable:'可检索',historical:'历史版本',unavailable:'已停用',extracted:'已抽取，待登记',registered:'建立索引中',indexing:'建立索引中',failed:'处理失败',running:'提取中'} as Record<string,string>)[job.treeStatus]??'待提取'}</span> {job.title} · {job.documentType} · {Math.ceil(Number(job.byteSize)/1024)} KB
             {job.currentVersionId?` · 当前版本 ${job.currentVersionId.slice(0,8)}`:''}<span title={`来源 SHA-256：${job.sourceSha256}`}> · 来源 {job.sourceSha256.slice(0,8)}</span>
-            {job.errorCode?` · ${job.errorCode==='revision-conflict'?'当前版本已变化，请重新选择资料更新':job.errorCode==='revision-source-unavailable'?'原资料已停用或不再可访问':job.errorCode}`:''}
+            {job.errorCode?` · ${job.errorCode==='extraction-review-required'?'含未完成核对的对象，暂未建立新索引':job.errorCode==='revision-conflict'?'当前版本已变化，请重新选择资料更新':job.errorCode==='revision-source-unavailable'?'原资料已停用或不再可访问':job.errorCode}`:''}
             {job.revisionBaseVersionId&&job.status!=='registered'?' · 新版处理期间保留旧版':''}
             {job.treeStatus==='searchable'&&job.documentId&&job.currentVersionId&&(job.visibility==='private'||canReview)&&<button type="button" disabled={uploading} onClick={()=>chooseRevision(job)}>上传新版</button>}
           </p>)}<div className="kb-upload-pagination"><button disabled={uploading||uploadJobsPage===0} onClick={()=>setUploadJobsPage(value=>value-1)}>上一页作业</button><span>第 {uploadJobsPage+1} 页</span><button disabled={uploading||uploadJobs.length<=6} onClick={()=>setUploadJobsPage(value=>value+1)}>下一页作业</button></div></div>}
