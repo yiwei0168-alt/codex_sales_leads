@@ -19,6 +19,7 @@ venv/
 # Node.js
 node_modules/
 .next/
+.next-releases/
 dist/
 build/
 *.tsbuildinfo

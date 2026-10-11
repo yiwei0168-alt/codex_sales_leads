@@ -29,7 +29,9 @@ export async function shadowRuntimeHash(){
   'src/lib/assistant/main/tools.ts','src/lib/assistant/main/model.ts','src/lib/assistant/main/skill-source-guard.ts',
   'src/lib/assistant/main/private-replay-guard.ts','src/lib/assistant/main/knowledge-message-guard.ts',
   'src/lib/mailbox/repository.ts','src/lib/mailbox/customer-timeline.ts','package-lock.json'];
- return digest({files:Object.fromEntries(await Promise.all(files.map(async file=>[file,digest(await readFile(file,'utf8'))]))),config:SKILL_GRAPH_REPLAY_CONFIG});
+ // Runtime hashes require the local source checkout, not a bundle of the whole
+ // workspace (which also contains private originals outside this allowlist).
+ return digest({files:Object.fromEntries(await Promise.all(files.map(async file=>[file,digest(await readFile(/*turbopackIgnore: true*/ file,'utf8'))]))),config:SKILL_GRAPH_REPLAY_CONFIG});
 }
 export const shadowRegistrationSchema=z.object({skillId:z.uuid(),version:z.number().int().positive(),
  selection:shadowSelectionSchema,hours:z.number().int().min(1).max(24).default(1)}).strict();

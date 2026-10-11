@@ -1,0 +1,45 @@
+{
+  "stage": "web release and private build boundary",
+  "date": "2026-10-11",
+  "sourceBase": "c044781a",
+  "releaseDirectory": ".next-releases/c044781a",
+  "webPort": 3018,
+  "webPidAtVerification": 38604,
+  "backgroundUpdated": false,
+  "backgroundRestart": "pending explicit approval after automatic review rejection",
+  "privateTraceManifests": 84,
+  "privateDependencies": 0,
+  "homepageAssetsHealthy": 11,
+  "authenticatedSmoke": [
+    "unauthenticated requests denied",
+    "normal login",
+    "pagination and invalid offset",
+    "empty shadow reviews",
+    "real PDF multipart upload",
+    "same content reused same job"
+  ],
+  "modelTasksCreated": 0,
+  "fixtureCleanup": true,
+  "migrationsApplied": [
+    123,
+    124,
+    125
+  ],
+  "enabledShadowCampaigns": 0,
+  "productionFeatureFlagsChanged": false,
+  "candidatePortsClosed": [
+    3028,
+    3038
+  ],
+  "rollbackBuildRetained": ".next",
+  "limitations": [
+    "No independent answer-quality acceptance",
+    "Main worker and LangGraph still use older loaded source",
+    "Runtime hashing requires source checkout"
+  ],
+  "checks": {
+    "productionBuild": "passed",
+    "skillShadowUnitTests": 16,
+    "privateManifestAudit": "passed"
+  }
+}
