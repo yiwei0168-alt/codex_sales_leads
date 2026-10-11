@@ -1,0 +1,11 @@
+{
+ "date":"2026-10-11",
+ "scope":"optional cancellation plumbing for future durable candidate model adapter",
+ "tests":{"newCancellationCases":7,"totalWithRegressions":34,"passed":true,"typecheck":"passed","eslint":"passed"},
+ "covered":["cancel before transport","unresponsive transport","stream reader cancellation","success listener cleanup","no fallback on cancellation","save successful receipt before discarding cancelled result","no request after admission cancellation"],
+ "correctedFixtureFailure":"Success fixture changed from JSON to required SSE protocol",
+ "actualModelCalls":0,
+ "productionDeployed":false,
+ "candidateDurableAdapterConnected":false,
+ "automaticActivation":false
+}

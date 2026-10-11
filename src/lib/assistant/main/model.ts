@@ -16,7 +16,8 @@ export const modelReplySchema = z.object({
     function: z.object({ name: z.string().max(100), arguments: z.string().max(100_000) }) })).max(12).optional(),
 });
 
-export async function requestModeModel(messages:ModelMessage[],profile:ModeConfig,index:number,transport:typeof fetch=fetch){
+export async function requestModeModel(messages:ModelMessage[],profile:ModeConfig,index:number,transport:typeof fetch=fetch,signal?:AbortSignal){
+  signal?.throwIfAborted();
   const candidate=profile.routes[index];if(!candidate)throw new Error('Invalid model attempt');
   const route=getOpenRouterConfig(),controller=new AbortController();
   const wireBody={model:candidate.model,messages:transportMessages(messages),tools:modelFunctions,tool_choice:'auto',stream:true,
@@ -28,6 +29,9 @@ export async function requestModeModel(messages:ModelMessage[],profile:ModeConfi
   let rejectAbort:()=>void=()=>{};
   const aborted=new Promise<never>((_,reject)=>{rejectAbort=()=>reject(controller.signal.reason);controller.signal.addEventListener('abort',rejectAbort,{once:true});});
   void aborted.catch(()=>undefined); // A deadline can fire while admission is still awaiting storage.
+  const cancel=()=>controller.abort(signal?.reason);
+  signal?.addEventListener('abort',cancel,{once:true});
+  if(signal?.aborted)cancel();
   const adapted:typeof fetch=async(input,init)=>{
     try{
       controller.signal.throwIfAborted();
@@ -42,8 +46,10 @@ export async function requestModeModel(messages:ModelMessage[],profile:ModeConfi
       body:wireJson,
       signal:controller.signal,redirect:'error',
     }));
+    controller.signal.throwIfAborted();
     await assertOpenRouterResponse(response);
     const body=await response.json();
+    controller.signal.throwIfAborted();
     if(typeof body.model!=='string'||!matchesBatchModel(body.model,candidate.model))throw new Error('Model route identity mismatch');
     return {...parseModelResponse(body),provider:typeof body.provider==='string'?body.provider:null,generationId:typeof body.id==='string'?body.id:null,requestManifest:modelRequestManifest(JSON.parse(wireJson),body)};
   }catch(error){
@@ -51,7 +57,7 @@ export async function requestModeModel(messages:ModelMessage[],profile:ModeConfi
     if(controller.signal.aborted)throw controller.signal.reason;
     if(transportError)throw transportError;
     throw error;
-  }finally{clearTimeout(first);clearTimeout(total);controller.signal.removeEventListener('abort',rejectAbort);controller.abort();}
+  }finally{clearTimeout(first);clearTimeout(total);signal?.removeEventListener('abort',cancel);controller.signal.removeEventListener('abort',rejectAbort);controller.abort();}
 }
 export const modelFunctions = [
   { type: "function", function: { name: "discover_tools", description: "List accessible product capabilities", parameters: { type: "object", properties: {}, additionalProperties: false } } },
