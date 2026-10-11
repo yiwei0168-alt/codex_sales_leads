@@ -21,7 +21,7 @@ const digest=(bytes:Uint8Array|string)=>createHash('sha256').update(bytes).diges
 try{
  await pool.query("insert into knowledge_collection(id,slug,name,base_type) values($1,$2,'Local development sources','industry')",[collection,`fixture-${collection}`]);
  for(const id of [owner,other])await pool.query("insert into app_user(id,email,display_name,password_hash,role,status) values($1,$2,'Tree verification','!','member','active')",[id,`${id}@example.invalid`]);
- for(const [original,artifact] of [['itu-ict-2025.xlsx','xlsx-layout-v2.0.2.json'],['itu-handbook-2020.pdf','pdf-layout-v2.0.3.json'],['itu-satellite-2025.pptx','pptx-layout-v2.0.3.json']]){
+ for(const [original,artifact] of [['itu-ict-2025.xlsx','xlsx-layout-v2.0.2.json'],['itu-handbook-2020.pdf','pdf-layout-v2.0.3.json'],['itu-satellite-2025.pptx','pptx-layout-v2.0.4.json']]){
   const root='tmp/ma24-public-eval-candidates/';
   const source=await readFile(root+original),bytes=await readFile(root+artifact);
   const parsed=JSON.parse(bytes.toString('utf8')) as {sourceSha256:string;extractorVersion:string;blocks:Block[]};
@@ -49,6 +49,7 @@ try{
   for(const [index,row] of stored.entries()){
    const b=expected[index];assert.equal(row.title,b.id);assert.equal(row.content,evidenceText(b));assert.equal(row.content_sha256,digest(row.content));
    assert.equal(row.source_location.unitIndex,b.unitIndex);assert.deepEqual(row.source_location.bbox,b.bbox??null);
+   if(b.shapePath){assert.deepEqual(row.source_location.shapePath,b.shapePath);assert.deepEqual(row.source_location.shapeIdPath,b.shapeIdPath);}
    const location=spreadsheetLocation(b);
    if(location)for(const [key,value] of Object.entries(location))assert.equal(row.source_location[key],value);
   }

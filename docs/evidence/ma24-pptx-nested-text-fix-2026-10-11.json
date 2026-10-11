@@ -1,0 +1,26 @@
+{
+  "schema": "pptx-nested-text-recovery-v1",
+  "extractorVersion": "layout-v2.0.4",
+  "sourceSha256": "2223cee26aced9a50d648d933c31b15f2f0659d0ebe30922fca5c31c1cc30465",
+  "artifactSha256": "ec18f2a91b9057f48a08ac70df4039b29fe408ecf7888f139147f6e40866e428",
+  "oldBlocksPreserved": 190,
+  "totalBlocks": 216,
+  "nestedTextShapesRecovered": 26,
+  "rawNestedCharacters": 335,
+  "normalizedNestedCharacters": 320,
+  "pythonTestsPassed": 4,
+  "typescriptTestsPassed": 12,
+  "typecheckPassed": true,
+  "lintPassed": true,
+  "cloneAll216ContentsAndShapePathsMatch": true,
+  "cloneIdempotenceAndReadAclPassed": true,
+  "productionWrites": 0,
+  "newModelCalls": 0,
+  "qualityAccepted": false,
+  "limitations": [
+    "Native group/id paths are precise object locators, not transformed slide geometry.",
+    "Images, charts and unsupported visual objects still require extraction/review; this does not establish complete slide semantics.",
+    "Source development-exposed and excluded from independent holdout.",
+    "New TypeScript location persistence is not yet loaded into running web/background services."
+  ]
+}

@@ -1,8 +1,15 @@
 import {createHash} from "node:crypto";
 import type {PoolClient} from "pg";
 const digest=(value:string)=>createHash("sha256").update(value).digest("hex");
-export type Block={id:string;unitType:"page"|"slide"|"sheet"|"document";unitIndex:number;blockType:string;quality:string;text?:string;section?:string;bbox?:number[];table?:{headers?:unknown[];rows?:unknown[][];startRow?:number;headerRow?:number;startColumn?:number;cellRange?:string}};
+export type Block={id:string;unitType:"page"|"slide"|"sheet"|"document";unitIndex:number;blockType:string;quality:string;text?:string;section?:string;bbox?:number[];shapePath?:number[];shapeIdPath?:number[];table?:{headers?:unknown[];rows?:unknown[][];startRow?:number;headerRow?:number;startColumn?:number;cellRange?:string}};
 const unitKey=(block:Block)=>`${block.unitType}:${block.unitIndex}`;
+export function slideShapeLocation(block:Block){
+  if(block.shapePath===undefined&&block.shapeIdPath===undefined)return {};
+  if(block.unitType!=="slide"||!Array.isArray(block.shapePath)||!Array.isArray(block.shapeIdPath)
+    ||!block.shapePath.length||block.shapePath.length!==block.shapeIdPath.length
+    ||[...block.shapePath,...block.shapeIdPath].some(value=>!Number.isSafeInteger(value)||value<1))throw new Error("Invalid slide shape path");
+  return {shapePath:block.shapePath,shapeIdPath:block.shapeIdPath};
+}
 const columnName=(index:number):string=>{
   let name="";
   for(let n=index;n>0;n=Math.floor((n-1)/26))name=String.fromCharCode(65+(n-1)%26)+name;
@@ -39,6 +46,7 @@ export function evidenceText(block:Block):string{
 export async function writeExtractedTree(client:PoolClient,input:{documentId:string;assetId:string;sourceSha256:string;extractorVersion:string;artifactHash:string;blocks:Block[]}){
   if(input.blocks.some(block=>!["success","blank"].includes(block.quality)))throw new Error("Unresolved extraction units");
   const blocks=input.blocks.filter(block=>block.quality==="success"&&evidenceText(block));
+  for(const block of blocks)slideShapeLocation(block);
   if(!blocks.length||blocks.some(block=>!block.id||!Number.isInteger(block.unitIndex)||block.unitIndex<1))throw new Error("No complete evidence blocks");
   const units=[...new Map(blocks.map(block=>[unitKey(block),block])).values()];
     const existing=await client.query<{id:string;status:string;artifact_sha256:string}>(`select id,status,artifact_sha256 from knowledge_tree_version where document_id=$1 and source_sha256=$2 and extractor_version=$3 for update`,
@@ -62,7 +70,7 @@ export async function writeExtractedTree(client:PoolClient,input:{documentId:str
       const content=evidenceText(block);
       await client.query(`insert into knowledge_tree_node(version_id,parent_id,ordinal,node_kind,title,heading_path,unit_type,unit_index,source_location,content,content_sha256)
         values($1,$2,$3,'evidence',$4,$5,$6,$7,$8,$9,$10)`,[version.id,parent,ordinal,block.id,[block.section??`${block.unitType} ${block.unitIndex}`],block.unitType,block.unitIndex,
-          JSON.stringify({unitType:block.unitType,unitIndex:block.unitIndex,blockId:block.id,bbox:block.bbox??null,startRow:block.table?.startRow??null,...(spreadsheetLocation(block)??{})}),content,digest(content)]);
+          JSON.stringify({unitType:block.unitType,unitIndex:block.unitIndex,blockId:block.id,bbox:block.bbox??null,startRow:block.table?.startRow??null,...(spreadsheetLocation(block)??{}),...slideShapeLocation(block)}),content,digest(content)]);
     }
     const count=await client.query<{count:string}>("select count(*)::text as count from knowledge_tree_node where version_id=$1",[version.id]);
     if(Number(count.rows[0].count)!==blocks.length+units.length)throw new Error("Tree completeness check failed");

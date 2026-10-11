@@ -4,10 +4,11 @@ from hashlib import sha256
 import json
 import pymupdf
 from pptx import Presentation
+from pptx.enum.shapes import MSO_SHAPE_TYPE
 from openpyxl import load_workbook
 from openpyxl.utils import get_column_letter
 
-EXTRACTOR_VERSION = "layout-v2.0.3"
+EXTRACTOR_VERSION = "layout-v2.0.4"
 
 def _clean(value):
     return " ".join(str("" if value is None else value).replace("\x00", "").split()).strip()
@@ -46,17 +47,24 @@ def extract_pdf(path: Path):
 def extract_pptx(path: Path):
     blocks=[];statuses=[]
     for index,slide in enumerate(Presentation(path).slides,1):
-        found=False
-        for shape_index,shape in enumerate(slide.shapes,1):
-            if getattr(shape,"has_table",False):
-                rows=[[_clean(cell.text) for cell in row.cells] for row in shape.table.rows]
-                if rows:
-                    blocks.append(_block(f"slide-{index}-table-{shape_index}","slide",index,"table",table={"headers":rows[0],"rows":rows[1:],"startRow":2}))
-                    found=True
-            elif getattr(shape,"has_text_frame",False):
-                text="\n".join(_clean(p.text) for p in shape.text_frame.paragraphs if _clean(p.text))
-                if text: blocks.append(_block(f"slide-{index}-text-{shape_index}","slide",index,"paragraph",text));found=True
-        statuses.append("success" if found else "blank")
+        start=len(blocks)
+        def visit(shapes, ordinals=(), shape_ids=()):
+            for ordinal,shape in enumerate(shapes,1):
+                shape_path=(*ordinals,ordinal);id_path=(*shape_ids,shape.shape_id)
+                if shape.shape_type == MSO_SHAPE_TYPE.GROUP:
+                    visit(shape.shapes,shape_path,id_path)
+                    continue
+                key="-".join(map(str,shape_path))
+                location={"shapePath":list(shape_path),"shapeIdPath":list(id_path)}
+                if getattr(shape,"has_table",False):
+                    rows=[[_clean(cell.text) for cell in row.cells] for row in shape.table.rows]
+                    if rows:
+                        blocks.append(_block(f"slide-{index}-table-{key}","slide",index,"table",table={"headers":rows[0],"rows":rows[1:],"startRow":2},**location))
+                elif getattr(shape,"has_text_frame",False):
+                    text="\n".join(_clean(p.text) for p in shape.text_frame.paragraphs if _clean(p.text))
+                    if text: blocks.append(_block(f"slide-{index}-text-{key}","slide",index,"paragraph",text,**location))
+        visit(slide.shapes)
+        statuses.append("success" if len(blocks)>start else "blank")
     return blocks,statuses
 
 def extract_xlsx(path: Path):

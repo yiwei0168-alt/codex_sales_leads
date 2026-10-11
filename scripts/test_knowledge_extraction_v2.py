@@ -5,6 +5,8 @@ import unittest
 
 from openpyxl import Workbook
 import pymupdf
+from pptx import Presentation
+from pptx.util import Inches
 from knowledge_extraction_v2 import extract_file
 
 
@@ -52,6 +54,29 @@ class SpreadsheetCoordinatesTest(unittest.TestCase):
             artifact = extract_file(path, "zero.xlsx")
             self.assertEqual(artifact["qualitySummary"]["success"], 1)
             self.assertEqual(artifact["blocks"][0]["table"]["headers"], ["0"])
+
+
+class PptxGroupTest(unittest.TestCase):
+    def test_nested_text_has_unique_order_and_native_object_paths(self):
+        with TemporaryDirectory() as directory:
+            path = Path(directory) / "groups.pptx"
+            deck = Presentation()
+            slide = deck.slides.add_slide(deck.slide_layouts[6])
+            direct = slide.shapes.add_textbox(0, 0, Inches(1), Inches(1))
+            direct.text = "Direct"
+            group = slide.shapes.add_group_shape()
+            child = group.shapes.add_textbox(0, 0, Inches(1), Inches(1))
+            child.text = "Grouped"
+            nested = group.shapes.add_group_shape()
+            inner = nested.shapes.add_textbox(0, 0, Inches(1), Inches(1))
+            inner.text = "Deep"
+            deck.save(path)
+            artifact = extract_file(path, "groups.pptx")
+            blocks = artifact["blocks"]
+            self.assertEqual([b["text"] for b in blocks], ["Direct", "Grouped", "Deep"])
+            self.assertEqual([b["shapePath"] for b in blocks], [[1], [2, 1], [2, 2, 1]])
+            self.assertEqual(blocks[2]["shapeIdPath"], [group.shape_id, nested.shape_id, inner.shape_id])
+            self.assertEqual(len(set(b["id"] for b in blocks)), 3)
 
 
 class PdfBlankPageTest(unittest.TestCase):

@@ -1,10 +1,17 @@
 import {expect,it,vi} from 'vitest';
 import type {PoolClient} from 'pg';
-import {evidenceText,spreadsheetLocation,writeExtractedTree,type Block} from './extracted-tree';
+import {evidenceText,slideShapeLocation,spreadsheetLocation,writeExtractedTree,type Block} from './extracted-tree';
 
 const block:Block={id:'sheet-1-table',unitType:'sheet',unitIndex:1,blockType:'table',quality:'success',section:'Original',
   table:{headers:['','',''],rows:[['','Value',''],['','',''],['',0,false],['','',''],['',-1.5,'']],
     startRow:2,headerRow:1,startColumn:1,cellRange:'A1:C6'}};
+it('retains native nested shape paths and rejects incomplete locators',()=>{
+  const slide:Block={id:'slide-1-text-2-1',unitType:'slide',unitIndex:1,blockType:'paragraph',quality:'success',text:'grouped',shapePath:[2,1],shapeIdPath:[4,7]};
+  expect(slideShapeLocation(slide)).toEqual({shapePath:[2,1],shapeIdPath:[4,7]});
+  expect(()=>slideShapeLocation({...slide,shapeIdPath:[4]})).toThrow();
+  expect(()=>slideShapeLocation({...slide,shapePath:[0,1]})).toThrow();
+  expect(()=>slideShapeLocation({...slide,unitType:'page'})).toThrow();
+});
 it('preserves explicit source addresses despite blank rows and columns',()=>{
   expect(evidenceText(block)).toBe('B2: Value\nB4: 0\nC4: false\nB6: -1.5');
   expect(spreadsheetLocation(block)).toEqual({sheetName:'Original',cellRange:'A1:C6',headerRow:1,startColumn:1});
