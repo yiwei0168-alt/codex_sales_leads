@@ -31,7 +31,7 @@ it('rejects missing rows and input hash tampering',async()=>{
  db.row=null;await expect(loadRecordedModeRequest(context,selection)).rejects.toThrow('unavailable');
 });
 it.each(['run_input','run_instructions','run_result','run_model_config','run_updated_at'])('revalidates changes to %s',async field=>{
- const first=await loadRecordedModeRequest(context,selection);db.row![field]='changed';
+ const first=await loadRecordedModeRequest(context,selection);db.row![field]=field==='run_input'?{content:'changed'}:'changed';
  await expect(revalidateRecordedModeRequest(context,selection,first.sourceHash)).rejects.toThrow('source changed');
 });
 it('does not allow a caller-supplied owner inside the selection',async()=>{

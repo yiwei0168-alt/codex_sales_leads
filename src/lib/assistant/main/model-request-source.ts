@@ -27,7 +27,8 @@ export async function loadRecordedModeRequest(context:{userId:string},input:Sele
   const prepared=prepareRecordedModeRequest({input:row.input,input_hash:row.input_hash,output:row.output});
   const binding={protocol:'recorded-mode-source-v1' as const,ownerId:owner,runId:p.runId,callId:p.callId,
    rowHash:digest(row),journalHash:prepared.journalHash,requestHash:prepared.requestHash};
-  return {...prepared,serverProvenanceVerified:true as const,binding,sourceHash:digest(binding)};
+  const knowledgeScope=z.object({knowledgeScope:z.array(z.enum(['company','industry','product'])).min(1).max(3).optional()}).parse(row.run_input).knowledgeScope;
+  return {...prepared,knowledgeScope,serverProvenanceVerified:true as const,binding,sourceHash:digest(binding)};
  });
 }
 /** Re-read the authoritative row before use; a saved disk object cannot supply current provenance. */

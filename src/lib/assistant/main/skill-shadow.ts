@@ -26,7 +26,7 @@ export async function shadowRuntimeHash(){
   'src/lib/assistant/main/local-analysis-boundary.ts',
   'src/lib/assistant/main/skill-replay.ts','src/lib/assistant/main/skill-replay-local.ts','src/lib/assistant/main/skill-replay-errors.ts',
   'src/lib/assistant/main/skill-graph-replay.ts','src/lib/assistant/main/graph.ts','src/lib/assistant/main/product.ts',
-  'src/lib/assistant/main/tools.ts','src/lib/assistant/main/model-request-manifest.ts','src/lib/assistant/main/model.ts','src/lib/assistant/main/skill-source-guard.ts',
+  'src/lib/assistant/main/tools.ts','src/lib/assistant/main/model-request-manifest.ts','src/lib/assistant/main/decision-memory-message.ts','src/lib/assistant/main/model.ts','src/lib/assistant/main/skill-source-guard.ts',
   'src/lib/assistant/main/private-replay-guard.ts','src/lib/assistant/main/knowledge-message-guard.ts',
   'src/lib/mailbox/repository.ts','src/lib/mailbox/customer-timeline.ts','package-lock.json'];
  // Runtime hashes require the local source checkout, not a bundle of the whole

@@ -1,0 +1,26 @@
+{
+  "scope": "G08 local evidence snapshot checks for one recorded request",
+  "tests": 90,
+  "testFiles": 10,
+  "cloneChecks": [
+    "local-evidence-guards",
+    "actual-decision-memory-revocation-denied",
+    "exact-request",
+    "cross-account-denied",
+    "wrong-run-denied",
+    "changed-instructions-denied",
+    "cancelled-task-denied",
+    "input-hash-tampering-denied"
+  ],
+  "fixturesRemoved": true,
+  "typecheck": "passed",
+  "lint": "passed",
+  "modelCalls": 0,
+  "networkDisabledInClone": true,
+  "unsupportedToolsAndDiscovery": "rejected pending current contract checks",
+  "sourcePermissionsRevalidated": false,
+  "executionAuthorized": false,
+  "qualityAccepted": false,
+  "wholeTaskReplayComplete": false,
+  "productionDeployed": false
+}
