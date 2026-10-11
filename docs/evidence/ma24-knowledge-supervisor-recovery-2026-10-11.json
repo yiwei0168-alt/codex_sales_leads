@@ -1,0 +1,30 @@
+{
+  "cloneOnly": true,
+  "platform": "win32",
+  "actualSupervisorKills": 2,
+  "descendantsStopped": true,
+  "extractionLeaseHeld": true,
+  "extractionExpiredRecovery": true,
+  "visualLeaseHeld": true,
+  "expiredFinishRejected": true,
+  "visualExpiredRecovery": true,
+  "ocrExecutionsOnResume": 0,
+  "ocrCheckpointReuses": 1,
+  "unrelatedJobUnchanged": true,
+  "v3PointersUnchanged": true,
+  "documentsPublished": 0,
+  "judgments": 0,
+  "externalCalls": 0,
+  "syntheticFixture": true,
+  "qualityAccepted": false,
+  "date": "2026-10-11",
+  "productionDeployed": false,
+  "checks": {
+    "typecheck": "passed",
+    "eslint": "passed",
+    "cleanup": "verified no fixture rows"
+  },
+  "initialFailures": [
+    "Two NODE_OPTIONS fixture runs did not reach extraction; explicit guarded preload propagation passed"
+  ]
+}

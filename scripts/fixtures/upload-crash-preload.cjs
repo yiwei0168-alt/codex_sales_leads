@@ -16,6 +16,14 @@ function checkpoint() {
 const spawn = cp.spawn;
 cp.spawn = function(command,args,options) {
   if (phase === 'extracting' && args?.[0] === 'scripts/extract-uploaded-knowledge.py') checkpoint();
+  // Explicit preload propagation avoids loading pg inside tsx's loader thread
+  // through NODE_OPTIONS. This applies only to this guarded clone fixture.
+  if (args?.[0] === 'scripts/windows-owned-process.py') {
+    const nodeIndex = args.indexOf(process.execPath);
+    if (nodeIndex >= 0) {
+      args = [...args]; args.splice(nodeIndex + 1, 0, '--require', __filename);
+    }
+  }
   return spawn.call(this, command,args,options);
 };
 require('node:module').syncBuiltinESMExports();

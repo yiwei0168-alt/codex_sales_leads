@@ -1,6 +1,9 @@
 import {runBoundedLocalProcess} from './lib/run-bounded-local-process';
 import nextEnv from '@next/env';
 nextEnv.loadEnvConfig(process.cwd());
+const only=process.argv.find(value=>value.startsWith('--job-id='));
+if(only&&!/^--job-id=[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i.test(only))throw new Error('Invalid job ID');
+const scope=only?[only]:[];
 let stopping=false;
 // Graceful shutdown drains the bounded local operation, preserving its receipt.
 process.on('SIGINT',()=>{stopping=true;});process.on('SIGTERM',()=>{stopping=true;});
@@ -12,4 +15,4 @@ async function loop(script:string,args:string[]){
     if(!stopping)await new Promise(done=>setTimeout(done,5000));
   }while(!stopping);
 }
-await Promise.all([loop('scripts/process-knowledge-upload-jobs.ts',['--limit=1']),loop('scripts/process-upload-visual-queue.ts',[])]);
+await Promise.all([loop('scripts/process-knowledge-upload-jobs.ts',['--limit=1',...scope]),loop('scripts/process-upload-visual-queue.ts',scope)]);
