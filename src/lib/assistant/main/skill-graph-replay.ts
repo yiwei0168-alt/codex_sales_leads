@@ -9,7 +9,7 @@ import {LocalReplayError,LOCAL_AGENT_REPLAY_TIMEOUT_MS} from './skill-replay-err
 
 export const SKILL_GRAPH_REPLAY_PROTOCOL='skill-main-graph-replay-v4-native-local-deadline';
 export const SKILL_GRAPH_REPLAY_CONFIG={maxModelCallsPerArm:8,recursionLimit:160,
-  tools:['knowledge_search','knowledge_compare','vectorless_read'],nativeSchema:z.toJSONSchema(modelReplySchema),modelFunctions,
+  tools:['knowledge_search','knowledge_compare','vectorless_read','mail_read','customer_timeline'],nativeSchema:z.toJSONSchema(modelReplySchema),modelFunctions,
   localToolExposure:'execute_tool-after-successful-describe_tool',generation:SKILL_REPLAY_CONFIG.generation,
   timeoutMs:LOCAL_AGENT_REPLAY_TIMEOUT_MS};
 export type GraphReplayArm={status:string;reply:string;messages:ModelMessage[];modelCalls:number;

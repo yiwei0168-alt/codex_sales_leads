@@ -1,16 +1,17 @@
 import {beforeEach,expect,it,vi} from 'vitest';
 import {digest} from './contracts';
-const mocks=vi.hoisted(()=>({query:vi.fn(),guard:vi.fn(),sources:vi.fn(),generate:vi.fn(),generateAgent:vi.fn(),close:vi.fn()}));
+const mocks=vi.hoisted(()=>({query:vi.fn(),guard:vi.fn(),privateGuard:vi.fn(),sources:vi.fn(),generate:vi.fn(),generateAgent:vi.fn(),close:vi.fn()}));
 vi.mock('@/lib/rag/db',()=>({tenantTransaction:async(_u:string,f:(client:unknown)=>unknown)=>f({query:mocks.query})}));
 vi.mock('./skill-source-guard',()=>({skillSourcesCurrent:mocks.sources}));
 vi.mock('./knowledge-message-guard',()=>({assertCurrentKnowledgeMessages:mocks.guard}));
+vi.mock('./private-replay-guard',()=>({assertCurrentPrivateReplayMessages:mocks.privateGuard,PRIVATE_REPLAY_TOOLS:['mail_read','customer_timeline']}));
 vi.mock('./skill-replay-local',()=>({localReplayModel:async()=>({generate:mocks.generate,generateAgent:mocks.generateAgent,close:mocks.close})}));
 import {prepareHistoricalSkillReplay,runHistoricalSkillReplay} from './skill-replay-snapshot';
 const id=(n:number)=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
 const context={userId:id(1)},input={skillId:id(2),version:1,runIds:[id(3)]};
 let version:Record<string,unknown>,run:Record<string,unknown>,calls:Array<Record<string,unknown>>;
 beforeEach(()=>{
-  vi.clearAllMocks();mocks.sources.mockResolvedValue(true);mocks.guard.mockResolvedValue(undefined);mocks.generate.mockResolvedValue({kind:'answer',text:'Synthetic answer'});
+  vi.clearAllMocks();mocks.sources.mockResolvedValue(true);mocks.guard.mockResolvedValue(undefined);mocks.privateGuard.mockResolvedValue(undefined);mocks.generate.mockResolvedValue({kind:'answer',text:'Synthetic answer'});
   mocks.generateAgent.mockResolvedValue({role:'assistant',content:'Synthetic native answer'});
   const files={'SKILL.md':'Check original evidence.'};
   version={files,content_hash:digest(files),dependencies:[],source:'user',validation:{},scope:'account',owner_id:context.userId};
@@ -27,7 +28,7 @@ it('binds owned saved messages and receipts to a historical suite and checks cur
 });
 it.each(['effect','version','hash','status','unsupported','empty','oversized'] as const)('rejects %s receipt sets',async kind=>{
   if(kind==='effect')calls[0].effect='send';if(kind==='version')calls[0].tool_version='2';if(kind==='hash')calls[0].input_hash='wrong';
-  if(kind==='status')calls[0].status='started';if(kind==='unsupported')calls[0].tool_id='mail_read';
+  if(kind==='status')calls[0].status='started';if(kind==='unsupported')calls[0].tool_id='mail_send';
   if(kind==='empty')calls=[];if(kind==='oversized')calls=Array(25).fill(calls[0]);
   await expect(prepareHistoricalSkillReplay(context,input)).rejects.toThrow();expect(mocks.generate).not.toHaveBeenCalled();
 });
@@ -71,4 +72,12 @@ it('binds main model receipts without exposing them as replay evidence',async()=
   expect(snapshot.bindings[0].calls[1].effect).toBe('model');
   calls[1].input_hash='invalid';
   await expect(prepareHistoricalSkillReplay(context,{skillId:id(2),version:1,runIds:[id(3)]})).rejects.toThrow('model receipt invalid');
+});
+it.each(['mail_read','customer_timeline'])('requires live local source revalidation for %s histories',async tool=>{
+  const args=tool==='mail_read'?{messageId:id(6)}:{customerId:id(6),offset:0};
+  calls=[{...calls[0],tool_id:tool,input:args,input_hash:digest(args),output:{status:'success',data:{id:id(6)}}}];
+  const snapshot=await prepareHistoricalSkillReplay(context,input);expect(snapshot.suite.cases[0].receipts[0].tool).toBe(tool);
+  expect(mocks.privateGuard).toHaveBeenCalledWith(context.userId,expect.any(Array));
+  mocks.privateGuard.mockRejectedValue(new Error('Private source revoked'));
+  await expect(prepareHistoricalSkillReplay(context,input)).rejects.toThrow('revoked');
 });

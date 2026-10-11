@@ -3,6 +3,7 @@ import {tenantTransaction} from '@/lib/rag/db';
 import {digest,toolResultSchema,type ExecutionContext,type ModelMessage} from './contracts';
 import {skillSourcesCurrent,type SourcedSkillVersion} from './skill-source-guard';
 import {assertCurrentKnowledgeMessages} from './knowledge-message-guard';
+import {assertCurrentPrivateReplayMessages,PRIVATE_REPLAY_TOOLS} from './private-replay-guard';
 import {skillReplaySuiteSchema,runSkillReplay,type ReplayPair} from './skill-replay';
 import {localReplayModel} from './skill-replay-local';
 import {runGraphSkillReplay,type GraphReplayPair} from './skill-graph-replay';
@@ -10,7 +11,7 @@ import {runGraphSkillReplay,type GraphReplayPair} from './skill-graph-replay';
 export const historicalSkillReplayInput=z.object({skillId:z.uuid(),version:z.number().int().positive(),
   runIds:z.array(z.uuid()).min(1).max(20).refine(ids=>new Set(ids).size===ids.length)}).strict();
 type SnapshotInput=z.infer<typeof historicalSkillReplayInput>;
-const supported=new Set(['knowledge_search','knowledge_compare','vectorless_read']);
+const supported=new Set(['knowledge_search','knowledge_compare','vectorless_read',...PRIVATE_REPLAY_TOOLS]);
 const model={name:'qwen3:8b' as const,digest:'500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41'};
 type Call={id:string;tool_id:string;tool_version:string;effect:string;status:string;input_hash:string;input:Record<string,unknown>;output:unknown};
 
@@ -73,7 +74,10 @@ export async function prepareHistoricalSkillReplay(context:Pick<ExecutionContext
     return {suite,bindings,evidenceGroups};
   });
   // This guard re-reads current ACL, document/release hashes, raw content and verified-fact state.
-  for(const group of snapshot.evidenceGroups)await assertCurrentKnowledgeMessages(context.userId,group.messages,group.scope);
+  for(const group of snapshot.evidenceGroups){
+    await assertCurrentKnowledgeMessages(context.userId,group.messages,group.scope);
+    await assertCurrentPrivateReplayMessages(context.userId,group.messages);
+  }
   return {suite:snapshot.suite,bindings:snapshot.bindings,bindingHash:digest(snapshot.bindings),suiteHash:digest(snapshot.suite)};
 }
 
