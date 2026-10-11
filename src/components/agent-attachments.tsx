@@ -1,12 +1,18 @@
 "use client";
 
-import {useState} from "react";
+import {useId,useRef,useState} from "react";
 import {WorkspaceDialog} from './workspace-dialog';
 
 type Asset={assetId:string;title:string;scope:string};
 type LibraryItem={assetId?:string;title:string;scope:string};
 
 export function AgentAttachments({selected,onChange}:{selected:string[];onChange:(ids:string[])=>void}){
+  const dialogId=useId();
+  const requestId=useRef(0);
+  const lastRequest=useRef({offset:0,query:""});
+  const [known,setKnown]=useState<Record<string,Asset>>({});
+  const [loaded,setLoaded]=useState(false);
+  const [error,setError]=useState("");
   const [open,setOpen]=useState(false);
   const [assets,setAssets]=useState<Asset[]>([]);
   const [offset,setOffset]=useState(0),[more,setMore]=useState(false),[query,setQuery]=useState('');
@@ -14,19 +20,24 @@ export function AgentAttachments({selected,onChange}:{selected:string[];onChange
   const [entityKey,setEntityKey]=useState("");
   const [busy,setBusy]=useState(false);
   const [notice,setNotice]=useState("");
-  async function refresh(nextOffset=0){
-    setBusy(true);setNotice("");
+  async function refresh(nextOffset=0,search=query){
+    lastRequest.current={offset:nextOffset,query:search};
+    const request=++requestId.current;
+    setBusy(true);setError("");setLoaded(false);
     try{
       const pages=await Promise.all(["private","shared"].map(async scope=>{
-        const response=await fetch(`/api/knowledge/library?scope=${scope}&offset=${nextOffset}&q=${encodeURIComponent(query)}`,{cache:"no-store"});
+        const response=await fetch(`/api/knowledge/library?scope=${scope}&offset=${nextOffset}&q=${encodeURIComponent(search)}`,{cache:"no-store"});
         const body=await response.json() as {items?:LibraryItem[];error?:string;hasMore?:boolean};
         if(!response.ok)throw new Error(body.error??"资料读取失败");
         return {items:body.items??[],hasMore:body.hasMore??false};
       }));
-      setAssets([...new Map(pages.flatMap(page=>page.items).filter((item):item is Asset=>Boolean(item.assetId)).map(item=>[item.assetId,item])).values()]);
+      if(request!==requestId.current)return;
+      const items=[...new Map(pages.flatMap(page=>page.items).filter((item):item is Asset=>Boolean(item.assetId)).map(item=>[item.assetId,item])).values()];
+      setAssets(items);setLoaded(true);
+      setKnown(previous=>({...previous,...Object.fromEntries(items.map(item=>[item.assetId,item]))}));
       setOffset(nextOffset);setMore(pages.some(page=>page.hasMore));
-    }catch(error){setNotice(error instanceof Error?error.message:"资料读取失败");}
-    finally{setBusy(false);}
+    }catch(error){if(request===requestId.current)setError(error instanceof Error?error.message:"资料读取失败");}
+    finally{if(request===requestId.current)setBusy(false);}
   }
   async function upload(file:File){
     if(collection==="product"&&!entityKey.trim()){setNotice("产品资料需要填写型号或 SKU");return;}
@@ -42,12 +53,15 @@ export function AgentAttachments({selected,onChange}:{selected:string[];onChange
     finally{setBusy(false);}
   }
   return <div className="ai-attachment-control">
-    <button type="button" aria-expanded={open} onClick={()=>{setOpen(!open);if(!open)void refresh();}}>资料 {selected.length?`(${selected.length})`:"＋"}</button>
-    {open&&<WorkspaceDialog title="本次任务资料" onClose={()=>setOpen(false)}>
-      <div><strong>本次任务资料</strong><button type="button" disabled={busy} onClick={()=>void refresh()}>刷新已处理资料</button></div>
+    <button type="button" aria-expanded={open} aria-haspopup="dialog" aria-controls={open?dialogId:undefined} onClick={()=>{setOpen(!open);if(!open)void refresh();}}>资料 {selected.length?`(${selected.length})`:"＋"}</button>
+    {open&&<WorkspaceDialog id={dialogId} title="本次任务资料" onClose={()=>setOpen(false)}>
+      <div><button type="button" disabled={busy} onClick={()=>void refresh()}>刷新已处理资料</button></div>
       <p>仅选择已有原件；未完成提取的文件不会进入任务。</p>
       <div><input aria-label="搜索资料" value={query} onChange={event=>setQuery(event.target.value)} placeholder="搜索标题或内容"/><button disabled={busy} onClick={()=>void refresh(0)}>搜索</button></div>
-      <div className="ai-attachment-list">{assets.length?assets.map(asset=><label key={asset.assetId}><input type="checkbox" checked={selected.includes(asset.assetId)} onChange={event=>onChange(event.target.checked?[...selected,asset.assetId]:selected.filter(id=>id!==asset.assetId))}/><span>{asset.title} · {asset.scope==="private"?"私有":"共享"}</span></label>):<small>暂无可选择的已注册原件。</small>}</div>
+      {selected.length>0&&<section aria-label="已选资料" className="ai-attachment-selected"><h3>已选资料（{selected.length}）</h3>{selected.map((id,index)=><div key={id}><span>{known[id]?.title??`已选资料 ${index+1}（名称待加载）`}</span><button type="button" aria-label={`移除 ${known[id]?.title??`已选资料 ${index+1}`}`} onClick={()=>onChange(selected.filter(value=>value!==id))}>移除</button></div>)}</section>}
+      {!loaded&&!error&&<p role="status">正在读取资料…</p>}
+      {error&&<div role="alert">{error}<button type="button" disabled={busy} onClick={()=>void refresh(lastRequest.current.offset,lastRequest.current.query)}>重试读取资料</button></div>}
+      <div className="ai-attachment-list">{loaded&&(assets.length?assets.map(asset=><label key={asset.assetId}><input type="checkbox" checked={selected.includes(asset.assetId)} onChange={event=>onChange(event.target.checked?[...selected,asset.assetId]:selected.filter(id=>id!==asset.assetId))}/><span>{asset.title} · {asset.scope==="private"?"私有":"共享"}</span></label>):<small>暂无匹配的已注册原件。</small>)}</div>
       <nav><button disabled={busy||!offset} onClick={()=>void refresh(Math.max(0,offset-12))}>上一页资料</button><span>第 {offset/12+1} 页 · 已选 {selected.length}</span><button disabled={busy||!more} onClick={()=>void refresh(offset+12)}>下一页资料</button></nav>
       <div className="ai-attachment-upload"><select aria-label="资料类别" value={collection} onChange={event=>setCollection(event.target.value as typeof collection)}><option value="company">公司</option><option value="product">产品</option><option value="industry">行业</option></select>
         {collection==="product"&&<input aria-label="型号或 SKU" value={entityKey} onChange={event=>setEntityKey(event.target.value)} placeholder="型号或 SKU"/>}

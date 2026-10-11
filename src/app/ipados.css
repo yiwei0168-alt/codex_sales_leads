@@ -60,3 +60,7 @@
 .intelligence-theme .ai-attachment-panel{color:var(--fog)}
 .intelligence-theme .ai-composer .ai-attachment-control button{color:#9fc4ff;background:#16375d}
 @media(max-width:620px){.ai-suggestion-grid{grid-template-columns:1fr}.ai-welcome{justify-content:flex-start;padding-top:22px}.ai-chat-panel>header{padding:0 15px}.ai-action-card dl{grid-template-columns:1fr}.ai-action-card dl>div:last-child{grid-column:auto}.ai-citations a{grid-template-columns:minmax(0,1fr) auto}.ai-citations a span{display:none}}
+
+.ai-attachment-selected>div{display:flex;align-items:center;gap:12px;margin-block:6px}
+.ai-attachment-selected span{min-width:0;flex:1;overflow-wrap:anywhere}
+.ai-attachment-selected button{flex:none}

@@ -1,0 +1,46 @@
+import {test,expect} from '@playwright/test';
+import {build} from 'esbuild';
+import {readFile} from 'node:fs/promises';
+let script:string,css:string;
+test.beforeAll(async()=>{
+ const bundle=await build({entryPoints:['tests/browser/attachments-fixture.tsx'],bundle:true,write:false,platform:'browser',format:'iife',jsx:'automatic',define:{'process.env.NODE_ENV':'"production"'}});
+ script=bundle.outputFiles[0].text;
+ css=(await Promise.all(['globals','ipados','conversation-theme','intelligence-theme'].map(name=>readFile(`src/app/${name}.css`,'utf8')))).join('\n');
+});
+test('selection remains visible across pages, search, failure and reopening',async({page})=>{
+ let fail=false,delay=false;
+ await page.route('**/*',async route=>{
+  const url=new URL(route.request().url());
+  if(url.pathname==='/')return route.fulfill({contentType:'text/html',body:'<meta charset="utf-8"><div id="root"></div>'});
+  if(url.pathname!=='/api/knowledge/library')return route.abort();
+  if(delay)await new Promise(resolve=>setTimeout(resolve,400));
+  if(fail)return route.fulfill({status:503,json:{error:'资料暂不可用'}});
+  const offset=Number(url.searchParams.get('offset')),scope=url.searchParams.get('scope');
+  return route.fulfill({json:{items:scope==='private'?[{assetId:`asset-${offset}`,title:offset?'第二页原件':'第一页原件',scope}]:[],hasMore:offset===0}});
+ });
+ await page.goto('https://ui.test/');await page.addStyleTag({content:css});await page.addScriptTag({content:script});
+ await page.evaluate(()=>document.body.classList.add('conversation-theme'));
+ const trigger=page.getByRole('button',{name:/^资料 /});await trigger.click();
+ const dialog=page.getByRole('dialog',{name:'本次任务资料'});
+ await expect(trigger).toHaveAttribute('aria-controls',await dialog.getAttribute('id')??'');
+ await dialog.getByRole('checkbox',{name:'第一页原件 · 私有'}).check();
+ await dialog.getByRole('button',{name:'下一页资料'}).click();
+ await dialog.getByRole('checkbox',{name:'第二页原件 · 私有'}).check();
+ const selected=dialog.getByRole('region',{name:'已选资料'});
+ await expect(selected).toContainText('第一页原件');await expect(selected).toContainText('第二页原件');
+ fail=true;await dialog.getByRole('button',{name:'刷新已处理资料'}).click();
+ await expect(dialog.getByRole('alert')).toContainText('资料暂不可用');
+ await expect(selected).toContainText('第一页原件');await expect(dialog.getByText('暂无匹配的已注册原件。')).toHaveCount(0);
+ fail=false;delay=true;await dialog.getByRole('button',{name:'重试读取资料'}).click();
+ await expect(dialog.getByRole('status')).toHaveText('正在读取资料…');
+ await expect(dialog.getByRole('alert')).toHaveCount(0);
+ await expect(dialog.getByRole('checkbox',{name:'第一页原件 · 私有'})).toBeChecked();
+ await dialog.getByRole('textbox',{name:'搜索资料'}).fill('原件');await dialog.getByRole('button',{name:'搜索',exact:true}).click();
+ await expect(dialog.getByRole('checkbox',{name:'第一页原件 · 私有'})).toBeChecked();
+ await selected.getByRole('button',{name:'移除 第二页原件'}).click();
+ await expect(selected).not.toContainText('第二页原件');
+ await page.keyboard.press('Escape');await expect(dialog).toHaveCount(0);await expect(trigger).toBeFocused();
+ await trigger.click();await expect(dialog.getByRole('checkbox',{name:'第一页原件 · 私有'})).toBeChecked();
+ await expect.poll(()=>dialog.evaluate(el=>el.scrollWidth<=el.clientWidth+1)).toBe(true);
+ await page.screenshot({path:`tmp/attachments-${page.viewportSize()!.width}.png`});
+});

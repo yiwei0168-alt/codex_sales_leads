@@ -1,0 +1,24 @@
+{
+  "scope": "G13/F08 isolated attachment selector",
+  "browserTests": 2,
+  "viewports": [
+    "1366x900",
+    "390x844"
+  ],
+  "checks": [
+    "cross-page selection visible and removable",
+    "search preserves selection",
+    "503 preserves selection and retries original request",
+    "loading distinct from empty",
+    "Escape and focus restoration",
+    "dialog ID association",
+    "no dialog horizontal overflow"
+  ],
+  "typecheck": "passed",
+  "lint": "passed",
+  "visualInspection": "mobile conversation-theme screenshot",
+  "network": "fully intercepted synthetic responses",
+  "modelCalls": 0,
+  "productionDeployed": false,
+  "fullG13Accepted": false
+}
