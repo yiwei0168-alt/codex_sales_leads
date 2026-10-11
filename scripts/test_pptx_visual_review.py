@@ -12,10 +12,27 @@ from PIL import Image
 from pptx import Presentation
 from pptx.util import Inches
 from pptx.enum.shapes import MSO_CONNECTOR
-from prepare_pptx_visual_review import connector_candidate, diagram_candidate, resolve_shape, visible_image, main
+from prepare_pptx_visual_review import connector_candidate, diagram_candidate, resolve_shape, visible_image, main, checkpoint_lines
 
 
 class VisualReviewTest(unittest.TestCase):
+    def test_checkpoint_corruption_and_interrupted_atomic_write(self):
+        with tempfile.TemporaryDirectory(dir=Path.cwd() / "tmp") as temp:
+            folder = Path(temp); image_hash = "a" * 64
+            lines = [{"text": "unreviewed", "confidence": .8, "box": [[0, 0]]}]
+            self.assertEqual(checkpoint_lines(folder, image_hash, lambda: lines), (lines, False))
+            def forbidden(): raise AssertionError("Must reuse complete checkpoint")
+            self.assertEqual(checkpoint_lines(folder, image_hash, forbidden), (lines, True))
+            file = folder / f"{image_hash}.json"
+            file.write_text('{"body":', encoding="utf-8")
+            self.assertEqual(checkpoint_lines(folder, image_hash, lambda: lines), (lines, False))
+            stored = json.loads(file.read_text(encoding="utf-8")); stored["body"]["lines"][0]["text"] = "changed"
+            file.write_text(json.dumps(stored), encoding="utf-8")
+            with patch("prepare_pptx_visual_review.os.replace", side_effect=RuntimeError("interrupted")):
+                with self.assertRaises(RuntimeError): checkpoint_lines(folder, image_hash, lambda: lines)
+            self.assertEqual(list(folder.glob("*.tmp")), [])
+            self.assertEqual(checkpoint_lines(folder, image_hash, lambda: lines), (lines, False))
+
     def test_all_batches_cover_101_distinct_images_without_accepting_quality(self):
         # Real PPTX serialization/crops/package output; OCR is a deterministic local stub.
         with tempfile.TemporaryDirectory(dir=Path.cwd() / "tmp") as temp:

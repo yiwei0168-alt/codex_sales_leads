@@ -5,10 +5,42 @@ from hashlib import sha256
 import argparse
 import json
 import socket
+import os
+import uuid
 import xml.etree.ElementTree as ET
 
 from PIL import Image
 from pptx import Presentation
+
+
+def checkpoint_lines(directory, image_hash, produce):
+    """Checkpoints remain unreviewed candidates; corrupt/incomplete files are recomputed."""
+    path = directory / f"{image_hash}.json" if directory else None
+    if path:
+        try:
+            stored = json.loads(path.read_text(encoding="utf-8"))
+            body = stored["body"]
+            if (body["imageSha256"] == image_hash and isinstance(body["lines"], list)
+                    and stored["sha256"] == sha256(json.dumps(body, sort_keys=True, allow_nan=False).encode()).hexdigest()
+                    and all(isinstance(line["text"], str) and isinstance(line["confidence"], (int, float))
+                            and isinstance(line["box"], list) for line in body["lines"])):
+                return body["lines"], True
+        except (OSError, ValueError, KeyError, TypeError):
+            pass
+    lines = produce()
+    if path:
+        body = {"imageSha256": image_hash, "lines": lines}
+        data = json.dumps({"body": body, "sha256": sha256(json.dumps(body, sort_keys=True, allow_nan=False).encode()).hexdigest()}, allow_nan=False)
+        temporary = path.with_suffix(f".{uuid.uuid4().hex}.tmp")
+        try:
+            with temporary.open("x", encoding="utf-8") as stream:
+                stream.write(data); stream.flush(); os.fsync(stream.fileno())
+            os.replace(temporary, path)
+        except OSError as error:
+            raise RuntimeError("Unable to persist OCR checkpoint") from error
+        finally:
+            temporary.unlink(missing_ok=True)
+    return lines, False
 
 
 def connector_candidate(shape):
@@ -88,6 +120,7 @@ def main():
     parser.add_argument("--output", required=True)
     parser.add_argument("--max-unique-images", type=int, default=50)
     parser.add_argument("--all-batches", action="store_true", help="Process successive bounded image batches before publishing the package")
+    parser.add_argument("--checkpoint-dir", help="Owned job-local checkpoint root for interrupted retries")
     parser.add_argument("--block-id", action="append", default=[], help="Process only selected unresolved object IDs")
     args = parser.parse_args()
     root = Path.cwd().resolve()
@@ -121,6 +154,16 @@ def main():
     names = ["PP-OCRv6_det_small.onnx", "ch_ppocr_mobile_v2.0_cls_mobile.onnx", "PP-OCRv6_rec_small.onnx"]
     if not all((models/name).is_file() for name in names):
         raise ValueError("Existing local OCR models required; downloads disabled")
+    model_hashes = {name: sha256((models/name).read_bytes()).hexdigest() for name in names}
+    checkpoint = None
+    if args.checkpoint_dir:
+        checkpoint_root = Path(args.checkpoint_dir).resolve()
+        if root not in checkpoint_root.parents:
+            raise ValueError("Checkpoint directory must remain in workspace")
+        identity = dict(source=source_hash, artifact=sha256(artifact.read_bytes()).hexdigest(), models=model_hashes,
+                        implementation=sha256(Path(__file__).read_bytes()).hexdigest())
+        checkpoint = checkpoint_root / sha256(json.dumps(identity, sort_keys=True).encode()).hexdigest()
+        checkpoint.mkdir(parents=True, exist_ok=True)
     def deny_network(*_args, **_kwargs):
         raise RuntimeError("Network disabled during local visual review")
     socket.socket.connect = deny_network
@@ -134,6 +177,7 @@ def main():
     })
     cache, records = {}, []
     processed_images, image_batches = 0, 0
+    reused_images = 0
     for block, shape in zip(pending, shapes):
         record = {"blockId": block["id"], "unitIndex": block["unitIndex"], "shapePath": block["shapePath"],
                   "shapeIdPath": block["shapeIdPath"], "status": "review-required"}
@@ -161,12 +205,15 @@ def main():
                 if not cache:
                     image_batches += 1
                 (output/f"{image_hash}.png").write_bytes(data)
-                result = engine(np.asarray(image), text_score=0.35)
-                lines = [{"text": text, "confidence": float(score), "box": np.asarray(box).tolist()}
-                         for text, score, box in zip(result.txts if result.txts is not None else [],
-                             result.scores if result.scores is not None else [], result.boxes if result.boxes is not None else [])]
+                def produce():
+                    result = engine(np.asarray(image), text_score=0.35)
+                    return [{"text": text, "confidence": float(score), "box": np.asarray(box).tolist()}
+                            for text, score, box in zip(result.txts if result.txts is not None else [],
+                                result.scores if result.scores is not None else [], result.boxes if result.boxes is not None else [])]
+                lines, reused = checkpoint_lines(checkpoint, image_hash, produce)
                 cache[image_hash] = lines
-                processed_images += 1
+                processed_images += int(not reused)
+                reused_images += int(reused)
             record["imageFile"] = f"{image_hash}.png"
             record["ocrLines"] = cache[image_hash]
             record["reason"] = "ocr-candidate-requires-visual-review" if cache[image_hash] else "no-text-image-still-requires-review"
@@ -176,10 +223,10 @@ def main():
         records.append(record)
     review = {"schema": "pptx-visual-review-candidates-v1", "sourceSha256": source_hash,
               "extractionArtifactSha256": sha256(artifact.read_bytes()).hexdigest(),
-              "modelSha256": {name: sha256((models/name).read_bytes()).hexdigest() for name in names},
+              "modelSha256": model_hashes,
               "records": records, "totalUnresolvedObjects": total_pending, "selectedObjects": len(pending),
               "uniqueImagesProcessed": len({r["imageFile"] for r in records if "imageFile" in r}),
-              "imageExecutions": processed_images, "imageBatches": image_batches,
+              "imageExecutions": processed_images, "checkpointReuses": reused_images, "imageBatches": image_batches,
               "batchImageLimit": args.max_unique_images, "allBatches": args.all_batches, "externalCalls": 0,
               "qualityAccepted": False, "extractionStatusChanged": False}
     (output/"review.json").write_text(json.dumps(review, ensure_ascii=False, indent=2), encoding="utf-8")

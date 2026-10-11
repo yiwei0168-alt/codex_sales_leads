@@ -6,6 +6,9 @@ import json
 import subprocess
 import sys
 import tempfile
+import time
+import os
+import signal
 from PIL import Image, ImageDraw
 from pptx import Presentation
 
@@ -23,17 +26,53 @@ with tempfile.TemporaryDirectory(dir=root / "tmp") as temp:
     deck.save(source)
     artifact.write_text(json.dumps(dict(sourceSha256=sha256(source.read_bytes()).hexdigest(), blocks=blocks)), encoding="utf-8")
     output = folder / "output"
-    subprocess.run([sys.executable, str(root / "scripts/prepare_pptx_visual_review.py"), "--input", str(source),
-                    "--artifact", str(artifact), "--output", str(output), "--max-unique-images", "2", "--all-batches"],
-                   check=True, timeout=300)
+    command = [sys.executable, str(root / "scripts/prepare_pptx_visual_review.py"), "--input", str(source),
+                    "--artifact", str(artifact), "--output", str(output), "--max-unique-images", "2", "--all-batches",
+                    "--checkpoint-dir", str(folder / "checkpoints")]
+    crashed = False
+    if "--crash" in sys.argv:
+        crash_command = command.copy(); crash_command[1] = str(root / "scripts/fixtures/visual-checkpoint-crash.py")
+        with (folder / "crash-stderr.txt").open("w", encoding="utf-8") as log, subprocess.Popen(crash_command, stdout=subprocess.DEVNULL, stderr=log) as child:
+            try:
+                marker = folder / "checkpoint-committed.marker"
+                deadline = time.monotonic() + 90
+                while not marker.exists() and child.poll() is None and time.monotonic() < deadline:
+                    time.sleep(.1)
+                assert marker.exists(), (folder / "crash-stderr.txt").read_text(encoding="utf-8")
+                # Windows venv python.exe may launch the interpreter as its child.
+                # The guarded probe writes its own PID into this unique temporary directory.
+                interpreter_pid = int(marker.read_text(encoding="ascii")); assert interpreter_pid > 0 and child.poll() is None
+                os.kill(interpreter_pid, signal.SIGTERM); assert child.wait(timeout=10) != 0
+                assert not (output / "review.json").exists()
+                crashed = True
+            finally:
+                if child.poll() is None: child.kill(); child.wait(timeout=10)
+    subprocess.run(command, check=True, timeout=300)
     result = json.loads((output / "review.json").read_text(encoding="utf-8"))
     assert result["imageBatches"] == 2 and result["uniqueImagesProcessed"] == 3
     assert result["qualityAccepted"] is False and result["extractionStatusChanged"] is False
     assert len(result["records"]) == 3 and result["externalCalls"] == 0
+    if crashed:
+        assert result["checkpointReuses"] == 1 and result["imageExecutions"] == 2
     for record in result["records"]:
         assert record["reason"] != "local-image-budget-exhausted"
         assert sha256((output / record["imageFile"]).read_bytes()).hexdigest() == record["reviewImageSha256"]
+    resumed = folder / "resumed"
+    command[command.index("--output") + 1] = str(resumed)
+    subprocess.run(command, check=True, timeout=300)
+    replay = json.loads((resumed / "review.json").read_text(encoding="utf-8"))
+    assert replay["imageExecutions"] == 0 and replay["checkpointReuses"] == 3
+    assert replay["records"] == result["records"]
+    # A changed extraction artifact must never reuse earlier OCR checkpoints.
+    artifact.write_text(artifact.read_text(encoding="utf-8") + "\n", encoding="utf-8")
+    changed = folder / "changed"
+    command[command.index("--output") + 1] = str(changed)
+    subprocess.run(command, check=True, timeout=300)
+    fresh = json.loads((changed / "review.json").read_text(encoding="utf-8"))
+    assert fresh["imageExecutions"] == 3 and fresh["checkpointReuses"] == 0
     evidence = dict(syntheticBoundaryProbe=True, actualLocalRapidOCR=True, objects=3, batches=2, batchLimit=2,
-                    allImagesHashVerified=True, qualityAccepted=False, externalCalls=0, productionDeployed=False)
+                    allImagesHashVerified=True, actualProcessKilled=crashed, reusedAfterCrash=1 if crashed else 0,
+                    checkpointReplayExecutions=0, checkpointReuses=3, changedArtifactRejectsReuse=True,
+                    qualityAccepted=False, externalCalls=0, productionDeployed=False)
     (root / "tmp/pptx-visual-batches-result.json").write_text(json.dumps(evidence, indent=2), encoding="utf-8")
     print(json.dumps(evidence))
