@@ -1,0 +1,47 @@
+import {test,expect} from '@playwright/test';
+import {build} from 'esbuild';
+import {readFile} from 'node:fs/promises';
+let script:string,css:string;
+test.beforeAll(async()=>{
+ script=(await build({entryPoints:['tests/browser/revisions-fixture.tsx'],bundle:true,write:false,platform:'browser',format:'iife',jsx:'automatic',define:{'process.env.NODE_ENV':'"production"'}})).outputFiles[0].text;
+ css=(await Promise.all(['globals','ipados','conversation-theme','intelligence-theme'].map(name=>readFile(`src/app/${name}.css`,'utf8')))).join('\n');
+});
+test('version paging never shows stale content as the requested page',async({page})=>{
+ let fail=false;const offsets:number[]=[];
+ await page.route('**/*',async route=>{
+  const url=new URL(route.request().url());
+  if(url.pathname==='/')return route.fulfill({contentType:'text/html',body:'<meta charset="utf-8"><div id="root"></div>'});
+  if(url.pathname!=='/api/knowledge/library/history')return route.abort();
+  const offset=Number(url.searchParams.get('offset'));offsets.push(offset);
+  await new Promise(resolve=>setTimeout(resolve,350));
+  if(fail)return route.fulfill({status:503,json:{error:'unavailable'}});
+  const second=url.searchParams.get('document')==='second';
+  return route.fulfill({json:{items:second?[]:[{id:`v${offset}`,title:`历史版本${offset}`,time:'2026-10-11',content:'原文'+('long-source-'.repeat(80)),reconstructed:true,truncated:true}],hasMore:!second&&offset===0}});
+ });
+ await page.goto('https://ui.test/');await page.addStyleTag({content:css});await page.addScriptTag({content:script});
+ await page.evaluate(()=>document.body.classList.add('conversation-theme'));
+ const outer=page.locator('summary').filter({hasText:'历史内容版本'});
+ await outer.click();await expect(page.getByRole('status')).toHaveText('正在读取版本…');
+ await expect(page.getByText('没有历史版本')).toHaveCount(0);
+ await page.locator('summary').filter({hasText:'历史版本0'}).click();
+ await expect(page.getByText(/旧版本由历史检索片段重建/)).toBeVisible();
+ await expect(page.getByText(/此处仅预览前5000字/)).toBeVisible();
+ await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+ fail=true;await page.getByRole('button',{name:'下一页版本'}).click();
+ await expect(page.getByRole('button',{name:'下一页版本'})).toBeDisabled();
+ await expect(page.getByRole('button',{name:'上一页版本'})).toBeDisabled();
+ await expect(page.locator('summary').filter({hasText:'历史版本0'})).toHaveCount(0);
+ await expect(page.getByRole('alert')).toContainText('版本读取失败');
+ fail=false;await page.getByRole('button',{name:'重试',exact:true}).click();
+ await expect(page.locator('summary').filter({hasText:'历史版本10'})).toBeVisible();
+ await expect(page.getByRole('alert')).toHaveCount(0);
+ await outer.click();await outer.click();await expect(page.getByRole('status')).toBeVisible();
+ await expect.poll(()=>offsets.length).toBe(4);await outer.click();
+ await page.waitForTimeout(400);await expect(page.getByRole('alert')).toHaveCount(0);
+ await outer.click();
+ await expect(page.locator('summary').filter({hasText:'历史版本10'})).toBeVisible();
+ await page.getByRole('button',{name:'切换文档'}).click();
+ await expect(page.locator('details').first()).not.toHaveAttribute('open','');
+ await outer.click();await expect(page.getByText('没有历史版本')).toBeVisible();
+ expect(offsets).toEqual([0,10,10,10,10,0]);
+});

@@ -1,0 +1,25 @@
+{
+  "scope": "G13/F10 history disclosure",
+  "browserTests": 2,
+  "viewports": [
+    "1366x900",
+    "390x844"
+  ],
+  "checks": [
+    "loading disables pagination",
+    "stale content hidden after page change and failure",
+    "retry same offset",
+    "abort in-flight read and reopen",
+    "new document resets history",
+    "empty state only on successful read",
+    "nested version disclosure",
+    "long content wraps",
+    "truncation and reconstruction disclosures retained"
+  ],
+  "typecheck": "passed",
+  "lint": "passed",
+  "network": "synthetic intercepted only",
+  "modelCalls": 0,
+  "productionDeployed": false,
+  "fullG13Accepted": false
+}
