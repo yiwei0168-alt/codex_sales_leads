@@ -6,12 +6,13 @@ import {assertResolvedInsideKnowledgeRoot,safeKnowledgeStorageKey} from './docum
 import type {Block} from './extracted-tree';
 const hash=(bytes:Uint8Array)=>createHash('sha256').update(bytes).digest('hex');
 const sha=z.string().regex(/^[a-f0-9]{64}$/);
+const ocrLines=z.array(z.object({text:z.string(),confidence:z.number(),box:z.array(z.array(z.number()))}));
 const candidate=z.object({blockId:z.string(),unitIndex:z.number().int().positive(),unitType:z.enum(['page','sheet']).optional(),shapePath:z.array(z.number().int().positive()).optional(),shapeIdPath:z.array(z.number().int().positive()).optional(),
   sheetName:z.string().optional(),visualReference:z.object({kind:z.string(),worksheetPart:z.string(),relationshipId:z.string().nullable()}).optional(),
-  sheetObjects:z.array(z.object({kind:z.string(),objectIndex:z.number().int().positive(),anchor:z.string(),text:z.string(),sourcePart:z.string(),images:z.array(z.object({imageIndex:z.number().int().positive(),imageFile:z.string(),reviewImageSha256:sha})).optional()})).optional(),
+  sheetObjects:z.array(z.object({kind:z.string(),objectIndex:z.number().int().positive(),anchor:z.string(),text:z.string(),sourcePart:z.string(),images:z.array(z.object({imageIndex:z.number().int().positive(),imageFile:z.string(),reviewImageSha256:sha,ocrLines:ocrLines.optional()})).optional()})).optional(),
   status:z.literal('review-required'),reason:z.string(),imageFile:z.string().optional(),reviewImageSha256:sha.optional(),
   rotation:z.number().optional(),coordinateSpace:z.string().optional(),
-  ocrLines:z.array(z.object({text:z.string(),confidence:z.number(),box:z.array(z.array(z.number()))})).optional(),
+  ocrLines:ocrLines.optional(),
   diagram:z.object({diagramSha256:sha,points:z.array(z.object({modelId:z.string().nullable(),type:z.string().nullable(),text:z.string()})),connections:z.array(z.record(z.string(),z.string().nullable()))}).optional(),
   connector:z.record(z.string(),z.unknown()).optional(),
 });

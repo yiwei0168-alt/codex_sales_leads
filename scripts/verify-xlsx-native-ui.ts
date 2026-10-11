@@ -29,6 +29,8 @@ try{
   await page.getByText('对象 2 · image',{exact:true}).click();await expect(page.getByText(/Embedded image part:/)).toBeVisible();
   await expect(page.getByRole('img',{name:'工作表对象 2 嵌入图片 1'})).toBeVisible();
   assert(await page.getByRole('img').evaluate((image:HTMLImageElement)=>image.complete&&image.naturalWidth===10));
+  await page.getByText('图片 OCR 候选（0 行，未经审核）',{exact:true}).click();
+  await expect(page.getByText('未识别到文字；不能据此认定为装饰。',{exact:true})).toBeVisible();
   assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
   await expect(page.getByRole('button',{name:'完成审核并提交后续处理'})).toBeDisabled();
   await page.screenshot({path:`tmp/xlsx-visual-local/ui-${width}.png`,fullPage:true});results.push({width,noOverflow:true,nativeObjectsExpandable:true,completionDisabled:true});await page.close();

@@ -81,6 +81,7 @@ export function KnowledgeExtractionReview({jobId,onClose,onComplete}:{jobId:stri
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img alt={`工作表对象 ${object.objectIndex} 嵌入图片 ${image.imageIndex}`} src={`/api/knowledge/uploads/review?format=image&jobId=${jobId}&artifactSha256=${data.artifactSha256}&blockId=${encodeURIComponent(item.block.id)}&objectIndex=${object.objectIndex}&imageIndex=${image.imageIndex}`}/>
                 <figcaption>嵌入原图，未还原工作表中的裁剪、旋转或遮挡。</figcaption>
+                {image.ocrLines&&<details><summary>图片 OCR 候选（{image.ocrLines.length} 行，未经审核）</summary><pre>{image.ocrLines.map(line=>`${line.text}（置信度 ${line.confidence.toFixed(2)}）`).join('\n')||'未识别到文字；不能据此认定为装饰。'}</pre></details>}
               </figure>)}
               <pre>{object.text}</pre></details>)}
             {item.candidate.sheetObjects.length===0&&<p>该视觉对象尚无法解析，请下载原件核对。</p>}

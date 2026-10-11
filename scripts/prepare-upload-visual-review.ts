@@ -34,7 +34,10 @@ try{
   await runBoundedLocalProcess(process.env.PYTHON_BINARY||'python',['scripts/prepare_pdf_visual_review.py','--input',source,'--artifact',artifact,'--output',resolve(folder)],20*60*1000);
   await runBoundedLocalProcess(python,['scripts/ocr_rendered_visual_review.py','--review',resolve(key),'--checkpoint-dir',checkpoints],20*60*1000);
  }
- else if(job.storage_key.toLowerCase().endsWith('.xlsx'))await runBoundedLocalProcess(process.env.PYTHON_BINARY||'python',['scripts/prepare_xlsx_visual_review.py','--input',source,'--artifact',artifact,'--output',resolve(folder)],20*60*1000);
+ else if(job.storage_key.toLowerCase().endsWith('.xlsx')){
+  await runBoundedLocalProcess(process.env.PYTHON_BINARY||'python',['scripts/prepare_xlsx_visual_review.py','--input',source,'--artifact',artifact,'--output',resolve(folder)],20*60*1000);
+  await runBoundedLocalProcess(python,['scripts/ocr_rendered_visual_review.py','--review',resolve(key),'--checkpoint-dir',checkpoints],20*60*1000);
+ }
  else await runBoundedLocalProcess(python,['scripts/prepare_pptx_visual_review.py','--input',source,'--artifact',artifact,'--output',resolve(folder),'--max-unique-images','100','--all-batches','--checkpoint-dir',checkpoints],20*60*1000);
  const review=await readFile(resolve(key)),packageSha256=hash(review);
  const candidates=validateVisualCandidates(review,{sourceSha256:job.source_sha256,artifactSha256:job.metrics.artifactSha256,packageSha256},blocks);

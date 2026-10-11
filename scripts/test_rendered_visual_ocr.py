@@ -27,9 +27,16 @@ class RenderedOCRTest(unittest.TestCase):
                 main(); replay=json.loads(path.read_text(encoding='utf-8')); self.assertEqual(len(calls),1)
                 self.assertEqual(replay['ocrCheckpointReuses'],1); self.assertEqual(first['records'],replay['records'])
                 self.assertFalse(replay['qualityAccepted'])
+                nested=dict(imageIndex=1,imageFile=digest+'.png',reviewImageSha256=digest)
+                payload['schema']='xlsx-visual-review-candidates-v1'
+                payload['records']=[dict(status='review-required',sheetObjects=[dict(images=[nested])])]
+                path.write_text(json.dumps(payload),encoding='utf-8'); main()
+                sheet=json.loads(path.read_text(encoding='utf-8'))
+                self.assertEqual(sheet['records'][0]['sheetObjects'][0]['images'][0]['ocrLines'][0]['text'],'Candidate')
+                self.assertEqual(len(calls),1);self.assertFalse(sheet['qualityAccepted'])
                 (folder/(digest+'.png')).write_bytes(b'changed')
                 with self.assertRaisesRegex(ValueError,'image changed'): main()
-                payload['records'][0]['imageFile']='../other.png'; path.write_text(json.dumps(payload),encoding='utf-8')
+                nested['imageFile']='../other.png'; path.write_text(json.dumps(payload),encoding='utf-8')
                 with self.assertRaisesRegex(ValueError,'render identity'): main()
 
 if __name__=='__main__': unittest.main()

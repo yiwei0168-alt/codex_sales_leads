@@ -16,12 +16,16 @@ def main():
     args=parser.parse_args(); root=Path.cwd().resolve(); path=Path(args.review).resolve(); checkpoint_root=Path(args.checkpoint_dir).resolve()
     if any(root not in p.parents for p in (path,checkpoint_root)): raise ValueError('Workspace paths required')
     original=path.read_bytes(); review=json.loads(original)
-    if (review['schema']!='pdf-visual-review-candidates-v1' or review['qualityAccepted'] is not False
+    if (review['schema'] not in {'pdf-visual-review-candidates-v1','xlsx-visual-review-candidates-v1'} or review['qualityAccepted'] is not False
             or review['extractionStatusChanged'] is not False or review['externalCalls']!=0 or not review['records']):
-        raise ValueError('Unreviewed local PDF candidate package required')
-    for record in review['records']:
+        raise ValueError('Unreviewed local visual candidate package required')
+    if any(record['status']!='review-required' for record in review['records']): raise ValueError('Unreviewed objects required')
+    images=review['records'] if review['schema']=='pdf-visual-review-candidates-v1' else [image for record in review['records'] for obj in record.get('sheetObjects',[]) for image in obj.get('images',[])]
+    if not images:
+        print(json.dumps(dict(images=0,executed=0,reused=0,externalCalls=0,qualityAccepted=False))); return
+    for record in images:
         digest=record['reviewImageSha256']
-        if not re.fullmatch('[a-f0-9]{64}',digest) or record['imageFile']!=digest+'.png' or record['status']!='review-required':
+        if not re.fullmatch('[a-f0-9]{64}',digest) or record['imageFile']!=digest+'.png':
             raise ValueError('Invalid render identity')
         image=path.parent/record['imageFile']
         if sha256(image.read_bytes()).hexdigest()!=digest: raise ValueError('Rendered image changed')
@@ -38,7 +42,7 @@ def main():
         'Det.engine_type':EngineType.ONNXRUNTIME,'Cls.engine_type':EngineType.ONNXRUNTIME,'Rec.engine_type':EngineType.ONNXRUNTIME,
         'Rec.lang_type':LangRec.CH,'Global.text_score':0.35})
     executed=reused=0
-    for record in review['records']:
+    for record in images:
         image_path=path.parent/record['imageFile']
         if sha256(image_path.read_bytes()).hexdigest()!=record['reviewImageSha256']: raise ValueError('Rendered image changed')
         def produce():
@@ -57,6 +61,6 @@ def main():
             stream.write(json.dumps(review,ensure_ascii=False,indent=2,allow_nan=False)); stream.flush(); os.fsync(stream.fileno())
         os.replace(temporary,path)
     finally: temporary.unlink(missing_ok=True)
-    print(json.dumps(dict(pages=len(review['records']),executed=executed,reused=reused,externalCalls=0,qualityAccepted=False)))
+    print(json.dumps(dict(images=len(images),executed=executed,reused=reused,externalCalls=0,qualityAccepted=False)))
 
 if __name__=='__main__': main()

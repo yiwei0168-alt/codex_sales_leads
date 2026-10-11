@@ -29,6 +29,7 @@ try{
  for(const item of after.blocks){
   if(xlsx){
    assert.equal(item.candidate?.sheetName,'Chart');assert.equal(item.candidate?.sheetObjects?.length,2);
+   assert(Array.isArray(item.candidate.sheetObjects[1].images?.[0].ocrLines));
    const bytes=await getExtractionReviewImage(owner,job.id,after.artifactSha256,item.block.id,2,1);assert.equal(bytes.subarray(0,8).toString('hex'),'89504e470d0a1a0a');
    await assert.rejects(()=>getExtractionReviewImage(owner,job.id,after.artifactSha256,item.block.id,1,1));
    await assert.rejects(()=>getExtractionReviewImage(other,job.id,after.artifactSha256,item.block.id,2,1));continue;
