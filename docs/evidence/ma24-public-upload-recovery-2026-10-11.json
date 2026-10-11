@@ -1,0 +1,147 @@
+{
+  "cloneOnly": true,
+  "publicDevelopmentSamples": true,
+  "modelCalls": 0,
+  "externalCalls": 0,
+  "results": [
+    {
+      "format": "page",
+      "phase": "extracting",
+      "actualProcessKilled": true,
+      "leaseProtected": true,
+      "recovered": true,
+      "sourceCoordinates": true,
+      "singleVersion": true,
+      "withdrawnDenied": true
+    },
+    {
+      "format": "page",
+      "phase": "extracted",
+      "actualProcessKilled": true,
+      "leaseProtected": true,
+      "recovered": true,
+      "sourceCoordinates": true,
+      "singleVersion": true,
+      "withdrawnDenied": true
+    },
+    {
+      "format": "page",
+      "phase": "registered",
+      "actualProcessKilled": true,
+      "leaseProtected": true,
+      "recovered": true,
+      "sourceCoordinates": true,
+      "singleVersion": true,
+      "withdrawnDenied": true
+    },
+    {
+      "format": "page",
+      "phase": "tree-transaction",
+      "actualProcessKilled": true,
+      "leaseProtected": true,
+      "recovered": true,
+      "sourceCoordinates": true,
+      "singleVersion": true,
+      "withdrawnDenied": true
+    },
+    {
+      "format": "slide",
+      "phase": "extracting",
+      "actualProcessKilled": true,
+      "leaseProtected": true,
+      "recovered": true,
+      "sourceCoordinates": true,
+      "singleVersion": true,
+      "withdrawnDenied": true
+    },
+    {
+      "format": "slide",
+      "phase": "extracted",
+      "actualProcessKilled": true,
+      "leaseProtected": true,
+      "recovered": true,
+      "sourceCoordinates": true,
+      "singleVersion": true,
+      "withdrawnDenied": true
+    },
+    {
+      "format": "slide",
+      "phase": "registered",
+      "actualProcessKilled": true,
+      "leaseProtected": true,
+      "recovered": true,
+      "sourceCoordinates": true,
+      "singleVersion": true,
+      "withdrawnDenied": true
+    },
+    {
+      "format": "slide",
+      "phase": "tree-transaction",
+      "actualProcessKilled": true,
+      "leaseProtected": true,
+      "recovered": true,
+      "sourceCoordinates": true,
+      "singleVersion": true,
+      "withdrawnDenied": true
+    },
+    {
+      "format": "sheet",
+      "phase": "extracting",
+      "actualProcessKilled": true,
+      "leaseProtected": true,
+      "recovered": true,
+      "sourceCoordinates": true,
+      "singleVersion": true,
+      "withdrawnDenied": true
+    },
+    {
+      "format": "sheet",
+      "phase": "extracted",
+      "actualProcessKilled": true,
+      "leaseProtected": true,
+      "recovered": true,
+      "sourceCoordinates": true,
+      "singleVersion": true,
+      "withdrawnDenied": true
+    },
+    {
+      "format": "sheet",
+      "phase": "registered",
+      "actualProcessKilled": true,
+      "leaseProtected": true,
+      "recovered": true,
+      "sourceCoordinates": true,
+      "singleVersion": true,
+      "withdrawnDenied": true
+    },
+    {
+      "format": "sheet",
+      "phase": "tree-transaction",
+      "actualProcessKilled": true,
+      "leaseProtected": true,
+      "recovered": true,
+      "sourceCoordinates": true,
+      "singleVersion": true,
+      "withdrawnDenied": true
+    }
+  ],
+  "sharedApprovalPreserved": true,
+  "parserFailureTerminal": true,
+  "damagedArtifactTerminal": true,
+  "staleIndexWriterDenied": true,
+  "otherDocumentsUnchanged": true,
+  "v3PointersUnchanged": true,
+  "schema": "public-development-upload-recovery-v1",
+  "extractorVersion": "layout-v2.0.3",
+  "typecheckPassed": true,
+  "lintPassed": true,
+  "fixturesCleaned": true,
+  "qualityAccepted": false,
+  "productionWrites": 0,
+  "limitations": [
+    "Uses developer-exposed files; no independent answer quality evidence.",
+    "Coordinates assertion covers unit type and source availability; complete geometry and semantics not verified.",
+    "PPTX inspection found 26 nested text shapes (335 characters) skipped by current extractor; repair pending.",
+    "Clone database reports development TLS/BYPASSRLS warning; not production hardening acceptance."
+  ]
+}

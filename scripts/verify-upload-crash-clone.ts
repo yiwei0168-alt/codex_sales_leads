@@ -22,7 +22,12 @@ const children=new Set<ChildProcess>();
 const hash=(value:unknown)=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
 const snapshot=async()=>hash((await pool.query(`select id,current_tree_version_id,content_sha256,status from knowledge_document where owner_id is distinct from $1 order by id`,[owner])).rows);
 const pointers=async()=>hash((await pool.query('select * from knowledge_release_pointer_v3 order by scope_kind,owner_id')).rows);
-const samples=[
+const publicDevelopmentSamples=process.argv.includes('--public-development-samples');
+const samples=publicDevelopmentSamples?[
+ {path:'tmp/ma24-public-eval-candidates/itu-handbook-2020.pdf',unit:'page',mime:'application/pdf'},
+ {path:'tmp/ma24-public-eval-candidates/itu-satellite-2025.pptx',unit:'slide',mime:'application/vnd.openxmlformats-officedocument.presentationml.presentation'},
+ {path:'tmp/ma24-public-eval-candidates/itu-ict-2025.xlsx',unit:'sheet',mime:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'},
+]:[
  {path:'knowledge/product/Bluetooth USB Adapter/BU530C_V1.0__Datasheet.pdf',unit:'page',mime:'application/pdf'},
  {path:'knowledge/industry/网络产品品牌与行业研究报告.pptx',unit:'slide',mime:'application/vnd.openxmlformats-officedocument.presentationml.presentation'},
  {path:'knowledge/product/Cudy products list.xlsx',unit:'sheet',mime:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'},
@@ -107,7 +112,7 @@ try{
  assert.equal((await pool.query('select error_code from knowledge_upload_job where id=$1',[damaged.id])).rows[0].error_code,'tree-index-failed');
  assert.equal((await pool.query('select current_tree_version_id from knowledge_document where id=$1',[saved.published_document_id])).rows[0].current_tree_version_id,null);
  assert.equal(await snapshot(),before);assert.equal(await pointers(),releaseBefore);
- await writeFile('tmp/upload-crash-result.json',JSON.stringify({cloneOnly:true,modelCalls:0,externalCalls:0,results,sharedApprovalPreserved:true,parserFailureTerminal:true,damagedArtifactTerminal:true,staleIndexWriterDenied:true,otherDocumentsUnchanged:true,v3PointersUnchanged:true},null,2));
+ await writeFile(publicDevelopmentSamples?'tmp/upload-public-development-crash-result.json':'tmp/upload-crash-result.json',JSON.stringify({cloneOnly:true,publicDevelopmentSamples,modelCalls:0,externalCalls:0,results,sharedApprovalPreserved:true,parserFailureTerminal:true,damagedArtifactTerminal:true,staleIndexWriterDenied:true,otherDocumentsUnchanged:true,v3PointersUnchanged:true},null,2));
 }finally{
  for(const child of children)child.kill();
  await pool.query('delete from knowledge_upload_job where user_id=$1',[owner]);
