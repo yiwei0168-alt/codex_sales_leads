@@ -1,0 +1,26 @@
+{
+  "scope": "G13/F09 execution history and instruction recovery",
+  "unitTests": 3,
+  "browserTests": 2,
+  "viewports": [
+    "1366x900",
+    "390x844"
+  ],
+  "checks": [
+    "persisted event ID deduplication",
+    "large integer event ordering",
+    "40 events accessible from initial 16",
+    "poll restart does not duplicate events",
+    "failed instruction retains draft",
+    "poll success does not clear action failure",
+    "pending action disables duplicate controls",
+    "edits made during request survive its success",
+    "successful unchanged submission clears draft"
+  ],
+  "typecheck": "passed",
+  "lint": "passed",
+  "network": "synthetic intercepted only",
+  "modelCalls": 0,
+  "productionDeployed": false,
+  "fullG13Accepted": false
+}

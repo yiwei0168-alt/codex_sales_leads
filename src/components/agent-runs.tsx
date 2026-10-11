@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import type { RunStatus } from "@/lib/assistant/main/contracts";
-import { parseRunEventPage, type RunEvent } from "@/lib/assistant/main/run-events";
+import { mergeRunEvents, parseRunEventPage, type RunEvent } from "@/lib/assistant/main/run-events";
 import { AgentApprovals } from "./agent-approvals";
 import type { AgentApproval } from "@/lib/assistant/main/approvals";
 
@@ -47,6 +47,7 @@ export function useAgentRuns(conversationId: string | undefined, onUpdated: () =
   const [runs, setRuns] = useState<Run[]>([]);
   const [eventsByRun, setEventsByRun] = useState<Record<string, RunEvent[]>>({});
   const [error, setError] = useState("");
+  const [controlError,setControlError]=useState<{conversationId:string|undefined;message:string}>();
   const [now, setNow] = useState(0);
   useEffect(() => {
     if (!conversationId) return;
@@ -69,10 +70,11 @@ export function useAgentRuns(conversationId: string | undefined, onUpdated: () =
             const events = parseRunEventPage(await response.text());
             if (!events.length || controller.signal.aborted) break;
             cursors.set(run.id, events[events.length - 1].id);
-            setEventsByRun(current => ({ ...current, [run.id]: [...(current[run.id] ?? []), ...events] }));
+            setEventsByRun(current => ({ ...current, [run.id]: mergeRunEvents(current[run.id]??[],events) }));
             if (events.length < 100) break;
           }
         }));
+        if(controller.signal.aborted)return;
         const state = JSON.stringify(data.runs.map(run => [run.id, run.status, run.batch?.status, cursors.get(run.id)]));
         if (prior && state !== prior) onUpdated();
         prior = state; setError("");
@@ -84,36 +86,46 @@ export function useAgentRuns(conversationId: string | undefined, onUpdated: () =
     return () => { controller.abort(); window.clearInterval(timer); window.clearInterval(clock); };
   }, [conversationId, onUpdated]);
   async function control(id: string, action: string, instruction?: string) {
-    setError("");
+    setControlError(undefined);
     try {
       const response = await fetch(`/api/assistant/runs/${id}/control`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action, ...(action === "instruct" ? { content: instruction } : {}) }) });
       if (!response.ok) throw new Error("操作失败，请刷新状态后重试");
-      onUpdated();
-    } catch (reason) { setError(reason instanceof Error ? reason.message : "操作失败"); }
+      onUpdated();return true;
+    } catch (reason) { setControlError({conversationId,message:reason instanceof Error ? reason.message : "操作失败"});return false; }
   }
   async function undo(id: string, version: number) {
     try { const response = await fetch("/api/assistant/memory", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id, version, action: "undo" }) });
       if (!response.ok) throw new Error("偏好已变化，请刷新后核对"); setError(""); onUpdated();
     } catch (reason) { setError(reason instanceof Error ? reason.message : "撤销失败，请重试"); }
   }
-  return { runs: runs.filter(run => run.conversation_id === conversationId), eventsByRun, error, now, control, undo };
+  return { runs: runs.filter(run => run.conversation_id === conversationId), eventsByRun, error:(controlError?.conversationId===conversationId?controlError?.message:undefined)||error, now, control, undo };
 }
 
 export function AgentRunCard({run, events = [], now, onControl, onUndo}: {run: Run; events?: RunEvent[]; now: number;
-  onControl: (id: string, action: string, instruction?: string) => Promise<void>;
+  onControl: (id: string, action: string, instruction?: string) => Promise<boolean>;
   onUndo: (id: string, version: number) => Promise<void>}) {
   const [instruction, setInstruction] = useState("");
   const [eventCount,setEventCount]=useState(16);
+  const [controlling,setControlling]=useState(false);
+  async function control(action:string){
+    if(controlling)return;
+    const submitted=instruction;
+    setControlling(true);
+    try{
+      const accepted=await onControl(run.id,action,action==="instruct"?submitted:undefined);
+      if(accepted&&action==="instruct")setInstruction(current=>current===submitted?"":current);
+    }finally{setControlling(false);}
+  }
   return <section id={`agent-run-${run.id}`} aria-label="当前任务" className="agent-runs ai-run-inline"><article className="agent-run">
       <div className="agent-run-actions"><strong>{labels[run.status]}</strong>
-        {["running", "queued"].includes(run.status) && <button type="button" onClick={() => void onControl(run.id, "pause")}>暂停</button>}
-        {["paused", "partial", "failed"].includes(run.status) && <button type="button" onClick={() => void onControl(run.id, "resume")}>继续</button>}
-        {!["completed", "cancelled"].includes(run.status) && <button type="button" onClick={() => void onControl(run.id, "cancel")}>取消</button>}
+        {["running", "queued"].includes(run.status) && <button type="button" disabled={controlling} onClick={() => void control("pause")}>暂停</button>}
+        {["paused", "partial", "failed"].includes(run.status) && <button type="button" disabled={controlling} onClick={() => void control("resume")}>继续</button>}
+        {!["completed", "cancelled"].includes(run.status) && <button type="button" disabled={controlling} onClick={() => void control("cancel")}>取消</button>}
       </div>
       {run.batch && <p className="agent-batch-state" role="status">{run.batch.status === "pending" ? `GLM Batch ${run.batch.providerStatus === "in_progress" ? "执行中" : "排队或等待结果"}` : run.batch.status === "completed" ? "GLM Batch 结果已保存" : `GLM Batch ${run.batch.status}，请核对`}{` · 已经过 ${elapsed(run.batch.submittedAt, now)} · 查询 ${run.batch.pollCount} 次`}</p>}
       <AgentApprovals items={run.approvals ?? []} />
       {run.memories?.map(memory => <p key={memory.id} className="text-sm">已记住偏好：{memory.key} <button type="button" onClick={() => void onUndo(memory.id, memory.version)}>撤销</button></p>)}
       {events.length > 0 && <details className="agent-run-timeline"><summary>查看执行详情（{events.length} 条）</summary>{events.length>eventCount&&<button onClick={()=>setEventCount(v=>v+32)}>加载更早记录（剩余 {events.length-eventCount} 条）</button>}<ol>{events.slice(-eventCount).map(event => <EventReceipt key={event.id} event={event}/>)}</ol></details>}
-      {["running", "queued", "paused", "partial", "failed"].includes(run.status) && <div className="agent-run-actions"><input aria-label="追加任务要求" value={instruction} onChange={event => setInstruction(event.target.value)} placeholder="追加要求，在下个安全边界生效" /><button type="button" disabled={!instruction.trim()} onClick={() => { void onControl(run.id, "instruct", instruction).then(() => setInstruction("")); }}>追加</button></div>}
+      {["running", "queued", "paused", "partial", "failed"].includes(run.status) && <div className="agent-run-actions"><input aria-label="追加任务要求" value={instruction} onChange={event => setInstruction(event.target.value)} placeholder="追加要求，在下个安全边界生效" /><button type="button" disabled={controlling||!instruction.trim()} onClick={() => void control("instruct")}>追加</button></div>}
     </article></section>;
 }

@@ -16,3 +16,9 @@ export function parseRunEventPage(body: string): RunEvent[] {
   }
   return events;
 }
+
+/** A restarted polling effect may replay an existing cursor page. Persisted event IDs are unique. */
+export function mergeRunEvents(prior:RunEvent[],incoming:RunEvent[]):RunEvent[]{
+  return [...new Map([...prior,...incoming].map(event=>[event.id,event])).values()]
+    .sort((left,right)=>BigInt(left.id)<BigInt(right.id)?-1:BigInt(left.id)>BigInt(right.id)?1:0);
+}
