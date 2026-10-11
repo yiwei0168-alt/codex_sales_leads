@@ -7,6 +7,7 @@ import {tenantTransaction} from '@/lib/rag/db';
 import {assertResolvedInsideKnowledgeRoot,safeKnowledgeStorageKey} from './document-repository';
 import {extractionReadiness} from './extraction-readiness';
 import {slideShapeLocation,type Block} from './extracted-tree';
+import {loadVisualCandidates,readVisualCandidateImage} from './visual-review-candidates';
 
 export class ExtractionReviewConflict extends Error {}
 export const extractionReviewDecision=z.object({
@@ -16,7 +17,7 @@ export const extractionReviewDecision=z.object({
 }).strict().refine(v=>v.decision==='evidence'?v.evidenceText.length>0:v.evidenceText==='');
 
 async function load(client:PoolClient,userId:string,jobId:string){
-  const result=await client.query<{source_sha256:string;extractor_version:string;extraction_artifact_key:string;storage_key:string;byte_size:string;metrics:{artifactSha256:string};title:string;original_filename:string}>(
+  const result=await client.query<{source_sha256:string;extractor_version:string;extraction_artifact_key:string;storage_key:string;byte_size:string;metrics:{artifactSha256:string;visualReviewKey?:string;visualReviewSha256?:string};title:string;original_filename:string}>(
     `select j.source_sha256,j.extractor_version,j.extraction_artifact_key,j.storage_key,j.byte_size::text,j.metrics,j.title,j.original_filename
      from knowledge_upload_job j join app_user u on u.id=j.user_id and u.status='active'
      where j.id=$1 and j.user_id=$2 and j.status='extracted' and j.error_code='extraction-review-required'
@@ -45,12 +46,26 @@ export async function getExtractionReview(userId:string,jobId:string,offset=0){
   z.uuid().parse(jobId);z.number().int().min(0).max(1000000).parse(offset);
   return tenantTransaction(userId,async client=>{
     const {job,blocks}=await load(client,userId,jobId);
+    const candidates=await loadVisualCandidates(job.metrics,job.source_sha256,job.metrics.artifactSha256,blocks);
+    const byCandidate=new Map(candidates?.map(record=>[record.blockId,record]));
     const judgments=await client.query(`select distinct on(block_id) block_id,revision,decision,evidence_text,note,created_at
       from knowledge_upload_extraction_review where owner_id=$1 and job_id=$2 and artifact_sha256=$3 order by block_id,revision desc`,[userId,jobId,job.metrics.artifactSha256]);
     const byBlock=new Map(judgments.rows.map(row=>[row.block_id,row]));
     return {jobId,title:job.title,sourceSha256:job.source_sha256,artifactSha256:job.metrics.artifactSha256,extractorVersion:job.extractor_version,
-      total:blocks.length,offset,blocks:blocks.slice(offset,offset+20).map(block=>({block,judgment:byBlock.get(block.id)??null})),
+      total:blocks.length,offset,blocks:blocks.slice(offset,offset+20).map(block=>({block,judgment:byBlock.get(block.id)??null,candidate:byCandidate.get(block.id)??null})),
       resolved:blocks.filter(block=>{const row=byBlock.get(block.id);return row&&row.decision!=='unresolved';}).length,indexingResumed:false};
+  });
+}
+
+export async function getExtractionReviewImage(userId:string,jobId:string,artifactSha256:string,blockId:string){
+  z.uuid().parse(jobId);z.string().regex(/^[a-f0-9]{64}$/).parse(artifactSha256);
+  return tenantTransaction(userId,async client=>{
+    const {job,blocks}=await load(client,userId,jobId);
+    if(job.metrics.artifactSha256!==artifactSha256)throw new ExtractionReviewConflict('抽取版本已变化，请重新加载');
+    const candidates=await loadVisualCandidates(job.metrics,job.source_sha256,artifactSha256,blocks);
+    const record=candidates?.find(candidate=>candidate.blockId===blockId);
+    if(!record?.imageFile||!job.metrics.visualReviewKey)throw new ExtractionReviewConflict('该对象没有可用预览');
+    return readVisualCandidateImage(job.metrics.visualReviewKey,record);
   });
 }
 

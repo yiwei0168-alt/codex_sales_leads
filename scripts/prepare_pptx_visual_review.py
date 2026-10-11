@@ -98,6 +98,10 @@ def main():
     if (output/"review.json").exists():
         raise ValueError("Completed review package exists; use a new output directory")
     payload = json.loads(artifact.read_text(encoding="utf-8"))
+    if "documents" in payload:
+        if not isinstance(payload["documents"], list) or len(payload["documents"]) != 1:
+            raise ValueError("Exactly one uploaded document required")
+        payload = payload["documents"][0]
     source_hash = sha256(source.read_bytes()).hexdigest()
     if payload["sourceSha256"] != source_hash:
         raise ValueError("Extraction source changed")

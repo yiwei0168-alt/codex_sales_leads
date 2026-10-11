@@ -8,7 +8,7 @@ import {Pool} from 'pg';
 import {getPool,tenantQuery} from '../src/lib/rag/db';
 import {createKnowledgeUploadJob,listKnowledgeUploadJobs} from '../src/lib/knowledge/upload';
 import {registerVectorlessUpload} from '../src/lib/knowledge/vectorless-registration';
-import {getExtractionReview,getExtractionReviewOriginal,recordExtractionReview} from '../src/lib/knowledge/extraction-review';
+import {getExtractionReview,getExtractionReviewOriginal,getExtractionReviewImage,recordExtractionReview} from '../src/lib/knowledge/extraction-review';
 
 nextEnv.loadEnvConfig(process.cwd());
 const base=process.env.DATABASE_MIGRATION_URL||process.env.DATABASE_URL;
@@ -45,6 +45,21 @@ try{
     assert(!(await listKnowledgeUploadJobs(other)).some(row=>row.id===job.id));
     const repeated=await createKnowledgeUploadJob(owner,input);assert.equal(repeated.id,job.id);assert(repeated.reused);
     assert.equal((await worker(job.id)).inputJobs,0);
+    if(process.argv.includes('--visual-candidates')&&visibility==='private'){
+      await new Promise<void>((done,reject)=>{
+        const child=spawn(process.execPath,['--require','./scripts/patch-node-user.cjs','--import','tsx','scripts/prepare-upload-visual-review.ts',`--job-id=${job.id}`,`--user-id=${owner}`],{cwd:process.cwd(),windowsHide:true,stdio:['ignore','pipe','pipe'],env:{...process.env,DATABASE_URL:url.toString()}});
+        let error='';child.stdout.on('data',()=>{});child.stderr.on('data',part=>{error=(error+String(part)).slice(-2000);});
+        child.once('error',reject);child.once('exit',code=>code===0?done():reject(new Error(error)));
+      });
+      const firstPage=await getExtractionReview(owner,job.id),image=firstPage.blocks.find(row=>row.candidate?.imageFile);assert(image);
+      const png=await getExtractionReviewImage(owner,job.id,firstPage.artifactSha256,image.block.id);assert.equal(png.subarray(0,8).toString('hex'),'89504e470d0a1a0a');
+      await assert.rejects(()=>getExtractionReviewImage(other,job.id,firstPage.artifactSha256,image.block.id),/不存在/);
+      await assert.rejects(()=>getExtractionReviewImage(owner,job.id,'0'.repeat(64),image.block.id),/版本已变化/);
+      const meta=(await pool.query('select metrics from knowledge_upload_job where id=$1',[job.id])).rows[0].metrics;
+      const packagePath=resolve(meta.visualReviewKey);assert(packagePath.startsWith(root+sep));const packageBytes=await readFile(packagePath);
+      await writeFile(packagePath,Buffer.concat([packageBytes,Buffer.from(' ')]));
+      try{await assert.rejects(()=>getExtractionReview(owner,job.id),/hash mismatch/);}finally{await writeFile(packagePath,packageBytes);}
+    }
     const review=await getExtractionReview(owner,job.id);assert.equal(review.total,63);assert.equal(review.blocks.length,20);
     assert.deepEqual((await getExtractionReviewOriginal(owner,job.id,review.artifactSha256)).bytes,bytes);
     await assert.rejects(()=>getExtractionReviewOriginal(other,job.id,review.artifactSha256),/不存在/);
@@ -73,12 +88,12 @@ try{
   const permissions=(await pool.query("select has_table_privilege('network_copilot_app','knowledge_upload_extraction_review','UPDATE') as update_allowed,has_table_privilege('network_copilot_app','knowledge_upload_extraction_review','DELETE') as delete_allowed")).rows[0];
   assert.equal(permissions.update_allowed,false);assert.equal(permissions.delete_allowed,false);
   const evidence={cloneOnly:true,formats:['PPTX'],privateAndSharedHeld:true,unresolvedBlocksPerJob:63,dedupReused:true,restartDoesNotReclaim:true,otherAccountHidden:true,directRegistrationRejected:true,noDocumentsPublished:true,v3PointersUnchanged:true,appendOnlyReview:true,staleReviewRejected:true,otherAccountReviewDenied:true,sourceArtifactBound:true,externalCalls:0,modelCalls:0};
-  await writeFile('tmp/upload-review-hold-result.json',JSON.stringify(evidence,null,2));console.log(JSON.stringify(evidence));
+  await writeFile(process.argv.includes('--visual-candidates')?'tmp/upload-visual-candidate-result.json':'tmp/upload-review-hold-result.json',JSON.stringify({...evidence,visualCandidatesVerified:process.argv.includes('--visual-candidates')},null,2));console.log(JSON.stringify(evidence));
 }finally{
   await pool.query('delete from knowledge_upload_extraction_review where owner_id=$1',[owner]);
   await pool.query('delete from knowledge_upload_job where user_id=$1',[owner]);
   await pool.query('delete from app_user where id=any($1::uuid[])',[[owner,other]]);await pool.end();await getPool().end();
   assert(root.startsWith(resolve('knowledge/uploads')+sep)&&basename(root)===owner);
-  for(const name of await readdir(root).catch(()=>[])){const file=resolve(root,name);assert(file.startsWith(root+sep));await rm(file,{force:true});}
+  for(const name of await readdir(root).catch(()=>[])){const file=resolve(root,name);assert(file.startsWith(root+sep));await rm(file,{force:true,recursive:true});}
   await rmdir(root).catch(()=>undefined);
 }

@@ -1,0 +1,40 @@
+{
+  "cloneOnly": true,
+  "formats": [
+    "PPTX"
+  ],
+  "privateAndSharedHeld": true,
+  "unresolvedBlocksPerJob": 63,
+  "dedupReused": true,
+  "restartDoesNotReclaim": true,
+  "otherAccountHidden": true,
+  "directRegistrationRejected": true,
+  "noDocumentsPublished": true,
+  "v3PointersUnchanged": true,
+  "appendOnlyReview": true,
+  "staleReviewRejected": true,
+  "otherAccountReviewDenied": true,
+  "sourceArtifactBound": true,
+  "externalCalls": 0,
+  "modelCalls": 0,
+  "visualCandidatesVerified": true,
+  "date": "2026-10-11",
+  "rule": "MA24-16",
+  "goal": "G05",
+  "tsTestsPassed": 10,
+  "pythonTestsPassed": 4,
+  "typecheck": "passed",
+  "eslint": "passed",
+  "imageAccountVersionChecks": true,
+  "packageTamperRejected": true,
+  "uiWidths": [
+    1366,
+    390,
+    320
+  ],
+  "candidatePreviewImplemented": true,
+  "runtimeDeployed": false,
+  "automaticSchedulingImplemented": false,
+  "resumeIndexingImplemented": false,
+  "qualityAccepted": false
+}

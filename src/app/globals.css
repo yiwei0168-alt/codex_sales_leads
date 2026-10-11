@@ -407,3 +407,7 @@ a { color: inherit; }
 .extraction-review nav { justify-content:space-between; }
 .extraction-review-discard { padding:12px; border:1px solid var(--line-strong); background:var(--surface,#fff); }
 .extraction-review-discard p { flex-basis:100%; }
+.extraction-review figure { margin:0; min-width:0; }
+.extraction-review figure img { display:block; max-width:100%; max-height:360px; object-fit:contain; background:#fff; }
+.extraction-review figcaption { margin-top:6px; font-size:var(--text-secondary); color:var(--slate-400); }
+.extraction-review details { min-width:0; border-top:1px solid var(--line); padding-top:8px; }

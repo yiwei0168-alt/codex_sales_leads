@@ -1,8 +1,9 @@
 "use client";
 import {useEffect,useState} from 'react';
 import {WorkspaceDialog} from './workspace-dialog';
+import type {VisualCandidate} from '@/lib/knowledge/visual-review-candidates';
 type Decision='evidence'|'decoration'|'unresolved';
-type Item={block:{id:string;unitType:string;unitIndex:number;blockType:string;section?:string;shapePath?:number[];shapeIdPath?:number[];text?:string};judgment:{revision:number;decision:Decision;evidence_text:string;note:string}|null};
+type Item={block:{id:string;unitType:string;unitIndex:number;blockType:string;section?:string;shapePath?:number[];shapeIdPath?:number[];text?:string};judgment:{revision:number;decision:Decision;evidence_text:string;note:string}|null;candidate?:VisualCandidate|null};
 type Review={jobId:string;title:string;artifactSha256:string;sourceSha256:string;total:number;resolved:number;offset:number;blocks:Item[]};
 
 export function KnowledgeExtractionReview({jobId,onClose}:{jobId:string;onClose:()=>void}){
@@ -44,11 +45,22 @@ export function KnowledgeExtractionReview({jobId,onClose}:{jobId:string;onClose:
       {error&&<p role="alert">{error} <button disabled={busy} onClick={()=>navigate(()=>{setDirty(false);setError('');setLoading(true);setRefresh(value=>value+1);})}>重新加载</button></p>}
       {data&&<><h3>{data.title}</h3><p>已核对 {data.resolved} / {data.total} 个对象</p>
         <a href={`/api/knowledge/uploads/review?format=original&jobId=${jobId}&artifactSha256=${data.artifactSha256}`}>下载本次原件进行对照</a>
-        <p className="subtle">请在原件中核对对应位置。当前尚未提供对象图像预览；无法判断时保留“未解决”。</p>
+        <p className="subtle">请结合原件核对。候选文字和结构未经审核；无法判断时保留“未解决”。</p>
         {item&&<fieldset disabled={busy||loading}><legend>对象 {offset+index+1} / {data.total}</legend>
           <p>{({slide:'幻灯片',page:'页',sheet:'工作表'} as Record<string,string>)[item.block.unitType]??'单元'} {item.block.unitIndex}{item.block.section?` · ${item.block.section}`:''}</p>
           {item.block.shapePath&&<p>对象顺序：{item.block.shapePath.join(' → ')}；原生 ID：{item.block.shapeIdPath?.join(' → ')}</p>}
           {item.block.text&&<pre>{item.block.text}</pre>}
+          {item.candidate?.imageFile&&<figure>
+            {/* Authenticated local PNG; do not proxy private images through the image optimizer. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img alt={`第 ${item.block.unitIndex} 页待审核对象原图裁剪`} src={`/api/knowledge/uploads/review?format=image&jobId=${jobId}&artifactSha256=${data.artifactSha256}&blockId=${encodeURIComponent(item.block.id)}`}/>
+            <figcaption>原始图片裁剪，旋转角度 {item.candidate.rotation??0}°；未还原整页布局及遮挡，请结合原件核对。</figcaption>
+          </figure>}
+          {item.candidate?.ocrLines&&<details><summary>OCR 候选文字（{item.candidate.ocrLines.length} 行，未经审核）</summary><pre>{item.candidate.ocrLines.map(line=>`${line.text}（置信度 ${line.confidence.toFixed(2)}）`).join('\n')||'未识别到文字；不能据此认定为装饰。'}</pre></details>}
+          {item.candidate?.diagram&&<details><summary>SmartArt 原生数据（未经审核）</summary><pre>{JSON.stringify(item.candidate.diagram,null,2)}</pre></details>}
+          {item.candidate?.connector&&<details><summary>连接线原生数据（未经审核）</summary><pre>{JSON.stringify(item.candidate.connector,null,2)}</pre></details>}
+          {!item.candidate&&<p className="subtle">该对象尚无本地候选预览，请下载原件核对。</p>}
+          {item.candidate&&!item.candidate.imageFile&&!item.candidate.diagram&&!item.candidate.connector&&<p className="subtle">本地工具未生成此对象的可用预览，请下载原件核对。</p>}
           <label>核对结论<select value={shownDecision} onChange={event=>edit({decision:event.target.value as Decision})}><option value="unresolved">未解决，需要继续核对</option><option value="evidence">包含资料内容，记录准确文字</option><option value="decoration">仅装饰，无资料内容</option></select></label>
           {shownDecision==='evidence'&&<label>对照原件确认的内容<textarea rows={7} maxLength={20000} value={shownEvidence} onChange={event=>edit({evidence:event.target.value})}/></label>}
           <label>核对依据 / 备注<textarea rows={3} maxLength={2000} value={shownNote} onChange={event=>edit({note:event.target.value})}/></label>

@@ -1,6 +1,6 @@
 import {z} from 'zod';
 import {requireApiSession} from '@/lib/auth/session';
-import {ExtractionReviewConflict,extractionReviewDecision,getExtractionReview,getExtractionReviewOriginal,recordExtractionReview} from '@/lib/knowledge/extraction-review';
+import {ExtractionReviewConflict,extractionReviewDecision,getExtractionReview,getExtractionReviewOriginal,getExtractionReviewImage,recordExtractionReview} from '@/lib/knowledge/extraction-review';
 export const runtime='nodejs';export const dynamic='force-dynamic';
 const headers={'Cache-Control':'private, no-store'};
 function failure(error:unknown){return error instanceof ExtractionReviewConflict
@@ -9,6 +9,13 @@ function failure(error:unknown){return error instanceof ExtractionReviewConflict
 export async function GET(request:Request){
   const session=await requireApiSession();if(session instanceof Response)return session;
   const params=new URL(request.url).searchParams;
+  if(params.get('format')==='image'){
+    const input=z.object({jobId:z.uuid(),artifactSha256:z.string().regex(/^[a-f0-9]{64}$/),blockId:z.string().min(1).max(300)}).safeParse({jobId:params.get('jobId'),artifactSha256:params.get('artifactSha256'),blockId:params.get('blockId')});
+    if(!input.success)return Response.json({error:'预览参数无效'},{status:400,headers});
+    try{const bytes=await getExtractionReviewImage(session.userId,input.data.jobId,input.data.artifactSha256,input.data.blockId);
+      return new Response(new Uint8Array(bytes),{headers:{...headers,'Content-Type':'image/png','X-Content-Type-Options':'nosniff'}});
+    }catch(error){return failure(error);}
+  }
   if(params.get('format')==='original'){
     const original=z.object({jobId:z.uuid(),artifactSha256:z.string().regex(/^[a-f0-9]{64}$/)}).safeParse({jobId:params.get('jobId'),artifactSha256:params.get('artifactSha256')});
     if(!original.success)return Response.json({error:'原件版本参数无效'},{status:400,headers});
