@@ -1,0 +1,61 @@
+{
+  "date": "2026-10-11",
+  "clone": {
+    "cloneOnly": true,
+    "actualWorkerAndQueue": true,
+    "pages": 1,
+    "previewReady": true,
+    "imageReadsVerified": true,
+    "nestedImageReadsVerified": true,
+    "otherAccountDenied": true,
+    "staleHashDenied": true,
+    "sourceChangeRetryRejected": true,
+    "automaticJudgments": 0,
+    "syntheticJudgments": true,
+    "contentQualityAccepted": false,
+    "indexedReviewBlocks": 0,
+    "completionReplayVerified": false,
+    "documentsPublished": 0,
+    "v3PointersUnchanged": true,
+    "externalCalls": 0,
+    "corruptPackageRecovered": true,
+    "missingNestedImageRecovered": true,
+    "judgmentRetained": true,
+    "format": "xlsx",
+    "syntheticFixture": true
+  },
+  "browser": {
+    "results": [
+      {
+        "width": 1366,
+        "noOverflow": true,
+        "nativeObjectsExpandable": true,
+        "completionDisabled": true,
+        "corruptCandidateRetry": true
+      },
+      {
+        "width": 390,
+        "noOverflow": true,
+        "nativeObjectsExpandable": true,
+        "completionDisabled": true,
+        "corruptCandidateRetry": true
+      },
+      {
+        "width": 320,
+        "noOverflow": true,
+        "nativeObjectsExpandable": true,
+        "completionDisabled": true,
+        "corruptCandidateRetry": true
+      }
+    ],
+    "syntheticAPI": true
+  },
+  "checks": {
+    "typecheck": "passed",
+    "eslint": "passed",
+    "testsPassed": 16,
+    "recoveryScreenshot390Inspected": true
+  },
+  "productionDeployed": false,
+  "qualityAccepted": false
+}

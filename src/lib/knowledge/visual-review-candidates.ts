@@ -64,3 +64,9 @@ export async function loadVisualCandidates(metrics:{visualReviewKey?:string;visu
   const path=resolve(safeKnowledgeStorageKey(metrics.visualReviewKey));assertResolvedInsideKnowledgeRoot(path);
   return validateVisualCandidates(await readFile(path),{sourceSha256,artifactSha256,packageSha256:metrics.visualReviewSha256},blocks);
 }
+export async function verifyVisualCandidateImages(packageKey:string,records:VisualCandidate[]){
+  for(const record of records){
+    if(record.imageFile)await readVisualCandidateImage(packageKey,record);
+    for(const object of record.sheetObjects??[])for(const image of object.images??[])await readVisualCandidateImage(packageKey,image);
+  }
+}

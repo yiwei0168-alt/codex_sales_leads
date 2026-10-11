@@ -56,8 +56,8 @@ export function KnowledgeExtractionReview({jobId,onClose,onComplete}:{jobId:stri
       {loading&&<p role="status">正在核对原件版本…</p>}
       {error&&<p role="alert">{error} <button disabled={busy} onClick={()=>navigate(()=>{setDirty(false);setError('');setLoading(true);setRefresh(value=>value+1);})}>重新加载</button></p>}
       {data&&<><h3>{data.title}</h3><p>已核对 {data.resolved} / {data.total} 个对象</p>
-        {data.visualState&&data.visualState!=='ready'&&data.visualState!=='unsupported'&&<p className="subtle">{({pending:'本地候选等待处理',running:'正在生成本地候选',retrying:'本地候选处理失败，稍后自动重试',failed:'本地候选连续处理失败，已暂停'} as Record<string,string>)[data.visualState]}
-          {data.visualState==='failed'&&<button disabled={busy} onClick={()=>void retryVisuals()}>重试本地候选</button>}
+        {data.visualState&&data.visualState!=='ready'&&data.visualState!=='unsupported'&&<p className="subtle">{({pending:'本地候选等待处理',running:'正在生成本地候选',retrying:'本地候选处理失败，稍后自动重试',failed:'本地候选连续处理失败，已暂停',corrupt:'本地候选文件不可用，可重新生成；已保存的审核记录保留。'} as Record<string,string>)[data.visualState]}
+          {(data.visualState==='failed'||data.visualState==='corrupt')&&<button disabled={busy} onClick={()=>void retryVisuals()}>重试本地候选</button>}
           <button disabled={busy||dirty} onClick={()=>{setLoading(true);setRefresh(value=>value+1);}}>刷新候选</button></p>}
         <a href={`/api/knowledge/uploads/review?format=original&jobId=${jobId}&artifactSha256=${data.artifactSha256}`}>下载本次原件进行对照</a>
         <p className="subtle">请结合原件核对。候选文字和结构未经审核；无法判断时保留“未解决”。</p>

@@ -7,7 +7,7 @@ import {tenantTransaction} from '@/lib/rag/db';
 import {assertResolvedInsideKnowledgeRoot,safeKnowledgeStorageKey} from './document-repository';
 import {extractionReadiness} from './extraction-readiness';
 import {slideShapeLocation,visualSourceLocation,type Block} from './extracted-tree';
-import {loadVisualCandidates,readVisualCandidateImage} from './visual-review-candidates';
+import {loadVisualCandidates,readVisualCandidateImage,verifyVisualCandidateImages} from './visual-review-candidates';
 import {deriveReviewedExtraction,reviewDecisionHash,type ExtractionJudgment} from './reviewed-extraction';
 
 export class ExtractionReviewConflict extends Error {}
@@ -94,14 +94,21 @@ export async function getExtractionReview(userId:string,jobId:string,offset=0){
   z.uuid().parse(jobId);z.number().int().min(0).max(1000000).parse(offset);
   return tenantTransaction(userId,async client=>{
     const {job,blocks}=await load(client,userId,jobId);
-    const candidates=await loadVisualCandidates(job.metrics,job.source_sha256,job.metrics.artifactSha256,blocks);
+    let candidates:Awaited<ReturnType<typeof loadVisualCandidates>>=null,visualCorrupt=false;
+    try{
+      candidates=await loadVisualCandidates(job.metrics,job.source_sha256,job.metrics.artifactSha256,blocks);
+      if(candidates&&job.metrics.visualReviewKey){
+        const visible=new Set(blocks.slice(offset,offset+20).map(block=>block.id));
+        await verifyVisualCandidateImages(job.metrics.visualReviewKey,candidates.filter(record=>visible.has(record.blockId)));
+      }
+    }catch{candidates=null;visualCorrupt=true;}
     const byCandidate=new Map(candidates?.map(record=>[record.blockId,record]));
     const judgments=await client.query<{block_id:string;revision:number;decision:string;evidence_text:string;note:string;created_at:string}>(`select distinct on(block_id) block_id,revision,decision,evidence_text,note,created_at
       from knowledge_upload_extraction_review where owner_id=$1 and job_id=$2 and artifact_sha256=$3 order by block_id,revision desc`,[userId,jobId,job.metrics.artifactSha256]);
     const byBlock=new Map(judgments.rows.map(row=>[row.block_id,row]));
     return {jobId,title:job.title,sourceSha256:job.source_sha256,artifactSha256:job.metrics.artifactSha256,extractorVersion:job.extractor_version,decisionSha256:reviewDecisionHash(judgments.rows),
       total:blocks.length,offset,blocks:blocks.slice(offset,offset+20).map(block=>({block,judgment:byBlock.get(block.id)??null,candidate:byCandidate.get(block.id)??null})),
-      visualState:! /\.(pptx|pdf|xlsx)$/i.test(job.storage_key)?'unsupported':job.metrics.visualReviewKey?'ready':job.visual_running?'running':job.visual_attempts>=3?'failed':job.visual_error_code?'retrying':'pending',
+      visualState:visualCorrupt?'corrupt':! /\.(pptx|pdf|xlsx)$/i.test(job.storage_key)?'unsupported':job.metrics.visualReviewKey?'ready':job.visual_running?'running':job.visual_attempts>=3?'failed':job.visual_error_code?'retrying':'pending',
       resolved:blocks.filter(block=>{const row=byBlock.get(block.id);return row&&row.decision!=='unresolved';}).length,indexingResumed:false};
   });
 }
@@ -109,10 +116,20 @@ export async function getExtractionReview(userId:string,jobId:string,offset=0){
 export async function retryExtractionVisuals(userId:string,jobId:string,artifactSha256:string){
   z.uuid().parse(jobId);z.string().regex(/^[a-f0-9]{64}$/).parse(artifactSha256);
   return tenantTransaction(userId,async client=>{
-    const {job}=await load(client,userId,jobId);
+    const {job,blocks}=await load(client,userId,jobId);
     if(job.metrics.artifactSha256!==artifactSha256||! /\.(pptx|pdf|xlsx)$/i.test(job.storage_key))throw new ExtractionReviewConflict('当前原件或版本不支持该重试');
     if(job.visual_running)throw new ExtractionReviewConflict('本地候选正在准备，请等待');
-    if(job.metrics.visualReviewKey)return {queued:false,alreadyPrepared:true};
+    if(job.metrics.visualReviewKey||job.metrics.visualReviewSha256){
+      let valid=false;
+      try{const records=await loadVisualCandidates(job.metrics,job.source_sha256,artifactSha256,blocks);
+        if(records&&job.metrics.visualReviewKey){await verifyVisualCandidateImages(job.metrics.visualReviewKey,records);valid=true;}
+      }catch{/* Only an unusable derived candidate is detached; source checks above remain strict. */}
+      if(valid)return {queued:false,alreadyPrepared:true};
+      await client.query(`update knowledge_upload_job set metrics=(metrics-'visualReviewKey'-'visualReviewSha256')||jsonb_build_object(
+        'visualRecoveryHistory',coalesce(metrics->'visualRecoveryHistory','[]'::jsonb)||jsonb_build_array(jsonb_build_object(
+          'key',metrics->'visualReviewKey','sha256',metrics->'visualReviewSha256','requestedAt',now(),'reason','candidate-unavailable')))
+        where id=$1 and user_id=$2`,[jobId,userId]);
+    }
     await client.query(`update knowledge_upload_job set visual_attempts=0,visual_error_code=null,visual_retry_at=null,visual_lease_token=null,visual_lease_until=null,updated_at=now() where id=$1 and user_id=$2`,[jobId,userId]);
     return {queued:true};
   });

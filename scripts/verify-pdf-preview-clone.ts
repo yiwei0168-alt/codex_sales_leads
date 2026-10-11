@@ -1,12 +1,12 @@
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
 import {readFile,writeFile,readdir,rm,rmdir} from 'node:fs/promises';
-import {resolve,sep} from 'node:path';
+import {resolve,sep,dirname} from 'node:path';
 import nextEnv from '@next/env';
 import {Pool} from 'pg';
 import {getPool} from '../src/lib/rag/db';
 import {createKnowledgeUploadJob} from '../src/lib/knowledge/upload';
-import {getExtractionReview,getExtractionReviewImage,recordExtractionReview,completeExtractionReview} from '../src/lib/knowledge/extraction-review';
+import {getExtractionReview,getExtractionReviewImage,recordExtractionReview,completeExtractionReview,retryExtractionVisuals} from '../src/lib/knowledge/extraction-review';
 import {readEvidence} from '../src/lib/knowledge/vectorless';
 import {runBoundedLocalProcess} from './lib/run-bounded-local-process';
 nextEnv.loadEnvConfig(process.cwd());
@@ -17,6 +17,7 @@ url.pathname=`/${database}`;process.env.DATABASE_URL=url.toString();
 const pool=new Pool({connectionString:url.toString()}),owner=randomUUID(),other=randomUUID();
 const xlsx=process.argv.includes('--xlsx');
 const complete=process.argv.includes('--complete-reviews');
+const recover=process.argv.includes('--corrupt-recovery');
 try{
  for(const id of [owner,other])await pool.query("insert into app_user(id,email,display_name,password_hash,role,status) values($1,$2,'PDF preview fixture','!','member','active')",[id,`${id}@example.invalid`]);
  const pointers=JSON.stringify((await pool.query('select * from knowledge_release_pointer_v3 order by scope_kind,owner_id')).rows);
@@ -43,11 +44,36 @@ try{
  await assert.rejects(()=>getExtractionReview(other,job.id));
  await assert.rejects(()=>getExtractionReviewImage(owner,job.id,'0'.repeat(64),after.blocks[0].block.id));
  assert.equal((await pool.query('select published_document_id from knowledge_upload_job where id=$1',[job.id])).rows[0].published_document_id,null);
+ if(recover){
+  assert(xlsx,'Recovery fixture uses nested XLSX image');
+  const original=(await pool.query('select storage_key from knowledge_upload_job where id=$1',[job.id])).rows[0];
+  const sourcePath=resolve(original.storage_key);assert(sourcePath.startsWith(resolve('knowledge/uploads',owner)+sep));const originalBytes=await readFile(sourcePath);
+  await writeFile(sourcePath,Buffer.concat([originalBytes,Buffer.from('changed source')]));
+  try{await assert.rejects(()=>retryExtractionVisuals(owner,job.id,after.artifactSha256),/原件已变化/);}finally{await writeFile(sourcePath,originalBytes);}
+  await recordExtractionReview(owner,{jobId:job.id,artifactSha256:after.artifactSha256,blockId:after.blocks[0].block.id,expectedRevision:0,decision:'unresolved',evidenceText:'',note:'Synthetic saved judgment retained during candidate recovery'});
+  assert.equal((await retryExtractionVisuals(owner,job.id,after.artifactSha256)).alreadyPrepared,true);
+  for(const damage of ['package','image'] as const){
+   const row=(await pool.query('select metrics from knowledge_upload_job where id=$1',[job.id])).rows[0];
+   const key=row.metrics.visualReviewKey,path=resolve(key);assert(path.startsWith(resolve('knowledge/uploads',owner)+sep));
+   if(damage==='package')await writeFile(path,Buffer.concat([await readFile(path),Buffer.from(' ')]));
+   else{
+    const payload=JSON.parse(await readFile(path,'utf8'));const file=resolve(dirname(path),payload.records[0].sheetObjects[1].images[0].imageFile);assert(file.startsWith(dirname(path)+sep));await rm(file);
+   }
+   const damaged=await getExtractionReview(owner,job.id);assert.equal(damaged.visualState,'corrupt');assert(damaged.blocks.every(item=>item.candidate===null));assert.equal(damaged.blocks[0].judgment?.revision,1);
+   await assert.rejects(()=>retryExtractionVisuals(other,job.id,after.artifactSha256));
+   await assert.rejects(()=>retryExtractionVisuals(owner,job.id,'0'.repeat(64)));
+   assert((await retryExtractionVisuals(owner,job.id,after.artifactSha256)).queued);
+   await run('scripts/process-upload-visual-queue.ts');
+   const restored=await getExtractionReview(owner,job.id);assert.equal(restored.visualState,'ready');assert.equal(restored.blocks[0].judgment?.revision,1);assert.equal(restored.resolved,0);
+   const next=(await pool.query('select metrics from knowledge_upload_job where id=$1',[job.id])).rows[0].metrics;
+   assert.notEqual(next.visualReviewKey,key);assert(next.visualRecoveryHistory.some((entry:{key:string})=>entry.key===key));
+  }
+ }
  let indexedReviewBlocks=0;
  if(complete){
   for(let offset=0;offset<after.total;offset+=20){
    const page=await getExtractionReview(owner,job.id,offset);
-   for(const item of page.blocks)await recordExtractionReview(owner,{jobId:job.id,artifactSha256:page.artifactSha256,blockId:item.block.id,expectedRevision:0,decision:'evidence',evidenceText:`Synthetic workflow marker ${item.block.id}`,note:'Isolated clone synthetic judgment; not content quality acceptance'});
+   for(const item of page.blocks)await recordExtractionReview(owner,{jobId:job.id,artifactSha256:page.artifactSha256,blockId:item.block.id,expectedRevision:item.judgment?.revision??0,decision:'evidence',evidenceText:`Synthetic workflow marker ${item.block.id}`,note:'Isolated clone synthetic judgment; not content quality acceptance'});
   }
   const reviewed=await getExtractionReview(owner,job.id);assert.equal(reviewed.resolved,after.total);
   const receipt=await completeExtractionReview(owner,job.id,reviewed.artifactSha256,reviewed.decisionSha256);assert(receipt.readyForRegistration);
@@ -68,8 +94,8 @@ try{
   assert.equal((await pool.query('select count(*)::int as n from knowledge_upload_review_completion where job_id=$1',[job.id])).rows[0].n,1);
  }
  assert.equal(JSON.stringify((await pool.query('select * from knowledge_release_pointer_v3 order by scope_kind,owner_id')).rows),pointers);
- const result={cloneOnly:true,actualWorkerAndQueue:true,pages:after.total,previewReady:true,imageReadsVerified:true,nestedImageReadsVerified:xlsx,otherAccountDenied:true,staleHashDenied:true,automaticJudgments:0,syntheticJudgments:complete,contentQualityAccepted:false,indexedReviewBlocks,completionReplayVerified:complete,documentsPublished:complete?1:0,v3PointersUnchanged:true,externalCalls:0};
- await writeFile(complete?`tmp/${xlsx?'xlsx':'pdf'}-review-index-result.json`:xlsx?'tmp/xlsx-native-clone-result.json':'tmp/pdf-preview-clone-result.json',JSON.stringify({...result,format:xlsx?'xlsx':'pdf',syntheticFixture:xlsx},null,2));console.log(JSON.stringify({...result,format:xlsx?'xlsx':'pdf'}));
+ const result={cloneOnly:true,actualWorkerAndQueue:true,pages:after.total,previewReady:true,imageReadsVerified:true,nestedImageReadsVerified:xlsx,otherAccountDenied:true,staleHashDenied:true,sourceChangeRetryRejected:recover,automaticJudgments:0,syntheticJudgments:complete||recover,contentQualityAccepted:false,indexedReviewBlocks,completionReplayVerified:complete,documentsPublished:complete?1:0,v3PointersUnchanged:true,externalCalls:0};
+ await writeFile(recover?'tmp/visual-candidate-recovery-result.json':complete?`tmp/${xlsx?'xlsx':'pdf'}-review-index-result.json`:xlsx?'tmp/xlsx-native-clone-result.json':'tmp/pdf-preview-clone-result.json',JSON.stringify({...result,corruptPackageRecovered:recover,missingNestedImageRecovered:recover,judgmentRetained:recover,format:xlsx?'xlsx':'pdf',syntheticFixture:xlsx},null,2));console.log(JSON.stringify({...result,recoveryVerified:recover,format:xlsx?'xlsx':'pdf'}));
 }finally{
  await pool.query('delete from knowledge_upload_review_completion where owner_id=$1',[owner]);
  await pool.query('delete from knowledge_upload_extraction_review where owner_id=$1',[owner]);

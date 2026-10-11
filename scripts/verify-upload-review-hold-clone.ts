@@ -124,7 +124,7 @@ try{
       const meta=(await pool.query('select metrics from knowledge_upload_job where id=$1',[job.id])).rows[0].metrics;
       const packagePath=resolve(meta.visualReviewKey);assert(packagePath.startsWith(root+sep));const packageBytes=await readFile(packagePath);
       await writeFile(packagePath,Buffer.concat([packageBytes,Buffer.from(' ')]));
-      try{await assert.rejects(()=>getExtractionReview(owner,job.id),/hash mismatch/);}finally{await writeFile(packagePath,packageBytes);}
+      try{assert.equal((await getExtractionReview(owner,job.id)).visualState,'corrupt');}finally{await writeFile(packagePath,packageBytes);}
     }
     const review=await getExtractionReview(owner,job.id);assert.equal(review.total,63);assert.equal(review.blocks.length,20);
     assert.deepEqual((await getExtractionReviewOriginal(owner,job.id,review.artifactSha256)).bytes,bytes);
