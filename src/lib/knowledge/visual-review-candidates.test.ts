@@ -26,3 +26,15 @@ it('rejects source substitution, premature acceptance and arbitrary image paths'
   expect(()=>run([record],{sourceSha256:'c'.repeat(64)})).toThrow();expect(()=>run([record],{qualityAccepted:true})).toThrow();
   expect(()=>run([{...record,imageFile:'../private.png',reviewImageSha256:'d'.repeat(64)}])).toThrow();
 });
+it('binds worksheet drawing references field by field, rejecting another sheet or relationship',()=>{
+ const reference={kind:'drawing',relationshipId:'rId1',worksheetPart:'xl/worksheets/sheet1.xml'};
+ const source={id:'sheet-1-visual-1',unitType:'sheet' as const,unitIndex:1,blockType:'pending-ocr',quality:'pending-ocr',section:'Chart',visualReference:reference};
+ const item={blockId:source.id,unitIndex:1,unitType:'sheet',status:'review-required',reason:'native-sheet-visual-requires-review',sheetName:'Chart',visualReference:reference,sheetObjects:[]};
+ const verify=(record:unknown)=>{
+  const bytes=Buffer.from(JSON.stringify({schema:'xlsx-visual-review-candidates-v1',sourceSha256:'a'.repeat(64),extractionArtifactSha256:'b'.repeat(64),externalCalls:0,qualityAccepted:false,extractionStatusChanged:false,records:[record]}));
+  return validateVisualCandidates(bytes,{sourceSha256:'a'.repeat(64),artifactSha256:'b'.repeat(64),packageSha256:createHash('sha256').update(bytes).digest('hex')},[source]);
+ };
+ expect(verify(item)[0].sheetName).toBe('Chart');
+ expect(()=>verify({...item,sheetName:'Other'})).toThrow();
+ expect(()=>verify({...item,visualReference:{...reference,relationshipId:'rId2'}})).toThrow();
+});

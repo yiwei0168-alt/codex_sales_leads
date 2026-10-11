@@ -19,7 +19,7 @@ try{
   `select j.storage_key,j.extraction_artifact_key,j.source_sha256,j.extractor_version,j.metrics from knowledge_upload_job j
    join app_user u on u.id=j.user_id and u.status='active' where j.id=$1 and j.user_id=$2 and j.status='extracted' and j.error_code='extraction-review-required' and j.lease_token is null
    and (($3::uuid is null and (j.visual_lease_until is null or j.visual_lease_until<now())) or (j.visual_lease_token=$3 and j.visual_lease_until>now()))`,[jobId,userId,visualLease??null]);
- if(!job||! /\.(pptx|pdf)$/i.test(job.storage_key))throw new Error('Owned pending PDF/PPTX review required');
+ if(!job||! /\.(pptx|pdf|xlsx)$/i.test(job.storage_key))throw new Error('Owned pending binary review required');
  if(job.metrics.visualReviewKey){console.log(JSON.stringify({alreadyPrepared:true}));}
  else{
  const source=resolve(safeKnowledgeStorageKey(job.storage_key)),artifact=resolve(safeKnowledgeStorageKey(job.extraction_artifact_key));
@@ -34,6 +34,7 @@ try{
   await runBoundedLocalProcess(process.env.PYTHON_BINARY||'python',['scripts/prepare_pdf_visual_review.py','--input',source,'--artifact',artifact,'--output',resolve(folder)],20*60*1000);
   await runBoundedLocalProcess(python,['scripts/ocr_rendered_visual_review.py','--review',resolve(key),'--checkpoint-dir',checkpoints],20*60*1000);
  }
+ else if(job.storage_key.toLowerCase().endsWith('.xlsx'))await runBoundedLocalProcess(process.env.PYTHON_BINARY||'python',['scripts/prepare_xlsx_visual_review.py','--input',source,'--artifact',artifact,'--output',resolve(folder)],20*60*1000);
  else await runBoundedLocalProcess(python,['scripts/prepare_pptx_visual_review.py','--input',source,'--artifact',artifact,'--output',resolve(folder),'--max-unique-images','100','--all-batches','--checkpoint-dir',checkpoints],20*60*1000);
  const review=await readFile(resolve(key)),packageSha256=hash(review);
  const candidates=validateVisualCandidates(review,{sourceSha256:job.source_sha256,artifactSha256:job.metrics.artifactSha256,packageSha256},blocks);

@@ -1,0 +1,50 @@
+{
+  "cloneOnly": true,
+  "actualWorkerAndQueue": true,
+  "pages": 1,
+  "previewReady": true,
+  "imageReadsVerified": false,
+  "otherAccountDenied": true,
+  "staleHashDenied": true,
+  "automaticJudgments": 0,
+  "documentsPublished": 0,
+  "v3PointersUnchanged": true,
+  "externalCalls": 0,
+  "format": "xlsx",
+  "syntheticFixture": true,
+  "date": "2026-10-11",
+  "rule": "MA24-16",
+  "goal": "G05",
+  "testsPassed": 9,
+  "typecheck": "passed",
+  "eslint": "passed",
+  "productionDeployed": false,
+  "qualityAccepted": false,
+  "nativeChartCacheZeroPreserved": true,
+  "externalRelationshipRejected": true,
+  "browser": {
+    "results": [
+      {
+        "width": 1366,
+        "noOverflow": true,
+        "nativeObjectsExpandable": true,
+        "completionDisabled": true
+      },
+      {
+        "width": 390,
+        "noOverflow": true,
+        "nativeObjectsExpandable": true,
+        "completionDisabled": true
+      },
+      {
+        "width": 320,
+        "noOverflow": true,
+        "nativeObjectsExpandable": true,
+        "completionDisabled": true
+      }
+    ],
+    "syntheticAPI": true
+  },
+  "embeddedImagesPreviewed": false,
+  "chartAppearanceRendered": false
+}

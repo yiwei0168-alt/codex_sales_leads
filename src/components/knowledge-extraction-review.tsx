@@ -74,6 +74,11 @@ export function KnowledgeExtractionReview({jobId,onClose,onComplete}:{jobId:stri
           {item.candidate?.ocrLines&&<details><summary>OCR 候选文字（{item.candidate.ocrLines.length} 行，未经审核）</summary><pre>{item.candidate.ocrLines.map(line=>`${line.text}（置信度 ${line.confidence.toFixed(2)}）`).join('\n')||'未识别到文字；不能据此认定为装饰。'}</pre></details>}
           {item.candidate?.diagram&&<details><summary>SmartArt 原生数据（未经审核）</summary><pre>{JSON.stringify(item.candidate.diagram,null,2)}</pre></details>}
           {item.candidate?.connector&&<details><summary>连接线原生数据（未经审核）</summary><pre>{JSON.stringify(item.candidate.connector,null,2)}</pre></details>}
+          {item.candidate?.sheetObjects&&<section aria-label="工作表视觉对象">
+            <p>工作表：{item.candidate.sheetName}。以下为原件中的对象与缓存数据，未计算公式、未还原图表外观；请结合原件审核。</p>
+            {item.candidate.sheetObjects.map(object=><details key={object.objectIndex}><summary>对象 {object.objectIndex} · {object.kind}</summary><p>位置（原生零起点坐标）：{object.anchor}</p><pre>{object.text}</pre></details>)}
+            {item.candidate.sheetObjects.length===0&&<p>该视觉对象尚无法解析，请下载原件核对。</p>}
+          </section>}
           {!item.candidate&&<p className="subtle">该对象尚无本地候选预览，请下载原件核对。</p>}
           {item.candidate&&!item.candidate.imageFile&&!item.candidate.diagram&&!item.candidate.connector&&<p className="subtle">本地工具未生成此对象的可用预览，请下载原件核对。</p>}
           <label>核对结论<select value={shownDecision} onChange={event=>edit({decision:event.target.value as Decision})}><option value="unresolved">未解决，需要继续核对</option><option value="evidence">包含资料内容，记录准确文字</option><option value="decoration">仅装饰，无资料内容</option></select></label>

@@ -101,7 +101,7 @@ export async function getExtractionReview(userId:string,jobId:string,offset=0){
     const byBlock=new Map(judgments.rows.map(row=>[row.block_id,row]));
     return {jobId,title:job.title,sourceSha256:job.source_sha256,artifactSha256:job.metrics.artifactSha256,extractorVersion:job.extractor_version,decisionSha256:reviewDecisionHash(judgments.rows),
       total:blocks.length,offset,blocks:blocks.slice(offset,offset+20).map(block=>({block,judgment:byBlock.get(block.id)??null,candidate:byCandidate.get(block.id)??null})),
-      visualState:! /\.(pptx|pdf)$/i.test(job.storage_key)?'unsupported':job.metrics.visualReviewKey?'ready':job.visual_running?'running':job.visual_attempts>=3?'failed':job.visual_error_code?'retrying':'pending',
+      visualState:! /\.(pptx|pdf|xlsx)$/i.test(job.storage_key)?'unsupported':job.metrics.visualReviewKey?'ready':job.visual_running?'running':job.visual_attempts>=3?'failed':job.visual_error_code?'retrying':'pending',
       resolved:blocks.filter(block=>{const row=byBlock.get(block.id);return row&&row.decision!=='unresolved';}).length,indexingResumed:false};
   });
 }
@@ -110,7 +110,7 @@ export async function retryExtractionVisuals(userId:string,jobId:string,artifact
   z.uuid().parse(jobId);z.string().regex(/^[a-f0-9]{64}$/).parse(artifactSha256);
   return tenantTransaction(userId,async client=>{
     const {job}=await load(client,userId,jobId);
-    if(job.metrics.artifactSha256!==artifactSha256||! /\.(pptx|pdf)$/i.test(job.storage_key))throw new ExtractionReviewConflict('当前原件或版本不支持该重试');
+    if(job.metrics.artifactSha256!==artifactSha256||! /\.(pptx|pdf|xlsx)$/i.test(job.storage_key))throw new ExtractionReviewConflict('当前原件或版本不支持该重试');
     if(job.visual_running)throw new ExtractionReviewConflict('本地候选正在准备，请等待');
     if(job.metrics.visualReviewKey)return {queued:false,alreadyPrepared:true};
     await client.query(`update knowledge_upload_job set visual_attempts=0,visual_error_code=null,visual_retry_at=null,visual_lease_token=null,visual_lease_until=null,updated_at=now() where id=$1 and user_id=$2`,[jobId,userId]);

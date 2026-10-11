@@ -6,7 +6,9 @@ import {assertResolvedInsideKnowledgeRoot,safeKnowledgeStorageKey} from './docum
 import type {Block} from './extracted-tree';
 const hash=(bytes:Uint8Array)=>createHash('sha256').update(bytes).digest('hex');
 const sha=z.string().regex(/^[a-f0-9]{64}$/);
-const candidate=z.object({blockId:z.string(),unitIndex:z.number().int().positive(),unitType:z.literal('page').optional(),shapePath:z.array(z.number().int().positive()).optional(),shapeIdPath:z.array(z.number().int().positive()).optional(),
+const candidate=z.object({blockId:z.string(),unitIndex:z.number().int().positive(),unitType:z.enum(['page','sheet']).optional(),shapePath:z.array(z.number().int().positive()).optional(),shapeIdPath:z.array(z.number().int().positive()).optional(),
+  sheetName:z.string().optional(),visualReference:z.object({kind:z.string(),worksheetPart:z.string(),relationshipId:z.string().nullable()}).optional(),
+  sheetObjects:z.array(z.object({kind:z.string(),objectIndex:z.number().int().positive(),anchor:z.string(),text:z.string(),sourcePart:z.string()})).optional(),
   status:z.literal('review-required'),reason:z.string(),imageFile:z.string().optional(),reviewImageSha256:sha.optional(),
   rotation:z.number().optional(),coordinateSpace:z.string().optional(),
   ocrLines:z.array(z.object({text:z.string(),confidence:z.number(),box:z.array(z.array(z.number()))})).optional(),
@@ -16,10 +18,10 @@ const candidate=z.object({blockId:z.string(),unitIndex:z.number().int().positive
 export type VisualCandidate=z.infer<typeof candidate>;
 export function validateVisualCandidates(bytes:Uint8Array,expected:{sourceSha256:string;artifactSha256:string;packageSha256:string},blocks:Block[]){
   if(hash(bytes)!==expected.packageSha256)throw new Error('Visual package hash mismatch');
-  const payload=z.object({schema:z.enum(['pptx-visual-review-candidates-v1','pdf-visual-review-candidates-v1']),sourceSha256:sha,extractionArtifactSha256:sha,
+  const payload=z.object({schema:z.enum(['pptx-visual-review-candidates-v1','pdf-visual-review-candidates-v1','xlsx-visual-review-candidates-v1']),sourceSha256:sha,extractionArtifactSha256:sha,
     externalCalls:z.literal(0),qualityAccepted:z.literal(false),extractionStatusChanged:z.literal(false),records:z.array(candidate)}).parse(JSON.parse(Buffer.from(bytes).toString('utf8')));
   if(payload.sourceSha256!==expected.sourceSha256||payload.extractionArtifactSha256!==expected.artifactSha256)throw new Error('Visual package identity mismatch');
-  const unitType=payload.schema==='pdf-visual-review-candidates-v1'?'page':'slide';
+  const unitType=payload.schema==='pdf-visual-review-candidates-v1'?'page':payload.schema==='xlsx-visual-review-candidates-v1'?'sheet':'slide';
   const pending=blocks.filter(block=>block.quality==='pending-ocr'),byId=new Map(pending.map(block=>[block.id,block]));
   if(pending.some(block=>block.unitType!==unitType))throw new Error('Visual format mismatch');
   const seen=new Set<string>();
@@ -29,6 +31,12 @@ export function validateVisualCandidates(bytes:Uint8Array,expected:{sourceSha256
       ||JSON.stringify(block.shapeIdPath)!==JSON.stringify(record.shapeIdPath))throw new Error('Visual object identity mismatch');
     if(unitType==='page'&&(record.unitType!=='page'||record.coordinateSpace!=='pdf-page-render'||!record.imageFile))throw new Error('Incomplete PDF preview');
     if(unitType==='slide'&&(!record.shapePath?.length||!record.shapeIdPath?.length||record.unitType))throw new Error('Incomplete slide locator');
+    if(unitType==='sheet'){
+      const source=block as Block & {visualReference?:VisualCandidate['visualReference']};
+      if(record.unitType!=='sheet'||record.sheetName!==block.section||!source.visualReference||!record.visualReference
+        ||source.visualReference.kind!==record.visualReference.kind||source.visualReference.worksheetPart!==record.visualReference.worksheetPart
+        ||source.visualReference.relationshipId!==record.visualReference.relationshipId||!record.sheetObjects)throw new Error('Sheet visual identity mismatch');
+    }
     if(record.imageFile&&(!record.reviewImageSha256||record.imageFile!==`${record.reviewImageSha256}.png`))throw new Error('Invalid visual image path');
     seen.add(record.blockId);
   }

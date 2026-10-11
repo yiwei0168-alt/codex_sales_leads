@@ -14,11 +14,12 @@ const url=new URL(base);assert(['localhost','127.0.0.1','::1'].includes(url.host
 const {database}=JSON.parse(await readFile('tmp/ma11-replay-state.json','utf8'));assert(/^ma11_replay_[a-f0-9]{12}$/.test(database));
 url.pathname=`/${database}`;process.env.DATABASE_URL=url.toString();
 const pool=new Pool({connectionString:url.toString()}),owner=randomUUID(),other=randomUUID();
+const xlsx=process.argv.includes('--xlsx');
 try{
  for(const id of [owner,other])await pool.query("insert into app_user(id,email,display_name,password_hash,role,status) values($1,$2,'PDF preview fixture','!','member','active')",[id,`${id}@example.invalid`]);
  const pointers=JSON.stringify((await pool.query('select * from knowledge_release_pointer_v3 order by scope_kind,owner_id')).rows);
  // Real registered development original, deliberately not a new independent sample.
- const input={collection:'industry' as const,title:'PDF preview fixture',originalFilename:'source.pdf',mimeType:'application/pdf',bytes:await readFile('knowledge/product/Bluetooth USB Adapter/BU530C_V1.0__Datasheet.pdf'),visibility:'private' as const};
+ const input={collection:'industry' as const,title:'Visual preview fixture',originalFilename:xlsx?'source.xlsx':'source.pdf',mimeType:xlsx?'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet':'application/pdf',bytes:await readFile(xlsx?'tmp/xlsx-visual-local/source.xlsx':'knowledge/product/Bluetooth USB Adapter/BU530C_V1.0__Datasheet.pdf'),visibility:'private' as const};
  const job=await createKnowledgeUploadJob(owner,input);
  const run=(script:string)=>runBoundedLocalProcess(process.execPath,['--require','./scripts/patch-node-user.cjs','--import','tsx',script,`--job-id=${job.id}`,'--limit=1'],120000);
  await run('scripts/process-knowledge-upload-jobs.ts');
@@ -26,6 +27,7 @@ try{
  await run('scripts/process-upload-visual-queue.ts');
  const after=await getExtractionReview(owner,job.id);assert.equal(after.visualState,'ready');assert.equal(after.resolved,0);
  for(const item of after.blocks){
+  if(xlsx){assert.equal(item.candidate?.sheetName,'Chart');assert.equal(item.candidate?.sheetObjects?.length,2);continue;}
   assert.equal(item.candidate?.coordinateSpace,'pdf-page-render');
   assert(Array.isArray(item.candidate?.ocrLines));
   const image=await getExtractionReviewImage(owner,job.id,after.artifactSha256,item.block.id);assert(image);
@@ -34,8 +36,8 @@ try{
  await assert.rejects(()=>getExtractionReviewImage(owner,job.id,'0'.repeat(64),after.blocks[0].block.id));
  assert.equal((await pool.query('select published_document_id from knowledge_upload_job where id=$1',[job.id])).rows[0].published_document_id,null);
  assert.equal(JSON.stringify((await pool.query('select * from knowledge_release_pointer_v3 order by scope_kind,owner_id')).rows),pointers);
- const result={cloneOnly:true,actualWorkerAndQueue:true,pages:after.total,previewReady:true,imageReadsVerified:true,otherAccountDenied:true,staleHashDenied:true,automaticJudgments:0,documentsPublished:0,v3PointersUnchanged:true,externalCalls:0};
- await writeFile('tmp/pdf-preview-clone-result.json',JSON.stringify(result,null,2));console.log(JSON.stringify(result));
+ const result={cloneOnly:true,actualWorkerAndQueue:true,pages:after.total,previewReady:true,imageReadsVerified:!xlsx,otherAccountDenied:true,staleHashDenied:true,automaticJudgments:0,documentsPublished:0,v3PointersUnchanged:true,externalCalls:0};
+ await writeFile(xlsx?'tmp/xlsx-native-clone-result.json':'tmp/pdf-preview-clone-result.json',JSON.stringify({...result,imageReadsVerified:!xlsx,format:xlsx?'xlsx':'pdf',syntheticFixture:xlsx},null,2));console.log(JSON.stringify({...result,format:xlsx?'xlsx':'pdf'}));
 }finally{
  await pool.query('delete from knowledge_upload_job where user_id=$1',[owner]);
  await pool.query('delete from app_user where id=any($1::uuid[])',[[owner,other]]);await pool.end();await getPool().end();
