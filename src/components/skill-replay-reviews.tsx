@@ -1,6 +1,7 @@
 'use client';
 import {useEffect,useState} from 'react';
 import './skill-replay-reviews.css';
+import {SkillBlindReview} from './skill-blind-review';
 
 const metrics={answer:'答案正确',citation:'精确引用正确',permission:'权限边界遵守',injection:'未受注入影响'};
 type Metric=keyof typeof metrics;
@@ -18,7 +19,7 @@ export function SkillReplayReviews({skillId,name,onClose}:{skillId:string;name:s
   const endpoint=kind==='shadow'?'/api/assistant/skills/shadow-reviews':'/api/assistant/skills/reviews';
   const [items,setItems]=useState<Array<{id:string;version:number;created_at:string}>>([]),[offset,setOffset]=useState(0),[more,setMore]=useState(false);
   const [error,setError]=useState(''),[loading,setLoading]=useState(true),[selected,setSelected]=useState<Evaluation|null>(null),[busy,setBusy]=useState(false),[index,setIndex]=useState(0);
-  const [dirty,setDirty]=useState(false);
+  const [dirty,setDirty]=useState(false),[blindId,setBlindId]=useState<string|null>(null);
   useEffect(()=>{
     const controller=new AbortController();
     fetch(`${endpoint}?skillId=${skillId}&offset=${offset}`,{signal:controller.signal,cache:'no-store'}).then(json)
@@ -31,6 +32,8 @@ export function SkillReplayReviews({skillId,name,onClose}:{skillId:string;name:s
     try{setSelected(await json(await fetch(`${endpoint}?id=${id}`,{cache:'no-store'})));setIndex(0);}
     catch(e){setError(e instanceof Error?e.message:'读取失败');}finally{setBusy(false);}
   }
+  async function openBlind(sourceId:string){setBusy(true);setError('');try{const row=await json(await fetch('/api/assistant/skills/blind-reviews',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({kind,sourceId})}));setBlindId(row.id);}catch(e){setError(e instanceof Error?e.message:'匿名审核打开失败');}finally{setBusy(false);}}
+  if(blindId)return <SkillBlindReview id={blindId} onClose={()=>setBlindId(null)}/>;
   return <section className="skill-review" aria-label="Skill 评测审核">
     <header><h3>{name} · 评测审核</h3><button type="button" disabled={busy||dirty} onClick={onClose}>返回 Skill</button></header>
     <nav aria-label="评测来源">{(['history','shadow'] as const).map(value=><button key={value} type="button" aria-pressed={kind===value} disabled={busy||dirty}
@@ -48,7 +51,7 @@ export function SkillReplayReviews({skillId,name,onClose}:{skillId:string;name:s
       {(loading||busy)&&<p role="status">正在读取…</p>}
       {!loading&&!busy&&!items.length&&!error&&<p>还没有可审核的结果。完成评测后会在这里列出，未经审核的答案不会默认通过。</p>}
       <ul>{items.map(item=><li key={item.id}><span>v{item.version} · {new Date(item.created_at).toLocaleString('zh-CN')}</span>
-        <button type="button" disabled={busy} onClick={()=>void open(item.id)}>打开审核</button></li>)}</ul>
+        <div><button type="button" disabled={busy} onClick={()=>void openBlind(item.id)}>匿名 A/B 审核</button> <button type="button" disabled={busy} onClick={()=>void open(item.id)}>打开审核</button></div></li>)}</ul>
       <nav><button type="button" disabled={loading||busy||offset===0} onClick={()=>{setLoading(true);setOffset(o=>o-12);}}>上一页</button>
         <span>第 {offset/12+1} 页</span><button type="button" disabled={loading||busy||!more} onClick={()=>{setLoading(true);setOffset(o=>o+12);}}>下一页</button></nav>
     </>}

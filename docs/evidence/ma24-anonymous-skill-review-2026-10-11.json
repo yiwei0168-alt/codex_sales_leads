@@ -1,0 +1,52 @@
+{
+  "date": "2026-10-11",
+  "stage": "G10 anonymous local Skill review",
+  "migration": 126,
+  "migrationAppliedTo": "isolated clone only",
+  "unitAndApiTests": 17,
+  "typecheck": "passed",
+  "lint": "passed",
+  "productionBuild": "passed",
+  "privateTraceManifests": 85,
+  "privateDependencies": 0,
+  "database": [
+    "historical replay current evidence",
+    "prospective local shadow current evidence",
+    "stable randomized order",
+    "owner RLS",
+    "append-only judgments",
+    "concurrent revision conflict",
+    "changed sources rejected",
+    "assistant development cannot unlock",
+    "explicit identity disclosure seals judgments",
+    "labeled endpoints blocked before disclosure"
+  ],
+  "browser": {
+    "viewports": 3,
+    "anonymousAnswers": true,
+    "sourceTextVisible": true,
+    "coordinatesVisible": true,
+    "staleDraftPreserved": true,
+    "revisionRefreshPreservesDraft": true,
+    "explicitDisclosure": true,
+    "disclosureSeals": true,
+    "noHorizontalOverflow": true,
+    "keyboardFocus": true,
+    "modelCalls": 0,
+    "screenshots": [
+      "tmp/skill-blind-ui/1366.png",
+      "tmp/skill-blind-ui/390.png",
+      "tmp/skill-blind-ui/320.png"
+    ]
+  },
+  "existingReviewBrowserCases": 6,
+  "productionLoaded": false,
+  "modelCalls": 0,
+  "productionAutomaticActivation": false,
+  "limitations": [
+    "Local results remain non-independent; no historical record upgraded",
+    "Account session identity does not itself prove independent human judgment",
+    "Original answer/evidence may contain identity clues",
+    "New independent RAG cohort and production-equivalent Skill activation gate still required"
+  ]
+}

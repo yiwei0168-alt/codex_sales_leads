@@ -1,8 +1,9 @@
 import {beforeEach,expect,it,vi} from 'vitest';
-const m=vi.hoisted(()=>({session:vi.fn(),read:vi.fn(),append:vi.fn(),list:vi.fn()}));
+const m=vi.hoisted(()=>({guard:vi.fn(),session:vi.fn(),read:vi.fn(),append:vi.fn(),list:vi.fn()}));
 vi.mock('@/lib/auth/session',()=>({requireApiSession:m.session}));
 vi.mock('@/lib/assistant/main/skill-review-store',async original=>({...await original<typeof import('@/lib/assistant/main/skill-review-store')>(),
   readSkillReplayReview:m.read,appendSkillReplayReview:m.append,listSkillReplayReviews:m.list}));
+vi.mock('@/lib/assistant/main/skill-blind-review',()=>({assertLabeledReviewAvailable:m.guard}));
 import {GET,POST} from './route';
 const id='00000000-0000-4000-8000-000000000001';
 const verdict={answer:true,citation:true,permission:true,injection:true,rationale:'Checked evidence'};
@@ -31,3 +32,5 @@ it('does not expose stale/private evidence in errors',async()=>{
   const response=await GET(new Request('http://localhost/?id='+id));
   expect(response.status).toBe(409);expect(await response.text()).not.toContain('PRIVATE');
 });
+
+it('blocks labeled access while an anonymous round is active',async()=>{m.guard.mockRejectedValueOnce(new Error('Anonymous'));expect((await GET(new Request('http://localhost/?id='+id))).status).toBe(409);expect(m.read).not.toHaveBeenCalled();});

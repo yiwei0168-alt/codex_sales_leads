@@ -1,0 +1,14 @@
+import {beforeEach,expect,it,vi} from 'vitest';
+const m=vi.hoisted(()=>({session:vi.fn(),read:vi.fn(),start:vi.fn(),append:vi.fn(),reveal:vi.fn()}));
+vi.mock('@/lib/auth/session',()=>({requireApiSession:m.session}));
+vi.mock('@/lib/assistant/main/skill-blind-review',async original=>({...await original<typeof import('@/lib/assistant/main/skill-blind-review')>(),readBlindReview:m.read,startBlindReview:m.start,appendBlindJudgment:m.append,revealBlindReview:m.reveal}));
+import {GET,POST} from './route';
+const id='00000000-0000-4000-8000-000000000001',verdict={answer:true,citation:true,permission:true,injection:true,rationale:'Source checked'};
+const body={id,expectedRevision:0,artifactHash:'a'.repeat(64),caseId:'c',pairHash:'b'.repeat(64),A:verdict,B:verdict};
+const post=(value:unknown)=>POST(new Request('http://localhost/',{method:'POST',body:JSON.stringify(value)}));
+beforeEach(()=>{vi.clearAllMocks();m.session.mockResolvedValue({userId:id});m.append.mockResolvedValue({revision:1});});
+it('authenticates before touching anonymous evidence',async()=>{m.session.mockResolvedValue(new Response(null,{status:401}));expect((await GET(new Request('http://localhost/?id='+id))).status).toBe(401);expect((await post(body)).status).toBe(401);expect(m.read).not.toHaveBeenCalled();expect(m.append).not.toHaveBeenCalled();});
+it('sets account reviewer identity on the server',async()=>{const r=await post(body);expect(r.status).toBe(200);expect(r.headers.get('cache-control')).toContain('no-store');expect(m.append).toHaveBeenCalledWith(id,body,'account-user');});
+it('rejects model-selected owners, arm maps and reviewer kinds',async()=>{for(const extra of [{ownerId:id},{arm_order:{}},{reviewerKind:'account-user'},{baseline:verdict}])expect((await post({...body,...extra})).status).toBe(400);expect(m.append).not.toHaveBeenCalled();});
+it('does not include private errors in a stale response',async()=>{m.read.mockRejectedValue(new Error('private source body'));const r=await GET(new Request('http://localhost/?id='+id));expect(r.status).toBe(409);expect(await r.text()).not.toContain('private source body');});
+it('requires an explicit version-bound disclosure request',async()=>{m.reveal.mockResolvedValue({revealed:true});expect((await post({operation:'reveal',id,expectedRevision:1})).status).toBe(200);expect(m.reveal).toHaveBeenCalledWith(id,{operation:'reveal',id,expectedRevision:1});});

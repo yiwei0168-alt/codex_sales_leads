@@ -1,3 +1,4 @@
+import {startBlindReview,readBlindReview,appendBlindJudgment} from '../src/lib/assistant/main/skill-blind-review';
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
 import {readFile} from 'node:fs/promises';
@@ -24,6 +25,7 @@ globalThis.fetch=async()=>{throw new Error('Network disabled in capture probe');
 try{
  await pool.query(await readFile('db/migrations/123_skill_shadow_capture.sql','utf8'));
  await pool.query(await readFile('db/migrations/124_skill_shadow_reviews.sql','utf8'));
+ if(!(await pool.query("select to_regclass('agent_skill_blind_round') as present")).rows[0].present)await pool.query(await readFile('db/migrations/126_skill_blind_reviews.sql','utf8'));
  await pool.query("insert into app_user(id,email,display_name,password_hash,role,status) values($1,$2,'Shadow capture fixture','!','member','active')",[owner,`${owner}@example.invalid`]);
  await pool.query("insert into assistant_conversation(id,user_id,title) values($1,$2,'Shadow fixture')",[conversation,owner]);
  const skill=await importSkill({userId:owner,role:'member'},{name:'Synthetic prospective method',source:'synthetic-probe',files:{'SKILL.md':'Read and cite original sources.'},dependencies:[]});
@@ -127,6 +129,10 @@ try{
  assert.equal((await tenantQuery<{ok:boolean}>(owner,"select finish_skill_shadow_job($1,$2,'completed',$3,'synthetic-storage-only') as ok",[evidenceJob.id,evidenceJob.lease_token,JSON.stringify(artifact)]))[0].ok,true);
  const review=await readSkillShadowReview({userId:owner},evidenceJob.id);assert.equal(review.revision,0);
  const verdict={answer:false,citation:false,permission:false,injection:false,rationale:'Synthetic persistence check only; no semantic acceptance.'};
+ const blind=await startBlindReview(owner,{kind:'shadow',sourceId:evidenceJob.id}),anonymous=await readBlindReview(owner,blind.id);
+ assert.equal(anonymous.sourceKind,'prospective-local-analysis');assert.equal(anonymous.autoEnable,false);assert(!('identities' in anonymous));
+ await appendBlindJudgment(owner,{id:blind.id,expectedRevision:0,artifactHash:anonymous.artifactHash,caseId:anonymous.pairs[0].caseId,pairHash:anonymous.pairs[0].pairHash,A:verdict,B:verdict},'account-user');
+ await assert.rejects(()=>readBlindReview(randomUUID(),blind.id));
  const judgment={caseId:review.review.reviews[0].caseId,pairHash:review.review.reviews[0].pairHash,baseline:verdict,candidate:verdict};
  const reviewInput={id:evidenceJob.id,artifactHash:review.artifactHash,expectedRevision:0,suiteHash:review.review.suiteHash,resultHash:review.review.resultHash,judgment};
  const concurrent=await Promise.allSettled([appendSkillShadowReview({userId:owner},reviewInput),appendSkillShadowReview({userId:owner},reviewInput)]);
@@ -140,7 +146,7 @@ try{
  await pool.query("update agent_skill_shadow_campaign set expires_at=created_at+interval '1 millisecond' where id=$1",[liveCampaign]);
  assert.equal((await readSkillShadowReview({userId:owner},evidenceJob.id)).revision,2);
  await pool.query("update agent_skill_shadow_campaign set expires_at=now()+interval '1 hour' where id=$1",[liveCampaign]);
- await pool.query("update agent_tool_call set output='{}' where id=$1",[evidenceCall]);await assert.rejects(()=>readSkillShadowReview({userId:owner},evidenceJob.id));
+ await pool.query("update agent_tool_call set output='{}' where id=$1",[evidenceCall]);await assert.rejects(()=>readSkillShadowReview({userId:owner},evidenceJob.id));await assert.rejects(()=>readBlindReview(owner,blind.id));
  await pool.query('update agent_tool_call set output=$2 where id=$1',[evidenceCall,JSON.stringify(evidence)]);
  await pool.query("update agent_skill_shadow_job set state='queued',lease_token=null,lease_until=null where id=$1",[evidenceJob.id]);
  const oldEndpoint=process.env.OLLAMA_LOCAL_URL;process.env.OLLAMA_LOCAL_URL='http://127.0.0.1:1';
@@ -157,12 +163,12 @@ try{
   actualOriginalEvidenceValidated:true,sourceVersionChangeDenied:true,localModelOfflineRecorded:true,noCloudFallback:true,
   modelCallHashReceipts:true,modelCallPhaseAndLeaseGuards:true,
   disabledPendingCaptureSettled:true,
-  authenticatedShadowReview:true,concurrentReviewConflict:true,reviewAppendOnly:true,reviewerBoundToAccount:true,expiredCampaignStillReviewable:true,changedEvidenceReviewDenied:true,
+  anonymousShadowReview:true,anonymousSourceInvalidation:true,authenticatedShadowReview:true,concurrentReviewConflict:true,reviewAppendOnly:true,reviewerBoundToAccount:true,expiredCampaignStillReviewable:true,changedEvidenceReviewDenied:true,
   modelCalls:0,productionCampaigns:0,workerAcceptance:false}));
 }finally{
  const client=await pool.connect();try{
   await client.query('begin');
-  for(const table of ['agent_skill_shadow_review','agent_skill_shadow_event','agent_skill_shadow_job','agent_skill_shadow_campaign'])
+  for(const table of ['agent_skill_blind_disclosure','agent_skill_blind_judgment','agent_skill_blind_round','agent_skill_shadow_review','agent_skill_shadow_event','agent_skill_shadow_job','agent_skill_shadow_campaign'])
    if((await client.query('select to_regclass($1) as present',[table])).rows[0].present)await client.query(`delete from ${table} where owner_id=$1`,[owner]);
   await client.query('delete from agent_tool_call where user_id=$1',[owner]);
   await client.query('delete from agent_skill_version where skill_id in(select id from agent_skill where owner_id=$1)',[owner]);

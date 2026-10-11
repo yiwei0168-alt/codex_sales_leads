@@ -14,3 +14,5 @@
 .skill-review pre{max-height:320px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;line-height:1.6}
 .skill-review footer button{background:var(--primary);color:#fff}.skill-review [role=alert]{color:var(--red)}
 @media(max-width:640px){.skill-review-arms{grid-template-columns:1fr}.skill-review header h3{font-size:16px}.skill-review nav{justify-content:flex-start}.skill-review-answer{max-height:220px}}
+
+.skill-review-source{padding:12px 0;border-bottom:1px solid var(--line);min-width:0}.skill-review-source>p{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.65;max-height:280px;overflow:auto}.skill-review-source>pre{color:var(--muted)}

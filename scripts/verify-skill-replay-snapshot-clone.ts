@@ -1,3 +1,4 @@
+import {startBlindReview,readBlindReview,appendBlindJudgment,revealBlindReview,assertLabeledReviewAvailable} from '../src/lib/assistant/main/skill-blind-review';
 import assert from 'node:assert/strict';
 import {randomUUID,randomBytes} from 'node:crypto';
 import {readFile} from 'node:fs/promises';
@@ -32,6 +33,7 @@ try{
     if(!(await pool.query('select to_regclass($1) as present',[table])).rows[0].present)await pool.query(await readFile(`db/migrations/${migration}`,'utf8'));
   }
   await pool.query(await readFile('db/migrations/122_skill_replay_reviews.sql','utf8'));
+  if(!(await pool.query("select to_regclass('agent_skill_blind_round') as present")).rows[0].present)await pool.query(await readFile('db/migrations/126_skill_blind_reviews.sql','utf8'));
   await pool.query("insert into app_user(id,email,display_name,password_hash,role,status) values($1,$2,'Replay fixture','!','member','active')",[owner,`${owner}@example.invalid`]);
   await pool.query("insert into assistant_conversation(id,user_id,title) values($1,$2,'Replay fixture')",[conversation,owner]);
   const question='Compare AP3000 and AP3600 interface tables.';
@@ -53,6 +55,24 @@ try{
   assert.equal((await storeHistoricalSkillReplay(context,snapshot,result)).id,stored.id);
   assert.equal((await readSkillReplayReview(context,stored.id)).revision,0);
   await assert.rejects(()=>readSkillReplayReview({userId:randomUUID()},stored.id));
+  const blind=await startBlindReview(owner,{kind:'history',sourceId:stored.id});
+  assert.equal((await startBlindReview(owner,{kind:'history',sourceId:stored.id})).id,blind.id);
+  const anonymous=await readBlindReview(owner,blind.id);assert.equal(anonymous.independentSource,false);assert.equal(anonymous.autoEnable,false);assert(!('identities' in anonymous));
+  assert.deepEqual(anonymous.pairs,(await readBlindReview(owner,blind.id)).pairs);const presentation=JSON.stringify({...anonymous,pairs:anonymous.pairs.map(p=>({caseId:p.caseId,pairHash:p.pairHash,question:p.question,A:p.A,B:p.B}))});assert(!presentation.includes('baseline'));assert(!presentation.includes('candidate'));
+  await assert.rejects(()=>readBlindReview(randomUUID(),blind.id));await assert.rejects(()=>assertLabeledReviewAvailable(owner,'history',stored.id));
+  const blindVerdict={answer:false,citation:false,permission:true,injection:true,rationale:'Synthetic persistence evidence only'};
+  const judgment={id:blind.id,expectedRevision:0,artifactHash:anonymous.artifactHash,caseId:anonymous.pairs[0].caseId,pairHash:anonymous.pairs[0].pairHash,A:blindVerdict,B:blindVerdict};
+  const blindConcurrent=await Promise.allSettled([appendBlindJudgment(owner,judgment,'account-user'),appendBlindJudgment(owner,judgment,'account-user')]);assert.equal(blindConcurrent.filter(r=>r.status==='fulfilled').length,1);
+  await appendBlindJudgment(owner,{...judgment,expectedRevision:1},'assistant-development');
+  await assert.rejects(()=>revealBlindReview(owner,{operation:'reveal',id:blind.id,expectedRevision:2}));
+  await appendBlindJudgment(owner,{...judgment,expectedRevision:2},'account-user');
+  await revealBlindReview(owner,{operation:'reveal',id:blind.id,expectedRevision:3});
+  assert((await readBlindReview(owner,blind.id)).identities);await assertLabeledReviewAvailable(owner,'history',stored.id);
+  await assert.rejects(()=>appendBlindJudgment(owner,{...judgment,expectedRevision:3},'account-user'));
+  for(const table of ['agent_skill_blind_round','agent_skill_blind_judgment','agent_skill_blind_disclosure']){
+    await assert.rejects(()=>tenantTransaction(owner,c=>c.query(`update ${table} set owner_id=owner_id where owner_id=$1`,[owner])));
+    assert.equal((await tenantTransaction(randomUUID(),c=>c.query(`select * from ${table} where owner_id=$1`,[owner]))).rowCount,0);
+  }
   const template=prepareSkillReview(snapshot.suite,result),verdict={answer:false,citation:false,permission:true,injection:true,rationale:'Storage fixture only; no quality acceptance.'};
   const reviewInput={id:stored.id,expectedRevision:0,suiteHash:template.suiteHash,resultHash:template.resultHash,
     judgment:{caseId:template.reviews[0].caseId,pairHash:template.reviews[0].pairHash,baseline:verdict,candidate:verdict}};
@@ -71,7 +91,7 @@ try{
   }
   await assert.rejects(()=>appendSkillReplayReview(context,{...reviewInput,expectedRevision:2,resultHash:digest('stale')}));
   await assert.rejects(()=>prepareHistoricalSkillReplay({userId:randomUUID()},input));
-  await pool.query("update agent_run set status='cancelled' where id=$1",[run]);await assert.rejects(()=>prepareHistoricalSkillReplay(context,input));
+  await pool.query("update agent_run set status='cancelled' where id=$1",[run]);await assert.rejects(()=>prepareHistoricalSkillReplay(context,input));await assert.rejects(()=>readBlindReview(owner,blind.id));
   await pool.query("update agent_run set status='completed' where id=$1",[run]);
   await pool.query("update agent_tool_call set effect='send' where id=$1",[call]);await assert.rejects(()=>prepareHistoricalSkillReplay(context,input));
   await pool.query("update agent_tool_call set effect='read',input_hash='tampered' where id=$1",[call]);await assert.rejects(()=>prepareHistoricalSkillReplay(context,input));
@@ -125,12 +145,13 @@ try{
   await assert.rejects(()=>assertCurrentPrivateReplayMessages(owner,mailMessages),/changed/);
   console.log(JSON.stringify({clone:true,actualComparisonReceipt:true,currentSourcesChecked:true,stableHashes:true,crossAccountDenied:true,
     cancelledRunDenied:true,nonReadReceiptDenied:true,inputTamperingDenied:true,changedEvidenceDenied:true,
-    replayIdempotent:true,concurrentReviewConflict:true,appendOnly:true,reviewerFromAccount:true,reviewRls:true,
+    anonymousStable:true,anonymousLabelsHidden:true,anonymousRls:true,anonymousConcurrentConflict:true,assistantCannotUnlock:true,revealSealsJudgments:true,replayIdempotent:true,concurrentReviewConflict:true,appendOnly:true,reviewerFromAccount:true,reviewRls:true,
     staleReviewDenied:true,changedSourceReviewDenied:true,privateMailAndTimelineSourceChecked:true,privateCrossAccountDenied:true,
     companyNoteChangeDenied:true,archiveDenied:true,purgedMailDenied:true,changedMailDenied:true,automaticActivation:false,modelCalls:0,externalCalls:0}));
 }finally{
   const client=await pool.connect();try{
     await client.query('begin');await client.query('set local session_replication_role=replica');
+    for(const table of ['agent_skill_blind_disclosure','agent_skill_blind_judgment','agent_skill_blind_round'])await client.query(`delete from ${table} where owner_id=$1`,[owner]);
     await client.query('delete from agent_skill_replay_review where owner_id=$1',[owner]);
     await client.query('delete from agent_skill_replay where owner_id=$1',[owner]);
     await client.query('delete from agent_skill_version where skill_id in(select id from agent_skill where owner_id=$1)',[owner]);
