@@ -1,0 +1,91 @@
+{
+  "downloadedAt": "2026-10-11T09:44:33.741187+00:00",
+  "sources": [
+    {
+      "file": "itu-ict-2025.xlsx",
+      "url": "https://www.itu.int/en/ITU-D/Statistics/Documents/facts/ITU_regional_global_Key_ICT_indicator_aggregates_Nov_2025.xlsx",
+      "finalUrl": "https://www.itu.int/en/ITU-D/Statistics/Documents/facts/ITU_regional_global_Key_ICT_indicator_aggregates_Nov_2025.xlsx",
+      "contentType": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "bytes": 110158,
+      "sha256": "fd9070eb39b133bd600afa97d088c98ecb07bb730c9861675295c99174d0759a",
+      "containerEntries": 34,
+      "formatPartVerified": "xl/workbook.xml",
+      "structure": {
+        "worksheets": [
+          {
+            "name": "By dvpmnt status and spec. reg.",
+            "rows": 159,
+            "columns": 45
+          },
+          {
+            "name": "By BDT region",
+            "rows": 132,
+            "columns": 47
+          },
+          {
+            "name": "By urban-rural area",
+            "rows": 144,
+            "columns": 37
+          },
+          {
+            "name": "By gender",
+            "rows": 57,
+            "columns": 33
+          },
+          {
+            "name": "Internet use by age",
+            "rows": 122,
+            "columns": 42
+          }
+        ]
+      },
+      "publisher": "ITU",
+      "status": "downloaded-format-verified-candidate",
+      "landingPage": "https://www.itu.int/en/ITU-D/Statistics/pages/stat/default.aspx"
+    },
+    {
+      "file": "itu-satellite-2025.pptx",
+      "url": "https://www.itu.int/en/ITU-D/Regional-Presence/AsiaPacific/Documents/Events/2025/LLDC%202025/PPTs/Session%201%20-%20Aamir%20%28Satellite%29.pptx",
+      "finalUrl": "https://www.itu.int/en/ITU-D/Regional-Presence/AsiaPacific/Documents/Events/2025/LLDC%202025/PPTs/Session%201%20-%20Aamir%20%28Satellite%29.pptx",
+      "contentType": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+      "bytes": 5034094,
+      "sha256": "2223cee26aced9a50d648d933c31b15f2f0659d0ebe30922fca5c31c1cc30465",
+      "containerEntries": 365,
+      "formatPartVerified": "ppt/presentation.xml",
+      "structure": {
+        "slides": 42,
+        "slidesWithText": 42
+      },
+      "publisher": "ITU",
+      "status": "downloaded-format-verified-candidate",
+      "landingPage": "https://www.itu.int/en/ITU-D/Regional-Presence/AsiaPacific/Pages/Events/2025/ITTLLDC%202025/main.aspx"
+    },
+    {
+      "file": "itu-handbook-2020.pdf",
+      "url": "https://www.itu.int/en/ITU-D/Statistics/Documents/publications/handbook/2020/ITUHandbookTelecomAdminData2020_E_rev1.pdf",
+      "finalUrl": "https://www.itu.int/en/ITU-D/Statistics/Documents/publications/handbook/2020/ITUHandbookTelecomAdminData2020_E_rev1.pdf",
+      "contentType": "application/pdf",
+      "bytes": 12103429,
+      "sha256": "67b852d766ea8c97ed947c1d3aab215d5d18ee4db49a0fcd563f4cb64fdcbe05",
+      "structure": {
+        "pages": 262,
+        "encrypted": false
+      },
+      "publisher": "ITU",
+      "status": "downloaded-format-verified-candidate",
+      "landingPage": "https://www.itu.int/en/ITU-D/Statistics/Pages/publications/handbook.aspx"
+    }
+  ],
+  "schema": "public-evaluation-candidate-inventory-v1",
+  "localOnly": true,
+  "productionWrites": 0,
+  "newModelCalls": 0,
+  "independentSourcesApproved": 0,
+  "qualityAccepted": false,
+  "limitations": [
+    "Format and structure checks only; full extraction, visual coordinates and semantic quality remain unverified.",
+    "No historical exposure or near-duplicate audit performed; candidates are not a frozen independent cohort.",
+    "Public ICT material supplements format/long-document coverage, not product-specific acceptance.",
+    "Originals remain local under ignored tmp; no shared publication or redistribution approval implied."
+  ]
+}
