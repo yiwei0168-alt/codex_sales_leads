@@ -36,5 +36,5 @@ export async function validateStoredSkillAcceptanceCandidate(context:{userId:str
  const after=await readSkillAcceptanceEvidence(context,input.bundleId);
  if(!after.sourcesCurrent||digest(before)!==digest(after)||baseline.artifactHash!==before.artifactHash)throw new Error('Candidate evidence or review changed during validation');
  return {bundleId:input.bundleId,caseId:input.caseId,artifactHash:before.artifactHash,projectionHash:audited.projectionHash,
-  baselineJournalVerified:true,candidateJournalVerified:true,productionAgentEquivalent:false,collectorProvenanceVerified:false,automaticActivation:false};
+  original:baseline.original,baselineJournalVerified:true,candidateJournalVerified:true,productionAgentEquivalent:false,collectorProvenanceVerified:false,automaticActivation:false};
 }

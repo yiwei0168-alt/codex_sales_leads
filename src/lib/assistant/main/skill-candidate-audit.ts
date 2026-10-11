@@ -29,13 +29,16 @@ export function prepareSkillModelJournalAudit(identity:Identity,rows:SkillModelA
  return {freezeId,sourceKind,snapshotHash,ordered,selected,fallback,journalHash:digest(ordered)};
 }
 
+export async function readSkillCandidateJournal(context:{userId:string},input:{evaluationId:string;arm:'baseline'|'candidate'}){const result=await tenantQuery<SkillModelAuditRow>(context.userId,`select a.id,a.owner_id,a.evaluation_id,a.arm,a.step,a.route_index,a.source_kind,a.snapshot_hash,a.freeze_id,a.input,a.input_hash,o.output,o.output_hash,a.created_at::text as started_at,o.created_at::text as completed_at
+  from agent_skill_model_attempt a left join agent_skill_model_outcome o on o.attempt_id=a.id and o.owner_id=a.owner_id
+  where a.owner_id=$1 and a.evaluation_id=$2 and a.arm=$3 order by a.step,a.route_index`,[context.userId,input.evaluationId,input.arm]);
+  return result.map(row=>{if(row.freeze_id==null)delete row.freeze_id;return row;});}
+
+
 /** Reconstructs the actual graph from authoritative model receipts. No model/provider/collector writes. */
 export async function auditDurableSkillCandidate(context:{userId:string},input:{runId:string;skillId:string;version:number;evaluationId:string;arm:'baseline'|'candidate'}){
  assertLocalAnalysisBoundary();z.uuid().parse(context.userId);z.uuid().parse(input.evaluationId);z.enum(['baseline','candidate']).parse(input.arm);
- const read=async()=>{const result=await tenantQuery<SkillModelAuditRow>(context.userId,`select a.id,a.owner_id,a.evaluation_id,a.arm,a.step,a.route_index,a.source_kind,a.snapshot_hash,a.freeze_id,a.input,a.input_hash,o.output,o.output_hash,a.created_at::text as started_at,o.created_at::text as completed_at
-  from agent_skill_model_attempt a left join agent_skill_model_outcome o on o.attempt_id=a.id and o.owner_id=a.owner_id
-  where a.owner_id=$1 and a.evaluation_id=$2 and a.arm=$3 order by a.step,a.route_index`,[context.userId,input.evaluationId,input.arm]);
-  return result.map(row=>{if(row.freeze_id==null)delete row.freeze_id;return row;});};
+ const read=()=>readSkillCandidateJournal(context,input);
  const rows=await read(),prepared=prepareSkillModelJournalAudit({...context,evaluationId:input.evaluationId,arm:input.arm},rows);
  let decisions=0;
  const replay=await runRecordedSkillCandidateArm(context,{runId:input.runId,skillId:input.skillId,version:input.version},input.arm,async request=>{

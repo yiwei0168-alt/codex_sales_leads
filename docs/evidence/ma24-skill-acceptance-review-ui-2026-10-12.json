@@ -1,0 +1,35 @@
+{
+  "date": "2026-10-12",
+  "scope": "G10 historical Skill acceptance review API and UI",
+  "checks": {
+    "unitTests": 43,
+    "typecheck": "passed",
+    "eslint": "passed",
+    "completeRecordedSourceCloneVerifier": "passed",
+    "reviewMaterialReconstructed": true,
+    "reviewListTenantIsolation": true,
+    "reviewSummaryMissingCasesNotAvailable": true,
+    "browserViewports": [1366,390,320],
+    "browserApi": "synthetic intercepted responses",
+    "answersAndCoordinatesVisible": true,
+    "explicitMetricsRequired": true,
+    "conflictDraftPreserved": true,
+    "saveAndRevoke": true,
+    "missingMaterialCannotPass": true,
+    "noHorizontalOverflow": true,
+    "keyboardFocus": true,
+    "actualModelCalls": 0
+  },
+  "visualReview": ["ma24-skill-acceptance-review-ui-2026-10-12-desktop.png", "ma24-skill-acceptance-review-ui-2026-10-12-mobile.png"],
+  "initialIssues": ["Removed an effect-local synchronous setState flagged by ESLint.","Browser locator failed to match the implicit question label; semantic navigation/combobox locator passed.","Mobile question label wrapping fixed and all three viewports rerun."],
+  "limitations": {
+    "onlyHistoricalReplayMaterialAdapter": true,
+    "materialReconstructionRequiresExternalTracingDisabled": true,
+    "productionDeployment": false,
+    "deployedBrowserDatabaseEndToEnd": false,
+    "runtimeAttestation": false,
+    "qualityAccepted": false,
+    "automaticActivation": false,
+    "publicGithubPush": "blocked by existing public-disclosure approval requirement"
+  }
+}

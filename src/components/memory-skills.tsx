@@ -1,5 +1,6 @@
 "use client";
 import {useEffect,useState} from "react";
+import {SkillAcceptanceReviews} from './skill-acceptance-reviews';
 import {SkillReplayReviews} from './skill-replay-reviews';
 
 type Skill={id:string;name:string;scope:string;current_version:number;enabled:boolean;published:boolean;owned:boolean;
@@ -14,6 +15,7 @@ export function MemorySkills(){
   const [busy,setBusy]=useState(false),[error,setError]=useState(""),[notice,setNotice]=useState("");
   const [versions,setVersions]=useState<Record<string,Version[]>>({});
   const [selectedVersion,setSelectedVersion]=useState<Record<string,number>>({});
+  const [acceptance,setAcceptance]=useState<Skill|null>(null);
   const [reviewSkill,setReviewSkill]=useState<Skill|null>(null);
   useEffect(()=>{
     const controller=new AbortController();
@@ -44,6 +46,7 @@ export function MemorySkills(){
       setVersions(current=>({...current,[skill.id]:[]}));setRevision(value=>value+1);
     }catch(error){setError(error instanceof Error?error.message:"Skill 更新失败");}finally{setBusy(false);}
   }
+  if(acceptance)return <SkillAcceptanceReviews key={acceptance.id} skillId={acceptance.id} name={acceptance.name} onClose={()=>setAcceptance(null)}/>;
   if(reviewSkill)return <SkillReplayReviews key={reviewSkill.id} skillId={reviewSkill.id} name={reviewSkill.name} onClose={()=>setReviewSkill(null)}/>;
   return <section className="memory-skills" aria-label="Skill">
     <h3>Skill</h3><p>账户方法保留来源和版本。脚本与跨账户方法仍须单独审核。</p>
@@ -59,6 +62,7 @@ export function MemorySkills(){
           onClick={()=>void change(skill,skill.enabled?"disable":"enable")}>{skill.enabled?"停用":needsReview(skill)?"待审核":"手动启用"}</button>
         <button type="button" disabled={busy} onClick={()=>void loadVersions(skill.id)}>历史版本</button>
         <button type="button" disabled={busy} onClick={()=>setReviewSkill(skill)}>评测审核</button>
+        <button type="button" disabled={busy} onClick={()=>setAcceptance(skill)}>{"\u9a8c\u6536\u5ba1\u6838"}</button>
       </div>}
       {skill.owned&&versions[skill.id]?.some(version=>version.version!==skill.current_version&&instructionOnly(version))&&<div className="memory-skill-history">
         <label>恢复到 <select value={selectedVersion[skill.id]??""} onChange={event=>setSelectedVersion(current=>({...current,[skill.id]:Number(event.target.value)}))}>

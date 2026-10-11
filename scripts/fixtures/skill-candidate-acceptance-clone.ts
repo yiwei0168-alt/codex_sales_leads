@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
 import type {Pool} from 'pg';
+import {readSkillAcceptanceReviewCase,readSkillAcceptanceReview,listSkillAcceptanceReviews} from '../../src/lib/assistant/main/skill-acceptance-review';
 import {digest} from '../../src/lib/assistant/main/contracts';
 import {prepareSkillAcceptanceBaseline} from '../../src/lib/assistant/main/skill-acceptance-baseline';
 import {validateStoredSkillAcceptanceCandidate} from '../../src/lib/assistant/main/skill-acceptance-candidate';
@@ -54,6 +55,12 @@ export async function verifyCandidateAcceptanceFixture(pool:Pool,owner:string,ru
   assert(Date.parse(c.capturedAt)>=Date.parse(plan.frozenAt));
   assert.equal(collected.automaticActivation,false);
   assert.equal(stored.freezeStatus.state,'active');
+  const summary=await readSkillAcceptanceReview({userId:owner},collected.bundleId);assert.equal(summary.cases.filter(row=>row.materialAvailable).length,1);
+  assert((await listSkillAcceptanceReviews({userId:owner},{skillId,offset:0})).items.some(row=>row.id===collected.bundleId));
+  assert.equal((await listSkillAcceptanceReviews({userId:randomUUID()},{skillId,offset:0})).items.length,0);
+  const material=await readSkillAcceptanceReviewCase({userId:owner},{bundleId:collected.bundleId,caseId:'replay'});
+  assert.equal(material.question,'Synthetic original task');assert.equal(digest(material.baseline),p.answerHash);assert.equal(digest(material.candidate),c.answerHash);
+  assert(!('messages' in material));assert(!('rawReceipts' in material));
   const review={bundleId:collected.bundleId,artifactHash:stored.artifactHash,expectedRevision:0,judgment:{caseId:'replay',observationHash:digest(stored.artifact.observations[0]),revoked:false,baseline:{answer:false,citation:false,permission:true,injection:true},candidate:{answer:false,citation:false,permission:true,injection:true},rationale:'Synthetic lifecycle test; no quality approval.'}};
   const reviewer={userId:owner,reviewerKind:'assistant-development' as const};
   await appendSkillAcceptanceJudgment(reviewer,review);
@@ -64,7 +71,7 @@ export async function verifyCandidateAcceptanceFixture(pool:Pool,owner:string,ru
   await assert.rejects(appendSkillAcceptanceJudgment(reviewer,{...review,expectedRevision:1}),/freeze no longer active/);
   const revoked=await appendSkillAcceptanceJudgment(reviewer,{...review,expectedRevision:1,judgment:{...review.judgment,revoked:true}});assert.equal(revoked.revision,2);
 
-  return {revokedHistoryReadable:true,revokedCandidateValidationRejected:true,revokedFreezeNewReviewRejected:true,reviewRevocationStillAllowed:true,storedCandidateAndBaselineBound:true,restrictedCollectorPublishedDerivedObservation:true,serverTimesPreserved:true,freezeBeforeExecutionVerified:true,sourceIdentityChecked:true,runtimeAttestation:false,perDecisionRoutesBound:true,mixedCandidateRoutes:new Set(c.selectedModels.map(row=>row.model)).size>1,syntheticBundle:true,automaticActivation:false};
+  return {reviewMaterialReconstructed:true,reviewListTenantIsolation:true,reviewSummaryMissingCasesNotAvailable:true,revokedHistoryReadable:true,revokedCandidateValidationRejected:true,revokedFreezeNewReviewRejected:true,reviewRevocationStillAllowed:true,storedCandidateAndBaselineBound:true,restrictedCollectorPublishedDerivedObservation:true,serverTimesPreserved:true,freezeBeforeExecutionVerified:true,sourceIdentityChecked:true,runtimeAttestation:false,perDecisionRoutesBound:true,mixedCandidateRoutes:new Set(c.selectedModels.map(row=>row.model)).size>1,syntheticBundle:true,automaticActivation:false};
  }finally{
   const client=await pool.connect();try{await client.query('begin');await client.query('set local session_replication_role=replica');await client.query('delete from agent_skill_acceptance_judgment where bundle_id=any($1::uuid[]) and owner_id=$2',[[id,...(collectedId?[collectedId]:[])],owner]);await client.query('delete from agent_skill_acceptance_bundle where id=any($1::uuid[]) and owner_id=$2',[[id,...(collectedId?[collectedId]:[])],owner]);await client.query('commit');}
   catch(error){await client.query('rollback');throw error;}finally{client.release();}

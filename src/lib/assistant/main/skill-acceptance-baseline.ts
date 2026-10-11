@@ -57,6 +57,7 @@ export async function validateStoredSkillAcceptanceBaseline(context:Context,inpu
  const after=await readSkillAcceptanceEvidence(context,input.bundleId);
  if(!after.sourcesCurrent||digest(before)!==digest(after))throw new Error('Acceptance evidence or review changed during baseline validation');
  return {bundleId:input.bundleId,caseId:input.caseId,artifactHash:before.artifactHash,projectionHash:current.projectionHash,
+  original:{sourceHash:projection.sourceHash,chainHash:projection.chainHash,initialSourceHash:projection.initialSourceHash},
   baselineJournalVerified:true as const,productionAgentEquivalent:false as const,collectorProvenanceVerified:false as const,
   candidateVerified:false as const,automaticActivation:false as const};
 }

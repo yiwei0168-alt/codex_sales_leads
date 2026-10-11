@@ -16,3 +16,5 @@
 @media(max-width:640px){.skill-review-arms{grid-template-columns:1fr}.skill-review header h3{font-size:16px}.skill-review nav{justify-content:flex-start}.skill-review-answer{max-height:220px}}
 
 .skill-review-source{padding:12px 0;border-bottom:1px solid var(--line);min-width:0}.skill-review-source>p{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.65;max-height:280px;overflow:auto}.skill-review-source>pre{color:var(--muted)}
+
+.skill-acceptance{height:min(78dvh,940px);min-height:360px;overflow:auto;align-content:start;padding:4px 8px 16px 0;scrollbar-gutter:stable}.skill-acceptance nav label{min-width:0;margin:0;white-space:nowrap}.skill-acceptance nav select{flex:1;max-width:min(100%,480px);min-width:0}.skill-acceptance .skill-review-answer{max-height:380px}.skill-acceptance footer{justify-content:flex-start}.skill-acceptance footer span{flex:1 1 200px}@media(max-width:640px){.skill-acceptance nav label{width:100%}.skill-acceptance nav select{width:100%}.skill-acceptance{height:78dvh}.skill-acceptance .skill-review-answer{max-height:300px}}
