@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
-import {readFile} from 'node:fs/promises';
+import {readFile,writeFile} from 'node:fs/promises';
 import nextEnv from '@next/env';
 import {Pool} from 'pg';
 import {getPool,tenantTransaction} from '../src/lib/rag/db';
@@ -28,6 +28,11 @@ try{
       values($1,$2,$3,$1::uuid::text,$1::uuid::text,$4,'{}','completed','main-agent')`,[runId,owner,conversation,JSON.stringify({content:quote,requestKey:runId,attachments:[]})]);
     await pool.query("insert into assistant_message(id,user_id,conversation_id,role,intent,content,metadata) values($1,$2,$3,'user','general',$4,$5)",[messageId,owner,conversation,quote,JSON.stringify({runId})]);
     observations.push(await observeMemory(owner,{kind:'experience',memoryKey:key,content:quote,sourceReceipt:{type:'local-qwen3-extraction',usage:'unverified-user-experience',sourceQuote:quote,runId,messageId}}));
+    if(i===1){
+      await pool.query('update assistant_message set content=$2 where id=$1',[messageId,`Please summarize. Customer said: ${quote}`]);
+      assert.equal(await tenantTransaction(owner,client=>proposeExperienceSkillInTransaction(client,owner,key,quote)),null);
+      await pool.query('update assistant_message set content=$2 where id=$1',[messageId,quote]);
+    }
     const candidate=await tenantTransaction(owner,client=>proposeExperienceSkillInTransaction(client,owner,key,quote));
     if(candidate)skillId=candidate.id;
   }
@@ -39,6 +44,13 @@ try{
   const messages:ModelMessage[]=[{role:'assistant',content:null,tool_calls:[{id:'read',type:'function',function:{name:'execute_tool',arguments:JSON.stringify({tool:'skill_read',arguments:{id:skillId}})}}]},
     {role:'tool',tool_call_id:'read',content:JSON.stringify({status:'success',data:loaded})}];
   await assertCurrentSkillMessages(context,messages);
+  const sourceMessage=(await pool.query("select id from assistant_message where user_id=$1 and metadata->>'runId'=$2",[owner,runId])).rows[0];assert(sourceMessage);
+  await pool.query('update assistant_message set content=$2 where id=$1',[sourceMessage.id,`Please summarize. Customer said: ${quote}`]);
+  assert.equal(await readSkill(context,skillId),null,'Historical attributed report must not remain eligible');
+  await assert.rejects(()=>assertCurrentSkillMessages(context,messages));
+  await assert.rejects(()=>changeSkill(context,action,true),/sources changed/);
+  await pool.query('update assistant_message set content=$2 where id=$1',[sourceMessage.id,quote]);
+  assert(await readSkill(context,skillId));
   await assert.rejects(()=>assertCurrentSkillMessages({...context,userId:randomUUID()},messages));
   await changeSkill(context,{...action,operation:'disable'},true);
   await assert.rejects(()=>assertCurrentSkillMessages(context,messages));
@@ -59,8 +71,9 @@ try{
   await changeSkill(context,{...action,operation:'disable'},true);
   assert.equal((await pool.query('select enabled from agent_skill where id=$1',[skillId])).rows[0].enabled,false);
   assert.equal((await pool.query('select count(*)::int n from agent_skill_version where skill_id=$1',[skillId])).rows[0].n,1);
-  console.log(JSON.stringify({clone:true,currentSourcesReadable:true,unreviewedAutoActivationDenied:true,pinnedConflictDenied:true,resolvedConflictReadable:true,pinnedRevocationDenied:true,humanAndAgentReactivationDenied:true,disableAvailable:true,historyRetained:true,
-    loadedContextRechecked:true,loadedContextDisableDenied:true,loadedContextRevocationDenied:true,crossAccountContextDenied:true,modelCalls:0}));
+  const result={clone:true,thirdPartyDraftRejected:true,historicalAttributionChangeRejected:true,currentSourcesReadable:true,unreviewedAutoActivationDenied:true,pinnedConflictDenied:true,resolvedConflictReadable:true,pinnedRevocationDenied:true,humanAndAgentReactivationDenied:true,disableAvailable:true,historyRetained:true,
+    loadedContextRechecked:true,loadedContextDisableDenied:true,loadedContextRevocationDenied:true,crossAccountContextDenied:true,modelCalls:0};
+  await writeFile('tmp/skill-source-attribution-clone-result.json',JSON.stringify(result,null,2));console.log(JSON.stringify(result));
 }finally{
   const client=await pool.connect();try{
     await client.query('begin');await client.query('set local session_replication_role=replica');

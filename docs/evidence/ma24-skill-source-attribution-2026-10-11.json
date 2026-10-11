@@ -1,0 +1,27 @@
+{
+  "clone": true,
+  "thirdPartyDraftRejected": true,
+  "historicalAttributionChangeRejected": true,
+  "currentSourcesReadable": true,
+  "unreviewedAutoActivationDenied": true,
+  "pinnedConflictDenied": true,
+  "resolvedConflictReadable": true,
+  "pinnedRevocationDenied": true,
+  "humanAndAgentReactivationDenied": true,
+  "disableAvailable": true,
+  "historyRetained": true,
+  "loadedContextRechecked": true,
+  "loadedContextDisableDenied": true,
+  "loadedContextRevocationDenied": true,
+  "crossAccountContextDenied": true,
+  "modelCalls": 0,
+  "date": "2026-10-11",
+  "productionDeployed": false,
+  "qualityAccepted": false,
+  "checks": {
+    "testsPassed": 45,
+    "typecheck": "passed",
+    "eslint": "passed"
+  },
+  "naturalSamplesAuthorization": "pending after automatic review rejection"
+}

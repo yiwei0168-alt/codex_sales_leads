@@ -4,7 +4,7 @@ import {experienceDraftPackage,proposeExperienceSkillInTransaction} from './expe
 const quote='I found comparing original tables reduced missed interface details.';
 // A positive report can mention missed details as the thing reduced; the conservative draft filter may abstain.
 const positive='I found comparing original tables reduced errors.';
-let reports:Array<{id:string;run_id:string;message_id:string;source_receipt:object}>=[];
+let reports:Array<{id:string;run_id:string;message_id:string;message_content:string;source_receipt:object}>=[];
 let existing=false;
 const query=vi.fn(async(sql:string)=>{
   if(sql.startsWith('select s.id'))return {rows:existing?[{id:'skill'}]:[]};
@@ -26,16 +26,21 @@ it('abstains on negative, ambiguous or credential-bearing reports',()=>{
   expect(experienceDraftPackage('method',`I found using sk-${'a'.repeat(32)} worked.`)).toBeNull();
 });
 it('requires repeated distinct completed task receipts before creating a draft',async()=>{
-  reports=[{id:'observation',run_id:'run',message_id:'message',source_receipt:{}}];
+  reports=[{id:'observation',run_id:'run',message_id:'message',message_content:positive,source_receipt:{}}];
   expect(await proposeExperienceSkillInTransaction(client,'owner','method',positive)).toBeNull();
   expect(query.mock.calls.some(([sql])=>sql.startsWith('insert'))).toBe(false);
 });
 it('creates only a disabled account draft with pending quality checks',async()=>{
-  reports=[1,2].map(n=>({id:`obs-${n}`,run_id:`run-${n}`,message_id:`message-${n}`,source_receipt:{n}}));
+  reports=[1,2].map(n=>({id:`obs-${n}`,run_id:`run-${n}`,message_id:`message-${n}`,message_content:positive,source_receipt:{n}}));
   expect(await proposeExperienceSkillInTransaction(client,'owner','method',positive)).toEqual({id:'skill',created:true});
   expect(query.mock.calls.find(([sql])=>sql.startsWith('insert into agent_skill('))?.[0]).toContain("'account',false,false");
   const call=query.mock.calls.find(([sql])=>sql.startsWith('insert into agent_skill_version'));
   expect(call).toBeDefined();
+});
+it('does not count historical third-party reports toward a new draft',async()=>{
+  reports=[1,2].map(n=>({id:`obs-${n}`,run_id:`run-${n}`,message_id:`message-${n}`,message_content:n===1?positive:`Please summarize. Customer said: ${positive}`,source_receipt:{n}}));
+  expect(await proposeExperienceSkillInTransaction(client,'owner','method',positive)).toBeNull();
+  expect(query.mock.calls.some(([sql])=>sql.startsWith('insert'))).toBe(false);
 });
 it('does not overwrite or re-enable an existing draft on replay',async()=>{
   existing=true;

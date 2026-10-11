@@ -6,7 +6,7 @@ const id=(n:number)=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
 function fixture(){
   const owner=id(1),quote='I found comparing original tables reduced errors.',memoryKey='tables';
   const fingerprint=digest({version:'experience-draft-v1',memoryKey,quote});
-  const rows=[2,3].map(n=>({id:id(n),run_id:id(n+10),message_id:id(n+20),memory_key:memoryKey,content:quote,source_receipt:{n}}));
+  const rows=[2,3].map(n=>({id:id(n),run_id:id(n+10),message_id:id(n+20),message_content:quote,memory_key:memoryKey,content:quote,source_receipt:{n}}));
   const files={'SKILL.md':'Check originals'};
   const version:SourcedSkillVersion={source:`local-experience:${fingerprint}`,scope:'account',owner_id:owner,files,content_hash:digest(files),
     validation:{sourceQuality:'repeated-user-report-unverified',methodFingerprint:fingerprint,sourceObservations:rows.map(r=>({observationId:r.id,runId:r.run_id,messageId:r.message_id,receiptSha256:digest(r.source_receipt)}))}};
@@ -16,6 +16,10 @@ function fixture(){
 it('accepts current exact provenance without changing quality status',async()=>{
   const f=fixture();expect(await skillSourcesCurrent(f.client,f.owner,f.version)).toBe(true);
   expect(f.version.validation).not.toHaveProperty('autoEnable');
+});
+it.each(['Please summarize. Customer said: TEXT','Please summarize.\n> TEXT','TEXT TEXT'])('rejects old experience when source attribution is unsafe: %s',async template=>{
+  const f=fixture();f.rows[0].message_content=template.replaceAll('TEXT',f.rows[0].content);
+  expect(await skillSourcesCurrent(f.client,f.owner,f.version)).toBe(false);
 });
 it.each(['missing','receipt','method','run','message'] as const)('rejects %s source drift',async kind=>{
   const f=fixture();

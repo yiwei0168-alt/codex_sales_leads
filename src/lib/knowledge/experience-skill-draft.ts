@@ -1,6 +1,7 @@
 import type {PoolClient} from 'pg';
 import {digest} from '@/lib/assistant/main/contracts';
 import {instructionOnlySkill,skillImportSchema} from '@/lib/assistant/main/skills';
+import {isDirectMemorySpan} from './memory-source-context';
 
 /** Repetition is a nomination signal, never evidence that replay/shadow tests have passed. */
 export function experienceDraftPackage(memoryKey:string,quote:string){
@@ -20,8 +21,8 @@ export async function proposeExperienceSkillInTransaction(client:PoolClient,user
   const existing=await client.query<{id:string}>(`select s.id from agent_skill s join agent_skill_version v on v.skill_id=s.id
     where s.owner_id=$1 and v.source=$2 limit 1`,[userId,draft.source]);
   if(existing.rows[0])return {id:existing.rows[0].id,created:false};
-  const reports=await client.query<{id:string;run_id:string;message_id:string;source_receipt:Record<string,unknown>}>(`
-    select distinct on(r.id) m.id,r.id as run_id,msg.id as message_id,m.source_receipt
+  const reports=await client.query<{id:string;run_id:string;message_id:string;message_content:string;source_receipt:Record<string,unknown>}>(`
+    select distinct on(r.id) m.id,r.id as run_id,msg.id as message_id,msg.content as message_content,m.source_receipt
     from agent_memory_observation m
     join agent_run r on r.id::text=m.source_receipt->>'runId' and r.user_id=m.owner_id
       and r.status='completed' and r.execution_kind='main-agent'
@@ -36,15 +37,16 @@ export async function proposeExperienceSkillInTransaction(client:PoolClient,user
       and not exists(select 1 from agent_memory_observation x where x.owner_id=$1 and (x.corrects_id=m.id or x.invalidates_id=m.id))
       and not exists(select 1 from agent_memory_conflict c where c.owner_id=$1 and c.status='open' and (c.earlier_id=m.id or c.later_id=m.id))
     order by r.id,m.recorded_at,m.id limit 10`,[userId,memoryKey,quote]);
-  if(reports.rows.length<2)return null;
+  const directReports=reports.rows.filter(row=>typeof row.message_content==='string'&&isDirectMemorySpan(row.message_content,quote));
+  if(directReports.length<2)return null;
   const skill=(await client.query<{id:string}>("insert into agent_skill(owner_id,name,scope,enabled,published) values($1,$2,'account',false,false) returning id",[userId,draft.name])).rows[0];
   const validation={instructions:'available',scripts:'none',dependencies:'none',autoEnable:'pending-replay-and-shadow',
     sourceQuality:'repeated-user-report-unverified',methodFingerprint:draft.fingerprint,
-    sourceObservations:reports.rows.map(row=>({observationId:row.id,runId:row.run_id,messageId:row.message_id,receiptSha256:digest(row.source_receipt)})),
+    sourceObservations:directReports.map(row=>({observationId:row.id,runId:row.run_id,messageId:row.message_id,receiptSha256:digest(row.source_receipt)})),
     replay:'pending',negativeCases:'pending',promptInjection:'pending',permissions:'pending',shadow:'pending'};
   await client.query(`insert into agent_skill_version(skill_id,version,content_hash,source,files,dependencies,validation)
     values($1,1,$2,$3,$4,'[]',$5)`,[skill.id,digest(draft.files),draft.source,JSON.stringify(draft.files),JSON.stringify(validation)]);
   await client.query("insert into agent_run_event(user_id,run_id,kind,payload) values($1,$2,'skill_draft_created',$3)",
-    [userId,reports.rows[0].run_id,JSON.stringify({skillId:skill.id,version:1,enabled:false,sourceQuality:validation.sourceQuality})]);
+    [userId,directReports[0].run_id,JSON.stringify({skillId:skill.id,version:1,enabled:false,sourceQuality:validation.sourceQuality})]);
   return {id:skill.id,created:true};
 }

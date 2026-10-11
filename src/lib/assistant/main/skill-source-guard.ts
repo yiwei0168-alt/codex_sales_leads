@@ -1,6 +1,7 @@
 import type {PoolClient} from 'pg';
 import {z} from 'zod';
 import {digest} from './contracts';
+import {isDirectMemorySpan} from '@/lib/knowledge/memory-source-context';
 
 const provenance=z.object({
   methodFingerprint:z.string().regex(/^[a-f0-9]{64}$/),
@@ -22,8 +23,8 @@ export async function skillSourcesCurrent(client:PoolClient,userId:string,versio
     ||new Set(refs.map(r=>r.observationId)).size!==refs.length
     ||new Set(refs.map(r=>r.runId)).size!==refs.length
     ||new Set(refs.map(r=>r.messageId)).size!==refs.length)return false;
-  const rows=await client.query<{id:string;run_id:string;message_id:string;memory_key:string;content:string;source_receipt:Record<string,unknown>}>(`
-    select m.id,r.id as run_id,msg.id as message_id,m.memory_key,m.content,m.source_receipt
+  const rows=await client.query<{id:string;run_id:string;message_id:string;message_content:string;memory_key:string;content:string;source_receipt:Record<string,unknown>}>(`
+    select m.id,r.id as run_id,msg.id as message_id,msg.content as message_content,m.memory_key,m.content,m.source_receipt
     from agent_memory_observation m
     join app_user u on u.id=m.owner_id and u.status='active'
     join agent_run r on r.id::text=m.source_receipt->>'runId' and r.user_id=m.owner_id
@@ -44,7 +45,7 @@ export async function skillSourcesCurrent(client:PoolClient,userId:string,versio
     `,[userId,refs.map(r=>r.observationId)]);
   return rows.rows.length===refs.length&&refs.every(ref=>{
     const row=rows.rows.find(r=>r.id===ref.observationId);
-    return row&&row.run_id===ref.runId&&row.message_id===ref.messageId&&digest(row.source_receipt)===ref.receiptSha256
+    return row&&typeof row.message_content==='string'&&isDirectMemorySpan(row.message_content,row.content)&&row.run_id===ref.runId&&row.message_id===ref.messageId&&digest(row.source_receipt)===ref.receiptSha256
       &&digest({version:'experience-draft-v1',memoryKey:row.memory_key,quote:row.content})===methodFingerprint;
   });
 }
