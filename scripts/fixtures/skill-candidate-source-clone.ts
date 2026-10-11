@@ -4,6 +4,7 @@ import {importSkill} from '../../src/lib/assistant/main/skills';
 import {runRecordedSkillCandidateArm} from '../../src/lib/assistant/main/skill-candidate-source';
 import {loadRecordedTaskChain} from '../../src/lib/assistant/main/recorded-task-source';
 import {digest,toolResultSchema} from '../../src/lib/assistant/main/contracts';
+import {verifyDurableCandidateFixture} from './skill-durable-candidate-clone';
 
 /** Synthetic accounts and task only; caller blocks network and asserts clone database. */
 export async function verifyCandidateSourceFixture(pool:Pool,owner:string,other:string,runId:string){
@@ -15,6 +16,8 @@ export async function verifyCandidateSourceFixture(pool:Pool,owner:string,other:
  const steps=[call('describe_tool',{tool:'skill_read'},'describe'),call('execute_tool',{tool:'skill_read',arguments:{id:skill.id}},'read'),
   call('describe_tool',{tool:'memory_read'},'describe-memory'),call('execute_tool',{tool:'memory_read',arguments:{}},'read-memory'),{role:'assistant',content:'Synthetic candidate response.'}];
  try{
+  const durableCandidate=await verifyDurableCandidateFixture(pool,owner,input);
+  console.log(JSON.stringify({durableCandidate,cloneOnly:true}));
   for(const arm of ['baseline','candidate'] as const){
    let index=0;
    const out=await runRecordedSkillCandidateArm(context,input,arm,async request=>{

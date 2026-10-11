@@ -1,0 +1,15 @@
+{
+ "date":"2026-10-11",
+ "scope":"guarded local clone with synthetic request callback, real graph and PostgreSQL journal",
+ "verificationCommand":"node --require ./scripts/patch-node-user.cjs --import tsx scripts/verify-recorded-model-source-clone.ts",
+ "exitCode":0,
+ "checks":{"realGraphAndPersistentJournalConnected":true,"failureThenFallback":true,
+  "recoveryWithoutAdditionalRequests":true,"stableRemappedCallIds":true,
+  "messagesAndTraceIdenticalOnRecovery":true,"snapshotAndSyntheticKindBound":true,
+  "existingSourceJournalAndBaselineRegressions":true,"fixtureCleanup":true,
+  "unitTestsPassed":37,"typecheck":"passed","eslint":"passed"},
+ "syntheticRequests":4,"requestsAddedByRecovery":0,"actualModelCalls":0,
+ "productionDeployed":false,"authorizedPaidRequestAdapterConnected":false,
+ "acceptanceBundleCollectorConnected":false,"productionAgentEquivalent":false,
+ "collectorProvenanceVerified":false,"automaticActivation":false
+}

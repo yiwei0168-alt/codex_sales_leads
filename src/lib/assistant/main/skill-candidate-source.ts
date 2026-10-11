@@ -7,6 +7,7 @@ import {instructionOnlySkill} from './skills';
 import {runSkillCandidateArm} from './skill-candidate-runner';
 import {assertLocalAnalysisBoundary} from './local-analysis-boundary';
 import type {RecordedEvidenceReceipt} from './recorded-evidence-receipts';
+import {createDurableSkillCandidateModel,type SkillCandidateCollector} from './skill-candidate-model';
 
 type Snapshot=Parameters<typeof runSkillCandidateArm>[0];
 const selection=z.object({runId:z.uuid(),skillId:z.uuid(),version:z.number().int().positive()}).strict();
@@ -56,5 +57,18 @@ export async function runRecordedSkillCandidateArm(context:{userId:string},input
  await validate();
  const output=await runSkillCandidateArm(saved.snapshot,arm,model,validate,maximumModelCalls);
  return {...output,serverSnapshotHash:saved.sourceHash,serverSnapshotRevalidated:true,
+  productionAgentEquivalent:false,collectorProvenanceVerified:false,automaticActivation:false};
+}
+
+/** No network/model implementation is selected implicitly; caller supplies an authorized collector. */
+export async function runDurableRecordedSkillCandidateArm(context:{userId:string},input:Selection,
+ arm:'baseline'|'candidate',collector:SkillCandidateCollector,maximumModelCalls=8){
+ const saved=await load(context,input);
+ const validate=async()=>{if((await load(context,input)).sourceHash!==saved.sourceHash)throw new Error('Candidate sources changed during execution');};
+ const durable=createDurableSkillCandidateModel({ownerId:context.userId,snapshotHash:saved.sourceHash,arm},collector,validate);
+ await validate();
+ const output=await runSkillCandidateArm(saved.snapshot,arm,durable.model,validate,maximumModelCalls);
+ return {...output,evaluationId:collector.evaluationId,sourceKind:collector.sourceKind,serverSnapshotHash:saved.sourceHash,
+  modelAttemptReceipts:durable.receipts,serverSnapshotRevalidated:true,
   productionAgentEquivalent:false,collectorProvenanceVerified:false,automaticActivation:false};
 }
