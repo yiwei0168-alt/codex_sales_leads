@@ -1,0 +1,18 @@
+{
+ "date":"2026-10-11",
+ "migration":131,
+ "tablesAppliedTo":"guarded loopback clone only",
+ "clusterRole":"NOLOGIN network_copilot_skill_collector, no production login membership granted",
+ "verificationCommand":"node --require ./scripts/patch-node-user.cjs --import tsx scripts/verify-recorded-model-source-clone.ts",
+ "exitCode":0,
+ "checks":{
+  "concurrentSingleAdmission":true,"unknownStartedAttemptNotRepeated":true,
+  "changedInputAndSnapshotRejected":true,"successReused":true,"conflictingOutcomeRejected":true,
+  "crossAccountHiddenAndWriteRejected":true,"wrongRouteReceiptRejected":true,
+  "ordinaryAppInsertDenied":true,"ordinaryOwnerRewriteDenied":true,"restrictedCollectorRequired":true,
+  "failureSavedBeforeFallback":true,"candidateSourceRegression":true,"recordedChainRegression":true,
+  "fixtureCleanup":true,"typecheck":"passed","eslint":"passed"
+ },
+ "actualModelCalls":0,"productionDeployed":false,"runnerFullyConnected":false,
+ "collectorProvenanceVerified":false,"automaticActivation":false
+}
