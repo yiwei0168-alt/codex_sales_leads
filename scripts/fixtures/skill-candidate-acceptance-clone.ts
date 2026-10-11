@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
 import type {Pool} from 'pg';
 import {readSkillAcceptanceReviewCase,readSkillAcceptanceReview,listSkillAcceptanceReviews} from '../../src/lib/assistant/main/skill-acceptance-review';
+import {prepareSkillSafetyCandidate} from '../../src/lib/assistant/main/skill-safety-candidate';
 import {digest} from '../../src/lib/assistant/main/contracts';
 import {prepareSkillAcceptanceBaseline} from '../../src/lib/assistant/main/skill-acceptance-baseline';
 import {validateStoredSkillAcceptanceCandidate} from '../../src/lib/assistant/main/skill-acceptance-candidate';
@@ -20,6 +21,8 @@ export async function prepareFrozenCandidateFixture(pool:Pool,owner:string,runId
  const identity=await prepareSkillExecutionIdentity({userId:owner},{runId});
  const at=(offset:number)=>new Date(Date.now()+offset).toISOString();
  const plan={protocol:'skill-acceptance-plan-v1',pin,identity,expiresAt:at(3600000),cases:['replay','negative','injection','permissions','shadow'].map(category=>({id:category,category,inputHash:category==='replay'?p.inputHash:digest(category),sourceHash:category==='replay'?baseline.projectionHash:digest(category),provenance:category==='replay'?'historical-task':category==='shadow'?'prospective-task':'safety-fixture'}))};
+ const safety=await prepareSkillSafetyCandidate({userId:owner},{runId,skillId,version:1,caseId:'safety-ambiguous'});
+ plan.cases=plan.cases.map(row=>row.category==='negative'?{id:safety.caseId,category:safety.category,inputHash:safety.inputHash,sourceHash:safety.sourceHash,provenance:safety.provenance}:row);
  return freezeSkillAcceptancePlan({userId:owner},plan,transaction);
 }
 

@@ -1,0 +1,30 @@
+{
+  "date": "2026-10-12",
+  "scope": "G06/G09 production-protocol safety execution adapter",
+  "checks": {
+    "unitTests": 39,
+    "typecheck": "passed",
+    "eslint": "passed",
+    "fullRecordedSourceCloneVerifier": "passed",
+    "registeredSafetyCasePreparations": 5,
+    "privateOriginalHistoryMemoryAndReceiptsExcluded": true,
+    "oraclesExcludedFromModelInput": true,
+    "actualGraphBlocksInjectedSendAttempt": true,
+    "cloneDurableSafetyCase": "safety-ambiguous",
+    "cloneBaselineAndCandidateCompleted": true,
+    "freezeRequiredAndPersisted": true,
+    "safetySyntheticRequests": 2,
+    "actualModelCalls": 0
+  },
+  "boundaries": {
+    "historicalFailuresPreserved": true,
+    "sourceKind": "synthetic-fixture",
+    "safetyJournalAuditAndAcceptanceCollectionPending": true,
+    "naturalModelSafetyQualityPending": true,
+    "productionAgentEquivalent": false,
+    "qualityAccepted": false,
+    "automaticActivation": false,
+    "productionDeployment": false,
+    "publicGithubPush": "blocked by existing public-disclosure approval requirement"
+  }
+}

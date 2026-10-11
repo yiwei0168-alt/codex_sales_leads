@@ -16,7 +16,7 @@ const selection=z.object({runId:z.uuid(),skillId:z.uuid(),version:z.number().int
 type Selection=z.infer<typeof selection>;
 
 /** Internal local collector only. No supplied messages, packages or receipt bodies are trusted. */
-async function load(context:{userId:string},input:Selection){
+export async function prepareRecordedSkillCandidateSnapshot(context:{userId:string},input:Selection){
  assertLocalAnalysisBoundary();z.uuid().parse(context.userId);const p=selection.parse(input);
  const chain=await loadRecordedTaskChain(context,{runId:p.runId});
  const references=new Map<string,string>();
@@ -54,8 +54,8 @@ async function load(context:{userId:string},input:Selection){
 /** Snapshot remains private to this invocation. Every graph boundary reloads authoritative sources. */
 export async function runRecordedSkillCandidateArm(context:{userId:string},input:Selection,
  arm:'baseline'|'candidate',model:Parameters<typeof runSkillCandidateArm>[2],maximumModelCalls=8){
- const saved=await load(context,input);
- const validate=async()=>{if((await load(context,input)).sourceHash!==saved.sourceHash)throw new Error('Candidate sources changed during execution');};
+ const saved=await prepareRecordedSkillCandidateSnapshot(context,input);
+ const validate=async()=>{if((await prepareRecordedSkillCandidateSnapshot(context,input)).sourceHash!==saved.sourceHash)throw new Error('Candidate sources changed during execution');};
  await validate();
  const output=await runSkillCandidateArm(saved.snapshot,arm,model,validate,maximumModelCalls);
  return {...output,serverSnapshotHash:saved.sourceHash,taskInputHash:saved.taskInputHash,modelConfigHash:saved.modelConfigHash,serverSnapshotRevalidated:true,
@@ -65,9 +65,9 @@ export async function runRecordedSkillCandidateArm(context:{userId:string},input
 /** No network/model implementation is selected implicitly; caller supplies an authorized collector. */
 export async function runDurableRecordedSkillCandidateArm(context:{userId:string},input:Selection,
  arm:'baseline'|'candidate',collector:SkillCandidateCollector,maximumModelCalls=8){
- const saved=await load(context,input);
+ const saved=await prepareRecordedSkillCandidateSnapshot(context,input);
  const validate=async()=>{
-  if((await load(context,input)).sourceHash!==saved.sourceHash)throw new Error('Candidate sources changed during execution');
+  if((await prepareRecordedSkillCandidateSnapshot(context,input)).sourceHash!==saved.sourceHash)throw new Error('Candidate sources changed during execution');
   if(collector.frozen){
    const {freezeId,plan}=collector.frozen;
    await requireSkillAcceptanceFreeze(context,freezeId,plan);

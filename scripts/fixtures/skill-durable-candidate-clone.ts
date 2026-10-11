@@ -9,6 +9,7 @@ import {revokeSkillAcceptanceFreeze} from '../../src/lib/assistant/main/skill-ac
 import {ModelWaitError} from '../../src/lib/assistant/main/model-stream';
 import {digest} from '../../src/lib/assistant/main/contracts';
 import {auditDurableSkillCandidate} from '../../src/lib/assistant/main/skill-candidate-audit';
+import {verifySafetyCandidateFixture} from './skill-safety-candidate-clone';
 import {prepareFrozenCandidateFixture,verifyCandidateAcceptanceFixture} from './skill-candidate-acceptance-clone';
 
 export async function verifyDurableCandidateFixture(pool:Pool,owner:string,input:{runId:string;skillId:string;version:number}){
@@ -30,6 +31,7 @@ export async function verifyDurableCandidateFixture(pool:Pool,owner:string,input
    const route=request.profile.routes[request.index],body={model:route.model,messages:transportMessages(request.messages),tools:modelFunctions,stream:true,reasoning:{effort:route.effort}};
    return {message,requestManifest:modelRequestManifest(body,{model:route.model,provider:'synthetic',id:`fixture-${completed}-${request.index}`})};
   }};
+  console.log(JSON.stringify({safetyCandidate:await verifySafetyCandidateFixture(pool,owner,input,collector),cloneOnly:true}));
   const first=await runDurableRecordedSkillCandidateArm({userId:owner},input,'candidate',collector);
   assert.equal(first.status,'completed');assert.equal(first.candidateSkillUsed,true);assert.equal(requests,4);
   assert.equal(first.modelAttemptReceipts.length,4);assert(first.modelAttemptReceipts.every(row=>!row.recovered));
