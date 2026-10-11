@@ -1,11 +1,34 @@
 import {createHash} from "node:crypto";
 import type {PoolClient} from "pg";
 const digest=(value:string)=>createHash("sha256").update(value).digest("hex");
-export type Block={id:string;unitType:"page"|"slide"|"sheet"|"document";unitIndex:number;blockType:string;quality:string;text?:string;section?:string;bbox?:number[];table?:{headers?:unknown[];rows?:unknown[][];startRow?:number}};
+export type Block={id:string;unitType:"page"|"slide"|"sheet"|"document";unitIndex:number;blockType:string;quality:string;text?:string;section?:string;bbox?:number[];table?:{headers?:unknown[];rows?:unknown[][];startRow?:number;headerRow?:number;startColumn?:number;cellRange?:string}};
 const unitKey=(block:Block)=>`${block.unitType}:${block.unitIndex}`;
+const columnName=(index:number):string=>{
+  let name="";
+  for(let n=index;n>0;n=Math.floor((n-1)/26))name=String.fromCharCode(65+(n-1)%26)+name;
+  return name;
+};
+export function spreadsheetLocation(block:Block){
+  const table=block.table;
+  if(block.unitType!=="sheet"||!table?.cellRange)return null;
+  const rows=[table.headers??[],...(table.rows??[])];
+  const firstRow=table.headerRow,firstColumn=table.startColumn;
+  const width=rows[0].length;
+  if(typeof firstRow!=="number"||typeof firstColumn!=="number"||!Number.isInteger(firstRow)||!Number.isInteger(firstColumn)||firstRow<1||firstColumn<1
+    ||!width||rows.some(row=>row.length!==width)||table.startRow!==firstRow+1
+    ||firstRow+rows.length-1>1048576||firstColumn+width-1>16384)throw new Error("Invalid spreadsheet coordinates");
+  const range=`${columnName(firstColumn)}${firstRow}:${columnName(firstColumn+width-1)}${firstRow+rows.length-1}`;
+  if(table.cellRange!==range||!block.section?.trim())throw new Error("Spreadsheet range does not match original grid");
+  return {sheetName:block.section,cellRange:range,headerRow:firstRow,startColumn:firstColumn};
+}
 export function evidenceText(block:Block):string{
   if(block.blockType==="table"&&block.table){
     const rows=[block.table.headers??[],...(block.table.rows??[])];
+    const location=spreadsheetLocation(block);
+    if(location)return rows.flatMap((row,rowIndex)=>row.flatMap((cell,columnIndex)=>{
+      const value=String(cell??"").replaceAll("\t"," ").replaceAll("\n"," ");
+      return value.trim()?[`${columnName(location.startColumn+columnIndex)}${location.headerRow+rowIndex}: ${value}`]:[];
+    })).join("\n");
     return rows.map(row=>row.map(cell=>String(cell??"").replaceAll("\t"," ").replaceAll("\n"," ")).join("\t")).join("\n").trim();
   }
   return block.text?.trim()??"";
@@ -39,7 +62,7 @@ export async function writeExtractedTree(client:PoolClient,input:{documentId:str
       const content=evidenceText(block);
       await client.query(`insert into knowledge_tree_node(version_id,parent_id,ordinal,node_kind,title,heading_path,unit_type,unit_index,source_location,content,content_sha256)
         values($1,$2,$3,'evidence',$4,$5,$6,$7,$8,$9,$10)`,[version.id,parent,ordinal,block.id,[block.section??`${block.unitType} ${block.unitIndex}`],block.unitType,block.unitIndex,
-          JSON.stringify({unitType:block.unitType,unitIndex:block.unitIndex,blockId:block.id,bbox:block.bbox??null,startRow:block.table?.startRow??null}),content,digest(content)]);
+          JSON.stringify({unitType:block.unitType,unitIndex:block.unitIndex,blockId:block.id,bbox:block.bbox??null,startRow:block.table?.startRow??null,...(spreadsheetLocation(block)??{})}),content,digest(content)]);
     }
     const count=await client.query<{count:string}>("select count(*)::text as count from knowledge_tree_node where version_id=$1",[version.id]);
     if(Number(count.rows[0].count)!==blocks.length+units.length)throw new Error("Tree completeness check failed");

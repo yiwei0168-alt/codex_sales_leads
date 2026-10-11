@@ -29,6 +29,9 @@ class SpreadsheetCoordinatesTest(unittest.TestCase):
             self.assertEqual(block["unitIndex"], 1)
             table = block["table"]
             self.assertEqual(table["startRow"], 2)
+            self.assertEqual(table["cellRange"], "A1:C6")
+            self.assertEqual(table["headerRow"], 1)
+            self.assertEqual(table["startColumn"], 1)
             self.assertEqual(table["headers"], ["", "", ""])
             physical_rows = [table["headers"], *table["rows"]]
             self.assertEqual(len(physical_rows), 6)

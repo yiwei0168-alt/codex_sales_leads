@@ -5,8 +5,9 @@ import json
 import pymupdf
 from pptx import Presentation
 from openpyxl import load_workbook
+from openpyxl.utils import get_column_letter
 
-EXTRACTOR_VERSION = "layout-v2.0.1"
+EXTRACTOR_VERSION = "layout-v2.0.2"
 
 def _clean(value):
     return " ".join(str("" if value is None else value).replace("\x00", "").split()).strip()
@@ -60,7 +61,7 @@ def extract_xlsx(path: Path):
         # Removing them makes startRow=2 point at different original cells.
         if any(any(row) for row in rows):
             width=max(len(row) for row in rows);headers=(rows[0]+[""]*width)[:width]
-            blocks.append(_block(f"sheet-{index}-table","sheet",index,"table",section=sheet.title,table={"headers":headers,"rows":[(row+[""]*width)[:width] for row in rows[1:]],"startRow":2},metadata={"mergedRanges":merged}))
+            blocks.append(_block(f"sheet-{index}-table","sheet",index,"table",section=sheet.title,table={"headers":headers,"rows":[(row+[""]*width)[:width] for row in rows[1:]],"startRow":2,"headerRow":1,"startColumn":1,"cellRange":f"A1:{get_column_letter(width)}{len(rows)}"},metadata={"mergedRanges":merged}))
             statuses.append("success")
         else: statuses.append("blank")
     workbook.close()

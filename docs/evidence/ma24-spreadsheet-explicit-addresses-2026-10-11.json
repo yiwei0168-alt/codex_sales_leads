@@ -1,0 +1,100 @@
+{
+  "extractorVersion": "layout-v2.0.2",
+  "sourceSha256": "fd9070eb39b133bd600afa97d088c98ecb07bb730c9861675295c99174d0759a",
+  "rows": [
+    {
+      "sheet": "By dvpmnt status and spec. reg.",
+      "location": {
+        "sheetName": "By dvpmnt status and spec. reg.",
+        "cellRange": "A1:AS159",
+        "headerRow": 1,
+        "startColumn": 1
+      },
+      "nonemptyCells": 5069,
+      "zeroCells": 31,
+      "contentBytes": 55673
+    },
+    {
+      "sheet": "By BDT region",
+      "location": {
+        "sheetName": "By BDT region",
+        "cellRange": "A1:AU132",
+        "headerRow": 1,
+        "startColumn": 1
+      },
+      "nonemptyCells": 3951,
+      "zeroCells": 10,
+      "contentBytes": 42650
+    },
+    {
+      "sheet": "By urban-rural area",
+      "location": {
+        "sheetName": "By urban-rural area",
+        "cellRange": "A1:AK144",
+        "headerRow": 1,
+        "startColumn": 1
+      },
+      "nonemptyCells": 2405,
+      "zeroCells": 31,
+      "contentBytes": 25541
+    },
+    {
+      "sheet": "By gender",
+      "location": {
+        "sheetName": "By gender",
+        "cellRange": "A1:AG57",
+        "headerRow": 1,
+        "startColumn": 1
+      },
+      "nonemptyCells": 576,
+      "zeroCells": 0,
+      "contentBytes": 6745
+    },
+    {
+      "sheet": "Internet use by age",
+      "location": {
+        "sheetName": "Internet use by age",
+        "cellRange": "A1:AP122",
+        "headerRow": 1,
+        "startColumn": 1
+      },
+      "nonemptyCells": 221,
+      "zeroCells": 0,
+      "contentBytes": 3011
+    }
+  ],
+  "zeroCellsPreserved": 72,
+  "schema": "spreadsheet-explicit-addresses-v1",
+  "pythonTestsPassed": 2,
+  "typescriptTestsPassed": 20,
+  "typecheckPassed": true,
+  "lintPassed": true,
+  "productionPointersChanged": 0,
+  "qualityAccepted": false,
+  "newModelCalls": 0,
+  "pdf": {
+    "artifactSha256": "3a53fa361db348e1c83c6f0c2f4efd185ef714a8410529646a69b5c4458be5e1",
+    "sourceSha256": "67b852d766ea8c97ed947c1d3aab215d5d18ee4db49a0fcd563f4cb64fdcbe05",
+    "conversionStatus": "success",
+    "units": 262,
+    "statuses": {
+      "success": 252,
+      "blank": 4,
+      "review-required": 6
+    },
+    "chunks": 937,
+    "maximumChunkTokens": 506,
+    "wrapperExitCode": 1,
+    "warnings": [
+      "table cells dropped or nearest-row fallback",
+      "six units require visual review",
+      "wrapper nonzero despite completed success artifact"
+    ]
+  },
+  "limitations": [
+    "Tree SQL parameters verified in tests, not a newly published production document.",
+    "Legacy artifacts without cellRange retain legacy text and must be re-extracted for exact addresses.",
+    "Real workbook is development-exposed; independent holdout replacement pending.",
+    "PDF source hash/coverage and warnings need review; conversion success is not acceptance."
+  ]
+}
