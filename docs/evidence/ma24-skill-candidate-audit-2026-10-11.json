@@ -1,0 +1,13 @@
+{
+ "date":"2026-10-11",
+ "scope":"read-only reconstruction from all stored model attempts for an account/evaluation/arm",
+ "unitTests":{"newJournalIntegrity":15,"fallbackRegression":14,"passed":29},
+ "cloneCommand":"node --require ./scripts/patch-node-user.cjs --import tsx scripts/verify-recorded-model-source-clone.ts",
+ "cloneExitCode":0,
+ "checks":{"readOnlyJournalAuditReconstructedGraph":true,"answerMessagesAndTraceMatchOriginal":true,
+  "auditCrossAccountRejected":true,"syntheticKindPreserved":true,"noRequestsAddedByAudit":true,
+  "fullSourceAndJournalRegression":true,"fixtureCleanup":true,"typecheck":"passed","eslint":"passed"},
+ "actualModelCalls":0,"productionDeployed":false,"productionAgentEquivalent":false,
+ "collectorProvenanceVerified":false,"automaticActivation":false,
+ "remaining":["acceptance bundle collector connection","authorized paid request adapter","final activation transaction gates","natural quality acceptance"]
+}
