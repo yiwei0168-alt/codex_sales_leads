@@ -7,7 +7,7 @@ import {assertRecordedFallbackChain} from './recorded-fallback-chain';
 import {prepareRecordedModeRequest} from './model-request-replay';
 import {runRecordedSkillCandidateArm} from './skill-candidate-source';
 
-export type SkillModelAuditRow={id:string;owner_id:string;evaluation_id:string;arm:string;step:number;route_index:number;source_kind:string;snapshot_hash:string;input:unknown;input_hash:string;output:unknown;output_hash:string|null};
+export type SkillModelAuditRow={id:string;owner_id:string;evaluation_id:string;arm:string;step:number;route_index:number;source_kind:string;snapshot_hash:string;input:unknown;input_hash:string;output:unknown;output_hash:string|null;started_at?:string;completed_at?:string};
 type Identity={userId:string;evaluationId:string;arm:'baseline'|'candidate'};
 /** Integrity only. Rows must subsequently be loaded from account-isolated server storage. */
 export function prepareSkillModelJournalAudit(identity:Identity,rows:SkillModelAuditRow[]){
@@ -31,7 +31,7 @@ export function prepareSkillModelJournalAudit(identity:Identity,rows:SkillModelA
 /** Reconstructs the actual graph from authoritative model receipts. No model/provider/collector writes. */
 export async function auditDurableSkillCandidate(context:{userId:string},input:{runId:string;skillId:string;version:number;evaluationId:string;arm:'baseline'|'candidate'}){
  assertLocalAnalysisBoundary();z.uuid().parse(context.userId);z.uuid().parse(input.evaluationId);z.enum(['baseline','candidate']).parse(input.arm);
- const read=()=>tenantQuery<SkillModelAuditRow>(context.userId,`select a.id,a.owner_id,a.evaluation_id,a.arm,a.step,a.route_index,a.source_kind,a.snapshot_hash,a.input,a.input_hash,o.output,o.output_hash
+ const read=()=>tenantQuery<SkillModelAuditRow>(context.userId,`select a.id,a.owner_id,a.evaluation_id,a.arm,a.step,a.route_index,a.source_kind,a.snapshot_hash,a.input,a.input_hash,o.output,o.output_hash,a.created_at::text as started_at,o.created_at::text as completed_at
   from agent_skill_model_attempt a left join agent_skill_model_outcome o on o.attempt_id=a.id and o.owner_id=a.owner_id
   where a.owner_id=$1 and a.evaluation_id=$2 and a.arm=$3 order by a.step,a.route_index`,[context.userId,input.evaluationId,input.arm]);
  const rows=await read(),prepared=prepareSkillModelJournalAudit({...context,evaluationId:input.evaluationId,arm:input.arm},rows);
@@ -44,6 +44,8 @@ export async function auditDurableSkillCandidate(context:{userId:string},input:{
  if(replay.status!=='completed'||replay.stopReason!==null||decisions!==prepared.selected.length||replay.serverSnapshotHash!==prepared.snapshotHash)throw new Error('Candidate graph reconstruction incomplete or changed');
  if(digest(await read())!==digest(rows))throw new Error('Candidate model journal changed during audit');
  const projection={protocol:'skill-candidate-journal-audit-v1',ownerId:context.userId,evaluationId:input.evaluationId,arm:input.arm,
+  capturedAt:new Date(Math.min(...rows.map(row=>Date.parse(row.started_at??'')))).toISOString(),
+  completedAt:new Date(Math.max(...rows.map(row=>Date.parse(row.completed_at??'')))).toISOString(),
   sourceKind:prepared.sourceKind,serverSnapshotHash:prepared.snapshotHash,journalHash:prepared.journalHash,
   taskInputHash:replay.taskInputHash,modelConfigHash:replay.modelConfigHash,
   evidenceHash:digest(replay.trace.filter(row=>row.receiptHash).map(row=>row.receiptHash)),

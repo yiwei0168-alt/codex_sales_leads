@@ -30,6 +30,7 @@ globalThis.fetch=async()=>{throw Error('No network in clone verification');};
 try{
  await pool.query(await readFile('db/migrations/130_skill_acceptance_evidence.sql','utf8'));
  await pool.query(await readFile('db/migrations/131_skill_model_attempt_journal.sql','utf8'));
+ await pool.query(await readFile('db/migrations/132_skill_bundle_collector.sql','utf8'));
  for(const id of [owner,other])await pool.query("insert into app_user(id,email,display_name,password_hash,role,status) values($1,$2,'Model source fixture','!','member','active')",[id,`${id}@example.invalid`]);
  console.log(JSON.stringify({skillModelJournal:await verifySkillModelJournalFixture(pool,owner,other),cloneOnly:true}));
  await pool.query("insert into assistant_conversation(id,user_id,title) values($1,$2,'Model source fixture')",[conversation,owner]);

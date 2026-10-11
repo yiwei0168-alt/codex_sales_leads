@@ -1,0 +1,11 @@
+{
+ "date":"2026-10-11","migration":132,"tablesAppliedTo":"guarded clone only",
+ "scope":"restricted collector derives historical observations from original task and candidate model journals",
+ "checks":{"restrictedCollectorPublishedDerivedObservation":true,"serverTimesPreserved":true,"freezeRemainsUnverified":true,
+  "injectedObservationRejected":true,"wrongOwnerRejected":true,"duplicateCaseRejected":true,"ordinaryApplicationStillCannotInsert":true,
+  "mixedDecisionRoutesPreserved":true,"fullCloneRegression":true,"fixtureCleanup":true,"relatedUnitTestsPassed":84,"typecheck":"passed","eslint":"passed"},
+ "cloneCommand":"node --require ./scripts/patch-node-user.cjs --import tsx scripts/verify-recorded-model-source-clone.ts",
+ "cloneExitCode":0,"actualModelCalls":0,"productionDeployed":false,
+ "limitations":["plan freeze and runtime/prompt/scope identities remain unverified","historical task start time unknown","source checks are point-in-time, not final activation lease","safety and prospective collectors pending"],
+ "collectorProvenanceVerified":false,"productionAgentEquivalent":false,"automaticActivation":false
+}

@@ -16,7 +16,7 @@ const outputSchema=z.discriminatedUnion('status',[
 type Row={id:string;owner_id:string;evaluation_id:string;arm:string;step:number;route_index:number;source_kind:string;snapshot_hash:string;input:unknown;input_hash:string};
 /** Must commit before returning. Supplied by a dedicated collector connection, never HTTP input. */
 export type SkillCollectorTransaction=<T>(ownerId:string,work:(client:PoolClient)=>Promise<T>)=>Promise<T>;
-async function assertCollector(client:PoolClient){
+export async function assertSkillCollector(client:PoolClient){
  const role=(await client.query<{name:string;super:boolean;bypass:boolean}>('select current_user as name,rolsuper as super,rolbypassrls as bypass from pg_roles where rolname=current_user')).rows[0];
  if(!role||role.name!=='network_copilot_skill_collector'||role.super||role.bypass)throw new Error('Dedicated restricted Skill collector required');
 }
@@ -36,7 +36,7 @@ export function createSkillModelJournal(transaction:SkillCollectorTransaction,bi
   async begin(input:unknown){
    assertLocalAnalysisBoundary();const request=inputSchema.parse(input),hash=digest(request);
    return transaction(pin.ownerId,async client=>{
-    await assertCollector(client);
+    await assertSkillCollector(client);
     const inserted=await client.query<{id:string}>(`insert into agent_skill_model_attempt(owner_id,evaluation_id,arm,step,route_index,source_kind,snapshot_hash,input,input_hash)
      values($1,$2,$3,$4,$5,$6,$7,$8,$9) on conflict(owner_id,evaluation_id,arm,step,route_index) do nothing returning id`,
     [pin.ownerId,pin.evaluationId,pin.arm,pin.step,request.index,pin.sourceKind,pin.snapshotHash,JSON.stringify(request),hash]);
@@ -51,7 +51,7 @@ export function createSkillModelJournal(transaction:SkillCollectorTransaction,bi
   async save(id:string,index:number,outcome:{status:'success';value:unknown}|{status:'unavailable';retryable:boolean;reason:string}){
    assertLocalAnalysisBoundary();z.uuid().parse(id);z.number().int().min(0).max(2).parse(index);
    return transaction(pin.ownerId,async client=>{
-    await assertCollector(client);
+    await assertSkillCollector(client);
     const row=(await client.query<Row>(`select * from agent_skill_model_attempt where id=$1 and owner_id=$2 and evaluation_id=$3 and arm=$4 and step=$5 and route_index=$6`,[id,pin.ownerId,pin.evaluationId,pin.arm,pin.step,index])).rows[0];
     if(!row||row.snapshot_hash!==pin.snapshotHash||row.source_kind!==pin.sourceKind||digest(row.input)!==row.input_hash)throw new Error('Skill model attempt unavailable');
     const output=checkOutput(row.input,outcome.status==='success'?{status:'success',data:{value:outcome.value}}:{status:'unavailable',data:{retryable:outcome.retryable,reason:outcome.reason}});
