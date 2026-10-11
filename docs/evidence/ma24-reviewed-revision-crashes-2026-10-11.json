@@ -1,0 +1,50 @@
+{
+  "cloneOnly": true,
+  "syntheticJudgments": true,
+  "qualityAccepted": false,
+  "externalCalls": 0,
+  "modelCalls": 0,
+  "v3PointersUnchanged": true,
+  "results": [
+    {
+      "visibility": "private",
+      "registrationProcessesKilled": 2,
+      "beforeCommitRollbackVerified": true,
+      "afterCommitReplayVerified": true,
+      "oldReadableWhilePendingAndHeld": true,
+      "duplicateReused": true,
+      "unresolvedRejected": true,
+      "tamperKeepsOld": true,
+      "sharedStillRequiresAdmin": false,
+      "reviewedCompetingRevisionRejected": true,
+      "stableDocumentId": true,
+      "oldEvidenceRejectedAfterSwitch": true,
+      "receiptPreserved": true,
+      "historyRetained": true
+    },
+    {
+      "visibility": "shared",
+      "registrationProcessesKilled": 2,
+      "beforeCommitRollbackVerified": true,
+      "afterCommitReplayVerified": true,
+      "oldReadableWhilePendingAndHeld": true,
+      "duplicateReused": true,
+      "unresolvedRejected": true,
+      "tamperKeepsOld": true,
+      "sharedStillRequiresAdmin": true,
+      "reviewedCompetingRevisionRejected": true,
+      "stableDocumentId": true,
+      "oldEvidenceRejectedAfterSwitch": true,
+      "receiptPreserved": true,
+      "historyRetained": true
+    }
+  ],
+  "date": "2026-10-11",
+  "checkpointScope": "Independent registration process, transaction before and after commit; not worker supervisor kill",
+  "checks": {
+    "typecheck": "passed",
+    "eslint": "passed",
+    "cleanup": "completed"
+  },
+  "productionDeployed": false
+}

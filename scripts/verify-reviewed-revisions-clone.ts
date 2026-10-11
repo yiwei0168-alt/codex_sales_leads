@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {spawn} from 'node:child_process';
 import {randomUUID} from 'node:crypto';
-import {readFile,writeFile,readdir,rm,rmdir} from 'node:fs/promises';
+import {readFile,writeFile,readdir,rm,rmdir,mkdir} from 'node:fs/promises';
 import {resolve,sep} from 'node:path';
 import nextEnv from '@next/env';
 import {Pool} from 'pg';
@@ -37,6 +37,21 @@ async function review(id:string){
  const receipt=await completeExtractionReview(owner,id,ready.artifactSha256,ready.decisionSha256);
  return {ready,receipt};
 }
+async function crashRegistration(id:string,phase:'tree-transaction'|'registered'){
+ const root=resolve('tmp/upload-crash');await mkdir(root,{recursive:true});
+ const marker=resolve(root,`${randomUUID()}.json`);
+ const child=spawn(process.execPath,['--require','./scripts/patch-node-user.cjs','--require','./scripts/fixtures/upload-crash-preload.cjs','--import','tsx','scripts/fixtures/register-reviewed-revision.ts',`--job-id=${id}`,`--owner-id=${owner}`],{windowsHide:true,stdio:'ignore',env:{...process.env,DATABASE_URL:url.toString(),UPLOAD_CRASH_PHASE:phase,UPLOAD_CRASH_MARKER:marker}});
+ const exited=new Promise<void>((done,reject)=>{child.once('exit',()=>done());child.once('error',reject);});
+ try{
+  let reached=false;
+  for(let i=0;i<900;i++){
+   const content=await readFile(marker,'utf8').catch(()=>null);
+   if(content){assert.equal(JSON.parse(content).pid,child.pid);assert.equal(JSON.parse(content).phase,phase);reached=true;break;}
+   if(child.exitCode!==null)break;await new Promise(done=>setTimeout(done,100));
+  }
+  assert(reached,`Reviewed revision checkpoint missing: ${phase}`);assert(child.kill());await exited;
+ }finally{if(child.exitCode===null){child.kill();await exited;}await rm(marker,{force:true});}
+}
 const results=[];
 try{
  for(const id of [owner,other])await pool.query("insert into app_user(id,email,display_name,password_hash,role,status) values($1,$2,'Reviewed revision test','!','admin','active')",[id,`${id}@example.invalid`]);
@@ -44,6 +59,8 @@ try{
  for(const visibility of ['private','shared'] as const){
   const original=await createKnowledgeUploadJob(owner,{collection:'industry',title:'Old reviewed revision target',originalFilename:'old.pdf',mimeType:'application/pdf',bytes:await readFile('knowledge/product/Bluetooth USB Adapter/BU530C_V1.0__Datasheet.pdf'),visibility});
   await worker(original.id);
+  // Current extractor conservatively holds visual content in this PDF as well.
+  if((await job(original.id)).error_code==='extraction-review-required')await review(original.id);
   const old=await registerVectorlessUpload(owner,original.id,{language:'en',authorityLevel:2});assert.equal(old.treeStatus,'searchable');
   const node=(await pool.query("select id from knowledge_tree_node where version_id=$1 and content is not null and content<>'' limit 1",[old.versionId])).rows[0];assert(node);
   const assertOld=async()=>{assert.equal((await doc(old.documentId)).current_tree_version_id,old.versionId);assert(await readEvidence(owner,node.id));};
@@ -68,9 +85,18 @@ try{
    await pool.query("update app_user set role='member' where id=$1",[owner]);
    await assert.rejects(()=>registerVectorlessUpload(owner,revision.id,{language:'en',authorityLevel:2}),/administrator/);await assertOld();
    await pool.query("update app_user set role='admin' where id=$1",[owner]);
-  }else assert.equal((await worker(revision.id)).completed,1);
+  }
+  await crashRegistration(revision.id,'tree-transaction');await assertOld();
+  assert.equal((await job(revision.id)).status,'extracted');
+  assert.equal((await pool.query('select count(*)::int as n from knowledge_tree_version where document_id=$1',[old.documentId])).rows[0].n,1);
+  assert.equal((await pool.query('select count(*)::int as n from knowledge_asset where document_id=$1',[old.documentId])).rows[0].n,1);
+  await crashRegistration(revision.id,'registered');
+  assert.equal((await job(revision.id)).status,'registered');
+  assert.notEqual((await doc(old.documentId)).current_tree_version_id,old.versionId);
+  assert.equal(await readEvidence(owner,node.id),null);
   const current=await registerVectorlessUpload(owner,revision.id,{language:'en',authorityLevel:2,expectedSourceSha256:revision.sourceSha256});
   assert.equal(current.treeStatus,'searchable');
+  assert(current.reused);
   assert.equal(current.documentId,old.documentId);assert.notEqual(current.versionId,old.versionId);assert.equal(await readEvidence(owner,node.id),null);
   const newNode=(await pool.query('select id from knowledge_tree_node where version_id=$1 and content=$2',[current.versionId,'Synthetic reviewed revision marker'])).rows[0];assert(newNode);
   const evidence=await readEvidence(owner,newNode.id);assert.equal((evidence?.source_location as {extractionReview:{receiptId:string}}).extractionReview.receiptId,receipt.receiptId);
@@ -79,7 +105,7 @@ try{
   assert.equal((await doc(old.documentId)).current_tree_version_id,current.versionId);
   assert.equal((await pool.query('select count(*)::int as n from knowledge_tree_version where document_id=$1',[old.documentId])).rows[0].n,2);
   assert.equal((await listKnowledgeUploadJobs(owner)).find(row=>row.id===original.id)?.treeStatus,'historical');
-  results.push({visibility,oldReadableWhilePendingAndHeld:true,duplicateReused:true,unresolvedRejected:true,tamperKeepsOld:true,sharedStillRequiresAdmin:visibility==='shared',reviewedCompetingRevisionRejected:true,stableDocumentId:true,oldEvidenceRejectedAfterSwitch:true,receiptPreserved:true,historyRetained:true});
+  results.push({visibility,registrationProcessesKilled:2,beforeCommitRollbackVerified:true,afterCommitReplayVerified:true,oldReadableWhilePendingAndHeld:true,duplicateReused:true,unresolvedRejected:true,tamperKeepsOld:true,sharedStillRequiresAdmin:visibility==='shared',reviewedCompetingRevisionRejected:true,stableDocumentId:true,oldEvidenceRejectedAfterSwitch:true,receiptPreserved:true,historyRetained:true});
  }
  assert.equal(JSON.stringify((await pool.query('select * from knowledge_release_pointer_v3 order by scope_kind,owner_id')).rows),pointers);
  const evidence={cloneOnly:true,syntheticJudgments:true,qualityAccepted:false,externalCalls:0,modelCalls:0,v3PointersUnchanged:true,results};
