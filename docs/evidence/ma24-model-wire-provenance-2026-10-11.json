@@ -1,0 +1,38 @@
+{
+  "date": "2026-10-11",
+  "stage": "G08/G09/G12 model wire provenance prerequisite",
+  "protocol": "main-model-wire-v1",
+  "unitTests": 49,
+  "typecheck": "passed",
+  "lint": "passed",
+  "tests": [
+    "serialized wire snapshot survives caller mutation",
+    "settings/messages/tool schema binding",
+    "derived model identity match",
+    "missing response identity stays unknown",
+    "quick mode three routes",
+    "route mismatch rejection",
+    "missing historical manifest rejection",
+    "unsuccessful attempts distinguished",
+    "existing timeout/fallback/batch/shadow regressions"
+  ],
+  "accountAudit": {
+    "scope": "explicit-account latest 100 completed journal rows",
+    "checked": 100,
+    "requestBound": 0,
+    "historicalWireManifestMissing": 85,
+    "modelAttemptNotSuccessful": 15
+  },
+  "newModelCalls": 0,
+  "externalNetworkCalls": 0,
+  "privatePlaintextAddedToManifest": false,
+  "productionLoaded": false,
+  "automaticActivationChanged": false,
+  "qualityAccepted": false,
+  "limitations": [
+    "Wire integrity is not production quality or independent acceptance",
+    "Historical missing data is not backfilled",
+    "Legacy batch not instrumented",
+    "New prospective records require updated background services and actual authorized tasks"
+  ]
+}

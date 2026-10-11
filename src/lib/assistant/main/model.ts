@@ -7,6 +7,7 @@ import { matchesBatchModel } from '@/providers/openrouter-batch';
 import { modelRoutedTransport } from '@/lib/network/model-transport';
 import { collectModelStream, withModeStream, ModelWaitError, ModelReceiptError } from './model-stream';
 import type { ModeConfig } from './mode-config';
+import {modelRequestManifest} from './model-request-manifest';
 
 export const modelReplySchema = z.object({
   role: z.literal("assistant"), content: z.string().nullable().optional(),
@@ -18,6 +19,9 @@ export const modelReplySchema = z.object({
 export async function requestModeModel(messages:ModelMessage[],profile:ModeConfig,index:number,transport:typeof fetch=fetch){
   const candidate=profile.routes[index];if(!candidate)throw new Error('Invalid model attempt');
   const route=getOpenRouterConfig(),controller=new AbortController();
+  const wireBody={model:candidate.model,messages:transportMessages(messages),tools:modelFunctions,tool_choice:'auto',stream:true,
+    max_tokens:16384,reasoning:{effort:candidate.effort},provider:{...route.providerPreferences,allow_fallbacks:false}};
+  const wireJson=JSON.stringify(wireBody);
   let transportError:unknown;
   const first=setTimeout(()=>controller.abort(new ModelWaitError('first-output')),profile.firstOutputMs);
   const total=setTimeout(()=>controller.abort(new ModelWaitError('total')),profile.totalMs);
@@ -35,14 +39,13 @@ export async function requestModeModel(messages:ModelMessage[],profile:ModeConfi
   try{
     const response=await withModeStream(()=>budgetedFetch(adapted)(`${route.baseUrl}/chat/completions`,{
       method:'POST',headers:{...route.defaultHeaders,Authorization:`Bearer ${route.apiKey}`,'Content-Type':'application/json'},
-      body:JSON.stringify({model:candidate.model,messages:transportMessages(messages),tools:modelFunctions,tool_choice:'auto',stream:true,
-        max_tokens:16384,reasoning:{effort:candidate.effort},provider:{...route.providerPreferences,allow_fallbacks:false}}),
+      body:wireJson,
       signal:controller.signal,redirect:'error',
     }));
     await assertOpenRouterResponse(response);
     const body=await response.json();
     if(typeof body.model!=='string'||!matchesBatchModel(body.model,candidate.model))throw new Error('Model route identity mismatch');
-    return {...parseModelResponse(body),provider:typeof body.provider==='string'?body.provider:null,generationId:typeof body.id==='string'?body.id:null};
+    return {...parseModelResponse(body),provider:typeof body.provider==='string'?body.provider:null,generationId:typeof body.id==='string'?body.id:null,requestManifest:modelRequestManifest(JSON.parse(wireJson),body)};
   }catch(error){
     if(error instanceof ModelReceiptError)throw error;
     if(controller.signal.aborted)throw controller.signal.reason;
@@ -59,15 +62,18 @@ export async function requestModel(messages: ModelMessage[], config: ModelConfig
   if(config.model.endsWith(":batch"))throw new Error("Batch model requires the durable asynchronous transport");
   const route = getOpenRouterConfig();
   const glmSync = config.model === "z-ai/glm-5.3";
+  const wireBody={ model: config.model, messages: transportMessages(messages), tools: modelFunctions, tool_choice: "auto",
+    ...(glmSync ? { max_tokens: 16_384 } : { max_completion_tokens: 16_384, parallel_tool_calls: false }),
+    provider: { ...route.providerPreferences, only: config.providers, allow_fallbacks: false } };
+  const wireJson=JSON.stringify(wireBody);
   const response = await budgetedFetch(transport)(`${route.baseUrl}/chat/completions`, {
     method: "POST", headers: { ...route.defaultHeaders, Authorization: `Bearer ${route.apiKey}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ model: config.model, messages: transportMessages(messages), tools: modelFunctions, tool_choice: "auto",
-      ...(glmSync ? { max_tokens: 16_384 } : { max_completion_tokens: 16_384, parallel_tool_calls: false }),
-      provider: { ...route.providerPreferences, only: config.providers, allow_fallbacks: false } }),
+    body: wireJson,
     signal: AbortSignal.timeout(180_000), redirect: "error",
   });
   await assertOpenRouterResponse(response);
-  return parseModelResponse(await response.json());
+  const body=await response.json();
+  return {...parseModelResponse(body),requestManifest:modelRequestManifest(JSON.parse(wireJson),body)};
 }
 
 /** Repair only the wire representation of rejected historical calls, never executable state. */

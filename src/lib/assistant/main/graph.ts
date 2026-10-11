@@ -139,7 +139,7 @@ async function durableModel(context: ExecutionContext, messages: ModelMessage[],
       // Provider IDs need only be unique inside one model response. Journal keys
       // are unique across the persistent task and remain stable after recovery.
       if (response.message.tool_calls) response.message.tool_calls = response.message.tool_calls.map((call,index) => ({ ...call, id: `call_${digest({run:context.runId,step,revision,index,id:call.id}).slice(0,40)}` }));
-      await completeCall(context, saved.id, result({ message: response.message }), {
+      await completeCall(context, saved.id, result({ message: response.message, requestManifest: response.requestManifest }), {
         inputItems: messages.length, validOutputItems: 1, downstreamUsedItems: 1,
         inputTokens: response.usage?.prompt_tokens ?? null, outputTokens: response.usage?.completion_tokens ?? null,
         apiCredits: null, costUsd: response.usage?.cost ?? null, latencyMs: Date.now() - started, retries: attempt,
