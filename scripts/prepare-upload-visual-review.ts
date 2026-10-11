@@ -30,13 +30,14 @@ try{
  const folder=safeKnowledgeStorageKey(`knowledge/uploads/${userId}/${jobId}.visual.${randomUUID()}`),key=`${folder}/review.json`;
  const python=resolve('.venv-docling-v3/Scripts/python.exe');
  await new Promise<void>((done,reject)=>{
-  const child=spawn(python,['scripts/prepare_pptx_visual_review.py','--input',source,'--artifact',artifact,'--output',resolve(folder),'--max-unique-images','100'],{cwd:process.cwd(),windowsHide:true,stdio:['ignore','pipe','pipe']});
+  const child=spawn(python,['scripts/prepare_pptx_visual_review.py','--input',source,'--artifact',artifact,'--output',resolve(folder),'--max-unique-images','100','--all-batches'],{cwd:process.cwd(),windowsHide:true,stdio:['ignore','pipe','pipe']});
   let error='';child.stdout.on('data',()=>{});child.stderr.on('data',part=>{error=(error+String(part)).slice(-2000);});
   const timer=setTimeout(()=>child.kill(),20*60*1000);
   child.once('error',err=>{clearTimeout(timer);reject(err);});child.once('exit',code=>{clearTimeout(timer);if(code===0)done();else reject(new Error(`Local candidate process failed: ${code}; ${error}`));});
  });
  const review=await readFile(resolve(key)),packageSha256=hash(review);
  const candidates=validateVisualCandidates(review,{sourceSha256:job.source_sha256,artifactSha256:job.metrics.artifactSha256,packageSha256},blocks);
+ if(candidates.some(record=>record.reason==='local-image-budget-exhausted'))throw new Error('Incomplete image batches');
  for(const record of candidates)if(record.imageFile)await readVisualCandidateImage(key,record);
  if(hash(await readFile(source))!==job.source_sha256||hash(await readFile(artifact))!==job.metrics.artifactSha256)throw new Error('Source changed during candidate extraction');
  await tenantTransaction(userId,async client=>{

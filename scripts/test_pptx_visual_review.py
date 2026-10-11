@@ -2,14 +2,54 @@ from io import BytesIO
 from types import SimpleNamespace
 import unittest
 import xml.etree.ElementTree as ET
+from pathlib import Path
+from hashlib import sha256
+import json
+import tempfile
+from unittest.mock import patch
+import numpy  # Load once before patch.dict restores the module registry between runs.
 from PIL import Image
 from pptx import Presentation
 from pptx.util import Inches
 from pptx.enum.shapes import MSO_CONNECTOR
-from prepare_pptx_visual_review import connector_candidate, diagram_candidate, resolve_shape, visible_image
+from prepare_pptx_visual_review import connector_candidate, diagram_candidate, resolve_shape, visible_image, main
 
 
 class VisualReviewTest(unittest.TestCase):
+    def test_all_batches_cover_101_distinct_images_without_accepting_quality(self):
+        # Real PPTX serialization/crops/package output; OCR is a deterministic local stub.
+        with tempfile.TemporaryDirectory(dir=Path.cwd() / "tmp") as temp:
+            folder = Path(temp); source = folder / "many.pptx"; artifact = folder / "artifact.json"
+            deck = Presentation(); slide = deck.slides.add_slide(deck.slide_layouts[6]); blocks = []
+            for i in range(101):
+                stream = BytesIO(); Image.new("RGB", (4, 4), (i, 0, 0)).save(stream, format="PNG"); stream.seek(0)
+                shape = slide.shapes.add_picture(stream, 0, 0, 100, 100)
+                blocks.append(dict(id=f"image-{i}", unitIndex=1, unitType="slide", quality="pending-ocr", shapePath=[i+1], shapeIdPath=[shape.shape_id]))
+            deck.save(source)
+            artifact.write_text(json.dumps(dict(sourceSha256=sha256(source.read_bytes()).hexdigest(), blocks=blocks)), encoding="utf-8")
+            calls = []
+            def engine(image, **_kwargs):
+                calls.append(int(image[0, 0, 0])); return SimpleNamespace(txts=None, scores=None, boxes=None)
+            module = SimpleNamespace(RapidOCR=lambda **_kwargs: engine, EngineType=SimpleNamespace(ONNXRUNTIME=1), LangRec=SimpleNamespace(CH=1))
+            for all_batches in (False, True):
+                calls.clear(); output = folder / str(all_batches)
+                argv = ["prepare", "--input", str(source), "--artifact", str(artifact), "--output", str(output), "--max-unique-images", "100"]
+                if all_batches: argv.append("--all-batches")
+                with patch("sys.argv", argv), patch.dict("sys.modules", {"rapidocr": module}), patch("socket.socket.connect"), patch("socket.create_connection"):
+                    main()
+                result = json.loads((output / "review.json").read_text(encoding="utf-8"))
+                self.assertEqual(len(result["records"]), 101)
+                self.assertEqual(len(calls), 101 if all_batches else 100)
+                self.assertEqual(result["imageBatches"], 2 if all_batches else 1)
+                self.assertFalse(result["qualityAccepted"])
+                self.assertFalse(result["extractionStatusChanged"])
+                self.assertEqual(result["externalCalls"], 0)
+                exhausted = [r for r in result["records"] if r["reason"] == "local-image-budget-exhausted"]
+                self.assertEqual(len(exhausted), 0 if all_batches else 1)
+                for record in result["records"]:
+                    if "imageFile" in record:
+                        self.assertEqual(sha256((output / record["imageFile"]).read_bytes()).hexdigest(), record["reviewImageSha256"])
+
     def test_connector_keeps_native_geometry_without_inventing_attachments(self):
         deck = Presentation(); slide = deck.slides.add_slide(deck.slide_layouts[6])
         line = slide.shapes.add_connector(MSO_CONNECTOR.STRAIGHT, 100, 200, 400, 600)

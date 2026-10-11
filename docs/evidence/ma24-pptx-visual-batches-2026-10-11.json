@@ -1,0 +1,21 @@
+{
+  "syntheticBoundaryProbe": true,
+  "actualLocalRapidOCR": true,
+  "objects": 3,
+  "batches": 2,
+  "batchLimit": 2,
+  "allImagesHashVerified": true,
+  "qualityAccepted": false,
+  "externalCalls": 0,
+  "productionDeployed": false,
+  "date": "2026-10-11",
+  "rule": "MA24-16",
+  "goal": "G05",
+  "pythonTestsPassed": 5,
+  "typecheck": "passed",
+  "eslint": "passed",
+  "stubOCRBoundaryObjects": 101,
+  "stubOCRBoundaryBatches": 2,
+  "durableBatchResume": false,
+  "realDocumentQualityAccepted": false
+}

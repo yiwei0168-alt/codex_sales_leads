@@ -87,6 +87,7 @@ def main():
     parser.add_argument("--artifact", required=True)
     parser.add_argument("--output", required=True)
     parser.add_argument("--max-unique-images", type=int, default=50)
+    parser.add_argument("--all-batches", action="store_true", help="Process successive bounded image batches before publishing the package")
     parser.add_argument("--block-id", action="append", default=[], help="Process only selected unresolved object IDs")
     args = parser.parse_args()
     root = Path.cwd().resolve()
@@ -132,6 +133,7 @@ def main():
         "Rec.engine_type": EngineType.ONNXRUNTIME, "Rec.lang_type": LangRec.CH, "Global.text_score": 0.35,
     })
     cache, records = {}, []
+    processed_images, image_batches = 0, 0
     for block, shape in zip(pending, shapes):
         record = {"blockId": block["id"], "unitIndex": block["unitIndex"], "shapePath": block["shapePath"],
                   "shapeIdPath": block["shapeIdPath"], "status": "review-required"}
@@ -152,14 +154,19 @@ def main():
             record.update(info); record["reviewImageSha256"] = image_hash
             if image_hash not in cache:
                 if len(cache) >= args.max_unique_images:
-                    record["reason"] = "local-image-budget-exhausted"
-                    records.append(record); continue
+                    if not args.all_batches:
+                        record["reason"] = "local-image-budget-exhausted"
+                        records.append(record); continue
+                    cache.clear()
+                if not cache:
+                    image_batches += 1
                 (output/f"{image_hash}.png").write_bytes(data)
                 result = engine(np.asarray(image), text_score=0.35)
                 lines = [{"text": text, "confidence": float(score), "box": np.asarray(box).tolist()}
                          for text, score, box in zip(result.txts if result.txts is not None else [],
                              result.scores if result.scores is not None else [], result.boxes if result.boxes is not None else [])]
                 cache[image_hash] = lines
+                processed_images += 1
             record["imageFile"] = f"{image_hash}.png"
             record["ocrLines"] = cache[image_hash]
             record["reason"] = "ocr-candidate-requires-visual-review" if cache[image_hash] else "no-text-image-still-requires-review"
@@ -171,10 +178,12 @@ def main():
               "extractionArtifactSha256": sha256(artifact.read_bytes()).hexdigest(),
               "modelSha256": {name: sha256((models/name).read_bytes()).hexdigest() for name in names},
               "records": records, "totalUnresolvedObjects": total_pending, "selectedObjects": len(pending),
-              "uniqueImagesProcessed": len(cache), "externalCalls": 0,
+              "uniqueImagesProcessed": len({r["imageFile"] for r in records if "imageFile" in r}),
+              "imageExecutions": processed_images, "imageBatches": image_batches,
+              "batchImageLimit": args.max_unique_images, "allBatches": args.all_batches, "externalCalls": 0,
               "qualityAccepted": False, "extractionStatusChanged": False}
     (output/"review.json").write_text(json.dumps(review, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(json.dumps({"reviewObjects": len(records), "uniqueImagesProcessed": len(cache), "externalCalls": 0,
+    print(json.dumps({"reviewObjects": len(records), "uniqueImagesProcessed": review["uniqueImagesProcessed"], "imageBatches": image_batches, "externalCalls": 0,
                       "qualityAccepted": False, "extractionStatusChanged": False}))
 
 
