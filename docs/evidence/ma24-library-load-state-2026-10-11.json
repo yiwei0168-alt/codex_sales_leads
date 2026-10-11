@@ -1,0 +1,24 @@
+{
+  "scope": "G13/F11 settings library",
+  "browserTests": 2,
+  "viewports": [
+    "1366x900",
+    "390x844"
+  ],
+  "checks": [
+    "one failed GET does not suppress other sections",
+    "loading and error do not appear empty",
+    "stale rows cannot be changed",
+    "draft retained across refresh",
+    "successful retry clears read error",
+    "saved Skill accurately described as disabled draft",
+    "no horizontal overflow"
+  ],
+  "typecheck": "passed",
+  "lint": "passed",
+  "visualInspection": "mobile conversation-theme",
+  "network": "synthetic intercepted only",
+  "modelCalls": 0,
+  "productionDeployed": false,
+  "fullG13Accepted": false
+}
