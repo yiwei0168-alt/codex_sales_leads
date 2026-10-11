@@ -1,0 +1,26 @@
+{
+  "sourceCommit": "2446594d",
+  "build": ".next-releases/ma24-workflow-ui",
+  "rollbackBuild": ".next-releases/ma24-blind-review",
+  "actualRollbackExercised": false,
+  "productionBuild": "passed",
+  "privateDependencyManifests": 85,
+  "privateDependencyCount": 0,
+  "isolatedBrowserTests": 14,
+  "authenticatedSmokePorts": [
+    3048,
+    3018
+  ],
+  "staticAssetsEach": 11,
+  "fixtureCleanup": true,
+  "newModelTasks": 0,
+  "queueBeforeWebReplacement": [],
+  "oldWebPid": 3996,
+  "newWebPid": 37244,
+  "langGraphPidUnchanged": 36248,
+  "candidatePidStopped": 37384,
+  "backgroundWorkersRestarted": false,
+  "featureFlagsChanged": false,
+  "qualityAccepted": false,
+  "fullGoalComplete": false
+}
