@@ -11,6 +11,22 @@ from PIL import Image
 from pptx import Presentation
 
 
+def connector_candidate(shape):
+    if shape.element.tag != "{http://schemas.openxmlformats.org/presentationml/2006/main}cxnSp":
+        return None
+    ns = {"p": "http://schemas.openxmlformats.org/presentationml/2006/main",
+          "a": "http://schemas.openxmlformats.org/drawingml/2006/main"}
+    def attrs(path):
+        node = shape.element.find(path, ns)
+        return dict(node.attrib) if node is not None else None
+    return {"objectXmlSha256": sha256(ET.tostring(shape.element)).hexdigest(),
+            "coordinateSpace": "parent-group-emu", "transform": attrs(".//a:xfrm"),
+            "offset": attrs(".//a:xfrm/a:off"), "extent": attrs(".//a:xfrm/a:ext"),
+            "geometry": attrs(".//a:prstGeom"), "startAttachment": attrs(".//a:stCxn"),
+            "endAttachment": attrs(".//a:endCxn"), "headEnd": attrs(".//a:headEnd"),
+            "tailEnd": attrs(".//a:tailEnd")}
+
+
 def diagram_candidate(shape):
     ns = {"d": "http://schemas.openxmlformats.org/drawingml/2006/diagram",
           "a": "http://schemas.openxmlformats.org/drawingml/2006/main"}
@@ -116,6 +132,11 @@ def main():
         record = {"blockId": block["id"], "unitIndex": block["unitIndex"], "shapePath": block["shapePath"],
                   "shapeIdPath": block["shapeIdPath"], "status": "review-required"}
         try:
+            connector = connector_candidate(shape)
+            if connector is not None:
+                record["connector"] = connector
+                record["reason"] = "native-connector-candidate-requires-review"
+                records.append(record); continue
             diagram = diagram_candidate(shape)
             if diagram is not None:
                 record["diagram"] = diagram

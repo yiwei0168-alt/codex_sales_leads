@@ -5,10 +5,26 @@ import xml.etree.ElementTree as ET
 from PIL import Image
 from pptx import Presentation
 from pptx.util import Inches
-from prepare_pptx_visual_review import diagram_candidate, resolve_shape, visible_image
+from pptx.enum.shapes import MSO_CONNECTOR
+from prepare_pptx_visual_review import connector_candidate, diagram_candidate, resolve_shape, visible_image
 
 
 class VisualReviewTest(unittest.TestCase):
+    def test_connector_keeps_native_geometry_without_inventing_attachments(self):
+        deck = Presentation(); slide = deck.slides.add_slide(deck.slide_layouts[6])
+        line = slide.shapes.add_connector(MSO_CONNECTOR.STRAIGHT, 100, 200, 400, 600)
+        result = connector_candidate(line)
+        self.assertEqual(result["offset"], {"x": "100", "y": "200"})
+        self.assertEqual(result["extent"], {"cx": "300", "cy": "400"})
+        self.assertEqual(result["coordinateSpace"], "parent-group-emu")
+        self.assertIsNone(result["startAttachment"])
+        self.assertIsNone(result["endAttachment"])
+        target = slide.shapes.add_textbox(0, 0, Inches(1), Inches(1))
+        line.begin_connect(target, 0)
+        attached = connector_candidate(line)
+        self.assertEqual(attached["startAttachment"]["id"], str(target.shape_id))
+        self.assertIsNone(connector_candidate(target))
+
     def test_native_diagram_binding_and_external_rejection(self):
         element = ET.fromstring('''<shape xmlns:d="http://schemas.openxmlformats.org/drawingml/2006/diagram"
           xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><d:relIds r:dm="data1"/></shape>''')

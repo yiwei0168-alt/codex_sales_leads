@@ -1,0 +1,30 @@
+{
+  "schema": "pptx-connector-review-coverage-v1",
+  "sourceSha256": "2223cee26aced9a50d648d933c31b15f2f0659d0ebe30922fca5c31c1cc30465",
+  "extractionArtifactSha256": "136d6572d8cde82e87d34cc0e6601e328ba0bae6b83e3525808ae3fea9d92e51",
+  "packageHashes": {
+    "visual-review": "b271865d3dae5d9a105022b7fb8a39d71ffa8956d1787db9a312bc8f181d1f4a",
+    "visual-review-tail": "8e21c78cf8b0b367c8572bb10b18ebb50501ba70ada0574af838794411c21765",
+    "visual-review-diagrams": "33cb89d94409f3689a9999dc8d3a15732e8507ed7e44e7eccb7f80326341cb9e",
+    "visual-review-connectors": "b36ec3659dd236c4c1d90894f845c5134759cae7dfddd1f3650ecdc1bdcef9d4"
+  },
+  "objectsCovered": 63,
+  "reasons": {
+    "no-text-image-still-requires-review": 23,
+    "ocr-candidate-requires-visual-review": 32,
+    "native-diagram-candidate-requires-review": 4,
+    "native-connector-candidate-requires-review": 4
+  },
+  "connectorObjects": 4,
+  "helperTestsPassed": 4,
+  "matchingSourceAndObjectPaths": true,
+  "productionWrites": 0,
+  "externalCalls": 0,
+  "qualityAccepted": false,
+  "productReviewLifecycleImplemented": false,
+  "limitations": [
+    "All objects have candidate records, not accepted visual interpretations.",
+    "Native connector positions remain parent/group coordinates; missing endpoint attachments remain unknown.",
+    "Dedicated upload extraction review, authenticated decisions and index resume still require implementation."
+  ]
+}
