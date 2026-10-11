@@ -1,0 +1,15 @@
+.skill-review{display:grid;gap:12px;min-width:0;color:var(--ink);background:var(--surface);font:inherit}
+.skill-review header,.skill-review nav,.skill-review footer,.skill-review li{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.skill-review h3,.skill-review h4,.skill-review p{margin:0}.skill-review>p,.skill-review footer{color:var(--muted);font-size:14px}
+.skill-review ul{list-style:none;margin:0;padding:0}.skill-review li{padding:12px 0;border-top:1px solid var(--line)}
+.skill-review button,.skill-review select{min-height:36px;padding:6px 10px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink)}
+.skill-review button:focus-visible,.skill-review select:focus-visible,.skill-review textarea:focus-visible,.skill-review summary:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+.skill-review button:disabled{opacity:.5;cursor:not-allowed}.skill-review-case{display:grid;gap:16px;min-width:0}
+.skill-review-arms{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}.skill-review fieldset{min-width:0;margin:0;padding:12px;border:1px solid var(--line);border-radius:8px}
+.skill-review legend{font-weight:600;padding:0 6px}.skill-review-answer{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.65;max-height:280px;overflow:auto;margin-bottom:16px}
+.skill-review label{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:8px;font-size:14px}
+.skill-review label:has(textarea){display:grid;grid-template-columns:minmax(0,1fr);justify-content:normal;align-items:stretch}.skill-review textarea{width:100%;min-height:80px;resize:vertical;padding:8px;color:var(--ink);background:var(--surface-2);border:1px solid var(--line);border-radius:6px;font:inherit}
+.skill-review details{background:var(--surface-2);padding:12px;border:1px solid var(--line);border-radius:6px;min-width:0}.skill-review summary{cursor:pointer}
+.skill-review pre{max-height:320px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;line-height:1.6}
+.skill-review footer button{background:var(--primary);color:#fff}.skill-review [role=alert]{color:var(--red)}
+@media(max-width:640px){.skill-review-arms{grid-template-columns:1fr}.skill-review header h3{font-size:16px}.skill-review nav{justify-content:flex-start}.skill-review-answer{max-height:220px}}

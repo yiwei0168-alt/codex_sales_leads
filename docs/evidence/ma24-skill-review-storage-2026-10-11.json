@@ -1,0 +1,41 @@
+{
+    "migration":  122,
+    "productionBuild":  "passed",
+    "lint":  "passed",
+    "autoEnable":  false,
+    "liveShadow":  false,
+    "typecheck":  "passed",
+    "browser":  {
+                    "widths":  [
+                                   1366,
+                                   390,
+                                   320
+                               ],
+                    "staleDraftPreserved":  true,
+                    "noHorizontalOverflow":  true,
+                    "fixture":  "synthetic",
+                    "screenshotsInspected":  true,
+                    "noDefaultPass":  true
+                },
+    "date":  "2026-10-11",
+    "runtime":  {
+                    "port":  3018,
+                    "assets":  11,
+                    "unauthenticatedReview":  401,
+                    "mailWorkerRestarted":  false,
+                    "home":  200,
+                    "productionEvaluationRowsInserted":  0
+                },
+    "unitAndRouteTests":  41,
+    "qualityAcceptance":  false,
+    "clone":  {
+                  "fixturesCleaned":  true,
+                  "concurrentRevisionConflict":  true,
+                  "staleSourcesDenied":  true,
+                  "appendOnly":  true,
+                  "realModelCalls":  0,
+                  "rls":  true,
+                  "idempotent":  true,
+                  "staleJudgmentsDenied":  true
+              }
+}

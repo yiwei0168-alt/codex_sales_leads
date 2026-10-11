@@ -61,3 +61,14 @@ it('routes the explicit graph engine through the native message adapter and sour
   expect(output).toMatchObject({productionGraphReused:true,productionAgentEquivalent:false});
   expect(mocks.generate).not.toHaveBeenCalled();expect(mocks.generateAgent).toHaveBeenCalledTimes(2);expect(persist).toHaveBeenCalledTimes(1);
 });
+it('binds main model receipts without exposing them as replay evidence',async()=>{
+  const input={messages:[{role:'user',content:'Historical context'}],profile:{version:'mode-v1'}};
+  calls.push({id:id(7),tool_id:'main_model',tool_version:'mode-v1',effect:'model',status:'completed',
+    input,input_hash:digest(input),output:{status:'success',data:{value:'historical output'}}});
+  const snapshot=await prepareHistoricalSkillReplay(context,{skillId:id(2),version:1,runIds:[id(3)]});
+  expect(snapshot.suite.cases[0].receipts).toHaveLength(1);
+  expect(snapshot.bindings[0].calls).toHaveLength(2);
+  expect(snapshot.bindings[0].calls[1].effect).toBe('model');
+  calls[1].input_hash='invalid';
+  await expect(prepareHistoricalSkillReplay(context,{skillId:id(2),version:1,runIds:[id(3)]})).rejects.toThrow('model receipt invalid');
+});

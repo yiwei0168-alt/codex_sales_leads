@@ -7,6 +7,7 @@ import {SKILL_REPLAY_PROTOCOL,SKILL_REPLAY_PROMPT,SKILL_REPLAY_CONFIG} from '../
 import {digest} from '../src/lib/assistant/main/contracts';
 import {getPool} from '../src/lib/rag/db';
 import {SKILL_GRAPH_REPLAY_CONFIG,SKILL_GRAPH_REPLAY_PROTOCOL} from '../src/lib/assistant/main/skill-graph-replay';
+import {storeHistoricalSkillReplay} from '../src/lib/assistant/main/skill-review-store';
 
 // Operator-only local command; never exposed as an Agent tool or unauthenticated HTTP endpoint.
 const engine=process.argv.includes('--main-graph')?'main-graph':'receipts';
@@ -14,8 +15,10 @@ const [owner,skillId,version,...runIds]=process.argv.slice(2).filter(arg=>arg!==
 const userId=z.uuid().parse(owner),input=historicalSkillReplayInput.parse({skillId,version:Number(version),runIds});
 const directory=path.resolve('tmp','skill-replay',randomUUID());await mkdir(directory,{recursive:true});
 let completed=0;
+let captured:Parameters<typeof storeHistoricalSkillReplay>[1]|undefined;
 try{
   const result=await runHistoricalSkillReplay({userId},input,async snapshot=>{
+    captured=snapshot;
     const codeFiles=['scripts/run-historical-skill-replay.ts','src/lib/assistant/main/skill-replay.ts','src/lib/assistant/main/skill-replay-local.ts','src/lib/assistant/main/skill-replay-errors.ts','src/lib/assistant/main/skill-replay-snapshot.ts','src/lib/assistant/main/knowledge-message-guard.ts','src/lib/assistant/main/skill-graph-replay.ts','src/lib/assistant/main/graph.ts','src/lib/assistant/main/product.ts','src/lib/assistant/main/tools.ts'];
     const codeHashes=Object.fromEntries(await Promise.all(codeFiles.map(async file=>[file,digest(await readFile(file,'utf8'))])));
     const config=engine==='main-graph'?SKILL_GRAPH_REPLAY_CONFIG:SKILL_REPLAY_CONFIG;
@@ -29,6 +32,10 @@ try{
     console.log(JSON.stringify({completed,total:input.runIds.length,review:'pending'}));
   },engine);
   await writeFile(path.join(directory,'result.json'),JSON.stringify(result,null,2),{flag:'wx'});
+  if(!captured)throw new Error('Replay snapshot missing');
+  const stored=await storeHistoricalSkillReplay({userId},captured,result);
+  await writeFile(path.join(directory,'stored.json'),JSON.stringify({id:stored.id,autoEnable:false}),{flag:'wx'});
+  console.log(JSON.stringify({reviewId:stored.id,review:'pending-authenticated-account-review'}));
 }catch{
   await writeFile(path.join(directory,'interrupted.json'),JSON.stringify({status:'interrupted',completed,
     reason:'Snapshot validation, local model or persistence failed; partial pairs are not acceptance',autoEnable:false}),{flag:'wx'});

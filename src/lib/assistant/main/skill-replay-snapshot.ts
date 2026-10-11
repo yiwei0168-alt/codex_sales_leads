@@ -34,10 +34,17 @@ export async function prepareHistoricalSkillReplay(context:Pick<ExecutionContext
       const scope=z.array(z.enum(['industry','company','product'])).min(1).max(3).optional().parse(run.input.knowledgeScope);
       const messages:ModelMessage[]=[];
       const calls=(await client.query<Call>(`select id,tool_id,tool_version,effect,status,input_hash,input,output from agent_tool_call
-        where user_id=$1 and run_id=$2 order by created_at,id limit 25`,[context.userId,runId])).rows;
-      if(!calls.length||calls.length>24)throw new Error('Historical task receipt count unsupported');
+        where user_id=$1 and run_id=$2 order by created_at,id limit 241`,[context.userId,runId])).rows;
+      if(!calls.length||calls.length>240)throw new Error('Historical task receipt count unsupported');
       const receipts=[];
       for(const call of calls){
+        // Model attempts are audit provenance, never business evidence or replayed paid calls.
+        if(call.tool_id==='main_model'&&call.effect==='model'){
+          if(call.status!=='completed'||!call.tool_version||digest(call.input)!==call.input_hash)
+            throw new Error('Historical model receipt invalid');
+          toolResultSchema.parse(call.output);
+          continue;
+        }
         if(!supported.has(call.tool_id)||call.tool_version!=='1'||call.effect!=='read'||call.status!=='completed'
           ||digest(call.input)!==call.input_hash)throw new Error('Historical task contains unsupported or invalid receipts');
         const output=toolResultSchema.parse(call.output);
@@ -53,10 +60,12 @@ export async function prepareHistoricalSkillReplay(context:Pick<ExecutionContext
         const receipt={tool:call.tool_id,arguments:call.input,result:call.output};
         receipts.push({...receipt,sha256:digest(receipt)});
       }
+      if(!receipts.length||receipts.length>24)throw new Error('Historical task receipt count unsupported');
       cases.push({id:`history-${runId}`,category:'replay' as const,provenance:'historical' as const,sourceRunId:runId,question:run.content,receipts});
       evidenceGroups.push({messages,scope});
       bindings.push({runId,messageId:run.message_id,messageHash:digest(run.content),inputHash:digest(run.input),
-        calls:calls.map(call=>({id:call.id,inputHash:call.input_hash,outputHash:digest(call.output)}))});
+        calls:calls.map(call=>({id:call.id,tool:call.tool_id,version:call.tool_version,effect:call.effect,status:call.status,
+          inputHash:call.input_hash,outputHash:digest(call.output)}))});
     }
     const suite=skillReplaySuiteSchema.parse({id:`skill-history-${p.skillId}-v${p.version}`,ownerId:context.userId,
       skill:{id:p.skillId,version:p.version,files:version.files,contentHash:version.content_hash,
