@@ -1,7 +1,8 @@
 import {beforeEach,expect,it,vi} from 'vitest';
 import type {ModelMessage} from './contracts';
 import {decisionMemoryMessage} from './decision-memory-message';
-const mocks=vi.hoisted(()=>({load:vi.fn(),revalidate:vi.fn(),decision:vi.fn(),skill:vi.fn(),memory:vi.fn(),knowledge:vi.fn(),private:vi.fn()}));
+const mocks=vi.hoisted(()=>({receipts:vi.fn(),load:vi.fn(),revalidate:vi.fn(),decision:vi.fn(),skill:vi.fn(),memory:vi.fn(),knowledge:vi.fn(),private:vi.fn()}));
+vi.mock('./recorded-evidence-receipts',()=>({loadRecordedEvidenceReceipts:mocks.receipts}));
 vi.mock('./model-request-source',()=>({loadRecordedModeRequest:mocks.load,revalidateRecordedModeRequest:mocks.revalidate}));
 vi.mock('./memory-context',async importOriginal=>({...await importOriginal<typeof import('./memory-context')>(),loadDecisionMemory:mocks.decision}));
 vi.mock('./skill-message-guard',()=>({assertCurrentSkillMessages:mocks.skill}));
@@ -17,7 +18,7 @@ const pair=(tool='memory_read'):ModelMessage[]=>[
 beforeEach(()=>{
  for(const mock of Object.values(mocks))mock.mockReset();
  mocks.load.mockResolvedValue({body:{messages:[{role:'system',content:'Instructions'},decisionMemoryMessage([]),...pair()]},sourceHash:'bound',profile:{mode:'standard'},accountRole:'member',knowledgeScope:undefined,serverProvenanceVerified:true});
- mocks.decision.mockResolvedValue([]);
+ mocks.decision.mockResolvedValue([]);mocks.receipts.mockResolvedValue({receiptHash:'bound-receipts',receipts:[]});
 });
 it('passes owner, original run and scope to guards, then rereads provenance without granting execution',async()=>{
  const result=await validateRecordedRequestEvidence(context,selection);
@@ -29,7 +30,7 @@ it('passes owner, original run and scope to guards, then rereads provenance with
  expect(mocks.revalidate.mock.invocationCallOrder[0]).toBeGreaterThan(mocks.private.mock.invocationCallOrder[0]);
  expect(result).toMatchObject({evidenceSnapshotRevalidated:true,sourcePermissionsRevalidated:false,executionAuthorized:false,qualityAccepted:false});
 });
-it.each(['skill','memory','knowledge','private','revalidate'] as const)('fails closed when %s changes or is unavailable',async name=>{
+it.each(['skill','memory','knowledge','private','revalidate','receipts'] as const)('fails closed when %s changes or is unavailable',async name=>{
  mocks[name].mockRejectedValue(new Error('Changed source'));
  await expect(validateRecordedRequestEvidence(context,selection)).rejects.toThrow('Changed source');
 });
@@ -49,4 +50,9 @@ it('requires ordered, complete, unique pairs and successful data',()=>{
   [messages[0],{...messages[1],content:'{"status":"error","data":{}}'}],
   [messages[0],{...messages[1],content:'{"status":"success"}'}]])expect(()=>assertRecordedEvidencePairs(broken)).toThrow();
  expect(()=>assertRecordedEvidencePairs(messages)).not.toThrow();
+});
+
+it('rejects receipt changes during evidence checks',async()=>{
+ mocks.receipts.mockResolvedValueOnce({receiptHash:'before'}).mockResolvedValueOnce({receiptHash:'after'});
+ await expect(validateRecordedRequestEvidence(context,selection)).rejects.toThrow('receipts changed');
 });

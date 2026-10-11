@@ -1,4 +1,5 @@
 import {z} from 'zod';
+import {loadRecordedEvidenceReceipts} from './recorded-evidence-receipts';
 import {assertRecordedToolContracts} from './recorded-tool-contracts';
 import type {ModelMessage} from './contracts';
 import {loadRecordedModeRequest,revalidateRecordedModeRequest} from './model-request-source';
@@ -43,6 +44,7 @@ export async function validateRecordedRequestEvidence(context:{userId:string},in
  const saved=await loadRecordedModeRequest(context,input),messages=saved.body.messages;
  assertRecordedToolContracts({userId:context.userId,role:saved.accountRole,mode:saved.profile.mode,knowledgeScope:saved.knowledgeScope},messages);
  assertRecordedEvidencePairs(messages);
+ const receipts=await loadRecordedEvidenceReceipts({userId:context.userId,runId:input.runId},messages);
  assertRecordedDecisionMemory(messages,await loadDecisionMemory(context.userId));
  await assertCurrentSkillMessages({userId:context.userId,runId:input.runId},messages);
  await assertCurrentMemoryMessages(context.userId,messages);
@@ -50,7 +52,9 @@ export async function validateRecordedRequestEvidence(context:{userId:string},in
  await assertCurrentPrivateReplayMessages(context.userId,messages);
  // Do not return a source snapshot if its journal changed during the separate local ACL checks.
  await revalidateRecordedModeRequest(context,input,saved.sourceHash);
+ const currentReceipts=await loadRecordedEvidenceReceipts({userId:context.userId,runId:input.runId},messages);
+ if(currentReceipts.receiptHash!==receipts.receiptHash)throw new Error('Recorded evidence receipts changed');
  // Whole-task provenance and complete source-output semantics remain separate gates.
- return {...saved,checkedEvidenceDomains:['decision-memory','skill','memory','knowledge','mail-and-timeline'] as const,
+ return {...saved,receiptBinding:receipts,checkedEvidenceDomains:['decision-memory','skill','memory','knowledge','mail-and-timeline'] as const,
   toolContractsRevalidated:true as const,evidenceSnapshotRevalidated:true as const,sourcePermissionsRevalidated:false as const,executionAuthorized:false as const,qualityAccepted:false as const};
 }

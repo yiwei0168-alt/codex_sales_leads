@@ -18,7 +18,7 @@ const base=process.env.DATABASE_MIGRATION_URL||process.env.DATABASE_URL;
 assert(base&&['localhost','127.0.0.1','::1'].includes(new URL(base).hostname));
 const state=JSON.parse(await readFile('tmp/ma11-replay-state.json','utf8'));assert(/^ma11_replay_[a-f0-9]{12}$/.test(state.database));
 const url=new URL(base);url.pathname=`/${state.database}`;process.env.DATABASE_URL=url.toString();
-const pool=new Pool({connectionString:url.toString()}),owner=randomUUID(),other=randomUUID(),conversation=randomUUID(),runId=randomUUID(),callId=randomUUID(),memoryId=randomUUID();
+const pool=new Pool({connectionString:url.toString()}),owner=randomUUID(),other=randomUUID(),conversation=randomUUID(),runId=randomUUID(),callId=randomUUID(),memoryId=randomUUID(),readCallId=randomUUID();
 globalThis.fetch=async()=>{throw Error('No network in clone verification');};
 try{
  for(const id of [owner,other])await pool.query("insert into app_user(id,email,display_name,password_hash,role,status) values($1,$2,'Model source fixture','!','member','active')",[id,`${id}@example.invalid`]);
@@ -31,17 +31,23 @@ try{
   {role:'assistant' as const,content:null,tool_calls:[{id:'describe-1',type:'function' as const,function:{name:'describe_tool',arguments:JSON.stringify({tool:'memory_read'})}}]},
   {role:'tool' as const,tool_call_id:'describe-1',content:JSON.stringify({status:'success',data:describeTool(productTools.find(t=>t.id==='memory_read')!)})},
   {role:'assistant' as const,content:null,tool_calls:[{id:'memory-1',type:'function' as const,function:{name:'execute_tool',arguments:JSON.stringify({tool:'memory_read',arguments:{}})}}]},
-  {role:'tool' as const,tool_call_id:'memory-1',content:JSON.stringify({status:'success',data:memories})}],input={profile,index:1,messages};
+  {role:'tool' as const,tool_call_id:'memory-1',content:JSON.stringify({status:'success',data:memories,callId:readCallId})}],input={profile,index:1,messages};
  const body={model:profile.routes[1].model,messages:transportMessages(messages),tools:modelFunctions,stream:true,reasoning:{effort:profile.routes[1].effort}};
  const output={status:'success',data:{value:{requestManifest:modelRequestManifest(body,{model:body.model,provider:'fixture',id:'synthetic-generation'})}}};
  await pool.query(`insert into agent_run(id,user_id,conversation_id,request_key,request_hash,input,model_config,status,execution_kind)
  values($1,$2,$3,$1::uuid::text,$1::uuid::text,$4,$5,'completed','main-agent')`,[runId,owner,conversation,JSON.stringify({content:'Synthetic original task'}),JSON.stringify(config)]);
  await pool.query(`insert into agent_tool_call(id,user_id,run_id,call_key,tool_id,tool_version,input_hash,input,effect,status,output)
  values($1,$2,$3,$1::uuid::text,'main_model','1',$4,$5,'model','completed',$6)`,[callId,owner,runId,digest(input),JSON.stringify(input),JSON.stringify(output)]);
+ await pool.query(`insert into agent_tool_call(id,user_id,run_id,call_key,tool_id,tool_version,input_hash,input,effect,status,output)
+ values($1,$2,$3,'memory-1','memory_read','1',$4,'{}','read','completed',$5)`,[readCallId,owner,runId,digest({}),JSON.stringify({status:'success',data:memories,callId:readCallId})]);
  const context={userId:owner},selection={runId,callId},snapshot=await loadRecordedModeRequest(context,selection);
  assert.equal(snapshot.serverProvenanceVerified,true);assert.equal(snapshot.executionAuthorized,false);assert.equal(snapshot.sourcePermissionsRevalidated,false);assert.deepEqual(snapshot.body,body);
  const checked=await validateRecordedRequestEvidence(context,selection);
  assert.equal(checked.toolContractsRevalidated,true);assert.equal(checked.evidenceSnapshotRevalidated,true);assert.equal(checked.sourcePermissionsRevalidated,false);assert.equal(checked.executionAuthorized,false);
+ assert.equal(checked.receiptBinding.receipts.length,1);
+ await pool.query("update agent_tool_call set output=$2 where id=$1",[readCallId,JSON.stringify({status:'success',data:[],callId:readCallId})]);
+ await assert.rejects(validateRecordedRequestEvidence(context,selection),/receipt mismatch/);
+ await pool.query("update agent_tool_call set output=$2 where id=$1",[readCallId,JSON.stringify({status:'success',data:memories,callId:readCallId})]);
  await pool.query('update agent_memory set active=false where id=$1',[memoryId]);
  await assert.rejects(validateRecordedRequestEvidence(context,selection),/decision memory changed/);
  await pool.query('update agent_memory set active=true where id=$1',[memoryId]);
@@ -52,7 +58,7 @@ try{
  await pool.query("update agent_run set status='cancelled' where id=$1",[runId]);await assert.rejects(loadRecordedModeRequest(context,selection));
  await pool.query("update agent_run set status='completed' where id=$1",[runId]);
  await pool.query('update agent_tool_call set input_hash=$2 where id=$1',[callId,'0'.repeat(64)]);await assert.rejects(loadRecordedModeRequest(context,selection));
- console.log(JSON.stringify({cloneOnly:true,localEvidenceGuardsPassed:true,currentToolContractsChecked:true,revokedDecisionMemoryDenied:true,exactRequest:true,tenantIsolation:true,wrongRunDenied:true,changedInstructionsDenied:true,cancelledRunDenied:true,inputHashTamperingDenied:true,modelCalls:0,sourcePermissionsRevalidated:false,executionAuthorized:false,qualityAccepted:false}));
+ console.log(JSON.stringify({cloneOnly:true,localEvidenceGuardsPassed:true,currentToolContractsChecked:true,readReceiptBound:true,substitutedReceiptDenied:true,revokedDecisionMemoryDenied:true,exactRequest:true,tenantIsolation:true,wrongRunDenied:true,changedInstructionsDenied:true,cancelledRunDenied:true,inputHashTamperingDenied:true,modelCalls:0,sourcePermissionsRevalidated:false,executionAuthorized:false,qualityAccepted:false}));
 }finally{
  await pool.query('delete from agent_memory_version where memory_id=$1',[memoryId]);
  await pool.query('delete from agent_memory where id=$1 and owner_id=$2',[memoryId,owner]);

@@ -1,0 +1,20 @@
+{
+  "scope": "G08 authoritative read receipt bindings inside a recorded request",
+  "tests": 22,
+  "typecheck": "passed",
+  "lint": "passed",
+  "cloneChecks": [
+    "saved-read-receipt-bound",
+    "substituted-database-output-denied",
+    "revoked-memory-denied",
+    "cross-account-denied",
+    "source-change-denied"
+  ],
+  "fixturesRemoved": true,
+  "modelCalls": 0,
+  "businessToolExecutions": 0,
+  "productionDeployed": false,
+  "wholeTaskReplayComplete": false,
+  "executionAuthorized": false,
+  "qualityAccepted": false
+}
