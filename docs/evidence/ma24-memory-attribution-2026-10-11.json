@@ -1,0 +1,68 @@
+{
+  "directory": "tmp/memory-attribution/97b176d9-2a60-4da8-9c3b-1b5f4e8344dd",
+  "developmentOnly": true,
+  "synthetic": true,
+  "model": "qwen3:8b",
+  "calls": 6,
+  "maximumOutputTokensPerCall": 1024,
+  "cloudCalls": 0,
+  "productionWrites": 0,
+  "passed": 6,
+  "total": 6,
+  "results": [
+    {
+      "id": "direct-preference",
+      "passed": true,
+      "accepted": true,
+      "outputSha256": "b6cbfd05ecca250f3dfd09fd134e01c201a9f54808b5c91893782c89c985abb7"
+    },
+    {
+      "id": "customer-preference",
+      "passed": true,
+      "accepted": false,
+      "outputSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "id": "customer-fact",
+      "passed": true,
+      "accepted": false,
+      "outputSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "id": "customer-experience",
+      "passed": true,
+      "accepted": false,
+      "outputSha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "id": "direct-correction",
+      "passed": true,
+      "accepted": true,
+      "outputSha256": "7633e4412c6a50b86eb27368d97b67c3c7caedc5c8667aaefae8538777403b55"
+    },
+    {
+      "id": "customer-correction",
+      "passed": true,
+      "accepted": false,
+      "outputSha256": "df44913622b366e68caf79edb8141ea4f897290bdc2766c3251cb72699ea1531"
+    }
+  ],
+  "date": "2026-10-11",
+  "productionDeployed": false,
+  "independentAcceptance": false,
+  "checks": {
+    "testsPassed": 69,
+    "typecheck": "passed",
+    "eslint": "passed",
+    "positiveOutputSpansInspected": true
+  },
+  "modelMisattributionBlocked": true,
+  "rawHashes": {
+    "customer-correction-raw.json": "7b52a6e69ea381cabfec8d1e9892fcad8e1ac7416767670c0900844af50f1eb6",
+    "customer-experience-raw.json": "8d70e97607e5d5e001365ac187ae995ba3ed58b98c269a0758ceba32a5db97ae",
+    "customer-fact-raw.json": "b214c2fc320593e38ddc9faa051bbc5a098dafa5dd0212c28822a46b787613ae",
+    "customer-preference-raw.json": "6357b955cd3d8b5dfc2be9bd47db43304feeb36b26ab5cd480ee2f33054b0adc",
+    "direct-correction-raw.json": "2b68a0a7862adfe543f82392b4ae5cf8150a9c620cad36ab589de88aeaa13573",
+    "direct-preference-raw.json": "9cc062ca0d3a70330b7345835cd5284144b90715587a0bc27b5fc8ea395c4cd7"
+  }
+}

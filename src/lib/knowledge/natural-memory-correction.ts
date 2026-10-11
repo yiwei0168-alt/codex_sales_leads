@@ -1,5 +1,6 @@
 import {createHash} from 'node:crypto';
 import {z} from 'zod';
+import {hasAttributedMemoryText} from './memory-source-context';
 
 export const naturalCorrectionSchema=z.object({
   intent:z.enum(['correction','not-correction','uncertain']),
@@ -24,6 +25,6 @@ export function validateNaturalCorrection(text:string,proposal:NaturalCorrection
   if(framing.test(p.oldContent)||framing.test(p.content)||/^(?:我之前说|纠正一下|I previously said)\s*/i.test(p.oldContent))return {recognized:true} as const;
   const sensitive=/(?:policy|score|approv|permission|system prompt|ignore|override|bypass|effective|from now|starting|since|until)|政策|评分|批准|权限|系统提示|忽略|绕过|生效|从今|从现在|以后|自从|截至|截止|改为从/i;
   const attributed=/^\s*(?:>|```|["“「]|客户|邮件|原文|文档|转述|引用|customer|the customer|quoted?|document|email)/i;
-  if(sensitive.test(text)||attributed.test(text)||/[?？]|\b(?:if|hypothetical|example|do not correct|don't correct)\b|假如|如果|例如|举例|不要更正|不要修改/i.test(text))return {recognized:true} as const;
+  if(sensitive.test(text)||attributed.test(text)||hasAttributedMemoryText(text)||/[?？]|\b(?:if|hypothetical|example|do not correct|don't correct)\b|假如|如果|例如|举例|不要更正|不要修改/i.test(text))return {recognized:true} as const;
   return {recognized:true,correction:{oldContent:p.oldContent,content:p.content}} as const;
 }

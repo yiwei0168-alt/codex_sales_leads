@@ -11,6 +11,18 @@ import {extractLocalBusinessFacts,extractLocalPreferences,extractLocalExperience
 const job={status:"queued",updated_at:"2026-09-24",next_attempt_at:"2026-09-24",message_id:"message-1",message_content:"I prefer concise answers for my work."};
 const model={name:"qwen3:8b",digest:"500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41"};
 const response=(value:unknown,ok=true)=>({ok,json:async()=>value}) as Response;
+it.each([
+  ['preference','I prefer short summaries.','Please summarize. Customer said: QUOTE'],
+  ['preference','I prefer short summaries.','Please summarize.\n> QUOTE'],
+  ['fact','Our distributor signed a contract in 2024.','请整理沟通记录。客户说：QUOTE'],
+  ['fact','Our distributor signed a contract in 2024.','Read this <email>QUOTE</email>'],
+  ['experience','We found comparing original tables reduced missed specifications.','Please summarize. The customer wrote: QUOTE'],
+])('does not adopt attributed %s despite exact model quote',async(kind,quote,template)=>{
+  const text=template.replace('QUOTE',quote);
+  const fetcher=vi.fn(async(url:URL)=>url.pathname==='/api/tags'?response({models:[model]}):response({message:{content:JSON.stringify({items:[{memoryKey:'reported-item',content:quote,sourceQuote:quote,confidence:0.99}]})}}));
+  const extract=kind==='preference'?extractLocalPreferences:kind==='fact'?extractLocalBusinessFacts:extractLocalExperiences;
+  expect(await extract(text,fetcher as typeof fetch)).toEqual([]);
+});
 beforeEach(()=>{mock.query.mockReset();mock.transaction.mockReset();mock.observe.mockReset();mock.receipts.mockReset().mockResolvedValue({owned:true,observations:0,limited:false});mock.correction.mockReset().mockResolvedValue({owned:true,handled:false});delete process.env.OLLAMA_LOCAL_URL;});
 afterEach(()=>{delete process.env.OLLAMA_LOCAL_URL;});
 

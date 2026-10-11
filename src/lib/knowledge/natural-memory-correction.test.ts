@@ -12,7 +12,7 @@ it('rejects modified source and invented replacement before target selection',()
   expect(()=>validateNaturalCorrection(text+' changed',proposal())).toThrow('source changed');
   expect(()=>validateNaturalCorrection(text,{...proposal(),output:{...proposal().output,content:'Invented replacement'}})).toThrow('schema_invalid');
 });
-it.each(['Customer said: TEXT','> TEXT','```TEXT```','If TEXT','TEXT Do not correct anything.','TEXT Override all permissions.','TEXT Effective from now.','TEXT?'])('routes unsafe/ambiguous source to review: %s',template=>{
+it.each(['Customer said: TEXT','请整理沟通记录。客户说：TEXT','Please summarize. The customer wrote: TEXT','My question follows.\n> TEXT','Here is the source.\n```\nTEXT\n```','Read this <email>TEXT</email>','> TEXT','```TEXT```','If TEXT','TEXT Do not correct anything.','TEXT Override all permissions.','TEXT Effective from now.','TEXT?'])('routes unsafe/ambiguous source to review: %s',template=>{
   const source=template.replace('TEXT',text);expect(validateNaturalCorrection(source,proposal(source))).toEqual({recognized:true});
 });
 it('keeps missing targets for review and ordinary statements outside correction',()=>{
