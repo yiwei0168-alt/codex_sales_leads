@@ -1,0 +1,23 @@
+{
+  "scope": "G08 one-recorded-mode-request preparation",
+  "tests": 10,
+  "modeRouteCombinations": 9,
+  "checks": [
+    "exact original messages and full native schema",
+    "original provider settings retained",
+    "original deadlines and route index retained",
+    "input object isolation",
+    "changed inputs rejected",
+    "missing identity/manifest rejected",
+    "legacy mode inference rejected"
+  ],
+  "typecheck": "passed",
+  "lint": "passed",
+  "modelCalls": 0,
+  "productionExecutionWired": false,
+  "serverProvenanceVerified": false,
+  "sourcePermissionsRevalidated": false,
+  "executionAuthorized": false,
+  "wholeTaskEquivalent": false,
+  "qualityAccepted": false
+}
