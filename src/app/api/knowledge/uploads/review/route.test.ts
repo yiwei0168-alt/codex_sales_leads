@@ -1,9 +1,9 @@
 import {beforeEach,describe,expect,it,vi} from 'vitest';
-const mocks=vi.hoisted(()=>({session:vi.fn(),read:vi.fn(),write:vi.fn(),original:vi.fn(),complete:vi.fn(),retry:vi.fn()}));
+const mocks=vi.hoisted(()=>({session:vi.fn(),read:vi.fn(),write:vi.fn(),original:vi.fn(),complete:vi.fn(),retry:vi.fn(),image:vi.fn()}));
 vi.mock('@/lib/auth/session',()=>({requireApiSession:mocks.session}));
 vi.mock('@/lib/knowledge/extraction-review',async importOriginal=>{
   const actual=await importOriginal<typeof import('@/lib/knowledge/extraction-review')>();
-  return {...actual,getExtractionReview:mocks.read,recordExtractionReview:mocks.write,getExtractionReviewOriginal:mocks.original,completeExtractionReview:mocks.complete,retryExtractionVisuals:mocks.retry};
+  return {...actual,getExtractionReview:mocks.read,recordExtractionReview:mocks.write,getExtractionReviewOriginal:mocks.original,completeExtractionReview:mocks.complete,retryExtractionVisuals:mocks.retry,getExtractionReviewImage:mocks.image};
 });
 import {GET,POST} from './route';
 import {ExtractionReviewConflict} from '@/lib/knowledge/extraction-review';
@@ -12,6 +12,14 @@ const valid={jobId,artifactSha256:'a'.repeat(64),blockId:'slide-1-image',expecte
 const post=(body:unknown)=>new Request('http://localhost/api/knowledge/uploads/review',{method:'POST',body:JSON.stringify(body)});
 beforeEach(()=>{vi.clearAllMocks();mocks.session.mockResolvedValue({userId:'owner',role:'member'});mocks.read.mockResolvedValue({blocks:[]});mocks.write.mockResolvedValue({revision:1,indexingResumed:false});});
 describe('extraction review endpoint',()=>{
+  it('requires paired positive nested image selectors and uses authenticated owner',async()=>{
+    const url=`http://localhost/api/knowledge/uploads/review?format=image&jobId=${jobId}&artifactSha256=${'a'.repeat(64)}&blockId=sheet-1`;
+    for(const query of ['&objectIndex=2','&imageIndex=1','&objectIndex=0&imageIndex=1','&objectIndex=2&imageIndex=1.5'])expect((await GET(new Request(url+query))).status).toBe(400);
+    expect(mocks.image).not.toHaveBeenCalled();mocks.image.mockResolvedValue(Buffer.from('png'));
+    const response=await GET(new Request(url+'&objectIndex=2&imageIndex=1'));expect(response.status).toBe(200);
+    expect(mocks.image).toHaveBeenCalledWith('owner',jobId,'a'.repeat(64),'sheet-1',2,1);
+    expect(response.headers.get('cache-control')).toBe('private, no-store');
+  });
   it('queues visual retry only for the authenticated owner and displayed artifact',async()=>{
     mocks.retry.mockResolvedValue({queued:true});
     const input={action:'retry-visuals',jobId,artifactSha256:'a'.repeat(64)};

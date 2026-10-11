@@ -16,11 +16,19 @@ const browser=await chromium.launch({channel:'chrome',headless:true}),results=[]
 try{
  for(const width of [1366,390,320]){
   const page=await browser.newPage({viewport:{width,height:760}});
-  await page.route('**/api/knowledge/uploads/review**',route=>route.fulfill({json:{jobId:job,title:'工作表原生候选',artifactSha256:'a'.repeat(64),sourceSha256:'b'.repeat(64),decisionSha256:'c'.repeat(64),visualState:'ready',total:1,resolved:0,offset:0,blocks:[{block,candidate:candidates.records[0],judgment:null}]}}));
+  await page.route('**/api/knowledge/uploads/review**',async route=>{
+   const url=new URL(route.request().url());if(url.searchParams.get('format')==='image'){
+    assert.equal(url.searchParams.get('objectIndex'),'2');assert.equal(url.searchParams.get('imageIndex'),'1');
+    await route.fulfill({contentType:'image/png',body:await readFile(`${result.output}/${candidates.records[0].sheetObjects[1].images[0].imageFile}`)});return;
+   }
+   await route.fulfill({json:{jobId:job,title:'工作表原生候选',artifactSha256:'a'.repeat(64),sourceSha256:'b'.repeat(64),decisionSha256:'c'.repeat(64),visualState:'ready',total:1,resolved:0,offset:0,blocks:[{block,candidate:candidates.records[0],judgment:null}]}});
+  });
   await page.goto(`http://127.0.0.1:${address.port}`);
   await expect(page.getByRole('region',{name:'工作表视觉对象'})).toBeVisible();
   await page.getByText('对象 1 · chart',{exact:true}).click();await expect(page.getByText(/val\[0\] cached: 0/)).toBeVisible();
   await page.getByText('对象 2 · image',{exact:true}).click();await expect(page.getByText(/Embedded image part:/)).toBeVisible();
+  await expect(page.getByRole('img',{name:'工作表对象 2 嵌入图片 1'})).toBeVisible();
+  assert(await page.getByRole('img').evaluate((image:HTMLImageElement)=>image.complete&&image.naturalWidth===10));
   assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
   await expect(page.getByRole('button',{name:'完成审核并提交后续处理'})).toBeDisabled();
   await page.screenshot({path:`tmp/xlsx-visual-local/ui-${width}.png`,fullPage:true});results.push({width,noOverflow:true,nativeObjectsExpandable:true,completionDisabled:true});await page.close();

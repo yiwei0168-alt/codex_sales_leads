@@ -118,15 +118,17 @@ export async function retryExtractionVisuals(userId:string,jobId:string,artifact
   });
 }
 
-export async function getExtractionReviewImage(userId:string,jobId:string,artifactSha256:string,blockId:string){
+export async function getExtractionReviewImage(userId:string,jobId:string,artifactSha256:string,blockId:string,objectIndex?:number,imageIndex?:number){
   z.uuid().parse(jobId);z.string().regex(/^[a-f0-9]{64}$/).parse(artifactSha256);
+  if(objectIndex!==undefined||imageIndex!==undefined){z.number().int().positive().parse(objectIndex);z.number().int().positive().parse(imageIndex);}
   return tenantTransaction(userId,async client=>{
     const {job,blocks}=await load(client,userId,jobId);
     if(job.metrics.artifactSha256!==artifactSha256)throw new ExtractionReviewConflict('抽取版本已变化，请重新加载');
     const candidates=await loadVisualCandidates(job.metrics,job.source_sha256,artifactSha256,blocks);
     const record=candidates?.find(candidate=>candidate.blockId===blockId);
-    if(!record?.imageFile||!job.metrics.visualReviewKey)throw new ExtractionReviewConflict('该对象没有可用预览');
-    return readVisualCandidateImage(job.metrics.visualReviewKey,record);
+    const image=objectIndex===undefined?record:record?.sheetObjects?.find(object=>object.objectIndex===objectIndex)?.images?.find(image=>image.imageIndex===imageIndex);
+    if(!image?.imageFile||!job.metrics.visualReviewKey)throw new ExtractionReviewConflict('该对象没有可用预览');
+    return readVisualCandidateImage(job.metrics.visualReviewKey,image);
   });
 }
 

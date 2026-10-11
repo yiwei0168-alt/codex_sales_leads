@@ -12,7 +12,9 @@ export async function GET(request:Request){
   if(params.get('format')==='image'){
     const input=z.object({jobId:z.uuid(),artifactSha256:z.string().regex(/^[a-f0-9]{64}$/),blockId:z.string().min(1).max(300)}).safeParse({jobId:params.get('jobId'),artifactSha256:params.get('artifactSha256'),blockId:params.get('blockId')});
     if(!input.success)return Response.json({error:'预览参数无效'},{status:400,headers});
-    try{const bytes=await getExtractionReviewImage(session.userId,input.data.jobId,input.data.artifactSha256,input.data.blockId);
+    const nested=z.object({objectIndex:z.coerce.number().int().positive().optional(),imageIndex:z.coerce.number().int().positive().optional()}).refine(value=>(value.objectIndex===undefined)===(value.imageIndex===undefined)).safeParse({objectIndex:params.get('objectIndex')??undefined,imageIndex:params.get('imageIndex')??undefined});
+    if(!nested.success)return Response.json({error:'图片对象编号无效'},{status:400,headers});
+    try{const bytes=await getExtractionReviewImage(session.userId,input.data.jobId,input.data.artifactSha256,input.data.blockId,nested.data.objectIndex,nested.data.imageIndex);
       return new Response(new Uint8Array(bytes),{headers:{...headers,'Content-Type':'image/png','X-Content-Type-Options':'nosniff'}});
     }catch(error){return failure(error);}
   }

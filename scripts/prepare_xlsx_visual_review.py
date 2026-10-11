@@ -6,6 +6,8 @@ import json
 import posixpath
 import zipfile
 import xml.etree.ElementTree as ET
+from io import BytesIO
+from PIL import Image
 from knowledge_extraction_v2 import xlsx_visual_references
 
 R='http://schemas.openxmlformats.org/officeDocument/2006/relationships'
@@ -41,24 +43,31 @@ def chart_text(archive,part):
             if not points: lines.append(f'{field}: no cached points; formula not evaluated')
     return '\n'.join(lines) or 'No supported native series; inspect original chart'
 
-def drawing_objects(archive,part):
+def drawing_objects(archive,part,output):
     objects=[]
     for ordinal,anchor in enumerate(ET.fromstring(archive.read(part)),1):
         positions=[]
         for end in ['from','to']:
             node=anchor.find('{'+X+'}'+end)
             if node is not None: positions.append(end+': '+', '.join(child.tag.rsplit('}',1)[-1]+'='+str(child.text) for child in node))
-        text=[]; kind='unsupported'
+        text=[]; kind='unsupported'; images=[]
         for chart in anchor.findall('.//{'+C+'}chart'):
             chart_part=related(archive,part,chart.get('{'+R+'}id'))
             text.append('Chart part: '+chart_part+'\n'+chart_text(archive,chart_part)); kind='chart'
         for picture in anchor.findall('.//{'+A+'}blip'):
             image_part=related(archive,part,picture.get('{'+R+'}embed') or picture.get('{'+R+'}link'))
             text.append('Embedded image part: '+image_part+'\nSHA-256: '+sha256(archive.read(image_part)).hexdigest()); kind='image' if kind=='unsupported' else 'mixed'
+            try:
+                with Image.open(BytesIO(archive.read(image_part))) as image:
+                    if image.width*image.height>20_000_000: raise ValueError('Image exceeds local preview limit')
+                    buffer=BytesIO(); image.convert('RGBA').save(buffer,format='PNG')
+                data=buffer.getvalue(); digest=sha256(data).hexdigest(); (output/(digest+'.png')).write_bytes(data)
+                images.append(dict(imageIndex=len(images)+1,imageFile=digest+'.png',reviewImageSha256=digest))
+            except (OSError,ValueError): text.append('Image preview unavailable; inspect the embedded original')
         native=' '.join(node.text or '' for node in anchor.findall('.//{'+A+'}t'))
         if native: text.append('Native text: '+native)
         objects.append(dict(kind=kind,objectIndex=ordinal,anchor='; '.join(positions) or 'No cell anchor (absolute placement)',
-                            text='\n'.join(text) or 'Unsupported drawing; inspect original',sourcePart=part))
+                            text='\n'.join(text) or 'Unsupported drawing; inspect original',sourcePart=part,images=images))
     return objects
 
 def main():
@@ -72,7 +81,7 @@ def main():
     documents=payload.get('documents',[payload]); assert len(documents)==1
     document=documents[0]
     if document['sourceSha256']!=source_hash: raise ValueError('Source identity changed')
-    originals=xlsx_visual_references(source); records=[]
+    originals=xlsx_visual_references(source); records=[]; output.mkdir(parents=True,exist_ok=True)
     with zipfile.ZipFile(source) as archive:
         for block in document['blocks']:
             if block['quality']!='pending-ocr': continue
@@ -83,7 +92,7 @@ def main():
             if reference['kind']=='drawing':
                 try:
                     part=related(archive,reference['worksheetPart'],reference['relationshipId'])
-                    record['sheetObjects']=drawing_objects(archive,part)
+                    record['sheetObjects']=drawing_objects(archive,part,output)
                 except (KeyError,ValueError,ET.ParseError): record['reason']='unsupported-sheet-visual-reference'
             else: record['reason']='unsupported-sheet-visual-reference'
             records.append(record)

@@ -8,7 +8,7 @@ const hash=(bytes:Uint8Array)=>createHash('sha256').update(bytes).digest('hex');
 const sha=z.string().regex(/^[a-f0-9]{64}$/);
 const candidate=z.object({blockId:z.string(),unitIndex:z.number().int().positive(),unitType:z.enum(['page','sheet']).optional(),shapePath:z.array(z.number().int().positive()).optional(),shapeIdPath:z.array(z.number().int().positive()).optional(),
   sheetName:z.string().optional(),visualReference:z.object({kind:z.string(),worksheetPart:z.string(),relationshipId:z.string().nullable()}).optional(),
-  sheetObjects:z.array(z.object({kind:z.string(),objectIndex:z.number().int().positive(),anchor:z.string(),text:z.string(),sourcePart:z.string()})).optional(),
+  sheetObjects:z.array(z.object({kind:z.string(),objectIndex:z.number().int().positive(),anchor:z.string(),text:z.string(),sourcePart:z.string(),images:z.array(z.object({imageIndex:z.number().int().positive(),imageFile:z.string(),reviewImageSha256:sha})).optional()})).optional(),
   status:z.literal('review-required'),reason:z.string(),imageFile:z.string().optional(),reviewImageSha256:sha.optional(),
   rotation:z.number().optional(),coordinateSpace:z.string().optional(),
   ocrLines:z.array(z.object({text:z.string(),confidence:z.number(),box:z.array(z.array(z.number()))})).optional(),
@@ -38,12 +38,19 @@ export function validateVisualCandidates(bytes:Uint8Array,expected:{sourceSha256
         ||source.visualReference.relationshipId!==record.visualReference.relationshipId||!record.sheetObjects)throw new Error('Sheet visual identity mismatch');
     }
     if(record.imageFile&&(!record.reviewImageSha256||record.imageFile!==`${record.reviewImageSha256}.png`))throw new Error('Invalid visual image path');
+    const objectIds=new Set<number>();
+    for(const object of record.sheetObjects??[]){
+      if(objectIds.has(object.objectIndex))throw new Error('Duplicate sheet visual object');objectIds.add(object.objectIndex);
+      const imageIds=new Set<number>();for(const image of object.images??[]){
+        if(imageIds.has(image.imageIndex)||image.imageFile!==`${image.reviewImageSha256}.png`)throw new Error('Invalid sheet image');imageIds.add(image.imageIndex);
+      }
+    }
     seen.add(record.blockId);
   }
   if(!pending.length||seen.size!==pending.length)throw new Error('Incomplete visual package');
   return payload.records;
 }
-export async function readVisualCandidateImage(packageKey:string,record:VisualCandidate){
+export async function readVisualCandidateImage(packageKey:string,record:Pick<VisualCandidate,'imageFile'|'reviewImageSha256'>){
   if(!record.reviewImageSha256||record.imageFile!==`${record.reviewImageSha256}.png`)throw new Error('No candidate image');
   const path=resolve(dirname(safeKnowledgeStorageKey(packageKey)),record.imageFile);assertResolvedInsideKnowledgeRoot(path);
   const bytes=await readFile(path);

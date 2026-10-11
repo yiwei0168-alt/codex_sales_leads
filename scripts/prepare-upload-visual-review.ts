@@ -40,6 +40,7 @@ try{
  const candidates=validateVisualCandidates(review,{sourceSha256:job.source_sha256,artifactSha256:job.metrics.artifactSha256,packageSha256},blocks);
  if(candidates.some(record=>record.reason==='local-image-budget-exhausted'))throw new Error('Incomplete image batches');
  for(const record of candidates)if(record.imageFile)await readVisualCandidateImage(key,record);
+ for(const record of candidates)for(const object of record.sheetObjects??[])for(const image of object.images??[])await readVisualCandidateImage(key,image);
  if(hash(await readFile(source))!==job.source_sha256||hash(await readFile(artifact))!==job.metrics.artifactSha256)throw new Error('Source changed during candidate extraction');
  await tenantTransaction(userId,async client=>{
   const result=await client.query(`update knowledge_upload_job set metrics=metrics||$3::jsonb,updated_at=now()

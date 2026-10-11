@@ -76,7 +76,13 @@ export function KnowledgeExtractionReview({jobId,onClose,onComplete}:{jobId:stri
           {item.candidate?.connector&&<details><summary>连接线原生数据（未经审核）</summary><pre>{JSON.stringify(item.candidate.connector,null,2)}</pre></details>}
           {item.candidate?.sheetObjects&&<section aria-label="工作表视觉对象">
             <p>工作表：{item.candidate.sheetName}。以下为原件中的对象与缓存数据，未计算公式、未还原图表外观；请结合原件审核。</p>
-            {item.candidate.sheetObjects.map(object=><details key={object.objectIndex}><summary>对象 {object.objectIndex} · {object.kind}</summary><p>位置（原生零起点坐标）：{object.anchor}</p><pre>{object.text}</pre></details>)}
+            {item.candidate.sheetObjects.map(object=><details key={object.objectIndex}><summary>对象 {object.objectIndex} · {object.kind}</summary><p>位置（原生零起点坐标）：{object.anchor}</p>
+              {object.images?.map(image=><figure key={image.imageIndex}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img alt={`工作表对象 ${object.objectIndex} 嵌入图片 ${image.imageIndex}`} src={`/api/knowledge/uploads/review?format=image&jobId=${jobId}&artifactSha256=${data.artifactSha256}&blockId=${encodeURIComponent(item.block.id)}&objectIndex=${object.objectIndex}&imageIndex=${image.imageIndex}`}/>
+                <figcaption>嵌入原图，未还原工作表中的裁剪、旋转或遮挡。</figcaption>
+              </figure>)}
+              <pre>{object.text}</pre></details>)}
             {item.candidate.sheetObjects.length===0&&<p>该视觉对象尚无法解析，请下载原件核对。</p>}
           </section>}
           {!item.candidate&&<p className="subtle">该对象尚无本地候选预览，请下载原件核对。</p>}

@@ -27,7 +27,12 @@ try{
  await run('scripts/process-upload-visual-queue.ts');
  const after=await getExtractionReview(owner,job.id);assert.equal(after.visualState,'ready');assert.equal(after.resolved,0);
  for(const item of after.blocks){
-  if(xlsx){assert.equal(item.candidate?.sheetName,'Chart');assert.equal(item.candidate?.sheetObjects?.length,2);continue;}
+  if(xlsx){
+   assert.equal(item.candidate?.sheetName,'Chart');assert.equal(item.candidate?.sheetObjects?.length,2);
+   const bytes=await getExtractionReviewImage(owner,job.id,after.artifactSha256,item.block.id,2,1);assert.equal(bytes.subarray(0,8).toString('hex'),'89504e470d0a1a0a');
+   await assert.rejects(()=>getExtractionReviewImage(owner,job.id,after.artifactSha256,item.block.id,1,1));
+   await assert.rejects(()=>getExtractionReviewImage(other,job.id,after.artifactSha256,item.block.id,2,1));continue;
+  }
   assert.equal(item.candidate?.coordinateSpace,'pdf-page-render');
   assert(Array.isArray(item.candidate?.ocrLines));
   const image=await getExtractionReviewImage(owner,job.id,after.artifactSha256,item.block.id);assert(image);
@@ -36,8 +41,8 @@ try{
  await assert.rejects(()=>getExtractionReviewImage(owner,job.id,'0'.repeat(64),after.blocks[0].block.id));
  assert.equal((await pool.query('select published_document_id from knowledge_upload_job where id=$1',[job.id])).rows[0].published_document_id,null);
  assert.equal(JSON.stringify((await pool.query('select * from knowledge_release_pointer_v3 order by scope_kind,owner_id')).rows),pointers);
- const result={cloneOnly:true,actualWorkerAndQueue:true,pages:after.total,previewReady:true,imageReadsVerified:!xlsx,otherAccountDenied:true,staleHashDenied:true,automaticJudgments:0,documentsPublished:0,v3PointersUnchanged:true,externalCalls:0};
- await writeFile(xlsx?'tmp/xlsx-native-clone-result.json':'tmp/pdf-preview-clone-result.json',JSON.stringify({...result,imageReadsVerified:!xlsx,format:xlsx?'xlsx':'pdf',syntheticFixture:xlsx},null,2));console.log(JSON.stringify({...result,format:xlsx?'xlsx':'pdf'}));
+ const result={cloneOnly:true,actualWorkerAndQueue:true,pages:after.total,previewReady:true,imageReadsVerified:true,nestedImageReadsVerified:xlsx,otherAccountDenied:true,staleHashDenied:true,automaticJudgments:0,documentsPublished:0,v3PointersUnchanged:true,externalCalls:0};
+ await writeFile(xlsx?'tmp/xlsx-native-clone-result.json':'tmp/pdf-preview-clone-result.json',JSON.stringify({...result,format:xlsx?'xlsx':'pdf',syntheticFixture:xlsx},null,2));console.log(JSON.stringify({...result,format:xlsx?'xlsx':'pdf'}));
 }finally{
  await pool.query('delete from knowledge_upload_job where user_id=$1',[owner]);
  await pool.query('delete from app_user where id=any($1::uuid[])',[[owner,other]]);await pool.end();await getPool().end();
