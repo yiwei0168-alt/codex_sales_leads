@@ -7,6 +7,8 @@ import {getPool,tenantTransaction} from '../src/lib/rag/db';
 import {observeMemory,undoMemory} from '../src/lib/knowledge/temporal-memory';
 import {proposeExperienceSkillInTransaction} from '../src/lib/knowledge/experience-skill-draft';
 import {changeSkill,readSkill} from '../src/lib/assistant/main/skills';
+import {assertCurrentSkillMessages} from '../src/lib/assistant/main/skill-message-guard';
+import type {ModelMessage} from '../src/lib/assistant/main/contracts';
 
 nextEnv.loadEnvConfig(process.cwd());
 const base=process.env.DATABASE_MIGRATION_URL||process.env.DATABASE_URL;
@@ -33,21 +35,32 @@ try{
   const context={userId:owner,role:'member' as const,runId,leaseToken:randomUUID()},action={id:skillId,version:1,operation:'enable' as const};
   await assert.rejects(()=>changeSkill(context,action),/replay and shadow/);
   await changeSkill(context,action,true); // Explicit synthetic human activation, not quality acceptance.
-  assert(await readSkill(context,skillId));
+  const loaded=await readSkill(context,skillId);assert(loaded);
+  const messages:ModelMessage[]=[{role:'assistant',content:null,tool_calls:[{id:'read',type:'function',function:{name:'execute_tool',arguments:JSON.stringify({tool:'skill_read',arguments:{id:skillId}})}}]},
+    {role:'tool',tool_call_id:'read',content:JSON.stringify({status:'success',data:loaded})}];
+  await assertCurrentSkillMessages(context,messages);
+  await assert.rejects(()=>assertCurrentSkillMessages({...context,userId:randomUUID()},messages));
+  await changeSkill(context,{...action,operation:'disable'},true);
+  await assert.rejects(()=>assertCurrentSkillMessages(context,messages));
+  await changeSkill(context,action,true);
   const pinned=await pool.query('select version from agent_run_skill where user_id=$1 and run_id=$2 and skill_id=$3',[owner,runId,skillId]);
   assert.equal(pinned.rows[0].version,1);
   const conflict=await observeMemory(owner,{kind:'experience',memoryKey:key,content:'I found this method failed.',sourceReceipt:{type:'synthetic'}});
   assert.equal(await readSkill(context,skillId),null,'Conflict must block an already pinned version');
+  await assert.rejects(()=>assertCurrentSkillMessages(context,messages));
   await undoMemory(owner,conflict);
   assert(await readSkill(context,skillId));
+  await assertCurrentSkillMessages(context,messages);
   await undoMemory(owner,observations[0]);
   assert.equal(await readSkill(context,skillId),null,'Revocation must block an already pinned version');
+  await assert.rejects(()=>assertCurrentSkillMessages(context,messages));
   for(const human of [false,true])for(const operation of ['enable','rollback'] as const)
     await assert.rejects(()=>changeSkill(context,{...action,operation},human),/sources changed/);
   await changeSkill(context,{...action,operation:'disable'},true);
   assert.equal((await pool.query('select enabled from agent_skill where id=$1',[skillId])).rows[0].enabled,false);
   assert.equal((await pool.query('select count(*)::int n from agent_skill_version where skill_id=$1',[skillId])).rows[0].n,1);
-  console.log(JSON.stringify({clone:true,currentSourcesReadable:true,unreviewedAutoActivationDenied:true,pinnedConflictDenied:true,resolvedConflictReadable:true,pinnedRevocationDenied:true,humanAndAgentReactivationDenied:true,disableAvailable:true,historyRetained:true,modelCalls:0}));
+  console.log(JSON.stringify({clone:true,currentSourcesReadable:true,unreviewedAutoActivationDenied:true,pinnedConflictDenied:true,resolvedConflictReadable:true,pinnedRevocationDenied:true,humanAndAgentReactivationDenied:true,disableAvailable:true,historyRetained:true,
+    loadedContextRechecked:true,loadedContextDisableDenied:true,loadedContextRevocationDenied:true,crossAccountContextDenied:true,modelCalls:0}));
 }finally{
   const client=await pool.connect();try{
     await client.query('begin');await client.query('set local session_replication_role=replica');

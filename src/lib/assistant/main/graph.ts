@@ -17,6 +17,8 @@ import { requestDurableBatchModel,ModelBatchPending } from "./model-batch";
 import {OpenRouterRequestError} from "@/providers/openrouter-batch";
 import {recordConsumedToolOutputs} from "./consumption";
 import {assertCurrentKnowledgeMessages,KnowledgeSourceChangedError,SOURCE_CHANGED_REPLY} from './knowledge-message-guard';
+import {assertCurrentSkillMessages,SkillContextChangedError,SKILL_CHANGED_REPLY} from './skill-message-guard';
+import {assertCurrentMemoryMessages,withCurrentDecisionMemory,MemoryContextChangedError,MEMORY_CHANGED_REPLY} from './memory-message-guard';
 
 export const MainAgentState = Annotation.Root({
   messages: Annotation<ModelMessage[]>(), pending: Annotation<ModelToolCall[]>(),
@@ -57,6 +59,8 @@ export function buildMainAgentGraph(deps: MainGraphDependencies, checkpointer?: 
         if (response.tool_calls?.length) return { messages: [...state.messages, response], pending: response.tool_calls, steps: state.steps + 1 };
         return { messages: [...state.messages, response], steps: state.steps + 1, status: "completed" as RunStatus, reply: response.content ?? "" };
       } catch(error) {
+        if(error instanceof MemoryContextChangedError)return {status:'partial' as RunStatus,reply:MEMORY_CHANGED_REPLY,pending:[]};
+        if(error instanceof SkillContextChangedError)return {status:'partial' as RunStatus,reply:SKILL_CHANGED_REPLY,pending:[]};
         if(error instanceof KnowledgeSourceChangedError)return {status:'partial' as RunStatus,reply:SOURCE_CHANGED_REPLY,pending:[]};
         if(error instanceof ModeModelsUnavailable)return {steps:state.steps+1,status:'partial' as RunStatus,reply:'当前模式的模型尝试已结束，任务和已有工具结果已保存。请查看执行详情；结果不明的请求需先核对，已执行的操作不会自动重做。'};
         if(error instanceof ModelBatchPending)return {status:"queued" as RunStatus,reply:"主模型批次已保存，正在等待提供方返回结果；后台会继续查询。批处理完成窗口为 24 小时，可暂停或取消后续工作。"};
@@ -72,6 +76,8 @@ export function buildMainAgentGraph(deps: MainGraphDependencies, checkpointer?: 
       let output: ToolResult;
       try { await deps.validateEvidence?.(state.messages); output = await deps.tool(call, state.instructionIds); }
       catch (error) {
+        if(error instanceof MemoryContextChangedError)return {status:'partial' as RunStatus,reply:MEMORY_CHANGED_REPLY,pending:[]};
+        if(error instanceof SkillContextChangedError)return {status:'partial' as RunStatus,reply:SKILL_CHANGED_REPLY,pending:[]};
         if(error instanceof KnowledgeSourceChangedError)return {status:'partial' as RunStatus,reply:SOURCE_CHANGED_REPLY,pending:[]};
         // A composite can stop between leaf actions. Preserve pending protocol
         // state so the safe boundary can close it and incorporate the new input.
@@ -168,11 +174,16 @@ export async function executeMainAgentRun(userId: string, runId: string, leaseTo
   context.knowledgeScope = run.input.knowledgeScope;
   if(run.model_config.profile)context.mode=modeConfigSchema.parse(run.model_config.profile).mode;
   if(run.execution_kind==="mail")return (await import("./mail-graph")).executeMailDeliveryRun(context,run);
+  const validateContext=async(messages:ModelMessage[])=>{
+    await assertCurrentSkillMessages(context,messages);
+    await assertCurrentMemoryMessages(userId,messages);
+    await assertCurrentKnowledgeMessages(userId,messages,context.knowledgeScope);
+  };
   const checkpointer = new PostgresSaver(getPool(), undefined, { schema: "langgraph" });
   const graph = buildMainAgentGraph({
-    validateEvidence:messages=>assertCurrentKnowledgeMessages(userId,messages,context.knowledgeScope),
+    validateEvidence:validateContext,
     boundary: async () => ({...await boundary(context),policyRevision:digest(await loadDecisionMemory(userId))}),
-    model: (messages, step,revision) => durableModel(context, messages, step, revision,run.model_config),
+    model: (messages, step,revision) => withCurrentDecisionMemory(userId,()=>durableModel(context, messages, step, revision,run.model_config)),
     tool: (call, instructionIds) => dispatchTool(call, { ...context, instructionIds }),
   }, checkpointer);
   const config = { configurable: { thread_id: `main-agent:${userId}:${runId}`, checkpoint_ns: "" }, recursionLimit: 400 };
@@ -181,8 +192,8 @@ export async function executeMainAgentRun(userId: string, runId: string, leaseTo
   let initial: Partial<typeof MainAgentState.State>;
   if (old.messages?.length) {
     if (!snapshot.next.length && (old.status === "completed" || old.status === "cancelled")) {
-      if(old.status==='completed')try{await assertCurrentKnowledgeMessages(userId,old.messages,context.knowledgeScope);}catch{
-        await finishRun(context,'partial',SOURCE_CHANGED_REPLY);return {status:'partial'};
+      if(old.status==='completed')try{await validateContext(old.messages);}catch(error){
+        await finishRun(context,'partial',error instanceof SkillContextChangedError?SKILL_CHANGED_REPLY:error instanceof MemoryContextChangedError?MEMORY_CHANGED_REPLY:SOURCE_CHANGED_REPLY);return {status:'partial'};
       }
       await finishRun(context, old.status, old.reply ?? "");
       return { status: old.status };
@@ -207,8 +218,8 @@ export async function executeMainAgentRun(userId: string, runId: string, leaseTo
       pending: [], steps: 0, seen: {}, instructionIds: [],decisionRevision:0,policyRevision:"",status: "running", reply: "" };
   }
   const final = await withProductSpend(userId, "main-agent", () => graph.invoke(initial, config), runId);
-  if(final.status==='completed')try{await assertCurrentKnowledgeMessages(userId,final.messages,context.knowledgeScope);}catch{
-    await finishRun(context,'partial',SOURCE_CHANGED_REPLY);return {status:'partial'};
+  if(final.status==='completed')try{await validateContext(final.messages);}catch(error){
+    await finishRun(context,'partial',error instanceof SkillContextChangedError?SKILL_CHANGED_REPLY:error instanceof MemoryContextChangedError?MEMORY_CHANGED_REPLY:SOURCE_CHANGED_REPLY);return {status:'partial'};
   }
   await finishRun(context, final.status, final.reply);
   return { status: final.status };

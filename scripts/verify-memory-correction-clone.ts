@@ -7,6 +7,8 @@ import {getPool} from '../src/lib/rag/db';
 import {observeMemory,memoryAt,memoryTimeline,memoryConflicts,undoMemory} from '../src/lib/knowledge/temporal-memory';
 import {correctMemory} from '../src/lib/knowledge/memory-correction';
 import {searchMemoryWithGraph} from '../src/lib/knowledge/memory-graph-search';
+import {assertCurrentMemoryMessages} from '../src/lib/assistant/main/memory-message-guard';
+import type {ModelMessage} from '../src/lib/assistant/main/contracts';
 
 nextEnv.loadEnvConfig(process.cwd());
 const base=process.env.DATABASE_MIGRATION_URL||process.env.DATABASE_URL;
@@ -21,7 +23,18 @@ try{
   const old=await observeMemory(owner,{kind:'business-fact',content:`${marker} old value`,memoryKey:marker,
     sourceReceipt:{type:'synthetic-report'},marketCodes:['DE'],validFrom:'2026-01-01T00:00:00Z'});
   const before=await now(),content=`${marker} corrected value`;
+  const saved=await searchMemoryWithGraph(owner,marker,new Date().toISOString(),new Date().toISOString(),{marketCode:'DE'},async()=>[old]);
+  assert.equal(saved.rows.length,1);
+  const toolMessages=(knownAt?:string):ModelMessage[]=>[
+    {role:'assistant',content:null,tool_calls:[{id:'memory-read',type:'function',function:{name:'execute_tool',arguments:JSON.stringify({tool:'memory_observation_search',arguments:{query:marker,marketCode:'DE',...(knownAt?{knownAt}:{})}})}}]},
+    {role:'tool',tool_call_id:'memory-read',content:JSON.stringify({status:'success',data:saved})},
+  ];
+  await assertCurrentMemoryMessages(owner,toolMessages());
+  await assert.rejects(()=>assertCurrentMemoryMessages(randomUUID(),toolMessages()));
   const replacement=await correctMemory(owner,{id:old,content,reason:'Synthetic correction'});
+  await assert.rejects(()=>assertCurrentMemoryMessages(owner,toolMessages()));
+  // Explicit historical knowledge time remains a legitimate historical query after correction.
+  await assertCurrentMemoryMessages(owner,toolMessages(before.replace(' ','T').replace('+00','Z')));
   assert.equal(await correctMemory(owner,{id:old,content,reason:'Synthetic correction'}),replacement);
   const after=await now();
   assert((await memoryAt(owner,after,before,{marketCode:'DE'})).some(row=>row.id===old));
