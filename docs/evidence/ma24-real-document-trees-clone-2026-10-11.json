@@ -1,0 +1,52 @@
+{
+  "schema": "real-document-tree-clone-verification-v1",
+  "cloneOnly": true,
+  "results": [
+    {
+      "format": "xlsx",
+      "sourceSha256": "fd9070eb39b133bd600afa97d088c98ecb07bb730c9861675295c99174d0759a",
+      "extractorVersion": "layout-v2.0.2",
+      "evidenceBlocksCompared": 5,
+      "evidenceContentHashesMatch": true,
+      "artifactLocationsMatch": true,
+      "idempotence": true,
+      "crossAccountReadDenied": true,
+      "withdrawnSourceReadDenied": true
+    },
+    {
+      "format": "pdf",
+      "sourceSha256": "67b852d766ea8c97ed947c1d3aab215d5d18ee4db49a0fcd563f4cb64fdcbe05",
+      "extractorVersion": "layout-v2.0.3",
+      "evidenceBlocksCompared": 4273,
+      "evidenceContentHashesMatch": true,
+      "artifactLocationsMatch": true,
+      "idempotence": true,
+      "crossAccountReadDenied": true,
+      "withdrawnSourceReadDenied": true
+    },
+    {
+      "format": "pptx",
+      "sourceSha256": "2223cee26aced9a50d648d933c31b15f2f0659d0ebe30922fca5c31c1cc30465",
+      "extractorVersion": "layout-v2.0.3",
+      "evidenceBlocksCompared": 190,
+      "evidenceContentHashesMatch": true,
+      "artifactLocationsMatch": true,
+      "idempotence": true,
+      "crossAccountReadDenied": true,
+      "withdrawnSourceReadDenied": true
+    }
+  ],
+  "fixturesCleaned": true,
+  "typecheckPassed": true,
+  "lintPassed": true,
+  "productionWrites": 0,
+  "modelCalls": 0,
+  "qualityAccepted": false,
+  "limitations": [
+    "Starts from hash-bound real extraction artifacts; does not test binary upload queue, lease recovery or worker restart.",
+    "All evidence rows compared against artifacts; public read API checked on first and last evidence per document.",
+    "PPTX artifact currently contains slide/block identifiers, not complete shape geometry.",
+    "Clone prints development database TLS/BYPASSRLS warning; not production database hardening acceptance.",
+    "Sources used for development; independent source qualification remains separate."
+  ]
+}
