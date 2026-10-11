@@ -1,4 +1,4 @@
-import {spawn} from 'node:child_process';
+import {runBoundedLocalProcess} from './lib/run-bounded-local-process';
 import nextEnv from '@next/env';
 nextEnv.loadEnvConfig(process.cwd());
 let stopping=false;
@@ -6,11 +6,8 @@ let stopping=false;
 process.on('SIGINT',()=>{stopping=true;});process.on('SIGTERM',()=>{stopping=true;});
 async function loop(script:string,args:string[]){
   do{
-    await new Promise<void>(done=>{
-      const child=spawn(process.execPath,['--require','./scripts/patch-node-user.cjs','--import','tsx',script,...args],{cwd:process.cwd(),windowsHide:true,stdio:['ignore','pipe','pipe']});
-      child.stdout.on('data',chunk=>process.stdout.write(chunk));child.stderr.on('data',()=>{});
-      child.once('error',()=>done());child.once('exit',()=>done());
-    });
+    try{await runBoundedLocalProcess(process.execPath,['--require','./scripts/patch-node-user.cjs','--import','tsx',script,...args],24*60*1000,true);}
+    catch{console.error(JSON.stringify({event:'knowledge-worker-operation-failed',script}));}
     if(process.argv.includes('--once'))return;
     if(!stopping)await new Promise(done=>setTimeout(done,5000));
   }while(!stopping);

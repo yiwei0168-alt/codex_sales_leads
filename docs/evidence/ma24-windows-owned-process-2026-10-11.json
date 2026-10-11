@@ -1,0 +1,46 @@
+{
+  "date": "2026-10-11",
+  "processTree": {
+    "platform": "win32",
+    "normalExit": true,
+    "nonzeroRejected": true,
+    "timeoutRejected": true,
+    "actualPythonInterpreterStopped": true,
+    "actualPythonDescendantStopped": true,
+    "parentDeathVerified": true,
+    "rootExitDescendantStopped": true,
+    "productionProcessesTouched": false,
+    "externalCalls": 0
+  },
+  "xlsxIntegration": {
+    "cloneOnly": true,
+    "actualWorkerAndQueue": true,
+    "pages": 1,
+    "previewReady": true,
+    "imageReadsVerified": true,
+    "nestedImageReadsVerified": true,
+    "otherAccountDenied": true,
+    "staleHashDenied": true,
+    "automaticJudgments": 0,
+    "syntheticJudgments": true,
+    "contentQualityAccepted": false,
+    "indexedReviewBlocks": 1,
+    "completionReplayVerified": true,
+    "documentsPublished": 1,
+    "v3PointersUnchanged": true,
+    "externalCalls": 0,
+    "format": "xlsx",
+    "syntheticFixture": true
+  },
+  "checks": {
+    "typecheck": "passed",
+    "eslint": "passed"
+  },
+  "productionDeployed": false,
+  "supervisorLeaseRecoveryVerified": false,
+  "primaryReference": "https://learn.microsoft.com/en-us/windows/win32/procthread/job-objects",
+  "initialFailures": [
+    "taskkill tree termination failed before supervisor timer integration",
+    "Parent fixture missing project Node user environment preload"
+  ]
+}
