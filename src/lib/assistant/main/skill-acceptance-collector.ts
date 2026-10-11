@@ -7,12 +7,14 @@ import {auditDurableSkillCandidate} from './skill-candidate-audit';
 import {assertSkillCollector,type SkillCollectorTransaction} from './skill-model-journal';
 import {skillSourcesCurrent,type SourcedSkillVersion} from './skill-source-guard';
 import {assertLocalAnalysisBoundary} from './local-analysis-boundary';
+import {requireSkillAcceptanceFreeze} from './skill-acceptance-freeze';
 
-const selection=z.object({plan:skillAcceptancePlanSchema,replays:z.array(z.object({caseId:z.string().min(1),runId:z.uuid(),evaluationId:z.uuid()}).strict()).min(1).max(100)}).strict();
+const selection=z.object({plan:skillAcceptancePlanSchema,freezeId:z.uuid().optional(),replays:z.array(z.object({caseId:z.string().min(1),runId:z.uuid(),evaluationId:z.uuid()}).strict()).min(1).max(100)}).strict();
 /** Append historical collection snapshots, not reviewer judgments or activation grants.
- * Identity/freeze attestations still require the final collector proof; they remain explicitly unverified. */
+ * Runtime identities remain unverified; optional freeze references are checked against server records. */
 export async function collectHistoricalSkillAcceptance(context:{userId:string},input:unknown,transaction:SkillCollectorTransaction){
- assertLocalAnalysisBoundary();const {plan,replays}=selection.parse(input);
+ assertLocalAnalysisBoundary();const {plan,replays,freezeId}=selection.parse(input);
+ if(freezeId)await requireSkillAcceptanceFreeze(context,freezeId,plan);
  if(plan.pin.ownerId!==context.userId||new Set(replays.map(row=>row.caseId)).size!==replays.length||new Set(replays.map(row=>row.evaluationId)).size!==replays.length)throw new Error('Collector owner or case binding invalid');
  const checkSkill=()=>tenantTransaction(context.userId,async client=>{
   const row=(await client.query<SourcedSkillVersion&{current_version:number;dependencies:unknown}>(`select s.current_version,s.scope,s.owner_id,v.source,v.validation,v.files,v.content_hash,v.dependencies
@@ -29,6 +31,7 @@ export async function collectHistoricalSkillAcceptance(context:{userId:string},i
   if(!item||item.category!=='replay'||item.provenance!=='historical-task')throw new Error('Collector case is not historical replay');
   const base=await prepareSkillAcceptanceBaseline(context,{runId:ref.runId}),candidate=await auditDurableSkillCandidate(context,{runId:ref.runId,skillId:plan.pin.skillId,version:plan.pin.version,evaluationId:ref.evaluationId,arm:'candidate'});
   const b=base.projection,c=candidate.projection;
+  if(freezeId&&(Date.parse(c.capturedAt)<Date.parse(plan.frozenAt)||Date.parse(c.completedAt)>=Date.parse(plan.expiresAt)))throw new Error('Candidate outside frozen plan interval');
   if(item.inputHash!==b.inputHash||item.sourceHash!==base.projectionHash||c.taskInputHash!==b.inputHash||b.modelConfigHash!==plan.identity.modelConfigHash||c.modelConfigHash!==plan.identity.modelConfigHash)
    throw new Error('Collector task or model configuration changed');
   if(sourceKind&&sourceKind!==c.sourceKind)throw new Error('Collector cannot mix source categories');sourceKind=c.sourceKind;
@@ -43,7 +46,8 @@ export async function collectHistoricalSkillAcceptance(context:{userId:string},i
   baselineSources[item.id]={runId:ref.runId,projectionHash:base.projectionHash};candidateSources[item.id]={runId:ref.runId,evaluationId:ref.evaluationId,projectionHash:candidate.projectionHash};
  }
  await checkSkill();
- const artifact={sourceKind,plan,observations,rawReceipts:{baselineSources,candidateSources,collector:{protocol:'historical-collector-v1',freezeVerified:false,runtimeIdentityVerified:false,automaticActivation:false}}},artifactHash=digest(artifact);
+ if(freezeId)await requireSkillAcceptanceFreeze(context,freezeId,plan);
+ const artifact={sourceKind,plan,observations,rawReceipts:{baselineSources,candidateSources,collector:{protocol:'historical-collector-v1',...(freezeId?{freezeId}:{}),freezeVerified:Boolean(freezeId),runtimeIdentityVerified:false,automaticActivation:false}}},artifactHash=digest(artifact);
  const id=await transaction(context.userId,async client=>{
   await assertSkillCollector(client);
   await client.query(`insert into agent_skill_acceptance_bundle(owner_id,skill_id,version,source_kind,plan,observations,raw_receipts,artifact_hash)

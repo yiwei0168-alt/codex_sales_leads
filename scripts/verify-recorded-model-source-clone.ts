@@ -20,6 +20,7 @@ import {loadRecordedModeRequest,revalidateRecordedModeRequest} from '../src/lib/
 import {verifyAcceptanceBaselineFixture} from './fixtures/skill-acceptance-baseline-clone';
 import {verifyCandidateSourceFixture} from './fixtures/skill-candidate-source-clone';
 import {verifySkillModelJournalFixture} from './fixtures/skill-model-journal-clone';
+import {verifyAcceptanceFreezeFixture} from './fixtures/skill-acceptance-freeze-clone';
 nextEnv.loadEnvConfig(process.cwd());disableLocalAnalysisTracing();
 const base=process.env.DATABASE_MIGRATION_URL||process.env.DATABASE_URL;
 assert(base&&['localhost','127.0.0.1','::1'].includes(new URL(base).hostname));
@@ -31,8 +32,10 @@ try{
  await pool.query(await readFile('db/migrations/130_skill_acceptance_evidence.sql','utf8'));
  await pool.query(await readFile('db/migrations/131_skill_model_attempt_journal.sql','utf8'));
  await pool.query(await readFile('db/migrations/132_skill_bundle_collector.sql','utf8'));
+ await pool.query(await readFile('db/migrations/133_skill_acceptance_freeze.sql','utf8'));
  for(const id of [owner,other])await pool.query("insert into app_user(id,email,display_name,password_hash,role,status) values($1,$2,'Model source fixture','!','member','active')",[id,`${id}@example.invalid`]);
  console.log(JSON.stringify({skillModelJournal:await verifySkillModelJournalFixture(pool,owner,other),cloneOnly:true}));
+ console.log(JSON.stringify({skillAcceptanceFreeze:await verifyAcceptanceFreezeFixture(pool,owner,other),cloneOnly:true}));
  await pool.query("insert into assistant_conversation(id,user_id,title) values($1,$2,'Model source fixture')",[conversation,owner]);
  await pool.query("insert into agent_memory(id,owner_id,scope,kind,memory_key,source_kind) values($1,$2,'account','preference','synthetic-replay','explicit')",[memoryId,owner]);
  await pool.query("insert into agent_memory_version(memory_id,version,content,scope_snapshot) values($1,1,'Synthetic preference','{}')",[memoryId]);

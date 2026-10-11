@@ -1,0 +1,11 @@
+{
+ "date":"2026-10-11","migration":133,"appliedTo":"guarded local clone only",
+ "checks":{"databaseStampedFreeze":true,"callerAndRawInsertBackdatingPrevented":true,"expiredDraftRejected":true,
+  "crossAccountReadAndRevokeRejected":true,"changedPlanRejected":true,"appendOnlyRevocation":true,
+  "ordinaryApplicationCannotFreeze":true,"fullCloneRegression":true,"fixtureCleanup":true,
+  "relatedUnitTestsPassed":73,"typecheck":"passed","eslint":"passed"},
+ "cloneCommand":"node --require ./scripts/patch-node-user.cjs --import tsx scripts/verify-recorded-model-source-clone.ts",
+ "cloneExitCode":0,"actualModelCalls":0,"productionDeployed":false,
+ "frozenCandidateCollectionEndToEnd":"pending runtime identity binding stage",
+ "runtimeIdentityVerified":false,"collectorProvenanceVerified":false,"automaticActivation":false
+}
