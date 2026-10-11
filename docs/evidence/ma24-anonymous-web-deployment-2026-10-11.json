@@ -1,0 +1,34 @@
+{
+  "date": "2026-10-11",
+  "sourceCommit": "be5aafc8",
+  "buildDirectory": ".next-releases/ma24-blind-review",
+  "rollbackBuild": ".next-releases/c044781a",
+  "schema": {
+    "migration": 126,
+    "applied": true,
+    "newlyApplied": true,
+    "v3Unchanged": true
+  },
+  "webPid": 3996,
+  "langgraphPidUnchanged": 36248,
+  "mainWorkerRestarted": false,
+  "mailWorkerRestarted": false,
+  "leadWorkerRestarted": false,
+  "candidatePort": 3048,
+  "candidateClosed": true,
+  "formalPort": 3018,
+  "staticAssetsHealthy": 11,
+  "smokeChecks": [
+    "authenticated routes",
+    "unauthenticated denial",
+    "pagination",
+    "shadow schema",
+    "anonymous review missing id rejects without cache",
+    "anonymous client owner rejected",
+    "public PDF multipart",
+    "duplicate upload reused"
+  ],
+  "modelTasksCreated": 0,
+  "fixtureCleanup": true,
+  "newQualityAcceptance": false
+}
