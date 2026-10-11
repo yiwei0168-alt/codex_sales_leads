@@ -1,0 +1,40 @@
+{
+  "rule": "MA24-17",
+  "sourceCommit": "1d1cc962",
+  "queuesBefore": [
+    [],
+    []
+  ],
+  "queuesAfter": [],
+  "oldLangGraphPid": 36248,
+  "langGraphPid": 21900,
+  "oldMainWorkerLauncherPid": 40460,
+  "mainWorkerLauncherPid": 43204,
+  "unchangedPids": {
+    "web": 37244,
+    "mail": 7704,
+    "lead": 5592
+  },
+  "langGraphHealth": 200,
+  "registeredGraphs": 5,
+  "webHealth": 200,
+  "newModelTasks": 0,
+  "automaticReview": "first incomplete-recovery command rejected without execution; full recovery command approved",
+  "qualityAccepted": false,
+  "mainWorkerProcessChain": [
+    43204,
+    31856,
+    41684
+  ],
+  "queueTables": [
+    "agent_run",
+    "mailbox_work_job",
+    "lead_workflow_job"
+  ],
+  "featureFlags": {
+    "ENABLE_VECTORLESS_AGENT_SHADOW": false,
+    "ENABLE_MEMORY_GRAPH_AGENT_SHADOW": false,
+    "ENABLE_LOCAL_MEMORY_EXTRACTION": false,
+    "ENABLE_MEMORY_GRAPH_PROJECTION": false
+  }
+}
