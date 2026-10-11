@@ -1,0 +1,33 @@
+{
+  "stage": "G08 prospective server capture and lease foundation",
+  "date": "2026-10-11",
+  "migration": "123_skill_shadow_capture.sql",
+  "appliedToProduction": false,
+  "capture": {
+    "campaignMustExistBeforeTaskInsertion": true,
+    "serverDatabaseLifecycleTrigger": true,
+    "accountSkillVersionAndConfigPinned": true,
+    "inputModelConfigResultInstructionsPinsJournalHashes": true,
+    "completedTaskQueuesOnce": true,
+    "cancelledTaskSkipped": true,
+    "pausedTaskWaits": true,
+    "journalLimit": 240,
+    "campaignsPerNewTaskLimit": 8
+  },
+  "recovery": {"leaseSeconds": 90, "maxAttempts": 3, "staleWorkerDenied": true, "exhaustionEvent": true},
+  "verified": {
+    "script": "scripts/verify-skill-shadow-capture-clone.ts",
+    "localCloneOnly": true,
+    "lateCampaignCannotBackfill": true,
+    "clientCannotInsertOrRewriteCapture": true,
+    "tenantIsolation": true,
+    "concurrentClaimOnce": true,
+    "expiredLeaseReclaimed": true,
+    "changedJournalOrCampaignCannotComplete": true,
+    "boundedRestartAttempts": true,
+    "modelCalls": 0
+  },
+  "remaining": ["campaign registration validation", "shadow model worker and full source validation", "real prospective task", "trusted semantic judgments", "automatic activation gate"],
+  "qualityAcceptance": false,
+  "automaticActivation": false
+}
