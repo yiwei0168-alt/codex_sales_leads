@@ -8,7 +8,7 @@ import {Pool} from 'pg';
 import {getPool,tenantQuery} from '../src/lib/rag/db';
 import {createKnowledgeUploadJob,listKnowledgeUploadJobs} from '../src/lib/knowledge/upload';
 import {registerVectorlessUpload} from '../src/lib/knowledge/vectorless-registration';
-import {getExtractionReview,recordExtractionReview} from '../src/lib/knowledge/extraction-review';
+import {getExtractionReview,getExtractionReviewOriginal,recordExtractionReview} from '../src/lib/knowledge/extraction-review';
 
 nextEnv.loadEnvConfig(process.cwd());
 const base=process.env.DATABASE_MIGRATION_URL||process.env.DATABASE_URL;
@@ -46,6 +46,9 @@ try{
     const repeated=await createKnowledgeUploadJob(owner,input);assert.equal(repeated.id,job.id);assert(repeated.reused);
     assert.equal((await worker(job.id)).inputJobs,0);
     const review=await getExtractionReview(owner,job.id);assert.equal(review.total,63);assert.equal(review.blocks.length,20);
+    assert.deepEqual((await getExtractionReviewOriginal(owner,job.id,review.artifactSha256)).bytes,bytes);
+    await assert.rejects(()=>getExtractionReviewOriginal(other,job.id,review.artifactSha256),/不存在/);
+    await assert.rejects(()=>getExtractionReviewOriginal(owner,job.id,'0'.repeat(64)),/版本已变化/);
     await assert.rejects(()=>getExtractionReview(other,job.id),/不存在/);
     const decision={jobId:job.id,artifactSha256:review.artifactSha256,blockId:review.blocks[0].block.id,expectedRevision:0,decision:'unresolved',evidenceText:'',note:'Synthetic development verification; not a human quality approval'};
     await assert.rejects(()=>recordExtractionReview(other,decision),/不存在/);

@@ -16,8 +16,8 @@ export const extractionReviewDecision=z.object({
 }).strict().refine(v=>v.decision==='evidence'?v.evidenceText.length>0:v.evidenceText==='');
 
 async function load(client:PoolClient,userId:string,jobId:string){
-  const result=await client.query<{source_sha256:string;extractor_version:string;extraction_artifact_key:string;storage_key:string;byte_size:string;metrics:{artifactSha256:string};title:string}>(
-    `select j.source_sha256,j.extractor_version,j.extraction_artifact_key,j.storage_key,j.byte_size::text,j.metrics,j.title
+  const result=await client.query<{source_sha256:string;extractor_version:string;extraction_artifact_key:string;storage_key:string;byte_size:string;metrics:{artifactSha256:string};title:string;original_filename:string}>(
+    `select j.source_sha256,j.extractor_version,j.extraction_artifact_key,j.storage_key,j.byte_size::text,j.metrics,j.title,j.original_filename
      from knowledge_upload_job j join app_user u on u.id=j.user_id and u.status='active'
      where j.id=$1 and j.user_id=$2 and j.status='extracted' and j.error_code='extraction-review-required'
        and j.lease_token is null for update of j`,[jobId,userId]);
@@ -29,7 +29,16 @@ async function load(client:PoolClient,userId:string,jobId:string){
     throw new ExtractionReviewConflict('原件已变化，不能审核');
   extractionReadiness(bytes,{sourceSha256:job.source_sha256,artifactSha256:job.metrics.artifactSha256,extractorVersion:job.extractor_version});
   const blocks=(JSON.parse(bytes.toString('utf8')).documents[0].blocks as Block[]).filter(block=>!['success','blank'].includes(block.quality));
-  return {job,blocks};
+  return {job,blocks,original};
+}
+
+export async function getExtractionReviewOriginal(userId:string,jobId:string,artifactSha256:string){
+  z.uuid().parse(jobId);z.string().regex(/^[a-f0-9]{64}$/).parse(artifactSha256);
+  return tenantTransaction(userId,async client=>{
+    const {job,original}=await load(client,userId,jobId);
+    if(job.metrics.artifactSha256!==artifactSha256)throw new ExtractionReviewConflict('抽取版本已变化，请重新加载');
+    return {bytes:original,filename:job.original_filename};
+  });
 }
 
 export async function getExtractionReview(userId:string,jobId:string,offset=0){

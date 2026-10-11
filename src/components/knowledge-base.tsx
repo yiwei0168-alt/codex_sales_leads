@@ -6,6 +6,7 @@ import { PersonalMemory } from "./personal-memory";
 import { MemoryObservations } from "./memory-observations";
 import { KnowledgeLibrary } from "./knowledge-library";
 import { KnowledgeReviewCenter } from "./knowledge-review-center";
+import { KnowledgeExtractionReview } from './knowledge-extraction-review';
 import type { KnowledgeBaseType, KnowledgeStats } from "@/lib/rag/types";
 
 const labels: Record<KnowledgeBaseType, { title: string; eyebrow: string; description: string }> = {
@@ -48,6 +49,7 @@ export function KnowledgeBase({ initialTab }: { initialTab?: string } = {}) {
   const router=useRouter(), params=useSearchParams();
   const tab=initialTab==="questions"||initialTab==="review"?initialTab:"materials";
   const [canReview,setCanReview]=useState(false);
+  const [extractionReviewJob,setExtractionReviewJob]=useState<string|null>(null);
   const [materialView,setMaterialView]=useState<"library"|"mailbox"|"memory"|"upload">("library");
   const [memoryView,setMemoryView]=useState<"observations"|"legacy">("observations");
   const [mailboxKnowledgePage,setMailboxKnowledgePage]=useState(1);
@@ -263,10 +265,12 @@ export function KnowledgeBase({ initialTab }: { initialTab?: string } = {}) {
             {job.currentVersionId?` · 当前版本 ${job.currentVersionId.slice(0,8)}`:''}<span title={`来源 SHA-256：${job.sourceSha256}`}> · 来源 {job.sourceSha256.slice(0,8)}</span>
             {job.errorCode?` · ${job.errorCode==='extraction-review-required'?'含未完成核对的对象，暂未建立新索引':job.errorCode==='revision-conflict'?'当前版本已变化，请重新选择资料更新':job.errorCode==='revision-source-unavailable'?'原资料已停用或不再可访问':job.errorCode}`:''}
             {job.revisionBaseVersionId&&job.status!=='registered'?' · 新版处理期间保留旧版':''}
+            {job.treeStatus==='review-required'&&<button type="button" onClick={()=>setExtractionReviewJob(job.id)}>审核抽取内容</button>}
             {job.treeStatus==='searchable'&&job.documentId&&job.currentVersionId&&(job.visibility==='private'||canReview)&&<button type="button" disabled={uploading} onClick={()=>chooseRevision(job)}>上传新版</button>}
           </p>)}<div className="kb-upload-pagination"><button disabled={uploading||uploadJobsPage===0} onClick={()=>setUploadJobsPage(value=>value-1)}>上一页作业</button><span>第 {uploadJobsPage+1} 页</span><button disabled={uploading||uploadJobs.length<=6} onClick={()=>setUploadJobsPage(value=>value+1)}>下一页作业</button></div></div>}
         </div>
       </div>
     </section>}
+    {extractionReviewJob&&<KnowledgeExtractionReview key={extractionReviewJob} jobId={extractionReviewJob} onClose={()=>setExtractionReviewJob(null)}/>}
   </div>;
 }

@@ -1,0 +1,43 @@
+{
+  "results": [
+    {
+      "width": 1366,
+      "noOverflow": true,
+      "dirtyGuard": true,
+      "conflictPreservesDraft": true,
+      "pagination": true,
+      "focusRestored": true
+    },
+    {
+      "width": 390,
+      "noOverflow": true,
+      "dirtyGuard": true,
+      "conflictPreservesDraft": true,
+      "pagination": true,
+      "focusRestored": true
+    },
+    {
+      "width": 320,
+      "noOverflow": true,
+      "dirtyGuard": true,
+      "conflictPreservesDraft": true,
+      "pagination": true,
+      "focusRestored": true
+    }
+  ],
+  "scope": "actual component and CSS with synthetic authenticated API responses",
+  "date": "2026-10-11",
+  "rule": "MA24-16",
+  "goal": "G05",
+  "testsPassed": 13,
+  "typecheck": "passed",
+  "eslint": "passed",
+  "originalDownloadCloneVerified": true,
+  "originalCrossAccountAndStaleHashDenied": true,
+  "runtimeDeployed": false,
+  "candidatePreviewImplemented": false,
+  "resumeIndexingImplemented": false,
+  "qualityAccepted": false,
+  "externalCalls": 0,
+  "modelCalls": 0
+}

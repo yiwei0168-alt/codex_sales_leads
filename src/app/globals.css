@@ -396,3 +396,14 @@ a { color: inherit; }
 .kb-upload-action { grid-column: 1 / -1; }
 .kb-upload-action .primary-button { flex-shrink: 0; white-space: nowrap; }
 @media (max-width: 650px) { .kb-upload-form { grid-template-columns: minmax(0, 1fr); } .kb-upload-action { flex-wrap: wrap; } }
+.extraction-review { display:grid; gap:12px; min-width:0; }
+.extraction-review h3,.extraction-review p { margin:0; overflow-wrap:anywhere; }
+.extraction-review fieldset { display:grid; gap:12px; min-width:0; padding:16px; border:1px solid var(--line); border-radius:8px; }
+.extraction-review label { display:grid; gap:6px; }
+.extraction-review textarea,.extraction-review select { width:100%; box-sizing:border-box; padding:10px; font:inherit; color:var(--ink); background:var(--surface,#fff); border:1px solid var(--line-strong); border-radius:6px; }
+.extraction-review textarea { resize:vertical; }
+.extraction-review pre { white-space:pre-wrap; overflow-wrap:anywhere; max-height:200px; overflow:auto; }
+.extraction-review nav,.extraction-review-discard { display:flex; gap:10px; flex-wrap:wrap; }
+.extraction-review nav { justify-content:space-between; }
+.extraction-review-discard { padding:12px; border:1px solid var(--line-strong); background:var(--surface,#fff); }
+.extraction-review-discard p { flex-basis:100%; }

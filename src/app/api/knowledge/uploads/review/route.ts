@@ -1,6 +1,6 @@
 import {z} from 'zod';
 import {requireApiSession} from '@/lib/auth/session';
-import {ExtractionReviewConflict,extractionReviewDecision,getExtractionReview,recordExtractionReview} from '@/lib/knowledge/extraction-review';
+import {ExtractionReviewConflict,extractionReviewDecision,getExtractionReview,getExtractionReviewOriginal,recordExtractionReview} from '@/lib/knowledge/extraction-review';
 export const runtime='nodejs';export const dynamic='force-dynamic';
 const headers={'Cache-Control':'private, no-store'};
 function failure(error:unknown){return error instanceof ExtractionReviewConflict
@@ -9,6 +9,14 @@ function failure(error:unknown){return error instanceof ExtractionReviewConflict
 export async function GET(request:Request){
   const session=await requireApiSession();if(session instanceof Response)return session;
   const params=new URL(request.url).searchParams;
+  if(params.get('format')==='original'){
+    const original=z.object({jobId:z.uuid(),artifactSha256:z.string().regex(/^[a-f0-9]{64}$/)}).safeParse({jobId:params.get('jobId'),artifactSha256:params.get('artifactSha256')});
+    if(!original.success)return Response.json({error:'原件版本参数无效'},{status:400,headers});
+    try{const file=await getExtractionReviewOriginal(session.userId,original.data.jobId,original.data.artifactSha256);
+      return new Response(new Uint8Array(file.bytes),{headers:{...headers,'Content-Type':'application/octet-stream','X-Content-Type-Options':'nosniff',
+        'Content-Disposition':`attachment; filename="original"; filename*=UTF-8''${encodeURIComponent(file.filename)}`}});
+    }catch(error){return failure(error);}
+  }
   const input=z.object({jobId:z.uuid(),offset:z.coerce.number().int().min(0).max(1000000)}).safeParse({jobId:params.get('jobId'),offset:params.get('offset')??0});
   if(!input.success)return Response.json({error:'审核参数无效'},{status:400,headers});
   try{return Response.json(await getExtractionReview(session.userId,input.data.jobId,input.data.offset),{headers});}catch(error){return failure(error);}
