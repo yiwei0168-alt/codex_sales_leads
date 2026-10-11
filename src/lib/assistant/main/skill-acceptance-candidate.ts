@@ -4,6 +4,7 @@ import {assertLocalAnalysisBoundary} from './local-analysis-boundary';
 import {readSkillAcceptanceEvidence} from './skill-acceptance-store';
 import {validateStoredSkillAcceptanceBaseline} from './skill-acceptance-baseline';
 import {auditDurableSkillCandidate} from './skill-candidate-audit';
+import {assertSkillAcceptanceRoutes} from './skill-acceptance-policy';
 
 const referenceSchema=z.object({runId:z.uuid(),evaluationId:z.uuid(),projectionHash:z.string().regex(/^[a-f0-9]{64}$/)}).strict();
 /** Recompute stored candidate claims from server receipts. No client assertions confer activation. */
@@ -29,12 +30,7 @@ export async function validateStoredSkillAcceptanceCandidate(context:{userId:str
   ||candidate.identity.modelConfigHash!==projection.modelConfigHash
   ||digest(candidate.modelReceiptHashes)!==digest(projection.modelAttemptReceipts.map(row=>row.hash)))
   throw new Error('Candidate observation does not match server journal');
- // v1 observations describe a single model/provider. Never hide a mixed-route execution
- // by selecting its last response; such evidence needs a richer comparison schema.
- for(const route of projection.selectedModels){
-  if(route.requestedModel!==candidate.requestedModel||route.model!==candidate.actualModel||route.provider!==candidate.provider
-   ||route.toolSchemaHash!==candidate.identity.toolSchemaHash)throw new Error('Candidate route or tools do not match observation');
- }
+ assertSkillAcceptanceRoutes(candidate,projection.selectedModels.map(route=>({step:route.step,requestedModel:route.requestedModel,actualModel:route.model!,provider:route.provider!,receiptHash:route.receiptHash,toolSchemaHash:route.toolSchemaHash})));
  const after=await readSkillAcceptanceEvidence(context,input.bundleId);
  if(!after.sourcesCurrent||digest(before)!==digest(after)||baseline.artifactHash!==before.artifactHash)throw new Error('Candidate evidence or review changed during validation');
  return {bundleId:input.bundleId,caseId:input.caseId,artifactHash:before.artifactHash,projectionHash:audited.projectionHash,

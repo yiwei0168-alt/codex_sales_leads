@@ -1,6 +1,6 @@
 import {describe,it,expect} from 'vitest';
 import {digest} from './contracts';
-import {evaluateSkillAcceptancePolicy,skillAcceptancePlanSchema} from './skill-acceptance-policy';
+import {evaluateSkillAcceptancePolicy,skillAcceptancePlanSchema,skillAcceptanceObservationSchema,assertSkillAcceptanceRoutes} from './skill-acceptance-policy';
 
 function fixture(){
  const pin={ownerId:'00000000-0000-4000-8000-000000000001',skillId:'00000000-0000-4000-8000-000000000002',version:1,contentHash:digest('package'),sourceHash:digest('sources')};
@@ -14,10 +14,48 @@ function fixture(){
  const judgments=observations.map(item=>({caseId:item.caseId,observationHash:digest(item),reviewerId:pin.ownerId,kind:'human',revision:1,revoked:false,baseline:{...verdict},candidate:{...verdict},rationale:'Synthetic policy fixture; not production or independent quality evidence.'}));
  return {plan,observations,judgments,currentPin:structuredClone(pin),currentIdentity:structuredClone(identity),now:'2026-10-11T01:00:00Z'};
 }
-function rebind(value:ReturnType<typeof fixture>){
+function rebind(value:{plan:unknown;observations:Array<{caseId:string;planHash:string}>;judgments:Array<{caseId:string;observationHash:string}>}){
  for(const row of value.observations)row.planHash=digest(value.plan);
  for(const row of value.judgments){const observation=value.observations.find(item=>item.caseId===row.caseId);if(observation)row.observationHash=digest(observation);}
 }
+
+function routedFixture(){
+ const old=fixture(),value={...old,observations:old.observations.map(row=>skillAcceptanceObservationSchema.parse(row))};
+ for(const row of value.observations)for(const side of ['baseline','candidate'] as const){
+  const arm=row[side];arm.modelReceiptHashes=[digest('first'),digest('second')];
+  arm.routing={protocol:'per-decision-v2',decisions:[
+   {step:0,requestedModel:arm.requestedModel,actualModel:arm.actualModel,provider:arm.provider,receiptHash:digest('first'),toolSchemaHash:arm.identity.toolSchemaHash},
+   {step:1,requestedModel:'synthetic/backup',actualModel:'synthetic/backup',provider:'backup-provider',receiptHash:digest('second'),toolSchemaHash:arm.identity.toolSchemaHash},
+  ]};
+ }
+ rebind(value);return value;
+}
+it('records mixed selected models without losing the original single-model format',()=>{
+ expect(evaluateSkillAcceptancePolicy(routedFixture())).toMatchObject({policyPassed:true,automaticActivation:false});
+ expect(evaluateSkillAcceptancePolicy(fixture()).policyPassed).toBe(true);
+});
+it.each(['gap','receipt','duplicate','tools','summary'])('rejects invalid per-decision %s binding',kind=>{
+ const value=routedFixture(),arm=value.observations[0].candidate,routes=arm.routing!.decisions;
+ if(kind==='gap')routes[1].step=3;if(kind==='receipt')routes[1].receiptHash=digest('missing');if(kind==='duplicate')routes[1].receiptHash=routes[0].receiptHash;
+ if(kind==='tools')routes[1].toolSchemaHash=digest('changed');if(kind==='summary')arm.actualModel='wrong';
+ expect(()=>evaluateSkillAcceptancePolicy(value)).toThrow();
+});
+it('does not hide a later model identity mismatch or route transition difference',()=>{
+ const value=routedFixture();value.observations[0].candidate.routing!.decisions[1].actualModel='different/model';rebind(value);
+ expect(evaluateSkillAcceptancePolicy(value).blockers).toEqual(expect.arrayContaining(['model-mismatch:replay:candidate','model-route-difference:replay']));
+});
+it('allows repeated decisions on the same route while checking all their receipt bindings',()=>{
+ const value=routedFixture(),arm=value.observations[0].candidate;
+ arm.modelReceiptHashes.push(digest('third'));arm.routing!.decisions.push({...arm.routing!.decisions[1],step:2,receiptHash:digest('third')});rebind(value);
+ expect(evaluateSkillAcceptancePolicy(value).policyPassed).toBe(true);
+});
+it('compares every saved route and receipt against server-derived decisions',()=>{
+ const arm=routedFixture().observations[0].candidate,expected=structuredClone(arm.routing!.decisions);
+ expect(()=>assertSkillAcceptanceRoutes(arm,expected)).not.toThrow();expected[1].receiptHash=digest('other');
+ expect(()=>assertSkillAcceptanceRoutes(arm,expected)).toThrow('server receipts');
+ const legacy=skillAcceptanceObservationSchema.parse(fixture().observations[0]).candidate;
+ expect(()=>assertSkillAcceptanceRoutes(legacy,arm.routing!.decisions)).toThrow('legacy');
+});
 describe('strict Skill acceptance calculation (not activation authority)',()=>{
  it('accepts complete policy evidence without issuing activation authorization',()=>{
   expect(evaluateSkillAcceptancePolicy(fixture())).toMatchObject({policyPassed:true,automaticActivation:false,blockers:[]});

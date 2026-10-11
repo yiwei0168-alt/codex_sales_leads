@@ -4,6 +4,7 @@ import {assertLocalAnalysisBoundary} from './local-analysis-boundary';
 import {loadRecordedTaskChain} from './recorded-task-source';
 import {replayRecordedGraphTrace} from './recorded-graph-audit';
 import {readSkillAcceptanceEvidence} from './skill-acceptance-store';
+import {assertSkillAcceptanceRoutes} from './skill-acceptance-policy';
 
 const sourceReference=z.object({runId:z.uuid(),projectionHash:z.string().regex(/^[a-f0-9]{64}$/)}).strict();
 type Context={userId:string};
@@ -52,11 +53,7 @@ export async function validateStoredSkillAcceptanceBaseline(context:Context,inpu
   ||digest(observation.baseline.modelReceiptHashes)!==digest(projection.modelReceiptHashes)
   ||observation.baseline.identity.modelConfigHash!==projection.modelConfigHash)
   throw new Error('Acceptance baseline observation does not match server journal');
- for(const request of projection.requests){
-  if(request.requestedModel!==observation.baseline.requestedModel||request.response.model!==observation.baseline.actualModel||request.response.provider!==observation.baseline.provider
-   ||request.toolSchemaHash!==observation.baseline.identity.toolSchemaHash)
-   throw new Error('Acceptance baseline route or tools do not match server journal');
- }
+ assertSkillAcceptanceRoutes(observation.baseline,projection.requests.map((request,step)=>({step,requestedModel:request.requestedModel,actualModel:request.response.model!,provider:request.response.provider!,receiptHash:projection.modelReceiptHashes[step],toolSchemaHash:request.toolSchemaHash})));
  const after=await readSkillAcceptanceEvidence(context,input.bundleId);
  if(!after.sourcesCurrent||digest(before)!==digest(after))throw new Error('Acceptance evidence or review changed during baseline validation');
  return {bundleId:input.bundleId,caseId:input.caseId,artifactHash:before.artifactHash,projectionHash:current.projectionHash,

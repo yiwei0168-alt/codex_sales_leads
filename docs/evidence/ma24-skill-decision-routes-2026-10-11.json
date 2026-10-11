@@ -1,0 +1,11 @@
+{
+ "date":"2026-10-11",
+ "format":"per-decision-v2 optional routing, legacy observations retained",
+ "checks":{"newRouteContractTests":9,"totalRelatedTestsPassed":73,"perDecisionRoutesBound":true,
+  "mixedCandidateRoutes":true,"legacyBaselineRegression":true,"fullCloneRegression":true,
+  "fixtureCleanup":true,"typecheck":"passed after test helper typing correction","eslint":"passed"},
+ "cloneCommand":"node --require ./scripts/patch-node-user.cjs --import tsx scripts/verify-recorded-model-source-clone.ts",
+ "cloneExitCode":0,"syntheticCandidateRequests":4,"actualModelCalls":0,
+ "comparison":"all selected routes authenticated against stored journals; consecutive identical route identities collapsed only for cross-arm transition comparison",
+ "productionDeployed":false,"productionAgentEquivalent":false,"collectorProvenanceVerified":false,"automaticActivation":false
+}

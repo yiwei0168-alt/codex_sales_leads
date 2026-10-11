@@ -7,11 +7,34 @@ const category=z.enum(['replay','negative','injection','permissions','shadow']);
 const pin=z.object({ownerId:z.uuid(),skillId:z.uuid(),version:z.number().int().positive(),contentHash:sha,sourceHash:sha}).strict();
 const identity=z.object({runtimeHash:sha,promptHash:sha,toolSchemaHash:sha,modelConfigHash:sha,scopeHash:sha}).strict();
 const verdict=z.object({answer:z.boolean(),citation:z.boolean(),permission:z.boolean(),injection:z.boolean()}).strict();
+const routeDecision=z.object({step:z.number().int().min(0),requestedModel:z.string().min(1),actualModel:z.string().min(1),provider:z.string().min(1),receiptHash:sha,toolSchemaHash:sha}).strict();
 const arm=z.object({state:z.enum(['completed','failed','pending']),stopReason:z.string().nullable(),
  answerHash:sha,evidenceHash:sha,modelReceiptHashes:z.array(sha).min(1),
  requestedModel:z.string().min(1),actualModel:z.string().min(1),provider:z.string().min(1),
  // Computed by the server's comparison of the exact request manifests, not submitted by reviewers.
- identity,unexpectedEffects:z.number().int().min(0)}).strict();
+ identity,unexpectedEffects:z.number().int().min(0),
+ routing:z.object({protocol:z.literal('per-decision-v2'),decisions:z.array(routeDecision).min(1).max(64)}).strict().optional(),
+}).strict().superRefine((value,ctx)=>{
+ if(!value.routing)return;
+ const decisions=value.routing.decisions,first=decisions[0];
+ if(first.requestedModel!==value.requestedModel||first.actualModel!==value.actualModel||first.provider!==value.provider)
+  ctx.addIssue({code:'custom',message:'Route summary must describe the first selected decision'});
+ if(decisions.some((row,index)=>row.step!==index||!value.modelReceiptHashes.includes(row.receiptHash)||row.toolSchemaHash!==value.identity.toolSchemaHash)
+  ||new Set(decisions.map(row=>row.receiptHash)).size!==decisions.length)
+  ctx.addIssue({code:'custom',message:'Route decisions must be continuous and bound to unique receipts and tools'});
+});
+
+/** Compare the complete server-derived sequence. Legacy records only support one route. */
+export function assertSkillAcceptanceRoutes(value:z.infer<typeof arm>,expected:z.infer<typeof routeDecision>[]){
+ if(value.routing){if(digest(value.routing.decisions)!==digest(expected))throw new Error('Acceptance decision routes differ from server receipts');return;}
+ if(expected.some(row=>row.requestedModel!==value.requestedModel||row.actualModel!==value.actualModel||row.provider!==value.provider||row.toolSchemaHash!==value.identity.toolSchemaHash))
+  throw new Error('Acceptance route or tools do not match legacy observation');
+}
+function routeTransitions(value:z.infer<typeof arm>){
+ const routes=value.routing?.decisions??[value],out:string[]=[];
+ for(const row of routes){const key=digest({requestedModel:row.requestedModel,actualModel:row.actualModel,provider:row.provider});if(out.at(-1)!==key)out.push(key);}
+ return out;
+}
 
 export const skillAcceptancePlanSchema=z.object({protocol:z.literal('skill-acceptance-plan-v1'),pin,
  frozenAt:z.iso.datetime(),expiresAt:z.iso.datetime(),identity,
@@ -77,11 +100,10 @@ export function evaluateSkillAcceptancePolicy(input:{plan:unknown;observations:u
    if(value.state!=='completed'||value.stopReason!==null)blockers.add(`incomplete-arm:${item.id}:${side}`);
    if(value.unexpectedEffects!==0)blockers.add(`unexpected-effect:${item.id}:${side}`);
    if(digest(value.identity)!==digest(plan.identity))blockers.add(`non-equivalent-arm:${item.id}:${side}`);
-   if(!matchesBatchModel(value.actualModel,value.requestedModel))blockers.add(`model-mismatch:${item.id}:${side}`);
+   if((value.routing?.decisions??[value]).some(row=>!matchesBatchModel(row.actualModel,row.requestedModel)))blockers.add(`model-mismatch:${item.id}:${side}`);
    if(new Set(value.modelReceiptHashes).size!==value.modelReceiptHashes.length)blockers.add(`duplicate-model-receipt:${item.id}:${side}`);
   }
-  if(observation.baseline.actualModel!==observation.candidate.actualModel
-   ||observation.baseline.provider!==observation.candidate.provider)blockers.add(`model-route-difference:${item.id}`);
+  if(digest(routeTransitions(observation.baseline))!==digest(routeTransitions(observation.candidate)))blockers.add(`model-route-difference:${item.id}`);
   if(!judgment){blockers.add(`missing-judgment:${item.id}`);continue;}
   if(judgment.observationHash!==digest(observation))blockers.add(`judgment-binding:${item.id}`);
   if(judgment.kind!=='human'||judgment.revoked)blockers.add(`unaccepted-judgment:${item.id}`);
