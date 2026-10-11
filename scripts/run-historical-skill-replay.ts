@@ -11,8 +11,15 @@ import {storeHistoricalSkillReplay} from '../src/lib/assistant/main/skill-review
 
 // Operator-only local command; never exposed as an Agent tool or unauthenticated HTTP endpoint.
 const engine=process.argv.includes('--main-graph')?'main-graph':'receipts';
-const [owner,skillId,version,...runIds]=process.argv.slice(2).filter(arg=>arg!=='--main-graph');
-const userId=z.uuid().parse(owner),input=historicalSkillReplayInput.parse({skillId,version:Number(version),runIds});
+const args=process.argv.slice(2).filter(arg=>arg!=='--main-graph');
+const [owner,skillId,version,...runIds]=args;
+const userId=z.uuid().parse(owner);
+let input;
+if(skillId==='--input'){
+  if(args.length!==3||!version)throw new Error('Usage: <owner> --input <selection.json> [--main-graph]');
+  const text=await readFile(version,'utf8');if(Buffer.byteLength(text)>100000)throw new Error('Selection too large');
+  input=historicalSkillReplayInput.parse(JSON.parse(text));
+}else input=historicalSkillReplayInput.parse({skillId,version:Number(version),runIds});
 const directory=path.resolve('tmp','skill-replay',randomUUID());await mkdir(directory,{recursive:true});
 let completed=0;
 let captured:Parameters<typeof storeHistoricalSkillReplay>[1]|undefined;
@@ -20,6 +27,7 @@ try{
   const result=await runHistoricalSkillReplay({userId},input,async snapshot=>{
     captured=snapshot;
     const codeFiles=['scripts/run-historical-skill-replay.ts','src/lib/assistant/main/skill-replay.ts','src/lib/assistant/main/skill-replay-local.ts','src/lib/assistant/main/skill-replay-errors.ts','src/lib/assistant/main/skill-replay-snapshot.ts','src/lib/assistant/main/knowledge-message-guard.ts','src/lib/assistant/main/skill-graph-replay.ts','src/lib/assistant/main/graph.ts','src/lib/assistant/main/product.ts','src/lib/assistant/main/tools.ts'];
+    codeFiles.push('src/lib/assistant/main/private-replay-guard.ts','src/lib/assistant/main/skill-review-store.ts');
     const codeHashes=Object.fromEntries(await Promise.all(codeFiles.map(async file=>[file,digest(await readFile(file,'utf8'))])));
     const config=engine==='main-graph'?SKILL_GRAPH_REPLAY_CONFIG:SKILL_REPLAY_CONFIG;
     await writeFile(path.join(directory,'manifest.json'),JSON.stringify({...snapshot,engine,

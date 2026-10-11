@@ -6,7 +6,7 @@ vi.mock('./skill-source-guard',()=>({skillSourcesCurrent:mocks.sources}));
 vi.mock('./knowledge-message-guard',()=>({assertCurrentKnowledgeMessages:mocks.guard}));
 vi.mock('./private-replay-guard',()=>({assertCurrentPrivateReplayMessages:mocks.privateGuard,PRIVATE_REPLAY_TOOLS:['mail_read','customer_timeline']}));
 vi.mock('./skill-replay-local',()=>({localReplayModel:async()=>({generate:mocks.generate,generateAgent:mocks.generateAgent,close:mocks.close})}));
-import {prepareHistoricalSkillReplay,runHistoricalSkillReplay} from './skill-replay-snapshot';
+import {prepareHistoricalSkillReplay,runHistoricalSkillReplay,historicalReplayInputFromSnapshot} from './skill-replay-snapshot';
 const id=(n:number)=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
 const context={userId:id(1)},input={skillId:id(2),version:1,runIds:[id(3)]};
 let version:Record<string,unknown>,run:Record<string,unknown>,calls:Array<Record<string,unknown>>;
@@ -80,4 +80,26 @@ it.each(['mail_read','customer_timeline'])('requires live local source revalidat
   expect(mocks.privateGuard).toHaveBeenCalledWith(context.userId,expect.any(Array));
   mocks.privateGuard.mockRejectedValue(new Error('Private source revoked'));
   await expect(prepareHistoricalSkillReplay(context,input)).rejects.toThrow('revoked');
+});
+it('labels selected read analysis separately and binds all omitted original actions',async()=>{
+  const syncArgs={connectionId:id(8)};
+  calls.push({id:id(9),tool_id:'mail_sync',tool_version:'1',effect:'reversible',status:'completed',input:syncArgs,input_hash:digest(syncArgs),output:{status:'success',data:{queued:true}}});
+  const subInput={...input,subtasks:[{runId:id(3),readCallIds:[id(5)],objective:'Compare only the recorded source table.'}]};
+  const snapshot=await prepareHistoricalSkillReplay(context,subInput);
+  expect(snapshot.suite.cases[0].coverage).toMatchObject({kind:'read-only-subtask',originalQuestion:run.content,wholeTaskEquivalent:false,
+    excludedCalls:[{id:id(9),tool:'mail_sync',effect:'reversible'}]});
+  expect(snapshot.suite.cases[0].receipts).toHaveLength(1);expect(snapshot.bindings[0].calls).toHaveLength(2);
+  expect(historicalReplayInputFromSnapshot(snapshot)).toEqual(subInput);
+  expect(snapshot.suite.cases[0].question).toContain('does not evaluate or execute');
+  await expect(prepareHistoricalSkillReplay(context,input)).rejects.toThrow('unsupported');
+  const before=snapshot.bindingHash;calls[1].output={status:'success',data:{queued:false}};
+  expect((await prepareHistoricalSkillReplay(context,subInput)).bindingHash).not.toBe(before);
+});
+it.each(['missing','write','model','unresolved','tampered'] as const)('refuses invalid subtask selection or journal: %s',async kind=>{
+  const selected=id(5),subInput={...input,subtasks:[{runId:id(3),readCallIds:[selected],objective:'Read only the recorded evidence.'}]};
+  if(kind==='missing')subInput.subtasks[0].readCallIds=[id(99)];
+  if(kind==='write'){calls[0].tool_id='mail_sync';calls[0].effect='reversible';}
+  if(kind==='model'){calls[0].tool_id='main_model';calls[0].effect='model';}
+  if(kind==='unresolved'||kind==='tampered')calls.push({...calls[0],id:id(9),status:kind==='unresolved'?'started':'completed',input_hash:kind==='tampered'?'changed':calls[0].input_hash});
+  await expect(prepareHistoricalSkillReplay(context,subInput)).rejects.toThrow();
 });

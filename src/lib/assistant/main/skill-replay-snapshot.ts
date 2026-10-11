@@ -9,7 +9,11 @@ import {localReplayModel} from './skill-replay-local';
 import {runGraphSkillReplay,type GraphReplayPair} from './skill-graph-replay';
 
 export const historicalSkillReplayInput=z.object({skillId:z.uuid(),version:z.number().int().positive(),
-  runIds:z.array(z.uuid()).min(1).max(20).refine(ids=>new Set(ids).size===ids.length)}).strict();
+  runIds:z.array(z.uuid()).min(1).max(20).refine(ids=>new Set(ids).size===ids.length),
+  subtasks:z.array(z.object({runId:z.uuid(),readCallIds:z.array(z.uuid()).min(1).max(24).refine(ids=>new Set(ids).size===ids.length),
+    objective:z.string().trim().min(10).max(4000)}).strict()).min(1).max(20).optional(),
+}).strict().refine(p=>!p.subtasks||(p.subtasks.length===p.runIds.length&&new Set(p.subtasks.map(s=>s.runId)).size===p.runIds.length&&p.subtasks.every(s=>p.runIds.includes(s.runId))),
+  {message:'Subtasks must explicitly cover exactly the supplied runs'});
 type SnapshotInput=z.infer<typeof historicalSkillReplayInput>;
 const supported=new Set(['knowledge_search','knowledge_compare','vectorless_read',...PRIVATE_REPLAY_TOOLS]);
 const model={name:'qwen3:8b' as const,digest:'500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41'};
@@ -27,6 +31,7 @@ export async function prepareHistoricalSkillReplay(context:Pick<ExecutionContext
       ||digest(version.files)!==version.content_hash||!await skillSourcesCurrent(client,context.userId,version))throw new Error('Skill snapshot unavailable');
     const cases=[],bindings=[],evidenceGroups:Array<{messages:ModelMessage[];scope?:Array<'industry'|'company'|'product'>}>=[];
     for(const runId of p.runIds){
+      const subtask=p.subtasks?.find(s=>s.runId===runId),selected=subtask?new Set(subtask.readCallIds):null;
       const run=(await client.query<{content:string;message_id:string;input:Record<string,unknown>}>(`select r.input,m.content,m.id as message_id
         from agent_run r join lateral(select id,content from assistant_message where user_id=r.user_id
           and conversation_id=r.conversation_id and role='user' and metadata->>'runId'=r.id::text order by created_at,id limit 1) m on true
@@ -37,10 +42,17 @@ export async function prepareHistoricalSkillReplay(context:Pick<ExecutionContext
       const calls=(await client.query<Call>(`select id,tool_id,tool_version,effect,status,input_hash,input,output from agent_tool_call
         where user_id=$1 and run_id=$2 order by created_at,id limit 241`,[context.userId,runId])).rows;
       if(!calls.length||calls.length>240)throw new Error('Historical task receipt count unsupported');
+      if(selected&&[...selected].some(id=>!calls.some(c=>c.id===id)))throw new Error('Selected read receipt unavailable');
       const receipts=[];
       for(const call of calls){
+        if(selected&&!selected.has(call.id)){
+          // Preserve full journal binding, even for omitted effects. Never execute or expose those outputs as evidence.
+          if(call.status!=='completed'||!call.tool_version||digest(call.input)!==call.input_hash)throw new Error('Excluded task receipt invalid or unresolved');
+          toolResultSchema.parse(call.output);continue;
+        }
         // Model attempts are audit provenance, never business evidence or replayed paid calls.
         if(call.tool_id==='main_model'&&call.effect==='model'){
+          if(selected)throw new Error('Model output is not a selectable read receipt');
           if(call.status!=='completed'||!call.tool_version||digest(call.input)!==call.input_hash)
             throw new Error('Historical model receipt invalid');
           toolResultSchema.parse(call.output);
@@ -62,7 +74,12 @@ export async function prepareHistoricalSkillReplay(context:Pick<ExecutionContext
         receipts.push({...receipt,sha256:digest(receipt)});
       }
       if(!receipts.length||receipts.length>24)throw new Error('Historical task receipt count unsupported');
-      cases.push({id:`history-${runId}`,category:'replay' as const,provenance:'historical' as const,sourceRunId:runId,question:run.content,receipts});
+      cases.push({id:`history-${runId}`,category:'replay' as const,provenance:'historical' as const,sourceRunId:runId,
+        question:subtask?`Read-only analysis subtask: ${subtask.objective}\nOnly the selected recorded reads are available. This does not evaluate or execute the original task's omitted operations.`:run.content,receipts,
+        ...(subtask?{coverage:{kind:'read-only-subtask' as const,objective:subtask.objective,originalQuestion:run.content,
+          selectedCallIds:calls.filter(c=>selected!.has(c.id)).map(c=>c.id),
+          excludedCalls:calls.filter(c=>!selected!.has(c.id)).map(c=>({id:c.id,tool:c.tool_id,effect:c.effect,status:c.status,inputHash:c.input_hash,outputHash:digest(c.output)})),
+          wholeTaskEquivalent:false as const}}:{})});
       evidenceGroups.push({messages,scope});
       bindings.push({runId,messageId:run.message_id,messageHash:digest(run.content),inputHash:digest(run.input),
         calls:calls.map(call=>({id:call.id,tool:call.tool_id,version:call.tool_version,effect:call.effect,status:call.status,
@@ -79,6 +96,14 @@ export async function prepareHistoricalSkillReplay(context:Pick<ExecutionContext
     await assertCurrentPrivateReplayMessages(context.userId,group.messages);
   }
   return {suite:snapshot.suite,bindings:snapshot.bindings,bindingHash:digest(snapshot.bindings),suiteHash:digest(snapshot.suite)};
+}
+
+/** Reconstructs server-validated selection; old full-task snapshots remain byte-compatible. */
+export function historicalReplayInputFromSnapshot(snapshot:Awaited<ReturnType<typeof prepareHistoricalSkillReplay>>){
+  const cases=snapshot.suite.cases,subtasks=cases.filter(c=>c.coverage).map(c=>({runId:c.sourceRunId,
+    readCallIds:c.coverage!.selectedCallIds,objective:c.coverage!.objective}));
+  return historicalSkillReplayInput.parse({skillId:snapshot.suite.skill.id,version:snapshot.suite.skill.version,
+    runIds:cases.map(c=>c.sourceRunId),...(subtasks.length?{subtasks}:{})});
 }
 
 /** Revalidate before/after every model call and before persisting a pair. Never consumes a disk-supplied snapshot. */

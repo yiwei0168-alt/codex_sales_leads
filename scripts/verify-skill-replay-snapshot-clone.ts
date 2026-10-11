@@ -85,6 +85,20 @@ try{
   await assert.rejects(()=>appendSkillReplayReview(context,{...reviewInput,expectedRevision:2}));
   await pool.query('update agent_tool_call set output=$2 where id=$1',[call,JSON.stringify(output)]);
   assert.equal((await prepareHistoricalSkillReplay(context,input)).suiteHash,snapshot.suiteHash);
+  const omitted=randomUUID(),omittedArgs={connectionId:randomUUID()};
+  await pool.query(`insert into agent_tool_call(id,user_id,run_id,call_key,tool_id,tool_version,input_hash,input,effect,status,output)
+    values($1,$2,$3,$1::uuid::text,'mail_sync','1',$4,$5,'reversible','completed',$6)`,
+    [omitted,owner,run,digest(omittedArgs),JSON.stringify(omittedArgs),JSON.stringify({status:'success',data:{queued:true}})]);
+  const subInput={...input,subtasks:[{runId:run,readCallIds:[call],objective:'Compare only the recorded interface tables.'}]};
+  await assert.rejects(()=>prepareHistoricalSkillReplay(context,input));
+  const subSnapshot=await prepareHistoricalSkillReplay(context,subInput);
+  assert.equal(subSnapshot.suite.cases[0].coverage?.wholeTaskEquivalent,false);
+  const subResult=await runSkillReplay(subSnapshot.suite,async()=>({kind:'answer',text:'Synthetic subtask storage test only.'}));
+  const subStored=await storeHistoricalSkillReplay(context,subSnapshot,subResult);
+  assert.equal((await readSkillReplayReview(context,subStored.id)).snapshot.suite.cases[0].coverage?.excludedCalls[0].id,omitted);
+  await pool.query('update agent_tool_call set output=$2 where id=$1',[omitted,JSON.stringify({status:'success',data:{queued:false}})]);
+  await assert.rejects(()=>readSkillReplayReview(context,subStored.id));
+  await pool.query('delete from agent_tool_call where id=$1 and user_id=$2',[omitted,owner]);
   const connection=randomUUID(),message=randomUUID(),customer=randomUUID();
   await pool.query("insert into mailbox_connection(id,user_id,provider,email,display_name,credential_ciphertext) values($1,$2,'alimail-imap',$3,'Synthetic replay mailbox','synthetic-unusable')",[connection,owner,`${owner}@example.invalid`]);
   const mailPayload={subject:'Synthetic discussion',bodyText:'Synthetic original body',sender:[],recipients:[]};

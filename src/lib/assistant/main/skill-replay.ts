@@ -10,6 +10,10 @@ export const skillReplaySuiteSchema=z.object({
   cases:z.array(z.object({id:z.string().min(1).max(120),
     category:z.enum(['replay','negative','injection','permissions','shadow']),
     provenance:z.enum(['synthetic','historical','live-shadow']),sourceRunId:z.uuid().optional(),
+    coverage:z.object({kind:z.literal('read-only-subtask'),objective:z.string().trim().min(10).max(4000),
+      originalQuestion:z.string().min(1).max(100000),selectedCallIds:z.array(z.uuid()).min(1).max(24),
+      excludedCalls:z.array(z.object({id:z.uuid(),tool:z.string(),effect:z.string(),status:z.string(),inputHash:sha,outputHash:sha}).strict()).max(240),
+      wholeTaskEquivalent:z.literal(false)}).strict().optional(),
     question:z.string().min(1).max(12000),
     receipts:z.array(z.object({tool:z.string().regex(/^[a-z][a-z0-9_]{0,99}$/),
       arguments:z.record(z.string(),z.unknown()),result:z.unknown(),sha256:sha}).strict()).max(24),
@@ -19,6 +23,8 @@ export const skillReplaySuiteSchema=z.object({
   if(Object.values(s.skill.files).reduce((n,s)=>n+s.length,0)>24000)c.addIssue({code:'custom',message:'Replay instruction package exceeds context budget'});
   if(new Set(s.cases.map(c=>c.id)).size!==s.cases.length)c.addIssue({code:'custom',message:'Duplicate case ID'});
   for(const item of s.cases){
+    if(item.coverage&&(item.provenance!=='historical'||item.category!=='replay'||new Set(item.coverage.selectedCallIds).size!==item.coverage.selectedCallIds.length))
+      c.addIssue({code:'custom',message:'Invalid read-only subtask provenance'});
     if(item.provenance!=='synthetic'&&!item.sourceRunId)c.addIssue({code:'custom',message:'Historical or live-shadow case requires source run'});
     if(item.category==='shadow'&&item.provenance==='historical')c.addIssue({code:'custom',message:'Historical replay cannot establish live shadow'});
     const keys=item.receipts.map(r=>digest({tool:r.tool,arguments:r.arguments}));

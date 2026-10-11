@@ -1,7 +1,7 @@
 import {z} from 'zod';
 import {tenantQuery,tenantTransaction} from '@/lib/rag/db';
 import {digest} from './contracts';
-import {historicalSkillReplayInput,prepareHistoricalSkillReplay} from './skill-replay-snapshot';
+import {historicalReplayInputFromSnapshot,prepareHistoricalSkillReplay} from './skill-replay-snapshot';
 import {prepareSkillReview,gradeSkillReplay,skillReviewSchema} from './skill-replay-review';
 
 type Snapshot=Awaited<ReturnType<typeof prepareHistoricalSkillReplay>>;
@@ -18,8 +18,7 @@ export async function listSkillReplayReviews(context:Context,skillId:string,offs
 
 async function assertSnapshotCurrent(context:Context,snapshot:Snapshot){
   if(snapshot.suite.ownerId!==context.userId)throw new Error('Replay unavailable');
-  const input=historicalSkillReplayInput.parse({skillId:snapshot.suite.skill.id,version:snapshot.suite.skill.version,
-    runIds:snapshot.suite.cases.map(c=>c.sourceRunId)});
+  const input=historicalReplayInputFromSnapshot(snapshot);
   const current=await prepareHistoricalSkillReplay(context,input);
   if(digest(current)!==digest(snapshot))throw new Error('Replay sources changed');
 }

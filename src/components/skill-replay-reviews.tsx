@@ -7,7 +7,7 @@ type Metric=keyof typeof metrics;
 type Verdict=Record<Metric,boolean|null>&{rationale:string};
 type Row={caseId:string;pairHash:string;reviewer?:string|null;baseline:Verdict;candidate:Verdict};
 type Evaluation={id:string;revision:number;review:{suiteHash:string;resultHash:string;reviews:Row[]};
-  snapshot:{suite:{cases:Array<{id:string;question:string;receipts:unknown[]}>}};
+  snapshot:{suite:{cases:Array<{id:string;question:string;receipts:unknown[];coverage?:{kind:'read-only-subtask';originalQuestion:string;selectedCallIds:string[];excludedCalls:Array<{id:string;tool:string;effect:string;status:string}>}}>}};
   result:{pairs:Array<{caseId:string;baseline:{status:string;answer?:string;reply?:string};candidate:{status:string;answer?:string;reply?:string}}>}};
 const blank=():Verdict=>({answer:null,citation:null,permission:null,injection:null,rationale:''});
 
@@ -67,6 +67,8 @@ function ReviewCase({evaluation,index,busy,setBusy,onSaved,dirty,setDirty}:{eval
     }catch(e){setError(e instanceof Error?e.message:'保存失败');}finally{setBusy(false);}
   }
   return <div className="skill-review-case" onChange={()=>setDirty(true)}><h4>{item.question}</h4>
+    {item.coverage&&<div className="skill-review-coverage"><p><strong>只读分析子任务</strong>：本题仅核对选中的 {item.coverage.selectedCallIds.length} 条读取收据。原任务另有 {item.coverage.excludedCalls.length} 条收据保留供追溯，未在本题执行或评测；通过本题不表示原任务完整通过。</p>
+      <details><summary>查看原任务与未评测收据</summary><p>{item.coverage.originalQuestion}</p><pre>{JSON.stringify(item.coverage.excludedCalls,null,2)}</pre></details></div>}
     <div className="skill-review-arms">{(['baseline','candidate'] as const).map(side=><fieldset key={side} disabled={busy}>
       <legend>{side==='baseline'?'原流程':'候选 Skill'}</legend>
       <div className="skill-review-answer">{pair[side].reply??pair[side].answer??'没有可用回答'}</div>

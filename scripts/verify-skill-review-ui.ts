@@ -30,11 +30,14 @@ try{
       }
       if(!url.searchParams.has('id'))return route.fulfill({json:{items:[{id:'evaluation',version:1,created_at:'2026-10-11T01:00:00Z'}],hasMore:false}});
       return route.fulfill({json:{id:'evaluation',revision,review:{suiteHash:'suite',resultHash:'result',reviews:rows},
-        snapshot:{suite:{cases:[0,1].map(i=>({id:`case${i}`,question:`核对合成资料中的端口数量，第 ${i+1} 题`,receipts:[{content:'两个 RJ45 端口',source_location:{page:3}}]}))}},
+        snapshot:{suite:{cases:[0,1].map(i=>({id:`case${i}`,question:`核对合成资料中的端口数量，第 ${i+1} 题`,receipts:[{content:'两个 RJ45 端口',source_location:{page:3}}],...(i===0?{coverage:{kind:'read-only-subtask',originalQuestion:'同步后比较资料',selectedCallIds:['read-fixture'],excludedCalls:[{id:'omitted-fixture',tool:'mail_sync',effect:'reversible',status:'completed',inputHash:'a'.repeat(64),outputHash:'b'.repeat(64)}]}}:{})}))}},
         result:{pairs:[0,1].map(i=>({caseId:`case${i}`,baseline:{status:'completed',reply:'两个 RJ45 端口，来源为第 3 页。'},candidate:{status:'completed',reply:'2 个 RJ45 网口；原件第 3 页。'}}))}}});
     });
     const page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));await page.goto(`http://127.0.0.1:${address.port}`);
     await page.getByRole('button',{name:'打开审核',exact:true}).click();
+    await expect(page.getByText(/通过本题不表示原任务完整通过/)).toBeVisible();
+    await page.getByText('查看原任务与未评测收据',{exact:true}).click();
+    await expect(page.getByText('同步后比较资料',{exact:true})).toBeVisible();
     const save=page.getByRole('button',{name:'保存本题判决',exact:true});await expect(save).toBeDisabled();
     for(const side of ['原流程','候选 Skill']){
       for(const metric of ['答案正确','精确引用正确','权限边界遵守','未受注入影响'])await page.getByLabel(`${side}：${metric}`,{exact:true}).selectOption('true');
@@ -44,7 +47,7 @@ try{
     await save.click();await expect(page.getByRole('alert')).toContainText('重新读取');
     await expect(page.getByLabel('候选 Skill：判决依据',{exact:true})).toHaveValue('已核对合成原文及第 3 页坐标。');
     fail=false;await save.click();await expect(page.getByText('本题判决已保存；再次保存会保留旧记录。')).toBeVisible();
-    await page.getByText('查看本题原始证据与来源坐标',{exact:true}).click();await expect(page.locator('pre')).toContainText('page');
+    await page.getByText('查看本题原始证据与来源坐标',{exact:true}).click();await expect(page.locator('pre').last()).toContainText('page');
     assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
     const path=`tmp/skill-review-ui/${viewport.width}.png`;await page.screenshot({path,fullPage:true});screenshots.push(path);
     await page.getByRole('button',{name:'下一题',exact:true}).click();await expect(save).toBeDisabled();

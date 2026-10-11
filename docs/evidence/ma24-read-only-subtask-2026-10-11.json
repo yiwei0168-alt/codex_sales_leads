@@ -1,0 +1,40 @@
+{
+  "stage": "G07 explicit read-only historical subtask",
+  "date": "2026-10-11",
+  "implementation": {
+    "selectedOwnedReadReceiptsOnly": true,
+    "fullOriginalJournalHashBinding": true,
+    "omittedEffectsNeverExecuted": true,
+    "wholeTaskEquivalent": false,
+    "reviewReconstructsSelectionAndRevalidatesSources": true,
+    "oldWholeTaskSnapshotsCompatible": true
+  },
+  "verification": {
+    "unitTests": 34,
+    "testFiles": 2,
+    "typecheck": "passed",
+    "targetedLint": "passed",
+    "clonePersistenceAndOmittedReceiptInvalidation": "passed",
+    "cloneTenantIsolationAndAppendOnlyReview": "passed",
+    "browserWidths": [1366, 390, 320],
+    "browserCoverageDisclosureAndOverflow": "passed"
+  },
+  "naturalSnapshot": {
+    "eligible": true,
+    "selectedMailReadReceipts": 6,
+    "excludedOriginalReceipts": 41,
+    "originalTaskCount": 1,
+    "currentPrivateSourcesValidated": true,
+    "suiteHash": "1a58a19e37afc9df48d0d2a3ada83cc9e90a487715ae2841fbe0bdbf539a5ba4",
+    "bindingHash": "489ce035c0e34a30fb133bcad07f7b240166a667158ca7ebc7200f79f3dd0ff0",
+    "localReplayDirectory": "tmp/skill-replay/99ecf98e-2a1e-4428-8827-7302526a2cb3",
+    "replayStatus": "running",
+    "qualityAcceptance": "pending"
+  },
+  "production": {
+    "runtimeReloaded": false,
+    "automaticActivation": false,
+    "mainRetrievalSwitched": false,
+    "paidCalls": 0
+  }
+}
