@@ -5,7 +5,7 @@ export async function claimVisualReviewJob(onlyJobId?:string){
   for(const account of accounts){
     const result=await tenantTransaction(account.id,async client=>{
       const found=await client.query<{id:string}>(`select id from knowledge_upload_job where user_id=$1 and ($2::uuid is null or id=$2)
-        and status='extracted' and error_code='extraction-review-required' and lower(storage_key) like '%.pptx'
+        and status='extracted' and error_code='extraction-review-required' and (lower(storage_key) like '%.pptx' or lower(storage_key) like '%.pdf')
         and metrics->>'visualReviewKey' is null and visual_attempts<3
         and (visual_lease_until is null or visual_lease_until<now()) and (visual_retry_at is null or visual_retry_at<=now())
         order by updated_at for update skip locked limit 1`,[account.id,onlyJobId??null]);

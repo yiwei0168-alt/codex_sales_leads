@@ -6,7 +6,7 @@ import {assertResolvedInsideKnowledgeRoot,safeKnowledgeStorageKey} from './docum
 import type {Block} from './extracted-tree';
 const hash=(bytes:Uint8Array)=>createHash('sha256').update(bytes).digest('hex');
 const sha=z.string().regex(/^[a-f0-9]{64}$/);
-const candidate=z.object({blockId:z.string(),unitIndex:z.number().int().positive(),shapePath:z.array(z.number().int().positive()),shapeIdPath:z.array(z.number().int().positive()),
+const candidate=z.object({blockId:z.string(),unitIndex:z.number().int().positive(),unitType:z.literal('page').optional(),shapePath:z.array(z.number().int().positive()).optional(),shapeIdPath:z.array(z.number().int().positive()).optional(),
   status:z.literal('review-required'),reason:z.string(),imageFile:z.string().optional(),reviewImageSha256:sha.optional(),
   rotation:z.number().optional(),coordinateSpace:z.string().optional(),
   ocrLines:z.array(z.object({text:z.string(),confidence:z.number(),box:z.array(z.array(z.number()))})).optional(),
@@ -16,15 +16,19 @@ const candidate=z.object({blockId:z.string(),unitIndex:z.number().int().positive
 export type VisualCandidate=z.infer<typeof candidate>;
 export function validateVisualCandidates(bytes:Uint8Array,expected:{sourceSha256:string;artifactSha256:string;packageSha256:string},blocks:Block[]){
   if(hash(bytes)!==expected.packageSha256)throw new Error('Visual package hash mismatch');
-  const payload=z.object({schema:z.literal('pptx-visual-review-candidates-v1'),sourceSha256:sha,extractionArtifactSha256:sha,
+  const payload=z.object({schema:z.enum(['pptx-visual-review-candidates-v1','pdf-visual-review-candidates-v1']),sourceSha256:sha,extractionArtifactSha256:sha,
     externalCalls:z.literal(0),qualityAccepted:z.literal(false),extractionStatusChanged:z.literal(false),records:z.array(candidate)}).parse(JSON.parse(Buffer.from(bytes).toString('utf8')));
   if(payload.sourceSha256!==expected.sourceSha256||payload.extractionArtifactSha256!==expected.artifactSha256)throw new Error('Visual package identity mismatch');
-  const pending=blocks.filter(block=>block.unitType==='slide'&&block.quality==='pending-ocr'),byId=new Map(pending.map(block=>[block.id,block]));
+  const unitType=payload.schema==='pdf-visual-review-candidates-v1'?'page':'slide';
+  const pending=blocks.filter(block=>block.quality==='pending-ocr'),byId=new Map(pending.map(block=>[block.id,block]));
+  if(pending.some(block=>block.unitType!==unitType))throw new Error('Visual format mismatch');
   const seen=new Set<string>();
   for(const record of payload.records){
     const block=byId.get(record.blockId);
     if(!block||seen.has(record.blockId)||block.unitIndex!==record.unitIndex||JSON.stringify(block.shapePath)!==JSON.stringify(record.shapePath)
       ||JSON.stringify(block.shapeIdPath)!==JSON.stringify(record.shapeIdPath))throw new Error('Visual object identity mismatch');
+    if(unitType==='page'&&(record.unitType!=='page'||record.coordinateSpace!=='pdf-page-render'||!record.imageFile))throw new Error('Incomplete PDF preview');
+    if(unitType==='slide'&&(!record.shapePath?.length||!record.shapeIdPath?.length||record.unitType))throw new Error('Incomplete slide locator');
     if(record.imageFile&&(!record.reviewImageSha256||record.imageFile!==`${record.reviewImageSha256}.png`))throw new Error('Invalid visual image path');
     seen.add(record.blockId);
   }
