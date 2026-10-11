@@ -1,0 +1,125 @@
+{
+  "date": "2026-10-11",
+  "scope": "synthetic-development-only",
+  "tests": 72,
+  "typecheck": true,
+  "focusedLint": true,
+  "cloneWorkerCases": 3,
+  "localEvaluations": [
+    {
+      "directory": "tmp/natural-memory-correction/2472275d-cc02-4eb5-900b-d6853fee13fa",
+      "calls": 8,
+      "passed": 6
+    },
+    {
+      "directory": "tmp/natural-memory-correction/b6909fcb-7900-4bdb-809b-aa8f30e682e3",
+      "calls": 8,
+      "passed": 7
+    }
+  ],
+  "currentValidatorReplay": {
+    "newModelCalls": 0,
+    "sourceHashes": {
+      "src/lib/knowledge/natural-memory-correction.ts": "fc4c0dc4f66a822b806819d64688a8736ec18c9989e3f2a8ae20ca5508f6e68e",
+      "src/lib/knowledge/local-memory-extraction.ts": "5786b1aa9dd41971de71fe4dbd68278d236dba20c232a1737324cd2fafc01f42",
+      "src/lib/knowledge/memory-correction.ts": "dc514eb2c78c46cc5e8ebb30e97d7655b69515ac92a03f0acd94483ad6c2b3d5"
+    },
+    "passed": 8,
+    "total": 8,
+    "reviews": [
+      {
+        "id": "zh-preference",
+        "validated": {
+          "recognized": true,
+          "correction": {
+            "oldContent": "我偏好详细摘要",
+            "content": "我偏好简短摘要"
+          }
+        },
+        "passed": true
+      },
+      {
+        "id": "en-preference",
+        "validated": {
+          "recognized": true,
+          "correction": {
+            "oldContent": "I prefer long reports",
+            "content": "I prefer concise reports"
+          }
+        },
+        "passed": true
+      },
+      {
+        "id": "zh-fact",
+        "validated": {
+          "recognized": true,
+          "correction": {
+            "oldContent": "我们有三个分销商",
+            "content": "我们有两个分销商"
+          }
+        },
+        "passed": true
+      },
+      {
+        "id": "experience",
+        "validated": {
+          "recognized": true,
+          "correction": {
+            "oldContent": "comparing titles reduced missed specifications",
+            "content": "comparing original tables reduced missed specifications"
+          }
+        },
+        "passed": true
+      },
+      {
+        "id": "missing-old",
+        "validated": {
+          "recognized": true
+        },
+        "passed": true
+      },
+      {
+        "id": "quoted",
+        "validated": {
+          "recognized": true
+        },
+        "passed": true
+      },
+      {
+        "id": "permission",
+        "validated": {
+          "recognized": true
+        },
+        "passed": true
+      },
+      {
+        "id": "ordinary",
+        "validated": {
+          "recognized": false
+        },
+        "passed": true
+      }
+    ]
+  },
+  "boundaries": {
+    "model": "qwen3:8b",
+    "loopbackOnly": true,
+    "outputTokenCap": 1024,
+    "modelSelectedIds": false,
+    "uniqueFullSpanMatch": true,
+    "terminalPunctuationIgnored": true,
+    "accountOnlyAutoCorrection": true,
+    "scopedOrConflictingToReview": true,
+    "sourceRevalidated": true,
+    "oldVersionPreserved": true,
+    "cloudCalls": 0,
+    "productionWrites": 0,
+    "autoLearningEnabled": false
+  },
+  "limitations": [
+    "Real outputs are synthetic development cases, not independent acceptance or natural account task quality.",
+    "Current-validator replay reuses second-run outputs; it is not a third model run.",
+    "Natural scope changes, implicit missing old statements, policies, authority and business-time changes require review.",
+    "This code has not been reloaded into running services."
+  ]
+}

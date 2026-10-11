@@ -4,6 +4,7 @@ import type {PoolClient} from 'pg';
 import {tenantTransaction} from '@/lib/rag/db';
 import {observeMemoryInTransaction,type MemoryObservationInput} from './temporal-memory';
 import {parseMemoryCorrectionCommand} from './memory-correction-command';
+import {validateNaturalCorrection,type NaturalCorrectionProposal} from './natural-memory-correction';
 
 const businessTimeSchema=z.object({validFrom:z.iso.datetime({offset:true}).nullable(),validUntil:z.iso.datetime({offset:true}).nullable()}).strict()
   .refine(p=>!p.validFrom||!p.validUntil||Date.parse(p.validUntil)>Date.parse(p.validFrom),{message:'Invalid business validity interval'});
@@ -22,7 +23,7 @@ export async function correctMemory(userId:string,input:z.input<typeof memoryCor
   return tenantTransaction(userId,client=>correctInTransaction(client,userId,p));
 }
 
-type MessageSource={runId:string;messageId:string;messageSha256:string;sourceQuote:string};
+type MessageSource={runId:string;messageId:string;messageSha256:string;sourceQuote:string;recognizer?:string};
 async function correctInTransaction(client:PoolClient,userId:string,p:z.output<typeof memoryCorrectionSchema>,source?:MessageSource){
     const target=(await client.query<Target>(`select id,kind,content,memory_key,market_code,company_id,
       market_codes,company_ids,valid_from,valid_until,confidence,invalidates_id,source_receipt
@@ -61,13 +62,14 @@ async function correctInTransaction(client:PoolClient,userId:string,p:z.output<t
       correctsId:p.id,idempotencyKey:key,
       sourceReceipt:{type:source?'user-message-correction':'user-correction',targetId:p.id,sourceQuote:p.content,reason:p.reason,
         ...(p.businessTime?{businessTimeCorrection:{explicit:true,before:{validFrom:target.valid_from,validUntil:target.valid_until},after:{validFrom,validUntil}}}:{}),
-        ...(source?{runId:source.runId,messageId:source.messageId,messageSha256:source.messageSha256,commandQuote:source.sourceQuote}:{}),
+        ...(source?{runId:source.runId,messageId:source.messageId,messageSha256:source.messageSha256,commandQuote:source.sourceQuote,
+          ...(source.recognizer?{recognizer:source.recognizer}:{})}:{}),
         usage:'unverified-internal-only',successVerified:false,observationBasis:'user-correction'},
     });
 }
 
 /** Uses only the saved authenticated user message; supplied tool/model text cannot select a target. */
-export async function processMessageMemoryCorrection(userId:string,runId:string,lease:string){
+export async function processMessageMemoryCorrection(userId:string,runId:string,lease:string,proposal?:NaturalCorrectionProposal){
   return tenantTransaction(userId,async client=>{
     const source=(await client.query<{message_id:string;content:string;created_at:string}>(`select m.id as message_id,m.content,m.created_at::text
       from agent_memory_extraction_job j join agent_run r on r.id=j.run_id and r.user_id=j.owner_id
@@ -79,7 +81,7 @@ export async function processMessageMemoryCorrection(userId:string,runId:string,
         and j.updated_at>now()-interval '5 minutes' and r.status='completed' and r.execution_kind='main-agent'
       for update of j`,[userId,runId,lease])).rows[0];
     if(!source)return {owned:false,handled:false};
-    const parsed=parseMemoryCorrectionCommand(source.content);
+    const parsed=proposal?validateNaturalCorrection(source.content,proposal):parseMemoryCorrectionCommand(source.content);
     if(!parsed.recognized)return {owned:true,handled:false};
     const key=`message-correction:${source.message_id}`;
     const prior=await client.query('select id from agent_memory_observation where owner_id=$1 and idempotency_key=$2',[userId,key]);
@@ -90,18 +92,29 @@ export async function processMessageMemoryCorrection(userId:string,runId:string,
         const targets=await client.query<{id:string;auto_eligible:boolean}>(`select m.id,
           (m.market_code is null and m.company_id is null and cardinality(m.market_codes)=0 and cardinality(m.company_ids)=0
             and m.source_receipt->>'type' in ('local-qwen3-extraction','user-correction','user-message-correction')
-            and (m.valid_from is null or m.valid_from<=now()) and (m.valid_until is null or m.valid_until>now())) as auto_eligible
+            and (m.valid_from is null or m.valid_from<=now()) and (m.valid_until is null or m.valid_until>now())
+            and (not $4::boolean or m.source_receipt->>'type'<>'local-qwen3-extraction' or exists(
+              select 1 from assistant_message original join agent_run original_run
+                on original_run.id::text=m.source_receipt->>'runId' and original_run.user_id=m.owner_id
+              where original.id::text=m.source_receipt->>'messageId' and original.user_id=m.owner_id and original.role='user'
+                and original.conversation_id=original_run.conversation_id and original.metadata->>'runId'=original_run.id::text
+                and original_run.status='completed' and length(coalesce(m.source_receipt->>'sourceQuote',''))>=3
+                and position(m.source_receipt->>'sourceQuote' in original.content)>0))) as auto_eligible
           from agent_memory_observation m where m.owner_id=$1
-          and (m.content=$2 or m.source_receipt->>'sourceQuote'=$2) and m.recorded_at<=$3::timestamptz
+          and (m.content=$2 or m.source_receipt->>'sourceQuote'=$2 or ($4::boolean and (
+            regexp_replace(btrim(m.content),'[。.!！]+$','')=regexp_replace(btrim($2::text),'[。.!！]+$','')
+            or regexp_replace(btrim(m.source_receipt->>'sourceQuote'),'[。.!！]+$','')=regexp_replace(btrim($2::text),'[。.!！]+$',''))))
+          and m.recorded_at<=$3::timestamptz
           and m.invalidates_id is null
           and not exists(select 1 from agent_memory_observation r where r.owner_id=$1 and (r.corrects_id=m.id or r.invalidates_id=m.id))
-          order by m.id limit 2`,[userId,parsed.correction.oldContent,source.created_at]);
+          order by m.id limit 2`,[userId,parsed.correction.oldContent,source.created_at,Boolean(proposal)]);
         reason=targets.rows.length===0?'没有找到可自动更正的当前账户级记忆':'旧内容匹配多条记忆';
-        if(targets.rows.length===1&&!targets.rows[0].auto_eligible)reason='目标属于原有记忆、限定范围或非当前业务时间，需在记忆中心核对';
+        if(targets.rows.length===1&&!targets.rows[0].auto_eligible)reason='目标来源不能复核，或属于原有记忆、限定范围及非当前业务时间，需在记忆中心核对';
         if(targets.rows.length===1&&targets.rows[0].auto_eligible){
           try{
             await correctInTransaction(client,userId,{id:targets.rows[0].id,content:parsed.correction.content,reason:'用户在对话中明确更正'},
-              {runId,messageId:source.message_id,messageSha256:createHash('sha256').update(source.content).digest('hex'),sourceQuote:source.content});
+              {runId,messageId:source.message_id,messageSha256:createHash('sha256').update(source.content).digest('hex'),sourceQuote:source.content,
+                ...(proposal?{recognizer:'local-qwen3-exact-spans-v1'}:{})});
             corrected=true;
           }catch(error){
             if(!(error instanceof Error)||!['Memory version changed','Memory conflict requires review','Memory correction is unchanged'].includes(error.message))throw error;
@@ -112,7 +125,8 @@ export async function processMessageMemoryCorrection(userId:string,runId:string,
       if(!corrected)await observeMemoryInTransaction(client,userId,{kind:'experience',
         content:`收到记忆更正请求，但未自动替换：${reason}。请到记忆中心核对原记录并更正。`,idempotencyKey:key,
         sourceReceipt:{type:'unresolved-memory-correction',runId,messageId:source.message_id,
-          messageSha256:createHash('sha256').update(source.content).digest('hex'),reason,usage:'review-notice-only',successVerified:false}});
+          messageSha256:createHash('sha256').update(source.content).digest('hex'),reason,usage:'review-notice-only',successVerified:false,
+          ...(proposal?{recognizer:'local-qwen3-exact-spans-v1',proposal:proposal.output}: {})}});
     }
     await client.query(`update agent_memory_extraction_job set status='ready',lease_token=null,error_code=null,updated_at=now()
       where owner_id=$1 and run_id=$2 and status='processing' and lease_token=$3`,[userId,runId,lease]);

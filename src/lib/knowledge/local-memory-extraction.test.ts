@@ -60,9 +60,9 @@ it("requeues invalid output without writing memory",async()=>{
 it('does not contact the local model until an eligible job has been claimed',async()=>{
   const fetcher=vi.fn();
   mock.query.mockResolvedValueOnce([{...job,next_attempt_at:'2999-01-01'}]);
-  expect(await processLocalMemoryExtraction('user-1','run-1',fetcher)).toBe('queued');
+  expect(await processLocalMemoryExtraction('user-1','run-1',fetcher as typeof fetch)).toBe('queued');
   mock.query.mockResolvedValueOnce([job]).mockResolvedValueOnce([]);
-  expect(await processLocalMemoryExtraction('user-1','run-1',fetcher)).toBe('busy');
+  expect(await processLocalMemoryExtraction('user-1','run-1',fetcher as typeof fetch)).toBe('busy');
   expect(fetcher).not.toHaveBeenCalled();
 });
 it('releases an expired claim with backoff when the local model is offline',async()=>{
@@ -70,7 +70,7 @@ it('releases an expired claim with backoff when the local model is offline',asyn
   const fetcher=vi.fn(async(_url:unknown,options?:RequestInit)=>{
     expect(options?.redirect).toBe('error');throw new Error('offline');
   });
-  expect(await processLocalMemoryExtraction('user-1','run-1',fetcher)).toBe('queued');
+  expect(await processLocalMemoryExtraction('user-1','run-1',fetcher as typeof fetch)).toBe('queued');
   expect(mock.query.mock.calls[2][2]).toEqual(['user-1','run-1',expect.any(String),'local_model_unavailable',600]);
 });
 it('does not overwrite a new lease after a failed model request',async()=>{
@@ -89,20 +89,35 @@ it('requeues a failed memory transaction rather than leaving its lease processin
 it('learns server receipts before checking model readiness',async()=>{
   mock.query.mockResolvedValueOnce([job]).mockResolvedValueOnce([{run_id:'run-1'}]).mockResolvedValueOnce([{run_id:'run-1'}]);
   const fetcher=vi.fn(async()=>{expect(mock.receipts).toHaveBeenCalledWith('user-1','run-1',expect.any(String));return response({models:[]});});
-  expect(await processLocalMemoryExtraction('user-1','run-1',fetcher)).toBe('queued');
+  expect(await processLocalMemoryExtraction('user-1','run-1',fetcher as typeof fetch)).toBe('queued');
 });
 it('handles an explicit correction without contacting a model',async()=>{
   mock.query.mockResolvedValueOnce([job]).mockResolvedValueOnce([{run_id:'run-1'}]);
   mock.correction.mockResolvedValueOnce({owned:true,handled:true});const fetcher=vi.fn();
-  expect(await processLocalMemoryExtraction('user-1','run-1',fetcher)).toBe('ready');
+  expect(await processLocalMemoryExtraction('user-1','run-1',fetcher as typeof fetch)).toBe('ready');
   expect(mock.correction).toHaveBeenCalledWith('user-1','run-1',expect.any(String));expect(fetcher).not.toHaveBeenCalled();
+});
+it('routes a natural correction to source revalidation rather than learning the old phrase as a new preference',async()=>{
+  const text='I previously said I prefer long reports. That was wrong. I prefer concise reports.';
+  mock.query.mockResolvedValueOnce([{...job,message_content:text}]).mockResolvedValueOnce([{run_id:'run-1'}]);
+  mock.correction.mockResolvedValueOnce({owned:true,handled:false}).mockResolvedValueOnce({owned:true,handled:true});
+  const fetcher=vi.fn(async(url:URL)=>url.pathname==='/api/tags'?response({models:[model]}):response({message:{content:JSON.stringify({intent:'correction',oldContent:'I prefer long reports',content:'I prefer concise reports'})}}));
+  expect(await processLocalMemoryExtraction('user-1','run-1',fetcher as typeof fetch)).toBe('ready');
+  expect(mock.correction.mock.calls[1][3]).toMatchObject({messageSha256:expect.any(String),output:{oldContent:'I prefer long reports'}});
+  expect(mock.observe).not.toHaveBeenCalled();expect(fetcher).toHaveBeenCalledTimes(2);
+});
+it('does not store a model correction after the extraction lease is lost',async()=>{
+  mock.query.mockResolvedValueOnce([{...job,message_content:'Actually I prefer concise reports instead of I prefer long reports.'}]).mockResolvedValueOnce([{run_id:'run-1'}]);
+  mock.correction.mockResolvedValueOnce({owned:true,handled:false}).mockResolvedValueOnce({owned:false,handled:false});
+  const fetcher=vi.fn(async(url:URL)=>url.pathname==='/api/tags'?response({models:[model]}):response({message:{content:JSON.stringify({intent:'correction',oldContent:'I prefer long reports',content:'I prefer concise reports'})}}));
+  expect(await processLocalMemoryExtraction('user-1','run-1',fetcher as typeof fetch)).toBe('busy');expect(mock.observe).not.toHaveBeenCalled();
 });
 it('does not start a model call when receipt learning loses ownership or fails',async()=>{
   const fetcher=vi.fn();
   mock.query.mockResolvedValueOnce([job]).mockResolvedValueOnce([{run_id:'run-1'}]);mock.receipts.mockResolvedValueOnce({owned:false});
-  expect(await processLocalMemoryExtraction('user-1','run-1',fetcher)).toBe('busy');
+  expect(await processLocalMemoryExtraction('user-1','run-1',fetcher as typeof fetch)).toBe('busy');
   mock.query.mockResolvedValueOnce([job]).mockResolvedValueOnce([{run_id:'run-1'}]).mockResolvedValueOnce([{run_id:'run-1'}]);mock.receipts.mockRejectedValueOnce(new Error('storage'));
-  expect(await processLocalMemoryExtraction('user-1','run-1',fetcher)).toBe('queued');
+  expect(await processLocalMemoryExtraction('user-1','run-1',fetcher as typeof fetch)).toBe('queued');
   expect(mock.query.mock.calls.at(-1)?.[2]).toContain('receipt_storage_error');expect(fetcher).not.toHaveBeenCalled();
 });
 

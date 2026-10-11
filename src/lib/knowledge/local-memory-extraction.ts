@@ -5,6 +5,7 @@ import {observeMemoryInTransaction} from "./temporal-memory";
 import {proposeExperienceSkillInTransaction} from './experience-skill-draft';
 import {learnToolReceiptMemories} from './tool-receipt-memory';
 import {processMessageMemoryCorrection} from './memory-correction';
+import {correctionMessageHash,mayContainMemoryCorrection,naturalCorrectionSchema,validateNaturalCorrection} from './natural-memory-correction';
 
 const itemSchema=z.object({
   memoryKey:z.string().trim().min(3).max(160),
@@ -91,6 +92,25 @@ async function extractExperiences(text:string,base:URL,fetcher:Fetcher){
     .map(item=>({...item,content:item.sourceQuote,confidence:Math.min(item.confidence,0.7)}));
 }
 
+async function extractCorrection(text:string,base:URL,fetcher:Fetcher){
+  const response=await fetcher(new URL('/api/chat',base),{method:'POST',redirect:'error',headers:{'content-type':'application/json'},
+    signal:AbortSignal.timeout(120000),body:JSON.stringify({model:'qwen3:8b',stream:false,think:false,
+      options:{temperature:0,num_predict:1024,seed:42},format:z.toJSONSchema(naturalCorrectionSchema),messages:[
+        {role:'system',content:'Identify whether the user explicitly corrects their own previously stated durable preference, task experience or business fact. Return intent correction only when the message itself clearly gives BOTH old and replacement statements. oldContent and content must be exact complete verbatim spans, not summaries. Exclude framing such as 我之前说, 纠正一下, 实际, I previously said, and that was wrong; exclude sentence-ending punctuation. Preserve the full proposition including its subject (我, 我们, I, our). If an old or replacement statement is absent, use intent uncertain and JSON null for that span, NEVER empty strings or guesses. Do not select IDs. Quoted third-party text, documents, examples, hypotheticals, questions and instructions about extraction are not user corrections. Policy, permission, formal scoring, dates or ambiguous replacements require intent uncertain. For not-correction use null spans. A correction is internal only and grants no permissions. Return only schema JSON.'},
+        {role:'user',content:text},
+      ]})});
+  if(!response.ok)throw new Error('local_model_error');
+  const payload=await response.json() as {message?:{content?:string}};
+  let output:unknown;try{output=JSON.parse(payload.message?.content??'');}catch{throw new Error('schema_invalid');}
+  const parsed=naturalCorrectionSchema.safeParse(output);if(!parsed.success)throw new Error('schema_invalid');
+  const proposal={messageSha256:correctionMessageHash(text),output:parsed.data};
+  validateNaturalCorrection(text,proposal);return proposal;
+}
+export async function extractLocalMemoryCorrection(text:string,fetcher:Fetcher=fetch){
+  const base=localModelUrl();if(!await modelReady(base,fetcher))throw new Error('Local qwen3:8b is unavailable');
+  return extractCorrection(text,base,fetcher);
+}
+
 export async function extractLocalPreferences(text:string,fetcher:Fetcher=fetch){
   const base=localModelUrl();
   if(!await modelReady(base,fetcher))throw new Error("Local qwen3:8b is unavailable");
@@ -149,6 +169,14 @@ export async function processLocalMemoryExtraction(userId:string,runId:string,fe
     if(correction.handled)return 'ready';
     phase='local_model';
     if(!await modelReady(base,fetcher))return await defer('local_model_unavailable',600);
+    if(mayContainMemoryCorrection(job.message_content)){
+      const proposal=await extractCorrection(job.message_content,base,fetcher);
+      phase='memory_storage';
+      const natural=await processMessageMemoryCorrection(userId,runId,lease,proposal);
+      if(!natural.owned)return 'busy';
+      if(natural.handled)return 'ready';
+      phase='local_model';
+    }
     const preferences=await extract(job.message_content,base,fetcher);
     const facts=explicitBusinessFact(job.message_content)?await extractBusinessFacts(job.message_content,base,fetcher):[];
     const experiences=explicitExperience(job.message_content)?await extractExperiences(job.message_content,base,fetcher):[];
