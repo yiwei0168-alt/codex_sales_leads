@@ -20,8 +20,7 @@ export function prepareRecordedTaskChain(turns:Turn[],task:{reply:string;instruc
   const reply=transportMessages([output.data.value.message as ModelMessage])[0];
   return {id:turn.id,step:Number(key[1]),revision:Number(key[2]),request,reply};
  }).sort((a,b)=>a.step-b.step);
- const usedInstructions=new Map<string,number>();
- const allowed=new Map<string,number>();for(const instruction of task.instructions)allowed.set(instruction.content,(allowed.get(instruction.content)??0)+1);
+ let usedInstructions=0;
  let prior:typeof prepared[number]|undefined;
  for(const turn of prepared){
   if(turn.step!==(prior?prior.step+1:0))throw new Error('Recorded model turn gap or duplicate');
@@ -39,9 +38,8 @@ export function prepareRecordedTaskChain(turns:Turn[],task:{reply:string;instruc
      if(!pending.delete(message.tool_call_id??''))throw new Error('Recorded model tool result unpaired');
     }else if(message.role==='user'){
      if(pending.size||turn.revision===prior.revision)throw new Error('Recorded instruction order invalid');
-     const content=message.content??'',count=(usedInstructions.get(content)??0)+1;
-     if(count>(allowed.get(content)??0))throw new Error('Recorded instruction lacks task provenance');
-     usedInstructions.set(content,count);
+     if(message.content!==task.instructions[usedInstructions]?.content)throw new Error('Recorded instruction lacks ordered task provenance');
+     usedInstructions++;
     }else if(message.role==='system'&&message.content==='Account preferences or policies changed. Replan from the current policy records before further actions.'&&turn.revision>prior.revision){
      if(pending.size)throw new Error('Recorded policy boundary order invalid');
     }else throw new Error('Recorded model history contains an unbound message');

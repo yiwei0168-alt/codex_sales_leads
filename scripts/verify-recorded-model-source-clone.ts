@@ -85,13 +85,22 @@ try{
  }
  const chain=await loadRecordedTaskChain(context,{runId});assert.equal(chain.turns.length,3);assert.equal(chain.serverTaskJournalVerified,true);assert.equal(chain.wholeTaskProvenanceVerified,false);
  const graphAudit=await auditRecordedGraphExecution(context,{runId});assert.equal(graphAudit.recordedDecisions,3);assert.equal(graphAudit.recordedTools,2);assert.equal(graphAudit.modelCalls,0);
+ const clarification='Synthetic clarification after recorded reads';
+ await pool.query('update agent_run set instructions=$2 where id=$1',[runId,JSON.stringify([{id:randomUUID(),content:clarification}])]);
+ const lastAttempts=(await pool.query("select id,input,output,call_key from agent_tool_call where run_id=$1 and call_key like 'mode-model:2:0:%'",[runId])).rows;
+ for(const row of lastAttempts){
+  const revisedInput={...row.input,messages:[...row.input.messages,{role:'user',content:clarification}]};
+  const revisedOutput=row.input.index===1?{...row.output,data:{value:{...row.output.data.value,requestManifest:modelRequestManifest({...body,messages:transportMessages(revisedInput.messages)},{model:body.model,provider:'fixture',id:'synthetic-revision'})}}}:row.output;
+  await pool.query('update agent_tool_call set input=$2,input_hash=$3,output=$4,call_key=$5 where id=$1',[row.id,JSON.stringify(revisedInput),digest(revisedInput),JSON.stringify(revisedOutput),row.call_key.replace('mode-model:2:0:','mode-model:2:1:')]);
+ }
+ const revisedAudit=await auditRecordedGraphExecution(context,{runId});assert.equal(revisedAudit.recordedBoundaryChanges,1);assert.equal(revisedAudit.recordedTools,2);
  await pool.query("update assistant_message set content='Changed original' where user_id=$1",[owner]);
  await assert.rejects(loadRecordedTaskChain(context,{runId}),/original user message changed/);
  await pool.query("update assistant_message set content='Synthetic original task' where user_id=$1",[owner]);
  await pool.query("update agent_tool_call set output=jsonb_set(output,'{data,value,message,content}','\"Altered historical reply\"'::jsonb) where id=$1",[earlierIds[0]]);
  await assert.rejects(loadRecordedTaskChain(context,{runId}),/history diverged/);
  await assert.rejects(loadRecordedTaskChain({userId:other},{runId}),/unavailable/);
- console.log(JSON.stringify({cloneOnly:true,threeTurnChainBound:true,productionGraphReceiptReplay:true,initialSourceBound:true,changedUserMessageDenied:true,missingFallbackPredecessorDenied:true,fallbackChainBound:true,alteredEarlierReplyDenied:true,localEvidenceGuardsPassed:true,currentToolContractsChecked:true,readReceiptBound:true,substitutedReceiptDenied:true,revokedDecisionMemoryDenied:true,exactRequest:true,tenantIsolation:true,wrongRunDenied:true,changedInstructionsDenied:true,cancelledRunDenied:true,inputHashTamperingDenied:true,modelCalls:0,sourcePermissionsRevalidated:false,executionAuthorized:false,qualityAccepted:false}));
+ console.log(JSON.stringify({cloneOnly:true,threeTurnChainBound:true,productionGraphReceiptReplay:true,instructionBoundaryReplay:true,initialSourceBound:true,changedUserMessageDenied:true,missingFallbackPredecessorDenied:true,fallbackChainBound:true,alteredEarlierReplyDenied:true,localEvidenceGuardsPassed:true,currentToolContractsChecked:true,readReceiptBound:true,substitutedReceiptDenied:true,revokedDecisionMemoryDenied:true,exactRequest:true,tenantIsolation:true,wrongRunDenied:true,changedInstructionsDenied:true,cancelledRunDenied:true,inputHashTamperingDenied:true,modelCalls:0,sourcePermissionsRevalidated:false,executionAuthorized:false,qualityAccepted:false}));
 }finally{
  await pool.query('delete from agent_memory_version where memory_id=$1',[memoryId]);
  await pool.query('delete from agent_memory where id=$1 and owner_id=$2',[memoryId,owner]);

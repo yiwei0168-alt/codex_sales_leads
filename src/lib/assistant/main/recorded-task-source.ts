@@ -1,4 +1,5 @@
 import {z} from 'zod';
+import {prepareRecordedModeRequest} from './model-request-replay';
 import {bindRecordedInitialSource} from './recorded-initial-source';
 import {assertRecordedFallbackChain} from './recorded-fallback-chain';
 import {tenantTransaction} from '@/lib/rag/db';
@@ -22,16 +23,15 @@ export async function loadRecordedTaskChain(context:{userId:string},input:{runId
  const saved=await snapshot();
  const fallbackBinding=assertRecordedFallbackChain(saved.calls);
  const successful=saved.calls.filter(call=>z.object({status:z.string()}).parse(call.output).status==='success');
+ const first=successful.filter(call=>/^mode-model:0:/.test(call.call_key));
+ if(first.length!==1)throw new Error('Recorded initial model decision missing or duplicated');
+ const initialBinding=await bindRecordedInitialSource({userId,runId},prepareRecordedModeRequest(first[0]).body.messages);
  const chain=prepareRecordedTaskChain(successful,{
   reply:z.object({reply:z.string()}).parse(saved.task.result).reply,
-  instructions:z.array(z.object({content:z.string()})).parse(saved.task.instructions),
+  instructions:z.array(z.object({content:z.string()})).parse(saved.task.instructions).slice(initialBinding.initialInstructionCount),
  });
  const checked=[];
  for(const turn of chain.turns)checked.push(await validateRecordedRequestEvidence({userId},{runId,callId:turn.id}));
- const initialBinding=await bindRecordedInitialSource({userId,runId},chain.turns[0].request.body.messages);
- // Instructions already present in the first decision must not be accepted a second time later.
- prepareRecordedTaskChain(successful,{reply:z.object({reply:z.string()}).parse(saved.task.result).reply,
-  instructions:z.array(z.object({content:z.string()})).parse(saved.task.instructions).slice(initialBinding.initialInstructionCount)});
  const sourceHash=digest(saved);
  if(digest(await snapshot())!==sourceHash)throw new Error('Recorded task changed during preparation');
  if((await bindRecordedInitialSource({userId,runId},chain.turns[0].request.body.messages)).initialSourceHash!==initialBinding.initialSourceHash)throw new Error('Recorded initial sources changed during preparation');

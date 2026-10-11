@@ -45,3 +45,9 @@ it('allows authoritative appended instructions only after a revision boundary',(
  expect(()=>prepareRecordedTaskChain(turns,task)).toThrow('provenance');
  expect(()=>prepareRecordedTaskChain([f.turns[0],turn(1,messages,f.final)],task)).toThrow('order');
 });
+it('rejects reordered authoritative instructions',()=>{
+ const f=fixture(),messages=[...f.initial,f.reply,f.result,{role:'user' as const,content:'Second'},{role:'user' as const,content:'First'}];
+ expect(()=>prepareRecordedTaskChain([f.turns[0],turn(1,messages,f.final,1)],{
+  ...task,instructions:[{content:'First'},{content:'Second'}],
+ })).toThrow('ordered task provenance');
+});

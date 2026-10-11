@@ -1,0 +1,14 @@
+{
+  "scope": "G08 safe-boundary instruction replay",
+  "tests": 13,
+  "typecheck": "passed",
+  "lint": "passed",
+  "cloneBoundaryChanges": 1,
+  "cloneRecordedTools": 2,
+  "modelCalls": 0,
+  "businessToolExecutions": 0,
+  "fixturesRemoved": true,
+  "pendingActionCancellationSupported": false,
+  "qualityAccepted": false,
+  "liveShadow": false
+}
