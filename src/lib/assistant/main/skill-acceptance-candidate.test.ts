@@ -34,3 +34,18 @@ it('rejects a judgment or artifact change during validation',async()=>{
 it('does not bypass baseline verification',async()=>{
  mocks.baseline.mockRejectedValue(new Error('baseline failed'));await expect(run()).rejects.toThrow('baseline failed');expect(mocks.audit).not.toHaveBeenCalled();
 });
+
+it.each(['revoked','expired','missing','changed'])('rejects a %s freeze before graph work',async state=>{
+ mocks.read.mockResolvedValue({...fixture(),freezeStatus:{state,freezeId:id}});
+ await expect(run()).rejects.toThrow('freeze no longer active');expect(mocks.audit).not.toHaveBeenCalled();
+});
+it('rejects a candidate journal from a different freeze',async()=>{
+ mocks.read.mockResolvedValue({...fixture(),freezeStatus:{state:'active',freezeId:id}});
+ mocks.audit.mockResolvedValue({...audit(),projection:{...audit().projection,freezeId:other}});
+ await expect(run()).rejects.toThrow('freeze binding mismatch');
+});
+it('rejects revocation during validation',async()=>{
+ mocks.read.mockResolvedValueOnce({...fixture(),freezeStatus:{state:'active',freezeId:id}}).mockResolvedValueOnce({...fixture(),freezeStatus:{state:'revoked',freezeId:id}});
+ mocks.audit.mockResolvedValue({...audit(),projection:{...audit().projection,freezeId:id}});
+ await expect(run()).rejects.toThrow('review changed');
+});

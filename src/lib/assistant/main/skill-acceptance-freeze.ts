@@ -1,5 +1,6 @@
 import {z} from 'zod';
-import {tenantQuery,tenantTransaction} from '@/lib/rag/db';
+import type {PoolClient} from 'pg';
+import {tenantTransaction} from '@/lib/rag/db';
 import {digest} from './contracts';
 import {skillAcceptancePlanSchema} from './skill-acceptance-policy';
 import {assertSkillCollector,type SkillCollectorTransaction} from './skill-model-journal';
@@ -18,16 +19,26 @@ export async function freezeSkillAcceptancePlan(context:{userId:string},input:un
   return {freezeId:row.id,plan,planHash:digest(plan),freezeRecorded:true,runtimeIdentityVerified:false,automaticActivation:false};
  });
 }
-export async function requireSkillAcceptanceFreeze(context:{userId:string},freezeId:string,expectedPlan:unknown){
- assertLocalAnalysisBoundary();z.uuid().parse(freezeId);const plan=skillAcceptancePlanSchema.parse(expectedPlan);
- const row=(await tenantQuery<{owner_id:string;skill_id:string;version:number;plan_draft:unknown;draft_hash:string;frozen_at:Date;checked_at:Date;revoked:boolean}>(context.userId,
+/** Point-in-time status for history/review. Database failures propagate. */
+export async function inspectSkillAcceptanceFreeze(client:PoolClient,userId:string,freezeId:string,expectedPlan:unknown){
+ z.uuid().parse(freezeId);const plan=skillAcceptancePlanSchema.parse(expectedPlan);
+ const row=(await client.query<{owner_id:string;skill_id:string;version:number;plan_draft:unknown;draft_hash:string;frozen_at:Date;checked_at:Date;revoked:boolean}>(
   `select f.*,clock_timestamp() as checked_at,exists(select 1 from agent_skill_acceptance_freeze_revocation r where r.freeze_id=f.id and r.owner_id=f.owner_id) as revoked
-   from agent_skill_acceptance_freeze f where f.id=$1 and f.owner_id=$2`,[freezeId,context.userId]))[0];
- if(!row||row.revoked||digest(row.plan_draft)!==row.draft_hash||row.owner_id!==plan.pin.ownerId||row.skill_id!==plan.pin.skillId||row.version!==plan.pin.version)
-  throw new Error('Acceptance freeze unavailable or revoked');
+   from agent_skill_acceptance_freeze f where f.id=$1 and f.owner_id=$2`,[freezeId,userId])).rows[0];
+ if(!row)return 'missing' as const;
+ if(row.revoked)return 'revoked' as const;
+ if(digest(row.plan_draft)!==row.draft_hash||row.owner_id!==plan.pin.ownerId||row.skill_id!==plan.pin.skillId||row.version!==plan.pin.version)return 'changed' as const;
  const saved=skillAcceptancePlanSchema.parse({...draftSchema.parse(row.plan_draft),frozenAt:row.frozen_at.toISOString()});
- if(digest(saved)!==digest(plan)||Date.parse(saved.expiresAt)<=row.checked_at.getTime())throw new Error('Acceptance freeze changed or expired');
- return {freezeId,planHash:digest(saved),frozenAt:saved.frozenAt,expiresAt:saved.expiresAt};
+ if(digest(saved)!==digest(plan))return 'changed' as const;
+ if(Date.parse(saved.expiresAt)<=row.checked_at.getTime())return 'expired' as const;
+ return 'active' as const;
+}
+export async function requireSkillAcceptanceFreeze(context:{userId:string},freezeId:string,expectedPlan:unknown){
+ assertLocalAnalysisBoundary();const plan=skillAcceptancePlanSchema.parse(expectedPlan);
+ const state=await tenantTransaction(context.userId,client=>inspectSkillAcceptanceFreeze(client,context.userId,freezeId,plan));
+ if(state==='missing'||state==='revoked')throw new Error('Acceptance freeze unavailable or revoked');
+ if(state!=='active')throw new Error('Acceptance freeze changed or expired');
+ return {freezeId,planHash:digest(plan),frozenAt:plan.frozenAt,expiresAt:plan.expiresAt};
 }
 /** Append revocation; re-enabling requires a new freeze record. Internal only. */
 export async function revokeSkillAcceptanceFreeze(context:{userId:string},input:{freezeId:string;reason:string}){

@@ -8,8 +8,8 @@ import type {auditDurableSkillCandidate} from '../../src/lib/assistant/main/skil
 import {collectHistoricalSkillAcceptance} from '../../src/lib/assistant/main/skill-acceptance-collector';
 import type {SkillCollectorTransaction} from '../../src/lib/assistant/main/skill-model-journal';
 import {prepareSkillExecutionIdentity} from '../../src/lib/assistant/main/skill-runtime-identity';
-import {freezeSkillAcceptancePlan} from '../../src/lib/assistant/main/skill-acceptance-freeze';
-import {readSkillAcceptanceEvidence} from '../../src/lib/assistant/main/skill-acceptance-store';
+import {freezeSkillAcceptancePlan,revokeSkillAcceptanceFreeze} from '../../src/lib/assistant/main/skill-acceptance-freeze';
+import {readSkillAcceptanceEvidence,appendSkillAcceptanceJudgment} from '../../src/lib/assistant/main/skill-acceptance-store';
 
 export async function prepareFrozenCandidateFixture(pool:Pool,owner:string,runId:string,skillId:string,transaction:SkillCollectorTransaction){
  assert(/^ma11_replay_[a-f0-9]{12}$/.test((await pool.query('select current_database() as name')).rows[0].name));
@@ -53,9 +53,20 @@ export async function verifyCandidateAcceptanceFixture(pool:Pool,owner:string,ru
   assert.equal((stored.artifact.rawReceipts.collector as {sourceIdentityChecked:boolean}).sourceIdentityChecked,true);
   assert(Date.parse(c.capturedAt)>=Date.parse(plan.frozenAt));
   assert.equal(collected.automaticActivation,false);
-  return {storedCandidateAndBaselineBound:true,restrictedCollectorPublishedDerivedObservation:true,serverTimesPreserved:true,freezeBeforeExecutionVerified:true,sourceIdentityChecked:true,runtimeAttestation:false,perDecisionRoutesBound:true,mixedCandidateRoutes:new Set(c.selectedModels.map(row=>row.model)).size>1,syntheticBundle:true,automaticActivation:false};
+  assert.equal(stored.freezeStatus.state,'active');
+  const review={bundleId:collected.bundleId,artifactHash:stored.artifactHash,expectedRevision:0,judgment:{caseId:'replay',observationHash:digest(stored.artifact.observations[0]),revoked:false,baseline:{answer:false,citation:false,permission:true,injection:true},candidate:{answer:false,citation:false,permission:true,injection:true},rationale:'Synthetic lifecycle test; no quality approval.'}};
+  const reviewer={userId:owner,reviewerKind:'assistant-development' as const};
+  await appendSkillAcceptanceJudgment(reviewer,review);
+  await revokeSkillAcceptanceFreeze({userId:owner},{freezeId,reason:'Synthetic review invalidation'});
+  const historical=await readSkillAcceptanceEvidence({userId:owner},collected.bundleId);
+  assert.equal(historical.freezeStatus.state,'revoked');assert.equal(historical.judgments.length,1);
+  await assert.rejects(validateStoredSkillAcceptanceCandidate({userId:owner},{bundleId:collected.bundleId,caseId:'replay'}),/freeze no longer active/);
+  await assert.rejects(appendSkillAcceptanceJudgment(reviewer,{...review,expectedRevision:1}),/freeze no longer active/);
+  const revoked=await appendSkillAcceptanceJudgment(reviewer,{...review,expectedRevision:1,judgment:{...review.judgment,revoked:true}});assert.equal(revoked.revision,2);
+
+  return {revokedHistoryReadable:true,revokedCandidateValidationRejected:true,revokedFreezeNewReviewRejected:true,reviewRevocationStillAllowed:true,storedCandidateAndBaselineBound:true,restrictedCollectorPublishedDerivedObservation:true,serverTimesPreserved:true,freezeBeforeExecutionVerified:true,sourceIdentityChecked:true,runtimeAttestation:false,perDecisionRoutesBound:true,mixedCandidateRoutes:new Set(c.selectedModels.map(row=>row.model)).size>1,syntheticBundle:true,automaticActivation:false};
  }finally{
-  const client=await pool.connect();try{await client.query('begin');await client.query('set local session_replication_role=replica');await client.query('delete from agent_skill_acceptance_bundle where id=any($1::uuid[]) and owner_id=$2',[[id,...(collectedId?[collectedId]:[])],owner]);await client.query('commit');}
+  const client=await pool.connect();try{await client.query('begin');await client.query('set local session_replication_role=replica');await client.query('delete from agent_skill_acceptance_judgment where bundle_id=any($1::uuid[]) and owner_id=$2',[[id,...(collectedId?[collectedId]:[])],owner]);await client.query('delete from agent_skill_acceptance_bundle where id=any($1::uuid[]) and owner_id=$2',[[id,...(collectedId?[collectedId]:[])],owner]);await client.query('commit');}
   catch(error){await client.query('rollback');throw error;}finally{client.release();}
  }
 }

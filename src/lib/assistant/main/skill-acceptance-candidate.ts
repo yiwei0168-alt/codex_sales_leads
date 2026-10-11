@@ -11,6 +11,7 @@ const referenceSchema=z.object({runId:z.uuid(),evaluationId:z.uuid(),projectionH
 export async function validateStoredSkillAcceptanceCandidate(context:{userId:string},input:{bundleId:string;caseId:string}){
  assertLocalAnalysisBoundary();z.uuid().parse(input.bundleId);z.string().min(1).parse(input.caseId);
  const before=await readSkillAcceptanceEvidence(context,input.bundleId);
+ if(before.freezeStatus&&before.freezeStatus.state!=='active'&&before.freezeStatus.state!=='not-recorded')throw new Error('Acceptance freeze no longer active');
  if(!before.sourcesCurrent)throw new Error('Acceptance Skill sources changed');
  const item=before.artifact.plan.cases.find(row=>row.id===input.caseId);
  if(!item||item.category!=='replay'||item.provenance!=='historical-task')throw new Error('Candidate case is not historical replay');
@@ -22,6 +23,7 @@ export async function validateStoredSkillAcceptanceCandidate(context:{userId:str
  const pin=before.artifact.plan.pin;
  const audited=await auditDurableSkillCandidate(context,{runId:reference.runId,skillId:pin.skillId,version:pin.version,evaluationId:reference.evaluationId,arm:'candidate'});
  const projection=audited.projection;
+ if(before.freezeStatus?.freezeId&&projection.freezeId!==before.freezeStatus.freezeId)throw new Error('Candidate journal freeze binding mismatch');
  if(audited.projectionHash!==reference.projectionHash||projection.sourceKind!==before.artifact.sourceKind)throw new Error('Candidate source projection changed');
  const observation=before.artifact.observations.find(row=>row.caseId===input.caseId),candidate=observation?.candidate;
  if(!candidate||candidate.state!=='completed'||candidate.stopReason!==null||candidate.unexpectedEffects!==0

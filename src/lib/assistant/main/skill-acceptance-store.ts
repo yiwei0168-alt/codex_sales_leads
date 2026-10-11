@@ -1,6 +1,7 @@
 import type {PoolClient} from 'pg';
 import {z} from 'zod';
 import {tenantTransaction} from '@/lib/rag/db';
+import {inspectSkillAcceptanceFreeze} from './skill-acceptance-freeze';
 import {digest} from './contracts';
 import {skillSourcesCurrent,type SourcedSkillVersion} from './skill-source-guard';
 import {skillAcceptancePlanSchema,skillAcceptanceObservationSchema,skillAcceptanceJudgmentSchema} from './skill-acceptance-policy';
@@ -47,6 +48,16 @@ async function latestJudgments(client:PoolClient,userId:string,id:string){
   where bundle_id=$1 and owner_id=$2 order by case_id,revision desc`,[id,userId]);
  return rows.rows.map(row=>skillAcceptanceJudgmentSchema.parse(row.judgment));
 }
+async function bundleFreezeStatus(client:PoolClient,userId:string,bundle:Awaited<ReturnType<typeof loadBundle>>){
+ const collector=bundle.artifact.rawReceipts.collector;
+ if(collector===undefined)return {state:'not-recorded' as const,freezeId:null};
+ const metadata=z.object({freezeId:z.uuid().optional(),freezeVerified:z.boolean().optional()}).passthrough().parse(collector);
+ if(!metadata.freezeId){
+  if(metadata.freezeVerified)throw new Error('Acceptance freeze reference missing');
+  return {state:'not-recorded' as const,freezeId:null};
+ }
+ return {state:await inspectSkillAcceptanceFreeze(client,userId,metadata.freezeId,bundle.artifact.plan),freezeId:metadata.freezeId};
+}
 export async function readSkillAcceptanceEvidence(context:Context,id:string){
  z.uuid().parse(id);z.uuid().parse(context.userId);
  return tenantTransaction(context.userId,async client=>{
@@ -58,7 +69,8 @@ export async function readSkillAcceptanceEvidence(context:Context,id:string){
   }
   // Historical evidence remains reviewable after version/source expiry, with an explicit warning.
   let sourcesCurrent=true;try{await assertCurrentSkill(client,context.userId,bundle.artifact.plan);}catch{sourcesCurrent=false;}
-  return {...bundle,judgments,sourcesCurrent,automaticActivation:false,collectorProvenanceVerified:false};
+  const freezeStatus=await bundleFreezeStatus(client,context.userId,bundle);
+  return {...bundle,judgments,sourcesCurrent,freezeStatus,automaticActivation:false,collectorProvenanceVerified:false};
  });
 }
 
@@ -80,7 +92,11 @@ export async function appendSkillAcceptanceJudgment(context:Context&{reviewerKin
   const latest=(await latestJudgments(client,context.userId,p.bundleId)).find(row=>row.caseId===p.judgment.caseId);
   if((latest?.revision??0)!==p.expectedRevision)throw new Error('Acceptance review revision changed');
   // Revocation remains available when a source/Skill has since changed.
-  if(!p.judgment.revoked)await assertCurrentSkill(client,context.userId,bundle.artifact.plan);
+  if(!p.judgment.revoked){
+   await assertCurrentSkill(client,context.userId,bundle.artifact.plan);
+   const freeze=await bundleFreezeStatus(client,context.userId,bundle);
+   if(freeze.state!=='active'&&freeze.state!=='not-recorded')throw new Error('Acceptance freeze no longer active');
+  }
   const judgment=skillAcceptanceJudgmentSchema.parse({...p.judgment,reviewerId:context.userId,kind,revision:p.expectedRevision+1});
   await client.query(`insert into agent_skill_acceptance_judgment(bundle_id,owner_id,case_id,revision,reviewer_id,reviewer_kind,observation_hash,judgment)
    values($1,$2,$3,$4,$2,$5,$6,$7)`,[p.bundleId,context.userId,judgment.caseId,judgment.revision,kind,judgment.observationHash,JSON.stringify(judgment)]);

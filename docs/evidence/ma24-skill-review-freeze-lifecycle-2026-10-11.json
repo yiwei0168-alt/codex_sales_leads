@@ -1,0 +1,26 @@
+{
+  "date": "2026-10-11",
+  "scope": "G09-G10 frozen review lifecycle",
+  "checks": {
+    "unitTests": 48,
+    "typecheck": "passed",
+    "eslint": "passed",
+    "fullRecordedSourceCloneVerifier": "passed",
+    "activeFreezeReviewAppended": true,
+    "revokedHistoryReadable": true,
+    "revokedCandidateValidationRejected": true,
+    "revokedFreezeNewReviewRejected": true,
+    "reviewRevocationStillAllowed": true,
+    "reviewerKind": "assistant-development",
+    "actualModelCalls": 0
+  },
+  "limitations": {
+    "pointInTimeStatusNotActivationTransactionLease": true,
+    "syntheticLifecycleJudgmentsNotQualityApproval": true,
+    "legacyUnfrozenDevelopmentReviewRemainsAvailable": true,
+    "productionDeployment": false,
+    "runtimeAttestation": false,
+    "automaticActivation": false,
+    "publicGithubPush": "blocked by existing public-disclosure approval requirement"
+  }
+}
