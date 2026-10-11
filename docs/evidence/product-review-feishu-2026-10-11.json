@@ -1,13 +1,17 @@
 {
   "date": "2026-10-11",
   "request": "Create an up-to-date Feishu product review document with exported LangGraph architecture, memory/RAG designs, detailed tools, node models and product value.",
-  "status": "draft-verified-awaiting-feishu-user-authentication",
+  "status": "published-and-read-back-verified",
   "sourceCommit": "bfc888f8",
   "document": "docs/product-review-2026-10-11/product-review.xml",
   "sections": 14,
   "registeredTools": 105,
   "figures": 7,
-  "liveGraphEndpointsRead": ["main_agent_workflow", "lead_workflow", "knowledge_workflow"],
+  "liveGraphEndpointsRead": [
+    "main_agent_workflow",
+    "lead_workflow",
+    "knowledge_workflow"
+  ],
   "liveHealthHttpStatus": 200,
   "graphExecutionCount": 0,
   "newModelCalls": 0,
@@ -17,18 +21,38 @@
     "typecheck": "passed",
     "exportScriptEslint": "passed",
     "locallyRenderedFigures": 7,
-    "visuallyInspected": ["live-lead_workflow", "memory-design"]
+    "visuallyInspected": [
+      "live-lead_workflow",
+      "memory-design"
+    ]
   },
   "feishu": {
     "identity": "user",
-    "createResult": "token_missing",
-    "documentCreated": false,
-    "requiredScopes": ["docx:document:create", "docs:document.media:upload", "docx:document:write_only", "docx:document:readonly"]
+    "createResult": "success",
+    "documentCreated": true,
+    "requiredScopes": [
+      "docx:document:create",
+      "docs:document.media:upload",
+      "docx:document:write_only",
+      "docx:document:readonly"
+    ],
+    "documentId": "EoUzdd7RFod8c8x2ym4cuV7UnQb",
+    "url": "https://my.feishu.cn/docx/EoUzdd7RFod8c8x2ym4cuV7UnQb",
+    "revisionId": 9,
+    "readBackVerified": true,
+    "images": 7,
+    "attachments": 2,
+    "toolsPresent": 105
   },
   "boundaries": [
     "No private mail, customer contents, credentials or environment files included.",
     "Running-service topology, current-source topology and conceptual design figures are labeled separately.",
     "Current uncommitted visual-queue work is explicitly marked in progress, not delivered.",
     "Historical failed quality evaluation retained; no production feature or main-route switch."
-  ]
+  ],
+  "githubPush": {
+    "status": "blocked-by-automatic-approval",
+    "reason": "Remote is public; explicit approval to publish internal architecture materials is pending.",
+    "localCommit": "7f91132"
+  }
 }
