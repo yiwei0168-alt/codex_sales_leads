@@ -1,0 +1,21 @@
+{
+  "scope": "G08 multi-turn journal integrity preparation",
+  "tests": 27,
+  "typecheck": "passed",
+  "lint": "passed",
+  "cloneChecks": [
+    "three-turn-model-chain",
+    "changed-earlier-assistant-output-denied",
+    "cross-account-denied",
+    "read-receipt-substitution-denied",
+    "revoked-memory-denied"
+  ],
+  "fixturesRemoved": true,
+  "networkDisabledInClone": true,
+  "modelCalls": 0,
+  "productionDeployed": false,
+  "initialConversationProvenanceVerified": false,
+  "wholeTaskProvenanceVerified": false,
+  "executionAuthorized": false,
+  "qualityAccepted": false
+}

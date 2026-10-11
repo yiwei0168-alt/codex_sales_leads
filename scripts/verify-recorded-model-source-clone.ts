@@ -4,6 +4,7 @@ import {readFile} from 'node:fs/promises';
 import nextEnv from '@next/env';
 import {Pool} from 'pg';
 import {getPool} from '../src/lib/rag/db';
+import {loadRecordedTaskChain} from '../src/lib/assistant/main/recorded-task-source';
 import {describeTool,productTools} from '../src/lib/assistant/main/tools';
 import {decisionMemoryMessage} from '../src/lib/assistant/main/decision-memory-message';
 import {loadDecisionMemory} from '../src/lib/assistant/main/memory-context';
@@ -58,7 +59,22 @@ try{
  await pool.query("update agent_run set status='cancelled' where id=$1",[runId]);await assert.rejects(loadRecordedModeRequest(context,selection));
  await pool.query("update agent_run set status='completed' where id=$1",[runId]);
  await pool.query('update agent_tool_call set input_hash=$2 where id=$1',[callId,'0'.repeat(64)]);await assert.rejects(loadRecordedModeRequest(context,selection));
- console.log(JSON.stringify({cloneOnly:true,localEvidenceGuardsPassed:true,currentToolContractsChecked:true,readReceiptBound:true,substitutedReceiptDenied:true,revokedDecisionMemoryDenied:true,exactRequest:true,tenantIsolation:true,wrongRunDenied:true,changedInstructionsDenied:true,cancelledRunDenied:true,inputHashTamperingDenied:true,modelCalls:0,sourcePermissionsRevalidated:false,executionAuthorized:false,qualityAccepted:false}));
+ await pool.query("update agent_run set result=$2 where id=$1",[runId,JSON.stringify({reply:'Synthetic final answer'})]);
+ const terminal={...output,data:{value:{...output.data.value,message:{role:'assistant',content:'Synthetic final answer'}}}};
+ await pool.query("update agent_tool_call set input_hash=$2,call_key='mode-model:2:0:1',output=$3 where id=$1",[callId,digest(input),JSON.stringify(terminal)]);
+ const earlierIds:string[]=[];
+ for(const [step,end,replyIndex] of [[0,3,3],[1,5,5]]){
+  const earlierId=randomUUID();earlierIds.push(earlierId);
+  const priorInput={...input,messages:messages.slice(0,end)},priorBody={...body,messages:transportMessages(priorInput.messages)};
+  const priorOutput={status:'success',data:{value:{message:messages[replyIndex],requestManifest:modelRequestManifest(priorBody,{model:body.model,provider:'fixture',id:`synthetic-${step}`})}}};
+  await pool.query(`insert into agent_tool_call(id,user_id,run_id,call_key,tool_id,tool_version,input_hash,input,effect,status,output)
+   values($1,$2,$3,$4,'main_model','1',$5,$6,'model','completed',$7)`,[earlierId,owner,runId,`mode-model:${step}:0:1`,digest(priorInput),JSON.stringify(priorInput),JSON.stringify(priorOutput)]);
+ }
+ const chain=await loadRecordedTaskChain(context,{runId});assert.equal(chain.turns.length,3);assert.equal(chain.serverTaskJournalVerified,true);assert.equal(chain.wholeTaskProvenanceVerified,false);
+ await pool.query("update agent_tool_call set output=jsonb_set(output,'{data,value,message,content}','\"Altered historical reply\"'::jsonb) where id=$1",[earlierIds[0]]);
+ await assert.rejects(loadRecordedTaskChain(context,{runId}),/history diverged/);
+ await assert.rejects(loadRecordedTaskChain({userId:other},{runId}),/unavailable/);
+ console.log(JSON.stringify({cloneOnly:true,threeTurnChainBound:true,alteredEarlierReplyDenied:true,localEvidenceGuardsPassed:true,currentToolContractsChecked:true,readReceiptBound:true,substitutedReceiptDenied:true,revokedDecisionMemoryDenied:true,exactRequest:true,tenantIsolation:true,wrongRunDenied:true,changedInstructionsDenied:true,cancelledRunDenied:true,inputHashTamperingDenied:true,modelCalls:0,sourcePermissionsRevalidated:false,executionAuthorized:false,qualityAccepted:false}));
 }finally{
  await pool.query('delete from agent_memory_version where memory_id=$1',[memoryId]);
  await pool.query('delete from agent_memory where id=$1 and owner_id=$2',[memoryId,owner]);
