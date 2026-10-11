@@ -6,10 +6,10 @@ import pymupdf
 from pptx import Presentation
 from openpyxl import load_workbook
 
-EXTRACTOR_VERSION = "layout-v2.0.0"
+EXTRACTOR_VERSION = "layout-v2.0.1"
 
 def _clean(value):
-    return " ".join(str(value or "").replace("\x00", "").split()).strip()
+    return " ".join(str("" if value is None else value).replace("\x00", "").split()).strip()
 
 def _block(block_id, unit_type, unit_index, block_type, text="", quality="success", **extra):
     return {"id": block_id, "unitType": unit_type, "unitIndex": unit_index, "blockType": block_type,
@@ -55,13 +55,15 @@ def extract_xlsx(path: Path):
     workbook=load_workbook(path,read_only=False,data_only=True);blocks=[];statuses=[]
     for index,sheet in enumerate(workbook.worksheets,1):
         rows=[[_clean(cell) for cell in row] for row in sheet.iter_rows(values_only=True)]
-        rows=[row for row in rows if any(row)]
         merged=[str(item) for item in sheet.merged_cells.ranges]
-        if rows:
+        # Keep physical row positions, including leading/interior blank rows.
+        # Removing them makes startRow=2 point at different original cells.
+        if any(any(row) for row in rows):
             width=max(len(row) for row in rows);headers=(rows[0]+[""]*width)[:width]
             blocks.append(_block(f"sheet-{index}-table","sheet",index,"table",section=sheet.title,table={"headers":headers,"rows":[(row+[""]*width)[:width] for row in rows[1:]],"startRow":2},metadata={"mergedRanges":merged}))
             statuses.append("success")
         else: statuses.append("blank")
+    workbook.close()
     return blocks,statuses
 
 def extract_file(path: Path, storage_key: str):

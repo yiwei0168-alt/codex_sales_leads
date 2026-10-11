@@ -1,0 +1,90 @@
+{
+  "extractorVersion": "layout-v2.0.1",
+  "sheets": [
+    {
+      "sheet": "By dvpmnt status and spec. reg.",
+      "cellsCompared": 7155,
+      "zeroCellsPreserved": 31,
+      "physicalRows": 159
+    },
+    {
+      "sheet": "By BDT region",
+      "cellsCompared": 6204,
+      "zeroCellsPreserved": 10,
+      "physicalRows": 132
+    },
+    {
+      "sheet": "By urban-rural area",
+      "cellsCompared": 5328,
+      "zeroCellsPreserved": 31,
+      "physicalRows": 144
+    },
+    {
+      "sheet": "By gender",
+      "cellsCompared": 1881,
+      "zeroCellsPreserved": 0,
+      "physicalRows": 57
+    },
+    {
+      "sheet": "Internet use by age",
+      "cellsCompared": 5124,
+      "zeroCellsPreserved": 0,
+      "physicalRows": 122
+    }
+  ],
+  "allCellsAndPhysicalRowsMatch": true,
+  "sourceNowDevelopmentExposed": true,
+  "newModelCalls": 0,
+  "schema": "spreadsheet-values-coordinate-regression-v1",
+  "pythonRegressionTestsPassed": 2,
+  "uploadRegistrationTestsPassed": 9,
+  "productionPointersChanged": 0,
+  "qualityAccepted": false,
+  "totalCellsCompared": 25692,
+  "docling": [
+    {
+      "file": "itu-ict-2025",
+      "artifactSha256": "6ec6b3c69c08a98fa9f074847698e0f99c62793280708b5d0679d4fb4718e6cd",
+      "conversionStatus": "success",
+      "unitStatuses": {
+        "review-required": 5
+      },
+      "chunks": 256,
+      "maximumTokenEstimate": 500
+    },
+    {
+      "file": "itu-satellite-2025",
+      "artifactSha256": "78ada7a3e8f9c319a051fa6f180402bff1f4ff724b552f56438b0c61bc49aa2a",
+      "conversionStatus": "success",
+      "unitStatuses": {
+        "success": 42
+      },
+      "chunks": 16,
+      "maximumTokenEstimate": 505
+    }
+  ],
+  "exactDuplicateAudit": [
+    {
+      "sha256": "fd9070eb39b133bd600afa97d088c98ecb07bb730c9861675295c99174d0759a",
+      "registeredAssetMatches": 0,
+      "historicalGoldMatches": 0
+    },
+    {
+      "sha256": "2223cee26aced9a50d648d933c31b15f2f0659d0ebe30922fca5c31c1cc30465",
+      "registeredAssetMatches": 0,
+      "historicalGoldMatches": 0
+    },
+    {
+      "sha256": "67b852d766ea8c97ed947c1d3aab215d5d18ee4db49a0fcd563f4cb64fdcbe05",
+      "registeredAssetMatches": 0,
+      "historicalGoldMatches": 0
+    }
+  ],
+  "limitations": [
+    "XLSX is now development-exposed and excluded from independent holdout selection.",
+    "Spreadsheet artifact cells/rows verified; rendered citation and all extraction semantics not accepted.",
+    "Docling XLSX units require review; PPTX has bbox clamping warnings and maximum chunk token estimate 505.",
+    "PDF extraction remains live in session 50697; no completion claimed.",
+    "Exact hash absence does not prove semantic independence."
+  ]
+}

@@ -341,3 +341,11 @@
 - 原件仅存于忽略的 `tmp/ma24-public-eval-candidates`；登记发布页、下载 URL、字节数和哈希，未提交原件。默认 Python 无 docling，结构检查使用现有 python-pptx/openpyxl/pypdf；项目另有 `.venv-docling-v3`，完整抽取仍待执行。
 - 此阶段没有历史暴露/近重复审计、精确坐标视觉复核或新 Gold，独立来源批准数仍为 0、qualityAccepted=false。公共行业资料用于补格式/长文档覆盖，不能替代产品型号质量与权限题组。无新模型调用、无共享发布、无生产变更；G14 保持进行中。
 - 证据：`docs/evidence/ma24-public-eval-candidates-2026-10-11.json`。下一步进行本地抽取、来源隔离审计及分组出题，再准备冻结与必要评测授权。
+
+
+### MA24-16 / G05、G14 — Excel 零值与物理行修复（2026-10-11）
+
+- 真实公共工作簿暴露上传解析缺陷：`value or ""` 丢弃数值 0/False，过滤空行使原始行号偏移。已修复为空值仅判断 None，保留全部物理行，并将抽取版本升为 `layout-v2.0.1`，避免与旧结果共用处理身份。未重建既有资料或切换旧版指针。
+- 2 项 Python 回归通过（前置/中间空行、0、False、负数和仅零值工作表）；真实工作簿 5 张表的 25,692 个单元格及物理行逐项比对通过，72 个零值保留。上传/注册相关 9 项测试通过。该 XLSX 已用于开发修复，明确排除于最终独立 holdout；不能继续把它称为未暴露来源。
+- 三候选哈希在当前 knowledge_asset 和历史 Gold 精确匹配均为 0；尚未证明语义独立。本地 docling 环境版本与模型指纹通过：XLSX 转换 success/256 chunks，但 5 个单位均需复核；PPTX 42 个单位 success/16 chunks，存在 bbox 裁剪警告及单块 tokenEstimate 505。完整引用坐标/语义验收仍未通过。262 页 PDF 抽取进程仍在运行，保留原会话 50697，不重新启动或声称完成。
+- 证据：`docs/evidence/ma24-spreadsheet-coordinate-fix-2026-10-11.json`。G05/G14 仍进行中；下一步核查抽取警告、最终坐标保存链与 PDF 结果，并另选未用于调试的 XLSX 冻结来源。未新增付费模型调用、未发布共享资料。
