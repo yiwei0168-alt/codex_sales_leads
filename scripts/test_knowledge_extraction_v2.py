@@ -4,6 +4,8 @@ from tempfile import TemporaryDirectory
 import unittest
 
 from openpyxl import Workbook
+from openpyxl.chart import BarChart, Reference
+from openpyxl.drawing.image import Image as SheetImage
 import pymupdf
 from pptx import Presentation
 from pptx.util import Inches
@@ -14,6 +16,26 @@ from knowledge_extraction_v2 import extract_file
 
 
 class SpreadsheetCoordinatesTest(unittest.TestCase):
+    def test_mixed_and_image_only_sheets_are_not_complete(self):
+        with TemporaryDirectory() as directory:
+            path=Path(directory)/"visual.xlsx"; picture=Path(directory)/"image.png"
+            Image.new("RGB",(20,20),"black").save(picture)
+            book=Workbook(); sheet=book.active; sheet.title="Chart"
+            sheet.append(["Value"]); sheet.append([0]); sheet.append([5])
+            chart=BarChart(); chart.add_data(Reference(sheet,min_col=1,min_row=1,max_row=3),titles_from_data=True)
+            sheet.add_chart(chart,"D2")
+            book.create_sheet("Image").add_image(SheetImage(str(picture)),"B3")
+            chart_page=book.create_chartsheet("ChartPage"); chart2=BarChart()
+            chart2.add_data(Reference(sheet,min_col=1,min_row=1,max_row=3),titles_from_data=True); chart_page.add_chart(chart2)
+            book.create_sheet("Blank"); book.save(path); book.close()
+            artifact=extract_file(path,"visual.xlsx")
+            self.assertEqual(artifact["qualitySummary"],{"success":0,"blank":1,"pending-ocr":3,"failed":0})
+            pending=[b for b in artifact["blocks"] if b["quality"]=="pending-ocr"]
+            self.assertEqual([b["section"] for b in pending],["Chart","Image","ChartPage"])
+            self.assertEqual(pending[0]["metadata"]["sourceReference"]["kind"],"drawing")
+            self.assertEqual(pending[0]["metadata"]["sourceReference"]["worksheetPart"],"xl/worksheets/sheet1.xml")
+            self.assertEqual(artifact["blocks"][0]["table"]["rows"][0],["0"])
+
     def test_blank_rows_zero_and_false_keep_original_positions(self):
         with TemporaryDirectory() as directory:
             path = Path(directory) / "coordinates.xlsx"
@@ -110,6 +132,22 @@ class PptxGroupTest(unittest.TestCase):
 
 
 class PdfBlankPageTest(unittest.TestCase):
+    def test_text_does_not_hide_visual_content(self):
+        with TemporaryDirectory() as directory:
+            path=Path(directory)/"mixed.pdf"; picture=Path(directory)/"image.png"
+            Image.new("RGB",(20,20),"black").save(picture)
+            document=pymupdf.open(); page=document.new_page(); page.insert_text((50,50),"Caption")
+            page.insert_image(pymupdf.Rect(50,80,100,130),filename=str(picture))
+            page=document.new_page(); page.insert_text((50,50),"Chart caption")
+            page.draw_rect(pymupdf.Rect(50,80,100,130),color=(0,0,0))
+            document.save(path); document.close()
+            artifact=extract_file(path,"mixed.pdf")
+            self.assertEqual(artifact["qualitySummary"]["pending-ocr"],2)
+            self.assertTrue(any(b["text"]=="Caption" for b in artifact["blocks"]))
+            pending=[b for b in artifact["blocks"] if b["quality"]=="pending-ocr"]
+            self.assertEqual([b["unitIndex"] for b in pending],[1,2])
+            self.assertTrue(all(len(b["bbox"])==4 for b in pending))
+
     def test_only_structurally_empty_pages_are_blank(self):
         with TemporaryDirectory() as directory:
             path = Path(directory) / "pages.pdf"

@@ -6,7 +6,7 @@ import type {PoolClient} from 'pg';
 import {tenantTransaction} from '@/lib/rag/db';
 import {assertResolvedInsideKnowledgeRoot,safeKnowledgeStorageKey} from './document-repository';
 import {extractionReadiness} from './extraction-readiness';
-import {slideShapeLocation,type Block} from './extracted-tree';
+import {slideShapeLocation,visualSourceLocation,type Block} from './extracted-tree';
 import {loadVisualCandidates,readVisualCandidateImage} from './visual-review-candidates';
 import {deriveReviewedExtraction,reviewDecisionHash,type ExtractionJudgment} from './reviewed-extraction';
 
@@ -141,7 +141,7 @@ export async function recordExtractionReview(userId:string,raw:unknown){
     const prior=await client.query<{revision:number}>(`select revision from knowledge_upload_extraction_review where owner_id=$1 and job_id=$2 and artifact_sha256=$3 and block_id=$4 order by revision desc limit 1`,[userId,input.jobId,input.artifactSha256,input.blockId]);
     if((prior.rows[0]?.revision??0)!==input.expectedRevision)throw new ExtractionReviewConflict('该对象已有新的审核，请重新加载');
     const revision=input.expectedRevision+1;
-    const location={unitType:block.unitType,unitIndex:block.unitIndex,blockId:block.id,bbox:block.bbox??null,...slideShapeLocation(block)};
+    const location={unitType:block.unitType,unitIndex:block.unitIndex,blockId:block.id,bbox:block.bbox??null,...slideShapeLocation(block),...visualSourceLocation(block)};
     await client.query(`insert into knowledge_upload_extraction_review(owner_id,job_id,source_sha256,artifact_sha256,extractor_version,block_id,revision,decision,evidence_text,note,source_location,reviewer_id)
       values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$1)`,[userId,input.jobId,job.source_sha256,input.artifactSha256,job.extractor_version,block.id,revision,input.decision,input.evidenceText,input.note,JSON.stringify(location)]);
     return {revision,indexingResumed:false};

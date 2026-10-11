@@ -1,0 +1,41 @@
+{
+  "extractorVersion": "layout-v2.0.6",
+  "developmentExposed": true,
+  "qualityAccepted": false,
+  "externalCalls": 0,
+  "results": [
+    {
+      "file": "itu-handbook-2020.pdf",
+      "sourceSha256": "67b852d766ea8c97ed947c1d3aab215d5d18ee4db49a0fcd563f4cb64fdcbe05",
+      "qualitySummary": {
+        "success": 1,
+        "blank": 4,
+        "pending-ocr": 257,
+        "failed": 0
+      },
+      "blocks": 4534,
+      "pendingVisuals": 257
+    },
+    {
+      "file": "itu-ict-2025.xlsx",
+      "sourceSha256": "fd9070eb39b133bd600afa97d088c98ecb07bb730c9861675295c99174d0759a",
+      "qualitySummary": {
+        "success": 5,
+        "blank": 0,
+        "pending-ocr": 0,
+        "failed": 0
+      },
+      "blocks": 5,
+      "pendingVisuals": 0
+    }
+  ],
+  "date": "2026-10-11",
+  "rule": "MA24-16",
+  "goal": "G05",
+  "pythonTestsPassed": 7,
+  "typescriptTestsPassed": 10,
+  "typecheck": "passed",
+  "eslint": "passed",
+  "productionDeployed": false,
+  "visualCandidatesImplemented": false
+}

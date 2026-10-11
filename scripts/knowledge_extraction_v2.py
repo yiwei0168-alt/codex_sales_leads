@@ -2,13 +2,16 @@ from __future__ import annotations
 from pathlib import Path
 from hashlib import sha256
 import json
+import posixpath
+import zipfile
+import xml.etree.ElementTree as ET
 import pymupdf
 from pptx import Presentation
 from pptx.enum.shapes import MSO_SHAPE_TYPE
 from openpyxl import load_workbook
 from openpyxl.utils import get_column_letter
 
-EXTRACTOR_VERSION = "layout-v2.0.5"
+EXTRACTOR_VERSION = "layout-v2.0.6"
 
 def _clean(value):
     return " ".join(str("" if value is None else value).replace("\x00", "").split()).strip()
@@ -28,7 +31,12 @@ def extract_pdf(path: Path):
                 if text: page_blocks.append(_block(f"page-{index}-block-{block_index}","page",index,"paragraph",text,bbox=[x0,y0,x1,y1]))
             if page_blocks:
                 blocks.extend(page_blocks)
-                statuses.append("success")
+                if page.get_images() or page.get_drawings() or list(page.annots() or []) or list(page.widgets() or []):
+                    blocks.append(_block(f"page-{index}-visual-review","page",index,"pending-ocr","",quality="pending-ocr",
+                        bbox=list(page.rect),metadata={"reviewReason":"mixed-page-visual-content"}))
+                    statuses.append("pending-ocr")
+                else:
+                    statuses.append("success")
             elif (all(not page.parent.xref_stream(ref).strip() for ref in page.get_contents())
                   and not page.get_images() and not list(page.annots() or [])
                   and not list(page.widgets() or [])):
@@ -73,18 +81,46 @@ def extract_pptx(path: Path):
         statuses.append("pending-ocr" if pending else "success" if len(blocks)>start else "blank")
     return blocks,statuses
 
+def xlsx_visual_references(path: Path):
+    # Read source XML: openpyxl can discard unsupported drawings during load.
+    ns={"s":"http://schemas.openxmlformats.org/spreadsheetml/2006/main",
+        "r":"http://schemas.openxmlformats.org/officeDocument/2006/relationships"}
+    result={}
+    with zipfile.ZipFile(path) as archive:
+        relations={item.get("Id"):item for item in ET.fromstring(archive.read("xl/_rels/workbook.xml.rels"))}
+        for sheet in ET.fromstring(archive.read("xl/workbook.xml")).findall("s:sheets/s:sheet",ns):
+            relation=relations[sheet.get("{"+ns["r"]+"}id")]
+            if relation.get("TargetMode")=="External":
+                raise ValueError("External worksheet relationship")
+            target=relation.get("Target", "")
+            part=posixpath.normpath(target.lstrip("/") if target.startswith("/") else posixpath.join("xl",target))
+            if not part.startswith("xl/"): raise ValueError("Invalid worksheet relationship")
+            refs=[]
+            for element in ET.fromstring(archive.read(part)).iter():
+                kind=element.tag.rsplit("}",1)[-1]
+                if kind in {"drawing","legacyDrawing","legacyDrawingHF","picture","oleObjects","controls"}:
+                    refs.append({"kind":kind,"relationshipId":element.get("{"+ns["r"]+"}id"),"worksheetPart":part})
+            result[sheet.get("name")]=refs
+    return result
+
+
 def extract_xlsx(path: Path):
+    visuals=xlsx_visual_references(path)
     workbook=load_workbook(path,read_only=False,data_only=True);blocks=[];statuses=[]
-    for index,sheet in enumerate(workbook.worksheets,1):
-        rows=[[_clean(cell) for cell in row] for row in sheet.iter_rows(values_only=True)]
-        merged=[str(item) for item in sheet.merged_cells.ranges]
+    for index,name in enumerate(workbook.sheetnames,1):
+        sheet=workbook[name]
+        start=len(blocks)
+        rows=[[_clean(cell) for cell in row] for row in sheet.iter_rows(values_only=True)] if hasattr(sheet,"iter_rows") else []
+        merged=[str(item) for item in sheet.merged_cells.ranges] if hasattr(sheet,"merged_cells") else []
         # Keep physical row positions, including leading/interior blank rows.
         # Removing them makes startRow=2 point at different original cells.
         if any(any(row) for row in rows):
             width=max(len(row) for row in rows);headers=(rows[0]+[""]*width)[:width]
             blocks.append(_block(f"sheet-{index}-table","sheet",index,"table",section=sheet.title,table={"headers":headers,"rows":[(row+[""]*width)[:width] for row in rows[1:]],"startRow":2,"headerRow":1,"startColumn":1,"cellRange":f"A1:{get_column_letter(width)}{len(rows)}"},metadata={"mergedRanges":merged}))
-            statuses.append("success")
-        else: statuses.append("blank")
+        for ordinal,reference in enumerate(visuals.get(sheet.title,[]),1):
+            blocks.append(_block(f"sheet-{index}-visual-{ordinal}","sheet",index,"pending-ocr","",quality="pending-ocr",
+                section=sheet.title,visualReference=reference,metadata={"reviewReason":"unparsed-sheet-visual","sourceReference":reference}))
+        statuses.append("pending-ocr" if visuals.get(sheet.title) else "success" if len(blocks)>start else "blank")
     workbook.close()
     return blocks,statuses
 

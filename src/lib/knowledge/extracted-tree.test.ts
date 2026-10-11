@@ -1,6 +1,14 @@
 import {expect,it,vi} from 'vitest';
 import type {PoolClient} from 'pg';
-import {evidenceText,slideShapeLocation,spreadsheetLocation,writeExtractedTree,type Block} from './extracted-tree';
+import {evidenceText,slideShapeLocation,spreadsheetLocation,visualSourceLocation,writeExtractedTree,type Block} from './extracted-tree';
+
+it('retains sheet visual package references and rejects escaping or mismatched locations',()=>{
+ const visual={id:'sheet-1-visual-1',unitType:'sheet' as const,unitIndex:1,blockType:'pending-ocr',quality:'pending-ocr',section:'Chart',
+  visualReference:{kind:'drawing',worksheetPart:'xl/worksheets/sheet1.xml',relationshipId:'rId1'}};
+ expect(visualSourceLocation(visual)).toEqual({sheetName:'Chart',visualReference:visual.visualReference});
+ expect(()=>visualSourceLocation({...visual,unitType:'page'})).toThrow();
+ expect(()=>visualSourceLocation({...visual,visualReference:{...visual.visualReference,worksheetPart:'xl/../private.xml'}})).toThrow();
+});
 
 const block:Block={id:'sheet-1-table',unitType:'sheet',unitIndex:1,blockType:'table',quality:'success',section:'Original',
   table:{headers:['','',''],rows:[['','Value',''],['','',''],['',0,false],['','',''],['',-1.5,'']],

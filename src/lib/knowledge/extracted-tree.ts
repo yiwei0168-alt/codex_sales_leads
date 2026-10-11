@@ -3,6 +3,13 @@ import type {PoolClient} from "pg";
 const digest=(value:string)=>createHash("sha256").update(value).digest("hex");
 export type Block={id:string;unitType:"page"|"slide"|"sheet"|"document";unitIndex:number;blockType:string;quality:string;review?:{receiptId:string;revision:number;decision:string;originalQuality:string};text?:string;section?:string;bbox?:number[];shapePath?:number[];shapeIdPath?:number[];table?:{headers?:unknown[];rows?:unknown[][];startRow?:number;headerRow?:number;startColumn?:number;cellRange?:string}};
 const unitKey=(block:Block)=>`${block.unitType}:${block.unitIndex}`;
+export function visualSourceLocation(block:Block & {visualReference?:{kind:string;worksheetPart:string;relationshipId:string|null}}){
+ const reference=block.visualReference;if(!reference)return {};
+ if(block.unitType!=='sheet'||!block.section?.trim()||!['drawing','legacyDrawing','legacyDrawingHF','picture','oleObjects','controls'].includes(reference.kind)
+  ||!/^xl\/[A-Za-z0-9_./-]+\.xml$/.test(reference.worksheetPart)||reference.worksheetPart.split('/').includes('..')
+  ||(reference.relationshipId!==null&&(typeof reference.relationshipId!=='string'||reference.relationshipId.length>300)))throw new Error('Invalid sheet visual reference');
+ return {sheetName:block.section,visualReference:reference};
+}
 export function slideShapeLocation(block:Block){
   if(block.shapePath===undefined&&block.shapeIdPath===undefined)return {};
   if(block.unitType!=="slide"||!Array.isArray(block.shapePath)||!Array.isArray(block.shapeIdPath)
@@ -70,7 +77,7 @@ export async function writeExtractedTree(client:PoolClient,input:{documentId:str
       const content=evidenceText(block);
       await client.query(`insert into knowledge_tree_node(version_id,parent_id,ordinal,node_kind,title,heading_path,unit_type,unit_index,source_location,content,content_sha256)
         values($1,$2,$3,'evidence',$4,$5,$6,$7,$8,$9,$10)`,[version.id,parent,ordinal,block.id,[block.section??`${block.unitType} ${block.unitIndex}`],block.unitType,block.unitIndex,
-          JSON.stringify({unitType:block.unitType,unitIndex:block.unitIndex,blockId:block.id,bbox:block.bbox??null,startRow:block.table?.startRow??null,...(spreadsheetLocation(block)??{}),...slideShapeLocation(block),...(block.review?{extractionReview:block.review}:{})}),content,digest(content)]);
+          JSON.stringify({unitType:block.unitType,unitIndex:block.unitIndex,blockId:block.id,bbox:block.bbox??null,startRow:block.table?.startRow??null,...(spreadsheetLocation(block)??{}),...slideShapeLocation(block),...visualSourceLocation(block),...(block.review?{extractionReview:block.review}:{})}),content,digest(content)]);
     }
     const count=await client.query<{count:string}>("select count(*)::text as count from knowledge_tree_node where version_id=$1",[version.id]);
     if(Number(count.rows[0].count)!==blocks.length+units.length)throw new Error("Tree completeness check failed");
