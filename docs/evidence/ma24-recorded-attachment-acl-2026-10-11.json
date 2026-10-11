@@ -1,0 +1,21 @@
+{
+  "scope": "G08 initial attachment database access and revision checks",
+  "cloneChecksPassed": 7,
+  "checks": [
+    "owner-private-accepted",
+    "other-account-denied",
+    "withdrawn-asset-denied",
+    "archived-document-denied",
+    "ready-current-version-accepted",
+    "failed-version-denied",
+    "replaced-version-denied"
+  ],
+  "metadataFixturesOnly": true,
+  "fixturesRemoved": true,
+  "typecheck": "passed",
+  "lint": "passed",
+  "modelCalls": 0,
+  "fileReads": 0,
+  "productionChanges": false,
+  "realAttachmentQualityAccepted": false
+}
