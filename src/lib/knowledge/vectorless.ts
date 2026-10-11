@@ -18,7 +18,7 @@ export function evidenceText(block:Block):string{
 }
 
 /** Build one approved document in a single transaction. Any failure leaves its old pointer intact. */
-export async function indexExtractedDocument(userId:string,jobId:string){
+export async function indexExtractedDocument(userId:string,jobId:string,leaseToken?:string){
   const [actor]=await tenantQuery<{role:string}>(userId,"select role from app_user where id=$1 and status='active'",[userId]);
   if(actor?.role!=="admin"&&actor?.role!=="member")throw new Error("Active account required");
   const [job]=await tenantQuery<{id:string;status:string;visibility:string;published_document_id:string;published_asset_id:string;source_sha256:string;extractor_version:string;storage_key:string;extraction_artifact_key:string;metrics:{artifactSha256?:string}}>(userId,
@@ -40,6 +40,10 @@ export async function indexExtractedDocument(userId:string,jobId:string){
   if(!blocks.length||blocks.some(block=>!block.id||!Number.isInteger(block.unitIndex)||block.unitIndex<1))throw new Error("No complete evidence blocks");
   const units=[...new Map(blocks.map(block=>[unitKey(block),block])).values()];
   return tenantTransaction(userId,async client=>{
+    if(leaseToken){
+      const lease=await client.query("select id from knowledge_upload_job where id=$1 and user_id=$2 and lease_token=$3 and lease_until>now() for update",[jobId,userId,leaseToken]);
+      if(!lease.rows[0])throw new Error("Upload lease expired or changed");
+    }
     await client.query("select pg_advisory_xact_lock(hashtextextended($1,0))",[job.published_document_id]);
     const asset=await client.query<{id:string}>(`select a.id from knowledge_asset a join knowledge_document d on d.id=a.document_id
       where a.id=$1 and d.id=$2 and a.source_sha256=$3 and a.registration_status='registered' and d.status='active'

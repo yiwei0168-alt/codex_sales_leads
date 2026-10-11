@@ -26,15 +26,21 @@ let completed=0;let failed=0;
 try{
   const accounts=await query<{id:string}>("select id from app_user where status='active' order by id");
   for(let index=0;index<limit;index++){
-    let job:{id:string;storageKey:string;visibility:string;userId:string;leaseToken:string}|null=null;
+    let job:{id:string;storageKey:string;visibility:string;status:string;userId:string;leaseToken:string}|null=null;
     for(const account of accounts){
       job=await tenantTransaction(account.id,async client=>{
-        const selected=await client.query<{id:string;storageKey:string;visibility:string}>(`select id,storage_key as "storageKey",visibility from knowledge_upload_job
-          where user_id=$1 and ($2::uuid is null or id=$2) and (status='pending' or (status='running' and lease_until<now()))
-          order by created_at for update skip locked limit 1`,[account.id,onlyJobId]);
+        const selected=await client.query<{id:string;storageKey:string;visibility:string;status:string}>(`select j.id,j.storage_key as "storageKey",j.visibility,j.status from knowledge_upload_job j
+          where j.user_id=$1 and ($2::uuid is null or j.id=$2) and (j.status='pending' or (j.status='running' and j.lease_until<now())
+            or (j.visibility='private' and j.error_code is null and (j.lease_until is null or j.lease_until<now())
+              and (j.status='extracted' or (j.status='registered' and exists(
+                select 1 from knowledge_document d join knowledge_asset a on a.id=j.published_asset_id and a.document_id=d.id
+                where d.id=j.published_document_id and d.status='active' and a.registration_status='registered'
+                  and d.current_tree_version_id is null)))))
+          order by j.created_at for update of j skip locked limit 1`,[account.id,onlyJobId]);
         if(!selected.rows[0])return null;
         const leaseToken=randomUUID();
-        await client.query("update knowledge_upload_job set status='running',lease_token=$3,lease_until=now()+interval '4 minutes',updated_at=now(),error_code=null where id=$1 and user_id=$2",[selected.rows[0].id,account.id,leaseToken]);
+        await client.query(`update knowledge_upload_job set status=case when status in('pending','running') then 'running' else status end,
+          lease_token=$3,lease_until=now()+interval '4 minutes',updated_at=now(),error_code=null where id=$1 and user_id=$2`,[selected.rows[0].id,account.id,leaseToken]);
         return {...selected.rows[0],userId:account.id,leaseToken};
       });
       if(job)break;
@@ -45,20 +51,23 @@ try{
     const artifact=resolve(artifactKey);assertResolvedInsideKnowledgeRoot(artifact);await mkdir(resolve("knowledge","uploads",job.userId),{recursive:true});
     const started=Date.now();
     try{
+      if(job.status==='pending'||job.status==='running'){
       const output=await runPython(source,artifact);
       const saved=await tenantQuery<{id:string}>(job.userId,`update knowledge_upload_job set status='extracted',extraction_artifact_key=$2,extractor_version=$3,
-        lease_token=null,lease_until=null,updated_at=now(),metrics=metrics||$4::jsonb where id=$1 and user_id=$5 and status='running'
+        updated_at=now(),metrics=metrics||$4::jsonb where id=$1 and user_id=$5 and status='running'
         and lease_token=$6 and lease_until>now() returning id`,[job.id,artifactKey,String(output.extractorVersion??"unknown"),JSON.stringify({validOutputItems:Number(output.blocks??0),downstreamUsedItems:0,latencyMs:Date.now()-started,retries:0,qualitySummary:output.qualitySummary??{},artifactSha256:output.artifactSha256??null,usageBoundary:"local-extraction-awaiting-review-and-indexing",optimizationOpportunity:"Review extracted units before indexing"}),job.userId,job.leaseToken]);
       if(!saved[0])throw new Error("Upload lease expired or changed");
+      }
       if(job.visibility==="private"){
-        const registration=await registerVectorlessUpload(job.userId,job.id,{language:"und",authorityLevel:2});
+        const registration=await registerVectorlessUpload(job.userId,job.id,{language:"und",authorityLevel:2,leaseToken:job.leaseToken});
         if(registration.treeStatus!=="searchable")throw new Error("Private tree indexing failed");
       }
+      await tenantQuery(job.userId,"update knowledge_upload_job set lease_token=null,lease_until=null where id=$1 and user_id=$2 and lease_token=$3",[job.id,job.userId,job.leaseToken]);
       completed++;
-    }catch(error){await tenantQuery(job.userId,`update knowledge_upload_job set status='failed',lease_token=null,lease_until=null,error_code=$2,
-      updated_at=now(),metrics=metrics||$3::jsonb where id=$1 and user_id=$4 and
-      ((status='running' and lease_token=$5 and lease_until>now()) or (status='extracted' and extraction_artifact_key=$6))`,
-      [job.id,error instanceof Error?error.name:"unknown",JSON.stringify({validOutputItems:0,downstreamUsedItems:0,latencyMs:Date.now()-started,retries:0,discardedReasonCounts:{extractionFailed:1}}),job.userId,job.leaseToken,artifactKey]);failed++;}
+    }catch(error){await tenantQuery(job.userId,`update knowledge_upload_job set status=case when status='registered' then status else 'failed' end,
+      lease_token=null,lease_until=null,error_code=coalesce(error_code,case when status='registered' then 'tree-index-failed' else $2 end),updated_at=now(),metrics=metrics||$3::jsonb
+      where id=$1 and user_id=$4 and lease_token=$5 and lease_until>now()`,
+      [job.id,error instanceof Error?error.name:"unknown",JSON.stringify({latencyMs:Date.now()-started,discardedReasonCounts:{processingFailed:1}}),job.userId,job.leaseToken]);failed++;}
   }
   console.log(JSON.stringify({inputJobs:completed+failed,completed,failed,embeddingCalls:0,modelCalls:0,externalCalls:0},null,2));
 }finally{await getPool().end();}

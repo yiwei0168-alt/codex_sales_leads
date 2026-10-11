@@ -1,0 +1,171 @@
+{
+  "stage": "G05 binary upload process-crash recovery",
+  "date": "2026-10-11",
+  "cloneOnly": true,
+  "modelCalls": 0,
+  "externalCalls": 0,
+  "results": [
+    {
+      "format": "page",
+      "phase": "extracting",
+      "actualProcessKilled": true,
+      "leaseProtected": true,
+      "recovered": true,
+      "sourceCoordinates": true,
+      "singleVersion": true,
+      "withdrawnDenied": true
+    },
+    {
+      "format": "page",
+      "phase": "extracted",
+      "actualProcessKilled": true,
+      "leaseProtected": true,
+      "recovered": true,
+      "sourceCoordinates": true,
+      "singleVersion": true,
+      "withdrawnDenied": true
+    },
+    {
+      "format": "page",
+      "phase": "registered",
+      "actualProcessKilled": true,
+      "leaseProtected": true,
+      "recovered": true,
+      "sourceCoordinates": true,
+      "singleVersion": true,
+      "withdrawnDenied": true
+    },
+    {
+      "format": "page",
+      "phase": "tree-transaction",
+      "actualProcessKilled": true,
+      "leaseProtected": true,
+      "recovered": true,
+      "sourceCoordinates": true,
+      "singleVersion": true,
+      "withdrawnDenied": true
+    },
+    {
+      "format": "slide",
+      "phase": "extracting",
+      "actualProcessKilled": true,
+      "leaseProtected": true,
+      "recovered": true,
+      "sourceCoordinates": true,
+      "singleVersion": true,
+      "withdrawnDenied": true
+    },
+    {
+      "format": "slide",
+      "phase": "extracted",
+      "actualProcessKilled": true,
+      "leaseProtected": true,
+      "recovered": true,
+      "sourceCoordinates": true,
+      "singleVersion": true,
+      "withdrawnDenied": true
+    },
+    {
+      "format": "slide",
+      "phase": "registered",
+      "actualProcessKilled": true,
+      "leaseProtected": true,
+      "recovered": true,
+      "sourceCoordinates": true,
+      "singleVersion": true,
+      "withdrawnDenied": true
+    },
+    {
+      "format": "slide",
+      "phase": "tree-transaction",
+      "actualProcessKilled": true,
+      "leaseProtected": true,
+      "recovered": true,
+      "sourceCoordinates": true,
+      "singleVersion": true,
+      "withdrawnDenied": true
+    },
+    {
+      "format": "sheet",
+      "phase": "extracting",
+      "actualProcessKilled": true,
+      "leaseProtected": true,
+      "recovered": true,
+      "sourceCoordinates": true,
+      "singleVersion": true,
+      "withdrawnDenied": true
+    },
+    {
+      "format": "sheet",
+      "phase": "extracted",
+      "actualProcessKilled": true,
+      "leaseProtected": true,
+      "recovered": true,
+      "sourceCoordinates": true,
+      "singleVersion": true,
+      "withdrawnDenied": true
+    },
+    {
+      "format": "sheet",
+      "phase": "registered",
+      "actualProcessKilled": true,
+      "leaseProtected": true,
+      "recovered": true,
+      "sourceCoordinates": true,
+      "singleVersion": true,
+      "withdrawnDenied": true
+    },
+    {
+      "format": "sheet",
+      "phase": "tree-transaction",
+      "actualProcessKilled": true,
+      "leaseProtected": true,
+      "recovered": true,
+      "sourceCoordinates": true,
+      "singleVersion": true,
+      "withdrawnDenied": true
+    }
+  ],
+  "sharedApprovalPreserved": true,
+  "parserFailureTerminal": true,
+  "damagedArtifactTerminal": true,
+  "staleIndexWriterDenied": true,
+  "otherDocumentsUnchanged": true,
+  "v3PointersUnchanged": true,
+  "actualWorkerTerminations": 13,
+  "verification": {
+    "unitTests": 16,
+    "testFiles": 3,
+    "typecheck": "passed",
+    "targetedLint": "passed",
+    "cloneProbe": "passed",
+    "cleanup": "passed"
+  },
+  "scope": {
+    "formats": [
+      "PDF",
+      "PPTX",
+      "XLSX"
+    ],
+    "crashCheckpoints": [
+      "claimed-before-extractor-spawn",
+      "extraction-committed",
+      "registration-committed",
+      "tree-before-commit"
+    ],
+    "leaseExpiry": "accelerated in isolated clone only; production lease remains four minutes",
+    "idempotence": "same upload job registration and tree replay",
+    "productionModelCalls": 0,
+    "productionDatabaseMutations": 0
+  },
+  "limitations": [
+    "No new independent answer or citation quality evidence",
+    "Same-content new-upload deduplication and binary revision workflow remain G05 work",
+    "This stage does not verify every text/mail workflow recovery point",
+    "No production web/worker restart or retrieval switch"
+  ],
+  "scripts": [
+    "scripts/verify-upload-crash-clone.ts",
+    "scripts/fixtures/upload-crash-preload.cjs"
+  ]
+}

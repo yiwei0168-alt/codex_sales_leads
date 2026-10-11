@@ -10,7 +10,7 @@ type Job={id:string;status:string;visibility:"private"|"shared";collection_slug:
 type Block={id:string;unitType:"page"|"slide"|"sheet"|"document";unitIndex:number;blockType:string;quality:string;text?:string;section?:string;table?:{headers?:unknown[];rows?:unknown[][];startRow?:number}};
 
 /** Register approved shared or owned private extraction without creating embeddings. */
-export async function registerVectorlessUpload(userId:string,jobId:string,options:{language:string;authorityLevel:1|2|3|4|5;expectedSourceSha256?:string}){
+export async function registerVectorlessUpload(userId:string,jobId:string,options:{language:string;authorityLevel:1|2|3|4|5;expectedSourceSha256?:string;leaseToken?:string}){
   const [actor]=await tenantQuery<{role:string}>(userId,"select role from app_user where id=$1 and status='active'",[userId]);
   if(actor?.role!=="admin"&&actor?.role!=="member")throw new Error("Active account required");
   const [job]=await tenantQuery<Job>(userId,`select id,status,visibility,collection_slug,title,source_url,entity_key,storage_key,extraction_artifact_key,
@@ -33,6 +33,10 @@ export async function registerVectorlessUpload(userId:string,jobId:string,option
   if(!content.trim()||content.length>2_000_000)throw new Error("Extracted content is empty or too large");
   const contentHash=sha(content);
   const registered=await tenantTransaction(userId,async client=>{
+    if(options.leaseToken){
+      const lease=await client.query("select id from knowledge_upload_job where id=$1 and user_id=$2 and lease_token=$3 and lease_until>now() for update",[jobId,userId,options.leaseToken]);
+      if(!lease.rows[0])throw new Error("Upload lease expired or changed");
+    }
     const selected=await client.query<Job>(`select id,status,visibility,source_sha256,extractor_version,extraction_artifact_key,metrics,published_document_id,published_asset_id
       from knowledge_upload_job where id=$1 and user_id=$2 for update`,[jobId,userId]);
     const current=selected.rows[0];
@@ -68,10 +72,11 @@ export async function registerVectorlessUpload(userId:string,jobId:string,option
     return {documentId,assetId:asset.rows[0].id,reused:false};
   },actor.role);
   try{
-    const tree=await indexExtractedDocument(userId,jobId);
+    const tree=await indexExtractedDocument(userId,jobId,options.leaseToken);
     return {...registered,treeStatus:"searchable" as const,versionId:tree.versionId};
   }catch(error){
-    await tenantQuery(userId,"update knowledge_upload_job set error_code='tree-index-failed',updated_at=now() where id=$1 and user_id=$2",[jobId,userId]);
+    await tenantQuery(userId,`update knowledge_upload_job set error_code='tree-index-failed',updated_at=now() where id=$1 and user_id=$2
+      and ($3::uuid is null or (lease_token=$3 and lease_until>now()))`,[jobId,userId,options.leaseToken??null]);
     return {...registered,treeStatus:"failed" as const,treeError:error instanceof Error?error.message:"unknown"};
   }
 }
