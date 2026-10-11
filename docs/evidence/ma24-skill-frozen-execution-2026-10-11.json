@@ -1,0 +1,31 @@
+{
+  "date": "2026-10-11",
+  "scope": "G08-G10 local frozen historical candidate execution",
+  "checks": {
+    "relatedUnitTests": 103,
+    "sourceTestsRepeatedAfterSourceHashBinding": 11,
+    "typecheck": "passed",
+    "eslint": "passed",
+    "fullRecordedSourceCloneVerifier": "passed",
+    "freezeBeforeExecutionAndCollection": true,
+    "sourceIdentityChecked": true,
+    "serverTimesPreserved": true,
+    "recoveryWithoutAdditionalRequests": true,
+    "revokedFreezeStopsExecution": true,
+    "syntheticRequests": 4,
+    "actualModelCalls": 0
+  },
+  "initialFailure": "Cross-account collection was rejected by the earlier freeze guard; the old assertion expected a later owner-binding error. Assertion corrected and full verifier passed.",
+  "limitations": {
+    "cloneOnly": true,
+    "sourceFingerprintIsNotLoadedBinaryAttestation": true,
+    "freezeIdNotYetBoundIntoModelAttemptRows": true,
+    "runtimeIdentityVerified": false,
+    "collectorProvenanceVerified": false,
+    "productionAgentEquivalent": false,
+    "qualityAccepted": false,
+    "automaticActivation": false,
+    "productionDeployment": false,
+    "publicGithubPush": "blocked by prior public-disclosure approval requirement"
+  }
+}

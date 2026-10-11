@@ -8,6 +8,8 @@ import {runSkillCandidateArm} from './skill-candidate-runner';
 import {assertLocalAnalysisBoundary} from './local-analysis-boundary';
 import type {RecordedEvidenceReceipt} from './recorded-evidence-receipts';
 import {createDurableSkillCandidateModel,type SkillCandidateCollector} from './skill-candidate-model';
+import {requireSkillAcceptanceFreeze} from './skill-acceptance-freeze';
+import {prepareSkillExecutionIdentity} from './skill-runtime-identity';
 
 type Snapshot=Parameters<typeof runSkillCandidateArm>[0];
 const selection=z.object({runId:z.uuid(),skillId:z.uuid(),version:z.number().int().positive()}).strict();
@@ -46,7 +48,7 @@ async function load(context:{userId:string},input:Selection){
  const first=chain.requests[0];if(!first)throw new Error('Candidate original request unavailable');
  const snapshot:Snapshot={...saved,context:{userId:context.userId,role:first.accountRole,mode:first.profile.mode,knowledgeScope:first.knowledgeScope},
   initialMessages:first.body.messages,profile:first.profile};
- return {snapshot,sourceHash:digest({chain,saved}),taskInputHash:chain.taskInputHash,modelConfigHash:chain.modelConfigHash};
+ return {snapshot,skillSourceHash:digest({source:saved.candidate.value.source,validation:saved.candidate.value.validation,dependencies:saved.candidate.value.dependencies}),sourceHash:digest({chain,saved}),taskInputHash:chain.taskInputHash,modelConfigHash:chain.modelConfigHash};
 }
 
 /** Snapshot remains private to this invocation. Every graph boundary reloads authoritative sources. */
@@ -64,7 +66,15 @@ export async function runRecordedSkillCandidateArm(context:{userId:string},input
 export async function runDurableRecordedSkillCandidateArm(context:{userId:string},input:Selection,
  arm:'baseline'|'candidate',collector:SkillCandidateCollector,maximumModelCalls=8){
  const saved=await load(context,input);
- const validate=async()=>{if((await load(context,input)).sourceHash!==saved.sourceHash)throw new Error('Candidate sources changed during execution');};
+ const validate=async()=>{
+  if((await load(context,input)).sourceHash!==saved.sourceHash)throw new Error('Candidate sources changed during execution');
+  if(collector.frozen){
+   const {freezeId,plan}=collector.frozen;
+   await requireSkillAcceptanceFreeze(context,freezeId,plan);
+   if(plan.pin.sourceHash!==saved.skillSourceHash||plan.pin.ownerId!==context.userId||plan.pin.skillId!==input.skillId||plan.pin.version!==input.version||plan.pin.contentHash!==saved.snapshot.candidate.value.content_hash
+    ||digest(plan.identity)!==digest(await prepareSkillExecutionIdentity(context,{runId:input.runId})))throw new Error('Frozen execution identity changed');
+  }
+ };
  const durable=createDurableSkillCandidateModel({ownerId:context.userId,snapshotHash:saved.sourceHash,arm},collector,validate);
  await validate();
  const output=await runSkillCandidateArm(saved.snapshot,arm,durable.model,validate,maximumModelCalls);

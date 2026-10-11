@@ -4,10 +4,12 @@ import {modelReplySchema} from './model';
 import {orderedModeDecision} from './mode-fallback';
 import {createSkillModelJournal,type SkillCollectorTransaction} from './skill-model-journal';
 import type {runSkillCandidateArm} from './skill-candidate-runner';
+import type {skillAcceptancePlanSchema} from './skill-acceptance-policy';
 
 type Decision=Parameters<Parameters<typeof runSkillCandidateArm>[2]>[0];
 export type SkillCandidateRequest=(input:Decision&{index:number})=>Promise<Record<string,unknown>>;
-export type SkillCandidateCollector={evaluationId:string;sourceKind:'synthetic-fixture'|'production-runner-pending-verification';transaction:SkillCollectorTransaction;request:SkillCandidateRequest};
+export type SkillCandidateCollector={evaluationId:string;sourceKind:'synthetic-fixture'|'production-runner-pending-verification';transaction:SkillCollectorTransaction;request:SkillCandidateRequest;
+ frozen?:{freezeId:string;plan:z.infer<typeof skillAcceptancePlanSchema>}};
 
 /** Internal adapter. Request callback must separately enforce authorization and paid-call admission. */
 export function createDurableSkillCandidateModel(pin:{ownerId:string;snapshotHash:string;arm:'baseline'|'candidate'},collector:SkillCandidateCollector,validate:()=>Promise<void>){

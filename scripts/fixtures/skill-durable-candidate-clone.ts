@@ -5,10 +5,11 @@ import {runDurableRecordedSkillCandidateArm} from '../../src/lib/assistant/main/
 import type {SkillCollectorTransaction} from '../../src/lib/assistant/main/skill-model-journal';
 import {modelFunctions,transportMessages} from '../../src/lib/assistant/main/model';
 import {modelRequestManifest} from '../../src/lib/assistant/main/model-request-manifest';
+import {revokeSkillAcceptanceFreeze} from '../../src/lib/assistant/main/skill-acceptance-freeze';
 import {ModelWaitError} from '../../src/lib/assistant/main/model-stream';
 import {digest} from '../../src/lib/assistant/main/contracts';
 import {auditDurableSkillCandidate} from '../../src/lib/assistant/main/skill-candidate-audit';
-import {verifyCandidateAcceptanceFixture} from './skill-candidate-acceptance-clone';
+import {prepareFrozenCandidateFixture,verifyCandidateAcceptanceFixture} from './skill-candidate-acceptance-clone';
 
 export async function verifyDurableCandidateFixture(pool:Pool,owner:string,input:{runId:string;skillId:string;version:number}){
  assert(/^ma11_replay_[a-f0-9]{12}$/.test((await pool.query('select current_database() as name')).rows[0].name));
@@ -19,8 +20,9 @@ export async function verifyDurableCandidateFixture(pool:Pool,owner:string,input
    const out=await work(client);await client.query('commit');return out;
   }catch(error){await client.query('rollback');throw error;}finally{client.release();}
  };
+ const frozen=await prepareFrozenCandidateFixture(pool,owner,input.runId,input.skillId,transaction);
  try{
-  const collector={evaluationId,sourceKind:'synthetic-fixture' as const,transaction,request:async(request:Parameters<import('../../src/lib/assistant/main/skill-candidate-model').SkillCandidateRequest>[0])=>{
+  const collector={frozen,evaluationId,sourceKind:'synthetic-fixture' as const,transaction,request:async(request:Parameters<import('../../src/lib/assistant/main/skill-candidate-model').SkillCandidateRequest>[0])=>{
    requests++;const completed=request.messages.filter(message=>message.role==='assistant').length;
    if(completed===0&&request.index===0)throw new ModelWaitError('first-output');
    const tool=completed===0?'describe_tool':'execute_tool',args=completed===0?{tool:'skill_read'}:{tool:'skill_read',arguments:{id:input.skillId}};
@@ -35,7 +37,7 @@ export async function verifyDurableCandidateFixture(pool:Pool,owner:string,input
   assert.equal(audited.graphReconstructed,true);assert.equal(audited.completeModelJournalVerified,true);
   assert.equal(audited.projection.answerHash,digest(first.reply));assert.equal(audited.projection.messagesHash,digest(first.messages));assert.equal(audited.projection.traceHash,digest(first.trace));
   assert.equal(audited.projection.sourceKind,'synthetic-fixture');assert.equal(audited.automaticActivation,false);assert.equal(requests,4);
-  console.log(JSON.stringify({candidateAcceptance:await verifyCandidateAcceptanceFixture(pool,owner,input.runId,input.skillId,audited),cloneOnly:true}));
+  console.log(JSON.stringify({candidateAcceptance:await verifyCandidateAcceptanceFixture(pool,owner,input.runId,input.skillId,audited,frozen),cloneOnly:true}));
   await assert.rejects(auditDurableSkillCandidate({userId:randomUUID()},{...input,evaluationId,arm:'candidate'}),/unavailable/);
   const second=await runDurableRecordedSkillCandidateArm({userId:owner},input,'candidate',collector);
   assert.equal(second.status,'completed');assert.equal(requests,4);assert(second.modelAttemptReceipts.every(row=>row.recovered));
@@ -46,10 +48,14 @@ export async function verifyDurableCandidateFixture(pool:Pool,owner:string,input
    join agent_skill_model_outcome o on o.attempt_id=a.id where a.evaluation_id=$1 order by a.step,a.route_index`,[evaluationId])).rows;
   assert.equal(rows.length,4);assert(rows.every(row=>row.source_kind==='synthetic-fixture'&&row.snapshot_hash===first.serverSnapshotHash));
   assert.equal(rows[0].output.status,'unavailable');assert.equal(rows[0].output.data.retryable,true);
-  return {realGraphAndPersistentJournalConnected:true,failureThenFallback:true,recoveryWithoutAdditionalRequests:true,stableRemappedCallIds:true,
+  await revokeSkillAcceptanceFreeze({userId:owner},{freezeId:frozen.freezeId,reason:'Synthetic revocation guard'});
+  await assert.rejects(runDurableRecordedSkillCandidateArm({userId:owner},input,'candidate',collector),/revoked/);assert.equal(requests,4);
+  return {revokedFreezeStopsExecution:true,realGraphAndPersistentJournalConnected:true,failureThenFallback:true,recoveryWithoutAdditionalRequests:true,stableRemappedCallIds:true,
    messagesAndTraceIdenticalOnRecovery:true,snapshotAndSyntheticKindBound:true,readOnlyJournalAuditReconstructedGraph:true,auditCrossAccountRejected:true,syntheticRequests:requests,actualModelCalls:0,automaticActivation:false};
  }finally{
   const client=await pool.connect();try{await client.query('begin');await client.query('set local session_replication_role=replica');
+   await client.query('delete from agent_skill_acceptance_freeze_revocation where freeze_id=$1',[frozen.freezeId]);
+   await client.query('delete from agent_skill_acceptance_freeze where id=$1',[frozen.freezeId]);
    await client.query('delete from agent_skill_model_outcome where attempt_id in(select id from agent_skill_model_attempt where evaluation_id=$1)',[evaluationId]);
    await client.query('delete from agent_skill_model_attempt where evaluation_id=$1',[evaluationId]);await client.query('commit');
   }catch(error){await client.query('rollback');throw error;}finally{client.release();}

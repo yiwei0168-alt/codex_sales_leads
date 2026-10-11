@@ -7,21 +7,29 @@ import {validateStoredSkillAcceptanceCandidate} from '../../src/lib/assistant/ma
 import type {auditDurableSkillCandidate} from '../../src/lib/assistant/main/skill-candidate-audit';
 import {collectHistoricalSkillAcceptance} from '../../src/lib/assistant/main/skill-acceptance-collector';
 import type {SkillCollectorTransaction} from '../../src/lib/assistant/main/skill-model-journal';
+import {prepareSkillExecutionIdentity} from '../../src/lib/assistant/main/skill-runtime-identity';
+import {freezeSkillAcceptancePlan} from '../../src/lib/assistant/main/skill-acceptance-freeze';
 import {readSkillAcceptanceEvidence} from '../../src/lib/assistant/main/skill-acceptance-store';
 
-export async function verifyCandidateAcceptanceFixture(pool:Pool,owner:string,runId:string,skillId:string,audited:Awaited<ReturnType<typeof auditDurableSkillCandidate>>){
+export async function prepareFrozenCandidateFixture(pool:Pool,owner:string,runId:string,skillId:string,transaction:SkillCollectorTransaction){
  assert(/^ma11_replay_[a-f0-9]{12}$/.test((await pool.query('select current_database() as name')).rows[0].name));
- const baseline=await prepareSkillAcceptanceBaseline({userId:owner},{runId}),p=baseline.projection,c=audited.projection;
+ const baseline=await prepareSkillAcceptanceBaseline({userId:owner},{runId}),p=baseline.projection;
  const version=(await pool.query('select * from agent_skill_version where skill_id=$1 and version=1',[skillId])).rows[0];
  const pin={ownerId:owner,skillId,version:1,contentHash:version.content_hash,sourceHash:digest({source:version.source,validation:version.validation,dependencies:version.dependencies})};
- const identity={runtimeHash:digest('synthetic'),promptHash:digest('synthetic'),toolSchemaHash:p.requests[0].toolSchemaHash,modelConfigHash:p.modelConfigHash,scopeHash:digest('synthetic')};
+ const identity=await prepareSkillExecutionIdentity({userId:owner},{runId});
  const at=(offset:number)=>new Date(Date.now()+offset).toISOString();
- const plan={protocol:'skill-acceptance-plan-v1',pin,identity,frozenAt:at(-10000),expiresAt:at(3600000),cases:['replay','negative','injection','permissions','shadow'].map(category=>({id:category,category,inputHash:category==='replay'?p.inputHash:digest(category),sourceHash:category==='replay'?baseline.projectionHash:digest(category),provenance:category==='replay'?'historical-task':category==='shadow'?'prospective-task':'safety-fixture'}))};
+ const plan={protocol:'skill-acceptance-plan-v1',pin,identity,expiresAt:at(3600000),cases:['replay','negative','injection','permissions','shadow'].map(category=>({id:category,category,inputHash:category==='replay'?p.inputHash:digest(category),sourceHash:category==='replay'?baseline.projectionHash:digest(category),provenance:category==='replay'?'historical-task':category==='shadow'?'prospective-task':'safety-fixture'}))};
+ return freezeSkillAcceptancePlan({userId:owner},plan,transaction);
+}
+
+export async function verifyCandidateAcceptanceFixture(pool:Pool,owner:string,runId:string,skillId:string,audited:Awaited<ReturnType<typeof auditDurableSkillCandidate>>,frozen:Awaited<ReturnType<typeof prepareFrozenCandidateFixture>>){
+ const baseline=await prepareSkillAcceptanceBaseline({userId:owner},{runId}),p=baseline.projection,c=audited.projection;
+ const {plan,freezeId}=frozen,{pin,identity}=plan;
  const base={state:'completed',stopReason:null,unexpectedEffects:0,identity,answerHash:p.answerHash,evidenceHash:p.evidenceHash,modelReceiptHashes:p.modelReceiptHashes,requestedModel:p.requests[0].requestedModel,actualModel:p.requests[0].response.model,provider:p.requests[0].response.provider,
   routing:{protocol:'per-decision-v2',decisions:p.requests.map((request,step)=>({step,requestedModel:request.requestedModel,actualModel:request.response.model,provider:request.response.provider,receiptHash:p.modelReceiptHashes[step],toolSchemaHash:request.toolSchemaHash}))}};
  const candidate={...base,answerHash:c.answerHash,evidenceHash:c.evidenceHash,modelReceiptHashes:c.modelAttemptReceipts.map(row=>row.hash),requestedModel:c.selectedModels[0].requestedModel,actualModel:c.selectedModels[0].model,provider:c.selectedModels[0].provider,
   routing:{protocol:'per-decision-v2',decisions:c.selectedModels.map(route=>({step:route.step,requestedModel:route.requestedModel,actualModel:route.model,provider:route.provider,receiptHash:route.receiptHash,toolSchemaHash:route.toolSchemaHash}))}};
- const observation={caseId:'replay',planHash:digest(plan),pin,inputHash:p.inputHash,sourceHash:baseline.projectionHash,provenance:'historical-task',capturedAt:at(-9000),taskStartedAt:at(-9000),completedAt:at(-8000),sourceCurrent:true,baseline:base,candidate};
+ const observation={caseId:'replay',planHash:digest(plan),pin,inputHash:p.inputHash,sourceHash:baseline.projectionHash,provenance:'historical-task',capturedAt:c.capturedAt,taskStartedAt:null,completedAt:c.completedAt,sourceCurrent:true,baseline:base,candidate};
  const artifact={sourceKind:'synthetic-fixture',plan,observations:[observation],rawReceipts:{baselineSources:{replay:{runId,projectionHash:baseline.projectionHash}},candidateSources:{replay:{runId,evaluationId:c.evaluationId,projectionHash:audited.projectionHash}}}};
  const id=randomUUID();let collectedId:string|undefined;
  try{
@@ -32,18 +40,20 @@ export async function verifyCandidateAcceptanceFixture(pool:Pool,owner:string,ru
    await client.query('begin');await client.query('set local role network_copilot_skill_collector');await client.query("select set_config('app.current_user_id',$1,true)",[userId]);
    const value=await work(client);await client.query('commit');return value;
   }catch(error){await client.query('rollback');throw error;}finally{client.release();}};
-  const collection={plan,replays:[{caseId:'replay',runId,evaluationId:c.evaluationId}]};
+  const collection={plan,freezeId,replays:[{caseId:'replay',runId,evaluationId:c.evaluationId}]};
   await assert.rejects(collectHistoricalSkillAcceptance({userId:owner},{...collection,observations:[observation]},transaction));
-  await assert.rejects(collectHistoricalSkillAcceptance({userId:randomUUID()},collection,transaction),/owner or case binding/);
+  await assert.rejects(collectHistoricalSkillAcceptance({userId:randomUUID()},collection,transaction),/Acceptance freeze unavailable/);
   await assert.rejects(collectHistoricalSkillAcceptance({userId:owner},{...collection,replays:[...collection.replays,...collection.replays]},transaction),/owner or case binding/);
-  const collected=await collectHistoricalSkillAcceptance({userId:owner},{plan,replays:[{caseId:'replay',runId,evaluationId:c.evaluationId}]},transaction);collectedId=collected.bundleId;
+  const collected=await collectHistoricalSkillAcceptance({userId:owner},collection,transaction);collectedId=collected.bundleId;
   const stored=await readSkillAcceptanceEvidence({userId:owner},collected.bundleId);
   assert.equal(stored.artifact.sourceKind,'synthetic-fixture');assert.equal(stored.artifact.observations[0].candidate.answerHash,c.answerHash);
   assert.equal(stored.artifact.observations[0].capturedAt,c.capturedAt);assert.equal(stored.artifact.observations[0].completedAt,c.completedAt);
   assert.equal(stored.artifact.observations[0].taskStartedAt,null);assert.equal(stored.collectorProvenanceVerified,false);
-  assert.equal((stored.artifact.rawReceipts.collector as {freezeVerified:boolean}).freezeVerified,false);
+  assert.equal((stored.artifact.rawReceipts.collector as {freezeVerified:boolean}).freezeVerified,true);
+  assert.equal((stored.artifact.rawReceipts.collector as {sourceIdentityChecked:boolean}).sourceIdentityChecked,true);
+  assert(Date.parse(c.capturedAt)>=Date.parse(plan.frozenAt));
   assert.equal(collected.automaticActivation,false);
-  return {storedCandidateAndBaselineBound:true,restrictedCollectorPublishedDerivedObservation:true,serverTimesPreserved:true,freezeRemainsUnverified:true,perDecisionRoutesBound:true,mixedCandidateRoutes:new Set(c.selectedModels.map(row=>row.model)).size>1,syntheticBundle:true,automaticActivation:false};
+  return {storedCandidateAndBaselineBound:true,restrictedCollectorPublishedDerivedObservation:true,serverTimesPreserved:true,freezeBeforeExecutionVerified:true,sourceIdentityChecked:true,runtimeAttestation:false,perDecisionRoutesBound:true,mixedCandidateRoutes:new Set(c.selectedModels.map(row=>row.model)).size>1,syntheticBundle:true,automaticActivation:false};
  }finally{
   const client=await pool.connect();try{await client.query('begin');await client.query('set local session_replication_role=replica');await client.query('delete from agent_skill_acceptance_bundle where id=any($1::uuid[]) and owner_id=$2',[[id,...(collectedId?[collectedId]:[])],owner]);await client.query('commit');}
   catch(error){await client.query('rollback');throw error;}finally{client.release();}
