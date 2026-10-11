@@ -84,7 +84,8 @@ export async function changeSkill(context: Pick<ExecutionContext, "userId" | "ro
       if(selected.scope!=="account"||selected.validation.scripts!=="none"||selected.validation.dependencies!=="none"
         ||!instructionOnlySkill(selected.files)||!Array.isArray(selected.dependencies)||selected.dependencies.length)
         throw new Error("Script, dependency or global Skill requires human approval");
-      if(selected.validation.autoEnable!=="passed")throw new Error("Skill replay and shadow acceptance required before Agent activation");
+      // Legacy validation labels and local review JSON are not trusted activation evidence.
+      throw new Error("Skill replay and shadow acceptance required before Agent activation: trusted production evidence gate unavailable");
     }
     if (input.operation === "publish") {
       const published = await client.query("update agent_skill set published=true,enabled=true,updated_at=now() where id=$1 and owner_id=$2 and scope='global' and current_version=$3", [input.id, context.userId, input.version]);

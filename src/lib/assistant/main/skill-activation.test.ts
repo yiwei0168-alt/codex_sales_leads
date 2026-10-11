@@ -31,7 +31,9 @@ it("requires replay and shadow acceptance before Agent activation of a pure acco
   const action={id:"00000000-0000-4000-8000-000000000002",version:1,operation:"enable" as const};
   await expect(changeSkill(context,action)).rejects.toThrow("replay and shadow acceptance");
   db.validation.autoEnable="passed";
-  await expect(changeSkill(context,action)).resolves.toEqual({updated:true});
+  await expect(changeSkill(context,action)).rejects.toThrow("trusted production evidence gate unavailable");
+  await expect(changeSkill(context,{...action,operation:"rollback"})).rejects.toThrow("trusted production evidence gate unavailable");
+  expect(db.queries.some(q=>q.sql.startsWith("update agent_skill"))).toBe(false);
   db.scope="global";
   await expect(changeSkill(context,action)).rejects.toThrow("human approval");
 });
