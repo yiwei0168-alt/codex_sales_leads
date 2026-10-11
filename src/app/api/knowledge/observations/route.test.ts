@@ -21,3 +21,12 @@ it.each([['Memory target is unavailable',404],['Memory version changed',409],['U
 it('rejects empty correction before mutation',async()=>{expect((await POST(request({action:'correct',id,content:'  '}))).status).toBe(400);expect(mock.correct).not.toHaveBeenCalled();});
 it('reports a stale undo instead of pretending to change the latest version',async()=>{mock.undo.mockRejectedValue(new Error('Memory version changed'));
   expect((await POST(request({action:'undo',id}))).status).toBe(409);});
+it('accepts explicit nullable business dates but never caller knowledge time',async()=>{
+  mock.correct.mockResolvedValue('new');const businessTime={validFrom:'2024-01-01T00:00:00Z',validUntil:null};
+  expect((await POST(request({action:'correct',id,content:'Updated',businessTime,recordedAt:'2020-01-01'}))).status).toBe(200);
+  expect(mock.correct).toHaveBeenCalledWith('owner',{id,content:'Updated',reason:'',businessTime});
+});
+it('rejects an inverted interval before calling the store',async()=>{
+  expect((await POST(request({action:'correct',id,content:'Updated',businessTime:{validFrom:'2025-01-01T00:00:00Z',validUntil:'2024-01-01T00:00:00Z'}}))).status).toBe(400);
+  expect(mock.correct).not.toHaveBeenCalled();
+});

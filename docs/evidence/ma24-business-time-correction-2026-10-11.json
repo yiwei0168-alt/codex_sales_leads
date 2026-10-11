@@ -1,0 +1,48 @@
+{
+  "date": "2026-10-11",
+  "stage": "G03-time-editor",
+  "checks": {
+    "tests": 51,
+    "files": 4,
+    "typecheck": true,
+    "focusedLint": true,
+    "productionBuild": true,
+    "cloneBitemporal": true,
+    "cloneIdempotency": true,
+    "cloneConcurrentChanges": true,
+    "cloneAccountIsolation": true,
+    "browserWidths": [
+      1366,
+      390,
+      320
+    ],
+    "timezoneConversion": "Asia/Shanghai -> UTC",
+    "invalidIntervalNoWrite": true,
+    "staleDraftPreserved": true,
+    "noHorizontalOverflow": true
+  },
+  "deployment": {
+    "webPort": 3018,
+    "webPid": 33640,
+    "homepage": 200,
+    "unauthenticatedObservationAPI": 401,
+    "staticAssets": 11,
+    "mailWorkerRestarted": false
+  },
+  "boundaries": {
+    "knowledgeTimeUserEditable": false,
+    "scopeEditable": false,
+    "privateCloudCalls": 0,
+    "modelCalls": 0,
+    "productionMemoryWrites": 0
+  },
+  "remaining": [
+    "general free-text correction",
+    "natural sample quality"
+  ],
+  "screenshots": [
+    "tmp/memory-correction-ui/editor-1366.png",
+    "tmp/memory-correction-ui/editor-390.png",
+    "tmp/memory-correction-ui/editor-320.png"
+  ]
+}

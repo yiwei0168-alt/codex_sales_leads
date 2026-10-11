@@ -34,3 +34,31 @@ it('preserves the original editor authority for bridged legacy preferences',asyn
 it.each([{content:'  '},{content:'x'.repeat(801)},{content:'Valid change',confidence:1},{content:'Valid change',marketCode:'FR'}])('rejects invalid input and scope/authority injection %j',async extra=>{
   await expect(correctMemory('owner',{id,...extra})).rejects.toThrow();expect(mock.transaction).not.toHaveBeenCalled();
 });
+it('allows time-only correction, preserves scope and records explicit before/after without backdating knowledge',async()=>{
+  const businessTime={validFrom:'2024-01-01T00:00:00+08:00',validUntil:'2025-01-01T00:00:00+08:00'};
+  await correctMemory('owner',{id,content:target.content,businessTime});
+  expect(mock.observe).toHaveBeenCalledWith({query},'owner',expect.objectContaining({content:target.content,marketCode:'DE',companyId:'c1',
+    validFrom:businessTime.validFrom,validUntil:businessTime.validUntil,sourceReceipt:expect.objectContaining({
+      businessTimeCorrection:{explicit:true,before:{validFrom:null,validUntil:null},after:businessTime}})}));
+  expect(mock.observe.mock.calls[0][2]).not.toHaveProperty('recordedAt');
+});
+it('can explicitly clear known business dates, without guessing replacement dates',async()=>{
+  query.mockImplementation(async(sql:string)=>({rows:sql.includes('select id,kind,content')?[{...target,valid_from:'2024-01-01T00:00:00Z'}]:[]}));
+  await correctMemory('owner',{id,content:target.content,businessTime:{validFrom:null,validUntil:null}});
+  expect(mock.observe.mock.calls[0][2]).toMatchObject({validFrom:null,validUntil:null});
+});
+it('treats equivalent instants as unchanged',async()=>{
+  query.mockImplementation(async(sql:string)=>({rows:sql.includes('select id,kind,content')?[{...target,valid_from:'2024-01-01T00:00:00Z'}]:[]}));
+  await expect(correctMemory('owner',{id,content:target.content,businessTime:{validFrom:'2024-01-01T08:00:00+08:00',validUntil:null}})).rejects.toThrow('unchanged');
+});
+it.each([
+  {validFrom:'2024-01-02T00:00:00Z',validUntil:'2024-01-01T00:00:00Z'},
+  {validFrom:'2024-01-01T00:00:00Z',validUntil:'2024-01-01T00:00:00Z'},
+  {validFrom:'2024-01-01T00:00:00',validUntil:null},
+  {validFrom:'2024-02-30T00:00:00Z',validUntil:null},
+  {validFrom:null},
+  {validFrom:null,validUntil:null,recordedAt:'2024-01-01T00:00:00Z'},
+])('rejects invalid or incomplete explicit time correction %j',async businessTime=>{
+  await expect(correctMemory('owner',{id,content:target.content,businessTime} as Parameters<typeof correctMemory>[1])).rejects.toThrow();
+  expect(mock.transaction).not.toHaveBeenCalled();
+});

@@ -21,13 +21,14 @@ const screenshots:string[]=[],errors:string[]=[];
 try{
   await mkdir('tmp/memory-correction-ui',{recursive:true});
   for(const viewport of [{width:1366,height:768},{width:390,height:844},{width:320,height:740}]){
-    const context=await browser.newContext({viewport});let saved=false,fail=false,posts=0;
+    const context=await browser.newContext({viewport,timezoneId:'Asia/Shanghai'});let saved=false,fail=false,posts=0;
     await context.route('**/*',async route=>{
       const request=route.request(),url=new URL(request.url());
       if(url.hostname!=='127.0.0.1')return route.abort();
       if(url.pathname!=='/api/knowledge/observations')return route.continue();
       if(request.method()==='POST'){
         posts++;const body=request.postDataJSON();assert.equal(body.action,'correct');assert.equal(body.id,'memory-0');
+        assert.deepEqual(body.businessTime,{validFrom:'2024-01-01T00:00:00.000Z',validUntil:'2024-02-01T00:00:00.000Z'});
         if(fail)return route.fulfill({status:409,json:{error:'这条记忆已被更正或撤销，请刷新后查看最新记录。'}});
         assert.equal(body.content,'更正后的合成偏好：使用简短摘要。');saved=true;return route.fulfill({json:{id:'new-memory'}});
       }
@@ -43,9 +44,20 @@ try{
     await field.fill('不会保存的草稿');await page.getByRole('button',{name:'取消',exact:true}).click();assert.equal(posts,0);
     await page.getByRole('button',{name:'更正这条记忆',exact:true}).first().click();
     await field.fill('更正后的合成偏好：使用简短摘要。');await page.getByLabel('更正原因（可选）').fill('核对后修正');
+    await page.getByLabel('业务生效时间',{exact:true}).selectOption('replace');
+    await page.getByLabel('开始时间（含）').fill('2024-01-01T08:00');
+    await page.getByLabel('结束时间（不含）').fill('2023-01-01T08:00');
+    await page.getByRole('button',{name:'保存更正',exact:true}).click();
+    await expect(page.getByRole('alert')).toContainText('结束时间必须晚于');assert.equal(posts,0);
+    await page.getByLabel('结束时间（不含）').fill('2024-02-01T08:00');
+    await expect(page.getByRole('button',{name:'历史时间轴',exact:true})).toBeDisabled();
+    await expect(page.getByRole('button',{name:'下一页',exact:true})).toBeDisabled();
+    const editorGeometry=await page.evaluate(()=>({width:innerWidth,scroll:document.documentElement.scrollWidth}));
+    assert(editorGeometry.scroll<=editorGeometry.width+1);
     const editorPath=`tmp/memory-correction-ui/editor-${viewport.width}.png`;await page.screenshot({path:editorPath});screenshots.push(editorPath);
     fail=true;await page.getByRole('button',{name:'保存更正',exact:true}).click();
     await expect(page.getByRole('alert')).toContainText('刷新');await expect(field).toHaveValue('更正后的合成偏好：使用简短摘要。');
+    await expect(page.getByLabel('开始时间（含）')).toHaveValue('2024-01-01T08:00');
     fail=false;await page.getByRole('button',{name:'保存更正',exact:true}).click();
     await expect(page.getByRole('status')).toContainText('更正已保存');await expect(field).toHaveCount(0);
     await expect(page.getByText('更正后的合成偏好：使用简短摘要。',{exact:true})).toBeVisible();

@@ -22,10 +22,10 @@ export async function GET(request:Request){
 
 export async function POST(request:Request){
   const session=await requireApiSession();if(session instanceof Response)return session;
-  const body=await request.json().catch(()=>null) as {action?:unknown;id?:unknown;content?:unknown;reason?:unknown}|null;
+  const body=await request.json().catch(()=>null) as {action?:unknown;id?:unknown;content?:unknown;reason?:unknown;businessTime?:unknown}|null;
   if(body?.action==='correct'){
-    const parsed=memoryCorrectionSchema.safeParse({id:body.id,content:body.content,reason:body.reason});
-    if(!parsed.success)return Response.json({error:'请填写 3～800 字的更正内容，备注不超过 500 字。'},{status:400,headers:noStore});
+    const parsed=memoryCorrectionSchema.safeParse({id:body.id,content:body.content,reason:body.reason,...(body.businessTime!==undefined?{businessTime:body.businessTime}:{})});
+    if(!parsed.success)return Response.json({error:'请核对更正内容（3～800 字）、原因（最多 500 字）和业务时间；结束时间必须晚于开始时间。'},{status:400,headers:noStore});
     try{return Response.json({id:await correctMemory(session.userId,parsed.data)},{headers:noStore});}
     catch(error){
       const message=error instanceof Error?error.message:'';
@@ -33,7 +33,7 @@ export async function POST(request:Request){
         'Memory target is unavailable':[404,'记忆不存在或不可访问。'],
         'Memory version changed':[409,'这条记忆已被更正或撤销，请刷新后查看最新记录。'],
         'Use original memory editor':[409,'请在原偏好管理入口修改这条记忆。'],
-        'Memory correction is unchanged':[400,'更正内容与原记录相同。'],
+        'Memory correction is unchanged':[400,'更正内容和业务时间均与原记录相同。'],
       };
       const [status,text]=known[message]??[503,'更正未保存，请稍后重试。'];
       return Response.json({error:text},{status,headers:noStore});

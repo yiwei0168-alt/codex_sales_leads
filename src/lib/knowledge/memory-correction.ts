@@ -5,8 +5,11 @@ import {tenantTransaction} from '@/lib/rag/db';
 import {observeMemoryInTransaction,type MemoryObservationInput} from './temporal-memory';
 import {parseMemoryCorrectionCommand} from './memory-correction-command';
 
+const businessTimeSchema=z.object({validFrom:z.iso.datetime({offset:true}).nullable(),validUntil:z.iso.datetime({offset:true}).nullable()}).strict()
+  .refine(p=>!p.validFrom||!p.validUntil||Date.parse(p.validUntil)>Date.parse(p.validFrom),{message:'Invalid business validity interval'});
 export const memoryCorrectionSchema=z.object({
   id:z.uuid(),content:z.string().trim().min(3).max(800),reason:z.string().trim().max(500).default(''),
+  businessTime:businessTimeSchema.optional(),
 }).strict();
 type Target={id:string;kind:MemoryObservationInput['kind'];content:string;memory_key:string|null;
   market_code:string|null;company_id:string|null;market_codes:string[];company_ids:string[];
@@ -28,11 +31,16 @@ async function correctInTransaction(client:PoolClient,userId:string,p:z.output<t
     // Legacy observations mirror an independently versioned store. Its original editor owns updates.
     if(String(target.source_receipt.type).startsWith('agent-memory-'))throw new Error('Use original memory editor');
     if(target.invalidates_id)throw new Error('Memory version changed');
-    if(target.content===p.content)throw new Error('Memory correction is unchanged');
+    const validFrom=p.businessTime?p.businessTime.validFrom:target.valid_from;
+    const validUntil=p.businessTime?p.businessTime.validUntil:target.valid_until;
+    const instant=(value:string|null)=>value===null?null:new Date(value).getTime();
+    if(target.content===p.content&&instant(validFrom)===instant(target.valid_from)&&instant(validUntil)===instant(target.valid_until))
+      throw new Error('Memory correction is unchanged');
     if(target.memory_key)await client.query('select pg_advisory_xact_lock(hashtextextended($1,0))',[
       `${userId}:${target.kind}:${target.memory_key}:${target.market_code??''}:${target.company_id??''}:${target.market_codes.join(',')}:${target.company_ids.join(',')}`]);
     await client.query('select pg_advisory_xact_lock(hashtextextended($1,0))',[`memory-target:${userId}:${p.id}`]);
-    const key=source?`message-correction:${source.messageId}`:`user-correction:${p.id}:${createHash('sha256').update(JSON.stringify([p.content,p.reason])).digest('hex')}`;
+    const key=source?`message-correction:${source.messageId}`:`user-correction:${p.id}:${createHash('sha256').update(JSON.stringify(
+      p.businessTime?[p.content,p.reason,{validFrom:validFrom===null?null:new Date(validFrom).toISOString(),validUntil:validUntil===null?null:new Date(validUntil).toISOString()}]:[p.content,p.reason])).digest('hex')}`;
     const replay=(await client.query<{id:string}>('select id from agent_memory_observation where owner_id=$1 and idempotency_key=$2',[userId,key])).rows[0];
     if(replay)return replay.id;
     const replaced=await client.query('select id from agent_memory_observation where owner_id=$1 and (corrects_id=$2 or invalidates_id=$2) limit 1',[userId,p.id]);
@@ -48,10 +56,11 @@ async function correctInTransaction(client:PoolClient,userId:string,p:z.output<t
       kind:target.kind,content:p.content,memoryKey:target.memory_key??undefined,
       marketCode:target.market_code??undefined,companyId:target.company_id??undefined,
       marketCodes:target.market_codes,companyIds:target.company_ids,
-      validFrom:target.valid_from,validUntil:target.valid_until,
+      validFrom,validUntil,
       confidence:target.confidence===null?undefined:Math.min(target.confidence,0.7),
       correctsId:p.id,idempotencyKey:key,
       sourceReceipt:{type:source?'user-message-correction':'user-correction',targetId:p.id,sourceQuote:p.content,reason:p.reason,
+        ...(p.businessTime?{businessTimeCorrection:{explicit:true,before:{validFrom:target.valid_from,validUntil:target.valid_until},after:{validFrom,validUntil}}}:{}),
         ...(source?{runId:source.runId,messageId:source.messageId,messageSha256:source.messageSha256,commandQuote:source.sourceQuote}:{}),
         usage:'unverified-internal-only',successVerified:false,observationBasis:'user-correction'},
     });

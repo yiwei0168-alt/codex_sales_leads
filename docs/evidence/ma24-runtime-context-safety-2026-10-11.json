@@ -96,9 +96,14 @@
     }
   },
   "deployment": {
-    "newGuardsLoaded": false,
+    "newGuardsLoaded": true,
+    "webPid": 33640,
+    "langgraphPid": 36248,
+    "langgraphHealth": 200,
+    "mainWorkerParentPid": 40460,
     "mailWorkerRestarted": false,
-    "productionFlagsChanged": false
+    "productionFlagsChanged": false,
+    "syntheticEndToEndTask": false
   },
   "limitations": [
     "Synthetic local development review, not independent human acceptance or live shadow.",

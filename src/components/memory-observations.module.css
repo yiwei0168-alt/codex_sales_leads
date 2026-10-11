@@ -4,7 +4,10 @@
 .records pre { max-width: 100%; overflow: auto; max-height: 240px; white-space: pre-wrap; }
 .editor { display: grid; gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); background: var(--surface); }
 .editor label { font-weight: 650; }
-.editor textarea, .editor input { width: 100%; min-width: 0; padding: 10px; border: 1px solid var(--line-strong); border-radius: 6px; color: var(--ink); background: var(--surface); }
+.editor textarea, .editor input, .editor select { width: 100%; min-width: 0; padding: 10px; border: 1px solid var(--line-strong); border-radius: 6px; color: var(--ink); background: var(--surface); }
+.timeFields { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 12px; min-width: 0; }
+.timeFields label { display: grid; gap: 6px; min-width: 0; }
+.timeFields p { grid-column: 1 / -1; }
 .editor textarea { resize: vertical; }
 .editor p { margin: 0; color: var(--muted); }
 .actions { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }

@@ -52,6 +52,18 @@ try{
   const unknown=await observeMemory(owner,{kind:'preference',content:'Unknown date original',sourceReceipt:{type:'synthetic'}});
   const unknownNew=await correctMemory(owner,{id:unknown,content:'Unknown date corrected'});
   assert.equal((await memoryTimeline(owner)).find(row=>row.id===unknownNew)?.valid_from,null);
+  const beforeTimeEdit=await now();
+  const businessTime={validFrom:'2024-01-01T00:00:00Z',validUntil:'2024-02-01T00:00:00Z'};
+  const dated=await correctMemory(owner,{id:unknownNew,content:'Unknown date corrected',businessTime});
+  assert.equal(await correctMemory(owner,{id:unknownNew,content:'Unknown date corrected',businessTime}),dated);
+  const afterTimeEdit=await now();
+  assert(!(await memoryAt(owner,'2024-01-15T00:00:00Z',beforeTimeEdit)).some(row=>row.id===dated),'Never backdate system knowledge');
+  assert((await memoryAt(owner,'2024-01-01T00:00:00Z',afterTimeEdit)).some(row=>row.id===dated),'Start is inclusive');
+  assert(!(await memoryAt(owner,'2024-02-01T00:00:00Z',afterTimeEdit)).some(row=>row.id===dated),'End is exclusive');
+  const cleared=await correctMemory(owner,{id:dated,content:'Unknown date corrected',businessTime:{validFrom:null,validUntil:null}});
+  assert.equal((await memoryTimeline(owner)).find(row=>row.id===cleared)?.valid_from,null);
+  assert(!(await memoryAt(owner,'2024-01-15T00:00:00Z',await now())).some(row=>row.id===cleared),'Unknown start is not assumed current');
+  assert((await memoryAt(owner,'2024-01-15T00:00:00Z',afterTimeEdit)).some(row=>row.id===dated),'Later correction preserves historical known time');
   const race=await observeMemory(owner,{kind:'preference',content:'Concurrent original',sourceReceipt:{type:'synthetic'},memoryKey:`race-${marker}`});
   const outcomes=await Promise.allSettled([correctMemory(owner,{id:race,content:'Concurrent first'}),correctMemory(owner,{id:race,content:'Concurrent second'})]);
   assert.equal(outcomes.filter(result=>result.status==='fulfilled').length,1);
@@ -64,7 +76,9 @@ try{
   assert(!final.some(row=>[old,replacement].includes(row.id)),'Undo must not silently revive superseded content');
   assert((await memoryAt(owner,after,after,{marketCode:'DE'})).some(row=>row.id===replacement),'Undo cannot alter historical known-at');
   console.log(JSON.stringify({clone:true,correction:true,idempotentNoticeOutbox:true,scopePreserved:true,unknownDatesPreserved:true,
-    knownAtPreserved:true,graphStaleCandidateRejected:true,concurrentCorrectionAndUndo:true,crossAccountDenied:true,modelCalls:0}));
+    knownAtPreserved:true,graphStaleCandidateRejected:true,concurrentCorrectionAndUndo:true,crossAccountDenied:true,
+    explicitTimeOnlyCorrection:true,timeCorrectionReplay:true,timeBoundaries:true,clearedTimeUnknown:true,noKnowledgeBackdating:true,
+    currentContextRevocation:true,historicalContextPreserved:true,modelCalls:0}));
 }finally{
   const client=await pool.connect();
   try{
