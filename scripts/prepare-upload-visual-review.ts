@@ -1,4 +1,4 @@
-import {spawn} from 'node:child_process';
+import {runBoundedLocalProcess} from './lib/run-bounded-local-process';
 import {createHash,randomUUID} from 'node:crypto';
 import {readFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
@@ -30,12 +30,7 @@ try{
  const folder=safeKnowledgeStorageKey(`knowledge/uploads/${userId}/${jobId}.visual.${randomUUID()}`),key=`${folder}/review.json`;
  const python=resolve('.venv-docling-v3/Scripts/python.exe');
  const checkpoints=resolve(safeKnowledgeStorageKey(`knowledge/uploads/${userId}/${jobId}.visual-checkpoints`));assertResolvedInsideKnowledgeRoot(checkpoints);
- await new Promise<void>((done,reject)=>{
-  const child=spawn(python,['scripts/prepare_pptx_visual_review.py','--input',source,'--artifact',artifact,'--output',resolve(folder),'--max-unique-images','100','--all-batches','--checkpoint-dir',checkpoints],{cwd:process.cwd(),windowsHide:true,stdio:['ignore','pipe','pipe']});
-  let error='';child.stdout.on('data',()=>{});child.stderr.on('data',part=>{error=(error+String(part)).slice(-2000);});
-  const timer=setTimeout(()=>child.kill(),20*60*1000);
-  child.once('error',err=>{clearTimeout(timer);reject(err);});child.once('exit',code=>{clearTimeout(timer);if(code===0)done();else reject(new Error(`Local candidate process failed: ${code}; ${error}`));});
- });
+ await runBoundedLocalProcess(python,['scripts/prepare_pptx_visual_review.py','--input',source,'--artifact',artifact,'--output',resolve(folder),'--max-unique-images','100','--all-batches','--checkpoint-dir',checkpoints],20*60*1000);
  const review=await readFile(resolve(key)),packageSha256=hash(review);
  const candidates=validateVisualCandidates(review,{sourceSha256:job.source_sha256,artifactSha256:job.metrics.artifactSha256,packageSha256},blocks);
  if(candidates.some(record=>record.reason==='local-image-budget-exhausted'))throw new Error('Incomplete image batches');
