@@ -1,6 +1,6 @@
 import {z} from 'zod';
 import {requireApiSession} from '@/lib/auth/session';
-import {ExtractionReviewConflict,completeExtractionReview,extractionReviewDecision,getExtractionReview,getExtractionReviewOriginal,getExtractionReviewImage,recordExtractionReview} from '@/lib/knowledge/extraction-review';
+import {ExtractionReviewConflict,completeExtractionReview,retryExtractionVisuals,extractionReviewDecision,getExtractionReview,getExtractionReviewOriginal,getExtractionReviewImage,recordExtractionReview} from '@/lib/knowledge/extraction-review';
 export const runtime='nodejs';export const dynamic='force-dynamic';
 const headers={'Cache-Control':'private, no-store'};
 function failure(error:unknown){return error instanceof ExtractionReviewConflict
@@ -37,6 +37,8 @@ export async function POST(request:Request){
       if(size>128000){await reader.cancel();return Response.json({error:'审核内容过长'},{status:413,headers});}chunks.push(value);}
   }catch{return Response.json({error:'审核内容读取失败'},{status:400,headers});}finally{reader.releaseLock();}
   let raw:unknown;try{raw=JSON.parse(Buffer.concat(chunks).toString('utf8'));}catch{return Response.json({error:'审核格式无效'},{status:400,headers});}
+  const retry=z.object({action:z.literal('retry-visuals'),jobId:z.uuid(),artifactSha256:z.string().regex(/^[a-f0-9]{64}$/)}).strict().safeParse(raw);
+  if(retry.success){try{return Response.json(await retryExtractionVisuals(session.userId,retry.data.jobId,retry.data.artifactSha256),{headers});}catch(error){return failure(error);}}
   const completion=z.object({action:z.literal('complete'),jobId:z.uuid(),artifactSha256:z.string().regex(/^[a-f0-9]{64}$/),decisionSha256:z.string().regex(/^[a-f0-9]{64}$/)}).strict().safeParse(raw);
   if(completion.success){try{return Response.json(await completeExtractionReview(session.userId,completion.data.jobId,completion.data.artifactSha256,completion.data.decisionSha256),{headers});}catch(error){return failure(error);}}
   const input=extractionReviewDecision.safeParse(raw);if(!input.success)return Response.json({error:'请填写有效的审核决定和依据'},{status:400,headers});

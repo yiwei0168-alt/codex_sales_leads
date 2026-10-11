@@ -1,0 +1,94 @@
+{
+  "cloneOnly": true,
+  "formats": [
+    "PPTX"
+  ],
+  "privateAndSharedHeld": true,
+  "unresolvedBlocksPerJob": 63,
+  "dedupReused": true,
+  "restartDoesNotReclaim": true,
+  "otherAccountHidden": true,
+  "directRegistrationRejected": true,
+  "noDocumentsPublished": true,
+  "privatePublishesOnlyAfterCompletion": false,
+  "sharedStillUnpublished": true,
+  "v3PointersUnchanged": true,
+  "appendOnlyReview": true,
+  "staleReviewRejected": true,
+  "otherAccountReviewDenied": true,
+  "sourceArtifactBound": true,
+  "externalCalls": 0,
+  "modelCalls": 0,
+  "completionVerified": false,
+  "completionReplayVerified": false,
+  "completionProcessesKilled": 0,
+  "visualCandidatesVerified": true,
+  "visualQueueVerified": true,
+  "date": "2026-10-11",
+  "status": "implemented-and-isolated-verification-only",
+  "migration": 129,
+  "productionDeployed": false,
+  "candidateLeaseMinutes": 25,
+  "retryDelayMinutes": 5,
+  "maxAutomaticAttempts": 3,
+  "actualCandidateObjects": 63,
+  "checks": {
+    "tests": 17,
+    "files": 3,
+    "typecheck": "passed",
+    "eslint": "passed",
+    "browser": {
+      "results": [
+        {
+          "width": 1366,
+          "noOverflow": true,
+          "dirtyGuard": true,
+          "conflictPreservesDraft": true,
+          "pagination": true,
+          "focusRestored": true,
+          "visualRetryFailureAndRecovery": true,
+          "visualRefreshProtectsDraft": true
+        },
+        {
+          "width": 390,
+          "noOverflow": true,
+          "dirtyGuard": true,
+          "conflictPreservesDraft": true,
+          "pagination": true,
+          "focusRestored": true,
+          "visualRetryFailureAndRecovery": true,
+          "visualRefreshProtectsDraft": true
+        },
+        {
+          "width": 320,
+          "noOverflow": true,
+          "dirtyGuard": true,
+          "conflictPreservesDraft": true,
+          "pagination": true,
+          "focusRestored": true,
+          "visualRetryFailureAndRecovery": true,
+          "visualRefreshProtectsDraft": true
+        }
+      ],
+      "scope": "actual component and CSS with synthetic authenticated API responses"
+    }
+  },
+  "queueChecks": [
+    "concurrent-single-claim",
+    "expired-lease-takeover",
+    "old-token-rejected",
+    "active-retry-rejected",
+    "retry-delay",
+    "third-attempt-stop",
+    "other-owner-retry-denied",
+    "owner-retry-resets",
+    "actual-local-candidate-subprocess"
+  ],
+  "limitations": [
+    "No production deployment or real visual quality acceptance",
+    "No hard-killed candidate process in this stage",
+    "No daemon longevity validation",
+    "PDF/XLSX visual candidates and over-budget batching remain pending"
+  ],
+  "githubPush": "pending-explicit-approval-for-prior-internal-architecture-commit-to-public-repository"
+}

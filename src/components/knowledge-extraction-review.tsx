@@ -4,7 +4,7 @@ import {WorkspaceDialog} from './workspace-dialog';
 import type {VisualCandidate} from '@/lib/knowledge/visual-review-candidates';
 type Decision='evidence'|'decoration'|'unresolved';
 type Item={block:{id:string;unitType:string;unitIndex:number;blockType:string;section?:string;shapePath?:number[];shapeIdPath?:number[];text?:string};judgment:{revision:number;decision:Decision;evidence_text:string;note:string}|null;candidate?:VisualCandidate|null};
-type Review={jobId:string;title:string;artifactSha256:string;sourceSha256:string;decisionSha256:string;total:number;resolved:number;offset:number;blocks:Item[]};
+type Review={jobId:string;title:string;artifactSha256:string;sourceSha256:string;decisionSha256:string;visualState?:string;total:number;resolved:number;offset:number;blocks:Item[]};
 
 export function KnowledgeExtractionReview({jobId,onClose,onComplete}:{jobId:string;onClose:()=>void;onComplete?:()=>void}){
   const [offset,setOffset]=useState(0),[index,setIndex]=useState(0),[refresh,setRefresh]=useState(0);
@@ -45,11 +45,20 @@ export function KnowledgeExtractionReview({jobId,onClose,onComplete}:{jobId:stri
       const body=await response.json();if(!response.ok)throw new Error(body.error||'审核完成提交失败');(onComplete??onClose)();
     }catch(reason){setError(reason instanceof Error?reason.message:'审核完成提交失败');}finally{setBusy(false);}
   }
+  async function retryVisuals(){
+    if(!data)return;setBusy(true);setError('');
+    try{const response=await fetch('/api/knowledge/uploads/review',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'retry-visuals',jobId,artifactSha256:data.artifactSha256})});
+      const body=await response.json();if(!response.ok)throw new Error(body.error||'重试未提交');setMessage('已排队准备本地候选，可稍后刷新查看。');setRefresh(value=>value+1);
+    }catch(reason){setError(reason instanceof Error?reason.message:'重试未提交');}finally{setBusy(false);}
+  }
   return <WorkspaceDialog title="审核抽取内容" drawer busy={busy} onClose={()=>navigate(onClose)}>
     <div className="extraction-review">
       {loading&&<p role="status">正在核对原件版本…</p>}
       {error&&<p role="alert">{error} <button disabled={busy} onClick={()=>navigate(()=>{setDirty(false);setError('');setLoading(true);setRefresh(value=>value+1);})}>重新加载</button></p>}
       {data&&<><h3>{data.title}</h3><p>已核对 {data.resolved} / {data.total} 个对象</p>
+        {data.visualState&&data.visualState!=='ready'&&data.visualState!=='unsupported'&&<p className="subtle">{({pending:'本地候选等待处理',running:'正在生成本地候选',retrying:'本地候选处理失败，稍后自动重试',failed:'本地候选连续处理失败，已暂停'} as Record<string,string>)[data.visualState]}
+          {data.visualState==='failed'&&<button disabled={busy} onClick={()=>void retryVisuals()}>重试本地候选</button>}
+          <button disabled={busy||dirty} onClick={()=>{setLoading(true);setRefresh(value=>value+1);}}>刷新候选</button></p>}
         <a href={`/api/knowledge/uploads/review?format=original&jobId=${jobId}&artifactSha256=${data.artifactSha256}`}>下载本次原件进行对照</a>
         <p className="subtle">请结合原件核对。候选文字和结构未经审核；无法判断时保留“未解决”。</p>
         {item&&<fieldset disabled={busy||loading}><legend>对象 {offset+index+1} / {data.total}</legend>

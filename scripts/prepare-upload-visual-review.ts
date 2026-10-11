@@ -12,11 +12,13 @@ import type {Block} from '../src/lib/knowledge/extracted-tree';
 nextEnv.loadEnvConfig(process.cwd());
 const arg=(name:string)=>process.argv.find(value=>value.startsWith(`--${name}=`))?.slice(name.length+3);
 const userId=z.uuid().parse(arg('user-id')),jobId=z.uuid().parse(arg('job-id'));
+const visualLease=arg('visual-lease');if(visualLease)z.uuid().parse(visualLease);
 const hash=(bytes:Uint8Array)=>createHash('sha256').update(bytes).digest('hex');
 try{
  const [job]=await tenantQuery<{storage_key:string;extraction_artifact_key:string;source_sha256:string;extractor_version:string;metrics:{artifactSha256:string;visualReviewKey?:string}}>(userId,
   `select j.storage_key,j.extraction_artifact_key,j.source_sha256,j.extractor_version,j.metrics from knowledge_upload_job j
-   join app_user u on u.id=j.user_id and u.status='active' where j.id=$1 and j.user_id=$2 and j.status='extracted' and j.error_code='extraction-review-required' and j.lease_token is null`,[jobId,userId]);
+   join app_user u on u.id=j.user_id and u.status='active' where j.id=$1 and j.user_id=$2 and j.status='extracted' and j.error_code='extraction-review-required' and j.lease_token is null
+   and (($3::uuid is null and (j.visual_lease_until is null or j.visual_lease_until<now())) or (j.visual_lease_token=$3 and j.visual_lease_until>now()))`,[jobId,userId,visualLease??null]);
  if(!job||!job.storage_key.toLowerCase().endsWith('.pptx'))throw new Error('Owned pending PPTX review required');
  if(job.metrics.visualReviewKey){console.log(JSON.stringify({alreadyPrepared:true}));}
  else{
@@ -41,8 +43,9 @@ try{
   const result=await client.query(`update knowledge_upload_job set metrics=metrics||$3::jsonb,updated_at=now()
    where id=$1 and user_id=$2 and status='extracted' and error_code='extraction-review-required' and lease_token is null
     and source_sha256=$4 and extraction_artifact_key=$5 and metrics->>'artifactSha256'=$6 and metrics->>'visualReviewKey' is null
+    and (($7::uuid is null and (visual_lease_until is null or visual_lease_until<now())) or (visual_lease_token=$7 and visual_lease_until>now()))
     and exists(select 1 from app_user where id=$2 and status='active') returning id`,
-   [jobId,userId,JSON.stringify({visualReviewKey:key,visualReviewSha256:packageSha256}),job.source_sha256,job.extraction_artifact_key,job.metrics.artifactSha256]);
+   [jobId,userId,JSON.stringify({visualReviewKey:key,visualReviewSha256:packageSha256}),job.source_sha256,job.extraction_artifact_key,job.metrics.artifactSha256,visualLease??null]);
   if(!result.rows[0])throw new Error('Review job changed or another candidate package won');
  });
  console.log(JSON.stringify({prepared:true,objects:candidates.length,externalCalls:0,qualityAccepted:false,indexingResumed:false}));

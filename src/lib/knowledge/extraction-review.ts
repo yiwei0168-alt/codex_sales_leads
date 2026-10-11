@@ -18,8 +18,9 @@ export const extractionReviewDecision=z.object({
 }).strict().refine(v=>v.decision==='evidence'?v.evidenceText.length>0:v.evidenceText==='');
 
 async function load(client:PoolClient,userId:string,jobId:string){
-  const result=await client.query<{source_sha256:string;extractor_version:string;extraction_artifact_key:string;storage_key:string;byte_size:string;metrics:{artifactSha256:string;visualReviewKey?:string;visualReviewSha256?:string};title:string;original_filename:string}>(
-    `select j.source_sha256,j.extractor_version,j.extraction_artifact_key,j.storage_key,j.byte_size::text,j.metrics,j.title,j.original_filename
+  const result=await client.query<{source_sha256:string;extractor_version:string;extraction_artifact_key:string;storage_key:string;byte_size:string;metrics:{artifactSha256:string;visualReviewKey?:string;visualReviewSha256?:string};title:string;original_filename:string;visual_attempts:number;visual_error_code:string|null;visual_running:boolean}>(
+    `select j.source_sha256,j.extractor_version,j.extraction_artifact_key,j.storage_key,j.byte_size::text,j.metrics,j.title,j.original_filename,
+       j.visual_attempts,j.visual_error_code,coalesce(j.visual_lease_until>now(),false) as visual_running
      from knowledge_upload_job j join app_user u on u.id=j.user_id and u.status='active'
      where j.id=$1 and j.user_id=$2 and j.status='extracted' and j.error_code='extraction-review-required'
        and j.lease_token is null for update of j`,[jobId,userId]);
@@ -100,7 +101,20 @@ export async function getExtractionReview(userId:string,jobId:string,offset=0){
     const byBlock=new Map(judgments.rows.map(row=>[row.block_id,row]));
     return {jobId,title:job.title,sourceSha256:job.source_sha256,artifactSha256:job.metrics.artifactSha256,extractorVersion:job.extractor_version,decisionSha256:reviewDecisionHash(judgments.rows),
       total:blocks.length,offset,blocks:blocks.slice(offset,offset+20).map(block=>({block,judgment:byBlock.get(block.id)??null,candidate:byCandidate.get(block.id)??null})),
+      visualState:!job.storage_key.toLowerCase().endsWith('.pptx')?'unsupported':job.metrics.visualReviewKey?'ready':job.visual_running?'running':job.visual_attempts>=3?'failed':job.visual_error_code?'retrying':'pending',
       resolved:blocks.filter(block=>{const row=byBlock.get(block.id);return row&&row.decision!=='unresolved';}).length,indexingResumed:false};
+  });
+}
+
+export async function retryExtractionVisuals(userId:string,jobId:string,artifactSha256:string){
+  z.uuid().parse(jobId);z.string().regex(/^[a-f0-9]{64}$/).parse(artifactSha256);
+  return tenantTransaction(userId,async client=>{
+    const {job}=await load(client,userId,jobId);
+    if(job.metrics.artifactSha256!==artifactSha256||!job.storage_key.toLowerCase().endsWith('.pptx'))throw new ExtractionReviewConflict('当前原件或版本不支持该重试');
+    if(job.visual_running)throw new ExtractionReviewConflict('本地候选正在准备，请等待');
+    if(job.metrics.visualReviewKey)return {queued:false,alreadyPrepared:true};
+    await client.query(`update knowledge_upload_job set visual_attempts=0,visual_error_code=null,visual_retry_at=null,visual_lease_token=null,visual_lease_until=null,updated_at=now() where id=$1 and user_id=$2`,[jobId,userId]);
+    return {queued:true};
   });
 }
 

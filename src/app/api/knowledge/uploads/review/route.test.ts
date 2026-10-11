@@ -1,9 +1,9 @@
 import {beforeEach,describe,expect,it,vi} from 'vitest';
-const mocks=vi.hoisted(()=>({session:vi.fn(),read:vi.fn(),write:vi.fn(),original:vi.fn(),complete:vi.fn()}));
+const mocks=vi.hoisted(()=>({session:vi.fn(),read:vi.fn(),write:vi.fn(),original:vi.fn(),complete:vi.fn(),retry:vi.fn()}));
 vi.mock('@/lib/auth/session',()=>({requireApiSession:mocks.session}));
 vi.mock('@/lib/knowledge/extraction-review',async importOriginal=>{
   const actual=await importOriginal<typeof import('@/lib/knowledge/extraction-review')>();
-  return {...actual,getExtractionReview:mocks.read,recordExtractionReview:mocks.write,getExtractionReviewOriginal:mocks.original,completeExtractionReview:mocks.complete};
+  return {...actual,getExtractionReview:mocks.read,recordExtractionReview:mocks.write,getExtractionReviewOriginal:mocks.original,completeExtractionReview:mocks.complete,retryExtractionVisuals:mocks.retry};
 });
 import {GET,POST} from './route';
 import {ExtractionReviewConflict} from '@/lib/knowledge/extraction-review';
@@ -12,6 +12,25 @@ const valid={jobId,artifactSha256:'a'.repeat(64),blockId:'slide-1-image',expecte
 const post=(body:unknown)=>new Request('http://localhost/api/knowledge/uploads/review',{method:'POST',body:JSON.stringify(body)});
 beforeEach(()=>{vi.clearAllMocks();mocks.session.mockResolvedValue({userId:'owner',role:'member'});mocks.read.mockResolvedValue({blocks:[]});mocks.write.mockResolvedValue({revision:1,indexingResumed:false});});
 describe('extraction review endpoint',()=>{
+  it('queues visual retry only for the authenticated owner and displayed artifact',async()=>{
+    mocks.retry.mockResolvedValue({queued:true});
+    const input={action:'retry-visuals',jobId,artifactSha256:'a'.repeat(64)};
+    const response=await POST(post(input));expect(response.status).toBe(200);
+    expect(await response.json()).toEqual({queued:true});
+    expect(mocks.retry).toHaveBeenCalledWith('owner',jobId,input.artifactSha256);
+    for(const invalid of [{...input,userId:'another-owner'},{...input,artifactSha256:undefined}])expect((await POST(post(invalid))).status).toBe(400);
+    expect(mocks.retry).toHaveBeenCalledTimes(1);
+    mocks.session.mockResolvedValue(new Response(null,{status:401}));
+    expect((await POST(post(input))).status).toBe(401);expect(mocks.retry).toHaveBeenCalledTimes(1);
+  });
+  it('preserves retry conflicts and hides internal preparation failures',async()=>{
+    const input={action:'retry-visuals',jobId,artifactSha256:'a'.repeat(64)};
+    mocks.retry.mockRejectedValue(new ExtractionReviewConflict('候选正在处理'));
+    expect((await POST(post(input))).status).toBe(409);
+    mocks.retry.mockRejectedValue(new Error('private candidate directory'));
+    const response=await POST(post(input));expect(response.status).toBe(503);
+    expect(await response.text()).not.toContain('private candidate directory');
+  });
   it('requires the displayed decision revision hash for completion',async()=>{
     mocks.complete.mockResolvedValue({readyForRegistration:true});
     const input={action:'complete',jobId,artifactSha256:'a'.repeat(64),decisionSha256:'b'.repeat(64)};
