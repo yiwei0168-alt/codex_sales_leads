@@ -1,0 +1,41 @@
+%%{init: {'flowchart': {'curve': 'linear'}}}%%
+graph TD;
+	__start__([<p>__start__</p>]):::first
+	retrieve_knowledge(retrieve_knowledge)
+	build_playbook(build_playbook)
+	prepare_recovery_evidence(prepare_recovery_evidence)
+	recover_saved_evidence(recover_saved_evidence)
+	discover_candidates(discover_candidates)
+	collect_evidence(collect_evidence)
+	correct_candidates(correct_candidates)
+	route_candidates(route_candidates)
+	score_candidates(score_candidates)
+	recover_incomplete_processing(recover_incomplete_processing)
+	review_assessment_anomalies(review_assessment_anomalies)
+	assemble_handoff_briefs(assemble_handoff_briefs)
+	persist_results(persist_results)
+	__end__([<p>__end__</p>]):::last
+	__start__ --> retrieve_knowledge;
+	assemble_handoff_briefs --> persist_results;
+	collect_evidence --> correct_candidates;
+	correct_candidates --> route_candidates;
+	discover_candidates --> collect_evidence;
+	persist_results --> __end__;
+	recover_saved_evidence --> prepare_recovery_evidence;
+	retrieve_knowledge --> build_playbook;
+	route_candidates --> score_candidates;
+	build_playbook -.-> prepare_recovery_evidence;
+	build_playbook -.-> discover_candidates;
+	prepare_recovery_evidence -.-> correct_candidates;
+	prepare_recovery_evidence -.-> recover_saved_evidence;
+	score_candidates -.-> recover_incomplete_processing;
+	score_candidates -.-> review_assessment_anomalies;
+	recover_incomplete_processing -.-> correct_candidates;
+	recover_incomplete_processing -.-> score_candidates;
+	review_assessment_anomalies -.-> recover_incomplete_processing;
+	review_assessment_anomalies -.-> discover_candidates;
+	review_assessment_anomalies -.-> assemble_handoff_briefs;
+	prepare_recovery_evidence -.-> prepare_recovery_evidence;
+	classDef default fill:#f2f0ff,line-height:1.2;
+	classDef first fill-opacity:0;
+	classDef last fill:#bfb6fc;

@@ -1,0 +1,42 @@
+{
+  "nodes": [
+    "__start__",
+    "load_candidate_context",
+    "build_development_strategy",
+    "draft_email_from_restricted_handoff",
+    "validate_and_persist",
+    "__end__"
+  ],
+  "edges": [
+    {
+      "source": "__start__",
+      "target": "load_candidate_context",
+      "conditional": false,
+      "data": null
+    },
+    {
+      "source": "build_development_strategy",
+      "target": "draft_email_from_restricted_handoff",
+      "conditional": false,
+      "data": null
+    },
+    {
+      "source": "draft_email_from_restricted_handoff",
+      "target": "validate_and_persist",
+      "conditional": false,
+      "data": null
+    },
+    {
+      "source": "load_candidate_context",
+      "target": "build_development_strategy",
+      "conditional": false,
+      "data": null
+    },
+    {
+      "source": "validate_and_persist",
+      "target": "__end__",
+      "conditional": false,
+      "data": null
+    }
+  ]
+}

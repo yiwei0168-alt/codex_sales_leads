@@ -1,0 +1,80 @@
+{
+  "quick": {
+    "model": "openai/gpt-6-luna",
+    "providers": [],
+    "version": "agent-modes-v1",
+    "profile": {
+      "mode": "quick",
+      "version": "agent-modes-v1",
+      "promptVersion": "agent-mode-prompts-v1.1.0",
+      "firstOutputMs": 15000,
+      "totalMs": 60000,
+      "routes": [
+        {
+          "model": "openai/gpt-6-luna",
+          "effort": "none"
+        },
+        {
+          "model": "anthropic/claude-haiku-5.5",
+          "effort": "low"
+        },
+        {
+          "model": "google/gemini-3.8-flash",
+          "effort": "low"
+        }
+      ]
+    }
+  },
+  "standard": {
+    "model": "anthropic/claude-sonnet-5.5",
+    "providers": [],
+    "version": "agent-modes-v1",
+    "profile": {
+      "mode": "standard",
+      "version": "agent-modes-v1",
+      "promptVersion": "agent-mode-prompts-v1.1.0",
+      "firstOutputMs": 30000,
+      "totalMs": 120000,
+      "routes": [
+        {
+          "model": "anthropic/claude-sonnet-5.5",
+          "effort": "low"
+        },
+        {
+          "model": "openai/gpt-6.1-sol",
+          "effort": "low"
+        },
+        {
+          "model": "moonshotai/kimi-k3",
+          "effort": "low"
+        }
+      ]
+    }
+  },
+  "deep": {
+    "model": "openai/gpt-6.1-sol",
+    "providers": [],
+    "version": "agent-modes-v1",
+    "profile": {
+      "mode": "deep",
+      "version": "agent-modes-v1",
+      "promptVersion": "agent-mode-prompts-v1.1.0",
+      "firstOutputMs": 60000,
+      "totalMs": 300000,
+      "routes": [
+        {
+          "model": "openai/gpt-6.1-sol",
+          "effort": "high"
+        },
+        {
+          "model": "anthropic/claude-opus-5.5",
+          "effort": "high"
+        },
+        {
+          "model": "z-ai/glm-5.3",
+          "effort": "high"
+        }
+      ]
+    }
+  }
+}

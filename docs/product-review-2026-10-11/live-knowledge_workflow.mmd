@@ -1,0 +1,24 @@
+flowchart TD
+  n0["__start__"]
+  n1["validate_knowledge_request"]
+  n2["knowledge_business_flow:classify_knowledge_request"]
+  n3["knowledge_business_flow:open_registered_document"]
+  n4["knowledge_business_flow:read_verified_facts"]
+  n5["knowledge_business_flow:compare_verified_facts"]
+  n6["knowledge_business_flow:generate_grounded_explanation"]
+  n7["knowledge_business_flow:__end__"]
+  n8["publish_knowledge_result"]
+  n9["__end__"]
+  n5 --> n7
+  n6 --> n7
+  n3 --> n7
+  n4 --> n7
+  n2 -.-> n3
+  n2 -.-> n4
+  n2 -.-> n5
+  n2 -.-> n6
+  n2 -.-> n7
+  n0 --> n1
+  n7 --> n8
+  n8 --> n9
+  n1 --> n2

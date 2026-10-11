@@ -1,0 +1,22 @@
+%%{init: {'flowchart': {'curve': 'linear'}}}%%
+graph TD;
+	__start__([<p>__start__</p>]):::first
+	classify_knowledge_request(classify_knowledge_request)
+	open_registered_document(open_registered_document)
+	read_verified_facts(read_verified_facts)
+	compare_verified_facts(compare_verified_facts)
+	generate_grounded_explanation(generate_grounded_explanation)
+	__end__([<p>__end__</p>]):::last
+	__start__ --> classify_knowledge_request;
+	compare_verified_facts --> __end__;
+	generate_grounded_explanation --> __end__;
+	open_registered_document --> __end__;
+	read_verified_facts --> __end__;
+	classify_knowledge_request -.-> open_registered_document;
+	classify_knowledge_request -.-> read_verified_facts;
+	classify_knowledge_request -.-> compare_verified_facts;
+	classify_knowledge_request -.-> generate_grounded_explanation;
+	classify_knowledge_request -.-> __end__;
+	classDef default fill:#f2f0ff,line-height:1.2;
+	classDef first fill-opacity:0;
+	classDef last fill:#bfb6fc;

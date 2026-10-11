@@ -1,0 +1,169 @@
+{
+  "nodes": [
+    {
+      "id": "__start__",
+      "type": "schema",
+      "data": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema"
+      }
+    },
+    {
+      "id": "validate_knowledge_request",
+      "type": "runnable",
+      "data": {
+        "id": [
+          "langgraph",
+          "RunnableCallable"
+        ],
+        "name": "validate_knowledge_request"
+      }
+    },
+    {
+      "id": "knowledge_business_flow:classify_knowledge_request",
+      "type": "runnable",
+      "data": {
+        "id": [
+          "langgraph",
+          "RunnableCallable"
+        ],
+        "name": "classify_knowledge_request"
+      }
+    },
+    {
+      "id": "knowledge_business_flow:open_registered_document",
+      "type": "runnable",
+      "data": {
+        "id": [
+          "langgraph",
+          "RunnableCallable"
+        ],
+        "name": "open_registered_document"
+      }
+    },
+    {
+      "id": "knowledge_business_flow:read_verified_facts",
+      "type": "runnable",
+      "data": {
+        "id": [
+          "langgraph",
+          "RunnableCallable"
+        ],
+        "name": "read_verified_facts"
+      }
+    },
+    {
+      "id": "knowledge_business_flow:compare_verified_facts",
+      "type": "runnable",
+      "data": {
+        "id": [
+          "langgraph",
+          "RunnableCallable"
+        ],
+        "name": "compare_verified_facts"
+      }
+    },
+    {
+      "id": "knowledge_business_flow:generate_grounded_explanation",
+      "type": "runnable",
+      "data": {
+        "id": [
+          "langgraph",
+          "RunnableCallable"
+        ],
+        "name": "generate_grounded_explanation"
+      }
+    },
+    {
+      "id": "knowledge_business_flow:__end__",
+      "type": "schema",
+      "data": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema"
+      }
+    },
+    {
+      "id": "publish_knowledge_result",
+      "type": "runnable",
+      "data": {
+        "id": [
+          "langgraph",
+          "RunnableCallable"
+        ],
+        "name": "publish_knowledge_result"
+      }
+    },
+    {
+      "id": "__end__",
+      "type": "schema",
+      "data": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "knowledge_business_flow:compare_verified_facts",
+      "target": "knowledge_business_flow:__end__",
+      "conditional": false
+    },
+    {
+      "source": "knowledge_business_flow:generate_grounded_explanation",
+      "target": "knowledge_business_flow:__end__",
+      "conditional": false
+    },
+    {
+      "source": "knowledge_business_flow:open_registered_document",
+      "target": "knowledge_business_flow:__end__",
+      "conditional": false
+    },
+    {
+      "source": "knowledge_business_flow:read_verified_facts",
+      "target": "knowledge_business_flow:__end__",
+      "conditional": false
+    },
+    {
+      "source": "knowledge_business_flow:classify_knowledge_request",
+      "target": "knowledge_business_flow:open_registered_document",
+      "conditional": true
+    },
+    {
+      "source": "knowledge_business_flow:classify_knowledge_request",
+      "target": "knowledge_business_flow:read_verified_facts",
+      "conditional": true
+    },
+    {
+      "source": "knowledge_business_flow:classify_knowledge_request",
+      "target": "knowledge_business_flow:compare_verified_facts",
+      "conditional": true
+    },
+    {
+      "source": "knowledge_business_flow:classify_knowledge_request",
+      "target": "knowledge_business_flow:generate_grounded_explanation",
+      "conditional": true
+    },
+    {
+      "source": "knowledge_business_flow:classify_knowledge_request",
+      "target": "knowledge_business_flow:__end__",
+      "conditional": true
+    },
+    {
+      "source": "__start__",
+      "target": "validate_knowledge_request",
+      "conditional": false
+    },
+    {
+      "source": "knowledge_business_flow:__end__",
+      "target": "publish_knowledge_result",
+      "conditional": false
+    },
+    {
+      "source": "publish_knowledge_result",
+      "target": "__end__",
+      "conditional": false
+    },
+    {
+      "source": "validate_knowledge_request",
+      "target": "knowledge_business_flow:classify_knowledge_request",
+      "conditional": false
+    }
+  ]
+}

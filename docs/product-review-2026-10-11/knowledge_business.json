@@ -1,0 +1,73 @@
+{
+  "nodes": [
+    "__start__",
+    "classify_knowledge_request",
+    "open_registered_document",
+    "read_verified_facts",
+    "compare_verified_facts",
+    "generate_grounded_explanation",
+    "__end__"
+  ],
+  "edges": [
+    {
+      "source": "__start__",
+      "target": "classify_knowledge_request",
+      "conditional": false,
+      "data": null
+    },
+    {
+      "source": "compare_verified_facts",
+      "target": "__end__",
+      "conditional": false,
+      "data": null
+    },
+    {
+      "source": "generate_grounded_explanation",
+      "target": "__end__",
+      "conditional": false,
+      "data": null
+    },
+    {
+      "source": "open_registered_document",
+      "target": "__end__",
+      "conditional": false,
+      "data": null
+    },
+    {
+      "source": "read_verified_facts",
+      "target": "__end__",
+      "conditional": false,
+      "data": null
+    },
+    {
+      "source": "classify_knowledge_request",
+      "target": "open_registered_document",
+      "conditional": true,
+      "data": null
+    },
+    {
+      "source": "classify_knowledge_request",
+      "target": "read_verified_facts",
+      "conditional": true,
+      "data": null
+    },
+    {
+      "source": "classify_knowledge_request",
+      "target": "compare_verified_facts",
+      "conditional": true,
+      "data": null
+    },
+    {
+      "source": "classify_knowledge_request",
+      "target": "generate_grounded_explanation",
+      "conditional": true,
+      "data": null
+    },
+    {
+      "source": "classify_knowledge_request",
+      "target": "__end__",
+      "conditional": true,
+      "data": null
+    }
+  ]
+}

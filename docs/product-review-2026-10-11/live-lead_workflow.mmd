@@ -1,0 +1,41 @@
+flowchart TD
+  n0["__start__"]
+  n1["validate_lead_request"]
+  n2["lead_business_flow:retrieve_knowledge"]
+  n3["lead_business_flow:build_playbook"]
+  n4["lead_business_flow:prepare_recovery_evidence"]
+  n5["lead_business_flow:recover_saved_evidence"]
+  n6["lead_business_flow:discover_candidates"]
+  n7["lead_business_flow:collect_evidence"]
+  n8["lead_business_flow:correct_candidates"]
+  n9["lead_business_flow:route_candidates"]
+  n10["lead_business_flow:score_candidates"]
+  n11["lead_business_flow:recover_incomplete_processing"]
+  n12["lead_business_flow:review_assessment_anomalies"]
+  n13["lead_business_flow:assemble_handoff_briefs"]
+  n14["lead_business_flow:persist_results"]
+  n15["publish_lead_result"]
+  n16["__end__"]
+  n13 --> n14
+  n7 --> n8
+  n8 --> n9
+  n6 --> n7
+  n5 --> n4
+  n2 --> n3
+  n9 --> n10
+  n3 -.-> n4
+  n3 -.-> n6
+  n4 -.-> n4
+  n4 -.-> n8
+  n4 -.-> n5
+  n10 -.-> n11
+  n10 -.-> n12
+  n11 -.-> n8
+  n11 -.-> n10
+  n12 -.-> n11
+  n12 -.-> n6
+  n12 -.-> n13
+  n0 --> n1
+  n14 --> n15
+  n15 --> n16
+  n1 --> n2

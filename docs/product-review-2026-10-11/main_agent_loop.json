@@ -1,0 +1,71 @@
+{
+  "nodes": [
+    "__start__",
+    "safe_boundary",
+    "main_model",
+    "execute_tool",
+    "__end__"
+  ],
+  "edges": [
+    {
+      "source": "__start__",
+      "target": "safe_boundary",
+      "conditional": false,
+      "data": null
+    },
+    {
+      "source": "safe_boundary",
+      "target": "main_model",
+      "conditional": true,
+      "data": null
+    },
+    {
+      "source": "safe_boundary",
+      "target": "execute_tool",
+      "conditional": true,
+      "data": null
+    },
+    {
+      "source": "safe_boundary",
+      "target": "__end__",
+      "conditional": true,
+      "data": null
+    },
+    {
+      "source": "main_model",
+      "target": "safe_boundary",
+      "conditional": true,
+      "data": null
+    },
+    {
+      "source": "main_model",
+      "target": "execute_tool",
+      "conditional": true,
+      "data": null
+    },
+    {
+      "source": "main_model",
+      "target": "__end__",
+      "conditional": true,
+      "data": null
+    },
+    {
+      "source": "execute_tool",
+      "target": "safe_boundary",
+      "conditional": true,
+      "data": null
+    },
+    {
+      "source": "execute_tool",
+      "target": "main_model",
+      "conditional": true,
+      "data": null
+    },
+    {
+      "source": "execute_tool",
+      "target": "__end__",
+      "conditional": true,
+      "data": null
+    }
+  ]
+}

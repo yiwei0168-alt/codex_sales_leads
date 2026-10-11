@@ -1,0 +1,301 @@
+<title>Network Channel Copilot｜产品说明与架构审核包｜2026-10-11</title>
+<p>读者：产品审核员、产品负责人、研发与测试。用途：核对产品要解决的问题、可观察行为、模型与工具权限、实现状态及发布条件。本文是审核快照，不是全功能上线公告。</p>
+<p>资料基线：代码提交 bfc888f8；2026-10-11 当前工作区及已保存验收证据；本轮通过本机 LangGraph 2024 服务读取真实图结构，未启动业务任务或付费推理。视觉候选自动队列为未提交在研代码，单独标注，不计入已交付功能。</p>
+<h1 seq="auto">审核摘要：产品价值与当前结论</h1>
+<p>产品面向海外渠道销售人员及管理者，把资料查询、目标市场研究、公司核验、客户邮件与跟进组织成可追溯的工作流程。用户用自然语言提出任务，Agent 调用产品已有工具，交付有来源的结果、可编辑草稿和持久任务记录。正式评分、共享知识发布、发信和破坏性操作仍有独立权限与审批。</p>
+<table><thead><tr><th><p>用户问题</p></th><th><p>产品要提供的价值</p></th><th><p>审核时观察的结果</p></th></tr></thead><tbody><tr><td><p>资料分散，型号、版本和接口细节容易混淆</p></td><td><p>从原始资料定位可核对的证据</p></td><td><p>型号/版本匹配，引用可回原页或单元格；无依据时澄清或说明缺项</p></td></tr><tr><td><p>搜索结果不能直接判断是否为合适渠道伙伴</p></td><td><p>用公开证据进行角色校正、资格评分和复核</p></td><td><p>研究结果与正式评分分开；评分可追溯到当前证据与政策版本</p></td></tr><tr><td><p>邮件往来分散，换人接手难恢复上下文</p></td><td><p>按公司归集收发邮件、参与人、重要沟通和备注</p></td><td><p>同账号同公司共用时间线；节点可打开原邮件；不推造隐藏收件人</p></td></tr><tr><td><p>重复交代个人偏好和业务背景</p></td><td><p>在可撤销的长期记忆中保留范围和时间</p></td><td><p>可查当前/历史、查看来源、纠正或撤销，冲突不会变成确定事实</p></td></tr><tr><td><p>简单问答与复杂研究对速度、思考需求不同</p></td><td><p>用户主动选三种模式，主模型各有两个备用</p></td><td><p>任务创建即固定模式/模型/工具边界；切换界面不改旧任务</p></td></tr><tr><td><p>任务中断后重复操作或不知道是否完成</p></td><td><p>持久任务、工具收据、租约和恢复</p></td><td><p>排队、部分完成、待确认和未知结果分别显示；未知发信不盲重发</p></td></tr><tr><td><p>有效方法重复摸索</p></td><td><p>从成功来源形成可测试的 Skill</p></td><td><p>草案有版本、范围、来源；自动启用必须满足安全和真实影子门槛</p></td></tr></tbody></table>
+<p>目前结论：基础产品、三模式、邮箱和多项存储/恢复能力已有实现与分阶段验证；长期记忆自动学习、完整视觉资料解析、可信 Skill 自动启用及新的独立质量评测尚未完成，不能批准无向量主路全面切换。没有经过验证的成交率、节省时间或准确率提升指标；商业收益应在真实试点中测量，不在本说明中预设数值。</p>
+<h1 seq="auto">产品范围、用户与状态口径</h1>
+<table><thead><tr><th><p>对象</p></th><th><p>职责与边界</p></th></tr></thead><tbody><tr><td><p>销售成员</p></td><td><p>查看本人有权访问的知识、公司、邮件、任务；整理客户、准备草稿和提交明确动作。</p></td></tr><tr><td><p>管理员</p></td><td><p>审核共享知识、正式事实及 Gold；管理允许的发布动作；并不因为管理员角色就可读取任意账号的私有资料。</p></td></tr><tr><td><p>审核员</p></td><td><p>核原文、权限、行为和收据；区分工程测试、模型回答质量、人工判决及实际部署。</p></td></tr><tr><td><p>系统 Agent</p></td><td><p>在固定模式和账号范围内选择工具；没有自行扩大发信、发布或跨账号权限的能力。</p></td></tr></tbody></table>
+<table><thead><tr><th><p>状态词</p></th><th><p>含义</p></th></tr></thead><tbody><tr><td><p>已部署/有运行证据</p></td><td><p>只表示记录对应版本和检查范围成立；不代表所有工作流已质量验收。</p></td></tr><tr><td><p>已实现待验收/部署</p></td><td><p>代码与限定测试存在，但尚未完成真实工作流、生产加载或独立质量门槛。</p></td></tr><tr><td><p>在研/规划</p></td><td><p>不计入交付；说明目标行为与缺口。</p></td></tr></tbody></table>
+<ul><li>本阶段二进制资料入口为 PDF、PPTX、XLSX；文本和已批准邮箱知识沿原入口。DOCX 等不作为已交付上传格式。</li><li>三类知识范围为行业、公司、产品；个人记忆独立分区，不混入“全部资料”。</li><li>目标不是无审批自动发信、自动发布未经核验的事实，也不是用模型替代账号权限或确定性计数。</li><li>PageIndex、OpenKB、ScalableRAG 是结构树、增量整理与集合操作的实现参考，不表示已整套集成，也不授权商业 OCR 或新云端私有资料处理。</li></ul>
+<h1 seq="auto">用户工作流与验收行为</h1>
+<table><thead><tr><th><p>场景</p></th><th><p>正常路径</p></th><th><p>异常与边界</p></th></tr></thead><tbody><tr><td><p>知识问答/打开原件</p></td><td><p>选择资料范围 → 检索 → 原文回读 → 引用/原件入口</p></td><td><p>型号不明确先澄清；未找到不编文件；撤销或旧版本证据拒绝；达到预算说明未查范围。</p></td></tr><tr><td><p>新增/修订资料</p></td><td><p>上传 → 本地抽取 → 完整性检查 → 单文档可检索版本</p></td><td><p>未解决图形进入审核；新版失败保留旧版；同源同抽取版本不重复建索引；共享资料保留管理员门槛。</p></td></tr><tr><td><p>公司研究与评分</p></td><td><p>明确国家/角色/目标 → 搜索/证据 → 角色校正 → 评分/独立复核</p></td><td><p>缺项与冲突显式保留；研究草稿不改变正式评分；恢复先检查原收据与来源。</p></td></tr><tr><td><p>客户沟通</p></td><td><p>同步收件/已发送 → 公司归属 → 时间线 → 备注/草稿 → 明确发信审批</p></td><td><p>同步不是学习授权；学习不是发布；草稿批准不是发送；本地删邮件不删除服务器副本。</p></td></tr><tr><td><p>长期记忆</p></td><td><p>任务/收据/纠正 → 范围校验 → 观察与通知 → 召回/撤销</p></td><td><p>业务事实仅为内部记忆；未知生效时间不猜；模型未就绪排队；歧义更正需处理而不覆盖。</p></td></tr><tr><td><p>模式与恢复</p></td><td><p>用户选模式 → 固定路由 → 工具收据 → 安全边界 → 结果</p></td><td><p>供应商临时失败可尝试备用；未知执行先核对；恢复不替换原模式或重做已完成动作。</p></td></tr></tbody></table>
+<h1 seq="auto">总体架构与 LangGraph 实际导出</h1>
+<p>架构分层：Next.js 页面/API负责身份和交互；持久任务队列交给 LangGraph 与专用 worker；工具适配器调用检索、邮件、研究等领域服务；PostgreSQL 保存权威业务数据、任务、审计及 checkpoint。本机文件保存原件与抽取产物，本机 Ollama/qwen3、BGE、RapidOCR 处理各自获准任务，Neo4j/Graphiti 是可重建记忆投影。云模型统一经 OpenRouter；IMAP/SMTP、公开搜索等仍是各自协议或服务，并不属于模型网关。</p>
+<p>以下三张 live 图由 GET /assistants/{graph_id}/graph?xray=1 的实际响应转换为 Mermaid，再本地渲染；节点和边保留服务导出值。虚线表示条件边，实线表示固定边。导出仅反映拓扑，不证明节点被某次任务执行。源 JSON、Mermaid 与哈希清单随附件提供。</p>
+<h2 seq="auto">主 Agent 服务入口与内部循环</h2>
+<img path="@./docs/product-review-2026-10-11/live-main_agent_workflow.png" caption="运行中的 LangGraph：main_agent_workflow 服务入口（真实导出）"/>
+<p>服务入口只显示 resume_persisted_main_agent，内部持久循环按任务动态建立，不能因服务图只有一个业务节点就理解为单轮问答。下图使用同一代码的 buildMainAgentGraph 工厂导出，未调用 invoke。</p>
+<img path="@./docs/product-review-2026-10-11/main_agent_loop.png" caption="当前源码工厂导出的主 Agent 内部图；条件边是 LangGraph 静态可达范围"/>
+<p>重要读图限制：内部条件回调没有显式 path map，LangGraph 的静态图会画出较宽的可能边集合。实际代码为：START → safe_boundary；边界若停止则 END，若有 pending 工具则 execute_tool，否则 main_model；模型完成/继续回 safe_boundary，工具运行后回 safe_boundary，其他终止状态进入 END。不要把图中的每条虚线都当成实际运行分支。</p>
+<table><thead><tr><th><p>节点</p></th><th><p>实际职责</p></th><th><p>是否调用模型</p></th></tr></thead><tbody><tr><td><p>resume_persisted_main_agent</p></td><td><p>校验 userId/runId/leaseToken，加载持久任务并恢复内部图</p></td><td><p>包装节点不直接调用</p></td></tr><tr><td><p>safe_boundary</p></td><td><p>检查暂停/取消、追加要求、政策修订；旧待执行动作按新要求失效</p></td><td><p>否</p></td></tr><tr><td><p>main_model</p></td><td><p>加载模式 Prompt/工具协议，前后校验知识/Skill/记忆来源，决定回答或工具调用</p></td><td><p>是，按三模式路由</p></td></tr><tr><td><p>execute_tool</p></td><td><p>Schema/模式/角色/审批/收据校验，再调用业务工具；重复动作保护</p></td><td><p>本身否；所选业务工具可能调用专用模型</p></td></tr></tbody></table>
+<p>当前主循环设有 80 次模型步骤保护；相同动作无新输入重复超过两次会保留部分结果并停止。工具结果超过上下文容量会明确返回部分结果与缩小查询提示，不静默截成完整证据。任务状态包括 queued、running、waiting_user、paused、partial、completed、failed、cancelled。</p>
+<h2 seq="auto">线索工作流</h2>
+<img path="@./docs/product-review-2026-10-11/live-lead_workflow.png" caption="运行中的 LangGraph：lead_workflow 展开业务子图（真实导出）"/>
+<p>可选完整线索工作流包含知识读取、市场计划、候选发现、证据采集、角色纠错、路由、评分、异常复核、开发交接和保存。图中的恢复分支用于证据未就绪或处理不完整后的继续。主 Agent 可直接调用独立公司/草稿/联系人工具；“先完整搜索再允许一切操作”不是当前产品的全局强制链。</p>
+<h2 seq="auto">知识兼容工作流与开发邮件子图</h2>
+<img path="@./docs/product-review-2026-10-11/live-knowledge_workflow.png" caption="运行中的 LangGraph：knowledge_workflow（兼容专用业务图，不是无向量导航主路）"/>
+<p>knowledge_workflow 仍提供 classify_knowledge_request、原件、事实、比较和 grounded explanation 节点。它与被明确停用的顶层旧意图识别不是同一个概念。服务注册中保留 assistant_workflow 不代表新对话入口启用旧意图分类；当前应按主 Agent 的任务和工具路由理解。</p>
+<img path="@./docs/product-review-2026-10-11/outreach_business.png" caption="当前源码工厂导出的开发策略与草稿子图（无业务调用）"/>
+<p>开发策略和草稿由受限交接材料生成，validate_and_persist 保存草稿而不发信。反馈修订另有 load_review_context → record_user_feedback → revise_with_claude_and_screen_memory → persist_revision_and_memory；保存反馈记忆不扩大正式事实权限。</p>
+<h1 seq="auto">节点模型与三种运行模式</h1>
+<p>下表为当前代码配置快照，不是对外模型市场可用性承诺。本轮没有新增连通性付费测试。主 Agent 新任务固定 agent-modes-v1 与 agent-mode-prompts-v1.1.0；旧任务沿用已保存配置。两个备用属于每个模式的主决策节点，不能推导为每个专用业务节点也都有同样两个备用。</p>
+<table><thead><tr><th><p>模式</p></th><th><p>首选 → 备用 1 → 备用 2</p></th><th><p>思考 / 首有效输出与总时限</p></th><th><p>工具定位</p></th></tr></thead><tbody><tr><td><p>快速问答</p></td><td><p>openai/gpt-6-luna → anthropic/claude-haiku-5.5 → google/gemini-3.8-flash</p></td><td><p>Luna none，其余 low；15 秒 / 60 秒</p></td><td><p>已有知识、已保存邮件和客户信息只读；无同步/写入/新研究。</p></td></tr><tr><td><p>标准工作（默认）</p></td><td><p>anthropic/claude-sonnet-5.5 → openai/gpt-6.1-sol → moonshotai/kimi-k3</p></td><td><p>low；30 秒 / 120 秒</p></td><td><p>日常工作与公开事实补充；排除公司调查/评分、脚本和任意调度。未加“最多三次搜索”限制。</p></td></tr><tr><td><p>深入研究</p></td><td><p>openai/gpt-6.1-sol → anthropic/claude-opus-5.5 → z-ai/glm-5.3</p></td><td><p>high；60 秒 / 300 秒</p></td><td><p>开放研究工具范围，但保留角色、审批、资料范围和功能开关。</p></td></tr></tbody></table>
+<p>同一决策轮每条路由最多尝试一次。429、特定 5xx、明确连接失败或本地等待超时可以备用；权限/身份/格式错误不绕过。完整 SSE 及工具参数确认后才执行；迟到结果不驱动第二次动作。先保存失败收据，收据写失败或恢复发现未知已开始调用时停止自动尝试。上述时限为代码初始值，任务快照可记录经校验的部署覆盖值。</p>
+<table><thead><tr><th><p>节点 / 业务步骤</p></th><th><p>模型或计算方式</p></th><th><p>当前配置来源与审核注意</p></th></tr></thead><tbody><tr><td><p>安全边界、持久化、权限、集合计算</p></td><td><p>确定性代码 / SQL，不调用 LLM</p></td><td><p>权限和计数不由模型自由生成。</p></td></tr><tr><td><p>retrieve_knowledge / 检索候选</p></td><td><p>本地 BGE-M3 1024 维 + PostgreSQL 全文/已核实事实</p></td><td><p>旧远程 text-embedding-v4 通道停用、历史向量保留；无向量候选路径见下节。</p></td></tr><tr><td><p>build_playbook / market_plan</p></td><td><p>openai/gpt-5.6-sol，经 OpenRouter</p></td><td><p>本机 OPENAI_GENERATION_MODEL=gpt-5.6-sol；优先 LEAD_PLANNER_MODEL，未设置则继承。</p></td></tr><tr><td><p>discover_candidates / web_search</p></td><td><p>google/gemini-3.6-flash 默认 + 配置的公开搜索渠道</p></td><td><p>GEMINI_DISCOVERY_MODEL 优先于 GEMINI_SEARCH_MODEL；本机未设置时用代码默认，可能配合 Tavily 等工具。</p></td></tr><tr><td><p>collect_evidence</p></td><td><p>公开网页获取与证据整理；子步骤可用发现门禁</p></td><td><p>非单一 LLM；发现门禁默认 deepseek/deepseek-v4-flash。</p></td></tr><tr><td><p>correct_candidates / role_correct</p></td><td><p>DeepSeek 结构化纠错，经 OpenRouter</p></td><td><p>本机 DEEPSEEK_MODEL=deepseek-v4-pro；升级模型未覆盖时默认 deepseek-v4-pro。</p></td></tr><tr><td><p>score_candidates / company_score</p></td><td><p>DeepSeek 资格评估 + 服务端规则/结果校验</p></td><td><p>与纠错一样使用当前专用路由；模型输出不单独授权正式评分发布。</p></td></tr><tr><td><p>review_assessment_anomalies / score_review</p></td><td><p>openai/gpt-5.6-terra 复评；openai/gpt-5.6-sol 裁决</p></td><td><p>LEAD_REVIEW_MODEL / LEAD_JUDGE_MODEL 未覆盖时的代码默认。</p></td></tr><tr><td><p>route_candidates / assemble_handoff_briefs / persist_results</p></td><td><p>确定性路由、交接聚合、数据库保存</p></td><td><p>没有给每个节点虚构一个模型。</p></td></tr><tr><td><p>generate_grounded_explanation（兼容知识图）</p></td><td><p>moonshotai/kimi-k3</p></td><td><p>KIMI_RAG_MODEL 优先于 KIMI_MODEL；主 Agent 自身最终回答仍由所选模式模型生成。</p></td></tr><tr><td><p>开发策略、草稿、跟进生成</p></td><td><p>moonshotai/kimi-k3</p></td><td><p>KIMI_OUTREACH_MODEL 优先于 KIMI_MODEL；当前本机 KIMI_MODEL=kimi-k3。</p></td></tr><tr><td><p>revise_with_claude_and_screen_memory</p></td><td><p>anthropic/claude-sonnet-4.6 默认</p></td><td><p>CLAUDE_OUTREACH_MODEL / CLAUDE_MODEL；本机未覆盖时用默认，不等同主 Agent 的 Sonnet 5.5。</p></td></tr><tr><td><p>邮件授权学习</p></td><td><p>moonshotai/kimi-k3</p></td><td><p>须明确授权邮件派生内容进入既有云模型；同步邮件不自动授权。</p></td></tr><tr><td><p>客户时间线本地摘要 / 自由文本记忆</p></td><td><p>本机 qwen3:8b</p></td><td><p>Ollama 固定回环、结构化 Schema、原文引用校验；失败排队，不云端兜底。</p></td></tr><tr><td><p>PPTX 图片 OCR 候选</p></td><td><p>本机 RapidOCR ONNX</p></td><td><p>不是 LLM；候选未经核对不得成为正式证据。</p></td></tr><tr><td><p>Graphiti / Neo4j</p></td><td><p>本地投影与检索服务</p></td><td><p>权威数据在 PostgreSQL；不能从图谱结果直接发布事实。</p></td></tr><tr><td><p>contacts_verify_evaluate / relationship_analyze</p></td><td><p>专用 DeepSeek 配置</p></td><td><p>联系人核验与正式核验发布分开；私有范围与公开证据范围各自检查。</p></td></tr></tbody></table>
+<p>配置差异须保留：用户要求用 GLM 替代 DeepSeek V4 Pro，已落实在深入模式的第二备用槽位；专用纠错/评分/联系人等仍有 DeepSeek 配置。本说明如实列出，不自行扩大解释为所有专用节点必须迁移，也不把这些节点写成已改 GLM。专用 ResilientAiProvider 另有受数据分类约束的备用配置，不能套用主 Agent 三路合同。</p>
+<h1 seq="auto">工具系统：发现、定义、执行与权限</h1>
+<p>模型面前的协议入口为 discover_tools、describe_tool、execute_tool。先发现当前可用工具，再取精确定义，再执行具名工具。服务端从认证任务取得账号/角色/租约，禁止模型参数自行指定身份。本次直接读取可执行注册表并通过目录一致性检查：105 个业务工具；3 个协议入口不计入 105。</p>
+<p>最终可用工具 = 已注册 ∩ 模式允许 ∩ 账号角色 ∩ 资料范围 ∩ 功能开关/账号试点 ∩ 连接与来源状态。下方“快/标/深”仅为 modeAllowsTool 的代码允许值，不能等同实际已启用。7 个 vectorless 工具与 memory_observation_search 还受关闭默认开关限制。知识页限定范围时，绝大多数业务工具进一步隐藏。</p>
+<table><thead><tr><th><p>共同契约</p></th><th><p>定义</p></th></tr></thead><tbody><tr><td><p>输入</p></td><td><p>严格 JSON Schema；必填、枚举、长度、分页、版本/哈希以附件 tools.json 为准。下方 * 表示 Schema required。</p></td></tr><tr><td><p>输出</p></td><td><p>status：success / partial / missing_input / waiting_approval / unavailable / unknown；data、sources、artifacts、missing、cost、receipt、callId。</p></td></tr><tr><td><p>效果</p></td><td><p>read=注册为读取；reversible=可逆写入；send=发送；destructive=破坏；publish=发布/需明确批准。标签不替代实际动作边界。</p></td></tr><tr><td><p>审批</p></td><td><p>send、destructive、publish 在中央执行器绑定工具版本与精确参数哈希；嵌套批量工具逐项审批，不能因父工具标 read 就免除发信批准。</p></td></tr><tr><td><p>恢复</p></td><td><p>复用已保存同一调用结果；已开始但无结果的操作标 unknown，先核对；不同动作不能重用旧批准。</p></td></tr><tr><td><p>来源安全</p></td><td><p>网页、邮件、文档和客户备注都是非可信内容，不能当系统指令；运行中来源撤销、版本/权限变化会阻止后续使用。</p></td></tr></tbody></table>
+<h1 seq="auto">长期记忆设计与 Skill 进化</h1>
+<img path="@./docs/product-review-2026-10-11/memory-design.png" caption="记忆系统目标与已实现基础的数据流示意；不是 LangGraph 服务导出图"/>
+<table><thead><tr><th><p>层次</p></th><th><p>保存内容</p></th><th><p>使用边界</p></th></tr></thead><tbody><tr><td><p>个人偏好</p></td><td><p>沟通语言、格式、工作习惯等稳定偏好</p></td><td><p>账号范围、通知/撤销；不能把业务政策伪装成偏好。</p></td></tr><tr><td><p>任务经验</p></td><td><p>方法、结果及可追溯任务/工具收据</p></td><td><p>用户自述成功与已验证成功分别保留；不足以直接自动启用 Skill。</p></td></tr><tr><td><p>带时间业务事实</p></td><td><p>账号/市场/公司范围，内容、置信度、来源</p></td><td><p>自动抽取仅作内部工作记忆，不作为正式评分或确定对外主张。</p></td></tr><tr><td><p>明确政策 / 公司决定</p></td><td><p>用户明确确认的范围、强制性及版本</p></td><td><p>单独确认/管理，优先级和正式事实渠道不被自动记忆覆盖。</p></td></tr><tr><td><p>Skill</p></td><td><p>触发条件、适用范围、指令、版本、来源和测试证据</p></td><td><p>账户纯指令、无脚本/新权限才有资格进入自动启用门禁；脚本/跨账户/发信权限仍人工批准。</p></td></tr></tbody></table>
+<p>双时间：recordedAt 表示系统何时入库/已知，validFrom/validUntil 表示业务何时生效。查询 businessAt 可还原某时有效事实，knownAt 可限制为系统当时已知内容。例如 10 月 11 日才录入“10 月 1 日起联系人变更”，不能回写成系统 10 月 1 日已经知道。缺失业务时间保持未知；更正追加新观察和 supersede/revoke 关系，保留旧记录。</p>
+<p>写入链：可靠结构化收据可确定性入库；自由文本先由本地模型抽取，核对原文、账号/市场/公司范围及 Schema，再去重、检测冲突。无唯一安全匹配的纠正不覆盖旧记录。事务 outbox 将获准版本投影到本机 Graphiti/Neo4j；投影可延迟、重放、重建。检索先明确账号分组，图只提供候选，再回 PostgreSQL 校验权限、双时间和撤销；图不可用回退 PostgreSQL。</p>
+<p>Skill 生命周期：重复成功来源 → 草案 → 固定版本/适用范围 → 历史回放、错误案例、注入、权限测试 → 真实任务无额外外部效果的影子对照 → 必要判决 → 合格自动启用 → 停用/回滚。当前草案、回放、审核和部分影子采集已实现；生产等价真实影子与自动启用完整门禁未完成，保持关闭不能视为完成目标。已人工确认启用的客户时间线 Skill 与该自动进化链是两件事。</p>
+<p>剩余：自然任务记忆质量、自由文本纠正的真实匹配、持续 worker/outbox/图谱消费与故障恢复、完整部署和合格 Skill 实例。已有本地安全开发评测出现歧义/注入失败，真实邮件只读回放也未通过；失败保留，不用合成存储测试替代语义验收。</p>
+<h1 seq="auto">RAG 设计、资料增量与证据架构</h1>
+<img path="@./docs/product-review-2026-10-11/rag-design.png" caption="无向量 RAG 目标数据流与原文/版本门禁示意；不是已切换生产主路的声明"/>
+<p>职责划分：RAG 从原始资料找到可引用证据；长期记忆保存跨任务背景。导航摘要用于选择下一步读什么，不能独立充当答案证据。正式事实必须走已核实事实通道；待审/冲突/个人经验可提示内部判断，但不能变成确定外部主张。</p>
+<table><thead><tr><th><p>层次</p></th><th><p>设计与实现重点</p></th><th><p>审核问题</p></th></tr></thead><tbody><tr><td><p>来源与版本</p></td><td><p>原件 SHA-256、抽取版本、文档版本、权限、来源状态；逐份幂等</p></td><td><p>重传是否重复？失败是否保留旧版？其他文档指针是否不变？</p></td></tr><tr><td><p>解析单元</p></td><td><p>PDF 页/原文块；PPTX 幻灯片及嵌套对象路径；XLSX 工作表/范围/单元格</p></td><td><p>坐标可否定位回原件？0 值/空白/合并单元格是否保留？视觉对象是否被漏掉？</p></td></tr><tr><td><p>结构树</p></td><td><p>父节点、顺序、标题路径、页/对象/表格坐标、导航摘要、原文哈希</p></td><td><p>摘要与证据是否分开？父/分组坐标有没有冒充绝对坐标？</p></td></tr><tr><td><p>查询</p></td><td><p>账号/范围/国家/公司/产品/版本/全文缩小集合，再 browse/read</p></td><td><p>默认 24 候选、8 组证据、8 次导航；达到限制是否说明部分范围？</p></td></tr><tr><td><p>集合运算</p></td><td><p>filter / aggregate 确定性计算并留任务收据</p></td><td><p>模型是否把未读集合说成已全部检查？</p></td></tr><tr><td><p>最终引用</p></td><td><p>原文 + 稳定坐标 + 当前版本 + PostgreSQL 权限/状态回校</p></td><td><p>是否精确支持主张？撤销/旧版是否拒绝？</p></td></tr><tr><td><p>候选回退</p></td><td><p>本地 BGE + 全文 + 已核实事实的旧 v3 只补候选，仍回读原文</p></td><td><p>远程旧向量是否误启用？是否直接引用旧摘要或失效块？</p></td></tr></tbody></table>
+<p>上传状态应分别反映资料版本、抽取单元和可检索版本。PPTX 文字/表格已可本地解析，嵌套组对象路径已补齐；图片、图表、SmartArt、连接线等不能静默丢弃。存在 pending-ocr/未解决对象时阻止新版本登记，列表标待审核，原文与旧可检索版保留。</p>
+<p>已提交但尚未生产部署的视觉审核闭环：逐对象不可覆写判决、原件下载、裁剪图/OCR 候选/SmartArt 原生数据预览、全部判决哈希、完成收据与可信派生产物、私有恢复索引及共享继续管理员发布。已用真实开发 PPTX 配合明确合成判决验证存储、篡改拒绝和实际提交前/后杀进程恢复；合成判决不代表真实视觉内容审核完成。</p>
+<p>在研：独立知识 worker、视觉候选自动认领、25 分钟独立租约、失败延迟重试/三次后人工重试入口。这些工作区改动尚未完成当前阶段验证/提交/部署。PDF 混合图形与 XLSX 视觉内容完整性、完整新版审核恢复矩阵和真实视觉质量仍待补。</p>
+<p>迁移与回滚：PostgreSQL 始终权威；旧 v3 release、向量与历史记忆保留。新主路通过独立质量及小范围试点后才切配置/指针，失败回切而不删数据。原 v3 双向量激活门槛只适用于旧 release 流程，不能写成新无向量文档必须生成远程向量。</p>
+<h1 seq="auto">邮箱、客户时间线与前端产品设计</h1>
+<ul><li>邮箱交互采用收件箱/已发送、日期范围、列表与独立阅读区；管理连接放在不透明顶层抽屉，固定头部、正文滚动、Escape/焦点恢复。</li><li>同步冻结时间范围，后台分页取完；显示排队/处理中/完成/失败/待核实。默认近期范围为 180 天，但用户可提供 from/through 或 lookbackDays。单页数量不是同步总量。</li><li>待学习邮件可跨页选择和全选；取消用户侧 5 封批量授权上限。后台串行处理、逐邮件授权内容哈希、防重复；结果未知先核实，不自动重发付费请求。</li><li>公司按国家分页，类型为已合作客户、询盘客户、在谈客户。用户可确认、备注、修正、合并、移除与恢复；域名/内容推断保留建议状态，公共邮箱不能只凭后缀合并公司。</li><li>同账号同公司共用时间线，展示重要日期、主题、内容、原邮件和参与人角色；To/Cc/Bcc 以实际保存信息为准，旧邮件缺失角色不补造。公司备注可作为 Agent 范围内背景，不是权限指令。</li><li>时间线本地摘要由 qwen3:8b 提供内部候选并校验原文引用；与明确授权的 Kimi 邮件知识学习分开。</li><li>删除对话使用应用确认窗口，说明历史移除与任务/审计保留；失败保留窗口和输入。三模式选择器、邮箱阅读空间和重点折叠已优化，全部可达旧折叠入口的最终实机审查仍未完成。</li></ul>
+<p>真实验收缺口：大范围 IMAP/已发送目录兼容与断线续同步、自然邮件摘要准确性、公司归属与沟通 loop、备注对 Agent 的正确影响。已有合成浏览器/数据库用例不能替代上述真实验收。</p>
+<h1 seq="auto">隐私、安全、恢复与发布边界</h1>
+<table><thead><tr><th><p>边界</p></th><th><p>要求与当前证据限制</p></th></tr></thead><tbody><tr><td><p>账号隔离</p></td><td><p>应用权限与数据库 RLS 双重约束；图谱候选、文件下载、引用均回校。开发克隆使用 BYPASSRLS 角色的警告不能冒充生产数据库加固通过。</p></td></tr><tr><td><p>私有内容</p></td><td><p>原件解析、本地记忆抽取和图谱不因引入新组件外发。必要私有内容可按既有授权进入指定主模型；邮件学习另有明确授权。不能写成“整个产品完全离线”。</p></td></tr><tr><td><p>外部查询</p></td><td><p>公开搜索不得包含私有邮件、政策或凭据；模型、搜索、邮箱连接分别管理。</p></td></tr><tr><td><p>发信/发布</p></td><td><p>批准绑定实际参数/版本/哈希；模型或 Skill 文本不能代替审批。批量发送每封独立受控；未知副作用先核对。</p></td></tr><tr><td><p>运行中撤销</p></td><td><p>模型轮次、工具前、恢复和最终保存再次检查来源。已经发给模型的数据无法倒退收回，系统只能阻止后续继续使用。</p></td></tr><tr><td><p>后台恢复</p></td><td><p>租约、checkpoint、事务和收据控制接管与去重；已完成结果可复用，未知执行不得标完成。</p></td></tr><tr><td><p>网关与网络</p></td><td><p>云模型统一 OpenRouter，记录实际路由和生成身份；日常连接不依赖 TUN，GitHub 推送按用户要求经本地代理。</p></td></tr><tr><td><p>数据保留</p></td><td><p>原件、原始抽取、判决历史、旧指针与失败评测保留；本说明不含账号邮件、客户正文、凭据或原始模型私有输入。</p></td></tr></tbody></table>
+<h1 seq="auto">当前完成度、质量证据与发布门槛</h1>
+<table><thead><tr><th><p>工作域</p></th><th><p>已有可核对成果</p></th><th><p>未完成 / 不可据此上线的部分</p></th></tr></thead><tbody><tr><td><p>主 Agent / 三模式</p></td><td><p>105 工具注册、模式边界、任务固定路由、持久收据；八模型 16 次合成多轮调用曾通过</p></td><td><p>真实业务模型/工具链与供应商故障备用质量；旧测试额度已用完。</p></td></tr><tr><td><p>资料增量</p></td><td><p>三格式/文本/邮件多项幂等、版本切换、失败旧版、进程中断恢复；PPTX 待审阻断和审核恢复代码</p></td><td><p>最新审核代码与迁移 127/128 未生产加载；129/自动队列在研；视觉完整性和真实质量。</p></td></tr><tr><td><p>记忆 / Graphiti</p></td><td><p>观察/版本、双时间、撤销、更正基础、outbox/本地回退和来源复核</p></td><td><p>自然任务连续运行、真实纠正质量、完整部署；自动学习与图投影未作为默认生产能力开启。</p></td></tr><tr><td><p>Skill</p></td><td><p>版本/来源、回放快照、审核、影子采集基础</p></td><td><p>真实回放失败仍在；生产等价影子、完整自动启用与合格自然实例。</p></td></tr><tr><td><p>邮箱 / 客户 / UI</p></td><td><p>同步队列、无限用户批量学习选择、公司/时间线/备注及重点 UI</p></td><td><p>真实 IMAP 长范围、自然摘要归属、全部可达折叠最终核查。</p></td></tr><tr><td><p>独立质量 / 发布</p></td><td><p>旧 300 Gold 与 50×2 用户判决完成；新审核基础已有</p></td><td><p>新未暴露来源/题集、配置冻结、新评测调用授权、必要判决、试点、主路切换与回滚。</p></td></tr></tbody></table>
+<table><thead><tr><th><p>旧冻结评测（历史配置）</p></th><th><p>v3</p></th><th><p>无向量</p></th></tr></thead><tbody><tr><td><p>答案正确</p></td><td><p>31/50</p></td><td><p>36/50</p></td></tr><tr><td><p>精确引用判分通过（含空引用行为）</p></td><td><p>4/50</p></td><td><p>12/50</p></td></tr><tr><td><p>需来源的 44 题精确引用</p></td><td><p>4/44</p></td><td><p>6/44</p></td></tr><tr><td><p>跨文档比较答案</p></td><td><p>4/8</p></td><td><p>2/8</p></td></tr><tr><td><p>私有政策请求的权限拒绝行为</p></td><td><p>1/1</p></td><td><p>0/1</p></td></tr></tbody></table>
+<p>历史判定：不允许切主路。无向量总分更高但跨文档和权限拒绝行为退步，引用仍大量失败；权限题未发生私有内容泄露，但拒绝行为不合格。无向量 12 条引用通过中 6 条为空引用行为题。旧配置输出与判决不能回写修分，也不能代表当前本地 BGE 方案的新验收。</p>
+<p>新独立评测须使用未参与开发调参的来源与题目；现有公开长 PDF/PPTX/XLSX 已用于开发，不能重新称为 holdout。用户暂时没有额外未使用资料；应继续准备适合的独立来源。具体新题集规模和冻结快照须形成可审查材料，必要人工判决继续由 Codex 引导。</p>
+<ul><li>发布阻断项：任何账号权限泄漏、未经确认正式事实发布；新候选答案和精确引用不得低于同配置基线；跨文档/长资料/新增资料应有可复核改善，正式事实和无答案不得退步。</li><li>工程门槛：新增/重传/更新/停用/解析失败、实际 worker 中断、outbox 重放、图谱停机、旧索引回退；只有“可检索”才可作为完整资料回答。</li><li>发布顺序：资料树影子 → 无向量只读对照 → 新文件试点 → 记忆图谱/Skill 影子 → 小范围启用 → 主路切换；保留 v3 与旧数据，实测回滚。</li><li>需要用户参与的事项只剩必要来源/事实争议、独立审核判决、明确的新付费调用授权与既有冻结门槛，不把例行继续工作再变成确认步骤。</li></ul>
+<h1 seq="auto">审核员建议检查表</h1>
+<table><thead><tr><th><p>审核点</p></th><th><p>可复现操作 / 所需证据</p></th><th><p>通过表现</p></th></tr></thead><tbody><tr><td><p>原件与引用</p></td><td><p>打开明确型号，追踪引用块到 PDF/PPTX/XLSX 原坐标</p></td><td><p>型号、版本、哈希与精确主张匹配。</p></td></tr><tr><td><p>版本与权限</p></td><td><p>上传修订失败、撤销资料、跨账号读取同 ID</p></td><td><p>旧可用版本保留；越权和失效证据拒绝。</p></td></tr><tr><td><p>用户控制</p></td><td><p>快速模式请求同步/发信；标准请求评分；明确发信确认前后</p></td><td><p>不越模式；审批内容具体，已批准动作不重复。</p></td></tr><tr><td><p>资料完整性</p></td><td><p>上传含图 PPTX、含零值/合并单元格 XLSX、混合图形 PDF</p></td><td><p>未解析内容明确待处理，不把残缺资料报完整。</p></td></tr><tr><td><p>记忆时间</p></td><td><p>晚录入、早生效、更正/撤销后查 businessAt 与 knownAt</p></td><td><p>保持两个时间维度和历史，不覆盖来源。</p></td></tr><tr><td><p>客户沟通</p></td><td><p>同公司不同参与人、公共邮箱、原邮件缺少 Cc 的历史样本</p></td><td><p>公司归属可纠正，不捏造参与人或摘要。</p></td></tr><tr><td><p>中断恢复</p></td><td><p>完成响应丢失、worker 终止、模型超时/未知收据</p></td><td><p>复用确定完成结果，未知需核对，不产生重复外部效果。</p></td></tr><tr><td><p>质量放行</p></td><td><p>读取新独立冻结清单、候选、判决、分组成绩及运行版本</p></td><td><p>数据/配置/审核身份可追溯，失败记录保留。</p></td></tr></tbody></table>
+<h1 seq="auto">详细工具目录（105 个，按实际注册表）</h1>
+<p>用途使用中文摘要；关键输入按当前 JSON Schema 自动生成。模式中“允”只表示代码允许，仍须角色/范围/开关/审批。完整嵌套输入、输出、枚举、限制、连接依赖及恢复策略见 tools.json 附件，避免把下列精简字段误认为完整 API。</p>
+<h2 seq="auto">邮箱与客户沟通（16）</h2>
+<p><b>customer_timeline</b> — 读取公司列表或客户沟通时间线、参与人与备注背景</p>
+<p>输入：customerId:string；country:string；offset*:integer。角色：成员；注册效果：读取；模式：快允 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>company_correspondence_list</b> — 读取公司关联收发邮件元数据</p>
+<p>输入：companyExternalId*:string；offset*:integer。角色：成员；注册效果：读取；模式：快允 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>mail_sync</b> — 排队同步本人收件/已发送邮件固定日期范围</p>
+<p>输入：connectionId*:string；lookbackDays:integer；maxMessages:integer；folderScope*:string[both/inbox/sent]；from:string；through:string。角色：成员；注册效果：可逆操作；模式：快禁 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>mailbox_rescreen</b> — 对本地已保存邮件重新执行确定性筛选</p>
+<p>输入：无。角色：成员；注册效果：可逆操作；模式：快禁 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>mailbox_learning_review</b> — 授权指定邮件学习或跳过，涉及既有云模型外发</p>
+<p>输入：messageId*:string；action*:string[authorize/skip]。角色：成员；注册效果：发布/确认；模式：快禁 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>mail_message_company_update</b> — 确认或清除邮件对应公司</p>
+<p>输入：messageId*:string；companyExternalId*:联合/嵌套。角色：成员；注册效果：发布/确认；模式：快禁 / 标允 / 深允；恢复：idempotent。</p>
+<p><b>mail_message_delete</b> — 永久删除一封本地邮件，不删除服务器副本</p>
+<p>输入：messageId*:string。角色：成员；注册效果：破坏性操作；模式：快禁 / 标允 / 深允；恢复：reconcile。</p>
+<p><b>mail_connection_control</b> — 断开或删除邮箱连接及明确选择的派生知识</p>
+<p>输入：connectionId*:string；action*:string[disconnect/delete]；deleteKnowledge*:boolean。角色：成员；注册效果：破坏性操作；模式：快禁 / 标允 / 深允；恢复：reconcile。</p>
+<p><b>mailbox_knowledge_list</b> — 读取本人已批准的邮件知识和模板</p>
+<p>输入：offset*:integer。角色：成员；注册效果：读取；模式：快允 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>mail_send</b> — 发送明确批准的邮件内容与附件</p>
+<p>输入：connectionId*:string；companyExternalId:string；to*:string；subject*:string；body*:string；parentId:string；followUpDraftId:string；attachments:array。角色：成员；注册效果：发送；模式：快禁 / 标允 / 深允；恢复：reconcile。</p>
+<p><b>mail_batch_send</b> — 编排批量发送；每个子项仍独立审核/收据</p>
+<p>输入：batchId*:string；items*:array。角色：成员；注册效果：读取；模式：快禁 / 标允 / 深允；恢复：composite。</p>
+<p><b>mail_connections</b> — 读取本人邮箱标识及连接状态，无凭据</p>
+<p>输入：无。角色：成员；注册效果：读取；模式：快禁 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>mail_history</b> — 读取已有发信历史</p>
+<p>输入：companyExternalId:string；offset*:integer。角色：成员；注册效果：读取；模式：快允 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>mail_read</b> — 读取一封本人已导入邮件，不能转发到公开搜索</p>
+<p>输入：messageId*:string。角色：成员；注册效果：读取；模式：快允 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>mailbox_candidate_list</b> — 读取邮件派生知识/模板待审候选及哈希</p>
+<p>输入：无。角色：成员；注册效果：读取；模式：快禁 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>mailbox_candidate_review</b> — 按哈希批准或拒绝一条邮件知识候选</p>
+<p>输入：candidateId*:string；decision*:string[approved/rejected]；expectedHash*:string。角色：成员；注册效果：发布/确认；模式：快禁 / 标允 / 深允；恢复：read-retry。</p>
+<h2 seq="auto">公司、研究、搜索与联系人（24）</h2>
+<p><b>lead_workflow</b> — 排队运行已批准范围的完整销售线索工作流</p>
+<p>输入：countryCode*:string；countryName*:string；objective*:string[new-market/existing-distributor-growth]；roles*:array；targetCount*:integer；queryLanguage*:string；userRequest*:string；opportunityTargets:array；coverageMode:string[auto/local/national/mixed]；verifiedOnly:boolean。角色：成员；注册效果：发布/确认；模式：快禁 / 标禁 / 深允；恢复：composite。</p>
+<p><b>company_assessment_read</b> — 读取公司现有正式评分和政策版本</p>
+<p>输入：companyExternalId*:string。角色：成员；注册效果：读取；模式：快允 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>company_score_publish</b> — 发布已保存、符合门槛且经过独立复核的正式评分</p>
+<p>输入：sourceCallId*:string；companyExternalId*:string；expectedRevision*:integer；expectedDomain*:string；expectedTotalScore*:integer；expectedPolicyVersion*:string。角色：成员；注册效果：发布/确认；模式：快禁 / 标禁 / 深允；恢复：idempotent。</p>
+<p><b>relationship_list</b> — 读取已保存公司关系</p>
+<p>输入：country*:string。角色：成员；注册效果：读取；模式：快允 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>relationship_save</b> — 保存有依据的公司关系</p>
+<p>输入：country*:string；from*:string；to*:string；type*:string[供货/转售/项目合作/技术合作/其他]；status*:string[pending/user-confirmed/user-rejected]；basis*:string；sourceUrl*:联合/嵌套；selection:object。角色：成员；注册效果：可逆操作；模式：快禁 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>relationship_analyze</b> — 分析两个已有公司的关系</p>
+<p>输入：country*:string；from*:string；to*:string。角色：成员；注册效果：可逆操作；模式：快禁 / 标禁 / 深允；恢复：read-retry。</p>
+<p><b>contacts_lookup</b> — 为单个公司查找并保存联系人候选</p>
+<p>输入：companyExternalId*:string；refresh*:boolean。角色：成员；注册效果：可逆操作；模式：快禁 / 标禁 / 深允；恢复：read-retry。</p>
+<p><b>contacts_enrichment_latest</b> — 读取最近联系人补全任务状态</p>
+<p>输入：无。角色：成员；注册效果：读取；模式：快禁 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>contacts_candidate_list</b> — 读取联系人邮箱候选及核验状态</p>
+<p>输入：companyExternalId*:string。角色：成员；注册效果：读取；模式：快允 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>contacts_verify_evaluate</b> — 核验一条已保存候选，仅保存影子决策</p>
+<p>输入：emailCandidateId*:string；expectedEmail*:string。角色：成员；注册效果：发布/确认；模式：快禁 / 标禁 / 深允；恢复：reconcile。</p>
+<p><b>contacts_verify_publish</b> — 发布已保存且来源未变化的联系人核验决策</p>
+<p>输入：decisionId*:string；decisionHash*:string；email*:string；category*:string[Official/HighConfidence/NeedsReview]；activeStatus*:string[Public/Verified/Pattern-guessed/Unknown/Invalid]；expectedCurrentDecisionId*:联合/嵌套。角色：成员；注册效果：发布/确认；模式：快禁 / 标禁 / 深允；恢复：idempotent。</p>
+<p><b>search_connections</b> — 查看已配置公开搜索能力，不返回凭据</p>
+<p>输入：无。角色：成员；注册效果：读取；模式：快禁 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>web_search</b> — 用 Gemini 搜索公开问题并返回来源</p>
+<p>输入：questions*:array。角色：成员；注册效果：读取；模式：快禁 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>search_channel</b> — 执行指定公开搜索渠道的独立查询</p>
+<p>输入：provider*:string[gemini-full/gemini-product/searchapi/google-places/brave/exa]；query*:string；countryCode*:string；countryName*:string；languageCode*:string；maxResults*:integer；category*:string[distribution/resale/retail/si-msp/installer/isp/agent/brand-owner/oem-odm-opportunity]；engine*:string[google-grounded/google/bing/google-places/brave/exa]。角色：成员；注册效果：读取；模式：快禁 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>company_research</b> — 研究指定公司的公开信息</p>
+<p>输入：companyName*:string；domain*:string；countryCode*:string；countryName*:string；objective*:string[new-market/existing-distributor-growth]；roles*:array。角色：成员；注册效果：读取；模式：快禁 / 标禁 / 深允；恢复：read-retry。</p>
+<p><b>evidence_collect</b> — 从已有研究收据继续采集证据</p>
+<p>输入：sourceCallId*:string。角色：成员；注册效果：可逆操作；模式：快禁 / 标禁 / 深允；恢复：read-retry。</p>
+<p><b>role_correct</b> — 根据已有证据校正渠道角色</p>
+<p>输入：sourceCallId*:string。角色：成员；注册效果：读取；模式：快禁 / 标禁 / 深允；恢复：read-retry。</p>
+<p><b>company_score</b> — 对已有证据评分，未直接发布正式评分</p>
+<p>输入：sourceCallId*:string。角色：成员；注册效果：读取；模式：快禁 / 标禁 / 深允；恢复：read-retry。</p>
+<p><b>score_review</b> — 对已保存评分进行独立复核</p>
+<p>输入：sourceCallId*:string。角色：成员；注册效果：读取；模式：快禁 / 标禁 / 深允；恢复：read-retry。</p>
+<p><b>company_search</b> — 查询已有公司，不启动新研究</p>
+<p>输入：query*:string；countryCode:string。角色：成员；注册效果：读取；模式：快允 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>company_read</b> — 读取本人公司、市场状态和已有证据</p>
+<p>输入：candidateId*:string。角色：成员；注册效果：读取；模式：快允 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>company_state_update</b> — 按预期修订修改明确公司字段，不发布正式评分</p>
+<p>输入：externalId*:string；expectedRevision*:integer；patch*:object。角色：成员；注册效果：可逆操作；模式：快禁 / 标允 / 深允；恢复：idempotent。</p>
+<p><b>company_add</b> — 手工添加用户指定公司，保持未核验状态</p>
+<p>输入：name*:string；country*:string；website*:string；role:string[Distributor/VAD/VAR/Dealer/Reseller/Retailer/E-tailer/SI/Installer/MSP/ISP/Agent/Brand Owner]。角色：成员；注册效果：可逆操作；模式：快禁 / 标允 / 深允；恢复：idempotent。</p>
+<p><b>market_plan</b> — 独立生成指定市场与角色的计划</p>
+<p>输入：countryCode*:string；countryName*:string；objective*:string[new-market/existing-distributor-growth]；roles*:array；targetCount*:integer；queryLanguage*:string；userRequest*:string。角色：成员；注册效果：读取；模式：快禁 / 标禁 / 深允；恢复：read-retry。</p>
+<h2 seq="auto">开发策略与草稿（9）</h2>
+<p><b>development_feedback_generate</b> — 根据反馈修订指定版本草稿，不发送</p>
+<p>输入：draftId*:string；feedback*:string；currentBody*:string；sourceRevision*:integer；allowMemory*:boolean。角色：成员；注册效果：可逆操作；模式：快禁 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>development_strategy</b> — 仅生成单公司开发策略，不发送</p>
+<p>输入：companyExternalId*:string；language:string；instructions:string。角色：成员；注册效果：读取；模式：快禁 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>draft_generate</b> — 基于现有证据直接生成任务草稿</p>
+<p>输入：companyExternalId*:string；language:string；instructions:string。角色：成员；注册效果：读取；模式：快禁 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>follow_up_list</b> — 读取指定已发送邮件的已有跟进草稿</p>
+<p>输入：parentId*:string。角色：成员；注册效果：读取；模式：快禁 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>follow_up_generate</b> — 生成指定邮件的跟进草稿</p>
+<p>输入：parentId*:string；instructions*:string。角色：成员；注册效果：可逆操作；模式：快禁 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>draft_read</b> — 读取现有草稿正文、状态及修订</p>
+<p>输入：draftId*:string。角色：成员；注册效果：读取；模式：快禁 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>draft_edit</b> — 修改当前可编辑草稿，不重新生成/发送</p>
+<p>输入：draftId*:string；body*:string；expectedRevision*:integer。角色：成员；注册效果：可逆操作；模式：快禁 / 标允 / 深允；恢复：idempotent。</p>
+<p><b>draft_approve</b> — 批准指定修订的草稿，不发送</p>
+<p>输入：draftId*:string；expectedRevision*:integer；body:string。角色：成员；注册效果：可逆操作；模式：快禁 / 标允 / 深允；恢复：idempotent。</p>
+<p><b>development_workflow</b> — 运行开发策略和草稿完整子流程</p>
+<p>输入：companyExternalId*:string；language:string；instructions:string。角色：成员；注册效果：可逆操作；模式：快禁 / 标允 / 深允；恢复：read-retry。</p>
+<h2 seq="auto">任务、审批与运行管理（11）</h2>
+<p><b>task_reconcile</b> — 用已有收据核对并关闭旧联系人/关系任务</p>
+<p>输入：id*:string；kind*:string[contacts/relationship]。角色：成员；注册效果：发布/确认；模式：快禁 / 标允 / 深允；恢复：reconcile。</p>
+<p><b>budget_read</b> — 读取历史预算参考，不代表当前固定消费上限</p>
+<p>输入：无。角色：成员；注册效果：读取；模式：快禁 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>task_usage_read</b> — 按用户任务读取既有调用和使用观测，不自动生成成本账本</p>
+<p>输入：无。角色：成员；注册效果：读取；模式：快禁 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>run_read</b> — 读取本人 Agent 任务、事件和部分结果</p>
+<p>输入：id*:string；after*:string。角色：成员；注册效果：读取；模式：快禁 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>run_control</b> — 在安全边界暂停、恢复、取消或追加任务要求</p>
+<p>输入：id*:string；action*:string[pause/resume/cancel/instruct]；content:string。角色：成员；注册效果：可逆操作；模式：快禁 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>schedule_list</b> — 读取用户定时任务及下次运行时间</p>
+<p>输入：无。角色：成员；注册效果：读取；模式：快禁 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>schedule_create</b> — 创建明确要求的单次/周期任务，不授权未来发信</p>
+<p>输入：title*:string；content*:string；timezone:string；plan*:联合/嵌套。角色：成员；注册效果：发布/确认；模式：快禁 / 标禁 / 深允；恢复：read-retry。</p>
+<p><b>schedule_control</b> — 按版本启停已有定时任务</p>
+<p>输入：id*:string；version*:integer；enabled*:boolean。角色：成员；注册效果：可逆操作；模式：快禁 / 标禁 / 深允；恢复：read-retry。</p>
+<p><b>task_list</b> — 列出本人业务任务与 Agent 任务</p>
+<p>输入：无。角色：成员；注册效果：读取；模式：快禁 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>task_detail</b> — 读取业务任务详情与收据</p>
+<p>输入：id*:string；kind*:string[search/contacts/draft/send/relationship/generation]。角色：成员；注册效果：读取；模式：快禁 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>plan_confirmation</b> — 请求具体大规模/批量/不确定付费计划的确认</p>
+<p>输入：plan*:string；scale*:string；uncertainty*:string；requestedEstimate:string。角色：成员；注册效果：发布/确认；模式：快禁 / 标允 / 深允；恢复：idempotent。</p>
+<h2 seq="auto">知识、原件、事实与资料审核（25）</h2>
+<p><b>knowledge_gold_review_list</b> — 读取管理员 Gold 审核队列</p>
+<p>输入：offset*:integer；limit*:integer；split:string[development/validation/holdout]；reviewed:boolean。角色：管理员；注册效果：读取；模式：快禁 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>knowledge_gold_review_save</b> — 保存指定题目的答案与精确来源审核</p>
+<p>输入：caseId*:string；caseSha256*:string；expectedAnswer*:string；expectedSources*:array；reviewNote*:string。角色：管理员；注册效果：发布/确认；模式：快禁 / 标允 / 深允；恢复：idempotent。</p>
+<p><b>knowledge_gold_holdout_unlock</b> — 满足前置门槛后解锁冻结审核集</p>
+<p>输入：无。角色：管理员；注册效果：发布/确认；模式：快禁 / 标允 / 深允；恢复：idempotent。</p>
+<p><b>knowledge_shared_text_upsert</b> — 管理员创建或修订共享文本资料</p>
+<p>输入：collection*:string[industry/company/product]；externalId*:string；title*:string；content*:string；sourceType*:string；sourceUrl:string；authorityLevel*:联合/嵌套；language*:string；market:string；companyId:string；productId:string；expectedContentHash:string。角色：管理员；注册效果：发布/确认；模式：快禁 / 标允 / 深允；恢复：idempotent。</p>
+<p><b>knowledge_shared_binary_register</b> — 管理员登记已本地抽取的二进制资料并构树</p>
+<p>输入：jobId*:string；sourceSha256*:string；language*:string；authorityLevel*:联合/嵌套。角色：管理员；注册效果：发布/确认；模式：快禁 / 标允 / 深允；恢复：idempotent。</p>
+<p><b>knowledge_shared_release_gate</b> — 读取旧 RAG v3 release 完整性阻断项</p>
+<p>输入：releaseKey*:string。角色：管理员；注册效果：读取；模式：快禁 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>knowledge_shared_release_activate</b> — 按原有门槛激活指定旧 v3 release</p>
+<p>输入：releaseKey*:string；releaseId*:string；expectedManifestHash*:string。角色：管理员；注册效果：发布/确认；模式：快禁 / 标允 / 深允；恢复：idempotent。</p>
+<p><b>vectorless_start</b> — 建立受预算约束的无向量检索会话</p>
+<p>输入：question*:string。角色：成员；注册效果：读取；模式：快允 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>vectorless_search</b> — 按权限和结构字段搜索文档集合</p>
+<p>输入：sessionId*:string；filters*:object。角色：成员；注册效果：读取；模式：快允 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>vectorless_browse</b> — 浏览指定文档子树</p>
+<p>输入：sessionId*:string；documentId*:string；parentId*:联合/嵌套。角色：成员；注册效果：读取；模式：快允 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>vectorless_read</b> — 回读带稳定坐标的原文证据</p>
+<p>输入：sessionId*:string；nodeId*:string。角色：成员；注册效果：读取；模式：快允 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>vectorless_aggregate</b> — 确定性聚合已授权文档集合</p>
+<p>输入：sessionId*:string；documentIds*:array。角色：成员；注册效果：读取；模式：快允 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>vectorless_filter</b> — 确定性筛选文档集合</p>
+<p>输入：sessionId*:string；documentIds*:array；filters*:object。角色：成员；注册效果：读取；模式：快允 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>vectorless_v3_candidates</b> — 由旧 v3 补候选，仍须回读原文</p>
+<p>输入：sessionId*:string。角色：成员；注册效果：读取；模式：快允 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>knowledge_search</b> — 检索有权访问的资料证据</p>
+<p>输入：query*:string；limit*:integer；collections:array。角色：成员；注册效果：读取；模式：快允 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>knowledge_facts</b> — 读取已核实结构化事实</p>
+<p>输入：entity*:string；attributes*:array。角色：成员；注册效果：读取；模式：快允 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>knowledge_status</b> — 读取知识库统计和状态</p>
+<p>输入：无。角色：成员；注册效果：读取；模式：快允 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>knowledge_library_list</b> — 按范围/查询/分页读取资料列表</p>
+<p>输入：scope*:string[private/shared/evidence]；query*:string；offset*:integer。角色：成员；注册效果：读取；模式：快允 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>knowledge_revision_list</b> — 读取指定资料历史版本</p>
+<p>输入：documentId*:string；offset*:integer。角色：成员；注册效果：读取；模式：快允 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>knowledge_upload_jobs</b> — 读取本人上传处理状态</p>
+<p>输入：无。角色：成员；注册效果：读取；模式：快禁 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>knowledge_private_delete</b> — 按当前哈希删除本人私有资料</p>
+<p>输入：documentId*:string；expectedHash*:string。角色：成员；注册效果：破坏性操作；模式：快禁 / 标允 / 深允；恢复：reconcile。</p>
+<p><b>knowledge_fact_review_list</b> — 读取管理员事实审核队列</p>
+<p>输入：offset*:integer；limit*:integer；reason*:string；query*:string；status*:string[open/accepted/corrected/rejected/replace-source]。角色：管理员；注册效果：读取；模式：快禁 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>knowledge_fact_review_decide</b> — 确认/保留/拒绝/更正指定事实</p>
+<p>输入：reviewId*:string；decision*:string[verify/retain-candidate/reject/correct]；note*:string；correctedValue:联合/嵌套；correctedRawValue:string；correctedUnit:联合/嵌套。角色：管理员；注册效果：发布/确认；模式：快禁 / 标允 / 深允；恢复：idempotent。</p>
+<p><b>knowledge_originals</b> — 按明确目标读取已登记原件；不明确时澄清</p>
+<p>输入：query*:string；assetId:string。角色：成员；注册效果：读取；模式：快允 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>knowledge_compare</b> — 分别取得两个对象的证据进行比较并显式显示缺项</p>
+<p>输入：entities*:array；attributes*:array。角色：成员；注册效果：读取；模式：快允 / 标允 / 深允；恢复：read-retry。</p>
+<h2 seq="auto">长期记忆与政策（13）</h2>
+<p><b>memory_read</b> — 按市场/公司读取当前偏好、政策和决定</p>
+<p>输入：market:string；company:string。角色：成员；注册效果：读取；模式：快允 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>memory_history_search</b> — 按文字及范围查询有效历史记忆</p>
+<p>输入：query*:string；market:string；company:string；role:string；offset*:integer；limit*:integer。角色：成员；注册效果：读取；模式：快允 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>memory_observation_search</b> — 按业务时间/已知时间读取账号内版本观察</p>
+<p>输入：query*:string；businessAt:string；knownAt:string；marketCode:string；companyId:string。角色：成员；注册效果：读取；模式：快允 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>legacy_memory_save</b> — 编辑历史人工确认的邮件风格或营销主张</p>
+<p>输入：id*:string；mode*:string[create/edit]；expectedUpdatedAt:string；kind*:string[email-style/user-approved-marketing-claim]；title*:string；content*:string；marketCodes*:array；channelRoles*:array；externalUseApproved*:boolean；confirmed*:boolean。角色：成员；注册效果：发布/确认；模式：快禁 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>preference_save</b> — 保存稳定账号偏好并通知、提供撤销</p>
+<p>输入：key*:string；content*:string；markets*:array；companies*:array；validUntil:string；expectedVersion:integer。角色：成员；注册效果：可逆操作；模式：快禁 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>policy_save</b> — 保存明确确认的政策/公司决定</p>
+<p>输入：key*:string；content*:string；kind*:string[preference/policy/company-decision]；scope*:string[account/global]；mandatory*:boolean；markets*:array；companies*:array；validUntil:string；expectedVersion:integer。角色：成员；注册效果：发布/确认；模式：快禁 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>memory_list</b> — 读取已有带来源的偏好和政策</p>
+<p>输入：无。角色：成员；注册效果：读取；模式：快禁 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>agent_memory_inventory</b> — 分页盘点含停用项的版本记忆</p>
+<p>输入：offset*:integer。角色：成员；注册效果：读取；模式：快禁 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>agent_memory_set_active</b> — 按版本和修订启停账号偏好</p>
+<p>输入：id*:string；version*:integer；expectedUpdatedAt*:string；active*:boolean。角色：成员；注册效果：可逆操作；模式：快禁 / 标允 / 深允；恢复：idempotent。</p>
+<p><b>decision_memory_set_active</b> — 明确确认后启停业务政策或公司决定</p>
+<p>输入：id*:string；version*:integer；expectedUpdatedAt*:string；active*:boolean。角色：成员；注册效果：发布/确认；模式：快禁 / 标允 / 深允；恢复：idempotent。</p>
+<p><b>global_policy_set_active</b> — 管理员明确确认后启停全局政策</p>
+<p>输入：id*:string；version*:integer；expectedUpdatedAt*:string；active*:boolean。角色：管理员；注册效果：发布/确认；模式：快禁 / 标允 / 深允；恢复：idempotent。</p>
+<p><b>legacy_memory_set_active</b> — 按修订归档或恢复历史记忆</p>
+<p>输入：id*:string；expectedUpdatedAt*:string；active*:boolean。角色：成员；注册效果：发布/确认；模式：快禁 / 标允 / 深允；恢复：idempotent。</p>
+<p><b>legacy_memory_delete</b> — 明确确认后永久删除可删除的历史记忆</p>
+<p>输入：id*:string；expectedUpdatedAt*:string。角色：成员；注册效果：破坏性操作；模式：快禁 / 标允 / 深允；恢复：reconcile。</p>
+<h2 seq="auto">Skill 管理与执行（7）</h2>
+<p><b>skill_list</b> — 列出可访问的 Skill</p>
+<p>输入：无。角色：成员；注册效果：读取；模式：快禁 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>skill_import</b> — 导入给定 Skill 文件包并固定版本</p>
+<p>输入：skillId:string；expectedVersion:integer；name*:string；source*:string；files*:object；dependencies*:array。角色：成员；注册效果：可逆操作；模式：快禁 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>skill_import_source</b> — 从指定来源导入 Skill</p>
+<p>输入：kind*:string[url/github]；name*:string；url:string；repository:string；ref:string；directory:string；skillId:string；expectedVersion:integer。角色：成员；注册效果：可逆操作；模式：快禁 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>skill_read</b> — 读取指定 Skill 的内容与版本</p>
+<p>输入：id*:string。角色：成员；注册效果：读取；模式：快禁 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>skill_manage</b> — 按版本管理 Skill 状态</p>
+<p>输入：id*:string；version*:integer；operation*:string[enable/disable/rollback]。角色：成员；注册效果：可逆操作；模式：快禁 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>skill_publish</b> — 管理员发布指定 Skill 版本</p>
+<p>输入：id*:string；version*:integer。角色：管理员；注册效果：发布/确认；模式：快禁 / 标允 / 深允；恢复：read-retry。</p>
+<p><b>skill_script</b> — 在受控脚本环境运行指定 Skill 入口，受额外门槛</p>
+<p>输入：id*:string；entry*:string；input*:string。角色：成员；注册效果：读取；模式：快禁 / 标禁 / 深允；恢复：read-retry。</p>
+<h1 seq="auto">证据、附件与版本追溯</h1>
+<p>附件含全部 105 工具的完整 JSON Schema、模式配置、LangGraph 实际响应/源码工厂导出、Mermaid 源码和图像。tools.json 的英文 description 是注册表原文，中文摘要用于阅读，发生细节疑义时以注册表、执行器及权限门禁共同核对。附件不含 .env、密钥、用户邮件或客户原文。</p>
+<p><a href="https://github.com/yiwei0168-alt/codex_sales_leads/blob/bfc888f8/docs/MA24_COMPLETION_GOAL_PLAN_2026-10-11.md">完整剩余计划与 G01–G20 台账</a></p>
+<p><a href="https://github.com/yiwei0168-alt/codex_sales_leads/blob/bfc888f8/docs/CONFIRMED_PRODUCT_RULES.md">产品确认规则及历史变更</a></p>
+<p><a href="https://github.com/yiwei0168-alt/codex_sales_leads/blob/bfc888f8/docs/MAIN_AGENT_WORKFLOW.md">主 Agent 工作流</a></p>
+<p><a href="https://github.com/yiwei0168-alt/codex_sales_leads/blob/bfc888f8/docs/AGENT_MODE_RUNTIME_2026-10-10.md">三模式运行验收记录</a></p>
+<p><a href="https://github.com/yiwei0168-alt/codex_sales_leads/blob/bfc888f8/docs/MAILCRM_IMPLEMENTATION_2026-10-08.md">邮箱/客户时间线实施记录</a></p>
+<p><a href="https://github.com/yiwei0168-alt/codex_sales_leads/blob/bfc888f8/docs/MA24_HOLDOUT_FINAL_REVIEW_2026-10-10.md">旧冻结集最终人工判分</a></p>
+<p><a href="https://github.com/yiwei0168-alt/codex_sales_leads/blob/bfc888f8/docs/MA24_VECTORLESS_MEMORY_ACCEPTANCE_2026-09-24.md">长期记忆/RAG 阶段验收证据</a></p>
+<p>这些链接固定到编写基线提交，避免后续 main 变动改变本次审核依据。图导出响应时间/哈希见 export-manifest.json。本文说明的工作区在研内容不算上述固定提交的交付。</p>
+<source path="@./docs/product-review-2026-10-11/tools.json" name="105工具完整输入输出定义.json"/>
+<source path="@./docs/product-review-2026-10-11/architecture-export.zip" name="LangGraph架构导出与模型配置.zip"/>
+<p>本次审核待决定：是否接受上述产品行为与状态描述；哪些缺口阻断试点；哪些新独立来源与评价项进入下一次冻结。任何签核应写明覆盖范围和证据版本，不能用“架构已看过”代替独立质量、真实业务与上线回滚验收。</p>

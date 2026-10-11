@@ -1,0 +1,41 @@
+{
+  "nodes": [
+    {
+      "id": "__start__",
+      "type": "schema",
+      "data": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema"
+      }
+    },
+    {
+      "id": "resume_persisted_main_agent",
+      "type": "runnable",
+      "data": {
+        "id": [
+          "langgraph",
+          "RunnableCallable"
+        ],
+        "name": "resume_persisted_main_agent"
+      }
+    },
+    {
+      "id": "__end__",
+      "type": "schema",
+      "data": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "__start__",
+      "target": "resume_persisted_main_agent",
+      "conditional": false
+    },
+    {
+      "source": "resume_persisted_main_agent",
+      "target": "__end__",
+      "conditional": false
+    }
+  ]
+}

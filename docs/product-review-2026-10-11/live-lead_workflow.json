@@ -1,0 +1,300 @@
+{
+  "nodes": [
+    {
+      "id": "__start__",
+      "type": "schema",
+      "data": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema"
+      }
+    },
+    {
+      "id": "validate_lead_request",
+      "type": "runnable",
+      "data": {
+        "id": [
+          "langgraph",
+          "RunnableCallable"
+        ],
+        "name": "validate_lead_request"
+      }
+    },
+    {
+      "id": "lead_business_flow:retrieve_knowledge",
+      "type": "runnable",
+      "data": {
+        "id": [
+          "langgraph",
+          "RunnableCallable"
+        ],
+        "name": "retrieve_knowledge"
+      }
+    },
+    {
+      "id": "lead_business_flow:build_playbook",
+      "type": "runnable",
+      "data": {
+        "id": [
+          "langgraph",
+          "RunnableCallable"
+        ],
+        "name": "build_playbook"
+      }
+    },
+    {
+      "id": "lead_business_flow:prepare_recovery_evidence",
+      "type": "runnable",
+      "data": {
+        "id": [
+          "langgraph",
+          "RunnableCallable"
+        ],
+        "name": "prepare_recovery_evidence"
+      }
+    },
+    {
+      "id": "lead_business_flow:recover_saved_evidence",
+      "type": "runnable",
+      "data": {
+        "id": [
+          "langgraph",
+          "RunnableCallable"
+        ],
+        "name": "recover_saved_evidence"
+      }
+    },
+    {
+      "id": "lead_business_flow:discover_candidates",
+      "type": "runnable",
+      "data": {
+        "id": [
+          "langgraph",
+          "RunnableCallable"
+        ],
+        "name": "discover_candidates"
+      }
+    },
+    {
+      "id": "lead_business_flow:collect_evidence",
+      "type": "runnable",
+      "data": {
+        "id": [
+          "langgraph",
+          "RunnableCallable"
+        ],
+        "name": "collect_evidence"
+      }
+    },
+    {
+      "id": "lead_business_flow:correct_candidates",
+      "type": "runnable",
+      "data": {
+        "id": [
+          "langgraph",
+          "RunnableCallable"
+        ],
+        "name": "correct_candidates"
+      }
+    },
+    {
+      "id": "lead_business_flow:route_candidates",
+      "type": "runnable",
+      "data": {
+        "id": [
+          "langgraph",
+          "RunnableCallable"
+        ],
+        "name": "route_candidates"
+      }
+    },
+    {
+      "id": "lead_business_flow:score_candidates",
+      "type": "runnable",
+      "data": {
+        "id": [
+          "langgraph",
+          "RunnableCallable"
+        ],
+        "name": "score_candidates"
+      }
+    },
+    {
+      "id": "lead_business_flow:recover_incomplete_processing",
+      "type": "runnable",
+      "data": {
+        "id": [
+          "langgraph",
+          "RunnableCallable"
+        ],
+        "name": "recover_incomplete_processing"
+      }
+    },
+    {
+      "id": "lead_business_flow:review_assessment_anomalies",
+      "type": "runnable",
+      "data": {
+        "id": [
+          "langgraph",
+          "RunnableCallable"
+        ],
+        "name": "review_assessment_anomalies"
+      }
+    },
+    {
+      "id": "lead_business_flow:assemble_handoff_briefs",
+      "type": "runnable",
+      "data": {
+        "id": [
+          "langgraph",
+          "RunnableCallable"
+        ],
+        "name": "assemble_handoff_briefs"
+      }
+    },
+    {
+      "id": "lead_business_flow:persist_results",
+      "type": "runnable",
+      "data": {
+        "id": [
+          "langgraph",
+          "RunnableCallable"
+        ],
+        "name": "persist_results"
+      }
+    },
+    {
+      "id": "publish_lead_result",
+      "type": "runnable",
+      "data": {
+        "id": [
+          "langgraph",
+          "RunnableCallable"
+        ],
+        "name": "publish_lead_result"
+      }
+    },
+    {
+      "id": "__end__",
+      "type": "schema",
+      "data": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "lead_business_flow:assemble_handoff_briefs",
+      "target": "lead_business_flow:persist_results",
+      "conditional": false
+    },
+    {
+      "source": "lead_business_flow:collect_evidence",
+      "target": "lead_business_flow:correct_candidates",
+      "conditional": false
+    },
+    {
+      "source": "lead_business_flow:correct_candidates",
+      "target": "lead_business_flow:route_candidates",
+      "conditional": false
+    },
+    {
+      "source": "lead_business_flow:discover_candidates",
+      "target": "lead_business_flow:collect_evidence",
+      "conditional": false
+    },
+    {
+      "source": "lead_business_flow:recover_saved_evidence",
+      "target": "lead_business_flow:prepare_recovery_evidence",
+      "conditional": false
+    },
+    {
+      "source": "lead_business_flow:retrieve_knowledge",
+      "target": "lead_business_flow:build_playbook",
+      "conditional": false
+    },
+    {
+      "source": "lead_business_flow:route_candidates",
+      "target": "lead_business_flow:score_candidates",
+      "conditional": false
+    },
+    {
+      "source": "lead_business_flow:build_playbook",
+      "target": "lead_business_flow:prepare_recovery_evidence",
+      "conditional": true
+    },
+    {
+      "source": "lead_business_flow:build_playbook",
+      "target": "lead_business_flow:discover_candidates",
+      "conditional": true
+    },
+    {
+      "source": "lead_business_flow:prepare_recovery_evidence",
+      "target": "lead_business_flow:prepare_recovery_evidence",
+      "conditional": true
+    },
+    {
+      "source": "lead_business_flow:prepare_recovery_evidence",
+      "target": "lead_business_flow:correct_candidates",
+      "conditional": true
+    },
+    {
+      "source": "lead_business_flow:prepare_recovery_evidence",
+      "target": "lead_business_flow:recover_saved_evidence",
+      "conditional": true
+    },
+    {
+      "source": "lead_business_flow:score_candidates",
+      "target": "lead_business_flow:recover_incomplete_processing",
+      "conditional": true
+    },
+    {
+      "source": "lead_business_flow:score_candidates",
+      "target": "lead_business_flow:review_assessment_anomalies",
+      "conditional": true
+    },
+    {
+      "source": "lead_business_flow:recover_incomplete_processing",
+      "target": "lead_business_flow:correct_candidates",
+      "conditional": true
+    },
+    {
+      "source": "lead_business_flow:recover_incomplete_processing",
+      "target": "lead_business_flow:score_candidates",
+      "conditional": true
+    },
+    {
+      "source": "lead_business_flow:review_assessment_anomalies",
+      "target": "lead_business_flow:recover_incomplete_processing",
+      "conditional": true
+    },
+    {
+      "source": "lead_business_flow:review_assessment_anomalies",
+      "target": "lead_business_flow:discover_candidates",
+      "conditional": true
+    },
+    {
+      "source": "lead_business_flow:review_assessment_anomalies",
+      "target": "lead_business_flow:assemble_handoff_briefs",
+      "conditional": true
+    },
+    {
+      "source": "__start__",
+      "target": "validate_lead_request",
+      "conditional": false
+    },
+    {
+      "source": "lead_business_flow:persist_results",
+      "target": "publish_lead_result",
+      "conditional": false
+    },
+    {
+      "source": "publish_lead_result",
+      "target": "__end__",
+      "conditional": false
+    },
+    {
+      "source": "validate_lead_request",
+      "target": "lead_business_flow:retrieve_knowledge",
+      "conditional": false
+    }
+  ]
+}

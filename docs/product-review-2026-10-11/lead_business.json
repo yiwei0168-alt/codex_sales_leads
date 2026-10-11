@@ -1,0 +1,147 @@
+{
+  "nodes": [
+    "__start__",
+    "retrieve_knowledge",
+    "build_playbook",
+    "prepare_recovery_evidence",
+    "recover_saved_evidence",
+    "discover_candidates",
+    "collect_evidence",
+    "correct_candidates",
+    "route_candidates",
+    "score_candidates",
+    "recover_incomplete_processing",
+    "review_assessment_anomalies",
+    "assemble_handoff_briefs",
+    "persist_results",
+    "__end__"
+  ],
+  "edges": [
+    {
+      "source": "__start__",
+      "target": "retrieve_knowledge",
+      "conditional": false,
+      "data": null
+    },
+    {
+      "source": "assemble_handoff_briefs",
+      "target": "persist_results",
+      "conditional": false,
+      "data": null
+    },
+    {
+      "source": "collect_evidence",
+      "target": "correct_candidates",
+      "conditional": false,
+      "data": null
+    },
+    {
+      "source": "correct_candidates",
+      "target": "route_candidates",
+      "conditional": false,
+      "data": null
+    },
+    {
+      "source": "discover_candidates",
+      "target": "collect_evidence",
+      "conditional": false,
+      "data": null
+    },
+    {
+      "source": "persist_results",
+      "target": "__end__",
+      "conditional": false,
+      "data": null
+    },
+    {
+      "source": "recover_saved_evidence",
+      "target": "prepare_recovery_evidence",
+      "conditional": false,
+      "data": null
+    },
+    {
+      "source": "retrieve_knowledge",
+      "target": "build_playbook",
+      "conditional": false,
+      "data": null
+    },
+    {
+      "source": "route_candidates",
+      "target": "score_candidates",
+      "conditional": false,
+      "data": null
+    },
+    {
+      "source": "build_playbook",
+      "target": "prepare_recovery_evidence",
+      "conditional": true,
+      "data": null
+    },
+    {
+      "source": "build_playbook",
+      "target": "discover_candidates",
+      "conditional": true,
+      "data": null
+    },
+    {
+      "source": "prepare_recovery_evidence",
+      "target": "prepare_recovery_evidence",
+      "conditional": true,
+      "data": null
+    },
+    {
+      "source": "prepare_recovery_evidence",
+      "target": "correct_candidates",
+      "conditional": true,
+      "data": null
+    },
+    {
+      "source": "prepare_recovery_evidence",
+      "target": "recover_saved_evidence",
+      "conditional": true,
+      "data": null
+    },
+    {
+      "source": "score_candidates",
+      "target": "recover_incomplete_processing",
+      "conditional": true,
+      "data": null
+    },
+    {
+      "source": "score_candidates",
+      "target": "review_assessment_anomalies",
+      "conditional": true,
+      "data": null
+    },
+    {
+      "source": "recover_incomplete_processing",
+      "target": "correct_candidates",
+      "conditional": true,
+      "data": null
+    },
+    {
+      "source": "recover_incomplete_processing",
+      "target": "score_candidates",
+      "conditional": true,
+      "data": null
+    },
+    {
+      "source": "review_assessment_anomalies",
+      "target": "recover_incomplete_processing",
+      "conditional": true,
+      "data": null
+    },
+    {
+      "source": "review_assessment_anomalies",
+      "target": "discover_candidates",
+      "conditional": true,
+      "data": null
+    },
+    {
+      "source": "review_assessment_anomalies",
+      "target": "assemble_handoff_briefs",
+      "conditional": true,
+      "data": null
+    }
+  ]
+}

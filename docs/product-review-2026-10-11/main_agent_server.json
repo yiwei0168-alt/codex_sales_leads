@@ -1,0 +1,21 @@
+{
+  "nodes": [
+    "__start__",
+    "resume_persisted_main_agent",
+    "__end__"
+  ],
+  "edges": [
+    {
+      "source": "__start__",
+      "target": "resume_persisted_main_agent",
+      "conditional": false,
+      "data": null
+    },
+    {
+      "source": "resume_persisted_main_agent",
+      "target": "__end__",
+      "conditional": false,
+      "data": null
+    }
+  ]
+}
