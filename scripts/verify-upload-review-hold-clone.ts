@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {spawn} from 'node:child_process';
 import {randomUUID,createHash} from 'node:crypto';
-import {readFile,readdir,rm,rmdir,writeFile} from 'node:fs/promises';
+import {readFile,readdir,rm,rmdir,writeFile,mkdir} from 'node:fs/promises';
 import {resolve,sep,basename} from 'node:path';
 import nextEnv from '@next/env';
 import {Pool} from 'pg';
@@ -19,6 +19,23 @@ assert(/^ma11_replay_[a-f0-9]{12}$/.test(state.database));
 const url=new URL(base);url.pathname=`/${state.database}`;process.env.DATABASE_URL=url.toString();
 const pool=new Pool({connectionString:url.toString()}),owner=randomUUID(),other=randomUUID();
 const root=resolve('knowledge/uploads',owner);
+const reviewCrashes=process.argv.includes('--review-crashes');
+assert(!reviewCrashes||process.argv.includes('--complete-reviews'));
+async function crashCompletion(jobId:string,artifactSha256:string,decisionSha256:string,phase:string){
+  await mkdir('tmp/upload-crash',{recursive:true});const marker=resolve('tmp/upload-crash',`${randomUUID()}.json`);
+  const child=spawn(process.execPath,['--require','./scripts/patch-node-user.cjs','--require','./scripts/fixtures/upload-crash-preload.cjs','--import','tsx',
+    'scripts/complete-upload-review.ts',`--job-id=${jobId}`,`--user-id=${owner}`,`--artifact-sha=${artifactSha256}`,`--decision-sha=${decisionSha256}`],
+    {cwd:process.cwd(),windowsHide:true,stdio:['ignore','pipe','pipe'],env:{...process.env,DATABASE_URL:url.toString(),UPLOAD_CRASH_PHASE:phase,UPLOAD_CRASH_MARKER:marker}});
+  let stderr='';child.stdout.on('data',()=>{});child.stderr.on('data',part=>{stderr=(stderr+String(part)).slice(-2000);});
+  const exited=new Promise<number|null>((done,reject)=>{child.once('error',reject);child.once('exit',done);});
+  try{
+    let reached=false;
+    for(let i=0;i<400;i++){const bytes=await readFile(marker,'utf8').catch(()=>null);if(bytes){assert.equal(JSON.parse(bytes).pid,child.pid);reached=true;break;}if(child.exitCode!==null)break;await new Promise(done=>setTimeout(done,50));}
+    assert(reached,`Completion checkpoint not reached: ${phase}; ${stderr}`);assert(child.kill());assert.notEqual(await exited,0);
+    const count=(await pool.query('select count(*)::int as n from knowledge_upload_review_completion where job_id=$1',[jobId])).rows[0].n;
+    assert.equal(count,phase==='review-before-commit'?0:1);
+  }finally{if(child.exitCode===null&&child.signalCode===null){child.kill();await exited;}await rm(marker,{force:true});}
+}
 async function worker(id:string){
   return await new Promise<Record<string,number>>((done,reject)=>{
     const child=spawn(process.execPath,['--require','./scripts/patch-node-user.cjs','--import','tsx','scripts/process-knowledge-upload-jobs.ts',`--job-id=${id}`,'--limit=1'],
@@ -97,7 +114,12 @@ try{
       await assert.rejects(()=>completeExtractionReview(owner,job.id,current.artifactSha256,current.decisionSha256),/记录已变化/);
       const reviewed=await getExtractionReview(owner,job.id);assert.equal(reviewed.resolved,63);
       await assert.rejects(()=>completeExtractionReview(other,job.id,reviewed.artifactSha256,reviewed.decisionSha256),/不存在/);
-      const receipt=await completeExtractionReview(owner,job.id,reviewed.artifactSha256,reviewed.decisionSha256);assert(receipt.readyForRegistration);
+      if(reviewCrashes)await crashCompletion(job.id,reviewed.artifactSha256,reviewed.decisionSha256,visibility==='private'?'review-before-commit':'review-after-commit');
+      const both=await Promise.all([completeExtractionReview(owner,job.id,reviewed.artifactSha256,reviewed.decisionSha256),completeExtractionReview(owner,job.id,reviewed.artifactSha256,reviewed.decisionSha256)]);
+      const receipt=both[0];assert(receipt.readyForRegistration);assert.equal(both[0].receiptId,both[1].receiptId);
+      assert.equal(both.filter(result=>!result.reused).length,reviewCrashes&&visibility==='shared'?0:1);
+      assert.equal((await pool.query('select count(*)::int as n from knowledge_upload_review_completion where job_id=$1',[job.id])).rows[0].n,1);
+      await assert.rejects(()=>completeExtractionReview(owner,job.id,reviewed.artifactSha256,'0'.repeat(64)),/记录已变化/);
       const ready=(await pool.query('select * from knowledge_upload_job where id=$1',[job.id])).rows[0];
       assert.equal(ready.error_code,null);assert.notEqual(ready.extraction_artifact_key,stored.extraction_artifact_key);
       assert.equal(createHash('sha256').update(await readFile(resolve(stored.extraction_artifact_key))).digest('hex'),stored.metrics.artifactSha256);
@@ -107,6 +129,8 @@ try{
       await assert.rejects(()=>registerVectorlessUpload(owner,job.id,{language:'und',authorityLevel:2}),/review receipt/);
       await writeFile(derivedPath,derivedBytes);await pool.query("update knowledge_upload_job set metrics=$2 where id=$1",[job.id,ready.metrics]);
       const processed=await worker(job.id);assert.equal(processed.completed,visibility==='private'?1:0);
+      const replay=await completeExtractionReview(owner,job.id,reviewed.artifactSha256,reviewed.decisionSha256);assert(replay.reused);assert.equal(replay.receiptId,receipt.receiptId);
+      assert.equal(replay.status,visibility==='private'?'registered':'extracted');
       if(visibility==='private'){
         const node=(await pool.query("select n.id from knowledge_tree_node n join knowledge_tree_version v on v.id=n.version_id join knowledge_document d on d.id=v.document_id where d.owner_id=$1 and n.content='Synthetic review integration marker'",[owner])).rows[0];assert(node);
         const evidence=await readEvidence(owner,node.id);assert.equal((evidence?.source_location as {extractionReview:{receiptId:string}}).extractionReview.receiptId,receipt.receiptId);
@@ -117,7 +141,7 @@ try{
   const permissions=(await pool.query("select has_table_privilege('network_copilot_app','knowledge_upload_extraction_review','UPDATE') as update_allowed,has_table_privilege('network_copilot_app','knowledge_upload_extraction_review','DELETE') as delete_allowed")).rows[0];
   assert.equal(permissions.update_allowed,false);assert.equal(permissions.delete_allowed,false);
   const evidence={cloneOnly:true,formats:['PPTX'],privateAndSharedHeld:true,unresolvedBlocksPerJob:63,dedupReused:true,restartDoesNotReclaim:true,otherAccountHidden:true,directRegistrationRejected:true,noDocumentsPublished:!process.argv.includes('--complete-reviews'),privatePublishesOnlyAfterCompletion:process.argv.includes('--complete-reviews'),sharedStillUnpublished:true,v3PointersUnchanged:true,appendOnlyReview:true,staleReviewRejected:true,otherAccountReviewDenied:true,sourceArtifactBound:true,externalCalls:0,modelCalls:0};
-  await writeFile(process.argv.includes('--complete-reviews')?'tmp/upload-review-completion-result.json':process.argv.includes('--visual-candidates')?'tmp/upload-visual-candidate-result.json':'tmp/upload-review-hold-result.json',JSON.stringify({...evidence,completionVerified:process.argv.includes('--complete-reviews'),visualCandidatesVerified:process.argv.includes('--visual-candidates')},null,2));console.log(JSON.stringify(evidence));
+  await writeFile(reviewCrashes?'tmp/upload-review-crash-result.json':process.argv.includes('--complete-reviews')?'tmp/upload-review-completion-result.json':process.argv.includes('--visual-candidates')?'tmp/upload-visual-candidate-result.json':'tmp/upload-review-hold-result.json',JSON.stringify({...evidence,completionVerified:process.argv.includes('--complete-reviews'),completionReplayVerified:process.argv.includes('--complete-reviews'),completionProcessesKilled:reviewCrashes?2:0,visualCandidatesVerified:process.argv.includes('--visual-candidates')},null,2));console.log(JSON.stringify(evidence));
 }catch(error){console.error(error);throw error;}finally{
   await pool.query('delete from knowledge_upload_review_completion where owner_id=$1',[owner]);
   await pool.query('delete from knowledge_upload_extraction_review where owner_id=$1',[owner]);

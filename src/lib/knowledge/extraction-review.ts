@@ -35,8 +35,31 @@ async function load(client:PoolClient,userId:string,jobId:string){
 }
 
 export async function completeExtractionReview(userId:string,jobId:string,artifactSha256:string,decisionSha256:string){
-  z.uuid().parse(jobId);z.string().regex(/^[a-f0-9]{64}$/).parse(artifactSha256);
+  z.uuid().parse(jobId);z.string().regex(/^[a-f0-9]{64}$/).parse(artifactSha256);z.string().regex(/^[a-f0-9]{64}$/).parse(decisionSha256);
   return tenantTransaction(userId,async client=>{
+    // Serialize first submission and retries on the job, including after worker registration.
+    const locked=await client.query<{status:string;storage_key:string;source_sha256:string;extraction_artifact_key:string;metrics:{artifactSha256?:string}}>(
+      `select j.status,j.storage_key,j.source_sha256,j.extraction_artifact_key,j.metrics from knowledge_upload_job j
+       join app_user u on u.id=j.user_id and u.status='active' where j.id=$1 and j.user_id=$2 for update of j`,[jobId,userId]);
+    const current=locked.rows[0];if(!current)throw new ExtractionReviewConflict('待审核作业不存在或状态已变化');
+    const prior=await client.query<{id:string;source_sha256:string;original_artifact_key:string;original_artifact_sha256:string;reviewed_artifact_key:string;reviewed_artifact_sha256:string;extractor_version:string}>(
+      'select * from knowledge_upload_review_completion where job_id=$1 and owner_id=$2',[jobId,userId]);
+    if(prior.rows[0]){
+      const receipt=prior.rows[0];
+      if(receipt.original_artifact_sha256!==artifactSha256||receipt.source_sha256!==current.source_sha256
+        ||receipt.reviewed_artifact_key!==current.extraction_artifact_key||receipt.reviewed_artifact_sha256!==current.metrics.artifactSha256)
+        throw new ExtractionReviewConflict('审核完成记录与当前作业不符');
+      const judgments=await client.query<ExtractionJudgment>(`select distinct on(block_id) block_id,revision,decision,evidence_text,source_sha256,extractor_version
+        from knowledge_upload_extraction_review where owner_id=$1 and job_id=$2 and artifact_sha256=$3 order by block_id,revision desc`,[userId,jobId,artifactSha256]);
+      if(reviewDecisionHash(judgments.rows)!==decisionSha256)throw new ExtractionReviewConflict('审核记录已变化，请重新加载后完成');
+      const paths=[current.storage_key,receipt.original_artifact_key,receipt.reviewed_artifact_key].map(key=>{const path=resolve(safeKnowledgeStorageKey(key));assertResolvedInsideKnowledgeRoot(path);return path;});
+      const [source,original,reviewed]=await Promise.all(paths.map(path=>readFile(path)));
+      const hash=(bytes:Uint8Array)=>createHash('sha256').update(bytes).digest('hex');
+      if(hash(source)!==receipt.source_sha256||hash(reviewed)!==receipt.reviewed_artifact_sha256)throw new ExtractionReviewConflict('审核原件或派生产物已变化');
+      const rebuilt=deriveReviewedExtraction(original,{receiptId:receipt.id,sourceSha256:receipt.source_sha256,artifactSha256,extractorVersion:receipt.extractor_version},judgments.rows);
+      if(!rebuilt.equals(reviewed))throw new ExtractionReviewConflict('审核派生产物与判决不符');
+      return {receiptId:receipt.id,status:current.status,indexingResumed:false,readyForRegistration:current.status==='extracted',reused:true};
+    }
     const {job,artifactBytes}=await load(client,userId,jobId);
     if(job.metrics.artifactSha256!==artifactSha256)throw new ExtractionReviewConflict('抽取版本已变化，请重新加载');
     const rows=await client.query<ExtractionJudgment>(`select distinct on(block_id) block_id,revision,decision,evidence_text,source_sha256,extractor_version
@@ -53,7 +76,7 @@ export async function completeExtractionReview(userId:string,jobId:string,artifa
       values($1,$2,$3,$4,$5,$6,$7,$8,$9)`,[receiptId,userId,jobId,job.source_sha256,job.extraction_artifact_key,artifactSha256,key,reviewedSha,job.extractor_version]);
     await client.query(`update knowledge_upload_job set extraction_artifact_key=$3,error_code=null,updated_at=now(),metrics=metrics||$4::jsonb where id=$1 and user_id=$2`,
       [jobId,userId,key,JSON.stringify({artifactSha256:reviewedSha,extractionReviewReceiptId:receiptId,originalExtractionArtifactKey:job.extraction_artifact_key,originalExtractionArtifactSha256:artifactSha256})]);
-    return {receiptId,status:'extracted',indexingResumed:false,readyForRegistration:true};
+    return {receiptId,status:'extracted',indexingResumed:false,readyForRegistration:true,reused:false};
   });
 }
 

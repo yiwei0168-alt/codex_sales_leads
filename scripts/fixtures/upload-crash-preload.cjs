@@ -25,8 +25,9 @@ Client.prototype.query = function(sql,...args) {
   if (phase === 'extracted' && /update knowledge_upload_job set status='extracted'/.test(text)) stages.set(this,'extracted');
   if (phase === 'registered' && /update knowledge_upload_job set status='registered'/.test(text)) stages.set(this,'registered');
   if (phase === 'tree-transaction' && /update knowledge_document set current_tree_version_id/.test(text)) stages.set(this,'tree-transaction');
+  if (['review-before-commit','review-after-commit'].includes(phase) && /insert into knowledge_upload_review_completion/.test(text)) stages.set(this,phase);
   const stage = stages.get(this), commit = /^commit$/i.test(text.trim());
-  if (commit && phase === 'tree-transaction' && stage === phase) checkpoint();
+  if (commit && ['tree-transaction','review-before-commit'].includes(phase) && stage === phase) checkpoint();
   const result = query.call(this,sql,...args);
   if (commit) {stages.delete(this); if (stage === phase) return result.then(value => {checkpoint(); return value;});}
   return result;
