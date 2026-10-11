@@ -1,0 +1,22 @@
+{
+  "date": "2026-10-11",
+  "testsPassed": 19,
+  "typecheck": true,
+  "eslint": true,
+  "productionGraphReused": true,
+  "originalInitialMessagesPreserved": true,
+  "skillOverlayOnly": true,
+  "exactRecordedReadsOnly": true,
+  "businessDispatcherAbsent": true,
+  "deadlineLateResponseIgnored": true,
+  "realModelCalls": 0,
+  "syntheticModelCallbacks": true,
+  "networkFetchForbiddenInTests": true,
+  "serverSnapshotAdapterIntegrated": false,
+  "durableModelReceiptsIntegrated": false,
+  "productionAgentEquivalent": false,
+  "collectorProvenanceVerified": false,
+  "automaticActivation": false,
+  "productionDeployed": false,
+  "test": "src/lib/assistant/main/skill-candidate-runner.test.ts"
+}
