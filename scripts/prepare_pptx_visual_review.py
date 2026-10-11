@@ -1,0 +1,123 @@
+"""Local OCR candidates for unresolved PPTX objects; never promotes extraction status."""
+from pathlib import Path
+from io import BytesIO
+from hashlib import sha256
+import argparse
+import json
+import socket
+
+from PIL import Image
+from pptx import Presentation
+
+
+def resolve_shape(deck, block):
+    slide_index = block["unitIndex"]
+    if not isinstance(slide_index, int) or not 1 <= slide_index <= len(deck.slides):
+        raise ValueError("Invalid slide index")
+    shapes = deck.slides[slide_index - 1].shapes
+    path, ids = block["shapePath"], block["shapeIdPath"]
+    if not path or len(path) != len(ids):
+        raise ValueError("Invalid object path")
+    for depth, (ordinal, expected_id) in enumerate(zip(path, ids)):
+        if not isinstance(ordinal, int) or not 1 <= ordinal <= len(shapes):
+            raise ValueError("Object path unavailable")
+        shape = shapes[ordinal - 1]
+        if shape.shape_id != expected_id:
+            raise ValueError("Object identity changed")
+        if depth + 1 < len(path):
+            shapes = shape.shapes
+    return shape
+
+
+def visible_image(shape):
+    blob = shape.image.blob
+    image = Image.open(BytesIO(blob)).convert("RGB")
+    crop = [float(getattr(shape, f"crop_{side}")) for side in ("left", "top", "right", "bottom")]
+    if any(value < 0 or value >= 1 for value in crop) or crop[0]+crop[2] >= 1 or crop[1]+crop[3] >= 1:
+        raise ValueError("Unsupported image crop")
+    w, h = image.size
+    image = image.crop((round(w*crop[0]), round(h*crop[1]), round(w*(1-crop[2])), round(h*(1-crop[3]))))
+    if image.width < 1 or image.height < 1:
+        raise ValueError("Empty image crop")
+    # These are cropped source-image pixels, not transformed slide coordinates.
+    return image, {"embeddedImageSha256": sha256(blob).hexdigest(), "crop": crop,
+                   "rotation": float(shape.rotation), "coordinateSpace": "cropped-image-pixels"}
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--input", required=True)
+    parser.add_argument("--artifact", required=True)
+    parser.add_argument("--output", required=True)
+    parser.add_argument("--max-unique-images", type=int, default=50)
+    args = parser.parse_args()
+    root = Path.cwd().resolve()
+    source, artifact, output = (Path(value).resolve() for value in (args.input, args.artifact, args.output))
+    if any(root not in path.parents for path in (source, artifact, output)) or source.suffix.lower() != ".pptx":
+        raise ValueError("Local workspace PPTX, artifact and output required")
+    if not 1 <= args.max_unique_images <= 100:
+        raise ValueError("Image budget must be 1..100")
+    if (output/"review.json").exists():
+        raise ValueError("Completed review package exists; use a new output directory")
+    payload = json.loads(artifact.read_text(encoding="utf-8"))
+    source_hash = sha256(source.read_bytes()).hexdigest()
+    if payload["sourceSha256"] != source_hash:
+        raise ValueError("Extraction source changed")
+    pending = [b for b in payload["blocks"] if b["quality"] == "pending-ocr" and b["unitType"] == "slide"]
+    deck = Presentation(source)
+    # Validate every locator before starting any local model work.
+    shapes = [resolve_shape(deck, b) for b in pending]
+    output.mkdir(parents=True, exist_ok=True)
+    models = root / ".models/docling-v3/RapidOcr"
+    names = ["PP-OCRv6_det_small.onnx", "ch_ppocr_mobile_v2.0_cls_mobile.onnx", "PP-OCRv6_rec_small.onnx"]
+    if not all((models/name).is_file() for name in names):
+        raise ValueError("Existing local OCR models required; downloads disabled")
+    def deny_network(*_args, **_kwargs):
+        raise RuntimeError("Network disabled during local visual review")
+    socket.socket.connect = deny_network
+    socket.create_connection = deny_network
+    import numpy as np
+    from rapidocr import RapidOCR, EngineType, LangRec
+    engine = RapidOCR(params={
+        "Det.model_path": models/names[0], "Cls.model_path": models/names[1], "Rec.model_path": models/names[2],
+        "Det.engine_type": EngineType.ONNXRUNTIME, "Cls.engine_type": EngineType.ONNXRUNTIME,
+        "Rec.engine_type": EngineType.ONNXRUNTIME, "Rec.lang_type": LangRec.CH, "Global.text_score": 0.35,
+    })
+    cache, records = {}, []
+    for block, shape in zip(pending, shapes):
+        record = {"blockId": block["id"], "unitIndex": block["unitIndex"], "shapePath": block["shapePath"],
+                  "shapeIdPath": block["shapeIdPath"], "status": "review-required"}
+        try:
+            image, info = visible_image(shape)
+            buf = BytesIO(); image.save(buf, format="PNG")
+            data = buf.getvalue(); image_hash = sha256(data).hexdigest()
+            record.update(info); record["reviewImageSha256"] = image_hash
+            if image_hash not in cache:
+                if len(cache) >= args.max_unique_images:
+                    record["reason"] = "local-image-budget-exhausted"
+                    records.append(record); continue
+                (output/f"{image_hash}.png").write_bytes(data)
+                result = engine(np.asarray(image), text_score=0.35)
+                lines = [{"text": text, "confidence": float(score), "box": np.asarray(box).tolist()}
+                         for text, score, box in zip(result.txts if result.txts is not None else [],
+                             result.scores if result.scores is not None else [], result.boxes if result.boxes is not None else [])]
+                cache[image_hash] = lines
+            record["imageFile"] = f"{image_hash}.png"
+            record["ocrLines"] = cache[image_hash]
+            record["reason"] = "ocr-candidate-requires-visual-review" if cache[image_hash] else "no-text-image-still-requires-review"
+        except (AttributeError, OSError, ValueError) as error:
+            record["reason"] = "unsupported-visual-object"
+            record["errorType"] = type(error).__name__
+        records.append(record)
+    review = {"schema": "pptx-visual-review-candidates-v1", "sourceSha256": source_hash,
+              "extractionArtifactSha256": sha256(artifact.read_bytes()).hexdigest(),
+              "modelSha256": {name: sha256((models/name).read_bytes()).hexdigest() for name in names},
+              "records": records, "uniqueImagesProcessed": len(cache), "externalCalls": 0,
+              "qualityAccepted": False, "extractionStatusChanged": False}
+    (output/"review.json").write_text(json.dumps(review, ensure_ascii=False, indent=2), encoding="utf-8")
+    print(json.dumps({"reviewObjects": len(records), "uniqueImagesProcessed": len(cache), "externalCalls": 0,
+                      "qualityAccepted": False, "extractionStatusChanged": False}))
+
+
+if __name__ == "__main__":
+    main()

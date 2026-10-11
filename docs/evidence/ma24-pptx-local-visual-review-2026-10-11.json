@@ -1,0 +1,31 @@
+{
+  "schema": "pptx-local-visual-review-run-v1",
+  "sourceSha256": "2223cee26aced9a50d648d933c31b15f2f0659d0ebe30922fca5c31c1cc30465",
+  "extractionArtifactSha256": "136d6572d8cde82e87d34cc0e6601e328ba0bae6b83e3525808ae3fea9d92e51",
+  "reviewArtifactSha256": "b271865d3dae5d9a105022b7fb8a39d71ffa8956d1787db9a312bc8f181d1f4a",
+  "modelSha256": {
+    "PP-OCRv6_det_small.onnx": "090f04abcd9d9a7498bc4ebf677e4cb9bdce1fe4197ddb7e529f1ef44e1ff94f",
+    "ch_ppocr_mobile_v2.0_cls_mobile.onnx": "e47acedf663230f8863ff1ab0e64dd2d82b838fceb5957146dab185a89d6215c",
+    "PP-OCRv6_rec_small.onnx": "6f327246b50388f3c176ae304bd95767ea6dc0c9ae92153ef8cbe210b3c14884"
+  },
+  "reviewObjects": 63,
+  "uniqueImagesProcessed": 50,
+  "reasons": {
+    "no-text-image-still-requires-review": 20,
+    "ocr-candidate-requires-visual-review": 32,
+    "unsupported-visual-object": 8,
+    "local-image-budget-exhausted": 3
+  },
+  "ocrLines": 612,
+  "helperTestsPassed": 2,
+  "externalCalls": 0,
+  "productionWrites": 0,
+  "qualityAccepted": false,
+  "extractionStatusChanged": false,
+  "limitations": [
+    "OCR text is an unreviewed candidate, not formal evidence or complete visual semantics.",
+    "Three objects remain queued by image budget and eight require other visual handling.",
+    "Cropped-image pixels are not transformed slide coordinates; original rotation recorded.",
+    "Review package is local ignored data; no publication or automatic acceptance."
+  ]
+}
