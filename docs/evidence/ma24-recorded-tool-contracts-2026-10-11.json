@@ -1,0 +1,22 @@
+{
+  "scope": "G08 current tool contract validation for recorded request preparation",
+  "tests": 44,
+  "testFiles": 5,
+  "typecheck": "passed",
+  "lint": "passed",
+  "cloneChecks": [
+    "current-memory-read-description",
+    "current-evidence-guards",
+    "revoked-memory-denied",
+    "exact-request",
+    "tenant-isolation",
+    "changed-source-denied"
+  ],
+  "fixturesRemoved": true,
+  "modelCalls": 0,
+  "toolExecutions": 0,
+  "sourcePermissionsRevalidated": false,
+  "executionAuthorized": false,
+  "qualityAccepted": false,
+  "productionDeployed": false
+}

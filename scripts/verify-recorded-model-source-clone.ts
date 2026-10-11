@@ -4,6 +4,7 @@ import {readFile} from 'node:fs/promises';
 import nextEnv from '@next/env';
 import {Pool} from 'pg';
 import {getPool} from '../src/lib/rag/db';
+import {describeTool,productTools} from '../src/lib/assistant/main/tools';
 import {decisionMemoryMessage} from '../src/lib/assistant/main/decision-memory-message';
 import {loadDecisionMemory} from '../src/lib/assistant/main/memory-context';
 import {validateRecordedRequestEvidence} from '../src/lib/assistant/main/model-request-evidence';
@@ -27,6 +28,8 @@ try{
  const memories=await loadDecisionMemory(owner);
  assert(memories.some(row=>row.id===memoryId));
  const config=modeModelConfig('standard'),profile=config.profile!,messages=[{role:'system' as const,content:'Synthetic product instructions'},decisionMemoryMessage(memories),{role:'user' as const,content:'Synthetic original task'},
+  {role:'assistant' as const,content:null,tool_calls:[{id:'describe-1',type:'function' as const,function:{name:'describe_tool',arguments:JSON.stringify({tool:'memory_read'})}}]},
+  {role:'tool' as const,tool_call_id:'describe-1',content:JSON.stringify({status:'success',data:describeTool(productTools.find(t=>t.id==='memory_read')!)})},
   {role:'assistant' as const,content:null,tool_calls:[{id:'memory-1',type:'function' as const,function:{name:'execute_tool',arguments:JSON.stringify({tool:'memory_read',arguments:{}})}}]},
   {role:'tool' as const,tool_call_id:'memory-1',content:JSON.stringify({status:'success',data:memories})}],input={profile,index:1,messages};
  const body={model:profile.routes[1].model,messages:transportMessages(messages),tools:modelFunctions,stream:true,reasoning:{effort:profile.routes[1].effort}};
@@ -38,7 +41,7 @@ try{
  const context={userId:owner},selection={runId,callId},snapshot=await loadRecordedModeRequest(context,selection);
  assert.equal(snapshot.serverProvenanceVerified,true);assert.equal(snapshot.executionAuthorized,false);assert.equal(snapshot.sourcePermissionsRevalidated,false);assert.deepEqual(snapshot.body,body);
  const checked=await validateRecordedRequestEvidence(context,selection);
- assert.equal(checked.evidenceSnapshotRevalidated,true);assert.equal(checked.sourcePermissionsRevalidated,false);assert.equal(checked.executionAuthorized,false);
+ assert.equal(checked.toolContractsRevalidated,true);assert.equal(checked.evidenceSnapshotRevalidated,true);assert.equal(checked.sourcePermissionsRevalidated,false);assert.equal(checked.executionAuthorized,false);
  await pool.query('update agent_memory set active=false where id=$1',[memoryId]);
  await assert.rejects(validateRecordedRequestEvidence(context,selection),/decision memory changed/);
  await pool.query('update agent_memory set active=true where id=$1',[memoryId]);
@@ -49,7 +52,7 @@ try{
  await pool.query("update agent_run set status='cancelled' where id=$1",[runId]);await assert.rejects(loadRecordedModeRequest(context,selection));
  await pool.query("update agent_run set status='completed' where id=$1",[runId]);
  await pool.query('update agent_tool_call set input_hash=$2 where id=$1',[callId,'0'.repeat(64)]);await assert.rejects(loadRecordedModeRequest(context,selection));
- console.log(JSON.stringify({cloneOnly:true,localEvidenceGuardsPassed:true,revokedDecisionMemoryDenied:true,exactRequest:true,tenantIsolation:true,wrongRunDenied:true,changedInstructionsDenied:true,cancelledRunDenied:true,inputHashTamperingDenied:true,modelCalls:0,sourcePermissionsRevalidated:false,executionAuthorized:false,qualityAccepted:false}));
+ console.log(JSON.stringify({cloneOnly:true,localEvidenceGuardsPassed:true,currentToolContractsChecked:true,revokedDecisionMemoryDenied:true,exactRequest:true,tenantIsolation:true,wrongRunDenied:true,changedInstructionsDenied:true,cancelledRunDenied:true,inputHashTamperingDenied:true,modelCalls:0,sourcePermissionsRevalidated:false,executionAuthorized:false,qualityAccepted:false}));
 }finally{
  await pool.query('delete from agent_memory_version where memory_id=$1',[memoryId]);
  await pool.query('delete from agent_memory where id=$1 and owner_id=$2',[memoryId,owner]);

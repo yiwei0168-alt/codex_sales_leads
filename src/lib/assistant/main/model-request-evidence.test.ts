@@ -3,26 +3,26 @@ import type {ModelMessage} from './contracts';
 import {decisionMemoryMessage} from './decision-memory-message';
 const mocks=vi.hoisted(()=>({load:vi.fn(),revalidate:vi.fn(),decision:vi.fn(),skill:vi.fn(),memory:vi.fn(),knowledge:vi.fn(),private:vi.fn()}));
 vi.mock('./model-request-source',()=>({loadRecordedModeRequest:mocks.load,revalidateRecordedModeRequest:mocks.revalidate}));
-vi.mock('./memory-context',()=>({loadDecisionMemory:mocks.decision}));
+vi.mock('./memory-context',async importOriginal=>({...await importOriginal<typeof import('./memory-context')>(),loadDecisionMemory:mocks.decision}));
 vi.mock('./skill-message-guard',()=>({assertCurrentSkillMessages:mocks.skill}));
 vi.mock('./memory-message-guard',()=>({assertCurrentMemoryMessages:mocks.memory}));
 vi.mock('./knowledge-message-guard',()=>({assertCurrentKnowledgeMessages:mocks.knowledge}));
 vi.mock('./private-replay-guard',()=>({assertCurrentPrivateReplayMessages:mocks.private}));
 import {assertRecordedEvidencePairs,validateRecordedRequestEvidence} from './model-request-evidence';
 const context={userId:'owner'},selection={runId:'run',callId:'call'};
-const pair=(tool='mail_read'):ModelMessage[]=>[
+const pair=(tool='memory_read'):ModelMessage[]=>[
  {role:'assistant',content:null,tool_calls:[{id:'tool-1',type:'function',function:{name:'execute_tool',arguments:JSON.stringify({tool,arguments:{}})}}]},
  {role:'tool',tool_call_id:'tool-1',content:JSON.stringify({status:'success',data:{synthetic:true}})},
 ];
 beforeEach(()=>{
  for(const mock of Object.values(mocks))mock.mockReset();
- mocks.load.mockResolvedValue({body:{messages:[{role:'system',content:'Instructions'},decisionMemoryMessage([]),...pair()]},sourceHash:'bound',knowledgeScope:['product'],serverProvenanceVerified:true});
+ mocks.load.mockResolvedValue({body:{messages:[{role:'system',content:'Instructions'},decisionMemoryMessage([]),...pair()]},sourceHash:'bound',profile:{mode:'standard'},accountRole:'member',knowledgeScope:undefined,serverProvenanceVerified:true});
  mocks.decision.mockResolvedValue([]);
 });
 it('passes owner, original run and scope to guards, then rereads provenance without granting execution',async()=>{
  const result=await validateRecordedRequestEvidence(context,selection);
  expect(mocks.skill).toHaveBeenCalledWith({userId:'owner',runId:'run'},result.body.messages);
- expect(mocks.knowledge).toHaveBeenCalledWith('owner',result.body.messages,['product']);
+ expect(mocks.knowledge).toHaveBeenCalledWith('owner',result.body.messages,undefined);
  expect(mocks.memory).toHaveBeenCalledWith('owner',result.body.messages);
  expect(mocks.private).toHaveBeenCalledWith('owner',result.body.messages);
  expect(mocks.revalidate).toHaveBeenCalledWith(context,selection,'bound');
@@ -37,10 +37,10 @@ it('rejects changed decision memory before evaluating other sources',async()=>{
  mocks.decision.mockResolvedValue([{content:'New policy'}]);
  await expect(validateRecordedRequestEvidence(context,selection)).rejects.toThrow('changed');expect(mocks.skill).not.toHaveBeenCalled();
 });
-it('rejects unsupported tools and discovery metadata pending their own validation',()=>{
+it('rejects unsupported business tools while leaving metadata to the contract validator',()=>{
  expect(()=>assertRecordedEvidencePairs(pair('mail_send'))).toThrow('unsupported');
  const messages=pair();messages[0].tool_calls![0].function.name='describe_tool';
- expect(()=>assertRecordedEvidencePairs(messages)).toThrow('unsupported');
+ expect(()=>assertRecordedEvidencePairs(messages)).not.toThrow();
 });
 it('requires ordered, complete, unique pairs and successful data',()=>{
  const messages=pair();

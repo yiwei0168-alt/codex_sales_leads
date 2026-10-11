@@ -1,4 +1,5 @@
 import {z} from 'zod';
+import {assertRecordedToolContracts} from './recorded-tool-contracts';
 import type {ModelMessage} from './contracts';
 import {loadRecordedModeRequest,revalidateRecordedModeRequest} from './model-request-source';
 import {loadDecisionMemory} from './memory-context';
@@ -11,7 +12,7 @@ import {assertCurrentPrivateReplayMessages} from './private-replay-guard';
 const supported=new Set(['knowledge_search','knowledge_facts','knowledge_compare','knowledge_originals','vectorless_read',
  'memory_read','memory_history_search','memory_observation_search','skill_read','mail_read','customer_timeline']);
 /** Every source result must have exactly one preceding call; no orphan or reused identity.
- * Discovery/description and other tools still need their own current-contract checks.
+ * Discovery/description metadata is separately checked against current contracts.
  */
 export function assertRecordedEvidencePairs(messages:ModelMessage[]){
  const seen=new Set<string>(),pending=new Set<string>();
@@ -27,6 +28,7 @@ export function assertRecordedEvidencePairs(messages:ModelMessage[]){
   for(const call of message.tool_calls??[]){
    if(!call.id||seen.has(call.id))throw new Error('Recorded evidence identity reused');
    seen.add(call.id);pending.add(call.id);
+   if(['discover_tools','describe_tool'].includes(call.function.name))continue;
    if(call.function.name!=='execute_tool')throw new Error('Recorded request has unsupported tool provenance');
    const args=z.object({tool:z.string(),arguments:z.record(z.string(),z.unknown())}).strict().parse(JSON.parse(call.function.arguments));
    if(!supported.has(args.tool))throw new Error('Recorded request has unsupported business evidence');
@@ -39,6 +41,7 @@ export function assertRecordedEvidencePairs(messages:ModelMessage[]){
  */
 export async function validateRecordedRequestEvidence(context:{userId:string},input:{runId:string;callId:string}){
  const saved=await loadRecordedModeRequest(context,input),messages=saved.body.messages;
+ assertRecordedToolContracts({userId:context.userId,role:saved.accountRole,mode:saved.profile.mode,knowledgeScope:saved.knowledgeScope},messages);
  assertRecordedEvidencePairs(messages);
  assertRecordedDecisionMemory(messages,await loadDecisionMemory(context.userId));
  await assertCurrentSkillMessages({userId:context.userId,runId:input.runId},messages);
@@ -47,7 +50,7 @@ export async function validateRecordedRequestEvidence(context:{userId:string},in
  await assertCurrentPrivateReplayMessages(context.userId,messages);
  // Do not return a source snapshot if its journal changed during the separate local ACL checks.
  await revalidateRecordedModeRequest(context,input,saved.sourceHash);
- // Current tool contracts/mode permissions and whole-task provenance remain separate gates.
+ // Whole-task provenance and complete source-output semantics remain separate gates.
  return {...saved,checkedEvidenceDomains:['decision-memory','skill','memory','knowledge','mail-and-timeline'] as const,
-  evidenceSnapshotRevalidated:true as const,sourcePermissionsRevalidated:false as const,executionAuthorized:false as const,qualityAccepted:false as const};
+  toolContractsRevalidated:true as const,evidenceSnapshotRevalidated:true as const,sourcePermissionsRevalidated:false as const,executionAuthorized:false as const,qualityAccepted:false as const};
 }

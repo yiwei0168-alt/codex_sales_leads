@@ -7,7 +7,7 @@ const selection=z.object({runId:z.uuid(),callId:z.uuid()}).strict();
 type Selection=z.infer<typeof selection>;
 type Row={id:string;user_id:string;run_id:string;tool_id:string;tool_version:string;effect:string;status:string;
  input:unknown;input_hash:string;output:unknown;run_input:unknown;run_instructions:unknown;run_result:unknown;
- run_model_config:unknown;run_status:string;execution_kind:string;account_status:string;run_updated_at:string};
+ run_model_config:unknown;run_status:string;execution_kind:string;account_status:string;account_role:string;run_updated_at:string};
 /** Internal only: no HTTP/Agent entry point and no model/tool dispatch.
  * Database provenance is distinct from current evidence ACL and evaluation authorization.
  */
@@ -16,7 +16,7 @@ export async function loadRecordedModeRequest(context:{userId:string},input:Sele
  return tenantTransaction(owner,async client=>{
   const row=(await client.query<Row>(`select c.id,c.user_id,c.run_id,c.tool_id,c.tool_version,c.effect,c.status,
    c.input,c.input_hash,c.output,r.input as run_input,r.instructions as run_instructions,r.result as run_result,
-   r.model_config as run_model_config,r.status as run_status,r.execution_kind,u.status as account_status,
+   r.model_config as run_model_config,r.status as run_status,r.execution_kind,u.status as account_status,u.role as account_role,
    r.updated_at::text as run_updated_at
    from agent_tool_call c join agent_run r on r.id=c.run_id and r.user_id=c.user_id
    join app_user u on u.id=r.user_id
@@ -28,7 +28,7 @@ export async function loadRecordedModeRequest(context:{userId:string},input:Sele
   const binding={protocol:'recorded-mode-source-v1' as const,ownerId:owner,runId:p.runId,callId:p.callId,
    rowHash:digest(row),journalHash:prepared.journalHash,requestHash:prepared.requestHash};
   const knowledgeScope=z.object({knowledgeScope:z.array(z.enum(['company','industry','product'])).min(1).max(3).optional()}).parse(row.run_input).knowledgeScope;
-  return {...prepared,knowledgeScope,serverProvenanceVerified:true as const,binding,sourceHash:digest(binding)};
+  return {...prepared,knowledgeScope,accountRole:z.enum(['admin','member']).parse(row.account_role),serverProvenanceVerified:true as const,binding,sourceHash:digest(binding)};
  });
 }
 /** Re-read the authoritative row before use; a saved disk object cannot supply current provenance. */

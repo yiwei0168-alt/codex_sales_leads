@@ -13,7 +13,7 @@ beforeEach(()=>{
  const body={model:profile.routes[0].model,messages:transportMessages(messages),tools:modelFunctions,stream:true,reasoning:{effort:profile.routes[0].effort}};
  db.row={id:callId,user_id:owner,run_id:runId,tool_id:'main_model',tool_version:'1',effect:'model',status:'completed',input,input_hash:digest(input),
   output:{status:'success',data:{value:{requestManifest:modelRequestManifest(body,{model:body.model,provider:'fixture',id:'generation'})}}},
-  run_input:{content:'Synthetic task'},run_instructions:[],run_result:{reply:'Saved'},run_model_config:{profile},run_status:'completed',execution_kind:'main-agent',account_status:'active',run_updated_at:'2026-10-11'};
+  run_input:{content:'Synthetic task'},run_instructions:[],run_result:{reply:'Saved'},run_model_config:{profile},run_status:'completed',execution_kind:'main-agent',account_role:'member',account_status:'active',run_updated_at:'2026-10-11'};
  db.query.mockReset();db.query.mockImplementation(async()=>({rows:db.row?[structuredClone(db.row)]:[]}));db.owners=[];
 });
 it('loads exact account/run/call and grants only database provenance',async()=>{
@@ -36,4 +36,10 @@ it.each(['run_input','run_instructions','run_result','run_model_config','run_upd
 });
 it('does not allow a caller-supplied owner inside the selection',async()=>{
  await expect(loadRecordedModeRequest(context,{...selection,ownerId:owner} as typeof selection)).rejects.toThrow();expect(db.query).not.toHaveBeenCalled();
+});
+
+it('binds the current account role to the source snapshot',async()=>{
+ const first=await loadRecordedModeRequest(context,selection);expect(first.accountRole).toBe('member');
+ db.row!.account_role='admin';
+ await expect(revalidateRecordedModeRequest(context,selection,first.sourceHash)).rejects.toThrow('source changed');
 });
