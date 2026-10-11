@@ -1423,3 +1423,11 @@ G08 增加影子审核独立入口、追加式迁移 124 和账号判决存储�
 - 返回的是单次请求准备产物，包含私有消息，只能留在内部；明确 serverProvenanceVerified/sourcePermissionsRevalidated/executionAuthorized/qualityAccepted 均为 false。调用方仍须加载服务端权威收据、检查当前来源、获取精确评测授权；本函数没有网络、工具执行、数据库写入或启用动作。它不是完整任务或候选 Skill 的生产等价影子实现。
 - 10 项相关测试通过，覆盖三模式各三个主备选择的精确请求/等待参数、原件对象隔离、环境变化不改原设置、消息篡改、身份/历史记录缺失、非法阈值及旧协议拒绝；类型/lint 通过。全部合成收据，无付费或本地模型调用。
 - 后续仍须 G08 真实全轮次快照与收据旁路、授权计数及可信持久产物，再接 G09 事务启用门槛；没有用本次完整性检查代替这些工作。证据：`docs/evidence/ma24-recorded-request-preparation-2026-10-11.json`。
+
+
+### MA24-16 / G08 — 权威模型收据读取（2026-10-11）
+
+- 新增内部 loadRecordedModeRequest/revalidateRecordedModeRequest，经租户事务按当前账号、任务和调用 ID 读取数据库；仅接受活跃账号、已完成主 Agent 任务、已完成 main_model/model 收据。绑定任务原输入、追加指令、结果、模型配置、更新时间及原模型收据，还原函数继续复核 wire/input 哈希。重读时任何绑定变化均拒绝使用旧快照。
+- 仅数据库来源标记为已复核；sourcePermissionsRevalidated、executionAuthorized 和 qualityAccepted 仍为 false。没有 HTTP/Agent 入口，没有模型/业务工具执行；含私有消息的准备产物只用于内部后续流程。完整轮次、当前记忆/Skill/资料/邮箱权限与授权仍必须独立接线，不能用本层替代。
+- 24 项相关单测通过；实际隔离数据库克隆验证原请求一致、跨账号和错误 run 拒绝、指令变更失效、取消任务拒绝及输入哈希篡改拒绝。合成夹具已清理，网络调用被禁用；类型/lint 通过。未读取真实私有任务正文、未新增调用或生产部署。
+- 证据：`docs/evidence/ma24-recorded-model-source-2026-10-11.json`。G08/G09 仍进行中，当前没有完整生产等价影子或自动启用验收结论。

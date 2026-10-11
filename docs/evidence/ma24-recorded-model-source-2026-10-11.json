@@ -1,0 +1,21 @@
+{
+  "scope": "G08 account-owned database model request preparation",
+  "tests": 24,
+  "cloneChecks": [
+    "exact-request",
+    "cross-account-denied",
+    "wrong-run-denied",
+    "changed-instructions-denied",
+    "cancelled-task-denied",
+    "input-hash-tampering-denied"
+  ],
+  "fixturesRemoved": true,
+  "typecheck": "passed",
+  "lint": "passed",
+  "modelCalls": 0,
+  "networkDisabledInClone": true,
+  "currentEvidencePermissionsVerified": false,
+  "executionAuthorized": false,
+  "qualityAccepted": false,
+  "productionDeployed": false
+}
