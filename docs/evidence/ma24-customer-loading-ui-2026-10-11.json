@@ -1,0 +1,41 @@
+{
+  "actualComponent": true,
+  "productionStyles": true,
+  "syntheticApi": true,
+  "transportAbortDeliberatelyDisabled": true,
+  "results": [
+    {
+      "width": 1366,
+      "height": 900,
+      "listFailureNotEmpty": true,
+      "pageFailureHidesOldEvidence": true,
+      "retry": true,
+      "lateResponseIgnoredWithoutTransportAbort": true,
+      "sameUrlRevisitWaitsForFreshData": true,
+      "filterClearsSelection": true,
+      "noStaleList": true,
+      "importantEmptyState": true,
+      "noMutations": true
+    },
+    {
+      "width": 320,
+      "height": 480,
+      "listFailureNotEmpty": true,
+      "pageFailureHidesOldEvidence": true,
+      "retry": true,
+      "lateResponseIgnoredWithoutTransportAbort": true,
+      "sameUrlRevisitWaitsForFreshData": true,
+      "filterClearsSelection": true,
+      "noStaleList": true,
+      "importantEmptyState": true,
+      "noMutations": true
+    }
+  ],
+  "date": "2026-10-11",
+  "typecheck": true,
+  "eslint": true,
+  "mergeRegressionViewports": 4,
+  "productionDeployed": false,
+  "privateDataRead": false,
+  "modelCalls": 0
+}
