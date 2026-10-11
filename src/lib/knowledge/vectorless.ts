@@ -1,3 +1,4 @@
+import {verifyReviewedExtraction} from './reviewed-extraction';
 import {createHash} from "node:crypto";
 import {readFile} from "node:fs/promises";
 import {resolve} from "node:path";
@@ -25,6 +26,7 @@ export async function indexExtractedDocument(userId:string,jobId:string,leaseTok
   if(digest(sourceBytes)!==job.source_sha256)throw new Error("Source hash mismatch");
   const artifactHash=digest(artifactBytes);
   if(!job.metrics.artifactSha256||artifactHash!==job.metrics.artifactSha256)throw new Error("Artifact hash mismatch");
+  await verifyReviewedExtraction(userId,jobId,artifactBytes);
   const artifact=JSON.parse(artifactBytes.toString("utf8")) as Artifact;
   const doc=artifact.documents?.[0];
   if(artifact.documents?.length!==1||!doc||doc.sourceSha256!==job.source_sha256||doc.extractorVersion!==job.extractor_version||!Array.isArray(doc.blocks))throw new Error("Extraction identity mismatch");

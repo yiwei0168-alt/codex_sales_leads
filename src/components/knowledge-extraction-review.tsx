@@ -4,9 +4,9 @@ import {WorkspaceDialog} from './workspace-dialog';
 import type {VisualCandidate} from '@/lib/knowledge/visual-review-candidates';
 type Decision='evidence'|'decoration'|'unresolved';
 type Item={block:{id:string;unitType:string;unitIndex:number;blockType:string;section?:string;shapePath?:number[];shapeIdPath?:number[];text?:string};judgment:{revision:number;decision:Decision;evidence_text:string;note:string}|null;candidate?:VisualCandidate|null};
-type Review={jobId:string;title:string;artifactSha256:string;sourceSha256:string;total:number;resolved:number;offset:number;blocks:Item[]};
+type Review={jobId:string;title:string;artifactSha256:string;sourceSha256:string;decisionSha256:string;total:number;resolved:number;offset:number;blocks:Item[]};
 
-export function KnowledgeExtractionReview({jobId,onClose}:{jobId:string;onClose:()=>void}){
+export function KnowledgeExtractionReview({jobId,onClose,onComplete}:{jobId:string;onClose:()=>void;onComplete?:()=>void}){
   const [offset,setOffset]=useState(0),[index,setIndex]=useState(0),[refresh,setRefresh]=useState(0);
   const [data,setData]=useState<Review|null>(null),[loading,setLoading]=useState(true),[error,setError]=useState('');
   const [busy,setBusy]=useState(false),[message,setMessage]=useState('');
@@ -39,6 +39,12 @@ export function KnowledgeExtractionReview({jobId,onClose}:{jobId:string;onClose:
       setDirty(false);setMessage(`已保存修订 ${body.revision}。`);setLoading(true);setRefresh(value=>value+1);
     }catch(reason){setError(reason instanceof Error?reason.message:'审核未保存');}finally{setBusy(false);}
   }
+  async function complete(){
+    if(!data)return;setBusy(true);setError('');
+    try{const response=await fetch('/api/knowledge/uploads/review',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'complete',jobId,artifactSha256:data.artifactSha256,decisionSha256:data.decisionSha256})});
+      const body=await response.json();if(!response.ok)throw new Error(body.error||'审核完成提交失败');(onComplete??onClose)();
+    }catch(reason){setError(reason instanceof Error?reason.message:'审核完成提交失败');}finally{setBusy(false);}
+  }
   return <WorkspaceDialog title="审核抽取内容" drawer busy={busy} onClose={()=>navigate(onClose)}>
     <div className="extraction-review">
       {loading&&<p role="status">正在核对原件版本…</p>}
@@ -68,7 +74,8 @@ export function KnowledgeExtractionReview({jobId,onClose}:{jobId:string;onClose:
         </fieldset>}
         <nav aria-label="抽取对象翻页"><button disabled={busy||loading||(offset===0&&index===0)} onClick={()=>navigate(()=>index>0?select(index-1):page(Math.max(0,offset-20),true))}>上一对象</button>
           <button disabled={busy||loading||offset+index+1>=data.total} onClick={()=>navigate(()=>index+1<data.blocks.length?select(index+1):page(offset+20))}>下一对象</button></nav>
-        <p className="subtle">本次仅保存审核记录，尚未恢复索引或发布资料。</p></>}
+        <p className="subtle">全部对象核对完成后才能提交。私有资料随后建立索引；共享资料仍需管理员登记。</p>
+        <button type="button" disabled={busy||loading||dirty||data.total===0||data.resolved!==data.total} onClick={()=>void complete()}>完成审核并提交后续处理</button></>}
       {message&&<p role="status">{message}</p>}
       {discard&&<section className="extraction-review-discard" role="alert"><p>有未保存的修改，是否放弃？</p><button onClick={()=>setDiscard(null)}>继续编辑</button><button onClick={()=>{const action=discard;setDiscard(null);setDirty(false);action();}}>放弃修改</button></section>}
     </div>

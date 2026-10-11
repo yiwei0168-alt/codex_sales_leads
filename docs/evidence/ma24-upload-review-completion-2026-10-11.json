@@ -1,0 +1,43 @@
+{
+  "cloneOnly": true,
+  "formats": [
+    "PPTX"
+  ],
+  "privateAndSharedHeld": true,
+  "unresolvedBlocksPerJob": 63,
+  "dedupReused": true,
+  "restartDoesNotReclaim": true,
+  "otherAccountHidden": true,
+  "directRegistrationRejected": true,
+  "noDocumentsPublished": false,
+  "privatePublishesOnlyAfterCompletion": true,
+  "sharedStillUnpublished": true,
+  "v3PointersUnchanged": true,
+  "appendOnlyReview": true,
+  "staleReviewRejected": true,
+  "otherAccountReviewDenied": true,
+  "sourceArtifactBound": true,
+  "externalCalls": 0,
+  "modelCalls": 0,
+  "completionVerified": true,
+  "visualCandidatesVerified": false,
+  "date": "2026-10-11",
+  "rule": "MA24-16",
+  "goal": "G05",
+  "testsPassed": 24,
+  "typecheck": "passed",
+  "eslint": "passed",
+  "migration128": "clone-only",
+  "runtimeDeployed": false,
+  "reviewJudgments": "synthetic-development-only",
+  "receiptReconstructionVerified": true,
+  "derivedBytesAndHashTamperRejected": true,
+  "sourceLocationReceiptVerified": true,
+  "uiWidths": [
+    1366,
+    390,
+    320
+  ],
+  "qualityAccepted": false,
+  "crashRecoveryMatrixCompleted": false
+}

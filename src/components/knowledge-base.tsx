@@ -271,6 +271,6 @@ export function KnowledgeBase({ initialTab }: { initialTab?: string } = {}) {
         </div>
       </div>
     </section>}
-    {extractionReviewJob&&<KnowledgeExtractionReview key={extractionReviewJob} jobId={extractionReviewJob} onClose={()=>setExtractionReviewJob(null)}/>}
+    {extractionReviewJob&&<KnowledgeExtractionReview key={extractionReviewJob} jobId={extractionReviewJob} onClose={()=>setExtractionReviewJob(null)} onComplete={()=>{setExtractionReviewJob(null);setUploadMessage('抽取审核已完成；私有资料等待索引，共享资料等待管理员登记。');}}/>}
   </div>;
 }

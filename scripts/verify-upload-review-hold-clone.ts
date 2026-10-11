@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {spawn} from 'node:child_process';
-import {randomUUID} from 'node:crypto';
+import {randomUUID,createHash} from 'node:crypto';
 import {readFile,readdir,rm,rmdir,writeFile} from 'node:fs/promises';
 import {resolve,sep,basename} from 'node:path';
 import nextEnv from '@next/env';
@@ -8,7 +8,8 @@ import {Pool} from 'pg';
 import {getPool,tenantQuery} from '../src/lib/rag/db';
 import {createKnowledgeUploadJob,listKnowledgeUploadJobs} from '../src/lib/knowledge/upload';
 import {registerVectorlessUpload} from '../src/lib/knowledge/vectorless-registration';
-import {getExtractionReview,getExtractionReviewOriginal,getExtractionReviewImage,recordExtractionReview} from '../src/lib/knowledge/extraction-review';
+import {getExtractionReview,getExtractionReviewOriginal,getExtractionReviewImage,recordExtractionReview,completeExtractionReview} from '../src/lib/knowledge/extraction-review';
+import {readEvidence} from '../src/lib/knowledge/vectorless';
 
 nextEnv.loadEnvConfig(process.cwd());
 const base=process.env.DATABASE_MIGRATION_URL||process.env.DATABASE_URL;
@@ -31,6 +32,8 @@ async function worker(id:string){
 try{
   const exists=await pool.query("select to_regclass('knowledge_upload_extraction_review') as relation");
   if(!exists.rows[0].relation)await pool.query(await readFile('db/migrations/127_upload_extraction_reviews.sql','utf8'));
+  const completionTable=await pool.query("select to_regclass('knowledge_upload_review_completion') as relation");
+  if(!completionTable.rows[0].relation)await pool.query(await readFile('db/migrations/128_upload_extraction_review_completion.sql','utf8'));
   for(const id of [owner,other])await pool.query("insert into app_user(id,email,display_name,password_hash,role,status) values($1,$2,'Review hold fixture','!','admin','active')",[id,`${id}@example.invalid`]);
   const pointers=JSON.stringify((await pool.query('select * from knowledge_release_pointer_v3 order by scope_kind,owner_id')).rows);
   const bytes=await readFile('tmp/ma24-public-eval-candidates/itu-satellite-2025.pptx');
@@ -82,16 +85,48 @@ try{
     await writeFile(originalPath,Buffer.concat([bytes,Buffer.from('changed')]));
     try{await assert.rejects(()=>getExtractionReview(owner,job.id),/原件已变化/);}finally{await writeFile(originalPath,bytes);}
     await assert.rejects(()=>registerVectorlessUpload(owner,job.id,{language:'und',authorityLevel:2}),/Unresolved extraction/);
-    assert.equal((await pool.query('select count(*)::int as n from knowledge_document where owner_id=$1',[owner])).rows[0].n,0);
+    assert.equal((await pool.query('select count(*)::int as n from knowledge_document where owner_id=$1',[owner])).rows[0].n,process.argv.includes('--complete-reviews')&&visibility==='shared'?1:0);
+    if(process.argv.includes('--complete-reviews')){
+      const current=await getExtractionReview(owner,job.id);
+      await assert.rejects(()=>completeExtractionReview(owner,job.id,current.artifactSha256,current.decisionSha256),/未解决/);
+      for(let offset=0;offset<current.total;offset+=20){
+        const page=await getExtractionReview(owner,job.id,offset);
+        for(const item of page.blocks)await recordExtractionReview(owner,{jobId:job.id,artifactSha256:page.artifactSha256,blockId:item.block.id,expectedRevision:item.judgment?.revision??0,
+          decision:item.block.id===current.blocks[0].block.id?'evidence':'decoration',evidenceText:item.block.id===current.blocks[0].block.id?'Synthetic review integration marker':'',note:'Synthetic clone workflow test; not document quality acceptance'});
+      }
+      await assert.rejects(()=>completeExtractionReview(owner,job.id,current.artifactSha256,current.decisionSha256),/记录已变化/);
+      const reviewed=await getExtractionReview(owner,job.id);assert.equal(reviewed.resolved,63);
+      await assert.rejects(()=>completeExtractionReview(other,job.id,reviewed.artifactSha256,reviewed.decisionSha256),/不存在/);
+      const receipt=await completeExtractionReview(owner,job.id,reviewed.artifactSha256,reviewed.decisionSha256);assert(receipt.readyForRegistration);
+      const ready=(await pool.query('select * from knowledge_upload_job where id=$1',[job.id])).rows[0];
+      assert.equal(ready.error_code,null);assert.notEqual(ready.extraction_artifact_key,stored.extraction_artifact_key);
+      assert.equal(createHash('sha256').update(await readFile(resolve(stored.extraction_artifact_key))).digest('hex'),stored.metrics.artifactSha256);
+      const derivedPath=resolve(ready.extraction_artifact_key);assert(derivedPath.startsWith(root+sep));const derivedBytes=await readFile(derivedPath);
+      const fake=Buffer.from(derivedBytes.toString().replace('Synthetic review integration marker','Unapproved changed text'));
+      await writeFile(derivedPath,fake);await pool.query("update knowledge_upload_job set metrics=jsonb_set(metrics,'{artifactSha256}',to_jsonb($2::text)) where id=$1",[job.id,createHash('sha256').update(fake).digest('hex')]);
+      await assert.rejects(()=>registerVectorlessUpload(owner,job.id,{language:'und',authorityLevel:2}),/review receipt/);
+      await writeFile(derivedPath,derivedBytes);await pool.query("update knowledge_upload_job set metrics=$2 where id=$1",[job.id,ready.metrics]);
+      const processed=await worker(job.id);assert.equal(processed.completed,visibility==='private'?1:0);
+      if(visibility==='private'){
+        const node=(await pool.query("select n.id from knowledge_tree_node n join knowledge_tree_version v on v.id=n.version_id join knowledge_document d on d.id=v.document_id where d.owner_id=$1 and n.content='Synthetic review integration marker'",[owner])).rows[0];assert(node);
+        const evidence=await readEvidence(owner,node.id);assert.equal((evidence?.source_location as {extractionReview:{receiptId:string}}).extractionReview.receiptId,receipt.receiptId);
+      }else assert.equal((await pool.query('select status from knowledge_upload_job where id=$1',[job.id])).rows[0].status,'extracted');
+    }
   }
   assert.equal(JSON.stringify((await pool.query('select * from knowledge_release_pointer_v3 order by scope_kind,owner_id')).rows),pointers);
   const permissions=(await pool.query("select has_table_privilege('network_copilot_app','knowledge_upload_extraction_review','UPDATE') as update_allowed,has_table_privilege('network_copilot_app','knowledge_upload_extraction_review','DELETE') as delete_allowed")).rows[0];
   assert.equal(permissions.update_allowed,false);assert.equal(permissions.delete_allowed,false);
-  const evidence={cloneOnly:true,formats:['PPTX'],privateAndSharedHeld:true,unresolvedBlocksPerJob:63,dedupReused:true,restartDoesNotReclaim:true,otherAccountHidden:true,directRegistrationRejected:true,noDocumentsPublished:true,v3PointersUnchanged:true,appendOnlyReview:true,staleReviewRejected:true,otherAccountReviewDenied:true,sourceArtifactBound:true,externalCalls:0,modelCalls:0};
-  await writeFile(process.argv.includes('--visual-candidates')?'tmp/upload-visual-candidate-result.json':'tmp/upload-review-hold-result.json',JSON.stringify({...evidence,visualCandidatesVerified:process.argv.includes('--visual-candidates')},null,2));console.log(JSON.stringify(evidence));
-}finally{
+  const evidence={cloneOnly:true,formats:['PPTX'],privateAndSharedHeld:true,unresolvedBlocksPerJob:63,dedupReused:true,restartDoesNotReclaim:true,otherAccountHidden:true,directRegistrationRejected:true,noDocumentsPublished:!process.argv.includes('--complete-reviews'),privatePublishesOnlyAfterCompletion:process.argv.includes('--complete-reviews'),sharedStillUnpublished:true,v3PointersUnchanged:true,appendOnlyReview:true,staleReviewRejected:true,otherAccountReviewDenied:true,sourceArtifactBound:true,externalCalls:0,modelCalls:0};
+  await writeFile(process.argv.includes('--complete-reviews')?'tmp/upload-review-completion-result.json':process.argv.includes('--visual-candidates')?'tmp/upload-visual-candidate-result.json':'tmp/upload-review-hold-result.json',JSON.stringify({...evidence,completionVerified:process.argv.includes('--complete-reviews'),visualCandidatesVerified:process.argv.includes('--visual-candidates')},null,2));console.log(JSON.stringify(evidence));
+}catch(error){console.error(error);throw error;}finally{
+  await pool.query('delete from knowledge_upload_review_completion where owner_id=$1',[owner]);
   await pool.query('delete from knowledge_upload_extraction_review where owner_id=$1',[owner]);
   await pool.query('delete from knowledge_upload_job where user_id=$1',[owner]);
+  await pool.query('update knowledge_document set current_tree_version_id=null where owner_id=$1',[owner]);
+  await pool.query('delete from knowledge_tree_node where version_id in(select v.id from knowledge_tree_version v join knowledge_document d on d.id=v.document_id where d.owner_id=$1)',[owner]);
+  await pool.query('delete from knowledge_tree_version where document_id in(select id from knowledge_document where owner_id=$1)',[owner]);
+  await pool.query('delete from knowledge_document_revision where user_id=$1',[owner]);
+  await pool.query('delete from knowledge_document where owner_id=$1',[owner]);
   await pool.query('delete from app_user where id=any($1::uuid[])',[[owner,other]]);await pool.end();await getPool().end();
   assert(root.startsWith(resolve('knowledge/uploads')+sep)&&basename(root)===owner);
   for(const name of await readdir(root).catch(()=>[])){const file=resolve(root,name);assert(file.startsWith(root+sep));await rm(file,{force:true,recursive:true});}

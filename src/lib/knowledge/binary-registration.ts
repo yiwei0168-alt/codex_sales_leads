@@ -1,3 +1,4 @@
+import {verifyReviewedExtraction} from './reviewed-extraction';
 import {createHash} from "node:crypto";
 import {readFile} from "node:fs/promises";
 import {extname,resolve} from "node:path";
@@ -36,6 +37,7 @@ export async function registerExtractedSharedBinary(userId:string,input:{jobId:s
   const artifactPath=resolve(safeKnowledgeStorageKey(job.extraction_artifact_key));assertResolvedInsideKnowledgeRoot(artifactPath);
   const artifactBytes=await readFile(artifactPath);
   if(!job.metrics.artifactSha256||sha(artifactBytes)!==job.metrics.artifactSha256)throw new Error("Extraction artifact hash mismatch");
+  await verifyReviewedExtraction(userId,job.id,artifactBytes);
   const artifact=JSON.parse(artifactBytes.toString("utf8")) as {documents?:Array<{sourceSha256?:string;blocks?:Block[]}>};
   const document=artifact.documents?.[0];
   if(artifact.documents?.length!==1||document?.sourceSha256!==job.source_sha256||!Array.isArray(document.blocks))throw new Error("Extraction artifact does not match the approved original");

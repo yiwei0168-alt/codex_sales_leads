@@ -1,9 +1,9 @@
 import {beforeEach,describe,expect,it,vi} from 'vitest';
-const mocks=vi.hoisted(()=>({session:vi.fn(),read:vi.fn(),write:vi.fn(),original:vi.fn()}));
+const mocks=vi.hoisted(()=>({session:vi.fn(),read:vi.fn(),write:vi.fn(),original:vi.fn(),complete:vi.fn()}));
 vi.mock('@/lib/auth/session',()=>({requireApiSession:mocks.session}));
 vi.mock('@/lib/knowledge/extraction-review',async importOriginal=>{
   const actual=await importOriginal<typeof import('@/lib/knowledge/extraction-review')>();
-  return {...actual,getExtractionReview:mocks.read,recordExtractionReview:mocks.write,getExtractionReviewOriginal:mocks.original};
+  return {...actual,getExtractionReview:mocks.read,recordExtractionReview:mocks.write,getExtractionReviewOriginal:mocks.original,completeExtractionReview:mocks.complete};
 });
 import {GET,POST} from './route';
 import {ExtractionReviewConflict} from '@/lib/knowledge/extraction-review';
@@ -12,6 +12,13 @@ const valid={jobId,artifactSha256:'a'.repeat(64),blockId:'slide-1-image',expecte
 const post=(body:unknown)=>new Request('http://localhost/api/knowledge/uploads/review',{method:'POST',body:JSON.stringify(body)});
 beforeEach(()=>{vi.clearAllMocks();mocks.session.mockResolvedValue({userId:'owner',role:'member'});mocks.read.mockResolvedValue({blocks:[]});mocks.write.mockResolvedValue({revision:1,indexingResumed:false});});
 describe('extraction review endpoint',()=>{
+  it('requires the displayed decision revision hash for completion',async()=>{
+    mocks.complete.mockResolvedValue({readyForRegistration:true});
+    const input={action:'complete',jobId,artifactSha256:'a'.repeat(64),decisionSha256:'b'.repeat(64)};
+    expect((await POST(post(input))).status).toBe(200);expect(mocks.complete).toHaveBeenCalledWith('owner',jobId,input.artifactSha256,input.decisionSha256);
+    expect((await POST(post({...input,decisionSha256:undefined}))).status).toBe(400);
+    mocks.complete.mockRejectedValue(new ExtractionReviewConflict('审核记录已变化'));expect((await POST(post(input))).status).toBe(409);
+  });
   it('downloads only the explicitly bound original as an attachment',async()=>{
     mocks.original.mockResolvedValue({bytes:Buffer.from('original bytes'),filename:'资料.pptx'});
     const response=await GET(new Request(`http://local/?jobId=${jobId}&format=original&artifactSha256=${'a'.repeat(64)}`));

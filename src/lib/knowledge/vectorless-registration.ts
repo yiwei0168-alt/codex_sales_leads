@@ -1,3 +1,4 @@
+import {verifyReviewedExtraction} from './reviewed-extraction';
 import {createHash} from "node:crypto";
 import {readFile} from "node:fs/promises";
 import {extname,resolve} from "node:path";
@@ -26,6 +27,7 @@ export async function registerVectorlessUpload(userId:string,jobId:string,option
   const [sourceBytes,artifactBytes]=await Promise.all([readFile(source),readFile(artifactPath)]);
   if(sourceBytes.length!==Number(job.byte_size)||sha(sourceBytes)!==job.source_sha256)throw new Error("Source bytes changed after upload");
   if(!job.metrics.artifactSha256||sha(artifactBytes)!==job.metrics.artifactSha256)throw new Error("Extraction artifact hash mismatch");
+  await verifyReviewedExtraction(userId,jobId,artifactBytes);
   const artifact=JSON.parse(artifactBytes.toString("utf8")) as {documents?:Array<{sourceSha256?:string;extractorVersion?:string;blocks?:Block[]}>};
   const extracted=artifact.documents?.[0];
   if(artifact.documents?.length!==1||extracted?.sourceSha256!==job.source_sha256||extracted.extractorVersion!==job.extractor_version||!Array.isArray(extracted.blocks))throw new Error("Extraction identity mismatch");

@@ -1,5 +1,5 @@
-import {createHash} from 'node:crypto';
-import {readFile} from 'node:fs/promises';
+import {createHash,randomUUID} from 'node:crypto';
+import {readFile,writeFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
 import {z} from 'zod';
 import type {PoolClient} from 'pg';
@@ -8,6 +8,7 @@ import {assertResolvedInsideKnowledgeRoot,safeKnowledgeStorageKey} from './docum
 import {extractionReadiness} from './extraction-readiness';
 import {slideShapeLocation,type Block} from './extracted-tree';
 import {loadVisualCandidates,readVisualCandidateImage} from './visual-review-candidates';
+import {deriveReviewedExtraction,reviewDecisionHash,type ExtractionJudgment} from './reviewed-extraction';
 
 export class ExtractionReviewConflict extends Error {}
 export const extractionReviewDecision=z.object({
@@ -30,7 +31,30 @@ async function load(client:PoolClient,userId:string,jobId:string){
     throw new ExtractionReviewConflict('原件已变化，不能审核');
   extractionReadiness(bytes,{sourceSha256:job.source_sha256,artifactSha256:job.metrics.artifactSha256,extractorVersion:job.extractor_version});
   const blocks=(JSON.parse(bytes.toString('utf8')).documents[0].blocks as Block[]).filter(block=>!['success','blank'].includes(block.quality));
-  return {job,blocks,original};
+  return {job,blocks,original,artifactBytes:bytes};
+}
+
+export async function completeExtractionReview(userId:string,jobId:string,artifactSha256:string,decisionSha256:string){
+  z.uuid().parse(jobId);z.string().regex(/^[a-f0-9]{64}$/).parse(artifactSha256);
+  return tenantTransaction(userId,async client=>{
+    const {job,artifactBytes}=await load(client,userId,jobId);
+    if(job.metrics.artifactSha256!==artifactSha256)throw new ExtractionReviewConflict('抽取版本已变化，请重新加载');
+    const rows=await client.query<ExtractionJudgment>(`select distinct on(block_id) block_id,revision,decision,evidence_text,source_sha256,extractor_version
+      from knowledge_upload_extraction_review where owner_id=$1 and job_id=$2 and artifact_sha256=$3 order by block_id,revision desc`,[userId,jobId,artifactSha256]);
+    if(reviewDecisionHash(rows.rows)!==decisionSha256)throw new ExtractionReviewConflict('审核记录已变化，请重新加载后完成');
+    const receiptId=randomUUID();
+    let reviewed:Buffer;
+    try{reviewed=deriveReviewedExtraction(artifactBytes,{receiptId,sourceSha256:job.source_sha256,artifactSha256,extractorVersion:job.extractor_version},rows.rows);}
+    catch{throw new ExtractionReviewConflict('仍有未解决或不匹配的对象，不能恢复索引');}
+    const key=safeKnowledgeStorageKey(`knowledge/uploads/${userId}/${jobId}.reviewed.${receiptId}.json`),path=resolve(key);assertResolvedInsideKnowledgeRoot(path);
+    await writeFile(path,reviewed,{flag:'wx'});
+    const reviewedSha=createHash('sha256').update(reviewed).digest('hex');
+    await client.query(`insert into knowledge_upload_review_completion(id,owner_id,job_id,source_sha256,original_artifact_key,original_artifact_sha256,reviewed_artifact_key,reviewed_artifact_sha256,extractor_version)
+      values($1,$2,$3,$4,$5,$6,$7,$8,$9)`,[receiptId,userId,jobId,job.source_sha256,job.extraction_artifact_key,artifactSha256,key,reviewedSha,job.extractor_version]);
+    await client.query(`update knowledge_upload_job set extraction_artifact_key=$3,error_code=null,updated_at=now(),metrics=metrics||$4::jsonb where id=$1 and user_id=$2`,
+      [jobId,userId,key,JSON.stringify({artifactSha256:reviewedSha,extractionReviewReceiptId:receiptId,originalExtractionArtifactKey:job.extraction_artifact_key,originalExtractionArtifactSha256:artifactSha256})]);
+    return {receiptId,status:'extracted',indexingResumed:false,readyForRegistration:true};
+  });
 }
 
 export async function getExtractionReviewOriginal(userId:string,jobId:string,artifactSha256:string){
@@ -48,10 +72,10 @@ export async function getExtractionReview(userId:string,jobId:string,offset=0){
     const {job,blocks}=await load(client,userId,jobId);
     const candidates=await loadVisualCandidates(job.metrics,job.source_sha256,job.metrics.artifactSha256,blocks);
     const byCandidate=new Map(candidates?.map(record=>[record.blockId,record]));
-    const judgments=await client.query(`select distinct on(block_id) block_id,revision,decision,evidence_text,note,created_at
+    const judgments=await client.query<{block_id:string;revision:number;decision:string;evidence_text:string;note:string;created_at:string}>(`select distinct on(block_id) block_id,revision,decision,evidence_text,note,created_at
       from knowledge_upload_extraction_review where owner_id=$1 and job_id=$2 and artifact_sha256=$3 order by block_id,revision desc`,[userId,jobId,job.metrics.artifactSha256]);
     const byBlock=new Map(judgments.rows.map(row=>[row.block_id,row]));
-    return {jobId,title:job.title,sourceSha256:job.source_sha256,artifactSha256:job.metrics.artifactSha256,extractorVersion:job.extractor_version,
+    return {jobId,title:job.title,sourceSha256:job.source_sha256,artifactSha256:job.metrics.artifactSha256,extractorVersion:job.extractor_version,decisionSha256:reviewDecisionHash(judgments.rows),
       total:blocks.length,offset,blocks:blocks.slice(offset,offset+20).map(block=>({block,judgment:byBlock.get(block.id)??null,candidate:byCandidate.get(block.id)??null})),
       resolved:blocks.filter(block=>{const row=byBlock.get(block.id);return row&&row.decision!=='unresolved';}).length,indexingResumed:false};
   });
