@@ -125,6 +125,11 @@ language plpgsql security definer set search_path=public,pg_temp as $$
 declare chosen agent_skill_shadow_job;
 begin
   if app_current_user_id() is null then return; end if;
+  with expired as (update agent_skill_shadow_job j set state='skipped',reason='campaign-disabled-or-expired',lease_token=null,lease_until=null
+    where j.owner_id=app_current_user_id() and (j.state in('observing','queued') or (j.state='running' and j.lease_until<=now()))
+      and exists(select 1 from agent_skill_shadow_campaign c where c.id=j.campaign_id and (not c.enabled or c.expires_at<=now()))
+    returning j.owner_id,j.id)
+  insert into agent_skill_shadow_event(owner_id,job_id,kind) select owner_id,id,'campaign-disabled-or-expired' from expired;
   with exhausted as (update agent_skill_shadow_job set state='failed',reason='lease-retry-limit',lease_token=null,lease_until=null
     where owner_id=app_current_user_id() and state='running' and lease_until<=now() and attempts>=3 returning owner_id,id,attempts)
   insert into agent_skill_shadow_event(owner_id,job_id,kind,payload)
@@ -168,3 +173,27 @@ begin
 end $$;
 revoke all on function claim_skill_shadow_job(),heartbeat_skill_shadow_job(uuid,uuid),finish_skill_shadow_job(uuid,uuid,text,jsonb,text) from public;
 grant execute on function claim_skill_shadow_job(),heartbeat_skill_shadow_job(uuid,uuid),finish_skill_shadow_job(uuid,uuid,text,jsonb,text) to network_copilot_app;
+
+-- Hash-only per-call receipts survive worker crashes; they are not semantic quality judgments.
+create or replace function record_skill_shadow_model_call(job uuid,token uuid,call_number integer,phase text,receipt jsonb) returns boolean
+language plpgsql security definer set search_path=public,pg_temp as $$
+declare target agent_skill_shadow_job;
+begin
+ if call_number<1 or call_number>16 or phase not in('started','completed','failed')
+   or receipt is null or jsonb_typeof(receipt)<>'object' or octet_length(receipt::text)>2000 then return false; end if;
+ select j.* into target from agent_skill_shadow_job j where j.id=job and j.owner_id=app_current_user_id()
+  and j.state='running' and j.lease_token=token and j.lease_until>now() for update;
+ if target.id is null then return false; end if;
+ if not exists(select 1 from agent_skill_shadow_campaign c where c.id=target.campaign_id and c.enabled and c.expires_at>now()) then return false; end if;
+ if exists(select 1 from agent_skill_shadow_event e where e.job_id=job and e.kind='model-'||phase
+   and e.payload->>'attempt'=target.attempts::text and e.payload->>'call'=call_number::text) then return false; end if;
+ if phase<>'started' and exists(select 1 from agent_skill_shadow_event e where e.job_id=job and e.kind in('model-completed','model-failed')
+   and e.payload->>'attempt'=target.attempts::text and e.payload->>'call'=call_number::text) then return false; end if;
+ if phase<>'started' and not exists(select 1 from agent_skill_shadow_event e where e.job_id=job and e.kind='model-started'
+   and e.payload->>'attempt'=target.attempts::text and e.payload->>'call'=call_number::text) then return false; end if;
+ insert into agent_skill_shadow_event(owner_id,job_id,kind,payload)
+  values(target.owner_id,job,'model-'||phase,jsonb_build_object('attempt',target.attempts,'call',call_number,'receipt',receipt));
+ return true;
+end $$;
+revoke all on function record_skill_shadow_model_call(uuid,uuid,integer,text,jsonb) from public;
+grant execute on function record_skill_shadow_model_call(uuid,uuid,integer,text,jsonb) to network_copilot_app;

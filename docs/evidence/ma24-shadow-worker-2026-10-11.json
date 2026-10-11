@@ -1,0 +1,36 @@
+{
+  "stage": "G08 local prospective shadow worker",
+  "date": "2026-10-11",
+  "implemented": [
+    "operator-only registration of current account instruction packages",
+    "fixed source, runtime, model and selection configuration",
+    "prospective capture queue consumption with lease heartbeat",
+    "current original evidence and private source revalidation before and after model rounds",
+    "local-only actual graph paired analysis without business dispatcher",
+    "separate observed production result and local baseline",
+    "per-call started/completed/failed hash receipts",
+    "persist incomplete analysis as failed, never as accepted"
+  ],
+  "limits": {"registrationHours": [1,24], "activeCampaignsPerAccount": 8, "maximumModelCallsPerTask": 16, "maximumStartAgeSeconds": 1800},
+  "verification": {
+    "unitTests": 48,
+    "testFiles": 3,
+    "typecheck": "passed",
+    "targetedLint": "passed",
+    "cloneActualOriginalSnapshot": "passed",
+    "cloneSourceVersionChangeDenied": "passed",
+    "cloneLocalModelOffline": "failed-and-recorded-as-expected",
+    "cloneCallPhaseAndLeaseGuards": "passed",
+    "cloneDisabledPendingCaptureSettled": "passed",
+    "newRealModelCalls": 0
+  },
+  "production": {"migration123Applied": false, "campaignsRegistered": 0, "workerStarted": false},
+  "limitations": [
+    "This asynchronous local paired analysis is not equivalent to the production model run.",
+    "No new natural prospective task or semantic acceptance has passed.",
+    "Authenticated shadow review and trusted automatic activation still remain.",
+    "Prior local safety and natural mail replay failures remain unchanged."
+  ],
+  "automaticActivation": false,
+  "qualityAcceptance": false
+}
