@@ -30,3 +30,11 @@ it.each(['empty','missing-outcome','output-hash','input-hash','owner','evaluatio
  if(kind==='invalid-failure'){rows[0].output={status:'unavailable',data:{retryable:true,reason:'execution-cancelled'}};rows[0].output_hash=digest(rows[0].output);}
  expect(()=>prepareSkillModelJournalAudit(identity,rows)).toThrow();
 });
+
+it('preserves a uniform freeze binding and rejects mixed or malformed bindings',()=>{
+ const rows=fixture(),freezeId='11111111-1111-4111-8111-111111111111';
+ rows.forEach(row=>{row.freeze_id=freezeId;});
+ expect(prepareSkillModelJournalAudit(identity,rows).freezeId).toBe(freezeId);
+ delete rows[0].freeze_id;expect(()=>prepareSkillModelJournalAudit(identity,rows)).toThrow();
+ rows.forEach(row=>{row.freeze_id='invalid';});expect(()=>prepareSkillModelJournalAudit(identity,rows)).toThrow();
+});

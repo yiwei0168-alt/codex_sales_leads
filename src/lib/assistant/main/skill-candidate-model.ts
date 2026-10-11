@@ -16,7 +16,7 @@ export function createDurableSkillCandidateModel(pin:{ownerId:string;snapshotHas
  z.uuid().parse(collector.evaluationId);
  const receipts:Array<{id:string;step:number;index:number;recovered:boolean}>=[];
  const model=async(input:Decision)=>{
-  const journal=createSkillModelJournal(collector.transaction,{...pin,evaluationId:collector.evaluationId,sourceKind:collector.sourceKind,step:input.step});
+  const journal=createSkillModelJournal(collector.transaction,{...pin,evaluationId:collector.evaluationId,sourceKind:collector.sourceKind,step:input.step,...(collector.frozen?{freezeId:collector.frozen.freezeId}:{})});
   const selected=await orderedModeDecision<Record<string,unknown>>({signal:input.signal,
    begin:async index=>{
     await validate();input.signal.throwIfAborted();

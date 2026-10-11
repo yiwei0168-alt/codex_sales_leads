@@ -33,6 +33,7 @@ try{
  await pool.query(await readFile('db/migrations/131_skill_model_attempt_journal.sql','utf8'));
  await pool.query(await readFile('db/migrations/132_skill_bundle_collector.sql','utf8'));
  await pool.query(await readFile('db/migrations/133_skill_acceptance_freeze.sql','utf8'));
+ await pool.query(await readFile('db/migrations/134_skill_model_freeze_binding.sql','utf8'));
  for(const id of [owner,other])await pool.query("insert into app_user(id,email,display_name,password_hash,role,status) values($1,$2,'Model source fixture','!','member','active')",[id,`${id}@example.invalid`]);
  console.log(JSON.stringify({skillModelJournal:await verifySkillModelJournalFixture(pool,owner,other),cloneOnly:true}));
  console.log(JSON.stringify({skillAcceptanceFreeze:await verifyAcceptanceFreezeFixture(pool,owner,other),cloneOnly:true}));

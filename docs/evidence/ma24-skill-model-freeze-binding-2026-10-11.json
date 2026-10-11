@@ -1,0 +1,30 @@
+{
+  "date": "2026-10-11",
+  "scope": "G08-G10 persistent model attempt freeze binding",
+  "migration": "134_skill_model_freeze_binding.sql",
+  "checks": {
+    "unitTests": 42,
+    "typecheck": "passed",
+    "eslint": "passed",
+    "completeRecordedSourceCloneVerifier": "passed",
+    "journalFreezePersisted": true,
+    "recoveryCannotRemoveFreeze": true,
+    "databaseRejectsRevokedAdmission": true,
+    "mixedAndMalformedFreezeBindingsRejected": true,
+    "frozenCollectionAndRecovery": true,
+    "syntheticRequests": 4,
+    "actualModelCalls": 0
+  },
+  "boundaries": {
+    "migrationAppliedOnlyToClone": true,
+    "legacyNullFreezesNotBackfilled": true,
+    "inFlightOutcomeCanStillBeSaved": true,
+    "productionDeployment": false,
+    "loadedRuntimeAttestation": false,
+    "collectorProvenanceVerified": false,
+    "productionAgentEquivalent": false,
+    "qualityAccepted": false,
+    "automaticActivation": false,
+    "githubPush": "blocked by existing public-disclosure approval requirement"
+  }
+}

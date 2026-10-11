@@ -33,6 +33,7 @@ export async function collectHistoricalSkillAcceptance(context:{userId:string},i
   if(freezeId&&digest(plan.identity)!==digest(await prepareSkillExecutionIdentity(context,{runId:ref.runId})))throw new Error('Frozen collector identity changed');
   const base=await prepareSkillAcceptanceBaseline(context,{runId:ref.runId}),candidate=await auditDurableSkillCandidate(context,{runId:ref.runId,skillId:plan.pin.skillId,version:plan.pin.version,evaluationId:ref.evaluationId,arm:'candidate'});
   const b=base.projection,c=candidate.projection;
+  if(freezeId&&c.freezeId!==freezeId)throw new Error('Candidate journal freeze binding mismatch');
   if(freezeId&&(Date.parse(c.capturedAt)<Date.parse(plan.frozenAt)||Date.parse(c.completedAt)>=Date.parse(plan.expiresAt)))throw new Error('Candidate outside frozen plan interval');
   if(item.inputHash!==b.inputHash||item.sourceHash!==base.projectionHash||c.taskInputHash!==b.inputHash||b.modelConfigHash!==plan.identity.modelConfigHash||c.modelConfigHash!==plan.identity.modelConfigHash)
    throw new Error('Collector task or model configuration changed');
