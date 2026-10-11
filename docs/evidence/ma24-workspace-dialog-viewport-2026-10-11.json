@@ -1,0 +1,113 @@
+{
+  "actualComponent": true,
+  "productionStyles": true,
+  "syntheticContent": true,
+  "results": [
+    {
+      "mode": "dialog",
+      "width": 1366,
+      "height": 900,
+      "mobileDrawerFullWidth": false,
+      "opaque": true,
+      "internalScroll": true,
+      "backgroundUnchanged": true,
+      "focusTrap": true,
+      "focusRestored": true,
+      "busyEscapeBlocked": true
+    },
+    {
+      "mode": "drawer",
+      "width": 1366,
+      "height": 900,
+      "mobileDrawerFullWidth": false,
+      "opaque": true,
+      "internalScroll": true,
+      "backgroundUnchanged": true,
+      "focusTrap": true,
+      "focusRestored": true,
+      "busyEscapeBlocked": true
+    },
+    {
+      "mode": "dialog",
+      "width": 1366,
+      "height": 360,
+      "mobileDrawerFullWidth": false,
+      "opaque": true,
+      "internalScroll": true,
+      "backgroundUnchanged": true,
+      "focusTrap": true,
+      "focusRestored": true,
+      "busyEscapeBlocked": true
+    },
+    {
+      "mode": "drawer",
+      "width": 1366,
+      "height": 360,
+      "mobileDrawerFullWidth": false,
+      "opaque": true,
+      "internalScroll": true,
+      "backgroundUnchanged": true,
+      "focusTrap": true,
+      "focusRestored": true,
+      "busyEscapeBlocked": true
+    },
+    {
+      "mode": "dialog",
+      "width": 390,
+      "height": 760,
+      "mobileDrawerFullWidth": false,
+      "opaque": true,
+      "internalScroll": true,
+      "backgroundUnchanged": true,
+      "focusTrap": true,
+      "focusRestored": true,
+      "busyEscapeBlocked": true
+    },
+    {
+      "mode": "drawer",
+      "width": 390,
+      "height": 760,
+      "mobileDrawerFullWidth": true,
+      "opaque": true,
+      "internalScroll": true,
+      "backgroundUnchanged": true,
+      "focusTrap": true,
+      "focusRestored": true,
+      "busyEscapeBlocked": true
+    },
+    {
+      "mode": "dialog",
+      "width": 320,
+      "height": 480,
+      "mobileDrawerFullWidth": false,
+      "opaque": true,
+      "internalScroll": true,
+      "backgroundUnchanged": true,
+      "focusTrap": true,
+      "focusRestored": true,
+      "busyEscapeBlocked": true
+    },
+    {
+      "mode": "drawer",
+      "width": 320,
+      "height": 480,
+      "mobileDrawerFullWidth": true,
+      "opaque": true,
+      "internalScroll": true,
+      "backgroundUnchanged": true,
+      "focusTrap": true,
+      "focusRestored": true,
+      "busyEscapeBlocked": true
+    }
+  ],
+  "date": "2026-10-11",
+  "productionDeployed": false,
+  "allBusinessEntrypointsVerified": false,
+  "checks": {
+    "typecheck": "passed",
+    "eslint": "passed",
+    "mobileScreenshotInspected": true
+  },
+  "defect": "Native dialog max-width reduced mobile drawer width; explicit viewport max-width fixes it",
+  "theme": "Existing MA15 light violet retained"
+}
