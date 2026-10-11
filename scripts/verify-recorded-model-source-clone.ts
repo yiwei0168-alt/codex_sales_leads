@@ -70,11 +70,18 @@ try{
   await pool.query(`insert into agent_tool_call(id,user_id,run_id,call_key,tool_id,tool_version,input_hash,input,effect,status,output)
    values($1,$2,$3,$4,'main_model','1',$5,$6,'model','completed',$7)`,[earlierId,owner,runId,`mode-model:${step}:0:1`,digest(priorInput),JSON.stringify(priorInput),JSON.stringify(priorOutput)]);
  }
+ await assert.rejects(loadRecordedTaskChain(context,{runId}),/predecessor missing/);
+ const selected=(await pool.query("select call_key,input from agent_tool_call where run_id=$1 and tool_id='main_model'",[runId])).rows;
+ for(const row of selected){
+  const failedInput={...row.input,index:0};
+  await pool.query(`insert into agent_tool_call(id,user_id,run_id,call_key,tool_id,tool_version,input_hash,input,effect,status,output)
+   values($1,$2,$3,$4,'main_model','1',$5,$6,'model','completed',$7)`,[randomUUID(),owner,runId,row.call_key.replace(/:1$/,':0'),digest(failedInput),JSON.stringify(failedInput),JSON.stringify({status:'unavailable',data:{retryable:true,reason:'http-429'}})]);
+ }
  const chain=await loadRecordedTaskChain(context,{runId});assert.equal(chain.turns.length,3);assert.equal(chain.serverTaskJournalVerified,true);assert.equal(chain.wholeTaskProvenanceVerified,false);
  await pool.query("update agent_tool_call set output=jsonb_set(output,'{data,value,message,content}','\"Altered historical reply\"'::jsonb) where id=$1",[earlierIds[0]]);
  await assert.rejects(loadRecordedTaskChain(context,{runId}),/history diverged/);
  await assert.rejects(loadRecordedTaskChain({userId:other},{runId}),/unavailable/);
- console.log(JSON.stringify({cloneOnly:true,threeTurnChainBound:true,alteredEarlierReplyDenied:true,localEvidenceGuardsPassed:true,currentToolContractsChecked:true,readReceiptBound:true,substitutedReceiptDenied:true,revokedDecisionMemoryDenied:true,exactRequest:true,tenantIsolation:true,wrongRunDenied:true,changedInstructionsDenied:true,cancelledRunDenied:true,inputHashTamperingDenied:true,modelCalls:0,sourcePermissionsRevalidated:false,executionAuthorized:false,qualityAccepted:false}));
+ console.log(JSON.stringify({cloneOnly:true,threeTurnChainBound:true,missingFallbackPredecessorDenied:true,fallbackChainBound:true,alteredEarlierReplyDenied:true,localEvidenceGuardsPassed:true,currentToolContractsChecked:true,readReceiptBound:true,substitutedReceiptDenied:true,revokedDecisionMemoryDenied:true,exactRequest:true,tenantIsolation:true,wrongRunDenied:true,changedInstructionsDenied:true,cancelledRunDenied:true,inputHashTamperingDenied:true,modelCalls:0,sourcePermissionsRevalidated:false,executionAuthorized:false,qualityAccepted:false}));
 }finally{
  await pool.query('delete from agent_memory_version where memory_id=$1',[memoryId]);
  await pool.query('delete from agent_memory where id=$1 and owner_id=$2',[memoryId,owner]);

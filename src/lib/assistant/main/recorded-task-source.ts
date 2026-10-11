@@ -1,4 +1,5 @@
 import {z} from 'zod';
+import {assertRecordedFallbackChain} from './recorded-fallback-chain';
 import {tenantTransaction} from '@/lib/rag/db';
 import {digest} from './contracts';
 import {prepareRecordedTaskChain} from './recorded-task-chain';
@@ -18,6 +19,7 @@ export async function loadRecordedTaskChain(context:{userId:string},input:{runId
   return {task,calls};
  });
  const saved=await snapshot();
+ const fallbackBinding=assertRecordedFallbackChain(saved.calls);
  const successful=saved.calls.filter(call=>z.object({status:z.string()}).parse(call.output).status==='success');
  const chain=prepareRecordedTaskChain(successful,{
   reply:z.object({reply:z.string()}).parse(saved.task.result).reply,
@@ -27,7 +29,7 @@ export async function loadRecordedTaskChain(context:{userId:string},input:{runId
  for(const turn of chain.turns)checked.push(await validateRecordedRequestEvidence({userId},{runId,callId:turn.id}));
  const sourceHash=digest(saved);
  if(digest(await snapshot())!==sourceHash)throw new Error('Recorded task changed during preparation');
- return {...chain,requests:checked,sourceHash,serverTaskJournalVerified:true as const,
-  // Initial conversation/attachments and failed-attempt fallback causality require their own binding.
+ return {...chain,fallbackBinding,requests:checked,sourceHash,serverTaskJournalVerified:true as const,
+  // Initial conversation and attachments still require their own provenance binding.
   wholeTaskProvenanceVerified:false as const,executionAuthorized:false as const,qualityAccepted:false as const};
 }

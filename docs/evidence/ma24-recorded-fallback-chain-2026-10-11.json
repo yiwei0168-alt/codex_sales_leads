@@ -1,0 +1,19 @@
+{
+  "scope": "G08 persisted three-mode fallback decision provenance",
+  "tests": 19,
+  "typecheck": "passed",
+  "lint": "passed",
+  "cloneChecks": [
+    "missing-primary-failure-denied",
+    "matching-retryable-failure-bound",
+    "three-turn-chain",
+    "altered-reply-denied",
+    "tenant-isolation"
+  ],
+  "fixturesRemoved": true,
+  "modelCalls": 0,
+  "productionDeployed": false,
+  "wholeTaskProvenanceVerified": false,
+  "executionAuthorized": false,
+  "qualityAccepted": false
+}
