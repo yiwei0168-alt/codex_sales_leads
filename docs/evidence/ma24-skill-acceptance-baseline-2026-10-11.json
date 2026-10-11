@@ -1,0 +1,22 @@
+{
+  "date": "2026-10-11",
+  "cloneOnly": true,
+  "storedBaselineBound": true,
+  "changedAnswerEvidenceAndModelRejected": true,
+  "wrongTaskAndProjectionRejected": true,
+  "crossAccountBaselineRejected": true,
+  "changedOriginalRejected": true,
+  "hashOnlyProjection": true,
+  "candidateVerified": false,
+  "productionAgentEquivalent": false,
+  "collectorProvenanceVerified": false,
+  "automaticActivation": false,
+  "typecheck": true,
+  "eslint": true,
+  "modelCalls": 0,
+  "businessToolExecutions": 0,
+  "fixturesCleaned": true,
+  "productionDeployed": false,
+  "verifier": "scripts/verify-recorded-model-source-clone.ts",
+  "fixture": "scripts/fixtures/skill-acceptance-baseline-clone.ts"
+}

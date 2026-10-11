@@ -39,7 +39,8 @@ export async function loadRecordedTaskChain(context:{userId:string},input:{runId
  const sourceHash=digest(saved);
  if(digest(await snapshot())!==sourceHash)throw new Error('Recorded task changed during preparation');
  if((await bindRecordedInitialSource({userId,runId},chain.turns[0].request.body.messages)).initialSourceHash!==initialBinding.initialSourceHash)throw new Error('Recorded initial sources changed during preparation');
- return {...chain,...initialBinding,fallbackBinding,journalClosure,requests:checked,sourceHash,serverTaskJournalVerified:true as const,
+ return {...chain,...initialBinding,fallbackBinding,journalClosure,requests:checked,sourceHash,
+  taskInputHash:digest(saved.task.input),modelConfigHash:digest(saved.task.model_config),serverTaskJournalVerified:true as const,
   // Complete tool-output semantics, interrupted recovery and effect adapters remain separate gates.
   wholeTaskProvenanceVerified:false as const,executionAuthorized:false as const,qualityAccepted:false as const};
 }

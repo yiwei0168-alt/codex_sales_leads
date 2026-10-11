@@ -17,6 +17,7 @@ import {modeModelConfig} from '../src/lib/assistant/main/mode-config';
 import {modelFunctions,transportMessages} from '../src/lib/assistant/main/model';
 import {modelRequestManifest} from '../src/lib/assistant/main/model-request-manifest';
 import {loadRecordedModeRequest,revalidateRecordedModeRequest} from '../src/lib/assistant/main/model-request-source';
+import {verifyAcceptanceBaselineFixture} from './fixtures/skill-acceptance-baseline-clone';
 nextEnv.loadEnvConfig(process.cwd());disableLocalAnalysisTracing();
 const base=process.env.DATABASE_MIGRATION_URL||process.env.DATABASE_URL;
 assert(base&&['localhost','127.0.0.1','::1'].includes(new URL(base).hostname));
@@ -25,6 +26,7 @@ const url=new URL(base);url.pathname=`/${state.database}`;process.env.DATABASE_U
 const pool=new Pool({connectionString:url.toString()}),owner=randomUUID(),other=randomUUID(),conversation=randomUUID(),runId=randomUUID(),callId=randomUUID(),memoryId=randomUUID(),readCallId=randomUUID();
 globalThis.fetch=async()=>{throw Error('No network in clone verification');};
 try{
+ await pool.query(await readFile('db/migrations/130_skill_acceptance_evidence.sql','utf8'));
  for(const id of [owner,other])await pool.query("insert into app_user(id,email,display_name,password_hash,role,status) values($1,$2,'Model source fixture','!','member','active')",[id,`${id}@example.invalid`]);
  await pool.query("insert into assistant_conversation(id,user_id,title) values($1,$2,'Model source fixture')",[conversation,owner]);
  await pool.query("insert into agent_memory(id,owner_id,scope,kind,memory_key,source_kind) values($1,$2,'account','preference','synthetic-replay','explicit')",[memoryId,owner]);
@@ -93,6 +95,8 @@ try{
   await pool.query('delete from agent_tool_call where id=$1 and user_id=$2',[hiddenId,owner]);
  }
  const graphAudit=await auditRecordedGraphExecution(context,{runId});assert.equal(graphAudit.recordedDecisions,3);assert.equal(graphAudit.recordedTools,2);assert.equal(graphAudit.modelCalls,0);
+ const acceptanceBaseline=await verifyAcceptanceBaselineFixture(pool,owner,other,runId);
+ console.log(JSON.stringify({acceptanceBaseline,cloneOnly:true,modelCalls:0}));
  const clarification='Synthetic clarification after recorded reads';
  await pool.query('update agent_run set instructions=$2 where id=$1',[runId,JSON.stringify([{id:randomUUID(),content:clarification}])]);
  const lastAttempts=(await pool.query("select id,input,output,call_key from agent_tool_call where run_id=$1 and call_key like 'mode-model:2:0:%'",[runId])).rows;
