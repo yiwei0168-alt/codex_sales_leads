@@ -7,6 +7,9 @@ from openpyxl import Workbook
 import pymupdf
 from pptx import Presentation
 from pptx.util import Inches
+from PIL import Image
+from pptx.chart.data import CategoryChartData
+from pptx.enum.chart import XL_CHART_TYPE
 from knowledge_extraction_v2 import extract_file
 
 
@@ -57,6 +60,33 @@ class SpreadsheetCoordinatesTest(unittest.TestCase):
 
 
 class PptxGroupTest(unittest.TestCase):
+    def test_visual_only_and_mixed_slides_require_review(self):
+        with TemporaryDirectory() as directory:
+            path = Path(directory) / "visuals.pptx"
+            picture = Path(directory) / "image.png"
+            Image.new("RGB", (20, 20), "black").save(picture)
+            deck = Presentation()
+            deck.slides.add_slide(deck.slide_layouts[6])
+            image_slide = deck.slides.add_slide(deck.slide_layouts[6])
+            image_slide.shapes.add_picture(str(picture), 0, 0)
+            mixed = deck.slides.add_slide(deck.slide_layouts[6])
+            mixed.shapes.add_textbox(0, 0, Inches(1), Inches(1)).text = "Caption"
+            group = mixed.shapes.add_group_shape()
+            group.shapes.add_picture(str(picture), 0, 0)
+            chart_slide = deck.slides.add_slide(deck.slide_layouts[6])
+            data = CategoryChartData()
+            data.categories = ["A", "B"]
+            data.add_series("Values", [0, 5])
+            chart_slide.shapes.add_chart(XL_CHART_TYPE.COLUMN_CLUSTERED, 0, 0, Inches(3), Inches(3), data)
+            deck.save(path)
+            artifact = extract_file(path, "visuals.pptx")
+            self.assertEqual(artifact["qualitySummary"], {
+                "success": 0, "blank": 1, "pending-ocr": 3, "failed": 0})
+            pending = [b for b in artifact["blocks"] if b["quality"] == "pending-ocr"]
+            self.assertEqual([b["unitIndex"] for b in pending], [2, 3, 4])
+            self.assertEqual(pending[1]["shapePath"], [2, 1])
+            self.assertTrue(any(b["text"] == "Caption" for b in artifact["blocks"]))
+
     def test_nested_text_has_unique_order_and_native_object_paths(self):
         with TemporaryDirectory() as directory:
             path = Path(directory) / "groups.pptx"

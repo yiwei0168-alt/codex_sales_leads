@@ -1,0 +1,27 @@
+{
+  "schema": "pptx-unparsed-visual-guard-v1",
+  "extractorVersion": "layout-v2.0.5",
+  "sourceSha256": "2223cee26aced9a50d648d933c31b15f2f0659d0ebe30922fca5c31c1cc30465",
+  "artifactSha256": "136d6572d8cde82e87d34cc0e6601e328ba0bae6b83e3525808ae3fea9d92e51",
+  "qualitySummary": {
+    "success": 10,
+    "blank": 0,
+    "pending-ocr": 32,
+    "failed": 0
+  },
+  "parsedTextTableBlocks": 216,
+  "unparsedVisualBlocks": 63,
+  "pythonRegressionTestsPassed": 5,
+  "typescriptRegistrationTestsPassed": 12,
+  "realArtifactRejectedBeforeDatabaseWrite": true,
+  "databaseQueriesOnRejectedArtifact": 0,
+  "productionWrites": 0,
+  "newModelCalls": 0,
+  "qualityAccepted": false,
+  "limitations": [
+    "Blocking incomplete extraction is a guard, not final local visual extraction delivery.",
+    "No OCR, chart data interpretation, image semantics or human review completed.",
+    "Visual objects include decorative content; safe local classification/review remains needed.",
+    "Previously registered sources not reindexed or deleted."
+  ]
+}

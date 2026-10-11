@@ -8,7 +8,7 @@ from pptx.enum.shapes import MSO_SHAPE_TYPE
 from openpyxl import load_workbook
 from openpyxl.utils import get_column_letter
 
-EXTRACTOR_VERSION = "layout-v2.0.4"
+EXTRACTOR_VERSION = "layout-v2.0.5"
 
 def _clean(value):
     return " ".join(str("" if value is None else value).replace("\x00", "").split()).strip()
@@ -63,8 +63,14 @@ def extract_pptx(path: Path):
                 elif getattr(shape,"has_text_frame",False):
                     text="\n".join(_clean(p.text) for p in shape.text_frame.paragraphs if _clean(p.text))
                     if text: blocks.append(_block(f"slide-{index}-text-{key}","slide",index,"paragraph",text,**location))
+                else:
+                    # An unparsed visual object is not a blank slide. Retain its
+                    # locator and prevent publication until local review resolves it.
+                    blocks.append(_block(f"slide-{index}-visual-{key}","slide",index,"pending-ocr","",quality="pending-ocr",
+                        metadata={"reviewReason":"unparsed-slide-visual","shapeType":str(shape.shape_type)},**location))
         visit(slide.shapes)
-        statuses.append("success" if len(blocks)>start else "blank")
+        pending=any(block["quality"]=="pending-ocr" for block in blocks[start:])
+        statuses.append("pending-ocr" if pending else "success" if len(blocks)>start else "blank")
     return blocks,statuses
 
 def extract_xlsx(path: Path):
