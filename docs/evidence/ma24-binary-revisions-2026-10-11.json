@@ -1,0 +1,109 @@
+{
+  "stage": "G05 atomic binary document revisions",
+  "date": "2026-10-11",
+  "cloneOnly": true,
+  "modelCalls": 0,
+  "externalCalls": 0,
+  "results": [
+    {
+      "format": ".pdf",
+      "newContentVerified": true,
+      "stableDocumentId": true,
+      "oldReadableDuringProcessing": true,
+      "parserFailureKeepsOld": true,
+      "transactionCrashKeepsOld": true,
+      "staleBaseRejected": true,
+      "oneWinner": true,
+      "oldEvidenceNotCurrent": true,
+      "downloadUsesCurrentAsset": true,
+      "historyRetained": true
+    },
+    {
+      "format": ".pptx",
+      "newContentVerified": true,
+      "stableDocumentId": true,
+      "oldReadableDuringProcessing": true,
+      "parserFailureKeepsOld": true,
+      "transactionCrashKeepsOld": true,
+      "staleBaseRejected": true,
+      "oneWinner": true,
+      "oldEvidenceNotCurrent": true,
+      "downloadUsesCurrentAsset": true,
+      "historyRetained": true
+    },
+    {
+      "format": ".xlsx",
+      "newContentVerified": true,
+      "stableDocumentId": true,
+      "oldReadableDuringProcessing": true,
+      "parserFailureKeepsOld": true,
+      "transactionCrashKeepsOld": true,
+      "staleBaseRejected": true,
+      "oneWinner": true,
+      "oldEvidenceNotCurrent": true,
+      "downloadUsesCurrentAsset": true,
+      "historyRetained": true
+    }
+  ],
+  "sharedExplicitAdminPublication": true,
+  "approvalHashMismatchRejected": true,
+  "revocationBeforePublicationRejected": true,
+  "jobHistoryStatus": true,
+  "v3PointersUnchanged": true,
+  "unrelatedDocumentsUnchanged": true,
+  "browser": {
+    "results": [
+      {
+        "width": 1366,
+        "pagination": true,
+        "explicitDocumentAndBase": true,
+        "conflictPreservesDraft": true,
+        "oldVersionNotice": true,
+        "noOverflow": true
+      },
+      {
+        "width": 390,
+        "pagination": true,
+        "explicitDocumentAndBase": true,
+        "conflictPreservesDraft": true,
+        "oldVersionNotice": true,
+        "noOverflow": true
+      },
+      {
+        "width": 320,
+        "pagination": true,
+        "explicitDocumentAndBase": true,
+        "conflictPreservesDraft": true,
+        "oldVersionNotice": true,
+        "noOverflow": true
+      }
+    ],
+    "scope": "actual upload component with synthetic APIs; adjacent page components stubbed"
+  },
+  "verification": {
+    "unitTests": 23,
+    "testFiles": 4,
+    "typecheck": "passed",
+    "targetedLint": "passed",
+    "originalUploadCrashMatrix": "12 checkpoints plus damaged-artifact failure passed after shared tree writer refactor",
+    "duplicateUploadRegression": "24 parallel submissions across three formats passed",
+    "fixtureCleanup": "passed"
+  },
+  "deployment": {
+    "migration125": "applied to isolated clone and local product PostgreSQL",
+    "webRuntime": "not rebuilt or restarted in this stage",
+    "mailWorkers": "untouched",
+    "retrievalSwitch": false
+  },
+  "limitations": [
+    "Independent answer/citation quality not established",
+    "Text/approved-mail complete recovery matrix remains pending",
+    "Re-uploading historical content is not an implicit document rollback; old sources remain stored",
+    "Browser verification used synthetic APIs and stubbed adjacent page components"
+  ],
+  "scripts": [
+    "scripts/verify-binary-revisions-clone.ts",
+    "scripts/verify-upload-revision-ui.ts",
+    "scripts/fixtures/revise-binary.py"
+  ]
+}

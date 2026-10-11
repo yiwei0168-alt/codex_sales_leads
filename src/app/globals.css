@@ -383,3 +383,16 @@ a { color: inherit; }
 .agent-library-tabs{display:flex;gap:8px;position:sticky;top:0;background:var(--surface);padding:8px 0;z-index:1}
 .agent-library-tabs button[aria-pressed="true"]{background:var(--blue-soft)}
 .mailbox-selectbar{flex-wrap:wrap}.mailbox-selectbar button{padding:5px 8px;border:1px solid var(--line);border-radius:5px}
+
+/* Binary revision controls remain within the existing upload workspace. */
+.kb-upload-revision, .kb-upload-jobs { grid-column: 1 / -1; min-width: 0; overflow-wrap: anywhere; }
+.kb-upload-revision { padding-bottom: 12px; border-bottom: 1px solid var(--line-strong); }
+.kb-upload-revision p { margin: 6px 0 10px; }
+.kb-upload-revision button, .kb-upload-jobs button { padding: 6px 10px; border: 1px solid var(--line-strong); border-radius: 6px; background: #fff; color: var(--ink); cursor: pointer; }
+.kb-upload-jobs > p { line-height: 1.8; padding: 10px 0; border-bottom: 1px solid var(--line-strong); }
+.kb-upload-jobs > p button { margin: 4px 0 4px 8px; }
+.kb-upload-pagination { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.kb-upload-jobs button:disabled, .kb-upload-revision button:disabled { opacity: .5; cursor: default; }
+.kb-upload-action { grid-column: 1 / -1; }
+.kb-upload-action .primary-button { flex-shrink: 0; white-space: nowrap; }
+@media (max-width: 650px) { .kb-upload-form { grid-template-columns: minmax(0, 1fr); } .kb-upload-action { flex-wrap: wrap; } }

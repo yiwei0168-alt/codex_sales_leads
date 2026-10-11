@@ -9,7 +9,8 @@ export async function readKnowledgeLibraryItem(userId:string,id:string,scope:Lib
     from public_evidence.document_version d join public_evidence.source s on s.id=d.source_id
     where d.id=$1 and s.sharing_status='public' and d.freshness_status<>'invalid'`,[id])
     :await tenantQuery(userId,`select d.id,d.title,
-      (select string_agg(content,E'\n\n' order by chunk_index) from knowledge_chunk where document_id=d.id) as content
+      coalesce((select content from knowledge_document_revision where document_id=d.id and content_sha256=d.content_sha256 and not reconstructed limit 1),
+      (select string_agg(content,E'\n\n' order by chunk_index) from knowledge_chunk where document_id=d.id)) as content
       from knowledge_document d where d.id=$1 and d.visibility=$2 and ($2='shared' or d.owner_id=$3)`,[id,scope,userId]);
   return rows[0]??null;
 }
@@ -26,8 +27,9 @@ export async function listKnowledgeLibrary(userId:string,scope:LibraryScope,quer
       from knowledge_document d
       left join knowledge_tree_version v on v.id=d.current_tree_version_id
       left join knowledge_asset va on va.id=v.asset_id and va.document_id=d.id and va.registration_status='registered' and va.source_sha256=v.source_sha256
-      left join lateral(select content from knowledge_chunk where document_id=d.id order by chunk_index limit 1) k on true
-      left join lateral(select id,document_type,document_version from knowledge_asset where document_id=d.id and registration_status='registered' order by updated_at desc,id limit 1) a on true
+      left join lateral(select coalesce((select content from knowledge_document_revision where document_id=d.id and content_sha256=d.content_sha256 and not reconstructed limit 1),
+        (select content from knowledge_chunk where document_id=d.id order by chunk_index limit 1)) as content) k on true
+      left join lateral(select id,document_type,document_version from knowledge_asset where document_id=d.id and registration_status='registered' and (v.id is null or (id=v.asset_id and source_sha256=v.source_sha256)) order by updated_at desc,id limit 1) a on true
       where (d.visibility='shared' or (d.visibility='private' and d.owner_id=$1))
         and ($2='' or d.title ilike '%'||$2||'%' or d.source_url ilike '%'||$2||'%')
       union all
@@ -54,8 +56,9 @@ export async function listKnowledgeLibrary(userId:string,scope:LibraryScope,quer
       from knowledge_document d join knowledge_collection c on c.id=d.collection_id
       left join knowledge_tree_version v on v.id=d.current_tree_version_id
       left join knowledge_asset va on va.id=v.asset_id and va.document_id=d.id and va.registration_status='registered' and va.source_sha256=v.source_sha256
-      left join lateral(select content from knowledge_chunk where document_id=d.id order by chunk_index limit 1) k on true
-      left join lateral(select id,document_type,document_version from knowledge_asset where document_id=d.id and registration_status='registered' order by updated_at desc,id limit 1) a on true
+      left join lateral(select coalesce((select content from knowledge_document_revision where document_id=d.id and content_sha256=d.content_sha256 and not reconstructed limit 1),
+        (select content from knowledge_chunk where document_id=d.id order by chunk_index limit 1)) as content) k on true
+      left join lateral(select id,document_type,document_version from knowledge_asset where document_id=d.id and registration_status='registered' and (v.id is null or (id=v.asset_id and source_sha256=v.source_sha256)) order by updated_at desc,id limit 1) a on true
       where d.visibility=$2 and ($2='shared' or d.owner_id=$1) and ($3='' or d.title ilike '%'||$3||'%') order by d.updated_at desc,d.id limit $5 offset $4`,[userId,scope,query,offset,pageSize+1]);
   return {items:rows.slice(0,pageSize),hasMore:rows.length>pageSize,fetched:rows.length};
 }

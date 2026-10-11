@@ -4,9 +4,10 @@ import {extname,resolve} from "node:path";
 import {tenantQuery,tenantTransaction} from "@/lib/rag/db";
 import {assertResolvedInsideKnowledgeRoot,safeKnowledgeStorageKey} from "./document-repository";
 import {evidenceText,indexExtractedDocument} from "./vectorless";
+import {registerBinaryRevision,type BinaryRevisionJob} from './binary-revision';
 
 const sha=(value:Uint8Array|string)=>createHash("sha256").update(value).digest("hex");
-type Job={id:string;status:string;visibility:"private"|"shared";collection_slug:string;title:string;source_url:string|null;entity_key:string|null;storage_key:string;extraction_artifact_key:string|null;source_sha256:string;extractor_version:string|null;mime_type:string;byte_size:string;metrics:{artifactSha256?:string};published_document_id:string|null;published_asset_id:string|null};
+type Job=BinaryRevisionJob;
 type Block={id:string;unitType:"page"|"slide"|"sheet"|"document";unitIndex:number;blockType:string;quality:string;text?:string;section?:string;table?:{headers?:unknown[];rows?:unknown[][];startRow?:number}};
 
 /** Register approved shared or owned private extraction without creating embeddings. */
@@ -14,7 +15,7 @@ export async function registerVectorlessUpload(userId:string,jobId:string,option
   const [actor]=await tenantQuery<{role:string}>(userId,"select role from app_user where id=$1 and status='active'",[userId]);
   if(actor?.role!=="admin"&&actor?.role!=="member")throw new Error("Active account required");
   const [job]=await tenantQuery<Job>(userId,`select id,status,visibility,collection_slug,title,source_url,entity_key,storage_key,extraction_artifact_key,
-    source_sha256,extractor_version,mime_type,byte_size::text,metrics,published_document_id,published_asset_id
+    source_sha256,extractor_version,mime_type,byte_size::text,metrics,published_document_id,published_asset_id,revision_target_document_id,revision_base_version_id
     from knowledge_upload_job where id=$1 and user_id=$2`,[jobId,userId]);
   if(!job||!job.extraction_artifact_key||!job.extractor_version||!['extracted','registered'].includes(job.status))throw new Error("Completed owned extraction required");
   if(options.expectedSourceSha256&&options.expectedSourceSha256!==job.source_sha256)throw new Error("Observed source hash changed");
@@ -32,6 +33,7 @@ export async function registerVectorlessUpload(userId:string,jobId:string,option
   const content=extracted.blocks.filter(block=>block.quality==="success").map(block=>`${block.unitType} ${block.unitIndex} · ${block.id}\n${evidenceText(block)}`).join("\n\n");
   if(!content.trim()||content.length>2_000_000)throw new Error("Extracted content is empty or too large");
   const contentHash=sha(content);
+  if(job.revision_target_document_id)return registerBinaryRevision(userId,job,{blocks:extracted.blocks,content,contentHash,...options},actor.role);
   const registered=await tenantTransaction(userId,async client=>{
     if(options.leaseToken){
       const lease=await client.query("select id from knowledge_upload_job where id=$1 and user_id=$2 and lease_token=$3 and lease_until>now() for update",[jobId,userId,options.leaseToken]);

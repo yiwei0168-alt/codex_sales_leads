@@ -35,6 +35,7 @@ interface MailboxKnowledgeItem {
 interface KnowledgeUploadJob {
   id:string;collection:KnowledgeBaseType;status:"pending"|"running"|"extracted"|"registered"|"failed";treeStatus:string;currentVersionId:string|null;sourceSha256:string;title:string;
   originalFilename:string;documentType:string;byteSize:string;errorCode:string|null;createdAt:string;updatedAt:string;
+  documentId:string|null;visibility:'private'|'shared';sourceUrl:string|null;entityKey:string|null;revisionBaseVersionId:string|null;
 }
 
 const mailboxKindLabels: Record<MailboxKnowledgeItem["kind"], string> = {
@@ -69,6 +70,8 @@ export function KnowledgeBase({ initialTab }: { initialTab?: string } = {}) {
   const [uploading, setUploading] = useState(false);
   const [uploadMessage, setUploadMessage] = useState("");
   const [uploadJobs,setUploadJobs]=useState<KnowledgeUploadJob[]>([]);
+  const [uploadJobsPage,setUploadJobsPage]=useState(0);
+  const [uploadRevision,setUploadRevision]=useState<{documentId:string;versionId:string;title:string;visibility:'private'|'shared'}|null>(null);
   const [mailboxKnowledge, setMailboxKnowledge] = useState<MailboxKnowledgeItem[]>([]);
   const [mailboxKnowledgeError, setMailboxKnowledgeError] = useState("");
 
@@ -91,11 +94,11 @@ export function KnowledgeBase({ initialTab }: { initialTab?: string } = {}) {
 
   useEffect(()=>{
     let disposed=false;let timer:ReturnType<typeof setTimeout>|undefined;
-    async function load(){try{const response=await fetch("/api/knowledge/uploads",{cache:"no-store"});const body=await response.json() as {jobs?:KnowledgeUploadJob[]};
-      if(!disposed&&response.ok){const jobs=body.jobs??[];setUploadJobs(jobs);if(jobs.some(job=>job.status==="pending"||job.status==="running"))timer=setTimeout(load,5000);}}
+    async function load(){try{const response=await fetch(`/api/knowledge/uploads?offset=${uploadJobsPage*6}&limit=7`,{cache:"no-store"});const body=await response.json() as {jobs?:KnowledgeUploadJob[]};
+      if(!disposed&&response.ok){const jobs=body.jobs??[];setUploadJobs(jobs);if(jobs.some(job=>job.status==="pending"||job.status==="running"||(job.visibility==="private"&&job.status==="extracted")||job.treeStatus==="indexing"))timer=setTimeout(load,5000);}}
       catch{/* Upload-job status is supplementary to the existing knowledge page. */}}
     void load();return()=>{disposed=true;if(timer)clearTimeout(timer);};
-  },[uploadMessage]);
+  },[uploadMessage,uploadJobsPage]);
 
   useEffect(() => {
     fetch(`/api/knowledge/mailbox?page=${mailboxKnowledgePage}`, { cache: "no-store" })
@@ -129,18 +132,27 @@ export function KnowledgeBase({ initialTab }: { initialTab?: string } = {}) {
     } finally { setQuerying(false); }
   }
 
+  function chooseRevision(job:KnowledgeUploadJob){
+    if(!job.documentId||!job.currentVersionId)return;
+    setUploadRevision({documentId:job.documentId,versionId:job.currentVersionId,title:job.title,visibility:job.visibility});
+    setUploadType(job.collection);setUploadTitle(job.title);setUploadSource(job.sourceUrl??'');setEntityId(job.entityKey??'');setUploadFile(null);setUploadMessage('');
+    const field=document.getElementById('kb-file') as HTMLInputElement|null;if(field){field.value='';field.focus();}
+  }
+  function cancelRevision(){setUploadRevision(null);setUploadFile(null);setUploadTitle('');setUploadSource('');setEntityId('');const field=document.getElementById('kb-file') as HTMLInputElement|null;if(field)field.value='';}
   async function upload() {
     if (!uploadFile || !uploadTitle.trim()) return;
     setUploading(true); setUploadMessage("");
     try {
       const binary=/\.(pdf|pptx|xlsx)$/i.test(uploadFile.name);
+      if(uploadRevision&&!binary)throw new Error('更新二进制资料请选择 PDF、PPTX 或 XLSX。');
       if(binary){
         const form=new FormData();form.set("file",uploadFile);form.set("collection",uploadType);form.set("title",uploadTitle.trim());
-        form.set("sourceUrl",uploadSource.trim());form.set("visibility","private");form.set("entityKey",entityId.trim());
+        form.set("sourceUrl",uploadSource.trim());form.set("visibility",uploadRevision?.visibility??"private");form.set("entityKey",entityId.trim());
+        if(uploadRevision){form.set('revisionDocumentId',uploadRevision.documentId);form.set('revisionBaseVersionId',uploadRevision.versionId);}
         const response=await fetch("/api/knowledge/uploads",{method:"POST",headers:adminToken?{authorization:`Bearer ${adminToken}`}:{},body:form});
         const body=await response.json() as {id?:string;status?:string;reused?:boolean;error?:string};if(!response.ok)throw new Error(body.error??"二进制资料上传失败");
-        setUploadMessage(body.reused?`相同资料已提交，沿用原作业 ${body.id?.slice(0,8)??""}，未重复处理或更改原登记信息。请查看下方处理状态。`:`上传成功：原件已保存，提取作业 ${body.id?.slice(0,8)??""} 等待本地 worker。`);
-        setUploadFile(null);setUploadTitle("");setUploadSource("");setEntityId("");
+        setUploadMessage(body.reused?`相同资料已提交，沿用原作业 ${body.id?.slice(0,8)??""}，未重复处理或更改原登记信息。请查看下方处理状态。`:uploadRevision?'新版已提交，校验通过后才替换当前版本；处理期间旧版仍可检索。':`上传成功：原件已保存，提取作业 ${body.id?.slice(0,8)??""} 等待本地 worker。`);
+        setUploadFile(null);setUploadTitle("");setUploadSource("");setEntityId("");setUploadRevision(null);setUploadJobsPage(0);
         const input=document.getElementById("kb-file") as HTMLInputElement|null;if(input)input.value="";return;
       }
       const content = await uploadFile.text();
@@ -235,17 +247,24 @@ export function KnowledgeBase({ initialTab }: { initialTab?: string } = {}) {
     {tab==="materials"&&materialView==="upload"&&<section className="panel kb-upload-panel knowledge-material-scroll">
       <div className="panel-header"><div><span className="section-kicker">KNOWLEDGE INGESTION</span><h2>上传你的知识资料</h2></div><span className="subtle">内容不会提交到 GitHub</span></div>
       <div className="kb-upload-body">
-        <div className="kb-upload-intro"><strong>选择知识库</strong><p>{uploadType === "industry" ? "行业知识、渠道结构、主要品牌、市场研究等。" : uploadType === "company" ? "Cudy Technology 公司简介、产品线、当前业务情况、战略与经营资料。" : "Cudy Technology 产品信息、技术规格、兼容性、认证和使用限制。"}</p><div className="kb-upload-types">{(["industry", "company", "product"] as KnowledgeBaseType[]).map((type) => <button key={type} className={uploadType === type ? "active" : ""} onClick={() => setUploadType(type)}>{labels[type].title}</button>)}</div></div>
+        <div className="kb-upload-intro"><strong>选择知识库</strong><p>{uploadType === "industry" ? "行业知识、渠道结构、主要品牌、市场研究等。" : uploadType === "company" ? "Cudy Technology 公司简介、产品线、当前业务情况、战略与经营资料。" : "Cudy Technology 产品信息、技术规格、兼容性、认证和使用限制。"}</p><div className="kb-upload-types">{(["industry", "company", "product"] as KnowledgeBaseType[]).map((type) => <button key={type} className={uploadType === type ? "active" : ""} disabled={Boolean(uploadRevision)||uploading} onClick={() => setUploadType(type)}>{labels[type].title}</button>)}</div></div>
         <div className="kb-upload-form">
+          {uploadRevision&&<div className="kb-upload-revision" role="status"><strong>更新：{uploadRevision.title}</strong><p>旧版在新版校验完成前保持可检索。{uploadRevision.visibility==='shared'?'共享新版仍需管理员批准。':''}</p><button type="button" disabled={uploading} onClick={cancelRevision}>取消更新</button></div>}
           <label>文档标题<input value={uploadTitle} onChange={(event) => setUploadTitle(event.target.value)} placeholder={uploadType === "company" ? "例如：Cudy Technology 公司简介 2026" : uploadType === "product" ? "例如：WR3000 技术规格 v2" : "例如：Networking 渠道结构研究"}/></label>
           <label>来源 URL（内部资料可留空）<input value={uploadSource} onChange={(event) => setUploadSource(event.target.value)} placeholder="https://..."/></label>
-          {uploadType === "product" && <label>产品型号 / SKU<input value={entityId} onChange={(event) => setEntityId(event.target.value)} placeholder="例如：WR3000"/></label>}
-          {uploadType === "industry" && <label>市场 / 范围（可选）<input value={entityId} onChange={(event) => setEntityId(event.target.value)} placeholder="例如：Global、Germany、EMEA"/></label>}
+          {uploadType === "product" && <label>产品型号 / SKU<input disabled={Boolean(uploadRevision)} value={entityId} onChange={(event) => setEntityId(event.target.value)} placeholder="例如：WR3000"/></label>}
+          {uploadType === "industry" && <label>市场 / 范围（可选）<input disabled={Boolean(uploadRevision)} value={entityId} onChange={(event) => setEntityId(event.target.value)} placeholder="例如：Global、Germany、EMEA"/></label>}
           {uploadType === "company" && <label>品牌方公司<input value="Cudy Technology" readOnly/></label>}
           <label>知识文件<input id="kb-file" type="file" accept=".md,.txt,.csv,.json,.pdf,.pptx,.xlsx,text/plain,text/markdown,text/csv,application/json,application/pdf,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onChange={(event) => setUploadFile(event.target.files?.[0] ?? null)}/><small>文本最多 2 MB并直接索引；PDF、PPTX、XLSX 最多25 MB，先保存原件并进入本地异步提取，不自动公开或向量化。</small></label>
           <label>管理 Token<input type="password" value={adminToken} onChange={(event) => setAdminToken(event.target.value)} placeholder="KNOWLEDGE_ADMIN_TOKEN（本地开发可留空）"/></label>
-          <div className="kb-upload-action"><span className={uploadMessage.startsWith("上传成功") ? "success" : ""}>{uploadMessage}</span><button className="primary-button" disabled={uploading || !uploadFile || !uploadTitle.trim() || (uploadType === "product" && !entityId.trim()) || !stats.configured} onClick={upload}>{uploading ? "正在提交…" : /\.(pdf|pptx|xlsx)$/i.test(uploadFile?.name??"") ? "上传并创建提取作业" : "上传并建立索引"}</button></div>
-          {uploadJobs.length>0&&<div className="kb-upload-jobs"><strong>最近提取作业</strong>{uploadJobs.slice(0,6).map(job=><p key={job.id}><span className={`tag ${job.treeStatus==="searchable"?"green":job.treeStatus==="failed"?"red":"neutral"}`}>{job.treeStatus==="searchable"?"可检索":job.treeStatus==="extracted"?"已抽取，待登记":job.treeStatus==="registered"||job.treeStatus==="indexing"?"建立索引中":job.treeStatus==="failed"?"处理失败":job.treeStatus==="running"?"提取中":"待提取"}</span> {job.title} · {job.documentType} · {Math.ceil(Number(job.byteSize)/1024)} KB{job.currentVersionId?` · 版本 ${job.currentVersionId.slice(0,8)}`:""}<span title={`来源 SHA-256：${job.sourceSha256}`}> · 来源 {job.sourceSha256.slice(0,8)}</span>{job.errorCode?` · ${job.errorCode}`:""}</p>)}</div>}
+          <div className="kb-upload-action"><span className={uploadMessage.startsWith("上传成功") ? "success" : ""}>{uploadMessage}</span><button className="primary-button" disabled={uploading || !uploadFile || !uploadTitle.trim() || (uploadType === "product" && !entityId.trim()) || !stats.configured} onClick={upload}>{uploading ? "正在提交…" : uploadRevision ? "提交新版" : /\.(pdf|pptx|xlsx)$/i.test(uploadFile?.name??"") ? "上传并创建提取作业" : "上传并建立索引"}</button></div>
+          {(uploadJobs.length>0||uploadJobsPage>0)&&<div className="kb-upload-jobs"><strong>提取作业</strong>{uploadJobs.slice(0,6).map(job=><p key={job.id}>
+            <span className={`tag ${job.treeStatus==='searchable'?'green':job.treeStatus==='failed'?'red':'neutral'}`}>{({searchable:'可检索',historical:'历史版本',unavailable:'已停用',extracted:'已抽取，待登记',registered:'建立索引中',indexing:'建立索引中',failed:'处理失败',running:'提取中'} as Record<string,string>)[job.treeStatus]??'待提取'}</span> {job.title} · {job.documentType} · {Math.ceil(Number(job.byteSize)/1024)} KB
+            {job.currentVersionId?` · 当前版本 ${job.currentVersionId.slice(0,8)}`:''}<span title={`来源 SHA-256：${job.sourceSha256}`}> · 来源 {job.sourceSha256.slice(0,8)}</span>
+            {job.errorCode?` · ${job.errorCode==='revision-conflict'?'当前版本已变化，请重新选择资料更新':job.errorCode==='revision-source-unavailable'?'原资料已停用或不再可访问':job.errorCode}`:''}
+            {job.revisionBaseVersionId&&job.status!=='registered'?' · 新版处理期间保留旧版':''}
+            {job.treeStatus==='searchable'&&job.documentId&&job.currentVersionId&&(job.visibility==='private'||canReview)&&<button type="button" disabled={uploading} onClick={()=>chooseRevision(job)}>上传新版</button>}
+          </p>)}<div className="kb-upload-pagination"><button disabled={uploading||uploadJobsPage===0} onClick={()=>setUploadJobsPage(value=>value-1)}>上一页作业</button><span>第 {uploadJobsPage+1} 页</span><button disabled={uploading||uploadJobs.length<=6} onClick={()=>setUploadJobsPage(value=>value+1)}>下一页作业</button></div></div>}
         </div>
       </div>
     </section>}

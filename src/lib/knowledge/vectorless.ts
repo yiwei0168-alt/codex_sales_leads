@@ -5,17 +5,10 @@ import {tenantQuery,tenantTransaction} from "@/lib/rag/db";
 import {assertResolvedInsideKnowledgeRoot,safeKnowledgeStorageKey} from "./document-repository";
 
 const digest=(value:Uint8Array|string)=>createHash("sha256").update(value).digest("hex");
-type Block={id:string;unitType:"page"|"slide"|"sheet"|"document";unitIndex:number;blockType:string;quality:string;text?:string;section?:string;bbox?:number[];table?:{headers?:unknown[];rows?:unknown[][];startRow?:number}};
 type Artifact={documents?:Array<{sourceSha256:string;extractorVersion:string;blocks:Block[]}>};
-const unitKey=(block:Block)=>`${block.unitType}:${block.unitIndex}`;
 export type KnowledgeCollections=Array<'industry'|'company'|'product'>;
-export function evidenceText(block:Block):string{
-  if(block.blockType==="table"&&block.table){
-    const rows=[block.table.headers??[],...(block.table.rows??[])];
-    return rows.map(row=>row.map(cell=>String(cell??"").replaceAll("\t"," ").replaceAll("\n"," ")).join("\t")).join("\n").trim();
-  }
-  return block.text?.trim()??"";
-}
+import {evidenceText,writeExtractedTree,type Block} from "./extracted-tree";
+export {evidenceText} from "./extracted-tree";
 
 /** Build one approved document in a single transaction. Any failure leaves its old pointer intact. */
 export async function indexExtractedDocument(userId:string,jobId:string,leaseToken?:string){
@@ -38,7 +31,6 @@ export async function indexExtractedDocument(userId:string,jobId:string,leaseTok
   if(doc.blocks.some(block=>block.quality!=="success"&&block.quality!=="blank"))throw new Error("Unresolved extraction units");
   const blocks=doc.blocks.filter(block=>block.quality==="success"&&evidenceText(block));
   if(!blocks.length||blocks.some(block=>!block.id||!Number.isInteger(block.unitIndex)||block.unitIndex<1))throw new Error("No complete evidence blocks");
-  const units=[...new Map(blocks.map(block=>[unitKey(block),block])).values()];
   return tenantTransaction(userId,async client=>{
     if(leaseToken){
       const lease=await client.query("select id from knowledge_upload_job where id=$1 and user_id=$2 and lease_token=$3 and lease_until>now() for update",[jobId,userId,leaseToken]);
@@ -50,35 +42,9 @@ export async function indexExtractedDocument(userId:string,jobId:string,leaseTok
         and d.owner_id=$4 and d.metadata->>'sourceSha256'=$3 for update of d`,
       [job.published_asset_id,job.published_document_id,job.source_sha256,userId]);
     if(!asset.rows[0])throw new Error("Approved source no longer current");
-    const existing=await client.query<{id:string;status:string;artifact_sha256:string}>(`select id,status,artifact_sha256 from knowledge_tree_version where document_id=$1 and source_sha256=$2 and extractor_version=$3 for update`,
-      [job.published_document_id,job.source_sha256,doc.extractorVersion]);
-    if(existing.rows[0]&&existing.rows[0].artifact_sha256!==artifactHash)throw new Error("Conflicting artifact for document source and extractor version");
-    if(existing.rows[0]?.status==="ready"){
-      await client.query("update knowledge_document set current_tree_version_id=$2 where id=$1",[job.published_document_id,existing.rows[0].id]);
-      return {versionId:existing.rows[0].id,reused:true,nodes:blocks.length+units.length};
-    }
-    const version=existing.rows[0]??(await client.query<{id:string}>(`insert into knowledge_tree_version(document_id,asset_id,source_sha256,extractor_version,artifact_sha256)
-      values($1,$2,$3,$4,$5) returning id`,[job.published_document_id,job.published_asset_id,job.source_sha256,doc.extractorVersion,artifactHash])).rows[0];
-    await client.query("delete from knowledge_tree_node where version_id=$1",[version.id]);
-    const parents=new Map<string,string>();
-    for(const [ordinal,block] of units.entries()){
-      const title=block.section?.trim()||`${block.unitType} ${block.unitIndex}`;
-      const inserted=await client.query<{id:string}>(`insert into knowledge_tree_node(version_id,ordinal,node_kind,title,heading_path,unit_type,unit_index,source_location)
-        values($1,$2,'unit',$3,$4,$5,$6,$7) returning id`,[version.id,ordinal,title,[title],block.unitType,block.unitIndex,JSON.stringify({unitType:block.unitType,unitIndex:block.unitIndex})]);
-      parents.set(unitKey(block),inserted.rows[0].id);
-    }
-    for(const [ordinal,block] of blocks.entries()){
-      const parent=parents.get(unitKey(block));if(!parent)throw new Error("Missing unit parent");
-      const content=evidenceText(block);
-      await client.query(`insert into knowledge_tree_node(version_id,parent_id,ordinal,node_kind,title,heading_path,unit_type,unit_index,source_location,content,content_sha256)
-        values($1,$2,$3,'evidence',$4,$5,$6,$7,$8,$9,$10)`,[version.id,parent,ordinal,block.id,[block.section??`${block.unitType} ${block.unitIndex}`],block.unitType,block.unitIndex,
-          JSON.stringify({unitType:block.unitType,unitIndex:block.unitIndex,blockId:block.id,bbox:block.bbox??null,startRow:block.table?.startRow??null}),content,digest(content)]);
-    }
-    const count=await client.query<{count:string}>("select count(*)::text as count from knowledge_tree_node where version_id=$1",[version.id]);
-    if(Number(count.rows[0].count)!==blocks.length+units.length)throw new Error("Tree completeness check failed");
-    await client.query("update knowledge_tree_version set status='ready',ready_at=now(),error_code=null where id=$1",[version.id]);
-    await client.query("update knowledge_document set current_tree_version_id=$2 where id=$1",[job.published_document_id,version.id]);
-    return {versionId:version.id,reused:false,nodes:blocks.length+units.length};
+    const tree=await writeExtractedTree(client,{documentId:job.published_document_id,assetId:job.published_asset_id,sourceSha256:job.source_sha256,extractorVersion:doc.extractorVersion,artifactHash,blocks:doc.blocks});
+    await client.query("update knowledge_document set current_tree_version_id=$2 where id=$1",[job.published_document_id,tree.versionId]);
+    return tree;
   },actor.role);
 }
 
