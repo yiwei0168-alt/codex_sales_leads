@@ -34,6 +34,6 @@ export async function POST(request:Request){
     const result=await createKnowledgeUploadJob(session.userId,{collection:parsed.data.collection,title:parsed.data.title,
       originalFilename:file.name,mimeType:file.type,bytes:new Uint8Array(await file.arrayBuffer()),sourceUrl:parsed.data.sourceUrl||undefined,
       visibility:parsed.data.visibility,entityKey:parsed.data.entityKey||undefined});
-    return Response.json(result,{status:202,headers:{"Cache-Control":"private, no-store"}});
+    return Response.json(result,{status:result.reused?200:202,headers:{"Cache-Control":"private, no-store"}});
   }catch(error){return Response.json({error:error instanceof Error?error.message:"二进制资料上传失败"},{status:400});}
 }

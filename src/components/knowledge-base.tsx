@@ -138,8 +138,8 @@ export function KnowledgeBase({ initialTab }: { initialTab?: string } = {}) {
         const form=new FormData();form.set("file",uploadFile);form.set("collection",uploadType);form.set("title",uploadTitle.trim());
         form.set("sourceUrl",uploadSource.trim());form.set("visibility","private");form.set("entityKey",entityId.trim());
         const response=await fetch("/api/knowledge/uploads",{method:"POST",headers:adminToken?{authorization:`Bearer ${adminToken}`}:{},body:form});
-        const body=await response.json() as {id?:string;status?:string;error?:string};if(!response.ok)throw new Error(body.error??"二进制资料上传失败");
-        setUploadMessage(`上传成功：原件已保存，提取作业 ${body.id?.slice(0,8)??""} 等待本地 worker。`);
+        const body=await response.json() as {id?:string;status?:string;reused?:boolean;error?:string};if(!response.ok)throw new Error(body.error??"二进制资料上传失败");
+        setUploadMessage(body.reused?`相同资料已提交，沿用原作业 ${body.id?.slice(0,8)??""}，未重复处理或更改原登记信息。请查看下方处理状态。`:`上传成功：原件已保存，提取作业 ${body.id?.slice(0,8)??""} 等待本地 worker。`);
         setUploadFile(null);setUploadTitle("");setUploadSource("");setEntityId("");
         const input=document.getElementById("kb-file") as HTMLInputElement|null;if(input)input.value="";return;
       }

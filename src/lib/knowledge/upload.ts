@@ -1,7 +1,7 @@
 import { createHash, randomUUID } from "node:crypto";
-import { mkdir, unlink, writeFile } from "node:fs/promises";
+import { mkdir, readFile, unlink, writeFile } from "node:fs/promises";
 import { basename, extname, resolve } from "node:path";
-import { tenantQuery } from "@/lib/rag/db";
+import { tenantQuery, tenantTransaction } from "@/lib/rag/db";
 import type { KnowledgeBaseType } from "@/lib/rag/types";
 import { assertResolvedInsideKnowledgeRoot, safeKnowledgeStorageKey } from "./document-repository";
 
@@ -37,14 +37,41 @@ export async function createKnowledgeUploadJob(userId:string,input:KnowledgeUplo
   const format=validateKnowledgeBinary(input);const id=randomUUID();
   const storageKey=safeKnowledgeStorageKey(`knowledge/uploads/${userId}/${id}${format.extension}`);
   const absolute=resolve(storageKey);assertResolvedInsideKnowledgeRoot(absolute);
-  await mkdir(resolve("knowledge","uploads",userId),{recursive:true});
-  await writeFile(absolute,input.bytes,{flag:"wx"});
   const sourceSha256=createHash("sha256").update(input.bytes).digest("hex");
+  // Use the installed local extractor's declaration; never merge work across upgrades.
+  const extractorSource=await readFile(resolve('scripts/knowledge_extraction_v2.py'),'utf8');
+  const requestedExtractorVersion=extractorSource.match(/^EXTRACTOR_VERSION = "([A-Za-z0-9._-]+)"$/m)?.[1];
+  if(!requestedExtractorVersion)throw new Error("Local extractor version unavailable");
+  const sourceUrl=input.sourceUrl?.trim()||null,entityKey=input.entityKey?.trim()||null;
+  const identity=JSON.stringify([userId,input.collection,input.visibility,entityKey,sourceUrl,sourceSha256,requestedExtractorVersion]);
+  let written=false;
   try{
-    await tenantQuery(userId,`insert into knowledge_upload_job(id,user_id,collection_slug,title,original_filename,storage_key,mime_type,byte_size,source_sha256,source_url,visibility,entity_key,metrics)
-      values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)`,[id,userId,input.collection,input.title,format.name,storageKey,format.mimeType,input.bytes.byteLength,sourceSha256,input.sourceUrl??null,input.visibility,input.entityKey??null,JSON.stringify({inputItems:1,inputBytes:input.bytes.byteLength,validOutputItems:1,downstreamUsedItems:1,inputTokens:0,outputTokens:0,apiCredits:0,costUsd:0,retries:0,discardedReasonCounts:{},usageBoundary:"raw-private-upload-pending-local-extraction",optimizationOpportunity:"Extract locally before any indexing or external disclosure"})]);
-  }catch(error){await unlink(absolute).catch(()=>undefined);throw error;}
-  return {id,status:"pending" as const,documentType:format.documentType,byteSize:input.bytes.byteLength,sourceSha256};
+    return await tenantTransaction(userId,async client=>{
+    await client.query('select pg_advisory_xact_lock(hashtextextended($1,0))',[identity]);
+    const existing=await client.query<{id:string;status:string;storage_key:string}>(`select j.id,j.status,j.storage_key from knowledge_upload_job j
+      where j.user_id=$1 and j.collection_slug=$2 and j.visibility=$3 and j.entity_key is not distinct from $4::text
+        and j.source_url is not distinct from $5::text and j.source_sha256=$6
+        and coalesce(j.extractor_version,j.metrics->>'requestedExtractorVersion')=$7
+        and j.status in('pending','running','extracted','registered') and j.error_code is null
+        and (j.published_document_id is null or exists(select 1 from knowledge_document d join knowledge_asset a
+          on a.id=j.published_asset_id and a.document_id=d.id where d.id=j.published_document_id
+          and d.owner_id=$1 and d.status='active' and d.metadata->>'sourceSha256'=$6
+          and a.registration_status='registered' and a.source_sha256=$6))
+      order by j.created_at limit 1`,[userId,input.collection,input.visibility,entityKey,sourceUrl,sourceSha256,requestedExtractorVersion]);
+    if(existing.rows[0]){
+      const prior=existing.rows[0],source=resolve(safeKnowledgeStorageKey(prior.storage_key));assertResolvedInsideKnowledgeRoot(source);
+      const bytes=await readFile(source);
+      if(bytes.length!==input.bytes.byteLength||createHash('sha256').update(bytes).digest('hex')!==sourceSha256)
+        throw new Error('Previously uploaded original changed; repair the source before retrying');
+      return {id:prior.id,status:prior.status,documentType:format.documentType,byteSize:input.bytes.byteLength,sourceSha256,reused:true};
+    }
+    await mkdir(resolve("knowledge","uploads",userId),{recursive:true});
+    await writeFile(absolute,input.bytes,{flag:"wx"});written=true;
+    await client.query(`insert into knowledge_upload_job(id,user_id,collection_slug,title,original_filename,storage_key,mime_type,byte_size,source_sha256,source_url,visibility,entity_key,metrics)
+      values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)`,[id,userId,input.collection,input.title,format.name,storageKey,format.mimeType,input.bytes.byteLength,sourceSha256,sourceUrl,input.visibility,entityKey,JSON.stringify({requestedExtractorVersion,inputItems:1,inputBytes:input.bytes.byteLength,validOutputItems:1,downstreamUsedItems:1,inputTokens:0,outputTokens:0,apiCredits:0,costUsd:0,retries:0,discardedReasonCounts:{},usageBoundary:"raw-private-upload-pending-local-extraction",optimizationOpportunity:"Extract locally before any indexing or external disclosure"})]);
+    return {id,status:"pending" as const,documentType:format.documentType,byteSize:input.bytes.byteLength,sourceSha256,reused:false};
+    });
+  }catch(error){if(written)await unlink(absolute).catch(()=>undefined);throw error;}
 }
 
 export async function listKnowledgeUploadJobs(userId:string){

@@ -26,10 +26,10 @@ let completed=0;let failed=0;
 try{
   const accounts=await query<{id:string}>("select id from app_user where status='active' order by id");
   for(let index=0;index<limit;index++){
-    let job:{id:string;storageKey:string;visibility:string;status:string;userId:string;leaseToken:string}|null=null;
+    let job:{id:string;storageKey:string;visibility:string;status:string;requestedExtractorVersion:string|null;userId:string;leaseToken:string}|null=null;
     for(const account of accounts){
       job=await tenantTransaction(account.id,async client=>{
-        const selected=await client.query<{id:string;storageKey:string;visibility:string;status:string}>(`select j.id,j.storage_key as "storageKey",j.visibility,j.status from knowledge_upload_job j
+        const selected=await client.query<{id:string;storageKey:string;visibility:string;status:string;requestedExtractorVersion:string|null}>(`select j.id,j.storage_key as "storageKey",j.visibility,j.status,j.metrics->>'requestedExtractorVersion' as "requestedExtractorVersion" from knowledge_upload_job j
           where j.user_id=$1 and ($2::uuid is null or j.id=$2) and (j.status='pending' or (j.status='running' and j.lease_until<now())
             or (j.visibility='private' and j.error_code is null and (j.lease_until is null or j.lease_until<now())
               and (j.status='extracted' or (j.status='registered' and exists(
@@ -53,6 +53,7 @@ try{
     try{
       if(job.status==='pending'||job.status==='running'){
       const output=await runPython(source,artifact);
+      if(job.requestedExtractorVersion&&output.extractorVersion!==job.requestedExtractorVersion)throw new Error('Local extractor version changed after upload');
       const saved=await tenantQuery<{id:string}>(job.userId,`update knowledge_upload_job set status='extracted',extraction_artifact_key=$2,extractor_version=$3,
         updated_at=now(),metrics=metrics||$4::jsonb where id=$1 and user_id=$5 and status='running'
         and lease_token=$6 and lease_until>now() returning id`,[job.id,artifactKey,String(output.extractorVersion??"unknown"),JSON.stringify({validOutputItems:Number(output.blocks??0),downstreamUsedItems:0,latencyMs:Date.now()-started,retries:0,qualitySummary:output.qualitySummary??{},artifactSha256:output.artifactSha256??null,usageBoundary:"local-extraction-awaiting-review-and-indexing",optimizationOpportunity:"Review extracted units before indexing"}),job.userId,job.leaseToken]);

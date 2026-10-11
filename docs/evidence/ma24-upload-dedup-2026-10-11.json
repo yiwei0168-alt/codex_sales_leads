@@ -1,0 +1,69 @@
+{
+  "stage": "G05 duplicate binary uploads",
+  "date": "2026-10-11",
+  "cloneOnly": true,
+  "modelCalls": 0,
+  "externalCalls": 0,
+  "results": [
+    {
+      "format": "pdf",
+      "concurrentUploads": 8,
+      "createdJobs": 1,
+      "originalFiles": 1,
+      "treeVersions": 1,
+      "metadataPreserved": true,
+      "scopesSeparated": 5,
+      "extractorVersionsSeparated": true,
+      "withdrawnNotReactivated": true
+    },
+    {
+      "format": "pptx",
+      "concurrentUploads": 8,
+      "createdJobs": 1,
+      "originalFiles": 1,
+      "treeVersions": 1,
+      "metadataPreserved": true,
+      "scopesSeparated": 5,
+      "extractorVersionsSeparated": true,
+      "withdrawnNotReactivated": true
+    },
+    {
+      "format": "xlsx",
+      "concurrentUploads": 8,
+      "createdJobs": 1,
+      "originalFiles": 1,
+      "treeVersions": 1,
+      "metadataPreserved": true,
+      "scopesSeparated": 5,
+      "extractorVersionsSeparated": true,
+      "withdrawnNotReactivated": true
+    }
+  ],
+  "changedOriginalRejected": true,
+  "queuedExtractorDriftRejected": true,
+  "identity": [
+    "authenticated owner",
+    "collection",
+    "visibility",
+    "entity key",
+    "source URL",
+    "source SHA-256",
+    "installed extractor version"
+  ],
+  "metadata": "Existing title, source and original filename retained; no metadata overwrite through duplicate submission",
+  "verification": {
+    "unitTests": 17,
+    "testFiles": 3,
+    "typecheck": "passed",
+    "targetedLint": "passed",
+    "realLocalFormats": 3,
+    "concurrentUploads": 24,
+    "cleanup": "passed"
+  },
+  "limitations": [
+    "No automatic merging of historical work with unknown extractor version",
+    "Binary document revision workflow remains unfinished",
+    "New answer/citation quality and production rollout remain unverified"
+  ],
+  "script": "scripts/verify-upload-dedup-clone.ts"
+}

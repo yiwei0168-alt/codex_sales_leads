@@ -15,6 +15,14 @@ describe("binary knowledge upload route",()=>{
   it("lists only through the authenticated repository scope",async()=>{
     const response=await GET();expect(response.status).toBe(200);expect(mocks.list).toHaveBeenCalledWith("00000000-0000-4000-8000-000000000001");
   });
+  it('returns the existing job without claiming another queued upload',async()=>{
+    mocks.create.mockResolvedValue({id:'existing',status:'registered',reused:true});
+    const form=new FormData();form.set('collection','industry');form.set('title','Renamed upload');
+    form.set('file',new File(['%PDF-1.7'],'repeat.pdf',{type:'application/pdf'}));
+    const response=await POST(new Request('http://local/api/knowledge/uploads',{method:'POST',body:form}));
+    expect(response.status).toBe(200);expect(await response.json()).toEqual({id:'existing',status:'registered',reused:true});
+    expect(response.headers.get('cache-control')).toBe('private, no-store');
+  });
   it("rejects an oversized declared multipart request before reading the body",async()=>{
     const response=await POST(new Request("http://local/api/knowledge/uploads",{method:"POST",headers:{authorization:"Bearer test-token","content-length":String(26*1024*1024)}}));
     expect(response.status).toBe(413);expect(mocks.create).not.toHaveBeenCalled();
