@@ -18,6 +18,7 @@ import {modelFunctions,transportMessages} from '../src/lib/assistant/main/model'
 import {modelRequestManifest} from '../src/lib/assistant/main/model-request-manifest';
 import {loadRecordedModeRequest,revalidateRecordedModeRequest} from '../src/lib/assistant/main/model-request-source';
 import {verifyAcceptanceBaselineFixture} from './fixtures/skill-acceptance-baseline-clone';
+import {verifyCandidateSourceFixture} from './fixtures/skill-candidate-source-clone';
 nextEnv.loadEnvConfig(process.cwd());disableLocalAnalysisTracing();
 const base=process.env.DATABASE_MIGRATION_URL||process.env.DATABASE_URL;
 assert(base&&['localhost','127.0.0.1','::1'].includes(new URL(base).hostname));
@@ -97,6 +98,8 @@ try{
  const graphAudit=await auditRecordedGraphExecution(context,{runId});assert.equal(graphAudit.recordedDecisions,3);assert.equal(graphAudit.recordedTools,2);assert.equal(graphAudit.modelCalls,0);
  const acceptanceBaseline=await verifyAcceptanceBaselineFixture(pool,owner,other,runId);
  console.log(JSON.stringify({acceptanceBaseline,cloneOnly:true,modelCalls:0}));
+ const candidateSource=await verifyCandidateSourceFixture(pool,owner,other,runId);
+ console.log(JSON.stringify({candidateSource,cloneOnly:true,modelCalls:0}));
  const clarification='Synthetic clarification after recorded reads';
  await pool.query('update agent_run set instructions=$2 where id=$1',[runId,JSON.stringify([{id:randomUUID(),content:clarification}])]);
  const lastAttempts=(await pool.query("select id,input,output,call_key from agent_tool_call where run_id=$1 and call_key like 'mode-model:2:0:%'",[runId])).rows;

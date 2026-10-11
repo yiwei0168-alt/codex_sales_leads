@@ -1,0 +1,27 @@
+{
+  "date": "2026-10-11",
+  "command": "node --require ./scripts/patch-node-user.cjs --import tsx scripts/verify-recorded-model-source-clone.ts",
+  "exitCode": 0,
+  "scope": "loopback guarded clone, new synthetic accounts and task; existing shared decision memory read locally",
+  "checks": {
+    "baselineAndCandidateGraphCompleted": true,
+    "originalMessagesAndProfilePreserved": true,
+    "crossAccountTaskAndSkillRejected": true,
+    "missingVersionAndEnabledRejected": true,
+    "midCallbackSourceChangeRejected": true,
+    "originalJournalUnchanged": true,
+    "exactNormalizedRecordedReadReturned": true,
+    "noProductionSkillPins": true,
+    "existingRecordedChainAndBaselineRegression": true,
+    "fixtureCleanup": true,
+    "typecheck": "passed",
+    "eslint": "passed"
+  },
+  "correctedFixtureFailures": ["missing assistant role", "expected raw receipt instead of ToolResult schema defaults"],
+  "syntheticCallbacks": 11,
+  "actualModelCalls": 0,
+  "productionDeployed": false,
+  "productionAgentEquivalent": false,
+  "collectorProvenanceVerified": false,
+  "automaticActivation": false
+}
