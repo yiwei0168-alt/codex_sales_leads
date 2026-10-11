@@ -1,13 +1,29 @@
 from io import BytesIO
 from types import SimpleNamespace
 import unittest
+import xml.etree.ElementTree as ET
 from PIL import Image
 from pptx import Presentation
 from pptx.util import Inches
-from prepare_pptx_visual_review import resolve_shape, visible_image
+from prepare_pptx_visual_review import diagram_candidate, resolve_shape, visible_image
 
 
 class VisualReviewTest(unittest.TestCase):
+    def test_native_diagram_binding_and_external_rejection(self):
+        element = ET.fromstring('''<shape xmlns:d="http://schemas.openxmlformats.org/drawingml/2006/diagram"
+          xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><d:relIds r:dm="data1"/></shape>''')
+        blob = b'''<d:dataModel xmlns:d="http://schemas.openxmlformats.org/drawingml/2006/diagram"
+          xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><d:ptLst>
+          <d:pt modelId="node-a"><d:t><a:p><a:r><a:t>Label</a:t></a:r></a:p></d:t></d:pt>
+          </d:ptLst><d:cxnLst><d:cxn srcId="node-a" destId="node-b"/></d:cxnLst></d:dataModel>'''
+        relation = SimpleNamespace(is_external=False, target_part=SimpleNamespace(blob=blob))
+        shape = SimpleNamespace(element=element, part=SimpleNamespace(rels={"data1": relation}))
+        result = diagram_candidate(shape)
+        self.assertEqual(result["points"][0]["text"], "Label")
+        self.assertEqual(result["connections"][0]["srcId"], "node-a")
+        relation.is_external = True
+        with self.assertRaises(ValueError): diagram_candidate(shape)
+
     def test_source_crop_excludes_hidden_pixels(self):
         image = Image.new("RGB", (100, 50), "white")
         stream = BytesIO(); image.save(stream, format="PNG")

@@ -5,9 +5,30 @@ from hashlib import sha256
 import argparse
 import json
 import socket
+import xml.etree.ElementTree as ET
 
 from PIL import Image
 from pptx import Presentation
+
+
+def diagram_candidate(shape):
+    ns = {"d": "http://schemas.openxmlformats.org/drawingml/2006/diagram",
+          "a": "http://schemas.openxmlformats.org/drawingml/2006/main"}
+    rel_ids = shape.element.find(".//d:relIds", ns)
+    if rel_ids is None:
+        return None
+    rel_id = rel_ids.get("{http://schemas.openxmlformats.org/officeDocument/2006/relationships}dm")
+    relation = shape.part.rels[rel_id]
+    if relation.is_external:
+        raise ValueError("External diagram data is not allowed")
+    blob = relation.target_part.blob
+    data = ET.fromstring(blob)
+    points = [{"modelId": pt.get("modelId"), "type": pt.get("type"),
+               "text": "\n".join("".join(p.itertext()) for p in pt.findall(".//a:p", ns)).strip()}
+              for pt in data.findall(".//d:pt", ns)]
+    connections = [{key: connection.get(key) for key in ("modelId", "type", "srcId", "destId", "srcOrd", "destOrd")}
+                   for connection in data.findall(".//d:cxn", ns)]
+    return {"diagramSha256": sha256(blob).hexdigest(), "points": points, "connections": connections}
 
 
 def resolve_shape(deck, block):
@@ -50,6 +71,7 @@ def main():
     parser.add_argument("--artifact", required=True)
     parser.add_argument("--output", required=True)
     parser.add_argument("--max-unique-images", type=int, default=50)
+    parser.add_argument("--block-id", action="append", default=[], help="Process only selected unresolved object IDs")
     args = parser.parse_args()
     root = Path.cwd().resolve()
     source, artifact, output = (Path(value).resolve() for value in (args.input, args.artifact, args.output))
@@ -64,6 +86,12 @@ def main():
     if payload["sourceSha256"] != source_hash:
         raise ValueError("Extraction source changed")
     pending = [b for b in payload["blocks"] if b["quality"] == "pending-ocr" and b["unitType"] == "slide"]
+    total_pending = len(pending)
+    if args.block_id:
+        selected = set(args.block_id)
+        if len(selected) != len(args.block_id) or not selected.issubset({b["id"] for b in pending}):
+            raise ValueError("Selected object IDs must be unique unresolved blocks")
+        pending = [b for b in pending if b["id"] in selected]
     deck = Presentation(source)
     # Validate every locator before starting any local model work.
     shapes = [resolve_shape(deck, b) for b in pending]
@@ -88,6 +116,11 @@ def main():
         record = {"blockId": block["id"], "unitIndex": block["unitIndex"], "shapePath": block["shapePath"],
                   "shapeIdPath": block["shapeIdPath"], "status": "review-required"}
         try:
+            diagram = diagram_candidate(shape)
+            if diagram is not None:
+                record["diagram"] = diagram
+                record["reason"] = "native-diagram-candidate-requires-review"
+                records.append(record); continue
             image, info = visible_image(shape)
             buf = BytesIO(); image.save(buf, format="PNG")
             data = buf.getvalue(); image_hash = sha256(data).hexdigest()
@@ -112,7 +145,8 @@ def main():
     review = {"schema": "pptx-visual-review-candidates-v1", "sourceSha256": source_hash,
               "extractionArtifactSha256": sha256(artifact.read_bytes()).hexdigest(),
               "modelSha256": {name: sha256((models/name).read_bytes()).hexdigest() for name in names},
-              "records": records, "uniqueImagesProcessed": len(cache), "externalCalls": 0,
+              "records": records, "totalUnresolvedObjects": total_pending, "selectedObjects": len(pending),
+              "uniqueImagesProcessed": len(cache), "externalCalls": 0,
               "qualityAccepted": False, "extractionStatusChanged": False}
     (output/"review.json").write_text(json.dumps(review, ensure_ascii=False, indent=2), encoding="utf-8")
     print(json.dumps({"reviewObjects": len(records), "uniqueImagesProcessed": len(cache), "externalCalls": 0,

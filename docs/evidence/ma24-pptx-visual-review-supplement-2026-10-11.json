@@ -1,0 +1,45 @@
+{
+  "schema": "pptx-visual-review-supplement-v1",
+  "packages": [
+    {
+      "name": "visual-review-tail",
+      "artifactSha256": "8e21c78cf8b0b367c8572bb10b18ebb50501ba70ada0574af838794411c21765",
+      "sourceSha256": "2223cee26aced9a50d648d933c31b15f2f0659d0ebe30922fca5c31c1cc30465",
+      "extractionArtifactSha256": "136d6572d8cde82e87d34cc0e6601e328ba0bae6b83e3525808ae3fea9d92e51",
+      "selectedObjects": 3,
+      "totalUnresolvedObjects": 63,
+      "uniqueImagesProcessed": 3,
+      "reasons": {
+        "no-text-image-still-requires-review": 3
+      },
+      "diagramPoints": 0,
+      "diagramConnections": 0
+    },
+    {
+      "name": "visual-review-diagrams",
+      "artifactSha256": "33cb89d94409f3689a9999dc8d3a15732e8507ed7e44e7eccb7f80326341cb9e",
+      "sourceSha256": "2223cee26aced9a50d648d933c31b15f2f0659d0ebe30922fca5c31c1cc30465",
+      "extractionArtifactSha256": "136d6572d8cde82e87d34cc0e6601e328ba0bae6b83e3525808ae3fea9d92e51",
+      "selectedObjects": 4,
+      "totalUnresolvedObjects": 63,
+      "uniqueImagesProcessed": 0,
+      "reasons": {
+        "native-diagram-candidate-requires-review": 4
+      },
+      "diagramPoints": 148,
+      "diagramConnections": 144
+    }
+  ],
+  "helperTestsPassed": 3,
+  "externalDiagramReferencesRejected": true,
+  "productionWrites": 0,
+  "externalCalls": 0,
+  "qualityAccepted": false,
+  "extractionStatusChanged": false,
+  "remainingUnsupportedObjects": 4,
+  "limitations": [
+    "Native diagram data is not a rendered layout or a confirmed semantic interpretation.",
+    "All OCR/no-text images and diagram candidates still require visual review.",
+    "Four connector objects and end-to-end product review workflow remain incomplete."
+  ]
+}
