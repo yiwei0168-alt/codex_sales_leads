@@ -1,0 +1,20 @@
+{
+  "scope": "G08 first request current source binding",
+  "tests": 34,
+  "typecheck": "passed",
+  "lint": "passed",
+  "cloneChecks": [
+    "initial-user-message-bound",
+    "changed-user-message-denied",
+    "three-turn-chain",
+    "fallback-predecessors",
+    "tenant-isolation"
+  ],
+  "attachmentTests": "mocked permission/version unavailable branches; no real attachment fixture in this stage",
+  "fixturesRemoved": true,
+  "modelCalls": 0,
+  "productionDeployed": false,
+  "wholeTaskProvenanceVerified": false,
+  "executionAuthorized": false,
+  "qualityAccepted": false
+}

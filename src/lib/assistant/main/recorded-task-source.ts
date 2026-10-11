@@ -1,4 +1,5 @@
 import {z} from 'zod';
+import {bindRecordedInitialSource} from './recorded-initial-source';
 import {assertRecordedFallbackChain} from './recorded-fallback-chain';
 import {tenantTransaction} from '@/lib/rag/db';
 import {digest} from './contracts';
@@ -27,9 +28,14 @@ export async function loadRecordedTaskChain(context:{userId:string},input:{runId
  });
  const checked=[];
  for(const turn of chain.turns)checked.push(await validateRecordedRequestEvidence({userId},{runId,callId:turn.id}));
+ const initialBinding=await bindRecordedInitialSource({userId,runId},chain.turns[0].request.body.messages);
+ // Instructions already present in the first decision must not be accepted a second time later.
+ prepareRecordedTaskChain(successful,{reply:z.object({reply:z.string()}).parse(saved.task.result).reply,
+  instructions:z.array(z.object({content:z.string()})).parse(saved.task.instructions).slice(initialBinding.initialInstructionCount)});
  const sourceHash=digest(saved);
  if(digest(await snapshot())!==sourceHash)throw new Error('Recorded task changed during preparation');
- return {...chain,fallbackBinding,requests:checked,sourceHash,serverTaskJournalVerified:true as const,
-  // Initial conversation and attachments still require their own provenance binding.
+ if((await bindRecordedInitialSource({userId,runId},chain.turns[0].request.body.messages)).initialSourceHash!==initialBinding.initialSourceHash)throw new Error('Recorded initial sources changed during preparation');
+ return {...chain,...initialBinding,fallbackBinding,requests:checked,sourceHash,serverTaskJournalVerified:true as const,
+  // Complete tool-output semantics, interrupted recovery and effect adapters remain separate gates.
   wholeTaskProvenanceVerified:false as const,executionAuthorized:false as const,qualityAccepted:false as const};
 }

@@ -2,14 +2,12 @@ import { Annotation, END, START, StateGraph, type BaseCheckpointSaver } from "@l
 import { PostgresSaver } from "@langchain/langgraph-checkpoint-postgres";
 import { getPool, tenantQuery } from "@/lib/rag/db";
 import { withProductSpend } from "@/lib/billing/context";
-import { availableTools } from "./tools";
-import { productPrompt } from "./product";
+import {initialTaskMessages} from "./initial-task-messages";
 import { digest, result, type ExecutionContext, type ModelMessage, type ModelToolCall, type RunStatus, type ToolResult, type ModelConfig } from "./contracts";
 import { boundary, beginCall, completeCall, event, finishRun, InstructionsChangedError } from "./repository";
 import { dispatchTool } from "./executor";
 import { requestModel, requestModeModel } from "./model";
 import { modeConfigSchema } from './mode-config';
-import { modePromptRules } from './mode-prompts';
 import { orderedModeDecision, ModeModelsUnavailable } from './mode-fallback';
 import { BudgetDeniedError } from "@/lib/billing/policy";
 import { loadDecisionMemory } from "./memory-context";
@@ -209,13 +207,7 @@ export async function executeMainAgentRun(userId: string, runId: string, leaseTo
        where user_id=$1 and conversation_id=$2 and role in('user','assistant') and (metadata->>'runId' is null or metadata->>'runId'<>$3)
        and created_at < (select created_at from agent_run where id=$3::uuid and user_id=$1)
        order by created_at desc,id desc limit 12) h order by created_at,id`, [userId, run.conversation_id, runId]);
-    const knowledgeScope = run.input.knowledgeScope;
-    initial = { messages: [{ role: "system", content: context.mode
-      ? `${modePromptRules(context.mode,run.model_config.profile?.promptVersion)}\n\n当前可用能力（完整参数执行前 describe_tool）：\n${availableTools(context).map(t=>`${t.id}: ${t.description}`).join('\n')}`
-      : productPrompt(availableTools(context)) },
-      ...(knowledgeScope?.length ? [{ role: "system" as const, content: `This question came from the knowledge base. Search and cite only these selected knowledge collections: ${knowledgeScope.join(", ")}. Pass this exact list as knowledge_search.collections. Answer in the user's language and distinguish missing evidence from verified facts.` }] : []),
-      ...history,
-      { role: "user", content: run.input.content + (run.input.attachments.length ? `\nAttached registered asset IDs: ${run.input.attachments.map(a => a.assetId).join(", ")}` : "") }],
+    initial = { messages: initialTaskMessages(context,run.input,run.model_config,history),
       pending: [], steps: 0, seen: {}, instructionIds: [],decisionRevision:0,policyRevision:"",status: "running", reply: "" };
   }
   const final = await withProductSpend(userId, "main-agent", () => graph.invoke(initial, config), runId);
