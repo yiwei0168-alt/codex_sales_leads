@@ -1,0 +1,48 @@
+{
+  "cloneOnly": true,
+  "formats": [
+    "PPTX"
+  ],
+  "privateAndSharedHeld": true,
+  "unresolvedBlocksPerJob": 63,
+  "dedupReused": true,
+  "restartDoesNotReclaim": true,
+  "otherAccountHidden": true,
+  "directRegistrationRejected": true,
+  "noDocumentsPublished": true,
+  "privatePublishesOnlyAfterCompletion": false,
+  "sharedStillUnpublished": true,
+  "v3PointersUnchanged": true,
+  "appendOnlyReview": true,
+  "staleReviewRejected": true,
+  "otherAccountReviewDenied": true,
+  "sourceArtifactBound": true,
+  "externalCalls": 0,
+  "modelCalls": 0,
+  "completionVerified": false,
+  "completionReplayVerified": false,
+  "completionProcessesKilled": 0,
+  "visualProcessesKilled": 3,
+  "visualCandidatesVerified": true,
+  "visualQueueVerified": true,
+  "date": "2026-10-11",
+  "rule": "MA24-16",
+  "goal": "G05",
+  "runtimeDeployed": false,
+  "qualityAccepted": false,
+  "typecheck": "passed",
+  "eslint": "passed",
+  "processExitCode": 0,
+  "checkpoints": [
+    "visual-claimed",
+    "visual-before-bind",
+    "visual-after-bind"
+  ],
+  "leaseExpiryAcceleratedInClone": true,
+  "cleanupCompleted": true,
+  "limitations": [
+    "Only PPTX candidate transaction checkpoints; no daemon longevity test",
+    "No production deployment or visual content quality acceptance",
+    "PDF/XLSX visuals, over-budget batching and revision matrix remain pending"
+  ]
+}

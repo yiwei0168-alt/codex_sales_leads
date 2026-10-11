@@ -21,7 +21,25 @@ const url=new URL(base);url.pathname=`/${state.database}`;process.env.DATABASE_U
 const pool=new Pool({connectionString:url.toString()}),owner=randomUUID(),other=randomUUID();
 const root=resolve('knowledge/uploads',owner);
 const reviewCrashes=process.argv.includes('--review-crashes');
+const visualCrashes=process.argv.includes('--visual-crashes');
 assert(!reviewCrashes||process.argv.includes('--complete-reviews'));
+assert(!visualCrashes||process.argv.includes('--visual-queue'));
+async function crashVisual(jobId:string,phase:string,leaseToken?:string){
+  await mkdir('tmp/upload-crash',{recursive:true});const marker=resolve('tmp/upload-crash',`${randomUUID()}.json`);
+  const child=spawn(process.execPath,['--require','./scripts/patch-node-user.cjs','--require','./scripts/fixtures/upload-crash-preload.cjs','--import','tsx',
+    leaseToken?'scripts/prepare-upload-visual-review.ts':'scripts/process-upload-visual-queue.ts',`--job-id=${jobId}`,`--user-id=${owner}`,...(leaseToken?[`--visual-lease=${leaseToken}`]:[])],
+    {cwd:process.cwd(),windowsHide:true,stdio:['ignore','pipe','pipe'],env:{...process.env,DATABASE_URL:url.toString(),UPLOAD_CRASH_PHASE:phase,UPLOAD_CRASH_MARKER:marker}});
+  let stderr='';child.stdout.on('data',()=>{});child.stderr.on('data',part=>{stderr=(stderr+String(part)).slice(-2000);});
+  const exited=new Promise<number|null>((done,reject)=>{child.once('error',reject);child.once('exit',done);});
+  try{
+    let reached=false;
+    for(let i=0;i<6000;i++){const bytes=await readFile(marker,'utf8').catch(()=>null);if(bytes){assert.equal(JSON.parse(bytes).pid,child.pid);reached=true;break;}if(child.exitCode!==null)break;await new Promise(done=>setTimeout(done,50));}
+    assert(reached,`Visual checkpoint not reached: ${phase}; ${stderr}`);assert(child.kill());assert.notEqual(await exited,0);
+    const current=(await pool.query('select visual_lease_token,metrics from knowledge_upload_job where id=$1',[jobId])).rows[0];
+    assert(current.visual_lease_token);assert.equal(Boolean(current.metrics.visualReviewKey),phase==='visual-after-bind');
+    console.log(JSON.stringify({visualProcessKilled:phase}));
+  }finally{if(child.exitCode===null&&child.signalCode===null){child.kill();await exited;}await rm(marker,{force:true});}
+}
 async function crashCompletion(jobId:string,artifactSha256:string,decisionSha256:string,phase:string){
   await mkdir('tmp/upload-crash',{recursive:true});const marker=resolve('tmp/upload-crash',`${randomUUID()}.json`);
   const child=spawn(process.execPath,['--require','./scripts/patch-node-user.cjs','--require','./scripts/fixtures/upload-crash-preload.cjs','--import','tsx',
@@ -82,7 +100,18 @@ try{
       assert((await retryExtractionVisuals(owner,job.id,stored.metrics.artifactSha256)).queued);
     }
     if((process.argv.includes('--visual-candidates')||process.argv.includes('--visual-queue'))&&visibility==='private'){
-      await new Promise<void>((done,reject)=>{
+      if(visualCrashes){
+        await crashVisual(job.id,'visual-claimed');assert.equal(await claimVisualReviewJob(job.id),null);
+        await pool.query("update knowledge_upload_job set visual_lease_until=now()-interval '1 second' where id=$1",[job.id]);
+        const before=await claimVisualReviewJob(job.id);assert(before);
+        await crashVisual(job.id,'visual-before-bind',before.leaseToken);
+        assert(await finishVisualReviewJob(before,false));assert.equal(await claimVisualReviewJob(job.id),null);
+        await pool.query("update knowledge_upload_job set visual_retry_at=now()-interval '1 second' where id=$1",[job.id]);
+        const after=await claimVisualReviewJob(job.id);assert(after);
+        await crashVisual(job.id,'visual-after-bind',after.leaseToken);
+        await pool.query("update knowledge_upload_job set visual_lease_until=now()-interval '1 second' where id=$1",[job.id]);
+        assert.equal(await finishVisualReviewJob(after,true),false);assert.equal(await claimVisualReviewJob(job.id),null);
+      }else await new Promise<void>((done,reject)=>{
         const child=spawn(process.execPath,['--require','./scripts/patch-node-user.cjs','--import','tsx',process.argv.includes('--visual-queue')?'scripts/process-upload-visual-queue.ts':'scripts/prepare-upload-visual-review.ts',`--job-id=${job.id}`,`--user-id=${owner}`],{cwd:process.cwd(),windowsHide:true,stdio:['ignore','pipe','pipe'],env:{...process.env,DATABASE_URL:url.toString()}});
         let error='';child.stdout.on('data',()=>{});child.stderr.on('data',part=>{error=(error+String(part)).slice(-2000);});
         child.once('error',reject);child.once('exit',code=>code===0?done():reject(new Error(error)));
@@ -158,7 +187,7 @@ try{
   const permissions=(await pool.query("select has_table_privilege('network_copilot_app','knowledge_upload_extraction_review','UPDATE') as update_allowed,has_table_privilege('network_copilot_app','knowledge_upload_extraction_review','DELETE') as delete_allowed")).rows[0];
   assert.equal(permissions.update_allowed,false);assert.equal(permissions.delete_allowed,false);
   const evidence={cloneOnly:true,formats:['PPTX'],privateAndSharedHeld:true,unresolvedBlocksPerJob:63,dedupReused:true,restartDoesNotReclaim:true,otherAccountHidden:true,directRegistrationRejected:true,noDocumentsPublished:!process.argv.includes('--complete-reviews'),privatePublishesOnlyAfterCompletion:process.argv.includes('--complete-reviews'),sharedStillUnpublished:true,v3PointersUnchanged:true,appendOnlyReview:true,staleReviewRejected:true,otherAccountReviewDenied:true,sourceArtifactBound:true,externalCalls:0,modelCalls:0};
-  await writeFile(process.argv.includes('--visual-queue')?'tmp/upload-visual-queue-result.json':reviewCrashes?'tmp/upload-review-crash-result.json':process.argv.includes('--complete-reviews')?'tmp/upload-review-completion-result.json':process.argv.includes('--visual-candidates')?'tmp/upload-visual-candidate-result.json':'tmp/upload-review-hold-result.json',JSON.stringify({...evidence,completionVerified:process.argv.includes('--complete-reviews'),completionReplayVerified:process.argv.includes('--complete-reviews'),completionProcessesKilled:reviewCrashes?2:0,visualCandidatesVerified:process.argv.includes('--visual-candidates')||process.argv.includes('--visual-queue'),visualQueueVerified:process.argv.includes('--visual-queue')},null,2));console.log(JSON.stringify(evidence));
+  await writeFile(visualCrashes?'tmp/upload-visual-crash-result.json':process.argv.includes('--visual-queue')?'tmp/upload-visual-queue-result.json':reviewCrashes?'tmp/upload-review-crash-result.json':process.argv.includes('--complete-reviews')?'tmp/upload-review-completion-result.json':process.argv.includes('--visual-candidates')?'tmp/upload-visual-candidate-result.json':'tmp/upload-review-hold-result.json',JSON.stringify({...evidence,completionVerified:process.argv.includes('--complete-reviews'),completionReplayVerified:process.argv.includes('--complete-reviews'),completionProcessesKilled:reviewCrashes?2:0,visualProcessesKilled:visualCrashes?3:0,visualCandidatesVerified:process.argv.includes('--visual-candidates')||process.argv.includes('--visual-queue'),visualQueueVerified:process.argv.includes('--visual-queue')},null,2));console.log(JSON.stringify(evidence));
 }catch(error){console.error(error);throw error;}finally{
   await pool.query('delete from knowledge_upload_review_completion where owner_id=$1',[owner]);
   await pool.query('delete from knowledge_upload_extraction_review where owner_id=$1',[owner]);

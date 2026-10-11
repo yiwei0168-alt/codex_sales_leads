@@ -26,8 +26,10 @@ Client.prototype.query = function(sql,...args) {
   if (phase === 'registered' && /update knowledge_upload_job set status='registered'/.test(text)) stages.set(this,'registered');
   if (phase === 'tree-transaction' && /update knowledge_document set current_tree_version_id/.test(text)) stages.set(this,'tree-transaction');
   if (['review-before-commit','review-after-commit'].includes(phase) && /insert into knowledge_upload_review_completion/.test(text)) stages.set(this,phase);
+  if (phase === 'visual-claimed' && /update knowledge_upload_job set visual_lease_token=/.test(text)) stages.set(this,phase);
+  if (['visual-before-bind','visual-after-bind'].includes(phase) && /update knowledge_upload_job set metrics=metrics\|\|/.test(text)) stages.set(this,phase);
   const stage = stages.get(this), commit = /^commit$/i.test(text.trim());
-  if (commit && ['tree-transaction','review-before-commit'].includes(phase) && stage === phase) checkpoint();
+  if (commit && ['tree-transaction','review-before-commit','visual-before-bind'].includes(phase) && stage === phase) checkpoint();
   const result = query.call(this,sql,...args);
   if (commit) {stages.delete(this); if (stage === phase) return result.then(value => {checkpoint(); return value;});}
   return result;
