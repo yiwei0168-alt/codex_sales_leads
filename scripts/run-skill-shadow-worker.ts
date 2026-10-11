@@ -1,6 +1,8 @@
 import {z} from 'zod';
 import {getPool} from '../src/lib/rag/db';
 import {processNextSkillShadow} from '../src/lib/assistant/main/skill-shadow';
+import {disableLocalAnalysisTracing} from '../src/lib/assistant/main/local-analysis-boundary';
+disableLocalAnalysisTracing();
 
 const userId=z.uuid().parse(process.argv[2]);let stop=false;
 process.on('SIGINT',()=>{stop=true;});process.on('SIGTERM',()=>{stop=true;});

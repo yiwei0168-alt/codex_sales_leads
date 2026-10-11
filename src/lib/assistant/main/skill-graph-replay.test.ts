@@ -1,6 +1,8 @@
 import {expect,it,vi} from 'vitest';
 import {digest,type ModelMessage} from './contracts';
 import {runGraphSkillReplay} from './skill-graph-replay';
+import {CallbackManager} from '@langchain/core/callbacks/manager';
+import {disableLocalAnalysisTracing} from './local-analysis-boundary';
 const id='00000000-0000-4000-8000-000000000001';
 const args={entities:['Synthetic A','Synthetic B'],attributes:['ports']};
 function fixture(){
@@ -13,6 +15,23 @@ function call(name:string,input:unknown,callId='call'){
   return {role:'assistant',content:null,tool_calls:[{id:callId,type:'function',function:{name,arguments:JSON.stringify(input)}}]};
 }
 const answer={role:'assistant',content:'A: two; B: three.'};
+it('rejects inherited tracing before model access and runs only with tracing explicitly disabled',async()=>{
+ vi.stubEnv('LANGSMITH_TRACING','true');vi.stubEnv('LANGCHAIN_TRACING_V2','true');
+ const network=vi.fn(async()=>{throw new Error('No external tracing permitted');});vi.stubGlobal('fetch',network);
+ try{
+  const blocked=vi.fn(async()=>answer);
+  await expect(runGraphSkillReplay(fixture(),blocked,async()=>{})).rejects.toThrow('external tracing disabled');
+  expect(blocked).not.toHaveBeenCalled();expect(network).not.toHaveBeenCalled();
+  disableLocalAnalysisTracing();
+  const output=await runGraphSkillReplay(fixture(),async()=>{
+   expect(CallbackManager.configure([])?.handlers.some(h=>h.name==='langchain_tracer')).toBe(false);
+   return answer;
+  },async()=>{});
+  expect(output.pairs[0].baseline.status).toBe('completed');
+  expect(output.pairs[0].candidate.status).toBe('completed');
+  expect(network).not.toHaveBeenCalled();
+ }finally{vi.unstubAllEnvs();vi.unstubAllGlobals();}
+});
 it('uses actual graph and registered schemas through discover, describe, read and final answer',async()=>{
   const model=vi.fn(async(messages:ModelMessage[])=>{
     const n=messages.filter(m=>m.role==='tool').length;

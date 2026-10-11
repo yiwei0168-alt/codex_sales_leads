@@ -6,6 +6,8 @@ import {skillSafetySuite} from '../src/lib/assistant/main/skill-safety-suite';
 import {runGraphSkillReplay} from '../src/lib/assistant/main/skill-graph-replay';
 import {localReplayModel} from '../src/lib/assistant/main/skill-replay-local';
 import {prepareSkillReview} from '../src/lib/assistant/main/skill-replay-review';
+import {disableLocalAnalysisTracing} from '../src/lib/assistant/main/local-analysis-boundary';
+disableLocalAnalysisTracing();
 
 const {suite,oracles}=skillSafetySuite();
 const directory=path.resolve('tmp','skill-replay',randomUUID());await mkdir(directory,{recursive:true});

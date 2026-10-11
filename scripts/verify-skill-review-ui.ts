@@ -16,7 +16,7 @@ await new Promise<void>(done=>server.listen(0,'127.0.0.1',done));const address=s
 const browser=await chromium.launch({channel:'chrome',headless:true}),errors:string[]=[],screenshots:string[]=[];
 try{
   await mkdir('tmp/skill-review-ui',{recursive:true});
-  for(const viewport of [{width:1366,height:768},{width:390,height:844},{width:320,height:740}]){
+  for(const viewport of [{width:1366,height:768},{width:390,height:844},{width:320,height:740}])for(const mode of ['history','shadow']){
     const context=await browser.newContext({viewport});let fail=true,posts=0,revision=0;
     const blank=()=>({answer:null,citation:null,permission:null,injection:null,rationale:''});
     const rows=[0,1].map(i=>({caseId:`case${i}`,pairHash:`hash${i}`,reviewer:null as string|null,baseline:blank(),candidate:blank()}));
@@ -25,16 +25,24 @@ try{
       if(!url.pathname.startsWith('/api/'))return route.continue();
       if(request.method()==='POST'){
         posts++;const body=request.postDataJSON();assert.equal(body.expectedRevision,revision);assert.equal(body.judgment.pairHash,'hash0');assert(!('reviewer' in body.judgment));
+        assert.equal(url.pathname,mode==='shadow'?'/api/assistant/skills/shadow-reviews':'/api/assistant/skills/reviews');
+        assert.equal(body.artifactHash,mode==='shadow'?'artifact':undefined);
         if(fail)return route.fulfill({status:409,json:{error:'审核修订已变化，请重新读取'}});
         revision++;Object.assign(rows[0],body.judgment,{reviewer:'account-fixture'});return route.fulfill({json:{revision}});
       }
       if(!url.searchParams.has('id'))return route.fulfill({json:{items:[{id:'evaluation',version:1,created_at:'2026-10-11T01:00:00Z'}],hasMore:false}});
-      return route.fulfill({json:{id:'evaluation',revision,review:{suiteHash:'suite',resultHash:'result',reviews:rows},
+      return route.fulfill({json:{id:'evaluation',revision,...(mode==='shadow'?{kind:'prospective-local-shadow',artifactHash:'artifact',observedProductionResult:{reply:'生产任务的独立观察答案'}}:{}),review:{suiteHash:'suite',resultHash:'result',reviews:rows},
         snapshot:{suite:{cases:[0,1].map(i=>({id:`case${i}`,question:`核对合成资料中的端口数量，第 ${i+1} 题`,receipts:[{content:'两个 RJ45 端口',source_location:{page:3}}],...(i===0?{coverage:{kind:'read-only-subtask',originalQuestion:'同步后比较资料',selectedCallIds:['read-fixture'],excludedCalls:[{id:'omitted-fixture',tool:'mail_sync',effect:'reversible',status:'completed',inputHash:'a'.repeat(64),outputHash:'b'.repeat(64)}]}}:{})}))}},
         result:{pairs:[0,1].map(i=>({caseId:`case${i}`,baseline:{status:'completed',reply:'两个 RJ45 端口，来源为第 3 页。'},candidate:{status:'completed',reply:'2 个 RJ45 网口；原件第 3 页。'}}))}}});
     });
     const page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));await page.goto(`http://127.0.0.1:${address.port}`);
+    if(mode==='shadow')await page.getByRole('button',{name:'实时采集的本地对照',exact:true}).click();
     await page.getByRole('button',{name:'打开审核',exact:true}).click();
+    if(mode==='shadow'){
+      await expect(page.getByText(/这不代表生产同模型评测通过/)).toBeVisible();
+      await page.getByText('查看生产任务原答案（单独观察，不参与下方本地双路判分）',{exact:true}).click();
+      await expect(page.locator('pre').first()).toContainText('生产任务的独立观察答案');
+    }
     await expect(page.getByText(/通过本题不表示原任务完整通过/)).toBeVisible();
     await page.getByText('查看原任务与未评测收据',{exact:true}).click();
     await expect(page.getByText('同步后比较资料',{exact:true})).toBeVisible();
@@ -44,16 +52,18 @@ try{
       await page.getByLabel(`${side}：判决依据`,{exact:true}).fill('已核对合成原文及第 3 页坐标。');
     }
     await expect(page.getByRole('button',{name:'下一题',exact:true})).toBeDisabled();
+    await expect(page.getByRole('button',{name:'历史回放',exact:true})).toBeDisabled();
+    await expect(page.getByRole('button',{name:'实时采集的本地对照',exact:true})).toBeDisabled();
     await save.click();await expect(page.getByRole('alert')).toContainText('重新读取');
     await expect(page.getByLabel('候选 Skill：判决依据',{exact:true})).toHaveValue('已核对合成原文及第 3 页坐标。');
     fail=false;await save.click();await expect(page.getByText('本题判决已保存；再次保存会保留旧记录。')).toBeVisible();
     await page.getByText('查看本题原始证据与来源坐标',{exact:true}).click();await expect(page.locator('pre').last()).toContainText('page');
     assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
-    const path=`tmp/skill-review-ui/${viewport.width}.png`;await page.screenshot({path,fullPage:true});screenshots.push(path);
+    const path=`tmp/skill-review-ui/${mode}-${viewport.width}.png`;await page.screenshot({path,fullPage:true});screenshots.push(path);
     await page.getByRole('button',{name:'下一题',exact:true}).click();await expect(save).toBeDisabled();
     await expect(page.getByText('本题判决尚未保存',{exact:true})).toBeVisible();assert.equal(posts,2);
     await context.close();
   }
-  assert.deepEqual(errors,[]);console.log(JSON.stringify({syntheticBrowserHarness:true,viewports:3,noDefaultPass:true,staleDraftPreserved:true,
+  assert.deepEqual(errors,[]);console.log(JSON.stringify({syntheticBrowserHarness:true,viewports:3,modes:2,shadowProductionResultSeparated:true,noDefaultPass:true,staleDraftPreserved:true,
     noSilentNavigationLoss:true,savedAndUnreviewedDistinguished:true,sourceDisclosure:true,noHorizontalOverflow:true,modelCalls:0,screenshots}));
 }finally{await browser.close();server.closeAllConnections();await new Promise<void>(done=>server.close(()=>done()));}

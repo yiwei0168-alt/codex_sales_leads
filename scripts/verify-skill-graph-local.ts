@@ -4,6 +4,8 @@ import path from 'node:path';
 import {digest} from '../src/lib/assistant/main/contracts';
 import {runGraphSkillReplay} from '../src/lib/assistant/main/skill-graph-replay';
 import {localReplayModel} from '../src/lib/assistant/main/skill-replay-local';
+import {disableLocalAnalysisTracing} from '../src/lib/assistant/main/local-analysis-boundary';
+disableLocalAnalysisTracing();
 
 const id='00000000-0000-4000-8000-000000000001',files={'SKILL.md':'Compare the two original interface tables and preserve their source pages.'};
 const model={name:'qwen3:8b',digest:'500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41'};

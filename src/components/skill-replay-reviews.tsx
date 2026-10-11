@@ -6,7 +6,7 @@ const metrics={answer:'答案正确',citation:'精确引用正确',permission:'�
 type Metric=keyof typeof metrics;
 type Verdict=Record<Metric,boolean|null>&{rationale:string};
 type Row={caseId:string;pairHash:string;reviewer?:string|null;baseline:Verdict;candidate:Verdict};
-type Evaluation={id:string;revision:number;review:{suiteHash:string;resultHash:string;reviews:Row[]};
+type Evaluation={id:string;revision:number;kind?:string;artifactHash?:string;observedProductionResult?:unknown;review:{suiteHash:string;resultHash:string;reviews:Row[]};
   snapshot:{suite:{cases:Array<{id:string;question:string;receipts:unknown[];coverage?:{kind:'read-only-subtask';originalQuestion:string;selectedCallIds:string[];excludedCalls:Array<{id:string;tool:string;effect:string;status:string}>}}>}};
   result:{pairs:Array<{caseId:string;baseline:{status:string;answer?:string;reply?:string};candidate:{status:string;answer?:string;reply?:string}}>}};
 const blank=():Verdict=>({answer:null,citation:null,permission:null,injection:null,rationale:''});
@@ -14,35 +14,39 @@ const blank=():Verdict=>({answer:null,citation:null,permission:null,injection:nu
 async function json(response:Response){const data=await response.json();if(!response.ok)throw new Error(data.error||'读取失败，请重试');return data;}
 
 export function SkillReplayReviews({skillId,name,onClose}:{skillId:string;name:string;onClose:()=>void}){
+  const [kind,setKind]=useState<'history'|'shadow'>('history');
+  const endpoint=kind==='shadow'?'/api/assistant/skills/shadow-reviews':'/api/assistant/skills/reviews';
   const [items,setItems]=useState<Array<{id:string;version:number;created_at:string}>>([]),[offset,setOffset]=useState(0),[more,setMore]=useState(false);
   const [error,setError]=useState(''),[loading,setLoading]=useState(true),[selected,setSelected]=useState<Evaluation|null>(null),[busy,setBusy]=useState(false),[index,setIndex]=useState(0);
   const [dirty,setDirty]=useState(false);
   useEffect(()=>{
     const controller=new AbortController();
-    fetch(`/api/assistant/skills/reviews?skillId=${skillId}&offset=${offset}`,{signal:controller.signal,cache:'no-store'}).then(json)
+    fetch(`${endpoint}?skillId=${skillId}&offset=${offset}`,{signal:controller.signal,cache:'no-store'}).then(json)
       .then(data=>{if(!controller.signal.aborted){setItems(data.items);setMore(data.hasMore);setLoading(false);}})
       .catch(e=>{if(!controller.signal.aborted){setError(e.message);setLoading(false);}});
     return()=>controller.abort();
-  },[skillId,offset]);
+  },[skillId,offset,endpoint]);
   async function open(id:string){
     setBusy(true);setError('');setSelected(null);
-    try{setSelected(await json(await fetch(`/api/assistant/skills/reviews?id=${id}`,{cache:'no-store'})));setIndex(0);}
+    try{setSelected(await json(await fetch(`${endpoint}?id=${id}`,{cache:'no-store'})));setIndex(0);}
     catch(e){setError(e instanceof Error?e.message:'读取失败');}finally{setBusy(false);}
   }
   return <section className="skill-review" aria-label="Skill 评测审核">
     <header><h3>{name} · 评测审核</h3><button type="button" disabled={busy||dirty} onClick={onClose}>返回 Skill</button></header>
-    <p>逐题核对双方回答及原始证据。这里审核历史回放，不会自动启用方法。</p>
+    <nav aria-label="评测来源">{(['history','shadow'] as const).map(value=><button key={value} type="button" aria-pressed={kind===value} disabled={busy||dirty}
+      onClick={()=>{if(kind!==value){setKind(value);setOffset(0);setSelected(null);setItems([]);setMore(false);setError('');setLoading(true);}}}>{value==='history'?'历史回放':'实时采集的本地对照'}</button>)}</nav>
+    <p>{kind==='shadow'?'审核新任务完成后的本地对照。双方均使用本地模型；生产原答案单独展示，这不代表生产同模型评测通过。':'逐题核对历史回放的双方回答及原始证据。'}审核不会自动启用方法。</p>
     {error&&<p role="alert">{error}</p>}
     {selected?<>
       <nav aria-label="审核题目"><button type="button" disabled={busy||dirty||index===0} onClick={()=>setIndex(i=>i-1)}>上一题</button>
         <span>{index+1} / {selected.result.pairs.length}</span>
         <button type="button" disabled={busy||dirty||index===selected.result.pairs.length-1} onClick={()=>setIndex(i=>i+1)}>下一题</button>
         <button type="button" disabled={busy||dirty} onClick={()=>setSelected(null)}>返回评测列表</button></nav>
-      <ReviewCase key={`${selected.id}:${index}:${selected.revision}`} evaluation={selected} index={index} busy={busy} setBusy={setBusy}
-        dirty={dirty} setDirty={setDirty} onSaved={async()=>{const updated=await json(await fetch(`/api/assistant/skills/reviews?id=${selected.id}`,{cache:'no-store'}));setSelected(updated);setDirty(false);}}/>
+      <ReviewCase key={`${selected.id}:${index}:${selected.revision}`} endpoint={endpoint} evaluation={selected} index={index} busy={busy} setBusy={setBusy}
+        dirty={dirty} setDirty={setDirty} onSaved={async()=>{const updated=await json(await fetch(`${endpoint}?id=${selected.id}`,{cache:'no-store'}));setSelected(updated);setDirty(false);}}/>
     </>:<>
       {(loading||busy)&&<p role="status">正在读取…</p>}
-      {!loading&&!busy&&!items.length&&!error&&<p>还没有可审核的历史回放。完成回放后会在这里列出，未经审核的答案不会默认通过。</p>}
+      {!loading&&!busy&&!items.length&&!error&&<p>还没有可审核的结果。完成评测后会在这里列出，未经审核的答案不会默认通过。</p>}
       <ul>{items.map(item=><li key={item.id}><span>v{item.version} · {new Date(item.created_at).toLocaleString('zh-CN')}</span>
         <button type="button" disabled={busy} onClick={()=>void open(item.id)}>打开审核</button></li>)}</ul>
       <nav><button type="button" disabled={loading||busy||offset===0} onClick={()=>{setLoading(true);setOffset(o=>o-12);}}>上一页</button>
@@ -51,7 +55,7 @@ export function SkillReplayReviews({skillId,name,onClose}:{skillId:string;name:s
   </section>;
 }
 
-function ReviewCase({evaluation,index,busy,setBusy,onSaved,dirty,setDirty}:{evaluation:Evaluation;index:number;busy:boolean;setBusy:(v:boolean)=>void;onSaved:()=>Promise<void>;dirty:boolean;setDirty:(v:boolean)=>void}){
+function ReviewCase({endpoint,evaluation,index,busy,setBusy,onSaved,dirty,setDirty}:{endpoint:string;evaluation:Evaluation;index:number;busy:boolean;setBusy:(v:boolean)=>void;onSaved:()=>Promise<void>;dirty:boolean;setDirty:(v:boolean)=>void}){
   const pair=evaluation.result.pairs[index],item=evaluation.snapshot.suite.cases.find(c=>c.id===pair.caseId)!;
   const prior=evaluation.review.reviews.find(r=>r.caseId===pair.caseId);
   const [values,setValues]=useState({baseline:prior?.baseline??blank(),candidate:prior?.candidate??blank()}),[error,setError]=useState('');
@@ -60,13 +64,15 @@ function ReviewCase({evaluation,index,busy,setBusy,onSaved,dirty,setDirty}:{eval
   async function save(){
     setBusy(true);setError('');
     try{
-      await json(await fetch('/api/assistant/skills/reviews',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({
+      await json(await fetch(endpoint,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({
         id:evaluation.id,expectedRevision:evaluation.revision,suiteHash:evaluation.review.suiteHash,resultHash:evaluation.review.resultHash,
+        ...(evaluation.artifactHash?{artifactHash:evaluation.artifactHash}:{}),
         judgment:{caseId:pair.caseId,pairHash:prior?.pairHash,...values}})}));
       await onSaved();
     }catch(e){setError(e instanceof Error?e.message:'保存失败');}finally{setBusy(false);}
   }
   return <div className="skill-review-case" onChange={()=>setDirty(true)}><h4>{item.question}</h4>
+    {evaluation.kind==='prospective-local-shadow'&&<details><summary>查看生产任务原答案（单独观察，不参与下方本地双路判分）</summary><pre>{JSON.stringify(evaluation.observedProductionResult,null,2)}</pre></details>}
     {item.coverage&&<div className="skill-review-coverage"><p><strong>只读分析子任务</strong>：本题仅核对选中的 {item.coverage.selectedCallIds.length} 条读取收据。原任务另有 {item.coverage.excludedCalls.length} 条收据保留供追溯，未在本题执行或评测；通过本题不表示原任务完整通过。</p>
       <details><summary>查看原任务与未评测收据</summary><p>{item.coverage.originalQuestion}</p><pre>{JSON.stringify(item.coverage.excludedCalls,null,2)}</pre></details></div>}
     <div className="skill-review-arms">{(['baseline','candidate'] as const).map(side=><fieldset key={side} disabled={busy}>

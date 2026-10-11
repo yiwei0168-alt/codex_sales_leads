@@ -23,6 +23,7 @@ export const shadowConfigSchema=z.object({protocol:z.literal('prospective-local-
 /** Operator/worker fingerprint; never reads environment files or private corpus. */
 export async function shadowRuntimeHash(){
  const files=['src/lib/assistant/main/skill-shadow.ts','src/lib/assistant/main/skill-replay-snapshot.ts',
+  'src/lib/assistant/main/local-analysis-boundary.ts',
   'src/lib/assistant/main/skill-replay.ts','src/lib/assistant/main/skill-replay-local.ts','src/lib/assistant/main/skill-replay-errors.ts',
   'src/lib/assistant/main/skill-graph-replay.ts','src/lib/assistant/main/graph.ts','src/lib/assistant/main/product.ts',
   'src/lib/assistant/main/tools.ts','src/lib/assistant/main/model.ts','src/lib/assistant/main/skill-source-guard.ts',
@@ -67,8 +68,8 @@ export async function prepareSkillShadow(context:Context){
    join agent_skill_version v on v.skill_id=s.id and v.version=c.version
    join agent_run r on r.id=j.run_id and r.user_id=j.owner_id
    join app_user u on u.id=j.owner_id and u.status='active'
-   where j.id=$1 and j.owner_id=$2 and c.enabled and c.expires_at>now() and r.status='completed'
-     and r.execution_kind='main-agent'`,[context.jobId,context.userId])).rows[0];
+   where j.id=$1 and j.owner_id=$2 and c.enabled and (not $3::boolean or c.expires_at>now()) and r.status='completed'
+     and r.execution_kind='main-agent'`,[context.jobId,context.userId,Boolean(context.leaseToken)])).rows[0];
   if(!row||row.scope!=='account'||row.current_version!==row.version||digest(row.files)!==row.content_hash
    ||!instructionOnlySkill(row.files)||!Array.isArray(row.dependencies)||row.dependencies.length
    ||!await skillSourcesCurrent(client,context.userId,row as SourcedSkillVersion))throw new Error('Shadow source unavailable');
@@ -84,7 +85,7 @@ export async function prepareSkillShadow(context:Context){
   return row;
  });
  const config=shadowConfigSchema.parse(job.config);
- if(await shadowRuntimeHash()!==config.runtimeHash)throw new Error('Shadow runtime changed');
+ if(context.leaseToken&&await shadowRuntimeHash()!==config.runtimeHash)throw new Error('Shadow runtime changed');
  if(context.leaseToken&&Date.now()-new Date(job.ready_at).getTime()>config.maximumAgeSeconds*1000)throw new Error('Shadow task too old');
  const input:z.infer<typeof historicalSkillReplayInput>={skillId:job.skill_id,version:job.version,runIds:[job.run_id]};
  if(config.selection.kind==='read-only-subtask'){

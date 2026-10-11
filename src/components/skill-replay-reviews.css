@@ -5,6 +5,7 @@
 .skill-review button,.skill-review select{min-height:36px;padding:6px 10px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink)}
 .skill-review button:focus-visible,.skill-review select:focus-visible,.skill-review textarea:focus-visible,.skill-review summary:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
 .skill-review button:disabled{opacity:.5;cursor:not-allowed}.skill-review-case{display:grid;gap:16px;min-width:0}
+.skill-review button[aria-pressed=true]{border-color:var(--primary);color:var(--primary);font-weight:600}
 .skill-review-arms{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}.skill-review fieldset{min-width:0;margin:0;padding:12px;border:1px solid var(--line);border-radius:8px}
 .skill-review legend{font-weight:600;padding:0 6px}.skill-review-answer{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.65;max-height:280px;overflow:auto;margin-bottom:16px}
 .skill-review label{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:8px;font-size:14px}

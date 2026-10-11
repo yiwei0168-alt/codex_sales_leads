@@ -8,6 +8,8 @@ import {digest} from '../src/lib/assistant/main/contracts';
 import {getPool} from '../src/lib/rag/db';
 import {SKILL_GRAPH_REPLAY_CONFIG,SKILL_GRAPH_REPLAY_PROTOCOL} from '../src/lib/assistant/main/skill-graph-replay';
 import {storeHistoricalSkillReplay} from '../src/lib/assistant/main/skill-review-store';
+import {disableLocalAnalysisTracing} from '../src/lib/assistant/main/local-analysis-boundary';
+disableLocalAnalysisTracing();
 
 // Operator-only local command; never exposed as an Agent tool or unauthenticated HTTP endpoint.
 const engine=process.argv.includes('--main-graph')?'main-graph':'receipts';
@@ -27,7 +29,7 @@ try{
   const result=await runHistoricalSkillReplay({userId},input,async snapshot=>{
     captured=snapshot;
     const codeFiles=['scripts/run-historical-skill-replay.ts','src/lib/assistant/main/skill-replay.ts','src/lib/assistant/main/skill-replay-local.ts','src/lib/assistant/main/skill-replay-errors.ts','src/lib/assistant/main/skill-replay-snapshot.ts','src/lib/assistant/main/knowledge-message-guard.ts','src/lib/assistant/main/skill-graph-replay.ts','src/lib/assistant/main/graph.ts','src/lib/assistant/main/product.ts','src/lib/assistant/main/tools.ts'];
-    codeFiles.push('src/lib/assistant/main/private-replay-guard.ts','src/lib/assistant/main/skill-review-store.ts');
+    codeFiles.push('src/lib/assistant/main/private-replay-guard.ts','src/lib/assistant/main/skill-review-store.ts','src/lib/assistant/main/local-analysis-boundary.ts');
     const codeHashes=Object.fromEntries(await Promise.all(codeFiles.map(async file=>[file,digest(await readFile(file,'utf8'))])));
     const config=engine==='main-graph'?SKILL_GRAPH_REPLAY_CONFIG:SKILL_REPLAY_CONFIG;
     await writeFile(path.join(directory,'manifest.json'),JSON.stringify({...snapshot,engine,

@@ -1,0 +1,44 @@
+{
+  "stage": "G08 authenticated local shadow review and local tracing boundary",
+  "date": "2026-10-11",
+  "review": {
+    "migration": "124_skill_shadow_reviews.sql",
+    "authenticatedAccountReviewer": true,
+    "wholeArtifactAndServerEventHashBound": true,
+    "originalSourcesRevalidated": true,
+    "appendOnlyRevisions": true,
+    "concurrentRevisionConflict": true,
+    "expiredCampaignResultsReviewable": true,
+    "disabledCampaignOrChangedEvidenceRejected": true,
+    "automaticActivation": false
+  },
+  "verification": {
+    "unitTests": 34,
+    "testFiles": 4,
+    "typecheck": "passed",
+    "cloneReviewAndIsolation": "passed",
+    "browserWidths": [1366,390,320],
+    "browserModes": ["history","prospective-local-shadow"],
+    "unsavedDraftProtected": true,
+    "productionAnswerSeparated": true,
+    "noHorizontalOverflow": true,
+    "realModelCalls": 0
+  },
+  "tracingAudit": {
+    "finding": "Local graph analysis inherited enabled global LangSmith tracing.",
+    "previousRealMailReplay": "tmp/skill-replay/99ecf98e-2a1e-4428-8827-7302526a2cb3",
+    "remoteRootTracesFound": 2,
+    "remoteRecordsRead": 66,
+    "nonemptyInputRecords": 0,
+    "nonemptyOutputRecords": 0,
+    "matchingMailBodiesOrFragments": 0,
+    "scope": "Only the two identified replay traces; does not establish content of all historical telemetry or metadata.",
+    "auditReadOnly": true,
+    "rawRemoteContentSaved": false,
+    "remoteRecordsDeleted": false,
+    "fix": "Dedicated local entrypoints disable tracing; graph entry and model boundaries reject enabled tracing. Async-local suppression alone failed a test and was replaced.",
+    "noTelemetryRequestTest": "passed"
+  },
+  "production": {"migration123Applied": false,"migration124Applied": false,"webReloaded": false,"shadowWorkerStarted": false},
+  "remaining": ["production-equivalent trusted quality evidence","real prospective evaluation","safe automatic activation gate","independent RAG quality and release gates"]
+}
