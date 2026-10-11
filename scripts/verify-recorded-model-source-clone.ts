@@ -84,6 +84,14 @@ try{
    values($1,$2,$3,$4,'main_model','1',$5,$6,'model','completed',$7)`,[randomUUID(),owner,runId,row.call_key.replace(/:1$/,':0'),digest(failedInput),JSON.stringify(failedInput),JSON.stringify({status:'unavailable',data:{retryable:true,reason:'http-429'}})]);
  }
  const chain=await loadRecordedTaskChain(context,{runId});assert.equal(chain.turns.length,3);assert.equal(chain.serverTaskJournalVerified,true);assert.equal(chain.wholeTaskProvenanceVerified,false);
+ assert.equal(chain.journalClosure.completeReadOnlyJournalVerified,true);assert.equal(chain.journalClosure.consumedReads,1);
+ const hiddenId=randomUUID();
+ for(const effect of ['write','read']){
+  await pool.query(`insert into agent_tool_call(id,user_id,run_id,call_key,tool_id,tool_version,input_hash,input,effect,status,output)
+   values($1,$2,$3,$1::uuid::text,'synthetic_unconsumed','1',$4,'{}',$5,'completed',$6)`,[hiddenId,owner,runId,digest({}),effect,JSON.stringify({status:'success',data:{synthetic:true}})]);
+  await assert.rejects(loadRecordedTaskChain(context,{runId}),/unconsumed operation/);
+  await pool.query('delete from agent_tool_call where id=$1 and user_id=$2',[hiddenId,owner]);
+ }
  const graphAudit=await auditRecordedGraphExecution(context,{runId});assert.equal(graphAudit.recordedDecisions,3);assert.equal(graphAudit.recordedTools,2);assert.equal(graphAudit.modelCalls,0);
  const clarification='Synthetic clarification after recorded reads';
  await pool.query('update agent_run set instructions=$2 where id=$1',[runId,JSON.stringify([{id:randomUUID(),content:clarification}])]);
@@ -100,7 +108,7 @@ try{
  await pool.query("update agent_tool_call set output=jsonb_set(output,'{data,value,message,content}','\"Altered historical reply\"'::jsonb) where id=$1",[earlierIds[0]]);
  await assert.rejects(loadRecordedTaskChain(context,{runId}),/history diverged/);
  await assert.rejects(loadRecordedTaskChain({userId:other},{runId}),/unavailable/);
- console.log(JSON.stringify({cloneOnly:true,threeTurnChainBound:true,productionGraphReceiptReplay:true,instructionBoundaryReplay:true,initialSourceBound:true,changedUserMessageDenied:true,missingFallbackPredecessorDenied:true,fallbackChainBound:true,alteredEarlierReplyDenied:true,localEvidenceGuardsPassed:true,currentToolContractsChecked:true,readReceiptBound:true,substitutedReceiptDenied:true,revokedDecisionMemoryDenied:true,exactRequest:true,tenantIsolation:true,wrongRunDenied:true,changedInstructionsDenied:true,cancelledRunDenied:true,inputHashTamperingDenied:true,modelCalls:0,sourcePermissionsRevalidated:false,executionAuthorized:false,qualityAccepted:false}));
+ console.log(JSON.stringify({cloneOnly:true,completeReadOnlyJournalVerified:true,unconsumedWriteRejected:true,unconsumedReadRejected:true,threeTurnChainBound:true,productionGraphReceiptReplay:true,instructionBoundaryReplay:true,initialSourceBound:true,changedUserMessageDenied:true,missingFallbackPredecessorDenied:true,fallbackChainBound:true,alteredEarlierReplyDenied:true,localEvidenceGuardsPassed:true,currentToolContractsChecked:true,readReceiptBound:true,substitutedReceiptDenied:true,revokedDecisionMemoryDenied:true,exactRequest:true,tenantIsolation:true,wrongRunDenied:true,changedInstructionsDenied:true,cancelledRunDenied:true,inputHashTamperingDenied:true,modelCalls:0,sourcePermissionsRevalidated:false,executionAuthorized:false,qualityAccepted:false}));
 }finally{
  await pool.query('delete from agent_memory_version where memory_id=$1',[memoryId]);
  await pool.query('delete from agent_memory where id=$1 and owner_id=$2',[memoryId,owner]);

@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-11",
+  "testsPassed": 29,
+  "typecheck": true,
+  "eslint": true,
+  "cloneOnly": true,
+  "completeReadOnlyJournalVerified": true,
+  "unconsumedWriteRejected": true,
+  "unconsumedReadRejected": true,
+  "threeTurnChainBound": true,
+  "productionGraphReceiptReplay": true,
+  "instructionBoundaryReplay": true,
+  "modelCalls": 0,
+  "businessToolExecutions": 0,
+  "fixturesCleaned": true,
+  "sourcePermissionsRevalidated": false,
+  "executionAuthorized": false,
+  "qualityAccepted": false,
+  "productionDeployed": false,
+  "verifier": "scripts/verify-recorded-model-source-clone.ts"
+}
