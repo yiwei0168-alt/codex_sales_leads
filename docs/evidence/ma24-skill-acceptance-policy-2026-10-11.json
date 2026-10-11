@@ -1,0 +1,18 @@
+{
+  "date": "2026-10-11",
+  "scope": "G09 deterministic acceptance policy prerequisite",
+  "policyTests": 34,
+  "existingActivationTests": 12,
+  "typecheck": true,
+  "eslint": true,
+  "syntheticOnly": true,
+  "authenticatedEvidenceAdapterImplemented": false,
+  "productionEquivalentRunnerImplemented": false,
+  "productionActivationGateImplemented": false,
+  "automaticActivation": false,
+  "databaseMigrations": 0,
+  "modelCalls": 0,
+  "productionDeployed": false,
+  "tests": "src/lib/assistant/main/skill-acceptance-policy.test.ts",
+  "policy": "src/lib/assistant/main/skill-acceptance-policy.ts"
+}
