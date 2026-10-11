@@ -15,6 +15,10 @@ from pptx import Presentation
 
 def checkpoint_lines(directory, image_hash, produce):
     """Checkpoints remain unreviewed candidates; corrupt/incomplete files are recomputed."""
+    # Owner/job/source/model/image hashes can exceed legacy Windows MAX_PATH.
+    # Only normalize the already validated internal directory, never user paths.
+    if directory and os.name == "nt" and not str(directory).startswith("\\\\?\\"):
+        directory = Path("\\\\?\\" + str(directory.resolve()))
     path = directory / f"{image_hash}.json" if directory else None
     if path:
         try:

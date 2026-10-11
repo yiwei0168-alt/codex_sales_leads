@@ -5,6 +5,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 from hashlib import sha256
 import json
+import os
 import tempfile
 from unittest.mock import patch
 import numpy  # Load once before patch.dict restores the module registry between runs.
@@ -16,6 +17,17 @@ from prepare_pptx_visual_review import connector_candidate, diagram_candidate, r
 
 
 class VisualReviewTest(unittest.TestCase):
+    def test_checkpoint_under_realistic_long_owner_job_path(self):
+        with tempfile.TemporaryDirectory(dir=Path.cwd() / "tmp") as temp:
+            directory=Path(temp)/('a'*60)/('b'*60)/('c'*40)
+            directory.mkdir(parents=True)
+            lines=[{"text":"candidate","confidence":.9,"box":[[0,0]]}]
+            self.assertEqual(checkpoint_lines(directory,'d'*64,lambda:lines),(lines,False))
+            self.assertEqual(checkpoint_lines(directory,'d'*64,lambda:[]),(lines,True))
+            stored=directory/('d'*64+'.json')
+            if os.name=='nt': stored=Path('\\\\?\\'+str(stored.resolve()))
+            stored.unlink()
+
     def test_checkpoint_corruption_and_interrupted_atomic_write(self):
         with tempfile.TemporaryDirectory(dir=Path.cwd() / "tmp") as temp:
             folder = Path(temp); image_hash = "a" * 64

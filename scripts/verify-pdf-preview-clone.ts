@@ -27,6 +27,7 @@ try{
  const after=await getExtractionReview(owner,job.id);assert.equal(after.visualState,'ready');assert.equal(after.resolved,0);
  for(const item of after.blocks){
   assert.equal(item.candidate?.coordinateSpace,'pdf-page-render');
+  assert(Array.isArray(item.candidate?.ocrLines));
   const image=await getExtractionReviewImage(owner,job.id,after.artifactSha256,item.block.id);assert(image);
  }
  await assert.rejects(()=>getExtractionReview(other,job.id));
