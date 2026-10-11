@@ -4,6 +4,8 @@ import {readFile} from 'node:fs/promises';
 import nextEnv from '@next/env';
 import {Pool} from 'pg';
 import {getPool} from '../src/lib/rag/db';
+import {auditRecordedGraphExecution} from '../src/lib/assistant/main/recorded-graph-audit';
+import {disableLocalAnalysisTracing} from '../src/lib/assistant/main/local-analysis-boundary';
 import {initialTaskMessages} from '../src/lib/assistant/main/initial-task-messages';
 import {loadRecordedTaskChain} from '../src/lib/assistant/main/recorded-task-source';
 import {describeTool,productTools} from '../src/lib/assistant/main/tools';
@@ -15,7 +17,7 @@ import {modeModelConfig} from '../src/lib/assistant/main/mode-config';
 import {modelFunctions,transportMessages} from '../src/lib/assistant/main/model';
 import {modelRequestManifest} from '../src/lib/assistant/main/model-request-manifest';
 import {loadRecordedModeRequest,revalidateRecordedModeRequest} from '../src/lib/assistant/main/model-request-source';
-nextEnv.loadEnvConfig(process.cwd());
+nextEnv.loadEnvConfig(process.cwd());disableLocalAnalysisTracing();
 const base=process.env.DATABASE_MIGRATION_URL||process.env.DATABASE_URL;
 assert(base&&['localhost','127.0.0.1','::1'].includes(new URL(base).hostname));
 const state=JSON.parse(await readFile('tmp/ma11-replay-state.json','utf8'));assert(/^ma11_replay_[a-f0-9]{12}$/.test(state.database));
@@ -82,13 +84,14 @@ try{
    values($1,$2,$3,$4,'main_model','1',$5,$6,'model','completed',$7)`,[randomUUID(),owner,runId,row.call_key.replace(/:1$/,':0'),digest(failedInput),JSON.stringify(failedInput),JSON.stringify({status:'unavailable',data:{retryable:true,reason:'http-429'}})]);
  }
  const chain=await loadRecordedTaskChain(context,{runId});assert.equal(chain.turns.length,3);assert.equal(chain.serverTaskJournalVerified,true);assert.equal(chain.wholeTaskProvenanceVerified,false);
+ const graphAudit=await auditRecordedGraphExecution(context,{runId});assert.equal(graphAudit.recordedDecisions,3);assert.equal(graphAudit.recordedTools,2);assert.equal(graphAudit.modelCalls,0);
  await pool.query("update assistant_message set content='Changed original' where user_id=$1",[owner]);
  await assert.rejects(loadRecordedTaskChain(context,{runId}),/original user message changed/);
  await pool.query("update assistant_message set content='Synthetic original task' where user_id=$1",[owner]);
  await pool.query("update agent_tool_call set output=jsonb_set(output,'{data,value,message,content}','\"Altered historical reply\"'::jsonb) where id=$1",[earlierIds[0]]);
  await assert.rejects(loadRecordedTaskChain(context,{runId}),/history diverged/);
  await assert.rejects(loadRecordedTaskChain({userId:other},{runId}),/unavailable/);
- console.log(JSON.stringify({cloneOnly:true,threeTurnChainBound:true,initialSourceBound:true,changedUserMessageDenied:true,missingFallbackPredecessorDenied:true,fallbackChainBound:true,alteredEarlierReplyDenied:true,localEvidenceGuardsPassed:true,currentToolContractsChecked:true,readReceiptBound:true,substitutedReceiptDenied:true,revokedDecisionMemoryDenied:true,exactRequest:true,tenantIsolation:true,wrongRunDenied:true,changedInstructionsDenied:true,cancelledRunDenied:true,inputHashTamperingDenied:true,modelCalls:0,sourcePermissionsRevalidated:false,executionAuthorized:false,qualityAccepted:false}));
+ console.log(JSON.stringify({cloneOnly:true,threeTurnChainBound:true,productionGraphReceiptReplay:true,initialSourceBound:true,changedUserMessageDenied:true,missingFallbackPredecessorDenied:true,fallbackChainBound:true,alteredEarlierReplyDenied:true,localEvidenceGuardsPassed:true,currentToolContractsChecked:true,readReceiptBound:true,substitutedReceiptDenied:true,revokedDecisionMemoryDenied:true,exactRequest:true,tenantIsolation:true,wrongRunDenied:true,changedInstructionsDenied:true,cancelledRunDenied:true,inputHashTamperingDenied:true,modelCalls:0,sourcePermissionsRevalidated:false,executionAuthorized:false,qualityAccepted:false}));
 }finally{
  await pool.query('delete from agent_memory_version where memory_id=$1',[memoryId]);
  await pool.query('delete from agent_memory where id=$1 and owner_id=$2',[memoryId,owner]);

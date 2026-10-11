@@ -1,0 +1,17 @@
+{
+  "scope": "G08 production graph audit using recorded replies and receipts only",
+  "tests": 9,
+  "typecheck": "passed",
+  "lint": "passed",
+  "cloneRecordedDecisions": 3,
+  "cloneRecordedTools": 2,
+  "productionGraphReused": true,
+  "fixturesRemoved": true,
+  "modelCalls": 0,
+  "businessToolExecutions": 0,
+  "externalTracingDisabled": true,
+  "productionDeployed": false,
+  "interruptedTracesSupported": false,
+  "liveShadow": false,
+  "qualityAccepted": false
+}
