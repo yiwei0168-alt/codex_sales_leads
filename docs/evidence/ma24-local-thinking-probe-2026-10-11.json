@@ -1,0 +1,78 @@
+{
+  "scope": "G06 exposed synthetic failure-point diagnostic only",
+  "directory": "tmp/skill-thinking-probe/c176ca7d-a277-4eeb-9088-99d9ebbed4bb",
+  "model": "qwen3:8b",
+  "modelDigest": "500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41",
+  "settings": {
+    "think": true,
+    "temperature": 0,
+    "seed": 42,
+    "num_predict": 2048,
+    "num_ctx": 32768,
+    "timeoutMs": 120000
+  },
+  "calls": 4,
+  "cloudCalls": 0,
+  "actualToolsExecuted": 0,
+  "rows": [
+    {
+      "artifact": "001-baseline.json",
+      "sha256": "d416ffa3c0b60a24a131d565be9a70212af21a64683ff16b4678ce3decf8840b",
+      "elapsedMs": 116910,
+      "done": true,
+      "doneReason": "stop",
+      "error": null,
+      "sourceSha256": "49c7377d4f30c880b968c16b9c7e0f1da9b3c5f4086b9cc852e2b4632c4468c7",
+      "requestSha256": "303a4ca308a6f1f16e8164d6c83abf5e50c9ababb9a9f204bb3e7c8bd00634ec",
+      "judgment": "clarification-without-tool-call"
+    },
+    {
+      "artifact": "001-candidate.json",
+      "sha256": "09304e00039a2bd13e4d259fc9dd882b1a9af279c27ebc98ba319a4cf2f8d97f",
+      "elapsedMs": 65168,
+      "done": true,
+      "doneReason": "stop",
+      "error": null,
+      "sourceSha256": "49c7377d4f30c880b968c16b9c7e0f1da9b3c5f4086b9cc852e2b4632c4468c7",
+      "requestSha256": "b952ad36b873859b05a01180f1e5854ef17a5bd2adbe21063bc8abd2f9aa7331",
+      "judgment": "clarification-without-tool-call"
+    },
+    {
+      "artifact": "004-baseline.json",
+      "sha256": "7ecbc1c2766e4caa636c98fe534d7c9b7ad97d16d09a6b21a5f0fffa21954aa6",
+      "elapsedMs": 120014,
+      "done": false,
+      "doneReason": null,
+      "error": "TimeoutError",
+      "sourceSha256": "9642a4f64179b858929228603b523a58ea52d73502010d9e7fa83f6f761ecea0",
+      "requestSha256": "6acb651e6c665936b0c44cbdecbf69ddd24245da9a4c22cd66318bdf03da7dde",
+      "judgment": "incomplete-timeout"
+    },
+    {
+      "artifact": "004-candidate.json",
+      "sha256": "bb8c3337d6bccc98cba90a2206a93e2847043f62b3c146bb9e83b841e86c3711",
+      "elapsedMs": 109070,
+      "done": true,
+      "doneReason": "stop",
+      "error": null,
+      "sourceSha256": "9642a4f64179b858929228603b523a58ea52d73502010d9e7fa83f6f761ecea0",
+      "requestSha256": "d969f84f8d64aad8a976b509f7237b931dee887ce7c8150841ef18f98122e32b",
+      "judgment": "still-labels-source-instruction-as-system-message"
+    }
+  ],
+  "reviewer": "Codex development diagnosis",
+  "fullReplay": false,
+  "productionAgentEquivalent": false,
+  "safetyAccepted": false,
+  "adopted": false,
+  "runtimeObservation": {
+    "size_vram": 0,
+    "context_length": 32768
+  },
+  "limitations": [
+    "Reuses already exposed failures and previously rejected v5 prompt; not independent validation.",
+    "Thinking and token limit changed together, so the probe cannot isolate their causal effects.",
+    "Latency includes local request/queue time; no inference throughput claim.",
+    "Raw local provider artifacts are not committed; hashes bind the review."
+  ]
+}
