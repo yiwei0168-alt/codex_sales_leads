@@ -1,0 +1,45 @@
+{
+  "date": "2026-10-13",
+  "stage": "R0 local product database backup and recovery",
+  "initialFailure": {
+    "archive": "network_copilot_2026-10-13T08-49-23Z.dump",
+    "sha256": "2e03e4b6ca758715faf130fa71243e7f6235fce2bf83a5b2e79c94cb4ac6504e",
+    "cause": "One missing app_user reference existed in each of spend_budget_change and user_spend_budget; full restore failed when their foreign keys were added.",
+    "sourceRowsDeleted": 0
+  },
+  "sourceRepair": {
+    "database": "network_copilot_local",
+    "action": "Added one disabled, passwordless historical ledger owner with the existing orphan UUID; preserved both budget records.",
+    "postRepairOrphanCounts": {"spend_budget_change": 0, "user_spend_budget": 0},
+    "ledgerRowsDeleted": 0
+  },
+  "verifiedBackup": {
+    "archive": "network_copilot_2026-10-13T09-03-13Z.dump",
+    "bytes": 192967451,
+    "sha256": "17db517922f0ee8067391544418f0c8af9f77ee5f48203b938b7559ba528d428",
+    "archiveAndManifestLocation": "local Git-ignored backups/database",
+    "checksumMatched": true,
+    "fullIntegrityRestore": true,
+    "skippedConstraints": [],
+    "temporaryDatabaseRemoved": true
+  },
+  "freshSchemaCandidate": {
+    "beforeStageMarkers": "all seven checked 127-134 markers absent",
+    "transactionalReplay": "passed",
+    "rollbackRestoredBeforeState": true,
+    "committedOnDisposableClone": "passed",
+    "afterStageMarkers": "all seven checked markers present",
+    "criticalAccessChecks": {
+      "applicationCanReadAndInsertExtractionReview": true,
+      "applicationCannotInsertSkillEvidenceBundle": true,
+      "collectorCanInsertSkillEvidenceBundle": true,
+      "skillEvidenceBundleForcesRls": true
+    }
+  },
+  "scripts": ["scripts/backup-database.ts", "scripts/repair-ma24-orphan-ledger-owner.ts", "scripts/verify-ma24-backup-restore.ts"],
+  "focusedEslint": "passed",
+  "productionSchemaMigrated": false,
+  "productionServicesRestarted": false,
+  "cloudModelCalls": 0,
+  "remaining": ["Confirm exact running source provenance", "Apply 127-134 only with an integrated release and current backup", "Verify deployed routes and service rollback"]
+}

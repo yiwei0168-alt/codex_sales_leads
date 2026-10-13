@@ -6,6 +6,8 @@ The application uses Alibaba Cloud RDS for PostgreSQL as its primary database. R
 
 Docker Desktop must be running. The script loads `.env.local` through the existing TypeScript runner, prefers `DATABASE_MIGRATION_URL`, and never prints the connection string. For a remote URL without an explicit SSL mode, the backup process requires TLS.
 
+For a local database URL, the Docker backup helper connects through `host.docker.internal`; `127.0.0.1` inside the helper container refers to that container, not the Windows host. Use `node scripts/run-tsx.cjs scripts/verify-ma24-backup-restore.ts` to restore the latest local archive into a disposable database and check the pending 127–134 migrations. The verifier removes its disposable database and never applies those migrations to the product database.
+
 ```powershell
 node scripts/run-tsx.cjs scripts/backup-database.ts
 ```

@@ -33,6 +33,10 @@ async function sha256(file: string): Promise<string> {
 }
 
 async function runDockerBackup(connectionString: string, outputDirectory: string, fileName: string): Promise<void> {
+  const dockerTarget = new URL(connectionString);
+  if (["localhost", "127.0.0.1", "::1"].includes(dockerTarget.hostname.toLowerCase())) {
+    dockerTarget.hostname = "host.docker.internal";
+  }
   const mount = `type=bind,source=${outputDirectory},target=/backup`;
   const script = [
     "set -eu",
@@ -51,7 +55,7 @@ async function runDockerBackup(connectionString: string, outputDirectory: string
     "run", "--rm", "-i", "--mount", mount, POSTGRES_IMAGE,
     "sh", "-c", script, "backup", fileName,
   ], { stdio: ["pipe", "inherit", "inherit"], windowsHide: true });
-  child.stdin.end(`${connectionString}\n`);
+  child.stdin.end(`${dockerTarget.toString()}\n`);
   const exitCode = await new Promise<number>((accept, reject) => {
     child.once("error", reject);
     child.once("exit", (code, signal) => {
