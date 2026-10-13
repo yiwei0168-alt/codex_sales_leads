@@ -1,6 +1,6 @@
 # Database backup and portability
 
-The application uses Alibaba Cloud RDS for PostgreSQL as its primary database. RDS automatic backups remain the first recovery layer. A separate PostgreSQL custom-format archive provides a provider-independent copy for migration or disaster recovery.
+The current local product database is PostgreSQL `network_copilot_local`. Earlier Alibaba Cloud RDS backups remain historical recovery material. A PostgreSQL custom-format archive provides a portable local copy; a backup is considered verified only after a full restore into an isolated database with its constraints intact.
 
 ## Create a local backup
 
