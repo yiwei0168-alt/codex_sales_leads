@@ -1,0 +1,31 @@
+{
+  "date": "2026-10-13",
+  "scope": "Read-only process command lines, release worktrees, and local HTTP assets",
+  "web": {
+    "pid": 42252,
+    "port": 3018,
+    "candidateWorktree": "tmp/ui-scroll-runtime-release",
+    "worktreeCommit": "245ed9cc",
+    "buildId": "QfoyXprIZIVgSWxFSZ-1K",
+    "matchingBuildManifestHttp": 200,
+    "rollbackBuildManifestHttp": 404,
+    "rootBuildManifestHttp": 404,
+    "assessment": "The live server serves the scoped-release build ID; process command line alone does not expose its working directory."
+  },
+  "langgraph": {
+    "pid": 14580,
+    "port": 2024,
+    "releaseMarkerCommit": "44e8608c",
+    "releaseMarkerPidMatchesProcess": true,
+    "worktreeCommit": "44e8608c",
+    "assessment": "Launcher command line and matching PID release marker corroborate the scoped hotfix; no in-process hash endpoint exists."
+  },
+  "mainWorker": {
+    "pid": 32380,
+    "launcherPath": "tmp/g02-rollback-release/scripts/run-tsx.cjs",
+    "worktreeCommit": "1d1cc962",
+    "assessment": "Parent launcher command line directly names the release worktree."
+  },
+  "productionChanges": 0,
+  "cloudModelCalls": 0
+}
