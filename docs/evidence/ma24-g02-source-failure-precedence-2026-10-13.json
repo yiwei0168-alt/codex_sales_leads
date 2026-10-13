@@ -16,14 +16,26 @@
     "langGraphHealth": 200,
     "activeOrQueuedMainAgentRuns": 0
   },
+  "localModelRevocation": {
+    "command": "node scripts/run-tsx.cjs scripts/verify-g02-local-model-revocation-clone.ts",
+    "database": "isolated local ma11_replay_7d98e095133b clone",
+    "model": "local qwen3:8b",
+    "modelCalls": 1,
+    "sourceRevokedBeforeGraphSave": true,
+    "staleAnswerDiscarded": true,
+    "subsequentToolCalls": 0,
+    "syntheticFixtureCleaned": true,
+    "cloudCalls": 0
+  },
   "scope": {
-    "actualModelCalls": 0,
+    "actualLocalModelCalls": 1,
+    "paidModelCalls": 0,
     "externalEffects": 0,
     "productionServicesRestarted": false,
     "realBusinessTaskAcceptance": false
   },
   "remaining": [
-    "Run a bounded real task with a source revoked during generation, then inspect durable task and tool receipts.",
+    "Run a bounded real account task with a source revoked during generation, then inspect durable task and tool receipts.",
     "Confirm old checkpoint recovery and pre-tool refusal on the currently loaded service without adding an external effect.",
     "The current branch contains other undeployed changes; source-only unit results cannot establish that production loaded this patch."
   ]
