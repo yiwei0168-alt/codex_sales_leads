@@ -1,0 +1,28 @@
+{
+  "date": "2026-10-13",
+  "scope": "MA24 G13 / mailbox manager drawer",
+  "component": "src/components/mailbox-workspace.tsx",
+  "test": "scripts/verify-mailbox-manager-ui.ts",
+  "actualComponent": true,
+  "productionStyles": true,
+  "fixture": "Four synthetic account metadata records; no mailbox contents, credentials, network API or model calls",
+  "viewports": ["1366x900", "1366x360", "390x760", "320x480"],
+  "verified": [
+    "Manager opens as a native opaque drawer above the inbox",
+    "Four account settings render and Add mailbox expands",
+    "Drawer body scrolls to the connection submit button in each viewport",
+    "No horizontal document overflow in each viewport",
+    "Escape closes the drawer"
+  ],
+  "checks": {
+    "mailboxManagerBrowserFixture": "passed",
+    "sharedDialogBrowserFixture": "passed",
+    "mobileScreenshotInspected": true,
+    "shortDesktopScreenshotInspected": true
+  },
+  "limitations": [
+    "Synthetic API metadata does not prove live authenticated mailbox behavior",
+    "Other collapsible product entry points remain to be audited",
+    "No product code or production service changed in this stage"
+  ]
+}
