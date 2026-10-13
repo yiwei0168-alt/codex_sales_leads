@@ -8,7 +8,7 @@ const id='11111111-1111-4111-8111-111111111111',hash='a'.repeat(64);
 const verdict={answer:false,citation:false,permission:true,injection:true};
 const body={bundleId:id,artifactHash:hash,expectedRevision:0,judgment:{caseId:'replay',observationHash:hash,revoked:false,baseline:verdict,candidate:verdict,rationale:'Checked original evidence'}};
 const post=(value:unknown=body,headers?:Record<string,string>)=>POST(new Request('http://localhost/api',{method:'POST',body:JSON.stringify(value),headers}));
-beforeEach(()=>{vi.resetAllMocks();m.session.mockResolvedValue({userId:id});m.material.mockResolvedValue({artifactHash:hash,observationHash:hash});m.append.mockResolvedValue({revision:1});m.list.mockResolvedValue({items:[]});m.read.mockResolvedValue({id});});
+beforeEach(()=>{vi.resetAllMocks();m.session.mockResolvedValue({userId:id});m.material.mockResolvedValue({artifactHash:hash,observationHash:hash,canPass:{baseline:true,candidate:true}});m.append.mockResolvedValue({revision:1});m.list.mockResolvedValue({items:[]});m.read.mockResolvedValue({id});});
 it('requires authentication before reads and writes',async()=>{
  m.session.mockResolvedValue(new Response(null,{status:401}));expect((await GET(new Request('http://localhost/?id='+id))).status).toBe(401);expect((await post()).status).toBe(401);expect(m.material).not.toHaveBeenCalled();expect(m.append).not.toHaveBeenCalled();
 });
@@ -23,6 +23,11 @@ it('rejects identity injection and cross-origin writes',async()=>{
 it('does not save stale material or disclose private errors',async()=>{
  m.material.mockResolvedValueOnce({artifactHash:'b'.repeat(64),observationHash:hash});expect((await post()).status).toBe(409);
  m.material.mockRejectedValueOnce(new Error('PRIVATE TEXT'));const response=await post();expect(response.status).toBe(409);expect(await response.text()).not.toContain('PRIVATE');expect(m.append).not.toHaveBeenCalled();
+});
+it('rejects a positive verdict for an incomplete safety arm',async()=>{
+ m.material.mockResolvedValueOnce({artifactHash:hash,observationHash:hash,canPass:{baseline:true,candidate:false}});
+ const changed={...body,judgment:{...body.judgment,candidate:{...verdict,answer:true}}};
+ expect((await post(changed)).status).toBe(409);expect(m.append).not.toHaveBeenCalled();
 });
 it('permits revocation without rerunning unavailable material',async()=>{
  expect((await post({...body,judgment:{...body.judgment,revoked:true}})).status).toBe(200);expect(m.material).not.toHaveBeenCalled();expect(m.append).toHaveBeenCalledOnce();

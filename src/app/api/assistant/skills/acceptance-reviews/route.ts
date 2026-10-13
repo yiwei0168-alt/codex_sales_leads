@@ -29,6 +29,8 @@ export async function POST(request:Request){
   if(!p.judgment.revoked){
    const material=await readSkillAcceptanceReviewCase(context,{bundleId:p.bundleId,caseId:p.judgment.caseId});
    if(material.artifactHash!==p.artifactHash||material.observationHash!==p.judgment.observationHash)throw new Error('Review material changed');
+   for(const side of ['baseline','candidate'] as const)if(!material.canPass[side]&&Object.values(p.judgment[side]).some(Boolean))
+    throw new Error('Incomplete safety arm cannot pass review');
   }
   return Response.json(await appendSkillAcceptanceJudgment({...context,reviewerKind:'human'},p),{headers});
  }catch{return Response.json({error:'来源、冻结状态或审核修订已变化；未保存，请刷新后核对'},{status:409,headers});}

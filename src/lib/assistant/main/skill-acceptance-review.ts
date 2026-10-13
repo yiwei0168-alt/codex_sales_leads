@@ -7,6 +7,7 @@ import {loadRecordedTaskChain} from './recorded-task-source';
 import {prepareSkillModelJournalAudit,readSkillCandidateJournal} from './skill-candidate-audit';
 import type {RecordedEvidenceReceipt} from './recorded-evidence-receipts';
 import {assertLocalAnalysisBoundary} from './local-analysis-boundary';
+import {readSkillSafetyReviewCase} from './skill-safety-review';
 
 type Context={userId:string};
 export async function listSkillAcceptanceReviews(context:Context,input:{skillId:string;offset:number}){
@@ -21,7 +22,11 @@ export async function readSkillAcceptanceReview(context:Context,bundleId:string)
  return {id:bundleId,artifactHash:saved.artifactHash,version:saved.artifact.plan.pin.version,sourceKind:saved.artifact.sourceKind,
   sourcesCurrent:saved.sourcesCurrent,freezeStatus:saved.freezeStatus,automaticActivation:false,
   cases:saved.artifact.plan.cases.map(item=>{const observation=saved.artifact.observations.find(row=>row.caseId===item.id);
-   return {id:item.id,category:item.category,hasObservation:Boolean(observation),materialAvailable:Boolean(observation&&item.category==='replay'&&item.provenance==='historical-task'),
+   return {id:item.id,category:item.category,hasObservation:Boolean(observation),materialAvailable:Boolean(observation&&(
+    item.category==='replay'&&item.provenance==='historical-task'||
+    item.provenance==='safety-fixture'&&['negative','injection','permissions'].includes(item.category)&&
+     z.record(z.string(),z.unknown()).safeParse(saved.artifact.rawReceipts.safetySources).success&&
+     Object.hasOwn(saved.artifact.rawReceipts.safetySources as object,item.id))),
     observationHash:observation?digest(observation):null,judgment:saved.judgments.find(row=>row.caseId===item.id)??null};}),
  };
 }
@@ -32,6 +37,8 @@ export async function readSkillAcceptanceReview(context:Context,bundleId:string)
 export async function readSkillAcceptanceReviewCase(context:Context,input:{bundleId:string;caseId:string}){
  assertLocalAnalysisBoundary();z.uuid().parse(input.bundleId);z.string().min(1).max(200).parse(input.caseId);
  const before=await readSkillAcceptanceEvidence(context,input.bundleId);
+ const item=before.artifact.plan.cases.find(row=>row.id===input.caseId);
+ if(item?.provenance==='safety-fixture')return readSkillSafetyReviewCase(context,input);
  const validated=await validateStoredSkillAcceptanceCandidate(context,input);
  const reference=z.object({runId:z.uuid(),evaluationId:z.uuid(),projectionHash:z.string()}).strict().parse(
   z.record(z.string(),z.unknown()).parse(before.artifact.rawReceipts.candidateSources)[input.caseId]);
@@ -59,6 +66,7 @@ export async function readSkillAcceptanceReviewCase(context:Context,input:{bundl
  if(digest(after)!==digest(before)||validated.artifactHash!==before.artifactHash)throw new Error('Review state changed during reading');
  return {bundleId:input.bundleId,caseId:input.caseId,artifactHash:before.artifactHash,observationHash:digest(observation),
   question,baseline,candidate,receipts:receipts.map(row=>({tool:row.tool_id,input:row.input,output:row.output})),
+  canPass:{baseline:true,candidate:true},
   sourceKind:before.artifact.sourceKind,freezeStatus:before.freezeStatus,judgment:before.judgments.find(row=>row.caseId===input.caseId)??null,
   automaticActivation:false,productionAgentEquivalent:false};
 }
