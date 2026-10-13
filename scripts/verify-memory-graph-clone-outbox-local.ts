@@ -19,15 +19,13 @@ const clone=new URL(base);clone.pathname=`/${state.database}`;
 process.env.DATABASE_URL=clone.toString();
 const cleanup=new Pool({connectionString:clone.toString()});
 let observationId="";
-function prepareClone():Promise<void>{
-  return new Promise((done,reject)=>{
-    const child=spawn(process.execPath,["scripts/run-tsx.cjs","scripts/migrate.ts"],
-      {cwd:process.cwd(),windowsHide:true,env:{...process.env,DATABASE_URL:clone.toString(),DATABASE_MIGRATION_URL:clone.toString()},
-        stdio:["ignore","pipe","pipe"]});
-    let errors="";child.stderr.on("data",chunk=>{errors+=String(chunk);});
-    child.stdout.on("data",()=>{});child.once("error",reject);
-    child.once("close",code=>code===0?done():reject(new Error(errors.slice(-500)||`clone-migrate-exit-${code}`)));
-  });
+async function verifyCloneSchema():Promise<void>{
+  const {rows}=await cleanup.query<{observation:string|null;outbox:string|null;next_job:string|null}>(
+    `select to_regclass('public.agent_memory_observation')::text as observation,
+      to_regclass('public.agent_memory_graph_outbox')::text as outbox,
+      to_regprocedure('public.next_memory_graph_outbox()')::text as next_job`);
+  if(!rows[0]?.observation||!rows[0].outbox||!rows[0].next_job)
+    throw new Error('Isolated clone lacks memory graph schema; prepare a fresh clone before this probe');
 }
 function cleanGraph():Promise<void>{
   return new Promise((done,reject)=>{
@@ -43,12 +41,24 @@ function cleanGraph():Promise<void>{
   });
 }
 try{
-  await prepareClone();
+  await verifyCloneSchema();
   const [owner]=await tenantQuery<{id:string}>(OWNER_USER_ID,"select id from app_user where id=$1 and status='active'",[OWNER_USER_ID]);
   if(!owner)throw new Error("Clone owner unavailable");
   const marker=`MA24 local graph probe ${randomUUID()}`;
   observationId=await observeMemory(OWNER_USER_ID,{kind:"preference",content:marker,
     sourceReceipt:{type:"local-graph-clone-probe",id:randomUUID()}});
+  const unavailable=await processMemoryGraphOutbox(OWNER_USER_ID,observationId,async()=>{
+    throw new Error("Synthetic local Neo4j outage");
+  });
+  if(unavailable!=="queued")throw new Error(`Graph outage was not queued: ${unavailable}`);
+  const [failed]=await tenantQuery<{delivered_at:Date|null;attempt_count:number;lease_token:string|null;last_error:string;next_attempt_at:Date}>(OWNER_USER_ID,
+    "select delivered_at,attempt_count,lease_token,last_error,next_attempt_at from agent_memory_graph_outbox where observation_id=$1",[observationId]);
+  if(!failed||failed.delivered_at||failed.attempt_count!==1||failed.lease_token||failed.last_error!=="local_graph_failed"||failed.next_attempt_at<=new Date())
+    throw new Error("Graph outage receipt did not retain a delayed retry");
+  if(await processMemoryGraphOutbox(OWNER_USER_ID,observationId,async()=>{throw new Error("Retry ran before due");})!=="busy")
+    throw new Error("Outbox ignored retry delay");
+  // Advance only this isolated clone receipt; production keeps the ten-minute backoff.
+  await tenantQuery(OWNER_USER_ID,"update agent_memory_graph_outbox set next_attempt_at=now()-interval '1 second' where observation_id=$1",[observationId]);
   const status=await processMemoryGraphOutbox(OWNER_USER_ID,observationId);
   if(status!=="delivered")throw new Error(`Graph outbox delivery failed: ${status}`);
   if(!(await graphObservationIds(OWNER_USER_ID,marker)).includes(observationId))throw new Error("Graph candidate missing");
@@ -58,10 +68,11 @@ try{
   if(checked.path!=="graph"||!checked.rows.some(row=>row.id===observationId))throw new Error("PostgreSQL revalidation failed");
   const [receipt]=await tenantQuery<{delivered_at:Date;attempt_count:number}>(OWNER_USER_ID,
     "select delivered_at,attempt_count from agent_memory_graph_outbox where observation_id=$1",[observationId]);
-  if(!receipt?.delivered_at||await processMemoryGraphOutbox(OWNER_USER_ID,observationId)!=="busy")
+  if(!receipt?.delivered_at||receipt.attempt_count!==2||await processMemoryGraphOutbox(OWNER_USER_ID,observationId)!=="busy")
     throw new Error("Outbox receipt or replay guard failed");
   console.log(JSON.stringify({local:true,clone:true,projected:true,postgresRevalidated:true,
-    crossAccountDenied:true,replayDenied:true,attemptCount:receipt.attempt_count,externalCalls:0}));
+    crossAccountDenied:true,replayDenied:true,failedProjectionQueued:true,retryDelayRespected:true,
+    localGraphRecovered:true,attemptCount:receipt.attempt_count,externalCalls:0}));
 }finally{
   try{
     if(observationId)await cleanGraph();

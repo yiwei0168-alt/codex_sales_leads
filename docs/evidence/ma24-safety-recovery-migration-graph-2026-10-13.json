@@ -1,0 +1,42 @@
+{
+  "date": "2026-10-13",
+  "scope": ["G04 local memory graph recovery", "G05 repeatable database migration"],
+  "environment": {
+    "database": "isolated local ma11_replay_7d98e095133b clone",
+    "graph": "local Graphiti and Neo4j",
+    "productionDeployment": false,
+    "cloudModelCalls": 0,
+    "paidModelCalls": 0
+  },
+  "migrationReplay": {
+    "command": "node scripts/run-tsx.cjs scripts/verify-migration-replay-clone.ts",
+    "consecutiveRuns": 2,
+    "result": "passed",
+    "tablesWithForceRls": 5,
+    "scopedPolicies": 10,
+    "applicationRoleUpdateOrDelete": false,
+    "cause": "Migrations 126-128 created policies without first dropping existing policies, so a replay stopped at migration 126.",
+    "fix": "Drop each existing policy before recreating it with the same tenant and reviewer conditions."
+  },
+  "graphOutbox": {
+    "command": "node scripts/run-tsx.cjs scripts/verify-memory-graph-clone-outbox-local.ts",
+    "result": "passed",
+    "failedProjectionQueued": true,
+    "retryDelayRespected": true,
+    "recoveredProjectionAttemptCount": 2,
+    "postgresRevalidation": true,
+    "crossAccountDenied": true,
+    "duplicateReplayDenied": true,
+    "syntheticProbeCleanup": "passed; final graph search returned no probe IDs"
+  },
+  "checks": {
+    "typescriptNoEmit": "passed",
+    "targetedEslint": "passed",
+    "gitDiffCheck": "passed"
+  },
+  "limits": [
+    "The graph failure was injected into the projector; this check did not stop a production Graphiti service.",
+    "The migration replay used an isolated clone and does not prove a production deployment.",
+    "Natural memory extraction quality and real document visual quality still require their separate acceptance gates."
+  ]
+}

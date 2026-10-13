@@ -18,7 +18,9 @@ create table if not exists knowledge_upload_extraction_review (
 );
 alter table knowledge_upload_extraction_review enable row level security;
 alter table knowledge_upload_extraction_review force row level security;
+drop policy if exists owned_read on knowledge_upload_extraction_review;
 create policy owned_read on knowledge_upload_extraction_review for select using(owner_id=app_current_user_id());
+drop policy if exists owned_insert on knowledge_upload_extraction_review;
 create policy owned_insert on knowledge_upload_extraction_review for insert with check(owner_id=app_current_user_id() and reviewer_id=app_current_user_id());
 revoke all on knowledge_upload_extraction_review from network_copilot_app;
 grant select,insert on knowledge_upload_extraction_review to network_copilot_app;

@@ -8,7 +8,9 @@ create table if not exists knowledge_upload_review_completion (
 );
 alter table knowledge_upload_review_completion enable row level security;
 alter table knowledge_upload_review_completion force row level security;
+drop policy if exists owned_read on knowledge_upload_review_completion;
 create policy owned_read on knowledge_upload_review_completion for select using(owner_id=app_current_user_id());
+drop policy if exists owned_insert on knowledge_upload_review_completion;
 create policy owned_insert on knowledge_upload_review_completion for insert with check(owner_id=app_current_user_id());
 revoke all on knowledge_upload_review_completion from network_copilot_app;
 grant select,insert on knowledge_upload_review_completion to network_copilot_app;
