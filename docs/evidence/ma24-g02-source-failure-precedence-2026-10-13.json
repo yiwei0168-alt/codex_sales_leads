@@ -66,12 +66,14 @@
     "actualLocalModelCalls": 1,
     "paidModelCalls": 1,
     "externalEffects": 0,
-    "productionServicesRestarted": false,
+    "productionServicesRestarted": true,
+    "productionGraphCommit": "44e8608c",
+    "productionSyntheticHttpRevocationPassed": true,
     "realBusinessTaskAcceptance": false
   },
   "remaining": [
     "Run a bounded real account task with a source revoked during generation on the currently loaded service; the paid synthetic clone test does not establish account-level production acceptance.",
-    "Confirm old checkpoint recovery and pre-tool refusal on the currently loaded service without adding an external effect.",
-    "The current branch contains other undeployed changes; source-only unit results cannot establish that production loaded this patch."
+    "The loaded service rejected a revoked synthetic checkpoint before a pending tool, but a real account business task during generation remains untested.",
+    "Independent RAG and Skill quality gates remain separate from this source-safety release."
   ]
 }

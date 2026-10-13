@@ -1,0 +1,68 @@
+{
+  "date": "2026-10-13",
+  "stage": "G02 scoped runtime hotfix",
+  "source": {
+    "previousServiceCommit": "1d1cc962",
+    "hotfixCommit": "44e8608c",
+    "hotfixFiles": [
+      "src/lib/assistant/main/graph.ts",
+      "src/lib/assistant/main/memory-message-guard.ts",
+      "src/lib/assistant/main/memory-message-guard.test.ts",
+      "src/lib/assistant/main/skill-message-guard.test.ts"
+    ],
+    "otherUnreleasedMainBranchCommitsLoaded": false,
+    "rollbackWorktree": "tmp/g02-rollback-release"
+  },
+  "preRelease": {
+    "focusedTestsPassed": 22,
+    "typescriptNoEmit": "passed",
+    "gitDiffCheck": "passed",
+    "hotfixCloneHttpPort": 2026,
+    "hotfixCloneHttpStatus": 200,
+    "hotfixCloneRevokedCheckpoint": "partial, no model or tool journal entries",
+    "hotfixProductionDatabaseHealthPort": 2027,
+    "hotfixProductionDatabaseHealthStatus": 200,
+    "activeOrQueuedAgentMailLeadJobs": 0,
+    "dueSchedules": 0,
+    "dueModelBatches": 0
+  },
+  "handover": {
+    "firstAttempt": "Stopped before replacing LangGraph; original graph remained healthy. The rollback worker initially exited because the isolated worktree lacked its node_modules junction. The original-version worker was restored and its live task-loop child verified.",
+    "secondAttempt": "passed",
+    "productionGraphCommit": "44e8608c",
+    "productionGraphPid": 14580,
+    "mainWorkerCommit": "1d1cc962",
+    "mainWorkerLauncherPid": 40980,
+    "mainWorkerTaskLoopPid": 7112,
+    "unchangedWebPid": 37244,
+    "unchangedMailWorkerPid": 7704,
+    "unchangedLeadWorkerPid": 5592,
+    "graphHealthStatus": 200,
+    "webHealthStatus": 200,
+    "activeOrQueuedAgentMailLeadJobsAfter": 0,
+    "dueSchedulesAfter": 0,
+    "dueModelBatchesAfter": 0
+  },
+  "productionSyntheticAcceptance": {
+    "command": "node scripts/run-tsx.cjs scripts/verify-g02-candidate-http-clone.ts 2024 --production-synthetic",
+    "account": "temporary synthetic account with zero spend budget",
+    "sourceRevokedBeforeResume": true,
+    "runStatus": "partial",
+    "sourceChangedReply": true,
+    "savedMessages": 2,
+    "pendingActionsAfter": 0,
+    "modelOrToolJournalEntries": 0,
+    "cloudCalls": 0,
+    "externalEffects": 0,
+    "remainingSyntheticAccounts": 0
+  },
+  "cleanup": {
+    "candidatePortsStopped": [2025, 2026, 2027],
+    "rollbackSourceRetained": true,
+    "v3PointerOrDataOperations": 0
+  },
+  "remaining": [
+    "A real account business task with source revocation during model generation remains untested on the loaded service.",
+    "This scoped release does not establish the independent RAG/Skill quality or main-path switch gates."
+  ]
+}
