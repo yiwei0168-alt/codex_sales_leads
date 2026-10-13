@@ -1,0 +1,35 @@
+{
+  "schema": "ma24-xlsx-real-cell-parity-v1",
+  "reviewedAt": "2026-10-13",
+  "scope": "Public, previously exposed development workbook. Local original-to-Docling-layout cell comparison; not independent evaluation or production upload acceptance.",
+  "source": {
+    "path": "tmp/ma24-public-eval-candidates/itu-ict-2025.xlsx",
+    "sha256": "fd9070eb39b133bd600afa97d088c98ecb07bb730c9861675295c99174d0759a"
+  },
+  "extraction": {
+    "path": "tmp/ma24-public-eval-candidates/xlsx-layout-v2.0.2.json",
+    "sha256": "96aa2e9b26ab16c604b844acebdf0f051d892061644da62a530d80c106bc8e15",
+    "qualitySummary": {"success": 5, "blank": 0, "pendingOcr": 0, "failed": 0}
+  },
+  "method": "Loaded the original workbook read-only with openpyxl data_only=true. For each of five sheets, compared every original cell at its one-based row and column coordinate with the corresponding extracted table header/row value. Exact comparison used Python string values; content comparison collapsed whitespace. Also checked workbook formula, chart and image counts and ZIP visual parts.",
+  "result": {
+    "sheets": 5,
+    "cellsCompared": 25692,
+    "nonemptyOriginalCells": 12222,
+    "exactStringMatches": 25678,
+    "whitespaceOnlyDifferences": 14,
+    "contentMismatches": 0,
+    "formulaCells": 0,
+    "charts": 0,
+    "images": 0,
+    "visualZipParts": 0,
+    "rangeAndSheetOrderMatched": true
+  },
+  "acceptance": {
+    "developmentSampleCellParity": true,
+    "productionUploadVerified": false,
+    "permissionsAndRevisionVerifiedHere": false,
+    "independentEvaluationEligible": false,
+    "g05Complete": false
+  }
+}
