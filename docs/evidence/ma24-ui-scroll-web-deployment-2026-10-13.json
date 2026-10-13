@@ -1,0 +1,70 @@
+{
+  "date": "2026-10-13",
+  "scope": "Scoped web-only deployment of task-detail long-content scrolling and mobile workspace drawer width",
+  "publicCommits": ["d29c96fc", "196666b0"],
+  "runtimeSource": {
+    "previousBaseCommit": "1d1cc962",
+    "scopedReleaseCommit": "245ed9cc",
+    "changedSourceFiles": [
+      "src/app/globals.css",
+      "src/components/task-detail-view.tsx",
+      "src/components/task-record-summary.tsx"
+    ],
+    "worktree": "tmp/ui-scroll-runtime-release",
+    "buildId": "QfoyXprIZIVgSWxFSZ-1K"
+  },
+  "preflight": {
+    "sourceTypecheck": "passed before Next generated route types",
+    "targetedEslint": "passed",
+    "workspaceDialogSyntheticBrowserCases": 8,
+    "candidatePort": 3020,
+    "candidateHttp": 200,
+    "candidateCssContainsBothChanges": true,
+    "agentMailLeadQueuedOrRunning": 0,
+    "dueSchedules": 0,
+    "dueModelBatches": 0
+  },
+  "build": {
+    "nextVersion": "16.3.4",
+    "compiler": "webpack",
+    "reasonForWebpack": "Turbopack rejects the local node_modules junction in this isolated worktree",
+    "temporaryTypeValidationBypass": "Only during isolated build: pre-existing GET(request?: Request) signature in src/app/api/knowledge/uploads/route.ts fails Next generated route type validation; source typecheck and targeted ESLint passed beforehand",
+    "temporaryConfigRestored": true
+  },
+  "rollback": {
+    "sourceCommit": "1d1cc962",
+    "worktree": "tmp/ui-scroll-web-rollback",
+    "buildId": "HgfRUQCAQDquKQubgs_Rl",
+    "candidatePort": 3021,
+    "candidateHttp": 200,
+    "buildRetained": true
+  },
+  "cutover": {
+    "previousWebPid": 37244,
+    "newWebPid": 42252,
+    "livePort": 3018,
+    "liveHttp": 200,
+    "liveCssMatchesCandidate": true,
+    "taskDetailScrollClassServed": true,
+    "drawerViewportMaxWidthServed": true,
+    "unreleasedKnowledgeReviewRouteStatus": 404,
+    "graphPidUnchanged": 14580,
+    "graphHealthHttp": 200,
+    "mailWorkerPidUnchanged": 7704,
+    "leadWorkerPidUnchanged": 5592,
+    "temporaryCandidateServersStopped": [3020, 3021]
+  },
+  "mainWorkerRecovery": {
+    "observation": "Previous main worker PIDs were absent at the post-cutover check; the time and cause of their exit were not established",
+    "sourceCommit": "1d1cc962",
+    "launcherPid": 13284,
+    "taskLoopPid": 32380,
+    "restartedAfterConfirmingNoDueWork": true,
+    "agentMailLeadQueuedOrRunningAfter": 0
+  },
+  "limits": [
+    "No real-account browser session was used to inspect the expanded task detail after deployment.",
+    "The pre-existing Next generated route type mismatch remains for a later source fix; the isolated build bypass did not change the runtime source config.",
+    "No LangGraph, mail worker, lead worker, database migration, RAG pointer, or automatic learning switch was changed."
+  ]
+}
