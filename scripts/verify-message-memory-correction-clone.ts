@@ -78,6 +78,20 @@ try{
     assert.equal((await pool.query('select count(*)::int n from agent_memory_notice where observation_id=$1',[corrected.id])).rows[0].n,1);
     naturalCases++;
   }
+  const attributedQuote='I prefer account-level summaries';
+  const attributedOrigin=await createJob(`Customer said: ${attributedQuote}`);
+  const attributedTarget=await observeMemory(owner,{kind:'preference',content:attributedQuote,
+    sourceReceipt:{type:'local-qwen3-extraction',runId:attributedOrigin.run,messageId:attributedOrigin.message,sourceQuote:attributedQuote}});
+  const attributedText=`I previously said ${attributedQuote}. That was wrong: I prefer customer-level summaries.`;
+  const attributedJob=await createJob(attributedText),attributedLease=randomUUID();
+  await pool.query("update agent_memory_extraction_job set status='processing',lease_token=$2,updated_at=now() where run_id=$1",[attributedJob.run,attributedLease]);
+  assert.equal((await processMessageMemoryCorrection(owner,attributedJob.run,attributedLease,{
+    messageSha256:correctionMessageHash(attributedText),output:{intent:'correction',oldContent:attributedQuote,
+      content:'I prefer customer-level summaries'}})).handled,true);
+  assert.equal((await pool.query('select count(*)::int n from agent_memory_observation where corrects_id=$1',[attributedTarget])).rows[0].n,0);
+  const attributedNotice=(await pool.query('select source_receipt from agent_memory_observation where owner_id=$1 and idempotency_key=$2',
+    [owner,`message-correction:${attributedJob.message}`])).rows[0];
+  assert.equal(attributedNotice.source_receipt.type,'unresolved-memory-correction');
   const missingSource=await observeMemory(owner,{kind:'preference',content:'Natural missing source',sourceReceipt:source});
   const invalidSourceJob=await createJob('Actually, Natural missing source was wrong; Natural new source is correct.');
   const invalidLease=randomUUID();
@@ -91,7 +105,8 @@ try{
   assert.equal(requests,0);
   console.log(JSON.stringify({clone:true,explicitUserMessageCorrection:true,sourceHashBound:true,unknownDatePreserved:true,
     noticeOutboxIdempotent:true,undoNotResurrected:true,ambiguousScopedConflictedAndUnsafePending:true,crossAccountDenied:true,
-    staleLeaseDenied:true,naturalCases,naturalSourceRevalidation:true,changedSourceDenied:true,missingOriginalSourcePending:true,modelAndNetworkCalls:requests}));
+    staleLeaseDenied:true,naturalCases,naturalSourceRevalidation:true,attributedOriginalPending:true,
+    changedSourceDenied:true,missingOriginalSourcePending:true,modelAndNetworkCalls:requests}));
 }finally{
   const client=await pool.connect();
   try{

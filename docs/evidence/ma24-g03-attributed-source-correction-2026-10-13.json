@@ -1,0 +1,17 @@
+{
+  "stage": "G03 natural correction provenance hardening",
+  "date": "2026-10-13",
+  "change": "For a local qwen3 extracted memory selected by natural correction, reread the original account user message and require its exact source quote to be a unique direct user statement. A quoted or customer-attributed source becomes a review notice instead of an automatic correction.",
+  "verification": {
+    "focusedTests": 70,
+    "typescript": "passed",
+    "eslint": "passed",
+    "isolatedDatabase": "passed",
+    "naturalCorrectionKinds": 3,
+    "attributedOriginalPending": true,
+    "crossAccountAndLease": "passed",
+    "newModelCalls": 0,
+    "productionMemoryWrites": 0
+  },
+  "status": "code-and-isolated-clone-verified; production deployment and natural quality acceptance pending"
+}

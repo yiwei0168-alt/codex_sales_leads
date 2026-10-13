@@ -5,6 +5,7 @@ import {tenantTransaction} from '@/lib/rag/db';
 import {observeMemoryInTransaction,type MemoryObservationInput} from './temporal-memory';
 import {parseMemoryCorrectionCommand} from './memory-correction-command';
 import {validateNaturalCorrection,type NaturalCorrectionProposal} from './natural-memory-correction';
+import {isDirectMemorySpan} from './memory-source-context';
 
 const businessTimeSchema=z.object({validFrom:z.iso.datetime({offset:true}).nullable(),validUntil:z.iso.datetime({offset:true}).nullable()}).strict()
   .refine(p=>!p.validFrom||!p.validUntil||Date.parse(p.validUntil)>Date.parse(p.validFrom),{message:'Invalid business validity interval'});
@@ -89,7 +90,8 @@ export async function processMessageMemoryCorrection(userId:string,runId:string,
       let reason='格式不明确，或涉及政策、权限及业务时间变更';
       let corrected=false;
       if(parsed.correction){
-        const targets=await client.query<{id:string;auto_eligible:boolean}>(`select m.id,
+        const targets=await client.query<{id:string;auto_eligible:boolean;source_type:string|null;source_receipt:Record<string,unknown>}>(`select m.id,
+          m.source_receipt->>'type' as source_type,m.source_receipt,
           (m.market_code is null and m.company_id is null and cardinality(m.market_codes)=0 and cardinality(m.company_ids)=0
             and m.source_receipt->>'type' in ('local-qwen3-extraction','user-correction','user-message-correction')
             and (m.valid_from is null or m.valid_from<=now()) and (m.valid_until is null or m.valid_until>now())
@@ -110,6 +112,19 @@ export async function processMessageMemoryCorrection(userId:string,runId:string,
           order by m.id limit 2`,[userId,parsed.correction.oldContent,source.created_at,Boolean(proposal)]);
         reason=targets.rows.length===0?'没有找到可自动更正的当前账户级记忆':'旧内容匹配多条记忆';
         if(targets.rows.length===1&&!targets.rows[0].auto_eligible)reason='目标来源不能复核，或属于原有记忆、限定范围及非当前业务时间，需在记忆中心核对';
+        if(proposal&&targets.rows.length===1&&targets.rows[0].auto_eligible&&targets.rows[0].source_type==='local-qwen3-extraction'){
+          const receipt=targets.rows[0].source_receipt;
+          const origin=(await client.query<{content:string}>(`select original.content from assistant_message original
+            join agent_run original_run on original_run.id::text=$2 and original_run.user_id=$1
+            where original.id::text=$3 and original.user_id=$1 and original.role='user'
+              and original.conversation_id=original_run.conversation_id
+              and original.metadata->>'runId'=original_run.id::text and original_run.status='completed'`,
+            [userId,receipt.runId,receipt.messageId])).rows[0];
+          if(!origin||typeof receipt.sourceQuote!=='string'||!isDirectMemorySpan(origin.content,receipt.sourceQuote)){
+            targets.rows[0].auto_eligible=false;
+            reason='旧记忆原句属于引用或转述，或来源已变化，需在记忆中心核对';
+          }
+        }
         if(targets.rows.length===1&&targets.rows[0].auto_eligible){
           try{
             await correctInTransaction(client,userId,{id:targets.rows[0].id,content:parsed.correction.content,reason:'用户在对话中明确更正'},
