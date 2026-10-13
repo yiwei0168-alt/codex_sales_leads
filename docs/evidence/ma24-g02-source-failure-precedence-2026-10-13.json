@@ -27,6 +27,21 @@
     "syntheticFixtureCleaned": true,
     "cloudCalls": 0
   },
+  "checkpointRevocation": {
+    "command": "node scripts/run-tsx.cjs scripts/verify-g02-checkpoint-revocation-clone.ts",
+    "database": "isolated local ma11_replay_7d98e095133b clone",
+    "postgresCheckpointRestoredByNewGraphObject": true,
+    "sourceRevokedBeforePendingTool": true,
+    "staleToolRefused": true,
+    "modelCallsBeforePause": 1,
+    "modelCallsAfterRevocation": 0,
+    "toolCalls": 0,
+    "paidModelCalls": 0,
+    "externalEffects": 0,
+    "checkpointAndFixtureCleaned": true,
+    "typescriptNoEmit": "passed",
+    "targetedEslint": "passed"
+  },
   "scope": {
     "actualLocalModelCalls": 1,
     "paidModelCalls": 0,
