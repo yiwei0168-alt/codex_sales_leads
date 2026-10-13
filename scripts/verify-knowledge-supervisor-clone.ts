@@ -15,7 +15,7 @@ const base=process.env.DATABASE_MIGRATION_URL||process.env.DATABASE_URL;assert(b
 const url=new URL(base);assert(['localhost','127.0.0.1','::1'].includes(url.hostname));
 const {database}=JSON.parse(await readFile('tmp/ma11-replay-state.json','utf8'));assert(/^ma11_replay_[a-f0-9]{12}$/.test(database));
 url.pathname=`/${database}`;process.env.DATABASE_URL=url.toString();
-const pool=new Pool({connectionString:url.toString()}),owner=randomUUID();
+const pool=new Pool({connectionString:url.toString()}),owner=randomUUID(),peerOwner=randomUUID();
 const stored=async(id:string)=>(await pool.query('select * from knowledge_upload_job where id=$1',[id])).rows[0];
 async function supervisor(id:string,phase?:string){
  const marker=resolve('tmp/upload-crash',`${randomUUID()}.json`);await mkdir(resolve('tmp/upload-crash'),{recursive:true});
@@ -40,10 +40,12 @@ async function supervisor(id:string,phase?:string){
 }
 try{
  await pool.query("insert into app_user(id,email,display_name,password_hash,role,status) values($1,$2,'Supervisor fixture','!','member','active')",[owner,`${owner}@example.invalid`]);
+ await pool.query("insert into app_user(id,email,display_name,password_hash,role,status) values($1,$2,'Supervisor peer fixture','!','member','active')",[peerOwner,`${peerOwner}@example.invalid`]);
  const pointers=JSON.stringify((await pool.query('select * from knowledge_release_pointer_v3 order by scope_kind,owner_id')).rows);
  const input={collection:'industry' as const,title:'Supervisor fixture',originalFilename:'fixture.xlsx',mimeType:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',bytes:await readFile('tmp/xlsx-visual-local/source.xlsx'),visibility:'private' as const};
  const target=await createKnowledgeUploadJob(owner,input);
  const unrelated=await createKnowledgeUploadJob(owner,{...input,bytes:Buffer.concat([input.bytes,Buffer.from('\nunrelated fixture')])});
+ const peer=await createKnowledgeUploadJob(peerOwner,input);
  const untouched=JSON.stringify(await stored(unrelated.id));
  await supervisor(target.id,'extracting');
  const first=await stored(target.id);assert.equal(first.status,'running');assert(first.lease_token);
@@ -52,6 +54,14 @@ try{
  // Pause immediately before candidate binding after actual local OCR has run.
  await supervisor(target.id,'visual-before-bind');
  const held=await stored(target.id);assert.equal(held.status,'extracted');assert.equal(held.error_code,'extraction-review-required');assert.equal(held.metrics.visualReviewKey,undefined);assert.equal(held.visual_attempts,1);assert(held.visual_lease_token);
+ // A different account can finish its own visual job while the target lease is stranded.
+ await supervisor(peer.id);
+ // --once runs extraction and visual workers concurrently; visual may poll before extraction completes.
+ if(!(await stored(peer.id)).metrics.visualReviewKey)await supervisor(peer.id);
+ const peerReady=await stored(peer.id);assert.equal(peerReady.status,'extracted');assert(peerReady.metrics.visualReviewKey);assert.equal(peerReady.visual_lease_token,null);
+ assert.equal((await getExtractionReview(peerOwner,peer.id)).visualState,'ready');
+ assert.equal((await stored(target.id)).visual_lease_token,held.visual_lease_token);
+ assert.equal((await stored(target.id)).visual_attempts,1);
  await supervisor(target.id);assert.equal((await stored(target.id)).visual_lease_token,held.visual_lease_token);assert.equal((await stored(target.id)).visual_attempts,1);
  await pool.query("update knowledge_upload_job set visual_lease_until=now()-interval '1 second' where id=$1",[target.id]);
  assert.equal(await finishVisualReviewJob({jobId:target.id,userId:owner,leaseToken:held.visual_lease_token},true),false);
@@ -62,11 +72,18 @@ try{
  assert.equal(candidate.ocrImageExecutions,0);assert.equal(candidate.ocrCheckpointReuses,1);
  assert.equal(JSON.stringify(await stored(unrelated.id)),untouched);
  assert.equal((await pool.query('select count(*)::int as n from knowledge_document where owner_id=$1',[owner])).rows[0].n,0);
+ assert.equal((await pool.query('select count(*)::int as n from knowledge_document where owner_id=$1',[peerOwner])).rows[0].n,0);
  assert.equal(JSON.stringify((await pool.query('select * from knowledge_release_pointer_v3 order by scope_kind,owner_id')).rows),pointers);
- const result={cloneOnly:true,platform:process.platform,actualSupervisorKills:2,descendantsStopped:true,extractionLeaseHeld:true,extractionExpiredRecovery:true,visualLeaseHeld:true,expiredFinishRejected:true,visualExpiredRecovery:true,ocrExecutionsOnResume:0,ocrCheckpointReuses:1,unrelatedJobUnchanged:true,v3PointersUnchanged:true,documentsPublished:0,judgments:0,externalCalls:0,syntheticFixture:true,qualityAccepted:false};
+ const result={cloneOnly:true,platform:process.platform,actualSupervisorKills:2,descendantsStopped:true,extractionLeaseHeld:true,extractionExpiredRecovery:true,visualLeaseHeld:true,peerAccountCompletedWhileTargetHeld:true,peerVisualReady:true,expiredFinishRejected:true,visualExpiredRecovery:true,ocrExecutionsOnResume:0,ocrCheckpointReuses:1,unrelatedJobUnchanged:true,v3PointersUnchanged:true,documentsPublished:0,judgments:0,externalCalls:0,syntheticFixture:true,qualityAccepted:false};
  await writeFile('tmp/knowledge-supervisor-clone-result.json',JSON.stringify(result,null,2));console.log(JSON.stringify(result));
 }finally{
- await pool.query('delete from knowledge_upload_job where user_id=$1',[owner]);await pool.query('delete from app_user where id=$1',[owner]);await pool.end();await getPool().end();
- const root=resolve('knowledge/uploads',owner);assert(root.startsWith(resolve('knowledge/uploads')+sep));
- for(const name of await readdir(root).catch(()=>[])){const path=resolve(root,name);assert(path.startsWith(root+sep));await rm(path,{recursive:true,force:true});}await rm(root,{recursive:true,force:true});
+ for(const userId of [owner,peerOwner]){
+  await pool.query('delete from knowledge_upload_job where user_id=$1',[userId]);
+  await pool.query('delete from app_user where id=$1',[userId]);
+ }
+ await pool.end();await getPool().end();
+ for(const userId of [owner,peerOwner]){
+  const root=resolve('knowledge/uploads',userId);assert(root.startsWith(resolve('knowledge/uploads')+sep));
+  for(const name of await readdir(root).catch(()=>[])){const path=resolve(root,name);assert(path.startsWith(root+sep));await rm(path,{recursive:true,force:true});}await rm(root,{recursive:true,force:true});
+ }
 }

@@ -1,0 +1,39 @@
+{
+  "date": "2026-10-13",
+  "goal": "G05",
+  "scope": "Isolated local clone, two synthetic accounts and three upload jobs; actual bounded knowledge supervisor and local OCR worker.",
+  "result": {
+    "cloneOnly": true,
+    "platform": "win32",
+    "actualSupervisorKills": 2,
+    "descendantsStopped": true,
+    "extractionLeaseHeld": true,
+    "extractionExpiredRecovery": true,
+    "visualLeaseHeld": true,
+    "peerAccountCompletedWhileTargetHeld": true,
+    "peerVisualReady": true,
+    "expiredFinishRejected": true,
+    "visualExpiredRecovery": true,
+    "ocrExecutionsOnResume": 0,
+    "ocrCheckpointReuses": 1,
+    "unrelatedJobUnchanged": true,
+    "v3PointersUnchanged": true,
+    "documentsPublished": 0,
+    "judgments": 0,
+    "externalCalls": 0,
+    "syntheticFixture": true,
+    "qualityAccepted": false
+  },
+  "verification": {
+    "script": "scripts/verify-knowledge-supervisor-clone.ts",
+    "runExitCode": 0,
+    "targetAndPeerDocumentCount": 0,
+    "focusedEslint": "passed",
+    "fixtureCleanup": "completed"
+  },
+  "remaining": [
+    "Real visual content review and per-object judgments",
+    "Actual product database deployment and page-to-database check",
+    "Other formats and revised-version multi-job failure matrix"
+  ]
+}
