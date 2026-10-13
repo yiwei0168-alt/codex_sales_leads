@@ -1,0 +1,79 @@
+{
+  "schema": "ma24-pptx-visual-quality-sample-v1",
+  "reviewedAt": "2026-10-13",
+  "scope": "Public development source; local visual inspection of rendered candidate crops. This is not an independent holdout or a production extraction review receipt.",
+  "source": {
+    "path": "tmp/ma24-public-eval-candidates/itu-satellite-2025.pptx",
+    "sha256": "2223cee26aced9a50d648d933c31b15f2f0659d0ebe30922fca5c31c1cc30465",
+    "extractionArtifact": "tmp/ma24-public-eval-candidates/pptx-layout-v2.0.5.json",
+    "extractionArtifactSha256": "136d6572d8cde82e87d34cc0e6601e328ba0bae6b83e3525808ae3fea9d92e51",
+    "candidateManifest": "tmp/ma24-public-eval-candidates/visual-review-combined.json"
+  },
+  "inventory": {
+    "candidateObjects": 63,
+    "uniqueRenderedImages": 53,
+    "ocrCandidates": 32,
+    "noTextImages": 23,
+    "nativeDiagrams": 4,
+    "nativeConnectors": 4,
+    "visuallyInspectedObjects": 6,
+    "remainingObjectsNotVisuallyInspected": 57
+  },
+  "findings": [
+    {
+      "blockId": "slide-1-visual-2-1",
+      "slide": 1,
+      "shapePath": [2, 1],
+      "imageSha256": "f30cbbd554f53e1789132860bae84ae38a17d9c7c678213c7470a1df12b0c16a",
+      "observation": "White ITU logo mark on black background, with no answer-bearing text. OCR returned no text.",
+      "proposedReviewDecision": "decoration"
+    },
+    {
+      "blockId": "slide-3-visual-5",
+      "slide": 3,
+      "shapePath": [5],
+      "imageSha256": "dbc13946d946c0941620252f13b2d9d701f37fbf3d7b7f46530169e395f363bc",
+      "observation": "GEO, MEO and LEO are three separate infographic columns. OCR recognizes most strings but emits all three labels, then all three heights, then all three examples and other rows. It also emits an unexplained '(D)'. Raw OCR order loses the column-to-value relationship and cannot be cited as a linear paragraph.",
+      "proposedReviewDecision": "evidence-after-structured-transcription"
+    },
+    {
+      "blockId": "slide-5-visual-4",
+      "slide": 5,
+      "shapePath": [4],
+      "imageSha256": "7532b01a2605d3f9af484dc2dc6f029fd1186661318042d0dabfa4f355a2ab97",
+      "observation": "Seven-column GEO/MEO/LEO comparison table. OCR emits headers and cell fragments out of row order and inserts a spurious Chinese character. The visible MEO orbital-period cell reads '127 minutes to 24 hours'; the OCR sequence separates '127', 'minutes', 'to 24', and 'hours' around other cells. Direct indexing would corrupt row and column associations.",
+      "proposedReviewDecision": "evidence-after-table-transcription"
+    },
+    {
+      "blockId": "slide-6-visual-2",
+      "slide": 6,
+      "shapePath": [2],
+      "imageSha256": "a4217f59df69b22c976fcc4cb2b78a73ea3a4f977fae1b21c414afc92cf80cff",
+      "observation": "Four-quadrant governance diagram. OCR interleaves bullet lists from different quadrants and breaks words, including 'Recommendations' and 'stakeholders'. The relationship between ITU, intergovernmental cooperation, national/regional level, and space stakeholders requires visual transcription.",
+      "proposedReviewDecision": "evidence-after-structured-transcription"
+    },
+    {
+      "blockId": "slide-16-visual-5",
+      "slide": 16,
+      "shapePath": [5],
+      "imageSha256": "04300ac66d32aa281843b58b426e6cc3dd05c33a091270303b1c2f0b485aaae7",
+      "observation": "Satellite silhouettes, transmission arcs and people; no numerical labels or answer-bearing text in this crop. OCR returned no text.",
+      "proposedReviewDecision": "decoration"
+    },
+    {
+      "blockId": "slide-36-visual-21",
+      "slide": 36,
+      "shapePath": [21],
+      "imageSha256": "e143ecfe3b1c2f7ba4d231074b789cb80480a4e588da6d977f009bf3c44aaee7",
+      "observation": "Purple satellite icon with no labels or answer-bearing text. OCR returned no text.",
+      "proposedReviewDecision": "decoration"
+    }
+  ],
+  "acceptance": {
+    "qualityAccepted": false,
+    "productionJudgmentsWritten": 0,
+    "documentsPublished": 0,
+    "independentEvaluationEligible": false,
+    "nextAction": "Review all remaining objects and transcribe substantive diagrams and tables against the complete original slide before recording per-object production decisions."
+  }
+}
