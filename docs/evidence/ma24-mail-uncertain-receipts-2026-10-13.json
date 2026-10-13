@@ -1,0 +1,20 @@
+{
+  "date": "2026-10-13",
+  "scope": "Local read-only metadata audit of mailbox learning jobs; no message bodies, recipients, job IDs, or costs exported.",
+  "script": "scripts/audit-ma24-uncertain-mail-learning.ts",
+  "result": {
+    "uncertainLearningJobs": 169,
+    "accountCount": 1,
+    "jobDate": "2026-10-10",
+    "missingMessages": 0,
+    "failedMessageLearningStates": 169,
+    "failedOutboundAudits": 169,
+    "unknownPaidReservations": 169,
+    "providerRequestReceipts": 0,
+    "requestFingerprints": 169
+  },
+  "decision": "Do not retry these jobs automatically. Their prior provider effect and charge cannot be determined from local receipts; reconcile the original requests with the provider before any individual recovery decision.",
+  "productionWrites": 0,
+  "modelCalls": 0,
+  "focusedEslint": "passed"
+}
