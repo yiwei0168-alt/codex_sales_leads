@@ -40,6 +40,13 @@ it('does not return a model answer after its method is revoked during generation
   const final=await graph.invoke({messages,pending:[],steps:0,status:'running',reply:'',seen:{},instructionIds:[],decisionRevision:0,policyRevision:''});
   expect(final.status).toBe('partial');expect(final.reply).toBe(SKILL_CHANGED_REPLY);expect(tool).not.toHaveBeenCalled();
 });
+it('reports withdrawn Skill source even when the model request also fails',async()=>{
+  const tool=vi.fn();const graph=buildMainAgentGraph({boundary:async()=>({control:null,instructions:[]}),
+    validateEvidence:m=>assertCurrentSkillMessages(context,m),
+    model:async()=>{pin.enabled=false;throw new Error('Model transport');},tool});
+  const final=await graph.invoke({messages,pending:[],steps:0,status:'running',reply:'',seen:{},instructionIds:[],decisionRevision:0,policyRevision:''});
+  expect(final.status).toBe('partial');expect(final.reply).toBe(SKILL_CHANGED_REPLY);expect(tool).not.toHaveBeenCalled();
+});
 it('stops a pending tool at the source check instead of reporting model outage',async()=>{
   pin.enabled=false;const tool=vi.fn(),model=vi.fn();
   const graph=buildMainAgentGraph({boundary:async()=>({control:null,instructions:[]}),validateEvidence:m=>assertCurrentSkillMessages(context,m),model,tool});

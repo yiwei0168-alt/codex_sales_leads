@@ -1,0 +1,30 @@
+{
+  "date": "2026-10-13",
+  "stage": "G02 runtime source revocation",
+  "finding": "A model transport failure racing with a memory or Skill source change could be reported as model unavailable without rechecking the withdrawn source.",
+  "fix": [
+    "Recheck implicit decision memory when a model request throws; preserve the transport error only while the memory fingerprint is unchanged.",
+    "On other model failures, revalidate the saved Skill, memory and knowledge context before selecting a model failure response."
+  ],
+  "verification": {
+    "focusedTestFiles": 5,
+    "focusedTestsPassed": 42,
+    "typescriptNoEmit": "passed",
+    "targetedEslint": "passed",
+    "gitDiffCheck": "passed",
+    "webHealth": 200,
+    "langGraphHealth": 200,
+    "activeOrQueuedMainAgentRuns": 0
+  },
+  "scope": {
+    "actualModelCalls": 0,
+    "externalEffects": 0,
+    "productionServicesRestarted": false,
+    "realBusinessTaskAcceptance": false
+  },
+  "remaining": [
+    "Run a bounded real task with a source revoked during generation, then inspect durable task and tool receipts.",
+    "Confirm old checkpoint recovery and pre-tool refusal on the currently loaded service without adding an external effect.",
+    "The current branch contains other undeployed changes; source-only unit results cannot establish that production loaded this patch."
+  ]
+}

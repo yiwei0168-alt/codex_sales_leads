@@ -43,6 +43,13 @@ it('rejects an answer if implicit account policy changes during its model call',
 it('does not confuse model transport errors with withdrawn memory',async()=>{
   const error=new Error('Model transport');await expect(withCurrentDecisionMemory(id,async()=>{throw error;})).rejects.toBe(error);
 });
+it('reports changed policy when a model transport error races with its withdrawal',async()=>{
+  const error=new Error('Model transport');
+  await expect(withCurrentDecisionMemory(id,async()=>{
+    m.decision.mockResolvedValue([{...row,content:'Withdrawn policy'}]);
+    throw error;
+  })).rejects.toBeInstanceOf(MemoryContextChangedError);
+});
 it('does not call the model when policy loading is unavailable',async()=>{
   m.decision.mockRejectedValue(new Error('DB unavailable'));const model=vi.fn();
   await expect(withCurrentDecisionMemory(id,model)).rejects.toBeInstanceOf(MemoryContextChangedError);expect(model).not.toHaveBeenCalled();

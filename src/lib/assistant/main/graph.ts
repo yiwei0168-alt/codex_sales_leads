@@ -58,6 +58,17 @@ export function buildMainAgentGraph(deps: MainGraphDependencies, checkpointer?: 
         if (response.tool_calls?.length) return { messages: [...state.messages, response], pending: response.tool_calls, steps: state.steps + 1 };
         return { messages: [...state.messages, response], steps: state.steps + 1, status: "completed" as RunStatus, reply: response.content ?? "" };
       } catch(error) {
+        // A transport failure may race with source revocation. Check the saved
+        // context again before describing the failure as a model outage.
+        if(!(error instanceof MemoryContextChangedError||error instanceof SkillContextChangedError||error instanceof KnowledgeSourceChangedError)){
+          try{await deps.validateEvidence?.(state.messages);}
+          catch(sourceError){
+            if(sourceError instanceof MemoryContextChangedError)return {status:'partial' as RunStatus,reply:MEMORY_CHANGED_REPLY,pending:[]};
+            if(sourceError instanceof SkillContextChangedError)return {status:'partial' as RunStatus,reply:SKILL_CHANGED_REPLY,pending:[]};
+            if(sourceError instanceof KnowledgeSourceChangedError)return {status:'partial' as RunStatus,reply:SOURCE_CHANGED_REPLY,pending:[]};
+            throw sourceError;
+          }
+        }
         if(error instanceof MemoryContextChangedError)return {status:'partial' as RunStatus,reply:MEMORY_CHANGED_REPLY,pending:[]};
         if(error instanceof SkillContextChangedError)return {status:'partial' as RunStatus,reply:SKILL_CHANGED_REPLY,pending:[]};
         if(error instanceof KnowledgeSourceChangedError)return {status:'partial' as RunStatus,reply:SOURCE_CHANGED_REPLY,pending:[]};

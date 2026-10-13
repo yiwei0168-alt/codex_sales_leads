@@ -15,7 +15,14 @@ const wireDigest=(value:unknown)=>digest(JSON.parse(JSON.stringify(value)));
 export async function withCurrentDecisionMemory<T>(userId:string,model:()=>Promise<T>):Promise<T>{
   const current=async()=>{try{return wireDigest(await loadDecisionMemory(userId));}catch{throw new MemoryContextChangedError();}};
   const before=await current();
-  const reply=await model(); // Preserve real model/transport error types.
+  let reply:T;
+  try{reply=await model();}
+  catch(error){
+    // A failed request can coincide with a policy edit. Keep the transport error
+    // only when the source actually remained current.
+    if(await current()!==before)throw new MemoryContextChangedError();
+    throw error;
+  }
   if(await current()!==before)throw new MemoryContextChangedError();
   return reply;
 }
