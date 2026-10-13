@@ -14,7 +14,8 @@ describe("binary knowledge upload route",()=>{
     mocks.session.mockResolvedValue({userId:"00000000-0000-4000-8000-000000000001",displayName:"Owner",role:"admin"});
     mocks.list.mockResolvedValue([]);mocks.create.mockResolvedValue({id:"job",status:"pending",documentType:"PDF",byteSize:12,sourceSha256:"a".repeat(64)});});
   it("lists only through the authenticated repository scope",async()=>{
-    const response=await GET();expect(response.status).toBe(200);expect(mocks.list).toHaveBeenCalledWith("00000000-0000-4000-8000-000000000001",0,30);
+    const response=await GET(new Request('http://local/api/knowledge/uploads'));
+    expect(response.status).toBe(200);expect(mocks.list).toHaveBeenCalledWith("00000000-0000-4000-8000-000000000001",0,30);
   });
   it('validates pagination and preserves the account scope',async()=>{
     expect((await GET(new Request('http://local/api/knowledge/uploads?offset=-1'))).status).toBe(400);

@@ -1,0 +1,61 @@
+{
+  "date": "2026-10-13",
+  "stage": "R0 runtime and build baseline",
+  "candidate": {
+    "sourceCommit": "efb6a85b",
+    "worktree": "tmp/r0-build-candidate",
+    "sourceChange": "Use a required Request parameter for the knowledge upload GET route and pass a real Request in its unit test",
+    "nextVersion": "16.3.4",
+    "compiler": "webpack (isolated worktree uses a node_modules junction)",
+    "buildId": "ClGPSmF1jQFzPjGqu5tOd",
+    "productionBuild": "passed, including generated route TypeScript and static page generation",
+    "ignoreBuildErrors": false,
+    "focusedRouteTests": 9,
+    "focusedEslint": "passed",
+    "candidateSmoke": {"port": 3022, "homepage": 200, "unauthenticatedUploadRoute": 401, "temporaryServerStopped": true},
+    "smokeNote": "First start without the existing local environment returned 500 for missing DATABASE_URL; rerun with the existing local environment passed. No credential values were printed."
+  },
+  "runningServices": {
+    "web": {"port": 3018, "pid": 42252, "http": 200, "lastVerifiedSource": "245ed9cc"},
+    "langgraph": {"port": 2024, "pid": 14580, "okHttp": 200, "lastVerifiedSource": "44e8608c"},
+    "mainWorkerPid": 32380,
+    "mailWorkerPid": 7704,
+    "leadWorkerPid": 5592,
+    "docker": ["postgres healthy", "neo4j running", "ollama running"],
+    "ollamaModelNames": ["qwen3:8b", "nomic-embed-text:latest"],
+    "localMemoryWorkerFound": false,
+    "memoryGraphWorkerFound": false,
+    "knowledgeWorkerFound": false,
+    "bgeProcessFound": false,
+    "exactRunningWorktree": "not independently established from process metadata; source commits above are from the last deployment receipts"
+  },
+  "localConfiguration": {
+    "ENABLE_LOCAL_MEMORY_EXTRACTION": "unset",
+    "ENABLE_MEMORY_GRAPH_PROJECTION": "unset",
+    "ENABLE_VECTORLESS_AGENT_SHADOW": "unset",
+    "ENABLE_MEMORY_GRAPH_AGENT_SHADOW": "unset",
+    "scope": "current workspace .env.local; process-specific environment was not inspected"
+  },
+  "readOnlyQueueCounts": {
+    "agentQueued": 0,
+    "agentRunning": 0,
+    "mailQueued": 0,
+    "mailRunning": 0,
+    "mailLearnUncertain": 169,
+    "leadQueued": 0,
+    "leadRunning": 0,
+    "memoryQueued": 3,
+    "memoryProcessing": 0,
+    "dueSchedules": 0,
+    "dueModelBatches": 0,
+    "knowledgeUploadJobs": 0
+  },
+  "readOnlySchemaMarkers": {
+    "present": ["agent_skill_shadow_campaign", "agent_skill_shadow_review", "agent_skill_blind_round", "knowledge_upload_job.revision_target_document_id"],
+    "absent": ["knowledge_upload_extraction_review", "knowledge_upload_review_completion", "agent_skill_acceptance_bundle", "agent_skill_model_attempt", "agent_skill_acceptance_freeze", "knowledge_upload_job.visual_retry_at"],
+    "limit": "The migration runner has no applied-migration ledger; these markers do not prove that all earlier statements were applied."
+  },
+  "productionChanges": 0,
+  "cloudModelCalls": 0,
+  "remaining": ["Record all G01-G20 three-dimensional status", "Prepare schema migration candidate and rollback before integrated deployment", "Confirm running source paths by a stronger provenance method when switching services", "Do not replay the 169 uncertain mail learning jobs without their original receipts"]
+}

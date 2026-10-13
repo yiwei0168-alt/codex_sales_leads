@@ -11,9 +11,9 @@ function authorized(request:Request):boolean{
   return request.headers.get("authorization")===`Bearer ${expected}`;
 }
 
-export async function GET(request?:Request){
+export async function GET(request:Request){
   const session=await requireApiSession();if(session instanceof Response)return session;
-  const params=request?new URL(request.url).searchParams:new URLSearchParams();
+  const params=new URL(request.url).searchParams;
   const paging=z.object({offset:z.coerce.number().int().min(0).max(1_000_000),limit:z.coerce.number().int().min(1).max(50)})
     .safeParse({offset:params.get('offset')??0,limit:params.get('limit')??30});
   if(!paging.success)return Response.json({error:'分页参数无效'},{status:400});
