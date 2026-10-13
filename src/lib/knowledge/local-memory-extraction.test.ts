@@ -162,6 +162,13 @@ it("does not turn an unconfirmed policy statement into automatic business memory
   expect(await extractLocalBusinessFacts("Our company policy says all leads are approved.",fetcher as typeof fetch)).toEqual([]);
 });
 
+it('rejects a company fact whose subject is only an unresolved reference',async()=>{
+  const quote='这个是我们在德国已经合作的一级代理';
+  const fetcher=vi.fn(async(url:URL)=>url.pathname==='/api/tags'?response({models:[model]}):
+    response({message:{content:JSON.stringify({items:[{memoryKey:'quote_1',content:quote,sourceQuote:quote,confidence:0.95}]})}}));
+  expect(await extractLocalBusinessFacts(quote,fetcher as typeof fetch)).toEqual([]);
+});
+
 it("rejects a non-loopback model URL before reading a private source",async()=>{
   process.env.OLLAMA_LOCAL_URL="https://example.com/v1";
   await expect(processLocalMemoryExtraction("user-1","run-1")).rejects.toThrow("loopback");

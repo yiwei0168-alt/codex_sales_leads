@@ -1,0 +1,16 @@
+{
+  "stage": "MA24-16 G03-G04 natural local memory extraction audit",
+  "date": "2026-10-13",
+  "authorization": "Five latest completed task user messages, 12000 characters each; up to 15 local qwen3:8b extractions with 1024 output tokens each; local tmp only; no email bodies, cloud, or production memory writes",
+  "sampleCount": 5,
+  "localModelCalls": 15,
+  "schemaErrors": 0,
+  "rawProposals": {"preferences": 0, "businessFacts": 1, "experiences": 0},
+  "manualReview": {"businessFactsAccepted": 0, "reason": "Unresolved demonstrative subject in an isolated message"},
+  "change": "Reject business facts whose source quote begins with an unresolved demonstrative or pronoun; align local extraction prompt",
+  "verification": {"tests": "30 passed", "typescript": "passed", "eslint": "passed"},
+  "privateRawArtifact": "Git-ignored local tmp/ma24-natural-memory-eval-2026-10-13/samples-and-results.json",
+  "productionMemoryWrites": 0,
+  "automaticLearningEnabled": false,
+  "naturalQualityAccepted": false
+}

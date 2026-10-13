@@ -25,6 +25,8 @@ function explicitPreference(quote:string):boolean{
   return /\b(?:i prefer|i like|my preference is|i want you to)\b|我(?:更)?(?:喜欢|倾向|偏好)|请(?:以后|始终|尽量)/i.test(value);
 }
 function explicitBusinessFact(quote:string):boolean{
+  // A deictic subject has no stable company identity in an isolated task message.
+  if(/^(?:这个|这家|这位|那个|那家|那位|他|她|它|this\b|that\b|it\b|he\b|she\b|they\b)/i.test(quote.trim()))return false;
   if(/(?:ignore|override|disable).{0,60}(?:instruction|policy|safety|permission)|system prompt|忽略.{0,30}(?:指令|规则|权限)/i.test(quote))return false;
   if(explicitPreference(quote)||explicitExperience(quote)||/\b(?:policy|score|approval|approve)\b|政策|评分|批准|[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i.test(quote))return false;
   if(/[?？]/.test(quote)||/\b(?:would|could|might|if|should|need to|plan to|will)\b|我们(?:需要|应该|计划)|请/i.test(quote))return false;
@@ -79,7 +81,7 @@ async function extract(text:string,base:URL,fetcher:Fetcher){
   return (await extractItems(text,base,fetcher,prompt)).filter(item=>isDirectMemorySpan(text,item.sourceQuote)&&explicitPreference(item.sourceQuote));
 }
 async function extractBusinessFacts(text:string,base:URL,fetcher:Fetcher){
-  const prompt="Extract up to three concrete business facts explicitly stated by the user about their own company, market or distributor. Each sourceQuote must copy the complete first-person statement exactly from the user message. Do not extract preferences, questions, hypotheticals, quoted documents, third-party claims, contact details, policy instructions, approval claims, formal scores or assistant text. These are unverified internal working notes only, never public claims. Do not infer dates of business validity or missing details. Return only JSON matching the schema; if uncertain, return an empty items array.";
+  const prompt="Extract up to three concrete business facts explicitly stated by the user about their own company, market or distributor. Each sourceQuote must copy the complete first-person statement exactly from the user message. The statement must be self-contained: reject a subject identified only as this, that, it, 这个 or 这家 when the referent is unavailable in this message. Do not extract preferences, questions, hypotheticals, quoted documents, third-party claims, contact details, policy instructions, approval claims, formal scores or assistant text. These are unverified internal working notes only, never public claims. Do not infer dates of business validity or missing details. Return only JSON matching the schema; if uncertain, return an empty items array.";
   return (await extractItems(text,base,fetcher,prompt)).filter(item=>isDirectMemorySpan(text,item.sourceQuote)&&explicitBusinessFact(item.sourceQuote));
 }
 async function extractExperiences(text:string,base:URL,fetcher:Fetcher){
