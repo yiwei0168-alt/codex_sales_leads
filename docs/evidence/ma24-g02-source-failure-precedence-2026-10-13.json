@@ -42,15 +42,35 @@
     "typescriptNoEmit": "passed",
     "targetedEslint": "passed"
   },
+  "paidModelRevocation": {
+    "command": "node scripts/run-tsx.cjs scripts/verify-g02-paid-model-revocation-clone.ts",
+    "database": "isolated local ma11_replay_7d98e095133b clone",
+    "account": "synthetic fixture only",
+    "route": "z-ai/glm-5.3 via OpenRouter Fireworks",
+    "providerRequests": 1,
+    "sourceRevokedAfterProviderResponse": true,
+    "runStatus": "partial",
+    "modelJournalEntries": 1,
+    "subsequentToolEntries": 0,
+    "billingReservations": 1,
+    "unsettledBillingReservations": 0,
+    "checkpointMessageCountBeforeAndAfter": 4,
+    "sourceChangedReply": true,
+    "staleAnswerDiscarded": true,
+    "externalEffects": 0,
+    "typescriptNoEmit": "passed",
+    "targetedEslint": "passed",
+    "localReceipt": "tmp/g02-paid-revocation-state.json"
+  },
   "scope": {
     "actualLocalModelCalls": 1,
-    "paidModelCalls": 0,
+    "paidModelCalls": 1,
     "externalEffects": 0,
     "productionServicesRestarted": false,
     "realBusinessTaskAcceptance": false
   },
   "remaining": [
-    "Run a bounded real account task with a source revoked during generation, then inspect durable task and tool receipts.",
+    "Run a bounded real account task with a source revoked during generation on the currently loaded service; the paid synthetic clone test does not establish account-level production acceptance.",
     "Confirm old checkpoint recovery and pre-tool refusal on the currently loaded service without adding an external effect.",
     "The current branch contains other undeployed changes; source-only unit results cannot establish that production loaded this patch."
   ]
