@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-13",
+  "stage": "R0 migration replay and rollback preflight",
+  "script": "scripts/verify-ma24-migration-candidate.ts",
+  "database": "ma11_replay_7d98e095133b",
+  "scope": "isolated local clone; no production schema changes",
+  "migrations": [127, 128, 129, 130, 131, 132, 133, 134],
+  "result": {
+    "transactionalReplay": "passed",
+    "expectedMarkersInsideTransaction": "all present",
+    "rollbackRestoredMarkerState": true,
+    "freshUpgradeFromProductionSchemaProved": false,
+    "reason": "This existing clone already had all seven checked stage markers before the replay."
+  },
+  "checks": {
+    "focusedEslint": "passed",
+    "scriptExecution": "passed",
+    "fullTypecheck": "Node default 4 GB heap exhausted; isolated production Next build passed earlier in the same R0 stage"
+  },
+  "releaseGate": "Before an integrated production deployment, replay the pending migrations against a fresh schema clone of the current product database, verify backup restoration and all required RLS/ACL boundaries, then take a verified production backup."
+}
