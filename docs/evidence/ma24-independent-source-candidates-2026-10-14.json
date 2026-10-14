@@ -55,8 +55,8 @@
       "localQuarantinePath": "tmp/ma24-independent-quarantine/eu-connectivity-kpis-2026.xlsx",
       "bytes": 410909,
       "sha256": "2ba1b1af51b4d27a703e4e5495ec89724d26bd6584a6b56244d8ecb7f54e079a",
-      "integrity": "valid OOXML; 49 ZIP parts; six worksheets including a 489-row Data source sheet; two formulas, one chart, six images; no macro or external-link parts",
-      "status": "quarantined; no exact registry match; connectivity coverage by EU region differs structurally from the prior ITU world/regional indicator workbook; question-level independence remains pending"
+      "integrity": "valid OOXML; 49 ZIP parts; six worksheets including a 489-row Data source sheet; 740 formula cells (two ordinary and 738 array), one chart, six images; no macro or external-link parts",
+      "status": "quarantined; no exact registry match; original Data source cells, two draft regional questions and drawing-text CC BY 4.0 reuse notes checked in ma24-g14-eu-xlsx-cell-review-2026-10-14.json; full answer-level independence and product citation remain pending, Gold 0"
     },
     {
       "kind": "pdf",

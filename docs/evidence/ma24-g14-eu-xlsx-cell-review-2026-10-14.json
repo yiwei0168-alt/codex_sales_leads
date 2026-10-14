@@ -1,0 +1,61 @@
+{
+  "schema": "ma24-g14-eu-xlsx-cell-review-v1",
+  "date": "2026-10-14",
+  "sourceUrl": "https://ec.europa.eu/newsroom/dae/redirection/document/129743",
+  "localQuarantinePath": "tmp/ma24-independent-quarantine/eu-connectivity-kpis-2026.xlsx",
+  "sha256": "2ba1b1af51b4d27a703e4e5495ec89724d26bd6584a6b56244d8ecb7f54e079a",
+  "method": "Read-only openpyxl inspection of the original XLSX with data_only true and false, plus original OOXML drawing text inspection for instructions and reuse notes; no workbook export or mutation.",
+  "workbook": {
+    "sheets": 6,
+    "dataSheet": "Data source",
+    "dataRows": 488,
+    "memberStates": 27,
+    "nuts2Regions": 244,
+    "overallRows": 244,
+    "ruralRows": 244,
+    "missingRegionTypeNumeratorOrBaseHouseholds": 0,
+    "vhcnNumeratorAboveBaseHouseholds": 0,
+    "formulaCells": 740,
+    "formulaKinds": {"ordinary": 2, "array": 738},
+    "cachedReportState": "The unselected interactive Report sheet includes #VALUE! cached cells; draft questions use only the literal Data source sheet."
+  },
+  "sourceMeaning": {
+    "aboutCell": "'About & links'!B4 says these are Digital Decade 2026 connectivity KPIs from the 2025 Connectivity Coverage in Europe edition.",
+    "timeCell": "'About & links'!B22 says coverage is as of mid-2025; percentages are household-weighted and may be capped at 100%.",
+    "headers": "'Data source'!A1:S1 identifies country, region, Overall/Rural type, covered-household metrics and Base HH denominator.",
+    "instructionDrawing": "xl/drawings/drawing1.xml: regional figures derive from NUTS-3; some regions have no rural households and rural 0 should mean not applicable. The two draft rows have nonzero rural base households.",
+    "reuseDrawing": "xl/drawings/drawing3.xml: except where otherwise noted, reuse is authorised under CC BY 4.0 with attribution and changes indicated; third-party elements may require separate permission. Commission disclaims data accuracy and notes potential revision."
+  },
+  "draftQuestions": [
+    {
+      "id": "eu-kpi-burgenland-vhcn-overall-rural",
+      "status": "draft only; not Gold",
+      "question": "按欧盟委员会 Digital Decade 2026 工作簿的 2025 年中数据，奥地利 Burgenland 地区的 VHCN（FTTP + DOCSIS 3.1）Overall 和 Rural 家庭覆盖率各约是多少？请分别写出覆盖户数与基数。",
+      "draftAnswer": "Overall 为 107,115 / 133,302，约 80.36%；Rural 为 5,648 / 14,284，约 39.54%。",
+      "sourceCoordinates": ["'Data source'!E2:G3", "'Data source'!O2:O3", "'Data source'!S2:S3"],
+      "calculation": "O2/S2 and O3/S3, each multiplied by 100; rounded to two percentage decimals"
+    },
+    {
+      "id": "eu-kpi-burgenland-5g-band-rural",
+      "status": "draft only; not Gold",
+      "question": "按同一工作簿，Burgenland 农村家庭中，5G 3.4–3.8 GHz 频段覆盖户数与农村基数分别是多少，对应覆盖率约是多少？",
+      "draftAnswer": "8,494 / 14,284，约 59.47%。",
+      "sourceCoordinates": ["'Data source'!E3:G3", "'Data source'!R1:S3"],
+      "calculation": "R3/S3 multiplied by 100; rounded to two percentage decimals"
+    }
+  ],
+  "exposureScreen": {
+    "exactRegistryHashMatches": 0,
+    "localTextSearch": "Burgenland, AT11, NUTS-2 and VHCN had no matches in docs/src/scripts/old holdout text beyond the new candidate content-screen receipt.",
+    "limit": "This does not establish full historical-output or semantic independence."
+  },
+  "acceptance": {
+    "originalCellCoordinatesChecked": true,
+    "sourceIndependenceEstablished": false,
+    "questionIndependenceEstablished": false,
+    "goldCreated": 0,
+    "modelCalls": 0,
+    "productionKnowledgeWrites": 0
+  },
+  "next": "Check full prior question/output overlap and product XLSX extraction/citation against the original cells before any source or Gold freeze; preserve Commission attribution and the mid-2025/methodology caveat."
+}
