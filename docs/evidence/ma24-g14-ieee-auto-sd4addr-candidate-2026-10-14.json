@@ -25,6 +25,14 @@
     "savedProductJudgments": 0,
     "userVisibleCitationProven": false
   },
+  "objectReview": {
+    "receipt": "docs/evidence/ma24-g14-ieee-auto-sd4addr-object-review-2026-10-14.json",
+    "inspectedObjectCrops": 11,
+    "proposedEvidence": 8,
+    "proposedDecoration": 2,
+    "proposedUnresolved": 1,
+    "savedProductJudgments": 0
+  },
   "localExposureScreen": {
     "exactHashCommand": "node scripts/run-tsx.cjs scripts/audit-g14-candidate-hash-local.ts 786e8324f221fb8d4e854e88515020b61079acb2f50d56e535441e10efbd92c2",
     "matchingAssets": 0,

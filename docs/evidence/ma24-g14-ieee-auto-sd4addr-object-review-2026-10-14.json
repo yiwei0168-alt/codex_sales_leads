@@ -1,0 +1,94 @@
+{
+  "schema": "ma24-g14-ieee-auto-sd4addr-object-review-v1",
+  "date": "2026-10-14",
+  "sourceSha256": "786e8324f221fb8d4e854e88515020b61079acb2f50d56e535441e10efbd92c2",
+  "extractionArtifactSha256": "da914590113f692bc562b3921f2ab214eabceacf163cd30f0661018a9e13a366",
+  "candidatePackageSha256": "b52f299820d2c7d15cf6e93126b564f3c1b2bb33b474a15c9d4ab139c0f01311",
+  "method": "Compared all 11 hash-checked candidate crops with rendered original slides 2, 3, 5, 7, 8 and 9. Dispositions are proposed local content judgments, not saved product review decisions or independent Gold approval.",
+  "objects": [
+    {
+      "blockId": "slide-2-visual-6-1",
+      "imageSha256": "28d83948863405996a520176dd50994bdcd70a6607e286c0cd28fb1f2b2132e7",
+      "proposedDecision": "evidence",
+      "evidenceText": "The abstract contrasts a legacy vehicle with several domain ECUs connected by different buses against an SDV paradigm with a central ECU and Ethernet links; the drawing is schematic.",
+      "reason": "Both vehicle schematics and their A/B labels are visible on the original slide; the graphic does not specify a measured topology benefit."
+    },
+    {
+      "blockId": "slide-2-visual-6-2",
+      "imageSha256": "07a930501992a6b4e6468b344cd4c0fe9110af50ce5133b40036cee506c8801f",
+      "proposedDecision": "evidence",
+      "evidenceText": "The slide legend identifies LIN, CAN, Ethernet and FlexRay link colors, plus sensor triangles and actuator circles.",
+      "reason": "The legend is legible in the crop and original slide; it describes this schematic only."
+    },
+    {
+      "blockId": "slide-3-visual-6",
+      "imageSha256": "cf634239d4d0f65f48e0d9a04d4ca8a30b6950a24591e53cc631b73708a87624",
+      "proposedDecision": "evidence",
+      "evidenceText": "The presentation juxtaposes an Ethernet II header with destination/source MAC fields and EtherType against an IEEE 802.11 header with Address 1 (RA), Address 2 (TA), Address 3 and Address 4; the shown example has MAC A/MAC B, BSSID and N/A in the 802.11 positions.",
+      "reason": "Labels and mapping lines are visible on original slide 3. The diagram is an example of the authors' forwarding discussion, not a complete general header translation rule."
+    },
+    {
+      "blockId": "slide-5-visual-6",
+      "imageSha256": "7a91c65bc4e6102d1e84268c21c6af7763321cf4fc0abb2311dc6e3ef7706eca",
+      "proposedDecision": "evidence",
+      "evidenceText": "The slide illustrates encapsulation: an original Ethernet packet with HOST_2/HOST_1 and 0x8000 is forwarded toward the wireless interface with an added outer RSU/OBU Ethernet header marked 0x08AF.",
+      "reason": "The original and forwarded packet rows and their relationship are visible on slide 5; this records the proposed SD4ADDR format, not a standard mandate."
+    },
+    {
+      "blockId": "slide-5-visual-7",
+      "imageSha256": "1dbe200e06b5c262d58e4879e6b7fa17b12c6ef4d06119a47d685d3459c70f49",
+      "proposedDecision": "evidence",
+      "evidenceText": "The slide illustrates decapsulation: the received packet has outer RSU/OBU and 0x08AF ahead of HOST_2/HOST_1 and 0x8000, while the forwarded packet retains the inner HOST_2/HOST_1 and 0x8000 header after removing the outer header.",
+      "reason": "The received and forwarded packet rows are legible on original slide 5."
+    },
+    {
+      "blockId": "slide-7-visual-3",
+      "imageSha256": "2b223f6a2c52bcc4672e313f94831729d429916d94789e443f2047b2c9f66095",
+      "proposedDecision": "evidence",
+      "evidenceText": "The authors' Ethernet-interface forwarding-time chart labels normal 4.639 μs, encap 4.990 μs and decap 5.943 μs; the slide attributes the higher decap time to recirculation and reparsing of the decapsulated packet.",
+      "reason": "All three bar labels, unit and explanatory bullet are legible on original slide 7; the OCR misreads some chart text and is not the source of this transcription."
+    },
+    {
+      "blockId": "slide-7-visual-7",
+      "imageSha256": "7e913a10712f4b6c8f7c92a03b4fea86c28414a534c4467626b8cb780672fa90",
+      "proposedDecision": "decoration",
+      "reason": "Photograph illustrates the Ethernet test setup. Visible connector counts and device stickers do not establish an equipment model or performance result and are not needed to support the chart values."
+    },
+    {
+      "blockId": "slide-8-visual-1",
+      "imageSha256": "0b195ed884e15d47dc07b83f5c99b209718cff5e1f7f843b12085df8f8108ae0",
+      "proposedDecision": "decoration",
+      "reason": "Photograph illustrates wireless test equipment below the charts; its NAP stickers and ports do not establish measured throughput or a product specification."
+    },
+    {
+      "blockId": "slide-8-visual-7",
+      "imageSha256": "176fa3d0d8f169072803ea79aac3aff4bb62f7ba0daf16a20d74ef065fd99ad0",
+      "proposedDecision": "evidence",
+      "evidenceText": "The authors' IEEE 802.11p throughput chart compares Default versus SD4ADDR by Layer 4 payload bytes: 20: 0.43/0.43; 50: 1.04/1.04; 100: 2.00/2.00; 200: 3.78/3.71; 500: 7.81/7.69; 1000: 12.03/11.88; 1472: 14.69/14.54 Mbps.",
+      "reason": "Axes, legend and paired labels are legible in crop and original slide 8. Values are presentation test results, not a general product or standard performance claim."
+    },
+    {
+      "blockId": "slide-8-visual-8",
+      "imageSha256": "36c8b5e6fdc78208cef250660851495c472a0a6aef5fd85c39319416ff286665",
+      "proposedDecision": "evidence",
+      "evidenceText": "The authors' Ethernet target-throughput chart shows matching Default and SD4ADDR values at 10, 20, 50, 100, 200 and 400 Mbps target settings; each bar pair is labeled with the target value in Mbps.",
+      "reason": "Axes, legend and all six paired bar labels are legible in crop and original slide 8. This supports the tested settings shown, not unlimited throughput equivalence."
+    },
+    {
+      "blockId": "slide-9-visual-6",
+      "imageSha256": "7670823f8d6fa0d2815bbabc3fd1ffb7a25c81a3ad7114187f29b6f673616faf",
+      "proposedDecision": "unresolved",
+      "reason": "Aveiro map contains colored pin, house, point and route marks but no complete legend identifying their types or timestamps. Slide body says 22 RSUs were active as of July 2025; that number is separate native text and cannot safely be mapped onto the plotted symbols or claimed current."
+    }
+  ],
+  "reviewedObjectCrops": 11,
+  "proposedEvidence": 8,
+  "proposedDecoration": 2,
+  "proposedUnresolved": 1,
+  "productJudgmentsSaved": 0,
+  "qualityAccepted": false,
+  "evaluationUseConfirmed": false,
+  "goldCreated": 0,
+  "productionKnowledgeWrites": 0,
+  "next": "Keep the unlabeled deployment map unresolved. Resolve source use and map provenance before attempting full-document product review completion; then verify user-visible citations and question independence prior to Gold freeze."
+}
