@@ -1,0 +1,88 @@
+/** Read-only G15 configuration preview. It does not freeze a corpus or authorize calls. */
+import {createHash} from 'node:crypto';
+import {readFile} from 'node:fs/promises';
+import {registerHooks} from 'node:module';
+import nextEnv from '@next/env';
+
+nextEnv.loadEnvConfig(process.cwd());
+registerHooks({resolve(specifier,context,next){
+  if(specifier==='server-only')return {url:'data:text/javascript,export {}',shortCircuit:true};
+  return next(specifier,context);
+}});
+
+const [{availableTools,describeTool},{modeModelConfig},{modePromptRules,MODE_PROMPT_VERSION},
+  {productPrompt,PRODUCT_VERSION},{modelFunctions}]=await Promise.all([
+  import('../src/lib/assistant/main/tools'),
+  import('../src/lib/assistant/main/mode-config'),
+  import('../src/lib/assistant/main/mode-prompts'),
+  import('../src/lib/assistant/main/product'),
+  import('../src/lib/assistant/main/model'),
+]);
+const hash=(value:string)=>createHash('sha256').update(value).digest('hex');
+const mode='standard' as const;
+const userId='00000000-0000-4000-8000-000000000001';
+const savedFlag=process.env.ENABLE_VECTORLESS_AGENT_SHADOW;
+const savedUsers=process.env.VECTORLESS_AGENT_SHADOW_USER_IDS;
+const scopes=[['industry'] as Array<'industry'|'company'|'product'>,
+  ['company'] as Array<'industry'|'company'|'product'>,
+  ['product'] as Array<'industry'|'company'|'product'>];
+const arms=[];
+try{
+ for(const scope of scopes){
+  process.env.ENABLE_VECTORLESS_AGENT_SHADOW='0';
+  process.env.VECTORLESS_AGENT_SHADOW_USER_IDS=userId;
+  const context={role:'member' as const,mode,knowledgeScope:scope,userId};
+  const baseline=availableTools(context);
+  process.env.ENABLE_VECTORLESS_AGENT_SHADOW='1';
+  const candidate=availableTools(context);
+  const baselineIds=baseline.map(tool=>tool.id),candidateIds=candidate.map(tool=>tool.id);
+  const added=candidateIds.filter(id=>!baselineIds.includes(id));
+  const removed=baselineIds.filter(id=>!candidateIds.includes(id));
+  if(removed.length||added.length!==7||added.some(id=>!id.startsWith('vectorless_')))
+    throw new Error(`Unexpected arm tool difference for ${scope.join(',')}`);
+  arms.push({knowledgeScope:scope,baseline:{toolCount:baselineIds.length,
+    toolIdsSha256:hash(JSON.stringify(baselineIds)),
+    toolSchemasSha256:hash(JSON.stringify(baseline.map(describeTool))),
+    productPromptSha256:hash(productPrompt(baseline))},
+    candidate:{toolCount:candidateIds.length,
+      toolIdsSha256:hash(JSON.stringify(candidateIds)),
+      toolSchemasSha256:hash(JSON.stringify(candidate.map(describeTool))),
+      productPromptSha256:hash(productPrompt(candidate))},addedTools:added});
+ }
+}finally{
+ if(savedFlag===undefined)delete process.env.ENABLE_VECTORLESS_AGENT_SHADOW;
+ else process.env.ENABLE_VECTORLESS_AGENT_SHADOW=savedFlag;
+ if(savedUsers===undefined)delete process.env.VECTORLESS_AGENT_SHADOW_USER_IDS;
+ else process.env.VECTORLESS_AGENT_SHADOW_USER_IDS=savedUsers;
+}
+const sourceFiles=[
+ 'scripts/prepare-ma24-g15-config-local.ts',
+ 'src/lib/assistant/main/graph.ts','src/lib/assistant/main/model.ts',
+ 'src/lib/assistant/main/model-stream.ts','src/lib/assistant/main/mode-config.ts',
+ 'src/lib/assistant/main/mode-prompts.ts','src/lib/assistant/main/mode-prompt-content.json',
+ 'src/lib/assistant/main/mode-tools.ts','src/lib/assistant/main/knowledge-response-policy.ts',
+ 'src/lib/assistant/main/product.ts','src/lib/assistant/main/tools.ts',
+ 'src/lib/assistant/main/vectorless-tools.ts','src/lib/knowledge/vectorless-session.ts',
+ 'src/lib/knowledge/vectorless.ts','src/lib/rag/repository.ts',
+ 'src/lib/rag/embedding-contract.ts',
+];
+const sourceHashes=Object.fromEntries(await Promise.all(sourceFiles.map(async file=>
+  [file,hash(await readFile(file,'utf8'))] as const)));
+const profile=modeModelConfig(mode).profile;
+if(!profile)throw new Error('Mode profile unavailable');
+console.log(JSON.stringify({schema:'ma24-g15-config-preview-v1',readOnly:true,simulation:true,
+  previewDateUtc:new Date().toISOString().slice(0,10),
+  mode,modePromptVersion:MODE_PROMPT_VERSION,modePromptSha256:hash(modePromptRules(mode)),
+  productVersion:PRODUCT_VERSION,modelProfile:profile,
+  modelFunctionsSha256:hash(JSON.stringify(modelFunctions)),arms,sourceHashes,
+  comparableModelRoutes:true,toolDeltaLimitedToVectorless:true,
+  sourceSetFrozen:false,goldFrozen:false,runtimeBuildVerified:false,transitiveCodeClosureVerified:false,
+  baselineRetrievalProfileVerified:false,
+  providerTariffsVerified:false,paidCallAuthorizationConfirmed:false,
+  maximumProviderRequests:null,maximumRequestBytes:null,maximumOutputTokens:null,
+  hardSpendCapUsd:null,readyForPaidEvaluation:false,
+  missing:['approved independent source and question set','coordinate-checked Gold hash',
+    'candidate and baseline runtime/build identity and transitive code closure','exact account and data scope',
+    'main Agent baseline BGE plus full-text plus verified-fact wiring and a healthy local BGE service',
+    'current provider tariffs and a durable per-call reservation rule',
+    'request/output and spend ceilings with required authorization']},null,2));

@@ -1,0 +1,153 @@
+{
+  "schema": "ma24-g15-config-preview-v1",
+  "readOnly": true,
+  "simulation": true,
+  "previewDateUtc": "2026-10-14",
+  "mode": "standard",
+  "modePromptVersion": "agent-mode-prompts-v1.1.0",
+  "modePromptSha256": "8a9db15663230154b3e63fbeed75bee277bc844c0f61e6c49410049b79a8def0",
+  "productVersion": "main-agent-product-v4-glm-sync",
+  "modelProfile": {
+    "mode": "standard",
+    "version": "agent-modes-v1",
+    "promptVersion": "agent-mode-prompts-v1.1.0",
+    "firstOutputMs": 30000,
+    "totalMs": 120000,
+    "routes": [
+      {
+        "model": "anthropic/claude-sonnet-5.5",
+        "effort": "low"
+      },
+      {
+        "model": "openai/gpt-6.1-sol",
+        "effort": "low"
+      },
+      {
+        "model": "moonshotai/kimi-k3",
+        "effort": "low"
+      }
+    ]
+  },
+  "modelFunctionsSha256": "caecd1d74246549de19f3d9c5cd195d2b29be8d76cb20ca5d3b1530b73f212df",
+  "arms": [
+    {
+      "knowledgeScope": [
+        "industry"
+      ],
+      "baseline": {
+        "toolCount": 3,
+        "toolIdsSha256": "1b5d277add9b68f5e440859db2db25795d02221e8761f6e5d6adfc7857342274",
+        "toolSchemasSha256": "fb73e2c98202eba3975783700283f58cc6c0445dfdd2ded07c238c5d080dd65d",
+        "productPromptSha256": "31ffcc4f86fa413a4224c7d5654c147de017c0dcc36de1f33dd20618f6e4cd5f"
+      },
+      "candidate": {
+        "toolCount": 10,
+        "toolIdsSha256": "027ee9de58fafd1de1e0a121144705a08da5f835c25f48c35e0c9fde6eee82aa",
+        "toolSchemasSha256": "25edce4d00de2519b5b1c32ae22b51ad2467a6c011186369933f6c33896536c8",
+        "productPromptSha256": "a47f61e43b4041733222a8730dbb30997d68e2e4cbf1a2b69883afd8c87a61eb"
+      },
+      "addedTools": [
+        "vectorless_start",
+        "vectorless_search",
+        "vectorless_browse",
+        "vectorless_read",
+        "vectorless_aggregate",
+        "vectorless_filter",
+        "vectorless_v3_candidates"
+      ]
+    },
+    {
+      "knowledgeScope": [
+        "company"
+      ],
+      "baseline": {
+        "toolCount": 3,
+        "toolIdsSha256": "1b5d277add9b68f5e440859db2db25795d02221e8761f6e5d6adfc7857342274",
+        "toolSchemasSha256": "fb73e2c98202eba3975783700283f58cc6c0445dfdd2ded07c238c5d080dd65d",
+        "productPromptSha256": "31ffcc4f86fa413a4224c7d5654c147de017c0dcc36de1f33dd20618f6e4cd5f"
+      },
+      "candidate": {
+        "toolCount": 10,
+        "toolIdsSha256": "027ee9de58fafd1de1e0a121144705a08da5f835c25f48c35e0c9fde6eee82aa",
+        "toolSchemasSha256": "25edce4d00de2519b5b1c32ae22b51ad2467a6c011186369933f6c33896536c8",
+        "productPromptSha256": "a47f61e43b4041733222a8730dbb30997d68e2e4cbf1a2b69883afd8c87a61eb"
+      },
+      "addedTools": [
+        "vectorless_start",
+        "vectorless_search",
+        "vectorless_browse",
+        "vectorless_read",
+        "vectorless_aggregate",
+        "vectorless_filter",
+        "vectorless_v3_candidates"
+      ]
+    },
+    {
+      "knowledgeScope": [
+        "product"
+      ],
+      "baseline": {
+        "toolCount": 4,
+        "toolIdsSha256": "4058f826fe34085b2245a36a6769649d95333506b0ad4aeeeef55b284350d026",
+        "toolSchemasSha256": "6e1155db11f5dce8c5affcede51383ce9ca4d7c01e14f160e5ced997d8dda728",
+        "productPromptSha256": "2c75efc6ec1dc34eb42637b7fc0955d9f67fb37ab9e8dfdbf09dc978a3bcd195"
+      },
+      "candidate": {
+        "toolCount": 11,
+        "toolIdsSha256": "1fa2baf6bd20912d16d63b092adad8e6da33b46f0a95c0f4522433638a22ce15",
+        "toolSchemasSha256": "4eb45c61beb5d4d03a772016921fbd956c220c94053ae6186e9b118acc18586c",
+        "productPromptSha256": "e0895653a8049280ffd91b5e6e3e298c39e12ca8290b7eaac4b27787177a63e8"
+      },
+      "addedTools": [
+        "vectorless_start",
+        "vectorless_search",
+        "vectorless_browse",
+        "vectorless_read",
+        "vectorless_aggregate",
+        "vectorless_filter",
+        "vectorless_v3_candidates"
+      ]
+    }
+  ],
+  "sourceHashes": {
+    "scripts/prepare-ma24-g15-config-local.ts": "66e354d2d2be7ad59cf0617162e275b7105cdc7f913bd6855260289caa52ae0a",
+    "src/lib/assistant/main/graph.ts": "f38e4a5d0dcd48d6f04348248c4c1e12878bae8e18c7a0bec7c98baf4d327f4d",
+    "src/lib/assistant/main/model.ts": "379628977bb5d4aacbe90f3d887d0c5995987aec8eac035c97103908ec38c91e",
+    "src/lib/assistant/main/model-stream.ts": "e80d4b9c39bcec9d9b46c467aa3916548163912933eab1ca01fe2645d3d62cb3",
+    "src/lib/assistant/main/mode-config.ts": "6b7dbaaf36e2e71d574507364a5c487ec84602a91699eec83476be6d638d5e8a",
+    "src/lib/assistant/main/mode-prompts.ts": "c5db375e26a0b10f0f5dd4ca78a031524fc5adf47ae22f8096fe69ea8d5ce110",
+    "src/lib/assistant/main/mode-prompt-content.json": "ce2c3ad88cc112bf077d2b86ca5ca169e46da63ae161b9695c3797efbda871cc",
+    "src/lib/assistant/main/mode-tools.ts": "c10c5930c87a5d30d543eeb70ce4ed3c42f455135e95a2a5e11eea1069ae20ea",
+    "src/lib/assistant/main/knowledge-response-policy.ts": "d23be9e48b89a7d6ac83a94360d0fbe4552b6642813886db1db2bd1e7ecf2fe7",
+    "src/lib/assistant/main/product.ts": "ac5cfcee5d17a36b859038555cc57655232b7195df756d14b943235540725718",
+    "src/lib/assistant/main/tools.ts": "ec975601a0b1eb6e3edb2ca6debd5142aa1974bf199cbed8c4c2b66522a3bb53",
+    "src/lib/assistant/main/vectorless-tools.ts": "19b32fad09211fe073fe256d1b23c9d86acad7d70899be5706036c206035b419",
+    "src/lib/knowledge/vectorless-session.ts": "9e39b30329a8085bbcc45f13f83bbdb7bddb825a52e0dcff9fa8a2bf6f877303",
+    "src/lib/knowledge/vectorless.ts": "34c9cdcdb6af742598c8367728123f0662974cc2d3de2a86d820b5eaf6914975",
+    "src/lib/rag/repository.ts": "d84806f280f6198e1240f86d781ef6361d778afc27be1e6254f5e63a4a158b7b",
+    "src/lib/rag/embedding-contract.ts": "82b2bb49cc53dbed7bcdf5ec18e8eaad3ffe93f5c38fc8fa914f93827d0f03fd"
+  },
+  "comparableModelRoutes": true,
+  "toolDeltaLimitedToVectorless": true,
+  "sourceSetFrozen": false,
+  "goldFrozen": false,
+  "runtimeBuildVerified": false,
+  "transitiveCodeClosureVerified": false,
+  "baselineRetrievalProfileVerified": false,
+  "providerTariffsVerified": false,
+  "paidCallAuthorizationConfirmed": false,
+  "maximumProviderRequests": null,
+  "maximumRequestBytes": null,
+  "maximumOutputTokens": null,
+  "hardSpendCapUsd": null,
+  "readyForPaidEvaluation": false,
+  "missing": [
+    "approved independent source and question set",
+    "coordinate-checked Gold hash",
+    "candidate and baseline runtime/build identity and transitive code closure",
+    "exact account and data scope",
+    "main Agent baseline BGE plus full-text plus verified-fact wiring and a healthy local BGE service",
+    "current provider tariffs and a durable per-call reservation rule",
+    "request/output and spend ceilings with required authorization"
+  ]
+}
