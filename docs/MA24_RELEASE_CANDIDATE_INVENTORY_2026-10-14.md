@@ -2,6 +2,8 @@
 
 本清单初版依据[当前运行盘点](evidence/ma24-r0-runtime-release-inventory-2026-10-14.json)、[迁移预检](evidence/ma24-release-migration-preflight-2026-10-14.json)与各已发布提交到候选 `d19e9010` 的文件差异；下方补充记录后续候选 build `JL8ySlDPL7j1x5xDRlO8A` 的隔离验收。它是 R0 发布准备清单，不是发布批准、业务质量结论或部署收据。验收仍按[执行台账](MA24_EXECUTION_STATUS_2026-10-13.md)的工程、真实质量和生产三列分别记。
 
+**2026-10-14 复核。** [只读预检收据](evidence/ma24-r0-release-preflight-refresh-2026-10-14.json)绑定源码提交 `7ccc139c`，记录了 127–134 八个迁移文件 SHA-256。产品库九个前置标记仍在、七个目标标记仍缺席；旧备份校验通过但已约 23 小时，发布前必须新建备份。Web 和 Graph 端口仍在，BGE 8765 无监听；邮箱、线索、本地记忆、图谱投影、知识及 Skill 影子 worker 均未运行。此复核未取队列计数或进程环境开关，也未改变运行服务。
+
 | 功能域 | 候选需要一起核对的运行单元 | 数据库与本地依赖 | 当前缺口及回滚入口 |
 | --- | --- | --- | --- |
 | G02–G04 来源撤销、自然记忆与图谱 | LangGraph、主 worker；自然抽取还需本地记忆 worker，投影还需图谱 worker | 既有 109–113 阶段、Ollama、Neo4j/Graphiti；本地两个开关须经质量验收才启用 | 当前仅旧 Graph/主 worker 在跑；本地记忆和投影 worker 未跑。服务回滚版本分别为 `44e8608c`、`1d1cc962`；自然样本和连续链路尚未通过 |

@@ -1,0 +1,44 @@
+{
+  "date": "2026-10-14",
+  "scope": "Read-only release preflight and local process reconciliation; no deployment, migration or queue mutation",
+  "sourceCommit": "7ccc139cd27b3017fa2b8594f28347496849a755",
+  "command": "npm run ma24:release-preflight",
+  "preflight": {
+    "schemaState": "stage-absent",
+    "prerequisiteMarkersPresent": 9,
+    "targetMarkersPresent": 0,
+    "migrationFiles": {
+      "127_upload_extraction_reviews.sql": "83dc4567b2079c03b7d44cee68691f2a7edccc25604720c93f1eee695dfade45",
+      "128_upload_extraction_review_completion.sql": "407faa5a9d68ed6bcc2b2665bee5570e67138532d7a128bdd131c747600377fa",
+      "129_upload_visual_queue.sql": "fb8a9bd1f382fec06f5ae1515fb65ce7e61ed599be00c31a0c8a82ec6211bbc3",
+      "130_skill_acceptance_evidence.sql": "8584db80f8085cd179e7b15fd6585785e0922746d17e1053ebb085469c7b8fce",
+      "131_skill_model_attempt_journal.sql": "ebd091f77b7ff60e5cfc601d77542ea9859791a2f5c93ea2d2bd670c72e10274",
+      "132_skill_bundle_collector.sql": "677f3cae793aef426c643ec4f73464ea5fdd5051289260fad10e55b563e04b4d",
+      "133_skill_acceptance_freeze.sql": "7b50d0490514384c37321fd7d49f4b61d53e944eb28a8431f257101974667b29",
+      "134_skill_model_freeze_binding.sql": "e8ef22ecc55b5a7cadd75241c851a4a0fb133526d6d275434fd5c472bb5f310d"
+    },
+    "backup": {
+      "file": "network_copilot_2026-10-13T09-03-13Z.dump",
+      "createdAt": "2026-10-13T09:05:06.766Z",
+      "bytes": 192967451,
+      "sha256": "17db517922f0ee8067391544418f0c8af9f77ee5f48203b938b7559ba528d428",
+      "checksumMatched": true,
+      "ageHoursAtCheck": 23.2,
+      "freshMigrationBackup": false
+    },
+    "readyForRelease": false
+  },
+  "runtime": {
+    "webListener": {"port": 3018, "pid": 33240, "homeStatus": 200},
+    "langgraphListener": {"port": 2024, "pid": 35656},
+    "bgeListener8765": false,
+    "mainTaskLoopPid": 34596,
+    "mainTaskLoopUsesRollbackWorktree": true,
+    "auxiliaryWorkersNotRunning": ["mailbox", "leadWorkflow", "localMemory", "memoryGraphProjection", "knowledge", "skillShadow"]
+  },
+  "limits": [
+    "HTTP 200 and stable PIDs do not establish the loaded Graph source hash or business quality.",
+    "No current queue counts or process environment flags were verified.",
+    "Create a fresh backup and record queue/flag snapshots immediately before any product migration."
+  ]
+}
