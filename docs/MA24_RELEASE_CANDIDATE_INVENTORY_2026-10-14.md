@@ -14,6 +14,8 @@
 
 **最新本地候选（2026-10-15）。** `a75bafd8` 的完整 Next 生产构建通过，build ID `eIvmmxRUHfVhWKs48wg29`，manifest SHA-256 `074bafd056801c8e7c0eb667e32ebe1399748e93ffb3e39f5a3d1a8f6624f0c3`；已复制并核对忽略目录 `.next-releases/ma24-g01-a75bafd8`（1546 文件）。此候选包含成功块审核和 `layout-v2.0.9`；透明文字的隔离上传→审核→登记链路通过。3018 上旧 build manifest 为 200，候选为 404；127–134 迁移仍未应用，旧备份需切换前更新。五类队列只读快照无待办或运行项，但切换时须重查。候选未部署，分域质量、试点和实际回滚未通过。[构建与预检收据](evidence/ma24-g01-integrated-release-candidate-v3-2026-10-15.json)。
 
+**G05 页面到库补验。** 同一候选 build 在隔离恢复库的实际浏览器成功文字视图保存并回读排除决定；手机/桌面布局已检查。旧 Web 仍可列出候选创建的作业，但未验证它继续处理该成功块审核；正式服务尚未切换。[页面收据](evidence/ma24-g05-success-review-page-db-clone-2026-10-15.json)。
+
 | 功能域 | 候选需要一起核对的运行单元 | 数据库与本地依赖 | 当前缺口及回滚入口 |
 | --- | --- | --- | --- |
 | G02–G04 来源撤销、自然记忆与图谱 | LangGraph、主 worker；自然抽取还需本地记忆 worker，投影还需图谱 worker | 既有 109–113 阶段、Ollama、Neo4j/Graphiti；本地两个开关须经质量验收才启用 | 当前仅旧 Graph/主 worker 在跑；本地记忆和投影 worker 未跑。服务回滚版本分别为 `44e8608c`、`1d1cc962`；自然样本和连续链路尚未通过 |

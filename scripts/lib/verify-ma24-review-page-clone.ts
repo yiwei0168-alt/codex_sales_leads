@@ -96,6 +96,26 @@ export async function verifyMa24ReviewPageClone(options: {
     await page.getByRole("button", { name: "审核抽取内容" }).click();
     await expect(page.getByRole("dialog")).toBeVisible();
     await expect(page.getByText("对象 1 / 63", { exact: true })).toBeVisible();
+    await page.getByRole("button", { name: "复核成功抽取文字" }).click();
+    await expect(page.getByText("对象 1 / 216", { exact: true })).toBeVisible();
+    for(let i=0;i<3;i++)await page.getByRole("button", { name: "下一对象" }).click();
+    await expect(page.getByText("对象 4 / 216", { exact: true })).toBeVisible();
+    await expect(page.locator("fieldset pre")).toHaveText("2");
+    await page.screenshot({ path: "tmp/ma24-success-review-clone-desktop.png" });
+    await page.setViewportSize({ width: 390, height: 800 });
+    assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
+    await page.screenshot({ path: "tmp/ma24-success-review-clone-mobile.png" });
+    await page.setViewportSize({ width: 1366, height: 900 });
+    await page.getByLabel("核对结论").selectOption("decoration");
+    await page.getByLabel("核对依据 / 备注").fill("Synthetic page-number exclusion in an isolated clone; no document will be published.");
+    await page.getByRole("button", { name: "保存本条审核" }).click();
+    await expect(page.getByText("已保存修订 1。", { exact: true })).toBeVisible();
+    const successDecision=(await options.admin.query<{revision:number;decision:string;evidence_text:string}>(
+      "select revision,decision,evidence_text from knowledge_upload_extraction_review where owner_id=$1 and job_id=$2 and block_id='slide-2-text-2'",
+      [options.userId,jobId])).rows[0];
+    assert.deepEqual(successDecision,{revision:1,decision:"decoration",evidence_text:""});
+    await page.getByRole("button", { name: "待审核对象" }).click();
+    await expect(page.getByText("对象 1 / 63", { exact: true })).toBeVisible();
     const downloadEvent = page.waitForEvent("download");
     await page.getByRole("link", { name: "下载本次原件进行对照" }).click();
     const downloaded = await downloadEvent;
@@ -118,7 +138,7 @@ export async function verifyMa24ReviewPageClone(options: {
     });
     assert.equal(stale.status, 409);
     await stale.body?.cancel();
-    assert.equal((await options.admin.query("select count(*)::int as n from knowledge_upload_extraction_review where owner_id=$1 and job_id=$2", [options.userId, jobId])).rows[0].n, 1);
+    assert.equal((await options.admin.query("select count(*)::int as n from knowledge_upload_extraction_review where owner_id=$1 and job_id=$2", [options.userId, jobId])).rows[0].n, 2);
     const storage = (await options.admin.query<{ storage_key: string }>(
       "select storage_key from knowledge_upload_job where id=$1 and user_id=$2", [jobId, options.userId],
     )).rows[0].storage_key;
@@ -154,7 +174,8 @@ export async function verifyMa24ReviewPageClone(options: {
     return { uploadStatus: uploaded.status, localExtractionExitCode: 0,
       visualObjects: review.total, pageOpened: true, originalDownloadMatched: true,
       savedRevision: rows.rows[0].revision,
-      databaseDecision: rows.rows[0].decision, staleWriteStatus: stale.status,
+      databaseDecision: rows.rows[0].decision, successfulTextPageNumberExcluded: true,
+      successfulTextDesktopAndMobileRendered: true, staleWriteStatus: stale.status,
       secondPageObjects: 20, refreshRestoredNote: true, mobileNoHorizontalOverflow: true,
       changedOriginalRejected: true, releasePointerUnchanged: true,
       completedReview: false, publishedDocuments: 0, cloudCredentialsClearedInWorker: true,

@@ -1,0 +1,50 @@
+{
+  "schema": "ma24-g05-success-review-page-db-clone-v1",
+  "date": "2026-10-15",
+  "command": "npm run ma24:verify-review-ui-clone",
+  "scope": "Current candidate Web success-text review view through an isolated restored database, real local extraction worker and browser; no production migration or publication",
+  "candidateBuildId": "eIvmmxRUHfVhWKs48wg29",
+  "sourceSha256": "2223cee26aced9a50d648d933c31b15f2f0659d0ebe30922fca5c31c1cc30465",
+  "source": "Public ITU satellite PPTX already used for development; not an independent Gold source",
+  "isolation": {
+    "sourceBackupSha256": "17db517922f0ee8067391544418f0c8af9f77ee5f48203b938b7559ba528d428",
+    "migrationsOnClone": "127-134",
+    "temporaryDatabase": "ma24_restore_889811a9bda0",
+    "temporaryDatabaseRemoved": true,
+    "productionDatabaseChanged": false,
+    "syntheticAccountOnly": true
+  },
+  "observed": {
+    "uploadStatus": 202,
+    "pendingVisualObjects": 63,
+    "successfulTextObjects": 216,
+    "originalDownloadedAndHashMatched": true,
+    "successViewPageNumber": "slide-2-text-2",
+    "browserSavedSuccessExclusion": true,
+    "databaseJudgment": {"revision": 1, "decision": "decoration", "evidenceText": ""},
+    "pendingViewStillAvailable": true,
+    "pendingUnresolvedSaved": true,
+    "staleRevisionRejectedStatus": 409,
+    "changedOriginalRejectedStatus": 409,
+    "reviewCompletionRows": 0,
+    "publishedDocuments": 0,
+    "v3ReleasePointerUnchanged": true,
+    "oldWebListedCandidateCreatedJob": true,
+    "mobileHorizontalOverflow": false,
+    "desktopScreenshotSha256": "1257d863c8d8f322a130757df706dafe4916016fb5042817b27d77402be30ef3",
+    "mobileScreenshotSha256": "ea4701cb33e434b65f92bf15127baa39d1f5f712f4d884291699d50c583806f6",
+    "screenshotsVisuallyInspected": true
+  },
+  "checks": {
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "gitDiffCheck": "passed",
+    "firstAttempt": "Failed in test locator getByRole('fieldset'); the page had reached object 4/216. Corrected the harness to locate the fieldset element, then two full clone/browser runs passed."
+  },
+  "limits": [
+    "The excluded text was a decorative page number selected by the synthetic test, not an adjudication of the ITU deck's substantive content.",
+    "The candidate browser used a synthetic account and disposable database; no production Web or knowledge worker loaded the change.",
+    "This test did not complete all visual review, publish the document, verify a model answer, or establish natural quality. Worker model usage counters were not captured by the Windows supervisor."
+  ],
+  "independentGoldCreated": 0
+}

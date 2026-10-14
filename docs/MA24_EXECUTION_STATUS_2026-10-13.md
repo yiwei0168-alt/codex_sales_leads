@@ -194,3 +194,5 @@ R1 的 PPTX 内容质量抽样已核对公开开发原件的 6/63 个待审核�
 2026-10-15 G14 ONS 5G XLSX 产品坐标补验：隔离克隆使用固定 `layout-v2.0.9` 的实际上传 worker 登记 SHA-256 `b488e723…5834a6238` 原件；`sheet-4-table` 的 `A1:C418` 证据经 `readEvidence` 回读 Highland、Aberdeen City、Aberdeenshire、Scotland 两条草案所需 8 个 B/C 格值和地址，跨账号拒绝，v3 指针未变，合成数据清理。类型与 lint 通过。此过程未调产品代码，仍未完成来源独立性审批、Gold 冻结、模型问答或生产网页引用，独立 Gold 0。[候选收据](evidence/ma24-g14-ons-5g-xlsx-candidate-2026-10-14.json)。
 
 2026-10-15 G14 题型去重：尽管 ONS 5G 的 Aberdeen 数字与指标来自新原件，其“两地区比例与百分点差”问法与已用于开发的 ONS ultrafast XLSX 草案同构，故不纳入新独立 Gold。Highland/Scotland 草案另要求辨别地理面积分母及不同地域级别，暂保留待审，未获独立来源/题目批准；独立 Gold 仍为 0。[交叉候选审计](evidence/ma24-g14-ons-5g-xlsx-candidate-2026-10-14.json)。
+
+2026-10-15 G05 候选网页成功块入口：以 `eIvmmxRUHfVhWKs48wg29` 在隔离恢复库运行正式页面和上传 worker，浏览器展示 216 个成功文字对象，排除原 PPTX 第 2 页装饰性页码并从数据库回读 revision 1/decoration；原 63 个待审对象及原件下载仍可操作。改源和旧修订写入均 409，手机无横向溢出、桌面/手机截图已检查。测试期间无审核完成或资料发布，v3 指针未变，临时库清理。首轮仅因测试定位器误用而失败，修正后两次完整通过；类型/lint 通过。仍缺生产加载、实际完整审核及模型引用质量。[页面收据](evidence/ma24-g05-success-review-page-db-clone-2026-10-15.json)。
