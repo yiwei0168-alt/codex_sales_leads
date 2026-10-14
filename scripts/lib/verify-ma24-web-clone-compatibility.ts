@@ -68,6 +68,7 @@ export async function verifyMa24WebCloneCompatibility(options: {
   attachmentUi?: boolean;
   runHistoryUi?: boolean;
   revisionHistoryUi?: boolean;
+  agentLibraryUi?: boolean;
 }): Promise<unknown> {
   assert.equal(await readFile(resolve(oldRoot, ".next/BUILD_ID"), "utf8").then(value => value.trim()), oldBuild);
   const candidateBuild = (await readFile(resolve(candidateRoot, ".next/BUILD_ID"), "utf8")).trim();
@@ -156,6 +157,7 @@ export async function verifyMa24WebCloneCompatibility(options: {
       let attachmentPage: unknown;
       let runHistoryPage: unknown;
       let revisionHistoryPage: unknown;
+      let agentLibraryPage: unknown;
       if (version.name === "candidate-web" && options.reviewUi) {
         const { verifyMa24ReviewPageClone } = await import("./verify-ma24-review-page-clone");
         try {
@@ -203,6 +205,10 @@ export async function verifyMa24WebCloneCompatibility(options: {
         const { verifyMa24RevisionHistoryClone } = await import("./verify-ma24-revision-history-clone");
         revisionHistoryPage = await verifyMa24RevisionHistoryClone({ admin: options.admin, base, cookie, userId });
       }
+      if (version.name === "candidate-web" && options.agentLibraryUi) {
+        const { verifyMa24AgentLibraryClone } = await import("./verify-ma24-agent-library-clone");
+        agentLibraryPage = await verifyMa24AgentLibraryClone({ admin: options.admin, base, cookie, userId });
+      }
       results.push({ version: version.name, buildId: version.buildId, manifestStatus: manifest.status,
         anonymousUploadStatus: denied.status, syntheticLoginStatus: login.status,
         authenticatedUploadStatus: list.status, visibleUploadJobs: listed.jobs.length,
@@ -215,7 +221,8 @@ export async function verifyMa24WebCloneCompatibility(options: {
         ...(mailboxReaderPage ? { mailboxReaderPage } : {}),
         ...(attachmentPage ? { attachmentPage } : {}),
         ...(runHistoryPage ? { runHistoryPage } : {}),
-        ...(revisionHistoryPage ? { revisionHistoryPage } : {}) });
+        ...(revisionHistoryPage ? { revisionHistoryPage } : {}),
+        ...(agentLibraryPage ? { agentLibraryPage } : {}) });
     } finally {
       await stopOwnedServer(child);
     }
