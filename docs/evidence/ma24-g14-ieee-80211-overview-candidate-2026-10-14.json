@@ -58,6 +58,15 @@
     "rawLocalReportSha256": "68f84f8b207d488164260e3e7b45cd81321c945b5d1074f0683c64272d610f97",
     "limit": "The historical blind questions duplicate old corpus queries; embedding neighbors are a screen, not a threshold or proof of semantic independence. Other development prompts, model outputs and provider-side exposure remain unaudited."
   },
+  "visualTriage": {
+    "receipt": "docs/evidence/ma24-g14-ieee-80211-overview-visual-triage-2026-10-14.json",
+    "originalSlidesInspected": 19,
+    "pendingVisualBlocks": 39,
+    "materialSlides": 15,
+    "illustrativeSlides": 4,
+    "savedObjectReviewVerdicts": 0,
+    "finding": "Membership charts, amendment timelines, a dated regulation map and multiple diagrams encode facts outside the main text. Whole-document registration and citation remain blocked until object-level review."
+  },
   "draftQuestions": [
     {
       "id": "ieee-80211-2025-amp-bands-modes",
