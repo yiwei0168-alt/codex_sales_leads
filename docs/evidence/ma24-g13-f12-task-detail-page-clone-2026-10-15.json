@@ -1,0 +1,23 @@
+{
+  "schema": "ma24-g13-f12-task-detail-page-clone-v1",
+  "date": "2026-10-15",
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-backup-restore.ts --web-compat --raw-json-ui",
+  "candidateBuildId": "-gufJcQePegDiD9FmcJAz",
+  "sourceArchiveSha256": "17db517922f0ee8067391544418f0c8af9f77ee5f48203b938b7559ba528d428",
+  "environment": "Disposable restored local database, migrations 127-134, synthetic private account and production-mode candidate Next Web; clone removed by verifier",
+  "taskDetail": {
+    "record": "Synthetic completed development-generation product_operation_metric with a 1620-character unbroken JSON field",
+    "databaseToApi": "Authenticated GET /api/tasks/[id]?kind=generation returned HTTP 200 and exact saved metrics",
+    "page": "Authenticated /tasks/[id]?kind=generation rendered TaskDetailView and its collapsed technical JSON disclosure",
+    "viewports": ["390x760", "1366x900"],
+    "expandedAndCopied": true,
+    "copiedJsonMatchedCompleteApiDetails": true,
+    "rawAndPageHorizontalOverflow": false,
+    "pageErrors": 0
+  },
+  "existingF12Regression": "The same candidate run passed knowledge-tree coordinate and saved company-score exact JSON copy on both viewports.",
+  "rollbackCompatibility": "Old Web build QfoyXprIZIVgSWxFSZ-1K loaded and authenticated against the migrated disposable clone; this is a compatibility check, not an actual production rollback.",
+  "checks": ["npm run build", "npx eslint scripts/lib/verify-ma24-raw-json-clone.ts", "git diff --check"],
+  "effects": { "modelCalls": 0, "productionWrites": 0, "productionSwitch": false },
+  "limits": "Only the generation-kind task detail with synthetic metrics was checked. Other TaskDetailView kinds, real task accuracy, other newly converted raw JSON pages, and production load remain unverified."
+}

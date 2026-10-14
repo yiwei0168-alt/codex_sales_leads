@@ -12,6 +12,7 @@ export async function verifyMa24RawJsonClone(options: {
   const documentId = randomUUID();
   const assetId = randomUUID();
   const versionId = randomUUID();
+  const taskId = randomUUID();
   const title = `MA24 F12 synthetic coordinates ${documentId.slice(0, 8)}`;
   const sourceSha = "a".repeat(64);
   const longValue = "SYNTHETIC".repeat(180);
@@ -28,6 +29,12 @@ export async function verifyMa24RawJsonClone(options: {
   const policy = { version: "synthetic-f12-v1", weights: { productAndUseCaseFit: 50,
     cooperationPathAndBuyingInfluence: 15, scaleAndChannelCoverage: 15,
     executionAndEnablement: 10, opportunityAndRisk: 10 } };
+  const taskMetrics = { stage: "synthetic-generation", diagnosticKey: longValue,
+    source: { kind: "fixture", page: 3, block: "task-raw-json" } };
+  await options.admin.query(
+    "insert into product_operation_metric(id,user_id,stage,status,metrics) values($1,$2,'development-generation','completed',$3)",
+    [taskId, options.userId, JSON.stringify(taskMetrics)],
+  );
   await options.admin.query(
     "insert into market_workspace(id,owner_id,slug,name,market,country_code) values($1,$2,'global-sales','Synthetic score display','Germany','DE')",
     [workspaceId, options.userId],
@@ -134,12 +141,29 @@ export async function verifyMa24RawJsonClone(options: {
         await expect(scoreDetails.getByRole("status")).toContainText("已复制原始 JSON");
         assert.deepEqual(JSON.parse(await page.evaluate(() => navigator.clipboard.readText())), dimensions);
         assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
+        const taskResponse = await fetch(`${options.base}/api/tasks/${taskId}?kind=generation`,
+          { headers: { cookie: options.cookie } });
+        assert.equal(taskResponse.status, 200);
+        const task = await taskResponse.json() as { details: { metrics: typeof taskMetrics } };
+        assert.deepEqual(task.details.metrics, taskMetrics);
+        await page.goto(`${options.base}/tasks/${taskId}?kind=generation`);
+        await expect(page.getByRole("heading", { name: "任务详情" })).toBeVisible();
+        const taskDetails = page.locator(".raw-json-details").filter({ hasText: "技术记录（原始结构，按需展开）" });
+        await expect(taskDetails).not.toHaveAttribute("open");
+        await taskDetails.locator("summary").click();
+        await expect(taskDetails.locator("pre")).toContainText(longValue);
+        assert(await taskDetails.locator("pre").evaluate(element => element.scrollWidth <= element.clientWidth + 1));
+        await taskDetails.getByRole("button", { name: "复制 JSON" }).click();
+        await expect(taskDetails.getByRole("status")).toContainText("已复制原始 JSON");
+        assert.deepEqual(JSON.parse(await page.evaluate(() => navigator.clipboard.readText())), task.details);
+        assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
         assert.deepEqual(pageErrors, []);
       } finally { await context.close(); }
     }
     return { candidatePage: true, syntheticTreeRead: true, longCoordinateCharacters: longValue.length,
       rawJsonSecondary: true, wrappedWithoutHorizontalOverflow: true, copiedExactJson: true,
       savedCompanyScorePage: true, readableSubscore: "40 / 50", policyVersion: "synthetic-f12-v1",
+      savedTaskDetailPage: true, taskDetailApi: 200, taskRawJsonCopiedFromApi: true,
       viewports: ["390x760", "1366x900"], pageErrors: 0, modelCalls: 0, productionWrites: 0 };
   } finally { await browser.close(); }
 }
