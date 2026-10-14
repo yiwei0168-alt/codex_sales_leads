@@ -79,14 +79,32 @@
     },
     "limits": "This is local extractor/evidence-text parity only. The three visual units are unresolved, so no tree registration, retrieval response, user-visible citation, permissions or production acceptance has been demonstrated. The interactive Report cache contains #VALUE! without selected filters."
   },
+  "cloneUploadReviewGate": {
+    "script": "scripts/verify-eu-xlsx-review-gate-clone.ts",
+    "command": "node scripts/run-tsx.cjs scripts/verify-eu-xlsx-review-gate-clone.ts",
+    "database": "existing local ma11_replay_* clone; synthetic private user",
+    "sourceHashMatched": true,
+    "worker": {"inputJobs": 1, "completed": 0, "failed": 0, "awaitingReview": 1, "embeddingCalls": 0, "modelCalls": 0, "externalCalls": 0},
+    "jobStatus": "extracted",
+    "jobErrorCode": "extraction-review-required",
+    "reviewObjects": 3,
+    "resolvedObjects": 0,
+    "treeStatus": "review-required",
+    "directRegistrationRejected": true,
+    "publishedDocuments": 0,
+    "cleanup": "Synthetic user, upload job and extraction-review rows were asserted to be zero; synthetic upload directory removed.",
+    "checks": ["npm run typecheck: pass", "npx eslint scripts/verify-eu-xlsx-review-gate-clone.ts: pass"],
+    "limits": "This verifies the isolated worker and registration block on the original XLSX. It does not resolve visual review, make the workbook retrievable, prove a user-visible answer/citation, or change production state."
+  },
   "acceptance": {
     "originalCellCoordinatesChecked": true,
     "localExtractorCellParityChecked": true,
+    "cloneUploadReviewGateChecked": true,
     "sourceIndependenceEstablished": false,
     "questionIndependenceEstablished": false,
     "goldCreated": 0,
     "modelCalls": 0,
     "productionKnowledgeWrites": 0
   },
-  "next": "Resolve each visual review object with original-sheet inspection, verify isolated upload/tree/retrieval citation and full development overlap before any source or Gold freeze; preserve Commission attribution and the mid-2025/methodology caveat."
+  "next": "Resolve each visual review object with original-sheet inspection, then verify isolated tree/retrieval citation and full development overlap before any source or Gold freeze; preserve Commission attribution and the mid-2025/methodology caveat."
 }
