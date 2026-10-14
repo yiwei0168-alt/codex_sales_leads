@@ -1,0 +1,19 @@
+{
+  "schema": "ma24-g01-runtime-queue-audit-v1",
+  "checkedAt": "2026-10-14 11:51:51.212553+00",
+  "command": "node scripts/run-tsx.cjs scripts/audit-ma24-runtime-queues.ts",
+  "mode": "read-only local database transaction; aggregate status counts only",
+  "queues": {
+    "mainAgent": { "cancelled": 2, "completed": 17, "failed": 1, "partial": 12, "queued": 0, "running": 0, "expiredOrMissingRunningLease": 0 },
+    "leadWorkflow": { "failed": 2, "queued": 0, "running": 0, "expiredOrMissingRunningLease": 0 },
+    "knowledgeUpload": { "total": 0, "pending": 0, "running": 0, "expiredOrMissingRunningLease": 0 },
+    "skillShadow": { "total": 0, "observing": 0, "queued": 0, "running": 0, "expiredOrMissingRunningLease": 0 },
+    "mailboxSync": { "completed": 12, "failed": 8, "running": 0, "runningOlderThanOneHour": 0 }
+  },
+  "assessment": "No sampled queue has a queued or running item or an expired running lease at the read-only snapshot. The historical partial and failed records require separate interpretation; zero active work is only one release-switch precondition, not release readiness.",
+  "limitations": [
+    "The snapshot can change and must be repeated immediately before a service or migration switch.",
+    "Only the five named PostgreSQL queues were counted; this does not establish external provider state, Graph queues, or absence of unrecorded effects.",
+    "No migration, worker action, backup, deployment, or rollback was performed."
+  ]
+}
