@@ -1,0 +1,30 @@
+{
+  "schema": "ma24-g14-eu-xlsx-cross-unit-search-v1",
+  "sourceSha256": "2ba1b1af51b4d27a703e4e5495ec89724d26bd6584a6b56244d8ecb7f54e079a",
+  "context": "The reviewed Instructions unit defines VHCN, while the Data source table contains Burgenland and the actual FTTP + DOCSIS 3.1 coverage cells. The prior same-node fulltext condition returned no document for Burgenland VHCN despite single-term Burgenland success.",
+  "change": "When primary document search returns no results, extract at most eight distinct useful Latin terms and require each term in a ready evidence unit of the same accessible document. Keep the original source-current, tenant, collection, market, company and product filters; return at most 24 documents.",
+  "cloneChecks": {
+    "query": "Burgenland VHCN",
+    "foundSyntheticDocument": true,
+    "reason": "cross-unit-fulltext",
+    "unsupportedTermRejected": true,
+    "wrongCollectionRejected": true,
+    "otherAccountRejected": true,
+    "citedSheet": "Data source",
+    "citedRange": "A1:S489",
+    "exactCellLinesChecked": 5,
+    "indexedCachedErrors": 0,
+    "syntheticUsersJobsReviewsDocumentsAfterCleanup": 0
+  },
+  "checks": [
+    "src/lib/knowledge/vectorless.test.ts: 8 passed",
+    "targeted eslint: passed",
+    "npm run typecheck: passed",
+    "scripts/verify-eu-xlsx-reviewed-citation-clone.ts: passed"
+  ],
+  "externalCalls": 0,
+  "modelCalls": 0,
+  "productionWrites": 0,
+  "qualityAccepted": false,
+  "remaining": "Test natural question formulations and answer/citation quality in the independent double-path evaluation, then perform actual product page and production-scope acceptance. This lexical fallback does not establish semantic recall across arbitrary wording."
+}

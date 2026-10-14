@@ -4,7 +4,7 @@ const mock=vi.hoisted(()=>({query:vi.fn(),transaction:vi.fn(),read:vi.fn()}));
 vi.mock("@/lib/rag/db",()=>({tenantQuery:mock.query,tenantTransaction:mock.transaction}));
 vi.mock("./document-repository",()=>({safeKnowledgeStorageKey:(key:string)=>key,assertResolvedInsideKnowledgeRoot:vi.fn()}));
 vi.mock("node:fs/promises",()=>({readFile:mock.read}));
-import {cjkQueryFragments,evidenceText,indexExtractedDocument,modelTokensInQuery,technicalQueryAnchors} from "./vectorless";
+import {cjkQueryFragments,evidenceText,indexExtractedDocument,latinQueryTerms,modelTokensInQuery,technicalQueryAnchors} from "./vectorless";
 const sha=(bytes:Uint8Array)=>createHash("sha256").update(bytes).digest("hex");
 beforeEach(()=>{mock.query.mockReset();mock.transaction.mockReset();mock.read.mockReset();});
 it("keeps exact model suffixes and distinct models for document narrowing",()=>{
@@ -23,6 +23,12 @@ it("uses multiple explicit technical anchors without broadening a lone unsupport
   expect(technicalQueryAnchors("VPN passthrough 等于 VPN server 吗？")).toEqual(["vpn","passthrough","server"]);
   expect(technicalQueryAnchors("The sheet says no PoE support. Is PoE supported?")).toEqual([]);
   expect(technicalQueryAnchors("给我不存在型号 ZZ-DOES-NOT-EXIST 的原始PDF")).toEqual(["pdf"]);
+});
+it("extracts bounded content terms for cross-unit document search",()=>{
+  expect(latinQueryTerms("What are the Burgenland VHCN coverage values from the source?"))
+    .toEqual(["burgenland","vhcn","coverage"]);
+  expect(latinQueryTerms("Burgenland burgenland VHCN")).toEqual(["burgenland","vhcn"]);
+  expect(latinQueryTerms(Array.from({length:20},(_,index)=>`Term${index}`).join(' '))).toHaveLength(8);
 });
 it("keeps table rows and headers as original evidence",()=>{
   expect(evidenceText({id:"table-1",unitType:"sheet",unitIndex:1,blockType:"table",quality:"success",table:{headers:["Model","Ports"],rows:[["A","8"],["B","16"]]}}))

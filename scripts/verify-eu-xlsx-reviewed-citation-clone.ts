@@ -21,6 +21,7 @@ url.pathname = `/${state.database}`;
 process.env.DATABASE_URL = url.toString();
 const pool = new Pool({ connectionString: url.toString() });
 const owner = randomUUID();
+const other = randomUUID();
 const uploadRoot = resolve("knowledge", "uploads");
 const ownerRoot = resolve(uploadRoot, owner);
 assert(ownerRoot.startsWith(uploadRoot + sep) && basename(ownerRoot) === owner);
@@ -77,6 +78,8 @@ try {
   assert.equal(offline.documents[0].sourceSha256, sha(source));
   await pool.query("insert into app_user(id,email,display_name,password_hash,role,status) values($1,$2,'EU XLSX reviewed clone','!','admin','active')",
     [owner, `${owner}@example.invalid`]);
+  await pool.query("insert into app_user(id,email,display_name,password_hash,role,status) values($1,$2,'EU XLSX other clone','!','member','active')",
+    [other, `${other}@example.invalid`]);
   const job = await createKnowledgeUploadJob(owner, { collection: "industry", title: "EU connectivity reviewed clone",
     originalFilename: "eu-connectivity-kpis-2026.xlsx",
     mimeType: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", bytes: source, visibility: "private" });
@@ -125,6 +128,10 @@ try {
     console.error(JSON.stringify({ found, compound, documentId: registered.documentId, diagnostic: diagnostic.rows }));
   }
   assert(found.some(item => item.documentId === registered.documentId));
+  assert(compound.some(item => item.documentId === registered.documentId && item.reason === "cross-unit-fulltext"));
+  assert.equal((await searchDocuments(owner, "Burgenland CertainlyAbsent", { collections: ["industry"] })).length, 0);
+  assert.equal((await searchDocuments(owner, "Burgenland VHCN", { collections: ["product"] })).length, 0);
+  assert.equal((await searchDocuments(other, "Burgenland VHCN", { collections: ["industry"] })).length, 0);
   const units = await browseTree(owner, registered.documentId, null, 0, 20, ["industry"]);
   const sourceUnit = units.find(item => item.title === "Data source");
   assert(sourceUnit);
@@ -151,6 +158,7 @@ try {
     pendingReviewUnits: initial.total, cachedErrorCells: table.candidate.cachedErrorCells.map(item => item.cell),
     reviewResolved: reviewed.resolved, completionReceipt: true, treeStatus: registered.treeStatus,
     searchFound: true, compoundQueryFound: compound.some(item => item.documentId === registered.documentId),
+    unsupportedTermRejected: true, wrongCollectionRejected: true, otherAccountRejected: true,
     citedSheet: evidence.source_location.sheetName, citedRange: evidence.source_location.cellRange,
     exactCellsChecked: 5, indexedCachedErrors: all.rows[0].errors, evidenceNodes: all.rows[0].evidence_nodes,
     syntheticPublishedDocuments: all.rows[0].published, externalCalls: 0, modelCalls: 0, qualityAccepted: false }));
@@ -160,12 +168,12 @@ try {
   await pool.query("delete from knowledge_upload_job where user_id=$1", [owner]);
   await pool.query("update knowledge_document set current_tree_version_id=null where owner_id=$1", [owner]);
   await pool.query("delete from knowledge_document where owner_id=$1", [owner]);
-  await pool.query("delete from app_user where id=$1", [owner]);
+  await pool.query("delete from app_user where id=any($1::uuid[])", [[owner, other]]);
   const residue = await pool.query<{ users: number; jobs: number; reviews: number; documents: number }>(`
-    select (select count(*)::int from app_user where id=$1) users,
+    select (select count(*)::int from app_user where id=any($2::uuid[])) users,
       (select count(*)::int from knowledge_upload_job where user_id=$1) jobs,
       (select count(*)::int from knowledge_upload_extraction_review where owner_id=$1) reviews,
-      (select count(*)::int from knowledge_document where owner_id=$1) documents`, [owner]);
+      (select count(*)::int from knowledge_document where owner_id=$1) documents`, [owner, [owner, other]]);
   assert.deepEqual(residue.rows[0], { users: 0, jobs: 0, reviews: 0, documents: 0 });
   await pool.end();
   await getPool().end();

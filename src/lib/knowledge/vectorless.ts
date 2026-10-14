@@ -67,6 +67,12 @@ export function technicalQueryAnchors(query:string){
   const anchors=query.match(/(?<![A-Za-z0-9_-])(?:[A-Z]{2,}\+?|\d+(?:\.\d+)?G|passthrough|server)(?![A-Za-z0-9_-])/g)??[];
   return [...new Set(anchors.map(anchor=>anchor.toLowerCase()))].slice(0,8);
 }
+const queryFillerWords=new Set(['the','and','for','from','with','what','which','where','when','how','many','much','does','have','has','are','was','were','can','could','would','should','tell','show','give','please','about','that','this','into','according','source','data','value','values']);
+/** When terms are in different reviewed units, require each useful Latin term somewhere in the same document. */
+export function latinQueryTerms(query:string){
+  return [...new Set((query.match(/[A-Za-z][A-Za-z0-9]{2,}/g)??[]).map(term=>term.toLowerCase())
+    .filter(term=>!queryFillerWords.has(term)))].slice(0,8);
+}
 export async function searchDocuments(userId:string,query:string,filters:{market?:string;companyId?:string;productId?:string;collections?:KnowledgeCollections}={}){
   const modelTokens=modelTokensInQuery(query);
   const prefixTokens=modelTokens.filter(token=>/^[a-z0-9]+$/.test(token));
@@ -95,7 +101,25 @@ export async function searchDocuments(userId:string,query:string,filters:{market
       and (m.id is not null or cm.id is not null or t.token is not null or pref.token is not null or n.id is not null or d.title ilike '%'||$1||'%')
       order by (m.id is not null) desc,(cm.id is not null) desc,(t.token is not null) desc,(pref.token is not null) desc,(n.id is not null) desc,d.title limit 24`,
     [query,userId,filters.market??null,filters.companyId??null,filters.productId??null,modelTokens,prefixTokens,filters.collections??null]);
-  if(documents.length||modelTokens.length)return documents;
+  if(documents.length)return documents;
+  const terms=latinQueryTerms(query);
+  if(terms.length>=2){
+    const acrossUnits=await tenantQuery<{documentId:string;title:string;versionId:string;reason:string;totalCount:number}>(userId,`select d.id as "documentId",d.title,v.id as "versionId",count(*) over()::int as "totalCount",
+      'cross-unit-fulltext' as reason from knowledge_document d join knowledge_tree_version v on v.id=d.current_tree_version_id
+      left join knowledge_asset a on a.id=v.asset_id and a.document_id=d.id and a.registration_status='registered' and a.source_sha256=v.source_sha256
+      where d.status='active' and v.status='ready' and ((a.id is not null)
+        or (v.asset_id is null and d.content_sha256=v.source_sha256 and exists(select 1 from knowledge_document_revision r
+          where r.document_id=d.id and r.content_sha256=v.source_sha256 and r.reconstructed=false)))
+        and (d.owner_id=$1 or d.visibility='shared')
+        and ($2::text is null or d.market=$2) and ($3::text is null or d.company_id=$3) and ($4::text is null or d.product_id=$4)
+        and ($6::text[] is null or exists(select 1 from knowledge_collection kc where kc.id=d.collection_id and kc.slug=any($6)))
+        and not exists(select 1 from unnest($5::text[]) term where not exists(select 1 from knowledge_tree_node n
+          where n.version_id=v.id and n.node_kind='evidence' and n.search_vector @@ plainto_tsquery('simple',term)))
+      order by d.title limit 24`,
+      [userId,filters.market??null,filters.companyId??null,filters.productId??null,terms,filters.collections??null]);
+    if(acrossUnits.length)return acrossUnits;
+  }
+  if(modelTokens.length)return documents;
   const anchors=technicalQueryAnchors(query);
   if(anchors.length>=2){
     const technical=await tenantQuery<{documentId:string;title:string;versionId:string;reason:string;totalCount:number}>(userId,`select d.id as "documentId",d.title,v.id as "versionId",count(*) over()::int as "totalCount",
