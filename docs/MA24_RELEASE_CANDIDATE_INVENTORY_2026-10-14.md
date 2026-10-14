@@ -2,6 +2,8 @@
 
 本清单初版依据[当前运行盘点](evidence/ma24-r0-runtime-release-inventory-2026-10-14.json)、[迁移预检](evidence/ma24-release-migration-preflight-2026-10-14.json)与各已发布提交到候选 `d19e9010` 的文件差异；下方补充记录后续候选 build `JL8ySlDPL7j1x5xDRlO8A` 的隔离验收。它是 R0 发布准备清单，不是发布批准、业务质量结论或部署收据。验收仍按[执行台账](MA24_EXECUTION_STATUS_2026-10-13.md)的工程、真实质量和生产三列分别记。
 
+**当前固定候选（2026-10-14 21:09 北京时间）。** 完整构建提交 `052f6b4c`，build ID `_zjhGHUAx7YAftOEXlsef`，build manifest SHA-256 `6c37a5ede35e3045e5db68a229cd8248a022c07091f7a94af9acfc64eae0769aa`；本地忽略目录 `.next-releases/ma24-g01-052f6b4c` 保存了 1530 文件、279540174 字节的构建副本，并核对了 build ID 与 manifest 哈希。[固定候选收据](evidence/ma24-g01-integrated-release-candidate-2026-10-14.json)同时记录八个迁移文件哈希和旧服务回切指针。3018 仍提供旧 Web build `QfoyXprIZIVgSWxFSZ-1K` 的 manifest，不提供当前候选的 manifest；Graph 源码没有进程内哈希证明。127–134 的七个目标标记仍缺席，旧备份校验通过但预检时已约 28.1 小时。五类数据库队列的只读快照无排队或运行项，但切换前须重取。BGE 8765 已恢复监听，其集成质量未验。此固定候选是可追溯的本机构建，不能作为发布批准；新备份、逐域质量门槛、迁移台账、生产冒烟和实际回滚仍未完成。
+
 **2026-10-14 复核。** [只读预检收据](evidence/ma24-r0-release-preflight-refresh-2026-10-14.json)绑定源码提交 `7ccc139c`，记录了 127–134 八个迁移文件 SHA-256。产品库九个前置标记仍在、七个目标标记仍缺席；旧备份校验通过但已约 23 小时，发布前必须新建备份。Web 和 Graph 端口仍在，BGE 8765 无监听；邮箱、线索、本地记忆、图谱投影、知识及 Skill 影子 worker 均未运行。此复核未取队列计数或进程环境开关，也未改变运行服务。
 
 | 功能域 | 候选需要一起核对的运行单元 | 数据库与本地依赖 | 当前缺口及回滚入口 |

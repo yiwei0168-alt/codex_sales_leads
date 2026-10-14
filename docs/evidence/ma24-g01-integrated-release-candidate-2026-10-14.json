@@ -1,0 +1,50 @@
+{
+  "schema": "ma24-g01-integrated-release-candidate-v1",
+  "checkedAt": "2026-10-14 13:09 UTC",
+  "scope": "Local candidate build and read-only release readiness inventory; no product migration, service switch, model task or rollback",
+  "candidate": {
+    "sourceCommit": "052f6b4c3019e75e5677f851493901120d0fd311",
+    "buildCommand": "npm run build",
+    "buildResult": "passed including TypeScript and 26 static pages",
+    "buildId": "_zjhGHUAx7YAftOEXlsef",
+    "buildManifestSha256": "6c37a5ede35e3045e5db68a229cd8248a022c07091f7a94af9acfc64eae0769aa",
+    "localSnapshot": ".next-releases/ma24-g01-052f6b4c",
+    "snapshotFiles": 1530,
+    "snapshotBytes": 279540174,
+    "snapshotBuildIdAndManifestMatch": true,
+    "snapshotGitIgnored": true
+  },
+  "previousServicePointers": {
+    "web": {"port": 3018, "pid": 33240, "previouslyVerifiedSourceCommit": "245ed9cc", "previouslyVerifiedBuildId": "QfoyXprIZIVgSWxFSZ-1K", "oldBuildManifestHttpStatus": 200, "candidateBuildManifestServed": false},
+    "langgraph": {"port": 2024, "pid": 35656, "previouslyCorroboratedSourceCommit": "44e8608c", "inProcessSourceHashAvailable": false},
+    "mainWorker": {"previouslyVerifiedRollbackCommit": "1d1cc962", "currentLoopRecheckRequired": true},
+    "bge": {"port": 8765, "pid": 22700, "listenerPresent": true, "integrationOrQualityProven": false}
+  },
+  "migrationPreflight": {
+    "command": "npm run ma24:release-preflight",
+    "schemaState": "stage-absent",
+    "prerequisiteMarkers123To126Present": 9,
+    "targetMarkers127To134Present": 0,
+    "migrationFileSha256": {
+      "127_upload_extraction_reviews.sql": "83dc4567b2079c03b7d44cee68691f2a7edccc25604720c93f1eee695dfade45",
+      "128_upload_extraction_review_completion.sql": "407faa5a9d68ed6bcc2b2665bee5570e67138532d7a128bdd131c747600377fa",
+      "129_upload_visual_queue.sql": "fb8a9bd1f382fec06f5ae1515fb65ce7e61ed599be00c31a0c8a82ec6211bbc3",
+      "130_skill_acceptance_evidence.sql": "8584db80f8085cd179e7b15fd6585785e0922746d17e1053ebb085469c7b8fce",
+      "131_skill_model_attempt_journal.sql": "ebd091f77b7ff60e5cfc601d77542ea9859791a2f5c93ea2d2bd670c72e10274",
+      "132_skill_bundle_collector.sql": "677f3cae793aef426c643ec4f73464ea5fdd5051289260fad10e55b563e04b4d",
+      "133_skill_acceptance_freeze.sql": "7b50d0490514384c37321fd7d49f4b61d53e944eb28a8431f257101974667b29",
+      "134_skill_model_freeze_binding.sql": "e8ef22ecc55b5a7cadd75241c851a4a0fb133526d6d275434fd5c472bb5f310d"
+    },
+    "priorBackup": {"file": "network_copilot_2026-10-13T09-03-13Z.dump", "bytes": 192967451, "sha256": "17db517922f0ee8067391544418f0c8af9f77ee5f48203b938b7559ba528d428", "checksumMatched": true, "ageHoursAtPreflight": 28.1, "freshMigrationBackup": false},
+    "readyForRelease": false
+  },
+  "queueSnapshot": {"checkedAt": "2026-10-14 13:00:21 UTC", "sampledQueues": ["mainAgent", "leadWorkflow", "knowledgeUpload", "skillShadow", "mailboxSync"], "queuedOrRunning": 0, "expiredRunningLeases": 0, "repeatAtSwitch": true},
+  "releaseGatesRemaining": [
+    "Complete domain-specific quality and acceptance gates before pilot exposure",
+    "Recheck exact running service source and runtime flags; Graph has no in-process source hash",
+    "Create and verify a fresh product backup immediately before 127-134 migration",
+    "Recheck queues and establish migration ledger and per-domain smoke criteria at switch",
+    "Run authorized domain pilots, actual service rollback and data compatibility checks"
+  ],
+  "assessment": "A reproducible local source/build candidate and old service pointers are now bound. This is not a deployed or release-ready package; G01 remains partial and G17/G18 production acceptance is open."
+}
