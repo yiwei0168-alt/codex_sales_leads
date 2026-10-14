@@ -4,12 +4,12 @@
   "stage": "R4 source discovery only",
   "holdoutFrozen": false,
   "goldCreated": 0,
-  "filesDownloaded": 5,
+  "filesDownloaded": 6,
   "localRegistryAudit": {
     "checkedAt": "2026-10-14",
     "database": "local PostgreSQL, repeatable-read read-only transaction",
     "tables": ["knowledge_asset", "knowledge_upload_job", "knowledge_evaluation_review_v3.expected_sources"],
-    "candidateHashesChecked": 5,
+    "candidateHashesChecked": 6,
     "matchingAssets": 0,
     "matchingUploadJobs": 0,
     "matchingHistoricalGoldSources": 0,
@@ -85,6 +85,20 @@
       "sha256": "6d29a37c1f254f4b9f8fd73a0be66bdb4480c6b32d0a64ef27505ca4188b1e4c",
       "integrity": "valid unencrypted PDF; 167 pages; pypdf repaired a non-zero-indexed xref while reading metadata",
       "status": "quarantined; 167 pages of text readable; exact answer, table/formula and coordinate review pending"
+    },
+    {
+      "kind": "pptx",
+      "title": "Tutorial: Gigabit Ethernet over Plastic Optical Fiber",
+      "publisher": "IEEE 802.3 GEPOF Study Group",
+      "metadataPage": "https://ieee802.org/3/GEPOFSG/public/Tutorial/index.html",
+      "sourceUrl": "https://ieee802.org/3/GEPOFSG/public/Tutorial/Presentation_v1.4.pptx",
+      "metadataChecked": "IEEE public tutorial page lists PPTX v1.4 for the 3 November 2014 tutorial.",
+      "contentRead": true,
+      "localQuarantinePath": "tmp/ma24-independent-quarantine/ieee-gepof-tutorial-v14.pptx",
+      "bytes": 13438668,
+      "sha256": "030a730584498f8b98109a1bf2da22a29cc443021c63fbd1c18cf2bad2da6910",
+      "integrity": "valid OOXML; 346 ZIP parts; 82 slides with text; no macro, external-link part or external relationship",
+      "status": "quarantined; substantive networking content and no exact local registry match; historical proposal context, question overlap and visual Gold coordinates pending"
     }
   ],
   "excluded": [
@@ -93,5 +107,5 @@
       "reason": "The browsing tool displayed full PDF text while checking the link; exposed to development review and unsuitable as a fresh holdout."
     }
   ],
-  "next": "Screen answer-level overlap and development exposure for the four still-eligible sources, complete necessary development fixes, freeze the eligible source set and retrieval configuration, then author Gold before running either retrieval path."
+  "next": "Screen answer-level overlap and development exposure for the four retained sources, including the IEEE technical PPTX; review original-slide and other source coordinates, complete development fixes, freeze eligible sources and retrieval configuration, then author Gold before either retrieval path."
 }

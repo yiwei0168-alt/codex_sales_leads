@@ -1,0 +1,48 @@
+{
+  "schema": "ma24-g14-ieee-pptx-candidate-v1",
+  "date": "2026-10-14",
+  "sourcePage": "https://ieee802.org/3/GEPOFSG/public/Tutorial/index.html",
+  "sourceUrl": "https://ieee802.org/3/GEPOFSG/public/Tutorial/Presentation_v1.4.pptx",
+  "publisher": "IEEE 802.3 Gigabit Ethernet over Plastic Optical Fiber Study Group",
+  "sourceDescription": "public tutorial presentation for 3 November 2014 IEEE 802 plenary",
+  "localQuarantinePath": "tmp/ma24-independent-quarantine/ieee-gepof-tutorial-v14.pptx",
+  "bytes": 13438668,
+  "sha256": "030a730584498f8b98109a1bf2da22a29cc443021c63fbd1c18cf2bad2da6910",
+  "integrity": {
+    "validZip": true,
+    "zipParts": 346,
+    "macroOrExternalLinkParts": 0,
+    "externalRelationships": 0,
+    "nativeSlides": 82,
+    "slidesWithNativeText": 82
+  },
+  "contentScreen": {
+    "nativeTextCharacters": 23910,
+    "slidesWithTerms": {"Ethernet": 12, "plastic optical fiber": 4, "POF": 47, "automotive": 15},
+    "doclingConversion": "success, text output",
+    "doclingWarnings": ["one chart data extraction failed", "several provenance boxes clamped to slide bounds"],
+    "sampledTopics": ["proposed IEEE P802.3bv objectives", "1,000 Mb/s MAC/PLS interface", "plastic optical fiber distance objectives", "automotive, home and industrial use"],
+    "domainFit": "substantive telecom networking presentation; suitable for further PPTX-source screening"
+  },
+  "localExactExposureScreen": {
+    "command": "node scripts/run-tsx.cjs scripts/audit-g14-candidate-hash-local.ts 030a730584498f8b98109a1bf2da22a29cc443021c63fbd1c18cf2bad2da6910",
+    "matchingAssets": 0,
+    "matchingUploadJobs": 0,
+    "matchingHistoricalGoldRows": 0,
+    "localTextHashTitleUrlHits": 0
+  },
+  "approval": {
+    "candidateQuarantined": true,
+    "sourceIndependenceEstablished": false,
+    "questionIndependenceEstablished": false,
+    "visualCoordinatesReviewed": false,
+    "goldCreated": 0,
+    "productionKnowledgeWrites": 0,
+    "modelCalls": 0
+  },
+  "limits": [
+    "The 2014 tutorial states proposed study-group objectives; it is not evidence of current product support or current standards status.",
+    "Exact registry and local text absence does not prove semantic independence or historical model non-exposure.",
+    "Docling chart and bbox warnings require original-slide review before precise Gold coordinates."
+  ]
+}
