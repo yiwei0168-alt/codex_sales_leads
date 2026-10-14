@@ -175,6 +175,23 @@ class PptxGroupTest(unittest.TestCase):
 
 
 class PdfBlankPageTest(unittest.TestCase):
+    def test_extracted_invisible_text_requires_page_review(self):
+        with TemporaryDirectory() as directory:
+            path=Path(directory)/"invisible.pdf"
+            document=pymupdf.open()
+            page=document.new_page(); page.insert_text((50,50),"Visible")
+            page.insert_text((50,80),"Transparent claim",fill_opacity=0)
+            page=document.new_page(); page.insert_text((50,50),"Hidden claim",render_mode=3)
+            document.new_page().insert_text((50,50),"Ordinary text")
+            document.save(path); document.close()
+            artifact=extract_file(path,"invisible.pdf")
+            self.assertEqual(artifact["qualitySummary"],{"success":1,"blank":0,"pending-ocr":2,"failed":0})
+            pending=[block for block in artifact["blocks"] if block["quality"]=="pending-ocr"]
+            self.assertEqual([block["unitIndex"] for block in pending],[1,2])
+            self.assertTrue(all(block["metadata"]["reviewReason"]=="invisible-pdf-text" for block in pending))
+            self.assertTrue(any(block["text"]=="Transparent claim" for block in artifact["blocks"]))
+            self.assertTrue(any(block["text"]=="Hidden claim" for block in artifact["blocks"]))
+
     def test_text_does_not_hide_visual_content(self):
         with TemporaryDirectory() as directory:
             path=Path(directory)/"mixed.pdf"; picture=Path(directory)/"image.png"

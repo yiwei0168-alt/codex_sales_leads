@@ -1,0 +1,20 @@
+{
+  "schema": "ma24-g05-invisible-pdf-text-gate-v1",
+  "date": "2026-10-15",
+  "cause": "PyMuPDF block extraction includes transparent text and PDF render-mode-3 text even when a text-only page has no image, drawing, annotation or widget to trigger the existing visual review marker.",
+  "change": "layout-v2.0.9 marks text-bearing pages with either kind of invisible text as pending-ocr and attaches an invisible-pdf-text page review reason. The original text blocks remain available for the existing successful-block review and exclusion path.",
+  "checks": {
+    "syntheticPdf": "Three-page source: one transparent-text page, one render-mode-3 page, one ordinary text page; extracted unit counts pending-ocr=2, success=1; both invisible source texts remain identifiable for review.",
+    "pythonRegression": "python scripts/test_knowledge_extraction_v2.py: 10 tests passed",
+    "readinessRegression": "npx vitest run src/lib/knowledge/extraction-readiness.test.ts: 6 tests passed",
+    "diffCheck": "passed"
+  },
+  "limits": [
+    "This targets two definite invisible-text mechanisms; other visual occlusion and all-success files remain subject to the pending prepublication review-policy decision.",
+    "No isolated database worker or actual candidate browser run was performed for layout-v2.0.9; production services have not loaded it.",
+    "A review marker is a publication hold, not an OCR result, human judgment, correct citation or independent quality pass."
+  ],
+  "productionKnowledgeWrites": 0,
+  "modelCalls": 0,
+  "independentGoldCreated": 0
+}
