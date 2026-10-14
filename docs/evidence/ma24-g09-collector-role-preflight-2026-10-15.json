@@ -1,0 +1,29 @@
+{
+  "schema": "ma24-g09-collector-role-preflight-v1",
+  "date": "2026-10-15",
+  "scope": "Read-only release preflight of the actual application database credential and Skill collector role; no schema change or model call",
+  "change": "scripts/verify-ma24-release-preflight.ts now checks the application connection cannot SET ROLE or inherit network_copilot_skill_collector, and requires that collector role be NOLOGIN, NOSUPERUSER and NOBYPASSRLS when the target migration stage is installed",
+  "currentProductionReadOnlyResult": {
+    "targetMigrationStage": "absent",
+    "prerequisiteMarkers": "present",
+    "collectorRolePresent": true,
+    "collectorRoleRestricted": true,
+    "applicationCanSetCollectorRole": false,
+    "applicationInheritsCollectorRole": false,
+    "migrationAdministratorCanSetCollectorRole": true,
+    "readyForRelease": false
+  },
+  "checks": {
+    "fullTypecheck": "passed",
+    "changedFileEslint": "passed",
+    "actualApplicationConnectionPreflight": "passed; role boundary held",
+    "privilegedCredentialNegativeTest": "passed; verifier exited 1 with collector impersonation rejection when the migration credential was used as the application credential",
+    "databaseWrites": 0,
+    "modelCalls": 0
+  },
+  "limits": [
+    "A database role check does not attest the deployed runner binary, provider request/response receipts, or prospective shadow collection",
+    "Target acceptance and freeze migrations are not installed in production",
+    "This is a preflight security check, not an automatic activation or Skill quality approval"
+  ]
+}

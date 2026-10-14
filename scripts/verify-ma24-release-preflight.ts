@@ -81,8 +81,29 @@ try {
   const markers = result.rows[0];
   const values = Object.values(markers);
   const schemaState = values.every(Boolean) ? "stage-present" : values.every(value => !value) ? "stage-absent" : "partial-stage";
+  const collectorRole = (await client.query<{ present: boolean; restricted: boolean }>(`select
+    exists(select 1 from pg_roles where rolname='network_copilot_skill_collector') as present,
+    exists(select 1 from pg_roles where rolname='network_copilot_skill_collector'
+      and not rolcanlogin and not rolsuper and not rolbypassrls) as restricted`)).rows[0];
+  const applicationClient = new Client({
+    connectionString: databaseConnectionString(application),
+    ssl: databaseSslConfiguration(application),
+  });
+  await applicationClient.connect();
+  let applicationCollectorAccess: { canSetRole: boolean; inheritsRole: boolean };
+  try {
+    const row = (await applicationClient.query<{ can_set_role: boolean; inherits_role: boolean }>(`select
+      case when to_regrole('network_copilot_skill_collector') is null then false
+        else pg_has_role(current_user,'network_copilot_skill_collector','SET') end as can_set_role,
+      case when to_regrole('network_copilot_skill_collector') is null then false
+        else pg_has_role(current_user,'network_copilot_skill_collector','USAGE') end as inherits_role`)).rows[0];
+    applicationCollectorAccess = { canSetRole: row.can_set_role, inheritsRole: row.inherits_role };
+  } finally {
+    await applicationClient.end();
+  }
   console.log(JSON.stringify({
-    preflight: "read-only", schemaState, prerequisiteMarkers, markers, migrationFiles: files,
+    preflight: "read-only", schemaState, prerequisiteMarkers, markers,
+    collectorRole, applicationCollectorAccess, migrationFiles: files,
     backup: { file: newest.name, bytes: archiveSize, sha256: archiveHash, createdAt: manifest.createdAt,
       ageHours: Math.round((Date.now() - Date.parse(manifest.createdAt)) / 3_600_000 * 10) / 10,
       checksumMatched: true },
@@ -91,6 +112,10 @@ try {
   }));
   assert(Object.values(prerequisiteMarkers).every(Boolean), "One or more 123-126 prerequisite markers are absent");
   assert.notEqual(schemaState, "partial-stage", "Partial 127-135 stage needs manual reconciliation");
+  assert(!applicationCollectorAccess.canSetRole && !applicationCollectorAccess.inheritsRole,
+    "Application database login can impersonate the Skill collector");
+  if (schemaState === "stage-present") assert(collectorRole.restricted,
+    "Skill collector must be NOLOGIN without superuser or BYPASSRLS privileges");
 } finally {
   await client.end();
 }
