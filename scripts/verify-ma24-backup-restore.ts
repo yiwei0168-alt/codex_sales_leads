@@ -104,10 +104,73 @@ try {
     (select relrowsecurity and relforcerowsecurity from pg_class where oid='agent_skill_acceptance_bundle'::regclass) as bundle_forced_rls`)).rows[0] as Record<string, boolean>;
   assert.deepEqual(access, { review_read: true, review_insert: true, app_bundle_insert: false,
     collector_bundle_insert: true, bundle_forced_rls: true }, "Critical migration ACL or RLS boundary failed");
+  let webCompatibility: unknown;
+  if (process.argv.includes("--web-compat")) {
+    const application = process.env.DATABASE_URL;
+    assert(application, "Web compatibility needs an application database URL");
+    const applicationSource = new URL(application);
+    assert.equal(applicationSource.hostname, source.hostname);
+    assert.equal(applicationSource.port || "5432", source.port || "5432");
+    assert.equal(applicationSource.pathname, source.pathname);
+    applicationSource.pathname = `/${database}`;
+    const sourceAcl = new Client({ connectionString: source.toString() });
+    await sourceAcl.connect();
+    const copiedRouteGrants: string[] = [];
+    try {
+      for (const table of ["app_user", "auth_login_attempt", "app_session", "knowledge_upload_job",
+        "knowledge_document", "knowledge_tree_version", "knowledge_asset"]) {
+        for (const privilege of ["SELECT", "INSERT", "UPDATE", "DELETE"]) {
+          const allowed = (await sourceAcl.query<{ allowed: boolean }>(
+            "select has_table_privilege($1,$2,$3) as allowed",
+            ["network_copilot_app", `public.${table}`, privilege],
+          )).rows[0].allowed;
+          if (!allowed) continue;
+          await clone.query(`grant ${privilege} on table "${table}" to network_copilot_app`);
+          copiedRouteGrants.push(`${table}:${privilege}`);
+        }
+      }
+      for (const privilege of ["USAGE", "SELECT", "UPDATE"]) {
+        const allowed = (await sourceAcl.query<{ allowed: boolean }>(
+          "select has_sequence_privilege($1,$2,$3) as allowed",
+          ["network_copilot_app", "public.auth_login_attempt_id_seq", privilege],
+        )).rows[0].allowed;
+        if (!allowed) continue;
+        await clone.query(`grant ${privilege} on sequence auth_login_attempt_id_seq to network_copilot_app`);
+        copiedRouteGrants.push(`auth_login_attempt_id_seq:${privilege}`);
+      }
+      const functionAllowed = (await sourceAcl.query<{ allowed: boolean }>(
+        "select has_function_privilege('network_copilot_app','public.app_current_user_id()','EXECUTE') as allowed",
+      )).rows[0].allowed;
+      if (functionAllowed) {
+        await clone.query("grant execute on function app_current_user_id() to network_copilot_app");
+        copiedRouteGrants.push("app_current_user_id:EXECUTE");
+      }
+      const schemaAllowed = (await sourceAcl.query<{ allowed: boolean }>(
+        "select has_schema_privilege('network_copilot_app','public','USAGE') as allowed",
+      )).rows[0].allowed;
+      if (schemaAllowed) {
+        await clone.query("grant usage on schema public to network_copilot_app");
+        copiedRouteGrants.push("public:USAGE");
+      }
+    } finally {
+      await sourceAcl.end();
+    }
+    const oldRouteAcl = (await clone.query(`select
+      has_table_privilege('network_copilot_app','app_user','SELECT') as user_read,
+      has_table_privilege('network_copilot_app','auth_login_attempt','SELECT') as login_attempt_read,
+      has_table_privilege('network_copilot_app','auth_login_attempt','INSERT') as login_attempt_insert,
+      has_table_privilege('network_copilot_app','app_session','INSERT') as session_insert,
+      has_table_privilege('network_copilot_app','knowledge_upload_job','SELECT') as upload_read`)).rows[0];
+    console.log(JSON.stringify({ clone: database, diagnostic: "old-web-route-clone-acl", copiedRouteGrants, oldRouteAcl }));
+    assert(Object.values(oldRouteAcl).every(Boolean), "Restored clone lacks old Web route privileges");
+    const { verifyMa24WebCloneCompatibility } = await import("./lib/verify-ma24-web-clone-compatibility");
+    webCompatibility = await verifyMa24WebCloneCompatibility({ admin: clone,
+      applicationDatabaseUrl: applicationSource.toString(), migrationDatabaseUrl: cloneUrl.toString() });
+  }
   console.log(JSON.stringify({ archive: newest, archiveSha256: manifest.sha256, restored: true,
     migrationRange: "127-134", rollbackVerified: true, committedOnDisposableClone: true,
     before, after, access, productionChanged: false, fullIntegrityRestore: true,
-    skippedConstraints: [] }));
+    skippedConstraints: [], ...(webCompatibility ? { webCompatibility } : {}) }));
 } finally {
   if (cloneConnected) await clone.end();
   if (created) await admin.query(`drop database ${quoted} with (force)`);

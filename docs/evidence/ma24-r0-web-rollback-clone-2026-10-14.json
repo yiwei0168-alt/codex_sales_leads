@@ -1,0 +1,67 @@
+{
+  "date": "2026-10-14",
+  "scope": "R0 isolated Web compatibility after MA24 migrations 127-134",
+  "command": "npm run ma24:verify-web-rollback-clone",
+  "sourceBackup": {
+    "file": "network_copilot_2026-10-13T09-03-13Z.dump",
+    "sha256": "17db517922f0ee8067391544418f0c8af9f77ee5f48203b938b7559ba528d428",
+    "fullIntegrityRestore": true,
+    "ownerAndAclIncluded": false
+  },
+  "database": {
+    "temporaryName": "ma24_restore_94d16bd1dd52",
+    "migrationRange": "127-134",
+    "sevenMarkersBefore": "all absent",
+    "transactionalRollbackToBefore": "passed",
+    "sevenMarkersAfterCommit": "all present",
+    "reviewTableApplicationSelectInsert": true,
+    "acceptanceBundleApplicationInsert": false,
+    "acceptanceBundleCollectorInsertAndForcedRls": true,
+    "productDatabaseChanged": false,
+    "temporaryDatabaseRemoved": true
+  },
+  "aclRecoveryForIsolatedSmoke": {
+    "finding": "The custom backup excluded ACLs. Before restoring route-specific effective privileges, old Web synthetic login returned 500; PostgreSQL reported missing auth_login_attempt_id_seq privilege. Login then passed, but upload list returned 503 until the joined knowledge tables had their source-equivalent privileges.",
+    "sourceRole": "network_copilot_app",
+    "sourceDatabasePrivilegeInspection": "read-only",
+    "temporaryCloneGrants": "Only effective source-role privileges on four authentication/upload tables, three list-join tables, the login sequence, app_current_user_id and public schema were copied to the disposable clone.",
+    "productDatabaseAclChanged": false,
+    "finalAuthenticatedRoutesPassed": true
+  },
+  "versions": [
+    {
+      "name": "old-web-rollback",
+      "sourceCommit": "245ed9cc",
+      "buildId": "QfoyXprIZIVgSWxFSZ-1K",
+      "buildManifestStatus": 200,
+      "anonymousUploadListStatus": 401,
+      "syntheticLoginStatus": 200,
+      "authenticatedUploadListStatus": 200,
+      "visibleUploadJobs": 0
+    },
+    {
+      "name": "candidate-web",
+      "sourceCommitAtLastProductionCodeBuild": "e0407885",
+      "buildId": "xlf_7uBjoKnfS1xxCbjvB",
+      "buildManifestStatus": 200,
+      "anonymousUploadListStatus": 401,
+      "syntheticLoginStatus": 200,
+      "authenticatedUploadListStatus": 200,
+      "visibleUploadJobs": 0,
+      "authenticatedSkillAcceptanceListStatus": 200,
+      "productionSourceOrNextConfigChangesSinceBuild": 0
+    }
+  ],
+  "cleanup": {
+    "isolatedWebProcessesStopped": true,
+    "onlyPreviouslyRunningWebPidRemains": 33240,
+    "temporaryRestoreDatabaseCountAfterRun": 0
+  },
+  "modelCalls": 0,
+  "realCustomerRecordsMutated": false,
+  "limits": [
+    "This proves only the listed authentication, authorization and empty-list routes against one migrated disposable clone.",
+    "No actual upload review, Skill evidence, Graph, worker, natural business task or source revocation was exercised.",
+    "No product port or database was switched. Service rollback after production traffic and any database write remains unverified."
+  ]
+}
