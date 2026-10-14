@@ -160,7 +160,7 @@ export async function verifyMa24WebCloneCompatibility(options: {
       }
       if (version.name === "candidate-web" && options.frontendUi) {
         const { verifyMa24MailboxDrawerClone } = await import("./verify-ma24-mailbox-drawer-clone");
-        mailboxDrawerPage = await verifyMa24MailboxDrawerClone({ base, cookie });
+        mailboxDrawerPage = await verifyMa24MailboxDrawerClone({ admin: options.admin, base, cookie, userId });
       }
       results.push({ version: version.name, buildId: version.buildId, manifestStatus: manifest.status,
         anonymousUploadStatus: denied.status, syntheticLoginStatus: login.status,

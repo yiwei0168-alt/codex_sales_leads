@@ -1,0 +1,19 @@
+{
+  "goal": "MA24 G13 F01/F02 populated mailbox drawer",
+  "date": "2026-10-15",
+  "sourceCommit": "21c4ab6ab0529c1f692146ecb7f1a59e85e2a4e1",
+  "candidateWebBuildId": "SYTDOFazJ7rlat8Kz_ESL",
+  "command": "npm run ma24:verify-frontend-ui-clone",
+  "environment": "Disposable local PostgreSQL restore with migrations 127-134; actual candidate Next page and mailbox connections API; one synthetic account",
+  "fixture": "Four active mailbox metadata rows with unique example.invalid addresses, invalid.example host and unusable synthetic credential strings; no sync button pressed or worker connected to clone",
+  "results": [
+    { "viewport": "1366x900", "connectedCards": 4, "internalWheelScroll": true, "opaque": true, "withinViewport": true, "escapeFocusReturn": true, "unsavedAddressPreserved": true, "horizontalOverflow": false, "screenshotSha256": "c3942d240d7f4d1e960e0348d0651788d7f4a0c4845e457d5d5fc80ccf081e85" },
+    { "viewport": "1366x360", "connectedCards": 4, "internalWheelScroll": true, "opaque": true, "withinViewport": true, "escapeFocusReturn": true, "unsavedAddressPreserved": true, "horizontalOverflow": false, "screenshotSha256": "957fea0ce2e9c8d008351f1e429d3a747894c0b00228b0619b0cf4873a2d2290" },
+    { "viewport": "390x760", "connectedCards": 4, "internalWheelScroll": true, "opaque": true, "fullWidthDrawer": true, "escapeFocusReturn": true, "unsavedAddressPreserved": true, "horizontalOverflow": false, "screenshotSha256": "2e18aab532898ba29e7ca1dad57f02ce4b305e92a9db3d9160c15ddfa1cd4e81" }
+  ],
+  "visualInspection": "Three local screenshots inspected. The drawer stayed opaque above the page, the fixed header remained visible, and four account cards plus the add form fit the intended internal scroll area.",
+  "databaseSyncRuns": 0,
+  "modelCalls": 0,
+  "productionChanged": false,
+  "limits": "Synthetic metadata cannot prove real IMAP connection, synchronization, large real mailbox lists, production loading or all F01-F13 entries. The disposable database was dropped by the runner after the checks."
+}

@@ -104,6 +104,8 @@ MAILCRM 实施已获确认；阶段 1/2 的抽屉与持久化队列代码、数�
 
 同日 [F01/F02 邮箱管理抽屉候选网页验收](evidence/ma24-g13-mailbox-drawer-candidate-page-clone-2026-10-15.json)通过空账号三视口的背景、滚动、焦点及草稿保留检查；真实多邮箱数据和生产入口未验。
 
+同日 [四个合成已连接邮箱补验](evidence/ma24-g13-mailbox-drawer-four-account-clone-2026-10-15.json)覆盖了三视口长内容滚动与账户卡布局；真实 IMAP 邮箱及生产入口仍未验。
+
 > 2026-10-08 运行恢复：主模型真实调用恢复；邮件可显式选用 HTTPS DNS 以处理系统 fake-IP，仍校验公网地址并固定 TLS 目标。17 项聚焦测试通过；目标期间邮件同步仍在 IMAP TLS 握手阶段被重置，邮件简报未验收通过。[运行证据](LOCAL_RUNTIME_RECOVERY_2026-10-08.md)。
 
 > MA24-13：冻结集候选回答采用 Codex 辅助逐题审核，展示答案/精确引用两项建议及原文依据，用户确认后才计入人工判决。首题 `base-43-open` 已核对原件链接、Gold 与当前第 1/3 页原文；建议尚未获用户确认，不计为验收通过。见 [确认规则](CONFIRMED_PRODUCT_RULES.md)。
