@@ -390,6 +390,7 @@ a { color: inherit; }
 .mailbox-batch-result{padding:8px 18px;border-bottom:1px solid var(--line);font-size:12px;max-height:130px;overflow:auto}.mailbox-batch-result summary{cursor:pointer}.mailbox-batch-result ul{margin:7px 0 0;padding-left:18px}.mailbox-batch-result li{overflow-wrap:anywhere;margin:3px 0}
 .mailbox-tab-content:has(>.mailbox-batch-result){grid-template-rows:auto auto auto minmax(0,1fr) auto}
 @media(max-width:700px){.mailbox-tab-content .mailbox-selectbar>span{display:block;flex-basis:100%}}
+.mailbox-sync-progress{display:grid;gap:5px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;min-width:0;font-size:12px;overflow-wrap:anywhere}.mailbox-sync-progress small{color:var(--slate-400)}.mailbox-sync-progress button{justify-self:start;padding:7px 10px;font-size:12px}
 
 /* Binary revision controls remain within the existing upload workspace. */
 .kb-upload-revision, .kb-upload-jobs { grid-column: 1 / -1; min-width: 0; overflow-wrap: anywhere; }

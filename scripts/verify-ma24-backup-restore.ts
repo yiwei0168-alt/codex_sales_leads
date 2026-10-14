@@ -176,6 +176,7 @@ try {
       conversationUi: process.argv.includes("--conversation-ui"),
       frontendUi: process.argv.includes("--frontend-ui"),
       mailboxBatchUi: process.argv.includes("--mailbox-batch-ui"),
+      mailboxSyncUi: process.argv.includes("--mailbox-sync-ui"),
       mailboxReaderUi: process.argv.includes("--mailbox-reader-ui") });
   }
   console.log(JSON.stringify({ archive: newest, archiveSha256: manifest.sha256, restored: true,

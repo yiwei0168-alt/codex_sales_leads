@@ -12,6 +12,8 @@ type Message={id:string;subject:string;excerpt:string;direction:"inbound"|"outbo
 type Candidate={id:string;message_id:string;kind:"company-policy"|"customer-signal"|"email-template";title:string;content:string;excerpt:string;contentHash:string;created_at:string;confidence:number|null;rationale:string|null;model:string|null};
 type Status={configured:boolean;kimiConfigured:boolean;messages:number;pendingCandidates:number;screening:{recommended:number;review:number;ignored:number;unscreened:number};latestRun:null|{id:string;status:string;phase:string;processed_count:number;discovered_count:number;imported_count:number;error_message:string|null}};
 type MailContent={subject:string;bodyText:string;sender:Array<{name?:string;address:string}>;recipients:Array<{name?:string;address:string}>;sentAt?:string};
+type SyncOptions={folderScope:"both"|"inbox"|"sent";from?:string;through?:string;lookbackDays?:number;maxMessages?:number};
+type MailJob={id:string;kind:string;status:string;error?:string;connection_id?:string|null;sync_options?:SyncOptions|null;result?:{discovered?:number;processed?:number;remaining?:number;imported?:number}|null};
 type BatchFeedback={scope:"learning"|"review";summary:string;items:Array<{id:string;label:string;status:"saved"|"failed"|"queued";error?:string}>};
 const PAGE_SIZE=8;
 const kindLabel={"company-policy":"公司政策","customer-signal":"客户信号","email-template":"邮件模板"};
@@ -28,6 +30,19 @@ function BatchResult({feedback}:{feedback:BatchFeedback}){
   </details>;
 }
 
+function SyncJobProgress({job,connectionName,busy,onResume}:{job:MailJob;connectionName:string;busy:boolean;onResume:(id:string,options:SyncOptions)=>void}){
+  const counts=job.result;
+  const complete=counts&&[counts.discovered,counts.processed,counts.remaining,counts.imported].every(value=>typeof value==='number');
+  const state=({queued:'排队',running:'处理中',completed:'完成',failed:'失败',uncertain:'待核实',cancelled:'已取消'} as Record<string,string>)[job.status]??job.status;
+  return <article className="mailbox-sync-progress">
+    <strong>{connectionName} · {state}</strong>
+    <small>范围：{job.sync_options?.from??'默认起始日'} 至 {job.sync_options?.through??'当前'} · {({both:'收件箱及已发送',inbox:'收件箱',sent:'已发送'} as Record<string,string>)[job.sync_options?.folderScope??'both']}</small>
+    <span>{complete?`发现 ${counts.discovered} 封 · 本次处理 ${counts.processed} 封 · 剩余待处理 ${counts.remaining} 封 · 新增 ${counts.imported} 封`:job.status==='queued'?'等待后台开始；发现量尚未确定。':'旧回执或尚未扫描完整范围，暂不能计算剩余量。'}</span>
+    {job.error&&<small role="alert">{job.error}</small>}
+    {job.status==='failed'&&job.connection_id&&job.sync_options&&<button className="secondary-button" disabled={busy} onClick={()=>onResume(job.connection_id!,job.sync_options!)}>按原范围继续同步</button>}
+  </article>;
+}
+
 function OriginalMail({messageId,onChanged}:{messageId:string;onChanged:()=>void}){
   const [content,setContent]=useState<MailContent|null>(null);
   const [error,setError]=useState("");
@@ -42,7 +57,7 @@ function OriginalMail({messageId,onChanged}:{messageId:string;onChanged:()=>void
 
 export function MailboxWorkspace(){
   const [connections,setConnections]=useState<Connection[]>([]);
-  const [jobs,setJobs]=useState<Array<{id:string;kind:string;status:string;error?:string}>>([]);
+  const [jobs,setJobs]=useState<MailJob[]>([]);
   const [jobCounts,setJobCounts]=useState<Array<{status:string;count:number}>>([]);
   const [status,setStatus]=useState<Status|null>(null);
   const [queue,setQueue]=useState<Message[]>([]);
@@ -86,7 +101,7 @@ export function MailboxWorkspace(){
     await request("/api/mailbox/connections","POST",{email,displayName:displayName.trim()||email,securityPassword,accessMode,imapHost,imapPort,smtpHost:provider==="ali"||accessMode==="send-enabled"?smtpHost:undefined,smtpPort,smtpPassword:smtpPassword||undefined});
     setSecurityPassword("");setSmtpPassword("");return `“${displayName||email}”连接成功；${accessMode==="send-enabled"?"SMTP 已验证，可用于已确认的发信":"保持只读"}。`;
   });}
-  async function sync(id:string){await perform("sync",async()=>{await request("/api/mailbox/sync","POST",{connectionId:id,folderScope,from:from||undefined,through:through||undefined});return '同步已排队，后台将分批读取所选日期范围。关闭页面不影响同步。';});}
+  async function sync(id:string,saved?:SyncOptions){await perform("sync",async()=>{await request("/api/mailbox/sync","POST",{connectionId:id,...(saved??{folderScope,from:from||undefined,through:through||undefined})});return '同步已排队，后台将分批读取所选日期范围。关闭页面不影响同步。';});}
   async function saveSettings(connection:Connection,mode:AccessMode,name:string){await perform(`settings:${connection.id}`,async()=>{await request(`/api/mailbox/connections/${connection.id}`,"PATCH",{action:"settings",displayName:name,accessMode:mode});return "邮箱名称和权限已保存。";});}
   async function disconnect(connection:Connection){if(!window.confirm(`断开 ${connection.displayName}？本地已导入数据保留，凭据将清除。`))return;await perform(`disconnect:${connection.id}`,async()=>{await request(`/api/mailbox/connections/${connection.id}`,"PATCH",{action:"disconnect"});return "连接已断开，数据保留。";});}
   async function remove(connection:Connection){if(!window.confirm(`永久删除 ${connection.displayName} 的本地导入邮件和待审候选？此操作不可撤销，远程邮箱不受影响。`))return;await perform(`remove:${connection.id}`,async()=>{await request(`/api/mailbox/connections/${connection.id}`,"DELETE",{confirm:"DELETE_MAILBOX_DATA"});return "本地邮箱数据已删除。";});}
@@ -128,6 +143,7 @@ export function MailboxWorkspace(){
   }
   const selectedCandidateItems=candidates.filter(item=>selectedCandidates.includes(item.id));
   const selectedCandidatesOffPage=selectedCandidates.length-selectedCandidateItems.length;
+  const latestSyncJob=jobs.find(item=>item.kind==='sync');
   function changeQueuePage(page:number){setQueuePage(page);}
   function changeReviewPage(page:number){setReviewPage(page);}
 
@@ -137,7 +153,8 @@ export function MailboxWorkspace(){
       <button className="secondary-button" aria-expanded={managerOpen} onClick={()=>setManagerOpen(value=>!value)}>{managerOpen?"收起邮箱管理":"管理 / 连接邮箱"}</button>
       {managerOpen&&<WorkspaceDialog title="管理 / 连接邮箱" drawer onClose={()=>setManagerOpen(false)}><div className="mailbox-manager">
       {jobCounts.length>0&&<details className="mailbox-job-progress"><summary>后台任务：{jobCounts.map(item=>`${({queued:'排队',running:'处理中',completed:'完成',failed:'失败',uncertain:'待核实',cancelled:'已取消'} as Record<string,string>)[item.status]??item.status} ${item.count}`).join(' / ')}</summary><p>处理中邮件不会因刷新页面重复外发。结果未明时先核对原收据，不自动重试。</p><button disabled={Boolean(busy)} onClick={()=>void perform('cancel',async()=>{const result=await request('/api/mailbox/jobs','POST',{action:'cancel-queued'});return `已取消 ${result.cancelled} 项排队任务，已开始的任务继续完成。`;})}>取消尚未开始的任务</button>{jobs.filter(item=>item.error).map(item=><p role="status" key={item.id}>{item.kind==='learn'?'学习':item.kind==='timeline'?'时间线':'同步'}：{item.error}{item.status==='uncertain'&&<button disabled={Boolean(busy)} onClick={()=>void perform('reconcile',async()=>{const result=await request('/api/mailbox/jobs','POST',{action:'reconcile',id:item.id});return result.message;})}>核对原收据</button>}</p>)}</details>}
-      <div className="mailbox-summary"><span><b>{status?.messages??0}</b> 已保存邮件</span><span><b>{queueTotal}</b> 待学习</span><span><b>{status?.pendingCandidates??0}</b> 待审核内容</span>{status?.latestRun&&<span className="mailbox-run-state" title={status.latestRun.error_message??undefined}>最近同步：{status.latestRun.status==="running"?`进行中 ${status.latestRun.processed_count}/${status.latestRun.discovered_count}`:status.latestRun.status==="failed"?"失败 · 查看邮箱管理后重试":`已完成 · 新增 ${status.latestRun.imported_count} 封`}</span>}</div>
+      <div className="mailbox-summary"><span><b>{status?.messages??0}</b> 已保存邮件</span><span><b>{queueTotal}</b> 待学习</span><span><b>{status?.pendingCandidates??0}</b> 待审核内容</span>{latestSyncJob&&<span className="mailbox-run-state">最近同步：{latestSyncJob.status==='running'?'处理中':latestSyncJob.status==='queued'?'排队':latestSyncJob.status==='completed'?'已完成':latestSyncJob.status==='failed'?'失败 · 可按原范围继续':'已停止'}{latestSyncJob.result&&typeof latestSyncJob.result.remaining==='number'&&` · 剩余 ${latestSyncJob.result.remaining} 封`}</span>}</div>
+      {jobs.filter(item=>item.kind==='sync').slice(0,3).map(job=><SyncJobProgress key={job.id} job={job} connectionName={connections.find(item=>item.id===job.connection_id)?.displayName??'邮箱'} busy={Boolean(busy)} onResume={(id,options)=>void sync(id,options)}/>)}
 
         {message&&<p role={noticeError?"alert":"status"} className={noticeError?"workspace-error":""}>{message}</p>}
 

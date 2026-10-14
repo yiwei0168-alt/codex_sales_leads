@@ -1,0 +1,29 @@
+{
+  "schema": "ma24-g13-f04-sync-progress-clone-v1",
+  "date": "2026-10-15",
+  "goal": "MA24 G13 F04",
+  "candidateBuildId": "CQhmxNBFyNrzmlD2t9hpT",
+  "oldWebBuildId": "QfoyXprIZIVgSWxFSZ-1K",
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-backup-restore.ts --web-compat --mailbox-sync-ui",
+  "environment": "Disposable restored local database; migrations 127-134 and application ACL applied only to the clone. Actual candidate Next page/API, synthetic account, connection, and sync jobs. Clone dropped after verification.",
+  "changes": [
+    "IMAP discovery scans each selected folder after the per-page fetch cap, while a zero remaining fetch allowance selects no messages.",
+    "The sync worker saves cumulative discovered, processed, remaining and imported counts across bounded pages.",
+    "Mailbox management shows the frozen range and cumulative job receipt, and a failed job can be queued again using its saved options. Older receipts with incomplete counters are labelled unknown."
+  ],
+  "verification": {
+    "unit": "Six focused tests passed across the IMAP discovery and work-queue suites, including a two-folder one-message fetch cap and three bounded sync pages.",
+    "pageAndDatabase": "The candidate page read two synthetic sync jobs through the actual jobs API. Desktop and 390x760 mobile showed failed 130 discovered/100 processed/30 remaining and completed 253/253/0; desktop continuation POST returned 202, and the queued database payload exactly matched the failed job's saved October date range and folder scope.",
+    "visual": "390x760 screenshot inspected. The management drawer has no horizontal overflow and the connection's Sync button can be scrolled into view.",
+    "mobileScreenshot": "tmp/ma24-g13-f04-sync-progress-mobile.png",
+    "mobileScreenshotSha256": "542d56cadf31e85364aa537cd6551f6002637fa4358e1cd7197b963cd3a3752a",
+    "checks": [
+      "npx vitest run src/lib/mailbox/alimail-imap.test.ts src/lib/mailbox/work-queue.test.ts",
+      "npm run typecheck",
+      "npm run build",
+      "node scripts/run-tsx.cjs scripts/verify-ma24-backup-restore.ts --web-compat --mailbox-sync-ui"
+    ]
+  },
+  "externalEffects": { "imapCalls": 0, "modelCalls": 0, "mailSends": 0, "productionDatabaseWrites": 0 },
+  "limits": "Cumulative-count computation has unit evidence; the page-to-database test used synthetic receipts and did not run a real IMAP provider or mailbox worker. Real mailbox full-range counts, interruption recovery, production loading and the remaining F01-F13 entries require separate acceptance."
+}

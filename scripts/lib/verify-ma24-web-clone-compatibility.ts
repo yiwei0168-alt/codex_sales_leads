@@ -63,6 +63,7 @@ export async function verifyMa24WebCloneCompatibility(options: {
   conversationUi?: boolean;
   frontendUi?: boolean;
   mailboxBatchUi?: boolean;
+  mailboxSyncUi?: boolean;
   mailboxReaderUi?: boolean;
 }): Promise<unknown> {
   assert.equal(await readFile(resolve(oldRoot, ".next/BUILD_ID"), "utf8").then(value => value.trim()), oldBuild);
@@ -147,6 +148,7 @@ export async function verifyMa24WebCloneCompatibility(options: {
       let conversationPage: unknown;
       let mailboxDrawerPage: unknown;
       let mailboxBatchPage: unknown;
+      let mailboxSyncPage: unknown;
       let mailboxReaderPage: unknown;
       if (version.name === "candidate-web" && options.reviewUi) {
         const { verifyMa24ReviewPageClone } = await import("./verify-ma24-review-page-clone");
@@ -175,6 +177,10 @@ export async function verifyMa24WebCloneCompatibility(options: {
         const { verifyMa24MailboxBatchClone } = await import("./verify-ma24-mailbox-batch-clone");
         mailboxBatchPage = await verifyMa24MailboxBatchClone({ admin: options.admin, base, cookie, userId });
       }
+      if (version.name === "candidate-web" && options.mailboxSyncUi) {
+        const { verifyMa24MailboxSyncClone } = await import("./verify-ma24-mailbox-sync-clone");
+        mailboxSyncPage = await verifyMa24MailboxSyncClone({ admin: options.admin, base, cookie, userId });
+      }
       if (version.name === "candidate-web" && options.mailboxReaderUi) {
         const { verifyMa24MailboxReaderClone } = await import("./verify-ma24-mailbox-reader-clone");
         mailboxReaderPage = await verifyMa24MailboxReaderClone({ admin: options.admin, base, cookie, userId });
@@ -187,6 +193,7 @@ export async function verifyMa24WebCloneCompatibility(options: {
         ...(conversationPage ? { conversationPage } : {}),
         ...(mailboxDrawerPage ? { mailboxDrawerPage } : {}),
         ...(mailboxBatchPage ? { mailboxBatchPage } : {}),
+        ...(mailboxSyncPage ? { mailboxSyncPage } : {}),
         ...(mailboxReaderPage ? { mailboxReaderPage } : {}) });
     } finally {
       await stopOwnedServer(child);

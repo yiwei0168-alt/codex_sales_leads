@@ -150,7 +150,6 @@ export async function readAliMailMessages(input: {
     if(input.folderScope==='sent'&&!folders.length)throw new Error('服务器未找到已发送文件夹，请检查客户端是否将发件保存到 IMAP 服务器');
     await input.onProgress?.({ phase: "discovering", folders: folders.length, discovered: 0, processed: 0 });
     for (const folder of folders) {
-      if (messages.length >= input.maxMessages) break;
       const lock = await client.getMailboxLock(folder.path, { readOnly: true, acquireTimeout: 15_000 });
       try {
         if (!client.mailbox) continue;
@@ -162,7 +161,7 @@ export async function readAliMailMessages(input: {
         discovered += allUids.length;
         await input.onProgress?.({ phase: "fetching", folders: folders.length, discovered, processed: messages.length });
         const remaining = input.maxMessages - messages.length;
-        const selected = lastUid === 0 ? allUids.slice(-remaining) : allUids.slice(0, remaining);
+        const selected = remaining === 0 ? [] : lastUid === 0 ? allUids.slice(-remaining) : allUids.slice(0, remaining);
         let highestUid = lastUid;
         if (selected.length > 0) {
           for await (const message of client.fetch(selected, {

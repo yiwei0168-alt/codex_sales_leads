@@ -34,7 +34,9 @@ export async function enqueueSync(userId:string,input:unknown){
   });
 }
 export async function mailboxJobs(userId:string){
-  return tenantQuery(userId,`select id,kind,status,result,error,created_at,updated_at from mailbox_work_job
+  return tenantQuery(userId,`select id,kind,status,result,error,created_at,updated_at,
+    case when kind='sync' then target_id end as connection_id,
+    case when kind='sync' then payload end as sync_options from mailbox_work_job
     where user_id=$1 order by created_at desc limit 100`,[userId]);
 }
 export async function processMailboxWork(){
@@ -56,13 +58,18 @@ export async function processMailboxWork(){
       result=await reviewMailboxMessageForLearning(job.user_id,row.target_id,'authorize');
     }else{
       const options=mailboxSyncSchema.parse(row.payload);
-      const totals={imported:0,discovered:0};
+      const totals={imported:0,processed:0,discovered:0,remaining:0};
+      let firstPage=true;
       // Each page is committed; retry skips stored messages within the frozen range.
       for(;;){
         const state=await tenantQuery(job.user_id,"select id from mailbox_work_job where user_id=$1 and id=$2 and lease_token=$3 and status='running' and lease_until>now()",params);
         if(!state.length)throw new Error("任务已停止");
         const page=await syncAliMail(job.user_id,row.target_id,options);
-        totals.imported+=page.imported;totals.discovered=page.discovered;
+        if(firstPage){totals.discovered=page.discovered;firstPage=false;}
+        totals.imported+=page.imported;
+        totals.processed+=page.imported+page.skipped;
+        totals.remaining=Math.max(0,page.discovered-page.imported-page.skipped);
+        totals.discovered=Math.max(totals.discovered,totals.processed+totals.remaining);
         await tenantQuery(job.user_id,"update mailbox_work_job set result=$4,updated_at=now() where user_id=$1 and id=$2 and lease_token=$3 and status='running'",[...params,JSON.stringify(totals)]);
         if(page.imported===0){if(page.discovered>0)throw new Error("部分邮件解析失败，保留已导入结果，请检查后重试");break;}
       }
