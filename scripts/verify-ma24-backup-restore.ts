@@ -179,7 +179,8 @@ try {
       mailboxSyncUi: process.argv.includes("--mailbox-sync-ui"),
       mailboxReaderUi: process.argv.includes("--mailbox-reader-ui"),
       attachmentUi: process.argv.includes("--attachment-ui"),
-      runHistoryUi: process.argv.includes("--run-history-ui") });
+      runHistoryUi: process.argv.includes("--run-history-ui"),
+      revisionHistoryUi: process.argv.includes("--revision-history-ui") });
   }
   console.log(JSON.stringify({ archive: newest, archiveSha256: manifest.sha256, restored: true,
     migrationRange: "127-134", rollbackVerified: true, committedOnDisposableClone: true,
