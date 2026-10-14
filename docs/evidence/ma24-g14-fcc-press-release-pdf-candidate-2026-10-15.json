@@ -64,6 +64,7 @@
     "preliminarySourceEligibility": "plausible for an internal independent PDF item, subject to final source/question set freeze and contamination review; not approved Gold"
   },
   "approvedIndependentSource": false,
+  "publicationFamilyOverlapAudit": "docs/evidence/ma24-g14-fcc-publication-family-overlap-2026-10-15.json: the draft's 77% fact is also present in the Chairman's statement on original/report physical page 173 (product extraction block page-173-block-6); 43.4% press-release figure is not established by the report's incidental 43.4% table matches. Treat both documents as one FCC 26-55 family, with set-level leakage review before Gold or product upload.",
   "goldCreated": 0,
   "productUploadOrModelAnswerRun": false,
   "productionKnowledgeWrites": 0,

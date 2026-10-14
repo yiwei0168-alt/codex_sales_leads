@@ -1,0 +1,38 @@
+{
+  "schema": "ma24-g14-fcc-publication-family-overlap-v1",
+  "date": "2026-10-15",
+  "stage": "R4 pre-freeze family and question contamination audit; no product upload or model run",
+  "sources": [
+    {
+      "name": "FCC DOC-424190 press release",
+      "path": "tmp/ma24-independent-candidates/fcc-doc-424190.pdf",
+      "sha256": "cc6b2100b895bc51a34bedd6873731d800a67a372a7b73b94f7095b98d902f0a",
+      "physicalPage": 1,
+      "visualPageSha256": "0328ff3ec5a58f4355b6912f0edf84459facc827509118b418fce52d27b8a732"
+    },
+    {
+      "name": "FCC 26-55, 2026 Section 706 Report",
+      "path": "tmp/ma24-independent-candidates/fcc-26-55.pdf",
+      "sha256": "805e0e5b954775059ad535ae650c955935758a88f2a20ec0e6554e77f0e61154",
+      "physicalPage": 173,
+      "section": "Statement of Chairman Brendan Carr",
+      "extractedBlockId": "page-173-block-6",
+      "extractionArtifactSha256": "0db0db7e98974db737693aca26974cc96c311beb66049f628253f8f2999bd115",
+      "visualPageSha256": "ddb69fe8d2c7a6088aeeb0b3941d58e382a07a39a0a24a17aa6f496ba81c6902"
+    }
+  ],
+  "method": "Rehashed both quarantined PDFs and the report extraction artifact, searched the report's page-bound blocks, extracted the two original target pages with PyMuPDF, rendered report physical page 173 at 1.8x, and visually checked it against the already-rendered press-release page 1. Poppler is unavailable in this Windows environment; PyMuPDF was used for the new render.",
+  "finding": {
+    "sharedFact": "Both original pages state that as of June 2025, 77% of Americans had access to at least three fixed services at 100/20 Mbps. The report statement is in the Chairman's statement, not the report's school-bandwidth paragraphs.",
+    "pressOnlyTargetFact": "The press release page 1 additionally states 43.4% for at least three fixed terrestrial services at 100/20 Mbps.",
+    "reportExtractionExact77Blocks": ["page-173-block-6"],
+    "reportExtraction434Blocks": ["page-21-block-2", "page-142-block-10"],
+    "report434Interpretation": "Those 43.4% string matches are unrelated table values, not evidence that the report states the press release's national three-fixed-terrestrial-service figure.",
+    "familyBoundary": "The two documents belong to one FCC 26-55 publication family and share one exact draft-answer fact. They cannot count as two independent source groups. If either is used for development tuning, re-audit or exclude the overlapping question in the other from unseen holdout."
+  },
+  "decision": "Keep the press release as a provisional, quarantined internal PDF question candidate and the long report as a separate provisional long-PDF candidate within the same family. Select and freeze family use with the full set before either document enters product upload or model answers. Neither question is approved Gold.",
+  "goldCreated": 0,
+  "productUploads": 0,
+  "modelCalls": 0,
+  "productionWrites": 0
+}

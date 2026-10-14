@@ -66,6 +66,7 @@
     }
   ],
   "crossCandidateGroupBoundary": "This report and FCC DOC-424190 press release belong to the same FCC 26-55 publication family. Their question facts differ (school bandwidth denominators versus fixed-service competition), but do not count them as two independent source groups or place one in development while freezing the other as an unseen source without a set-level leakage decision.",
+  "directOverlapAudit": "docs/evidence/ma24-g14-fcc-publication-family-overlap-2026-10-15.json: original physical page 173, in the Chairman's statement, repeats the press-release draft's June 2025 77% three-fixed-services fact. The report's two 43.4% extraction matches are unrelated table values; do not infer the full draft answer from them. Both candidates remain provisional, Gold 0.",
   "sourceUseBoundary": "Only a short attributed factual question and answer are proposed for internal evaluation; no complete-PDF redistribution or general licence claim. Verify source-use and set-level eligibility before Gold.",
   "approvedIndependentSource": false,
   "goldCreated": 0,
