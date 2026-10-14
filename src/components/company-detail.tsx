@@ -7,6 +7,7 @@ import { opportunityStages } from "@/lib/sales/opportunity-stages";
 import { assessmentDisplay } from "@/lib/sales/assessment-display";
 import { CompanyCorrespondence } from "./company-correspondence";
 import { useDialogFocus } from "./use-dialog-focus";
+import { RawJsonDetails } from "./raw-json-details";
 export function CompanyDetail({company,contactDetails,onClose,onUpdate,onEvidence,onOpenAssistant}:{company:CompanyRecord;contactDetails?:CompanyContactDetailsDto;onClose:()=>void;onUpdate:(patch:Partial<CompanyRecord>)=>void;onEvidence:(evidence:Evidence)=>void;onOpenAssistant:()=>void}){
   const dialogRef=useDialogFocus(onClose);
   const [tab,setTab]=useState("overview");const [assessment,setAssessment]=useState<Record<string,unknown>|null>(null);const [loaded,setLoaded]=useState(false);const [error,setError]=useState("");
@@ -37,7 +38,7 @@ export function CompanyDetail({company,contactDetails,onClose,onUpdate,onEvidenc
         </details></>}
       {tab==="score"&&<><h3>{company.assessmentNeedsRefresh?"历史评分待更新":`综合评分 ${company.fitScore}`}</h3>
         {!loaded&&!error&&<p>正在读取…</p>}{loaded&&!assessment&&<p>没有关联到版本化评分记录；不推算子项分数。</p>}
-        {assessment&&<><p>政策版本：{String(assessment.policyVersion??"历史版本未知")} · 评分时间：{String(assessment.assessedAt??"未知")}</p><dl>{assessmentDisplay(assessment.dimensions,assessment.policySnapshot).map(item=><div key={item.key}><dt>{item.label}</dt><dd>{item.score??"未知"} / {item.maximum??"历史上限未知"}</dd></div>)}</dl><details><summary>原始子项评分</summary><pre style={{whiteSpace:"pre-wrap"}}>{JSON.stringify(assessment.dimensions,null,2)}</pre></details><details><summary>评分政策及权重</summary><pre style={{whiteSpace:"pre-wrap"}}>{JSON.stringify(assessment.policySnapshot,null,2)}</pre></details></>}
+        {assessment&&<><p>政策版本：{String(assessment.policyVersion??"历史版本未知")} · 评分时间：{String(assessment.assessedAt??"未知")}</p><dl>{assessmentDisplay(assessment.dimensions,assessment.policySnapshot).map(item=><div key={item.key}><dt>{item.label}</dt><dd>{item.score??"未知"} / {item.maximum??"历史上限未知"}</dd></div>)}</dl><RawJsonDetails summary="原始子项评分" value={assessment.dimensions}/><RawJsonDetails summary="评分政策及权重" value={assessment.policySnapshot}/></>}
         {company.evidence.map(item=><button className="evidence-card" key={item.id} onClick={()=>onEvidence(item)}>{item.claim} · {item.status} · {item.capturedAt}</button>)}
         <h3>风险与未知</h3>{[...company.risks,...company.unknowns].map((text,index)=><p key={index}>{text}</p>)}</>}
       {tab==="development"&&<><CompanyCorrespondence key={company.id} companyId={company.id}/><p>生成或批准草稿不代表已发送。</p><label>开发阶段<select value={company.opportunityStage} onChange={event=>onUpdate({opportunityStage:event.target.value as CompanyRecord["opportunityStage"]})}><option value="Discovered">未加入开发</option>{opportunityStages.map(([value,label])=><option key={value} value={value}>{label}</option>)}</select></label>

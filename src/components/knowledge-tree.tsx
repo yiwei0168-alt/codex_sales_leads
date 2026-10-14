@@ -1,5 +1,6 @@
 "use client";
 import {useEffect,useState} from "react";
+import { RawJsonDetails } from "./raw-json-details";
 
 type Node={id:string;title:string;node_kind:"unit"|"evidence";unit_type:string;unit_index:number;source_location:Record<string,unknown>};
 type Evidence={id:string;content:string;source_location:Record<string,unknown>;source_sha256:string};
@@ -42,6 +43,6 @@ export function KnowledgeTree({documentId}:{documentId:string}){
     {(offset>0||hasMore)&&<div className="library-pagination"><button type="button" disabled={loading||offset===0} onClick={()=>{setOffset(Math.max(0,offset-20));setLoading(true);}}>上一页</button>
       <span>第 {offset/20+1} 页</span><button type="button" disabled={loading||!hasMore} onClick={()=>{setOffset(offset+20);setLoading(true);}}>下一页</button></div>}
     {evidence&&<div className="knowledge-tree-evidence"><strong>{coordinate(evidence.source_location)}</strong><pre>{evidence.content}</pre>
-      <details><summary>完整来源坐标</summary><code>{JSON.stringify(evidence.source_location)}</code><small>来源 SHA-256：{evidence.source_sha256}</small></details></div>}
+      <RawJsonDetails summary="完整来源坐标" value={evidence.source_location}/><small>来源 SHA-256：{evidence.source_sha256}</small></div>}
   </section>;
 }

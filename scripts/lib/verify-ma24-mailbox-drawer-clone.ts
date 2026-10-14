@@ -41,6 +41,18 @@ export async function verifyMa24MailboxDrawerClone(options: {
         else {
           await expect(dialog.getByRole("textbox", { name: "名称" })).toHaveCount(4);
           await expect(dialog.getByRole("textbox", { name: "名称" }).last()).toHaveValue("邮箱 4");
+          const account = dialog.locator(".mailbox-managed-account").first();
+          await expect(account.getByRole("button", { name: "保存设置" })).toBeVisible();
+          await expect(account.getByRole("button", { name: "同步", exact: true })).toBeVisible();
+          await expect(account.getByRole("button", { name: "断开", exact: true })).toHaveCount(0);
+          await account.getByText("连接与数据管理", { exact: true }).click();
+          await expect(account.getByRole("button", { name: "断开", exact: true })).toBeVisible();
+          await expect(account.getByRole("button", { name: "删除本地数据" })).toBeVisible();
+          page.once("dialog", confirmation => confirmation.dismiss());
+          await account.getByRole("button", { name: "断开", exact: true }).click();
+          page.once("dialog", confirmation => confirmation.dismiss());
+          await account.getByRole("button", { name: "删除本地数据" }).click();
+          assert.equal((await options.admin.query("select count(*)::int as n from mailbox_connection where user_id=$1 and status='active'", [options.userId])).rows[0].n, 4);
         }
         assert.equal(await dialog.evaluate(element => getComputedStyle(element).backgroundColor), "rgb(255, 255, 255)");
         const bounds = await dialog.boundingBox();

@@ -1,0 +1,31 @@
+{
+  "schema": "ma24-g13-f12-raw-json-danger-page-clone-v1",
+  "date": "2026-10-15",
+  "goal": "MA24 G13 F12",
+  "candidateBuildId": "aATaEUd9-1_DP251Yzqli",
+  "oldWebBuildId": "QfoyXprIZIVgSWxFSZ-1K",
+  "commands": [
+    "npm run build",
+    "node scripts/run-tsx.cjs scripts/verify-ma24-backup-restore.ts --web-compat --raw-json-ui",
+    "node scripts/run-tsx.cjs scripts/verify-ma24-backup-restore.ts --web-compat --frontend-ui"
+  ],
+  "environment": "Disposable restored local database with migrations 127-134 and source-equivalent application ACL only on the clone. Actual candidate Next pages and APIs with synthetic private knowledge tree and four synthetic mailbox connections. Clones dropped after verification.",
+  "changes": [
+    "Company score details and knowledge source coordinates use a secondary raw JSON disclosure with an explicit copy action and bounded wrapping.",
+    "Mailbox disconnect and local-data deletion are separated from Save/Sync in a labelled connection-and-data section; existing browser confirmations remain."
+  ],
+  "results": {
+    "knowledgeTree": "The actual page and tree API displayed a 1620-character unbroken coordinate value. On 390x760 and 1366x900, the raw block stayed within its width and exact JSON was copied and read back from the clipboard; no horizontal page overflow or page errors occurred.",
+    "mailbox": "The actual mailbox drawer was checked in empty and four-connected scenarios at 1366x900, 1366x360 and 390x760. Save/Sync remained visible; Disconnect/Delete were hidden until the separate section opened. Dismissing both existing confirmation dialogs left all four clone connections active. Drawer scroll, Escape focus return and no horizontal overflow also passed.",
+    "mobileScreenshot": "tmp/ma24-mailbox-drawer-clone/four-connected-390x760.png",
+    "mobileScreenshotSha256": "ff01fa97c5151bc8e5ac0e1063c701582b3019cde19ee501fa50c19263979266",
+    "visualInspection": "The mobile four-account screenshot was inspected. The danger-section heading was changed to the theme's darker red after the first screenshot appeared low contrast; the final screenshot was inspected again."
+  },
+  "checks": [
+    "npm run typecheck",
+    "npx eslint src/components/raw-json-details.tsx src/components/company-detail.tsx src/components/knowledge-tree.tsx src/components/mailbox-workspace.tsx scripts/lib/verify-ma24-mailbox-drawer-clone.ts scripts/lib/verify-ma24-raw-json-clone.ts scripts/lib/verify-ma24-web-clone-compatibility.ts scripts/verify-ma24-backup-restore.ts",
+    "git diff --check"
+  ],
+  "externalEffects": { "modelCalls": 0, "mailSends": 0, "productionDatabaseWrites": 0 },
+  "limits": "Company score JSON uses the same new component but its actual company-detail page was not browser-tested in this run. Other raw JSON disclosures and danger actions across F12 remain to audit. The synthetic tree and mailbox connections do not prove real source semantics or production loading."
+}

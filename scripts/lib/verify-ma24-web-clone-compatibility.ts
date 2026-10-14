@@ -69,6 +69,7 @@ export async function verifyMa24WebCloneCompatibility(options: {
   runHistoryUi?: boolean;
   revisionHistoryUi?: boolean;
   agentLibraryUi?: boolean;
+  rawJsonUi?: boolean;
 }): Promise<unknown> {
   assert.equal(await readFile(resolve(oldRoot, ".next/BUILD_ID"), "utf8").then(value => value.trim()), oldBuild);
   const candidateBuild = (await readFile(resolve(candidateRoot, ".next/BUILD_ID"), "utf8")).trim();
@@ -158,6 +159,7 @@ export async function verifyMa24WebCloneCompatibility(options: {
       let runHistoryPage: unknown;
       let revisionHistoryPage: unknown;
       let agentLibraryPage: unknown;
+      let rawJsonPage: unknown;
       if (version.name === "candidate-web" && options.reviewUi) {
         const { verifyMa24ReviewPageClone } = await import("./verify-ma24-review-page-clone");
         try {
@@ -209,6 +211,10 @@ export async function verifyMa24WebCloneCompatibility(options: {
         const { verifyMa24AgentLibraryClone } = await import("./verify-ma24-agent-library-clone");
         agentLibraryPage = await verifyMa24AgentLibraryClone({ admin: options.admin, base, cookie, userId });
       }
+      if (version.name === "candidate-web" && options.rawJsonUi) {
+        const { verifyMa24RawJsonClone } = await import("./verify-ma24-raw-json-clone");
+        rawJsonPage = await verifyMa24RawJsonClone({ admin: options.admin, base, cookie, userId });
+      }
       results.push({ version: version.name, buildId: version.buildId, manifestStatus: manifest.status,
         anonymousUploadStatus: denied.status, syntheticLoginStatus: login.status,
         authenticatedUploadStatus: list.status, visibleUploadJobs: listed.jobs.length,
@@ -222,7 +228,8 @@ export async function verifyMa24WebCloneCompatibility(options: {
         ...(attachmentPage ? { attachmentPage } : {}),
         ...(runHistoryPage ? { runHistoryPage } : {}),
         ...(revisionHistoryPage ? { revisionHistoryPage } : {}),
-        ...(agentLibraryPage ? { agentLibraryPage } : {}) });
+        ...(agentLibraryPage ? { agentLibraryPage } : {}),
+        ...(rawJsonPage ? { rawJsonPage } : {}) });
     } finally {
       await stopOwnedServer(child);
     }

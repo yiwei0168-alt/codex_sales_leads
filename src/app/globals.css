@@ -391,6 +391,7 @@ a { color: inherit; }
 .mailbox-tab-content:has(>.mailbox-batch-result){grid-template-rows:auto auto auto minmax(0,1fr) auto}
 @media(max-width:700px){.mailbox-tab-content .mailbox-selectbar>span{display:block;flex-basis:100%}}
 .mailbox-sync-progress{display:grid;gap:5px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;min-width:0;font-size:12px;overflow-wrap:anywhere}.mailbox-sync-progress small{color:var(--slate-400)}.mailbox-sync-progress button{justify-self:start;padding:7px 10px;font-size:12px}
+.mailbox-danger-zone{margin-top:10px;border-top:1px solid var(--border);padding-top:8px;overflow-wrap:anywhere}.mailbox-danger-zone summary{cursor:pointer;color:var(--red);font-weight:600}.mailbox-danger-zone p{margin:8px 0;color:var(--slate-400);font-size:12px}.mailbox-danger-zone>div{display:flex;flex-wrap:wrap;gap:8px}.raw-json-details{min-width:0}.raw-json-details summary{cursor:pointer}.raw-json-details button{margin:8px 8px 8px 0}.raw-json-details pre{max-width:100%;max-height:50dvh;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word}.raw-json-details small{overflow-wrap:anywhere}
 
 /* Binary revision controls remain within the existing upload workspace. */
 .kb-upload-revision, .kb-upload-jobs { grid-column: 1 / -1; min-width: 0; overflow-wrap: anywhere; }
