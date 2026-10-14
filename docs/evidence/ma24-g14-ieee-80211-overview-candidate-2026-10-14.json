@@ -67,6 +67,16 @@
     "savedObjectReviewVerdicts": 0,
     "finding": "Membership charts, amendment timelines, a dated regulation map and multiple diagrams encode facts outside the main text. Whole-document registration and citation remain blocked until object-level review."
   },
+  "visualCandidatePackage": {
+    "receipt": "docs/evidence/ma24-g14-ieee-80211-overview-visual-candidates-2026-10-14.json",
+    "localPackageSha256": "b80be978c3f3bac175ebebca5774c2bb03a710a73185cb0f2a5673b555ccb1c6",
+    "records": 39,
+    "uniqueImages": 35,
+    "ocrLines": 193,
+    "hashAndBlockIdIntegrityPassed": true,
+    "qualityAccepted": false,
+    "savedObjectReviewVerdicts": 0
+  },
   "draftQuestions": [
     {
       "id": "ieee-80211-2025-amp-bands-modes",

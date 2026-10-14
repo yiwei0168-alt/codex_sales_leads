@@ -1,0 +1,42 @@
+{
+  "schema": "ma24-g14-ieee-80211-overview-visual-candidates-v1",
+  "date": "2026-10-14",
+  "scope": "Offline product visual-candidate preparation for a quarantined IEEE 802.11 September 2025 PPTX; integrity audit only, without saved review decisions.",
+  "source": "tmp/ma24-independent-quarantine/ieee-80211-overview-under-development-2025.pptx",
+  "sourceSha256": "3ae95a7ecdadf8cca4127e239bfbd71c25aa08e354fd0ca94d078a3e0eb11e3d",
+  "extractionArtifact": "tmp/ma24-independent-quarantine/ieee-80211-overview-product-extraction.json",
+  "extractionArtifactSha256": "970674e5bb24e1ab73e2431c62d84ba7942aaf2860b9ffb8f9ad916e355f66ee",
+  "command": ".\\.venv-docling-v3\\Scripts\\python.exe scripts/prepare_pptx_visual_review.py --input tmp/ma24-independent-quarantine/ieee-80211-overview-under-development-2025.pptx --artifact tmp/ma24-independent-quarantine/ieee-80211-overview-product-extraction.json --output tmp/ma24-independent-quarantine/ieee-80211-overview-visual-candidates --max-unique-images 100 --all-batches --checkpoint-dir tmp/ma24-independent-quarantine/ieee-80211-overview-visual-checkpoints",
+  "result": {
+    "exitCode": 0,
+    "reviewObjects": 39,
+    "uniqueImagesProcessed": 35,
+    "imageBatches": 1,
+    "externalCalls": 0,
+    "qualityAccepted": false,
+    "extractionStatusChanged": false
+  },
+  "package": {
+    "path": "tmp/ma24-independent-quarantine/ieee-80211-overview-visual-candidates/review.json",
+    "sha256": "b80be978c3f3bac175ebebca5774c2bb03a710a73185cb0f2a5673b555ccb1c6",
+    "schema": "pptx-visual-review-candidates-v1",
+    "records": 39,
+    "matchingPendingBlockIds": 39,
+    "uniqueImageFiles": 35,
+    "missingImageFiles": 0,
+    "mismatchedImageHashes": 0,
+    "sourceHashMatchesExtraction": true,
+    "artifactHashMatchesFile": true,
+    "ocrLines": 193,
+    "reasons": {
+      "ocr-candidate-requires-visual-review": 25,
+      "no-text-image-still-requires-review": 10,
+      "native-connector-candidate-requires-review": 4
+    }
+  },
+  "reviewBoundary": "OCR and generated images are review aids, not accepted transcriptions. Chart values, map colors, diagram relationships and small labels still require object-level original-image judgment. No product review verdict was saved; whole-document registration and user-visible citations remain unverified.",
+  "savedObjectReviewVerdicts": 0,
+  "goldCreated": 0,
+  "productionKnowledgeWrites": 0,
+  "next": "Compare each candidate crop and OCR against the original slide, record evidence/decoration/unresolved decisions with the source and artifact hashes through the review gate, and leave material objects unresolved where their facts cannot be transcribed reliably."
+}
