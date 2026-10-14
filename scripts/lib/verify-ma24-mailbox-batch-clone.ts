@@ -205,10 +205,96 @@ export async function verifyMa24MailboxBatchClone(options: {
     } finally {
       await reviewContext.close();
     }
+    const savedCandidates: string[] = [];
+    for (const [index, messageId] of messageIds.slice(0, 2).entries()) {
+      const inserted = await options.admin.query<{ id: string }>(
+        `insert into mailbox_artifact_candidate(user_id,message_id,kind,title,content)
+         values($1,$2,'customer-signal',$3,$4) returning id`,
+        [options.userId, messageId, `Real clone candidate ${index + 1}`, `Synthetic original ${index + 1}`],
+      );
+      savedCandidates.push(inserted.rows[0].id);
+    }
+    const realContext = await browser.newContext({ viewport: { width: 1366, height: 900 } });
+    await realContext.addCookies([{ name: partialCookieName, value: partialCookieValue, url: options.base }]);
+    try {
+      const page = await realContext.newPage();
+      await page.goto(options.base);
+      await page.getByRole("button", { name: "客户开发", exact: true }).click();
+      await page.getByRole("navigation", { name: "客户开发页签" }).getByRole("button", { name: "邮箱" }).click();
+      await page.getByRole("tab", { name: /待审核内容/ }).click();
+      const panel = page.getByRole("tabpanel");
+      await expect(panel.locator(".mailbox-review-card")).toHaveCount(2);
+      await panel.getByRole("checkbox", { name: "选择当前页" }).check();
+      await options.admin.query("update mailbox_artifact_candidate set content='Synthetic changed after display' where id=$1", [savedCandidates[1]]);
+      const partialResponse = page.waitForResponse(response => response.url().endsWith("/api/mailbox/candidates/batch")
+        && response.request().method() === "POST");
+      await panel.getByRole("button", { name: "批量拒绝（2）" }).click();
+      const partialResult = await (await partialResponse).json() as { processed: number; failed: number; results: Array<{ id: string; result: string }> };
+      assert.equal(partialResult.processed, 1);
+      assert.equal(partialResult.failed, 1);
+      assert.equal(partialResult.results.find(item => item.id === savedCandidates[1])?.result, "conflict");
+      await expect(panel.locator(".mailbox-review-card")).toHaveCount(1);
+      await expect(panel.locator(".mailbox-review-card input[type=checkbox]")).toBeChecked();
+      await expect(panel.locator(".mailbox-batch-result")).toContainText("审核成功 1 条，失败 1 条");
+      const firstStatuses = (await options.admin.query<{ id: string; review_status: string }>(
+        "select id,review_status from mailbox_artifact_candidate where id=any($1::uuid[])", [savedCandidates],
+      )).rows;
+      assert.equal(firstStatuses.find(row => row.id === savedCandidates[0])?.review_status, "rejected");
+      assert.equal(firstStatuses.find(row => row.id === savedCandidates[1])?.review_status, "pending");
+      const retryResponse = page.waitForResponse(response => response.url().endsWith("/api/mailbox/candidates/batch")
+        && response.request().method() === "POST");
+      await panel.getByRole("button", { name: "批量拒绝（1）" }).click();
+      const retryResult = await (await retryResponse).json() as { processed: number; failed: number };
+      assert.equal(retryResult.processed, 1);
+      assert.equal(retryResult.failed, 0);
+      await expect(panel.locator(".mailbox-review-card")).toHaveCount(0);
+      const finalStatuses = (await options.admin.query<{ review_status: string }>(
+        "select review_status from mailbox_artifact_candidate where id=any($1::uuid[])", [savedCandidates],
+      )).rows;
+      assert.equal(finalStatuses.filter(row => row.review_status === "rejected").length, 2);
+    } finally {
+      await realContext.close();
+    }
+    const skipContext = await browser.newContext({ viewport: { width: 1366, height: 900 } });
+    await skipContext.addCookies([{ name: partialCookieName, value: partialCookieValue, url: options.base }]);
+    try {
+      const page = await skipContext.newPage();
+      await page.goto(options.base);
+      await page.getByRole("button", { name: "客户开发", exact: true }).click();
+      await page.getByRole("navigation", { name: "客户开发页签" }).getByRole("button", { name: "邮箱" }).click();
+      await page.getByRole("tab", { name: /私有学习候选/ }).click();
+      const panel = page.getByRole("tabpanel");
+      const queueResponse = await page.request.get(`${options.base}/api/mailbox/learning-queue?page=1`);
+      assert.equal(queueResponse.status(), 200);
+      const queueData = await queueResponse.json() as { messages: Array<{ id: string }> };
+      assert(queueData.messages.length >= 2);
+      await panel.locator(".mailbox-row input[type=checkbox]").nth(0).check();
+      await panel.locator(".mailbox-row input[type=checkbox]").nth(1).check();
+      await options.admin.query("update mailbox_message set learning_status='skipped' where id=$1", [queueData.messages[1].id]);
+      const skipResponse = page.waitForResponse(response => response.url().endsWith("/api/mailbox/screening")
+        && response.request().method() === "POST");
+      await panel.getByRole("button", { name: "跳过所选" }).click();
+      const skipResult = await (await skipResponse).json() as { processed: number; failed: number; results: Array<{ id: string; status: string }> };
+      assert.equal(skipResult.processed, 2);
+      assert.equal(skipResult.failed, 1);
+      assert.equal(skipResult.results.find(item => item.id === queueData.messages[1].id)?.status, "failed");
+      await expect(panel.locator(".mailbox-batch-result")).toContainText("可重试的 0 封保留选择");
+      await expect(panel.getByRole("button", { name: "授权所选 0" })).toBeDisabled();
+      const stored = (await options.admin.query<{ id: string; learning_status: string }>(
+        "select id,learning_status from mailbox_message where id=any($1::uuid[])",
+        [[queueData.messages[0].id, queueData.messages[1].id]],
+      )).rows;
+      assert(stored.every(row => row.learning_status === "skipped"));
+    } finally {
+      await skipContext.close();
+    }
     return { candidatePage: true, syntheticMessages: 10, queuedLearningJobs: 10,
       gatewayCredential: "synthetic-unusable", workerStarted: false, modelCalls: 0, mailSends: 0,
       partialBatchUi: "HTTP responses intercepted for deterministic learning/review partial results; no skip or candidate-review write",
-      candidateReviewSelectionAcrossPages: true, results };
+      candidateReviewSelectionAcrossPages: true,
+      realCandidatePartialReview: "One rejection saved, one stale-hash conflict stayed pending, then refreshed retry saved; clone database verified both rejected",
+      realSkipPartialReview: "One skip saved, one prior state change failed; follow-up pending-ID read cleared non-retryable selection and clone database verified both skipped",
+      results };
   } finally {
     await browser.close();
   }

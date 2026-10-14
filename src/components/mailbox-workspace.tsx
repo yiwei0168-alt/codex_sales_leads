@@ -94,7 +94,31 @@ export function MailboxWorkspace(){
     if(!ids.length)return;
     if(action==="authorize"&&!window.confirm(`将所选 ${ids.length} 封邮件分别脱敏后通过 OpenRouter 发送给 Kimi？每封都有独立外发审计。`))return;
     setBatchFeedback(null);
-    await perform(`messages:${action}`,async()=>{const result=await request("/api/mailbox/screening","POST",{action,messageIds:ids,consent:action==="authorize"});const failedIds=(result.results??[]).filter((item:{status:string})=>item.status==='failed').map((item:{id:string})=>item.id);setSelectedMessages(failedIds);if(action==="authorize"){setBatchFeedback({scope:"learning",summary:`${result.queued} 封已排队；逐封状态在邮箱管理的后台任务中更新。`,items:[]});return `已排队 ${result.queued} 封，后台逐封处理；每封保留独立授权记录。`;}const items=(result.results??[]).map((item:{id:string;status:string;error?:string},index:number)=>({id:item.id,label:queue.find(row=>row.id===item.id)?.subject||`第 ${index+1} 封邮件`,status:item.status==='failed'?"failed" as const:"saved" as const,error:item.error}));setBatchFeedback({scope:"learning",summary:`成功 ${items.length-failedIds.length} 封，失败 ${failedIds.length} 封；失败项保留选择。`,items});return `处理 ${result.processed??0} 封，失败 ${result.failed??0} 封，失败项保留选择。`;});
+    await perform(`messages:${action}`,async()=>{
+      const result=await request("/api/mailbox/screening","POST",{action,messageIds:ids,consent:action==="authorize"});
+      if(action==="authorize"){
+        setSelectedMessages([]);
+        setBatchFeedback({scope:"learning",summary:`${result.queued} 封已排队；逐封状态在邮箱管理的后台任务中更新。`,items:[]});
+        return `已排队 ${result.queued} 封，后台逐封处理；每封保留独立授权记录。`;
+      }
+      const outcomes:BatchFeedback["items"]=(result.results??[]).map((item:{id:string;status:string;error?:string},index:number)=>({
+        id:item.id,label:queue.find(row=>row.id===item.id)?.subject||`第 ${index+1} 封邮件`,
+        status:item.status==='failed'?"failed" as const:"saved" as const,error:item.error,
+      }));
+      const failedIds=outcomes.filter(item=>item.status==="failed").map(item=>item.id);
+      let retryableIds=failedIds;
+      let pendingReadVerified=failedIds.length===0;
+      if(failedIds.length){
+        try{
+          const pendingResponse=await fetch('/api/mailbox/learning-queue?select=all',{cache:'no-store'});
+          if(pendingResponse.ok){const pending=await pendingResponse.json() as {ids:string[]};const pendingSet=new Set(pending.ids);retryableIds=failedIds.filter(id=>pendingSet.has(id));pendingReadVerified=true;}
+        }catch{/* Keep the failed selection if the follow-up read is unavailable. */}
+      }
+      setSelectedMessages(retryableIds);
+      const summary=`成功 ${outcomes.length-failedIds.length} 封，失败 ${failedIds.length} 封；${pendingReadVerified?`可重试的 ${retryableIds.length} 封保留选择。`:'失败项暂保留选择，请刷新核对状态。'}`;
+      setBatchFeedback({scope:"learning",summary,items:outcomes});
+      return summary;
+    });
   }
   async function decideCandidates(items:Candidate[],action:"approved"|"rejected"){
     if(!items.length)return;
