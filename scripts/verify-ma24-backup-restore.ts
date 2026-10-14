@@ -174,7 +174,8 @@ try {
       applicationDatabaseUrl: applicationSource.toString(), migrationDatabaseUrl: cloneUrl.toString(),
       reviewUi: process.argv.includes("--review-ui"),
       conversationUi: process.argv.includes("--conversation-ui"),
-      frontendUi: process.argv.includes("--frontend-ui") });
+      frontendUi: process.argv.includes("--frontend-ui"),
+      mailboxBatchUi: process.argv.includes("--mailbox-batch-ui") });
   }
   console.log(JSON.stringify({ archive: newest, archiveSha256: manifest.sha256, restored: true,
     migrationRange: "127-134", rollbackVerified: true, committedOnDisposableClone: true,

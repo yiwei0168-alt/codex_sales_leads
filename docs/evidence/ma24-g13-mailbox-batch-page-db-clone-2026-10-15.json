@@ -1,0 +1,31 @@
+{
+  "schema": "ma24-g13-f03-mailbox-batch-page-db-clone-v1",
+  "goal": "MA24 G13 F03",
+  "date": "2026-10-15",
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-backup-restore.ts --web-compat --mailbox-batch-ui",
+  "backup": "network_copilot_2026-10-13T09-03-13Z.dump",
+  "backupSha256": "17db517922f0ee8067391544418f0c8af9f77ee5f48203b938b7559ba528d428",
+  "candidateBuildId": "SYTDOFazJ7rlat8Kz_ESL",
+  "oldBuildId": "QfoyXprIZIVgSWxFSZ-1K",
+  "database": "Disposable local restore; migrations 127-134 committed only on the clone, which was dropped after verification",
+  "fixture": "One synthetic account, one invalid.example mailbox connection, ten encrypted synthetic messages; the candidate Web process received an unusable synthetic OpenRouter credential and no mailbox worker was started",
+  "browser": {
+    "viewports": ["1366x900", "390x760"],
+    "perViewport": "Actual candidate page listed 8 messages on page 1 and 2 on page 2; selecting each page retained all 10 across navigation and left page 1 checked; the authorize button displayed 10; no horizontal overflow or browser page error",
+    "authorization": "Selecting all 10 from the page, accepting the confirmation naming 10 messages and calling the real screening API returned HTTP 202; page displayed queued 10",
+    "afterReload": "Header displayed background processing; opening mailbox management showed queued 10 in the durable task summary"
+  },
+  "databaseVerification": {
+    "learnJobs": 10,
+    "distinctTargets": 10,
+    "status": "queued",
+    "consentBound": true,
+    "contentHashBound": true,
+    "syncRuns": 0
+  },
+  "oldWebSmoke": "Old Web could sign in and read its empty upload list on the migrated clone before the candidate page run",
+  "modelCalls": 0,
+  "mailSends": 0,
+  "productionDatabaseWrites": 0,
+  "limits": "This proves the candidate-page selection, authorization enqueue and reload progress path for synthetic mail. It does not prove actual background processing, real mailbox synchronization, provider receipt reconciliation, production deployment or every F01-F13 entry."
+}
