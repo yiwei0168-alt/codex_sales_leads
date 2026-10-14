@@ -26,9 +26,10 @@ export async function GET(request:Request){
         'Content-Disposition':`attachment; filename="original"; filename*=UTF-8''${encodeURIComponent(file.filename)}`}});
     }catch(error){return failure(error);}
   }
-  const input=z.object({jobId:z.uuid(),offset:z.coerce.number().int().min(0).max(1000000)}).safeParse({jobId:params.get('jobId'),offset:params.get('offset')??0});
+  const input=z.object({jobId:z.uuid(),offset:z.coerce.number().int().min(0).max(1000000),view:z.enum(['pending','successful'])}).safeParse({
+    jobId:params.get('jobId'),offset:params.get('offset')??0,view:params.get('view')??'pending'});
   if(!input.success)return Response.json({error:'审核参数无效'},{status:400,headers});
-  try{return Response.json(await getExtractionReview(session.userId,input.data.jobId,input.data.offset),{headers});}catch(error){return failure(error);}
+  try{return Response.json(await getExtractionReview(session.userId,input.data.jobId,input.data.offset,input.data.view),{headers});}catch(error){return failure(error);}
 }
 export async function POST(request:Request){
   const session=await requireApiSession();if(session instanceof Response)return session;

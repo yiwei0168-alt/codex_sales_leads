@@ -1,0 +1,35 @@
+{
+  "schema": "ma24-g05-success-block-review-v1",
+  "date": "2026-10-15",
+  "cause": "A visually occluded PDF text block could be marked success by extraction and bypass the pending-only human review, then enter indexed evidence.",
+  "change": [
+    "The authenticated review API and UI now offer a separate paged view of success-marked text within an existing review-required job, with the immutable original and page coordinate available for comparison.",
+    "An owner may exclude a success-marked block as decoration with a revisioned, source/artifact-bound judgment; retaining it can only preserve the exact original extracted text, not substitute new text.",
+    "Reviewed extraction requires every originally pending block to be resolved and validates every optional success-block override. It writes receipt-linked derived bytes without changing the original artifact, and verifies the same decisions again before indexing."
+  ],
+  "checks": {
+    "focusedVitest": "4 files, 29 tests passed: reviewed artifact, visual candidates, binary registration and authenticated review API",
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "isolatedCloneCommand": "node scripts/run-tsx.cjs scripts/verify-itu-occluded-review-clone.ts",
+    "cloneSourceSha256": "8bac4a67a32ef5b9d87b7855dc57de7f686b405a6d2ffab537782265a61f0615",
+    "clonePendingPagesReviewed": 12,
+    "cloneSuccessBlocksExcluded": ["page-5-block-3", "page-8-block-4", "page-11-block-3"],
+    "cloneOriginalPagePreviewRead": true,
+    "cloneHiddenTextIndexed": false,
+    "clonePage5FwaEvidenceCited": true,
+    "cloneOtherAccountDenied": true,
+    "cloneSyntheticRecordsCleaned": true,
+    "browser": "2 Playwright component flows passed at 1366x900 and 390x844: success-tab source text, coordinates, page preview, exclusion save, return to pending completion and no horizontal overflow; screenshots visually inspected"
+  },
+  "sourceBoundary": "The ITU PDF directly drove this repair and is now development/regression only; its FWA conflict question is excluded from fresh independent Gold.",
+  "limits": [
+    "The browser check used a bundled component and synthetic authenticated API responses; the actual running candidate and production service were not exercised.",
+    "This review path applies while a job is already review-required. A file with only success-marked blocks can still bypass human review, so a general prepublication visibility gate remains open.",
+    "Production Web and knowledge services have not loaded this change; no production document was modified.",
+    "The clone verified source-block exclusion and readEvidence, not an actual user-visible model answer or independent quality pass."
+  ],
+  "productionKnowledgeWrites": 0,
+  "modelCalls": 0,
+  "independentGoldCreated": 0
+}

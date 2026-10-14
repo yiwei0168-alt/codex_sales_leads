@@ -31,8 +31,9 @@ async function load(client:PoolClient,userId:string,jobId:string){
   if(original.length!==Number(job.byte_size)||createHash('sha256').update(original).digest('hex')!==job.source_sha256)
     throw new ExtractionReviewConflict('原件已变化，不能审核');
   extractionReadiness(bytes,{sourceSha256:job.source_sha256,artifactSha256:job.metrics.artifactSha256,extractorVersion:job.extractor_version});
-  const blocks=(JSON.parse(bytes.toString('utf8')).documents[0].blocks as Block[]).filter(block=>!['success','blank'].includes(block.quality));
-  return {job,blocks,original,artifactBytes:bytes};
+  const allBlocks=JSON.parse(bytes.toString('utf8')).documents[0].blocks as Block[];
+  const blocks=allBlocks.filter(block=>!['success','blank'].includes(block.quality));
+  return {job,blocks,allBlocks,original,artifactBytes:bytes};
 }
 
 export async function completeExtractionReview(userId:string,jobId:string,artifactSha256:string,decisionSha256:string){
@@ -90,26 +91,34 @@ export async function getExtractionReviewOriginal(userId:string,jobId:string,art
   });
 }
 
-export async function getExtractionReview(userId:string,jobId:string,offset=0){
+export async function getExtractionReview(userId:string,jobId:string,offset=0,view:'pending'|'successful'='pending'){
   z.uuid().parse(jobId);z.number().int().min(0).max(1000000).parse(offset);
   return tenantTransaction(userId,async client=>{
-    const {job,blocks}=await load(client,userId,jobId);
+    const {job,blocks,allBlocks}=await load(client,userId,jobId);
+    const displayed=view==='successful'?allBlocks.filter(block=>block.quality==='success'):blocks;
     let candidates:Awaited<ReturnType<typeof loadVisualCandidates>>=null,visualCorrupt=false;
     try{
       candidates=await loadVisualCandidates(job.metrics,job.source_sha256,job.metrics.artifactSha256,blocks);
       if(candidates&&job.metrics.visualReviewKey){
-        const visible=new Set(blocks.slice(offset,offset+20).map(block=>block.id));
-        await verifyVisualCandidateImages(job.metrics.visualReviewKey,candidates.filter(record=>visible.has(record.blockId)));
+        const visible=new Set(displayed.slice(offset,offset+20).map(block=>`${block.unitType}:${block.unitIndex}`));
+        await verifyVisualCandidateImages(job.metrics.visualReviewKey,candidates.filter(record=>
+          view==='pending'?displayed.slice(offset,offset+20).some(block=>block.id===record.blockId)
+            :record.coordinateSpace==='pdf-page-render'&&visible.has(`page:${record.unitIndex}`)));
       }
     }catch{candidates=null;visualCorrupt=true;}
     const byCandidate=new Map(candidates?.map(record=>[record.blockId,record]));
     const judgments=await client.query<{block_id:string;revision:number;decision:string;evidence_text:string;note:string;created_at:string}>(`select distinct on(block_id) block_id,revision,decision,evidence_text,note,created_at
       from knowledge_upload_extraction_review where owner_id=$1 and job_id=$2 and artifact_sha256=$3 order by block_id,revision desc`,[userId,jobId,job.metrics.artifactSha256]);
     const byBlock=new Map(judgments.rows.map(row=>[row.block_id,row]));
+    const pageCandidate=new Map(candidates?.filter(record=>record.coordinateSpace==='pdf-page-render').map(record=>[record.unitIndex,record]));
     return {jobId,title:job.title,sourceSha256:job.source_sha256,artifactSha256:job.metrics.artifactSha256,extractorVersion:job.extractor_version,decisionSha256:reviewDecisionHash(judgments.rows),
-      total:blocks.length,offset,blocks:blocks.slice(offset,offset+20).map(block=>({block,judgment:byBlock.get(block.id)??null,candidate:byCandidate.get(block.id)??null})),
+      view,total:displayed.length,offset,blocks:displayed.slice(offset,offset+20).map(block=>{
+        const candidate=byCandidate.get(block.id)??(view==='successful'&&block.unitType==='page'?pageCandidate.get(block.unitIndex):null)??null;
+        return {block,judgment:byBlock.get(block.id)??null,candidate,previewBlockId:candidate?.blockId??null};
+      }),
       visualState:visualCorrupt?'corrupt':! /\.(pptx|pdf|xlsx)$/i.test(job.storage_key)?'unsupported':job.metrics.visualReviewKey?'ready':job.visual_running?'running':job.visual_attempts>=3?'failed':job.visual_error_code?'retrying':'pending',
-      resolved:blocks.filter(block=>{const row=byBlock.get(block.id);return row&&row.decision!=='unresolved';}).length,indexingResumed:false};
+      resolved:displayed.filter(block=>{const row=byBlock.get(block.id);return row&&row.decision!=='unresolved';}).length,
+      pendingTotal:blocks.length,pendingResolved:blocks.filter(block=>{const row=byBlock.get(block.id);return row&&row.decision!=='unresolved';}).length,indexingResumed:false};
   });
 }
 
@@ -153,10 +162,12 @@ export async function getExtractionReviewImage(userId:string,jobId:string,artifa
 export async function recordExtractionReview(userId:string,raw:unknown){
   const input=extractionReviewDecision.parse(raw);
   return tenantTransaction(userId,async client=>{
-    const {job,blocks}=await load(client,userId,input.jobId);
+    const {job,allBlocks}=await load(client,userId,input.jobId);
     if(input.artifactSha256!==job.metrics.artifactSha256)throw new ExtractionReviewConflict('抽取版本已变化，请重新加载');
-    const block=blocks.find(block=>block.id===input.blockId);
+    const block=allBlocks.find(block=>block.id===input.blockId&&block.quality!=='blank');
     if(!block)throw new ExtractionReviewConflict('对象不属于当前待审核产物');
+    if(block.quality==='success'&&(input.decision==='unresolved'||input.decision==='evidence'&&input.evidenceText!==block.text))
+      throw new ExtractionReviewConflict('成功抽取文字仅可核对保留原文或排除，不可替换为新内容');
     const prior=await client.query<{revision:number}>(`select revision from knowledge_upload_extraction_review where owner_id=$1 and job_id=$2 and artifact_sha256=$3 and block_id=$4 order by revision desc limit 1`,[userId,input.jobId,input.artifactSha256,input.blockId]);
     if((prior.rows[0]?.revision??0)!==input.expectedRevision)throw new ExtractionReviewConflict('该对象已有新的审核，请重新加载');
     const revision=input.expectedRevision+1;

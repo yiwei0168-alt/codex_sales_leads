@@ -14,13 +14,17 @@ export function deriveReviewedExtraction(original:Uint8Array,input:{receiptId:st
   const document=artifact.documents[0];
   const pending=(document.blocks as Block[]).filter(block=>!['success','blank'].includes(block.quality));
   const byId=new Map(judgments.map(row=>[row.block_id,row]));
-  if(!pending.length||byId.size!==judgments.length||pending.length!==byId.size)throw new Error('Incomplete review decisions');
+  const allowed=new Set((document.blocks as Block[]).filter(block=>block.quality!=='blank').map(block=>block.id));
+  if(!pending.length||byId.size!==judgments.length||pending.some(block=>!byId.has(block.id))
+    ||[...byId.keys()].some(id=>!allowed.has(id)))throw new Error('Incomplete or invalid review decisions');
   document.blocks=(document.blocks as Block[]).map(block=>{
-    if(['success','blank'].includes(block.quality))return block;
     const row=byId.get(block.id);
+    if(block.quality==='blank'||block.quality==='success'&&!row)return block;
     if(!row||!['evidence','decoration'].includes(row.decision)||row.source_sha256!==input.sourceSha256||row.extractor_version!==input.extractorVersion
       ||!Number.isSafeInteger(row.revision)||row.revision<1||row.decision==='evidence'&&!row.evidence_text.trim()
-      ||row.decision==='decoration'&&row.evidence_text!=='')throw new Error('Unresolved or mismatched review decision');
+      ||row.decision==='decoration'&&row.evidence_text!==''
+      ||block.quality==='success'&&row.decision==='evidence'&&row.evidence_text!==block.text)
+      throw new Error('Unresolved or mismatched review decision');
     return {...block,quality:row.decision==='evidence'?'success':'blank',blockType:row.decision==='evidence'?'reviewed-text':'reviewed-decoration',text:row.evidence_text,
       review:{receiptId:input.receiptId,revision:row.revision,decision:row.decision,originalQuality:block.quality}};
   });

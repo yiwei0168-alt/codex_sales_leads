@@ -112,7 +112,7 @@
       "bytes": 2113423,
       "sha256": "8bac4a67a32ef5b9d87b7855dc57de7f686b405a6d2ffab537782265a61f0615",
       "integrity": "valid unencrypted PDF; 12 pages",
-      "status": "blocked from independent Gold and registration: all 12 pages visually inspected, and page 5 conflict values are visible, but success-marked extraction blocks on pages 5, 8 and 11 contain text occluded in the rendered original; pending-only review cannot remove them. See ma24-g14-itu-pdf-full-visual-review-2026-10-15.json. If this source drives a product repair, use it only for development/regression. Source-use and citation remain open."
+      "status": "development/regression only: all 12 pages were visually inspected; three occluded success blocks drove the 2026-10-15 successful-block review repair and isolated clone test. The source and its FWA conflict draft are excluded from fresh independent Gold, though page 5 values remain a valid engineering fixture. Production registration and model-visible citation remain open; see ma24-g14-itu-pdf-full-visual-review-2026-10-15.json."
     },
     {
       "kind": "long-pdf",

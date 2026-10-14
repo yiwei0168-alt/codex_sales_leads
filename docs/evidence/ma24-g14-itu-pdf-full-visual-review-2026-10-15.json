@@ -28,7 +28,7 @@
     {"id": "page-11-block-3", "bboxPoints": [82.78, 0.42, 888.45, 86.7], "text": "6G Spectrum discussions have started; Focus on Agenda 1.7 of WRC-27", "visualDisposition": "covered by foreground title header; not visible in rendered page"}
   ],
   "workflowFinding": "The current extraction-review query selects only blocks whose quality is neither success nor blank. These three occluded blocks are already marked success, so the ordinary 12 pending visual-review decisions cannot remove them from the searchable registration content.",
-  "decision": "Source is blocked from independent Gold and production knowledge registration pending correction of the success-block review or extraction boundary. If this PDF drives a product repair, reclassify it as development/regression material rather than a fresh quality holdout.",
+  "decision": "This PDF has now driven the successful-block review repair and its isolated clone regression, so it is development/regression material only and excluded from fresh independent Gold. The clone can exclude the occluded text; production registration and model-visible citation remain unverified.",
   "questionOriginalValuesValid": true,
   "productReadCitationPassed": false,
   "sourceApproved": false,

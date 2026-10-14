@@ -55,6 +55,6 @@
     "goldCreated": 0,
     "modelCalls": 0,
     "productionKnowledgeWrites": 0,
-    "remaining": "All 12 pages were visually inspected, but three successful extraction blocks contain text hidden by foreground layers and cannot be excluded by the current pending-only review workflow. Block source registration and Gold pending a safe correction; if this PDF drives a product repair, reclassify it as development/regression material. Source-use, full overlap and user-visible citation remain open."
+    "remaining": "The three occluded success blocks drove a product review repair and isolated clone regression on 2026-10-15, so this whole PDF and its conflict draft are development/regression only, not fresh independent Gold. Clone evidence confirms exclusion and original-page evidence; production registration and model-visible citation remain open."
   }
 }

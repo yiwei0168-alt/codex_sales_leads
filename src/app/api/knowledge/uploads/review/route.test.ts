@@ -12,6 +12,12 @@ const valid={jobId,artifactSha256:'a'.repeat(64),blockId:'slide-1-image',expecte
 const post=(body:unknown)=>new Request('http://localhost/api/knowledge/uploads/review',{method:'POST',body:JSON.stringify(body)});
 beforeEach(()=>{vi.clearAllMocks();mocks.session.mockResolvedValue({userId:'owner',role:'member'});mocks.read.mockResolvedValue({blocks:[]});mocks.write.mockResolvedValue({revision:1,indexingResumed:false});});
 describe('extraction review endpoint',()=>{
+  it('offers a bounded successful-text review view under the authenticated owner',async()=>{
+    const url=`http://localhost/api/knowledge/uploads/review?jobId=${jobId}&offset=20&view=successful`;
+    expect((await GET(new Request(url))).status).toBe(200);
+    expect(mocks.read).toHaveBeenCalledWith('owner',jobId,20,'successful');
+    expect((await GET(new Request(url.replace('successful','everything')))).status).toBe(400);
+  });
   it('requires paired positive nested image selectors and uses authenticated owner',async()=>{
     const url=`http://localhost/api/knowledge/uploads/review?format=image&jobId=${jobId}&artifactSha256=${'a'.repeat(64)}&blockId=sheet-1`;
     for(const query of ['&objectIndex=2','&imageIndex=1','&objectIndex=0&imageIndex=1','&objectIndex=2&imageIndex=1.5'])expect((await GET(new Request(url+query))).status).toBe(400);
@@ -61,7 +67,7 @@ describe('extraction review endpoint',()=>{
   });
   it('binds review to authenticated owner and returns no-store data',async()=>{
     const response=await GET(new Request(`http://local/?jobId=${jobId}&offset=20`));
-    expect(response.status).toBe(200);expect(response.headers.get('cache-control')).toBe('private, no-store');expect(mocks.read).toHaveBeenCalledWith('owner',jobId,20);
+    expect(response.status).toBe(200);expect(response.headers.get('cache-control')).toBe('private, no-store');expect(mocks.read).toHaveBeenCalledWith('owner',jobId,20,'pending');
     expect((await POST(post(valid))).status).toBe(200);expect(mocks.write).toHaveBeenCalledWith('owner',valid);
   });
   it('rejects invented reviewer, empty evidence and decoration with evidence',async()=>{
