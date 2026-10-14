@@ -1,0 +1,29 @@
+{
+  "schema": "ma24-g05-ieee-gepof-slide16-chart-resolution-v1",
+  "date": "2026-10-14",
+  "ruleId": "MA24-18",
+  "sourceSha256": "030a730584498f8b98109a1bf2da22a29cc443021c63fbd1c18cf2bad2da6910",
+  "candidatePackageSha256": "282813baaa002f9dbffecf462fbea48574def5280f1a220bb491053317810e86",
+  "previousReview": "ma24-g05-ieee-gepof-object-review-early-2026-10-14.json",
+  "blockId": "slide-16-visual-4",
+  "method": "Read the original PPTX slide 16 shape path 4, shape ID 6, whose embedded OLE program is MSGraph.Chart.8. Parsed its Workbook BIFF LABEL, NUMBER and chart-axis records directly; compared them with the rendered original slide. No workbook or PPTX mutation.",
+  "command": ".\\.venv-docling-v3\\Scripts\\python.exe scripts/verify-ieee-gepof-chart-data.py",
+  "embeddedWorkbookSha256": "925183c4172d1dc0bd87f90310c11d5d5e6e8da72a56bdebdbcc743b5f50d7fd",
+  "axisLabelLiteral": "Attenuation (dBo)",
+  "categories": ["10 mm", "8 mm", "6 mm", "5 mm"],
+  "series": {
+    "Bending at RX": [0.82, 1.46, 2.22, 2.68],
+    "Bending at TX": [0.56, 0.97, 1.95, 2.67]
+  },
+  "revisedProposal": {
+    "decision": "evidence",
+    "evidenceText": "The historical slide 16 chart labels its y-axis 'Attenuation (dBo)' and compares bending at RX and TX for bend radii 10, 8, 6 and 5 mm. RX values are 0.82, 1.46, 2.22 and 2.68; TX values are 0.56, 0.97, 1.95 and 2.67, respectively.",
+    "scopeGuard": "Preserve the axis label exactly as shown, including 'dBo'; do not silently normalize its unit or generalize these presentation values to a current product specification."
+  },
+  "earlyBatchCurrentProposals": {"reviewed": 17, "evidence": 6, "decoration": 9, "unresolved": 2},
+  "productJudgmentsSaved": 0,
+  "qualityAccepted": false,
+  "goldCreated": 0,
+  "productionKnowledgeWrites": 0,
+  "remaining": "The slide 11 formula and slide 12 attenuation graph remain unresolved, 112 other objects have no original-slide review, and product registration/read/citation acceptance has not occurred."
+}
