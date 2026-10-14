@@ -1,0 +1,44 @@
+{
+  "schema": "ma24-g09-activation-readiness-audit-v1",
+  "date": "2026-10-15",
+  "scope": "Read-only local production database inventory for the previously authorized account; no Skill activation, review write or model call",
+  "command": "node scripts/run-tsx.cjs scripts/audit-skill-success-sources-local.ts --account-email=steven.zhang@cudy.com",
+  "accountInventory": {
+    "currentSkills": 1,
+    "enabledSkills": 1,
+    "importedOrNonExperienceSkills": 1,
+    "completedMainRuns": 11,
+    "replayRows": 1,
+    "replayReviewRows": 0,
+    "shadowCampaigns": 0,
+    "shadowJobs": 0,
+    "shadowReviewRows": 0,
+    "blindRounds": 0,
+    "blindJudgments": 0,
+    "experienceObservations": 0
+  },
+  "productionSchema": {
+    "agent_skill_acceptance_bundle": "not installed",
+    "agent_skill_acceptance_judgment": "not installed",
+    "agent_skill_acceptance_freeze": "not installed",
+    "agent_skill_acceptance_freeze_revocation": "not installed"
+  },
+  "sourceCodeBoundary": {
+    "activation": "src/lib/assistant/main/skills.ts: non-human enable/rollback currently rejects every account Skill after script/dependency/scope checks; no policy verdict is consumed in its transaction.",
+    "collector": "src/lib/assistant/main/skill-acceptance-collector.ts: historical observations are labelled runtimeIdentityVerified=false, collectorProvenanceVerified=false and automaticActivation=false.",
+    "sourceKinds": "db/migrations/130_skill_acceptance_evidence.sql permits only synthetic-fixture and production-runner-pending-verification; no trusted production-attested category exists.",
+    "reviews": "src/lib/assistant/main/skill-acceptance-store.ts: latest judgments and freeze are readable, but the read returns collectorProvenanceVerified=false and does not authorize activation.",
+    "policy": "src/lib/assistant/main/skill-acceptance-policy.ts calculates policyPassed from complete bound observations and human judgments, but explicitly is not an authorization boundary."
+  },
+  "decision": "G09 is not eligible for automatic activation. The one enabled Skill is an existing manually enabled instruction Skill; its presence does not prove automatic activation. Do not convert status labels or local JSON into activation authority.",
+  "requiredNextEvidence": [
+    "Apply and verify the pending production acceptance/freeze schema as part of the authorized release sequence.",
+    "Establish a server-authenticated, frozen production runner identity and collector provenance; keep synthetic and pending-verification artifacts ineligible.",
+    "Collect complete safety, historical replay and prospective shadow results with latest human judgments for an eligible account Skill.",
+    "In the final enable transaction, lock Skill/version and evidence/review/freeze versions, recheck current sources, expiry, revocation and policy, then verify enable, rejection, disable and rollback on an isolated clone before a scoped pilot."
+  ],
+  "checks": ["read-only repeatable-read SQL inventory", "npm run typecheck", "npx eslint scripts/audit-skill-success-sources-local.ts"],
+  "databaseWrites": 0,
+  "modelCalls": 0,
+  "automaticActivationPerformed": false
+}

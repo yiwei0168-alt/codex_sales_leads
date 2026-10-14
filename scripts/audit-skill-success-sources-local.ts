@@ -31,10 +31,20 @@ try{
  const counts:Record<string,number>={};
  for(const table of ['agent_skill_shadow_campaign','agent_skill_shadow_job','agent_skill_replay','agent_skill_replay_review','agent_skill_shadow_review','agent_skill_blind_round','agent_skill_blind_judgment'])
   counts[table]=(await client.query(`select count(*)::int as n from ${table} where owner_id=$1`,[owner])).rows[0].n;
+ const acceptanceTables:Record<string,{installed:boolean;rows:number|null}>={};
+ for(const table of ['agent_skill_acceptance_bundle','agent_skill_acceptance_judgment','agent_skill_acceptance_freeze','agent_skill_acceptance_freeze_revocation']){
+  const installed=(await client.query<{installed:boolean}>("select to_regclass($1) is not null as installed",[`public.${table}`])).rows[0].installed;
+  acceptanceTables[table]={installed,rows:installed?(await client.query<{n:number}>(`select count(*)::int as n from ${table} where owner_id=$1`,[owner])).rows[0].n:null};
+ }
+ const acceptanceSourceKinds:Record<string,number>={};
+ if(acceptanceTables.agent_skill_acceptance_bundle.installed){
+  const rows=await client.query<{source_kind:string;n:number}>("select source_kind,count(*)::int as n from agent_skill_acceptance_bundle where owner_id=$1 group by source_kind",[owner]);
+  for(const row of rows.rows)acceptanceSourceKinds[row.source_kind]=row.n;
+ }
  console.log(JSON.stringify({scope:'explicit-account-current-skill-source-inventory',readOnly:true,
   currentSkills:versions.length,enabledSkills:enabled,importedOrNonExperienceSkills:imported,
   repeatedReportDrafts:reports,currentRepeatedReportSources:currentReports,experienceObservations:observations,
-  completedMainRuns:runs.completed,evaluationRows:counts,
+  completedMainRuns:runs.completed,evaluationRows:counts,acceptanceTables,acceptanceSourceKinds,
   methodSuccessCertified:false,activationAuthorized:false,newModelCalls:0,
   limitations:['Completed runs and successful tool receipts do not prove task or method quality.',
    'Current repeated reports remain user reports, not independently verified success.',
