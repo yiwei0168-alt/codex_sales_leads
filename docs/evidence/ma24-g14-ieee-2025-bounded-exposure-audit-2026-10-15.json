@@ -1,0 +1,45 @@
+{
+  "schema": "ma24-g14-ieee-2025-bounded-exposure-audit-v1",
+  "date": "2026-10-15",
+  "scope": "Two quarantined public 2025 IEEE 802.11 PPTX sources after isolated product review; local read-only hash, text/log and version-history screen",
+  "sources": [
+    {
+      "name": "SD4ADDR automotive presentation",
+      "sha256": "786e8324f221fb8d4e854e88515020b61079acb2f50d56e535441e10efbd92c2",
+      "matchingProductAssets": 0,
+      "matchingProductUploadJobs": 0,
+      "matchingHistoricalGoldRows": 0,
+      "firstDistinctiveTermHistory": "The searched Git history first introduces SD4ADDR in the 2026-10-14 candidate commit d9b46dc9."
+    },
+    {
+      "name": "IEEE 802.11 overview and amendments under development",
+      "sha256": "3ae95a7ecdadf8cca4127e239bfbd71c25aa08e354fd0ca94d078a3e0eb11e3d",
+      "matchingProductAssets": 0,
+      "matchingProductUploadJobs": 0,
+      "matchingHistoricalGoldRows": 0,
+      "firstDistinctiveTermHistory": "The searched Git history first introduces 802.11bp in the 2026-10-14 candidate commit e22a1f9c."
+    }
+  ],
+  "textScreen": {
+    "terms": ["SD4ADDR", "0x08AF", "Aveiro Tech City Living Lab", "802.11bp", "802.11br", "Ambient Power Transmission", "Enhanced Light Communications"],
+    "searchedTrackedAreas": ["docs", "src", "scripts", "experiments"],
+    "excludedCurrentCandidateAndStatusRecords": true,
+    "remainingTrackedHits": ["scripts/screen-ma24-g14-draft-batch-local.ts", "scripts/verify-ieee-overview-review-clone.ts", "scripts/verify-ieee-auto-sd4addr-review-clone.ts", "docs/evidence/ma24-independent-source-candidates-2026-10-14.json", "docs/MA24_COMPLETION_GOAL_PLAN_2026-10-11.md"],
+    "remainingTrackedHitsClassification": "These lines record candidate selection, draft screening or the later product verification. The sampled plan/history lines do not predate candidate discovery.",
+    "ignoredTmpTextLogHitsOutsideCandidateQuarantine": 0,
+    "ignoredTmpSearchFormats": ["json", "md", "txt", "log"]
+  },
+  "historicalQuestionScreenReferences": [
+    "docs/evidence/ma24-g14-draft-batch-neighbor-screen-2026-10-14.json",
+    "docs/evidence/ma24-g14-ieee-80211-overview-candidate-2026-10-14.json"
+  ],
+  "limitations": [
+    "No exact hash or distinctive-term hit is only a bounded local exposure screen, not proof of semantic independence.",
+    "Binary files, unrecorded prompts, provider-side use and pretraining exposure are outside this search.",
+    "The 2025 research-presentation evaluation-use preference is still unconfirmed; the candidate questions are not Gold."
+  ],
+  "approvedIndependentSources": 0,
+  "goldCreated": 0,
+  "modelAnswerCalls": 0,
+  "productionKnowledgeWrites": 0
+}
