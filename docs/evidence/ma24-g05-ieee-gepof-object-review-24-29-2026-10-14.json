@@ -1,0 +1,72 @@
+{
+  "schema": "ma24-g05-ieee-gepof-object-review-24-29-v1",
+  "date": "2026-10-14",
+  "ruleId": "MA24-18",
+  "sourceSha256": "030a730584498f8b98109a1bf2da22a29cc443021c63fbd1c18cf2bad2da6910",
+  "extractionArtifactSha256": "035446eaf582572f1b5cb9c893f2604be23b74aafd1813adba54ee42e47fd107",
+  "candidatePackageSha256": "282813baaa002f9dbffecf462fbea48574def5280f1a220bb491053317810e86",
+  "method": "Compared seven hash-bound candidate images with original PowerPoint renders of slides 24–29 and checked each native shape path/ID and bounds. Descriptions below capture legible diagram relationships and axes; graph points without a source data table remain approximate and are not promoted to exact measurements.",
+  "renderedOriginals": {
+    "slide24": "d670d8b937e72603927b643d2af8121eabb416b4c4d4b461d1715c2d1fabb821",
+    "slide25": "0ee4f4a636ccc2547d2649e5b9f2610d097eef3eaad12ccc1274a8637cd34570",
+    "slide26": "07c420ba17deafcefa79ed0d936477881122e9f674fceae973c2b16687a672f5",
+    "slide27": "17ed236651073b97ec624e53b9c91e600116d32f3f9baca8724761d03887e982",
+    "slide28": "4fc704378fe40e4bb3e98accb960c1cfee321faea63a34e0a1ad6bfe937458d2",
+    "slide29": "8f1122f87cec4972a0c9c7cff4f7552fd1cbbf2bdc5fb8ebd0ff5b2d6043e639"
+  },
+  "objects": [
+    {
+      "blockId": "slide-24-visual-3",
+      "proposedDecision": "evidence",
+      "evidenceText": "For the slide's 15 m POF plus four connections scenario, a graph plots sensitivity (dBm) against symbol rate (MHz) for PAM levels M. Its blue curve is lowest near the mid-300 MHz range, rises at higher symbol rates, and is compared with a horizontal 'Target by link budget analysis' line; labels include M = 32, 16, 8 and 4.",
+      "reason": "Chart title, axes, target line and M labels are legible in the original slide; no exact interpolated point or current link guarantee is inferred."
+    },
+    {
+      "blockId": "slide-25-visual-3",
+      "proposedDecision": "evidence",
+      "evidenceText": "For the slide's 50 m POF plus one connection scenario, a graph plots sensitivity (dBm) against symbol rate (MHz) for PAM levels M. A blue curve has a low point around the mid-300 MHz range and rises toward 800 MHz; it is compared with a horizontal 'Target by link budget analysis' line and labels M = 32, 16, 8 and 4.",
+      "reason": "The original slide distinguishes this scenario from slide 24 and shows the axes and target line; exact curve samples are not tabulated."
+    },
+    {
+      "blockId": "slide-26-visual-4",
+      "proposedDecision": "evidence",
+      "evidenceText": "The VDE data-encapsulation illustration shows a repeating transmit block j with CW0 through CW16 separated by pilot/header markers S1, PHS₀, S2₀, PHS₁ and S2₁. Its lower examples label pilot S1 for synchronization, payload as encapsulated Ethernet frames, PHY header for link startup/THP negotiation/decapsulation synchronization, and pilot S2 for channel estimation/equalizer adaptation/timing recovery.",
+      "reason": "Sequence labels and caption roles are visible on the original slide and candidate crop. This is the tutorial's 2014 proposal illustration, not an adopted 802.3 format."
+    },
+    {
+      "blockId": "slide-27-visual-4",
+      "proposedDecision": "evidence",
+      "evidenceText": "The proposed VDE encoding diagram takes a 6682-bit binary information stream through an MLCC demultiplexer into three labeled levels of 1664, 1994 and 3024 bits. Levels 1 and 2 pass BCH encoders labeled (2016,1664) and (2016,1994), QPSK Gray mappers and transforms; level 3 passes an RZ² Gray mapper and transform. The branches combine through further transforms and an RZ²-to-PAM mux to a labeled 2016-symbol M-PAM output.",
+      "reason": "Main branch counts, block names and output are legible on the original. The evidence records a proposed architecture and does not assert implementation or coding gain beyond the separate native slide text."
+    },
+    {
+      "blockId": "slide-28-visual-16",
+      "proposedDecision": "evidence",
+      "evidenceText": "The left non-linearity diagram models a POF channel as parallel W_o0, W_o1, W_o2 … W_oP branches fed by x(k), summed to y(k), combined with n(k) to z(k), then passed through parallel D_o0 … D_oP linearizer branches to produce v(k).",
+      "reason": "Labels and arrows in this candidate crop match the original slide's Volterra-series/non-linear-filtering illustration; no fitted coefficient values are given."
+    },
+    {
+      "blockId": "slide-28-visual-20",
+      "proposedDecision": "evidence",
+      "evidenceText": "The right simplified 'Linearized Channel' diagram shows x(k) entering W_o1(k), then combining with n′(k) to produce v(k).",
+      "reason": "The two blocks, signal labels and arrows are legible in the crop and original slide."
+    },
+    {
+      "blockId": "slide-29-visual-4",
+      "proposedDecision": "evidence",
+      "evidenceText": "The capacity-penalty chart plots Channel SNR_e (dB), about 15–40, against capacity penalty in the detector (dB), 0–15. The red DFE curve rises much faster than the blue Linearizer + DFE curve, and a vertical arrow marks 'Capacity recovery by linearization' around 35 dB SNR_e. No exact series data table is supplied.",
+      "reason": "Axes, legend and relative curve positions are clear on the original slide. The nearby native text's under-30-dB claim is separate and is not inferred from a precise chart point."
+    }
+  ],
+  "newlyReviewedObjects": 7,
+  "cumulativeReviewedObjects": 24,
+  "cumulativeProposedEvidence": 15,
+  "cumulativeProposedDecoration": 9,
+  "cumulativeProposedUnresolved": 0,
+  "remainingUnreviewedObjects": 105,
+  "productJudgmentsSaved": 0,
+  "qualityAccepted": false,
+  "goldCreated": 0,
+  "productionKnowledgeWrites": 0,
+  "remaining": "Review the remaining 105 visual objects against original slides before product review completion, then test original-tree reading and slide 5/22 citations in an isolated clone. This deck remains outside independent answer-quality Gold."
+}

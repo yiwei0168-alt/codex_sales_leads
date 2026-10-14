@@ -1365,3 +1365,5 @@ IEEE 2014 GEPOF 教程按用户确认仅进入 PPTX 读取与引用验收。使�
 第 16 页 MSGraph 图表已通过内嵌 Workbook 的标签、数值和图轴原文核对，从未解决转为本地证据提案；按原文保留 `dBo`，不推断为其他单位。[复核收据](evidence/ma24-g05-ieee-gepof-slide16-chart-resolution-2026-10-14.json)。
 
 第 11 页公式和第 12 页衰减曲线也已用高清原页复核，首批 17 个对象均形成有依据的本地提案。第 12 页不提供数据表，记录坐标与趋势时不能伪造精确采样值；另 112 个对象未核，未写入产品审核表。[复核收据](evidence/ma24-g05-ieee-gepof-formula-curve-resolution-2026-10-14.json)。
+
+第 24–29 页又核对 7 个技术图形；VDE 帧序列和编码仅标为教程方案，图表曲线只记录可读坐标及趋势。[对象收据](evidence/ma24-g05-ieee-gepof-object-review-24-29-2026-10-14.json)。累计 24/129 个对象形成本地草案，剩余 105 个继续逐页核对。
