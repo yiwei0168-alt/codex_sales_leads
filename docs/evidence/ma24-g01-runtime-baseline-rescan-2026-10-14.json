@@ -1,0 +1,58 @@
+{
+  "schema": "ma24-g01-runtime-baseline-rescan-v1",
+  "checkedAt": "2026-10-14 18:58 Asia/Shanghai",
+  "scope": "Read-only local runtime and migration baseline rescan; no deployment, migration, business task or rollback",
+  "candidateSourceCommit": "508ab9ed",
+  "web": {
+    "port": 3018,
+    "pid": 33240,
+    "processStartLocal": "2026-10-14 11:26:01",
+    "homeHttpStatus": 200,
+    "priorReleaseWorktreeCommit": "245ed9cc",
+    "priorReleaseWorktreeStillAtCommit": true,
+    "priorBuildId": "QfoyXprIZIVgSWxFSZ-1K",
+    "priorBuildManifestHttpStatus": 200,
+    "candidateSourceLoaded": false
+  },
+  "langgraph": {
+    "port": 2024,
+    "pid": 35656,
+    "processStartLocal": "2026-10-14 11:28:50",
+    "okHttpStatus": 200,
+    "previouslyCorroboratedReleaseCommit": "44e8608c",
+    "inProcessSourceHashAvailable": false
+  },
+  "mainWorker": {
+    "launcherPid": 36056,
+    "taskLoopPid": 34596,
+    "processStartLocal": "2026-10-14 11:31:55",
+    "taskLoopCommandMatchesRollbackWorktree": true,
+    "rollbackWorktreeCommit": "1d1cc962"
+  },
+  "bge": {
+    "port": 8765,
+    "pid": 22700,
+    "processStartLocal": "2026-10-14 16:59:57",
+    "healthHttpStatus": 200,
+    "healthStatus": "ready",
+    "model": "BAAI/bge-m3",
+    "revision": "5617a9f61b028005a4858fdac845db406aefb181",
+    "dimensions": 1024,
+    "qualityOrGraphIntegrationProven": false
+  },
+  "migrationReadOnlyPreflight": {
+    "command": "npm run ma24:release-preflight",
+    "prerequisiteMarkers123To126": "all nine present",
+    "targetMarkers127To134": "all seven absent",
+    "migrationFileHashes": "unchanged from docs/evidence/ma24-release-migration-preflight-2026-10-14.json",
+    "backupChecksumMatched": true,
+    "backupAgeHours": 25.9,
+    "readyForRelease": false
+  },
+  "assessment": "The local running Web/Graph/main-worker baseline remains the previously verified release line. BGE has become available, but this does not establish integration or quality. The candidate source is not deployed, migrations 127-134 are absent, and the existing backup is not fresh enough for a release action.",
+  "remaining": [
+    "Freeze an integrated source, service and migration release package after the relevant quality gates",
+    "Create a fresh verified backup immediately before migration and check queues/runtime again",
+    "Perform the authorized domain pilot and actual rollback acceptance before final release audit"
+  ]
+}
