@@ -393,6 +393,8 @@ public_fact_search 改用 OpenRouter 的 Gemini 原生 web 搜索，采用完整
 
 已确认停用远程 Qwen。RAG 与研究上下文采用本地 BGE、全文和已核实事实；旧意图保持停用，RAG 主路指针不变。BGE 停机不触发云端向量回退。文本入库、外联知识与私有记忆取消远程 embedding 依赖，保留全文检索及原权限条件；历史向量不批量删除。详见 MODESEL16_LOCAL_RETRIEVAL_2026-10-10.md，冻结集召回对照与答案验收分开记录。
 
+2026-10-14 候选：主 Agent `knowledge_search` 可在 `ENABLE_MAIN_AGENT_LOCAL_BGE_SEARCH=1` 下调用回环本地 BGE，再以受控全文查询和已核实事实检索；BGE 不可用时结果标记 `partial`，不作完整 BGE 基线。默认关闭，当前产品进程未加载，完整任务验收见 [G15 配置草案](MA24_G15_CONFIG_PREVIEW_2026-10-14.md) 的待办边界。
+
 ### MODESEL-16 验收脚本身份（2026-10-10）
 
 compare-holdout-retrieval-local 的 local-document-recall-v2 收据分别记录 frozenReferenceProfile 与 evaluatedProfile，并核对运行前后 Gold、资料、权限、事实审核和 release 状态。此为文档召回诊断，不能替代答案与精确引用判分，不能据此调优已冻结题。旧候选和判决不改写；详见 LOCAL_RETRIEVAL_RECEIPT_2026-10-10.md。

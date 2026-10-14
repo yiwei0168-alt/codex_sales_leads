@@ -64,7 +64,8 @@ const sourceFiles=[
  'src/lib/assistant/main/product.ts','src/lib/assistant/main/tools.ts',
  'src/lib/assistant/main/vectorless-tools.ts','src/lib/knowledge/vectorless-session.ts',
  'src/lib/knowledge/vectorless.ts','src/lib/rag/repository.ts',
- 'src/lib/rag/embedding-contract.ts',
+ 'src/lib/rag/embedding-contract.ts','src/lib/rag/bge-client.ts',
+ 'src/lib/knowledge/query-normalizer.ts',
 ];
 const sourceHashes=Object.fromEntries(await Promise.all(sourceFiles.map(async file=>
   [file,hash(await readFile(file,'utf8'))] as const)));
@@ -76,6 +77,8 @@ console.log(JSON.stringify({schema:'ma24-g15-config-preview-v1',readOnly:true,si
   productVersion:PRODUCT_VERSION,modelProfile:profile,
   modelFunctionsSha256:hash(JSON.stringify(modelFunctions)),arms,sourceHashes,
   comparableModelRoutes:true,toolDeltaLimitedToVectorless:true,
+  intendedLocalBgeFlagForBothArms:'ENABLE_MAIN_AGENT_LOCAL_BGE_SEARCH=1',
+  currentLocalBgeFlagEnabled:process.env.ENABLE_MAIN_AGENT_LOCAL_BGE_SEARCH==='1',
   sourceSetFrozen:false,goldFrozen:false,runtimeBuildVerified:false,transitiveCodeClosureVerified:false,
   baselineRetrievalProfileVerified:false,
   providerTariffsVerified:false,paidCallAuthorizationConfirmed:false,

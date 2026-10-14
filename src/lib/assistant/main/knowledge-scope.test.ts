@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-const mocks = vi.hoisted(() => ({ search: vi.fn().mockResolvedValue([]) }));
+const mocks = vi.hoisted(() => ({ search: vi.fn().mockResolvedValue([]),bge:vi.fn().mockResolvedValue([[0.1]]) }));
+vi.mock("@/lib/rag/bge-client",()=>({embedTextsWithBge:mocks.bge}));
 vi.mock("@/lib/rag/repository", async importOriginal => {
   const actual = await importOriginal<typeof import("@/lib/rag/repository")>();
   return { ...actual, hybridSearch: mocks.search };
@@ -8,7 +9,7 @@ vi.mock("@/lib/rag/repository", async importOriginal => {
 
 import { availableTools, productTools } from "./tools";
 import {dispatchTool} from "./executor";
-afterEach(()=>vi.unstubAllEnvs());
+afterEach(()=>{vi.unstubAllEnvs();mocks.search.mockClear();mocks.bge.mockReset();mocks.bge.mockResolvedValue([[0.1]]);});
 
 describe("knowledge question scope", () => {
   it('rejects guessed mode-forbidden tools before loading or executing them',async()=>{
@@ -31,6 +32,29 @@ describe("knowledge question scope", () => {
       userId: "owner", runId: "run", leaseToken: "lease", role: "member", knowledgeScope: ["product"],
     });
     expect(mocks.search).toHaveBeenCalledWith("owner", "Compare models", null, { collections: ["product"] }, 8);
+  });
+  it('uses local BGE with controlled lexical retrieval when the pilot baseline flag is enabled',async()=>{
+    vi.stubEnv('ENABLE_MAIN_AGENT_LOCAL_BGE_SEARCH','1');
+    const search=productTools.find(tool=>tool.id==='knowledge_search')!;
+    const output=await search.execute(search.input.parse({query:'Compare models',collections:['company']}),{
+      userId:'owner',runId:'run',leaseToken:'lease',role:'member',knowledgeScope:['product'],
+    });
+    expect(mocks.bge).toHaveBeenCalledWith(['Compare models']);
+    expect(mocks.search).toHaveBeenCalledWith('owner','Compare models',null,
+      expect.objectContaining({collections:['product'],lexicalQuery:expect.any(String)}),8,[0.1]);
+    expect(output.status).toBe('success');
+  });
+  it('marks the local BGE lane as partial when it is unavailable',async()=>{
+    vi.stubEnv('ENABLE_MAIN_AGENT_LOCAL_BGE_SEARCH','1');
+    mocks.bge.mockRejectedValueOnce(new Error('offline'));
+    const search=productTools.find(tool=>tool.id==='knowledge_search')!;
+    const output=await search.execute(search.input.parse({query:'Compare models'}),{
+      userId:'owner',runId:'run',leaseToken:'lease',role:'member',knowledgeScope:['product'],
+    });
+    expect(mocks.search).toHaveBeenCalledWith('owner','Compare models',null,
+      expect.objectContaining({collections:['product'],lexicalQuery:expect.any(String)}),8,null);
+    expect(output.status).toBe('partial');
+    expect(output.missing).toContain('Local BGE unavailable; vector lane omitted');
   });
   it("keeps vectorless Agent navigation opt-in and out of scoped knowledge-page questions",()=>{
     expect(availableTools({role:"member"}).some(tool=>tool.id==="vectorless_start")).toBe(false);

@@ -110,7 +110,7 @@
     }
   ],
   "sourceHashes": {
-    "scripts/prepare-ma24-g15-config-local.ts": "66e354d2d2be7ad59cf0617162e275b7105cdc7f913bd6855260289caa52ae0a",
+    "scripts/prepare-ma24-g15-config-local.ts": "9103e834a7d8215aaf9a57c4449b43a91197ebdac2de0d719258c68d38a4eeab",
     "src/lib/assistant/main/graph.ts": "f38e4a5d0dcd48d6f04348248c4c1e12878bae8e18c7a0bec7c98baf4d327f4d",
     "src/lib/assistant/main/model.ts": "379628977bb5d4aacbe90f3d887d0c5995987aec8eac035c97103908ec38c91e",
     "src/lib/assistant/main/model-stream.ts": "e80d4b9c39bcec9d9b46c467aa3916548163912933eab1ca01fe2645d3d62cb3",
@@ -120,15 +120,19 @@
     "src/lib/assistant/main/mode-tools.ts": "c10c5930c87a5d30d543eeb70ce4ed3c42f455135e95a2a5e11eea1069ae20ea",
     "src/lib/assistant/main/knowledge-response-policy.ts": "d23be9e48b89a7d6ac83a94360d0fbe4552b6642813886db1db2bd1e7ecf2fe7",
     "src/lib/assistant/main/product.ts": "ac5cfcee5d17a36b859038555cc57655232b7195df756d14b943235540725718",
-    "src/lib/assistant/main/tools.ts": "ec975601a0b1eb6e3edb2ca6debd5142aa1974bf199cbed8c4c2b66522a3bb53",
+    "src/lib/assistant/main/tools.ts": "ebcbeeefcac5d3c6da4eb827c7c95a270072c469c6bf8245def6149161ad71ce",
     "src/lib/assistant/main/vectorless-tools.ts": "19b32fad09211fe073fe256d1b23c9d86acad7d70899be5706036c206035b419",
     "src/lib/knowledge/vectorless-session.ts": "9e39b30329a8085bbcc45f13f83bbdb7bddb825a52e0dcff9fa8a2bf6f877303",
     "src/lib/knowledge/vectorless.ts": "34c9cdcdb6af742598c8367728123f0662974cc2d3de2a86d820b5eaf6914975",
     "src/lib/rag/repository.ts": "d84806f280f6198e1240f86d781ef6361d778afc27be1e6254f5e63a4a158b7b",
-    "src/lib/rag/embedding-contract.ts": "82b2bb49cc53dbed7bcdf5ec18e8eaad3ffe93f5c38fc8fa914f93827d0f03fd"
+    "src/lib/rag/embedding-contract.ts": "82b2bb49cc53dbed7bcdf5ec18e8eaad3ffe93f5c38fc8fa914f93827d0f03fd",
+    "src/lib/rag/bge-client.ts": "f761dc29facc4c30e10ce5885cbd658b87e284eb117546b055935249791817db",
+    "src/lib/knowledge/query-normalizer.ts": "e736b0c0b191ddd6e931fd937caa76cd32a2dc81fe062b536abac82232405379"
   },
   "comparableModelRoutes": true,
   "toolDeltaLimitedToVectorless": true,
+  "intendedLocalBgeFlagForBothArms": "ENABLE_MAIN_AGENT_LOCAL_BGE_SEARCH=1",
+  "currentLocalBgeFlagEnabled": false,
   "sourceSetFrozen": false,
   "goldFrozen": false,
   "runtimeBuildVerified": false,

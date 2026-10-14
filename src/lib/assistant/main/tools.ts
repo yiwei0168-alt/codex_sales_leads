@@ -2,6 +2,8 @@ import { z } from "zod";
 import { modeAllowsTool } from './mode-tools';
 import { tenantQuery } from "@/lib/rag/db";
 import { hybridSearch, getKnowledgeStats, authorizedKnowledgeChunkIds } from "@/lib/rag/repository";
+import {embedTextsWithBge} from "@/lib/rag/bge-client";
+import {buildControlledLexicalQuery} from "@/lib/knowledge/query-normalizer";
 import { resolveVerifiedFacts } from "@/lib/knowledge/fact-repository";
 import {factReviewDecisionSchema,factReviewListSchema} from "@/lib/knowledge/review-input";
 import {listKnowledgeLibrary,listKnowledgeRevisions,deletePrivateKnowledgeDocument} from "@/lib/knowledge/library-service";
@@ -97,9 +99,23 @@ export const productTools: ProductTool[] = [
     input: z.object({ query: z.string().min(2).max(4000), limit: z.number().int().min(1).max(20).default(8),
       collections: z.array(z.enum(["industry", "company", "product"])).min(1).max(3).optional() }).strict(),
     execute: async (i, c) => {
-      const chunks=await hybridSearch(c.userId,i.query,null,{collections:c.knowledgeScope??i.collections},i.limit);
+      const localBgeEnabled=process.env.ENABLE_MAIN_AGENT_LOCAL_BGE_SEARCH==="1";
+      let bgeEmbedding:number[]|null=null,degraded=false;
+      if(localBgeEnabled){
+        try{
+          bgeEmbedding=(await embedTextsWithBge([i.query]))[0]??null;
+          if(!bgeEmbedding)degraded=true;
+        }catch{degraded=true;}
+      }
+      const filters={collections:c.knowledgeScope??i.collections,
+        ...(localBgeEnabled?{lexicalQuery:buildControlledLexicalQuery(i.query)}:{})};
+      const chunks=localBgeEnabled
+        ?await hybridSearch(c.userId,i.query,null,filters,i.limit,bgeEmbedding)
+        :await hybridSearch(c.userId,i.query,null,filters,i.limit);
       const allowed=await authorizedKnowledgeChunkIds(c.userId,chunks.map(chunk=>chunk.id));
-      return result(chunks.filter(chunk=>allowed.has(chunk.id)),{cost:'known'});
+      return result(chunks.filter(chunk=>allowed.has(chunk.id)),degraded
+        ?{cost:'known',status:'partial',missing:['Local BGE unavailable; vector lane omitted']}
+        :{cost:'known'});
     } }),
   defineTool({ id: "knowledge_facts", description: "Read verified facts for an entity and explicit attribute keys. Missing facts stay unknown; quarantined facts are not formal evidence.",
     input: z.object({ entity: z.string().min(1).max(180), attributes: z.array(z.string().max(120)).min(1).max(30) }).strict(),

@@ -1,0 +1,34 @@
+{
+  "date": "2026-10-14",
+  "scope": "G15/MODESEL-16 main Agent knowledge_search local BGE candidate wiring",
+  "sourceBaseCommit": "7d9943de",
+  "sourceHashesSha256": {
+    "src/lib/assistant/main/tools.ts": "ebcbeeefcac5d3c6da4eb827c7c95a270072c469c6bf8245def6149161ad71ce",
+    "src/lib/assistant/main/knowledge-scope.test.ts": "bbab2f47e1e7b6f51a1752de422c950baef8ff34fa5012e395e7341fa0d012dd"
+  },
+  "behavior": {
+    "flag": "ENABLE_MAIN_AGENT_LOCAL_BGE_SEARCH=1",
+    "defaultEnabled": false,
+    "queryEmbeddingDestination": "local BGE 1024-dimension client, hybridSearch BGE argument only",
+    "remoteQwenQueryEmbedding": false,
+    "lexicalQuery": "buildControlledLexicalQuery",
+    "knowledgeScopeOverridePreserved": true,
+    "bgeUnavailable": "local full-text/verified-fact search remains; tool result status partial with explicit missing BGE lane",
+    "cloudFallback": false
+  },
+  "checks": {
+    "knowledgeScopeTests": "8/8 passed, including BGE success, BGE unavailable, scope and shadow access",
+    "typecheck": "passed",
+    "focusedLint": "passed",
+    "nextBuild": "passed, Next.js 16.3.4, 26 static pages",
+    "candidateBuildId": "Y8xU4nsdbThR8jnpL9QmN"
+  },
+  "runtime": {
+    "bgePort8765Listening": false,
+    "candidateLoadedInProductProcess": false,
+    "actualBgeVectorInMainAgentReceipt": false,
+    "newProviderCalls": 0,
+    "paidEvaluationReady": false
+  },
+  "next": "Restore the fixed local BGE service, run a scoped complete main Agent task with the flag on and verify lane/source receipts; retain G14/G15 freeze and paid authorization gates before the independent two-path evaluation"
+}
