@@ -8,7 +8,7 @@
     "aclIncluded": false
   },
   "isolation": {
-    "temporaryDatabase": "ma24_restore_5fc60484d272",
+    "temporaryDatabase": "ma24_restore_d07c823ff562",
     "migrationRange": "127-134",
     "oldWebBuildId": "QfoyXprIZIVgSWxFSZ-1K",
     "candidateWebBuildId": "xlf_7uBjoKnfS1xxCbjvB",
@@ -34,6 +34,8 @@
     "unresolvedVisualObjects": 63,
     "firstPageObjects": 20,
     "pageOpenedInChrome": true,
+    "reviewOriginalDownloadedThroughBrowser": true,
+    "reviewOriginalSha256MatchedUpload": true,
     "decisionSavedThroughPage": "unresolved",
     "databaseRevision": 1,
     "staleRevisionWriteStatus": 409,
@@ -57,7 +59,7 @@
   },
   "checks": {
     "typecheck": "passed",
-    "lint": "0 errors, 11 existing warnings",
+    "focusedLint": "0 errors",
     "mobileScreenshot": "tmp/ma24-review-page-clone-mobile.png",
     "screenshotInspected": true
   },

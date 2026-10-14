@@ -96,6 +96,11 @@ export async function verifyMa24ReviewPageClone(options: {
     await page.getByRole("button", { name: "审核抽取内容" }).click();
     await expect(page.getByRole("dialog")).toBeVisible();
     await expect(page.getByText("对象 1 / 63", { exact: true })).toBeVisible();
+    const downloadEvent = page.waitForEvent("download");
+    await page.getByRole("link", { name: "下载本次原件进行对照" }).click();
+    const downloaded = await downloadEvent;
+    assert.equal(createHash("sha256").update(await readFile(await downloaded.path())).digest("hex"),
+      createHash("sha256").update(bytes).digest("hex"), "Review original download differs from uploaded PPTX");
     const note = "Synthetic isolated page-to-database verification; content remains unresolved";
     await page.getByLabel("核对依据 / 备注").fill(note);
     await page.getByRole("button", { name: "保存本条审核" }).click();
@@ -147,7 +152,8 @@ export async function verifyMa24ReviewPageClone(options: {
     assert.equal((await options.admin.query("select count(*)::int as n from knowledge_upload_review_completion where owner_id=$1", [options.userId])).rows[0].n, 0);
     assert.equal(JSON.stringify((await options.admin.query("select * from knowledge_release_pointer_v3 order by scope_kind,owner_id")).rows), pointerBefore);
     return { uploadStatus: uploaded.status, localExtractionExitCode: 0,
-      visualObjects: review.total, pageOpened: true, savedRevision: rows.rows[0].revision,
+      visualObjects: review.total, pageOpened: true, originalDownloadMatched: true,
+      savedRevision: rows.rows[0].revision,
       databaseDecision: rows.rows[0].decision, staleWriteStatus: stale.status,
       secondPageObjects: 20, refreshRestoredNote: true, mobileNoHorizontalOverflow: true,
       changedOriginalRejected: true, releasePointerUnchanged: true,
