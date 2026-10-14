@@ -4,6 +4,17 @@
   "sourceCommitBeforeThisStage": "797a3cb3436684239853a27f013758bea4581d28",
   "command": "npm run ma24:release-preflight",
   "scope": "Local product database target shared by application and migration URLs; no database write or business task",
+  "prerequisiteMarkers123To126": {
+    "shadowCampaign": true,
+    "shadowJob": true,
+    "shadowEvent": true,
+    "shadowReview": true,
+    "blindRound": true,
+    "blindJudgment": true,
+    "blindDisclosure": true,
+    "uploadRevisionTarget": true,
+    "uploadRevisionBase": true
+  },
   "stageMarkers": {
     "extractionReview": false,
     "reviewCompletion": false,
@@ -26,7 +37,7 @@
   "backup": {
     "file": "network_copilot_2026-10-13T09-03-13Z.dump",
     "createdAt": "2026-10-13T09:05:06.766Z",
-    "ageHoursAtPreflight": 21.1,
+    "ageHoursAtLatestPreflight": 21.2,
     "bytes": 192967451,
     "sha256": "17db517922f0ee8067391544418f0c8af9f77ee5f48203b938b7559ba528d428",
     "sizeAndSha256Matched": true,
@@ -34,7 +45,7 @@
   },
   "validation": { "typecheck": "passed", "lintErrors": 0, "lintExistingWarnings": 11 },
   "limits": [
-    "Seven markers do not constitute a complete audit of every DDL object in migrations 127-134.",
+    "Nine prerequisite and seven target markers do not constitute a complete audit of every DDL object in migrations 123-134.",
     "The backup predates this preflight; a fresh backup and queue/runtime check are required immediately before migration.",
     "Migrations 127-134 were not applied to the product database.",
     "No candidate service was deployed or rollback exercised by this preflight."

@@ -1,0 +1,65 @@
+{
+  "date": "2026-10-14",
+  "scope": "Read-only local runtime, process, HTTP, container and source-delta inventory for R0",
+  "candidateCommit": "d19e9010421d9b3a93a3b881a0db3282a78aa45f",
+  "web": {
+    "port": 3018,
+    "pid": 33240,
+    "startedLocal": "2026-10-14 11:26:01",
+    "previouslyVerifiedSourceCommit": "245ed9cc",
+    "previouslyVerifiedBuildId": "QfoyXprIZIVgSWxFSZ-1K",
+    "currentHomeStatus": 200,
+    "currentBuildManifestStatus": 200,
+    "currentSessionEndpointStatus": 200,
+    "candidateChangesLoaded": false
+  },
+  "langgraph": {
+    "port": 2024,
+    "pid": 35656,
+    "startedLocal": "2026-10-14 11:28:50",
+    "previouslyVerifiedSourceCommit": "44e8608c",
+    "currentOkStatus": 200,
+    "inProcessSourceHashAvailable": false
+  },
+  "mainWorker": {
+    "launcherPid": 36056,
+    "taskLoopPid": 34596,
+    "startedLocal": "2026-10-14 11:31:55",
+    "previouslyVerifiedSourceCommit": "1d1cc962",
+    "taskLoopCommandMatchesRollbackWorktree": true
+  },
+  "otherWorkers": {
+    "mailbox": "not-running",
+    "leadWorkflow": "not-running",
+    "localMemory": "not-running",
+    "memoryGraphProjection": "not-running",
+    "knowledge": "not-running",
+    "skillShadow": "not-running"
+  },
+  "localDependencies": {
+    "postgresContainer": "up-healthy",
+    "neo4jContainer": "up-http-200",
+    "ollamaContainer": "up-http-200",
+    "bgeService": "no-listener-or-health-response-at-8765",
+    "graphiti": "no-independent-health-claim; projection worker not running"
+  },
+  "localConfigurationFile": {
+    "memoryExtractionFlagEntries": 0,
+    "memoryGraphProjectionFlagEntries": 0,
+    "workerCodeRequiresExplicitValueOne": true,
+    "runningProcessEnvironmentProven": false
+  },
+  "sourceDeltaBasis": {
+    "webBaseline": "git diff --name-only 245ed9cc HEAD -- db/migrations src scripts package.json",
+    "graphBaseline": "git diff --name-only 44e8608c HEAD -- src/lib/assistant src/lib/knowledge scripts db/migrations package.json",
+    "mainWorkerBaseline": "git diff --name-only 1d1cc962 HEAD -- src/lib/assistant src/lib/knowledge scripts db/migrations package.json",
+    "allIncludeMigrationFile126": true,
+    "allIncludeMigrationFiles127To134": true,
+    "notableCurrentCodeAreas": ["upload visual review and queue", "knowledge extraction and revision", "Skill acceptance, safety and freeze", "message source guard and model cancellation", "mailbox customer UI"]
+  },
+  "limits": [
+    "Stable PIDs and the old Web build manifest corroborate continuity with the previous release receipts, but Graph has no in-process source hash endpoint.",
+    "Container uptime and HTTP status do not prove model, graph or embedding quality.",
+    "No product database migration, candidate service deployment, business task or rollback was performed."
+  ]
+}

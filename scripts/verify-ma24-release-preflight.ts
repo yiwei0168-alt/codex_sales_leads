@@ -54,6 +54,17 @@ const client = new Client({
 });
 await client.connect();
 try {
+  const prerequisiteResult = await client.query<Record<string, boolean>>(`select
+    to_regclass('public.agent_skill_shadow_campaign') is not null as shadow_campaign,
+    to_regclass('public.agent_skill_shadow_job') is not null as shadow_job,
+    to_regclass('public.agent_skill_shadow_event') is not null as shadow_event,
+    to_regclass('public.agent_skill_shadow_review') is not null as shadow_review,
+    to_regclass('public.agent_skill_blind_round') is not null as blind_round,
+    to_regclass('public.agent_skill_blind_judgment') is not null as blind_judgment,
+    to_regclass('public.agent_skill_blind_disclosure') is not null as blind_disclosure,
+    exists(select 1 from information_schema.columns where table_schema='public' and table_name='knowledge_upload_job' and column_name='revision_target_document_id') as revision_target,
+    exists(select 1 from information_schema.columns where table_schema='public' and table_name='knowledge_upload_job' and column_name='revision_base_version_id') as revision_base`);
+  const prerequisiteMarkers = prerequisiteResult.rows[0];
   const result = await client.query<Record<string, boolean>>(`select
     to_regclass('public.knowledge_upload_extraction_review') is not null as extraction_review,
     to_regclass('public.knowledge_upload_review_completion') is not null as review_completion,
@@ -66,13 +77,14 @@ try {
   const values = Object.values(markers);
   const schemaState = values.every(Boolean) ? "stage-present" : values.every(value => !value) ? "stage-absent" : "partial-stage";
   console.log(JSON.stringify({
-    preflight: "read-only", schemaState, markers, migrationFiles: files,
+    preflight: "read-only", schemaState, prerequisiteMarkers, markers, migrationFiles: files,
     backup: { file: newest.name, bytes: archiveSize, sha256: archiveHash, createdAt: manifest.createdAt,
       ageHours: Math.round((Date.now() - Date.parse(manifest.createdAt)) / 3_600_000 * 10) / 10,
       checksumMatched: true },
     readyForRelease: false,
     remaining: ["Create a fresh backup immediately before migration", "Bind an integrated source/service release and rollback package", "Verify runtime and queues again"],
   }));
+  assert(Object.values(prerequisiteMarkers).every(Boolean), "One or more 123-126 prerequisite markers are absent");
   assert.notEqual(schemaState, "partial-stage", "Partial 127-134 stage needs manual reconciliation");
 } finally {
   await client.end();
