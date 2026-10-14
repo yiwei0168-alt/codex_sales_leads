@@ -58,10 +58,23 @@
     "semanticIndependenceProven": false,
     "cloudCalls": 0
   },
+  "sourceReuseAndInterpretationAudit": {
+    "checkedOn": "2026-10-14",
+    "onsIndicatorPage": "https://www.ons.gov.uk/explore-local-statistics/indicators/5g-coverage",
+    "onsMethodologyPage": "https://www.ons.gov.uk/peoplepopulationandcommunity/healthandsocialcare/healthandwellbeing/methodologies/explorelocalstatisticsserviceqmi",
+    "ofcomReusePage": "https://www.ofcom.org.uk/about-ofcom/our-website/copyright",
+    "onsFacts": "The indicator page explicitly offers an XLSX download, attributes its data to Ofcom, and marks site content OGL v3.0 except where otherwise stated. It warns that some data may be aggregated and differ from other published figures.",
+    "ofcomFacts": "Ofcom's public reuse page permits accurate, non-misleading reproduction of its website material with acknowledgement of Ofcom copyright and the publication title, unless another status is indicated.",
+    "workbookChecks": "Read-only recheck of Notes!B4 and data sheet 1 cells A370:C370, A381:C382 and A395:C395 matched both draft answers and the geographic-area denominator.",
+    "attributionForCandidate": "Office for National Statistics, 5G coverage, January 2026; underlying data: Ofcom, published 13 May 2026; exact workbook URL and source SHA retained.",
+    "interpretationLimit": "The second draft compares a local authority with Scotland only as values printed in this ONS workbook. It must not imply an equal geographic level, a causal explanation, household or population coverage, or equivalence to other Ofcom releases.",
+    "reuseStatus": "preliminary source-use check for short attributed factual questions; not a blanket licence determination for redistribution of the complete workbook or third-party content",
+    "sourceApproved": false
+  },
   "independenceBoundary": "Downloaded after layout-v2.0.8 was committed. This 5G geographic-area metric is distinct from the development-exposed ONS ultrafast fixed-premises metric. Do not use it to tune product extraction or retrieval; if a fix depends on this source, remove it from fresh quality holdout.",
   "sourceApproved": false,
   "goldCreated": 0,
   "productExtractionRun": false,
   "productionKnowledgeWrites": 0,
-  "next": "Audit the two source-cell drafts against historical question semantics and development exposure, check source reuse, and verify product citation only after code/config freeze; then decide whether this source enters the independent Gold set."
+  "next": "Complete development-exposure and semantic-duplicate audit, freeze candidate code/config, then verify product citation without product tuning from this source; decide whether this source enters the independent Gold set."
 }
