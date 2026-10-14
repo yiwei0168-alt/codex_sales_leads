@@ -1,0 +1,44 @@
+{
+  "schema": "ma24-g14-ieee-auto-sd4addr-review-citation-clone-v1",
+  "date": "2026-10-15",
+  "scope": "Existing isolated local ma11_replay clone; new synthetic private accounts; original public IEEE 2025 SD4ADDR PPTX; actual upload worker, review, registration and product evidence reads",
+  "sourceSha256": "786e8324f221fb8d4e854e88515020b61079acb2f50d56e535441e10efbd92c2",
+  "candidatePackageSha256": "b52f299820d2c7d15cf6e93126b564f3c1b2bb33b474a15c9d4ab139c0f01311",
+  "offlineReviewedExtractionSha256": "da914590113f692bc562b3921f2ab214eabceacf163cd30f0661018a9e13a366",
+  "currentLocalExtractionSha256": "c7763d4d1a08504d40422210a269b14e5d8b28eae1af0149ed3bc3f3ef4b06b7",
+  "cloneExtractionSha256": "7bee90e65fdaa0d86877d1726484cdfe79e8a27e9df39206c591335a32ccad83",
+  "verifier": "scripts/verify-ieee-auto-sd4addr-review-clone.ts",
+  "verifierSha256": "7f38339c0f1d156a1537959c59132936f36ca2e0a99a273f10c7831e4748a5ab",
+  "command": "node scripts/run-tsx.cjs scripts/verify-ieee-auto-sd4addr-review-clone.ts",
+  "sourceReviews": [
+    "docs/evidence/ma24-g14-ieee-auto-sd4addr-object-review-2026-10-14.json",
+    "docs/evidence/ma24-g14-ieee-auto-sd4addr-map-limited-review-2026-10-15.json"
+  ],
+  "checks": ["npm run typecheck", "npx eslint scripts/verify-ieee-auto-sd4addr-review-clone.ts", "actual worker, review, register and read on isolated clone"],
+  "observed": {
+    "currentExtractor": "layout-v2.0.9",
+    "reviewedExtractor": "layout-v2.0.6",
+    "extractionBlocks": 68,
+    "blockContentAndLocatorsEqualIgnoringExtractorVersion": true,
+    "pendingReviewBlocks": 11,
+    "savedAndReadBack": 11,
+    "reviewDecisions": {"evidence": 9, "decoration": 2, "unresolved": 0},
+    "completionReceipt": true,
+    "treeStatus": "searchable",
+    "syntheticPrivateDocumentsRegistered": 1,
+    "exactEvidenceBlocksRead": ["slide-6-text-2", "slide-7-visual-3", "slide-9-visual-6"],
+    "originalSlideCoordinatesChecked": [6, 7, 9],
+    "searchFound": true,
+    "otherAccountReadDenied": true,
+    "syntheticUsersJobsReviewsAndDocumentsAfterCleanup": 0,
+    "productionKnowledgeWrites": 0,
+    "goldCreated": 0
+  },
+  "limits": [
+    "The test used synthetic accounts and an isolated clone; its saved judgments and document were cleaned up.",
+    "The map evidence describes visible marks and explicitly leaves symbol identity and device counts unverified.",
+    "No user-visible answer model or exact answer citation was graded. Evaluation-use and source/question independence remain unconfirmed; this is not independent Gold or a production deployment."
+  ],
+  "qualityAccepted": false,
+  "productionAccepted": false
+}
