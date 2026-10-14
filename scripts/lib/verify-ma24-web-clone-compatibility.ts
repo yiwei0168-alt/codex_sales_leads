@@ -66,6 +66,7 @@ export async function verifyMa24WebCloneCompatibility(options: {
   mailboxSyncUi?: boolean;
   mailboxReaderUi?: boolean;
   attachmentUi?: boolean;
+  runHistoryUi?: boolean;
 }): Promise<unknown> {
   assert.equal(await readFile(resolve(oldRoot, ".next/BUILD_ID"), "utf8").then(value => value.trim()), oldBuild);
   const candidateBuild = (await readFile(resolve(candidateRoot, ".next/BUILD_ID"), "utf8")).trim();
@@ -152,6 +153,7 @@ export async function verifyMa24WebCloneCompatibility(options: {
       let mailboxSyncPage: unknown;
       let mailboxReaderPage: unknown;
       let attachmentPage: unknown;
+      let runHistoryPage: unknown;
       if (version.name === "candidate-web" && options.reviewUi) {
         const { verifyMa24ReviewPageClone } = await import("./verify-ma24-review-page-clone");
         try {
@@ -191,6 +193,10 @@ export async function verifyMa24WebCloneCompatibility(options: {
         const { verifyMa24AttachmentSelectorClone } = await import("./verify-ma24-attachment-selector-clone");
         attachmentPage = await verifyMa24AttachmentSelectorClone({ admin: options.admin, base, cookie, userId });
       }
+      if (version.name === "candidate-web" && options.runHistoryUi) {
+        const { verifyMa24RunHistoryClone } = await import("./verify-ma24-run-history-clone");
+        runHistoryPage = await verifyMa24RunHistoryClone({ admin: options.admin, base, cookie, userId });
+      }
       results.push({ version: version.name, buildId: version.buildId, manifestStatus: manifest.status,
         anonymousUploadStatus: denied.status, syntheticLoginStatus: login.status,
         authenticatedUploadStatus: list.status, visibleUploadJobs: listed.jobs.length,
@@ -201,7 +207,8 @@ export async function verifyMa24WebCloneCompatibility(options: {
         ...(mailboxBatchPage ? { mailboxBatchPage } : {}),
         ...(mailboxSyncPage ? { mailboxSyncPage } : {}),
         ...(mailboxReaderPage ? { mailboxReaderPage } : {}),
-        ...(attachmentPage ? { attachmentPage } : {}) });
+        ...(attachmentPage ? { attachmentPage } : {}),
+        ...(runHistoryPage ? { runHistoryPage } : {}) });
     } finally {
       await stopOwnedServer(child);
     }
