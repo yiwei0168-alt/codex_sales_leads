@@ -1,0 +1,20 @@
+{
+  "schema": "ma24-g06-tool-model-view-v1",
+  "scope": "Engineering regression for forged role blocks in untrusted tool results",
+  "change": "The main graph retains original tool messages for source/version validation and checkpoint evidence, but passes a derived tool-message view to the model. The derived view omits XML-style system/developer/assistant/user/tool role blocks, including unclosed blocks, and quarantines malformed tool JSON.",
+  "checks": {
+    "focusedVitest": "3 files, 15 tests passed: tool-model-view, main graph, existing synthetic safety suite",
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "originalEvidenceRetained": true,
+    "modelViewOmitsExposedRoleBlock": true,
+    "realModelSafetyGrade": "not run",
+    "productionServiceLoaded": false
+  },
+  "limits": [
+    "This deterministic boundary covers role-spoofing markup only; untagged source instructions and answer contamination still require model evaluation and broader controls.",
+    "The exposed synthetic fixture is a regression test, not independent G06 quality evidence.",
+    "No paid provider call, external effect, production migration, or automatic Skill enablement occurred."
+  ],
+  "next": "Run the fixed current protocol on exposed cases as regression, then evaluate newly independent safety cases and inspect actual model answers before any safety gate or Skill enablement claim."
+}

@@ -15,6 +15,7 @@ import {decisionMemoryMessage} from "./decision-memory-message";
 import { requestDurableBatchModel,ModelBatchPending } from "./model-batch";
 import {OpenRouterRequestError} from "@/providers/openrouter-batch";
 import {recordConsumedToolOutputs} from "./consumption";
+import {toolModelView} from './tool-model-view';
 import {assertCurrentKnowledgeMessages,KnowledgeSourceChangedError,SOURCE_CHANGED_REPLY} from './knowledge-message-guard';
 import {assertCurrentSkillMessages,SkillContextChangedError,SKILL_CHANGED_REPLY} from './skill-message-guard';
 import {assertCurrentMemoryMessages,withCurrentDecisionMemory,MemoryContextChangedError,MEMORY_CHANGED_REPLY} from './memory-message-guard';
@@ -53,7 +54,7 @@ export function buildMainAgentGraph(deps: MainGraphDependencies, checkpointer?: 
       if (state.steps >= 80) return { status: "partial" as RunStatus, reply: "任务已保存部分结果，达到本轮执行步数限制。可以继续或调整要求。" };
       try {
         await deps.validateEvidence?.(state.messages);
-        const response = await deps.model(state.messages, state.steps,state.decisionRevision??0);
+        const response = await deps.model(toolModelView(state.messages), state.steps,state.decisionRevision??0);
         await deps.validateEvidence?.(state.messages);
         if (response.tool_calls?.length) return { messages: [...state.messages, response], pending: response.tool_calls, steps: state.steps + 1 };
         return { messages: [...state.messages, response], steps: state.steps + 1, status: "completed" as RunStatus, reply: response.content ?? "" };
