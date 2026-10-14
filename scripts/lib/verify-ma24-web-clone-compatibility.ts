@@ -213,7 +213,9 @@ export async function verifyMa24WebCloneCompatibility(options: {
       }
       if (version.name === "candidate-web" && options.rawJsonUi) {
         const { verifyMa24RawJsonClone } = await import("./verify-ma24-raw-json-clone");
-        rawJsonPage = await verifyMa24RawJsonClone({ admin: options.admin, base, cookie, userId });
+        rawJsonPage = await verifyMa24RawJsonClone({ admin: options.admin, base, cookie, userId,
+          migrationDatabaseUrl: options.migrationDatabaseUrl,
+          applicationDatabaseUrl: options.applicationDatabaseUrl });
       }
       results.push({ version: version.name, buildId: version.buildId, manifestStatus: manifest.status,
         anonymousUploadStatus: denied.status, syntheticLoginStatus: login.status,

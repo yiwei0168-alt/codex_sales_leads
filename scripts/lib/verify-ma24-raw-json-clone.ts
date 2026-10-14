@@ -1,18 +1,27 @@
 import assert from "node:assert/strict";
 import { createHash, randomUUID } from "node:crypto";
 import { chromium, expect } from "@playwright/test";
-import type { Client } from "pg";
+import { Pool, type Client } from "pg";
+import { PostgresSaver } from "@langchain/langgraph-checkpoint-postgres";
+import { buildLeadWorkflowGraph } from "../../src/lib/leads/workflow/graph";
+import type { LeadWorkflowDependencies } from "../../src/lib/leads/workflow/graph";
+import { checkpointInvocation } from "../../src/lib/leads/workflow/pause";
+import { plan as checkpointPlan } from "../workflow-recovery-fixtures";
 
 const digest = (value: string) => createHash("sha256").update(value).digest("hex");
 
 export async function verifyMa24RawJsonClone(options: {
   admin: Client; base: string; cookie: string; userId: string;
+  migrationDatabaseUrl: string; applicationDatabaseUrl: string;
 }): Promise<unknown> {
   const collection = randomUUID();
   const documentId = randomUUID();
   const assetId = randomUUID();
   const versionId = randomUUID();
   const taskId = randomUUID();
+  const checkpointActionId = randomUUID();
+  const checkpointConversationId = randomUUID();
+  const checkpointThread = `ma24-f12-checkpoint:${checkpointActionId}`;
   const observationId = randomUUID();
   const personalMemoryId = randomUUID();
   const title = `MA24 F12 synthetic coordinates ${documentId.slice(0, 8)}`;
@@ -40,6 +49,45 @@ export async function verifyMa24RawJsonClone(options: {
     "insert into product_operation_metric(id,user_id,stage,status,metrics) values($1,$2,'development-generation','completed',$3)",
     [taskId, options.userId, JSON.stringify(taskMetrics)],
   );
+  await options.admin.query(
+    "insert into assistant_conversation(id,user_id,title) values($1,$2,'Synthetic F12 checkpoint')",
+    [checkpointConversationId, options.userId],
+  );
+  await options.admin.query(
+    "insert into assistant_action(id,user_id,conversation_id,action_type,status,payload,result) values($1,$2,$3,'lead-search','completed',$4,'{}'::jsonb)",
+    [checkpointActionId, options.userId, checkpointConversationId, JSON.stringify({
+      ...checkpointPlan, countryCode: "DE", countryName: "Germany", targetCount: 1,
+      userRequest: "Synthetic F12 saved checkpoint display",
+    })],
+  );
+  await options.admin.query(
+    "insert into lead_workflow_job(user_id,action_id,graph_thread_id,status,phase,execution_mode) values($1,$2,$3,'completed','completed','inline')",
+    [options.userId, checkpointActionId, checkpointThread],
+  );
+  const checkpointPool = new Pool({ connectionString: options.migrationDatabaseUrl });
+  try {
+    const graph = buildLeadWorkflowGraph({} as LeadWorkflowDependencies,
+      new PostgresSaver(checkpointPool, undefined, { schema: "langgraph" }));
+    await graph.updateState({ configurable: { thread_id: checkpointThread } }, {
+      userId: options.userId, actionId: checkpointActionId, workspaceId: randomUUID(),
+      graphThreadId: checkpointThread, phase: "completed",
+      plan: { ...checkpointPlan, countryCode: "DE", countryName: "Germany", targetCount: 1 },
+      candidates: [], correctedCandidates: [], assessments: [], assessmentReviews: [],
+      creditsUsed: 13, modelUsage: [], stageMetrics: [], warnings: [longValue],
+    }, "collect_evidence");
+    const seeded = await graph.getState({ configurable: { thread_id: checkpointThread } });
+    assert(seeded.next.length > 0 || seeded.values.result,
+      "Synthetic F12 checkpoint must be resumable or terminal before the UI reads it");
+  } finally { await checkpointPool.end(); }
+  const checkpointAppPool = new Pool({ connectionString: options.applicationDatabaseUrl });
+  try {
+    const graph = buildLeadWorkflowGraph({} as LeadWorkflowDependencies,
+      new PostgresSaver(checkpointAppPool, undefined, { schema: "langgraph" }));
+    const snapshot = await graph.getState({ configurable: { thread_id: checkpointThread } });
+    assert.equal(snapshot.values.userId, options.userId);
+    assert.equal(snapshot.values.actionId, checkpointActionId);
+    checkpointInvocation(snapshot, options.userId, checkpointActionId);
+  } finally { await checkpointAppPool.end(); }
   await options.admin.query(
     `insert into agent_memory_observation(id,owner_id,kind,content,source_receipt,valid_from)
      values($1,$2,'experience',$3,$4,now()-interval '1 minute')`,
@@ -187,6 +235,24 @@ export async function verifyMa24RawJsonClone(options: {
         await expect(taskDetails.getByRole("status")).toContainText("已复制原始 JSON");
         assert.deepEqual(JSON.parse(await page.evaluate(() => navigator.clipboard.readText())), task.details);
         assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
+        const checkpointResponse = await fetch(`${options.base}/api/assistant/actions/${checkpointActionId}/progress`,
+          { headers: { cookie: options.cookie } });
+        assert.equal(checkpointResponse.status, 200);
+        const checkpoint = await checkpointResponse.json() as { progress: { warnings: string[]; creditsUsed: number } };
+        assert.equal(checkpoint.progress.creditsUsed, 13);
+        assert.deepEqual(checkpoint.progress.warnings, [longValue]);
+        await page.goto(`${options.base}/tasks/${checkpointActionId}?kind=search`);
+        await expect(page.getByRole("heading", { name: "任务详情" })).toBeVisible();
+        const checkpointDetails = page.locator(".raw-json-details")
+          .filter({ hasText: "阶段成本与数量记录（已保存检查点）" });
+        await expect(checkpointDetails).not.toHaveAttribute("open");
+        await checkpointDetails.locator("summary").click();
+        await expect(checkpointDetails.locator("pre")).toContainText(longValue);
+        assert(await checkpointDetails.locator("pre")
+          .evaluate(element => element.scrollWidth <= element.clientWidth + 1));
+        await checkpointDetails.getByRole("button", { name: "复制 JSON" }).click();
+        assert.deepEqual(JSON.parse(await page.evaluate(() => navigator.clipboard.readText())), checkpoint.progress);
+        assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
         await page.goto(options.base);
         if (viewport.width < 700) await page.getByRole("button", { name: "打开导航菜单" }).click();
         await page.getByRole("button", { name: "知识库", exact: true }).click();
@@ -219,6 +285,7 @@ export async function verifyMa24RawJsonClone(options: {
       rawJsonSecondary: true, wrappedWithoutHorizontalOverflow: true, copiedExactJson: true,
       savedCompanyScorePage: true, readableSubscore: "40 / 50", policyVersion: "synthetic-f12-v1",
       savedTaskDetailPage: true, taskDetailApi: 200, taskRawJsonCopiedFromApi: true,
+      savedCheckpointPage: true, checkpointProgressApi: 200, checkpointRawJsonCopiedFromApi: true,
       memoryObservationApi: 200, memorySourceReceiptCopiedFromApi: true,
       memoryAuditTriggeredByActualSave: true, memoryAuditCopiedFromApi: true,
       viewports: ["390x760", "1366x900"], pageErrors: 0, modelCalls: 0, productionWrites: 0 };

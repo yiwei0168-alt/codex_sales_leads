@@ -115,7 +115,7 @@ try {
     applicationSource.pathname = `/${database}`;
     const sourceAcl = new Client({ connectionString: source.toString() });
     await sourceAcl.connect();
-    const copiedAcl = { tables: 0, sequences: 0, functions: 0, grants: 0 };
+    const copiedAcl = { tables: 0, sequences: 0, functions: 0, langgraphTables: 0, grants: 0 };
     const identifier = (value: string) => `"${value.replaceAll('"', '""')}"`;
     try {
       const tables = (await sourceAcl.query<{ name: string; privileges: string[] }>(`select c.relname as name,
@@ -157,6 +157,28 @@ try {
       if (schemaAllowed) {
         await clone.query("grant usage on schema public to network_copilot_app");
         copiedAcl.grants++;
+      }
+      for (const role of ["network_copilot_app", "network_copilot_local_login"]) {
+        const langgraphSchemaAllowed = (await sourceAcl.query<{ allowed: boolean }>(
+          "select has_schema_privilege($1,'langgraph','USAGE') as allowed", [role],
+        )).rows[0].allowed;
+        if (langgraphSchemaAllowed) {
+          await clone.query(`grant usage on schema langgraph to ${identifier(role)}`);
+          copiedAcl.grants++;
+        }
+        const langgraphTables = (await sourceAcl.query<{ name: string; privileges: string[] }>(`select c.relname as name,
+          array_remove(array[
+            case when has_table_privilege($1,c.oid,'SELECT') then 'SELECT' end,
+            case when has_table_privilege($1,c.oid,'INSERT') then 'INSERT' end,
+            case when has_table_privilege($1,c.oid,'UPDATE') then 'UPDATE' end,
+            case when has_table_privilege($1,c.oid,'DELETE') then 'DELETE' end],null) as privileges
+          from pg_class c join pg_namespace n on n.oid=c.relnamespace
+          where n.nspname='langgraph' and c.relkind in ('r','p') order by c.relname`, [role])).rows;
+        for (const table of langgraphTables) {
+          if (!table.privileges.length) continue;
+          await clone.query(`grant ${table.privileges.join(',')} on table langgraph.${identifier(table.name)} to ${identifier(role)}`);
+          copiedAcl.langgraphTables++;copiedAcl.grants += table.privileges.length;
+        }
       }
     } finally {
       await sourceAcl.end();

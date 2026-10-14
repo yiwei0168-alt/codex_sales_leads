@@ -1,0 +1,29 @@
+{
+  "schema": "ma24-g13-f12-checkpoint-raw-json-page-clone-v1",
+  "date": "2026-10-15",
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-backup-restore.ts --web-compat --raw-json-ui",
+  "candidateBuildId": "-gufJcQePegDiD9FmcJAz",
+  "sourceArchiveSha256": "17db517922f0ee8067391544418f0c8af9f77ee5f48203b938b7559ba528d428",
+  "environment": "Disposable restored local database with migrations 127-134, synthetic private account, production-mode candidate Next Web and existing old Web compatibility check; clone removed by verifier",
+  "checkpoint": {
+    "record": "Synthetic completed lead-search action, workflow job and actual LangGraph checkpoint written only to the disposable clone",
+    "directApplicationRoleRead": "A separate pool using the clone's original application login role read the checkpoint and passed ownership/invocation validation",
+    "progressApi": "Authenticated GET /api/assistant/actions/[id]/progress returned HTTP 200 with creditsUsed 13 and a 1620-character synthetic warning field",
+    "page": "Authenticated /tasks/[id]?kind=search rendered TaskRunControls with a default-collapsed saved-checkpoint JSON disclosure",
+    "viewports": ["390x760", "1366x900"],
+    "copiedJsonMatchedCompleteApiProgress": true,
+    "rawAndPageHorizontalOverflow": false,
+    "pageErrors": 0
+  },
+  "cloneAclDiagnosis": {
+    "initialFailure": "Checkpoint API returned 503 on the restored clone although the admin-written checkpoint was present and resumable.",
+    "cause": "The restore harness copied public application-role grants but omitted source-equivalent langgraph grants for network_copilot_app and the raw network_copilot_local_login role used by PostgresSaver.",
+    "sourceReadOnlyCheck": "Both roles' source-schema/table privileges were queried without changing production.",
+    "harnessFix": "Copy each role's actual source langgraph schema/table privileges to the disposable clone before running the candidate Web; no production role was granted new access.",
+    "finalCloneAcl": "Four langgraph tables for each role; final candidate page and API passed."
+  },
+  "regression": "The same run retained exact JSON copy for task generation detail, knowledge-tree coordinates, company score, learning-memory source and saved-memory audit on both viewports; old Web authenticated against the migrated disposable clone.",
+  "checks": ["npx tsc --noEmit", "npx eslint scripts/lib/verify-ma24-raw-json-clone.ts scripts/lib/verify-ma24-web-clone-compatibility.ts scripts/verify-ma24-backup-restore.ts", "git diff --check"],
+  "effects": { "modelCalls": 0, "productionWrites": 0, "productionSwitch": false },
+  "limits": "This is a synthetic saved checkpoint in a disposable clone. It does not establish real task cost accuracy, other search task states, production load or an actual production rollback."
+}
