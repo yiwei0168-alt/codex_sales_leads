@@ -37,4 +37,6 @@ R1 的 PPTX 内容质量抽样已核对公开开发原件的 6/63 个待审核�
 
 [多作业 supervisor 克隆验收](evidence/ma24-knowledge-multi-job-supervisor-2026-10-13.json)新增第二个合成账号：目标作业在视觉处理绑定前被强杀、租约尚未过期时，另一账号的资料仍能完成抽取并准备视觉候选；目标租约/尝试数及同账号第三份未处理作业不变。目标过期后可恢复，OCR 检查点复用、旧租约提交拒绝、两账号均未发布资料、v3 指针不变。该隔离测试通过，仍不等于三格式所有修订/失败矩阵或生产部署验收。
 
+2026-10-14 R4 并行准备：将[四份官方来源候选](evidence/ma24-independent-source-candidates-2026-10-14.json)下载到 Git 忽略的本地隔离目录，包括 PPTX、XLSX、12 页 PDF 和 167 页长 PDF；已核文件格式、大小和 SHA-256，既有源码/证据登记中未找到相同哈希。ITU DataHub XLSX 与旧开发材料主题相近，仍需逐题排除重叠；来源尚未冻结、未生成 Gold 或进入检索对照。检查时被网页工具展开正文的另一份 ETSI PDF 已明确排除独立集。
+
 进程命令行核对到主任务 worker 启动器位于 `tmp/g02-rollback-release`，该工作树为 `1d1cc962`。Web 正式端口返回 `245ed9cc` 独立工作树的唯一 build manifest（200），旧构建与根目录构建 ID 均为 404；Graph 的 PID 与 `44e8608c` 发布标记吻合。该[运行版本证据](evidence/ma24-r0-runtime-provenance-2026-10-13.json)比上次收据更直接，但 Graph 没有可返回进程内哈希的端点。[邮箱收据审计](evidence/ma24-mail-uncertain-receipts-2026-10-13.json)显示 169 条同属一个账号，均有失败外发审计及 unknown 付费预留、请求指纹，但没有服务商请求 ID/哈希。原请求是否发生费用无法由本地记录判断，继续保持不自动重试。
