@@ -1,0 +1,54 @@
+{
+  "schema": "ma24-g14-nist-tn2363-review-citation-clone-v1",
+  "date": "2026-10-15",
+  "stage": "G05/G14 isolated product upload, visual review, registration and source-coordinate read",
+  "sourceReceipt": "docs/evidence/ma24-g14-nist-tn2363-long-pdf-candidate-2026-10-15.json",
+  "sourceSha256": "65e333dac9975f4ca9a952a966fb212ce7ccb161ec60b48bf45c3dfd7adbd6a9",
+  "offlineExtractionArtifactSha256": "ce902deb2b449b99df06c560b5a9f728065cb0ea65d343a03898bd17509afd73",
+  "visualPackageReviewJsonSha256": "7e6414d386a75acbf066c4b3c58e330f62e1c5ec086bc8f23029cf5c5dc128f2",
+  "visualDecisionDraftSha256": "4f01b72aa7d222b34f3b4082dee3520479a9d2db0c805e187675b648c38d360b",
+  "productExtraction": {
+    "extractorVersion": "layout-v2.0.9",
+    "firstAttempt": "Stopped before review because uploaded artifact byte SHA-256 differed from the offline artifact SHA-256; synthetic job and account cleanup completed.",
+    "differenceExplainedBy": "The extraction artifact contains a job-specific storage key; after removing only that key, the offline and uploaded document objects were deeply equal, including source SHA-256 and all blocks.",
+    "finalRunArtifactSha256": "9474269f6c5a9e1de5b2d24cce15bf8ac74262e48c22c297fc899f14f557ba00",
+    "eachDecisionRevisionTextAndTypeReadBack": true,
+    "offlineAndUploadedBlocksDeepEqual": true,
+    "initialPendingVisualPages": 11,
+    "prematureReviewCompletionRejected": true,
+    "visualCandidateImagesRead": 11,
+    "decisionsSavedAndReadBack": 11,
+    "evidenceDecisions": 8,
+    "decorationDecisions": 3,
+    "unresolvedDecisions": 0,
+    "reviewReadyForRegistration": true,
+    "registeredInIsolatedClone": true
+  },
+  "sourceCoordinateChecks": {
+    "readEvidenceBlockIds": [
+      "page-18-block-4",
+      "page-28-block-4",
+      "page-28-block-6",
+      "page-20-visual-review",
+      "page-33-visual-review"
+    ],
+    "blockIdsAndOriginalPageCoordinatesMatched": true,
+    "decorativeVisualBlocksAbsentFromEvidenceTree": true,
+    "otherAccountReadDeniedForEachTarget": true,
+    "releasePointersUnchanged": true
+  },
+  "isolation": {
+    "database": "ma11_replay clone, not the production database",
+    "syntheticAccountsJobsReviewsAndDocumentsCleaned": true,
+    "modelCalls": 0,
+    "productionKnowledgeWrites": 0,
+    "productionDeployment": false
+  },
+  "acceptanceBoundary": {
+    "productVisibleModelAnswerAndCitationChecked": false,
+    "sourceFamilyAndFullSetContaminationAuditComplete": false,
+    "independentGoldApproved": false,
+    "longDocumentQualityAccepted": false,
+    "note": "The clone proves exact extracted blocks, a source-checked visual review path, private registration and source-coordinate reads. It does not prove independent answer quality or production behavior."
+  }
+}
