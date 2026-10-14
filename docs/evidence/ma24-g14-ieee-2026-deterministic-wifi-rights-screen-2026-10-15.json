@@ -1,0 +1,38 @@
+{
+  "schema": "ma24-g14-pptx-source-rights-screen-v1",
+  "date": "2026-10-15",
+  "status": "quarantined for source review; not approved for independent Gold",
+  "source": {
+    "publisherIndex": "IEEE 802.11 WNG Standing Committee",
+    "indexUrl": "https://www.ieee802.org/11/Reports/wng_update.htm",
+    "contributionUrl": "https://mentor.ieee.org/802.11/dcn/26/11-26-1147-01-0wng-toward-deterministic-wi-fi-requirements-evolution.pptx",
+    "title": "Toward Deterministic Wi-Fi: Requirements & Evolution",
+    "authors": "Kazi Huq, Alfred Lin (Sony Corporation), et al.",
+    "contributionDate": "2026-07-14",
+    "localOriginal": "tmp/ma24-independent-quarantine/ieee-2026-deterministic-wifi.pptx",
+    "sha256": "fd792f4d04c6f0a5566e3e5335578739cda484b5cce7ceee1b75720a561a7eae",
+    "slideCount": 13
+  },
+  "sourceCheck": {
+    "method": "Downloaded from the direct PPTX link in the IEEE WNG July 2026 index; inspected all slide XML text and rendered original slides 8 and 11 using PowerPoint for visual comparison",
+    "slide8": "The authors' table associates EDCA with possible contention latency variation, TWT with no guarantee of deterministic access from scheduled wake-up, RTWT with variable timing boundaries, trigger-based access with availability of scheduled opportunities, and multi-AP coordination with possible timing overhead.",
+    "slide11": "The authors explicitly propose a two-step evolution: transitional slot-based operation retaining CSMA/CA for legacy and best-effort traffic, then green-field fully scheduled operation without CSMA/CA dependency.",
+    "statusBoundary": "These are authors' July 2026 discussion and proposal, not an adopted IEEE standard or measured performance result."
+  },
+  "localExactHashScreen": {
+    "matchingAssets": 0,
+    "matchingUploadJobs": 0,
+    "matchingHistoricalGoldRows": 0,
+    "readOnly": true,
+    "semanticIndependenceProven": false
+  },
+  "rightsScreen": {
+    "publicReadAccess": "https://www.ieee802.org/11/help.html",
+    "relatedIEEEWorkingGroupContributionNotice": "https://1.ieee802.org/documents/",
+    "finding": "Public read access does not establish permission to reuse a contribution for this product's independent evaluation; the referenced IEEE 802.1 notice says other uses require the contribution copyright owners' permission. Applicability and permission for this 802.11 file remain unresolved.",
+    "decision": "Hold this PPTX out of Gold and product ingestion pending a suitable use basis; continue seeking a source with clear evaluation/reuse terms. Do not infer that the deck is prohibited from all internal reading."
+  },
+  "goldCreated": 0,
+  "modelAnswerCalls": 0,
+  "productionKnowledgeWrites": 0
+}
