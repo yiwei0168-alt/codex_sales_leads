@@ -1,10 +1,11 @@
 import type { ModelMessage } from "./contracts";
 
-const roleBlock = /<\s*(system|developer|assistant|user|tool)\s*>[\s\S]*?(?:<\s*\/\s*\1\s*>|$)/gi;
+const roleBlock = /<\s*(system|developer|assistant|user|tool)(?:\s+[^<>]*?)?\s*>[\s\S]*?(?:<\s*\/\s*\1\s*>|$)/gi;
+const chatMlBlock = /(?:<\|im_start\|>|\[im_start\])\s*(?:system|developer|assistant|user|tool)\b[\s\S]*?(?:<\|im_end\|>|\[im_end\]|(?=<\|im_start\|>|\[im_start\])|$)/gi;
 const omitted = "[Untrusted source role block omitted from model context]";
 
 function redact(value: unknown): unknown {
-  if (typeof value === "string") return value.replace(roleBlock, omitted);
+  if (typeof value === "string") return value.replace(roleBlock, omitted).replace(chatMlBlock, omitted);
   if (Array.isArray(value)) return value.map(redact);
   if (value && typeof value === "object") return Object.fromEntries(
     Object.entries(value).map(([key, nested]) => [key, redact(nested)]));

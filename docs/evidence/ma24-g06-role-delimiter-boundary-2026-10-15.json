@@ -1,0 +1,26 @@
+{
+  "schema": "ma24-g06-role-delimiter-boundary-v1",
+  "date": "2026-10-15",
+  "scope": "Main graph model view of untrusted tool results; deterministic role-spoofing syntax only",
+  "change": "The existing model-view redactor now omits XML role blocks with tag attributes and both <|im_start|> and [im_start] ChatML-style role blocks. The graph still retains unmodified tool messages for source/version validation and checkpoint evidence.",
+  "checks": {
+    "focusedVitest": "3 files, 20 tests passed: model view, main graph and Skill safety suite",
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "diffCheck": "passed",
+    "frozenWebPointerCheck": "expected rejection: changed tool-model-view source and test were detected; live Web still served the old build asset and returned 404 for the frozen candidate asset",
+    "syntheticRolePayloadOmittedFromModelView": true,
+    "adjacentFactualTextPreserved": true,
+    "originalToolReceiptRetained": true
+  },
+  "limits": [
+    "This covers explicit role delimiters, not arbitrary untagged instructions or every possible encoding of a delimiter.",
+    "No model answer, independent safety case or production-loaded graph was checked in this stage.",
+    "The current frozen Web snapshot predates this source change and must be rebuilt and reverified before any candidate release."
+  ],
+  "realModelSafetyAccepted": false,
+  "independentSafetyAccepted": false,
+  "productionLoaded": false,
+  "modelCalls": 0,
+  "externalEffects": 0
+}
