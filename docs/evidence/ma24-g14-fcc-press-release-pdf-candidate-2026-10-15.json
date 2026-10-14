@@ -1,0 +1,55 @@
+{
+  "schema": "ma24-g14-fcc-press-release-pdf-candidate-v1",
+  "date": "2026-10-15",
+  "publisher": "US Federal Communications Commission",
+  "title": "FCC Broadband Report Shows Rapid Expansion of High-Speed Internet",
+  "publicationDate": "2026-08-14",
+  "sourceUrl": "https://docs.fcc.gov/public/attachments/DOC-424190A1.pdf",
+  "localQuarantinePath": "tmp/ma24-independent-candidates/fcc-doc-424190.pdf",
+  "bytes": 213110,
+  "sha256": "cc6b2100b895bc51a34bedd6873731d800a67a372a7b73b94f7095b98d902f0a",
+  "format": "PDF 1.7, two unencrypted US Letter pages",
+  "readOnlySourceCheck": {
+    "method": "pypdf text extraction, Poppler page render, visual inspection of both rendered pages",
+    "pageCount": 2,
+    "targetPage": 1,
+    "targetTextMatchesRenderedPage": true,
+    "scope": "The two percentages below are claims printed in the FCC press release for June 2025, not independently verified current service availability. The draft asks what the press release says and distinguishes all fixed services from fixed terrestrial services."
+  },
+  "localExposureScreen": {
+    "command": "node scripts/run-tsx.cjs scripts/audit-g14-candidate-hash-local.ts cc6b2100b895bc51a34bedd6873731d800a67a372a7b73b94f7095b98d902f0a",
+    "matchingAssets": 0,
+    "matchingUploadJobs": 0,
+    "matchingHistoricalGoldRows": 0,
+    "limitation": "Exact hash absence does not prove semantic or question-level independence."
+  },
+  "draftOverlapScreen": {
+    "command": "node scripts/run-tsx.cjs scripts/screen-ma24-g14-question-overlap-local.ts docs/evidence/ma24-g14-fcc-press-release-pdf-candidate-2026-10-15.json tmp/ma24-independent-candidates/fcc-question-overlap-screen.json",
+    "localOutput": "tmp/ma24-independent-candidates/fcc-question-overlap-screen.json",
+    "outputSha256": "9759ef2e8f8353a1711bba448e556149dd5f422a48ea2ee3272c028263406c70",
+    "screenedReceiptSha256": "0c4624eab8032b195e76f23a8536525553162a01d2cf0d2bfdc7aad962459e94",
+    "receiptHashScope": "Hash identifies this receipt before the screening result was appended; source SHA, draft ID, question and answer were unchanged by that append.",
+    "historicalRows": 350,
+    "uniqueHistoricalQueries": 300,
+    "maximumCosine": 0.491678,
+    "manualTopTen": "The nearest ten old questions concern counts of physical network ports on named products or the shared combo port, not FCC broadband availability, three service choices, or the fixed-versus-fixed-terrestrial denominator.",
+    "boundedDevelopmentSearch": "No title, document ID, or target sentence hit in tracked docs/src/scripts outside this receipt.",
+    "semanticIndependenceProven": false,
+    "cloudCalls": 0
+  },
+  "draftQuestions": [
+    {
+      "id": "fcc-2026-fixed-service-option-scope",
+      "status": "draft only; not Gold",
+      "question": "按 FCC 2026 年 8 月 14 日新闻稿，截至 2025 年 6 月，多少美国人可选择至少三种达到 100/20 Mbps 的固定服务？其中至少三种固定地面服务的比例是多少？请区分两种口径并引用原页。",
+      "draftAnswer": "新闻稿称，77% 的美国人可获得至少三种达到 100/20 Mbps 的固定服务；按固定地面服务口径，比例为 43.4%。两项均为截至 2025 年 6 月的新闻稿数据。",
+      "sourceCoordinates": ["PDF page 1, bullet headed Americans Have More Competitive Options Than Ever Before"]
+    }
+  ],
+  "sourceUseBoundary": "Use only for internal, attributed question and short factual answer screening. Do not redistribute the PDF or infer that every third-party item on the FCC site has the same reuse terms.",
+  "approvedIndependentSource": false,
+  "goldCreated": 0,
+  "productUploadOrModelAnswerRun": false,
+  "productionKnowledgeWrites": 0,
+  "next": "Finish broader development exposure and source-use review, then decide whether to freeze as an independent PDF question before any product run."
+}

@@ -40,7 +40,8 @@ const report={schema:'ma24-g14-question-neighbor-screen-v1',sourceSha256:candida
  historicalBlindSha256:hash(blindRaw),oldRows:old.length,uniqueOldQueries:unique.length,
  model:'BAAI/bge-m3',revision:'5617a9f61b028005a4858fdac845db406aefb181',dimensions:1024,
  questions:similarity,semanticIndependenceProven:false,qualityAccepted:false,cloudCalls:0};
-const output=path.resolve('tmp/ma24-independent-quarantine/ieee-80211-overview-overlap-screen.json');
+const output=path.resolve(process.argv[3]??'tmp/ma24-independent-quarantine/ieee-80211-overview-overlap-screen.json');
+if(!output.startsWith(path.resolve('tmp')+path.sep)||!output.endsWith('.json'))throw new Error('A temporary output JSON path is required');
 await writeFile(output,JSON.stringify(report,null,2),{flag:'wx'});
 console.log(JSON.stringify({output,questionCount:questions.length,oldRows:old.length,uniqueOldQueries:unique.length,
  topScores:similarity.map(row=>({id:row.id,score:row.neighbors[0]?.score,query:row.neighbors[0]?.query}))}));
