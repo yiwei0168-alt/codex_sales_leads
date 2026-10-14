@@ -1,0 +1,96 @@
+{
+  "schema": "ma24-g14-nist-tn2363-long-pdf-candidate-v1",
+  "date": "2026-10-15",
+  "stage": "R4 isolated long-document candidate and cross-section question draft only",
+  "publisher": "National Institute of Standards and Technology",
+  "title": "Software-based 5G Industrial Wireless Private Networks: Challenges and Opportunities for Mission-Critical and Time-Sensitive Applications",
+  "reportId": "NIST TN 2363",
+  "officialLandingPage": "https://www.nist.gov/publications/software-based-5g-industrial-wireless-private-networks-challenges-and-opportunities",
+  "sourceUrl": "https://tsapps.nist.gov/publication/get_pdf.cfm?pub_id=960946",
+  "localQuarantinePath": "tmp/ma24-independent-quarantine/nist-tn-2363-industrial-5g.pdf",
+  "bytes": 2751456,
+  "sha256": "65e333dac9975f4ca9a952a966fb212ce7ccb161ec60b48bf45c3dfd7adbd6a9",
+  "format": "Unencrypted PDF 2.0, 44 physical pages with multiple technical chapters",
+  "sourceCheck": {
+    "downloadedDirectlyFromOfficialNistUrl": true,
+    "pdfMetadataTitleAndNistAuthorsPresent": true,
+    "tocPresent": true,
+    "conversionStatus": "Docling unavailable; PyMuPDF text extraction and target-page rendering succeeded; no DoclingDocument conversion",
+    "pagesRenderedAndVisuallyChecked": [1, 2, 3, 7, 9, 10, 18, 20, 21, 27, 28, 33, 35, 37],
+    "physicalToPrintedPages": "physical 18 and 28 correspond to printed pages 13 and 23",
+    "section3_3": "The report names uncertain processing delays, dynamic channel conditions and lack of device instrumentation as barriers to accurate per-hop latency estimates, and calls for comprehensive end-to-end and RAN measurement.",
+    "section5_2": "The report says software-based 5G-TSN adds software-stack overhead that increases packet-delay uncertainty and latency; schedule design must account for those effects, and real-world deployment validation is needed.",
+    "scopeGuard": "This is the report's assessment, not a claim that every private 5G deployment fails a timing requirement."
+  },
+  "sourceUseBoundary": {
+    "officialPolicyUrl": "https://www.nist.gov/open/copyright-fair-use-and-licensing-statements-srd-data-software-and-technical-series-publications",
+    "assessment": "NIST's technical-series policy gives general reprint rights for NIST-authored work but cautions that some publications may contain third-party material. This draft uses a short attributed answer from the report's prose; no figures or full PDF are redistributed.",
+    "fullSourceReuseApproved": false
+  },
+  "localExposureScreen": {
+    "command": "node scripts/run-tsx.cjs scripts/audit-g14-candidate-hash-local.ts 65e333dac9975f4ca9a952a966fb212ce7ccb161ec60b48bf45c3dfd7adbd6a9",
+    "matchingAssets": 0,
+    "matchingUploadJobs": 0,
+    "matchingHistoricalGoldRows": 0,
+    "boundedTitleReportIdAndDownloadIdHitsBeforeReceipt": 0,
+    "semanticIndependenceProven": false
+  },
+  "offlineProductExtraction": {
+    "command": "python scripts/extract-uploaded-knowledge.py tmp/ma24-independent-quarantine/nist-tn-2363-industrial-5g.pdf tmp/ma24-independent-quarantine/nist-tn-2363.layout-v2.0.9.extraction.json",
+    "extractorVersion": "layout-v2.0.9",
+    "artifactSha256": "ce902deb2b449b99df06c560b5a9f728065cb0ea65d343a03898bd17509afd73",
+    "sourceSha256MatchesOriginal": true,
+    "totalBlocks": 434,
+    "pageStatuses": {"success": 33, "blank": 0, "pending-ocr": 11, "failed": 0},
+    "pendingPhysicalPages": [1, 2, 7, 9, 10, 20, 21, 27, 33, 35, 37],
+    "targetEvidenceBlocks": ["page-18-block-4", "page-28-block-4", "page-28-block-6"],
+    "targetBlocksHaveOriginalPageAndBoundingBox": true,
+    "treeOrRetrievalReady": false,
+    "modelCalls": 0,
+    "databaseWrites": 0
+  },
+  "offlineVisualTriage": {
+    "scope": "All 11 pending physical pages rendered from the original and compared with the extracted block list; proposal only, no product verdict saved",
+    "decorativeOnlyPages": [1, 2, 9],
+    "substantiveFigureOrTablePages": [7, 10, 20, 21, 27, 33, 35, 37],
+    "observations": {
+      "1-2": "Cover seals/logos; title and publication text is present in success blocks.",
+      "7": "Figure 1 service-category/use-case diagram; caption alone does not encode diagram labels.",
+      "9": "Body text and footnote are present; the visible page rule is decorative.",
+      "10": "Figure 2 IMT-2030 usage-scenario diagram; caption alone does not encode category geometry and labels.",
+      "20": "Table 1 latency summary; row-to-column numeric relationships require visual transcription review.",
+      "21": "Figure 3 software-based RAN architecture with delay labels; diagram structure requires review.",
+      "27": "Figure 4 5G-TSN architecture; connection and entity relationships require review.",
+      "33": "Figure 5 aggressor taxonomy and Figure 6 welding-interference measurement table; taxonomy and row/column relationships require review.",
+      "35": "Figure 7 PER-SNR multi-series curve; caption does not provide precise plotted values.",
+      "37": "Figure 8 assessment-stage flowchart; stage actions and sequence require review."
+    },
+    "substantiveObjectsResolved": 0,
+    "productReviewDecisionsSaved": 0,
+    "registrationReady": false
+  },
+  "oldQuestionNeighborScreen": {
+    "inputReceiptSha256BeforeThisAmendment": "d7208395a92c1a34d277721b91707d0ff2f28670fa1ac21b3d4b06948ff9dfc2",
+    "localOutputPath": "tmp/ma24-independent-quarantine/nist-tn2363-question-neighbors.json",
+    "outputSha256": "5a4b4de63b0669aae84c75bb640ecbfe7563c296810711f0f5822df123600fe6",
+    "oldRows": 350,
+    "uniqueOldQueries": 300,
+    "topCosine": 0.522632,
+    "topNeighbor": "P5 适合什么部署场景？请说明依据",
+    "finding": "No same TSN delay/validation question in the displayed top ten; this bounded embedding screen is not a full semantic independence audit."
+  },
+  "draftQuestions": [
+    {
+      "id": "nist-tn2363-delay-profile-and-5g-tsn-validation",
+      "status": "draft only; not Gold",
+      "question": "按 NIST TN 2363 第 3.3 节和第 5.2 节，为什么仅配置 5G-TSN 调度计划不足以证明软件化私有 5G 能满足工业时延要求？请列出报告指出的三项逐跳时延估计困难、软件实现对传输的影响，以及所需的验证方式，并分别引用原页。",
+      "draftAnswer": "第 3.3 节列出处理延迟不确定、信道条件动态变化和缺少设备仪表化三项困难，要求用全面测试和测量评估端到端性能及 RAN 时延。第 5.2 节指出软件实现增加软件栈开销，可能提高数据包传输时延及不确定性，TSN 调度设计必须计入这些影响；报告还强调需要在真实部署中验证和测试。",
+      "sourceCoordinates": ["physical PDF page 18 / printed page 13, section 3.3", "physical PDF page 28 / printed page 23, section 5.2"]
+    }
+  ],
+  "approvedIndependentSource": false,
+  "goldCreated": 0,
+  "productUploadOrModelAnswerRun": false,
+  "productionKnowledgeWrites": 0,
+  "next": "Review and transcribe eight substantive figure/table pages with source-bound provenance, complete cross-candidate source-family/set audit, then decide eligibility before any Gold freeze or product-visible answer run."
+}
