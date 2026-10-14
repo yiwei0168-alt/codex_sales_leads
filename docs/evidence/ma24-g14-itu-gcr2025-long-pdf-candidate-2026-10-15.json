@@ -1,0 +1,66 @@
+{
+  "schema": "ma24-g14-itu-gcr2025-long-pdf-candidate-v1",
+  "date": "2026-10-15",
+  "stage": "R4 isolated source and question draft only",
+  "publisher": "International Telecommunication Union",
+  "title": "Global Connectivity Report 2025",
+  "officialLandingPage": "https://www.itu.int/itu-d/reports/statistics/global-connectivity-report-2025/",
+  "sourceUrl": "https://www.itu.int/dms_pub/itu-d/opb/ind/D-IND-ICT_MDD.GCR-2025-4-PDF-E.pdf",
+  "localQuarantinePath": "tmp/ma24-independent-quarantine/itu-global-connectivity-report-2025.pdf",
+  "bytes": 37223722,
+  "sha256": "4489081fe8709ea1bcea2b724ff5a92c3979195432a8da73c20a8c8e0570ccb8",
+  "format": "Unencrypted PDF 1.6, 129 physical pages",
+  "readOnlySourceCheck": {
+    "downloadedDirectlyFromOfficialPdfUrl": true,
+    "pdfMetadataTitle": "Global Connectivity Report 2025",
+    "pdfMetadataAuthor": "ITU",
+    "conversionStatus": "Docling unavailable; PyMuPDF and pypdf text extraction succeeded; no DoclingDocument conversion",
+    "targetPagesRenderedAndVisuallyChecked": [3, 70, 71],
+    "physicalToPrintedPages": "physical 70-71 correspond to printed pages 59-60",
+    "printedPage59": "The report states 204 submarine cable cuts recorded globally in 2024, about four per week.",
+    "printedPage60": "The report lists permitting in EEZs and territorial waters, customs delays for repair vessels and equipment, cabotage restrictions, and limited regional repair capacity as factors delaying repairs.",
+    "sourceClaimBoundary": "The candidate asks what the dated ITU report states; its underlying cut count is attributed in the report to SubTel Forum and is not independently remeasured here."
+  },
+  "localExposureScreen": {
+    "command": "node scripts/run-tsx.cjs scripts/audit-g14-candidate-hash-local.ts 4489081fe8709ea1bcea2b724ff5a92c3979195432a8da73c20a8c8e0570ccb8",
+    "matchingAssets": 0,
+    "matchingUploadJobs": 0,
+    "matchingHistoricalGoldRows": 0,
+    "boundedTitleAndIdSearchHitsBeforeThisReceipt": 0,
+    "independenceProven": false
+  },
+  "followUpExposureScreen": {
+    "textSearchScope": "Tracked docs/src/scripts/experiments plus local tmp JSON/Markdown/text/log/TypeScript, excluding this candidate receipt, node_modules and .next; terms included title, document ID, 204 cable cuts, submarine cable cuts and cabotage laws.",
+    "textSearchResult": "Only the newly generated candidate question-neighbor output matched; no prior local text hit found.",
+    "gitPickaxeResult": "No title or '204 cable cuts' match in the searched Git history for docs/src/scripts/experiments.",
+    "limitations": "Bounded text and exact-hash absence do not cover unrecorded prompts, binary content, semantic paraphrases or model pretraining."
+  },
+  "oldQuestionScreen": {
+    "command": "node scripts/run-tsx.cjs scripts/screen-ma24-g14-question-overlap-local.ts docs/evidence/ma24-g14-itu-gcr2025-long-pdf-candidate-2026-10-15.json tmp/ma24-independent-quarantine/itu-gcr2025-question-neighbors.json",
+    "outputSha256": "5561fee35dc88456ca15bbe7f853b2844bbabcbe80fde1ff3c0cea8e31d14e78",
+    "screenedReceiptSha256BeforeFollowUpAppend": "5c2253788b693c6323be86291d30ee88ade390cd26c9a714ab78dbfc7e8ad365",
+    "screenBindingScope": "Source SHA, draft ID, question and answer are unchanged by this follow-up append.",
+    "historicalRows": 350,
+    "uniqueHistoricalQueries": 300,
+    "maximumCosine": 0.466337,
+    "manualTopTen": "Nine neighbors ask physical port counts on named devices and one asks to open revised device material; none asks submarine cable cuts or repair delays.",
+    "semanticIndependenceProven": false,
+    "cloudCalls": 0
+  },
+  "draftQuestions": [
+    {
+      "id": "itu-gcr2025-submarine-cable-cuts-and-repair-delay",
+      "status": "draft only; not Gold",
+      "question": "按 ITU《Global Connectivity Report 2025》第 59–60 页，2024 年全球记录了多少次海底电缆断裂？报告列出哪些制度或作业环节会拖延维修？请至少指出三类，并分别引用原页。",
+      "draftAnswer": "报告称 2024 年全球记录 204 次海底电缆断裂。维修延误因素包括专属经济区和领海的许可程序、专用维修船舶和设备的海关清关、限制外国船舶进入本国水域的沿岸运输法规，以及偏远或岛屿地区有限的区域维修能力。",
+      "sourceCoordinates": ["physical PDF page 70 / printed page 59, right column", "physical PDF page 71 / printed page 60, left column"]
+    }
+  ],
+  "sourceUseBoundary": "Physical page 3 states CC BY-NC-SA 3.0 IGO with attribution and non-commercial conditions. Keep the PDF in local quarantine; proposed use is an internal attributed factual question and short answer, with no source redistribution.",
+  "crossCandidateBoundary": "This ITU 2025 report is a distinct publication from the ITU 2026 workshop PDF already used for development and the earlier ITU ICT workbook, but common publisher alone does not establish question-level independence. Screen old questions and development exposure before deciding whether this report may enter the frozen set.",
+  "approvedIndependentSource": false,
+  "goldCreated": 0,
+  "productUploadOrModelAnswerRun": false,
+  "productionKnowledgeWrites": 0,
+  "next": "Complete the full document/product extraction and source-family audit, then decide set-level eligibility before any Gold freeze or model answer run."
+}
