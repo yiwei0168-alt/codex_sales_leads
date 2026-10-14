@@ -1,0 +1,20 @@
+{
+  "schema": "ma24-g13-f12-company-score-page-clone-v1",
+  "date": "2026-10-15",
+  "goal": "MA24 G13 F12",
+  "candidateBuildId": "aATaEUd9-1_DP251Yzqli",
+  "oldWebBuildId": "QfoyXprIZIVgSWxFSZ-1K",
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-backup-restore.ts --web-compat --raw-json-ui",
+  "environment": "Disposable restored local clone, migrations 127-134, source-equivalent application ACL; synthetic private account, company and saved assessment. Clone dropped after verification.",
+  "results": {
+    "oldWeb": "Build manifest, anonymous denial and synthetic login/upload-list smoke passed.",
+    "candidateWeb": "Actual company page and assessment API returned the saved scoring policy version; the readable product/use-case subscore displayed 40 / 50.",
+    "rawDetails": "Raw dimensions were collapsed initially; after expansion, a 1620-character unbroken synthetic value wrapped within the pre element. Copy button yielded exact dimensions JSON from clipboard.",
+    "otherSurface": "The previously checked knowledge-tree coordinate display passed again in the same run.",
+    "viewports": ["390x760", "1366x900"],
+    "pageErrors": 0,
+    "horizontalOverflow": false
+  },
+  "externalEffects": { "modelCalls": 0, "mailSends": 0, "productionDatabaseWrites": 0 },
+  "limits": "Synthetic score verifies the rendered page and read path, not real scoring quality or production loading. Other F12 disclosures and danger actions remain to audit."
+}
