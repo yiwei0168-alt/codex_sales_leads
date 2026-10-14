@@ -44,6 +44,20 @@
     "terms": ["802.11bp", "802.11bq", "802.11br", "Integrated mmWave", "Enhanced Light Communications", "Ambient Power Transmission"],
     "limit": "Exact hash and term absence do not prove semantic independence across all prior development material or provider-side exposure."
   },
+  "questionNeighborScreen": {
+    "command": "node scripts/run-tsx.cjs scripts/screen-ma24-g14-question-overlap-local.ts docs/evidence/ma24-g14-ieee-80211-overview-candidate-2026-10-14.json",
+    "inputEvidenceCommit": "e22a1f9c",
+    "inputEvidenceSha256": "72f804f02a9b8c909d0d02290cb08d356ba63cef5953b52d3135265deb8305f9",
+    "model": "local BAAI/bge-m3 revision 5617a9f61b028005a4858fdac845db406aefb181",
+    "oldRows": 350,
+    "uniqueOldQueries": 300,
+    "historicalBlindRows": 50,
+    "maximumCosineScores": {"ieee-80211-2025-amp-bands-modes": 0.526261, "ieee-80211-2025-elc-optical-bands": 0.524894},
+    "nearestTopics": "old device port/power questions and a 2.5G-versus-5G boundary question, not the same amendment facts",
+    "rawLocalReport": "tmp/ma24-independent-quarantine/ieee-80211-overview-overlap-screen.json",
+    "rawLocalReportSha256": "68f84f8b207d488164260e3e7b45cd81321c945b5d1074f0683c64272d610f97",
+    "limit": "The historical blind questions duplicate old corpus queries; embedding neighbors are a screen, not a threshold or proof of semantic independence. Other development prompts, model outputs and provider-side exposure remain unaudited."
+  },
   "draftQuestions": [
     {
       "id": "ieee-80211-2025-amp-bands-modes",
