@@ -5,6 +5,7 @@ import {extname,resolve} from "node:path";
 import {tenantQuery,tenantTransaction} from "@/lib/rag/db";
 import {assertResolvedInsideKnowledgeRoot,safeKnowledgeStorageKey} from "./document-repository";
 import {evidenceText,indexExtractedDocument} from "./vectorless";
+import {assertNoSpreadsheetCachedErrors} from "./extracted-tree";
 import {registerBinaryRevision,type BinaryRevisionJob} from './binary-revision';
 
 const sha=(value:Uint8Array|string)=>createHash("sha256").update(value).digest("hex");
@@ -32,6 +33,7 @@ export async function registerVectorlessUpload(userId:string,jobId:string,option
   const extracted=artifact.documents?.[0];
   if(artifact.documents?.length!==1||extracted?.sourceSha256!==job.source_sha256||extracted.extractorVersion!==job.extractor_version||!Array.isArray(extracted.blocks))throw new Error("Extraction identity mismatch");
   if(extracted.blocks.some(block=>!['success','blank'].includes(block.quality)))throw new Error("Unresolved extraction unit");
+  assertNoSpreadsheetCachedErrors(extracted.blocks);
   const content=extracted.blocks.filter(block=>block.quality==="success").map(block=>`${block.unitType} ${block.unitIndex} · ${block.id}\n${evidenceText(block)}`).join("\n\n");
   if(!content.trim()||content.length>2_000_000)throw new Error("Extracted content is empty or too large");
   const contentHash=sha(content);

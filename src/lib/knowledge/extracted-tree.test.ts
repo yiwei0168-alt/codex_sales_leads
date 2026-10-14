@@ -1,6 +1,6 @@
 import {expect,it,vi} from 'vitest';
 import type {PoolClient} from 'pg';
-import {evidenceText,slideShapeLocation,spreadsheetLocation,visualSourceLocation,writeExtractedTree,type Block} from './extracted-tree';
+import {assertNoSpreadsheetCachedErrors,evidenceText,slideShapeLocation,spreadsheetLocation,visualSourceLocation,writeExtractedTree,type Block} from './extracted-tree';
 
 it('retains sheet visual package references and rejects escaping or mismatched locations',()=>{
  const visual={id:'sheet-1-visual-1',unitType:'sheet' as const,unitIndex:1,blockType:'pending-ocr',quality:'pending-ocr',section:'Chart',
@@ -33,6 +33,19 @@ it('rejects forged ranges and inconsistent physical grids',()=>{
 it('handles columns beyond Z',()=>{
   expect(evidenceText({...block,table:{headers:['x',0],rows:[],headerRow:9,startRow:10,startColumn:26,cellRange:'Z9:AA9'}}))
     .toBe('Z9: x\nAA9: 0');
+});
+it('holds a successful spreadsheet table with cached formula errors before writing tree nodes',async()=>{
+  const report:Block={...block,id:'sheet-2-table',section:'Report',table:{
+    headers:Array(12).fill(''),rows:[...Array.from({length:10},()=>Array(12).fill('')),
+      [...Array(11).fill(''), '#VALUE!']],headerRow:1,startRow:2,startColumn:1,cellRange:'A1:L12'}};
+  const query=vi.fn();
+  expect(()=>assertNoSpreadsheetCachedErrors([report])).toThrow('sheet-2-table L12');
+  await expect(writeExtractedTree({query} as unknown as PoolClient,{documentId:'doc',assetId:'asset',
+    sourceSha256:'a'.repeat(64),extractorVersion:'layout-v2.0.6',artifactHash:'b'.repeat(64),blocks:[report]}))
+    .rejects.toThrow('sheet-2-table L12');
+  expect(query).not.toHaveBeenCalled();
+  assertNoSpreadsheetCachedErrors([block,{...report,table:{...report.table!,rows:report.table!.rows!.map(row=>
+    row.map(value=>value==='#VALUE!'?'Formula #VALUE! example':value))}}]);
 });
 it('saves cell range and sheet name in the evidence source location',async()=>{
   const query=vi.fn().mockResolvedValue({rows:[]});

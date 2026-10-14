@@ -48,10 +48,27 @@ export function evidenceText(block:Block):string{
   return block.text?.trim()??"";
 }
 
+const spreadsheetCachedError=/^#(?:NULL!|DIV\/0!|VALUE!|REF!|NAME\?|NUM!|N\/A|SPILL!|CALC!|FIELD!|GETTING_DATA|BLOCKED!|CONNECT!|UNKNOWN!)$/i;
+/** A cached formula error is not a usable source value, even when extraction marked the table successful. */
+export function assertNoSpreadsheetCachedErrors(blocks:Block[]){
+  for(const block of blocks){
+    if(block.unitType!=="sheet"||block.quality!=="success"||block.blockType!=="table"||!block.table)continue;
+    const rows=[block.table.headers??[],...(block.table.rows??[])];
+    for(const [rowIndex,row] of rows.entries())for(const [columnIndex,cell] of row.entries()){
+      if(typeof cell==="string"&&spreadsheetCachedError.test(cell.trim())){
+        const rowNumber=(block.table.headerRow??1)+rowIndex;
+        const column=columnName((block.table.startColumn??1)+columnIndex);
+        throw new Error(`Spreadsheet cached error requires source review: ${block.id} ${column}${rowNumber}`);
+      }
+    }
+  }
+}
+
 
 /** Caller owns the document lock and transaction. Does not switch the current pointer. */
 export async function writeExtractedTree(client:PoolClient,input:{documentId:string;assetId:string;sourceSha256:string;extractorVersion:string;artifactHash:string;blocks:Block[]}){
   if(input.blocks.some(block=>!["success","blank"].includes(block.quality)))throw new Error("Unresolved extraction units");
+  assertNoSpreadsheetCachedErrors(input.blocks);
   const blocks=input.blocks.filter(block=>block.quality==="success"&&evidenceText(block));
   for(const block of blocks)slideShapeLocation(block);
   if(!blocks.length||blocks.some(block=>!block.id||!Number.isInteger(block.unitIndex)||block.unitIndex<1))throw new Error("No complete evidence blocks");

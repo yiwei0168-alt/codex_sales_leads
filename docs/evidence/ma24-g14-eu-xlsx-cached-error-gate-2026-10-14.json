@@ -1,0 +1,22 @@
+{
+  "schema": "ma24-g14-eu-xlsx-cached-error-gate-v1",
+  "sourceSha256": "2ba1b1af51b4d27a703e4e5495ec89724d26bd6584a6b56244d8ecb7f54e079a",
+  "extractionArtifactSha256": "35518eca6f89878f079d4c72298743b610419ecb37eefaf539d8c67f2b5fdb09",
+  "extractorVersion": "layout-v2.0.6",
+  "finding": "The unselected interactive Report sheet has four #VALUE! cached cells in sheet-2-table, although that table block is marked success. Reviewing or excluding the separate sheet-2-visual-1 chart block alone would leave the table eligible for indexing.",
+  "firstBlockedCell": "Report!K12",
+  "productGuard": "Successful spreadsheet table blocks with canonical cached error values now fail registration before document creation and fail direct tree writes before any node write. The guard preserves ordinary zeros, false values and prose that merely mentions an error token.",
+  "actualArtifactCheck": "Spreadsheet cached error requires source review: sheet-2-table K12",
+  "checks": {
+    "targetedTests": "src/lib/knowledge/extracted-tree.test.ts: 7 passed",
+    "targetedLint": "passed",
+    "typecheck": "passed",
+    "actualArtifactGuard": "passed"
+  },
+  "productionSourceModified": false,
+  "databaseWrites": 0,
+  "externalCalls": 0,
+  "modelCalls": 0,
+  "qualityAccepted": false,
+  "remaining": "Provide an auditable path to exclude or replace the Report table block, re-extract and review every pending unit, then verify tree retrieval and precise citation from the Data source sheet. Do not treat chart zeros or cached formula errors as coverage data."
+}
