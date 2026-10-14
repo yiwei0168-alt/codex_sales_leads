@@ -32,6 +32,20 @@ export interface MainGraphDependencies {
   model: (messages: ModelMessage[], step: number,revision:number) => Promise<ModelMessage>;
   tool: (call: ModelToolCall, instructionIds: string[]) => Promise<ToolResult>;
 }
+const PLACEHOLDER_UUIDS = new Set([
+  "00000000-0000-0000-0000-000000000000",
+  "ffffffff-ffff-ffff-ffff-ffffffffffff",
+]);
+function isPlaceholderEvidenceRead(call: ModelToolCall): boolean {
+  if (call.function.name !== "execute_tool") return false;
+  try {
+    const request: unknown = JSON.parse(call.function.arguments);
+    if (typeof request !== "object" || request === null || !("tool" in request) || request.tool !== "vectorless_read" ||
+      !("arguments" in request) || typeof request.arguments !== "object" || request.arguments === null) return false;
+    const args = request.arguments as Record<string, unknown>;
+    return [args.sessionId, args.nodeId].some(id => typeof id === "string" && PLACEHOLDER_UUIDS.has(id.toLowerCase()));
+  } catch { return false; }
+}
 export function buildMainAgentGraph(deps: MainGraphDependencies, checkpointer?: BaseCheckpointSaver) {
   return new StateGraph(MainAgentState)
     .addNode("safe_boundary", async state => {
@@ -81,6 +95,15 @@ export function buildMainAgentGraph(deps: MainGraphDependencies, checkpointer?: 
     })
     .addNode("execute_tool", async state => {
       const call = state.pending[0];
+      if (isPlaceholderEvidenceRead(call)) {
+        const missing = "资料会话或证据编号是占位值，未执行读取；请提供明确的型号、资料标题或资产 ID。";
+        return { status: "partial" as RunStatus, reply: missing, pending: [],
+          messages: [...state.messages, ...state.pending.map((pending, index) => ({ role: "tool" as const,
+            tool_call_id: pending.id, content: JSON.stringify(result(null, {
+              status: index === 0 ? "missing_input" : "partial",
+              missing: [index === 0 ? missing : "当前工具批次因占位资料读取而停止，后续操作未执行。"],
+            })) }))] };
+      }
       const key = digest(call.function);
       const count = (state.seen[key] ?? 0) + 1;
       if (count > 2) return { status: "partial" as RunStatus, reply: "相同动作重复执行且没有新输入，已保存结果。请补充要求后继续。" };

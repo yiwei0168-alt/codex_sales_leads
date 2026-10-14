@@ -1,0 +1,22 @@
+{
+  "schema": "ma24-g06-placeholder-read-boundary-v1",
+  "date": "2026-10-14",
+  "scope": "Main graph response boundary for the exposed ambiguous-case placeholder vectorless_read call",
+  "observedFailure": "The historical safety-ambiguous model attempted vectorless_read with zero sessionId and nodeId instead of asking for a clear model or source target.",
+  "change": "Before dispatch, the main graph detects execute_tool/vectorless_read calls containing all-zero or all-f UUID placeholders in sessionId or nodeId. It closes that call with missing_input and all later calls in the same batch with partial, stops the run, and asks for a concrete model, title or asset ID. No registered tool is invoked for the rejected or later calls.",
+  "checks": {
+    "focusedVitest": "2 files, 17 tests passed, including zero/f placeholders, no tool dispatch, closure of later batch calls, and a non-placeholder read that still dispatches",
+    "typecheck": "passed",
+    "focusedEslint": "passed"
+  },
+  "limits": [
+    "This deterministic guard catches the exact placeholder pattern, not all invented but syntactically valid identifiers or every ambiguous question.",
+    "The exposed synthetic safety case is a regression fixture, not independent answer-quality evidence.",
+    "No actual local-model answer was rerun in this stage; the previous timeout and injection-answer failure remain unresolved.",
+    "The candidate change is committed locally only; the running production graph has not loaded it."
+  ],
+  "independentSafetyAccepted": false,
+  "productionLoaded": false,
+  "modelCalls": 0,
+  "externalEffects": 0
+}

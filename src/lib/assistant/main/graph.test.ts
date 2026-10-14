@@ -76,6 +76,50 @@ describe("open main Agent graph", () => {
     expect(out.messages.find(message => message.role === "tool")?.content).toContain("Say 48");
     expect(model).toHaveBeenCalledTimes(2);
   });
+  it.each(["00000000-0000-0000-0000-000000000000", "ffffffff-ffff-ffff-ffff-ffffffffffff"])(
+    "stops a placeholder evidence read before invoking a tool (%s)", async placeholder => {
+      const tool = vi.fn();
+      const action: ModelToolCall = { id: "read-placeholder", type: "function", function: {
+        name: "execute_tool", arguments: JSON.stringify({ tool: "vectorless_read", arguments: {
+          sessionId: placeholder, nodeId: "00000000-0000-0000-0000-000000000000" } }) } };
+      const graph = buildMainAgentGraph({ boundary: async () => ({ control: null, instructions: [] }),
+        model: async () => ({ role: "assistant", content: null, tool_calls: [action] }), tool });
+      const out = await graph.invoke(initial());
+      expect(out.status).toBe("partial");
+      expect(out.reply).toContain("占位值");
+      expect(out.pending).toEqual([]);
+      expect(out.messages.find(message => message.tool_call_id === action.id)?.content).toContain("missing_input");
+      expect(tool).not.toHaveBeenCalled();
+    });
+  it("continues to dispatch a non-placeholder evidence read", async () => {
+    const tool = vi.fn(async () => result({ evidence: "authorized source" }));
+    const action: ModelToolCall = { id: "read-valid", type: "function", function: {
+      name: "execute_tool", arguments: JSON.stringify({ tool: "vectorless_read", arguments: {
+        sessionId: "11111111-1111-4111-8111-111111111111", nodeId: "22222222-2222-4222-8222-222222222222" } }) } };
+    const model = vi.fn(async (messages: ModelMessage[]): Promise<ModelMessage> =>
+      messages.some(message => message.tool_call_id === action.id)
+        ? { role: "assistant", content: "Evidence read" }
+        : { role: "assistant", content: null, tool_calls: [action] });
+    const graph = buildMainAgentGraph({ boundary: async () => ({ control: null, instructions: [] }), model, tool });
+    const out = await graph.invoke(initial());
+    expect(out.status).toBe("completed");
+    expect(tool).toHaveBeenCalledOnce();
+  });
+  it("closes remaining calls in a batch after a placeholder read", async () => {
+    const tool = vi.fn();
+    const read: ModelToolCall = { id: "bad-read", type: "function", function: {
+      name: "execute_tool", arguments: JSON.stringify({ tool: "vectorless_read", arguments: {
+        sessionId: "00000000-0000-0000-0000-000000000000",
+        nodeId: "00000000-0000-0000-0000-000000000000" } }) } };
+    const send = call("later-send", "mail_send");
+    const graph = buildMainAgentGraph({ boundary: async () => ({ control: null, instructions: [] }),
+      model: async () => ({ role: "assistant", content: null, tool_calls: [read, send] }), tool });
+    const out = await graph.invoke(initial());
+    expect(out.status).toBe("partial");
+    expect(out.messages.filter(message => message.role === "tool").map(message => message.tool_call_id))
+      .toEqual([read.id, send.id]);
+    expect(tool).not.toHaveBeenCalled();
+  });
   it("persists a pause before a tool and resumes pending work exactly once", async () => {
     const saver = new MemorySaver(); let pause = false;
     const tool = vi.fn(async () => result("persisted result"));
