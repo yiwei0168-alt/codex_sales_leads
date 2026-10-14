@@ -1,0 +1,24 @@
+{
+  "schema": "ma24-g13-f12-memory-raw-json-page-clone-v1",
+  "date": "2026-10-15",
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-backup-restore.ts --web-compat --raw-json-ui",
+  "candidateBuildId": "-gufJcQePegDiD9FmcJAz",
+  "environment": "Disposable restored local database with migrations 127-134, synthetic private account, production-mode candidate Next Web; clone removed by verifier",
+  "memorySource": {
+    "fixture": "Private synthetic agent_memory_observation inserted only into the disposable clone with a 1620-character source receipt field",
+    "actualApi": "Authenticated GET /api/knowledge/observations?view=current returned the saved source receipt",
+    "actualPage": "Knowledge > personal memory > learning memory showed the record; raw receipt was collapsed by default, expanded, and copied exactly as returned by the API",
+    "viewports": ["390x760", "1366x900"],
+    "rawAndPageHorizontalOverflow": false
+  },
+  "memoryAudit": {
+    "write": "Authenticated POST /api/knowledge/memories created a synthetic email-style private memory and fired the database audit trigger",
+    "actualApi": "Authenticated GET /api/knowledge/memories/history?offset=0 returned the insert snapshot",
+    "actualPage": "Knowledge > personal memory > original memory > change audit showed the record; copied before/after snapshot exactly matched the API",
+    "historyContainsNoMemoryBody": true
+  },
+  "regression": "Same run passed task detail, knowledge tree, saved company score, and old-Web migrated-clone compatibility checks.",
+  "checks": ["npm run typecheck", "npx eslint scripts/lib/verify-ma24-raw-json-clone.ts", "git diff --check"],
+  "effects": { "modelCalls": 0, "productionWrites": 0, "productionSwitch": false, "pageErrors": 0 },
+  "limits": "Synthetic source and audit rows prove display and copy fidelity, not natural memory correctness or production load. Other F12 pages still need separate page/API/database acceptance."
+}

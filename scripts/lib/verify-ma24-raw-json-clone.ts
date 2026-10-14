@@ -13,6 +13,8 @@ export async function verifyMa24RawJsonClone(options: {
   const assetId = randomUUID();
   const versionId = randomUUID();
   const taskId = randomUUID();
+  const observationId = randomUUID();
+  const personalMemoryId = randomUUID();
   const title = `MA24 F12 synthetic coordinates ${documentId.slice(0, 8)}`;
   const sourceSha = "a".repeat(64);
   const longValue = "SYNTHETIC".repeat(180);
@@ -31,9 +33,17 @@ export async function verifyMa24RawJsonClone(options: {
     executionAndEnablement: 10, opportunityAndRisk: 10 } };
   const taskMetrics = { stage: "synthetic-generation", diagnosticKey: longValue,
     source: { kind: "fixture", page: 3, block: "task-raw-json" } };
+  const memoryReceipt = { type: "synthetic-f12-memory-source", diagnosticKey: longValue,
+    location: { page: 3, block: "memory-source" } };
+  const memoryContent = `Synthetic F12 observation ${observationId.slice(0, 8)}`;
   await options.admin.query(
     "insert into product_operation_metric(id,user_id,stage,status,metrics) values($1,$2,'development-generation','completed',$3)",
     [taskId, options.userId, JSON.stringify(taskMetrics)],
+  );
+  await options.admin.query(
+    `insert into agent_memory_observation(id,owner_id,kind,content,source_receipt,valid_from)
+     values($1,$2,'experience',$3,$4,now()-interval '1 minute')`,
+    [observationId, options.userId, memoryContent, JSON.stringify(memoryReceipt)],
   );
   await options.admin.query(
     "insert into market_workspace(id,owner_id,slug,name,market,country_code) values($1,$2,'global-sales','Synthetic score display','Germany','DE')",
@@ -96,6 +106,26 @@ export async function verifyMa24RawJsonClone(options: {
     [versionId, unit, JSON.stringify(location), content, digest(content)],
   );
   await options.admin.query("update knowledge_document set current_tree_version_id=$2 where id=$1", [documentId, versionId]);
+  const memorySaved = await fetch(`${options.base}/api/knowledge/memories`, {
+    method: "POST", headers: { cookie: options.cookie, "content-type": "application/json" },
+    body: JSON.stringify({ id: personalMemoryId, mode: "create", kind: "email-style",
+      title: "Synthetic F12 audit", content: "Synthetic private memory audit entry",
+      marketCodes: [], channelRoles: [], externalUseApproved: false, confirmed: true }),
+  });
+  assert.equal(memorySaved.status, 200, `Synthetic memory save HTTP ${memorySaved.status}`);
+  const observationResponse = await fetch(`${options.base}/api/knowledge/observations?view=current`,
+    { headers: { cookie: options.cookie } });
+  assert.equal(observationResponse.status, 200);
+  const observationItems = (await observationResponse.json() as { items: Array<{ id: string; source_receipt: typeof memoryReceipt }> }).items;
+  assert.deepEqual(observationItems.find(item => item.id === observationId)?.source_receipt, memoryReceipt);
+  const auditResponse = await fetch(`${options.base}/api/knowledge/memories/history?offset=0`,
+    { headers: { cookie: options.cookie } });
+  assert.equal(auditResponse.status, 200);
+  const audit = (await auditResponse.json() as { items: Array<{ memoryId: string; beforeState: unknown; afterState: unknown }> })
+    .items.find(item => item.memoryId === personalMemoryId);
+  assert(audit?.afterState);
+  assert.equal(audit.beforeState, null);
+  assert(!JSON.stringify(audit.afterState).includes("Synthetic private memory audit entry"));
   const browser = await chromium.launch({ channel: "chrome", headless: true });
   try {
     for (const viewport of [{ width: 390, height: 760 }, { width: 1366, height: 900 }]) {
@@ -157,6 +187,31 @@ export async function verifyMa24RawJsonClone(options: {
         await expect(taskDetails.getByRole("status")).toContainText("已复制原始 JSON");
         assert.deepEqual(JSON.parse(await page.evaluate(() => navigator.clipboard.readText())), task.details);
         assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
+        await page.goto(options.base);
+        if (viewport.width < 700) await page.getByRole("button", { name: "打开导航菜单" }).click();
+        await page.getByRole("button", { name: "知识库", exact: true }).click();
+        await page.getByRole("navigation", { name: "资料分区" }).getByRole("button", { name: "个人记忆" }).click();
+        const learning = page.getByRole("region", { name: "学习记忆" });
+        const observation = learning.locator("article").filter({ hasText: memoryContent });
+        await expect(observation).toBeVisible();
+        const receipt = observation.locator(".raw-json-details");
+        await expect(receipt).not.toHaveAttribute("open");
+        await receipt.locator("summary").click();
+        await expect(receipt.locator("pre")).toContainText(longValue);
+        assert(await receipt.locator("pre").evaluate(element => element.scrollWidth <= element.clientWidth + 1));
+        await receipt.getByRole("button", { name: "复制 JSON" }).click();
+        assert.deepEqual(JSON.parse(await page.evaluate(() => navigator.clipboard.readText())), memoryReceipt);
+        await page.getByRole("navigation", { name: "记忆来源" }).getByRole("button", { name: "原有记忆" }).click();
+        await page.getByText("记忆变更审计", { exact: true }).click();
+        const history = page.locator("article").filter({ hasText: `记忆 ${personalMemoryId.slice(0, 8)}` });
+        await expect(history).toBeVisible();
+        const snapshot = history.locator(".raw-json-details");
+        await expect(snapshot).not.toHaveAttribute("open");
+        await snapshot.locator("summary").click();
+        await snapshot.getByRole("button", { name: "复制 JSON" }).click();
+        assert.deepEqual(JSON.parse(await page.evaluate(() => navigator.clipboard.readText())),
+          { before: audit.beforeState, after: audit.afterState });
+        assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
         assert.deepEqual(pageErrors, []);
       } finally { await context.close(); }
     }
@@ -164,6 +219,8 @@ export async function verifyMa24RawJsonClone(options: {
       rawJsonSecondary: true, wrappedWithoutHorizontalOverflow: true, copiedExactJson: true,
       savedCompanyScorePage: true, readableSubscore: "40 / 50", policyVersion: "synthetic-f12-v1",
       savedTaskDetailPage: true, taskDetailApi: 200, taskRawJsonCopiedFromApi: true,
+      memoryObservationApi: 200, memorySourceReceiptCopiedFromApi: true,
+      memoryAuditTriggeredByActualSave: true, memoryAuditCopiedFromApi: true,
       viewports: ["390x760", "1366x900"], pageErrors: 0, modelCalls: 0, productionWrites: 0 };
   } finally { await browser.close(); }
 }
