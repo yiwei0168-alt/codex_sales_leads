@@ -1,0 +1,38 @@
+{
+  "schema": "ma24-g14-itu-pdf-full-visual-review-v1",
+  "date": "2026-10-15",
+  "sourceSha256": "8bac4a67a32ef5b9d87b7855dc57de7f686b405a6d2ffab537782265a61f0615",
+  "officialPage": "https://www.itu.int/oth/D0736000003/en",
+  "localOriginal": "tmp/ma24-independent-quarantine/itu-q1-2026-bhatia.pdf",
+  "extractionArtifact": "tmp/ma24-independent-quarantine/itu-q1-2026-layout-v2.0.6.json",
+  "method": "Rendered all 12 original PDF pages at 1.5x with PyMuPDF, inspected each page image at original detail, and compared visible text and diagrams to the local product extraction blocks. Intermediate renders are ignored under tmp/pdfs/ma24-itu-full-review.",
+  "pageCount": 12,
+  "pagesVisuallyInspected": 12,
+  "pages": [
+    {"physicalPage": 1, "visible": "Title and presenter attribution; decorative light-trail image."},
+    {"physicalPage": 2, "visible": "Presenter's mobile-connection headline, region multipliers and an Ericsson traffic chart with separate source/forecast note; chart values are too small for unqualified answer claims from this render."},
+    {"physicalPage": 3, "visible": "Presenter's meaningful-connectivity and landmass claims over a world-map illustration; historical speaker claims only."},
+    {"physicalPage": 4, "visible": "Six labeled challenge photographs and a concluding sentence; photographs illustrate categories rather than quantified evidence."},
+    {"physicalPage": 5, "visible": "India connectivity cards including 1,354 Mn = 1,306 Mn + 48 Mn and the FWA card 18.8 Mn versus 13.2 Mn + 5.1 Mn; the conflict question's exact values and units are visible.", "occludedSuccessfulBlock": "page-5-block-3"},
+    {"physicalPage": 6, "visible": "Technology-generation timeline from land lines to a 2030 6G illustration; forecast/vision, not adopted present-day capability."},
+    {"physicalPage": 7, "visible": "Terrestrial coverage illustration with good/bad/none zones and dense-to-maritime examples; no numeric coverage data."},
+    {"physicalPage": 8, "visible": "Satellite, terrestrial and airborne network arrows leading to an illustrative 2030 unified design; old By 2023 line is covered by a foreground card.", "occludedSuccessfulBlock": "page-8-block-4"},
+    {"physicalPage": 9, "visible": "LEO illustration and labeled subscriber terminal, gateway earth station, gateway control center and Internet link."},
+    {"physicalPage": 10, "visible": "IMT generation labels 3G/IMT-2000 through 6G/IMT-2030, as presented by the speaker."},
+    {"physicalPage": 11, "visible": "Speaker's WRC-27 spectrum discussion diagram and prospective wording; an earlier title string is covered by the foreground header.", "occludedSuccessfulBlock": "page-11-block-3"},
+    {"physicalPage": 12, "visible": "Thank-you slide and presenter contact; no substantive technical evidence."}
+  ],
+  "occludedSuccessBlocks": [
+    {"id": "page-5-block-3", "bboxPoints": [396.27, 96.49, 564.11, 116.7], "text": "Overall Connectivity", "visualDisposition": "covered by top/card layer; not visible in rendered page"},
+    {"id": "page-8-block-4", "bboxPoints": [65.4, 446.55, 883.24, 476.84], "text": "By 2023, LTE and 5G will cover 70% of the world's population but only 35% of the landmass.", "visualDisposition": "covered by lower diagram/card; not visible in rendered page"},
+    {"id": "page-11-block-3", "bboxPoints": [82.78, 0.42, 888.45, 86.7], "text": "6G Spectrum discussions have started; Focus on Agenda 1.7 of WRC-27", "visualDisposition": "covered by foreground title header; not visible in rendered page"}
+  ],
+  "workflowFinding": "The current extraction-review query selects only blocks whose quality is neither success nor blank. These three occluded blocks are already marked success, so the ordinary 12 pending visual-review decisions cannot remove them from the searchable registration content.",
+  "decision": "Source is blocked from independent Gold and production knowledge registration pending correction of the success-block review or extraction boundary. If this PDF drives a product repair, reclassify it as development/regression material rather than a fresh quality holdout.",
+  "questionOriginalValuesValid": true,
+  "productReadCitationPassed": false,
+  "sourceApproved": false,
+  "goldCreated": 0,
+  "modelCalls": 0,
+  "productionKnowledgeWrites": 0
+}

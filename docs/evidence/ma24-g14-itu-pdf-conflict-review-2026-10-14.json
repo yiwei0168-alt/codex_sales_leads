@@ -46,13 +46,15 @@
     "blocks": 106,
     "qualitySummary": {"success": 0, "blank": 0, "pending-ocr": 12, "failed": 0},
     "page5TextAndBoxesPresent": true,
-    "treeOrRetrievalReady": false
+    "treeOrRetrievalReady": false,
+    "fullVisualReview": "docs/evidence/ma24-g14-itu-pdf-full-visual-review-2026-10-15.json",
+    "occludedSuccessfulBlocks": ["page-5-block-3", "page-8-block-4", "page-11-block-3"]
   },
   "gates": {
     "sourceApproved": false,
     "goldCreated": 0,
     "modelCalls": 0,
     "productionKnowledgeWrites": 0,
-    "remaining": "Check source-use boundary and full development overlap. Complete all 12 pages' visual review and isolated product read/citation before deciding whether this single conflict draft enters a frozen independent set."
+    "remaining": "All 12 pages were visually inspected, but three successful extraction blocks contain text hidden by foreground layers and cannot be excluded by the current pending-only review workflow. Block source registration and Gold pending a safe correction; if this PDF drives a product repair, reclassify it as development/regression material. Source-use, full overlap and user-visible citation remain open."
   }
 }
