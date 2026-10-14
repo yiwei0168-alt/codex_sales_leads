@@ -42,7 +42,7 @@ export function MemorySkills(){
       const response=await fetch("/api/assistant/skills",{method:"PATCH",headers:{"content-type":"application/json"},
         body:JSON.stringify({id:skill.id,version,operation})});
       if(!response.ok)throw new Error("Skill 已变化，请刷新后重试");
-      setNotice(operation==="rollback"?`已恢复 ${skill.name} 的 v${version}`:`${skill.name} 已${operation==="enable"?"启用":"停用"}`);
+      setNotice(operation==="rollback"?`已恢复 ${skill.name} 的 v${version}，当前已停用，请审核后手动启用`:`${skill.name} 已${operation==="enable"?"启用":"停用"}`);
       setVersions(current=>({...current,[skill.id]:[]}));setRevision(value=>value+1);
     }catch(error){setError(error instanceof Error?error.message:"Skill 更新失败");}finally{setBusy(false);}
   }

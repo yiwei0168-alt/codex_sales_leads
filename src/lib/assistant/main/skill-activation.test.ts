@@ -47,3 +47,9 @@ it('rechecks actual dependencies on rollback',async()=>{
   db.validation={scripts:'none',dependencies:'none',autoEnable:'passed'};db.dependencies=['executable-package'];
   await expect(changeSkill(context,{id:'00000000-0000-4000-8000-000000000002',version:1,operation:'rollback'})).rejects.toThrow('human approval');
 });
+it('disables a Skill when a human restores a previous version',async()=>{
+  await expect(changeSkill(context,{id:'00000000-0000-4000-8000-000000000002',version:1,operation:'rollback'},true)).resolves.toEqual({updated:true});
+  const update=db.queries.find(call=>call.sql.startsWith('update agent_skill set current_version='));
+  expect(update?.sql).toContain('enabled=false');
+  expect(update?.sql).toContain('updated_at=now()');
+});

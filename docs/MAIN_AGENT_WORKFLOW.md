@@ -329,6 +329,8 @@ Graphiti 0.30.2 的隔离依赖与本地 `nomic-embed-text` 已安装。`scripts
 2026-09-24 / MA24 PageIndex 隔离试验：`.venv-pageindex-local` 与生产解析环境隔离；`knowledge:verify-pageindex-isolated-local` 生成合成 PDF、限制运行期 socket 仅回环、以本机 Ollama 的 `qwen3:8b` 进行 SDK 索引，再与无需模型的 Flash 结构比较。两条路径各返回 2 个页节点；所有临时内容与索引自动清理。PageIndex 摘要只供结构导航参考，不替代 `readEvidence` 的原文和坐标，也不处理 PDF 以外本阶段格式。
 2026-09-24 / MA24 Skill 启用门槛：`skill_import` 及用户导入都先保存停用版本；新版本替换当前版本时也先停用。`skill_manage` 由 Agent 调用启用或回滚时，先核对账户范围、无脚本/依赖和 `validation.autoEnable=passed`；未通过回放与影子验收则拒绝。账户页面的手动启用保留用户显式操作，导入提示改为草案，记忆中心区分待验证与待审核。
 
+2026-10-15 / MA24-06 G09 恢复版本补验：人工 `rollback` 在同一事务切换 `current_version` 并设 `enabled=false`，与导入新版的停用规则一致；管理页提示须重新审核并手动启用。隔离恢复库实测已启用 v2 恢复 v1 后 `readSkill` 不可读，人工重新启用后的新任务读取 v1。自动启用的可信评测与正式部署仍待完成。[收据](evidence/ma24-g09-skill-rollback-disabled-clone-2026-10-15.json)。
+
 2026-09-29 / MA24-10 同类 Gold 授权：用户要求已审核同类直接采纳助手的 Gold，只将不同类交用户审核。助手仍逐条读取匹配原件、保存题目哈希与精确来源；审核备注明确记录“按类型授权自动采纳”和代表题，不写成用户逐题确认。新类型确认后应用于同类表达，已保存决定不覆盖；development/validation 完成与配置冻结前不打开 holdout。[执行证据](MA24_GOLD_PATTERN_REVIEW_2026-09-29.md)。
 
 本次已执行到 147/300：五类资料题新写入 80 条，型号套装、2.5G/5G、SFP兼容性及否定理解分别确认代表题并保存各 4 条。对原件缺失参数、可选配置、区域版本与矛盾数值保留限制；每条经既有保存校验并回读，重放不增加修订。后续沿相同流程继续，来源完整度审计不替代答案与引用质量对照。

@@ -91,7 +91,7 @@ export async function changeSkill(context: Pick<ExecutionContext, "userId" | "ro
       const published = await client.query("update agent_skill set published=true,enabled=true,updated_at=now() where id=$1 and owner_id=$2 and scope='global' and current_version=$3", [input.id, context.userId, input.version]);
       if (!published.rowCount) throw new Error("Global Skill version changed; publication requires a new confirmation");
     }
-    else if (input.operation === "rollback") await client.query("update agent_skill set current_version=$3,published=case when scope='global' then false else published end where id=$1 and owner_id=$2", [input.id, context.userId, input.version]);
+    else if (input.operation === "rollback") await client.query("update agent_skill set current_version=$3,enabled=false,published=case when scope='global' then false else published end,updated_at=now() where id=$1 and owner_id=$2", [input.id, context.userId, input.version]);
     else await client.query("update agent_skill set enabled=$3,published=case when scope='global' then false else published end,updated_at=now() where id=$1 and owner_id=$2 and current_version=$4", [input.id, context.userId, input.operation === "enable", input.version]).then(r => { if (!r.rowCount) throw new Error("Skill version changed"); });
     return { updated: true };
   }, context.role);
