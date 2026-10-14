@@ -1,0 +1,32 @@
+{
+  "schema": "ma24-g13-f12-pptx-native-review-page-clone-v1",
+  "date": "2026-10-15",
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-backup-restore.ts --web-compat --review-ui",
+  "candidateBuildId": "-gufJcQePegDiD9FmcJAz",
+  "sourceArchiveSha256": "17db517922f0ee8067391544418f0c8af9f77ee5f48203b938b7559ba528d428",
+  "sourcePptxSha256": "2223cee26aced9a50d648d933c31b15f2f0659d0ebe30922fca5c31c1cc30465",
+  "environment": "Disposable restored local database, migrations 127-134, synthetic private account, actual production-mode candidate Next Web, local extraction and visual candidate workers",
+  "firstAttempt": "The extraction-only verifier returned 63 pending objects but no SmartArt candidate. The missing step was the separate local visual candidate worker; this attempt failed before browser assertions and was not counted as acceptance.",
+  "acceptedRun": {
+    "uploadHttpStatus": 202,
+    "pendingVisualObjects": 63,
+    "visualCandidateWorkerBoundPackage": true,
+    "smartArtBlockId": "slide-2-visual-3",
+    "smartArtRawJsonCopiedExactlyFromReviewApi": true,
+    "connectorBlockId": "slide-36-visual-5",
+    "connectorRawJsonCopiedExactlyFromReviewApi": true,
+    "connectorMobileViewport": "390x800",
+    "connectorMobileRawAndPageHorizontalOverflow": false,
+    "reviewDecisionSavedRevision": 1,
+    "staleDecisionHttpStatus": 409,
+    "originalDownloadSha256Matched": true,
+    "changedOriginalRejected": true,
+    "reviewCompleted": false,
+    "publishedDocuments": 0,
+    "releasePointerUnchanged": true
+  },
+  "rollbackCompatibility": "Old Web loaded before and after candidate upload on the migrated disposable clone; no production rollback occurred.",
+  "checks": ["npm run typecheck", "npx eslint scripts/lib/verify-ma24-review-page-clone.ts", "git diff --check"],
+  "effects": { "productionWrites": 0, "productionSwitch": false, "workerCloudCredentialsCleared": true, "modelCallCount": "not captured for this review-ui verifier" },
+  "limits": "One SmartArt and one connector object were checked for raw structure display/copy. This does not establish that their semantic content is correct, that all 63 visual judgments are complete, or that the production entry is accepted."
+}

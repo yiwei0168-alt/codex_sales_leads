@@ -7,9 +7,9 @@ import { chromium, expect } from "@playwright/test";
 import { Client } from "pg";
 import { fetch as localFetch, FormData } from "undici";
 
-async function runLocalExtraction(jobId: string, databaseUrl: string): Promise<void> {
+async function runLocalWorker(script: string, jobId: string, databaseUrl: string, userId?: string): Promise<void> {
   const workerArgs = [process.execPath, "--require", "./scripts/patch-node-user.cjs", "--import", "tsx",
-    "scripts/process-knowledge-upload-jobs.ts", `--job-id=${jobId}`, "--limit=1"];
+    script, `--job-id=${jobId}`, ...(userId ? [`--user-id=${userId}`] : ["--limit=1"])];
   const command = process.platform === "win32" ? process.env.PYTHON_BINARY?.trim() || "python" : workerArgs[0];
   const args = process.platform === "win32"
     ? ["scripts/windows-owned-process.py", String(process.pid), "180000", "--", ...workerArgs]
@@ -23,7 +23,7 @@ async function runLocalExtraction(jobId: string, databaseUrl: string): Promise<v
     child.stderr.on("data", part => { stderr = `${stderr}${part}`.slice(-1000); });
     child.once("error", reject);
     child.once("close", code => {
-      if (code !== 0) return reject(new Error(`Local extraction failed with code ${code}: ${stderr}`));
+      if (code !== 0) return reject(new Error(`Local ${script} failed with code ${code}: ${stderr}`));
       accept();
     });
   });
@@ -61,26 +61,43 @@ export async function verifyMa24ReviewPageClone(options: {
     assert.equal(uploaded.status, 202, `Candidate Web did not register the synthetic PPTX upload: ${uploadBody.error ?? "unknown"}`);
     const { id: jobId } = uploadBody;
     assert(jobId && /^[a-f0-9-]{36}$/.test(jobId));
-    await runLocalExtraction(jobId, options.migrationDatabaseUrl);
+    await runLocalWorker("scripts/process-knowledge-upload-jobs.ts", jobId, options.migrationDatabaseUrl);
     const job = (await options.admin.query<{ status: string; error_code: string; metrics: { unresolvedBlocks: number } }>(
       "select status,error_code,metrics from knowledge_upload_job where id=$1 and user_id=$2", [jobId, options.userId],
     )).rows[0];
     assert.equal(job.status, "extracted");
     assert.equal(job.error_code, "extraction-review-required");
     assert.equal(job.metrics.unresolvedBlocks, 63);
+    await runLocalWorker("scripts/prepare-upload-visual-review.ts", jobId, options.migrationDatabaseUrl, options.userId);
+    const prepared = (await options.admin.query<{ metrics: { visualReviewKey?: string } }>(
+      "select metrics from knowledge_upload_job where id=$1 and user_id=$2", [jobId, options.userId],
+    )).rows[0];
+    assert(prepared.metrics.visualReviewKey, "Local visual candidate worker did not bind a review package");
     const reviewResponse = await fetch(`${options.base}/api/knowledge/uploads/review?jobId=${jobId}&offset=0`, {
       headers: { cookie: options.cookie }, signal: AbortSignal.timeout(20_000),
     });
     assert.equal(reviewResponse.status, 200);
     const review = await reviewResponse.json() as {
-      artifactSha256: string; total: number; blocks: Array<{ block: { id: string } }>;
+      artifactSha256: string; total: number; blocks: Array<{ block: { id: string }; candidate?: { diagram?: unknown; connector?: unknown } }>;
     };
     assert.equal(review.total, 63);
     assert.equal(review.blocks.length, 20);
     const firstBlockId = review.blocks[0].block.id;
+    assert.equal(review.blocks[2].block.id, "slide-2-visual-3");
+    const diagram = review.blocks[2].candidate?.diagram;
+    assert(diagram, "PPTX SmartArt candidate missing from review API");
+    const connectorResponse = await fetch(`${options.base}/api/knowledge/uploads/review?jobId=${jobId}&offset=20`, {
+      headers: { cookie: options.cookie }, signal: AbortSignal.timeout(20_000),
+    });
+    assert.equal(connectorResponse.status, 200);
+    const connectorPage = await connectorResponse.json() as { blocks: Array<{ block: { id: string }; candidate?: { connector?: unknown } }> };
+    assert.equal(connectorPage.blocks[12].block.id, "slide-36-visual-5");
+    const connector = connectorPage.blocks[12].candidate?.connector;
+    assert(connector, "PPTX connector candidate missing from review API");
 
     browser = await chromium.launch({ channel: "chrome", headless: true });
     const page = await browser.newPage({ viewport: { width: 1366, height: 900 } });
+    await page.context().grantPermissions(["clipboard-read", "clipboard-write"], { origin: options.base });
     await page.goto(options.base);
     await page.getByLabel("登录邮箱").fill(options.email);
     await page.getByLabel("密码", { exact: true }).fill(options.password);
@@ -96,6 +113,26 @@ export async function verifyMa24ReviewPageClone(options: {
     await page.getByRole("button", { name: "审核抽取内容" }).click();
     await expect(page.getByRole("dialog")).toBeVisible();
     await expect(page.getByText("对象 1 / 63", { exact: true })).toBeVisible();
+    for(let i=0;i<2;i++)await page.getByRole("button", { name: "下一对象" }).click();
+    await expect(page.getByText("对象 3 / 63", { exact: true })).toBeVisible();
+    const diagramDetails = page.locator(".raw-json-details").filter({ hasText: "SmartArt 原生数据（未经审核）" });
+    await expect(diagramDetails).not.toHaveAttribute("open");
+    await diagramDetails.locator("summary").click();
+    await diagramDetails.getByRole("button", { name: "复制 JSON" }).click();
+    assert.deepEqual(JSON.parse(await page.evaluate(() => navigator.clipboard.readText())), diagram);
+    for(let i=0;i<30;i++)await page.getByRole("button", { name: "下一对象" }).click();
+    await expect(page.getByText("对象 33 / 63", { exact: true })).toBeVisible();
+    const connectorDetails = page.locator(".raw-json-details").filter({ hasText: "连接线原生数据（未经审核）" });
+    await expect(connectorDetails).not.toHaveAttribute("open");
+    await connectorDetails.locator("summary").click();
+    await connectorDetails.getByRole("button", { name: "复制 JSON" }).click();
+    assert.deepEqual(JSON.parse(await page.evaluate(() => navigator.clipboard.readText())), connector);
+    await page.setViewportSize({ width: 390, height: 800 });
+    assert(await connectorDetails.locator("pre").evaluate(element => element.scrollWidth <= element.clientWidth + 1));
+    assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
+    await connectorDetails.getByRole("button", { name: "复制 JSON" }).click();
+    assert.deepEqual(JSON.parse(await page.evaluate(() => navigator.clipboard.readText())), connector);
+    await page.setViewportSize({ width: 1366, height: 900 });
     await page.getByRole("button", { name: "复核成功抽取文字" }).click();
     await expect(page.getByText("对象 1 / 216", { exact: true })).toBeVisible();
     for(let i=0;i<3;i++)await page.getByRole("button", { name: "下一对象" }).click();
@@ -173,6 +210,7 @@ export async function verifyMa24ReviewPageClone(options: {
     assert.equal(JSON.stringify((await options.admin.query("select * from knowledge_release_pointer_v3 order by scope_kind,owner_id")).rows), pointerBefore);
     return { uploadStatus: uploaded.status, localExtractionExitCode: 0,
       visualObjects: review.total, pageOpened: true, originalDownloadMatched: true,
+      smartArtCopiedFromApi: true, connectorCopiedFromApi: true, connectorMobileNoOverflow: true,
       savedRevision: rows.rows[0].revision,
       databaseDecision: rows.rows[0].decision, successfulTextPageNumberExcluded: true,
       successfulTextDesktopAndMobileRendered: true, staleWriteStatus: stale.status,
