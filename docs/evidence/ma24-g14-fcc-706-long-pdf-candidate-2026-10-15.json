@@ -1,0 +1,62 @@
+{
+  "schema": "ma24-g14-fcc-706-long-pdf-candidate-v1",
+  "date": "2026-10-15",
+  "stage": "R4 source and question candidate only",
+  "publisher": "US Federal Communications Commission",
+  "title": "2026 Section 706 Report, FCC 26-55",
+  "adopted": "2026-08-13",
+  "released": "2026-08-14",
+  "sourceUrl": "https://docs.fcc.gov/public/attachments/FCC-26-55A1.pdf",
+  "localQuarantinePath": "tmp/ma24-independent-candidates/fcc-26-55.pdf",
+  "sha256": "805e0e5b954775059ad535ae650c955935758a88f2a20ec0e6554e77f0e61154",
+  "format": "Unencrypted 178-page PDF; local metadata reports Aspose.Words for Java 24.11.0",
+  "sourceIdentity": "Official FCC PDF search result shows FCC 26-55, 2026 Section 706 Report, and the same adopted/released dates as local physical page 1. Binary identity to the online copy has not been independently rehashed.",
+  "readOnlySourceCheck": {
+    "method": "PyMuPDF text extraction because Docling is unavailable in the current Python environment; rendered physical pages 27 and 28 at 1.5x and visually checked complete paragraphs and Fig. 12 against extracted text",
+    "conversionStatus": "text extraction succeeded; no DoclingDocument conversion",
+    "pageCount": 178,
+    "targetPhysicalPages": [27, 28],
+    "targetPrintedPages": [27, 28],
+    "paragraph47": "The report says approximately 78% of entities met 1 Gbps per 1,000 students in 2024, compared with 74% of school districts in 2023 under a closely approximated Connect K-12 approach.",
+    "paragraphs48And49": "The Commission's own Form 471-based measure uses student counts and bandwidth at school level; it reports 52% of students with at least 1 Mbps per student in 2025.",
+    "figure12": "Overall 2021-2025 row reads 32%, 33%, 37%, 44%, 52%; the row is a student measure, not the 2024 entity measure.",
+    "interpretation": "The 78% and 52% have different years and denominators; their arithmetic difference is not a valid change in one population. The 2023 74% figure is also described as school districts while 2024 uses entities, with methodology approximated by staff."
+  },
+  "localExposureScreen": {
+    "command": "node scripts/run-tsx.cjs scripts/audit-g14-candidate-hash-local.ts 805e0e5b954775059ad535ae650c955935758a88f2a20ec0e6554e77f0e61154",
+    "matchingAssets": 0,
+    "matchingUploadJobs": 0,
+    "matchingHistoricalGoldRows": 0,
+    "boundedPhraseSearch": "No FCC 26-55 or 1 Gbps per 1,000 students / 1 Mbps per student phrase match in tracked docs, src, scripts or experiments before this receipt.",
+    "limitation": "Exact hash and bounded phrase absence do not prove full semantic independence or absence from unrecorded prompts and provider-side context."
+  },
+  "draftOverlapScreen": {
+    "command": "node scripts/run-tsx.cjs scripts/screen-ma24-g14-question-overlap-local.ts docs/evidence/ma24-g14-fcc-706-long-pdf-candidate-2026-10-15.json tmp/ma24-independent-candidates/fcc-706-question-overlap-screen.json",
+    "localOutputSha256": "c32a7d015ec7fca46820929c180b03c41f6582db5f3657640e7de7e95d98da66",
+    "screenedReceiptSha256": "8cfabc8a435551e310f6c3995f4a751ee8777e40c35baf4ab527297b0fc93787",
+    "receiptHashScope": "The screen hashes this candidate receipt before the screening and group-boundary fields were appended; source SHA, draft ID, question and answer were unchanged.",
+    "oldRows": 350,
+    "uniqueOldQueries": 300,
+    "maximumCosine": 0.442445,
+    "manualTopTen": "Nearest old wording concerns named product deployment fit, physical ports and VPN passthrough, not the FCC school entity/student denominator distinction.",
+    "semanticIndependenceProven": false,
+    "cloudCalls": 0
+  },
+  "draftQuestions": [
+    {
+      "id": "fcc-706-2026-school-entity-vs-student-denominator",
+      "status": "draft only; not Gold",
+      "question": "按 FCC《2026 Section 706 Report》第 47–49 段，2024 年达到每 1000 名学生 1 Gbps 门槛的实体约占多少？2025 年所在学校达到每名学生至少 1 Mbps 的学生约占多少？为什么不能把这两个百分比直接相减，当作同一群体的改善或退步？请给出原页。",
+      "draftAnswer": "报告称，2024 年约 78% 的实体达到每 1000 名学生 1 Gbps 的门槛；2025 年约 52% 的学生所在学校达到每名学生至少 1 Mbps。前者按实体统计，后者按学生统计，且年份和方法不同，因此不能把 78% 与 52% 直接相减解释为同一群体的变化。",
+      "sourceCoordinates": ["physical/printed PDF page 27, paragraphs 47–48", "physical/printed PDF page 28, paragraph 49 and Fig. 12"],
+      "scopeGuard": "Attribute numbers to the dated FCC report, not current school connectivity; do not conflate entities, districts and students."
+    }
+  ],
+  "crossCandidateGroupBoundary": "This report and FCC DOC-424190 press release belong to the same FCC 26-55 publication family. Their question facts differ (school bandwidth denominators versus fixed-service competition), but do not count them as two independent source groups or place one in development while freezing the other as an unseen source without a set-level leakage decision.",
+  "sourceUseBoundary": "Only a short attributed factual question and answer are proposed for internal evaluation; no complete-PDF redistribution or general licence claim. Verify source-use and set-level eligibility before Gold.",
+  "approvedIndependentSource": false,
+  "goldCreated": 0,
+  "productUploadOrModelAnswerRun": false,
+  "productionKnowledgeWrites": 0,
+  "next": "Screen the draft against old questions and development exposure; audit source use and document-level visual review, then decide set-level eligibility before Gold and model runs."
+}
