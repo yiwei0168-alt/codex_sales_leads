@@ -1,0 +1,37 @@
+{
+  "schema": "ma24-g13-f12-skill-replay-raw-json-page-clone-v1",
+  "date": "2026-10-15",
+  "scope": "G13/F12 historical Skill replay raw evidence; disposable restored database and candidate production-mode Web",
+  "baseline": {
+    "archive": "network_copilot_2026-10-13T09-03-13Z.dump",
+    "archiveSha256": "17db517922f0ee8067391544418f0c8af9f77ee5f48203b938b7559ba528d428",
+    "candidateBuildId": "-gufJcQePegDiD9FmcJAz",
+    "oldBuildId": "QfoyXprIZIVgSWxFSZ-1K",
+    "migrations": "127-134"
+  },
+  "method": "Created a synthetic account, completed read-only knowledge_compare journal and disabled account Skill in the disposable restore. Prepared and stored a source-revalidated historical replay with a deterministic answer substitute, then used the candidate's real login, review API, and Skill review page. No blind review or judgment was created.",
+  "result": {
+    "oldWebRollbackSmoke": true,
+    "candidateApiStatus": 200,
+    "anonymousApiStatus": 401,
+    "databaseReplayPersisted": true,
+    "sourceRevalidated": true,
+    "pageViewports": ["390x760", "1366x900"],
+    "rawJsonInitiallyCollapsed": true,
+    "copiedJsonEqualsApiReceipt": true,
+    "horizontalOverflow": false,
+    "pageErrors": 0,
+    "reviewRowsWritten": 0,
+    "modelCalls": 0,
+    "productionWrites": 0,
+    "restoreDatabaseDropped": true
+  },
+  "checks": [
+    "node scripts/run-tsx.cjs scripts/verify-ma24-backup-restore.ts --web-compat --skill-replay-raw-json-ui",
+    "npx eslint on the three changed scripts",
+    "targeted TypeScript check on the changed scripts and their imported dependencies",
+    "git diff --check"
+  ],
+  "typecheckNote": "Full npm run typecheck is currently blocked by a pre-existing error in tmp/ma24-independent-quarantine/verify-nist-tn2363-review-clone.ts:106; targeted TypeScript check passed.",
+  "limits": "Synthetic replay and model substitute prove page/API/database consistency only. They do not establish historical or prospective Skill answer quality, valid human judgment, activation eligibility, deployed production behavior, or an actual production rollback. Other F12 surfaces, including non-mail approval, remain separately open."
+}
