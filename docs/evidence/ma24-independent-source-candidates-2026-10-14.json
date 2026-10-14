@@ -4,12 +4,12 @@
   "stage": "R4 source discovery only",
   "holdoutFrozen": false,
   "goldCreated": 0,
-  "filesDownloaded": 6,
+  "filesDownloaded": 7,
   "localRegistryAudit": {
     "checkedAt": "2026-10-14",
     "database": "local PostgreSQL, repeatable-read read-only transaction",
     "tables": ["knowledge_asset", "knowledge_upload_job", "knowledge_evaluation_review_v3.expected_sources"],
-    "candidateHashesChecked": 6,
+    "candidateHashesChecked": 7,
     "matchingAssets": 0,
     "matchingUploadJobs": 0,
     "matchingHistoricalGoldSources": 0,
@@ -99,6 +99,20 @@
       "sha256": "030a730584498f8b98109a1bf2da22a29cc443021c63fbd1c18cf2bad2da6910",
       "integrity": "valid OOXML; 346 ZIP parts; 82 slides with text; no macro, external-link part or external relationship",
       "status": "quarantined; user-confirmed MA24-18: PPTX read/citation acceptance only, excluded from independent answer-quality Gold and PPTX quality quota; product acceptance pending"
+    },
+    {
+      "kind": "pptx",
+      "title": "SD4ADDR: Bridging In-Vehicle Ethernet and V2X via SDN-Based Address Translation",
+      "publisher": "IEEE 802.11 Automotive Topic Interest Group public report page",
+      "metadataPage": "https://www.ieee802.org/11/Reports/auto_update.htm",
+      "sourceUrl": "https://mentor.ieee.org/802.11/dcn/25/11-25-1322-00-auto-sd4addr-bridging-in-vehicle-ethernet-and-v2x-via-sdn-based-address-translation.pptx",
+      "metadataChecked": "IEEE July 2025 public meeting page lists the technical presentation and its direct PPTX link.",
+      "contentRead": true,
+      "localQuarantinePath": "tmp/ma24-independent-quarantine/ieee-auto-sd4addr-2025.pptx",
+      "bytes": 3609415,
+      "sha256": "786e8324f221fb8d4e854e88515020b61079acb2f50d56e535441e10efbd92c2",
+      "integrity": "valid OOXML; 72 ZIP parts; 11 slides with native text; no macro/external-link parts or external relationships",
+      "status": "quarantined as potential independent PPTX quality source; research-result scope, question-level semantic overlap, precise chart coordinate and evaluation-use review pending; Gold 0"
     }
   ],
   "excluded": [
@@ -107,5 +121,5 @@
       "reason": "The browsing tool displayed full PDF text while checking the link; exposed to development review and unsuitable as a fresh holdout."
     }
   ],
-  "next": "Run PPTX read/citation acceptance on the IEEE slide 5/22 examples without Gold credit. Screen answer-level overlap and coordinates for the three remaining independent-quality candidates, find a separate eligible PPTX quality source, complete development fixes, then freeze eligible sources, Gold and retrieval configuration before either retrieval path."
+  "next": "Run PPTX read/citation acceptance on the GEPOF examples without Gold credit. Screen answer-level overlap and coordinates for the EU, ITU, ETSI and new IEEE automotive candidates, settle evaluation use of the research presentation, complete development fixes, then freeze eligible sources, Gold and retrieval configuration before either retrieval path."
 }

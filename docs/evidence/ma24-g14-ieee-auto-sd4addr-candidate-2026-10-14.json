@@ -1,0 +1,56 @@
+{
+  "schema": "ma24-g14-ieee-auto-sd4addr-candidate-v1",
+  "date": "2026-10-14",
+  "metadataPage": "https://www.ieee802.org/11/Reports/auto_update.htm",
+  "sourceUrl": "https://mentor.ieee.org/802.11/dcn/25/11-25-1322-00-auto-sd4addr-bridging-in-vehicle-ethernet-and-v2x-via-sdn-based-address-translation.pptx",
+  "publisher": "IEEE 802.11 Automotive Topic Interest Group public report page; presentation by Instituto de Telecomunicações / Universidade de Aveiro authors",
+  "sourceDescription": "SD4ADDR: Bridging In-Vehicle Ethernet and V2X via SDN-Based Address Translation, July 2025 meeting presentation",
+  "localQuarantinePath": "tmp/ma24-independent-quarantine/ieee-auto-sd4addr-2025.pptx",
+  "bytes": 3609415,
+  "sha256": "786e8324f221fb8d4e854e88515020b61079acb2f50d56e535441e10efbd92c2",
+  "integrity": {"validOoxml": true, "zipParts": 72, "slides": 11, "slidesWithNativeText": 11, "macroOrExternalLinkParts": 0, "externalRelationships": 0},
+  "contentScreen": {
+    "doclingConversion": "success; 11 pages; 7632-byte local Markdown",
+    "doclingWarnings": "page 2 provenance boxes clamped to slide bounds; do not use those boxes as Gold coordinates",
+    "topics": ["802.3/802.11 header translation", "SD4ADDR Ethernet-over-Ethernet encapsulation", "OvS and ONOS implementation", "forwarding-time and throughput evaluation", "Aveiro living-lab deployment"],
+    "originalSlidesVisuallyChecked": [3, 5, 6, 7],
+    "domainFit": "substantive network implementation and measured performance; source-specific research result, not a current product or standard claim"
+  },
+  "localExposureScreen": {
+    "exactHashCommand": "node scripts/run-tsx.cjs scripts/audit-g14-candidate-hash-local.ts 786e8324f221fb8d4e854e88515020b61079acb2f50d56e535441e10efbd92c2",
+    "matchingAssets": 0,
+    "matchingUploadJobs": 0,
+    "matchingHistoricalGoldRows": 0,
+    "distinctiveTermFiles": 0,
+    "terms": ["SD4ADDR", "0x08AF", "Aveiro Tech City Living Lab"],
+    "limit": "Exact hash and term absence do not prove answer-level semantic independence, complete historical-output non-exposure, or permission for final evaluation use."
+  },
+  "draftQuestions": [
+    {
+      "id": "ieee-auto-sd4addr-implementation",
+      "status": "draft; not Gold; intended use unconfirmed",
+      "question": "按这份 2025 年 IEEE 802.11 汽车主题演示，SD4ADDR 在哪些开源组件中实现，扩展了什么封装动作，并用哪个 etherType 标记其封装包？",
+      "draftAnswer": "演示称方案实现在 OvS 与 ONOS SDN 控制器中；扩展 OpenFlow 的 encap/decap 动作以支持 Ethernet-over-Ethernet 封装与解封装，用 etherType 0x08AF 标记 SD4ADDR 封装包。",
+      "sourceCoordinate": "original slide 6, Implementation, printed Slide 6; visible text bullets",
+      "visualCheck": "pass: components, actions and etherType are legible"
+    },
+    {
+      "id": "ieee-auto-sd4addr-forwarding-time",
+      "status": "draft; not Gold; intended use unconfirmed",
+      "question": "按这份演示第 7 页的实测图，normal、encap、decap 的平均转发时间各是多少微秒？演示把 decap 较高的耗时归因于什么？",
+      "draftAnswer": "图上分别为 4.639、4.990、5.943 微秒；演示将 decap 较高耗时归因于 recirculation 对解封装后的包重新解析。",
+      "sourceCoordinate": "original slide 7, Forwarding time evaluation, printed Slide 7; three bar labels and final text bullet",
+      "visualCheck": "pass: numeric chart labels and explanation are legible on original render; Docling text alone omits chart values"
+    }
+  ],
+  "approval": {
+    "candidateQuarantined": true,
+    "sourceIndependenceEstablished": false,
+    "questionIndependenceEstablished": false,
+    "evaluationUseConfirmed": false,
+    "goldCreated": 0,
+    "modelCalls": 0,
+    "productionKnowledgeWrites": 0
+  },
+  "next": "Audit answer-level semantic overlap and source-use boundary, inspect original chart and extraction coordinates through the product path without tuning on held-out answers, then seek user review of this new research-presentation question type before any Gold freeze."
+}
