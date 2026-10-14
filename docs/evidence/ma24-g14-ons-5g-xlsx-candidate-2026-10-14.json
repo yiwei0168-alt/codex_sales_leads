@@ -71,6 +71,13 @@
     "reuseStatus": "preliminary source-use check for short attributed factual questions; not a blanket licence determination for redistribution of the complete workbook or third-party content",
     "sourceApproved": false
   },
+  "boundedDevelopmentTextScreen": {
+    "checkedOn": "2026-10-14",
+    "scope": "Tracked scripts/src/docs excluding this candidate and its two status summaries, plus ignored tmp JSON/JSONL/Markdown/text artifacts; terms Aberdeen City, Aberdeenshire, their area codes, 5G coverage with Highland, and 35.65.",
+    "finding": "No targeted 5G answer or source values found in prior development text. An older ultrafast fixed-broadband extraction contains the same Aberdeen area names and codes with different values (93.4 and 48.5); three other raw hits were bbox decimals containing 35.65, and one was this draft's overlap output.",
+    "limitation": "A bounded local text search cannot prove absence from all prior model-provider context, binary artifacts, unscanned logs, or semantic paraphrases; complete exposure review remains open.",
+    "independenceApproved": false
+  },
   "independenceBoundary": "Downloaded after layout-v2.0.8 was committed. This 5G geographic-area metric is distinct from the development-exposed ONS ultrafast fixed-premises metric. Do not use it to tune product extraction or retrieval; if a fix depends on this source, remove it from fresh quality holdout.",
   "sourceApproved": false,
   "goldCreated": 0,
