@@ -9,6 +9,19 @@
     "finding": "The 300-case corpus consists of model datasheet, product specification/comparison/deployment and routing-boundary templates. It contains no GEPOF or P802.3bv question. A local docs/src/scripts keyword scan found GEPOF/P802.3bv only in the new candidate/status records.",
     "limit": "This is a template and keyword screen, not a full semantic comparison with all historical model prompts, development retrieval outputs or provider-side exposure. Question independence is unapproved."
   },
+  "historicalHoldoutOutputScreen": {
+    "sourceDirectory": "tmp/ma24-holdout-evaluation/",
+    "filesSearched": 11,
+    "receipt": "docs/evidence/ma24-holdout-final-score-2026-10-10.json",
+    "receiptBoundSha256": {
+      "blind-questions.json": "711ed12f970c54d7d3a73bd5d824946aa7c89cb3c9995b2976445c88bc017d70",
+      "candidates.json": "7c238898ac8f4f96d8338992ff023fbe2af3cbed2fefa41ba587e5db60f9ee08",
+      "verdicts.json": "7065329ffc4057d0f18f6249a5754aeade4a8c0fb9e1e18b313fd7600d771218"
+    },
+    "readOnlySearch": "rg -i -l for GEPOF, P802.3bv, VDE proposal, plastic optical fiber, 15m/40m/50m of POF, then broader whole-word POF and VDE",
+    "result": "zero matching files in the ignored local historical holdout directory",
+    "limit": "The receipt binds the main blind prompts, candidate outputs and verdicts; the directory also contains advisory and pilot files. Zero term hits do not prove semantic independence, exhaust all development runs or rule out provider-side exposure."
+  },
   "draftQuestions": [
     {
       "id": "ieee-gepof-2014-objectives-distances",
