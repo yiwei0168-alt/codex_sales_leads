@@ -173,7 +173,8 @@ try {
     webCompatibility = await verifyMa24WebCloneCompatibility({ admin: clone,
       applicationDatabaseUrl: applicationSource.toString(), migrationDatabaseUrl: cloneUrl.toString(),
       reviewUi: process.argv.includes("--review-ui"),
-      conversationUi: process.argv.includes("--conversation-ui") });
+      conversationUi: process.argv.includes("--conversation-ui"),
+      frontendUi: process.argv.includes("--frontend-ui") });
   }
   console.log(JSON.stringify({ archive: newest, archiveSha256: manifest.sha256, restored: true,
     migrationRange: "127-134", rollbackVerified: true, committedOnDisposableClone: true,

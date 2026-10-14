@@ -61,6 +61,7 @@ export async function verifyMa24WebCloneCompatibility(options: {
   migrationDatabaseUrl: string;
   reviewUi?: boolean;
   conversationUi?: boolean;
+  frontendUi?: boolean;
 }): Promise<unknown> {
   assert.equal(await readFile(resolve(oldRoot, ".next/BUILD_ID"), "utf8").then(value => value.trim()), oldBuild);
   const candidateBuild = (await readFile(resolve(candidateRoot, ".next/BUILD_ID"), "utf8")).trim();
@@ -137,6 +138,7 @@ export async function verifyMa24WebCloneCompatibility(options: {
       }
       let reviewPage: unknown;
       let conversationPage: unknown;
+      let mailboxDrawerPage: unknown;
       if (version.name === "candidate-web" && options.reviewUi) {
         const { verifyMa24ReviewPageClone } = await import("./verify-ma24-review-page-clone");
         try {
@@ -156,12 +158,17 @@ export async function verifyMa24WebCloneCompatibility(options: {
         const { verifyMa24ConversationDeleteClone } = await import("./verify-ma24-conversation-delete-clone");
         conversationPage = await verifyMa24ConversationDeleteClone({ admin: options.admin, base, cookie, userId });
       }
+      if (version.name === "candidate-web" && options.frontendUi) {
+        const { verifyMa24MailboxDrawerClone } = await import("./verify-ma24-mailbox-drawer-clone");
+        mailboxDrawerPage = await verifyMa24MailboxDrawerClone({ base, cookie });
+      }
       results.push({ version: version.name, buildId: version.buildId, manifestStatus: manifest.status,
         anonymousUploadStatus: denied.status, syntheticLoginStatus: login.status,
         authenticatedUploadStatus: list.status, visibleUploadJobs: listed.jobs.length,
         ...(acceptanceReviewStatus ? { acceptanceReviewStatus } : {}),
         ...(reviewPage ? { reviewPage } : {}),
-        ...(conversationPage ? { conversationPage } : {}) });
+        ...(conversationPage ? { conversationPage } : {}),
+        ...(mailboxDrawerPage ? { mailboxDrawerPage } : {}) });
     } finally {
       await stopOwnedServer(child);
     }

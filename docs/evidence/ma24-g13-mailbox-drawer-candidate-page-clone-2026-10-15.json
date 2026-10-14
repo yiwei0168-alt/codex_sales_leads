@@ -1,0 +1,17 @@
+{
+  "goal": "MA24 G13 F01/F02",
+  "date": "2026-10-15",
+  "sourceCommit": "c4ad5cc13501b1b8f86f3e5c959c5149a8f8e4fe",
+  "candidateWebBuildId": "SYTDOFazJ7rlat8Kz_ESL",
+  "backupSha256": "17db517922f0ee8067391544418f0c8af9f77ee5f48203b938b7559ba528d428",
+  "command": "npm run ma24:verify-frontend-ui-clone",
+  "environment": "Actual candidate Next page and application API against disposable local PostgreSQL restore; migrations 127-134; synthetic account with no connected mailboxes",
+  "results": [
+    { "viewport": "1366x900", "opaque": true, "insideViewport": true, "contentOverflow": false, "escapeFocusReturn": true, "unsavedAddressPreserved": true, "horizontalOverflow": false, "screenshotSha256": "0e1c05f618633759d19e31086691794e3e5dd26c58a182698f4b6d32b47c950f" },
+    { "viewport": "1366x360", "opaque": true, "insideViewport": true, "contentOverflow": true, "internalWheelScroll": true, "escapeFocusReturn": true, "unsavedAddressPreserved": true, "horizontalOverflow": false, "screenshotSha256": "cfe1babd5ecea92f335bae05253a0707659e6914e1d187b7babbc0a7a8c0d29d" },
+    { "viewport": "390x760", "opaque": true, "fullWidthDrawer": true, "contentOverflow": true, "internalWheelScroll": true, "escapeFocusReturn": true, "unsavedAddressPreserved": true, "horizontalOverflow": false, "screenshotSha256": "cdd95f9905ebd1de2b255486b86d4b4ac9f995d6f2b74afdd674c9e3ce7878d5" }
+  ],
+  "visualInspection": "All three local screenshots inspected. The panel is opaque and above the dimmed page; title and close control remain visible while content scrolls. The mobile capture shows the scrolled form inside the drawer.",
+  "testHistory": "Initial desktop assertion incorrectly required scrolling despite no overflow. Second attempt looked for a textbox in a collapsed details section after reopening. Both harness errors were corrected; two subsequent full clone runs passed.",
+  "limits": "No connected mailbox or real IMAP sync, no mail write or model call, no production deploy. This covers the empty-account drawer path only, not all F01-F13 entries or background scrolling with a populated mailbox."
+}
