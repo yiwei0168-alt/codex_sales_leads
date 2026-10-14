@@ -85,6 +85,12 @@ def main():
     with zipfile.ZipFile(source) as archive:
         for block in document['blocks']:
             if block['quality']!='pending-ocr': continue
+            if block['blockType']=='table' and block.get('metadata',{}).get('reviewReason')=='cached-spreadsheet-error':
+                if block['unitType']!='sheet' or block['section'] not in originals: raise ValueError('Cached-error sheet changed')
+                records.append(dict(blockId=block['id'],unitIndex=block['unitIndex'],unitType='sheet',
+                    status='review-required',reason='cached-spreadsheet-error',sheetName=block['section'],
+                    cachedErrorCount=block['metadata']['cachedErrorCount'],cachedErrorCells=block['metadata']['cachedErrorCells']))
+                continue
             reference=block['visualReference']
             if block['unitType']!='sheet' or reference not in originals.get(block['section'],[]): raise ValueError('Visual reference changed')
             record=dict(blockId=block['id'],unitIndex=block['unitIndex'],unitType='sheet',status='review-required',
@@ -96,7 +102,7 @@ def main():
                 except (KeyError,ValueError,ET.ParseError): record['reason']='unsupported-sheet-visual-reference'
             else: record['reason']='unsupported-sheet-visual-reference'
             records.append(record)
-    if not records: raise ValueError('Pending sheet visuals required')
+    if not records: raise ValueError('Pending sheet review units required')
     if sha256(source.read_bytes()).hexdigest()!=source_hash or artifact.read_bytes()!=artifact_bytes: raise ValueError('Source changed')
     output.mkdir(parents=True,exist_ok=True)
     result=dict(schema='xlsx-visual-review-candidates-v1',sourceSha256=source_hash,extractionArtifactSha256=sha256(artifact_bytes).hexdigest(),records=records,externalCalls=0,qualityAccepted=False,extractionStatusChanged=False)

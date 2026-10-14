@@ -1,0 +1,49 @@
+{
+  "schema": "ma24-g14-eu-xlsx-reviewed-citation-clone-v1",
+  "sourceSha256": "2ba1b1af51b4d27a703e4e5495ec89724d26bd6584a6b56244d8ecb7f54e079a",
+  "extractorVersion": "layout-v2.0.7",
+  "offlineExtractionArtifactSha256": "c554c7a80ca329c5372af97cedd575a11fbc82abcf824f6e6af8f58b23a304d1",
+  "offlineCandidatePackageSha256": "2af8f902644bf4a936261b2ee16908d03043377179485c26527c48410c574af7",
+  "scope": "local-replay-clone-only; synthetic private account",
+  "extraction": {
+    "blocks": 7,
+    "pendingReviewIds": ["sheet-1-visual-1", "sheet-2-table", "sheet-2-visual-1", "sheet-5-visual-1"],
+    "cachedErrorCells": ["Report!K12", "Report!L12", "Report!M12", "Report!N12"],
+    "dataSourceTableUnchangedFromV206": true,
+    "candidatePackageValidatedAgainstSourceAndArtifact": true
+  },
+  "cloneReview": {
+    "testDecisionsSaved": 4,
+    "resolved": 4,
+    "completionReceiptCreated": true,
+    "treeStatus": "searchable",
+    "syntheticDocumentsBeforeCleanup": 1,
+    "syntheticUsersJobsReviewsDocumentsAfterCleanup": 0,
+    "evidenceNodes": 7,
+    "indexedCachedErrorStrings": 0
+  },
+  "citationCheck": {
+    "singleTermProductSearch": "Burgenland: found the synthetic document",
+    "compoundProductSearch": "Burgenland VHCN: not found; VHCN appears in the separately reviewed Instructions unit, while the Data source grid names the metric as Overall FTTP & DOCSIS 3.1 coverage. Current fulltext matching requires the terms in one evidence node.",
+    "productTreeRead": "Data source!A1:S489",
+    "exactCellLinesChecked": ["O2: 107115", "S2: 133302", "O3: 5648", "R3: 8494", "S3: 14284"]
+  },
+  "checks": [
+    "python scripts/test_knowledge_extraction_v2.py: 8 passed",
+    "npx vitest run src/lib/knowledge/visual-review-candidates.test.ts src/lib/knowledge/extracted-tree.test.ts: 13 passed",
+    "targeted eslint: 0 errors",
+    "synthetic review UI at 1366/390/320 px: four cells visible, original link visible, incomplete review blocked, no horizontal overflow; 390 px screenshot visually inspected",
+    "npm run typecheck: passed",
+    "npm run build: passed including 26 static pages",
+    "scripts/verify-eu-xlsx-review-gate-clone.ts: passed with 4 pending units",
+    "scripts/verify-ieee-overview-review-clone.ts: 39 visual blocks identical after extractor-version and storage-key normalization",
+    "scripts/verify-eu-xlsx-reviewed-citation-clone.ts: passed"
+  ],
+  "externalCalls": 0,
+  "modelCalls": 0,
+  "productionKnowledgeWrites": 0,
+  "sourceIndependenceEstablished": false,
+  "goldCreated": 0,
+  "qualityAccepted": false,
+  "remaining": "Fix or explicitly score compound document search across evidence units, complete production page-to-database and visible citation acceptance, finish source independence/Gold audit, and retain the original license and mid-2025 method caveats. Clone review decisions were deleted."
+}

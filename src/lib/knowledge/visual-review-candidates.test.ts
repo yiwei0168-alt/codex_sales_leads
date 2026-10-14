@@ -38,3 +38,18 @@ it('binds worksheet drawing references field by field, rejecting another sheet o
  expect(()=>verify({...item,sheetName:'Other'})).toThrow();
  expect(()=>verify({...item,visualReference:{...reference,relationshipId:'rId2'}})).toThrow();
 });
+it('binds cached spreadsheet error candidates to the pending table and exact cells',()=>{
+ const cells=[{cell:'K12',value:'#VALUE!'},{cell:'L12',value:'#VALUE!'}];
+ const source:Block={id:'sheet-2-table',unitType:'sheet',unitIndex:2,blockType:'table',quality:'pending-ocr',section:'Report',
+  metadata:{reviewReason:'cached-spreadsheet-error',cachedErrorCount:2,cachedErrorCells:cells}};
+ const item={blockId:source.id,unitIndex:2,unitType:'sheet',status:'review-required',reason:'cached-spreadsheet-error',
+  sheetName:'Report',cachedErrorCount:2,cachedErrorCells:cells};
+ const verify=(record:unknown)=>{
+  const bytes=Buffer.from(JSON.stringify({schema:'xlsx-visual-review-candidates-v1',sourceSha256:'a'.repeat(64),extractionArtifactSha256:'b'.repeat(64),externalCalls:0,qualityAccepted:false,extractionStatusChanged:false,records:[record]}));
+  return validateVisualCandidates(bytes,{sourceSha256:'a'.repeat(64),artifactSha256:'b'.repeat(64),packageSha256:createHash('sha256').update(bytes).digest('hex')},[source]);
+ };
+ expect(verify(item)[0].cachedErrorCount).toBe(2);
+ for(const changed of [{...item,cachedErrorCount:1},{...item,cachedErrorCells:[cells[0]]},{...item,sheetName:'Data source'},
+  {...item,visualReference:{kind:'drawing',relationshipId:'rId1',worksheetPart:'xl/worksheets/sheet2.xml'}}])
+  expect(()=>verify(changed)).toThrow();
+});

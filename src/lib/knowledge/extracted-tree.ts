@@ -1,7 +1,7 @@
 import {createHash} from "node:crypto";
 import type {PoolClient} from "pg";
 const digest=(value:string)=>createHash("sha256").update(value).digest("hex");
-export type Block={id:string;unitType:"page"|"slide"|"sheet"|"document";unitIndex:number;blockType:string;quality:string;review?:{receiptId:string;revision:number;decision:string;originalQuality:string};text?:string;section?:string;bbox?:number[];shapePath?:number[];shapeIdPath?:number[];table?:{headers?:unknown[];rows?:unknown[][];startRow?:number;headerRow?:number;startColumn?:number;cellRange?:string}};
+export type Block={id:string;unitType:"page"|"slide"|"sheet"|"document";unitIndex:number;blockType:string;quality:string;review?:{receiptId:string;revision:number;decision:string;originalQuality:string};text?:string;section?:string;bbox?:number[];shapePath?:number[];shapeIdPath?:number[];table?:{headers?:unknown[];rows?:unknown[][];startRow?:number;headerRow?:number;startColumn?:number;cellRange?:string};metadata?:{reviewReason?:string;cachedErrorCount?:number;cachedErrorCells?:Array<{cell:string;value:string}>}};
 const unitKey=(block:Block)=>`${block.unitType}:${block.unitIndex}`;
 export function visualSourceLocation(block:Block & {visualReference?:{kind:string;worksheetPart:string;relationshipId:string|null}}){
  const reference=block.visualReference;if(!reference)return {};

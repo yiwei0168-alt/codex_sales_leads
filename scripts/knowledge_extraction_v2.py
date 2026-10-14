@@ -11,7 +11,7 @@ from pptx.enum.shapes import MSO_SHAPE_TYPE
 from openpyxl import load_workbook
 from openpyxl.utils import get_column_letter
 
-EXTRACTOR_VERSION = "layout-v2.0.6"
+EXTRACTOR_VERSION = "layout-v2.0.7"
 
 def _clean(value):
     return " ".join(str("" if value is None else value).replace("\x00", "").split()).strip()
@@ -110,17 +110,27 @@ def extract_xlsx(path: Path):
     for index,name in enumerate(workbook.sheetnames,1):
         sheet=workbook[name]
         start=len(blocks)
-        rows=[[_clean(cell) for cell in row] for row in sheet.iter_rows(values_only=True)] if hasattr(sheet,"iter_rows") else []
+        rows=[];cached_errors=[]
+        if hasattr(sheet,"iter_rows"):
+            for cell_row in sheet.iter_rows(values_only=False):
+                rows.append([_clean(cell.value) for cell in cell_row])
+                for cell in cell_row:
+                    if cell.data_type=="e": cached_errors.append({"cell":cell.coordinate,"value":_clean(cell.value)})
         merged=[str(item) for item in sheet.merged_cells.ranges] if hasattr(sheet,"merged_cells") else []
         # Keep physical row positions, including leading/interior blank rows.
         # Removing them makes startRow=2 point at different original cells.
         if any(any(row) for row in rows):
             width=max(len(row) for row in rows);headers=(rows[0]+[""]*width)[:width]
-            blocks.append(_block(f"sheet-{index}-table","sheet",index,"table",section=sheet.title,table={"headers":headers,"rows":[(row+[""]*width)[:width] for row in rows[1:]],"startRow":2,"headerRow":1,"startColumn":1,"cellRange":f"A1:{get_column_letter(width)}{len(rows)}"},metadata={"mergedRanges":merged}))
+            error_note=f"Cached spreadsheet errors ({len(cached_errors)}): "+", ".join(f"{item['cell']} {item['value']}" for item in cached_errors[:32]) if cached_errors else ""
+            metadata={"mergedRanges":merged}
+            if cached_errors: metadata.update({"reviewReason":"cached-spreadsheet-error","cachedErrorCount":len(cached_errors),"cachedErrorCells":cached_errors[:32]})
+            blocks.append(_block(f"sheet-{index}-table","sheet",index,"table",text=error_note,
+                quality="pending-ocr" if cached_errors else "success",section=sheet.title,
+                table={"headers":headers,"rows":[(row+[""]*width)[:width] for row in rows[1:]],"startRow":2,"headerRow":1,"startColumn":1,"cellRange":f"A1:{get_column_letter(width)}{len(rows)}"},metadata=metadata))
         for ordinal,reference in enumerate(visuals.get(sheet.title,[]),1):
             blocks.append(_block(f"sheet-{index}-visual-{ordinal}","sheet",index,"pending-ocr","",quality="pending-ocr",
                 section=sheet.title,visualReference=reference,metadata={"reviewReason":"unparsed-sheet-visual","sourceReference":reference}))
-        statuses.append("pending-ocr" if visuals.get(sheet.title) else "success" if len(blocks)>start else "blank")
+        statuses.append("pending-ocr" if visuals.get(sheet.title) or cached_errors else "success" if len(blocks)>start else "blank")
     workbook.close()
     return blocks,statuses
 

@@ -16,6 +16,21 @@ from knowledge_extraction_v2 import extract_file
 
 
 class SpreadsheetCoordinatesTest(unittest.TestCase):
+    def test_cached_formula_error_table_requires_review(self):
+        with TemporaryDirectory() as directory:
+            path=Path(directory)/"cached-errors.xlsx"
+            book=Workbook(); report=book.active; report.title="Report"
+            report["A1"]="Metric"; report["B2"]="#VALUE!"; report["B2"].data_type="e"
+            literal=book.create_sheet("Literal"); literal["A1"]="The formula may show #VALUE!"
+            book.save(path); book.close()
+            artifact=extract_file(path,"cached-errors.xlsx")
+            self.assertEqual(artifact["qualitySummary"],{"success":1,"blank":0,"pending-ocr":1,"failed":0})
+            table=artifact["blocks"][0]
+            self.assertEqual((table["id"],table["quality"]),("sheet-1-table","pending-ocr"))
+            self.assertEqual(table["metadata"]["reviewReason"],"cached-spreadsheet-error")
+            self.assertEqual(table["metadata"]["cachedErrorCells"],[{"cell":"B2","value":"#VALUE!"}])
+            self.assertEqual(artifact["blocks"][1]["quality"],"success")
+
     def test_mixed_and_image_only_sheets_are_not_complete(self):
         with TemporaryDirectory() as directory:
             path=Path(directory)/"visual.xlsx"; picture=Path(directory)/"image.png"

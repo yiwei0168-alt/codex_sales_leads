@@ -9,6 +9,7 @@ const sha=z.string().regex(/^[a-f0-9]{64}$/);
 const ocrLines=z.array(z.object({text:z.string(),confidence:z.number(),box:z.array(z.array(z.number()))}));
 const candidate=z.object({blockId:z.string(),unitIndex:z.number().int().positive(),unitType:z.enum(['page','sheet']).optional(),shapePath:z.array(z.number().int().positive()).optional(),shapeIdPath:z.array(z.number().int().positive()).optional(),
   sheetName:z.string().optional(),visualReference:z.object({kind:z.string(),worksheetPart:z.string(),relationshipId:z.string().nullable()}).optional(),
+  cachedErrorCount:z.number().int().positive().optional(),cachedErrorCells:z.array(z.object({cell:z.string().regex(/^[A-Z]{1,3}[1-9][0-9]*$/),value:z.string().min(1)})).optional(),
   sheetObjects:z.array(z.object({kind:z.string(),objectIndex:z.number().int().positive(),anchor:z.string(),text:z.string(),sourcePart:z.string(),images:z.array(z.object({imageIndex:z.number().int().positive(),imageFile:z.string(),reviewImageSha256:sha,ocrLines:ocrLines.optional()})).optional()})).optional(),
   status:z.literal('review-required'),reason:z.string(),imageFile:z.string().optional(),reviewImageSha256:sha.optional(),
   rotation:z.number().optional(),coordinateSpace:z.string().optional(),
@@ -34,9 +35,16 @@ export function validateVisualCandidates(bytes:Uint8Array,expected:{sourceSha256
     if(unitType==='slide'&&(!record.shapePath?.length||!record.shapeIdPath?.length||record.unitType))throw new Error('Incomplete slide locator');
     if(unitType==='sheet'){
       const source=block as Block & {visualReference?:VisualCandidate['visualReference']};
-      if(record.unitType!=='sheet'||record.sheetName!==block.section||!source.visualReference||!record.visualReference
+      if(record.unitType!=='sheet'||record.sheetName!==block.section)throw new Error('Sheet review identity mismatch');
+      if(block.blockType==='table'&&block.metadata?.reviewReason==='cached-spreadsheet-error'){
+        if(record.reason!=='cached-spreadsheet-error'||record.visualReference||record.sheetObjects
+          ||record.cachedErrorCount!==block.metadata.cachedErrorCount||!record.cachedErrorCells?.length
+          ||JSON.stringify(record.cachedErrorCells)!==JSON.stringify(block.metadata.cachedErrorCells))
+          throw new Error('Cached-error table identity mismatch');
+      }else if(!source.visualReference||!record.visualReference
         ||source.visualReference.kind!==record.visualReference.kind||source.visualReference.worksheetPart!==record.visualReference.worksheetPart
-        ||source.visualReference.relationshipId!==record.visualReference.relationshipId||!record.sheetObjects)throw new Error('Sheet visual identity mismatch');
+        ||source.visualReference.relationshipId!==record.visualReference.relationshipId||!record.sheetObjects
+        ||record.cachedErrorCount||record.cachedErrorCells)throw new Error('Sheet visual identity mismatch');
     }
     if(record.imageFile&&(!record.reviewImageSha256||record.imageFile!==`${record.reviewImageSha256}.png`))throw new Error('Invalid visual image path');
     const objectIds=new Set<number>();

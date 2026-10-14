@@ -74,11 +74,11 @@ try {
   assert.equal(row.error_code, "extraction-review-required");
   assert.equal(row.published_document_id, null);
   assert.equal(row.source_sha256, "2ba1b1af51b4d27a703e4e5495ec89724d26bd6584a6b56244d8ecb7f54e079a");
-  assert.equal(row.metrics.unresolvedBlocks, 3);
+  assert.equal(row.metrics.unresolvedBlocks, 4);
   assert.deepEqual(row.metrics.qualitySummary, { blank: 0, failed: 0, success: 3, "pending-ocr": 3 });
   assert.equal((await listKnowledgeUploadJobs(owner)).find(item => item.id === job.id)?.treeStatus, "review-required");
   const review = await getExtractionReview(owner, job.id);
-  assert.equal(review.total, 3);
+  assert.equal(review.total, 4);
   assert.equal(review.resolved, 0);
   await assert.rejects(() => registerVectorlessUpload(owner, job.id, { language: "und", authorityLevel: 2 }),
     /Unresolved extraction/);

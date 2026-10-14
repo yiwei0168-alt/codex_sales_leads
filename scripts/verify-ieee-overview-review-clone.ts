@@ -97,16 +97,21 @@ try {
     const newJson = JSON.parse(live.toString("utf8"));
     const oldBlocks = oldJson.documents[0].blocks;
     const newBlocks = newJson.documents[0].blocks;
-    const differingTopLevel = [...new Set([...Object.keys(oldJson), ...Object.keys(newJson)])]
-      .filter(key => JSON.stringify(oldJson[key]) !== JSON.stringify(newJson[key]));
-    const differingDocumentFields = [...new Set([...Object.keys(oldJson.documents[0]), ...Object.keys(newJson.documents[0])])]
-      .filter(key => JSON.stringify(oldJson.documents[0][key]) !== JSON.stringify(newJson.documents[0][key]));
-    assert.deepEqual(differingTopLevel, ["documents"]);
-    assert.deepEqual(differingDocumentFields, ["storageKey"]);
-    assert.equal(oldJson.extractorVersion, newJson.extractorVersion);
+    const normalized = structuredClone(newJson);
+    normalized.documents[0].storageKey = oldJson.documents[0].storageKey;
+    if (newJson.extractorVersion !== oldJson.extractorVersion) {
+      assert.equal(oldJson.extractorVersion, "layout-v2.0.6");
+      assert.equal(newJson.extractorVersion, "layout-v2.0.7");
+      normalized.extractorVersion = oldJson.extractorVersion;
+      normalized.documents[0].extractorVersion = oldJson.documents[0].extractorVersion;
+      for (const block of normalized.documents[0].blocks) block.extractorVersion = oldJson.extractorVersion;
+    }
+    assert.deepEqual(normalized, oldJson);
     assert.equal(oldBlocks.length, 268);
-    assert.equal(sha256(Buffer.from(JSON.stringify(oldBlocks))), sha256(Buffer.from(JSON.stringify(newBlocks))));
-    artifactParity = "identical-blocks-storage-key-only-difference";
+    assert.equal(newBlocks.length, 268);
+    artifactParity = newJson.extractorVersion === oldJson.extractorVersion
+      ? "identical-blocks-storage-key-only-difference"
+      : "identical-blocks-after-version-normalization-and-storage-key";
   }
   assert.equal(first.total, 39);
   const ids: string[] = [];
