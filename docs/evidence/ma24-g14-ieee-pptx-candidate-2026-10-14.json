@@ -41,6 +41,12 @@
     "productionKnowledgeWrites": 0,
     "modelCalls": 0
   },
+  "confirmedUse": {
+    "ruleId": "MA24-18",
+    "userChoice": "仅作 PPTX 读取与引用验收",
+    "independentAnswerQualityEligible": false,
+    "productReadCitationAcceptance": "pending"
+  },
   "limits": [
     "The 2014 tutorial states proposed study-group objectives; it is not evidence of current product support or current standards status.",
     "Exact registry and local text absence does not prove semantic independence or historical model non-exposure.",

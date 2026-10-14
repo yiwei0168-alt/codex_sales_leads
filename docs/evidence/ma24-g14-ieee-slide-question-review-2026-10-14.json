@@ -3,6 +3,15 @@
   "date": "2026-10-14",
   "sourceSha256": "030a730584498f8b98109a1bf2da22a29cc443021c63fbd1c18cf2bad2da6910",
   "sourceUrl": "https://ieee802.org/3/GEPOFSG/public/Tutorial/Presentation_v1.4.pptx",
+  "confirmedUse": {
+    "ruleId": "MA24-18",
+    "userChoice": "仅作 PPTX 读取与引用验收",
+    "scope": "this IEEE 2014 tutorial and its two visually checked examples",
+    "independentQualityQuestionEligible": false,
+    "independentGoldEligible": false,
+    "pptxQualityQuotaCredit": 0,
+    "implementation": "decision recorded; product read/citation acceptance still pending"
+  },
   "reviewMethod": "PowerPoint opened the quarantined original read-only and exported slides 5, 22 and 61 at 1600x900; each rendered image was inspected visually against its printed slide number and text. Images and original remain local under ignored tmp/ma24-independent-quarantine/.",
   "corpusScreen": {
     "currentCorpus": "src/lib/knowledge/evaluation/corpus.ts",
@@ -25,7 +34,7 @@
   "draftQuestions": [
     {
       "id": "ieee-gepof-2014-objectives-distances",
-      "status": "draft-for-question-level-review; not Gold",
+      "status": "PPTX read/citation acceptance example only; not independent Gold",
       "question": "在 2014 年 IEEE 802 的 Gigabit Ethernet over Plastic Optical Fiber 教程所列研究目标中，汽车环境的两种 POF 链路条件以及家庭/工业环境的 POF 链路条件分别是什么？",
       "draftAnswer": "汽车环境：至少 15 m POF、4 个 POF 连接；或至少 40 m POF、无 POF 连接。家庭和工业环境：至少 50 m POF、1 个 POF 连接。",
       "sourceCoordinate": "slide 5, title Objectives, bullets beginning For the automotive environment and For the home and industrial environment; printed page number 5",
@@ -34,7 +43,7 @@
     },
     {
       "id": "ieee-gepof-2014-vde-proposal-status",
-      "status": "draft-for-question-level-review; not Gold",
+      "status": "PPTX read/citation acceptance example only; not independent Gold",
       "question": "这份 2014 年教程介绍 VDE 方案时，研究组当时是否已采纳技术提案？教程怎样描述 VDE 材料的提交性质？",
       "draftAnswer": "当时研究组尚未采纳技术提案；VDE 方案是作为对 IEEE 802.3 的贡献提交的。",
       "sourceCoordinate": "slide 22, title VDE proposal, first bullet and indented statement SG has not adopted technical proposals; printed page number 22",
@@ -53,6 +62,6 @@
     "approvedGoldQuestions": 0,
     "modelCalls": 0,
     "productionKnowledgeWrites": 0,
-    "remaining": "Complete historical prompt/output exposure and semantic overlap audit, source/permission and precise answer review for the full independent set, then freeze source and Gold before either retrieval-path run."
+    "remaining": "Run product PPTX read/citation acceptance on the two examples. Find a separate eligible PPTX source for independent answer-quality Gold; complete source/permission, overlap and precise-answer audit for the full independent set before either retrieval-path run."
   }
 }

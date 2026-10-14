@@ -98,7 +98,7 @@
       "bytes": 13438668,
       "sha256": "030a730584498f8b98109a1bf2da22a29cc443021c63fbd1c18cf2bad2da6910",
       "integrity": "valid OOXML; 346 ZIP parts; 82 slides with text; no macro, external-link part or external relationship",
-      "status": "quarantined; substantive networking content and no exact local registry match; historical proposal context, question overlap and visual Gold coordinates pending"
+      "status": "quarantined; user-confirmed MA24-18: PPTX read/citation acceptance only, excluded from independent answer-quality Gold and PPTX quality quota; product acceptance pending"
     }
   ],
   "excluded": [
@@ -107,5 +107,5 @@
       "reason": "The browsing tool displayed full PDF text while checking the link; exposed to development review and unsuitable as a fresh holdout."
     }
   ],
-  "next": "Screen answer-level overlap and development exposure for the four retained sources, including the IEEE technical PPTX; review original-slide and other source coordinates, complete development fixes, freeze eligible sources and retrieval configuration, then author Gold before either retrieval path."
+  "next": "Run PPTX read/citation acceptance on the IEEE slide 5/22 examples without Gold credit. Screen answer-level overlap and coordinates for the three remaining independent-quality candidates, find a separate eligible PPTX quality source, complete development fixes, then freeze eligible sources, Gold and retrieval configuration before either retrieval path."
 }

@@ -803,3 +803,7 @@ MODESEL-15：53 项本地测试通过。旧入口仅返回停用提示，配置�
 2026-10-14 补验：成功保存后未修改的条目不能重复提交新修订，冲突后的草稿仍可重试；1366/390/320 宽度组件浏览器验证通过。服务端未改，未部署正式网页。证据：docs/evidence/ma24-extraction-review-save-state-2026-10-14.json。
 
 2026-10-14 本机运行恢复：旧网页、旧 LangGraph 热修和旧主 worker 在三个到期队列为空后恢复，网页与静态资源 200、零模型健康图 ready；没有加载本阶段视觉审核界面，也未执行真实账号端到端任务。邮箱/线索 worker 未重启。证据：docs/evidence/ma24-local-service-recovery-2026-10-14.json。
+
+### MA24-18 / G14 — IEEE 教程仅验收 PPTX 读取与引用（2026-10-14）
+
+用户明确将 SHA-256 `030a730584498f8b98109a1bf2da22a29cc443021c63fbd1c18cf2bad2da6910` 的 IEEE 2014 GEPOF 教程限定为“仅作 PPTX 读取与引用验收”。第 5、22 页已目视核对的两个样例用于检查产品是否能读出原幻灯片并返回正确页号和原文依据，不作为独立问答 Gold 或 G14 拟议 PPTX 质量题。该验收尚未在产品链路执行；独立 PPTX 质量来源仍缺。确认与样例见 docs/CONFIRMED_PRODUCT_RULES.md、docs/evidence/ma24-g14-ieee-slide-question-review-2026-10-14.json。
