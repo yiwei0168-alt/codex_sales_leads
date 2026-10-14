@@ -1,0 +1,42 @@
+{
+  "date": "2026-10-14",
+  "scope": "G14 read-only public source inventory and local exact-reference screen",
+  "inventoryCommand": "node scripts/run-tsx.cjs scripts/audit-independent-source-pool-local.ts",
+  "historicalCorpus": {
+    "version": "knowledge-eval-v3-baseline",
+    "sha256": "a3c7f67502a8c79898736c0300658bb3a77f25b690fae095fdcdcc7bfe6df248",
+    "goldRows": 300,
+    "distinctGoldSourceHashes": 50,
+    "repeatedQuestionGroups": 10,
+    "crossSplitRepeatedGroups": 10,
+    "duplicateQuestionsAfterRecordedVariantSuffixRemoval": 40
+  },
+  "currentRegisteredPublicPool": {
+    "sources": 197,
+    "mimeTypes": ["application/pdf"],
+    "sourceHashesInHistoricalGold": 50,
+    "notInGoldButIndependenceUnproven": 147,
+    "approvedIndependentSources": 0
+  },
+  "quarantinedFreshCandidates": {
+    "sourceRegistry": "docs/evidence/ma24-independent-source-candidates-2026-10-14.json",
+    "stillEligibleForContaminationReview": 4,
+    "excludedForSubjectOverlap": 1,
+    "exactHashReferencesInLocalTextOutsideRegistry": 0,
+    "titleOrUrlReferencesInLocalTextOutsideRegistry": 0,
+    "searchScope": "docs, scripts, src, experiments and tmp text files with json/md/ts extensions; excluded the candidate registry and quarantined binaries",
+    "answerLevelIndependenceEstablished": false
+  },
+  "conclusion": {
+    "oldCorpusCanServeAsFreshIndependentHoldout": false,
+    "existingPublicPoolDirectlyApprovedForNewHoldout": false,
+    "candidateDocumentsOpenedForGold": false,
+    "newModelCalls": 0,
+    "next": "Finish development changes, audit semantic and question overlap for the four quarantined originals, freeze sources and runtime, then prepare coordinate-checked Gold before either retrieval path is run"
+  },
+  "limits": [
+    "Exact hash, title and URL absence in searched text does not exclude prior semantic exposure or unsearched binary artifacts.",
+    "The inventory does not audit historical retrieval outputs, development fixtures or near-duplicate questions.",
+    "All 147 public PDF hashes absent from old Gold remain unproven; their format coverage cannot supply PPTX or XLSX cases."
+  ]
+}
