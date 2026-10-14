@@ -31,7 +31,7 @@
   "draftQuestions": [
     {
       "id": "ons-5g-2026-aberdeen-city-shire",
-      "status": "draft only; not Gold",
+      "status": "excluded from fresh independent Gold: same two-area percentage-point comparison pattern as development-exposed ONS ultrafast XLSX draft; retained for development/reference only",
       "question": "按 ONS 2026 年 1 月 5G 覆盖工作簿，Aberdeen City 与 Aberdeenshire 的室外 5G 地理面积覆盖率各是多少？两地相差多少个百分点？",
       "draftAnswer": "Aberdeen City 为 99.85%，Aberdeenshire 为 64.20%，相差 35.65 个百分点。",
       "sourceCoordinates": ["'Notes'!B4", "'1'!A5:C5", "'1'!A381:C382"],
@@ -58,6 +58,13 @@
     "semanticIndependenceProven": false,
     "cloudCalls": 0
   },
+  "crossCandidatePatternAudit": {
+    "checkedOn": "2026-10-15",
+    "oldGoldAndHistoricalBlind": "The prior BGE screen covered 350 historical rows/300 unique queries; the ten closest old queries for both 5G drafts ask product port or 2.5G-versus-cellular questions, not UK geographic coverage. A bounded source search found no Aberdeen/Highland/Scotland outdoor-coverage query in those old question files.",
+    "developmentDraftComparison": "The excluded ONS ultrafast broadband workbook draft ons-ultrafast-2026-orkney-shetland also asks for two named UK-area percentages and a percentage-point difference in the same 2026 four-sheet ONS workbook format. A changed indicator and area names alone would leave ons-5g-2026-aberdeen-city-shire as a near-template repeat.",
+    "decision": "Exclude ons-5g-2026-aberdeen-city-shire from the fresh independent set. Keep ons-5g-2026-highland-scotland-scope as an unapproved candidate because it additionally tests the geographic-area denominator and different geographic levels; assess its remaining pattern overlap before Gold freeze.",
+    "independenceApproved": false
+  },
   "sourceReuseAndInterpretationAudit": {
     "checkedOn": "2026-10-14",
     "onsIndicatorPage": "https://www.ons.gov.uk/explore-local-statistics/indicators/5g-coverage",
@@ -81,7 +88,25 @@
   "independenceBoundary": "Downloaded after layout-v2.0.8 was committed. This 5G geographic-area metric is distinct from the development-exposed ONS ultrafast fixed-premises metric. Do not use it to tune product extraction or retrieval; if a fix depends on this source, remove it from fresh quality holdout.",
   "sourceApproved": false,
   "goldCreated": 0,
-  "productExtractionRun": false,
+  "isolatedProductCitationCheck": {
+    "checkedOn": "2026-10-15",
+    "command": "node scripts/run-tsx.cjs scripts/verify-ons-5g-citation-clone.ts",
+    "sourceSha256Matched": true,
+    "extractorVersion": "layout-v2.0.9",
+    "qualitySummary": {"success": 4, "blank": 0, "pending-ocr": 0, "failed": 0},
+    "actualUploadWorkerRegistered": true,
+    "evidenceBlock": "sheet-4-table",
+    "sheetName": "1",
+    "cellRange": "A1:C418",
+    "targetCellsRead": ["B370", "C370", "B381", "C381", "B382", "C382", "B395", "C395"],
+    "crossAccountDenied": true,
+    "v3PointersUnchanged": true,
+    "syntheticRecordsCleaned": true,
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "scopeLimit": "Isolated clone and direct readEvidence only; no candidate or baseline model answer, actual browser citation, production upload or independent Gold approval."
+  },
+  "productExtractionRun": true,
   "productionKnowledgeWrites": 0,
-  "next": "Complete development-exposure and semantic-duplicate audit, freeze candidate code/config, then verify product citation without product tuning from this source; decide whether this source enters the independent Gold set."
+  "next": "Complete development-exposure and semantic-duplicate audit, freeze Gold and comparable run config, then verify model answer and displayed citation without product tuning from this source; decide whether this source enters the independent Gold set."
 }
