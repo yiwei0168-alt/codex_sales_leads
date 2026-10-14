@@ -7,11 +7,14 @@
     "syntheticPdf": "Three-page source: one transparent-text page, one render-mode-3 page, one ordinary text page; extracted unit counts pending-ocr=2, success=1; both invisible source texts remain identifiable for review.",
     "pythonRegression": "python scripts/test_knowledge_extraction_v2.py: 10 tests passed",
     "readinessRegression": "npx vitest run src/lib/knowledge/extraction-readiness.test.ts: 6 tests passed",
+    "isolatedClone": "node scripts/run-tsx.cjs scripts/verify-invisible-pdf-review-clone.ts: actual upload worker held a one-page transparent-text PDF; owner excluded the success-marked hidden block, completed the pending page review, and resumed registration. The indexed tree omits the hidden sentence, preserves visible evidence, and denies another account. Release v3 pointers unchanged; synthetic users, jobs, reviews and documents removed. Passed twice.",
+    "typecheck": "npx tsc --noEmit: passed",
+    "eslint": "npx eslint scripts/verify-invisible-pdf-review-clone.ts: passed",
     "diffCheck": "passed"
   },
   "limits": [
     "This targets two definite invisible-text mechanisms; other visual occlusion and all-success files remain subject to the pending prepublication review-policy decision.",
-    "No isolated database worker or actual candidate browser run was performed for layout-v2.0.9; production services have not loaded it.",
+    "The database check used an isolated local clone and synthetic PDF; no actual candidate browser run was performed and production services have not loaded layout-v2.0.9.",
     "A review marker is a publication hold, not an OCR result, human judgment, correct citation or independent quality pass."
   ],
   "productionKnowledgeWrites": 0,
