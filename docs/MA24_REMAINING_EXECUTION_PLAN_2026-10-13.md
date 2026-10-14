@@ -10,6 +10,8 @@
 
 同日 G14 同轮候选近邻补审：NIST 跨节题与当前 19 条其他草案逐题检查；本地 BGE 前五近邻是 ITU 海缆、ONS 覆盖口径、ETSI 信道参数及 FCC 统计口径题，未见相同 5G-TSN 时延验证问题。NIST 目前也未与已登记候选共用发布家族。此为当前文件集合的有界筛查，不能代替完整开发暴露及冻结题集审计；Gold 仍为 0。[收据](evidence/ma24-g14-nist-cross-candidate-audit-2026-10-15.json)。
 
+同日 G14 候选发现前暴露补审：NIST 报告编号、下载标识及目标答案短语在 `6135edf2` 之前的固定提交 `d68f8934` 所查 `docs/src/scripts/experiments` 无命中；候选隔离目录外的忽略文本/日志无命中，当前资料资产/上传/旧 Gold 原件哈希亦为 0。该有界结果保留 NIST 进入整套冻结前审核的资格，不证明未记录提示、二进制或模型既有知识不存在；没有据此修改产品代码，Gold 仍为 0。[暴露收据](evidence/ma24-g14-nist-bounded-development-exposure-2026-10-15.json)。
+
 2026-10-15 G14 两份 2025 IEEE 演示的当前库精确哈希及本地历史文本/日志/Git 有界污染检查均未发现候选发现之前的所查专有术语；旧题近邻仍只作筛查。下一步须结合用户用途选择完成全题集语义审计与冻结，不能将零命中当成 Gold。[有界污染审计](evidence/ma24-g14-ieee-2025-bounded-exposure-audit-2026-10-15.json)。
 
 2026-10-15 G14 IEEE 802.11 概览补验：第 12 页地图仅转录有原图依据的日期/图例；隔离克隆的旧未解决门槛仍拒绝登记，限定地图证据后 39/39 条审核、登记、搜索和第 12/20/22 页证据块读取通过。来源用途、独立性、Gold、回答引用和生产加载仍待验。[地图提案](evidence/ma24-g14-ieee-80211-overview-map-limited-review-2026-10-15.json)、[产品链路收据](evidence/ma24-g14-ieee-80211-overview-map-review-clone-2026-10-15.json)。

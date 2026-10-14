@@ -1,0 +1,50 @@
+{
+  "schema": "ma24-g14-nist-bounded-development-exposure-v1",
+  "date": "2026-10-15",
+  "sourceSha256": "65e333dac9975f4ca9a952a966fb212ce7ccb161ec60b48bf45c3dfd7adbd6a9",
+  "sourceReceipt": "docs/evidence/ma24-g14-nist-tn2363-long-pdf-candidate-2026-10-15.json",
+  "firstCandidateCommit": "6135edf2",
+  "preDiscoveryTrackedBaseline": "d68f893467b9eb9514fd06528ecd18fe187cf043",
+  "trackedHistoryScreen": {
+    "areas": ["docs", "src", "scripts", "experiments"],
+    "terms": [
+      "NIST TN 2363",
+      "NIST.TN.2363",
+      "960946",
+      "Software-based 5G Industrial Wireless",
+      "uncertain processing delays",
+      "lack of device instrumentation",
+      "software-stack overhead",
+      "5G-TSN",
+      "per-hop delay"
+    ],
+    "matchingFilesAtPreDiscoveryCommit": 0,
+    "gitLogPickaxeFirstHits": "Report ID and 5G-TSN terms first appeared in the searched version history at candidate commit 6135edf2; later audit commit e839ea97 also references them.",
+    "interpretation": "No searched distinctive source or answer wording was found in the tracked pre-discovery areas; this is not an exhaustive history of all conversations or binaries."
+  },
+  "ignoredLocalTextScreen": {
+    "roots": ["tmp", "experiments"],
+    "extensions": [".json", ".md", ".txt", ".log"],
+    "excluded": "tmp/ma24-independent-quarantine and nested node_modules/.git directories",
+    "terms": "The seven report-specific IDs/title/answer phrases in trackedHistoryScreen.terms; generic 5G-TSN and per-hop delay excluded from this ignored-file pass.",
+    "matchingFilesOutsideCandidateQuarantine": 0
+  },
+  "currentLocalRegistryReadOnlyRecheck": {
+    "matchingAssets": 0,
+    "matchingUploadJobs": 0,
+    "matchingHistoricalGoldRows": 0,
+    "cloneSyntheticDataCleanedBeforeRecheck": true
+  },
+  "crossCandidateQuestionAudit": "docs/evidence/ma24-g14-nist-cross-candidate-audit-2026-10-15.json",
+  "developmentUseSinceDiscovery": "Offline extraction and isolated product review/citation clone used this source, with no product-code tuning, model answer call or production knowledge write recorded in those stages.",
+  "limitations": [
+    "Exact-hash and wording absence do not prove semantic independence.",
+    "Unrecorded prompts, binary contents, provider-side use and model pretraining were not searched.",
+    "A future code or prompt fix based on this source would require moving it out of the unexposed holdout pool."
+  ],
+  "eligibleForFullSetFreezeReview": true,
+  "fullSetFreezeCompleted": false,
+  "approvedIndependentGold": false,
+  "modelAnswerCalls": 0,
+  "productionKnowledgeWrites": 0
+}
