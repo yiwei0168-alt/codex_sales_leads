@@ -70,7 +70,7 @@
       "bytes": 2113423,
       "sha256": "8bac4a67a32ef5b9d87b7855dc57de7f686b405a6d2ffab537782265a61f0615",
       "integrity": "valid unencrypted PDF; 12 pages",
-      "status": "quarantined; text read for content screening; generic NTN/satellite questions may overlap an earlier development PPTX; answer and coordinate review pending"
+      "status": "quarantined; physical page 5 arithmetic conflict visually checked in ma24-g14-itu-pdf-conflict-review-2026-10-14.json as one draft conflict question; local extractor marks all 12 pages pending visual review, so source/use approval, actual citation and Gold remain pending"
     },
     {
       "kind": "long-pdf",

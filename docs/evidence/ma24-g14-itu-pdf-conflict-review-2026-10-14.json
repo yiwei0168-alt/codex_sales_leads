@@ -1,0 +1,58 @@
+{
+  "schema": "ma24-g14-itu-pdf-conflict-review-v1",
+  "date": "2026-10-14",
+  "sourceUrl": "https://www.itu.int/dms_pub/itu-d/oth/07/36/D07360000030011PDFE.pdf",
+  "metadataPage": "https://www.itu.int/oth/D0736000003/en",
+  "sourceDescription": "Bharat B Bhatia presentation at the ITU Question 1/1 workshop, 28 September 2026; presenter claims are not treated as validated current ITU statistics",
+  "localQuarantinePath": "tmp/ma24-independent-quarantine/itu-q1-2026-bhatia.pdf",
+  "sha256": "8bac4a67a32ef5b9d87b7855dc57de7f686b405a6d2ffab537782265a61f0615",
+  "originalReview": {
+    "method": "Read the 12-page original with local PyMuPDF; rendered physical pages 2, 3, 5 and 11 at 2x and inspected the images. Page 5 values were cross-checked against PyMuPDF text and search rectangles.",
+    "physicalPage": 5,
+    "pageSizePoints": [959.76, 540],
+    "consistentExample": {"displayedTotalMn": 1354, "componentsMn": [1306, 48], "sumMn": 1354},
+    "fwaConflict": {"displayedTotalMn": 18.8, "componentsMn": [13.2, 5.1], "componentSumMn": 18.3, "differenceMn": 0.5},
+    "sourceBoxesPoints": {
+      "totalSubscribers": [232.4, 142.2, 389.5, 182.6],
+      "subscriberComponents": [209.4, 212.6, 411.8, 226.3],
+      "fwaDisplayedTotal": [411.6, 339.8, 548.7, 380.2],
+      "fwaComponents": [391.7, 410.2, 568.1, 423.9]
+    },
+    "scopeGuard": "The slide establishes an internal arithmetic discrepancy, not which FWA figure is correct or present-day India subscription totals."
+  },
+  "draftQuestion": {
+    "id": "itu-bhatia-2026-india-fwa-conflict",
+    "status": "draft only; not Gold",
+    "category": "conflict",
+    "question": "在这份 2026 年演示的第 5 页，Total Subscribers 与 FWA Subscribers 两组汇总各自是否等于页上分项之和？如有不一致，差多少，并能否仅凭这一页断定哪个 FWA 数字正确？",
+    "draftAnswer": "Total Subscribers 一组相符：1,306 Mn wireless + 48 Mn wireline = 1,354 Mn。FWA 一组不符：13.2 Mn 5G FWA + 5.1 Mn UBR = 18.3 Mn，而页上汇总写 18.8 Mn，相差 0.5 Mn（50 万）。仅凭这一页无法判断汇总还是分项有误，不应猜测正确总数。",
+    "sourceCoordinate": "original PDF physical page 5, Total Subscribers and FWA Subscribers cards",
+    "visualCheck": "pass for all four values and units"
+  },
+  "rejectedUses": [
+    "Do not turn the page 3 global meaningful-connectivity percentage into a current verified population fact.",
+    "Do not use page 11 WRC-27 proposed agenda/spectrum language as a current adopted decision.",
+    "Do not resolve the FWA contradiction from the slide by silently choosing one number."
+  ],
+  "localExposureScreen": {
+    "exactRegistryHashMatches": 0,
+    "distinctiveNumbersOrPhraseInOldText": "No hits for 18.8 Mn, 13.2 Mn, 5.1 Mn UBR or FWA Subscribers in old holdout outputs; the product 300-case corpus has no FWA or UBR term. The local docs/src/scripts scan found the presenter name only in the new candidate registry.",
+    "limit": "Term absence and old-blind-question topic separation do not establish complete semantic independence or provider-side non-exposure."
+  },
+  "productExtraction": {
+    "extractorVersion": "layout-v2.0.6",
+    "artifactPath": "tmp/ma24-independent-quarantine/itu-q1-2026-layout-v2.0.6.json",
+    "artifactSha256": "f7b8cb0ea6ee7113e24f0865f0f08d9605dcb3f16217d08f691fdc424be91ff7",
+    "blocks": 106,
+    "qualitySummary": {"success": 0, "blank": 0, "pending-ocr": 12, "failed": 0},
+    "page5TextAndBoxesPresent": true,
+    "treeOrRetrievalReady": false
+  },
+  "gates": {
+    "sourceApproved": false,
+    "goldCreated": 0,
+    "modelCalls": 0,
+    "productionKnowledgeWrites": 0,
+    "remaining": "Check source-use boundary and full development overlap. Complete all 12 pages' visual review and isolated product read/citation before deciding whether this single conflict draft enters a frozen independent set."
+  }
+}
