@@ -1,0 +1,114 @@
+{
+  "schema": "ma24-gepof-original-slide-object-review-v1",
+  "date": "2026-10-14",
+  "ruleId": "MA24-18",
+  "sourceSha256": "030a730584498f8b98109a1bf2da22a29cc443021c63fbd1c18cf2bad2da6910",
+  "extractionArtifactSha256": "035446eaf582572f1b5cb9c893f2604be23b74aafd1813adba54ee42e47fd107",
+  "candidatePackageSha256": "282813baaa002f9dbffecf462fbea48574def5280f1a220bb491053317810e86",
+  "method": "Compared each hash-matched object crop to the original PowerPoint-rendered slide; slide 43 chart shape 322 has no candidate image, so its chart cache in ppt/charts/chart1.xml was compared with the original rendered slide.",
+  "originalSlideRenderSha256": {
+    "34": "9d3418613581dd8b447fb6f150b4541361f2c3089f37e4a0557efee1ba3f9cb1",
+    "36": "4eb9f70dac27beb881bcdafb8ee714eaee12cf49317d2a9b19a5853dc624b8c1",
+    "37": "df225feac02d4a1d474e3cea0320d546e6719d1aece046e06fdec9ad0db4ecce",
+    "38": "bac4032575c3eee3bc44942e25c7fc1123e7ebb660b1bfd0f93047a5d5f01f75",
+    "39": "2e3c62e40a94eb293884be5ee378a38abd55c1650327342b91927b7e1c20c348",
+    "43": "1e204477a22dc380385fdd5c136df10c4730f285ffdc1761f7b28896516bd09c"
+  },
+  "slide43ChartCache": {
+    "shapeId": 322,
+    "part": "ppt/charts/chart1.xml",
+    "categories": ["2014", "2015", "2016", "2017", "2018", "2019", "2020"],
+    "fractions": [0.058, 0.072, 0.095, 0.112, 0.144, 0.175, 0.2]
+  },
+  "objects": [
+    {
+      "blockId": "slide-34-visual-3",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 tutorial slide illustrates the home-installation 'cut and plug' point with a two-panel photo: a red cutting device at a white optical cable and two white cable ends being inserted into a small connector or outlet fitting.",
+      "reason": "The two-panel image carries an installation sequence beyond the adjacent bullet text; it does not establish a current connector specification or installation instruction."
+    },
+    {
+      "blockId": "slide-34-visual-4",
+      "proposedDecision": "decoration",
+      "reason": "The lower photo of several insulated conductors and a white cable in corrugated conduit illustrates the adjacent electromagnetic-isolation/installation discussion but has no independently legible specification; its exact wiring role cannot be inferred from the photograph."
+    },
+    {
+      "blockId": "slide-36-visual-2",
+      "proposedDecision": "evidence",
+      "evidenceText": "One installation-example photo on slide 36 shows several loops of white cable inside an open wall box.",
+      "reason": "Distinct visual installation example; do not infer cable grade or compliance."
+    },
+    {
+      "blockId": "slide-36-visual-3",
+      "proposedDecision": "evidence",
+      "evidenceText": "One installation-example photo on slide 36 shows white cables running out of a multi-gang wall box beside electrical wiring.",
+      "reason": "Distinct visual installation example; no electrical safety claim is inferred."
+    },
+    {
+      "blockId": "slide-36-visual-4",
+      "proposedDecision": "evidence",
+      "evidenceText": "The central slide 36 photo shows thin white cables entering an open electrical distribution enclosure with colored wiring and breaker modules.",
+      "reason": "Distinct visual routing example; OCR of breaker markings is unnecessary and not treated as a product identifier."
+    },
+    {
+      "blockId": "slide-36-visual-5",
+      "proposedDecision": "evidence",
+      "evidenceText": "The lower-left slide 36 photo shows a wall power outlet beside a small two-port fitting with red lights and a white cable.",
+      "reason": "Distinct depicted endpoint; the image alone does not establish its electrical or optical pinout."
+    },
+    {
+      "blockId": "slide-36-visual-6",
+      "proposedDecision": "evidence",
+      "evidenceText": "The lower-middle slide 36 photo shows a 'homefibre' labeled two-port wall plate adjacent to a mains socket.",
+      "reason": "The wall-plate arrangement and readable label are visible in the original slide; no manufacturer or current availability is inferred."
+    },
+    {
+      "blockId": "slide-36-visual-7",
+      "proposedDecision": "evidence",
+      "evidenceText": "The lower-right slide 36 photo shows white cables routed along a room's skirting-board edge.",
+      "reason": "Distinct routing example; not a compliance or recommended-installation claim."
+    },
+    {
+      "blockId": "slide-37-visual-3",
+      "proposedDecision": "evidence",
+      "evidenceText": "The slide 37 room diagram labels a 'Wall Plug' and 'Pluggable module' on one side, and a 'WiFi AP' on the other, with a dashed green POF link between home devices and blue wireless arcs near the access point.",
+      "reason": "The original illustration conveys the proposed optical backhaul plus room-level WiFi relationship; it is a 2014 concept diagram, not an implementation specification."
+    },
+    {
+      "blockId": "slide-38-visual-1",
+      "proposedDecision": "evidence",
+      "evidenceText": "A chart attributed by the slide to the EU broadband-access situation at 1 July 2013 compares fast/ultrafast subscriptions as a percentage of population. From July 2010 to July 2013, the labeled 'At least 30 Mbps' series rises from 1.2% to 5.4%, and the labeled 'At least 100 Mbps' series rises from 0.1% to 1.2%.",
+      "reason": "Series names, date range, unit and endpoint labels are legible on the original slide; these are historical EU chart values, not current market data."
+    },
+    {
+      "blockId": "slide-38-visual-2",
+      "proposedDecision": "evidence",
+      "evidenceText": "A historical chart on slide 38 titled 'Fixed broadband penetration at EU level, January 2004 - July 2013' shows labeled values rising from 4.9% in January 2004 to 29.4% in July 2013.",
+      "reason": "Title, percentage unit, date endpoints and labels are legible on the original slide; this is historical presentation data only."
+    },
+    {
+      "blockId": "slide-39-visual-3",
+      "proposedDecision": "evidence",
+      "evidenceText": "The slide 39 historical EU market-share chart compares DSL (including VDSL), Cable (including DOCSIS 3.0) and Other from January 2006 to July 2013. Its labeled endpoints change from 81% to 73% for DSL, 16% to 17% for Cable, and 3% to 10% for Other.",
+      "reason": "Legend and labeled endpoints were checked against the original slide; the chart is attributed to the EU broadband-access situation at 1 July 2013 and must not be described as current."
+    },
+    {
+      "blockId": "slide-43-visual-2",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 tutorial's 'High Broadband Population penetration' chart gives a scenario series for 2014–2020: 5.8%, 7.2%, 9.5%, 11.2%, 14.4%, 17.5% and 20%, respectively. These values are presentation projections or scenario figures, not verified later outcomes.",
+      "reason": "Chart shape 322 is unsupported by the visual candidate extractor, but its seven cached values in ppt/charts/chart1.xml match the PowerPoint-rendered chart. The adjacent table is separate shape 323 and is not silently included."
+    }
+  ],
+  "newlyReviewedObjects": 13,
+  "newProposedEvidence": 12,
+  "newProposedDecoration": 1,
+  "cumulativeReviewedObjects": 37,
+  "cumulativeProposedEvidence": 27,
+  "cumulativeProposedDecoration": 10,
+  "cumulativeProposedUnresolved": 0,
+  "remainingUnreviewedObjects": 92,
+  "productJudgmentsSavedForThisBatch": 0,
+  "qualityAccepted": false,
+  "goldCreated": 0,
+  "productionKnowledgeWrites": 0
+}
