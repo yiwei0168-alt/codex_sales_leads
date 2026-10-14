@@ -1,0 +1,30 @@
+{
+  "schema": "ma24-g01-web-release-pointer-check-v1",
+  "checkedAt": "2026-10-14T23:43:07.348Z",
+  "command": "node scripts/verify-ma24-web-release-pointer.mjs",
+  "mode": "read-only",
+  "candidate": {
+    "sourceCommit": "04890d60",
+    "buildId": "H5kRggLKi87-KFXajjdmU",
+    "snapshot": ".next-releases/ma24-g01-04890d60",
+    "buildManifestSha256": "415b4126edeb15f3b378d48c76f700c4abca746f10af9b706e07eb5f5b70d9fd",
+    "committedBuildInputChangesSinceSourceCommit": 0,
+    "worktreeBuildInputChanges": 0,
+    "artifactPointerCheck": "passed"
+  },
+  "liveWeb": {
+    "port": 3018,
+    "homeStatus": 200,
+    "sessionEndpointStatus": 200,
+    "oldBuildId": "QfoyXprIZIVgSWxFSZ-1K",
+    "oldBuildManifestStatus": 200,
+    "candidateBuildManifestStatus": 404,
+    "candidateLoaded": false
+  },
+  "releaseReady": false,
+  "limits": [
+    "This binds Web build inputs and the manifest but does not rehash every snapshot file; the earlier snapshot receipt contains the full-file comparison.",
+    "HTTP asset status does not prove the exact in-process source of LangGraph or workers.",
+    "The target migration stage remains absent, the previous backup is not fresh for a switch, and no domain pilot or actual service rollback has occurred."
+  ]
+}

@@ -48,6 +48,8 @@
 
 同日 R0/G18 续验：隔离副本缺少 Git 忽略的本地 OCR 模型是视觉准备退出的原因；接入现有模型后，候选版 PPTX 审核及写入后旧版 Web 回读在一次性恢复库通过。当前构建复制到忽略的 `.next-releases/ma24-g01-04890d60`，解析依赖目录链接后的 1,484 个文件逐项哈希一致，私有追踪依赖仍为零。正式库只读预检仍为迁移 127–135 未安装、切换备份不新鲜；分域质量、生产试点和实际服务回滚未完成。[续验收据](evidence/ma24-g01-g18-04890d60-review-rollback-snapshot-2026-10-15.json)。
 
+同日 R0 发布指针补验：新增 `node scripts/verify-ma24-web-release-pointer.mjs` 只读复核冻结源码的构建输入、快照 ID 与 manifest 哈希及运行中 Web 的静态构建指针。实测旧版资源 200、候选资源 404，候选未加载；该检查不证明 LangGraph/worker 进程源码，也不替代分域质量、切换前备份、迁移、试点和生产实际回滚。[指针收据](evidence/ma24-g01-web-release-pointer-check-2026-10-15.json)。
+
 原 Goal 仍指向 [G01–G20 完整计划](MA24_COMPLETION_GOAL_PLAN_2026-10-11.md)，工具当前返回 usageLimited，未完成。本次不创建替代 Goal，不以新编号清除原任务缺口。
 
 ## 1. 当前基线和执行原则
