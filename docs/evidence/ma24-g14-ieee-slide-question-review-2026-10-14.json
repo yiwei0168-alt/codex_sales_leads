@@ -1,0 +1,45 @@
+{
+  "schema": "ma24-g14-ieee-slide-question-review-v1",
+  "date": "2026-10-14",
+  "sourceSha256": "030a730584498f8b98109a1bf2da22a29cc443021c63fbd1c18cf2bad2da6910",
+  "sourceUrl": "https://ieee802.org/3/GEPOFSG/public/Tutorial/Presentation_v1.4.pptx",
+  "reviewMethod": "PowerPoint opened the quarantined original read-only and exported slides 5, 22 and 61 at 1600x900; each rendered image was inspected visually against its printed slide number and text. Images and original remain local under ignored tmp/ma24-independent-quarantine/.",
+  "corpusScreen": {
+    "currentCorpus": "src/lib/knowledge/evaluation/corpus.ts",
+    "finding": "The 300-case corpus consists of model datasheet, product specification/comparison/deployment and routing-boundary templates. It contains no GEPOF or P802.3bv question. A local docs/src/scripts keyword scan found GEPOF/P802.3bv only in the new candidate/status records.",
+    "limit": "This is a template and keyword screen, not a full semantic comparison with all historical model prompts, development retrieval outputs or provider-side exposure. Question independence is unapproved."
+  },
+  "draftQuestions": [
+    {
+      "id": "ieee-gepof-2014-objectives-distances",
+      "status": "draft-for-question-level-review; not Gold",
+      "question": "在 2014 年 IEEE 802 的 Gigabit Ethernet over Plastic Optical Fiber 教程所列研究目标中，汽车环境的两种 POF 链路条件以及家庭/工业环境的 POF 链路条件分别是什么？",
+      "draftAnswer": "汽车环境：至少 15 m POF、4 个 POF 连接；或至少 40 m POF、无 POF 连接。家庭和工业环境：至少 50 m POF、1 个 POF 连接。",
+      "sourceCoordinate": "slide 5, title Objectives, bullets beginning For the automotive environment and For the home and industrial environment; printed page number 5",
+      "visualCheck": "pass: all three length/connection pairs and slide number are legible on the original render",
+      "scopeGuard": "Historical study-group objective only; not a claim about a current standard, current product, or guaranteed deployed link."
+    },
+    {
+      "id": "ieee-gepof-2014-vde-proposal-status",
+      "status": "draft-for-question-level-review; not Gold",
+      "question": "这份 2014 年教程介绍 VDE 方案时，研究组当时是否已采纳技术提案？教程怎样描述 VDE 材料的提交性质？",
+      "draftAnswer": "当时研究组尚未采纳技术提案；VDE 方案是作为对 IEEE 802.3 的贡献提交的。",
+      "sourceCoordinate": "slide 22, title VDE proposal, first bullet and indented statement SG has not adopted technical proposals; printed page number 22",
+      "visualCheck": "pass: contribution and non-adoption statements and slide number are legible on the original render",
+      "scopeGuard": "The answer is explicitly about the tutorial's 2014 snapshot and must not be generalized to present-day adoption status."
+    }
+  ],
+  "rejectedQuestion": {
+    "sourceCoordinate": "slide 61, title Factors of success of POF in Industrial Networking",
+    "reason": "The visible list is a broad industrial-networking need and the concluding POF suitability claim is presentation advocacy. A question based on it would be too generic and could be answered without this source, so it is excluded from draft Gold."
+  },
+  "gates": {
+    "visuallyReviewedSlides": 3,
+    "draftQuestions": 2,
+    "approvedIndependentSources": 0,
+    "approvedGoldQuestions": 0,
+    "modelCalls": 0,
+    "productionKnowledgeWrites": 0,
+    "remaining": "Complete historical prompt/output exposure and semantic overlap audit, source/permission and precise answer review for the full independent set, then freeze source and Gold before either retrieval-path run."
+  }
+}

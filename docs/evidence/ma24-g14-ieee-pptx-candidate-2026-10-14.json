@@ -36,6 +36,7 @@
     "sourceIndependenceEstablished": false,
     "questionIndependenceEstablished": false,
     "visualCoordinatesReviewed": false,
+    "partialVisualReview": "slides 5, 22 and 61; see ma24-g14-ieee-slide-question-review-2026-10-14.json",
     "goldCreated": 0,
     "productionKnowledgeWrites": 0,
     "modelCalls": 0
