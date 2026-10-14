@@ -19,11 +19,12 @@ async function runLocalWorker(script: string, jobId: string, databaseUrl: string
   return new Promise((accept, reject) => {
     const child = spawn(command, args, { cwd: process.cwd(), env, windowsHide: true, stdio: ["ignore", "pipe", "pipe"] });
     let stderr = "";
-    child.stdout.on("data", () => undefined);
+    let stdout = "";
+    child.stdout.on("data", part => { stdout = `${stdout}${part}`.slice(-1000); });
     child.stderr.on("data", part => { stderr = `${stderr}${part}`.slice(-1000); });
     child.once("error", reject);
     child.once("close", code => {
-      if (code !== 0) return reject(new Error(`Local ${script} failed with code ${code}: ${stderr}`));
+      if (code !== 0) return reject(new Error(`Local ${script} failed with code ${code}: stdout=${stdout}; stderr=${stderr}`));
       accept();
     });
   });

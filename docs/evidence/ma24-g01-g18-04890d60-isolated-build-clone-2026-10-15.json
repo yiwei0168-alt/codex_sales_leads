@@ -1,0 +1,46 @@
+{
+  "schema": "ma24-g01-g18-isolated-build-clone-v1",
+  "date": "2026-10-15",
+  "sourceCommit": "04890d60",
+  "scope": "Clean committed-source build in ignored tmp workspace; disposable local database clone; no production migration or service switch",
+  "build": {
+    "nextVersion": "16.3.4",
+    "buildId": "H5kRggLKi87-KFXajjdmU",
+    "result": "passed including TypeScript and 26 static pages",
+    "traceManifests": 87,
+    "privateDependencies": 0,
+    "liveWebBuildUntouched": true
+  },
+  "basicClone": {
+    "backup": "network_copilot_2026-10-13T09-03-13Z.dump",
+    "backupSha256": "17db517922f0ee8067391544418f0c8af9f77ee5f48203b938b7559ba528d428",
+    "migrationRange": "127-135",
+    "transactionRollbackRestoredPriorMarkers": true,
+    "migrationCommittedOnDisposableClone": true,
+    "collectorInsertAllowed": true,
+    "applicationBundleInsertDenied": true,
+    "bundleForcedRls": true,
+    "oldWebBuildId": "QfoyXprIZIVgSWxFSZ-1K",
+    "candidateWebBuildId": "H5kRggLKi87-KFXajjdmU",
+    "oldAndCandidateLoginAndUploadList": "passed",
+    "candidateAcceptanceReviewRoute": 200,
+    "modelCalls": 0,
+    "cloneDropped": true,
+    "productionChanged": false
+  },
+  "expandedReviewUi": {
+    "result": "not passed",
+    "firstAttempt": "isolated archive lacked the ignored public PPTX fixture",
+    "laterAttempts": "fixture and local Python environment were linked; local prepare-upload-visual-review worker exited 1 without stdout or stderr",
+    "oldWebAfterCandidateWrite": "not reached",
+    "cloneDroppedAfterEachAttempt": true,
+    "diagnosticChange": "bounded stdout and stderr are now included when the local worker fails",
+    "nextStep": "isolate the nested local visual preparation worker failure, then rerun review UI and old Web after-write read on a fresh clone"
+  },
+  "limits": [
+    "The backup predates this release and is not a fresh switch-time production backup",
+    "The isolated build was not copied to a release snapshot or loaded by the live Web service",
+    "The basic clone does not prove the expanded review flow or actual service rollback",
+    "No domain pilot, production schema change, or production quality acceptance occurred"
+  ]
+}
