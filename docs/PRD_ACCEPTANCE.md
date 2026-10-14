@@ -809,3 +809,5 @@ MODESEL-15：53 项本地测试通过。旧入口仅返回停用提示，配置�
 用户明确将 SHA-256 `030a730584498f8b98109a1bf2da22a29cc443021c63fbd1c18cf2bad2da6910` 的 IEEE 2014 GEPOF 教程限定为“仅作 PPTX 读取与引用验收”。第 5、22 页已目视核对的两个样例用于检查产品是否能读出原幻灯片并返回正确页号和原文依据，不作为独立问答 Gold 或 G14 拟议 PPTX 质量题。该验收尚未在产品链路执行；独立 PPTX 质量来源仍缺。确认与样例见 docs/CONFIRMED_PRODUCT_RULES.md、docs/evidence/ma24-g14-ieee-slide-question-review-2026-10-14.json。
 
 本地产品抽取器补验：`layout-v2.0.6` 对原 PPTX 输出 563 块，第 5、22 页目标文字为 success，分别具有 `slide-5-text-2` 和 `slide-22-text-2` 坐标，与已渲染原页一致。全稿 44/82 页仍待 OCR，未做产品树登记/读取与端到端引用；只记录两页抽取通过。[机器收据](evidence/ma24-g05-ieee-pptx-local-extraction-2026-10-14.json)。
+
+隔离克隆上传原 PPTX 后，worker 留下 129 个待审对象和 `review-required` 状态；直接树登记按门槛拒绝，发布文档 0，合成账号/作业清理后计数 0。类型检查和新脚本 lint 通过。原件仍不能进入产品树读取；需完成实质视觉审核，不能把待审图表一概标为装饰。[审核阻断收据](evidence/ma24-g05-ieee-pptx-review-gate-clone-2026-10-14.json)。

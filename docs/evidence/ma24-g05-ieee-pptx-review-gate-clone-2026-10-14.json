@@ -1,0 +1,24 @@
+{
+  "schema": "ma24-g05-ieee-pptx-review-gate-clone-v1",
+  "date": "2026-10-14",
+  "ruleId": "MA24-18",
+  "sourceSha256": "030a730584498f8b98109a1bf2da22a29cc443021c63fbd1c18cf2bad2da6910",
+  "command": "node scripts/run-tsx.cjs scripts/verify-ieee-pptx-review-gate-clone.ts",
+  "database": "ma11_replay_7d98e095133b",
+  "isolation": "local replay clone, synthetic private user and upload job; no production database access",
+  "worker": {"inputJobs": 1, "completed": 0, "failed": 0, "awaitingReview": 1, "embeddingCalls": 0, "modelCalls": 0, "externalCalls": 0},
+  "extraction": {"slides": 82, "success": 38, "pendingOcr": 44, "unresolvedReviewBlocks": 129},
+  "productGate": {
+    "uploadStatus": "extracted",
+    "errorCode": "extraction-review-required",
+    "treeStatus": "review-required",
+    "reviewTotal": 129,
+    "reviewResolved": 0,
+    "directRegistrationRejected": true,
+    "publishedDocuments": 0
+  },
+  "cleanupCheck": {"syntheticUsersRemaining": 0, "syntheticJobsRemaining": 0},
+  "checks": {"typecheck": "passed", "targetedEslint": "passed"},
+  "acceptance": "review gate and non-publication verified on the original IEEE PPTX; end-to-end product read/citation remains pending until substantive visual review and registration are completed",
+  "boundary": "The two visually checked slides are extraction examples only. No pending object was relabeled as decoration or accepted without review; the deck remains excluded from independent answer-quality Gold."
+}
