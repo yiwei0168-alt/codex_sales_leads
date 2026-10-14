@@ -1,0 +1,66 @@
+{
+  "schema": "ma24-g14-ons-xlsx-candidate-v1",
+  "date": "2026-10-14",
+  "publisher": "UK Office for National Statistics; indicator data sourced from Ofcom",
+  "title": "Ultrafast broadband, UK local areas, January 2026",
+  "metadataPage": "https://www.ons.gov.uk/explore-local-statistics/indicators/ultrafast-broadband",
+  "sourceUrl": "https://www.ons.gov.uk/explore-local-statistics/api/v1/data/ultrafast-broadband.xlsx?time=all",
+  "metadataChecked": "The ONS page defines ultrafast as at least 300 Mbit/s download, identifies January 2026 and Ofcom as the source (published 13 May 2026), offers XLSX downloads, and shows a site-level Open Government Licence v3.0 notice except where stated.",
+  "localQuarantinePath": "tmp/ma24-independent-quarantine/ons-ultrafast-broadband-2026.xlsx",
+  "bytes": 23086,
+  "sha256": "fbc5d6e5365981a964a993d6dbec7e248864de84ec3651ad7b2f873dbc0b0b8b",
+  "integrity": {"validOoxml": true, "zipParts": 20, "badZipMember": null, "macroParts": 0, "externalLinkParts": 0},
+  "readOnlyWorkbookScreen": {
+    "worksheets": ["Cover_sheet", "Table_of_contents", "Notes", "1"],
+    "generatedAtAsPrinted": "13/10/2026",
+    "indicatorDefinition": "Percentage of premises with access to ultrafast fixed-line broadband at least 300 Mbit/s, as of January 2026",
+    "sourceAsPrinted": "Ofcom, published on 13/05/2026",
+    "dataHeaders": ["Area code", "Area name", "2026-01-01 (%)"],
+    "dataRows": 413,
+    "uniqueAreaCodes": 413,
+    "numericValues": 413,
+    "missingValues": 0,
+    "exampleCells": {"1!A6:C6": ["E06000001", "Hartlepool", 96.9], "1!A417:C418": [["W06000024", "Merthyr Tydfil", 79.1], ["W92000004", "Wales", 83.3]]}
+  },
+  "localExposureScreen": {
+    "command": "node scripts/run-tsx.cjs scripts/audit-g14-candidate-hash-local.ts fbc5d6e5365981a964a993d6dbec7e248864de84ec3651ad7b2f873dbc0b0b8b",
+    "matchingAssets": 0,
+    "matchingUploadJobs": 0,
+    "matchingHistoricalGoldRows": 0,
+    "distinctiveLocalTextSearch": "No hits for ONS ultrafast broadband, 2026-01-01 (%) header, E06000001, or Redcar and Cleveland in src/scripts/docs/experiments and historical local holdout text at screening time.",
+    "limitation": "Exact hash and bounded term absence do not prove question-level or complete source independence."
+  },
+  "draftQuestions": [
+    {
+      "id": "ons-ultrafast-2026-orkney-shetland",
+      "status": "draft only; not Gold",
+      "question": "按 ONS 的 2026 年 1 月超高速宽带工作簿，Orkney Islands 和 Shetland Islands 两地可获得至少 300 Mbit/s 固定宽带的房产比例各是多少？相差多少个百分点？",
+      "draftAnswer": "Orkney Islands 为 30.0%，Shetland Islands 为 20.0%，相差 10.0 个百分点。",
+      "sourceCoordinates": ["'Notes'!B4", "'1'!A5:C5", "'1'!A375:C375", "'1'!A377:C377"],
+      "calculation": "C375 minus C377, expressed in percentage points"
+    },
+    {
+      "id": "ons-ultrafast-2026-hartlepool-cornwall",
+      "status": "draft only; not Gold",
+      "question": "按同一 ONS 工作簿，Hartlepool 和 Cornwall 在 2026 年 1 月的超高速宽带覆盖率各是多少？前者高出多少个百分点？",
+      "draftAnswer": "Hartlepool 为 96.9%，Cornwall 为 66.3%，前者高出 30.6 个百分点。",
+      "sourceCoordinates": ["'Notes'!B4", "'1'!A5:C6", "'1'!A54:C54"],
+      "calculation": "C6 minus C54, expressed in percentage points"
+    }
+  ],
+  "draftOverlapScreen": {
+    "command": "node scripts/run-tsx.cjs scripts/screen-ma24-g14-draft-batch-local.ts",
+    "localOutput": "tmp/ma24-independent-quarantine/g14-draft-batch-overlap-screen-v3.json",
+    "outputSha256": "c9bfb71f444c59947bc729acd013eabdfd1fbf10fc287a966dfadc2535c28c00",
+    "questionHashBinding": "Each local result hashes source SHA-256, draft ID and question text; receipt metadata edits do not change the bound question.",
+    "historicalRows": 350,
+    "uniqueHistoricalQueries": 300,
+    "maximumCosine": {"ons-ultrafast-2026-orkney-shetland": 0.453846, "ons-ultrafast-2026-hartlepool-cornwall": 0.432905},
+    "manualTopThree": "For both drafts the top three old questions concern old product Ethernet ports or PoE, not the named ONS areas or 2026 coverage percentages.",
+    "semanticIndependenceProven": false,
+    "cloudCalls": 0
+  },
+  "status": "quarantined candidate; two original-cell drafts checked, source/Gold not frozen, full independence and product citation pending",
+  "goldCreated": 0,
+  "productionKnowledgeWrites": 0
+}

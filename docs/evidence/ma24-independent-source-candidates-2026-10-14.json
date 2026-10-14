@@ -4,7 +4,7 @@
   "stage": "R4 source discovery only",
   "holdoutFrozen": false,
   "goldCreated": 0,
-  "filesDownloaded": 8,
+  "filesDownloaded": 9,
   "localRegistryAudit": {
     "checkedAt": "2026-10-14",
     "database": "local PostgreSQL, repeatable-read read-only transaction",
@@ -15,7 +15,30 @@
     "matchingHistoricalGoldSources": 0,
     "limitation": "Seven hashes were checked in the initial transaction and the eighth in a separate read-only transaction. Exact-hash absence does not exclude semantic overlap, prior development exposure outside the registry, or public model pretraining."
   },
+  "additionalRegistryAudit": {
+    "source": "ONS January 2026 ultrafast broadband XLSX",
+    "sourceSha256": "fbc5d6e5365981a964a993d6dbec7e248864de84ec3651ad7b2f873dbc0b0b8b",
+    "checkedAt": "2026-10-14",
+    "database": "local PostgreSQL, read-only candidate hash audit",
+    "matchingAssets": 0,
+    "matchingUploadJobs": 0,
+    "matchingHistoricalGoldRows": 0,
+    "limitation": "Separate ninth-source check; no claim of semantic independence."
+  },
   "candidates": [
+    {
+      "kind": "xlsx",
+      "title": "Ultrafast broadband, UK local areas, January 2026",
+      "publisher": "UK Office for National Statistics; source data from Ofcom",
+      "metadataPage": "https://www.ons.gov.uk/explore-local-statistics/indicators/ultrafast-broadband",
+      "sourceUrl": "https://www.ons.gov.uk/explore-local-statistics/api/v1/data/ultrafast-broadband.xlsx?time=all",
+      "contentRead": true,
+      "localQuarantinePath": "tmp/ma24-independent-quarantine/ons-ultrafast-broadband-2026.xlsx",
+      "bytes": 23086,
+      "sha256": "fbc5d6e5365981a964a993d6dbec7e248864de84ec3651ad7b2f873dbc0b0b8b",
+      "integrity": "valid OOXML; 20 ZIP parts; four worksheets, 413 numeric geographic rows, no macro or external-link parts",
+      "status": "quarantined replacement XLSX candidate; distinct from the development-exposed EU workbook, exact local asset/upload/old-Gold hashes 0; two original-cell drafts and local old-question near-neighbor screen completed, full independence, product citation and Gold pending; see ma24-g14-ons-xlsx-candidate-2026-10-14.json"
+    },
     {
       "kind": "pptx",
       "title": "Infra4Dev -slides",
@@ -135,5 +158,5 @@
       "reason": "The browsing tool displayed full PDF text while checking the link; exposed to development review and unsuitable as a fresh holdout."
     }
   ],
-  "next": "Run PPTX read/citation acceptance on the GEPOF examples without Gold credit. Replace the development-exposed EU workbook with a fresh independent XLSX source. Complete answer-level overlap, original-coordinate and product-citation reviews for the remaining candidates, settle evaluation use of the research presentation, finish development fixes, then freeze eligible sources, Gold and retrieval configuration before either retrieval path."
+  "next": "Run PPTX read/citation acceptance on the GEPOF examples without Gold credit. Review the new ONS XLSX candidate's original cells, question independence and product citation without tuning product behavior on it. Complete the corresponding reviews for the other candidates, settle evaluation use of the research presentation, finish development fixes, then freeze eligible sources, Gold and retrieval configuration before either retrieval path."
 }
