@@ -1,0 +1,44 @@
+{
+  "schema": "ma24-g14-zbw-pptx-render-extraction-clone-v1",
+  "date": "2026-10-15",
+  "sourceSha256": "595df78e84768ec588a9d638366c69064c63139bdb43fea3445500ac7fd63bde",
+  "scope": "Held-out ZBW 2025 PPTX visual survey and real local upload extraction on an isolated database clone; no review completion, registration, Gold or answer-model evaluation",
+  "docling": {
+    "conversion": "passed to Markdown",
+    "slides": 40,
+    "warnings": "Provenance boxes on slides 8 and 19 were clamped to page bounds; original slide renders were inspected and the candidate question does not use those slides"
+  },
+  "originalVisualCheck": {
+    "powerPointSlidesRendered": 40,
+    "allSlidesSurveyedInFiveContactSheets": true,
+    "fullResolutionSlidesInspected": [8, 11, 19, 22, 25, 28, 30, 33, 39],
+    "answerSlides": [25, 28],
+    "answerSlideTextMatchesDraft": true,
+    "allPendingProductVisualObjectsIndividuallyJudged": false
+  },
+  "isolatedProductExtraction": {
+    "uploadJobs": 1,
+    "workerAwaitingReview": 1,
+    "workerCompleted": 0,
+    "workerFailed": 0,
+    "blocks": 430,
+    "successfulTextBlocks": 285,
+    "unresolvedVisualObjects": 145,
+    "slide25EvidenceBlock": "slide-25-text-6",
+    "slide28EvidenceBlocks": ["slide-28-text-5", "slide-28-text-6"],
+    "targetTextAndSlideIndexVerified": true,
+    "embeddingCalls": 0,
+    "modelCalls": 0,
+    "externalCalls": 0,
+    "registeredDocuments": 0,
+    "v3ReleasePointerUnchanged": true,
+    "productionWrites": 0
+  },
+  "status": "candidate; not Gold",
+  "remaining": [
+    "Individually adjudicate all 145 pending visual objects and verify complete review package and source binding",
+    "Complete isolated registration, search and readEvidence citation checks after review",
+    "Audit the final source family and question set for historical or development exposure before freezing Gold",
+    "Run user-visible answer and precise citation evaluation under frozen configurations, then production acceptance separately"
+  ]
+}
