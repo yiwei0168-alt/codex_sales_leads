@@ -77,6 +77,13 @@
     "qualityAccepted": false,
     "savedObjectReviewVerdicts": 0
   },
+  "objectReview": {
+    "receipt": "docs/evidence/ma24-g14-ieee-80211-overview-object-review-2026-10-14.json",
+    "inspectedObjectCrops": 6,
+    "proposedDecorations": 6,
+    "remainingObjectCrops": 33,
+    "savedProductJudgments": 0
+  },
   "draftQuestions": [
     {
       "id": "ieee-80211-2025-amp-bands-modes",

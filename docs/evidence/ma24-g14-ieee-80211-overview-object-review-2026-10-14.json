@@ -1,0 +1,53 @@
+{
+  "schema": "ma24-g14-ieee-80211-overview-object-review-v1",
+  "date": "2026-10-14",
+  "sourceSha256": "3ae95a7ecdadf8cca4127e239bfbd71c25aa08e354fd0ca94d078a3e0eb11e3d",
+  "extractionArtifactSha256": "970674e5bb24e1ab73e2431c62d84ba7942aaf2860b9ffb8f9ad916e355f66ee",
+  "candidatePackageSha256": "b80be978c3f3bac175ebebca5774c2bb03a710a73185cb0f2a5673b555ccb1c6",
+  "method": "Visually inspected each original embedded-image crop from the hash-checked local candidate package, in the context of the previously inspected full slide. These are object-level proposed dispositions, not saved product review judgments.",
+  "objects": [
+    {
+      "blockId": "slide-9-visual-5",
+      "imageSha256": "f12c0c8a5008e89ba586a20793ad87abb5a678f8232d9cbed11a86e702ff0972",
+      "proposedDecision": "decoration",
+      "reason": "Industrial robot photograph illustrates a radio-technology use case; it contains no legible technical specification or standard claim for citation."
+    },
+    {
+      "blockId": "slide-18-visual-3",
+      "imageSha256": "bc5ef79de7a697c78febb22d62e362cdf1645f70f156b190e395e968673d1493",
+      "proposedDecision": "decoration",
+      "reason": "Photograph of a phone and home router illustrates an application. Small phone-interface labels are not evidence of an 802.11 positioning property and must not be turned into technical claims."
+    },
+    {
+      "blockId": "slide-18-visual-4",
+      "imageSha256": "a8e45a9588bf67eb617a2cdf63531dea2b35815859408e598e1e23f7fd34b7fe",
+      "proposedDecision": "decoration",
+      "reason": "Smartwatch photograph is a use-case illustration; the tiny screen content and iMore credit do not establish a positioning performance figure."
+    },
+    {
+      "blockId": "slide-18-visual-5",
+      "imageSha256": "4d72877a299b4cccc72667d31d1d96b6a69ddd3b13dd5e62d748a97f8fee78ce",
+      "proposedDecision": "decoration",
+      "reason": "Vehicle/pedestrian proximity rendering illustrates an application; it does not provide a quantified range or accuracy claim."
+    },
+    {
+      "blockId": "slide-22-visual-3",
+      "imageSha256": "3ab22cb25a7e2d01541616e508441f1ad1b322f1f93a78c72d63b18bd7ef8124",
+      "proposedDecision": "decoration",
+      "reason": "Optical communication cartoon uses binary digits as visual texture; the selected wavelength and WDM facts are in the separate native body text, not the cartoon."
+    },
+    {
+      "blockId": "slide-23-visual-5",
+      "imageSha256": "6bb2e84ec590f0d72cc3158eead855d27d36d313799da2ea9d8440fac203c34f",
+      "proposedDecision": "decoration",
+      "reason": "Credited encryption stock art says 'old' and 'new' encryption standards, without naming an actual standard or substantiating the adjacent technical bullets. Do not cite its OCR as a standards fact."
+    }
+  ],
+  "reviewedObjectCrops": 6,
+  "otherPendingObjects": 33,
+  "productJudgmentsSaved": 0,
+  "qualityAccepted": false,
+  "goldCreated": 0,
+  "productionKnowledgeWrites": 0,
+  "next": "Continue object-level original crop review for the remaining 33 material or mixed objects. Persist any accepted decisions through the product review gate only after matching the uploaded source and extraction hashes; do not finish review while material objects remain unresolved."
+}
