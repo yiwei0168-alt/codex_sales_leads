@@ -1,0 +1,66 @@
+{
+  "schema": "ma24-g14-nist-additional-long-drafts-v1",
+  "date": "2026-10-15",
+  "sourceReceipt": "docs/evidence/ma24-g14-nist-tn2363-long-pdf-candidate-2026-10-15.json",
+  "sourceFamily": "NIST TN 2363; two additional drafts from the same original, not two additional independent source groups",
+  "sha256": "65e333dac9975f4ca9a952a966fb212ce7ccb161ec60b48bf45c3dfd7adbd6a9",
+  "draftQuestions": [
+    {
+      "id": "nist-tn2363-aggressor-welding-table-comparison",
+      "status": "draft only; not Gold",
+      "question": "按 NIST TN 2363 第 28 印刷页的图 5 和图 6，工业无线干扰源分为哪两大类，各有哪些子类？在焊接源从无 RFI 变为距测试系统 3 m 时，1-1-3 与 3-1-1 两种时隙格式的平均时延分别变化多少毫秒？这些表格数据能否证明抖动随焊接源距离缩短在两种格式下都单调增加？请引用原图表。",
+      "draftAnswer": "图 5 将干扰源分为物理干扰（遮挡、多径、路径损耗）与电磁干扰（共存通信、非通信干扰）。图 6 中，1-1-3 平均时延由 9.025 ms 到 12.301 ms，增加 3.276 ms；3-1-1 由 8.516 ms 到 11.332 ms，增加 2.816 ms。不能断言抖动在两种格式下单调增加，例如 3-1-1 在无焊接 RFI 时为 0.355 ms、3 m 时为 0.181 ms，且 6 m 时为 0.558 ms。它们是该测试床在 6 Mbps 下行 iPerf 流量中的测量结果，不是所有工业 5G 部署的规律。",
+      "sourceCoordinates": ["physical PDF page 33 / printed page 28, Figure 5", "physical PDF page 33 / printed page 28, Figure 6"],
+      "productEvidenceBlock": "page-33-visual-review",
+      "visualCheck": "Figure 5 labels and all Figure 6 row tuples checked against the original page and a 3x table render; source-bound text read through an isolated product clone."
+    },
+    {
+      "id": "nist-tn2363-ieee3388-assessment-and-profiles",
+      "status": "draft only; not Gold",
+      "question": "按 NIST TN 2363 第 32 印刷页，报告转述的 IEEE 3388 工业无线网络评估流程依次是哪五个阶段？规划阶段要确定哪些输入，最后一阶段用于作出什么决定？报告所说面向行业及干扰源的场景配置文件当时是已完成还是仍在开发？请引用图 8 和相邻原文。",
+      "draftAnswer": "图 8 的阶段依次为规划、执行、分析、报告和结果利用。规划要确定拟建工业无线网络、干扰源、QoS 要求及测试方法；最后利用结果决定是否采用所提网络。报告称面向行业和干扰源的配置文件仍在开发，未来特定场景配置文件是预计用途，不能写成已完成的配置文件。",
+      "sourceCoordinates": ["physical PDF page 37 / printed page 32, Figure 8 and adjacent IEEE 3388/profile paragraphs"],
+      "productEvidenceBlocks": ["page-37-block-2", "page-37-block-3", "page-37-visual-review"],
+      "visualCheck": "Page 37 flowchart stages and the adjacent profile-status paragraph checked against the original PDF; the paragraph and figure evidence blocks were saved and read with original coordinates in an isolated clone. No model answer was run."
+    }
+  ],
+  "numericCheck": {
+    "slot1_1_3AverageDeltaMs": 3.276,
+    "slot3_1_1AverageDeltaMs": 2.816,
+    "jitterMonotonicCounterexample": "For 3-1-1, jitter is 0.355 ms without welding RFI, 0.558 ms at 6 m, and 0.181 ms at 3 m; no monotonic increase follows."
+  },
+  "oldQuestionNeighborScreen": {
+    "inputReceiptSha256AtScreenTime": "b9e28ff9dd9aac629abc2ecd669668056f4b0c27b5f5a7ca8fa9cebcbb1d0919",
+    "screenBindingScope": "Source SHA-256, both draft IDs, questions and answers are unchanged; the visual-check note and this follow-up were updated after screening.",
+    "localOutputPath": "tmp/ma24-independent-quarantine/nist-additional-long-neighbors-v2.json",
+    "outputSha256": "b580ed889905463bd8a48307e06848beb1b5c9dafe87e05f620408c5dab5a85b",
+    "oldRows": 350,
+    "uniqueOldQueries": 300,
+    "topCosines": [0.470815, 0.501263],
+    "manualTopFive": "The welding-table draft neighbors ask AP port/power specifications and document opening; the IEEE 3388 workflow draft neighbors ask P5 deployment or device ports/PoE. No same source fact or answer appears there."
+  },
+  "currentCandidateNeighborScreen": {
+    "uniqueDraftsIncludingTheseTwo": 22,
+    "weldingOutputSha256": "64e935561c6b5cca6427f68d5bf2f2f80e558ea8cf5e6f09ae58af51a115fbdd",
+    "assessmentOutputSha256": "9d116edb648f50b13fe6c4b0680fa972b6e427cd0358a0190e56a392fb891ed4",
+    "topSiblingCosine": 0.581376,
+    "assessmentVsFirstNistCosine": 0.579428,
+    "manualAnswerComparison": "All three NIST drafts share one source family. The first concerns 5G-TSN per-hop delay validation, the second classifies aggressors and calculates testbed table differences, and the third reads IEEE 3388 assessment stages and profile development status. No draft is counted as an additional independent source group."
+  },
+  "isolatedProductRead": {
+    "finalRunArtifactSha256": "b5d134ca502503497886f5bcb417816ebc7353f0b519e742bd2c8e8085c9c6e7",
+    "reviewDecisions": 11,
+    "registeredInReplayClone": true,
+    "readEvidenceBlocks": ["page-33-visual-review", "page-37-block-2", "page-37-block-3", "page-37-visual-review"],
+    "originalPageBlockAndBoundingBoxChecked": true,
+    "otherAccountDenied": true,
+    "syntheticDataCleaned": true,
+    "modelCalls": 0,
+    "productionKnowledgeWrites": 0
+  },
+  "sameSourceFamilyAsFirstNistDraft": true,
+  "fullSetFreezeCompleted": false,
+  "goldCreated": 0,
+  "modelAnswerCalls": 0,
+  "productionKnowledgeWrites": 0
+}
