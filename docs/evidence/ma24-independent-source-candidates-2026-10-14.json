@@ -4,7 +4,7 @@
   "stage": "R4 source discovery only",
   "holdoutFrozen": false,
   "goldCreated": 0,
-  "filesDownloaded": 9,
+  "filesDownloaded": 10,
   "localRegistryAudit": {
     "checkedAt": "2026-10-14",
     "database": "local PostgreSQL, repeatable-read read-only transaction",
@@ -15,17 +15,36 @@
     "matchingHistoricalGoldSources": 0,
     "limitation": "Seven hashes were checked in the initial transaction and the eighth in a separate read-only transaction. Exact-hash absence does not exclude semantic overlap, prior development exposure outside the registry, or public model pretraining."
   },
-  "additionalRegistryAudit": {
-    "source": "ONS January 2026 ultrafast broadband XLSX",
-    "sourceSha256": "fbc5d6e5365981a964a993d6dbec7e248864de84ec3651ad7b2f873dbc0b0b8b",
-    "checkedAt": "2026-10-14",
-    "database": "local PostgreSQL, read-only candidate hash audit",
-    "matchingAssets": 0,
-    "matchingUploadJobs": 0,
-    "matchingHistoricalGoldRows": 0,
-    "limitation": "Separate ninth-source check; no claim of semantic independence."
-  },
+  "subsequentRegistryAudits": [
+    {
+      "source": "ONS January 2026 ultrafast broadband XLSX",
+      "sourceSha256": "fbc5d6e5365981a964a993d6dbec7e248864de84ec3651ad7b2f873dbc0b0b8b",
+      "matchingAssets": 0,
+      "matchingUploadJobs": 0,
+      "matchingHistoricalGoldRows": 0
+    },
+    {
+      "source": "ONS January 2026 outdoor 5G geographic coverage XLSX",
+      "sourceSha256": "b488e723e475ce022fdf3d35bc1ead4611e58dda9cbf96371a6e7485834a6238",
+      "matchingAssets": 0,
+      "matchingUploadJobs": 0,
+      "matchingHistoricalGoldRows": 0
+    }
+  ],
   "candidates": [
+    {
+      "kind": "xlsx",
+      "title": "5G outdoor geographic coverage, UK local areas, January 2026",
+      "publisher": "UK Office for National Statistics; source data from Ofcom",
+      "metadataPage": "https://www.ons.gov.uk/explore-local-statistics/indicators/5g-coverage",
+      "sourceUrl": "https://www.ons.gov.uk/explore-local-statistics/api/v1/data/5g-coverage.xlsx?time=all",
+      "contentRead": true,
+      "localQuarantinePath": "tmp/ma24-independent-quarantine/ons-5g-coverage-2026.xlsx",
+      "bytes": 23187,
+      "sha256": "b488e723e475ce022fdf3d35bc1ead4611e58dda9cbf96371a6e7485834a6238",
+      "integrity": "valid OOXML; 20 ZIP parts; four worksheets, 413 numeric geographic rows, no macro or external-link parts",
+      "status": "quarantined fresh post-fix XLSX candidate; source hash absent in local asset/upload/old-Gold registers, no product extraction or tuning; question-level independence, original-cell Gold and product citation pending; see ma24-g14-ons-5g-xlsx-candidate-2026-10-14.json"
+    },
     {
       "kind": "xlsx",
       "title": "Ultrafast broadband, UK local areas, January 2026",
@@ -158,5 +177,5 @@
       "reason": "The browsing tool displayed full PDF text while checking the link; exposed to development review and unsuitable as a fresh holdout."
     }
   ],
-  "next": "Run PPTX read/citation acceptance on the GEPOF examples without Gold credit. Find a fresh XLSX source after the EU workbook and ONS workbook became development fixtures; freeze the generic layout-v2.0.8 extractor before using that source for independent quality. Complete the corresponding reviews for the other candidates, settle evaluation use of the research presentation, then freeze eligible sources, Gold and retrieval configuration before either retrieval path."
+  "next": "Run PPTX read/citation acceptance on the GEPOF examples without Gold credit. Keep the new post-fix ONS 5G XLSX out of product tuning while reviewing question independence, original cells and reuse conditions; verify its product citation after candidate code/config freeze. Complete the corresponding reviews for other sources, settle research-presentation use, then freeze eligible sources and Gold before either retrieval path."
 }

@@ -1,0 +1,37 @@
+{
+  "schema": "ma24-g14-ons-5g-xlsx-candidate-v1",
+  "date": "2026-10-14",
+  "publisher": "UK Office for National Statistics; indicator data sourced from Ofcom",
+  "title": "5G outdoor geographic coverage, UK local areas, January 2026",
+  "metadataPage": "https://www.ons.gov.uk/explore-local-statistics/indicators/5g-coverage",
+  "sourceUrl": "https://www.ons.gov.uk/explore-local-statistics/api/v1/data/5g-coverage.xlsx?time=all",
+  "metadataChecked": "The ONS page defines the metric as percentage of geographic area with outdoor 5G signal from at least one operator at a -110 dBm threshold, dated January 2026, and identifies Ofcom data published 13 May 2026. The page offers this XLSX and shows the site-level Open Government Licence v3.0 notice except where stated.",
+  "localQuarantinePath": "tmp/ma24-independent-quarantine/ons-5g-coverage-2026.xlsx",
+  "bytes": 23187,
+  "sha256": "b488e723e475ce022fdf3d35bc1ead4611e58dda9cbf96371a6e7485834a6238",
+  "integrity": {"validOoxml": true, "zipParts": 20, "badZipMember": null, "macroParts": 0, "externalLinkParts": 0},
+  "readOnlyWorkbookScreen": {
+    "worksheets": ["Cover_sheet", "Table_of_contents", "Notes", "1"],
+    "generatedAtAsPrinted": "13/10/2026",
+    "indicatorDefinition": "Percentage of geographic area with outdoor 5G signal from at least one operator at a -110 dBm threshold, January 2026",
+    "sourceAsPrinted": "Ofcom, published on 13/05/2026",
+    "dataHeaders": ["Area code", "Area name", "2026-01-01 (%)"],
+    "dataRows": 413,
+    "uniqueAreaCodes": 413,
+    "numericValues": 413,
+    "missingValues": 0
+  },
+  "localExposureScreen": {
+    "command": "node scripts/run-tsx.cjs scripts/audit-g14-candidate-hash-local.ts b488e723e475ce022fdf3d35bc1ead4611e58dda9cbf96371a6e7485834a6238",
+    "matchingAssets": 0,
+    "matchingUploadJobs": 0,
+    "matchingHistoricalGoldRows": 0,
+    "limitation": "Exact hash absence does not prove semantic or question-level independence."
+  },
+  "independenceBoundary": "Downloaded after layout-v2.0.8 was committed. This 5G geographic-area metric is distinct from the development-exposed ONS ultrafast fixed-premises metric. Do not use it to tune product extraction or retrieval; if a fix depends on this source, remove it from fresh quality holdout.",
+  "sourceApproved": false,
+  "goldCreated": 0,
+  "productExtractionRun": false,
+  "productionKnowledgeWrites": 0,
+  "next": "Audit question-level and semantic overlap, choose original-cell questions and coordinates, check source reuse and product citation only after code/config freeze; then decide whether this source enters the independent Gold set."
+}
