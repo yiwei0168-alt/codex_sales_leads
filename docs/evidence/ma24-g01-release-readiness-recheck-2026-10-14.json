@@ -1,0 +1,48 @@
+{
+  "schema": "ma24-g01-release-readiness-recheck-v1",
+  "checkedAt": "2026-10-14 14:57 UTC",
+  "scope": "Read-only local release readiness recheck; no migration, service switch, model call, or rollback",
+  "candidate": {
+    "sourceCommit": "052f6b4c3019e75e5677f851493901120d0fd311",
+    "buildId": "_zjhGHUAx7YAftOEXlsef",
+    "snapshot": ".next-releases/ma24-g01-052f6b4c",
+    "snapshotBuildIdMatches": true,
+    "snapshotBuildManifestSha256": "6c37a5ede35e3045e5db68a229cd8248a022c07091f7a94af9acfc64eae0769aa",
+    "runtimeInputGitTreesUnchangedFromCandidateToHead": ["src", "package.json", "package-lock.json", "next.config.ts", "scripts/build-next.mjs", "db/migrations"]
+  },
+  "runningService": {
+    "webHomeHttpStatus": 200,
+    "previousWebBuildId": "QfoyXprIZIVgSWxFSZ-1K",
+    "previousWebBuildManifestHttpStatus": 200,
+    "candidateWebBuildManifestHttpStatus": 404,
+    "langgraphOkHttpStatus": 200,
+    "graphInProcessSourceHashVerified": false
+  },
+  "migrationPreflight": {
+    "command": "npm run ma24:release-preflight",
+    "schemaState": "stage-absent",
+    "prerequisiteMarkersPresent": 9,
+    "targetMarkersPresent": 0,
+    "migrationFileHashesUnchangedFromCandidateReceipt": true,
+    "priorBackupChecksumMatched": true,
+    "priorBackupAgeHours": 29.9,
+    "freshMigrationBackup": false,
+    "readyForRelease": false
+  },
+  "queueAudit": {
+    "command": "npm run ma24:audit-runtime-queues",
+    "checkedAt": "2026-10-14 14:57:16 UTC",
+    "sampledQueues": ["mainAgent", "leadWorkflow", "knowledgeUpload", "skillShadow", "mailboxSync"],
+    "queuedOrRunning": 0,
+    "expiredRunningLeases": 0,
+    "repeatAtSwitch": true
+  },
+  "remainingBeforeSwitch": [
+    "Complete each domain's quality and acceptance gates",
+    "Verify exact running service source and runtime flags",
+    "Create and verify a fresh product backup immediately before migration 127-134",
+    "Record the migration ledger, service pointers, queue and switch-time smoke results",
+    "Execute authorized domain pilots and actual service rollback with data compatibility checks"
+  ],
+  "assessment": "The frozen candidate still matches its recorded build input trees and is not loaded by the Web service. G01 is partial; G17/G18 production acceptance remains open."
+}
