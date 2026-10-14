@@ -1,0 +1,52 @@
+{
+  "date": "2026-10-14",
+  "scope": "G07 account-bound real read-only replay eligibility audit",
+  "source": "Existing private replay manifest tmp/skill-replay/99ecf98e-2a1e-4428-8827-7302526a2cb3/manifest.json and current local product database",
+  "method": "Read-only repeatable-read journal inventory, then prepareHistoricalSkillReplay with the manifest's account, Skill and version pin; no model or external calls",
+  "inventory": {
+    "completedMainRunsInThisAccount": 11,
+    "journalLevelPureReadCandidates": 2,
+    "runsContainingEffects": 4,
+    "runsContainingUnsupportedReadTools": 7,
+    "runsContainingIncompleteReceipts": 0,
+    "accountLevelSkills": 1,
+    "onlySkill": "客户沟通时间线",
+    "onlySkillVersion": 1
+  },
+  "candidates": [
+    {
+      "runId": "1176eb00-f5af-49b6-aee3-2c60cef474fc",
+      "journal": "One completed knowledge_search receipt and four completed model receipts; no external effect",
+      "sourceValidation": "rejected",
+      "reason": "Replay preparation rejected an empty required evidence array; journal-level success status is insufficient"
+    },
+    {
+      "runId": "38e3acb7-ccf1-47bf-b013-38a79909593d",
+      "journal": "One completed knowledge_search receipt and three completed model receipts; no external effect",
+      "sourceValidation": "passed for this complete historical task",
+      "suiteHash": "f23f2bb21123d91997ac0d7859933e88d3fdf29cbc432409c7aaf827c2819b37",
+      "bindingHash": "ec3b5eff4817f6c3fe5b3c2b55956fd986ac03836e0006b142ce8a68c2072a64",
+      "skillRelevance": "failed: original question concerns product USB availability, not customer communication history",
+      "eligibleAsTimelineSkillQualityEvidence": false
+    }
+  ],
+  "priorMailSubtask": {
+    "manifest": "tmp/skill-replay/99ecf98e-2a1e-4428-8827-7302526a2cb3/manifest.json",
+    "selectedMailReadReceipts": 6,
+    "excludedCustomerTimelineReceipts": 0,
+    "priorCandidateRequestedUnrecordedCustomerTimeline": true,
+    "canExpandIntoExactRecordedTimelineRead": false
+  },
+  "conclusion": {
+    "completeRelevantRealReplayAvailableInAuditedAccount": false,
+    "modelCalls": 0,
+    "externalEffects": 0,
+    "automaticActivation": false,
+    "nextSourceNeeded": "A current account-owned complete read-only customer timeline task, or an explicitly bounded subtask with the exact required current read receipts; then run the pinned replay and independent review"
+  },
+  "limits": [
+    "This inventory covers only the account pinned by the existing private replay manifest, not all users or future runs.",
+    "Source validation and semantic relevance are distinct; no replay model comparison was run for the off-topic task.",
+    "A new real task or source evidence is still required for G07 quality acceptance."
+  ]
+}
