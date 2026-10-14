@@ -1,0 +1,57 @@
+{
+  "schema": "ma24-g14-zbw-visual-question-drafts-v1",
+  "date": "2026-10-15",
+  "stage": "source-checked visual PPTX drafts; not Gold",
+  "source": {
+    "title": "An introduction to the topic of Open Science for researchers in business studies and economics",
+    "publisher": "ZBW Open Economics Guide",
+    "doi": "10.5281/zenodo.15348619",
+    "sha256": "595df78e84768ec588a9d638366c69064c63139bdb43fea3445500ac7fd63bde",
+    "publicationFamily": "ZBW Open Economics Guide 2025 teaching slide set, including PPTX, ODP and PDF versions",
+    "localOriginal": "tmp/ma24-independent-quarantine/zbw-2025-open-science.pptx"
+  },
+  "sourceReview": {
+    "originalSlidesVisuallyChecked": [11, 30],
+    "renderedSlideSha256": {
+      "11": "85efef17af325cb6baf464f7980c21f53a89f8b97159c53b1631b4a1496fe0e5",
+      "30": "03bc5775e5517c8a59952571e18b3d34964cc8874d0e329e02cc08334eec2b24"
+    },
+    "reviewedProductVisualBlocks": ["slide-11-visual-2", "slide-30-visual-5"],
+    "productCheck": "Both blocks were saved as evidence and read with source hash, slide coordinate and content in the isolated reviewed-citation clone; production/user-visible answer is not checked.",
+    "reuse": "Short attributed paraphrase of CC BY 4.0 teaching-slide text; no logo or third-party image reproduced."
+  },
+  "draftQuestions": [
+    {
+      "id": "zbw-2025-open-science-five-individual-benefits",
+      "type": "PPTX visual-only evidence",
+      "question": "按 ZBW 2025 年这份课件第 11 页的图示，开放科学对个人列出了哪五项益处？请逐项概括并引用该页。",
+      "draftAnswer": "图示列出：提高学术工作的可见度；扩大影响并促进知识转移；便于获得反馈；符合资助方指南；增加发表选择并加强作者控制。",
+      "sourceCoordinates": ["slide 11, five-segment benefits wheel", "reviewed block slide-11-visual-2"],
+      "acceptanceBoundary": "Five distinct segments must be represented. Do not treat the central person/icon as a sixth benefit or claim measured outcomes."
+    },
+    {
+      "id": "zbw-2025-dmp-lifecycle-and-access-questions",
+      "type": "PPTX editable text plus visual evidence",
+      "question": "按同一份 ZBW 课件第 30 页，数据管理计划应从项目哪个阶段开始、持续多久？右侧问题板又分别怎样提示数据保存期限、数据转移和数据使用权限？请分别引用文字与图示。",
+      "draftAnswer": "课件称，数据管理计划理想情况下在项目规划阶段建立，并贯穿整个项目。问题板要求考虑数据应保存多久、何时何地转移数据，以及谁被允许使用数据。",
+      "sourceCoordinates": ["slide 30, left editable bullet list", "slide 30, right DMP question board", "reviewed block slide-30-visual-5"],
+      "acceptanceBoundary": "Do not invent a numerical retention period, transfer destination, access role or legal requirement; the slide poses these as planning questions."
+    }
+  ],
+  "boundedOverlapScreen": {
+    "command": "node scripts/run-tsx.cjs scripts/screen-ma24-g14-question-overlap-local.ts docs/evidence/ma24-g14-zbw-visual-question-drafts-2026-10-15.json tmp/ma24-independent-quarantine/zbw-visual-drafts-neighbors.json",
+    "receiptSha256BeforeThisField": "a7a74e052c4cc46e96908a7a36658134d723c118b3459b31b64ea556bdd1b8aa",
+    "localReportSha256": "55391d163588890f01124c38d6c688233fc145745c58c5345b5f61af8ea49894",
+    "oldRows": 350,
+    "uniqueOldQuestions": 300,
+    "topCosines": [0.495131, 0.533392],
+    "manualTopTen": "The nearest old items request product datasheets, private company policy, port counts or deployment scenarios. None asks the five illustrated Open Science benefits or the DMP lifecycle and planning questions.",
+    "otherCurrentDrafts": "The current candidate inventory asks technical/legal Open Data publication conditions in slides 25/28 and telecommunications/statistics questions from other sources; neither of these two slide 11/30 answer intents is repeated. Re-audit when the complete set is selected.",
+    "semanticIndependenceProven": false,
+    "cloudCalls": 0
+  },
+  "setBoundary": "These drafts and the existing slides 25/28 draft are one ZBW publication family. They test different answer facts and evidence modes but cannot count as three independent sources. Final whole-set semantic/development exposure audit, source-use approval, Gold freeze and user-visible answer/citation judgment remain required.",
+  "goldCreated": 0,
+  "modelAnswerCalls": 0,
+  "productionWrites": 0
+}
