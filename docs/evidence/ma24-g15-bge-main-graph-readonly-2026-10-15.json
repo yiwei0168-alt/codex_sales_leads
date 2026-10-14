@@ -1,0 +1,33 @@
+{
+  "schema": "ma24-g15-bge-main-graph-readonly-v1",
+  "date": "2026-10-15",
+  "sourceCommit": "29c76d8dd2e69e9e31636987382e406d1914bc20",
+  "verifierSha256": "adc4d6f6bd645f1a146d53a79cf629d2171915fc048276ddf92cfc9ddb9081e8",
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-g15-bge-graph-local.ts",
+  "scope": "Read-only main Agent graph probe with scripted model decisions, real local knowledge_search and PostgreSQL source recheck for an exposed development product query",
+  "bgeHealth": {
+    "status": "ready",
+    "model": "BAAI/bge-m3",
+    "revision": "5617a9f61b028005a4858fdac845db406aefb181",
+    "dimensions": 1024
+  },
+  "observed": {
+    "graphStatus": "completed",
+    "scriptedModelDecisions": 2,
+    "realKnowledgeReads": 1,
+    "sourceRechecks": 5,
+    "authorizedChunks": 8,
+    "bgeRankedChunks": 3,
+    "qwenRankedChunks": 0,
+    "modelCalls": 0,
+    "providerCalls": 0,
+    "durableRunOrJournal": false
+  },
+  "limits": [
+    "This proves a current local main graph can call its real BGE-backed retrieval tool and source guard; the decision and answer were scripted.",
+    "The query was exposed development material, not independent Gold. Answer correctness and exact citation quality were not scored.",
+    "The production Graph/Web processes have not loaded this candidate; no domain pilot or actual rollback occurred."
+  ],
+  "qualityAccepted": false,
+  "productionAccepted": false
+}
