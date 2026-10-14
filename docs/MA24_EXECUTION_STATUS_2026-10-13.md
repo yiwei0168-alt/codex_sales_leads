@@ -2,6 +2,8 @@
 
 本台账按 [R0–R7 收尾计划](MA24_REMAINING_EXECUTION_PLAN_2026-10-13.md)跟踪原 G01–G20。状态区分工程、真实质量与生产运行；“部分”仅表示列出的范围有证据。历史完成结果见 [原计划](MA24_COMPLETION_GOAL_PLAN_2026-10-11.md)，本次只读运行盘点与构建见 [R0 收据](evidence/ma24-r0-runtime-build-2026-10-13.json)。
 
+2026-10-15 G14 另一份 PPTX 地图原页复核：2025 年 IEEE SD4ADDR 演示第 9 页的地图缺图例，PPTX 该页也无讲者备注，不能把彩色标记逐一认作 RSU/OBU 或据图计数。对照整页与图片哈希后，为该对象提出有限视觉证据说明，并把“22 个 RSU 当时活跃”严格保留为原页另列的作者文字。该演示 11 个对象现有证据 9、装饰 2 的离线提案；尚未写产品审核、登记、冻结独立 Gold 或核用户可见引用。[地图复核收据](evidence/ma24-g14-ieee-auto-sd4addr-map-limited-review-2026-10-15.json)。
+
 2026-10-15 G06 修复后旧歧义题本机回归：当前标准模式候选臂以回环 `qwen3:8b` 执行，首个模型请求在固定 120 秒内未返回；图以 `partial / model-deadline` 停止，工具轨迹与业务派发均为 0。占位 ID 拦截没有被本轮模型触发，因而不能判澄清或安全质量；相同 CPU 本地配置不再重复试跑。[超时收据](evidence/ma24-g06-ambiguity-postfix-local-timeout-2026-10-15.json)。
 
 2026-10-15 G15 当前主图只读补验：提交 `29c76d8d` 的主 Agent 图以两次脚本决策驱动一次真实本地 `knowledge_search`，从 BGE-M3 返回 8 个授权块（3 个带 BGE 排名、0 个 Qwen 排名），完成 5 次来源回校，图状态 `completed`。没有回答模型、外部提供方或持久任务调用；开发问句不能证明独立题答案和精确引用质量，正式进程亦未加载候选。[主图收据](evidence/ma24-g15-bge-main-graph-readonly-2026-10-15.json)。

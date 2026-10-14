@@ -1,0 +1,34 @@
+{
+  "schema": "ma24-g14-ieee-auto-sd4addr-map-limited-review-v1",
+  "date": "2026-10-15",
+  "sourceSha256": "786e8324f221fb8d4e854e88515020b61079acb2f50d56e535441e10efbd92c2",
+  "supersedesProposalFor": "slide-9-visual-6",
+  "priorReview": "docs/evidence/ma24-g14-ieee-auto-sd4addr-object-review-2026-10-14.json",
+  "originalSlide": {
+    "number": 9,
+    "title": "Real World Deployment",
+    "renderSha256": "555b77cb8fc063f93da7f72f21fa30e52460fed4f4bd21324667b229a703cdda",
+    "nativeText": "The authors state that SD4ADDR was deployed in the Aveiro Tech City Living Lab in Portugal and that 22 RSUs were active as of July 2025; additional OBUs were planned.",
+    "notesRelationshipPresent": false
+  },
+  "object": {
+    "blockId": "slide-9-visual-6",
+    "shapePath": [6],
+    "embeddedImageSha256": "f519d65c15a863e1692b7566953bfe7290cc53a9ae4a504400759dc5ca32a006",
+    "reviewImageSha256": "7670823f8d6fa0d2815bbabc3fd1ffb7a25c81a3ad7114187f29b6f673616faf",
+    "proposedDecision": "evidence",
+    "evidenceText": "The July 2025 presentation places an Aveiro city map beside its deployment claim. The map shows purple pin markers, green house icons, orange and blue point clusters, and red connecting lines. It provides no legend mapping those symbols to RSUs or OBUs, so the image does not independently establish marker counts, device types, routes, or current deployment status.",
+    "reason": "The map crop and full original slide were compared. The 22 active RSUs statement is separate native slide text, not a count derived from the map. No slide-9 speaker notes relationship supplies a legend."
+  },
+  "proposedReviewAfterReplacement": {
+    "total": 11,
+    "evidence": 9,
+    "decoration": 2,
+    "unresolved": 0
+  },
+  "productJudgmentsSaved": 0,
+  "qualityAccepted": false,
+  "independentGoldApproved": false,
+  "productionKnowledgeWrites": 0,
+  "next": "Verify all 11 source-bound proposals through the product review gate in an isolated clone, then check source/question independence and product citations before any Gold freeze. The map may be described only within this limited visual scope."
+}
