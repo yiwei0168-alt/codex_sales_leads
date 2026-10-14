@@ -1,0 +1,48 @@
+{
+  "date": "2026-10-14",
+  "scope": "G10 synthetic Skill acceptance review page-to-database test on existing ma11 replay clone",
+  "command": "npm run ma24:verify-skill-review-ui-clone",
+  "database": {
+    "clone": "ma11_replay_7d98e095133b",
+    "syntheticUserAndSkillOnly": true,
+    "applicationRoleUsedByWeb": true,
+    "syntheticUsersAfterRun": 0,
+    "syntheticCandidateSkillsAfterRun": 0,
+    "syntheticUiJudgmentsAfterRun": 0,
+    "productDatabaseChanged": false
+  },
+  "candidateWebBuildId": "JL8ySlDPL7j1x5xDRlO8A",
+  "findingAndFix": {
+    "initialBrowserSaveStatus": 403,
+    "initialResponse": "请求来源无效",
+    "browserOriginAndPostUrl": "http://127.0.0.1:<isolated-port>",
+    "browserSecFetchSite": "same-origin",
+    "cause": "Inference from the same-origin browser request, the 403, and the successful Host-aware fix: the request URL origin differed from the browser-facing Host origin.",
+    "fix": "Accept an Origin matching either the request URL origin or its protocol plus Host, while rejecting cross-site and same-site browser POSTs.",
+    "focusedRouteTests": "8 passed"
+  },
+  "observed": {
+    "candidateWebFullBuild": "passed",
+    "syntheticReviewBundleListed": true,
+    "reviewQuestionAndBothArmsLoadedFromDatabase": true,
+    "browserSavedAllNegativeSyntheticVerdicts": true,
+    "databaseReviewerKind": "human",
+    "savedRevision": 1,
+    "refreshRestoredRevision": true,
+    "browserRevokedJudgment": true,
+    "revokedRevision": 2,
+    "skillRemainedDisabled": true,
+    "existingCloneFixtureAssertions": "passed",
+    "modelCalls": 0
+  },
+  "checks": {
+    "typecheck": "passed",
+    "focusedLint": "passed",
+    "gitDiffCheck": "passed"
+  },
+  "limits": [
+    "The browser used a synthetic account, source task, Skill, and evidence bundle. The test's human reviewer kind is the API identity, not an independent human quality judgment.",
+    "The UI-generated judgments were removed from the clone before the original fixture continued and its remaining cleanup completed.",
+    "Safety and prospective-shadow material, natural business quality, automatic enablement, production deployment and rollback are not accepted by this result."
+  ]
+}

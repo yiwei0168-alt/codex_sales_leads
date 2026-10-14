@@ -19,7 +19,9 @@ export async function GET(request:Request){
 export async function POST(request:Request){
  const session=await requireApiSession();if(session instanceof Response)return session;
  const origin=request.headers.get('origin');
- if((origin&&origin!==new URL(request.url).origin)||request.headers.get('sec-fetch-site')==='cross-site')return Response.json({error:'请求来源无效'},{status:403,headers});
+ const target=new URL(request.url),host=request.headers.get('host');
+ const sameOrigin=!origin||origin===target.origin||(host&&origin===`${target.protocol}//${host}`);
+ if(!sameOrigin||['cross-site','same-site'].includes(request.headers.get('sec-fetch-site')??''))return Response.json({error:'请求来源无效'},{status:403,headers});
  const text=await request.text();if(text.length>24000)return Response.json({error:'审核内容过长'},{status:413,headers});
  let body:unknown;try{body=JSON.parse(text);}catch{return Response.json({error:'审核参数无效'},{status:400,headers});}
  const parsed=appendSkillAcceptanceJudgmentSchema.safeParse(body);

@@ -20,6 +20,12 @@ it('rejects identity injection and cross-origin writes',async()=>{
  for(const changed of [{...body,userId:id},{...body,reviewerKind:'human'},{...body,judgment:{...body.judgment,reviewerId:id}}])expect((await post(changed)).status).toBe(400);
  expect((await post(body,{origin:'http://other.invalid'})).status).toBe(403);expect(m.append).not.toHaveBeenCalled();
 });
+it('accepts the browser Host origin when the internal request URL uses a different host',async()=>{
+ const request=new Request('http://localhost/api',{method:'POST',body:JSON.stringify(body),headers:{host:'127.0.0.1:3018',origin:'http://127.0.0.1:3018','sec-fetch-site':'same-origin'}});
+ expect((await POST(request)).status).toBe(200);expect(m.append).toHaveBeenCalledOnce();
+ expect((await post(body,{host:'127.0.0.1:3018',origin:'http://other.invalid','sec-fetch-site':'cross-site'})).status).toBe(403);
+ expect((await post(body,{host:'127.0.0.1:3018',origin:'http://127.0.0.1:3018','sec-fetch-site':'same-site'})).status).toBe(403);
+});
 it('does not save stale material or disclose private errors',async()=>{
  m.material.mockResolvedValueOnce({artifactHash:'b'.repeat(64),observationHash:hash});expect((await post()).status).toBe(409);
  m.material.mockRejectedValueOnce(new Error('PRIVATE TEXT'));const response=await post();expect(response.status).toBe(409);expect(await response.text()).not.toContain('PRIVATE');expect(m.append).not.toHaveBeenCalled();

@@ -12,7 +12,7 @@ import {auditDurableSkillCandidate} from '../../src/lib/assistant/main/skill-can
 import {verifySafetyCandidateFixture} from './skill-safety-candidate-clone';
 import {prepareFrozenCandidateFixture,verifyCandidateAcceptanceFixture} from './skill-candidate-acceptance-clone';
 
-export async function verifyDurableCandidateFixture(pool:Pool,owner:string,input:{runId:string;skillId:string;version:number}){
+export async function verifyDurableCandidateFixture(pool:Pool,owner:string,input:{runId:string;skillId:string;version:number},onReviewReady?:(bundleId:string,skillId:string)=>Promise<void>){
  assert(/^ma11_replay_[a-f0-9]{12}$/.test((await pool.query('select current_database() as name')).rows[0].name));
  const evaluationId=randomUUID();let requests=0;
  const transaction:SkillCollectorTransaction=async(userId,work)=>{
@@ -51,7 +51,7 @@ export async function verifyDurableCandidateFixture(pool:Pool,owner:string,input
   assert.equal(rows[0].output.status,'unavailable');assert.equal(rows[0].output.data.retryable,true);
   const binding={ownerId:owner,evaluationId,arm:'candidate' as const,step:0,snapshotHash:first.serverSnapshotHash,sourceKind:'synthetic-fixture' as const};
   await assert.rejects(createSkillModelJournal(transaction,binding).begin(rows[0].input),/binding changed/);
-  console.log(JSON.stringify({candidateAcceptance:await verifyCandidateAcceptanceFixture(pool,owner,input.runId,input.skillId,audited,frozen),cloneOnly:true}));
+  console.log(JSON.stringify({candidateAcceptance:await verifyCandidateAcceptanceFixture(pool,owner,input.runId,input.skillId,audited,frozen,onReviewReady),cloneOnly:true}));
   await revokeSkillAcceptanceFreeze({userId:owner},{freezeId:frozen.freezeId,reason:'Synthetic revocation guard'});
   await assert.rejects(runDurableRecordedSkillCandidateArm({userId:owner},input,'candidate',collector),/revoked/);assert.equal(requests,4);
   await assert.rejects(createSkillModelJournal(transaction,{...binding,freezeId:frozen.freezeId}).begin(rows[0].input),/freeze unavailable/);

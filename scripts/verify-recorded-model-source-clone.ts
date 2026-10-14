@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {randomUUID} from 'node:crypto';
+import {randomBytes,randomUUID} from 'node:crypto';
 import {readFile} from 'node:fs/promises';
 import nextEnv from '@next/env';
 import {Pool} from 'pg';
@@ -21,12 +21,16 @@ import {verifyAcceptanceBaselineFixture} from './fixtures/skill-acceptance-basel
 import {verifyCandidateSourceFixture} from './fixtures/skill-candidate-source-clone';
 import {verifySkillModelJournalFixture} from './fixtures/skill-model-journal-clone';
 import {verifyAcceptanceFreezeFixture} from './fixtures/skill-acceptance-freeze-clone';
+import {hashPassword} from '../src/lib/auth/password';
 nextEnv.loadEnvConfig(process.cwd());disableLocalAnalysisTracing();
 const base=process.env.DATABASE_MIGRATION_URL||process.env.DATABASE_URL;
 assert(base&&['localhost','127.0.0.1','::1'].includes(new URL(base).hostname));
 const state=JSON.parse(await readFile('tmp/ma11-replay-state.json','utf8'));assert(/^ma11_replay_[a-f0-9]{12}$/.test(state.database));
+const applicationBase=process.env.DATABASE_URL;assert(applicationBase&&['localhost','127.0.0.1','::1'].includes(new URL(applicationBase).hostname));
+const applicationUrl=new URL(applicationBase);applicationUrl.pathname=`/${state.database}`;
 const url=new URL(base);url.pathname=`/${state.database}`;process.env.DATABASE_URL=url.toString();
 const pool=new Pool({connectionString:url.toString()}),owner=randomUUID(),other=randomUUID(),conversation=randomUUID(),runId=randomUUID(),callId=randomUUID(),memoryId=randomUUID(),readCallId=randomUUID();
+const skillReviewUiPassword=process.argv.includes('--skill-review-ui')?randomBytes(24).toString('base64url'):null;
 globalThis.fetch=async()=>{throw Error('No network in clone verification');};
 try{
  await pool.query(await readFile('db/migrations/130_skill_acceptance_evidence.sql','utf8'));
@@ -34,7 +38,7 @@ try{
  await pool.query(await readFile('db/migrations/132_skill_bundle_collector.sql','utf8'));
  await pool.query(await readFile('db/migrations/133_skill_acceptance_freeze.sql','utf8'));
  await pool.query(await readFile('db/migrations/134_skill_model_freeze_binding.sql','utf8'));
- for(const id of [owner,other])await pool.query("insert into app_user(id,email,display_name,password_hash,role,status) values($1,$2,'Model source fixture','!','member','active')",[id,`${id}@example.invalid`]);
+ for(const id of [owner,other])await pool.query("insert into app_user(id,email,display_name,password_hash,role,status) values($1,$2,'Model source fixture',$3,'member','active')",[id,`${id}@example.invalid`,id===owner&&skillReviewUiPassword?hashPassword(skillReviewUiPassword):'!']);
  console.log(JSON.stringify({skillModelJournal:await verifySkillModelJournalFixture(pool,owner,other),cloneOnly:true}));
  console.log(JSON.stringify({skillAcceptanceFreeze:await verifyAcceptanceFreezeFixture(pool,owner,other),cloneOnly:true}));
  await pool.query("insert into assistant_conversation(id,user_id,title) values($1,$2,'Model source fixture')",[conversation,owner]);
@@ -106,7 +110,10 @@ try{
  const graphAudit=await auditRecordedGraphExecution(context,{runId});assert.equal(graphAudit.recordedDecisions,3);assert.equal(graphAudit.recordedTools,2);assert.equal(graphAudit.modelCalls,0);
  const acceptanceBaseline=await verifyAcceptanceBaselineFixture(pool,owner,other,runId);
  console.log(JSON.stringify({acceptanceBaseline,cloneOnly:true,modelCalls:0}));
- const candidateSource=await verifyCandidateSourceFixture(pool,owner,other,runId);
+ const candidateSource=await verifyCandidateSourceFixture(pool,owner,other,runId,skillReviewUiPassword?async(bundleId,skillId)=>{
+  const {verifyMa24SkillReviewUiClone}=await import('./lib/verify-ma24-skill-review-ui-clone');
+  console.log(JSON.stringify({skillReviewUi:await verifyMa24SkillReviewUiClone({pool,owner,email:`${owner}@example.invalid`,password:skillReviewUiPassword,applicationDatabaseUrl:applicationUrl.toString(),migrationDatabaseUrl:url.toString(),bundleId,skillId}),cloneOnly:true}));
+ }:undefined);
  console.log(JSON.stringify({candidateSource,cloneOnly:true,modelCalls:0}));
  const clarification='Synthetic clarification after recorded reads';
  await pool.query('update agent_run set instructions=$2 where id=$1',[runId,JSON.stringify([{id:randomUUID(),content:clarification}])]);

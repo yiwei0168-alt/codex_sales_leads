@@ -7,7 +7,7 @@ import {digest,toolResultSchema} from '../../src/lib/assistant/main/contracts';
 import {verifyDurableCandidateFixture} from './skill-durable-candidate-clone';
 
 /** Synthetic accounts and task only; caller blocks network and asserts clone database. */
-export async function verifyCandidateSourceFixture(pool:Pool,owner:string,other:string,runId:string){
+export async function verifyCandidateSourceFixture(pool:Pool,owner:string,other:string,runId:string,onReviewReady?:(bundleId:string,skillId:string)=>Promise<void>){
  assert(/^ma11_replay_[a-f0-9]{12}$/.test((await pool.query('select current_database() as name')).rows[0].name));
  const context={userId:owner},original=await loadRecordedTaskChain(context,{runId});
  const skill=await importSkill({...context,role:'member'},{name:'Candidate source fixture',source:'synthetic-fixture',files:{'SKILL.md':'Check original evidence.'},dependencies:[]});
@@ -16,7 +16,7 @@ export async function verifyCandidateSourceFixture(pool:Pool,owner:string,other:
  const steps=[call('describe_tool',{tool:'skill_read'},'describe'),call('execute_tool',{tool:'skill_read',arguments:{id:skill.id}},'read'),
   call('describe_tool',{tool:'memory_read'},'describe-memory'),call('execute_tool',{tool:'memory_read',arguments:{}},'read-memory'),{role:'assistant',content:'Synthetic candidate response.'}];
  try{
-  const durableCandidate=await verifyDurableCandidateFixture(pool,owner,input);
+  const durableCandidate=await verifyDurableCandidateFixture(pool,owner,input,onReviewReady);
   console.log(JSON.stringify({durableCandidate,cloneOnly:true}));
   for(const arm of ['baseline','candidate'] as const){
    let index=0;
