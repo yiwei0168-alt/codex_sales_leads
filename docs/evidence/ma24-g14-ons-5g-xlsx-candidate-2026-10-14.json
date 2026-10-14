@@ -28,10 +28,40 @@
     "matchingHistoricalGoldRows": 0,
     "limitation": "Exact hash absence does not prove semantic or question-level independence."
   },
+  "draftQuestions": [
+    {
+      "id": "ons-5g-2026-aberdeen-city-shire",
+      "status": "draft only; not Gold",
+      "question": "按 ONS 2026 年 1 月 5G 覆盖工作簿，Aberdeen City 与 Aberdeenshire 的室外 5G 地理面积覆盖率各是多少？两地相差多少个百分点？",
+      "draftAnswer": "Aberdeen City 为 99.85%，Aberdeenshire 为 64.20%，相差 35.65 个百分点。",
+      "sourceCoordinates": ["'Notes'!B4", "'1'!A5:C5", "'1'!A381:C382"],
+      "calculation": "C381 minus C382, expressed in percentage points"
+    },
+    {
+      "id": "ons-5g-2026-highland-scotland-scope",
+      "status": "draft only; not Gold",
+      "question": "按同一工作簿，Highland 与 Scotland 的 2026 年 1 月 5G 覆盖比例分别是多少，Highland 低多少个百分点？这里的比例描述地理面积、住户还是人口？",
+      "draftAnswer": "Highland 为 35.20%，Scotland 为 47.52%，Highland 低 12.32 个百分点。指标描述至少一家运营商在室外达到 −110 dBm 信号阈值的地理面积比例，并非住户或人口比例。",
+      "sourceCoordinates": ["'Notes'!B4", "'1'!A5:C5", "'1'!A370:C370", "'1'!A395:C395"],
+      "calculation": "C395 minus C370, expressed in percentage points"
+    }
+  ],
+  "draftOverlapScreen": {
+    "command": "node scripts/run-tsx.cjs scripts/screen-ma24-g14-draft-batch-local.ts",
+    "localOutput": "tmp/ma24-independent-quarantine/g14-draft-batch-overlap-screen-v4.json",
+    "outputSha256": "2b1c233205fb9528e556152a0cb08f71e85d7bf717f33efb62bcce61b54eff26",
+    "questionHashBinding": "Each result hashes source SHA-256, draft ID and question text.",
+    "historicalRows": 350,
+    "uniqueHistoricalQueries": 300,
+    "maximumCosine": {"ons-5g-2026-aberdeen-city-shire": 0.47479, "ons-5g-2026-highland-scotland-scope": 0.501637},
+    "manualTopThree": "The first draft's top old neighbors ask AP3000/AP3600 physical ports and power; the second draft's ask whether a 2.5G Ethernet port means 5G cellular. None requests named UK-area outdoor 5G geographic coverage or these values.",
+    "semanticIndependenceProven": false,
+    "cloudCalls": 0
+  },
   "independenceBoundary": "Downloaded after layout-v2.0.8 was committed. This 5G geographic-area metric is distinct from the development-exposed ONS ultrafast fixed-premises metric. Do not use it to tune product extraction or retrieval; if a fix depends on this source, remove it from fresh quality holdout.",
   "sourceApproved": false,
   "goldCreated": 0,
   "productExtractionRun": false,
   "productionKnowledgeWrites": 0,
-  "next": "Audit question-level and semantic overlap, choose original-cell questions and coordinates, check source reuse and product citation only after code/config freeze; then decide whether this source enters the independent Gold set."
+  "next": "Audit the two source-cell drafts against historical question semantics and development exposure, check source reuse, and verify product citation only after code/config freeze; then decide whether this source enters the independent Gold set."
 }

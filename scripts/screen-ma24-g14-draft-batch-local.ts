@@ -11,6 +11,7 @@ const sources=[
  'ma24-g14-etsi-long-pdf-page-review-2026-10-14.json',
  'ma24-g14-ieee-auto-sd4addr-candidate-2026-10-14.json',
  'ma24-g14-ons-xlsx-candidate-2026-10-14.json',
+ 'ma24-g14-ons-5g-xlsx-candidate-2026-10-14.json',
 ];
 const hash=(value:string)=>createHash('sha256').update(value).digest('hex');
 type Draft={id:string;question:string};
@@ -55,7 +56,7 @@ const report={schema:'ma24-g14-draft-batch-neighbor-screen-v1',
  historicalBlindSha256:hash(blindRaw),oldRows:old.length,uniqueOldQueries:unique.length,
  model:'BAAI/bge-m3',revision:'5617a9f61b028005a4858fdac845db406aefb181',dimensions:1024,
  questions,semanticIndependenceProven:false,qualityAccepted:false,cloudCalls:0};
-const output=path.resolve('tmp/ma24-independent-quarantine/g14-draft-batch-overlap-screen-v3.json');
+const output=path.resolve('tmp/ma24-independent-quarantine/g14-draft-batch-overlap-screen-v4.json');
 await writeFile(output,JSON.stringify(report,null,2),{flag:'wx'});
 console.log(JSON.stringify({output,questionCount:questions.length,oldRows:old.length,uniqueOldQueries:unique.length,
  topScores:questions.map(row=>({id:row.id,score:row.neighbors[0]?.score,query:row.neighbors[0]?.query}))}));
