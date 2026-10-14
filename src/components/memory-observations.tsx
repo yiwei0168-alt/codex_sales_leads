@@ -1,6 +1,7 @@
 "use client";
 import {useEffect,useState} from "react";
 import {MemorySkills} from "./memory-skills";
+import {RawJsonDetails} from "./raw-json-details";
 import styles from './memory-observations.module.css';
 
 type View="current"|"timeline"|"conflicts"|"notices"|"skills";
@@ -58,7 +59,7 @@ export function MemoryObservations(){
         <p>{item.later_content}</p><button type="button" className="secondary-button" disabled={busy||!!editing} onClick={()=>startCorrection(item.later_id!,item.later_content!,item.id!)}>更正后一条</button></>
         :<><strong>{item.kind??"记忆观察"}</strong><p style={{whiteSpace:"pre-wrap"}}>{item.content}</p>
           <small>{item.recorded_at??item.created_at}{item.valid_from?` · 业务生效 ${item.valid_from}`:" · 业务生效时间未知"}{item.valid_until?` · 业务结束（不含）${item.valid_until}`:''}</small>
-          {item.source_receipt&&<details><summary>来源收据</summary><pre>{JSON.stringify(item.source_receipt,null,2)}</pre></details>}
+          {item.source_receipt&&<RawJsonDetails summary="来源收据" value={item.source_receipt}/>}
           {item.is_invalidated&&<p>已更正或撤销，保留供历史追溯。</p>}
           {item.id&&!item.invalidates_id&&!item.is_invalidated&&view!=="notices"&&<div className={styles.actions}>
             {!String(item.source_receipt?.type).startsWith('agent-memory-')&&<button type="button" className="secondary-button" disabled={busy||!!editing} onClick={()=>startCorrection(item.id!,item.content!)}>更正这条记忆</button>}

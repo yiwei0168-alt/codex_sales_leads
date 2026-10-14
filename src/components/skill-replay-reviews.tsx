@@ -2,6 +2,7 @@
 import {useEffect,useState} from 'react';
 import './skill-replay-reviews.css';
 import {SkillBlindReview} from './skill-blind-review';
+import {RawJsonDetails} from './raw-json-details';
 
 const metrics={answer:'答案正确',citation:'精确引用正确',permission:'权限边界遵守',injection:'未受注入影响'};
 type Metric=keyof typeof metrics;
@@ -75,9 +76,9 @@ function ReviewCase({endpoint,evaluation,index,busy,setBusy,onSaved,dirty,setDir
     }catch(e){setError(e instanceof Error?e.message:'保存失败');}finally{setBusy(false);}
   }
   return <div className="skill-review-case" onChange={()=>setDirty(true)}><h4>{item.question}</h4>
-    {evaluation.kind==='prospective-local-shadow'&&<details><summary>查看生产任务原答案（单独观察，不参与下方本地双路判分）</summary><pre>{JSON.stringify(evaluation.observedProductionResult,null,2)}</pre></details>}
+    {evaluation.kind==='prospective-local-shadow'&&<RawJsonDetails summary="查看生产任务原答案（单独观察，不参与下方本地双路判分）" value={evaluation.observedProductionResult}/>}
     {item.coverage&&<div className="skill-review-coverage"><p><strong>只读分析子任务</strong>：本题仅核对选中的 {item.coverage.selectedCallIds.length} 条读取收据。原任务另有 {item.coverage.excludedCalls.length} 条收据保留供追溯，未在本题执行或评测；通过本题不表示原任务完整通过。</p>
-      <details><summary>查看原任务与未评测收据</summary><p>{item.coverage.originalQuestion}</p><pre>{JSON.stringify(item.coverage.excludedCalls,null,2)}</pre></details></div>}
+      <details><summary>查看原任务与未评测收据</summary><p>{item.coverage.originalQuestion}</p><RawJsonDetails summary="复制未评测收据 JSON" value={item.coverage.excludedCalls}/></details></div>}
     <div className="skill-review-arms">{(['baseline','candidate'] as const).map(side=><fieldset key={side} disabled={busy}>
       <legend>{side==='baseline'?'原流程':'候选 Skill'}</legend>
       <div className="skill-review-answer">{pair[side].reply??pair[side].answer??'没有可用回答'}</div>
@@ -88,7 +89,7 @@ function ReviewCase({endpoint,evaluation,index,busy,setBusy,onSaved,dirty,setDir
       <label>判决依据<textarea aria-label={`${side==='baseline'?'原流程':'候选 Skill'}：判决依据`} maxLength={4000} value={values[side].rationale}
         onChange={e=>setValues(v=>({...v,[side]:{...v[side],rationale:e.target.value}}))}/></label>
     </fieldset>)}</div>
-    <details><summary>查看本题原始证据与来源坐标</summary><pre>{JSON.stringify(item.receipts,null,2)}</pre></details>
+    <RawJsonDetails summary="查看本题原始证据与来源坐标" value={item.receipts}/>
     {error&&<p role="alert">{error}</p>}
     <footer><span>{dirty?'有未保存的修改，请保存或放弃后切换题目。':prior?.reviewer?'本题判决已保存；再次保存会保留旧记录。':'本题判决尚未保存'}</span>
       {dirty&&<button type="button" disabled={busy} onClick={()=>{setValues({baseline:prior?.baseline??blank(),candidate:prior?.candidate??blank()});setDirty(false);setError('');}}>放弃本次修改</button>}

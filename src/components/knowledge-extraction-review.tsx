@@ -1,6 +1,7 @@
 "use client";
 import {useEffect,useState} from 'react';
 import {WorkspaceDialog} from './workspace-dialog';
+import {RawJsonDetails} from './raw-json-details';
 import type {VisualCandidate} from '@/lib/knowledge/visual-review-candidates';
 type Decision='evidence'|'decoration'|'unresolved';
 type View='pending'|'successful';
@@ -80,8 +81,8 @@ export function KnowledgeExtractionReview({jobId,onClose,onComplete}:{jobId:stri
             <figcaption>{item.candidate.coordinateSpace==='pdf-page-render'?'原始 PDF 页面本地渲染，包含批注；文字与图表含义仍需审核。':`原始图片裁剪，旋转角度 ${item.candidate.rotation??0}°；未还原整页布局及遮挡，请结合原件核对。`}</figcaption>
           </figure>}
           {item.candidate?.ocrLines&&<details><summary>OCR 候选文字（{item.candidate.ocrLines.length} 行，未经审核）</summary><pre>{item.candidate.ocrLines.map(line=>`${line.text}（置信度 ${line.confidence.toFixed(2)}）`).join('\n')||'未识别到文字；不能据此认定为装饰。'}</pre></details>}
-          {item.candidate?.diagram&&<details><summary>SmartArt 原生数据（未经审核）</summary><pre>{JSON.stringify(item.candidate.diagram,null,2)}</pre></details>}
-          {item.candidate?.connector&&<details><summary>连接线原生数据（未经审核）</summary><pre>{JSON.stringify(item.candidate.connector,null,2)}</pre></details>}
+          {item.candidate?.diagram&&<RawJsonDetails summary="SmartArt 原生数据（未经审核）" value={item.candidate.diagram}/>}
+          {item.candidate?.connector&&<RawJsonDetails summary="连接线原生数据（未经审核）" value={item.candidate.connector}/>}
           {item.candidate?.cachedErrorCells&&<section aria-label="工作表缓存错误">
             <p>此表含 {item.candidate.cachedErrorCount} 个缓存公式错误。以下只列前 {item.candidate.cachedErrorCells.length} 个位置；这些值不能直接作为资料证据。请对照原件，只保留核实过的内容，无法核实时保持未解决。</p>
             <pre>{item.candidate.cachedErrorCells.map(error=>`${error.cell}: ${error.value}`).join('\n')}</pre>

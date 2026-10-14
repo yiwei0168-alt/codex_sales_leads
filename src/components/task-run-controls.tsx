@@ -1,6 +1,7 @@
 "use client";
 import { useEffect,useState } from "react";
 import { useRouter } from "next/navigation";
+import {RawJsonDetails} from "./raw-json-details";
 type State={job:{status:string;phase:string;attempts:number;stop_requested:boolean;paused_at:string|null}|null;progress:Record<string,unknown>|null};
 export function TaskRunControls({actionId,status,processingRecovery=false}:{actionId:string;status:string;processingRecovery?:boolean}){
   const router=useRouter();const [state,setState]=useState<State|null>(null);const [busy,setBusy]=useState(false);const [message,setMessage]=useState("");const [revision,setRevision]=useState(0);
@@ -18,6 +19,6 @@ export function TaskRunControls({actionId,status,processingRecovery=false}:{acti
     {state?.job&&["queued","running"].includes(state.job.status)&&<button disabled={busy||state.job.stop_requested} onClick={()=>void action(true)}>在下一安全节点暂停</button>}
     {(paused||status==="failed"||state?.job?.status==="failed")&&<button disabled={busy} onClick={()=>{if(window.confirm("从已保存阶段恢复，后续模型和搜索可能产生费用。是否确认继续？"))void action(false);}}>确认费用并从检查点恢复</button>}
     {message&&<p role="status">{message}</p>}
-    <details><summary>阶段成本与数量记录（已保存检查点）</summary><p>当前阶段尚未保存的调用不在这里；未知费用不按零计算。请求暂停不会中断正在计费的调用。</p><pre style={{whiteSpace:"pre-wrap",overflowWrap:"anywhere"}}>{state?.progress?JSON.stringify(state.progress,null,2):"尚无检查点记录"}</pre></details>
+    <p>当前阶段尚未保存的调用不在这里；未知费用不按零计算。请求暂停不会中断正在计费的调用。</p>{state?.progress?<RawJsonDetails summary="阶段成本与数量记录（已保存检查点）" value={state.progress}/>:<details><summary>阶段成本与数量记录（已保存检查点）</summary><p>尚无检查点记录</p></details>}
   </section>;
 }

@@ -1,0 +1,15 @@
+{
+  "schema": "ma24-g13-f12-remaining-raw-json-surfaces-v1",
+  "date": "2026-10-15",
+  "scope": "Candidate source and build; no production deployment or database write",
+  "change": "Task detail, visual extraction review, memory history and source receipts, Skill replay review, and task checkpoint raw structures now use the existing expandable RawJsonDetails component with exact JSON copy and long-token wrapping.",
+  "checks": [
+    "npm run typecheck",
+    "npx eslint on the six modified components",
+    "npm run build",
+    "node scripts/run-tsx.cjs scripts/verify-skill-acceptance-ui.ts: existing RawJsonDetails browser flow passed at 1366, 390 and 320 px, including exact long-coordinate copy and no horizontal overflow",
+    "git diff --check"
+  ],
+  "limits": "The browser check covers the shared component inside Skill acceptance, not every newly converted page. Task detail, visual review, memory, replay, and checkpoint page/API/database flows still need scoped end-to-end acceptance. Production load and real business data are not verified.",
+  "externalEffects": {"modelCalls": 0, "productionWrites": 0, "deployment": false}
+}
