@@ -16,6 +16,15 @@
     "originalSlidesVisuallyChecked": [3, 5, 6, 7],
     "domainFit": "substantive network implementation and measured performance; source-specific research result, not a current product or standard claim"
   },
+  "productLocalExtraction": {
+    "receipt": "docs/evidence/ma24-g14-ieee-auto-sd4addr-product-extraction-2026-10-14.json",
+    "artifactSha256": "da914590113f692bc562b3921f2ab214eabceacf163cd30f0661018a9e13a366",
+    "blocks": 68,
+    "pendingVisualBlocks": 11,
+    "candidatePackageSha256": "b52f299820d2c7d15cf6e93126b564f3c1b2bb33b474a15c9d4ab139c0f01311",
+    "savedProductJudgments": 0,
+    "userVisibleCitationProven": false
+  },
   "localExposureScreen": {
     "exactHashCommand": "node scripts/run-tsx.cjs scripts/audit-g14-candidate-hash-local.ts 786e8324f221fb8d4e854e88515020b61079acb2f50d56e535441e10efbd92c2",
     "matchingAssets": 0,

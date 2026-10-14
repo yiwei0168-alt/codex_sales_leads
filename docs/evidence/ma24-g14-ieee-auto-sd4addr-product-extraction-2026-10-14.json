@@ -1,0 +1,46 @@
+{
+  "schema": "ma24-g14-ieee-auto-sd4addr-product-extraction-v1",
+  "date": "2026-10-14",
+  "scope": "Offline product-path extraction and visual candidate preparation of the quarantined public IEEE 802.11 automotive research PPTX; no evaluation-use decision.",
+  "source": "tmp/ma24-independent-quarantine/ieee-auto-sd4addr-2025.pptx",
+  "sourceSha256": "786e8324f221fb8d4e854e88515020b61079acb2f50d56e535441e10efbd92c2",
+  "extractCommand": "python scripts/extract-uploaded-knowledge.py tmp/ma24-independent-quarantine/ieee-auto-sd4addr-2025.pptx tmp/ma24-independent-quarantine/ieee-auto-sd4addr-product-extraction.json",
+  "extraction": {
+    "extractorVersion": "layout-v2.0.6",
+    "artifactSha256": "da914590113f692bc562b3921f2ab214eabceacf163cd30f0661018a9e13a366",
+    "blocks": 68,
+    "slideQuality": {"success": 5, "blank": 0, "pending-ocr": 6, "failed": 0},
+    "pendingVisualBlocks": 11,
+    "pendingBySlide": {"2": 2, "3": 1, "5": 2, "7": 2, "8": 3, "9": 1},
+    "sourceHashMatched": true,
+    "externalCalls": 0
+  },
+  "visualCommand": ".\\.venv-docling-v3\\Scripts\\python.exe scripts/prepare_pptx_visual_review.py --input tmp/ma24-independent-quarantine/ieee-auto-sd4addr-2025.pptx --artifact tmp/ma24-independent-quarantine/ieee-auto-sd4addr-product-extraction.json --output tmp/ma24-independent-quarantine/ieee-auto-sd4addr-visual-candidates --max-unique-images 100 --all-batches --checkpoint-dir tmp/ma24-independent-quarantine/ieee-auto-sd4addr-visual-checkpoints",
+  "visualPackage": {
+    "path": "tmp/ma24-independent-quarantine/ieee-auto-sd4addr-visual-candidates/review.json",
+    "sha256": "b52f299820d2c7d15cf6e93126b564f3c1b2bb33b474a15c9d4ab139c0f01311",
+    "records": 11,
+    "matchingPendingBlockIds": 11,
+    "uniqueImages": 11,
+    "mismatchedImageHashes": 0,
+    "sourceHashMatchesExtraction": true,
+    "artifactHashMatchesFile": true,
+    "ocrLines": 133,
+    "reason": "ocr-candidate-requires-visual-review",
+    "externalCalls": 0,
+    "qualityAccepted": false,
+    "extractionStatusChanged": false
+  },
+  "selectedChartCheck": {
+    "blockId": "slide-7-visual-3",
+    "reviewImageSha256": "2b223f6a2c52bcc4672e313f94831729d429916d94789e443f2047b2c9f66095",
+    "observation": "The original slide and product candidate crop visibly label normal 4.639, encap 4.990 and decap 5.943 microseconds for average forwarding time. OCR includes the three numbers but misreads other chart labels; it is not an accepted transcription by itself.",
+    "savedProductJudgment": false
+  },
+  "evaluationUseConfirmed": false,
+  "savedProductJudgments": 0,
+  "sourceApproved": false,
+  "goldCreated": 0,
+  "productionKnowledgeWrites": 0,
+  "next": "Resolve the presentation's evaluation-use boundary, review all 11 visual objects against original slides, audit answer-level independence and user-visible product citations before any source or Gold freeze."
+}

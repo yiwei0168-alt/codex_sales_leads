@@ -112,7 +112,7 @@
       "bytes": 3609415,
       "sha256": "786e8324f221fb8d4e854e88515020b61079acb2f50d56e535441e10efbd92c2",
       "integrity": "valid OOXML; 72 ZIP parts; 11 slides with native text; no macro/external-link parts or external relationships",
-      "status": "quarantined as potential independent PPTX quality source; research-result scope, question-level semantic overlap, precise chart coordinate and evaluation-use review pending; Gold 0"
+      "status": "quarantined as potential independent PPTX quality source; offline product extraction has 68 blocks and 11 pending visual objects on six slides; 11 hash-matched local candidate images prepared and slide 7 chart crop checked, but no product judgments or user-visible citation; research-result scope, question-level semantic overlap and evaluation-use review pending; Gold 0"
     },
     {
       "kind": "pptx",
