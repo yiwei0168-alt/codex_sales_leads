@@ -1,0 +1,29 @@
+{
+  "schema": "ma24-g01-typecheck-scope-build-v1",
+  "date": "2026-10-15",
+  "scope": "Candidate source/build and disposable restored database; no deployed service or production migration changed",
+  "problem": "Root tsconfig included **/*.ts and **/*.tsx across ignored tmp/, so npm run typecheck failed at tmp/ma24-independent-quarantine/verify-nist-tn2363-review-clone.ts:106 on a disposable source-review probe. The probe is ignored by Git and is not product or maintained test source.",
+  "change": "Added tmp to tsconfig.json exclude while retaining the broad source include and existing generated Next type paths.",
+  "checks": {
+    "nextGuide": "node_modules/next/dist/docs/01-app/03-api-reference/05-config/02-typescript.md: Next type checking selects the complete project named by tsconfig",
+    "ignoredProbeVerified": true,
+    "npmRunTypecheck": "passed",
+    "npmRunBuild": "passed; Next 16.3.4, generated TypeScript and 26 static pages",
+    "typescriptListFilesOnly": {"total": 2687, "src": 850, "scripts": 383, "tmp": 0,
+      "assistantRunRouteIncluded": true, "webCloneVerifierIncluded": true},
+    "candidateBuildId": "dbiGeczgl91_vubichMag",
+    "buildManifestSha256": "9476e0afd3f9da68a64e6ec58631191fd3eaca62c9f5a377e7517fe9a89e59ea",
+    "tsconfigSha256": "4809f6a357cd59b505f991b5c879d55b174cbd130485a0034d4c3f479245dcc1",
+    "restoredArchiveSha256": "17db517922f0ee8067391544418f0c8af9f77ee5f48203b938b7559ba528d428",
+    "migrationRange": "127-134",
+    "migrationTransactionRollbackAndCloneCommit": true,
+    "oldWebCloneLoginAndRead": true,
+    "candidateWebCloneLoginAndRead": true,
+    "candidateAcceptanceListStatus": 200,
+    "anonymousUploadListStatus": 401,
+    "cloneDropped": true
+  },
+  "limits": "The build is a new local candidate, not a frozen release package. Clone compatibility and migration rollback do not establish production deployment, switch, real business quality, or actual service rollback. Existing non-diff next-env.d.ts and generated/untracked worktree files were not included in this change.",
+  "modelCalls": 0,
+  "productionWrites": 0
+}

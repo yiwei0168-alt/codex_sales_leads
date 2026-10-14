@@ -1387,3 +1387,8 @@ IEEE 2014 GEPOF 教程按用户确认仅进入 PPTX 读取与引用验收。使�
 
 - 保持 FCC 新闻稿及 FCC 26-55 正式报告在隔离区。原页复核确认新闻稿草案的 77% 固定服务事实也在报告第 173 页主席声明，不能把这两个文件当两个独立来源组。报告其余 `43.4%` 字符串来自无关表格，不按数字相同推断同一事实。
 - 整套题冻结前明确 FCC 家族用途。任一文件用于开发调参后，另一文件的 77% 重叠题须重新审计或退出未见题；候选当前 Gold 0，产品上传和模型调用均为 0。[交叉收据](evidence/ma24-g14-fcc-publication-family-overlap-2026-10-15.json)。
+
+### MA24 / G01 — TypeScript 检查范围与新候选构建（2026-10-15）
+
+- 根 TypeScript 配置将 Git 忽略的 `tmp/` 从全仓检查中排除，保留产品源码、正式脚本及 Next 生成类型。实际 `--listFilesOnly` 计数为 `src/` 850、`scripts/` 383、`tmp/` 0；`npm run typecheck`、完整 `npm run build` 均通过。
+- 新候选 build `dbiGeczgl91_vubichMag` 与旧 Web 在一次性恢复库完成登录/读取兼容冒烟；127–134 迁移事务回滚及克隆提交成功，库已删除。这不替代正式发布备份、域内质量、试点和真实服务回滚。[收据](evidence/ma24-g01-typecheck-scope-build-2026-10-15.json)。
