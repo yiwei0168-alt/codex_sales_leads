@@ -1,0 +1,50 @@
+{
+  "schema": "ma24-g15-bge-runtime-read-v1",
+  "date": "2026-10-14",
+  "scope": "local BGE service and main Agent knowledge_search tool, read-only product DB",
+  "service": {
+    "url": "http://127.0.0.1:8765",
+    "health": "ready",
+    "model": "BAAI/bge-m3",
+    "revision": "5617a9f61b028005a4858fdac845db406aefb181",
+    "dimensions": 1024,
+    "offline": true,
+    "manifestSha256": "b2fbfc9cffe08e82274ec851b3c4432110a1b1d1b55ff8b4b0f1915843790015",
+    "loopbackListenerPidAtProbe": 22700,
+    "autostartConfigured": false
+  },
+  "syntheticEmbedProbe": {
+    "dimensions": 1024,
+    "l2Norm": 1,
+    "cloudCalls": 0
+  },
+  "toolProbe": {
+    "script": "scripts/verify-ma24-g15-bge-tool-local.ts",
+    "scriptSha256": "25ac6dafddac73f60dc1b2808745ed51f062a06dc558798098c68edfac888396",
+    "readOnly": true,
+    "questionKind": "exposed development product query",
+    "trustedKnowledgeScope": "product",
+    "modelRequestedScope": "company",
+    "modelRequestedScopeIgnored": true,
+    "authorizedChunks": 8,
+    "bgeRankedChunks": 3,
+    "qwenRankedChunks": 0,
+    "toolStatus": "success",
+    "localBgeFlag": true,
+    "modelCalls": 0,
+    "providerCalls": 0
+  },
+  "checks": {
+    "typecheck": "passed",
+    "focusedEslint": "passed"
+  },
+  "acceptance": {
+    "toolToLocalBgeToProductDb": true,
+    "wholeAgentTaskExecuted": false,
+    "answerAndCitationQualityAccepted": false,
+    "independentSetUsed": false,
+    "productionProcessLoadedCandidate": false,
+    "g15Frozen": false,
+    "g16Ready": false
+  }
+}

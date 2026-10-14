@@ -30,4 +30,4 @@ BGE 组合与 2026-09-30 本地基线一致。两道未找齐题是 boundary-5-0
 
 部署：最终生产构建、类型检查及聚焦 lint 通过。确认三类任务队列为空后重载产品、LangGraph 与三个 worker；3018、2024/ok、8765/health 均 HTTP 200，五项应用错误日志为空。本地 BGE 持续运行，未更改 TUN/代理配置。
 
-2026-10-14 后续候选补充：主 Agent 的 `knowledge_search` 以默认关闭的 `ENABLE_MAIN_AGENT_LOCAL_BGE_SEARCH` 接入本地 BGE，查询向量只进入 BGE 槽；不可用时以 `partial` 返回全文/已核实事实候选。候选通过 8 项定向测试、类型、lint 与 Web 构建，见 [G15 收据](evidence/ma24-g15-agent-bge-tool-2026-10-14.json)。上段部署记录属于 2026-10-10 的历史状态；本次盘点 8765 无监听，新候选尚未加载到产品进程，未进行完整主 Agent 或独立集质量验收。
+2026-10-14 后续候选补充：主 Agent 的 `knowledge_search` 以默认关闭的 `ENABLE_MAIN_AGENT_LOCAL_BGE_SEARCH` 接入本地 BGE，查询向量只进入 BGE 槽；不可用时以 `partial` 返回全文/已核实事实候选。候选通过 8 项定向测试、类型、lint 与 Web 构建，见 [G15 收据](evidence/ma24-g15-agent-bge-tool-2026-10-14.json)。上段部署记录属于 2026-10-10 的历史状态；本次盘点时 8765 无监听，随后已恢复离线 BGE 服务，并由只读工具探针验证本地产品库中的 BGE 排名，无 Qwen 排名及云供应商调用，见[运行补证](evidence/ma24-g15-bge-runtime-read-2026-10-14.json)。新候选尚未加载到产品进程，未进行完整主 Agent 或独立集质量验收。
