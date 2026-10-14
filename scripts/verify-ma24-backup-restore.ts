@@ -115,42 +115,48 @@ try {
     applicationSource.pathname = `/${database}`;
     const sourceAcl = new Client({ connectionString: source.toString() });
     await sourceAcl.connect();
-    const copiedRouteGrants: string[] = [];
+    const copiedAcl = { tables: 0, sequences: 0, functions: 0, grants: 0 };
+    const identifier = (value: string) => `"${value.replaceAll('"', '""')}"`;
     try {
-      for (const table of ["app_user", "auth_login_attempt", "app_session", "knowledge_upload_job",
-        "knowledge_document", "knowledge_tree_version", "knowledge_asset"]) {
-        for (const privilege of ["SELECT", "INSERT", "UPDATE", "DELETE"]) {
-          const allowed = (await sourceAcl.query<{ allowed: boolean }>(
-            "select has_table_privilege($1,$2,$3) as allowed",
-            ["network_copilot_app", `public.${table}`, privilege],
-          )).rows[0].allowed;
-          if (!allowed) continue;
-          await clone.query(`grant ${privilege} on table "${table}" to network_copilot_app`);
-          copiedRouteGrants.push(`${table}:${privilege}`);
-        }
+      const tables = (await sourceAcl.query<{ name: string; privileges: string[] }>(`select c.relname as name,
+        array_remove(array[
+          case when has_table_privilege('network_copilot_app',c.oid,'SELECT') then 'SELECT' end,
+          case when has_table_privilege('network_copilot_app',c.oid,'INSERT') then 'INSERT' end,
+          case when has_table_privilege('network_copilot_app',c.oid,'UPDATE') then 'UPDATE' end,
+          case when has_table_privilege('network_copilot_app',c.oid,'DELETE') then 'DELETE' end],null) as privileges
+        from pg_class c join pg_namespace n on n.oid=c.relnamespace
+        where n.nspname='public' and c.relkind in ('r','p','v') order by c.relname`)).rows;
+      for (const table of tables) {
+        if (!table.privileges.length) continue;
+        await clone.query(`grant ${table.privileges.join(',')} on table ${identifier(table.name)} to network_copilot_app`);
+        copiedAcl.tables++;copiedAcl.grants += table.privileges.length;
       }
-      for (const privilege of ["USAGE", "SELECT", "UPDATE"]) {
-        const allowed = (await sourceAcl.query<{ allowed: boolean }>(
-          "select has_sequence_privilege($1,$2,$3) as allowed",
-          ["network_copilot_app", "public.auth_login_attempt_id_seq", privilege],
-        )).rows[0].allowed;
-        if (!allowed) continue;
-        await clone.query(`grant ${privilege} on sequence auth_login_attempt_id_seq to network_copilot_app`);
-        copiedRouteGrants.push(`auth_login_attempt_id_seq:${privilege}`);
+      const sequences = (await sourceAcl.query<{ name: string; privileges: string[] }>(`select c.relname as name,
+        array_remove(array[
+          case when has_sequence_privilege('network_copilot_app',c.oid,'USAGE') then 'USAGE' end,
+          case when has_sequence_privilege('network_copilot_app',c.oid,'SELECT') then 'SELECT' end,
+          case when has_sequence_privilege('network_copilot_app',c.oid,'UPDATE') then 'UPDATE' end],null) as privileges
+        from pg_class c join pg_namespace n on n.oid=c.relnamespace
+        where n.nspname='public' and c.relkind='S' order by c.relname`)).rows;
+      for (const sequence of sequences) {
+        if (!sequence.privileges.length) continue;
+        await clone.query(`grant ${sequence.privileges.join(',')} on sequence ${identifier(sequence.name)} to network_copilot_app`);
+        copiedAcl.sequences++;copiedAcl.grants += sequence.privileges.length;
       }
-      const functionAllowed = (await sourceAcl.query<{ allowed: boolean }>(
-        "select has_function_privilege('network_copilot_app','public.app_current_user_id()','EXECUTE') as allowed",
-      )).rows[0].allowed;
-      if (functionAllowed) {
-        await clone.query("grant execute on function app_current_user_id() to network_copilot_app");
-        copiedRouteGrants.push("app_current_user_id:EXECUTE");
+      const functions = (await sourceAcl.query<{ signature: string }>(`select p.oid::regprocedure::text as signature
+        from pg_proc p join pg_namespace n on n.oid=p.pronamespace
+        where n.nspname='public' and p.prokind='f'
+          and has_function_privilege('network_copilot_app',p.oid,'EXECUTE') order by p.oid`)).rows;
+      for (const item of functions) {
+        await clone.query(`grant execute on function ${item.signature} to network_copilot_app`);
+        copiedAcl.functions++;copiedAcl.grants++;
       }
       const schemaAllowed = (await sourceAcl.query<{ allowed: boolean }>(
         "select has_schema_privilege('network_copilot_app','public','USAGE') as allowed",
       )).rows[0].allowed;
       if (schemaAllowed) {
         await clone.query("grant usage on schema public to network_copilot_app");
-        copiedRouteGrants.push("public:USAGE");
+        copiedAcl.grants++;
       }
     } finally {
       await sourceAcl.end();
@@ -161,11 +167,12 @@ try {
       has_table_privilege('network_copilot_app','auth_login_attempt','INSERT') as login_attempt_insert,
       has_table_privilege('network_copilot_app','app_session','INSERT') as session_insert,
       has_table_privilege('network_copilot_app','knowledge_upload_job','SELECT') as upload_read`)).rows[0];
-    console.log(JSON.stringify({ clone: database, diagnostic: "old-web-route-clone-acl", copiedRouteGrants, oldRouteAcl }));
+    console.log(JSON.stringify({ clone: database, diagnostic: "source-equivalent-application-acl-on-clone", copiedAcl, oldRouteAcl }));
     assert(Object.values(oldRouteAcl).every(Boolean), "Restored clone lacks old Web route privileges");
     const { verifyMa24WebCloneCompatibility } = await import("./lib/verify-ma24-web-clone-compatibility");
     webCompatibility = await verifyMa24WebCloneCompatibility({ admin: clone,
-      applicationDatabaseUrl: applicationSource.toString(), migrationDatabaseUrl: cloneUrl.toString() });
+      applicationDatabaseUrl: applicationSource.toString(), migrationDatabaseUrl: cloneUrl.toString(),
+      reviewUi: process.argv.includes("--review-ui") });
   }
   console.log(JSON.stringify({ archive: newest, archiveSha256: manifest.sha256, restored: true,
     migrationRange: "127-134", rollbackVerified: true, committedOnDisposableClone: true,

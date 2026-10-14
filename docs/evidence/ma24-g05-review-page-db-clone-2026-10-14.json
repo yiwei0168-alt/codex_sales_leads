@@ -1,0 +1,61 @@
+{
+  "date": "2026-10-14",
+  "scope": "G05/G10 isolated public PPTX extraction-review page-to-database acceptance",
+  "command": "npm run ma24:verify-review-ui-clone",
+  "sourceBackup": {
+    "file": "network_copilot_2026-10-13T09-03-13Z.dump",
+    "sha256": "17db517922f0ee8067391544418f0c8af9f77ee5f48203b938b7559ba528d428",
+    "aclIncluded": false
+  },
+  "isolation": {
+    "temporaryDatabase": "ma24_restore_07ec1205613c",
+    "migrationRange": "127-134",
+    "oldWebBuildId": "QfoyXprIZIVgSWxFSZ-1K",
+    "candidateWebBuildId": "xlf_7uBjoKnfS1xxCbjvB",
+    "account": "synthetic",
+    "sample": "public development ITU satellite PPTX",
+    "sampleSha256": "2223cee26aced9a50d648d933c31b15f2f0659d0ebe30922fca5c31c1cc30465",
+    "sourceRoleEffectivePrivilegesMirroredOnClone": {
+      "tables": 138,
+      "sequences": 3,
+      "functions": 172,
+      "grants": 665
+    },
+    "productDatabaseOrAclChanged": false,
+    "temporaryDatabaseRemoved": true,
+    "cloudCredentialsClearedInExtractionWorker": true,
+    "workerUsageCountersCaptured": false
+  },
+  "observed": {
+    "uploadStatus": 202,
+    "localExtractionExitCode": 0,
+    "jobStatus": "extracted",
+    "jobErrorCode": "extraction-review-required",
+    "unresolvedVisualObjects": 63,
+    "firstPageObjects": 20,
+    "pageOpenedInChrome": true,
+    "decisionSavedThroughPage": "unresolved",
+    "databaseRevision": 1,
+    "staleRevisionWriteStatus": 409,
+    "changedOriginalReadStatus": 409,
+    "secondPageObjects": 20,
+    "noteRestoredAfterReload": true,
+    "mobileViewportWidth": 390,
+    "mobileHorizontalOverflow": false,
+    "completionButtonDisabled": true,
+    "reviewCompletionRows": 0,
+    "publishedKnowledgeDocuments": 0,
+    "v3ReleasePointerUnchanged": true
+  },
+  "checks": {
+    "typecheck": "passed",
+    "lint": "0 errors, 11 existing warnings",
+    "mobileScreenshot": "tmp/ma24-review-page-clone-mobile.png",
+    "screenshotInspected": true
+  },
+  "limits": [
+    "The saved decision is synthetic and intentionally unresolved. It is not a human visual-content judgment.",
+    "No complete review, searchable publication, BGE indexing, production migration, deployment, real user task or live rollback was exercised.",
+    "The extraction worker's usage counters were not captured through the Windows process supervisor; empty cloud credential variables and local-only job scope are recorded instead."
+  ]
+}

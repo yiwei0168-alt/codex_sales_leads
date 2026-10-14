@@ -59,6 +59,7 @@ export async function verifyMa24WebCloneCompatibility(options: {
   admin: Client;
   applicationDatabaseUrl: string;
   migrationDatabaseUrl: string;
+  reviewUi?: boolean;
 }): Promise<unknown> {
   assert.equal(await readFile(resolve(oldRoot, ".next/BUILD_ID"), "utf8").then(value => value.trim()), oldBuild);
   const candidateBuild = (await readFile(resolve(candidateRoot, ".next/BUILD_ID"), "utf8")).trim();
@@ -122,10 +123,27 @@ export async function verifyMa24WebCloneCompatibility(options: {
         assert.equal(response.status, 200, "Candidate Skill acceptance list failed after migration");
         assert.deepEqual(await response.json(), { items: [], hasMore: false });
       }
+      let reviewPage: unknown;
+      if (version.name === "candidate-web" && options.reviewUi) {
+        const { verifyMa24ReviewPageClone } = await import("./verify-ma24-review-page-clone");
+        try {
+          reviewPage = await verifyMa24ReviewPageClone({ admin: options.admin, base, cookie,
+            userId, email, password, migrationDatabaseUrl: options.migrationDatabaseUrl });
+        } catch (error) {
+          const diagnostic = serviceOutput.split(/\r?\n/).filter(line =>
+            /permission denied|function .*does not exist|relation .*does not exist|ECONN|error:|code:/i.test(line))
+            .slice(-8).join(" | ").replaceAll(email, "<synthetic-email>")
+            .replaceAll(password, "<synthetic-password>")
+            .replaceAll(options.applicationDatabaseUrl, "<clone-db>")
+            .replaceAll(options.migrationDatabaseUrl, "<clone-db>").slice(0, 1400);
+          throw new Error(`Candidate review page smoke failed: ${error instanceof Error ? error.message : "unknown"}; server diagnostic: ${diagnostic || "none"}`);
+        }
+      }
       results.push({ version: version.name, buildId: version.buildId, manifestStatus: manifest.status,
         anonymousUploadStatus: denied.status, syntheticLoginStatus: login.status,
         authenticatedUploadStatus: list.status, visibleUploadJobs: listed.jobs.length,
-        ...(acceptanceReviewStatus ? { acceptanceReviewStatus } : {}) });
+        ...(acceptanceReviewStatus ? { acceptanceReviewStatus } : {}),
+        ...(reviewPage ? { reviewPage } : {}) });
     } finally {
       await stopOwnedServer(child);
     }
