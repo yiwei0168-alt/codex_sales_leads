@@ -1,0 +1,43 @@
+{
+  "schema": "ma24-g14-xlsx-source-discovery-v1",
+  "date": "2026-10-15",
+  "scope": "Official-source metadata and reuse screen for additional XLSX families; no source content, question, product upload or Gold",
+  "candidates": [
+    {
+      "publisher": "Australian Communications and Media Authority",
+      "title": "Communications and media in Australia: How we communicate — data tables",
+      "publisherPage": "https://www.acma.gov.au/publications/2026-02/report/communications-and-media-australia-how-we-communicate",
+      "sourceUrl": "https://www.acma.gov.au/sites/default/files/2026-02/How%20we%20communicate%20data%20tables.xlsx",
+      "publisherDescribesFormat": "XLSX, approximately 1.24 MB; Australian adult communication use in 2025",
+      "reusePage": "https://www.acma.gov.au/copyright-notice",
+      "reuseBoundary": "ACMA website content is generally CC BY 4.0 with attribution, except logos, images, trademark-protected devices and third-party material. Verify the workbook's own notices before use.",
+      "downloadAttempt": "Direct PowerShell download did not return a file; a bounded curl attempt timed out after 20 seconds with zero bytes. No original hash or cell values are available.",
+      "status": "metadata-only; no draft or eligibility decision"
+    },
+    {
+      "publisher": "Ofcom",
+      "title": "Connected Nations: Planned Network Deployments 2025 — tables",
+      "publisherPage": "https://www.ofcom.org.uk/phones-and-broadband/coverage-and-speeds/connected-nations-planned-network-deployment/connected-nations-2025",
+      "sourceUrl": "https://www.ofcom.org.uk/siteassets/resources/documents/research-and-data/multi-sector/infrastructure-research/connected-nations---planned-network-deployment/2025/cn2025-planned-network-deployments-tables.xlsx?v=396520",
+      "publisherDescribesFormat": "XLSX, 14.57 KB; January 2025 provider deployment plans, not achieved coverage",
+      "reusePage": "https://www.ofcom.org.uk/about-ofcom/our-website/copyright",
+      "reuseBoundary": "Ofcom permits accurate attributed reproduction of its material under its site terms, with separate treatment for Crown-owned material; determine workbook-specific status before reuse.",
+      "downloadAttempt": "Direct PowerShell request received the site's JavaScript/cookie verification page rather than workbook bytes. No challenge was solved or bypassed.",
+      "status": "metadata-only; no draft or eligibility decision"
+    },
+    {
+      "publisher": "Canadian Radio-television and Telecommunications Commission",
+      "title": "Communications Market Reports — Data: Mobile and broadband availability",
+      "publisherPage": "https://crtc.gc.ca/eng/publications/reports/policymonitoring/cmrd.htm",
+      "sourceUrl": "https://applications.crtc.gc.ca/OpenData/CASP/COMMUNICATION%20MONITORING%20REPORTS/Telecommunications%20Overview/English/data-mobile-and-broadband-availability.xlsx",
+      "publisherDescribesFormat": "Excel workbook; publisher index last modified August 2026",
+      "reusePage": "https://crtc.gc.ca/eng/copyright.htm",
+      "reuseBoundary": "CRTC site terms allow attributed non-commercial reproduction of its materials subject to conditions; workbook may include third-party data, requiring item-level review.",
+      "downloadAttempt": "A bounded direct PowerShell request ended prematurely. No original hash or cell values are available.",
+      "status": "metadata-only; no draft or eligibility decision"
+    }
+  ],
+  "assessment": "ACMA is the first source to retry because its publisher states CC BY 4.0 and its topic is distinct from the used ONS/EC workbook families. None can be counted toward XLSX quality coverage before obtaining and checking original bytes, terms, cells, independence and product citation.",
+  "goldCreated": 0,
+  "productionWrites": 0
+}
