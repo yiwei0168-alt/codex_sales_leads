@@ -1,0 +1,33 @@
+{
+  "schema": "ma24-g14-nist-cross-candidate-audit-v1",
+  "date": "2026-10-15",
+  "targetSourceSha256": "65e333dac9975f4ca9a952a966fb212ce7ccb161ec60b48bf45c3dfd7adbd6a9",
+  "targetDraftId": "nist-tn2363-delay-profile-and-5g-tsn-validation",
+  "screen": {
+    "localOutputPath": "tmp/ma24-independent-quarantine/nist-cross-candidate-screen.json",
+    "outputSha256": "48c4b6db655da6268b42e7d7758da07cea423dc65a0fa39c419c61bd6b595016",
+    "inputPattern": "docs/evidence/ma24-g14-*.json draftQuestions/draftQuestion with unique IDs",
+    "uniqueDraftsIncludingTarget": 20,
+    "otherDraftsCompared": 19,
+    "model": "local BAAI/bge-m3 revision 5617a9f61b028005a4858fdac845db406aefb181",
+    "cloudCalls": 0,
+    "topNeighbors": [
+      {"id": "itu-gcr2025-submarine-cable-cuts-and-repair-delay", "cosine": 0.522543},
+      {"id": "ons-5g-2026-highland-outdoor-denominator", "cosine": 0.500148},
+      {"id": "etsi-38901-v195-isac-lower-power-clusters", "cosine": 0.495851},
+      {"id": "fcc-2026-fixed-service-option-scope", "cosine": 0.491018},
+      {"id": "fcc-706-2026-school-entity-vs-student-denominator", "cosine": 0.489716}
+    ]
+  },
+  "manualReview": {
+    "allNineteenQuestionTextsInspected": true,
+    "sameSpecificQuestionFound": false,
+    "explanation": "The NIST draft asks how uncertain per-hop delay, dynamic channels, missing instrumentation and software-stack overhead affect 5G-TSN validation. The closest ITU draft concerns submarine-cable failures and repair procedures; the next ONS, ETSI and FCC drafts concern different measurements, standards parameters or denominators. Shared 5G or cross-page wording alone does not establish an answer overlap.",
+    "sourceFamily": "NIST TN 2363 is a separate publication family from the inspected ITU, FCC, ETSI, ONS, European Commission and IEEE candidate originals. This bounded screen does not rule out uncatalogued derivative sources or unrecorded development exposure."
+  },
+  "oldQuestionScreen": "docs/evidence/ma24-g14-nist-tn2363-long-pdf-candidate-2026-10-15.json#oldQuestionNeighborScreen",
+  "eligibleForSetLevelFreezeReview": true,
+  "fullSetAndDevelopmentExposureAuditComplete": false,
+  "independentGoldApproved": false,
+  "qualityAccepted": false
+}
