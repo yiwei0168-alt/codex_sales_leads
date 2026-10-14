@@ -79,9 +79,11 @@
   },
   "objectReview": {
     "receipt": "docs/evidence/ma24-g14-ieee-80211-overview-object-review-2026-10-14.json",
-    "inspectedObjectCrops": 6,
+    "inspectedObjectCrops": 14,
+    "proposedEvidence": 7,
     "proposedDecorations": 6,
-    "remainingObjectCrops": 33,
+    "proposedUnresolved": 1,
+    "remainingObjectCrops": 25,
     "savedProductJudgments": 0
   },
   "draftQuestions": [

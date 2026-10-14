@@ -126,7 +126,7 @@
       "bytes": 3590900,
       "sha256": "3ae95a7ecdadf8cca4127e239bfbd71c25aa08e354fd0ca94d078a3e0eb11e3d",
       "integrity": "valid OOXML; 151 ZIP parts; 27 slides with native text; no macro or external-link part; six external hyperlinks",
-      "status": "quarantined candidate; slides 20 and 22 yield two visually checked, time-scoped draft questions and matching local product text blocks; all 19 visually pending slides inspected; six object crops have hash-bound proposed decoration dispositions and 33 still need object-level judgment, but no product verdicts are saved; 15 slides contain material diagrams/charts; complete semantic independence and user-visible citations unverified; Gold 0"
+      "status": "quarantined candidate; slides 20 and 22 yield two visually checked, time-scoped draft questions and matching local product text blocks; all 19 visually pending slides inspected; 14 of 39 object crops have hash-bound proposed dispositions (seven evidence, six decoration, one unresolved map) and 25 remain unreviewed; no product verdicts are saved; 15 slides contain material diagrams/charts; complete semantic independence and user-visible citations unverified; Gold 0"
     }
   ],
   "excluded": [

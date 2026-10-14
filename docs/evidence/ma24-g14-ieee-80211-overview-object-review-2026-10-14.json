@@ -41,13 +41,71 @@
       "imageSha256": "6bb2e84ec590f0d72cc3158eead855d27d36d313799da2ea9d8440fac203c34f",
       "proposedDecision": "decoration",
       "reason": "Credited encryption stock art says 'old' and 'new' encryption standards, without naming an actual standard or substantiating the adjacent technical bullets. Do not cite its OCR as a standards fact."
+    },
+    {
+      "blockId": "slide-2-visual-4",
+      "imageSha256": "a48ce84ef9fc6d57a3d53b77bbee9469980ecb6f9f27fe70aeed0dd17315d9e3",
+      "proposedDecision": "evidence",
+      "evidenceText": "The slide states that IEEE standards drive functionality, capability and interoperability of products and services affecting how people live, work and communicate.",
+      "reason": "The complete sentence is legible in both the embedded object and the original slide. It is a general presentation statement, not a numerical membership fact."
+    },
+    {
+      "blockId": "slide-2-visual-6-1",
+      "imageSha256": "d90c4bbafd89933b71c0300f29d648f1d27612deb2c81e0e0209e53c205b7550",
+      "proposedDecision": "evidence",
+      "evidenceText": "The slide illustrates six standards-process stage labels arranged around a colored ring: initiating the project, mobilizing the working group, drafting the standard, balloting the standard, gaining final approval, and maintaining the standard.",
+      "reason": "The ring image alone contains no text; the stage labels are separate visible native text on the same original slide. The ring has no numeric proportions, so it must not support percentage claims."
+    },
+    {
+      "blockId": "slide-4-visual-1",
+      "imageSha256": "ccd3e3872e6039bded5b458b12726d76847b4cca2aa15c846b68849c9678a697",
+      "proposedDecision": "evidence",
+      "evidenceText": "The slide's IEEE 802.11 membership chart shows a historical series from about 1991 through 2025, with a rise to the mid-2000s, a decline around 2008, and a renewed rise after 2020 to the highest plotted level at the right edge.",
+      "reason": "The axis and broad trajectory are legible on the crop and original slide. Exact yearly point values are not labeled and must not be inferred from this rendering."
+    },
+    {
+      "blockId": "slide-12-visual-3",
+      "imageSha256": "306095061de8adcf86d06d17865753e969d3021020f1ee233897de85ba7897da",
+      "proposedDecision": "unresolved",
+      "reason": "The legend distinguishes adopted 5925–6425 MHz, adopted 5925–7125 MHz, adopted lower band while considering 6425–7125 MHz, and considering 5925–6425 MHz. Country regions are color encoded but several borders and fills cannot be mapped with sufficient confidence for a complete country-level transcription. This is a September 2025 presentation snapshot, not current regulatory authority."
+    },
+    {
+      "blockId": "slide-15-visual-1",
+      "imageSha256": "7e3529e92821bd6a118b3f4b0a13067aa4c5aa848ed555554191b73935d003a4",
+      "proposedDecision": "evidence",
+      "evidenceText": "The slide's MAC randomization timeline says: 2014 iOS 8 adds randomization during scanning/probe requests; 2015 Android 6.0 introduces it for background scans; 2016 Windows 10 introduces conditional support when hardware supports it; 2018 Android 9 adds randomization when connecting as a developer option; 2019 Android 10 adds randomization when connecting, enabled by default; 2020 iOS 14 adds randomization when connecting, enabled by default.",
+      "reason": "All six date/label pairs are legible on the original image. This records the presentation's dated timeline, not a current platform support claim."
+    },
+    {
+      "blockId": "slide-21-visual-3",
+      "imageSha256": "2a99f2a0ab4478f3b90562ca2f628e8a1ab96e5d1079e59379cc64283d91f38d",
+      "proposedDecision": "evidence",
+      "evidenceText": "The frequency/wavelength schematic marks mmWave between 30 and 300 GHz, corresponding approximately to 1 cm down to 1 mm wavelength; it places microwave below, and THz, far infrared, infrared and UV toward higher frequency/shorter wavelength.",
+      "reason": "The mmWave boundaries and scale labels are visible. The diagram is schematic; do not read exact band allocations or device performance from it."
+    },
+    {
+      "blockId": "slide-25-visual-5",
+      "imageSha256": "31651b8ef69a22ffb7652da82743647ab9d6116754130ab62346df86da20d5b0",
+      "proposedDecision": "evidence",
+      "evidenceText": "The UCM schematic feeds 3D model data from Blender/3D modelling software and Tx/Rx parameters into a propagation model with sub-7 GHz, mm-wave and optical branches; it shows CUDA under acceleration and outputs channel responses and parameters.",
+      "reason": "The transparent crop is difficult to read on a dark viewer background, but its labels and connectors are legible on the white original slide. No throughput or performance figure appears in the diagram."
+    },
+    {
+      "blockId": "slide-26-visual-3",
+      "imageSha256": "b44a060421c29157960a103ee421b02d8acba590ca3e9c268cf15e0e56e90ad9",
+      "proposedDecision": "evidence",
+      "evidenceText": "The beam-sector schematic gives possible observations as current and historical SNR levels and camera images; machine learning is shown between an AP and a device, with beam sector selection as the action.",
+      "reason": "The labels and AP/device relationship are legible in the original image. The schematic does not establish measured accuracy or deployment status."
     }
   ],
-  "reviewedObjectCrops": 6,
-  "otherPendingObjects": 33,
+  "reviewedObjectCrops": 14,
+  "proposedEvidence": 7,
+  "proposedDecoration": 6,
+  "proposedUnresolved": 1,
+  "otherPendingObjects": 25,
   "productJudgmentsSaved": 0,
   "qualityAccepted": false,
   "goldCreated": 0,
   "productionKnowledgeWrites": 0,
-  "next": "Continue object-level original crop review for the remaining 33 material or mixed objects. Persist any accepted decisions through the product review gate only after matching the uploaded source and extraction hashes; do not finish review while material objects remain unresolved."
+  "next": "Continue object-level original crop review for the remaining 25 material or mixed objects. Persist any accepted decisions through the product review gate only after matching the uploaded source and extraction hashes; do not finish review while the regulation map or other material objects remain unresolved."
 }
