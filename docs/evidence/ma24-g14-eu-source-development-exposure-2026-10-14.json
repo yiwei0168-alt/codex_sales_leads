@@ -1,0 +1,18 @@
+{
+  "schema": "ma24-g14-eu-source-development-exposure-v1",
+  "date": "2026-10-14",
+  "sourceSha256": "2ba1b1af51b4d27a703e4e5495ec89724d26bd6584a6b56244d8ecb7f54e079a",
+  "finding": "The EU connectivity workbook was used as the named fixture for a product retrieval change and its regression test. It no longer qualifies as a fresh source-independent MA24 quality holdout.",
+  "developmentCommit": "052f6b4c3019e75e5677f851493901120d0fd311",
+  "directEvidence": [
+    "src/lib/knowledge/vectorless.test.ts includes 'What are the Burgenland VHCN coverage values from the source?' and a repeated 'Burgenland ... VHCN' query",
+    "scripts/verify-eu-xlsx-reviewed-citation-clone.ts tests 'Burgenland VHCN' against the reviewed workbook clone",
+    "docs/evidence/ma24-g14-eu-xlsx-cross-unit-search-2026-10-14.json documents a retrieval fix driven by Burgenland and VHCN in separate evidence blocks",
+    "git show --stat 052f6b4c includes both the production retrieval change and these EU workbook tests"
+  ],
+  "decision": "Reclassify the entire workbook and both Burgenland draft questions as development/regression material; exclude them from the fresh G14 source pool and XLSX independent quality quota.",
+  "retainedUse": "The isolated workbook extraction, review, original-cell citation and cross-unit search tests remain valid engineering/regression evidence within their recorded scope.",
+  "independentXlsxGoldFromThisSource": 0,
+  "replacementIndependentXlsxNeeded": true,
+  "notes": "The earlier exact-hash and old-question checks were true for their bounded scope but insufficient to detect development exposure created while fixing retrieval. The seven-draft BGE diagnostic remains a historical screen; its two EU scores do not restore independent status."
+}

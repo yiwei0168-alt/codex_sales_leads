@@ -1,0 +1,36 @@
+{
+  "schema": "ma24-g14-draft-batch-neighbor-screen-v1",
+  "date": "2026-10-14",
+  "scope": "Seven unapproved draft questions from four quarantined sources compared locally with historical question wording; diagnostic only, no Gold or model answer generation",
+  "command": "node scripts/run-tsx.cjs scripts/screen-ma24-g14-draft-batch-local.ts",
+  "output": "tmp/ma24-independent-quarantine/g14-draft-batch-overlap-screen.json",
+  "outputSha256": "2e42c15087bfab413f10614442aec36b27face2703e466869f662f164a44eaf0",
+  "comparison": {
+    "oldRows": 350,
+    "uniqueOldQueries": 300,
+    "candidateQuestions": 7,
+    "model": "BAAI/bge-m3",
+    "revision": "5617a9f61b028005a4858fdac845db406aefb181",
+    "dimensions": 1024,
+    "cloudCalls": 0
+  },
+  "maximumCosineByQuestion": {
+    "eu-kpi-burgenland-vhcn-overall-rural": 0.404543,
+    "eu-kpi-burgenland-5g-band-rural": 0.520997,
+    "itu-bhatia-2026-india-fwa-conflict": 0.490438,
+    "etsi-38901-v195-inf-blocker-parameters": 0.467788,
+    "etsi-38901-v195-isac-lower-power-clusters": 0.48701,
+    "ieee-auto-sd4addr-implementation": 0.527051,
+    "ieee-auto-sd4addr-forwarding-time": 0.46571
+  },
+  "manualTopNeighborRead": "The top three old-question wordings for each draft were read from the full local output. They concern existing product ports, PoE, model-document navigation or deployment fit, rather than the source-specific regional data, subscriber arithmetic, ETSI procedure or SD4ADDR results. The 5G-band draft's nearest neighbor asks whether a 2.5G Ethernet port means 5G cellular; the shared token does not make the requested fact equivalent.",
+  "limits": [
+    "Cosine scores are not an independence threshold or acceptance verdict.",
+    "The comparison covers the 300-case corpus and 50 historical blind rows, not every development prompt, output, provider-side exposure or public model pretraining.",
+    "Source reuse, full visual review, product read/citation and question-level Gold approval remain separate gates."
+  ],
+  "semanticIndependenceProven": false,
+  "goldCreated": 0,
+  "productionKnowledgeWrites": 0,
+  "checks": ["npm run typecheck", "npx eslint scripts/screen-ma24-g14-draft-batch-local.ts"]
+}

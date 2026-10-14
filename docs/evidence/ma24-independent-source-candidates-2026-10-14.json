@@ -56,7 +56,7 @@
       "bytes": 410909,
       "sha256": "2ba1b1af51b4d27a703e4e5495ec89724d26bd6584a6b56244d8ecb7f54e079a",
       "integrity": "valid OOXML; 49 ZIP parts; six worksheets including a 489-row Data source sheet; 740 formula cells (two ordinary and 738 array), one chart, six images; no macro or external-link parts",
-      "status": "quarantined; no exact registry match; original cells, two draft questions, reuse notes and three visual sheets inspected; local extraction parity passed, but unselected interactive Report chart has no usable series and three visual reviews remain unresolved; clone direct registration blocked, user citation, full independence and Gold pending"
+      "status": "development/regression only: commit 052f6b4c used Burgenland VHCN from this workbook to change and test cross-unit retrieval. Both Burgenland drafts are excluded from fresh G14 Gold and XLSX quality quota despite valid isolated extraction/citation engineering evidence; see ma24-g14-eu-source-development-exposure-2026-10-14.json"
     },
     {
       "kind": "pdf",
@@ -135,5 +135,5 @@
       "reason": "The browsing tool displayed full PDF text while checking the link; exposed to development review and unsuitable as a fresh holdout."
     }
   ],
-  "next": "Run PPTX read/citation acceptance on the GEPOF examples without Gold credit. Screen answer-level overlap and coordinates for the EU, ITU, ETSI and IEEE PPTX candidates, settle evaluation use of the research presentation, complete development fixes, then freeze eligible sources, Gold and retrieval configuration before either retrieval path."
+  "next": "Run PPTX read/citation acceptance on the GEPOF examples without Gold credit. Replace the development-exposed EU workbook with a fresh independent XLSX source. Complete answer-level overlap, original-coordinate and product-citation reviews for the remaining candidates, settle evaluation use of the research presentation, finish development fixes, then freeze eligible sources, Gold and retrieval configuration before either retrieval path."
 }
