@@ -1,6 +1,6 @@
 # MA24 候选发布范围与最小依赖（2026-10-14）
 
-本清单依据[当前运行盘点](evidence/ma24-r0-runtime-release-inventory-2026-10-14.json)、[迁移预检](evidence/ma24-release-migration-preflight-2026-10-14.json)与各已发布提交到候选 `d19e9010` 的文件差异。它是 R0 发布准备清单，不是发布批准、业务质量结论或部署收据。验收仍按[执行台账](MA24_EXECUTION_STATUS_2026-10-13.md)的工程、真实质量和生产三列分别记。
+本清单初版依据[当前运行盘点](evidence/ma24-r0-runtime-release-inventory-2026-10-14.json)、[迁移预检](evidence/ma24-release-migration-preflight-2026-10-14.json)与各已发布提交到候选 `d19e9010` 的文件差异；下方补充记录后续候选 build `JL8ySlDPL7j1x5xDRlO8A` 的隔离验收。它是 R0 发布准备清单，不是发布批准、业务质量结论或部署收据。验收仍按[执行台账](MA24_EXECUTION_STATUS_2026-10-13.md)的工程、真实质量和生产三列分别记。
 
 | 功能域 | 候选需要一起核对的运行单元 | 数据库与本地依赖 | 当前缺口及回滚入口 |
 | --- | --- | --- | --- |
@@ -17,4 +17,4 @@
 
 **资料审核补充。** 随后的[独立页面到库验收](evidence/ma24-g05-review-page-db-clone-2026-10-14.json)在另一临时恢复库上传公开 PPTX、运行本地抽取并从候选 `/knowledge` 下载相同原件、保存一条合成“未解决”决定；修订冲突、原件失效、翻页、刷新和移动端宽度均通过，未完成审核或改动 v3 资料指针。重启旧版 Web 后，合成账号仍能列出候选版创建的作业；未验证旧版原件下载或后续审核。此收据把上段“未覆盖真实上传/审核”的范围向前推进到隔离的合成审核路径，不代表人工内容判决或生产发布。
 
-**Skill 验收入口补充。** 新候选 Web build `JL8ySlDPL7j1x5xDRlO8A` 含[同源保存修复和页面到库收据](evidence/ma24-g10-skill-review-page-db-clone-2026-10-14.json)：合成审核包可从浏览器读取、保存、刷新和撤销，Skill 未启用。此 build 与上述资料审核使用的候选 build 不同；资料审核的旧结果不能自动代替新 build 的回归或正式发布证明。安全与实时影子材料的真实质量门槛仍未通过。
+**Skill 验收入口补充。** 新候选 Web build `JL8ySlDPL7j1x5xDRlO8A` 含[同源保存修复和页面到库收据](evidence/ma24-g10-skill-review-page-db-clone-2026-10-14.json)：合成审核包可从浏览器读取、保存、刷新和撤销，Skill 未启用。同一 build 的[公开 PPTX 资料审核复跑](evidence/ma24-g05-review-page-db-clone-2026-10-14.json)也已通过隔离页面到库路径；两项均未部署产品服务，安全、视觉内容与实时影子材料的真实质量门槛仍未通过。

@@ -63,6 +63,24 @@
     "mobileScreenshot": "tmp/ma24-review-page-clone-mobile.png",
     "screenshotInspected": true
   },
+  "currentCandidateRerun": {
+    "temporaryDatabase": "ma24_restore_88de0ae3f183",
+    "candidateWebBuildId": "JL8ySlDPL7j1x5xDRlO8A",
+    "migrationRange": "127-134",
+    "sourceBackupSha256": "17db517922f0ee8067391544418f0c8af9f77ee5f48203b938b7559ba528d428",
+    "publicPptxUploadAndLocalExtraction": "passed",
+    "unresolvedVisualObjects": 63,
+    "browserOriginalDownloadMatched": true,
+    "browserSavedUnresolvedRevision": 1,
+    "staleWriteAndChangedOriginalStatus": 409,
+    "reloadAndMobileNoOverflow": true,
+    "reviewCompletionRows": 0,
+    "publishedKnowledgeDocuments": 0,
+    "v3ReleasePointerUnchanged": true,
+    "oldWebListedCandidateCreatedJob": true,
+    "temporaryDatabaseRemoved": true,
+    "workerUsageCountersCaptured": false
+  },
   "limits": [
     "The saved decision is synthetic and intentionally unresolved. It is not a human visual-content judgment.",
     "Old Web post-upload compatibility covered the metadata list only. The synthetic file had been cleaned before that read; original download and continuing review were not tested.",
