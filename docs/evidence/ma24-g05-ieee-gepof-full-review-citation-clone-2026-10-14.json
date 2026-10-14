@@ -1,0 +1,45 @@
+{
+  "schema": "ma24-gepof-full-review-citation-clone-v1",
+  "date": "2026-10-14",
+  "ruleId": "MA24-18",
+  "scope": "isolated local replay database and synthetic private users; engineering acceptance for whole-PPTX review, product tree reading and source coordinates",
+  "command": "node scripts/run-tsx.cjs scripts/verify-ieee-gepof-full-review-clone.ts",
+  "sourceSha256": "030a730584498f8b98109a1bf2da22a29cc443021c63fbd1c18cf2bad2da6910",
+  "offlineExtractionArtifactSha256": "035446eaf582572f1b5cb9c893f2604be23b74aafd1813adba54ee42e47fd107",
+  "liveExtractionArtifactSha256": "85b7654c09715c5c65fc96b3f756b151919116a3991303de0c0b34cc2192bd37",
+  "artifactParity": "identical 563 blocks after normalizing only extractor version layout-v2.0.7 to layout-v2.0.6 and synthetic storage key",
+  "sourceVisualObjectsReviewed": 129,
+  "judgmentsSavedAndReadBack": 129,
+  "decisions": { "evidence": 107, "decoration": 22, "unresolved": 0 },
+  "reviewCompletionReceiptCreated": true,
+  "syntheticTreeStatus": "searchable",
+  "syntheticPublishedDocumentsDuringTest": 1,
+  "evidenceNodes": 541,
+  "searchFoundBothTargets": true,
+  "exactCitationTargets": [
+    {
+      "slide": 5,
+      "blockId": "slide-5-text-2",
+      "verifiedText": "Specify operation over at least 15m of POF with 4 POF connections",
+      "sourceSha256Matched": true,
+      "slideAndBlockLocationMatched": true
+    },
+    {
+      "slide": 22,
+      "blockId": "slide-22-text-2",
+      "verifiedText": "SG has not adopted technical proposals",
+      "sourceSha256Matched": true,
+      "slideAndBlockLocationMatched": true
+    }
+  ],
+  "otherAccountDenied": true,
+  "wrongCollectionDenied": true,
+  "syntheticUsersJobsJudgmentsCompletionAndDocumentCleaned": true,
+  "externalCalls": 0,
+  "modelCalls": 0,
+  "productionKnowledgeWrites": 0,
+  "independentQualityGoldCreated": 0,
+  "userVisibleModelAnswerCitationAccepted": false,
+  "productionRuntimeAccepted": false,
+  "next": "Verify the same source-bound slide 5 and 22 citations through the deployed product entry after the approved release and migration; assess user-visible answer wording only within an authorized model-call scope. Keep this tutorial excluded from independent answer-quality Gold."
+}

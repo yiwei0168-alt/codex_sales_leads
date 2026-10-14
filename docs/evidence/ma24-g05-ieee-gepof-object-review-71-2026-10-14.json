@@ -1,0 +1,112 @@
+{
+  "schema": "ma24-gepof-original-slide-object-review-v1",
+  "date": "2026-10-14",
+  "ruleId": "MA24-18",
+  "sourceSha256": "030a730584498f8b98109a1bf2da22a29cc443021c63fbd1c18cf2bad2da6910",
+  "extractionArtifactSha256": "035446eaf582572f1b5cb9c893f2604be23b74aafd1813adba54ee42e47fd107",
+  "candidatePackageSha256": "282813baaa002f9dbffecf462fbea48574def5280f1a220bb491053317810e86",
+  "method": "Each logo crop hash matched the visual candidate package and was read against the original PowerPoint-rendered slide. All judgments transcribe what the 2014 presentation lists and do not independently verify support.",
+  "originalSlideRenderSha256": "46122150276b575865c96ad69ae2061edd91ef3953e97d15a104f858a40ba798",
+  "objects": [
+    {
+      "blockId": "slide-71-visual-4",
+      "sourceImageSha256": "55f7e8d4921798b6dd8670b934ddffb8827e5287d6dae98d66bbf859fbbd14d5",
+      "logoText": "Volvo",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 IEEE GEPOF tutorial places a Volvo logo in the 'Automotive' section of its 'Some of the companies encouraging IEEE 802.3 to develop GEPOF' slides.",
+      "reason": "The logo and its section placement are visible in the original slide. This records the tutorial claim only; it does not independently verify endorsement, membership, a deployed POF product, or current participation."
+    },
+    {
+      "blockId": "slide-71-visual-5",
+      "sourceImageSha256": "a5cc0af98dd475b86563e2da886b90863c9bd28302f98d023c344e403ea37785",
+      "logoText": "Toyota",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 IEEE GEPOF tutorial places a Toyota logo in the 'Automotive' section of its 'Some of the companies encouraging IEEE 802.3 to develop GEPOF' slides.",
+      "reason": "The logo and its section placement are visible in the original slide. This records the tutorial claim only; it does not independently verify endorsement, membership, a deployed POF product, or current participation."
+    },
+    {
+      "blockId": "slide-71-visual-6",
+      "sourceImageSha256": "9f58bc9dbec0a2a8d5bb6b54b853b20058b30be0d391c8af6279b2e5cb17a46e",
+      "logoText": "DENSO",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 IEEE GEPOF tutorial places a DENSO logo in the 'Automotive' section of its 'Some of the companies encouraging IEEE 802.3 to develop GEPOF' slides.",
+      "reason": "The logo and its section placement are visible in the original slide. This records the tutorial claim only; it does not independently verify endorsement, membership, a deployed POF product, or current participation."
+    },
+    {
+      "blockId": "slide-71-visual-7",
+      "sourceImageSha256": "c02d9eb2e98f6af08a3d7fe4d7186b07e05385ca0f2f25d8c228993d24ec79ac",
+      "logoText": "YAZAKI",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 IEEE GEPOF tutorial places a YAZAKI logo in the 'Automotive' section of its 'Some of the companies encouraging IEEE 802.3 to develop GEPOF' slides.",
+      "reason": "The logo and its section placement are visible in the original slide. This records the tutorial claim only; it does not independently verify endorsement, membership, a deployed POF product, or current participation."
+    },
+    {
+      "blockId": "slide-71-visual-8",
+      "sourceImageSha256": "db3118a7e09b232d2d97dc1226fceb5476d4af7c3adf5213132807a42ad92cd0",
+      "logoText": "Honda",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 IEEE GEPOF tutorial places a Honda logo in the 'Automotive' section of its 'Some of the companies encouraging IEEE 802.3 to develop GEPOF' slides.",
+      "reason": "The logo and its section placement are visible in the original slide. This records the tutorial claim only; it does not independently verify endorsement, membership, a deployed POF product, or current participation."
+    },
+    {
+      "blockId": "slide-71-visual-9",
+      "sourceImageSha256": "6308095c8e123b8feef22726dc043475fbed466ae56124ba43aeb1da2841a275",
+      "logoText": "Jaguar and Land Rover",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 IEEE GEPOF tutorial places a Jaguar and Land Rover logo in the 'Automotive' section of its 'Some of the companies encouraging IEEE 802.3 to develop GEPOF' slides.",
+      "reason": "The logo and its section placement are visible in the original slide. This records the tutorial claim only; it does not independently verify endorsement, membership, a deployed POF product, or current participation."
+    },
+    {
+      "blockId": "slide-71-visual-10",
+      "sourceImageSha256": "f9ea65316d8bbb96bc3f9ea46c76cef8f964842532b9a4995b62480d9655603c",
+      "logoText": "BMW",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 IEEE GEPOF tutorial places a BMW logo in the 'Automotive' section of its 'Some of the companies encouraging IEEE 802.3 to develop GEPOF' slides.",
+      "reason": "The logo and its section placement are visible in the original slide. This records the tutorial claim only; it does not independently verify endorsement, membership, a deployed POF product, or current participation."
+    },
+    {
+      "blockId": "slide-71-visual-11",
+      "sourceImageSha256": "610c3babf490c0b6f696f94d4dd4d6568aa4fc73ff0df3add8b4425b826b2c6d",
+      "logoText": "Sumitomo",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 IEEE GEPOF tutorial places a Sumitomo logo in the 'Automotive' section of its 'Some of the companies encouraging IEEE 802.3 to develop GEPOF' slides.",
+      "reason": "The logo and its section placement are visible in the original slide. This records the tutorial claim only; it does not independently verify endorsement, membership, a deployed POF product, or current participation."
+    },
+    {
+      "blockId": "slide-71-visual-12",
+      "sourceImageSha256": "50aa6fdd266f6270527d8391b6b7e3940dd04e9e6e4ed510772ec039002d0d15",
+      "logoText": "Renault",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 IEEE GEPOF tutorial places a Renault logo in the 'Automotive' section of its 'Some of the companies encouraging IEEE 802.3 to develop GEPOF' slides.",
+      "reason": "The logo and its section placement are visible in the original slide. This records the tutorial claim only; it does not independently verify endorsement, membership, a deployed POF product, or current participation."
+    },
+    {
+      "blockId": "slide-71-visual-13",
+      "sourceImageSha256": "e111d204915ec3bc7f962e70f5a67fe9317462488a6951ece1f9209ffb033333",
+      "logoText": "TE Connectivity",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 IEEE GEPOF tutorial places a TE Connectivity logo in the 'Automotive' section of its 'Some of the companies encouraging IEEE 802.3 to develop GEPOF' slides.",
+      "reason": "The logo and its section placement are visible in the original slide. This records the tutorial claim only; it does not independently verify endorsement, membership, a deployed POF product, or current participation."
+    },
+    {
+      "blockId": "slide-71-visual-14",
+      "sourceImageSha256": "fb88e04ab4923b78dfddb283c39f152009e682bf79cfc8233b1fe4a55481d924",
+      "logoText": "Furukawa Electric Group",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 IEEE GEPOF tutorial places a Furukawa Electric Group logo in the 'Automotive' section of its 'Some of the companies encouraging IEEE 802.3 to develop GEPOF' slides.",
+      "reason": "The logo and its section placement are visible in the original slide. This records the tutorial claim only; it does not independently verify endorsement, membership, a deployed POF product, or current participation."
+    }
+  ],
+  "newlyReviewedObjects": 11,
+  "newProposedEvidence": 11,
+  "newProposedDecoration": 0,
+  "cumulativeReviewedObjects": 100,
+  "cumulativeProposedEvidence": 78,
+  "cumulativeProposedDecoration": 22,
+  "cumulativeProposedUnresolved": 0,
+  "remainingUnreviewedObjects": 29,
+  "productJudgmentsSavedForThisBatch": 0,
+  "qualityAccepted": false,
+  "goldCreated": 0,
+  "productionKnowledgeWrites": 0
+}

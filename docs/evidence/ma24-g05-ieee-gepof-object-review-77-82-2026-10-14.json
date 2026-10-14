@@ -1,0 +1,109 @@
+{
+  "schema": "ma24-gepof-original-slide-object-review-v1",
+  "date": "2026-10-14",
+  "ruleId": "MA24-18",
+  "sourceSha256": "030a730584498f8b98109a1bf2da22a29cc443021c63fbd1c18cf2bad2da6910",
+  "extractionArtifactSha256": "035446eaf582572f1b5cb9c893f2604be23b74aafd1813adba54ee42e47fd107",
+  "candidatePackageSha256": "282813baaa002f9dbffecf462fbea48574def5280f1a220bb491053317810e86",
+  "method": "Compared all 13 hash-matched formula/graph crops to six original high-resolution PowerPoint-rendered slides. Formula notation was read from the original images, with OCR used only to locate candidate objects. Graph descriptions preserve axes, legends and qualitative relationships without inventing plotted data tables.",
+  "originalSlideRenderSha256": {
+    "77": "a9c9ddc75b117e219ee3a1771cde85ced7f5e06896e28c1a84918882b8f362d4",
+    "78": "3a6a1cdd2157b5482dc1ecc6df99cbc12d6338787fba6310ebf636fc75e10937",
+    "79": "9c934f1559ff76cd759d0cb51e664324691248948dbd316893487ea0fc111de4",
+    "80": "8a47e46b604c37bf832e4077e8b0ac2afb2a6aa9341e345f748b0db8a79dc124",
+    "81": "5c43e052f9ee858a19a3dfabb5d293de5c6e5ef0c48900da6c9831d01972753f",
+    "82": "3b875402475340a22ecd8337e595b5e7e7b70832635f91495f0bad7d45c3d401"
+  },
+  "objects": [
+    {
+      "blockId": "slide-77-visual-4",
+      "proposedDecision": "evidence",
+      "evidenceText": "The slide 77 optical-power model gives the initial condition P(θ,0,0,λ) = P₀(θ,λ).",
+      "reason": "Read from the original equation image. This records the tutorial model, not independent physical validation."
+    },
+    {
+      "blockId": "slide-77-visual-5",
+      "proposedDecision": "evidence",
+      "evidenceText": "One slide 77 boundary condition is [∂P(θ,z,t,λ)/∂θ] at θ=0 equals 0.",
+      "reason": "The lower-left displayed boundary expression is legible in the original slide image."
+    },
+    {
+      "blockId": "slide-77-visual-6",
+      "proposedDecision": "evidence",
+      "evidenceText": "The other slide 77 boundary condition is P(θ,z,t,λ) as θ approaches π/2 equals 0.",
+      "reason": "The lower-right displayed boundary expression is legible in the original slide image."
+    },
+    {
+      "blockId": "slide-77-visual-7",
+      "proposedDecision": "evidence",
+      "evidenceText": "The slide 77 displayed power-flow equation is ∂P(θ,z,t,λ)/∂z = −α(θ,λ)P(θ,z,t,λ) − τ(θ,λ)∂P(θ,z,t,λ)/∂t + (1/θ)∂/∂θ[θD(θ,λ)∂P(θ,z,t,λ)/∂θ]. Its annotations identify differential mode delay, relative mode delay and mode mixing terms.",
+      "reason": "Formula symbols and the three visual annotations were checked on the high-resolution original. This is a historical tutorial equation, not an independently validated model."
+    },
+    {
+      "blockId": "slide-78-visual-4",
+      "proposedDecision": "evidence",
+      "evidenceText": "Slide 78 displays α(θ,λ) = γ(λ) + [1/(θQ(θ))] ∂/∂θ[θD(θ)∂Q(θ)/∂θ] for differential mode attenuation from a steady-state far-field pattern Q(θ).",
+      "reason": "The original equation image and adjacent native caption were read together; no physical accuracy claim is added."
+    },
+    {
+      "blockId": "slide-78-visual-5",
+      "proposedDecision": "evidence",
+      "evidenceText": "Slide 78 says Q(θ) may be fitted by a bi-sigmoid function. Its displayed numerator is (1+exp(−σ₁²θ₁²))(1+exp(−σ₂²θ₂²)); its denominator is (1+exp[−σ₁²(θ₁²−θ²)])(1+exp[−σ₂²(θ₂²−θ²)]).",
+      "reason": "The four factors and subscripts were read from the original formula image. This records the presentation's fit form, not fitted parameter values."
+    },
+    {
+      "blockId": "slide-78-visual-6",
+      "proposedDecision": "evidence",
+      "evidenceText": "The slide 78 relative-mode-delay expression is τ(θ,λ) = (1/c)[n_core(λ) − λ∂n_core(λ)/∂λ] / cos(θ). The slide defines c as vacuum light speed and n_core as the core refractive index.",
+      "reason": "Formula and definitions were checked on the original slide; no numerical value or validation is inferred."
+    },
+    {
+      "blockId": "slide-78-visual-7",
+      "proposedDecision": "evidence",
+      "evidenceText": "The slide 78 diffusion-coefficient fit is displayed as D(θ,λ) = [D₀ + D₁/(1 + D₂ exp(σ₂²θ²))](λ₀/λ)⁴.",
+      "reason": "Subscripts, positive exponential term and wavelength exponent were checked from the original formula image; no coefficient values are supplied."
+    },
+    {
+      "blockId": "slide-79-visual-4",
+      "proposedDecision": "evidence",
+      "evidenceText": "Slide 79 expresses the SI-POF impulse response as I(z,t) = 2π ∫ from −∞ to +∞ S_PD(λ) ∫ from 0 to π/2 sin(θ)P(θ,z,t,λ)η_PD(θ) dθ dλ. Its adjacent text calls S_PD photodetector sensitivity and η_PD directivity.",
+      "reason": "The integration limits, factors and adjacent definitions were read from the original slide; this is a model expression, not a measured impulse response."
+    },
+    {
+      "blockId": "slide-80-visual-1",
+      "proposedDecision": "evidence",
+      "evidenceText": "The left slide 80 FFP plot shows the tutorial's over-filled launching condition: normalized power versus mode inner angle, a blue launch UMD 0.5 step near 20°, and colored model curves that shift left as the annotated length increases from 0 to 100 m toward EMD.",
+      "reason": "Axes, launch annotation and curve direction are visible on the full original slide; no exact interpolated curve values are asserted."
+    },
+    {
+      "blockId": "slide-80-visual-4",
+      "proposedDecision": "evidence",
+      "evidenceText": "The right slide 80 FFP plot shows the tutorial's under-filled launching condition: normalized power versus mode inner angle, a blue launch UMD 0.2 step near 7°, and colored model curves spreading right as the annotated length increases from 0 to 100 m toward EMD.",
+      "reason": "Axes, launch annotation and curve direction are visible on the full original slide; no exact interpolated curve values are asserted."
+    },
+    {
+      "blockId": "slide-81-visual-3",
+      "proposedDecision": "evidence",
+      "evidenceText": "Slide 81 plots modeled normalized power versus mode inner angle for a real LED plus lens launch described as almost EMD. Multiple colored curves for increasing length largely overlap through the central falloff; the slide annotates an almost equal mode distribution.",
+      "reason": "The full original slide supplies axes and annotations; this is a model illustration without a plotted source-data table."
+    },
+    {
+      "blockId": "slide-82-visual-3",
+      "proposedDecision": "evidence",
+      "evidenceText": "Slide 82 compares modeled SI-POF mode-mixing conditions Over-filled, Under-filled and EMD. In the upper chart optical-power attenuation (dBo) rises with length and is highest for Over-filled, lowest for Under-filled; in the lower chart E-to-E −3 dB bandwidth (MHz) falls with length and is highest for Under-filled, lowest for Over-filled across the shown range.",
+      "reason": "Legends, axes and relative curve order are visible in the original slide. Preserve its attenuation unit spelling 'dBo' and do not invent exact points or measured performance."
+    }
+  ],
+  "newlyReviewedObjects": 13,
+  "newProposedEvidence": 13,
+  "newProposedDecoration": 0,
+  "cumulativeReviewedObjects": 129,
+  "cumulativeProposedEvidence": 107,
+  "cumulativeProposedDecoration": 22,
+  "cumulativeProposedUnresolved": 0,
+  "remainingUnreviewedObjects": 0,
+  "productJudgmentsSavedForThisBatch": 0,
+  "qualityAccepted": false,
+  "goldCreated": 0,
+  "productionKnowledgeWrites": 0
+}

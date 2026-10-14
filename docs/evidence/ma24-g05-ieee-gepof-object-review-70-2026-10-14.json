@@ -1,0 +1,144 @@
+{
+  "schema": "ma24-gepof-original-slide-object-review-v1",
+  "date": "2026-10-14",
+  "ruleId": "MA24-18",
+  "sourceSha256": "030a730584498f8b98109a1bf2da22a29cc443021c63fbd1c18cf2bad2da6910",
+  "extractionArtifactSha256": "035446eaf582572f1b5cb9c893f2604be23b74aafd1813adba54ee42e47fd107",
+  "candidatePackageSha256": "282813baaa002f9dbffecf462fbea48574def5280f1a220bb491053317810e86",
+  "method": "Each logo crop hash matched the visual candidate package and was read against the original PowerPoint-rendered slide. All judgments transcribe what the 2014 presentation lists and do not independently verify support.",
+  "originalSlideRenderSha256": "e0091c76ffd41584f0b2c93b3553383e9a11c69afa0125ae5ebce302fd5d00cf",
+  "objects": [
+    {
+      "blockId": "slide-70-visual-4",
+      "sourceImageSha256": "b530f482d7f83a247abddaa6ba69e3504c50401c1460c1bada2b91ca976f6404",
+      "logoText": "Telefónica",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 IEEE GEPOF tutorial places a Telefónica logo in the 'Home Network' section of its 'Some of the companies encouraging IEEE 802.3 to develop GEPOF' slides.",
+      "reason": "The logo and its section placement are visible in the original slide. This records the tutorial claim only; it does not independently verify endorsement, membership, a deployed POF product, or current participation."
+    },
+    {
+      "blockId": "slide-70-visual-5",
+      "sourceImageSha256": "8bdb1d48e0879a5ab2d786f677c916be87a81765fa2ed53f02799759cce3a459",
+      "logoText": "Vodafone",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 IEEE GEPOF tutorial places a Vodafone logo in the 'Home Network' section of its 'Some of the companies encouraging IEEE 802.3 to develop GEPOF' slides.",
+      "reason": "The logo and its section placement are visible in the original slide. This records the tutorial claim only; it does not independently verify endorsement, membership, a deployed POF product, or current participation."
+    },
+    {
+      "blockId": "slide-70-visual-6",
+      "sourceImageSha256": "85f58e4b83e2c46fb7567d2d2b186ab27fe1741ee92b99227e23bc4376650a64",
+      "logoText": "Deutsche Telekom",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 IEEE GEPOF tutorial places a Deutsche Telekom logo in the 'Home Network' section of its 'Some of the companies encouraging IEEE 802.3 to develop GEPOF' slides.",
+      "reason": "The logo and its section placement are visible in the original slide. This records the tutorial claim only; it does not independently verify endorsement, membership, a deployed POF product, or current participation."
+    },
+    {
+      "blockId": "slide-70-visual-7",
+      "sourceImageSha256": "e23fefcb9821761b13842cb8ebb59bfc9957b7f86d72fa55bffdac175058a53d",
+      "logoText": "Cox Communications",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 IEEE GEPOF tutorial places a Cox Communications logo in the 'Home Network' section of its 'Some of the companies encouraging IEEE 802.3 to develop GEPOF' slides.",
+      "reason": "The logo and its section placement are visible in the original slide. This records the tutorial claim only; it does not independently verify endorsement, membership, a deployed POF product, or current participation."
+    },
+    {
+      "blockId": "slide-70-visual-8",
+      "sourceImageSha256": "ea62a3a9d2564748e41e33415a2f186429320afd5ac379b512e21df2ec1c97d7",
+      "logoText": "FRÄNKISCHE",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 IEEE GEPOF tutorial places a FRÄNKISCHE logo in the 'Home Network' section of its 'Some of the companies encouraging IEEE 802.3 to develop GEPOF' slides.",
+      "reason": "The logo and its section placement are visible in the original slide. This records the tutorial claim only; it does not independently verify endorsement, membership, a deployed POF product, or current participation."
+    },
+    {
+      "blockId": "slide-70-visual-9",
+      "sourceImageSha256": "a259400209f99fc20e1cd96d11ec23fbf54eb31c52e1e7552b95d8bce6336696",
+      "logoText": "Feller by Schneider Electric",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 IEEE GEPOF tutorial places a Feller by Schneider Electric logo in the 'Home Network' section of its 'Some of the companies encouraging IEEE 802.3 to develop GEPOF' slides.",
+      "reason": "The logo and its section placement are visible in the original slide. This records the tutorial claim only; it does not independently verify endorsement, membership, a deployed POF product, or current participation."
+    },
+    {
+      "blockId": "slide-70-visual-10",
+      "sourceImageSha256": "ec332d2e43cc747cc5ee68e38f0b92d9cffbc4b82239392e46fd88206c88b200",
+      "logoText": "homefibre",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 IEEE GEPOF tutorial places a homefibre logo in the 'Home Network' section of its 'Some of the companies encouraging IEEE 802.3 to develop GEPOF' slides.",
+      "reason": "The logo and its section placement are visible in the original slide. This records the tutorial claim only; it does not independently verify endorsement, membership, a deployed POF product, or current participation."
+    },
+    {
+      "blockId": "slide-70-visual-11",
+      "sourceImageSha256": "812c980e7b227d0473db0d7b55fd12c9a4587b68e22c1a4017e1de4fa724ffbf",
+      "logoText": "casacom",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 IEEE GEPOF tutorial places a casacom logo in the 'Home Network' section of its 'Some of the companies encouraging IEEE 802.3 to develop GEPOF' slides.",
+      "reason": "The logo and its section placement are visible in the original slide. This records the tutorial claim only; it does not independently verify endorsement, membership, a deployed POF product, or current participation."
+    },
+    {
+      "blockId": "slide-70-visual-12",
+      "sourceImageSha256": "17c771ec31a5120f257f81cda09fcd1310df26609b601f75e982076888a70646",
+      "logoText": "COMOSS",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 IEEE GEPOF tutorial places a COMOSS logo in the 'Home Network' section of its 'Some of the companies encouraging IEEE 802.3 to develop GEPOF' slides.",
+      "reason": "The logo and its section placement are visible in the original slide. This records the tutorial claim only; it does not independently verify endorsement, membership, a deployed POF product, or current participation."
+    },
+    {
+      "blockId": "slide-70-visual-13",
+      "sourceImageSha256": "562c69726592a3967dc8b73ce476f5f0aa62ab83e6618d9fdd7c5083d9de2313",
+      "logoText": "RUTENBECK",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 IEEE GEPOF tutorial places a RUTENBECK logo in the 'Home Network' section of its 'Some of the companies encouraging IEEE 802.3 to develop GEPOF' slides.",
+      "reason": "The logo and its section placement are visible in the original slide. This records the tutorial claim only; it does not independently verify endorsement, membership, a deployed POF product, or current participation."
+    },
+    {
+      "blockId": "slide-70-visual-14",
+      "sourceImageSha256": "5b97810cd0198ab92603a326c8a2cc268859c043a9f1ac7b83a4110c4ff7a3ef",
+      "logoText": "SKYLANE optics",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 IEEE GEPOF tutorial places a SKYLANE optics logo in the 'Home Network' section of its 'Some of the companies encouraging IEEE 802.3 to develop GEPOF' slides.",
+      "reason": "The logo and its section placement are visible in the original slide. This records the tutorial claim only; it does not independently verify endorsement, membership, a deployed POF product, or current participation."
+    },
+    {
+      "blockId": "slide-70-visual-15",
+      "sourceImageSha256": "e09a3a9f91f3617310669ec77bc26f22c3bd09149c1ab6bd778e2ae57a717787",
+      "logoText": "Swisscom",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 IEEE GEPOF tutorial places a Swisscom logo in the 'Home Network' section of its 'Some of the companies encouraging IEEE 802.3 to develop GEPOF' slides.",
+      "reason": "The logo and its section placement are visible in the original slide. This records the tutorial claim only; it does not independently verify endorsement, membership, a deployed POF product, or current participation."
+    },
+    {
+      "blockId": "slide-70-visual-16",
+      "sourceImageSha256": "eb55b882892b5d53ab5edf2b67a1a7fb43f6dde330c80cf71941c819b494e6a8",
+      "logoText": "Telecom Italia",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 IEEE GEPOF tutorial places a Telecom Italia logo in the 'Home Network' section of its 'Some of the companies encouraging IEEE 802.3 to develop GEPOF' slides.",
+      "reason": "The logo and its section placement are visible in the original slide. This records the tutorial claim only; it does not independently verify endorsement, membership, a deployed POF product, or current participation."
+    },
+    {
+      "blockId": "slide-70-visual-17",
+      "sourceImageSha256": "8620b4be1ffa4c2904f481c9d2c27766ed814ed8c39b2984b865cee365cd2fe8",
+      "logoText": "Orange",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 IEEE GEPOF tutorial places a Orange logo in the 'Home Network' section of its 'Some of the companies encouraging IEEE 802.3 to develop GEPOF' slides.",
+      "reason": "The logo and its section placement are visible in the original slide. This records the tutorial claim only; it does not independently verify endorsement, membership, a deployed POF product, or current participation."
+    },
+    {
+      "blockId": "slide-70-visual-18",
+      "sourceImageSha256": "44ee771f4455494e41e63ef625af5a441078daa6aadacdc1c697a94aa672c7c0",
+      "logoText": "digitalSTROM",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 IEEE GEPOF tutorial places a digitalSTROM logo in the 'Home Network' section of its 'Some of the companies encouraging IEEE 802.3 to develop GEPOF' slides.",
+      "reason": "The logo and its section placement are visible in the original slide. This records the tutorial claim only; it does not independently verify endorsement, membership, a deployed POF product, or current participation."
+    }
+  ],
+  "newlyReviewedObjects": 15,
+  "newProposedEvidence": 15,
+  "newProposedDecoration": 0,
+  "cumulativeReviewedObjects": 89,
+  "cumulativeProposedEvidence": 67,
+  "cumulativeProposedDecoration": 22,
+  "cumulativeProposedUnresolved": 0,
+  "remainingUnreviewedObjects": 40,
+  "productJudgmentsSavedForThisBatch": 0,
+  "qualityAccepted": false,
+  "goldCreated": 0,
+  "productionKnowledgeWrites": 0
+}

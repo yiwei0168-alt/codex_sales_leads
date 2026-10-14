@@ -1,0 +1,152 @@
+{
+  "schema": "ma24-gepof-original-slide-object-review-v1",
+  "date": "2026-10-14",
+  "ruleId": "MA24-18",
+  "sourceSha256": "030a730584498f8b98109a1bf2da22a29cc443021c63fbd1c18cf2bad2da6910",
+  "extractionArtifactSha256": "035446eaf582572f1b5cb9c893f2604be23b74aafd1813adba54ee42e47fd107",
+  "candidatePackageSha256": "282813baaa002f9dbffecf462fbea48574def5280f1a220bb491053317810e86",
+  "method": "Each logo crop hash matched the visual candidate package and was read against the original PowerPoint-rendered slide. All judgments transcribe what the 2014 presentation lists and do not independently verify support.",
+  "originalSlideRenderSha256": "612c7683becce78416df7a1b7f213ed5b3132a6860c7f1b43ca69dd56974319b",
+  "objects": [
+    {
+      "blockId": "slide-72-visual-4",
+      "sourceImageSha256": "2bf96c7f386da9736dc416402402771b1bce3e5e0838f40d5c7187a975740c9d",
+      "logoText": "PHOENIX CONTACT",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 IEEE GEPOF tutorial places a PHOENIX CONTACT logo in the 'Industrial and others' section of its 'Some of the companies encouraging IEEE 802.3 to develop GEPOF' slides.",
+      "reason": "The logo and its section placement are visible in the original slide. This records the tutorial claim only; it does not independently verify endorsement, membership, a deployed POF product, or current participation."
+    },
+    {
+      "blockId": "slide-72-visual-5",
+      "sourceImageSha256": "e111d204915ec3bc7f962e70f5a67fe9317462488a6951ece1f9209ffb033333",
+      "logoText": "TE Connectivity",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 IEEE GEPOF tutorial places a TE Connectivity logo in the 'Industrial and others' section of its 'Some of the companies encouraging IEEE 802.3 to develop GEPOF' slides.",
+      "reason": "The logo and its section placement are visible in the original slide. This records the tutorial claim only; it does not independently verify endorsement, membership, a deployed POF product, or current participation."
+    },
+    {
+      "blockId": "slide-72-visual-6",
+      "sourceImageSha256": "df491093641a6c30ec5b6e816246ca5a14fd0dcdc883068e678584ecfb25ace0",
+      "logoText": "ALSTOM",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 IEEE GEPOF tutorial places a ALSTOM logo in the 'Industrial and others' section of its 'Some of the companies encouraging IEEE 802.3 to develop GEPOF' slides.",
+      "reason": "The logo and its section placement are visible in the original slide. This records the tutorial claim only; it does not independently verify endorsement, membership, a deployed POF product, or current participation."
+    },
+    {
+      "blockId": "slide-72-visual-7",
+      "sourceImageSha256": "64ef570828d661d608b838717db2959ee7f12e326c5793c7ef391bb79ee22d95",
+      "logoText": "BOEING",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 IEEE GEPOF tutorial places a BOEING logo in the 'Industrial and others' section of its 'Some of the companies encouraging IEEE 802.3 to develop GEPOF' slides.",
+      "reason": "The logo and its section placement are visible in the original slide. This records the tutorial claim only; it does not independently verify endorsement, membership, a deployed POF product, or current participation."
+    },
+    {
+      "blockId": "slide-72-visual-8",
+      "sourceImageSha256": "03a3dab10829a9b596981c5d2cc57ef177409dc144f20c58f34e6c9380f7a355",
+      "logoText": "Avago Technologies",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 IEEE GEPOF tutorial places a Avago Technologies logo in the 'Industrial and others' section of its 'Some of the companies encouraging IEEE 802.3 to develop GEPOF' slides.",
+      "reason": "The logo and its section placement are visible in the original slide. This records the tutorial claim only; it does not independently verify endorsement, membership, a deployed POF product, or current participation."
+    },
+    {
+      "blockId": "slide-72-visual-9",
+      "sourceImageSha256": "1111bb3cffeacb22b380505ae6573284a50f83149fbd2b5abfb29abc6461ccd6",
+      "logoText": "Firecomms",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 IEEE GEPOF tutorial places a Firecomms logo in the 'Industrial and others' section of its 'Some of the companies encouraging IEEE 802.3 to develop GEPOF' slides.",
+      "reason": "The logo and its section placement are visible in the original slide. This records the tutorial claim only; it does not independently verify endorsement, membership, a deployed POF product, or current participation."
+    },
+    {
+      "blockId": "slide-72-visual-10",
+      "sourceImageSha256": "2c0f0c9065f60f33c96eddd044f49ed394be1ae1a3eee8647aaabe2af98d3e49",
+      "logoText": "HAMAMATSU",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 IEEE GEPOF tutorial places a HAMAMATSU logo in the 'Industrial and others' section of its 'Some of the companies encouraging IEEE 802.3 to develop GEPOF' slides.",
+      "reason": "The logo and its section placement are visible in the original slide. This records the tutorial claim only; it does not independently verify endorsement, membership, a deployed POF product, or current participation."
+    },
+    {
+      "blockId": "slide-72-visual-11",
+      "sourceImageSha256": "896c659fdcd708917d98be8c6da873790e3a2b90ea2c38a2ba7d3d0035870d68",
+      "logoText": "MITSUBISHI RAYON",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 IEEE GEPOF tutorial places a MITSUBISHI RAYON logo in the 'Industrial and others' section of its 'Some of the companies encouraging IEEE 802.3 to develop GEPOF' slides.",
+      "reason": "The logo and its section placement are visible in the original slide. This records the tutorial claim only; it does not independently verify endorsement, membership, a deployed POF product, or current participation."
+    },
+    {
+      "blockId": "slide-72-visual-12",
+      "sourceImageSha256": "cc02da014fa31376d40cd00f231668c0fd0807cc1ef786c10ceea717bd1e4e44",
+      "logoText": "Asahi Kasei",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 IEEE GEPOF tutorial places a Asahi Kasei logo in the 'Industrial and others' section of its 'Some of the companies encouraging IEEE 802.3 to develop GEPOF' slides.",
+      "reason": "The logo and its section placement are visible in the original slide. This records the tutorial claim only; it does not independently verify endorsement, membership, a deployed POF product, or current participation."
+    },
+    {
+      "blockId": "slide-72-visual-13",
+      "sourceImageSha256": "34603959d855f182de7eac01d1df27098f4ad3e8ee4d02eda61de4719a9afe69",
+      "logoText": "Luceat",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 IEEE GEPOF tutorial places a Luceat logo in the 'Industrial and others' section of its 'Some of the companies encouraging IEEE 802.3 to develop GEPOF' slides.",
+      "reason": "The logo and its section placement are visible in the original slide. This records the tutorial claim only; it does not independently verify endorsement, membership, a deployed POF product, or current participation."
+    },
+    {
+      "blockId": "slide-72-visual-14",
+      "sourceImageSha256": "4f67eb03bcc8515aa92ab5bbf2467e4ce7f83a28bbeb91a5ca601e66a8fa3ef8",
+      "logoText": "TORAY",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 IEEE GEPOF tutorial places a TORAY logo in the 'Industrial and others' section of its 'Some of the companies encouraging IEEE 802.3 to develop GEPOF' slides.",
+      "reason": "The logo and its section placement are visible in the original slide. This records the tutorial claim only; it does not independently verify endorsement, membership, a deployed POF product, or current participation."
+    },
+    {
+      "blockId": "slide-72-visual-15",
+      "sourceImageSha256": "74b8cdb07eac738c8ed067d1462badac42e02810305d012a693c18e7ce855747",
+      "logoText": "SIEMENS",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 IEEE GEPOF tutorial places a SIEMENS logo in the 'Industrial and others' section of its 'Some of the companies encouraging IEEE 802.3 to develop GEPOF' slides.",
+      "reason": "The logo and its section placement are visible in the original slide. This records the tutorial claim only; it does not independently verify endorsement, membership, a deployed POF product, or current participation."
+    },
+    {
+      "blockId": "slide-72-visual-16",
+      "sourceImageSha256": "d907fb3b542fdccce5d9b9cf6f2c11a89b762de94a2dbab735a85e36ea42bf18",
+      "logoText": "BAE SYSTEMS",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 IEEE GEPOF tutorial places a BAE SYSTEMS logo in the 'Industrial and others' section of its 'Some of the companies encouraging IEEE 802.3 to develop GEPOF' slides.",
+      "reason": "The logo and its section placement are visible in the original slide. This records the tutorial claim only; it does not independently verify endorsement, membership, a deployed POF product, or current participation."
+    },
+    {
+      "blockId": "slide-72-visual-17",
+      "sourceImageSha256": "ec7e8c7bc9013c39e9de780ceefbf8008b6d27f43fac627468f31a2c5dd53394",
+      "logoText": "PoFLink",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 IEEE GEPOF tutorial places a PoFLink logo in the 'Industrial and others' section of its 'Some of the companies encouraging IEEE 802.3 to develop GEPOF' slides.",
+      "reason": "The logo and its section placement are visible in the original slide. This records the tutorial claim only; it does not independently verify endorsement, membership, a deployed POF product, or current participation."
+    },
+    {
+      "blockId": "slide-72-visual-18",
+      "sourceImageSha256": "a032fd343db41c7216f09705d7dce8ff406d0f29f413abed9582a02e4031d4d8",
+      "logoText": "HP",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 IEEE GEPOF tutorial places a HP logo in the 'Industrial and others' section of its 'Some of the companies encouraging IEEE 802.3 to develop GEPOF' slides.",
+      "reason": "The logo and its section placement are visible in the original slide. This records the tutorial claim only; it does not independently verify endorsement, membership, a deployed POF product, or current participation."
+    },
+    {
+      "blockId": "slide-72-visual-19",
+      "sourceImageSha256": "3bd2c51d8f340456fe0a6769040b9aee98b7fe088cfe119e8384adf555a7eeab",
+      "logoText": "K POF",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 IEEE GEPOF tutorial places a K POF logo in the 'Industrial and others' section of its 'Some of the companies encouraging IEEE 802.3 to develop GEPOF' slides.",
+      "reason": "The logo and its section placement are visible in the original slide. This records the tutorial claim only; it does not independently verify endorsement, membership, a deployed POF product, or current participation."
+    }
+  ],
+  "newlyReviewedObjects": 16,
+  "newProposedEvidence": 16,
+  "newProposedDecoration": 0,
+  "cumulativeReviewedObjects": 116,
+  "cumulativeProposedEvidence": 94,
+  "cumulativeProposedDecoration": 22,
+  "cumulativeProposedUnresolved": 0,
+  "remainingUnreviewedObjects": 13,
+  "productJudgmentsSavedForThisBatch": 0,
+  "qualityAccepted": false,
+  "goldCreated": 0,
+  "productionKnowledgeWrites": 0
+}
