@@ -47,6 +47,22 @@
     "semanticIndependenceProven": false,
     "cloudCalls": 0
   },
+  "offlineProductExtraction": {
+    "date": "2026-10-15",
+    "command": "python scripts/extract-uploaded-knowledge.py tmp/ma24-independent-quarantine/itu-global-connectivity-report-2025.pdf tmp/ma24-independent-quarantine/itu-global-connectivity-report-2025.layout-v2.0.9.extraction.json",
+    "extractorVersion": "layout-v2.0.9",
+    "artifactSha256": "788600e3fc3a1f8bd0a1d658ab608686b1c4358cfe76672500f3ae652303ffd6",
+    "artifactSourceSha256MatchesOriginal": true,
+    "totalBlocks": 2322,
+    "successBlocks": 2194,
+    "pendingVisualBlocks": 128,
+    "pageStatuses": {"success": 1, "blank": 0, "pending-ocr": 128, "failed": 0},
+    "targetEvidenceBlockIds": ["page-70-block-49", "page-71-block-10", "page-71-block-12", "page-71-block-13", "page-71-block-14"],
+    "targetEvidenceCoordinatesChecked": "The 204-cuts paragraph and four repair-delay bullets retain physical pages 70-71 and bounding boxes consistent with the rendered original; the source text includes a superscript footnote joined as '201515' outside the asked fact.",
+    "interpretation": "Target text is recoverable, but 128 pages contain pending visual objects. The complete source must remain blocked from searchable registration until page-level review; this offline run is not a product citation or user-visible answer check.",
+    "modelCalls": 0,
+    "databaseWrites": 0
+  },
   "draftQuestions": [
     {
       "id": "itu-gcr2025-submarine-cable-cuts-and-repair-delay",
@@ -62,5 +78,5 @@
   "goldCreated": 0,
   "productUploadOrModelAnswerRun": false,
   "productionKnowledgeWrites": 0,
-  "next": "Complete the full document/product extraction and source-family audit, then decide set-level eligibility before any Gold freeze or model answer run."
+  "next": "Review the 128 pending pages against the original, decide their evidence/decoration scope and source-family eligibility, then audit the complete set before any Gold freeze or model answer run."
 }

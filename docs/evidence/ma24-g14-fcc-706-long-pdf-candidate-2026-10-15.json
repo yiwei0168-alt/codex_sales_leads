@@ -42,6 +42,19 @@
     "semanticIndependenceProven": false,
     "cloudCalls": 0
   },
+  "offlineProductExtraction": {
+    "date": "2026-10-15",
+    "command": "python scripts/extract-uploaded-knowledge.py tmp/ma24-independent-candidates/fcc-26-55.pdf tmp/ma24-independent-candidates/fcc-26-55.layout-v2.0.9.extraction.json",
+    "extractorVersion": "layout-v2.0.9",
+    "artifactSha256": "0db0db7e98974db737693aca26974cc96c311beb66049f628253f8f2999bd115",
+    "artifactSourceSha256MatchesOriginal": true,
+    "totalBlocks": 2584,
+    "pageStatuses": {"success": 0, "blank": 0, "pending-ocr": 178, "failed": 0},
+    "targetEvidenceBlockIds": ["page-27-block-3", "page-28-block-3", "page-28-block-5"],
+    "interpretation": "The 78% entity paragraph, 52% student paragraph and Figure 12 values are present in page-bound blocks, but every page has pending visual content. This offline run does not satisfy full review, searchable registration or user-visible citation.",
+    "modelCalls": 0,
+    "databaseWrites": 0
+  },
   "draftQuestions": [
     {
       "id": "fcc-706-2026-school-entity-vs-student-denominator",
@@ -58,5 +71,5 @@
   "goldCreated": 0,
   "productUploadOrModelAnswerRun": false,
   "productionKnowledgeWrites": 0,
-  "next": "Screen the draft against old questions and development exposure; audit source use and document-level visual review, then decide set-level eligibility before Gold and model runs."
+  "next": "Review all 178 pending pages or choose a different long source before searchable registration; retain the FCC publication-family and set-level independence gate before Gold and model runs."
 }
