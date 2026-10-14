@@ -213,6 +213,11 @@
 .conversation-theme .customer-timeline header h3{margin:0 0 4px}
 .conversation-theme .customer-timeline header p{margin:6px 0}
 .customer-context{margin:10px 0;font-size:13px}.customer-context summary{cursor:pointer;color:var(--primary);padding:4px 0}
+@media(min-width:701px) and (max-height:520px){
+ .conversation-theme .main-shell:has(.mailbox-workspace){overflow-y:auto;overflow-x:hidden}
+ .conversation-theme .workspace-content:has(.mailbox-workspace){flex:none;min-height:600px}
+ .conversation-theme .mailbox-workspace{min-height:480px}
+}
 @media(max-width:700px){
  .conversation-theme .mailbox-tabs button{font-size:13px;padding:8px 10px}
  .conversation-theme .mail-reader,.conversation-theme .customer-columns{grid-template-rows:minmax(0,1fr)}

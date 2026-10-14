@@ -1,0 +1,28 @@
+{
+  "schema": "ma24-g13-f06-long-original-reader-clone-v1",
+  "goal": "MA24 G13 F06 and short-window disclosure access",
+  "date": "2026-10-15",
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-backup-restore.ts --web-compat --mailbox-reader-ui",
+  "backup": "network_copilot_2026-10-13T09-03-13Z.dump",
+  "backupSha256": "17db517922f0ee8067391544418f0c8af9f77ee5f48203b938b7559ba528d428",
+  "candidateBuildId": "x3HNBFv7NzVNh4r6H4ROZ",
+  "oldBuildId": "QfoyXprIZIVgSWxFSZ-1K",
+  "database": "Disposable local restore; migrations 127-134 applied on the clone only; clone dropped after verification",
+  "fixture": "One synthetic account, one invalid.example mailbox connection, encrypted 80-line long mail and encrypted one-line short mail",
+  "implementationThreshold": "Body over 1400 characters or over 20 lines uses the reading drawer; otherwise the original stays inline. This is an implementation choice, not a separately user-confirmed numeric rule.",
+  "browser": {
+    "viewports": ["1366x900", "1366x360", "390x760"],
+    "shortWindowFailureAndFix": "Before the layout change the 1366x360 learning-list clientHeight was 0 and the original summary was blocked by the selection bar/pager. After the change, the list clientHeight exceeded 120 px and the main shell scrolled to the summary; the same click path completed.",
+    "longOriginal": "After an injected HTTP 503 and inline retry, the 80-line original opened in an opaque right-side drawer (full-screen on mobile) with a bounded header and independently scrolling body. No long inline pre remained in the list.",
+    "closeAndFocus": "Escape closed the drawer and returned focus to the persistent reopen button; reopening and closing via the close button also returned focus.",
+    "shortOriginal": "The one-line original stayed in the inline disclosure and did not create a drawer.",
+    "inboxReaderRegression": "List/detail forced HTTP 503 and retry, long inbox reading, and desktop refresh failure clearing stale body continued to pass; short viewport used main-shell scroll, ordinary desktop and mobile used reading-area scroll.",
+    "screenshots": "All three drawer viewport screenshots plus mobile short-inline and pre-fix short-window screenshots were inspected locally",
+    "noHorizontalOverflow": true,
+    "pageErrors": 0
+  },
+  "modelCalls": 0,
+  "mailSends": 0,
+  "productionDatabaseWrites": 0,
+  "scopeLimit": "Candidate build and synthetic account only. Real mailbox content, production deployment, accessibility audit beyond the tested focus paths, and all other F01-F13 entrances remain separate acceptance work."
+}

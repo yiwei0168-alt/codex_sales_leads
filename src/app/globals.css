@@ -352,6 +352,9 @@ a { color: inherit; }
 .workspace-error{color:var(--red)!important;background:var(--red-soft)!important;padding:10px;border-radius:6px}
 .destructive-button{background:var(--red)!important;color:white!important}
 .workspace-drawer .mailbox-manager{max-height:none}
+.mailbox-original-reader{min-width:0;display:grid;gap:12px;line-height:1.65}
+.mailbox-original-reader h3,.mailbox-original-reader p{margin:0}
+.mailbox-original-reader pre{margin:0;max-height:none;overflow:visible;white-space:pre-wrap;overflow-wrap:anywhere;font:inherit}
 @media(max-width:700px){.workspace-drawer{width:100vw;border-radius:0}.workspace-dialog-body{padding:14px}.mailbox-sync-options{grid-template-columns:1fr}.workspace-drawer .mailbox-connect-form{grid-template-columns:1fr}}
 
 .mailbox-job-progress{padding:8px 16px;max-height:180px;overflow:auto;border-bottom:1px solid var(--line)}

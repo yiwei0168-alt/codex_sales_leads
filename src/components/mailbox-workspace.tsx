@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState, type FormEvent } from "react";
+import { useCallback, useEffect, useRef, useState, type FormEvent } from "react";
 import { MailboxReader } from "./mailbox-reader";
 import { MailboxCustomers } from "./mailbox-customers";
 import { WorkspaceDialog } from "./workspace-dialog";
@@ -24,8 +24,12 @@ function OriginalMail({messageId,onChanged}:{messageId:string;onChanged:()=>void
   const [content,setContent]=useState<MailContent|null>(null);
   const [error,setError]=useState("");
   const [loading,setLoading]=useState(false);
-  async function load(){if(content||loading)return;setLoading(true);setError("");try{const response=await fetch(`/api/mailbox/messages/${messageId}`,{cache:"no-store"});const body=await response.json();if(!response.ok)throw new Error(body.error??"原文读取失败");setContent(body.message);}catch(reason){setError(reason instanceof Error?reason.message:"原文读取失败");}finally{setLoading(false);}}
-  return <details className="mailbox-disclosure" onToggle={event=>{if(event.currentTarget.open)void load();}}><summary>查看邮件原文</summary>{loading&&<p role="status">正在读取原文…</p>}{error&&<p role="alert">{error} <button onClick={()=>void load()}>重试</button></p>}{content&&<div className="mailbox-message-content"><p><strong>{content.subject||"无主题"}</strong></p><p>发件：{content.sender.map(item=>item.address).join("、")}</p><p>收件：{content.recipients.map(item=>item.address).join("、")}</p><pre>{content.bodyText}</pre><MailCompanyLink messageId={messageId} onChanged={onChanged}/></div>}</details>;
+  const [readerOpen,setReaderOpen]=useState(false);
+  const openButtonRef=useRef<HTMLButtonElement>(null);
+  const longBody=content!==null&&(content.bodyText.length>1400||content.bodyText.split(/\r?\n/).length>20);
+  async function load(){if(content||loading)return;setLoading(true);setError("");try{const response=await fetch(`/api/mailbox/messages/${messageId}`,{cache:"no-store"});const body=await response.json();if(!response.ok)throw new Error(body.error??"原文读取失败");const message=body.message as MailContent;setContent(message);if(message.bodyText.length>1400||message.bodyText.split(/\r?\n/).length>20)setReaderOpen(true);}catch(reason){setError(reason instanceof Error?reason.message:"原文读取失败");}finally{setLoading(false);}}
+  function closeReader(){setReaderOpen(false);requestAnimationFrame(()=>openButtonRef.current?.focus());}
+  return <><details className="mailbox-disclosure" onToggle={event=>{if(event.currentTarget.open)void load();}}><summary>查看邮件原文</summary>{loading&&<p role="status">正在读取原文…</p>}{error&&<p role="alert">{error} <button onClick={()=>void load()}>重试</button></p>}{content&&(longBody?<div className="mailbox-message-content"><p>长邮件原文已在阅读面板打开。</p><button ref={openButtonRef} type="button" onClick={()=>setReaderOpen(true)}>打开阅读面板</button></div>:<div className="mailbox-message-content"><p><strong>{content.subject||"无主题"}</strong></p><p>发件：{content.sender.map(item=>item.address).join("、")}</p><p>收件：{content.recipients.map(item=>item.address).join("、")}</p><pre>{content.bodyText}</pre><MailCompanyLink messageId={messageId} onChanged={onChanged}/></div>)}</details>{readerOpen&&content&&<WorkspaceDialog title="邮件原文" drawer onClose={closeReader}><div className="mailbox-original-reader"><h3>{content.subject||"无主题"}</h3><p>发件：{content.sender.map(item=>item.address).join("、")}</p><p>收件：{content.recipients.map(item=>item.address).join("、")}</p><pre>{content.bodyText}</pre><MailCompanyLink messageId={messageId} onChanged={onChanged}/></div></WorkspaceDialog>}</>;
 }
 
 export function MailboxWorkspace(){
