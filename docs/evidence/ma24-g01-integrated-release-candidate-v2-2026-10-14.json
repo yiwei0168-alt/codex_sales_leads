@@ -1,0 +1,56 @@
+{
+  "schema": "ma24-g01-integrated-release-candidate-v2",
+  "checkedAt": "2026-10-14 15:39 UTC",
+  "scope": "Local candidate rebuild and read-only release readiness inventory; no product migration, service switch, model task or rollback",
+  "candidate": {
+    "sourceCommit": "0d7d9c4c83da68089c72489d04165b0755b3cf92",
+    "buildCommand": "npm run build",
+    "buildResult": "passed including TypeScript and 26 static pages",
+    "extractorVersion": "layout-v2.0.8",
+    "buildId": "m7KFQXMQKtBL1X-v4EJoV",
+    "buildManifestSha256": "b785ae906a1305fe7850ee3a4829a8b26c2a5031c70911e0de2a6b82b07afe59",
+    "localSnapshot": ".next-releases/ma24-g01-0d7d9c4c",
+    "snapshotFiles": 1538,
+    "snapshotBytes": 281328466,
+    "snapshotBuildIdAndManifestMatch": true,
+    "snapshotGitIgnored": true,
+    "supersedesBuildId": "_zjhGHUAx7YAftOEXlsef"
+  },
+  "servicePointers": {
+    "webPort": 3018,
+    "previousBuildId": "QfoyXprIZIVgSWxFSZ-1K",
+    "previousBuildManifestHttpStatus": 200,
+    "newBuildManifestHttpStatus": 404,
+    "langgraphOkHttpStatus": 200,
+    "graphInProcessSourceHashVerified": false
+  },
+  "migrationPreflight": {
+    "command": "npm run ma24:release-preflight",
+    "schemaState": "stage-absent",
+    "prerequisiteMarkers123To126Present": 9,
+    "targetMarkers127To134Present": 0,
+    "migrationFileHashesUnchangedFromPriorCandidate": true,
+    "priorBackupFile": "network_copilot_2026-10-13T09-03-13Z.dump",
+    "priorBackupSha256": "17db517922f0ee8067391544418f0c8af9f77ee5f48203b938b7559ba528d428",
+    "priorBackupChecksumMatched": true,
+    "priorBackupAgeHours": 30.6,
+    "freshMigrationBackup": false,
+    "readyForRelease": false
+  },
+  "queueSnapshot": {
+    "command": "npm run ma24:audit-runtime-queues",
+    "checkedAt": "2026-10-14 15:39:08 UTC",
+    "sampledQueues": ["mainAgent", "leadWorkflow", "knowledgeUpload", "skillShadow", "mailboxSync"],
+    "queuedOrRunning": 0,
+    "expiredRunningLeases": 0,
+    "repeatAtSwitch": true
+  },
+  "releaseGatesRemaining": [
+    "Complete domain-specific natural quality and acceptance gates",
+    "Verify exact running service source, worker and runtime flags",
+    "Create and verify a fresh product backup immediately before 127-134 migration",
+    "Record the migration ledger and switch-time queue and domain smoke results",
+    "Run authorized domain pilots, actual service rollback and data compatibility checks"
+  ],
+  "assessment": "Current code and build are again bound in a local snapshot. The Web service still runs the old build; G01 remains partial and G17/G18 production acceptance is open."
+}

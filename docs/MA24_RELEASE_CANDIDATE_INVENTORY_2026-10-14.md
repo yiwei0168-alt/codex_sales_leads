@@ -8,6 +8,8 @@
 
 **构建后变更。** `layout-v2.0.8` 的 XLSX 读取修复发生在上述固定构建之后；该 build 仍可追溯，但已不包含最新抽取器。含此修复的发布候选须重新完成构建、固定哈希及隔离验证，不能沿用 `_zjhGHUAx7YAftOEXlsef` 充当新功能已加载证据。[修复收据](evidence/ma24-g05-xlsx-table-style-readonly-fix-2026-10-14.json)。
 
+**现行本地候选。** 源码提交 `0d7d9c4c` 已重新完整构建，build ID `m7KFQXMQKtBL1X-v4EJoV`、内部 build manifest SHA-256 `b785ae906a1305fe7850ee3a4829a8b26c2a5031c70911e0de2a6b82b07afe59`，本地忽略目录 `.next-releases/ma24-g01-0d7d9c4c` 保存 1538 文件、281328466 字节并复核 ID/哈希。该构建包含 `layout-v2.0.8`；3018 的旧 Web manifest 仍为 200，新候选为 404。产品库迁移与备份门槛未变，见[新候选收据](evidence/ma24-g01-integrated-release-candidate-v2-2026-10-14.json)。旧候选仅保留历史回切/比对记录，不再代表当前源码。
+
 | 功能域 | 候选需要一起核对的运行单元 | 数据库与本地依赖 | 当前缺口及回滚入口 |
 | --- | --- | --- | --- |
 | G02–G04 来源撤销、自然记忆与图谱 | LangGraph、主 worker；自然抽取还需本地记忆 worker，投影还需图谱 worker | 既有 109–113 阶段、Ollama、Neo4j/Graphiti；本地两个开关须经质量验收才启用 | 当前仅旧 Graph/主 worker 在跑；本地记忆和投影 worker 未跑。服务回滚版本分别为 `44e8608c`、`1d1cc962`；自然样本和连续链路尚未通过 |
