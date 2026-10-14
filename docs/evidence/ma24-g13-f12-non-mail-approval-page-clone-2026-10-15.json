@@ -1,0 +1,40 @@
+{
+  "schema": "ma24-g13-f12-non-mail-approval-page-clone-v1",
+  "date": "2026-10-15",
+  "scope": "G13/F12 non-mail approval parameters and safe rejection on disposable restored database and candidate Web",
+  "baseline": {
+    "archive": "network_copilot_2026-10-13T09-03-13Z.dump",
+    "archiveSha256": "17db517922f0ee8067391544418f0c8af9f77ee5f48203b938b7559ba528d428",
+    "candidateBuildId": "-gufJcQePegDiD9FmcJAz",
+    "oldBuildId": "QfoyXprIZIVgSWxFSZ-1K",
+    "migrations": "127-134"
+  },
+  "method": "A synthetic waiting_user run and pending skill_delete approval with a 1620-character diagnostic field were inserted only in the disposable restored database. The candidate's actual run and approval APIs, desktop/mobile conversation page, rejection route and database state were compared. No target Skill was created or deleted.",
+  "result": {
+    "oldWebCompatibilitySmoke": true,
+    "runApiStatus": 200,
+    "approvalApiStatus": 200,
+    "anonymousApprovalApiStatus": 401,
+    "pageViewports": ["390x760", "1366x900"],
+    "businessFieldsVisible": true,
+    "rawJsonInitiallyCollapsed": true,
+    "copiedJsonEqualsApiPayload": true,
+    "horizontalOverflow": false,
+    "pageErrors": 0,
+    "rejectApiStatus": 200,
+    "databaseApprovalStatusAfterReject": "denied",
+    "databaseRunStatusAfterReject": "queued",
+    "staleApproveApiStatus": 409,
+    "executedToolCalls": 0,
+    "modelCalls": 0,
+    "productionWrites": 0,
+    "restoreDatabaseDropped": true
+  },
+  "checks": [
+    "node scripts/run-tsx.cjs scripts/verify-ma24-backup-restore.ts --web-compat --non-mail-approval-raw-json-ui",
+    "npx eslint on the three changed scripts",
+    "targeted TypeScript check on the changed scripts and their imported dependencies",
+    "git diff --check"
+  ],
+  "limits": "Synthetic denial verifies the displayed parameters and no-execution path. It does not establish actual destructive or publish approval quality, execution after approval, production deployment, or actual production rollback. Full-project typecheck remains blocked by the pre-existing tmp/ma24-independent-quarantine/verify-nist-tn2363-review-clone.ts:106 error."
+}
