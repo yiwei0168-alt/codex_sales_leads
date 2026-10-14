@@ -1,0 +1,50 @@
+{
+  "schema": "ma24-gepof-original-slide-object-review-v1",
+  "date": "2026-10-14",
+  "ruleId": "MA24-18",
+  "sourceSha256": "030a730584498f8b98109a1bf2da22a29cc443021c63fbd1c18cf2bad2da6910",
+  "extractionArtifactSha256": "035446eaf582572f1b5cb9c893f2604be23b74aafd1813adba54ee42e47fd107",
+  "candidatePackageSha256": "282813baaa002f9dbffecf462fbea48574def5280f1a220bb491053317810e86",
+  "method": "Compared all four hash-matched candidate graphics with the original PowerPoint-rendered slides. Numeric labels were read from the full slide where chart text is larger than in the transparent crop.",
+  "originalSlideRenderSha256": {
+    "45": "5c783f862498c1a75514ed13702408c14e4cde4a85213ad094f807f522db21f2",
+    "46": "02ed5dc46de48475d4fd99970c956bbf4be9c8f76e7a154e17a0be8ff6732b34",
+    "49": "e33ea6bff9800187d20d4d76359b1f9edc16200e35fde7775c2ef288f3ed76c3"
+  },
+  "objects": [
+    {
+      "blockId": "slide-45-visual-4",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 tutorial's Japan fixed-broadband-subscriber chart, attributed on the slide to Japan's Ministry of Internal Affairs and Communications, ends at December 2013 with labeled values in millions: Total 35.8, FTTH 25.0, CATV 6.1 and DSL 4.7. The chart depicts FTTH rising and DSL falling over the displayed period beginning March 2008.",
+      "reason": "Legend, unit, date endpoints and four right-end labels are legible on the original slide. These are historical chart readings, not current subscription counts."
+    },
+    {
+      "blockId": "slide-46-visual-2",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 tutorial's Japanese optical-wiring demand survey bar chart labels five response percentages: Process time reduction 9.3%, Smaller Bend Radius 12.0%, Easier connection 14.7%, Lower parts cost 14.7%, and No special skill requirement 49.3%.",
+      "reason": "The five bars and category labels are legible on the original slide. The slide lists respondent types but does not establish a sample size or a current market survey."
+    },
+    {
+      "blockId": "slide-49-visual-9",
+      "proposedDecision": "decoration",
+      "reason": "A small coin-stack icon decorates the low end of the relative-cost arrow; the comparative cabling labels and arrow are native slide content, and the icon adds no measurable value."
+    },
+    {
+      "blockId": "slide-49-visual-10",
+      "proposedDecision": "decoration",
+      "reason": "Larger coin-stack clip art decorates the high end of the relative-cost arrow; it carries no numeric cost or independent technical assertion."
+    }
+  ],
+  "newlyReviewedObjects": 4,
+  "newProposedEvidence": 2,
+  "newProposedDecoration": 2,
+  "cumulativeReviewedObjects": 41,
+  "cumulativeProposedEvidence": 29,
+  "cumulativeProposedDecoration": 12,
+  "cumulativeProposedUnresolved": 0,
+  "remainingUnreviewedObjects": 88,
+  "productJudgmentsSavedForThisBatch": 0,
+  "qualityAccepted": false,
+  "goldCreated": 0,
+  "productionKnowledgeWrites": 0
+}

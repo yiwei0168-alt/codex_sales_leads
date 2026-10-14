@@ -1,0 +1,73 @@
+{
+  "schema": "ma24-gepof-original-slide-object-review-v1",
+  "date": "2026-10-14",
+  "ruleId": "MA24-18",
+  "sourceSha256": "030a730584498f8b98109a1bf2da22a29cc443021c63fbd1c18cf2bad2da6910",
+  "extractionArtifactSha256": "035446eaf582572f1b5cb9c893f2604be23b74aafd1813adba54ee42e47fd107",
+  "candidatePackageSha256": "282813baaa002f9dbffecf462fbea48574def5280f1a220bb491053317810e86",
+  "method": "Compared seven hash-matched image placements with original PowerPoint-rendered slides; examined slide54.xml connector shape 687 and its endpoint shape IDs 685/677 against the complete timeline. The repeated O-GEAR logo is one image reused in three placements.",
+  "originalSlideRenderSha256": {
+    "52": "0d4d92db0a4f1b8edc4cc96be57c727c25640b8ebe6f8ab849929018a67076ad",
+    "53": "91343ed249754fb66542b5cea78fb4d5a9577c118254cfc49fed258dabc0335c",
+    "54": "3f4bdc7cec38df1aed65b25d7f40b193d46f6176f3d259e3478317607fd004df"
+  },
+  "objects": [
+    {
+      "blockId": "slide-52-visual-23",
+      "proposedDecision": "evidence",
+      "evidenceText": "In the tutorial's 'In-vehicle Optical Components' panel, the 'Model link' image depicts a central in-vehicle optical network model with several linked peripheral modules.",
+      "reason": "The distinct topology model is visible, but individual module functions and link performance cannot be identified from the photo."
+    },
+    {
+      "blockId": "slide-52-visual-26",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 'POF' example photo on slide 52 shows a red-jacketed cable with its inner fiber protruding at the cut end.",
+      "reason": "The slide's native label ties this particular component photo to POF; no dimension or material certification is inferred."
+    },
+    {
+      "blockId": "slide-52-visual-27",
+      "proposedDecision": "evidence",
+      "evidenceText": "The component photo labeled 'Connector' on slide 52 shows a dark connector housing with two round openings and two colored leads.",
+      "reason": "The label and photo identify the depicted component type without implying its pinout or current qualification."
+    },
+    {
+      "blockId": "slide-52-visual-28",
+      "proposedDecision": "evidence",
+      "evidenceText": "The component photo labeled 'Header' on slide 52 shows a small metal-cased header with a dark rectangular socket.",
+      "reason": "The native label and photo identify the depicted component type, not a tested specification."
+    },
+    {
+      "blockId": "slide-53-visual-27",
+      "proposedDecision": "decoration",
+      "reason": "The O-GEAR logo decorates the slide heading; the project name and substantive program description are already native text."
+    },
+    {
+      "blockId": "slide-54-visual-13",
+      "proposedDecision": "evidence",
+      "evidenceText": "On the 2014 tutorial's projected in-vehicle Gigabit Ethernet schedule, a red dotted connector visually links the IEEE 802.3 '1 Gbps Ethernet Std.' milestone to the O-GEAR '1 Gbps Demonstration' and automotive development timeline near 2016–2017.",
+      "reason": "Native connector shape 687 links endpoint shapes 685 and 677 in slide54.xml; the full original slide supplies the timeline labels. This is the presentation's planned relationship, not proof those milestones occurred."
+    },
+    {
+      "blockId": "slide-54-visual-30",
+      "proposedDecision": "decoration",
+      "reason": "A reused O-GEAR logo appears at the upper-right of the schedule; it adds no timeline value beyond the native O-GEAR row label."
+    },
+    {
+      "blockId": "slide-54-visual-31",
+      "proposedDecision": "decoration",
+      "reason": "A second placement of the same O-GEAR logo decorates the support area of the schedule; milestone labels and arrows remain native slide content."
+    }
+  ],
+  "newlyReviewedObjects": 8,
+  "newProposedEvidence": 5,
+  "newProposedDecoration": 3,
+  "cumulativeReviewedObjects": 49,
+  "cumulativeProposedEvidence": 34,
+  "cumulativeProposedDecoration": 15,
+  "cumulativeProposedUnresolved": 0,
+  "remainingUnreviewedObjects": 80,
+  "productJudgmentsSavedForThisBatch": 0,
+  "qualityAccepted": false,
+  "goldCreated": 0,
+  "productionKnowledgeWrites": 0
+}
