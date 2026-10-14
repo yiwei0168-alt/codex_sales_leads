@@ -65,6 +65,7 @@ export async function verifyMa24WebCloneCompatibility(options: {
   mailboxBatchUi?: boolean;
   mailboxSyncUi?: boolean;
   mailboxReaderUi?: boolean;
+  attachmentUi?: boolean;
 }): Promise<unknown> {
   assert.equal(await readFile(resolve(oldRoot, ".next/BUILD_ID"), "utf8").then(value => value.trim()), oldBuild);
   const candidateBuild = (await readFile(resolve(candidateRoot, ".next/BUILD_ID"), "utf8")).trim();
@@ -150,6 +151,7 @@ export async function verifyMa24WebCloneCompatibility(options: {
       let mailboxBatchPage: unknown;
       let mailboxSyncPage: unknown;
       let mailboxReaderPage: unknown;
+      let attachmentPage: unknown;
       if (version.name === "candidate-web" && options.reviewUi) {
         const { verifyMa24ReviewPageClone } = await import("./verify-ma24-review-page-clone");
         try {
@@ -185,6 +187,10 @@ export async function verifyMa24WebCloneCompatibility(options: {
         const { verifyMa24MailboxReaderClone } = await import("./verify-ma24-mailbox-reader-clone");
         mailboxReaderPage = await verifyMa24MailboxReaderClone({ admin: options.admin, base, cookie, userId });
       }
+      if (version.name === "candidate-web" && options.attachmentUi) {
+        const { verifyMa24AttachmentSelectorClone } = await import("./verify-ma24-attachment-selector-clone");
+        attachmentPage = await verifyMa24AttachmentSelectorClone({ admin: options.admin, base, cookie, userId });
+      }
       results.push({ version: version.name, buildId: version.buildId, manifestStatus: manifest.status,
         anonymousUploadStatus: denied.status, syntheticLoginStatus: login.status,
         authenticatedUploadStatus: list.status, visibleUploadJobs: listed.jobs.length,
@@ -194,7 +200,8 @@ export async function verifyMa24WebCloneCompatibility(options: {
         ...(mailboxDrawerPage ? { mailboxDrawerPage } : {}),
         ...(mailboxBatchPage ? { mailboxBatchPage } : {}),
         ...(mailboxSyncPage ? { mailboxSyncPage } : {}),
-        ...(mailboxReaderPage ? { mailboxReaderPage } : {}) });
+        ...(mailboxReaderPage ? { mailboxReaderPage } : {}),
+        ...(attachmentPage ? { attachmentPage } : {}) });
     } finally {
       await stopOwnedServer(child);
     }

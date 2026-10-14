@@ -1,0 +1,24 @@
+{
+  "schema": "ma24-g13-f08-attachment-page-db-clone-v1",
+  "date": "2026-10-15",
+  "goal": "MA24 G13 F08",
+  "candidateBuildId": "CQhmxNBFyNrzmlD2t9hpT",
+  "oldWebBuildId": "QfoyXprIZIVgSWxFSZ-1K",
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-backup-restore.ts --web-compat --attachment-ui",
+  "environment": "Disposable restored local database with migrations 127-134 and source-equivalent application ACL only on the clone. Actual candidate Next page and knowledge library API, two synthetic accounts, thirteen synthetic registered private assets. Clone dropped after verification.",
+  "results": {
+    "realLibraryApi": "The owner received twelve items and hasMore=true on page one, then one item and hasMore=false on page two. A second authenticated account received zero matching private items.",
+    "actualPage": "At both 390x760 and 1366x900, a user opened New Conversation > Attachments, searched the unique fixture prefix, selected one item on each page, saw both exact titles in the selected list, removed the first item, closed with Escape and reopened to see the second title retained.",
+    "viewports": ["390x760", "1366x900"],
+    "horizontalOverflow": false,
+    "pageErrors": 0,
+    "oldWebSmoke": "Old Web and candidate Web both logged in with a synthetic account and read an empty upload-job list on the clone."
+  },
+  "checks": [
+    "npm run typecheck",
+    "npx eslint scripts/lib/verify-ma24-attachment-selector-clone.ts scripts/lib/verify-ma24-web-clone-compatibility.ts scripts/verify-ma24-backup-restore.ts",
+    "node scripts/run-tsx.cjs scripts/verify-ma24-backup-restore.ts --web-compat --attachment-ui"
+  ],
+  "externalEffects": { "uploads": 0, "taskSubmissions": 0, "modelCalls": 0, "productionDatabaseWrites": 0 },
+  "limits": "The fixture used registered metadata only. It does not prove real upload or extraction, attachment permission at task execution, failure/retry on the actual page, very long titles in a short viewport, production loading, or all G13 entries. The earlier isolated component test covers simulated 503 and retry only."
+}
