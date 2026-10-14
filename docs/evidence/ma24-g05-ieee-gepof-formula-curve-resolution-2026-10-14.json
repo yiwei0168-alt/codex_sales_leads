@@ -1,0 +1,37 @@
+{
+  "schema": "ma24-g05-ieee-gepof-formula-curve-resolution-v1",
+  "date": "2026-10-14",
+  "ruleId": "MA24-18",
+  "sourceSha256": "030a730584498f8b98109a1bf2da22a29cc443021c63fbd1c18cf2bad2da6910",
+  "extractionArtifactSha256": "035446eaf582572f1b5cb9c893f2604be23b74aafd1813adba54ee42e47fd107",
+  "candidatePackageSha256": "282813baaa002f9dbffecf462fbea48574def5280f1a220bb491053317810e86",
+  "previousReviews": ["ma24-g05-ieee-gepof-object-review-early-2026-10-14.json", "ma24-g05-ieee-gepof-slide16-chart-resolution-2026-10-14.json"],
+  "method": "Re-exported slides 11 and 12 at 3200x1800 from the same read-only original PowerPoint. Visually checked the complete formula and a rotated magnification of the attenuation y-axis against the original page. No OCR text was accepted without visual comparison; the slide 12 chart has no source data table for exact plotted points.",
+  "renderedSlidesSha256": {"11": "2277454b8767e0dd7304f4c18452d4dfd30eae33d6077adcf9da2703e6249b44", "12": "f1f257cc4b9109281c2a6d9603665e8f67c2a46cf7b1a47a0df7bd19eddd0024"},
+  "inspectionCropsSha256": {"slide11Formula": "5a285593367e4d9bd6b7be949b8dfc3e7baf7a553661a8bce742ce1c9ea61ff4", "slide12AxisUpright": "1693f9f84010497958b37028c8649ea4998d961e5968881d901004f975a0c3a3"},
+  "objects": [
+    {
+      "blockId": "slide-11-visual-8",
+      "sourceImageSha256": "7f1ad3cab60227d4ec8d1266e16b635fa05b77ea4fca27ff4cc1279c7efd3dd0",
+      "priorDecision": "unresolved",
+      "revisedProposal": "evidence",
+      "evidenceText": "The historical slide's displayed light-transmission equation is ∂P(θ,z,t,λ)/∂z = −α(θ,λ)P(θ,z,t,λ) − τ(θ,λ)∂P(θ,z,t,λ)/∂t + (1/θ)∂/∂θ[θD(θ,λ)∂P(θ,z,t,λ)/∂θ]. The slide labels the α term differential mode delay, the τ term relative mode delay and the D term mode mixing.",
+      "reason": "The formula was read from the original high-resolution rendering of the WMF shape, not reconstructed from incomplete OCR. This records the presentation's diagram and labels, not an independently validated physical model."
+    },
+    {
+      "blockId": "slide-12-visual-3-1",
+      "sourceImageSha256": "59ec2e5de86ec2c034cc7f013c54daae151c9e8e12980ec21472ac4103fadc6d",
+      "priorDecision": "unresolved",
+      "revisedProposal": "evidence",
+      "evidenceText": "The slide 12 'PMMA SI-POF characteristic attenuation' chart plots Light wavelength (nm), 400–700, against Attenuation (dBo/km), 0–600. The blue curve has a pronounced peak around 620 nm, falls around 650 nm and rises again toward 700 nm. Exact plotted samples are not tabulated.",
+      "reason": "The original full slide and upright axis magnification support the literal axis labels and qualitative curve description. The transparent candidate crop alone loses the black axes and titles. Approximate curve positions are not treated as precise measured values."
+    }
+  ],
+  "earlyBatchCurrentProposals": {"reviewed": 17, "evidence": 8, "decoration": 9, "unresolved": 0},
+  "remainingUnreviewedObjects": 112,
+  "productJudgmentsSaved": 0,
+  "qualityAccepted": false,
+  "goldCreated": 0,
+  "productionKnowledgeWrites": 0,
+  "remaining": "Continue original-slide review of the other 112 visual objects, then save verified product judgments in an isolated clone, complete whole-document review, register and read the original tree, and check citations for slides 5 and 22."
+}
