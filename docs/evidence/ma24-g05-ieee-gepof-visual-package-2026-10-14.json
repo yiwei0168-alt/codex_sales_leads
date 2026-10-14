@@ -1,0 +1,35 @@
+{
+  "schema": "ma24-g05-ieee-gepof-visual-package-v1",
+  "date": "2026-10-14",
+  "ruleId": "MA24-18",
+  "scope": "Offline visual-candidate preparation and identity check for the original IEEE 2014 GEPOF PPTX; no review verdict, registration, Gold or model call",
+  "source": "tmp/ma24-independent-quarantine/ieee-gepof-tutorial-v14.pptx",
+  "sourceSha256": "030a730584498f8b98109a1bf2da22a29cc443021c63fbd1c18cf2bad2da6910",
+  "extractionArtifact": "tmp/ma24-independent-quarantine/ieee-product-extraction.json",
+  "extractionArtifactSha256": "035446eaf582572f1b5cb9c893f2604be23b74aafd1813adba54ee42e47fd107",
+  "command": ".\\.venv-docling-v3\\Scripts\\python.exe scripts/prepare_pptx_visual_review.py --input tmp/ma24-independent-quarantine/ieee-gepof-tutorial-v14.pptx --artifact tmp/ma24-independent-quarantine/ieee-product-extraction.json --output tmp/ma24-independent-quarantine/ieee-gepof-visual-candidates --max-unique-images 100 --all-batches --checkpoint-dir tmp/ma24-independent-quarantine/ieee-gepof-visual-checkpoints",
+  "result": {"exitCode": 0, "reviewObjects": 129, "uniqueImagesProcessed": 114, "imageBatches": 2, "externalCalls": 0, "qualityAccepted": false, "extractionStatusChanged": false},
+  "package": {
+    "path": "tmp/ma24-independent-quarantine/ieee-gepof-visual-candidates/review.json",
+    "sha256": "282813baaa002f9dbffecf462fbea48574def5280f1a220bb491053317810e86",
+    "schema": "pptx-visual-review-candidates-v1",
+    "sourceHashMatches": true,
+    "artifactHashMatches": true,
+    "pendingBlockIds": 129,
+    "records": 129,
+    "uniqueBlockIds": 129,
+    "missingOrExtraBlockIds": 0,
+    "uniqueImageFiles": 114,
+    "mismatchedImageHashes": 0,
+    "ocrCandidateLines": 461
+  },
+  "targetSlides": {
+    "slide5": {"successfulTextBlocks": 3, "pendingVisualBlocks": 0, "targetBlockId": "slide-5-text-2"},
+    "slide22": {"successfulTextBlocks": 3, "pendingVisualBlocks": 0, "targetBlockId": "slide-22-text-2"}
+  },
+  "productJudgmentsSaved": 0,
+  "productionKnowledgeWrites": 0,
+  "goldCreated": 0,
+  "assessment": "The two citation examples have no pending objects on their own slides, but the product's whole-document review gate remains active because 129 objects elsewhere are unresolved. Candidate OCR and crops are review aids only; no product tree or user-visible citation acceptance is claimed.",
+  "next": "Perform substantive object review against the original slides, then complete isolated product registration and read the two target blocks with exact slide citations. Keep this tutorial outside independent answer-quality Gold."
+}
