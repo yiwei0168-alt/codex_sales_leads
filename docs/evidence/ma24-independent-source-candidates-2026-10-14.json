@@ -98,7 +98,7 @@
       "bytes": 13438668,
       "sha256": "030a730584498f8b98109a1bf2da22a29cc443021c63fbd1c18cf2bad2da6910",
       "integrity": "valid OOXML; 346 ZIP parts; 82 slides with text; no macro, external-link part or external relationship",
-      "status": "quarantined; user-confirmed MA24-18: PPTX read/citation acceptance only, excluded from independent answer-quality Gold and PPTX quality quota; 129-object visual package hash-checked, 70 original-slide proposals (48 evidence, 22 decoration) saved and read back only in a cleaned isolated product clone, 59 unreviewed; completion and registration rejected, no read/citation acceptance or production decisions"
+      "status": "quarantined; user-confirmed MA24-18: PPTX read/citation acceptance only, excluded from independent answer-quality Gold and PPTX quality quota; 129-object visual package hash-checked, 74 original-slide proposals (52 evidence, 22 decoration) saved and read back only in a cleaned isolated product clone, 55 unreviewed; completion and registration rejected, no read/citation acceptance or production decisions"
     },
     {
       "kind": "pptx",

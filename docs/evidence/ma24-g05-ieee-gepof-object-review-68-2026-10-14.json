@@ -1,0 +1,48 @@
+{
+  "schema": "ma24-gepof-original-slide-object-review-v1",
+  "date": "2026-10-14",
+  "ruleId": "MA24-18",
+  "sourceSha256": "030a730584498f8b98109a1bf2da22a29cc443021c63fbd1c18cf2bad2da6910",
+  "extractionArtifactSha256": "035446eaf582572f1b5cb9c893f2604be23b74aafd1813adba54ee42e47fd107",
+  "candidatePackageSha256": "282813baaa002f9dbffecf462fbea48574def5280f1a220bb491053317810e86",
+  "method": "Compared all four native connector records to the original PowerPoint-rendered slide 68 and their endpoint IDs in ppt/slides/slide68.xml; shape 13 is GEPOF, 14 is GEPOF+ GREEN and 16 is 10000 POF.",
+  "originalSlideRenderSha256": "578a20645058c6df78d05a43aea60cf1c0e33dfa5853992a2f25b7f1eb23f4c9",
+  "objects": [
+    {
+      "blockId": "slide-68-visual-2",
+      "proposedDecision": "evidence",
+      "evidenceText": "On the 2014 tutorial's conceptual 'Future of POF' plot, the horizontal SPEED axis points right; labeled positions range from 25 Mbps at the left through 1000 Mbps to 10000 Mbps at the right.",
+      "reason": "The native arrow defines the direction of the conceptual axis; positions are not a measured performance dataset."
+    },
+    {
+      "blockId": "slide-68-visual-3",
+      "proposedDecision": "evidence",
+      "evidenceText": "On the same conceptual plot, the vertical LENGTH axis points upward, with labels 15 m, 50 m and 100 m at increasing height.",
+      "reason": "The arrow defines axis direction; no additional limit or tested reach is inferred."
+    },
+    {
+      "blockId": "slide-68-visual-20",
+      "proposedDecision": "evidence",
+      "evidenceText": "A red curved arrow in the 2014 future-looking diagram leads from the GEPOF cloud toward a '10000 POF' cloud near the 10000 Mbps axis position.",
+      "reason": "Connector shape 28 attaches native shape 13 (GEPOF) to shape 16 (10000 POF); the arrow represents a proposed direction, not a later proven standard or deployment."
+    },
+    {
+      "blockId": "slide-68-visual-22",
+      "proposedDecision": "evidence",
+      "evidenceText": "A green upward arrow in the 2014 future-looking diagram leads from the GEPOF cloud toward 'GEPOF+ GREEN' beside the words 'GREEN Light source'.",
+      "reason": "Connector shape 31 attaches native shape 13 (GEPOF) to shape 14 (GEPOF+ GREEN); the slide presents a future concept rather than a verified performance result."
+    }
+  ],
+  "newlyReviewedObjects": 4,
+  "newProposedEvidence": 4,
+  "newProposedDecoration": 0,
+  "cumulativeReviewedObjects": 74,
+  "cumulativeProposedEvidence": 52,
+  "cumulativeProposedDecoration": 22,
+  "cumulativeProposedUnresolved": 0,
+  "remainingUnreviewedObjects": 55,
+  "productJudgmentsSavedForThisBatch": 0,
+  "qualityAccepted": false,
+  "goldCreated": 0,
+  "productionKnowledgeWrites": 0
+}
