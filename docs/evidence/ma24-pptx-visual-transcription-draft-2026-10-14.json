@@ -534,11 +534,51 @@
     },
     {
       "blockId": "slide-27-visual-4",
-      "status": "draft-limited",
-      "safeDescription": "Institutional matrix organized by stakeholder level, texts, tools, discussion forums, satellite life-cycle stage/actions and space-vision mission. Rows include intergovernmental, national/regional and cooperation among stakeholders.",
-      "blockedClaims": [
-        "The dense individual cell-to-row mapping needs a higher-resolution transcription before citation.",
-        "Do not treat left-to-right arrows as a formal legal approval sequence."
+      "status": "draft-structured",
+      "summary": "The diagram is a six-column institutional landscape. The printed intergovernmental level contains a UN/UNOOSA lane and a separate ITU-R lane; national or regional and stakeholder-cooperation levels follow below.",
+      "columns": ["Space Stakeholders", "Texts", "Tools", "Fora for Negotiation and Discussion", "Satellite Life Cycle Stage and Action", "Space Vision Mission"],
+      "lanes": [
+        {
+          "level": "At Intergovernmental Level — UN/UNOOSA lane",
+          "stakeholders": ["UNOOSA", "UNIDIR and UNODA", "Other UN entities: WMO, UNOSAT etc"],
+          "texts": ["Outer Space Treaties", "Long Term Sustainable Guidelines", "Recommendations, Resolutions, Norms", "Handbooks"],
+          "tools": ["The Register (Database of space objects)"],
+          "fora": ["COPUOS and sub Committees", "UN General Assembly", "Sessions of UN entities related to Space"],
+          "lifeCycle": ["International guiding principles to be considered during preparation and operation", "Registration of space objects at launch time", "Reuse Recycle Reduce principles throughout life cycle"],
+          "mission": ["Secured Space", "Safe Space", "Sustainable Space", "Peaceful uses of outer space"]
+        },
+        {
+          "level": "At Intergovernmental Level — ITU-R lane",
+          "stakeholders": ["ITU Radiocommunication Sector (ITU-R)"],
+          "texts": ["ITU Constitution and Convention", "Radio Regulations", "Rules of procedures", "Recommendations"],
+          "tools": ["ITU Master Register", "Table of frequency allocation"],
+          "fora": ["ITU-R meetings, Study Groups, World Radio Conferences"],
+          "lifeCycle": ["Procedure for Spectrum/orbit filing for an interference free operation"],
+          "mission": ["Coordinated Space", "Rational, efficient, economical, equitable use of Spectrum/orbit resources"]
+        },
+        {
+          "level": "At National Or Regional Level",
+          "stakeholders": ["State Agencies and Administrations", "Space Agencies", "Military Sector"],
+          "texts": ["National Law, National Acts", "Accords (Artemis Accords)", "Guidelines"],
+          "tools": ["Space Data Collection (NORAD N2YO)", "COSPAR id Register"],
+          "fora": ["Committee on Space Research COSPAR", "Inter Agencies Space Debris Coordination Committee IADC"],
+          "lifeCycle": ["Space Traffic Management", "Cleaning Space", "Debris Creation (Launcher, Anti-satellite weapons ASAT)"],
+          "mission": ["Enabling space exploration, science and commercial activities", "Protecting National Interests"]
+        },
+        {
+          "level": "Cooperation Inter Stakeholder",
+          "stakeholders": ["ISO", "Space Stakeholders Organisations", "Operators and Manufacturers", "Academia Research Centers", "Space NGOs"],
+          "texts": ["Standards", "Sharing practices", "Charts, Recommendations And other"],
+          "tools": ["Space Sustainability Rating (SSR)"],
+          "fora": ["Interagency Meetings", "Working Groups between Operators, Manufacturers", "Working Groups with researchers and academia"],
+          "lifeCycle": ["In Orbit Servicing", "End of life move to graveyard orbit", "Sustainable Technology in design and manufacturing", "Space Weather, Climate Monitoring"],
+          "mission": ["Reliable and economical sustainable Services for telecommunication, observation etc"]
+        }
+      ],
+      "limits": [
+        "This is a transcription of labels and their visual columns/lanes, not a validation of the organizations' legal roles or current rules.",
+        "Left-to-right arrows and vertical arrows are visual links; the image does not establish a formal legal approval sequence or precise dependency for every cell.",
+        "The small abbreviations beside Interagency Meetings and the researcher working group need human verification before exact quotation. Some other printed grammar is preserved as displayed."
       ],
       "slide": 27,
       "shapePath": [
@@ -580,9 +620,9 @@
   ],
   "draftItems": 19,
   "substantiveObjectsTotal": 19,
-  "substantiveObjectsStillWithoutStructuredDraft": 10,
+  "substantiveObjectsStillWithoutStructuredDraft": 9,
   "qualityAccepted": false,
   "productionJudgmentsWritten": 0,
-  "next": "All nineteen substantive drafts have a Codex second visual pass; three structured entries were corrected. Obtain any required independent reviewer decision. Seven objects retain only limited descriptions and three still lack citation-ready detail; resolve them against primary data or keep those claims excluded. Then write production review decisions and run the real upload/publication gate.",
-  "limitedOrBlockedItems": 10
+  "next": "Nine initial structured drafts and ten limited/blocked drafts received a Codex second visual pass. Slide 27 now has a new structured draft from the embedded image but needs an independent review; seven objects retain limited descriptions and two slide-29 objects remain without a labeled metric. Obtain reviewer decisions before production review and publication-gate testing.",
+  "limitedOrBlockedItems": 9
 }

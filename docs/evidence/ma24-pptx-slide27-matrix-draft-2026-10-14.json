@@ -1,0 +1,21 @@
+{
+  "schema": "ma24-pptx-slide27-matrix-draft-v1",
+  "date": "2026-10-14",
+  "sourceSha256": "2223cee26aced9a50d648d933c31b15f2f0659d0ebe30922fca5c31c1cc30465",
+  "blockId": "slide-27-visual-4",
+  "embeddedImage": "tmp/ma24-public-eval-candidates/visual-review/8296a9e2f5362d3b1e6282fec2d38be7e793e697eb9c0457d889b0bbb19554dd.png",
+  "objectImageSha256": "8296a9e2f5362d3b1e6282fec2d38be7e793e697eb9c0457d889b0bbb19554dd",
+  "transcription": "docs/evidence/ma24-pptx-visual-transcription-draft-2026-10-14.json",
+  "verifiedVisualStructure": {
+    "columns": 6,
+    "lanes": 4,
+    "intergovernmentalLanes": 2,
+    "otherLevels": ["At National Or Regional Level", "Cooperation Inter Stakeholder"]
+  },
+  "unverifiedSmallLabels": ["Abbreviation in the Interagency Meetings cell", "Parenthetical IAU-center wording in the researcher working-group cell"],
+  "prohibitedInferences": ["Arrows define a formal legal approval sequence", "Displayed institutional roles or rules are current"],
+  "independentReviewerAccepted": false,
+  "productionReviewWritten": false,
+  "documentPublished": false,
+  "remainingUnlabeledMetricObjects": ["slide-29-visual-6", "slide-29-visual-8"]
+}
