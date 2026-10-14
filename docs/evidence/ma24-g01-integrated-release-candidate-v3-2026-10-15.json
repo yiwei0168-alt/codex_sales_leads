@@ -1,0 +1,54 @@
+{
+  "schema": "ma24-g01-integrated-release-candidate-v3",
+  "checkedAt": "2026-10-14 16:47 UTC",
+  "scope": "Local committed-source build and read-only release preflight; no migration, service switch, business task, model call or rollback",
+  "candidate": {
+    "sourceCommit": "a75bafd8c0ffad5cd2067292ad9853dc466eba38",
+    "buildCommand": "npm run build",
+    "buildResult": "passed including TypeScript and 26 static pages",
+    "extractorVersion": "layout-v2.0.9",
+    "buildId": "eIvmmxRUHfVhWKs48wg29",
+    "buildManifestSha256": "074bafd056801c8e7c0eb667e32ebe1399748e93ffb3e39f5a3d1a8f6624f0c3",
+    "localSnapshot": ".next-releases/ma24-g01-a75bafd8",
+    "snapshotFiles": 1546,
+    "snapshotBytes": 286755262,
+    "snapshotBuildIdAndManifestMatch": true,
+    "snapshotGitIgnored": true,
+    "supersedesBuildId": "m7KFQXMQKtBL1X-v4EJoV"
+  },
+  "servicePointers": {
+    "webPort": 3018,
+    "oldBuildId": "QfoyXprIZIVgSWxFSZ-1K",
+    "oldBuildManifestHttpStatus": 200,
+    "candidateBuildManifestHttpStatus": 404,
+    "candidateLoaded": false
+  },
+  "migrationPreflight": {
+    "command": "npm run ma24:release-preflight",
+    "schemaState": "stage-absent",
+    "prerequisiteMarkers123To126Present": 9,
+    "targetMarkers127To134Present": 0,
+    "targetMigrationFileHashesUnchanged": true,
+    "priorBackupSha256": "17db517922f0ee8067391544418f0c8af9f77ee5f48203b938b7559ba528d428",
+    "priorBackupChecksumMatched": true,
+    "priorBackupAgeHours": 31.7,
+    "freshMigrationBackup": false,
+    "readyForRelease": false
+  },
+  "queueSnapshot": {
+    "command": "npm run ma24:audit-runtime-queues",
+    "checkedAt": "2026-10-14 16:47:19 UTC",
+    "sampledQueues": ["mainAgent", "leadWorkflow", "knowledgeUpload", "skillShadow", "mailboxSync"],
+    "queuedOrRunning": 0,
+    "expiredRunningLeases": 0,
+    "repeatAtSwitch": true
+  },
+  "releaseGatesRemaining": [
+    "Complete domain-specific natural quality and acceptance gates",
+    "Verify exact running service source, worker identities and runtime flags",
+    "Create and verify a fresh product backup immediately before migrations 127-134",
+    "Record migration ledger and switch-time queue and domain smoke results",
+    "Run authorized domain pilots, actual service rollback and data compatibility checks"
+  ],
+  "assessment": "The current committed source has a reproducible local build snapshot. The Web service remains on its old build; G01 is partial and G17/G18 are not proven."
+}
