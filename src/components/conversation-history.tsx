@@ -23,6 +23,7 @@ export function ConversationHistory({ activeId, refreshKey, onSelect, onNew }: {
   const [trace, setTrace] = useState<AssistantConversationSummary>();
   const menuRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
+  const deleteTriggerRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     if (!openMenu) return;
     function outside(event: PointerEvent) { if (!menuRef.current?.contains(event.target as Node) && !triggerRef.current?.contains(event.target as Node)) setOpenMenu(undefined); }
@@ -34,6 +35,7 @@ export function ConversationHistory({ activeId, refreshKey, onSelect, onNew }: {
   }, [openMenu]);
   function toggleMenu(id: string, trigger: HTMLButtonElement) {
     if (openMenu === id) { setOpenMenu(undefined); return; }
+    deleteTriggerRef.current = trigger;
     const rect = trigger.getBoundingClientRect(), width = 184, height = 144;
     setMenuPosition({top:rect.bottom + height + 6 > window.innerHeight ? Math.max(8,rect.top - height - 4) : rect.bottom + 4,
       left:Math.max(8,Math.min(rect.right - width,window.innerWidth - width - 8))});
@@ -72,6 +74,10 @@ export function ConversationHistory({ activeId, refreshKey, onSelect, onNew }: {
     } catch(reason) {setDeleteError(reason instanceof Error?reason.message:"连接中断，请刷新历史核实是否已删除后再重试");}
     finally {setDeleteBusy(false);}
   }
+  function closeDelete() {
+    setDeleting(undefined);
+    requestAnimationFrame(() => deleteTriggerRef.current?.isConnected && deleteTriggerRef.current.focus());
+  }
   return <section className="conversation-history" aria-label="对话历史">
     <div className="conversation-history-head"><strong>对话历史</strong></div>
     {error && <p role="status">{error}</p>}
@@ -92,11 +98,11 @@ export function ConversationHistory({ activeId, refreshKey, onSelect, onNew }: {
       <button type="button" role="menuitem" className="danger" onClick={() => {setDeleting(items.find(item => item.id === openMenu)!);setDeleteError("");setOpenMenu(undefined);}}>删除对话</button>
     </div>, document.body)}
     {trace && <ConversationTrace key={trace.id} conversationId={trace.id} title={trace.title} onClose={() => setTrace(undefined)}/>}
-    {deleting&&<WorkspaceDialog title="删除对话" busy={deleteBusy} onClose={()=>setDeleting(undefined)}>
+    {deleting&&<WorkspaceDialog title="删除对话" busy={deleteBusy} focusCloseButton={false} onClose={closeDelete}>
       <p>从历史中删除“<strong>{deleting.title}</strong>”？</p>
-      <p>对话将从历史列表移除，界面不提供撤销。已完成任务和必要审计记录会保留；进行中的任务不能删除。</p>
+      <p>对话将从历史列表移除，界面不提供撤销。已完成任务和必要审计记录会保留。进行中、等待确认或暂停的任务，以及已确认或执行中的操作，会阻止删除。</p>
       {deleteError&&<p className="workspace-error" role="alert">{deleteError}</p>}
-      <footer className="workspace-dialog-actions"><button className="secondary-button" disabled={deleteBusy} onClick={()=>setDeleting(undefined)}>取消</button><button className="primary-button destructive-button" disabled={deleteBusy} onClick={()=>void remove(deleting)}>{deleteBusy?"正在删除…":"删除对话"}</button></footer>
+      <footer className="workspace-dialog-actions"><button className="secondary-button" data-dialog-initial-focus disabled={deleteBusy} onClick={closeDelete}>取消</button><button className="primary-button destructive-button" disabled={deleteBusy} onClick={()=>void remove(deleting)}>{deleteBusy?"正在删除…":"删除对话"}</button></footer>
     </WorkspaceDialog>}
   </section>;
 }
