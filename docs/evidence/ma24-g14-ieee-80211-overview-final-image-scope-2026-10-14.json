@@ -1,0 +1,38 @@
+{
+  "schema": "ma24-g14-ieee-80211-overview-final-image-scope-v1",
+  "sourceSha256": "3ae95a7ecdadf8cca4127e239bfbd71c25aa08e354fd0ca94d078a3e0eb11e3d",
+  "candidatePackageSha256": "b80be978c3f3bac175ebebca5774c2bb03a710a73185cb0f2a5673b555ccb1c6",
+  "supersedesProposalFor": "slide-19-visual-3-1",
+  "sourceMetadataCheck": {
+    "slide12Notes": "The map shows the countries that have enabled or are considering enabling 6GHz operation for Wi-Fi services.",
+    "slide12OriginalSourceLink": "https://www.wi-fi.org/regulations-enabling-6-ghz-wi-fi",
+    "slide12SnapshotDateShown": "2025-01-06",
+    "slide12ImageAltText": "A map of the world; Description automatically generated",
+    "slide12ImageHyperlinks": 0,
+    "slide19ImageAltText": null,
+    "slide19ImageHyperlinks": 0
+  },
+  "objects": [
+    {
+      "blockId": "slide-19-visual-3-1",
+      "reviewImageSha256": "43d59a778f1279645c550d72e5d3875814357e08f26f1d4295bd2f1e1eeb73d6",
+      "proposedDecision": "evidence",
+      "evidenceText": "An image in the slide's AMP application collage shows a handset and nearby consumer tags with the caption 'Read range requirement: 5~10cm'. This is a presentation use-case illustration; the slide does not verify adoption as a normative 802.11bp requirement or measured product performance.",
+      "reason": "The complete caption and objects are legible in the embedded image and rendered slide 19. The numerical phrase is preserved with source context and an explicit non-normative limit; no external mirror is used as proof of provenance."
+    },
+    {
+      "blockId": "slide-12-visual-3",
+      "reviewImageSha256": "306095061de8adcf86d06d17865753e969d3021020f1ee233897de85ba7897da",
+      "proposedDecision": "unresolved",
+      "reason": "The original slide, legend, source link, dated snapshot and speaker notes explain the categories but provide no country-by-country text. Small borders and striped fills cannot be exhaustively assigned to countries with confidence. The map also cannot serve as current regulatory authority."
+    }
+  ],
+  "revisedCumulativeProposedEvidence": 16,
+  "revisedCumulativeProposedDecoration": 22,
+  "revisedCumulativeProposedUnresolved": 1,
+  "productJudgmentsSaved": 0,
+  "qualityAccepted": false,
+  "goldCreated": 0,
+  "productionKnowledgeWrites": 0,
+  "remaining": "Resolve or explicitly quarantine the dated country-status map through the established visual-review gate before whole-document registration. Proposed evidence remains offline and cannot be used as a saved review decision."
+}
