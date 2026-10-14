@@ -1,0 +1,44 @@
+{
+  "schema": "ma24-g14-ons-5g-denominator-draft-v1",
+  "date": "2026-10-15",
+  "sourceTitle": "5G outdoor geographic coverage, UK local areas, January 2026",
+  "sourceSha256": "b488e723e475ce022fdf3d35bc1ead4611e58dda9cbf96371a6e7485834a6238",
+  "sha256": "b488e723e475ce022fdf3d35bc1ead4611e58dda9cbf96371a6e7485834a6238",
+  "sourcePath": "tmp/ma24-independent-quarantine/ons-5g-coverage-2026.xlsx",
+  "sourceAttribution": "Office for National Statistics, 5G coverage, January 2026; underlying data: Ofcom, published 13 May 2026",
+  "workbookReadOnlyCheck": {
+    "sha256Recalculated": true,
+    "notesB4": "Percentage of geographic areas with 5G signal outdoors from at least one operator, threshold -110 dBm, as of January 2026",
+    "dataHeader": "'1'!A5:C5: Area code, Area name, 2026-01-01 (%)",
+    "highland": "'1'!A370:C370: S12000017, Highland, 35.2",
+    "allSheetsIndoorHouseholdPopulationTermHits": 0,
+    "sheetsScanned": ["Cover_sheet", "Table_of_contents", "Notes", "1"]
+  },
+  "draftQuestions": [
+    {
+      "id": "ons-5g-2026-highland-outdoor-denominator",
+      "status": "replacement draft for the earlier Highland-Scotland percentage-point question; not independent Gold",
+      "question": "ONS《5G coverage》2026 年 1 月工作簿中，Highland 的 35.20% 表示什么覆盖指标？这份工作簿能否给出 Highland 的住户室内 5G 覆盖率？请引用指标定义与原始单元格。",
+      "draftAnswer": "35.20% 是 Highland 地理面积中，室外达到至少一家运营商 5G 信号、阈值为 −110 dBm 的比例，时间为 2026 年 1 月。工作簿未提供住户室内覆盖率，不能由 35.20% 推得该比例。",
+      "sourceCoordinates": ["'Notes'!B4", "'1'!A5:C5", "'1'!A370:C370"]
+    }
+  ],
+  "developmentPatternDecision": "The earlier two-area percentage-point difference draft is superseded as a candidate, not deleted from history. This replacement tests the source-defined outdoor geographic-area denominator and a requested household-indoor value absent from this workbook; it does not ask for a two-area subtraction. It shares the Highland value and denominator topic with the earlier draft, so the two cannot count as independent questions.",
+  "oldQuestionScreen": {
+    "command": "node scripts/run-tsx.cjs scripts/screen-ma24-g14-question-overlap-local.ts docs/evidence/ma24-g14-ons-5g-denominator-draft-2026-10-15.json tmp/ma24-independent-quarantine/ons-5g-highland-denominator-neighbors.json",
+    "outputSha256": "0541804da675c561a32fbd9f079d015c88cc7b3bf2ede2eb18bbe9f9c1c1d1fc",
+    "inputReceiptSha256BeforeScreenAndStatusAppend": "2b439d734df9939699e20cf1d15bff40b80ae403bb7d350c00d191ba5a881e1b",
+    "screenBindingScope": "Source SHA, draft ID, question and draft answer are unchanged; this receipt subsequently appended the screen and clarified the status and cross-draft decision.",
+    "historicalRows": 350,
+    "uniqueHistoricalQueries": 300,
+    "maximumCosine": 0.513857,
+    "manualTopTen": "The first five nearest questions ask whether a 2.5G Ethernet port means 5G cellular. The rest concern PoE support, device deployment scenes and opening revised device material. None asks the Highland outdoor-geographic-area denominator or a missing household-indoor value.",
+    "semanticIndependenceProven": false,
+    "cloudCalls": 0
+  },
+  "limits": "Workbook-wide term absence is a bounded check, not proof that no conceivable proxy for household indoor coverage exists. BGE neighbors and manual review do not establish full development-exposure or source-family independence; set-level audit and user-visible answer quality remain pending.",
+  "independentGoldApproved": false,
+  "goldCreated": 0,
+  "modelAnswerCalls": 0,
+  "productionKnowledgeWrites": 0
+}
