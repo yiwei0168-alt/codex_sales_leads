@@ -2,6 +2,8 @@
 
 本台账按 [R0–R7 收尾计划](MA24_REMAINING_EXECUTION_PLAN_2026-10-13.md)跟踪原 G01–G20。状态区分工程、真实质量与生产运行；“部分”仅表示列出的范围有证据。历史完成结果见 [原计划](MA24_COMPLETION_GOAL_PLAN_2026-10-11.md)，本次只读运行盘点与构建见 [R0 收据](evidence/ma24-r0-runtime-build-2026-10-13.json)。
 
+2026-10-15 G06 修复后旧歧义题本机回归：当前标准模式候选臂以回环 `qwen3:8b` 执行，首个模型请求在固定 120 秒内未返回；图以 `partial / model-deadline` 停止，工具轨迹与业务派发均为 0。占位 ID 拦截没有被本轮模型触发，因而不能判澄清或安全质量；相同 CPU 本地配置不再重复试跑。[超时收据](evidence/ma24-g06-ambiguity-postfix-local-timeout-2026-10-15.json)。
+
 2026-10-15 G15 当前主图只读补验：提交 `29c76d8d` 的主 Agent 图以两次脚本决策驱动一次真实本地 `knowledge_search`，从 BGE-M3 返回 8 个授权块（3 个带 BGE 排名、0 个 Qwen 排名），完成 5 次来源回校，图状态 `completed`。没有回答模型、外部提供方或持久任务调用；开发问句不能证明独立题答案和精确引用质量，正式进程亦未加载候选。[主图收据](evidence/ma24-g15-bge-main-graph-readonly-2026-10-15.json)。
 
 2026-10-15 当前候选基线补验：提交 `a2d012db` 的产品源码完成完整构建，build `fcjc0FZo2wEPgTGkEyisG` 已保存本地快照并逐文件核对 1628 个文件的树指纹。一次性恢复库的迁移 127–134 可回滚并重新提交；当前候选页面上传并写入未解决审核记录后，旧 Web 在同一克隆仍可登录并列出该作业。正式 3018 仍为旧 build，正式迁移 0/7 标记、切换前新备份与分域质量门槛未满足；此为克隆兼容性，不是生产回滚。[基线收据](evidence/ma24-g01-g18-current-candidate-clone-rollback-2026-10-15.json)。
