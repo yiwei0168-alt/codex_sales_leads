@@ -65,6 +65,18 @@ export async function verifyMa24SkillReviewUiClone(input:{pool:Pool;owner:string
   await review.getByRole('button',{name:'打开验收'}).nth(await bundleIndex()).click();
   try{await expect(review.getByText('Synthetic original task',{exact:true})).toBeVisible({timeout:10000});}
   catch{throw new Error(`Expected synthetic review material unavailable: ${(await review.innerText()).slice(0,1100)}`);}
+  const selectedCase=await review.getByRole('navigation',{name:'验收题目'}).locator('select').inputValue();
+  const material=await page.evaluate(async ({bundleId,caseId})=>{
+   const response=await fetch(`/api/assistant/skills/acceptance-reviews?id=${encodeURIComponent(bundleId)}&caseId=${encodeURIComponent(caseId)}`,{cache:'no-store'});
+   if(!response.ok)throw new Error(`Skill review material HTTP ${response.status}`);
+   return response.json();
+  },{bundleId:input.bundleId,caseId:selectedCase}) as {receipts:unknown[]};
+  const rawReceipts=review.locator('.raw-json-details').filter({hasText:'完整证据记录与坐标'});
+  await expect(rawReceipts).not.toHaveAttribute('open');
+  await page.context().grantPermissions(['clipboard-read','clipboard-write'],{origin:base});
+  await rawReceipts.locator('summary').click();
+  await rawReceipts.getByRole('button',{name:'复制 JSON'}).click();
+  assert.deepEqual(JSON.parse(await page.evaluate(()=>navigator.clipboard.readText())),material.receipts);
   await expect(review.getByText('合成测试材料',{exact:false})).toBeVisible();
   await page.setViewportSize({width:390,height:800});
   const closeNavigation=page.getByRole('button',{name:'关闭导航菜单'}).first();
@@ -103,7 +115,7 @@ export async function verifyMa24SkillReviewUiClone(input:{pool:Pool;owner:string
    'select revision,judgment from agent_skill_acceptance_judgment where bundle_id=$1 and owner_id=$2 order by revision desc limit 1',[input.bundleId,input.owner])).rows[0];
   assert.equal(revoked.revision,2);assert.equal(revoked.judgment.revoked,true);
   assert.equal((await input.pool.query('select enabled from agent_skill where id=$1',[input.skillId])).rows[0].enabled,false);
-  return {candidateWebBuildId:buildId,syntheticBundle:true,pageOpened:true,materialFromDatabase:true,
+  return {candidateWebBuildId:buildId,syntheticBundle:true,pageOpened:true,materialFromDatabase:true,exactRawReceiptCopiedFromDatabase:true,
    savedHumanRouteRevision:1,refreshRestoredRevision:true,revokedRevision:2,skillRemainedDisabled:true,
    mobileNoHorizontalOverflow:true,modelCalls:0,productionChanged:false};
  }catch(error){

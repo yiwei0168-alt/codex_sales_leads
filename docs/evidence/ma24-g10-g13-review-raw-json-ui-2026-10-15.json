@@ -24,7 +24,21 @@
     "mobileScreenshotInspected": true,
     "pageErrors": 0
   },
-  "checks": ["npm run typecheck", "npx eslint src/components/agent-approvals.tsx src/components/skill-review-evidence.tsx scripts/verify-skill-acceptance-ui.ts", "npm run build", "git diff --check"],
+  "pageToDatabaseCheck": {
+    "command": "node scripts/run-tsx.cjs scripts/verify-recorded-model-source-clone.ts --skill-review-ui",
+    "environment": "Local ma11_replay clone, synthetic private account and actual candidate Next Web/API; synthetic records cleaned by verifier",
+    "candidateBuildId": "fcjc0FZo2wEPgTGkEyisG",
+    "actualApiMaterialRead": true,
+    "exactRawReceiptCopiedFromDatabase": true,
+    "savedHumanJudgmentRevision": 1,
+    "refreshRestoredRevision": true,
+    "revokedJudgmentRevision": 2,
+    "skillRemainedDisabled": true,
+    "mobileNoHorizontalOverflow": true,
+    "modelCalls": 0,
+    "productionChanged": false
+  },
+  "checks": ["npm run typecheck", "npx eslint src/components/agent-approvals.tsx src/components/skill-review-evidence.tsx scripts/verify-skill-acceptance-ui.ts scripts/lib/verify-ma24-skill-review-ui-clone.ts", "npm run build", "git diff --check"],
   "externalEffects": { "modelCalls": 0, "productionWrites": 0, "skillActivation": false },
-  "limits": "Synthetic API component browser check does not verify the actual Skill reviewer page-to-database route, natural judgment quality, non-mail approval page, production load or G09 automatic activation."
+  "limits": "Actual Skill reviewer page-to-database check still uses a synthetic account and evidence; it does not verify natural judgment quality, non-mail approval page, production load or G09 automatic activation."
 }
