@@ -10,6 +10,8 @@
 
 **现行本地候选。** 源码提交 `0d7d9c4c` 已重新完整构建，build ID `m7KFQXMQKtBL1X-v4EJoV`、内部 build manifest SHA-256 `b785ae906a1305fe7850ee3a4829a8b26c2a5031c70911e0de2a6b82b07afe59`，本地忽略目录 `.next-releases/ma24-g01-0d7d9c4c` 保存 1538 文件、281328466 字节并复核 ID/哈希。该构建包含 `layout-v2.0.8`；3018 的旧 Web manifest 仍为 200，新候选为 404。产品库迁移与备份门槛未变，见[新候选收据](evidence/ma24-g01-integrated-release-candidate-v2-2026-10-14.json)。旧候选仅保留历史回切/比对记录，不再代表当前源码。
 
+**2026-10-15 源码变更。** G05 的成功块排除路径和 `layout-v2.0.9` 不可见 PDF 文字待审门槛已在上述 `0d7d9c4c` 构建之后提交；因此该构建仍可追溯，但不能作为这些变更的发布包或运行证据。新候选须重新构建、固定哈希，并按资料审核路径复验。[局部抽取收据](evidence/ma24-g05-invisible-pdf-text-gate-2026-10-15.json)。
+
 | 功能域 | 候选需要一起核对的运行单元 | 数据库与本地依赖 | 当前缺口及回滚入口 |
 | --- | --- | --- | --- |
 | G02–G04 来源撤销、自然记忆与图谱 | LangGraph、主 worker；自然抽取还需本地记忆 worker，投影还需图谱 worker | 既有 109–113 阶段、Ollama、Neo4j/Graphiti；本地两个开关须经质量验收才启用 | 当前仅旧 Graph/主 worker 在跑；本地记忆和投影 worker 未跑。服务回滚版本分别为 `44e8608c`、`1d1cc962`；自然样本和连续链路尚未通过 |
