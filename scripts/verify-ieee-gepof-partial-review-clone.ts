@@ -31,6 +31,8 @@ const names = [
   "ma24-g05-ieee-gepof-object-review-34-43-2026-10-14.json",
   "ma24-g05-ieee-gepof-object-review-45-49-2026-10-14.json",
   "ma24-g05-ieee-gepof-object-review-52-54-2026-10-14.json",
+  "ma24-g05-ieee-gepof-object-review-58-60-2026-10-14.json",
+  "ma24-g05-ieee-gepof-object-review-62-64-2026-10-14.json",
 ];
 type Decision = "evidence" | "decoration" | "unresolved";
 type Proposed = { blockId: string; proposedDecision: Decision; evidenceText?: string; reason: string };
@@ -74,7 +76,7 @@ for (const review of reviews.slice(5)) for (const item of review.objects as Prop
   assert(!proposals.has(item.blockId));
   proposals.set(item.blockId, item);
 }
-assert.equal(proposals.size, 49);
+assert.equal(proposals.size, 70);
 const candidateIds = new Set(candidate.records.map(record => record.blockId));
 assert.equal(candidateIds.size, 129);
 for (const item of proposals.values()) {
@@ -84,7 +86,7 @@ for (const item of proposals.values()) {
 }
 assert.deepEqual(Object.fromEntries(["evidence", "decoration", "unresolved"].map(decision =>
   [decision, [...proposals.values()].filter(item => item.proposedDecision === decision).length])),
-{ evidence: 34, decoration: 15, unresolved: 0 });
+{ evidence: 48, decoration: 22, unresolved: 0 });
 
 const pool = new Pool({ connectionString: url.toString() });
 const owner = randomUUID();
@@ -166,7 +168,7 @@ try {
       evidenceText: proposal.proposedDecision === "evidence" ? proposal.evidenceText : "", note: proposal.reason });
   }
   const reviewed = await getExtractionReview(owner, job.id);
-  assert.equal(reviewed.resolved, 49);
+  assert.equal(reviewed.resolved, 70);
   let saved = 0;
   for (let offset = 0; offset < reviewed.total; offset += 20) {
     const page = await getExtractionReview(owner, job.id, offset);
@@ -179,10 +181,10 @@ try {
       saved++;
     }
   }
-  assert.equal(saved, 49);
+  assert.equal(saved, 70);
   const rows = await pool.query<{ decision: string; count: number }>(
     "select decision,count(*)::int count from knowledge_upload_extraction_review where owner_id=$1 and job_id=$2 group by decision", [owner, job.id]);
-  assert.deepEqual(Object.fromEntries(rows.rows.map(row => [row.decision, row.count])), { evidence: 34, decoration: 15 });
+  assert.deepEqual(Object.fromEntries(rows.rows.map(row => [row.decision, row.count])), { evidence: 48, decoration: 22 });
   await assert.rejects(() => completeExtractionReview(owner, job.id, reviewed.artifactSha256, reviewed.decisionSha256), /未解决/);
   await assert.rejects(() => registerVectorlessUpload(owner, job.id, { language: "en", authorityLevel: 2 }), /Unresolved extraction/);
   const after = await pool.query<{ reviews: number; completions: number; documents: number; status: string; error_code: string }>(`
@@ -190,10 +192,10 @@ try {
       (select count(*)::int from knowledge_upload_review_completion where owner_id=$1 and job_id=$2) completions,
       (select count(*)::int from knowledge_document where owner_id=$1) documents,
       status,error_code from knowledge_upload_job where id=$2`, [owner, job.id]);
-  assert.deepEqual(after.rows[0], { reviews: 49, completions: 0, documents: 0, status: "extracted", error_code: "extraction-review-required" });
+  assert.deepEqual(after.rows[0], { reviews: 70, completions: 0, documents: 0, status: "extracted", error_code: "extraction-review-required" });
   console.log(JSON.stringify({ cloneOnly: true, sourceSha256: first.sourceSha256, artifactSha256: first.artifactSha256,
     artifactParity, reviewTotal: first.total, reviewSavedAndReadBack: saved, reviewResolved: reviewed.resolved,
-    remainingUnreviewed: 80, decisions: { evidence: 34, decoration: 15 },
+    remainingUnreviewed: 59, decisions: { evidence: 48, decoration: 22 },
     completionRejected: true, registrationRejected: true, completionReceipts: 0, documents: 0,
     externalCalls: 0, modelCalls: 0, qualityAccepted: false }));
 } finally {

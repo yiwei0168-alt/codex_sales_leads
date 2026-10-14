@@ -1,0 +1,75 @@
+{
+  "schema": "ma24-gepof-original-slide-object-review-v1",
+  "date": "2026-10-14",
+  "ruleId": "MA24-18",
+  "sourceSha256": "030a730584498f8b98109a1bf2da22a29cc443021c63fbd1c18cf2bad2da6910",
+  "extractionArtifactSha256": "035446eaf582572f1b5cb9c893f2604be23b74aafd1813adba54ee42e47fd107",
+  "candidatePackageSha256": "282813baaa002f9dbffecf462fbea48574def5280f1a220bb491053317810e86",
+  "method": "Compared eight hash-matched candidate images to original PowerPoint-rendered slides. Slide 64 is recorded as a six-photo sequence paired with its native captions, not a validated installation procedure.",
+  "originalSlideRenderSha256": {
+    "62": "3091276d0aca32b01680e8cf142b3681d27e7c247ed830d0da4e900a5c24493f",
+    "63": "d97e90fcd8f7b71db0791c5020ace050e5f3e7391bc0bf9acacd56ab04bb664a",
+    "64": "1b02d490a220f3093a8f488cdaf853fa40b76b80b0f20043f0cbde0bb07eae96"
+  },
+  "objects": [
+    {
+      "blockId": "slide-62-visual-4",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 tutorial's mechanical-characteristics diagram depicts two opposing fiber ends, with an axial movement arrow along their length and a radial movement arrow across the fiber diameter. The adjacent text discusses displacement from shock, vibration and temperature.",
+      "reason": "Original diagram and slide labels establish the movement directions; the drawing gives no measured displacement or test result."
+    },
+    {
+      "blockId": "slide-63-visual-4-2",
+      "proposedDecision": "decoration",
+      "reason": "An automotive assembly robot-cell photograph illustrates the slide's native robot-cell requirements but contains no independently readable cable length, EMC value or POF durability result."
+    },
+    {
+      "blockId": "slide-64-visual-3",
+      "proposedDecision": "evidence",
+      "evidenceText": "The first photo on slide 64 depicts a hand holding a partly stripped optical cable; the paired native caption says 'Remove cable coating' and 'Pulling boot over wire'.",
+      "reason": "Records the historical tutorial's photo/caption pairing without turning it into a current installation instruction."
+    },
+    {
+      "blockId": "slide-64-visual-4",
+      "proposedDecision": "evidence",
+      "evidenceText": "The second photo on slide 64 depicts a handheld cutting tool at a fiber end; the paired caption says 'Cut the fiber'.",
+      "reason": "The action is visible in the original photo, but the slide does not establish tool model or cutting tolerance."
+    },
+    {
+      "blockId": "slide-64-visual-5",
+      "proposedDecision": "evidence",
+      "evidenceText": "The third photo on slide 64 depicts a handheld tool gripping cable material; the paired caption says 'Remove isolation'.",
+      "reason": "Records the image with its source wording rather than supplying an unshown stripping method."
+    },
+    {
+      "blockId": "slide-64-visual-9",
+      "proposedDecision": "evidence",
+      "evidenceText": "The fourth photo on slide 64 depicts a connector piece held in a handheld tool; the paired caption says 'Fix connector in the intake'.",
+      "reason": "The caption supplies the step name; the image does not prove a universal connector mechanism."
+    },
+    {
+      "blockId": "slide-64-visual-10",
+      "proposedDecision": "evidence",
+      "evidenceText": "The fifth photo on slide 64 depicts a hand working on a cable and connector in the tool; the paired caption says 'Put wires in the boot' and 'Tighten the screws'.",
+      "reason": "Records only the tutorial's illustrated sequence; no torque or safety specification is shown."
+    },
+    {
+      "blockId": "slide-64-visual-11",
+      "proposedDecision": "evidence",
+      "evidenceText": "The final photo on slide 64 shows a hand holding a terminated cable end beside the slide's 'Done!' label.",
+      "reason": "The completed appearance is visible, but the picture itself is not attenuation or reliability test evidence."
+    }
+  ],
+  "newlyReviewedObjects": 8,
+  "newProposedEvidence": 7,
+  "newProposedDecoration": 1,
+  "cumulativeReviewedObjects": 70,
+  "cumulativeProposedEvidence": 48,
+  "cumulativeProposedDecoration": 22,
+  "cumulativeProposedUnresolved": 0,
+  "remainingUnreviewedObjects": 59,
+  "productJudgmentsSavedForThisBatch": 0,
+  "qualityAccepted": false,
+  "goldCreated": 0,
+  "productionKnowledgeWrites": 0
+}

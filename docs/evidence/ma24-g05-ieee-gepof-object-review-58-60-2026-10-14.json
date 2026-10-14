@@ -1,0 +1,100 @@
+{
+  "schema": "ma24-gepof-original-slide-object-review-v1",
+  "date": "2026-10-14",
+  "ruleId": "MA24-18",
+  "sourceSha256": "030a730584498f8b98109a1bf2da22a29cc443021c63fbd1c18cf2bad2da6910",
+  "extractionArtifactSha256": "035446eaf582572f1b5cb9c893f2604be23b74aafd1813adba54ee42e47fd107",
+  "candidatePackageSha256": "282813baaa002f9dbffecf462fbea48574def5280f1a220bb491053317810e86",
+  "method": "Compared all 13 hash-matched candidate images with original PowerPoint-rendered slides. Protocol-logo labels were read directly from crops and located in their fieldbus or industrial-Ethernet row on the original slide; logo placement is not proof of a particular protocol's POF implementation.",
+  "originalSlideRenderSha256": {
+    "58": "15b349a4ac19609823f19aae73451b3c4991a7d2f910e62b4e0022dfb15d9611",
+    "59": "a4c1081d1a3a28738646f41645aa5f6de64a58c8a464a1bacc3b05224adbf186",
+    "60": "2ad978e8eca31792b1b81948c6d117f0ec8e7afaa85e5497038849565a2da960"
+  },
+  "objects": [
+    {
+      "blockId": "slide-58-visual-5",
+      "proposedDecision": "decoration",
+      "reason": "Nested-circle graphic illustrates relative fiber-core sizes; the adjacent native table already names POF, PCF, GOF-MM and GOF-SM and gives the numeric core diameters. Circle areas should not be measured as data."
+    },
+    {
+      "blockId": "slide-59-visual-29",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 tutorial lists the PROFIBUS logo in the 'Fieldbus e.g.' row of its industrial automation evolution slide.",
+      "reason": "The protocol name appears in an image rather than native slide text; this records slide placement only, not a verified POF deployment."
+    },
+    {
+      "blockId": "slide-59-visual-30",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 tutorial lists the INTERBUS logo in the 'Fieldbus e.g.' row of its industrial automation evolution slide.",
+      "reason": "The protocol name appears in an image rather than native slide text; no POF compatibility claim is inferred."
+    },
+    {
+      "blockId": "slide-59-visual-31",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 tutorial lists the 'sercos the automation bus' logo in the 'Fieldbus e.g.' row of its industrial automation evolution slide.",
+      "reason": "The logo text and row location are visible; it does not independently establish the network medium."
+    },
+    {
+      "blockId": "slide-59-visual-32",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 tutorial lists a Modbus logo in the 'Industrial Ethernet e.g.' row of its industrial automation evolution slide.",
+      "reason": "The image gives a protocol name and row placement only; no specific Modbus variant or POF implementation is inferred."
+    },
+    {
+      "blockId": "slide-59-visual-33",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 tutorial lists a PROFINET Industrial Ethernet logo in the 'Industrial Ethernet e.g.' row of its industrial automation evolution slide.",
+      "reason": "The logo text is legible in the original image; row placement is not proof of a deployed POF link."
+    },
+    {
+      "blockId": "slide-59-visual-34",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 tutorial lists an EtherNet/IP logo in the 'Industrial Ethernet e.g.' row of its industrial automation evolution slide.",
+      "reason": "The logo text is legible; no implementation or current capability is inferred."
+    },
+    {
+      "blockId": "slide-59-visual-35",
+      "proposedDecision": "evidence",
+      "evidenceText": "The 2014 tutorial lists an EtherCAT logo in the 'Industrial Ethernet e.g.' row of its industrial automation evolution slide.",
+      "reason": "The logo text is legible; no implementation or current capability is inferred."
+    },
+    {
+      "blockId": "slide-60-visual-3",
+      "proposedDecision": "decoration",
+      "reason": "Automotive assembly-robot photo illustrates the native heavy-industrial/MICE discussion but supplies no independent environment rating or POF measurement."
+    },
+    {
+      "blockId": "slide-60-visual-4",
+      "proposedDecision": "decoration",
+      "reason": "Large excavation-machine photo illustrates a harsh industrial setting without a readable environment rating or cable specification."
+    },
+    {
+      "blockId": "slide-60-visual-10",
+      "proposedDecision": "decoration",
+      "reason": "Industrial-facility photo illustrates the adjacent heavy-industrial heading and adds no independent MICE category value."
+    },
+    {
+      "blockId": "slide-60-visual-11",
+      "proposedDecision": "decoration",
+      "reason": "Machinery cable-carrier photo illustrates an industrial installation but gives no independently readable motion-cycle or protection rating."
+    },
+    {
+      "blockId": "slide-60-visual-12",
+      "proposedDecision": "decoration",
+      "reason": "Office desk photo illustrates the native 'commercial' environment heading without a technical property or measured value."
+    }
+  ],
+  "newlyReviewedObjects": 13,
+  "newProposedEvidence": 7,
+  "newProposedDecoration": 6,
+  "cumulativeReviewedObjects": 62,
+  "cumulativeProposedEvidence": 41,
+  "cumulativeProposedDecoration": 21,
+  "cumulativeProposedUnresolved": 0,
+  "remainingUnreviewedObjects": 67,
+  "productJudgmentsSavedForThisBatch": 0,
+  "qualityAccepted": false,
+  "goldCreated": 0,
+  "productionKnowledgeWrites": 0
+}
