@@ -1,0 +1,41 @@
+{
+  "schema": "ma24-g14-ieee-overview-review-clone-v1",
+  "scope": "local-replay-clone-only",
+  "sourceSha256": "3ae95a7ecdadf8cca4127e239bfbd71c25aa08e354fd0ca94d078a3e0eb11e3d",
+  "offlineCandidatePackageSha256": "b80be978c3f3bac175ebebca5774c2bb03a710a73185cb0f2a5673b555ccb1c6",
+  "offlineExtractionArtifactSha256": "970674e5bb24e1ab73e2431c62d84ba7942aaf2860b9ffb8f9ad916e355f66ee",
+  "cloneExtractionArtifactSha256": "4aa95461984b29a16156def98e0e70d5b71fabe86319788bc83851a6cad4413c",
+  "artifactDifference": "The only differing top-level field was documents; the only differing field in the one document was storageKey generated for the synthetic upload. Both artifacts used layout-v2.0.6 and their 268 blocks had identical serialized SHA-256 8b719c2e720f6a6bdca13d7124e93946efbff9e15c2216614be8a38af15821d4.",
+  "reviewInputs": [
+    "ma24-g14-ieee-80211-overview-object-review-2026-10-14.json",
+    "ma24-g14-ieee-80211-overview-object-review-completion-2026-10-14.json",
+    "ma24-g14-ieee-80211-overview-connector-resolution-2026-10-14.json",
+    "ma24-g14-ieee-80211-overview-final-image-scope-2026-10-14.json"
+  ],
+  "reviewBlockIdentity": "All 39 pending block IDs matched the offline candidate package, with the same order and no duplicates.",
+  "cloneReviewRowsSaved": 39,
+  "cloneReviewResolved": 38,
+  "cloneDecisions": {
+    "evidence": 16,
+    "decoration": 22,
+    "unresolved": 1
+  },
+  "unresolvedBlockId": "slide-12-visual-3",
+  "completionRejected": true,
+  "registrationRejected": true,
+  "completionReceipts": 0,
+  "publishedDocuments": 0,
+  "syntheticUsersJobsAndReviewsAfterCleanup": 0,
+  "externalCalls": 0,
+  "modelCalls": 0,
+  "productionReviewDecisionsSaved": 0,
+  "productionKnowledgeWrites": 0,
+  "goldCreated": 0,
+  "qualityAccepted": false,
+  "checks": [
+    "npx eslint scripts/verify-ieee-overview-review-clone.ts",
+    "npm run typecheck",
+    "node scripts/run-tsx.cjs scripts/verify-ieee-overview-review-clone.ts"
+  ],
+  "remaining": "Resolve or quarantine the dated country-status map under the product review protocol, complete source independence and Gold checks, then run real product reading and citation acceptance. Clone decisions are test records and were deleted."
+}
