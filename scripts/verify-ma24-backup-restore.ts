@@ -37,6 +37,7 @@ const migrationFiles = [
   "129_upload_visual_queue.sql", "130_skill_acceptance_evidence.sql",
   "131_skill_model_attempt_journal.sql", "132_skill_bundle_collector.sql",
   "133_skill_acceptance_freeze.sql", "134_skill_model_freeze_binding.sql",
+  "135_skill_freeze_current_version.sql",
 ];
 const markers = async () => (await clone.query(`select
   to_regclass('public.knowledge_upload_extraction_review') is not null as extraction_review,
@@ -45,7 +46,11 @@ const markers = async () => (await clone.query(`select
   to_regclass('public.agent_skill_model_attempt') is not null as model_attempt,
   to_regclass('public.agent_skill_acceptance_freeze') is not null as acceptance_freeze,
   exists(select 1 from information_schema.columns where table_schema='public' and table_name='knowledge_upload_job' and column_name='visual_retry_at') as visual_retry,
-  exists(select 1 from information_schema.columns where table_schema='public' and table_name='agent_skill_model_attempt' and column_name='freeze_id') as model_freeze_binding`)).rows[0] as Record<string, boolean>;
+  exists(select 1 from information_schema.columns where table_schema='public' and table_name='agent_skill_model_attempt' and column_name='freeze_id') as model_freeze_binding,
+  case when to_regrole('network_copilot_skill_collector') is null then false else
+    has_table_privilege('network_copilot_skill_collector','public.agent_skill','SELECT') and
+    has_table_privilege('network_copilot_skill_collector','public.agent_skill_version','SELECT') and
+    has_table_privilege('network_copilot_skill_collector','public.agent_run_skill','SELECT') end as skill_freeze_reader`)).rows[0] as Record<string, boolean>;
 const apply = async () => {
   for (const name of migrationFiles) await clone.query(await readFile(`db/migrations/${name}`, "utf8"));
 };
@@ -209,7 +214,7 @@ try {
       nonMailApprovalRawJsonUi: process.argv.includes("--non-mail-approval-raw-json-ui") });
   }
   console.log(JSON.stringify({ archive: newest, archiveSha256: manifest.sha256, restored: true,
-    migrationRange: "127-134", rollbackVerified: true, committedOnDisposableClone: true,
+    migrationRange: "127-135", rollbackVerified: true, committedOnDisposableClone: true,
     before, after, access, productionChanged: false, fullIntegrityRestore: true,
     skippedConstraints: [], ...(webCompatibility ? { webCompatibility } : {}) }));
 } finally {

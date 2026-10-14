@@ -23,6 +23,7 @@ const migrationNames = [
   "129_upload_visual_queue.sql", "130_skill_acceptance_evidence.sql",
   "131_skill_model_attempt_journal.sql", "132_skill_bundle_collector.sql",
   "133_skill_acceptance_freeze.sql", "134_skill_model_freeze_binding.sql",
+  "135_skill_freeze_current_version.sql",
 ];
 const sha256 = async (path: string) => {
   const digest = createHash("sha256");
@@ -72,7 +73,11 @@ try {
     to_regclass('public.agent_skill_model_attempt') is not null as model_attempt,
     to_regclass('public.agent_skill_acceptance_freeze') is not null as acceptance_freeze,
     exists(select 1 from information_schema.columns where table_schema='public' and table_name='knowledge_upload_job' and column_name='visual_retry_at') as visual_retry,
-    exists(select 1 from information_schema.columns where table_schema='public' and table_name='agent_skill_model_attempt' and column_name='freeze_id') as model_freeze_binding`);
+    exists(select 1 from information_schema.columns where table_schema='public' and table_name='agent_skill_model_attempt' and column_name='freeze_id') as model_freeze_binding,
+    case when to_regrole('network_copilot_skill_collector') is null then false else
+      has_table_privilege('network_copilot_skill_collector','public.agent_skill','SELECT') and
+      has_table_privilege('network_copilot_skill_collector','public.agent_skill_version','SELECT') and
+      has_table_privilege('network_copilot_skill_collector','public.agent_run_skill','SELECT') end as skill_freeze_reader`);
   const markers = result.rows[0];
   const values = Object.values(markers);
   const schemaState = values.every(Boolean) ? "stage-present" : values.every(value => !value) ? "stage-absent" : "partial-stage";
@@ -85,7 +90,7 @@ try {
     remaining: ["Create a fresh backup immediately before migration", "Bind an integrated source/service release and rollback package", "Verify runtime and queues again"],
   }));
   assert(Object.values(prerequisiteMarkers).every(Boolean), "One or more 123-126 prerequisite markers are absent");
-  assert.notEqual(schemaState, "partial-stage", "Partial 127-134 stage needs manual reconciliation");
+  assert.notEqual(schemaState, "partial-stage", "Partial 127-135 stage needs manual reconciliation");
 } finally {
   await client.end();
 }

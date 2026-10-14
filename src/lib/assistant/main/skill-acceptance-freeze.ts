@@ -5,6 +5,7 @@ import {digest} from './contracts';
 import {skillAcceptancePlanSchema} from './skill-acceptance-policy';
 import {assertSkillCollector,type SkillCollectorTransaction} from './skill-model-journal';
 import {assertLocalAnalysisBoundary} from './local-analysis-boundary';
+import {instructionOnlySkill} from './skills';
 
 const draftSchema=skillAcceptancePlanSchema.omit({frozenAt:true});
 export async function freezeSkillAcceptancePlan(context:{userId:string},input:unknown,transaction:SkillCollectorTransaction){
@@ -12,6 +13,15 @@ export async function freezeSkillAcceptancePlan(context:{userId:string},input:un
  if(draft.pin.ownerId!==context.userId||new Set(draft.cases.map(row=>row.id)).size!==draft.cases.length)throw new Error('Freeze owner or case binding invalid');
  return transaction(context.userId,async client=>{
   await assertSkillCollector(client);
+  const skill=(await client.query<{current_version:number;scope:string;enabled:boolean;files:unknown;content_hash:string;source:string;validation:unknown;dependencies:unknown}>(
+   `select s.current_version,s.scope,s.enabled,v.files,v.content_hash,v.source,v.validation,v.dependencies
+    from agent_skill s join agent_skill_version v on v.skill_id=s.id and v.version=$3
+    where s.id=$1 and s.owner_id=$2`,[draft.pin.skillId,context.userId,draft.pin.version])).rows[0];
+  if(!skill||skill.scope!=='account'||skill.enabled||skill.current_version!==draft.pin.version
+   ||skill.content_hash!==draft.pin.contentHash||digest(skill.files)!==draft.pin.contentHash
+   ||digest({source:skill.source,validation:skill.validation,dependencies:skill.dependencies})!==draft.pin.sourceHash
+   ||!instructionOnlySkill(skill.files)||!Array.isArray(skill.dependencies)||skill.dependencies.length)
+   throw new Error('Freeze Skill version or source changed');
   const row=(await client.query<{id:string;frozen_at:Date}>(`insert into agent_skill_acceptance_freeze(owner_id,skill_id,version,plan_draft,draft_hash)
    values($1,$2,$3,$4,$5) returning id,frozen_at`,[context.userId,draft.pin.skillId,draft.pin.version,JSON.stringify(draft),digest(draft)])).rows[0];
   const plan=skillAcceptancePlanSchema.parse({...draft,frozenAt:row.frozen_at.toISOString()});

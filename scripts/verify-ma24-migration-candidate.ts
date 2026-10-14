@@ -21,7 +21,11 @@ const markers = async () => {
     to_regclass('public.agent_skill_model_attempt') is not null as model_attempt,
     to_regclass('public.agent_skill_acceptance_freeze') is not null as acceptance_freeze,
     exists(select 1 from information_schema.columns where table_schema='public' and table_name='knowledge_upload_job' and column_name='visual_retry_at') as visual_retry,
-    exists(select 1 from information_schema.columns where table_schema='public' and table_name='agent_skill_model_attempt' and column_name='freeze_id') as model_freeze_binding`);
+    exists(select 1 from information_schema.columns where table_schema='public' and table_name='agent_skill_model_attempt' and column_name='freeze_id') as model_freeze_binding,
+    case when to_regrole('network_copilot_skill_collector') is null then false else
+      has_table_privilege('network_copilot_skill_collector','public.agent_skill','SELECT') and
+      has_table_privilege('network_copilot_skill_collector','public.agent_skill_version','SELECT') and
+      has_table_privilege('network_copilot_skill_collector','public.agent_run_skill','SELECT') end as skill_freeze_reader`);
   return result.rows[0] as Record<string, boolean>;
 };
 
@@ -41,6 +45,7 @@ try {
     "132_skill_bundle_collector.sql",
     "133_skill_acceptance_freeze.sql",
     "134_skill_model_freeze_binding.sql",
+    "135_skill_freeze_current_version.sql",
   ]) {
     await client.query(await readFile(`db/migrations/${file}`, "utf8"));
     applied.push(file);
