@@ -1,0 +1,60 @@
+{
+  "schema": "ma24-g14-open-license-pptx-candidate-v1",
+  "date": "2026-10-15",
+  "status": "source-checked draft for future set freeze; not Gold",
+  "source": {
+    "publisher": "ZBW Open Economics Guide",
+    "publisherPage": "https://openeconomics.zbw.eu/en/teaching/",
+    "repositoryRecord": "https://zenodo.org/records/15348619",
+    "sourceUrl": "https://zenodo.org/records/15348619/files/02_ZBW_OEG_Introduction_to_Open_Science.pptx?download=1",
+    "title": "An introduction to the topic of Open Science for researchers in business studies and economics",
+    "creators": ["Corinna Dau", "Birgit Fingerle", "Guido Scherp", "André Vatter"],
+    "publicationDate": "2025-05-06",
+    "doi": "10.5281/zenodo.15348619",
+    "localOriginal": "tmp/ma24-independent-quarantine/zbw-2025-open-science.pptx",
+    "sha256": "595df78e84768ec588a9d638366c69064c63139bdb43fea3445500ac7fd63bde",
+    "zenodoMd5Matched": "bb17dbf7398b7f58cb409406ebcf9abb",
+    "bytes": 8778379,
+    "slides": 40,
+    "publicationFamily": "ZBW Open Economics Guide 2025 teaching slide set, including its PPTX, ODP and PDF versions"
+  },
+  "reuse": {
+    "publisherPageLicense": "CC BY 4.0",
+    "repositoryMetadataLicense": "cc-by-4.0",
+    "originalSlide2Check": "The slide licenses the presentation under CC BY 4.0 with attribution and excludes logos; it marks third-party images per slide and identifies Remix icons separately.",
+    "plannedUse": "Attributed short paraphrase with exact slide citations in an internal answer-quality evaluation; no logo or third-party image copied into the answer key",
+    "attribution": "Dau, Fingerle, Scherp and Vatter, ZBW Open Economics Guide, 2025, doi:10.5281/zenodo.15348619, CC BY 4.0"
+  },
+  "sourceReview": {
+    "method": "Read all 40 source slide XML text entries and visually compared PowerPoint-rendered original slides 2, 25 and 28",
+    "slide25": "Confidential and medical data may need restricted access; the deck distinguishes FAIR practice from fully opening every data set and asks that at least the existence of restricted data be visible.",
+    "slide28": "The deck separates technical publication of a complete machine-readable data set on an accessible platform from legal conditions that allow resharing and reuse, with a suitable license.",
+    "answerScope": "Only what this 2025 teaching deck says; not a universal legal or current repository requirement"
+  },
+  "draftQuestion": {
+    "id": "zbw-2025-open-data-technical-legal-restriction",
+    "type": "PPTX cross-slide document-grounded answer",
+    "question": "按照 ZBW 2025 年这份课件，公开研究数据在技术发布和法律许可方面分别需要满足什么条件？对不能完全公开的敏感数据，课件建议保留哪一层最低限度的可见性？",
+    "expectedAnswer": "技术上，把完整数据集以机器可读格式放在易访问的平台，并优先存入有 DOI 的仓储以便引用。法律上，采用允许再分享和充分复用的条件，例如合适的开放许可。机密或医疗数据可能需要限制访问；即使限制访问，至少应让别人知道该数据存在。",
+    "expectedSlides": [25, 28],
+    "sourceStatus": "Teaching guidance in the dated presentation, not legal advice"
+  },
+  "boundedIndependenceScreen": {
+    "matchingLocalAssets": 0,
+    "matchingLocalUploadJobs": 0,
+    "matchingHistoricalGoldRows": 0,
+    "currentG14DraftQuestionsInspected": 22,
+    "sameOpenDataQuestionInCurrentDrafts": false,
+    "distinctiveTermHitsInDocsSrcScripts": 0,
+    "limitations": "Exact hash and keyword screens do not prove semantic independence, absence from unrecorded prompts, or independence from model pretraining; repeat on the complete frozen source and question set."
+  },
+  "remaining": [
+    "Review all substantive visual content before product registration, and verify the candidate text blocks and slide coordinates in an isolated product clone",
+    "Run full historical and final-set question/source-family contamination audit after all candidates are selected",
+    "Freeze Gold and both model configurations before any comparison calls",
+    "Verify user-visible answer quality and exact citations, then production gate separately"
+  ],
+  "goldCreated": 0,
+  "modelAnswerCalls": 0,
+  "productionKnowledgeWrites": 0
+}
