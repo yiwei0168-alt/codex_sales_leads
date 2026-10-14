@@ -1,0 +1,20 @@
+{
+  "date": "2026-10-14",
+  "scope": "G05 visual review guidance; existing server-side gate is unchanged",
+  "checks": {
+    "unresolvedDecisionBlocksReviewedArtifact": "existing deriveReviewedExtraction test passed",
+    "focusedReviewTests": "13 passed in 3 files",
+    "componentBrowserWidths": [1366, 390, 320],
+    "componentBrowser": "3 passed; no horizontal overflow, review completion remains disabled while unresolved, draft/conflict/retry/pagination/focus checks passed",
+    "eslintFocused": "passed",
+    "typecheck": "passed with 8192 MB Node heap after default 4096 MB heap exhausted"
+  },
+  "change": "Review drawer displays remaining count and explains that substantive visuals without reliable transcription must stay unresolved, preventing the new searchable version; it does not recategorize them as decoration.",
+  "limits": {
+    "browserApi": "synthetic responses",
+    "productionDeployed": false,
+    "pptxProductionJudgments": 0,
+    "visualContentQualityAccepted": false,
+    "independentHoldoutFrozen": false
+  }
+}

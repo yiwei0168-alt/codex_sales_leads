@@ -55,12 +55,12 @@ export function KnowledgeExtractionReview({jobId,onClose,onComplete}:{jobId:stri
     <div className="extraction-review">
       {loading&&<p role="status">正在核对原件版本…</p>}
       {error&&<p role="alert">{error} <button disabled={busy} onClick={()=>navigate(()=>{setDirty(false);setError('');setLoading(true);setRefresh(value=>value+1);})}>重新加载</button></p>}
-      {data&&<><h3>{data.title}</h3><p>已核对 {data.resolved} / {data.total} 个对象</p>
+      {data&&<><h3>{data.title}</h3><p>已核对 {data.resolved} / {data.total} 个对象；剩余 {data.total-data.resolved} 个待核</p>
         {data.visualState&&data.visualState!=='ready'&&data.visualState!=='unsupported'&&<p className="subtle">{({pending:'本地候选等待处理',running:'正在生成本地候选',retrying:'本地候选处理失败，稍后自动重试',failed:'本地候选连续处理失败，已暂停',corrupt:'本地候选文件不可用，可重新生成；已保存的审核记录保留。'} as Record<string,string>)[data.visualState]}
           {(data.visualState==='failed'||data.visualState==='corrupt')&&<button disabled={busy} onClick={()=>void retryVisuals()}>重试本地候选</button>}
           <button disabled={busy||dirty} onClick={()=>{setLoading(true);setRefresh(value=>value+1);}}>刷新候选</button></p>}
         <a href={`/api/knowledge/uploads/review?format=original&jobId=${jobId}&artifactSha256=${data.artifactSha256}`}>下载本次原件进行对照</a>
-        <p className="subtle">请结合原件核对。候选文字和结构未经审核；无法判断时保留“未解决”。</p>
+        <p className="subtle">请结合原件核对。候选文字和结构未经审核；图表含资料内容却无法准确转录时，保留“未解决”，不要标为装饰。</p>
         {item&&<fieldset disabled={busy||loading}><legend>对象 {offset+index+1} / {data.total}</legend>
           <p>{({slide:'幻灯片',page:'页',sheet:'工作表'} as Record<string,string>)[item.block.unitType]??'单元'} {item.block.unitIndex}{item.block.section?` · ${item.block.section}`:''}</p>
           {item.block.shapePath&&<p>对象顺序：{item.block.shapePath.join(' → ')}；原生 ID：{item.block.shapeIdPath?.join(' → ')}</p>}
@@ -89,6 +89,7 @@ export function KnowledgeExtractionReview({jobId,onClose,onComplete}:{jobId:stri
           {!item.candidate&&<p className="subtle">该对象尚无本地候选预览，请下载原件核对。</p>}
           {item.candidate&&!item.candidate.imageFile&&!item.candidate.diagram&&!item.candidate.connector&&<p className="subtle">本地工具未生成此对象的可用预览，请下载原件核对。</p>}
           <label>核对结论<select value={shownDecision} onChange={event=>edit({decision:event.target.value as Decision})}><option value="unresolved">未解决，需要继续核对</option><option value="evidence">包含资料内容，记录准确文字</option><option value="decoration">仅装饰，无资料内容</option></select></label>
+          {shownDecision==='unresolved'&&<p className="subtle">此对象保持待核，不能完成本资料的审核或建立新版索引；若已有可检索旧版，仍可查询旧版。</p>}
           {shownDecision==='evidence'&&<label>对照原件确认的内容<textarea rows={7} maxLength={20000} value={shownEvidence} onChange={event=>edit({evidence:event.target.value})}/></label>}
           <label>核对依据 / 备注<textarea rows={3} maxLength={2000} value={shownNote} onChange={event=>edit({note:event.target.value})}/></label>
           <button type="button" className="primary-button" disabled={!shownNote.trim()||(shownDecision==='evidence'&&!shownEvidence.trim())} onClick={()=>void save()}>{busy?'正在保存…':'保存本条审核'}</button>
