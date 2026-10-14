@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import type { AgentApproval } from "@/lib/assistant/main/approvals";
+import { RawJsonDetails } from "./raw-json-details";
 const actionLabels:Record<string,string>={mail_send:"发送邮件",plan_confirmation:"执行计划",mail_message_delete:"删除本地邮件",mail_connection_control:"管理邮箱连接",knowledge_private_delete:"删除私有知识",legacy_memory_delete:"删除个人记忆",skill_delete:"删除方法",schedule_delete:"删除定时任务",knowledge_release_activate:"发布知识版本"};
 const fieldLabels:Record<string,string>={to:"收件人",cc:"抄送",bcc:"密送",subject:"主题",body:"正文",messageId:"邮件对象",connectionId:"邮箱连接",documentId:"资料对象",id:"操作对象",title:"标题",name:"名称",action:"最终动作",deleteKnowledge:"同时删除衍生私有知识",companyExternalId:"公司",draftId:"草稿",summary:"计划摘要",plan:"执行计划",items:"执行项目",content:"内容",reason:"原因",decision:"决定",expectedEmail:"邮箱地址",email:"邮箱地址",category:"核验类别",activeStatus:"发布状态",releaseId:"知识版本",confirmed:"确认标记",attachments:"附件"};
 function BusinessValue({value}:{value:unknown}) {
@@ -18,7 +19,7 @@ function ApprovalPreview({item}:{item:AgentApproval}) {
   </>;
   const payload=item.payload&&typeof item.payload==="object"?item.payload as Record<string,unknown>:{};
   const business=Object.fromEntries(Object.entries(payload).filter(([key])=>!(/hash|revision|version|sha256/i.test(key))));
-  return <><BusinessValue value={business}/><details><summary>工具参数与版本详情</summary><pre>{JSON.stringify(item.payload,null,2)}</pre></details></>;
+  return <><BusinessValue value={business}/><RawJsonDetails summary="工具参数与版本详情" value={item.payload}/></>;
 }
 export function AgentApprovals({ items }: { items: AgentApproval[] }) {
   const [error, setError] = useState("");

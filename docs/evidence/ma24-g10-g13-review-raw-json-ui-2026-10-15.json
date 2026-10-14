@@ -1,0 +1,30 @@
+{
+  "schema": "ma24-g10-g13-review-raw-json-ui-v1",
+  "date": "2026-10-15",
+  "goals": ["G10 review surface", "G13 F12"],
+  "candidateBuildId": "fcjc0FZo2wEPgTGkEyisG",
+  "changes": [
+    "Skill acceptance evidence now shows a concise page/block/slide/sheet/cell coordinate summary and keeps exact raw coordinates and full receipts in secondary expandable disclosures with copy actions.",
+    "Non-mail Agent approval previews retain readable business fields and give their technical payload a secondary copyable raw JSON disclosure."
+  ],
+  "browserCheck": {
+    "command": "node scripts/run-tsx.cjs scripts/verify-skill-acceptance-ui.ts",
+    "surface": "Isolated rendered Skill acceptance component with synthetic API responses; not a live database or deployed Web session",
+    "viewports": ["1366x800", "390x800", "320x800"],
+    "coordinateSummaryVisible": "页：3 · 块：4",
+    "longUnbrokenCharacters": 1620,
+    "rawCollapsedInitially": true,
+    "rawCopiedExactly": true,
+    "rawHorizontalOverflow": false,
+    "pageHorizontalOverflow": false,
+    "existingReviewFlow": "Explicit four-metric judgments, injected 409 with draft retained, save, revoke, missing-material rejection and keyboard focus passed.",
+    "fixtureRepair": "The older browser fixture omitted the current material.canPass field and crashed before rendering; the fixture now includes both arm flags and exercises the actual current component contract.",
+    "mobileCoordinateScreenshot": "tmp/skill-acceptance-ui/390-coordinates.png",
+    "mobileCoordinateScreenshotSha256": "376cccdf7f431085cdf4807167870c0900c71a2565499288cb94d512cc1452a8",
+    "mobileScreenshotInspected": true,
+    "pageErrors": 0
+  },
+  "checks": ["npm run typecheck", "npx eslint src/components/agent-approvals.tsx src/components/skill-review-evidence.tsx scripts/verify-skill-acceptance-ui.ts", "npm run build", "git diff --check"],
+  "externalEffects": { "modelCalls": 0, "productionWrites": 0, "skillActivation": false },
+  "limits": "Synthetic API component browser check does not verify the actual Skill reviewer page-to-database route, natural judgment quality, non-mail approval page, production load or G09 automatic activation."
+}
