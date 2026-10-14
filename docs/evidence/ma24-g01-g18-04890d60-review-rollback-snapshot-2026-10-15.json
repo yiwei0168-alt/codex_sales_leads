@@ -1,0 +1,59 @@
+{
+  "schema": "ma24-g01-g18-review-rollback-snapshot-v1",
+  "date": "2026-10-15",
+  "candidateSourceCommit": "04890d60",
+  "testHarnessCommitBeforeThisReceipt": "ddfaf3f2",
+  "scope": "Current committed-source build, disposable local PostgreSQL restore, synthetic PPTX review and old Web read after candidate write; no production migration, pilot, switch or actual rollback",
+  "previousFailureResolved": {
+    "cause": "The isolated git archive omitted ignored local OCR model files required by prepare_pptx_visual_review.py",
+    "action": "Linked the existing local .models directory into the ignored isolated workspace; no download or external model call",
+    "fullReviewCloneResult": "passed"
+  },
+  "clone": {
+    "backup": "network_copilot_2026-10-13T09-03-13Z.dump",
+    "backupSha256": "17db517922f0ee8067391544418f0c8af9f77ee5f48203b938b7559ba528d428",
+    "migrationRange": "127-135",
+    "transactionRollbackRestoredPriorMarkers": true,
+    "migrationCommittedOnDisposableClone": true,
+    "criticalAclAndForcedRls": "passed",
+    "candidatePptxUploadStatus": 202,
+    "visualReviewObjects": 63,
+    "reviewPageOpened": true,
+    "originalDownloadMatched": true,
+    "smartArtAndConnectorCopiedFromApi": true,
+    "unresolvedDecisionRevision": 1,
+    "staleWriteStatus": 409,
+    "changedOriginalRejected": true,
+    "releasePointerUnchanged": true,
+    "completedReview": false,
+    "publishedDocuments": 0,
+    "oldWebAfterCandidateWriteVisibleJobs": 1,
+    "cloneDropped": true,
+    "cloudCredentialsClearedInWorker": true,
+    "workerUsageCountersCaptured": false,
+    "modelCalls": "not measured by this review-UI run"
+  },
+  "candidateSnapshot": {
+    "path": ".next-releases/ma24-g01-04890d60",
+    "buildId": "H5kRggLKi87-KFXajjdmU",
+    "ignoredByGit": true,
+    "files": 1484,
+    "bytes": 204500111,
+    "sourceResolvedAndSnapshotTreeSha256": "dad72e26cffc5a274ee559003aae82825f15856805fd1b5101db352875723f0d",
+    "comparison": "Every relative path, byte length and SHA-256 matched after resolving two source node_modules junctions; the snapshot materialized their files",
+    "privateTraceManifests": 87,
+    "privateTraceDependencies": 0
+  },
+  "productionReadOnlyPreflight": {
+    "targetMigrationStage": "absent",
+    "applicationCanAssumeCollectorRole": false,
+    "backupFreshForSwitch": false,
+    "readyForRelease": false
+  },
+  "remaining": [
+    "Bind exact production service source, feature flags and queues at switch time",
+    "Obtain domain-specific natural quality and independent evaluation evidence before pilots",
+    "Create and verify a fresh production backup immediately before authorized migration",
+    "Perform scoped production pilot and actual service rollback with post-rollback data checks"
+  ]
+}
