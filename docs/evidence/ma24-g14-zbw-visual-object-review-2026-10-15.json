@@ -1,0 +1,747 @@
+{
+  "schema": "ma24-g14-zbw-visual-object-review-v1",
+  "date": "2026-10-15",
+  "sourceSha256": "595df78e84768ec588a9d638366c69064c63139bdb43fea3445500ac7fd63bde",
+  "artifactSha256": "778e65d60e8f54cfc4002e542d458ab5e4ba238638c8bd7f295a318362489c6f",
+  "candidatePackageSha256": "98970c6fa0f14f6f250559081e29a780393b8b38c0ad42e82d1a2b19deedead6",
+  "scope": "145 individual original-slide and candidate-image proposals; no product review applied or document registered",
+  "objects": [
+    {
+      "blockId": "slide-1-visual-2",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: ZBW logo is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-1-visual-4",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: Guide logo crop is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-1-visual-6",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: CC BY badge is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-1-visual-8-2",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-2-visual-1",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: ZBW logo is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-2-visual-3",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: CC BY badge is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-2-visual-4",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: Guide logo crop is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-3-visual-3",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: sharing illustration is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-4-visual-3",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: Guide logo crop is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-4-visual-6",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-4-visual-7",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: Guide QR code is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-4-visual-9",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: Open Economics Guide illustration is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-5-visual-1",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and native connector checked: layout line or callout link, with no standalone factual content."
+    },
+    {
+      "blockId": "slide-5-visual-11",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-5-visual-16",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-5-visual-17",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-5-visual-18",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-6-visual-1",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and native connector checked: layout line or callout link, with no standalone factual content."
+    },
+    {
+      "blockId": "slide-6-visual-11",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-6-visual-16",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-6-visual-17",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-6-visual-18",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-7-visual-5",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: historical photograph is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-7-visual-7",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-7-visual-8-2",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-9-visual-12",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: researcher at laptop illustration is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-9-visual-14",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-10-visual-3",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: researcher team illustration is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-10-visual-7",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-11-visual-2",
+      "proposedDecision": "evidence",
+      "evidenceText": "The wheel lists five individual benefits of Open Science: greater visibility of scholarly work; greater impact and promotion of knowledge transfer; facilitating feedback; compliance with funding guidelines; and more options for publication and more control.",
+      "reason": "Original slide and candidate image checked: five-benefit wheel diagram carries text or structure absent from successful editable text blocks."
+    },
+    {
+      "blockId": "slide-11-visual-4",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-12-visual-2",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: reader illustration is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-12-visual-4",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-13-visual-4",
+      "proposedDecision": "decoration",
+      "reason": "Original slide 13 shape 216 exported and checked: identity illustration next to the editable ORCID uniqueness text."
+    },
+    {
+      "blockId": "slide-13-visual-5",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: document icon is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-13-visual-6",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: researcher portrait is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-13-visual-7",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: institution icon is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-13-visual-8",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: identity illustration is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-13-visual-13",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: ORCID logo is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-13-visual-16",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-14-visual-1",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and native connector checked: layout line or callout link, with no standalone factual content."
+    },
+    {
+      "blockId": "slide-14-visual-11",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-14-visual-16",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-14-visual-17",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-14-visual-18",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-15-visual-7",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: Open Access logo is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-15-visual-11",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-16-visual-12",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: researcher at laptop illustration is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-16-visual-14",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-17-visual-5",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: Gold Open Access icon is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-17-visual-6",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: Green Open Access leaf is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-17-visual-7",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: information icon is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-17-visual-9",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: information icon is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-17-visual-11",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-18-visual-2",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: DOAJ logo is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-18-visual-8",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: Jisc Open policy finder logo is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-18-visual-10",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-19-visual-4",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-19-visual-5",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-19-visual-6",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-19-visual-9",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-20-visual-5",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and native connector checked: layout line or callout link, with no standalone factual content."
+    },
+    {
+      "blockId": "slide-20-visual-6",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and native connector checked: layout line or callout link, with no standalone factual content."
+    },
+    {
+      "blockId": "slide-20-visual-7",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: information icon is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-20-visual-9",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-21-visual-3",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: EconStor logo is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-21-visual-8",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: MPRA logo is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-21-visual-10",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: information icon is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-21-visual-12",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-22-visual-2",
+      "proposedDecision": "evidence",
+      "evidenceText": "The dated EconBiz example searches for marketing with the Open Access only filter selected; results show freely available labels. This illustrates the interface in the slide, not current search results or counts.",
+      "reason": "Original slide and candidate image checked: EconBiz search screenshot carries text or structure absent from successful editable text blocks."
+    },
+    {
+      "blockId": "slide-22-visual-3",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: EconBiz logo is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-22-visual-7",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and native connector checked: layout line or callout link, with no standalone factual content."
+    },
+    {
+      "blockId": "slide-22-visual-8",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and native connector checked: layout line or callout link, with no standalone factual content."
+    },
+    {
+      "blockId": "slide-22-visual-10",
+      "proposedDecision": "evidence",
+      "evidenceText": "A magnified callout of the EconBiz example marks an Article result as freely available.",
+      "reason": "Original slide and candidate image checked: freely available article zoom carries text or structure absent from successful editable text blocks."
+    },
+    {
+      "blockId": "slide-23-visual-9",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: information icon is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-23-visual-10",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: Open Access browser icon is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-23-visual-11",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: OA Helper logo is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-23-visual-12",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: Green Open Access icon is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-23-visual-14",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-23-visual-15",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: open-science items illustration is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-24-visual-1",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and native connector checked: layout line or callout link, with no standalone factual content."
+    },
+    {
+      "blockId": "slide-24-visual-11",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-24-visual-16",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-24-visual-17",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-24-visual-18",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-25-visual-8",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-25-visual-9",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: two-person illustration is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-26-visual-1",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: research data team illustration is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-26-visual-9",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-27-visual-1",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: researcher at laptop illustration is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-27-visual-16",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-28-visual-4",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-28-visual-7",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: person holding mug illustration is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-28-visual-8",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: server icon is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-29-visual-4",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-29-visual-11",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-29-visual-15",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-29-visual-19",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-29-visual-20",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: data-centre illustration is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-30-visual-4",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-30-visual-5",
+      "proposedDecision": "evidence",
+      "evidenceText": "The DMP board asks what data are produced and used, the data type, what should or must be stored and why, which supplementary information is needed, when data selection happens, how long data should be stored, when and where data are transferred, and who may use the data.",
+      "reason": "Original slide and candidate image checked: DMP question-board diagram carries text or structure absent from successful editable text blocks."
+    },
+    {
+      "blockId": "slide-31-visual-5",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-31-visual-6",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: information icon is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-31-visual-7",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: researcher portrait is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-31-visual-10",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: researcher portrait is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-32-visual-6",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-32-visual-14",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: code browser illustration is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-33-visual-3",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-33-visual-5",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: server-panel icon is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-33-visual-7",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: open-lock icon is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-33-visual-9",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: reproducibility icon is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-33-visual-11",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: folder icon is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-33-visual-13",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: countdown cards is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-33-visual-15-1",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: gear icon is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-33-visual-15-2",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: gear icon is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-33-visual-15-3",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: gear icon is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-33-visual-17",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: branch icon is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-33-visual-20",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: code icon is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-33-visual-22",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: Creative Commons icon is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-33-visual-23",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: code snippets illustration is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-33-visual-25",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: code and document illustration is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-33-visual-26",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: code laptop icon is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-34-visual-1",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and native connector checked: layout line or callout link, with no standalone factual content."
+    },
+    {
+      "blockId": "slide-34-visual-11",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-34-visual-16",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-34-visual-17",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-34-visual-18",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-35-visual-5",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: programmer illustration is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-35-visual-7",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-36-visual-7",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: researcher illustration is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-36-visual-9",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-37-visual-3",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-37-visual-6",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: phone illustration is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-38-visual-3",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: rocket illustration is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-38-visual-5",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-38-visual-6",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: GitLab logo is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-38-visual-7",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: GitHub logo is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-38-visual-8",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: Zenodo logo is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-38-visual-9",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: Figshare logo is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-39-visual-1",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: researcher profile illustration is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-39-visual-7",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: blank or transparent picture is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-40-visual-3",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: Guide logo crop is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-40-visual-4",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: information icon is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-40-visual-5",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: Guide QR code is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    },
+    {
+      "blockId": "slide-40-visual-8",
+      "proposedDecision": "decoration",
+      "reason": "Original slide and candidate image checked: Open Economics Guide illustration is decorative or repeats adjacent editable text; no separate factual transcription needed."
+    }
+  ],
+  "proposedReview": {
+    "total": 145,
+    "evidence": 4,
+    "decoration": 141,
+    "unresolved": 0
+  },
+  "productReviewApplied": false,
+  "goldCreated": 0
+}

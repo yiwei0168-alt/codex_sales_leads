@@ -1,0 +1,47 @@
+{
+  "schema": "ma24-g14-zbw-reviewed-citation-clone-v1",
+  "date": "2026-10-15",
+  "scope": "ZBW 2025 PPTX real local upload, 145 visual judgments, review completion, private tree registration and exact evidence reads on a local isolated clone; synthetic account and artifacts removed",
+  "identity": {
+    "sourceSha256": "595df78e84768ec588a9d638366c69064c63139bdb43fea3445500ac7fd63bde",
+    "offlineArtifactSha256": "778e65d60e8f54cfc4002e542d458ab5e4ba238638c8bd7f295a318362489c6f",
+    "candidatePackageSha256": "98970c6fa0f14f6f250559081e29a780393b8b38c0ad42e82d1a2b19deedead6",
+    "liveArtifactBlocksMatchOffline": true
+  },
+  "review": {
+    "objectsSaved": 145,
+    "evidence": 4,
+    "decoration": 141,
+    "unresolved": 0,
+    "completionReceipt": true,
+    "decisionsBoundToLiveArtifact": true
+  },
+  "productClone": {
+    "privateTreeStatus": "searchable",
+    "searchFound": true,
+    "citedBlockIds": [
+      "slide-25-text-6",
+      "slide-28-text-5",
+      "slide-28-text-6",
+      "slide-11-visual-2",
+      "slide-22-visual-2",
+      "slide-22-visual-10",
+      "slide-30-visual-5"
+    ],
+    "sourceHashBlockIdSlideAndContentChecked": true,
+    "crossAccountEvidenceReadDenied": true,
+    "v3ReleasePointerUnchanged": true,
+    "embeddingCalls": 0,
+    "modelCalls": 0,
+    "externalCalls": 0,
+    "productionWrites": 0,
+    "syntheticArtifactsRemoved": true
+  },
+  "qualityBoundary": {
+    "goldCreated": 0,
+    "userVisibleAnswerAccepted": false,
+    "finalSourceFamilyAndQuestionContaminationAudit": "pending",
+    "frozenTwoPathIndependentEvaluation": "pending",
+    "productionCitationAndPilot": "pending"
+  }
+}
