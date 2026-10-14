@@ -15,25 +15,29 @@
           "illustratedAltitude": "36,000 km",
           "example": "Wideband global system",
           "coverage": "Broad coverage with 3 satellites",
-          "latencyAndOperation": "High latency; operationally simple"
+          "latencyAndOperation": "High latency; operationally simple",
+          "additionalCharacteristic": "Expansive coverage"
         },
         {
           "orbit": "MEO",
           "illustratedAltitude": "approximately 8,000 km",
           "example": "O3b mPOWER",
           "coverage": "Extended reach with 6 satellites; scalable",
-          "latencyAndOperation": "Low latency; operationally simple"
+          "latencyAndOperation": "Low latency; operationally simple",
+          "additionalCharacteristic": "High throughput, high flexibility, high performance"
         },
         {
           "orbit": "LEO",
           "illustratedAltitude": "approximately 1,000 km",
           "example": "Starlink",
           "coverage": "Limited view; hundreds of satellites",
-          "latencyAndOperation": "Low latency; operationally complex"
+          "latencyAndOperation": "Low latency; operationally complex",
+          "additionalCharacteristic": "Low, contended bandwidth; requires operator's nearest gateway"
         }
       ],
       "limits": [
-        "These are values and characterizations printed on this slide, not independently verified product guarantees."
+        "These are values and characterizations printed on this slide, not independently verified product guarantees.",
+        "The additional-characteristic lines are separate rows of slide text, not extensions of the latency row."
       ],
       "slide": 3,
       "shapePath": [
@@ -358,6 +362,10 @@
           "resources": [
             "Guidelines, codes of conduct and best practices",
             "Strategies for post-mission deorbiting or disposal of spacecraft"
+          ],
+          "visibleQualifiers": [
+            "The guidelines card has a trailing asterisk with no definition visible on this slide.",
+            "The strategies card says 'by Administration, Organization and Satellite System (Responses to CA/272)' and has a trailing asterisk."
           ]
         },
         {
@@ -378,7 +386,8 @@
         }
       ],
       "limits": [
-        "These are resource titles shown on a Space Sustainability Gateway screenshot; the slide does not verify current content or availability of each linked resource."
+        "These are resource titles shown on a Space Sustainability Gateway screenshot; the slide does not verify current content or availability of each linked resource.",
+        "Preserve the two policy-card asterisks and the CA/272 response qualifier; the slide does not define the asterisks."
       ],
       "slide": 24,
       "shapePath": [
@@ -399,8 +408,17 @@
         "Space Debris: UN Inter-Agency Meeting Special Report to COPUOS, Section K related to ITU",
         "Long-term Sustainability of Outer Space Activities: UNOOSA Information Repository"
       ],
+      "cardHierarchy": [
+        { "title": "Online Satellite Catalogs" },
+        { "title": "Collision Avoidance" },
+        { "title": "Environment Reports", "detail": "ESA's Space Environment Report 2023" },
+        { "title": "Environmental protection of the geostationary-satellite orbit", "detail": "Recommendation ITU-R S.1003-2" },
+        { "title": "Space Debris – UN Inter-Agency Meeting Special Report to COPUOS", "detail": "Section K related to ITU" },
+        { "title": "Long-term Sustainability of Outer Space Activities – UNOOSA Information Repository" }
+      ],
       "limits": [
-        "These are visible resource titles on a screenshot; URL validity and current publication state were not checked."
+        "These are visible resource titles and details on a screenshot; URL validity and current publication state were not checked.",
+        "The ESA report and Section K text are card details, not separate resource cards."
       ],
       "slide": 25,
       "shapePath": [
@@ -562,9 +580,9 @@
   ],
   "draftItems": 19,
   "substantiveObjectsTotal": 19,
-  "substantiveObjectsStillWithoutStructuredDraft": 0,
+  "substantiveObjectsStillWithoutStructuredDraft": 10,
   "qualityAccepted": false,
   "productionJudgmentsWritten": 0,
-  "next": "Validate the nine structured drafts independently; resolve ten limited/blocked charts and diagrams against primary data or keep those claims excluded. Then write production review decisions and run the real upload/publication gate.",
+  "next": "All nineteen substantive drafts have a Codex second visual pass; three structured entries were corrected. Obtain any required independent reviewer decision. Seven objects retain only limited descriptions and three still lack citation-ready detail; resolve them against primary data or keep those claims excluded. Then write production review decisions and run the real upload/publication gate.",
   "limitedOrBlockedItems": 10
 }

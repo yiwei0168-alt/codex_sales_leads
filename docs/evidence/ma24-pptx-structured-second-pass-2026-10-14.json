@@ -1,0 +1,26 @@
+{
+  "schema": "ma24-pptx-structured-second-pass-v1",
+  "date": "2026-10-14",
+  "scope": "Codex second visual pass of nine structured draft objects against the full rendered slides of the public development PPTX. This is not an independent human review, a production judgment, or an independent evaluation source.",
+  "sourceSha256": "2223cee26aced9a50d648d933c31b15f2f0659d0ebe30922fca5c31c1cc30465",
+  "draft": "docs/evidence/ma24-pptx-visual-transcription-draft-2026-10-14.json",
+  "renderedSlideRoot": "tmp/ma24-public-eval-candidates",
+  "results": [
+    { "blockId": "slide-3-visual-5", "renderedSlide": "source-slide-3.png", "result": "corrected", "finding": "The GEO, MEO and LEO columns each had an omitted final characteristic row. The draft now keeps those rows separate from latency and operation." },
+    { "blockId": "slide-5-visual-4", "renderedSlide": "source-slide-5.png", "result": "matched", "finding": "All seven headers, three orbit rows, approximate values and unexplained asterisks match the visible table." },
+    { "blockId": "slide-6-visual-2", "renderedSlide": "source-slide-6.png", "result": "matched", "finding": "The four scope-to-list associations match the visible quadrants; the arrows do not establish a legal hierarchy." },
+    { "blockId": "slide-15-visual-5", "renderedSlide": "source-slide-15.png", "result": "matched", "finding": "The five criteria and four columns match the qualitative circle fills; no numeric score is printed." },
+    { "blockId": "slide-17-visual-5", "renderedSlide": "source-slide-17.png", "result": "matched", "finding": "Four strategic-choice branches match the original labels and order; no ranking is shown." },
+    { "blockId": "slide-19-visual-3", "renderedSlide": "source-slide-19.png", "result": "matched", "finding": "Green/red comparisons match all three rows and both spectrum columns; the slide frames them as advantages and disadvantages." },
+    { "blockId": "slide-22-visual-5", "renderedSlide": "source-slide-22.png", "result": "matched", "finding": "The thirteen displayed 2024-to-2035 value pairs match. The chart does not print units beside those pairs." },
+    { "blockId": "slide-24-visual-5", "renderedSlide": "source-slide-24.png", "result": "corrected", "finding": "The two policy cards' asterisks and the CA/272 response qualifier were missing from the draft and are now preserved." },
+    { "blockId": "slide-25-visual-5", "renderedSlide": "source-slide-25.png", "result": "corrected", "finding": "The Environment Reports and Space Debris card titles were flattened with their details. The draft now records the visible card hierarchy." }
+  ],
+  "objectsChecked": 9,
+  "matchedWithoutChange": 6,
+  "corrected": 3,
+  "limitedOrBlockedObjectsStillOpen": 10,
+  "qualityAccepted": false,
+  "productionJudgmentsWritten": 0,
+  "documentsPublished": 0
+}

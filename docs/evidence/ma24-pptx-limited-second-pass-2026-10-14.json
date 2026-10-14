@@ -1,0 +1,26 @@
+{
+  "schema": "ma24-pptx-limited-second-pass-v1",
+  "date": "2026-10-14",
+  "scope": "Codex second visual pass of ten limited or blocked objects against full rendered slides of the public development PPTX. No exact plotted values, regulatory permissions, or unlabeled metrics were inferred. No production judgment was written.",
+  "sourceSha256": "2223cee26aced9a50d648d933c31b15f2f0659d0ebe30922fca5c31c1cc30465",
+  "draft": "docs/evidence/ma24-pptx-visual-transcription-draft-2026-10-14.json",
+  "renderedSlideRoot": "tmp/ma24-public-eval-candidates",
+  "results": [
+    { "blockId": "slide-8-visual-5", "renderedSlide": "source-slide-8.png", "result": "limited-description-matched", "excluded": "Exact annual launch counts and purpose shares are not data-labeled." },
+    { "blockId": "slide-9-visual-4", "renderedSlide": "source-slide-9.png", "result": "limited-description-matched", "excluded": "Exact annual API and administration values are not data-labeled; the series use separate axes." },
+    { "blockId": "slide-10-visual-5", "renderedSlide": "source-slide-10.png", "result": "limited-description-matched", "excluded": "Exact annual coordination-request and administration values are not data-labeled; the series use separate axes." },
+    { "blockId": "slide-11-visual-5", "renderedSlide": "source-slide-11.png", "result": "limited-description-matched", "excluded": "The conceptual cost chart has no numeric scale or break-even thresholds." },
+    { "blockId": "slide-12-visual-6", "renderedSlide": "source-slide-12.png", "result": "limited-description-matched", "excluded": "The colored arrows do not by themselves authorize a specific band or link." },
+    { "blockId": "slide-13-visual-1", "renderedSlide": "source-slide-13.png", "result": "limited-description-matched", "excluded": "The reused diagram is not independent corroboration and cannot replace the adjacent resolution text." },
+    { "blockId": "slide-23-visual-4", "renderedSlide": "source-slide-23.png", "result": "limited-description-matched", "excluded": "Individual bubble dates, apogees and constellation sizes are not data-labeled." },
+    { "blockId": "slide-27-visual-4", "renderedSlide": "source-slide-27.png", "result": "still-unresolved", "excluded": "The dense cell-to-row and arrow relationships need higher-resolution transcription before citation." },
+    { "blockId": "slide-29-visual-6", "renderedSlide": "source-slide-29.png", "result": "still-unresolved", "excluded": "The country bar-chart numbers have no labeled metric; surrounding delegate and proposal totals cannot supply one." },
+    { "blockId": "slide-29-visual-8", "renderedSlide": "source-slide-29.png", "result": "still-unresolved", "excluded": "The regional percentages have no labeled denominator and sum to 101% as printed." }
+  ],
+  "objectsChecked": 10,
+  "limitedDescriptionsMatched": 7,
+  "stillUnresolved": 3,
+  "qualityAccepted": false,
+  "productionJudgmentsWritten": 0,
+  "documentsPublished": 0
+}
