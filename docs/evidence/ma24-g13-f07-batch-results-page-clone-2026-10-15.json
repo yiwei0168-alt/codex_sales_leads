@@ -1,0 +1,27 @@
+{
+  "schema": "ma24-g13-f07-batch-results-page-clone-v1",
+  "date": "2026-10-15",
+  "goal": "MA24 G13 F07",
+  "candidateBuildId": "DjnvG9BXrfs2MTRXHdmOV",
+  "oldWebBuildId": "QfoyXprIZIVgSWxFSZ-1K",
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-backup-restore.ts --web-compat --mailbox-batch-ui",
+  "environment": "Disposable restored local database with migrations 127-134 committed only on the clone; real candidate Next page, synthetic private account and encrypted synthetic messages. Clone was dropped after verification.",
+  "changes": [
+    "Learning skip and candidate review show per-item success/failure details and preserve failed selections.",
+    "Candidate review selections persist across pages; batch buttons count and submit only the visible page, within the existing eight-item server limit. Other-page selections are shown and can be cleared.",
+    "Current-page select-all has an indeterminate state. On mobile, selected counts remain visible and per-item details are collapsed by default so the review list retains reading space."
+  ],
+  "verification": {
+    "realApi": "Ten encrypted synthetic mails were selected across 8+2 pages on desktop and mobile; the actual authorize API returned 202 and created ten consent/hash-bound queued jobs. No worker was started.",
+    "interceptedPartialResponses": "On the actual candidate page, one success and one failed learning-skip response, and one success and one failed candidate-review response, were injected only at the HTTP response boundary. Their details, failed selection and current-page button counts were checked. No skip or candidate-review database write occurred in these partial-response cases.",
+    "candidateCrossPageSelection": "Nine synthetic response-only candidates across 8+1 pages; selecting on both pages persisted. Returning to page 1 showed two current-page selections, and its partial batch left the failed item selected while the other-page item remained selected.",
+    "mobileScreenshot": "tmp/ma24-g13-f07-review-partial-mobile.png",
+    "mobileScreenshotSha256": "16c6897501c22df1a8b754208862f1dcd67a8467558b4c05be8ed2825dd79310",
+    "visualInspection": "390x760 screenshot checked: no horizontal overflow; selected counts, clear control, collapsed result summary and the first candidate card are visible.",
+    "checks": ["npm run build", "npm run typecheck", "npx eslint src/components/mailbox-workspace.tsx scripts/lib/verify-ma24-mailbox-batch-clone.ts", "git diff --check"]
+  },
+  "modelCalls": 0,
+  "mailSends": 0,
+  "productionDatabaseWrites": 0,
+  "limits": "Partial response tests exercise candidate-page rendering with intercepted HTTP results, not actual partial database transactions. Real mailbox synchronization, background worker outcomes, failed-item retry after a true backend failure, production loading and remaining F01-F13 entries still require separate evidence."
+}
