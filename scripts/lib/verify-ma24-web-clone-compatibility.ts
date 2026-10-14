@@ -63,6 +63,7 @@ export async function verifyMa24WebCloneCompatibility(options: {
   conversationUi?: boolean;
   frontendUi?: boolean;
   mailboxBatchUi?: boolean;
+  mailboxReaderUi?: boolean;
 }): Promise<unknown> {
   assert.equal(await readFile(resolve(oldRoot, ".next/BUILD_ID"), "utf8").then(value => value.trim()), oldBuild);
   const candidateBuild = (await readFile(resolve(candidateRoot, ".next/BUILD_ID"), "utf8")).trim();
@@ -146,6 +147,7 @@ export async function verifyMa24WebCloneCompatibility(options: {
       let conversationPage: unknown;
       let mailboxDrawerPage: unknown;
       let mailboxBatchPage: unknown;
+      let mailboxReaderPage: unknown;
       if (version.name === "candidate-web" && options.reviewUi) {
         const { verifyMa24ReviewPageClone } = await import("./verify-ma24-review-page-clone");
         try {
@@ -173,6 +175,10 @@ export async function verifyMa24WebCloneCompatibility(options: {
         const { verifyMa24MailboxBatchClone } = await import("./verify-ma24-mailbox-batch-clone");
         mailboxBatchPage = await verifyMa24MailboxBatchClone({ admin: options.admin, base, cookie, userId });
       }
+      if (version.name === "candidate-web" && options.mailboxReaderUi) {
+        const { verifyMa24MailboxReaderClone } = await import("./verify-ma24-mailbox-reader-clone");
+        mailboxReaderPage = await verifyMa24MailboxReaderClone({ admin: options.admin, base, cookie, userId });
+      }
       results.push({ version: version.name, buildId: version.buildId, manifestStatus: manifest.status,
         anonymousUploadStatus: denied.status, syntheticLoginStatus: login.status,
         authenticatedUploadStatus: list.status, visibleUploadJobs: listed.jobs.length,
@@ -180,7 +186,8 @@ export async function verifyMa24WebCloneCompatibility(options: {
         ...(reviewPage ? { reviewPage } : {}),
         ...(conversationPage ? { conversationPage } : {}),
         ...(mailboxDrawerPage ? { mailboxDrawerPage } : {}),
-        ...(mailboxBatchPage ? { mailboxBatchPage } : {}) });
+        ...(mailboxBatchPage ? { mailboxBatchPage } : {}),
+        ...(mailboxReaderPage ? { mailboxReaderPage } : {}) });
     } finally {
       await stopOwnedServer(child);
     }

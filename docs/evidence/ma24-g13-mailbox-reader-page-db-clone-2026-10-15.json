@@ -1,0 +1,25 @@
+{
+  "schema": "ma24-g13-f05-f06-mailbox-reader-page-db-clone-v1",
+  "goal": "MA24 G13 F05/F06 partial",
+  "date": "2026-10-15",
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-backup-restore.ts --web-compat --mailbox-reader-ui",
+  "backup": "network_copilot_2026-10-13T09-03-13Z.dump",
+  "backupSha256": "17db517922f0ee8067391544418f0c8af9f77ee5f48203b938b7559ba528d428",
+  "candidateBuildId": "NYvnlmCxAUmqWM9b5T21a",
+  "oldBuildId": "QfoyXprIZIVgSWxFSZ-1K",
+  "database": "Disposable local restore, migrations 127-134 committed on clone only, clone dropped after run",
+  "fixture": "One synthetic account, one invalid.example mailbox connection, one encrypted 80-line synthetic inbound message",
+  "browser": {
+    "viewports": ["1366x900", "390x760"],
+    "listFailure": "First list request forced to HTTP 503; page showed list error and retry, without showing a false empty-mail message; retry loaded the real synthetic list",
+    "detailFailure": "First original request forced to HTTP 503; reading area showed an error and retry, and stopped displaying the loading text; retry read the encrypted original from the clone",
+    "refreshFailure": "Desktop re-read after a successful original was forced to HTTP 503; previously loaded body disappeared until a successful retry. Mobile reading mode hides the list and its refresh button while a message is selected, so this exact desktop refresh path was not tested there.",
+    "inlineOriginal": "Learning-list original disclosure also recovered from one forced HTTP 503 through its inline retry on both viewports",
+    "longBody": "The 80-line original scrolled within the inbox reading area on desktop and mobile; no horizontal page overflow or browser page error",
+    "visualInspection": "Both viewport screenshots were rendered and inspected locally"
+  },
+  "modelCalls": 0,
+  "mailSends": 0,
+  "productionDatabaseWrites": 0,
+  "limits": "This is synthetic candidate-page evidence. The learning-list long original still expands inline in a constrained region, so the full F06 reading-space requirement is not closed. Real mailbox, provider failures, production deployment and all F01-F13 entry points remain unverified."
+}
