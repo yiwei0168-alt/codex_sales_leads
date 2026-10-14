@@ -1,0 +1,25 @@
+{
+  "date": "2026-10-14",
+  "scope": "Restore stopped local product services at previously verified versions",
+  "preflight": {
+    "postgresContainer": "healthy",
+    "dueAgentRuns": 0,
+    "dueModelBatches": 0,
+    "dueSchedules": 0,
+    "currentRootMigrationMarkers": {"127": false, "128": false, "130": false, "131": false, "133": false},
+    "previouslyPublishedWebBuildId": "QfoyXprIZIVgSWxFSZ-1K"
+  },
+  "restored": {
+    "web": {"sourceCommit": "245ed9cc", "pid": 33240, "port": 3018, "homeStatus": 200, "checkedStaticAssets": 5, "staticAssetStatuses": [200, 200, 200, 200, 200]},
+    "langgraph": {"sourceCommit": "44e8608c", "pid": 35656, "port": 2024, "runtimeHealth": {"status": "ready", "service": "network-channel-langgraph"}},
+    "mainWorker": {"sourceCommit": "1d1cc962", "launcherPid": 36056, "taskLoopPid": 34596}
+  },
+  "limits": {
+    "currentReviewUiChangesLoaded": false,
+    "currentRootMigrations127To134Applied": false,
+    "mailAndLeadWorkersRestarted": false,
+    "newModelTasksOrBusinessActionsCreatedByRecovery": false,
+    "privateAccountEndToEndVerified": false,
+    "productionMainPathSwitched": false
+  }
+}
