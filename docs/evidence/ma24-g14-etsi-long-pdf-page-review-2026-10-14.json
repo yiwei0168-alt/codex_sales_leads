@@ -1,0 +1,53 @@
+{
+  "schema": "ma24-g14-etsi-long-pdf-page-review-v1",
+  "date": "2026-10-14",
+  "sourceUrl": "https://www.etsi.org/deliver/etsi_tr/138900_138999/138901/19.05.00_60/tr_138901v190500p.pdf",
+  "sourceDescription": "ETSI TR 138 901 V19.5.0 (2026-09), 3GPP TR 38.901 Release 19",
+  "localQuarantinePath": "tmp/ma24-independent-quarantine/etsi-tr-138901-v190500.pdf",
+  "sha256": "6d29a37c1f254f4b9f8fd73a0be66bdb4480c6b32d0a64ef27505ca4188b1e4c",
+  "pages": 167,
+  "reviewMethod": "Read the original PDF bookmarks and relevant page text with local PyMuPDF, rendered physical pages 84 and 141 at 2x, and visually checked the table rows, prose steps, footer page numbers, values and units. Equations were not reconstructed from the noisy extracted text.",
+  "draftQuestions": [
+    {
+      "id": "etsi-38901-v195-inf-blocker-parameters",
+      "status": "draft only; not Gold",
+      "category": "long-pdf-table",
+      "question": "按 ETSI TR 138 901 V19.5.0 的 Table 7.6.14.1.1-1，室内工厂（InF）场景中的 AGV 和 industrial robot 阻挡物分别采用什么宽、高和移动速度参数？请保留原表单位。",
+      "draftAnswer": "AGV：宽 3 m、高 1.5 m、最高 30 km/h。Industrial robot：宽 2 m、高 0.2 m、最高 3 m/s。两行速度单位不同。",
+      "sourceCoordinate": "original PDF physical page 84, printed page 83, clause 7.6.14.1.2, Table 7.6.14.1.1-1",
+      "sourceBoxesPoints": {"agv": [204.9, 547.7, 223.9, 556.7], "agvSpeed": [442.6, 547.7, 498.7, 556.7], "industrialRobot": [184.6, 558.9, 244.3, 567.9], "robotSpeed": [447.7, 558.9, 493.7, 567.9]},
+      "visualCheck": "pass: both complete InF table rows and units legible"
+    },
+    {
+      "id": "etsi-38901-v195-isac-lower-power-clusters",
+      "status": "draft only; not Gold",
+      "category": "long-pdf-procedure",
+      "question": "按同一版本第 7.9.5.5 节为 ISAC 背景信道增加低功率簇/射线的过程，第二背景信道在 Step 2 如何调整簇数 N 和每簇射线数 M？如果 Step 1 假定 LOS，Step 2 对 DS、ASA、ASD、ZSA、ZSD 用什么传播条件生成？Step 3 给出的 G 是多少？",
+      "draftAnswer": "Step 2 将簇数 N 增至 360，每簇射线数 M 降至 1；若 Step 1 假定 LOS，Step 2 按 NLOS 条件生成 DS、ASA、ASD、ZSA、ZSD。Step 3 的 G = −25 dB。",
+      "sourceCoordinate": "original PDF physical page 141, printed page 140, clause 7.9.5.5, Steps 2 and 3",
+      "sourceBoxesPoints": {"increasedTo360": [56.6, 654.1, 122.2, 664.1], "reducedTo1": [342.0, 654.1, 391.5, 664.1], "step3": [56.6, 711.8, 81.9, 721.8], "minus25dB": [225.0, 725.8, 257.6, 735.8]},
+      "visualCheck": "pass: prose and G value legible; extracted formula text is noisy and is not used as Gold"
+    }
+  ],
+  "localExposureScreen": {
+    "exactRegistryHashMatches": 0,
+    "termSearch": "No files matched the exact table caption, Lower power clusters, the Step 2 cluster-number phrase or Industrial robot in docs/src/scripts/old holdout text. No AGV, blocker-based, Lower power clusters or ISAC hit in the old holdout output directory or the 300-case corpus source.",
+    "limit": "Bounded term absence does not prove complete development-output or semantic independence, nor lack of model pretraining exposure."
+  },
+  "productExtraction": {
+    "extractorVersion": "layout-v2.0.6",
+    "artifactPath": "tmp/ma24-independent-quarantine/etsi-tr-138901-layout-v2.0.6.json",
+    "artifactSha256": "24195d56c07b1f240e8489569430b32993a8b986656359731fe041496e8aa3ef",
+    "blocks": 6642,
+    "qualitySummary": {"success": 14, "blank": 0, "pending-ocr": 153, "failed": 0},
+    "targetTextAndPhysicalPageCoordinatesPresent": true,
+    "treeOrRetrievalReady": false
+  },
+  "gates": {
+    "sourceApproved": false,
+    "goldCreated": 0,
+    "modelCalls": 0,
+    "productionKnowledgeWrites": 0,
+    "remaining": "Complete reuse/permission and full question-level overlap review, then resolve the 153 visual-review pages and verify isolated product read/citation before freezing any long-PDF Gold."
+  }
+}

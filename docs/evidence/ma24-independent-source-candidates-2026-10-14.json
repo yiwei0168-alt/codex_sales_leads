@@ -84,7 +84,7 @@
       "bytes": 2800065,
       "sha256": "6d29a37c1f254f4b9f8fd73a0be66bdb4480c6b32d0a64ef27505ca4188b1e4c",
       "integrity": "valid unencrypted PDF; 167 pages; pypdf repaired a non-zero-indexed xref while reading metadata",
-      "status": "quarantined; 167 pages of text readable; exact answer, table/formula and coordinate review pending"
+      "status": "quarantined; original physical pages 84 and 141 visually checked as two draft long-PDF questions on InF blocker table and ISAC low-power clusters in ma24-g14-etsi-long-pdf-page-review-2026-10-14.json; local extractor leaves 153/167 pages pending visual review, so source/use approval, actual citation and Gold remain pending"
     },
     {
       "kind": "pptx",
