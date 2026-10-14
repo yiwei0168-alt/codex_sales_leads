@@ -47,7 +47,8 @@
   "exposureScreen": {
     "exactRegistryHashMatches": 0,
     "localTextSearch": "Burgenland, AT11, NUTS-2 and VHCN had no matches in docs/src/scripts/old holdout text beyond the new candidate content-screen receipt.",
-    "limit": "This does not establish full historical-output or semantic independence."
+    "historicalHoldout": "The receipt-bound blind-questions.json, candidates.json and verdicts.json SHA-256 values match the 2026-10-10 final-score receipt. All 11 nonempty files in tmp/ma24-holdout-evaluation were searched for Burgenland, AT11, NUTS-2, VHCN and 3.4–3.8 variants with zero matches. The 50 blind questions were read: 40 product-datasheet tasks and 10 routing/boundary tasks; none asks regional household connectivity coverage.",
+    "limit": "The bounded historical-output review and topic distinction do not exhaust all development runs, all semantic paraphrases or provider-side exposure."
   },
   "acceptance": {
     "originalCellCoordinatesChecked": true,
