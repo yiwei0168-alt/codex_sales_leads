@@ -16,6 +16,7 @@
     "test:browser": "playwright test",
     "ui:check-assets": "node scripts/verify-local-ui-assets.mjs",
     "db:migrate": "node scripts/run-tsx.cjs scripts/migrate.ts",
+    "ma24:release-preflight": "node scripts/run-tsx.cjs scripts/verify-ma24-release-preflight.ts",
     "leads:publish-scoring-policy": "node scripts/run-tsx.cjs scripts/publish-lead-scoring-policy.ts",
     "assistant:verify": "tsx scripts/verify-assistant-workspace.ts",
     "assistant:worker": "node scripts/run-tsx.cjs scripts/run-main-agent-worker.ts",
