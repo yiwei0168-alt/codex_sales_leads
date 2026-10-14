@@ -47,9 +47,25 @@
     }
   ],
   "sourceUseBoundary": "Use only for internal, attributed question and short factual answer screening. Do not redistribute the PDF or infer that every third-party item on the FCC site has the same reuse terms.",
+  "followUpAudit": {
+    "date": "2026-10-15",
+    "sourceAuthenticity": "Official FCC attachment URL returned an indexed FCC news release in public search; the same quarantined PDF was rehashed locally and both pages had previously been rendered and inspected. The web open endpoint returned HTTP 403, so the indexed result was corroboration rather than a fresh download.",
+    "localPdfRehashSha256": "cc6b2100b895bc51a34bedd6873731d800a67a372a7b73b94f7095b98d902f0a",
+    "pdfMetadata": "Producer Aspose.Words for Java 24.11.0; no copyright notice in extracted text on either page. This does not itself establish a reuse licence.",
+    "developmentExposureCommands": [
+      "rg -i -l --glob '!docs/evidence/ma24-g14-fcc-press-release-pdf-candidate-2026-10-15.json' --glob '!docs/MA24_EXECUTION_STATUS_2026-10-13.md' --glob '!docs/MA24_REMAINING_EXECUTION_PLAN_2026-10-13.md' 'DOC-424190|FCC Broadband Report Shows Rapid Expansion|43\\.4%|77% of Americans|three fixed terrestrial' docs src scripts experiments",
+      "rg -i -l --hidden --no-ignore --glob '*.json' --glob '*.md' --glob '*.txt' --glob '*.log' --glob '!**/node_modules/**' --glob '!**/.next/**' 'DOC-424190|FCC Broadband Report Shows Rapid Expansion|43\\.4%|77% of Americans|three fixed terrestrial' tmp",
+      "git log --all --format='%h %s' -S'43.4%' -- docs src scripts experiments"
+    ],
+    "developmentExposureResult": "No tracked working-tree or ignored local text/log hit outside the new FCC candidate/status/plan records. Git history pickaxe found the target number only in the candidate receipt commit db07744d. This bounded search excludes binary files, possible unrecorded prompts and provider-side exposure.",
+    "sourceUseReference": "https://www.copyright.gov/title17/92chap1.html#105",
+    "sourceUseAssessment": "17 USC 105 generally excludes US Government works from US copyright protection, but the PDF has no item-specific licence statement and this review does not establish rights for third-party material or redistribution. Internal attributed factual question and short-answer evaluation remains within the stated limited use; keep the original quarantined.",
+    "questionScopeAssessment": "The draft asks for two categories and values as stated in the dated press release, with page citation. It must not be scored as present-day broadband availability or as independent validation of the FCC's estimates.",
+    "preliminarySourceEligibility": "plausible for an internal independent PDF item, subject to final source/question set freeze and contamination review; not approved Gold"
+  },
   "approvedIndependentSource": false,
   "goldCreated": 0,
   "productUploadOrModelAnswerRun": false,
   "productionKnowledgeWrites": 0,
-  "next": "Finish broader development exposure and source-use review, then decide whether to freeze as an independent PDF question before any product run."
+  "next": "Carry this preliminarily eligible PDF source into the final G14 set-level audit. Freeze question wording, source hash and acceptance rubric with the complete set before product upload or model answer run; keep Gold count zero until that gate passes."
 }
