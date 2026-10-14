@@ -34,12 +34,29 @@
     "modelCalls": 0,
     "providerCalls": 0
   },
+  "graphProbe": {
+    "script": "scripts/verify-ma24-g15-bge-graph-local.ts",
+    "scriptSha256": "adc4d6f6bd645f1a146d53a79cf629d2171915fc048276ddf92cfc9ddb9081e8",
+    "readOnly": true,
+    "graphStatus": "completed",
+    "scriptedModelDecisions": 2,
+    "realKnowledgeReads": 1,
+    "sourceRechecks": 5,
+    "authorizedChunks": 8,
+    "bgeRankedChunks": 3,
+    "qwenRankedChunks": 0,
+    "modelCalls": 0,
+    "providerCalls": 0,
+    "durableRunOrJournal": false,
+    "answerQualityAccepted": false
+  },
   "checks": {
     "typecheck": "passed",
     "focusedEslint": "passed"
   },
   "acceptance": {
     "toolToLocalBgeToProductDb": true,
+    "scriptedGraphWithRealReadExecuted": true,
     "wholeAgentTaskExecuted": false,
     "answerAndCitationQualityAccepted": false,
     "independentSetUsed": false,
