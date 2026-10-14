@@ -1,0 +1,44 @@
+{
+  "schema": "ma24-g14-ieee-80211-overview-connector-resolution-v1",
+  "sourceSha256": "3ae95a7ecdadf8cca4127e239bfbd71c25aa08e354fd0ca94d078a3e0eb11e3d",
+  "candidatePackageSha256": "b80be978c3f3bac175ebebca5774c2bb03a710a73185cb0f2a5673b555ccb1c6",
+  "supersedesProposalsIn": "ma24-g14-ieee-80211-overview-object-review-completion-2026-10-14.json",
+  "method": "Read native slide 5 shape IDs, order, text, connector endpoints and bounds with python-pptx 1.0.2, then matched the MAC / PHY & MAC arrow-and-divider arrangement to the rendered original slide. No product judgment was saved.",
+  "objects": [
+    {
+      "blockId": "slide-5-visual-3",
+      "shapeIdPath": [14],
+      "proposedDecision": "decoration",
+      "reason": "The top-level line has x=-224873 EMU, zero width and zero height, outside the visible slide. It contributes no visible timeline relation."
+    },
+    {
+      "blockId": "slide-5-visual-6-4-3",
+      "shapeIdPath": [3, 107, 110],
+      "proposedDecision": "evidence",
+      "evidenceText": "The vertical arrow beside the MAC label points upward from the divider, marking the upper portion of the historical 802.11 development chart as MAC.",
+      "reason": "Native connector endpoints are x=381000, y=3292085 to y=686094 within the nested group. Adjacent native text shape 108 is 'MAC'; the relation is visible on the rendered slide."
+    },
+    {
+      "blockId": "slide-5-visual-6-4-4",
+      "shapeIdPath": [3, 107, 111],
+      "proposedDecision": "evidence",
+      "evidenceText": "The vertical arrow beside the PHY & MAC label points downward from the divider, marking the lower portion of the historical 802.11 development chart as PHY & MAC.",
+      "reason": "Native connector endpoints are x=381000, y=3490862 to y=5953913 within the nested group. Adjacent native text shape 109 is 'PHY & MAC'; the relation is visible on the rendered slide."
+    },
+    {
+      "blockId": "slide-5-visual-6-4-5",
+      "shapeIdPath": [3, 107, 112],
+      "proposedDecision": "evidence",
+      "evidenceText": "A short horizontal line separates the upper MAC arrow from the lower PHY & MAC arrow in the historical development chart.",
+      "reason": "Native connector runs from x=152400 to x=381000 at y=3375440 inside the same group; the separator is visible between the two arrow spans on the rendered slide."
+    }
+  ],
+  "revisedCumulativeProposedEvidence": 15,
+  "revisedCumulativeProposedDecoration": 22,
+  "revisedCumulativeProposedUnresolved": 2,
+  "remainingUnresolved": ["slide-12-visual-3", "slide-19-visual-3-1"],
+  "productJudgmentsSaved": 0,
+  "qualityAccepted": false,
+  "goldCreated": 0,
+  "productionKnowledgeWrites": 0
+}
