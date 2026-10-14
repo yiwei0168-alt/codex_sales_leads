@@ -1,0 +1,40 @@
+{
+  "schema": "ma24-g14-zbw-bounded-independence-audit-v1",
+  "date": "2026-10-15",
+  "sourceSha256": "595df78e84768ec588a9d638366c69064c63139bdb43fea3445500ac7fd63bde",
+  "draftId": "zbw-2025-open-data-technical-legal-restriction",
+  "localNearNeighborReport": "tmp/ma24-independent-quarantine/zbw-overlap-screen.json",
+  "localNearNeighborReportSha256": "c9fffd52086122a0b7051d7da2cf49a318ea06f838f8ac6b29649af5ed019660",
+  "oldQuestionScreen": {
+    "oldCorpusSha256": "a3c7f67502a8c79898736c0300658bb3a77f25b690fae095fdcdcc7bfe6df248",
+    "historicalBlindSha256": "711ed12f970c54d7d3a73bd5d824946aa7c89cb3c9995b2976445c88bc017d70",
+    "rows": 350,
+    "uniqueQuestions": 300,
+    "embeddingModel": "BAAI/bge-m3",
+    "embeddingRevision": "5617a9f61b028005a4858fdac845db406aefb181",
+    "topTenScoreRange": [0.467119, 0.482504],
+    "topTenManualReview": "Open-datasheet, version-opening and private-policy access questions; none asks the ZBW deck's technical/legal Open Data conditions or restricted-data existence rule",
+    "answerModelCalls": 0,
+    "cloudCalls": 0
+  },
+  "currentDraftScreen": {
+    "g14EvidenceJsonFilesRead": 49,
+    "uniqueQuestionIdsInspected": 23,
+    "otherDraftQuestions": 22,
+    "sameOpenDataQuestionFound": false,
+    "ieee2014TutorialQuestionsUse": "PPTX reading/citation acceptance only, per MA24-18; not independent-quality Gold"
+  },
+  "productionDatabaseReadOnlyHashScreen": {
+    "matchingAssets": 0,
+    "matchingUploadJobs": 0,
+    "matchingHistoricalGoldRows": 0,
+    "writes": 0
+  },
+  "conclusion": "No same-question overlap found in the bounded inspected sets; independent Gold is not yet approved",
+  "remaining": [
+    "Audit the complete final source and question family set after selection, including development exposure and publication variants",
+    "Freeze Gold, source coordinates, product code and two comparable model configurations before comparison calls",
+    "Judge user-visible answers and exact citations, then production acceptance separately"
+  ],
+  "goldCreated": 0
+}

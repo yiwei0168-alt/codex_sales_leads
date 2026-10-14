@@ -9,8 +9,11 @@ const source=path.resolve(process.argv[2]??'');
 const evidenceRoot=path.resolve('docs/evidence');
 if(!source.startsWith(evidenceRoot+path.sep)||!source.endsWith('.json'))throw new Error('A committed G14 evidence JSON path is required');
 const raw=await readFile(source,'utf8');
-const candidate=JSON.parse(raw) as {sha256?:string;draftQuestions?:Array<{id:string;question:string}>};
-if(!candidate.sha256||!Array.isArray(candidate.draftQuestions)||!candidate.draftQuestions.length)throw new Error('Candidate evidence lacks source hash or questions');
+const candidate=JSON.parse(raw) as {sha256?:string;source?:{sha256?:string};draftQuestions?:Array<{id:string;question:string}>;draftQuestion?:{id:string;question:string}};
+const sourceSha256=candidate.sha256??candidate.source?.sha256;
+const drafts=candidate.draftQuestions??(candidate.draftQuestion?[candidate.draftQuestion]:[]);
+if(!/^[a-f0-9]{64}$/.test(sourceSha256??'')||!Array.isArray(drafts)||!drafts.length
+  ||drafts.some(row=>!row.id||!row.question))throw new Error('Candidate evidence lacks source hash or questions');
 const corpus=buildKnowledgeEvaluationCorpus();
 const blindPath=path.resolve('tmp/ma24-holdout-evaluation/blind-questions.json');
 const blindRaw=await readFile(blindPath,'utf8');
@@ -18,7 +21,7 @@ const blind=JSON.parse(blindRaw) as {cases:Array<{caseId:string;query:string}>};
 const old=[...corpus.cases.map(row=>({id:row.id,query:row.query,source:'old-300'})),
  ...blind.cases.map(row=>({id:row.caseId,query:row.query,source:'historical-blind'}))];
 const unique=[...new Set(old.map(row=>row.query))];
-const questions=candidate.draftQuestions.map(row=>({id:row.id,query:row.question}));
+const questions=drafts.map(row=>({id:row.id,query:row.question}));
 const inputs=[...questions.map(row=>row.query),...unique];
 const vectors:number[][]=[];
 for(let offset=0;offset<inputs.length;offset+=32){
@@ -35,7 +38,7 @@ const similarity=questions.map((question,index)=>{
  }).sort((a,b)=>b.score-a.score).slice(0,10);
  return {id:question.id,query:question.query,neighbors};
 });
-const report={schema:'ma24-g14-question-neighbor-screen-v1',sourceSha256:candidate.sha256,
+const report={schema:'ma24-g14-question-neighbor-screen-v1',sourceSha256,
  evidenceSha256:hash(raw),oldCorpusVersion:corpus.version,oldCorpusSha256:knowledgeEvaluationCorpusHash(corpus),
  historicalBlindSha256:hash(blindRaw),oldRows:old.length,uniqueOldQueries:unique.length,
  model:'BAAI/bge-m3',revision:'5617a9f61b028005a4858fdac845db406aefb181',dimensions:1024,
