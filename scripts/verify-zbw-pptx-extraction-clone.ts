@@ -2,7 +2,7 @@
 import assert from "node:assert/strict";
 import { createHash, randomUUID } from "node:crypto";
 import { spawn } from "node:child_process";
-import { readFile, rm } from "node:fs/promises";
+import { readFile, rm, writeFile } from "node:fs/promises";
 import { basename, resolve, sep } from "node:path";
 import nextEnv from "@next/env";
 import { Pool } from "pg";
@@ -73,7 +73,9 @@ try {
   assert.equal(row.error_code, "extraction-review-required");
   const artifactPath = resolve(row.extraction_artifact_key);
   assert(artifactPath.startsWith(ownerRoot + sep));
-  const artifact = JSON.parse(await readFile(artifactPath, "utf8")) as { documents: Array<{ blocks: Block[] }> };
+  const artifactBytes = await readFile(artifactPath);
+  const artifactSha256 = createHash("sha256").update(artifactBytes).digest("hex");
+  const artifact = JSON.parse(artifactBytes.toString("utf8")) as { documents: Array<{ blocks: Block[] }> };
   assert.equal(artifact.documents.length, 1);
   const blocks = artifact.documents[0].blocks;
   const target = (slide: number) => blocks.filter(block => block.unitIndex === slide && block.quality === "success")
@@ -89,7 +91,10 @@ try {
     "select * from knowledge_release_pointer_v3 order by scope_kind,owner_id")).rows);
   assert.equal(pointerAfter, pointerBefore);
   assert.equal((await pool.query("select count(*)::int n from knowledge_document where owner_id=$1", [owner])).rows[0].n, 0);
-  console.log(JSON.stringify({ cloneOnly: true, sourceSha256, worker, blocks: blocks.length,
+  if (process.argv.includes("--save-artifact")) {
+    await writeFile("tmp/ma24-independent-quarantine/zbw-product-extraction.json", artifactBytes, { flag: "wx" });
+  }
+  console.log(JSON.stringify({ cloneOnly: true, sourceSha256, artifactSha256, worker, blocks: blocks.length,
     successfulBlocks: blocks.filter(block => block.quality === "success").length,
     unresolvedVisualObjects: review.total, slide25, slide28,
     documentPublished: false, releasePointerUnchanged: true, productionWrites: 0, goldCreated: 0,

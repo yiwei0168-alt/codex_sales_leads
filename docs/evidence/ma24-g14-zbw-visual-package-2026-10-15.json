@@ -1,0 +1,25 @@
+{
+  "schema": "ma24-g14-zbw-visual-package-v1",
+  "date": "2026-10-15",
+  "sourceSha256": "595df78e84768ec588a9d638366c69064c63139bdb43fea3445500ac7fd63bde",
+  "artifactSha256": "778e65d60e8f54cfc4002e542d458ab5e4ba238638c8bd7f295a318362489c6f",
+  "packageSha256": "98970c6fa0f14f6f250559081e29a780393b8b38c0ad42e82d1a2b19deedead6",
+  "localArtifact": "tmp/ma24-independent-quarantine/zbw-product-extraction.json",
+  "localPackage": "tmp/ma24-independent-quarantine/zbw-visual-candidates/review.json",
+  "sourceBindingAndObjectIdentityVerified": true,
+  "objects": 145,
+  "uniqueImageHashesVerified": 68,
+  "reasons": {
+    "ocrCandidateRequiresVisualReview": 57,
+    "noTextImageStillRequiresReview": 78,
+    "nativeConnectorCandidateRequiresReview": 9,
+    "unsupportedVisualObject": 1
+  },
+  "imageExecutions": 68,
+  "imageBatches": 1,
+  "externalCalls": 0,
+  "qualityAccepted": false,
+  "extractionStatusChanged": false,
+  "goldCreated": 0,
+  "remaining": "Complete and verify all 145 individual judgments before product review completion and isolated registration"
+}

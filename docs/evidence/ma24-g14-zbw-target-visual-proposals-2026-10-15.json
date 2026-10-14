@@ -1,0 +1,41 @@
+{
+  "schema": "ma24-g14-zbw-target-visual-proposals-v1",
+  "date": "2026-10-15",
+  "sourceSha256": "595df78e84768ec588a9d638366c69064c63139bdb43fea3445500ac7fd63bde",
+  "artifactSha256": "778e65d60e8f54cfc4002e542d458ab5e4ba238638c8bd7f295a318362489c6f",
+  "candidatePackageSha256": "98970c6fa0f14f6f250559081e29a780393b8b38c0ad42e82d1a2b19deedead6",
+  "scope": "Original slides 25 and 28 plus each corresponding local candidate image; proposed visual decisions only, not applied to product review",
+  "objects": [
+    {
+      "blockId": "slide-25-visual-8",
+      "proposedDecision": "decoration",
+      "reason": "Candidate renders as a blank or transparent black image; the original slide shows no substantive content at this location."
+    },
+    {
+      "blockId": "slide-25-visual-9",
+      "proposedDecision": "decoration",
+      "reason": "Two-person illustration beside the Open Data definitions; it contains no data restriction or visibility condition."
+    },
+    {
+      "blockId": "slide-28-visual-4",
+      "proposedDecision": "decoration",
+      "reason": "Same blank or transparent image as slide 25; no substantive content appears in the original render."
+    },
+    {
+      "blockId": "slide-28-visual-7",
+      "proposedDecision": "decoration",
+      "reason": "Woman illustration above the legal text box; the OCR letters are image noise and the legal conditions remain in successful text block slide-28-text-6."
+    },
+    {
+      "blockId": "slide-28-visual-8",
+      "proposedDecision": "decoration",
+      "reason": "Server icon above the technical text box; the OCR characters are icon noise and the technical conditions remain in successful text block slide-28-text-5."
+    }
+  ],
+  "candidatePackageObjects": 145,
+  "proposals": 5,
+  "objectsStillWithoutProposals": 140,
+  "productReviewApplied": false,
+  "registeredDocuments": 0,
+  "goldCreated": 0
+}
