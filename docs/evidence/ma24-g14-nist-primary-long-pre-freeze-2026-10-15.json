@@ -1,0 +1,67 @@
+{
+  "schema": "ma24-g14-nist-primary-long-pre-freeze-v1",
+  "date": "2026-10-15",
+  "status": "selected draft for future set freeze; not Gold",
+  "source": {
+    "publisher": "NIST",
+    "report": "NIST TN 2363",
+    "officialLandingPage": "https://www.nist.gov/publications/software-based-5g-industrial-wireless-private-networks-challenges-and-opportunities",
+    "originalLocalPath": "tmp/ma24-independent-quarantine/nist-tn-2363-industrial-5g.pdf",
+    "sha256": "65e333dac9975f4ca9a952a966fb212ce7ccb161ec60b48bf45c3dfd7adbd6a9",
+    "physicalPages": 44,
+    "publicationFamily": "NIST TN 2363; all three NIST drafts count as one source family"
+  },
+  "selectedPrimaryQuestionId": "nist-tn2363-delay-profile-and-5g-tsn-validation",
+  "primaryQuestionSourceCheck": {
+    "originalPagesRenderedAndRead": [18, 28],
+    "printedPages": [13, 23],
+    "sections": ["3.3 Creating Delay Profiles", "5.2 Meeting QoS requirements with Software-based Implementations"],
+    "answerPointsChecked": [
+      "Uncertain processing delays, dynamic channel conditions, and missing device instrumentation complicate per-hop latency estimates",
+      "The report calls for comprehensive end-to-end and RAN testing and measurement",
+      "Software stack overhead can increase packet transmission latency and uncertainty, which schedule design must account for",
+      "The report calls for validation and testing in real-world deployments"
+    ],
+    "proseOnly": true,
+    "pageAndAnswerScopeMatched": true,
+    "productSourceCoordinateReadReceipt": "docs/evidence/ma24-g14-nist-tn2363-review-citation-clone-2026-10-15.json"
+  },
+  "currentSetAudit": {
+    "candidateEvidenceFilesWithDrafts": 14,
+    "candidateDrafts": 22,
+    "uniqueDraftIds": 22,
+    "exactSourceHashes": 12,
+    "manifestSha256": "5198bc47b99df9c18f551baab2c3db32a6e192ac4e938369ae5dcd0073ef7b68",
+    "manifestConstruction": "Sort ma24-g14-*.json files by name; for each file with draftQuestions or draftQuestion, hash its bytes and collect file, sha256, draft IDs, and source hash; SHA-256 the JSON.stringify array",
+    "otherNistDraftIds": [
+      "nist-tn2363-aggressor-welding-table-comparison",
+      "nist-tn2363-ieee3388-assessment-and-profiles"
+    ],
+    "otherDraftsInspected": 19,
+    "sameAnswerAmongInspectedOtherDrafts": false,
+    "otherNistDraftsCountAsAdditionalSourceFamilies": false
+  },
+  "historicalSetAudit": {
+    "oldCorpusCases": 300,
+    "historicalBlindCases": 50,
+    "uniqueOldQueries": 300,
+    "generationAndAllBlindQueriesInspected": true,
+    "only5gLexicalNeighbor": "Does a 2.5G port mean 5G cellular?",
+    "sameDelayProfileOrTsnValidationQuestionFound": false,
+    "priorBoundedBgeScreen": "docs/evidence/ma24-g14-nist-tn2363-long-pdf-candidate-2026-10-15.json#oldQuestionNeighborScreen"
+  },
+  "sourceUse": {
+    "officialNistPolicy": "https://www.nist.gov/open/copyright-fair-use-and-licensing-statements-srd-data-software-and-technical-series-publications",
+    "plannedUse": "Short attributed answer and precise citations to NIST-authored prose; no full PDF or figures redistributed",
+    "thirdPartyMaterialBoundary": "The NIST policy cautions that some technical publications may contain third-party material"
+  },
+  "remaining": [
+    "Audit the complete future frozen set and any later candidate additions again",
+    "Keep answer key out of both model inputs and development tuning",
+    "Freeze full Gold set and comparable baseline/candidate configuration before model calls",
+    "Verify product-visible answer and exact citations, then complete real quality and production gates"
+  ],
+  "goldCreated": 0,
+  "modelAnswerCalls": 0,
+  "productionKnowledgeWrites": 0
+}
