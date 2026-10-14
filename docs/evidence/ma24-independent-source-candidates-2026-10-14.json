@@ -37,7 +37,7 @@
       "bytes": 23086,
       "sha256": "fbc5d6e5365981a964a993d6dbec7e248864de84ec3651ad7b2f873dbc0b0b8b",
       "integrity": "valid OOXML; 20 ZIP parts; four worksheets, 413 numeric geographic rows, no macro or external-link parts",
-      "status": "quarantined replacement XLSX candidate; distinct from the development-exposed EU workbook, exact local asset/upload/old-Gold hashes 0; two original-cell drafts and local old-question near-neighbor screen completed, full independence, product citation and Gold pending; see ma24-g14-ons-xlsx-candidate-2026-10-14.json"
+      "status": "development/regression only: original workbook exposed and verified the layout-v2.0.8 XLSX table-style parser fix; both ONS drafts excluded from fresh G14 Gold and XLSX quota despite valid source-cell and extraction checks; see ma24-g05-xlsx-table-style-readonly-fix-2026-10-14.json"
     },
     {
       "kind": "pptx",
@@ -158,5 +158,5 @@
       "reason": "The browsing tool displayed full PDF text while checking the link; exposed to development review and unsuitable as a fresh holdout."
     }
   ],
-  "next": "Run PPTX read/citation acceptance on the GEPOF examples without Gold credit. Review the new ONS XLSX candidate's original cells, question independence and product citation without tuning product behavior on it. Complete the corresponding reviews for the other candidates, settle evaluation use of the research presentation, finish development fixes, then freeze eligible sources, Gold and retrieval configuration before either retrieval path."
+  "next": "Run PPTX read/citation acceptance on the GEPOF examples without Gold credit. Find a fresh XLSX source after the EU workbook and ONS workbook became development fixtures; freeze the generic layout-v2.0.8 extractor before using that source for independent quality. Complete the corresponding reviews for the other candidates, settle evaluation use of the research presentation, then freeze eligible sources, Gold and retrieval configuration before either retrieval path."
 }

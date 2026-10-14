@@ -60,7 +60,7 @@
     "semanticIndependenceProven": false,
     "cloudCalls": 0
   },
-  "status": "quarantined candidate; two original-cell drafts checked, source/Gold not frozen, full independence and product citation pending",
+  "status": "development/regression only: this original workbook triggered and verified the layout-v2.0.8 read-only XLSX parser fix. Both draft questions leave the fresh G14 source pool and XLSX quality quota; original-cell and local extraction evidence remain engineering evidence only",
   "goldCreated": 0,
   "productionKnowledgeWrites": 0
 }

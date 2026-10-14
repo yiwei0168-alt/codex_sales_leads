@@ -2,10 +2,13 @@
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import unittest
+import zipfile
+import xml.etree.ElementTree as ET
 
 from openpyxl import Workbook
 from openpyxl.chart import BarChart, Reference
 from openpyxl.drawing.image import Image as SheetImage
+from openpyxl.worksheet.table import Table
 import pymupdf
 from pptx import Presentation
 from pptx.util import Inches
@@ -16,6 +19,31 @@ from knowledge_extraction_v2 import extract_file
 
 
 class SpreadsheetCoordinatesTest(unittest.TestCase):
+    def test_unsupported_table_style_metadata_preserves_cells_and_merges(self):
+        with TemporaryDirectory() as directory:
+            original=Path(directory)/"original.xlsx"
+            patched=Path(directory)/"table-style.xlsx"
+            book=Workbook(); sheet=book.active
+            sheet.append(["Area","Rate"]);sheet.append(["Orkney",30]);sheet.append(["Shetland",20])
+            sheet.merge_cells("D1:E1");sheet["D1"]="Source note"
+            sheet.add_table(Table(displayName="Rates",ref="A1:B3"))
+            book.save(original);book.close()
+            with zipfile.ZipFile(original) as source, zipfile.ZipFile(patched,"w") as output:
+                for part in source.infolist():
+                    data=source.read(part.filename)
+                    if part.filename=="xl/tables/table1.xml":
+                        root=ET.fromstring(data)
+                        namespace="{http://schemas.openxmlformats.org/spreadsheetml/2006/main}"
+                        root.find(f"{namespace}tableColumns/{namespace}tableColumn").set("dxfId","0")
+                        data=ET.tostring(root,encoding="utf-8")
+                    output.writestr(part,data)
+            artifact=extract_file(patched,"table-style.xlsx")
+            self.assertEqual(artifact["qualitySummary"],{"success":1,"blank":0,"pending-ocr":0,"failed":0})
+            table=artifact["blocks"][0]
+            self.assertIn("D1:E1",table["metadata"]["mergedRanges"])
+            self.assertEqual(table["table"]["rows"][1][:2],["Shetland","20"])
+            self.assertEqual(table["table"]["cellRange"],"A1:E3")
+
     def test_cached_formula_error_table_requires_review(self):
         with TemporaryDirectory() as directory:
             path=Path(directory)/"cached-errors.xlsx"

@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+2026-10-14 G05 XLSX 表格样式兼容：`layout-v2.0.8` 以只读模式读取原单元格，并从原始 OOXML 读取合并范围，避开部分官方文件中 `tableColumn dxfId` 导致的 openpyxl 普通加载异常。合成回归 9 项、图表/图片边界检查通过；ONS 原件 4/4 表和指定原格读取通过，欧盟旧产物 7 块在忽略版本及合并范围顺序后等价。尚未部署，其他第三方 XLSX、实际上传页面、生产引用仍待验收。ONS 文件因用于该修复退出独立测评。[证据](evidence/ma24-g05-xlsx-table-style-readonly-fix-2026-10-14.json)。
+
 2026-10-14 G14 跨证据块检索：`Burgenland` 位于欧盟工作簿数据表，`VHCN` 定义位于说明块；原同块全文查询无命中。有界文档级词项回退在隔离克隆找回该私有文档，同时拒绝不存在的词、错误集合与另一账号，精确单元格引用未退步。自然问句及独立双路径质量、生产服务仍待验收。[证据](evidence/ma24-g14-eu-xlsx-cross-unit-search-2026-10-14.json)。
 
 2026-10-14 G05/G14 XLSX 表块审核：`layout-v2.0.7` 将带缓存公式错误的表块纳入有原坐标的待审对象。欧盟原件在恢复克隆完成上传、候选、四条测试判决、登记与 `Data source` 树引用，5 个关键单元格原坐标吻合，错误缓存未入索引；合成数据已清理。组合查询 `Burgenland VHCN` 未命中，正式审核、产品可见引用、独立 Gold 和生产加载仍待验收。[证据](evidence/ma24-g14-eu-xlsx-reviewed-citation-clone-2026-10-14.json)。

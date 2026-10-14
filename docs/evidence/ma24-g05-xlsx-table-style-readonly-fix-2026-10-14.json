@@ -1,0 +1,43 @@
+{
+  "schema": "ma24-g05-xlsx-table-style-readonly-fix-v1",
+  "date": "2026-10-14",
+  "scope": "Local XLSX extractor compatibility and regression evidence; no deployed Web or worker update, product migration, model call or Gold acceptance",
+  "trigger": "An official ONS XLSX uses dxfId on a tableColumn; openpyxl 3.1.5 ordinary workbook loading raises TypeError before any sheet can be extracted. Read-only mode reads the original source cells.",
+  "change": "layout-v2.0.8 loads XLSX in openpyxl read-only mode and obtains merged ranges directly from each original worksheet XML; visual references remain sourced from original OOXML.",
+  "syntheticRegression": {
+    "fixture": "Table with a patched tableColumn dxfId, a merged range and two numeric data rows",
+    "command": "python scripts/test_knowledge_extraction_v2.py",
+    "result": "9 tests passed; fixture retained original values, physical cell range and D1:E1 merged range"
+  },
+  "officialSourceProbe": {
+    "sourceSha256": "fbc5d6e5365981a964a993d6dbec7e248864de84ec3651ad7b2f873dbc0b0b8b",
+    "command": "python scripts/extract-uploaded-knowledge.py tmp/ma24-independent-quarantine/ons-ultrafast-broadband-2026.xlsx tmp/ma24-independent-quarantine/ons-ultrafast-broadband-product-extraction.json",
+    "artifactSha256": "10647a077df47b20d3d718e92530d5162ee72b3d14f25bc6b6d2f03946c18f90",
+    "qualitySummary": {"success": 4, "blank": 0, "pending-ocr": 0, "failed": 0},
+    "blocks": 4,
+    "dataBlock": "sheet-4-table",
+    "originalCellRange": "A1:C418",
+    "checkedRows": [6, 54, 375, 377],
+    "cellValuesMatchedOriginal": true
+  },
+  "priorWorkbookRegression": {
+    "source": "development-only EU connectivity XLSX",
+    "previousExtractorVersion": "layout-v2.0.7",
+    "newExtractorVersion": "layout-v2.0.8",
+    "newArtifactSha256": "ae67b2236eb5881d3938d57455f62457188ec1f9c2567077615d58f31e9f6fa5",
+    "sameSourceHash": true,
+    "sameQualitySummary": {"success": 3, "blank": 0, "pending-ocr": 3, "failed": 0},
+    "sameSevenBlocksAfterVersionAndMergedRangeOrderNormalization": true
+  },
+  "visualBoundaryCheck": {
+    "command": "python scripts/verify_xlsx_visual_local.py",
+    "syntheticImageAndChartObjects": 2,
+    "nativeChartCacheZeroPreserved": true,
+    "externalRelationshipRejected": true
+  },
+  "sourceIndependenceConsequence": "The ONS workbook directly exposed the parser failure and verified the fix. Reclassify this workbook and its two draft questions as development/regression material, excluding them from the fresh G14 source set and XLSX quality quota.",
+  "newCandidateBuildRequired": true,
+  "qualityAccepted": false,
+  "productionKnowledgeWrites": 0,
+  "externalCalls": 0
+}

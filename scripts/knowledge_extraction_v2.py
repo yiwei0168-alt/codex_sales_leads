@@ -11,7 +11,7 @@ from pptx.enum.shapes import MSO_SHAPE_TYPE
 from openpyxl import load_workbook
 from openpyxl.utils import get_column_letter
 
-EXTRACTOR_VERSION = "layout-v2.0.7"
+EXTRACTOR_VERSION = "layout-v2.0.8"
 
 def _clean(value):
     return " ".join(str("" if value is None else value).replace("\x00", "").split()).strip()
@@ -104,9 +104,31 @@ def xlsx_visual_references(path: Path):
     return result
 
 
+def xlsx_merged_ranges(path: Path):
+    # Read merge coordinates from source XML; openpyxl's read-only mode does
+    # not expose merged_cells but skips unsupported table-style metadata.
+    ns={"s":"http://schemas.openxmlformats.org/spreadsheetml/2006/main",
+        "r":"http://schemas.openxmlformats.org/officeDocument/2006/relationships"}
+    result={}
+    with zipfile.ZipFile(path) as archive:
+        relations={item.get("Id"):item for item in ET.fromstring(archive.read("xl/_rels/workbook.xml.rels"))}
+        for sheet in ET.fromstring(archive.read("xl/workbook.xml")).findall("s:sheets/s:sheet",ns):
+            relation=relations[sheet.get("{"+ns["r"]+"}id")]
+            if relation.get("TargetMode")=="External":
+                raise ValueError("External worksheet relationship")
+            target=relation.get("Target", "")
+            part=posixpath.normpath(target.lstrip("/") if target.startswith("/") else posixpath.join("xl",target))
+            if not part.startswith("xl/"): raise ValueError("Invalid worksheet relationship")
+            root=ET.fromstring(archive.read(part))
+            result[sheet.get("name")]=[item.get("ref") for item in root.findall("s:mergeCells/s:mergeCell",ns)]
+    return result
+
+
 def extract_xlsx(path: Path):
     visuals=xlsx_visual_references(path)
-    workbook=load_workbook(path,read_only=False,data_only=True);blocks=[];statuses=[]
+    source_merges=xlsx_merged_ranges(path)
+    workbook=load_workbook(path,read_only=True,data_only=True)
+    blocks=[];statuses=[]
     for index,name in enumerate(workbook.sheetnames,1):
         sheet=workbook[name]
         start=len(blocks)
@@ -116,7 +138,7 @@ def extract_xlsx(path: Path):
                 rows.append([_clean(cell.value) for cell in cell_row])
                 for cell in cell_row:
                     if cell.data_type=="e": cached_errors.append({"cell":cell.coordinate,"value":_clean(cell.value)})
-        merged=[str(item) for item in sheet.merged_cells.ranges] if hasattr(sheet,"merged_cells") else []
+        merged=source_merges.get(sheet.title,[])
         # Keep physical row positions, including leading/interior blank rows.
         # Removing them makes startRow=2 point at different original cells.
         if any(any(row) for row in rows):
