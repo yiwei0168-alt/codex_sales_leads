@@ -23,12 +23,12 @@
       "metadataPage": "https://thedocs.worldbank.org/en/doc/06e049f31b6bf5381540526e19ce463e-0450012025/infra4dev-slides",
       "sourceUrl": "https://thedocs.worldbank.org/en/doc/06e049f31b6bf5381540526e19ce463e-0450012025/original/-Holding-slides-Infra4Dev-2025-V5.pptx",
       "metadataChecked": "World Bank page identifies an English PPTX published 2025-05-15; web downloader reported PPTX content type without returning slide content.",
-      "contentRead": false,
+      "contentRead": true,
       "localQuarantinePath": "tmp/ma24-independent-quarantine/worldbank-infra4dev-2025.pptx",
       "bytes": 10381569,
       "sha256": "238542410669055b34b5102207561c23a4932be883b55ca9bc2921f809d74b0f",
       "integrity": "valid OOXML; 180 ZIP parts; no macro or external-link parts",
-      "status": "quarantined; exact hash absent from existing source registry; scope and freeze pending"
+      "status": "excluded from fresh MA24 PPTX quality holdout after content screen: conference agenda lacks substantive telecom/product evidence; kept in quarantine"
     },
     {
       "kind": "xlsx",
@@ -65,12 +65,12 @@
       "metadataPage": "https://www.itu.int/oth/D0736000003/en",
       "sourceUrl": "https://www.itu.int/dms_pub/itu-d/oth/07/36/D07360000030011PDFE.pdf",
       "metadataChecked": "Official event page lists this free presentation PDF as 2,113,423 bytes, posted 2026-09-28. The link URL was captured without displaying document text.",
-      "contentRead": false,
+      "contentRead": true,
       "localQuarantinePath": "tmp/ma24-independent-quarantine/itu-q1-2026-bhatia.pdf",
       "bytes": 2113423,
       "sha256": "8bac4a67a32ef5b9d87b7855dc57de7f686b405a6d2ffab537782265a61f0615",
       "integrity": "valid unencrypted PDF; 12 pages",
-      "status": "quarantined; exact hash absent from existing source registry; scope and freeze pending"
+      "status": "quarantined; text read for content screening; generic NTN/satellite questions may overlap an earlier development PPTX; answer and coordinate review pending"
     },
     {
       "kind": "long-pdf",
@@ -79,12 +79,12 @@
       "metadataPage": "https://www.etsi.org/deliver/etsi_tr/138900_138999/138901/19.05.00_60/",
       "sourceUrl": "https://www.etsi.org/deliver/etsi_tr/138900_138999/138901/19.05.00_60/tr_138901v190500p.pdf",
       "metadataChecked": "Official directory lists a PDF dated 2026-09-25 with 2,800,065 bytes; the PDF body was not displayed.",
-      "contentRead": false,
+      "contentRead": true,
       "localQuarantinePath": "tmp/ma24-independent-quarantine/etsi-tr-138901-v190500.pdf",
       "bytes": 2800065,
       "sha256": "6d29a37c1f254f4b9f8fd73a0be66bdb4480c6b32d0a64ef27505ca4188b1e4c",
       "integrity": "valid unencrypted PDF; 167 pages; pypdf repaired a non-zero-indexed xref while reading metadata",
-      "status": "quarantined; exact hash absent from existing source registry; scope and freeze pending"
+      "status": "quarantined; 167 pages of text readable; exact answer, table/formula and coordinate review pending"
     }
   ],
   "excluded": [

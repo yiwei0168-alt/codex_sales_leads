@@ -1,0 +1,59 @@
+{
+  "schema": "ma24-g14-candidate-content-screen-v1",
+  "date": "2026-10-14",
+  "scope": "four quarantined public originals, local content and domain-fit screen only",
+  "readOnly": true,
+  "productionKnowledgeWrites": 0,
+  "modelCalls": 0,
+  "approvedIndependentSources": 0,
+  "goldCreated": 0,
+  "candidates": [
+    {
+      "file": "worldbank-infra4dev-2025.pptx",
+      "sha256": "238542410669055b34b5102207561c23a4932be883b55ca9bc2921f809d74b0f",
+      "nativeSlides": 40,
+      "slidesWithNativeText": 38,
+      "doclingStatus": "success with six out-of-bounds provenance bbox clamping warnings",
+      "nativeTermSlides": {"telecom": 0, "connectivity": 0, "network": 0, "broadband": 1, "digital": 3},
+      "contentKind": "conference agenda and speaker/session listing across transport, hydrogen, resilient infrastructure and other fields",
+      "decision": "exclude from fresh MA24 PPTX quality holdout for insufficient telecom/product subject evidence",
+      "limitation": "A single broadband agenda mention does not establish substantive connectivity evidence; visual slide content has not been individually reviewed."
+    },
+    {
+      "file": "eu-connectivity-kpis-2026.xlsx",
+      "sha256": "2ba1b1af51b4d27a703e4e5495ec89724d26bd6584a6b56244d8ecb7f54e079a",
+      "worksheets": 6,
+      "dataSourceSheetRows": 489,
+      "dataSourceSheetColumns": 19,
+      "doclingStatus": "success with openpyxl data-validation and drawing support warnings",
+      "contentKind": "EU NUTS regional VHCN, FTTP and 5G coverage, with Overall and Rural rows",
+      "differenceFromDevelopmentWorkbook": "regional coverage table and EU area keys versus previously used ITU global and regional ICT indicator workbook",
+      "decision": "retain in quarantine for question-level overlap and physical-cell coordinate review",
+      "limitation": "Report-sheet formulas include #VALUE! in the extracted view; visual/chart semantics and specific cells are not yet accepted."
+    },
+    {
+      "file": "itu-q1-2026-bhatia.pdf",
+      "sha256": "8bac4a67a32ef5b9d87b7855dc57de7f686b405a6d2ffab537782265a61f0615",
+      "pages": 12,
+      "pagesWithExtractedText": 12,
+      "extractedCharacters": 3858,
+      "doclingStatus": "failed in both native and standard PDF pipelines with docling_parse filesystem character-sequence error, including with ASCII temporary path",
+      "fallback": "local pypdf text extraction",
+      "contentKind": "universal and meaningful connectivity, Indian subscription and coverage figures, terrestrial and satellite connectivity, WRC-27",
+      "decision": "retain in quarantine; avoid generic NTN/satellite questions overlapping the earlier ITU development PPTX",
+      "limitation": "PDF text extraction is not visual or precise-coordinate validation; individual answer claims remain unaudited."
+    },
+    {
+      "file": "etsi-tr-138901-v190500.pdf",
+      "sha256": "6d29a37c1f254f4b9f8fd73a0be66bdb4480c6b32d0a64ef27505ca4188b1e4c",
+      "pages": 167,
+      "pagesWithExtractedText": 167,
+      "extractedCharacters": 470118,
+      "fallback": "local pypdf text extraction after Docling PDF parser failed on the shorter candidate",
+      "contentKind": "3GPP Release 19 study of 0.5 to 100 GHz radio channel models",
+      "decision": "retain in quarantine for specific-question overlap, table/formula and page-coordinate review",
+      "limitation": "Readable text is not validated table or formula semantics and does not prove answer-level independence."
+    }
+  ],
+  "next": "Find a substantive unexposed telecom PPTX; choose question-specific claims from the remaining three originals, compare answers and phrasing with old corpus and development materials, verify visual or cell coordinates, then freeze only eligible sources before Gold and model runs."
+}
