@@ -807,3 +807,5 @@ MODESEL-15：53 项本地测试通过。旧入口仅返回停用提示，配置�
 ### MA24-18 / G14 — IEEE 教程仅验收 PPTX 读取与引用（2026-10-14）
 
 用户明确将 SHA-256 `030a730584498f8b98109a1bf2da22a29cc443021c63fbd1c18cf2bad2da6910` 的 IEEE 2014 GEPOF 教程限定为“仅作 PPTX 读取与引用验收”。第 5、22 页已目视核对的两个样例用于检查产品是否能读出原幻灯片并返回正确页号和原文依据，不作为独立问答 Gold 或 G14 拟议 PPTX 质量题。该验收尚未在产品链路执行；独立 PPTX 质量来源仍缺。确认与样例见 docs/CONFIRMED_PRODUCT_RULES.md、docs/evidence/ma24-g14-ieee-slide-question-review-2026-10-14.json。
+
+本地产品抽取器补验：`layout-v2.0.6` 对原 PPTX 输出 563 块，第 5、22 页目标文字为 success，分别具有 `slide-5-text-2` 和 `slide-22-text-2` 坐标，与已渲染原页一致。全稿 44/82 页仍待 OCR，未做产品树登记/读取与端到端引用；只记录两页抽取通过。[机器收据](evidence/ma24-g05-ieee-pptx-local-extraction-2026-10-14.json)。

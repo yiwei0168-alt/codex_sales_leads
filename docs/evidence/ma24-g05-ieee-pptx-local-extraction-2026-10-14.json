@@ -1,0 +1,36 @@
+{
+  "schema": "ma24-g05-ieee-pptx-local-extraction-v1",
+  "date": "2026-10-14",
+  "ruleId": "MA24-18",
+  "sourceSha256": "030a730584498f8b98109a1bf2da22a29cc443021c63fbd1c18cf2bad2da6910",
+  "source": "tmp/ma24-independent-quarantine/ieee-gepof-tutorial-v14.pptx",
+  "command": "python scripts/extract-uploaded-knowledge.py tmp/ma24-independent-quarantine/ieee-gepof-tutorial-v14.pptx tmp/ma24-independent-quarantine/ieee-product-extraction.json",
+  "artifactSha256": "035446eaf582572f1b5cb9c893f2604be23b74aafd1813adba54ee42e47fd107",
+  "extractorVersion": "layout-v2.0.6",
+  "documentSourceHashMatched": true,
+  "totalBlocks": 563,
+  "slideQualitySummary": {"success": 38, "blank": 0, "pending-ocr": 44, "failed": 0},
+  "visuallyCheckedExamples": [
+    {
+      "slide": 5,
+      "blockId": "slide-5-text-2",
+      "quality": "success",
+      "shapePath": [2],
+      "shapeIdPath": [71],
+      "contentCheck": "all three POF length/connection conditions appear in extracted block and matched the rendered original"
+    },
+    {
+      "slide": 22,
+      "blockId": "slide-22-text-2",
+      "quality": "success",
+      "shapePath": [2],
+      "shapeIdPath": [162],
+      "contentCheck": "contribution and SG non-adoption statements appear in extracted block and matched the rendered original"
+    }
+  ],
+  "externalCalls": 0,
+  "modelCalls": 0,
+  "databaseWrites": 0,
+  "scopeResult": "local product extraction and slide/block coordinates passed for the two approved examples only",
+  "remaining": "Register and read this source through an isolated product tree, verify evidence and page citations at the product boundary, and keep unresolved slides out of any full-document acceptance. This deck remains excluded from independent answer-quality Gold."
+}
