@@ -92,7 +92,7 @@ export function KnowledgeExtractionReview({jobId,onClose,onComplete}:{jobId:stri
           {shownDecision==='unresolved'&&<p className="subtle">此对象保持待核，不能完成本资料的审核或建立新版索引；若已有可检索旧版，仍可查询旧版。</p>}
           {shownDecision==='evidence'&&<label>对照原件确认的内容<textarea rows={7} maxLength={20000} value={shownEvidence} onChange={event=>edit({evidence:event.target.value})}/></label>}
           <label>核对依据 / 备注<textarea rows={3} maxLength={2000} value={shownNote} onChange={event=>edit({note:event.target.value})}/></label>
-          <button type="button" className="primary-button" disabled={!shownNote.trim()||(shownDecision==='evidence'&&!shownEvidence.trim())} onClick={()=>void save()}>{busy?'正在保存…':'保存本条审核'}</button>
+          <button type="button" className="primary-button" disabled={!dirty||!shownNote.trim()||(shownDecision==='evidence'&&!shownEvidence.trim())} onClick={()=>void save()}>{busy?'正在保存…':'保存本条审核'}</button>
         </fieldset>}
         <nav aria-label="抽取对象翻页"><button disabled={busy||loading||(offset===0&&index===0)} onClick={()=>navigate(()=>index>0?select(index-1):page(Math.max(0,offset-20),true))}>上一对象</button>
           <button disabled={busy||loading||offset+index+1>=data.total} onClick={()=>navigate(()=>index+1<data.blocks.length?select(index+1):page(offset+20))}>下一对象</button></nav>

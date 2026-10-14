@@ -54,6 +54,7 @@ try{
   await page.getByRole('button',{name:'保存本条审核'}).click();await expect(page.getByRole('alert')).toContainText('该对象已有新的审核');
   await expect(page.getByLabel('核对依据 / 备注')).toHaveValue('需要检查图中的连接关系');
   await page.getByRole('button',{name:'保存本条审核'}).click();await expect(page.getByText('已保存修订 1。',{exact:true})).toBeVisible();
+  await expect(page.getByRole('button',{name:'保存本条审核'})).toBeDisabled();
   assert.equal(posts[1].expectedRevision,0);assert.equal(posts[1].artifactSha256,'a'.repeat(64));
   for(let i=0;i<20;i++)await page.getByRole('button',{name:'下一对象',exact:true}).click();
   await expect(page.getByText('对象 21 / 21',{exact:true})).toBeVisible();await expect(page.getByRole('button',{name:'下一对象',exact:true})).toBeDisabled();

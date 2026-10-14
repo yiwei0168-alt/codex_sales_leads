@@ -1,0 +1,16 @@
+{
+  "date": "2026-10-14",
+  "scope": "G05 visual review editor save state",
+  "change": "Save is available only when the current review entry has unsaved edits. A successful save disables it; a 409 conflict retains the draft for retry.",
+  "verification": {
+    "browserWidths": [1366, 390, 320],
+    "browserResults": "3 passed; saved entry cannot be submitted again without edits, conflict draft can be retried, pagination and focus recovery remain working",
+    "apiMode": "synthetic authenticated API responses"
+  },
+  "limits": {
+    "serverDecisionSemanticsChanged": false,
+    "productionDeployed": false,
+    "pptxProductionJudgments": 0,
+    "visualContentQualityAccepted": false
+  }
+}
