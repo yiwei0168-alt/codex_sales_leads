@@ -31,9 +31,10 @@ def extract_pdf(path: Path):
                 if text: page_blocks.append(_block(f"page-{index}-block-{block_index}","page",index,"paragraph",text,bbox=[x0,y0,x1,y1]))
             if page_blocks:
                 blocks.extend(page_blocks)
-                invisible_text=any(trace.get("chars") and (trace.get("type")==3 or trace.get("opacity",1)<=0.01)
+                visual_content=bool(page.get_images() or page.get_drawings() or list(page.annots() or []) or list(page.widgets() or []))
+                invisible_text=not visual_content and any(trace.get("chars") and (trace.get("type")==3 or trace.get("opacity",1)<=0.01)
                     for trace in page.get_texttrace())
-                if page.get_images() or page.get_drawings() or list(page.annots() or []) or list(page.widgets() or []) or invisible_text:
+                if visual_content or invisible_text:
                     blocks.append(_block(f"page-{index}-visual-review","page",index,"pending-ocr","",quality="pending-ocr",
                         bbox=list(page.rect),metadata={"reviewReason":"invisible-pdf-text" if invisible_text else "mixed-page-visual-content"}))
                     statuses.append("pending-ocr")
