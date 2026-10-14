@@ -4,16 +4,16 @@
   "stage": "R4 source discovery only",
   "holdoutFrozen": false,
   "goldCreated": 0,
-  "filesDownloaded": 7,
+  "filesDownloaded": 8,
   "localRegistryAudit": {
     "checkedAt": "2026-10-14",
     "database": "local PostgreSQL, repeatable-read read-only transaction",
     "tables": ["knowledge_asset", "knowledge_upload_job", "knowledge_evaluation_review_v3.expected_sources"],
-    "candidateHashesChecked": 7,
+    "candidateHashesChecked": 8,
     "matchingAssets": 0,
     "matchingUploadJobs": 0,
     "matchingHistoricalGoldSources": 0,
-    "limitation": "Exact-hash absence does not exclude semantic overlap, prior development exposure outside the registry, or public model pretraining."
+    "limitation": "Seven hashes were checked in the initial transaction and the eighth in a separate read-only transaction. Exact-hash absence does not exclude semantic overlap, prior development exposure outside the registry, or public model pretraining."
   },
   "candidates": [
     {
@@ -113,6 +113,20 @@
       "sha256": "786e8324f221fb8d4e854e88515020b61079acb2f50d56e535441e10efbd92c2",
       "integrity": "valid OOXML; 72 ZIP parts; 11 slides with native text; no macro/external-link parts or external relationships",
       "status": "quarantined as potential independent PPTX quality source; research-result scope, question-level semantic overlap, precise chart coordinate and evaluation-use review pending; Gold 0"
+    },
+    {
+      "kind": "pptx",
+      "title": "IEEE 802.11 Overview and Amendments under development",
+      "publisher": "IEEE 802.11 presentation page",
+      "metadataPage": "https://www.ieee802.org/11/presentation.html",
+      "sourceUrl": "https://www.ieee802.org/11/IEEE%20802-11-Overview-and-Amendments-Under-Development.pptx",
+      "metadataChecked": "IEEE page describes a September 2025 presentation on projects under development and permits presenting it; the deck disclaims formal IEEE interpretation.",
+      "contentRead": true,
+      "localQuarantinePath": "tmp/ma24-independent-quarantine/ieee-80211-overview-under-development-2025.pptx",
+      "bytes": 3590900,
+      "sha256": "3ae95a7ecdadf8cca4127e239bfbd71c25aa08e354fd0ca94d078a3e0eb11e3d",
+      "integrity": "valid OOXML; 151 ZIP parts; 27 slides with native text; no macro or external-link part; six external hyperlinks",
+      "status": "quarantined candidate; slides 20 and 22 yield two visually checked, time-scoped draft questions and matching local product text blocks; 19 slides pending visual review, complete semantic independence and user-visible citations unverified; Gold 0"
     }
   ],
   "excluded": [
@@ -121,5 +135,5 @@
       "reason": "The browsing tool displayed full PDF text while checking the link; exposed to development review and unsuitable as a fresh holdout."
     }
   ],
-  "next": "Run PPTX read/citation acceptance on the GEPOF examples without Gold credit. Screen answer-level overlap and coordinates for the EU, ITU, ETSI and new IEEE automotive candidates, settle evaluation use of the research presentation, complete development fixes, then freeze eligible sources, Gold and retrieval configuration before either retrieval path."
+  "next": "Run PPTX read/citation acceptance on the GEPOF examples without Gold credit. Screen answer-level overlap and coordinates for the EU, ITU, ETSI and IEEE PPTX candidates, settle evaluation use of the research presentation, complete development fixes, then freeze eligible sources, Gold and retrieval configuration before either retrieval path."
 }

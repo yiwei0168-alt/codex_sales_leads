@@ -1,0 +1,76 @@
+{
+  "schema": "ma24-g14-ieee-80211-overview-candidate-v1",
+  "date": "2026-10-14",
+  "metadataPage": "https://www.ieee802.org/11/presentation.html",
+  "sourceUrl": "https://www.ieee802.org/11/IEEE%20802-11-Overview-and-Amendments-Under-Development.pptx",
+  "publisher": "IEEE 802.11 presentation page",
+  "sourceDescription": "IEEE 802.11 Overview and Amendments under development, September 2025",
+  "metadataChecked": "The IEEE page identifies a September 2025 presentation on current projects and says no permission is required to present it. The deck itself states that an individual's views are not the formal IEEE position or interpretation.",
+  "localQuarantinePath": "tmp/ma24-independent-quarantine/ieee-80211-overview-under-development-2025.pptx",
+  "bytes": 3590900,
+  "sha256": "3ae95a7ecdadf8cca4127e239bfbd71c25aa08e354fd0ca94d078a3e0eb11e3d",
+  "integrity": {
+    "validOoxml": true,
+    "zipParts": 151,
+    "zipBadPart": null,
+    "slides": 27,
+    "slidesWithNativeText": 27,
+    "macroParts": 0,
+    "externalLinkParts": 0,
+    "externalRelationships": "six hyperlinks to public references; no embedded external document was fetched"
+  },
+  "contentScreen": {
+    "doclingConversion": "success; Markdown and JSON retained only in ignored quarantine",
+    "doclingWarnings": "a 95,591,529-pixel image triggered PIL DecompressionBombWarning; page 5 provenance bbox was clamped; neither warning affects the two selected text pages, but full-document quality is unapproved",
+    "originalSlidesVisuallyChecked": [20, 21, 22],
+    "domainFit": "substantive WLAN amendment and PHY material with page-specific details; all claims must be attributed to the September 2025 presentation, not asserted as current adopted standards",
+    "productLocalExtractor": {
+      "version": "layout-v2.0.6",
+      "artifactSha256": "970674e5bb24e1ab73e2431c62d84ba7942aaf2860b9ffb8f9ad916e355f66ee",
+      "sourceSha256Matched": true,
+      "blocks": 268,
+      "slideQuality": {"success": 8, "blank": 0, "pending-ocr": 19, "failed": 0},
+      "selectedTextBlocks": ["slide-20-text-2", "slide-22-text-2"],
+      "selectedBlocksMatchVisibleOriginal": true,
+      "productionTreeReadOrCitationProven": false
+    }
+  },
+  "localExposureScreen": {
+    "exactHashCommand": "node scripts/run-tsx.cjs scripts/audit-g14-candidate-hash-local.ts 3ae95a7ecdadf8cca4127e239bfbd71c25aa08e354fd0ca94d078a3e0eb11e3d",
+    "matchingAssets": 0,
+    "matchingUploadJobs": 0,
+    "matchingHistoricalGoldRows": 0,
+    "distinctiveTermMatchesInOldCorpusAndLocalHoldoutOutputs": 0,
+    "terms": ["802.11bp", "802.11bq", "802.11br", "Integrated mmWave", "Enhanced Light Communications", "Ambient Power Transmission"],
+    "limit": "Exact hash and term absence do not prove semantic independence across all prior development material or provider-side exposure."
+  },
+  "draftQuestions": [
+    {
+      "id": "ieee-80211-2025-amp-bands-modes",
+      "status": "draft; not Gold",
+      "question": "按 IEEE 802.11 这份 2025 年 9 月在研修订概览，第 20 页所述 802.11bp AMP 方案将环境供能传输放在哪两个频段，无线电力传输协议放在哪个频段，并支持哪两种传输方式？",
+      "draftAnswer": "该页称环境供能传输覆盖 S1G 和 2.4 GHz；无线电力传输协议定义在 S1G；支持 bistatic 与 monostatic 两种传输方式。",
+      "sourceCoordinate": "original slide 20, title 802.11bp Ambient Power Transmission (AMP), body bullets; printed page 20; product block slide-20-text-2",
+      "visualCheck": "pass: the frequencies and two transmission modes are legible on the original render",
+      "scopeGuard": "Presentation description of work under development as of September 2025; not a statement that 802.11bp was adopted or deployed."
+    },
+    {
+      "id": "ieee-80211-2025-elc-optical-bands",
+      "status": "draft; not Gold",
+      "question": "按同一份 2025 年 9 月概览，第 22 页的 802.11br ELC 方案列出哪两个新光学波段范围，并明确提到哪种波分技术？",
+      "draftAnswer": "该页列出 400–600 nm 与 1200–1600 nm，并提到 wavelength division multiplexing（WDM，波分复用）。",
+      "sourceCoordinate": "original slide 22, title 802.11br Enhanced Light Communications (ELC), body bullets; printed page 22; product block slide-22-text-2",
+      "visualCheck": "pass: both wavelength ranges and WDM are legible on the original render",
+      "scopeGuard": "Presentation description of an amendment under development as of September 2025; not a current IEEE standard claim."
+    }
+  ],
+  "approval": {
+    "candidateQuarantined": true,
+    "sourceIndependenceEstablished": false,
+    "questionIndependenceEstablished": false,
+    "goldCreated": 0,
+    "modelCalls": 0,
+    "productionKnowledgeWrites": 0
+  },
+  "next": "Complete answer-level semantic overlap and full visual review; verify product tree read and user-visible citation on the original without tuning either retrieval arm; then decide whether the source and questions can enter a frozen independent Gold set."
+}
