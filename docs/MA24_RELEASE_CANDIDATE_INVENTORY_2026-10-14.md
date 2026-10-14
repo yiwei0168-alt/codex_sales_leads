@@ -14,6 +14,8 @@
 
 **最新本地候选（2026-10-15）。** `a75bafd8` 的完整 Next 生产构建通过，build ID `eIvmmxRUHfVhWKs48wg29`，manifest SHA-256 `074bafd056801c8e7c0eb667e32ebe1399748e93ffb3e39f5a3d1a8f6624f0c3`；已复制并核对忽略目录 `.next-releases/ma24-g01-a75bafd8`（1546 文件）。此候选包含成功块审核和 `layout-v2.0.9`；透明文字的隔离上传→审核→登记链路通过。3018 上旧 build manifest 为 200，候选为 404；127–134 迁移仍未应用，旧备份需切换前更新。五类队列只读快照无待办或运行项，但切换时须重查。候选未部署，分域质量、试点和实际回滚未通过。[构建与预检收据](evidence/ma24-g01-integrated-release-candidate-v3-2026-10-15.json)。
 
+**2026-10-15 G13 测试构建。** 源码 `28dc7a8d` 的根目录 `.next` 完整构建通过，build ID `SYTDOFazJ7rlat8Kz_ESL`、manifest SHA-256 `23d829176841037b60ed1a20627ff096e6e6b964c54e989e7431a87d0464b109`；它包含 F13 删除确认修正，并通过[隔离网页到库验收](evidence/ma24-g13-conversation-delete-page-db-clone-2026-10-15.json)。该根目录测试构建未固定为新的发布快照，也未替代上方的可回切快照；3018、生产迁移和发布状态未因此改变。
+
 **G05 页面到库补验。** 同一候选 build 在隔离恢复库的实际浏览器成功文字视图保存并回读排除决定；手机/桌面布局已检查。旧 Web 仍可列出候选创建的作业，但未验证它继续处理该成功块审核；正式服务尚未切换。[页面收据](evidence/ma24-g05-success-review-page-db-clone-2026-10-15.json)。
 
 | 功能域 | 候选需要一起核对的运行单元 | 数据库与本地依赖 | 当前缺口及回滚入口 |

@@ -60,6 +60,7 @@ export async function verifyMa24WebCloneCompatibility(options: {
   applicationDatabaseUrl: string;
   migrationDatabaseUrl: string;
   reviewUi?: boolean;
+  conversationUi?: boolean;
 }): Promise<unknown> {
   assert.equal(await readFile(resolve(oldRoot, ".next/BUILD_ID"), "utf8").then(value => value.trim()), oldBuild);
   const candidateBuild = (await readFile(resolve(candidateRoot, ".next/BUILD_ID"), "utf8")).trim();
@@ -135,6 +136,7 @@ export async function verifyMa24WebCloneCompatibility(options: {
         assert.deepEqual(await response.json(), { items: [], hasMore: false });
       }
       let reviewPage: unknown;
+      let conversationPage: unknown;
       if (version.name === "candidate-web" && options.reviewUi) {
         const { verifyMa24ReviewPageClone } = await import("./verify-ma24-review-page-clone");
         try {
@@ -150,11 +152,16 @@ export async function verifyMa24WebCloneCompatibility(options: {
           throw new Error(`Candidate review page smoke failed: ${error instanceof Error ? error.message : "unknown"}; server diagnostic: ${diagnostic || "none"}`);
         }
       }
+      if (version.name === "candidate-web" && options.conversationUi) {
+        const { verifyMa24ConversationDeleteClone } = await import("./verify-ma24-conversation-delete-clone");
+        conversationPage = await verifyMa24ConversationDeleteClone({ admin: options.admin, base, cookie, userId });
+      }
       results.push({ version: version.name, buildId: version.buildId, manifestStatus: manifest.status,
         anonymousUploadStatus: denied.status, syntheticLoginStatus: login.status,
         authenticatedUploadStatus: list.status, visibleUploadJobs: listed.jobs.length,
         ...(acceptanceReviewStatus ? { acceptanceReviewStatus } : {}),
-        ...(reviewPage ? { reviewPage } : {}) });
+        ...(reviewPage ? { reviewPage } : {}),
+        ...(conversationPage ? { conversationPage } : {}) });
     } finally {
       await stopOwnedServer(child);
     }

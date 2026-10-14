@@ -1,0 +1,19 @@
+{
+  "goal": "MA24 G13 F13",
+  "date": "2026-10-15",
+  "sourceCommit": "28dc7a8d74712db590cc26c7b7f665fc00f4e26b",
+  "candidateWebBuildId": "SYTDOFazJ7rlat8Kz_ESL",
+  "candidateBuildManifestSha256": "23d829176841037b60ed1a20627ff096e6e6b964c54e989e7431a87d0464b109",
+  "backupSha256": "17db517922f0ee8067391544418f0c8af9f77ee5f48203b938b7559ba528d428",
+  "command": "npm run ma24:verify-conversation-ui-clone",
+  "environment": "Disposable local PostgreSQL restore, migrations 127-134, source-equivalent application ACL, synthetic account, old and candidate Next servers on temporary local ports",
+  "result": {
+    "desktop1366x900": { "cancelFocusRestored": true, "pausedRunDeleteStatus": 409, "blockedConversationStatus": "active", "completedRunDeleteStatus": 200, "finalConversationStatus": "deleted", "runRetained": true, "noHorizontalOverflow": true },
+    "mobile390x760": { "cancelFocusRestored": true, "pausedRunDeleteStatus": 409, "blockedConversationStatus": "active", "completedRunDeleteStatus": 200, "finalConversationStatus": "deleted", "runRetained": true, "noHorizontalOverflow": true },
+    "oldWebSmoke": { "manifestStatus": 200, "syntheticLoginStatus": 200, "emptyUploadListStatus": 200 },
+    "candidateWebSmoke": { "manifestStatus": 200, "syntheticLoginStatus": 200, "emptyUploadListStatus": 200 },
+    "modelCalls": 0,
+    "productionChanged": false
+  },
+  "limits": "Synthetic account and task in disposable restored database. This does not prove production rollout, real task cancellation UX, all F01-F13 entries, or business quality. The new root .next build has not been fixed as a release snapshot."
+}

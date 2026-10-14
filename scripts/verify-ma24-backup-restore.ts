@@ -172,7 +172,8 @@ try {
     const { verifyMa24WebCloneCompatibility } = await import("./lib/verify-ma24-web-clone-compatibility");
     webCompatibility = await verifyMa24WebCloneCompatibility({ admin: clone,
       applicationDatabaseUrl: applicationSource.toString(), migrationDatabaseUrl: cloneUrl.toString(),
-      reviewUi: process.argv.includes("--review-ui") });
+      reviewUi: process.argv.includes("--review-ui"),
+      conversationUi: process.argv.includes("--conversation-ui") });
   }
   console.log(JSON.stringify({ archive: newest, archiveSha256: manifest.sha256, restored: true,
     migrationRange: "127-134", rollbackVerified: true, committedOnDisposableClone: true,

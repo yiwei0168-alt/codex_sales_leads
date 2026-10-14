@@ -20,6 +20,7 @@
     "ma24:audit-runtime-queues": "node scripts/run-tsx.cjs scripts/audit-ma24-runtime-queues.ts",
     "ma24:verify-web-rollback-clone": "node scripts/run-tsx.cjs scripts/verify-ma24-backup-restore.ts --web-compat",
     "ma24:verify-review-ui-clone": "node scripts/run-tsx.cjs scripts/verify-ma24-backup-restore.ts --web-compat --review-ui",
+    "ma24:verify-conversation-ui-clone": "node scripts/run-tsx.cjs scripts/verify-ma24-backup-restore.ts --web-compat --conversation-ui",
     "ma24:verify-skill-review-ui-clone": "node scripts/run-tsx.cjs scripts/verify-recorded-model-source-clone.ts --skill-review-ui",
     "leads:publish-scoring-policy": "node scripts/run-tsx.cjs scripts/publish-lead-scoring-policy.ts",
     "assistant:verify": "tsx scripts/verify-assistant-workspace.ts",
