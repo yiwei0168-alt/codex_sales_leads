@@ -4,7 +4,17 @@
   "stage": "R4 source discovery only",
   "holdoutFrozen": false,
   "goldCreated": 0,
-  "filesDownloaded": 4,
+  "filesDownloaded": 5,
+  "localRegistryAudit": {
+    "checkedAt": "2026-10-14",
+    "database": "local PostgreSQL, repeatable-read read-only transaction",
+    "tables": ["knowledge_asset", "knowledge_upload_job", "knowledge_evaluation_review_v3.expected_sources"],
+    "candidateHashesChecked": 5,
+    "matchingAssets": 0,
+    "matchingUploadJobs": 0,
+    "matchingHistoricalGoldSources": 0,
+    "limitation": "Exact-hash absence does not exclude semantic overlap, prior development exposure outside the registry, or public model pretraining."
+  },
   "candidates": [
     {
       "kind": "pptx",
@@ -27,12 +37,26 @@
       "metadataPage": "https://datacatalog.worldbank.org/search/dataset/0067055/itu-data-hub",
       "sourceUrl": "https://datacatalogfiles.worldbank.org/ddh-published/0067055/DR0095954/WBGs_ITU_Indicators_Nov2025_6Feb2026.xlsx",
       "metadataChecked": "Catalog lists a public CC BY 4.0 Excel file, last updated 2026-03-13, 134 KB; web downloader reported binary content without returning cell content.",
-      "contentRead": false,
+      "contentRead": true,
       "localQuarantinePath": "tmp/ma24-independent-quarantine/worldbank-itu-datahub-2026.xlsx",
       "bytes": 137248,
       "sha256": "00ee9334e004546cb8d1f423ca320222b7b76be0258539e30a03559d594b2079",
       "integrity": "valid OOXML; 34 ZIP parts; no macro or external-link parts",
-      "status": "quarantined; exact hash absent from existing source registry; overlaps prior ITU ICT topic, so answer-level independence screening remains"
+      "status": "development-only candidate; subject and indicator overlap with the previously used ITU ICT workbook, so it is excluded from the fresh holdout source set"
+    },
+    {
+      "kind": "xlsx",
+      "title": "Digital Decade 2026 - Connectivity KPIs workbook",
+      "publisher": "European Commission, DG CONNECT",
+      "metadataPage": "https://digital-strategy.ec.europa.eu/en/library/digital-decade-2026-connectivity-coverage-europe-2025-report",
+      "sourceUrl": "https://ec.europa.eu/newsroom/dae/redirection/document/129743",
+      "metadataChecked": "Commission page published 2026-06-17 and lists this workbook as a download. Direct download was HTTP 200; the file is an XLSX ZIP container.",
+      "contentRead": true,
+      "localQuarantinePath": "tmp/ma24-independent-quarantine/eu-connectivity-kpis-2026.xlsx",
+      "bytes": 410909,
+      "sha256": "2ba1b1af51b4d27a703e4e5495ec89724d26bd6584a6b56244d8ecb7f54e079a",
+      "integrity": "valid OOXML; 49 ZIP parts; six worksheets including a 489-row Data source sheet; two formulas, one chart, six images; no macro or external-link parts",
+      "status": "quarantined; no exact registry match; connectivity coverage by EU region differs structurally from the prior ITU world/regional indicator workbook; question-level independence remains pending"
     },
     {
       "kind": "pdf",
@@ -69,5 +93,5 @@
       "reason": "The browsing tool displayed full PDF text while checking the link; exposed to development review and unsuitable as a fresh holdout."
     }
   ],
-  "next": "Complete source provenance and answer-level contamination screening, explicitly exclude overlap with the prior ITU development workbook, freeze an eligible source set and retrieval configuration, then author Gold before running either retrieval path."
+  "next": "Screen answer-level overlap and development exposure for the four still-eligible sources, complete necessary development fixes, freeze the eligible source set and retrieval configuration, then author Gold before running either retrieval path."
 }

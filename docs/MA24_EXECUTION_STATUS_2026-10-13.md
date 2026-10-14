@@ -39,4 +39,6 @@ R1 的 PPTX 内容质量抽样已核对公开开发原件的 6/63 个待审核�
 
 2026-10-14 R4 并行准备：将[四份官方来源候选](evidence/ma24-independent-source-candidates-2026-10-14.json)下载到 Git 忽略的本地隔离目录，包括 PPTX、XLSX、12 页 PDF 和 167 页长 PDF；已核文件格式、大小和 SHA-256，既有源码/证据登记中未找到相同哈希。ITU DataHub XLSX 与旧开发材料主题相近，仍需逐题排除重叠；来源尚未冻结、未生成 Gold 或进入检索对照。检查时被网页工具展开正文的另一份 ETSI PDF 已明确排除独立集。
 
+2026-10-14 R4 续查：本机 PostgreSQL 恢复健康后，在只读重复读事务中核查四份原候选及新增欧盟委员会 XLSX 的 SHA-256；`knowledge_asset`、`knowledge_upload_job` 和历史 Gold 来源均无精确哈希匹配。对照工作表后，World Bank/ITU DataHub XLSX 与已用于开发的 ITU 指标资料主题、指标及年份交叉，移出新独立集候选；另登记[欧盟委员会 2026 连接覆盖 KPI 工作簿](evidence/ma24-independent-source-candidates-2026-10-14.json)，其地区覆盖表与旧 ITU 汇总表结构不同。该工作簿含公式、图表和图片，后续题目应明确区分可引用单元格与未核实图形。四份余下原件仍只在本地隔离区；未冻结来源或配置、未编 Gold、未上传或运行模型。精确哈希清白不等于答案级独立，G14–G16 仍待完成。
+
 进程命令行核对到主任务 worker 启动器位于 `tmp/g02-rollback-release`，该工作树为 `1d1cc962`。Web 正式端口返回 `245ed9cc` 独立工作树的唯一 build manifest（200），旧构建与根目录构建 ID 均为 404；Graph 的 PID 与 `44e8608c` 发布标记吻合。该[运行版本证据](evidence/ma24-r0-runtime-provenance-2026-10-13.json)比上次收据更直接，但 Graph 没有可返回进程内哈希的端点。[邮箱收据审计](evidence/ma24-mail-uncertain-receipts-2026-10-13.json)显示 169 条同属一个账号，均有失败外发审计及 unknown 付费预留、请求指纹，但没有服务商请求 ID/哈希。原请求是否发生费用无法由本地记录判断，继续保持不自动重试。
