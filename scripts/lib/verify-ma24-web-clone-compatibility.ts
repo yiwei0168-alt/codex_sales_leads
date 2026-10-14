@@ -71,6 +71,7 @@ export async function verifyMa24WebCloneCompatibility(options: {
   const versions = [
     { name: "old-web-rollback", root: oldRoot, buildId: oldBuild },
     { name: "candidate-web", root: candidateRoot, buildId: candidateBuild },
+    ...(options.reviewUi ? [{ name: "old-web-after-candidate-upload", root: oldRoot, buildId: oldBuild }] : []),
   ];
   const results: Array<Record<string, unknown>> = [];
   for (const version of versions) {
@@ -113,7 +114,17 @@ export async function verifyMa24WebCloneCompatibility(options: {
       assert.equal(list.status, 200, `${version.name} authenticated upload list failed`);
       const listed = await list.json() as { jobs?: unknown[] };
       assert(Array.isArray(listed.jobs));
-      assert.deepEqual(listed.jobs, [], `${version.name} synthetic account sees non-owned upload jobs`);
+      if (version.name === "old-web-after-candidate-upload") {
+        const uploaded = (await options.admin.query<{ id: string; status: string }>(
+          "select id,status from knowledge_upload_job where user_id=$1", [userId],
+        )).rows;
+        assert.equal(uploaded.length, 1, "Synthetic candidate upload missing before old Web rollback smoke");
+        assert.equal(uploaded[0].status, "extracted");
+        assert.equal(listed.jobs.length, 1, "Old Web cannot list the candidate-created upload");
+        assert.equal((listed.jobs[0] as { id: string }).id, uploaded[0].id);
+      } else {
+        assert.deepEqual(listed.jobs, [], `${version.name} synthetic account sees non-owned upload jobs`);
+      }
       let acceptanceReviewStatus: number | undefined;
       if (version.name === "candidate-web") {
         const response = await fetch(`${base}/api/assistant/skills/acceptance-reviews?skillId=${randomUUID()}`, {
@@ -148,5 +159,7 @@ export async function verifyMa24WebCloneCompatibility(options: {
       await stopOwnedServer(child);
     }
   }
-  return { cloneOnly: true, syntheticAccountOnly: true, modelCalls: 0, versions: results };
+  return { cloneOnly: true, syntheticAccountOnly: true,
+    modelCalls: options.reviewUi ? null : 0, workerUsageCountersCaptured: !options.reviewUi,
+    versions: results };
 }

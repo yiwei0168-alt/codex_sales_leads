@@ -8,7 +8,7 @@
     "aclIncluded": false
   },
   "isolation": {
-    "temporaryDatabase": "ma24_restore_07ec1205613c",
+    "temporaryDatabase": "ma24_restore_5fc60484d272",
     "migrationRange": "127-134",
     "oldWebBuildId": "QfoyXprIZIVgSWxFSZ-1K",
     "candidateWebBuildId": "xlf_7uBjoKnfS1xxCbjvB",
@@ -45,7 +45,15 @@
     "completionButtonDisabled": true,
     "reviewCompletionRows": 0,
     "publishedKnowledgeDocuments": 0,
-    "v3ReleasePointerUnchanged": true
+    "v3ReleasePointerUnchanged": true,
+    "oldWebAfterCandidateUpload": {
+      "buildId": "QfoyXprIZIVgSWxFSZ-1K",
+      "syntheticLoginStatus": 200,
+      "authenticatedUploadListStatus": 200,
+      "visibleUploadJobs": 1,
+      "jobIdMatchedCandidateCreatedRow": true,
+      "jobStatus": "extracted"
+    }
   },
   "checks": {
     "typecheck": "passed",
@@ -55,6 +63,7 @@
   },
   "limits": [
     "The saved decision is synthetic and intentionally unresolved. It is not a human visual-content judgment.",
+    "Old Web post-upload compatibility covered the metadata list only. The synthetic file had been cleaned before that read; original download and continuing review were not tested.",
     "No complete review, searchable publication, BGE indexing, production migration, deployment, real user task or live rollback was exercised.",
     "The extraction worker's usage counters were not captured through the Windows process supervisor; empty cloud credential variables and local-only job scope are recorded instead."
   ]
