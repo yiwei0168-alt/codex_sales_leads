@@ -1,6 +1,6 @@
 {
-  "schema": "ma24-pptx-visual-quality-sample-v1",
-  "reviewedAt": "2026-10-13",
+  "schema": "ma24-pptx-visual-quality-sample-v2",
+  "reviewedAt": "2026-10-14",
   "scope": "Public development source; local visual inspection of rendered candidate crops. This is not an independent holdout or a production extraction review receipt.",
   "source": {
     "path": "tmp/ma24-public-eval-candidates/itu-satellite-2025.pptx",
@@ -16,14 +16,17 @@
     "noTextImages": 23,
     "nativeDiagrams": 4,
     "nativeConnectors": 4,
-    "visuallyInspectedObjects": 6,
-    "remainingObjectsNotVisuallyInspected": 57
+    "visuallyInspectedObjects": 63,
+    "remainingObjectsNotVisuallyInspected": 0
   },
   "findings": [
     {
       "blockId": "slide-1-visual-2-1",
       "slide": 1,
-      "shapePath": [2, 1],
+      "shapePath": [
+        2,
+        1
+      ],
       "imageSha256": "f30cbbd554f53e1789132860bae84ae38a17d9c7c678213c7470a1df12b0c16a",
       "observation": "White ITU logo mark on black background, with no answer-bearing text. OCR returned no text.",
       "proposedReviewDecision": "decoration"
@@ -31,7 +34,9 @@
     {
       "blockId": "slide-3-visual-5",
       "slide": 3,
-      "shapePath": [5],
+      "shapePath": [
+        5
+      ],
       "imageSha256": "dbc13946d946c0941620252f13b2d9d701f37fbf3d7b7f46530169e395f363bc",
       "observation": "GEO, MEO and LEO are three separate infographic columns. OCR recognizes most strings but emits all three labels, then all three heights, then all three examples and other rows. It also emits an unexplained '(D)'. Raw OCR order loses the column-to-value relationship and cannot be cited as a linear paragraph.",
       "proposedReviewDecision": "evidence-after-structured-transcription"
@@ -39,7 +44,9 @@
     {
       "blockId": "slide-5-visual-4",
       "slide": 5,
-      "shapePath": [4],
+      "shapePath": [
+        4
+      ],
       "imageSha256": "7532b01a2605d3f9af484dc2dc6f029fd1186661318042d0dabfa4f355a2ab97",
       "observation": "Seven-column GEO/MEO/LEO comparison table. OCR emits headers and cell fragments out of row order and inserts a spurious Chinese character. The visible MEO orbital-period cell reads '127 minutes to 24 hours'; the OCR sequence separates '127', 'minutes', 'to 24', and 'hours' around other cells. Direct indexing would corrupt row and column associations.",
       "proposedReviewDecision": "evidence-after-table-transcription"
@@ -47,7 +54,9 @@
     {
       "blockId": "slide-6-visual-2",
       "slide": 6,
-      "shapePath": [2],
+      "shapePath": [
+        2
+      ],
       "imageSha256": "a4217f59df69b22c976fcc4cb2b78a73ea3a4f977fae1b21c414afc92cf80cff",
       "observation": "Four-quadrant governance diagram. OCR interleaves bullet lists from different quadrants and breaks words, including 'Recommendations' and 'stakeholders'. The relationship between ITU, intergovernmental cooperation, national/regional level, and space stakeholders requires visual transcription.",
       "proposedReviewDecision": "evidence-after-structured-transcription"
@@ -55,7 +64,9 @@
     {
       "blockId": "slide-16-visual-5",
       "slide": 16,
-      "shapePath": [5],
+      "shapePath": [
+        5
+      ],
       "imageSha256": "04300ac66d32aa281843b58b426e6cc3dd05c33a091270303b1c2f0b485aaae7",
       "observation": "Satellite silhouettes, transmission arcs and people; no numerical labels or answer-bearing text in this crop. OCR returned no text.",
       "proposedReviewDecision": "decoration"
@@ -63,10 +74,601 @@
     {
       "blockId": "slide-36-visual-21",
       "slide": 36,
-      "shapePath": [21],
+      "shapePath": [
+        21
+      ],
       "imageSha256": "e143ecfe3b1c2f7ba4d231074b789cb80480a4e588da6d977f009bf3c44aaee7",
       "observation": "Purple satellite icon with no labels or answer-bearing text. OCR returned no text.",
       "proposedReviewDecision": "decoration"
+    },
+    {
+      "blockId": "slide-1-visual-4",
+      "slide": 1,
+      "shapePath": [
+        4
+      ],
+      "imageSha256": "887f92f1229f90e318a13ce1569dad0568aef7a598ae7ac13a755f8e058ed48c",
+      "observation": "ITU 2025 branding graphic. The two OCR labels identify a logo/year but provide no answer-bearing claim for satellite questions.",
+      "proposedReviewDecision": "decoration"
+    },
+    {
+      "blockId": "slide-8-visual-5",
+      "slide": 8,
+      "shapePath": [
+        5
+      ],
+      "imageSha256": "d873e94e79c3cf7b969596fb1db120775e39ffca34832d66591e7ebda590e8ad",
+      "observation": "Stacked payload-launch chart: bar heights, years and purpose colors carry the result; OCR extracts axis and legend labels but no per-year counts or color-to-bar assignments.",
+      "proposedReviewDecision": "evidence-after-chart-transcription"
+    },
+    {
+      "blockId": "slide-9-visual-4",
+      "slide": 9,
+      "shapePath": [
+        4
+      ],
+      "imageSha256": "3eb2f7a63dde6706cecaeb0ed478ffdd42201fb78ad4afba6eec28402e2297dc",
+      "observation": "Two-axis 2011–2022 trend chart. OCR mangles year ticks and omits plotted values and blue/orange series linkage.",
+      "proposedReviewDecision": "evidence-after-chart-transcription"
+    },
+    {
+      "blockId": "slide-10-visual-5",
+      "slide": 10,
+      "shapePath": [
+        5
+      ],
+      "imageSha256": "6b37667fb68e3d50839e452c442aaa6c3e4935b332f2feed4f328ed2459d923c",
+      "observation": "Another two-axis NGSO trend chart. OCR mangles year ticks and does not preserve line-to-value associations.",
+      "proposedReviewDecision": "evidence-after-chart-transcription"
+    },
+    {
+      "blockId": "slide-11-visual-5",
+      "slide": 11,
+      "shapePath": [
+        5
+      ],
+      "imageSha256": "2eb3cba8963f0f3a92edf7aec3af7606f35fbb28a4013e34b81677b1c8cd2250",
+      "observation": "Cost versus density diagram with labeled technology trajectories and A/B/C markers. OCR recognizes labels but loses curve intersections and trajectory relationships.",
+      "proposedReviewDecision": "evidence-after-structured-transcription"
+    },
+    {
+      "blockId": "slide-12-visual-6",
+      "slide": 12,
+      "shapePath": [
+        6
+      ],
+      "imageSha256": "d75797f429a208feb0e2f2b1ceedeec6731ca8cf30eaca548fbb6d515210b577",
+      "observation": "Satellite expanded-cone operations diagram. OCR reads legend labels but not colored/dashed arrow directions or allowed/prohibited path relationships.",
+      "proposedReviewDecision": "evidence-after-structured-transcription"
+    },
+    {
+      "blockId": "slide-13-visual-1",
+      "slide": 13,
+      "shapePath": [
+        1
+      ],
+      "imageSha256": "d75797f429a208feb0e2f2b1ceedeec6731ca8cf30eaca548fbb6d515210b577",
+      "observation": "Same rendered expanded-cone diagram appears on slide 13; each slide coordinate remains separate. OCR still loses arrow and coverage relations.",
+      "proposedReviewDecision": "evidence-after-structured-transcription"
+    },
+    {
+      "blockId": "slide-15-visual-5",
+      "slide": 15,
+      "shapePath": [
+        5
+      ],
+      "imageSha256": "f25e6b200cbbf5a15c6996061d270186bca150028ce01b1980ce50c9acb42854",
+      "observation": "GEO/MEO/LEO decision matrix uses filled and partial circles to encode relative performance. OCR lists row/column names but cannot preserve scores.",
+      "proposedReviewDecision": "evidence-after-table-transcription"
+    },
+    {
+      "blockId": "slide-17-visual-5",
+      "slide": 17,
+      "shapePath": [
+        5
+      ],
+      "imageSha256": "a20c90834cf9395b3a21c8e7014df63b57ae01bc8c876173a8eafc7317551aca",
+      "observation": "Four labeled strategy branches connected to a central icon. OCR captures branch names but not the visual grouping; a typed list may be possible after slide-context review.",
+      "proposedReviewDecision": "evidence-after-structured-transcription"
+    },
+    {
+      "blockId": "slide-19-visual-3",
+      "slide": 19,
+      "shapePath": [
+        3
+      ],
+      "imageSha256": "e4ad44cfdbdb0dffa5fc4d8bccb34ae2747c6c260660eed891cdbb658299e7e1",
+      "observation": "Two-spectrum red/green advantage-disadvantage matrix. OCR captures row headings and legend words but not which color belongs to each cell.",
+      "proposedReviewDecision": "evidence-after-table-transcription"
+    },
+    {
+      "blockId": "slide-22-visual-5",
+      "slide": 22,
+      "shapePath": [
+        5
+      ],
+      "imageSha256": "933275f934722f4cb6cc9da4956c086e740e065cbae925152eacd69fb64b7978",
+      "observation": "Space-economy flow diagram with numerical ranges and category-to-category arrows. OCR interleaves columns and breaks some numbers; do not cite the sequence directly.",
+      "proposedReviewDecision": "evidence-after-structured-transcription"
+    },
+    {
+      "blockId": "slide-23-visual-4",
+      "slide": 23,
+      "shapePath": [
+        4
+      ],
+      "imageSha256": "59a73746722f1179dba6e4a78ba5a5d68af996eda1eae0a98ac962c026fa8c1c",
+      "observation": "Bubble plot of NGSO constellation size against date and apogee. OCR corrupts axis ticks and cannot recover individual bubble positions, sizes or categories.",
+      "proposedReviewDecision": "evidence-after-chart-transcription"
+    },
+    {
+      "blockId": "slide-24-visual-4",
+      "slide": 24,
+      "shapePath": [
+        4
+      ],
+      "imageSha256": "b2a1f93a5345ba02d7717ed3f2bdb8a061b78eb92068550baa52dd74102d1db8",
+      "observation": "Space Sustainability Gateway title/banner graphic; identifies a section but does not support substantive policy claims.",
+      "proposedReviewDecision": "navigation-only"
+    },
+    {
+      "blockId": "slide-24-visual-5",
+      "slide": 24,
+      "shapePath": [
+        5
+      ],
+      "imageSha256": "2ebd475215ae6fd851cf732027ea99bb98f3eb9067a861138895e1b83b876414",
+      "observation": "Policy, spectrum and regulatory resource cards. OCR may list names, but card grouping and small qualifiers require slide-level transcription before citation.",
+      "proposedReviewDecision": "evidence-after-structured-transcription"
+    },
+    {
+      "blockId": "slide-25-visual-4",
+      "slide": 25,
+      "shapePath": [
+        4
+      ],
+      "imageSha256": "b2a1f93a5345ba02d7717ed3f2bdb8a061b78eb92068550baa52dd74102d1db8",
+      "observation": "Repeated Space Sustainability Gateway section banner; no new substantive claim.",
+      "proposedReviewDecision": "navigation-only"
+    },
+    {
+      "blockId": "slide-25-visual-5",
+      "slide": 25,
+      "shapePath": [
+        5
+      ],
+      "imageSha256": "856f101a9b56c2e5be39ee54cbce5a9161f6a27d713e78fdad7306ad7c0a1146",
+      "observation": "Six space-environment resource cards and links. OCR text alone does not preserve each resource title, description and card relation.",
+      "proposedReviewDecision": "evidence-after-structured-transcription"
+    },
+    {
+      "blockId": "slide-27-visual-4",
+      "slide": 27,
+      "shapePath": [
+        4
+      ],
+      "imageSha256": "8296a9e2f5362d3b1e6282fec2d38be7e793e697eb9c0457d889b0bbb19554dd",
+      "observation": "Dense multi-column governance matrix with stakeholder levels, texts, tools and mission stages. OCR emits 162 fragments without reliable row/column relationships.",
+      "proposedReviewDecision": "evidence-after-table-transcription"
+    },
+    {
+      "blockId": "slide-28-visual-5",
+      "slide": 28,
+      "shapePath": [
+        5
+      ],
+      "imageSha256": "11da30984638b14d969b4fa55d041b81ad93107d05c95fdf63f8c308c7d827fc",
+      "observation": "ITU WRC Dubai 2023 conference logo; source branding only.",
+      "proposedReviewDecision": "navigation-only"
+    },
+    {
+      "blockId": "slide-29-visual-4-2",
+      "slide": 29,
+      "shapePath": [
+        4,
+        2
+      ],
+      "imageSha256": "16b66ce99446128e89d4bbfabc8d0446ea2d03e0bc9827b3bb43a8bf06ac2150",
+      "observation": "Repeated ITU WRC Dubai 2023 conference logo with different crop/color; source branding only.",
+      "proposedReviewDecision": "navigation-only"
+    },
+    {
+      "blockId": "slide-29-visual-6",
+      "slide": 29,
+      "shapePath": [
+        6
+      ],
+      "imageSha256": "25c607f692dad50af7025d9cd0fa583168010a29bdae2bd3241c74d1057432e0",
+      "observation": "Country bar chart with values, including United States 287 and China 280. OCR listing alone must be checked against aligned bars and slide metric before use.",
+      "proposedReviewDecision": "evidence-after-chart-transcription"
+    },
+    {
+      "blockId": "slide-29-visual-8",
+      "slide": 29,
+      "shapePath": [
+        8
+      ],
+      "imageSha256": "03838385fe9d0932ee18ba28b87deba3669ca83b73ce31e5a794b59fcb7bd227",
+      "observation": "Regional percentage bar chart; percentages and regions require visual row alignment and slide metric before citation.",
+      "proposedReviewDecision": "evidence-after-chart-transcription"
+    },
+    {
+      "blockId": "slide-31-visual-2",
+      "slide": 31,
+      "shapePath": [
+        2
+      ],
+      "imageSha256": "efef6127009595ccc9f7d85a97071aa8c3b4235a9ba45978ffa66c67bc170fb4",
+      "observation": "Illustrative satellite-network photograph/composite with no factual labels in crop.",
+      "proposedReviewDecision": "decoration"
+    },
+    {
+      "blockId": "slide-34-visual-2",
+      "slide": 34,
+      "shapePath": [
+        2
+      ],
+      "imageSha256": "6ed07b5611181c971f240b472f1c0fb510e6271c598e132823d20526451fb6b8",
+      "observation": "Earth observation photograph with no factual labels in crop.",
+      "proposedReviewDecision": "decoration"
+    },
+    {
+      "blockId": "slide-36-visual-22",
+      "slide": 36,
+      "shapePath": [
+        22
+      ],
+      "imageSha256": "4a4ad1c84d9fe8c16857afcbfc369dd13c942f1700f30f991980313c84fd3a0b",
+      "observation": "Unlabeled wireless-signal icon; no answer-bearing data.",
+      "proposedReviewDecision": "decoration"
+    },
+    {
+      "blockId": "slide-36-visual-23",
+      "slide": 36,
+      "shapePath": [
+        23
+      ],
+      "imageSha256": "59a2ed1b4b60399c62c93f9ae8df75e6169a1493b74763964046224cd89b7043",
+      "observation": "Unlabeled dish antenna icon; no answer-bearing claim in the crop.",
+      "proposedReviewDecision": "decoration"
+    },
+    {
+      "blockId": "slide-36-visual-24",
+      "slide": 36,
+      "shapePath": [
+        24
+      ],
+      "imageSha256": "5f15fdf1a87a372435dab3c539ab0c84dc5aa00f931ec23b510693e7b4b6915e",
+      "observation": "Unlabeled globe icon; no answer-bearing claim in the crop.",
+      "proposedReviewDecision": "decoration"
+    },
+    {
+      "blockId": "slide-36-visual-25",
+      "slide": 36,
+      "shapePath": [
+        25
+      ],
+      "imageSha256": "5a3f8ae2f192bb5d0b756bf517031ba5bf447eb16ab126e024e42d46a8f134f4",
+      "observation": "Unlabeled handset icon; no answer-bearing claim in the crop.",
+      "proposedReviewDecision": "decoration"
+    },
+    {
+      "blockId": "slide-36-visual-26",
+      "slide": 36,
+      "shapePath": [
+        26
+      ],
+      "imageSha256": "1f2b1568daa0fccdd864f8c4b629d086ba106905f80a318d0df45bc9bae70878",
+      "observation": "Unlabeled atom icon; no answer-bearing claim in the crop.",
+      "proposedReviewDecision": "decoration"
+    },
+    {
+      "blockId": "slide-36-visual-30",
+      "slide": 36,
+      "shapePath": [
+        30
+      ],
+      "imageSha256": "921267a27de8731afac61c73a8ec201aa312eb2acce39b6a47ad4caa1371f0cc",
+      "observation": "Unlabeled satellite icon; no answer-bearing claim in the crop.",
+      "proposedReviewDecision": "decoration"
+    },
+    {
+      "blockId": "slide-36-visual-54",
+      "slide": 36,
+      "shapePath": [
+        54
+      ],
+      "imageSha256": "63139f518f744dcfc21ab5f8f7d5029a36a3be6207de5c957b861c50ff179ab7",
+      "observation": "Unlabeled antenna icon; no answer-bearing claim in the crop.",
+      "proposedReviewDecision": "decoration"
+    },
+    {
+      "blockId": "slide-36-visual-55-2",
+      "slide": 36,
+      "shapePath": [
+        55,
+        2
+      ],
+      "imageSha256": "60478671eec86237b18e22418f85660571fdd9eb6fbbbfc7192696c7e087b226",
+      "observation": "Unlabeled signal waveform icon; no answer-bearing claim in the crop.",
+      "proposedReviewDecision": "decoration"
+    },
+    {
+      "blockId": "slide-36-visual-56",
+      "slide": 36,
+      "shapePath": [
+        56
+      ],
+      "imageSha256": "18b329d66f1808e841d5493d049c979dcbb4797eb722319bbf83673858d983e6",
+      "observation": "Unlabeled handset icon; no answer-bearing claim in the crop.",
+      "proposedReviewDecision": "decoration"
+    },
+    {
+      "blockId": "slide-37-visual-3",
+      "slide": 37,
+      "shapePath": [
+        3
+      ],
+      "imageSha256": "1ad6148d033cb557b693c243f855f4a6c6e09e675746ba77bb7bd1efe44654f4",
+      "observation": "Illustrative digital-globe photograph/composite; no answer-bearing claim in the crop.",
+      "proposedReviewDecision": "decoration"
+    },
+    {
+      "blockId": "slide-40-visual-1",
+      "slide": 40,
+      "shapePath": [
+        1
+      ],
+      "imageSha256": "efe0fbeb8da7d1370dbf7fe5edc5c69ae1f9e77dd4849ed1ecc214959ab25eb1",
+      "observation": "Itu institutional logo; may be branding/navigation only and must not be treated as verified answer evidence.",
+      "proposedReviewDecision": "navigation-only"
+    },
+    {
+      "blockId": "slide-40-visual-3",
+      "slide": 40,
+      "shapePath": [
+        3
+      ],
+      "imageSha256": "2bc8adff5a9977cf6107e119617dd68dfdf03be65610b991eb9b651871a52714",
+      "observation": "Qr code whose destination was not decoded or verified; may be branding/navigation only and must not be treated as verified answer evidence.",
+      "proposedReviewDecision": "navigation-only"
+    },
+    {
+      "blockId": "slide-40-visual-6",
+      "slide": 40,
+      "shapePath": [
+        6
+      ],
+      "imageSha256": "45cbd584f461de8905efb46137e576ceda8d52337d6654e3009390f488ee499d",
+      "observation": "Linkedin logo; may be branding/navigation only and must not be treated as verified answer evidence.",
+      "proposedReviewDecision": "navigation-only"
+    },
+    {
+      "blockId": "slide-40-visual-7",
+      "slide": 40,
+      "shapePath": [
+        7
+      ],
+      "imageSha256": "78b423d3971e92ebf34fdfa9072befb49e267d292b24b6633de5485fdb8c2fff",
+      "observation": "Qr code; destination was not decoded or verified; slide-level context or destination verification is needed before any factual use.",
+      "proposedReviewDecision": "navigation-only"
+    },
+    {
+      "blockId": "slide-40-visual-8",
+      "slide": 40,
+      "shapePath": [
+        8
+      ],
+      "imageSha256": "28999e634e784e248ab163adf68622acaeffd9248473fb87d29ab3cbaf079684",
+      "observation": "Twitter/x logo; slide-level context or destination verification is needed before any factual use.",
+      "proposedReviewDecision": "navigation-only"
+    },
+    {
+      "blockId": "slide-40-visual-11",
+      "slide": 40,
+      "shapePath": [
+        11
+      ],
+      "imageSha256": "51cb9dd1de79af027be8d03e37890e1a842d2e2268266dd5d15171c0ebb327e7",
+      "observation": "Envelope/contact icon; slide-level context or destination verification is needed before any factual use.",
+      "proposedReviewDecision": "navigation-only"
+    },
+    {
+      "blockId": "slide-41-visual-4-1",
+      "slide": 41,
+      "shapePath": [
+        4,
+        1
+      ],
+      "imageSha256": "a9c48dd84af6c365d664eb4d4a3870dcb8cd9569a3d05ec1a6e8b1d12bda9c72",
+      "observation": "Standalone downward arrow glyph; slide-level context or destination verification is needed before any factual use.",
+      "proposedReviewDecision": "navigation-only"
+    },
+    {
+      "blockId": "slide-41-visual-53-3",
+      "slide": 41,
+      "shapePath": [
+        53,
+        3
+      ],
+      "imageSha256": "829af6d825a9e0e603d199a97c64fe98574cfa4f6ee7a4793585b1173d8fb9ad",
+      "observation": "Standalone arrowhead glyph; slide-level context or destination verification is needed before any factual use.",
+      "proposedReviewDecision": "navigation-only"
+    },
+    {
+      "blockId": "slide-41-visual-53-9",
+      "slide": 41,
+      "shapePath": [
+        53,
+        9
+      ],
+      "imageSha256": "ff6a2bb823eda1e71bdb7cfc8cf289fa09e50ac12151531fdb05b3b9c5500eeb",
+      "observation": "Standalone upward arrow glyph; slide-level context or destination verification is needed before any factual use.",
+      "proposedReviewDecision": "navigation-only"
+    },
+    {
+      "blockId": "slide-41-visual-53-11",
+      "slide": 41,
+      "shapePath": [
+        53,
+        11
+      ],
+      "imageSha256": "2bf0014a768fb76cc0924a87f4ddd43e87e145b5aa0a0df17eb5e91a699c052f",
+      "observation": "Standalone arrowhead glyph; slide-level context or destination verification is needed before any factual use.",
+      "proposedReviewDecision": "navigation-only"
+    },
+    {
+      "blockId": "slide-42-visual-4-1",
+      "slide": 42,
+      "shapePath": [
+        4,
+        1
+      ],
+      "imageSha256": "96dacf59baeffe1ff3a783098e26f18fda5c96f4d088d3625b5d1b9142a9b5f4",
+      "observation": "Small institutional logo with unreadable lettering; slide-level context or destination verification is needed before any factual use.",
+      "proposedReviewDecision": "navigation-only"
+    },
+    {
+      "blockId": "slide-42-visual-4-2",
+      "slide": 42,
+      "shapePath": [
+        4,
+        2
+      ],
+      "imageSha256": "4286284c09117ef0033fbe9f8a29ca7839c4e125247e0d3d3edcc87527fd26a0",
+      "observation": "Small institutional logo; slide-level context or destination verification is needed before any factual use.",
+      "proposedReviewDecision": "navigation-only"
+    },
+    {
+      "blockId": "slide-42-visual-5-1",
+      "slide": 42,
+      "shapePath": [
+        5,
+        1
+      ],
+      "imageSha256": "c7c27ce38d3f92203402047fe54a277bb088ab1ae23dbef90a76442517f14c75",
+      "observation": "Apt organization logo; slide-level context or destination verification is needed before any factual use.",
+      "proposedReviewDecision": "navigation-only"
+    },
+    {
+      "blockId": "slide-42-visual-6",
+      "slide": 42,
+      "shapePath": [
+        6
+      ],
+      "imageSha256": "8cf5826f933e43169b00257c418b8dcdeb6bb9647518fc487665ce1a759ac394",
+      "observation": "Rcc organization logo; slide-level context or destination verification is needed before any factual use.",
+      "proposedReviewDecision": "navigation-only"
+    },
+    {
+      "blockId": "slide-42-visual-7",
+      "slide": 42,
+      "shapePath": [
+        7
+      ],
+      "imageSha256": "d7d12435afa9bdaac9d2cd9498d61efe8afafc4e568e1ee1390e673aba5816c1",
+      "observation": "Asmg organization logo; slide-level context or destination verification is needed before any factual use.",
+      "proposedReviewDecision": "navigation-only"
+    },
+    {
+      "blockId": "slide-42-visual-8",
+      "slide": 42,
+      "shapePath": [
+        8
+      ],
+      "imageSha256": "ce5868a2a5c10b2c492a142669f48eb9b41e132e981e3175ed3c41825414174d",
+      "observation": "Citel organization logo; slide-level context or destination verification is needed before any factual use.",
+      "proposedReviewDecision": "navigation-only"
+    },
+    {
+      "blockId": "slide-2-visual-3",
+      "slide": 2,
+      "shapePath": [
+        3
+      ],
+      "objectSha256": "201ff0de931c5c2e158d33825268afe91e4c43926869a1891e990a136d50109a",
+      "renderedSlideSha256": "dfca373a87472f8d1eb258cc0f15e18686683ac77bc83b767d522a6ca40b7cc7",
+      "observation": "Four topic blocks on a table-of-contents slide; no detailed satellite claim. Native diagram text identifies navigation sections.",
+      "proposedReviewDecision": "navigation-only"
+    },
+    {
+      "blockId": "slide-7-visual-3",
+      "slide": 7,
+      "shapePath": [
+        3
+      ],
+      "objectSha256": "dc17f94eaa9ed85b7e8d7367013a704811a0fe91b0d78dde260d0f74b09059e8",
+      "renderedSlideSha256": "035dd58cc611096bf91fdf9b024df7ebeeacb5b16f068651e61c5714d6041629",
+      "observation": "Same four-block contents diagram, with Trends in space connectivity highlighted; it indicates current section only.",
+      "proposedReviewDecision": "navigation-only"
+    },
+    {
+      "blockId": "slide-21-visual-3",
+      "slide": 21,
+      "shapePath": [
+        3
+      ],
+      "objectSha256": "58878afb1ed0d08b37c1570a0e93c4596c92f431f54aa25d192a555ac485d0d9",
+      "renderedSlideSha256": "6f2b9e37007a757c1ab1c39a53020758c09558da98d997dbe1b08f893ee4f1ca",
+      "observation": "Same contents diagram, with Challenges highlighted; it indicates current section only.",
+      "proposedReviewDecision": "navigation-only"
+    },
+    {
+      "blockId": "slide-26-visual-3",
+      "slide": 26,
+      "shapePath": [
+        3
+      ],
+      "objectSha256": "a0ce8d6c71d8b20b086fc258f26214af4417620041d279441b28c0df6c8f2cc3",
+      "renderedSlideSha256": "4019da0fd2073c6050dfdb3fc9b8af224c71c51d503b623d50e9eb7671fb253b",
+      "observation": "Same contents diagram, with Cooperation for a sustainable future highlighted; it indicates current section only.",
+      "proposedReviewDecision": "navigation-only"
+    },
+    {
+      "blockId": "slide-36-visual-5",
+      "slide": 36,
+      "shapePath": [
+        5
+      ],
+      "objectSha256": "fbe4e245520398f2203896fedc000c5079bd9a92d880e4dfdea126185dfa3bbe",
+      "renderedSlideSha256": "16af651848c3cd7e7d4952588797a324f11f4e7e3204f9be7d3cbe9ebb41cfed",
+      "observation": "Horizontal separator spanning the upper agenda rows; no factual claim independent of adjacent native text.",
+      "proposedReviewDecision": "layout-only"
+    },
+    {
+      "blockId": "slide-36-visual-6",
+      "slide": 36,
+      "shapePath": [
+        6
+      ],
+      "objectSha256": "1759c8f58025d08bc0684f9c194d9a6f6014046324f46a727c3e39ea7276556d",
+      "renderedSlideSha256": "16af651848c3cd7e7d4952588797a324f11f4e7e3204f9be7d3cbe9ebb41cfed",
+      "observation": "Horizontal separator spanning the lower agenda rows; no factual claim independent of adjacent native text.",
+      "proposedReviewDecision": "layout-only"
+    },
+    {
+      "blockId": "slide-36-visual-55-1",
+      "slide": 36,
+      "shapePath": [
+        55,
+        1
+      ],
+      "objectSha256": "ae2086996296890d8ec62539714a9e88cee7f800424d9126cecdc41ebaad3ee9",
+      "renderedSlideSha256": "16af651848c3cd7e7d4952588797a324f11f4e7e3204f9be7d3cbe9ebb41cfed",
+      "observation": "First native line segment of the waveform divider between upper and lower agenda rows; layout only.",
+      "proposedReviewDecision": "layout-only"
+    },
+    {
+      "blockId": "slide-36-visual-55-3",
+      "slide": 36,
+      "shapePath": [
+        55,
+        3
+      ],
+      "objectSha256": "07249822318306e9314393558294be67d449feb3a00b70493d81cc9eea867524",
+      "renderedSlideSha256": "16af651848c3cd7e7d4952588797a324f11f4e7e3204f9be7d3cbe9ebb41cfed",
+      "observation": "Second native line segment of the waveform divider between upper and lower agenda rows; layout only.",
+      "proposedReviewDecision": "layout-only"
     }
   ],
   "acceptance": {
@@ -74,6 +676,6 @@
     "productionJudgmentsWritten": 0,
     "documentsPublished": 0,
     "independentEvaluationEligible": false,
-    "nextAction": "Review all remaining objects and transcribe substantive diagrams and tables against the complete original slide before recording per-object production decisions."
+    "nextAction": "Complete and validate structured transcriptions for every substantive chart, matrix, diagram and resource card against the full original slides; then write production review decisions and run the real upload/publication gate."
   }
 }
