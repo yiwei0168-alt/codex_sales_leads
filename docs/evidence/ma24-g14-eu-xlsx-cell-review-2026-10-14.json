@@ -96,15 +96,26 @@
     "checks": ["npm run typecheck: pass", "npx eslint scripts/verify-eu-xlsx-review-gate-clone.ts: pass"],
     "limits": "This verifies the isolated worker and registration block on the original XLSX. It does not resolve visual review, make the workbook retrievable, prove a user-visible answer/citation, or change production state."
   },
+  "originalVisualReview": {
+    "method": "Opened the quarantined original in local Excel 16 read-only with link updates disabled and macros disabled. Exported Instructions, Report and Notes on the data and reuse to ignored local PDF review copies. The first print export split across columns; a second in-memory print-area/fit-to-page export produced one page per sheet. Rendered those PDFs to PNG and visually inspected each; no workbook save occurred.",
+    "sourceHashAfterReviewMatched": true,
+    "instructions": "The fitted Excel render visibly confirms the indicator definitions and selection instructions plus the European Commission logo. drawing1 OOXML also contains a regional-zero caveat, but its trailing Note on the data section was not visible in the fitted render; keep that text as XML-only evidence, not visually confirmed transcription.",
+    "report": "The original Report has no Member State or reporting level selected. Its dynamic chart displays axes/legend and zero placeholders, with no regional series suitable as answer data. Its four pictures are a NUTS-level illustration, European Commission logo, Digital Decade 2026 banner and Connectivity Coverage in Europe 2025 cover. The cached table contains calculation errors while selectors are blank.",
+    "reuseNotes": "The original legal-notice text shape is legible and matches drawing3 text: EU-authored workbook, CC BY 4.0 attribution/changes condition, possible third-party rights, and data-revision/accuracy caveats. Its accompanying picture is a European Commission logo.",
+    "reviewDecision": "Keep all three visual-review records unresolved. Do not publish the original workbook or use the unselected Report chart as factual Gold. The two draft questions remain grounded only in Data source literal cells.",
+    "productionWrites": 0,
+    "modelCalls": 0
+  },
   "acceptance": {
     "originalCellCoordinatesChecked": true,
     "localExtractorCellParityChecked": true,
     "cloneUploadReviewGateChecked": true,
+    "originalVisualObjectsInspected": true,
     "sourceIndependenceEstablished": false,
     "questionIndependenceEstablished": false,
     "goldCreated": 0,
     "modelCalls": 0,
     "productionKnowledgeWrites": 0
   },
-  "next": "Resolve each visual review object with original-sheet inspection, then verify isolated tree/retrieval citation and full development overlap before any source or Gold freeze; preserve Commission attribution and the mid-2025/methodology caveat."
+  "next": "Decide whether the original interactive workbook can receive a truthful per-object review transcript without exposing blank-selector calculation artifacts, or select another eligible XLSX source. Then verify isolated tree/retrieval citation and full development overlap before any source or Gold freeze; preserve Commission attribution and the mid-2025/methodology caveat."
 }
