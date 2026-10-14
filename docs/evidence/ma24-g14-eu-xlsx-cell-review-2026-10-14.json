@@ -50,13 +50,43 @@
     "historicalHoldout": "The receipt-bound blind-questions.json, candidates.json and verdicts.json SHA-256 values match the 2026-10-10 final-score receipt. All 11 nonempty files in tmp/ma24-holdout-evaluation were searched for Burgenland, AT11, NUTS-2, VHCN and 3.4–3.8 variants with zero matches. The 50 blind questions were read: 40 product-datasheet tasks and 10 routing/boundary tasks; none asks regional household connectivity coverage.",
     "limit": "The bounded historical-output review and topic distinction do not exhaust all development runs, all semantic paraphrases or provider-side exposure."
   },
+  "productExtraction": {
+    "extractorVersion": "layout-v2.0.6",
+    "artifactPath": "tmp/ma24-independent-quarantine/eu-connectivity-layout-v2.0.6.json",
+    "artifactSha256": "35518eca6f89878f079d4c72298743b610419ecb37eefaf539d8c67f2b5fdb09",
+    "sourceHashMatched": true,
+    "blocks": 7,
+    "sheetQuality": {"success": 3, "blank": 0, "pendingOcr": 3, "failed": 0},
+    "cellParity": {
+      "sheetsCompared": ["Report", "Data source", "About & links", "Helper"],
+      "cellsCompared": 12504,
+      "nonemptyOriginalCells": 9378,
+      "normalizedContentMismatches": 0,
+      "dataSourceRange": "'Data source'!A1:S489",
+      "questionCellsMatched": ["E2", "F2", "G2", "O2", "S2", "E3", "F3", "G3", "O3", "R3", "S3"]
+    },
+    "evidenceText": "Ran the product evidenceText and spreadsheetLocation functions on the extracted Data source block. Range A1:S489 and nine exact cell-coordinate/value lines passed; generated evidence text is 125,610 UTF-8 bytes.",
+    "visualReview": {
+      "artifactPath": "tmp/ma24-independent-quarantine/eu-connectivity-visual-review-v1/review.json",
+      "artifactSha256": "878a4b34fee1ed18a7864d7c21f9a60d11d1a594e22ac9682f7e680515b7e901",
+      "reviewRecords": 3,
+      "sheets": ["Instructions", "Report", "Notes on the data and reuse"],
+      "objects": 9,
+      "chartObjects": 1,
+      "nativeTextObjects": 2,
+      "qualityAccepted": false,
+      "externalCalls": 0
+    },
+    "limits": "This is local extractor/evidence-text parity only. The three visual units are unresolved, so no tree registration, retrieval response, user-visible citation, permissions or production acceptance has been demonstrated. The interactive Report cache contains #VALUE! without selected filters."
+  },
   "acceptance": {
     "originalCellCoordinatesChecked": true,
+    "localExtractorCellParityChecked": true,
     "sourceIndependenceEstablished": false,
     "questionIndependenceEstablished": false,
     "goldCreated": 0,
     "modelCalls": 0,
     "productionKnowledgeWrites": 0
   },
-  "next": "Check full prior question/output overlap and product XLSX extraction/citation against the original cells before any source or Gold freeze; preserve Commission attribution and the mid-2025/methodology caveat."
+  "next": "Resolve each visual review object with original-sheet inspection, verify isolated upload/tree/retrieval citation and full development overlap before any source or Gold freeze; preserve Commission attribution and the mid-2025/methodology caveat."
 }
