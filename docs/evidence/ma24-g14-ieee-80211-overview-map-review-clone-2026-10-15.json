@@ -1,0 +1,44 @@
+{
+  "schema": "ma24-g14-ieee-80211-overview-map-review-clone-v1",
+  "date": "2026-10-15",
+  "scope": "Existing isolated local ma11_replay clone, new synthetic private account, original public IEEE 802.11 overview PPTX and actual upload worker/review/registration/evidence read",
+  "sourceSha256": "3ae95a7ecdadf8cca4127e239bfbd71c25aa08e354fd0ca94d078a3e0eb11e3d",
+  "candidatePackageSha256": "b80be978c3f3bac175ebebca5774c2bb03a710a73185cb0f2a5673b555ccb1c6",
+  "mapReview": "docs/evidence/ma24-g14-ieee-80211-overview-map-limited-review-2026-10-15.json",
+  "verifier": "scripts/verify-ieee-overview-review-clone.ts",
+  "verifierSha256": "5e3eb3003c8cf8b3cce5df7febffe2266f973ad5796b75b9d7a1e07f6152ebbd",
+  "checks": [
+    "npm run typecheck",
+    "npx eslint scripts/verify-ieee-overview-review-clone.ts",
+    "node scripts/run-tsx.cjs scripts/verify-ieee-overview-review-clone.ts",
+    "node scripts/run-tsx.cjs scripts/verify-ieee-overview-review-clone.ts --resolve-map"
+  ],
+  "unresolvedGate": {
+    "reviewTotal": 39,
+    "resolved": 38,
+    "decisions": {"evidence": 16, "decoration": 22, "unresolved": 1},
+    "completionRejected": true,
+    "registrationRejected": true,
+    "documents": 0
+  },
+  "limitedMapReview": {
+    "reviewSavedAndReadBack": 39,
+    "decisions": {"evidence": 17, "decoration": 22, "unresolved": 0},
+    "artifactParity": "identical-blocks-after-version-normalization-and-storage-key",
+    "completionReceipt": true,
+    "treeStatus": "searchable",
+    "syntheticPrivateDocumentsRegistered": 1,
+    "exactEvidenceBlocksRead": ["slide-12-visual-3", "slide-20-text-2", "slide-22-text-2"],
+    "searchFound": true,
+    "syntheticUsersJobsReviewsAndDocumentsAfterCleanup": 0
+  },
+  "limits": [
+    "The map block transcribes only the dated legend, not country-by-country assignments or current regulatory status.",
+    "No user-visible answer model or exact answer citation was graded. The synthetic clone records were deleted.",
+    "The source and question independence, evaluation use, Gold and production loading remain unapproved."
+  ],
+  "productionKnowledgeWrites": 0,
+  "goldCreated": 0,
+  "qualityAccepted": false,
+  "productionAccepted": false
+}

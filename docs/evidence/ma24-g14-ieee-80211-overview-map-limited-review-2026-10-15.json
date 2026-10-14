@@ -1,0 +1,31 @@
+{
+  "schema": "ma24-g14-ieee-80211-overview-map-limited-review-v1",
+  "date": "2026-10-15",
+  "sourceSha256": "3ae95a7ecdadf8cca4127e239bfbd71c25aa08e354fd0ca94d078a3e0eb11e3d",
+  "candidatePackageSha256": "b80be978c3f3bac175ebebca5774c2bb03a710a73185cb0f2a5673b555ccb1c6",
+  "supersedesProposalFor": "slide-12-visual-3",
+  "priorReview": "docs/evidence/ma24-g14-ieee-80211-overview-final-image-scope-2026-10-14.json",
+  "originalSlide": {
+    "number": 12,
+    "renderSha256": "69eed1af53d044e511397d37006691c2091e30a65d36c0ac8362731deec89a08",
+    "printedSnapshotDate": "2025-01-06",
+    "presenterDate": "September 2025",
+    "sourceLinkPrinted": "https://www.wi-fi.org/regulations-enabling-6-ghz-wi-fi",
+    "countryByCountryTableOnSlide": false
+  },
+  "object": {
+    "blockId": "slide-12-visual-3",
+    "shapePath": [3],
+    "embeddedImageSha256": "0576f902f7fbb79ba364108b3c8a49e1fc8c473cf0f55b99722664918de962d9",
+    "reviewImageSha256": "306095061de8adcf86d06d17865753e969d3021020f1ee233897de85ba7897da",
+    "proposedDecision": "evidence",
+    "evidenceText": "A world map on the presentation's slide 12 has a printed snapshot date of 2025-01-06. Its legend shows four 6 GHz Wi-Fi categories: adopted 5925-6425 MHz; adopted 5925-7125 MHz; adopted 5925-6425 MHz while considering 6425-7125 MHz; and considering 5925-6425 MHz. The slide supplies no country-by-country text table. This block supports the dated legend only, not exact country assignments or current regulatory status.",
+    "reason": "The original whole slide and embedded-image crop show all four legend labels and the printed date. Small borders and striped fills still cannot be reliably assigned country by country, so those claims remain outside the approved evidence scope."
+  },
+  "proposedReviewAfterReplacement": {"total": 39, "evidence": 17, "decoration": 22, "unresolved": 0},
+  "productJudgmentsSaved": 0,
+  "qualityAccepted": false,
+  "independentGoldApproved": false,
+  "productionKnowledgeWrites": 0,
+  "next": "Verify all 39 source-bound decisions through the isolated product review gate, retain the old unresolved-block rejection as a regression, then assess source/question independence and user-visible citations before Gold."
+}
