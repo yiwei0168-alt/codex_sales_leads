@@ -1,0 +1,61 @@
+{
+  "schema": "ma24-g01-g18-current-candidate-clone-rollback-v1",
+  "checkedAtUtc": "2026-10-14 20:13 UTC",
+  "scope": "Current committed-source build snapshot, read-only runtime/preflight and disposable clone migration/Web compatibility; no production migration, switch or actual service rollback",
+  "source": {
+    "commit": "a2d012db6f84d6ab899c2b7ba3bbef08003c3e71",
+    "trackedProductSourceDiffFromHead": false,
+    "buildCommand": "npm run build",
+    "buildResult": "passed, including generated TypeScript and 26 static pages",
+    "nextVersion": "16.3.4",
+    "buildId": "fcjc0FZo2wEPgTGkEyisG",
+    "buildManifestSha256": "9476e0afd3f9da68a64e6ec58631191fd3eaca62c9f5a377e7517fe9a89e59ea",
+    "snapshot": ".next-releases/ma24-g01-a2d012db",
+    "snapshotIgnoredByGit": true,
+    "snapshotFiles": 1628,
+    "snapshotBytes": 293723159,
+    "sourceAndSnapshotTreeSha256": "8526de57443e5c7d1bfa15b662ab7357f7c8ab5ff590c0d613779cd6a3083f50",
+    "treeHashMethod": "Sorted relative POSIX paths, each path length and bytes, followed by SHA-256 digest of file bytes, then outer SHA-256; source and snapshot hashes matched."
+  },
+  "disposableClone": {
+    "commands": [
+      "node scripts/run-tsx.cjs scripts/verify-ma24-backup-restore.ts --web-compat",
+      "node scripts/run-tsx.cjs scripts/verify-ma24-backup-restore.ts --web-compat --review-ui"
+    ],
+    "backupSha256": "17db517922f0ee8067391544418f0c8af9f77ee5f48203b938b7559ba528d428",
+    "migrationRange": "127-134",
+    "transactionRollbackRestoredPreMigrationMarkers": true,
+    "migrationCommittedOnDisposableClone": true,
+    "applicationAclCopiedFromSource": true,
+    "collectorInsertAllowedAndOrdinaryAppInsertDenied": true,
+    "oldWebBuildId": "QfoyXprIZIVgSWxFSZ-1K",
+    "candidateWebBuildId": "fcjc0FZo2wEPgTGkEyisG",
+    "bothWebVersionsLoginAndRead": true,
+    "candidateReviewPage": "Actual local PPTX extraction and candidate review page saved an unresolved decision, rejected stale/original-changed writes, and did not complete review or publish a document; v3 pointer unchanged.",
+    "oldWebAfterCandidateWrite": "Old Web restarted on the same migrated clone and listed the one candidate-created upload job.",
+    "cloneDropped": true,
+    "modelCalls": "not measured in the review-UI run; worker cloud credentials cleared",
+    "productionChanged": false
+  },
+  "currentRuntimeReadOnly": {
+    "webPort": 3018,
+    "webPidObserved": 33240,
+    "oldBuildManifestHttp": 200,
+    "candidateBuildManifestHttp": 404,
+    "candidateLoaded": false,
+    "langgraphPort": 2024,
+    "langgraphHttp": 200,
+    "migrationSchemaState": "stage-absent",
+    "migrationPrerequisiteMarkersPresent": 9,
+    "migrationTargetMarkersPresent": 0,
+    "backupBeforeSwitchFresh": false,
+    "preflightReadyForRelease": false,
+    "queuedOrRunningInSampledMainLeadKnowledgeShadowMailboxQueues": 0
+  },
+  "remaining": [
+    "Complete per-domain natural quality and production acceptance before a pilot.",
+    "Recheck exact service source, feature flags and queues at switch time.",
+    "Take and verify a fresh product backup immediately before authorized migration.",
+    "Perform scoped production pilot, actual service rollback and post-rollback data checks; clone compatibility does not prove those."
+  ]
+}
