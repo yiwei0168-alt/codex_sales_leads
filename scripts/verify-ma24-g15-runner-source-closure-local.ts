@@ -16,6 +16,7 @@ const required = [runner, 'scripts/run-ma24-g16-task.ts',
   'next.config.ts', 'scripts/build-next.mjs', 'scripts/package-ma24-next-standalone.py',
   'src/lib/knowledge/evaluation/ma24-evaluation-task-binding.ts',
   'src/lib/knowledge/evaluation/ma24-persisted-run-binding.ts',
+  'scripts/export-ma24-g16-persisted-runs.ts',
   'scripts/score-ma24-independent-comparison.ts',
   'src/lib/assistant/main/graph.ts', 'src/lib/assistant/main/tool-execution.ts',
   'src/lib/billing/paid-fetch.ts'];
@@ -26,11 +27,16 @@ const altered = { ...preview, sourceHashes: {
 } };
 assert.throws(() => assertMa24G15RuntimeBinding(altered, preview,
   new Date().toISOString().slice(0, 10)), /sourceHashes drift/);
+const exporter = 'scripts/export-ma24-g16-persisted-runs.ts';
+assert.throws(() => assertMa24G15RuntimeBinding({ ...preview, sourceHashes: {
+  ...preview.sourceHashes, [exporter]: '0'.repeat(64),
+} }, preview, new Date().toISOString().slice(0, 10)), /sourceHashes drift/);
 console.log(JSON.stringify({ schema: 'ma24-g15-runner-source-closure-local-v1',
   sourceClosureFileCount: preview.sourceClosureFileCount,
   runnerSha256: preview.sourceHashes[runner],
   nextConfigSha256: preview.sourceHashes['next.config.ts'],
   previewStdoutSha256: createHash('sha256').update(stdout).digest('hex'),
   requiredRuntimeFilesPresent: required.length, buildConfigHashDriftRejected: true,
+  runExporterHashDriftRejected: true,
   readyForPaidEvaluation: preview.readyForPaidEvaluation,
   providerCalls: 0 }));

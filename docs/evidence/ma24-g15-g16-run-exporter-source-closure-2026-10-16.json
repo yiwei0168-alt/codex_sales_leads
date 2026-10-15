@@ -1,0 +1,14 @@
+{
+  "schema": "ma24-g15-g16-run-exporter-source-closure-v1",
+  "date": "2026-10-16",
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-g15-runner-source-closure-local.ts",
+  "sourceClosureFileCount": 304,
+  "requiredRuntimeFilesPresent": 14,
+  "previewStdoutSha256": "17e41a56c72d545e328e8b70419e3838289c0b11b4bc9af2fd55a4d77bdf9038",
+  "runExporterHashDriftRejected": true,
+  "buildConfigHashDriftRejected": true,
+  "readyForPaidEvaluation": false,
+  "providerCalls": 0,
+  "scope": "The read-only G16 persisted-run exporter is now included in the G15 code/config source closure. This is an engineering hash-boundary check, not a real model run or paid-admission approval.",
+  "g17ToG20Advanced": false
+}

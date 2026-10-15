@@ -80,6 +80,7 @@ const sourceFiles=[
  'src/lib/knowledge/evaluation/ma24-g15-hard-limit-binding.ts',
  'src/lib/knowledge/evaluation/ma24-persisted-run-binding.ts',
  'src/lib/knowledge/evaluation/ma24-citation-evidence.ts',
+ 'scripts/export-ma24-g16-persisted-runs.ts',
  'scripts/score-ma24-independent-comparison.ts',
  'scripts/verify-ma24-g16-persisted-runs.ts',
  'db/migrations/136_ma24_evaluation_run_kind.sql',
@@ -100,6 +101,7 @@ for(const required of [
  'src/lib/assistant/main/tool-execution.ts',
  'src/lib/billing/paid-fetch.ts',
  'src/lib/knowledge/evaluation/ma24-persisted-run-binding.ts',
+ 'scripts/export-ma24-g16-persisted-runs.ts',
  'scripts/score-ma24-independent-comparison.ts',
 ])if(!sourceHashes[required])throw new Error(`MA24 runtime closure omits ${required}`);
 const profile=modeModelConfig(mode).profile;
