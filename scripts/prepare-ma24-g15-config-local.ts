@@ -60,6 +60,7 @@ if(new Date().toISOString().slice(0,10)!==promptDateUtc)
 const sourceFiles=[
  'scripts/prepare-ma24-g15-config-local.ts',
  'scripts/lib/ma24-local-source-closure.ts','tsconfig.json','package.json','package-lock.json',
+ 'next.config.ts','scripts/build-next.mjs','scripts/package-ma24-next-standalone.py',
  'src/lib/assistant/main/graph.ts','src/lib/assistant/main/model.ts',
  'src/lib/assistant/main/model-stream.ts','src/lib/assistant/main/mode-config.ts',
  'src/lib/assistant/main/mode-prompts.ts','src/lib/assistant/main/mode-prompt-content.json',
@@ -87,6 +88,7 @@ const sourceFiles=[
 ];
 const sourceHashes=await ma24LocalSourceClosure(process.cwd(),sourceFiles);
 for(const required of [
+ 'next.config.ts','scripts/build-next.mjs','scripts/package-ma24-next-standalone.py',
  'src/lib/knowledge/evaluation/ma24-evaluation-runner.ts',
  'src/lib/knowledge/evaluation/ma24-evaluation-claim.ts',
  'src/lib/knowledge/evaluation/ma24-evaluation-task-binding.ts',

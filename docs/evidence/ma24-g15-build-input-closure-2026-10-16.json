@@ -1,0 +1,26 @@
+{
+  "schema": "ma24-g15-build-input-closure-v1",
+  "date": "2026-10-16",
+  "finding": "The G15 source closure previously omitted next.config.ts and the build/package scripts, so a release package construction change would not invalidate the frozen sourceHashes.",
+  "change": "Explicitly include next.config.ts, scripts/build-next.mjs and scripts/package-ma24-next-standalone.py in the G15 preview closure and required-file verifier.",
+  "preview": "docs/evidence/ma24-g15-config-preview-2026-10-16-v22.json",
+  "previewSha256": "6fef2591a6a66c0ddcb8abda1e2654adddae5c9be96a26c11dd7c5b4d24e24ac",
+  "sourceClosureFileCount": 300,
+  "requiredRuntimeAndBuildInputs": 11,
+  "checks": {
+    "closureVerifier": "300 files; build configuration hash mutation rejected as sourceHashes drift",
+    "oldV21Preview": "rejected as sourceHashes drift",
+    "currentV22Preview": "runtimeBindingMatched=true; readyForModelCalls=false",
+    "typescript": "node node_modules/typescript/bin/tsc --noEmit passed",
+    "eslint": "targeted two changed scripts passed"
+  },
+  "providerCalls": 0,
+  "productionWrites": 0,
+  "g17ToG20Advanced": false,
+  "remaining": [
+    "Bind the actual loaded service build and complete dependency closure",
+    "Freeze the independent G14 source and Gold set",
+    "Complete G15 BGE, tariff, hard-limit and paid authorization preflight",
+    "Run and adjudicate G16 real baseline and candidate tasks"
+  ]
+}
