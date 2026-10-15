@@ -1,0 +1,65 @@
+{
+  "schema": "ma24-g14-g16-required-gate-readiness-v1",
+  "date": "2026-10-16",
+  "scope": "Read-only comparison of the current private v9 draft metadata, the approved-five staging source and Gold snapshots, and the G16 frozen-manifest validator. This receipt does not freeze a manifest or assign final tags.",
+  "inputs": {
+    "privateDraftMetadata": "tmp/ma24-independent-quarantine/g14-current-draft-pool-v9-metadata-2026-10-16.json",
+    "privateDraftMetadataSha256": "96459f096b17bafdd32dfedc18db924e0339ae53dd4b563ea1d2d7f78b88b9ed",
+    "approvedSourceSetStaging": "tmp/ma24-independent-quarantine/approved-five-source-set-staging-v1.json",
+    "approvedSourceSetSha256": "97ffb579162ddfe07e44d33c1bedb51d4848603f8d564bd0276f0e2a018f679e",
+    "approvedGoldStaging": "tmp/ma24-independent-quarantine/approved-five-gold-staging-v1.json",
+    "approvedGoldSha256": "90a72b52dac0a646e4d5ca9d3974c52d9e8b1706246e0ed277de873605d40d96",
+    "validator": "src/lib/knowledge/evaluation/ma24-independent-comparison.ts"
+  },
+  "currentPool": {
+    "publicationDrafts": 24,
+    "syntheticSecurityDrafts": 3,
+    "approvedGoldCases": 5,
+    "approvedConnectedExposureUnits": 3,
+    "fullSetFrozen": false,
+    "realDualArmRuns": 0
+  },
+  "approvedFiveStructuralCoverage": {
+    "longDocument": 0,
+    "crossDocument": 1,
+    "newOrRevised": 0,
+    "noAnswer": 1,
+    "permissionDeny": 0,
+    "caseIds": [
+      "bpi-2018-cash-accruals",
+      "govuk-bduk-taking-part-premises-vs-regional-ability",
+      "taking-part-2019-20-rural-age75-intersection-unavailable",
+      "fcc-2026-fixed-service-option-scope",
+      "nist-industrial-wireless-5p4ghz-horn-free-vs-ground-1m"
+    ],
+    "qualification": "These are structural observations from draft metadata and approved case IDs, not frozen G16 manifest tags or answer-quality verdicts. The approved cross-document and no-answer cases belong to the same GOV.UK exposure unit."
+  },
+  "g16ValidatorMinimum": {
+    "requiredImprovementTags": ["long-document", "cross-document", "new-or-revised"],
+    "protectedNoRegressionTags": ["official-fact", "no-answer", "permission"],
+    "additionalPermissionRequirement": "At least one permission-tagged case must have expectedOutcome=deny."
+  },
+  "candidateOnly": {
+    "revision": "ETSI V19.4.0/V19.5.0 ZOD reference revision is one unapproved new-or-revised draft. It compares two versions but is not counted as a second cross-document draft by current metadata; its user content review is pending.",
+    "longDocument": "Nine publication drafts have primaryFormat=long-pdf, including the unapproved ETSI revision and DBS conflict cases; none is in the approved-five staging source set.",
+    "permission": "The synthetic owner-route and outsider-deny cases are unapproved; evaluation account IDs, private asset inventory, ready evidence tree and Gold have not been frozen together.",
+    "draftHardCaseCounts": {
+      "cross-document": 1,
+      "new-or-revised": 1,
+      "conflict": 1,
+      "no-answer": 1,
+      "permission": 2,
+      "injection": 1
+    }
+  },
+  "nextAcceptanceOrder": [
+    "Complete bounded content, source-use, product-citation and family-independence review of remaining publication candidates; keep shared sources in one exposure unit.",
+    "Approve and freeze enough independent Gold to satisfy both the proposed stratification and the explicit G16 required tags; do not infer tags from file format alone.",
+    "Freeze the owner and denied account inventories with the private security asset, owner Gold, identical question and scope, and current ready tree; revalidate at execution boundaries.",
+    "Freeze source, Gold, corpus, code and actual runtime build together; complete G15 rate, limit and paid-call authorization gates before model calls.",
+    "Run persisted baseline and candidate arms, inspect user-visible answers and citations, and record independent reviewer verdicts."
+  ],
+  "g15ReadyForModelCalls": false,
+  "g16QualityGatePassed": false,
+  "g17ToG20Advanced": false
+}
