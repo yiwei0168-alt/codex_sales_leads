@@ -1,0 +1,41 @@
+{
+  "schema": "ma24-g14-bduk-two-private-gold-drafts-v1",
+  "date": "2026-10-15",
+  "scope": "G14 preparation for G16; G17-G20 deferred",
+  "privateDrafts": [
+    {
+      "caseId": "bpi-2018-cash-accruals",
+      "path": "tmp/ma24-independent-quarantine/bpi-cash-accruals-gold-draft-v1.json",
+      "sha256": "4a765537bfa29e378cb3bb91e4e1ffea243193840e9c6edacefbf076bc5f2029",
+      "sourceFamilies": ["BDUK Broadband Performance Indicator March 2018"],
+      "sourceCoordinates": ["Sheet1!D26", "Sheet1!A33"]
+    },
+    {
+      "caseId": "govuk-bduk-taking-part-premises-vs-regional-ability",
+      "path": "tmp/ma24-independent-quarantine/govuk-bduk-taking-part-cross-document-gold-draft-v1.json",
+      "sha256": "8796ec80fb6b2a74eb195040390e2f9600ace697582dc5213b67ac1eea13ff98",
+      "sourceFamilies": ["BDUK Broadband Performance Indicator March 2018", "Taking Part 2019/20 Internet"],
+      "sourceCoordinates": ["Sheet1!B26", "Sheet1!A28", "Table 2!C22", "Table 2!C28"]
+    }
+  ],
+  "checks": {
+    "originalWorkbookSha256sMatchedPriorReceipts": true,
+    "originalCellsReadOnlyVerified": true,
+    "questionsMatchCurrentDraftPoolExactly": true,
+    "productExtractionBlockIdsAndUnitIndexesMatched": true,
+    "percentagePointArithmeticVerified": true,
+    "causalInferenceExcluded": true,
+    "publisherWorkbooksKeptInPrivateQuarantine": true,
+    "modelCalls": 0
+  },
+  "sharedExposureUnit": "These two drafts and the Taking Part no-answer draft share the BDUK-plus-Taking-Part connected source unit and cannot be split across development and holdout.",
+  "acceptanceBoundary": {
+    "privateGoldDraftsTotal": 7,
+    "independentGoldApproved": 0,
+    "sourceEligibilityAndSemanticIndependenceFinalReview": false,
+    "independentReviewerSignedOff": false,
+    "userVisibleDualSourceAnswerAndCitationsVerified": false,
+    "qualityGatePassed": false,
+    "g17ToG20Advanced": false
+  }
+}
