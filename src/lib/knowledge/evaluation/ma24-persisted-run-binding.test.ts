@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { assertMa24PersistedRunBinding } from "./ma24-persisted-run-binding";
+import { assertMa24PersistedRunBinding, deriveMa24PersistedRun } from "./ma24-persisted-run-binding";
 import { ma24CaseQuerySha256, type Ma24Case, type Ma24Run } from "./ma24-independent-comparison";
 import { digest } from "../../assistant/main/contracts";
 import { modelFunctions, transportMessages } from "../../assistant/main/model";
@@ -43,6 +43,27 @@ const verify = (overrides: Partial<Parameters<typeof assertMa24PersistedRunBindi
 };
 
 describe("MA24 persisted run binding", () => {
+  it("exports only settled rows and takes answer, model and receipt IDs from the journal", () => {
+    const input = { case: frozen, query, arm: run.arm, runId,
+      manifestSha256: run.manifestSha256, citations: [] };
+    const rows = { task, modelCalls, evidenceCalls: [], allCalls: modelCalls };
+    expect(deriveMa24PersistedRun(input, rows)).toEqual({ ...run,
+      receiptIds: [runId, modelCalls[0].id] });
+    expect(() => deriveMa24PersistedRun(input, { ...rows,
+      task: { ...task, status: "queued" } })).toThrow("not exportable");
+    expect(() => deriveMa24PersistedRun(input, { ...rows,
+      task: { ...task, result: { reply: "Invented answer" } } })).toThrow("persisted model journal mismatch");
+    expect(() => deriveMa24PersistedRun(input, { ...rows,
+      task: { ...task, execution_spec: { ...task.execution_spec, arm: "baseline" } } }))
+      .toThrow("persisted task mismatch");
+    expect(deriveMa24PersistedRun(input, { task: { ...task, status: "failed",
+      result: { reply: "Provider unavailable" } }, modelCalls: [], evidenceCalls: [], allCalls: [] }))
+      .toEqual({ ...run, status: "failed", answer: "", citations: [],
+        receiptIds: [runId], modelCallIds: [], failureReason: "Provider unavailable" });
+    expect(() => deriveMa24PersistedRun({ ...input, citations: [{
+      assetSha256: "a".repeat(64), unitIndex: 1, excerpt: "Unsupported" }],
+    }, rows)).toThrow("citation lacks persisted source");
+  });
   it("binds one completed execution to its database principal, question, scope, reply and model journal", () => {
     expect(verify().modelCallIds).toEqual([modelCalls[0].id]);
     expect(verify().wireManifests).toEqual([{ callId: modelCalls[0].id,

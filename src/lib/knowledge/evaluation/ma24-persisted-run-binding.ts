@@ -1,7 +1,8 @@
 import { createHash } from "node:crypto";
 import { tenantTransaction } from "../../rag/db";
 import { stableJson } from "../review-types";
-import { ma24CaseQuerySha256, type Ma24Case, type Ma24Run } from "./ma24-independent-comparison";
+import { ma24CaseQuerySha256, type Ma24Arm, type Ma24Case, type Ma24Run } from "./ma24-independent-comparison";
+import type { GoldSourceCoordinate } from "../review-types";
 import { digest } from "../../assistant/main/contracts";
 import { auditModelProtocol } from "../../assistant/main/model-protocol-audit";
 import { assertMa24CitationEvidence, type Ma24EvidenceCall } from "./ma24-citation-evidence";
@@ -132,22 +133,64 @@ export function assertMa24PersistedRunBinding(input: {
 /** Tenant scoped, read-only lookup of the persisted main Agent run and model-call journal. */
 export async function verifyMa24PersistedRunBinding(frozen: Ma24Case, query: string, run: Ma24Run) {
   return tenantTransaction(frozen.userId, async client => {
-    const task = (await client.query<PersistedRun>(
+    const rows = await loadPersistedRunRows(client, frozen.userId, run.runId);
+    return assertMa24PersistedRunBinding({ case: frozen, query, run, ...rows });
+  });
+}
+
+type QueryClient = Parameters<Parameters<typeof tenantTransaction>[1]>[0];
+async function loadPersistedRunRows(client: QueryClient, userId: string, runId: string) {
+  const task = (await client.query<PersistedRun>(
       `select id,user_id,status,execution_kind,execution_spec,input,model_config,result
-       from agent_run where id=$1 and user_id=$2`, [run.runId, frozen.userId])).rows[0];
-    const modelCalls = (await client.query<PersistedModelCall>(
+       from agent_run where id=$1 and user_id=$2`, [runId, userId])).rows[0];
+  const modelCalls = (await client.query<PersistedModelCall>(
       `select id,user_id,run_id,tool_id,effect,status,input,input_hash,output from agent_tool_call
        where run_id=$1 and user_id=$2 and tool_id='main_model' and effect='model' order by id`,
-      [run.runId, frozen.userId])).rows;
-    const evidenceCalls = (await client.query<Ma24EvidenceCall>(
+      [runId, userId])).rows;
+  const evidenceCalls = (await client.query<Ma24EvidenceCall>(
       `select id,user_id,run_id,tool_id,effect,status,input,input_hash,output from agent_tool_call
        where run_id=$1 and user_id=$2 and tool_id in ('knowledge_search','vectorless_read') order by id`,
-      [run.runId, frozen.userId])).rows;
-    const allCalls = (await client.query<PersistedCall>(
+      [runId, userId])).rows;
+  const allCalls = (await client.query<PersistedCall>(
       `select id,user_id,run_id,effect,status,input,input_hash
        from agent_tool_call where run_id=$1 and user_id=$2 order by id`,
-      [run.runId, frozen.userId])).rows;
-    return assertMa24PersistedRunBinding({ case: frozen, query, run, task,
-      modelCalls, evidenceCalls, allCalls });
+      [runId, userId])).rows;
+  return { task, modelCalls, evidenceCalls, allCalls };
+}
+
+type ExportInput = { case: Ma24Case; query: string; arm: Ma24Arm; runId: string;
+  manifestSha256: string; citations: GoldSourceCoordinate[] };
+
+/** Derive factual fields from saved rows and verify the complete binding before export. */
+export function deriveMa24PersistedRun(input: ExportInput,
+  rows: Awaited<ReturnType<typeof loadPersistedRunRows>>): Ma24Run {
+  const { case: frozen, query, arm, runId, manifestSha256, citations } = input;
+  const task = rows.task;
+  const result = task?.result as Record<string, unknown> | undefined;
+  const modelConfig = task?.model_config as Record<string, unknown> | undefined;
+  if (!task || !["completed", "failed"].includes(task.status) ||
+    typeof modelConfig?.model !== "string" || !modelConfig.model.trim() ||
+    (task.status === "completed" && (typeof result?.reply !== "string" || !result.reply.trim())) ||
+    (task.status === "failed" && citations.length))
+    throw new Error(`MA24 run is not exportable ${frozen.caseId}:${arm}`);
+  const run: Ma24Run = {
+    caseId: frozen.caseId, arm, runId, caseSha256: frozen.caseSha256,
+    manifestSha256, userId: frozen.userId, knowledgeScope: frozen.knowledgeScope,
+    status: task.status as "completed" | "failed",
+    answer: task.status === "completed" ? result!.reply as string : "",
+    citations, receiptIds: [runId, ...rows.allCalls.map(call => call.id)],
+    modelCallIds: rows.modelCalls.map(call => call.id), modelId: modelConfig.model,
+    ...(task.status === "failed" ? { failureReason: typeof result?.reply === "string" && result.reply.trim()
+      ? result.reply : "Persisted task failed; no reason recorded" } : {}),
+  };
+  assertMa24PersistedRunBinding({ case: frozen, query, run, ...rows });
+  return run;
+}
+
+/** Build a scoreable run from saved rows; only citation coordinates come from the reviewer. */
+export async function exportMa24PersistedRun(input: ExportInput) {
+  return tenantTransaction(input.case.userId, async client => {
+    const rows = await loadPersistedRunRows(client, input.case.userId, input.runId);
+    return deriveMa24PersistedRun(input, rows);
   });
 }
