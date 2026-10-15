@@ -1,0 +1,52 @@
+{
+  "schema": "ma24-g14-zbw-family-predecision-review-v1",
+  "date": "2026-10-15",
+  "stage": "G14 read-only family review before the pending user decision on three teaching-slide question types",
+  "original": {
+    "path": "tmp/ma24-independent-quarantine/zbw-2025-open-science.pptx",
+    "sha256Recomputed": "595df78e84768ec588a9d638366c69064c63139bdb43fea3445500ac7fd63bde",
+    "publisherPage": "https://openeconomics.zbw.eu/en/teaching/",
+    "repositoryRecord": "https://zenodo.org/records/15348619",
+    "publisherPageLastUpdate": "2025-05-06",
+    "family": "PPTX, ODP and PDF variants of one ZBW Open Economics Guide slide set"
+  },
+  "rightsReview": {
+    "publisherPage": "Offers the slides under CC BY 4.0",
+    "originalSlide2": "Presentation and its illustrations are CC BY 4.0 with attribution; logos are excluded, third-party images are marked separately, and Remix icons are identified separately.",
+    "evaluationUse": "Private factual questions and short attributed paraphrases only; no logo or slide image in the answer key."
+  },
+  "sourceReview": [
+    {
+      "caseId": "zbw-2025-open-science-five-individual-benefits",
+      "originalSlide": 11,
+      "check": "The wheel has five labelled benefits: visibility, impact and knowledge transfer, feedback, funder-guideline compliance, and publication options plus author control. The central person is an illustration, not a sixth benefit."
+    },
+    {
+      "caseId": "zbw-2025-open-data-technical-legal-restriction",
+      "originalSlides": [25, 28],
+      "check": "Slide 28 separates complete machine-readable accessible publication from legal conditions allowing resharing and reuse, and recommends a DOI repository. Slide 25 says some sensitive data cannot be fully open and at minimum their existence should be visible."
+    },
+    {
+      "caseId": "zbw-2025-dmp-lifecycle-and-access-questions",
+      "originalSlide": 30,
+      "check": "The left text says ideally create a DMP during planning and continue it throughout the project. The right board asks how long to retain data, when and where to transfer it, and who may use it; it supplies no numerical period, destination or specific role."
+    }
+  ],
+  "currentPoolReview": {
+    "pool": "tmp/ma24-independent-quarantine/g14-current-draft-pool-v6-2026-10-15.json",
+    "publicationDraftsInspected": 24,
+    "zbwDrafts": 3,
+    "otherPublicationDrafts": 21,
+    "sameRequestedZbwAnswerAmongOtherDrafts": false,
+    "unitAccounting": "All three ZBW drafts share one original publication family and must be treated as one connected exposure unit; the three questions do not constitute three independent sources.",
+    "historicalScreens": [
+      "docs/evidence/ma24-g14-zbw-bounded-independence-audit-2026-10-15.json",
+      "docs/evidence/ma24-g14-zbw-visual-question-drafts-2026-10-15.json"
+    ],
+    "productSourceTextScreen": "No ZBW or requested answer phrases matched in src or db/migrations in a bounded text search."
+  },
+  "decisionBoundary": "The user has not yet answered the ZBW question-type review request. This check confirms source content and bounded non-overlap only; it does not approve a candidate answer, family independence, private Gold, full G14 freeze, G15 admission or G16 model quality.",
+  "goldAdded": 0,
+  "modelCalls": 0,
+  "g17ToG20Advanced": false
+}
