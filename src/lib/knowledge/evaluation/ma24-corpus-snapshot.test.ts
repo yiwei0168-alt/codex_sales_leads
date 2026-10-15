@@ -3,7 +3,8 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 const mocks = vi.hoisted(() => ({ tenantTransaction: vi.fn() }));
 vi.mock("../../rag/db", () => ({ tenantTransaction: mocks.tenantTransaction }));
 import { assertMa24CorpusSnapshotBytes, assertMa24CorpusSnapshotShape,
-  assertMa24PermissionGoldControl, verifyMa24LiveCorpusAccount,
+  assertMa24PermissionGoldControl, assertMa24RouteGoldCorpusAccess,
+  verifyMa24LiveCorpusAccount,
   verifyMa24LivePermissionControl, type Ma24CorpusSnapshot } from "./ma24-corpus-snapshot";
 import type { Ma24FrozenManifest, Ma24GoldSnapshot } from "./ma24-independent-comparison";
 
@@ -61,6 +62,18 @@ describe("MA24 frozen corpus and tenant ACL", () => {
       { ...snapshot, permissionProofs: [{ ...snapshot.permissionProofs[0],
         targetAssetSha256: "c".repeat(64) }] })).toThrow(/permission control/);
     expect(() => assertMa24PermissionGoldControl(manifest, snapshot, gold)).not.toThrow();
+    expect(() => assertMa24RouteGoldCorpusAccess(manifest, snapshot, gold)).not.toThrow();
+    for (const changed of [
+      { ...document, assetRegistrationStatus: "withdrawn" },
+      { ...document, currentTreeStatus: "failed" },
+      { ...document, currentTreeSourceSha256: "c".repeat(64) },
+      { ...document, currentTreeAssetId: "66666666-6666-4666-8666-666666666666" },
+    ]) expect(() => assertMa24RouteGoldCorpusAccess(manifest,
+      { ...snapshot, accounts: [{ ...snapshot.accounts[0], documents: [changed] }, snapshot.accounts[1]] },
+      gold)).toThrow(/route Gold source unavailable/);
+    expect(() => assertMa24RouteGoldCorpusAccess(manifest, snapshot, { ...gold,
+      cases: [{ ...gold.cases[0], expectedSources: [{ assetSha256: "c".repeat(64), unitIndex: 1,
+        excerpt: "Unknown source" }] }, gold.cases[1]] })).toThrow(/route Gold source unavailable/);
     expect(() => assertMa24PermissionGoldControl(manifest, snapshot, { ...gold,
       cases: [{ ...gold.cases[0], expectedSources: [] }, gold.cases[1]] }))
       .toThrow(/permission Gold source mismatch/);

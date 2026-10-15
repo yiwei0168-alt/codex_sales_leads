@@ -8,6 +8,7 @@ import { assertMa24FrozenSnapshotBytes, assertMa24GoldMatchesManifest,
 import { verifyMa24EvaluationTaskBinding } from "./ma24-evaluation-task-binding";
 import { assertMa24G15RuntimeBinding, type Ma24G15Preview } from "./ma24-g15-runtime-binding";
 import { assertMa24CorpusSnapshotBytes, assertMa24PermissionGoldControl,
+  assertMa24RouteGoldCorpusAccess,
   verifyMa24LiveCorpusAccount, verifyMa24LivePermissionControl } from "./ma24-corpus-snapshot";
 
 type ClaimedEvaluationRun = { id: string; user_id: string; lease_token: string };
@@ -56,6 +57,7 @@ export async function claimAndBindMa24EvaluationRun(input: Omit<BindingInput,
   const gold = decode(input.goldBytes) as Ma24GoldSnapshot;
   assertMa24GoldMatchesManifest(input.manifest, gold);
   assertMa24PermissionGoldControl(input.manifest, corpus, gold);
+  assertMa24RouteGoldCorpusAccess(input.manifest, corpus, gold);
   const frozenCodeAndConfig = decode(input.codeAndConfigBytes) as Ma24G15Preview;
   const loadedCodeAndConfig = loadCurrentMa24G15Preview();
   const nowUtcDate = new Date().toISOString().slice(0, 10);

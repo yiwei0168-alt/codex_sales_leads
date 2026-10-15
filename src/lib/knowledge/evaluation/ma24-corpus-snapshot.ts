@@ -101,6 +101,27 @@ export function assertMa24PermissionGoldControl(manifest: Ma24FrozenManifest,
   }
 }
 
+/** Every routed answer key must cite a ready asset visible to its execution account. */
+export function assertMa24RouteGoldCorpusAccess(manifest: Ma24FrozenManifest,
+  snapshot: Ma24CorpusSnapshot, gold: Ma24GoldSnapshot) {
+  const goldById = new Map(gold.cases.map(item => [item.caseId, item]));
+  for (const item of manifest.cases) {
+    if (item.expectedOutcome !== "route") continue;
+    const account = snapshot.accounts.find(entry =>
+      accountKey(entry.userId, entry.knowledgeScope) ===
+      accountKey(item.userId, item.knowledgeScope));
+    for (const source of goldById.get(item.caseId)?.expectedSources ?? []) {
+      if (!account?.documents.some(document =>
+        document.assetSha256 === source.assetSha256 &&
+        document.assetRegistrationStatus === "registered" &&
+        document.currentTreeVersionId && document.currentTreeStatus === "ready" &&
+        document.currentTreeAssetId === document.assetId &&
+        document.currentTreeSourceSha256 === source.assetSha256))
+        throw new Error(`MA24 route Gold source unavailable ${item.caseId}`);
+    }
+  }
+}
+
 /** Keep the positive control's private source present during a denied-account run. */
 export async function verifyMa24LivePermissionControl(manifest: Ma24FrozenManifest,
   snapshot: Ma24CorpusSnapshot, caseId: string) {

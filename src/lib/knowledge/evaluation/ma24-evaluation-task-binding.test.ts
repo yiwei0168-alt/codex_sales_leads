@@ -39,8 +39,17 @@ const loadedCodeAndConfig: Ma24G15Preview = { schema: "ma24-g15-config-preview-v
   transitiveCodeClosureVerified: false, providerTariffsVerified: false,
   paidCallAuthorizationConfirmed: false, readyForPaidEvaluation: false };
 const codeAndConfigBytes = new TextEncoder().encode(JSON.stringify(loadedCodeAndConfig));
+const sourceDocument = { documentId: "66666666-6666-4666-8666-666666666666",
+  collectionSlug: "industry" as const, ownerId: userId, visibility: "private",
+  title: "Synthetic evidence", sourceUrl: null, authorityLevel: 2, language: "en",
+  market: null, companyId: null, productId: null, metadata: {}, contentSha256: "a".repeat(64),
+  currentTreeVersionId: "77777777-7777-4777-8777-777777777777",
+  currentTreeStatus: "ready", currentTreeSourceSha256: "c".repeat(64),
+  currentTreeAssetId: "88888888-8888-4888-8888-888888888888",
+  activeReleaseId: null, assetId: "88888888-8888-4888-8888-888888888888",
+  assetSha256: "c".repeat(64), assetRegistrationStatus: "registered" };
 const corpus: Ma24CorpusSnapshot = { schema: "ma24-g16-corpus-snapshot-v2",
-  accounts: [{ userId, knowledgeScope: ["industry"], documents: [], releases: [] }],
+  accounts: [{ userId, knowledgeScope: ["industry"], documents: [sourceDocument], releases: [] }],
   permissionProofs: [] };
 const corpusSnapshotBytes = new TextEncoder().encode(JSON.stringify(corpus));
 const sha = (bytes: Uint8Array) => createHash("sha256").update(bytes).digest("hex");
@@ -154,7 +163,7 @@ describe("MA24 evaluation task admission binding", () => {
           expect(args).toEqual([userId, task.conversation_id]);
           return { rows: [conversation] };
         }
-        if (sql.includes("from knowledge_document d")) return { rows: [] };
+        if (sql.includes("from knowledge_document d")) return { rows: [sourceDocument] };
         expect(sql).toContain("from knowledge_release_pointer_v3");
         return { rows: [] };
       } });

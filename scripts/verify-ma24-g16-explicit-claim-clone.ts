@@ -39,7 +39,9 @@ const userId = randomUUID(), conversationId = randomUUID();
 const evaluationId = randomUUID(), ordinaryId = randomUUID(), malformedId = randomUUID();
 const admittedId = randomUUID(), rejectedId = randomUUID();
 const admittedConversationId = randomUUID(), rejectedConversationId = randomUUID();
+const sourceDocumentId = randomUUID(), sourceAssetId = randomUUID(), sourceTreeId = randomUUID();
 let inserted = false;
+let sourceInserted = false;
 let verified = false;
 try {
   const kind = (await admin.query<{ definition: string }>(
@@ -111,6 +113,29 @@ try {
   const saved = (await admin.query<{ status: string; lease_token: string }>(
     "select status,lease_token from agent_run where id=$1 and user_id=$2", [evaluationId, userId])).rows[0];
   assert.deepEqual(saved, { status: "running", lease_token: first.lease_token });
+  const sourceClient = await admin.connect();
+  try {
+    await sourceClient.query("begin");
+    await sourceClient.query(`insert into knowledge_document(id,collection_id,external_id,title,
+        source_type,content_sha256,owner_id,visibility,status)
+      select $1,c.id,$2,'MA24 explicit claim source','synthetic',$3,$4,'private','active'
+        from knowledge_collection c where c.slug='industry'`,
+    [sourceDocumentId, `ma24-claim-source-${sourceDocumentId}`, "a".repeat(64), userId]);
+    await sourceClient.query(`insert into knowledge_asset(id,document_id,storage_key,source_sha256,
+        mime_type,byte_size,document_type,source_nature)
+      values($1,$2,$3,$4,'application/pdf',1,'PDF','synthetic')`,
+    [sourceAssetId, sourceDocumentId,
+      `knowledge/uploads/${userId}/${sourceDocumentId}.pdf`, "c".repeat(64)]);
+    await sourceClient.query(`insert into knowledge_tree_version(id,document_id,asset_id,
+        source_sha256,extractor_version,artifact_sha256,status)
+      values($1,$2,$3,$4,'synthetic-fixture',$5,'ready')`,
+    [sourceTreeId, sourceDocumentId, sourceAssetId, "c".repeat(64), "d".repeat(64)]);
+    await sourceClient.query("update knowledge_document set current_tree_version_id=$2 where id=$1",
+      [sourceDocumentId, sourceTreeId]);
+    await sourceClient.query("commit");
+    sourceInserted = true;
+  } catch (error) { await sourceClient.query("rollback"); throw error; }
+  finally { sourceClient.release(); }
   const caseId = "ma24-explicit-admission-synthetic";
   const frozenQuery = "What does the synthetic source report?";
   const sourceSetBytes = new TextEncoder().encode(JSON.stringify({
@@ -213,6 +238,20 @@ try {
   await assert.rejects(claimAndBindMa24EvaluationRun({ ...binding, runId: rejectedId,
     manifest: { ...manifest, goldSnapshotSha256: hash(invalidGoldBytes) },
     goldBytes: invalidGoldBytes }), /Invalid MA24 frozen Gold case/);
+  const unavailableGoldBytes = new TextEncoder().encode(JSON.stringify({
+    schema: "ma24-g16-gold-snapshot-v1", cases: [{ caseId,
+      caseSha256: ma24CaseQuerySha256(frozenQuery), expectedAnswer: "Synthetic answer",
+      expectedSources: [{ assetSha256: "e".repeat(64), unitIndex: 1,
+        excerpt: "Missing evidence" }], reviewer: "Synthetic reviewer",
+      reviewedAt: "2026-10-15T00:00:00Z", note: "Fixture only" }],
+  }));
+  await assert.rejects(claimAndBindMa24EvaluationRun({ ...binding, runId: rejectedId,
+    manifest: { ...manifest, goldSnapshotSha256: hash(unavailableGoldBytes) },
+    goldBytes: unavailableGoldBytes }), /route Gold source unavailable/);
+  assert.equal((await admin.query<{ status: string }>(
+    "select status from agent_run where id=$1 and user_id=$2",
+    [rejectedId, userId])).rows[0]?.status, "queued",
+  "Unavailable Gold source consumed the queued evaluation task");
   assert.equal((await admin.query<{ status: string }>(
     "select status from agent_run where id=$1 and user_id=$2",
     [rejectedId, userId])).rows[0]?.status, "queued",
@@ -261,15 +300,31 @@ try {
         [userId, [evaluationId, ordinaryId, malformedId, admittedId, rejectedId]]);
       await client.query("delete from assistant_conversation where user_id=$1 and id=any($2::uuid[])",
         [userId, [conversationId, admittedConversationId, rejectedConversationId]]);
+      if (sourceInserted) {
+        await client.query("update knowledge_document set current_tree_version_id=null where id=$1",
+          [sourceDocumentId]);
+        await client.query("delete from knowledge_tree_version where id=$1 and document_id=$2",
+          [sourceTreeId, sourceDocumentId]);
+        await client.query("delete from knowledge_asset where id=$1 and document_id=$2",
+          [sourceAssetId, sourceDocumentId]);
+        await client.query("delete from knowledge_document where id=$1 and owner_id=$2",
+          [sourceDocumentId, userId]);
+      }
       await client.query("delete from app_user where id=$1", [userId]);
       await client.query("commit");
-      const residual = (await admin.query<{ users: string; conversations: string; runs: string }>(`
+      const residual = (await admin.query<{ users: string; conversations: string; runs: string;
+        documents: string; assets: string; trees: string }>(`
         select (select count(*)::text from app_user where id=$1) as users,
           (select count(*)::text from assistant_conversation where id=any($2::uuid[])) as conversations,
-          (select count(*)::text from agent_run where id=any($3::uuid[])) as runs`,
+          (select count(*)::text from agent_run where id=any($3::uuid[])) as runs,
+          (select count(*)::text from knowledge_document where id=$4) as documents,
+          (select count(*)::text from knowledge_asset where id=$5) as assets,
+          (select count(*)::text from knowledge_tree_version where id=$6) as trees`,
       [userId, [conversationId, admittedConversationId, rejectedConversationId],
-        [evaluationId, ordinaryId, malformedId, admittedId, rejectedId]])).rows[0];
-      assert.deepEqual(residual, { users: "0", conversations: "0", runs: "0" },
+        [evaluationId, ordinaryId, malformedId, admittedId, rejectedId],
+        sourceDocumentId, sourceAssetId, sourceTreeId])).rows[0];
+      assert.deepEqual(residual, { users: "0", conversations: "0", runs: "0",
+        documents: "0", assets: "0", trees: "0" },
         "Synthetic evaluation claim rows remained");
     } catch (error) { await client.query("rollback"); throw error; }
     finally { client.release(); }
@@ -284,6 +339,7 @@ if (verified) console.log(JSON.stringify({ schema: "ma24-g16-explicit-claim-clon
     "app-role-grant", "claimed-row-bound-to-frozen-input",
     "snapshot-drift-rejected-before-claim", "live-corpus-drift-rejected-before-claim",
     "invalid-source-and-gold-rejected-before-claim",
+    "unavailable-route-Gold-source-rejected-before-claim",
     "loaded-runtime-drift-rejected-before-claim",
     "binding-failure-terminated-without-model-call",
     "leased-evaluation-tool-guard-rejected-writes-and-context-drift",

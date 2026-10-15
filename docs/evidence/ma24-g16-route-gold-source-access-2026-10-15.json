@@ -1,0 +1,32 @@
+{
+  "schema": "ma24-g16-route-gold-source-access-v1",
+  "date": "2026-10-15",
+  "change": "Before an evaluation task is admitted, every route Gold source must be visible to that case's frozen account and knowledge scope, registered, and attached to a ready evidence tree for the same asset SHA-256.",
+  "failure": "A Gold source asset absent from the account's frozen corpus snapshot now rejects admission even when the Gold and manifest byte hashes match.",
+  "focusedChecks": {
+    "vitestFiles": 2,
+    "vitestCasesPassed": 16,
+    "typescript": "passed",
+    "eslint": "passed",
+    "isolatedDatabase": [
+      "ready private source passes for its owner",
+      "different Gold asset hash rejects before task execution",
+      "unavailable Gold source rejects before task claim and leaves the task queued",
+      "new visible document and ACL drift still reject",
+      "changed question, expired lease and snapshot drift still reject",
+      "synthetic users, tasks, document, asset and tree are cleaned"
+    ]
+  },
+  "g15CurrentPreview": "docs/evidence/ma24-g15-config-preview-2026-10-15-v7.json",
+  "g15CurrentPreviewSha256": "dd21a0e7023294ec863c1625b43eedda5ed8b558c1e7dc4577b1507c3b93c183",
+  "g15SourceClosureFiles": 289,
+  "modelCalls": 0,
+  "providerCalls": 0,
+  "realDualArmRuns": 0,
+  "qualityAccepted": false,
+  "limits": [
+    "This checks source availability and tree identity; it does not verify the exact cited excerpt or final user-visible citation.",
+    "The isolated database case uses a synthetic source. Full G14 Gold, live account inventory, G15 paid authorization and G16 real dual-arm results remain open."
+  ],
+  "g17ToG20Advanced": false
+}

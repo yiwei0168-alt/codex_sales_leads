@@ -43,6 +43,7 @@ globalThis.fetch = async () => { throw new Error("External HTTP disabled for MA2
 
 const admin = new Pool({ connectionString: migrationUrl });
 const userId = randomUUID(), otherUserId = randomUUID(), conversationId = randomUUID();
+const sourceDocumentId = randomUUID(), sourceAssetId = randomUUID(), sourceTreeId = randomUUID();
 const runId = randomUUID(), leaseToken = randomUUID(), caseId = "ma24-admission-synthetic";
 const query = "What does this synthetic local source say?";
 const sourceSet: Ma24SourceSetSnapshot = { schema: "ma24-g16-source-set-v1",
@@ -68,19 +69,9 @@ const loadedCodeAndConfig: Ma24G15Preview = { schema: "ma24-g15-config-preview-v
   transitiveCodeClosureVerified: false, providerTariffsVerified: false,
   paidCallAuthorizationConfirmed: false, readyForPaidEvaluation: false };
 const codeAndConfigBytes = new TextEncoder().encode(JSON.stringify(loadedCodeAndConfig));
-const corpusSnapshotBytes = new TextEncoder().encode(JSON.stringify({
-  schema: "ma24-g16-corpus-snapshot-v2",
-  accounts: [await readMa24LiveCorpusAccount(userId, ["industry"])],
-  permissionProofs: [],
-}));
 const sha = (bytes: Uint8Array) => createHash("sha256").update(bytes).digest("hex");
-const manifest: Ma24FrozenManifest = { schema: "ma24-g16-frozen-comparison-v4",
-  sourceSetSha256: sha(sourceSetBytes),
-  goldSnapshotSha256: sha(goldBytes), codeAndConfigSha256: sha(codeAndConfigBytes),
-  corpusSnapshotSha256: sha(corpusSnapshotBytes),
-  requiredImprovementTags: [], protectedNoRegressionTags: [],
-  cases: [{ caseId, caseSha256: ma24CaseQuerySha256(query), group: "synthetic",
-    tags: [], expectedOutcome: "route", userId, knowledgeScope: ["industry"] }] };
+let corpusSnapshotBytes: Uint8Array;
+let manifest: Ma24FrozenManifest;
 const taskInput = { content: query, requestKey: `ma24-admission-${runId}`, attachments: [],
   knowledgeScope: ["industry"], mode: "standard" };
 const verify = () => verifyMa24EvaluationTaskBinding({ manifest, sourceSetBytes, goldBytes,
@@ -105,21 +96,59 @@ try {
       `insert into assistant_conversation(id,user_id,title,status)
        values($1,$2,'MA24 synthetic admission','deleted')`,
       [conversationId, userId]);
-    await client.query(
-      `insert into agent_run(id,user_id,conversation_id,request_key,request_hash,input,model_config,
-        execution_version,execution_kind,execution_spec,status,lease_token,lease_until)
-       values($1,$2,$3,$4,'synthetic-local',$5,$6,'ma24-admission-fixture',
-        'main-agent-evaluation',$7,'running',$8,now()+interval '10 minutes')`,
-      [runId, userId, conversationId, taskInput.requestKey, JSON.stringify(taskInput),
-        JSON.stringify(model), JSON.stringify({ schema: "ma24-evaluation-run-v1",
-          manifestSha256: ma24ManifestSha256(manifest), caseId, arm: "baseline" }), leaseToken]);
+    await client.query(`insert into knowledge_document(id,collection_id,external_id,title,
+        source_type,content_sha256,owner_id,visibility,status)
+      select $1,c.id,$2,'MA24 admission source','synthetic',$3,$4,'private','active'
+        from knowledge_collection c where c.slug='industry'`,
+    [sourceDocumentId, `ma24-admission-source-${sourceDocumentId}`, "a".repeat(64), userId]);
+    await client.query(`insert into knowledge_asset(id,document_id,storage_key,source_sha256,
+        mime_type,byte_size,document_type,source_nature)
+      values($1,$2,$3,$4,'application/pdf',1,'PDF','synthetic')`,
+    [sourceAssetId, sourceDocumentId,
+      `knowledge/uploads/${userId}/${sourceDocumentId}.pdf`, "c".repeat(64)]);
+    await client.query(`insert into knowledge_tree_version(id,document_id,asset_id,
+        source_sha256,extractor_version,artifact_sha256,status)
+      values($1,$2,$3,$4,'synthetic-fixture',$5,'ready')`,
+    [sourceTreeId, sourceDocumentId, sourceAssetId, "c".repeat(64), "d".repeat(64)]);
+    await client.query("update knowledge_document set current_tree_version_id=$2 where id=$1",
+      [sourceDocumentId, sourceTreeId]);
     await client.query("commit");
     created = true;
   } catch (error) { await client.query("rollback"); throw error; }
   finally { client.release(); }
 
+  corpusSnapshotBytes = new TextEncoder().encode(JSON.stringify({
+    schema: "ma24-g16-corpus-snapshot-v2",
+    accounts: [await readMa24LiveCorpusAccount(userId, ["industry"])],
+    permissionProofs: [],
+  }));
+  manifest = { schema: "ma24-g16-frozen-comparison-v4",
+    sourceSetSha256: sha(sourceSetBytes),
+    goldSnapshotSha256: sha(goldBytes), codeAndConfigSha256: sha(codeAndConfigBytes),
+    corpusSnapshotSha256: sha(corpusSnapshotBytes),
+    requiredImprovementTags: [], protectedNoRegressionTags: [],
+    cases: [{ caseId, caseSha256: ma24CaseQuerySha256(query), group: "synthetic",
+      tags: [], expectedOutcome: "route", userId, knowledgeScope: ["industry"] }] };
+  await admin.query(
+    `insert into agent_run(id,user_id,conversation_id,request_key,request_hash,input,model_config,
+      execution_version,execution_kind,execution_spec,status,lease_token,lease_until)
+     values($1,$2,$3,$4,'synthetic-local',$5,$6,'ma24-admission-fixture',
+      'main-agent-evaluation',$7,'running',$8,now()+interval '10 minutes')`,
+    [runId, userId, conversationId, taskInput.requestKey, JSON.stringify(taskInput),
+      JSON.stringify(model), JSON.stringify({ schema: "ma24-evaluation-run-v1",
+        manifestSha256: ma24ManifestSha256(manifest), caseId, arm: "baseline" }), leaseToken]);
+
   assert.deepEqual(await verify(), { userId, caseId, arm: "baseline", query,
     knowledgeScope: ["industry"] });
+  const unavailableGoldBytes = new TextEncoder().encode(JSON.stringify({ ...gold,
+    cases: [{ ...gold.cases[0], expectedSources: [{ assetSha256: "e".repeat(64),
+      unitIndex: 1, excerpt: "Missing source" }] }] }));
+  await assert.rejects(verifyMa24EvaluationTaskBinding({
+    manifest: { ...manifest, goldSnapshotSha256: sha(unavailableGoldBytes) },
+    sourceSetBytes, goldBytes: unavailableGoldBytes, codeAndConfigBytes,
+    corpusSnapshotBytes, loadedCodeAndConfig, nowUtcDate: "2026-10-15", runId,
+    leaseToken, caseId, arm: "baseline", loadedModelConfig: model,
+  }), /route Gold source unavailable/);
   const changedDocumentId = randomUUID();
   await admin.query(`insert into knowledge_document(id,collection_id,external_id,title,
       source_type,content_sha256,owner_id,visibility,status)
@@ -185,7 +214,9 @@ try {
     where id=$1 and user_id=$2`, [runId, userId]);
   await assert.rejects(verify(), /leased execution/);
   console.log(JSON.stringify({ schema: "ma24-g16-admission-local-v1", synthetic: true,
-    checks: ["valid-leased-row", "live-corpus-drift-rejected", "tenant-acl-visibility-change-readback",
+    checks: ["valid-leased-row", "ready-route-Gold-source-bound",
+      "unavailable-route-Gold-source-rejected", "live-corpus-drift-rejected",
+      "tenant-acl-visibility-change-readback",
       "cross-account-row-hidden", "changed-question-rejected",
       "expired-lease-rejected", "gold-bytes-drift-rejected", "code-config-bytes-drift-rejected",
       "loaded-prompt-drift-rejected",
@@ -204,14 +235,28 @@ try {
       await client.query("delete from agent_run where id=$1 and user_id=$2", [runId, userId]);
       await client.query("delete from assistant_conversation where id=$1 and user_id=$2",
         [conversationId, userId]);
+      await client.query("update knowledge_document set current_tree_version_id=null where id=$1",
+        [sourceDocumentId]);
+      await client.query("delete from knowledge_tree_version where id=$1 and document_id=$2",
+        [sourceTreeId, sourceDocumentId]);
+      await client.query("delete from knowledge_asset where id=$1 and document_id=$2",
+        [sourceAssetId, sourceDocumentId]);
+      await client.query("delete from knowledge_document where id=$1 and owner_id=$2",
+        [sourceDocumentId, userId]);
       await client.query("delete from app_user where id=any($1::uuid[])", [[userId, otherUserId]]);
       await client.query("commit");
-      const residual = await admin.query<{ users: string; runs: string; messages: string }>(`
+      const residual = await admin.query<{ users: string; runs: string; messages: string;
+        documents: string; assets: string; trees: string }>(`
         select (select count(*)::text from app_user where id=any($1::uuid[])) as users,
           (select count(*)::text from agent_run where id=$2) as runs,
-          (select count(*)::text from assistant_message where conversation_id=$3) as messages`,
-      [[userId, otherUserId], runId, conversationId]);
-      assert.deepEqual(residual.rows[0], { users: "0", runs: "0", messages: "0" },
+          (select count(*)::text from assistant_message where conversation_id=$3) as messages,
+          (select count(*)::text from knowledge_document where id=$4) as documents,
+          (select count(*)::text from knowledge_asset where id=$5) as assets,
+          (select count(*)::text from knowledge_tree_version where id=$6) as trees`,
+      [[userId, otherUserId], runId, conversationId,
+        sourceDocumentId, sourceAssetId, sourceTreeId]);
+      assert.deepEqual(residual.rows[0], { users: "0", runs: "0", messages: "0",
+        documents: "0", assets: "0", trees: "0" },
         "Synthetic admission rows remained after cleanup");
     } catch (error) { await client.query("rollback"); throw error; }
     finally { client.release(); }

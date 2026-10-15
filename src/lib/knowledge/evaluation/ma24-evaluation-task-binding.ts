@@ -7,6 +7,7 @@ import { assertMa24FrozenSnapshotBytes, assertMa24GoldMatchesManifest,
   type Ma24FrozenManifest, type Ma24GoldSnapshot,
   type Ma24SourceSetSnapshot } from "./ma24-independent-comparison";
 import { assertMa24CorpusSnapshotBytes, assertMa24PermissionGoldControl,
+  assertMa24RouteGoldCorpusAccess,
   verifyMa24LiveCorpusAccount, verifyMa24LivePermissionControl } from "./ma24-corpus-snapshot";
 
 type EvaluationTask = Pick<AgentRun, "id" | "user_id" | "status" | "input" |
@@ -54,6 +55,7 @@ export function assertMa24EvaluationTaskBinding(input: {
   const gold = JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(goldBytes)) as Ma24GoldSnapshot;
   assertMa24GoldMatchesManifest(manifest, gold);
   assertMa24PermissionGoldControl(manifest, corpus, gold);
+  assertMa24RouteGoldCorpusAccess(manifest, corpus, gold);
   const spec = task.execution_spec as Record<string, unknown> | null;
   const entry = manifest.cases.find(item => item.caseId === caseId);
   const question = sourceSet.cases.find(item => item.caseId === caseId);
