@@ -1,0 +1,22 @@
+{
+  "schema": "ma24-g15-evaluation-limit-binding-v1",
+  "dateLocal": "2026-10-16",
+  "scope": "Read-only G15 runtime preview binding and missing-limit diagnostics",
+  "change": "The frozen and loaded previews now bind maximum provider requests, request bytes, output tokens and total USD spend cap. Missing or invalid values are reported separately while model calls remain disabled.",
+  "verification": {
+    "focusedTests": "16 passed across runtime binding and dedicated evaluation runner",
+    "typecheck": "passed",
+    "changedFileEslint": "passed",
+    "v14PreviewPath": "docs/evidence/ma24-g15-config-preview-2026-10-16-v14.json",
+    "v14PreviewSha256": "7631efa25fcb921852c506d296a7d052ac26f28910ef3f0ddef5e5a35dc331ab",
+    "runtimeBinding": "matched; readyForModelCalls=false"
+  },
+  "limits": [
+    "The current preview has null ceilings and no paid authorization; this change does not supply or enforce a durable per-experiment request/spend cap.",
+    "Source and Gold freeze, runtime build, provider tariff verification, exact account scope and paid admission preflight remain open.",
+    "The preview's UTC prompt date is 2026-10-15 despite the 2026-10-16 local date and must be regenerated for any later UTC run date."
+  ],
+  "providerCalls": 0,
+  "realDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}

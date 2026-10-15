@@ -19,7 +19,42 @@ describe("MA24 G15 runtime binding", () => {
   it("reports a matching preview as still unready when freeze and spend gates are missing", () => {
     const same = preview();
     expect(assertMa24G15RuntimeBinding(same, structuredClone(same), "2026-10-15"))
-      .toMatchObject({ runtimeBindingMatched: true, readyForModelCalls: false });
+      .toMatchObject({ runtimeBindingMatched: true, readyForModelCalls: false,
+        missing: expect.arrayContaining(["maximum provider requests not fixed",
+          "maximum request bytes not fixed", "maximum output tokens not fixed",
+          "hard spend cap not fixed"]) });
+  });
+  it("requires positive bounded request, output and total spend values", () => {
+    const loaded = preview();
+    loaded.maximumProviderRequests = 0;
+    loaded.maximumRequestBytes = Number.NaN;
+    loaded.maximumOutputTokens = -1;
+    loaded.hardSpendCapUsd = Number.POSITIVE_INFINITY;
+    expect(assertMa24G15RuntimeBinding(loaded, loaded, "2026-10-15").missing)
+      .toEqual(expect.arrayContaining(["maximum provider requests not fixed",
+        "maximum request bytes not fixed", "maximum output tokens not fixed",
+        "hard spend cap not fixed"]));
+    loaded.maximumProviderRequests = 100;
+    loaded.maximumRequestBytes = 100_000;
+    loaded.maximumOutputTokens = 16_384;
+    loaded.hardSpendCapUsd = 10;
+    const result = assertMa24G15RuntimeBinding(loaded, loaded, "2026-10-15");
+    expect(result.readyForModelCalls).toBe(false);
+    expect(result.missing).not.toContain("hard spend cap not fixed");
+  });
+  it("rejects a changed request or spend ceiling after a preview is frozen", () => {
+    const frozen = preview();
+    frozen.maximumProviderRequests = 100;
+    frozen.maximumRequestBytes = 100_000;
+    frozen.maximumOutputTokens = 16_384;
+    frozen.hardSpendCapUsd = 10;
+    for (const field of ["maximumProviderRequests", "maximumRequestBytes",
+      "maximumOutputTokens", "hardSpendCapUsd"] as const) {
+      const loaded = structuredClone(frozen);
+      loaded[field] = 1;
+      expect(() => assertMa24G15RuntimeBinding(frozen, loaded, "2026-10-15"))
+        .toThrow(`${field} drift`);
+    }
   });
   it("rejects a different UTC prompt date before execution", () => {
     expect(() => assertMa24G15RuntimeBinding(preview(), preview(), "2026-10-16"))

@@ -14,10 +14,16 @@ export type Ma24G15Preview = {
   sourceSetFrozen: boolean; goldFrozen: boolean; runtimeBuildVerified: boolean;
   transitiveCodeClosureVerified: boolean; providerTariffsVerified: boolean;
   paidCallAuthorizationConfirmed: boolean; readyForPaidEvaluation: boolean;
+  maximumProviderRequests?: number | null; maximumRequestBytes?: number | null;
+  maximumOutputTokens?: number | null; hardSpendCapUsd?: number | null;
 };
 
 const sha = (value: unknown) => createHash("sha256").update(JSON.stringify(value)).digest("hex");
 const date = (value: string) => /^\d{4}-\d{2}-\d{2}$/.test(value);
+const positiveSafeInteger = (value: number | null | undefined) =>
+  Number.isSafeInteger(value) && (value ?? 0) > 0;
+const positiveFinite = (value: number | null | undefined) =>
+  typeof value === "number" && Number.isFinite(value) && value > 0;
 
 export function assertMa24G15RuntimeBinding(frozen: Ma24G15Preview,
   loaded: Ma24G15Preview, nowUtcDate: string) {
@@ -32,7 +38,10 @@ export function assertMa24G15RuntimeBinding(frozen: Ma24G15Preview,
     throw new Error("MA24 G15 product prompt UTC date drift");
   for (const field of ["mode", "modePromptVersion", "modePromptSha256", "productVersion",
     "modelFunctionsSha256", "intendedLocalBgeFlagForBothArms", "sourceClosureMethod"] as const)
-    if (frozen[field] !== loaded[field]) throw new Error(`MA24 G15 ${field} drift`);
+    if (!Object.is(frozen[field], loaded[field])) throw new Error(`MA24 G15 ${field} drift`);
+  for (const field of ["maximumProviderRequests", "maximumRequestBytes",
+    "maximumOutputTokens", "hardSpendCapUsd"] as const)
+    if (!Object.is(frozen[field], loaded[field])) throw new Error(`MA24 G15 ${field} drift`);
   if (frozen.sourceClosureMethod !== "recursive-local-static-imports-v1" ||
     !Number.isSafeInteger(frozen.sourceClosureFileCount) ||
     frozen.sourceClosureFileCount !== Object.keys(frozen.sourceHashes).length ||
@@ -48,6 +57,10 @@ export function assertMa24G15RuntimeBinding(frozen: Ma24G15Preview,
     ...(!loaded.transitiveCodeClosureVerified ? ["transitive code closure not verified"] : []),
     ...(!loaded.providerTariffsVerified ? ["provider tariffs not verified"] : []),
     ...(!loaded.paidCallAuthorizationConfirmed ? ["paid call authorization not confirmed"] : []),
+    ...(!positiveSafeInteger(loaded.maximumProviderRequests) ? ["maximum provider requests not fixed"] : []),
+    ...(!positiveSafeInteger(loaded.maximumRequestBytes) ? ["maximum request bytes not fixed"] : []),
+    ...(!positiveSafeInteger(loaded.maximumOutputTokens) ? ["maximum output tokens not fixed"] : []),
+    ...(!positiveFinite(loaded.hardSpendCapUsd) ? ["hard spend cap not fixed"] : []),
     ...(!loaded.readyForPaidEvaluation ? ["paid evaluation not ready"] : []),
   ];
   return { runtimeBindingMatched: true, readyForModelCalls: false,
