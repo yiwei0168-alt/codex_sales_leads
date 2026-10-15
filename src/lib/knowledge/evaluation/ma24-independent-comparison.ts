@@ -10,8 +10,9 @@ export type Ma24Case = {
 };
 /** The answer key stays outside this manifest; only its locked hash enters model-run inputs. */
 export type Ma24FrozenManifest = {
-  schema: "ma24-g16-frozen-comparison-v2";
+  schema: "ma24-g16-frozen-comparison-v3";
   sourceSetSha256: string; goldSnapshotSha256: string; codeAndConfigSha256: string;
+  corpusSnapshotSha256: string;
   requiredImprovementTags: string[]; protectedNoRegressionTags: string[];
   cases: Ma24Case[];
 };
@@ -75,12 +76,13 @@ export function assertMa24SourceSetMatchesManifest(manifest: Ma24FrozenManifest,
 
 /** The scoring CLI must bind each claimed snapshot hash to the bytes it actually reads. */
 export function assertMa24FrozenSnapshotBytes(manifest: Ma24FrozenManifest, snapshots: {
-  sourceSet: Uint8Array; gold: Uint8Array; codeAndConfig: Uint8Array;
+  sourceSet: Uint8Array; gold: Uint8Array; codeAndConfig: Uint8Array; corpus: Uint8Array;
 }) {
   for (const [name, expected, bytes] of [
     ["source set", manifest.sourceSetSha256, snapshots.sourceSet],
     ["Gold", manifest.goldSnapshotSha256, snapshots.gold],
     ["code and config", manifest.codeAndConfigSha256, snapshots.codeAndConfig],
+    ["corpus", manifest.corpusSnapshotSha256, snapshots.corpus],
   ] as const) {
     const actual = createHash("sha256").update(bytes).digest("hex");
     if (actual !== expected) throw new Error(`MA24 frozen ${name} snapshot drift`);
@@ -88,8 +90,9 @@ export function assertMa24FrozenSnapshotBytes(manifest: Ma24FrozenManifest, snap
 }
 
 function validateManifest(manifest: Ma24FrozenManifest) {
-  if (manifest.schema !== "ma24-g16-frozen-comparison-v2" || !manifest.cases.length ||
-    ![manifest.sourceSetSha256, manifest.goldSnapshotSha256, manifest.codeAndConfigSha256].every(hex64))
+  if (manifest.schema !== "ma24-g16-frozen-comparison-v3" || !manifest.cases.length ||
+    ![manifest.sourceSetSha256, manifest.goldSnapshotSha256, manifest.codeAndConfigSha256,
+      manifest.corpusSnapshotSha256].every(hex64))
     throw new Error("Incomplete MA24 frozen manifest");
   const ids = new Set<string>();
   for (const item of manifest.cases) {

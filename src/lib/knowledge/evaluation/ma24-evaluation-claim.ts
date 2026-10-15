@@ -7,6 +7,7 @@ import { assertMa24FrozenSnapshotBytes, assertMa24GoldMatchesManifest,
   type Ma24SourceSetSnapshot } from "./ma24-independent-comparison";
 import { verifyMa24EvaluationTaskBinding } from "./ma24-evaluation-task-binding";
 import { assertMa24G15RuntimeBinding, type Ma24G15Preview } from "./ma24-g15-runtime-binding";
+import { assertMa24CorpusSnapshotBytes, verifyMa24LiveCorpusAccount } from "./ma24-corpus-snapshot";
 
 type ClaimedEvaluationRun = { id: string; user_id: string; lease_token: string };
 
@@ -41,7 +42,11 @@ export async function claimAndBindMa24EvaluationRun(input: Omit<BindingInput,
   assertMa24FrozenSnapshotBytes(input.manifest, {
     sourceSet: input.sourceSetBytes, gold: input.goldBytes,
     codeAndConfig: input.codeAndConfigBytes,
+    corpus: input.corpusSnapshotBytes,
   });
+  const corpus = assertMa24CorpusSnapshotBytes(input.manifest, input.corpusSnapshotBytes,
+    input.manifest.corpusSnapshotSha256);
+  await verifyMa24LiveCorpusAccount(corpus, entry.userId, entry.knowledgeScope);
   const decode = (bytes: Uint8Array) => JSON.parse(new TextDecoder("utf-8", { fatal: true })
     .decode(bytes));
   assertMa24SourceSetMatchesManifest(input.manifest,

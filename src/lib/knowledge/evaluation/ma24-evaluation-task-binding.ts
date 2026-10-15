@@ -6,6 +6,7 @@ import { assertMa24FrozenSnapshotBytes, assertMa24GoldMatchesManifest,
   assertMa24SourceSetMatchesManifest, ma24ManifestSha256,
   type Ma24FrozenManifest, type Ma24GoldSnapshot,
   type Ma24SourceSetSnapshot } from "./ma24-independent-comparison";
+import { assertMa24CorpusSnapshotBytes, verifyMa24LiveCorpusAccount } from "./ma24-corpus-snapshot";
 
 type EvaluationTask = Pick<AgentRun, "id" | "user_id" | "status" | "input" |
   "model_config" | "execution_kind" | "execution_spec" | "lease_token" | "conversation_id"> & {
@@ -19,6 +20,7 @@ export function assertMa24EvaluationTaskBinding(input: {
   sourceSetBytes: Uint8Array;
   goldBytes: Uint8Array;
   codeAndConfigBytes: Uint8Array;
+  corpusSnapshotBytes: Uint8Array;
   loadedCodeAndConfig: Ma24G15Preview;
   nowUtcDate: string;
   task: EvaluationTask;
@@ -29,16 +31,19 @@ export function assertMa24EvaluationTaskBinding(input: {
   arm: "baseline" | "candidate";
   loadedModelConfig: ModelConfig;
 }) {
-  const { manifest, sourceSetBytes, goldBytes, codeAndConfigBytes,
+  const { manifest, sourceSetBytes, goldBytes, codeAndConfigBytes, corpusSnapshotBytes,
     loadedCodeAndConfig, nowUtcDate, task, conversation, runId, leaseToken,
     caseId, arm, loadedModelConfig } = input;
-  if (manifest.schema !== "ma24-g16-frozen-comparison-v2" ||
-    [manifest.sourceSetSha256, manifest.goldSnapshotSha256, manifest.codeAndConfigSha256]
+  if (manifest.schema !== "ma24-g16-frozen-comparison-v3" ||
+    [manifest.sourceSetSha256, manifest.goldSnapshotSha256, manifest.codeAndConfigSha256,
+      manifest.corpusSnapshotSha256]
       .some(hash => !/^[0-9a-f]{64}$/.test(hash)))
     throw new Error("MA24 evaluation snapshot hash missing");
   assertMa24FrozenSnapshotBytes(manifest, {
     sourceSet: sourceSetBytes, gold: goldBytes, codeAndConfig: codeAndConfigBytes,
+    corpus: corpusSnapshotBytes,
   });
+  assertMa24CorpusSnapshotBytes(manifest, corpusSnapshotBytes, manifest.corpusSnapshotSha256);
   const frozenConfig = JSON.parse(new TextDecoder("utf-8", { fatal: true })
     .decode(codeAndConfigBytes)) as Ma24G15Preview;
   assertMa24G15RuntimeBinding(frozenConfig, loadedCodeAndConfig, nowUtcDate);
@@ -86,7 +91,7 @@ export async function verifyMa24EvaluationTaskBinding(input: Omit<
   Parameters<typeof assertMa24EvaluationTaskBinding>[0], "task" | "conversation">) {
   const entry = input.manifest.cases.find(item => item.caseId === input.caseId);
   if (!entry) throw new Error("MA24 evaluation case absent from frozen manifest");
-  return tenantTransaction(entry.userId, async client => {
+  const bound = await tenantTransaction(entry.userId, async client => {
     const task = (await client.query<EvaluationTask>(
       `select id,user_id,conversation_id,status,lease_token,lease_until,execution_kind,execution_spec,input,model_config
        from agent_run where id=$1 and user_id=$2`, [input.runId, entry.userId])).rows[0];
@@ -101,4 +106,8 @@ export async function verifyMa24EvaluationTaskBinding(input: Omit<
     [entry.userId, task.conversation_id])).rows[0];
     return assertMa24EvaluationTaskBinding({ ...input, task, conversation });
   });
+  const corpus = assertMa24CorpusSnapshotBytes(input.manifest, input.corpusSnapshotBytes,
+    input.manifest.corpusSnapshotSha256);
+  await verifyMa24LiveCorpusAccount(corpus, bound.userId, bound.knowledgeScope);
+  return bound;
 }

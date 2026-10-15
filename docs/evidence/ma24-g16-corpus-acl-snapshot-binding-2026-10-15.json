@@ -1,0 +1,31 @@
+{
+  "schema": "ma24-g16-corpus-acl-snapshot-binding-v1",
+  "date": "2026-10-15",
+  "stage": "G16 engineering admission and runtime guard",
+  "change": "The frozen comparison manifest now requires a fourth private corpus snapshot hash. Before explicit claim and at every existing runner revalidation boundary, the tenant-visible active document inventory and v3 release pointers are read again under the evaluation account and compared to the frozen bytes.",
+  "manifestSchema": "ma24-g16-frozen-comparison-v3",
+  "snapshotSchema": "ma24-g16-corpus-snapshot-v1",
+  "inventoryFields": [
+    "evaluation user ID and sorted knowledge scopes",
+    "visible active document ID, owner, visibility, collection, title, source URL, authority, locale, entity filters, metadata and content SHA-256",
+    "current tree version and active v3 release ID",
+    "asset ID, source SHA-256 and registration status",
+    "tenant-visible shared and owner v3 release pointers"
+  ],
+  "checks": {
+    "typescript": "passed",
+    "targetedVitest": "4 files, 34 tests passed",
+    "targetedEslint": "passed",
+    "localAdmissionClone": ["valid leased row", "new visible document rejects a frozen inventory", "private document hidden from second tenant", "changing visibility to shared makes it visible to second tenant", "synthetic rows cleaned", "provider calls 0"],
+    "explicitClaimClone": ["new visible document rejects before claim", "task remains queued", "normal claim and prior boundaries pass after cleanup", "synthetic rows cleaned", "provider calls 0"],
+    "g15Preview": "289 source files; new corpus module included; readyForPaidEvaluation false"
+  },
+  "limits": [
+    "The read-only inventory does not itself prove that a denied document exists for a negative permission Gold case; that requires separate owner/source and outsider access evidence.",
+    "The inventory binds document and release identities, not every chunk byte or user-visible answer citation; separate source readback and reviewer verdicts remain required.",
+    "The database is not held locked across a paid model call; each existing runner boundary rechecks the inventory, while exact mid-call changes still require receipt review.",
+    "No full G14 freeze, G15 paid authorization, provider call, real dual-arm answer, or G16 quality acceptance occurred."
+  ],
+  "realDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}

@@ -5,9 +5,9 @@ import { assertMa24FrozenSnapshotBytes, assertMa24SourceSetMatchesManifest,
   type Ma24FrozenManifest, type Ma24GoldSnapshot, type Ma24Run, type Ma24Verdict } from "./ma24-independent-comparison";
 
 const manifest: Ma24FrozenManifest = {
-  schema: "ma24-g16-frozen-comparison-v2",
+  schema: "ma24-g16-frozen-comparison-v3",
   sourceSetSha256: "a".repeat(64), goldSnapshotSha256: "b".repeat(64),
-  codeAndConfigSha256: "c".repeat(64),
+  codeAndConfigSha256: "c".repeat(64), corpusSnapshotSha256: "1".repeat(64),
   requiredImprovementTags: ["long-document", "cross-document", "new-or-revised"],
   protectedNoRegressionTags: ["official-fact", "no-answer", "permission"],
   cases: [
@@ -123,12 +123,13 @@ describe("MA24 independent comparison", () => {
   });
   it("rejects snapshot bytes that differ from the frozen source, Gold or code/config hashes", () => {
     const bytes = { sourceSet: Buffer.from("source"), gold: Buffer.from("gold"),
-      codeAndConfig: Buffer.from("config") };
+      codeAndConfig: Buffer.from("config"), corpus: Buffer.from("corpus") };
     const hash = (value: Uint8Array) => createHash("sha256").update(value).digest("hex");
     const bound = { ...manifest, sourceSetSha256: hash(bytes.sourceSet),
-      goldSnapshotSha256: hash(bytes.gold), codeAndConfigSha256: hash(bytes.codeAndConfig) };
+      goldSnapshotSha256: hash(bytes.gold), codeAndConfigSha256: hash(bytes.codeAndConfig),
+      corpusSnapshotSha256: hash(bytes.corpus) };
     expect(() => assertMa24FrozenSnapshotBytes(bound, bytes)).not.toThrow();
-    for (const field of ["sourceSet", "gold", "codeAndConfig"] as const) {
+    for (const field of ["sourceSet", "gold", "codeAndConfig", "corpus"] as const) {
       const changed = { ...bytes, [field]: Buffer.from("changed") };
       expect(() => assertMa24FrozenSnapshotBytes(bound, changed)).toThrow(/snapshot drift/);
     }

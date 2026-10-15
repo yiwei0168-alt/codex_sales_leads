@@ -7,6 +7,7 @@ import { Pool } from "pg";
 import { getPool } from "../src/lib/rag/db";
 import { modeModelConfig } from "../src/lib/assistant/main/mode-config";
 import { verifyMa24EvaluationTaskBinding } from "../src/lib/knowledge/evaluation/ma24-evaluation-task-binding";
+import { readMa24LiveCorpusAccount } from "../src/lib/knowledge/evaluation/ma24-corpus-snapshot";
 import type { Ma24G15Preview } from "../src/lib/knowledge/evaluation/ma24-g15-runtime-binding";
 import { ma24CaseQuerySha256, ma24ManifestSha256,
   type Ma24FrozenManifest, type Ma24GoldSnapshot,
@@ -67,17 +68,22 @@ const loadedCodeAndConfig: Ma24G15Preview = { schema: "ma24-g15-config-preview-v
   transitiveCodeClosureVerified: false, providerTariffsVerified: false,
   paidCallAuthorizationConfirmed: false, readyForPaidEvaluation: false };
 const codeAndConfigBytes = new TextEncoder().encode(JSON.stringify(loadedCodeAndConfig));
+const corpusSnapshotBytes = new TextEncoder().encode(JSON.stringify({
+  schema: "ma24-g16-corpus-snapshot-v1",
+  accounts: [await readMa24LiveCorpusAccount(userId, ["industry"])],
+}));
 const sha = (bytes: Uint8Array) => createHash("sha256").update(bytes).digest("hex");
-const manifest: Ma24FrozenManifest = { schema: "ma24-g16-frozen-comparison-v2",
+const manifest: Ma24FrozenManifest = { schema: "ma24-g16-frozen-comparison-v3",
   sourceSetSha256: sha(sourceSetBytes),
   goldSnapshotSha256: sha(goldBytes), codeAndConfigSha256: sha(codeAndConfigBytes),
+  corpusSnapshotSha256: sha(corpusSnapshotBytes),
   requiredImprovementTags: [], protectedNoRegressionTags: [],
   cases: [{ caseId, caseSha256: ma24CaseQuerySha256(query), group: "synthetic",
     tags: [], expectedOutcome: "route", userId, knowledgeScope: ["industry"] }] };
 const taskInput = { content: query, requestKey: `ma24-admission-${runId}`, attachments: [],
   knowledgeScope: ["industry"], mode: "standard" };
 const verify = () => verifyMa24EvaluationTaskBinding({ manifest, sourceSetBytes, goldBytes,
-  codeAndConfigBytes, loadedCodeAndConfig, nowUtcDate: "2026-10-15", runId,
+  codeAndConfigBytes, corpusSnapshotBytes, loadedCodeAndConfig, nowUtcDate: "2026-10-15", runId,
   leaseToken, caseId, arm: "baseline", loadedModelConfig: model });
 let created = false;
 try {
@@ -113,6 +119,22 @@ try {
 
   assert.deepEqual(await verify(), { userId, caseId, arm: "baseline", query,
     knowledgeScope: ["industry"] });
+  const changedDocumentId = randomUUID();
+  await admin.query(`insert into knowledge_document(id,collection_id,external_id,title,
+      source_type,content_sha256,owner_id,visibility,status)
+    select $1,c.id,$2,'MA24 admission corpus drift','synthetic',$3,$4,'private','active'
+      from knowledge_collection c where c.slug='industry'`,
+  [changedDocumentId, `ma24-admission-${changedDocumentId}`, "d".repeat(64), userId]);
+  await assert.rejects(verify(), /live corpus or ACL differs/);
+  assert(!(await readMa24LiveCorpusAccount(otherUserId, ["industry"]))
+    .documents.some(document => document.documentId === changedDocumentId));
+  await admin.query("update knowledge_document set visibility='shared' where id=$1 and owner_id=$2",
+    [changedDocumentId, userId]);
+  assert((await readMa24LiveCorpusAccount(otherUserId, ["industry"]))
+    .documents.some(document => document.documentId === changedDocumentId));
+  await admin.query("delete from knowledge_document where id=$1 and owner_id=$2",
+    [changedDocumentId, userId]);
+  assert.equal((await verify()).caseId, caseId);
   await admin.query(`insert into assistant_message(user_id,conversation_id,role,intent,content,metadata)
     values($1,$2,'user','general','contaminating history','{}')`, [userId, conversationId]);
   await assert.rejects(verify(), /leased execution/);
@@ -126,22 +148,22 @@ try {
   const wrongUserManifest: Ma24FrozenManifest = { ...manifest,
     cases: [{ ...manifest.cases[0], userId: otherUserId }] };
   await assert.rejects(verifyMa24EvaluationTaskBinding({ manifest: wrongUserManifest,
-    sourceSetBytes, goldBytes, codeAndConfigBytes, loadedCodeAndConfig,
+    sourceSetBytes, goldBytes, codeAndConfigBytes, corpusSnapshotBytes, loadedCodeAndConfig,
     nowUtcDate: "2026-10-15", runId, leaseToken, caseId,
     arm: "baseline", loadedModelConfig: model }),
   /absent from tenant store/);
   await assert.rejects(verifyMa24EvaluationTaskBinding({ manifest, sourceSetBytes,
-    goldBytes: new TextEncoder().encode("changed Gold"), codeAndConfigBytes,
+    goldBytes: new TextEncoder().encode("changed Gold"), codeAndConfigBytes, corpusSnapshotBytes,
     loadedCodeAndConfig, nowUtcDate: "2026-10-15",
     runId, leaseToken, caseId, arm: "baseline", loadedModelConfig: model }),
   /frozen Gold snapshot drift/);
   await assert.rejects(verifyMa24EvaluationTaskBinding({ manifest, sourceSetBytes,
-    goldBytes, codeAndConfigBytes: new TextEncoder().encode("changed config"),
+    goldBytes, codeAndConfigBytes: new TextEncoder().encode("changed config"), corpusSnapshotBytes,
     loadedCodeAndConfig, nowUtcDate: "2026-10-15",
     runId, leaseToken, caseId, arm: "baseline", loadedModelConfig: model }),
   /frozen code and config snapshot drift/);
   await assert.rejects(verifyMa24EvaluationTaskBinding({ manifest, sourceSetBytes,
-    goldBytes, codeAndConfigBytes, loadedCodeAndConfig: { ...loadedCodeAndConfig,
+    goldBytes, codeAndConfigBytes, corpusSnapshotBytes, loadedCodeAndConfig: { ...loadedCodeAndConfig,
       modePromptSha256: "changed-loaded-prompt" }, nowUtcDate: "2026-10-15",
     runId, leaseToken, caseId, arm: "baseline", loadedModelConfig: model }),
   /modePromptSha256 drift/);
@@ -149,7 +171,7 @@ try {
     cases: [{ ...gold.cases[0], expectedSources: [] }] }));
   await assert.rejects(verifyMa24EvaluationTaskBinding({
     manifest: { ...manifest, goldSnapshotSha256: sha(invalidGoldBytes) }, sourceSetBytes,
-    goldBytes: invalidGoldBytes, codeAndConfigBytes, loadedCodeAndConfig,
+    goldBytes: invalidGoldBytes, codeAndConfigBytes, corpusSnapshotBytes, loadedCodeAndConfig,
     nowUtcDate: "2026-10-15", runId, leaseToken, caseId,
     arm: "baseline", loadedModelConfig: model,
   }), /Invalid MA24 frozen Gold case/);
@@ -162,7 +184,8 @@ try {
     where id=$1 and user_id=$2`, [runId, userId]);
   await assert.rejects(verify(), /leased execution/);
   console.log(JSON.stringify({ schema: "ma24-g16-admission-local-v1", synthetic: true,
-    checks: ["valid-leased-row", "cross-account-row-hidden", "changed-question-rejected",
+    checks: ["valid-leased-row", "live-corpus-drift-rejected", "tenant-acl-visibility-change-readback",
+      "cross-account-row-hidden", "changed-question-rejected",
       "expired-lease-rejected", "gold-bytes-drift-rejected", "code-config-bytes-drift-rejected",
       "loaded-prompt-drift-rejected",
       "hash-matching-invalid-gold-rejected", "conversation-history-rejected",

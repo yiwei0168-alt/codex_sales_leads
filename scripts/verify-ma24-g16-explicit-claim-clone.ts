@@ -31,6 +31,8 @@ const { productTools } = await import("../src/lib/assistant/main/tools");
 const { modeModelConfig } = await import("../src/lib/assistant/main/mode-config");
 const { ma24CaseQuerySha256, ma24ManifestSha256 } = await import(
   "../src/lib/knowledge/evaluation/ma24-independent-comparison");
+const { readMa24LiveCorpusAccount } = await import(
+  "../src/lib/knowledge/evaluation/ma24-corpus-snapshot");
 const admin = new Pool({ connectionString: adminUrl });
 const app = new Pool({ connectionString: appUrl });
 const userId = randomUUID(), conversationId = randomUUID();
@@ -124,10 +126,15 @@ try {
   const model = modeModelConfig("standard");
   const loadedCodeAndConfig = loadCurrentMa24G15Preview();
   const codeAndConfigBytes = new TextEncoder().encode(JSON.stringify(loadedCodeAndConfig));
+  const corpusSnapshotBytes = new TextEncoder().encode(JSON.stringify({
+    schema: "ma24-g16-corpus-snapshot-v1",
+    accounts: [await readMa24LiveCorpusAccount(userId, ["industry"])],
+  }));
   const hash = (bytes: Uint8Array) => createHash("sha256").update(bytes).digest("hex");
-  const manifest = { schema: "ma24-g16-frozen-comparison-v2" as const,
+  const manifest = { schema: "ma24-g16-frozen-comparison-v3" as const,
     sourceSetSha256: hash(sourceSetBytes), goldSnapshotSha256: hash(goldBytes),
     codeAndConfigSha256: hash(codeAndConfigBytes),
+    corpusSnapshotSha256: hash(corpusSnapshotBytes),
     requiredImprovementTags: [], protectedNoRegressionTags: [],
     cases: [{ caseId, caseSha256: ma24CaseQuerySha256(frozenQuery),
       group: "synthetic", tags: [], expectedOutcome: "route" as const,
@@ -148,9 +155,22 @@ try {
       schema: "ma24-evaluation-run-v1", manifestSha256: ma24ManifestSha256(manifest),
       caseId, arm: "baseline" })]);
   }
-  const binding = { manifest, sourceSetBytes, goldBytes, codeAndConfigBytes,
+  const binding = { manifest, sourceSetBytes, goldBytes, codeAndConfigBytes, corpusSnapshotBytes,
     caseId, arm: "baseline" as const,
     workerId: "ma24-bound-claim-fixture" };
+  const corpusDriftId = randomUUID();
+  await admin.query(`insert into knowledge_document(id,collection_id,external_id,title,
+      source_type,content_sha256,owner_id,visibility,status)
+    select $1,c.id,$2,'MA24 preclaim corpus drift','synthetic',$3,$4,'private','active'
+      from knowledge_collection c where c.slug='industry'`,
+  [corpusDriftId, `ma24-preclaim-${corpusDriftId}`, "d".repeat(64), userId]);
+  await assert.rejects(claimAndBindMa24EvaluationRun({ ...binding, runId: admittedId }),
+    /live corpus or ACL differs/);
+  assert.equal((await admin.query<{ status: string }>(
+    "select status from agent_run where id=$1 and user_id=$2",
+    [admittedId, userId])).rows[0]?.status, "queued");
+  await admin.query("delete from knowledge_document where id=$1 and owner_id=$2",
+    [corpusDriftId, userId]);
   const admitted = await claimAndBindMa24EvaluationRun({ ...binding, runId: admittedId });
   assert.equal(admitted.userId, userId);
   assert.equal(admitted.query, frozenQuery);
@@ -261,7 +281,8 @@ if (verified) console.log(JSON.stringify({ schema: "ma24-g16-explicit-claim-clon
   checks: ["explicit-id-and-owner", "ordinary-rejected", "malformed-rejected",
     "blank-worker-rejected", "duplicate-claim-rejected", "expired-lease-not-reclaimed",
     "app-role-grant", "claimed-row-bound-to-frozen-input",
-    "snapshot-drift-rejected-before-claim", "invalid-source-and-gold-rejected-before-claim",
+    "snapshot-drift-rejected-before-claim", "live-corpus-drift-rejected-before-claim",
+    "invalid-source-and-gold-rejected-before-claim",
     "loaded-runtime-drift-rejected-before-claim",
     "binding-failure-terminated-without-model-call",
     "leased-evaluation-tool-guard-rejected-writes-and-context-drift",

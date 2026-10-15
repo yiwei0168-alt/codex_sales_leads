@@ -4,6 +4,7 @@ import { modeModelConfig } from "../../assistant/main/mode-config";
 const mocks = vi.hoisted(() => ({ tenantTransaction: vi.fn() }));
 vi.mock("../../rag/db", () => ({ tenantTransaction: mocks.tenantTransaction }));
 import { assertMa24EvaluationTaskBinding, verifyMa24EvaluationTaskBinding } from "./ma24-evaluation-task-binding";
+import type { Ma24CorpusSnapshot } from "./ma24-corpus-snapshot";
 import type { Ma24G15Preview } from "./ma24-g15-runtime-binding";
 import { ma24CaseQuerySha256, ma24ManifestSha256,
   type Ma24FrozenManifest, type Ma24GoldSnapshot,
@@ -38,10 +39,14 @@ const loadedCodeAndConfig: Ma24G15Preview = { schema: "ma24-g15-config-preview-v
   transitiveCodeClosureVerified: false, providerTariffsVerified: false,
   paidCallAuthorizationConfirmed: false, readyForPaidEvaluation: false };
 const codeAndConfigBytes = new TextEncoder().encode(JSON.stringify(loadedCodeAndConfig));
+const corpus: Ma24CorpusSnapshot = { schema: "ma24-g16-corpus-snapshot-v1",
+  accounts: [{ userId, knowledgeScope: ["industry"], documents: [], releases: [] }] };
+const corpusSnapshotBytes = new TextEncoder().encode(JSON.stringify(corpus));
 const sha = (bytes: Uint8Array) => createHash("sha256").update(bytes).digest("hex");
-const manifest: Ma24FrozenManifest = { schema: "ma24-g16-frozen-comparison-v2",
+const manifest: Ma24FrozenManifest = { schema: "ma24-g16-frozen-comparison-v3",
   sourceSetSha256: sha(sourceSetBytes), goldSnapshotSha256: sha(goldBytes),
-  codeAndConfigSha256: sha(codeAndConfigBytes), requiredImprovementTags: [],
+  codeAndConfigSha256: sha(codeAndConfigBytes),
+  corpusSnapshotSha256: sha(corpusSnapshotBytes), requiredImprovementTags: [],
   protectedNoRegressionTags: [], cases: [{ caseId, caseSha256: ma24CaseQuerySha256(query),
     group: "publication", tags: [], expectedOutcome: "route", userId,
     knowledgeScope: ["industry"] }] };
@@ -55,7 +60,7 @@ const task = { id: runId, user_id: userId, conversation_id: "55555555-5555-4555-
     knowledgeScope: ["industry" as const], mode: "standard" as const },
   model_config: loadedModelConfig };
 const conversation = { status: "deleted", message_count: 0, run_count: 1 };
-const fixture = { manifest, sourceSetBytes, goldBytes, codeAndConfigBytes,
+const fixture = { manifest, sourceSetBytes, goldBytes, codeAndConfigBytes, corpusSnapshotBytes,
   loadedCodeAndConfig, nowUtcDate: "2026-10-15",
   task, conversation, runId, leaseToken, caseId,
   arm: "baseline" as const, loadedModelConfig };
@@ -78,6 +83,8 @@ describe("MA24 evaluation task admission binding", () => {
       .toThrow("frozen Gold snapshot drift");
     expect(() => bind({ codeAndConfigBytes: new TextEncoder().encode("changed config") }))
       .toThrow("frozen code and config snapshot drift");
+    expect(() => bind({ corpusSnapshotBytes: new TextEncoder().encode("changed corpus") }))
+      .toThrow("frozen corpus snapshot drift");
   });
   it("rejects loaded prompt, arm, source and model changes even when the frozen file hash matches", () => {
     for (const change of [
@@ -142,12 +149,16 @@ describe("MA24 evaluation task admission binding", () => {
           expect(args).toEqual([runId, userId]);
           return { rows: [task] };
         }
-        expect(sql).toContain("from assistant_conversation c");
-        expect(args).toEqual([userId, task.conversation_id]);
-        return { rows: [conversation] };
+        if (sql.includes("from assistant_conversation c")) {
+          expect(args).toEqual([userId, task.conversation_id]);
+          return { rows: [conversation] };
+        }
+        if (sql.includes("from knowledge_document d")) return { rows: [] };
+        expect(sql).toContain("from knowledge_release_pointer_v3");
+        return { rows: [] };
       } });
     });
     await expect(verifyMa24EvaluationTaskBinding(fixture)).resolves.toMatchObject({ arm: "baseline", query });
-    expect(mocks.tenantTransaction).toHaveBeenCalledOnce();
+    expect(mocks.tenantTransaction).toHaveBeenCalledTimes(2);
   });
 });
