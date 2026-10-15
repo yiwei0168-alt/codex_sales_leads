@@ -5,7 +5,7 @@ import { readFile, readdir, writeFile } from "node:fs/promises";
 import { join, resolve, sep } from "node:path";
 
 const root = resolve("docs/evidence");
-const output = resolve(process.argv[2] ?? "tmp/ma24-independent-quarantine/g14-current-draft-pool-v2.json");
+const output = resolve(process.argv[2] ?? "tmp/ma24-independent-quarantine/g14-current-draft-pool-v3.json");
 assert(output.startsWith(resolve("tmp") + sep) && output.endsWith(".json"));
 const digest = (bytes: Uint8Array | string) => createHash("sha256").update(bytes).digest("hex");
 const oldAuditPath = join(root, "ma24-g14-draft-pool-exclusion-audit-2026-10-15.json");
@@ -44,6 +44,10 @@ const newSources = [
     id: "govuk-bduk-taking-part-premises-vs-regional-ability",
     families: ["BDUK Broadband Performance Indicator March 2018", "Taking Part 2019/20 Internet"],
     primaryFormat: "xlsx", wholeQuestionCrossDocument: true },
+  { file: "ma24-g14-nist-two-source-delay-vs-coupling-draft-2026-10-15.json",
+    id: "nist-ran-propagation-vs-dipole-range-alignment",
+    families: ["NIST TN 2363", "NIST 2015 industrial wireless measurement workbook"],
+    primaryFormat: "xlsx", wholeQuestionCrossDocument: true },
 ] as const;
 const newFiles = new Set<string>(newSources.map(item => item.file));
 const oldDrafts: Array<{ id: string; file: string; question: string }> = [];
@@ -80,14 +84,14 @@ for (const item of newSources) {
     wholeQuestionNoAnswer: draft.wholeQuestionNoAnswer === true,
     wholeQuestionCrossDocument: item.wholeQuestionCrossDocument });
 }
-assert.equal(rows.length, 21);
+assert.equal(rows.length, 22);
 assert.equal(new Set(rows.map(item => item.id)).size, rows.length);
 assert.equal(rows.filter(item => item.wholeQuestionNoAnswer).length, 1);
-assert.equal(rows.filter(item => item.wholeQuestionCrossDocument).length, 1);
+assert.equal(rows.filter(item => item.wholeQuestionCrossDocument).length, 2);
 const countBy = (values: string[]) => Object.fromEntries([...new Set(values)].sort()
   .map(value => [value, values.filter(item => item === value).length]));
 const primaryFormatDrafts = countBy(rows.map(item => item.primaryFormat));
-assert.deepEqual(primaryFormatDrafts, { "long-pdf": 7, pdf: 1, pptx: 8, xlsx: 5 });
+assert.deepEqual(primaryFormatDrafts, { "long-pdf": 7, pdf: 1, pptx: 8, xlsx: 6 });
 const proposed = oldCoverage.proposedTargetNotYetFrozen;
 const hardCaseDrafts = {
   "cross-document": rows.filter(item => item.wholeQuestionCrossDocument).length,
@@ -98,9 +102,9 @@ const hardCaseDrafts = {
 const unmetHardCaseTargets = Object.fromEntries(Object.entries(hardCaseDrafts)
   .map(([tag, count]) => [tag, Math.max(0, proposed[tag] - count)]));
 const report = {
-  schema: "ma24-g14-current-draft-pool-v2",
+  schema: "ma24-g14-current-draft-pool-v3",
   priorAuditSha256: digest(oldAuditBytes), priorCoverageSha256: digest(oldCoverageBytes), newSourceSha256,
-  scope: "Twenty-one current drafts, not Gold eligibility or an approved final stratification",
+  scope: "Twenty-two current drafts, not Gold eligibility or an approved final stratification",
   draftCount: rows.length, publicationFamiliesBeforeFinalEligibility:
     new Set(rows.flatMap(item => item.families)).size,
   primaryFormatDrafts, hardCaseDrafts, proposedTargetsNotFrozen: proposed, unmetHardCaseTargets,

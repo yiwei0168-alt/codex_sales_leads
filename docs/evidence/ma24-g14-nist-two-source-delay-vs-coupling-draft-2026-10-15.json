@@ -1,0 +1,38 @@
+{
+  "schema": "ma24-g14-nist-two-source-delay-vs-coupling-draft-v1",
+  "date": "2026-10-15",
+  "scope": "Pre-freeze cross-document question draft based on two separate NIST originals; neither source nor question is approved Gold",
+  "sourceSha256s": [
+    "65e333dac9975f4ca9a952a966fb212ce7ccb161ec60b48bf45c3dfd7adbd6a9",
+    "0132c779ab57132ae5b5718b1b1440b52ed66bd48bc62d953336c90f7f2cb814"
+  ],
+  "families": ["NIST TN 2363", "NIST 2015 industrial wireless measurement workbook"],
+  "draft": {
+    "id": "nist-ran-propagation-vs-dipole-range-alignment",
+    "question": "按 NIST TN 2363 图 3，软件化 5G RAN 图中与无线链路有关的传输时延和传播时延分别被标在何处？另据 NIST 工业无线测量元数据工作簿 Ray Tracing Results 表，第 23 行自由空间偶极子与地面反射偶极子在 2.245 GHz 的 Coupling 分别是多少 dB？同一行两个标为 Range (m) 的 B23 与 M23 是否相等？能否仅凭这一行的 Coupling 差值，得出图 3 中传播时延的毫秒变化？请引用报告原图和工作簿原格。",
+    "draftAnswer": "图 3 把无线传输时延标在 UE 与 gNB 协议栈之间的无线发送环节，把传播时延标在 UE 到远端射频头的空中路径。工作簿第 23 行自由空间偶极子 Coupling 为 -47.5 dB，地面反射偶极子为 -47.75 dB；两个标为 Range (m) 的 B23 为 1.999988 m、M23 约 2.423883 m，并不相等。不能仅凭同一行就认定这两个耦合值构成同距离控制比较；资料也没有给出可换算成图 3 数据包传播时延毫秒变化的实验或链路关系。",
+    "expectedSourceCoordinates": ["NIST TN 2363 physical PDF page 21 / printed page 16 / Figure 3 / page-21-visual-review", "Ray Tracing Results!M4", "Ray Tracing Results!T4", "Ray Tracing Results!B6", "Ray Tracing Results!M6", "Ray Tracing Results!N6", "Ray Tracing Results!T6", "Ray Tracing Results!B23", "Ray Tracing Results!M23", "Ray Tracing Results!N23", "Ray Tracing Results!T23"],
+    "wholeQuestionCrossDocument": true,
+    "wholeQuestionNoAnswer": false
+  },
+  "originalChecks": {
+    "reportPageAndFigureRead": true,
+    "reportVisualProductCloneReceipt": "docs/evidence/ma24-g14-nist-tn2363-visual-review-clone-2026-10-15.json",
+    "workbookRawCellsRead": true,
+    "freeSpaceDipoleRangeM23Meters": 2.4238829097429604,
+    "otherLabeledRangeB23Meters": 1.999988,
+    "freeSpaceDipoleCouplingN23Db": -47.5,
+    "groundBounceDipoleCouplingT23Db": -47.75,
+    "samePhysicalRowDoesNotMeanSameRange": true,
+    "workbookSingleSourceDraftUsesDifferentAntennaFrequencyAndRow": true,
+    "reportExistingDraftsDoNotRequestFigure3TransmissionPropagationLabels": true
+  },
+  "limits": [
+    "The question combines two original documents to test source-coordinate and unit boundaries; it does not claim the workbook measured 5G packet latency or that row-aligned dipole values share the same distance.",
+    "The workbook's full visual review, product registration and user-visible cell citations are still open.",
+    "Historical and current-set overlap, source-family exposure, final eligibility and Gold review remain open."
+  ],
+  "goldCreated": 0,
+  "modelAnswerCalls": 0,
+  "productionWrites": 0
+}

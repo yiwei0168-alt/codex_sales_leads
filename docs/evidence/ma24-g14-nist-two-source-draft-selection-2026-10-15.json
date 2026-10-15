@@ -1,0 +1,45 @@
+{
+  "schema": "ma24-g14-nist-two-source-draft-selection-v1",
+  "date": "2026-10-15",
+  "scope": "Selection into the current draft pool for final review, not source or Gold approval",
+  "selectedId": "nist-ran-propagation-vs-dipole-range-alignment",
+  "selectedDraftReceiptSha256": "73d9332ecdea6e09f10376b4ebe35d59d715922f59f741a5ada605997679c35a",
+  "sourceSha256s": ["65e333dac9975f4ca9a952a966fb212ce7ccb161ec60b48bf45c3dfd7adbd6a9", "0132c779ab57132ae5b5718b1b1440b52ed66bd48bc62d953336c90f7f2cb814"],
+  "originalCoordinateCheck": {
+    "report": "Physical PDF page 21 / printed page 16 / Figure 3, transmission and propagation delay labels",
+    "workbook": "Ray Tracing Results!B6/B23, M6/M23, N6/N23, T6/T23 and the two section headers M4/T4",
+    "rangeB23Meters": 1.999988,
+    "rangeM23Meters": 2.4238829097429604,
+    "couplingN23Db": -47.5,
+    "couplingT23Db": -47.75,
+    "unitBoundary": "The same physical row does not establish a matched range or a dB-to-ms conversion"
+  },
+  "screening": {
+    "retiredFirstDraftCurrentPoolTopCosine": 0.806711,
+    "finalHistoricalScreenSha256": "6d64835322a92db81b4d2b66ccfba55cc396281312e26dc31fecbdc490a91b53",
+    "finalHistoricalUniqueQuestions": 300,
+    "finalHistoricalTopCosine": 0.533002,
+    "finalCurrentPoolScreenSha256": "ced988f98aad6cb282258cbe14bb9c0a28f8482d47baaab63328e79112048956",
+    "finalCurrentPoolComparedDrafts": 21,
+    "finalCurrentPoolTopId": "nist-industrial-wireless-5p4ghz-horn-free-vs-ground-1m",
+    "finalCurrentPoolTopCosine": 0.730069,
+    "manualFinding": "The nearest current question asks horn free-space/ground-bounce values at 1 m and 5.4 GHz. This draft asks dipole values and unequal range columns on row 23, plus separate report delay labels. No identical requested answer was found among the 21 current questions; both NIST source families remain shared."
+  },
+  "poolReconciliation": {
+    "inputPoolBeforeSha256": "4724f3dcb425cca856202eb1e172f3cf03c5e8c1605b067f5f94157a12d0794e",
+    "outputPoolSha256": "4703226adc9b8531ccae6fa840fb35c300cc1a6cd5f3259dad9b06a5d1a24a8b",
+    "drafts": 22,
+    "provisionalPublicationFamilies": 12,
+    "xlsxPrimaryFormatDrafts": 6,
+    "wholeQuestionCrossDocumentDrafts": 2,
+    "goldApproved": 0
+  },
+  "remaining": [
+    "Audit shared NIST source-family exposure and full-set overlap at final freeze; the BGE screen is diagnostic only.",
+    "Finish the workbook's visual review, product registration and exact user-visible cell citations.",
+    "Create separately reviewed independent Gold and run the G15/G16 comparable model paths before any quality conclusion."
+  ],
+  "cloudCalls": 0,
+  "modelAnswerCalls": 0,
+  "productionWrites": 0
+}
