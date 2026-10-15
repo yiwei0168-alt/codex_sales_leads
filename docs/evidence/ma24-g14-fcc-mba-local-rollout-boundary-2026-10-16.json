@@ -1,0 +1,28 @@
+{
+  "schema": "ma24-g14-fcc-mba-local-rollout-boundary-v1",
+  "date": "2026-10-16",
+  "scope": "Bounded local Codex rollout pattern screen for the new private FCC candidate",
+  "privateReport": {
+    "path": "tmp/ma24-independent-quarantine/fcc-mba-local-rollout-pattern-screen-v1.json",
+    "sha256": "2e23d1868899c9f4657457a9056746973f2250e7a0738c29d6b6c0fcbffda090",
+    "fullQuestionAndAnswerAbsentFromTrackedReceipt": true
+  },
+  "screened": {
+    "jsonlRolloutFiles": 129,
+    "bytes": 1066583448,
+    "filesWithAnyMatch": 3,
+    "literalPatternLabels": ["official title", "official PDF identifier", "original PDF SHA-256", "private candidate identifier", "complete question", "complete expected answer"]
+  },
+  "earliestObservedUtc": {
+    "officialTitleAndPdfIdentifier": "2026-10-15T23:31:37.728Z",
+    "originalPdfSha256": "2026-10-15T23:31:58.648Z",
+    "candidateIdentifierQuestionAndAnswer": "2026-10-15T23:33:48.775Z",
+    "relation": "All first appeared in the same candidate-preparation rollout; source discovery preceded question drafting."
+  },
+  "conclusion": "No earlier literal hit among the scanned local JSONL rollouts. The preparation rollout itself contains the complete draft question and answer, so this check must not be described as no model-provider exposure.",
+  "limits": ["Literal byte matches only", "Local JSONL rollouts only", "Does not cover unrecorded prompts, other logs, derivatives, semantic paraphrases, remote providers, or final evaluation-model inputs"],
+  "independentGoldApproved": 0,
+  "g15PaidAdmission": false,
+  "g16RealDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}
