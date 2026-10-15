@@ -1,0 +1,33 @@
+{
+  "schema": "ma24-g14-fcc-mba-original-size-visual-review-receipt-v1",
+  "date": "2026-10-16",
+  "scope": "Private FCC Thirteenth Measuring Broadband America Fixed Broadband Report candidate source, original-size visual inspection only",
+  "sourceSha256": "cb74399d38def5adafb04390728bd3aae6aea0ad28cdac064c5f73dd1b661c4c",
+  "extractionArtifactSha256": "ca204bf0ad8783a2dc339c82023e6c8e6d810d2413a69267c85fc72125d38033",
+  "renderManifestSha256": "46eb2ad5646cabc6b9751b02cbf5c76aba5b796e08bd88b8b20f0be379d7073c",
+  "privateTriage": {
+    "path": "tmp/ma24-independent-quarantine/fcc-mba-thirteenth-visual-triage-v2.json",
+    "sha256": "e7519ecc3ef85907813f978935180dfed16f9078421c99862b008116707b12f5",
+    "renderedImageHashesChecked": 62,
+    "pendingPagesCheckedAtOriginalSize": 62,
+    "extractionSuccessPagesCheckedAtOriginalSize": [5, 6, 50],
+    "uniquePhysicalPagesCheckedAtOriginalSize": 65,
+    "provisionalPagesWithSeparateChartOrTableEvidence": 46,
+    "provisionalPagesWithoutSeparateVisualEvidence": 16,
+    "productDecisionsSaved": 0
+  },
+  "observations": [
+    "The 16 pages without separate visual evidence are cover, list or prose pages; their text remains part of the source and is not discarded.",
+    "Several charts continue across physical pages, so the title and continuation must be read together during evidence review.",
+    "On physical page 19, the prose describes Chart 7 across-tier aggregation as a weighted mean; the Chart 7 caption on physical page 20 calls it a weighted median. The private candidate answer avoids selecting either formula."
+  ],
+  "limits": [
+    "Original-size inspection and source-bound render verification do not constitute product review decisions or accepted extraction quality.",
+    "The candidate still requires source registration, product readback, user-visible citation and answer review, family exposure review, Gold selection and full evaluation-set freeze.",
+    "No paid admission, model response, dual-arm run or G16 quality verdict follows from this inspection."
+  ],
+  "independentGoldApproved": 0,
+  "g15PaidAdmission": false,
+  "g16RealDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}
