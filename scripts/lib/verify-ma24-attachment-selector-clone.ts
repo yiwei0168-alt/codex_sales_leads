@@ -60,8 +60,17 @@ export async function verifyMa24AttachmentSelectorClone(options: {
   assert.equal(otherList.status, 200);
   assert.deepEqual((await otherList.json() as { items: unknown[] }).items, []);
 
+  const forbiddenTask = await fetch(`${options.base}/api/assistant/messages`, {
+    method: "POST", headers: { cookie: otherCookie, "content-type": "application/json" },
+    body: JSON.stringify({ content: "Synthetic inaccessible attachment reference", requestKey: randomUUID(),
+      attachments: [{ assetId: secondPage.items[0].assetId }] }),
+  });
+  assert.equal(forbiddenTask.status, 409);
+  assert.equal((await options.admin.query("select count(*)::int as total from agent_run where user_id=$1", [otherUser])).rows[0].total, 0);
+
   const browser = await chromium.launch({ channel: "chrome", headless: true });
   try {
+    let submittedRunId = "";
     for (const viewport of [{ width: 390, height: 560 }, { width: 1366, height: 620 }]) {
       const context = await browser.newContext({ viewport });
       const [name, value] = options.cookie.split("=");
@@ -111,12 +120,33 @@ export async function verifyMa24AttachmentSelectorClone(options: {
         assert(layout.bodyScrollHeight > layout.bodyHeight, `Expected short viewport to scroll: ${JSON.stringify(layout)}`);
         assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
         assert.deepEqual(errors, []);
+        if (viewport.width > 700) {
+          await page.keyboard.press("Escape");
+          await page.locator(".ai-composer textarea").fill("Synthetic F08 attachment reference acceptance");
+          const taskResponsePromise = page.waitForResponse(response => response.url().endsWith("/api/assistant/messages") && response.request().method() === "POST");
+          await page.locator(".ai-composer").getByRole("button", { name: "发送" }).click();
+          const taskResponse = await taskResponsePromise;
+          assert.equal(taskResponse.status(), 202);
+          const taskRequest = taskResponse.request().postDataJSON() as { attachments: Array<{ assetId: string }> };
+          assert.deepEqual(taskRequest.attachments, [{ assetId: secondPage.items[0].assetId }]);
+          const task = await taskResponse.json() as { run: { id: string; status: string } };
+          submittedRunId = task.run.id;
+          assert.equal(task.run.status, "queued");
+          const persisted = (await options.admin.query<{ user_id: string; status: string; input: { attachments: Array<{ assetId: string }> } }>(
+            "select user_id,status,input from agent_run where id=$1", [submittedRunId],
+          )).rows[0];
+          assert.equal(persisted.user_id, options.userId);
+          assert.equal(persisted.status, "queued");
+          assert.deepEqual(persisted.input.attachments, [{ assetId: secondPage.items[0].assetId }]);
+        }
       } finally { await context.close(); }
     }
+    assert(submittedRunId);
     return { candidatePage: true, privateAssets: 13, realLibraryApi: true, pageSizes: [12, 1],
       crossPageSelection: true, selectedNamePersists: true, removal: true, otherAccountExcluded: true,
       viewports: ["390x560", "1366x620"], longTitleCharacters: titles[12].length,
       shortViewportScroll: true, noHorizontalOverflow: true, pageErrors: 0,
-      modelCalls: 0, uploads: 0, taskSubmissions: 0 };
+      ownerTaskQueuedWithExactSelectedAsset: true, otherAccountTaskRejected: true,
+      modelCalls: 0, uploads: 0, taskSubmissions: 1 };
   } finally { await browser.close(); }
 }

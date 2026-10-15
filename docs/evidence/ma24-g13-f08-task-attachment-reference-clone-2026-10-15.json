@@ -1,0 +1,20 @@
+{
+  "schema": "ma24-g13-f08-task-attachment-reference-clone-v1",
+  "date": "2026-10-15",
+  "goal": "MA24 G13 F08",
+  "candidateSource": "5e74b86d",
+  "candidateBuildId": "lZLtUJUu48Mzpo-hg2VLq",
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-backup-restore.ts --web-compat --attachment-ui",
+  "environment": "Exact candidate Web build against a disposable restored database migrated through 135, with 13 synthetic registered private assets and two synthetic accounts; no agent worker running",
+  "results": {
+    "ownerActualPage": "After selecting the second-page 921-character-title asset, the desktop composer sent one message with exactly that asset ID in attachments.",
+    "ownerActualApi": "POST /api/assistant/messages returned 202 and a queued run.",
+    "database": "The queued agent_run belonged to the owner and persisted exactly the selected asset ID in input.attachments.",
+    "crossAccount": "The other logged-in account could not list the asset. A forged POST naming its asset ID returned 409 and created zero agent_run rows for that account.",
+    "cloneDroppedByHarness": true,
+    "oldAndCandidateWebSmoke": true
+  },
+  "checks": ["npm run typecheck", "npx eslint scripts/lib/verify-ma24-attachment-selector-clone.ts", "git diff --check"],
+  "externalEffects": { "modelCalls": 0, "workerExecutions": 0, "taskSubmissionsOnClone": 1, "productionWrites": 0 },
+  "limits": "The asset was synthetic registered metadata with no original upload or extracted content. This proves submission binding and cross-account rejection at the queued API path, not worker-time content access, answer quality, real upload/retry, production load or rollback."
+}
