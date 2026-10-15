@@ -1,0 +1,35 @@
+{
+  "schema": "ma24-g15-local-build-check-v1",
+  "date": "2026-10-16",
+  "scope": "Read-only assessment of the current G15/G16 local build and runtime preview; no evaluation task or provider call",
+  "gitHeadBeforeBuild": "85d3f22b2a3423a229eb949336bee0485963ff23",
+  "command": "npm run build",
+  "result": {
+    "exitCode": 0,
+    "nextVersion": "16.3.4",
+    "productionCompilation": "passed",
+    "typescript": "passed",
+    "staticPagesGenerated": 26
+  },
+  "postBuildPreview": {
+    "command": "node scripts/run-tsx.cjs scripts/prepare-ma24-g15-config-local.ts",
+    "productPromptDateUtc": "2026-10-15",
+    "sourceClosureFileCount": 289,
+    "sortedSourceHashesSha256": "0722274c6131f542b8608d1e6efc87335076ed12b535a04f710c72380798b591",
+    "runtimeBuildVerified": false,
+    "transitiveCodeClosureVerified": false,
+    "readyForPaidEvaluation": false
+  },
+  "interpretation": "The current local working tree built successfully. The G15 preview has no frozen build artifact identity or full execution closure proof, so this result does not satisfy runtime build binding or permit paid model calls.",
+  "remainingAdmissionGates": [
+    "independent source and Gold set freeze",
+    "frozen build and executed code identity",
+    "both-arm local BGE configuration and health",
+    "current provider tariffs and durable paid-call reservation",
+    "bounded call manifest and explicit paid authorization",
+    "independent source/Gold and paid admission preflight"
+  ],
+  "providerCalls": 0,
+  "realDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}
