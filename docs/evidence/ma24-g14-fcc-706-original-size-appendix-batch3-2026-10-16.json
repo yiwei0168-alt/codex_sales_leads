@@ -1,0 +1,387 @@
+{
+  "schema": "ma24-g14-fcc-706-original-size-appendix-batch3-v1",
+  "date": "2026-10-16",
+  "scope": "Final 36 previously contact-sheet-only FCC appendix pages checked at original size; source-bound amendment, no product replay",
+  "sourceSha256": "805e0e5b954775059ad535ae650c955935758a88f2a20ec0e6554e77f0e61154",
+  "extractionArtifactSha256": "6724008a1138a5e83dc4439e42ed4f75176154e5bf9a0d738dbd2f339cd2d0d4",
+  "renderPackageSha256": "27441a7bb1854545078f89b2879057a7464e685a395e37765de2bdad80d4c969",
+  "priorWholePdfReviewSha256": "00e19caabc9349303b789cadf12fe38b81ea33190bd425222c3b1567ddffdb6a",
+  "priorBatch1Sha256": "1f5f219372a683023e77352647e7defc7294c6d636314c1e92bd1dfedf60de44",
+  "priorBatch2Sha256": "ab80f14bd917c3f2b9c02fad159eff748b48b1ff0061d7e75d4f03464a0f827b",
+  "records": [
+    {
+      "physicalPage": 130,
+      "blockId": "page-130-visual-review",
+      "originalRenderSha256": "77994869654d4de0ac67edc611207068fb242c93a1d8426eae9a68b0a16ab62d",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 county table continues with geography rows and service-availability, population, density and income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 131,
+      "blockId": "page-131-visual-review",
+      "originalRenderSha256": "0bef347a50cb6df004c34e764cb328ba93b2bb7371637b18511814719635bdfe",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 county table continues with geography rows and service-availability, population, density and income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 132,
+      "blockId": "page-132-visual-review",
+      "originalRenderSha256": "8e85267c6a6297e45fdcbf6d67efb0b479bb875c6f9584938aad895f12d41975",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 county table continues with geography rows and service-availability, population, density and income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 133,
+      "blockId": "page-133-visual-review",
+      "originalRenderSha256": "c3cd999bd8864b4d485797bb4b9f5f0382f04054ff28d1c4bfea504f9977481b",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 county table continues with geography rows and service-availability, population, density and income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 134,
+      "blockId": "page-134-visual-review",
+      "originalRenderSha256": "fdf975ff7814f4c6d00c8b6042f430649985aed5a3dbb59d6d9fc19e2fab57cb",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 county table continues with geography rows and service-availability, population, density and income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 135,
+      "blockId": "page-135-visual-review",
+      "originalRenderSha256": "b23346c15e7dc4c932d3144f4d1e099c8d58678473e9c05478c0fbf0d23f6d99",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 county table continues with geography rows and service-availability, population, density and income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 136,
+      "blockId": "page-136-visual-review",
+      "originalRenderSha256": "d292892097b5ce0e7cd4813bc8ab50746fe3f831a518376b3b4761c77a69df34",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 county table continues with geography rows and service-availability, population, density and income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 137,
+      "blockId": "page-137-visual-review",
+      "originalRenderSha256": "1bf16a46320616bee582d72905c9228eb791760de28d5704ef29ab826a074830",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 county table continues with geography rows and service-availability, population, density and income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 138,
+      "blockId": "page-138-visual-review",
+      "originalRenderSha256": "2a1bafc5e0f3f277fe1f93d9e515a097cdd34bfb47a753c6d7ab436f40498939",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 county table continues with geography rows and service-availability, population, density and income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 139,
+      "blockId": "page-139-visual-review",
+      "originalRenderSha256": "e678a3c1d92e2bf244e10a0648bc388e76be6716496900e4217f48e64e836a47",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 county table continues with geography rows and service-availability, population, density and income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 140,
+      "blockId": "page-140-visual-review",
+      "originalRenderSha256": "dc7aefc084c3913503ad8fc766ecf75853f15c8447b64a00c0da1527b84f0f52",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 county table continues with geography rows and service-availability, population, density and income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 141,
+      "blockId": "page-141-visual-review",
+      "originalRenderSha256": "4687f60d60fdcc08b6c22c30005ef3fa2146bcd671237ada3765a1345883e142",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 county table continues with geography rows and service-availability, population, density and income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 142,
+      "blockId": "page-142-visual-review",
+      "originalRenderSha256": "7e79f8ab000da48865c5dc90ad7550f08e8881b38a55c49c0e4b0f1a3c3e08b9",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 county table continues with geography rows and service-availability, population, density and income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 143,
+      "blockId": "page-143-visual-review",
+      "originalRenderSha256": "2840fc3e29fbdadd4bb62ef4789ecde6f7bf96c5002ab0a93d9fbdd7dc7fd43c",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 county table continues with geography rows and service-availability, population, density and income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 145,
+      "blockId": "page-145-visual-review",
+      "originalRenderSha256": "023b9fe18f3e9bb0bbe3d711d66e190b9615d53d1ef6f0a20458aef2584b832d",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 county table continues with geography rows and service-availability, population, density and income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 146,
+      "blockId": "page-146-visual-review",
+      "originalRenderSha256": "6adf7c33c0765f8b5baf7e486ce93eca0908c9e8e6fcddbffca9247a0b0654e5",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 county table continues with geography rows and service-availability, population, density and income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 147,
+      "blockId": "page-147-visual-review",
+      "originalRenderSha256": "b953576dddae976c0e035aaa8438a4b9b9f7d1d1c717ab2756ce72d44b0cd5aa",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 county table continues with geography rows and service-availability, population, density and income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 148,
+      "blockId": "page-148-visual-review",
+      "originalRenderSha256": "75d509da9689df93d161fcdfd1e9ce14f76e4f4db16aaa1fb69be53a23d20f0b",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 county table continues with geography rows and service-availability, population, density and income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 149,
+      "blockId": "page-149-visual-review",
+      "originalRenderSha256": "b0cf001ecd334bf631c321163cd19827b0dc38aa7f2884ba27f97a57638a0847",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 county table continues with geography rows and service-availability, population, density and income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 150,
+      "blockId": "page-150-visual-review",
+      "originalRenderSha256": "80e4d72776434f3ed5d21213f88f242a8e3a1378db99ee6977e5fbacd2f1a6a3",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 county table continues with geography rows and service-availability, population, density and income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 151,
+      "blockId": "page-151-visual-review",
+      "originalRenderSha256": "0e9018e4c2e6e85919d3011dbb7eeadddb9fe8df20fc21322f922ea394c02c37",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 county table continues with geography rows and service-availability, population, density and income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 152,
+      "blockId": "page-152-visual-review",
+      "originalRenderSha256": "38daccdfe0fcbddc2453e2dac107b3fbea1fdebdbf65262433dd663f573c18cd",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 county table continues with geography rows and service-availability, population, density and income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 153,
+      "blockId": "page-153-visual-review",
+      "originalRenderSha256": "c109e6c7b4d1e2c2801c413d1a69e5947a8bc99143b09ba5e3e6282417bb9563",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 county table continues with geography rows and service-availability, population, density and income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 154,
+      "blockId": "page-154-visual-review",
+      "originalRenderSha256": "91a675ba801dcf225606c23bd5ce706a00bf19bb32cc5b0abf3ece56bdc66da6",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 county table continues with geography rows and service-availability, population, density and income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 155,
+      "blockId": "page-155-visual-review",
+      "originalRenderSha256": "f8aaaf3c57a10d6f1d2632afd4e3b01647f45a5409dcd908f4ed0cd55145dfa5",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 county table continues with geography rows and service-availability, population, density and income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 158,
+      "blockId": "page-158-visual-review",
+      "originalRenderSha256": "4f5e3bc20a57fa6d03aa63d7b5dffb3f08eb76526c37ca847c1800ffcbe1f96d",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-6 table continues at top, followed by Appendix A-7 tribal-lands 5G-NR and fixed-service table; retain both structures.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 159,
+      "blockId": "page-159-visual-review",
+      "originalRenderSha256": "4914edd758375bddc3999a927bd082de744f838246997f090810a3e1a8fe8a2c",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-8 tribal-lands 4G-LTE and fixed-service table is present.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 162,
+      "blockId": "page-162-visual-review",
+      "originalRenderSha256": "7e98499066923e4f2e028bdfe523ceb55d9e77af6c7d2de5b6af62b0ca002579",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-11 tribal-lands in-vehicle 4G-LTE and fixed-service table is present.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 163,
+      "blockId": "page-163-visual-review",
+      "originalRenderSha256": "6829d9781add68d6a285fff4f6b2024733a4d2bc21339f77895b82aefb286abd",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-12 5G-NR census-block-group quartile table separates population, density and income categories.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 164,
+      "blockId": "page-164-visual-review",
+      "originalRenderSha256": "e19579ec074f816d5c9fbfb5b6bee7ad4643b6c456ac9007b351618fde40bb4e",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-13 4G-LTE census-block-group quartile table separates population, density and income categories.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 165,
+      "blockId": "page-165-visual-review",
+      "originalRenderSha256": "639e4a258ab5a27992ac31a27ad50f75aa6afc53e23030f841a4fa4b8f1b2eb4",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-14 in-vehicle 5G-NR 35/3 census-block-group quartile table is present.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 166,
+      "blockId": "page-166-visual-review",
+      "originalRenderSha256": "796c77415bb495fc53af52d89e717b8af482473eb441077b4e5ce05ac10facc7",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-15 in-vehicle 5G-NR 7/1 census-block-group quartile table is present.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 167,
+      "blockId": "page-167-visual-review",
+      "originalRenderSha256": "4b2004f4845265014b9570c957d69e506308f9c4879c27ee928899005e9c2a18",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-16 in-vehicle 4G-LTE census-block-group quartile table is present.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 169,
+      "blockId": "page-169-visual-review",
+      "originalRenderSha256": "6b7e4477190ff631076757f787c5e69db5f6d3233cf8cb20817385ec1b3f9bd7",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-18 served/unserved demographic comparison table is present.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 170,
+      "blockId": "page-170-visual-review",
+      "originalRenderSha256": "9e57a11d33f3347be9acf5ab1a62d230493a6fd5c3e17968811f9d250af829f4",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-19 served/unserved in-vehicle 5G-NR 35/3 demographic comparison table is present.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 171,
+      "blockId": "page-171-visual-review",
+      "originalRenderSha256": "017e0f4049493d9a7c55974658f193fe4fdc0d7e3ef537d5932fd48b9df9bd12",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-20 served/unserved in-vehicle 5G-NR 7/1 demographic comparison table is present.",
+      "productDecisionSaved": false
+    }
+  ],
+  "counts": {
+    "newlyOriginalSizeChecked": 36,
+    "countyTablePages": 25,
+    "otherAppendixTablePages": 11,
+    "retainEvidence": 36,
+    "reclassifyAsDecoration": 0,
+    "previouslyContactSheetOnlyRemaining": 0
+  },
+  "decisionOverride": {},
+  "reviewBoundary": "All 89 formerly contact-sheet-only pages now have original-size page-type decisions across the three batch receipts. Numeric cells and any apparent source repetition are not validated or corrected by this review.",
+  "productReviewDecisionsSaved": 0,
+  "independentGoldAdded": 0,
+  "providerCalls": 0,
+  "g17ToG20Advanced": false
+}
