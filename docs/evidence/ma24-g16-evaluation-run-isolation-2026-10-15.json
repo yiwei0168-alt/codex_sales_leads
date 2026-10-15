@@ -24,7 +24,12 @@
     "evaluationRunInsert": true,
     "completedTransition": true,
     "skillShadowJobs": 0,
-    "transactionRolledBack": true
+    "transactionRolledBack": true,
+    "enabledSyntheticCampaign": true,
+    "ordinaryRunShadowJobsPositiveControl": 1,
+    "evaluationRunShadowJobsUnderEnabledCampaign": 0,
+    "activeCampaignsAfterRollback": 0,
+    "positiveControlScope": "Same account, same enabled campaign, two queued runs in one rollback transaction; no model or worker started."
   },
   "checks": {
     "focusedVitest": "12 passed across 2 files",
