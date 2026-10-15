@@ -1,0 +1,39 @@
+{
+  "schema": "ma24-g14-fcc-mba-visual-triage-receipt-v1",
+  "date": "2026-10-16",
+  "scope": "Source-bound contact-sheet triage and first original-size page batch for the private FCC report",
+  "sourceSha256": "cb74399d38def5adafb04390728bd3aae6aea0ad28cdac064c5f73dd1b661c4c",
+  "extractionArtifactSha256": "ca204bf0ad8783a2dc339c82023e6c8e6d810d2413a69267c85fc72125d38033",
+  "privateRenderPackage": {
+    "path": "tmp/ma24-independent-quarantine/fcc-mba-thirteenth-visual-review/review.json",
+    "sha256": "46eb2ad5646cabc6b9751b02cbf5c76aba5b796e08bd88b8b20f0be379d7073c",
+    "pendingPagesRendered": 62,
+    "contactSheetsGeneratedAndVisuallyInspected": 7,
+    "renderedImagesSha256Checked": 62
+  },
+  "privateTriage": {
+    "path": "tmp/ma24-independent-quarantine/fcc-mba-thirteenth-visual-triage-v1.json",
+    "sha256": "09d5ca6e207d01ce41650cd8797894de240c2fb557ddeaf28c89008f0aa83dc6",
+    "provisionalChartOrTablePagesFromContactSheets": 46,
+    "provisionalDecorationPagesFromContactSheets": 16,
+    "originalSizePendingPagesChecked": [8, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+    "originalSizeNonpendingPagesChecked": [5, 6, 50],
+    "originalSizeSourcePagesCheckedTotal": 13,
+    "pendingVisualPagesWithoutOriginalSizeCheck": 52,
+    "productDecisionsSaved": 0
+  },
+  "candidateTargetPageCheck": {
+    "physicalPages": [8, 18, 19, 20],
+    "status": "original-size visually checked; target text block coordinates remain available",
+    "aggregationWordingCaveat": "The paragraph beside Chart 6 describes Chart 7 across tiers as a weighted mean, while the following Chart 7 caption says weighted median. The private candidate does not assert either aggregation formula; final answer review must preserve this limit."
+  },
+  "limits": [
+    "Contact sheets only support provisional presence triage, not chart values, evidence transcription, or final review decisions.",
+    "The remaining 52 pending visual pages require original-size review before a complete source decision; source registration and user-visible citations have not run.",
+    "No Gold, model answer, production rollout, or G16 quality acceptance follows from rendering."
+  ],
+  "independentGoldApproved": 0,
+  "g15PaidAdmission": false,
+  "g16RealDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}
