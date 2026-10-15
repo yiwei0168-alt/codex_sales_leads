@@ -1,0 +1,38 @@
+{
+  "schema": "ma24-g14-dbs-local-rollout-exposure-v1",
+  "date": "2026-10-16",
+  "sourceFamily": "DBS annual report 2024-25 corrected edition",
+  "firstGitRegistration": "dd92ca77 at 2026-10-15T13:08:13Z",
+  "script": "tmp/ma24-independent-quarantine/audit-dbs-rollout-exposure.py",
+  "scriptSha256": "0bfcc91778696836298d7f167c74cad6d3e0a6b9d7ce11e73b0aa28495a6e573",
+  "scope": {
+    "localCodexRolloutFilesAtFirstScan": 113,
+    "jsonlRecordsAtFirstScan": 171743,
+    "patterns": [
+      "ARA_2024-25_19.11.2025_Correction_Slip",
+      "dbs-2024-25-basic-checks-correction2-year-conflict",
+      "DBS annual report and accounts 2024 to 2025",
+      "Basic DBS checks",
+      "2,657,121",
+      "5902287709dd1049eae2429af4e87d8a5efbee5d123763b5735a72213f754a44"
+    ]
+  },
+  "observation": {
+    "firstMatchingRecordUtc": "2026-10-15T12:22:45.376Z",
+    "lastPreRegistrationMatchingRecordUtc": "2026-10-15T13:08:10.133Z",
+    "preRegistrationPatternHitsAcrossRecordsAndTerms": 161,
+    "postRegistrationPatternHitsAcrossRecordsAndTerms": 221,
+    "firstQuestionIdMatchUtc": "2026-10-15T13:04:23.043Z",
+    "firstOriginalPdfHashMatchUtc": "2026-10-15T13:01:57.707Z",
+    "interpretation": "The observed pre-registration hits occur in the roughly 46-minute source discovery, download, page inspection and candidate-preparation window. A record may match multiple patterns, so hit counts are not distinct prior exposures. No target-pattern match predating that window appeared in this retained local rollout scan."
+  },
+  "limits": [
+    "The local rollout inventory is live. Later scans can contain additional post-registration records while the fixed pre-registration boundary and earliest matches remain the comparison target.",
+    "Only retained local rollout JSONL files and the listed exact case-insensitive patterns were scanned; unrecorded prompts, deleted logs, binary derivatives, remote systems and provider-side knowledge were not examined.",
+    "A first observed mention in candidate preparation is not itself proof of earlier development contamination, nor proof of independence.",
+    "The DBS candidate still needs user content review, family eligibility and whole-set source/answer audit before Gold."
+  ],
+  "independentGoldApproved": false,
+  "realDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}
