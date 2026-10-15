@@ -6,6 +6,10 @@
 
 两份新 GOV.UK XLSX 在当前本地产品资产、上传作业和旧 Gold 的精确哈希筛查均为 0；历史题标题/关键词也未命中，但不能以此替代语义独立审计。Taking Part 页脚 OGL 说明支持初步短题用途审核，整份再分发及例外仍未批准。[无答案候选](evidence/ma24-g14-taking-part-internet-xlsx-no-answer-candidate-2026-10-15.json)、[BDUK 候选](evidence/ma24-g14-bpi-2018-xlsx-candidate-2026-10-15.json)。
 
+固定离线 BGE 已恢复并用于两题对旧 350 行题的近邻诊断；两题前十都不含同一统计问法。此筛查不等于新独立 Gold 审批，仍须审当前候选间答案/来源重叠及无法由本地历史覆盖的暴露。[无答案筛查](evidence/ma24-g14-taking-part-internet-xlsx-no-answer-candidate-2026-10-15.json)、[BDUK 筛查](evidence/ma24-g14-bpi-2018-xlsx-candidate-2026-10-15.json)。
+
+两条新 XLSX 草案与筛留的 18 条草案已完成本地近邻诊断；最近项分别是 ONS 5G 分母题和 FCC 学校带宽分母题。人工初看是同类口径推理而非同一来源或答案，但还须逐题审计后才能冻结 Gold。原始输出哈希见[执行台账](MA24_EXECUTION_STATUS_2026-10-13.md)，无云调用。
+
 2026-10-15 G14 XLSX 候选补充：GOV.UK 2018 年 BDUK 指标工作簿已取得原件并核对两种支出口径的原格；历史口径问答仅为候选，尚须完整开发暴露、来源复用、产品读取/引用与整套 Gold 终审。[候选收据](evidence/ma24-g14-bpi-2018-xlsx-candidate-2026-10-15.json)。
 
 同期 PDF 第 2 页重复 XLSX 草案全部答案事实，第 4 页有 OGL 正文复用声明。该 PDF 与 XLSX 只能算同一发布家族；后续格式测评必须绑定工作簿原格引用，不能借同源 PDF 增加独立来源数。[交叉收据](evidence/ma24-g14-bpi-2018-xlsx-candidate-2026-10-15.json)。

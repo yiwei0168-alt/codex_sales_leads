@@ -34,6 +34,17 @@
     "scope": "Current local product database, read-only; the isolated clone is a separate database and was cleaned"
   },
   "gitHistoryPublicationTitleHitsBeforeCandidate": 0,
+  "localBgeNeighborScreen": {
+    "command": "node scripts/run-tsx.cjs scripts/screen-ma24-g14-question-overlap-local.ts docs/evidence/ma24-g14-bpi-2018-xlsx-candidate-2026-10-15.json tmp/ma24-independent-quarantine/bpi-2018-neighbor-screen.json",
+    "outputSha256": "71ca9944bca528934595b1e5b92029d40f7cfbe3719ed571f2be6b7282060dbe",
+    "model": "local BAAI/bge-m3 revision 5617a9f61b028005a4858fdac845db406aefb181",
+    "historicalRows": 350,
+    "uniqueHistoricalQueries": 300,
+    "topScore": 0.480006,
+    "manualTopTen": "The closest old queries concern network device deployment suitability and interface/power comparisons, not BDUK expenditure timing or covered-premises indicators.",
+    "semanticIndependenceProven": false,
+    "cloudCalls": 0
+  },
   "publicationFamily": "BDUK Broadband Performance Indicators historical quarterly series; treat related releases as one family pending review",
   "sameReleasePdfCrossCheck": {
     "url": "https://assets.publishing.service.gov.uk/media/5b053e7ee5274a2ae26f14ca/Broadband_Performance_Indicator_-_March_2018.pdf",

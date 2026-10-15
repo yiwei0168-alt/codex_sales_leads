@@ -6,6 +6,10 @@
 
 两份 GOV.UK 新 XLSX 的正式本地资料/上传/旧 Gold 精确哈希均为 0 命中；Git 历史标题仅在新候选提交首次出现。Taking Part 的发布页脚注明 OGL v3.0（例外除外），短篇带署名题有初步来源依据；这些只读筛查不能证明语义未暴露、完整许可或独立 Gold 资格。[无答案候选](evidence/ma24-g14-taking-part-internet-xlsx-no-answer-candidate-2026-10-15.json)、[BDUK 候选](evidence/ma24-g14-bpi-2018-xlsx-candidate-2026-10-15.json)。
 
+同日恢复固定 revision 本地 BGE 8765 服务并验证 `/health`；两条新 XLSX 草案对旧 350 行题（去重 300 问）的本地近邻分别最高 0.428802 与 0.480006，人工检查前十均为设备端口/部署题，不是相同统计事实。原始近邻输出哈希已记录，未调用云模型；完整语义独立和整套题终审仍未完成。[无答案筛查](evidence/ma24-g14-taking-part-internet-xlsx-no-answer-candidate-2026-10-15.json)、[BDUK 筛查](evidence/ma24-g14-bpi-2018-xlsx-candidate-2026-10-15.json)。
+
+同日把两条新 XLSX 草案与先前筛留的 18 条草案交叉比较：固定本地 BGE 的最近项分别为 ONS 5G 分母题（0.521341）与 FCC 学校带宽分母题（0.510083）。两处共同点均是统计口径辨析；来源、目标指标及所求事实不同，未据分数排除或批准。诊断输出 `tmp/ma24-independent-quarantine/new-vs-retained-screen.json` 的 SHA-256 为 `742884708066a4828aabc36fa414628eb6eb97a1ab207850208f72ccd6e03b34`，云调用 0；整套题逐项人工去重、来源家族与开发暴露终审仍未完成。
+
 2026-10-15 G14 新 XLSX 来源候选：英国政府 2018 年 3 月 Broadband Performance Indicator 原件 12,802 字节已从发布页直链下载，哈希及 `Sheet1!D26`、`A33` 原格核对；现金口径 7,934 与权责发生制估计 7,617 的历史口径题已拟稿。有界项目文本搜索无同题关键词；完整暴露、复用条款、产品坐标与答案引用未审，Gold 0。[候选收据](evidence/ma24-g14-bpi-2018-xlsx-candidate-2026-10-15.json)。
 
 同日同发布 PDF 原页复核：第 2 页完整重复该工作簿的 March 2018 表格及现金/权责发生制附注；第 4 页载明 Crown copyright 2018 和开放政府许可（不含标志）。因此 XLSX 可继续作格式坐标候选，PDF 不可另计独立来源家族；工作簿自身的适用条件和最终复用审核仍待核。[交叉收据](evidence/ma24-g14-bpi-2018-xlsx-candidate-2026-10-15.json)。

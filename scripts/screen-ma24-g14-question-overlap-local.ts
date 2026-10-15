@@ -9,9 +9,14 @@ const source=path.resolve(process.argv[2]??'');
 const evidenceRoot=path.resolve('docs/evidence');
 if(!source.startsWith(evidenceRoot+path.sep)||!source.endsWith('.json'))throw new Error('A committed G14 evidence JSON path is required');
 const raw=await readFile(source,'utf8');
-const candidate=JSON.parse(raw) as {sha256?:string;source?:{sha256?:string};draftQuestions?:Array<{id:string;question:string}>;draftQuestion?:{id:string;question:string}};
-const sourceSha256=candidate.sha256??candidate.source?.sha256;
-const drafts=candidate.draftQuestions??(candidate.draftQuestion?[candidate.draftQuestion]:[]);
+const candidate=JSON.parse(raw) as {sha256?:string;originalSha256?:string;source?:{sha256?:string};
+ draftQuestions?:Array<{id:string;question:string}>;draftQuestion?:{id:string;question:string}|string;
+ draft?:{id:string;question:string}};
+const sourceSha256=candidate.sha256??candidate.source?.sha256??candidate.originalSha256;
+const draft=candidate.draft??(typeof candidate.draftQuestion==='string'
+ ? {id:`source-${sourceSha256?.slice(0,12)}`,question:candidate.draftQuestion}
+ : candidate.draftQuestion);
+const drafts=candidate.draftQuestions??(draft?[draft]:[]);
 if(!/^[a-f0-9]{64}$/.test(sourceSha256??'')||!Array.isArray(drafts)||!drafts.length
   ||drafts.some(row=>!row.id||!row.question))throw new Error('Candidate evidence lacks source hash or questions');
 const corpus=buildKnowledgeEvaluationCorpus();

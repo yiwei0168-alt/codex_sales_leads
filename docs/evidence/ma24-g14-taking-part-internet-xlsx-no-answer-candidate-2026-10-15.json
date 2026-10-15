@@ -38,6 +38,17 @@
     "historicalBlindQuestionTitleOrTopicHits": 0,
     "limitation": "Exact title/topic search does not rule out semantic paraphrases, untracked provider context, or every historical binary artifact."
   },
+  "localBgeNeighborScreen": {
+    "command": "node scripts/run-tsx.cjs scripts/screen-ma24-g14-question-overlap-local.ts docs/evidence/ma24-g14-taking-part-internet-xlsx-no-answer-candidate-2026-10-15.json tmp/ma24-independent-quarantine/taking-part-no-answer-neighbor-screen.json",
+    "outputSha256": "a6fd92c50fee0092ce9abb9de231917f96d36f1a0e200b655846924bf2bd3a64",
+    "model": "local BAAI/bge-m3 revision 5617a9f61b028005a4858fdac845db406aefb181",
+    "historicalRows": 350,
+    "uniqueHistoricalQueries": 300,
+    "topScore": 0.428802,
+    "manualTopTen": "The closest old queries concern shared combo ports, physical Ethernet port counts, or PoE, not rural-by-age internet ability. Four of the first ten are wording variants of the same combo-port question.",
+    "semanticIndependenceProven": false,
+    "cloudCalls": 0
+  },
   "sourceUseCheck": {
     "publisherPageFooter": "GOV.UK page footer states OGL v3.0 for content except where otherwise stated and Crown copyright.",
     "workbookSpecificExceptionFound": false,
