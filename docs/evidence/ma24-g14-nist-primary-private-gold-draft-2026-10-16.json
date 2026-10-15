@@ -1,0 +1,31 @@
+{
+  "schema": "ma24-g14-nist-primary-private-gold-draft-v1",
+  "date": "2026-10-16",
+  "caseId": "nist-tn2363-delay-profile-and-5g-tsn-validation",
+  "caseQuestionSha256": "3ef44091700138bbacfb235f74830b245d86d36f1cda11ff8ae97fe68caaa47b",
+  "privateDraftPath": "tmp/ma24-independent-quarantine/nist-tn2363-delay-tsn-gold-draft-v1.json",
+  "privateDraftSha256": "e255783e90c7be70987a870234c7c34de3dc7b6a742b05d967c741a59bdb1431",
+  "originalPdfSha256": "65e333dac9975f4ca9a952a966fb212ce7ccb161ec60b48bf45c3dfd7adbd6a9",
+  "productExtractionSha256": "babd6ce7bec494922fed339b33d3e156d8c05f55435613fffcf0ddfbada9d26f",
+  "checks": {
+    "questionEqualsCurrentV8PoolText": true,
+    "originalPhysicalPages18And28VisuallyRechecked": true,
+    "threeExcerptsMatchExactBlockIdPageAndProductExtractionText": true,
+    "isolatedFullVisualReviewAndPrivateProductRegistrationPreviouslyPassed": true,
+    "userVisibleModelAnswerChecked": false,
+    "providerCalls": 0,
+    "productionKnowledgeWrites": 0
+  },
+  "sourceExposureUnit": "NIST TN 2363",
+  "knownLinkToNistIndustrialWorkbookAfterV8Correction": false,
+  "reviewPacket": "docs/MA24_G14_NIST_TN2363_PRIMARY_REVIEW_PACKET_2026-10-16.md",
+  "acceptanceBoundary": {
+    "newTypePermissionReply": "pending",
+    "userQuestionAndAnswerReview": "pending",
+    "independentGoldApprovedForThisCase": false,
+    "fullSetFrozen": false,
+    "g15ReadyForModelCalls": false,
+    "g16RealDualArmRuns": 0,
+    "g17ToG20Advanced": false
+  }
+}

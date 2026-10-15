@@ -525,3 +525,5 @@ Taking Part 工作簿的整题无答案候选已有第 2 条隔离 Gold 草案�
 2026-10-16 NIST 跨来源旧草案因误用 B23（喇叭天线距离）与 M23（偶极子距离）的差值而退出暂定池；保留旧收据作为纠错历史，不进入冻结输入。[原格纠错](evidence/ma24-g14-nist-cross-source-candidate-correction-2026-10-16.json)及[v8 闭包](evidence/ma24-g14-current-family-readiness-v8-2026-10-16.json)把当前池更正为 24 条出版资料草案、3 条合成安全草案、13 个已知出版资料暴露单元。下一步按 v8 清单完成 FCC 同源草案和其他待审题的内容判定、历史与派生来源审计，再冻结题文/Gold/账号/配置。G15 付费准入和 G16 真实双路仍未解锁，G17–G20 暂停。
 
 2026-10-16 G16 的[本地隔离数据库准入验收](evidence/ma24-g16-local-admission-db-clone-acceptance-2026-10-16.json)已连续两次通过并清理合成数据，关闭旧预检的数据库正向路径缺口。后续仍须完成专用评测 runner、正式 Gold 与账号/模型配置冻结和 G15 准入，才可进行 G16 真实双路质量运行；不能用合成准入通过代替真实结果。G17–G20 暂停。
+
+2026-10-16 NIST TN 2363 第 3.3/5.2 节的[跨章节审核包](MA24_G14_NIST_TN2363_PRIMARY_REVIEW_PACKET_2026-10-16.md)和[私有 Gold 草案](evidence/ma24-g14-nist-primary-private-gold-draft-2026-10-16.json)已核对原页与三条产品证据坐标。待用户答复题型审核许可后，再处理逐题答案和限定；该题不能提前计入已批准 Gold。随后按 v8 单独审核 NIST 报告来源单元的另外两题、派生来源和整套独立性。G15/G16 实测未解锁，G17–G20 暂停。
