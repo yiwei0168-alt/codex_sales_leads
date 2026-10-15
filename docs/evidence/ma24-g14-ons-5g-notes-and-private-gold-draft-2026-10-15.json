@@ -1,0 +1,37 @@
+{
+  "schema": "ma24-g14-ons-5g-notes-and-private-gold-draft-v1",
+  "date": "2026-10-15",
+  "scope": "G14 preparation for G16; G17-G20 deferred",
+  "sourceSha256": "b488e723e475ce022fdf3d35bc1ead4611e58dda9cbf96371a6e7485834a6238",
+  "privateDraft": {
+    "caseId": "ons-5g-2026-highland-outdoor-denominator",
+    "path": "tmp/ma24-independent-quarantine/ons-5g-highland-denominator-gold-draft-v1.json",
+    "sha256": "a3fd562233762f8f5a0951b4b10c30883fa7d39ce90e7222541da9237cb73760",
+    "expectedOutcome": "route with an explicit unavailable household-indoor subanswer",
+    "sourceCoordinates": ["Notes!B4", "1!B370:C370"]
+  },
+  "checks": {
+    "originalFourSheetsReadOnlyInspected": true,
+    "originalSha256MatchedPriorReceipt": true,
+    "indoorHouseholdPremisesPopulationTermHits": 0,
+    "questionMatchesCurrentDraftPool": true,
+    "isolatedUploadWorkerRegistered": true,
+    "notesAndDataEvidenceBlocksReadBack": true,
+    "otherAccountDeniedBothBlocks": true,
+    "syntheticRecordsCleaned": true,
+    "typescriptNoEmit": "passed",
+    "focusedEslint": "passed",
+    "modelCalls": 0,
+    "productionKnowledgeWrites": 0
+  },
+  "interpretation": "The percentage is outdoor geographic-area coverage in this dated workbook. An indoor household value is absent from this workbook; this does not establish that no other source reports one. The earlier Highland-versus-Scotland draft uses the same source and target value and cannot be a separate independent question.",
+  "acceptanceBoundary": {
+    "privateGoldDraftsTotal": 8,
+    "independentGoldApproved": 0,
+    "fullSourceIndependenceAndRightsReview": false,
+    "independentReviewerSignedOff": false,
+    "userVisibleModelAnswerAndCitationVerified": false,
+    "qualityGatePassed": false,
+    "g17ToG20Advanced": false
+  }
+}

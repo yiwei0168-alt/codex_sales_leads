@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+2026-10-15 G14 ONS 5G 候选的指标定义与 Highland 原格已通过隔离产品证据回读及跨账号拒读，新建私有待审 Gold 草案；批准 Gold 0。尚未完成完整来源独立性、独立审核、用户可见模型回答与引用验收，G17–G20 暂缓。[收据](evidence/ma24-g14-ons-5g-notes-and-private-gold-draft-2026-10-15.json)。
+
 2026-10-15 G14 候选答案准备：两条 GOV.UK 工作簿题的私有 Gold 草案已核原格与产品块坐标；跨文档题只比较不同统计量，不作因果结论。独立审核、完整来源资格、正式 Gold 冻结及真实模型引用仍未验收，批准 Gold 0；G17–G20 暂缓。[草案收据](evidence/ma24-g14-bduk-two-private-gold-drafts-2026-10-15.json)。
 
 2026-10-15 G16 工程补验：持久模型调用行已完成不等于模型产生可用答案；完成的 Agent 任务现在必须至少对应一条保存的成功模型回答，文本与最终回复一致。定向测试和本地隔离数据库反例通过，未形成真实独立双路或 Gold 质量验收；G17–G20 暂停。[收据](evidence/ma24-g16-successful-model-output-gate-2026-10-15.json)。

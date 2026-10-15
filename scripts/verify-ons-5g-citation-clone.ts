@@ -45,10 +45,19 @@ try{
   const found=await readEvidence(owner,evidence.id,['industry']);assert(found);
   for(const literal of ['B370: Highland','C370: 35.2','B381: Aberdeen City','C381: 99.85',
     'B382: Aberdeenshire','C382: 64.2','B395: Scotland','C395: 47.52'])assert(found.content.includes(literal),literal);
+  const notes=(await pool.query<{id:string;source_location:Record<string,unknown>}>(`
+    select n.id,n.source_location from knowledge_tree_node n join knowledge_document d on d.current_tree_version_id=n.version_id
+    where d.id=$1 and n.title='sheet-3-table' and n.node_kind='evidence'`,[registered.published_document_id])).rows[0];
+  assert(notes);
+  assert.equal(notes.source_location.sheetName,'Notes');
+  const definition=await readEvidence(owner,notes.id,['industry']);assert(definition);
+  assert(definition.content.includes('B4: This indicator shows the percentage of geographic areas with 5G signal outdoors'));
+  assert(definition.content.includes('signal strength threshold is -110dBm'));
   assert.equal(await readEvidence(other,evidence.id,['industry']),null);
+  assert.equal(await readEvidence(other,notes.id,['industry']),null);
   assert.equal(JSON.stringify((await pool.query('select * from knowledge_release_pointer_v3 order by scope_kind,owner_id')).rows),pointers);
   console.log(JSON.stringify({cloneOnly:true,sourceSha256:hash(original),extractorVersion:'layout-v2.0.10',
-    registered:true,cellRange:'A1:C418',targetCellsRead:8,crossAccountDenied:true,
+    registered:true,cellRange:'A1:C418',targetCellsRead:8,notesDefinitionRead:true,crossAccountDenied:true,
     productionKnowledgeWrites:0,modelCalls:0,independentGoldCreated:0}));
 }finally{
   await pool.query('delete from knowledge_upload_job where user_id=$1',[owner]);
