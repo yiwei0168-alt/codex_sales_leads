@@ -1,0 +1,27 @@
+{
+  "schema": "ma24-g14-cross-source-text-overlap-receipt-v1",
+  "date": "2026-10-16",
+  "script": "scripts/audit-ma24-g14-cross-source-text-overlap-local.py",
+  "scriptSha256": "1622d26f0201c38dc24fb5ee058f8d3c7e15920a14fffc266c03a312a6560089",
+  "inputPoolSha256": "96459f096b17bafdd32dfedc18db924e0339ae53dd4b563ea1d2d7f78b88b9ed",
+  "privateReportPath": "tmp/ma24-independent-quarantine/g14-cross-source-text-overlap-v9-2026-10-16.json",
+  "privateReportSha256": "94071788d5d36b9f3594aca6aa830f6c6b8f34e2bcb78c4cf738176842c1a6d1",
+  "originalsRehashed": 16,
+  "formatCounts": { "pdf": 8, "xlsx": 4, "pptx": 4 },
+  "pdfPagesWithTextExtractionAttempted": 854,
+  "normalizedTokens": 483173,
+  "crossFamilyPairs": 118,
+  "crossFamilyPairsWithEightTokenMatch": 8,
+  "crossFamilyPairsWithTwelveTokenMatch": 0,
+  "sameFamilyPositiveControls": {
+    "etsiVersionsSharedTwelveTokenShingles": 67451,
+    "fccReleaseDocumentsSharedTwelveTokenShingles": 59
+  },
+  "crossFamilyEightTokenMatchReview": "All eight matches were generic wording or numeric sequences: NIST/ETSI missing-value strings, DBS/ETSI and ETSI/FCC number runs, ITU/FCC packet-latency wording, and FCC/NTIA agency naming. None was a candidate answer-bearing passage in this bounded screen.",
+  "conversionStatus": "Docling CLI PPTX conversion was attempted but did not finish and produced no file; the process was stopped. This audit used source-hash-bound existing product extraction for four PPTX, pypdf text extraction for eight PDFs, and openpyxl cached cell values for four XLSX.",
+  "limitation": "Exact lexical overlap in extractable text only. OCR gaps, charts, formulas, differently worded derivatives, unrecorded prompts and provider knowledge remain unassessed. Zero twelve-token matches do not establish whole-set independence or approve Gold.",
+  "approvedGoldCasesUnchanged": 5,
+  "fullSetFrozen": false,
+  "realDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}
