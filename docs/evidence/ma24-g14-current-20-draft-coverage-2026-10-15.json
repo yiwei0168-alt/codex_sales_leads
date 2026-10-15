@@ -1,0 +1,32 @@
+{
+  "schema": "ma24-g14-current-20-draft-coverage-v1",
+  "date": "2026-10-15",
+  "command": "node scripts/run-tsx.cjs scripts/audit-ma24-g14-current-draft-pool.ts tmp/ma24-independent-quarantine/g14-current-draft-pool-bound.json",
+  "outputSha256": "8c141a454a65b99a8c5751ec2b19db64f1cf1aa0abdf75dbcf6aace6dded268c",
+  "inputBoundary": "18 retained draft IDs from the prior exclusion audit, plus the BDUK and Taking Part XLSX candidates; the prior audit and coverage receipt hashes are checked and the two new evidence-file hashes are recorded before reconciliation",
+  "counts": {
+    "drafts": 20,
+    "provisionalPublicationFamilies": 12,
+    "primaryFormats": { "pdf": 1, "long-pdf": 7, "pptx": 8, "xlsx": 4 },
+    "wholeQuestionHardCases": {
+      "cross-document": 0,
+      "new-or-revised": 0,
+      "conflict": 0,
+      "no-answer": 1,
+      "permission": 0,
+      "injection": 0
+    }
+  },
+  "gapsAgainstProposedTargetsNotYetFrozen": {
+    "cross-document": 8,
+    "new-or-revised": 4,
+    "conflict": 3,
+    "no-answer": 1,
+    "permission": 2,
+    "injection": 1
+  },
+  "interpretation": "Counts describe draft coverage, not eligible sources or approved Gold. Family relationships, source use, full development exposure, original-answer coordinates and product citations remain subject to individual review; the proposed targets are not user-confirmed final counts. The ONS mixed question does not count as a whole-question no-answer case.",
+  "goldCreated": 0,
+  "modelAnswerCalls": 0,
+  "newPaidCalls": 0
+}
