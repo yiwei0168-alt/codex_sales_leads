@@ -1,0 +1,20 @@
+{
+  "schema": "ma24-g16-local-admission-db-preflight-v1",
+  "date": "2026-10-15",
+  "purpose": "Attempt live local PostgreSQL acceptance for the leased evaluation task binder without invoking a model.",
+  "result": "blocked-at-synthetic-task-insert-and-rolled-back",
+  "observations": {
+    "localDatabaseReachableOutsideSandbox": true,
+    "agentRunEvaluationKindAllowed": false,
+    "missingMigration": "db/migrations/136_ma24_evaluation_run_kind.sql",
+    "syntheticMarkerRowsAfterFailure": 0,
+    "providerCalls": 0
+  },
+  "acceptanceScript": "scripts/verify-ma24-g16-admission-local.ts",
+  "nextRequirement": "Apply migration 136 in the intended local or isolated acceptance database, then rerun the script; do not count this attempt as a passed database acceptance.",
+  "limitations": [
+    "The pure binder and mocked tenant lookup passed separate tests; the live database positive path remains unverified.",
+    "No production migration, paid evaluation, Gold freeze or dual-arm quality run occurred."
+  ],
+  "g17ToG20Advanced": false
+}
