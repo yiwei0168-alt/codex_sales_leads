@@ -1,0 +1,59 @@
+{
+  "schema": "ma24-g14-fcc-family-gold-disposition-v1",
+  "date": "2026-10-15",
+  "decision": "Approve the source-checked FCC press-release case as one private independent Gold case within one connected FCC 26-55 publication exposure unit. The 178-page report case remains provisional and is not a second independent unit. This is a partial G14 disposition, not the full set freeze or G16 admission.",
+  "approvedCaseId": "fcc-2026-fixed-service-option-scope",
+  "otherSameFamilyCandidate": "fcc-706-2026-school-entity-vs-student-denominator",
+  "sourceFamily": [
+    {
+      "original": "https://docs.fcc.gov/public/attachments/DOC-424190A1.pdf",
+      "sha256": "cc6b2100b895bc51a34bedd6873731d800a67a372a7b73b94f7095b98d902f0a",
+      "use": "Gold source; private attributed factual question and short answer"
+    },
+    {
+      "original": "https://docs.fcc.gov/public/attachments/FCC-26-55A1.pdf",
+      "sha256": "805e0e5b954775059ad535ae650c955935758a88f2a20ec0e6554e77f0e61154",
+      "use": "Shared-family exposure audit only; not included in this private Gold snapshot"
+    }
+  ],
+  "contentAndProductBasis": [
+    "Both release pages were visually checked. The dated June 2025 values are 77% for three or more fixed services and 43.4% for three or more fixed terrestrial services at 100/20 Mbps; the private answer preserves these different scopes and makes no current-coverage or policy-causation claim.",
+    "The current extraction's page-1-block-10 contains both values and the locked excerpt. Isolated upload, visual decisions, private registration, exact source-coordinate readback and cross-account denial passed without any model call.",
+    "The long report's Chairman statement repeats 77%, so both originals remain one publication exposure unit. Its separate school-bandwidth question is not approved here."
+  ],
+  "boundedIndependenceBasis": {
+    "firstGitRegistration": "db07744d at 2026-10-14T17:39:48Z",
+    "firstLocalSessionFamilyMatchUtc": "2026-10-14T17:30:54.225Z",
+    "preRegistrationWindow": "The 70 matching JSONL records in the nine-minute preparation window are repeated candidate discovery/tool records, not 70 independent prior exposures; no earlier source-specific match was found in the retained 101 rollout files and 160978 records scanned.",
+    "rolloutAuditScriptSha256": "587f59bad65e5a93ff177012a4d974b5a61459d1a28d775152e78f891e1a5299",
+    "historicalQuestionNeighborReportSha256": "9759ef2e8f8353a1711bba448e556149dd5f422a48ea2ee3272c028263406c70",
+    "historicalQuestionRows": 350,
+    "historicalUniqueQuestions": 300,
+    "historicalNearestQuestion": "Physical device port count, not the FCC two-scope availability fact",
+    "currentPoolNeighborReportSha256": "1a936e9f3cb88533fe6c2199f9421a77c2efe73b21c825ea3362c371a3e827df",
+    "currentPoolQuestionsReviewed": 27,
+    "otherSourceUnitWithSameRequestedFact": false,
+    "sourceSpecificProductCodeOrMigrationTextMatch": false,
+    "beforeRegistrationGitTreeMatch": false,
+    "sourceSpecificImplementationCommitFound": false,
+    "limit": "The bounded local screens cannot rule out unrecorded prompts, binary derivatives or provider-side pretraining. Candidate preparation and the isolated product read are documented exposure and must remain inside this FCC family unit. If the family is used to tune answers or retrieval, retire it from independent quality scoring."
+  },
+  "privateSnapshots": {
+    "sourceSetPath": "tmp/ma24-independent-quarantine/fcc-press-reviewed-source-set-v1.json",
+    "sourceSetSha256": "3f2855ae911cd6eaea5dc596f531ec1a473ef1b69615a54d5faf04871164b62d",
+    "goldPath": "tmp/ma24-independent-quarantine/fcc-press-reviewed-gold-v1.json",
+    "goldSha256": "4a59fec8ac26eeb3951104721f1440e5cea1f1ae040baed923196e65f7eeb0c9",
+    "caseQuestionSha256": "8669ca1c6a503672bdf9c57843a3543056cd02d17f2d4291a4157dc602484f1b",
+    "reviewedAtUtc": "2026-10-15T12:42:06+00:00",
+    "sourceAndGoldStructuralValidation": "passed against the G16 snapshot validators for this single-family partial set"
+  },
+  "sourceUseBoundary": "Keep both original PDFs private; use a dated, attributed short factual answer and page coordinate. Do not copy FCC emblems or claim unrestricted third-party rights.",
+  "approvedGoldCasesInThisUnit": 1,
+  "approvedConnectedExposureUnitsInThisDisposition": 1,
+  "cumulativeApprovedGoldCases": 4,
+  "cumulativeApprovedConnectedExposureUnits": 2,
+  "fullEvaluationSetFrozen": false,
+  "g15ReadyForModelCalls": false,
+  "realDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}
