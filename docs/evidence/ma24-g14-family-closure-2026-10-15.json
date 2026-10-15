@@ -1,0 +1,30 @@
+{
+  "schema": "ma24-g14-family-closure-v1",
+  "date": "2026-10-15",
+  "inputPoolSha256": "2cb4c56dd2f35e88a43ebdb1eaa2e15246438ee5727d9d6c7d31b9c86d3184c7",
+  "command": "node scripts/run-tsx.cjs scripts/audit-ma24-g14-family-closure-v5.ts",
+  "outputSha256": "7db26dec75621fd337a5b3dbe7e8e6610f6bbc87fa9b3dc0b7f452db90fc94ae",
+  "reproduction": "A second run to a separate quarantine output path produced the same SHA-256.",
+  "finding": {
+    "provisionalPublicationFamilies": 13,
+    "connectedPublicationExposureUnits": 11,
+    "syntheticPrivateFixtureUnits": 1,
+    "draftMaterials": 26,
+    "bridges": [
+      {
+        "families": ["BDUK Broadband Performance Indicator March 2018", "Taking Part 2019/20 Internet"],
+        "draftsSharingTheConnectedUnit": 3
+      },
+      {
+        "families": ["NIST 2015 industrial wireless measurement workbook", "NIST TN 2363"],
+        "draftsSharingTheConnectedUnit": 5
+      }
+    ]
+  },
+  "freezeImplication": "For development exposure versus independent holdout, all drafts in a connected source unit must move together. A cross-document draft links both source families and their other drafts; they cannot be treated as independent units merely because the family labels differ.",
+  "boundary": "This is exact family-label closure within the current 26-draft file. It does not prove that differently labeled publications have no semantic overlap, nor approve any family, question, Gold, or final split.",
+  "checks": { "typescriptNoEmit": "passed", "scriptReproduction": "passed" },
+  "goldCreated": 0,
+  "modelAnswerCalls": 0,
+  "g17ToG20Advanced": false
+}
