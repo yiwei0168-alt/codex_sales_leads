@@ -1,0 +1,33 @@
+{
+  "schema": "ma24-g14-approved-subsets-staging-v1",
+  "date": "2026-10-16",
+  "script": "scripts/audit-ma24-g14-approved-snapshots-local.ts",
+  "scriptSha256": "71568ed67eda6c496a2f0c5ff5e1542e497d892f9088d2e4090892eb3d45e65d",
+  "approvedCases": 5,
+  "connectedExposureUnits": 3,
+  "familyDispositionPaths": [
+    "docs/evidence/ma24-g14-govuk-family-gold-disposition-2026-10-15.json",
+    "docs/evidence/ma24-g14-fcc-family-gold-disposition-2026-10-15.json",
+    "docs/evidence/ma24-g14-nist-connected-family-gold-disposition-2026-10-15.json"
+  ],
+  "checks": {
+    "sixFamilySnapshotHashesMatchedTheirDispositions": true,
+    "sourceAndGoldCaseIdsMatchedWithinEachFamily": true,
+    "crossFamilyCaseIdsUnique": true,
+    "goldQuestionHashesMatchedSourceText": true,
+    "fiveGoldAnswersAndPreciseCoordinatesPresent": true,
+    "secondRunProducedIdenticalStagingHashes": true
+  },
+  "privateStagingSnapshots": {
+    "sourceSetPath": "tmp/ma24-independent-quarantine/approved-five-source-set-staging-v1.json",
+    "sourceSetSha256": "97ffb579162ddfe07e44d33c1bedb51d4848603f8d564bd0276f0e2a018f679e",
+    "goldPath": "tmp/ma24-independent-quarantine/approved-five-gold-staging-v1.json",
+    "goldSha256": "90a72b52dac0a646e4d5ca9d3974c52d9e8b1706246e0ed277de873605d40d96"
+  },
+  "acceptanceBoundary": {
+    "fullEvaluationSetFrozen": false,
+    "g15ReadyForModelCalls": false,
+    "realDualArmRuns": 0,
+    "g17ToG20Advanced": false
+  }
+}
