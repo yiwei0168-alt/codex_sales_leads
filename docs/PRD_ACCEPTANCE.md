@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+2026-10-15 G14 GOV.UK 工作簿家族三题的逐题内容确认和来源暴露终审完成，作为一个共享单元批准私有 Gold；两个原件哈希、目标原格及三题题文/Gold 快照结构通过复核。[终审收据](evidence/ma24-g14-govuk-family-gold-disposition-2026-10-15.json)。目前仅 **3 题、1 来源单元**，整套独立测评未冻结；用户可见引用、G15 调用授权和 G16 双路质量仍未验。G17–G20 暂停。
+
 2026-10-15 G16 checkpoint 重放保护补正：专用测评任务只在从未保存过 LangGraph checkpoint 时发起图执行；空消息但已有 checkpoint 的反例也拒绝自动重放。5 项定向测试、类型和 lint 通过。[工程收据](evidence/ma24-g16-empty-checkpoint-replay-guard-2026-10-15.json)。持久库恢复及真实双路质量未验，Gold 仍为 0；G17–G20 暂停。
 
 2026-10-15 G15/G16 入场不再只接受自报的代码配置哈希：当前预览由本机代码重新计算，并与冻结预览的提示词、模型路由、工具臂和源码闭包比较，任务模型配置也须一致。隔离克隆的哈希同步改写反例被拒，当前旧 v4 预览因源码漂移不可用。[收据](evidence/ma24-g16-runtime-semantic-preclaim-2026-10-15.json)。预览仍未就绪，Gold、付费准入和真实双路质量均未验收；G17–G20 暂停。

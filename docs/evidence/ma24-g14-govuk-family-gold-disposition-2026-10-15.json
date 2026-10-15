@@ -1,0 +1,54 @@
+{
+  "schema": "ma24-g14-govuk-family-gold-disposition-v1",
+  "date": "2026-10-15",
+  "decision": "Approve the three content-confirmed GOV.UK workbook cases as one connected, private independent Gold source unit. This is a partial G14 disposition, not a frozen full evaluation set or G16 admission.",
+  "caseIds": [
+    "bpi-2018-cash-accruals",
+    "govuk-bduk-taking-part-premises-vs-regional-ability",
+    "taking-part-2019-20-rural-age75-intersection-unavailable"
+  ],
+  "userContentConfirmations": ["MA24-20", "MA24-21", "MA24-22"],
+  "sourceFamilies": [
+    {
+      "release": "https://www.gov.uk/government/statistics/broadband-performance-indicator-march-2018",
+      "workbookSha256": "7d178716b667ebe66537154b0bb96f87348ccb782368b2f43920b45db9f7f5c1"
+    },
+    {
+      "release": "https://www.gov.uk/government/statistics/taking-part-201920-internet",
+      "workbookSha256": "90eb0ed392efc2db8ab6681bcf4b9634c41f891d3df7a95bba3bf6f9457ff614"
+    }
+  ],
+  "reviewedOriginalCells": [
+    "BDUK Sheet1!B26/D26/A28/A32/A33",
+    "Taking Part Table 2!B2/C5/B22/C22/B28/C28/B33/C33",
+    "Taking Part Table 3!B15/C15"
+  ],
+  "independenceBasis": [
+    "The source-family preparation first appears in retained local sessions on 2026-10-14; the bounded earlier Git and local session screens found no same source markers or old question with the same requested facts.",
+    "The current 27-draft pool was reviewed as a whole. These three cases share the two workbooks and remain one exposure unit; other source units did not supply the same requested facts.",
+    "The current product src and migrations contain no source-specific titles or target values. Candidate-specific upload/read scripts are development acceptance evidence, not model inputs or product answer rules.",
+    "No relevant product extraction, answer prompt or model implementation commit was found after the source-family preparation boundary in the checked paths. The clone source reads did not supply model answers."
+  ],
+  "sourceUseBoundary": "Private factual evaluation with official source links and workbook coordinates; no workbook redistribution or department emblem. User-visible attribution still requires G16 verification.",
+  "holdoutPreservation": "Keep all three cases in one sealed source unit. If any of these questions or source facts is used to tune product answer or retrieval behavior, retire the entire unit from independent quality scoring and retain it only as regression evidence.",
+  "privateSnapshots": {
+    "sourceSetPath": "tmp/ma24-independent-quarantine/govuk-family-reviewed-source-set-v1.json",
+    "sourceSetSha256": "50abc8f94fe74fc72862a51181be830296d92aa0099421676a39a81f004ce695",
+    "goldPath": "tmp/ma24-independent-quarantine/govuk-family-reviewed-gold-v1.json",
+    "goldSha256": "7dffad163f320a986d455acf26986b21567678107fa3e240cf9a9246dd6fbcb6",
+    "reviewedAtUtc": "2026-10-15T11:42:15+00:00",
+    "caseCount": 3,
+    "sourceAndGoldStructuralValidation": "passed against the G16 snapshot validators"
+  },
+  "remainingForFullG14G16": [
+    "Review and freeze the remaining independent source units and hard-case coverage; this three-case family alone cannot satisfy the full G16 manifest.",
+    "Freeze the evaluation accounts, ACLs, source inventory and actual code/build configuration; verify source attribution in the user-visible answer.",
+    "Verify current provider tariffs, authorization and hard limits before paid calls; obtain actual baseline/candidate runs and reviewer verdicts."
+  ],
+  "approvedGoldCasesInThisUnit": 3,
+  "approvedConnectedExposureUnits": 1,
+  "fullEvaluationSetFrozen": false,
+  "g15ReadyForModelCalls": false,
+  "realDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}
