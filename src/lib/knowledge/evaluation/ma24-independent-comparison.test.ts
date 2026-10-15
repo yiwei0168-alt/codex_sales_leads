@@ -27,7 +27,8 @@ const runs: Ma24Run[] = manifest.cases.flatMap((item, index) => (["baseline", "c
   userId: item.userId, knowledgeScope: item.knowledgeScope,
   status: "completed" as const, answer: `Recorded ${item.caseId} ${arm} answer${item.expectedOutcome === "route" ? ": Original source fact" : ""}`,
   citations: item.expectedOutcome === "route" ?
-    [{ assetSha256: "1".repeat(64), unitIndex: 1, excerpt: "Original source fact" }] : [],
+    [{ assetSha256: (item.caseId === "cross" ? "4" : "1").repeat(64),
+      unitIndex: 1, excerpt: "Original source fact" }] : [],
   modelCallIds: [`00000000-0000-4000-8001-${String(index * 2 + armIndex + 1).padStart(12, "0")}`],
   receiptIds: [`00000000-0000-4000-8001-${String(index * 2 + armIndex + 1).padStart(12, "0")}`,
     `${item.caseId}-${arm}-receipt`], modelId: "frozen-model",
@@ -36,7 +37,8 @@ const gold: Ma24GoldSnapshot = { schema: "ma24-g16-gold-snapshot-v1",
   cases: manifest.cases.map(item => ({ caseId: item.caseId, caseSha256: item.caseSha256,
     expectedAnswer: `Expected ${item.caseId} answer`,
     expectedSources: item.expectedOutcome === "route" ?
-      [{ assetSha256: "1".repeat(64), unitIndex: 1, excerpt: "Original source fact" }] : [],
+      [{ assetSha256: (item.caseId === "cross" ? "4" : "1").repeat(64),
+        unitIndex: 1, excerpt: "Original source fact" }] : [],
     reviewer: "gold-reviewer", reviewedAt: "2026-10-15T00:00:00Z", note: "Original checked" })) };
 const verdicts: Ma24Verdict[] = runs.map(run => ({
   caseId: run.caseId, arm: run.arm, runSha256: ma24RunSha256(run),
@@ -51,6 +53,13 @@ const score = (input: { manifest: Ma24FrozenManifest; runs: Ma24Run[]; verdicts:
   scoreMa24IndependentComparison({ ...input, gold });
 
 describe("MA24 independent comparison", () => {
+  it("does not split one Gold source binary across separate scoring groups", () => {
+    const sameBinary: Ma24GoldSnapshot = { ...gold, cases: gold.cases.map(item =>
+      item.caseId === "cross" ? { ...item, expectedSources: [gold.cases[0].expectedSources[0]] }
+        : item) };
+    expect(() => scoreMa24IndependentComparison({ manifest, gold: sameBinary, runs, verdicts }))
+      .toThrow("MA24 shared Gold source split across groups cross");
+  });
   it("binds each frozen case hash to the exact source-set question", () => {
     const sourceSet = { schema: "ma24-g16-source-set-v1" as const,
       cases: manifest.cases.map(item => ({ caseId: item.caseId, query: `Question ${item.caseId}` })) };

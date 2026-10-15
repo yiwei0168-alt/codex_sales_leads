@@ -125,6 +125,7 @@ export function assertMa24GoldMatchesManifest(manifest: Ma24FrozenManifest, gold
     throw new Error("Incomplete MA24 frozen Gold snapshot");
   const cases = new Map(manifest.cases.map(item => [item.caseId, item]));
   const seen = new Set<string>();
+  const sourceGroup = new Map<string, string>();
   for (const item of gold.cases) {
     const expected = cases.get(item.caseId);
     if (!expected || seen.has(item.caseId) || item.caseSha256 !== expected.caseSha256 ||
@@ -133,6 +134,12 @@ export function assertMa24GoldMatchesManifest(manifest: Ma24FrozenManifest, gold
       !Array.isArray(item.expectedSources) || item.expectedSources.some(source => !goldSourceIsPrecise(source)) ||
       (expected.expectedOutcome === "route" && !item.expectedSources.length))
       throw new Error(`Invalid MA24 frozen Gold case ${item.caseId}`);
+    for (const source of item.expectedSources) {
+      const prior = sourceGroup.get(source.assetSha256);
+      if (prior && prior !== expected.group)
+        throw new Error(`MA24 shared Gold source split across groups ${item.caseId}`);
+      sourceGroup.set(source.assetSha256, expected.group);
+    }
     seen.add(item.caseId);
   }
 }

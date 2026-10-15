@@ -1,0 +1,22 @@
+{
+  "schema": "ma24-g16-shared-gold-source-group-v1",
+  "dateLocal": "2026-10-16",
+  "scope": "G16 frozen Gold and manifest group validation",
+  "change": "Cases citing the same Gold asset SHA-256 must share one scoring group; a split is rejected before reviewed answers are scored.",
+  "verification": {
+    "focusedTests": "24 passed across independent comparison and persisted run binding",
+    "typecheck": "passed",
+    "changedFileEslint": "passed",
+    "v15PreviewPath": "docs/evidence/ma24-g15-config-preview-2026-10-16-v15.json",
+    "v15PreviewSha256": "2a6d04a0eaf02fbdc61ab2ec46020f17c9eb0058d9e1bfc580e5afe0f7695235",
+    "v15RuntimeBinding": "matched; readyForModelCalls=false",
+    "v14RuntimeBinding": "rejected with sourceHashes drift"
+  },
+  "limits": [
+    "Equal binary hashes are only a minimum source-closure check. Distinct PDFs, releases or derived works in one publication family still require G14 family and semantic exposure review.",
+    "The full independent source/Gold set is not frozen, paid admission is closed and no real dual-arm answer or citation quality has been assessed."
+  ],
+  "providerCalls": 0,
+  "realDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}
