@@ -2,13 +2,13 @@ import {beforeEach,expect,it,vi} from "vitest";
 
 const mock=vi.hoisted(()=>({transaction:vi.fn()}));
 vi.mock("@/lib/rag/db",()=>({tenantTransaction:mock.transaction,tenantQuery:vi.fn(),query:vi.fn()}));
-import {finishRun} from "./repository";
+import {enqueueRun,finishRun} from "./repository";
 import type {ExecutionContext,RunStatus} from "./contracts";
 
 const context:ExecutionContext={userId:"user-1",runId:"run-1",leaseToken:"lease-1",role:"member"};
 beforeEach(()=>{mock.transaction.mockReset();});
 
-for(const [status,kind,queued] of [["completed","main-agent",true],["completed","mail",false],["failed","main-agent",false]] as const){
+for(const [status,kind,queued] of [["completed","main-agent",true],["completed","main-agent-evaluation",false],["completed","mail",false],["failed","main-agent",false]] as const){
   it(`${status} ${kind} ${queued?"queues":"does not queue"} local extraction`,async()=>{
     const calls:string[]=[];
     const client={query:vi.fn(async(sql:string)=>{
@@ -22,3 +22,26 @@ for(const [status,kind,queued] of [["completed","main-agent",true],["completed",
     expect(calls.some(sql=>sql.includes("insert into agent_run_event"))).toBe(true);
   });
 }
+
+it("queues a scoped evaluation with its frozen case identity and no conversation history",async()=>{
+  const spec={schema:"ma24-evaluation-run-v1" as const,manifestSha256:"a".repeat(64),caseId:"case-1",arm:"candidate" as const};
+  const input={content:"What does the source say?",requestKey:"ma24-case-1-candidate",attachments:[],knowledgeScope:["product" as const]};
+  const statements:Array<{sql:string;params:unknown[]|undefined}>=[];
+  const client={query:vi.fn(async(sql:string,params?:unknown[])=>{
+    statements.push({sql,params});
+    if(sql.includes("insert into assistant_conversation"))return {rows:[{id:"conversation-1"}],rowCount:1};
+    if(sql.includes("insert into agent_run("))return {rows:[{id:"run-1",execution_kind:"main-agent-evaluation",status:"queued"}],rowCount:1};
+    return {rows:[],rowCount:0};
+  })};
+  mock.transaction.mockImplementation(async(_user:string,run:(dbClient:typeof client)=>Promise<unknown>)=>run(client));
+  const result=await enqueueRun(context.userId,input,{model:"model-1",providers:["provider-1"],version:"v1"},
+    {kind:"main-agent-evaluation",spec});
+  expect(result).toMatchObject({execution_kind:"main-agent-evaluation",status:"queued"});
+  const inserted=statements.find(row=>row.sql.includes("insert into agent_run("));
+  expect(inserted?.params?.[6]).toBe("main-agent-evaluation");
+  expect(JSON.parse(inserted?.params?.[7] as string)).toEqual(spec);
+  expect(inserted?.params?.[8]).toBe("queued");
+  await expect(enqueueRun(context.userId,{...input,conversationId:"old-conversation"},
+    {model:"model-1",providers:["provider-1"],version:"v1"},{kind:"main-agent-evaluation",spec}))
+    .rejects.toThrow("Invalid MA24 evaluation task scope or identity");
+});

@@ -50,7 +50,7 @@ export interface AgentRun {
   input: MessageInput; result: { reply: string } | null; model_config: ModelConfig;
   instructions: Array<{ id: string; content: string }>; control: "pause" | "cancel" | null;
   lease_token: string | null;
-  execution_kind?: "main-agent" | "mail"; execution_spec?: unknown;
+  execution_kind?: "main-agent" | "mail" | "main-agent-evaluation"; execution_spec?: unknown;
 }
 export interface ModelToolCall { id: string; type: "function"; function: { name: string; arguments: string } }
 export interface ModelMessage {

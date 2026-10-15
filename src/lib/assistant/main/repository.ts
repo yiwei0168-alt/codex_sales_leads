@@ -4,7 +4,18 @@ import type { AgentRun, ExecutionContext, MessageInput, ModelConfig, RunStatus, 
 import { digest } from "./contracts";
 import { approvalDigest } from "./approvals";
 
-export async function enqueueRun(userId: string, input: MessageInput, model: ModelConfig, serverOptions?: { kind:"mail"; spec:unknown; paused:true }): Promise<AgentRun> {
+type RunServerOptions = { kind:"mail"; spec:unknown; paused:true } | {
+  kind:"main-agent-evaluation";
+  spec:{schema:"ma24-evaluation-run-v1";manifestSha256:string;caseId:string;arm:"baseline"|"candidate"};
+};
+export async function enqueueRun(userId: string, input: MessageInput, model: ModelConfig, serverOptions?: RunServerOptions): Promise<AgentRun> {
+  if(serverOptions?.kind==="main-agent-evaluation"&&(
+    input.conversationId!==undefined||input.attachments?.length!==0||!input.knowledgeScope?.length||
+    serverOptions.spec.schema!=="ma24-evaluation-run-v1"||
+    !["baseline","candidate"].includes(serverOptions.spec.arm)||
+    !/^[0-9a-f]{64}$/.test(serverOptions.spec.manifestSha256)||
+    !serverOptions.spec.caseId.trim()||serverOptions.spec.caseId.length>120))
+    throw new Error("Invalid MA24 evaluation task scope or identity");
   return tenantTransaction(userId, async client => {
     await client.query("select pg_advisory_xact_lock(hashtextextended($1,0))", [`agent-request:${userId}:${input.requestKey}`]);
     const hash = digest(serverOptions?{input,execution:serverOptions}:input);
@@ -27,7 +38,7 @@ export async function enqueueRun(userId: string, input: MessageInput, model: Mod
       if (!asset.rowCount) throw new Error("Attachment unavailable");
     }
     const saved = await client.query<AgentRun>(`insert into agent_run(user_id,conversation_id,request_key,request_hash,input,model_config,execution_kind,execution_spec,status)
-      values($1,$2,$3,$4,$5,$6,$7,$8,$9) returning *`, [userId, conversationId, input.requestKey, hash, JSON.stringify(input), JSON.stringify(model),serverOptions?.kind??"main-agent",serverOptions?JSON.stringify(serverOptions.spec):null,serverOptions?.paused?"paused":"queued"]);
+      values($1,$2,$3,$4,$5,$6,$7,$8,$9) returning *`, [userId, conversationId, input.requestKey, hash, JSON.stringify(input), JSON.stringify(model),serverOptions?.kind??"main-agent",serverOptions?JSON.stringify(serverOptions.spec):null,serverOptions?.kind==="mail"&&serverOptions.paused?"paused":"queued"]);
     const run = saved.rows[0];
     await client.query("insert into assistant_message(user_id,conversation_id,role,intent,content,metadata) values($1,$2,'user','general',$3,$4)", [userId, conversationId, input.content, JSON.stringify({ runId: run.id })]);
     await client.query("insert into agent_run_event(user_id,run_id,kind,payload) values($1,$2,'queued','{}')", [userId, run.id]);

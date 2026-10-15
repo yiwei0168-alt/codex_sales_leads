@@ -1,0 +1,49 @@
+{
+  "schema": "ma24-g16-evaluation-run-isolation-v1",
+  "date": "2026-10-15",
+  "scope": "G15/G16 engineering only; migration verified in a rollback transaction, not deployed",
+  "changes": [
+    "Dedicated main-agent-evaluation execution_kind with manifest/case/arm spec",
+    "Normal main-agent graph and scoped vectorless session still available",
+    "Completed evaluation runs do not enqueue ordinary memory extraction",
+    "Skill shadow capture trigger ignores non-main-agent inserts",
+    "G16 persisted verifier rejects ordinary main-agent tasks and wrong evaluation spec"
+  ],
+  "fileSha256": {
+    "db/migrations/136_ma24_evaluation_run_kind.sql": "e987a4001ebc9e0006ef2662bd7cd5108bd1be2378e440f501eba16eab6cac1d",
+    "src/lib/assistant/main/contracts.ts": "17159633d74865eda9f9dc979bbd82a5e7f43076e2888e5a96f51fb08c165b92",
+    "src/lib/assistant/main/repository.ts": "6d9a4a178a88831dbc39165bdd02a6784a07c682bfa0e45856b5744467760adb",
+    "src/lib/assistant/main/memory-extraction-queue.test.ts": "2291aa4a809bfd45a773211cf54b0bd7f1ad88ec1799f24c2d4c23dd2bb691ca",
+    "src/lib/knowledge/vectorless-session.ts": "9aee07dd5723aa422b11d3941bcce88274a8eb86a565d3b9fbd78122463b5b12",
+    "src/lib/knowledge/evaluation/ma24-persisted-run-binding.ts": "91979cdba7ce3308b7d1404aedef8be37f4ebba132f57a5ea339b372d3ce6a21",
+    "src/lib/knowledge/evaluation/ma24-persisted-run-binding.test.ts": "22a331bcfe90ac8bb1269a5ee97019c64eb69ec091395a400032b7f96d9e9a35",
+    "scripts/verify-ma24-g15-runtime-binding.ts": "6d0d7d0fdcfec7fc6c0ab2da0138565e3562f3b6e588f3b10cd93c3ec895aef4"
+  },
+  "localDatabaseRollbackCheck": {
+    "migrationApplies": true,
+    "evaluationRunInsert": true,
+    "completedTransition": true,
+    "skillShadowJobs": 0,
+    "transactionRolledBack": true
+  },
+  "checks": {
+    "focusedVitest": "12 passed across 2 files",
+    "typescript": "passed",
+    "focusedEslint": "passed",
+    "g15ReadOnlyRuntimeBinding": "matched against v3 preview; readyForModelCalls=false"
+  },
+  "g15PreviewV3Sha256": "aee5684eea27e71975bbc09413391a6a23cb19804f8ced98ac2753f7063c5fa5",
+  "migrationAppliedToProductDatabase": false,
+  "actualEvaluationRunnerConnected": false,
+  "realDualArmRuns": 0,
+  "independentGoldApproved": false,
+  "providerCalls": 0,
+  "g17ToG20Advanced": false,
+  "remaining": [
+    "Freeze independent source set and Gold",
+    "Dedicated evaluation account/data snapshot and actual runner wiring",
+    "Loaded build and UTC prompt/source closure identity",
+    "BGE health and provider tariffs, reservations and bounded authorization",
+    "Real dual-arm answers, source receipts and human verdicts"
+  ]
+}

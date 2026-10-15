@@ -8,7 +8,7 @@ import { assertMa24CitationEvidence, type Ma24EvidenceCall } from "./ma24-citati
 
 type PersistedRun = {
   id: string; user_id: string; status: string; execution_kind: string;
-  input: unknown; model_config: unknown; result: unknown;
+  input: unknown; execution_spec: unknown; model_config: unknown; result: unknown;
 };
 type PersistedModelCall = {
   id: string; user_id: string; run_id: string; tool_id: string;
@@ -49,6 +49,7 @@ export function assertMa24PersistedRunBinding(input: {
 }) {
   const { case: frozen, query, run, task, modelCalls, evidenceCalls } = input;
   const taskInput = task?.input as Record<string, unknown> | undefined;
+  const taskSpec = task?.execution_spec as Record<string, unknown> | undefined;
   const modelConfig = task?.model_config as Record<string, unknown> | undefined;
   const result = task?.result as Record<string, unknown> | undefined;
   if (ma24CaseQuerySha256(query) !== frozen.caseSha256 || run.caseId !== frozen.caseId ||
@@ -56,10 +57,13 @@ export function assertMa24PersistedRunBinding(input: {
     stableJson(run.knowledgeScope) !== stableJson(frozen.knowledgeScope))
     throw new Error(`MA24 frozen case drift ${run.caseId}:${run.arm}`);
   if (!task || task.id !== run.runId || task.user_id !== frozen.userId ||
-    task.execution_kind !== "main-agent" || taskInput?.content !== query ||
+    task.execution_kind !== "main-agent-evaluation" ||
+    taskSpec?.schema !== "ma24-evaluation-run-v1" ||
+    taskSpec.manifestSha256 !== run.manifestSha256 || taskSpec.caseId !== run.caseId ||
+    taskSpec.arm !== run.arm || Object.keys(taskSpec).sort().join(",") !== "arm,caseId,manifestSha256,schema" ||
+    taskInput?.content !== query ||
     stableJson(taskInput.knowledgeScope) !== stableJson(frozen.knowledgeScope) ||
-    (taskInput.attachments !== undefined &&
-      (!Array.isArray(taskInput.attachments) || taskInput.attachments.length !== 0)) ||
+    !Array.isArray(taskInput.attachments) || taskInput.attachments.length !== 0 ||
     taskInput.conversationId !== undefined ||
     modelConfig?.model !== run.modelId ||
     (run.status === "completed" ? task.status !== "completed" || result?.reply !== run.answer :
@@ -115,7 +119,7 @@ export function assertMa24PersistedRunBinding(input: {
 export async function verifyMa24PersistedRunBinding(frozen: Ma24Case, query: string, run: Ma24Run) {
   return tenantTransaction(frozen.userId, async client => {
     const task = (await client.query<PersistedRun>(
-      `select id,user_id,status,execution_kind,input,model_config,result
+      `select id,user_id,status,execution_kind,execution_spec,input,model_config,result
        from agent_run where id=$1 and user_id=$2`, [run.runId, frozen.userId])).rows[0];
     const modelCalls = (await client.query<PersistedModelCall>(
       `select id,user_id,run_id,tool_id,effect,status,input,input_hash,output from agent_tool_call

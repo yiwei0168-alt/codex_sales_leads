@@ -44,7 +44,7 @@ export async function startVectorlessSession(userId:string,question:string,agent
   if(!question.trim()||question.length>4000)throw new Error("Question required within 4000 characters");
   if(agentRunId)return tenantTransaction(userId,async client=>{
     await client.query("select pg_advisory_xact_lock(hashtextextended($1,0))",[`${userId}:${agentRunId}:vectorless`]);
-    const run=await client.query("select id from agent_run where user_id=$1 and id=$2 and execution_kind='main-agent'",[userId,agentRunId]);
+    const run=await client.query("select id from agent_run where user_id=$1 and id=$2 and execution_kind in('main-agent','main-agent-evaluation')",[userId,agentRunId]);
     if(!run.rowCount)throw new Error("Owned main Agent run required");
     const existing=await client.query<{id:string;question:string}>(
       "select id,question from knowledge_retrieval_session where owner_id=$1 and agent_run_id=$2",[userId,agentRunId]);

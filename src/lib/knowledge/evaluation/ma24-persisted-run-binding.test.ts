@@ -17,8 +17,10 @@ const run: Ma24Run = { caseId: frozen.caseId, arm: "candidate", runId,
   knowledgeScope: frozen.knowledgeScope, status: "completed", answer: "Document answer",
   citations: [], receiptIds: ["33333333-3333-4333-8333-333333333333"],
   modelCallIds: ["33333333-3333-4333-8333-333333333333"], modelId: "model-1" };
-const task = { id: runId, user_id: userId, status: "completed", execution_kind: "main-agent",
-  input: { content: query, knowledgeScope: frozen.knowledgeScope },
+const task = { id: runId, user_id: userId, status: "completed", execution_kind: "main-agent-evaluation",
+  execution_spec: { schema: "ma24-evaluation-run-v1", manifestSha256: run.manifestSha256,
+    caseId: run.caseId, arm: run.arm },
+  input: { content: query, knowledgeScope: frozen.knowledgeScope, attachments: [] },
   model_config: { model: "model-1" }, result: { reply: "Document answer" } };
 const modelInput = { messages: [
   { role: "system" as const, content: "Search and cite only these selected knowledge collections: industry, product." },
@@ -41,6 +43,13 @@ describe("MA24 persisted run binding", () => {
     expect(verify().wireManifests).toEqual([{ callId: modelCalls[0].id,
       requestHash: requestManifest.requestHash, provider: "fixture", generationId: "generation-1" }]);
     expect(() => verify({ task: { ...task, user_id: "44444444-4444-4444-8444-444444444444" } }))
+      .toThrow("persisted task mismatch");
+    expect(() => verify({ task: { ...task, execution_kind: "main-agent" } }))
+      .toThrow("persisted task mismatch");
+    expect(() => verify({ task: { ...task, execution_spec: { ...task.execution_spec, arm: "baseline" } } }))
+      .toThrow("persisted task mismatch");
+    expect(() => verify({ task: { ...task, execution_spec: { ...task.execution_spec,
+      manifestSha256: "b".repeat(64) } } }))
       .toThrow("persisted task mismatch");
     expect(() => verify({ task: { ...task, input: { ...task.input, knowledgeScope: ["industry"] } } }))
       .toThrow("persisted task mismatch");

@@ -2,6 +2,8 @@
 
 # 产品主 Agent 与开放式工具架构
 
+2026-10-15 MA24 G15/G16：独立测评任务采用 `main-agent-evaluation` 执行类型，保存清单哈希、题目 ID 和 baseline/candidate 路径；主 Agent 图及限定资料检索仍运行。普通任务完成时的记忆抽取仅处理 `main-agent`，现有 Skill 影子触发器也只采集该类型；G16 读取持久任务时反查专用类型和执行标识。[工程收据](evidence/ma24-g16-evaluation-run-isolation-2026-10-15.json)。数据库迁移仅在回滚事务核验，实际运行器、付费准入及质量验收未完成；G17–G20 暂停。
+
 2026-10-15 MA24 G15：运行前绑定拒绝缺少源码闭包字段的旧预览。默认入口改读 v2 预览并对 280 个本地源码文件、两路工具/Prompt 配置及 UTC 日期做只读匹配；匹配结果明确 `readyForModelCalls=false`。独立来源/Gold、真实运行构建、资料权限与费用授权齐备之前不进入双路模型调用。[复核收据](evidence/ma24-g15-default-preview-drift-review-2026-10-15.json)。G17–G20 暂停。
 
 2026-10-15 MA24 G14：GOV.UK 同一暴露单元三题的私有 v2 草稿已补数值格与定义摘录，来源位置和产品抽取文本逐项吻合；无答案题的交叉组缺失结论只适用于这四张表。[逐题收据](evidence/ma24-g14-govuk-per-case-source-review-2026-10-15.json)。审核授权已取得，Gold 冻结、G15 运行准入及 G16 双路答案/引用仍未通过；G17–G20 暂停。
