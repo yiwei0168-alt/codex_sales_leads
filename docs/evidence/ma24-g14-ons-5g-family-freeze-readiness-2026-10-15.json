@@ -1,0 +1,56 @@
+{
+  "schema": "ma24-g14-ons-5g-family-freeze-readiness-v1",
+  "date": "2026-10-15",
+  "scope": "ONS January 2026 outdoor 5G coverage workbook; one current Highland denominator candidate; G17-G20 deferred",
+  "candidateId": "ons-5g-2026-highland-outdoor-denominator",
+  "decision": "Source, answer boundary, private product coordinates and bounded independence screens are ready for per-question content review. Do not freeze Gold before that review is recorded.",
+  "original": {
+    "publisherPage": "https://www.ons.gov.uk/explore-local-statistics/indicators/5g-coverage",
+    "workbookUrl": "https://www.ons.gov.uk/explore-local-statistics/api/v1/data/5g-coverage.xlsx?time=all",
+    "privatePath": "tmp/ma24-independent-quarantine/ons-5g-coverage-2026.xlsx",
+    "sha256Rechecked": "b488e723e475ce022fdf3d35bc1ead4611e58dda9cbf96371a6e7485834a6238",
+    "cellsRechecked": {
+      "Notes!B4": "Percentage of geographic areas with 5G signal outdoors from at least 1 operator; -110 dBm threshold; January 2026",
+      "1!A5:C5": "Area code; Area name; 2026-01-01 (%)",
+      "1!A370:C370": "S12000017; Highland; 35.2"
+    },
+    "fourSheetIndoorHouseholdPremisesPopulationTermHits": 0,
+    "interpretationLimit": "The workbook does not state a Highland household indoor 5G coverage rate. This does not assert that no such measure exists elsewhere."
+  },
+  "sourceUse": {
+    "onsPage": "Offers the XLSX, attributes underlying data to Ofcom and states OGL v3.0 except where otherwise stated.",
+    "ofcomPage": "https://www.ofcom.org.uk/about-ofcom/our-website/copyright",
+    "boundary": "Private attributed factual question and short answer only; do not redistribute the whole workbook, use either organisation's logo or imply equivalence to other Ofcom estimates."
+  },
+  "boundedIndependence": {
+    "firstLocalFamilyMatchUtc": "2026-10-14T15:33:47.347Z",
+    "firstGitRegistration": "0d7d9c4c at 2026-10-14T15:36:42Z",
+    "preRegistrationSessionMatches": 13,
+    "preRegistrationInterpretation": "All 13 local records occur in the three-minute source discovery/preparation window; no earlier target-family match was found in 101 retained rollout files and 161280 records.",
+    "rolloutAuditScriptSha256": "53f323a2dca0097201d7467b65c25a199814fd8b24de07dd960243862",
+    "oldQuestionRows": 350,
+    "oldUniqueQuestions": 300,
+    "closestOldQuestions": "2.5G Ethernet versus 5G cellular device questions, not Highland geographic-area coverage or the missing household-indoor value",
+    "currentPublicationDraftPool": 24,
+    "currentPoolClosest": [
+      "fcc-706-2026-school-entity-vs-student-denominator",
+      "fcc-2026-fixed-service-option-scope",
+      "ieee-80211-2025-amp-bands-modes",
+      "nist-tn2363-delay-profile-and-5g-tsn-validation"
+    ],
+    "currentPoolAnswerOverlap": "No other current publication draft asks for the same Highland value, outdoor-area definition or absent indoor-household metric. The earlier Highland-versus-Scotland draft shares the workbook and target value and remains superseded within this one source unit.",
+    "productSpecificImplementation": "No target name, area code, value or workbook identifier appears in non-test src files; later source-specific test fixture text is engineering acceptance evidence and must not be presented to the answer model.",
+    "limit": "Bounded local audit cannot exclude unrecorded prompts, binary derivatives or provider pretraining. Any later answer/retrieval tuning using this source retires the entire ONS unit from independent scoring."
+  },
+  "existingProductReadback": "docs/evidence/ma24-g14-ons-5g-notes-and-private-gold-draft-2026-10-15.json",
+  "privateDraftPath": "tmp/ma24-independent-quarantine/ons-5g-highland-denominator-gold-draft-v1.json",
+  "pending": [
+    "Record the requested per-question content and mixed-answer review reply.",
+    "Only then decide Gold eligibility, seal source/Gold snapshots and validate them against the G16 admission contract.",
+    "Complete the full G14 source-set and hard-case coverage, G15 paid admission and G16 real dual-arm answer/citation review."
+  ],
+  "cumulativeApprovedGoldCasesUnchanged": 4,
+  "cumulativeApprovedConnectedExposureUnitsUnchanged": 2,
+  "realDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}
