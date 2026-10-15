@@ -69,7 +69,7 @@ export async function executeMa24EvaluationRun(input: EvaluationInput) {
     const config = { configurable: { thread_id: `ma24-evaluation:${context.userId}:${context.runId}`,
       checkpoint_ns: '' }, recursionLimit: 400 };
     const snapshot = await graph.getState(config);
-    if ((snapshot.values as Partial<typeof MainAgentState.State>).messages?.length)
+    if (snapshot.createdAt)
       throw new Error('MA24 evaluation checkpoint requires manual reconciliation before resume');
     const initial: Partial<typeof MainAgentState.State> = {
       messages: initialTaskMessages(context, run.input, run.model_config, []),

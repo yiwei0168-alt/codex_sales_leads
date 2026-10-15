@@ -110,7 +110,23 @@ it('passes only the question into the shared graph and settles a synthetic compl
 it('does not replay a checkpoint with existing messages', async () => {
   const invoke = vi.fn();
   mocks.buildGraph.mockReturnValue({
-    getState: async () => ({ values: { messages: [{ role: 'user', content: 'old' }] } }),
+    getState: async () => ({ values: { messages: [{ role: 'user', content: 'old' }] },
+      createdAt: '2026-10-15T00:00:00.000Z' }),
+    invoke,
+  });
+  await expect(executeMa24EvaluationRun(input))
+    .rejects.toThrow('MA24 evaluation checkpoint requires manual reconciliation');
+  expect(invoke).not.toHaveBeenCalled();
+  expect(mocks.model).not.toHaveBeenCalled();
+  expect(mocks.finish).toHaveBeenCalledWith(expect.any(Object), 'failed',
+    'MA24 evaluation execution failed');
+});
+
+it('does not replay a checkpoint whose message list is empty', async () => {
+  const invoke = vi.fn();
+  mocks.buildGraph.mockReturnValue({
+    getState: async () => ({ values: { messages: [], pending: [{ callId: 'prior-tool' }] },
+      createdAt: '2026-10-15T00:00:00.000Z' }),
     invoke,
   });
   await expect(executeMa24EvaluationRun(input))

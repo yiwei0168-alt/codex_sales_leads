@@ -1,0 +1,25 @@
+{
+  "schema": "ma24-g16-empty-checkpoint-replay-guard-v1",
+  "date": "2026-10-15",
+  "change": "The dedicated evaluation runner rejects any persisted LangGraph checkpoint before graph invocation, including a checkpoint with no messages but pending state.",
+  "basis": "The installed LangGraph getState implementation returns createdAt only when it loaded a saved checkpoint; a new thread returns values {}, next [], tasks [] without createdAt.",
+  "verification": {
+    "focusedTestsPassed": 5,
+    "emptyMessageCheckpointRejected": true,
+    "graphInvokeAfterRejectedCheckpoint": false,
+    "modelCallsAfterRejectedCheckpoint": 0,
+    "failedSettlementDependencyCalled": true,
+    "typecheckPassed": true,
+    "focusedEslintPassed": true,
+    "currentSourceClosureFileCount": 288,
+    "currentRunnerSha256": "f37c8321319d1b6cc3eafcf95bce605c3717fbd9f999958e44416064fdd71d3d",
+    "readyForPaidEvaluation": false
+  },
+  "limits": [
+    "The checkpoint test uses a scripted graph and settlement dependency; it does not prove PostgreSQL recovery or a real provider call.",
+    "A checkpoint that exists requires manual reconciliation. Automatic replay and task retry remain disabled for this case.",
+    "Independent Gold, G15 paid admission and real dual-arm reviewer verdicts remain open; G17-G20 remain paused."
+  ],
+  "approvedGold": 0,
+  "realDualArmRuns": 0
+}
