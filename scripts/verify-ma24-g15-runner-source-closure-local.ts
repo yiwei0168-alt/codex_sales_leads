@@ -10,7 +10,8 @@ const stdout = execFileSync(process.execPath,
   { cwd: process.cwd(), encoding: 'utf8', maxBuffer: 4_194_304 });
 const preview = JSON.parse(stdout) as Ma24G15Preview;
 const runner = 'src/lib/knowledge/evaluation/ma24-evaluation-runner.ts';
-const required = [runner, 'src/lib/knowledge/evaluation/ma24-evaluation-claim.ts',
+const required = [runner, 'scripts/run-ma24-g16-task.ts',
+  'src/lib/knowledge/evaluation/ma24-evaluation-claim.ts',
   'next.config.ts', 'scripts/build-next.mjs', 'scripts/package-ma24-next-standalone.py',
   'src/lib/knowledge/evaluation/ma24-evaluation-task-binding.ts',
   'src/lib/knowledge/evaluation/ma24-persisted-run-binding.ts',

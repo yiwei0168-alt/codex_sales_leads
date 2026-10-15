@@ -72,6 +72,7 @@ const sourceFiles=[
  'src/lib/knowledge/query-normalizer.ts',
  'src/lib/knowledge/evaluation/ma24-evaluation-claim.ts',
  'src/lib/knowledge/evaluation/ma24-evaluation-runner.ts',
+ 'scripts/run-ma24-g16-task.ts',
  'src/lib/knowledge/evaluation/ma24-evaluation-task-binding.ts',
  'src/lib/knowledge/evaluation/ma24-independent-comparison.ts',
  'src/lib/knowledge/evaluation/ma24-g15-runtime-binding.ts',
@@ -90,6 +91,7 @@ const sourceHashes=await ma24LocalSourceClosure(process.cwd(),sourceFiles);
 for(const required of [
  'next.config.ts','scripts/build-next.mjs','scripts/package-ma24-next-standalone.py',
  'src/lib/knowledge/evaluation/ma24-evaluation-runner.ts',
+ 'scripts/run-ma24-g16-task.ts',
  'src/lib/knowledge/evaluation/ma24-evaluation-claim.ts',
  'src/lib/knowledge/evaluation/ma24-evaluation-task-binding.ts',
  'src/lib/assistant/main/graph.ts',

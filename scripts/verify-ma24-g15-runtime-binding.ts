@@ -4,7 +4,7 @@ import { execFileSync } from "node:child_process";
 import { readFile } from "node:fs/promises";
 import { assertMa24G15RuntimeBinding, type Ma24G15Preview } from "../src/lib/knowledge/evaluation/ma24-g15-runtime-binding";
 
-const frozenPath = process.argv[2] ?? "docs/evidence/ma24-g15-config-preview-2026-10-16-v23.json";
+const frozenPath = process.argv[2] ?? "docs/evidence/ma24-g15-config-preview-2026-10-16-v24.json";
 const frozenBytes = await readFile(frozenPath);
 const frozen = JSON.parse(frozenBytes.toString("utf8")) as Ma24G15Preview;
 const output = execFileSync(process.execPath,

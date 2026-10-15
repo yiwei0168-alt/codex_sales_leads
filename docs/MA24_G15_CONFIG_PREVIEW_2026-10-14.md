@@ -1,5 +1,7 @@
 # MA24 G15 双路径配置与调用边界草案（2026-10-14）
 
+2026-10-16 G16 的显式逐题命令已纳入 [v24 只读预览](evidence/ma24-g15-config-preview-2026-10-16-v24.json) 的 301 文件源码闭包；参数和私有冻结快照在调用专用 runner 前核对。当前仍是只读模拟预览，不准付费调用。[工程收据](evidence/ma24-g16-explicit-task-cli-2026-10-16.json)。
+
 2026-10-16 构建输入冻结补强：G15 源码闭包现明确包含 `next.config.ts`、生产构建启动脚本及 standalone 打包脚本，避免改动发布包构造方式而仍沿用旧配置指纹。当前 300 个本地文件的[v22 只读预览](evidence/ma24-g15-config-preview-2026-10-16-v22.json)与加载源码匹配；旧 v21 因 `sourceHashes` 漂移被拒，篡改构建配置哈希也被拒。[工程收据](evidence/ma24-g15-build-input-closure-2026-10-16.json)。这只绑定源码输入，尚未证明正式进程加载的构建，也未开放付费模型调用。
 
 2026-10-16 运行日期门槛核对：专用运行器已在认领前及执行中的模型/工具边界重复核验当前 UTC 提示词日期。G15 预览现在将 `runPromptDateGateImplemented` 记为 `true`，运行绑定器要求冻结值与当前值一致并报告缺失门槛；日期变化仍直接拒绝。4 组 35 项定向测试、类型与 lint 通过，[v21 只读预览](evidence/ma24-g15-config-preview-2026-10-16-v21.json)匹配当前源码且模型准入仍为 `false`。[核对收据](evidence/ma24-g15-run-prompt-date-gate-2026-10-16.json)。

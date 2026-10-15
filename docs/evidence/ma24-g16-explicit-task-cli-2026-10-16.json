@@ -1,0 +1,26 @@
+{
+  "schema": "ma24-g16-explicit-task-cli-v1",
+  "date": "2026-10-16",
+  "entry": "scripts/run-ma24-g16-task.ts",
+  "scope": "One existing queued evaluation task, one case and one arm per explicit invocation",
+  "inputBoundary": "Five frozen JSON inputs must resolve inside tmp/ma24-independent-evaluation; the entry checks snapshot bytes, question text, Gold structure, corpus snapshot, case identity and arm before calling the dedicated runner.",
+  "negativeChecks": [
+    "Missing arguments rejected before file or database access",
+    "A JSON file outside the private evaluation directory rejected",
+    "Private files with a mismatched frozen Gold hash rejected before task claim"
+  ],
+  "sourceClosure": {
+    "previewPath": "docs/evidence/ma24-g15-config-preview-2026-10-16-v24.json",
+    "previewSha256": "42b962a0eb20b01e9c0e563edcc491fc4f0a72d9db8cbe97a32b9a3fc7080052",
+    "files": 301,
+    "entrySha256": "686ef5e84ce22c0504f40e14d1eba260c3882bbf9f3b3f08e9509d0f3606aecc",
+    "oldV23Rejected": "sourceHashes drift"
+  },
+  "typecheck": "passed",
+  "changedFileLint": "passed",
+  "currentModelAdmission": false,
+  "providerCalls": 0,
+  "realDualArmRuns": 0,
+  "limitation": "This does not create queued tasks, authorize spend, freeze the full Gold set, run a real model, collect a dual-arm pair, or prove answer quality.",
+  "g17ToG20Advanced": false
+}
