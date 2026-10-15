@@ -5,7 +5,8 @@ vi.mock("../../rag/db", () => ({ tenantTransaction: mocks.tenantTransaction }));
 import { assertMa24CorpusSnapshotBytes, assertMa24CorpusSnapshotShape,
   assertMa24PermissionGoldControl, assertMa24RouteGoldCorpusAccess,
   verifyMa24LiveCorpusAccount,
-  verifyMa24LivePermissionControl, verifyMa24LiveRouteGoldEvidence,
+  verifyMa24LivePermissionControl, verifyMa24LivePermissionGoldEvidence,
+  verifyMa24LiveRouteGoldEvidence,
   type Ma24CorpusSnapshot } from "./ma24-corpus-snapshot";
 import type { Ma24FrozenManifest, Ma24GoldSnapshot } from "./ma24-independent-comparison";
 
@@ -106,12 +107,20 @@ describe("MA24 frozen corpus and tenant ACL", () => {
   });
   it("rechecks the owner's private source during the denied account's run", async () => {
     let ownerDocuments = [document];
+    let ownerEvidence = [{ blockId: "synthetic-block", content: "Source",
+      sourceLocation: {} }];
     mocks.tenantTransaction.mockImplementation(async (userId: string,
       callback: (client: { query: (sql: string) => Promise<{ rows: unknown[] }> }) => Promise<unknown>) =>
-      callback({ query: async sql => ({ rows: sql.includes("from knowledge_document d") &&
+      callback({ query: async sql => ({ rows: sql.includes("join knowledge_tree_node n")
+        ? (userId === owner ? ownerEvidence : []) : sql.includes("from knowledge_document d") &&
         userId === owner ? ownerDocuments : [] }) }));
     await expect(verifyMa24LivePermissionControl(manifest, snapshot, "outsider"))
       .resolves.toBeUndefined();
+    await expect(verifyMa24LivePermissionGoldEvidence(manifest, snapshot, gold, "outsider"))
+      .resolves.toBeUndefined();
+    ownerEvidence = [{ ...ownerEvidence[0], content: "No evidence" }];
+    await expect(verifyMa24LivePermissionGoldEvidence(manifest, snapshot, gold, "outsider"))
+      .rejects.toThrow(/evidence coordinate unavailable/);
     ownerDocuments = [];
     await expect(verifyMa24LivePermissionControl(manifest, snapshot, "outsider"))
       .rejects.toThrow(/corpus or ACL differs/);

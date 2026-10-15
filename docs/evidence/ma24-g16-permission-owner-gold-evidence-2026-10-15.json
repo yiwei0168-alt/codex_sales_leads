@@ -1,0 +1,31 @@
+{
+  "schema": "ma24-g16-permission-owner-gold-evidence-v1",
+  "date": "2026-10-15",
+  "change": "A denied-access evaluation case now verifies its paired owner's route Gold evidence coordinate under the owner's RLS view before claim and at every leased runner boundary.",
+  "positiveNegativeControl": "The denied account remains unable to see the private target; the owner account must still see the target asset and the exact Gold excerpt in its current ready evidence tree.",
+  "focusedChecks": {
+    "vitestFilesPassed": 2,
+    "vitestCasesPassed": 17,
+    "typescript": "passed",
+    "eslint": "passed",
+    "isolatedDatabase": [
+      "owner private source visible and denied account source hidden",
+      "valid paired owner Gold evidence passes",
+      "owner evidence content drift rejects the denied case's positive control",
+      "shared ACL drift and missing owner target still reject",
+      "synthetic users, document, asset, tree and evidence nodes cleaned with zero residue"
+    ]
+  },
+  "g15CurrentPreview": "docs/evidence/ma24-g15-config-preview-2026-10-15-v9.json",
+  "g15CurrentPreviewSha256": "ba513065779defc4cbed1d5232456be24749b9e9b0d5ddb4cc7e7f74ebdbd529",
+  "g15SourceClosureFiles": 289,
+  "modelCalls": 0,
+  "providerCalls": 0,
+  "realDualArmRuns": 0,
+  "qualityAccepted": false,
+  "limits": [
+    "The database case is a two-account synthetic fixture; actual permission Gold accounts and sources remain unfrozen.",
+    "This is source control validation, not a real model refusal or user-visible permission quality verdict."
+  ],
+  "g17ToG20Advanced": false
+}

@@ -9,6 +9,7 @@ import { assertMa24FrozenSnapshotBytes, assertMa24GoldMatchesManifest,
 import { assertMa24CorpusSnapshotBytes, assertMa24PermissionGoldControl,
   assertMa24RouteGoldCorpusAccess,
   verifyMa24LiveCorpusAccount, verifyMa24LivePermissionControl,
+  verifyMa24LivePermissionGoldEvidence,
   verifyMa24LiveRouteGoldEvidence } from "./ma24-corpus-snapshot";
 
 type EvaluationTask = Pick<AgentRun, "id" | "user_id" | "status" | "input" |
@@ -117,6 +118,7 @@ export async function verifyMa24EvaluationTaskBinding(input: Omit<
   await verifyMa24LiveCorpusAccount(corpus, bound.userId, bound.knowledgeScope);
   await verifyMa24LivePermissionControl(input.manifest, corpus, bound.caseId);
   const gold = JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(input.goldBytes)) as Ma24GoldSnapshot;
+  await verifyMa24LivePermissionGoldEvidence(input.manifest, corpus, gold, bound.caseId);
   await verifyMa24LiveRouteGoldEvidence(input.manifest, gold, bound.caseId);
   return bound;
 }

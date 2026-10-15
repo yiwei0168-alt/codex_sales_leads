@@ -172,6 +172,13 @@ export async function verifyMa24LiveRouteGoldEvidence(manifest: Ma24FrozenManife
   });
 }
 
+/** A denied-access case is valid only while its paired owner answer key still has live evidence. */
+export async function verifyMa24LivePermissionGoldEvidence(manifest: Ma24FrozenManifest,
+  snapshot: Ma24CorpusSnapshot, gold: Ma24GoldSnapshot, caseId: string) {
+  const proof = snapshot.permissionProofs.find(item => item.denyCaseId === caseId);
+  if (proof) await verifyMa24LiveRouteGoldEvidence(manifest, gold, proof.ownerCaseId);
+}
+
 /** Keep the positive control's private source present during a denied-account run. */
 export async function verifyMa24LivePermissionControl(manifest: Ma24FrozenManifest,
   snapshot: Ma24CorpusSnapshot, caseId: string) {

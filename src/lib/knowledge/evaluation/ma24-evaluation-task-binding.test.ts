@@ -217,6 +217,9 @@ describe("MA24 evaluation task admission binding", () => {
     }) => Promise<unknown>) => callback({ query: async sql => {
       if (sql.includes("from agent_run where")) return { rows: [deniedTask] };
       if (sql.includes("from assistant_conversation")) return { rows: [conversation] };
+      if (sql.includes("join knowledge_tree_node n")) return { rows: tenant === ownerId
+        ? [{ blockId: "synthetic-block", content: "Synthetic evidence", sourceLocation: {} }]
+        : [] };
       if (sql.includes("from knowledge_document d"))
         return { rows: tenant === ownerId ? ownerDocuments : [] };
       return { rows: [] };

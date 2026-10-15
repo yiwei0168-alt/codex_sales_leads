@@ -1,6 +1,6 @@
 /** Two-account private-source proof in an isolated local database; no model calls. */
 import assert from "node:assert/strict";
-import { randomUUID } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import nextEnv from "@next/env";
 import { Pool } from "pg";
@@ -25,13 +25,14 @@ const adminUrl = cloneUrl(process.env.DATABASE_MIGRATION_URL);
 process.env.DATABASE_URL = cloneUrl(process.env.DATABASE_URL);
 const { readMa24LiveCorpusAccount, assertMa24CorpusSnapshotShape,
   assertMa24PermissionGoldControl, verifyMa24LiveCorpusAccount,
-  verifyMa24LivePermissionControl } = await import(
+  verifyMa24LivePermissionControl, verifyMa24LivePermissionGoldEvidence } = await import(
   "../src/lib/knowledge/evaluation/ma24-corpus-snapshot");
 const { ma24CaseQuerySha256 } = await import(
   "../src/lib/knowledge/evaluation/ma24-independent-comparison");
 const admin = new Pool({ connectionString: adminUrl });
 const ownerId = randomUUID(), outsiderId = randomUUID();
 const documentId = randomUUID(), assetId = randomUUID(), treeVersionId = randomUUID();
+const unitId = randomUUID(), evidenceId = randomUUID();
 const assetSha256 = "a".repeat(64), question = "Read the private synthetic review code";
 const ownerCaseId = "ma24-permission-owner-fixture";
 const denyCaseId = "ma24-permission-deny-fixture";
@@ -53,6 +54,14 @@ try {
       extractor_version,artifact_sha256,status)
     values($1,$2,$3,$4,'ma24-permission-fixture',$5,'ready')`,
   [treeVersionId, documentId, assetId, assetSha256, "b".repeat(64)]);
+  await admin.query(`insert into knowledge_tree_node(id,version_id,ordinal,node_kind,title,
+      unit_type,unit_index,source_location)
+    values($1,$2,1,'unit','Synthetic page','page',1,'{}')`, [unitId, treeVersionId]);
+  await admin.query(`insert into knowledge_tree_node(id,version_id,parent_id,ordinal,node_kind,
+      title,unit_type,unit_index,source_location,content,content_sha256)
+    values($1,$2,$3,1,'evidence','Synthetic block','page',1,$4,$5,$6)`,
+  [evidenceId, treeVersionId, unitId, JSON.stringify({ blockId: "synthetic-block" }),
+    "Synthetic source", createHash("sha256").update("Synthetic source").digest("hex")]);
   await admin.query("update knowledge_document set current_tree_version_id=$2 where id=$1",
     [documentId, treeVersionId]);
 
@@ -86,6 +95,13 @@ try {
   assert(!snapshot.accounts[1].documents.some(row => row.assetSha256 === assetSha256));
   await verifyMa24LiveCorpusAccount(snapshot, outsiderId, ["industry"]);
   await verifyMa24LivePermissionControl(manifest, snapshot, denyCaseId);
+  await verifyMa24LivePermissionGoldEvidence(manifest, snapshot, gold, denyCaseId);
+  await admin.query("update knowledge_tree_node set content=$2,content_sha256=$3 where id=$1",
+    [evidenceId, "Altered content", createHash("sha256").update("Altered content").digest("hex")]);
+  await assert.rejects(verifyMa24LivePermissionGoldEvidence(manifest, snapshot, gold, denyCaseId),
+    /route Gold evidence coordinate unavailable/);
+  await admin.query("update knowledge_tree_node set content=$2,content_sha256=$3 where id=$1",
+    [evidenceId, "Synthetic source", createHash("sha256").update("Synthetic source").digest("hex")]);
 
   await admin.query("update knowledge_document set visibility='shared' where id=$1", [documentId]);
   await assert.rejects(verifyMa24LiveCorpusAccount(snapshot, outsiderId, ["industry"]),
@@ -101,16 +117,28 @@ try {
 } finally {
   await admin.query("update knowledge_document set current_tree_version_id=null where id=$1",
     [documentId]);
+  await admin.query("delete from knowledge_tree_node where id=$1", [evidenceId]);
+  await admin.query("delete from knowledge_tree_node where id=$1", [unitId]);
   await admin.query("delete from knowledge_tree_version where id=$1", [treeVersionId]);
   await admin.query("delete from knowledge_asset where id=$1", [assetId]);
   await admin.query("delete from knowledge_document where id=$1", [documentId]);
   for (const userId of [ownerId, outsiderId]) await admin.query(
     "delete from app_user where id=$1 and display_name='MA24 permission control fixture'",
     [userId]);
+  const residual = (await admin.query<{ users: string; documents: string; assets: string;
+    trees: string; nodes: string }>(`
+      select (select count(*)::text from app_user where id=any($1::uuid[])) as users,
+        (select count(*)::text from knowledge_document where id=$2) as documents,
+        (select count(*)::text from knowledge_asset where id=$3) as assets,
+        (select count(*)::text from knowledge_tree_version where id=$4) as trees,
+        (select count(*)::text from knowledge_tree_node where id=any($5::uuid[])) as nodes`,
+  [[ownerId, outsiderId], documentId, assetId, treeVersionId, [unitId, evidenceId]])).rows[0];
+  assert.deepEqual(residual, { users: "0", documents: "0", assets: "0", trees: "0", nodes: "0" });
   await admin.end();
 }
 console.log(JSON.stringify({ schema: "ma24-g16-permission-control-clone-v1",
   checks: ["owner-private-target-present", "outsider-target-hidden",
     "identical-question-positive-negative-pair", "owner-Gold-cites-target",
+    "owner-Gold-evidence-drift-rejected-during-denial",
     "shared-ACL-drift-rejected", "missing-owner-target-rejected",
     "wrong-owner-Gold-source-rejected", "synthetic-rows-cleaned"], providerCalls: 0 }));
