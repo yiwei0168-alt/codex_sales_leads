@@ -1,0 +1,35 @@
+{
+  "schema": "ma24-g14-itu-gcr2025-whole-pdf-visual-triage-v1",
+  "date": "2026-10-15",
+  "stage": "Original-bound page overview and target-page review; no product visual decision or Gold approval",
+  "sourceSha256": "4489081fe8709ea1bcea2b724ff5a92c3979195432a8da73c20a8c8e0570ccb8",
+  "sourcePath": "tmp/ma24-independent-quarantine/itu-global-connectivity-report-2025.pdf",
+  "sourcePages": 129,
+  "extractionArtifactSha256": "788600e3fc3a1f8bd0a1d658ab608686b1c4358cfe76672500f3ae652303ffd6",
+  "visualCandidatePackage": "tmp/ma24-independent-quarantine/itu-gcr2025-visual-review/review.json",
+  "visualCandidatePackageSha256": "a7e4c0784ae51a2195b77623a67b1579bcef70375ce837b6e7c1d20b8580efac",
+  "pendingPageBlocks": 128,
+  "renderedPendingPageImages": 128,
+  "externalCallsDuringRender": 0,
+  "overviewMethod": "Rendered every pending page from the source at up to 1.5x with the existing local PDF review script, arranged the 128 renders into sixteen 2-column/4-row contact sheets, and visually scanned all sixteen sheets. Contact thumbnails are triage only and do not resolve small chart labels or complete the per-page product review.",
+  "targetOriginalDetailReview": {
+    "physicalPage70": {
+      "printedPage": 59,
+      "renderSha256": "a13ffb35250ff672081934a26fb8793524f605cad7220ab1934910afc0caed79",
+      "finding": "Right column explicitly reports 204 cable cuts globally in 2024. Figure 3.6 above is a substantive stacked bar chart of used-bandwidth shares by route and provider category; it cannot be marked decoration for whole-document registration."
+    },
+    "physicalPage71": {
+      "printedPage": 60,
+      "renderSha256": "ba67f54b10190e5b50a49c1bb82d846eeed4edae44dd682c9f4371b35533eb51",
+      "finding": "Left column lists four repair-delay factors: permits in EEZs/territorial waters, customs clearance, cabotage restrictions, and limited regional repair capacity. No separate chart or map is visible on this page."
+    }
+  },
+  "wholeDocumentTriage": "The report contains many substantive figures, tables and maps beyond the two target pages. Their small legends, quantitative labels and geographic classifications have not been individually checked against product extraction; accepting all pending pages as decoration or copying raw OCR into evidence would be unsound.",
+  "nextReviewBoundary": "Perform source-bound decisions for all 128 pending visual blocks, inspecting full-size chart/table/map pages and avoiding numerical claims unsupported by the original. Then verify private registration and exact target citations in an isolated product clone before considering family independence and Gold.",
+  "productReviewDecisionsSaved": 0,
+  "privateRegistrationPassed": false,
+  "goldApproved": false,
+  "modelCalls": 0,
+  "productionWrites": 0,
+  "g17ToG20Advanced": false
+}
