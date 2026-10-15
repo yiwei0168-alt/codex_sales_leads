@@ -1,0 +1,37 @@
+{
+  "schema": "ma24-g14-xlsx-source-candidate-v1",
+  "date": "2026-10-15",
+  "publisher": "UK Department for Digital, Culture, Media & Sport",
+  "publicationTitle": "Broadband Performance Indicator - March 2018",
+  "publicationDate": "2018-05-24",
+  "publisherPage": "https://www.gov.uk/government/statistics/broadband-performance-indicator-march-2018",
+  "originalXlsxUrl": "https://assets.publishing.service.gov.uk/media/5b053e8ee5274a2b17b217fd/Broadband_Performance_Indicator_March_2018_spreadsheet_version.xlsx",
+  "originalSha256": "7d178716b667ebe66537154b0bb96f87348ccb782368b2f43920b45db9f7f5c1",
+  "originalBytes": 12802,
+  "quarantinePath": "tmp/ma24-independent-quarantine/bpi-march-2018.xlsx",
+  "workbook": {
+    "sheets": [{ "name": "Sheet1", "rows": 33, "columns": 5 }],
+    "inspectedCoordinates": {
+      "Sheet1!A26": "March 2018",
+      "Sheet1!B26": 4852808,
+      "Sheet1!C26": 611677118,
+      "Sheet1!D26": 7934
+    },
+    "noteCoordinateSummaries": {
+      "Sheet1!A32": "The table is cumulative because grant payment and service availability occur at different times.",
+      "Sheet1!A33": "Cash basis means payment or budget transfer; the accruals estimate is GBP 637129745 and 7617 premises per GBP million, with delivery ahead of payment."
+    }
+  },
+  "draftQuestion": "In the UK government's March 2018 Broadband Performance Indicator workbook, what are the reported cash-basis and estimated accruals-basis premises covered per GBP million, and what timing difference explains the lower accruals-basis value?",
+  "draftAnswer": "The cash-basis table reports 7934 premises per GBP million. The note estimates 7617 on an accruals basis, where cumulative expenditure is higher because some work was delivered before payment.",
+  "draftSourceCoordinates": ["Sheet1!D26", "Sheet1!A33"],
+  "boundedLocalTextSearch": "No matches for publication title, BDUK, or the two indicator values in docs, src, scripts, and experiments outside the new candidate and tmp directory.",
+  "publicationFamily": "BDUK Broadband Performance Indicators historical quarterly series; treat related releases as one family pending review",
+  "status": "candidate_only",
+  "sourceReuseReviewComplete": false,
+  "fullDevelopmentExposureAuditComplete": false,
+  "productUploadReviewed": false,
+  "userVisibleAnswerCitationReviewed": false,
+  "goldFrozen": false,
+  "modelCalls": 0
+}

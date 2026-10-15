@@ -1,5 +1,7 @@
 # MA24 执行状态台账（2026-10-13）
 
+2026-10-15 G14 新 XLSX 来源候选：英国政府 2018 年 3 月 Broadband Performance Indicator 原件 12,802 字节已从发布页直链下载，哈希及 `Sheet1!D26`、`A33` 原格核对；现金口径 7,934 与权责发生制估计 7,617 的历史口径题已拟稿。有界项目文本搜索无同题关键词；完整暴露、复用条款、产品坐标与答案引用未审，Gold 0。[候选收据](evidence/ma24-g14-bpi-2018-xlsx-candidate-2026-10-15.json)。
+
 2026-10-15 G16 判分门槛补正：若候选路径已完成运行的实际行为与冻结预期不符，即使审核判为错误且其他得分足够，`gatePassed` 仍必须为 `false`；基线错误仍可作为候选改进的对照。新增两侧反例回归；8 项定向测试、类型检查与 ESLint 通过。独立 Gold、双路真实运行和质量验收仍为 0。[工程收据](evidence/ma24-g16-outcome-mismatch-hard-gate-2026-10-15.json)。
 
 本台账按 [R0–R7 收尾计划](MA24_REMAINING_EXECUTION_PLAN_2026-10-13.md)跟踪原 G01–G20。状态区分工程、真实质量与生产运行；“部分”仅表示列出的范围有证据。历史完成结果见 [原计划](MA24_COMPLETION_GOAL_PLAN_2026-10-11.md)，本次只读运行盘点与构建见 [R0 收据](evidence/ma24-r0-runtime-build-2026-10-13.json)。
