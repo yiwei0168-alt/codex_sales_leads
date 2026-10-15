@@ -1,0 +1,43 @@
+{
+  "schema": "ma24-g15-local-bge-recovery-v1",
+  "date": "2026-10-16",
+  "scope": "Local read-only baseline retrieval on an exposed development product query",
+  "service": {
+    "binding": "127.0.0.1:8765",
+    "startedFrom": "Existing offline .models/bge-m3/5617a9f61b028005a4858fdac845db406aefb181 snapshot and .venv-bge-v3",
+    "serviceCodeSha256": "614dac43b0f7ef29c5b31e423aed280260162b3f138b2eb67d7638b77eeeb4f9",
+    "healthAfterProbe": {
+      "status": "ready",
+      "model": "BAAI/bge-m3",
+      "revision": "5617a9f61b028005a4858fdac845db406aefb181",
+      "dimensions": 1024
+    }
+  },
+  "probe": {
+    "command": "node scripts/run-tsx.cjs scripts/verify-ma24-g15-bge-tool-local.ts",
+    "scriptSha256": "7f494b11eba8a9619fc6191a3aa85c4fcb7a3489e2fbfd84373d912dcbd0c8f0",
+    "questionKind": "exposed development product query",
+    "requestedCollection": "company",
+    "authorizedScope": "product",
+    "toolStatus": "success",
+    "authorizedChunks": 8,
+    "bgeRankedChunks": 3,
+    "fulltextRankedChunks": 6,
+    "factRankedChunks": 8,
+    "qwenRankedChunks": 0,
+    "modelCalls": 0,
+    "providerCalls": 0
+  },
+  "currentG15Preview": {
+    "path": "docs/evidence/ma24-g15-config-preview-2026-10-16-v28.json",
+    "currentLocalBgeFlagEnabled": false,
+    "baselineRetrievalProfileVerified": false,
+    "readyForPaidEvaluation": false
+  },
+  "limits": [
+    "The probe enabled the BGE flag only in its own process; the product and dedicated evaluation processes were not reconfigured or verified",
+    "This exposed development query does not validate independent Gold, full Agent answers, user-visible citations, paid admission or dual-arm quality",
+    "A point-in-time localhost health response does not prove service availability for a future frozen run"
+  ],
+  "g17ToG20Advanced": false
+}
