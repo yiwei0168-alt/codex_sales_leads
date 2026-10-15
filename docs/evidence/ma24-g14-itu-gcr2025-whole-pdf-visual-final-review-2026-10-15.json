@@ -1,0 +1,1303 @@
+{
+  "schema": "ma24-g14-itu-gcr2025-whole-pdf-visual-final-review-v1",
+  "date": "2026-10-15",
+  "stage": "Source-bound full-size page judgments prepared for isolated product replay; not product-saved decisions",
+  "sourceSha256": "4489081fe8709ea1bcea2b724ff5a92c3979195432a8da73c20a8c8e0570ccb8",
+  "extractionArtifactSha256": "788600e3fc3a1f8bd0a1d658ab608686b1c4358cfe76672500f3ae652303ffd6",
+  "candidatePackageSha256": "a7e4c0784ae51a2195b77623a67b1579bcef70375ce837b6e7c1d20b8580efac",
+  "sourcePhysicalPages": 129,
+  "page128HasPendingVisualRecord": false,
+  "visualReviewRecords": 128,
+  "counts": {
+    "evidence": 56,
+    "decoration": 72,
+    "unresolved": 0
+  },
+  "judgments": [
+    {
+      "blockId": "page-1-visual-review",
+      "physicalPage": 1,
+      "originalRenderSha256": "2383a8fba12786bb9d054f81d2d8eafbd50306ca0d37af79d358f0e48f794a8a",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 1,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-2-visual-review",
+      "physicalPage": 2,
+      "originalRenderSha256": "535f85ace7e1d046ca3c1d46dc5e692618211d5a1dd4e7f9e9611a7d1da44fd5",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 5,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-3-visual-review",
+      "physicalPage": 3,
+      "originalRenderSha256": "69f1e08ee729d10fb996de95682033df2995dd4afe7ce455d92a1132b5d6ed1d",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 11,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-4-visual-review",
+      "physicalPage": 4,
+      "originalRenderSha256": "bd479dd8dff517d3cd54ceb40335d17a34d0b3a6700702f60803c37b6a72a07f",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 2,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-5-visual-review",
+      "physicalPage": 5,
+      "originalRenderSha256": "6e91d762388def1283787388812213107786dcaac31da200bca0620122a2ac16",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 11,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-6-visual-review",
+      "physicalPage": 6,
+      "originalRenderSha256": "1b213c5b5551f9099de5fb53914749672459487673eec407eb5445eefffdee63",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 11,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-7-visual-review",
+      "physicalPage": 7,
+      "originalRenderSha256": "2a03b3c250e8c74e35a5a6de4e7ec5e21e4d178ea03441f46e7e7260c17f316f",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 31,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-8-visual-review",
+      "physicalPage": 8,
+      "originalRenderSha256": "c47d07ed9ca436633b23fd402404468b125ac17f5c2dcc7995dfc5c48623d49a",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 17,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-9-visual-review",
+      "physicalPage": 9,
+      "originalRenderSha256": "3c10a76afaa9915612ab3b8e18c92c94c0292240df7da8b6a2a0236ef41604d1",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 37,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-10-visual-review",
+      "physicalPage": 10,
+      "originalRenderSha256": "6f510fa3e738a95ab76ef7ff5dbcc45455403f4b82be0ace9f4adeab41947223",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 31,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-11-visual-review",
+      "physicalPage": 11,
+      "originalRenderSha256": "4272dcd424f965a6d6b96f7f2023345fa97d95ef2152fdb8cfe751913d8cc175",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 28,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-12-visual-review",
+      "physicalPage": 12,
+      "originalRenderSha256": "c0b534827d3ff88d47da37ea173b442f576f7ce24df4eb35b9315f086be21863",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 11,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-13-visual-review",
+      "physicalPage": 13,
+      "originalRenderSha256": "bf3ccb371997312318c237c7b7a310251541050535322844ca38a013a3132a99",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 13,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-14-visual-review",
+      "physicalPage": 14,
+      "originalRenderSha256": "475e4be5df1e9ead70fc47d89fff2e0968b077e9f30ebb2b685c0b520e4e3346",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 15,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-15-visual-review",
+      "physicalPage": 15,
+      "originalRenderSha256": "8067c9789adefa4e22f16bad1b40ed0cef9e91cf1ecfbffa77a03f25d9bb670f",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 13,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-16-visual-review",
+      "physicalPage": 16,
+      "originalRenderSha256": "c174866127b1c765c16b6d4332b85ca8cdfd75f6a21497d18803aa163b5029a8",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 13,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-17-visual-review",
+      "physicalPage": 17,
+      "originalRenderSha256": "dc2979ab75986d5afa1d57b6077ab60e3b0b0d0b56db6fe1f4e67ddec6460ea8",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 12,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-18-visual-review",
+      "physicalPage": 18,
+      "originalRenderSha256": "ef134a072aa2c745efa0ed0d34229253f9aca526eff15e79003e9b7c0a7e89e7",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 4,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-19-visual-review",
+      "physicalPage": 19,
+      "originalRenderSha256": "58a04f4dbd1ba880d8788e93a9ce298b9dc9549c3eb7bf6a05b479128848c6b2",
+      "decision": "evidence",
+      "evidenceText": "Figure 1.1 charts selected global connectivity indicators from 1994 to 2025 in millions. Its labelled 2025 endpoints are 9,171 mobile-cellular subscriptions, 8,175 active mobile-broadband subscriptions, 6,047 Internet users, 1,654 fixed-broadband subscriptions and 815 fixed telephone lines. The figure reports counts in millions, not rates or unique subscribers.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 17,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-20-visual-review",
+      "physicalPage": 20,
+      "originalRenderSha256": "b6e7ed96baf0c5446a5fad477e8f9df190f6b6f99964b3edac226224e0395ad2",
+      "decision": "evidence",
+      "evidenceText": "Table 1.1 presents selected supercomputing milestones for 1993, 1997, 2008, 2022 and 2024, with performance, units, numeric FLOPS, an indexed comparison and named systems. It is a historical milestone table, not a connectivity coverage measure.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 19,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-21-visual-review",
+      "physicalPage": 21,
+      "originalRenderSha256": "154fdbab74ea0f582f2691095bf1a199556ccd6bdf897713f4c37683f949b1f7",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 12,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-22-visual-review",
+      "physicalPage": 22,
+      "originalRenderSha256": "1d04eda217be879d5cba63069bdef787f97856abe2620fa5fde4da551caed187",
+      "decision": "evidence",
+      "evidenceText": "Figure 1.2 depicts the universal and meaningful connectivity framework. Its six interdependent dimensions are quality, availability, affordability, security, devices and skills. The diagram distinguishes catalysts, levers, content and services from applications and impacts.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 10,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-23-visual-review",
+      "physicalPage": 23,
+      "originalRenderSha256": "f794cf7307270137cdb43b2530272dd9579620e8c177df118de2eeb3aa02aeea",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 8,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-24-visual-review",
+      "physicalPage": 24,
+      "originalRenderSha256": "c6f8f5220e9f8f001bc5d3ff7f1ead07d6e24dcceb16079ec2fd84835769526c",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 12,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-25-visual-review",
+      "physicalPage": 25,
+      "originalRenderSha256": "e39ecf3fd08dcaa07aeb63d9ede6da575227d1fda21127771a2c1e27a5e894d1",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 10,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-26-visual-review",
+      "physicalPage": 26,
+      "originalRenderSha256": "f81dc9f3c7869f40879a0490cd3454eacb1001db1c5a374a0ebbf17fd45283ea",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 12,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-27-visual-review",
+      "physicalPage": 27,
+      "originalRenderSha256": "4ca2949d55f08a7f0c6a4dd17a3d474e548023aaa768f74f64c1092d61eea13a",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 7,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-28-visual-review",
+      "physicalPage": 28,
+      "originalRenderSha256": "b787516ea1e11b3fec78559b0c119a548f8c9fdddb019458ca1e38faab0415f7",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 23,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-29-visual-review",
+      "physicalPage": 29,
+      "originalRenderSha256": "c23f765821eabc093442276852e6cf0b12368fe5213fa5e7e300b33b207e6b7c",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 6,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-30-visual-review",
+      "physicalPage": 30,
+      "originalRenderSha256": "28e85a583931979e5c36122e1ef578f8b8b221851f1644de134d03206087761d",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 7,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-31-visual-review",
+      "physicalPage": 31,
+      "originalRenderSha256": "600fd0b4829bc9a4f75f38b603eafef6e029b28b10d816049aa4e482cef5f758",
+      "decision": "evidence",
+      "evidenceText": "Table 2.1 assesses progress toward the 2030 universal and meaningful connectivity targets across Internet use, household and school connections, business use, mobile coverage, fixed-broadband speed, entry-level price, mobile-phone use and digital skills. It separates target, current global situation and number of economies meeting each target; unavailable values are marked n.a.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 15,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-32-visual-review",
+      "physicalPage": 32,
+      "originalRenderSha256": "39c5ab53095d92490d66be64b1ceb5a66465061a3640e4e31e13361326881603",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 14,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-33-visual-review",
+      "physicalPage": 33,
+      "originalRenderSha256": "2ef7bda86e8f6e3f69dac93351ef1d564e1f02d93760a1c3a4adae3a9806dfc9",
+      "decision": "evidence",
+      "evidenceText": "Figure 2.1 charts the rise in individuals using the Internet from 2005 to 2025, with bars for billions of people on the left axis and a green percentage series on the right axis. The two axes must not be interchanged.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 27,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-34-visual-review",
+      "physicalPage": 34,
+      "originalRenderSha256": "b6a7da2002df1a69af31d28d9e55e3ef033d0a223912177ca6c8f3dcbcab6eba",
+      "decision": "evidence",
+      "evidenceText": "Figure 2.2 compares percentages of individuals using the Internet across ITU regions and special groups in 2005 and 2025. Blue columns are 2025 and green markers are 2005; the categories include region, income and LDC/LLDC/SIDS groupings.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 28,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-35-visual-review",
+      "physicalPage": 35,
+      "originalRenderSha256": "a19c4cbbab0301b5851d4ae6e5c3defcb5fb97532eeabfea1664f57e0c5f1137",
+      "decision": "evidence",
+      "evidenceText": "Figure 2.3 ranks reported economies by the share of Internet users who connect daily, weekly or less than weekly. It is a stacked frequency-of-use chart; its rows should not be treated as a population Internet-penetration table.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 5,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-36-visual-review",
+      "physicalPage": 36,
+      "originalRenderSha256": "7321c5d35e756d4461b21a472cbc7a3ebce6d055819ef4628e1ee0ba22b1362d",
+      "decision": "evidence",
+      "evidenceText": "Figure 2.4 plots Internet-use percentage against GDP per capita in thousands of constant-2021 PPP dollars, with a fitted curve and country points. It shows association, not a causal effect or country-level labels.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 7,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-37-visual-review",
+      "physicalPage": 37,
+      "originalRenderSha256": "d31228775de4c8a4b93058d94a6606f26618487b336bff9f10802ca2350f10fd",
+      "decision": "evidence",
+      "evidenceText": "Figure 2.5 maps 2024 or latest-available population Internet-use share in broad colour bands: 0–20, 20–40, 40–60, 60–80 and 80–100 per cent, plus unavailable. The map should not be used for precise country percentages.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 11,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-38-visual-review",
+      "physicalPage": 38,
+      "originalRenderSha256": "ce9c328b42955ba35ef97ac70cf60d2bd66f05cd7165f7b0dd6aafa57460e986",
+      "decision": "evidence",
+      "evidenceText": "Figure 2.6 shows distributions of Internet-use percentage by gender and income group for 2024, with red group-average lines. Figure 2.7 maps the 2024 Internet-use gender parity score in colour bands. Map colour is not an exact country value.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 9,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-39-visual-review",
+      "physicalPage": 39,
+      "originalRenderSha256": "f9941e5c5ff8631f5d17c407afe3dd2a352913f19b6f201bc26b6f4c918bf0cc",
+      "decision": "evidence",
+      "evidenceText": "Figure 2.8 compares 2025 Internet-use percentages for ages 15–24 versus the rest of the population across regions and income groups. Its blue bars and green markers represent different age groups, not two time periods.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 30,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-40-visual-review",
+      "physicalPage": 40,
+      "originalRenderSha256": "b3bce8c0b4b29de9e9ac7daba2745273a30e8757081bc0d033a232692fc6c9d1",
+      "decision": "evidence",
+      "evidenceText": "Figure 2.9 compares Internet-use share with GDP per capita by age group (15–24, 25–74, 75+), using separate fitted curves and country points. The note limits the 75+ series to countries with data from 2020 or later.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 5,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-41-visual-review",
+      "physicalPage": 41,
+      "originalRenderSha256": "b4adbd54bcf6dc4184e71873be39ef17c2ff27e98bf83d7eb52a954dac9e9547",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 7,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-42-visual-review",
+      "physicalPage": 42,
+      "originalRenderSha256": "8b88e2ce3c5e84a9fae2bae765f6f52019f79859f245f7c6ef577b6af0ad865f",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 11,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-43-visual-review",
+      "physicalPage": 43,
+      "originalRenderSha256": "7709f5a311d36c040994fbce512c4fad4044c3c62c7be9f226b9fb6c42d72449",
+      "decision": "evidence",
+      "evidenceText": "Figure 2.10 places rural and urban Internet-use percentages side by side for economies with data from 2022 or later. The green points are rural and blue points urban; the figure does not print exact percentages for every country.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 5,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-44-visual-review",
+      "physicalPage": 44,
+      "originalRenderSha256": "9acffd41dfacfbd03e6b92fcf08a3380d5a4a4f0bcaf6da646dad6adbd414189",
+      "decision": "evidence",
+      "evidenceText": "Figure 2.11 compares Internet banking, online purchasing and interaction with government by highest education attained. Four shades distinguish primary-or-less through tertiary; the plotted country dots are not an exact numeric table.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 8,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-45-visual-review",
+      "physicalPage": 45,
+      "originalRenderSha256": "96ffc024a9840b772da8d9e97a970a2515a8687dc94ca067c1181ed955f10c66",
+      "decision": "evidence",
+      "evidenceText": "Figure 2.12 compares Internet-use share by labour-force status against GDP per capita. Blue is in the labour force and green is outside it; the curves are descriptive relationships, not evidence that employment causes Internet use.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 8,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-46-visual-review",
+      "physicalPage": 46,
+      "originalRenderSha256": "32c9f62b9f8a03c40c48b589b5486a4aa868e11be93beec979ea99ce2f2e264f",
+      "decision": "evidence",
+      "evidenceText": "Figure 2.13 compares Internet-use percentages for manual and non-manual occupations across reported economies. Blue denotes non-manual and green denotes manual; precise percentages are not printed for every economy.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 10,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-47-visual-review",
+      "physicalPage": 47,
+      "originalRenderSha256": "13e63a3a3d6f13332278c20e987f9587a935942a247b9dbf33111a012f7a4d60",
+      "decision": "evidence",
+      "evidenceText": "Figure 2.14 is a box-plot comparison of reported reasons for not using the Internet: no need, lack of skills and high cost of service. The figure shows distributions, not a single global percentage for each barrier.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 21,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-48-visual-review",
+      "physicalPage": 48,
+      "originalRenderSha256": "343383e683b5f6c1d9b6b59d35370281bd5bec4704411edb4f2d1b68c9bd65d3",
+      "decision": "evidence",
+      "evidenceText": "Figure 2.15 shows 2023 shares of population within 10, 25, 50 and 100 km of a fibre-optic node by region and income group. Its note says the 25, 50 and 100 km segments add people beyond the previous threshold; the stack must not be read as four independent totals.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 46,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-49-visual-review",
+      "physicalPage": 49,
+      "originalRenderSha256": "e7a83d73235996998a27639d88007888db4999dfb6a852479f0c86f51413b701",
+      "decision": "evidence",
+      "evidenceText": "Figures 2.16 and 2.17 chart fixed-broadband subscriptions and advertised speed categories. The share at or above 100 Mbit/s is a subset of the share at or above 10 Mbit/s, not an additional category.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 60,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-50-visual-review",
+      "physicalPage": 50,
+      "originalRenderSha256": "d1b5bb7265c16d7a2decad3b341feb20651842073327098150702e317f7c22f8",
+      "decision": "evidence",
+      "evidenceText": "Figure 2.18 compares average download speeds for fixed and mobile networks in 2022 and the first half of 2025. The period note and differing access technologies must accompany any numerical reading.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 13,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-51-visual-review",
+      "physicalPage": 51,
+      "originalRenderSha256": "d194647206c04d2d8685088bc277e8559fa7a8b5286cc7ac2c6d36d9f23f00b2",
+      "decision": "evidence",
+      "evidenceText": "Figure 2.19 stacks population coverage by mobile network generation from 2015 to 2025. Lower-generation bands show people not covered by a more advanced generation, and the 5G series begins in 2020.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 20,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-52-visual-review",
+      "physicalPage": 52,
+      "originalRenderSha256": "40b5a7c2d8ea90adda8fc98b93b81e189539da2cb151bc90a879adb11879d990",
+      "decision": "evidence",
+      "evidenceText": "Figures 2.20 and 2.21 compare mobile coverage and active mobile-broadband subscriptions by region and income group. Figure 2.20 uses incremental coverage bands; the 5G subscription series in Figure 2.21 is a subset of mobile-broadband subscriptions.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 57,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-53-visual-review",
+      "physicalPage": 53,
+      "originalRenderSha256": "871fbe4b17441650b059d0955b58a7c1d856771343141051aaa801e44f9cd05e",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 6,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-54-visual-review",
+      "physicalPage": 54,
+      "originalRenderSha256": "03bec7b9a961a560b14ee859a0353bd7bb7039f9ae4f993cdb768098c2110989",
+      "decision": "evidence",
+      "evidenceText": "Figure 2.22 compares Internet users by device type, including computer, mobile phone and tablet. Its underlying observations are from 2020 or later; categories need not be mutually exclusive.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 11,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-55-visual-review",
+      "physicalPage": 55,
+      "originalRenderSha256": "fe1aae47d484957ae872bfd2dd6bf59ffee2558b70e3f3cbd6cd3890582d4472",
+      "decision": "evidence",
+      "evidenceText": "Figure 2.23 maps the 2025 price of an entry-level data-only mobile-broadband basket as a percentage of GNI per capita. Colour bands do not give exact country prices.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 10,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-56-visual-review",
+      "physicalPage": 56,
+      "originalRenderSha256": "19b79d818122d4e98c0bf9e46533ea9896fb6bc40dcda05d929137544463b51b",
+      "decision": "evidence",
+      "evidenceText": "Figure 2.24 maps fixed-broadband basket affordability in 2025, and Figure 2.25 compares affordability changes by basket and income group from 2022 to 2025. The note substitutes 2024 for a discontinued low-usage mobile basket in the 2025 comparison.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 24,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-57-visual-review",
+      "physicalPage": 57,
+      "originalRenderSha256": "a5f0622c55d481a741ae957c6ac99a59599f3735d6b3d1a62d60f76e6b69c6d2",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 14,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-58-visual-review",
+      "physicalPage": 58,
+      "originalRenderSha256": "3157fbdaedcf0c224b0ef3dc20c014542804df7ea0d97d279e0e8c4e904de659",
+      "decision": "evidence",
+      "evidenceText": "Figure 2.26 consists of scatter panels relating Internet use to basic ICT skills by skill area, using 2024 or latest-available observations. The plots support comparison and association, not causal or exact country-level readings.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 62,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-59-visual-review",
+      "physicalPage": 59,
+      "originalRenderSha256": "f312bb9073a7736d9ec801f2edd486ee9a84d516a58e2f00849cb47076b746c8",
+      "decision": "evidence",
+      "evidenceText": "Figure 2.27 charts Global Cybersecurity Index scores by region for the report years 2017, 2018, 2021 and 2024. Year and region labels must remain attached to any value read from the bars.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 43,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-60-visual-review",
+      "physicalPage": 60,
+      "originalRenderSha256": "03bd889ff8b0dea9cb3952e244aa26e87786128f997690cb2ef3939e90298017",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 10,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-61-visual-review",
+      "physicalPage": 61,
+      "originalRenderSha256": "8b9e3478d421c27914c8b84e1caa8c04529be1bf51ad5dd5712046eba523ce6e",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 18,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-62-visual-review",
+      "physicalPage": 62,
+      "originalRenderSha256": "b2c1cd28e50c3863dcefa11d5227a3fda90e8b32ce327c0f3114acea376fd86b",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 12,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-63-visual-review",
+      "physicalPage": 63,
+      "originalRenderSha256": "d20adc639da3b1fd0b5547a16ac6fd69fcbd41caf33546ad8d05e1b2266cf470",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 14,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-64-visual-review",
+      "physicalPage": 64,
+      "originalRenderSha256": "51087d5c9c7899fee9d53a9218ba58a9037ef7495158c69dbd60613a110563c4",
+      "decision": "evidence",
+      "evidenceText": "Figure 3.1 diagrams four groups of policy and regulatory instruments: governance tools, market access, investment mechanisms and competition safeguards. It is a classification diagram, not a quantitative ranking.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 26,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-65-visual-review",
+      "physicalPage": 65,
+      "originalRenderSha256": "74db78f9292fbd4a9467118ba359589186eabbbfbccbc8a4125f99771ed77831",
+      "decision": "evidence",
+      "evidenceText": "Figure 3.2 compares countries implementing seven key measures with the rest of the world on Internet use, 5G coverage and mobile-broadband subscriptions. The comparison is descriptive and does not establish that the measures caused the differences.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 31,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-66-visual-review",
+      "physicalPage": 66,
+      "originalRenderSha256": "7991f3bcf8aae86cb68cc56016853808cae624b6188c9b84453769c8ee12275b",
+      "decision": "evidence",
+      "evidenceText": "Figure 3.3 compares G5 Benchmark average scores with 5G coverage and other connectivity measures. The page explicitly cautions that the correlations do not prove causation.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 40,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-67-visual-review",
+      "physicalPage": 67,
+      "originalRenderSha256": "38f1cc4030492aae8dc9e336b09c93ba21125258b9e2a048c728a5052bc418d7",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 16,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-68-visual-review",
+      "physicalPage": 68,
+      "originalRenderSha256": "66cd90c5e2d157868793265029035e02a394a7bf7b1f075c9cd37a27c1af6834",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 8,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-69-visual-review",
+      "physicalPage": 69,
+      "originalRenderSha256": "842f2a4793897d91637ea7a493628dd2aaad6efc6e1fd632777b88a155db82de",
+      "decision": "evidence",
+      "evidenceText": "Figure 3.4 maps submarine cable systems and Figure 3.5 charts international bandwidth growth from 2020 to 2024. The dense route map should not support exact route or landing-point claims without separate source checking.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 23,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-70-visual-review",
+      "physicalPage": 70,
+      "originalRenderSha256": "a13ffb35250ff672081934a26fb8793524f605cad7220ab1934910afc0caed79",
+      "decision": "evidence",
+      "evidenceText": "Figure 3.6 charts shares of used bandwidth by category for major submarine cable routes. This substantive chart remains visual evidence even though the candidate question about 2024 cable cuts is supported by separately extracted page text.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 54,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-71-visual-review",
+      "physicalPage": 71,
+      "originalRenderSha256": "ba67f54b10190e5b50a49c1bb82d846eeed4edae44dd682c9f4371b35533eb51",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 18,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-72-visual-review",
+      "physicalPage": 72,
+      "originalRenderSha256": "82855932442f67e479882fb57e7dfa88c4e9bf808eb3f3ae43e16ec0204d019c",
+      "decision": "evidence",
+      "evidenceText": "Figure 3.7 shows regional satellite-broadband subscriptions from 2016 to 2024 as bars and their share of fixed subscriptions on a separate right axis. Bar counts and the percentage line must not be interchanged.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 45,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-73-visual-review",
+      "physicalPage": 73,
+      "originalRenderSha256": "3bdc934fe3b3c04eceb0c49f1304a3d5d28e632ec3961f874c344ce0963cca08",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 12,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-74-visual-review",
+      "physicalPage": 74,
+      "originalRenderSha256": "b78fc93a9e4b879a95b05ba4ee7f51b753380d802c5283d0d55a6113db178054",
+      "decision": "evidence",
+      "evidenceText": "Table 3.1 compares geostationary and non-geostationary satellite system characteristics, including orbital altitude, coverage and equipment. Read each characteristic within its own row and satellite-system column.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 25,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-75-visual-review",
+      "physicalPage": 75,
+      "originalRenderSha256": "e349e126691ec7a2d45a84b915a20ee9e617038edf98ae4780cd7fd5a89f548d",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 10,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-76-visual-review",
+      "physicalPage": 76,
+      "originalRenderSha256": "61ec018cbd94403dc4c7149954894d3611847798f14642a6c097f5d11eaf6842",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 11,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-77-visual-review",
+      "physicalPage": 77,
+      "originalRenderSha256": "9a63faecd74e70da84bd4631985e6c0e43a7a4b347d0214ac2bc58ef675b2de6",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 20,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-78-visual-review",
+      "physicalPage": 78,
+      "originalRenderSha256": "3d8fdd3aa0764407f171c178786b96a08c4ee9298ca873785b5598914ef05b64",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 9,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-79-visual-review",
+      "physicalPage": 79,
+      "originalRenderSha256": "acfa0dfa3dcad57dc5f91d241e4df2a495ad6d70fa4caa9d2fb4028754915e0c",
+      "decision": "evidence",
+      "evidenceText": "Figure 4.1 plots Internet use against affordability of services and devices. The scatter relationship is descriptive and does not establish the direction of causation.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 37,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-80-visual-review",
+      "physicalPage": 80,
+      "originalRenderSha256": "330182281abe4a3b13e01e5177f8e52f0997ef4d4b9a3df0c2975d8845c17b19",
+      "decision": "evidence",
+      "evidenceText": "Figure 4.2 compares median monthly traffic per subscription across basket-price groups for fixed and mobile broadband in 2025. The two panels use separate GB scales and must not be read as a single-axis series.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 25,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-81-visual-review",
+      "physicalPage": 81,
+      "originalRenderSha256": "10d6d12245a5cfcd48cafa43b0daa4f0dce98890f57a5de2a595ecc94f9c9a57",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 12,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-82-visual-review",
+      "physicalPage": 82,
+      "originalRenderSha256": "8f93682a7725b5b697aff91357661081ce7eb349588042ad4fe2d5959de3bb6b",
+      "decision": "evidence",
+      "evidenceText": "Figure 4.3 plots ICT services as a share of household expenditure against GNI per capita for 2022. Each point is a country coloured by World Bank income group; the scatter plot shows association, not a causal or exact country-level table.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 18,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-83-visual-review",
+      "physicalPage": 83,
+      "originalRenderSha256": "1fe2907c0842adcc19ed23200823d1a280a0eb6d42517baa46050fc94b96afa8",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 13,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-84-visual-review",
+      "physicalPage": 84,
+      "originalRenderSha256": "30bbaa728cf405928bf09a63d0ac0d57c98f5591c2acbd547fa6b17a67dec009",
+      "decision": "evidence",
+      "evidenceText": "Figure 4.4 compares data-only mobile-broadband basket affordability and price levels from 2013 to 2025. Diamonds denote global medians and whiskers the fifth-to-ninety-fifth percentile range; the reference basket changes from 1 GB to 1.5 GB, 2 GB and 5 GB over the series.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 50,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-85-visual-review",
+      "physicalPage": 85,
+      "originalRenderSha256": "470bd80c063d45f1e1e4c15826931b38c4e21eb1433b0ccc9a7b544b8b9c2e0c",
+      "decision": "evidence",
+      "evidenceText": "Figure 4.5 stacks the share of economies in five basket-price bands for fixed and mobile broadband, separately by income group in 2025. Both baskets use 5 GB, and the colour bands are mutually exclusive portions of each income-group bar.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 47,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-86-visual-review",
+      "physicalPage": 86,
+      "originalRenderSha256": "c468599cffe302785b4cdbfddf518357edeadf3f589f0ed7eec4dcf99ad62edd",
+      "decision": "evidence",
+      "evidenceText": "Figure 4.6 compares the 2025 5 GB mobile-broadband basket price as a share of average GNI per capita with the equivalent burden for the bottom 40 per cent of earners. Filled and open points represent different income denominators; the note limits the sample to 107 countries with recent inequality data.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 42,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-87-visual-review",
+      "physicalPage": 87,
+      "originalRenderSha256": "596b9aede5353e7f5a29fac4c27f9746296ddddd687af69eaa6a51951a572a1e",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 10,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-88-visual-review",
+      "physicalPage": 88,
+      "originalRenderSha256": "a5fb3210697f9dc96d3bb7bb323600abeee04e576a90dd4fe5ddfd1948726ff9",
+      "decision": "evidence",
+      "evidenceText": "Figure 4.7 shows median basket prices by competition score in two separate panels. The left panel uses the Herfindahl-Hirschman Index, the right uses ITU Regulatory Tracker competition clusters; the red horizontal line marks the 2 per cent target.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 28,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-89-visual-review",
+      "physicalPage": 89,
+      "originalRenderSha256": "df4973e85ac6e347c620efa0172c47b7bf229ab6b41319bc36fa28c79e9a4aef",
+      "decision": "evidence",
+      "evidenceText": "Figure 4.8 compares shares of economies meeting the up-to-2-per-cent-of-GNI affordability threshold across four G5 Benchmark maturity groups. Blue and green bars distinguish mobile and fixed broadband; this is a group comparison, not causal proof.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 15,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-90-visual-review",
+      "physicalPage": 90,
+      "originalRenderSha256": "0d6ad8b6d4d1bea15e60df903912d1931bffd2074594a00b551c2353b565a336",
+      "decision": "evidence",
+      "evidenceText": "Figure 4.9 contains two regional maps of Peru for 2025 broadband basket prices, separately mobile and fixed, in percentage-of-regional-GDP colour bands. The source note combines Lima with Callao and cautions against interpreting map boundaries as a legal position.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 10,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-91-visual-review",
+      "physicalPage": 91,
+      "originalRenderSha256": "301d5b49645077ce98533f2565ac23a821c9e66047157a08b5b75c7e75ed1ba9",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 9,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-92-visual-review",
+      "physicalPage": 92,
+      "originalRenderSha256": "564a0799e7c639031d94ae81c11a79aea9eae352966d8dbda235daa4380cc6ae",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 14,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-93-visual-review",
+      "physicalPage": 93,
+      "originalRenderSha256": "e61b3d0c40c560ca45606627a217fda9e301888b4eed2269f41930eb9b6bbc30",
+      "decision": "evidence",
+      "evidenceText": "Table 5.1 maps two UMC framework dimensions, digital skills and safety/security, to their measurement questions and indicator areas. The cells are categorical framework definitions rather than measured country outcomes.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 16,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-94-visual-review",
+      "physicalPage": 94,
+      "originalRenderSha256": "f6fca4c6e7e4206ce2527027a8ca3575dd66c91116e2572e357d9ed8a0908444",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 8,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-95-visual-review",
+      "physicalPage": 95,
+      "originalRenderSha256": "9f7bd8552afab83e6db4db143c9ee3822fb44bb6b7a17d627d0600d1220eecd2",
+      "decision": "evidence",
+      "evidenceText": "Table 5.2 lists activities used to calculate ICT skills under information/data literacy, communication/collaboration, digital content creation, safety and problem solving. Category headings and activities must remain associated when cited.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 28,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-96-visual-review",
+      "physicalPage": 96,
+      "originalRenderSha256": "6083cd060bbd164aefe1eb9475979d2026c73579426846d0cebaebf4fe848789",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 8,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-97-visual-review",
+      "physicalPage": 97,
+      "originalRenderSha256": "85c636ca6b953b9e814405892966ef6c49c7950a007b1089984653f5d8160c9d",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 14,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-98-visual-review",
+      "physicalPage": 98,
+      "originalRenderSha256": "c3cc8bba6b4793170217b7466aefeab6e728952e731e3c52349dd23ae46fed1c",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 15,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-99-visual-review",
+      "physicalPage": 99,
+      "originalRenderSha256": "ca95c3c108f3e83b564c68e5baeaf23f6154cf7ae35d81e05356b13b4a69bd45",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 10,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-100-visual-review",
+      "physicalPage": 100,
+      "originalRenderSha256": "cf97c2e525a1bb40901dc5f4cbf07f655f63c879e3419d2730bf8ecc779efe6c",
+      "decision": "evidence",
+      "evidenceText": "Figure 5.1 is a dense network of Colombia digital appropriation and transformation paths derived from survey-based conditional probabilities. Colours distinguish learning communities; arrows and example probabilities must not be read as universal prerequisite rules.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 12,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-101-visual-review",
+      "physicalPage": 101,
+      "originalRenderSha256": "1659547245acf649054be1678379bbef83acdf6a0640fecefa53af30d3b45564",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 11,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-102-visual-review",
+      "physicalPage": 102,
+      "originalRenderSha256": "3ec93a51b9c6995c129d87c632802131f920eff143faab41a0a1c6bbcfcf4c97",
+      "decision": "evidence",
+      "evidenceText": "Figure 5.2 compares rural and urban Internet users with at least basic ICT skills by country and skill area, using 2024 or latest available observations. Blue denotes rural and green urban; missing country/skill cells are not zeroes.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 9,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-103-visual-review",
+      "physicalPage": 103,
+      "originalRenderSha256": "d15eff803192e7d52dce90d2615d43713b7371b0606e1264f1e00259c07d1806",
+      "decision": "evidence",
+      "evidenceText": "Figure 5.3 compares the same at-least-basic ICT-skill shares by four education levels across countries and skill areas. The education categories follow ISCED and each dot retains its country, skill and education context.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 8,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-104-visual-review",
+      "physicalPage": 104,
+      "originalRenderSha256": "4df70fe26196db6e2d7fa25dfa4a0a5778b99ca6989fc5b6d5dd69d6f46be354",
+      "decision": "evidence",
+      "evidenceText": "Figure 5.4 presents distributions of at-least-basic ICT-skill shares by skill area and education level. Boxes show quartiles and medians across 19 countries, whiskers exclude outliers and dots mark outliers; the boxes are not country values.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 10,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-105-visual-review",
+      "physicalPage": 105,
+      "originalRenderSha256": "ebf01f7f5106d92f3cf6886e73635589b8ead8e30cf152238414cec3851b7d01",
+      "decision": "evidence",
+      "evidenceText": "Figure 5.5 plots at-least-basic ICT-skill shares against GDP per capita by five skill areas, with fitted curves and country points. The 2021 PPP GDP axis and 2021-or-later skill-data note limit interpretation; association does not prove causation.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 11,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-106-visual-review",
+      "physicalPage": 106,
+      "originalRenderSha256": "cdfeda05cb738e2c9ebbbdb27042a82836577a6a295136aeafc7c9f5a5326a72",
+      "decision": "evidence",
+      "evidenceText": "Figure 5.6 stacks Internet users by overall ICT-skill classification for eight listed countries. Colour segments range from at least basic in all areas to low or no skills; the stack is a within-country distribution, not cross-country population counts.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 11,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-107-visual-review",
+      "physicalPage": 107,
+      "originalRenderSha256": "50e28e037768c4a8215bade1367a36a7bb446ec4706a48aade1ba592f24924d8",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 13,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-108-visual-review",
+      "physicalPage": 108,
+      "originalRenderSha256": "f7b846cdd72034f5b6727606f0bb0913bc508b35d310d597755dd4ad333ec1f5",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 10,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-109-visual-review",
+      "physicalPage": 109,
+      "originalRenderSha256": "67de80a0e3db875b2cda8034556c9b9ecd6b44dcbed6dacf347aecdb153fe891",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 9,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-110-visual-review",
+      "physicalPage": 110,
+      "originalRenderSha256": "5aae97c9fd44815d333085197aca97a67b2e1dfc390c80d9780f5481b8e107e8",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 19,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-111-visual-review",
+      "physicalPage": 111,
+      "originalRenderSha256": "b305b7fad29e5b638563245a0d19cc3dfbfe7385dc091572873ee940e2827ff5",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 8,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-112-visual-review",
+      "physicalPage": 112,
+      "originalRenderSha256": "2254231c52d1382a72ad57e301b95fc82c568d0b10ac2d2dd1fca4e2d7ca6d5d",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 13,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-113-visual-review",
+      "physicalPage": 113,
+      "originalRenderSha256": "ea9e0313cd0282face2abe2effb6009f2637a9f335c0023d6c4b39666a9b62ff",
+      "decision": "evidence",
+      "evidenceText": "Table 6.1 maps proposed indicators to universal and meaningful connectivity dimensions, including connection quality, availability, affordability, devices, digital skills and safety/security. The table is a proposal framework, not observed country values.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 18,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-114-visual-review",
+      "physicalPage": 114,
+      "originalRenderSha256": "9d32e2dcdfdeac0aecb61ed8dc23e2c07d8d76d1353501d96e65832841ccc7d7",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 9,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-115-visual-review",
+      "physicalPage": 115,
+      "originalRenderSha256": "fbf70bd3b31471ddbfcc9ea3ee261f2959c1c5d50e2c45c3740aa917e9c36af5",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 13,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-116-visual-review",
+      "physicalPage": 116,
+      "originalRenderSha256": "83b669b9564b5f498d706f17c292e8909b2af4ed17d50047ca068614f1e58585",
+      "decision": "evidence",
+      "evidenceText": "Table 6.2 groups demand-side, supply-side and price ICT statistics by data source and collecting institution. Source and institution cells must be read within their data-type row.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 25,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-117-visual-review",
+      "physicalPage": 117,
+      "originalRenderSha256": "ec899fe36ff9e88e7396daa011ab99d8899f72185e01f38c672cd37354b60515",
+      "decision": "evidence",
+      "evidenceText": "Figure 6.1 plots the 2023 Statistical Performance Index against 2024 Atlas-method GNI per capita on a logarithmic x-axis. Points are countries and marker shapes/colours identify ITU regions; the relationship does not prove causation.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 16,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-118-visual-review",
+      "physicalPage": 118,
+      "originalRenderSha256": "90335a454c21fc677927c8d870fcdfd29f638dc3d30640835f50f42457a5c876",
+      "decision": "evidence",
+      "evidenceText": "Figure 6.2 maps the latest reported year of Internet-use data for SDG indicator 17.8.1. Colours represent reporting-year bands, not Internet-use percentages; unavailable is a separate grey category.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 11,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-119-visual-review",
+      "physicalPage": 119,
+      "originalRenderSha256": "0d3528a3ddd8cd4ad2667d6912431d906b4d54bf61862fb48b7695b700032060",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 10,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-120-visual-review",
+      "physicalPage": 120,
+      "originalRenderSha256": "0e5df0c33542fd5b98b137ff5aed5eac26739bbbac6ae33c7562e15059889222",
+      "decision": "evidence",
+      "evidenceText": "Figure 6.3 diagrams domestic funding, budget support, parallel funding and pooled funding instruments for producing statistics. It distinguishes example initiatives from general categories and is not a quantitative comparison.",
+      "note": "Full-size original page checked: substantive visual object retained with legend, period, denominator and category limits stated in the evidence text.",
+      "successfulTextBlocksOnPage": 11,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-121-visual-review",
+      "physicalPage": 121,
+      "originalRenderSha256": "a779174a6f9317f01e72ebc6308ae333eec5f2866faa6b3f51bc6aa35b6c60d9",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 6,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-122-visual-review",
+      "physicalPage": 122,
+      "originalRenderSha256": "5c25face8a6add4c61eee84aad755965f904d0f02e2b4b843cbfdf3842cd79a1",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 13,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-123-visual-review",
+      "physicalPage": 123,
+      "originalRenderSha256": "4fd34e3d785f85e35522a821e5a2ee0271f70447bd1e6d80c056c3f6749bc454",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 12,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-124-visual-review",
+      "physicalPage": 124,
+      "originalRenderSha256": "ccae28b05c4b79c9da2572a89a2a8d53e3ef5a6606cb72beaccbcff520cd0cdb",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 13,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-125-visual-review",
+      "physicalPage": 125,
+      "originalRenderSha256": "537f4c3e898888c32556f9302ae1f0ee7be3ae2a6ec01744063ef79e29786970",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 14,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-126-visual-review",
+      "physicalPage": 126,
+      "originalRenderSha256": "12f31d567b71782b00aa23c4ed3acc39ea23cc57f2c91afa9cd2253fd60ca0c6",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 8,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-127-visual-review",
+      "physicalPage": 127,
+      "originalRenderSha256": "38ddbe5a241d2e022460518926e7dd97487685a6a016b8cac870caf372b97192",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 19,
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-129-visual-review",
+      "physicalPage": 129,
+      "originalRenderSha256": "b9d9e152aa5efc00dbf31ebf903ec076327c4493b18547f5ad204779c138aa0a",
+      "decision": "decoration",
+      "evidenceText": "",
+      "note": "Full-size original page checked: no separate data chart, map, table or diagram beyond successfully extracted text; decorative page-render review block only.",
+      "successfulTextBlocksOnPage": 1,
+      "productDecisionSaved": false
+    }
+  ],
+  "productDecisionsSaved": 0,
+  "privateRegistrationPassed": false,
+  "goldApprovedFromThisSource": false,
+  "modelCalls": 0,
+  "g17ToG20Advanced": false
+}
