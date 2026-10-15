@@ -1,0 +1,314 @@
+{
+  "schema": "ma24-g14-fcc-706-original-size-appendix-batch2-v1",
+  "date": "2026-10-16",
+  "scope": "Second 29 previously contact-sheet-only FCC appendix pages checked at original size; source-bound amendment, no product replay",
+  "sourceSha256": "805e0e5b954775059ad535ae650c955935758a88f2a20ec0e6554e77f0e61154",
+  "extractionArtifactSha256": "6724008a1138a5e83dc4439e42ed4f75176154e5bf9a0d738dbd2f339cd2d0d4",
+  "renderPackageSha256": "27441a7bb1854545078f89b2879057a7464e685a395e37765de2bdad80d4c969",
+  "priorWholePdfReviewSha256": "00e19caabc9349303b789cadf12fe38b81ea33190bd425222c3b1567ddffdb6a",
+  "priorBatch1Sha256": "1f5f219372a683023e77352647e7defc7294c6d636314c1e92bd1dfedf60de44",
+  "records": [
+    {
+      "physicalPage": 98,
+      "blockId": "page-98-visual-review",
+      "originalRenderSha256": "635da57a972f2494d0e9735723ea89925bb796e49a8aeae892fd8074b5167584",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 continued county table contains geography rows and distinct evaluated-population, fixed-terrestrial, fixed-wireline, mobile-5G-NR, population-density and per-capita-income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 99,
+      "blockId": "page-99-visual-review",
+      "originalRenderSha256": "c9377ccde6938bba1da0cef5ee56ff64a7f1f8a5f6c8ec680a89f4794588b246",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 continued county table contains geography rows and distinct evaluated-population, fixed-terrestrial, fixed-wireline, mobile-5G-NR, population-density and per-capita-income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 100,
+      "blockId": "page-100-visual-review",
+      "originalRenderSha256": "a025e57be10fa04761e9550185df8e76102b0a59952b486f698392e8f1d08281",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 continued county table contains geography rows and distinct evaluated-population, fixed-terrestrial, fixed-wireline, mobile-5G-NR, population-density and per-capita-income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 101,
+      "blockId": "page-101-visual-review",
+      "originalRenderSha256": "ed97566761720c4d08d6147d6dd78c8ade8fdfcaabadcfa68979420b13e78e09",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 continued county table contains geography rows and distinct evaluated-population, fixed-terrestrial, fixed-wireline, mobile-5G-NR, population-density and per-capita-income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 102,
+      "blockId": "page-102-visual-review",
+      "originalRenderSha256": "03cf2b6a9a156212dec082115fffae0e3937c27365c3b142e6a05153cf6532f1",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 continued county table contains geography rows and distinct evaluated-population, fixed-terrestrial, fixed-wireline, mobile-5G-NR, population-density and per-capita-income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 103,
+      "blockId": "page-103-visual-review",
+      "originalRenderSha256": "04fd854d7e37aff3bf5f2ec0ae542c5e9d89bbc407206ff2344d81176a590b61",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 continued county table contains geography rows and distinct evaluated-population, fixed-terrestrial, fixed-wireline, mobile-5G-NR, population-density and per-capita-income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 104,
+      "blockId": "page-104-visual-review",
+      "originalRenderSha256": "1a5276d46269be84a4e90072a435487a41f1120083989e77de8bbd8ce4ca41ca",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 continued county table contains geography rows and distinct evaluated-population, fixed-terrestrial, fixed-wireline, mobile-5G-NR, population-density and per-capita-income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 105,
+      "blockId": "page-105-visual-review",
+      "originalRenderSha256": "cfca26126935b034ebea516b949400742d223c71a23037276f08d9c2a630e35e",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 continued county table contains geography rows and distinct evaluated-population, fixed-terrestrial, fixed-wireline, mobile-5G-NR, population-density and per-capita-income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 106,
+      "blockId": "page-106-visual-review",
+      "originalRenderSha256": "7172573624e6ca1e73b88e9fb3de6b1e73df0980bf4534416dfdef8a940d1b47",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 continued county table contains geography rows and distinct evaluated-population, fixed-terrestrial, fixed-wireline, mobile-5G-NR, population-density and per-capita-income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 107,
+      "blockId": "page-107-visual-review",
+      "originalRenderSha256": "61db8957d8781acf4a3730ec534ef9929a95f27f0522ed0493e9c555e7238adb",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 continued county table contains geography rows and distinct evaluated-population, fixed-terrestrial, fixed-wireline, mobile-5G-NR, population-density and per-capita-income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 108,
+      "blockId": "page-108-visual-review",
+      "originalRenderSha256": "c8890d810143d282d1b1e888efbc199ee4d41836e05eb8ceaf465e0e017c433d",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 continued county table contains geography rows and distinct evaluated-population, fixed-terrestrial, fixed-wireline, mobile-5G-NR, population-density and per-capita-income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 109,
+      "blockId": "page-109-visual-review",
+      "originalRenderSha256": "5b351b65e12cb210a80ccd22ed8676a035eb32177a1d7d9e643f0cf61209cff2",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 continued county table contains geography rows and distinct evaluated-population, fixed-terrestrial, fixed-wireline, mobile-5G-NR, population-density and per-capita-income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 110,
+      "blockId": "page-110-visual-review",
+      "originalRenderSha256": "b98b1178aede7459504e23e1b50ae4d76db7402d45b76dea94c1d5918244386a",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 continued county table contains geography rows and distinct evaluated-population, fixed-terrestrial, fixed-wireline, mobile-5G-NR, population-density and per-capita-income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 111,
+      "blockId": "page-111-visual-review",
+      "originalRenderSha256": "dcb182adf77ae1a10ac1b676afcd7c8cb87434ce2e7fdd979e09f632109b390c",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 continued county table contains geography rows and distinct evaluated-population, fixed-terrestrial, fixed-wireline, mobile-5G-NR, population-density and per-capita-income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 113,
+      "blockId": "page-113-visual-review",
+      "originalRenderSha256": "9ba014cf079aa60a32789e4a41e39032c99198a891b132bcc2ffeb522b542c91",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 continued county table contains geography rows and distinct evaluated-population, fixed-terrestrial, fixed-wireline, mobile-5G-NR, population-density and per-capita-income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 114,
+      "blockId": "page-114-visual-review",
+      "originalRenderSha256": "b296baa6c4d1ac407fe63c44c94e8a2dc2694f9ace2e6a70c2e8f0bbeb79ef1c",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 continued county table contains geography rows and distinct evaluated-population, fixed-terrestrial, fixed-wireline, mobile-5G-NR, population-density and per-capita-income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 115,
+      "blockId": "page-115-visual-review",
+      "originalRenderSha256": "5ba36cc8de5b33f8258aa296908c87de60a6088516001ea78214706b5b084935",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 continued county table contains geography rows and distinct evaluated-population, fixed-terrestrial, fixed-wireline, mobile-5G-NR, population-density and per-capita-income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 116,
+      "blockId": "page-116-visual-review",
+      "originalRenderSha256": "47a589151ef4615b25748319cd69307280ecab66ddb36d433512b1fd34aca18c",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 continued county table contains geography rows and distinct evaluated-population, fixed-terrestrial, fixed-wireline, mobile-5G-NR, population-density and per-capita-income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 117,
+      "blockId": "page-117-visual-review",
+      "originalRenderSha256": "9ef14205783cb4861052289b388b2d43f66ea122c1970787a2b01522fb326415",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 continued county table contains geography rows and distinct evaluated-population, fixed-terrestrial, fixed-wireline, mobile-5G-NR, population-density and per-capita-income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 118,
+      "blockId": "page-118-visual-review",
+      "originalRenderSha256": "a835e3f7176da6f3bfd03c8beb45d3623caa7db03425b98868bde699ff7653db",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 continued county table contains geography rows and distinct evaluated-population, fixed-terrestrial, fixed-wireline, mobile-5G-NR, population-density and per-capita-income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 119,
+      "blockId": "page-119-visual-review",
+      "originalRenderSha256": "a66ae5c2e7cfe24e14b5234d0f157a6c99d06635ea25306550b182edcfe4e139",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 continued county table contains geography rows and distinct evaluated-population, fixed-terrestrial, fixed-wireline, mobile-5G-NR, population-density and per-capita-income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 120,
+      "blockId": "page-120-visual-review",
+      "originalRenderSha256": "9067d922ac9059eda3861f077902342f8aa57e04441521843572af16c30ad7d6",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 continued county table contains geography rows and distinct evaluated-population, fixed-terrestrial, fixed-wireline, mobile-5G-NR, population-density and per-capita-income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 121,
+      "blockId": "page-121-visual-review",
+      "originalRenderSha256": "7aeabdfe7d82cd440677d9d14b279c251018bfb1a32e6175f4a395e486d9cf1d",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 continued county table contains geography rows and distinct evaluated-population, fixed-terrestrial, fixed-wireline, mobile-5G-NR, population-density and per-capita-income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 122,
+      "blockId": "page-122-visual-review",
+      "originalRenderSha256": "b78d0a1b3183d0a3513a9ad08e91033ca61009b8e2a64a4d641df0a2cd73482a",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 continued county table contains geography rows and distinct evaluated-population, fixed-terrestrial, fixed-wireline, mobile-5G-NR, population-density and per-capita-income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 123,
+      "blockId": "page-123-visual-review",
+      "originalRenderSha256": "7d9b3fdeadebb98f49ba4c6ec8cd212f0c2af4a26fb6aa6068b7a1b21bd5d946",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 continued county table contains geography rows and distinct evaluated-population, fixed-terrestrial, fixed-wireline, mobile-5G-NR, population-density and per-capita-income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 124,
+      "blockId": "page-124-visual-review",
+      "originalRenderSha256": "4c0376f6ef9af9b3069ad37d717d4fc28d11171e6050b5028e67b0e2a664aaf1",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 continued county table contains geography rows and distinct evaluated-population, fixed-terrestrial, fixed-wireline, mobile-5G-NR, population-density and per-capita-income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 125,
+      "blockId": "page-125-visual-review",
+      "originalRenderSha256": "d217fec5414d75be8317de74ab6d1551615af0c8f97ab019c8ee59041b488adf",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 continued county table contains geography rows and distinct evaluated-population, fixed-terrestrial, fixed-wireline, mobile-5G-NR, population-density and per-capita-income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 126,
+      "blockId": "page-126-visual-review",
+      "originalRenderSha256": "3d401d1c0127517c0b5ea4a7a17f3f88b1528f3cafdd0f0f506ad5af74478966",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 continued county table contains geography rows and distinct evaluated-population, fixed-terrestrial, fixed-wireline, mobile-5G-NR, population-density and per-capita-income columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 127,
+      "blockId": "page-127-visual-review",
+      "originalRenderSha256": "ca6e1e62ae777c828a62fc29befccbe4d9cb4c295a2bac70cc707cdd0432d42c",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 continued county table contains geography rows and distinct evaluated-population, fixed-terrestrial, fixed-wireline, mobile-5G-NR, population-density and per-capita-income columns.",
+      "productDecisionSaved": false
+    }
+  ],
+  "counts": {
+    "newlyOriginalSizeChecked": 29,
+    "retainEvidence": 29,
+    "reclassifyAsDecoration": 0,
+    "previouslyContactSheetOnlyRemaining": 36
+  },
+  "decisionOverride": {},
+  "reviewBoundary": "The other 36 previously contact-sheet-only pages still require original-size inspection. County-table numeric cells are not individually accepted by this page-type review.",
+  "productReviewDecisionsSaved": 0,
+  "independentGoldAdded": 0,
+  "providerCalls": 0,
+  "g17ToG20Advanced": false
+}
