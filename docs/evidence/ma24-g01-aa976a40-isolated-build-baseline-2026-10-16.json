@@ -1,0 +1,58 @@
+{
+  "schema": "ma24-g01-isolated-build-baseline-v1",
+  "date": "2026-10-16",
+  "sourceCommit": "aa976a40",
+  "sourceArchive": {
+    "path": "tmp/ma24-g01-aa976a40.tar",
+    "sha256": "4f3ad5c7317a472f8859e2d2c6753fa7a27743457c796e01e1da2c4c2f32ade9",
+    "method": "git archive of the named committed source; isolated work directory with a local node_modules junction and a temporary .env.local hardlink"
+  },
+  "priorCandidate": {
+    "sourceCommit": "5e74b86d",
+    "buildInputFilesChangedToCurrentSource": 44,
+    "usableAsCurrentCandidate": false
+  },
+  "build": {
+    "command": "node scripts/build-next.mjs in tmp/ma24-current-build-aa976a40",
+    "nextVersion": "16.3.4",
+    "firstAttempt": "Turbopack could not create a local dependency junction under the restricted Windows sandbox; no code verdict from that attempt",
+    "retriedWithJunctionPermission": true,
+    "compiled": true,
+    "typescript": "passed within the production build",
+    "staticPagesGenerated": 26,
+    "buildId": "mycj143k7S-7i2_cSQrRz",
+    "buildManifestSha256": "f163f26819f8d879f83831753def6efdaf8812e2e86928cca467648c8568420c"
+  },
+  "snapshot": {
+    "path": ".next-releases/ma24-g01-aa976a40-layout/.next",
+    "sourceTreeAtParent": true,
+    "regularFiles": 1497,
+    "regularBytes": 206541258,
+    "treeSha256": "79709d0a1eca2e2822e554ddc710814d031ac7ce9f6f744473eac2d252b4fad6",
+    "referenceBuildRegularFilesMatched": 1282,
+    "referenceMismatches": 0,
+    "traceManifests": 87,
+    "tracedDependencyPaths": 15780,
+    "missingTracedDependencyPaths": 0,
+    "privateTraceDependencies": 0,
+    "envNamedFiles": 0,
+    "temporaryEnvironmentHardlinkRemoved": true,
+    "externalParentNodeModulesJunction": true,
+    "readyAsSelfContainedDeploymentArtifact": false
+  },
+  "liveWeb": {
+    "baseUrl": "http://127.0.0.1:3018",
+    "readOnlyPointerAttempt": "After local-loopback permission, connection refused; no Web listener observed on port 3018",
+    "runningBuildIdentityVerified": false,
+    "candidateLoaded": false
+  },
+  "productionWrites": 0,
+  "modelCalls": 0,
+  "g17ToG20Advanced": false,
+  "remaining": [
+    "Bind the full service and worker runtime versions and flags when those processes are available",
+    "Create a self-contained dependency and runtime package, or freeze the external dependency tree",
+    "Verify current database migration and backup state before any authorized deployment",
+    "Complete G14-G16 source, quality and paid admission gates"
+  ]
+}
