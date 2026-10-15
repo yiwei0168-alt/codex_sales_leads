@@ -1,0 +1,42 @@
+{
+  "schema": "ma24-g14-xlsx-no-answer-candidate-v1",
+  "date": "2026-10-15",
+  "publisher": "UK Department for Digital, Culture, Media & Sport",
+  "publicationTitle": "Taking Part 2019/20 - Internet",
+  "publicationDate": "2020-09-16",
+  "publisherPage": "https://www.gov.uk/government/statistics/taking-part-201920-internet",
+  "originalXlsxUrl": "https://assets.publishing.service.gov.uk/media/5f59dab4e90e071465674094/Internet.xlsx",
+  "originalSha256": "90eb0ed392efc2db8ab6681bcf4b9634c41f891d3df7a95bba3bf6f9457ff614",
+  "originalBytes": 59949,
+  "quarantinePath": "tmp/ma24-independent-quarantine/taking-part-internet-2019-20.xlsx",
+  "workbookSheets": [
+    { "name": "Contents", "rows": 34, "columns": 3 },
+    { "name": "Table 1", "rows": 69, "columns": 10 },
+    { "name": "Table 2", "rows": 47, "columns": 13 },
+    { "name": "Table 3", "rows": 56, "columns": 18 }
+  ],
+  "draft": {
+    "id": "taking-part-2019-20-rural-age75-intersection-unavailable",
+    "question": "According to the Taking Part 2019/20 Internet workbook, what percentage of rural England adults aged 75 or over rated their ability to use the internet at 7 or higher? Give the exact combined-group figure from the workbook.",
+    "expectedOutcome": "no-answer",
+    "answerRubric": "State that the workbook does not report the rural-and-75-or-over intersection. Table 2 reports rural adults separately (75.6%), and Table 3 reports adults aged 75 or over separately (33.1%). These marginal percentages cannot be combined into the requested subgroup rate; do not invent an exact percentage.",
+    "sourceCoordinates": ["'Table 2'!B2", "'Table 2'!B32:F33", "'Table 3'!B2", "'Table 3'!B10:F15"],
+    "wholeQuestionNoAnswer": true,
+    "reason": "No joint rural-by-age row or table exists in the four-sheet workbook; the two labels occur in different marginal breakdowns."
+  },
+  "boundedLocalTextSearch": "No matches for the publication title, either table title, or the 75.6/33.1 pair in tracked docs/src/scripts/experiments outside this candidate.",
+  "publicationFamily": "Taking Part 2019/20 Internet release; all four workbook sheets are one family",
+  "sourceReuseReviewComplete": false,
+  "fullDevelopmentExposureAuditComplete": false,
+  "offlineExtraction": {
+    "extractorVersion": "layout-v2.0.10",
+    "qualitySummary": { "success": 3, "blank": 0, "pending-ocr": 1, "failed": 0 },
+    "targetSheetBlocks": ["sheet-3-table", "sheet-4-table"],
+    "pendingVisualObject": "Contents sheet, image anchored at B2; 219 by 158 pixels, pending visual disposition before registration"
+  },
+  "productUploadReviewed": false,
+  "userVisibleAnswerCitationReviewed": false,
+  "goldFrozen": false,
+  "modelCalls": 0,
+  "status": "candidate_only"
+}

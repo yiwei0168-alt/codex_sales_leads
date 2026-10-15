@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+2026-10-15 G14 无答案题候选：英国 Taking Part 2019/20 Internet 工作簿分表给出 Rural 75.6% 与 75+ 33.1%，不提供联合人群比例；草案要求拒绝编造联合值。封面视觉待审，独立 Gold、产品引用和真实模型行为未验。[候选收据](evidence/ma24-g14-taking-part-internet-xlsx-no-answer-candidate-2026-10-15.json)。
+
 2026-10-15 G14 英国政府 BDUK XLSX 候选：原件哈希、33 行单表与现金/权责发生制指标原格已核；仅形成一条历史事实题草案。来源许可、独立性、产品引用及 Gold 均待验收。[候选收据](evidence/ma24-g14-bpi-2018-xlsx-candidate-2026-10-15.json)。
 
 同发布 PDF 第 2 页与表格答案事实重复，第 4 页可核正文 OGL 声明。该 PDF 不另计独立题源；XLSX 原格读取/引用、复用条款和 Gold 仍未验收。[交叉收据](evidence/ma24-g14-bpi-2018-xlsx-candidate-2026-10-15.json)。

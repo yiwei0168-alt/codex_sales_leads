@@ -2,6 +2,8 @@
 
 # 产品主 Agent 与开放式工具架构
 
+2026-10-15 G14 无答案来源工作流：Taking Part 2019/20 Internet 工作簿的 Rural 与 75+ 仅是不同表的边际组，不能相加或推得联合组。拟议题只问未提供的联合比例，预期拒绝给出精确数；独立来源和实际回答尚未验。[候选收据](evidence/ma24-g14-taking-part-internet-xlsx-no-answer-candidate-2026-10-15.json)。
+
 2026-10-15 G14 来源工作流：英国政府 BDUK 原始 XLSX 在隔离目录保存，按表格原格提出现金/权责发生制指标题；当前仅为独立题源候选，尚未经过上传审核、用户可见引用或 Gold 冻结。[候选收据](evidence/ma24-g14-bpi-2018-xlsx-candidate-2026-10-15.json)。
 
 同发布 PDF 原页已核：第 2 页重复工作簿答案事实，第 4 页有正文 OGL 说明。格式测评若采用该题，只上传工作簿并核原格引用；PDF 属同一发布家族，不重复计入独立来源。[交叉收据](evidence/ma24-g14-bpi-2018-xlsx-candidate-2026-10-15.json)。

@@ -1,5 +1,7 @@
 # MA24 剩余任务收尾计划（2026-10-13）
 
+2026-10-15 G14 无答案题候选：另一 GOV.UK 四表 XLSX 只给农村与 75 岁以上的分开比例，没有交叉组；已拟一条完整无答案题，原件哈希与原格已核。封面视觉对象、来源使用、完整暴露及产品引用仍待审，Gold 不变。[候选收据](evidence/ma24-g14-taking-part-internet-xlsx-no-answer-candidate-2026-10-15.json)。
+
 2026-10-15 G14 XLSX 候选补充：GOV.UK 2018 年 BDUK 指标工作簿已取得原件并核对两种支出口径的原格；历史口径问答仅为候选，尚须完整开发暴露、来源复用、产品读取/引用与整套 Gold 终审。[候选收据](evidence/ma24-g14-bpi-2018-xlsx-candidate-2026-10-15.json)。
 
 同期 PDF 第 2 页重复 XLSX 草案全部答案事实，第 4 页有 OGL 正文复用声明。该 PDF 与 XLSX 只能算同一发布家族；后续格式测评必须绑定工作簿原格引用，不能借同源 PDF 增加独立来源数。[交叉收据](evidence/ma24-g14-bpi-2018-xlsx-candidate-2026-10-15.json)。
