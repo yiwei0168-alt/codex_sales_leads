@@ -1,0 +1,65 @@
+{
+  "schema": "ma24-g14-provisional-revision-draft-addition-v1",
+  "date": "2026-10-15",
+  "status": "provisional-question-inventory-only",
+  "draftId": "etsi-38901-v194-v195-zod-reference-revision",
+  "officialSources": [
+    {
+      "version": "19.4.0",
+      "url": "https://www.etsi.org/deliver/etsi_tr/138900_138999/138901/19.04.00_60/tr_138901v190400p.pdf",
+      "sha256": "b0cbf2b55c91c6c10a2086f642194ebf26cdd27f48b88ee3f5bd40ad184f3701"
+    },
+    {
+      "version": "19.5.0",
+      "url": "https://www.etsi.org/deliver/etsi_tr/138900_138999/138901/19.05.00_60/tr_138901v190500p.pdf",
+      "sha256": "6d29a37c1f254f4b9f8fd73a0be66bdb4480c6b32d0a64ef27505ca4188b1e4c"
+    }
+  ],
+  "originalPageFinding": "Printed page 48 of both PDFs shows a corrected ZOD table reference: 7.5-6/7/8 in V19.4.0 versus 7.5-7/8/9/10/11/12 in V19.5.0. V19.5.0 also identifies those tables as the source of the ZSD log-normal mean. The visible equation forms did not change.",
+  "historicalScreen": {
+    "path": "tmp/ma24-independent-quarantine/etsi-zod-revision-neighbor-screen-2026-10-15.json",
+    "sha256": "d9fa6772e48a9a9b97f8b0201ffdc35fc7c45d9e3359fd2bbd8d124302042baa",
+    "oldRows": 350,
+    "uniqueQueries": 300,
+    "topTenReviewed": true,
+    "sameQuestionFound": false
+  },
+  "currentPoolScreen": {
+    "path": "tmp/ma24-independent-quarantine/etsi-zod-revision-current-pool-screen-2026-10-15.json",
+    "sha256": "2e10ec8ac7a76313ab3977a4c4aedec7ef22505aaf248b8030ff65914711324c",
+    "priorDrafts": 26,
+    "sameQuestionFound": false,
+    "sameSourceFamilyFound": true
+  },
+  "inventory": {
+    "path": "tmp/ma24-independent-quarantine/g14-current-draft-pool-v6-2026-10-15.json",
+    "sha256": "2be471883c10e9c7672efd4fbd681fe47560205a5fb03341250827ba64399ddb",
+    "drafts": 27,
+    "publicationDrafts": 24,
+    "syntheticSecurityDrafts": 3,
+    "newOrRevisedDrafts": 1,
+    "unmetNewOrRevisedTarget": 3
+  },
+  "familyClosure": {
+    "path": "tmp/ma24-independent-quarantine/g14-family-closure-v6-2026-10-15.json",
+    "sha256": "9ff0555557e9fa496262b6657236572fbb010692b9fbe7ac2005f7509b5ddc72",
+    "publicationFamilies": 13,
+    "connectedPublicationExposureUnits": 11,
+    "revisionDraftSharesExistingEtsiFamily": true
+  },
+  "limits": [
+    "BGE near-neighbor screens and bounded text searches do not prove whole-set independence.",
+    "Both full PDFs need visual review and product ingestion with verified citation coordinates before model evaluation.",
+    "This provisional draft is not approved Gold and no actual dual-arm task ran."
+  ],
+  "approvedGold": 0,
+  "modelAnswerCalls": 0,
+  "g17ToG20Advanced": false,
+  "checks": {
+    "poolReproductionSha256Matched": true,
+    "familyClosureReproductionSha256Matched": true,
+    "typescriptNoEmit": "passed",
+    "eslint": "passed",
+    "gitDiffCheck": "passed"
+  }
+}

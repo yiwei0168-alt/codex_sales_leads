@@ -385,3 +385,5 @@ R1 的 PPTX 内容质量抽样已核对公开开发原件的 6/63 个待审核�
 2026-10-15 G14 Taking Part 无答案题的四页签、目标行和产品抽取坐标已核；农村总体 75.6% 与 75+ 总体 33.1% 不构成交叉人群比例。隔离 Gold 草案总数 2，正式批准数 0；该原件与 BDUK 跨文档题共同组成一个暴露单元，不能独立拆分。[草案收据](evidence/ma24-g14-taking-part-private-no-answer-gold-draft-2026-10-15.json)。
 
 2026-10-15 G14 合成私有安全题的权限正例、无权账号拒绝、来源指令注入已形成 3 条隔离 Gold 草案，原页和两个正例坐标核对，拒绝依据为隔离产品 ACL 而非文档自述。合计隔离 Gold 草案 5，批准 Gold 仍为 0；实际账号和资料状态尚未冻结，也未运行双路模型。[安全草案收据](evidence/ma24-g14-private-security-gold-drafts-2026-10-15.json)。
+
+2026-10-15 G14 ETSI cross-version candidate advanced into the provisional v6 inventory: 27 drafts, including one new-or-revised draft, still zero approved Gold. Official V19.4.0/V19.5.0 page 48 and V19.5.0 change history were rechecked; historical 350-row and current 26-draft neighbor screens found no same question, while the source remains in the existing ETSI family. Connected publication exposure units remain 11. Full PDF review, product citation, whole-set independence and G16 real runs remain open; G17-G20 are paused. [Receipt](evidence/ma24-g14-current-27-draft-revision-addition-2026-10-15.json).

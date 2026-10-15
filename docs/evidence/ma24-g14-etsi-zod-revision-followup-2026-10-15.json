@@ -1,0 +1,44 @@
+{
+  "schema": "ma24-g14-etsi-revision-followup-v1",
+  "date": "2026-10-15",
+  "sourceSha256s": [
+    "b0cbf2b55c91c6c10a2086f642194ebf26cdd27f48b88ee3f5bd40ad184f3701",
+    "6d29a37c1f254f4b9f8fd73a0be66bdb4480c6b32d0a64ef27505ca4188b1e4c"
+  ],
+  "draft": {
+    "id": "etsi-38901-v194-v195-zod-reference-revision",
+    "question": "比较 ETSI TR 138 901 V19.4.0 与 V19.5.0 的第 7.5 节 ZOD 生成步骤：式 (7.5-19) 中 ZOD offset 参数的来源表引用如何修订？式 (7.5-20) 后的 μ_lgZSD 来源说明增加了什么？请分别注明两个版本，并区分引用修订与公式本身。"
+  },
+  "status": "bounded-source-and-question-review-complete-provisional-draft",
+  "goldApproved": false,
+  "modelCalls": 0,
+  "g17ToG20Advanced": false,
+  "review": {
+    "originalPdfSha256s": [
+      "b0cbf2b55c91c6c10a2086f642194ebf26cdd27f48b88ee3f5bd40ad184f3701",
+      "6d29a37c1f254f4b9f8fd73a0be66bdb4480c6b32d0a64ef27505ca4188b1e4c"
+    ],
+    "sourceAuditSha256": "683ec61dd73a2921f8154c2541f9e5b3852d5f252a09f1fe03fe5ce482f70b75",
+    "originalPageReview": "Both official physical page 49 images confirm the ZOD table-reference correction and unchanged visible equation forms; V19.5.0 physical page 166 lists CR 0043.",
+    "historicalNeighborScreen": {
+      "sha256": "d9fa6772e48a9a9b97f8b0201ffdc35fc7c45d9e3359fd2bbd8d124302042baa",
+      "oldRows": 350,
+      "uniqueQueries": 300,
+      "topTenManualReview": "No question asks the ETSI ZOD cross-version correction; nearest results ask to open a newer device datasheet or a nonexistent PDF."
+    },
+    "currentPoolScreen": {
+      "sha256": "2e10ec8ac7a76313ab3977a4c4aedec7ef22505aaf248b8030ff65914711324c",
+      "poolRows": 26,
+      "closestIds": [
+        "etsi-38901-v195-isac-lower-power-clusters",
+        "etsi-38901-v195-inf-blocker-parameters"
+      ],
+      "manualReview": "The two same-family drafts ask ISAC and indoor-factory blocker parameters, not the ZOD correction. They still share the V19.5.0 source family."
+    },
+    "preCandidateTextExposure": "At 508ab9ed^, searched docs/src/scripts/experiments: V19.5.0 URL occurred as source metadata; exact ZOD correction phrases absent. At 3dba9141^, searched docs/src/scripts/experiments: exact ZOD correction phrases absent.",
+    "productCitationVerified": false,
+    "completeLongPdfVisualReview": false,
+    "wholeSetIndependenceProven": false
+  },
+  "disposition": "May enter provisional G14 inventory as one new-or-revised draft in the existing ETSI exposure family; no Gold approval or G16 execution admission."
+}
