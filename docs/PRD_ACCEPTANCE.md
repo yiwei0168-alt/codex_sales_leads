@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+2026-10-15 G14 NTIA/NASA《18 GHz Band Report》新增一条原页核对后的短 PDF 草案；本地哈希、有限暴露及题目近邻检查已记录。9 个视觉页未完成产品审核，来源终审、Gold 和用户可见引用仍未通过。[候选收据](evidence/ma24-g14-ntia-18ghz-pdf-candidate-2026-10-15.json)。
+
 2026-10-15 G14 独立测评材料准备：NIST 报告图 3 与工业无线元数据工作簿组成第 2 条跨文档待审草案，原页/原格及有界近邻筛查已核；当前池 22 草案、Gold 0。共享原件、工作簿登记与用户可见引用均未验收，不能计作独立质量通过。[筛选收据](evidence/ma24-g14-nist-two-source-draft-selection-2026-10-15.json)。
 
 2026-10-15 G14 长 PDF 局部验收：NIST TN 2363 的 11 个视觉对象在隔离克隆完成 8 证据/3 装饰审核、登记和指定块原页坐标回读；另一账号拒绝且发布指针不变。此不证明独立 Gold、实际答案与用户可见引用质量。[产品收据](evidence/ma24-g14-nist-tn2363-visual-review-clone-2026-10-15.json)。

@@ -1,0 +1,68 @@
+{
+  "schema": "ma24-g14-ntia-18ghz-pdf-candidate-v1",
+  "date": "2026-10-15",
+  "status": "Original-page checked candidate only; not frozen Gold",
+  "publisher": "National Telecommunications and Information Administration and National Aeronautics and Space Administration",
+  "title": "18 GHz Band Report, NTIA Report 25-01",
+  "reportDate": "March 2025",
+  "publisherListingDate": "May 1, 2025",
+  "publisherPage": "https://www.ntia.gov/report/2025/18-ghz-band-report",
+  "sourceUrl": "https://www.ntia.gov/sites/default/files/2025-05/18-ghz-band-study-report.pdf",
+  "localQuarantinePath": "tmp/ma24-independent-quarantine/ntia-18-ghz-band-report-2025.pdf",
+  "bytes": 302208,
+  "sha256": "ff6074c82f7c6abbab80a792ad3d1fae111074f64a492395d2c3c7b78f0c8e42",
+  "physicalPages": 10,
+  "draftQuestions": [
+    {
+      "id": "ntia-18ghz-g117-iss-footnote-and-manual-recommendation",
+      "status": "draft only; not Gold",
+      "question": "According to the March 2025 NTIA/NASA 18 GHz Band Report, why did the existing G117 military-only limit on federal FSS not itself restrict ISS? What separate restriction on federal ISS space-to-space links and what NTIA Manual update did the report recommend? Did the report settle non-federal ISS allocation priority as definitively primary? Answer only what this dated report said and cite its original pages.",
+      "draftAnswer": "The report says G117 limits federal Fixed Satellite Service (FSS) to military systems, while Inter-Satellite Service (ISS) is a different service class. It recommends a new U.S. footnote limiting federal space-to-space links in this band to communications with a non-federal network or system for space relay, and updating the NTIA Manual with ePFD/PFD limits to protect incumbent operations when the allocation changes are made. It recommends seeking comment on whether non-federal ISS allocations should be primary or secondary; it recommends co-primary allocations in the federal table. These are the report's recommendations, not proof that later FCC rules adopted them.",
+      "sourceCoordinates": ["physical PDF page 8 / printed page 5 / Observation 2 and Observation 3", "physical PDF page 9 / printed page 6 / Recommendations 2-4"],
+      "primaryFormat": "pdf",
+      "wholeQuestionCrossDocument": false
+    }
+  ],
+  "originalCheck": {
+    "method": "Downloaded original PDF from official NTIA URL; SHA-256 and 10-page count checked; physical pages 4, 8 and 9 rendered and visually inspected; page text and recommendation boundaries compared to original rendering",
+    "page8Finding": "G117 applies to federal FSS, not ISS; a separate footnote and NTIA Manual power-flux-density update are proposed",
+    "page9Finding": "Recommendation 2 seeks comment on non-federal primary versus secondary ISS status, while recommending co-primary status in the federal table; recommendations 3-4 specify the federal link restriction and manual limits",
+    "temporalBoundary": "The question asks what the March 2025 report recommended, not the current legal allocation status"
+  },
+  "offlineProductExtraction": {
+    "extractorVersion": "layout-v2.0.10",
+    "artifactPath": "tmp/ma24-independent-quarantine/ntia-18-ghz-band-report-2025.layout-v2.extraction.json",
+    "artifactSha256": "176c8b774435f757bd12894125123db39cc80831dcf764dacf9518be33d31e1d",
+    "blocks": 136,
+    "qualitySummary": { "success": 1, "blank": 0, "pending-ocr": 9, "failed": 0 },
+    "targetBlocks": ["page-8-block-29", "page-9-block-7"],
+    "registrationGate": "Nine page-level visual-review blocks remain unresolved; offline extraction is not registered or user-citable"
+  },
+  "boundedExposureScreen": {
+    "trackedCurrentAndHistory": "No exact title, NTIA Report 25-01, or G117 hit in searched docs/src/scripts/experiments at HEAD or Git pickaxe history before this candidate receipt",
+    "localRegistryExactHash": { "assets": 0, "uploadJobs": 0, "historicalGold": 0 },
+    "independenceProven": false
+  },
+  "questionOverlapScreen": {
+    "historicalCommand": "node scripts/run-tsx.cjs scripts/screen-ma24-g14-question-overlap-local.ts docs/evidence/ma24-g14-ntia-18ghz-pdf-candidate-2026-10-15.json tmp/ma24-independent-quarantine/ntia-18ghz-historical-neighbors.json",
+    "historicalOutputSha256": "08e6c008c019368b232345de054f9ad83d45f5570e8b58d3cecfb648047862c3",
+    "historicalReceiptSha256BeforeThisAppend": "961b87a56b7948661a2498608db1a741055f9fdac49ddf6497ee87e0219e0bf0",
+    "historicalRows": 350,
+    "uniqueHistoricalQueries": 300,
+    "historicalTopCosine": 0.451823,
+    "historicalTopQuery": "GS108 适合什么部署场景？请说明依据",
+    "currentPoolOutputSha256": "0a98b154552efc8a13435467e870e6e4a9beda528ee24133eee63e4360f6cbd5",
+    "currentPoolComparedDrafts": 22,
+    "currentPoolTopId": "nist-tn2363-delay-profile-and-5g-tsn-validation",
+    "currentPoolTopCosine": 0.523879,
+    "manualFinding": "The old top neighbor asks a named product's deployment fit. The current top neighbor asks industrial 5G-TSN latency validation; no current question asks this dated NTIA/NASA report's G117 versus ISS service-class boundary, proposed federal link footnote, or non-federal allocation-priority caveat. This is a bounded question screen, not source-family or semantic-independence approval.",
+    "model": "local BAAI/bge-m3 revision 5617a9f61b028005a4858fdac845db406aefb181",
+    "cloudCalls": 0
+  },
+  "sourceUseBoundary": "Use a short attributed factual paraphrase for internal evaluation only. Keep the original PDF quarantined; this screen does not grant rights to redistribute the report or embedded third-party material.",
+  "publisherFamily": "NTIA/NASA Report 25-01; distinct original from the existing NIST, FCC, ETSI, ITU, ONS, GOV.UK, IEEE, ZBW and Zenodo draft families, subject to final full-set audit",
+  "goldCreated": 0,
+  "modelAnswerCalls": 0,
+  "productionWrites": 0,
+  "remaining": ["Complete all nine page-level visual reviews and isolated product citation readback", "Resolve final source-use and full-set family/exposure decisions", "Freeze independently reviewed Gold before any G15/G16 model run"]
+}
