@@ -1,0 +1,37 @@
+{
+  "schema": "ma24-g01-local-runtime-smoke-v1",
+  "date": "2026-10-16",
+  "sourceCommit": "aa976a40",
+  "buildId": "mycj143k7S-7i2_cSQrRz",
+  "snapshot": ".next-releases/ma24-g01-aa976a40-layout/.next",
+  "scope": "Bounded local loopback startup and HTTP status checks of the isolated candidate snapshot; not a production switch or G17 pilot",
+  "startup": {
+    "command": "node node_modules/next/dist/bin/next start -p 3019 -H 127.0.0.1",
+    "firstSandboxAttempt": "Next reported ready, but requests from a separate sandbox context timed out; no HTTP verdict was taken from this attempt",
+    "localLoopbackRetry": "Next 16.3.4 reported ready in 281 ms when run with local-loopback permission",
+    "temporaryEnvHardlinkUsed": true,
+    "temporaryEnvHardlinkRemovedAfterStop": true,
+    "processStopped": true,
+    "port3019ListenerAfterStop": false,
+    "snapshotTreeSha256AfterStop": "79709d0a1eca2e2822e554ddc710814d031ac7ce9f6f744473eac2d252b4fad6",
+    "snapshotTreeUnchangedAfterStop": true
+  },
+  "http": {
+    "method": "GET, response bodies suppressed",
+    "baseUrl": "http://127.0.0.1:3019",
+    "homeStatus": 200,
+    "sessionStatus": 200,
+    "candidateBuildManifestStatus": 200,
+    "oldBuildManifestStatus": 404,
+    "candidateBuildManifestPath": "/_next/static/mycj143k7S-7i2_cSQrRz/_buildManifest.js",
+    "oldBuildManifestPath": "/_next/static/QfoyXprIZIVgSWxFSZ-1K/_buildManifest.js"
+  },
+  "limits": [
+    "Only this local candidate process was observed; the prior 3018 service was absent and its current build identity is not proven",
+    "GET status checks do not validate authenticated workflows, live model answers, background workers or database write effects",
+    "The candidate snapshot still uses a workspace node_modules junction and is not a self-contained deployment package",
+    "No domain pilot, production migration, service switch or actual rollback was performed"
+  ],
+  "modelCalls": 0,
+  "g17ToG20Advanced": false
+}
