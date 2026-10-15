@@ -86,6 +86,26 @@ export function assertMa24G15RuntimeBinding(frozen: Ma24G15Preview,
   return { runtimeBindingMatched: true, readyForModelCalls: missing.length === 0, missing };
 }
 
+/** A private admission may change reviewed gates, never the live code or runtime identity. */
+export function assertMa24G15AdmissionCodeIdentity(admitted: Ma24G15Preview,
+  fresh: Ma24G15Preview) {
+  if (admitted.schema !== "ma24-g15-config-preview-v1" ||
+    fresh.schema !== admitted.schema || !fresh.readOnly || !fresh.simulation)
+    throw new Error("MA24 G15 admission base preview invalid");
+  for (const field of ["productPromptDateUtc", "requiredRunPromptDateUtc", "mode",
+    "modePromptVersion", "modePromptSha256", "productVersion",
+    "modelFunctionsSha256", "sourceClosureMethod", "sourceClosureFileCount",
+    "intendedLocalBgeFlagForBothArms", "currentLocalBgeFlagEnabled",
+    "comparableModelRoutes", "toolDeltaLimitedToVectorless",
+    "runPromptDateGateImplemented"] as const)
+    if (!Object.is(admitted[field], fresh[field]))
+      throw new Error(`MA24 G15 admission ${field} drift`);
+  for (const field of ["modelProfile", "arms", "sourceHashes"] as const)
+    if (sha(admitted[field]) !== sha(fresh[field]))
+      throw new Error(`MA24 G15 admission ${field} drift`);
+  return admitted;
+}
+
 /** Require an admitted frozen preview before a dedicated evaluation task is claimed. */
 export function requireMa24G15ModelReady(frozen: Ma24G15Preview,
   loaded: Ma24G15Preview, nowUtcDate: string) {

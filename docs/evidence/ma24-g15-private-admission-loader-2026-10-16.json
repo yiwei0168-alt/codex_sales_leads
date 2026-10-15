@@ -1,0 +1,35 @@
+{
+  "schema": "ma24-g15-private-admission-loader-v1",
+  "date": "2026-10-16",
+  "finding": "The existing G15 runtime comparator could accept a fully admitted configuration, but the only current loader always returned a read-only simulation preview. Real admission was unreachable from the dedicated G16 entry.",
+  "change": "An optional MA24_G15_ADMITTED_CONFIG_PATH now loads a JSON configuration only after realpath confines it to tmp/ma24-independent-evaluation and its code, prompt, model, tool-arm, UTC date and live BGE-flag identity match a freshly computed preview. Without this path the loader still returns the read-only simulation preview.",
+  "codeHashes": {
+    "src/lib/knowledge/evaluation/ma24-evaluation-claim.ts": "e7124b68f60baa52d9b5520a218ce054bb45b11998d93aa7f215ee9532ab02b4",
+    "src/lib/knowledge/evaluation/ma24-g15-runtime-binding.ts": "a874a3ec743a07ca238c065bc929dd3bbce80ef625bdfb783233b44a00cab30d"
+  },
+  "checks": {
+    "focusedVitest": "4 files, 33 tests passed; default preview closed, private file accepted, public path rejected, source-hash and live BGE-flag drift rejected",
+    "typescript": "passed",
+    "changedFileEslint": "passed",
+    "realPrivatePathSmoke": "A private copy of the current unready preview matched live code and remained readyForModelCalls=false; temporary file removed",
+    "modelCalls": 0,
+    "providerCalls": 0
+  },
+  "currentReadOnlyPreview": {
+    "path": "docs/evidence/ma24-g15-config-preview-2026-10-16-v28.json",
+    "sha256": "a75ef3318c5e9dca67f59f944031cff14b6602d4a1ce67969d330263377a5c47",
+    "sourceClosureFiles": 304,
+    "runtimeBindingMatched": true,
+    "readOnly": true,
+    "simulation": true,
+    "readyForModelCalls": false
+  },
+  "remaining": [
+    "An admitted private configuration must be backed by independently reviewed source, Gold, runtime build, retrieval baseline, tariff and user authorization evidence",
+    "The frozen manifest must bind the exact admitted configuration bytes and the durable per-run hard-limit row must match its caps and authorization reference",
+    "Current local BGE flag is disabled and the available v28 preview is only a simulation",
+    "No real G16 model answer, citation or dual-arm quality verdict exists"
+  ],
+  "g17ToG20Advanced": false,
+  "limit": "This creates a guarded loader path, not a paid-call authorization. The admission booleans require substantive evidence outside this loader before an operator creates a non-simulation configuration."
+}

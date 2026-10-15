@@ -1,9 +1,13 @@
 import { expect, it, vi } from "vitest";
+import { randomUUID } from "node:crypto";
+import { unlinkSync, writeFileSync } from "node:fs";
+import { resolve } from "node:path";
 
 const mocks = vi.hoisted(() => ({ query: vi.fn(), runtimeBinding: vi.fn(),
   verifyTaskBinding: vi.fn() }));
 vi.mock("node:child_process", () => ({
-  execFileSync: () => JSON.stringify({ schema: "ma24-g15-config-preview-v1" }),
+  execFileSync: () => JSON.stringify({ schema: "ma24-g15-config-preview-v1",
+    readOnly: true, simulation: true, modelProfile: {}, arms: [], sourceHashes: {} }),
 }));
 vi.mock("../../rag/db", () => ({ query: mocks.query }));
 vi.mock("../../assistant/main/repository", () => ({ finishRun: vi.fn() }));
@@ -16,7 +20,8 @@ vi.mock("./ma24-independent-comparison", () => ({
 vi.mock("./ma24-evaluation-task-binding", () => ({
   verifyMa24EvaluationTaskBinding: mocks.verifyTaskBinding,
 }));
-vi.mock("./ma24-g15-runtime-binding", () => ({
+vi.mock("./ma24-g15-runtime-binding", async importOriginal => ({
+  ...await importOriginal<typeof import("./ma24-g15-runtime-binding")>(),
   assertMa24G15RuntimeBinding: mocks.runtimeBinding,
 }));
 vi.mock("./ma24-corpus-snapshot", () => ({
@@ -29,7 +34,43 @@ vi.mock("./ma24-corpus-snapshot", () => ({
   verifyMa24LiveRouteGoldEvidence: vi.fn(),
 }));
 
-import { claimAndBindMa24EvaluationRun } from "./ma24-evaluation-claim";
+import { claimAndBindMa24EvaluationRun,
+  loadCurrentMa24G15Preview } from "./ma24-evaluation-claim";
+
+it("loads an admitted config only from a private file bound to live code", () => {
+  const path = resolve("tmp/ma24-independent-evaluation", `g15-test-${randomUUID()}.json`);
+  const saved = process.env.MA24_G15_ADMITTED_CONFIG_PATH;
+  try {
+    writeFileSync(path, JSON.stringify({ schema: "ma24-g15-config-preview-v1",
+      readOnly: false, simulation: false, modelProfile: {}, arms: [], sourceHashes: {} }));
+    process.env.MA24_G15_ADMITTED_CONFIG_PATH = path;
+    expect(loadCurrentMa24G15Preview()).toMatchObject({ readOnly: false, simulation: false });
+    writeFileSync(path, JSON.stringify({ schema: "ma24-g15-config-preview-v1",
+      readOnly: false, simulation: false, modelProfile: {}, arms: [],
+      sourceHashes: { "src/graph.ts": "drift" } }));
+    expect(() => loadCurrentMa24G15Preview()).toThrow("admission sourceHashes drift");
+  } finally {
+    if (saved === undefined) delete process.env.MA24_G15_ADMITTED_CONFIG_PATH;
+    else process.env.MA24_G15_ADMITTED_CONFIG_PATH = saved;
+    unlinkSync(path);
+  }
+});
+
+it("keeps the default preview closed and rejects a public admission path", () => {
+  const saved = process.env.MA24_G15_ADMITTED_CONFIG_PATH;
+  try {
+    delete process.env.MA24_G15_ADMITTED_CONFIG_PATH;
+    expect(loadCurrentMa24G15Preview()).toMatchObject({ readOnly: true,
+      simulation: true });
+    process.env.MA24_G15_ADMITTED_CONFIG_PATH = resolve(
+      "docs/evidence/ma24-g15-config-preview-2026-10-16-v27.json");
+    expect(() => loadCurrentMa24G15Preview())
+      .toThrow("admitted configuration must be private evaluation JSON");
+  } finally {
+    if (saved === undefined) delete process.env.MA24_G15_ADMITTED_CONFIG_PATH;
+    else process.env.MA24_G15_ADMITTED_CONFIG_PATH = saved;
+  }
+});
 
 it("binds a synthetic unready task without treating the binding as model admission", async () => {
   const userId = "11111111-1111-4111-8111-111111111111";

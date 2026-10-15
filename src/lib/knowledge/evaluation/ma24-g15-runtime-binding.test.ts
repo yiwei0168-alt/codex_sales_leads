@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { assertMa24G15RuntimeBinding, requireMa24G15ModelReady,
+import { assertMa24G15AdmissionCodeIdentity, assertMa24G15RuntimeBinding,
+  requireMa24G15ModelReady,
   type Ma24G15Preview } from "./ma24-g15-runtime-binding";
 
 const preview = (): Ma24G15Preview => ({ schema: "ma24-g15-config-preview-v1",
@@ -21,6 +22,25 @@ const preview = (): Ma24G15Preview => ({ schema: "ma24-g15-config-preview-v1",
   readyForPaidEvaluation: false });
 
 describe("MA24 G15 runtime binding", () => {
+  it("allows a private admission to add reviewed gates only after code identity matches", () => {
+    const fresh = preview();
+    const admitted = structuredClone(fresh);
+    admitted.readOnly = false;
+    admitted.simulation = false;
+    admitted.sourceSetFrozen = true;
+    admitted.goldFrozen = true;
+    expect(assertMa24G15AdmissionCodeIdentity(admitted, fresh)).toBe(admitted);
+    admitted.sourceHashes["src/graph.ts"] = "different";
+    expect(() => assertMa24G15AdmissionCodeIdentity(admitted, fresh))
+      .toThrow("admission sourceHashes drift");
+  });
+  it("rejects an admission that reports an unobserved local BGE runtime flag", () => {
+    const fresh = preview();
+    const admitted = structuredClone(fresh);
+    admitted.currentLocalBgeFlagEnabled = true;
+    expect(() => assertMa24G15AdmissionCodeIdentity(admitted, fresh))
+      .toThrow("admission currentLocalBgeFlagEnabled drift");
+  });
   it("reports a matching preview as still unready when freeze and spend gates are missing", () => {
     const same = preview();
     expect(assertMa24G15RuntimeBinding(same, structuredClone(same), "2026-10-15"))

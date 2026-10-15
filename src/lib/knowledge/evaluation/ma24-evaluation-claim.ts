@@ -1,4 +1,6 @@
 import { execFileSync } from "node:child_process";
+import { readFileSync, realpathSync } from "node:fs";
+import { resolve, sep } from "node:path";
 import { query } from "../../rag/db";
 import { finishRun } from "../../assistant/main/repository";
 import { modeModelConfig } from "../../assistant/main/mode-config";
@@ -6,7 +8,8 @@ import { assertMa24FrozenSnapshotBytes, assertMa24GoldMatchesManifest,
   assertMa24SourceSetMatchesManifest, type Ma24GoldSnapshot,
   type Ma24SourceSetSnapshot } from "./ma24-independent-comparison";
 import { verifyMa24EvaluationTaskBinding } from "./ma24-evaluation-task-binding";
-import { assertMa24G15RuntimeBinding, type Ma24G15Preview } from "./ma24-g15-runtime-binding";
+import { assertMa24G15AdmissionCodeIdentity, assertMa24G15RuntimeBinding,
+  type Ma24G15Preview } from "./ma24-g15-runtime-binding";
 import { assertMa24CorpusSnapshotBytes, assertMa24PermissionGoldControl,
   assertMa24RouteGoldCorpusAccess,
   verifyMa24LiveCorpusAccount, verifyMa24LivePermissionControl,
@@ -33,7 +36,15 @@ export function loadCurrentMa24G15Preview(): Ma24G15Preview {
   const output = execFileSync(process.execPath,
     ["scripts/run-tsx.cjs", "scripts/prepare-ma24-g15-config-local.ts"],
     { cwd: process.cwd(), encoding: "utf8", maxBuffer: 4_194_304 });
-  return JSON.parse(output) as Ma24G15Preview;
+  const fresh = JSON.parse(output) as Ma24G15Preview;
+  const requested = process.env.MA24_G15_ADMITTED_CONFIG_PATH;
+  if (!requested) return fresh;
+  const root = realpathSync(resolve("tmp/ma24-independent-evaluation"));
+  const path = realpathSync(resolve(requested));
+  if (!path.startsWith(root + sep) || !path.endsWith(".json"))
+    throw new Error("MA24 G15 admitted configuration must be private evaluation JSON");
+  const admitted = JSON.parse(readFileSync(path, "utf8")) as Ma24G15Preview;
+  return assertMa24G15AdmissionCodeIdentity(admitted, fresh);
 }
 
 /** Claim one task, bind its current lease to all frozen inputs, and retire failed admissions. */
