@@ -1,0 +1,52 @@
+{
+  "schema": "ma24-g01-5e74b86d-review-clone-v1",
+  "checkedAt": "2026-10-15T00:08:54Z",
+  "sourceCommit": "5e74b86d",
+  "candidateBuildId": "lZLtUJUu48Mzpo-hg2VLq",
+  "scope": "Exact rebuilt candidate against disposable local PostgreSQL restores; synthetic login and public PPTX review fixture; no production migration, switch, model evaluation, domain pilot or actual rollback",
+  "basicClone": {
+    "command": "node scripts/run-tsx.cjs scripts/verify-ma24-backup-restore.ts --web-compat",
+    "backupSha256": "17db517922f0ee8067391544418f0c8af9f77ee5f48203b938b7559ba528d428",
+    "migrationRange": "127-135",
+    "transactionRollbackRestoredPriorMarkers": true,
+    "migrationCommittedOnDisposableClone": true,
+    "criticalAclAndForcedRls": "passed",
+    "oldAndCandidateBuildManifestStatus": 200,
+    "oldAndCandidateSyntheticLoginAndUploadList": "passed",
+    "candidateAcceptanceReviewRouteStatus": 200,
+    "modelCalls": 0
+  },
+  "expandedReview": {
+    "command": "node scripts/run-tsx.cjs scripts/verify-ma24-backup-restore.ts --web-compat --review-ui",
+    "firstAttempt": "Local prepare-upload-visual-review worker exited 1 without stdout/stderr while isolated source directory lacked the ignored .venv-docling-v3 Python environment; disposable database was dropped",
+    "recovery": "Linked the existing local Python environment into the ignored isolated workspace and reran the same command",
+    "rerunResult": "passed",
+    "candidatePptxUploadStatus": 202,
+    "visualReviewObjects": 63,
+    "originalDownloadMatched": true,
+    "smartArtAndConnectorCopiedFromApi": true,
+    "successfulTextRenderedDesktopAndMobile": true,
+    "savedReviewRevision": 1,
+    "savedDecision": "unresolved",
+    "staleWriteStatus": 409,
+    "changedOriginalRejected": true,
+    "mobileNoHorizontalOverflow": true,
+    "completedReview": false,
+    "publishedDocuments": 0,
+    "oldWebAfterCandidateWriteVisibleJobs": 1,
+    "cloudCredentialsClearedInWorker": true,
+    "modelCalls": "not measured by this review-UI run"
+  },
+  "cleanup": {
+    "allThreeDisposableCloneDatabasesAbsent": true,
+    "isolatedSyntheticUploadDirectoryEmpty": true,
+    "liveWebOldManifestStatus": 200,
+    "liveWebCandidateManifestStatus": 404,
+    "productionChanged": false
+  },
+  "limits": [
+    "The restored backup predates the release and is not a fresh switch-time backup.",
+    "The isolated old Web reading a candidate-created job does not prove an actual service switch or production rollback.",
+    "This test does not grade source meaning, answer quality or independent Gold and does not load the candidate on the live Web."
+  ]
+}
