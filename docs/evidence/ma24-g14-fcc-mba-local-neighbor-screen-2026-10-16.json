@@ -1,0 +1,44 @@
+{
+  "schema": "ma24-g14-fcc-mba-local-neighbor-screen-receipt-v1",
+  "date": "2026-10-16",
+  "scope": "Private candidate diagnostic against historical and current question pools",
+  "candidateId": "fcc-mba-2022-idle-loaded-latency-anonymization-v1",
+  "candidateFileSha256": "b561d63fd006f2ed4ab5dbb4b74d6b21ac04969e022a4b71fe1b0ae3a1afb592",
+  "privateReport": {
+    "path": "tmp/ma24-independent-quarantine/fcc-mba-thirteenth-neighbor-screen-v1.json",
+    "sha256": "d946bcf87e1e62c75acdf167085382acabb273de11d4831eae47e67973e41a11",
+    "questionTextAndAnswersInTrackedReceipt": false
+  },
+  "localModel": {
+    "healthObservedFromElevatedLocalContext": true,
+    "binding": "127.0.0.1:8765",
+    "model": "BAAI/bge-m3",
+    "revision": "5617a9f61b028005a4858fdac845db406aefb181",
+    "dimensions": 1024
+  },
+  "screenedQuestions": {
+    "historicalCorpus": 300,
+    "historicalBlind": 50,
+    "currentPublicationDrafts": 25,
+    "currentSyntheticSecurityDrafts": 3,
+    "totalIncludingCandidate": 379
+  },
+  "topNeighbors": [
+    { "id": "fcc-2026-fixed-service-option-scope", "pool": "current-publication", "cosine": 0.566658 },
+    { "id": "nist-tn2363-aggressor-welding-table-comparison", "pool": "current-publication", "cosine": 0.5437 },
+    { "id": "ieee-80211-2025-amp-bands-modes", "pool": "current-publication", "cosine": 0.521749 },
+    { "id": "nist-tn2363-delay-profile-and-5g-tsn-validation", "pool": "current-publication", "cosine": 0.515586 },
+    { "id": "govuk-bduk-taking-part-premises-vs-regional-ability", "pool": "current-publication", "cosine": 0.510201 }
+  ],
+  "closestHistorical": { "id": "boundary-3-08", "pool": "old-300", "cosine": 0.436547, "manualTopicCheck": "shared combo-port count; unrelated to the FCC measurement method" },
+  "manualReview": "The highest current-pool neighbors ask for fixed-service availability, industrial wireless delay, or wireless standard bands, not the candidate's measurement procedure and anonymization boundary. This bounded comparison finds no same question among the inspected neighbors; scores alone do not establish independence.",
+  "limitations": [
+    "The neighbor report stores only the top 20 identifiers and scores; this is a diagnostic, not a complete semantic proof.",
+    "The fixed service ran only for local screening and did not configure the product or evaluation process.",
+    "Local conversation history, derivative sources, family boundaries, whole-source visual review, product citation, rights, and final Gold remain open."
+  ],
+  "approvedIndependentGold": 0,
+  "g15PaidAdmission": false,
+  "g16RealDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}
