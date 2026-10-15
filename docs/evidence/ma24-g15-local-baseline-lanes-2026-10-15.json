@@ -1,0 +1,38 @@
+{
+  "schema": "ma24-g15-local-baseline-lanes-v1",
+  "date": "2026-10-15",
+  "scope": "Read-only current local product knowledge_search baseline lane check using exposed development material",
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-g15-bge-tool-local.ts",
+  "verifierSha256": "7f494b11eba8a9619fc6191a3aa85c4fcb7a3489e2fbfd84373d912dcbd0c8f0",
+  "localBgeHealth": {
+    "status": "ready",
+    "model": "BAAI/bge-m3",
+    "revision": "5617a9f61b028005a4858fdac845db406aefb181",
+    "dimensions": 1024
+  },
+  "observed": {
+    "query": "WR3000 Ethernet ports",
+    "requestedCollection": "company",
+    "authorizedScope": "product",
+    "toolStatus": "success",
+    "authorizedChunks": 8,
+    "bgeRankedChunks": 3,
+    "fulltextRankedChunks": 6,
+    "factRankedChunks": 8,
+    "qwenRankedChunks": 0,
+    "modelCalls": 0,
+    "providerCalls": 0
+  },
+  "checks": {
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "localProbe": "passed"
+  },
+  "limits": [
+    "Lane ranks can overlap across returned chunks; counts are not additive and do not independently prove answer quality.",
+    "This query and source are exposed development material. No independent Gold, model answer, user-visible citation, paid call, or production process was exercised.",
+    "The local BGE process health is a point-in-time observation, not a deployment or availability guarantee."
+  ],
+  "g15Frozen": false,
+  "g16QualityAccepted": false
+}

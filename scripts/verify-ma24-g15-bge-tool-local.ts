@@ -23,16 +23,19 @@ try{
  const input=tool.input.parse({query:'WR3000 Ethernet ports',limit:8,collections:['company']});
  const output=await tool.execute(input,{userId:OWNER_USER_ID,runId:'g15-local-read-only-probe',
   leaseToken:'g15-local-read-only-probe',role:'admin',knowledgeScope:['product']});
- const chunks=Array.isArray(output.data)?output.data as Array<{metadata?:{laneRanks?:{bge?:number|null;qwen?:number|null}}}>:[];
+ const chunks=Array.isArray(output.data)?output.data as Array<{metadata?:{laneRanks?:{bge?:number|null;qwen?:number|null;fulltext?:number|null;facts?:number|null}}}>:[];
  const bgeHits=chunks.filter(row=>Number.isFinite(row.metadata?.laneRanks?.bge)).length;
  const qwenHits=chunks.filter(row=>Number.isFinite(row.metadata?.laneRanks?.qwen)).length;
+ const fulltextHits=chunks.filter(row=>Number.isFinite(row.metadata?.laneRanks?.fulltext)).length;
+ const factHits=chunks.filter(row=>Number.isFinite(row.metadata?.laneRanks?.facts)).length;
  assert.equal(output.status,'success','Full BGE baseline required; degraded result is not acceptance');
  assert(chunks.length>0&&bgeHits>0,'No authorized BGE-ranked evidence returned');
+ assert(fulltextHits>0&&factHits>0,'Expected local full-text and verified-fact ranks for this development query');
  assert.equal(qwenHits,0,'Remote Qwen query lane unexpectedly used');
  console.log(JSON.stringify({scope:'main-agent-knowledge-search-local-product-read',readOnly:true,
   questionKind:'exposed development product query',knowledgeScope:'product',
   ignoredModelRequestedScope:'company',authorizedChunks:chunks.length,bgeRankedChunks:bgeHits,
-  qwenRankedChunks:qwenHits,toolStatus:output.status,
+  fulltextRankedChunks:fulltextHits,factRankedChunks:factHits,qwenRankedChunks:qwenHits,toolStatus:output.status,
   localBgeFlag:true,modelCalls:0,providerCalls:0,answerQualityAccepted:false,
   wholeAgentTaskExecuted:false,independentSetUsed:false}));
 }finally{await getPool().end();}
