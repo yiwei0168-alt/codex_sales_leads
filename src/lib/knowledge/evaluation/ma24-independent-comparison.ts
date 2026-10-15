@@ -46,6 +46,8 @@ function validateManifest(manifest: Ma24FrozenManifest) {
       !item.group.trim() || !["route", "clarify", "no-answer", "deny"].includes(item.expectedOutcome) ||
       new Set(item.tags).size !== item.tags.length || item.tags.some(tag => !tag.trim()))
       throw new Error(`Invalid or duplicate MA24 case ${item.caseId}`);
+    if (item.tags.includes("no-answer") !== (item.expectedOutcome === "no-answer"))
+      throw new Error(`MA24 no-answer tag/outcome mismatch ${item.caseId}`);
     ids.add(item.caseId);
   }
   for (const tags of [manifest.requiredImprovementTags, manifest.protectedNoRegressionTags]) {
@@ -56,6 +58,8 @@ function validateManifest(manifest: Ma24FrozenManifest) {
   if (requiredImprovement.some(tag => !manifest.requiredImprovementTags.includes(tag)) ||
     requiredProtection.some(tag => !manifest.protectedNoRegressionTags.includes(tag)))
     throw new Error("MA24 required quality gates missing from frozen manifest");
+  if (!manifest.cases.some(item => item.tags.includes("permission") && item.expectedOutcome === "deny"))
+    throw new Error("MA24 permission gate lacks a denied-access case");
 }
 
 /** Scores reviewed answers only; run receipts and reviewer judgments remain separate inputs. */

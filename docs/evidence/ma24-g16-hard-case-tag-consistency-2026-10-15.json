@@ -1,0 +1,33 @@
+{
+  "schema": "ma24-g16-hard-case-tag-consistency-v1",
+  "date": "2026-10-15",
+  "scope": "Frozen independent comparison manifest validation before accepting any model-run or reviewer data",
+  "files": {
+    "module": {
+      "path": "src/lib/knowledge/evaluation/ma24-independent-comparison.ts",
+      "sha256": "8e1b001be71c61caf196dcee392c5c0a2ad6721c09335fd65b65fa6a56219e93"
+    },
+    "test": {
+      "path": "src/lib/knowledge/evaluation/ma24-independent-comparison.test.ts",
+      "sha256": "19e865ab40eb74b45b340868797ad03febe8d810353ee62f5e5c7367a4eaf1a5"
+    }
+  },
+  "behavior": {
+    "noAnswerTagMatchesExpectedOutcomeBothWays": true,
+    "permissionProtectedGroupRequiresAtLeastOneDeniedAccessCase": true,
+    "authorizedPermissionCaseMayAlsoRemainInGroup": true,
+    "groupCountsStillRequireSourceAndGoldReview": true
+  },
+  "checks": {
+    "typecheck": "passed",
+    "targetedEslint": "passed",
+    "vitest": "9 passed in the comparison module, including false-tag and no-denial counterexamples"
+  },
+  "boundary": {
+    "newGoldCases": 0,
+    "actualDualArmAnswers": 0,
+    "humanG16Verdicts": 0,
+    "paidCalls": 0,
+    "productionLoaded": false
+  }
+}

@@ -12,6 +12,7 @@ const manifest: Ma24FrozenManifest = {
     { caseId: "long", caseSha256: "d".repeat(64), group: "pdf", tags: ["long-document", "official-fact"], expectedOutcome: "route" },
     { caseId: "cross", caseSha256: "e".repeat(64), group: "multi-source", tags: ["cross-document", "permission"], expectedOutcome: "route" },
     { caseId: "new", caseSha256: "f".repeat(64), group: "revision", tags: ["new-or-revised", "no-answer"], expectedOutcome: "no-answer" },
+    { caseId: "permission-deny", caseSha256: "2".repeat(64), group: "security", tags: ["permission"], expectedOutcome: "deny" },
   ],
 };
 const runs: Ma24Run[] = manifest.cases.flatMap(item => (["baseline", "candidate"] as const).map(arm => ({
@@ -34,12 +35,13 @@ describe("MA24 independent comparison", () => {
     const result = scoreMa24IndependentComparison({ manifest, runs, verdicts });
     expect(result.complete).toBe(true);
     expect(result.gatePassed).toBe(true);
-    expect(result.totals.candidate.answerCorrect).toBe(3);
+    expect(result.totals.candidate.answerCorrect).toBe(4);
     expect(result.byGroup.pdf.baseline.total).toBe(1);
     expect(Object.values(result.improvementResults)).toEqual([true, true, true]);
   });
   it("keeps missing and unknown outcomes open", () => {
-    const missing = scoreMa24IndependentComparison({ manifest, runs, verdicts: verdicts.slice(0, -1) });
+    const missing = scoreMa24IndependentComparison({ manifest, runs,
+      verdicts: verdicts.filter(row => row.caseId !== "new" || row.arm !== "candidate") });
     expect(missing.complete).toBe(false);
     expect(missing.missingVerdicts).toEqual(["new:candidate"]);
     const unknown = runs.map(row => row.caseId === "long" && row.arm === "candidate"
@@ -82,6 +84,20 @@ describe("MA24 independent comparison", () => {
     expect(() => scoreMa24IndependentComparison({
       manifest: { ...manifest, requiredImprovementTags: [] }, runs, verdicts,
     })).toThrow("required quality gates missing");
+  });
+  it("requires honest no-answer labels and an actual denied permission case", () => {
+    const mislabeledNoAnswer = { ...manifest, cases: manifest.cases.map(item => item.caseId === "new"
+      ? { ...item, expectedOutcome: "route" as const } : item) };
+    expect(() => scoreMa24IndependentComparison({ manifest: mislabeledNoAnswer, runs, verdicts }))
+      .toThrow("no-answer tag/outcome mismatch");
+    const missingNoAnswerTag = { ...manifest, cases: manifest.cases.map(item => item.caseId === "new"
+      ? { ...item, tags: ["new-or-revised"] } : item) };
+    expect(() => scoreMa24IndependentComparison({ manifest: missingNoAnswerTag, runs, verdicts }))
+      .toThrow("no-answer tag/outcome mismatch");
+    const authorizedOnly = { ...manifest, cases: manifest.cases.filter(item => item.caseId !== "permission-deny") };
+    expect(() => scoreMa24IndependentComparison({ manifest: authorizedOnly, runs: runs.filter(row => row.caseId !== "permission-deny"),
+      verdicts: verdicts.filter(row => row.caseId !== "permission-deny") }))
+      .toThrow("permission gate lacks a denied-access case");
   });
   it("records the observed behavior and rejects a correct verdict for the wrong outcome", () => {
     const mismatch = verdicts.map(row => row.caseId === "new" && row.arm === "candidate"

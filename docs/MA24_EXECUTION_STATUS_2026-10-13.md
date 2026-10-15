@@ -26,6 +26,8 @@ BDUK 来源用途补核：官方发布页同时列出 XLSX/PDF，PDF 第 4 页�
 
 2026-10-15 G16 判分门槛补正：若候选路径已完成运行的实际行为与冻结预期不符，即使审核判为错误且其他得分足够，`gatePassed` 仍必须为 `false`；基线错误仍可作为候选改进的对照。新增两侧反例回归；8 项定向测试、类型检查与 ESLint 通过。独立 Gold、双路真实运行和质量验收仍为 0。[工程收据](evidence/ma24-g16-outcome-mismatch-hard-gate-2026-10-15.json)。
 
+同日 G16 冻结清单门槛补正：标记 `no-answer` 的题必须预期 `no-answer`，反向亦然；`permission` 保护分组至少有一条预期拒绝访问题，可同时保留授权访问正例。防止只靠标签凑齐分组后误判质量通过；9 项定向测试、类型检查及 ESLint 通过。尚无新独立 Gold 或双路真实结果。[工程收据](evidence/ma24-g16-hard-case-tag-consistency-2026-10-15.json)。
+
 本台账按 [R0–R7 收尾计划](MA24_REMAINING_EXECUTION_PLAN_2026-10-13.md)跟踪原 G01–G20。状态区分工程、真实质量与生产运行；“部分”仅表示列出的范围有证据。历史完成结果见 [原计划](MA24_COMPLETION_GOAL_PLAN_2026-10-11.md)，本次只读运行盘点与构建见 [R0 收据](evidence/ma24-r0-runtime-build-2026-10-13.json)。
 
 2026-10-15 G01 构建检查范围修复：根 `tsconfig` 原把 Git 忽略的 `tmp/` 临时 NIST 验收脚本纳入全仓类型检查，导致与产品无关的第 106 行错误；现只将 `tmp` 排除。`npm run typecheck`、Next 16.3.4 完整 `npm run build`（含生成类型和 26 个静态页）通过，清单仍覆盖 `src/` 850、`scripts/` 383 个 TypeScript 文件，`tmp/` 0。新候选 build `dbiGeczgl91_vubichMag` 在一次性恢复库通过 127–134 迁移回滚/提交与新旧 Web 登录读取兼容；生产部署、切换和实际回滚均未发生。[构建与克隆收据](evidence/ma24-g01-typecheck-scope-build-2026-10-15.json)。
