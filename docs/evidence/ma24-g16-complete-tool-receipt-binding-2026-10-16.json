@@ -1,0 +1,28 @@
+{
+  "schema": "ma24-g16-complete-tool-receipt-binding-v1",
+  "date": "2026-10-16",
+  "scope": "Read-only G16 persisted result verification and G15 code/config preview; no model or provider calls",
+  "changes": {
+    "persistedRunBinding": "The run's receipt IDs must cover every tenant-scoped agent_tool_call row and may additionally name the run row itself. Invented or duplicate IDs, omitted calls, nonterminal calls, changed input hashes, foreign owner/run IDs and effects other than read/model are rejected.",
+    "frozenCodeClosure": "The G15 preview now includes the G16 persisted-run verifier, scorer, source-citation binder and their local import closure."
+  },
+  "verification": {
+    "focusedTests": "23 passed across persisted-run binding and independent comparison",
+    "typecheck": "passed",
+    "changedFileEslint": "passed",
+    "runnerSourceClosureFiles": 294,
+    "requiredRunnerAndScorerPaths": 8,
+    "v12RuntimeBinding": "matched; readyForModelCalls=false",
+    "v11RuntimeBinding": "rejected with sourceHashes drift",
+    "v12PreviewPath": "docs/evidence/ma24-g15-config-preview-2026-10-15-v12.json",
+    "v12PreviewSha256": "d2b4040b622b7bd00197e4a26dd6d34f5f818cb7f712a3206e159a8bbfe70734"
+  },
+  "limits": [
+    "The receipt binding was verified with focused in-memory fixtures and typechecked tenant SQL; an isolated database run of the new all-call query and a real G16 result remain outstanding.",
+    "The journal's saved wire manifest is bound locally, but independent provider billing receipts and complete runtime build identity are not verified here.",
+    "The independent source/Gold set and paid admission are not frozen, so this change does not authorize model calls or pass G16 answer/citation quality."
+  ],
+  "providerCalls": 0,
+  "realDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}

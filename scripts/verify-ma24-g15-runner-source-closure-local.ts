@@ -12,6 +12,8 @@ const preview = JSON.parse(stdout) as Ma24G15Preview;
 const runner = 'src/lib/knowledge/evaluation/ma24-evaluation-runner.ts';
 const required = [runner, 'src/lib/knowledge/evaluation/ma24-evaluation-claim.ts',
   'src/lib/knowledge/evaluation/ma24-evaluation-task-binding.ts',
+  'src/lib/knowledge/evaluation/ma24-persisted-run-binding.ts',
+  'scripts/score-ma24-independent-comparison.ts',
   'src/lib/assistant/main/graph.ts', 'src/lib/assistant/main/tool-execution.ts',
   'src/lib/billing/paid-fetch.ts'];
 for (const path of required)

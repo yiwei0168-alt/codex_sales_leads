@@ -74,6 +74,10 @@ const sourceFiles=[
  'src/lib/knowledge/evaluation/ma24-evaluation-task-binding.ts',
  'src/lib/knowledge/evaluation/ma24-independent-comparison.ts',
  'src/lib/knowledge/evaluation/ma24-g15-runtime-binding.ts',
+ 'src/lib/knowledge/evaluation/ma24-persisted-run-binding.ts',
+ 'src/lib/knowledge/evaluation/ma24-citation-evidence.ts',
+ 'scripts/score-ma24-independent-comparison.ts',
+ 'scripts/verify-ma24-g16-persisted-runs.ts',
  'db/migrations/136_ma24_evaluation_run_kind.sql',
  'db/migrations/137_ma24_explicit_evaluation_claim.sql',
  'db/migrations/138_ma24_evaluation_claim_owner.sql',
@@ -86,6 +90,8 @@ for(const required of [
  'src/lib/assistant/main/graph.ts',
  'src/lib/assistant/main/tool-execution.ts',
  'src/lib/billing/paid-fetch.ts',
+ 'src/lib/knowledge/evaluation/ma24-persisted-run-binding.ts',
+ 'scripts/score-ma24-independent-comparison.ts',
 ])if(!sourceHashes[required])throw new Error(`MA24 runtime closure omits ${required}`);
 const profile=modeModelConfig(mode).profile;
 if(!profile)throw new Error('Mode profile unavailable');

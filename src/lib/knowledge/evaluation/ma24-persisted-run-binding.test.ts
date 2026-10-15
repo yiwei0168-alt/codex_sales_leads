@@ -34,8 +34,13 @@ const modelCalls = [{ id: "33333333-3333-4333-8333-333333333333", user_id: userI
   run_id: runId, tool_id: "main_model", effect: "model", status: "completed",
   input: modelInput, input_hash: digest(modelInput),
   output: { status: "success", data: { message: { role: "assistant", content: run.answer }, requestManifest } } }];
-const verify = (overrides: Partial<Parameters<typeof assertMa24PersistedRunBinding>[0]> = {}) =>
-  assertMa24PersistedRunBinding({ case: frozen, query, run, task, modelCalls, evidenceCalls: [], ...overrides });
+const verify = (overrides: Partial<Parameters<typeof assertMa24PersistedRunBinding>[0]> = {}) => {
+  const calls = overrides.modelCalls ?? modelCalls;
+  const evidence = overrides.evidenceCalls ?? [];
+  return assertMa24PersistedRunBinding({ case: frozen, query, run, task,
+    modelCalls: calls, evidenceCalls: evidence,
+    allCalls: [...calls, ...evidence], ...overrides });
+};
 
 describe("MA24 persisted run binding", () => {
   it("binds one completed execution to its database principal, question, scope, reply and model journal", () => {
@@ -74,9 +79,28 @@ describe("MA24 persisted run binding", () => {
   it("rejects a run with no persisted model attempt", () => {
     expect(() => verify({ modelCalls: [] })).toThrow("persisted model journal mismatch");
     const failedRun: Ma24Run = { ...run, status: "failed", answer: "", citations: [], modelCallIds: [],
-      failureReason: "preflight failed" };
+      receiptIds: [runId], failureReason: "preflight failed" };
     expect(() => verify({ run: failedRun, task: { ...task, status: "failed", result: null },
       modelCalls: [] })).not.toThrow();
+  });
+  it("rejects invented, duplicated or omitted persisted receipt IDs", () => {
+    const invented = "44444444-4444-4444-8444-444444444444";
+    expect(() => verify({ run: { ...run, receiptIds: [...run.receiptIds, invented] } }))
+      .toThrow("persisted receipt list mismatch");
+    expect(() => verify({ run: { ...run, receiptIds: [...run.receiptIds, run.receiptIds[0]] } }))
+      .toThrow("persisted receipt list mismatch");
+    expect(() => verify({ run: { ...run, receiptIds: [runId] } }))
+      .toThrow("persisted receipt list mismatch");
+    expect(() => verify({ allCalls: [...modelCalls, { ...modelCalls[0], id: invented }] }))
+      .toThrow("persisted receipt list mismatch");
+    expect(() => verify({ allCalls: [{ ...modelCalls[0], status: "started" }] }))
+      .toThrow("persisted receipt list mismatch");
+    expect(() => verify({ allCalls: [{ ...modelCalls[0], input_hash: "0".repeat(64) }] }))
+      .toThrow("persisted receipt list mismatch");
+    expect(() => verify({ allCalls: [{ ...modelCalls[0], effect: "send" }] }))
+      .toThrow("persisted receipt list mismatch");
+    expect(() => verify({ run: { ...run, receiptIds: [runId, ...run.receiptIds] } }))
+      .not.toThrow();
   });
   it("requires a successful saved model output while allowing a failed fallback attempt", () => {
     const failedCall = { ...modelCalls[0], id: "44444444-4444-4444-8444-444444444444",
@@ -160,7 +184,7 @@ describe("MA24 persisted run binding", () => {
       modelCalls: withSourceMessage(JSON.stringify(sourceCall.output)) }).citationBindings)
       .toEqual([{ citationIndex: 0, callId: sourceId }]);
     expect(() => verify({ run: citedRun, evidenceCalls: [] }))
-      .toThrow("citation lacks persisted source");
+      .toThrow("persisted receipt list mismatch");
     expect(() => verify({ run: citedRun, evidenceCalls: [sourceCall] }))
       .toThrow("citation absent from final model input");
     expect(() => verify({ run: citedRun, evidenceCalls: [sourceCall],

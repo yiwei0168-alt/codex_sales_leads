@@ -14,6 +14,8 @@ type PersistedModelCall = {
   id: string; user_id: string; run_id: string; tool_id: string;
   effect: string; status: string; input: unknown; input_hash: string; output: unknown;
 };
+type PersistedCall = Pick<PersistedModelCall,
+  "id" | "user_id" | "run_id" | "effect" | "status" | "input" | "input_hash">;
 
 function savedModelAnswer(output: unknown): string | undefined {
   const receipt = output as Record<string, unknown> | null;
@@ -46,8 +48,9 @@ function modelVisibleSourceCalls(call: PersistedModelCall, evidenceCalls: Ma24Ev
 export function assertMa24PersistedRunBinding(input: {
   case: Ma24Case; query: string; run: Ma24Run;
   task: PersistedRun | undefined; modelCalls: PersistedModelCall[]; evidenceCalls: Ma24EvidenceCall[];
+  allCalls: PersistedCall[];
 }) {
-  const { case: frozen, query, run, task, modelCalls, evidenceCalls } = input;
+  const { case: frozen, query, run, task, modelCalls, evidenceCalls, allCalls } = input;
   const taskInput = task?.input as Record<string, unknown> | undefined;
   const taskSpec = task?.execution_spec as Record<string, unknown> | undefined;
   const modelConfig = task?.model_config as Record<string, unknown> | undefined;
@@ -85,6 +88,17 @@ export function assertMa24PersistedRunBinding(input: {
           typeof message.content === "string" && message.content.includes(scopeRule));
     }))
     throw new Error(`MA24 persisted model journal mismatch ${run.caseId}:${run.arm}`);
+  const savedCallIds = new Set(allCalls.map(call => call.id));
+  const receiptIds = new Set(run.receiptIds);
+  if (savedCallIds.size !== allCalls.length ||
+    receiptIds.size !== run.receiptIds.length ||
+    allCalls.some(call => !receiptIds.has(call.id) ||
+      call.user_id !== frozen.userId || call.run_id !== run.runId ||
+      call.status !== "completed" || call.input_hash !== digest(call.input) ||
+      !["read", "model"].includes(call.effect)) ||
+    run.receiptIds.some(id => id !== task.id && !savedCallIds.has(id)) ||
+    [...modelCalls, ...evidenceCalls].some(call => !savedCallIds.has(call.id)))
+    throw new Error(`MA24 persisted receipt list mismatch ${run.caseId}:${run.arm}`);
   const wireManifests = modelCalls.flatMap(call => {
     if ((call.output as Record<string, unknown> | null)?.status !== "success") return [];
     const audit = auditModelProtocol(call);
@@ -129,6 +143,11 @@ export async function verifyMa24PersistedRunBinding(frozen: Ma24Case, query: str
       `select id,user_id,run_id,tool_id,effect,status,input,input_hash,output from agent_tool_call
        where run_id=$1 and user_id=$2 and tool_id in ('knowledge_search','vectorless_read') order by id`,
       [run.runId, frozen.userId])).rows;
-    return assertMa24PersistedRunBinding({ case: frozen, query, run, task, modelCalls, evidenceCalls });
+    const allCalls = (await client.query<PersistedCall>(
+      `select id,user_id,run_id,effect,status,input,input_hash
+       from agent_tool_call where run_id=$1 and user_id=$2 order by id`,
+      [run.runId, frozen.userId])).rows;
+    return assertMa24PersistedRunBinding({ case: frozen, query, run, task,
+      modelCalls, evidenceCalls, allCalls });
   });
 }
