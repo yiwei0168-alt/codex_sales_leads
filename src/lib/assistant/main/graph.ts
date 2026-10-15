@@ -131,7 +131,7 @@ export function buildMainAgentGraph(deps: MainGraphDependencies, checkpointer?: 
     .addConditionalEdges("execute_tool", s => s.status === "running" ? "safe_boundary" : END)
     .compile({ checkpointer, name: "main_agent_business_flow" });
 }
-async function durableModel(context: ExecutionContext, messages: ModelMessage[], step: number, revision:number, config: ModelConfig): Promise<ModelMessage> {
+export async function durableModel(context: ExecutionContext, messages: ModelMessage[], step: number, revision:number, config: ModelConfig): Promise<ModelMessage> {
   // Reload on every decision so edits/undo take effect without stale prompt-only memory.
   const memories = await loadDecisionMemory(context.userId);
   const currentMessages: ModelMessage[] = [messages[0], decisionMemoryMessage(memories), ...messages.slice(1)];

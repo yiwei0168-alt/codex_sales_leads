@@ -1,0 +1,25 @@
+{
+  "schema": "ma24-g16-dedicated-runner-preclaim-v1",
+  "date": "2026-10-15",
+  "scope": "G16 dedicated evaluation run entry and current local G15 admission",
+  "change": "A dedicated entry now checks G15 model-call readiness before claiming a task. Its admitted path is wired to the shared main Agent graph, a separate evaluation checkpoint namespace, an empty hidden conversation, per-boundary frozen task revalidation, read-only evaluation tool identity and the existing durable model journal and spend scope. Incomplete outcomes settle as failed without publishing an ordinary conversation message.",
+  "checks": [
+    "A focused test rejected unready paid admission before calling the claim function",
+    "The current local G15 preview rejected the new runner preclaim entry: no task claim and no provider call",
+    "TypeScript typecheck and focused ESLint passed",
+    "The pre-existing isolated clone verified the leased evaluation tool boundary, hidden conversation and zero provider calls"
+  ],
+  "observedCurrentGate": {
+    "paidAdmissionDenied": true,
+    "taskClaimed": false,
+    "providerCalls": 0
+  },
+  "approvedGold": 0,
+  "realDualArmRuns": 0,
+  "limitations": [
+    "The G15 runtime binding currently returns readyForModelCalls=false; this is an execution scaffold, not a completed positive model-run acceptance.",
+    "The admitted graph path has not been exercised end-to-end with a frozen independent set, current tariffs, budget authorization, real provider receipts or reviewer verdicts.",
+    "A checkpoint with existing messages requires manual reconciliation; automatic evaluation resume is not implemented.",
+    "G17-G20 remain paused."
+  ]
+}
