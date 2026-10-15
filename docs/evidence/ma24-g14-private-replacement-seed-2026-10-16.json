@@ -1,0 +1,47 @@
+{
+  "schema": "ma24-g14-private-replacement-seed-v1",
+  "date": "2026-10-16",
+  "scope": "G14 replacement candidate after public question exposure correction",
+  "candidateCount": 1,
+  "candidateId": "fcc-mba-2022-idle-loaded-latency-anonymization-v1",
+  "candidateFile": {
+    "privatePath": "tmp/ma24-independent-quarantine/fcc-mba-thirteenth-latency-candidate-v1.json",
+    "sha256": "b561d63fd006f2ed4ab5dbb4b74d6b21ac04969e022a4b71fe1b0ae3a1afb592",
+    "gitIgnored": true,
+    "questionAndExpectedAnswerInTrackedReceipt": false
+  },
+  "officialSource": {
+    "url": "https://docs.fcc.gov/public/attachments/FCC-24-136A6.pdf",
+    "privatePath": "tmp/ma24-independent-quarantine/fcc-mba-thirteenth-report.pdf",
+    "sha256": "cb74399d38def5adafb04390728bd3aae6aea0ad28cdac064c5f73dd1b661c4c",
+    "physicalPages": 65,
+    "targetPhysicalPagesVisuallyChecked": [8, 18, 19, 20],
+    "measuredPeriod": "September–October 2022"
+  },
+  "offlineProductExtraction": {
+    "version": "layout-v2.0.10",
+    "privatePath": "tmp/ma24-independent-quarantine/fcc-mba-thirteenth.layout-v2.0.10.extraction.json",
+    "sha256": "ca204bf0ad8783a2dc339c82023e6c8e6d810d2413a69267c85fc72125d38033",
+    "blocks": 555,
+    "qualitySummary": { "success": 3, "blank": 0, "pending-ocr": 62, "failed": 0 },
+    "targetBlockIdsPresent": ["page-8-block-4", "page-18-block-4", "page-19-block-2", "page-19-block-6", "page-19-block-8"]
+  },
+  "publicTreeScreen": {
+    "script": "scripts/audit-ma24-g14-public-question-exposure.mjs",
+    "privateReportPath": "tmp/ma24-independent-quarantine/fcc-mba-thirteenth-exposure-report-v1.json",
+    "privateReportSha256": "cf63ae80fa47f4e65a4c069a8a4fe1cf7b4e58a939d346244b570c08097db2cd",
+    "trackedTextFiles": 3031,
+    "exactQuestionMatches": 0,
+    "fragmentMatches": 0,
+    "limitation": "Current tracked text only; does not clear Git history, local conversations, derivatives, semantic overlap, or provider-side exposure."
+  },
+  "acceptance": {
+    "status": "private source and question draft only",
+    "historicalContentReviewedFiveEligibleAsIndependentHoldout": 0,
+    "newIndependentGoldApproved": 0,
+    "g15PaidAdmission": false,
+    "g16RealDualArmRuns": 0,
+    "pending": ["whole-source visual review", "rights and family review", "historical and semantic exposure audit", "product registration and user-visible citation", "question/answer review and Gold freeze"]
+  },
+  "g17ToG20Advanced": false
+}
