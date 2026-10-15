@@ -16,7 +16,10 @@ if (candidateArg) {
     const question = item.query || item.question;
     if (typeof caseId !== "string" || typeof question !== "string" || question.trim().length < 20)
       throw new Error("each candidate requires a caseId and complete question");
-    return { caseId, question };
+    const answer = item.expectedAnswer;
+    if (answer !== undefined && (typeof answer !== "string" || answer.trim().length < 20))
+      throw new Error("expectedAnswer must be complete when supplied");
+    return { caseId, question, answer };
   });
 }
 const tracked = execFileSync("git", ["ls-files", "-z"]).toString("utf8").split("\0").filter(Boolean);
@@ -35,10 +38,14 @@ const hits = (value, window = 28) => {
   }).sort((a, b) => b.count - a.count).slice(0, 12);
   return { exact, fragments };
 };
+const historyExactCommits = value => execFileSync("git", ["log", "--all", "--format=%H", `-S${value}`, "--", "."],
+  { encoding: "utf8" }).trim().split(/\s+/).filter(Boolean);
 let report;
 if (privateCandidates) {
   report = { mode: "private-candidates", trackedTextFiles: textFiles.length,
-    cases: privateCandidates.map(item => ({ caseId: item.caseId, question: hits(item.question) })) };
+    cases: privateCandidates.map(item => ({ caseId: item.caseId, question: hits(item.question),
+      localGitHistoryExactCommits: historyExactCommits(item.question),
+      ...(item.answer ? { answer: hits(item.answer), localGitHistoryExactAnswerCommits: historyExactCommits(item.answer) } : {}) })) };
 } else {
   const sources = JSON.parse(readFileSync("tmp/ma24-independent-quarantine/approved-five-source-set-staging-v1.json", "utf8")).cases;
   const gold = JSON.parse(readFileSync("tmp/ma24-independent-quarantine/approved-five-gold-staging-v1.json", "utf8")).cases;
@@ -57,7 +64,8 @@ const outputPath = process.argv.find((argument, index) => index > 1 && !argument
 if (outputPath) writeFileSync(outputPath, `${output}\n`, "utf8");
 else console.log(output);
 const exposed = privateCandidates
-  ? report.cases.some(item => item.question.exact.length)
+  ? report.cases.some(item => item.question.exact.length || item.localGitHistoryExactCommits.length
+    || item.answer?.exact.length || item.localGitHistoryExactAnswerCommits?.length)
   : [...report.approvedCases.map(item => item.question.exact.length),
     ...report.provisionalPublicationCases.map(item => item.exactQuestionPaths.length),
     ...report.provisionalSecurityCases.map(item => item.exactQuestionPaths.length)].some(Boolean);

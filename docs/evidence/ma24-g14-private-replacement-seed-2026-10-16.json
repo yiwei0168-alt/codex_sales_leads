@@ -1,5 +1,5 @@
 {
-  "schema": "ma24-g14-private-replacement-seed-v1",
+  "schema": "ma24-g14-private-replacement-seed-v2",
   "date": "2026-10-16",
   "scope": "G14 replacement candidate after public question exposure correction",
   "candidateCount": 1,
@@ -26,14 +26,20 @@
     "qualitySummary": { "success": 3, "blank": 0, "pending-ocr": 62, "failed": 0 },
     "targetBlockIdsPresent": ["page-8-block-4", "page-18-block-4", "page-19-block-2", "page-19-block-6", "page-19-block-8"]
   },
-  "publicTreeScreen": {
+  "publicTreeAndLocalHistoryScreen": {
     "script": "scripts/audit-ma24-g14-public-question-exposure.mjs",
-    "privateReportPath": "tmp/ma24-independent-quarantine/fcc-mba-thirteenth-exposure-report-v1.json",
-    "privateReportSha256": "cf63ae80fa47f4e65a4c069a8a4fe1cf7b4e58a939d346244b570c08097db2cd",
+    "privateReportPath": "tmp/ma24-independent-quarantine/fcc-mba-thirteenth-exposure-report-v3.json",
+    "privateReportSha256": "bee7d445cfcdd8050605c5889321fb1764c55a64a49156360a14516d6c95b3f9",
     "trackedTextFiles": 3031,
     "exactQuestionMatches": 0,
-    "fragmentMatches": 0,
-    "limitation": "Current tracked text only; does not clear Git history, local conversations, derivatives, semantic overlap, or provider-side exposure."
+    "exactAnswerMatches": 0,
+    "questionFragmentMatches": 0,
+    "answerFragmentMatches": 0,
+    "localGitAllRefsExactQuestionCommits": 0,
+    "localGitAllRefsExactAnswerCommits": 0,
+    "historicalFiveRegression": "The same private mode returns a nonzero exposure exit code; all five historical questions have current-tree and local-history exact matches.",
+    "answerExposureRegression": "A private synthetic fixture with an already public historical question placed in expectedAnswer returned nonzero; current-tree and local-history exact answer matches were both detected.",
+    "limitation": "Current tracked text and locally available Git refs only; does not clear unfetched remote history, local conversations, derivatives, semantic overlap, or provider-side exposure."
   },
   "acceptance": {
     "status": "private source and question draft only",
