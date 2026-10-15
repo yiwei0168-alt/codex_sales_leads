@@ -1,0 +1,14 @@
+{
+  "schema": "ma24-g16-source-question-binding-v1",
+  "date": "2026-10-15",
+  "scope": "Read-only G16 scorer admission; no model run or Gold freeze",
+  "change": "The frozen source-set JSON must have schema ma24-g16-source-set-v1 and contain exactly one nonempty, trimmed query for each manifest case. Only schema/cases and caseId/query fields are admitted, preventing accidental Gold fields in the question snapshot. Each manifest caseSha256 must equal SHA-256 of the corresponding exact UTF-8 query. The scoring CLI checks this after binding source-set file bytes and before Gold/run scoring.",
+  "checks": {
+    "targetedVitest": "14 passed",
+    "typecheck": "npx tsc --noEmit passed",
+    "focusedEslint": "passed for scorer, CLI and test",
+    "cliConsistentFixture": "exit 0; complete=false; gatePassed=false; eight synthetic runs missing",
+    "cliChangedQuestionWithUpdatedFileHash": "exit 1; MA24 frozen question mismatch a"
+  },
+  "limits": "The check binds recorded question text to the manifest but does not prove the model was actually sent that text, that allowed evidence was bounded, that provider receipts are authentic, or that the source/Gold set is independent. Gold approved: 0; actual two-arm model runs: 0. G17-G20 remain deferred."
+}

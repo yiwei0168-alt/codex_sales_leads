@@ -19,6 +19,11 @@ export type Ma24GoldSnapshot = {
   cases: Array<{ caseId: string; caseSha256: string; expectedAnswer: string;
     expectedSources: GoldSourceCoordinate[]; reviewer: string; reviewedAt: string; note: string }>;
 };
+/** Questions are frozen separately from Gold for the scorer's input checks. */
+export type Ma24SourceSetSnapshot = {
+  schema: "ma24-g16-source-set-v1";
+  cases: Array<{ caseId: string; query: string }>;
+};
 export type Ma24Run = {
   caseId: string; arm: Ma24Arm; caseSha256: string; manifestSha256: string;
   status: "completed" | "failed" | "unknown"; answer: string;
@@ -41,6 +46,28 @@ const requiredProtection = ["official-fact", "no-answer", "permission"] as const
 const key = (caseId: string, arm: Ma24Arm) => `${caseId}:${arm}`;
 export const ma24ManifestSha256 = (manifest: Ma24FrozenManifest) => sha(manifest);
 export const ma24RunSha256 = (run: Ma24Run) => sha(run);
+export const ma24CaseQuerySha256 = (query: string) =>
+  createHash("sha256").update(query, "utf8").digest("hex");
+const hasOnlyKeys = (value: unknown, keys: string[]) =>
+  value !== null && typeof value === "object" && !Array.isArray(value) &&
+  Object.keys(value).sort().join("|") === [...keys].sort().join("|");
+
+/** Bind each manifest case to the actual question text in the frozen source set. */
+export function assertMa24SourceSetMatchesManifest(manifest: Ma24FrozenManifest, sourceSet: Ma24SourceSetSnapshot) {
+  if (!hasOnlyKeys(sourceSet, ["schema", "cases"]) || sourceSet.schema !== "ma24-g16-source-set-v1" ||
+    !Array.isArray(sourceSet.cases) || sourceSet.cases.length !== manifest.cases.length)
+    throw new Error("Incomplete MA24 frozen source set");
+  const byId = new Map(manifest.cases.map(item => [item.caseId, item]));
+  const seen = new Set<string>();
+  for (const item of sourceSet.cases) {
+    const expected = byId.get(item?.caseId);
+    if (!hasOnlyKeys(item, ["caseId", "query"]) || !expected || seen.has(item.caseId) || typeof item.query !== "string" ||
+      !item.query.trim() || item.query !== item.query.trim() ||
+      ma24CaseQuerySha256(item.query) !== expected.caseSha256)
+      throw new Error(`MA24 frozen question mismatch ${item?.caseId ?? "<unknown>"}`);
+    seen.add(item.caseId);
+  }
+}
 
 /** The scoring CLI must bind each claimed snapshot hash to the bytes it actually reads. */
 export function assertMa24FrozenSnapshotBytes(manifest: Ma24FrozenManifest, snapshots: {

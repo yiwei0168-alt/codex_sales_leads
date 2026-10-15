@@ -3,8 +3,9 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { resolve, sep } from "node:path";
-import { assertMa24FrozenSnapshotBytes, scoreMa24IndependentComparison, type Ma24FrozenManifest, type Ma24Run,
-  type Ma24GoldSnapshot, type Ma24Verdict } from "../src/lib/knowledge/evaluation/ma24-independent-comparison";
+import { assertMa24FrozenSnapshotBytes, assertMa24SourceSetMatchesManifest,
+  scoreMa24IndependentComparison, type Ma24FrozenManifest, type Ma24Run,
+  type Ma24GoldSnapshot, type Ma24SourceSetSnapshot, type Ma24Verdict } from "../src/lib/knowledge/evaluation/ma24-independent-comparison";
 
 const root = resolve("tmp/ma24-independent-evaluation");
 const paths = process.argv.slice(2).map(value => resolve(value));
@@ -17,6 +18,8 @@ const [manifest, runs, verdicts] = bytes.slice(0, 3).map(value => JSON.parse(val
 assertMa24FrozenSnapshotBytes(manifest, {
   sourceSet: bytes[3], gold: bytes[4], codeAndConfig: bytes[5],
 });
+const sourceSet = JSON.parse(bytes[3].toString("utf8")) as Ma24SourceSetSnapshot;
+assertMa24SourceSetMatchesManifest(manifest, sourceSet);
 const gold = JSON.parse(bytes[4].toString("utf8")) as Ma24GoldSnapshot;
 const result = scoreMa24IndependentComparison({ manifest, gold, runs, verdicts });
 const hash = (value: Uint8Array) => createHash("sha256").update(value).digest("hex");

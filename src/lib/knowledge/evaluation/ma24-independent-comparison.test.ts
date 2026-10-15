@@ -1,6 +1,7 @@
 import { createHash } from "node:crypto";
 import { describe, expect, it } from "vitest";
-import { assertMa24FrozenSnapshotBytes, ma24ManifestSha256, ma24RunSha256, scoreMa24IndependentComparison,
+import { assertMa24FrozenSnapshotBytes, assertMa24SourceSetMatchesManifest,
+  ma24CaseQuerySha256, ma24ManifestSha256, ma24RunSha256, scoreMa24IndependentComparison,
   type Ma24FrozenManifest, type Ma24GoldSnapshot, type Ma24Run, type Ma24Verdict } from "./ma24-independent-comparison";
 
 const manifest: Ma24FrozenManifest = {
@@ -40,6 +41,25 @@ const score = (input: { manifest: Ma24FrozenManifest; runs: Ma24Run[]; verdicts:
   scoreMa24IndependentComparison({ ...input, gold });
 
 describe("MA24 independent comparison", () => {
+  it("binds each frozen case hash to the exact source-set question", () => {
+    const sourceSet = { schema: "ma24-g16-source-set-v1" as const,
+      cases: manifest.cases.map(item => ({ caseId: item.caseId, query: `Question ${item.caseId}` })) };
+    const bound = { ...manifest, cases: manifest.cases.map(item => ({ ...item,
+      caseSha256: ma24CaseQuerySha256(`Question ${item.caseId}`) })) };
+    expect(() => assertMa24SourceSetMatchesManifest(bound, sourceSet)).not.toThrow();
+    expect(() => assertMa24SourceSetMatchesManifest(bound, { ...sourceSet,
+      cases: sourceSet.cases.map(item => item.caseId === "cross" ? { ...item, query: "Changed question" } : item) }))
+      .toThrow("MA24 frozen question mismatch cross");
+    expect(() => assertMa24SourceSetMatchesManifest(bound, { ...sourceSet,
+      cases: [sourceSet.cases[0], sourceSet.cases[0], ...sourceSet.cases.slice(2)] }))
+      .toThrow("MA24 frozen question mismatch long");
+    expect(() => assertMa24SourceSetMatchesManifest(bound, { ...sourceSet,
+      cases: sourceSet.cases.slice(1) })).toThrow("Incomplete MA24 frozen source set");
+    expect(() => assertMa24SourceSetMatchesManifest(bound, { ...sourceSet,
+      cases: sourceSet.cases.map(item => item.caseId === "cross"
+        ? { ...item, expectedAnswer: "Do not leak Gold" } : item) }))
+      .toThrow("MA24 frozen question mismatch cross");
+  });
   it("requires one answer model and distinct run receipts across both arms", () => {
     const otherModel = runs.map(run => run.caseId === "cross" && run.arm === "candidate"
       ? { ...run, modelId: "different-model" } : run);
