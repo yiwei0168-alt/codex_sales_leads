@@ -3,6 +3,7 @@ import { assertMa24G15RuntimeBinding, requireMa24G15ModelReady,
   type Ma24G15Preview } from "./ma24-g15-runtime-binding";
 
 const preview = (): Ma24G15Preview => ({ schema: "ma24-g15-config-preview-v1",
+  readOnly: true, simulation: true,
   productPromptDateUtc: "2026-10-15", requiredRunPromptDateUtc: "2026-10-15",
   mode: "standard", modePromptVersion: "v1", modePromptSha256: "prompt",
   productVersion: "v1", modelProfile: { routes: ["primary", "fallback"] },
@@ -11,7 +12,9 @@ const preview = (): Ma24G15Preview => ({ schema: "ma24-g15-config-preview-v1",
   sourceHashes: { "src/graph.ts": "graph" },
   sourceClosureMethod: "recursive-local-static-imports-v1", sourceClosureFileCount: 1,
   intendedLocalBgeFlagForBothArms: "flag=1",
-  currentLocalBgeFlagEnabled: false, runPromptDateGateImplemented: true,
+  currentLocalBgeFlagEnabled: false, baselineRetrievalProfileVerified: false,
+  comparableModelRoutes: true, toolDeltaLimitedToVectorless: true,
+  runPromptDateGateImplemented: true,
   sourceSetFrozen: false, goldFrozen: false,
   runtimeBuildVerified: false, transitiveCodeClosureVerified: false,
   providerTariffsVerified: false, paidCallAuthorizationConfirmed: false,
@@ -29,7 +32,7 @@ describe("MA24 G15 runtime binding", () => {
   it("refuses a matching but unready preview before a task can be claimed", () => {
     const same = preview();
     expect(() => requireMa24G15ModelReady(same, structuredClone(same), "2026-10-15"))
-      .toThrow(/MA24 evaluation model admission unavailable: local BGE flag disabled/);
+      .toThrow(/MA24 evaluation model admission unavailable: read-only preview/);
   });
   it("requires positive bounded request, output and total spend values", () => {
     const loaded = preview();
@@ -48,6 +51,24 @@ describe("MA24 G15 runtime binding", () => {
     const result = assertMa24G15RuntimeBinding(loaded, loaded, "2026-10-15");
     expect(result.readyForModelCalls).toBe(false);
     expect(result.missing).not.toContain("hard spend cap not fixed");
+  });
+  it("admits only a fully bound non-preview configuration", () => {
+    const admitted = preview();
+    Object.assign(admitted, { readOnly: false, simulation: false,
+      currentLocalBgeFlagEnabled: true, baselineRetrievalProfileVerified: true,
+      sourceSetFrozen: true, goldFrozen: true, runtimeBuildVerified: true,
+      transitiveCodeClosureVerified: true, providerTariffsVerified: true,
+      paidCallAuthorizationConfirmed: true, readyForPaidEvaluation: true,
+      paidCallAuthorizationReference: "synthetic-authorization",
+      maximumProviderRequests: 100, maximumRequestBytes: 100_000,
+      maximumOutputTokens: 16_384, hardSpendCapUsd: 10 });
+    expect(assertMa24G15RuntimeBinding(admitted, structuredClone(admitted), "2026-10-15"))
+      .toEqual({ runtimeBindingMatched: true, readyForModelCalls: true, missing: [] });
+    expect(requireMa24G15ModelReady(admitted, structuredClone(admitted), "2026-10-15"))
+      .toEqual(admitted);
+    admitted.readOnly = true;
+    expect(assertMa24G15RuntimeBinding(admitted, admitted, "2026-10-15"))
+      .toMatchObject({ readyForModelCalls: false, missing: ["read-only preview"] });
   });
   it("rejects a changed request or spend ceiling after a preview is frozen", () => {
     const frozen = preview();
@@ -72,7 +93,9 @@ describe("MA24 G15 runtime binding", () => {
       .toThrow("paidCallAuthorizationReference drift");
   });
   it("rejects changed or missing admission decisions after a preview is frozen", () => {
-    for (const field of ["currentLocalBgeFlagEnabled", "runPromptDateGateImplemented",
+    for (const field of ["readOnly", "simulation", "currentLocalBgeFlagEnabled",
+      "baselineRetrievalProfileVerified", "comparableModelRoutes", "toolDeltaLimitedToVectorless",
+      "runPromptDateGateImplemented",
       "sourceSetFrozen", "goldFrozen",
       "runtimeBuildVerified", "transitiveCodeClosureVerified", "providerTariffsVerified",
       "paidCallAuthorizationConfirmed", "readyForPaidEvaluation"] as const) {

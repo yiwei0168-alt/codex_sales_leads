@@ -5,12 +5,15 @@ import { createHash } from "node:crypto";
 type Arm = { knowledgeScope: string[]; baseline: Record<string, unknown>;
   candidate: Record<string, unknown>; addedTools: string[] };
 export type Ma24G15Preview = {
-  schema: string; productPromptDateUtc: string; requiredRunPromptDateUtc: string;
+  schema: string; readOnly: boolean; simulation: boolean;
+  productPromptDateUtc: string; requiredRunPromptDateUtc: string;
   mode: string; modePromptVersion: string; modePromptSha256: string;
   productVersion: string; modelProfile: unknown; modelFunctionsSha256: string;
   arms: Arm[]; sourceHashes: Record<string, string>;
   sourceClosureMethod: string; sourceClosureFileCount: number;
   intendedLocalBgeFlagForBothArms: string; currentLocalBgeFlagEnabled: boolean;
+  baselineRetrievalProfileVerified: boolean;
+  comparableModelRoutes: boolean; toolDeltaLimitedToVectorless: boolean;
   runPromptDateGateImplemented: boolean;
   sourceSetFrozen: boolean; goldFrozen: boolean; runtimeBuildVerified: boolean;
   transitiveCodeClosureVerified: boolean; providerTariffsVerified: boolean;
@@ -44,7 +47,9 @@ export function assertMa24G15RuntimeBinding(frozen: Ma24G15Preview,
   for (const field of ["maximumProviderRequests", "maximumRequestBytes",
     "maximumOutputTokens", "hardSpendCapUsd", "paidCallAuthorizationReference"] as const)
     if (!Object.is(frozen[field], loaded[field])) throw new Error(`MA24 G15 ${field} drift`);
-  for (const field of ["currentLocalBgeFlagEnabled", "runPromptDateGateImplemented",
+  for (const field of ["readOnly", "simulation", "currentLocalBgeFlagEnabled",
+    "baselineRetrievalProfileVerified", "comparableModelRoutes", "toolDeltaLimitedToVectorless",
+    "runPromptDateGateImplemented",
     "sourceSetFrozen", "goldFrozen",
     "runtimeBuildVerified", "transitiveCodeClosureVerified", "providerTariffsVerified",
     "paidCallAuthorizationConfirmed", "readyForPaidEvaluation"] as const)
@@ -58,7 +63,12 @@ export function assertMa24G15RuntimeBinding(frozen: Ma24G15Preview,
   for (const field of ["modelProfile", "arms", "sourceHashes"] as const)
     if (sha(frozen[field]) !== sha(loaded[field])) throw new Error(`MA24 G15 ${field} drift`);
   const missing = [
+    ...(loaded.readOnly ? ["read-only preview"] : []),
+    ...(loaded.simulation ? ["simulation preview"] : []),
     ...(!loaded.currentLocalBgeFlagEnabled ? ["local BGE flag disabled"] : []),
+    ...(!loaded.baselineRetrievalProfileVerified ? ["baseline retrieval profile not verified"] : []),
+    ...(!loaded.comparableModelRoutes ? ["model routes not comparable"] : []),
+    ...(!loaded.toolDeltaLimitedToVectorless ? ["arm tool delta not limited"] : []),
     ...(!loaded.runPromptDateGateImplemented ? ["run prompt date gate not implemented"] : []),
     ...(!loaded.sourceSetFrozen ? ["source set not frozen"] : []),
     ...(!loaded.goldFrozen ? ["Gold not frozen"] : []),
@@ -73,8 +83,7 @@ export function assertMa24G15RuntimeBinding(frozen: Ma24G15Preview,
     ...(!positiveFinite(loaded.hardSpendCapUsd) ? ["hard spend cap not fixed"] : []),
     ...(!loaded.readyForPaidEvaluation ? ["paid evaluation not ready"] : []),
   ];
-  return { runtimeBindingMatched: true, readyForModelCalls: false,
-    missing: [...missing, "independent source/Gold and paid admission preflight not implemented"] };
+  return { runtimeBindingMatched: true, readyForModelCalls: missing.length === 0, missing };
 }
 
 /** Require an admitted frozen preview before a dedicated evaluation task is claimed. */

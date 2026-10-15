@@ -1,0 +1,26 @@
+{
+  "schema": "ma24-g15-conditional-model-admission-v1",
+  "date": "2026-10-16",
+  "change": "Runtime binding now derives model-call readiness from all bound admission fields instead of unconditionally returning false. It explicitly rejects read-only and simulation previews, an unverified baseline retrieval profile, incomparable model routes, and an invalid arm tool delta.",
+  "syntheticContractCheck": {
+    "allFieldsPresentAndPositive": "readyForModelCalls=true in a local unit fixture only",
+    "readOnlyReintroduced": "readyForModelCalls=false",
+    "focusedTests": "35 passed across runtime binding, task binding and runner"
+  },
+  "currentPreview": {
+    "path": "docs/evidence/ma24-g15-config-preview-2026-10-16-v23.json",
+    "sha256": "276e2c0d642fe80b6a16602f4e1a9253988dc34121a7295249b714c5c01ae7e1",
+    "sourceClosureFiles": 300,
+    "readOnly": true,
+    "simulation": true,
+    "readyForModelCalls": false,
+    "modelCalls": 0,
+    "providerCalls": 0
+  },
+  "oldPreviewV22": "Rejected for sourceHashes drift",
+  "typecheck": "passed",
+  "changedFileLint": "passed",
+  "limitation": "No real paid-admission artifact or full Gold freeze exists; a synthetic all-true fixture is a code path check, not authorization or an accepted G16 run.",
+  "realDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}

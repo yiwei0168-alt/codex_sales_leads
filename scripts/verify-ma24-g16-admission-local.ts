@@ -58,6 +58,7 @@ const gold: Ma24GoldSnapshot = { schema: "ma24-g16-gold-snapshot-v1", cases: [{
 const goldBytes = new TextEncoder().encode(JSON.stringify(gold));
 const model = modeModelConfig("standard");
 const loadedCodeAndConfig: Ma24G15Preview = { schema: "ma24-g15-config-preview-v1",
+  readOnly: true, simulation: true,
   productPromptDateUtc: "2026-10-15", requiredRunPromptDateUtc: "2026-10-15",
   mode: "standard", modePromptVersion: "fixture", modePromptSha256: "prompt",
   productVersion: "fixture", modelProfile: model.profile, modelFunctionsSha256: "functions",
@@ -66,6 +67,8 @@ const loadedCodeAndConfig: Ma24G15Preview = { schema: "ma24-g15-config-preview-v
   sourceHashes: { "src/graph.ts": "fixture" },
   sourceClosureMethod: "recursive-local-static-imports-v1", sourceClosureFileCount: 1,
   intendedLocalBgeFlagForBothArms: "flag=1", currentLocalBgeFlagEnabled: false,
+  baselineRetrievalProfileVerified: false, comparableModelRoutes: true,
+  toolDeltaLimitedToVectorless: true,
   runPromptDateGateImplemented: true,
   sourceSetFrozen: false, goldFrozen: false, runtimeBuildVerified: false,
   transitiveCodeClosureVerified: false, providerTariffsVerified: false,
