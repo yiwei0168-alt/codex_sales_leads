@@ -1,0 +1,28 @@
+{
+  "schema": "ma24-g14-nist-mat-field-semantics-candidate-v1",
+  "date": "2026-10-16",
+  "sha256": "0132c779ab57132ae5b5718b1b1440b52ed66bd48bc62d953336c90f7f2cb814",
+  "source": {
+    "publisher": "NIST",
+    "original": "https://s3.amazonaws.com/nist-ics-wireless/measurements/SmartManufacturing_MetaData.xlsx",
+    "localQuarantinePath": "tmp/ma24-independent-quarantine/nist-smartmanufacturing-metadata.xlsx",
+    "sheet": "Measurements Mat Files Format",
+    "productExtractionSha256": "65781df9d501cab4116b5d4b3cbc23fa315784de5e5b6fd6fb2dcdd2d87f0ae1",
+    "productBlockId": "sheet-7-table",
+    "productBlockQuality": "success",
+    "productBlockRange": "A1:K54"
+  },
+  "draft": {
+    "id": "nist-mat-allthepdps-time-fields-vs-iq",
+    "question": "按 NIST SmartManufacturing_MetaData 工作簿的 Measurements Mat Files Format 表，AllthePdps{:,3}、{:,4}、{:,5}、{:,6} 各记录什么？AllthePdps{5,7} 的字段名与 AllthePdps{5,8} 的单位是什么？仅凭这张字段定义表能否给出任一次测量的实际采样时间？请给出原始单元格。"
+  },
+  "verifiedOriginalCells": ["B13/D13", "B14/D14", "B15/D15", "B16/D16", "B25/C25", "B26/D26"],
+  "privateDraftPath": "tmp/ma24-independent-quarantine/nist-mat-field-semantics-private-draft-v1.json",
+  "connectedExposureUnit": "NIST SmartManufacturing workbook plus TN 2363; no additional independent source unit",
+  "limitations": [
+    "This is a sixth potential XLSX publication question only if later selected into the current pool; the current v9 pool remains unchanged.",
+    "The question and answer have not received user content review, family-level disposition, whole-set independence review, or final Gold approval.",
+    "No model answer, user-visible citation, G15 paid admission or G16 dual-arm run was performed."
+  ],
+  "g17ToG20Advanced": false
+}

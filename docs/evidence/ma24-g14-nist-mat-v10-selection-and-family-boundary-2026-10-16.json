@@ -1,0 +1,60 @@
+{
+  "schema": "ma24-g14-nist-mat-v10-selection-and-family-boundary-v1",
+  "date": "2026-10-16",
+  "sourceAndDraft": {
+    "caseId": "nist-mat-allthepdps-time-fields-vs-iq",
+    "originalWorkbookSha256": "0132c779ab57132ae5b5718b1b1440b52ed66bd48bc62d953336c90f7f2cb814",
+    "candidateReceipt": "docs/evidence/ma24-g14-nist-mat-field-semantics-candidate-2026-10-16.json",
+    "candidateReceiptSha256": "60cebe04cd950f6e178d7dec91e1ff25d42bdcc98045b8e4f4bd26235ebffdfe",
+    "privateDraftSha256": "2e3309e87daada23897d420c94b40eeafa73b7e37d7a2e16e92da138b9c92bb2",
+    "originalCellsChecked": 12,
+    "productEvidence": "sheet-7-table, unit 7, A1:K54; success, target field definitions present",
+    "sourceUnit": "Already exposed NIST workbook family; no new independent source unit"
+  },
+  "neighborScreens": {
+    "historical": {
+      "path": "tmp/ma24-independent-quarantine/nist-mat-field-semantics-history-screen-v1.json",
+      "sha256": "9faa0d7d5b28f9d50358c74f9b925d94c4d7ef411d907a7ab84328c7c4fb3b97",
+      "rows": 350,
+      "uniqueQuestions": 300,
+      "highestCosine": 0.518642,
+      "manualFinding": "The closest old questions open product datasheets; they do not ask about NIST MAT field definitions."
+    },
+    "currentV9": {
+      "path": "tmp/ma24-independent-quarantine/nist-mat-field-semantics-v9-screen-v1.json",
+      "sha256": "6ef79ccf0f201ab24c282fcb189c82a93c7d685fba48bc606399a4900101e8ca",
+      "otherDrafts": 27,
+      "highestCosine": 0.500081,
+      "sameWorkbookApprovedCaseCosine": 0.495005,
+      "manualFinding": "The nearest current questions concern ONS coverage denominators, ETSI revisions, and NIST ray-tracing numerical values. None requests MAT time-field and I/Q schema meanings."
+    },
+    "model": "offline pinned BAAI/bge-m3 revision 5617a9f61b028005a4858fdac845db406aefb181",
+    "cloudCalls": 0,
+    "semanticIndependenceProven": false
+  },
+  "provisionalPool": {
+    "path": "tmp/ma24-independent-quarantine/g14-current-draft-pool-v10-nist-mat-2026-10-16.json",
+    "sha256": "a02578cf7c3cf966e42a96087415cdc57b89bb52519b7c23cb0bba9d91a45d79",
+    "priorV9Sha256": "96459f096b17bafdd32dfedc18db924e0339ae53dd4b563ea1d2d7f78b88b9ed",
+    "publicationDrafts": 25,
+    "syntheticSecurityDrafts": 3,
+    "publicationXlsxDrafts": 6,
+    "approvedGoldCases": 5,
+    "fullSetFrozen": false
+  },
+  "familyBoundary": {
+    "privateReport": "tmp/ma24-independent-quarantine/g14-family-readiness-v10-2026-10-16.json",
+    "privateReportSha256": "fa4886b33b6fffc884f308b4fd2aa45839acdbb93149a4f140b9ce0be271e9ff",
+    "currentPoolFamilyLabels": 14,
+    "currentPoolLabelComponents": 13,
+    "knownExposureUnitUpperBoundAfterHistoricalNistConnection": 12,
+    "reason": "The approved NIST family disposition and retired cross-document draft connect the workbook and TN 2363 even though the current provisional rows no longer do. Final Gold grouping must preserve that historical exposure. Other unobserved links could further reduce the independent unit count."
+  },
+  "remaining": [
+    "User content review and family-level approval are pending; this case is not Gold.",
+    "The actual isolated-product read of this new block, user-visible answer and citation have not been verified.",
+    "Whole-set historical and derivative exposure review and final manifest tags are not frozen.",
+    "G15 paid admission and G16 real dual-arm quality remain closed."
+  ],
+  "g17ToG20Advanced": false
+}
