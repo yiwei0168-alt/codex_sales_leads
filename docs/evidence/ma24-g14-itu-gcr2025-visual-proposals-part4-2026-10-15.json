@@ -1,0 +1,331 @@
+{
+  "schema": "ma24-g14-itu-gcr2025-visual-proposals-part4-v1",
+  "date": "2026-10-15",
+  "stage": "Physical pages 81-112 source-bound proposals; not product judgments",
+  "sourceSha256": "4489081fe8709ea1bcea2b724ff5a92c3979195432a8da73c20a8c8e0570ccb8",
+  "extractionArtifactSha256": "788600e3fc3a1f8bd0a1d658ab608686b1c4358cfe76672500f3ae652303ffd6",
+  "candidatePackageSha256": "a7e4c0784ae51a2195b77623a67b1579bcef70375ce837b6e7c1d20b8580efac",
+  "scopePhysicalPages": [
+    81,
+    112
+  ],
+  "targetedFullSizePages": [
+    82,
+    84,
+    85,
+    86,
+    88,
+    89,
+    90,
+    93,
+    95,
+    100,
+    102,
+    103,
+    104,
+    105,
+    106
+  ],
+  "proposedCounts": {
+    "evidence": 15,
+    "decoration": 17,
+    "unresolved": 0
+  },
+  "proposals": [
+    {
+      "blockId": "page-81-visual-review",
+      "physicalPage": 81,
+      "originalRenderSha256": "10d6d12245a5cfcd48cafa43b0daa4f0dce98890f57a5de2a595ecc94f9c9a57",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact overview shows digitally extracted narrative, boxed prose or references without a distinct chart/map/table; tentative until original-page recheck before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-82-visual-review",
+      "physicalPage": 82,
+      "originalRenderSha256": "8f93682a7725b5b697aff91357661081ce7eb349588042ad4fe2d5959de3bb6b",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figure 4.3 plots ICT services as a share of household expenditure against GNI per capita for 2022. Each point is a country coloured by World Bank income group; the scatter plot shows association, not a causal or exact country-level table.",
+      "reason": "Full-size original render of physical PDF page 82 checked against figure/table, legend and notes; keep denominators and category definitions.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-83-visual-review",
+      "physicalPage": 83,
+      "originalRenderSha256": "1fe2907c0842adcc19ed23200823d1a280a0eb6d42517baa46050fc94b96afa8",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact overview shows digitally extracted narrative, boxed prose or references without a distinct chart/map/table; tentative until original-page recheck before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-84-visual-review",
+      "physicalPage": 84,
+      "originalRenderSha256": "30bbaa728cf405928bf09a63d0ac0d57c98f5591c2acbd547fa6b17a67dec009",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figure 4.4 compares data-only mobile-broadband basket affordability and price levels from 2013 to 2025. Diamonds denote global medians and whiskers the fifth-to-ninety-fifth percentile range; the reference basket changes from 1 GB to 1.5 GB, 2 GB and 5 GB over the series.",
+      "reason": "Full-size original render of physical PDF page 84 checked against figure/table, legend and notes; keep denominators and category definitions.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-85-visual-review",
+      "physicalPage": 85,
+      "originalRenderSha256": "470bd80c063d45f1e1e4c15826931b38c4e21eb1433b0ccc9a7b544b8b9c2e0c",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figure 4.5 stacks the share of economies in five basket-price bands for fixed and mobile broadband, separately by income group in 2025. Both baskets use 5 GB, and the colour bands are mutually exclusive portions of each income-group bar.",
+      "reason": "Full-size original render of physical PDF page 85 checked against figure/table, legend and notes; keep denominators and category definitions.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-86-visual-review",
+      "physicalPage": 86,
+      "originalRenderSha256": "c468599cffe302785b4cdbfddf518357edeadf3f589f0ed7eec4dcf99ad62edd",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figure 4.6 compares the 2025 5 GB mobile-broadband basket price as a share of average GNI per capita with the equivalent burden for the bottom 40 per cent of earners. Filled and open points represent different income denominators; the note limits the sample to 107 countries with recent inequality data.",
+      "reason": "Full-size original render of physical PDF page 86 checked against figure/table, legend and notes; keep denominators and category definitions.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-87-visual-review",
+      "physicalPage": 87,
+      "originalRenderSha256": "596b9aede5353e7f5a29fac4c27f9746296ddddd687af69eaa6a51951a572a1e",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact overview shows digitally extracted narrative, boxed prose or references without a distinct chart/map/table; tentative until original-page recheck before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-88-visual-review",
+      "physicalPage": 88,
+      "originalRenderSha256": "a5fb3210697f9dc96d3bb7bb323600abeee04e576a90dd4fe5ddfd1948726ff9",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figure 4.7 shows median basket prices by competition score in two separate panels. The left panel uses the Herfindahl-Hirschman Index, the right uses ITU Regulatory Tracker competition clusters; the red horizontal line marks the 2 per cent target.",
+      "reason": "Full-size original render of physical PDF page 88 checked against figure/table, legend and notes; keep denominators and category definitions.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-89-visual-review",
+      "physicalPage": 89,
+      "originalRenderSha256": "df4973e85ac6e347c620efa0172c47b7bf229ab6b41319bc36fa28c79e9a4aef",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figure 4.8 compares shares of economies meeting the up-to-2-per-cent-of-GNI affordability threshold across four G5 Benchmark maturity groups. Blue and green bars distinguish mobile and fixed broadband; this is a group comparison, not causal proof.",
+      "reason": "Full-size original render of physical PDF page 89 checked against figure/table, legend and notes; keep denominators and category definitions.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-90-visual-review",
+      "physicalPage": 90,
+      "originalRenderSha256": "0d6ad8b6d4d1bea15e60df903912d1931bffd2074594a00b551c2353b565a336",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figure 4.9 contains two regional maps of Peru for 2025 broadband basket prices, separately mobile and fixed, in percentage-of-regional-GDP colour bands. The source note combines Lima with Callao and cautions against interpreting map boundaries as a legal position.",
+      "reason": "Full-size original render of physical PDF page 90 checked against figure/table, legend and notes; keep denominators and category definitions.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-91-visual-review",
+      "physicalPage": 91,
+      "originalRenderSha256": "301d5b49645077ce98533f2565ac23a821c9e66047157a08b5b75c7e75ed1ba9",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact overview shows digitally extracted narrative, boxed prose or references without a distinct chart/map/table; tentative until original-page recheck before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-92-visual-review",
+      "physicalPage": 92,
+      "originalRenderSha256": "564a0799e7c639031d94ae81c11a79aea9eae352966d8dbda235daa4380cc6ae",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact overview shows digitally extracted narrative, boxed prose or references without a distinct chart/map/table; tentative until original-page recheck before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-93-visual-review",
+      "physicalPage": 93,
+      "originalRenderSha256": "e61b3d0c40c560ca45606627a217fda9e301888b4eed2269f41930eb9b6bbc30",
+      "proposedDecision": "evidence",
+      "evidenceText": "Table 5.1 maps two UMC framework dimensions, digital skills and safety/security, to their measurement questions and indicator areas. The cells are categorical framework definitions rather than measured country outcomes.",
+      "reason": "Full-size original render of physical PDF page 93 checked against figure/table, legend and notes; keep denominators and category definitions.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-94-visual-review",
+      "physicalPage": 94,
+      "originalRenderSha256": "f6fca4c6e7e4206ce2527027a8ca3575dd66c91116e2572e357d9ed8a0908444",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact overview shows digitally extracted narrative, boxed prose or references without a distinct chart/map/table; tentative until original-page recheck before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-95-visual-review",
+      "physicalPage": 95,
+      "originalRenderSha256": "9f7bd8552afab83e6db4db143c9ee3822fb44bb6b7a17d627d0600d1220eecd2",
+      "proposedDecision": "evidence",
+      "evidenceText": "Table 5.2 lists activities used to calculate ICT skills under information/data literacy, communication/collaboration, digital content creation, safety and problem solving. Category headings and activities must remain associated when cited.",
+      "reason": "Full-size original render of physical PDF page 95 checked against figure/table, legend and notes; keep denominators and category definitions.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-96-visual-review",
+      "physicalPage": 96,
+      "originalRenderSha256": "6083cd060bbd164aefe1eb9475979d2026c73579426846d0cebaebf4fe848789",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact overview shows digitally extracted narrative, boxed prose or references without a distinct chart/map/table; tentative until original-page recheck before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-97-visual-review",
+      "physicalPage": 97,
+      "originalRenderSha256": "85c636ca6b953b9e814405892966ef6c49c7950a007b1089984653f5d8160c9d",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact overview shows digitally extracted narrative, boxed prose or references without a distinct chart/map/table; tentative until original-page recheck before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-98-visual-review",
+      "physicalPage": 98,
+      "originalRenderSha256": "c3cc8bba6b4793170217b7466aefeab6e728952e731e3c52349dd23ae46fed1c",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact overview shows digitally extracted narrative, boxed prose or references without a distinct chart/map/table; tentative until original-page recheck before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-99-visual-review",
+      "physicalPage": 99,
+      "originalRenderSha256": "ca95c3c108f3e83b564c68e5baeaf23f6154cf7ae35d81e05356b13b4a69bd45",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact overview shows digitally extracted narrative, boxed prose or references without a distinct chart/map/table; tentative until original-page recheck before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-100-visual-review",
+      "physicalPage": 100,
+      "originalRenderSha256": "cf97c2e525a1bb40901dc5f4cbf07f655f63c879e3419d2730bf8ecc779efe6c",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figure 5.1 is a dense network of Colombia digital appropriation and transformation paths derived from survey-based conditional probabilities. Colours distinguish learning communities; arrows and example probabilities must not be read as universal prerequisite rules.",
+      "reason": "Full-size original render of physical PDF page 100 checked against figure/table, legend and notes; keep denominators and category definitions.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-101-visual-review",
+      "physicalPage": 101,
+      "originalRenderSha256": "1659547245acf649054be1678379bbef83acdf6a0640fecefa53af30d3b45564",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact overview shows digitally extracted narrative, boxed prose or references without a distinct chart/map/table; tentative until original-page recheck before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-102-visual-review",
+      "physicalPage": 102,
+      "originalRenderSha256": "3ec93a51b9c6995c129d87c632802131f920eff143faab41a0a1c6bbcfcf4c97",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figure 5.2 compares rural and urban Internet users with at least basic ICT skills by country and skill area, using 2024 or latest available observations. Blue denotes rural and green urban; missing country/skill cells are not zeroes.",
+      "reason": "Full-size original render of physical PDF page 102 checked against figure/table, legend and notes; keep denominators and category definitions.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-103-visual-review",
+      "physicalPage": 103,
+      "originalRenderSha256": "d15eff803192e7d52dce90d2615d43713b7371b0606e1264f1e00259c07d1806",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figure 5.3 compares the same at-least-basic ICT-skill shares by four education levels across countries and skill areas. The education categories follow ISCED and each dot retains its country, skill and education context.",
+      "reason": "Full-size original render of physical PDF page 103 checked against figure/table, legend and notes; keep denominators and category definitions.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-104-visual-review",
+      "physicalPage": 104,
+      "originalRenderSha256": "4df70fe26196db6e2d7fa25dfa4a0a5778b99ca6989fc5b6d5dd69d6f46be354",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figure 5.4 presents distributions of at-least-basic ICT-skill shares by skill area and education level. Boxes show quartiles and medians across 19 countries, whiskers exclude outliers and dots mark outliers; the boxes are not country values.",
+      "reason": "Full-size original render of physical PDF page 104 checked against figure/table, legend and notes; keep denominators and category definitions.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-105-visual-review",
+      "physicalPage": 105,
+      "originalRenderSha256": "ebf01f7f5106d92f3cf6886e73635589b8ead8e30cf152238414cec3851b7d01",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figure 5.5 plots at-least-basic ICT-skill shares against GDP per capita by five skill areas, with fitted curves and country points. The 2021 PPP GDP axis and 2021-or-later skill-data note limit interpretation; association does not prove causation.",
+      "reason": "Full-size original render of physical PDF page 105 checked against figure/table, legend and notes; keep denominators and category definitions.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-106-visual-review",
+      "physicalPage": 106,
+      "originalRenderSha256": "cdfeda05cb738e2c9ebbbdb27042a82836577a6a295136aeafc7c9f5a5326a72",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figure 5.6 stacks Internet users by overall ICT-skill classification for eight listed countries. Colour segments range from at least basic in all areas to low or no skills; the stack is a within-country distribution, not cross-country population counts.",
+      "reason": "Full-size original render of physical PDF page 106 checked against figure/table, legend and notes; keep denominators and category definitions.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-107-visual-review",
+      "physicalPage": 107,
+      "originalRenderSha256": "50e28e037768c4a8215bade1367a36a7bb446ec4706a48aade1ba592f24924d8",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact overview shows digitally extracted narrative, boxed prose or references without a distinct chart/map/table; tentative until original-page recheck before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-108-visual-review",
+      "physicalPage": 108,
+      "originalRenderSha256": "f7b846cdd72034f5b6727606f0bb0913bc508b35d310d597755dd4ad333ec1f5",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact overview shows digitally extracted narrative, boxed prose or references without a distinct chart/map/table; tentative until original-page recheck before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-109-visual-review",
+      "physicalPage": 109,
+      "originalRenderSha256": "67de80a0e3db875b2cda8034556c9b9ecd6b44dcbed6dacf347aecdb153fe891",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact overview shows digitally extracted narrative, boxed prose or references without a distinct chart/map/table; tentative until original-page recheck before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-110-visual-review",
+      "physicalPage": 110,
+      "originalRenderSha256": "5aae97c9fd44815d333085197aca97a67b2e1dfc390c80d9780f5481b8e107e8",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact overview shows digitally extracted narrative, boxed prose or references without a distinct chart/map/table; tentative until original-page recheck before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-111-visual-review",
+      "physicalPage": 111,
+      "originalRenderSha256": "b305b7fad29e5b638563245a0d19cc3dfbfe7385dc091572873ee940e2827ff5",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact overview shows digitally extracted narrative, boxed prose or references without a distinct chart/map/table; tentative until original-page recheck before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-112-visual-review",
+      "physicalPage": 112,
+      "originalRenderSha256": "2254231c52d1382a72ad57e301b95fc82c568d0b10ac2d2dd1fca4e2d7ca6d5d",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact overview shows digitally extracted narrative, boxed prose or references without a distinct chart/map/table; tentative until original-page recheck before product save.",
+      "productDecisionSaved": false
+    }
+  ],
+  "cumulativePendingPageProposals": 112,
+  "remainingPendingPagesNotProposed": 16,
+  "productReviewDecisionsSaved": 0,
+  "privateRegistrationPassed": false,
+  "goldApproved": false,
+  "modelCalls": 0,
+  "g17ToG20Advanced": false
+}
