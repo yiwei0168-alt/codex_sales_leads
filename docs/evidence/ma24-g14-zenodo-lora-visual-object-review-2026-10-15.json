@@ -1,0 +1,69 @@
+{
+  "schema": "ma24-g14-zenodo-lora-visual-object-review-v1",
+  "date": "2026-10-15",
+  "sourceSha256": "907049721a1359658787a026cbeace9b93be4879b75048b5c5a7debea51dedec",
+  "extractionSha256": "4a628ae1c4181fccc6474f143881a562f2b8d1932bd90c15a55b3d85370afb61",
+  "candidateReceiptSha256": "68735550303d34983203e00ba50d63229d6bb8b71509a9c86de06c13ab8d3938",
+  "scope": "All 38 pending visual blocks on 12 slides reviewed against PowerPoint read-only renders and native shape positions; proposed decisions only, no product review saved",
+  "slideRenderSha256": {
+    "1": "aab74b3eeb66676f4f6b37b23e9ff55bc26fd5aae4429d91ae6e8d6b6aa22fd2",
+    "2": "d84dae51909ab686c43b5508854f202d097c8a84f9034c1a8b7c01c59404f1ae",
+    "3": "7d9475d50b3c049b4e2beae63f7dada85105b9d9dd55b414d1d872ff38fde665",
+    "5": "66632d6f5180c58d828d5b8baea1f83d469edc6aeb4a2ef5a4021a4122bb0b1d",
+    "6": "77aa8540830a91385f1ae309b2ea0e86eb8e16fe772e716a75bb0560a89a90e7",
+    "10": "d60135792e45cd4b6e440311c23018aa45da1d326c39758d2d1199ae3e835961",
+    "12": "d47b394e2a9da552177d985907f3482d77fcc4aa92e9568b9ddf6fe2ef2d21b7",
+    "13": "50dd0221e156dff82f73445900cda96f82a6792dbd121e191a1904b8587b903d",
+    "14": "a3ae94ce0319a17e53ba68627a7a6283534f28c42641e01aab9e848ab6bac707",
+    "15": "2642c99ecdc5db38dc2a2d5719adbec9397d0b6b794ea48f905b635a9e5eeb5b",
+    "16": "b52dac709d5ce8837ca74424820bdf07dbbf7d8ebd052345a212d0334963a28c",
+    "18": "68f45434cc58a8bea2588c0560d9212f2a7be9c33b969c707b59c2712d358947"
+  },
+  "decisionGroups": [
+    {
+      "blockIds": ["slide-1-visual-1", "slide-2-visual-1", "slide-3-visual-1", "slide-6-visual-1", "slide-10-visual-1", "slide-12-visual-1", "slide-18-visual-1"],
+      "proposedDecision": "decoration",
+      "reason": "Large illustrative scenes add no distinct factual claim; the adjacent editable text carries the stated project content. Do not treat depicted satellites, launches or laboratories as observed project evidence."
+    },
+    {
+      "blockIds": ["slide-5-visual-2", "slide-5-visual-5", "slide-5-visual-8", "slide-5-visual-11", "slide-5-visual-14", "slide-16-visual-2", "slide-16-visual-5", "slide-16-visual-8", "slide-16-visual-11"],
+      "proposedDecision": "decoration",
+      "reason": "Feature and expected-outcome icons repeat nearby editable headings and descriptions; they add no independent measurements or component labels."
+    },
+    {
+      "blockIds": ["slide-12-visual-3", "slide-12-visual-6", "slide-12-visual-9", "slide-12-visual-12"],
+      "proposedDecision": "decoration",
+      "reason": "Four chevrons repeat the explicit native 1–4 sequence and adjacent Sensors, Microcontroller, LoRa Radio, Ground Station labels."
+    },
+    {
+      "blockIds": ["slide-13-visual-7", "slide-13-visual-8", "slide-13-visual-9"],
+      "proposedDecision": "evidence",
+      "reviewText": "Three left-to-right arrows connect Sensors GPS/BMP180 to Microcontroller ESP32/Arduino, then LoRa Radio SX127x, then Ground Station.",
+      "reason": "Direction and adjacency are needed for the architecture question; native labels alone do not encode the connections."
+    },
+    {
+      "blockIds": ["slide-14-visual-3", "slide-14-visual-4", "slide-14-visual-5", "slide-14-visual-6", "slide-14-visual-14"],
+      "proposedDecision": "decoration",
+      "reason": "Four lines draw the Operator stick figure. The second line to Start Mission duplicates the first association line; these add no separate use case."
+    },
+    {
+      "blockIds": ["slide-14-visual-13", "slide-14-visual-17", "slide-14-visual-18", "slide-14-visual-19", "slide-14-visual-20"],
+      "proposedDecision": "evidence",
+      "reviewText": "The Operator has links to Start Mission, Receive Telemetry, Monitor GPS/Altitude, Store Data and Analyze Mission. This is a proposed use-case diagram, not proof that these functions were implemented.",
+      "reason": "The five distinct associations are conveyed by source lines rather than by the use-case labels alone."
+    },
+    {
+      "blockIds": ["slide-15-visual-3", "slide-15-visual-6", "slide-15-visual-9", "slide-15-visual-12", "slide-15-visual-15"],
+      "proposedDecision": "evidence",
+      "reviewText": "Downward arrows order Read Sensors → Build Packet + CRC → Transmit LoRa Frame → Decode + Deliver Payload → Display + Store (CSV/DB).",
+      "reason": "The arrows establish direction of the five telemetry steps for the cross-slide draft question."
+    }
+  ],
+  "pendingBlockCount": 38,
+  "proposedEvidenceCount": 13,
+  "proposedDecorationCount": 25,
+  "productReviewSaved": false,
+  "documentRegistered": false,
+  "goldCreated": 0,
+  "remaining": ["Save and read back all 38 object decisions in isolated product flow", "Verify registered original coordinates and user-visible citation", "Complete source-family and question/answer exposure audit before Gold freeze"]
+}
