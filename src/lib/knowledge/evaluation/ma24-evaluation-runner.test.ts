@@ -46,7 +46,7 @@ vi.mock('./ma24-evaluation-task-binding', () => ({
   verifyMa24EvaluationTaskBinding: mocks.verify,
 }));
 vi.mock('./ma24-g15-runtime-binding', () => ({
-  assertMa24G15RuntimeBinding: mocks.binding,
+  requireMa24G15ModelReady: mocks.binding,
 }));
 vi.mock('./ma24-g15-hard-limit-binding', () => ({
   verifyMa24EvaluationHardLimit: mocks.hardLimit,
@@ -71,8 +71,7 @@ const task = { execution_kind: 'main-agent-evaluation', control: null, instructi
 beforeEach(() => {
   vi.resetAllMocks();
   mocks.preview.mockReturnValue({ schema: 'ma24-g15-config-preview-v1' });
-  mocks.binding.mockReturnValue({ runtimeBindingMatched: true,
-    readyForModelCalls: true, missing: [] });
+  mocks.binding.mockImplementation((_frozen, loaded) => loaded);
   mocks.claim.mockResolvedValue({ id: runId, lease_token: leaseToken,
     userId, caseId: 'case-1', arm: 'baseline', query: task.input.content,
     knowledgeScope: ['product'] });
@@ -141,8 +140,9 @@ it('rechecks financial admission after claim and before graph or model work', as
 });
 
 it('refuses an unready paid evaluation before claiming a persisted task', async () => {
-  mocks.binding.mockReturnValue({ runtimeBindingMatched: true,
-    readyForModelCalls: false, missing: ['Gold not frozen', 'paid call authorization not confirmed'] });
+  mocks.binding.mockImplementation(() => {
+    throw new Error('MA24 evaluation model admission unavailable: Gold not frozen');
+  });
   await expect(executeMa24EvaluationRun(input))
     .rejects.toThrow('MA24 evaluation model admission unavailable');
   expect(mocks.claim).not.toHaveBeenCalled();

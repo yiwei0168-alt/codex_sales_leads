@@ -73,3 +73,12 @@ export function assertMa24G15RuntimeBinding(frozen: Ma24G15Preview,
   return { runtimeBindingMatched: true, readyForModelCalls: false,
     missing: [...missing, "independent source/Gold and paid admission preflight not implemented"] };
 }
+
+/** Require an admitted frozen preview before a dedicated evaluation task is claimed. */
+export function requireMa24G15ModelReady(frozen: Ma24G15Preview,
+  loaded: Ma24G15Preview, nowUtcDate: string) {
+  const gate = assertMa24G15RuntimeBinding(frozen, loaded, nowUtcDate);
+  if (!gate.readyForModelCalls)
+    throw new Error(`MA24 evaluation model admission unavailable: ${gate.missing.join("; ")}`);
+  return loaded;
+}

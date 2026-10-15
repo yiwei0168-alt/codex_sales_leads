@@ -6,7 +6,7 @@ import { assertMa24FrozenSnapshotBytes, assertMa24GoldMatchesManifest,
   assertMa24SourceSetMatchesManifest, type Ma24GoldSnapshot,
   type Ma24SourceSetSnapshot } from "./ma24-independent-comparison";
 import { verifyMa24EvaluationTaskBinding } from "./ma24-evaluation-task-binding";
-import { assertMa24G15RuntimeBinding, type Ma24G15Preview } from "./ma24-g15-runtime-binding";
+import { requireMa24G15ModelReady, type Ma24G15Preview } from "./ma24-g15-runtime-binding";
 import { assertMa24CorpusSnapshotBytes, assertMa24PermissionGoldControl,
   assertMa24RouteGoldCorpusAccess,
   verifyMa24LiveCorpusAccount, verifyMa24LivePermissionControl,
@@ -65,7 +65,7 @@ export async function claimAndBindMa24EvaluationRun(input: Omit<BindingInput,
   const frozenCodeAndConfig = decode(input.codeAndConfigBytes) as Ma24G15Preview;
   const loadedCodeAndConfig = loadCurrentMa24G15Preview();
   const nowUtcDate = new Date().toISOString().slice(0, 10);
-  assertMa24G15RuntimeBinding(frozenCodeAndConfig, loadedCodeAndConfig, nowUtcDate);
+  requireMa24G15ModelReady(frozenCodeAndConfig, loadedCodeAndConfig, nowUtcDate);
   const loadedModelConfig = modeModelConfig("standard");
   const claimed = await claimMa24EvaluationRun(input.runId, entry.userId, input.workerId);
   if (!claimed) throw new Error("MA24 evaluation task unavailable for explicit claim");

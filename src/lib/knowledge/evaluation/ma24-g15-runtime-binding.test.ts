@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { assertMa24G15RuntimeBinding, type Ma24G15Preview } from "./ma24-g15-runtime-binding";
+import { assertMa24G15RuntimeBinding, requireMa24G15ModelReady,
+  type Ma24G15Preview } from "./ma24-g15-runtime-binding";
 
 const preview = (): Ma24G15Preview => ({ schema: "ma24-g15-config-preview-v1",
   productPromptDateUtc: "2026-10-15", requiredRunPromptDateUtc: "2026-10-15",
@@ -23,6 +24,11 @@ describe("MA24 G15 runtime binding", () => {
         missing: expect.arrayContaining(["maximum provider requests not fixed",
           "maximum request bytes not fixed", "maximum output tokens not fixed",
           "hard spend cap not fixed"]) });
+  });
+  it("refuses a matching but unready preview before a task can be claimed", () => {
+    const same = preview();
+    expect(() => requireMa24G15ModelReady(same, structuredClone(same), "2026-10-15"))
+      .toThrow(/MA24 evaluation model admission unavailable: local BGE flag disabled/);
   });
   it("requires positive bounded request, output and total spend values", () => {
     const loaded = preview();

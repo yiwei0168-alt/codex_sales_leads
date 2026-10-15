@@ -14,7 +14,7 @@ import { assertCurrentSkillMessages } from '../../assistant/main/skill-message-g
 import { assertCurrentMemoryMessages, withCurrentDecisionMemory } from '../../assistant/main/memory-message-guard';
 import { claimAndBindMa24EvaluationRun, loadCurrentMa24G15Preview } from './ma24-evaluation-claim';
 import { verifyMa24EvaluationTaskBinding } from './ma24-evaluation-task-binding';
-import { assertMa24G15RuntimeBinding } from './ma24-g15-runtime-binding';
+import { requireMa24G15ModelReady } from './ma24-g15-runtime-binding';
 import { verifyMa24EvaluationHardLimit } from './ma24-g15-hard-limit-binding';
 import { ma24ManifestSha256 } from './ma24-independent-comparison';
 
@@ -32,10 +32,7 @@ export function assertMa24EvaluationSpendBoundary(userId: string, runId: string)
 /** Refuse all model work until the current G15 preview admits paid evaluation. */
 export function assertMa24EvaluationModelReady() {
   const loaded = loadCurrentMa24G15Preview();
-  const gate = assertMa24G15RuntimeBinding(loaded, loaded, new Date().toISOString().slice(0, 10));
-  if (!gate.readyForModelCalls)
-    throw new Error(`MA24 evaluation model admission unavailable: ${gate.missing.join('; ')}`);
-  return loaded;
+  return requireMa24G15ModelReady(loaded, loaded, new Date().toISOString().slice(0, 10));
 }
 
 /** Dedicated G16 entry: frozen admission, hidden conversation, shared Agent graph, durable journals. */

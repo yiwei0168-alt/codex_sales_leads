@@ -1,0 +1,28 @@
+{
+  "schema": "ma24-g15-preclaim-model-admission-v1",
+  "date": "2026-10-16",
+  "change": "The dedicated claim-and-bind entry now requires the same frozen/current model admission decision as the runner before its explicit database claim.",
+  "preview": "docs/evidence/ma24-g15-config-preview-2026-10-16-v19.json",
+  "previewSourceClosureFiles": 297,
+  "previewReadyForPaidEvaluation": false,
+  "currentBinding": {
+    "matched": true,
+    "readyForModelCalls": false,
+    "frozenPreviewSha256": "346a9397eb97f3a559938c2ff3f77b047ce8f6b32d7f40b4d519794fb451b03b"
+  },
+  "oldV18Binding": "Rejected with MA24 G15 sourceHashes drift",
+  "checks": {
+    "focusedVitest": "4 files, 34 tests passed with TEMP/TMP inside workspace; an earlier run using the sandbox default temp failed at Vite cache rename before test collection",
+    "typescript": "node node_modules/typescript/bin/tsc --noEmit passed",
+    "eslint": "targeted six evaluation files passed",
+    "directClaimNegativeCase": "matching but unready preview refused before database claim"
+  },
+  "modelCalls": 0,
+  "providerCalls": 0,
+  "productionWrites": 0,
+  "remaining": [
+    "Complete and freeze the independent G14 source, question and Gold set",
+    "Verify exact runtime build and transitive closure, current provider tariffs and paid preflight",
+    "Obtain a scoped authorization reference and durable hard-limit row before any G16 dual-arm model call"
+  ]
+}
