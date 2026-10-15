@@ -128,20 +128,29 @@ try {
   const registered = await registerVectorlessUpload(owner, job.id, { language: "en", authorityLevel: 2,
     expectedSourceSha256: manifest.sourceSha256 });
   assert.equal(registered.treeStatus, "searchable");
-  const node = (await pool.query<{ id: string }>(`select id from knowledge_tree_node where version_id=$1 and node_kind='evidence'
-    and source_location->>'blockId'='page-28-visual-review'`, [registered.versionId])).rows[0];
-  assert(node);
-  const evidence = await readEvidence(owner, node.id, ["industry"]);
-  assert(evidence?.content.includes("Figure 12"));
-  assert.equal(evidence.source_location.unitIndex, 28);
-  assert.equal(await readEvidence(other, node.id, ["industry"]), null);
+  const targetBlocks = [
+    { blockId: "page-27-block-3", page: 27, excerpt: "approximately 78% of entities met the" },
+    { blockId: "page-28-block-3", page: 28, excerpt: "in 2025, 52% of students had access to connectivity" },
+    { blockId: "page-28-visual-review", page: 28, excerpt: "Figure 12" },
+  ];
+  for (const target of targetBlocks) {
+    const nodes: Array<{ id: string }> = (await pool.query<{ id: string }>(`select id from knowledge_tree_node where version_id=$1
+      and node_kind='evidence' and source_location->>'blockId'=$2`,
+    [registered.versionId, target.blockId])).rows;
+    assert.equal(nodes.length, 1, `expected one evidence node for ${target.blockId}`);
+    const evidence = await readEvidence(owner, nodes[0].id, ["industry"]);
+    assert(evidence?.content.includes(target.excerpt), `missing source excerpt for ${target.blockId}`);
+    assert.equal(evidence.source_location.unitIndex, target.page);
+    assert.equal(await readEvidence(other, nodes[0].id, ["industry"]), null);
+  }
   const search = await searchDocuments(owner, "Figure 12 student 1 Mbps", { collections: ["industry"] });
   assert(search.some(item => item.documentId === registered.documentId));
   console.log(JSON.stringify({ cloneOnly: true, sourceSha256: manifest.sourceSha256,
     extractorVersion: first.extractorVersion, artifactSha256: first.artifactSha256,
     originalCandidateImagesRebound: imageNames.size, reviewSavedAndReadBack: 178,
     decisions: { evidence: 122, decoration: 56 }, page76Decoration: true, completionReceipt: true,
-    treeStatus: registered.treeStatus, citedPage: 28, searchFound: true,
+    treeStatus: registered.treeStatus, citedPages: [27, 28], targetEvidenceBlocks: targetBlocks.length,
+    searchFound: true,
     otherAccountDenied: true, modelCalls: 0, externalCalls: 0, qualityAccepted: false, goldCreated: 0 }));
 } finally {
   if (jobId) {

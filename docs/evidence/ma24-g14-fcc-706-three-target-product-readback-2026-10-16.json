@@ -1,0 +1,22 @@
+{
+  "schema": "ma24-g14-fcc-706-three-target-product-readback-v1",
+  "date": "2026-10-16",
+  "scope": "Local isolated ma11_replay clone; FCC 26-55 official 178-page PDF candidate",
+  "script": "scripts/verify-fcc-706-full-review-v2-clone.ts",
+  "sourceSha256": "805e0e5b954775059ad535ae650c955935758a88f2a20ec0e6554e77f0e61154",
+  "extractorVersion": "layout-v2.0.10",
+  "runExtractionArtifactSha256": "45b015e39d0a4d62e29b83a30afca5f6d5e5b9d941927e818da6b45cdbf09f0a",
+  "reviewDecisionsSavedAndReadBack": 178,
+  "reviewDecisions": { "evidence": 122, "decoration": 56, "unresolved": 0 },
+  "treeStatus": "searchable",
+  "targetEvidenceReadBack": [
+    { "blockId": "page-27-block-3", "physicalPage": 27, "excerptPresent": "approximately 78% of entities met the", "otherAccountDenied": true },
+    { "blockId": "page-28-block-3", "physicalPage": 28, "excerptPresent": "in 2025, 52% of students had access to connectivity", "otherAccountDenied": true },
+    { "blockId": "page-28-visual-review", "physicalPage": 28, "excerptPresent": "Figure 12", "otherAccountDenied": true }
+  ],
+  "targetPageSearchFound": true,
+  "syntheticDatabaseAndUploadResidue": 0,
+  "modelCalls": 0,
+  "externalCalls": 0,
+  "acceptanceBoundary": "Verifies that the exact draft evidence blocks are stored and readable by the isolated owner after full product review and registration, and denied to another account. User content review, same-family Gold disposition, whole-set independence and model answer/citation quality remain pending. G17-G20 are paused."
+}
