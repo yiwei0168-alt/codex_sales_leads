@@ -1,0 +1,27 @@
+{
+  "schema": "ma24-g14-zenodo-lora-private-gold-draft-v1",
+  "date": "2026-10-16",
+  "caseId": "zenodo-lora-cansat-architecture-crc-storage",
+  "privateDraftPath": "tmp/ma24-independent-quarantine/zenodo-lora-cansat-gold-draft-v1.json",
+  "privateDraftSha256": "981535c1825980495ae7c719b85375d73ad11a4cc405ee9fbd6dfd4aec8280b7",
+  "originalPresentationSha256": "907049721a1359658787a026cbeace9b93be4879b75048b5c5a7debea51dedec",
+  "extractionSha256": "4a628ae1c4181fccc6474f143881a562f2b8d1932bd90c15a55b3d85370afb61",
+  "checks": {
+    "draftJsonParsed": true,
+    "originalAndExtractionHashesRecalculated": true,
+    "sevenSourceExcerptsMatchedExactBlockTextAndSlide": true,
+    "eightVisualDirectionBlockIdsPresent": true,
+    "sourceAndAnswerBoundaryFromReviewedSlides": true,
+    "modelAnswerCalls": 0,
+    "productionKnowledgeWrites": 0
+  },
+  "reviewPacket": "docs/MA24_G14_ZENODO_LORA_REVIEW_PACKET_2026-10-16.md",
+  "acceptanceBoundary": {
+    "userDiagramQuestionAndAnswerReview": "pending",
+    "independentGoldApproved": false,
+    "fullSetFrozen": false,
+    "g15ReadyForModelCalls": false,
+    "realDualArmRuns": 0,
+    "g17ToG20Advanced": false
+  }
+}
