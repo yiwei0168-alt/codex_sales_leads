@@ -13,7 +13,7 @@ vi.mock('@langchain/langgraph-checkpoint-postgres', () => ({
   PostgresSaver: class PostgresSaver {},
 }));
 vi.mock('../../rag/db', () => ({ getPool: mocks.pool }));
-vi.mock('../../billing/context', () => ({ withProductSpend: mocks.spend,
+vi.mock('../../billing/context', () => ({ withMa24EvaluationSpend: mocks.spend,
   currentSpendContext: mocks.spendContext }));
 vi.mock('../../billing/stage-paid-call-override', () => ({
   currentStagePaidCallOverride: mocks.financialOverride,
@@ -102,6 +102,14 @@ it('rejects an inherited fixed FX reference before claiming or running the graph
   expect(mocks.model).not.toHaveBeenCalled();
 });
 
+it('rejects an inherited spend scope for another evaluation run before claiming', async () => {
+  mocks.spendContext.mockReturnValue({ ma24EvaluationRunId:
+    '44444444-4444-4444-8444-444444444444' });
+  await expect(executeMa24EvaluationRun(input))
+    .rejects.toThrow('MA24 evaluation financial override unavailable');
+  expect(mocks.claim).not.toHaveBeenCalled();
+});
+
 it('rechecks fixed FX after claiming and before graph or model work', async () => {
   mocks.spendContext.mockReturnValueOnce(undefined)
     .mockReturnValueOnce({ fixedFxReferenceVersion: 'synthetic-fx-v1' });
@@ -149,8 +157,7 @@ it('passes only the question into the shared graph and settles a synthetic compl
     },
   }));
   await expect(executeMa24EvaluationRun(input)).resolves.toEqual({ status: 'completed', runId });
-  expect(mocks.spend).toHaveBeenCalledWith(userId, 'main-agent-evaluation',
-    expect.any(Function), runId);
+  expect(mocks.spend).toHaveBeenCalledWith(userId, runId, expect.any(Function));
   expect(mocks.model).toHaveBeenCalledOnce();
   expect(mocks.verify.mock.calls.length).toBeGreaterThan(2);
   expect(mocks.finish).toHaveBeenCalledWith(expect.objectContaining({

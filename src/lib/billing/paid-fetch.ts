@@ -106,7 +106,8 @@ export function budgetedFetch(transport:typeof fetch=fetch):typeof fetch {
       ?paidRequestFingerprint(request.method,url,body):searchRequestFingerprint(rule,request,parsed);
     const id=await reservePaidCall(scope.userId,{operationId:scope.operationId,stage:scope.stage,tariffKey:rule.key,
       tariffVersion:costBoundKnown?(native?.version??policy.version):admissionOverride!.ruleId,
-      maximumChargeMicros:costBoundKnown?rule.maximumChargeMicros:0,costBoundKnown,requestBytes:bytes,modelAttempt,requestFingerprint,
+      maximumChargeMicros:costBoundKnown?rule.maximumChargeMicros:0,costBoundKnown,requestBytes:bytes,
+      maximumOutputTokens:outputTokens??0,modelAttempt,requestFingerprint,
       foreignCostBound:rule.foreignCostBound,costAttribution:scope.costAttribution});
     const started=Date.now();let response:Response;
     try{response=await routedTransport(input,{...init,redirect:"error"});}catch{

@@ -81,6 +81,7 @@ const sourceFiles=[
  'db/migrations/136_ma24_evaluation_run_kind.sql',
  'db/migrations/137_ma24_explicit_evaluation_claim.sql',
  'db/migrations/138_ma24_evaluation_claim_owner.sql',
+ 'db/migrations/139_ma24_evaluation_hard_limits.sql',
 ];
 const sourceHashes=await ma24LocalSourceClosure(process.cwd(),sourceFiles);
 for(const required of [

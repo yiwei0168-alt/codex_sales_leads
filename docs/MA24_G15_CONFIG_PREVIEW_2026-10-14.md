@@ -1,5 +1,7 @@
 # MA24 G15 双路径配置与调用边界草案（2026-10-14）
 
+2026-10-16 工程更新：整次独立测评现在有数据库预留时的四项共享硬限额，跨账号运行按同一冻结清单哈希计数；失效运行、缺少限额行及超限预留在网络发送前拒绝。[隔离克隆收据](evidence/ma24-g15-durable-evaluation-hard-limits-2026-10-16.json)。当前没有经过授权的限额行，费率及付费预检也未完成；[v17 只读预览](evidence/ma24-g15-config-preview-2026-10-16-v17.json)仍为 `readyForPaidEvaluation=false`，不开放 G16 双路模型运行。下文保留早期草案状态作为历史记录。
+
 本文件由[只读配置预览](evidence/ma24-g15-config-preview-2026-10-14.json)和当前源码核对而来。它尚不是冻结快照、付费请求批准或 G16 运行入口。预览可用 `node scripts/run-tsx.cjs scripts/prepare-ma24-g15-config-local.ts` 重建；脚本只模拟工具可见性，不连接供应商或写数据库。
 
 ## 可比较的主 Agent 配置

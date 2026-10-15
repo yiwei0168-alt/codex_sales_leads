@@ -1,0 +1,34 @@
+{
+  "schema": "ma24-g15-durable-evaluation-hard-limits-v1",
+  "date": "2026-10-16",
+  "migration": "db/migrations/139_ma24_evaluation_hard_limits.sql",
+  "scope": "Every paid reservation whose operation ID is a leased MA24 evaluation run contributes to one manifest-wide durable ceiling, including runs owned by different accounts.",
+  "reservedDimensions": [
+    "provider request count",
+    "request bytes",
+    "requested maximum output tokens",
+    "maximum charged micro-USD reservation"
+  ],
+  "enforcement": "A before-insert trigger locks and increments the manifest cap row inside the same transaction as the paid-call reservation. Missing or exceeded caps, unknown cost bounds and inactive runs reject the insert before network send. Failed inserts roll back increments; settled or unknown bills do not release the conservative cap.",
+  "provisioningBoundary": "The application role cannot insert or raise a cap row. No authorized cap row was created by this stage; a later G15 preflight must bind the exact reviewed limits, current tariffs, frozen inputs and paid authorization before calls can open.",
+  "checks": {
+    "focusedVitest": "47 passed across billing context, paid fetch and evaluation runner",
+    "typescriptNoEmit": "passed",
+    "focusedEslint": "passed",
+    "isolatedPostgresClone": "ma11_replay_7d98e095133b",
+    "cloneResults": [
+      "missing cap rejected through restricted application role",
+      "two accounts shared all four caps through restricted application role",
+      "request count, bytes, tokens and reserved spend overflow rejected",
+      "unknown cost and inactive run rejected",
+      "all migration and synthetic data rolled back"
+    ],
+    "providerCalls": 0,
+    "realDualArmRuns": 0
+  },
+  "previewPath": "docs/evidence/ma24-g15-config-preview-2026-10-16-v17.json",
+  "previewSha256": "26544a30eaff4709bed1a73073bc9d28dfb3702e0b02c211ca9b32965994de4c",
+  "previewSourceClosureFiles": 295,
+  "previewBinding": "matched; readyForModelCalls=false; v16 rejected for sourceHashes drift",
+  "g17ToG20Advanced": false
+}

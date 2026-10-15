@@ -1,6 +1,6 @@
 import { PostgresSaver } from '@langchain/langgraph-checkpoint-postgres';
 import { getPool } from '../../rag/db';
-import { currentSpendContext, withProductSpend } from '../../billing/context';
+import { currentSpendContext, withMa24EvaluationSpend } from '../../billing/context';
 import { currentStagePaidCallOverride } from '../../billing/stage-paid-call-override';
 import { digest, type ExecutionContext, type ModelMessage } from '../../assistant/main/contracts';
 import { buildMainAgentGraph, durableModel, MainAgentState } from '../../assistant/main/graph';
@@ -19,9 +19,10 @@ import { assertMa24G15RuntimeBinding } from './ma24-g15-runtime-binding';
 type EvaluationInput = Parameters<typeof claimAndBindMa24EvaluationRun>[0];
 
 /** MA24 evaluation must use the frozen, reviewed financial path rather than a stage bypass. */
-export function assertMa24EvaluationSpendBoundary(userId: string) {
+export function assertMa24EvaluationSpendBoundary(userId: string, runId: string) {
   const spend = currentSpendContext();
   if (spend?.tariffPolicy || spend?.fixedFxReferenceVersion ||
+    (spend?.ma24EvaluationRunId && spend.ma24EvaluationRunId !== runId) ||
     currentStagePaidCallOverride(userId))
     throw new Error('MA24 evaluation financial override unavailable');
 }
@@ -39,14 +40,14 @@ export function assertMa24EvaluationModelReady() {
 export async function executeMa24EvaluationRun(input: EvaluationInput) {
   const entry = input.manifest.cases.find(item => item.caseId === input.caseId);
   if (!entry) throw new Error('MA24 evaluation case absent from frozen manifest');
-  assertMa24EvaluationSpendBoundary(entry.userId);
+  assertMa24EvaluationSpendBoundary(entry.userId, input.runId);
   assertMa24EvaluationModelReady(); // Before a lease or any provider request.
   const admitted = await claimAndBindMa24EvaluationRun(input);
   const context: ExecutionContext = { userId: admitted.userId, runId: admitted.id,
     leaseToken: admitted.lease_token, role: 'member', mode: 'standard',
     knowledgeScope: admitted.knowledgeScope, evaluationArm: admitted.arm };
   const revalidate = async () => {
-    assertMa24EvaluationSpendBoundary(admitted.userId);
+    assertMa24EvaluationSpendBoundary(admitted.userId, admitted.id);
     const loadedCodeAndConfig = assertMa24EvaluationModelReady();
     await verifyMa24EvaluationTaskBinding({ ...input,
       leaseToken: admitted.lease_token, loadedCodeAndConfig,
@@ -89,8 +90,8 @@ export async function executeMa24EvaluationRun(input: EvaluationInput) {
       pending: [], steps: 0, seen: {}, instructionIds: [], decisionRevision: 0,
       policyRevision: '', status: 'running', reply: '',
     };
-    const final = await withProductSpend(context.userId, 'main-agent-evaluation',
-      () => graph.invoke(initial, config), context.runId);
+    const final = await withMa24EvaluationSpend(context.userId, context.runId,
+      () => graph.invoke(initial, config));
     if (final.status !== 'completed') {
       await finishRun(context, 'failed', 'MA24 evaluation execution did not complete');
       return { status: 'failed' as const, runId: context.runId };
