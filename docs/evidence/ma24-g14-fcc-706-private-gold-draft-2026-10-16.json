@@ -1,0 +1,34 @@
+{
+  "schema": "ma24-g14-fcc-706-private-gold-draft-v1",
+  "date": "2026-10-16",
+  "caseId": "fcc-706-2026-school-entity-vs-student-denominator",
+  "privateDraftPath": "tmp/ma24-independent-quarantine/fcc-706-school-denominator-gold-draft-v1.json",
+  "privateDraftSha256": "b7284edce8d380ca0b90c9cc82a3215b9f5919ad9bf4054f2991294e53bd4399",
+  "originalPdfSha256": "805e0e5b954775059ad535ae650c955935758a88f2a20ec0e6554e77f0e61154",
+  "localExtractionSha256": "6724008a1138a5e83dc4439e42ed4f75176154e5bf9a0d738dbd2f339cd2d0d4",
+  "isolatedProductExtractionSha256": "473114c80fec12c51b7274b11bee9776efdd75e6f6524445e8934c59ca9f00ea",
+  "checks": {
+    "draftJsonParsed": true,
+    "sourceAndLocalExtractionHashesRecalculated": true,
+    "threeSourceExcerptsMatchedExactPageAndTextOrReviewedVisual": true,
+    "physicalPages27And28Reinspected": true,
+    "wholePdfReviewAndCloneReceiptsPresent": true,
+    "modelCalls": 0,
+    "productionKnowledgeWrites": 0
+  },
+  "sharedPublicationFamily": {
+    "family": "FCC 26-55",
+    "alreadyApprovedCase": "fcc-2026-fixed-service-option-scope",
+    "thisCandidateAddsIndependentSourceUnit": false
+  },
+  "reviewPacket": "docs/MA24_G14_FCC_706_LONG_REPORT_REVIEW_PACKET_2026-10-15.md",
+  "acceptanceBoundary": {
+    "userQuestionAndAnswerReview": "pending",
+    "sameFamilyGoldDisposition": "pending",
+    "independentGoldApprovedForThisCase": false,
+    "fullSetFrozen": false,
+    "g15ReadyForModelCalls": false,
+    "realDualArmRuns": 0,
+    "g17ToG20Advanced": false
+  }
+}
