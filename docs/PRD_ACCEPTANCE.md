@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+2026-10-16 / MA24 G15：专用评测领取前增加标准模式三后备路由的实际计费规则覆盖检查，并在模型/工具边界重核；缺项、过期、请求字节/输出上限不足及其他业务合同反例由 21 项定向测试覆盖。[工程收据](evidence/ma24-g15-preclaim-tariff-coverage-2026-10-16.json)。现行规则三路均为 0，v30 只读闭包匹配但 `readyForModelCalls=false`；完整 Gold、真实账号/运行包、费率规则、限额授权和 G16 双路质量待验，G17–G20 暂停。
+
 2026-10-16 / MA24 G15：当前只读配置的三模型 OpenRouter 目录价及 41 个端点报价已取得并锁定响应哈希；目录报价不能覆盖所有端点及 GPT-6.1 Sol 长输入分档。[费率面收据](evidence/ma24-g15-public-openrouter-tariff-surface-2026-10-16.json)。尚未核最终路由、账号条款和限额，也没有付费授权或模型调用；`providerTariffsVerified=false`，G17–G20 暂停。
 
 2026-10-16 / MA24 G14：NIST MAT 字段候选在隔离克隆完成工作簿可检索注册、来源树授权回读和 12 个原格核对，跨账号拒读。[回读收据](evidence/ma24-g14-nist-mat-isolated-readback-2026-10-16.json)。这只证明产品读取该证据块；逐题内容、整组独立性、用户可见引用和 Gold 冻结未通过，批准 Gold 仍为 5 题，G17–G20 暂停。

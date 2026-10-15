@@ -17,6 +17,7 @@ import { claimAndBindMa24EvaluationRun, loadCurrentMa24G15Preview } from './ma24
 import { verifyMa24EvaluationTaskBinding } from './ma24-evaluation-task-binding';
 import { requireMa24G15ModelReady } from './ma24-g15-runtime-binding';
 import { verifyMa24EvaluationHardLimit } from './ma24-g15-hard-limit-binding';
+import { assertMa24G15TariffCoverage } from './ma24-g15-tariff-coverage';
 import { ma24ManifestSha256 } from './ma24-independent-comparison';
 import { assertBgeServiceReady } from '../../rag/bge-client';
 
@@ -75,6 +76,7 @@ export async function executeMa24EvaluationRun(input: EvaluationInput) {
   if (!entry) throw new Error('MA24 evaluation case absent from frozen manifest');
   assertMa24EvaluationSpendBoundary(entry.userId, input.runId);
   const initialPreview = assertMa24EvaluationModelReady(); // Before a lease or any provider request.
+  assertMa24G15TariffCoverage(initialPreview);
   await assertBgeServiceReady();
   const manifestSha256 = ma24ManifestSha256(input.manifest);
   await verifyMa24EvaluationHardLimit({ userId: entry.userId, runId: input.runId,
@@ -88,6 +90,7 @@ export async function executeMa24EvaluationRun(input: EvaluationInput) {
     lease.assertHealthy();
     assertMa24EvaluationSpendBoundary(admitted.userId, admitted.id);
     const loadedCodeAndConfig = assertMa24EvaluationModelReady();
+    assertMa24G15TariffCoverage(loadedCodeAndConfig);
     await assertBgeServiceReady();
     await verifyMa24EvaluationHardLimit({ userId: admitted.userId, runId: admitted.id,
       manifestSha256, preview: loadedCodeAndConfig });

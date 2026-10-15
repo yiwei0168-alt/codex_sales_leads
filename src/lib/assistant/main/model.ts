@@ -16,12 +16,14 @@ export const modelReplySchema = z.object({
     function: z.object({ name: z.string().max(100), arguments: z.string().max(100_000) }) })).max(12).optional(),
 });
 
+export const MODE_MODEL_MAX_OUTPUT_TOKENS = 16_384;
+
 export async function requestModeModel(messages:ModelMessage[],profile:ModeConfig,index:number,transport:typeof fetch=fetch,signal?:AbortSignal){
   signal?.throwIfAborted();
   const candidate=profile.routes[index];if(!candidate)throw new Error('Invalid model attempt');
   const route=getOpenRouterConfig(),controller=new AbortController();
   const wireBody={model:candidate.model,messages:transportMessages(messages),tools:modelFunctions,tool_choice:'auto',stream:true,
-    max_tokens:16384,reasoning:{effort:candidate.effort},provider:{...route.providerPreferences,allow_fallbacks:false}};
+    max_tokens:MODE_MODEL_MAX_OUTPUT_TOKENS,reasoning:{effort:candidate.effort},provider:{...route.providerPreferences,allow_fallbacks:false}};
   const wireJson=JSON.stringify(wireBody);
   let transportError:unknown;
   const first=setTimeout(()=>controller.abort(new ModelWaitError('first-output')),profile.firstOutputMs);

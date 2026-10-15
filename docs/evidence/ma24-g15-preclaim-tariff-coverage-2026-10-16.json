@@ -1,0 +1,35 @@
+{
+  "schema": "ma24-g15-preclaim-tariff-coverage-v1",
+  "date": "2026-10-16",
+  "change": "The dedicated MA24 runner checks live billing-rule coverage for all three standard-mode fallback models before a persisted task claim and at every model/tool boundary. The check uses the frozen maximum request bytes and the mode stream's actual 16,384-token output request; an unrelated request contract cannot satisfy it.",
+  "currentModelRoutes": [
+    "anthropic/claude-sonnet-5.5",
+    "openai/gpt-6.1-sol",
+    "moonshotai/kimi-k3"
+  ],
+  "activeBillingPolicyVersion": "request-bounds-v1.13.0",
+  "matchingActiveBillingRulesByRoute": [0, 0, 0],
+  "currentPolicyProbe": "A read-only v30 preview with only in-memory request bounds supplied was rejected with missing-tariff; no lease or model call was made.",
+  "checks": {
+    "focusedVitest": "2 files, 21 tests passed: full/missing fallback coverage, expired tariff, insufficient request bounds, unrelated request contract, and runner preclaim rejection",
+    "typescript": "npm run typecheck passed",
+    "lint": "Targeted ESLint on five changed TypeScript files passed",
+    "readOnlyRuntimeBinding": "v30 preview matched the current 305-file source closure; readyForModelCalls=false, modelCalls=0, providerCalls=0"
+  },
+  "sourceClosurePreview": {
+    "path": "docs/evidence/ma24-g15-config-preview-2026-10-16-v30.json",
+    "sha256": "efcc643cf125ecfb23b59dde8c250afeb0e4adc93fc03919680931af06029d62"
+  },
+  "relatedPublicPricingSurface": {
+    "path": "docs/evidence/ma24-g15-public-openrouter-tariff-surface-2026-10-16.json",
+    "sha256": "00f5cc27e3f68cdf8a80c444263acc34d8e9f10fdc3dd2218946c11bc38130f8"
+  },
+  "remaining": [
+    "Approve and install current request bounds for every allowed model route and endpoint policy; the public price capture does not itself create billing rules.",
+    "Freeze the independent Gold, exact accounts and corpus, final running build, durable cap, provider terms and paid-call authorization before G15 can admit G16.",
+    "No real dual-arm model answer or user-visible citation has been scored."
+  ],
+  "g15ReadyForModelCalls": false,
+  "g16RealDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}

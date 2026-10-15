@@ -9,6 +9,7 @@ const mocks = vi.hoisted(() => ({
   spend: vi.fn(), pool: vi.fn(), memory: vi.fn(), availableTools: vi.fn(),
   spendContext: vi.fn(), financialOverride: vi.fn(),
   hardLimit: vi.fn(),
+  tariffCoverage: vi.fn(),
   bgeHealth: vi.fn(),
   dispatch: vi.fn(), skillGuard: vi.fn(), memoryGuard: vi.fn(), knowledgeGuard: vi.fn(),
 }));
@@ -54,6 +55,9 @@ vi.mock('./ma24-g15-runtime-binding', () => ({
 vi.mock('./ma24-g15-hard-limit-binding', () => ({
   verifyMa24EvaluationHardLimit: mocks.hardLimit,
 }));
+vi.mock('./ma24-g15-tariff-coverage', () => ({
+  assertMa24G15TariffCoverage: mocks.tariffCoverage,
+}));
 
 import { assertMa24EvaluationBaselineToolResult, executeMa24EvaluationRun,
   startMa24EvaluationHeartbeat } from './ma24-evaluation-runner';
@@ -81,6 +85,7 @@ beforeEach(() => {
     knowledgeScope: ['product'] });
   mocks.verify.mockResolvedValue({ userId, caseId: 'case-1' });
   mocks.hardLimit.mockResolvedValue({});
+  mocks.tariffCoverage.mockReturnValue(['reviewed-route-1', 'reviewed-route-2', 'reviewed-route-3']);
   mocks.bgeHealth.mockResolvedValue(undefined);
   mocks.boundary.mockResolvedValue(task);
   mocks.heartbeat.mockResolvedValue(true);
@@ -196,6 +201,13 @@ it('refuses an unready paid evaluation before claiming a persisted task', async 
   await expect(executeMa24EvaluationRun(input))
     .rejects.toThrow('MA24 evaluation model admission unavailable');
   expect(mocks.claim).not.toHaveBeenCalled();
+});
+
+it('refuses a missing route tariff before claiming a persisted task', async () => {
+  mocks.tariffCoverage.mockImplementationOnce(() => { throw new Error('missing-tariff'); });
+  await expect(executeMa24EvaluationRun(input)).rejects.toThrow('missing-tariff');
+  expect(mocks.claim).not.toHaveBeenCalled();
+  expect(mocks.model).not.toHaveBeenCalled();
 });
 
 it('refuses a missing local BGE baseline before claiming or calling a model', async () => {
