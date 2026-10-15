@@ -1,0 +1,51 @@
+{
+  "schema": "ma24-g14-govuk-preintroduction-exposure-screen-v1",
+  "date": "2026-10-15",
+  "snapshot": {
+    "commit": "44e68b25a2d8ba18b0620b0075f303737d3dced9",
+    "relationship": "Direct parent of the first BDUK candidate registration commit 2011713b; precedes the Taking Part candidate registration.",
+    "trackedPathsInScopes": 2679,
+    "textExtensionPathsInScopes": 2625,
+    "scopes": ["docs", "scripts", "src", "experiments"]
+  },
+  "exactGitGrep": {
+    "caseInsensitive": true,
+    "patterns": [
+      "Broadband Performance Indicator",
+      "Taking Part 2019/20",
+      "4852808",
+      "7,934 premises",
+      "7,617 premises",
+      "broadband-performance-indicator-march-2018",
+      "taking-part-201920-internet",
+      "rural England adults aged 75"
+    ],
+    "matchedTrackedPaths": 0
+  },
+  "historicalQuestionScreens": {
+    "oldCorpusRows": 350,
+    "uniqueOldQueries": 300,
+    "model": "local BAAI/bge-m3",
+    "revision": "5617a9f61b028005a4858fdac845db406aefb181",
+    "bpiClosestScore": 0.480006,
+    "crossDocumentClosestScore": 0.426785,
+    "noAnswerClosestScore": 0.428802,
+    "manualScopeFinding": "Closest old queries concern device ports, deployment advice or PoE, not the two GOV.UK workbooks or these answer values.",
+    "screenPaths": [
+      "tmp/ma24-independent-quarantine/bpi-2018-neighbor-screen.json",
+      "tmp/ma24-independent-quarantine/govuk-two-xlsx-cross-document-revised-neighbor-screen.json",
+      "tmp/ma24-independent-quarantine/taking-part-no-answer-neighbor-screen.json"
+    ]
+  },
+  "conclusion": "No exact pre-introduction hit in the searched tracked tree, and no same-specific-question neighbor in the recorded historical 350-row question screen. This is bounded negative evidence, not final semantic or exposure independence approval.",
+  "limits": [
+    "The Git grep does not inspect prior local conversations, untracked files, binary artifacts, provider-side prompts or model pretraining.",
+    "Question embeddings and nearest neighbors cannot prove that answer facts were never exposed.",
+    "Same-release BDUK PDF repeats the workbook facts and remains in the publication family.",
+    "All three GOV.UK cases share one source exposure unit and need a joint final eligibility decision."
+  ],
+  "independentGoldApproved": false,
+  "approvedGoldCount": 0,
+  "realDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}
