@@ -14,6 +14,7 @@
 
 - [ONS 指标页](https://www.ons.gov.uk/explore-local-statistics/indicators/5g-coverage)所列工作簿的本地隔离副本为 `tmp/ma24-independent-quarantine/ons-5g-coverage-2026.xlsx`，SHA-256 为 `b488e723e475ce022fdf3d35bc1ead4611e58dda9cbf96371a6e7485834a6238`。2026-10-16 只读重算一致。
 - 原件四表为 `Cover_sheet`、`Table_of_contents`、`Notes`、`1`。`Notes!B4` 明确写明室外、地理面积、至少一家运营商和 −110 dBm 阈值；`1!A5:C5` 是地区代码、地区名称及 `2026-01-01 (%)`；`1!A370:C370` 为 `S12000017`、`Highland`、`35.2`。四表逐格扫描 `indoor`、`household`、`premises`、`population` 文本均无命中；这只是对该原件的有界缺项复核。
+- 2026-10-16 再次只读核原件：`1!C370` 的原始数值是 `35.2`，单元格格式为 `#,##0.0`。审核题中的 `35.20%` 数值相同，但正式冻结题文应采用原件的一位小数精度 `35.2%`。ONS 指标页与 Ofcom 再利用说明也已复查，见[本轮原件与来源收据](evidence/ma24-g14-ons-5g-current-original-and-source-use-2026-10-16.json)。
 - 隔离产品上传、`Notes` 和数据证据块回读、另一账号拒读已经过检；坐标分别为 `sheet-3-table` 第 4 行和 `sheet-4-table` 第 370 行。现有验收仅覆盖产品抽取与权限，不覆盖真实模型答案和用户可见引用。[产品与草案收据](evidence/ma24-g14-ons-5g-notes-and-private-gold-draft-2026-10-15.json)、[私有候选](../tmp/ma24-independent-quarantine/ons-5g-highland-denominator-gold-draft-v1.json)。
 
 ## 独立性及来源边界

@@ -1,0 +1,30 @@
+{
+  "schema": "ma24-g14-ons-5g-current-original-and-source-use-v1",
+  "date": "2026-10-16",
+  "caseId": "ons-5g-2026-highland-outdoor-denominator",
+  "originalWorkbook": {
+    "privatePath": "tmp/ma24-independent-quarantine/ons-5g-coverage-2026.xlsx",
+    "sha256": "b488e723e475ce022fdf3d35bc1ead4611e58dda9cbf96371a6e7485834a6238",
+    "readMode": "openpyxl read-only, no workbook edits",
+    "sheets": ["Cover_sheet", "Table_of_contents", "Notes", "1"],
+    "definitionCell": "Notes!B4",
+    "definitionFacts": ["percentage of geographic area", "5G outdoors", "at least one operator", "-110 dBm threshold", "January 2026"],
+    "dataHeader": "1!A5:C5 = Area code; Area name; 2026-01-01 (%)",
+    "highlandRow": "1!A370:C370 = S12000017; Highland; 35.2",
+    "highlandNumericCell": "1!C370",
+    "highlandCellNumberFormat": "#,##0.0",
+    "indoorHouseholdPremisesPopulationTextHitsAcrossFourSheets": 0
+  },
+  "officialPagesChecked": {
+    "onsIndicator": "https://www.ons.gov.uk/explore-local-statistics/indicators/5g-coverage",
+    "onsFinding": "The indicator defines outdoor geographic-area coverage at -110 dBm for January 2026, attributes source data to Ofcom, offers XLSX download and states OGL v3.0 except where otherwise stated.",
+    "ofcomReuse": "https://www.ofcom.org.uk/about-ofcom/our-website/copyright",
+    "ofcomFinding": "Accurate non-misleading reproduction of ordinary website material is allowed with Ofcom copyright and publication title acknowledged; logo use requires separate permission."
+  },
+  "candidateWordingNote": "The candidate's 35.20% and the original numeric 35.2 represent the same value, but a frozen question should use 35.2% to match the workbook's one-decimal display precision.",
+  "scopeBoundary": "A short private attributed factual question is within the reviewed use. Do not redistribute the workbook or logo, equate the indicator with indoor household coverage, or infer that an indoor measure is absent from every other source.",
+  "contentReviewReply": "pending",
+  "goldApprovedByThisCheck": 0,
+  "realDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}
