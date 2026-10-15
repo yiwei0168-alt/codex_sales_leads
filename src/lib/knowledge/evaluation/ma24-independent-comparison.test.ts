@@ -96,6 +96,20 @@ describe("MA24 independent comparison", () => {
     expect(() => scoreMa24IndependentComparison({ manifest, runs, verdicts: incorrectPositive }))
       .toThrow("answer verdict contradicts observed outcome");
   });
+  it("blocks a candidate outcome mismatch even when its other scores pass", () => {
+    const mismatch = verdicts.map(row => row.caseId === "long" && row.arm === "candidate"
+      ? { ...row, observedOutcome: "no-answer" as const, answerCorrect: false } : row);
+    const result = scoreMa24IndependentComparison({ manifest, runs, verdicts: mismatch });
+    expect(result.complete).toBe(true);
+    expect(result.overallNonRegression).toBe(true);
+    expect(Object.values(result.improvementResults).every(Boolean)).toBe(true);
+    expect(result.outcomeMismatches).toHaveLength(1);
+    expect(result.gatePassed).toBe(false);
+    const baselineMismatch = verdicts.map(row => row.caseId === "new" && row.arm === "baseline"
+      ? { ...row, observedOutcome: "route" as const } : row);
+    expect(scoreMa24IndependentComparison({ manifest, runs, verdicts: baselineMismatch }).gatePassed)
+      .toBe(true);
+  });
   it("cannot mark unsupported route citations or non-answer citations precise", () => {
     const missingCitation = runs.map(row => row.caseId === "long" && row.arm === "candidate"
       ? { ...row, citations: [] } : row);

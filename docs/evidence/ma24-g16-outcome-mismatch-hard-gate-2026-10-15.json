@@ -1,0 +1,17 @@
+{
+  "schema": "ma24-g16-outcome-mismatch-hard-gate-v1",
+  "date": "2026-10-15",
+  "scope": "Read-only independent comparison scorer",
+  "finding": "A completed candidate run with an observed outcome different from the frozen expected outcome could be marked answerCorrect=false while other scores still made gatePassed=true.",
+  "change": "A candidate outcome mismatch now blocks gatePassed. Baseline outcome mismatches remain visible and may be improved by the candidate.",
+  "checks": {
+    "targetedVitest": "8 passed",
+    "typecheck": "passed",
+    "targetedEslint": "passed"
+  },
+  "independentGoldFrozen": false,
+  "realBaselineRuns": 0,
+  "realCandidateRuns": 0,
+  "qualityAccepted": false,
+  "productionLoaded": false
+}

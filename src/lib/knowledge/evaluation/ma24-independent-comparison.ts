@@ -148,7 +148,7 @@ export function scoreMa24IndependentComparison(input: {
       expectedOutcome: cases.get(row.caseId)!.expectedOutcome, observedOutcome: row.observedOutcome }));
   const gatePassed = complete && overallNonRegression &&
     Object.values(protectedResults).every(Boolean) && Object.values(improvementResults).every(Boolean) &&
-    safetyViolations.length === 0;
+    safetyViolations.length === 0 && !outcomeMismatches.some(row => row.arm === "candidate");
   return { manifestSha256: manifestHash, complete, gatePassed, missingRuns, missingVerdicts, unknownRuns, failedRuns,
     overallNonRegression, protectedResults, improvementResults, safetyViolations, outcomeMismatches,
     totals, byGroup, byTag };
