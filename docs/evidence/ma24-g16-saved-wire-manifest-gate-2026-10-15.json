@@ -1,0 +1,29 @@
+{
+  "schema": "ma24-g16-saved-wire-manifest-gate-v1",
+  "date": "2026-10-15",
+  "scope": "G16 read-only persisted-run verification; G17-G20 out of scope",
+  "changes": [
+    "Every successful persisted main_model call must have a request manifest that reconstructs from saved input and current tool schema and matches the selected model route.",
+    "The saved response must identify a matching model, provider, and generation ID; successful calls in one task cannot reuse the same provider/generation pair.",
+    "The verifier reports each successful call's request hash and response identity alongside its database task binding."
+  ],
+  "verification": {
+    "tests": "node node_modules/vitest/vitest.mjs run src/lib/knowledge/evaluation/ma24-persisted-run-binding.test.ts src/lib/knowledge/evaluation/ma24-independent-comparison.test.ts: 2 files, 21 tests passed",
+    "typecheck": "npm run typecheck: passed",
+    "lint": "node node_modules/eslint/bin/eslint.js src/lib/knowledge/evaluation/ma24-persisted-run-binding.ts src/lib/knowledge/evaluation/ma24-persisted-run-binding.test.ts: passed",
+    "negativeCases": [
+      "Saved successful answer without wire manifest is rejected",
+      "Altered request hash or missing provider generation ID is rejected",
+      "Changed route model with a recalculated journal input hash is rejected",
+      "Reused provider generation ID within one task is rejected",
+      "A valid mode-model route and manifest remains accepted"
+    ]
+  },
+  "limitations": [
+    "This binds saved journal data; it does not independently confirm a provider response or billing record.",
+    "No frozen independent Gold or real dual-arm model tasks have been verified by this change.",
+    "Corpus authorization and exact citation coordinates remain unverified; G16 quality gate is not passed."
+  ],
+  "modelCalls": 0,
+  "productionWrites": 0
+}

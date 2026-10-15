@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+2026-10-15 G16 评分前数据库绑定再补已保存模型 wire 清单检查；篡改或缺失清单、模型路由漂移、返回标识不完整会拒绝。工程测试已过，提供方独立收据、冻结 Gold、真实双路答案与引用验收仍缺，不能据此判 G16 通过。[收据](evidence/ma24-g16-saved-wire-manifest-gate-2026-10-15.json)。G17–G20 暂缓。
+
 2026-10-15 G14 修订型候选证据：ETSI 38.901 相邻两版的 ZOD 参数表引用更正已核原页，形成隔离待审题。它未加入当前独立题组、未获 Gold 批准，也未通过完整来源/产品引用/真实双路质量验收；G17–G20 暂缓。[收据](evidence/ma24-g14-etsi-zod-revision-source-audit-2026-10-15.json)。
 
 2026-10-15 G14 ONS 5G 候选的指标定义与 Highland 原格已通过隔离产品证据回读及跨账号拒读，新建私有待审 Gold 草案；批准 Gold 0。尚未完成完整来源独立性、独立审核、用户可见模型回答与引用验收，G17–G20 暂缓。[收据](evidence/ma24-g14-ons-5g-notes-and-private-gold-draft-2026-10-15.json)。

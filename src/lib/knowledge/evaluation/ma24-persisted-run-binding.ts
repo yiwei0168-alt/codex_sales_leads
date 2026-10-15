@@ -3,6 +3,7 @@ import { tenantTransaction } from "../../rag/db";
 import { stableJson } from "../review-types";
 import { ma24CaseQuerySha256, type Ma24Case, type Ma24Run } from "./ma24-independent-comparison";
 import { digest } from "../../assistant/main/contracts";
+import { auditModelProtocol } from "../../assistant/main/model-protocol-audit";
 
 type PersistedRun = {
   id: string; user_id: string; status: string; execution_kind: string;
@@ -63,10 +64,21 @@ export function assertMa24PersistedRunBinding(input: {
           typeof message.content === "string" && message.content.includes(scopeRule));
     }))
     throw new Error(`MA24 persisted model journal mismatch ${run.caseId}:${run.arm}`);
+  const wireManifests = modelCalls.flatMap(call => {
+    if ((call.output as Record<string, unknown> | null)?.status !== "success") return [];
+    const audit = auditModelProtocol(call);
+    if (!audit.bound || audit.model !== run.modelId)
+      throw new Error(`MA24 saved model wire manifest mismatch ${run.caseId}:${run.arm}`);
+    return [{ callId: call.id, requestHash: audit.requestHash,
+      provider: audit.provider, generationId: audit.generationId }];
+  });
+  if (new Set(wireManifests.map(item => `${item.provider}:${item.generationId}`)).size !== wireManifests.length)
+    throw new Error(`MA24 duplicate provider generation ${run.caseId}:${run.arm}`);
   return {
     runId: run.runId, userId: task.user_id,
     taskSha256: createHash("sha256").update(stableJson(task)).digest("hex"),
     modelCallIds: modelCalls.map(call => call.id).sort(),
+    wireManifests,
   };
 }
 
