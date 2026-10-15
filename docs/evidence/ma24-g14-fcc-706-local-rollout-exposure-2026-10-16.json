@@ -1,0 +1,42 @@
+{
+  "schema": "ma24-g14-fcc-706-local-rollout-exposure-v1",
+  "date": "2026-10-16",
+  "sourceFamily": "FCC 26-55 press release and 2026 Section 706 Report",
+  "longReportSha256": "805e0e5b954775059ad535ae650c955935758a88f2a20ec0e6554e77f0e61154",
+  "firstLongReportCandidateGitRegistration": "99e87409 at 2026-10-14T19:53:58Z",
+  "privateScript": "tmp/ma24-independent-quarantine/audit-fcc-706-rollout-exposure.py",
+  "privateScriptSha256": "497e2aca3a446f0898dc6d6b45981940c49a21d9a2b117da40e1dc912b0f8325",
+  "scope": {
+    "retainedLocalCodexRolloutFiles": 116,
+    "jsonlRecords": 174811,
+    "malformedTimestampAmongMatchingRecords": 0,
+    "caseInsensitiveExactPatterns": [
+      "fcc-26-55a1.pdf",
+      "2026 section 706 report",
+      "1 gbps per 1,000 students",
+      "1 mbps per student",
+      "fcc-706-2026-school-entity-vs-student-denominator",
+      "805e0e5b954775059ad535ae650c955935758a88f2a20ec0e6554e77f0e61154"
+    ]
+  },
+  "observation": {
+    "firstReportUrlMatchUtc": "2026-10-14T17:30:54.225Z",
+    "firstReportTitleMatchUtc": "2026-10-14T17:33:09.197Z",
+    "firstOriginalHashMatchUtc": "2026-10-14T17:31:23.571Z",
+    "firstSchoolBandwidthTermUtc": "2026-10-14T19:50:47.494Z",
+    "firstCandidateQuestionIdUtc": "2026-10-14T19:52:00.268Z",
+    "lastPreRegistrationMatchUtc": "2026-10-14T19:53:49.700Z",
+    "preRegistrationUniqueMatchingRecords": 77,
+    "postRegistrationUniqueMatchingRecords": 480,
+    "interpretation": "The report URL and downloaded source appear during the earlier FCC press-release discovery. The school-bandwidth answer terms first appear about three minutes before the long-report question's Git registration, during that question's preparation. The report and release must remain one connected FCC 26-55 exposure unit; the long report cannot be counted as a newly unseen independent source."
+  },
+  "limits": [
+    "Matching records may repeat tool output and are not distinct exposure events.",
+    "The selected phrases do not prove absence of semantic paraphrases, unrecorded prompts, deleted logs, binary derivatives or provider-side knowledge.",
+    "The user's question-and-answer review, same-family Gold disposition and full-set contamination review remain open."
+  ],
+  "longReportGoldApproved": false,
+  "additionalIndependentSourceUnits": 0,
+  "realDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}
