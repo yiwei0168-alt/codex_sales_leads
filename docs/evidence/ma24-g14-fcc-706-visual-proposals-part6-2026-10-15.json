@@ -1,0 +1,194 @@
+{
+  "schema": "ma24-g14-fcc-706-visual-proposals-part6-v1",
+  "date": "2026-10-15",
+  "stage": "Physical pages 161-178 original-page-bound proposals; not saved product decisions",
+  "sourceSha256": "805e0e5b954775059ad535ae650c955935758a88f2a20ec0e6554e77f0e61154",
+  "extractionArtifactSha256": "6724008a1138a5e83dc4439e42ed4f75176154e5bf9a0d738dbd2f339cd2d0d4",
+  "renderPackageSha256": "27441a7bb1854545078f89b2879057a7464e685a395e37765de2bdad80d4c969",
+  "physicalPageRange": [
+    161,
+    178
+  ],
+  "originalSizeSamplePages": [
+    161,
+    168,
+    172,
+    173,
+    174,
+    175,
+    176,
+    177,
+    178
+  ],
+  "otherPagesReviewedAtContactSheetResolution": true,
+  "proposedEvidence": 12,
+  "proposedDecoration": 6,
+  "judgments": [
+    {
+      "physicalPage": 161,
+      "blockId": "page-161-visual-review",
+      "originalRenderSha256": "16badcdb7ec72c3be2b793002f150d74a99b9505bcd13a59d72e32c91acee6ef",
+      "proposal": "evidence",
+      "visualFeature": "Appendix A-6 through A-21 supplemental availability or demographic table",
+      "successfulTextBlocksOnPage": 10,
+      "originalSizeChecked": true
+    },
+    {
+      "physicalPage": 162,
+      "blockId": "page-162-visual-review",
+      "originalRenderSha256": "7e98499066923e4f2e028bdfe523ceb55d9e77af6c7d2de5b6af62b0ca002579",
+      "proposal": "evidence",
+      "visualFeature": "Appendix A-6 through A-21 supplemental availability or demographic table",
+      "successfulTextBlocksOnPage": 10,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 163,
+      "blockId": "page-163-visual-review",
+      "originalRenderSha256": "6829d9781add68d6a285fff4f6b2024733a4d2bc21339f77895b82aefb286abd",
+      "proposal": "evidence",
+      "visualFeature": "Appendix A-6 through A-21 supplemental availability or demographic table",
+      "successfulTextBlocksOnPage": 10,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 164,
+      "blockId": "page-164-visual-review",
+      "originalRenderSha256": "e19579ec074f816d5c9fbfb5b6bee7ad4643b6c456ac9007b351618fde40bb4e",
+      "proposal": "evidence",
+      "visualFeature": "Appendix A-6 through A-21 supplemental availability or demographic table",
+      "successfulTextBlocksOnPage": 10,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 165,
+      "blockId": "page-165-visual-review",
+      "originalRenderSha256": "639e4a258ab5a27992ac31a27ad50f75aa6afc53e23030f841a4fa4b8f1b2eb4",
+      "proposal": "evidence",
+      "visualFeature": "Appendix A-6 through A-21 supplemental availability or demographic table",
+      "successfulTextBlocksOnPage": 10,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 166,
+      "blockId": "page-166-visual-review",
+      "originalRenderSha256": "796c77415bb495fc53af52d89e717b8af482473eb441077b4e5ce05ac10facc7",
+      "proposal": "evidence",
+      "visualFeature": "Appendix A-6 through A-21 supplemental availability or demographic table",
+      "successfulTextBlocksOnPage": 10,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 167,
+      "blockId": "page-167-visual-review",
+      "originalRenderSha256": "4b2004f4845265014b9570c957d69e506308f9c4879c27ee928899005e9c2a18",
+      "proposal": "evidence",
+      "visualFeature": "Appendix A-6 through A-21 supplemental availability or demographic table",
+      "successfulTextBlocksOnPage": 10,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 168,
+      "blockId": "page-168-visual-review",
+      "originalRenderSha256": "d0a02a7e211eaf8f48efea553182c1443472b5da2856b3467c7746150ce16a66",
+      "proposal": "evidence",
+      "visualFeature": "Appendix A-6 through A-21 supplemental availability or demographic table",
+      "successfulTextBlocksOnPage": 7,
+      "originalSizeChecked": true
+    },
+    {
+      "physicalPage": 169,
+      "blockId": "page-169-visual-review",
+      "originalRenderSha256": "6b7e4477190ff631076757f787c5e69db5f6d3233cf8cb20817385ec1b3f9bd7",
+      "proposal": "evidence",
+      "visualFeature": "Appendix A-6 through A-21 supplemental availability or demographic table",
+      "successfulTextBlocksOnPage": 7,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 170,
+      "blockId": "page-170-visual-review",
+      "originalRenderSha256": "9e57a11d33f3347be9acf5ab1a62d230493a6fd5c3e17968811f9d250af829f4",
+      "proposal": "evidence",
+      "visualFeature": "Appendix A-6 through A-21 supplemental availability or demographic table",
+      "successfulTextBlocksOnPage": 8,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 171,
+      "blockId": "page-171-visual-review",
+      "originalRenderSha256": "017e0f4049493d9a7c55974658f193fe4fdc0d7e3ef537d5932fd48b9df9bd12",
+      "proposal": "evidence",
+      "visualFeature": "Appendix A-6 through A-21 supplemental availability or demographic table",
+      "successfulTextBlocksOnPage": 8,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 172,
+      "blockId": "page-172-visual-review",
+      "originalRenderSha256": "a733e5d3501172ae0e1971c06cb625afa4f748b5673ce12630a0dd4cbd9b6a87",
+      "proposal": "evidence",
+      "visualFeature": "Appendix A-6 through A-21 supplemental availability or demographic table",
+      "successfulTextBlocksOnPage": 8,
+      "originalSizeChecked": true
+    },
+    {
+      "physicalPage": 173,
+      "blockId": "page-173-visual-review",
+      "originalRenderSha256": "e73d6666e451e01752a8f4fe69875384e4eb1217031fdc9522d54dde5d6eb414",
+      "proposal": "decoration",
+      "visualFeature": "Commissioner statement text; no separate data visual seen in the original-size page.",
+      "successfulTextBlocksOnPage": 10,
+      "originalSizeChecked": true
+    },
+    {
+      "physicalPage": 174,
+      "blockId": "page-174-visual-review",
+      "originalRenderSha256": "fa6051d5056cf3c80fc3fe17ea645a1b1269e9bec6ef4b00e743ed8e587c7d14",
+      "proposal": "decoration",
+      "visualFeature": "Commissioner statement text; no separate data visual seen in the original-size page.",
+      "successfulTextBlocksOnPage": 11,
+      "originalSizeChecked": true
+    },
+    {
+      "physicalPage": 175,
+      "blockId": "page-175-visual-review",
+      "originalRenderSha256": "261aea4cd86bc69f04700c16c3d7ffc078a30932aa5fb5411a1c08a9d45c6c65",
+      "proposal": "decoration",
+      "visualFeature": "Commissioner statement text; no separate data visual seen in the original-size page.",
+      "successfulTextBlocksOnPage": 19,
+      "originalSizeChecked": true
+    },
+    {
+      "physicalPage": 176,
+      "blockId": "page-176-visual-review",
+      "originalRenderSha256": "2a66bb009ffd8acb54b52210c0fdad5a7c7d58c4990a572bacf467b1f1720803",
+      "proposal": "decoration",
+      "visualFeature": "Commissioner statement text; no separate data visual seen in the original-size page.",
+      "successfulTextBlocksOnPage": 7,
+      "originalSizeChecked": true
+    },
+    {
+      "physicalPage": 177,
+      "blockId": "page-177-visual-review",
+      "originalRenderSha256": "d28f3a8bd5f3cc115ddf2fbd8cce358ff2a2856c61d0e1dc767971eda64e3ce8",
+      "proposal": "decoration",
+      "visualFeature": "Commissioner statement text; no separate data visual seen in the original-size page.",
+      "successfulTextBlocksOnPage": 14,
+      "originalSizeChecked": true
+    },
+    {
+      "physicalPage": 178,
+      "blockId": "page-178-visual-review",
+      "originalRenderSha256": "d6ef0b0223169488fa08a7ec635c0c99b2c425bf5e13157327fe4bc3862f4499",
+      "proposal": "decoration",
+      "visualFeature": "Commissioner statement text; no separate data visual seen in the original-size page.",
+      "successfulTextBlocksOnPage": 3,
+      "originalSizeChecked": true
+    }
+  ],
+  "productDecisionsSaved": 0,
+  "independentGoldAdded": 0,
+  "modelCalls": 0,
+  "g17ToG20Advanced": false
+}
