@@ -1,0 +1,36 @@
+{
+  "schema": "ma24-g14-itu-gcr2025-source-use-and-four-factor-review-v1",
+  "date": "2026-10-15",
+  "caseId": "itu-gcr2025-submarine-cable-cuts-and-repair-delay",
+  "original": {
+    "officialLandingPage": "https://www.itu.int/itu-d/reports/statistics/global-connectivity-report-2025/",
+    "officialPdf": "https://www.itu.int/dms_pub/itu-d/opb/ind/D-IND-ICT_MDD.GCR-2025-4-PDF-E.pdf",
+    "sha256": "4489081fe8709ea1bcea2b724ff5a92c3979195432a8da73c20a8c8e0570ccb8",
+    "physicalPages": 129,
+    "originalPagesChecked": [3, 70, 71],
+    "printedAnswerPages": [59, 60]
+  },
+  "sourceUseFinding": {
+    "pdfCopyrightPage": "Physical page 3 states CC BY-NC-SA 3.0 IGO and non-commercial, attribution and share-alike terms.",
+    "publisherLandingPage": "The report landing page states Copyright ITU 2025 All rights reserved.",
+    "licenseReference": "https://creativecommons.org/licenses/by-nc-sa/3.0/igo/",
+    "disposition": "Do not infer a right to use the complete PDF in a commercial or public product. Keep original and draft in private quarantine; source-use determination remains open."
+  },
+  "questionAndAnswerFinding": {
+    "previousQuestion": "Asked for at least three of four delay factors while the candidate answer listed all four.",
+    "scoringConflict": "G16 exact-source coverage would require every frozen Gold coordinate, so a valid three-factor answer could be penalized if all four factor blocks were mandatory Gold sources.",
+    "draftRevision": "Private draft now asks for all four factors, cites the count and each factor, and attributes the count to what the dated ITU report says.",
+    "draftPath": "tmp/ma24-independent-quarantine/itu-gcr2025-four-factor-gold-draft-v1.json",
+    "draftSha256": "ca9d35ddee9245ba63e51649957a8178ed16628be2a300c72421dec375f2d5ef",
+    "sourceBlockIds": ["page-70-block-49", "page-71-block-10", "page-71-block-12", "page-71-block-13", "page-71-block-14"],
+    "allFiveExcerptsFoundAtDeclaredUnitIndices": true,
+    "productExtractorVersion": "layout-v2.0.10",
+    "priorIsolatedProductReview": "docs/evidence/ma24-g14-itu-gcr2025-isolated-product-review-2026-10-15.json"
+  },
+  "independenceBoundary": "The prior exact-hash, old-question and bounded local-development screens and the current 27-draft pool provide candidate evidence, not a complete historical exposure proof. Other ITU publications must remain separate only after a full family and answer overlap review.",
+  "independentGoldApproved": false,
+  "fullEvaluationSetFrozen": false,
+  "g15ReadyForModelCalls": false,
+  "realDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}

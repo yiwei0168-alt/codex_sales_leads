@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+2026-10-15 / MA24 G14 ITU 长 PDF 候选补审：原件 129 页哈希及物理第 3、70、71 页重核；发布页写有“all rights reserved”，PDF 版权页写有 CC BY-NC-SA 3.0 IGO，来源用途尚未定案。旧题只要求四类维修延误因素中的至少三类，和 G16 全 Gold 来源覆盖评分不一致；私有草案改为要求四类，5 个产品证据块的页号与摘录均核对通过。[补审收据](evidence/ma24-g14-itu-gcr2025-source-use-and-four-factor-review-2026-10-15.json)。本题 Gold 未批准，完整来源暴露审计及 G15/G16 真实验收仍待完成；G17–G20 暂停。
+
 2026-10-15 / MA24 G15/G16 财务准入：专用评测入口现在于任务认领前和运行边界拒绝 MA05/A33 阶段财务绕行及继承的费率覆盖；本地现行计费策略对 standard 三条模型路由均无精确费率规则。10 项定向测试、类型与 lint 通过，v10 只读源码预览匹配但 `readyForModelCalls=false`，模型/服务商调用 0。[工程收据](evidence/ma24-g15-financial-override-boundary-2026-10-15.json)。仍须核对费率、冻结完整 Gold 和运行构建、取得付费调用授权及真实双路质量；G17–G20 暂停。
 
 2026-10-15 / MA24 G16 权限正例证据复核：拒绝访问题除锁定目标资产、账号 ACL 与拥有者 Gold 来源外，现在还在领取前及每次运行边界验证拥有者当前可见证据块的 Gold 摘录。17 项定向单测、类型、lint 及两账号隔离库正反例通过；证据漂移拒绝、合成行归零、模型调用 0。[工程收据](evidence/ma24-g16-permission-owner-gold-evidence-2026-10-15.json)。G15 只读预览为 v9，付费准入仍关闭；真实权限题账号、整套 Gold 和 G16 双路质量未验，G17–G20 暂停。
