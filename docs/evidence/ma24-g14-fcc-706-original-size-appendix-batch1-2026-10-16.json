@@ -1,0 +1,265 @@
+{
+  "schema": "ma24-g14-fcc-706-original-size-appendix-batch1-v1",
+  "date": "2026-10-16",
+  "scope": "First 24 previously contact-sheet-only FCC appendix pages checked at original size; source-bound amendment, no product replay",
+  "sourceSha256": "805e0e5b954775059ad535ae650c955935758a88f2a20ec0e6554e77f0e61154",
+  "extractionArtifactSha256": "6724008a1138a5e83dc4439e42ed4f75176154e5bf9a0d738dbd2f339cd2d0d4",
+  "renderPackageSha256": "27441a7bb1854545078f89b2879057a7464e685a395e37765de2bdad80d4c969",
+  "priorWholePdfReviewSha256": "00e19caabc9349303b789cadf12fe38b81ea33190bd425222c3b1567ddffdb6a",
+  "records": [
+    {
+      "physicalPage": 68,
+      "blockId": "page-68-visual-review",
+      "originalRenderSha256": "914be8a7febd4fb9cde0d785c49106650e5bca1612f2378bd4b28f7742d4f25c",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-1 continued state/urban/rural table retains distinct fixed-wireline, fixed-terrestrial, any-fixed and mobile-5G-NR population and percent columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 69,
+      "blockId": "page-69-visual-review",
+      "originalRenderSha256": "d56a61f83b034e3d0b98088bd682a8a1dc631cadfa50c8d63be4de4e23c64bdf",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-1 continued state/urban/rural table retains distinct fixed-wireline, fixed-terrestrial, any-fixed and mobile-5G-NR population and percent columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 70,
+      "blockId": "page-70-visual-review",
+      "originalRenderSha256": "a2e99ec209bc94200b565ac517f7d7de6be1536704ce21f5514c39ca6bf930f1",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-1 continued state/urban/rural table retains distinct fixed-wireline, fixed-terrestrial, any-fixed and mobile-5G-NR population and percent columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 71,
+      "blockId": "page-71-visual-review",
+      "originalRenderSha256": "64c6c72e83e68ae8930ff828d09b195d834ca36bdc3e4f48b875de828162b6a3",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-1 continued state/urban/rural table retains distinct fixed-wireline, fixed-terrestrial, any-fixed and mobile-5G-NR population and percent columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 72,
+      "blockId": "page-72-visual-review",
+      "originalRenderSha256": "9e5728100be606638ffed96ed1b417d37fbe78c56d220ece8dd50a57a5925437",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-1 continued state/urban/rural table retains distinct fixed-wireline, fixed-terrestrial, any-fixed and mobile-5G-NR population and percent columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 73,
+      "blockId": "page-73-visual-review",
+      "originalRenderSha256": "c45e3981d30fc15ce1c7206601f431c93a4cff97d580af3efd8f58ec69a8c9f4",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-1 continued state/urban/rural table retains distinct fixed-wireline, fixed-terrestrial, any-fixed and mobile-5G-NR population and percent columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 74,
+      "blockId": "page-74-visual-review",
+      "originalRenderSha256": "30b697db1c6f3159df935a5f43c8246c68524af6a5bc4aab045d6cd48b5f759c",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-1 continued state/urban/rural table retains distinct fixed-wireline, fixed-terrestrial, any-fixed and mobile-5G-NR population and percent columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 76,
+      "blockId": "page-76-visual-review",
+      "originalRenderSha256": "b01f152dc725f2def54f8d32861bb8f0b5ef8bf2d6f48bd571173d809d312df2",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "decoration",
+      "finding": "Only a continuation of the previous table's source footnote and page furniture is visible; no chart or table remains on this page.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 78,
+      "blockId": "page-78-visual-review",
+      "originalRenderSha256": "069645b12ddf1455b55730b329adabb0aba1136d53a1be051b8de1b17c9ffef0",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-3 continued state/urban/rural table combines mobile 5G-NR at least 35/3 Mbps with any-fixed, fixed-terrestrial and fixed-wireline services.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 79,
+      "blockId": "page-79-visual-review",
+      "originalRenderSha256": "b54e7b03892f8d2a6d9503c57f2a299982152da991f157900f43f261d237319a",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-3 continued state/urban/rural table combines mobile 5G-NR at least 35/3 Mbps with any-fixed, fixed-terrestrial and fixed-wireline services.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 80,
+      "blockId": "page-80-visual-review",
+      "originalRenderSha256": "41d68db2664159217a040e2576c235c7082155fe8d952bef00b9369350d882b3",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-3 continued state/urban/rural table combines mobile 5G-NR at least 35/3 Mbps with any-fixed, fixed-terrestrial and fixed-wireline services.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 81,
+      "blockId": "page-81-visual-review",
+      "originalRenderSha256": "4f6ceb175cc37ba3243edf786ad6a473e5e437a36c6f390ba2db09e519b666f9",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-3 continued state/urban/rural table combines mobile 5G-NR at least 35/3 Mbps with any-fixed, fixed-terrestrial and fixed-wireline services.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 83,
+      "blockId": "page-83-visual-review",
+      "originalRenderSha256": "cf14a6037698278badd85decfa6474ec694f8230e241bcfc72b44ac9903bd0ec",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-4 longitudinal table separates June 2023, December 2023, June 2024, December 2024 and June 2025, with population and percent columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 84,
+      "blockId": "page-84-visual-review",
+      "originalRenderSha256": "457cbb37c4b6b2709479610a1525b02462e3e82fcc4aa5a49630062a6f57ac12",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-4 longitudinal table separates June 2023, December 2023, June 2024, December 2024 and June 2025, with population and percent columns.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 86,
+      "blockId": "page-86-visual-review",
+      "originalRenderSha256": "5e15aaa5a3bdcea95ab8d805154323472418749e0314f7e20433506c9c47d3e6",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 county table associates each geography with evaluated population, fixed-terrestrial, fixed-wireline and mobile-5G-NR percentages, density and per-capita income.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 87,
+      "blockId": "page-87-visual-review",
+      "originalRenderSha256": "d3c4d9164ed374ef65f323d7220f194cf55c5a08ef7814eaca6e4f1e179ce4c5",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 county table associates each geography with evaluated population, fixed-terrestrial, fixed-wireline and mobile-5G-NR percentages, density and per-capita income.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 88,
+      "blockId": "page-88-visual-review",
+      "originalRenderSha256": "bab246ea69b98a2e19daf25e50568149ea91df1d005ccdc3f362db860b4d4763",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 county table associates each geography with evaluated population, fixed-terrestrial, fixed-wireline and mobile-5G-NR percentages, density and per-capita income.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 89,
+      "blockId": "page-89-visual-review",
+      "originalRenderSha256": "1b0e59eca56c9827be6463b048d82bb45ce805b54f4951079a2e9a6794c0aee1",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 county table associates each geography with evaluated population, fixed-terrestrial, fixed-wireline and mobile-5G-NR percentages, density and per-capita income.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 90,
+      "blockId": "page-90-visual-review",
+      "originalRenderSha256": "42056913490b18ad86ef9e9043e283d7e370b7f7985d82329afbb767e2341a64",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 county table associates each geography with evaluated population, fixed-terrestrial, fixed-wireline and mobile-5G-NR percentages, density and per-capita income.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 91,
+      "blockId": "page-91-visual-review",
+      "originalRenderSha256": "6ce9483b95047803848e68b23de171e78061b5dd8124acf625d3dd04d568633b",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 county table associates each geography with evaluated population, fixed-terrestrial, fixed-wireline and mobile-5G-NR percentages, density and per-capita income.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 92,
+      "blockId": "page-92-visual-review",
+      "originalRenderSha256": "11907b942d6787417cd23e79d919ffe794334b44af8dc835468a57534f2457cf",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 county table associates each geography with evaluated population, fixed-terrestrial, fixed-wireline and mobile-5G-NR percentages, density and per-capita income.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 93,
+      "blockId": "page-93-visual-review",
+      "originalRenderSha256": "af5514cb26d74858c7c3894c6581ed6fa5753a34752ca62f53abebfb54151745",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 county table associates each geography with evaluated population, fixed-terrestrial, fixed-wireline and mobile-5G-NR percentages, density and per-capita income.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 94,
+      "blockId": "page-94-visual-review",
+      "originalRenderSha256": "03e96a9db38170d575581d3dd0f5a5174eebe7f0015c71d3294f6a14ffcf63e2",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 county table associates each geography with evaluated population, fixed-terrestrial, fixed-wireline and mobile-5G-NR percentages, density and per-capita income.",
+      "productDecisionSaved": false
+    },
+    {
+      "physicalPage": 95,
+      "blockId": "page-95-visual-review",
+      "originalRenderSha256": "e00f71cd2607ea3471bef421a816d7051c23eb89bf1b9b01b85a74f588adbb23",
+      "originalSizeChecked": true,
+      "priorDecision": "evidence",
+      "reviewedDecision": "evidence",
+      "finding": "Appendix A-5 county table associates each geography with evaluated population, fixed-terrestrial, fixed-wireline and mobile-5G-NR percentages, density and per-capita income.",
+      "productDecisionSaved": false
+    }
+  ],
+  "counts": {
+    "newlyOriginalSizeChecked": 24,
+    "retainEvidence": 23,
+    "reclassifyAsDecoration": 1,
+    "previouslyContactSheetOnlyRemaining": 65
+  },
+  "decisionOverride": {
+    "page-76-visual-review": "decoration"
+  },
+  "reviewBoundary": "The other 65 previously contact-sheet-only pages still require original-size inspection. No appendix numerical cell is accepted solely from this page-type review.",
+  "productReviewDecisionsSaved": 0,
+  "independentGoldAdded": 0,
+  "providerCalls": 0,
+  "g17ToG20Advanced": false
+}
