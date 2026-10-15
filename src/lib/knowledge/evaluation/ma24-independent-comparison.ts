@@ -13,6 +13,12 @@ export type Ma24FrozenManifest = {
   requiredImprovementTags: string[]; protectedNoRegressionTags: string[];
   cases: Ma24Case[];
 };
+/** Kept outside model inputs; the scorer reads it only after both arms finish. */
+export type Ma24GoldSnapshot = {
+  schema: "ma24-g16-gold-snapshot-v1";
+  cases: Array<{ caseId: string; caseSha256: string; expectedAnswer: string;
+    expectedSources: GoldSourceCoordinate[]; reviewer: string; reviewedAt: string; note: string }>;
+};
 export type Ma24Run = {
   caseId: string; arm: Ma24Arm; caseSha256: string; manifestSha256: string;
   status: "completed" | "failed" | "unknown"; answer: string;
@@ -76,14 +82,40 @@ function validateManifest(manifest: Ma24FrozenManifest) {
     throw new Error("MA24 permission gate lacks a denied-access case");
 }
 
+function validateGold(manifest: Ma24FrozenManifest, gold: Ma24GoldSnapshot) {
+  if (gold.schema !== "ma24-g16-gold-snapshot-v1" || gold.cases.length !== manifest.cases.length)
+    throw new Error("Incomplete MA24 frozen Gold snapshot");
+  const cases = new Map(manifest.cases.map(item => [item.caseId, item]));
+  const seen = new Set<string>();
+  for (const item of gold.cases) {
+    const expected = cases.get(item.caseId);
+    if (!expected || seen.has(item.caseId) || item.caseSha256 !== expected.caseSha256 ||
+      !item.expectedAnswer.trim() || !item.reviewer.trim() ||
+      !Number.isFinite(Date.parse(item.reviewedAt)) || !item.note.trim() ||
+      !Array.isArray(item.expectedSources) || item.expectedSources.some(source => !goldSourceIsPrecise(source)) ||
+      (expected.expectedOutcome === "route" && !item.expectedSources.length))
+      throw new Error(`Invalid MA24 frozen Gold case ${item.caseId}`);
+    seen.add(item.caseId);
+  }
+}
+
+function citationMatchesGold(actual: GoldSourceCoordinate, expected: GoldSourceCoordinate) {
+  return actual.assetSha256 === expected.assetSha256 && actual.unitIndex === expected.unitIndex &&
+    (expected.row === undefined || actual.row === expected.row) &&
+    (expected.version === undefined || actual.version === expected.version) &&
+    (expected.blockId === undefined || actual.blockId === expected.blockId);
+}
+
 /** Scores reviewed answers only; run receipts and reviewer judgments remain separate inputs. */
 export function scoreMa24IndependentComparison(input: {
-  manifest: Ma24FrozenManifest; runs: Ma24Run[]; verdicts: Ma24Verdict[];
+  manifest: Ma24FrozenManifest; gold: Ma24GoldSnapshot; runs: Ma24Run[]; verdicts: Ma24Verdict[];
 }) {
-  const { manifest, runs, verdicts } = input;
+  const { manifest, gold, runs, verdicts } = input;
   validateManifest(manifest);
+  validateGold(manifest, gold);
   const manifestHash = ma24ManifestSha256(manifest);
   const cases = new Map(manifest.cases.map(item => [item.caseId, item]));
+  const goldCases = new Map(gold.cases.map(item => [item.caseId, item]));
   const runMap = new Map<string, Ma24Run>();
   for (const run of runs) {
     const item = cases.get(run.caseId);
@@ -117,7 +149,9 @@ export function scoreMa24IndependentComparison(input: {
     if (verdict.answerCorrect && verdict.observedOutcome !== cases.get(verdict.caseId)?.expectedOutcome)
       throw new Error(`MA24 answer verdict contradicts observed outcome ${id}`);
     if (verdict.preciseCitationCorrect && (cases.get(verdict.caseId)?.expectedOutcome === "route"
-      ? !run.citations.length || run.citations.some(source => !goldSourceIsPrecise(source))
+      ? !run.citations.length || run.citations.some(source => !goldSourceIsPrecise(source)) ||
+        goldCases.get(verdict.caseId)!.expectedSources.some(expected =>
+          !run.citations.some(actual => citationMatchesGold(actual, expected)))
       : run.citations.length > 0))
       throw new Error(`MA24 citation verdict contradicts coordinates ${id}`);
     verdictMap.set(id, verdict);

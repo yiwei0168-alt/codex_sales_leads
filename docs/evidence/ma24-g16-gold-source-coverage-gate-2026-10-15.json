@@ -1,0 +1,21 @@
+{
+  "schema": "ma24-g16-gold-source-coverage-gate-v1",
+  "date": "2026-10-15",
+  "change": "The read-only G16 scorer parses the separately frozen Gold snapshot after verifying its raw SHA-256, checks complete one-to-one case coverage and review metadata, and rejects a precise-citation-positive verdict unless run citations cover every expected Gold source coordinate. Matching uses asset SHA-256, unit index, and any Gold row, version or block ID.",
+  "checks": {
+    "targetedVitest": "11 passed",
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "syntheticCliComplete": "Four synthetic cases with empty runs/verdicts returned complete=false and gatePassed=false",
+    "syntheticCliGoldByteDrift": "Changing the Gold file bytes after manifest creation returned exit code 1 with MA24 frozen Gold snapshot drift",
+    "gitDiffCheck": "passed"
+  },
+  "limits": [
+    "The scorer enforces coordinate coverage; a human reviewer still decides whether the cited excerpt actually supports the answer.",
+    "The smoke files are synthetic and ignored locally; they are not independent Gold or model outputs.",
+    "No independent source set, Gold case, actual dual-arm model run, paid authorization or production quality acceptance has been completed."
+  ],
+  "goldCreated": 0,
+  "modelCalls": 0,
+  "productionWrites": 0
+}
