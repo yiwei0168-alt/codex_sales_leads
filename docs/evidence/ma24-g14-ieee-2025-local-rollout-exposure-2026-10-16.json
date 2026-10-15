@@ -1,0 +1,43 @@
+{
+  "schema": "ma24-g14-ieee-2025-local-rollout-exposure-v1",
+  "date": "2026-10-16",
+  "sourceFamily": "IEEE 802.11 overview and amendments under development, September 2025",
+  "sourceSha256": "3ae95a7ecdadf8cca4127e239bfbd71c25aa08e354fd0ca94d078a3e0eb11e3d",
+  "firstGitRegistration": "e22a1f9c at 2026-10-14T11:15:13Z",
+  "privateScript": "tmp/ma24-independent-quarantine/audit-ieee-2025-rollout-exposure.py",
+  "privateScriptSha256": "a4b18149e92ce24d8de33568ad9882662c3358ed08275ebe1323d0ccb0f7f221",
+  "scope": {
+    "retainedLocalCodexRolloutFiles": 115,
+    "jsonlRecords": 174280,
+    "caseInsensitiveExactPatterns": [
+      "802.11bp",
+      "802.11br",
+      "ambient power transmission",
+      "enhanced light communications",
+      "ieee-80211-overview-under-development-2025.pptx",
+      "ieee-80211-2025-amp-bands-modes",
+      "ieee-80211-2025-elc-optical-bands",
+      "3ae95a7ecdadf8cca4127e239bfbd71c25aa08e354fd0ca94d078a3e0eb11e3d"
+    ],
+    "malformedTimestampAmongMatchingRecords": 0
+  },
+  "observation": {
+    "firstMatchingRecordUtc": "2026-10-14T11:08:04.287Z",
+    "firstDistinctiveSlideTermUtc": "2026-10-14T11:10:50.053Z",
+    "firstCandidateQuestionIdUtc": "2026-10-14T11:13:45.900Z",
+    "lastPreRegistrationMatchUtc": "2026-10-14T11:15:07.394Z",
+    "uniqueMatchingRecordsBeforeRegistration": 78,
+    "uniqueMatchingRecordsAfterRegistration": 624,
+    "interpretation": "The first retained source-specific match checks the private source file path. The subsequent matches in the same roughly seven-minute pre-registration window concern its download, parsing, slide inspection and question drafting. No selected pattern matched before that window in retained local rollouts."
+  },
+  "relationshipToPriorAudit": "Extends ma24-g14-ieee-2025-bounded-exposure-audit-2026-10-15.json from Git/project text screening to retained local Codex rollout JSONL records. It does not revise that audit's product-asset and historical-Gold counts.",
+  "limits": [
+    "A line or event may repeat earlier tool text; record counts are not distinct exposure events.",
+    "The patterns are specific to this source and its two questions, but absence of a hit cannot establish semantic independence.",
+    "Unrecorded or deleted prompts, binary derivatives, remote systems and provider-side knowledge were not examined.",
+    "Question-answer review, source-family decision and full-set contamination review remain open. This receipt does not freeze independent Gold."
+  ],
+  "independentGoldApproved": false,
+  "realDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}
