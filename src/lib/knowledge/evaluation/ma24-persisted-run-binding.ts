@@ -32,7 +32,7 @@ export function assertMa24PersistedRunBinding(input: {
     (run.status === "completed" ? task.status !== "completed" || result?.reply !== run.answer :
       task.status !== "failed" || run.status !== "failed"))
     throw new Error(`MA24 persisted task mismatch ${run.caseId}:${run.arm}`);
-  if (!modelCalls.length || modelCalls.some(call => call.user_id !== frozen.userId ||
+  if ((run.status === "completed" && !modelCalls.length) || modelCalls.some(call => call.user_id !== frozen.userId ||
     call.run_id !== run.runId || call.tool_id !== "main_model" || call.effect !== "model" ||
     call.status !== "completed"))
     throw new Error(`MA24 persisted model journal mismatch ${run.caseId}:${run.arm}`);

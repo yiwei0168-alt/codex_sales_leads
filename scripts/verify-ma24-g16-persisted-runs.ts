@@ -31,6 +31,7 @@ for (const run of runs) {
     ["baseline", "candidate"].includes(run.arm) &&
     !seen.has(`${run.caseId}:${run.arm}`), "Unknown or duplicate MA24 execution");
   seen.add(`${run.caseId}:${run.arm}`);
+  if (run.status === "unknown") continue; // Unknown runs are never attested as executed.
   verified.push({ caseId: run.caseId, arm: run.arm,
     ...await verifyMa24PersistedRunBinding(frozen, query, run) });
 }

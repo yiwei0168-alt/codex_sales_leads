@@ -4,15 +4,17 @@
   "scope": "G16 only; G17-G20 deferred",
   "change": {
     "runContract": "Each evaluation run now names a distinct UUID agent_run.id; duplicates are rejected before scoring.",
-    "readOnlyVerifier": "The verifier reads tenant-scoped agent_run and agent_tool_call rows and compares persisted user_id, original content, ordered knowledgeScope, main-agent execution kind, answer model, terminal status, reply, and presence of completed main_model journal rows with the frozen case and submitted run.",
+    "readOnlyVerifier": "The verifier reads tenant-scoped agent_run and agent_tool_call rows and compares persisted user_id, original content, ordered knowledgeScope, main-agent execution kind, answer model, terminal status, reply, and completed main_model journal rows with the frozen case and submitted run. Completed runs require a model call; failed runs may have failed before model invocation.",
     "entryPoint": "scripts/verify-ma24-g16-persisted-runs.ts",
+    "scoringGate": "The independent scoring CLI now performs the same database binding for every completed or failed run before scoring. Unknown runs are unverified and already block the quality gate.",
     "output": "A local JSON summary of verified run IDs, persisted task hashes, and model-call IDs; no question or answer text is printed."
   },
   "checks": {
     "targetedTests": "17 passed across independent-comparison and persisted-run-binding tests",
     "typescript": "node node_modules/typescript/bin/tsc --noEmit passed",
     "eslint": "targeted ESLint passed",
-    "negativeCases": ["duplicate persisted run ID", "wrong database account", "narrowed database knowledge scope", "changed database question", "changed database reply", "foreign model call", "missing model call"]
+    "negativeCases": ["duplicate persisted run ID", "wrong database account", "narrowed database knowledge scope", "changed database question", "changed database reply", "foreign model call", "missing model call for a completed run"],
+    "failedRunCase": "A persisted failed task with no model call is accepted as a failed execution record, while scoring still blocks the quality gate."
   },
   "acceptanceBoundary": {
     "realFrozenCaseDatabaseRowsVerified": 0,

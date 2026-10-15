@@ -36,5 +36,9 @@ describe("MA24 persisted run binding", () => {
   });
   it("rejects a run with no persisted model attempt", () => {
     expect(() => verify({ modelCalls: [] })).toThrow("persisted model journal mismatch");
+    const failedRun: Ma24Run = { ...run, status: "failed", answer: "", citations: [],
+      failureReason: "preflight failed" };
+    expect(() => verify({ run: failedRun, task: { ...task, status: "failed", result: null },
+      modelCalls: [] })).not.toThrow();
   });
 });
