@@ -1,0 +1,191 @@
+{
+  "schema": "ma24-g14-itu-gcr2025-visual-proposals-part5-v1",
+  "date": "2026-10-15",
+  "stage": "Physical pages 113-127 and 129 source-bound proposals; not product judgments. Page 128 has no pending visual record.",
+  "sourceSha256": "4489081fe8709ea1bcea2b724ff5a92c3979195432a8da73c20a8c8e0570ccb8",
+  "extractionArtifactSha256": "788600e3fc3a1f8bd0a1d658ab608686b1c4358cfe76672500f3ae652303ffd6",
+  "candidatePackageSha256": "a7e4c0784ae51a2195b77623a67b1579bcef70375ce837b6e7c1d20b8580efac",
+  "scopePhysicalPages": [
+    113,
+    114,
+    115,
+    116,
+    117,
+    118,
+    119,
+    120,
+    121,
+    122,
+    123,
+    124,
+    125,
+    126,
+    127,
+    129
+  ],
+  "targetedFullSizePages": [
+    113,
+    116,
+    117,
+    118,
+    120
+  ],
+  "proposedCounts": {
+    "evidence": 5,
+    "decoration": 11,
+    "unresolved": 0
+  },
+  "proposals": [
+    {
+      "blockId": "page-113-visual-review",
+      "physicalPage": 113,
+      "originalRenderSha256": "ea9e0313cd0282face2abe2effb6009f2637a9f335c0023d6c4b39666a9b62ff",
+      "proposedDecision": "evidence",
+      "evidenceText": "Table 6.1 maps proposed indicators to universal and meaningful connectivity dimensions, including connection quality, availability, affordability, devices, digital skills and safety/security. The table is a proposal framework, not observed country values.",
+      "reason": "Full-size original render of physical PDF page 113 checked against figure/table, legend and notes; keep measurement and category scope.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-114-visual-review",
+      "physicalPage": 114,
+      "originalRenderSha256": "9d32e2dcdfdeac0aecb61ed8dc23e2c07d8d76d1353501d96e65832841ccc7d7",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact overview shows digitally extracted narrative, boxed prose, references or publisher mark without a distinct data chart/map/table; tentative until original-page recheck before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-115-visual-review",
+      "physicalPage": 115,
+      "originalRenderSha256": "fbf70bd3b31471ddbfcc9ea3ee261f2959c1c5d50e2c45c3740aa917e9c36af5",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact overview shows digitally extracted narrative, boxed prose, references or publisher mark without a distinct data chart/map/table; tentative until original-page recheck before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-116-visual-review",
+      "physicalPage": 116,
+      "originalRenderSha256": "83b669b9564b5f498d706f17c292e8909b2af4ed17d50047ca068614f1e58585",
+      "proposedDecision": "evidence",
+      "evidenceText": "Table 6.2 groups demand-side, supply-side and price ICT statistics by data source and collecting institution. Source and institution cells must be read within their data-type row.",
+      "reason": "Full-size original render of physical PDF page 116 checked against figure/table, legend and notes; keep measurement and category scope.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-117-visual-review",
+      "physicalPage": 117,
+      "originalRenderSha256": "ec899fe36ff9e88e7396daa011ab99d8899f72185e01f38c672cd37354b60515",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figure 6.1 plots the 2023 Statistical Performance Index against 2024 Atlas-method GNI per capita on a logarithmic x-axis. Points are countries and marker shapes/colours identify ITU regions; the relationship does not prove causation.",
+      "reason": "Full-size original render of physical PDF page 117 checked against figure/table, legend and notes; keep measurement and category scope.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-118-visual-review",
+      "physicalPage": 118,
+      "originalRenderSha256": "90335a454c21fc677927c8d870fcdfd29f638dc3d30640835f50f42457a5c876",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figure 6.2 maps the latest reported year of Internet-use data for SDG indicator 17.8.1. Colours represent reporting-year bands, not Internet-use percentages; unavailable is a separate grey category.",
+      "reason": "Full-size original render of physical PDF page 118 checked against figure/table, legend and notes; keep measurement and category scope.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-119-visual-review",
+      "physicalPage": 119,
+      "originalRenderSha256": "0d3528a3ddd8cd4ad2667d6912431d906b4d54bf61862fb48b7695b700032060",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact overview shows digitally extracted narrative, boxed prose, references or publisher mark without a distinct data chart/map/table; tentative until original-page recheck before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-120-visual-review",
+      "physicalPage": 120,
+      "originalRenderSha256": "0e5df0c33542fd5b98b137ff5aed5eac26739bbbac6ae33c7562e15059889222",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figure 6.3 diagrams domestic funding, budget support, parallel funding and pooled funding instruments for producing statistics. It distinguishes example initiatives from general categories and is not a quantitative comparison.",
+      "reason": "Full-size original render of physical PDF page 120 checked against figure/table, legend and notes; keep measurement and category scope.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-121-visual-review",
+      "physicalPage": 121,
+      "originalRenderSha256": "a779174a6f9317f01e72ebc6308ae333eec5f2866faa6b3f51bc6aa35b6c60d9",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact overview shows digitally extracted narrative, boxed prose, references or publisher mark without a distinct data chart/map/table; tentative until original-page recheck before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-122-visual-review",
+      "physicalPage": 122,
+      "originalRenderSha256": "5c25face8a6add4c61eee84aad755965f904d0f02e2b4b843cbfdf3842cd79a1",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact overview shows digitally extracted narrative, boxed prose, references or publisher mark without a distinct data chart/map/table; tentative until original-page recheck before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-123-visual-review",
+      "physicalPage": 123,
+      "originalRenderSha256": "4fd34e3d785f85e35522a821e5a2ee0271f70447bd1e6d80c056c3f6749bc454",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact overview shows digitally extracted narrative, boxed prose, references or publisher mark without a distinct data chart/map/table; tentative until original-page recheck before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-124-visual-review",
+      "physicalPage": 124,
+      "originalRenderSha256": "ccae28b05c4b79c9da2572a89a2a8d53e3ef5a6606cb72beaccbcff520cd0cdb",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact overview shows digitally extracted narrative, boxed prose, references or publisher mark without a distinct data chart/map/table; tentative until original-page recheck before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-125-visual-review",
+      "physicalPage": 125,
+      "originalRenderSha256": "537f4c3e898888c32556f9302ae1f0ee7be3ae2a6ec01744063ef79e29786970",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact overview shows digitally extracted narrative, boxed prose, references or publisher mark without a distinct data chart/map/table; tentative until original-page recheck before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-126-visual-review",
+      "physicalPage": 126,
+      "originalRenderSha256": "12f31d567b71782b00aa23c4ed3acc39ea23cc57f2c91afa9cd2253fd60ca0c6",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact overview shows digitally extracted narrative, boxed prose, references or publisher mark without a distinct data chart/map/table; tentative until original-page recheck before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-127-visual-review",
+      "physicalPage": 127,
+      "originalRenderSha256": "38ddbe5a241d2e022460518926e7dd97487685a6a016b8cac870caf372b97192",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact overview shows digitally extracted narrative, boxed prose, references or publisher mark without a distinct data chart/map/table; tentative until original-page recheck before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-129-visual-review",
+      "physicalPage": 129,
+      "originalRenderSha256": "b9d9e152aa5efc00dbf31ebf903ec076327c4493b18547f5ad204779c138aa0a",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact overview shows digitally extracted narrative, boxed prose, references or publisher mark without a distinct data chart/map/table; tentative until original-page recheck before product save.",
+      "productDecisionSaved": false
+    }
+  ],
+  "cumulativePendingPageProposals": 128,
+  "remainingPendingPagesNotProposed": 0,
+  "productReviewDecisionsSaved": 0,
+  "privateRegistrationPassed": false,
+  "goldApproved": false,
+  "modelCalls": 0,
+  "g17ToG20Advanced": false
+}
