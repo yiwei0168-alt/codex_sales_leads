@@ -1,0 +1,28 @@
+{
+  "schema": "ma24-g15-runtime-binding-preflight-v1",
+  "date": "2026-10-15",
+  "command": "npm run ma24:verify-g15-runtime-binding",
+  "frozenPreviewSha256": "6a3c8ad62b9ee86767a27f95276bf8680b95465d14f96964cc055d7c4264a4ca",
+  "observed": {
+    "currentPreviewRecomputedFromLoadedSource": true,
+    "currentPromptDateUtc": "2026-10-15",
+    "promptDateModelRoutesToolArmsAndListedSourceHashesMatched": true,
+    "oldOctober14PreviewRejected": true,
+    "oldPreviewRejection": "MA24 G15 preview lacks a bound UTC prompt date",
+    "oldPreviewExitCode": 1,
+    "currentRuntimeBindingMatched": true,
+    "readyForModelCalls": false,
+    "providerCalls": 0
+  },
+  "checks": {
+    "targetedVitest": "4 passed",
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "gitDiffCheck": "passed"
+  },
+  "limits": [
+    "This read-only command checks the listed local source files and generated prompts, not the full transitive code closure or the loaded production build.",
+    "The current preview itself reports source and Gold unfrozen, local BGE flag disabled, and tariffs and paid authorization unverified.",
+    "No new G16 runner is wired to this command; matching a preview cannot by itself authorize model calls or establish answer quality."
+  ]
+}

@@ -21,6 +21,7 @@
     "ma24:verify-web-rollback-clone": "node scripts/run-tsx.cjs scripts/verify-ma24-backup-restore.ts --web-compat",
     "ma24:verify-review-ui-clone": "node scripts/run-tsx.cjs scripts/verify-ma24-backup-restore.ts --web-compat --review-ui",
     "ma24:verify-thoth-review-ui-clone": "node scripts/run-tsx.cjs scripts/verify-ma24-backup-restore.ts --web-compat --thoth-review-ui",
+    "ma24:verify-g15-runtime-binding": "node scripts/run-tsx.cjs scripts/verify-ma24-g15-runtime-binding.ts",
     "ma24:verify-conversation-ui-clone": "node scripts/run-tsx.cjs scripts/verify-ma24-backup-restore.ts --web-compat --conversation-ui",
     "ma24:verify-frontend-ui-clone": "node scripts/run-tsx.cjs scripts/verify-ma24-backup-restore.ts --web-compat --frontend-ui",
     "ma24:verify-skill-review-ui-clone": "node scripts/run-tsx.cjs scripts/verify-recorded-model-source-clone.ts --skill-review-ui",
