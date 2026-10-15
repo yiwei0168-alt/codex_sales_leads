@@ -1,8 +1,8 @@
 /** Read-only G15 configuration preview. It does not freeze a corpus or authorize calls. */
 import {createHash} from 'node:crypto';
-import {readFile} from 'node:fs/promises';
 import {registerHooks} from 'node:module';
 import nextEnv from '@next/env';
+import {ma24LocalSourceClosure} from './lib/ma24-local-source-closure';
 
 nextEnv.loadEnvConfig(process.cwd());
 registerHooks({resolve(specifier,context,next){
@@ -60,6 +60,7 @@ if(new Date().toISOString().slice(0,10)!==promptDateUtc)
   throw new Error('UTC date changed while computing product prompt hashes; rerun the G15 preview');
 const sourceFiles=[
  'scripts/prepare-ma24-g15-config-local.ts',
+ 'scripts/lib/ma24-local-source-closure.ts','tsconfig.json','package.json','package-lock.json',
  'src/lib/assistant/main/graph.ts','src/lib/assistant/main/model.ts',
  'src/lib/assistant/main/model-stream.ts','src/lib/assistant/main/mode-config.ts',
  'src/lib/assistant/main/mode-prompts.ts','src/lib/assistant/main/mode-prompt-content.json',
@@ -70,8 +71,7 @@ const sourceFiles=[
  'src/lib/rag/embedding-contract.ts','src/lib/rag/bge-client.ts',
  'src/lib/knowledge/query-normalizer.ts',
 ];
-const sourceHashes=Object.fromEntries(await Promise.all(sourceFiles.map(async file=>
-  [file,hash(await readFile(file,'utf8'))] as const)));
+const sourceHashes=await ma24LocalSourceClosure(process.cwd(),sourceFiles);
 const profile=modeModelConfig(mode).profile;
 if(!profile)throw new Error('Mode profile unavailable');
 console.log(JSON.stringify({schema:'ma24-g15-config-preview-v1',readOnly:true,simulation:true,
@@ -79,6 +79,7 @@ console.log(JSON.stringify({schema:'ma24-g15-config-preview-v1',readOnly:true,si
   mode,modePromptVersion:MODE_PROMPT_VERSION,modePromptSha256:hash(modePromptRules(mode)),
   productVersion:PRODUCT_VERSION,modelProfile:profile,
   modelFunctionsSha256:hash(JSON.stringify(modelFunctions)),arms,sourceHashes,
+  sourceClosureMethod:'recursive-local-static-imports-v1',sourceClosureFileCount:Object.keys(sourceHashes).length,
   comparableModelRoutes:true,toolDeltaLimitedToVectorless:true,
   intendedLocalBgeFlagForBothArms:'ENABLE_MAIN_AGENT_LOCAL_BGE_SEARCH=1',
   currentLocalBgeFlagEnabled:process.env.ENABLE_MAIN_AGENT_LOCAL_BGE_SEARCH==='1',
@@ -89,7 +90,7 @@ console.log(JSON.stringify({schema:'ma24-g15-config-preview-v1',readOnly:true,si
   maximumProviderRequests:null,maximumRequestBytes:null,maximumOutputTokens:null,
   hardSpendCapUsd:null,readyForPaidEvaluation:false,
   missing:['approved independent source and question set','coordinate-checked Gold hash',
-    'candidate and baseline runtime/build identity and transitive code closure','exact account and data scope',
+    'candidate and baseline runtime/build identity and executed code closure binding','exact account and data scope',
     'main Agent baseline BGE plus full-text plus verified-fact wiring and a healthy local BGE service',
     'current provider tariffs and a durable per-call reservation rule',
     'request/output and spend ceilings with required authorization']},null,2));

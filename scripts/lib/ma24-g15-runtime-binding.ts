@@ -9,6 +9,7 @@ export type Ma24G15Preview = {
   mode: string; modePromptVersion: string; modePromptSha256: string;
   productVersion: string; modelProfile: unknown; modelFunctionsSha256: string;
   arms: Arm[]; sourceHashes: Record<string, string>;
+  sourceClosureMethod: string; sourceClosureFileCount: number;
   intendedLocalBgeFlagForBothArms: string; currentLocalBgeFlagEnabled: boolean;
   sourceSetFrozen: boolean; goldFrozen: boolean; runtimeBuildVerified: boolean;
   transitiveCodeClosureVerified: boolean; providerTariffsVerified: boolean;
@@ -30,8 +31,13 @@ export function assertMa24G15RuntimeBinding(frozen: Ma24G15Preview,
     loaded.productPromptDateUtc !== nowUtcDate)
     throw new Error("MA24 G15 product prompt UTC date drift");
   for (const field of ["mode", "modePromptVersion", "modePromptSha256", "productVersion",
-    "modelFunctionsSha256", "intendedLocalBgeFlagForBothArms"] as const)
+    "modelFunctionsSha256", "intendedLocalBgeFlagForBothArms", "sourceClosureMethod"] as const)
     if (frozen[field] !== loaded[field]) throw new Error(`MA24 G15 ${field} drift`);
+  if (frozen.sourceClosureMethod !== "recursive-local-static-imports-v1" ||
+    !Number.isSafeInteger(frozen.sourceClosureFileCount) ||
+    frozen.sourceClosureFileCount !== Object.keys(frozen.sourceHashes).length ||
+    loaded.sourceClosureFileCount !== Object.keys(loaded.sourceHashes).length)
+    throw new Error("MA24 G15 local source closure incomplete");
   for (const field of ["modelProfile", "arms", "sourceHashes"] as const)
     if (sha(frozen[field]) !== sha(loaded[field])) throw new Error(`MA24 G15 ${field} drift`);
   const missing = [

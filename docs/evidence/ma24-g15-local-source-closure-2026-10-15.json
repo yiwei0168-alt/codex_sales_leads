@@ -1,0 +1,27 @@
+{
+  "schema": "ma24-g15-local-source-closure-v1",
+  "date": "2026-10-15",
+  "change": "The read-only G15 preview now recursively resolves local static TypeScript/JavaScript imports from the main Agent evaluation entries and hashes all reached files plus tsconfig.json and the npm package lock. The runtime binding requires the closure method and count and compares every file hash.",
+  "observed": {
+    "previousListedEntryFiles": 18,
+    "currentClosureFiles": 280,
+    "currentPreviewBindingMatched": true,
+    "currentPreviewSha256": "14a936160d1f69e4585d83c0fa3fc71f9c63b96882e5615066634c96f1c6a30c",
+    "oldPreviewRejected": true,
+    "oldPreviewRejection": "MA24 G15 sourceClosureMethod drift",
+    "readyForModelCalls": false
+  },
+  "checks": {
+    "targetedVitest": "6 passed: transitive leaf byte drift, missing local import, method/count/date and existing binding drift",
+    "typecheck": "passed",
+    "focusedEslint": "passed"
+  },
+  "limits": [
+    "This is a local static import closure preview, not proof that a deployed runtime loaded those exact bytes; transitiveCodeClosureVerified remains false.",
+    "External package runtime contents, generated build assets, dynamic paths outside literal imports, source/Gold freeze, current tariffs and paid authorization remain outside this check.",
+    "The preview uses the current UTC product prompt date and expires when that date or code changes."
+  ],
+  "goldCreated": 0,
+  "modelCalls": 0,
+  "productionWrites": 0
+}
