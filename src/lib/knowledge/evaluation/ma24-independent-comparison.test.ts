@@ -23,6 +23,7 @@ const runs: Ma24Run[] = manifest.cases.flatMap(item => (["baseline", "candidate"
 })));
 const verdicts: Ma24Verdict[] = runs.map(run => ({
   caseId: run.caseId, arm: run.arm, runSha256: ma24RunSha256(run),
+  observedOutcome: manifest.cases.find(item => item.caseId === run.caseId)!.expectedOutcome,
   answerCorrect: run.arm === "candidate", preciseCitationCorrect: run.arm === "candidate",
   permissionLeak: false, unapprovedOfficialFact: false,
   reviewer: "reviewer", reviewedAt: "2026-10-15T00:00:00Z", note: "Original checked",
@@ -45,7 +46,7 @@ describe("MA24 independent comparison", () => {
       ? { ...row, status: "unknown" as const, failureReason: "Provider outcome unconfirmed" } : row);
     const reviewed = verdicts.map(row => row.caseId === "long" && row.arm === "candidate"
       ? { ...row, runSha256: ma24RunSha256(unknown.find(item => item.caseId === row.caseId && item.arm === row.arm)!),
-        answerCorrect: false, preciseCitationCorrect: false } : row);
+        observedOutcome: null, answerCorrect: false, preciseCitationCorrect: false } : row);
     expect(scoreMa24IndependentComparison({ manifest, runs: unknown, verdicts: reviewed }).unknownRuns)
       .toEqual(["long:candidate"]);
   });
@@ -54,7 +55,7 @@ describe("MA24 independent comparison", () => {
       ? { ...row, status: "failed" as const, answer: "", failureReason: "Model deadline" } : row);
     const reviewed = verdicts.map(row => row.caseId === "long" && row.arm === "baseline"
       ? { ...row, runSha256: ma24RunSha256(failed.find(item => item.caseId === row.caseId && item.arm === row.arm)!),
-        answerCorrect: false, preciseCitationCorrect: false } : row);
+        observedOutcome: null, answerCorrect: false, preciseCitationCorrect: false } : row);
     const result = scoreMa24IndependentComparison({ manifest, runs: failed, verdicts: reviewed });
     expect(result.failedRuns).toEqual(["long:baseline"]);
     expect(result.complete).toBe(false);
@@ -81,6 +82,19 @@ describe("MA24 independent comparison", () => {
     expect(() => scoreMa24IndependentComparison({
       manifest: { ...manifest, requiredImprovementTags: [] }, runs, verdicts,
     })).toThrow("required quality gates missing");
+  });
+  it("records the observed behavior and rejects a correct verdict for the wrong outcome", () => {
+    const mismatch = verdicts.map(row => row.caseId === "new" && row.arm === "candidate"
+      ? { ...row, observedOutcome: "route" as const, answerCorrect: false,
+        preciseCitationCorrect: false } : row);
+    const result = scoreMa24IndependentComparison({ manifest, runs, verdicts: mismatch });
+    expect(result.outcomeMismatches).toEqual([{ caseId: "new", arm: "candidate",
+      expectedOutcome: "no-answer", observedOutcome: "route" }]);
+    expect(result.gatePassed).toBe(false);
+    const incorrectPositive = mismatch.map(row => row.caseId === "new" && row.arm === "candidate"
+      ? { ...row, answerCorrect: true } : row);
+    expect(() => scoreMa24IndependentComparison({ manifest, runs, verdicts: incorrectPositive }))
+      .toThrow("answer verdict contradicts observed outcome");
   });
   it("cannot mark unsupported route citations or non-answer citations precise", () => {
     const missingCitation = runs.map(row => row.caseId === "long" && row.arm === "candidate"

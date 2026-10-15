@@ -1,0 +1,16 @@
+{
+  "schema": "ma24-g16-observed-outcome-gate-v1",
+  "date": "2026-10-15",
+  "scope": "Independent comparison reviewer contract and read-only scorer",
+  "change": "Each completed run's reviewer verdict records the observed route, clarify, no-answer, or deny outcome. Failed and unknown runs require a null observed outcome. A verdict cannot mark an answer correct when the observed and expected outcomes differ; the report lists such mismatches.",
+  "checks": {
+    "targetedVitest": "7 passed",
+    "typecheck": "passed",
+    "targetedEslint": "passed"
+  },
+  "independentGoldFrozen": false,
+  "realBaselineRuns": 0,
+  "realCandidateRuns": 0,
+  "qualityAccepted": false,
+  "productionLoaded": false
+}
