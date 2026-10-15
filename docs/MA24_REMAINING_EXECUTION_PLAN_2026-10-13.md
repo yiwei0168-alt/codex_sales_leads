@@ -28,6 +28,8 @@
 
 同日 R4 来源用途补审：Data.gov 将 NIST 工业无线数据集列为公开、格式含 XLSX，许可指向 NIST 开放数据政策；NIST 项目页要求使用时引用 DOI。对私有独立测评中该工作簿的短数值事实题，按注明 NIST 与 DOI 的边界暂可列候选；此判断不覆盖内嵌照片/图表再发布，也不证明题目独立或已形成 Gold。[来源用途收据](evidence/ma24-g14-nist-industrial-wireless-xlsx-source-use-2026-10-15.json)。
 
+同日 R4 题池复核：发现 ITU 2026 演示 FWA 冲突题直接驱动 G05 产品修复却仍在待审名单，现列为第 9 条排除项。17 条剩余草案对旧 350 行/300 个不同问题和同轮其他题各取五个本地 BGE 近邻，逐项读最相近的问法；未见相同原件事实的题面重合，同原件多题和 FCC 同发布家族仍须按家族处理。该筛查不证明完整来源/答案独立，Gold 仍为 0。[题池筛查](evidence/ma24-g14-current-pool-neighbor-screen-2026-10-15.json)。
+
 本轮用户将执行范围限定至 G16。G17–G20 的分域试点、正式切换、实际服务回滚、后续测试和交付留待下一阶段；本轮完成的克隆开发验证不代替这些阶段的验收，原 Goal 继续 active。
 
 2026-10-15 R0 类型检查范围补验：`tsconfig` 排除 Git 忽略的 `tmp/` 验收工作区后，完整 `npm run typecheck` 和带生成类型的 `npm run build` 通过；TypeScript 清单仍覆盖产品 `src/` 与正式 `scripts/`。新候选 build 在一次性恢复库通过迁移 127–134 和新旧 Web 兼容检查。此为构建与克隆证据，候选发布包、正式迁移、分域试点和实际回滚仍未完成。[收据](evidence/ma24-g01-typecheck-scope-build-2026-10-15.json)。

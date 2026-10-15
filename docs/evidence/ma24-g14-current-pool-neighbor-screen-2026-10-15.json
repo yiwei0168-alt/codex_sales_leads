@@ -1,0 +1,25 @@
+{
+  "schema": "ma24-g14-current-pool-neighbor-screen-receipt-v1",
+  "date": "2026-10-15",
+  "command": "node scripts/run-tsx.cjs scripts/screen-ma24-g14-current-pool-local.ts tmp/ma24-independent-quarantine/g14-current-pool-neighbors-2026-10-15.json",
+  "outputPath": "tmp/ma24-independent-quarantine/g14-current-pool-neighbors-2026-10-15.json",
+  "outputSha256": "f53a3c1640a55f0589286e6f1650d1ec876292bbde31b01597598eb16a6e1de1",
+  "manifestSha256": "571768b374c03b678326880c01c91b70b392b82067eaf23ba86d342bc0e5f917",
+  "exclusionAuditSha256": "9569269372db20f4b281e67d42a51fb5c4aa5fcb03c065af3cc9bd47dfb33ce6",
+  "oldCorpusVersion": "knowledge-eval-v3-baseline",
+  "oldCorpusSha256": "a3c7f67502a8c79898736c0300658bb3a77f25b690fae095fdcdcc7bfe6df248",
+  "historicalBlindSha256": "711ed12f970c54d7d3a73bd5d824946aa7c89cb3c9995b2976445c88bc017d70",
+  "model": "local BAAI/bge-m3 revision 5617a9f61b028005a4858fdac845db406aefb181",
+  "scope": { "retainedDrafts": 17, "historicalRows": 350, "uniqueHistoricalQueries": 300, "currentNeighborsPerDraft": 5, "historicalNeighborsPerDraft": 5 },
+  "manualTopNeighborReview": [
+    "The closest historical queries for all 17 drafts concern product ports, PoE, deployment, opening a datasheet or revision navigation; none asks the same original-source facts or answers as its paired draft.",
+    "High current-pool similarity for the two FCC questions reflects one Section 706 publication family; they ask distinct fixed-service-choice and school-bandwidth-denominator facts, but must not count as independent families.",
+    "High within-pool scores for the two IEEE overview questions, three NIST TN 2363 questions and three ZBW questions likewise reflect shared originals; the question texts ask different passages or objects, without creating additional source families.",
+    "The NIST metadata workbook comparison asks original 1 m ray-tracing cells; its closest current question is an IEEE 802.11 AMP band/mode question and its closest historical question is about combo-port counting. No shared answer is apparent in those texts.",
+    "Other closest pairs across different originals concern different measured entities or procedures despite shared wireless, 5G, percentage or citation vocabulary."
+  ],
+  "limit": "Local embedding nearest neighbors and manual reading of paired question texts do not prove absence of answer leakage, publication-family overlap, unseen prompts, derivative sources or model pretraining knowledge. This is a bounded pre-freeze screen, not a Gold verdict.",
+  "goldCreated": 0,
+  "cloudCalls": 0,
+  "productionWrites": 0
+}
