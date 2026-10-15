@@ -1,0 +1,33 @@
+{
+  "schema": "ma24-g16-local-admission-db-clone-acceptance-v1",
+  "date": "2026-10-16",
+  "supersedesPreflight": "docs/evidence/ma24-g16-local-admission-db-preflight-2026-10-15.json",
+  "scope": "Local disposable MA11 replay database clone with synthetic accounts, document, evidence and leased evaluation task; no production database or model invocation",
+  "cloneDatabase": "ma11_replay_7d98e095133b",
+  "acceptanceScript": "scripts/verify-ma24-g16-admission-local.ts",
+  "scriptSha256": "873a3de4f2753154e791ac582c30b2873f637acee0963d2a63e1d616c40b07cc",
+  "requiredMigration": "db/migrations/136_ma24_evaluation_run_kind.sql",
+  "migrationFileSha256": "929730833e9ba80e14ea6f0c35c2e23ac5f6db068f6312c45fba8a2b18943e58",
+  "command": "MA24_ADMISSION_USE_CLONE=1 node scripts/run-tsx.cjs scripts/verify-ma24-g16-admission-local.ts",
+  "runs": 2,
+  "bothRunsPassed": true,
+  "checks": [
+    "valid leased evaluation row accepted",
+    "live route Gold source and excerpt bound",
+    "changed or unavailable Gold evidence rejected",
+    "live corpus and ACL drift rejected",
+    "cross-account source hidden",
+    "changed question rejected",
+    "expired lease rejected",
+    "frozen Gold and code/config byte drift rejected",
+    "loaded prompt drift rejected",
+    "hash-matching structurally invalid Gold rejected",
+    "conversation history and visibility changes rejected",
+    "synthetic rows absent after cleanup"
+  ],
+  "providerCalls": 0,
+  "approvedGoldSetFrozen": false,
+  "realDualArmRuns": 0,
+  "g17ToG20Advanced": false,
+  "limitation": "The clone has the evaluation execution-kind constraint needed by this test. This verifies the local database admission binder; it does not verify production migration, dedicated worker scheduling, paid-call admission, user-visible answer quality or G16 completion."
+}
