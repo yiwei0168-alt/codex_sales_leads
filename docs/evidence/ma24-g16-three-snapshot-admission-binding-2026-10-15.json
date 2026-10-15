@@ -1,0 +1,21 @@
+{
+  "schema": "ma24-g16-three-snapshot-admission-binding-v1",
+  "date": "2026-10-15",
+  "scope": "G16 pre-execution engineering and isolated clone checks",
+  "snapshotsBoundByRawSha256": ["sourceSet", "gold", "codeAndConfig"],
+  "modelFacingReturnFields": ["userId", "caseId", "arm", "query", "knowledgeScope"],
+  "checks": {
+    "focusedVitest": "8 passed in ma24-evaluation-task-binding.test.ts",
+    "typescript": "npx.cmd tsc --noEmit passed",
+    "focusedEslint": "binder, test, and local admission script passed",
+    "isolatedClonePositive": "valid leased row accepted",
+    "isolatedCloneNegative": ["cross-account row rejected", "changed question rejected",
+      "expired lease rejected", "Gold byte drift rejected", "code/config byte drift rejected"]
+  },
+  "goldContentOrIndependenceApproved": false,
+  "approvedGoldCount": 0,
+  "dedicatedRunnerConnected": false,
+  "realDualArmRuns": 0,
+  "providerCalls": 0,
+  "g17ToG20Advanced": false
+}

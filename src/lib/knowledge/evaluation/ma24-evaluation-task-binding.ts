@@ -1,8 +1,7 @@
-import { createHash } from "node:crypto";
 import { tenantTransaction } from "../../rag/db";
 import type { AgentRun, ModelConfig } from "../../assistant/main/contracts";
 import { stableJson } from "../review-types";
-import { assertMa24SourceSetMatchesManifest, ma24ManifestSha256,
+import { assertMa24FrozenSnapshotBytes, assertMa24SourceSetMatchesManifest, ma24ManifestSha256,
   type Ma24FrozenManifest, type Ma24SourceSetSnapshot } from "./ma24-independent-comparison";
 
 type EvaluationTask = Pick<AgentRun, "id" | "user_id" | "status" | "input" |
@@ -14,6 +13,8 @@ type EvaluationTask = Pick<AgentRun, "id" | "user_id" | "status" | "input" |
 export function assertMa24EvaluationTaskBinding(input: {
   manifest: Ma24FrozenManifest;
   sourceSetBytes: Uint8Array;
+  goldBytes: Uint8Array;
+  codeAndConfigBytes: Uint8Array;
   task: EvaluationTask;
   runId: string;
   leaseToken: string;
@@ -21,12 +22,15 @@ export function assertMa24EvaluationTaskBinding(input: {
   arm: "baseline" | "candidate";
   loadedModelConfig: ModelConfig;
 }) {
-  const { manifest, sourceSetBytes, task, runId, leaseToken, caseId, arm, loadedModelConfig } = input;
+  const { manifest, sourceSetBytes, goldBytes, codeAndConfigBytes,
+    task, runId, leaseToken, caseId, arm, loadedModelConfig } = input;
   if (manifest.schema !== "ma24-g16-frozen-comparison-v2" ||
     [manifest.sourceSetSha256, manifest.goldSnapshotSha256, manifest.codeAndConfigSha256]
-      .some(hash => !/^[0-9a-f]{64}$/.test(hash)) ||
-    createHash("sha256").update(sourceSetBytes).digest("hex") !== manifest.sourceSetSha256)
-    throw new Error("MA24 evaluation source-set bytes drift");
+      .some(hash => !/^[0-9a-f]{64}$/.test(hash)))
+    throw new Error("MA24 evaluation snapshot hash missing");
+  assertMa24FrozenSnapshotBytes(manifest, {
+    sourceSet: sourceSetBytes, gold: goldBytes, codeAndConfig: codeAndConfigBytes,
+  });
   const sourceSet = JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(sourceSetBytes)) as Ma24SourceSetSnapshot;
   assertMa24SourceSetMatchesManifest(manifest, sourceSet);
   const spec = task.execution_spec as Record<string, unknown> | null;

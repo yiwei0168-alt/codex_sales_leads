@@ -15,10 +15,12 @@ const query = "What does the publication report?";
 const sourceSet: Ma24SourceSetSnapshot = { schema: "ma24-g16-source-set-v1",
   cases: [{ caseId, query }] };
 const sourceSetBytes = new TextEncoder().encode(JSON.stringify(sourceSet));
+const goldBytes = new TextEncoder().encode("synthetic Gold kept outside model input");
+const codeAndConfigBytes = new TextEncoder().encode("synthetic code and configuration snapshot");
 const sha = (bytes: Uint8Array) => createHash("sha256").update(bytes).digest("hex");
 const manifest: Ma24FrozenManifest = { schema: "ma24-g16-frozen-comparison-v2",
-  sourceSetSha256: sha(sourceSetBytes), goldSnapshotSha256: "a".repeat(64),
-  codeAndConfigSha256: "b".repeat(64), requiredImprovementTags: [],
+  sourceSetSha256: sha(sourceSetBytes), goldSnapshotSha256: sha(goldBytes),
+  codeAndConfigSha256: sha(codeAndConfigBytes), requiredImprovementTags: [],
   protectedNoRegressionTags: [], cases: [{ caseId, caseSha256: ma24CaseQuerySha256(query),
     group: "publication", tags: [], expectedOutcome: "route", userId,
     knowledgeScope: ["industry"] }] };
@@ -31,7 +33,7 @@ const task = { id: runId, user_id: userId, status: "running" as const,
   input: { content: query, requestKey: "evaluation-fixture", attachments: [],
     knowledgeScope: ["industry" as const], mode: "standard" as const },
   model_config: loadedModelConfig };
-const fixture = { manifest, sourceSetBytes, task, runId, leaseToken, caseId,
+const fixture = { manifest, sourceSetBytes, goldBytes, codeAndConfigBytes, task, runId, leaseToken, caseId,
   arm: "baseline" as const, loadedModelConfig };
 const bind = (changes: Partial<Parameters<typeof assertMa24EvaluationTaskBinding>[0]> = {}) =>
   assertMa24EvaluationTaskBinding({ ...fixture, ...changes });
@@ -43,9 +45,15 @@ describe("MA24 evaluation task admission binding", () => {
   });
   it("rejects a changed frozen question or a changed byte snapshot", () => {
     expect(() => bind({ sourceSetBytes: new TextEncoder().encode(JSON.stringify({ ...sourceSet,
-      cases: [{ caseId, query: "Changed question" }] })) })).toThrow("source-set bytes drift");
+      cases: [{ caseId, query: "Changed question" }] })) })).toThrow("frozen source set snapshot drift");
     expect(() => bind({ manifest: { ...manifest, cases: [{ ...manifest.cases[0],
       caseSha256: "0".repeat(64) }] } })).toThrow("frozen question mismatch");
+  });
+  it("rejects Gold and code/config byte drift before returning a model-facing task", () => {
+    expect(() => bind({ goldBytes: new TextEncoder().encode("changed Gold") }))
+      .toThrow("frozen Gold snapshot drift");
+    expect(() => bind({ codeAndConfigBytes: new TextEncoder().encode("changed config") }))
+      .toThrow("frozen code and config snapshot drift");
   });
   it("rejects a different principal, task, lease, status or execution kind", () => {
     for (const changed of [

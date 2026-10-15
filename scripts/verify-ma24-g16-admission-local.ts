@@ -45,16 +45,20 @@ const query = "What does this synthetic local source say?";
 const sourceSet: Ma24SourceSetSnapshot = { schema: "ma24-g16-source-set-v1",
   cases: [{ caseId, query }] };
 const sourceSetBytes = new TextEncoder().encode(JSON.stringify(sourceSet));
+const goldBytes = new TextEncoder().encode("synthetic Gold kept outside model input");
+const codeAndConfigBytes = new TextEncoder().encode("synthetic code and configuration snapshot");
+const sha = (bytes: Uint8Array) => createHash("sha256").update(bytes).digest("hex");
 const manifest: Ma24FrozenManifest = { schema: "ma24-g16-frozen-comparison-v2",
-  sourceSetSha256: createHash("sha256").update(sourceSetBytes).digest("hex"),
-  goldSnapshotSha256: "a".repeat(64), codeAndConfigSha256: "b".repeat(64),
+  sourceSetSha256: sha(sourceSetBytes),
+  goldSnapshotSha256: sha(goldBytes), codeAndConfigSha256: sha(codeAndConfigBytes),
   requiredImprovementTags: [], protectedNoRegressionTags: [],
   cases: [{ caseId, caseSha256: ma24CaseQuerySha256(query), group: "synthetic",
     tags: [], expectedOutcome: "route", userId, knowledgeScope: ["industry"] }] };
 const model = modeModelConfig("standard");
 const taskInput = { content: query, requestKey: `ma24-admission-${runId}`, attachments: [],
   knowledgeScope: ["industry"], mode: "standard" };
-const verify = () => verifyMa24EvaluationTaskBinding({ manifest, sourceSetBytes, runId,
+const verify = () => verifyMa24EvaluationTaskBinding({ manifest, sourceSetBytes, goldBytes,
+  codeAndConfigBytes, runId,
   leaseToken, caseId, arm: "baseline", loadedModelConfig: model });
 let created = false;
 try {
@@ -92,8 +96,17 @@ try {
   const wrongUserManifest: Ma24FrozenManifest = { ...manifest,
     cases: [{ ...manifest.cases[0], userId: otherUserId }] };
   await assert.rejects(verifyMa24EvaluationTaskBinding({ manifest: wrongUserManifest,
-    sourceSetBytes, runId, leaseToken, caseId, arm: "baseline", loadedModelConfig: model }),
+    sourceSetBytes, goldBytes, codeAndConfigBytes, runId, leaseToken, caseId,
+    arm: "baseline", loadedModelConfig: model }),
   /absent from tenant store/);
+  await assert.rejects(verifyMa24EvaluationTaskBinding({ manifest, sourceSetBytes,
+    goldBytes: new TextEncoder().encode("changed Gold"), codeAndConfigBytes,
+    runId, leaseToken, caseId, arm: "baseline", loadedModelConfig: model }),
+  /frozen Gold snapshot drift/);
+  await assert.rejects(verifyMa24EvaluationTaskBinding({ manifest, sourceSetBytes,
+    goldBytes, codeAndConfigBytes: new TextEncoder().encode("changed config"),
+    runId, leaseToken, caseId, arm: "baseline", loadedModelConfig: model }),
+  /frozen code and config snapshot drift/);
   await admin.query(`update agent_run set input=jsonb_set(input,'{content}',to_jsonb($2::text))
     where id=$1 and user_id=$3`, [runId, "Changed question", userId]);
   await assert.rejects(verify(), /leased execution/);
@@ -104,7 +117,8 @@ try {
   await assert.rejects(verify(), /leased execution/);
   console.log(JSON.stringify({ schema: "ma24-g16-admission-local-v1", synthetic: true,
     checks: ["valid-leased-row", "cross-account-row-hidden", "changed-question-rejected",
-      "expired-lease-rejected"], providerCalls: 0 }));
+      "expired-lease-rejected", "gold-bytes-drift-rejected", "code-config-bytes-drift-rejected"],
+    providerCalls: 0 }));
 } finally {
   if (created) {
     const client = await admin.connect();
