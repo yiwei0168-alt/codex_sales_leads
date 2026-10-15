@@ -10,7 +10,9 @@
     "v15PreviewPath": "docs/evidence/ma24-g15-config-preview-2026-10-16-v15.json",
     "v15PreviewSha256": "2a6d04a0eaf02fbdc61ab2ec46020f17c9eb0058d9e1bfc580e5afe0f7695235",
     "v15RuntimeBinding": "matched; readyForModelCalls=false",
-    "v14RuntimeBinding": "rejected with sourceHashes drift"
+    "v14RuntimeBinding": "rejected with sourceHashes drift",
+    "approvedFivePrivateRegression": "passed: 5 reviewed Gold cases in 3 connected groups, with input snapshot hashes checked",
+    "approvedFiveVerifier": "scripts/verify-ma24-g14-approved-source-groups-local.ts"
   },
   "limits": [
     "Equal binary hashes are only a minimum source-closure check. Distinct PDFs, releases or derived works in one publication family still require G14 family and semantic exposure review.",
