@@ -1,0 +1,88 @@
+import { describe, expect, it } from "vitest";
+import { ma24ManifestSha256, ma24RunSha256, scoreMa24IndependentComparison,
+  type Ma24FrozenManifest, type Ma24Run, type Ma24Verdict } from "./ma24-independent-comparison";
+
+const manifest: Ma24FrozenManifest = {
+  schema: "ma24-g16-frozen-comparison-v1",
+  sourceSetSha256: "a".repeat(64), goldSnapshotSha256: "b".repeat(64),
+  codeAndConfigSha256: "c".repeat(64),
+  requiredImprovementTags: ["long-document", "cross-document", "new-or-revised"],
+  protectedNoRegressionTags: ["official-fact", "no-answer", "permission"],
+  cases: [
+    { caseId: "long", caseSha256: "d".repeat(64), group: "pdf", tags: ["long-document", "official-fact"], expectedOutcome: "route" },
+    { caseId: "cross", caseSha256: "e".repeat(64), group: "multi-source", tags: ["cross-document", "permission"], expectedOutcome: "route" },
+    { caseId: "new", caseSha256: "f".repeat(64), group: "revision", tags: ["new-or-revised", "no-answer"], expectedOutcome: "no-answer" },
+  ],
+};
+const runs: Ma24Run[] = manifest.cases.flatMap(item => (["baseline", "candidate"] as const).map(arm => ({
+  caseId: item.caseId, arm, caseSha256: item.caseSha256, manifestSha256: ma24ManifestSha256(manifest),
+  status: "completed" as const, answer: `Recorded ${item.caseId} ${arm} answer`,
+  citations: item.expectedOutcome === "route" ?
+    [{ assetSha256: "1".repeat(64), unitIndex: 1, excerpt: "Original source fact" }] : [],
+  receiptIds: [`${item.caseId}-${arm}-receipt`], modelId: "frozen-model",
+})));
+const verdicts: Ma24Verdict[] = runs.map(run => ({
+  caseId: run.caseId, arm: run.arm, runSha256: ma24RunSha256(run),
+  answerCorrect: run.arm === "candidate", preciseCitationCorrect: run.arm === "candidate",
+  permissionLeak: false, unapprovedOfficialFact: false,
+  reviewer: "reviewer", reviewedAt: "2026-10-15T00:00:00Z", note: "Original checked",
+}));
+
+describe("MA24 independent comparison", () => {
+  it("scores arbitrary frozen case counts and all required improvement groups", () => {
+    const result = scoreMa24IndependentComparison({ manifest, runs, verdicts });
+    expect(result.complete).toBe(true);
+    expect(result.gatePassed).toBe(true);
+    expect(result.totals.candidate.answerCorrect).toBe(3);
+    expect(result.byGroup.pdf.baseline.total).toBe(1);
+    expect(Object.values(result.improvementResults)).toEqual([true, true, true]);
+  });
+  it("keeps missing and unknown outcomes open", () => {
+    const missing = scoreMa24IndependentComparison({ manifest, runs, verdicts: verdicts.slice(0, -1) });
+    expect(missing.complete).toBe(false);
+    expect(missing.missingVerdicts).toEqual(["new:candidate"]);
+    const unknown = runs.map(row => row.caseId === "long" && row.arm === "candidate"
+      ? { ...row, status: "unknown" as const, failureReason: "Provider outcome unconfirmed" } : row);
+    const reviewed = verdicts.map(row => row.caseId === "long" && row.arm === "candidate"
+      ? { ...row, runSha256: ma24RunSha256(unknown.find(item => item.caseId === row.caseId && item.arm === row.arm)!),
+        answerCorrect: false, preciseCitationCorrect: false } : row);
+    expect(scoreMa24IndependentComparison({ manifest, runs: unknown, verdicts: reviewed }).unknownRuns)
+      .toEqual(["long:candidate"]);
+  });
+  it("rejects changed frozen inputs and changed answers after review", () => {
+    expect(() => scoreMa24IndependentComparison({ manifest,
+      runs: [{ ...runs[0], manifestSha256: "0".repeat(64) }, ...runs.slice(1)], verdicts }))
+      .toThrow("frozen input drift");
+    expect(() => scoreMa24IndependentComparison({ manifest,
+      runs: [{ ...runs[0], answer: "Edited" }, ...runs.slice(1)], verdicts }))
+      .toThrow("answer changed after review");
+  });
+  it("requires each improvement category and blocks explicit safety violations", () => {
+    const noCrossGain = verdicts.map(row => row.caseId === "cross" && row.arm === "candidate"
+      ? { ...row, answerCorrect: false, preciseCitationCorrect: false } : row);
+    const result = scoreMa24IndependentComparison({ manifest, runs, verdicts: noCrossGain });
+    expect(result.complete).toBe(true);
+    expect(result.improvementResults["cross-document"]).toBe(false);
+    expect(result.gatePassed).toBe(false);
+    const leaked = verdicts.map(row => row.caseId === "cross" && row.arm === "candidate"
+      ? { ...row, permissionLeak: true } : row);
+    expect(scoreMa24IndependentComparison({ manifest, runs, verdicts: leaked }).gatePassed).toBe(false);
+    expect(() => scoreMa24IndependentComparison({
+      manifest: { ...manifest, requiredImprovementTags: [] }, runs, verdicts,
+    })).toThrow("required quality gates missing");
+  });
+  it("cannot mark unsupported route citations or non-answer citations precise", () => {
+    const missingCitation = runs.map(row => row.caseId === "long" && row.arm === "candidate"
+      ? { ...row, citations: [] } : row);
+    const reviewed = verdicts.map(row => row.caseId === "long" && row.arm === "candidate"
+      ? { ...row, runSha256: ma24RunSha256(missingCitation.find(item => item.caseId === row.caseId && item.arm === row.arm)!) } : row);
+    expect(() => scoreMa24IndependentComparison({ manifest, runs: missingCitation, verdicts: reviewed }))
+      .toThrow("citation verdict contradicts coordinates");
+    const unexpected = runs.map(row => row.caseId === "new" && row.arm === "candidate"
+      ? { ...row, citations: [{ assetSha256: "1".repeat(64), unitIndex: 1, excerpt: "Wrong citation" }] } : row);
+    const unexpectedReviewed = verdicts.map(row => row.caseId === "new" && row.arm === "candidate"
+      ? { ...row, runSha256: ma24RunSha256(unexpected.find(item => item.caseId === row.caseId && item.arm === row.arm)!) } : row);
+    expect(() => scoreMa24IndependentComparison({ manifest, runs: unexpected, verdicts: unexpectedReviewed }))
+      .toThrow("citation verdict contradicts coordinates");
+  });
+});

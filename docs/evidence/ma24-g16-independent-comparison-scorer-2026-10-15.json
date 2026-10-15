@@ -1,0 +1,39 @@
+{
+  "schema": "ma24-g16-independent-comparison-scorer-evidence-v1",
+  "date": "2026-10-15",
+  "scope": "Local scoring contract and read-only CLI for a future frozen MA24 G16 dual-arm independent set; no Gold or model answers supplied",
+  "files": {
+    "module": { "path": "src/lib/knowledge/evaluation/ma24-independent-comparison.ts", "sha256": "f31c45aa91ef0c83fc72b38398133ca91c99744269a95febd473a4f1500fc69e" },
+    "test": { "path": "src/lib/knowledge/evaluation/ma24-independent-comparison.test.ts", "sha256": "c7fca159c5c205f78dd76c5c81e753a78e0ebea04c4ed41d12529a5bb8ea970b" },
+    "cli": { "path": "scripts/score-ma24-independent-comparison.ts", "sha256": "2759740c0d538e6493ecff2ba6b568a0ff132c183c695eaac27ef12b5ef4b217" }
+  },
+  "contract": {
+    "manifestContainsGoldAnswers": false,
+    "manifestBindsSourceGoldAndCodeConfigHashes": true,
+    "runsBindCaseAndManifestHashes": true,
+    "verdictsBindExactRunHashes": true,
+    "requiresBothArmsAndExplicitReviewerVerdicts": true,
+    "unknownOutcomesBlockCompletion": true,
+    "arbitraryPositiveCaseCount": true,
+    "requiredImprovementTags": ["long-document", "cross-document", "new-or-revised"],
+    "protectedNoRegressionTags": ["official-fact", "no-answer", "permission"],
+    "anyReviewedPermissionLeakOrUnapprovedOfficialFactBlocksGate": true,
+    "oldFixed50ScorerChanged": false
+  },
+  "checks": {
+    "typecheck": "passed",
+    "targetedEslint": "passed",
+    "vitest": "11 passed across new 5 and existing 6 comparison cases",
+    "readOnlyCliSmoke": "Synthetic three-case manifest plus empty runs/verdicts returned complete=false, gatePassed=false and six missing arm results"
+  },
+  "boundary": {
+    "frozenIndependentSources": 0,
+    "newGoldCases": 0,
+    "actualDualArmAnswers": 0,
+    "humanG16Verdicts": 0,
+    "providerCalls": 0,
+    "paidAuthorizationClaimed": false,
+    "productionLoaded": false,
+    "next": "Freeze the independently audited source, question and Gold set; bind complete G15 runtime and spend controls; run both arms on identical questions and review original answers before using this scorer."
+  }
+}
