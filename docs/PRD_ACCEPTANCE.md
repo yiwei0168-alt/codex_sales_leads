@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+2026-10-15 用户已批准 GOV.UK 工作簿家族的跨文档比较和交叉组无答案两类候选进入独立 Gold 逐题审核，[MA24-20](CONFIRMED_PRODUCT_RULES.md) 已登记。两题与 BDUK 单来源题共用一个暴露单元；批准 Gold 仍为 0，整套独立性、真实双路答案和引用质量未通过。[授权收据](evidence/ma24-g14-govuk-new-type-review-authorization-2026-10-15.json)。G17–G20 暂停。
+
 2026-10-15 G16 评分正向引用判决现要求每条评审摘录出现在最终回答中；缺失摘录的正向判决被拒。15 项定向测试、类型和 lint 通过。回答中出现摘录仍需人工判断其来源标签、坐标和语义是否正确；Gold、真实双路与最终质量尚未验收。[工程收据](evidence/ma24-g16-visible-excerpt-verdict-gate-2026-10-15.json)。G17–G20 暂停。
 
 2026-10-15 G16 持久化引用验收增补：评审坐标所指原文须实际出现在产出最终回复的成功模型请求输入中；仅有同任务资料读取日志不再足以取得引用证据绑定。定向测试、类型和 lint 通过；用户可见引用表达、冻结 Gold、真实双路和质量判决仍待验。[工程收据](evidence/ma24-g16-final-model-source-consumption-gate-2026-10-15.json)。G17–G20 暂停。

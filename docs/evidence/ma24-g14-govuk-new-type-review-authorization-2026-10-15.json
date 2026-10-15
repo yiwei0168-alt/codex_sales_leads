@@ -1,0 +1,22 @@
+{
+  "schema": "ma24-g14-govuk-new-type-review-authorization-v1",
+  "date": "2026-10-15",
+  "userReply": "批准进入逐题审核",
+  "questionScope": "Whether the cross-document comparison and unavailable intersection question types in the prepared GOV.UK workbook family may enter independent Gold final per-case review; approval is review authorization only.",
+  "caseIdsEnteringReview": [
+    "govuk-bduk-taking-part-premises-vs-regional-ability",
+    "taking-part-2019-20-rural-age75-intersection-unavailable"
+  ],
+  "sharedExposureUnitCaseIds": [
+    "bpi-2018-cash-accruals",
+    "govuk-bduk-taking-part-premises-vs-regional-ability",
+    "taking-part-2019-20-rural-age75-intersection-unavailable"
+  ],
+  "reviewAuthorized": true,
+  "independentGoldApproved": false,
+  "goldApprovedCount": 0,
+  "realDualArmRuns": 0,
+  "g17ToG20Advanced": false,
+  "implementationStatus": "Rule recorded; individual Gold decisions and final independent-set acceptance pending",
+  "productionWrites": 0
+}
