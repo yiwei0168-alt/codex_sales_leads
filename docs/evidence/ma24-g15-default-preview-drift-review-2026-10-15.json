@@ -1,0 +1,36 @@
+{
+  "schema": "ma24-g15-default-preview-drift-review-v1",
+  "date": "2026-10-15",
+  "oldDefaultPreview": "docs/evidence/ma24-g15-config-preview-2026-10-15.json",
+  "oldDefaultSha256": "6a3c8ad62b9ee86767a27f95276bf8680b95465d14f96964cc055d7c4264a4ca",
+  "failure": "MA24 G15 sourceClosureMethod drift",
+  "oldSourceClosureMethod": null,
+  "newPreview": "docs/evidence/ma24-g15-config-preview-2026-10-15-v2.json",
+  "newPreviewSha256": "07e7437bc7616d3466f2d2593c447f0fffab9e8474742a33ebddba008ffa7096",
+  "newSourceClosureMethod": "recursive-local-static-imports-v1",
+  "newSourceClosureFileCount": 280,
+  "runtimeBindingMatched": true,
+  "readyForModelCalls": false,
+  "modelCalls": 0,
+  "providerCalls": 0,
+  "remainingGates": [
+    "local BGE flag disabled",
+    "source set not frozen",
+    "Gold not frozen",
+    "runtime build not verified",
+    "transitive code closure not verified",
+    "provider tariffs not verified",
+    "paid call authorization not confirmed",
+    "paid evaluation not ready",
+    "independent source/Gold and paid admission preflight not implemented"
+  ],
+  "scope": "read-only preview refresh; no execution freeze or paid admission",
+  "g17ToG20Advanced": false,
+  "checks": {
+    "defaultCommand": "passed; runtimeBindingMatched=true and readyForModelCalls=false",
+    "typecheck": "passed",
+    "targetedEslint": "passed",
+    "runtimeBindingVitest": "5 passed with TEMP/TMP inside workspace"
+  },
+  "snapshotLineEndings": "CRLF worktree bytes under core.autocrlf=true; checked against on-disk preview"
+}

@@ -1,4 +1,5 @@
 # MA24 执行状态台账（2026-10-13）
+2026-10-15 G15 默认运行前预览复核：旧 `ma24-g15-config-preview-2026-10-15.json` 缺少源码闭包方法/文件数，当前命令以 `sourceClosureMethod drift` 拒绝；保留旧件并生成 v2，核 280 个静态本地源码文件，运行前只读绑定匹配。默认检查入口现指向 v2；结果仍列出来源/Gold 未冻结、运行构建与完整闭包未核、BGE 开关未启用、费率及调用授权未定，因此 `readyForModelCalls=false`，0 次模型/提供方调用。[漂移收据](evidence/ma24-g15-default-preview-drift-review-2026-10-15.json)。G17–G20 暂停。
 2026-10-15 G14 GOV.UK 三题逐题来源核查：保留 v1，新增 v2 私有草稿，补齐原格数值及定义摘录，原件/抽取哈希与各坐标相符；无答案结论限定在被核的四表，不外推外部来源。[收据](evidence/ma24-g14-govuk-per-case-source-review-2026-10-15.json)。这是一个共享暴露单元的候选，不是三份独立 Gold；批准 Gold 0、真实双路 0，G17–G20 暂停。
 2026-10-15 G14 GOV.UK 新题型收到用户“批准进入逐题审核”的回复：跨文档题和交叉组无答案题可开展最终独立 Gold 逐题审核，连同 BDUK 单来源题按一个暴露单元处理。[规则 MA24-20](CONFIRMED_PRODUCT_RULES.md)、[授权收据](evidence/ma24-g14-govuk-new-type-review-authorization-2026-10-15.json)。这不是 Gold 采纳、整套独立性或模型质量证据；批准 Gold 0、真实双路 0，G17–G20 暂停。
 2026-10-15 G16 评分正向引用判决增设回答摘录核验：评审输入的每条原文摘录必须出现在持久最终回答中；缺失摘录时拒绝 `preciseCitationCorrect=true`。15 项定向测试、类型、lint 通过。[工程收据](evidence/ma24-g16-visible-excerpt-verdict-gate-2026-10-15.json)。仍需人工判断显示的来源标签/坐标和语义，批准 Gold 0、真实双路 0；G17–G20 暂停。

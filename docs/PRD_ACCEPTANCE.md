@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+2026-10-15 G15 旧默认配置预览因缺少源码闭包字段被运行前检查拒绝；已保留旧件并生成 v2 只读预览、修正入口。当前 280 文件及 UTC 日期匹配只证明局部加载配置一致，来源/Gold、运行构建、BGE、费率与调用授权未完成，模型调用 0。[收据](evidence/ma24-g15-default-preview-drift-review-2026-10-15.json)。G17–G20 暂停。
+
 2026-10-15 G14 GOV.UK 三题的 v2 私有草稿已将关键数值格、表格标签和口径摘录与原件及产品抽取块逐项核对。[逐题来源收据](evidence/ma24-g14-govuk-per-case-source-review-2026-10-15.json)。三题仍共用一个暴露单元；Gold 0、真实双路 0，来源独立性、题义终审和用户可见引用验收尚缺。G17–G20 暂停。
 
 2026-10-15 用户已批准 GOV.UK 工作簿家族的跨文档比较和交叉组无答案两类候选进入独立 Gold 逐题审核，[MA24-20](CONFIRMED_PRODUCT_RULES.md) 已登记。两题与 BDUK 单来源题共用一个暴露单元；批准 Gold 仍为 0，整套独立性、真实双路答案和引用质量未通过。[授权收据](evidence/ma24-g14-govuk-new-type-review-authorization-2026-10-15.json)。G17–G20 暂停。
