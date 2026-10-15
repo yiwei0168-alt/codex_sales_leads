@@ -1,0 +1,44 @@
+{
+  "schema": "ma24-g14-nist-tn2363-visual-review-clone-v1",
+  "date": "2026-10-15",
+  "scope": "Original-page visual decision review and actual upload/visual-review/registration/readback in the existing isolated replay database; not production or independent Gold",
+  "sourceSha256": "65e333dac9975f4ca9a952a966fb212ce7ccb161ec60b48bf45c3dfd7adbd6a9",
+  "currentExtractorVersion": "layout-v2.0.10",
+  "offlineExtractionSha256": "babd6ce7bec494922fed339b33d3e156d8c05f55435613fffcf0ddfbada9d26f",
+  "productExtractionSha256": "704deca1d9f401d59cc0ab267611c3cbb2934ca0f278093c5d0496e2aee19354",
+  "reviewDecisionManifestSha256": "9a89e8bc561d3570da64355b178871b9f56309af30221b26a7df8f4dec9c174f",
+  "versionComparison": {
+    "priorExtractorVersion": "layout-v2.0.9",
+    "blocksCompared": 434,
+    "blockIdsAndOrderEqual": true,
+    "changedBlockFields": ["extractorVersion"],
+    "pendingVisualBlockIdsEqual": true
+  },
+  "visualReview": {
+    "originalPhysicalPagesInspected": [1, 2, 7, 9, 10, 20, 21, 27, 33, 35, 37],
+    "evidencePages": [7, 10, 20, 21, 27, 33, 35, 37],
+    "decorativePages": [1, 2, 9],
+    "pendingResolved": 11,
+    "evidenceDecisions": 8,
+    "decorationDecisions": 3,
+    "table20RowsRechecked": 16,
+    "weldingTable33RowsRechecked": 10,
+    "curve35Policy": "Qualitative legend/axes/trend only; no numerical values inferred from the plot"
+  },
+  "isolatedProductCheck": {
+    "registered": true,
+    "requiredEvidenceBlockIds": ["page-18-block-4", "page-28-block-4", "page-28-block-6", "page-20-visual-review", "page-33-visual-review", "page-37-block-2", "page-37-block-3", "page-37-visual-review"],
+    "sourceLocationPageBlockAndBboxChecked": true,
+    "otherAccountDenied": true,
+    "releasePointersUnchanged": true,
+    "syntheticUsersJobsReviewsDocumentsRemoved": true
+  },
+  "limits": [
+    "This source is still only a G14 candidate. Final source-set exposure and overlap review, Gold freeze, model answers, and user-visible citations remain open.",
+    "The clone uses a local replay database with a development database role; it does not verify production runtime identity or production access controls.",
+    "No exact numerical points were transcribed from the PER-SNR curve on physical page 35."
+  ],
+  "independentGoldApproved": false,
+  "modelCalls": 0,
+  "productionKnowledgeWrites": 0
+}
