@@ -41,6 +41,25 @@
   "fullDevelopmentExposureAuditComplete": false,
   "productUploadReviewed": false,
   "userVisibleAnswerCitationReviewed": false,
+  "isolatedProductEvidenceRead": {
+    "command": "node scripts/run-tsx.cjs scripts/verify-bpi-xlsx-citation-clone.ts",
+    "cloneOnly": true,
+    "sourceSha256Matched": true,
+    "extractorVersion": "layout-v2.0.10",
+    "offlineQualitySummary": { "success": 1, "blank": 0, "pending-ocr": 0, "failed": 0 },
+    "actualUploadWorkerRegistered": true,
+    "evidenceBlock": "sheet-1-table",
+    "sheetName": "Sheet1",
+    "cellRange": "A1:E33",
+    "targetCellsRead": ["A26", "B26", "C26", "D26", "A33"],
+    "cashAndAccrualsFactsReadable": true,
+    "crossAccountDenied": true,
+    "v3PointersUnchanged": true,
+    "syntheticRecordsCleaned": true,
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "scopeLimit": "Direct readEvidence in an isolated clone; no user-visible answer or citation, independent Gold approval, model call, or production upload."
+  },
   "goldFrozen": false,
   "modelCalls": 0
 }

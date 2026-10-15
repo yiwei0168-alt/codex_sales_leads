@@ -4,6 +4,8 @@
 
 同发布 PDF 第 2 页与表格答案事实重复，第 4 页可核正文 OGL 声明。该 PDF 不另计独立题源；XLSX 原格读取/引用、复用条款和 Gold 仍未验收。[交叉收据](evidence/ma24-g14-bpi-2018-xlsx-candidate-2026-10-15.json)。
 
+隔离恢复库实际上传 worker 对该 XLSX 登记成功，证据块的目标行与附注可经 `readEvidence` 回读，另一账号被拒，合成数据已清理；这只证明产品到证据读取，未证明用户可见回答和精确引用。[产品收据](evidence/ma24-g14-bpi-2018-xlsx-candidate-2026-10-15.json)。
+
 2026-10-15 G16 判分补正：候选路径实际行为类型不匹配阻断总门槛；错误行为被审核为错误也不能因其他得分而掩盖。基线错误仍可作为改进对照。8 项定向测试、类型检查与 ESLint 通过；无独立 Gold 或真实双路质量验收。[工程收据](evidence/ma24-g16-outcome-mismatch-hard-gate-2026-10-15.json)。
 
 MA24 当前 Goal 本轮范围由用户于 2026-10-15 明确限定为“只完成到 G16”；G17–G20 暂不推进。G01–G16 仍须按各自工程、真实质量与运行证据验收，不因本轮范围改变而降低门槛。[规则登记](CONFIRMED_PRODUCT_RULES.md)、[执行台账](MA24_EXECUTION_STATUS_2026-10-13.md)。

@@ -4,6 +4,8 @@
 
 同日同发布 PDF 原页复核：第 2 页完整重复该工作簿的 March 2018 表格及现金/权责发生制附注；第 4 页载明 Crown copyright 2018 和开放政府许可（不含标志）。因此 XLSX 可继续作格式坐标候选，PDF 不可另计独立来源家族；工作簿自身的适用条件和最终复用审核仍待核。[交叉收据](evidence/ma24-g14-bpi-2018-xlsx-candidate-2026-10-15.json)。
 
+同日 BDUK XLSX 隔离产品链路：`layout-v2.0.10` 离线抽取 1/1 成功块，实际上传 worker 在隔离恢复库登记；`sheet-1-table` 的 `A1:E33` 可回读 2018 年 3 月指标与权责发生制附注，另一账号被拒，v3 指针不变且合成记录清理。类型检查与定向 ESLint 通过。用户可见回答/引用、完整独立性与 Gold 仍未完成。[产品收据](evidence/ma24-g14-bpi-2018-xlsx-candidate-2026-10-15.json)。
+
 2026-10-15 G16 判分门槛补正：若候选路径已完成运行的实际行为与冻结预期不符，即使审核判为错误且其他得分足够，`gatePassed` 仍必须为 `false`；基线错误仍可作为候选改进的对照。新增两侧反例回归；8 项定向测试、类型检查与 ESLint 通过。独立 Gold、双路真实运行和质量验收仍为 0。[工程收据](evidence/ma24-g16-outcome-mismatch-hard-gate-2026-10-15.json)。
 
 本台账按 [R0–R7 收尾计划](MA24_REMAINING_EXECUTION_PLAN_2026-10-13.md)跟踪原 G01–G20。状态区分工程、真实质量与生产运行；“部分”仅表示列出的范围有证据。历史完成结果见 [原计划](MA24_COMPLETION_GOAL_PLAN_2026-10-11.md)，本次只读运行盘点与构建见 [R0 收据](evidence/ma24-r0-runtime-build-2026-10-13.json)。
