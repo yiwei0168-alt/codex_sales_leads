@@ -1,0 +1,38 @@
+{
+  "schema": "ma24-g14-public-question-exposure-correction-v1",
+  "date": "2026-10-16",
+  "repository": "yiwei0168-alt/codex_sales_leads",
+  "remoteVisibilityReadOnlyCheck": "PUBLIC via gh repo view --json visibility,isPrivate",
+  "auditedGitHeadAndRemoteMain": "ffaed1f2217e634957c64067fcd6acc60618a900",
+  "remoteMainReadOnlyCheck": "git ls-remote origin refs/heads/main matched the audited Git HEAD",
+  "auditScript": "scripts/audit-ma24-g14-public-question-exposure.mjs",
+  "privateFullReport": {
+    "path": "tmp/ma24-independent-quarantine/public-question-exposure-audit-2026-10-16.json",
+    "sha256": "f649856fb63aa8a721dce1d264305a78c5638123b243518767c277bcf8ea680f"
+  },
+  "inputs": {
+    "approvedFiveSourceSetSha256": "97ffb579162ddfe07e44d33c1bedb51d4848603f8d564bd0276f0e2a018f679e",
+    "provisionalV10PoolSha256": "a02578cf7c3cf966e42a96087415cdc57b89bb52519b7c23cb0bba9d91a45d79"
+  },
+  "trackedTextFilesChecked": 3029,
+  "exactQuestionExposure": {
+    "historicallyContentApprovedGoldCases": 5,
+    "approvedCasesWithExactQuestionInTrackedPublicTree": 5,
+    "provisionalPublicationCases": 25,
+    "provisionalPublicationCasesWithExactQuestionInTrackedPublicTree": 25,
+    "provisionalSyntheticSecurityCases": 3,
+    "provisionalSyntheticSecurityCasesWithExactQuestionInTrackedPublicTree": 3,
+    "fullApprovedAnswerStringExactMatches": 0,
+    "candidateReceiptsWithStructuredAnswerOrRubric": 5
+  },
+  "correction": {
+    "previousContentAndSourceReviewDecisionsPreservedAsHistory": true,
+    "approvedFiveEligibleAsUnexposedIndependentHoldout": 0,
+    "currentV10CasesAdmittedForIndependentFreeze": 0,
+    "reason": "The exact questions are in the current public GitHub tree before the first G16 model comparison. Public availability does not prove a provider model read them, but their non-exposure cannot be certified for an independent holdout.",
+    "nextAction": "Keep current cases as source/content review or regression material. Build fresh private questions and Gold without publishing question/answer text; audit historical and derivative exposure before freezing. Recheck the final private set immediately before G15 admission."
+  },
+  "modelCalls": 0,
+  "g16RealDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}
