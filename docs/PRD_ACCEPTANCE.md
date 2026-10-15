@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+2026-10-15 G14 跨文档质量题准备：两份 GOV.UK 工作簿的哈希和原格已重核；选择数值直接重叠较少的修订版进入整套候选审核，旧版退出当前池。当前 21 条仅为草案，发布家族仍为 12 个；跨文档 Gold、两来源用户可见引用及质量验收都未通过。[选择收据](evidence/ma24-g14-govuk-cross-document-family-selection-2026-10-15.json)。
+
 2026-10-15 G16 独立质量评分器已在本地要求来源集、Gold、代码/配置三个实际文件与冻结哈希一致；随后验证 Gold 逐题审核记录，并要求被判为精确引用正确的运行引用覆盖该题全部 Gold 来源坐标。11 项定向测试、类型检查、lint 与合成命令篡改拒绝通过。此为评分器工程检查，尚无独立 Gold、真实双路答案、人工语义判决或生产质量验收。[输入绑定](evidence/ma24-g16-frozen-snapshot-byte-binding-2026-10-15.json)、[来源覆盖](evidence/ma24-g16-gold-source-coverage-gate-2026-10-15.json)。
 
 2026-10-15 G14 无答案题候选：英国 Taking Part 2019/20 Internet 工作簿分表给出 Rural 75.6% 与 75+ 33.1%，不提供联合人群比例；草案要求拒绝编造联合值。封面视觉待审，独立 Gold、产品引用和真实模型行为未验。[候选收据](evidence/ma24-g14-taking-part-internet-xlsx-no-answer-candidate-2026-10-15.json)。

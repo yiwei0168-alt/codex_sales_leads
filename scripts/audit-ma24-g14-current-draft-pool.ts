@@ -1,11 +1,11 @@
-/** Reconcile the retained G14 drafts with two newer XLSX candidates before any Gold freeze. */
+/** Reconcile the retained G14 drafts and selected XLSX alternatives before any Gold freeze. */
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { readFile, readdir, writeFile } from "node:fs/promises";
 import { join, resolve, sep } from "node:path";
 
 const root = resolve("docs/evidence");
-const output = resolve(process.argv[2] ?? "tmp/ma24-independent-quarantine/g14-current-draft-pool.json");
+const output = resolve(process.argv[2] ?? "tmp/ma24-independent-quarantine/g14-current-draft-pool-v2.json");
 assert(output.startsWith(resolve("tmp") + sep) && output.endsWith(".json"));
 const digest = (bytes: Uint8Array | string) => createHash("sha256").update(bytes).digest("hex");
 const oldAuditPath = join(root, "ma24-g14-draft-pool-exclusion-audit-2026-10-15.json");
@@ -34,10 +34,16 @@ for (const family of oldCoverage.sourceFamilies) for (const id of family.ids) {
 assert.deepEqual(new Set(oldTags.keys()), retainedIds);
 const newSources = [
   { file: "ma24-g14-bpi-2018-xlsx-candidate-2026-10-15.json", id: "bpi-2018-cash-accruals",
-    family: "BDUK Broadband Performance Indicator March 2018", primaryFormat: "xlsx" },
+    families: ["BDUK Broadband Performance Indicator March 2018"], primaryFormat: "xlsx",
+    wholeQuestionCrossDocument: false },
   { file: "ma24-g14-taking-part-internet-xlsx-no-answer-candidate-2026-10-15.json",
     id: "taking-part-2019-20-rural-age75-intersection-unavailable",
-    family: "Taking Part 2019/20 Internet", primaryFormat: "xlsx" },
+    families: ["Taking Part 2019/20 Internet"], primaryFormat: "xlsx",
+    wholeQuestionCrossDocument: false },
+  { file: "ma24-g14-govuk-two-xlsx-cross-document-revised-draft-2026-10-15.json",
+    id: "govuk-bduk-taking-part-premises-vs-regional-ability",
+    families: ["BDUK Broadband Performance Indicator March 2018", "Taking Part 2019/20 Internet"],
+    primaryFormat: "xlsx", wholeQuestionCrossDocument: true },
 ] as const;
 const newFiles = new Set<string>(newSources.map(item => item.file));
 const oldDrafts: Array<{ id: string; file: string; question: string }> = [];
@@ -54,7 +60,9 @@ for (const file of (await readdir(root)).filter(name => /^ma24-g14-.*\.json$/.te
 }
 assert.equal(oldDrafts.length, 18);
 assert.deepEqual(new Set(oldDrafts.map(item => item.id)), retainedIds);
-const rows = oldDrafts.map(item => ({ ...item, ...oldTags.get(item.id)!, wholeQuestionNoAnswer: false }));
+const rows = oldDrafts.map(item => ({ ...item, families: [oldTags.get(item.id)!.family],
+  primaryFormat: oldTags.get(item.id)!.primaryFormat, wholeQuestionNoAnswer: false,
+  wholeQuestionCrossDocument: false }));
 const newSourceSha256: Record<string, string> = {};
 for (const item of newSources) {
   const raw = await readFile(join(root, item.file));
@@ -68,29 +76,33 @@ for (const item of newSources) {
   const question = draft.question;
   assert(typeof question === "string" && question.trim());
   rows.push({ id: item.id, question, file: item.file,
-    family: item.family, primaryFormat: item.primaryFormat,
-    wholeQuestionNoAnswer: draft.wholeQuestionNoAnswer === true });
+    families: [...item.families], primaryFormat: item.primaryFormat,
+    wholeQuestionNoAnswer: draft.wholeQuestionNoAnswer === true,
+    wholeQuestionCrossDocument: item.wholeQuestionCrossDocument });
 }
-assert.equal(rows.length, 20);
+assert.equal(rows.length, 21);
 assert.equal(new Set(rows.map(item => item.id)).size, rows.length);
 assert.equal(rows.filter(item => item.wholeQuestionNoAnswer).length, 1);
+assert.equal(rows.filter(item => item.wholeQuestionCrossDocument).length, 1);
 const countBy = (values: string[]) => Object.fromEntries([...new Set(values)].sort()
   .map(value => [value, values.filter(item => item === value).length]));
 const primaryFormatDrafts = countBy(rows.map(item => item.primaryFormat));
-assert.deepEqual(primaryFormatDrafts, { "long-pdf": 7, pdf: 1, pptx: 8, xlsx: 4 });
+assert.deepEqual(primaryFormatDrafts, { "long-pdf": 7, pdf: 1, pptx: 8, xlsx: 5 });
 const proposed = oldCoverage.proposedTargetNotYetFrozen;
 const hardCaseDrafts = {
-  "cross-document": 0, "new-or-revised": 0, conflict: 0,
+  "cross-document": rows.filter(item => item.wholeQuestionCrossDocument).length,
+  "new-or-revised": 0, conflict: 0,
   "no-answer": rows.filter(item => item.wholeQuestionNoAnswer).length,
   permission: 0, injection: 0,
 };
 const unmetHardCaseTargets = Object.fromEntries(Object.entries(hardCaseDrafts)
   .map(([tag, count]) => [tag, Math.max(0, proposed[tag] - count)]));
 const report = {
-  schema: "ma24-g14-current-draft-pool-v1",
+  schema: "ma24-g14-current-draft-pool-v2",
   priorAuditSha256: digest(oldAuditBytes), priorCoverageSha256: digest(oldCoverageBytes), newSourceSha256,
-  scope: "Twenty current drafts, not Gold eligibility or an approved final stratification",
-  draftCount: rows.length, publicationFamiliesBeforeFinalEligibility: new Set(rows.map(item => item.family)).size,
+  scope: "Twenty-one current drafts, not Gold eligibility or an approved final stratification",
+  draftCount: rows.length, publicationFamiliesBeforeFinalEligibility:
+    new Set(rows.flatMap(item => item.families)).size,
   primaryFormatDrafts, hardCaseDrafts, proposedTargetsNotFrozen: proposed, unmetHardCaseTargets,
   rows: rows.sort((a, b) => a.id.localeCompare(b.id)),
   goldCreated: 0, modelAnswerCalls: 0,

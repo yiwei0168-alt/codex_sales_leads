@@ -1,0 +1,39 @@
+{
+  "schema": "ma24-g14-govuk-cross-document-family-selection-v1",
+  "date": "2026-10-15",
+  "scope": "Pre-freeze choice of a single cross-document draft for the next full-set review; neither source nor question is approved Gold",
+  "selectedDraftId": "govuk-bduk-taking-part-premises-vs-regional-ability",
+  "selectedDraftReceiptSha256": "cac953b6a1f82d55b2dca5189153d760aff703710d542ac8a83ebd42b9dfc0c4",
+  "retiredAlternativeDraftId": "govuk-bduk-taking-part-infrastructure-vs-ability",
+  "retiredAlternativeReceiptSha256": "6c1e055987187821068207aed34da5ca66c76b1b5b7d1bf6f6285bb390673f0a",
+  "originalsRechecked": [
+    { "path": "tmp/ma24-independent-quarantine/bpi-march-2018.xlsx", "sha256": "7d178716b667ebe66537154b0bb96f87348ccb782368b2f43920b45db9f7f5c1", "cells": { "Sheet1!B26": 4852808, "Sheet1!D26": 7934, "Sheet1!A33": "The note gives an estimated accruals ratio of 7,617 and explains delivery ahead of payment." } },
+    { "path": "tmp/ma24-independent-quarantine/taking-part-internet-2019-20.xlsx", "sha256": "90eb0ed392efc2db8ab6681bcf4b9634c41f891d3df7a95bba3bf6f9457ff614", "cells": { "Table 2!C22": 74, "Table 2!C28": 80.3, "Table 2!C33": 75.6, "Table 3!C15": 33.1 } }
+  ],
+  "answerComparison": {
+    "bpiSingleSourceRequestedNumbers": [7934, 7617],
+    "takingPartNoAnswerMarginalNumbers": [75.6, 33.1],
+    "selectedCrossDocumentRequestedNumbers": [4852808, 80.3, 74, 6.3],
+    "retiredAlternativeRequestedNumbers": [4852808, 7934, 75.6],
+    "directRequestedNumberOverlapWithSelected": false,
+    "sameOriginalFamiliesReused": true,
+    "interpretation": "The selected draft asks different reported quantities and rejects a causal inference. The BDUK premises count is part of the same workbook context as the spending ratio, so source-level leakage and answer-family effects still require full-set review."
+  },
+  "poolReconciliation": {
+    "command": "node scripts/run-tsx.cjs scripts/audit-ma24-g14-current-draft-pool.ts tmp/ma24-independent-quarantine/g14-current-draft-pool-v2-2026-10-15.json",
+    "outputSha256": "4724f3dcb425cca856202eb1e172f3cf03c5e8c1605b067f5f94157a12d0794e",
+    "drafts": 21,
+    "provisionalPublicationFamilies": 12,
+    "xlsxDrafts": 5,
+    "wholeQuestionCrossDocumentDrafts": 1,
+    "wholeQuestionNoAnswerDrafts": 1,
+    "goldApproved": 0
+  },
+  "remaining": [
+    "Complete both originals' source-use and development-exposure audit and review all same-family answers in the final set.",
+    "Run the selected draft against the final retained question pool and inspect semantic neighbors; current old-question screen and direct numeric comparison are bounded.",
+    "Freeze the final independent source, question and Gold set only after the full audit, then obtain a user-visible two-document answer and exact citations under G15/G16 controls."
+  ],
+  "modelCalls": 0,
+  "productionWrites": 0
+}
