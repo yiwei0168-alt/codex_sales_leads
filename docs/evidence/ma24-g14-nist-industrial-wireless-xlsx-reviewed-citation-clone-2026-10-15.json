@@ -1,0 +1,40 @@
+{
+  "schema": "ma24-g14-nist-industrial-wireless-xlsx-reviewed-citation-clone-v1",
+  "date": "2026-10-15",
+  "scope": "Disposable local MA11 database clone and private synthetic accounts; actual product upload, extraction, visual review, registration and readEvidence; no production write",
+  "command": "node --require ./scripts/patch-node-user.cjs --import tsx scripts/verify-nist-xlsx-review-clone.ts",
+  "source": {
+    "path": "tmp/ma24-independent-quarantine/nist-smartmanufacturing-metadata.xlsx",
+    "sha256": "0132c779ab57132ae5b5718b1b1440b52ed66bd48bc62d953336c90f7f2cb814",
+    "offlineExtractionPath": "tmp/ma24-independent-quarantine/nist-smartmanufacturing-metadata.layout-v2.0.9.extraction.json",
+    "originalVisualReview": "docs/evidence/ma24-g14-nist-industrial-wireless-xlsx-visual-original-review-2026-10-15.json"
+  },
+  "result": {
+    "sourceAndUploadedExtractionBlocksEqualAfterJobStorageKeyNormalization": true,
+    "visualState": "ready",
+    "reviewBlocks": ["sheet-1-table", "sheet-1-visual-1", "sheet-4-visual-1", "sheet-6-visual-1"],
+    "titleUniqueEmbeddedMediaHashesMatched": 6,
+    "titlePreviewImagesReadAndHashed": 6,
+    "repeatedRouteMapHashMatched": true,
+    "nativeChartSourcePartMatched": "xl/charts/chart1.xml",
+    "unresolvedReviewBlocksRegistrationRejected": true,
+    "reviewDecisionsSaved": 4,
+    "reviewCompletionReadyForRegistration": true,
+    "privateTreeStatus": "searchable",
+    "targetEvidence": {
+      "blockId": "sheet-5-table",
+      "sheetName": "Ray Tracing Results",
+      "cellRange": "A1:X3242",
+      "exactCellsChecked": ["B7: 1", "F7: -26.36", "G7: -42.85", "K7: -30.85", "L7: -47.339999999999996"]
+    },
+    "otherAccountSearchEmptyAndEvidenceReadDenied": true,
+    "titleCachedErrorCandidateCount": 32,
+    "originalCachedErrorCount": 62,
+    "cachedErrorTableIndexed": false,
+    "modelCalls": 0,
+    "productionWrites": 0,
+    "goldCreated": 0
+  },
+  "limit": "The product review candidate exposes only 32 cached-error cell addresses while the original has 62. The original was inspected directly and the entire pending table block was replaced by a bounded review explanation; this verifies the clone index, not complete candidate-cell enumeration. No user-visible model answer, full source-family and question contamination audit, final Gold freeze, production load or natural quality acceptance was performed.",
+  "cleanup": "The harness deleted its synthetic review, upload, document and account rows plus the owner's uploaded files in finally. A separate post-run clone query confirmed zero synthetic NIST upload jobs."
+}
