@@ -1,0 +1,25 @@
+{
+  "schema": "ma24-g14-source-binary-closure-receipt-v1",
+  "date": "2026-10-16",
+  "script": "scripts/audit-ma24-g14-source-binaries-local.py",
+  "scriptSha256": "f62372e2b0307f21ce68f8da9b63a446316c617cecc10add9c2005fd4e5edd24",
+  "poolPath": "tmp/ma24-independent-quarantine/g14-current-draft-pool-v9-metadata-2026-10-16.json",
+  "poolSha256": "96459f096b17bafdd32dfedc18db924e0339ae53dd4b563ea1d2d7f78b88b9ed",
+  "privateReportPath": "tmp/ma24-independent-quarantine/g14-source-binary-closure-v9-2026-10-16.json",
+  "privateReportSha256": "8b48bf6395a638ce1ee368eb68d17588db90781602c9b869ff8e06d207a5f137",
+  "publicationDraftsChecked": 24,
+  "distinctOriginalBinariesRehashed": 16,
+  "declaredFamilyLabels": 14,
+  "sameBinaryCrossLabelConflicts": 0,
+  "specificConnections": {
+    "govukCrossDocument": "The BDUK and Taking Part cross-document draft reuses the exact two binaries used by its corresponding single-source drafts.",
+    "etsiRevision": "The revision draft adds the V19.4.0 original and reuses the same V19.5.0 binary as two other ETSI drafts.",
+    "fccRelease": "The two FCC drafts use distinct original PDFs within one declared release family."
+  },
+  "limitation": "This establishes local binary identity and declared family links, not absence of derivative or semantic exposure. It does not approve any provisional candidate as Gold.",
+  "approvedGoldCasesUnchanged": 5,
+  "fullSetFrozen": false,
+  "g15ReadyForModelCalls": false,
+  "realDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}
