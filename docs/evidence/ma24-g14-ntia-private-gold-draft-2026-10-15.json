@@ -1,0 +1,34 @@
+{
+  "schema": "ma24-g14-ntia-private-gold-draft-v1",
+  "date": "2026-10-15",
+  "caseId": "ntia-18ghz-g117-iss-footnote-and-manual-recommendation",
+  "questionSha256": "26c202f39fd03d478808bee5ad0e6b748b5318991563308421abf27efb955369",
+  "privateDraftPath": "tmp/ma24-independent-quarantine/ntia-18ghz-gold-draft-v1.json",
+  "privateDraftSha256": "2dfbfedc7e9f90f7b6ea7885abe0b1c45c6509f2e9df9f552b264a39d22ad1de",
+  "originalPdfSha256": "ff6074c82f7c6abbab80a792ad3d1fae111074f64a492395d2c3c7b78f0c8e42",
+  "offlineExtractionSha256": "176c8b774435f757bd12894125123db39cc80831dcf764dacf9518be33d31e1d",
+  "originalPageReview": {
+    "physicalPagesReinspected": [8, 9],
+    "sourceCoordinates": [
+      { "unitIndex": 8, "blockId": "page-8-block-29" },
+      { "unitIndex": 9, "blockId": "page-9-block-7" }
+    ],
+    "coordinateExcerptsFoundInExtraction": 2,
+    "datedRecommendationBoundary": "The draft distinguishes the proposed co-primary allocation from Recommendation 2's request for comment on whether non-federal ISS should be primary or secondary; it does not state that a final rule resolved this priority."
+  },
+  "checks": {
+    "questionExactlyMatchesCurrentDraftPool": true,
+    "originalAndExtractionHashesMatch": true,
+    "bothBlockIdsPagesAndExcerptsMatch": true,
+    "privateDraftJsonValid": true
+  },
+  "acceptanceBoundary": {
+    "privateGoldDraftsPrepared": 1,
+    "independentReviewerApproved": false,
+    "fullSetSourceIndependenceApproved": false,
+    "approvedIndependentGold": 0,
+    "realDualArmModelRuns": 0,
+    "qualityGatePassed": false,
+    "g17ToG20Advanced": false
+  }
+}
