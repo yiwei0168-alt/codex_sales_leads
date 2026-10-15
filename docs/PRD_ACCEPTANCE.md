@@ -24,6 +24,8 @@
 
 同日 G14 Taking Part 无答案题经四页签、原格与抽取行核对形成第 2 条隔离 Gold 草案；两项边际比例不能代替交叉人群统计。独立审核与真实模型行为未验，批准 Gold 仍为 0。[草案收据](evidence/ma24-g14-taking-part-private-no-answer-gold-draft-2026-10-15.json)。
 
+同日 G14 三条合成安全题的隔离 Gold 草案已备，分别覆盖拥有者可读、其他账号拒绝及来源指令注入；拒绝依据来自产品 ACL 隔离验证。当前隔离草案共 5 条，未冻结账号或独立 Gold，质量通过数仍为 0。[安全草案收据](evidence/ma24-g14-private-security-gold-drafts-2026-10-15.json)。
+
 2026-10-15 G14 独立测评材料准备：NIST 报告图 3 与工业无线元数据工作簿组成第 2 条跨文档待审草案，原页/原格及有界近邻筛查已核；当前池 22 草案、Gold 0。共享原件、工作簿登记与用户可见引用均未验收，不能计作独立质量通过。[筛选收据](evidence/ma24-g14-nist-two-source-draft-selection-2026-10-15.json)。
 
 2026-10-15 G14 长 PDF 局部验收：NIST TN 2363 的 11 个视觉对象在隔离克隆完成 8 证据/3 装饰审核、登记和指定块原页坐标回读；另一账号拒绝且发布指针不变。此不证明独立 Gold、实际答案与用户可见引用质量。[产品收据](evidence/ma24-g14-nist-tn2363-visual-review-clone-2026-10-15.json)。
