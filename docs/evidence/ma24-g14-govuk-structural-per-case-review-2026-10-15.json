@@ -1,0 +1,66 @@
+{
+  "schema": "ma24-g14-govuk-structural-per-case-review-v1",
+  "date": "2026-10-15",
+  "authorizationRule": "MA24-20",
+  "status": "source-content-reviewed-gold-pending",
+  "sourceSha256s": {
+    "bpi": "7d178716b667ebe66537154b0bb96f87348ccb782368b2f43920b45db9f7f5c1",
+    "takingPart": "90eb0ed392efc2db8ab6681bcf4b9634c41f891d3df7a95bba3bf6f9457ff614"
+  },
+  "takingPartWorkbookStructure": {
+    "sheets": [
+      { "name": "Contents", "visible": true, "nonemptyCells": 20, "formulas": 0 },
+      { "name": "Table 1", "visible": true, "nonemptyCells": 387, "formulas": 0 },
+      { "name": "Table 2", "visible": true, "nonemptyCells": 152, "formulas": 0 },
+      { "name": "Table 3", "visible": true, "nonemptyCells": 147, "formulas": 0 }
+    ],
+    "hiddenRowsOrColumns": 0,
+    "definedNames": 0,
+    "nativeTables": 0,
+    "pivotTables": 0,
+    "charts": 0,
+    "comments": 0,
+    "externalLinks": 0,
+    "contentsSheetImages": 1,
+    "ruralCell": "Table 2!B33/C33: Rural, 75.6%",
+    "age75Cell": "Table 3!B15/C15: 75+, 33.1%",
+    "separateBreakdowns": "Table 2 labels area-level breakdowns; Table 3 lists Age, Gender and other demographic categories. The Table 3 title contains a trailing 'area-level breakdowns' phrase despite its demographic section and rows; the review uses the actual Age rows.",
+    "intersectionReported": false,
+    "scopeOfNegativeFinding": "Only this four-sheet workbook; no claim about all Taking Part microdata or external publications."
+  },
+  "productExtraction": {
+    "takingPartSha256": "9a3fbc73dfa5ecdeb665f8ee2edddefaa706b5db346f1e597913be4b3ef10ecf",
+    "ruralBlock": "sheet-3-table, unitIndex 3, original row 33",
+    "age75Block": "sheet-4-table, unitIndex 4, original row 15",
+    "targetRowsMatchOriginal": true
+  },
+  "caseReviews": [
+    {
+      "caseId": "bpi-2018-cash-accruals",
+      "sourceContentDecision": "supported",
+      "check": "Sheet1!D26 is 7,934 cash-basis premises per GBP million; A33 gives 7,617 accruals-basis and explicitly says work was delivered before payment.",
+      "goldDecision": "pending-independent-family-and-final-review"
+    },
+    {
+      "caseId": "govuk-bduk-taking-part-premises-vs-regional-ability",
+      "sourceContentDecision": "supported",
+      "check": "BDUK Sheet1!B26 is 4,852,808 cumulative premises; Taking Part Table 2!C28 is London 80.3% and C22 is North East 74.0%, giving 6.3 percentage points. The two workbooks do not link premises to respondents or identify a causal effect.",
+      "goldDecision": "pending-independent-family-and-final-review"
+    },
+    {
+      "caseId": "taking-part-2019-20-rural-age75-intersection-unavailable",
+      "sourceContentDecision": "supported-with-workbook-only-boundary",
+      "check": "The workbook has separate Rural and 75+ marginal rows, no joint row, column, hidden sheet or pivot result. Their percentages and respondent counts cannot determine a joint subgroup rate.",
+      "goldDecision": "pending-independent-family-and-final-review"
+    }
+  ],
+  "sharedExposureUnitCount": 1,
+  "approvedGold": 0,
+  "modelAnswerCalls": 0,
+  "remaining": [
+    "Whole-set source and semantic independence review for the shared GOV.UK family.",
+    "Final per-case Gold disposition and immutable snapshot.",
+    "Actual model answers and user-visible citations under both frozen arms."
+  ],
+  "g17ToG20Advanced": false
+}
