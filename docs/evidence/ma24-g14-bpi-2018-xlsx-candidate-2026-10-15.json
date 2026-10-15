@@ -27,6 +27,15 @@
   "draftSourceCoordinates": ["Sheet1!D26", "Sheet1!A33"],
   "boundedLocalTextSearch": "No matches for publication title, BDUK, or the two indicator values in docs, src, scripts, and experiments outside the new candidate and tmp directory.",
   "publicationFamily": "BDUK Broadband Performance Indicators historical quarterly series; treat related releases as one family pending review",
+  "sameReleasePdfCrossCheck": {
+    "url": "https://assets.publishing.service.gov.uk/media/5b053e7ee5274a2ae26f14ca/Broadband_Performance_Indicator_-_March_2018.pdf",
+    "sha256": "9c309775d6409a961e90b88e4fe35443e674e36c19263a44f6c476946905d3a9",
+    "physicalPages": 4,
+    "page2": "The workbook's March 2018 table row and cash/accruals explanation also appear in the same-release PDF; this is one publication family, not a second independent source.",
+    "page4": "The report identifies Crown copyright 2018 and permits reuse of information other than logos under the Open Government Licence.",
+    "visualCheck": "Physical pages 2 and 4 rendered and inspected"
+  },
+  "formatCaveat": "This draft can test XLSX coordinate retrieval when only the workbook is in the product source pool, but the answer facts are duplicated in the same-release PDF. Do not count the PDF as another source family or a separate independent question.",
   "status": "candidate_only",
   "sourceReuseReviewComplete": false,
   "fullDevelopmentExposureAuditComplete": false,
