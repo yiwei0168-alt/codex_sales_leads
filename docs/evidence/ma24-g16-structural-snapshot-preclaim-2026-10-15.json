@@ -1,0 +1,22 @@
+{
+  "schema": "ma24-g16-structural-snapshot-preclaim-v1",
+  "date": "2026-10-15",
+  "scope": "G16 explicit evaluation task admission in an isolated local database clone",
+  "change": "The explicit claim path now validates the hash-matching frozen source set and Gold content against the manifest before obtaining a database lease. The post-claim task binding still repeats those checks on the live leased row.",
+  "checks": [
+    "TypeScript typecheck passed",
+    "ESLint on the changed code and clone script passed",
+    "The existing explicit-claim clone accepted a valid synthetic task and cleaned its fixture rows",
+    "A hash-matching source set with a changed question was rejected before claim and the task stayed queued",
+    "A hash-matching Gold snapshot with no required route source was rejected before claim and the task stayed queued",
+    "No ordinary conversation message or provider model call was created"
+  ],
+  "approvedGold": 0,
+  "realDualArmRuns": 0,
+  "providerCalls": 0,
+  "limitations": [
+    "The clone used synthetic source and Gold data; it does not establish independent Gold eligibility or answer quality.",
+    "The current G15 preview is not ready for paid evaluation, and no dedicated model execution runner was invoked.",
+    "G17-G20 remain paused."
+  ]
+}

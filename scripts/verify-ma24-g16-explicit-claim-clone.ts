@@ -161,6 +161,26 @@ try {
     "select status from agent_run where id=$1 and user_id=$2",
     [rejectedId, userId])).rows[0]?.status, "queued",
   "Snapshot drift consumed the queued evaluation task");
+  const invalidSourceBytes = new TextEncoder().encode(JSON.stringify({
+    schema: "ma24-g16-source-set-v1",
+    cases: [{ caseId, query: "Changed question" }],
+  }));
+  await assert.rejects(claimAndBindMa24EvaluationRun({ ...binding, runId: rejectedId,
+    manifest: { ...manifest, sourceSetSha256: hash(invalidSourceBytes) },
+    sourceSetBytes: invalidSourceBytes }), /frozen question mismatch/);
+  const invalidGoldBytes = new TextEncoder().encode(JSON.stringify({
+    schema: "ma24-g16-gold-snapshot-v1", cases: [{ caseId,
+      caseSha256: ma24CaseQuerySha256(frozenQuery), expectedAnswer: "Synthetic answer",
+      expectedSources: [], reviewer: "Synthetic reviewer",
+      reviewedAt: "2026-10-15T00:00:00Z", note: "Fixture only" }],
+  }));
+  await assert.rejects(claimAndBindMa24EvaluationRun({ ...binding, runId: rejectedId,
+    manifest: { ...manifest, goldSnapshotSha256: hash(invalidGoldBytes) },
+    goldBytes: invalidGoldBytes }), /Invalid MA24 frozen Gold case/);
+  assert.equal((await admin.query<{ status: string }>(
+    "select status from agent_run where id=$1 and user_id=$2",
+    [rejectedId, userId])).rows[0]?.status, "queued",
+  "Hash-matching invalid source or Gold consumed the queued evaluation task");
   const changedRuntimeBytes = new TextEncoder().encode(JSON.stringify({
     ...loadedCodeAndConfig, modePromptSha256: "changed-runtime-prompt",
   }));
@@ -224,7 +244,8 @@ if (verified) console.log(JSON.stringify({ schema: "ma24-g16-explicit-claim-clon
   checks: ["explicit-id-and-owner", "ordinary-rejected", "malformed-rejected",
     "blank-worker-rejected", "duplicate-claim-rejected", "expired-lease-not-reclaimed",
     "app-role-grant", "claimed-row-bound-to-frozen-input",
-    "snapshot-drift-rejected-before-claim", "loaded-runtime-drift-rejected-before-claim",
+    "snapshot-drift-rejected-before-claim", "invalid-source-and-gold-rejected-before-claim",
+    "loaded-runtime-drift-rejected-before-claim",
     "binding-failure-terminated-without-model-call",
     "no-ordinary-message-or-model-call", "synthetic-rows-cleaned"],
   providerCalls: 0 }));

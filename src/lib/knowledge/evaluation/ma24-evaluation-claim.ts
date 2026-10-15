@@ -2,7 +2,9 @@ import { execFileSync } from "node:child_process";
 import { query } from "../../rag/db";
 import { finishRun } from "../../assistant/main/repository";
 import { modeModelConfig } from "../../assistant/main/mode-config";
-import { assertMa24FrozenSnapshotBytes } from "./ma24-independent-comparison";
+import { assertMa24FrozenSnapshotBytes, assertMa24GoldMatchesManifest,
+  assertMa24SourceSetMatchesManifest, type Ma24GoldSnapshot,
+  type Ma24SourceSetSnapshot } from "./ma24-independent-comparison";
 import { verifyMa24EvaluationTaskBinding } from "./ma24-evaluation-task-binding";
 import { assertMa24G15RuntimeBinding, type Ma24G15Preview } from "./ma24-g15-runtime-binding";
 
@@ -40,8 +42,13 @@ export async function claimAndBindMa24EvaluationRun(input: Omit<BindingInput,
     sourceSet: input.sourceSetBytes, gold: input.goldBytes,
     codeAndConfig: input.codeAndConfigBytes,
   });
-  const frozenCodeAndConfig = JSON.parse(new TextDecoder("utf-8", { fatal: true })
-    .decode(input.codeAndConfigBytes)) as Ma24G15Preview;
+  const decode = (bytes: Uint8Array) => JSON.parse(new TextDecoder("utf-8", { fatal: true })
+    .decode(bytes));
+  assertMa24SourceSetMatchesManifest(input.manifest,
+    decode(input.sourceSetBytes) as Ma24SourceSetSnapshot);
+  assertMa24GoldMatchesManifest(input.manifest,
+    decode(input.goldBytes) as Ma24GoldSnapshot);
+  const frozenCodeAndConfig = decode(input.codeAndConfigBytes) as Ma24G15Preview;
   const loadedCodeAndConfig = loadCurrentMa24G15Preview();
   const nowUtcDate = new Date().toISOString().slice(0, 10);
   assertMa24G15RuntimeBinding(frozenCodeAndConfig, loadedCodeAndConfig, nowUtcDate);
