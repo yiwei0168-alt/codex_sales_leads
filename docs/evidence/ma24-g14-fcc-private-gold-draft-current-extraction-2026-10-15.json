@@ -1,0 +1,40 @@
+{
+  "schema": "ma24-g14-fcc-private-gold-draft-current-extraction-v1",
+  "date": "2026-10-15",
+  "stage": "G14 provisional answer and exact-coordinate preparation, not Gold approval",
+  "caseId": "fcc-2026-fixed-service-option-scope",
+  "privateDraft": {
+    "path": "tmp/ma24-independent-quarantine/fcc-2026-service-options-gold-draft-v1.json",
+    "sha256": "23010c2b955f34a5aa7ab98dffd50665edc7effeb0ddb4d544e425e1c93a6149",
+    "questionExactlyMatchesCurrentV6Pool": true,
+    "independentGoldApproved": false
+  },
+  "original": {
+    "officialUrl": "https://docs.fcc.gov/public/attachments/DOC-424190A1.pdf",
+    "localPath": "tmp/ma24-independent-candidates/fcc-doc-424190.pdf",
+    "sha256Recomputed": "cc6b2100b895bc51a34bedd6873731d800a67a372a7b73b94f7095b98d902f0a",
+    "physicalPagesVisuallyRechecked": [1, 2],
+    "targetStatement": "As of June 2025, the dated FCC release gives 77% for at least three fixed services and 43.4% for at least three fixed terrestrial services at 100/20 Mbps."
+  },
+  "currentExtraction": {
+    "path": "tmp/ma24-independent-candidates/fcc-doc-424190.layout-current.extraction.json",
+    "extractorVersion": "layout-v2.0.10",
+    "sha256": "2d732651f0a6efd532d41e14cf1336731b87ffaf89c51f61d563bb4f960224cc",
+    "sourceHashMatchesOriginal": true,
+    "targetBlock": "page-1-block-10",
+    "targetUnitIndex": 1,
+    "privateDraftExcerptContainedInBlock": true,
+    "qualitySummary": {"success": 0, "blank": 0, "pending-ocr": 2, "failed": 0},
+    "visualReviewAndSearchableRegistrationComplete": false
+  },
+  "familyBoundary": "The two-page news release and 178-page FCC 26-55 report share the 77% fact and count as one connected publication exposure unit. The report candidate's 178 visual pages remain pending; neither original has been used for product answer tuning.",
+  "answerBoundary": "The draft attributes both values to the dated release and distinguishes fixed from fixed-terrestrial services; it does not present these as current coverage or prove any policy caused them.",
+  "remaining": [
+    "Resolve both PDF visual pages and verify private product upload, registration and target citation readback under an evaluation account.",
+    "Finish whole-family historical/development exposure and final-set question review before deciding whether either FCC case qualifies for independent Gold.",
+    "Freeze source, Gold, accounts and configuration before paid G16 model calls; review actual answer and user-visible citation separately."
+  ],
+  "approvedGoldAdded": 0,
+  "providerCalls": 0,
+  "g17ToG20Advanced": false
+}
