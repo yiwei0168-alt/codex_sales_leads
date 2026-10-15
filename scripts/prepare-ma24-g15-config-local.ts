@@ -70,6 +70,7 @@ const sourceFiles=[
  'src/lib/rag/embedding-contract.ts','src/lib/rag/bge-client.ts',
  'src/lib/knowledge/query-normalizer.ts',
  'src/lib/knowledge/evaluation/ma24-evaluation-claim.ts',
+ 'src/lib/knowledge/evaluation/ma24-evaluation-runner.ts',
  'src/lib/knowledge/evaluation/ma24-evaluation-task-binding.ts',
  'src/lib/knowledge/evaluation/ma24-independent-comparison.ts',
  'src/lib/knowledge/evaluation/ma24-g15-runtime-binding.ts',
@@ -78,6 +79,14 @@ const sourceFiles=[
  'db/migrations/138_ma24_evaluation_claim_owner.sql',
 ];
 const sourceHashes=await ma24LocalSourceClosure(process.cwd(),sourceFiles);
+for(const required of [
+ 'src/lib/knowledge/evaluation/ma24-evaluation-runner.ts',
+ 'src/lib/knowledge/evaluation/ma24-evaluation-claim.ts',
+ 'src/lib/knowledge/evaluation/ma24-evaluation-task-binding.ts',
+ 'src/lib/assistant/main/graph.ts',
+ 'src/lib/assistant/main/tool-execution.ts',
+ 'src/lib/billing/paid-fetch.ts',
+])if(!sourceHashes[required])throw new Error(`MA24 runtime closure omits ${required}`);
 const profile=modeModelConfig(mode).profile;
 if(!profile)throw new Error('Mode profile unavailable');
 console.log(JSON.stringify({schema:'ma24-g15-config-preview-v1',readOnly:true,simulation:true,

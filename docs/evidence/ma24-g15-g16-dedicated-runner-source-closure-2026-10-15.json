@@ -1,0 +1,28 @@
+{
+  "schema": "ma24-g15-g16-dedicated-runner-source-closure-v1",
+  "date": "2026-10-15",
+  "scope": "Current local G15 static-import source closure for the G16 dedicated evaluation runner",
+  "findingBeforeChange": "The generated 287-file preview contained the evaluation claim and binder but omitted src/lib/knowledge/evaluation/ma24-evaluation-runner.ts.",
+  "change": "The dedicated runner is now a closure root. Preview generation fails if the runner, claim, task binder, main Agent graph, registered tool execution or paid-fetch transport is absent from the closure.",
+  "observedAfterChange": {
+    "sourceClosureFileCount": 288,
+    "runnerSha256": "bfc1dbff0270a55e91df52ca56da9e4676ef8f5d906ba310b1685da11dca7317",
+    "previewStdoutSha256": "692c3138861d86159b5cac9068ddbd238c6f3a978219632c0eb2882e7ef2fb20",
+    "requiredRuntimeFilesPresent": 6,
+    "runnerHashDriftRejected": true,
+    "readyForPaidEvaluation": false,
+    "providerCalls": 0
+  },
+  "checks": [
+    "The local preview regenerated from current bytes and included all six required runtime files",
+    "A frozen copy with only the runner hash changed failed semantic runtime binding with sourceHashes drift",
+    "TypeScript typecheck and focused ESLint passed"
+  ],
+  "approvedGold": 0,
+  "realDualArmRuns": 0,
+  "limitations": [
+    "A local static-import closure is not a verified deployment build or proof of executing those bytes in production.",
+    "The preview and source hashes change after subsequent code edits and must be frozen again before any paid run.",
+    "Independent Gold, current provider tariffs, budget authorization and positive dual-arm execution remain open; G17-G20 remain paused."
+  ]
+}
