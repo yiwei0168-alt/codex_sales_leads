@@ -205,6 +205,8 @@ async function durableModel(context: ExecutionContext, messages: ModelMessage[],
 export async function executeMainAgentRun(userId: string, runId: string, leaseToken: string) {
   const context: ExecutionContext = { userId, runId, leaseToken, role: "member" };
   const run = await boundary(context);
+  if (run.execution_kind === "main-agent-evaluation")
+    throw new Error("MA24 evaluation execution requires a dedicated admitted runner");
   context.knowledgeScope = run.input.knowledgeScope;
   if(run.model_config.profile)context.mode=modeConfigSchema.parse(run.model_config.profile).mode;
   if(run.execution_kind==="mail")return (await import("./mail-graph")).executeMailDeliveryRun(context,run);

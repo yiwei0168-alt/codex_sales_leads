@@ -1,0 +1,27 @@
+{
+  "schema": "ma24-g16-ordinary-worker-claim-isolation-v1",
+  "date": "2026-10-15",
+  "status": "local-engineering-verification-only",
+  "change": "The ordinary claim_next_agent_run function selects only main-agent and mail execution kinds; direct main graph execution rejects main-agent-evaluation before any model call.",
+  "verification": {
+    "typecheck": "passed",
+    "focusedTests": "22 passed",
+    "localDatabaseTransaction": {
+      "migrationAppliedInsideRollbackOnly": true,
+      "ordinaryQueuedTaskClaimed": true,
+      "evaluationQueuedTaskStillQueued": true,
+      "transactionRolledBack": true
+    },
+    "g15Preview": "ma24-g15-config-preview-2026-10-15-v4.json",
+    "g15ReadOnlyBindingMatched": true,
+    "modelCalls": 0,
+    "providerCalls": 0
+  },
+  "limitations": [
+    "Migration 136 is not deployed to the running database.",
+    "A dedicated evaluation claim path and admission checks are not implemented.",
+    "Independent Gold approval and paid call authorization remain absent.",
+    "No real dual-arm task was executed."
+  ],
+  "g17ToG20Advanced": false
+}

@@ -395,3 +395,5 @@ NTIA/NASA 18 GHz 候选现有 1 条隔离的 Gold 草案：问题与当前池逐
 Taking Part 工作簿的整题无答案候选已有第 2 条隔离 Gold 草案：四个工作表的原格与产品抽取行核对后，农村和 75 岁及以上的数值只分别作为边际统计出现，不能推断交叉人群比例。[草案收据](evidence/ma24-g14-taking-part-private-no-answer-gold-draft-2026-10-15.json)。该题与 BDUK 跨文档题同属一个共享来源暴露单元，冻结时应整组处理；独立审核与真实无答案模型行为仍未完成，批准 Gold 仍为 0。
 
 合成私有安全原件的权限正例、跨账号拒绝和来源指令注入共 3 条隔离 Gold 草案已准备；与此前两条合计 5 条。拒绝预期由隔离产品 ACL 验证支撑，不能由 PDF 内的自述权限文字决定；精确合成码仅保留在忽略的私有草案内。[安全草案收据](evidence/ma24-g14-private-security-gold-drafts-2026-10-15.json)。实际账号 UUID、独立审核、来源资格和冻结 Gold 仍缺，G17–G20 不推进。
+
+2026-10-15 G16 ordinary worker claim isolation: migration 136 now filters out main-agent-evaluation runs, and direct main graph execution rejects them before a model call. A rollback-only local DB fixture claimed an ordinary task while leaving an evaluation task queued; 22 focused tests and typecheck passed. Preview v4 matches loaded code but remains unready. This is an engineering guard only: dedicated evaluation admission, frozen Gold, authorization, real dual-arm runs and reviewer verdicts remain open. G17-G20 remain paused. [Receipt](evidence/ma24-g16-ordinary-worker-claim-isolation-2026-10-15.json).
