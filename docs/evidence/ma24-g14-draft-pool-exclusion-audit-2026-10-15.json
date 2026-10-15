@@ -1,0 +1,66 @@
+{
+  "schema": "ma24-g14-draft-pool-exclusion-audit-v1",
+  "date": "2026-10-15",
+  "scope": "Current ma24-g14-*.json draftQuestion/draftQuestions fields only; pre-freeze inventory, not an independent Gold set",
+  "reproducibility": {
+    "inputFilesWithDrafts": 16,
+    "draftEntries": 25,
+    "uniqueDraftIds": 25,
+    "manifestSha256": "cffec2be0f902b7590128dc15d132c6ca6b770ed0f94bd72101399711b28e601",
+    "manifestConstruction": "Sort docs/evidence/ma24-g14-*.json by name; for each JSON containing draftQuestions or draftQuestion, record filename, byte SHA-256 and sorted draft IDs; SHA-256 the compact JSON.stringify of the row array."
+  },
+  "excludedFromIndependentGold": [
+    {
+      "reason": "Workbook used to repair and verify product extraction; development/regression only",
+      "sourceReceipt": "docs/evidence/ma24-g14-eu-source-development-exposure-2026-10-14.json",
+      "ids": ["eu-kpi-burgenland-vhcn-overall-rural", "eu-kpi-burgenland-5g-band-rural"]
+    },
+    {
+      "reason": "Workbook triggered and verified the layout-v2.0.8 table-style fix; development/regression only",
+      "sourceReceipt": "docs/evidence/ma24-g14-ons-xlsx-candidate-2026-10-14.json",
+      "ids": ["ons-ultrafast-2026-orkney-shetland", "ons-ultrafast-2026-hartlepool-cornwall"]
+    },
+    {
+      "reason": "User-confirmed IEEE 2014 tutorial scope is PPTX reading and citation acceptance only",
+      "sourceReceipt": "docs/CONFIRMED_PRODUCT_RULES.md (MA24-18)",
+      "ids": ["ieee-gepof-2014-objectives-distances", "ieee-gepof-2014-vde-proposal-status"]
+    },
+    {
+      "reason": "ONS 5G Aberdeen difference repeats the previously used two-region percentage-difference template; Highland/Scotland difference shares the core workbook and material with the replacement denominator draft. Retain the replacement as the sole current ONS 5G draft for full-set review.",
+      "sourceReceipt": "docs/evidence/ma24-g14-ons-5g-denominator-draft-2026-10-15.json",
+      "ids": ["ons-5g-2026-aberdeen-city-shire", "ons-5g-2026-highland-scotland-scope"]
+    }
+  ],
+  "remainingDraftsForFullSetReview": {
+    "count": 17,
+    "ids": [
+      "etsi-38901-v195-inf-blocker-parameters",
+      "etsi-38901-v195-isac-lower-power-clusters",
+      "fcc-2026-fixed-service-option-scope",
+      "fcc-706-2026-school-entity-vs-student-denominator",
+      "ieee-80211-2025-amp-bands-modes",
+      "ieee-80211-2025-elc-optical-bands",
+      "ieee-auto-sd4addr-forwarding-time",
+      "ieee-auto-sd4addr-implementation",
+      "itu-bhatia-2026-india-fwa-conflict",
+      "itu-gcr2025-submarine-cable-cuts-and-repair-delay",
+      "nist-tn2363-aggressor-welding-table-comparison",
+      "nist-tn2363-delay-profile-and-5g-tsn-validation",
+      "nist-tn2363-ieee3388-assessment-and-profiles",
+      "ons-5g-2026-highland-outdoor-denominator",
+      "zbw-2025-dmp-lifecycle-and-access-questions",
+      "zbw-2025-open-data-technical-legal-restriction",
+      "zbw-2025-open-science-five-individual-benefits"
+    ]
+  },
+  "familyRulesForNextAudit": [
+    "The two FCC documents belong to one Section 706 release family and have direct 77% fact overlap; choosing either cannot create two independent source families.",
+    "The three NIST drafts use one TN 2363 original; choose and freeze at the family level.",
+    "The three ZBW drafts use one 2025 slide deck; distinct questions do not create distinct source families.",
+    "The four IEEE 2025 draft questions come from two presentations; their source-use boundary and family relationship remain undecided and must not be silently counted."
+  ],
+  "nextGate": "Audit complete final source families, original-byte permissions, question/answer overlap and development exposure; freeze Gold and exact answer coordinates separately from model inputs. Recompute this manifest after any draft changes.",
+  "goldCreated": 0,
+  "modelAnswerCalls": 0,
+  "productionKnowledgeWrites": 0
+}
