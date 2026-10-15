@@ -1,0 +1,41 @@
+{
+  "schema": "ma24-g14-zbw-v8-family-exposure-screen-v1",
+  "date": "2026-10-16",
+  "sourceSha256": "595df78e84768ec588a9d638366c69064c63139bdb43fea3445500ac7fd63bde",
+  "currentPool": {
+    "path": "tmp/ma24-independent-quarantine/g14-current-draft-pool-v8-nist-corrected-2026-10-16.json",
+    "sha256Recomputed": "4572c140e64aa992a666c90729fb1ca6c3a8ef6a6922b3a8b5c7a6dfb3e984d8",
+    "publicationRows": 24,
+    "zbwRows": 3,
+    "otherPublicationRows": 21,
+    "zbwIds": [
+      "zbw-2025-dmp-lifecycle-and-access-questions",
+      "zbw-2025-open-data-technical-legal-restriction",
+      "zbw-2025-open-science-five-individual-benefits"
+    ],
+    "sameRequestedAnswerAmongOtherRows": false,
+    "exposureUnitsForThreeZbwRows": 1
+  },
+  "versionHistoryScreen": {
+    "firstCandidateCommit": "9a4d1823",
+    "method": "git grep of the first candidate commit's parent for DOI, original SHA-256 and publisher title in docs/src/scripts; git log --all -S for DOI and SHA-256 in those paths",
+    "parentTreeExactTermMatches": 0,
+    "doiHistoryCommits": ["9a4d1823", "1a8f24dc", "f7930f06"],
+    "shaHistoryCommits": ["9a4d1823", "39d6372c", "ffd91971", "79f11dfb", "4340c85a", "1a8f24dc", "41e0be1c", "f7930f06"],
+    "finding": "The inspected tracked code and documentation first record this exact source during the G14 candidate work; no earlier DOI, source hash or publisher-title hit was found in the immediate pre-candidate tree. Later hits are candidate handling and review artifacts."
+  },
+  "currentProductTextScreen": {
+    "paths": ["src", "db/migrations"],
+    "terms": ["ZBW", "Open Science", "Open Data", "data management plan", "DMP", "zenodo.15348619"],
+    "matches": 0
+  },
+  "priorHistoricalQuestionScreens": [
+    "docs/evidence/ma24-g14-zbw-bounded-independence-audit-2026-10-15.json",
+    "docs/evidence/ma24-g14-zbw-visual-question-drafts-2026-10-15.json"
+  ],
+  "scopeLimit": "This is a bounded tracked-text and current-pool screen. It cannot rule out untracked past prompts, binary or differently worded derivatives, provider pretraining, or future use of the source for development. It does not decide question content, source-family eligibility or independent Gold.",
+  "goldAdded": 0,
+  "modelCalls": 0,
+  "productionWrites": 0,
+  "g17ToG20Advanced": false
+}
