@@ -1,0 +1,37 @@
+{
+  "schema": "ma24-g14-govuk-earliest-preparation-exposure-v1",
+  "date": "2026-10-15",
+  "purpose": "Widen the earlier title/value-only session screen to source-family markers and inspect Git history before candidate preparation.",
+  "localRolloutScreen": {
+    "rolloutFilesAtScreen": 95,
+    "jsonlRecordsAtScreen": 153350,
+    "firstWholeTokenBdukUtc": "2026-10-14T15:08:31Z",
+    "firstTakingPartPhraseUtc": "2026-10-14T15:12:22Z",
+    "firstBroadbandPerformancePhraseUtc": "2026-10-14T17:28:28Z",
+    "firstFullBpiTitleOrUrlUtc": "2026-10-15T03:14:17Z",
+    "firstBpiCandidateGitCommitUtc": "2026-10-15T03:22:10Z",
+    "wholeTokenBdukBeforeFirstTakingPart": 3,
+    "earlierWholeTokenBduk": 0,
+    "earlierTakingPartPhrase": 0,
+    "earlierBroadbandPerformancePhrase": 0,
+    "falsePositiveCorrection": "Substring BDUK hits in older rollout records came from long encoded data. A whole-token boundary screen removed them; they are not treated as source mentions."
+  },
+  "gitHistoryScreen": {
+    "refs": "all locally available refs",
+    "beforeUtc": "2026-10-15T03:14:17Z",
+    "paths": ["docs", "scripts", "src", "experiments"],
+    "method": "git log --all --before=<boundary> -G with exact title, release URL and formatted answer-value alternatives",
+    "matchingCommits": 0
+  },
+  "interpretation": "The source-family names first appear in the local candidate-research session on 2026-10-14, before the first candidate commit. No earlier matching whole-token family marker was found in the scanned local rollout records, and the bounded Git history search found no matching commit. This narrows observed local exposure but does not prove independence from unrecorded prompts, binary artifacts, provider-side records or paraphrases.",
+  "supersedesInterpretationOf": "docs/evidence/ma24-g14-govuk-local-rollout-exposure-boundary-2026-10-15.json",
+  "limits": [
+    "Session scans cover locally retained rollout JSONL at the time of this audit, not all possible historical conversations.",
+    "The Git patch search is limited to the named paths, patterns, refs and commit-date cutoff; binary and untracked material are outside its scope.",
+    "The shared BDUK plus Taking Part family still requires final source, question and answer leakage review before Gold freeze."
+  ],
+  "independentGoldApproved": false,
+  "approvedGoldCount": 0,
+  "realDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}
