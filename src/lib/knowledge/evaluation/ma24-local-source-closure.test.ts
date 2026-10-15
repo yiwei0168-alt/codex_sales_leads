@@ -27,4 +27,25 @@ describe("MA24 G15 local source closure", () => {
       await rm(root, { recursive: true, force: true });
     }
   });
+  it("tracks import options and rejects nonliteral dynamic imports", async () => {
+    const root = await mkdtemp(path.resolve(process.cwd(), "tmp", "ma24-source-closure-"));
+    try {
+      await writeFile(path.join(root, "tsconfig.json"), JSON.stringify({ compilerOptions: {
+        module: "esnext", moduleResolution: "bundler", target: "es2017" } }));
+      await writeFile(path.join(root, "entry.ts"),
+        "void import('./leaf', { with: { type: 'json' } });\n");
+      await writeFile(path.join(root, "leaf.ts"), "export const value = 1;\n");
+      const bound = await ma24LocalSourceClosure(root, ["entry.ts"]);
+      expect(Object.keys(bound)).toEqual(["entry.ts", "leaf.ts"]);
+      await writeFile(path.join(root, "entry.ts"),
+        "const target = './leaf'; void import(target, { with: { type: 'json' } });\n");
+      await expect(ma24LocalSourceClosure(root, ["entry.ts"]))
+        .rejects.toThrow("Dynamic import cannot be frozen");
+      await writeFile(path.join(root, "entry.ts"), "require('./leaf', {});\n");
+      await expect(ma24LocalSourceClosure(root, ["entry.ts"]))
+        .rejects.toThrow("Dynamic import cannot be frozen");
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
 });

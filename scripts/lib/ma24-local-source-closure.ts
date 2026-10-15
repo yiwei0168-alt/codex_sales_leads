@@ -1,4 +1,4 @@
-/** Hash the local static import closure of the main Agent evaluation entries. */
+/** Hash the local literal import closure of the main Agent evaluation entries. */
 import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
@@ -16,9 +16,12 @@ function moduleSpecifiers(source: ts.SourceFile) {
     if (ts.isImportEqualsDeclaration(node) && ts.isExternalModuleReference(node.moduleReference) &&
       node.moduleReference.expression && ts.isStringLiteral(node.moduleReference.expression))
       found.add(node.moduleReference.expression.text);
-    if (ts.isCallExpression(node) && node.arguments.length === 1 &&
+    if (ts.isCallExpression(node) &&
       (node.expression.kind === ts.SyntaxKind.ImportKeyword ||
         (ts.isIdentifier(node.expression) && node.expression.text === "require"))) {
+      if (node.arguments.length < 1 ||
+        (ts.isIdentifier(node.expression) && node.arguments.length !== 1))
+        throw new Error(`Dynamic import cannot be frozen: ${source.fileName}`);
       const arg = node.arguments[0];
       if (ts.isStringLiteral(arg) || ts.isNoSubstitutionTemplateLiteral(arg)) found.add(arg.text);
       else throw new Error(`Dynamic import cannot be frozen: ${source.fileName}`);

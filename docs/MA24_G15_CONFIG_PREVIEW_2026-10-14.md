@@ -19,6 +19,8 @@
 
 2026 年 10 月 16 日本地 `npm run build` 已通过生产编译、TypeScript 与 26 个静态页生成；随后重建的 G15 预览含 289 个本地源码闭包文件，但 `runtimeBuildVerified`、`transitiveCodeClosureVerified` 和 `readyForPaidEvaluation` 仍为 `false`。[构建核查收据](evidence/ma24-g15-local-build-check-2026-10-16.json)。此结果只核对当前工作树，尚未绑定冻结构建或正式执行进程。
 
+同日补强了源码闭包扫描：带第二参数的字面量 `import()` 现在会纳入依赖，非字面量动态导入及多参数 `require()` 会明确拒绝；新测试覆盖这两种边界。[定向核查收据](evidence/ma24-g15-import-closure-guard-2026-10-16.json)与 [v11 只读预览](evidence/ma24-g15-config-preview-2026-10-15-v11.json)记录当前指纹。扫描仍只证明受支持的本地导入可追踪，完整执行闭包和正式构建身份仍待验证。
+
 ## 同账号双臂工具隔离补验（2026-10-15）
 
 G15 预览现以**同一白名单账号、同一 `ENABLE_VECTORLESS_AGENT_SHADOW=1` 开关**分别设置服务端 `evaluationArm=baseline/candidate`，而非用切换全局开关模拟两臂。`industry`、`company`、`product` 范围的基线工具数为 3/3/4，候选为 10/10/11；仅候选多出七个 `vectorless_*`。基线的工具发现、描述和执行路径均拒绝这些工具，定向测试 9 项、类型及 lint 通过。[工程收据](evidence/ma24-g15-g16-evaluation-arm-tool-isolation-2026-10-15.json)。该标识尚未由专用评测运行器绑定到持久任务，预览仍为 `readyForPaidEvaluation=false`。

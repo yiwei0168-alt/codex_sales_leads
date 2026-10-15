@@ -1,0 +1,27 @@
+{
+  "schema": "ma24-g15-import-closure-guard-v1",
+  "date": "2026-10-16",
+  "scope": "G15 local source closure parsing for the G16 dedicated evaluation runner",
+  "codeChange": {
+    "file": "scripts/lib/ma24-local-source-closure.ts",
+    "before": "Call expressions with import or require were inspected only when exactly one argument was present; an import with options could bypass dependency collection.",
+    "after": "A literal first argument to import is collected with or without import options; nonliteral import arguments and malformed multi-argument require calls are rejected rather than silently omitted."
+  },
+  "verification": {
+    "focusedVitest": "2 passed after setting the test process TEMP and TMP to workspace tmp; initial attempt failed before test import because the Windows sandbox temp directory denied a rename",
+    "changedFileEslint": "passed",
+    "typescriptNoEmit": "passed",
+    "liveRunnerSourceClosure": "passed; 289 local files, six required runner paths present, runner hash drift rejected",
+    "currentV11PreviewRuntimeBinding": "matched, readyForModelCalls=false",
+    "oldV10PreviewRuntimeBinding": "rejected with sourceHashes drift",
+    "v11PreviewPath": "docs/evidence/ma24-g15-config-preview-2026-10-15-v11.json",
+    "v11PreviewSha256": "ffb6d504f75bccbba8b74be2e76446f18e754160dfebed45447960b381b17b66"
+  },
+  "limits": [
+    "This closes one silent local import omission; package/runtime loading, non-code file reads and executed build identity still need a complete closure audit.",
+    "The current preview still has unfrozen source/Gold, disabled main-Agent BGE flag and unverified tariffs/paid authorization. No model call is admitted."
+  ],
+  "providerCalls": 0,
+  "realDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}
