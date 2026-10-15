@@ -1,0 +1,32 @@
+{
+  "schema": "ma24-g14-dbs-full-review-clone-v1",
+  "date": "2026-10-16",
+  "scope": "Isolated MA11 replay database, synthetic private owner and unauthorised synthetic account; corrected DBS 2024-25 annual report",
+  "command": "node scripts/run-tsx.cjs scripts/verify-dbs-full-review-clone.ts",
+  "sourceSha256": "5902287709dd1049eae2429af4e87d8a5efbee5d123763b5735a72213f754a44",
+  "extractorVersion": "layout-v2.0.10",
+  "offlineManifest": "docs/evidence/ma24-g14-dbs-whole-pdf-visual-page-decisions-2026-10-16.json",
+  "result": {
+    "cloneOnly": true,
+    "originalCandidateImagesRebound": 151,
+    "reviewSavedAndReadBack": 151,
+    "decisions": {
+      "evidence": 67,
+      "decoration": 84
+    },
+    "completionReceipt": true,
+    "treeStatus": "searchable",
+    "citedPages": [7, 41],
+    "sourcePage7CorrectionReadBack": true,
+    "sourcePage41ChartReadBack": true,
+    "searchFound": true,
+    "otherAccountDeniedForBothPages": true,
+    "syntheticRowsCleaned": true,
+    "modelCalls": 0,
+    "externalCalls": 0,
+    "qualityAccepted": false,
+    "goldCreated": 0
+  },
+  "boundary": "This proves isolated product save/readback and private citation coordinates for this source. It does not establish a user-approved DBS conflict question, full independent Gold freeze, G15 paid admission or G16 real dual-arm quality. The development database emitted its non-production TLS/role warning; no production database or user account was touched.",
+  "g17ToG20Advanced": false
+}
