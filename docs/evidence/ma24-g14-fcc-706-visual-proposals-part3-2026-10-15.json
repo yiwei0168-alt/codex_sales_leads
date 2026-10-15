@@ -1,0 +1,319 @@
+{
+  "schema": "ma24-g14-fcc-706-visual-proposals-part3-v1",
+  "date": "2026-10-15",
+  "stage": "Physical pages 65-96 original-page-bound proposals; not saved product decisions",
+  "sourceSha256": "805e0e5b954775059ad535ae650c955935758a88f2a20ec0e6554e77f0e61154",
+  "extractionArtifactSha256": "6724008a1138a5e83dc4439e42ed4f75176154e5bf9a0d738dbd2f339cd2d0d4",
+  "renderPackageSha256": "27441a7bb1854545078f89b2879057a7464e685a395e37765de2bdad80d4c969",
+  "physicalPageRange": [
+    65,
+    96
+  ],
+  "originalSizeSamplePages": [
+    65,
+    66,
+    67,
+    75,
+    77,
+    82,
+    85,
+    96
+  ],
+  "otherPagesReviewedAtContactSheetResolution": true,
+  "proposedEvidence": 30,
+  "proposedDecoration": 2,
+  "judgments": [
+    {
+      "physicalPage": 65,
+      "blockId": "page-65-visual-review",
+      "originalRenderSha256": "1e12ac7036a87b91510b45f2774a7a0cb27eaa74b4d3fb5f3448050ab180944d",
+      "proposal": "decoration",
+      "visualFeature": "Appendix A contents/index text; no separate data visual seen in the original-size page.",
+      "successfulTextBlocksOnPage": 19,
+      "originalSizeChecked": true
+    },
+    {
+      "physicalPage": 66,
+      "blockId": "page-66-visual-review",
+      "originalRenderSha256": "7deeb05d24b1030918592fcd66b772b97351797334296ee24a3e5cc981f279fc",
+      "proposal": "decoration",
+      "visualFeature": "Appendix A contents/index text; no separate data visual seen in the original-size page.",
+      "successfulTextBlocksOnPage": 9,
+      "originalSizeChecked": true
+    },
+    {
+      "physicalPage": 67,
+      "blockId": "page-67-visual-review",
+      "originalRenderSha256": "4bbfb99b147b2820214bd73cb68e598aaa9cfc87fef75b7d3d2a908a63366c1f",
+      "proposal": "evidence",
+      "visualFeature": "Appendix A-1 fixed and mobile service availability table, including continuation pages",
+      "successfulTextBlocksOnPage": 47,
+      "originalSizeChecked": true
+    },
+    {
+      "physicalPage": 68,
+      "blockId": "page-68-visual-review",
+      "originalRenderSha256": "914be8a7febd4fb9cde0d785c49106650e5bca1612f2378bd4b28f7742d4f25c",
+      "proposal": "evidence",
+      "visualFeature": "Appendix A-1 fixed and mobile service availability table, including continuation pages",
+      "successfulTextBlocksOnPage": 49,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 69,
+      "blockId": "page-69-visual-review",
+      "originalRenderSha256": "d56a61f83b034e3d0b98088bd682a8a1dc631cadfa50c8d63be4de4e23c64bdf",
+      "proposal": "evidence",
+      "visualFeature": "Appendix A-1 fixed and mobile service availability table, including continuation pages",
+      "successfulTextBlocksOnPage": 51,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 70,
+      "blockId": "page-70-visual-review",
+      "originalRenderSha256": "a2e99ec209bc94200b565ac517f7d7de6be1536704ce21f5514c39ca6bf930f1",
+      "proposal": "evidence",
+      "visualFeature": "Appendix A-1 fixed and mobile service availability table, including continuation pages",
+      "successfulTextBlocksOnPage": 51,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 71,
+      "blockId": "page-71-visual-review",
+      "originalRenderSha256": "64c6c72e83e68ae8930ff828d09b195d834ca36bdc3e4f48b875de828162b6a3",
+      "proposal": "evidence",
+      "visualFeature": "Appendix A-1 fixed and mobile service availability table, including continuation pages",
+      "successfulTextBlocksOnPage": 54,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 72,
+      "blockId": "page-72-visual-review",
+      "originalRenderSha256": "9e5728100be606638ffed96ed1b417d37fbe78c56d220ece8dd50a57a5925437",
+      "proposal": "evidence",
+      "visualFeature": "Appendix A-1 fixed and mobile service availability table, including continuation pages",
+      "successfulTextBlocksOnPage": 50,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 73,
+      "blockId": "page-73-visual-review",
+      "originalRenderSha256": "c45e3981d30fc15ce1c7206601f431c93a4cff97d580af3efd8f58ec69a8c9f4",
+      "proposal": "evidence",
+      "visualFeature": "Appendix A-1 fixed and mobile service availability table, including continuation pages",
+      "successfulTextBlocksOnPage": 53,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 74,
+      "blockId": "page-74-visual-review",
+      "originalRenderSha256": "30b697db1c6f3159df935a5f43c8246c68524af6a5bc4aab045d6cd48b5f759c",
+      "proposal": "evidence",
+      "visualFeature": "Appendix A-1 fixed and mobile service availability table, including continuation pages",
+      "successfulTextBlocksOnPage": 25,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 75,
+      "blockId": "page-75-visual-review",
+      "originalRenderSha256": "64818e041652ca364aff2c07ebe4f0284628cf80c4bed1962eeb9893b33679dd",
+      "proposal": "evidence",
+      "visualFeature": "Appendix A-2 mobile service availability table, including continuation page",
+      "successfulTextBlocksOnPage": 24,
+      "originalSizeChecked": true
+    },
+    {
+      "physicalPage": 76,
+      "blockId": "page-76-visual-review",
+      "originalRenderSha256": "b01f152dc725f2def54f8d32861bb8f0b5ef8bf2d6f48bd571173d809d312df2",
+      "proposal": "evidence",
+      "visualFeature": "Appendix A-2 mobile service availability table, including continuation page",
+      "successfulTextBlocksOnPage": 3,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 77,
+      "blockId": "page-77-visual-review",
+      "originalRenderSha256": "54587646ed8f38b258704b8f7a11622cc4d87aac52dfcba483fe92bb4c16d3a1",
+      "proposal": "evidence",
+      "visualFeature": "Appendix A-3 fixed and mobile service availability table, including continuation pages",
+      "successfulTextBlocksOnPage": 8,
+      "originalSizeChecked": true
+    },
+    {
+      "physicalPage": 78,
+      "blockId": "page-78-visual-review",
+      "originalRenderSha256": "069645b12ddf1455b55730b329adabb0aba1136d53a1be051b8de1b17c9ffef0",
+      "proposal": "evidence",
+      "visualFeature": "Appendix A-3 fixed and mobile service availability table, including continuation pages",
+      "successfulTextBlocksOnPage": 7,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 79,
+      "blockId": "page-79-visual-review",
+      "originalRenderSha256": "b54e7b03892f8d2a6d9503c57f2a299982152da991f157900f43f261d237319a",
+      "proposal": "evidence",
+      "visualFeature": "Appendix A-3 fixed and mobile service availability table, including continuation pages",
+      "successfulTextBlocksOnPage": 7,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 80,
+      "blockId": "page-80-visual-review",
+      "originalRenderSha256": "41d68db2664159217a040e2576c235c7082155fe8d952bef00b9369350d882b3",
+      "proposal": "evidence",
+      "visualFeature": "Appendix A-3 fixed and mobile service availability table, including continuation pages",
+      "successfulTextBlocksOnPage": 7,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 81,
+      "blockId": "page-81-visual-review",
+      "originalRenderSha256": "4f6ceb175cc37ba3243edf786ad6a473e5e437a36c6f390ba2db09e519b666f9",
+      "proposal": "evidence",
+      "visualFeature": "Appendix A-3 fixed and mobile service availability table, including continuation pages",
+      "successfulTextBlocksOnPage": 7,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 82,
+      "blockId": "page-82-visual-review",
+      "originalRenderSha256": "91d73908bc6259d2218e95ef1798cb4cc2506ee146b7c5df1e9b5d85b8856152",
+      "proposal": "evidence",
+      "visualFeature": "Appendix A-4 fixed and mobile speed-tier availability table, including continuation pages",
+      "successfulTextBlocksOnPage": 23,
+      "originalSizeChecked": true
+    },
+    {
+      "physicalPage": 83,
+      "blockId": "page-83-visual-review",
+      "originalRenderSha256": "cf14a6037698278badd85decfa6474ec694f8230e241bcfc72b44ac9903bd0ec",
+      "proposal": "evidence",
+      "visualFeature": "Appendix A-4 fixed and mobile speed-tier availability table, including continuation pages",
+      "successfulTextBlocksOnPage": 23,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 84,
+      "blockId": "page-84-visual-review",
+      "originalRenderSha256": "457cbb37c4b6b2709479610a1525b02462e3e82fcc4aa5a49630062a6f57ac12",
+      "proposal": "evidence",
+      "visualFeature": "Appendix A-4 fixed and mobile speed-tier availability table, including continuation pages",
+      "successfulTextBlocksOnPage": 11,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 85,
+      "blockId": "page-85-visual-review",
+      "originalRenderSha256": "193713e1bae3ef27b37a73612f4c5a9be97788923e8d96521b40936c77269e6c",
+      "proposal": "evidence",
+      "visualFeature": "Appendix A-5 state, territory and county availability table, including continuation pages",
+      "successfulTextBlocksOnPage": 12,
+      "originalSizeChecked": true
+    },
+    {
+      "physicalPage": 86,
+      "blockId": "page-86-visual-review",
+      "originalRenderSha256": "5e15aaa5a3bdcea95ab8d805154323472418749e0314f7e20433506c9c47d3e6",
+      "proposal": "evidence",
+      "visualFeature": "Appendix A-5 state, territory and county availability table, including continuation pages",
+      "successfulTextBlocksOnPage": 11,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 87,
+      "blockId": "page-87-visual-review",
+      "originalRenderSha256": "d3c4d9164ed374ef65f323d7220f194cf55c5a08ef7814eaca6e4f1e179ce4c5",
+      "proposal": "evidence",
+      "visualFeature": "Appendix A-5 state, territory and county availability table, including continuation pages",
+      "successfulTextBlocksOnPage": 13,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 88,
+      "blockId": "page-88-visual-review",
+      "originalRenderSha256": "bab246ea69b98a2e19daf25e50568149ea91df1d005ccdc3f362db860b4d4763",
+      "proposal": "evidence",
+      "visualFeature": "Appendix A-5 state, territory and county availability table, including continuation pages",
+      "successfulTextBlocksOnPage": 11,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 89,
+      "blockId": "page-89-visual-review",
+      "originalRenderSha256": "1b0e59eca56c9827be6463b048d82bb45ce805b54f4951079a2e9a6794c0aee1",
+      "proposal": "evidence",
+      "visualFeature": "Appendix A-5 state, territory and county availability table, including continuation pages",
+      "successfulTextBlocksOnPage": 11,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 90,
+      "blockId": "page-90-visual-review",
+      "originalRenderSha256": "42056913490b18ad86ef9e9043e283d7e370b7f7985d82329afbb767e2341a64",
+      "proposal": "evidence",
+      "visualFeature": "Appendix A-5 state, territory and county availability table, including continuation pages",
+      "successfulTextBlocksOnPage": 11,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 91,
+      "blockId": "page-91-visual-review",
+      "originalRenderSha256": "6ce9483b95047803848e68b23de171e78061b5dd8124acf625d3dd04d568633b",
+      "proposal": "evidence",
+      "visualFeature": "Appendix A-5 state, territory and county availability table, including continuation pages",
+      "successfulTextBlocksOnPage": 11,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 92,
+      "blockId": "page-92-visual-review",
+      "originalRenderSha256": "11907b942d6787417cd23e79d919ffe794334b44af8dc835468a57534f2457cf",
+      "proposal": "evidence",
+      "visualFeature": "Appendix A-5 state, territory and county availability table, including continuation pages",
+      "successfulTextBlocksOnPage": 19,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 93,
+      "blockId": "page-93-visual-review",
+      "originalRenderSha256": "af5514cb26d74858c7c3894c6581ed6fa5753a34752ca62f53abebfb54151745",
+      "proposal": "evidence",
+      "visualFeature": "Appendix A-5 state, territory and county availability table, including continuation pages",
+      "successfulTextBlocksOnPage": 11,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 94,
+      "blockId": "page-94-visual-review",
+      "originalRenderSha256": "03e96a9db38170d575581d3dd0f5a5174eebe7f0015c71d3294f6a14ffcf63e2",
+      "proposal": "evidence",
+      "visualFeature": "Appendix A-5 state, territory and county availability table, including continuation pages",
+      "successfulTextBlocksOnPage": 11,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 95,
+      "blockId": "page-95-visual-review",
+      "originalRenderSha256": "e00f71cd2607ea3471bef421a816d7051c23eb89bf1b9b01b85a74f588adbb23",
+      "proposal": "evidence",
+      "visualFeature": "Appendix A-5 state, territory and county availability table, including continuation pages",
+      "successfulTextBlocksOnPage": 11,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 96,
+      "blockId": "page-96-visual-review",
+      "originalRenderSha256": "eed2ed47601651ccd748136087aa8928c8c66d098c8df75748833b082db8d6ef",
+      "proposal": "evidence",
+      "visualFeature": "Appendix A-5 state, territory and county availability table, including continuation pages",
+      "successfulTextBlocksOnPage": 11,
+      "originalSizeChecked": true
+    }
+  ],
+  "productDecisionsSaved": 0,
+  "independentGoldAdded": 0,
+  "modelCalls": 0,
+  "g17ToG20Advanced": false
+}
