@@ -93,6 +93,27 @@ it('rejects stage financial bypass or inherited tariff overrides before claiming
   expect(mocks.claim).not.toHaveBeenCalled();
 });
 
+it('rejects an inherited fixed FX reference before claiming or running the graph', async () => {
+  mocks.spendContext.mockReturnValue({ fixedFxReferenceVersion: 'synthetic-fx-v1' });
+  await expect(executeMa24EvaluationRun(input))
+    .rejects.toThrow('MA24 evaluation financial override unavailable');
+  expect(mocks.claim).not.toHaveBeenCalled();
+  expect(mocks.buildGraph).not.toHaveBeenCalled();
+  expect(mocks.model).not.toHaveBeenCalled();
+});
+
+it('rechecks fixed FX after claiming and before graph or model work', async () => {
+  mocks.spendContext.mockReturnValueOnce(undefined)
+    .mockReturnValueOnce({ fixedFxReferenceVersion: 'synthetic-fx-v1' });
+  await expect(executeMa24EvaluationRun(input))
+    .rejects.toThrow('MA24 evaluation financial override unavailable');
+  expect(mocks.claim).toHaveBeenCalledOnce();
+  expect(mocks.buildGraph).not.toHaveBeenCalled();
+  expect(mocks.model).not.toHaveBeenCalled();
+  expect(mocks.finish).toHaveBeenCalledWith(expect.any(Object), 'failed',
+    'MA24 evaluation execution failed');
+});
+
 it('rechecks financial admission after claim and before graph or model work', async () => {
   mocks.financialOverride.mockReturnValueOnce(null)
     .mockReturnValueOnce({ ruleId: 'A33', allowFinancialAdmissionBypass: true });

@@ -20,7 +20,9 @@ type EvaluationInput = Parameters<typeof claimAndBindMa24EvaluationRun>[0];
 
 /** MA24 evaluation must use the frozen, reviewed financial path rather than a stage bypass. */
 export function assertMa24EvaluationSpendBoundary(userId: string) {
-  if (currentSpendContext()?.tariffPolicy || currentStagePaidCallOverride(userId))
+  const spend = currentSpendContext();
+  if (spend?.tariffPolicy || spend?.fixedFxReferenceVersion ||
+    currentStagePaidCallOverride(userId))
     throw new Error('MA24 evaluation financial override unavailable');
 }
 

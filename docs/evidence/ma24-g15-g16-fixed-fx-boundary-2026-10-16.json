@@ -1,0 +1,23 @@
+{
+  "schema": "ma24-g15-g16-fixed-fx-boundary-v1",
+  "dateLocal": "2026-10-16",
+  "scope": "Dedicated G16 evaluation runner's G15 financial admission boundary",
+  "change": "Reject an inherited fixedFxReferenceVersion before claiming and at every evaluation revalidation boundary, alongside inherited tariff policy and stage paid-call bypass.",
+  "checks": {
+    "focusedRunnerTests": "9 passed, including fixed FX rejection before and after claim",
+    "typecheck": "passed",
+    "changedFileEslint": "passed",
+    "currentRuntimeBinding": "matched; readyForModelCalls=false",
+    "previewPath": "docs/evidence/ma24-g15-config-preview-2026-10-16-v13.json",
+    "previewSha256": "189574594ba466c3acfb5abe02a57b29979bdd892b5183c08cba5dd50a691fd9",
+    "previewUtcPromptDate": "2026-10-15"
+  },
+  "limits": [
+    "The UTC prompt date is October 15 while the local calendar date is October 16; the preview is read-only and must be regenerated for any later UTC run date.",
+    "Independent source and Gold freeze, runtime build identity, current provider tariffs, paid-call authorization, and paid preflight remain outstanding.",
+    "No model or provider call, real dual-arm run, or G16 answer/citation quality acceptance occurred."
+  ],
+  "providerCalls": 0,
+  "realDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}
