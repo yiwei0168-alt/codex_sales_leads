@@ -1496,3 +1496,5 @@ IEEE 2014 GEPOF 教程按用户确认仅进入 PPTX 读取与引用验收。使�
 2026-10-15 G16 评分工作流在正向精确引用判决前，再把每条评审登记的原文摘录与任务最终回答对照；仅工具读到、模型看到而回答未呈现的摘录不能取得正向引用分。来源标签、页/表坐标及语义仍交人工逐题审核。[工程收据](evidence/ma24-g16-visible-excerpt-verdict-gate-2026-10-15.json)。G17–G20 暂停。
 
 2026-10-15 G14 GOV.UK 工作簿家族审核工作流获用户准许进入最终逐题审核：分别核跨文档统计口径及因果边界、交叉组无答案的资料范围，再对 BDUK 单来源题和这两题执行共享暴露单元泄漏审计。题型审核授权不直接生成 Gold、运行模型或通过质量门槛。[规则 MA24-20](CONFIRMED_PRODUCT_RULES.md)、[授权收据](evidence/ma24-g14-govuk-new-type-review-authorization-2026-10-15.json)。G17–G20 暂停。
+
+2026-10-15 MA24 G14：第三道 BDUK 现金/权责题已获用户同意进入逐题审核，7,934/7,617 处每百万英镑及交付与付款时间限定获确认。三题的逐题答案确认不自动赋予同一 GOV.UK 来源家族独立性；家族终审和 Gold 冻结前不得送入 G16 双路执行。[MA24-22](CONFIRMED_PRODUCT_RULES.md)、[回复收据](evidence/ma24-g14-bpi-cash-accrual-answer-review-2026-10-15.json)。G17–G20 暂停。

@@ -403,3 +403,5 @@ Taking Part 工作簿的整题无答案候选已有第 2 条隔离 Gold 草案�
 2026-10-15 G14 当前 27 条题文的本地整池近邻筛查已补齐，含 GOV.UK、NTIA、ETSI 修订与合成安全附录；同源相似题仍按暴露单元合并，跨家族语义相似待资料层面终审。下一步核历史与派生资料暴露、逐题 Gold 资格及冻结输入；当前筛查不解锁 G16 真实双路运行。[收据](evidence/ma24-g14-current-27-pool-overlap-review-2026-10-15.json)。G17–G20 暂停。
 
 2026-10-15 GOV.UK 跨文档与交叉组无答案两题的答案和限定已获逐题确认，仅保留为待冻结候选。接下来核第三道 BDUK 题及整组来源/历史暴露，再作最终 Gold 资格和冻结；[MA24-21](CONFIRMED_PRODUCT_RULES.md) 不自动解锁 G15/G16。G17–G20 暂停。
+
+2026-10-15 G14 BDUK 第三题已获逐题审核与候选答案确认；三题内容审核回复齐全。下一步仍为同一来源暴露单元的资格/历史泄漏终审、正式 Gold 判决与冻结；G15 的双路配置和付费准入、G16 真实质量尚未满足。[MA24-22](CONFIRMED_PRODUCT_RULES.md)、[回复收据](evidence/ma24-g14-bpi-cash-accrual-answer-review-2026-10-15.json)。G17–G20 暂停。

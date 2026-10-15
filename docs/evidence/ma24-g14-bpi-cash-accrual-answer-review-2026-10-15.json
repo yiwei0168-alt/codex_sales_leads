@@ -1,0 +1,24 @@
+{
+  "schema": "ma24-g14-bpi-cash-accrual-answer-review-v1",
+  "date": "2026-10-15",
+  "caseId": "bpi-2018-cash-accruals",
+  "userReply": "同意审核并确认候选答案",
+  "confirmedAnswer": {
+    "referencePeriod": "March 2018",
+    "cashPremisesPerMillionPounds": 7934,
+    "accrualsPremisesPerMillionPounds": 7617,
+    "timeAndAccountingLimit": "Project delivery preceded grant payments; the accruals estimate includes a higher cost amount."
+  },
+  "sourceReview": {
+    "assetSha256": "7d178716b667ebe66537154b0bb96f87348ccb782368b2f43920b45db9f7f5c1",
+    "originalCells": ["Sheet1!A26", "Sheet1!D26", "Sheet1!A33"],
+    "productBlock": "sheet-1-table",
+    "priorReceipt": "docs/evidence/ma24-g14-govuk-per-case-source-review-2026-10-15.json"
+  },
+  "decision": "Admit to per-case review; answer and temporal limitation confirmed; retain as a private, not-yet-frozen Gold candidate.",
+  "sharedExposureUnit": "BDUK 2018 plus Taking Part 2019/20, shared with the cross-document and no-answer cases",
+  "independentGoldApproved": false,
+  "approvedGoldCount": 0,
+  "realDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}
