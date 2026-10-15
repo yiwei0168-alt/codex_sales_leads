@@ -1,0 +1,31 @@
+{
+  "schema": "ma24-g15-financial-override-boundary-v1",
+  "date": "2026-10-15",
+  "scope": "G15/G16 dedicated evaluation financial admission; read-only local verification",
+  "finding": {
+    "standardRoutes": [
+      "anthropic/claude-sonnet-5.5",
+      "openai/gpt-6.1-sol",
+      "moonshotai/kimi-k3"
+    ],
+    "activeBillingPolicy": "request-bounds-v1.13.0 (request-bounds-v1.10.0 base plus v1.13.0 delta)",
+    "exactTariffRulesForStandardRoutes": 0,
+    "stageFinancialBypassSources": [
+      "PRODUCT_FINANCIAL_POLICY=observe (MA05)",
+      "PAID_CALL_STAGE_OVERRIDE=A33 for its named account"
+    ]
+  },
+  "change": "Dedicated evaluation rejects a stage financial bypass or inherited tariffPolicy before claiming and at each runner revalidation boundary.",
+  "verification": {
+    "targetedTests": "10 passed across ma24-evaluation-runner.test.ts and stage-paid-call-override.test.ts",
+    "typescript": "node node_modules/typescript/bin/tsc --noEmit passed",
+    "eslint": "targeted runner, test, and binding script passed",
+    "frozenPreview": "docs/evidence/ma24-g15-config-preview-2026-10-15-v10.json",
+    "frozenPreviewSha256": "d4e445a49ffa408620288a20f4b3b79b3f4d9e6ed2e43b6fe8ed331ff33bcf6c",
+    "runtimeBindingMatched": true,
+    "readyForModelCalls": false,
+    "modelCalls": 0,
+    "providerCalls": 0
+  },
+  "remaining": "Freeze source set and full Gold; verify runtime build and transitive closure, exact route tariffs and paid authorization, then run actual dual-arm quality review. G17-G20 remain paused."
+}

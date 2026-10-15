@@ -1,6 +1,7 @@
 import { PostgresSaver } from '@langchain/langgraph-checkpoint-postgres';
 import { getPool } from '../../rag/db';
-import { withProductSpend } from '../../billing/context';
+import { currentSpendContext, withProductSpend } from '../../billing/context';
+import { currentStagePaidCallOverride } from '../../billing/stage-paid-call-override';
 import { digest, type ExecutionContext, type ModelMessage } from '../../assistant/main/contracts';
 import { buildMainAgentGraph, durableModel, MainAgentState } from '../../assistant/main/graph';
 import { initialTaskMessages } from '../../assistant/main/initial-task-messages';
@@ -17,6 +18,12 @@ import { assertMa24G15RuntimeBinding } from './ma24-g15-runtime-binding';
 
 type EvaluationInput = Parameters<typeof claimAndBindMa24EvaluationRun>[0];
 
+/** MA24 evaluation must use the frozen, reviewed financial path rather than a stage bypass. */
+export function assertMa24EvaluationSpendBoundary(userId: string) {
+  if (currentSpendContext()?.tariffPolicy || currentStagePaidCallOverride(userId))
+    throw new Error('MA24 evaluation financial override unavailable');
+}
+
 /** Refuse all model work until the current G15 preview admits paid evaluation. */
 export function assertMa24EvaluationModelReady() {
   const loaded = loadCurrentMa24G15Preview();
@@ -28,12 +35,16 @@ export function assertMa24EvaluationModelReady() {
 
 /** Dedicated G16 entry: frozen admission, hidden conversation, shared Agent graph, durable journals. */
 export async function executeMa24EvaluationRun(input: EvaluationInput) {
+  const entry = input.manifest.cases.find(item => item.caseId === input.caseId);
+  if (!entry) throw new Error('MA24 evaluation case absent from frozen manifest');
+  assertMa24EvaluationSpendBoundary(entry.userId);
   assertMa24EvaluationModelReady(); // Before a lease or any provider request.
   const admitted = await claimAndBindMa24EvaluationRun(input);
   const context: ExecutionContext = { userId: admitted.userId, runId: admitted.id,
     leaseToken: admitted.lease_token, role: 'member', mode: 'standard',
     knowledgeScope: admitted.knowledgeScope, evaluationArm: admitted.arm };
   const revalidate = async () => {
+    assertMa24EvaluationSpendBoundary(admitted.userId);
     const loadedCodeAndConfig = assertMa24EvaluationModelReady();
     await verifyMa24EvaluationTaskBinding({ ...input,
       leaseToken: admitted.lease_token, loadedCodeAndConfig,

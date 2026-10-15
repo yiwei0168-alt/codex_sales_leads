@@ -6,13 +6,18 @@ const mocks = vi.hoisted(() => ({
   preview: vi.fn(), claim: vi.fn(), binding: vi.fn(), verify: vi.fn(),
   boundary: vi.fn(), finish: vi.fn(), buildGraph: vi.fn(), model: vi.fn(),
   spend: vi.fn(), pool: vi.fn(), memory: vi.fn(), availableTools: vi.fn(),
+  spendContext: vi.fn(), financialOverride: vi.fn(),
   dispatch: vi.fn(), skillGuard: vi.fn(), memoryGuard: vi.fn(), knowledgeGuard: vi.fn(),
 }));
 vi.mock('@langchain/langgraph-checkpoint-postgres', () => ({
   PostgresSaver: class PostgresSaver {},
 }));
 vi.mock('../../rag/db', () => ({ getPool: mocks.pool }));
-vi.mock('../../billing/context', () => ({ withProductSpend: mocks.spend }));
+vi.mock('../../billing/context', () => ({ withProductSpend: mocks.spend,
+  currentSpendContext: mocks.spendContext }));
+vi.mock('../../billing/stage-paid-call-override', () => ({
+  currentStagePaidCallOverride: mocks.financialOverride,
+}));
 vi.mock('../../assistant/main/graph', () => ({
   buildMainAgentGraph: mocks.buildGraph, durableModel: mocks.model, MainAgentState: {},
 }));
@@ -48,7 +53,7 @@ import { executeMa24EvaluationRun } from './ma24-evaluation-runner';
 const userId = '11111111-1111-4111-8111-111111111111';
 const runId = '22222222-2222-4222-8222-222222222222';
 const leaseToken = '33333333-3333-4333-8333-333333333333';
-const input = { manifest: { cases: [] },
+const input = { manifest: { cases: [{ caseId: 'case-1', userId }] },
   sourceSetBytes: new TextEncoder().encode('frozen question bytes'),
   goldBytes: new TextEncoder().encode('PRIVATE_GOLD_SENTINEL'),
   codeAndConfigBytes: new TextEncoder().encode('frozen config bytes'),
@@ -73,6 +78,31 @@ beforeEach(() => {
   mocks.model.mockResolvedValue({ role: 'assistant', content: 'Synthetic answer' });
   mocks.availableTools.mockReturnValue([]);
   mocks.spend.mockImplementation((_userId: string, _stage: string, run: () => Promise<unknown>) => run());
+  mocks.spendContext.mockReturnValue(undefined);
+  mocks.financialOverride.mockReturnValue(null);
+});
+
+it('rejects stage financial bypass or inherited tariff overrides before claiming', async () => {
+  mocks.financialOverride.mockReturnValueOnce({ ruleId: 'MA05', allowFinancialAdmissionBypass: true });
+  await expect(executeMa24EvaluationRun(input))
+    .rejects.toThrow('MA24 evaluation financial override unavailable');
+  expect(mocks.claim).not.toHaveBeenCalled();
+  mocks.spendContext.mockReturnValue({ tariffPolicy: { version: 'unfrozen', rules: [] } });
+  await expect(executeMa24EvaluationRun(input))
+    .rejects.toThrow('MA24 evaluation financial override unavailable');
+  expect(mocks.claim).not.toHaveBeenCalled();
+});
+
+it('rechecks financial admission after claim and before graph or model work', async () => {
+  mocks.financialOverride.mockReturnValueOnce(null)
+    .mockReturnValueOnce({ ruleId: 'A33', allowFinancialAdmissionBypass: true });
+  await expect(executeMa24EvaluationRun(input))
+    .rejects.toThrow('MA24 evaluation financial override unavailable');
+  expect(mocks.claim).toHaveBeenCalledOnce();
+  expect(mocks.buildGraph).not.toHaveBeenCalled();
+  expect(mocks.model).not.toHaveBeenCalled();
+  expect(mocks.finish).toHaveBeenCalledWith(expect.any(Object), 'failed',
+    'MA24 evaluation execution failed');
 });
 
 it('refuses an unready paid evaluation before claiming a persisted task', async () => {
