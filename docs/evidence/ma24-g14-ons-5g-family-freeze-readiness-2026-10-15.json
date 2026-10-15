@@ -31,7 +31,8 @@
     "oldQuestionRows": 350,
     "oldUniqueQuestions": 300,
     "closestOldQuestions": "2.5G Ethernet versus 5G cellular device questions, not Highland geographic-area coverage or the missing household-indoor value",
-    "currentPublicationDraftPool": 24,
+    "currentPublicationDraftPoolManuallyReviewed": 24,
+    "nearestNeighborDiagnosticPool": 18,
     "currentPoolClosest": [
       "fcc-706-2026-school-entity-vs-student-denominator",
       "fcc-2026-fixed-service-option-scope",

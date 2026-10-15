@@ -29,7 +29,8 @@
     "oldQuestionRows": 350,
     "oldUniqueQuestions": 300,
     "closestOldQuestion": "Open a revised device datasheet, not the LoRa architecture, CRC stage or ground-station storage facts",
-    "currentPublicationDraftPool": 24,
+    "currentPublicationDraftPoolManuallyReviewed": 24,
+    "nearestNeighborDiagnosticPool": 18,
     "currentPoolClosest": [
       "nist-tn2363-ieee3388-assessment-and-profiles",
       "etsi-38901-v195-isac-lower-power-clusters",

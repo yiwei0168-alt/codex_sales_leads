@@ -1,0 +1,63 @@
+{
+  "schema": "ma24-g14-nist-connected-family-gold-disposition-v1",
+  "date": "2026-10-15",
+  "decision": "Approve the source-checked NIST workbook numerical comparison as one private independent Gold case in one connected NIST workbook plus TN 2363 exposure unit. Four other same-unit report/cross-document drafts remain provisional. This is a partial G14 disposition, not the full evaluation set freeze or G16 model quality acceptance.",
+  "approvedCaseId": "nist-industrial-wireless-5p4ghz-horn-free-vs-ground-1m",
+  "connectedSourceFamily": [
+    {
+      "original": "https://s3.amazonaws.com/nist-ics-wireless/measurements/SmartManufacturing_MetaData.xlsx",
+      "publisherPage": "https://www.nist.gov/ctl/smart-connected-systems-division/networked-control-systems-group/measurement-data-files",
+      "sha256": "0132c779ab57132ae5b5718b1b1440b52ed66bd48bc62d953336c90f7f2cb814",
+      "use": "Gold source; private attributed factual answer from exact Ray Tracing Results cells"
+    },
+    {
+      "original": "https://tsapps.nist.gov/publication/get_pdf.cfm?pub_id=960946",
+      "sha256": "65e333dac9975f4ca9a952a966fb212ce7ccb161ec60b48bf45c3dfd7adbd6a9",
+      "use": "Current cross-document draft links the report to the workbook; this PDF stays inside the same exposure unit and supplies no fact to this Gold answer"
+    }
+  ],
+  "connectedUnitOtherDrafts": [
+    "nist-ran-propagation-vs-dipole-range-alignment",
+    "nist-tn2363-aggressor-welding-table-comparison",
+    "nist-tn2363-delay-profile-and-5g-tsn-validation",
+    "nist-tn2363-ieee3388-assessment-and-profiles"
+  ],
+  "contentAndProductBasis": [
+    "The original Ray Tracing Results sheet labels free-space horn and ground-bounce horn sections. At 1 m and 5.4 GHz, F7/G7 are -26.36/-42.85 dB and K7/L7 are -30.85/approximately -47.34 dB; both comparisons differ by 4.49 dB. L7 is a cached floating-point value -47.339999999999996, displayed to two decimals.",
+    "The claim is limited to the workbook row and does not infer a general ground-reflection effect. Original worksheet formula/cached values and the private product sheet-5-table source read were checked.",
+    "The clone completed visual review, private registration and source-coordinate readback while excluding cached #N/A title-sheet output and denying another account; it made no answer-model call."
+  ],
+  "boundedIndependenceBasis": {
+    "firstGitFamilyRegistration": "6135edf2 at 2026-10-14T21:39:07Z",
+    "firstLocalSessionFamilyMatchUtc": "2026-10-14T21:32:51.614Z",
+    "preRegistrationWindow": "The 97 matching JSONL records before the first family commit occur in the seven-minute NIST report discovery and preparation window; no earlier family-specific match was found in the retained 102 rollout files and 161710 records. The workbook identifier first appears later, at 2026-10-15T00:23:28.525Z.",
+    "rolloutAuditScriptSha256": "b2dd7571b7f4aabcbdf4d63e797684285ee59bc2fb58631420f15c8061406d15",
+    "historicalQuestionRows": 350,
+    "historicalUniqueQuestions": 300,
+    "historicalNearestQuestion": "Physical product port/PoE questions, not NIST ray-tracing cells",
+    "currentPoolPublicationDraftsManuallyReviewed": 24,
+    "otherCurrentDraftWithSameAnswer": false,
+    "sameUnitAnswerSeparation": "The cross-document NIST draft reads a different dipole row and compares unlike range columns with separate report delay labels; the other TN 2363 drafts ask about welding interference, TSN delays or IEEE 3388. None supplies the four horn values at row 7 as its answer.",
+    "sourceSpecificNonTestProductCodeMatch": false,
+    "beforeFirstRegistrationGitTreeMatch": false,
+    "limit": "Bounded local screens cannot rule out unrecorded prompts, binary derivatives or provider pretraining. Product acceptance scripts are source exposure, but their facts have not been placed in model input or source-specific product answer rules. If any connected NIST source is used to tune product answers or retrieval, retire the entire unit from independent scoring."
+  },
+  "sourceUseBoundary": "Private, short, attributed NIST numerical answer with the dataset DOI https://doi.org/10.18434/T44S3N; no redistribution of workbook photos, chart, full workbook or technical report under this decision.",
+  "privateSnapshots": {
+    "sourceSetPath": "tmp/ma24-independent-quarantine/nist-workbook-reviewed-source-set-v1.json",
+    "sourceSetSha256": "dd260cc16d086db00050384ffeb61eeb6f4f25a800fb0ded2d9811b3135db7c0",
+    "goldPath": "tmp/ma24-independent-quarantine/nist-workbook-reviewed-gold-v1.json",
+    "goldSha256": "0bcb5e91f1df5f02a6e805e30dfd80ed2108e550e982e28dcce7e58c0f320f71",
+    "caseQuestionSha256": "74a35591eb354c3265cc71a6725f6480ab36ecb05facefd79640fc59cbe30dbd",
+    "reviewedAtUtc": "2026-10-15T12:56:59.894391+00:00",
+    "sourceAndGoldStructuralValidation": "passed against G16 snapshot validators for this partial one-case set"
+  },
+  "approvedGoldCasesInThisUnit": 1,
+  "approvedConnectedExposureUnitsInThisDisposition": 1,
+  "cumulativeApprovedGoldCases": 5,
+  "cumulativeApprovedConnectedExposureUnits": 3,
+  "fullEvaluationSetFrozen": false,
+  "g15ReadyForModelCalls": false,
+  "realDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}
