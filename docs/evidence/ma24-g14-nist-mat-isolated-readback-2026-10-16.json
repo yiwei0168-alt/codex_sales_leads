@@ -1,0 +1,32 @@
+{
+  "schema": "ma24-g14-nist-mat-isolated-readback-v1",
+  "date": "2026-10-16",
+  "scope": "Isolated localhost clone registration and owner evidence readback for the NIST workbook candidate; no answer-model run or final Gold decision.",
+  "command": "node scripts/run-tsx.cjs scripts/verify-nist-xlsx-review-clone.ts",
+  "scriptSha256": "01b6e9320a763f52f60533dcac8dbaa3995e209a62252a28e2a7ecd49dd841fc",
+  "sourceSha256": "0132c779ab57132ae5b5718b1b1440b52ed66bd48bc62d953336c90f7f2cb814",
+  "result": {
+    "sourceAndUploadedBlocksEqual": true,
+    "visualState": "ready",
+    "reviewDecisionsSaved": 4,
+    "registrationReady": true,
+    "treeStatus": "searchable",
+    "matFormatSourceCoordinate": {
+      "blockId": "sheet-7-table",
+      "unitIndex": 7,
+      "sheetName": "Measurements Mat Files Format",
+      "cellRange": "A1:K54"
+    },
+    "matFormatExactCellsChecked": [
+      "B13", "D13", "B14", "D14", "B15", "D15",
+      "B16", "D16", "B25", "C25", "B26", "D26"
+    ],
+    "otherAccountReadDenied": true,
+    "modelCalls": 0,
+    "productionWrites": 0
+  },
+  "qualification": "The owner-read evidence contains the twelve source cells and their definitions. This verifies product ingestion and authorization in the isolated clone; it does not verify a generated user-visible answer or citation, candidate content approval, whole-set independence, or G16 quality.",
+  "approvedGoldCasesAfterThisCheck": 5,
+  "fullEvaluationSetFrozen": false,
+  "g17ToG20Advanced": false
+}

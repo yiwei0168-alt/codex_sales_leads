@@ -162,6 +162,25 @@ try {
   for (const line of ["B7: 1", "F7: -26.36", "G7: -42.85", "K7: -30.85", "L7: -47.339999999999996"])
     assert(evidence.content.includes(line), `Missing exact cell ${line}`);
   assert.equal(await readEvidence(other, sourceNode.id, ["industry"]), null);
+  const formatUnit = units.find(item => item.title === "Measurements Mat Files Format");
+  assert(formatUnit);
+  const formatChildren = await browseTree(owner, registered.documentId, formatUnit.id, 0, 20, ["industry"]);
+  const formatNode = formatChildren.find(item => item.source_location.blockId === "sheet-7-table");
+  assert(formatNode);
+  const formatEvidence = await readEvidence(owner, formatNode.id, ["industry"]);
+  assert(formatEvidence);
+  assert.equal(formatEvidence.source_sha256, sha(source));
+  assert.equal(formatEvidence.source_location.sheetName, "Measurements Mat Files Format");
+  assert.equal(formatEvidence.source_location.cellRange, "A1:K54");
+  for (const line of [
+    "B13: AllthePdps{:,3}", "D13: The Acquisition date and time",
+    "B14: AllthePdps{:,4}", "D14: The record time",
+    "B15: AllthePdps{:,5}", "D15: The Absolute Time and Date",
+    "B16: AllthePdps{:,6}", "D16: The Impulse Response (I,Q) data",
+    "B25: AllthePdps{5,7}", "C25: Carrier Freq",
+    "B26: AllthePdps{5,8}", "D26: Carrier Frequency in Hz",
+  ]) assert(formatEvidence.content.includes(line), `Missing MAT format cell ${line}`);
+  assert.equal(await readEvidence(other, formatNode.id, ["industry"]), null);
   const indexedErrors = await pool.query<{ total: number }>(
     "select count(*)::int as total from knowledge_tree_node where version_id=$1 and content like '%#N/A%'", [registered.versionId]);
   assert.equal(indexedErrors.rows[0].total, 1, "Only the review explanation should mention #N/A");
@@ -172,6 +191,7 @@ try {
     originalCachedErrorCount: 62, reviewDecisionsSaved: reviewed.resolved,
     registrationReady: receipt.readyForRegistration, treeStatus: registered.treeStatus,
     sourceCoordinate: evidence.source_location, exactCellsChecked: 5,
+    matFormatSourceCoordinate: formatEvidence.source_location, matFormatExactCellsChecked: 12,
     otherAccountReadDenied: true, indexedCachedErrorTables: 0,
     modelCalls: 0, productionWrites: 0, qualityAccepted: false }));
 } finally {

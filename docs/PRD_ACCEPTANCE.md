@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+2026-10-16 / MA24 G14：NIST MAT 字段候选在隔离克隆完成工作簿可检索注册、来源树授权回读和 12 个原格核对，跨账号拒读。[回读收据](evidence/ma24-g14-nist-mat-isolated-readback-2026-10-16.json)。这只证明产品读取该证据块；逐题内容、整组独立性、用户可见引用和 Gold 冻结未通过，批准 Gold 仍为 5 题，G17–G20 暂停。
+
 2026-10-16 / MA24 G15/G16：专用运行器增加 BGE 固定模型健康检查及 `knowledge_search` 降级失败结算；20 项定向测试、类型/lint 与本机健康探针通过。[工程收据](evidence/ma24-g15-g16-bge-degradation-gate-2026-10-16.json)。当前 v29 仍只读模拟，旧隔离包需按最终源码重建；独立 Gold、付费准入和真实双路质量尚未验收，G17–G20 暂停。
 
 2026-10-16 / MA24 G01 当前源码 `81e44b14` 的隔离 Next 16.3.4 生产构建、追踪依赖、无环境文件独立包和 3031 本机三路状态冒烟通过。[构建收据](evidence/ma24-g01-81e44b14-current-isolated-package-2026-10-16.json)。这只验本地包可运行；生产加载、G14 独立 Gold、G15 非模拟准入和 G16 真实双路质量仍待验，G17–G20 暂停。
