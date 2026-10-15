@@ -1,0 +1,32 @@
+{
+  "schema": "ma24-g16-evaluation-task-admission-binding-v1",
+  "date": "2026-10-15",
+  "change": "Added a read-only tenant-scoped pre-execution binding for a leased MA24 evaluation task against frozen source-set bytes and a manifest case.",
+  "bindingChecks": [
+    "source-set byte SHA-256 matches manifest and each frozen question hash matches its case",
+    "planned run ID, case ID and arm match the persisted execution spec and manifest hash",
+    "persisted account, execution kind, running status and unexpired lease token match",
+    "question, knowledge scope, no attachments, no previous conversation and standard mode match",
+    "persisted model configuration equals the loaded standard model profile",
+    "tenant-scoped lookup selects the exact task ID and account"
+  ],
+  "checks": {
+    "focusedVitest": "7 passed, including adversarial drift and mocked tenant lookup",
+    "typescript": "passed",
+    "eslint": "passed",
+    "realDatabaseClone": "not run for this stage",
+    "providerCalls": 0
+  },
+  "files": [
+    "src/lib/knowledge/evaluation/ma24-evaluation-task-binding.ts",
+    "src/lib/knowledge/evaluation/ma24-evaluation-task-binding.test.ts"
+  ],
+  "limits": [
+    "This binder is not yet invoked by a dedicated evaluation worker; the ordinary worker still excludes evaluation tasks.",
+    "It does not verify code/build closure, full source authorization, Gold review, provider tariffs, paid-call cap or real model quality.",
+    "The database lookup was checked by a mocked tenant boundary, not a live isolated database fixture."
+  ],
+  "approvedGoldCount": 0,
+  "realDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}

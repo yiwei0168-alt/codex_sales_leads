@@ -407,3 +407,5 @@ R1 的 PPTX 内容质量抽样已核对公开开发原件的 6/63 个待审核�
 2026-10-15 G14 GOV.UK 来源家族暴露时间修正：扩大到完整词项后，BDUK 与 Taking Part 最早见于前一天的候选准备会话；旧的完整标题/URL/数值筛查仅覆盖较晚窗口，不能作为最早接触时间。更早编码子串已排除，指定模式的本地 Git 提交历史未命中。此为有界排查，家族独立资格、正式 Gold 和 G16 真实双路仍待验。[修正收据](evidence/ma24-g14-govuk-earliest-preparation-exposure-2026-10-15.json)。G17–G20 暂停。
 
 2026-10-15 G15/G16 同账号工具隔离工程验收：基线臂新增服务端 `evaluationArm` 闸门，即使账号在影子白名单也不能调用 `vectorless_*`；候选保留七项。三种范围的只读预览、9 项测试、类型与 lint 通过。专用 runner、Gold/配置冻结、付费准入和真实双路质量仍待完成；Gold 0、双路 0。[收据](evidence/ma24-g15-g16-evaluation-arm-tool-isolation-2026-10-15.json)。G17–G20 暂停。
+
+2026-10-15 G16 评测任务执行前身份绑定：新增租户内只读核验，按冻结来源集字节、题面哈希、manifest、账号、case、臂、知识范围、标准模式、模型配置和未过期租约核对持久任务；7 项对抗性单测及模拟租户读取、类型和 lint 通过。尚未接入专用 worker，也未做真实隔离库验收或供应商调用；Gold 0、双路 0。[工程收据](evidence/ma24-g16-evaluation-task-admission-binding-2026-10-15.json)。G17–G20 暂停。

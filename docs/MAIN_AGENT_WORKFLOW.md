@@ -1500,3 +1500,5 @@ IEEE 2014 GEPOF 教程按用户确认仅进入 PPTX 读取与引用验收。使�
 2026-10-15 MA24 G14：第三道 BDUK 现金/权责题已获用户同意进入逐题审核，7,934/7,617 处每百万英镑及交付与付款时间限定获确认。三题的逐题答案确认不自动赋予同一 GOV.UK 来源家族独立性；家族终审和 Gold 冻结前不得送入 G16 双路执行。[MA24-22](CONFIRMED_PRODUCT_RULES.md)、[回复收据](evidence/ma24-g14-bpi-cash-accrual-answer-review-2026-10-15.json)。G17–G20 暂停。
 
 2026-10-15 G15/G16：评测臂标识现在进入服务端工具可见性判断；在同一白名单账号和同一开关下，基线拒绝七个 `vectorless_*`，候选可见。工具发现、描述、执行均复用该判断；本地预览与定向测试通过。专用 runner 仍须从冻结清单为持久任务派生臂标识，当前不得把这一工程闸门当作实际双路运行。[收据](evidence/ma24-g15-g16-evaluation-arm-tool-isolation-2026-10-15.json)。G17–G20 暂停。
+
+2026-10-15 G16：评测专用任务在未来被认领后须先经 `verifyMa24EvaluationTaskBinding` 核冻结来源集字节、题面、账号、case、臂、范围、标准模型配置及有效租约，再进入主 Agent 图。该绑定器已实现并通过定向测试，但尚未由专用 worker 调用；普通 worker 继续跳过这类任务，不因绑定器存在而开放付费运行。[收据](evidence/ma24-g16-evaluation-task-admission-binding-2026-10-15.json)。G17–G20 暂停。
