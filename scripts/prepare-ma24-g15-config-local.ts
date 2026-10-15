@@ -19,6 +19,7 @@ const [{availableTools,describeTool},{modeModelConfig},{modePromptRules,MODE_PRO
   import('../src/lib/assistant/main/model'),
 ]);
 const hash=(value:string)=>createHash('sha256').update(value).digest('hex');
+const promptDateUtc=new Date().toISOString().slice(0,10);
 const mode='standard' as const;
 const userId='00000000-0000-4000-8000-000000000001';
 const savedFlag=process.env.ENABLE_VECTORLESS_AGENT_SHADOW;
@@ -55,6 +56,8 @@ try{
  if(savedUsers===undefined)delete process.env.VECTORLESS_AGENT_SHADOW_USER_IDS;
  else process.env.VECTORLESS_AGENT_SHADOW_USER_IDS=savedUsers;
 }
+if(new Date().toISOString().slice(0,10)!==promptDateUtc)
+  throw new Error('UTC date changed while computing product prompt hashes; rerun the G15 preview');
 const sourceFiles=[
  'scripts/prepare-ma24-g15-config-local.ts',
  'src/lib/assistant/main/graph.ts','src/lib/assistant/main/model.ts',
@@ -72,7 +75,7 @@ const sourceHashes=Object.fromEntries(await Promise.all(sourceFiles.map(async fi
 const profile=modeModelConfig(mode).profile;
 if(!profile)throw new Error('Mode profile unavailable');
 console.log(JSON.stringify({schema:'ma24-g15-config-preview-v1',readOnly:true,simulation:true,
-  previewDateUtc:new Date().toISOString().slice(0,10),
+  previewDateUtc:promptDateUtc,productPromptDateUtc:promptDateUtc,
   mode,modePromptVersion:MODE_PROMPT_VERSION,modePromptSha256:hash(modePromptRules(mode)),
   productVersion:PRODUCT_VERSION,modelProfile:profile,
   modelFunctionsSha256:hash(JSON.stringify(modelFunctions)),arms,sourceHashes,
@@ -80,6 +83,7 @@ console.log(JSON.stringify({schema:'ma24-g15-config-preview-v1',readOnly:true,si
   intendedLocalBgeFlagForBothArms:'ENABLE_MAIN_AGENT_LOCAL_BGE_SEARCH=1',
   currentLocalBgeFlagEnabled:process.env.ENABLE_MAIN_AGENT_LOCAL_BGE_SEARCH==='1',
   sourceSetFrozen:false,goldFrozen:false,runtimeBuildVerified:false,transitiveCodeClosureVerified:false,
+  requiredRunPromptDateUtc:promptDateUtc,runPromptDateGateImplemented:false,
   baselineRetrievalProfileVerified:false,
   providerTariffsVerified:false,paidCallAuthorizationConfirmed:false,
   maximumProviderRequests:null,maximumRequestBytes:null,maximumOutputTokens:null,

@@ -1,0 +1,29 @@
+{
+  "schema": "ma24-g15-config-drift-v1",
+  "date": "2026-10-15",
+  "scope": "Read-only comparison of the 2026-10-14 G15 configuration preview against current source and tool descriptions",
+  "oldPreview": "docs/evidence/ma24-g15-config-preview-2026-10-14.json",
+  "currentPreview": "docs/evidence/ma24-g15-config-preview-2026-10-15.json",
+  "currentPreviewSha256": "6a3c8ad62b9ee86767a27f95276bf8680b95465d14f96964cc055d7c4264a4ca",
+  "sourceChangesSinceOldPreview": [
+    "scripts/prepare-ma24-g15-config-local.ts",
+    "src/lib/assistant/main/graph.ts",
+    "src/lib/knowledge/vectorless.ts"
+  ],
+  "observed": {
+    "oldPromptDateUtc": "2026-10-14",
+    "currentPromptDateUtc": "2026-10-15",
+    "productPromptUsesUtcClockDate": true,
+    "baselineAndCandidatePromptHashesChangedInAllThreeScopes": true,
+    "toolSchemasUnchangedInAllThreeScopes": true,
+    "modelRoutesUnchanged": true,
+    "previewRejectsUtcDateRolloverDuringGeneration": true,
+    "runPromptDateGateImplemented": false,
+    "currentLocalBgeFlagEnabled": false,
+    "sourceSetFrozen": false,
+    "goldFrozen": false,
+    "readyForPaidEvaluation": false
+  },
+  "interpretation": "The old preview cannot be used as a code/config freeze. A future runner must bind its exact prompt date and compare actual loaded code, source and Gold hashes before model calls. This receipt makes no quality or paid-call claim.",
+  "providerCalls": 0
+}
