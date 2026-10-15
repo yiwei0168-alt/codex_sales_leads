@@ -1,0 +1,22 @@
+{
+  "schema": "ma24-g16-final-model-source-consumption-gate-v1",
+  "date": "2026-10-15",
+  "scope": "G16 read-only citation provenance; G17-G20 paused",
+  "change": "A reviewer-entered citation must be supported both by a same-task persisted source receipt and by source content in the saved input of a successful model call that produced the final answer. The visible tool message is checked with the same source hash, unit, optional block/version, row and excerpt rules.",
+  "verification": {
+    "focusedTests": "2 files, 10 tests passed",
+    "typecheck": "npm run typecheck passed",
+    "lint": "Targeted ESLint passed",
+    "negativeCases": [
+      "A saved source read that never entered the final-answer model request is rejected",
+      "A model-visible source message with a changed excerpt is rejected",
+      "A model-visible source message with a different call ID is rejected"
+    ]
+  },
+  "limitations": [
+    "This does not prove that the final user-visible answer displayed the citation.",
+    "No frozen Gold, real dual-arm execution, independent provider receipt, or final G16 quality acceptance was produced."
+  ],
+  "realModelCalls": 0,
+  "productionWrites": 0
+}

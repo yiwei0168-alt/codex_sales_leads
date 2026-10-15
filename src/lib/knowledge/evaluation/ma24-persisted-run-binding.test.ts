@@ -139,9 +139,27 @@ describe("MA24 persisted run binding", () => {
     const citedRun: Ma24Run = { ...run, receiptIds: [...run.receiptIds, sourceId],
       citations: [{ assetSha256: "a".repeat(64), unitIndex: 4, row: 370,
         blockId: "sheet-4-table", excerpt: "Highland" }] };
-    expect(verify({ run: citedRun, evidenceCalls: [sourceCall] }).citationBindings)
+    const withSourceMessage = (content: string) => {
+      const input = { ...modelInput, messages: [...modelInput.messages,
+        { role: "tool" as const, tool_call_id: "call_read", content }] };
+      const manifest = modelRequestManifest({ ...wireBody, messages: transportMessages(input.messages) },
+        { model: "model-1", provider: "fixture", id: "generation-1" });
+      return [{ ...modelCalls[0], input, input_hash: digest(input), output: { status: "success",
+        data: { message: { role: "assistant", content: run.answer }, requestManifest: manifest } } }];
+    };
+    expect(verify({ run: citedRun, evidenceCalls: [sourceCall],
+      modelCalls: withSourceMessage(JSON.stringify(sourceCall.output)) }).citationBindings)
       .toEqual([{ citationIndex: 0, callId: sourceId }]);
     expect(() => verify({ run: citedRun, evidenceCalls: [] }))
       .toThrow("citation lacks persisted source");
+    expect(() => verify({ run: citedRun, evidenceCalls: [sourceCall] }))
+      .toThrow("citation absent from final model input");
+    expect(() => verify({ run: citedRun, evidenceCalls: [sourceCall],
+      modelCalls: withSourceMessage(JSON.stringify({ ...sourceCall.output,
+        data: { ...sourceCall.output.data, evidence: { ...sourceCall.output.data.evidence,
+          content: "A370: Other" } } })) })).toThrow("citation absent from final model input");
+    expect(() => verify({ run: citedRun, evidenceCalls: [sourceCall],
+      modelCalls: withSourceMessage(JSON.stringify({ ...sourceCall.output, callId: runId })) }))
+      .toThrow("citation absent from final model input");
   });
 });

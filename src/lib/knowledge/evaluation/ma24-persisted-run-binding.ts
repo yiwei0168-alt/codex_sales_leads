@@ -26,6 +26,22 @@ function savedModelAnswer(output: unknown): string | undefined {
   return message.content;
 }
 
+function modelVisibleSourceCalls(call: PersistedModelCall, evidenceCalls: Ma24EvidenceCall[]): Ma24EvidenceCall[] {
+  const input = call.input as { messages?: unknown } | null;
+  if (!Array.isArray(input?.messages)) return [];
+  const sourceById = new Map(evidenceCalls.map(source => [source.id, source]));
+  return input.messages.flatMap(message => {
+    if (!message || typeof message !== "object" ||
+      (message as { role?: unknown }).role !== "tool" ||
+      typeof (message as { content?: unknown }).content !== "string") return [];
+    try {
+      const output = JSON.parse((message as { content: string }).content) as { callId?: unknown };
+      const source = typeof output?.callId === "string" ? sourceById.get(output.callId) : undefined;
+      return source ? [{ ...source, output }] : [];
+    } catch { return []; }
+  });
+}
+
 /** Checks database rows, not fields copied from an evaluation run file. */
 export function assertMa24PersistedRunBinding(input: {
   case: Ma24Case; query: string; run: Ma24Run;
@@ -77,6 +93,15 @@ export function assertMa24PersistedRunBinding(input: {
     throw new Error(`MA24 duplicate provider generation ${run.caseId}:${run.arm}`);
   const citationEvidence = assertMa24CitationEvidence({ userId: frozen.userId, runId: run.runId,
     citations: run.citations, receiptIds: run.receiptIds, calls: evidenceCalls });
+  if (run.citations.length && !modelCalls.some(call => {
+    if (savedModelAnswer(call.output) !== run.answer) return false;
+    try {
+      assertMa24CitationEvidence({ userId: frozen.userId, runId: run.runId,
+        citations: run.citations, receiptIds: run.receiptIds,
+        calls: modelVisibleSourceCalls(call, evidenceCalls) });
+      return true;
+    } catch { return false; }
+  })) throw new Error(`MA24 citation absent from final model input ${run.caseId}:${run.arm}`);
   return {
     runId: run.runId, userId: task.user_id,
     taskSha256: createHash("sha256").update(stableJson(task)).digest("hex"),
