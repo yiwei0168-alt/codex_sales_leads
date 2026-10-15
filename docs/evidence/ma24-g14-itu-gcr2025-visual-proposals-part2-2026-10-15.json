@@ -1,0 +1,186 @@
+{
+  "schema": "ma24-g14-itu-gcr2025-visual-proposals-part2-v1",
+  "date": "2026-10-15",
+  "stage": "Physical pages 33–48 source-bound proposals; not product judgments",
+  "sourceSha256": "4489081fe8709ea1bcea2b724ff5a92c3979195432a8da73c20a8c8e0570ccb8",
+  "extractionArtifactSha256": "788600e3fc3a1f8bd0a1d658ab608686b1c4358cfe76672500f3ae652303ffd6",
+  "candidatePackageSha256": "a7e4c0784ae51a2195b77623a67b1579bcef70375ce837b6e7c1d20b8580efac",
+  "scopePhysicalPages": [
+    33,
+    48
+  ],
+  "targetedFullSizePages": [
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48
+  ],
+  "proposedCounts": {
+    "evidence": 14,
+    "decoration": 2,
+    "unresolved": 0
+  },
+  "proposals": [
+    {
+      "blockId": "page-33-visual-review",
+      "physicalPage": 33,
+      "originalRenderSha256": "2ef7bda86e8f6e3f69dac93351ef1d564e1f02d93760a1c3a4adae3a9806dfc9",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figure 2.1 charts the rise in individuals using the Internet from 2005 to 2025, with bars for billions of people on the left axis and a green percentage series on the right axis. The two axes must not be interchanged.",
+      "reason": "Full-size physical PDF page 33 checked against its original chart/map, legend and note; concise description avoids unprinted exact values.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-34-visual-review",
+      "physicalPage": 34,
+      "originalRenderSha256": "b6a7da2002df1a69af31d28d9e55e3ef033d0a223912177ca6c8f3dcbcab6eba",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figure 2.2 compares percentages of individuals using the Internet across ITU regions and special groups in 2005 and 2025. Blue columns are 2025 and green markers are 2005; the categories include region, income and LDC/LLDC/SIDS groupings.",
+      "reason": "Full-size physical PDF page 34 checked against its original chart/map, legend and note; concise description avoids unprinted exact values.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-35-visual-review",
+      "physicalPage": 35,
+      "originalRenderSha256": "a19c4cbbab0301b5851d4ae6e5c3defcb5fb97532eeabfea1664f57e0c5f1137",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figure 2.3 ranks reported economies by the share of Internet users who connect daily, weekly or less than weekly. It is a stacked frequency-of-use chart; its rows should not be treated as a population Internet-penetration table.",
+      "reason": "Full-size physical PDF page 35 checked against its original chart/map, legend and note; concise description avoids unprinted exact values.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-36-visual-review",
+      "physicalPage": 36,
+      "originalRenderSha256": "7321c5d35e756d4461b21a472cbc7a3ebce6d055819ef4628e1ee0ba22b1362d",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figure 2.4 plots Internet-use percentage against GDP per capita in thousands of constant-2021 PPP dollars, with a fitted curve and country points. It shows association, not a causal effect or country-level labels.",
+      "reason": "Full-size physical PDF page 36 checked against its original chart/map, legend and note; concise description avoids unprinted exact values.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-37-visual-review",
+      "physicalPage": 37,
+      "originalRenderSha256": "d31228775de4c8a4b93058d94a6606f26618487b336bff9f10802ca2350f10fd",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figure 2.5 maps 2024 or latest-available population Internet-use share in broad colour bands: 0–20, 20–40, 40–60, 60–80 and 80–100 per cent, plus unavailable. The map should not be used for precise country percentages.",
+      "reason": "Full-size physical PDF page 37 checked against its original chart/map, legend and note; concise description avoids unprinted exact values.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-38-visual-review",
+      "physicalPage": 38,
+      "originalRenderSha256": "ce9c328b42955ba35ef97ac70cf60d2bd66f05cd7165f7b0dd6aafa57460e986",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figure 2.6 shows distributions of Internet-use percentage by gender and income group for 2024, with red group-average lines. Figure 2.7 maps the 2024 Internet-use gender parity score in colour bands. Map colour is not an exact country value.",
+      "reason": "Full-size physical PDF page 38 checked against its original chart/map, legend and note; concise description avoids unprinted exact values.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-39-visual-review",
+      "physicalPage": 39,
+      "originalRenderSha256": "f9941e5c5ff8631f5d17c407afe3dd2a352913f19b6f201bc26b6f4c918bf0cc",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figure 2.8 compares 2025 Internet-use percentages for ages 15–24 versus the rest of the population across regions and income groups. Its blue bars and green markers represent different age groups, not two time periods.",
+      "reason": "Full-size physical PDF page 39 checked against its original chart/map, legend and note; concise description avoids unprinted exact values.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-40-visual-review",
+      "physicalPage": 40,
+      "originalRenderSha256": "b3bce8c0b4b29de9e9ac7daba2745273a30e8757081bc0d033a232692fc6c9d1",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figure 2.9 compares Internet-use share with GDP per capita by age group (15–24, 25–74, 75+), using separate fitted curves and country points. The note limits the 75+ series to countries with data from 2020 or later.",
+      "reason": "Full-size physical PDF page 40 checked against its original chart/map, legend and note; concise description avoids unprinted exact values.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-41-visual-review",
+      "physicalPage": 41,
+      "originalRenderSha256": "b4adbd54bcf6dc4184e71873be39ef17c2ff27e98bf83d7eb52a954dac9e9547",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Page overview shows digitally extracted narrative or shaded text only, with no separate chart/map/table; recheck original before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-42-visual-review",
+      "physicalPage": 42,
+      "originalRenderSha256": "8b88e2ce3c5e84a9fae2bae765f6f52019f79859f245f7c6ef577b6af0ad865f",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Page overview shows digitally extracted narrative or shaded text only, with no separate chart/map/table; recheck original before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-43-visual-review",
+      "physicalPage": 43,
+      "originalRenderSha256": "7709f5a311d36c040994fbce512c4fad4044c3c62c7be9f226b9fb6c42d72449",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figure 2.10 places rural and urban Internet-use percentages side by side for economies with data from 2022 or later. The green points are rural and blue points urban; the figure does not print exact percentages for every country.",
+      "reason": "Full-size physical PDF page 43 checked against its original chart/map, legend and note; concise description avoids unprinted exact values.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-44-visual-review",
+      "physicalPage": 44,
+      "originalRenderSha256": "9acffd41dfacfbd03e6b92fcf08a3380d5a4a4f0bcaf6da646dad6adbd414189",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figure 2.11 compares Internet banking, online purchasing and interaction with government by highest education attained. Four shades distinguish primary-or-less through tertiary; the plotted country dots are not an exact numeric table.",
+      "reason": "Full-size physical PDF page 44 checked against its original chart/map, legend and note; concise description avoids unprinted exact values.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-45-visual-review",
+      "physicalPage": 45,
+      "originalRenderSha256": "96ffc024a9840b772da8d9e97a970a2515a8687dc94ca067c1181ed955f10c66",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figure 2.12 compares Internet-use share by labour-force status against GDP per capita. Blue is in the labour force and green is outside it; the curves are descriptive relationships, not evidence that employment causes Internet use.",
+      "reason": "Full-size physical PDF page 45 checked against its original chart/map, legend and note; concise description avoids unprinted exact values.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-46-visual-review",
+      "physicalPage": 46,
+      "originalRenderSha256": "32c9f62b9f8a03c40c48b589b5486a4aa868e11be93beec979ea99ce2f2e264f",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figure 2.13 compares Internet-use percentages for manual and non-manual occupations across reported economies. Blue denotes non-manual and green denotes manual; precise percentages are not printed for every economy.",
+      "reason": "Full-size physical PDF page 46 checked against its original chart/map, legend and note; concise description avoids unprinted exact values.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-47-visual-review",
+      "physicalPage": 47,
+      "originalRenderSha256": "13e63a3a3d6f13332278c20e987f9587a935942a247b9dbf33111a012f7a4d60",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figure 2.14 is a box-plot comparison of reported reasons for not using the Internet: no need, lack of skills and high cost of service. The figure shows distributions, not a single global percentage for each barrier.",
+      "reason": "Full-size physical PDF page 47 checked against its original chart/map, legend and note; concise description avoids unprinted exact values.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-48-visual-review",
+      "physicalPage": 48,
+      "originalRenderSha256": "343383e683b5f6c1d9b6b59d35370281bd5bec4704411edb4f2d1b68c9bd65d3",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figure 2.15 shows 2023 shares of population within 10, 25, 50 and 100 km of a fibre-optic node by region and income group. Its note says the 25, 50 and 100 km segments add people beyond the previous threshold; the stack must not be read as four independent totals.",
+      "reason": "Full-size physical PDF page 48 checked against its original chart/map, legend and note; concise description avoids unprinted exact values.",
+      "productDecisionSaved": false
+    }
+  ],
+  "cumulativePendingPageProposals": 48,
+  "remainingPendingPagesNotProposed": 80,
+  "productReviewDecisionsSaved": 0,
+  "privateRegistrationPassed": false,
+  "goldApproved": false,
+  "modelCalls": 0,
+  "g17ToG20Advanced": false
+}
