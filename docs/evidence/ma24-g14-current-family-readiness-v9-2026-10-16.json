@@ -1,0 +1,37 @@
+{
+  "schema": "ma24-g14-current-family-readiness-v9-receipt",
+  "date": "2026-10-16",
+  "supersedes": "docs/evidence/ma24-g14-current-family-readiness-v8-2026-10-16.json",
+  "script": "scripts/audit-ma24-g14-current-family-readiness-local.ts",
+  "scriptSha256": "418052f98fda6072e39db58e18642b9d9156ef2cd4ab1a6de81681222b6ae7e6",
+  "poolPath": "tmp/ma24-independent-quarantine/g14-current-draft-pool-v9-metadata-2026-10-16.json",
+  "poolSha256": "96459f096b17bafdd32dfedc18db924e0339ae53dd4b563ea1d2d7f78b88b9ed",
+  "privateReportPath": "tmp/ma24-independent-quarantine/g14-family-readiness-v9-2026-10-16.json",
+  "privateReportSha256": "7ab6f3314b10c8f94fb1e4c726223734519ffa0c44edf1c045e1014e8d38fa8f",
+  "counts": {
+    "publicationDrafts": 24,
+    "syntheticSecurityDrafts": 3,
+    "publicationFamilyLabels": 14,
+    "connectedPublicationExposureUnits": 13,
+    "approvedGoldCases": 5,
+    "unitsContainingApprovedGold": 3,
+    "unitsWhoseCurrentDraftsAreAllApproved": 2,
+    "unitsMixingApprovedAndProvisionalDrafts": 1
+  },
+  "mixedUnit": {
+    "family": "FCC 26-55 Section 706 release",
+    "approvedCase": "fcc-2026-fixed-service-option-scope",
+    "provisionalCase": "fcc-706-2026-school-entity-vs-student-denominator"
+  },
+  "v8ToV9Comparison": "Connected units and counts are unchanged; v9 corrects draft-pool metadata only and binds the report to the current pool hash.",
+  "checks": {
+    "typescript": "passed",
+    "changedFileEslint": "passed",
+    "privateInputHashBinding": "passed"
+  },
+  "fullSetFrozen": false,
+  "g15ReadyForModelCalls": false,
+  "realDualArmRuns": 0,
+  "g17ToG20Advanced": false,
+  "limits": "Connected family labels are a structural exposure audit, not proof that hidden derivatives, semantic reuse, provider knowledge or unreviewed historical prompts are absent. Provisional questions are not approved Gold."
+}
