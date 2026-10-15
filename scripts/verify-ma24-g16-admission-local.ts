@@ -1,6 +1,7 @@
 /** Local synthetic database acceptance for MA24 task admission; no model calls. */
 import assert from "node:assert/strict";
 import { createHash, randomUUID } from "node:crypto";
+import { readFile } from "node:fs/promises";
 import nextEnv from "@next/env";
 import { Pool } from "pg";
 import { getPool } from "../src/lib/rag/db";
@@ -10,9 +11,26 @@ import { ma24CaseQuerySha256, ma24ManifestSha256,
   type Ma24FrozenManifest, type Ma24SourceSetSnapshot } from "../src/lib/knowledge/evaluation/ma24-independent-comparison";
 
 nextEnv.loadEnvConfig(process.cwd());
-const migrationUrl = process.env.DATABASE_MIGRATION_URL;
-const appUrl = process.env.DATABASE_URL;
+let migrationUrl = process.env.DATABASE_MIGRATION_URL;
+let appUrl = process.env.DATABASE_URL;
 assert(migrationUrl && appUrl, "Local database URLs required");
+if (process.env.MA24_ADMISSION_USE_CLONE === "1") {
+  const state = JSON.parse(await readFile("tmp/ma11-replay-state.json", "utf8")) as {
+    database: string; cleaned?: boolean;
+  };
+  assert(!state.cleaned && /^ma11_replay_[a-f0-9]{12}$/.test(state.database),
+    "Active isolated clone required");
+  const migrationClone = new URL(migrationUrl);
+  const appClone = new URL(appUrl);
+  assert(["localhost", "127.0.0.1"].includes(migrationClone.hostname) &&
+    ["localhost", "127.0.0.1"].includes(appClone.hostname), "Local database required");
+  migrationClone.pathname = `/${state.database}`;
+  appClone.pathname = `/${state.database}`;
+  migrationUrl = migrationClone.toString();
+  appUrl = appClone.toString();
+  process.env.DATABASE_MIGRATION_URL = migrationUrl;
+  process.env.DATABASE_URL = appUrl;
+}
 const migration = new URL(migrationUrl), app = new URL(appUrl);
 assert(["localhost", "127.0.0.1"].includes(migration.hostname), "Local database required");
 assert.equal(`${app.hostname}:${app.port || "5432"}${app.pathname}`,

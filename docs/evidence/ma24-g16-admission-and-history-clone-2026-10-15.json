@@ -1,0 +1,34 @@
+{
+  "schema": "ma24-g16-admission-and-history-clone-v1",
+  "date": "2026-10-15",
+  "database": "ma11_replay_7d98e095133b",
+  "databaseScope": "existing isolated local clone; product database unchanged",
+  "migration136": "applied to clone; second run found it already applied",
+  "historyQuarantine": {
+    "evaluationHiddenConversation": true,
+    "evaluationOrdinaryMessages": 0,
+    "ordinaryControlVisible": true,
+    "evaluationDetailListEventsHidden": true,
+    "evaluationResultPersisted": true,
+    "syntheticUsersAndRunsAfterCleanup": 0
+  },
+  "admissionBinding": {
+    "validLeasedRow": "accepted",
+    "crossAccountRow": "rejected",
+    "changedQuestion": "rejected",
+    "expiredLease": "rejected"
+  },
+  "checks": {
+    "historyCloneScript": "passed twice",
+    "admissionCloneScript": "passed",
+    "typescript": "npx.cmd tsc --noEmit passed",
+    "focusedEslint": "two clone verification scripts passed",
+    "diffCheck": "passed"
+  },
+  "productDatabaseMigrationApplied": false,
+  "dedicatedRunnerConnected": false,
+  "approvedGoldCount": 0,
+  "realDualArmRuns": 0,
+  "providerCalls": 0,
+  "g17ToG20Advanced": false
+}
