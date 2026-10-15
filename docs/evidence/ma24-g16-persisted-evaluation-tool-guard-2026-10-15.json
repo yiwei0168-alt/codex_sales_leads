@@ -1,0 +1,21 @@
+{
+  "schema": "ma24-g16-persisted-evaluation-tool-guard-v1",
+  "date": "2026-10-15",
+  "scope": "G16 leased main Agent evaluation task, immediately before registered tool approval or journaling",
+  "change": "Registered tool execution now reads the leased task kind and requires the evaluation arm to match the persisted execution specification, the knowledge scope to match the persisted input, and the tool effect to be read. An ordinary task cannot execute while carrying an evaluation arm.",
+  "checks": [
+    "Three focused boundary tests passed, including a matched read and denials for write, arm and scope drift",
+    "TypeScript typecheck and focused ESLint passed",
+    "The isolated local database clone rejected a write tool, missing arm, wrong arm and wrong scope against a real leased synthetic evaluation row",
+    "Rejected actions created zero tool-call journal rows, zero ordinary conversation messages and zero provider model calls; synthetic rows were cleaned",
+    "A current local BGE baseline read returned authorized BGE, full-text and verified-fact ranked chunks for an exposed development query, with no provider call"
+  ],
+  "approvedGold": 0,
+  "realDualArmRuns": 0,
+  "providerCalls": 0,
+  "limitations": [
+    "The BGE probe is point-in-time engineering evidence on exposed development material, not an independent answer-quality result.",
+    "The tool guard relies on correct effect declarations for registered tools and does not replace the frozen-task binder or a dedicated runner.",
+    "G15 source/Gold, build, tariff, budget and paid-call admission remain unready; G17-G20 remain paused."
+  ]
+}

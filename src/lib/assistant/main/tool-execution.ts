@@ -2,10 +2,20 @@ import { result, type ExecutionContext, type ProductTool, type ToolResult } from
 import { beginCall, completeCall, event, boundary, LeaseLostError, InstructionsChangedError, assertCurrentInstructions } from "./repository";
 import { needsApproval, requestApproval } from "./approvals";
 import { modeAllowsTool } from './mode-tools';
+import { stableJson } from '@/lib/knowledge/review-types';
 export async function executeRegisteredTool(tool: ProductTool, input: unknown, callKey: string, context: ExecutionContext): Promise<ToolResult> {
   const current = await boundary(context);
   if (current.control) throw new LeaseLostError();
   assertCurrentInstructions(context, current.instructions);
+  if (current.execution_kind === 'main-agent-evaluation') {
+    const spec = current.execution_spec as { arm?: unknown } | null;
+    if (!context.evaluationArm || spec?.arm !== context.evaluationArm || tool.effect !== 'read' ||
+      !context.knowledgeScope?.length ||
+      stableJson(context.knowledgeScope) !== stableJson(current.input.knowledgeScope))
+      throw new Error('MA24 evaluation tool context does not match the leased task');
+  } else if (context.evaluationArm) {
+    throw new Error('MA24 evaluation arm cannot execute an ordinary task');
+  }
   if (!modeAllowsTool(context.mode,tool.id)) return result(null,{status:'unavailable',missing:['当前模式不支持此操作，请切换模式。']});
   if (tool.role === "admin" && context.role !== "admin") return result(null, { status: "unavailable", missing: ["Administrator permission"] });
   let approvalId: string | undefined;

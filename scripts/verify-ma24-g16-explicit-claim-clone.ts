@@ -26,6 +26,8 @@ const { claimMa24EvaluationRun, claimAndBindMa24EvaluationRun,
   "../src/lib/knowledge/evaluation/ma24-evaluation-claim");
 const { getPool } = await import("../src/lib/rag/db");
 const { finishRun } = await import("../src/lib/assistant/main/repository");
+const { executeRegisteredTool } = await import("../src/lib/assistant/main/tool-execution");
+const { productTools } = await import("../src/lib/assistant/main/tools");
 const { modeModelConfig } = await import("../src/lib/assistant/main/mode-config");
 const { ma24CaseQuerySha256, ma24ManifestSha256 } = await import(
   "../src/lib/knowledge/evaluation/ma24-independent-comparison");
@@ -152,6 +154,19 @@ try {
   const admitted = await claimAndBindMa24EvaluationRun({ ...binding, runId: admittedId });
   assert.equal(admitted.userId, userId);
   assert.equal(admitted.query, frozenQuery);
+  const readTool = productTools.find(tool => tool.id === "knowledge_search");
+  const writeTool = productTools.find(tool => tool.id === "schedule_create");
+  assert(readTool && writeTool, "Evaluation tool guard fixture tools unavailable");
+  const toolContext = { userId, runId: admittedId, leaseToken: admitted.lease_token,
+    role: "member" as const, knowledgeScope: ["industry" as const],
+    evaluationArm: "baseline" as const };
+  for (const [tool, changed] of [
+    [writeTool, {}], [readTool, { evaluationArm: undefined }],
+    [readTool, { evaluationArm: "candidate" as const }],
+    [readTool, { knowledgeScope: ["product"] as Array<"industry" | "company" | "product"> }],
+  ] as const) await assert.rejects(executeRegisteredTool(tool, {},
+    "ma24-evaluation-tool-guard-fixture", { ...toolContext, ...changed }),
+  /MA24 evaluation tool context does not match the leased task/);
   await finishRun({ userId, runId: admittedId, leaseToken: admitted.lease_token,
     role: "member" }, "failed", "Synthetic admission only");
   await assert.rejects(claimAndBindMa24EvaluationRun({ ...binding, runId: rejectedId,
@@ -198,15 +213,17 @@ try {
     [rejectedId, userId])).rows[0];
   assert.deepEqual(rejectedStatus, { status: "failed",
     result: { reply: "MA24 evaluation admission rejected" } });
-  const sideEffects = (await admin.query<{ messages: number; model_calls: number }>(`
+  const sideEffects = (await admin.query<{ messages: number; model_calls: number; tool_calls: number }>(`
     select (select count(*)::integer from assistant_message
       where user_id=$1 and conversation_id=any($2::uuid[])) as messages,
       (select count(*)::integer from agent_tool_call
-      where user_id=$1 and run_id=any($3::uuid[]) and effect='model') as model_calls`,
+      where user_id=$1 and run_id=any($3::uuid[]) and effect='model') as model_calls,
+      (select count(*)::integer from agent_tool_call
+      where user_id=$1 and run_id=any($3::uuid[])) as tool_calls`,
   [userId, [admittedConversationId, rejectedConversationId],
     [admittedId, rejectedId]])).rows[0];
-  assert.deepEqual(sideEffects, { messages: 0, model_calls: 0 },
-    "Evaluation admission wrote ordinary messages or model calls");
+  assert.deepEqual(sideEffects, { messages: 0, model_calls: 0, tool_calls: 0 },
+    "Rejected evaluation tool action wrote a message or call journal");
   verified = true;
 } finally {
   if (inserted) {
@@ -247,5 +264,6 @@ if (verified) console.log(JSON.stringify({ schema: "ma24-g16-explicit-claim-clon
     "snapshot-drift-rejected-before-claim", "invalid-source-and-gold-rejected-before-claim",
     "loaded-runtime-drift-rejected-before-claim",
     "binding-failure-terminated-without-model-call",
+    "leased-evaluation-tool-guard-rejected-writes-and-context-drift",
     "no-ordinary-message-or-model-call", "synthetic-rows-cleaned"],
   providerCalls: 0 }));
