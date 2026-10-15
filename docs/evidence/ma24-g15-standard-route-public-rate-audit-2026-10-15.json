@@ -1,0 +1,40 @@
+{
+  "schema": "ma24-g15-standard-route-public-rate-audit-v1",
+  "observedAtUtc": "2026-10-15T15:17:13Z",
+  "scope": "Read-only public OpenRouter route and tariff eligibility audit for the MA24 standard main-Agent evaluation profile; no cost ledger or tariff activation",
+  "configuredRoutes": [
+    "anthropic/claude-sonnet-5.5",
+    "openai/gpt-6.1-sol",
+    "moonshotai/kimi-k3"
+  ],
+  "productWire": {
+    "profileSource": "src/lib/assistant/main/mode-config.ts",
+    "requestSource": "src/lib/assistant/main/model.ts",
+    "providerConfigurationSource": "src/providers/openrouter.ts",
+    "endpoint": "https://openrouter.ai/api/v1/chat/completions",
+    "maxOutputTokensPerTurn": 16384,
+    "providerPinned": false,
+    "allowProviderFallbacks": false,
+    "interpretation": "Disabling provider fallback does not select a single provider before routing. The provider preference only requires parameters and denies data collection."
+  },
+  "publicPagesChecked": [
+    { "model": "anthropic/claude-sonnet-5.5", "url": "https://openrouter.ai/anthropic/claude-sonnet-5.5", "observedHeadlineInputUsdPerMillion": 2, "observedHeadlineOutputUsdPerMillion": 10, "observation": "Separate cache-read and cache-write prices are listed; multiple providers are available." },
+    { "model": "openai/gpt-6.1-sol", "url": "https://openrouter.ai/openai/gpt-6.1-sol", "observedHeadlineInputUsdPerMillion": 2, "observedHeadlineOutputUsdPerMillion": 10, "observation": "Separate cache and web-search prices are listed; multiple providers are available." },
+    { "model": "moonshotai/kimi-k3", "url": "https://openrouter.ai/moonshotai/kimi-k3", "observedHeadlineInputUsdPerMillion": 0.29, "observedHeadlineOutputUsdPerMillion": 24, "observation": "The displayed headline reflects a provider route; the same page lists other providers with different input/output prices. Search indexing showed a different historical headline, so it cannot be treated as a fixed model-wide maximum." }
+  ],
+  "currentProductPolicy": {
+    "globalRequestBoundSource": "src/lib/billing/policy.ts",
+    "matchingApprovedStandardRouteTariffs": 0,
+    "g15PreviewProviderTariffsVerified": false,
+    "maximumProviderRequests": null,
+    "maximumRequestBytes": null,
+    "maximumOutputTokens": null,
+    "hardSpendCapUsd": null
+  },
+  "decision": "The observed public headline prices are useful route identification evidence, not a verified maximum per-call bound. Keep paid evaluation closed until provider routing and all charge classes are bounded, the exact wire size/output ceilings and durable reservation are implemented, and the user-approved spend scope is frozen.",
+  "tariffAdmitted": false,
+  "paidCalls": 0,
+  "g15ReadyForModelCalls": false,
+  "realDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}
