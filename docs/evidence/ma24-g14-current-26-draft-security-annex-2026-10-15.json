@@ -1,0 +1,51 @@
+{
+  "schema": "ma24-g14-current-26-draft-security-annex-v1",
+  "date": "2026-10-15",
+  "command": "node scripts/run-tsx.cjs scripts/audit-ma24-g14-current-draft-pool-v5.ts",
+  "priorDraftPoolSha256": "0bb3bba346d26759d773310874e359bcf8ea0f80898148455f3c6ebfe2323fa2",
+  "securityReceiptSha256": "4f8b9b3d0241d6b225e42da043330638bc129d6eb2255944db1d0e362eb49b69",
+  "privateSourceSha256": "d58ae5222337dd8ee8e801018083848297a8cb209da464767f7e5859b18d4396",
+  "outputSha256": "2cb4c56dd2f35e88a43ebdb1eaa2e15246438ee5727d9d6c7d31b9c86d3184c7",
+  "reproduction": "Two additional runs to different quarantine output paths produced the same SHA-256.",
+  "counts": {
+    "allDraftMaterials": 26,
+    "publicationDrafts": 23,
+    "syntheticSecurityDrafts": 3,
+    "provisionalPublicationFamilies": 13,
+    "syntheticFixtureFamilies": 1,
+    "primaryFormatsIncludingSynthetic": { "pdf": 5, "long-pdf": 7, "pptx": 8, "xlsx": 6 },
+    "wholeQuestionHardCasesIncludingSynthetic": {
+      "cross-document": 2,
+      "new-or-revised": 0,
+      "conflict": 0,
+      "no-answer": 1,
+      "permission": 2,
+      "injection": 1
+    }
+  },
+  "securityInterpretation": "The two permission questions intentionally have identical wording and different execution account profiles. The injection question uses a separate factual target in the same private PDF. These are self-authored synthetic drafts, not a fourteenth publication family or approved independent Gold.",
+  "remainingAgainstProposedHardCaseTargetsNotFrozen": {
+    "cross-document": 6,
+    "new-or-revised": 4,
+    "conflict": 3,
+    "no-answer": 1,
+    "permission": 0,
+    "injection": 0
+  },
+  "checks": {
+    "sourceBytesMatchReceipt": true,
+    "uniqueDraftIds": true,
+    "securityQuestionHasNoExactMatchInPrior23": true,
+    "typescriptNoEmit": "passed",
+    "scriptReproduction": "passed"
+  },
+  "acceptanceBoundary": {
+    "accountIdsFrozen": false,
+    "semanticIndependenceReviewComplete": false,
+    "sourceEligibilityApproved": false,
+    "goldCreated": 0,
+    "modelAnswerCalls": 0,
+    "qualityGatePassed": false,
+    "g17ToG20Advanced": false
+  }
+}

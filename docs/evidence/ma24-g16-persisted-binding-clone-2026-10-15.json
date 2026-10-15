@@ -1,0 +1,24 @@
+{
+  "schema": "ma24-g16-persisted-binding-clone-v1",
+  "date": "2026-10-15",
+  "command": "node scripts/run-tsx.cjs tmp/ma24-independent-quarantine/verify-g16-persisted-binding-clone.ts",
+  "environment": "Local MA11 replay clone only; script rejects non-local database hosts and database names outside the replay pattern.",
+  "result": {
+    "ownerTaskAndModelJournalReadBack": true,
+    "differentAccountDenied": true,
+    "changedFrozenQuestionDenied": true,
+    "persistedKnowledgeScopeDriftDenied": true,
+    "syntheticUsersRunsAndCallsCleaned": true,
+    "providerModelCalls": 0,
+    "productionWrites": 0
+  },
+  "acceptanceBoundary": {
+    "productionPrincipalVerified": false,
+    "realIndependentDualArmRuns": 0,
+    "accessibleCorpusSnapshotBound": false,
+    "providerReceiptChainVerified": false,
+    "independentGoldApproved": false,
+    "qualityGatePassed": false,
+    "g17ToG20Advanced": false
+  }
+}
