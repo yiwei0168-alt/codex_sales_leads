@@ -1,0 +1,50 @@
+{
+  "schema": "ma24-g14-nist-tn2363-primary-question-review-v1",
+  "date": "2026-10-15",
+  "stage": "Source-bound content review packet; pending user decision on cross-section explanatory question type, not Gold",
+  "caseId": "nist-tn2363-delay-profile-and-5g-tsn-validation",
+  "caseQuerySha256": "3ef44091700138bbacfb235f74830b245d86d36f1cda11ff8ae97fe68caaa47b",
+  "source": {
+    "publisherPage": "https://www.nist.gov/publications/software-based-5g-industrial-wireless-private-networks-challenges-and-opportunities",
+    "originalPdf": "https://tsapps.nist.gov/publication/get_pdf.cfm?pub_id=960946",
+    "localPrivatePath": "tmp/ma24-independent-quarantine/nist-tn-2363-industrial-5g.pdf",
+    "sha256Rechecked": "65e333dac9975f4ca9a952a966fb212ce7ccb161ec60b48bf45c3dfd7adbd6a9",
+    "physicalPages": 44,
+    "documentConversion": "Docling is unavailable in this environment. PyMuPDF original-page text and existing full-size page renders were checked; no DoclingDocument conversion was claimed."
+  },
+  "originalPageReview": {
+    "physical18Printed13": "Section 3.3 names uncertain processing delays, dynamic channel conditions and missing device instrumentation as per-hop delay estimation difficulties; it calls for comprehensive end-to-end and RAN measurement.",
+    "physical28Printed23": "Section 5.2 says software stack overhead can increase packet-transmission latency and uncertainty, TSN schedule design must account for them, and real-world validation and testing are needed.",
+    "limit": "The report assesses design and validation challenges. The question does not assert that every private 5G deployment misses a latency requirement."
+  },
+  "privateProductEvidence": {
+    "extractorVersion": "layout-v2.0.10",
+    "artifactSha256": "babd6ce7bec494922fed339b33d3e156d8c05f55435613fffcf0ddfbada9d26f",
+    "exactExcerptsPresent": ["page-18-block-4", "page-28-block-4", "page-28-block-6"],
+    "visualPendingResolved": 11,
+    "isolatedPrivateRegistrationAndCitation": "docs/evidence/ma24-g14-nist-tn2363-visual-review-clone-2026-10-15.json",
+    "otherAccountDenied": true,
+    "productionKnowledgeWrites": 0
+  },
+  "connectedFamilyAndIndependence": {
+    "existingApprovedNistWorkbookGoldCases": 1,
+    "additionalIndependentExposureUnitsIfApproved": 0,
+    "currentDraftPool": "tmp/ma24-independent-quarantine/g14-current-draft-pool-v6-2026-10-15.json",
+    "currentDraftPoolSha256": "2be471883c10e9c7672efd4fbd681fe47560205a5fb03341250827ba64399ddb",
+    "otherPublicationDraftsReviewed": 23,
+    "sameRequestedAnswerAmongOthers": false,
+    "historicalScreen": "docs/evidence/ma24-g14-nist-primary-long-pre-freeze-2026-10-15.json",
+    "sourceSpecificNonTestProductCodeMatches": 0,
+    "sourceSpecificGitPickaxeProductCodeMatches": 0,
+    "limit": "The local historical and current-pool screens are bounded and do not prove absence of unrecorded exposure or model-provider pretraining."
+  },
+  "decisionNeeded": "Under MA24-10, ask the user whether this cross-section explanatory question type may enter final per-question independent Gold review; content approval, source-unit eligibility and formal Gold remain separate decisions.",
+  "userDecisionRecorded": false,
+  "independentGoldAdded": 0,
+  "sourceSetFrozen": false,
+  "goldSnapshotFrozen": false,
+  "modelCalls": 0,
+  "g15ReadyForPaidEvaluation": false,
+  "g16RealDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}
