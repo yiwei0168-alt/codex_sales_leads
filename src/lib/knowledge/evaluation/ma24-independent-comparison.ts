@@ -30,7 +30,7 @@ export type Ma24Run = {
   caseId: string; arm: Ma24Arm; runId: string; caseSha256: string; manifestSha256: string;
   userId: string; knowledgeScope: Ma24KnowledgeScope[];
   status: "completed" | "failed" | "unknown"; answer: string;
-  citations: GoldSourceCoordinate[]; receiptIds: string[]; modelId: string;
+  citations: GoldSourceCoordinate[]; receiptIds: string[]; modelCallIds: string[]; modelId: string;
   failureReason?: string;
 };
 export type Ma24Verdict = {
@@ -167,6 +167,9 @@ export function scoreMa24IndependentComparison(input: {
       run.knowledgeScope.some((scope, index) => scope !== item.knowledgeScope[index]))
       throw new Error(`MA24 execution context drift ${id}`);
     if (!run.modelId.trim() || !run.receiptIds.length || run.receiptIds.some(receipt => !receipt.trim()) ||
+      !Array.isArray(run.modelCallIds) ||
+      (run.status === "completed" && !run.modelCallIds.length) ||
+      run.modelCallIds.some(callId => !uuid(callId) || !run.receiptIds.includes(callId)) ||
       !["completed", "failed", "unknown"].includes(run.status) ||
       (run.status === "completed" && !run.answer.trim()) ||
       (run.status !== "completed" && (!run.failureReason?.trim() || run.answer !== "" || run.citations.length !== 0)))

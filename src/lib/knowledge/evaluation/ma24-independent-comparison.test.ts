@@ -28,7 +28,9 @@ const runs: Ma24Run[] = manifest.cases.flatMap((item, index) => (["baseline", "c
   status: "completed" as const, answer: `Recorded ${item.caseId} ${arm} answer`,
   citations: item.expectedOutcome === "route" ?
     [{ assetSha256: "1".repeat(64), unitIndex: 1, excerpt: "Original source fact" }] : [],
-  receiptIds: [`${item.caseId}-${arm}-receipt`], modelId: "frozen-model",
+  modelCallIds: [`00000000-0000-4000-8001-${String(index * 2 + armIndex + 1).padStart(12, "0")}`],
+  receiptIds: [`00000000-0000-4000-8001-${String(index * 2 + armIndex + 1).padStart(12, "0")}`,
+    `${item.caseId}-${arm}-receipt`], modelId: "frozen-model",
 })));
 const gold: Ma24GoldSnapshot = { schema: "ma24-g16-gold-snapshot-v1",
   cases: manifest.cases.map(item => ({ caseId: item.caseId, caseSha256: item.caseSha256,
@@ -77,6 +79,14 @@ describe("MA24 independent comparison", () => {
     expect(() => assertMa24SourceSetMatchesManifest(distinctAccounts, sameText)).not.toThrow();
   });
   it("requires one answer model and distinct run receipts across both arms", () => {
+    const missingModelCall = runs.map(run => run.caseId === "cross" && run.arm === "candidate"
+      ? { ...run, modelCallIds: [] } : run);
+    expect(() => score({ manifest, runs: missingModelCall, verdicts }))
+      .toThrow("Incomplete MA24 run receipt cross:candidate");
+    const unboundModelCall = runs.map(run => run.caseId === "cross" && run.arm === "candidate"
+      ? { ...run, modelCallIds: ["44444444-4444-4444-8444-444444444444"] } : run);
+    expect(() => score({ manifest, runs: unboundModelCall, verdicts }))
+      .toThrow("Incomplete MA24 run receipt cross:candidate");
     const duplicateRunId = runs.map(run => run.caseId === "cross" && run.arm === "candidate"
       ? { ...run, runId: runs[0].runId } : run);
     expect(() => score({ manifest, runs: duplicateRunId, verdicts }))
@@ -86,11 +96,11 @@ describe("MA24 independent comparison", () => {
     expect(() => score({ manifest, runs: otherModel, verdicts }))
       .toThrow("MA24 answer model differs across arms cross:candidate");
     const reusedReceipt = runs.map(run => run.caseId === "cross" && run.arm === "candidate"
-      ? { ...run, receiptIds: runs[0].receiptIds } : run);
+      ? { ...run, receiptIds: [...run.receiptIds, ...runs[0].receiptIds] } : run);
     expect(() => score({ manifest, runs: reusedReceipt, verdicts }))
       .toThrow(/MA24 run receipt reused/);
     const repeatedWithinRun = runs.map(run => run.caseId === "cross" && run.arm === "candidate"
-      ? { ...run, receiptIds: ["same-receipt", "same-receipt"] } : run);
+      ? { ...run, receiptIds: [...run.receiptIds, "same-receipt", "same-receipt"] } : run);
     expect(() => score({ manifest, runs: repeatedWithinRun, verdicts }))
       .toThrow(/MA24 run receipt reused/);
   });

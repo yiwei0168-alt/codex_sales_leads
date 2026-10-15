@@ -1,0 +1,39 @@
+{
+  "schema": "ma24-g16-model-request-binding-engineering-v1",
+  "date": "2026-10-15",
+  "scope": "G16 only; G17-G20 deferred",
+  "change": {
+    "runContract": "Each completed evaluation run lists its main_model call UUIDs in modelCallIds; every ID must also appear in its receiptIds. The database verifier requires the exact persisted call-ID set for completed or failed runs.",
+    "taskIsolation": "The persisted agent_run input must contain the frozen question and ordered knowledgeScope, with no attachments and no reused conversationId.",
+    "modelRequest": "Every persisted main_model call must have a valid input_hash matching its saved input, a user message with the exact frozen question, and a system message containing the frozen knowledgeScope restriction. The verifier reads these fields from tenant-scoped database rows rather than the submitted evaluation file."
+  },
+  "checks": {
+    "targetedTests": "17 passed across independent-comparison and persisted-run-binding tests",
+    "typescript": "node node_modules/typescript/bin/tsc --noEmit passed",
+    "eslint": "targeted ESLint passed",
+    "isolatedClone": {
+      "readOnlyVerifierPassed": true,
+      "differentAccountDenied": true,
+      "changedQuestionDenied": true,
+      "persistedScopeDriftDenied": true,
+      "modelCallIdDriftDenied": true,
+      "modelInputHashDriftDenied": true,
+      "modelQuestionDriftDenied": true,
+      "attachmentDriftDenied": true,
+      "syntheticRowsCleaned": true,
+      "providerModelCalls": 0,
+      "productionWrites": 0
+    }
+  },
+  "acceptanceBoundary": {
+    "realFrozenCaseDatabaseRowsVerified": 0,
+    "accessibleCorpusSnapshotBound": false,
+    "providerReceiptChainVerified": false,
+    "citationsVerified": false,
+    "independentGoldApproved": false,
+    "privateGoldDrafts": 5,
+    "realDualArmModelRuns": 0,
+    "qualityGatePassed": false,
+    "g17ToG20Advanced": false
+  }
+}
