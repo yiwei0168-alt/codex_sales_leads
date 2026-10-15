@@ -527,3 +527,5 @@ Taking Part 工作簿的整题无答案候选已有第 2 条隔离 Gold 草案�
 2026-10-16 G16 的[本地隔离数据库准入验收](evidence/ma24-g16-local-admission-db-clone-acceptance-2026-10-16.json)已连续两次通过并清理合成数据，关闭旧预检的数据库正向路径缺口。后续仍须完成专用评测 runner、正式 Gold 与账号/模型配置冻结和 G15 准入，才可进行 G16 真实双路质量运行；不能用合成准入通过代替真实结果。G17–G20 暂停。
 
 2026-10-16 NIST TN 2363 第 3.3/5.2 节的[跨章节审核包](MA24_G14_NIST_TN2363_PRIMARY_REVIEW_PACKET_2026-10-16.md)和[私有 Gold 草案](evidence/ma24-g14-nist-primary-private-gold-draft-2026-10-16.json)已核对原页与三条产品证据坐标。待用户答复题型审核许可后，再处理逐题答案和限定；该题不能提前计入已批准 Gold。随后按 v8 单独审核 NIST 报告来源单元的另外两题、派生来源和整套独立性。G15/G16 实测未解锁，G17–G20 暂停。
+
+2026-10-16 另外两道 TN 2363 题的[图表/流程审核包](MA24_G14_NIST_TN2363_REMAINING_REVIEW_PACKET_2026-10-16.md)与[私有草案](evidence/ma24-g14-nist-remaining-two-private-gold-drafts-2026-10-16.json)也已核对原图、表列算术及产品证据块。下一步在同一 NIST 报告来源单元内完成逐题内容判定，审计历史与派生暴露，才能决定其 Gold 资格；不能把三题计作三个独立来源。G15/G16 实测未解锁，G17–G20 暂停。

@@ -1,0 +1,31 @@
+{
+  "schema": "ma24-g14-nist-remaining-two-private-gold-drafts-v1",
+  "date": "2026-10-16",
+  "privateDraftPath": "tmp/ma24-independent-quarantine/nist-tn2363-remaining-two-gold-drafts-v1.json",
+  "privateDraftSha256": "f4508f394ebd6741d9ac5ddff1eddb86c70663ed5f2291be8bb3874597b62999",
+  "sourceSha256": "65e333dac9975f4ca9a952a966fb212ce7ccb161ec60b48bf45c3dfd7adbd6a9",
+  "caseIds": [
+    "nist-tn2363-aggressor-welding-table-comparison",
+    "nist-tn2363-ieee3388-assessment-and-profiles"
+  ],
+  "checks": {
+    "questionsEqualCurrentV8PoolText": true,
+    "originalPhysicalPages33And37VisuallyRechecked": true,
+    "threeExcerptsMatchOriginalPageAndReviewedProductBlocks": true,
+    "figure6FiveRelevantRowsAndTwoDecimalDifferencesVerified": true,
+    "priorIsolatedPrivateReadEvidenceAndCrossAccountDenial": true,
+    "providerCalls": 0,
+    "productionKnowledgeWrites": 0
+  },
+  "sourceExposureUnit": "NIST TN 2363",
+  "additionalIndependentSourceUnits": 0,
+  "reviewPacket": "docs/MA24_G14_NIST_TN2363_REMAINING_REVIEW_PACKET_2026-10-16.md",
+  "acceptanceBoundary": {
+    "userQuestionAndAnswerReview": "pending",
+    "independentGoldApprovedForTheseCases": false,
+    "fullSetFrozen": false,
+    "g15ReadyForModelCalls": false,
+    "g16RealDualArmRuns": 0,
+    "g17ToG20Advanced": false
+  }
+}
