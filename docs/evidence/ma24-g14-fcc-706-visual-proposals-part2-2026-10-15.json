@@ -1,0 +1,308 @@
+{
+  "schema": "ma24-g14-fcc-706-visual-proposals-part2-v1",
+  "date": "2026-10-15",
+  "stage": "Physical pages 33-64 original-page-bound proposals; not saved product decisions",
+  "sourceSha256": "805e0e5b954775059ad535ae650c955935758a88f2a20ec0e6554e77f0e61154",
+  "extractionArtifactSha256": "6724008a1138a5e83dc4439e42ed4f75176154e5bf9a0d738dbd2f339cd2d0d4",
+  "renderPackageSha256": "27441a7bb1854545078f89b2879057a7464e685a395e37765de2bdad80d4c969",
+  "physicalPageRange": [
+    33,
+    64
+  ],
+  "proposedEvidence": 2,
+  "proposedDecoration": 30,
+  "judgments": [
+    {
+      "physicalPage": 33,
+      "blockId": "page-33-visual-review",
+      "originalRenderSha256": "8e045e337f03014371fae860a5b26a0a63d12a1d3d7107b0fb10354161cdba0f",
+      "proposal": "decoration",
+      "visualFeature": "No separate chart, diagram, map or table seen in contact sheet; successful text blocks retained.",
+      "successfulTextBlocksOnPage": 12,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 34,
+      "blockId": "page-34-visual-review",
+      "originalRenderSha256": "7c36d589e5db0ac4d571606c756b46eef0565e8467b4425485e4665fbe7591e0",
+      "proposal": "decoration",
+      "visualFeature": "No separate chart, diagram, map or table seen in contact sheet; successful text blocks retained.",
+      "successfulTextBlocksOnPage": 12,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 35,
+      "blockId": "page-35-visual-review",
+      "originalRenderSha256": "3e6e31ab9a33e6c505ac79882479be87e64ad74ac8cd2e08ea45b7c4bf946189",
+      "proposal": "decoration",
+      "visualFeature": "No separate chart, diagram, map or table seen in contact sheet; successful text blocks retained.",
+      "successfulTextBlocksOnPage": 11,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 36,
+      "blockId": "page-36-visual-review",
+      "originalRenderSha256": "4e68c622e06c56332a595f1045f0ad30868859a3ab36ecfabdafde2ab6fbce78",
+      "proposal": "decoration",
+      "visualFeature": "No separate chart, diagram, map or table seen in contact sheet; successful text blocks retained.",
+      "successfulTextBlocksOnPage": 17,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 37,
+      "blockId": "page-37-visual-review",
+      "originalRenderSha256": "fc3751f9ea7d6a223a74d92bf6403a195a5f0c8dd34cfe22317315e5f7b52df0",
+      "proposal": "decoration",
+      "visualFeature": "No separate chart, diagram, map or table seen in contact sheet; successful text blocks retained.",
+      "successfulTextBlocksOnPage": 12,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 38,
+      "blockId": "page-38-visual-review",
+      "originalRenderSha256": "0876f3eddf47349902e686ddc07cb4a88d81aee385f3f28131695c0a2c129faf",
+      "proposal": "decoration",
+      "visualFeature": "No separate chart, diagram, map or table seen in contact sheet; successful text blocks retained.",
+      "successfulTextBlocksOnPage": 11,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 39,
+      "blockId": "page-39-visual-review",
+      "originalRenderSha256": "868d36f417c6b0bb44eb883f053cd6ca7bfed05d9742f06306ad0345217c8f76",
+      "proposal": "decoration",
+      "visualFeature": "No separate chart, diagram, map or table seen in contact sheet; successful text blocks retained.",
+      "successfulTextBlocksOnPage": 15,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 40,
+      "blockId": "page-40-visual-review",
+      "originalRenderSha256": "43e1c93281d6f743d56003f410df6253f7819115ab74ae57a5cd6f60c5358355",
+      "proposal": "decoration",
+      "visualFeature": "No separate chart, diagram, map or table seen in contact sheet; successful text blocks retained.",
+      "successfulTextBlocksOnPage": 13,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 41,
+      "blockId": "page-41-visual-review",
+      "originalRenderSha256": "84ee8c6424863ce2913941faa0f874c867773587930ec890ba57e65fd747223a",
+      "proposal": "decoration",
+      "visualFeature": "No separate chart, diagram, map or table seen in contact sheet; successful text blocks retained.",
+      "successfulTextBlocksOnPage": 16,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 42,
+      "blockId": "page-42-visual-review",
+      "originalRenderSha256": "35d5de1b989f63ba0bc5aa3d7fc7bc1ef3de0ec925ca0cb261a28bb2b6b45ddc",
+      "proposal": "decoration",
+      "visualFeature": "No separate chart, diagram, map or table seen in contact sheet; successful text blocks retained.",
+      "successfulTextBlocksOnPage": 15,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 43,
+      "blockId": "page-43-visual-review",
+      "originalRenderSha256": "f2d54bc7f24d8828ac313f552cf10d976a4f47703e4a3c965c5807021500fd44",
+      "proposal": "decoration",
+      "visualFeature": "No separate chart, diagram, map or table seen in contact sheet; successful text blocks retained.",
+      "successfulTextBlocksOnPage": 15,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 44,
+      "blockId": "page-44-visual-review",
+      "originalRenderSha256": "9edcf7faf78a62f6fe36f24b812071e1c0e52cddfb287a8618d2348de255304f",
+      "proposal": "decoration",
+      "visualFeature": "No separate chart, diagram, map or table seen in contact sheet; successful text blocks retained.",
+      "successfulTextBlocksOnPage": 15,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 45,
+      "blockId": "page-45-visual-review",
+      "originalRenderSha256": "49f6dbe3f9fa33d7ffac60bd98ec955f7966dec2f316bd0aa266d0d72eabd09c",
+      "proposal": "decoration",
+      "visualFeature": "No separate chart, diagram, map or table seen in contact sheet; successful text blocks retained.",
+      "successfulTextBlocksOnPage": 17,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 46,
+      "blockId": "page-46-visual-review",
+      "originalRenderSha256": "fb3d03d163671f2ac5dd68f8ecdf9170feac5efc1ff2df88d1babf13408d5df5",
+      "proposal": "decoration",
+      "visualFeature": "No separate chart, diagram, map or table seen in contact sheet; successful text blocks retained.",
+      "successfulTextBlocksOnPage": 15,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 47,
+      "blockId": "page-47-visual-review",
+      "originalRenderSha256": "6381fdf1592ef65404772d8b8d4fe86920b728dabdaba75b134b3eb613c9eb16",
+      "proposal": "decoration",
+      "visualFeature": "No separate chart, diagram, map or table seen in contact sheet; successful text blocks retained.",
+      "successfulTextBlocksOnPage": 13,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 48,
+      "blockId": "page-48-visual-review",
+      "originalRenderSha256": "67984002bbb93226427c02fd5d3624bd7c04fd1de3ce9f036e9e2110cd91f46d",
+      "proposal": "decoration",
+      "visualFeature": "No separate chart, diagram, map or table seen in contact sheet; successful text blocks retained.",
+      "successfulTextBlocksOnPage": 14,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 49,
+      "blockId": "page-49-visual-review",
+      "originalRenderSha256": "985bbd81d77e6c4c05e0dae2a57ed8420d7d378ada92d5714f5382547f20d22f",
+      "proposal": "decoration",
+      "visualFeature": "No separate chart, diagram, map or table seen in contact sheet; successful text blocks retained.",
+      "successfulTextBlocksOnPage": 12,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 50,
+      "blockId": "page-50-visual-review",
+      "originalRenderSha256": "229c4c55399c04aafeb39b7de31398ce95eb9a147cbea5f9c49addae54b28b39",
+      "proposal": "decoration",
+      "visualFeature": "No separate chart, diagram, map or table seen in contact sheet; successful text blocks retained.",
+      "successfulTextBlocksOnPage": 15,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 51,
+      "blockId": "page-51-visual-review",
+      "originalRenderSha256": "4c3e7c0124fbfcb55cfd8c0075b607e750bd1dfc3833410da4a4f0ea09f2bb06",
+      "proposal": "decoration",
+      "visualFeature": "No separate chart, diagram, map or table seen in contact sheet; successful text blocks retained.",
+      "successfulTextBlocksOnPage": 16,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 52,
+      "blockId": "page-52-visual-review",
+      "originalRenderSha256": "60556e4e846646a153d33d60f399fd114d18ef2c5d83f30a20650e6dddddedf3",
+      "proposal": "decoration",
+      "visualFeature": "No separate chart, diagram, map or table seen in contact sheet; successful text blocks retained.",
+      "successfulTextBlocksOnPage": 15,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 53,
+      "blockId": "page-53-visual-review",
+      "originalRenderSha256": "a2842c49ce7337bdf99c27d2bf29c6522f9593f4e77418e70707e83afaff2f1f",
+      "proposal": "evidence",
+      "visualFeature": "Figure 17: housing units deployed and supported by federal high-cost programs, start of table",
+      "successfulTextBlocksOnPage": 24,
+      "originalSizeChecked": true
+    },
+    {
+      "physicalPage": 54,
+      "blockId": "page-54-visual-review",
+      "originalRenderSha256": "e30f50b7e6e437a7cdc8b5356ed6bd1a08a94fea50d6cd5ccf8daf86d05f73a6",
+      "proposal": "evidence",
+      "visualFeature": "Figure 17 continuation: program rows, totals and annual support values",
+      "successfulTextBlocksOnPage": 15,
+      "originalSizeChecked": true
+    },
+    {
+      "physicalPage": 55,
+      "blockId": "page-55-visual-review",
+      "originalRenderSha256": "ce62325012a8b0f440aef1fbecd174c2887c861fdc7d9ffda58e02b4b4dc11a8",
+      "proposal": "decoration",
+      "visualFeature": "No separate chart, diagram, map or table seen in contact sheet; successful text blocks retained.",
+      "successfulTextBlocksOnPage": 8,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 56,
+      "blockId": "page-56-visual-review",
+      "originalRenderSha256": "f639f0414cb603d9a91b3a87c31a4de989e5ee9c2d911c0f51916f6d8dc798e8",
+      "proposal": "decoration",
+      "visualFeature": "No separate chart, diagram, map or table seen in contact sheet; successful text blocks retained.",
+      "successfulTextBlocksOnPage": 16,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 57,
+      "blockId": "page-57-visual-review",
+      "originalRenderSha256": "d55acdbe842a970ae9ab70c039c8e60905f1ff46c76389fd69e3987a7f8d690b",
+      "proposal": "decoration",
+      "visualFeature": "No separate chart, diagram, map or table seen in contact sheet; successful text blocks retained.",
+      "successfulTextBlocksOnPage": 15,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 58,
+      "blockId": "page-58-visual-review",
+      "originalRenderSha256": "e661c7e5b4576b6356dbdc2a02847c9c3351e86a7e709a8e0edca2721f10e6ec",
+      "proposal": "decoration",
+      "visualFeature": "No separate chart, diagram, map or table seen in contact sheet; successful text blocks retained.",
+      "successfulTextBlocksOnPage": 13,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 59,
+      "blockId": "page-59-visual-review",
+      "originalRenderSha256": "a4120dcfad7ba692eafa8dca53fc15dfec9646c9fa3a80741c79a571d5b8d274",
+      "proposal": "decoration",
+      "visualFeature": "No separate chart, diagram, map or table seen in contact sheet; successful text blocks retained.",
+      "successfulTextBlocksOnPage": 13,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 60,
+      "blockId": "page-60-visual-review",
+      "originalRenderSha256": "61bf58c2a9a6bb05f7110949a6ec12e56e2b9ef23fdbc3199ef1a445732272f9",
+      "proposal": "decoration",
+      "visualFeature": "No separate chart, diagram, map or table seen in contact sheet; successful text blocks retained.",
+      "successfulTextBlocksOnPage": 16,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 61,
+      "blockId": "page-61-visual-review",
+      "originalRenderSha256": "b7af21c0b4a5bb2bf7d18467e6c8b31d63b1c67937ffd3f984f1b12870aa97dd",
+      "proposal": "decoration",
+      "visualFeature": "No separate chart, diagram, map or table seen in contact sheet; successful text blocks retained.",
+      "successfulTextBlocksOnPage": 15,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 62,
+      "blockId": "page-62-visual-review",
+      "originalRenderSha256": "4a440b22f8b8a92fab8294b2d296fa0020587f37c5695f0ffee7048c45f0c8c8",
+      "proposal": "decoration",
+      "visualFeature": "No separate chart, diagram, map or table seen in contact sheet; successful text blocks retained.",
+      "successfulTextBlocksOnPage": 18,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 63,
+      "blockId": "page-63-visual-review",
+      "originalRenderSha256": "986a264ad89d95063a4d1680d74d75b5f478f0069793544d566f5fd3a0266eeb",
+      "proposal": "decoration",
+      "visualFeature": "No separate chart, diagram, map or table seen in contact sheet; successful text blocks retained.",
+      "successfulTextBlocksOnPage": 13,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 64,
+      "blockId": "page-64-visual-review",
+      "originalRenderSha256": "09151474a662e1ef8f1d3b57fc2e6c783c26617871d2535e017094c57d36bb8e",
+      "proposal": "decoration",
+      "visualFeature": "No separate chart, diagram, map or table seen in contact sheet; successful text blocks retained.",
+      "successfulTextBlocksOnPage": 6,
+      "originalSizeChecked": false
+    }
+  ],
+  "productDecisionsSaved": 0,
+  "independentGoldAdded": 0,
+  "modelCalls": 0,
+  "g17ToG20Advanced": false
+}
