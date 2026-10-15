@@ -1,0 +1,25 @@
+{
+  "schema": "ma24-g16-explicit-evaluation-claim-clone-v1",
+  "date": "2026-10-15",
+  "scope": "G16 dedicated evaluation claim path; G17-G20 paused",
+  "migration": "db/migrations/137_ma24_explicit_evaluation_claim.sql",
+  "applicationEntry": "src/lib/knowledge/evaluation/ma24-evaluation-claim.ts",
+  "verification": "MA24_ADMISSION_USE_CLONE=1 node scripts/run-tsx.cjs scripts/verify-ma24-g16-explicit-claim-clone.ts",
+  "isolatedDatabase": "ma11_replay_7d98e095133b",
+  "checks": [
+    "The restricted application role claimed only the explicitly named queued evaluation row",
+    "An ordinary task and an evaluation row with the wrong execution schema were not claimed",
+    "Blank worker identity was rejected by both the application wrapper and SQL function",
+    "A second claim and a claim after the original lease expired did not reclaim the running task",
+    "Synthetic user, conversation and task rows were removed after the test",
+    "TypeScript typecheck and ESLint on changed TypeScript files passed"
+  ],
+  "providerCalls": 0,
+  "approvedGold": 0,
+  "realDualArmRuns": 0,
+  "productionMigrationApplied": false,
+  "limitations": [
+    "The function only claims a named task. A dedicated runner must bind the leased row to frozen source, Gold, code/config, account, model and paid-call admission before any model request.",
+    "No real evaluation task, provider request or reviewer verdict was produced."
+  ]
+}

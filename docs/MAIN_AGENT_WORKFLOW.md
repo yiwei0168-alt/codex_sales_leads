@@ -2,6 +2,8 @@
 
 # 产品主 Agent 与开放式工具架构
 
+2026-10-15 MA24 G16：迁移 137 新增 `claim_ma24_evaluation_run(run_id, worker)`，只能显式领取排队评测任务，不扫描队列且不自动重领过期租约；普通任务领取函数仍排除评测任务。受限角色克隆验证通过。[收据](evidence/ma24-g16-explicit-evaluation-claim-clone-2026-10-15.json)。领取后仍须由专用运行器完成冻结快照、身份、租约与费用准入核验才可请求模型；G17–G20 暂停。
+
 2026-10-15 MA24 G16：持久任务核验把模型输入的来源工具消息与已存来源读取输出作稳定 JSON 等值比较；只有相同 `callId` 的不同内容不能支撑精确引用。[工程收据](evidence/ma24-g16-model-visible-source-byte-binding-2026-10-15.json)。专用运行器与真实双路仍待接入，G17–G20 暂停。
 
 2026-10-15 MA24 G14：GOV.UK 两工作簿三题的现有私有 v2 草稿与 v6 池题面逐字匹配，来源坐标和原件哈希已再核；答案确认属于内容审核，三题须按一个共享来源暴露单元完成最终独立性审计，不能直接升级为 Gold。[家族当前复核](evidence/ma24-g14-govuk-family-current-freeze-readiness-2026-10-15.json)。G15/G16 仍只读准备，G17–G20 暂停。
