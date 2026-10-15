@@ -30,12 +30,11 @@ const scopes=[['industry'] as Array<'industry'|'company'|'product'>,
 const arms=[];
 try{
  for(const scope of scopes){
-  process.env.ENABLE_VECTORLESS_AGENT_SHADOW='0';
+  process.env.ENABLE_VECTORLESS_AGENT_SHADOW='1';
   process.env.VECTORLESS_AGENT_SHADOW_USER_IDS=userId;
   const context={role:'member' as const,mode,knowledgeScope:scope,userId};
-  const baseline=availableTools(context);
-  process.env.ENABLE_VECTORLESS_AGENT_SHADOW='1';
-  const candidate=availableTools(context);
+  const baseline=availableTools({...context,evaluationArm:'baseline'});
+  const candidate=availableTools({...context,evaluationArm:'candidate'});
   const baselineIds=baseline.map(tool=>tool.id),candidateIds=candidate.map(tool=>tool.id);
   const added=candidateIds.filter(id=>!baselineIds.includes(id));
   const removed=baselineIds.filter(id=>!candidateIds.includes(id));

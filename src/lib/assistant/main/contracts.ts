@@ -6,7 +6,7 @@ import type { ModeConfig } from './mode-config';
 export const runStatuses = ["queued", "running", "waiting_user", "paused", "partial", "completed", "failed", "cancelled"] as const;
 export type RunStatus = typeof runStatuses[number];
 export type Effect = "read" | "reversible" | "send" | "destructive" | "publish";
-export interface ExecutionContext { userId: string; runId: string; leaseToken: string; role: "admin" | "member"; mode?: AgentMode; callId?: string; instructionIds?: readonly string[]; knowledgeScope?: Array<"industry" | "company" | "product"> }
+export interface ExecutionContext { userId: string; runId: string; leaseToken: string; role: "admin" | "member"; mode?: AgentMode; callId?: string; instructionIds?: readonly string[]; knowledgeScope?: Array<"industry" | "company" | "product">; evaluationArm?: "baseline" | "candidate" }
 export const toolResultSchema = z.object({
   status: z.enum(["success", "partial", "missing_input", "waiting_approval", "unavailable", "unknown"]),
   data: z.unknown().optional(),

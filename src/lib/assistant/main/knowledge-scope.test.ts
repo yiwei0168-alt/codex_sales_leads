@@ -84,4 +84,23 @@ describe("knowledge question scope", () => {
     expect(tools.every(t=>t.effect==='read')).toBe(true);
     expect(availableTools({...context,userId:'other'}).some(t=>t.id.startsWith('vectorless_'))).toBe(false);
   });
+  it('keeps evaluation baseline tools isolated on a whitelisted account',async()=>{
+    vi.stubEnv('VECTORLESS_AGENT_SHADOW_USER_IDS','pilot');
+    vi.stubEnv('ENABLE_VECTORLESS_AGENT_SHADOW','1');
+    const context={userId:'pilot',runId:'run',leaseToken:'lease',role:'member' as const,
+      knowledgeScope:['product' as const],mode:'quick' as const};
+    const baseline={...context,evaluationArm:'baseline' as const};
+    const candidate={...context,evaluationArm:'candidate' as const};
+    expect(availableTools(baseline).map(tool=>tool.id))
+      .toEqual(['knowledge_search','knowledge_status','knowledge_originals','knowledge_compare']);
+    expect(availableTools(candidate).filter(tool=>tool.id.startsWith('vectorless_'))).toHaveLength(7);
+    const discover={id:'call-1',type:'function' as const,function:{name:'discover_tools',arguments:'{}'}};
+    expect(JSON.stringify((await dispatchTool(discover,baseline)).data)).not.toContain('vectorless_');
+    const describe={id:'call-2',type:'function' as const,function:{name:'describe_tool',
+      arguments:JSON.stringify({tool:'vectorless_start'})}};
+    expect((await dispatchTool(describe,baseline)).status).toBe('unavailable');
+    const execute={id:'call-3',type:'function' as const,function:{name:'execute_tool',
+      arguments:JSON.stringify({tool:'vectorless_start',arguments:{question:'test'}})}};
+    expect((await dispatchTool(execute,baseline)).status).toBe('unavailable');
+  });
 });

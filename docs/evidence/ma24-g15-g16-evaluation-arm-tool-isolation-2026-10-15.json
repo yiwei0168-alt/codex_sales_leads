@@ -1,0 +1,37 @@
+{
+  "schema": "ma24-g15-g16-evaluation-arm-tool-isolation-v1",
+  "date": "2026-10-15",
+  "change": "Bind vectorless tool visibility to a trusted evaluationArm in the server execution context, even when the same account is on the shadow-tool whitelist and the feature flag is enabled.",
+  "files": [
+    "src/lib/assistant/main/contracts.ts",
+    "src/lib/assistant/main/tools.ts",
+    "src/lib/assistant/main/initial-task-messages.ts",
+    "src/lib/assistant/main/knowledge-scope.test.ts",
+    "scripts/prepare-ma24-g15-config-local.ts"
+  ],
+  "verifiedScopes": [
+    { "knowledgeScope": "industry", "baselineToolCount": 3, "candidateToolCount": 10 },
+    { "knowledgeScope": "company", "baselineToolCount": 3, "candidateToolCount": 10 },
+    { "knowledgeScope": "product", "baselineToolCount": 4, "candidateToolCount": 11 }
+  ],
+  "candidateOnlyTools": [
+    "vectorless_start", "vectorless_search", "vectorless_browse", "vectorless_read",
+    "vectorless_aggregate", "vectorless_filter", "vectorless_v3_candidates"
+  ],
+  "checks": {
+    "focusedVitest": "9 passed",
+    "baselineDiscoverDescribeExecuteRejected": true,
+    "typescript": "passed",
+    "eslint": "passed",
+    "localPreview": "passed; readyForPaidEvaluation=false",
+    "previewLocalSha256": "ad6cf88fbc771928fe142aab5fafdf20c6a2144b7468cb58fceb16770e3b4cec"
+  },
+  "limits": [
+    "No dedicated evaluation task claim/admission runner exists yet; the ordinary worker continues to reject evaluation tasks.",
+    "The evaluationArm context is a server-side tool gate, not a substitute for frozen account, source and code identity or paid-call authorization.",
+    "No approved Gold, model answer, provider call, real dual-arm run or quality verdict is claimed."
+  ],
+  "approvedGoldCount": 0,
+  "realDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}

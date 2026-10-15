@@ -405,3 +405,5 @@ R1 的 PPTX 内容质量抽样已核对公开开发原件的 6/63 个待审核�
 2026-10-15 G14 BDUK 第三题逐题回复：用户同意审核并确认 2018 年 3 月 7,934/7,617 处每百万英镑的现金/权责口径及交付早于付款的限定。GOV.UK 家族三题的候选答案均已确认，仍以一个来源暴露单元做最终资格审计；批准 Gold 0、真实双路 0，G17–G20 暂停。[MA24-22](CONFIRMED_PRODUCT_RULES.md)、[回复收据](evidence/ma24-g14-bpi-cash-accrual-answer-review-2026-10-15.json)。
 
 2026-10-15 G14 GOV.UK 来源家族暴露时间修正：扩大到完整词项后，BDUK 与 Taking Part 最早见于前一天的候选准备会话；旧的完整标题/URL/数值筛查仅覆盖较晚窗口，不能作为最早接触时间。更早编码子串已排除，指定模式的本地 Git 提交历史未命中。此为有界排查，家族独立资格、正式 Gold 和 G16 真实双路仍待验。[修正收据](evidence/ma24-g14-govuk-earliest-preparation-exposure-2026-10-15.json)。G17–G20 暂停。
+
+2026-10-15 G15/G16 同账号工具隔离工程验收：基线臂新增服务端 `evaluationArm` 闸门，即使账号在影子白名单也不能调用 `vectorless_*`；候选保留七项。三种范围的只读预览、9 项测试、类型与 lint 通过。专用 runner、Gold/配置冻结、付费准入和真实双路质量仍待完成；Gold 0、双路 0。[收据](evidence/ma24-g15-g16-evaluation-arm-tool-isolation-2026-10-15.json)。G17–G20 暂停。

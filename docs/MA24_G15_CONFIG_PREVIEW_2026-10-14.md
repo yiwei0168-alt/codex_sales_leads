@@ -16,3 +16,7 @@
 4. 当前没有对新评测确定账号、数据范围、最大供应商请求数、每请求字节/输出 token 上限或美元硬上限。须在题量、路由和当前供应商费率核实后形成逐次可预留的持久调用清单，区分成功、失败、未知结果；未知结果先按收据恢复，不能盲目重试。旧冻结集与一次性授权不自动续用。需要新增付费或冻结解锁确认时，再提交完整快照和硬上限请求必要批准。
 
 因此本草案的 `readyForPaidEvaluation` 为 `false`。G15 工程准备已开始，真实质量和运行验收均未通过。
+
+## 同账号双臂工具隔离补验（2026-10-15）
+
+G15 预览现以**同一白名单账号、同一 `ENABLE_VECTORLESS_AGENT_SHADOW=1` 开关**分别设置服务端 `evaluationArm=baseline/candidate`，而非用切换全局开关模拟两臂。`industry`、`company`、`product` 范围的基线工具数为 3/3/4，候选为 10/10/11；仅候选多出七个 `vectorless_*`。基线的工具发现、描述和执行路径均拒绝这些工具，定向测试 9 项、类型及 lint 通过。[工程收据](evidence/ma24-g15-g16-evaluation-arm-tool-isolation-2026-10-15.json)。该标识尚未由专用评测运行器绑定到持久任务，预览仍为 `readyForPaidEvaluation=false`。

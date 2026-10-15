@@ -4,7 +4,7 @@ import {modePromptRules} from './mode-prompts';
 import type {ExecutionContext,MessageInput,ModelConfig,ModelMessage} from './contracts';
 
 /** Shared by production and replay preparation; decision memory is injected separately per turn. */
-export function initialTaskMessages(context:Pick<ExecutionContext,'userId'|'role'|'mode'|'knowledgeScope'>,
+export function initialTaskMessages(context:Pick<ExecutionContext,'userId'|'role'|'mode'|'knowledgeScope'|'evaluationArm'>,
  input:Pick<MessageInput,'content'|'attachments'|'knowledgeScope'>,config:ModelConfig,history:Array<{role:'user'|'assistant';content:string}>):ModelMessage[]{
  const knowledgeScope=input.knowledgeScope;
  return [{role:'system',content:context.mode

@@ -405,3 +405,5 @@ Taking Part 工作簿的整题无答案候选已有第 2 条隔离 Gold 草案�
 2026-10-15 GOV.UK 跨文档与交叉组无答案两题的答案和限定已获逐题确认，仅保留为待冻结候选。接下来核第三道 BDUK 题及整组来源/历史暴露，再作最终 Gold 资格和冻结；[MA24-21](CONFIRMED_PRODUCT_RULES.md) 不自动解锁 G15/G16。G17–G20 暂停。
 
 2026-10-15 G14 BDUK 第三题已获逐题审核与候选答案确认；三题内容审核回复齐全。下一步仍为同一来源暴露单元的资格/历史泄漏终审、正式 Gold 判决与冻结；G15 的双路配置和付费准入、G16 真实质量尚未满足。[MA24-22](CONFIRMED_PRODUCT_RULES.md)、[回复收据](evidence/ma24-g14-bpi-cash-accrual-answer-review-2026-10-15.json)。G17–G20 暂停。
+
+2026-10-15 G15/G16 同账号双臂工具差集已在服务端上下文隔离并完成定向验证；基线对七个 `vectorless_*` 的发现、描述、执行均拒绝，候选工具清单不变。下一步仍须专用运行器将冻结 manifest 的臂与账号绑定到持久任务，并独立完成来源/Gold、调用限额及真实质量验收；当前没有启动付费测评。[收据](evidence/ma24-g15-g16-evaluation-arm-tool-isolation-2026-10-15.json)。G17–G20 暂停。
