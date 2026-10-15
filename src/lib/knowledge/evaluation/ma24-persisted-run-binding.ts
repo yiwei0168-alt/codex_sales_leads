@@ -4,6 +4,7 @@ import { stableJson } from "../review-types";
 import { ma24CaseQuerySha256, type Ma24Case, type Ma24Run } from "./ma24-independent-comparison";
 import { digest } from "../../assistant/main/contracts";
 import { auditModelProtocol } from "../../assistant/main/model-protocol-audit";
+import { assertMa24CitationEvidence, type Ma24EvidenceCall } from "./ma24-citation-evidence";
 
 type PersistedRun = {
   id: string; user_id: string; status: string; execution_kind: string;
@@ -28,9 +29,9 @@ function savedModelAnswer(output: unknown): string | undefined {
 /** Checks database rows, not fields copied from an evaluation run file. */
 export function assertMa24PersistedRunBinding(input: {
   case: Ma24Case; query: string; run: Ma24Run;
-  task: PersistedRun | undefined; modelCalls: PersistedModelCall[];
+  task: PersistedRun | undefined; modelCalls: PersistedModelCall[]; evidenceCalls: Ma24EvidenceCall[];
 }) {
-  const { case: frozen, query, run, task, modelCalls } = input;
+  const { case: frozen, query, run, task, modelCalls, evidenceCalls } = input;
   const taskInput = task?.input as Record<string, unknown> | undefined;
   const modelConfig = task?.model_config as Record<string, unknown> | undefined;
   const result = task?.result as Record<string, unknown> | undefined;
@@ -74,11 +75,14 @@ export function assertMa24PersistedRunBinding(input: {
   });
   if (new Set(wireManifests.map(item => `${item.provider}:${item.generationId}`)).size !== wireManifests.length)
     throw new Error(`MA24 duplicate provider generation ${run.caseId}:${run.arm}`);
+  const citationEvidence = assertMa24CitationEvidence({ userId: frozen.userId, runId: run.runId,
+    citations: run.citations, receiptIds: run.receiptIds, calls: evidenceCalls });
   return {
     runId: run.runId, userId: task.user_id,
     taskSha256: createHash("sha256").update(stableJson(task)).digest("hex"),
     modelCallIds: modelCalls.map(call => call.id).sort(),
     wireManifests,
+    ...citationEvidence,
   };
 }
 
@@ -92,6 +96,10 @@ export async function verifyMa24PersistedRunBinding(frozen: Ma24Case, query: str
       `select id,user_id,run_id,tool_id,effect,status,input,input_hash,output from agent_tool_call
        where run_id=$1 and user_id=$2 and tool_id='main_model' and effect='model' order by id`,
       [run.runId, frozen.userId])).rows;
-    return assertMa24PersistedRunBinding({ case: frozen, query, run, task, modelCalls });
+    const evidenceCalls = (await client.query<Ma24EvidenceCall>(
+      `select id,user_id,run_id,tool_id,effect,status,input,input_hash,output from agent_tool_call
+       where run_id=$1 and user_id=$2 and tool_id in ('knowledge_search','vectorless_read') order by id`,
+      [run.runId, frozen.userId])).rows;
+    return assertMa24PersistedRunBinding({ case: frozen, query, run, task, modelCalls, evidenceCalls });
   });
 }

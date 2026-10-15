@@ -33,7 +33,7 @@ const modelCalls = [{ id: "33333333-3333-4333-8333-333333333333", user_id: userI
   input: modelInput, input_hash: digest(modelInput),
   output: { status: "success", data: { message: { role: "assistant", content: run.answer }, requestManifest } } }];
 const verify = (overrides: Partial<Parameters<typeof assertMa24PersistedRunBinding>[0]> = {}) =>
-  assertMa24PersistedRunBinding({ case: frozen, query, run, task, modelCalls, ...overrides });
+  assertMa24PersistedRunBinding({ case: frozen, query, run, task, modelCalls, evidenceCalls: [], ...overrides });
 
 describe("MA24 persisted run binding", () => {
   it("binds one completed execution to its database principal, question, scope, reply and model journal", () => {
@@ -127,5 +127,21 @@ describe("MA24 persisted run binding", () => {
     expect(() => verify({ run: { ...run, modelCallIds: [modelCalls[0].id, secondId],
       receiptIds: [modelCalls[0].id, secondId] }, modelCalls: [modelCalls[0],
       { ...modelCalls[0], id: secondId }] })).toThrow("duplicate provider generation");
+  });
+  it("requires reviewer-entered citations to come from this task's saved source reads", () => {
+    const sourceId = "55555555-5555-4555-8555-555555555555";
+    const sourceInput = { sessionId: runId, nodeId: sourceId };
+    const sourceCall = { id: sourceId, user_id: userId, run_id: runId, tool_id: "vectorless_read",
+      effect: "read", status: "completed", input: sourceInput, input_hash: digest(sourceInput),
+      output: { status: "success", callId: sourceId, data: { status: "ok", evidence: {
+        content: "A370: Highland", source_sha256: "a".repeat(64), source_location: {
+          unitType: "sheet", unitIndex: 4, blockId: "sheet-4-table" } } } } };
+    const citedRun: Ma24Run = { ...run, receiptIds: [...run.receiptIds, sourceId],
+      citations: [{ assetSha256: "a".repeat(64), unitIndex: 4, row: 370,
+        blockId: "sheet-4-table", excerpt: "Highland" }] };
+    expect(verify({ run: citedRun, evidenceCalls: [sourceCall] }).citationBindings)
+      .toEqual([{ citationIndex: 0, callId: sourceId }]);
+    expect(() => verify({ run: citedRun, evidenceCalls: [] }))
+      .toThrow("citation lacks persisted source");
   });
 });

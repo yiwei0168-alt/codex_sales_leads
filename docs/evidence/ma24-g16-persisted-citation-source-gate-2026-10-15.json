@@ -1,0 +1,30 @@
+{
+  "schema": "ma24-g16-persisted-citation-source-gate-v1",
+  "date": "2026-10-15",
+  "scope": "G16 read-only scored-run source provenance; G17-G20 out of scope",
+  "changes": [
+    "The persisted-run verifier now reads tenant-scoped knowledge_search and vectorless_read tool calls from the same agent_run.",
+    "Each reviewer-entered citation must match a saved source hash, unit, optional block/version, and excerpt in a referenced tool output.",
+    "Spreadsheet row citations must locate the excerpt on a cell line with the same row number; a neighboring row cannot be substituted.",
+    "The matched source tool call ID must be included in that run's receipt ID list, and output/journal identity must match the task owner and run."
+  ],
+  "verification": {
+    "tests": "node node_modules/vitest/vitest.mjs run src/lib/knowledge/evaluation/ma24-citation-evidence.test.ts src/lib/knowledge/evaluation/ma24-persisted-run-binding.test.ts src/lib/knowledge/evaluation/ma24-independent-comparison.test.ts: 3 files, 25 tests passed",
+    "typecheck": "npm run typecheck: passed",
+    "lint": "node node_modules/eslint/bin/eslint.js on the two citation/persisted-run implementation and test files: passed",
+    "negativeCases": [
+      "Citation without a saved source read is rejected",
+      "Wrong spreadsheet row or excerpt is rejected",
+      "Other-account, altered-input or mismatched output-call ID is rejected",
+      "Correct v3 search and vectorless original-read source coordinates are accepted"
+    ]
+  },
+  "limitations": [
+    "This checks source provenance for reviewer-entered coordinates; it does not parse or prove that the final user-visible answer actually cited those coordinates.",
+    "Source outputs are saved task journals, not an independently frozen corpus or a current ACL recheck at scoring time.",
+    "Only knowledge_search and vectorless_read provide supported precise source outputs here; other tools still need separate original-evidence verification.",
+    "No frozen Gold or real dual-arm task was used; external provider receipts and final G16 quality are unverified."
+  ],
+  "modelCalls": 0,
+  "productionWrites": 0
+}
