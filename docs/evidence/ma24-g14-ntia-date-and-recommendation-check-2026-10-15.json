@@ -1,0 +1,26 @@
+{
+  "schema": "ma24-g14-ntia-date-and-recommendation-check-v1",
+  "date": "2026-10-15",
+  "caseId": "ntia-18ghz-g117-iss-footnote-and-manual-recommendation",
+  "sourcePdf": "tmp/ma24-independent-quarantine/ntia-18-ghz-band-report-2025.pdf",
+  "sourcePdfSha256": "ff6074c82f7c6abbab80a792ad3d1fae111074f64a492395d2c3c7b78f0c8e42",
+  "physicalPages": 10,
+  "reportDate": {
+    "value": "March 2025",
+    "coordinate": "physical PDF page 3, NTIA Report 25-01 title page",
+    "verification": "pypdf text extraction and visual rendering"
+  },
+  "publisherReleaseDate": {
+    "value": "May 1, 2025",
+    "source": "https://www.ntia.gov/blog/2025/ntia-nasa-recommend-18-ghz-band-allocation-bolster-commercial-space-activities"
+  },
+  "originalRecommendationCheck": {
+    "physicalPage8": "Observation 2 says G117 restricts federal FSS to military systems but not ISS, a different service class. Observation 3 calls for NTIA Manual power flux density updates.",
+    "physicalPage9": "Recommendation 2 proposes co-primary federal and non-federal allocations while explicitly asking the FCC to seek comment on non-federal ISS primary versus secondary status. Recommendation 3 proposes a separate federal relay link footnote. Recommendation 4 calls for NTIA Manual ePFD/PFD limits alongside the allocation amendment."
+  },
+  "questionDateDisposition": "The phrase 'March 2025 NTIA/NASA 18 GHz Band Report' is the report's own date, not the May 1 publisher release date; no candidate question revision is needed.",
+  "independentGoldApprovedForThisCase": false,
+  "fullEvaluationSetFrozen": false,
+  "g15AdmissionOpen": false,
+  "realDualArmRuns": 0
+}
