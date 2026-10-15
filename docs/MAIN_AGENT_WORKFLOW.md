@@ -1,6 +1,7 @@
 > MA15 变更：采用已确认的半透明紫色视觉、三个业务入口及资料默认页；四阶段已实现，模式/资料隔离、六组布局/路由、真实批准与模拟断线恢复、构建及静态资源通过；验收边界见 MA15_UI_ACCEPTANCE_2026-09-21.md。精确规则与状态见 [规则](CONFIRMED_PRODUCT_RULES.md) 和 [工作流](FRONTEND_SIMPLIFICATION_PLAN_2026-09-21.md)。
 
 # 产品主 Agent 与开放式工具架构
+2026-10-16 MA24 G15：专用双臂运行的费率核验须绑定实际模型路由和允许的提供方，覆盖端点阶梯价、缓存及可能的搜索计费；当前三模型 41 端点公开报价仅为只读预核，不能据此打开付费调用。[费率面收据](evidence/ma24-g15-public-openrouter-tariff-surface-2026-10-16.json)。G17–G20 暂停。
 2026-10-16 MA24 G14：NIST MAT 字段候选沿用已审核的工作簿视觉与注册流程，新增 `Measurements Mat Files Format` 来源树回读，对 12 个单元格、工作表/块/范围及另一账号拒读做隔离核验。[回读收据](evidence/ma24-g14-nist-mat-isolated-readback-2026-10-16.json)。候选仍与 NIST TN 2363 同属已知暴露单元；内容确认、正式 Gold、用户可见引用和 G16 真实双路待验，G17–G20 暂停。
 
 2026-10-16 MA24 专用双臂评测在模型和工具边界须核对回环 BGE 服务的模型、revision 与维度；若 `knowledge_search` 返回 `partial`，任务走失败结算，不能把退化的全文/事实结果计作完整 BGE 基线。[工程收据](evidence/ma24-g15-g16-bge-degradation-gate-2026-10-16.json)。普通产品任务的既有降级行为不受此评测闸门约束。

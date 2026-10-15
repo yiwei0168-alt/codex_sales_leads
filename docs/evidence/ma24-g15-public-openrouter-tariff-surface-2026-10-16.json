@@ -1,0 +1,117 @@
+{
+  "schema": "ma24-g15-public-openrouter-tariff-surface-v1",
+  "capturedAtUtc": "2026-10-15T23:04:09.424781+00:00",
+  "scope": "Public credential-free GETs for the three model routes in the current read-only v29 G15 preview. Endpoint maxima include pricing override tiers and reverse stated discounts for a conservative listed-price surface.",
+  "previewPath": "docs/evidence/ma24-g15-config-preview-2026-10-16-v29.json",
+  "previewSha256": "63a3d5041a43f71ea00bee03935c40afbba2bdc7f5dbdaa936bc3b73008a1926",
+  "models": [
+    {
+      "id": "anthropic/claude-sonnet-5.5",
+      "canonicalSlug": "anthropic/claude-sonnet-5.5-20260928",
+      "catalogUrl": "https://openrouter.ai/api/v1/model/anthropic/claude-sonnet-5.5",
+      "catalogResponseSha256": "f434feb33f9be82ce349316ebcb04981aad21692b0bfa8766031a36dbe4a09f6",
+      "catalogPricing": {
+        "prompt": "0.000002",
+        "completion": "0.00001",
+        "web_search": "0.01",
+        "input_cache_read": "0.0000001",
+        "input_cache_write": "0.0000025",
+        "input_cache_write_1h": "0.000004"
+      },
+      "endpointUrl": "https://openrouter.ai/api/v1/models/anthropic/claude-sonnet-5.5/endpoints",
+      "endpointResponseSha256": "b5762baa289c50a02a2286de9555dee2fec16a0ddd840bd9152bb53aed9cb985",
+      "endpointCount": 8,
+      "observedOverrideThresholdsPromptTokens": [],
+      "maximumUndiscountedEndpointUsdPerMillionTokens": {
+        "prompt": "2.2",
+        "completion": "11",
+        "input_cache_read": "0.11",
+        "input_cache_write": "2.75",
+        "input_cache_write_1h": "4.4"
+      },
+      "maximumUndiscountedEndpointWebSearchUsdPerCall": "0.01",
+      "maxPriceEndpointTags": {
+        "prompt": "google-vertex/us",
+        "completion": "google-vertex/us",
+        "input_cache_read": "google-vertex/us",
+        "input_cache_write": "google-vertex/us",
+        "input_cache_write_1h": "google-vertex/us",
+        "web_search": "google-vertex/global"
+      }
+    },
+    {
+      "id": "openai/gpt-6.1-sol",
+      "canonicalSlug": "openai/gpt-6.1-sol-20260929",
+      "catalogUrl": "https://openrouter.ai/api/v1/model/openai/gpt-6.1-sol",
+      "catalogResponseSha256": "ccb74da365eba379995495e4b3d74375b2e0ae44d9a4abc5994254b42262d932",
+      "catalogPricing": {
+        "prompt": "0.000002",
+        "completion": "0.00001",
+        "web_search": "0.01",
+        "input_cache_read": "0.0000001",
+        "input_cache_write": "0.0000025",
+        "overrides": [
+          {
+            "min_prompt_tokens": 272000,
+            "prompt": "0.000004",
+            "completion": "0.000015",
+            "input_cache_read": "0.0000002",
+            "input_cache_write": "0.000005"
+          }
+        ]
+      },
+      "endpointUrl": "https://openrouter.ai/api/v1/models/openai/gpt-6.1-sol/endpoints",
+      "endpointResponseSha256": "f7aaba85ac4a2894cc70d72da2f77dd6810d64c05978d14e8342f0701e891fbe",
+      "endpointCount": 8,
+      "observedOverrideThresholdsPromptTokens": [
+        272000
+      ],
+      "maximumUndiscountedEndpointUsdPerMillionTokens": {
+        "prompt": "24",
+        "completion": "90",
+        "input_cache_read": "1.2",
+        "input_cache_write": "30"
+      },
+      "maximumUndiscountedEndpointWebSearchUsdPerCall": "0.01",
+      "maxPriceEndpointTags": {
+        "prompt": "openai/ultrafast",
+        "completion": "openai/ultrafast",
+        "input_cache_read": "openai/ultrafast",
+        "input_cache_write": "openai/ultrafast",
+        "web_search": "openai/flex"
+      }
+    },
+    {
+      "id": "moonshotai/kimi-k3",
+      "canonicalSlug": "moonshotai/kimi-k3-20260715",
+      "catalogUrl": "https://openrouter.ai/api/v1/model/moonshotai/kimi-k3",
+      "catalogResponseSha256": "a8b6867497bda5574219a26be51bffa6a97b3e41aae28854f834a72b81420de1",
+      "catalogPricing": {
+        "prompt": "0.000000405",
+        "completion": "0.000015",
+        "input_cache_read": "0.00000028"
+      },
+      "endpointUrl": "https://openrouter.ai/api/v1/models/moonshotai/kimi-k3/endpoints",
+      "endpointResponseSha256": "dc7d8a250feeef03b1ea3a7c4c0928d1f2ab91175b5b85f483594c1e5addd1d1",
+      "endpointCount": 25,
+      "observedOverrideThresholdsPromptTokens": [],
+      "maximumUndiscountedEndpointUsdPerMillionTokens": {
+        "prompt": "4.5",
+        "completion": "24",
+        "input_cache_read": "1.2",
+        "input_cache_write": "3.75"
+      },
+      "maximumUndiscountedEndpointWebSearchUsdPerCall": null,
+      "maxPriceEndpointTags": {
+        "prompt": "fireworks/us",
+        "completion": "wafer",
+        "input_cache_read": "akashml/fp4",
+        "input_cache_write": "amazon-bedrock/us-east-2"
+      }
+    }
+  ],
+  "result": "Evidence only; no tariff admitted or paid calls enabled. Recheck endpoint set, route policy, tier thresholds, account/BYOK terms and current runtime before G15 admission.",
+  "paidCalls": 0,
+  "g15ReadyForModelCalls": false,
+  "g17ToG20Advanced": false
+}
