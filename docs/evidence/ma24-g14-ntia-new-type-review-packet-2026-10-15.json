@@ -1,0 +1,35 @@
+{
+  "schema": "ma24-g14-ntia-new-type-review-packet-v1",
+  "date": "2026-10-15",
+  "caseId": "ntia-18ghz-g117-iss-footnote-and-manual-recommendation",
+  "reviewPacket": "docs/MA24_G14_NEW_TYPE_REVIEW_PACKET_2026-10-15.md",
+  "poolPath": "tmp/ma24-independent-quarantine/g14-current-draft-pool-v5-2026-10-15.json",
+  "poolSha256": "2cb4c56dd2f35e88a43ebdb1eaa2e15246438ee5727d9d6c7d31b9c86d3184c7",
+  "poolCounts": {
+    "publicationQuestions": 23,
+    "otherPublicationQuestions": 22,
+    "syntheticSecurityQuestions": 3,
+    "ntiaReportQuestions": 1,
+    "otherPublicationExactQuestionMatches": 0,
+    "otherPublicationQuestionsContainingG117IssOrNtia": 0
+  },
+  "privateGoldDraftSha256": "2dfbfedc7e9f90f7b6ea7885abe0b1c45c6509f2e9df9f552b264a39d22ad1de",
+  "originalPdfSha256": "ff6074c82f7c6abbab80a792ad3d1fae111074f64a492395d2c3c7b78f0c8e42",
+  "productExtractionSha256": "176c8b774435f757bd12894125123db39cc80831dcf764dacf9518be33d31e1d",
+  "originalPagesReinspected": [8, 9],
+  "answerCoordinates": ["page-8-block-29", "page-9-block-7"],
+  "additionalContextCoordinate": "page-8-block-31",
+  "manualCurrentPoolFinding": "The 22 other publication questions concern different reports, workbooks or presentations and do not ask the same G117/ISS service distinction, proposed federal relay footnote and non-federal priority caveat. This is a bounded screen, not a full-set independence approval.",
+  "reviewClass": "dated official technical recommendation versus adopted-rule status",
+  "priorAuthorizedTypesCoverClass": false,
+  "userReviewOfNewTypePending": true,
+  "fullSetIndependenceApproved": false,
+  "independentGoldApproved": false,
+  "realDualArmRuns": 0,
+  "g17ToG20Advanced": false,
+  "limitations": [
+    "Exact wording and local-hash absence cannot prove semantic independence or rule out unrecorded exposure.",
+    "The official NTIA URL could not be fetched during this repeat check; original local PDF bytes and rendered pages were available and matched prior receipts.",
+    "This packet is for internal review only and does not authorize redistributing the PDF or page images."
+  ]
+}
