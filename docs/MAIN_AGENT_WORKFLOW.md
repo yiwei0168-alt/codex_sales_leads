@@ -2,6 +2,8 @@
 
 # 产品主 Agent 与开放式工具架构
 
+2026-10-15 MA24 G16：`claimAndBindMa24EvaluationRun` 先核三份冻结文件的原始字节哈希，再按任务 ID 与冻结账号领取并调用数据库租户绑定器；迁移 138 移除原两参数认领函数。领取后题文/账号/臂/租约/会话不符时，用通用失败原因结束该评测任务，不写入普通消息历史。[克隆收据](evidence/ma24-g16-claimed-task-admission-clone-2026-10-15.json)。此函数仅完成入场，不开放模型调用；G17–G20 暂停。
+
 2026-10-15 MA24 G16：迁移 137 新增 `claim_ma24_evaluation_run(run_id, worker)`，只能显式领取排队评测任务，不扫描队列且不自动重领过期租约；普通任务领取函数仍排除评测任务。受限角色克隆验证通过。[收据](evidence/ma24-g16-explicit-evaluation-claim-clone-2026-10-15.json)。领取后仍须由专用运行器完成冻结快照、身份、租约与费用准入核验才可请求模型；G17–G20 暂停。
 
 2026-10-15 MA24 G16：持久任务核验把模型输入的来源工具消息与已存来源读取输出作稳定 JSON 等值比较；只有相同 `callId` 的不同内容不能支撑精确引用。[工程收据](evidence/ma24-g16-model-visible-source-byte-binding-2026-10-15.json)。专用运行器与真实双路仍待接入，G17–G20 暂停。

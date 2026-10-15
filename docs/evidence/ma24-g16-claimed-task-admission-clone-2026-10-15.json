@@ -1,0 +1,27 @@
+{
+  "schema": "ma24-g16-claimed-task-admission-clone-v1",
+  "date": "2026-10-15",
+  "scope": "G16 explicit claim plus frozen task binding; G17-G20 paused",
+  "change": "claimAndBindMa24EvaluationRun checks the three frozen snapshot byte hashes before claiming an explicit task for the frozen account, then binds its live lease, case, arm, question, scope, model configuration and hidden empty conversation. Post-claim binding failure settles the task as failed with a generic reason and no ordinary conversation message.",
+  "ownerBoundMigration": "db/migrations/138_ma24_evaluation_claim_owner.sql",
+  "verification": "MA24_ADMISSION_USE_CLONE=1 node scripts/run-tsx.cjs scripts/verify-ma24-g16-explicit-claim-clone.ts",
+  "isolatedDatabase": "ma11_replay_7d98e095133b",
+  "checks": [
+    "A valid queued evaluation task was explicitly claimed and bound to its frozen synthetic question",
+    "The same task ID paired with a different account did not claim the row",
+    "Changed snapshot bytes were rejected before claiming and the target task remained queued",
+    "Changed persisted question text after claiming was rejected and the task finished as failed with a generic reason",
+    "Database counts found zero ordinary messages and zero model calls for both admitted synthetic tasks",
+    "The prior cleanup failure from the new task events was corrected by deleting synthetic event rows first; a stale failed fixture was removed only after checking its exact synthetic account identity",
+    "The final clone run passed and verified zero synthetic users, conversations and tasks remained",
+    "TypeScript typecheck and ESLint on changed files passed"
+  ],
+  "providerCalls": 0,
+  "approvedGold": 0,
+  "realDualArmRuns": 0,
+  "productionMigrationApplied": false,
+  "limitations": [
+    "This is task admission only. The semantic identity of the loaded build and configuration, provider tariffs, paid-call authorization and source eligibility still need independent admission checks.",
+    "The dedicated model executor and real baseline/candidate runs are not connected."
+  ]
+}
