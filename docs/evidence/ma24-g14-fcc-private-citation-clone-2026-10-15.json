@@ -1,0 +1,54 @@
+{
+  "schema": "ma24-g14-fcc-private-citation-clone-v1",
+  "date": "2026-10-15",
+  "stage": "G05/G14 isolated product PDF visual review, private registration and exact evidence read",
+  "source": {
+    "officialUrl": "https://docs.fcc.gov/public/attachments/DOC-424190A1.pdf",
+    "localOriginal": "tmp/ma24-independent-candidates/fcc-doc-424190.pdf",
+    "sha256": "cc6b2100b895bc51a34bedd6873731d800a67a372a7b73b94f7095b98d902f0a",
+    "pages": 2
+  },
+  "reproduction": {
+    "command": "node scripts/run-tsx.cjs tmp/ma24-independent-quarantine/verify-fcc-press-review-clone.ts",
+    "scriptSha256": "2496366e00e81c9208540543860518d2fa58aeea9524043b4dfc92869e0846fc",
+    "visualReviewPackage": "tmp/ma24-independent-quarantine/fcc-doc-424190-visual-review-v1/review.json",
+    "visualReviewPackageSha256": "a350a689e0c41645bda21c53f8a7c1b33517a1b049cd33a9520874c619a5f272",
+    "offlineExtractionSha256": "2d732651f0a6efd532d41e14cf1336731b87ffaf89c51f61d563bb4f960224cc",
+    "productExtractionSha256AfterJobStorageKeyChange": "4ba50431ea40712a743f4b003b35ab5f06ad260474c92d0063dfbae62057af9d"
+  },
+  "originalPageReview": {
+    "pagesInspected": [1, 2],
+    "page1TargetFacts": "77% at least three fixed services and 43.4% at least three fixed terrestrial services, both at 100/20 Mbps as of June 2025",
+    "visualLayerDecisions": "Both whole-page visual candidates are decoration because the substantive text is preserved in searchable page text blocks; the rendered layers add the publisher logo, formatting and hyperlink styling. This decision does not discard the text blocks."
+  },
+  "isolatedProductResult": {
+    "database": "existing MA11 replay clone",
+    "accountCount": 2,
+    "heldBeforeReview": true,
+    "prematureCompletionRejected": true,
+    "pendingVisualPages": 2,
+    "visualPagePngHashesMatchedOfflineRenders": true,
+    "decisionsSaved": 2,
+    "decorationDecisions": 2,
+    "evidenceDecisions": 0,
+    "reviewCompleted": true,
+    "registeredPrivately": true,
+    "targetBlock": "page-1-block-10",
+    "targetUnitIndex": 1,
+    "targetEvidenceReadWithExactBlockAndPage": true,
+    "targetContainsBothPercentages": true,
+    "otherAccountReadDenied": true,
+    "releasePointersUnchanged": true,
+    "syntheticUsersJobsReviewsAndDocumentsCleaned": true,
+    "modelCalls": 0,
+    "productionKnowledgeWrites": 0
+  },
+  "acceptanceBoundary": {
+    "privateGoldDraftSha256": "23010c2b955f34a5aa7ab98dffd50665edc7effeb0ddb4d544e425e1c93a6149",
+    "fccPublicationFamilyAndFullSetIndependenceApproved": false,
+    "independentGoldApproved": false,
+    "userVisibleModelAnswerAndCitationChecked": false,
+    "realDualArmRuns": 0,
+    "g17ToG20Advanced": false
+  }
+}
