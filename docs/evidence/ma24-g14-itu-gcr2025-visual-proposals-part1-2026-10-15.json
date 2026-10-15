@@ -1,0 +1,320 @@
+{
+  "schema": "ma24-g14-itu-gcr2025-visual-proposals-part1-v1",
+  "date": "2026-10-15",
+  "stage": "First 32 source-bound page proposals; not product judgments",
+  "sourceSha256": "4489081fe8709ea1bcea2b724ff5a92c3979195432a8da73c20a8c8e0570ccb8",
+  "extractionArtifactSha256": "788600e3fc3a1f8bd0a1d658ab608686b1c4358cfe76672500f3ae652303ffd6",
+  "candidatePackageSha256": "a7e4c0784ae51a2195b77623a67b1579bcef70375ce837b6e7c1d20b8580efac",
+  "scopePhysicalPages": [
+    1,
+    32
+  ],
+  "targetedFullSizePages": [
+    19,
+    20,
+    22,
+    31
+  ],
+  "contactSheetOverviewAllPages": true,
+  "proposedCounts": {
+    "evidence": 4,
+    "decoration": 28,
+    "unresolved": 0
+  },
+  "proposals": [
+    {
+      "blockId": "page-1-visual-review",
+      "physicalPage": 1,
+      "originalRenderSha256": "2383a8fba12786bb9d054f81d2d8eafbd50306ca0d37af79d358f0e48f794a8a",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact-sheet review shows cover art, portraits, logos, rules, shaded backgrounds or page layout only beyond digitally extracted text; no separately readable chart, map or table content was seen in this page preview. Recheck against the original before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-2-visual-review",
+      "physicalPage": 2,
+      "originalRenderSha256": "535f85ace7e1d046ca3c1d46dc5e692618211d5a1dd4e7f9e9611a7d1da44fd5",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact-sheet review shows cover art, portraits, logos, rules, shaded backgrounds or page layout only beyond digitally extracted text; no separately readable chart, map or table content was seen in this page preview. Recheck against the original before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-3-visual-review",
+      "physicalPage": 3,
+      "originalRenderSha256": "69f1e08ee729d10fb996de95682033df2995dd4afe7ce455d92a1132b5d6ed1d",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact-sheet review shows cover art, portraits, logos, rules, shaded backgrounds or page layout only beyond digitally extracted text; no separately readable chart, map or table content was seen in this page preview. Recheck against the original before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-4-visual-review",
+      "physicalPage": 4,
+      "originalRenderSha256": "bd479dd8dff517d3cd54ceb40335d17a34d0b3a6700702f60803c37b6a72a07f",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact-sheet review shows cover art, portraits, logos, rules, shaded backgrounds or page layout only beyond digitally extracted text; no separately readable chart, map or table content was seen in this page preview. Recheck against the original before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-5-visual-review",
+      "physicalPage": 5,
+      "originalRenderSha256": "6e91d762388def1283787388812213107786dcaac31da200bca0620122a2ac16",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact-sheet review shows cover art, portraits, logos, rules, shaded backgrounds or page layout only beyond digitally extracted text; no separately readable chart, map or table content was seen in this page preview. Recheck against the original before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-6-visual-review",
+      "physicalPage": 6,
+      "originalRenderSha256": "1b213c5b5551f9099de5fb53914749672459487673eec407eb5445eefffdee63",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact-sheet review shows cover art, portraits, logos, rules, shaded backgrounds or page layout only beyond digitally extracted text; no separately readable chart, map or table content was seen in this page preview. Recheck against the original before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-7-visual-review",
+      "physicalPage": 7,
+      "originalRenderSha256": "2a03b3c250e8c74e35a5a6de4e7ec5e21e4d178ea03441f46e7e7260c17f316f",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact-sheet review shows cover art, portraits, logos, rules, shaded backgrounds or page layout only beyond digitally extracted text; no separately readable chart, map or table content was seen in this page preview. Recheck against the original before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-8-visual-review",
+      "physicalPage": 8,
+      "originalRenderSha256": "c47d07ed9ca436633b23fd402404468b125ac17f5c2dcc7995dfc5c48623d49a",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact-sheet review shows cover art, portraits, logos, rules, shaded backgrounds or page layout only beyond digitally extracted text; no separately readable chart, map or table content was seen in this page preview. Recheck against the original before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-9-visual-review",
+      "physicalPage": 9,
+      "originalRenderSha256": "3c10a76afaa9915612ab3b8e18c92c94c0292240df7da8b6a2a0236ef41604d1",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact-sheet review shows cover art, portraits, logos, rules, shaded backgrounds or page layout only beyond digitally extracted text; no separately readable chart, map or table content was seen in this page preview. Recheck against the original before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-10-visual-review",
+      "physicalPage": 10,
+      "originalRenderSha256": "6f510fa3e738a95ab76ef7ff5dbcc45455403f4b82be0ace9f4adeab41947223",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact-sheet review shows cover art, portraits, logos, rules, shaded backgrounds or page layout only beyond digitally extracted text; no separately readable chart, map or table content was seen in this page preview. Recheck against the original before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-11-visual-review",
+      "physicalPage": 11,
+      "originalRenderSha256": "4272dcd424f965a6d6b96f7f2023345fa97d95ef2152fdb8cfe751913d8cc175",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact-sheet review shows cover art, portraits, logos, rules, shaded backgrounds or page layout only beyond digitally extracted text; no separately readable chart, map or table content was seen in this page preview. Recheck against the original before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-12-visual-review",
+      "physicalPage": 12,
+      "originalRenderSha256": "c0b534827d3ff88d47da37ea173b442f576f7ce24df4eb35b9315f086be21863",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact-sheet review shows cover art, portraits, logos, rules, shaded backgrounds or page layout only beyond digitally extracted text; no separately readable chart, map or table content was seen in this page preview. Recheck against the original before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-13-visual-review",
+      "physicalPage": 13,
+      "originalRenderSha256": "bf3ccb371997312318c237c7b7a310251541050535322844ca38a013a3132a99",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact-sheet review shows cover art, portraits, logos, rules, shaded backgrounds or page layout only beyond digitally extracted text; no separately readable chart, map or table content was seen in this page preview. Recheck against the original before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-14-visual-review",
+      "physicalPage": 14,
+      "originalRenderSha256": "475e4be5df1e9ead70fc47d89fff2e0968b077e9f30ebb2b685c0b520e4e3346",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact-sheet review shows cover art, portraits, logos, rules, shaded backgrounds or page layout only beyond digitally extracted text; no separately readable chart, map or table content was seen in this page preview. Recheck against the original before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-15-visual-review",
+      "physicalPage": 15,
+      "originalRenderSha256": "8067c9789adefa4e22f16bad1b40ed0cef9e91cf1ecfbffa77a03f25d9bb670f",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact-sheet review shows cover art, portraits, logos, rules, shaded backgrounds or page layout only beyond digitally extracted text; no separately readable chart, map or table content was seen in this page preview. Recheck against the original before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-16-visual-review",
+      "physicalPage": 16,
+      "originalRenderSha256": "c174866127b1c765c16b6d4332b85ca8cdfd75f6a21497d18803aa163b5029a8",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact-sheet review shows cover art, portraits, logos, rules, shaded backgrounds or page layout only beyond digitally extracted text; no separately readable chart, map or table content was seen in this page preview. Recheck against the original before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-17-visual-review",
+      "physicalPage": 17,
+      "originalRenderSha256": "dc2979ab75986d5afa1d57b6077ab60e3b0b0d0b56db6fe1f4e67ddec6460ea8",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact-sheet review shows cover art, portraits, logos, rules, shaded backgrounds or page layout only beyond digitally extracted text; no separately readable chart, map or table content was seen in this page preview. Recheck against the original before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-18-visual-review",
+      "physicalPage": 18,
+      "originalRenderSha256": "ef134a072aa2c745efa0ed0d34229253f9aca526eff15e79003e9b7c0a7e89e7",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact-sheet review shows cover art, portraits, logos, rules, shaded backgrounds or page layout only beyond digitally extracted text; no separately readable chart, map or table content was seen in this page preview. Recheck against the original before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-19-visual-review",
+      "physicalPage": 19,
+      "originalRenderSha256": "58a04f4dbd1ba880d8788e93a9ce298b9dc9549c3eb7bf6a05b479128848c6b2",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figure 1.1 charts selected global connectivity indicators from 1994 to 2025 in millions. Its labelled 2025 endpoints are 9,171 mobile-cellular subscriptions, 8,175 active mobile-broadband subscriptions, 6,047 Internet users, 1,654 fixed-broadband subscriptions and 815 fixed telephone lines. The figure reports counts in millions, not rates or unique subscribers.",
+      "reason": "Full-size physical page 19 / printed page 8 checked; five 2025 endpoint labels and chart units are visible.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-20-visual-review",
+      "physicalPage": 20,
+      "originalRenderSha256": "b6e7ed96baf0c5446a5fad477e8f9df190f6b6f99964b3edac226224e0395ad2",
+      "proposedDecision": "evidence",
+      "evidenceText": "Table 1.1 presents selected supercomputing milestones for 1993, 1997, 2008, 2022 and 2024, with performance, units, numeric FLOPS, an indexed comparison and named systems. It is a historical milestone table, not a connectivity coverage measure.",
+      "reason": "Full-size physical page 20 / printed page 9 checked; the table has factual rows and column relationships.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-21-visual-review",
+      "physicalPage": 21,
+      "originalRenderSha256": "154fdbab74ea0f582f2691095bf1a199556ccd6bdf897713f4c37683f949b1f7",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact-sheet review shows cover art, portraits, logos, rules, shaded backgrounds or page layout only beyond digitally extracted text; no separately readable chart, map or table content was seen in this page preview. Recheck against the original before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-22-visual-review",
+      "physicalPage": 22,
+      "originalRenderSha256": "1d04eda217be879d5cba63069bdef787f97856abe2620fa5fde4da551caed187",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figure 1.2 depicts the universal and meaningful connectivity framework. Its six interdependent dimensions are quality, availability, affordability, security, devices and skills. The diagram distinguishes catalysts, levers, content and services from applications and impacts.",
+      "reason": "Full-size physical page 22 / printed page 11 checked; diagram relationships are not just page decoration.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-23-visual-review",
+      "physicalPage": 23,
+      "originalRenderSha256": "f794cf7307270137cdb43b2530272dd9579620e8c177df118de2eeb3aa02aeea",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact-sheet review shows cover art, portraits, logos, rules, shaded backgrounds or page layout only beyond digitally extracted text; no separately readable chart, map or table content was seen in this page preview. Recheck against the original before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-24-visual-review",
+      "physicalPage": 24,
+      "originalRenderSha256": "c6f8f5220e9f8f001bc5d3ff7f1ead07d6e24dcceb16079ec2fd84835769526c",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact-sheet review shows cover art, portraits, logos, rules, shaded backgrounds or page layout only beyond digitally extracted text; no separately readable chart, map or table content was seen in this page preview. Recheck against the original before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-25-visual-review",
+      "physicalPage": 25,
+      "originalRenderSha256": "e39ecf3fd08dcaa07aeb63d9ede6da575227d1fda21127771a2c1e27a5e894d1",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact-sheet review shows cover art, portraits, logos, rules, shaded backgrounds or page layout only beyond digitally extracted text; no separately readable chart, map or table content was seen in this page preview. Recheck against the original before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-26-visual-review",
+      "physicalPage": 26,
+      "originalRenderSha256": "f81dc9f3c7869f40879a0490cd3454eacb1001db1c5a374a0ebbf17fd45283ea",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact-sheet review shows cover art, portraits, logos, rules, shaded backgrounds or page layout only beyond digitally extracted text; no separately readable chart, map or table content was seen in this page preview. Recheck against the original before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-27-visual-review",
+      "physicalPage": 27,
+      "originalRenderSha256": "4ca2949d55f08a7f0c6a4dd17a3d474e548023aaa768f74f64c1092d61eea13a",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact-sheet review shows cover art, portraits, logos, rules, shaded backgrounds or page layout only beyond digitally extracted text; no separately readable chart, map or table content was seen in this page preview. Recheck against the original before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-28-visual-review",
+      "physicalPage": 28,
+      "originalRenderSha256": "b787516ea1e11b3fec78559b0c119a548f8c9fdddb019458ca1e38faab0415f7",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact-sheet review shows cover art, portraits, logos, rules, shaded backgrounds or page layout only beyond digitally extracted text; no separately readable chart, map or table content was seen in this page preview. Recheck against the original before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-29-visual-review",
+      "physicalPage": 29,
+      "originalRenderSha256": "c23f765821eabc093442276852e6cf0b12368fe5213fa5e7e300b33b207e6b7c",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact-sheet review shows cover art, portraits, logos, rules, shaded backgrounds or page layout only beyond digitally extracted text; no separately readable chart, map or table content was seen in this page preview. Recheck against the original before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-30-visual-review",
+      "physicalPage": 30,
+      "originalRenderSha256": "28e85a583931979e5c36122e1ef578f8b8b221851f1644de134d03206087761d",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact-sheet review shows cover art, portraits, logos, rules, shaded backgrounds or page layout only beyond digitally extracted text; no separately readable chart, map or table content was seen in this page preview. Recheck against the original before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-31-visual-review",
+      "physicalPage": 31,
+      "originalRenderSha256": "600fd0b4829bc9a4f75f38b603eafef6e029b28b10d816049aa4e482cef5f758",
+      "proposedDecision": "evidence",
+      "evidenceText": "Table 2.1 assesses progress toward the 2030 universal and meaningful connectivity targets across Internet use, household and school connections, business use, mobile coverage, fixed-broadband speed, entry-level price, mobile-phone use and digital skills. It separates target, current global situation and number of economies meeting each target; unavailable values are marked n.a.",
+      "reason": "Full-size physical page 31 / printed page 20 checked; the table and its footnotes govern interpretation.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-32-visual-review",
+      "physicalPage": 32,
+      "originalRenderSha256": "39c5ab53095d92490d66be64b1ceb5a66465061a3640e4e31e13361326881603",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact-sheet review shows cover art, portraits, logos, rules, shaded backgrounds or page layout only beyond digitally extracted text; no separately readable chart, map or table content was seen in this page preview. Recheck against the original before product save.",
+      "productDecisionSaved": false
+    }
+  ],
+  "remainingPendingPagesNotProposed": 96,
+  "productReviewDecisionsSaved": 0,
+  "privateRegistrationPassed": false,
+  "goldApproved": false,
+  "modelCalls": 0,
+  "g17ToG20Advanced": false
+}
