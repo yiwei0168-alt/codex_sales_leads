@@ -1,0 +1,22 @@
+{
+  "schema": "ma24-g16-runner-synthetic-paths-v1",
+  "date": "2026-10-15",
+  "scope": "Dedicated G16 runner orchestration with injected synthetic task, graph, model and spend dependencies",
+  "checks": [
+    "Unready G15 admission rejects before task claim",
+    "A scripted completion passes only the question into initial main Agent messages; a private Gold sentinel is absent",
+    "The scripted completion invokes the graph under the main-agent-evaluation spend scope and calls the completed settlement dependency",
+    "A checkpoint containing prior messages refuses automatic replay and calls the failed settlement dependency",
+    "A partial graph outcome calls failed settlement instead of completed settlement",
+    "Four focused tests, TypeScript typecheck and focused ESLint passed"
+  ],
+  "syntheticProviderCalls": 0,
+  "currentRealGateReady": false,
+  "approvedGold": 0,
+  "realDualArmRuns": 0,
+  "limitations": [
+    "The positive path used mocked admission, graph, model, database and billing functions; it does not validate a real provider request, reservation or PostgreSQL completion row.",
+    "The production G15 runtime binding still returns readyForModelCalls=false and blocks entry before task claim.",
+    "Independent Gold, actual account/source snapshot, provider tariffs, authorized spend cap, positive persisted execution and reviewer verdicts remain open; G17-G20 remain paused."
+  ]
+}
