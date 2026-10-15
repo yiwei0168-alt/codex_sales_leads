@@ -1,0 +1,26 @@
+{
+  "schema": "ma24-g16-nonroute-citation-credit-gate-v1",
+  "date": "2026-10-15",
+  "stage": "G16 independent comparison scorer engineering gate",
+  "defect": "A completed clarify, no-answer or deny case with zero citations could be marked preciseCitationCorrect=true and increase the exact-citation score, despite having no citation to assess.",
+  "change": "A precise-citation-positive verdict now requires the frozen expected outcome to be route, as well as a nonempty precise citation set covering Gold coordinates.",
+  "targetFiles": [
+    "src/lib/knowledge/evaluation/ma24-independent-comparison.ts",
+    "src/lib/knowledge/evaluation/ma24-independent-comparison.test.ts"
+  ],
+  "checks": {
+    "vitestCommand": "node node_modules/vitest/vitest.mjs run src/lib/knowledge/evaluation/ma24-independent-comparison.test.ts",
+    "vitestResult": "14 passed with TEMP and TMP directed to tmp/vitest-temp inside the workspace",
+    "typescriptCommand": "node node_modules/typescript/bin/tsc --noEmit",
+    "typescriptResult": "passed",
+    "eslintCommand": "node node_modules/eslint/bin/eslint.js src/lib/knowledge/evaluation/ma24-independent-comparison.ts src/lib/knowledge/evaluation/ma24-independent-comparison.test.ts",
+    "eslintResult": "passed",
+    "negativeCases": ["no-answer with empty citations but positive exact-citation verdict", "deny with empty citations but positive exact-citation verdict", "no-answer with an unexpected citation and positive verdict"]
+  },
+  "smokeFixtureBoundary": "The preexisting local CLI smoke inputs have a Gold snapshot byte-hash mismatch, so they were not used as passing evidence for this stage.",
+  "independentGoldApproved": false,
+  "realDualArmModelRuns": 0,
+  "qualityGatePassed": false,
+  "productionDeployment": false,
+  "g17ToG20Advanced": false
+}

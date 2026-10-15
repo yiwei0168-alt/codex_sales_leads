@@ -185,11 +185,10 @@ export function scoreMa24IndependentComparison(input: {
       throw new Error(`Failed MA24 run cannot pass review ${id}`);
     if (verdict.answerCorrect && verdict.observedOutcome !== cases.get(verdict.caseId)?.expectedOutcome)
       throw new Error(`MA24 answer verdict contradicts observed outcome ${id}`);
-    if (verdict.preciseCitationCorrect && (cases.get(verdict.caseId)?.expectedOutcome === "route"
-      ? !run.citations.length || run.citations.some(source => !goldSourceIsPrecise(source)) ||
-        goldCases.get(verdict.caseId)!.expectedSources.some(expected =>
-          !run.citations.some(actual => citationMatchesGold(actual, expected)))
-      : run.citations.length > 0))
+    if (verdict.preciseCitationCorrect && (cases.get(verdict.caseId)?.expectedOutcome !== "route" ||
+      !run.citations.length || run.citations.some(source => !goldSourceIsPrecise(source)) ||
+      goldCases.get(verdict.caseId)!.expectedSources.some(expected =>
+        !run.citations.some(actual => citationMatchesGold(actual, expected)))))
       throw new Error(`MA24 citation verdict contradicts coordinates ${id}`);
     verdictMap.set(id, verdict);
   }

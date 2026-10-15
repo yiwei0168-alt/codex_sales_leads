@@ -33,7 +33,9 @@ const gold: Ma24GoldSnapshot = { schema: "ma24-g16-gold-snapshot-v1",
 const verdicts: Ma24Verdict[] = runs.map(run => ({
   caseId: run.caseId, arm: run.arm, runSha256: ma24RunSha256(run),
   observedOutcome: manifest.cases.find(item => item.caseId === run.caseId)!.expectedOutcome,
-  answerCorrect: run.arm === "candidate", preciseCitationCorrect: run.arm === "candidate",
+  answerCorrect: run.arm === "candidate",
+  preciseCitationCorrect: run.arm === "candidate" &&
+    manifest.cases.find(item => item.caseId === run.caseId)!.expectedOutcome === "route",
   permissionLeak: false, unapprovedOfficialFact: false,
   reviewer: "reviewer", reviewedAt: "2026-10-15T00:00:00Z", note: "Original checked",
 }));
@@ -220,8 +222,15 @@ describe("MA24 independent comparison", () => {
     const unexpected = runs.map(row => row.caseId === "new" && row.arm === "candidate"
       ? { ...row, citations: [{ assetSha256: "1".repeat(64), unitIndex: 1, excerpt: "Wrong citation" }] } : row);
     const unexpectedReviewed = verdicts.map(row => row.caseId === "new" && row.arm === "candidate"
-      ? { ...row, runSha256: ma24RunSha256(unexpected.find(item => item.caseId === row.caseId && item.arm === row.arm)!) } : row);
+      ? { ...row, preciseCitationCorrect: true,
+        runSha256: ma24RunSha256(unexpected.find(item => item.caseId === row.caseId && item.arm === row.arm)!) } : row);
     expect(() => score({ manifest, runs: unexpected, verdicts: unexpectedReviewed }))
       .toThrow("citation verdict contradicts coordinates");
+    for (const caseId of ["new", "permission-deny"]) {
+      const falselyCredited = verdicts.map(row => row.caseId === caseId && row.arm === "candidate"
+        ? { ...row, preciseCitationCorrect: true } : row);
+      expect(() => score({ manifest, runs, verdicts: falselyCredited }))
+        .toThrow(`MA24 citation verdict contradicts coordinates ${caseId}:candidate`);
+    }
   });
 });
