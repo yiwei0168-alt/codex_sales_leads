@@ -1,0 +1,68 @@
+{
+  "schema": "ma24-g14-dbs-correction-conflict-source-review-v1",
+  "date": "2026-10-15",
+  "stage": "Complete official original, visual conflict and offline product-extraction review; draft only, not Gold",
+  "publisherPage": "https://www.gov.uk/government/publications/dbs-annual-report-and-accounts-2024-to-2025",
+  "sourceUrl": "https://assets.publishing.service.gov.uk/media/698371adafabc06c35d34413/ARA_2024-25_19.11.2025_Correction_Slip.pdf",
+  "sourceLocalPath": "tmp/ma24-independent-quarantine/dbs-2024-25-ara-corrected.pdf",
+  "sha256": "5902287709dd1049eae2429af4e87d8a5efbee5d123763b5735a72213f754a44",
+  "bytes": 9981741,
+  "physicalPages": 157,
+  "sourceCompleted": true,
+  "publicationDates": {
+    "firstPublished": "2025-11-20",
+    "updatedWithCorrectionSlip": "2026-02-04",
+    "reportPeriod": "2024-04-01 to 2025-03-31"
+  },
+  "sourceUseBoundary": "GOV.UK and physical PDF page 4 state Open Government Licence v3.0 except where otherwise stated; private attributed short factual questions only, no report or emblem redistribution.",
+  "visuallyReviewedConflict": {
+    "correctionSlipPhysicalPage": 7,
+    "correctionSlipRenderSha256": "2db9ed49511acfa6a28cc71e712213f538f1cb325b7ff5f6eeba87074a8e629b",
+    "chartPhysicalPage": 41,
+    "chartPrintedPage": 38,
+    "chartRenderSha256": "9027191afa271055d1029450d13830c973e269e6d6be8e0eacc7e56baeb2cd70",
+    "staleChartAssignments": {"2021-22": 2642272, "2022-23": 2657121},
+    "correction2Assignments": {"2021-22": 2657121, "2022-23": 2642272},
+    "interpretation": "The amended PDF still displays the older Figure 2 bar labels. Its preceding Correction 2 expressly reverses the assignments; the correction controls the dated report answer. Both the stale chart and the correction must be cited when explaining the conflict."
+  },
+  "offlineProductExtraction": {
+    "extractorVersion": "layout-v2.0.10",
+    "artifactPath": "tmp/ma24-independent-quarantine/dbs-2024-25-ara-corrected.layout-extraction.json",
+    "artifactSha256": "0cc2e2c39837221894a6334ddb5c9c65c2ba54405946d97911974d9812e53a72",
+    "blocks": 3122,
+    "pageQuality": {"success": 3, "blank": 3, "pending-ocr": 151, "failed": 0},
+    "correctionTextBlocks": ["page-7-block-1", "page-7-block-4", "page-7-block-5", "page-7-block-6"],
+    "chartTextBlocks": ["page-41-block-6", "page-41-block-21", "page-41-block-22", "page-41-block-34", "page-41-block-35"],
+    "chartVisualBlock": "page-41-visual-review",
+    "targetBothPagesHavePendingVisualReview": true,
+    "registrationReady": false,
+    "limit": "Text extraction retains the values and correction, but the chart's year/value association depends on visual review. A full private product registration would first require resolving pending visual content across the complete 157-page document; no source or citation readback is claimed."
+  },
+  "draftQuestions": [
+    {
+      "id": "dbs-2024-25-basic-checks-correction2-year-conflict",
+      "question": "按 2026 年 2 月 4 日更新的 DBS《2024–25 年报》，第 38 印刷页图 2 原来把 2021–22 和 2022–23 年的 Basic DBS checks 数量分别标成多少？前置更正单 Correction 2 要求这两个年份最终各采用多少？请区分未改的图示标签与更正后口径，并分别引用原页。",
+      "draftAnswer": "图 2 原标签将 2021–22 年标为 2,642,272、2022–23 年标为 2,657,121；更正单 Correction 2 明确要求交换归属，即 2021–22 年为 2,657,121，2022–23 年为 2,642,272。回答这份已修订的年报时应采用更正单数值，并说明图示仍保留相反标签；不能把两个版本当作两组不同统计。",
+      "sourceCoordinates": ["physical PDF page 7: Correction 2, page-7-block-4/6", "physical PDF page 41 / printed page 38: Figure 2, page-41-visual-review and value/year labels"]
+    }
+  ],
+  "boundedQuestionExposureScreen": {
+    "historicalRows": 350,
+    "uniqueHistoricalQuestions": 300,
+    "embeddingModel": "BAAI/bge-m3 revision 5617a9f61b028005a4858fdac845db406aefb181",
+    "diagnosticReport": "tmp/ma24-independent-quarantine/dbs-correction2-old-neighbors.json",
+    "topNeighborScore": 0.498601,
+    "topNeighborId": "boundary-1-01",
+    "manualTopTenReview": "The ten nearest old questions concern opening a product model file, port counts or a nonexistent model PDF; none ask about DBS, annual-report corrections or the two Basic checks year assignments. The prior bounded source-name and exact-number search recorded zero matches before this source review.",
+    "currentPool": "tmp/ma24-independent-quarantine/g14-current-draft-pool-v6-2026-10-15.json",
+    "currentPublicationDraftsReviewed": 24,
+    "currentPoolReview": "No DBS publication, Correction 2, Basic checks count or matching year-assignment question is present in the 24 publication drafts. The new candidate has not been added to that pool.",
+    "independenceLimit": "Embedding proximity and bounded text review do not rule out unlogged prompts, binary/remote exposure, connected-source reuse or model pretraining; this is not the family or whole-set independence verdict."
+  },
+  "newTypeReviewRequired": true,
+  "independenceApproved": false,
+  "goldApproved": false,
+  "modelCalls": 0,
+  "productionWrites": 0,
+  "g17ToG20Advanced": false
+}
