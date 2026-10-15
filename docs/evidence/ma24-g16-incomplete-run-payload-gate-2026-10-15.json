@@ -1,0 +1,12 @@
+{
+  "schema": "ma24-g16-incomplete-run-payload-gate-v1",
+  "date": "2026-10-15",
+  "scope": "G16 independent comparison scorer input validation only; G17-G20 deferred",
+  "change": "A failed or unknown run must have a nonempty failure reason and empty answer and citations. This prevents stale model output from entering the comparison record as an incomplete run.",
+  "checks": {
+    "targetedTests": "13 passed with TEMP and TMP set to workspace tmp",
+    "typecheck": "npx tsc --noEmit passed",
+    "lint": "npx eslint on scorer and its test passed"
+  },
+  "limits": "The check does not attest receipt provider provenance, authorize paid calls, create independent Gold, or establish G16 answer quality. Actual two-arm model runs remain zero."
+}

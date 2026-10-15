@@ -128,7 +128,7 @@ export function scoreMa24IndependentComparison(input: {
     if (!run.modelId.trim() || !run.receiptIds.length || run.receiptIds.some(receipt => !receipt.trim()) ||
       !["completed", "failed", "unknown"].includes(run.status) ||
       (run.status === "completed" && !run.answer.trim()) ||
-      (run.status !== "completed" && !run.failureReason?.trim()))
+      (run.status !== "completed" && (!run.failureReason?.trim() || run.answer !== "" || run.citations.length !== 0)))
       throw new Error(`Incomplete MA24 run receipt ${id}`);
     if (answerModelId !== undefined && run.modelId !== answerModelId)
       throw new Error(`MA24 answer model differs across arms ${id}`);

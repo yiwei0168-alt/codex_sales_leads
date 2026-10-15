@@ -99,7 +99,7 @@ describe("MA24 independent comparison", () => {
     expect(missing.complete).toBe(false);
     expect(missing.missingVerdicts).toEqual(["new:candidate"]);
     const unknown = runs.map(row => row.caseId === "long" && row.arm === "candidate"
-      ? { ...row, status: "unknown" as const, failureReason: "Provider outcome unconfirmed" } : row);
+      ? { ...row, status: "unknown" as const, answer: "", citations: [], failureReason: "Provider outcome unconfirmed" } : row);
     const reviewed = verdicts.map(row => row.caseId === "long" && row.arm === "candidate"
       ? { ...row, runSha256: ma24RunSha256(unknown.find(item => item.caseId === row.caseId && item.arm === row.arm)!),
         observedOutcome: null, answerCorrect: false, preciseCitationCorrect: false } : row);
@@ -108,7 +108,7 @@ describe("MA24 independent comparison", () => {
   });
   it("does not count a failed baseline as candidate quality improvement", () => {
     const failed = runs.map(row => row.caseId === "long" && row.arm === "baseline"
-      ? { ...row, status: "failed" as const, answer: "", failureReason: "Model deadline" } : row);
+      ? { ...row, status: "failed" as const, answer: "", citations: [], failureReason: "Model deadline" } : row);
     const reviewed = verdicts.map(row => row.caseId === "long" && row.arm === "baseline"
       ? { ...row, runSha256: ma24RunSha256(failed.find(item => item.caseId === row.caseId && item.arm === row.arm)!),
         observedOutcome: null, answerCorrect: false, preciseCitationCorrect: false } : row);
@@ -116,6 +116,16 @@ describe("MA24 independent comparison", () => {
     expect(result.failedRuns).toEqual(["long:baseline"]);
     expect(result.complete).toBe(false);
     expect(result.gatePassed).toBe(false);
+  });
+  it("rejects stale answers and citations on failed or unknown runs", () => {
+    for (const status of ["failed", "unknown"] as const) {
+      const changed = { ...runs[0], status, failureReason: "Provider result unavailable" };
+      expect(() => score({ manifest, runs: [changed, ...runs.slice(1)], verdicts }))
+        .toThrow("Incomplete MA24 run receipt long:baseline");
+      const answerCleared = { ...changed, answer: "" };
+      expect(() => score({ manifest, runs: [answerCleared, ...runs.slice(1)], verdicts }))
+        .toThrow("Incomplete MA24 run receipt long:baseline");
+    }
   });
   it("rejects changed frozen inputs and changed answers after review", () => {
     expect(() => score({ manifest,
