@@ -54,6 +54,14 @@
     "page4": "The report identifies Crown copyright 2018 and permits reuse of information other than logos under the Open Government Licence.",
     "visualCheck": "Physical pages 2 and 4 rendered and inspected"
   },
+  "sourceUseCheck": {
+    "officialReleasePage": "https://www.gov.uk/government/statistics/broadband-performance-indicator-march-2018",
+    "govUkTerms": "https://www.gov.uk/help/terms-conditions",
+    "openGovernmentLicenceV3": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
+    "observed": "The official release links the 12.5 KB XLSX and same-release PDF; PDF page 4 permits reuse of information other than logos under the Open Government Licence. GOV.UK terms state most Crown content is OGL and require checking exceptions; OGL v3 requires source acknowledgement and excludes certain logos, personal data, and unlicensed third-party rights.",
+    "permittedScopeAssessment": "Preliminary support for an attributed, short factual evaluation question with a link to the official original. Do not reproduce the publisher logo or treat the entire workbook as cleared for redistribution.",
+    "status": "Limited source-use review only; final exact-workbook exceptions, third-party content, and product attribution presentation remain open."
+  },
   "formatCaveat": "This draft can test XLSX coordinate retrieval when only the workbook is in the product source pool, but the answer facts are duplicated in the same-release PDF. Do not count the PDF as another source family or a separate independent question.",
   "status": "candidate_only",
   "sourceReuseReviewComplete": false,

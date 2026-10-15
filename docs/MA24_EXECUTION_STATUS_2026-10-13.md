@@ -14,6 +14,8 @@
 
 同日同发布 PDF 原页复核：第 2 页完整重复该工作簿的 March 2018 表格及现金/权责发生制附注；第 4 页载明 Crown copyright 2018 和开放政府许可（不含标志）。因此 XLSX 可继续作格式坐标候选，PDF 不可另计独立来源家族；工作簿自身的适用条件和最终复用审核仍待核。[交叉收据](evidence/ma24-g14-bpi-2018-xlsx-candidate-2026-10-15.json)。
 
+BDUK 来源用途补核：官方发布页同时列出 XLSX/PDF，PDF 第 4 页的 OGL 声明与 GOV.UK 使用条款为带来源归属的短篇事实题提供初步依据；许可仍要求归属并排除标志和若干第三方权利。完整工作簿再分发、原件逐项例外及产品端归属展示未批准，`sourceReuseReviewComplete=false`。[来源收据](evidence/ma24-g14-bpi-2018-xlsx-candidate-2026-10-15.json)。
+
 同日 BDUK XLSX 隔离产品链路：`layout-v2.0.10` 离线抽取 1/1 成功块，实际上传 worker 在隔离恢复库登记；`sheet-1-table` 的 `A1:E33` 可回读 2018 年 3 月指标与权责发生制附注，另一账号被拒，v3 指针不变且合成记录清理。类型检查与定向 ESLint 通过。用户可见回答/引用、完整独立性与 Gold 仍未完成。[产品收据](evidence/ma24-g14-bpi-2018-xlsx-candidate-2026-10-15.json)。
 
 2026-10-15 G16 判分门槛补正：若候选路径已完成运行的实际行为与冻结预期不符，即使审核判为错误且其他得分足够，`gatePassed` 仍必须为 `false`；基线错误仍可作为候选改进的对照。新增两侧反例回归；8 项定向测试、类型检查与 ESLint 通过。独立 Gold、双路真实运行和质量验收仍为 0。[工程收据](evidence/ma24-g16-outcome-mismatch-hard-gate-2026-10-15.json)。
