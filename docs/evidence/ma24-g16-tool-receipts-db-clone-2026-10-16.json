@@ -1,0 +1,26 @@
+{
+  "schema": "ma24-g16-tool-receipts-db-clone-v1",
+  "date": "2026-10-16",
+  "scope": "Isolated local PostgreSQL clone acceptance of G16 tenant-scoped persisted tool-receipt query",
+  "verifier": "scripts/verify-ma24-g16-tool-receipts-clone.ts",
+  "result": "passed",
+  "checks": [
+    "valid completed read receipt accepted",
+    "invented receipt ID rejected",
+    "omitted persisted call rejected",
+    "started call rejected",
+    "persisted input hash drift rejected",
+    "send effect rejected",
+    "restored completed read receipt accepted",
+    "synthetic user, conversation, run and call rows cleaned"
+  ],
+  "typecheck": "passed",
+  "changedFileEslint": "passed",
+  "providerCalls": 0,
+  "realDualArmRuns": 0,
+  "limits": [
+    "The fixture uses one failed synthetic run and one read tool call; it does not validate a live model result or every tool shape.",
+    "G14 Gold set and G15 paid admission remain unfinished, so G16 quality acceptance is still open."
+  ],
+  "g17ToG20Advanced": false
+}
