@@ -26,13 +26,18 @@
       "ids": ["ieee-gepof-2014-objectives-distances", "ieee-gepof-2014-vde-proposal-status"]
     },
     {
+      "reason": "ITU presentation and page-5 FWA conflict question directly drove the successful-text review product repair; development/regression only",
+      "sourceReceipt": "docs/evidence/ma24-g05-success-block-review-2026-10-15.json",
+      "ids": ["itu-bhatia-2026-india-fwa-conflict"]
+    },
+    {
       "reason": "ONS 5G Aberdeen difference repeats the previously used two-region percentage-difference template; Highland/Scotland difference shares the core workbook and material with the replacement denominator draft. Retain the replacement as the sole current ONS 5G draft for full-set review.",
       "sourceReceipt": "docs/evidence/ma24-g14-ons-5g-denominator-draft-2026-10-15.json",
       "ids": ["ons-5g-2026-aberdeen-city-shire", "ons-5g-2026-highland-scotland-scope"]
     }
   ],
   "remainingDraftsForFullSetReview": {
-    "count": 18,
+    "count": 17,
     "ids": [
       "etsi-38901-v195-inf-blocker-parameters",
       "etsi-38901-v195-isac-lower-power-clusters",
@@ -42,7 +47,6 @@
       "ieee-80211-2025-elc-optical-bands",
       "ieee-auto-sd4addr-forwarding-time",
       "ieee-auto-sd4addr-implementation",
-      "itu-bhatia-2026-india-fwa-conflict",
       "itu-gcr2025-submarine-cable-cuts-and-repair-delay",
       "nist-tn2363-aggressor-welding-table-comparison",
       "nist-tn2363-delay-profile-and-5g-tsn-validation",

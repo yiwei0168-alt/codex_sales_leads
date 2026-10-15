@@ -1,0 +1,21 @@
+{
+  "schema": "ma24-g14-nist-industrial-wireless-xlsx-source-use-v1",
+  "date": "2026-10-15",
+  "sourceSha256": "0132c779ab57132ae5b5718b1b1440b52ed66bd48bc62d953336c90f7f2cb814",
+  "publisherDownloadPage": "https://www.nist.gov/ctl/smart-connected-systems-division/networked-control-systems-group/measurement-data-files",
+  "publisherProjectPage": "https://www.nist.gov/ctl/smart-connected-systems-division/networked-control-systems-group/project-data-wireless-systems",
+  "datasetCatalog": "https://catalog.data.gov/dataset/radio-frequency-measurements-for-selected-manufacturing-and-industrial-environments-9fa03",
+  "datasetDoi": "https://doi.org/10.18434/T44S3N",
+  "licensePolicy": "https://www.nist.gov/open/license",
+  "checkedFacts": [
+    "The NIST download page links SmartManufacturing_MetaData.xlsx as situational metadata about instrumentation settings and antenna position.",
+    "The NIST project page links the metadata and requests the dataset DOI when data is used for research or publication.",
+    "The U.S. government Data.gov catalog lists the related NIST dataset as public, includes XLSX among distribution formats, and points its license field to NIST's open/license policy.",
+    "NIST's policy permits attributed reuse of qualifying non-SRD NIST-created data, while describing separate treatment for Standard Reference Data and externally created material."
+  ],
+  "boundedDecision": "The source-use evidence supports using short, attributed factual answers from the Ray Tracing Results numeric cells in a private independent-evaluation candidate. Cite NIST and DOI 10.18434/T44S3N. Do not reproduce workbook photographs, diagrams or chart as a deliverable under this decision. This is a source-use screen, not a final copyright determination for every embedded object.",
+  "independence": "Source-use evidence does not establish question independence. Full development-exposure and cross-family semantic audit remain open; no Gold is frozen.",
+  "goldCreated": 0,
+  "modelCalls": 0,
+  "productionWrites": 0
+}
