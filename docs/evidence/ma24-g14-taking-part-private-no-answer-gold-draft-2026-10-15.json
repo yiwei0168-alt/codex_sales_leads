@@ -1,0 +1,38 @@
+{
+  "schema": "ma24-g14-taking-part-private-no-answer-gold-draft-v1",
+  "date": "2026-10-15",
+  "caseId": "taking-part-2019-20-rural-age75-intersection-unavailable",
+  "questionSha256": "f7bb11de2f11ed650c94e11f79fa3c5dffe6513e6a1635587494b76527561054",
+  "privateDraftPath": "tmp/ma24-independent-quarantine/taking-part-no-answer-gold-draft-v1.json",
+  "privateDraftSha256": "7e74a7ddea54b189e5aa973857533baec7d71451160d1c8be04fcb0bbd9ab10e",
+  "originalWorkbookSha256": "90eb0ed392efc2db8ab6681bcf4b9634c41f891d3df7a95bba3bf6f9457ff614",
+  "workbookReview": {
+    "allSheetsInspected": ["Contents", "Table 1", "Table 2", "Table 3"],
+    "allSheetsVisible": true,
+    "formulaCells": 0,
+    "ruralLabel": { "sheet": "Table 2", "cell": "B33", "percentageCell": "C33", "percentage": 75.6 },
+    "age75Label": { "sheet": "Table 3", "cell": "B15", "percentageCell": "C15", "percentage": 33.1 },
+    "jointRuralAge75RowFound": false,
+    "interpretation": "The two reported rates are separate marginal breakdowns. They do not identify the requested rural-and-75+ subgroup rate."
+  },
+  "productExtractionCoordinates": [
+    { "unitIndex": 3, "blockId": "sheet-3-table", "row": 33 },
+    { "unitIndex": 4, "blockId": "sheet-4-table", "row": 15 }
+  ],
+  "checks": {
+    "questionExactlyMatchesCurrentDraftPool": true,
+    "sourceWorkbookHashMatched": true,
+    "extractionSourceHashMatched": true,
+    "bothLabelsAndRowsMatchedExtraction": true,
+    "privateDraftJsonValid": true
+  },
+  "acceptanceBoundary": {
+    "privateGoldDraftsPreparedTotal": 2,
+    "independentReviewerApproved": false,
+    "fullSetSourceIndependenceApproved": false,
+    "approvedIndependentGold": 0,
+    "realDualArmModelRuns": 0,
+    "qualityGatePassed": false,
+    "g17ToG20Advanced": false
+  }
+}
