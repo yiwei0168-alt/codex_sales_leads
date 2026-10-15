@@ -1,0 +1,32 @@
+{
+  "schema": "ma24-g14-fcc-706-full-review-v2-clone-v1",
+  "date": "2026-10-16",
+  "scope": "MA11 synthetic private-account database replay of the FCC 26-55 full 178-page original-size decision manifest",
+  "manifestPath": "docs/evidence/ma24-g14-fcc-706-whole-pdf-visual-final-review-v2-2026-10-16.json",
+  "manifestSha256": "ceec4120a3c960a25ee896dff24cc6bd2791a5512261ed02c14b6669418d8c8a",
+  "verificationScript": "scripts/verify-fcc-706-full-review-v2-clone.ts",
+  "sourceSha256": "805e0e5b954775059ad535ae650c955935758a88f2a20ec0e6554e77f0e61154",
+  "extractorVersion": "layout-v2.0.10",
+  "liveExtractionArtifactSha256": "473114c80fec12c51b7274b11bee9776efdd75e6f6524445e8934c59ca9f00ea",
+  "originalCandidateImagesRebound": 178,
+  "reviewDecisionsSavedAndReadBack": 178,
+  "decisions": {
+    "evidence": 122,
+    "decoration": 56,
+    "unresolved": 0
+  },
+  "page76Decision": "decoration",
+  "completionReceiptReadyForRegistration": true,
+  "registeredTreeStatus": "searchable",
+  "citationReadBack": {
+    "page": 28,
+    "searchFound": true,
+    "otherAccountDenied": true
+  },
+  "syntheticUsersJobsReviewsDocumentsResidue": 0,
+  "modelCalls": 0,
+  "externalCalls": 0,
+  "independentGoldAdded": 0,
+  "qualityAccepted": false,
+  "reviewBoundary": "This verifies isolated product saving, reading, registration, search and ACL behavior for page-level decisions. Numeric-cell accuracy, question-specific answer and citation quality, independent Gold freeze, G15 paid calls and G16 real dual-arm evaluation remain unverified. G17-G20 remain paused."
+}
