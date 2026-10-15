@@ -1,0 +1,51 @@
+{
+  "schema": "ma24-g14-govuk-family-review-packet-v1",
+  "date": "2026-10-15",
+  "reviewPacket": "docs/MA24_G14_GOVUK_FAMILY_REVIEW_PACKET_2026-10-15.md",
+  "poolPath": "tmp/ma24-independent-quarantine/g14-current-draft-pool-v5-2026-10-15.json",
+  "poolSha256": "2cb4c56dd2f35e88a43ebdb1eaa2e15246438ee5727d9d6c7d31b9c86d3184c7",
+  "sharedExposureUnitCaseIds": [
+    "bpi-2018-cash-accruals",
+    "govuk-bduk-taking-part-premises-vs-regional-ability",
+    "taking-part-2019-20-rural-age75-intersection-unavailable"
+  ],
+  "newTypeCaseIdsForReview": [
+    "govuk-bduk-taking-part-premises-vs-regional-ability",
+    "taking-part-2019-20-rural-age75-intersection-unavailable"
+  ],
+  "sourceOriginals": [
+    {
+      "path": "tmp/ma24-independent-quarantine/bpi-march-2018.xlsx",
+      "sha256": "7d178716b667ebe66537154b0bb96f87348ccb782368b2f43920b45db9f7f5c1",
+      "extractionPath": "tmp/ma24-independent-quarantine/bpi-extract.json",
+      "extractionSha256": "0bc434546c2a39475c6dbf639cc0aeaa411ac745b732ec63648aac00472a37f2",
+      "sheets": ["Sheet1"],
+      "checkedCells": {"Sheet1!A26": "March 2018", "Sheet1!B26": 4852808},
+      "scopeCells": ["Sheet1!A28", "Sheet1!A32"]
+    },
+    {
+      "path": "tmp/ma24-independent-quarantine/taking-part-internet-2019-20.xlsx",
+      "sha256": "90eb0ed392efc2db8ab6681bcf4b9634c41f891d3df7a95bba3bf6f9457ff614",
+      "extractionPath": "tmp/ma24-independent-quarantine/taking-part-extract.json",
+      "extractionSha256": "9a3fbc73dfa5ecdeb665f8ee2edddefaa706b5db346f1e597913be4b3ef10ecf",
+      "sheets": ["Contents", "Table 1", "Table 2", "Table 3"],
+      "checkedCells": {"Table 2!C22": 74.0, "Table 2!C28": 80.3, "Table 2!C33": 75.6, "Table 3!C15": 33.1},
+      "allFourSheetsScannedForRuralAndAge75SameRow": true,
+      "jointRowsFound": 0
+    }
+  ],
+  "calculatedLondonMinusNorthEastPercentagePoints": 6.3,
+  "publicationFamiliesRepresented": 2,
+  "exposureUnitsRepresented": 1,
+  "sameFamilyQuestionCount": 3,
+  "userReviewOfNewTypesPending": true,
+  "fullSetIndependenceApproved": false,
+  "independentGoldApproved": false,
+  "realDualArmRuns": 0,
+  "g17ToG20Advanced": false,
+  "limitations": [
+    "The no-answer conclusion applies only to the four inspected sheets of this specific workbook, not to all available surveys or external data.",
+    "The three draft questions share source exposure. Their different answers do not create three independent source families.",
+    "Workbook and registry checks do not rule out unrecorded prompts, provider-side exposure or semantic overlap beyond the bounded prior screens."
+  ]
+}
