@@ -3,12 +3,14 @@ import { goldSourceIsPrecise, stableJson, type GoldSourceCoordinate } from "../r
 
 export type Ma24Arm = "baseline" | "candidate";
 export type Ma24Outcome = "route" | "clarify" | "no-answer" | "deny";
+export type Ma24KnowledgeScope = "industry" | "company" | "product";
 export type Ma24Case = {
   caseId: string; caseSha256: string; group: string; tags: string[]; expectedOutcome: Ma24Outcome;
+  userId: string; knowledgeScope: Ma24KnowledgeScope[];
 };
 /** The answer key stays outside this manifest; only its locked hash enters model-run inputs. */
 export type Ma24FrozenManifest = {
-  schema: "ma24-g16-frozen-comparison-v1";
+  schema: "ma24-g16-frozen-comparison-v2";
   sourceSetSha256: string; goldSnapshotSha256: string; codeAndConfigSha256: string;
   requiredImprovementTags: string[]; protectedNoRegressionTags: string[];
   cases: Ma24Case[];
@@ -26,6 +28,7 @@ export type Ma24SourceSetSnapshot = {
 };
 export type Ma24Run = {
   caseId: string; arm: Ma24Arm; caseSha256: string; manifestSha256: string;
+  userId: string; knowledgeScope: Ma24KnowledgeScope[];
   status: "completed" | "failed" | "unknown"; answer: string;
   citations: GoldSourceCoordinate[]; receiptIds: string[]; modelId: string;
   failureReason?: string;
@@ -40,6 +43,7 @@ export type Ma24Verdict = {
 
 const sha = (value: unknown) => createHash("sha256").update(stableJson(value)).digest("hex");
 const hex64 = (value: string) => /^[0-9a-f]{64}$/.test(value);
+const uuid = (value: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(value);
 const arms = ["baseline", "candidate"] as const;
 const requiredImprovement = ["long-document", "cross-document", "new-or-revised"] as const;
 const requiredProtection = ["official-fact", "no-answer", "permission"] as const;
@@ -84,12 +88,15 @@ export function assertMa24FrozenSnapshotBytes(manifest: Ma24FrozenManifest, snap
 }
 
 function validateManifest(manifest: Ma24FrozenManifest) {
-  if (manifest.schema !== "ma24-g16-frozen-comparison-v1" || !manifest.cases.length ||
+  if (manifest.schema !== "ma24-g16-frozen-comparison-v2" || !manifest.cases.length ||
     ![manifest.sourceSetSha256, manifest.goldSnapshotSha256, manifest.codeAndConfigSha256].every(hex64))
     throw new Error("Incomplete MA24 frozen manifest");
   const ids = new Set<string>();
   for (const item of manifest.cases) {
     if (!item.caseId.trim() || ids.has(item.caseId) || !hex64(item.caseSha256) ||
+      !uuid(item.userId) || !Array.isArray(item.knowledgeScope) || !item.knowledgeScope.length ||
+      new Set(item.knowledgeScope).size !== item.knowledgeScope.length ||
+      item.knowledgeScope.some(scope => !["industry", "company", "product"].includes(scope)) ||
       !item.group.trim() || !["route", "clarify", "no-answer", "deny"].includes(item.expectedOutcome) ||
       new Set(item.tags).size !== item.tags.length || item.tags.some(tag => !tag.trim()))
       throw new Error(`Invalid or duplicate MA24 case ${item.caseId}`);
@@ -152,6 +159,10 @@ export function scoreMa24IndependentComparison(input: {
     if (!item || !arms.includes(run.arm) || runMap.has(id)) throw new Error(`Unknown or duplicate MA24 run ${id}`);
     if (run.caseSha256 !== item.caseSha256 || run.manifestSha256 !== manifestHash)
       throw new Error(`MA24 frozen input drift ${id}`);
+    if (run.userId !== item.userId || !Array.isArray(run.knowledgeScope) ||
+      run.knowledgeScope.length !== item.knowledgeScope.length ||
+      run.knowledgeScope.some((scope, index) => scope !== item.knowledgeScope[index]))
+      throw new Error(`MA24 execution context drift ${id}`);
     if (!run.modelId.trim() || !run.receiptIds.length || run.receiptIds.some(receipt => !receipt.trim()) ||
       !["completed", "failed", "unknown"].includes(run.status) ||
       (run.status === "completed" && !run.answer.trim()) ||

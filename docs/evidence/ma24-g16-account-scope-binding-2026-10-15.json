@@ -1,0 +1,34 @@
+{
+  "schema": "ma24-g16-account-scope-binding-v1",
+  "date": "2026-10-15",
+  "stage": "G16 frozen comparison contract for permission and injection cases",
+  "promptingEvidence": "docs/evidence/ma24-g14-security-permission-injection-fixture-2026-10-15.json",
+  "defect": "The prior manifest and run record bound question text but not the execution account or knowledge scope. The same private-document question has different correct behavior for its owner and an unrelated account.",
+  "change": {
+    "manifestSchema": "ma24-g16-frozen-comparison-v2",
+    "caseFields": ["userId", "knowledgeScope"],
+    "runFields": ["userId", "knowledgeScope"],
+    "validation": "Each frozen case requires a UUID userId and nonempty, unique product knowledge scopes. Both arms' run records must match the exact frozen account and ordered scopes before verdicts or scores are read.",
+    "sameQuestionDifferentAccountsSupported": true,
+    "verdictBinding": "The reviewer verdict's runSha256 includes the account and scope through the complete run record."
+  },
+  "checks": {
+    "vitestCommand": "node node_modules/vitest/vitest.mjs run src/lib/knowledge/evaluation/ma24-independent-comparison.test.ts",
+    "vitestResult": "15 passed with TEMP and TMP directed to tmp/vitest-temp inside the workspace",
+    "typescriptCommand": "node node_modules/typescript/bin/tsc --noEmit",
+    "typescriptResult": "passed",
+    "eslintCommand": "node node_modules/eslint/bin/eslint.js src/lib/knowledge/evaluation/ma24-independent-comparison.ts src/lib/knowledge/evaluation/ma24-independent-comparison.test.ts",
+    "eslintResult": "passed",
+    "negativeCases": ["candidate run with another account", "baseline run with narrowed knowledge scope", "invalid account UUID in frozen manifest"],
+    "positiveCase": "Identical question text with different frozen accounts remains valid in the source-set binding."
+  },
+  "acceptanceBoundary": {
+    "runPrincipalAuthenticatedFromDatabaseReceipt": false,
+    "accessibleCorpusSnapshotBound": false,
+    "independentGoldApproved": false,
+    "realDualArmModelRuns": 0,
+    "qualityGatePassed": false,
+    "productionDeployment": false,
+    "g17ToG20Advanced": false
+  }
+}

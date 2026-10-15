@@ -5,20 +5,25 @@ import { assertMa24FrozenSnapshotBytes, assertMa24SourceSetMatchesManifest,
   type Ma24FrozenManifest, type Ma24GoldSnapshot, type Ma24Run, type Ma24Verdict } from "./ma24-independent-comparison";
 
 const manifest: Ma24FrozenManifest = {
-  schema: "ma24-g16-frozen-comparison-v1",
+  schema: "ma24-g16-frozen-comparison-v2",
   sourceSetSha256: "a".repeat(64), goldSnapshotSha256: "b".repeat(64),
   codeAndConfigSha256: "c".repeat(64),
   requiredImprovementTags: ["long-document", "cross-document", "new-or-revised"],
   protectedNoRegressionTags: ["official-fact", "no-answer", "permission"],
   cases: [
-    { caseId: "long", caseSha256: "d".repeat(64), group: "pdf", tags: ["long-document", "official-fact"], expectedOutcome: "route" },
-    { caseId: "cross", caseSha256: "e".repeat(64), group: "multi-source", tags: ["cross-document", "permission"], expectedOutcome: "route" },
-    { caseId: "new", caseSha256: "f".repeat(64), group: "revision", tags: ["new-or-revised", "no-answer"], expectedOutcome: "no-answer" },
-    { caseId: "permission-deny", caseSha256: "2".repeat(64), group: "security", tags: ["permission"], expectedOutcome: "deny" },
+    { caseId: "long", caseSha256: "d".repeat(64), group: "pdf", tags: ["long-document", "official-fact"], expectedOutcome: "route",
+      userId: "11111111-1111-4111-8111-111111111111", knowledgeScope: ["industry"] },
+    { caseId: "cross", caseSha256: "e".repeat(64), group: "multi-source", tags: ["cross-document", "permission"], expectedOutcome: "route",
+      userId: "11111111-1111-4111-8111-111111111111", knowledgeScope: ["industry", "product"] },
+    { caseId: "new", caseSha256: "f".repeat(64), group: "revision", tags: ["new-or-revised", "no-answer"], expectedOutcome: "no-answer",
+      userId: "11111111-1111-4111-8111-111111111111", knowledgeScope: ["industry"] },
+    { caseId: "permission-deny", caseSha256: "2".repeat(64), group: "security", tags: ["permission"], expectedOutcome: "deny",
+      userId: "22222222-2222-4222-8222-222222222222", knowledgeScope: ["industry"] },
   ],
 };
 const runs: Ma24Run[] = manifest.cases.flatMap(item => (["baseline", "candidate"] as const).map(arm => ({
   caseId: item.caseId, arm, caseSha256: item.caseSha256, manifestSha256: ma24ManifestSha256(manifest),
+  userId: item.userId, knowledgeScope: item.knowledgeScope,
   status: "completed" as const, answer: `Recorded ${item.caseId} ${arm} answer`,
   citations: item.expectedOutcome === "route" ?
     [{ assetSha256: "1".repeat(64), unitIndex: 1, excerpt: "Original source fact" }] : [],
@@ -61,6 +66,14 @@ describe("MA24 independent comparison", () => {
       cases: sourceSet.cases.map(item => item.caseId === "cross"
         ? { ...item, expectedAnswer: "Do not leak Gold" } : item) }))
       .toThrow("MA24 frozen question mismatch cross");
+    const privateQuestion = "What is the private review code?";
+    const sameText = { ...sourceSet, cases: sourceSet.cases.map(item =>
+      ["long", "permission-deny"].includes(item.caseId) ? { ...item, query: privateQuestion } : item) };
+    const distinctAccounts = { ...bound, cases: bound.cases.map(item =>
+      ["long", "permission-deny"].includes(item.caseId)
+        ? { ...item, caseSha256: ma24CaseQuerySha256(privateQuestion) } : item) };
+    expect(distinctAccounts.cases[0].userId).not.toBe(distinctAccounts.cases[3].userId);
+    expect(() => assertMa24SourceSetMatchesManifest(distinctAccounts, sameText)).not.toThrow();
   });
   it("requires one answer model and distinct run receipts across both arms", () => {
     const otherModel = runs.map(run => run.caseId === "cross" && run.arm === "candidate"
@@ -75,6 +88,23 @@ describe("MA24 independent comparison", () => {
       ? { ...run, receiptIds: ["same-receipt", "same-receipt"] } : run);
     expect(() => score({ manifest, runs: repeatedWithinRun, verdicts }))
       .toThrow(/MA24 run receipt reused/);
+  });
+  it("binds both arms to the frozen account and knowledge scope", () => {
+    const outsider = manifest.cases.find(item => item.caseId === "permission-deny")!;
+    const owner = manifest.cases.find(item => item.caseId === "long")!;
+    expect(outsider.userId).not.toBe(owner.userId);
+    const switchedAccount = runs.map(run => run.caseId === outsider.caseId && run.arm === "candidate"
+      ? { ...run, userId: owner.userId } : run);
+    expect(() => score({ manifest, runs: switchedAccount, verdicts }))
+      .toThrow("MA24 execution context drift permission-deny:candidate");
+    const narrowedScope = runs.map(run => run.caseId === "cross" && run.arm === "baseline"
+      ? { ...run, knowledgeScope: ["industry"] as Ma24Run["knowledgeScope"] } : run);
+    expect(() => score({ manifest, runs: narrowedScope, verdicts }))
+      .toThrow("MA24 execution context drift cross:baseline");
+    const invalidManifest = { ...manifest, cases: manifest.cases.map(item => item.caseId === "permission-deny"
+      ? { ...item, userId: "not-a-uuid" } : item) };
+    expect(() => score({ manifest: invalidManifest, runs, verdicts }))
+      .toThrow("Invalid or duplicate MA24 case permission-deny");
   });
   it("rejects snapshot bytes that differ from the frozen source, Gold or code/config hashes", () => {
     const bytes = { sourceSet: Buffer.from("source"), gold: Buffer.from("gold"),
