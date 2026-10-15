@@ -1,0 +1,45 @@
+{
+  "schema": "ma24-g14-govuk-family-current-freeze-readiness-v1",
+  "date": "2026-10-15",
+  "method": "Recomputed SHA-256 from current local bytes, parsed the private v2 drafts and v6 pool, compared exact question strings, source hashes and family memberships; screened source-specific terms in src, db and scripts.",
+  "originalSha256": {
+    "bpiMarch2018Xlsx": "7d178716b667ebe66537154b0bb96f87348ccb782368b2f43920b45db9f7f5c1",
+    "takingPart2019to2020Xlsx": "90eb0ed392efc2db8ab6681bcf4b9634c41f891d3df7a95bba3bf6f9457ff614"
+  },
+  "draftSha256": {
+    "bpiCashAccrualsV2": "c1e693aa17592984aa9a7c8ac0356241c6710ccd67c2e5b71940f11da4d00c4f",
+    "crossDocumentV2": "1a7dd8954badbb0faa936ce503acbe2f90d1b51bdd356b4342f9aebfa0d5e30a",
+    "takingPartNoAnswerV2": "9e71248bd9136a2e6b621d06ac204ae0f022eb6509d9063f0adec31c292e26b0"
+  },
+  "pool": {
+    "path": "tmp/ma24-independent-quarantine/g14-current-draft-pool-v6-2026-10-15.json",
+    "sha256": "2be471883c10e9c7672efd4fbd681fe47560205a5fb03341250827ba64399ddb",
+    "drafts": 27,
+    "publicationDrafts": 24,
+    "syntheticSecurityDrafts": 3,
+    "proposedCoverageStillMissing": {
+      "crossDocument": 6,
+      "newOrRevised": 3,
+      "conflict": 3,
+      "noAnswer": 1
+    }
+  },
+  "caseChecks": [
+    { "caseId": "bpi-2018-cash-accruals", "questionExactlyMatchesPool": true, "sourceCoordinates": 3, "sourceFamilies": ["BDUK Broadband Performance Indicator March 2018"], "answerConfirmedByUser": true, "goldApproved": false },
+    { "caseId": "govuk-bduk-taking-part-premises-vs-regional-ability", "questionExactlyMatchesPool": true, "sourceCoordinates": 6, "sourceFamilies": ["BDUK Broadband Performance Indicator March 2018", "Taking Part 2019/20 Internet"], "answerConfirmedByUser": true, "goldApproved": false },
+    { "caseId": "taking-part-2019-20-rural-age75-intersection-unavailable", "questionExactlyMatchesPool": true, "sourceCoordinates": 2, "sourceFamilies": ["Taking Part 2019/20 Internet"], "answerConfirmedByUser": true, "goldApproved": false }
+  ],
+  "sharedExposureUnitCount": 1,
+  "sourceSpecificCodeScreen": {
+    "scopes": ["src", "db/migrations", "scripts"],
+    "patterns": ["whole-token BDUK", "Taking Part", "Broadband Performance Indicator", "4852808", "4,852,808", "7,934", "7,617", "rural-age75"],
+    "productSourceOrMigrationSpecificMatches": 0,
+    "testAndAuditScriptsContainSourceFacts": true,
+    "interpretation": "No source-specific product hardcoding found in the scoped text screen; development/test exposure exists in scripts and does not establish a blind holdout."
+  },
+  "decision": "Content-confirmed candidate family may continue final source and whole-set leakage review; no independent Gold freeze or quality claim yet.",
+  "limits": ["Current file and scoped text screens do not cover unrecorded prompts, binary/derived material outside named files, provider-side records or semantic tuning.", "The three cases are one connected source exposure unit, not three independent families.", "Product model answer and user-visible citations have not been tested."],
+  "approvedGoldCount": 0,
+  "realDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}

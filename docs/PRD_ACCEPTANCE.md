@@ -1,5 +1,8 @@
 # PRD v0.3 Acceptance Report
 
+2026-10-15 G14 GOV.UK 家族三题答案确认后，当前原件/草稿/题池哈希与题面复核一致；三题共享两原件组成一个暴露单元。定向文本屏查未见产品源码硬编码，验收脚本已使用来源事实，故仍不满足独立 Gold 冻结证据。[家族当前复核](evidence/ma24-g14-govuk-family-current-freeze-readiness-2026-10-15.json)。正式 Gold 0、真实双路 0；G17–G20 暂停。
+
+
 2026-10-15 G16 评测任务执行前现核对隐藏且独占的空会话，避免普通历史混入题目上下文。隔离数据库中，历史消息和可见状态反例均被拒，合成记录清理；10 项定向测试、类型/lint 通过。[工程收据](evidence/ma24-g16-empty-hidden-conversation-admission-2026-10-15.json)。真实运行器和独立质量仍未验收，G17–G20 暂停。
 
 
