@@ -1,0 +1,63 @@
+{
+  "schema": "ma24-g01-current-isolated-package-v1",
+  "date": "2026-10-16",
+  "sourceCommit": "7b4beb1b67e0a945327195d368394e53f7d77b23",
+  "sourceArchive": {
+    "path": "tmp/ma24-g01-7b4beb1b.tar",
+    "sha256": "0650e0bd53e3576be7f93b98dba01099c1b3c2b85c77e1a06a690185d9f49047",
+    "method": "git archive HEAD extracted into an isolated workspace directory"
+  },
+  "build": {
+    "directory": "tmp/ma24-current-build-7b4beb1b",
+    "command": "node scripts/build-next.mjs",
+    "nextVersion": "16.3.4",
+    "firstAttempt": "Restricted sandbox could not create a Turbopack dependency junction; no code verdict from that attempt",
+    "retryWithJunctionPermission": "passed",
+    "productionCompile": "passed",
+    "typescript": "passed",
+    "staticPagesGenerated": 26,
+    "buildId": "-05BDB4Aa9xdIYK44Bj4j",
+    "buildManifestSha256": "409c7217b4bc839a83452c374793753a62cb3889c9abfe1e9d12fb97cb29c339",
+    "artifactVerification": {
+      "script": "scripts/verify-ma24-build-artifact-local.py",
+      "regularFiles": 3498,
+      "regularBytes": 245132639,
+      "treeSha256": "2965cf544aea751a9ab35e3383928f1c55e52f649779362e065f37cd59b5628e",
+      "traceManifests": 172,
+      "tracedDependencyPaths": 30784,
+      "missingTracedDependencyPaths": 0,
+      "environmentFiles": 0,
+      "parentNodeModulesLinked": true
+    }
+  },
+  "package": {
+    "path": ".next-releases/ma24-g01-7b4beb1b-standalone",
+    "script": "scripts/package-ma24-next-standalone.py",
+    "appRelativePath": "tmp/ma24-current-build-7b4beb1b",
+    "sourceFilesMatched": 2216,
+    "regularFiles": 2265,
+    "regularBytes": 33341494,
+    "treeSha256": "98d978e8ec5e0ed2647885a7ccc38316c9bac5c9d82a6a7d40c30e2f6778fbad",
+    "remainingJunctions": 0,
+    "environmentFiles": 0,
+    "treeUnchangedAfterSmoke": true
+  },
+  "localRuntimeSmoke": {
+    "scope": "Packaged server on 127.0.0.1:3031 with runtime environment loaded from the existing local .env.local; status-only HEAD requests",
+    "withoutRuntimeEnvironment": "Home returned 500 because DATABASE_URL was not configured; session and build manifest returned 200",
+    "homeStatus": 200,
+    "sessionStatus": 200,
+    "candidateBuildManifestStatus": 200,
+    "processStopped": true,
+    "port3031ListenerAfterStop": false
+  },
+  "modelCalls": 0,
+  "productionWrites": 0,
+  "g17ToG20Advanced": false,
+  "limits": [
+    "The isolated package has not been loaded by the production Web or worker processes",
+    "Three status-only local routes do not verify product workflows, database migration, model execution or quality",
+    "No deployment, domain pilot or rollback occurred",
+    "G14 Gold set, G15 non-simulated paid admission and G16 real dual-arm quality remain incomplete"
+  ]
+}
