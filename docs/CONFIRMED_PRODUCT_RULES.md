@@ -1,5 +1,10 @@
 # 用户确认规则登记表
 
+## MA24-21 — GOV.UK 两题答案与限定的逐题确认（2026-10-15）
+
+- 用户对 `govuk-bduk-taking-part-premises-vs-regional-ability` 回复“确认答案与限定，保留为待冻结 Gold 候选”：BDUK 2018 年 3 月累计可用房产 **4,852,808** 处；Taking Part 2019/20 伦敦 **80.3%**、东北部 **74.0%**，相差 **6.3 个百分点**；两份工作簿不能证明 BDUK 可用性造成该地区能力差异。用户对 `taking-part-2019-20-rural-age75-intersection-unavailable` 回复“确认资料不足答案，保留为待冻结 Gold 候选”：农村成人总体 **75.6%**、75 岁及以上成人总体 **33.1%**；这份四表工作簿未给农村且 75 岁及以上交叉组的精确比例，两个边际比例不能推出该值。
+- 范围仅为这两道私有候选的答案和限定逐题审核；两题与 `bpi-2018-cash-accruals` 仍共用 BDUK＋Taking Part 来源暴露单元。该回复未审核第三道 BDUK 题，也未批准家族/整套独立性、来源资格、正式 Gold、冻结快照或 G16 双路质量。当前状态：答案与限定已确认并登记，批准 Gold **0**、真实双路运行 **0**；后续仍须整组暴露终审及冻结。见[逐题回复收据](evidence/ma24-g14-govuk-two-case-answer-review-2026-10-15.json)和[审核包](MA24_G14_GOVUK_FAMILY_REVIEW_PACKET_2026-10-15.md)。本轮仍只推进至 G16，G17–G20 暂停。
+
 ## MA24-20 — GOV.UK 工作簿新题型进入独立 Gold 逐题审核（2026-10-15）
 
 - 用户对审核问题明确回复：“批准进入逐题审核”。批准范围为 G14 GOV.UK 工作簿家族中的两类题：`govuk-bduk-taking-part-premises-vs-regional-ability` 所代表的跨文档统计口径/因果边界题，以及 `taking-part-2019-20-rural-age75-intersection-unavailable` 所代表的交叉组无答案题。两题与 `bpi-2018-cash-accruals` 共用 BDUK 2018 与 Taking Part 2019/20 两份原件，按一个共享来源暴露单元审计和冻结。

@@ -1,0 +1,42 @@
+{
+  "schema": "ma24-g14-govuk-two-case-answer-review-v1",
+  "date": "2026-10-15",
+  "ruleId": "MA24-21",
+  "priorAuthorizationRuleId": "MA24-20",
+  "scope": "Per-case answer and limitation review only; both cases remain private candidates in the shared BDUK plus Taking Part exposure unit.",
+  "decisions": [
+    {
+      "caseId": "govuk-bduk-taking-part-premises-vs-regional-ability",
+      "userAnswer": "确认答案与限定，保留为待冻结 Gold 候选",
+      "confirmedValues": {
+        "bdukCumulativePremisesMarch2018": 4852808,
+        "londonInternetAbilityPercent2019_20": 80.3,
+        "northEastInternetAbilityPercent2019_20": 74.0,
+        "differencePercentagePoints": 6.3
+      },
+      "confirmedLimit": "The two workbooks do not establish that BDUK availability caused the regional internet ability gap.",
+      "draftPath": "tmp/ma24-independent-quarantine/govuk-bduk-taking-part-cross-document-gold-draft-v2.json",
+      "draftSha256": "1a7dd8954badbb0faa936ce503acbe2f90d1b51bdd356b4342f9aebfa0d5e30a",
+      "status": "answer-and-limitation-confirmed-gold-pending"
+    },
+    {
+      "caseId": "taking-part-2019-20-rural-age75-intersection-unavailable",
+      "userAnswer": "确认资料不足答案，保留为待冻结 Gold 候选",
+      "confirmedValues": {
+        "allRuralAdultsPercent": 75.6,
+        "allAdultsAge75PlusPercent": 33.1
+      },
+      "confirmedLimit": "This four-sheet workbook does not report the exact rural-and-age-75-plus intersection rate; the two marginal percentages do not determine it.",
+      "draftPath": "tmp/ma24-independent-quarantine/taking-part-no-answer-gold-draft-v2.json",
+      "draftSha256": "9e71248bd9136a2e6b621d06ac204ae0f022eb6509d9063f0adec31c292e26b0",
+      "status": "workbook-only-no-answer-confirmed-gold-pending"
+    }
+  ],
+  "bpiSingleSourceCaseReviewedByThisReply": false,
+  "familyIndependenceApproved": false,
+  "frozenSourceSet": false,
+  "frozenGold": false,
+  "goldApprovedCount": 0,
+  "realDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}

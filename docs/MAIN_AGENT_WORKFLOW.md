@@ -10,6 +10,8 @@
 
 2026-10-15 MA24 G14：BDUK、跨文档与 Taking Part 无答案三题共用两份 GOV.UK 原件，统一作为一个来源暴露单元；新增两种题型的原格、计算和资料不足边界见[家族审核包](MA24_G14_GOVUK_FAMILY_REVIEW_PACKET_2026-10-15.md)。审核新题型和整套污染后才可冻结 Gold，当前无真实双路运行；G17–G20 暂停。
 
+2026-10-15 MA24 G14：跨文档题的数值及因果限定、无答案题的工作簿范围已分别获用户逐题确认，状态只前进到“答案已确认、待整组冻结”。在审核第三道 BDUK 题、来源暴露和整套独立性前，不能把两题写入正式 Gold 或送入 G16 双路执行。[MA24-21](CONFIRMED_PRODUCT_RULES.md)、[回复收据](evidence/ma24-g14-govuk-two-case-answer-review-2026-10-15.json)。G17–G20 暂停。
+
 2026-10-15 MA24 G16：`main-agent-evaluation` 入队后，普通控制接口及 `run_control` 仅可取消该任务；追加指令、暂停或恢复会在事务读取任务类型后拒绝，不能经此入口改变冻结题目。专用评测领取和执行仍未接入，双路运行质量未验收。[工程收据](evidence/ma24-g16-evaluation-task-control-isolation-2026-10-15.json)。G17–G20 暂停。
 
 2026-10-15 MA24 G14：NTIA/NASA 报告的建议与最终规则状态题已整理原页、候选答案和当前池有界重叠结果；此前五类 Gold 自动采纳授权不涵盖该新类型。先完成新类型审核和整套来源污染终审，再冻结 Gold 与 G15/G16 模型输入；目前仅有[审核材料](MA24_G14_NEW_TYPE_REVIEW_PACKET_2026-10-15.md)，未产生独立 Gold 或真实双路调用。G17–G20 暂停。
