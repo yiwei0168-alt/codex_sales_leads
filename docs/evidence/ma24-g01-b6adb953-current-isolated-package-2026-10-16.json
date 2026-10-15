@@ -1,0 +1,62 @@
+{
+  "schema": "ma24-g01-current-isolated-package-v1",
+  "date": "2026-10-16",
+  "sourceCommit": "b6adb9536d7bd494331354f4ff439fbd340cc365",
+  "sourceArchive": {
+    "path": "tmp/ma24-g01-b6adb953.tar",
+    "sha256": "e00cc9efebfa4a0822a5831c67b2bf88ad2cbba2b57638b79e3fddf8f359abe5",
+    "method": "git archive HEAD extracted into a fresh isolated workspace directory"
+  },
+  "build": {
+    "directory": "tmp/ma24-current-build-b6adb953",
+    "command": "node scripts/build-next.mjs",
+    "nextVersion": "16.3.4",
+    "productionCompile": "passed",
+    "typescript": "passed",
+    "staticPagesGenerated": 26,
+    "buildId": "iIJLvExWkQx29DAbnWLjJ",
+    "buildManifestSha256": "a49dc8d0d92cf1ab6cc9c30eeba33affaf139c0cdd42282bc0ee7eb64d885503",
+    "artifactVerification": {
+      "script": "scripts/verify-ma24-build-artifact-local.py",
+      "regularFiles": 3497,
+      "regularBytes": 245136990,
+      "treeSha256": "b04a9fb4d755ea777bda7c9b964b4c7a0204a650d7447a5ce6354cdb888d29c1",
+      "traceManifests": 172,
+      "tracedDependencyPaths": 30784,
+      "missingTracedDependencyPaths": 0,
+      "environmentFiles": 0,
+      "parentNodeModulesLinked": true
+    }
+  },
+  "package": {
+    "path": ".next-releases/ma24-g01-b6adb953-standalone",
+    "script": "scripts/package-ma24-next-standalone.py",
+    "appRelativePath": "tmp/ma24-current-build-b6adb953",
+    "sourceFilesMatched": 2216,
+    "regularFiles": 2265,
+    "regularBytes": 33341489,
+    "treeSha256": "c321e69e04f9aaa0d331547abfb1356a6fd42f6b1e71dcd371975e5d7ab296be",
+    "remainingJunctions": 0,
+    "environmentFiles": 0,
+    "treeUnchangedAfterSmoke": true
+  },
+  "localRuntimeSmoke": {
+    "scope": "Packaged server on 127.0.0.1:3031 with existing local runtime environment loaded; status-only HEAD requests",
+    "homeStatus": 200,
+    "sessionStatus": 200,
+    "candidateBuildManifestStatus": 200,
+    "testProcessStopped": true,
+    "port3031ListenerAfterStop": false
+  },
+  "sandboxObservation": "Ordinary sandbox first denied Turbopack dependency-junction creation. The same isolated build compiled under approved elevated local execution. Ordinary sandbox loopback HEAD requests then had no response despite a ready server log; the same three status-only requests returned 200 under approved elevated local execution.",
+  "modelCalls": 0,
+  "intentionalProductionWrites": 0,
+  "g17ToG20Advanced": false,
+  "limits": [
+    "The isolated package has not been loaded by the production Web or worker processes",
+    "Three status-only local routes do not verify product workflows, database migration, model execution or quality",
+    "G15 runtimeBuildVerified remains false until the final dedicated process and frozen inputs are bound to this build",
+    "No deployment, domain pilot or rollback occurred",
+    "G14 Gold set, G15 non-simulated paid admission and G16 real dual-arm quality remain incomplete"
+  ]
+}
