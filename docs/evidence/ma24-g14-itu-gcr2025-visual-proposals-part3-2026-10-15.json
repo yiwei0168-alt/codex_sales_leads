@@ -1,0 +1,334 @@
+{
+  "schema": "ma24-g14-itu-gcr2025-visual-proposals-part3-v1",
+  "date": "2026-10-15",
+  "stage": "Physical pages 49-80 source-bound proposals; not product judgments",
+  "sourceSha256": "4489081fe8709ea1bcea2b724ff5a92c3979195432a8da73c20a8c8e0570ccb8",
+  "extractionArtifactSha256": "788600e3fc3a1f8bd0a1d658ab608686b1c4358cfe76672500f3ae652303ffd6",
+  "candidatePackageSha256": "a7e4c0784ae51a2195b77623a67b1579bcef70375ce837b6e7c1d20b8580efac",
+  "scopePhysicalPages": [
+    49,
+    80
+  ],
+  "targetedFullSizePages": [
+    49,
+    50,
+    51,
+    52,
+    54,
+    55,
+    56,
+    58,
+    59,
+    64,
+    65,
+    66,
+    69,
+    70,
+    72,
+    74,
+    79,
+    80
+  ],
+  "proposedCounts": {
+    "evidence": 18,
+    "decoration": 14,
+    "unresolved": 0
+  },
+  "proposals": [
+    {
+      "blockId": "page-49-visual-review",
+      "physicalPage": 49,
+      "originalRenderSha256": "e7a83d73235996998a27639d88007888db4999dfb6a852479f0c86f51413b701",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figures 2.16 and 2.17 chart fixed-broadband subscriptions and advertised speed categories. The share at or above 100 Mbit/s is a subset of the share at or above 10 Mbit/s, not an additional category.",
+      "reason": "Full-size original render of physical PDF page 49 checked against chart/map/table, legend and notes; description avoids unsupported exact values.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-50-visual-review",
+      "physicalPage": 50,
+      "originalRenderSha256": "d1b5bb7265c16d7a2decad3b341feb20651842073327098150702e317f7c22f8",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figure 2.18 compares average download speeds for fixed and mobile networks in 2022 and the first half of 2025. The period note and differing access technologies must accompany any numerical reading.",
+      "reason": "Full-size original render of physical PDF page 50 checked against chart/map/table, legend and notes; description avoids unsupported exact values.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-51-visual-review",
+      "physicalPage": 51,
+      "originalRenderSha256": "d194647206c04d2d8685088bc277e8559fa7a8b5286cc7ac2c6d36d9f23f00b2",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figure 2.19 stacks population coverage by mobile network generation from 2015 to 2025. Lower-generation bands show people not covered by a more advanced generation, and the 5G series begins in 2020.",
+      "reason": "Full-size original render of physical PDF page 51 checked against chart/map/table, legend and notes; description avoids unsupported exact values.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-52-visual-review",
+      "physicalPage": 52,
+      "originalRenderSha256": "40b5a7c2d8ea90adda8fc98b93b81e189539da2cb151bc90a879adb11879d990",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figures 2.20 and 2.21 compare mobile coverage and active mobile-broadband subscriptions by region and income group. Figure 2.20 uses incremental coverage bands; the 5G subscription series in Figure 2.21 is a subset of mobile-broadband subscriptions.",
+      "reason": "Full-size original render of physical PDF page 52 checked against chart/map/table, legend and notes; description avoids unsupported exact values.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-53-visual-review",
+      "physicalPage": 53,
+      "originalRenderSha256": "871fbe4b17441650b059d0955b58a7c1d856771343141051aaa801e44f9cd05e",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact overview shows digitally extracted narrative or shaded text without a distinct chart/map/table; tentative until original-page recheck before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-54-visual-review",
+      "physicalPage": 54,
+      "originalRenderSha256": "03bec7b9a961a560b14ee859a0353bd7bb7039f9ae4f993cdb768098c2110989",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figure 2.22 compares Internet users by device type, including computer, mobile phone and tablet. Its underlying observations are from 2020 or later; categories need not be mutually exclusive.",
+      "reason": "Full-size original render of physical PDF page 54 checked against chart/map/table, legend and notes; description avoids unsupported exact values.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-55-visual-review",
+      "physicalPage": 55,
+      "originalRenderSha256": "fe1aae47d484957ae872bfd2dd6bf59ffee2558b70e3f3cbd6cd3890582d4472",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figure 2.23 maps the 2025 price of an entry-level data-only mobile-broadband basket as a percentage of GNI per capita. Colour bands do not give exact country prices.",
+      "reason": "Full-size original render of physical PDF page 55 checked against chart/map/table, legend and notes; description avoids unsupported exact values.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-56-visual-review",
+      "physicalPage": 56,
+      "originalRenderSha256": "19b79d818122d4e98c0bf9e46533ea9896fb6bc40dcda05d929137544463b51b",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figure 2.24 maps fixed-broadband basket affordability in 2025, and Figure 2.25 compares affordability changes by basket and income group from 2022 to 2025. The note substitutes 2024 for a discontinued low-usage mobile basket in the 2025 comparison.",
+      "reason": "Full-size original render of physical PDF page 56 checked against chart/map/table, legend and notes; description avoids unsupported exact values.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-57-visual-review",
+      "physicalPage": 57,
+      "originalRenderSha256": "a5f0622c55d481a741ae957c6ac99a59599f3735d6b3d1a62d60f76e6b69c6d2",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact overview shows digitally extracted narrative or shaded text without a distinct chart/map/table; tentative until original-page recheck before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-58-visual-review",
+      "physicalPage": 58,
+      "originalRenderSha256": "3157fbdaedcf0c224b0ef3dc20c014542804df7ea0d97d279e0e8c4e904de659",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figure 2.26 consists of scatter panels relating Internet use to basic ICT skills by skill area, using 2024 or latest-available observations. The plots support comparison and association, not causal or exact country-level readings.",
+      "reason": "Full-size original render of physical PDF page 58 checked against chart/map/table, legend and notes; description avoids unsupported exact values.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-59-visual-review",
+      "physicalPage": 59,
+      "originalRenderSha256": "f312bb9073a7736d9ec801f2edd486ee9a84d516a58e2f00849cb47076b746c8",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figure 2.27 charts Global Cybersecurity Index scores by region for the report years 2017, 2018, 2021 and 2024. Year and region labels must remain attached to any value read from the bars.",
+      "reason": "Full-size original render of physical PDF page 59 checked against chart/map/table, legend and notes; description avoids unsupported exact values.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-60-visual-review",
+      "physicalPage": 60,
+      "originalRenderSha256": "03bd889ff8b0dea9cb3952e244aa26e87786128f997690cb2ef3939e90298017",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact overview shows digitally extracted narrative or shaded text without a distinct chart/map/table; tentative until original-page recheck before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-61-visual-review",
+      "physicalPage": 61,
+      "originalRenderSha256": "8b9e3478d421c27914c8b84e1caa8c04529be1bf51ad5dd5712046eba523ce6e",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact overview shows digitally extracted narrative or shaded text without a distinct chart/map/table; tentative until original-page recheck before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-62-visual-review",
+      "physicalPage": 62,
+      "originalRenderSha256": "b2c1cd28e50c3863dcefa11d5227a3fda90e8b32ce327c0f3114acea376fd86b",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact overview shows digitally extracted narrative or shaded text without a distinct chart/map/table; tentative until original-page recheck before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-63-visual-review",
+      "physicalPage": 63,
+      "originalRenderSha256": "d20adc639da3b1fd0b5547a16ac6fd69fcbd41caf33546ad8d05e1b2266cf470",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact overview shows digitally extracted narrative or shaded text without a distinct chart/map/table; tentative until original-page recheck before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-64-visual-review",
+      "physicalPage": 64,
+      "originalRenderSha256": "51087d5c9c7899fee9d53a9218ba58a9037ef7495158c69dbd60613a110563c4",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figure 3.1 diagrams four groups of policy and regulatory instruments: governance tools, market access, investment mechanisms and competition safeguards. It is a classification diagram, not a quantitative ranking.",
+      "reason": "Full-size original render of physical PDF page 64 checked against chart/map/table, legend and notes; description avoids unsupported exact values.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-65-visual-review",
+      "physicalPage": 65,
+      "originalRenderSha256": "74db78f9292fbd4a9467118ba359589186eabbbfbccbc8a4125f99771ed77831",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figure 3.2 compares countries implementing seven key measures with the rest of the world on Internet use, 5G coverage and mobile-broadband subscriptions. The comparison is descriptive and does not establish that the measures caused the differences.",
+      "reason": "Full-size original render of physical PDF page 65 checked against chart/map/table, legend and notes; description avoids unsupported exact values.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-66-visual-review",
+      "physicalPage": 66,
+      "originalRenderSha256": "7991f3bcf8aae86cb68cc56016853808cae624b6188c9b84453769c8ee12275b",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figure 3.3 compares G5 Benchmark average scores with 5G coverage and other connectivity measures. The page explicitly cautions that the correlations do not prove causation.",
+      "reason": "Full-size original render of physical PDF page 66 checked against chart/map/table, legend and notes; description avoids unsupported exact values.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-67-visual-review",
+      "physicalPage": 67,
+      "originalRenderSha256": "38f1cc4030492aae8dc9e336b09c93ba21125258b9e2a048c728a5052bc418d7",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact overview shows digitally extracted narrative or shaded text without a distinct chart/map/table; tentative until original-page recheck before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-68-visual-review",
+      "physicalPage": 68,
+      "originalRenderSha256": "66cd90c5e2d157868793265029035e02a394a7bf7b1f075c9cd37a27c1af6834",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact overview shows digitally extracted narrative or shaded text without a distinct chart/map/table; tentative until original-page recheck before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-69-visual-review",
+      "physicalPage": 69,
+      "originalRenderSha256": "842f2a4793897d91637ea7a493628dd2aaad6efc6e1fd632777b88a155db82de",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figure 3.4 maps submarine cable systems and Figure 3.5 charts international bandwidth growth from 2020 to 2024. The dense route map should not support exact route or landing-point claims without separate source checking.",
+      "reason": "Full-size original render of physical PDF page 69 checked against chart/map/table, legend and notes; description avoids unsupported exact values.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-70-visual-review",
+      "physicalPage": 70,
+      "originalRenderSha256": "a13ffb35250ff672081934a26fb8793524f605cad7220ab1934910afc0caed79",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figure 3.6 charts shares of used bandwidth by category for major submarine cable routes. This substantive chart remains visual evidence even though the candidate question about 2024 cable cuts is supported by separately extracted page text.",
+      "reason": "Full-size original render of physical PDF page 70 checked against chart/map/table, legend and notes; description avoids unsupported exact values.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-71-visual-review",
+      "physicalPage": 71,
+      "originalRenderSha256": "ba67f54b10190e5b50a49c1bb82d846eeed4edae44dd682c9f4371b35533eb51",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact overview shows digitally extracted narrative or shaded text without a distinct chart/map/table; tentative until original-page recheck before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-72-visual-review",
+      "physicalPage": 72,
+      "originalRenderSha256": "82855932442f67e479882fb57e7dfa88c4e9bf808eb3f3ae43e16ec0204d019c",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figure 3.7 shows regional satellite-broadband subscriptions from 2016 to 2024 as bars and their share of fixed subscriptions on a separate right axis. Bar counts and the percentage line must not be interchanged.",
+      "reason": "Full-size original render of physical PDF page 72 checked against chart/map/table, legend and notes; description avoids unsupported exact values.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-73-visual-review",
+      "physicalPage": 73,
+      "originalRenderSha256": "3bdc934fe3b3c04eceb0c49f1304a3d5d28e632ec3961f874c344ce0963cca08",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact overview shows digitally extracted narrative or shaded text without a distinct chart/map/table; tentative until original-page recheck before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-74-visual-review",
+      "physicalPage": 74,
+      "originalRenderSha256": "b78fc93a9e4b879a95b05ba4ee7f51b753380d802c5283d0d55a6113db178054",
+      "proposedDecision": "evidence",
+      "evidenceText": "Table 3.1 compares geostationary and non-geostationary satellite system characteristics, including orbital altitude, coverage and equipment. Read each characteristic within its own row and satellite-system column.",
+      "reason": "Full-size original render of physical PDF page 74 checked against chart/map/table, legend and notes; description avoids unsupported exact values.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-75-visual-review",
+      "physicalPage": 75,
+      "originalRenderSha256": "e349e126691ec7a2d45a84b915a20ee9e617038edf98ae4780cd7fd5a89f548d",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact overview shows digitally extracted narrative or shaded text without a distinct chart/map/table; tentative until original-page recheck before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-76-visual-review",
+      "physicalPage": 76,
+      "originalRenderSha256": "61ec018cbd94403dc4c7149954894d3611847798f14642a6c097f5d11eaf6842",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact overview shows digitally extracted narrative or shaded text without a distinct chart/map/table; tentative until original-page recheck before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-77-visual-review",
+      "physicalPage": 77,
+      "originalRenderSha256": "9a63faecd74e70da84bd4631985e6c0e43a7a4b347d0214ac2bc58ef675b2de6",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact overview shows digitally extracted narrative or shaded text without a distinct chart/map/table; tentative until original-page recheck before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-78-visual-review",
+      "physicalPage": 78,
+      "originalRenderSha256": "3d8fdd3aa0764407f171c178786b96a08c4ee9298ca873785b5598914ef05b64",
+      "proposedDecision": "decoration",
+      "evidenceText": "",
+      "reason": "Contact overview shows digitally extracted narrative or shaded text without a distinct chart/map/table; tentative until original-page recheck before product save.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-79-visual-review",
+      "physicalPage": 79,
+      "originalRenderSha256": "acfa0dfa3dcad57dc5f91d241e4df2a495ad6d70fa4caa9d2fb4028754915e0c",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figure 4.1 plots Internet use against affordability of services and devices. The scatter relationship is descriptive and does not establish the direction of causation.",
+      "reason": "Full-size original render of physical PDF page 79 checked against chart/map/table, legend and notes; description avoids unsupported exact values.",
+      "productDecisionSaved": false
+    },
+    {
+      "blockId": "page-80-visual-review",
+      "physicalPage": 80,
+      "originalRenderSha256": "330182281abe4a3b13e01e5177f8e52f0997ef4d4b9a3df0c2975d8845c17b19",
+      "proposedDecision": "evidence",
+      "evidenceText": "Figure 4.2 compares median monthly traffic per subscription across basket-price groups for fixed and mobile broadband in 2025. The two panels use separate GB scales and must not be read as a single-axis series.",
+      "reason": "Full-size original render of physical PDF page 80 checked against chart/map/table, legend and notes; description avoids unsupported exact values.",
+      "productDecisionSaved": false
+    }
+  ],
+  "cumulativePendingPageProposals": 80,
+  "remainingPendingPagesNotProposed": 48,
+  "productReviewDecisionsSaved": 0,
+  "privateRegistrationPassed": false,
+  "goldApproved": false,
+  "modelCalls": 0,
+  "g17ToG20Advanced": false
+}
