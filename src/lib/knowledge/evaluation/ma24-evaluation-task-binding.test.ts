@@ -31,7 +31,8 @@ const manifest: Ma24FrozenManifest = { schema: "ma24-g16-frozen-comparison-v2",
     group: "publication", tags: [], expectedOutcome: "route", userId,
     knowledgeScope: ["industry"] }] };
 const loadedModelConfig = modeModelConfig("standard");
-const task = { id: runId, user_id: userId, status: "running" as const,
+const task = { id: runId, user_id: userId, conversation_id: "55555555-5555-4555-8555-555555555555",
+  status: "running" as const,
   lease_token: leaseToken, lease_until: new Date(Date.now() + 600_000),
   execution_kind: "main-agent-evaluation" as const,
   execution_spec: { schema: "ma24-evaluation-run-v1", manifestSha256: ma24ManifestSha256(manifest),
@@ -39,7 +40,9 @@ const task = { id: runId, user_id: userId, status: "running" as const,
   input: { content: query, requestKey: "evaluation-fixture", attachments: [],
     knowledgeScope: ["industry" as const], mode: "standard" as const },
   model_config: loadedModelConfig };
-const fixture = { manifest, sourceSetBytes, goldBytes, codeAndConfigBytes, task, runId, leaseToken, caseId,
+const conversation = { status: "deleted", message_count: 0, run_count: 1 };
+const fixture = { manifest, sourceSetBytes, goldBytes, codeAndConfigBytes,
+  task, conversation, runId, leaseToken, caseId,
   arm: "baseline" as const, loadedModelConfig };
 const bind = (changes: Partial<Parameters<typeof assertMa24EvaluationTaskBinding>[0]> = {}) =>
   assertMa24EvaluationTaskBinding({ ...fixture, ...changes });
@@ -77,6 +80,11 @@ describe("MA24 evaluation task admission binding", () => {
       { status: "queued" }, { execution_kind: "main-agent" },
     ]) expect(() => bind({ task: { ...task, ...changed } as typeof task })).toThrow("leased execution");
   });
+  it("rejects a visible, populated or reused evaluation conversation", () => {
+    for (const changed of [{ status: "active" }, { message_count: 1 }, { run_count: 2 }])
+      expect(() => bind({ conversation: { ...conversation, ...changed } }))
+        .toThrow("leased execution");
+  });
   it("rejects case, arm and manifest drift in the persisted task spec", () => {
     for (const changed of [
       { caseId: "other" }, { arm: "candidate" }, { manifestSha256: "0".repeat(64) },
@@ -101,13 +109,17 @@ describe("MA24 evaluation task admission binding", () => {
   });
   it("reads only the frozen account's live task row before returning the bound arm", async () => {
     mocks.tenantTransaction.mockImplementation(async (tenant: string, callback: (client: {
-      query: (sql: string, args: string[]) => Promise<{ rows: typeof task[] }>;
+      query: (sql: string, args: string[]) => Promise<{ rows: unknown[] }>;
     }) => Promise<unknown>) => {
       expect(tenant).toBe(userId);
       return callback({ query: async (sql, args) => {
-        expect(sql).toContain("from agent_run where id=$1 and user_id=$2");
-        expect(args).toEqual([runId, userId]);
-        return { rows: [task] };
+        if (sql.includes("from agent_run where id=$1 and user_id=$2")) {
+          expect(args).toEqual([runId, userId]);
+          return { rows: [task] };
+        }
+        expect(sql).toContain("from assistant_conversation c");
+        expect(args).toEqual([userId, task.conversation_id]);
+        return { rows: [conversation] };
       } });
     });
     await expect(verifyMa24EvaluationTaskBinding(fixture)).resolves.toMatchObject({ arm: "baseline", query });

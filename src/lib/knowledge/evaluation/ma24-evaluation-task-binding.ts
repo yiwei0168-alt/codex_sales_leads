@@ -7,9 +7,10 @@ import { assertMa24FrozenSnapshotBytes, assertMa24GoldMatchesManifest,
   type Ma24SourceSetSnapshot } from "./ma24-independent-comparison";
 
 type EvaluationTask = Pick<AgentRun, "id" | "user_id" | "status" | "input" |
-  "model_config" | "execution_kind" | "execution_spec" | "lease_token"> & {
+  "model_config" | "execution_kind" | "execution_spec" | "lease_token" | "conversation_id"> & {
     lease_until: Date | string | null;
   };
+type EvaluationConversation = { status: string; message_count: number; run_count: number };
 
 /** Binds a leased evaluation task to frozen question bytes before a dedicated runner uses it. */
 export function assertMa24EvaluationTaskBinding(input: {
@@ -18,6 +19,7 @@ export function assertMa24EvaluationTaskBinding(input: {
   goldBytes: Uint8Array;
   codeAndConfigBytes: Uint8Array;
   task: EvaluationTask;
+  conversation: EvaluationConversation;
   runId: string;
   leaseToken: string;
   caseId: string;
@@ -25,7 +27,7 @@ export function assertMa24EvaluationTaskBinding(input: {
   loadedModelConfig: ModelConfig;
 }) {
   const { manifest, sourceSetBytes, goldBytes, codeAndConfigBytes,
-    task, runId, leaseToken, caseId, arm, loadedModelConfig } = input;
+    task, conversation, runId, leaseToken, caseId, arm, loadedModelConfig } = input;
   if (manifest.schema !== "ma24-g16-frozen-comparison-v2" ||
     [manifest.sourceSetSha256, manifest.goldSnapshotSha256, manifest.codeAndConfigSha256]
       .some(hash => !/^[0-9a-f]{64}$/.test(hash)))
@@ -49,6 +51,8 @@ export function assertMa24EvaluationTaskBinding(input: {
     new Date(task.lease_until).getTime() <= Date.now() ||
     task.user_id !== entry.userId ||
     task.execution_kind !== "main-agent-evaluation" ||
+    !conversation || conversation.status !== "deleted" ||
+    conversation.message_count !== 0 || conversation.run_count !== 1 ||
     spec?.schema !== "ma24-evaluation-run-v1" ||
     spec.caseId !== caseId || spec.arm !== arm ||
     spec.manifestSha256 !== ma24ManifestSha256(manifest) ||
@@ -71,14 +75,22 @@ export function assertMa24EvaluationTaskBinding(input: {
 
 /** Read the live leased row under its own tenant before any model request. */
 export async function verifyMa24EvaluationTaskBinding(input: Omit<
-  Parameters<typeof assertMa24EvaluationTaskBinding>[0], "task">) {
+  Parameters<typeof assertMa24EvaluationTaskBinding>[0], "task" | "conversation">) {
   const entry = input.manifest.cases.find(item => item.caseId === input.caseId);
   if (!entry) throw new Error("MA24 evaluation case absent from frozen manifest");
   return tenantTransaction(entry.userId, async client => {
     const task = (await client.query<EvaluationTask>(
-      `select id,user_id,status,lease_token,lease_until,execution_kind,execution_spec,input,model_config
+      `select id,user_id,conversation_id,status,lease_token,lease_until,execution_kind,execution_spec,input,model_config
        from agent_run where id=$1 and user_id=$2`, [input.runId, entry.userId])).rows[0];
     if (!task) throw new Error("MA24 evaluation task absent from tenant store");
-    return assertMa24EvaluationTaskBinding({ ...input, task });
+    const conversation = (await client.query<EvaluationConversation>(`
+      select c.status,
+        (select count(*)::integer from assistant_message m
+         where m.user_id=c.user_id and m.conversation_id=c.id) as message_count,
+        (select count(*)::integer from agent_run r
+         where r.user_id=c.user_id and r.conversation_id=c.id) as run_count
+      from assistant_conversation c where c.user_id=$1 and c.id=$2`,
+    [entry.userId, task.conversation_id])).rows[0];
+    return assertMa24EvaluationTaskBinding({ ...input, task, conversation });
   });
 }

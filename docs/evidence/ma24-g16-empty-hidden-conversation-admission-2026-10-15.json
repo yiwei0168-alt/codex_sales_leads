@@ -1,0 +1,23 @@
+{
+  "schema": "ma24-g16-empty-hidden-conversation-admission-v1",
+  "date": "2026-10-15",
+  "scope": "G16 pre-execution evaluation task binding in isolated local clone",
+  "requiredConversationState": {
+    "status": "deleted",
+    "ordinaryMessageCount": 0,
+    "associatedRunCount": 1
+  },
+  "checks": {
+    "focusedVitest": "10 passed in ma24-evaluation-task-binding.test.ts",
+    "typescript": "npx.cmd tsc --noEmit passed",
+    "focusedEslint": "binder, test and admission script passed",
+    "isolatedClonePositive": "hidden empty dedicated conversation accepted",
+    "isolatedCloneNegative": ["one contaminating message rejected", "active conversation rejected"],
+    "syntheticUsersRunsAndMessagesAfterCleanup": 0,
+    "providerCalls": 0
+  },
+  "dedicatedRunnerConnected": false,
+  "approvedGoldCount": 0,
+  "realDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}

@@ -82,7 +82,8 @@ try {
        values($1,$2,'MA24 admission synthetic fixture','member','active')`,
       [id, `${id}@example.invalid`]);
     await client.query(
-      `insert into assistant_conversation(id,user_id,title) values($1,$2,'MA24 synthetic admission')`,
+      `insert into assistant_conversation(id,user_id,title,status)
+       values($1,$2,'MA24 synthetic admission','deleted')`,
       [conversationId, userId]);
     await client.query(
       `insert into agent_run(id,user_id,conversation_id,request_key,request_hash,input,model_config,
@@ -99,6 +100,16 @@ try {
 
   assert.deepEqual(await verify(), { userId, caseId, arm: "baseline", query,
     knowledgeScope: ["industry"] });
+  await admin.query(`insert into assistant_message(user_id,conversation_id,role,intent,content,metadata)
+    values($1,$2,'user','general','contaminating history','{}')`, [userId, conversationId]);
+  await assert.rejects(verify(), /leased execution/);
+  await admin.query("delete from assistant_message where user_id=$1 and conversation_id=$2",
+    [userId, conversationId]);
+  await admin.query("update assistant_conversation set status='active' where id=$1 and user_id=$2",
+    [conversationId, userId]);
+  await assert.rejects(verify(), /leased execution/);
+  await admin.query("update assistant_conversation set status='deleted' where id=$1 and user_id=$2",
+    [conversationId, userId]);
   const wrongUserManifest: Ma24FrozenManifest = { ...manifest,
     cases: [{ ...manifest.cases[0], userId: otherUserId }] };
   await assert.rejects(verifyMa24EvaluationTaskBinding({ manifest: wrongUserManifest,
@@ -131,7 +142,8 @@ try {
   console.log(JSON.stringify({ schema: "ma24-g16-admission-local-v1", synthetic: true,
     checks: ["valid-leased-row", "cross-account-row-hidden", "changed-question-rejected",
       "expired-lease-rejected", "gold-bytes-drift-rejected", "code-config-bytes-drift-rejected",
-      "hash-matching-invalid-gold-rejected"],
+      "hash-matching-invalid-gold-rejected", "conversation-history-rejected",
+      "visible-conversation-rejected"],
     providerCalls: 0 }));
 } finally {
   if (created) {
@@ -147,6 +159,13 @@ try {
         [conversationId, userId]);
       await client.query("delete from app_user where id=any($1::uuid[])", [[userId, otherUserId]]);
       await client.query("commit");
+      const residual = await admin.query<{ users: string; runs: string; messages: string }>(`
+        select (select count(*)::text from app_user where id=any($1::uuid[])) as users,
+          (select count(*)::text from agent_run where id=$2) as runs,
+          (select count(*)::text from assistant_message where conversation_id=$3) as messages`,
+      [[userId, otherUserId], runId, conversationId]);
+      assert.deepEqual(residual.rows[0], { users: "0", runs: "0", messages: "0" },
+        "Synthetic admission rows remained after cleanup");
     } catch (error) { await client.query("rollback"); throw error; }
     finally { client.release(); }
   }
