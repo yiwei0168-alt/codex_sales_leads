@@ -507,3 +507,5 @@ Taking Part 工作簿的整题无答案候选已有第 2 条隔离 Gold 草案�
 2026-10-15 G16 专用运行入口的执行前绑定器已实现：从持久任务和冻结题文来源集核对账号、case、臂、范围、模式、模型配置及当前租约。下一步接入专用认领/运行器并在隔离库验证，再补全构建、来源及付费准入；当前不能发起真实模型双路。7 项定向测试、类型和 lint 通过。[收据](evidence/ma24-g16-evaluation-task-admission-binding-2026-10-15.json)。G17–G20 暂停。
 
 2026-10-16 G14 LoRa 图示流程候选已有[逐题审核包](MA24_G14_ZENODO_LORA_REVIEW_PACKET_2026-10-16.md)和[隔离草案收据](evidence/ma24-g14-zenodo-lora-private-gold-draft-2026-10-16.json)。接下来记录题文、答案与设计限定的逐题回复，再决定是否按一个发布家族冻结来源与 Gold；这一步没有增加已批准的 5 题 Gold 或启动 G16 模型运行。G17–G20 暂停。
+
+2026-10-16 G14 DBS 冲突题已有[逐题审核包](MA24_G14_DBS_CONFLICT_REVIEW_PACKET_2026-10-16.md)与[隔离草案收据](evidence/ma24-g14-dbs-private-gold-draft-2026-10-16.json)。后续记录新题型逐题回复，将其纳入最终同轮语义/家族审计后再决定 Gold 资格；当前已批准 Gold 5 题/3 单元，G15 付费准入及 G16 真实双路仍关闭，G17–G20 暂停。

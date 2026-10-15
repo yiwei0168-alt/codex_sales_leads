@@ -1,0 +1,27 @@
+{
+  "schema": "ma24-g14-dbs-private-gold-draft-v1",
+  "date": "2026-10-16",
+  "caseId": "dbs-2024-25-basic-checks-correction2-year-conflict",
+  "privateDraftPath": "tmp/ma24-independent-quarantine/dbs-correction2-conflict-gold-draft-v1.json",
+  "privateDraftSha256": "8a7dbed8f52a4abe932a752a74c86830f8e626f7a32646be172bfaecf8862418",
+  "originalPdfSha256": "5902287709dd1049eae2429af4e87d8a5efbee5d123763b5735a72213f754a44",
+  "extractionSha256": "0cc2e2c39837221894a6334ddb5c9c65c2ba54405946d97911974d9812e53a72",
+  "checks": {
+    "draftJsonParsed": true,
+    "sourceAndExtractionHashesRecalculated": true,
+    "threeSourceExcerptsMatchedExactBlockTextAndPage": true,
+    "originalTargetPagesVisuallyReinspected": [7, 41],
+    "wholePdfReviewAndCloneReceiptsPresent": true,
+    "modelCalls": 0,
+    "productionKnowledgeWrites": 0
+  },
+  "reviewPacket": "docs/MA24_G14_DBS_CONFLICT_REVIEW_PACKET_2026-10-16.md",
+  "acceptanceBoundary": {
+    "userConflictQuestionAndAnswerReview": "pending",
+    "independentGoldApproved": false,
+    "fullSetFrozen": false,
+    "g15ReadyForModelCalls": false,
+    "realDualArmRuns": 0,
+    "g17ToG20Advanced": false
+  }
+}
