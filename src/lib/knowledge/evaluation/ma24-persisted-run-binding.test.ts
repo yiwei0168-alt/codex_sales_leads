@@ -23,7 +23,8 @@ const modelInput = { messages: [
 ] };
 const modelCalls = [{ id: "33333333-3333-4333-8333-333333333333", user_id: userId,
   run_id: runId, tool_id: "main_model", effect: "model", status: "completed",
-  input: modelInput, input_hash: digest(modelInput) }];
+  input: modelInput, input_hash: digest(modelInput),
+  output: { status: "success", data: { message: { role: "assistant", content: run.answer } } } }];
 const verify = (overrides: Partial<Parameters<typeof assertMa24PersistedRunBinding>[0]> = {}) =>
   assertMa24PersistedRunBinding({ case: frozen, query, run, task, modelCalls, ...overrides });
 
@@ -58,5 +59,24 @@ describe("MA24 persisted run binding", () => {
       failureReason: "preflight failed" };
     expect(() => verify({ run: failedRun, task: { ...task, status: "failed", result: null },
       modelCalls: [] })).not.toThrow();
+  });
+  it("requires a successful saved model output while allowing a failed fallback attempt", () => {
+    const failedCall = { ...modelCalls[0], id: "44444444-4444-4444-8444-444444444444",
+      output: { status: "unavailable" } };
+    expect(() => verify({ modelCalls: [{ ...modelCalls[0], output: { status: "unavailable" } }] }))
+      .toThrow("persisted model journal mismatch");
+    expect(() => verify({ run: { ...run, modelCallIds: [failedCall.id, modelCalls[0].id],
+      receiptIds: [failedCall.id, modelCalls[0].id] }, modelCalls: [failedCall, modelCalls[0]] }))
+      .not.toThrow();
+    expect(() => verify({ modelCalls: [{ ...modelCalls[0], output: null }] }))
+      .toThrow("persisted model journal mismatch");
+    expect(() => verify({ modelCalls: [{ ...modelCalls[0], output: { status: "success" } }] }))
+      .toThrow("persisted model journal mismatch");
+    expect(() => verify({ modelCalls: [{ ...modelCalls[0], output: {
+      status: "success", data: { value: { message: { role: "assistant", content: "Other answer" } } },
+    } }] })).toThrow("persisted model journal mismatch");
+    expect(() => verify({ modelCalls: [{ ...modelCalls[0], output: {
+      status: "success", data: { value: { message: { role: "assistant", content: run.answer } } },
+    } }] })).not.toThrow();
   });
 });

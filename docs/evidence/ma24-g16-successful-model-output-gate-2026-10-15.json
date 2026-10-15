@@ -1,0 +1,29 @@
+{
+  "schema": "ma24-g16-successful-model-output-gate-v1",
+  "date": "2026-10-15",
+  "scope": "G16 only; G17-G20 deferred",
+  "finding": "The main Agent can persist a completed main_model journal row whose output is unavailable, then retry or use a fallback. Journal row status alone does not prove a successful model answer.",
+  "change": "The G16 database verifier reads each model-call output and requires a saved successful assistant message whose final content equals the persisted completed Agent reply. It accepts a failed attempt followed by that successful answer, while rejecting missing, unavailable, or mismatched outputs.",
+  "checks": {
+    "targetedTests": "18 passed across two evaluation test files",
+    "typescript": "node node_modules/typescript/bin/tsc --noEmit passed",
+    "eslint": "targeted ESLint passed",
+    "isolatedReplayClone": {
+      "validCompletedRunReadBack": true,
+      "unavailableOnlyCompletedRunDenied": true,
+      "changedModelAnswerDenied": true,
+      "accountQuestionScopeCallIdHashAndAttachmentDriftDenied": true,
+      "syntheticRowsCleaned": true,
+      "providerModelCalls": 0,
+      "productionWrites": 0
+    }
+  },
+  "acceptanceBoundary": {
+    "realIndependentDualArmRuns": 0,
+    "independentGoldApproved": 0,
+    "providerReceiptChainVerified": false,
+    "corpusSnapshotBound": false,
+    "qualityGatePassed": false,
+    "g17ToG20Advanced": false
+  }
+}

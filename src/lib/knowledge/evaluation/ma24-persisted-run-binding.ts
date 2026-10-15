@@ -10,8 +10,19 @@ type PersistedRun = {
 };
 type PersistedModelCall = {
   id: string; user_id: string; run_id: string; tool_id: string;
-  effect: string; status: string; input: unknown; input_hash: string;
+  effect: string; status: string; input: unknown; input_hash: string; output: unknown;
 };
+
+function savedModelAnswer(output: unknown): string | undefined {
+  const receipt = output as Record<string, unknown> | null;
+  if (receipt?.status !== "success") return undefined;
+  const data = receipt.data as Record<string, unknown> | undefined;
+  const selected = (data?.value ?? data) as Record<string, unknown> | undefined;
+  const message = selected?.message as Record<string, unknown> | undefined;
+  if (message?.role !== "assistant" || typeof message.content !== "string" ||
+    (Array.isArray(message.tool_calls) && message.tool_calls.length > 0)) return undefined;
+  return message.content;
+}
 
 /** Checks database rows, not fields copied from an evaluation run file. */
 export function assertMa24PersistedRunBinding(input: {
@@ -37,13 +48,15 @@ export function assertMa24PersistedRunBinding(input: {
       task.status !== "failed" || run.status !== "failed"))
     throw new Error(`MA24 persisted task mismatch ${run.caseId}:${run.arm}`);
   const scopeRule = `Search and cite only these selected knowledge collections: ${frozen.knowledgeScope.join(", ")}.`;
-  if (!Array.isArray(run.modelCallIds) || (run.status === "completed" && !modelCalls.length) ||
+  if (!Array.isArray(run.modelCallIds) ||
+    (run.status === "completed" && !modelCalls.some(call => savedModelAnswer(call.output) === run.answer)) ||
     stableJson(modelCalls.map(call => call.id).sort()) !== stableJson([...run.modelCallIds].sort()) ||
     modelCalls.some(call => {
       const savedInput = call.input as Record<string, unknown> | undefined;
       const messages = savedInput?.messages;
       return call.user_id !== frozen.userId || call.run_id !== run.runId ||
         call.tool_id !== "main_model" || call.effect !== "model" || call.status !== "completed" ||
+        !["success", "unavailable"].includes((call.output as Record<string, unknown> | null)?.status as string) ||
         call.input_hash !== digest(call.input) || !Array.isArray(messages) ||
         !messages.some(message => message?.role === "user" && message.content === query) ||
         !messages.some(message => message?.role === "system" &&
@@ -64,7 +77,7 @@ export async function verifyMa24PersistedRunBinding(frozen: Ma24Case, query: str
       `select id,user_id,status,execution_kind,input,model_config,result
        from agent_run where id=$1 and user_id=$2`, [run.runId, frozen.userId])).rows[0];
     const modelCalls = (await client.query<PersistedModelCall>(
-      `select id,user_id,run_id,tool_id,effect,status,input,input_hash from agent_tool_call
+      `select id,user_id,run_id,tool_id,effect,status,input,input_hash,output from agent_tool_call
        where run_id=$1 and user_id=$2 and tool_id='main_model' and effect='model' order by id`,
       [run.runId, frozen.userId])).rows;
     return assertMa24PersistedRunBinding({ case: frozen, query, run, task, modelCalls });
