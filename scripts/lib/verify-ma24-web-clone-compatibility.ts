@@ -60,6 +60,7 @@ export async function verifyMa24WebCloneCompatibility(options: {
   applicationDatabaseUrl: string;
   migrationDatabaseUrl: string;
   reviewUi?: boolean;
+  thothReviewUi?: boolean;
   conversationUi?: boolean;
   frontendUi?: boolean;
   mailboxBatchUi?: boolean;
@@ -152,6 +153,7 @@ export async function verifyMa24WebCloneCompatibility(options: {
         assert.deepEqual(await response.json(), { items: [], hasMore: false });
       }
       let reviewPage: unknown;
+      let thothReviewPage: unknown;
       let conversationPage: unknown;
       let mailboxDrawerPage: unknown;
       let mailboxBatchPage: unknown;
@@ -178,6 +180,11 @@ export async function verifyMa24WebCloneCompatibility(options: {
             .replaceAll(options.migrationDatabaseUrl, "<clone-db>").slice(0, 1400);
           throw new Error(`Candidate review page smoke failed: ${error instanceof Error ? error.message : "unknown"}; server diagnostic: ${diagnostic || "none"}`);
         }
+      }
+      if (version.name === "candidate-web" && options.thothReviewUi) {
+        const { verifyMa24ThothReviewPageClone } = await import("./verify-ma24-thoth-review-page-clone");
+        thothReviewPage = await verifyMa24ThothReviewPageClone({ admin: options.admin, base, cookie,
+          userId, email, password, migrationDatabaseUrl: options.migrationDatabaseUrl });
       }
       if (version.name === "candidate-web" && options.conversationUi) {
         const { verifyMa24ConversationDeleteClone } = await import("./verify-ma24-conversation-delete-clone");
@@ -235,6 +242,7 @@ export async function verifyMa24WebCloneCompatibility(options: {
         authenticatedUploadStatus: list.status, visibleUploadJobs: listed.jobs.length,
         ...(acceptanceReviewStatus ? { acceptanceReviewStatus } : {}),
         ...(reviewPage ? { reviewPage } : {}),
+        ...(thothReviewPage ? { thothReviewPage } : {}),
         ...(conversationPage ? { conversationPage } : {}),
         ...(mailboxDrawerPage ? { mailboxDrawerPage } : {}),
         ...(mailboxBatchPage ? { mailboxBatchPage } : {}),

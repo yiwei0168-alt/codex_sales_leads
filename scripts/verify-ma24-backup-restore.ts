@@ -200,6 +200,7 @@ try {
     webCompatibility = await verifyMa24WebCloneCompatibility({ admin: clone,
       applicationDatabaseUrl: applicationSource.toString(), migrationDatabaseUrl: cloneUrl.toString(),
       reviewUi: process.argv.includes("--review-ui"),
+      thothReviewUi: process.argv.includes("--thoth-review-ui"),
       conversationUi: process.argv.includes("--conversation-ui"),
       frontendUi: process.argv.includes("--frontend-ui"),
       mailboxBatchUi: process.argv.includes("--mailbox-batch-ui"),

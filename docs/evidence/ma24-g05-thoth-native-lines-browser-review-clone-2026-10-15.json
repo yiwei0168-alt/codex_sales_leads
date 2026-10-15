@@ -1,0 +1,41 @@
+{
+  "schema": "ma24-g05-thoth-native-lines-browser-review-clone-v1",
+  "date": "2026-10-15",
+  "command": "npm run ma24:verify-thoth-review-ui-clone",
+  "scope": "Candidate Web, Chrome browser and disposable restored local PostgreSQL clone with a synthetic account",
+  "sourceSha256": "a3fa61e4fb6218994c2a8ca8f9063056ae61dfc406534956b13c09e8424b9798",
+  "candidateBuildId": "oh7Y96aWonmHBhzGiBHqz",
+  "backupSha256": "17db517922f0ee8067391544418f0c8af9f77ee5f48203b938b7559ba528d428",
+  "observed": {
+    "localRestoreAndMigrations127To135": "passed",
+    "migrationRollbackBeforeCommit": "passed",
+    "oldWebLoginAndUploadList": "passed",
+    "candidateWebLoginAndUploadList": "passed",
+    "uploadedPptxStatus": 202,
+    "pendingNativeLineTableCount": 1,
+    "tableBlockId": "slide-1-table-1",
+    "browserFallbackForMissingPreview": true,
+    "browserOriginalDownloadHashMatched": true,
+    "mobile390pxHorizontalOverflow": false,
+    "completionDisabledBeforeReview": true,
+    "browserSavedCorrectedGraphRevision": 1,
+    "browserSavedEvidenceMatchedDatabase": true,
+    "browserCompletedReview": true,
+    "completionRowCount": 1,
+    "v3ReleasePointerUnchanged": true,
+    "temporaryDatabaseRemoved": true,
+    "productionDatabaseChanged": false,
+    "independentGoldCreated": 0,
+    "modelCalls": 0
+  },
+  "checks": {
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "gitDiffCheck": "passed"
+  },
+  "limits": [
+    "The Thoth source was already used for extraction defect development and cannot establish independent G14 Gold.",
+    "The browser completed extraction review in an isolated clone; it did not test candidate Web production deployment or a user-visible model answer with citation.",
+    "The standalone backend clone previously verified registration and corrected evidence read; this browser run did not repeat those checks."
+  ]
+}
