@@ -1,0 +1,45 @@
+{
+  "schema": "ma24-g14-zenodo-lora-reviewed-citation-clone-v1",
+  "date": "2026-10-15",
+  "scope": "Real local upload worker, 38 saved visual judgments, review completion, private tree registration and exact source reads on an isolated PostgreSQL clone; synthetic users and artifacts removed",
+  "verifier": "scripts/verify-lora-pptx-reviewed-citation-clone.ts",
+  "verifierSha256": "04ae7494efc92f526ef3f074ff138b8b2525753d8bcd799ac8716ad1dae27ce8",
+  "proposal": "ma24-g14-zenodo-lora-visual-object-review-2026-10-15.json",
+  "proposalSha256": "8c5f4d489da49aa0809b89bc136ba4852fb129afb007b3de36cab16cb5063bf4",
+  "sourceSha256": "907049721a1359658787a026cbeace9b93be4879b75048b5c5a7debea51dedec",
+  "offlineExtractionSha256": "4a628ae1c4181fccc6474f143881a562f2b8d1932bd90c15a55b3d85370afb61",
+  "cloneBoundary": {
+    "databaseNamePatternChecked": "ma11_replay_[a-f0-9]{12}",
+    "localHostRequired": true,
+    "actualDatabaseIdentityChecked": true,
+    "productionWrites": 0,
+    "syntheticUsersJobsReviewsAndDocumentsRemoved": true,
+    "v3ReleasePointerUnchanged": true
+  },
+  "uploadAndReview": {
+    "workerInputJobs": 1,
+    "workerAwaitingReview": 1,
+    "liveArtifactBlocksMatchOffline": true,
+    "savedDecisions": 38,
+    "evidence": 13,
+    "decoration": 25,
+    "unresolved": 0,
+    "completionReadyForRegistration": true,
+    "privateTreeStatus": "searchable"
+  },
+  "sourceReads": {
+    "blockIds": ["slide-13-text-6", "slide-13-text-3", "slide-13-text-2", "slide-13-text-1", "slide-13-visual-7", "slide-15-text-7", "slide-15-text-13", "slide-15-text-16", "slide-15-visual-3"],
+    "sourceHashSlideBlockIdAndContentChecked": true,
+    "crossAccountReadDenied": true,
+    "documentSearchFound": true
+  },
+  "checks": { "typecheck": "passed", "targetedEslint": "passed" },
+  "calls": { "embedding": 0, "answerModel": 0, "external": 0 },
+  "qualityBoundary": {
+    "goldCreated": 0,
+    "userVisibleAnswerAccepted": false,
+    "completeSourceFamilyAndQuestionExposureAudit": "pending",
+    "frozenTwoPathEvaluation": "pending",
+    "productionCitationAndPilot": "pending"
+  }
+}
