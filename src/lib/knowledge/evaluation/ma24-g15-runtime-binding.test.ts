@@ -56,6 +56,14 @@ describe("MA24 G15 runtime binding", () => {
         .toThrow(`${field} drift`);
     }
   });
+  it("binds the exact paid authorization reference", () => {
+    const frozen = preview();
+    frozen.paidCallAuthorizationReference = "approved-synthetic-reference";
+    const loaded = structuredClone(frozen);
+    loaded.paidCallAuthorizationReference = "other-reference";
+    expect(() => assertMa24G15RuntimeBinding(frozen, loaded, "2026-10-15"))
+      .toThrow("paidCallAuthorizationReference drift");
+  });
   it("rejects changed or missing admission decisions after a preview is frozen", () => {
     for (const field of ["currentLocalBgeFlagEnabled", "sourceSetFrozen", "goldFrozen",
       "runtimeBuildVerified", "transitiveCodeClosureVerified", "providerTariffsVerified",

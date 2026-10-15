@@ -15,6 +15,8 @@ import { assertCurrentMemoryMessages, withCurrentDecisionMemory } from '../../as
 import { claimAndBindMa24EvaluationRun, loadCurrentMa24G15Preview } from './ma24-evaluation-claim';
 import { verifyMa24EvaluationTaskBinding } from './ma24-evaluation-task-binding';
 import { assertMa24G15RuntimeBinding } from './ma24-g15-runtime-binding';
+import { verifyMa24EvaluationHardLimit } from './ma24-g15-hard-limit-binding';
+import { ma24ManifestSha256 } from './ma24-independent-comparison';
 
 type EvaluationInput = Parameters<typeof claimAndBindMa24EvaluationRun>[0];
 
@@ -41,7 +43,10 @@ export async function executeMa24EvaluationRun(input: EvaluationInput) {
   const entry = input.manifest.cases.find(item => item.caseId === input.caseId);
   if (!entry) throw new Error('MA24 evaluation case absent from frozen manifest');
   assertMa24EvaluationSpendBoundary(entry.userId, input.runId);
-  assertMa24EvaluationModelReady(); // Before a lease or any provider request.
+  const initialPreview = assertMa24EvaluationModelReady(); // Before a lease or any provider request.
+  const manifestSha256 = ma24ManifestSha256(input.manifest);
+  await verifyMa24EvaluationHardLimit({ userId: entry.userId, runId: input.runId,
+    manifestSha256, preview: initialPreview });
   const admitted = await claimAndBindMa24EvaluationRun(input);
   const context: ExecutionContext = { userId: admitted.userId, runId: admitted.id,
     leaseToken: admitted.lease_token, role: 'member', mode: 'standard',
@@ -49,6 +54,8 @@ export async function executeMa24EvaluationRun(input: EvaluationInput) {
   const revalidate = async () => {
     assertMa24EvaluationSpendBoundary(admitted.userId, admitted.id);
     const loadedCodeAndConfig = assertMa24EvaluationModelReady();
+    await verifyMa24EvaluationHardLimit({ userId: admitted.userId, runId: admitted.id,
+      manifestSha256, preview: loadedCodeAndConfig });
     await verifyMa24EvaluationTaskBinding({ ...input,
       leaseToken: admitted.lease_token, loadedCodeAndConfig,
       nowUtcDate: new Date().toISOString().slice(0, 10),

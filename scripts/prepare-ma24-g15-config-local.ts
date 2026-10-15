@@ -74,6 +74,7 @@ const sourceFiles=[
  'src/lib/knowledge/evaluation/ma24-evaluation-task-binding.ts',
  'src/lib/knowledge/evaluation/ma24-independent-comparison.ts',
  'src/lib/knowledge/evaluation/ma24-g15-runtime-binding.ts',
+ 'src/lib/knowledge/evaluation/ma24-g15-hard-limit-binding.ts',
  'src/lib/knowledge/evaluation/ma24-persisted-run-binding.ts',
  'src/lib/knowledge/evaluation/ma24-citation-evidence.ts',
  'scripts/score-ma24-independent-comparison.ts',
@@ -82,6 +83,7 @@ const sourceFiles=[
  'db/migrations/137_ma24_explicit_evaluation_claim.sql',
  'db/migrations/138_ma24_evaluation_claim_owner.sql',
  'db/migrations/139_ma24_evaluation_hard_limits.sql',
+ 'db/migrations/140_ma24_evaluation_hard_limit_binding.sql',
 ];
 const sourceHashes=await ma24LocalSourceClosure(process.cwd(),sourceFiles);
 for(const required of [
@@ -109,6 +111,7 @@ console.log(JSON.stringify({schema:'ma24-g15-config-preview-v1',readOnly:true,si
   requiredRunPromptDateUtc:promptDateUtc,runPromptDateGateImplemented:false,
   baselineRetrievalProfileVerified:false,
   providerTariffsVerified:false,paidCallAuthorizationConfirmed:false,
+  paidCallAuthorizationReference:null,
   maximumProviderRequests:null,maximumRequestBytes:null,maximumOutputTokens:null,
   hardSpendCapUsd:null,readyForPaidEvaluation:false,
   missing:['approved independent source and question set','coordinate-checked Gold hash',

@@ -14,6 +14,7 @@ export type Ma24G15Preview = {
   sourceSetFrozen: boolean; goldFrozen: boolean; runtimeBuildVerified: boolean;
   transitiveCodeClosureVerified: boolean; providerTariffsVerified: boolean;
   paidCallAuthorizationConfirmed: boolean; readyForPaidEvaluation: boolean;
+  paidCallAuthorizationReference?: string | null;
   maximumProviderRequests?: number | null; maximumRequestBytes?: number | null;
   maximumOutputTokens?: number | null; hardSpendCapUsd?: number | null;
 };
@@ -40,7 +41,7 @@ export function assertMa24G15RuntimeBinding(frozen: Ma24G15Preview,
     "modelFunctionsSha256", "intendedLocalBgeFlagForBothArms", "sourceClosureMethod"] as const)
     if (!Object.is(frozen[field], loaded[field])) throw new Error(`MA24 G15 ${field} drift`);
   for (const field of ["maximumProviderRequests", "maximumRequestBytes",
-    "maximumOutputTokens", "hardSpendCapUsd"] as const)
+    "maximumOutputTokens", "hardSpendCapUsd", "paidCallAuthorizationReference"] as const)
     if (!Object.is(frozen[field], loaded[field])) throw new Error(`MA24 G15 ${field} drift`);
   for (const field of ["currentLocalBgeFlagEnabled", "sourceSetFrozen", "goldFrozen",
     "runtimeBuildVerified", "transitiveCodeClosureVerified", "providerTariffsVerified",
@@ -62,6 +63,7 @@ export function assertMa24G15RuntimeBinding(frozen: Ma24G15Preview,
     ...(!loaded.transitiveCodeClosureVerified ? ["transitive code closure not verified"] : []),
     ...(!loaded.providerTariffsVerified ? ["provider tariffs not verified"] : []),
     ...(!loaded.paidCallAuthorizationConfirmed ? ["paid call authorization not confirmed"] : []),
+    ...(!loaded.paidCallAuthorizationReference?.trim() ? ["paid call authorization reference missing"] : []),
     ...(!positiveSafeInteger(loaded.maximumProviderRequests) ? ["maximum provider requests not fixed"] : []),
     ...(!positiveSafeInteger(loaded.maximumRequestBytes) ? ["maximum request bytes not fixed"] : []),
     ...(!positiveSafeInteger(loaded.maximumOutputTokens) ? ["maximum output tokens not fixed"] : []),

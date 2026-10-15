@@ -7,6 +7,7 @@ const mocks = vi.hoisted(() => ({
   boundary: vi.fn(), finish: vi.fn(), buildGraph: vi.fn(), model: vi.fn(),
   spend: vi.fn(), pool: vi.fn(), memory: vi.fn(), availableTools: vi.fn(),
   spendContext: vi.fn(), financialOverride: vi.fn(),
+  hardLimit: vi.fn(),
   dispatch: vi.fn(), skillGuard: vi.fn(), memoryGuard: vi.fn(), knowledgeGuard: vi.fn(),
 }));
 vi.mock('@langchain/langgraph-checkpoint-postgres', () => ({
@@ -47,6 +48,9 @@ vi.mock('./ma24-evaluation-task-binding', () => ({
 vi.mock('./ma24-g15-runtime-binding', () => ({
   assertMa24G15RuntimeBinding: mocks.binding,
 }));
+vi.mock('./ma24-g15-hard-limit-binding', () => ({
+  verifyMa24EvaluationHardLimit: mocks.hardLimit,
+}));
 
 import { executeMa24EvaluationRun } from './ma24-evaluation-runner';
 
@@ -73,6 +77,7 @@ beforeEach(() => {
     userId, caseId: 'case-1', arm: 'baseline', query: task.input.content,
     knowledgeScope: ['product'] });
   mocks.verify.mockResolvedValue({ userId, caseId: 'case-1' });
+  mocks.hardLimit.mockResolvedValue({});
   mocks.boundary.mockResolvedValue(task);
   mocks.memory.mockResolvedValue([]);
   mocks.model.mockResolvedValue({ role: 'assistant', content: 'Synthetic answer' });
@@ -87,6 +92,7 @@ it('rejects stage financial bypass or inherited tariff overrides before claiming
   await expect(executeMa24EvaluationRun(input))
     .rejects.toThrow('MA24 evaluation financial override unavailable');
   expect(mocks.claim).not.toHaveBeenCalled();
+  expect(mocks.hardLimit).not.toHaveBeenCalled();
   mocks.spendContext.mockReturnValue({ tariffPolicy: { version: 'unfrozen', rules: [] } });
   await expect(executeMa24EvaluationRun(input))
     .rejects.toThrow('MA24 evaluation financial override unavailable');
@@ -142,6 +148,14 @@ it('refuses an unready paid evaluation before claiming a persisted task', async 
   expect(mocks.claim).not.toHaveBeenCalled();
 });
 
+it('refuses a missing or mismatched durable hard limit before claiming', async () => {
+  mocks.hardLimit.mockRejectedValueOnce(new Error('MA24 authorized hard limit missing'));
+  await expect(executeMa24EvaluationRun(input))
+    .rejects.toThrow('MA24 authorized hard limit missing');
+  expect(mocks.claim).not.toHaveBeenCalled();
+  expect(mocks.model).not.toHaveBeenCalled();
+});
+
 it('passes only the question into the shared graph and settles a synthetic completion', async () => {
   mocks.buildGraph.mockImplementation((deps: MainGraphDependencies) => ({
     getState: async () => ({ values: {} }),
@@ -158,6 +172,7 @@ it('passes only the question into the shared graph and settles a synthetic compl
   }));
   await expect(executeMa24EvaluationRun(input)).resolves.toEqual({ status: 'completed', runId });
   expect(mocks.spend).toHaveBeenCalledWith(userId, runId, expect.any(Function));
+  expect(mocks.hardLimit.mock.calls.length).toBeGreaterThan(2);
   expect(mocks.model).toHaveBeenCalledOnce();
   expect(mocks.verify.mock.calls.length).toBeGreaterThan(2);
   expect(mocks.finish).toHaveBeenCalledWith(expect.objectContaining({

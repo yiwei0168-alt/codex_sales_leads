@@ -1,0 +1,33 @@
+{
+  "schema": "ma24-g15-authorized-cap-readback-v1",
+  "date": "2026-10-16",
+  "scope": "G15 paid evaluation admission binding for the G16 dedicated runner; no provider calls",
+  "migration": "db/migrations/140_ma24_evaluation_hard_limit_binding.sql",
+  "behavior": [
+    "The restricted application role can read only the hard-limit row tied to its own queued or active evaluation run and exact frozen manifest hash.",
+    "The maximum request count, request bytes, output tokens, reserved micro-USD and authorization reference are compared with the frozen G15 preview before claiming and during runner revalidation.",
+    "An authorized hard-limit row cannot change its ceilings or authorization identity after creation; use counters cannot decrease."
+  ],
+  "checks": {
+    "focusedVitest": "22 passed across hard-limit binding, G15 runtime binding and evaluation runner",
+    "typescriptNoEmit": "passed",
+    "focusedEslint": "passed",
+    "isolatedPostgresClone": "ma11_replay_7d98e095133b",
+    "cloneResults": [
+      "owner-bound readback passed under restricted application role",
+      "cross-account read rejected",
+      "inactive run returned no cap",
+      "frozen ceiling edit rejected",
+      "valid reservation continued to increase counters after immutability guard",
+      "migration and synthetic rows rolled back"
+    ],
+    "providerCalls": 0,
+    "realDualArmRuns": 0
+  },
+  "previewPath": "docs/evidence/ma24-g15-config-preview-2026-10-16-v18.json",
+  "previewSha256": "6633e3ba891d753bfbd3edc94a7aee999ec334abad2292061f66a7ea0455ad37",
+  "previewSourceClosureFiles": 297,
+  "previewBinding": "matched; readyForModelCalls=false; v17 rejected for missing paidCallAuthorizationReference binding",
+  "remaining": "No authorized cap row exists. Independent source/Gold freeze, actual runtime build closure, tariff and payment authorization preflight and G16 real dual-arm quality review remain incomplete.",
+  "g17ToG20Advanced": false
+}

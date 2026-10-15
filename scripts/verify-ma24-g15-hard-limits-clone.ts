@@ -95,10 +95,36 @@ try {
   checks.push(await denied("unknown-cost-rejected", () => reservation(0, 1, 1, 1, false)));
   await client.query("update agent_run set status='failed' where id=$1", [runs[0]]);
   checks.push(await denied("inactive-run-rejected", () => reservation(0, 1, 1, 1)));
+  await client.query(await readFile("db/migrations/140_ma24_evaluation_hard_limit_binding.sql", "utf8"));
+  checks.push(await denied("frozen-cap-edit-rejected", () => client.query(
+    "update ma24_evaluation_hard_limit set maximum_provider_requests=11 where manifest_sha256=$1",
+    [manifest])));
+  await client.query('set local role "network_copilot_app"');
+  await client.query("select set_config('app.current_user_id',$1,true)", [owners[1]]);
+  const own = (await client.query<{ maximum_provider_requests: string;
+    authorization_reference: string }>(
+    "select * from read_ma24_evaluation_hard_limit($1::uuid,$2::uuid,$3::text)",
+    [owners[1], runs[1], manifest])).rows[0];
+  assert.equal(own?.maximum_provider_requests, "10");
+  assert.equal(own?.authorization_reference, "synthetic-clone-only");
+  checks.push(await denied("cross-account-reader-rejected", () => client.query(
+    "select * from read_ma24_evaluation_hard_limit($1::uuid,$2::uuid,$3::text)",
+    [owners[0], runs[0], manifest])));
+  await client.query("reset role");
+  await client.query('set local role "network_copilot_app"');
+  await client.query("select set_config('app.current_user_id',$1,true)", [owners[0]]);
+  const inactive = (await client.query(
+    "select * from read_ma24_evaluation_hard_limit($1::uuid,$2::uuid,$3::text)",
+    [owners[0], runs[0], manifest])).rows;
+  assert.equal(inactive.length, 0);
+  await client.query("reset role");
+  checks.push("owner-bound-reader-and-immutable-ceiling");
+  await appReservation(1, 1, 1, 1, "knowledge-search");
+  checks.push("reservation-counters-increase-after-immutability-guard");
   const after = (await client.query<{ count: string }>(
     "select count(*)::text as count from paid_call_reservation where operation_id=any($1::text[])",
     [runs])).rows[0]?.count;
-  assert.equal(after, "2", "Failed admissions inserted reservations");
+  assert.equal(after, "3", "Failed admissions inserted reservations");
   await client.query("rollback"); opened = false;
   const remains = (await client.query<{ limit_table: string | null; owners: string }>(
     `select to_regclass('public.ma24_evaluation_hard_limit')::text as limit_table,
