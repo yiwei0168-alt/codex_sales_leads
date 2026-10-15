@@ -1,0 +1,60 @@
+{
+  "schema": "ma24-g14-ntia-18ghz-visual-review-clone-v1",
+  "date": "2026-10-15",
+  "stage": "G05/G14 isolated PDF upload, visual review, private registration and source-coordinate read",
+  "sourceReceipt": "docs/evidence/ma24-g14-ntia-18ghz-pdf-candidate-2026-10-15.json",
+  "sourceSha256": "ff6074c82f7c6abbab80a792ad3d1fae111074f64a492395d2c3c7b78f0c8e42",
+  "offlineExtractionArtifactSha256": "176c8b774435f757bd12894125123db39cc80831dcf764dacf9518be33d31e1d",
+  "visualPackageReviewJsonSha256": "e9582cce44fbbe3dd4817a11610f62d0520a4cab75f8d0b66858195991bb46db",
+  "visualDecisionManifestSha256": "0c3a323a23bd0b5017bcad4869b1fef18e65213b0f44a29dd935cf475469ab2e",
+  "originalPageReview": {
+    "physicalPagesInspected": [1, 2, 3, 4, 5, 6, 7, 8, 9],
+    "page2Blank": true,
+    "page7And8Table1RetainedAsEvidence": true,
+    "page1And3LogosAndPage4To6And9TextOnlyVisualLayersExcluded": true,
+    "proposalBoundary": "Table 1 shows proposed allocation changes, not an enacted rule."
+  },
+  "productClone": {
+    "database": "isolated MA11 replay clone",
+    "extractorVersion": "layout-v2.0.10",
+    "offlineAndUploadedBlocksDeepEqualAfterJobStorageKeyNormalization": true,
+    "productArtifactSha256FinalRun": "78912a357c6ccbddbdadd0f59100f62b41ad27cafefe4b1724e26f253273d22c",
+    "allNineCandidatePngHashesMatchedOfflineOriginalPageRenders": true,
+    "initialPendingVisualPages": 9,
+    "prematureReviewCompletionRejected": true,
+    "decisionsSavedAndReadBack": 9,
+    "evidenceDecisions": 2,
+    "decorationDecisions": 7,
+    "unresolvedDecisions": 0,
+    "reviewCompleted": true,
+    "registeredPrivately": true
+  },
+  "sourceCoordinateChecks": {
+    "readEvidenceBlockIds": [
+      "page-7-visual-review",
+      "page-8-block-29",
+      "page-8-visual-review",
+      "page-9-block-7"
+    ],
+    "originalPageBlockIdAndBoundingBoxMatched": true,
+    "page8G117AndIssDistinctionPresent": true,
+    "page9RecommendationPhrasesPresent": true,
+    "otherAccountReadDenied": true,
+    "releasePointersUnchanged": true
+  },
+  "isolation": {
+    "syntheticRowsAndFilesCleaned": true,
+    "modelCalls": 0,
+    "productionKnowledgeWrites": 0,
+    "productionDeployment": false
+  },
+  "acceptanceBoundary": {
+    "sourceFamilyAndFullSetExposureAuditComplete": false,
+    "sourceUseFinalApproval": false,
+    "independentGoldApproved": false,
+    "productVisibleModelAnswerAndCitationChecked": false,
+    "productionRuntimeChecked": false,
+    "g17ToG20Advanced": false,
+    "note": "The earlier candidate receipt records the pre-review state. This clone establishes local engineering behavior only; no independent quality or production acceptance is claimed."
+  }
+}
