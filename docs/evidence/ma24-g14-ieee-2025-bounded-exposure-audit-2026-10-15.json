@@ -41,5 +41,9 @@
   "approvedIndependentSources": 0,
   "goldCreated": 0,
   "modelAnswerCalls": 0,
-  "productionKnowledgeWrites": 0
+  "productionKnowledgeWrites": 0,
+  "retainedLocalRolloutFollowup": [
+    "ma24-g14-ieee-2025-local-rollout-exposure-2026-10-16.json",
+    "ma24-g14-ieee-sd4addr-local-rollout-exposure-2026-10-16.json"
+  ]
 }

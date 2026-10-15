@@ -1,0 +1,43 @@
+{
+  "schema": "ma24-g14-ieee-sd4addr-local-rollout-exposure-v1",
+  "date": "2026-10-16",
+  "sourceFamily": "IEEE 802.11 Automotive TIG SD4ADDR, July 2025 presentation",
+  "sourceSha256": "786e8324f221fb8d4e854e88515020b61079acb2f50d56e535441e10efbd92c2",
+  "firstGitRegistration": "d9b46dc9 at 2026-10-14T10:22:42Z",
+  "privateScript": "tmp/ma24-independent-quarantine/audit-ieee-sd4addr-rollout-exposure.py",
+  "privateScriptSha256": "a4e7021364ede40a570d4c8d0292be4bca567ff9d252fe6b5d98f03ab8bef9ce",
+  "scope": {
+    "retainedLocalCodexRolloutFiles": 116,
+    "jsonlRecords": 174404,
+    "caseInsensitiveExactPatterns": [
+      "sd4addr",
+      "0x08af",
+      "aveiro tech city living lab",
+      "ieee-auto-sd4addr-2025.pptx",
+      "ieee-auto-sd4addr-implementation",
+      "ieee-auto-sd4addr-forwarding-time",
+      "786e8324f221fb8d4e854e88515020b61079acb2f50d56e535441e10efbd92c2"
+    ],
+    "malformedTimestampAmongMatchingRecords": 0
+  },
+  "observation": {
+    "firstMatchingRecordUtc": "2026-10-14T10:17:12.236Z",
+    "firstSourceFilePathUtc": "2026-10-14T10:17:32.089Z",
+    "firstAnswerTermUtc": "2026-10-14T10:19:00.564Z",
+    "firstCandidateQuestionIdUtc": "2026-10-14T10:21:37.364Z",
+    "lastPreRegistrationMatchUtc": "2026-10-14T10:22:36.519Z",
+    "uniqueMatchingRecordsBeforeRegistration": 72,
+    "uniqueMatchingRecordsAfterRegistration": 1090,
+    "interpretation": "The earliest retained match is the public IEEE presentation index entry. The next matches concern the source URL, private download, parsing and draft-question preparation in the same roughly five-minute pre-registration window. No selected pattern matched earlier in retained local rollouts."
+  },
+  "relationshipToPriorAudit": "Extends ma24-g14-ieee-2025-bounded-exposure-audit-2026-10-15.json from Git/project text screening to retained local Codex rollout JSONL records. It does not revise that audit's product-asset and historical-Gold counts.",
+  "limits": [
+    "A line or event may repeat earlier tool text; record counts are not distinct exposure events.",
+    "The broad string SD4ADDR was inspected at its first match, but absence of an earlier local match cannot establish semantic independence.",
+    "Unrecorded or deleted prompts, binary derivatives, remote systems and provider-side knowledge were not examined.",
+    "Presentation-use preference, question-answer review, source-family decision and full-set contamination review remain open. This receipt does not freeze independent Gold."
+  ],
+  "independentGoldApproved": false,
+  "realDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}
