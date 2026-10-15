@@ -82,8 +82,16 @@ try {
   const livePath = resolve(jobRow.extraction_artifact_key);
   assert(livePath.startsWith(ownerRoot + sep));
   const liveArtifact = JSON.parse(await readFile(livePath, "utf8"));
-  assert.equal(liveArtifact.extractorVersion, offlineArtifact.extractorVersion);
-  assert.deepEqual(liveArtifact.documents[0].blocks, offlineArtifact.documents[0].blocks);
+  assert.equal(liveArtifact.extractorVersion, "layout-v2.0.10");
+  assert.equal(offlineArtifact.extractorVersion, "layout-v2.0.9");
+  const withoutExtractorVersion = (blocks: Array<Record<string, unknown>>) => blocks.map(block => {
+    const content = { ...block };
+    delete content.extractorVersion;
+    return content;
+  });
+  assert.deepEqual(withoutExtractorVersion(liveArtifact.documents[0].blocks),
+    withoutExtractorVersion(offlineArtifact.documents[0].blocks));
+  assert.deepEqual(liveArtifact.documents[0].qualitySummary, offlineArtifact.documents[0].qualitySummary);
   const first = await getExtractionReview(owner, job.id);
   assert.equal(first.total, 145);
   const ids: string[] = [];
@@ -116,6 +124,7 @@ try {
     { id: "slide-28-text-5", slide: 28, phrase: "machine-readable" },
     { id: "slide-28-text-6", slide: 28, phrase: "reshare" },
     { id: "slide-11-visual-2", slide: 11, phrase: "greater visibility" },
+    { id: "slide-30-text-2", slide: 30, phrase: "is ideally created during the project planning and continued during the entire project period" },
     { id: "slide-22-visual-2", slide: 22, phrase: "Open Access only" },
     { id: "slide-22-visual-10", slide: 22, phrase: "freely available" },
     { id: "slide-30-visual-5", slide: 30, phrase: "who may use" },

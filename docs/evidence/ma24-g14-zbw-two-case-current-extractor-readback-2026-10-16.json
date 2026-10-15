@@ -1,0 +1,32 @@
+{
+  "schema": "ma24-g14-zbw-two-case-current-extractor-readback-v1",
+  "date": "2026-10-16",
+  "sourceSha256": "595df78e84768ec588a9d638366c69064c63139bdb43fea3445500ac7fd63bde",
+  "originalSlidesReinspected": [11, 30],
+  "originalSlideRenderSha256s": {
+    "11": "85efef17af325cb6baf464f7980c21f53a89f8b97159c53b1631b4a1496fe0e5",
+    "30": "03bc5775e5517c8a59952571e18b3d34964cc8874d0e329e02cc08334eec2b24"
+  },
+  "privateDrafts": [
+    { "caseId": "zbw-2025-open-science-five-individual-benefits", "path": "tmp/ma24-independent-quarantine/zbw-slide-11-benefits-gold-draft-v1.json", "sha256": "541b3d26371274b2c3f6c122141b881feef12a8dc9c7e0a1309445306a37bb71", "sourceBlocks": ["slide-11-visual-2"] },
+    { "caseId": "zbw-2025-dmp-lifecycle-and-access-questions", "path": "tmp/ma24-independent-quarantine/zbw-slide-30-dmp-gold-draft-v1.json", "sha256": "f1028f2078c3fdbe5d797b0fe800c88604c5292d6bcb742e105402664b39ebb8", "sourceBlocks": ["slide-30-text-2", "slide-30-visual-5"] }
+  ],
+  "privateReviewPacket": { "path": "tmp/ma24-independent-quarantine/zbw-two-case-review-packet-2026-10-16.md", "sha256": "0e89d08e22dfa296707b51156ce045131a6b2ddc4858d4db8b93e45375369076" },
+  "draftJsonAndThreeExcerptCoordinatesChecked": true,
+  "oldOfflineExtraction": { "version": "layout-v2.0.9", "sha256": "778e65d60e8f54cfc4002e542d458ab5e4ba238638c8bd7f295a318362489c6f" },
+  "currentCloneExtraction": { "version": "layout-v2.0.10", "all145BlocksEqualAfterRemovingOnlyExtractorVersion": true, "qualitySummaryEqual": true },
+  "isolatedProduct": {
+    "visualDecisionsSaved": 145,
+    "evidence": 4,
+    "decoration": 141,
+    "treeStatus": "searchable",
+    "threeDraftBlocksReadBackWithSourceHashPageAndContent": true,
+    "crossAccountDenied": true,
+    "syntheticDatabaseAndUploadResidue": 0,
+    "modelCalls": 0,
+    "externalCalls": 0,
+    "productionWrites": 0
+  },
+  "sourceUnit": "One ZBW Open Economics Guide 2025 teaching-slide publication family for all three provisional ZBW cases",
+  "acceptanceBoundary": "Two private drafts remain pending content review and family-level disposition. No independent Gold approval, user-visible model answer/citation acceptance, whole-set freeze, G15 admission or G16 dual-arm run. G17-G20 paused."
+}
