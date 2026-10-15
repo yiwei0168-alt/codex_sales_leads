@@ -1,0 +1,25 @@
+{
+  "schema": "ma24-g14-fcc-706-question-review-readiness-v1",
+  "date": "2026-10-15",
+  "caseId": "fcc-706-2026-school-entity-vs-student-denominator",
+  "reviewPacket": "docs/MA24_G14_FCC_706_LONG_REPORT_REVIEW_PACKET_2026-10-15.md",
+  "sourceSha256": "805e0e5b954775059ad535ae650c955935758a88f2a20ec0e6554e77f0e61154",
+  "originalSizeCheckedPages": [27, 28],
+  "answerCoordinates": ["page-27-block-3", "page-28-block-3", "page-28-block-5", "page-28-visual-review"],
+  "candidateAnswer": {
+    "2024EntityPercentApproximately": 78,
+    "2024Threshold": "1 Gbps per 1,000 students",
+    "2025StudentPercent": 52,
+    "2025Threshold": "1 Mbps per student",
+    "limitation": "Different years, counted populations, thresholds and methods; no same-population change from subtraction."
+  },
+  "connectedFCCPublicationUnit": true,
+  "separateIndependentSourceUnitAdded": false,
+  "isolatedProductReviewReceipt": "docs/evidence/ma24-g14-fcc-706-isolated-product-review-2026-10-15.json",
+  "userCaseDecisionReceived": false,
+  "privateGoldApprovedByThisReceipt": false,
+  "fullG14Frozen": false,
+  "g15ReadyForPaidCalls": false,
+  "realDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}
