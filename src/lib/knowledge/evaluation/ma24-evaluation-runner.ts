@@ -6,7 +6,7 @@ import { digest, type ExecutionContext, type ModelMessage } from '../../assistan
 import { buildMainAgentGraph, durableModel, MainAgentState } from '../../assistant/main/graph';
 import { initialTaskMessages } from '../../assistant/main/initial-task-messages';
 import { dispatchTool } from '../../assistant/main/executor';
-import { boundary, finishRun } from '../../assistant/main/repository';
+import { boundary, finishRun, heartbeat } from '../../assistant/main/repository';
 import { modeModelConfig } from '../../assistant/main/mode-config';
 import { loadDecisionMemory } from '../../assistant/main/memory-context';
 import { assertCurrentKnowledgeMessages } from '../../assistant/main/knowledge-message-guard';
@@ -19,6 +19,26 @@ import { verifyMa24EvaluationHardLimit } from './ma24-g15-hard-limit-binding';
 import { ma24ManifestSha256 } from './ma24-independent-comparison';
 
 type EvaluationInput = Parameters<typeof claimAndBindMa24EvaluationRun>[0];
+
+/** Keep the explicit worker's 90-second lease alive during a long provider call. */
+export function startMa24EvaluationHeartbeat(context: ExecutionContext,
+  renew: typeof heartbeat = heartbeat, intervalMs = 20_000) {
+  let failure: Error | null = null;
+  let pending = Promise.resolve();
+  const timer = setInterval(() => {
+    if (failure) return;
+    pending = pending.then(async () => {
+      if (!await renew(context)) throw new Error('MA24 evaluation lease lost');
+    }).catch(error => {
+      failure ??= error instanceof Error ? error : new Error('MA24 evaluation heartbeat failed');
+    });
+  }, intervalMs);
+  timer.unref();
+  return {
+    assertHealthy() { if (failure) throw failure; },
+    async stop() { clearInterval(timer); await pending; },
+  };
+}
 
 /** MA24 evaluation must use the frozen, reviewed financial path rather than a stage bypass. */
 export function assertMa24EvaluationSpendBoundary(userId: string, runId: string) {
@@ -48,7 +68,9 @@ export async function executeMa24EvaluationRun(input: EvaluationInput) {
   const context: ExecutionContext = { userId: admitted.userId, runId: admitted.id,
     leaseToken: admitted.lease_token, role: 'member', mode: 'standard',
     knowledgeScope: admitted.knowledgeScope, evaluationArm: admitted.arm };
+  const lease = startMa24EvaluationHeartbeat(context);
   const revalidate = async () => {
+    lease.assertHealthy();
     assertMa24EvaluationSpendBoundary(admitted.userId, admitted.id);
     const loadedCodeAndConfig = assertMa24EvaluationModelReady();
     await verifyMa24EvaluationHardLimit({ userId: admitted.userId, runId: admitted.id,
@@ -97,13 +119,18 @@ export async function executeMa24EvaluationRun(input: EvaluationInput) {
     const final = await withMa24EvaluationSpend(context.userId, context.runId,
       () => graph.invoke(initial, config));
     if (final.status !== 'completed') {
+      await lease.stop();
+      lease.assertHealthy();
       await finishRun(context, 'failed', 'MA24 evaluation execution did not complete');
       return { status: 'failed' as const, runId: context.runId };
     }
     await validateEvidence(final.messages);
+    await lease.stop();
+    lease.assertHealthy();
     await finishRun(context, 'completed', final.reply);
     return { status: 'completed' as const, runId: context.runId };
   } catch (error) {
+    await lease.stop();
     try { await finishRun(context, 'failed', 'MA24 evaluation execution failed'); }
     catch (settlementError) {
       throw new AggregateError([error, settlementError],

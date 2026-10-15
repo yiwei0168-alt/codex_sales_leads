@@ -25,7 +25,7 @@ const { claimMa24EvaluationRun, claimAndBindMa24EvaluationRun,
   loadCurrentMa24G15Preview } = await import(
   "../src/lib/knowledge/evaluation/ma24-evaluation-claim");
 const { getPool } = await import("../src/lib/rag/db");
-const { finishRun } = await import("../src/lib/assistant/main/repository");
+const { finishRun, heartbeat } = await import("../src/lib/assistant/main/repository");
 const { executeRegisteredTool } = await import("../src/lib/assistant/main/tool-execution");
 const { productTools } = await import("../src/lib/assistant/main/tools");
 const { modeModelConfig } = await import("../src/lib/assistant/main/mode-config");
@@ -108,8 +108,16 @@ try {
   assert(first && first.id === evaluationId && first.user_id === userId &&
     /^[0-9a-f-]{36}$/.test(first.lease_token), "Explicit evaluation claim failed");
   assert.equal(await claim(evaluationId), null, "Evaluation task claimed twice");
+  const leaseContext = { userId, runId: evaluationId,
+    leaseToken: first.lease_token, role: "member" as const };
+  assert.equal(await heartbeat(leaseContext), true, "Explicit evaluation lease did not renew");
+  const renewed = (await admin.query<{ valid: boolean }>(
+    "select lease_until > now()+interval '80 seconds' as valid from agent_run where id=$1",
+    [evaluationId])).rows[0];
+  assert.equal(renewed?.valid, true, "Explicit evaluation lease renewal was not persisted");
   await admin.query(`update agent_run set lease_until=now()-interval '1 second'
     where id=$1 and user_id=$2`, [evaluationId, userId]);
+  assert.equal(await heartbeat(leaseContext), false, "Expired evaluation lease renewed");
   assert.equal(await claim(evaluationId), null, "Expired evaluation lease was reclaimed");
   const saved = (await admin.query<{ status: string; lease_token: string }>(
     "select status,lease_token from agent_run where id=$1 and user_id=$2", [evaluationId, userId])).rows[0];
@@ -359,7 +367,9 @@ try {
 }
 if (verified) console.log(JSON.stringify({ schema: "ma24-g16-explicit-claim-clone-v1",
   checks: ["explicit-id-and-owner", "ordinary-rejected", "malformed-rejected",
-    "blank-worker-rejected", "duplicate-claim-rejected", "expired-lease-not-reclaimed",
+    "blank-worker-rejected", "duplicate-claim-rejected",
+    "lease-heartbeat-persisted", "expired-lease-heartbeat-rejected",
+    "expired-lease-not-reclaimed",
     "app-role-grant", "claimed-row-bound-to-frozen-input",
     "snapshot-drift-rejected-before-claim", "live-corpus-drift-rejected-before-claim",
     "invalid-source-and-gold-rejected-before-claim",

@@ -5,6 +5,7 @@ import type { ModelMessage } from '../../assistant/main/contracts';
 const mocks = vi.hoisted(() => ({
   preview: vi.fn(), claim: vi.fn(), binding: vi.fn(), verify: vi.fn(),
   boundary: vi.fn(), finish: vi.fn(), buildGraph: vi.fn(), model: vi.fn(),
+  heartbeat: vi.fn(),
   spend: vi.fn(), pool: vi.fn(), memory: vi.fn(), availableTools: vi.fn(),
   spendContext: vi.fn(), financialOverride: vi.fn(),
   hardLimit: vi.fn(),
@@ -25,7 +26,7 @@ vi.mock('../../assistant/main/graph', () => ({
 vi.mock('../../assistant/main/tools', () => ({ availableTools: mocks.availableTools }));
 vi.mock('../../assistant/main/executor', () => ({ dispatchTool: mocks.dispatch }));
 vi.mock('../../assistant/main/repository', () => ({
-  boundary: mocks.boundary, finishRun: mocks.finish,
+  boundary: mocks.boundary, finishRun: mocks.finish, heartbeat: mocks.heartbeat,
 }));
 vi.mock('../../assistant/main/memory-context', () => ({ loadDecisionMemory: mocks.memory }));
 vi.mock('../../assistant/main/knowledge-message-guard', () => ({
@@ -52,7 +53,7 @@ vi.mock('./ma24-g15-hard-limit-binding', () => ({
   verifyMa24EvaluationHardLimit: mocks.hardLimit,
 }));
 
-import { executeMa24EvaluationRun } from './ma24-evaluation-runner';
+import { executeMa24EvaluationRun, startMa24EvaluationHeartbeat } from './ma24-evaluation-runner';
 
 const userId = '11111111-1111-4111-8111-111111111111';
 const runId = '22222222-2222-4222-8222-222222222222';
@@ -78,12 +79,57 @@ beforeEach(() => {
   mocks.verify.mockResolvedValue({ userId, caseId: 'case-1' });
   mocks.hardLimit.mockResolvedValue({});
   mocks.boundary.mockResolvedValue(task);
+  mocks.heartbeat.mockResolvedValue(true);
   mocks.memory.mockResolvedValue([]);
   mocks.model.mockResolvedValue({ role: 'assistant', content: 'Synthetic answer' });
   mocks.availableTools.mockReturnValue([]);
   mocks.spend.mockImplementation((_userId: string, _stage: string, run: () => Promise<unknown>) => run());
   mocks.spendContext.mockReturnValue(undefined);
   mocks.financialOverride.mockReturnValue(null);
+});
+
+it('renews a long evaluation lease and stops renewing after settlement', async () => {
+  vi.useFakeTimers();
+  try {
+    const lease = startMa24EvaluationHeartbeat({ userId, runId, leaseToken,
+      role: 'member' }, mocks.heartbeat);
+    await vi.advanceTimersByTimeAsync(60_000);
+    expect(mocks.heartbeat).toHaveBeenCalledTimes(3);
+    lease.assertHealthy();
+    await lease.stop();
+    await vi.advanceTimersByTimeAsync(40_000);
+    expect(mocks.heartbeat).toHaveBeenCalledTimes(3);
+  } finally { vi.useRealTimers(); }
+});
+
+it('records lost lease and rejects further evaluation boundaries', async () => {
+  vi.useFakeTimers();
+  try {
+    mocks.heartbeat.mockResolvedValue(false);
+    const lease = startMa24EvaluationHeartbeat({ userId, runId, leaseToken,
+      role: 'member' }, mocks.heartbeat);
+    await vi.advanceTimersByTimeAsync(20_000);
+    expect(() => lease.assertHealthy()).toThrow('MA24 evaluation lease lost');
+    await lease.stop();
+  } finally { vi.useRealTimers(); }
+});
+
+it('renews the lease while a synthetic provider call lasts beyond 90 seconds', async () => {
+  vi.useFakeTimers();
+  try {
+    mocks.buildGraph.mockReturnValue({
+      getState: async () => ({ values: {} }),
+      invoke: async () => {
+        await vi.advanceTimersByTimeAsync(100_000);
+        return { status: 'completed', reply: 'Synthetic answer', messages: [] };
+      },
+    });
+    await expect(executeMa24EvaluationRun(input))
+      .resolves.toEqual({ status: 'completed', runId });
+    expect(mocks.heartbeat).toHaveBeenCalledTimes(5);
+    expect(mocks.finish).toHaveBeenCalledWith(expect.any(Object), 'completed',
+      'Synthetic answer');
+  } finally { vi.useRealTimers(); }
 });
 
 it('rejects stage financial bypass or inherited tariff overrides before claiming', async () => {

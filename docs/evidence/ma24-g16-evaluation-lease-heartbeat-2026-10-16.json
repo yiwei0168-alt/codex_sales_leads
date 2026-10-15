@@ -1,0 +1,33 @@
+{
+  "schema": "ma24-g16-evaluation-lease-heartbeat-v1",
+  "date": "2026-10-16",
+  "scope": "Dedicated G16 evaluation worker lease renewal; G17-G20 paused",
+  "finding": "The explicit claim grants a 90-second lease and the dedicated runner previously had no renewal loop, although a configured model call may take 120 seconds. This could expire the lease before the answer is settled.",
+  "change": "The dedicated runner now renews its own lease every 20 seconds, serializes renewals, records renewal failure, checks that failure at subsequent execution boundaries, and stops the timer before task settlement.",
+  "runnerPath": "src/lib/knowledge/evaluation/ma24-evaluation-runner.ts",
+  "runnerSha256": "1118adb379a51df7f89af32fc87dc6823923d172a2fab989f8357e7215ff829d",
+  "cloneVerifierPath": "scripts/verify-ma24-g16-explicit-claim-clone.ts",
+  "cloneVerifierSha256": "ff72468c8646a4e6887e574ad7ae3e1455b86584fe6a27ffcb431a484450c83e",
+  "checks": {
+    "focusedVitest": "4 files, 29 tests passed; includes a synthetic 100-second provider call with 5 heartbeat renewals and a lost-lease rejection",
+    "typescript": "passed",
+    "changedFileEslint": "passed",
+    "isolatedPostgresqlClone": "Synthetic explicit claim renewed its lease to more than 80 seconds remaining; expired lease refused renewal; verifier completed with no ordinary message or model call and cleaned synthetic rows",
+    "initialRestrictedAttempt": "Local 127.0.0.1:5432 connection was denied with EACCES; the approved isolated-clone retry passed"
+  },
+  "currentG15Preview": {
+    "path": "docs/evidence/ma24-g15-config-preview-2026-10-16-v27.json",
+    "sha256": "ab793ff5d615667322179663493c288aef5a1c6feded75020375b45b09663ad1",
+    "sourceClosureFiles": 304,
+    "runtimeBindingMatched": true,
+    "readOnly": true,
+    "simulation": true,
+    "readyForModelCalls": false
+  },
+  "modelCalls": 0,
+  "providerCalls": 0,
+  "productionWrites": 0,
+  "realDualArmRuns": 0,
+  "g17ToG20Advanced": false,
+  "limits": "Synthetic timing and isolated database checks verify the lease path, not a real paid model call, complete Gold, G15 non-simulated admission, or G16 answer quality."
+}
