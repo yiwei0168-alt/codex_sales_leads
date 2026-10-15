@@ -1,0 +1,17 @@
+{
+  "schema": "ma24-g16-failed-run-gate-v1",
+  "date": "2026-10-15",
+  "scope": "Independent comparison scorer engineering gate only",
+  "change": "A failed run on either arm remains in the report but prevents complete and gatePassed. It is not counted as candidate quality improvement over a failed baseline.",
+  "checks": {
+    "targetedVitest": "6 passed",
+    "typecheck": "passed",
+    "targetedEslint": "passed"
+  },
+  "environmentNote": "Initial Vitest startup hit EPERM while renaming its cache under the MXC temp directory. The same targeted test passed with TEMP and TMP set to a workspace tmp directory.",
+  "independentGoldFrozen": false,
+  "realBaselineRuns": 0,
+  "realCandidateRuns": 0,
+  "qualityAccepted": false,
+  "productionLoaded": false
+}

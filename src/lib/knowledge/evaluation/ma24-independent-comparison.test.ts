@@ -49,6 +49,17 @@ describe("MA24 independent comparison", () => {
     expect(scoreMa24IndependentComparison({ manifest, runs: unknown, verdicts: reviewed }).unknownRuns)
       .toEqual(["long:candidate"]);
   });
+  it("does not count a failed baseline as candidate quality improvement", () => {
+    const failed = runs.map(row => row.caseId === "long" && row.arm === "baseline"
+      ? { ...row, status: "failed" as const, answer: "", failureReason: "Model deadline" } : row);
+    const reviewed = verdicts.map(row => row.caseId === "long" && row.arm === "baseline"
+      ? { ...row, runSha256: ma24RunSha256(failed.find(item => item.caseId === row.caseId && item.arm === row.arm)!),
+        answerCorrect: false, preciseCitationCorrect: false } : row);
+    const result = scoreMa24IndependentComparison({ manifest, runs: failed, verdicts: reviewed });
+    expect(result.failedRuns).toEqual(["long:baseline"]);
+    expect(result.complete).toBe(false);
+    expect(result.gatePassed).toBe(false);
+  });
   it("rejects changed frozen inputs and changed answers after review", () => {
     expect(() => scoreMa24IndependentComparison({ manifest,
       runs: [{ ...runs[0], manifestSha256: "0".repeat(64) }, ...runs.slice(1)], verdicts }))

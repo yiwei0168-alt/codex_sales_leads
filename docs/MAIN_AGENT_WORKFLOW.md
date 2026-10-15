@@ -1396,3 +1396,8 @@ IEEE 2014 GEPOF 教程按用户确认仅进入 PPTX 读取与引用验收。使�
 
 - 根 TypeScript 配置将 Git 忽略的 `tmp/` 从全仓检查中排除，保留产品源码、正式脚本及 Next 生成类型。实际 `--listFilesOnly` 计数为 `src/` 850、`scripts/` 383、`tmp/` 0；`npm run typecheck`、完整 `npm run build` 均通过。
 - 新候选 build `dbiGeczgl91_vubichMag` 与旧 Web 在一次性恢复库完成登录/读取兼容冒烟；127–134 迁移事务回滚及克隆提交成功，库已删除。这不替代正式发布备份、域内质量、试点和真实服务回滚。[收据](evidence/ma24-g01-typecheck-scope-build-2026-10-15.json)。
+
+### MA24 / G16 — 独立比较的失败运行处理（2026-10-15）
+
+- 每个冻结题必须保留基线与候选的实际运行状态、收据及审核绑定。`failed` 和 `unknown` 分别列出；任一侧失败时即使已保存失败判决，也不得将该题视为完整比较或把对侧成功算作质量提升。
+- 判分器已实现 `failedRuns` 阻断门槛并通过定向检查。当前没有冻结的新独立 Gold 或真实双路答案，不产生质量通过结论。[收据](evidence/ma24-g16-failed-run-gate-2026-10-15.json)。

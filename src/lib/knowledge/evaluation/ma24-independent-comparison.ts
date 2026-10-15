@@ -97,12 +97,13 @@ export function scoreMa24IndependentComparison(input: {
       throw new Error(`MA24 citation verdict contradicts coordinates ${id}`);
     verdictMap.set(id, verdict);
   }
-  const missingRuns: string[] = [], missingVerdicts: string[] = [], unknownRuns: string[] = [];
+  const missingRuns: string[] = [], missingVerdicts: string[] = [], unknownRuns: string[] = [], failedRuns: string[] = [];
   for (const item of manifest.cases) for (const arm of arms) {
     const id = key(item.caseId, arm);
     const run = runMap.get(id);
     if (!run) missingRuns.push(id);
     else if (run.status === "unknown") unknownRuns.push(id);
+    else if (run.status === "failed") failedRuns.push(id);
     if (run && !verdictMap.has(id)) missingVerdicts.push(id);
   }
   const summarize = (selected: Ma24Case[]) => Object.fromEntries(arms.map(arm => {
@@ -122,7 +123,7 @@ export function scoreMa24IndependentComparison(input: {
   const atLeast = (row: ReturnType<typeof summarize>) =>
     row.candidate.answerCorrect >= row.baseline.answerCorrect &&
     row.candidate.preciseCitationCorrect >= row.baseline.preciseCitationCorrect;
-  const complete = !missingRuns.length && !missingVerdicts.length && !unknownRuns.length;
+  const complete = !missingRuns.length && !missingVerdicts.length && !unknownRuns.length && !failedRuns.length;
   const overallNonRegression = complete && atLeast(totals);
   const protectedResults = Object.fromEntries(manifest.protectedNoRegressionTags.map(tag =>
     [tag, complete && atLeast(byTag[tag])]));
@@ -137,6 +138,6 @@ export function scoreMa24IndependentComparison(input: {
   const gatePassed = complete && overallNonRegression &&
     Object.values(protectedResults).every(Boolean) && Object.values(improvementResults).every(Boolean) &&
     safetyViolations.length === 0;
-  return { manifestSha256: manifestHash, complete, gatePassed, missingRuns, missingVerdicts, unknownRuns,
+  return { manifestSha256: manifestHash, complete, gatePassed, missingRuns, missingVerdicts, unknownRuns, failedRuns,
     overallNonRegression, protectedResults, improvementResults, safetyViolations, totals, byGroup, byTag };
 }
