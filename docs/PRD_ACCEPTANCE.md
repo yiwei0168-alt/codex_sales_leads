@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+2026-10-15 G16 评分器已拒绝双路模型 ID 不一致和运行收据 ID 重复；12 项定向测试、类型检查、lint 通过。尚未形成真实双路运行、独立 Gold 或质量验收，且记录 ID 约束不能验证提供方来源。[工程收据](evidence/ma24-g16-run-identity-gate-2026-10-15.json)。
+
 2026-10-15 G14 来源使用边界：BDUK 与 Taking Part 官方 XLSX 可作为有归属、带原格引用的短数值事实题候选；Taking Part 的部门标识不进入题目或答案。两原件的有界本地发现前暴露筛查未见专有内容，当前库精确哈希为 0，但未排除所有语义或未记录暴露；Gold、实际模型引用和整体质量仍未验收。[审计收据](evidence/ma24-g14-govuk-two-xlsx-source-and-exposure-audit-2026-10-15.json)。
 
 2026-10-15 G14 跨文档质量题准备：两份 GOV.UK 工作簿的哈希和原格已重核；选择数值直接重叠较少的修订版进入整套候选审核，旧版退出当前池。当前 21 条仅为草案，发布家族仍为 12 个；跨文档 Gold、两来源用户可见引用及质量验收都未通过。[选择收据](evidence/ma24-g14-govuk-cross-document-family-selection-2026-10-15.json)。

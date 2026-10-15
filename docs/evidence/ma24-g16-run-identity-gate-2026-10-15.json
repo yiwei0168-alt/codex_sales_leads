@@ -1,0 +1,17 @@
+{
+  "schema": "ma24-g16-run-identity-gate-v1",
+  "date": "2026-10-15",
+  "change": "The independent G16 scorer rejects answer model ID drift across either arm or case, and rejects reused receipt IDs across all runs, including duplicates within one run.",
+  "checks": {
+    "targetedVitest": "12 passed, including model mismatch, cross-run receipt reuse and within-run receipt reuse",
+    "typecheck": "passed",
+    "focusedEslint": "passed"
+  },
+  "limits": [
+    "A self-reported model ID or receipt ID is not provider provenance; the actual dual-arm runner and ledger binding remain to be implemented.",
+    "No independent Gold, actual dual-arm model results or human quality verdicts exist."
+  ],
+  "goldCreated": 0,
+  "modelCalls": 0,
+  "productionWrites": 0
+}

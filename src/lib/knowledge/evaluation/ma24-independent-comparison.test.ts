@@ -40,6 +40,20 @@ const score = (input: { manifest: Ma24FrozenManifest; runs: Ma24Run[]; verdicts:
   scoreMa24IndependentComparison({ ...input, gold });
 
 describe("MA24 independent comparison", () => {
+  it("requires one answer model and distinct run receipts across both arms", () => {
+    const otherModel = runs.map(run => run.caseId === "cross" && run.arm === "candidate"
+      ? { ...run, modelId: "different-model" } : run);
+    expect(() => score({ manifest, runs: otherModel, verdicts }))
+      .toThrow("MA24 answer model differs across arms cross:candidate");
+    const reusedReceipt = runs.map(run => run.caseId === "cross" && run.arm === "candidate"
+      ? { ...run, receiptIds: runs[0].receiptIds } : run);
+    expect(() => score({ manifest, runs: reusedReceipt, verdicts }))
+      .toThrow(/MA24 run receipt reused/);
+    const repeatedWithinRun = runs.map(run => run.caseId === "cross" && run.arm === "candidate"
+      ? { ...run, receiptIds: ["same-receipt", "same-receipt"] } : run);
+    expect(() => score({ manifest, runs: repeatedWithinRun, verdicts }))
+      .toThrow(/MA24 run receipt reused/);
+  });
   it("rejects snapshot bytes that differ from the frozen source, Gold or code/config hashes", () => {
     const bytes = { sourceSet: Buffer.from("source"), gold: Buffer.from("gold"),
       codeAndConfig: Buffer.from("config") };

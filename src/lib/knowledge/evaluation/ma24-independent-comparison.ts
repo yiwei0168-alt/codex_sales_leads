@@ -117,6 +117,8 @@ export function scoreMa24IndependentComparison(input: {
   const cases = new Map(manifest.cases.map(item => [item.caseId, item]));
   const goldCases = new Map(gold.cases.map(item => [item.caseId, item]));
   const runMap = new Map<string, Ma24Run>();
+  const receiptOwner = new Map<string, string>();
+  let answerModelId: string | undefined;
   for (const run of runs) {
     const item = cases.get(run.caseId);
     const id = key(run.caseId, run.arm);
@@ -128,6 +130,14 @@ export function scoreMa24IndependentComparison(input: {
       (run.status === "completed" && !run.answer.trim()) ||
       (run.status !== "completed" && !run.failureReason?.trim()))
       throw new Error(`Incomplete MA24 run receipt ${id}`);
+    if (answerModelId !== undefined && run.modelId !== answerModelId)
+      throw new Error(`MA24 answer model differs across arms ${id}`);
+    answerModelId = run.modelId;
+    for (const receipt of run.receiptIds) {
+      const prior = receiptOwner.get(receipt);
+      if (prior) throw new Error(`MA24 run receipt reused ${receipt}: ${prior}, ${id}`);
+      receiptOwner.set(receipt, id);
+    }
     runMap.set(id, run);
   }
   const verdictMap = new Map<string, Ma24Verdict>();
