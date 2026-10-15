@@ -5,7 +5,7 @@ import { tenantQuery, tenantTransaction } from "@/lib/rag/db";
 import type { KnowledgeBaseType } from "@/lib/rag/types";
 import { assertResolvedInsideKnowledgeRoot, safeKnowledgeStorageKey } from "./document-repository";
 
-export const MAX_KNOWLEDGE_BINARY_BYTES = 25 * 1024 * 1024;
+export const MAX_KNOWLEDGE_BINARY_BYTES = 50 * 1024 * 1024;
 export class KnowledgeUploadConflictError extends Error {}
 const FORMATS: Record<string,{mime:string;marker:string}> = {
   ".pdf": { mime: "application/pdf", marker: "%PDF-" },
@@ -23,7 +23,7 @@ export function validateKnowledgeBinary(input:Pick<KnowledgeUploadInput,"origina
   const name=basename(input.originalFilename).replace(/[\u0000-\u001f\u007f]/g,"").trim();
   const extension=extname(name).toLowerCase();const format=FORMATS[extension];
   if(!name||name!==input.originalFilename||!format)throw new Error("仅支持 PDF、PPTX、XLSX 原件");
-  if(input.bytes.byteLength===0||input.bytes.byteLength>MAX_KNOWLEDGE_BINARY_BYTES)throw new Error("二进制资料大小必须在 1 byte 至 25 MB 之间");
+  if(input.bytes.byteLength===0||input.bytes.byteLength>MAX_KNOWLEDGE_BINARY_BYTES)throw new Error("二进制资料大小必须在 1 byte 至 50 MiB 之间");
   if(input.mimeType&&input.mimeType!=="application/octet-stream"&&input.mimeType!==format.mime)throw new Error("文件扩展名与 MIME 类型不一致");
   const prefix=Buffer.from(input.bytes.subarray(0,8)).toString("latin1");
   if(extension===".pdf"&&!prefix.startsWith(format.marker))throw new Error("PDF 文件签名无效");

@@ -15,4 +15,8 @@ describe("knowledge binary upload validation",()=>{
     expect(()=>validateKnowledgeBinary({originalFilename:"deck.pptx",mimeType:"application/octet-stream",bytes:Buffer.from("PK [Content_Types].xml xl/")})).toThrow();
     expect(()=>validateKnowledgeBinary({originalFilename:"guide.pdf",mimeType:"application/pdf",bytes:new Uint8Array(MAX_KNOWLEDGE_BINARY_BYTES+1)})).toThrow();
   });
+  it("accepts the 37.2 MB ITU long PDF within the 50 MiB boundary",()=>{
+    const bytes=new Uint8Array(37_223_722);bytes.set(Buffer.from("%PDF-"));
+    expect(validateKnowledgeBinary({originalFilename:"itu-global-connectivity-report-2025.pdf",mimeType:"application/pdf",bytes}).documentType).toBe("PDF");
+  });
 });

@@ -24,7 +24,7 @@ export async function GET(request:Request){
 export async function POST(request:Request){
   const session=await requireApiSession();if(session instanceof Response)return session;
   const declaredBytes=Number(request.headers.get("content-length")??0);
-  if(Number.isFinite(declaredBytes)&&declaredBytes>MAX_KNOWLEDGE_BINARY_BYTES+128_000)return Response.json({error:"二进制资料上限为25 MB"},{status:413});
+  if(Number.isFinite(declaredBytes)&&declaredBytes>MAX_KNOWLEDGE_BINARY_BYTES+128_000)return Response.json({error:"二进制资料上限为 50 MiB"},{status:413});
   let form:FormData;try{form=await request.formData();}catch{return Response.json({error:"请求必须是 multipart/form-data"},{status:400});}
   const parsed=z.object({collection:z.enum(["industry","company","product"]),title:z.string().trim().min(1).max(300),
     sourceUrl:z.union([z.url(),z.literal("")]).default(""),visibility:z.enum(["private","shared"]).default("private"),

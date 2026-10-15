@@ -7,7 +7,7 @@ vi.mock("@/lib/knowledge/upload",async importOriginal=>{
   return {...actual,createKnowledgeUploadJob:mocks.create,listKnowledgeUploadJobs:mocks.list};
 });
 import { GET,POST } from "./route";
-import {KnowledgeUploadConflictError} from '@/lib/knowledge/upload';
+import {KnowledgeUploadConflictError,MAX_KNOWLEDGE_BINARY_BYTES} from '@/lib/knowledge/upload';
 
 describe("binary knowledge upload route",()=>{
   beforeEach(()=>{vi.clearAllMocks();process.env.KNOWLEDGE_ADMIN_TOKEN="test-token";
@@ -48,7 +48,7 @@ describe("binary knowledge upload route",()=>{
     expect(mocks.create).toHaveBeenCalledWith(expect.any(String),expect.objectContaining({revisionDocumentId:'00000000-0000-4000-8000-000000000010',revisionBaseVersionId:'00000000-0000-4000-8000-000000000011'}));
   });
   it("rejects an oversized declared multipart request before reading the body",async()=>{
-    const response=await POST(new Request("http://local/api/knowledge/uploads",{method:"POST",headers:{authorization:"Bearer test-token","content-length":String(26*1024*1024)}}));
+    const response=await POST(new Request("http://local/api/knowledge/uploads",{method:"POST",headers:{authorization:"Bearer test-token","content-length":String(MAX_KNOWLEDGE_BINARY_BYTES+128_001)}}));
     expect(response.status).toBe(413);expect(mocks.create).not.toHaveBeenCalled();
   });
   it("queues a validated multipart file without indexing in the request",async()=>{
