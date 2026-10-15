@@ -89,7 +89,7 @@ export function assertMa24FrozenSnapshotBytes(manifest: Ma24FrozenManifest, snap
   }
 }
 
-function validateManifest(manifest: Ma24FrozenManifest) {
+export function assertMa24FrozenManifestComplete(manifest: Ma24FrozenManifest) {
   if (manifest.schema !== "ma24-g16-frozen-comparison-v4" || !manifest.cases.length ||
     ![manifest.sourceSetSha256, manifest.goldSnapshotSha256, manifest.codeAndConfigSha256,
       manifest.corpusSnapshotSha256].every(hex64))
@@ -161,7 +161,7 @@ export function scoreMa24IndependentComparison(input: {
   manifest: Ma24FrozenManifest; gold: Ma24GoldSnapshot; runs: Ma24Run[]; verdicts: Ma24Verdict[];
 }) {
   const { manifest, gold, runs, verdicts } = input;
-  validateManifest(manifest);
+  assertMa24FrozenManifestComplete(manifest);
   assertMa24GoldMatchesManifest(manifest, gold);
   const manifestHash = ma24ManifestSha256(manifest);
   const cases = new Map(manifest.cases.map(item => [item.caseId, item]));

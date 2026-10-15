@@ -1,0 +1,32 @@
+{
+  "schema": "ma24-g16-pair-enqueue-gated-v1",
+  "date": "2026-10-16",
+  "entry": "scripts/enqueue-ma24-g16-pair.ts",
+  "pairHelper": "src/lib/knowledge/evaluation/ma24-evaluation-pair.ts",
+  "scope": "One frozen case, same account/question/scope/model in baseline and candidate; stable distinct request keys permit retry after a partial enqueue.",
+  "admissionOrder": [
+    "Resolve five input JSON files inside the private independent-evaluation directory",
+    "Verify frozen byte hashes, question/Gold/corpus shape and source-access controls",
+    "Require a current, matching G15 non-simulation paid admission, complete manifest gates and model profile",
+    "Recheck live corpus and Gold evidence under tenant scope",
+    "Enqueue two hidden main-agent-evaluation tasks without running a provider"
+  ],
+  "checks": {
+    "pairUnitTests": "2 passed: same frozen inputs and stable separate arm keys across retry; mismatched returned model rejected",
+    "manifestGateTests": "18 passed across scorer and paired-enqueue checks; both G16 command entries use the scorer's complete-manifest validator",
+    "typecheck": "passed",
+    "changedFileLint": "passed",
+    "privateStructuralFixture": "Current v25 read-only simulation preview rejected at the G15 gate before enqueueRun",
+    "sourceClosure": "303 local files; pair command and helper included"
+  },
+  "currentPreview": {
+    "path": "docs/evidence/ma24-g15-config-preview-2026-10-16-v25.json",
+    "sha256": "e72f75a9305f5f79881f29b4289dfdefba2c8dfe771b2d4727444cf5d0a4674c",
+    "readyForModelCalls": false
+  },
+  "queuedRealTasks": 0,
+  "providerCalls": 0,
+  "realDualArmRuns": 0,
+  "limitation": "No actual database pair was enqueued. No current provider tariff, full Gold set, paid authorization, real model output or quality verdict was accepted.",
+  "g17ToG20Advanced": false
+}

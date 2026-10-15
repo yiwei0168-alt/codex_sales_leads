@@ -28,7 +28,7 @@ const paths = await Promise.all([manifestPath, sourceSetPath, goldPath, configPa
   }));
 const [manifestBytes, sourceSetBytes, goldBytes, codeAndConfigBytes,
   corpusSnapshotBytes] = await Promise.all(paths.map(path => readFile(path)));
-const [{ assertMa24FrozenSnapshotBytes, assertMa24GoldMatchesManifest,
+const [{ assertMa24FrozenManifestComplete, assertMa24FrozenSnapshotBytes, assertMa24GoldMatchesManifest,
   assertMa24SourceSetMatchesManifest }, { assertMa24CorpusSnapshotBytes },
   { executeMa24EvaluationRun }, { getPool }] = await Promise.all([
   import('../src/lib/knowledge/evaluation/ma24-independent-comparison'),
@@ -42,6 +42,7 @@ assertMa24FrozenSnapshotBytes(manifest, { sourceSet: sourceSetBytes, gold: goldB
 assertMa24SourceSetMatchesManifest(manifest, JSON.parse(sourceSetBytes.toString('utf8')));
 assertMa24GoldMatchesManifest(manifest, JSON.parse(goldBytes.toString('utf8')));
 assertMa24CorpusSnapshotBytes(manifest, corpusSnapshotBytes, manifest.corpusSnapshotSha256);
+assertMa24FrozenManifestComplete(manifest);
 assert(manifest.cases.some((item: { caseId: string }) => item.caseId === caseId),
   'MA24 case absent from frozen manifest');
 try {

@@ -1,5 +1,7 @@
 # MA24 G15 双路径配置与调用边界草案（2026-10-14）
 
+2026-10-16 G16 成对入队命令及其冻结任务 helper 已进入 [v25 只读预览](evidence/ma24-g15-config-preview-2026-10-16-v25.json) 的 303 文件源码闭包。相同题目、账号、范围和模型的两臂用稳定不同的请求键，重试不改写已创建任务；当前预览仍拒绝正式入队。[工程收据](evidence/ma24-g16-pair-enqueue-gated-2026-10-16.json)。
+
 2026-10-16 G16 的显式逐题命令已纳入 [v24 只读预览](evidence/ma24-g15-config-preview-2026-10-16-v24.json) 的 301 文件源码闭包；参数和私有冻结快照在调用专用 runner 前核对。当前仍是只读模拟预览，不准付费调用。[工程收据](evidence/ma24-g16-explicit-task-cli-2026-10-16.json)。
 
 2026-10-16 构建输入冻结补强：G15 源码闭包现明确包含 `next.config.ts`、生产构建启动脚本及 standalone 打包脚本，避免改动发布包构造方式而仍沿用旧配置指纹。当前 300 个本地文件的[v22 只读预览](evidence/ma24-g15-config-preview-2026-10-16-v22.json)与加载源码匹配；旧 v21 因 `sourceHashes` 漂移被拒，篡改构建配置哈希也被拒。[工程收据](evidence/ma24-g15-build-input-closure-2026-10-16.json)。这只绑定源码输入，尚未证明正式进程加载的构建，也未开放付费模型调用。

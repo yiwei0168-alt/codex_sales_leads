@@ -11,6 +11,7 @@ const stdout = execFileSync(process.execPath,
 const preview = JSON.parse(stdout) as Ma24G15Preview;
 const runner = 'src/lib/knowledge/evaluation/ma24-evaluation-runner.ts';
 const required = [runner, 'scripts/run-ma24-g16-task.ts',
+  'scripts/enqueue-ma24-g16-pair.ts',
   'src/lib/knowledge/evaluation/ma24-evaluation-claim.ts',
   'next.config.ts', 'scripts/build-next.mjs', 'scripts/package-ma24-next-standalone.py',
   'src/lib/knowledge/evaluation/ma24-evaluation-task-binding.ts',
