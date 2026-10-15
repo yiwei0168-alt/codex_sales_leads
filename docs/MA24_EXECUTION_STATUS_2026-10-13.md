@@ -4,6 +4,8 @@
 
 同日隔离产品续验：原封面图核为部门徽标/名称，1 项装饰判决经产品审核保存并完成，实际登记后 `Table 2!A1:M47` 与 `Table 3!A1:R56` 证据块回读目标六格；跨账号拒绝、v3 指针不变、合成记录清理。无真实模型拒答或用户可见引用，Gold 仍 0。[产品收据](evidence/ma24-g14-taking-part-internet-xlsx-no-answer-candidate-2026-10-15.json)。
 
+两份 GOV.UK 新 XLSX 的正式本地资料/上传/旧 Gold 精确哈希均为 0 命中；Git 历史标题仅在新候选提交首次出现。Taking Part 的发布页脚注明 OGL v3.0（例外除外），短篇带署名题有初步来源依据；这些只读筛查不能证明语义未暴露、完整许可或独立 Gold 资格。[无答案候选](evidence/ma24-g14-taking-part-internet-xlsx-no-answer-candidate-2026-10-15.json)、[BDUK 候选](evidence/ma24-g14-bpi-2018-xlsx-candidate-2026-10-15.json)。
+
 2026-10-15 G14 新 XLSX 来源候选：英国政府 2018 年 3 月 Broadband Performance Indicator 原件 12,802 字节已从发布页直链下载，哈希及 `Sheet1!D26`、`A33` 原格核对；现金口径 7,934 与权责发生制估计 7,617 的历史口径题已拟稿。有界项目文本搜索无同题关键词；完整暴露、复用条款、产品坐标与答案引用未审，Gold 0。[候选收据](evidence/ma24-g14-bpi-2018-xlsx-candidate-2026-10-15.json)。
 
 同日同发布 PDF 原页复核：第 2 页完整重复该工作簿的 March 2018 表格及现金/权责发生制附注；第 4 页载明 Crown copyright 2018 和开放政府许可（不含标志）。因此 XLSX 可继续作格式坐标候选，PDF 不可另计独立来源家族；工作簿自身的适用条件和最终复用审核仍待核。[交叉收据](evidence/ma24-g14-bpi-2018-xlsx-candidate-2026-10-15.json)。

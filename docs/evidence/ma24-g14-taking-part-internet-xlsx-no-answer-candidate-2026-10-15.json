@@ -25,6 +25,24 @@
     "reason": "No joint rural-by-age row or table exists in the four-sheet workbook; the two labels occur in different marginal breakdowns."
   },
   "boundedLocalTextSearch": "No matches for the publication title, either table title, or the 75.6/33.1 pair in tracked docs/src/scripts/experiments outside this candidate.",
+  "exactHashExposureScreen": {
+    "command": "node scripts/run-tsx.cjs scripts/audit-g14-candidate-hash-local.ts 90eb0ed392efc2db8ab6681bcf4b9634c41f891d3df7a95bba3bf6f9457ff614",
+    "matchingAssets": 0,
+    "matchingUploadJobs": 0,
+    "matchingHistoricalGoldRows": 0,
+    "scope": "Current local product database, read-only; the isolated clone is a separate database and was cleaned"
+  },
+  "historyAndQuestionScreen": {
+    "gitHistoryTitleHitsBeforeCandidate": 0,
+    "historicalQuestionCorpusTitleOrTopicHits": 0,
+    "historicalBlindQuestionTitleOrTopicHits": 0,
+    "limitation": "Exact title/topic search does not rule out semantic paraphrases, untracked provider context, or every historical binary artifact."
+  },
+  "sourceUseCheck": {
+    "publisherPageFooter": "GOV.UK page footer states OGL v3.0 for content except where otherwise stated and Crown copyright.",
+    "workbookSpecificExceptionFound": false,
+    "status": "Preliminary support for short attributed factual use; not an approval to redistribute the workbook or to treat all embedded third-party material as OGL."
+  },
   "publicationFamily": "Taking Part 2019/20 Internet release; all four workbook sheets are one family",
   "sourceReuseReviewComplete": false,
   "fullDevelopmentExposureAuditComplete": false,

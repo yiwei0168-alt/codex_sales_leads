@@ -4,6 +4,8 @@
 
 同日隔离克隆已把封面部门标识判为装饰并完成产品审核、登记；两个目标工作表的证据范围及原格读取通过，跨账号拒绝、指针不变和合成数据清理。还需来源/污染终审、用户可见引用及真实无答案行为，未冻结 Gold。[产品收据](evidence/ma24-g14-taking-part-internet-xlsx-no-answer-candidate-2026-10-15.json)。
 
+两份新 GOV.UK XLSX 在当前本地产品资产、上传作业和旧 Gold 的精确哈希筛查均为 0；历史题标题/关键词也未命中，但不能以此替代语义独立审计。Taking Part 页脚 OGL 说明支持初步短题用途审核，整份再分发及例外仍未批准。[无答案候选](evidence/ma24-g14-taking-part-internet-xlsx-no-answer-candidate-2026-10-15.json)、[BDUK 候选](evidence/ma24-g14-bpi-2018-xlsx-candidate-2026-10-15.json)。
+
 2026-10-15 G14 XLSX 候选补充：GOV.UK 2018 年 BDUK 指标工作簿已取得原件并核对两种支出口径的原格；历史口径问答仅为候选，尚须完整开发暴露、来源复用、产品读取/引用与整套 Gold 终审。[候选收据](evidence/ma24-g14-bpi-2018-xlsx-candidate-2026-10-15.json)。
 
 同期 PDF 第 2 页重复 XLSX 草案全部答案事实，第 4 页有 OGL 正文复用声明。该 PDF 与 XLSX 只能算同一发布家族；后续格式测评必须绑定工作簿原格引用，不能借同源 PDF 增加独立来源数。[交叉收据](evidence/ma24-g14-bpi-2018-xlsx-candidate-2026-10-15.json)。

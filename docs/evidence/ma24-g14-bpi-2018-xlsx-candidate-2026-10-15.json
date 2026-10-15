@@ -26,6 +26,14 @@
   "draftAnswer": "The cash-basis table reports 7934 premises per GBP million. The note estimates 7617 on an accruals basis, where cumulative expenditure is higher because some work was delivered before payment.",
   "draftSourceCoordinates": ["Sheet1!D26", "Sheet1!A33"],
   "boundedLocalTextSearch": "No matches for publication title, BDUK, or the two indicator values in docs, src, scripts, and experiments outside the new candidate and tmp directory.",
+  "exactHashExposureScreen": {
+    "command": "node scripts/run-tsx.cjs scripts/audit-g14-candidate-hash-local.ts 7d178716b667ebe66537154b0bb96f87348ccb782368b2f43920b45db9f7f5c1",
+    "matchingAssets": 0,
+    "matchingUploadJobs": 0,
+    "matchingHistoricalGoldRows": 0,
+    "scope": "Current local product database, read-only; the isolated clone is a separate database and was cleaned"
+  },
+  "gitHistoryPublicationTitleHitsBeforeCandidate": 0,
   "publicationFamily": "BDUK Broadband Performance Indicators historical quarterly series; treat related releases as one family pending review",
   "sameReleasePdfCrossCheck": {
     "url": "https://assets.publishing.service.gov.uk/media/5b053e7ee5274a2ae26f14ca/Broadband_Performance_Indicator_-_March_2018.pdf",
