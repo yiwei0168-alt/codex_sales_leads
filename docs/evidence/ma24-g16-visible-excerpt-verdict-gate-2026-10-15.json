@@ -1,0 +1,18 @@
+{
+  "schema": "ma24-g16-visible-excerpt-verdict-gate-v1",
+  "date": "2026-10-15",
+  "scope": "G16 read-only independent-comparison scoring; G17-G20 paused",
+  "change": "A positive preciseCitationCorrect verdict now requires every reviewer-entered citation excerpt to appear in the persisted final answer after whitespace normalization. The existing Gold coordinate and persisted source/model-input checks remain required separately.",
+  "verification": {
+    "focusedTests": "ma24-independent-comparison.test.ts: 15 tests passed",
+    "typecheck": "npm run typecheck passed",
+    "lint": "Targeted ESLint passed",
+    "negativeCase": "A positive precise-citation verdict is rejected when the answer omits the source excerpt."
+  },
+  "limitations": [
+    "Excerpt occurrence alone does not establish that the answer displayed a source label or correct coordinate; that remains a human review judgment.",
+    "No frozen independent Gold, real dual-arm answer, provider receipt, or final G16 quality acceptance was produced."
+  ],
+  "realModelCalls": 0,
+  "productionWrites": 0
+}

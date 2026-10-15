@@ -140,6 +140,11 @@ function citationMatchesGold(actual: GoldSourceCoordinate, expected: GoldSourceC
     (expected.blockId === undefined || actual.blockId === expected.blockId);
 }
 
+function answerShowsCitationExcerpt(answer: string, citation: GoldSourceCoordinate) {
+  const normalize = (value: string) => value.replace(/\s+/g, " ").trim();
+  return normalize(answer).includes(normalize(citation.excerpt ?? ""));
+}
+
 /** Scores reviewed answers only; run receipts and reviewer judgments remain separate inputs. */
 export function scoreMa24IndependentComparison(input: {
   manifest: Ma24FrozenManifest; gold: Ma24GoldSnapshot; runs: Ma24Run[]; verdicts: Ma24Verdict[];
@@ -204,6 +209,7 @@ export function scoreMa24IndependentComparison(input: {
       throw new Error(`MA24 answer verdict contradicts observed outcome ${id}`);
     if (verdict.preciseCitationCorrect && (cases.get(verdict.caseId)?.expectedOutcome !== "route" ||
       !run.citations.length || run.citations.some(source => !goldSourceIsPrecise(source)) ||
+      run.citations.some(source => !answerShowsCitationExcerpt(run.answer, source)) ||
       goldCases.get(verdict.caseId)!.expectedSources.some(expected =>
         !run.citations.some(actual => citationMatchesGold(actual, expected)))))
       throw new Error(`MA24 citation verdict contradicts coordinates ${id}`);

@@ -25,7 +25,7 @@ const runs: Ma24Run[] = manifest.cases.flatMap((item, index) => (["baseline", "c
   caseId: item.caseId, arm, runId: `00000000-0000-4000-8000-${String(index * 2 + armIndex + 1).padStart(12, "0")}`,
   caseSha256: item.caseSha256, manifestSha256: ma24ManifestSha256(manifest),
   userId: item.userId, knowledgeScope: item.knowledgeScope,
-  status: "completed" as const, answer: `Recorded ${item.caseId} ${arm} answer`,
+  status: "completed" as const, answer: `Recorded ${item.caseId} ${arm} answer${item.expectedOutcome === "route" ? ": Original source fact" : ""}`,
   citations: item.expectedOutcome === "route" ?
     [{ assetSha256: "1".repeat(64), unitIndex: 1, excerpt: "Original source fact" }] : [],
   modelCallIds: [`00000000-0000-4000-8001-${String(index * 2 + armIndex + 1).padStart(12, "0")}`],
@@ -145,7 +145,8 @@ describe("MA24 independent comparison", () => {
     expect(() => scoreMa24IndependentComparison({ manifest, gold: twoSourceGold, runs, verdicts }))
       .toThrow("citation verdict contradicts coordinates cross:candidate");
     const withBoth = runs.map(run => run.caseId === "cross"
-      ? { ...run, citations: [...run.citations, secondSource] } : run);
+      ? { ...run, answer: `${run.answer}; Second original`,
+        citations: [...run.citations, secondSource] } : run);
     const reviewed = verdicts.map(row => row.caseId === "cross"
       ? { ...row, runSha256: ma24RunSha256(withBoth.find(run => run.caseId === row.caseId && run.arm === row.arm)!) }
       : row);
@@ -258,6 +259,12 @@ describe("MA24 independent comparison", () => {
       .toBe(true);
   });
   it("cannot mark unsupported route citations or non-answer citations precise", () => {
+    const invisibleExcerpt = runs.map(row => row.caseId === "long" && row.arm === "candidate"
+      ? { ...row, answer: "Recorded answer without the quoted source" } : row);
+    const invisibleReviewed = verdicts.map(row => row.caseId === "long" && row.arm === "candidate"
+      ? { ...row, runSha256: ma24RunSha256(invisibleExcerpt.find(item => item.caseId === row.caseId && item.arm === row.arm)!) } : row);
+    expect(() => score({ manifest, runs: invisibleExcerpt, verdicts: invisibleReviewed }))
+      .toThrow("citation verdict contradicts coordinates");
     const missingCitation = runs.map(row => row.caseId === "long" && row.arm === "candidate"
       ? { ...row, citations: [] } : row);
     const reviewed = verdicts.map(row => row.caseId === "long" && row.arm === "candidate"
