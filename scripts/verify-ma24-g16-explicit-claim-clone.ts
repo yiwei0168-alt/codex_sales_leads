@@ -21,7 +21,8 @@ const cloneUrl = (value: string | undefined) => {
 const adminUrl = cloneUrl(process.env.DATABASE_MIGRATION_URL);
 const appUrl = cloneUrl(process.env.DATABASE_URL);
 process.env.DATABASE_URL = appUrl;
-const { claimMa24EvaluationRun, claimAndBindMa24EvaluationRun } = await import(
+const { claimMa24EvaluationRun, claimAndBindMa24EvaluationRun,
+  loadCurrentMa24G15Preview } = await import(
   "../src/lib/knowledge/evaluation/ma24-evaluation-claim");
 const { getPool } = await import("../src/lib/rag/db");
 const { finishRun } = await import("../src/lib/assistant/main/repository");
@@ -118,7 +119,9 @@ try {
         excerpt: "Synthetic evidence" }], reviewer: "Synthetic reviewer",
       reviewedAt: "2026-10-15T00:00:00Z", note: "Fixture only" }],
   }));
-  const codeAndConfigBytes = new TextEncoder().encode("synthetic code and config");
+  const model = modeModelConfig("standard");
+  const loadedCodeAndConfig = loadCurrentMa24G15Preview();
+  const codeAndConfigBytes = new TextEncoder().encode(JSON.stringify(loadedCodeAndConfig));
   const hash = (bytes: Uint8Array) => createHash("sha256").update(bytes).digest("hex");
   const manifest = { schema: "ma24-g16-frozen-comparison-v2" as const,
     sourceSetSha256: hash(sourceSetBytes), goldSnapshotSha256: hash(goldBytes),
@@ -128,7 +131,6 @@ try {
       group: "synthetic", tags: [], expectedOutcome: "route" as const,
       userId, knowledgeScope: ["industry" as const] }],
   };
-  const model = modeModelConfig("standard");
   for (const [runId, separateConversationId, content] of [
     [admittedId, admittedConversationId, frozenQuery],
     [rejectedId, rejectedConversationId, "Changed question"],
@@ -145,7 +147,7 @@ try {
       caseId, arm: "baseline" })]);
   }
   const binding = { manifest, sourceSetBytes, goldBytes, codeAndConfigBytes,
-    caseId, arm: "baseline" as const, loadedModelConfig: model,
+    caseId, arm: "baseline" as const,
     workerId: "ma24-bound-claim-fixture" };
   const admitted = await claimAndBindMa24EvaluationRun({ ...binding, runId: admittedId });
   assert.equal(admitted.userId, userId);
@@ -159,6 +161,16 @@ try {
     "select status from agent_run where id=$1 and user_id=$2",
     [rejectedId, userId])).rows[0]?.status, "queued",
   "Snapshot drift consumed the queued evaluation task");
+  const changedRuntimeBytes = new TextEncoder().encode(JSON.stringify({
+    ...loadedCodeAndConfig, modePromptSha256: "changed-runtime-prompt",
+  }));
+  await assert.rejects(claimAndBindMa24EvaluationRun({ ...binding, runId: rejectedId,
+    manifest: { ...manifest, codeAndConfigSha256: hash(changedRuntimeBytes) },
+    codeAndConfigBytes: changedRuntimeBytes }), /modePromptSha256 drift/);
+  assert.equal((await admin.query<{ status: string }>(
+    "select status from agent_run where id=$1 and user_id=$2",
+    [rejectedId, userId])).rows[0]?.status, "queued",
+  "Changed frozen runtime preview consumed the queued evaluation task");
   await assert.rejects(claimAndBindMa24EvaluationRun({ ...binding, runId: rejectedId }),
     /leased execution/);
   const rejectedStatus = (await admin.query<{ status: string; result: { reply: string } }>(
@@ -212,6 +224,7 @@ if (verified) console.log(JSON.stringify({ schema: "ma24-g16-explicit-claim-clon
   checks: ["explicit-id-and-owner", "ordinary-rejected", "malformed-rejected",
     "blank-worker-rejected", "duplicate-claim-rejected", "expired-lease-not-reclaimed",
     "app-role-grant", "claimed-row-bound-to-frozen-input",
-    "snapshot-drift-rejected-before-claim", "binding-failure-terminated-without-model-call",
+    "snapshot-drift-rejected-before-claim", "loaded-runtime-drift-rejected-before-claim",
+    "binding-failure-terminated-without-model-call",
     "no-ordinary-message-or-model-call", "synthetic-rows-cleaned"],
   providerCalls: 0 }));

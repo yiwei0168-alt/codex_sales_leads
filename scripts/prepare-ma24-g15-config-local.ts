@@ -69,6 +69,13 @@ const sourceFiles=[
  'src/lib/knowledge/vectorless.ts','src/lib/rag/repository.ts',
  'src/lib/rag/embedding-contract.ts','src/lib/rag/bge-client.ts',
  'src/lib/knowledge/query-normalizer.ts',
+ 'src/lib/knowledge/evaluation/ma24-evaluation-claim.ts',
+ 'src/lib/knowledge/evaluation/ma24-evaluation-task-binding.ts',
+ 'src/lib/knowledge/evaluation/ma24-independent-comparison.ts',
+ 'src/lib/knowledge/evaluation/ma24-g15-runtime-binding.ts',
+ 'db/migrations/136_ma24_evaluation_run_kind.sql',
+ 'db/migrations/137_ma24_explicit_evaluation_claim.sql',
+ 'db/migrations/138_ma24_evaluation_claim_owner.sql',
 ];
 const sourceHashes=await ma24LocalSourceClosure(process.cwd(),sourceFiles);
 const profile=modeModelConfig(mode).profile;

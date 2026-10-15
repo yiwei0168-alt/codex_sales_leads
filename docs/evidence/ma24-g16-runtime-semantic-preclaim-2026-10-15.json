@@ -1,0 +1,29 @@
+{
+  "schema": "ma24-g16-runtime-semantic-preclaim-v1",
+  "date": "2026-10-15",
+  "scope": "G15/G16 code and configuration identity before an explicit evaluation claim; G17-G20 paused",
+  "change": "The frozen code/config file is parsed as a G15 preview. Task binding compares it with a loaded preview and the selected standard model profile. The explicit claim path itself rebuilds the current preview in a fresh local process and rejects semantic drift before claiming the task.",
+  "sourceClosure": {
+    "method": "recursive-local-static-imports-v1",
+    "currentFileCount": 287,
+    "includesEvaluationClaimAndBinding": true,
+    "includesMigrations136To138": true,
+    "currentPreviewStdoutSha256AtInspection": "54ac36c0ba26e80931ebb9096478c54f1101592c38fef0da52adb21b5bf9a3c8"
+  },
+  "checks": [
+    "16 focused G15/G16 binding unit tests passed; TypeScript typecheck and ESLint on changed files passed",
+    "The original local admission fixture rejected a changed loaded prompt even when frozen file bytes were unchanged",
+    "The isolated clone rejected a frozen preview whose hash was updated to match changed prompt content because the freshly rebuilt runtime preview differed; the queued task remained unclaimed",
+    "The isolated clone bound a valid task, terminated a changed-question task, and verified zero ordinary messages, zero model calls and zero synthetic rows after cleanup",
+    "The older v4 G15 preview failed the current runtime binding check with sourceHashes drift"
+  ],
+  "approvedGold": 0,
+  "realDualArmRuns": 0,
+  "providerCalls": 0,
+  "readyForPaidEvaluation": false,
+  "limitations": [
+    "The current preview is an observed local identity, not a frozen release build or approval for model calls.",
+    "The G15 preview still reports missing source/Gold freeze, runtime build verification, complete code closure verification, tariff verification and paid authorization.",
+    "A dedicated evaluation model executor, current provider admission and real dual-arm human review remain open."
+  ]
+}

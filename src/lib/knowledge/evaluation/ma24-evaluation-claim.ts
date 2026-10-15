@@ -1,7 +1,10 @@
+import { execFileSync } from "node:child_process";
 import { query } from "../../rag/db";
 import { finishRun } from "../../assistant/main/repository";
+import { modeModelConfig } from "../../assistant/main/mode-config";
 import { assertMa24FrozenSnapshotBytes } from "./ma24-independent-comparison";
 import { verifyMa24EvaluationTaskBinding } from "./ma24-evaluation-task-binding";
+import { assertMa24G15RuntimeBinding, type Ma24G15Preview } from "./ma24-g15-runtime-binding";
 
 type ClaimedEvaluationRun = { id: string; user_id: string; lease_token: string };
 
@@ -18,8 +21,17 @@ export async function claimMa24EvaluationRun(runId: string, expectedUserId: stri
 
 type BindingInput = Parameters<typeof verifyMa24EvaluationTaskBinding>[0];
 
+/** Rebuild the G15 preview from the currently loaded repository before claiming. */
+export function loadCurrentMa24G15Preview(): Ma24G15Preview {
+  const output = execFileSync(process.execPath,
+    ["scripts/run-tsx.cjs", "scripts/prepare-ma24-g15-config-local.ts"],
+    { cwd: process.cwd(), encoding: "utf8", maxBuffer: 4_194_304 });
+  return JSON.parse(output) as Ma24G15Preview;
+}
+
 /** Claim one task, bind its current lease to all frozen inputs, and retire failed admissions. */
-export async function claimAndBindMa24EvaluationRun(input: Omit<BindingInput, "leaseToken"> & {
+export async function claimAndBindMa24EvaluationRun(input: Omit<BindingInput,
+  "leaseToken" | "loadedCodeAndConfig" | "nowUtcDate" | "loadedModelConfig"> & {
   workerId: string;
 }) {
   const entry = input.manifest.cases.find(item => item.caseId === input.caseId);
@@ -28,13 +40,19 @@ export async function claimAndBindMa24EvaluationRun(input: Omit<BindingInput, "l
     sourceSet: input.sourceSetBytes, gold: input.goldBytes,
     codeAndConfig: input.codeAndConfigBytes,
   });
+  const frozenCodeAndConfig = JSON.parse(new TextDecoder("utf-8", { fatal: true })
+    .decode(input.codeAndConfigBytes)) as Ma24G15Preview;
+  const loadedCodeAndConfig = loadCurrentMa24G15Preview();
+  const nowUtcDate = new Date().toISOString().slice(0, 10);
+  assertMa24G15RuntimeBinding(frozenCodeAndConfig, loadedCodeAndConfig, nowUtcDate);
+  const loadedModelConfig = modeModelConfig("standard");
   const claimed = await claimMa24EvaluationRun(input.runId, entry.userId, input.workerId);
   if (!claimed) throw new Error("MA24 evaluation task unavailable for explicit claim");
   try {
     if (claimed.user_id !== entry.userId)
       throw new Error("MA24 claimed evaluation account differs from frozen case");
     const bound = await verifyMa24EvaluationTaskBinding({ ...input,
-      leaseToken: claimed.lease_token });
+      loadedCodeAndConfig, nowUtcDate, loadedModelConfig, leaseToken: claimed.lease_token });
     return { ...claimed, ...bound };
   } catch (error) {
     try {

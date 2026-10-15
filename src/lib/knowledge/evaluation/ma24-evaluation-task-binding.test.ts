@@ -4,6 +4,7 @@ import { modeModelConfig } from "../../assistant/main/mode-config";
 const mocks = vi.hoisted(() => ({ tenantTransaction: vi.fn() }));
 vi.mock("../../rag/db", () => ({ tenantTransaction: mocks.tenantTransaction }));
 import { assertMa24EvaluationTaskBinding, verifyMa24EvaluationTaskBinding } from "./ma24-evaluation-task-binding";
+import type { Ma24G15Preview } from "./ma24-g15-runtime-binding";
 import { ma24CaseQuerySha256, ma24ManifestSha256,
   type Ma24FrozenManifest, type Ma24GoldSnapshot,
   type Ma24SourceSetSnapshot } from "./ma24-independent-comparison";
@@ -22,7 +23,21 @@ const gold: Ma24GoldSnapshot = { schema: "ma24-g16-gold-snapshot-v1", cases: [{
   reviewer: "Synthetic reviewer", reviewedAt: "2026-10-15T00:00:00Z", note: "Fixture only",
 }] };
 const goldBytes = new TextEncoder().encode(JSON.stringify(gold));
-const codeAndConfigBytes = new TextEncoder().encode("synthetic code and configuration snapshot");
+const loadedModelConfig = modeModelConfig("standard");
+const loadedCodeAndConfig: Ma24G15Preview = { schema: "ma24-g15-config-preview-v1",
+  productPromptDateUtc: "2026-10-15", requiredRunPromptDateUtc: "2026-10-15",
+  mode: "standard", modePromptVersion: "fixture", modePromptSha256: "prompt",
+  productVersion: "fixture", modelProfile: loadedModelConfig.profile,
+  modelFunctionsSha256: "functions", arms: [{ knowledgeScope: ["industry"],
+    baseline: { prompt: "baseline" }, candidate: { prompt: "candidate" },
+    addedTools: ["vectorless_read"] }],
+  sourceHashes: { "src/graph.ts": "fixture" },
+  sourceClosureMethod: "recursive-local-static-imports-v1", sourceClosureFileCount: 1,
+  intendedLocalBgeFlagForBothArms: "flag=1", currentLocalBgeFlagEnabled: false,
+  sourceSetFrozen: false, goldFrozen: false, runtimeBuildVerified: false,
+  transitiveCodeClosureVerified: false, providerTariffsVerified: false,
+  paidCallAuthorizationConfirmed: false, readyForPaidEvaluation: false };
+const codeAndConfigBytes = new TextEncoder().encode(JSON.stringify(loadedCodeAndConfig));
 const sha = (bytes: Uint8Array) => createHash("sha256").update(bytes).digest("hex");
 const manifest: Ma24FrozenManifest = { schema: "ma24-g16-frozen-comparison-v2",
   sourceSetSha256: sha(sourceSetBytes), goldSnapshotSha256: sha(goldBytes),
@@ -30,7 +45,6 @@ const manifest: Ma24FrozenManifest = { schema: "ma24-g16-frozen-comparison-v2",
   protectedNoRegressionTags: [], cases: [{ caseId, caseSha256: ma24CaseQuerySha256(query),
     group: "publication", tags: [], expectedOutcome: "route", userId,
     knowledgeScope: ["industry"] }] };
-const loadedModelConfig = modeModelConfig("standard");
 const task = { id: runId, user_id: userId, conversation_id: "55555555-5555-4555-8555-555555555555",
   status: "running" as const,
   lease_token: leaseToken, lease_until: new Date(Date.now() + 600_000),
@@ -42,6 +56,7 @@ const task = { id: runId, user_id: userId, conversation_id: "55555555-5555-4555-
   model_config: loadedModelConfig };
 const conversation = { status: "deleted", message_count: 0, run_count: 1 };
 const fixture = { manifest, sourceSetBytes, goldBytes, codeAndConfigBytes,
+  loadedCodeAndConfig, nowUtcDate: "2026-10-15",
   task, conversation, runId, leaseToken, caseId,
   arm: "baseline" as const, loadedModelConfig };
 const bind = (changes: Partial<Parameters<typeof assertMa24EvaluationTaskBinding>[0]> = {}) =>
@@ -63,6 +78,16 @@ describe("MA24 evaluation task admission binding", () => {
       .toThrow("frozen Gold snapshot drift");
     expect(() => bind({ codeAndConfigBytes: new TextEncoder().encode("changed config") }))
       .toThrow("frozen code and config snapshot drift");
+  });
+  it("rejects loaded prompt, arm, source and model changes even when the frozen file hash matches", () => {
+    for (const change of [
+      { modePromptSha256: "changed" },
+      { arms: [{ ...loadedCodeAndConfig.arms[0], candidate: { prompt: "changed" } }] },
+      { sourceHashes: { "src/graph.ts": "changed" } },
+      { modelProfile: { routes: ["other"] } },
+    ]) expect(() => bind({ loadedCodeAndConfig: { ...loadedCodeAndConfig, ...change } }))
+      .toThrow(/drift/);
+    expect(() => bind({ nowUtcDate: "2026-10-16" })).toThrow(/UTC date drift/);
   });
   it("rejects a hash-matching Gold file with a missing reviewed source", () => {
     const invalid = new TextEncoder().encode(JSON.stringify({ ...gold,

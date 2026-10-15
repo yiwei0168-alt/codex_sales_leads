@@ -2,7 +2,7 @@
 import { createHash } from "node:crypto";
 import { execFileSync } from "node:child_process";
 import { readFile } from "node:fs/promises";
-import { assertMa24G15RuntimeBinding, type Ma24G15Preview } from "./lib/ma24-g15-runtime-binding";
+import { assertMa24G15RuntimeBinding, type Ma24G15Preview } from "../src/lib/knowledge/evaluation/ma24-g15-runtime-binding";
 
 const frozenPath = process.argv[2] ?? "docs/evidence/ma24-g15-config-preview-2026-10-15-v4.json";
 const frozenBytes = await readFile(frozenPath);

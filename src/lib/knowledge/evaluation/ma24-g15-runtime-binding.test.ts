@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { assertMa24G15RuntimeBinding, type Ma24G15Preview } from "../../../../scripts/lib/ma24-g15-runtime-binding";
+import { assertMa24G15RuntimeBinding, type Ma24G15Preview } from "./ma24-g15-runtime-binding";
 
 const preview = (): Ma24G15Preview => ({ schema: "ma24-g15-config-preview-v1",
   productPromptDateUtc: "2026-10-15", requiredRunPromptDateUtc: "2026-10-15",

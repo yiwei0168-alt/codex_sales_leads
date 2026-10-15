@@ -1,6 +1,7 @@
 import { tenantTransaction } from "../../rag/db";
 import type { AgentRun, ModelConfig } from "../../assistant/main/contracts";
 import { stableJson } from "../review-types";
+import { assertMa24G15RuntimeBinding, type Ma24G15Preview } from "./ma24-g15-runtime-binding";
 import { assertMa24FrozenSnapshotBytes, assertMa24GoldMatchesManifest,
   assertMa24SourceSetMatchesManifest, ma24ManifestSha256,
   type Ma24FrozenManifest, type Ma24GoldSnapshot,
@@ -18,6 +19,8 @@ export function assertMa24EvaluationTaskBinding(input: {
   sourceSetBytes: Uint8Array;
   goldBytes: Uint8Array;
   codeAndConfigBytes: Uint8Array;
+  loadedCodeAndConfig: Ma24G15Preview;
+  nowUtcDate: string;
   task: EvaluationTask;
   conversation: EvaluationConversation;
   runId: string;
@@ -27,7 +30,8 @@ export function assertMa24EvaluationTaskBinding(input: {
   loadedModelConfig: ModelConfig;
 }) {
   const { manifest, sourceSetBytes, goldBytes, codeAndConfigBytes,
-    task, conversation, runId, leaseToken, caseId, arm, loadedModelConfig } = input;
+    loadedCodeAndConfig, nowUtcDate, task, conversation, runId, leaseToken,
+    caseId, arm, loadedModelConfig } = input;
   if (manifest.schema !== "ma24-g16-frozen-comparison-v2" ||
     [manifest.sourceSetSha256, manifest.goldSnapshotSha256, manifest.codeAndConfigSha256]
       .some(hash => !/^[0-9a-f]{64}$/.test(hash)))
@@ -35,6 +39,9 @@ export function assertMa24EvaluationTaskBinding(input: {
   assertMa24FrozenSnapshotBytes(manifest, {
     sourceSet: sourceSetBytes, gold: goldBytes, codeAndConfig: codeAndConfigBytes,
   });
+  const frozenConfig = JSON.parse(new TextDecoder("utf-8", { fatal: true })
+    .decode(codeAndConfigBytes)) as Ma24G15Preview;
+  assertMa24G15RuntimeBinding(frozenConfig, loadedCodeAndConfig, nowUtcDate);
   const sourceSet = JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(sourceSetBytes)) as Ma24SourceSetSnapshot;
   assertMa24SourceSetMatchesManifest(manifest, sourceSet);
   const gold = JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(goldBytes)) as Ma24GoldSnapshot;
@@ -66,6 +73,7 @@ export function assertMa24EvaluationTaskBinding(input: {
     loadedModelConfig.profile?.mode !== "standard" ||
     !loadedModelConfig.model?.trim() || !loadedModelConfig.version?.trim() ||
     loadedModelConfig.model !== loadedModelConfig.profile.routes[0]?.model ||
+    stableJson(loadedModelConfig.profile) !== stableJson(loadedCodeAndConfig.modelProfile) ||
     stableJson(task.model_config) !== stableJson(loadedModelConfig))
     throw new Error("MA24 evaluation task does not match frozen input and leased execution");
   return { userId: entry.userId, caseId: entry.caseId,
