@@ -1,0 +1,26 @@
+{
+  "schema": "ma24-g15-g16-claim-binding-layer-correction-v1",
+  "date": "2026-10-16",
+  "supersedesBehaviorClaimIn": "docs/evidence/ma24-g15-preclaim-model-admission-2026-10-16.json",
+  "change": "The binding-only claim entry checks frozen/current G15 runtime identity without requiring model readiness; the dedicated G16 runner still requires model readiness before claiming or invoking any model or tool step.",
+  "reason": "The earlier direct-claim model readiness check prevented the isolated database's positive synthetic binding acceptance, although that entry makes no model call.",
+  "preview": "docs/evidence/ma24-g15-config-preview-2026-10-16-v20.json",
+  "runtimeBindingMatched": true,
+  "readyForModelCalls": false,
+  "readyForPaidEvaluation": false,
+  "checks": {
+    "focusedVitest": "4 files, 34 tests passed",
+    "typescript": "node node_modules/typescript/bin/tsc --noEmit passed",
+    "eslint": "targeted claim source and test passed",
+    "isolatedDatabaseClaim": "ma24-g16-explicit-claim-clone-v1 passed all 18 reported checks, including claimed-row-bound-to-frozen-input, model-free binding failure settlement and synthetic-rows-cleaned",
+    "runtimeBinding": "v20 frozen/current matched while readyForModelCalls remained false"
+  },
+  "modelCalls": 0,
+  "providerCalls": 0,
+  "productionWrites": 0,
+  "remaining": [
+    "Freeze an independently reviewed G14 source, question and Gold set",
+    "Complete G15 runtime, tariff and hard-limit preflight with authorization",
+    "Execute G16 real baseline and candidate runs only after paid admission becomes ready"
+  ]
+}
