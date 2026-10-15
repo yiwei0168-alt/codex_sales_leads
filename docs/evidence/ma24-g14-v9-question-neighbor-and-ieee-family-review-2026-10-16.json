@@ -1,0 +1,33 @@
+{
+  "schema": "ma24-g14-v9-question-neighbor-and-ieee-family-review-v1",
+  "date": "2026-10-16",
+  "command": "node scripts/run-tsx.cjs scripts/audit-ma24-g14-current-pool-neighbors-local.ts tmp/ma24-independent-quarantine/g14-current-draft-pool-v9-metadata-2026-10-16.json tmp/ma24-independent-quarantine/g14-current-pool-neighbors-v9-2026-10-16.json",
+  "scriptSha256": "4861a7cad29c02954e9b17c0d39255f60e01bc811cd968fbd67bd451d737e81d",
+  "poolSha256": "96459f096b17bafdd32dfedc18db924e0339ae53dd4b563ea1d2d7f78b88b9ed",
+  "privateNeighborReportSha256": "bcb0fcbe774fd9b50c0d6655479dd89ef22236170eef2beb38d3996811be089a",
+  "drafts": 27,
+  "localModel": "BAAI/bge-m3 revision 5617a9f61b028005a4858fdac845db406aefb181",
+  "cloudCalls": 0,
+  "highestCrossFamilyPairsReviewed": [
+    { "left": "fcc-2026-fixed-service-option-scope", "right": "ieee-80211-2025-amp-bands-modes", "cosine": 0.596074 },
+    { "left": "fcc-706-2026-school-entity-vs-student-denominator", "right": "govuk-bduk-taking-part-premises-vs-regional-ability", "cosine": 0.57117 },
+    { "left": "ieee-80211-2025-amp-bands-modes", "right": "ieee-auto-sd4addr-implementation", "cosine": 0.561438 },
+    { "left": "ieee-80211-2025-elc-optical-bands", "right": "ieee-auto-sd4addr-implementation", "cosine": 0.556979 },
+    { "left": "ieee-80211-2025-amp-bands-modes", "right": "nist-tn2363-ieee3388-assessment-and-profiles", "cosine": 0.556584 },
+    { "left": "etsi-38901-v195-isac-lower-power-clusters", "right": "ieee-80211-2025-amp-bands-modes", "cosine": 0.551601 }
+  ],
+  "manualQuestionReview": "The six highest cross-family question pairs do not request the same document-specific answer. The FCC/GOV.UK pair shares quantitative-comparison wording but uses different statistics; FCC/IEEE, ETSI/IEEE and NIST/IEEE pairs share communications terminology but ask different technical facts. The two IEEE deck pairs share the 802.11 umbrella but ask current amendment frequencies/modes or optical bands versus an automotive SD4ADDR implementation and EtherType.",
+  "ieeePublicationCheck": {
+    "overviewOfficialPage": "https://www.ieee802.org/11/presentation.html",
+    "overviewOfficialDescription": "IEEE 802.11 volunteer presentation about current projects, September 2025",
+    "sd4addrOfficialPage": "https://www.ieee802.org/11/Reports/auto_update.htm",
+    "sd4addrOfficialDescription": "July 2025 Automotive Topic Interest Group meeting contribution by University of Aveiro authors",
+    "crossDeckExtractedTextSharedEightTokenShingles": 0,
+    "provisionalFamilyFinding": "The two originals are separate IEEE 802.11 presentations with different authorship context and target facts; retain separate publication labels for now, while flagging their common IEEE umbrella for final family and derivative-exposure review. This does not approve either source as independent Gold."
+  },
+  "limitations": "BGE proximity is diagnostic, not a semantic-independence threshold. Manual review covers the six highest cross-family pairs in this current pool, not every historical prompt, derivative publication, image or provider exposure. The lexical check only covered extractable text.",
+  "approvedGoldCasesUnchanged": 5,
+  "fullSetFrozen": false,
+  "realDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}
