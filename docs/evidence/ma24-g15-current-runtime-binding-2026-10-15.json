@@ -1,0 +1,28 @@
+{
+  "schema": "ma24-g15-current-runtime-binding-v1",
+  "date": "2026-10-15",
+  "scope": "Read-only current source, prompt and tool-arm binding; no model or provider calls",
+  "previousPreview": "docs/evidence/ma24-g15-config-preview-2026-10-15-v4.json",
+  "previousPreviewSourceClosureFiles": 280,
+  "previousBinding": "sourceHashes drift",
+  "currentPreview": "docs/evidence/ma24-g15-config-preview-2026-10-15-v5.json",
+  "currentPreviewSha256": "58e8ee97bc210808243d3039ad69f6957c31779043ba29cad2af637150e2f364",
+  "currentSourceClosureFiles": 289,
+  "currentRuntimeBindingMatched": true,
+  "loadedPromptDateUtc": "2026-10-15",
+  "readyForModelCalls": false,
+  "missing": [
+    "local BGE flag disabled",
+    "source set not frozen",
+    "Gold not frozen",
+    "runtime build not verified",
+    "transitive code closure not verified",
+    "provider tariffs not verified",
+    "paid call authorization not confirmed",
+    "paid evaluation not ready",
+    "independent source/Gold and paid admission preflight not implemented"
+  ],
+  "modelCalls": 0,
+  "providerCalls": 0,
+  "g17ToG20Advanced": false
+}
