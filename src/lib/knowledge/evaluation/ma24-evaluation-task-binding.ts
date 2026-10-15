@@ -1,8 +1,10 @@
 import { tenantTransaction } from "../../rag/db";
 import type { AgentRun, ModelConfig } from "../../assistant/main/contracts";
 import { stableJson } from "../review-types";
-import { assertMa24FrozenSnapshotBytes, assertMa24SourceSetMatchesManifest, ma24ManifestSha256,
-  type Ma24FrozenManifest, type Ma24SourceSetSnapshot } from "./ma24-independent-comparison";
+import { assertMa24FrozenSnapshotBytes, assertMa24GoldMatchesManifest,
+  assertMa24SourceSetMatchesManifest, ma24ManifestSha256,
+  type Ma24FrozenManifest, type Ma24GoldSnapshot,
+  type Ma24SourceSetSnapshot } from "./ma24-independent-comparison";
 
 type EvaluationTask = Pick<AgentRun, "id" | "user_id" | "status" | "input" |
   "model_config" | "execution_kind" | "execution_spec" | "lease_token"> & {
@@ -33,6 +35,8 @@ export function assertMa24EvaluationTaskBinding(input: {
   });
   const sourceSet = JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(sourceSetBytes)) as Ma24SourceSetSnapshot;
   assertMa24SourceSetMatchesManifest(manifest, sourceSet);
+  const gold = JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(goldBytes)) as Ma24GoldSnapshot;
+  assertMa24GoldMatchesManifest(manifest, gold);
   const spec = task.execution_spec as Record<string, unknown> | null;
   const entry = manifest.cases.find(item => item.caseId === caseId);
   const question = sourceSet.cases.find(item => item.caseId === caseId);

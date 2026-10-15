@@ -1,0 +1,20 @@
+{
+  "schema": "ma24-g16-gold-content-admission-v1",
+  "date": "2026-10-15",
+  "scope": "pre-execution Gold structure gate; no model execution",
+  "gate": ["snapshot byte hashes", "Gold case count and identity", "case question hashes",
+    "expected answers", "reviewer and review time", "precise source coordinates for route cases"],
+  "checks": {
+    "focusedVitest": "24 passed across task binding and independent comparison",
+    "typescript": "npx.cmd tsc --noEmit passed",
+    "focusedEslint": "four changed TypeScript files passed",
+    "isolatedClone": "valid synthetic Gold accepted; hash-matching missing-source Gold rejected",
+    "providerCalls": 0
+  },
+  "humanGoldApproval": false,
+  "sourceIndependenceProven": false,
+  "approvedGoldCount": 0,
+  "dedicatedRunnerConnected": false,
+  "realDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}

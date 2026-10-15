@@ -1,5 +1,8 @@
 # PRD v0.3 Acceptance Report
 
+2026-10-15 G16 评测入场现验证 Gold 内容结构与清单逐题对应；只改 Gold 和清单哈希仍不能绕过缺失的来源坐标。24 项相关测试、类型/lint 和隔离克隆正反例通过。[工程收据](evidence/ma24-g16-gold-content-admission-2026-10-15.json)。人工 Gold 批准、整套来源独立性、付费准入和真实双路质量仍未完成。G17–G20 暂停。
+
+
 2026-10-15 G16 入场校验现同时绑定来源题集、Gold 和代码配置三个冻结文件的原始字节哈希；隔离克隆验证 Gold/配置篡改被拒，返回给执行器的仅是题目、账号、路径和知识范围。[工程收据](evidence/ma24-g16-three-snapshot-admission-binding-2026-10-15.json)。字节一致不证明 Gold 内容已审核或付费/质量门槛通过；Gold 0、真实双路 0。G17–G20 暂停。
 
 

@@ -5,7 +5,8 @@ const mocks = vi.hoisted(() => ({ tenantTransaction: vi.fn() }));
 vi.mock("../../rag/db", () => ({ tenantTransaction: mocks.tenantTransaction }));
 import { assertMa24EvaluationTaskBinding, verifyMa24EvaluationTaskBinding } from "./ma24-evaluation-task-binding";
 import { ma24CaseQuerySha256, ma24ManifestSha256,
-  type Ma24FrozenManifest, type Ma24SourceSetSnapshot } from "./ma24-independent-comparison";
+  type Ma24FrozenManifest, type Ma24GoldSnapshot,
+  type Ma24SourceSetSnapshot } from "./ma24-independent-comparison";
 
 const userId = "11111111-1111-4111-8111-111111111111";
 const runId = "22222222-2222-4222-8222-222222222222";
@@ -15,7 +16,12 @@ const query = "What does the publication report?";
 const sourceSet: Ma24SourceSetSnapshot = { schema: "ma24-g16-source-set-v1",
   cases: [{ caseId, query }] };
 const sourceSetBytes = new TextEncoder().encode(JSON.stringify(sourceSet));
-const goldBytes = new TextEncoder().encode("synthetic Gold kept outside model input");
+const gold: Ma24GoldSnapshot = { schema: "ma24-g16-gold-snapshot-v1", cases: [{
+  caseId, caseSha256: ma24CaseQuerySha256(query), expectedAnswer: "Synthetic answer",
+  expectedSources: [{ assetSha256: "c".repeat(64), unitIndex: 1, excerpt: "Synthetic evidence" }],
+  reviewer: "Synthetic reviewer", reviewedAt: "2026-10-15T00:00:00Z", note: "Fixture only",
+}] };
+const goldBytes = new TextEncoder().encode(JSON.stringify(gold));
 const codeAndConfigBytes = new TextEncoder().encode("synthetic code and configuration snapshot");
 const sha = (bytes: Uint8Array) => createHash("sha256").update(bytes).digest("hex");
 const manifest: Ma24FrozenManifest = { schema: "ma24-g16-frozen-comparison-v2",
@@ -54,6 +60,13 @@ describe("MA24 evaluation task admission binding", () => {
       .toThrow("frozen Gold snapshot drift");
     expect(() => bind({ codeAndConfigBytes: new TextEncoder().encode("changed config") }))
       .toThrow("frozen code and config snapshot drift");
+  });
+  it("rejects a hash-matching Gold file with a missing reviewed source", () => {
+    const invalid = new TextEncoder().encode(JSON.stringify({ ...gold,
+      cases: [{ ...gold.cases[0], expectedSources: [] }] }));
+    expect(() => bind({ goldBytes: invalid,
+      manifest: { ...manifest, goldSnapshotSha256: sha(invalid) } }))
+      .toThrow("Invalid MA24 frozen Gold case");
   });
   it("rejects a different principal, task, lease, status or execution kind", () => {
     for (const changed of [

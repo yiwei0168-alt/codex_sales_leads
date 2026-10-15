@@ -116,8 +116,9 @@ function validateManifest(manifest: Ma24FrozenManifest) {
     throw new Error("MA24 permission gate lacks a denied-access case");
 }
 
-function validateGold(manifest: Ma24FrozenManifest, gold: Ma24GoldSnapshot) {
-  if (gold.schema !== "ma24-g16-gold-snapshot-v1" || gold.cases.length !== manifest.cases.length)
+export function assertMa24GoldMatchesManifest(manifest: Ma24FrozenManifest, gold: Ma24GoldSnapshot) {
+  if (!gold || gold.schema !== "ma24-g16-gold-snapshot-v1" ||
+    !Array.isArray(gold.cases) || gold.cases.length !== manifest.cases.length)
     throw new Error("Incomplete MA24 frozen Gold snapshot");
   const cases = new Map(manifest.cases.map(item => [item.caseId, item]));
   const seen = new Set<string>();
@@ -151,7 +152,7 @@ export function scoreMa24IndependentComparison(input: {
 }) {
   const { manifest, gold, runs, verdicts } = input;
   validateManifest(manifest);
-  validateGold(manifest, gold);
+  assertMa24GoldMatchesManifest(manifest, gold);
   const manifestHash = ma24ManifestSha256(manifest);
   const cases = new Map(manifest.cases.map(item => [item.caseId, item]));
   const goldCases = new Map(gold.cases.map(item => [item.caseId, item]));
