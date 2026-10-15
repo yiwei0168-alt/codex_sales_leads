@@ -22,6 +22,8 @@
 
 同日 R4 XLSX 原件补查：ACMA 官方链接再试 120 秒仍为 0 字节，继续只作元数据候选。另从 NIST 官方工业无线测量数据页直链取得 2015 年 XLSX 原件，六张工作表和目标 `Ray Tracing Results` 原格、公式及缓存值已核；1 m、5.4 GHz 的自由空间/地面反射数值题进入草案。本地旧 350 行近邻前十未见同题，当前抽取器保留目标表与原格，但整件仍有三处视觉待审，未上传登记、未计 Gold。许可、整套独立性及产品引用仍需审。[NIST XLSX 收据](evidence/ma24-g14-nist-industrial-wireless-xlsx-candidate-2026-10-15.json)。
 
+同日 R4 NIST XLSX 原图续验：三处待审工作表实际含四个审核块，其中一块为 `Title Sheet` 的 62 个空文件槽位查找错误，另三块为图像/图表。原件的 6 张唯一嵌图、另一页重复的路线图和 Excel 只读导出的原生曲线图均已逐项目视核对，并按图像哈希记录有限转写及禁止推断范围。提案尚未写入产品；整件审核、登记、原格引用与质量 Gold 仍待验。[原图提案](evidence/ma24-g14-nist-industrial-wireless-xlsx-visual-original-review-2026-10-15.json)。
+
 2026-10-15 R0 类型检查范围补验：`tsconfig` 排除 Git 忽略的 `tmp/` 验收工作区后，完整 `npm run typecheck` 和带生成类型的 `npm run build` 通过；TypeScript 清单仍覆盖产品 `src/` 与正式 `scripts/`。新候选 build 在一次性恢复库通过迁移 127–134 和新旧 Web 兼容检查。此为构建与克隆证据，候选发布包、正式迁移、分域试点和实际回滚仍未完成。[收据](evidence/ma24-g01-typecheck-scope-build-2026-10-15.json)。
 
 2026-10-15 G14 新长 PDF 候选：NIST TN 2363 官方原件共 44 个物理页，本地当前抽取器得到 33 页成功、11 页待视觉审核；11 页已按原页逐页检查，其中 8 页的图表/表格仍须结构转录和正式审核。第 3.3/5.2 节跨页题仅为草案，旧 300 题的向量近邻筛查未见同题，但完整来源家族与全题集污染审计未完成。禁止把离线抽取、原页核对或零哈希命中当作独立 Gold；本件尚无产品登记和模型回答。[候选收据](evidence/ma24-g14-nist-tn2363-long-pdf-candidate-2026-10-15.json)。

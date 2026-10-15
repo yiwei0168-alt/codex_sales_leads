@@ -1,0 +1,45 @@
+{
+  "schema": "ma24-g14-nist-industrial-wireless-xlsx-visual-original-review-v1",
+  "date": "2026-10-15",
+  "scope": "Original workbook media, Excel-rendered native chart and cached-error cells; read-only proposals, not product judgments",
+  "sourceSha256": "0132c779ab57132ae5b5718b1b1440b52ed66bd48bc62d953336c90f7f2cb814",
+  "sourcePath": "tmp/ma24-independent-quarantine/nist-smartmanufacturing-metadata.xlsx",
+  "extractionArtifactSha256": "65781df9d501cab4116b5d4b3cbc23fa315784de5e5b6fd6fb2dcdd2d87f0ae1",
+  "pendingReviewBlocks": ["sheet-1-table", "sheet-1-visual-1", "sheet-4-visual-1", "sheet-6-visual-1"],
+  "qualitySummaryInterpretation": "Three sheet units are pending, comprising one cached-error table block and three sheet-level visual blocks. The original extraction's pending-ocr count 3 is sheet-level, not a count of review blocks.",
+  "cachedErrorTable": {
+    "sheet": "Title Sheet",
+    "blockId": "sheet-1-table",
+    "checkedCells": ["H29", "G32:I35", "G36:I66"],
+    "fileCountCell": 4,
+    "populatedFilenameCells": ["G32", "G33", "G34", "G35"],
+    "unusedFilenameCells": "G36:G66 are blank",
+    "cachedErrorCells": "H36:I66 contain 62 #N/A values from VLOOKUP formulas against blank filename inputs",
+    "proposal": "Keep the four populated file index entries as source context. Exclude the 62 #N/A cached outputs from facts and search; they do not represent measurement observations.",
+    "limit": "This proposal does not validate the historical local Q: file paths or the referenced external MAT measurements."
+  },
+  "embeddedMedia": [
+    { "part": "xl/media/image1.jpeg", "sha256": "cf2cf323aa6a59fb5ca7da1eeee2f244b71c8a9be632571c412fdecfef2fe5ee", "location": "Title Sheet", "proposal": "Evidence only of a photographed industrial measurement corridor and equipment; no numeric measurement or person identity inferred." },
+    { "part": "xl/media/image2.jpeg", "sha256": "26152e672a715aee1771a0cdf624c993abb1a0f418e76e92e17029be7667dec8", "location": "Title Sheet", "proposal": "Evidence only of the visible industrial corridor, equipment and a person; no identity, procedure or measurement inferred." },
+    { "part": "xl/media/image3.jpeg", "sha256": "0136b054eadb7d9a1d3d978112d45bb69a79f72a175b90ee7b3f0575dfb02c97", "location": "Title Sheet", "proposal": "Evidence only of the visible corridor and antenna/equipment arrangement; no numeric performance inferred." },
+    { "part": "xl/media/image4.png", "sha256": "16cf80f2b8d21be1ad98393f56936f5444ec26f9739954264f3f54607791e103", "location": "Title Sheet and Data_Physical_Location", "proposal": "Evidence map of the Gaithersburg route with numbered checkpoints, transmitter/receiver marks and north arrow; the same media bytes appear on both sheets. Use sheet and image coordinates rather than counting it as two independent sources." },
+    { "part": "xl/media/image5.png", "sha256": "f986fd40e6de8015334d5ac0d2ed126c322afafe1b96fa5e59b4ca35deeed759", "location": "Title Sheet", "proposal": "Evidence diagram labelled Outer Run, with route points and notes identifying TX1, TX2 and TX2b and common/start-finish locations. Preserve the printed labels and route direction; do not infer distances from the drawing." },
+    { "part": "xl/media/image6.png", "sha256": "5f343a49eec55f8a2279e44b17703c01a4ae902f91c15b0e9a620411864d4ac3", "location": "Title Sheet", "proposal": "Evidence diagram labelled Inner Run, with starred shared points, I-prefixed inner points, arrows and the visible note that locations 3 and 6.1 were two-minute data collections. Do not infer numerical distances or timings for other points." }
+  ],
+  "nativeChart": {
+    "sheet": "Ray Trace Graph",
+    "sourcePart": "xl/charts/chart1.xml",
+    "sourcePartSha256": "d4fb15841d0e225ca59594afe56bbd1458bf8d77326ada61919bd0b01e09ae5d",
+    "renderMethod": "Microsoft Excel opened the original read-only with macros disabled and links not updated; native chart Export(PNG) saved only to the ignored quarantine directory; workbook closed without saving.",
+    "renderPath": "tmp/ma24-independent-quarantine/nist-ray-trace-original-chart.png",
+    "renderSha256": "c358c24b74a6f04c78d273a33fd609ca37a5a68b13a32e9d262f4beb39b16948",
+    "visibleReview": "Four plotted series with legend labels Free Space, Path Loss (dB) at 2.245 Ghz, Free Space Loss (dB) R 5.4 GHz, and Path Loss (dB) at 5.4 Ghz. The chart has no visible title or axis units.",
+    "proposal": "Treat the chart as visual evidence of the plotted trends. Use the Ray Tracing Results table for exact values and units; do not derive precise measurements from pixel positions or claim the chart itself labels its axes."
+  },
+  "productReviewSaved": false,
+  "documentRegistered": false,
+  "goldCreated": 0,
+  "modelCalls": 0,
+  "productionWrites": 0,
+  "next": "Run actual upload and review on a disposable clone; compare every review candidate to these original media, then verify that excluded cached errors are not indexed and that the target table retains cell citations."
+}
