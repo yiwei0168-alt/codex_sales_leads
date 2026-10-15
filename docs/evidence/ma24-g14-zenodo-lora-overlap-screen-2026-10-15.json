@@ -1,0 +1,30 @@
+{
+  "schema": "ma24-g14-zenodo-lora-overlap-screen-v1",
+  "date": "2026-10-15",
+  "candidateReceipt": "ma24-g14-zenodo-lora-cansat-pptx-candidate-2026-10-15.json",
+  "candidateReceiptSha256": "68735550303d34983203e00ba50d63229d6bb8b71509a9c86de06c13ab8d3938",
+  "draftId": "zenodo-lora-cansat-architecture-crc-storage",
+  "auditReceipt": "ma24-g14-draft-pool-exclusion-audit-2026-10-15.json",
+  "auditReceiptSha256": "87fbcc40cf74c5f0276670cddc21ae7d61fd72b7ca764a47bcd987e7be933f7d",
+  "manifestSha256": "a175d9fb5c6b708dfd8cd9e42b4f0e3fe58b9183064c786b21aa083df42dc5b1",
+  "method": "Local BAAI/bge-m3 nearest-neighbor diagnostic on the candidate against 300 unique historical queries and 17 other retained current draft questions; review nearest question text manually. Similarity alone does not establish independence.",
+  "historicalScreen": {
+    "outputPath": "tmp/ma24-independent-quarantine/zenodo-lora-cansat-2026-old-neighbors.json",
+    "outputSha256": "8e53ad2636a27e2737a7b35a6b5fee34941befcc5b6fa4a82296553ad16ef547",
+    "topScore": 0.482873,
+    "topQuestion": "打开刚才那个型号的新版资料",
+    "manualReview": "Top ten were datasheet/open-new-version requests, with no matching LoRa architecture, CRC and ground-station storage answer."
+  },
+  "currentPoolScreen": {
+    "outputPath": "tmp/ma24-independent-quarantine/g14-current-pool-neighbors-27-drafts-2026-10-15.json",
+    "outputSha256": "4b2387d1e45776f2289cf1524f932cc0f449b572529066e9db1f0626a3175032",
+    "retainedQuestions": 18,
+    "topScore": 0.526707,
+    "topQuestionId": "nist-tn2363-ieee3388-assessment-and-profiles",
+    "manualReview": "Five nearest questions concern different NIST, ETSI, ZBW and IEEE source topics; none asks for the LoRa sensor-to-ground chain, CRC stage or storage step."
+  },
+  "boundary": "Bounded local text and vector screens do not prove no development exposure or final semantic independence. Recheck the complete final source family, question and answer set before Gold freeze.",
+  "semanticIndependenceProven": false,
+  "goldCreated": 0,
+  "cloudCalls": 0
+}

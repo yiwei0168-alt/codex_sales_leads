@@ -1,0 +1,53 @@
+{
+  "schema": "ma24-g14-zenodo-lora-cansat-pptx-candidate-v1",
+  "date": "2026-10-15",
+  "stage": "Original-byte and target-slide checked draft; not Gold",
+  "publisherRecord": "https://zenodo.org/records/19963593",
+  "sourceUrl": "https://zenodo.org/records/19963593/files/Smart-Long-Range-LoRa-Telemetry-for-CanSat-Remote-Monitoring-Missions%20%281%29.pptx?download=1",
+  "doi": "https://doi.org/10.5281/zenodo.19963593",
+  "sourceLocalPath": "tmp/ma24-independent-quarantine/zenodo-lora-cansat-2026.pptx",
+  "sha256": "907049721a1359658787a026cbeace9b93be4879b75048b5c5a7debea51dedec",
+  "bytes": 20363880,
+  "publisherMd5Matched": "2c67bccff1499c014d14c3f66f8129ea",
+  "licenseBoundary": "The Zenodo record identifies the presentation as CC BY 4.0. This candidate uses short attributed facts from the authors' architecture and telemetry slides; referenced third-party material and embedded imagery are not reproduced as a deliverable.",
+  "originalInspection": {
+    "slideCount": 19,
+    "mediaParts": 23,
+    "macroParts": 0,
+    "externalRelationships": "10 gamma.app layout hyperlinks; no external content needed to read the target slide text",
+    "powerPointOpenedReadOnlyAndClosedWithoutSave": true,
+    "slide13RenderSha256": "50dd0221e156dff82f73445900cda96f82a6792dbd121e191a1904b8587b903d",
+    "slide15RenderSha256": "2642c99ecdc5db38dc2a2d5719adbec9397d0b6b794ea48f905b635a9e5eeb5b",
+    "slide17RenderSha256": "707746a8595021116f617b1d5c64bbc882968dab8784841a6c2127294e2b1f8f",
+    "targetReview": "Slide 13 has Sensors GPS/BMP180 -> Microcontroller ESP32/Arduino -> LoRa Radio SX127x -> Ground Station. Slide 15's arrows order Read Sensors, Build Packet + CRC, Transmit LoRa Frame, Decode + Deliver Payload, Display + Store (CSV/DB). Slide 17 lists planned parameters, not field measurements."
+  },
+  "localExposureScreen": {
+    "currentRegistryExactHash": { "assets": 0, "uploadJobs": 0, "historicalGoldRows": 0 },
+    "trackedBaseline": "git grep of distinctive title/author terms at commit 5632888e in docs/src/scripts/experiments found no matches",
+    "searchedLocalText": "Current docs/src/scripts/experiments/tmp text, JSON and logs outside quarantine found no distinctive title/author term matches",
+    "independenceProven": false
+  },
+  "offlineProductExtraction": {
+    "extractorVersion": "layout-v2.0.10",
+    "artifactPath": "tmp/ma24-independent-quarantine/zenodo-lora-cansat-2026.layout-v2.0.10.extraction.json",
+    "artifactSha256": "4a628ae1c4181fccc6474f143881a562f2b8d1932bd90c15a55b3d85370afb61",
+    "totalBlocks": 232,
+    "qualitySummary": { "success": 7, "blank": 0, "pending-ocr": 12, "failed": 0 },
+    "slide13SourceBlocks": ["slide-13-text-1", "slide-13-text-2", "slide-13-text-3", "slide-13-text-6"],
+    "slide15SourceBlocks": ["slide-15-text-4", "slide-15-text-7", "slide-15-text-10", "slide-15-text-13", "slide-15-text-16"],
+    "targetVisualBlocksPending": ["slide-13-visual-7", "slide-13-visual-8", "slide-13-visual-9", "slide-15-visual-3", "slide-15-visual-6", "slide-15-visual-9", "slide-15-visual-12", "slide-15-visual-15"],
+    "registrationGate": "Twelve slides contain unresolved visual content; no whole-document registration or user-visible citation is claimed."
+  },
+  "draftQuestion": {
+    "id": "zenodo-lora-cansat-architecture-crc-storage",
+    "status": "draft only; not Gold",
+    "question": "按这份 2026 年 CanSat LoRa 遥测方案第 13、15 页，传感器/GPS 数据从机载端到地面站依次经过哪些组件？哪一步加入 CRC，LoRa 发射后地面端怎样处理并保存数据？请按方案原页说明，不把设计当作已实测结果。",
+    "draftAnswer": "第 13 页的方案链路是传感器（GPS/BMP180）→ 微控制器（ESP32/Arduino）→ LoRa 射频（SX127x）→ 地面站。第 15 页在微控制器构造数据包时加入 CRC；LoRa 帧发出后，地面站接收器解码并取出遥测载荷，界面显示并以 CSV/数据库保存。课件把这些列为设计流程，没有在这两页给出完成外场验证的证据。",
+    "sourceCoordinates": ["slide 13: slide-13-text-1/2/3/6 and arrows", "slide 15: slide-15-text-4/7/10/13/16 and arrows"]
+  },
+  "publicationFamilyBoundary": "This 2026 Arab International University CanSat project is a different publication family from the ZBW open-science deck and the IEEE 802.11 presentations; full cross-source and question exposure audit is still required.",
+  "pending": ["Review all unresolved visual objects before product registration", "Verify private product readEvidence and user-visible slide citations", "Audit question and answer overlap across the final set", "Freeze Gold separately from model input"],
+  "goldCreated": 0,
+  "modelAnswerCalls": 0,
+  "productionWrites": 0
+}

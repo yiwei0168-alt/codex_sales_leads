@@ -3,10 +3,10 @@
   "date": "2026-10-15",
   "scope": "Current ma24-g14-*.json draftQuestion/draftQuestions fields only; pre-freeze inventory, not an independent Gold set",
   "reproducibility": {
-    "inputFilesWithDrafts": 17,
-    "draftEntries": 26,
-    "uniqueDraftIds": 26,
-    "manifestSha256": "571768b374c03b678326880c01c91b70b392b82067eaf23ba86d342bc0e5f917",
+    "inputFilesWithDrafts": 18,
+    "draftEntries": 27,
+    "uniqueDraftIds": 27,
+    "manifestSha256": "a175d9fb5c6b708dfd8cd9e42b4f0e3fe58b9183064c786b21aa083df42dc5b1",
     "manifestConstruction": "Sort docs/evidence/ma24-g14-*.json by name; for each JSON containing draftQuestions or draftQuestion, record filename, byte SHA-256 and sorted draft IDs; SHA-256 the compact JSON.stringify of the row array."
   },
   "excludedFromIndependentGold": [
@@ -37,7 +37,7 @@
     }
   ],
   "remainingDraftsForFullSetReview": {
-    "count": 17,
+    "count": 18,
     "ids": [
       "etsi-38901-v195-inf-blocker-parameters",
       "etsi-38901-v195-isac-lower-power-clusters",
@@ -55,7 +55,8 @@
       "ons-5g-2026-highland-outdoor-denominator",
       "zbw-2025-dmp-lifecycle-and-access-questions",
       "zbw-2025-open-data-technical-legal-restriction",
-      "zbw-2025-open-science-five-individual-benefits"
+      "zbw-2025-open-science-five-individual-benefits",
+      "zenodo-lora-cansat-architecture-crc-storage"
     ]
   },
   "familyRulesForNextAudit": [
@@ -63,7 +64,8 @@
     "The three NIST drafts use one TN 2363 original; choose and freeze at the family level.",
     "The NIST industrial-wireless measurement workbook is a different 2015 original from TN 2363; its own source-use, extraction-review and semantic independence gates remain open.",
     "The three ZBW drafts use one 2025 slide deck; distinct questions do not create distinct source families.",
-    "The four IEEE 2025 draft questions come from two presentations; their source-use boundary and family relationship remain undecided and must not be silently counted."
+    "The four IEEE 2025 draft questions come from two presentations; their source-use boundary and family relationship remain undecided and must not be silently counted.",
+    "The 2026 Zenodo CanSat LoRa deck is a separate original and publisher family from ZBW and IEEE; twelve visually complex slides remain unresolved, so its draft is not Gold."
   ],
   "nextGate": "Audit complete final source families, original-byte permissions, question/answer overlap and development exposure; freeze Gold and exact answer coordinates separately from model inputs. Recompute this manifest after any draft changes.",
   "goldCreated": 0,
