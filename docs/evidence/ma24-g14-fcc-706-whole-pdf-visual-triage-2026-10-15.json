@@ -1,0 +1,40 @@
+{
+  "schema": "ma24-g14-fcc-706-whole-pdf-visual-triage-v1",
+  "date": "2026-10-15",
+  "scope": "Private visual triage of all rendered pages; no final page-level product decisions",
+  "source": "https://docs.fcc.gov/public/attachments/FCC-26-55A1.pdf",
+  "sourceSha256": "805e0e5b954775059ad535ae650c955935758a88f2a20ec0e6554e77f0e61154",
+  "physicalPages": 178,
+  "renderCommand": "python scripts/prepare_pdf_visual_review.py --input tmp/ma24-independent-candidates/fcc-26-55.pdf --artifact tmp/ma24-independent-candidates/fcc-26-55.layout-v2.0.9.extraction.json --output tmp/ma24-independent-quarantine/fcc-26-55-visual-review",
+  "privateReviewPackage": "tmp/ma24-independent-quarantine/fcc-26-55-visual-review/review.json",
+  "privateReviewPackageSha256": "27441a7bb1854545078f89b2879057a7464e685a395e37765de2bdad80d4c969",
+  "renderedPages": 178,
+  "uniqueAndCompletePhysicalPageNumbers": true,
+  "contactSheetsInspected": 12,
+  "provisionalVisualEvidence": {
+    "ranges": ["17-26", "28-32", "53-54", "67-172"],
+    "pageCount": 123,
+    "basis": "Charts or blue-header tables visible in contact sheets; retain and inspect original-size page content before final evidence text."
+  },
+  "provisionalTextOnlyOrDecorationPages": 55,
+  "targetOriginalSizeReview": {
+    "page27": "Paragraphs 47-48 are readable text. The approximately 78% value is an entity measure in 2024.",
+    "page28": "Paragraph 49 is readable text. Figure 12 is a substantive table, including the 2025 Overall 52% student measure; retain as visual evidence.",
+    "page53": "Figure 17 is another substantive table and confirms that the main-body table ranges do not end at page 32."
+  },
+  "currentExtractorReplay": {
+    "version": "layout-v2.0.10",
+    "artifactSha256": "6724008a1138a5e83dc4439e42ed4f75176154e5bf9a0d738dbd2f339cd2d0d4",
+    "blocks": 2584,
+    "pendingVisualPages": 178,
+    "blockIdPageTypeTextQualityAndBBoxEqualToV2_0_9": true,
+    "targetTextBlockIdsUnchanged": ["page-27-block-3", "page-28-block-3", "page-28-block-5"]
+  },
+  "remaining": "Inspect every provisional evidence and text-only page at original size; bind final judgments to the current extraction artifact, save and read back visual decisions in an isolated product clone, then review FCC family Gold and exact citations.",
+  "finalVisualJudgments": 0,
+  "productReviewDecisionsSaved": 0,
+  "independentGoldAdded": 0,
+  "modelCalls": 0,
+  "externalCalls": 0,
+  "g17ToG20Advanced": false
+}
