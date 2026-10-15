@@ -1,0 +1,48 @@
+{
+  "schema": "ma24-g14-ntia-local-rollout-exposure-v1",
+  "date": "2026-10-16",
+  "sourceFamily": "NTIA/NASA Report 25-01, 18 GHz Band Report",
+  "firstGitRegistration": "02818f44 at 2026-10-15T05:36:02Z",
+  "privateScript": "tmp/ma24-independent-quarantine/audit-ntia-rollout-exposure.py",
+  "privateScriptSha256": "5c2850a34cfcd4341f0c72d55a3ed0c6c45cd3db75ebea80323e73cf2eea56c5",
+  "scope": {
+    "retainedLocalCodexRolloutFilesAtFinalScan": 114,
+    "jsonlRecordsAtFinalScan": 172420,
+    "malformedTimestampAmongMatchingRecords": 0,
+    "caseInsensitiveExactPatterns": [
+      "ntia report 25-01",
+      "18 ghz band report",
+      "ntia-18ghz-g117-iss-footnote-and-manual-recommendation",
+      "18-ghz-band-study-report.pdf",
+      "ff6074c82f7c6abbab80a792ad3d1fae111074f64a492395d2c3c7b78f0c8e42"
+    ]
+  },
+  "observation": {
+    "firstMatchingRecordUtc": "2026-10-15T05:30:34.946Z",
+    "lastPreRegistrationMatchingRecordUtc": "2026-10-15T05:35:47.173Z",
+    "preRegistrationPatternHitsAcrossRecordsAndTerms": 78,
+    "postRegistrationPatternHitsAcrossRecordsAndTerms": 506,
+    "firstCaseIdMatchUtc": "2026-10-15T05:33:24.562Z",
+    "firstOriginalPdfHashMatchUtc": "2026-10-15T05:31:22.047Z",
+    "context": "The earliest retained match is a search result and search preparation in the same NTIA source-discovery window, about five and a half minutes before the candidate's first Git registration. No selected source-specific pattern matched earlier in the retained local rollout scan."
+  },
+  "falsePositiveCorrection": "The initial broad substring G117 matched unrelated encoded character streams as early as September 24. Those hits were inspected and excluded; the final scan uses source-specific title, file, case ID and PDF hash patterns instead. The broad count is not used to claim earlier source exposure.",
+  "currentProvisionalPoolCrossCheck": {
+    "poolPath": "tmp/ma24-independent-quarantine/g14-current-draft-pool-v7-dbs-current-2026-10-16.json",
+    "poolSha256": "770a5201492be9df8c7e1e93e8d13ac1d1be9c66fad4c02bb36f992ad3bb2626",
+    "publicationDrafts": 25,
+    "ntiaFamilyDrafts": 1,
+    "otherPublicationRowsWithExactG117TitleOrReportId": 0,
+    "nearestOtherQuestion": "nist-tn2363-delay-profile-and-5g-tsn-validation",
+    "nearestCosine": 0.523879,
+    "manualFinding": "The NIST neighbor concerns industrial 5G-TSN delay validation and does not request the NTIA report's FSS/ISS classification, proposed federal relay footnote or non-federal priority caveat. This is a bounded overlap screen, not semantic independence proof."
+  },
+  "limits": [
+    "Pattern-hit counts are not distinct exposure events; one record can contain several terms.",
+    "This bounded scan does not cover unrecorded prompts, deleted logs, arbitrary binary derivatives, remote systems or provider-side knowledge.",
+    "Candidate discovery shortly before Git registration does not by itself prove independent Gold eligibility; user review, family decision and full-set contamination review remain open."
+  ],
+  "independentGoldApproved": false,
+  "realDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}
