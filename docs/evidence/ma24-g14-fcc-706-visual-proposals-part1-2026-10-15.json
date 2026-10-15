@@ -1,0 +1,308 @@
+{
+  "schema": "ma24-g14-fcc-706-visual-proposals-part1-v1",
+  "date": "2026-10-15",
+  "stage": "First 32 original-page-bound proposals; not saved product decisions",
+  "sourceSha256": "805e0e5b954775059ad535ae650c955935758a88f2a20ec0e6554e77f0e61154",
+  "extractionArtifactSha256": "6724008a1138a5e83dc4439e42ed4f75176154e5bf9a0d738dbd2f339cd2d0d4",
+  "renderPackageSha256": "27441a7bb1854545078f89b2879057a7464e685a395e37765de2bdad80d4c969",
+  "physicalPageRange": [
+    1,
+    32
+  ],
+  "proposedEvidence": 15,
+  "proposedDecoration": 17,
+  "judgments": [
+    {
+      "physicalPage": 1,
+      "blockId": "page-1-visual-review",
+      "originalRenderSha256": "ff725736822c5d2432f2aa3dba04cbaaa85dd7a6d675700c9aae41dc1ba2a6f2",
+      "proposal": "decoration",
+      "visualFeature": "No separate chart, diagram, map or table seen in contact sheet; successful text blocks retained.",
+      "successfulTextBlocksOnPage": 21,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 2,
+      "blockId": "page-2-visual-review",
+      "originalRenderSha256": "03b976e8f4668356373be43f8f9529697dcac3e8eb3eeaa6a8f5f12025fbb271",
+      "proposal": "decoration",
+      "visualFeature": "No separate chart, diagram, map or table seen in contact sheet; successful text blocks retained.",
+      "successfulTextBlocksOnPage": 13,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 3,
+      "blockId": "page-3-visual-review",
+      "originalRenderSha256": "b44482599b1696c34df9fb62b45f3693fec97024f73c5821060424d6ae1b13d5",
+      "proposal": "decoration",
+      "visualFeature": "No separate chart, diagram, map or table seen in contact sheet; successful text blocks retained.",
+      "successfulTextBlocksOnPage": 18,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 4,
+      "blockId": "page-4-visual-review",
+      "originalRenderSha256": "ab5b4ccb20a5950dfc8f95b689a402b84dbb7164a793aed005f8969dcc07c734",
+      "proposal": "decoration",
+      "visualFeature": "No separate chart, diagram, map or table seen in contact sheet; successful text blocks retained.",
+      "successfulTextBlocksOnPage": 12,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 5,
+      "blockId": "page-5-visual-review",
+      "originalRenderSha256": "fe207d9a5160c60a3e2cd5b6f9133ecf461ec17935e427e7714645d6536255cc",
+      "proposal": "decoration",
+      "visualFeature": "No separate chart, diagram, map or table seen in contact sheet; successful text blocks retained.",
+      "successfulTextBlocksOnPage": 11,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 6,
+      "blockId": "page-6-visual-review",
+      "originalRenderSha256": "0776fa17ffe703f8f7552e2a01ddbf8ba60fcdd53a8f385d18f746ba553eccf6",
+      "proposal": "decoration",
+      "visualFeature": "No separate chart, diagram, map or table seen in contact sheet; successful text blocks retained.",
+      "successfulTextBlocksOnPage": 13,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 7,
+      "blockId": "page-7-visual-review",
+      "originalRenderSha256": "31a2bef24322ece68508133281188cf799b551366fd216011d6b000c07d65e60",
+      "proposal": "decoration",
+      "visualFeature": "No separate chart, diagram, map or table seen in contact sheet; successful text blocks retained.",
+      "successfulTextBlocksOnPage": 12,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 8,
+      "blockId": "page-8-visual-review",
+      "originalRenderSha256": "7f84ed39ef28a97f44a714171bdb740d3152c7489e357f99582cf0487f6031d5",
+      "proposal": "decoration",
+      "visualFeature": "No separate chart, diagram, map or table seen in contact sheet; successful text blocks retained.",
+      "successfulTextBlocksOnPage": 14,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 9,
+      "blockId": "page-9-visual-review",
+      "originalRenderSha256": "ee3c721bfef856439b2ea4c6089c3f30bc414f677cb349e222c2dc57ee17ee4f",
+      "proposal": "decoration",
+      "visualFeature": "No separate chart, diagram, map or table seen in contact sheet; successful text blocks retained.",
+      "successfulTextBlocksOnPage": 18,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 10,
+      "blockId": "page-10-visual-review",
+      "originalRenderSha256": "476680ddbaeeafa352a519960dea37c367dedacdd467836d4e700c4861673a7a",
+      "proposal": "decoration",
+      "visualFeature": "No separate chart, diagram, map or table seen in contact sheet; successful text blocks retained.",
+      "successfulTextBlocksOnPage": 13,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 11,
+      "blockId": "page-11-visual-review",
+      "originalRenderSha256": "7323e7b5ba943c1d9de8146329cfdbd73e9d5b082a6c1b11b30d551a97a1ea7d",
+      "proposal": "decoration",
+      "visualFeature": "No separate chart, diagram, map or table seen in contact sheet; successful text blocks retained.",
+      "successfulTextBlocksOnPage": 12,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 12,
+      "blockId": "page-12-visual-review",
+      "originalRenderSha256": "b2d9c059d0fcbe04cd8472909eb543d274bed86125c13d02701dc2a3b94c697a",
+      "proposal": "decoration",
+      "visualFeature": "No separate chart, diagram, map or table seen in contact sheet; successful text blocks retained.",
+      "successfulTextBlocksOnPage": 17,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 13,
+      "blockId": "page-13-visual-review",
+      "originalRenderSha256": "0dbc00934bcb13f054eb58271a2bdb789576acacdbc385e4cdae64d45f0dbef7",
+      "proposal": "decoration",
+      "visualFeature": "No separate chart, diagram, map or table seen in contact sheet; successful text blocks retained.",
+      "successfulTextBlocksOnPage": 13,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 14,
+      "blockId": "page-14-visual-review",
+      "originalRenderSha256": "df1ee9d5998c746b55c1d7170c7b1cbeb6a74d21238eb77627bf159d781db29e",
+      "proposal": "decoration",
+      "visualFeature": "No separate chart, diagram, map or table seen in contact sheet; successful text blocks retained.",
+      "successfulTextBlocksOnPage": 12,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 15,
+      "blockId": "page-15-visual-review",
+      "originalRenderSha256": "48c23aa182dfd7e3560142b594a1a5a9956c0444b18ee9b0ff00409691bc7f74",
+      "proposal": "decoration",
+      "visualFeature": "No separate chart, diagram, map or table seen in contact sheet; successful text blocks retained.",
+      "successfulTextBlocksOnPage": 11,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 16,
+      "blockId": "page-16-visual-review",
+      "originalRenderSha256": "ce067447cfa053359f35e42194544f4858283bb31e23501829fd6c42899afb6f",
+      "proposal": "decoration",
+      "visualFeature": "No separate chart, diagram, map or table seen in contact sheet; successful text blocks retained.",
+      "successfulTextBlocksOnPage": 11,
+      "originalSizeChecked": false
+    },
+    {
+      "physicalPage": 17,
+      "blockId": "page-17-visual-review",
+      "originalRenderSha256": "e2927d0336e707a0a764176ef56aa095c7309d6a0e5190c6c4828f4fa12126c3",
+      "proposal": "evidence",
+      "visualFeature": "Figures 1 and 2: fixed-service availability tables",
+      "successfulTextBlocksOnPage": 7,
+      "originalSizeChecked": true
+    },
+    {
+      "physicalPage": 18,
+      "blockId": "page-18-visual-review",
+      "originalRenderSha256": "4d44998597d1e5170467fc0357b75d8061f9fb234a6df3d8150c6a6c80362bbf",
+      "proposal": "evidence",
+      "visualFeature": "Figure 2 continuation: Tribal Lands fixed-service table",
+      "successfulTextBlocksOnPage": 6,
+      "originalSizeChecked": true
+    },
+    {
+      "physicalPage": 19,
+      "blockId": "page-19-visual-review",
+      "originalRenderSha256": "41863ce407a9b7b21bcf15230fcf05f6d173af711edee2a2a774d03fc380cce3",
+      "proposal": "evidence",
+      "visualFeature": "Figure 3: provider-count bar chart",
+      "successfulTextBlocksOnPage": 9,
+      "originalSizeChecked": true
+    },
+    {
+      "physicalPage": 20,
+      "blockId": "page-20-visual-review",
+      "originalRenderSha256": "a58a3f840342398a9c84dfee5a42929aaed3c7a3be8342e049321ac5414ba719",
+      "proposal": "evidence",
+      "visualFeature": "Figure 4 and start of Figure 5: fixed-service provider-option tables",
+      "successfulTextBlocksOnPage": 9,
+      "originalSizeChecked": true
+    },
+    {
+      "physicalPage": 21,
+      "blockId": "page-21-visual-review",
+      "originalRenderSha256": "80e0ae64c11ade2a159f1c20a467c951cade57a0d6fb60e6a7feaa86be47018c",
+      "proposal": "evidence",
+      "visualFeature": "Figure 5 continuation: urban/rural/Tribal provider-option table",
+      "successfulTextBlocksOnPage": 7,
+      "originalSizeChecked": true
+    },
+    {
+      "physicalPage": 22,
+      "blockId": "page-22-visual-review",
+      "originalRenderSha256": "6719e97fce280063a73ef2002e5a7339ba5296841254d9dc2cd9efaa19283fff",
+      "proposal": "evidence",
+      "visualFeature": "Figures 6 and 7: mobile 5G-NR availability tables",
+      "successfulTextBlocksOnPage": 14,
+      "originalSizeChecked": true
+    },
+    {
+      "physicalPage": 23,
+      "blockId": "page-23-visual-review",
+      "originalRenderSha256": "600619bf69d4879b232c49c26558234032a8e8ffaf10bec072ba161370a22f8e",
+      "proposal": "evidence",
+      "visualFeature": "Figure 7 continuation: Tribal Lands mobile 5G-NR table",
+      "successfulTextBlocksOnPage": 8,
+      "originalSizeChecked": true
+    },
+    {
+      "physicalPage": 24,
+      "blockId": "page-24-visual-review",
+      "originalRenderSha256": "2e85b5ac6062dc3ecc4f6b5282cbc9216086a852b43df067cb4e2a626ee6e241",
+      "proposal": "evidence",
+      "visualFeature": "Figure 8: mobile 5G-NR provider-option table",
+      "successfulTextBlocksOnPage": 13,
+      "originalSizeChecked": true
+    },
+    {
+      "physicalPage": 25,
+      "blockId": "page-25-visual-review",
+      "originalRenderSha256": "0b6ee7546de61e322e3b7fa09a4c01b30781d310b91715f3b314aa11c9d73546",
+      "proposal": "evidence",
+      "visualFeature": "Figure 9: combined fixed and mobile availability table",
+      "successfulTextBlocksOnPage": 12,
+      "originalSizeChecked": true
+    },
+    {
+      "physicalPage": 26,
+      "blockId": "page-26-visual-review",
+      "originalRenderSha256": "a6dffca82f4da28d025935ddae97b20f18a17f2abad45bdef0d15ce955704d8c",
+      "proposal": "evidence",
+      "visualFeature": "Figures 10 and 11: funding-commitment tables",
+      "successfulTextBlocksOnPage": 11,
+      "originalSizeChecked": true
+    },
+    {
+      "physicalPage": 27,
+      "blockId": "page-27-visual-review",
+      "originalRenderSha256": "7fa943d73b539c4483e5142ba80024edd62c78a4c0ff05ca6e368e956268af3d",
+      "proposal": "decoration",
+      "visualFeature": "No separate chart, diagram, map or table seen in contact sheet; successful text blocks retained.",
+      "successfulTextBlocksOnPage": 13,
+      "originalSizeChecked": true
+    },
+    {
+      "physicalPage": 28,
+      "blockId": "page-28-visual-review",
+      "originalRenderSha256": "cc8370e077064d21ecf7e1dd8b65fa86294a65d67f75666d45365a9b3e556cad",
+      "proposal": "evidence",
+      "visualFeature": "Figure 12: student 1 Mbps benchmark by year table",
+      "successfulTextBlocksOnPage": 13,
+      "originalSizeChecked": true
+    },
+    {
+      "physicalPage": 29,
+      "blockId": "page-29-visual-review",
+      "originalRenderSha256": "2c7b3a4838c365e9c2e967473e54fd0b36953588ba5af2ba3d046f28440e3c18",
+      "proposal": "evidence",
+      "visualFeature": "Figure 13: provider options by demographic quartile table",
+      "successfulTextBlocksOnPage": 8,
+      "originalSizeChecked": true
+    },
+    {
+      "physicalPage": 30,
+      "blockId": "page-30-visual-review",
+      "originalRenderSha256": "3074e33e1c7ddc5d6b19afaf5e58a7886ad122ca17c317428bc4d71644ed8c2d",
+      "proposal": "evidence",
+      "visualFeature": "Figures 14 and 15: fixed and mobile service demographic tables",
+      "successfulTextBlocksOnPage": 23,
+      "originalSizeChecked": true
+    },
+    {
+      "physicalPage": 31,
+      "blockId": "page-31-visual-review",
+      "originalRenderSha256": "971a74fed5d84cb4574cd2ec93acf5eeffea536551f535684769a23fe674cde5",
+      "proposal": "evidence",
+      "visualFeature": "Figure 15 continuation and Figure 16: served/unserved demographic table",
+      "successfulTextBlocksOnPage": 18,
+      "originalSizeChecked": true
+    },
+    {
+      "physicalPage": 32,
+      "blockId": "page-32-visual-review",
+      "originalRenderSha256": "5a2ee45e00ce6faea010dee56cb37d59e9c10946956d8b0757c7b88a6c46e863",
+      "proposal": "evidence",
+      "visualFeature": "Figure 16 continuation: served/unserved demographic table",
+      "successfulTextBlocksOnPage": 13,
+      "originalSizeChecked": true
+    }
+  ],
+  "productDecisionsSaved": 0,
+  "independentGoldAdded": 0,
+  "modelCalls": 0,
+  "g17ToG20Advanced": false
+}
