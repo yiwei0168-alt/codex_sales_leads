@@ -2,7 +2,7 @@ import {beforeEach,expect,it,vi} from "vitest";
 
 const mock=vi.hoisted(()=>({transaction:vi.fn()}));
 vi.mock("@/lib/rag/db",()=>({tenantTransaction:mock.transaction,tenantQuery:vi.fn(),query:vi.fn()}));
-import {enqueueRun,finishRun} from "./repository";
+import {controlRun,enqueueRun,finishRun} from "./repository";
 import type {ExecutionContext,RunStatus} from "./contracts";
 
 const context:ExecutionContext={userId:"user-1",runId:"run-1",leaseToken:"lease-1",role:"member"};
@@ -44,4 +44,30 @@ it("queues a scoped evaluation with its frozen case identity and no conversation
   await expect(enqueueRun(context.userId,{...input,conversationId:"old-conversation"},
     {model:"model-1",providers:["provider-1"],version:"v1"},{kind:"main-agent-evaluation",spec}))
     .rejects.toThrow("Invalid MA24 evaluation task scope or identity");
+});
+
+it.each(["pause","resume","instruct"] as const)("rejects ordinary %s control of an evaluation task",async(action)=>{
+  const statements:string[]=[];
+  const client={query:vi.fn(async(sql:string)=>{
+    statements.push(sql);
+    if(sql.includes("select * from agent_run"))return {rows:[{status:"queued",execution_kind:"main-agent-evaluation"}],rowCount:1};
+    return {rows:[],rowCount:0};
+  })};
+  mock.transaction.mockImplementation(async(_user:string,run:(dbClient:typeof client)=>Promise<unknown>)=>run(client));
+  await expect(controlRun(context.userId,context.runId,action,"new instruction"))
+    .rejects.toThrow("MA24 evaluation task can only be cancelled");
+  expect(statements).toHaveLength(1);
+});
+
+it("permits cancelling a queued evaluation task",async()=>{
+  const statements:string[]=[];
+  const client={query:vi.fn(async(sql:string)=>{
+    statements.push(sql);
+    if(sql.includes("select * from agent_run"))return {rows:[{status:"queued",execution_kind:"main-agent-evaluation"}],rowCount:1};
+    return {rows:[],rowCount:1};
+  })};
+  mock.transaction.mockImplementation(async(_user:string,run:(dbClient:typeof client)=>Promise<unknown>)=>run(client));
+  expect(await controlRun(context.userId,context.runId,"cancel")).toBe(true);
+  expect(statements.some(sql=>sql.includes("set status=$3"))).toBe(true);
+  expect(statements.some(sql=>sql.includes("insert into agent_run_event"))).toBe(true);
 });

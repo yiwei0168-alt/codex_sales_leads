@@ -96,6 +96,8 @@ export async function controlRun(userId: string, id: string, action: "pause" | "
     const run = locked.rows[0];
     if (!run) return false;
     if (["completed", "cancelled"].includes(run.status)) throw new Error("Task is terminal; create a new task");
+    if (run.execution_kind === "main-agent-evaluation" && action !== "cancel")
+      throw new Error("MA24 evaluation task can only be cancelled through ordinary task controls");
     if (action === "instruct") {
       if (!content?.trim()) throw new Error("Instruction required");
       await client.query("update agent_run set instructions=instructions||$3::jsonb,status=case when status='waiting_user' then 'queued' else status end,next_attempt_at=now(),updated_at=now() where user_id=$1 and id=$2", [userId, id, JSON.stringify([{ id: randomUUID(), content }])]);

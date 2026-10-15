@@ -1,0 +1,21 @@
+{
+  "schema": "ma24-g16-evaluation-task-control-isolation-v1",
+  "date": "2026-10-15",
+  "status": "engineering-guard-verified",
+  "behavior": "An owner cannot pause, resume or append instructions to a main-agent-evaluation task through ordinary task controls; cancellation remains available. Ordinary main-agent controls retain their existing path.",
+  "reason": "The frozen question and run context must not be changed after evaluation enqueue by the ordinary conversation control API or run_control tool.",
+  "verification": {
+    "focusedTests": "9 passed, including three rejected control actions and queued evaluation cancellation",
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "databaseWrites": 0,
+    "modelCalls": 0
+  },
+  "limitations": [
+    "This guard applies to ordinary task controls, not direct privileged database writes.",
+    "Dedicated evaluation admission and claim, frozen source and Gold snapshots, paid-call authorization and real dual-arm runs remain open.",
+    "No production database migration or model execution occurred."
+  ],
+  "approvedGold": 0,
+  "g17ToG20Advanced": false
+}
