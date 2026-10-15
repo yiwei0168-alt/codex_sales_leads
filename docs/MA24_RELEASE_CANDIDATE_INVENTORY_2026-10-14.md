@@ -1,5 +1,7 @@
 # MA24 候选发布范围与最小依赖（2026-10-14）
 
+**2026-10-16 当前本地候选。** 从提交 `efb97331` 的 Git 归档隔离构建 Next 16.3.4，生产编译、TypeScript 与 26 个静态页通过；build ID `HVFrKKso8yYPtbPlZOzLN`。候选快照 `.next-releases/ma24-g01-efb97331-layout/.next` 与原构建 1,282 个常规文件逐一相符，87 份 trace 的 15,780 个依赖路径均存在，无环境文件。临时本机 3021 页面/会话/新构建清单分别返回 200，旧构建清单返回 404；进程和临时环境链接已清理。[本地构建及启动收据](evidence/ma24-g01-efb97331-isolated-build-and-smoke-2026-10-16.json)。快照仍依赖工作区外部 `node_modules` junction，未绑定正式 Web/worker 进程或生产资料/迁移；G14–G16 的质量与付费准入仍独立待验，G17–G20 暂停。下文各旧候选均保留为历史记录。
+
 本清单初版依据[当前运行盘点](evidence/ma24-r0-runtime-release-inventory-2026-10-14.json)、[迁移预检](evidence/ma24-release-migration-preflight-2026-10-14.json)与各已发布提交到候选 `d19e9010` 的文件差异；下方补充记录后续候选 build `JL8ySlDPL7j1x5xDRlO8A` 的隔离验收。它是 R0 发布准备清单，不是发布批准、业务质量结论或部署收据。验收仍按[执行台账](MA24_EXECUTION_STATUS_2026-10-13.md)的工程、真实质量和生产三列分别记。
 
 **2026-10-15 更新。** G09 冻结计划静态版本核对新增迁移 135；当前发布前迁移集合已扩为 127–135。一次性恢复库完整恢复、事务回滚和提交通过，正式库只读预检仍显示整段目标迁移缺席。下文 127–134 的旧候选、构建哈希与运行检查均为各自日期的历史记录；需固定包含迁移 135 的新候选，并在切换前取得新备份和逐域质量证据。[G09 收据](evidence/ma24-g09-freeze-current-version-clone-2026-10-15.json)。

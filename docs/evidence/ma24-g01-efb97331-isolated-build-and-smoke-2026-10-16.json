@@ -1,0 +1,55 @@
+{
+  "schema": "ma24-g01-isolated-build-and-smoke-v1",
+  "date": "2026-10-16",
+  "sourceCommit": "efb97331",
+  "sourceArchive": {
+    "path": "tmp/ma24-g01-efb97331.zip",
+    "sha256": "644fdd5c9ae3edb2da93a34e3e67f51c3a73b047f97bdc85c0957a71177d782e",
+    "method": "git archive HEAD extracted into a separate workspace directory"
+  },
+  "build": {
+    "directory": "tmp/ma24-current-build-efb97331",
+    "command": "node scripts/build-next.mjs",
+    "nextVersion": "16.3.4",
+    "firstSandboxAttempt": "Turbopack could not create a local dependency junction under restricted Windows permissions; no compiler verdict was taken",
+    "retryWithJunctionPermission": "production compile and TypeScript passed; 26 static pages generated",
+    "buildId": "HVFrKKso8yYPtbPlZOzLN",
+    "buildManifestSha256": "b97cb84d3eb1b8161863b56183d3e5d2faef04d1cb7678a650bb9a6c658d24ca"
+  },
+  "snapshot": {
+    "path": ".next-releases/ma24-g01-efb97331-layout/.next",
+    "regularFiles": 1497,
+    "regularBytes": 206429544,
+    "treeSha256": "032d5204b0af58c557a4dcf81ca91045eda6da2f4acba06cd8072a6f36fc1b82",
+    "originalBuildRegularFilesMatched": 1282,
+    "referenceMismatches": 0,
+    "traceManifests": 87,
+    "tracedDependencyPaths": 15780,
+    "missingTracedDependencyPaths": 0,
+    "envNamedFiles": 0,
+    "externalParentNodeModulesJunction": true,
+    "selfContainedDeploymentArtifact": false
+  },
+  "localRuntimeSmoke": {
+    "scope": "127.0.0.1:3021 status-only GET checks; no production service switch",
+    "port3019Attempt": "Port already in use; no process was stopped or changed on that port",
+    "startup": "Next reported ready in 279 ms",
+    "homeStatus": 200,
+    "sessionStatus": 200,
+    "candidateBuildManifestStatus": 200,
+    "previousCandidateBuildManifestStatus": 404,
+    "processStopped": true,
+    "port3021ListenerAfterStop": false,
+    "temporaryEnvHardlinkRemoved": true,
+    "snapshotTreeSha256AfterStop": "032d5204b0af58c557a4dcf81ca91045eda6da2f4acba06cd8072a6f36fc1b82"
+  },
+  "modelCalls": 0,
+  "productionWrites": 0,
+  "g17ToG20Advanced": false,
+  "remaining": [
+    "Bind complete Web and worker runtime identities and flags when current processes are available",
+    "Package or freeze the external dependency tree",
+    "Verify production migration and backup state before a separately authorized deployment",
+    "Complete G14 Gold freeze, G15 paid preflight, and G16 real dual-arm quality acceptance"
+  ]
+}
