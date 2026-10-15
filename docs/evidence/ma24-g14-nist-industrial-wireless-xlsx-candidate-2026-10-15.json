@@ -1,0 +1,74 @@
+{
+  "schema": "ma24-g14-nist-industrial-wireless-xlsx-candidate-v1",
+  "date": "2026-10-15",
+  "stage": "Original-byte and cell-checked draft only; not Gold",
+  "publisher": "National Institute of Standards and Technology",
+  "publisherPage": "https://www.nist.gov/ctl/smart-connected-systems-division/networked-control-systems-group/measurement-data-files",
+  "sourceUrl": "https://s3.amazonaws.com/nist-ics-wireless/measurements/SmartManufacturing_MetaData.xlsx",
+  "sourceLocalPath": "tmp/ma24-independent-quarantine/nist-smartmanufacturing-metadata.xlsx",
+  "sha256": "0132c779ab57132ae5b5718b1b1440b52ed66bd48bc62d953336c90f7f2cb814",
+  "bytes": 4455754,
+  "originalIntegrity": {
+    "validXlsxZipEntries": 46,
+    "macroParts": 0,
+    "externalLinkParts": 0,
+    "worksheets": ["Title Sheet", "Test Runs Information", "Data_AcqLoc", "Data_Physical_Location", "Ray Tracing Results", "Measurements Mat Files Format"],
+    "chartSheet": "Ray Trace Graph",
+    "sourceWorkbookUnmodified": true
+  },
+  "originalCellCheck": {
+    "sheet": "Ray Tracing Results",
+    "sectionHeaders": { "B4": "Free Space Ray Tracing Results for Horn", "I4": "Ground Bounce Ray Tracing Results for Horn" },
+    "columnHeaders": { "B6": "Range (m)", "F6": "Coupling (dB) at 5.4 Ghz", "G6": "Path Loss (dB) at 5.4 Ghz", "K6": "Coupling (dB) at 5.4 Ghz", "L6": "Path Loss (dB) at 5.4 Ghz" },
+    "row": { "B7": 1, "F7": -26.36, "G7": -42.85, "K7": -30.85, "L7": -47.34 },
+    "formulaCheck": "G7 = F7-C3-E3 and L7 = K7-C3-E3; C3=14.34 and E3=2.15. Cached path-loss values match these formula results to two decimals.",
+    "difference": "At 1 m and 5.4 GHz, the tabulated ground-bounce coupling and path-loss values are each 4.49 dB more negative than their free-space counterparts; this is a workbook comparison, not a general propagation claim."
+  },
+  "draftQuestions": [
+    {
+      "id": "nist-industrial-wireless-5p4ghz-horn-free-vs-ground-1m",
+      "status": "draft only; not Gold",
+      "question": "按 NIST 工业无线测量元数据工作簿的 Ray Tracing Results 表，在 1 m、5.4 GHz 的喇叭天线结果中，自由空间和地面反射两种情形的 Coupling 与 Path Loss 分别是多少 dB？地面反射两项各比自由空间的表列值低多少 dB？请给出原始单元格。",
+      "draftAnswer": "自由空间为 Coupling -26.36 dB、Path Loss -42.85 dB；地面反射为 Coupling -30.85 dB、Path Loss -47.34 dB。两项地面反射表列值均比自由空间低 4.49 dB。",
+      "sourceCoordinates": ["Ray Tracing Results!B4", "Ray Tracing Results!I4", "Ray Tracing Results!B6", "Ray Tracing Results!F6:G7", "Ray Tracing Results!K6:L7"]
+    }
+  ],
+  "rightsBoundary": "NIST's official page links the workbook as industrial-wireless measurement metadata. Its policy generally permits attributed use of NIST-created non-SRD data, while warning that other material may have different rights. No workbook-specific license statement was found in cell text; keep original local and use only short attributed factual answers pending final source-use review.",
+  "rightsPage": "https://www.nist.gov/open/copyright-fair-use-and-licensing-statements-srd-data-software-and-technical-series-publications",
+  "boundedExposureScreen": {
+    "localRegistryExactHash": { "assets": 0, "uploadJobs": 0, "historicalGold": 0 },
+    "trackedAndIgnoredTextSearch": "No matching SmartManufacturing_MetaData, Ground Bounce Ray Tracing Results for Horn or nist-ics-wireless text in searched docs/src/scripts/experiments or tmp JSON/Markdown/text/log before this receipt.",
+    "trackedGitHistoryPickaxe": "No SmartManufacturing_MetaData match in searched docs/src/scripts/experiments history.",
+    "independenceProven": false
+  },
+  "oldQuestionScreen": {
+    "command": "node scripts/run-tsx.cjs scripts/screen-ma24-g14-question-overlap-local.ts docs/evidence/ma24-g14-nist-industrial-wireless-xlsx-candidate-2026-10-15.json tmp/ma24-independent-quarantine/nist-industrial-wireless-xlsx-neighbors.json",
+    "outputSha256": "743e76adfa65d7b315c3382bc382866333f68918a3d2539f0dd1952c8368587e",
+    "screenedReceiptSha256BeforeFollowUpAppend": "57a808982fdf217b6120462a4f5272a2dd0c4ac970d048f0a4d67f82afbd676c",
+    "screenBindingScope": "Original source hash, draft ID and question text did not change in this follow-up append.",
+    "historicalRows": 350,
+    "uniqueHistoricalQueries": 300,
+    "topCosine": 0.441477,
+    "manualTopTen": "The ten nearest old queries concern product physical port counts, PoE support, or whether a 2.5G port means 5G cellular; none asks the NIST measured ray-tracing table values.",
+    "semanticIndependenceProven": false,
+    "cloudCalls": 0
+  },
+  "offlineProductExtraction": {
+    "command": "python scripts/extract-uploaded-knowledge.py tmp/ma24-independent-quarantine/nist-smartmanufacturing-metadata.xlsx tmp/ma24-independent-quarantine/nist-smartmanufacturing-metadata.layout-v2.0.9.extraction.json",
+    "extractorVersion": "layout-v2.0.9",
+    "artifactSha256": "65781df9d501cab4116b5d4b3cbc23fa315784de5e5b6fd6fb2dcdd2d87f0ae1",
+    "artifactSourceSha256MatchesOriginal": true,
+    "totalBlocks": 9,
+    "qualitySummary": { "success": 4, "blank": 0, "pending-ocr": 3, "failed": 0 },
+    "targetSheetBlock": "sheet-5-table, section Ray Tracing Results, cellRange A1:X3242",
+    "targetCellValuesRetained": ["B7=1", "F7=-26.36", "G7=-42.85", "K7=-30.85", "L7=-47.339999999999996"],
+    "registrationGate": "Three other visual/page blocks remain pending review, including the Title Sheet with 62 cached #N/A cells; do not register the workbook as fully searchable from this offline extraction.",
+    "externalCalls": 0,
+    "databaseWrites": 0
+  },
+  "publicationFamilyBoundary": "This 2015 measurement-metadata workbook is a different original from NIST TN 2363; shared publisher is recorded for full-set family and question-overlap audit.",
+  "pending": ["Full future-set overlap and development-exposure audit", "Isolated product upload, complete visual review, registration and original-cell citation", "Workbook-specific source-use adjudication", "Gold answer freeze, model comparison and production acceptance"],
+  "goldCreated": 0,
+  "modelAnswerCalls": 0,
+  "productionWrites": 0
+}
