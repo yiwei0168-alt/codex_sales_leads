@@ -1,0 +1,45 @@
+{
+  "schema": "ma24-g14-current-family-readiness-v7-receipt",
+  "date": "2026-10-16",
+  "script": "scripts/audit-ma24-g14-current-family-readiness-local.ts",
+  "scriptSha256": "80e87ca02f4942c61ab0dc4d91a4873dc62bd66faeb2f3702e9026230ddfafd0",
+  "poolPath": "tmp/ma24-independent-quarantine/g14-current-draft-pool-v7-dbs-current-2026-10-16.json",
+  "poolSha256": "770a5201492be9df8c7e1e93e8d13ac1d1be9c66fad4c02bb36f992ad3bb2626",
+  "approvedSourceSetSha256": "97ffb579162ddfe07e44d33c1bedb51d4848603f8d564bd0276f0e2a018f679e",
+  "privateReportPath": "tmp/ma24-independent-quarantine/g14-family-readiness-v7-2026-10-16.json",
+  "privateReportSha256": "acdbdaf1ab92ea32f595b0ed04cfcbe65e80cb2cc5acc825ef2eb86c2c8c5ced",
+  "counts": {
+    "publicationDrafts": 25,
+    "syntheticSecurityDrafts": 3,
+    "publicationFamilyLabels": 14,
+    "connectedPublicationExposureUnits": 12,
+    "approvedGoldCases": 5,
+    "unitsContainingApprovedGold": 3,
+    "unitsWhoseCurrentDraftsAreAllApproved": 1,
+    "unitsMixingApprovedAndProvisionalDrafts": 2
+  },
+  "mixedUnits": [
+    {
+      "family": "FCC 26-55 Section 706 release",
+      "approvedGoldCases": 1,
+      "provisionalSameUnitDrafts": 1
+    },
+    {
+      "family": "NIST TN 2363 plus 2015 industrial wireless measurement workbook",
+      "approvedGoldCases": 1,
+      "provisionalSameUnitDrafts": 4
+    }
+  ],
+  "finding": "The three GOV.UK drafts are all approved inside their connected unit. FCC and NIST each contain approved Gold plus provisional drafts from the same source unit. If any same-unit question or source fact is later used to tune product answers or retrieval, retire that entire unit from independent quality scoring and retain it only for regression evidence.",
+  "checks": {
+    "poolAndApprovedSnapshotHashesMatchedTrackedReceipts": true,
+    "allDraftCaseIdsUnique": true,
+    "allApprovedCaseIdsPresentInCurrentPublicationPool": true,
+    "allPublicationDraftsAssignedToExactlyOneConnectedUnit": true,
+    "syntheticSecurityFixtureKeptSeparate": true
+  },
+  "fullSetFrozen": false,
+  "g15ReadyForModelCalls": false,
+  "realDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}
