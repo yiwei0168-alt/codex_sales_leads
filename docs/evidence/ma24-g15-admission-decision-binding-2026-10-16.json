@@ -1,0 +1,19 @@
+{
+  "schema": "ma24-g15-admission-decision-binding-v1",
+  "date": "2026-10-16",
+  "change": "Frozen and loaded G15 previews must contain matching boolean admission decisions for local BGE, source/Gold freeze, build and source closure, tariffs, paid authorization, and paid evaluation readiness. A missing or changed decision fails before an evaluation claim.",
+  "previewPath": "docs/evidence/ma24-g15-config-preview-2026-10-16-v16.json",
+  "previewSha256": "f0ffa4f989be54b5587d0798e8a66267a1dc09578ff29a0f86a5ab20664ae3cf",
+  "sourceClosureFileCount": 294,
+  "checks": {
+    "focusedVitest": "8 passed",
+    "typescriptNoEmit": "passed",
+    "focusedEslint": "passed",
+    "v16ReadOnlyRuntimeBinding": "matched; readyForModelCalls=false",
+    "v15ReadOnlyRuntimeBinding": "rejected: sourceHashes drift",
+    "modelCalls": 0,
+    "providerCalls": 0
+  },
+  "remaining": "Full source/Gold freeze, local BGE, runtime build/closure, tariffs, durable request/output/spend caps and paid authorization remain incomplete. No G16 real dual-arm run was executed.",
+  "g17ToG20Advanced": false
+}

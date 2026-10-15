@@ -56,6 +56,21 @@ describe("MA24 G15 runtime binding", () => {
         .toThrow(`${field} drift`);
     }
   });
+  it("rejects changed or missing admission decisions after a preview is frozen", () => {
+    for (const field of ["currentLocalBgeFlagEnabled", "sourceSetFrozen", "goldFrozen",
+      "runtimeBuildVerified", "transitiveCodeClosureVerified", "providerTariffsVerified",
+      "paidCallAuthorizationConfirmed", "readyForPaidEvaluation"] as const) {
+      const frozen = preview();
+      const loaded = structuredClone(frozen);
+      loaded[field] = true;
+      expect(() => assertMa24G15RuntimeBinding(frozen, loaded, "2026-10-15"))
+        .toThrow(`${field} drift`);
+      const omitted = structuredClone(frozen);
+      delete (omitted as Partial<Ma24G15Preview>)[field];
+      expect(() => assertMa24G15RuntimeBinding(frozen, omitted, "2026-10-15"))
+        .toThrow(`${field} drift`);
+    }
+  });
   it("rejects a different UTC prompt date before execution", () => {
     expect(() => assertMa24G15RuntimeBinding(preview(), preview(), "2026-10-16"))
       .toThrow(/UTC date drift/);

@@ -42,6 +42,11 @@ export function assertMa24G15RuntimeBinding(frozen: Ma24G15Preview,
   for (const field of ["maximumProviderRequests", "maximumRequestBytes",
     "maximumOutputTokens", "hardSpendCapUsd"] as const)
     if (!Object.is(frozen[field], loaded[field])) throw new Error(`MA24 G15 ${field} drift`);
+  for (const field of ["currentLocalBgeFlagEnabled", "sourceSetFrozen", "goldFrozen",
+    "runtimeBuildVerified", "transitiveCodeClosureVerified", "providerTariffsVerified",
+    "paidCallAuthorizationConfirmed", "readyForPaidEvaluation"] as const)
+    if (typeof frozen[field] !== "boolean" || typeof loaded[field] !== "boolean" ||
+      frozen[field] !== loaded[field]) throw new Error(`MA24 G15 ${field} drift`);
   if (frozen.sourceClosureMethod !== "recursive-local-static-imports-v1" ||
     !Number.isSafeInteger(frozen.sourceClosureFileCount) ||
     frozen.sourceClosureFileCount !== Object.keys(frozen.sourceHashes).length ||
