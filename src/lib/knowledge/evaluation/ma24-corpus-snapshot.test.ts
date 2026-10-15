@@ -3,8 +3,9 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 const mocks = vi.hoisted(() => ({ tenantTransaction: vi.fn() }));
 vi.mock("../../rag/db", () => ({ tenantTransaction: mocks.tenantTransaction }));
 import { assertMa24CorpusSnapshotBytes, assertMa24CorpusSnapshotShape,
-  verifyMa24LiveCorpusAccount, type Ma24CorpusSnapshot } from "./ma24-corpus-snapshot";
-import type { Ma24FrozenManifest } from "./ma24-independent-comparison";
+  assertMa24PermissionGoldControl, verifyMa24LiveCorpusAccount,
+  verifyMa24LivePermissionControl, type Ma24CorpusSnapshot } from "./ma24-corpus-snapshot";
+import type { Ma24FrozenManifest, Ma24GoldSnapshot } from "./ma24-independent-comparison";
 
 const owner = "11111111-1111-4111-8111-111111111111";
 const outsider = "22222222-2222-4222-8222-222222222222";
@@ -13,22 +14,33 @@ const document = { documentId: "33333333-3333-4333-8333-333333333333",
   title: "Synthetic source", sourceUrl: null, authorityLevel: 2, language: "en",
   market: null, companyId: null, productId: null, metadata: {},
   contentSha256: "a".repeat(64), currentTreeVersionId: "44444444-4444-4444-8444-444444444444",
+  currentTreeStatus: "ready", currentTreeSourceSha256: "b".repeat(64),
+  currentTreeAssetId: "55555555-5555-4555-8555-555555555555",
   activeReleaseId: null, assetId: "55555555-5555-4555-8555-555555555555",
   assetSha256: "b".repeat(64), assetRegistrationStatus: "registered" };
-const manifest: Ma24FrozenManifest = { schema: "ma24-g16-frozen-comparison-v3",
+const manifest: Ma24FrozenManifest = { schema: "ma24-g16-frozen-comparison-v4",
   sourceSetSha256: "1".repeat(64), goldSnapshotSha256: "2".repeat(64),
   codeAndConfigSha256: "3".repeat(64), corpusSnapshotSha256: "4".repeat(64),
   requiredImprovementTags: [], protectedNoRegressionTags: [], cases: [
-    { caseId: "owner", caseSha256: "5".repeat(64), group: "security", tags: [],
+    { caseId: "owner", caseSha256: "5".repeat(64), group: "security", tags: ["permission"],
       expectedOutcome: "route", userId: owner, knowledgeScope: ["industry"] },
-    { caseId: "outsider", caseSha256: "6".repeat(64), group: "security", tags: [],
+    { caseId: "outsider", caseSha256: "5".repeat(64), group: "security", tags: ["permission"],
       expectedOutcome: "deny", userId: outsider, knowledgeScope: ["industry"] },
   ] };
-const snapshot: Ma24CorpusSnapshot = { schema: "ma24-g16-corpus-snapshot-v1",
+const snapshot: Ma24CorpusSnapshot = { schema: "ma24-g16-corpus-snapshot-v2",
   accounts: [
     { userId: owner, knowledgeScope: ["industry"], documents: [document], releases: [] },
     { userId: outsider, knowledgeScope: ["industry"], documents: [], releases: [] },
-  ] };
+  ], permissionProofs: [{ denyCaseId: "outsider", ownerCaseId: "owner",
+    targetAssetSha256: document.assetSha256 }] };
+const gold: Ma24GoldSnapshot = { schema: "ma24-g16-gold-snapshot-v1", cases: [
+  { caseId: "owner", caseSha256: "5".repeat(64), expectedAnswer: "Synthetic answer",
+    expectedSources: [{ assetSha256: document.assetSha256, unitIndex: 1, excerpt: "Source" }],
+    reviewer: "fixture", reviewedAt: "2026-10-15T00:00:00Z", note: "fixture" },
+  { caseId: "outsider", caseSha256: "5".repeat(64), expectedAnswer: "Access denied",
+    expectedSources: [], reviewer: "fixture", reviewedAt: "2026-10-15T00:00:00Z",
+    note: "fixture" },
+] };
 afterEach(() => mocks.tenantTransaction.mockReset());
 
 describe("MA24 frozen corpus and tenant ACL", () => {
@@ -43,6 +55,15 @@ describe("MA24 frozen corpus and tenant ACL", () => {
       { ...snapshot, accounts: [snapshot.accounts[0],
         { ...snapshot.accounts[1], documents: [document] }] }))
       .toThrow(/document inventory/);
+    expect(() => assertMa24CorpusSnapshotShape(manifest,
+      { ...snapshot, permissionProofs: [] })).toThrow(/lacks owner and target proof/);
+    expect(() => assertMa24CorpusSnapshotShape(manifest,
+      { ...snapshot, permissionProofs: [{ ...snapshot.permissionProofs[0],
+        targetAssetSha256: "c".repeat(64) }] })).toThrow(/permission control/);
+    expect(() => assertMa24PermissionGoldControl(manifest, snapshot, gold)).not.toThrow();
+    expect(() => assertMa24PermissionGoldControl(manifest, snapshot, { ...gold,
+      cases: [{ ...gold.cases[0], expectedSources: [] }, gold.cases[1]] }))
+      .toThrow(/permission Gold source mismatch/);
   });
   it("binds the private inventory to its exact bytes", () => {
     const bytes = new TextEncoder().encode(JSON.stringify(snapshot));
@@ -67,6 +88,18 @@ describe("MA24 frozen corpus and tenant ACL", () => {
       .rejects.toThrow(/corpus or ACL differs/);
     liveDocuments = [{ ...document, visibility: "shared" }];
     await expect(verifyMa24LiveCorpusAccount(snapshot, owner, ["industry"]))
+      .rejects.toThrow(/corpus or ACL differs/);
+  });
+  it("rechecks the owner's private source during the denied account's run", async () => {
+    let ownerDocuments = [document];
+    mocks.tenantTransaction.mockImplementation(async (userId: string,
+      callback: (client: { query: (sql: string) => Promise<{ rows: unknown[] }> }) => Promise<unknown>) =>
+      callback({ query: async sql => ({ rows: sql.includes("from knowledge_document d") &&
+        userId === owner ? ownerDocuments : [] }) }));
+    await expect(verifyMa24LivePermissionControl(manifest, snapshot, "outsider"))
+      .resolves.toBeUndefined();
+    ownerDocuments = [];
+    await expect(verifyMa24LivePermissionControl(manifest, snapshot, "outsider"))
       .rejects.toThrow(/corpus or ACL differs/);
   });
 });

@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import { tenantTransaction } from "../../rag/db";
 import { stableJson } from "../review-types";
-import type { Ma24FrozenManifest, Ma24KnowledgeScope } from "./ma24-independent-comparison";
+import type { Ma24FrozenManifest, Ma24GoldSnapshot, Ma24KnowledgeScope } from "./ma24-independent-comparison";
 
 type CorpusDocument = {
   documentId: string; collectionSlug: Ma24KnowledgeScope; ownerId: string;
@@ -9,6 +9,8 @@ type CorpusDocument = {
   authorityLevel: number; language: string; market: string | null;
   companyId: string | null; productId: string | null; metadata: Record<string, unknown>;
   contentSha256: string; currentTreeVersionId: string | null;
+  currentTreeStatus: string | null; currentTreeSourceSha256: string | null;
+  currentTreeAssetId: string | null;
   activeReleaseId: string | null; assetId: string | null;
   assetSha256: string | null; assetRegistrationStatus: string | null;
 };
@@ -18,8 +20,9 @@ export type Ma24CorpusAccount = {
   documents: CorpusDocument[]; releases: CorpusRelease[];
 };
 export type Ma24CorpusSnapshot = {
-  schema: "ma24-g16-corpus-snapshot-v1";
+  schema: "ma24-g16-corpus-snapshot-v2";
   accounts: Ma24CorpusAccount[];
+  permissionProofs: Array<{ denyCaseId: string; ownerCaseId: string; targetAssetSha256: string }>;
 };
 
 const accountKey = (userId: string, scopes: Ma24KnowledgeScope[]) =>
@@ -29,7 +32,8 @@ const hash = (bytes: Uint8Array) => createHash("sha256").update(bytes).digest("h
 /** Every manifest account/scope pair must have one inventory, with no extra account. */
 export function assertMa24CorpusSnapshotShape(manifest: Ma24FrozenManifest,
   snapshot: Ma24CorpusSnapshot) {
-  if (snapshot?.schema !== "ma24-g16-corpus-snapshot-v1" || !Array.isArray(snapshot.accounts))
+  if (snapshot?.schema !== "ma24-g16-corpus-snapshot-v2" || !Array.isArray(snapshot.accounts) ||
+    !Array.isArray(snapshot.permissionProofs))
     throw new Error("Incomplete MA24 corpus snapshot");
   const expected = new Set(manifest.cases.map(item => accountKey(item.userId, item.knowledgeScope)));
   const seen = new Set<string>();
@@ -53,6 +57,58 @@ export function assertMa24CorpusSnapshotShape(manifest: Ma24FrozenManifest,
   }
   if (seen.size !== expected.size)
     throw new Error("MA24 corpus snapshot lacks a frozen account");
+  const cases = new Map(manifest.cases.map(item => [item.caseId, item]));
+  const denyCases = manifest.cases.filter(item => item.expectedOutcome === "deny" &&
+    item.tags.includes("permission"));
+  const proved = new Set<string>();
+  for (const proof of snapshot.permissionProofs) {
+    const denied = cases.get(proof.denyCaseId);
+    const owner = cases.get(proof.ownerCaseId);
+    const ownerAccount = snapshot.accounts.find(account => owner &&
+      accountKey(account.userId, account.knowledgeScope) ===
+      accountKey(owner.userId, owner.knowledgeScope));
+    const deniedAccount = snapshot.accounts.find(account => denied &&
+      accountKey(account.userId, account.knowledgeScope) ===
+      accountKey(denied.userId, denied.knowledgeScope));
+    if (!denied || denied.expectedOutcome !== "deny" || !denied.tags.includes("permission") ||
+      !owner || owner.expectedOutcome !== "route" || !owner.tags.includes("permission") ||
+      denied.userId === owner.userId || denied.caseSha256 !== owner.caseSha256 ||
+      accountKey("scope", denied.knowledgeScope) !== accountKey("scope", owner.knowledgeScope) ||
+      !/^[0-9a-f]{64}$/.test(proof.targetAssetSha256) || proved.has(proof.denyCaseId) ||
+      !ownerAccount?.documents.some(document => document.ownerId === owner.userId &&
+        document.visibility === "private" && document.assetSha256 === proof.targetAssetSha256 &&
+        document.assetRegistrationStatus === "registered" && document.currentTreeVersionId &&
+        document.currentTreeStatus === "ready" &&
+        document.currentTreeAssetId === document.assetId &&
+        document.currentTreeSourceSha256 === proof.targetAssetSha256) ||
+      deniedAccount?.documents.some(document => document.assetSha256 === proof.targetAssetSha256))
+      throw new Error(`Invalid MA24 permission control ${proof.denyCaseId}`);
+    proved.add(proof.denyCaseId);
+  }
+  if (proved.size !== denyCases.length)
+    throw new Error("MA24 permission denial lacks owner and target proof");
+}
+
+/** The positive control must cite the same asset that the denied account cannot read. */
+export function assertMa24PermissionGoldControl(manifest: Ma24FrozenManifest,
+  snapshot: Ma24CorpusSnapshot, gold: Ma24GoldSnapshot) {
+  const goldById = new Map(gold.cases.map(item => [item.caseId, item]));
+  for (const proof of snapshot.permissionProofs) {
+    if (!goldById.get(proof.ownerCaseId)?.expectedSources.some(source =>
+      source.assetSha256 === proof.targetAssetSha256) ||
+      !manifest.cases.some(item => item.caseId === proof.ownerCaseId))
+      throw new Error(`MA24 permission Gold source mismatch ${proof.denyCaseId}`);
+  }
+}
+
+/** Keep the positive control's private source present during a denied-account run. */
+export async function verifyMa24LivePermissionControl(manifest: Ma24FrozenManifest,
+  snapshot: Ma24CorpusSnapshot, caseId: string) {
+  const proof = snapshot.permissionProofs.find(item => item.denyCaseId === caseId);
+  if (!proof) return;
+  const owner = manifest.cases.find(item => item.caseId === proof.ownerCaseId);
+  if (!owner) throw new Error("MA24 permission owner case absent");
+  await verifyMa24LiveCorpusAccount(snapshot, owner.userId, owner.knowledgeScope);
 }
 
 /** The frozen file is byte-bound; account data stays outside model inputs. */
@@ -75,9 +131,12 @@ export async function readMa24LiveCorpusAccount(userId: string,
         d.language, d.market, d.company_id as "companyId", d.product_id as "productId",
         d.metadata, d.content_sha256 as "contentSha256",
         d.current_tree_version_id as "currentTreeVersionId",
+        v.status as "currentTreeStatus", v.source_sha256 as "currentTreeSourceSha256",
+        v.asset_id as "currentTreeAssetId",
         d.active_release_v3_id as "activeReleaseId", a.id as "assetId",
         a.source_sha256 as "assetSha256", a.registration_status as "assetRegistrationStatus"
       from knowledge_document d join knowledge_collection c on c.id=d.collection_id
+      left join knowledge_tree_version v on v.id=d.current_tree_version_id
       left join knowledge_asset a on a.document_id=d.id
       where d.status='active' and c.slug=any($1::text[])
       order by d.id,a.id`, [knowledgeScope])).rows;

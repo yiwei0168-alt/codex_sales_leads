@@ -39,11 +39,12 @@ const loadedCodeAndConfig: Ma24G15Preview = { schema: "ma24-g15-config-preview-v
   transitiveCodeClosureVerified: false, providerTariffsVerified: false,
   paidCallAuthorizationConfirmed: false, readyForPaidEvaluation: false };
 const codeAndConfigBytes = new TextEncoder().encode(JSON.stringify(loadedCodeAndConfig));
-const corpus: Ma24CorpusSnapshot = { schema: "ma24-g16-corpus-snapshot-v1",
-  accounts: [{ userId, knowledgeScope: ["industry"], documents: [], releases: [] }] };
+const corpus: Ma24CorpusSnapshot = { schema: "ma24-g16-corpus-snapshot-v2",
+  accounts: [{ userId, knowledgeScope: ["industry"], documents: [], releases: [] }],
+  permissionProofs: [] };
 const corpusSnapshotBytes = new TextEncoder().encode(JSON.stringify(corpus));
 const sha = (bytes: Uint8Array) => createHash("sha256").update(bytes).digest("hex");
-const manifest: Ma24FrozenManifest = { schema: "ma24-g16-frozen-comparison-v3",
+const manifest: Ma24FrozenManifest = { schema: "ma24-g16-frozen-comparison-v4",
   sourceSetSha256: sha(sourceSetBytes), goldSnapshotSha256: sha(goldBytes),
   codeAndConfigSha256: sha(codeAndConfigBytes),
   corpusSnapshotSha256: sha(corpusSnapshotBytes), requiredImprovementTags: [],
@@ -160,5 +161,60 @@ describe("MA24 evaluation task admission binding", () => {
     });
     await expect(verifyMa24EvaluationTaskBinding(fixture)).resolves.toMatchObject({ arm: "baseline", query });
     expect(mocks.tenantTransaction).toHaveBeenCalledTimes(2);
+  });
+  it("rechecks the owner's private source when a paired account is expected to deny", async () => {
+    const ownerId = "44444444-4444-4444-8444-444444444444";
+    const deniedCaseId = "paired-permission-deny";
+    const source = { documentId: "66666666-6666-4666-8666-666666666666",
+      collectionSlug: "industry" as const, ownerId, visibility: "private", title: "Private fixture",
+      sourceUrl: null, authorityLevel: 2, language: "en", market: null,
+      companyId: null, productId: null, metadata: {}, contentSha256: "a".repeat(64),
+      currentTreeVersionId: "77777777-7777-4777-8777-777777777777",
+      currentTreeStatus: "ready", currentTreeSourceSha256: "c".repeat(64),
+      currentTreeAssetId: "88888888-8888-4888-8888-888888888888",
+      activeReleaseId: null, assetId: "88888888-8888-4888-8888-888888888888",
+      assetSha256: "c".repeat(64), assetRegistrationStatus: "registered" };
+    const pairedSourceSet: Ma24SourceSetSnapshot = { schema: "ma24-g16-source-set-v1",
+      cases: [{ caseId, query }, { caseId: deniedCaseId, query }] };
+    const pairedGold: Ma24GoldSnapshot = { schema: "ma24-g16-gold-snapshot-v1",
+      cases: [gold.cases[0], { caseId: deniedCaseId,
+        caseSha256: ma24CaseQuerySha256(query), expectedAnswer: "Access denied",
+        expectedSources: [], reviewer: "fixture", reviewedAt: "2026-10-15T00:00:00Z",
+        note: "fixture" }] };
+    const pairedCorpus: Ma24CorpusSnapshot = { schema: "ma24-g16-corpus-snapshot-v2",
+      accounts: [{ userId: ownerId, knowledgeScope: ["industry"], documents: [source],
+        releases: [] }, { userId, knowledgeScope: ["industry"], documents: [], releases: [] }],
+      permissionProofs: [{ ownerCaseId: caseId, denyCaseId: deniedCaseId,
+        targetAssetSha256: source.assetSha256 }] };
+    const sourceBytes = new TextEncoder().encode(JSON.stringify(pairedSourceSet));
+    const goldBytes = new TextEncoder().encode(JSON.stringify(pairedGold));
+    const corpusBytes = new TextEncoder().encode(JSON.stringify(pairedCorpus));
+    const pairedManifest: Ma24FrozenManifest = { ...manifest,
+      sourceSetSha256: sha(sourceBytes), goldSnapshotSha256: sha(goldBytes),
+      corpusSnapshotSha256: sha(corpusBytes), cases: [
+        { ...manifest.cases[0], userId: ownerId, tags: ["permission"] },
+        { caseId: deniedCaseId, caseSha256: ma24CaseQuerySha256(query),
+          group: "security", tags: ["permission"], expectedOutcome: "deny",
+          userId, knowledgeScope: ["industry"] },
+      ] };
+    const deniedTask = { ...task, execution_spec: { ...task.execution_spec,
+      caseId: deniedCaseId, manifestSha256: ma24ManifestSha256(pairedManifest) } };
+    let ownerDocuments = [source];
+    mocks.tenantTransaction.mockImplementation(async (tenant: string, callback: (client: {
+      query: (sql: string) => Promise<{ rows: unknown[] }>;
+    }) => Promise<unknown>) => callback({ query: async sql => {
+      if (sql.includes("from agent_run where")) return { rows: [deniedTask] };
+      if (sql.includes("from assistant_conversation")) return { rows: [conversation] };
+      if (sql.includes("from knowledge_document d"))
+        return { rows: tenant === ownerId ? ownerDocuments : [] };
+      return { rows: [] };
+    } }));
+    const input = { ...fixture, manifest: pairedManifest, sourceSetBytes: sourceBytes,
+      goldBytes, corpusSnapshotBytes: corpusBytes, caseId: deniedCaseId };
+    await expect(verifyMa24EvaluationTaskBinding(input)).resolves.toMatchObject({
+      caseId: deniedCaseId, userId });
+    ownerDocuments = [];
+    await expect(verifyMa24EvaluationTaskBinding(input))
+      .rejects.toThrow(/live corpus or ACL differs/);
   });
 });

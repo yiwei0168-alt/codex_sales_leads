@@ -69,11 +69,12 @@ const loadedCodeAndConfig: Ma24G15Preview = { schema: "ma24-g15-config-preview-v
   paidCallAuthorizationConfirmed: false, readyForPaidEvaluation: false };
 const codeAndConfigBytes = new TextEncoder().encode(JSON.stringify(loadedCodeAndConfig));
 const corpusSnapshotBytes = new TextEncoder().encode(JSON.stringify({
-  schema: "ma24-g16-corpus-snapshot-v1",
+  schema: "ma24-g16-corpus-snapshot-v2",
   accounts: [await readMa24LiveCorpusAccount(userId, ["industry"])],
+  permissionProofs: [],
 }));
 const sha = (bytes: Uint8Array) => createHash("sha256").update(bytes).digest("hex");
-const manifest: Ma24FrozenManifest = { schema: "ma24-g16-frozen-comparison-v3",
+const manifest: Ma24FrozenManifest = { schema: "ma24-g16-frozen-comparison-v4",
   sourceSetSha256: sha(sourceSetBytes),
   goldSnapshotSha256: sha(goldBytes), codeAndConfigSha256: sha(codeAndConfigBytes),
   corpusSnapshotSha256: sha(corpusSnapshotBytes),

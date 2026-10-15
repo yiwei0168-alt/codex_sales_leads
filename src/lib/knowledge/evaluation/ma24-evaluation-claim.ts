@@ -7,7 +7,8 @@ import { assertMa24FrozenSnapshotBytes, assertMa24GoldMatchesManifest,
   type Ma24SourceSetSnapshot } from "./ma24-independent-comparison";
 import { verifyMa24EvaluationTaskBinding } from "./ma24-evaluation-task-binding";
 import { assertMa24G15RuntimeBinding, type Ma24G15Preview } from "./ma24-g15-runtime-binding";
-import { assertMa24CorpusSnapshotBytes, verifyMa24LiveCorpusAccount } from "./ma24-corpus-snapshot";
+import { assertMa24CorpusSnapshotBytes, assertMa24PermissionGoldControl,
+  verifyMa24LiveCorpusAccount, verifyMa24LivePermissionControl } from "./ma24-corpus-snapshot";
 
 type ClaimedEvaluationRun = { id: string; user_id: string; lease_token: string };
 
@@ -47,12 +48,14 @@ export async function claimAndBindMa24EvaluationRun(input: Omit<BindingInput,
   const corpus = assertMa24CorpusSnapshotBytes(input.manifest, input.corpusSnapshotBytes,
     input.manifest.corpusSnapshotSha256);
   await verifyMa24LiveCorpusAccount(corpus, entry.userId, entry.knowledgeScope);
+  await verifyMa24LivePermissionControl(input.manifest, corpus, entry.caseId);
   const decode = (bytes: Uint8Array) => JSON.parse(new TextDecoder("utf-8", { fatal: true })
     .decode(bytes));
   assertMa24SourceSetMatchesManifest(input.manifest,
     decode(input.sourceSetBytes) as Ma24SourceSetSnapshot);
-  assertMa24GoldMatchesManifest(input.manifest,
-    decode(input.goldBytes) as Ma24GoldSnapshot);
+  const gold = decode(input.goldBytes) as Ma24GoldSnapshot;
+  assertMa24GoldMatchesManifest(input.manifest, gold);
+  assertMa24PermissionGoldControl(input.manifest, corpus, gold);
   const frozenCodeAndConfig = decode(input.codeAndConfigBytes) as Ma24G15Preview;
   const loadedCodeAndConfig = loadCurrentMa24G15Preview();
   const nowUtcDate = new Date().toISOString().slice(0, 10);

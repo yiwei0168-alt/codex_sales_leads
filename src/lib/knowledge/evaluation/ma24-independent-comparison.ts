@@ -10,7 +10,7 @@ export type Ma24Case = {
 };
 /** The answer key stays outside this manifest; only its locked hash enters model-run inputs. */
 export type Ma24FrozenManifest = {
-  schema: "ma24-g16-frozen-comparison-v3";
+  schema: "ma24-g16-frozen-comparison-v4";
   sourceSetSha256: string; goldSnapshotSha256: string; codeAndConfigSha256: string;
   corpusSnapshotSha256: string;
   requiredImprovementTags: string[]; protectedNoRegressionTags: string[];
@@ -90,7 +90,7 @@ export function assertMa24FrozenSnapshotBytes(manifest: Ma24FrozenManifest, snap
 }
 
 function validateManifest(manifest: Ma24FrozenManifest) {
-  if (manifest.schema !== "ma24-g16-frozen-comparison-v3" || !manifest.cases.length ||
+  if (manifest.schema !== "ma24-g16-frozen-comparison-v4" || !manifest.cases.length ||
     ![manifest.sourceSetSha256, manifest.goldSnapshotSha256, manifest.codeAndConfigSha256,
       manifest.corpusSnapshotSha256].every(hex64))
     throw new Error("Incomplete MA24 frozen manifest");

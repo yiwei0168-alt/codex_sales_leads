@@ -6,7 +6,8 @@ import { assertMa24FrozenSnapshotBytes, assertMa24GoldMatchesManifest,
   assertMa24SourceSetMatchesManifest, ma24ManifestSha256,
   type Ma24FrozenManifest, type Ma24GoldSnapshot,
   type Ma24SourceSetSnapshot } from "./ma24-independent-comparison";
-import { assertMa24CorpusSnapshotBytes, verifyMa24LiveCorpusAccount } from "./ma24-corpus-snapshot";
+import { assertMa24CorpusSnapshotBytes, assertMa24PermissionGoldControl,
+  verifyMa24LiveCorpusAccount, verifyMa24LivePermissionControl } from "./ma24-corpus-snapshot";
 
 type EvaluationTask = Pick<AgentRun, "id" | "user_id" | "status" | "input" |
   "model_config" | "execution_kind" | "execution_spec" | "lease_token" | "conversation_id"> & {
@@ -34,7 +35,7 @@ export function assertMa24EvaluationTaskBinding(input: {
   const { manifest, sourceSetBytes, goldBytes, codeAndConfigBytes, corpusSnapshotBytes,
     loadedCodeAndConfig, nowUtcDate, task, conversation, runId, leaseToken,
     caseId, arm, loadedModelConfig } = input;
-  if (manifest.schema !== "ma24-g16-frozen-comparison-v3" ||
+  if (manifest.schema !== "ma24-g16-frozen-comparison-v4" ||
     [manifest.sourceSetSha256, manifest.goldSnapshotSha256, manifest.codeAndConfigSha256,
       manifest.corpusSnapshotSha256]
       .some(hash => !/^[0-9a-f]{64}$/.test(hash)))
@@ -43,7 +44,8 @@ export function assertMa24EvaluationTaskBinding(input: {
     sourceSet: sourceSetBytes, gold: goldBytes, codeAndConfig: codeAndConfigBytes,
     corpus: corpusSnapshotBytes,
   });
-  assertMa24CorpusSnapshotBytes(manifest, corpusSnapshotBytes, manifest.corpusSnapshotSha256);
+  const corpus = assertMa24CorpusSnapshotBytes(manifest, corpusSnapshotBytes,
+    manifest.corpusSnapshotSha256);
   const frozenConfig = JSON.parse(new TextDecoder("utf-8", { fatal: true })
     .decode(codeAndConfigBytes)) as Ma24G15Preview;
   assertMa24G15RuntimeBinding(frozenConfig, loadedCodeAndConfig, nowUtcDate);
@@ -51,6 +53,7 @@ export function assertMa24EvaluationTaskBinding(input: {
   assertMa24SourceSetMatchesManifest(manifest, sourceSet);
   const gold = JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(goldBytes)) as Ma24GoldSnapshot;
   assertMa24GoldMatchesManifest(manifest, gold);
+  assertMa24PermissionGoldControl(manifest, corpus, gold);
   const spec = task.execution_spec as Record<string, unknown> | null;
   const entry = manifest.cases.find(item => item.caseId === caseId);
   const question = sourceSet.cases.find(item => item.caseId === caseId);
@@ -109,5 +112,6 @@ export async function verifyMa24EvaluationTaskBinding(input: Omit<
   const corpus = assertMa24CorpusSnapshotBytes(input.manifest, input.corpusSnapshotBytes,
     input.manifest.corpusSnapshotSha256);
   await verifyMa24LiveCorpusAccount(corpus, bound.userId, bound.knowledgeScope);
+  await verifyMa24LivePermissionControl(input.manifest, corpus, bound.caseId);
   return bound;
 }

@@ -127,11 +127,12 @@ try {
   const loadedCodeAndConfig = loadCurrentMa24G15Preview();
   const codeAndConfigBytes = new TextEncoder().encode(JSON.stringify(loadedCodeAndConfig));
   const corpusSnapshotBytes = new TextEncoder().encode(JSON.stringify({
-    schema: "ma24-g16-corpus-snapshot-v1",
+    schema: "ma24-g16-corpus-snapshot-v2",
     accounts: [await readMa24LiveCorpusAccount(userId, ["industry"])],
+    permissionProofs: [],
   }));
   const hash = (bytes: Uint8Array) => createHash("sha256").update(bytes).digest("hex");
-  const manifest = { schema: "ma24-g16-frozen-comparison-v3" as const,
+  const manifest = { schema: "ma24-g16-frozen-comparison-v4" as const,
     sourceSetSha256: hash(sourceSetBytes), goldSnapshotSha256: hash(goldBytes),
     codeAndConfigSha256: hash(codeAndConfigBytes),
     corpusSnapshotSha256: hash(corpusSnapshotBytes),

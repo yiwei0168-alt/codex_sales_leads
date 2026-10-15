@@ -1,0 +1,24 @@
+{
+  "schema": "ma24-g16-permission-positive-negative-control-v1",
+  "date": "2026-10-15",
+  "stage": "G16 permission-case engineering gate",
+  "manifestSchema": "ma24-g16-frozen-comparison-v4",
+  "corpusSnapshotSchema": "ma24-g16-corpus-snapshot-v2",
+  "rule": "Every permission-tagged deny case must be paired with a route case having the exact same question hash and knowledge scope under a distinct owner account. The frozen owner inventory must contain the private registered target asset and a ready current evidence tree for the same asset. The denied account must not see that asset. The owner Gold must cite it. Before a denied-account claim and at each runner revalidation, both account inventories are checked again.",
+  "sensitiveDataBoundary": "The manifest and tracked receipt contain asset hashes and case IDs only. The private synthetic PDF, review code, full corpus snapshots, and account IDs remain outside public Git.",
+  "checks": {
+    "typescript": "passed",
+    "targetedVitest": "4 files, 36 tests passed after the tree-source extension",
+    "targetedEslint": "passed after the tree-source extension",
+    "twoAccountClone": ["owner private registered asset present", "outsider target absent under tenant RLS", "same question owner route and outsider deny proof passes", "owner Gold cites target asset", "private to shared drift rejected", "owner target archived drift rejected", "wrong owner Gold source rejected", "synthetic rows cleaned", "provider calls 0"],
+    "ordinaryAdmissionClone": "passed after current tree join; provider calls 0",
+    "explicitClaimClone": "passed after v4 contract change; provider calls 0"
+  },
+  "remaining": [
+    "The actual G14 private security PDF and two evaluation accounts have not been frozen into this v4 manifest; the earlier product ACL clone is candidate evidence only.",
+    "Database metadata and tree readiness do not prove that the user-visible model refused or that a cited excerpt appeared in the final answer.",
+    "The full G14 source set, G15 paid admission and G16 dual-arm quality judgment remain open."
+  ],
+  "realDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}

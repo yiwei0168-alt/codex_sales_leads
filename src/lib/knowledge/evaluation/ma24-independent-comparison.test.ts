@@ -5,7 +5,7 @@ import { assertMa24FrozenSnapshotBytes, assertMa24SourceSetMatchesManifest,
   type Ma24FrozenManifest, type Ma24GoldSnapshot, type Ma24Run, type Ma24Verdict } from "./ma24-independent-comparison";
 
 const manifest: Ma24FrozenManifest = {
-  schema: "ma24-g16-frozen-comparison-v3",
+  schema: "ma24-g16-frozen-comparison-v4",
   sourceSetSha256: "a".repeat(64), goldSnapshotSha256: "b".repeat(64),
   codeAndConfigSha256: "c".repeat(64), corpusSnapshotSha256: "1".repeat(64),
   requiredImprovementTags: ["long-document", "cross-document", "new-or-revised"],

@@ -4,7 +4,7 @@ import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { resolve, sep } from "node:path";
 import { verifyMa24PersistedRunBinding } from "../src/lib/knowledge/evaluation/ma24-persisted-run-binding";
-import { assertMa24CorpusSnapshotBytes } from "../src/lib/knowledge/evaluation/ma24-corpus-snapshot";
+import { assertMa24CorpusSnapshotBytes, assertMa24PermissionGoldControl } from "../src/lib/knowledge/evaluation/ma24-corpus-snapshot";
 import { assertMa24FrozenSnapshotBytes, assertMa24SourceSetMatchesManifest,
   scoreMa24IndependentComparison, type Ma24FrozenManifest, type Ma24Run,
   type Ma24GoldSnapshot, type Ma24SourceSetSnapshot, type Ma24Verdict } from "../src/lib/knowledge/evaluation/ma24-independent-comparison";
@@ -20,7 +20,7 @@ const [manifest, runs, verdicts] = bytes.slice(0, 3).map(value => JSON.parse(val
 assertMa24FrozenSnapshotBytes(manifest, {
   sourceSet: bytes[3], gold: bytes[4], codeAndConfig: bytes[5], corpus: bytes[6],
 });
-assertMa24CorpusSnapshotBytes(manifest, bytes[6], manifest.corpusSnapshotSha256);
+const corpus = assertMa24CorpusSnapshotBytes(manifest, bytes[6], manifest.corpusSnapshotSha256);
 const sourceSet = JSON.parse(bytes[3].toString("utf8")) as Ma24SourceSetSnapshot;
 assertMa24SourceSetMatchesManifest(manifest, sourceSet);
 const frozenCases = new Map(manifest.cases.map(item => [item.caseId, item]));
@@ -34,6 +34,7 @@ for (const run of runs) {
     ...await verifyMa24PersistedRunBinding(frozen, question, run) });
 }
 const gold = JSON.parse(bytes[4].toString("utf8")) as Ma24GoldSnapshot;
+assertMa24PermissionGoldControl(manifest, corpus, gold);
 const result = scoreMa24IndependentComparison({ manifest, gold, runs, verdicts });
 const hash = (value: Uint8Array) => createHash("sha256").update(value).digest("hex");
 console.log(JSON.stringify({ schema: "ma24-g16-scored-comparison-v1", readOnly: true,
