@@ -1,0 +1,27 @@
+{
+  "schema": "ma24-g14-current-family-readiness-v8-receipt",
+  "date": "2026-10-16",
+  "supersedes": "docs/evidence/ma24-g14-current-family-readiness-v7-2026-10-16.json",
+  "correction": "docs/evidence/ma24-g14-nist-cross-source-candidate-correction-2026-10-16.json",
+  "script": "scripts/audit-ma24-g14-current-family-readiness-local.ts",
+  "scriptSha256": "7e1a1b37f3654e3db08e02d5e20d543f43d3153e509ed2b0a6bb964e243ca415",
+  "poolPath": "tmp/ma24-independent-quarantine/g14-current-draft-pool-v8-nist-corrected-2026-10-16.json",
+  "poolSha256": "4572c140e64aa992a666c90729fb1ca6c3a8ef6a6922b3a8b5c7a6dfb3e984d8",
+  "privateReportPath": "tmp/ma24-independent-quarantine/g14-family-readiness-v8-2026-10-16.json",
+  "privateReportSha256": "e611dee90a2c64ccda15ebe2795ac7a5460f3b2c5e5faf8c7ecceab66b0d3957",
+  "counts": {
+    "publicationDrafts": 24,
+    "syntheticSecurityDrafts": 3,
+    "publicationFamilyLabels": 14,
+    "connectedPublicationExposureUnits": 13,
+    "approvedGoldCases": 5,
+    "unitsContainingApprovedGold": 3,
+    "unitsWhoseCurrentDraftsAreAllApproved": 2,
+    "unitsMixingApprovedAndProvisionalDrafts": 1
+  },
+  "finding": "Retiring the unsupported NIST cross-source question removes the only recorded link between the NIST TN 2363 report and industrial wireless workbook. The workbook's approved Gold and report's provisional drafts now occupy separate exposure units under recorded family labels. FCC still mixes one approved Gold with one provisional same-unit draft. These are inventory facts, not proof that hidden derivative exposure is absent.",
+  "fullSetFrozen": false,
+  "g15ReadyForModelCalls": false,
+  "realDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}

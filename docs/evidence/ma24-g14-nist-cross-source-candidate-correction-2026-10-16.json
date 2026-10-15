@@ -1,0 +1,55 @@
+{
+  "schema": "ma24-g14-nist-cross-source-candidate-correction-v1",
+  "date": "2026-10-16",
+  "supersedesCandidateReceipt": "docs/evidence/ma24-g14-nist-two-source-delay-vs-coupling-draft-2026-10-15.json",
+  "candidateId": "nist-ran-propagation-vs-dipole-range-alignment",
+  "disposition": "retired-from-provisional-pool-pending-substantive-redraft",
+  "reason": "B23 is under the free-space horn section, whereas M23 is under the free-space dipole section. Their inequality cannot establish that the N23 and T23 dipole coupling values were measured at different ranges. The candidate answer made that unsupported inference. The report delay diagram and ray-tracing coupling table also do not establish a measured millisecond conversion.",
+  "originalSourceChecks": {
+    "pdfSha256": "65e333dac9975f4ca9a952a966fb212ce7ccb161ec60b48bf45c3dfd7adbd6a9",
+    "pdfExtractionSha256": "babd6ce7bec494922fed339b33d3e156d8c05f55435613fffcf0ddfbada9d26f",
+    "pdfFigure3Block": "page-21-visual-review",
+    "pdfPhysicalPage": 21,
+    "pdfFigure3Decision": "evidence",
+    "xlsxSha256": "0132c779ab57132ae5b5718b1b1440b52ed66bd48bc62d953336c90f7f2cb814",
+    "xlsxExtractionSha256": "9e2d5ba09125dc86f921b537fb9c79df757477d9efde7134e63bd6a85e7ba1a7",
+    "sheet": "Ray Tracing Results",
+    "checkedCells": [
+      "B4",
+      "M4",
+      "T4",
+      "B6",
+      "M6",
+      "N6",
+      "T6",
+      "B23",
+      "M23",
+      "N23",
+      "T23"
+    ],
+    "freeSpaceHornRangeB23Meters": 1.999988,
+    "freeSpaceDipoleRangeM23Meters": 2.4238829097429604,
+    "freeSpaceDipoleCouplingN23Db": -47.5,
+    "groundBounceDipoleCouplingT23Db": -47.75,
+    "originalAndExtractionCellsEqual": true
+  },
+  "acceptanceBoundary": {
+    "figure3ProductEvidenceDecisionExists": true,
+    "figure3ExactReadEvidenceCheckedInThisAudit": false,
+    "newGoldApproved": false,
+    "fullG14SetFrozen": false,
+    "g15PaidCalls": 0,
+    "g16RealRuns": 0
+  },
+  "poolCorrection": {
+    "priorPoolSha256": "770a5201492be9df8c7e1e93e8d13ac1d1be9c66fad4c02bb36f992ad3bb2626",
+    "correctedPoolPath": "tmp/ma24-independent-quarantine/g14-current-draft-pool-v8-nist-corrected-2026-10-16.json",
+    "correctedPoolSha256": "4572c140e64aa992a666c90729fb1ca6c3a8ef6a6922b3a8b5c7a6dfb3e984d8",
+    "drafts": 27,
+    "publicationDrafts": 24,
+    "syntheticSecurityDrafts": 3,
+    "crossDocumentDrafts": 1,
+    "localNeighborOutputSha256": "96ab0a61090de4f74f21bc2d8112f62e8a86671707dd76be1e6c959ea8592318",
+    "semanticIndependenceProven": false
+  }
+}

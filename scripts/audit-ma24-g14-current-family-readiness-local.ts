@@ -5,7 +5,7 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
 const poolReceipt = JSON.parse(await readFile(
-  'docs/evidence/ma24-g14-dbs-current-28-pool-screen-2026-10-16.json', 'utf8'));
+  'docs/evidence/ma24-g14-nist-cross-source-candidate-correction-2026-10-16.json', 'utf8'));
 const goldReceipt = JSON.parse(await readFile(
   'docs/evidence/ma24-g14-approved-five-staging-integrity-2026-10-16.json', 'utf8'));
 const hash = (bytes: Uint8Array) => createHash('sha256').update(bytes).digest('hex');
@@ -14,7 +14,8 @@ const readBound = async (path: string, expectedHash: string) => {
   assert.equal(hash(bytes), expectedHash, `MA24 G14 input drift: ${path}`);
   return JSON.parse(bytes.toString('utf8'));
 };
-const pool = await readBound(poolReceipt.inputPool, poolReceipt.inputPoolSha256) as {
+const pool = await readBound(poolReceipt.poolCorrection.correctedPoolPath,
+  poolReceipt.poolCorrection.correctedPoolSha256) as {
   schema: string; draftCount: number; publicationDraftCount: number;
   syntheticSecurityDraftCount: number;
   publicationRows: Array<{ id: string; families: string[] }>;
@@ -24,7 +25,7 @@ const gold = await readBound(goldReceipt.privateStagingSnapshots.sourceSetPath,
   goldReceipt.privateStagingSnapshots.sourceSetSha256) as {
     schema: string; cases: Array<{ caseId: string }>;
   };
-assert.equal(pool.schema, 'ma24-g14-current-draft-pool-v7');
+assert.equal(pool.schema, 'ma24-g14-current-draft-pool-v8');
 assert.equal(gold.schema, 'ma24-g16-source-set-v1');
 assert.equal(pool.publicationRows.length, pool.publicationDraftCount);
 assert.equal(pool.securityAnnex.length, pool.syntheticSecurityDraftCount);
@@ -68,14 +69,14 @@ const units = [...new Set(familyNames.map(root))].sort().map(groupId => {
       approvedGoldIds.length === draftIds.length ? 'all-drafts-approved' :
         'mixed-approved-and-provisional' };
 });
-assert.equal(units.length, 12);
+assert.equal(units.length, 13);
 assert.equal(familyNames.length, 14);
 assert.equal(units.flatMap(row => row.draftIds).length, pool.publicationDraftCount);
 assert.equal(units.flatMap(row => row.approvedGoldIds).length, approvedIds.size);
 assert.equal(new Set(pool.securityAnnex.map(item => item.sourceSha256)).size, 1);
-const outputPath = resolve('tmp/ma24-independent-quarantine/g14-family-readiness-v7-2026-10-16.json');
-const report = { schema: 'ma24-g14-family-readiness-v7',
-  poolSha256: poolReceipt.inputPoolSha256,
+const outputPath = resolve('tmp/ma24-independent-quarantine/g14-family-readiness-v8-2026-10-16.json');
+const report = { schema: 'ma24-g14-family-readiness-v8',
+  poolSha256: poolReceipt.poolCorrection.correctedPoolSha256,
   approvedSourceSetSha256: goldReceipt.privateStagingSnapshots.sourceSetSha256,
   rule: 'A connected publication family is one exposure unit; a provisional same-unit draft cannot be treated as an independent source if later used for development.',
   publicationFamilies: familyNames.length, publicationExposureUnits: units.length,
