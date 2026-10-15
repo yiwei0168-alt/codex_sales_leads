@@ -1,0 +1,52 @@
+{
+  "schema": "ma24-g14-ntia-18ghz-source-use-and-exposure-v1",
+  "date": "2026-10-15",
+  "sourceReceipt": "docs/evidence/ma24-g14-ntia-18ghz-pdf-candidate-2026-10-15.json",
+  "sourceSha256": "ff6074c82f7c6abbab80a792ad3d1fae111074f64a492395d2c3c7b78f0c8e42",
+  "publisherPage": "https://www.ntia.gov/report/2025/18-ghz-band-report",
+  "publisherPdf": "https://www.ntia.gov/sites/default/files/2025-05/18-ghz-band-study-report.pdf",
+  "checkedPublisherFacts": [
+    "The NTIA publication page dated May 1, 2025 links NTIA Report 25-01 and describes the study as joint work by NTIA, NASA and DOD.",
+    "The downloaded ten-page PDF identifies itself as an NTIA/NASA jointly prepared report; its original page 3 gives the March 2025 report date.",
+    "The publisher page presents the band allocation changes as recommendations for later FCC and NTIA action, not as proof that the proposed domestic rules took effect."
+  ],
+  "sourceUseScreen": {
+    "legalReference": "https://uscode.house.gov/view.xhtml?edition=prelim&num=0&req=granuleid%3AUSC-prelim-title17-section105",
+    "boundedDecision": "Use short, attributed factual paraphrases of the report's dated recommendations in a private evaluation candidate, with original-page citations. Keep the PDF and reviewed page images in quarantine. Do not redistribute the PDF, logos, table image, or externally sourced material based on this screen.",
+    "limitation": "17 USC 105 concerns qualifying U.S. Government works; official hosting and joint agency authorship do not establish rights in every embedded element or foreign-jurisdiction use. This is not a final redistribution permission determination."
+  },
+  "preDiscoveryTrackedScreen": {
+    "firstCandidateCommit": "02818f44",
+    "baselineParentCommit": "82eea5e031418c2add6d7f3707336f152cbcce18",
+    "areas": ["docs", "src", "scripts", "experiments"],
+    "terms": ["NTIA Report 25-01", "18 GHz Band Report", "G117", "5.521A"],
+    "matchingFilesAtParentCommit": 0,
+    "allHistoryRegexHits": ["02818f44", "d83e8496"],
+    "interpretation": "The searched report-specific wording enters tracked history at the candidate and subsequent review commits."
+  },
+  "ignoredLocalTextScreen": {
+    "roots": ["tmp", "experiments"],
+    "extensions": [".json", ".md", ".txt", ".log"],
+    "excluded": "tmp/ma24-independent-quarantine and nested node_modules/.git directories",
+    "terms": ["NTIA Report 25-01", "18 GHz Band Report", "G117"],
+    "matchingFilesOutsideCandidateQuarantine": 0
+  },
+  "priorLocalRegistryExactHash": {
+    "receipt": "docs/evidence/ma24-g14-ntia-18ghz-pdf-candidate-2026-10-15.json",
+    "assets": 0,
+    "uploadJobs": 0,
+    "historicalGold": 0
+  },
+  "developmentUseSinceDiscovery": "Offline extraction and isolated visual review/registration/citation clone; no recorded product-code tuning, model answer calls, or production knowledge writes in those stages.",
+  "limitations": [
+    "The checked exact wording and hash absence do not prove semantic independence.",
+    "Unrecorded prompts, binary contents, provider-side use and model pretraining were not searched.",
+    "The candidate remains subject to full-set publication-family and question-contamination review before Gold freeze."
+  ],
+  "eligibleForFullSetFreezeReview": true,
+  "fullSetFreezeCompleted": false,
+  "approvedIndependentGold": false,
+  "modelAnswerCalls": 0,
+  "productionKnowledgeWrites": 0,
+  "g17ToG20Advanced": false
+}
