@@ -1,0 +1,52 @@
+{
+  "schema": "ma24-g14-zenodo-lora-family-freeze-readiness-v1",
+  "date": "2026-10-15",
+  "scope": "One CanSat LoRa PPTX design-diagram candidate; G17-G20 deferred",
+  "candidateId": "zenodo-lora-cansat-architecture-crc-storage",
+  "decision": "Source facts, visual arrow meaning, private product reads and bounded independence screens support final question review. Under confirmed rule MA24-10, the new diagram-flow question type needs user review. Do not freeze independent Gold before that reply and a locked source/Gold snapshot.",
+  "original": {
+    "record": "https://zenodo.org/records/19963593",
+    "doi": "https://doi.org/10.5281/zenodo.19963593",
+    "privatePath": "tmp/ma24-independent-quarantine/zenodo-lora-cansat-2026.pptx",
+    "bytesRechecked": 20363880,
+    "sha256Rechecked": "907049721a1359658787a026cbeace9b93be4879b75048b5c5a7debea51dedec",
+    "recordedLicense": "CC BY 4.0 for this presentation; do not transfer this status to related records or third-party slide imagery",
+    "relatedRecordCaution": "Other Zenodo records with the same project title include a separately licensed preprint; treat later derivatives as the same publication family unless a further audit proves otherwise."
+  },
+  "sourceFacts": {
+    "slide13": "Sensors GPS/BMP180 -> Microcontroller ESP32/Arduino -> LoRa Radio SX127x -> Ground Station",
+    "slide15": "Read Sensors -> Build Packet + CRC -> Transmit LoRa Frame -> Decode + Deliver Payload -> Display + Store (CSV/DB)",
+    "answerLimit": "These slides describe a design and processing sequence; do not claim that they demonstrate field performance or a completed deployment.",
+    "slideRenderHashesAndVisualDecisions": "docs/evidence/ma24-g14-zenodo-lora-visual-object-review-2026-10-15.json",
+    "privateProductReadback": "docs/evidence/ma24-g14-zenodo-lora-reviewed-citation-clone-2026-10-15.json"
+  },
+  "boundedIndependence": {
+    "firstLocalFamilyMatchUtc": "2026-10-15T01:05:49.577Z",
+    "firstGitRegistration": "8a694273 at 2026-10-15T01:17:12Z",
+    "preRegistrationSessionMatches": 45,
+    "preRegistrationInterpretation": "Matches occur in the eleven-minute discovery, download, slide inspection and question-draft window; no earlier target-family match was found in 102 retained rollout files and 161466 records.",
+    "rolloutAuditScriptSha256": "29b8039e954b5ca16f800ea3cff2c3e357d2fe9831cc413a0d5a0f4d4ea0c655",
+    "oldQuestionRows": 350,
+    "oldUniqueQuestions": 300,
+    "closestOldQuestion": "Open a revised device datasheet, not the LoRa architecture, CRC stage or ground-station storage facts",
+    "currentPublicationDraftPool": 24,
+    "currentPoolClosest": [
+      "nist-tn2363-ieee3388-assessment-and-profiles",
+      "etsi-38901-v195-isac-lower-power-clusters",
+      "zbw-2025-dmp-lifecycle-and-access-questions",
+      "ieee-80211-2025-amp-bands-modes"
+    ],
+    "currentPoolAnswerOverlap": "No other draft asks the CanSat sensor-to-ground chain, CRC step or storage step. The closest topics are separate standards, research-data and wireless-measurement sources.",
+    "productSpecificImplementation": "No CanSat, SX127, project title, author or record identifier occurs in non-test src files.",
+    "limit": "The bounded local screen cannot exclude unrecorded prompts, binary derivatives or model-provider pretraining. If this publication family is used to tune extraction or answer behavior, retire it from independent quality scoring."
+  },
+  "pending": [
+    "Record the requested MA24-10 user review of this new diagram-flow question type, candidate answer and design-only limit.",
+    "If approved, create a private source/Gold snapshot bound to the exact question, source SHA and reviewed slide text/arrow coordinates; validate against G16 admission.",
+    "Finish the complete G14 source-set and hard-case coverage, G15 paid admission and G16 real dual-arm answer/citation review."
+  ],
+  "cumulativeApprovedGoldCasesUnchanged": 4,
+  "cumulativeApprovedConnectedExposureUnitsUnchanged": 2,
+  "realDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}
