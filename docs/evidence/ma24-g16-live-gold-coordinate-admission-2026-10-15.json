@@ -1,0 +1,32 @@
+{
+  "schema": "ma24-g16-live-gold-coordinate-admission-v1",
+  "date": "2026-10-15",
+  "change": "A route Gold coordinate is checked under the execution account's RLS against evidence nodes in its active, registered asset's current ready tree before claim and at the leased runner boundary.",
+  "checkedCoordinates": ["asset SHA-256", "unit index", "block ID when present", "spreadsheet row within original cell range and matching row text when present", "normalized excerpt within evidence content"],
+  "unsupportedCoordinate": "A Gold version field currently fails closed because no versioned coordinate mapping is frozen.",
+  "focusedChecks": {
+    "vitestFilesPassed": 2,
+    "vitestCasesPassed": 17,
+    "typescript": "passed",
+    "eslint": "passed",
+    "isolatedDatabase": [
+      "valid route evidence passes under the evaluation account",
+      "invented Gold excerpt is rejected before claim and task remains queued",
+      "changed live evidence content is rejected at the leased runner boundary, then restoration passes",
+      "synthetic document, asset, tree, evidence nodes, users and tasks are cleaned"
+    ]
+  },
+  "g15CurrentPreview": "docs/evidence/ma24-g15-config-preview-2026-10-15-v8.json",
+  "g15CurrentPreviewSha256": "c42e1929877f867c8a46af73e99b15a22611cc7f63869b36ebb4dff045b8c990",
+  "g15SourceClosureFiles": 289,
+  "modelCalls": 0,
+  "providerCalls": 0,
+  "realDualArmRuns": 0,
+  "qualityAccepted": false,
+  "limits": [
+    "This validates frozen Gold coordinates against a synthetic isolated database source; approved Gold and actual evaluation account corpora remain unfrozen.",
+    "It does not establish final model answer correctness or user-visible citation accuracy.",
+    "Full G14 set, G15 paid authorization, and G16 real dual-arm verdicts remain open."
+  ],
+  "g17ToG20Advanced": false
+}

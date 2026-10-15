@@ -151,7 +151,7 @@ describe("MA24 evaluation task admission binding", () => {
   });
   it("reads only the frozen account's live task row before returning the bound arm", async () => {
     mocks.tenantTransaction.mockImplementation(async (tenant: string, callback: (client: {
-      query: (sql: string, args: string[]) => Promise<{ rows: unknown[] }>;
+      query: (sql: string, args: unknown[]) => Promise<{ rows: unknown[] }>;
     }) => Promise<unknown>) => {
       expect(tenant).toBe(userId);
       return callback({ query: async (sql, args) => {
@@ -163,13 +163,16 @@ describe("MA24 evaluation task admission binding", () => {
           expect(args).toEqual([userId, task.conversation_id]);
           return { rows: [conversation] };
         }
+        if (sql.includes("join knowledge_tree_node n")) return { rows: [{
+          blockId: "synthetic-block", content: "Synthetic evidence", sourceLocation: {},
+        }] };
         if (sql.includes("from knowledge_document d")) return { rows: [sourceDocument] };
         expect(sql).toContain("from knowledge_release_pointer_v3");
         return { rows: [] };
       } });
     });
     await expect(verifyMa24EvaluationTaskBinding(fixture)).resolves.toMatchObject({ arm: "baseline", query });
-    expect(mocks.tenantTransaction).toHaveBeenCalledTimes(2);
+    expect(mocks.tenantTransaction).toHaveBeenCalledTimes(3);
   });
   it("rechecks the owner's private source when a paired account is expected to deny", async () => {
     const ownerId = "44444444-4444-4444-8444-444444444444";

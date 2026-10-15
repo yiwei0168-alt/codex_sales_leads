@@ -5,7 +5,8 @@ vi.mock("../../rag/db", () => ({ tenantTransaction: mocks.tenantTransaction }));
 import { assertMa24CorpusSnapshotBytes, assertMa24CorpusSnapshotShape,
   assertMa24PermissionGoldControl, assertMa24RouteGoldCorpusAccess,
   verifyMa24LiveCorpusAccount,
-  verifyMa24LivePermissionControl, type Ma24CorpusSnapshot } from "./ma24-corpus-snapshot";
+  verifyMa24LivePermissionControl, verifyMa24LiveRouteGoldEvidence,
+  type Ma24CorpusSnapshot } from "./ma24-corpus-snapshot";
 import type { Ma24FrozenManifest, Ma24GoldSnapshot } from "./ma24-independent-comparison";
 
 const owner = "11111111-1111-4111-8111-111111111111";
@@ -114,5 +115,36 @@ describe("MA24 frozen corpus and tenant ACL", () => {
     ownerDocuments = [];
     await expect(verifyMa24LivePermissionControl(manifest, snapshot, "outsider"))
       .rejects.toThrow(/corpus or ACL differs/);
+  });
+  it("checks the live block, spreadsheet row and excerpt before a routed answer", async () => {
+    const located = { ...gold, cases: [{ ...gold.cases[0], expectedSources: [{
+      assetSha256: document.assetSha256, unitIndex: 1, blockId: "sheet-1-table",
+      row: 26, excerpt: "D26: 7934" }]
+    }, gold.cases[1]] };
+    let rows = [{ blockId: "sheet-1-table", content: "A26: March 2018\nD26: 7934",
+      sourceLocation: { cellRange: "A1:D33" } }];
+    mocks.tenantTransaction.mockImplementation(async (userId: string,
+      callback: (client: { query: (sql: string, args: unknown[]) => Promise<{ rows: unknown[] }> }) => Promise<unknown>) => {
+      expect(userId).toBe(owner);
+      return callback({ query: async (sql, args) => {
+        expect(sql).toContain("n.node_kind='evidence'");
+        expect(args).toEqual([["industry"], document.assetSha256, 1]);
+        return { rows };
+      } });
+    });
+    await expect(verifyMa24LiveRouteGoldEvidence(manifest, located, "owner"))
+      .resolves.toBeUndefined();
+    await expect(verifyMa24LiveRouteGoldEvidence(manifest, located, "outsider"))
+      .resolves.toBeUndefined();
+    for (const changed of [
+      { ...rows[0], blockId: "wrong-block" },
+      { ...rows[0], content: "D26: 7935" },
+      { ...rows[0], content: "D27: 7934" },
+      { ...rows[0], sourceLocation: { cellRange: "A27:D33" } },
+    ]) {
+      rows = [changed];
+      await expect(verifyMa24LiveRouteGoldEvidence(manifest, located, "owner"))
+        .rejects.toThrow(/evidence coordinate unavailable/);
+    }
   });
 });

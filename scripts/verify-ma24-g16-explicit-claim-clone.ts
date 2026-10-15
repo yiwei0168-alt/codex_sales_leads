@@ -40,6 +40,7 @@ const evaluationId = randomUUID(), ordinaryId = randomUUID(), malformedId = rand
 const admittedId = randomUUID(), rejectedId = randomUUID();
 const admittedConversationId = randomUUID(), rejectedConversationId = randomUUID();
 const sourceDocumentId = randomUUID(), sourceAssetId = randomUUID(), sourceTreeId = randomUUID();
+const sourceUnitId = randomUUID(), sourceEvidenceId = randomUUID();
 let inserted = false;
 let sourceInserted = false;
 let verified = false;
@@ -130,6 +131,15 @@ try {
         source_sha256,extractor_version,artifact_sha256,status)
       values($1,$2,$3,$4,'synthetic-fixture',$5,'ready')`,
     [sourceTreeId, sourceDocumentId, sourceAssetId, "c".repeat(64), "d".repeat(64)]);
+    await sourceClient.query(`insert into knowledge_tree_node(id,version_id,ordinal,node_kind,title,
+        unit_type,unit_index,source_location)
+      values($1,$2,1,'unit','Synthetic page','page',1,'{}')`,
+    [sourceUnitId, sourceTreeId]);
+    await sourceClient.query(`insert into knowledge_tree_node(id,version_id,parent_id,ordinal,
+        node_kind,title,unit_type,unit_index,source_location,content,content_sha256)
+      values($1,$2,$3,1,'evidence','Synthetic block','page',1,$4,$5,$6)`,
+    [sourceEvidenceId, sourceTreeId, sourceUnitId, JSON.stringify({ blockId: "synthetic-block" }),
+      "Synthetic evidence", createHash("sha256").update("Synthetic evidence").digest("hex")]);
     await sourceClient.query("update knowledge_document set current_tree_version_id=$2 where id=$1",
       [sourceDocumentId, sourceTreeId]);
     await sourceClient.query("commit");
@@ -248,6 +258,16 @@ try {
   await assert.rejects(claimAndBindMa24EvaluationRun({ ...binding, runId: rejectedId,
     manifest: { ...manifest, goldSnapshotSha256: hash(unavailableGoldBytes) },
     goldBytes: unavailableGoldBytes }), /route Gold source unavailable/);
+  const missingExcerptBytes = new TextEncoder().encode(JSON.stringify({
+    schema: "ma24-g16-gold-snapshot-v1", cases: [{ caseId,
+      caseSha256: ma24CaseQuerySha256(frozenQuery), expectedAnswer: "Synthetic answer",
+      expectedSources: [{ assetSha256: "c".repeat(64), unitIndex: 1,
+        excerpt: "Invented evidence" }], reviewer: "Synthetic reviewer",
+      reviewedAt: "2026-10-15T00:00:00Z", note: "Fixture only" }],
+  }));
+  await assert.rejects(claimAndBindMa24EvaluationRun({ ...binding, runId: rejectedId,
+    manifest: { ...manifest, goldSnapshotSha256: hash(missingExcerptBytes) },
+    goldBytes: missingExcerptBytes }), /route Gold evidence coordinate unavailable/);
   assert.equal((await admin.query<{ status: string }>(
     "select status from agent_run where id=$1 and user_id=$2",
     [rejectedId, userId])).rows[0]?.status, "queued",
@@ -303,6 +323,8 @@ try {
       if (sourceInserted) {
         await client.query("update knowledge_document set current_tree_version_id=null where id=$1",
           [sourceDocumentId]);
+        await client.query("delete from knowledge_tree_node where id=$1", [sourceEvidenceId]);
+        await client.query("delete from knowledge_tree_node where id=$1", [sourceUnitId]);
         await client.query("delete from knowledge_tree_version where id=$1 and document_id=$2",
           [sourceTreeId, sourceDocumentId]);
         await client.query("delete from knowledge_asset where id=$1 and document_id=$2",
@@ -313,18 +335,20 @@ try {
       await client.query("delete from app_user where id=$1", [userId]);
       await client.query("commit");
       const residual = (await admin.query<{ users: string; conversations: string; runs: string;
-        documents: string; assets: string; trees: string }>(`
+        documents: string; assets: string; trees: string; nodes: string }>(`
         select (select count(*)::text from app_user where id=$1) as users,
           (select count(*)::text from assistant_conversation where id=any($2::uuid[])) as conversations,
           (select count(*)::text from agent_run where id=any($3::uuid[])) as runs,
           (select count(*)::text from knowledge_document where id=$4) as documents,
           (select count(*)::text from knowledge_asset where id=$5) as assets,
-          (select count(*)::text from knowledge_tree_version where id=$6) as trees`,
+          (select count(*)::text from knowledge_tree_version where id=$6) as trees,
+          (select count(*)::text from knowledge_tree_node where id=any($7::uuid[])) as nodes`,
       [userId, [conversationId, admittedConversationId, rejectedConversationId],
         [evaluationId, ordinaryId, malformedId, admittedId, rejectedId],
-        sourceDocumentId, sourceAssetId, sourceTreeId])).rows[0];
+        sourceDocumentId, sourceAssetId, sourceTreeId,
+        [sourceUnitId, sourceEvidenceId]])).rows[0];
       assert.deepEqual(residual, { users: "0", conversations: "0", runs: "0",
-        documents: "0", assets: "0", trees: "0" },
+        documents: "0", assets: "0", trees: "0", nodes: "0" },
         "Synthetic evaluation claim rows remained");
     } catch (error) { await client.query("rollback"); throw error; }
     finally { client.release(); }
@@ -340,6 +364,7 @@ if (verified) console.log(JSON.stringify({ schema: "ma24-g16-explicit-claim-clon
     "snapshot-drift-rejected-before-claim", "live-corpus-drift-rejected-before-claim",
     "invalid-source-and-gold-rejected-before-claim",
     "unavailable-route-Gold-source-rejected-before-claim",
+    "invented-Gold-excerpt-rejected-before-claim",
     "loaded-runtime-drift-rejected-before-claim",
     "binding-failure-terminated-without-model-call",
     "leased-evaluation-tool-guard-rejected-writes-and-context-drift",

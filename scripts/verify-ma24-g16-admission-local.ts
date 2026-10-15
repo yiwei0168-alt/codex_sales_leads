@@ -44,6 +44,7 @@ globalThis.fetch = async () => { throw new Error("External HTTP disabled for MA2
 const admin = new Pool({ connectionString: migrationUrl });
 const userId = randomUUID(), otherUserId = randomUUID(), conversationId = randomUUID();
 const sourceDocumentId = randomUUID(), sourceAssetId = randomUUID(), sourceTreeId = randomUUID();
+const sourceUnitId = randomUUID(), sourceEvidenceId = randomUUID();
 const runId = randomUUID(), leaseToken = randomUUID(), caseId = "ma24-admission-synthetic";
 const query = "What does this synthetic local source say?";
 const sourceSet: Ma24SourceSetSnapshot = { schema: "ma24-g16-source-set-v1",
@@ -110,6 +111,15 @@ try {
         source_sha256,extractor_version,artifact_sha256,status)
       values($1,$2,$3,$4,'synthetic-fixture',$5,'ready')`,
     [sourceTreeId, sourceDocumentId, sourceAssetId, "c".repeat(64), "d".repeat(64)]);
+    await client.query(`insert into knowledge_tree_node(id,version_id,ordinal,node_kind,title,
+        unit_type,unit_index,source_location)
+      values($1,$2,1,'unit','Synthetic page','page',1,'{}')`,
+    [sourceUnitId, sourceTreeId]);
+    await client.query(`insert into knowledge_tree_node(id,version_id,parent_id,ordinal,node_kind,
+        title,unit_type,unit_index,source_location,content,content_sha256)
+      values($1,$2,$3,1,'evidence','Synthetic block','page',1,$4,$5,$6)`,
+    [sourceEvidenceId, sourceTreeId, sourceUnitId, JSON.stringify({ blockId: "synthetic-block" }),
+      "Synthetic evidence", sha(new TextEncoder().encode("Synthetic evidence"))]);
     await client.query("update knowledge_document set current_tree_version_id=$2 where id=$1",
       [sourceDocumentId, sourceTreeId]);
     await client.query("commit");
@@ -140,6 +150,12 @@ try {
 
   assert.deepEqual(await verify(), { userId, caseId, arm: "baseline", query,
     knowledgeScope: ["industry"] });
+  await admin.query("update knowledge_tree_node set content=$2,content_sha256=$3 where id=$1",
+    [sourceEvidenceId, "Altered evidence", sha(new TextEncoder().encode("Altered evidence"))]);
+  await assert.rejects(verify(), /route Gold evidence coordinate unavailable/);
+  await admin.query("update knowledge_tree_node set content=$2,content_sha256=$3 where id=$1",
+    [sourceEvidenceId, "Synthetic evidence", sha(new TextEncoder().encode("Synthetic evidence"))]);
+  assert.equal((await verify()).caseId, caseId);
   const unavailableGoldBytes = new TextEncoder().encode(JSON.stringify({ ...gold,
     cases: [{ ...gold.cases[0], expectedSources: [{ assetSha256: "e".repeat(64),
       unitIndex: 1, excerpt: "Missing source" }] }] }));
@@ -215,6 +231,7 @@ try {
   await assert.rejects(verify(), /leased execution/);
   console.log(JSON.stringify({ schema: "ma24-g16-admission-local-v1", synthetic: true,
     checks: ["valid-leased-row", "ready-route-Gold-source-bound",
+      "live-Gold-excerpt-drift-rejected-and-restored",
       "unavailable-route-Gold-source-rejected", "live-corpus-drift-rejected",
       "tenant-acl-visibility-change-readback",
       "cross-account-row-hidden", "changed-question-rejected",
@@ -237,6 +254,8 @@ try {
         [conversationId, userId]);
       await client.query("update knowledge_document set current_tree_version_id=null where id=$1",
         [sourceDocumentId]);
+      await client.query("delete from knowledge_tree_node where id=$1", [sourceEvidenceId]);
+      await client.query("delete from knowledge_tree_node where id=$1", [sourceUnitId]);
       await client.query("delete from knowledge_tree_version where id=$1 and document_id=$2",
         [sourceTreeId, sourceDocumentId]);
       await client.query("delete from knowledge_asset where id=$1 and document_id=$2",
@@ -246,17 +265,18 @@ try {
       await client.query("delete from app_user where id=any($1::uuid[])", [[userId, otherUserId]]);
       await client.query("commit");
       const residual = await admin.query<{ users: string; runs: string; messages: string;
-        documents: string; assets: string; trees: string }>(`
+        documents: string; assets: string; trees: string; nodes: string }>(`
         select (select count(*)::text from app_user where id=any($1::uuid[])) as users,
           (select count(*)::text from agent_run where id=$2) as runs,
           (select count(*)::text from assistant_message where conversation_id=$3) as messages,
           (select count(*)::text from knowledge_document where id=$4) as documents,
           (select count(*)::text from knowledge_asset where id=$5) as assets,
-          (select count(*)::text from knowledge_tree_version where id=$6) as trees`,
+          (select count(*)::text from knowledge_tree_version where id=$6) as trees,
+          (select count(*)::text from knowledge_tree_node where id=any($7::uuid[])) as nodes`,
       [[userId, otherUserId], runId, conversationId,
-        sourceDocumentId, sourceAssetId, sourceTreeId]);
+        sourceDocumentId, sourceAssetId, sourceTreeId, [sourceUnitId, sourceEvidenceId]]);
       assert.deepEqual(residual.rows[0], { users: "0", runs: "0", messages: "0",
-        documents: "0", assets: "0", trees: "0" },
+        documents: "0", assets: "0", trees: "0", nodes: "0" },
         "Synthetic admission rows remained after cleanup");
     } catch (error) { await client.query("rollback"); throw error; }
     finally { client.release(); }

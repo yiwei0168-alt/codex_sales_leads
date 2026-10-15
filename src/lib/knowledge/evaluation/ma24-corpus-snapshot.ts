@@ -122,6 +122,56 @@ export function assertMa24RouteGoldCorpusAccess(manifest: Ma24FrozenManifest,
   }
 }
 
+type RouteEvidence = { blockId: string; content: string; sourceLocation: Record<string, unknown> };
+const normalizeExcerpt = (value: string) => value.replace(/\s+/g, " ").trim();
+
+function evidenceMatchesGold(row: RouteEvidence, source: Ma24GoldSnapshot["cases"][number]["expectedSources"][number]) {
+  if (source.blockId !== undefined && row.blockId !== source.blockId) return false;
+  if (source.version !== undefined) return false; // No versioned coordinate mapping is frozen yet.
+  if (source.row === undefined)
+    return normalizeExcerpt(row.content).includes(normalizeExcerpt(source.excerpt ?? ""));
+  const range = row.sourceLocation.cellRange;
+  if (typeof range !== "string") return false;
+  const match = /^[A-Z]+([1-9]\d*):[A-Z]+([1-9]\d*)$/.exec(range);
+  if (!match || source.row < Number(match[1]) || source.row > Number(match[2])) return false;
+  const rowText = row.content.split("\n").filter(line =>
+    new RegExp(`^[A-Z]+${source.row}:\\s`).test(line)).join(" ");
+  return normalizeExcerpt(rowText).includes(normalizeExcerpt(source.excerpt ?? ""));
+}
+
+/** Verify the Gold coordinate against the current RLS-visible evidence tree, not merely its asset. */
+export async function verifyMa24LiveRouteGoldEvidence(manifest: Ma24FrozenManifest,
+  gold: Ma24GoldSnapshot, caseId: string) {
+  const entry = manifest.cases.find(item => item.caseId === caseId);
+  if (!entry) throw new Error(`MA24 route Gold case absent ${caseId}`);
+  if (entry.expectedOutcome !== "route") return;
+  const sources = gold.cases.find(item => item.caseId === caseId)?.expectedSources;
+  if (!sources?.length) throw new Error(`MA24 route Gold evidence absent ${caseId}`);
+  await tenantTransaction(entry.userId, async client => {
+    const cache = new Map<string, RouteEvidence[]>();
+    for (const source of sources) {
+      const key = `${source.assetSha256}:${source.unitIndex}`;
+      let rows = cache.get(key);
+      if (!rows) {
+        rows = (await client.query<RouteEvidence>(`
+          select coalesce(n.source_location->>'blockId',n.source_location->>'v3ChunkId',n.id::text) as "blockId",
+            n.content, n.source_location as "sourceLocation"
+          from knowledge_document d join knowledge_collection c on c.id=d.collection_id
+          join knowledge_asset a on a.document_id=d.id
+          join knowledge_tree_version v on v.id=d.current_tree_version_id
+            and v.asset_id=a.id and v.source_sha256=a.source_sha256 and v.status='ready'
+          join knowledge_tree_node n on n.version_id=v.id and n.node_kind='evidence'
+          where d.status='active' and c.slug=any($1::text[])
+            and a.registration_status='registered' and a.source_sha256=$2 and n.unit_index=$3
+          order by n.ordinal`, [entry.knowledgeScope, source.assetSha256, source.unitIndex])).rows;
+        cache.set(key, rows);
+      }
+      if (!rows.some(row => evidenceMatchesGold(row, source)))
+        throw new Error(`MA24 route Gold evidence coordinate unavailable ${caseId}`);
+    }
+  });
+}
+
 /** Keep the positive control's private source present during a denied-account run. */
 export async function verifyMa24LivePermissionControl(manifest: Ma24FrozenManifest,
   snapshot: Ma24CorpusSnapshot, caseId: string) {
