@@ -2,6 +2,8 @@
 
 状态：**用户已批准两条新题型进入最终逐题审核；以下均为私有候选，尚非批准 Gold。** 两份工作簿形成一个共享暴露单元：BDUK 单来源题、跨文档题和 Taking Part 无答案题必须一起冻结、审计和分组，不能以三题数冒充三个独立来源家族。[确认规则 MA24-20](CONFIRMED_PRODUCT_RULES.md)。G17–G20 暂停。
 
+逐题原格核查已形成 [v2 私有草稿收据](evidence/ma24-g14-govuk-per-case-source-review-2026-10-15.json)：三题的来源摘录分别由 2、4、2 条修订为 3、6、2 条，并把关键数字格与标签一并写入摘录。旧 v1 草稿保留。此次只修正原格/产品抽取引用，未批准 Gold，也未证明全套来源独立或用户可见引用质量。
+
 ## A. 跨文档比较与因果边界
 
 题目 ID：`govuk-bduk-taking-part-premises-vs-regional-ability`。题目要求从 [BDUK 2018 官方发布](https://www.gov.uk/government/statistics/broadband-performance-indicator-march-2018) 与 [Taking Part 2019/20 官方发布](https://www.gov.uk/government/statistics/taking-part-201920-internet) 报出可用房产数、伦敦与东北部成人自评互联网能力比例及百分点差，并判断两本工作簿能否证明前者造成后者的地区差异。
@@ -23,4 +25,4 @@
 - 两份官方发布页均列出原 XLSX。当前有界来源用途审核仅支持带归属的短事实与内部题目，不批准整件再分发或封面徽标使用；当前本地/历史定向筛查不能排除未记录提示或提供方侧暴露。
 - 这两种题分别属于**跨文档统计口径/因果边界**与**交叉组无答案**，不在此前五类设备题按类型自动采纳的授权范围。用户已批准进入最终逐题审核；全套独立性终审、冻结 Gold、G15 运行准入与 G16 真实双路质量均未完成；批准 Gold 仍为 **0**。
 
-审核时分别判断 A 的计算和因果边界、B 的资料不足范围是否准确，以及两题是否适合在同一个来源暴露单元中纳入 G14。若题面/答案改变，先更新私有草案、重核原格与题池重叠，再冻结哈希。检查收据：[GOV.UK 家族审核准备](evidence/ma24-g14-govuk-family-review-packet-2026-10-15.json)。
+审核时分别判断 A 的计算和因果边界、B 的资料不足范围是否准确，以及两题是否适合在同一个来源暴露单元中纳入 G14。若题面/答案改变，先更新私有草案、重核原格与题池重叠，再冻结哈希。检查收据：[GOV.UK 家族审核准备](evidence/ma24-g14-govuk-family-review-packet-2026-10-15.json)、[逐题原格核查](evidence/ma24-g14-govuk-per-case-source-review-2026-10-15.json)。

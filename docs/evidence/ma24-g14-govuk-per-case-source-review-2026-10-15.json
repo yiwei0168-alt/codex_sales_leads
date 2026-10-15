@@ -1,0 +1,193 @@
+{
+  "schema": "ma24-g14-govuk-per-case-source-review-v1",
+  "date": "2026-10-15",
+  "authorizationRule": "MA24-20",
+  "status": "draft-source-correction-only",
+  "sharedExposureUnitCaseIds": [
+    "bpi-2018-cash-accruals",
+    "govuk-bduk-taking-part-premises-vs-regional-ability",
+    "taking-part-2019-20-rural-age75-intersection-unavailable"
+  ],
+  "originals": {
+    "bpi": {
+      "path": "tmp/ma24-independent-quarantine/bpi-march-2018.xlsx",
+      "sha256": "7d178716b667ebe66537154b0bb96f87348ccb782368b2f43920b45db9f7f5c1",
+      "extractionPath": "tmp/ma24-independent-quarantine/bpi-extract.json",
+      "extractionSha256": "0bc434546c2a39475c6dbf639cc0aeaa411ac745b732ec63648aac00472a37f2",
+      "checkedCells": {
+        "Sheet1!A26": "March 2018",
+        "Sheet1!B26": 4852808,
+        "Sheet1!D26": 7934
+      }
+    },
+    "taking": {
+      "path": "tmp/ma24-independent-quarantine/taking-part-internet-2019-20.xlsx",
+      "sha256": "90eb0ed392efc2db8ab6681bcf4b9634c41f891d3df7a95bba3bf6f9457ff614",
+      "extractionPath": "tmp/ma24-independent-quarantine/taking-part-extract.json",
+      "extractionSha256": "9a3fbc73dfa5ecdeb665f8ee2edddefaa706b5db346f1e597913be4b3ef10ecf",
+      "checkedCells": {
+        "Table 2!B22": "North East",
+        "Table 2!C22": 74,
+        "Table 2!B28": "London",
+        "Table 2!C28": 80.3,
+        "Table 2!B33": "Rural",
+        "Table 2!C33": 75.6,
+        "Table 3!B15": "75+",
+        "Table 3!C15": 33.1
+      }
+    }
+  },
+  "takingWorkbookRowScreen": [
+    {
+      "sheet": "Contents",
+      "rows": 34,
+      "columns": 3,
+      "jointKeywordRows": []
+    },
+    {
+      "sheet": "Table 1",
+      "rows": 69,
+      "columns": 10,
+      "jointKeywordRows": []
+    },
+    {
+      "sheet": "Table 2",
+      "rows": 47,
+      "columns": 13,
+      "jointKeywordRows": []
+    },
+    {
+      "sheet": "Table 3",
+      "rows": 56,
+      "columns": 18,
+      "jointKeywordRows": []
+    }
+  ],
+  "cases": [
+    {
+      "caseId": "bpi-2018-cash-accruals",
+      "draftV1": "tmp/ma24-independent-quarantine/bpi-cash-accruals-gold-draft-v1.json",
+      "draftV1Sha256": "4a765537bfa29e378cb3bb91e4e1ffea243193840e9c6edacefbf076bc5f2029",
+      "draftV2": "tmp/ma24-independent-quarantine/bpi-cash-accruals-gold-draft-v2.json",
+      "draftV2Sha256": "c1e693aa17592984aa9a7c8ac0356241c6710ccd67c2e5b71940f11da4d00c4f",
+      "sourceCountV1": 2,
+      "sourceCountV2": 3,
+      "sources": [
+        {
+          "assetSha256": "7d178716b667ebe66537154b0bb96f87348ccb782368b2f43920b45db9f7f5c1",
+          "unitIndex": 1,
+          "row": 26,
+          "blockId": "sheet-1-table",
+          "excerpt": "A26: March 2018"
+        },
+        {
+          "assetSha256": "7d178716b667ebe66537154b0bb96f87348ccb782368b2f43920b45db9f7f5c1",
+          "unitIndex": 1,
+          "row": 26,
+          "blockId": "sheet-1-table",
+          "excerpt": "D26: 7934"
+        },
+        {
+          "assetSha256": "7d178716b667ebe66537154b0bb96f87348ccb782368b2f43920b45db9f7f5c1",
+          "unitIndex": 1,
+          "row": 33,
+          "blockId": "sheet-1-table",
+          "excerpt": "7,617 premises covered"
+        }
+      ],
+      "originalCellAndExtractionMatch": true,
+      "decision": "source-anchored private draft; Gold pending"
+    },
+    {
+      "caseId": "govuk-bduk-taking-part-premises-vs-regional-ability",
+      "draftV1": "tmp/ma24-independent-quarantine/govuk-bduk-taking-part-cross-document-gold-draft-v1.json",
+      "draftV1Sha256": "8796ec80fb6b2a74eb195040390e2f9600ace697582dc5213b67ac1eea13ff98",
+      "draftV2": "tmp/ma24-independent-quarantine/govuk-bduk-taking-part-cross-document-gold-draft-v2.json",
+      "draftV2Sha256": "1a7dd8954badbb0faa936ce503acbe2f90d1b51bdd356b4342f9aebfa0d5e30a",
+      "sourceCountV1": 4,
+      "sourceCountV2": 6,
+      "sources": [
+        {
+          "assetSha256": "7d178716b667ebe66537154b0bb96f87348ccb782368b2f43920b45db9f7f5c1",
+          "unitIndex": 1,
+          "row": 26,
+          "blockId": "sheet-1-table",
+          "excerpt": "A26: March 2018\nB26: 4852808"
+        },
+        {
+          "assetSha256": "7d178716b667ebe66537154b0bb96f87348ccb782368b2f43920b45db9f7f5c1",
+          "unitIndex": 1,
+          "row": 28,
+          "blockId": "sheet-1-table",
+          "excerpt": "intervention areas"
+        },
+        {
+          "assetSha256": "7d178716b667ebe66537154b0bb96f87348ccb782368b2f43920b45db9f7f5c1",
+          "unitIndex": 1,
+          "row": 32,
+          "blockId": "sheet-1-table",
+          "excerpt": "cumulative from the start of the programme"
+        },
+        {
+          "assetSha256": "90eb0ed392efc2db8ab6681bcf4b9634c41f891d3df7a95bba3bf6f9457ff614",
+          "unitIndex": 3,
+          "row": 2,
+          "blockId": "sheet-3-table",
+          "excerpt": "Proportion of adults who rated their ability to use the internet at 7 or higher"
+        },
+        {
+          "assetSha256": "90eb0ed392efc2db8ab6681bcf4b9634c41f891d3df7a95bba3bf6f9457ff614",
+          "unitIndex": 3,
+          "row": 22,
+          "blockId": "sheet-3-table",
+          "excerpt": "B22: North East\nC22: 74"
+        },
+        {
+          "assetSha256": "90eb0ed392efc2db8ab6681bcf4b9634c41f891d3df7a95bba3bf6f9457ff614",
+          "unitIndex": 3,
+          "row": 28,
+          "blockId": "sheet-3-table",
+          "excerpt": "B28: London\nC28: 80.3"
+        }
+      ],
+      "originalCellAndExtractionMatch": true,
+      "decision": "source-anchored private draft; Gold pending"
+    },
+    {
+      "caseId": "taking-part-2019-20-rural-age75-intersection-unavailable",
+      "draftV1": "tmp/ma24-independent-quarantine/taking-part-no-answer-gold-draft-v1.json",
+      "draftV1Sha256": "7e74a7ddea54b189e5aa973857533baec7d71451160d1c8be04fcb0bbd9ab10e",
+      "draftV2": "tmp/ma24-independent-quarantine/taking-part-no-answer-gold-draft-v2.json",
+      "draftV2Sha256": "9e71248bd9136a2e6b621d06ac204ae0f022eb6509d9063f0adec31c292e26b0",
+      "sourceCountV1": 2,
+      "sourceCountV2": 2,
+      "sources": [
+        {
+          "assetSha256": "90eb0ed392efc2db8ab6681bcf4b9634c41f891d3df7a95bba3bf6f9457ff614",
+          "unitIndex": 3,
+          "row": 33,
+          "blockId": "sheet-3-table",
+          "excerpt": "B33: Rural\nC33: 75.6"
+        },
+        {
+          "assetSha256": "90eb0ed392efc2db8ab6681bcf4b9634c41f891d3df7a95bba3bf6f9457ff614",
+          "unitIndex": 4,
+          "row": 15,
+          "blockId": "sheet-4-table",
+          "excerpt": "B15: 75+\nC15: 33.1"
+        }
+      ],
+      "originalCellAndExtractionMatch": true,
+      "decision": "source-anchored private draft; Gold pending"
+    }
+  ],
+  "independentGoldApproved": false,
+  "realDualArmRuns": 0,
+  "g17ToG20Advanced": false,
+  "limitations": [
+    "Original cell and extracted text matching is not full-set independence or Gold approval.",
+    "The joint-keyword screen applies only to this workbook, not external sources.",
+    "Three cases share two originals and one exposure unit.",
+    "Live model answers and visible citations remain unverified."
+  ]
+}
