@@ -16,7 +16,7 @@ export async function verifyMa24AttachmentSelectorClone(options: {
   const titles: string[] = [];
   for (let index = 0; index < 13; index++) {
     const document = randomUUID();
-    const title = `${prefix} ${String(index + 1).padStart(2, "0")}`;
+    const title = `${prefix} ${String(index + 1).padStart(2, "0")}${index === 12 ? ` ${"LongSourceCoordinate".repeat(45)}` : ""}`;
     titles.push(title);
     await options.admin.query(
       `insert into knowledge_document(id,collection_id,external_id,title,source_type,content_sha256,owner_id,visibility,updated_at)
@@ -62,7 +62,7 @@ export async function verifyMa24AttachmentSelectorClone(options: {
 
   const browser = await chromium.launch({ channel: "chrome", headless: true });
   try {
-    for (const viewport of [{ width: 390, height: 760 }, { width: 1366, height: 900 }]) {
+    for (const viewport of [{ width: 390, height: 560 }, { width: 1366, height: 620 }]) {
       const context = await browser.newContext({ viewport });
       const [name, value] = options.cookie.split("=");
       assert(name && value);
@@ -82,6 +82,7 @@ export async function verifyMa24AttachmentSelectorClone(options: {
         await dialog.locator(".ai-attachment-list label").filter({ hasText: titles[0] }).getByRole("checkbox").check();
         await dialog.getByRole("button", { name: "下一页资料" }).click();
         await expect(dialog.locator(".ai-attachment-list label")).toHaveCount(1);
+        await expect(dialog.locator(".ai-attachment-list label").filter({ hasText: titles[12] })).toBeVisible();
         await dialog.locator(".ai-attachment-list label").filter({ hasText: titles[12] }).getByRole("checkbox").check();
         await expect(dialog.getByRole("region", { name: "已选资料" })).toContainText(titles[0]);
         await expect(dialog.getByRole("region", { name: "已选资料" })).toContainText(titles[12]);
@@ -90,13 +91,32 @@ export async function verifyMa24AttachmentSelectorClone(options: {
         await page.keyboard.press("Escape");
         await page.locator(".ai-composer").getByRole("button", { name: /^资料/ }).click();
         await expect(page.getByRole("dialog", { name: "本次任务资料" }).getByRole("region", { name: "已选资料" })).toContainText(titles[12]);
+        const layout = await page.getByRole("dialog", { name: "本次任务资料" }).evaluate(element => {
+          const body = element.querySelector<HTMLElement>(".workspace-dialog-body");
+          const selected = element.querySelector<HTMLElement>(".ai-attachment-selected");
+          const close = element.querySelector<HTMLElement>(".workspace-dialog-head button");
+          if (!body || !selected || !close) throw new Error("Attachment dialog structure missing");
+          return {
+            dialogWidth: element.scrollWidth,
+            bodyWidth: body.clientWidth,
+            bodyScrollWidth: body.scrollWidth,
+            bodyScrollHeight: body.scrollHeight,
+            bodyHeight: body.clientHeight,
+            closeVisible: close.getBoundingClientRect().bottom <= innerHeight,
+            selectedVisibleAfterScroll: (() => { selected.scrollIntoView(); return selected.getBoundingClientRect().top < innerHeight; })(),
+          };
+        });
+        assert(layout.bodyScrollWidth <= layout.bodyWidth + 1, `Attachment body overflows horizontally: ${JSON.stringify(layout)}`);
+        assert(layout.closeVisible && layout.selectedVisibleAfterScroll, `Attachment controls are unreachable: ${JSON.stringify(layout)}`);
+        assert(layout.bodyScrollHeight > layout.bodyHeight, `Expected short viewport to scroll: ${JSON.stringify(layout)}`);
         assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
         assert.deepEqual(errors, []);
       } finally { await context.close(); }
     }
     return { candidatePage: true, privateAssets: 13, realLibraryApi: true, pageSizes: [12, 1],
       crossPageSelection: true, selectedNamePersists: true, removal: true, otherAccountExcluded: true,
-      viewports: ["390x760", "1366x900"], noHorizontalOverflow: true, pageErrors: 0,
+      viewports: ["390x560", "1366x620"], longTitleCharacters: titles[12].length,
+      shortViewportScroll: true, noHorizontalOverflow: true, pageErrors: 0,
       modelCalls: 0, uploads: 0, taskSubmissions: 0 };
   } finally { await browser.close(); }
 }

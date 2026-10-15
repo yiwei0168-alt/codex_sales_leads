@@ -1,0 +1,24 @@
+{
+  "schema": "ma24-g13-f08-long-title-short-viewport-clone-v1",
+  "date": "2026-10-15",
+  "goal": "MA24 G13 F08",
+  "candidateSource": "5e74b86d",
+  "candidateBuildId": "lZLtUJUu48Mzpo-hg2VLq",
+  "oldWebBuildId": "QfoyXprIZIVgSWxFSZ-1K",
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-backup-restore.ts --web-compat --attachment-ui",
+  "environment": "Exact frozen candidate Web build and old Web against disposable restore clone migrated through 135; synthetic private registered assets only. The updated test harness was copied into the ignored isolated candidate directory before execution.",
+  "result": {
+    "restoredAndMigrated": true,
+    "oldAndCandidateWebSmoke": true,
+    "realLibraryApi": "13 private assets appeared as 12+1 pages to the owner; a second account saw none.",
+    "actualCandidatePage": "The 921-character final title was visible, selected on page two, retained after Escape and reopening, while page-one selection could be removed.",
+    "viewports": ["390x560", "1366x620"],
+    "shortViewportBodyScroll": true,
+    "closeAndSelectedControlsReachable": true,
+    "horizontalOverflow": false,
+    "pageErrors": 0
+  },
+  "checks": ["npm run typecheck", "npx eslint scripts/lib/verify-ma24-attachment-selector-clone.ts", "git diff --check"],
+  "externalEffects": { "modelCalls": 0, "uploads": 0, "taskSubmissions": 0, "productionDatabaseWrites": 0 },
+  "limits": "The fixture is registered metadata, not a real upload. Task execution attachment authorization, upload failure/retry, real data, production load, and actual production rollback remain open."
+}
