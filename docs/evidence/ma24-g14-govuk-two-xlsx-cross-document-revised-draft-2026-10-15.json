@@ -1,0 +1,50 @@
+{
+  "schema": "ma24-g14-cross-document-revised-draft-v1",
+  "date": "2026-10-15",
+  "status": "alternative_candidate_only",
+  "sourceSha256s": [
+    "7d178716b667ebe66537154b0bb96f87348ccb782368b2f43920b45db9f7f5c1",
+    "90eb0ed392efc2db8ab6681bcf4b9634c41f891d3df7a95bba3bf6f9457ff614"
+  ],
+  "sources": [
+    {
+      "family": "BDUK Broadband Performance Indicator March 2018",
+      "localOriginal": "tmp/ma24-independent-quarantine/bpi-march-2018.xlsx",
+      "publisherPage": "https://www.gov.uk/government/statistics/broadband-performance-indicator-march-2018",
+      "observedCells": {
+        "Sheet1!A26": "March 2018",
+        "Sheet1!B26": 4852808,
+        "Sheet1!B3": "Premises  with superfast broadband service made available"
+      },
+      "scopeNoteCells": ["Sheet1!A28", "Sheet1!A30", "Sheet1!A32"]
+    },
+    {
+      "family": "Taking Part 2019/20 Internet",
+      "localOriginal": "tmp/ma24-independent-quarantine/taking-part-internet-2019-20.xlsx",
+      "publisherPage": "https://www.gov.uk/government/statistics/taking-part-201920-internet",
+      "observedCells": {
+        "'Table 2'!B2": "Table 2: Internet ability, area-level breakdown - Proportion of adults who rated their ability to use the internet at 7 or higher - area-level breakdowns, 2019/20, England ",
+        "'Table 2'!B22": "North East",
+        "'Table 2'!C22": 74.0,
+        "'Table 2'!B28": "London",
+        "'Table 2'!C28": 80.3
+      },
+      "unitCell": "'Table 2'!C5"
+    }
+  ],
+  "draft": {
+    "id": "govuk-bduk-taking-part-premises-vs-regional-ability",
+    "question": "Using the UK government's March 2018 Broadband Performance Indicator workbook and its Taking Part 2019/20 Internet workbook, report the cumulative number of premises with superfast service made available at end-March 2018 and the percentages of adults in London and the North East who rated their internet ability at 7 or higher in 2019/20. What is the London–North East gap in percentage points? Do these two workbooks establish that BDUK availability caused the regional ability gap? Cite exact cells from both originals and explain the limits of the comparison.",
+    "expectedOutcome": "route",
+    "answerRubric": "BDUK Sheet1!B26 reports 4,852,808 premises cumulatively by March 2018. Taking Part Table 2!C28 reports London at 80.3% and C22 reports North East at 74.0%; the gap is 6.3 percentage points. The first measure concerns availability at premises in BDUK-supported intervention areas, whereas the second is a later self-rating by surveyed adults in England. The workbooks do not link intervention premises to respondents or identify a causal effect on regional self-ratings; no causal conclusion follows.",
+    "tagsProposed": ["cross-document", "official-fact"],
+    "requiredDistinctOriginals": 2,
+    "exactCitationRequired": true
+  },
+  "relationshipToOtherDrafts": "Requests a different BDUK output than the single-source draft's 7,934 versus 7,617 spending-ratio answer, but the same 4,852,808 numerator may still appear in that calculation or explanation. It avoids the Taking Part no-answer draft's rural 75.6% and age 75+ 33.1% marginals. Both publication families are shared, and only one cross-document alternative may advance; answer-level and family selection remain pending.",
+  "sourceUseReviewComplete": false,
+  "fullDevelopmentExposureAuditComplete": false,
+  "productCitationAndUserVisibleAnswerReviewed": false,
+  "goldFrozen": false,
+  "modelAnswerCalls": 0
+}

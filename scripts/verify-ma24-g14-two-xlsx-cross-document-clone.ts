@@ -113,7 +113,8 @@ try {
   assert.equal(takingEvidence.source_location.sheetName, "Table 2");
   for (const value of ["B26: 4852808", "D26: 7934", "A28:"])
     assert(bpiEvidence.content.includes(value), value);
-  for (const value of ["B2:", "B7:", "B33: Rural", "C33: 75.6"])
+  for (const value of ["B2:", "B7:", "B22: North East", "C22: 74", "B28: London", "C28: 80.3",
+    "B33: Rural", "C33: 75.6"])
     assert(takingEvidence.content.includes(value), value);
   assert.equal(await readEvidence(other, bpiNode.id, ["industry"]), null);
   assert.equal(await readEvidence(other, takingNode.id, ["industry"]), null);

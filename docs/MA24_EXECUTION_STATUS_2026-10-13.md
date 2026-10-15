@@ -1,5 +1,7 @@
 # MA24 执行状态台账（2026-10-13）
 
+2026-10-15 G14 双工作簿替代题续审：为减少与现有 BDUK 支出口径题和 Taking Part 农村/高龄无答案题的直接答案重复，新草案改用 BDUK `Sheet1!B26` 的 4,852,808 处累计可用房产，以及 Taking Part `Table 2!C22/C28` 的东北部 74.0% 与伦敦 80.3%，差 6.3 个百分点，并要求拒绝跨时期、不同单位的因果推断。两份原件哈希与原格复核，隔离克隆实际上传/登记后双文档目标格回读、跨账号拒绝与清理通过。本地 BGE 对旧 350 行题前十未见同题，但同发布家族及 BDUK 分子仍可能与单来源题重合；新版与旧版跨文档题均仅为替代候选，不加入当前 20 条保留池，独立 Gold 仍 0。[草案](evidence/ma24-g14-govuk-two-xlsx-cross-document-revised-draft-2026-10-15.json)、[复核收据](evidence/ma24-g14-govuk-two-xlsx-cross-document-revised-review-2026-10-15.json)。
+
 2026-10-15 G15 运行前绑定补充：新增只读命令，临运行时重新生成配置预览，对 UTC Prompt 日期、模型路由、两路工具/Prompt 指纹及列出的源码哈希逐项比较。当前 10 月 15 日预览匹配但返回 `readyForModelCalls=false`；旧 10 月 14 日预览因缺日期绑定以退出码 1 拒绝。4 项定向测试、类型检查与 ESLint 通过。该命令未接入新的 G16 模型运行器，完整代码闭包、资料/Gold、预算和付费准入仍缺，不能据此运行模型。[运行前收据](evidence/ma24-g15-runtime-binding-preflight-2026-10-15.json)。
 
 2026-10-15 G15 配置漂移复核：重算旧预览后发现主图与 `vectorless.ts` 的源码指纹已变化；产品 Prompt 把当前 UTC 日期写入正文，三种资料范围的两路 Prompt 哈希也随 10 月 14 日至 15 日变化。工具 Schema 与模型路由未变。预览脚本显式记录 Prompt 日期，并拒绝生成期间跨 UTC 日期；当时尚未补运行前校验。新预览仍显示来源/Gold 未冻结、当地 BGE 开关未在当前环境启用、费用上限未定，不能用于付费或质量运行。[漂移收据](evidence/ma24-g15-config-drift-2026-10-15.json)、[当前预览](evidence/ma24-g15-config-preview-2026-10-15.json)。

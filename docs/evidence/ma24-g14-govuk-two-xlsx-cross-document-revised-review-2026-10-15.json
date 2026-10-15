@@ -1,0 +1,46 @@
+{
+  "schema": "ma24-g14-cross-document-revised-review-v1",
+  "date": "2026-10-15",
+  "draftEvidence": "docs/evidence/ma24-g14-govuk-two-xlsx-cross-document-revised-draft-2026-10-15.json",
+  "draftEvidenceSha256": "cac953b6a1f82d55b2dca5189153d760aff703710d542ac8a83ebd42b9dfc0c4",
+  "sourceOriginalsRechecked": {
+    "bpiSha256": "7d178716b667ebe66537154b0bb96f87348ccb782368b2f43920b45db9f7f5c1",
+    "takingPartSha256": "90eb0ed392efc2db8ab6681bcf4b9634c41f891d3df7a95bba3bf6f9457ff614",
+    "bpiCell": "Sheet1!B26 = 4852808",
+    "takingPartCells": ["'Table 2'!C22 = 74.0", "'Table 2'!C28 = 80.3"],
+    "calculatedGapPercentagePoints": 6.3,
+    "metricScopeChecked": true
+  },
+  "isolatedProductRead": {
+    "command": "node scripts/run-tsx.cjs scripts/verify-ma24-g14-two-xlsx-cross-document-clone.ts",
+    "verifierSha256": "4126c2d01c051fbcd872ddc6e700435ba527598501fe5b95f0457277b77b0769",
+    "actualUploadWorkerJobs": 2,
+    "registeredDocuments": 2,
+    "bpiEvidenceRange": "A1:E33",
+    "takingPartEvidenceRange": "A1:M47",
+    "bpiB26AndTakingPartC22C28Read": true,
+    "crossAccountSearchAndReadDenied": true,
+    "v3PointersUnchanged": true,
+    "syntheticRowsAndFilesCleaned": true
+  },
+  "historicalQuestionNeighborScreen": {
+    "command": "node scripts/run-tsx.cjs scripts/screen-ma24-g14-question-overlap-local.ts docs/evidence/ma24-g14-govuk-two-xlsx-cross-document-revised-draft-2026-10-15.json tmp/ma24-independent-quarantine/govuk-two-xlsx-cross-document-revised-neighbor-screen.json",
+    "outputSha256": "ff6a0f4d5149a8689733c0f40c6661fa8d44366ba2420fd73c6f9950595fd81a",
+    "localBgeRevision": "5617a9f61b028005a4858fdac845db406aefb181",
+    "historicalRows": 350,
+    "uniqueQuestions": 300,
+    "topScore": 0.426785,
+    "manualTopTen": "The ten nearest historical questions concern physical device ports, PoE or deployment; none asks for the two government workbook metrics or their causal relationship.",
+    "semanticIndependenceProven": false,
+    "cloudCalls": 0
+  },
+  "selection": "The new draft avoids the earlier alternative's rural 75.6% and cash-basis 7,934 requested answers, but shares source families and may share BDUK's premises numerator with its single-source draft. Keep both cross-document versions as alternatives; do not add either to the retained 20 or count independent Gold until full family/answer selection and exposure review.",
+  "remaining": [
+    "Complete source-use and development-exposure review for both originals and all same-family draft answers.",
+    "Choose one cross-document version against the single-source and no-answer cases, then freeze question and coordinate-checked Gold.",
+    "Verify a user-visible two-document model answer and exact citations only after G15 runtime and paid admission gates are ready."
+  ],
+  "goldFrozen": false,
+  "modelAnswerCalls": 0,
+  "productionKnowledgeWrites": 0
+}
