@@ -1,0 +1,43 @@
+{
+  "schema": "ma24-g14-dbs-current-28-pool-screen-v1",
+  "date": "2026-10-16",
+  "status": "provisional-inventory-and-neighbor-diagnostic",
+  "candidateId": "dbs-2024-25-basic-checks-correction2-year-conflict",
+  "inputPool": "tmp/ma24-independent-quarantine/g14-current-draft-pool-v7-dbs-current-2026-10-16.json",
+  "inputPoolSha256": "770a5201492be9df8c7e1e93e8d13ac1d1be9c66fad4c02bb36f992ad3bb2626",
+  "neighborOutput": "tmp/ma24-independent-quarantine/g14-current-pool-neighbors-v7-dbs-current-2026-10-16.json",
+  "neighborOutputSha256": "30e5bd05af78cdf9803cea14250bf599891afd3674582f504ec32a06e510e110",
+  "command": "node scripts/run-tsx.cjs scripts/audit-ma24-g14-current-pool-neighbors-local.ts tmp/ma24-independent-quarantine/g14-current-draft-pool-v7-dbs-current-2026-10-16.json tmp/ma24-independent-quarantine/g14-current-pool-neighbors-v7-dbs-current-2026-10-16.json",
+  "counts": {
+    "drafts": 28,
+    "publicationDrafts": 25,
+    "syntheticSecurityDrafts": 3,
+    "provisionalPublicationFamilies": 14,
+    "connectedPublicationExposureUnitsFromKnownFamilyLabels": 12,
+    "wholeQuestionConflictDrafts": 1,
+    "approvedPrivateGoldCasesUnchanged": 5,
+    "approvedConnectedExposureUnitsUnchanged": 3
+  },
+  "localBge": {
+    "model": "BAAI/bge-m3",
+    "revision": "5617a9f61b028005a4858fdac845db406aefb181",
+    "topNeighbors": [
+      { "id": "fcc-2026-fixed-service-option-scope", "cosine": 0.512794 },
+      { "id": "fcc-706-2026-school-entity-vs-student-denominator", "cosine": 0.502737 },
+      { "id": "ieee-80211-2025-elc-optical-bands", "cosine": 0.501548 }
+    ],
+    "manualReview": "The top FCC questions concern fixed-service option percentages and school bandwidth denominators; the IEEE question concerns optical bands. The DBS question asks for Basic checks year assignments in one annual report and its correction slip. These question texts do not request the DBS counts or Correction 2 fact. The ETSI revision question is a version-reference change, not this chart-versus-correction conflict.",
+    "sameSpecificQuestionFoundInThisPool": false,
+    "semanticIndependenceProven": false,
+    "cloudCalls": 0
+  },
+  "limits": [
+    "The newly added DBS candidate remains provisional pending new-type content review and family eligibility; the v7 pool is not a final source or Gold freeze.",
+    "The known family-label closure does not exclude hidden derivative-source links or unrecorded model exposure.",
+    "Local vector similarity and manual question review do not verify answer quality or real G16 citations."
+  ],
+  "fullSetFrozen": false,
+  "g15ReadyForModelCalls": false,
+  "realDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}
