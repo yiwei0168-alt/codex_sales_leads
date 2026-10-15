@@ -1,0 +1,64 @@
+{
+  "schema": "ma24-g01-standalone-package-v1",
+  "date": "2026-10-16",
+  "sourceCommit": "e5037ea8",
+  "sourceArchive": {
+    "path": "tmp/ma24-g01-e5037ea8.zip",
+    "sha256": "dc99db16b7a3d2a81682fe14ecf4e0e83d3ad6242a2ffd6756074eff62215414",
+    "method": "git archive HEAD into an isolated workspace directory"
+  },
+  "build": {
+    "directory": "tmp/ma24-current-build-e5037ea8",
+    "command": "node scripts/build-next.mjs",
+    "nextVersion": "16.3.4",
+    "productionCompile": "passed",
+    "typescript": "passed",
+    "staticPagesGenerated": 26,
+    "buildId": "W1QTvNdQQ6Kbc0hxnVjDc",
+    "buildManifestSha256": "48b7a31430704038aa87cc5ac30932e152d84998d949243219379e6f892c1d1d"
+  },
+  "package": {
+    "path": ".next-releases/ma24-g01-e5037ea8-standalone",
+    "script": "scripts/package-ma24-next-standalone.py",
+    "sourceFilesMatched": 2216,
+    "materializedJunctions": [
+      "tmp/ma24-current-build-e5037ea8/node_modules",
+      "tmp/ma24-current-build-e5037ea8/.next/node_modules/pg-587764f78a6c7a9c",
+      "tmp/ma24-current-build-e5037ea8/.next/node_modules/pino-28069d5257187539"
+    ],
+    "appRelativePath": "tmp/ma24-current-build-e5037ea8",
+    "regularFiles": 2265,
+    "regularBytes": 33341411,
+    "treeSha256": "b6bb3594c8f03d555fd9cf31e4a54d8dd43a04a1fd9774e55ee1e7a63483f902",
+    "remainingJunctions": 0,
+    "environmentFiles": 0,
+    "treeUnchangedAfterSmoke": true
+  },
+  "localRuntimeSmoke": {
+    "scope": "Status-only GET requests to 127.0.0.1:3026 with a CommonJS resolver guard rejecting dependencies outside the package",
+    "homeStatus": 200,
+    "sessionStatus": 200,
+    "candidateBuildManifestStatus": 200,
+    "processStopped": true,
+    "port3026ListenerAfterStop": false,
+    "temporaryEnvHardlinkRemoved": true
+  },
+  "existingStartCommandSmoke": {
+    "command": "node node_modules/next/dist/bin/next start -p 3027 -H 127.0.0.1",
+    "source": "same isolated e5037ea8 build, using the existing next start path",
+    "homeStatus": 200,
+    "sessionStatus": 200,
+    "candidateBuildManifestStatus": 200,
+    "processStopped": true,
+    "temporaryEnvHardlinkRemoved": true
+  },
+  "modelCalls": 0,
+  "productionWrites": 0,
+  "g17ToG20Advanced": false,
+  "limits": [
+    "The resolver guard checks CommonJS module resolution and three local routes, not every dynamic import, filesystem access or product workflow",
+    "The package has not been loaded by the production Web or worker processes",
+    "No production migration, deployment, domain pilot or rollback occurred",
+    "G14 Gold, G15 paid admission and G16 real dual-arm quality remain incomplete"
+  ]
+}
