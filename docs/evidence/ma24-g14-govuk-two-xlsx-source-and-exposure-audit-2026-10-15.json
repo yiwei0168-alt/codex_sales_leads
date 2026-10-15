@@ -1,0 +1,52 @@
+{
+  "schema": "ma24-g14-govuk-two-xlsx-source-and-exposure-audit-v1",
+  "date": "2026-10-15",
+  "scope": "Bounded source-use and pre-discovery exposure review for two original workbooks shared by the selected cross-document, BPI and Taking Part drafts; not a Gold freeze or a claim of exhaustive independence",
+  "publisherSources": {
+    "bpiRelease": "https://www.gov.uk/government/statistics/broadband-performance-indicator-march-2018",
+    "takingPartRelease": "https://www.gov.uk/government/statistics/taking-part-201920-internet",
+    "govUkTerms": "https://www.gov.uk/help/terms-conditions",
+    "openGovernmentLicence": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
+    "observed": "Each official release lists its XLSX original. The release pages state OGL v3.0 except where otherwise stated; GOV.UK terms allow reuse of covered content subject to the licence. The licence requires source attribution and excludes certain logos, personal data and unlicensed third-party rights. The same-release BPI PDF has its own OGL notice on page 4, as checked in the prior BPI receipt."
+  },
+  "originalWorkbookParts": [
+    { "sourceSha256": "7d178716b667ebe66537154b0bb96f87348ccb782368b2f43920b45db9f7f5c1", "zipEntries": 12, "embeddedMediaOrDrawingOrExternalLinkParts": 0, "copyrightOrLicenceStatementCells": 0 },
+    { "sourceSha256": "90eb0ed392efc2db8ab6681bcf4b9634c41f891d3df7a95bba3bf6f9457ff614", "zipEntries": 22, "embeddedImageSha256": "ea4233d16dca3fac948730a2fd9ffe7cd7e993a0e29b2a3691b7e487995762cb", "imageMeaning": "Department emblem and name on Contents sheet, previously reviewed as decorative in the isolated product clone", "externalLinkOrEmbeddedObjectParts": 0, "copyrightOrLicenceStatementCells": 0 }
+  ],
+  "boundedPreDiscoveryExposure": {
+    "bpiBaselineCommit": "44e68b25a2d8ba18b0620b0075f303737d3dced9",
+    "takingPartBaselineCommit": "6da4c019f424abef79d18e9098673607223d892d",
+    "trackedAreas": ["docs", "src", "scripts", "experiments"],
+    "bpiDistinctiveTitleFilenameAndAnswerPhraseHits": 0,
+    "takingPartDistinctiveTitleAndQuestionPhraseHits": 0,
+    "ignoredTextRoots": ["tmp", "experiments"],
+    "ignoredTextExtensions": [".json", ".md", ".txt", ".log"],
+    "ignoredTextExcluded": ["tmp/ma24-independent-quarantine", "node_modules"],
+    "distinctiveTitleOrFilenameHitsOutsideCandidateQuarantine": 0,
+    "currentLocalRegistryReadOnly": {
+      "bpi": { "matchingAssets": 0, "matchingUploadJobs": 0, "matchingHistoricalGoldRows": 0 },
+      "takingPart": { "matchingAssets": 0, "matchingUploadJobs": 0, "matchingHistoricalGoldRows": 0 }
+    },
+    "questionOverlapReceipts": [
+      "docs/evidence/ma24-g14-govuk-two-xlsx-cross-document-revised-review-2026-10-15.json",
+      "docs/evidence/ma24-g14-selected-cross-document-current-pool-screen-2026-10-15.json"
+    ],
+    "falsePositiveBoundary": "Generic percentages 75.6% and 33.1% and numeral 77,617 have unrelated historical uses; absence of those numerals is not asserted."
+  },
+  "boundedUseDecision": {
+    "eligibleForFinalSetReview": true,
+    "allowedCandidateUse": "Private evaluation questions and short numerical answers attributed to the two official releases, with exact workbook cells and source links; the department emblem is excluded from answer content.",
+    "wholeWorkbookRedistributionApproved": false,
+    "productAttributionVerified": false,
+    "fullRightsDetermination": false,
+    "semanticIndependenceProven": false
+  },
+  "remaining": [
+    "In the final freeze, handle all three questions as two shared source families and check source-level leakage after any development change.",
+    "Verify user-visible attribution and exact two-workbook citations under G15/G16 controls before claiming answer quality.",
+    "Unrecorded prompts, binary contents outside the inspected originals, provider-side exposure and model pretraining are not covered by this bounded local audit."
+  ],
+  "goldCreated": 0,
+  "modelCalls": 0,
+  "productionWrites": 0
+}

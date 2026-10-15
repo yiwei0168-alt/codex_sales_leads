@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+2026-10-15 G14 来源使用边界：BDUK 与 Taking Part 官方 XLSX 可作为有归属、带原格引用的短数值事实题候选；Taking Part 的部门标识不进入题目或答案。两原件的有界本地发现前暴露筛查未见专有内容，当前库精确哈希为 0，但未排除所有语义或未记录暴露；Gold、实际模型引用和整体质量仍未验收。[审计收据](evidence/ma24-g14-govuk-two-xlsx-source-and-exposure-audit-2026-10-15.json)。
+
 2026-10-15 G14 跨文档质量题准备：两份 GOV.UK 工作簿的哈希和原格已重核；选择数值直接重叠较少的修订版进入整套候选审核，旧版退出当前池。当前 21 条仅为草案，发布家族仍为 12 个；跨文档 Gold、两来源用户可见引用及质量验收都未通过。[选择收据](evidence/ma24-g14-govuk-cross-document-family-selection-2026-10-15.json)。
 
 2026-10-15 G16 独立质量评分器已在本地要求来源集、Gold、代码/配置三个实际文件与冻结哈希一致；随后验证 Gold 逐题审核记录，并要求被判为精确引用正确的运行引用覆盖该题全部 Gold 来源坐标。11 项定向测试、类型检查、lint 与合成命令篡改拒绝通过。此为评分器工程检查，尚无独立 Gold、真实双路答案、人工语义判决或生产质量验收。[输入绑定](evidence/ma24-g16-frozen-snapshot-byte-binding-2026-10-15.json)、[来源覆盖](evidence/ma24-g16-gold-source-coverage-gate-2026-10-15.json)。
