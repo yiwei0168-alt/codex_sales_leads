@@ -103,4 +103,21 @@ describe("knowledge question scope", () => {
       arguments:JSON.stringify({tool:'vectorless_start',arguments:{question:'test'}})}};
     expect((await dispatchTool(execute,baseline)).status).toBe('unavailable');
   });
+  it('exposes no evaluation tools when a runner omits the account or knowledge scope',async()=>{
+    const context={userId:'pilot',runId:'run',leaseToken:'lease',role:'member' as const};
+    expect(availableTools(context).some(tool=>tool.effect!=='read')).toBe(true);
+    for(const evaluationArm of ['baseline','candidate'] as const){
+      const arm={...context,evaluationArm};
+      expect(availableTools(arm)).toEqual([]);
+      expect(availableTools({...arm,userId:undefined,knowledgeScope:['product']})).toEqual([]);
+      const discover={id:'discover',type:'function' as const,function:{name:'discover_tools',arguments:'{}'}};
+      expect(JSON.stringify((await dispatchTool(discover,arm)).data)).not.toContain('schedule_create');
+      const describe={id:'describe',type:'function' as const,function:{name:'describe_tool',
+        arguments:JSON.stringify({tool:'schedule_create'})}};
+      expect((await dispatchTool(describe,arm)).status).toBe('unavailable');
+      const execute={id:'execute',type:'function' as const,function:{name:'execute_tool',
+        arguments:JSON.stringify({tool:'schedule_create',arguments:{}})}};
+      expect((await dispatchTool(execute,arm)).status).toBe('unavailable');
+    }
+  });
 });

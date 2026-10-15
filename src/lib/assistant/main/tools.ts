@@ -221,8 +221,10 @@ export const productTools: ProductTool[] = [
     execute: async i => result({ approvedPlan: i }, { cost: "known" }) }),
 ];
 export function availableTools(context: Pick<ExecutionContext, "role" | "knowledgeScope" | "mode" | "evaluationArm"> & Partial<Pick<ExecutionContext,'userId'>>, tools = productTools) {
+  if (context.evaluationArm && (!context.userId || !context.knowledgeScope?.length)) return [];
   const scopedShadow=Boolean(context.userId&&(process.env.VECTORLESS_AGENT_SHADOW_USER_IDS??'').split(',').map(id=>id.trim()).includes(context.userId));
   return tools.filter(t => (t.role === "member" || context.role === "admin")
+    && (!context.evaluationArm || t.effect === "read")
     && modeAllowsTool(context.mode,t.id)
     && (!t.id.startsWith("vectorless_") || (context.evaluationArm!=="baseline" && process.env.ENABLE_VECTORLESS_AGENT_SHADOW==="1" && (!context.knowledgeScope?.length||scopedShadow)))
     && (t.id!=="memory_observation_search" || (process.env.ENABLE_MEMORY_GRAPH_AGENT_SHADOW==="1" && !context.knowledgeScope?.length))

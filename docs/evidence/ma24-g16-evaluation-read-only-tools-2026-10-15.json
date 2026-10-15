@@ -1,0 +1,22 @@
+{
+  "schema": "ma24-g16-evaluation-read-only-tools-v1",
+  "date": "2026-10-15",
+  "scope": "G15/G16 main Agent tool discovery, description and execution for baseline and candidate evaluation arms",
+  "change": "An evaluation arm requires an account and a nonempty knowledge scope, then can see only ProductTools declared with the read effect. The ordinary main Agent tool set is unchanged. The frozen task binder separately requires the exact scoped account and question.",
+  "checks": [
+    "10 knowledge-scope and evaluation-arm tests passed",
+    "Both arms returned an empty tool set with a missing account or knowledge scope and rejected schedule_create in discover_tools, describe_tool and execute_tool",
+    "TypeScript typecheck passed",
+    "ESLint on changed files passed",
+    "The current read-only G15 preview reports industry and company 3 baseline/10 candidate tools, product 4 baseline/11 candidate tools; every arm adds only the same seven vectorless navigation tools"
+  ],
+  "providerCalls": 0,
+  "approvedGold": 0,
+  "realDualArmRuns": 0,
+  "readyForPaidEvaluation": false,
+  "limitations": [
+    "The read-effect filter relies on ProductTool effect declarations; any incorrect declaration requires a separate tool audit.",
+    "No dedicated evaluation model executor, paid admission or real answer/citation review ran.",
+    "G17-G20 remain paused."
+  ]
+}
