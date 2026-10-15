@@ -1,0 +1,34 @@
+{
+  "schema": "ma24-g15-g16-bge-degradation-gate-v1",
+  "date": "2026-10-16",
+  "finding": "The dedicated evaluation runner relied on a reviewed BGE flag and retrieval-profile declaration but did not recheck the local service immediately before a run. A knowledge_search partial result could continue into model generation after the BGE lane failed.",
+  "change": "The dedicated runner now checks the loopback BGE health response for ready status, pinned model, revision and 1024 dimensions before claiming and at each execution boundary. A partial knowledge_search result aborts that evaluation and follows failed-run settlement.",
+  "codeHashes": {
+    "src/lib/rag/bge-client.ts": "0e5a1ce5a12e1213dfd68032c63a1860e847c2764b03b09e834ab760e52875c9",
+    "src/lib/knowledge/evaluation/ma24-evaluation-runner.ts": "971c15a4c260075a4e5843fd30ed3e1897afed776cccbe296cea7eed75402789"
+  },
+  "checks": {
+    "focusedVitest": "2 files, 20 tests passed; missing service before claim and partial knowledge search during graph both reject without another model call",
+    "typescript": "passed",
+    "changedFileEslint": "passed",
+    "liveLocalHealthThroughNewFunction": "passed against existing offline BGE service on 127.0.0.1:8765",
+    "realModelCalls": 0,
+    "providerCalls": 0
+  },
+  "currentReadOnlyPreview": {
+    "path": "docs/evidence/ma24-g15-config-preview-2026-10-16-v29.json",
+    "sha256": "63a3d5041a43f71ea00bee03935c40afbba2bdc7f5dbdaa936bc3b73008a1926",
+    "sourceClosureFiles": 304,
+    "runtimeBindingMatched": true,
+    "readOnly": true,
+    "simulation": true,
+    "readyForModelCalls": false
+  },
+  "remaining": [
+    "Health is a point-in-time service check; a partial knowledge_search result is also rejected if degradation occurs during execution",
+    "G14 complete Gold, frozen accounts and data, current runtime build, provider tariffs, durable authorized limits and user paid-call authorization remain unverified",
+    "The earlier 81e44b14 isolated build does not contain this source change and cannot serve as the final runtime build",
+    "No real G16 paired model run or quality verdict exists"
+  ],
+  "g17ToG20Advanced": false
+}

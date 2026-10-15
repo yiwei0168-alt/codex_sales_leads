@@ -9,12 +9,14 @@ const mocks = vi.hoisted(() => ({
   spend: vi.fn(), pool: vi.fn(), memory: vi.fn(), availableTools: vi.fn(),
   spendContext: vi.fn(), financialOverride: vi.fn(),
   hardLimit: vi.fn(),
+  bgeHealth: vi.fn(),
   dispatch: vi.fn(), skillGuard: vi.fn(), memoryGuard: vi.fn(), knowledgeGuard: vi.fn(),
 }));
 vi.mock('@langchain/langgraph-checkpoint-postgres', () => ({
   PostgresSaver: class PostgresSaver {},
 }));
 vi.mock('../../rag/db', () => ({ getPool: mocks.pool }));
+vi.mock('../../rag/bge-client', () => ({ assertBgeServiceReady: mocks.bgeHealth }));
 vi.mock('../../billing/context', () => ({ withMa24EvaluationSpend: mocks.spend,
   currentSpendContext: mocks.spendContext }));
 vi.mock('../../billing/stage-paid-call-override', () => ({
@@ -53,7 +55,8 @@ vi.mock('./ma24-g15-hard-limit-binding', () => ({
   verifyMa24EvaluationHardLimit: mocks.hardLimit,
 }));
 
-import { executeMa24EvaluationRun, startMa24EvaluationHeartbeat } from './ma24-evaluation-runner';
+import { assertMa24EvaluationBaselineToolResult, executeMa24EvaluationRun,
+  startMa24EvaluationHeartbeat } from './ma24-evaluation-runner';
 
 const userId = '11111111-1111-4111-8111-111111111111';
 const runId = '22222222-2222-4222-8222-222222222222';
@@ -78,6 +81,7 @@ beforeEach(() => {
     knowledgeScope: ['product'] });
   mocks.verify.mockResolvedValue({ userId, caseId: 'case-1' });
   mocks.hardLimit.mockResolvedValue({});
+  mocks.bgeHealth.mockResolvedValue(undefined);
   mocks.boundary.mockResolvedValue(task);
   mocks.heartbeat.mockResolvedValue(true);
   mocks.memory.mockResolvedValue([]);
@@ -192,6 +196,45 @@ it('refuses an unready paid evaluation before claiming a persisted task', async 
   await expect(executeMa24EvaluationRun(input))
     .rejects.toThrow('MA24 evaluation model admission unavailable');
   expect(mocks.claim).not.toHaveBeenCalled();
+});
+
+it('refuses a missing local BGE baseline before claiming or calling a model', async () => {
+  mocks.bgeHealth.mockRejectedValueOnce(new Error('BGE-M3 health HTTP 503'));
+  await expect(executeMa24EvaluationRun(input)).rejects.toThrow('BGE-M3 health HTTP 503');
+  expect(mocks.claim).not.toHaveBeenCalled();
+  expect(mocks.model).not.toHaveBeenCalled();
+});
+
+it('rejects a degraded knowledge search result in either evaluation arm', () => {
+  const call = { id: 'synthetic', type: 'function' as const,
+    function: { name: 'execute_tool', arguments: JSON.stringify({
+      tool: 'knowledge_search', arguments: { query: 'test' } }) } };
+  const partial = { status: 'partial' as const, data: [], sources: [], artifacts: [],
+    missing: ['Local BGE unavailable; vector lane omitted'], cost: 'known' as const };
+  expect(() => assertMa24EvaluationBaselineToolResult(call, partial))
+    .toThrow('baseline knowledge_search degraded');
+  expect(assertMa24EvaluationBaselineToolResult(call, { ...partial,
+    status: 'success' })).toMatchObject({ status: 'success' });
+});
+
+it('fails the persisted evaluation when a knowledge search degrades during the graph', async () => {
+  mocks.dispatch.mockResolvedValue({ status: 'partial', data: [], sources: [],
+    artifacts: [], missing: ['Local BGE unavailable; vector lane omitted'], cost: 'known' });
+  mocks.buildGraph.mockImplementation((deps: MainGraphDependencies) => ({
+    getState: async () => ({ values: {} }),
+    invoke: async () => {
+      await deps.tool({ id: 'synthetic', type: 'function', function: {
+        name: 'execute_tool', arguments: JSON.stringify({ tool: 'knowledge_search',
+          arguments: { query: 'test' } }),
+      } }, []);
+      return { status: 'completed', reply: 'should not complete', messages: [] };
+    },
+  }));
+  await expect(executeMa24EvaluationRun(input))
+    .rejects.toThrow('baseline knowledge_search degraded');
+  expect(mocks.model).not.toHaveBeenCalled();
+  expect(mocks.finish).toHaveBeenCalledWith(expect.any(Object), 'failed',
+    'MA24 evaluation execution failed');
 });
 
 it('refuses a missing or mismatched durable hard limit before claiming', async () => {

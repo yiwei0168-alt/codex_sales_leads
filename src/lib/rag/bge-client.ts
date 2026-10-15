@@ -1,5 +1,6 @@
 const BGE_DIMENSIONS = 1024;
 const BGE_REVISION = "5617a9f61b028005a4858fdac845db406aefb181";
+const BGE_MODEL = "BAAI/bge-m3";
 
 export function bgeServiceBaseUrl(): string {
   const configured = process.env.BGE_M3_SERVICE_URL?.trim() || "http://127.0.0.1:8765";
@@ -9,6 +10,19 @@ export function bgeServiceBaseUrl(): string {
     throw new Error("BGE_M3_SERVICE_URL must be a loopback-only HTTP origin");
   }
   return parsed.origin;
+}
+
+/** Check the loaded local model immediately before an evaluation uses its retrieval lane. */
+export async function assertBgeServiceReady(transport: typeof fetch = fetch): Promise<void> {
+  const response = await transport(`${bgeServiceBaseUrl()}/health`, {
+    signal: AbortSignal.timeout(5_000),
+  });
+  if (!response.ok) throw new Error(`BGE-M3 health HTTP ${response.status}`);
+  const body = await response.json() as { status?: string; model?: string;
+    revision?: string; dimensions?: number };
+  if (body.status !== "ready" || body.model !== BGE_MODEL ||
+    body.revision !== BGE_REVISION || body.dimensions !== BGE_DIMENSIONS)
+    throw new Error("BGE-M3 evaluation baseline unavailable or incompatible");
 }
 
 export async function embedTextsWithBge(

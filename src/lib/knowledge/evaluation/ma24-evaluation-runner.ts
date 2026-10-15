@@ -2,7 +2,8 @@ import { PostgresSaver } from '@langchain/langgraph-checkpoint-postgres';
 import { getPool } from '../../rag/db';
 import { currentSpendContext, withMa24EvaluationSpend } from '../../billing/context';
 import { currentStagePaidCallOverride } from '../../billing/stage-paid-call-override';
-import { digest, type ExecutionContext, type ModelMessage } from '../../assistant/main/contracts';
+import { digest, type ExecutionContext, type ModelMessage,
+  type ModelToolCall, type ToolResult } from '../../assistant/main/contracts';
 import { buildMainAgentGraph, durableModel, MainAgentState } from '../../assistant/main/graph';
 import { initialTaskMessages } from '../../assistant/main/initial-task-messages';
 import { dispatchTool } from '../../assistant/main/executor';
@@ -17,6 +18,7 @@ import { verifyMa24EvaluationTaskBinding } from './ma24-evaluation-task-binding'
 import { requireMa24G15ModelReady } from './ma24-g15-runtime-binding';
 import { verifyMa24EvaluationHardLimit } from './ma24-g15-hard-limit-binding';
 import { ma24ManifestSha256 } from './ma24-independent-comparison';
+import { assertBgeServiceReady } from '../../rag/bge-client';
 
 type EvaluationInput = Parameters<typeof claimAndBindMa24EvaluationRun>[0];
 
@@ -55,12 +57,25 @@ export function assertMa24EvaluationModelReady() {
   return requireMa24G15ModelReady(loaded, loaded, new Date().toISOString().slice(0, 10));
 }
 
+/** A degraded knowledge search cannot count as the frozen BGE baseline. */
+export function assertMa24EvaluationBaselineToolResult(call: ModelToolCall,
+  outcome: ToolResult): ToolResult {
+  if (call.function.name !== 'execute_tool') return outcome;
+  let input: unknown;
+  try { input = JSON.parse(call.function.arguments); } catch { return outcome; }
+  if (input && typeof input === 'object' && 'tool' in input &&
+    input.tool === 'knowledge_search' && outcome.status === 'partial')
+    throw new Error('MA24 evaluation baseline knowledge_search degraded');
+  return outcome;
+}
+
 /** Dedicated G16 entry: frozen admission, hidden conversation, shared Agent graph, durable journals. */
 export async function executeMa24EvaluationRun(input: EvaluationInput) {
   const entry = input.manifest.cases.find(item => item.caseId === input.caseId);
   if (!entry) throw new Error('MA24 evaluation case absent from frozen manifest');
   assertMa24EvaluationSpendBoundary(entry.userId, input.runId);
   const initialPreview = assertMa24EvaluationModelReady(); // Before a lease or any provider request.
+  await assertBgeServiceReady();
   const manifestSha256 = ma24ManifestSha256(input.manifest);
   await verifyMa24EvaluationHardLimit({ userId: entry.userId, runId: input.runId,
     manifestSha256, preview: initialPreview });
@@ -73,6 +88,7 @@ export async function executeMa24EvaluationRun(input: EvaluationInput) {
     lease.assertHealthy();
     assertMa24EvaluationSpendBoundary(admitted.userId, admitted.id);
     const loadedCodeAndConfig = assertMa24EvaluationModelReady();
+    await assertBgeServiceReady();
     await verifyMa24EvaluationHardLimit({ userId: admitted.userId, runId: admitted.id,
       manifestSha256, preview: loadedCodeAndConfig });
     await verifyMa24EvaluationTaskBinding({ ...input,
@@ -103,7 +119,8 @@ export async function executeMa24EvaluationRun(input: EvaluationInput) {
       },
       tool: async (call, instructionIds) => {
         await revalidate();
-        return dispatchTool(call, { ...context, instructionIds });
+        return assertMa24EvaluationBaselineToolResult(call,
+          await dispatchTool(call, { ...context, instructionIds }));
       },
     }, new PostgresSaver(getPool(), undefined, { schema: 'langgraph' }));
     const config = { configurable: { thread_id: `ma24-evaluation:${context.userId}:${context.runId}`,
