@@ -47,7 +47,7 @@ try{
     'B382: Aberdeenshire','C382: 64.2','B395: Scotland','C395: 47.52'])assert(found.content.includes(literal),literal);
   assert.equal(await readEvidence(other,evidence.id,['industry']),null);
   assert.equal(JSON.stringify((await pool.query('select * from knowledge_release_pointer_v3 order by scope_kind,owner_id')).rows),pointers);
-  console.log(JSON.stringify({cloneOnly:true,sourceSha256:hash(original),extractorVersion:'layout-v2.0.9',
+  console.log(JSON.stringify({cloneOnly:true,sourceSha256:hash(original),extractorVersion:'layout-v2.0.10',
     registered:true,cellRange:'A1:C418',targetCellsRead:8,crossAccountDenied:true,
     productionKnowledgeWrites:0,modelCalls:0,independentGoldCreated:0}));
 }finally{

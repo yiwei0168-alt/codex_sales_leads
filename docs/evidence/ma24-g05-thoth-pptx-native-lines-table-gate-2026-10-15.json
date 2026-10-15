@@ -1,0 +1,38 @@
+{
+  "schema": "ma24-g05-thoth-pptx-native-lines-table-gate-v1",
+  "date": "2026-10-15",
+  "sourceRole": "Development and regression only; this original revealed the extraction defect and cannot be counted as fresh independent Gold",
+  "publisherRecord": "https://zenodo.org/records/18173982",
+  "publisherPptxUrl": "https://zenodo.org/records/18173982/files/supplement%20Thoth%20Formats%20Specifications%20Platforms%20overview%202026.pptx?download=1",
+  "publisherPngUrl": "https://zenodo.org/records/18173982/files/supplement%20Thoth%20Formats%20Specifications%20Platforms%20overview%202026.png?download=1",
+  "licenseScope": "The publisher record explicitly labels this supporting graphic CC BY 4.0; attribution remains required.",
+  "original": {
+    "localPath": "tmp/ma24-independent-quarantine/thoth-metadata-overview-2026.pptx",
+    "bytes": 204024,
+    "publisherMd5Matched": "3aa6c1428aec9360e62070c3e7028c2a",
+    "sha256": "a3fa61e4fb6218994c2a8ca8f9063056ae61dfc406534956b13c09e8424b9798",
+    "slides": 1,
+    "nativeTableCount": 1,
+    "emptyNativeLineShapes": 26,
+    "publisherPngMd5Matched": "c2b3ad93f4918d262ab19a64add85234",
+    "publisherPngSha256": "52e3c8f8e3ec12b616658f6f8cb51ab2045ddfae340ef63d2478e2853682d514",
+    "localPowerPointRenderSha256": "58bb3f2a8caafc968953cd9e1365c17e002c463cd62293fcf9f9ef53c56646bd"
+  },
+  "defect": "layout-v2.0.9 emitted the slide's three-column table as success while skipping 26 native line shapes. One emitted row joined BibTeX to EBSCOHost, although the publisher's original diagram connects BibTeX to Thoth and ONIX 2.1 to EBSCOHost. The line relationships change the meaning of the table's cell adjacency.",
+  "change": "layout-v2.0.10 marks a PPTX table as pending-ocr when the same slide contains a native line auto-shape or connector, retaining its original shape path and reviewReason table-with-native-lines. Registration must wait for human source review; the table is not certified solely from cell positions.",
+  "checks": {
+    "beforeArtifactSha256": "53dbc5f5a1377010d0b9ff77044f84f4dfd7b971d52ca05bc7ce4ce36b03a424",
+    "beforeOriginalSlideStatus": "success",
+    "afterArtifactSha256": "9b9902c41a9026c0d711f511d8c1db93e2e19c34c27c00e6e28db26c79923b3c",
+    "afterOriginalSlideStatus": "pending-ocr",
+    "afterTableBlockId": "slide-1-table-1",
+    "afterTableBlockQuality": "pending-ocr",
+    "contrastCopy": "An ignored diagnostic copy removed only the 26 native line shapes (SHA-256 ede0f8caa26e0b4376043d98c1e5d137f000d35986b0c9e8505fc4306b5ee586); the table then remained success under layout-v2.0.10.",
+    "existingExtractorSuite": "python scripts/test_knowledge_extraction_v2.py: 10 passed",
+    "nistXlsxCloneOnV2010": "The independent NIST workbook clone retained 9 identical extraction blocks after job-key normalization, saved 4 reviews, registered privately, read 5 exact target cells and denied another account. Synthetic rows were cleaned."
+  },
+  "limits": "The Thoth deck is a single-slide graphic, not an approved PPTX quality source. The local PowerPoint render had font fallback and wrapped headings, so the publisher's matching PNG was used to check connections. The new gate prevents automatic indexing; no full product review, user-visible answer or production loading was performed.",
+  "goldCreated": 0,
+  "modelCalls": 0,
+  "productionWrites": 0
+}

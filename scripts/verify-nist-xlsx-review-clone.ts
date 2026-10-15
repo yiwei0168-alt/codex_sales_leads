@@ -26,7 +26,7 @@ const uploadRoot = resolve("knowledge", "uploads");
 const ownerRoot = resolve(uploadRoot, owner);
 assert(ownerRoot.startsWith(uploadRoot + sep) && basename(ownerRoot) === owner);
 const sourcePath = "tmp/ma24-independent-quarantine/nist-smartmanufacturing-metadata.xlsx";
-const artifactPath = "tmp/ma24-independent-quarantine/nist-smartmanufacturing-metadata.layout-v2.0.9.extraction.json";
+const artifactPath = "tmp/ma24-independent-quarantine/nist-smartmanufacturing-metadata.layout-v2.0.10.extraction.json";
 const sha = (bytes: Uint8Array) => createHash("sha256").update(bytes).digest("hex");
 const judgments: Record<string, { evidenceText: string; note: string }> = {
   "sheet-1-table": {

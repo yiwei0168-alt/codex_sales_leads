@@ -11,7 +11,7 @@ from pptx.enum.shapes import MSO_SHAPE_TYPE
 from openpyxl import load_workbook
 from openpyxl.utils import get_column_letter
 
-EXTRACTOR_VERSION = "layout-v2.0.9"
+EXTRACTOR_VERSION = "layout-v2.0.10"
 
 def _clean(value):
     return " ".join(str("" if value is None else value).replace("\x00", "").split()).strip()
@@ -57,8 +57,19 @@ def extract_pdf(path: Path):
 
 def extract_pptx(path: Path):
     blocks=[];statuses=[]
+    def has_native_line(shapes):
+        for shape in shapes:
+            if shape.shape_type == MSO_SHAPE_TYPE.GROUP and has_native_line(shape.shapes):
+                return True
+            element=shape._element
+            if element.tag.endswith("}cxnSp") or any(node.get("prst")=="line" for node in element.iter() if node.tag.endswith("}prstGeom")):
+                return True
+        return False
     for index,slide in enumerate(Presentation(path).slides,1):
         start=len(blocks)
+        # A table can hold diagram labels while separate native lines encode
+        # relationships. Cell adjacency alone must not certify those claims.
+        table_with_lines=has_native_line(slide.shapes)
         def visit(shapes, ordinals=(), shape_ids=()):
             for ordinal,shape in enumerate(shapes,1):
                 shape_path=(*ordinals,ordinal);id_path=(*shape_ids,shape.shape_id)
@@ -70,7 +81,10 @@ def extract_pptx(path: Path):
                 if getattr(shape,"has_table",False):
                     rows=[[_clean(cell.text) for cell in row.cells] for row in shape.table.rows]
                     if rows:
-                        blocks.append(_block(f"slide-{index}-table-{key}","slide",index,"table",table={"headers":rows[0],"rows":rows[1:],"startRow":2},**location))
+                        blocks.append(_block(f"slide-{index}-table-{key}","slide",index,"table",
+                            quality="pending-ocr" if table_with_lines else "success",
+                            table={"headers":rows[0],"rows":rows[1:],"startRow":2},
+                            **({"metadata":{"reviewReason":"table-with-native-lines"}} if table_with_lines else {}),**location))
                 elif getattr(shape,"has_text_frame",False):
                     text="\n".join(_clean(p.text) for p in shape.text_frame.paragraphs if _clean(p.text))
                     if text: blocks.append(_block(f"slide-{index}-text-{key}","slide",index,"paragraph",text,**location))
