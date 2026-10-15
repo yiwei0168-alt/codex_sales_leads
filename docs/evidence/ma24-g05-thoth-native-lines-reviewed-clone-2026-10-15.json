@@ -1,0 +1,31 @@
+{
+  "schema": "ma24-g05-thoth-native-lines-reviewed-clone-v1",
+  "date": "2026-10-15",
+  "sourceRole": "Development and regression source only; the original exposed the extractor defect and is not independent Gold",
+  "publisherRecord": "https://zenodo.org/records/18173982",
+  "originalPptxSha256": "a3fa61e4fb6218994c2a8ca8f9063056ae61dfc406534956b13c09e8424b9798",
+  "publisherPngSha256": "52e3c8f8e3ec12b616658f6f8cb51ab2045ddfae340ef63d2478e2853682d514",
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-g05-thoth-native-lines-review-clone.ts",
+  "verifierSha256": "6e6a047244e8b37c8be44b1be3be928d6a4660cf9f0aae29f4085bc586dcd501",
+  "initialAttempt": "The first verifier attempted to fetch a standalone PNG for the pending native table and received 'no preview'. The product review UI explicitly offers authenticated original download for PPTX candidates without imageFile. This was a verifier assumption, and its failed result was not counted as acceptance.",
+  "verified": {
+    "actualUploadWorkerExtracted": true,
+    "tableReviewReason": "table-with-native-lines",
+    "unreviewedRegistrationDenied": true,
+    "visualCandidatePresentWithoutStandaloneImage": true,
+    "authenticatedOriginalDownloadHashMatched": true,
+    "onePendingTableReviewSavedAndCompleted": true,
+    "reviewedGraphReplacesFalseAdjacentRows": true,
+    "privateRegistrationAndSourceReadPassed": true,
+    "sourceSlide": 1,
+    "crossAccountSearchReadAndOriginalDownloadDenied": true,
+    "v3PointersUnchanged": true,
+    "syntheticUsersJobsReviewsAndDocumentsCleaned": true
+  },
+  "reviewContentBoundary": "The indexed text describes only connections drawn in the publisher-matching original graphic. The mistaken BibTeX-to-EBSCOHost and ONIX-2.1-to-Project-MUSE row adjacencies are absent from indexed evidence; the false-row explanation remains in the review note.",
+  "checks": { "typecheck": "passed", "focusedEslint": "passed", "finalIsolatedClone": "passed" },
+  "limits": "The browser page itself, a user-visible model answer/citation, all other complex PPTX tables, and production loading were not tested. This does not approve the Thoth deck as independent evaluation material.",
+  "modelCalls": 0,
+  "newGold": 0,
+  "productionWrites": 0
+}
