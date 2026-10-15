@@ -1,0 +1,39 @@
+{
+  "schema": "ma24-g14-govuk-local-rollout-exposure-boundary-v1",
+  "date": "2026-10-15",
+  "purpose": "Correct the interpretation of the pre-registration Git screen by checking local Codex session records before the first BDUK candidate commit.",
+  "boundary": {
+    "firstCandidateRegistrationCommit": "2011713b",
+    "parentCommit": "44e68b25a2d8ba18b0620b0075f303737d3dced9",
+    "commitTimestampUtc": "2026-10-15T03:22:10Z",
+    "firstExactRolloutMatchUtc": "2026-10-15T03:14:17Z",
+    "lastPreCommitExactRolloutMatchUtc": "2026-10-15T03:21:57Z"
+  },
+  "screen": {
+    "root": "local Codex sessions/rollout-*.jsonl",
+    "rolloutFiles": 94,
+    "jsonlRecords": 152834,
+    "preCommitRolloutsWithMatches": 2,
+    "exactPatterns": [
+      "Broadband Performance Indicator",
+      "Taking Part 2019/20",
+      "4852808",
+      "7,934 premises",
+      "7,617 premises",
+      "broadband-performance-indicator-march-2018",
+      "taking-part-201920-internet"
+    ],
+    "result": "Exact title, URL and answer-value matches occur before the first Git registration, but only within the 8-minute candidate preparation window. No earlier exact match was found in the scanned local rollout records. Repeated tool call and tool output records are not independent exposures."
+  },
+  "interpretation": "The zero-match historical Git tree is not a zero-exposure proof: the same-session preparation preceded its first commit. The observed pre-commit rollout matches do not by themselves establish exposure during older product development. Candidate preparation is documented exposure and must stay within this single GOV.UK source-family unit.",
+  "limits": [
+    "Exact-pattern search can miss paraphrases, alternative URLs, unrecorded conversations, binary contents or provider-side material.",
+    "This screen does not certify that the question family is independent of all product-development materials or that answer content is valid Gold.",
+    "The two user-confirmed answers remain content-only confirmations; family eligibility, freeze and G16 quality remain open."
+  ],
+  "linkedGitScreen": "docs/evidence/ma24-g14-govuk-preintroduction-exposure-screen-2026-10-15.json",
+  "independentGoldApproved": false,
+  "approvedGoldCount": 0,
+  "realDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}
