@@ -1,0 +1,27 @@
+{
+  "schema": "ma24-g14-selected-cross-document-current-pool-screen-v1",
+  "date": "2026-10-15",
+  "command": "node scripts/run-tsx.cjs scripts/screen-ma24-g14-selected-cross-document-local.ts tmp/ma24-independent-quarantine/g14-current-draft-pool-v2-2026-10-15.json tmp/ma24-independent-quarantine/g14-selected-cross-document-neighbors-2026-10-15.json",
+  "inputPoolSha256": "4724f3dcb425cca856202eb1e172f3cf03c5e8c1605b067f5f94157a12d0794e",
+  "outputSha256": "065d7f0c57f8f05ec33aa2fbd0c11a83e866fca834c3e90e7634d034dc0683a4",
+  "selectedDraftId": "govuk-bduk-taking-part-premises-vs-regional-ability",
+  "otherDraftsCompared": 20,
+  "model": "Local BAAI/bge-m3 revision 5617a9f61b028005a4858fdac845db406aefb181",
+  "closest": [
+    { "id": "taking-part-2019-20-rural-age75-intersection-unavailable", "cosine": 0.675727 },
+    { "id": "bpi-2018-cash-accruals", "cosine": 0.614243 },
+    { "id": "fcc-706-2026-school-entity-vs-student-denominator", "cosine": 0.57117 },
+    { "id": "fcc-2026-fixed-service-option-scope", "cosine": 0.542822 }
+  ],
+  "manualAllTwentyQuestionReview": {
+    "sameSpecificQuestionFound": false,
+    "firstTwo": "The two closest drafts share the selected question's two original workbooks. Taking Part asks for an unavailable rural-and-age intersection and cites 75.6%/33.1%; BPI asks for 7,934/7,617 premises per GBP million and expenditure timing. The selected cross-document draft asks for 4,852,808 premises, London 80.3%, North East 74.0%, their 6.3-point difference, and the limit on causal inference.",
+    "nextTwo": "The two FCC questions also distinguish denominators or service categories, but use different publishers, populations, units and answer numbers; they do not supply the selected answer.",
+    "remainingSixteen": "All remaining question texts were inspected. They concern other source families and facts such as 5G coverage definitions, IEEE/ETSI parameters, NIST industrial wireless, ZBW research-data slides, ITU cable repair and CanSat telemetry; none asks the selected BDUK/Taking Part facts or causal link."
+  },
+  "limit": "Question-text similarity and manual answer-scope reading do not prove absence of unrecorded development exposure, derivative-source overlap, model pretraining knowledge, or full source-use rights. The two closest cases share source families and must be handled together in final freeze and leakage review.",
+  "goldApproved": 0,
+  "modelAnswerCalls": 0,
+  "cloudCalls": 0,
+  "productionWrites": 0
+}
