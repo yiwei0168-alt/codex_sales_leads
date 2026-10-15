@@ -56,6 +56,8 @@
 
 同日 R0 发布指针补验：新增 `node scripts/verify-ma24-web-release-pointer.mjs` 只读复核冻结源码的构建输入、快照 ID 与 manifest 哈希及运行中 Web 的静态构建指针。实测旧版资源 200、候选资源 404，候选未加载；该检查不证明 LangGraph/worker 进程源码，也不替代分域质量、切换前备份、迁移、试点和生产实际回滚。[指针收据](evidence/ma24-g01-web-release-pointer-check-2026-10-15.json)。
 
+同日 R0/G06 新候选：G06 角色分隔符修补后的提交 `5e74b86d` 已从干净 Git 归档隔离构建，完整 Next 16.3.4 构建、类型和 26 页通过；87 份追踪清单无私有依赖，忽略快照 1,486 文件逐项哈希一致。发布指针脚本改绑新快照并通过，只读正式库仍为目标迁移未安装、旧备份不新鲜、五队列无排队/运行；Web 仍载旧版。旧 `04890d60` 快照保留为历史候选，新提交的克隆兼容、分域质量、试点和实际回滚须另验。[新候选收据](evidence/ma24-g01-current-safety-candidate-build-2026-10-15.json)。
+
 原 Goal 仍指向 [G01–G20 完整计划](MA24_COMPLETION_GOAL_PLAN_2026-10-11.md)，工具当前返回 usageLimited，未完成。本次不创建替代 Goal，不以新编号清除原任务缺口。
 
 ## 1. 当前基线和执行原则

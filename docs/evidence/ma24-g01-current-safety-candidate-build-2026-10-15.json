@@ -1,0 +1,53 @@
+{
+  "schema": "ma24-g01-current-safety-candidate-build-v1",
+  "checkedAt": "2026-10-15T00:01:11Z",
+  "sourceCommit": "5e74b86d",
+  "scope": "Clean committed-source Next build, ignored local snapshot and read-only runtime/database/queue checks; no production migration, switch, model run, pilot or rollback",
+  "build": {
+    "sourceWorkspace": "tmp/ma24-current-build-5e74b86d",
+    "method": "git archive of source commit with local node_modules and OCR-model junctions; no live .next mutation",
+    "nextVersion": "16.3.4",
+    "command": "npm run build",
+    "result": "passed including TypeScript and 26 static pages",
+    "buildId": "lZLtUJUu48Mzpo-hg2VLq",
+    "traceManifests": 87,
+    "missingTraceDependencies": 0,
+    "privateTraceDependencies": 0
+  },
+  "snapshot": {
+    "path": ".next-releases/ma24-g01-5e74b86d",
+    "gitIgnored": true,
+    "files": 1486,
+    "bytes": 204554375,
+    "treeSha256": "08747a2db7ac34d46c1133fee4cf3a0567a121093583d8a418ddcf9af502aea3",
+    "treeHashMethod": "Sort [relative POSIX path, byte count, SHA-256] for each source and destination file, JSON encode compactly, then SHA-256; all source and snapshot rows matched",
+    "buildManifestSha256": "62e24755b44c3f2ca85cf85fd916ae1d1e4090462f41fc9cd5632048fc63983e",
+    "allFilesMatch": true,
+    "supersedesCandidateBuildId": "H5kRggLKi87-KFXajjdmU"
+  },
+  "readOnlyChecks": {
+    "webPointerCommand": "node scripts/verify-ma24-web-release-pointer.mjs",
+    "frozenBuildInputChanges": 0,
+    "oldWebBuildId": "QfoyXprIZIVgSWxFSZ-1K",
+    "oldWebManifestStatus": 200,
+    "candidateWebManifestStatus": 404,
+    "candidateLoaded": false,
+    "databaseSchemaState": "stage-absent",
+    "prerequisiteMarkersPresent": 9,
+    "targetMarkersPresent": 0,
+    "applicationCanAssumeCollectorRole": false,
+    "priorBackupChecksumMatched": true,
+    "priorBackupAgeHours": 38.9,
+    "freshSwitchBackup": false,
+    "queueSnapshotAt": "2026-10-15 00:01:11 UTC",
+    "queuedOrRunningInFiveSampledQueues": 0
+  },
+  "readyForRelease": false,
+  "remaining": [
+    "Reverify disposable database clone compatibility on this exact new build where relevant",
+    "Complete domain natural quality and independent evaluation gates",
+    "Bind exact production service/worker source and runtime flags at switch time",
+    "Create and verify a fresh production backup immediately before authorized migrations 127-135",
+    "Perform domain pilots and actual service rollback with post-rollback data checks"
+  ]
+}

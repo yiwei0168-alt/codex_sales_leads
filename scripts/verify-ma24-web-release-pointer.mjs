@@ -6,11 +6,11 @@ import { resolve } from "node:path";
 
 // This check only binds the local Web artifact and HTTP build pointer. It cannot
 // establish the in-process source of LangGraph or workers, or authorize a switch.
-const sourceCommit = "04890d60";
-const expectedCandidateBuildId = "H5kRggLKi87-KFXajjdmU";
-const expectedCandidateManifestSha256 = "415b4126edeb15f3b378d48c76f700c4abca746f10af9b706e07eb5f5b70d9fd";
+const sourceCommit = "5e74b86d";
+const expectedCandidateBuildId = "lZLtUJUu48Mzpo-hg2VLq";
+const expectedCandidateManifestSha256 = "62e24755b44c3f2ca85cf85fd916ae1d1e4090462f41fc9cd5632048fc63983e";
 const expectedLiveBuildId = "QfoyXprIZIVgSWxFSZ-1K";
-const snapshot = resolve(".next-releases/ma24-g01-04890d60");
+const snapshot = resolve(".next-releases/ma24-g01-5e74b86d");
 const buildInputs = [
   "src", "public", "db/migrations", "package.json", "package-lock.json",
   "next.config.ts", "tsconfig.json", "scripts/build-next.mjs",
