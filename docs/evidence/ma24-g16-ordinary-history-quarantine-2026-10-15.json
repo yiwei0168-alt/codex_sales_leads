@@ -1,0 +1,22 @@
+{
+  "schema": "ma24-g16-ordinary-history-quarantine-v1",
+  "date": "2026-10-15",
+  "scope": "G16 code isolation; no database deployment or model execution",
+  "changes": [
+    "Evaluation enqueue creates a deleted-status conversation with a generic title and no ordinary user message",
+    "Evaluation completion stores the result and status event without an ordinary assistant message",
+    "Ordinary getRun, listRuns and readEvents exclude main-agent-evaluation runs"
+  ],
+  "checks": {
+    "focusedVitest": "11 passed in memory-extraction-queue.test.ts",
+    "typescript": "npx.cmd tsc --noEmit passed",
+    "focusedEslint": "repository.ts and memory-extraction-queue.test.ts passed"
+  },
+  "databasePositiveAcceptance": false,
+  "migration136AppliedToProductDatabase": false,
+  "dedicatedRunnerConnected": false,
+  "approvedGoldCount": 0,
+  "realDualArmRuns": 0,
+  "providerCalls": 0,
+  "g17ToG20Advanced": false
+}

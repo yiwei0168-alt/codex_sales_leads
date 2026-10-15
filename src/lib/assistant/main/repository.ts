@@ -29,7 +29,10 @@ export async function enqueueRun(userId: string, input: MessageInput, model: Mod
       const c = await client.query("select id from assistant_conversation where user_id=$1 and id=$2 and status='active' for update", [userId, conversationId]);
       if (!c.rowCount) throw new Error("Conversation unavailable");
     } else {
-      const c = await client.query<{ id: string }>("insert into assistant_conversation(user_id,title) values($1,$2) returning id", [userId, input.content.slice(0, 38)]);
+      const evaluation = serverOptions?.kind === "main-agent-evaluation";
+      const c = await client.query<{ id: string }>(
+        "insert into assistant_conversation(user_id,title,status) values($1,$2,$3) returning id",
+        [userId, evaluation ? "MA24 evaluation" : input.content.slice(0, 38), evaluation ? "deleted" : "active"]);
       conversationId = c.rows[0].id;
     }
     for (const attachment of input.attachments) {
@@ -40,14 +43,16 @@ export async function enqueueRun(userId: string, input: MessageInput, model: Mod
     const saved = await client.query<AgentRun>(`insert into agent_run(user_id,conversation_id,request_key,request_hash,input,model_config,execution_kind,execution_spec,status)
       values($1,$2,$3,$4,$5,$6,$7,$8,$9) returning *`, [userId, conversationId, input.requestKey, hash, JSON.stringify(input), JSON.stringify(model),serverOptions?.kind??"main-agent",serverOptions?JSON.stringify(serverOptions.spec):null,serverOptions?.kind==="mail"&&serverOptions.paused?"paused":"queued"]);
     const run = saved.rows[0];
-    await client.query("insert into assistant_message(user_id,conversation_id,role,intent,content,metadata) values($1,$2,'user','general',$3,$4)", [userId, conversationId, input.content, JSON.stringify({ runId: run.id })]);
+    if (serverOptions?.kind !== "main-agent-evaluation")
+      await client.query("insert into assistant_message(user_id,conversation_id,role,intent,content,metadata) values($1,$2,'user','general',$3,$4)", [userId, conversationId, input.content, JSON.stringify({ runId: run.id })]);
     await client.query("insert into agent_run_event(user_id,run_id,kind,payload) values($1,$2,'queued','{}')", [userId, run.id]);
     await client.query("update assistant_conversation set updated_at=now() where user_id=$1 and id=$2", [userId, conversationId]);
     return run;
   });
 }
 export async function getRun(userId: string, id: string): Promise<AgentRun | null> {
-  return (await tenantQuery<AgentRun>(userId, "select * from agent_run where user_id=$1 and id=$2", [userId, id]))[0] ?? null;
+  return (await tenantQuery<AgentRun>(userId,
+    "select * from agent_run where user_id=$1 and id=$2 and execution_kind<>'main-agent-evaluation'", [userId, id]))[0] ?? null;
 }
 export async function listRuns(userId: string, conversationId?: string) {
   return tenantQuery<Pick<AgentRun, "id" | "status" | "conversation_id" | "result">>(userId,
@@ -60,11 +65,15 @@ export async function listRuns(userId: string, conversationId?: string) {
       coalesce((select jsonb_agg(jsonb_build_object('id',m.id,'key',m.memory_key,'version',m.current_version))
         from agent_memory m join agent_memory_version v on v.memory_id=m.id and v.version=m.current_version
         where m.owner_id=r.user_id and m.active and m.source_kind='automatic' and v.source_run_id=r.id),'[]') as memories
-     from agent_run r where r.user_id=$1 and ($2::uuid is null or r.conversation_id=$2) order by r.created_at desc limit 50`, [userId, conversationId ?? null]);
+     from agent_run r where r.user_id=$1 and r.execution_kind<>'main-agent-evaluation'
+       and ($2::uuid is null or r.conversation_id=$2) order by r.created_at desc limit 50`, [userId, conversationId ?? null]);
 }
 export async function readEvents(userId: string, runId: string, after: string) {
   return tenantQuery<{ id: string; kind: string; payload: Record<string, unknown> }>(userId,
-    "select id::text,kind,payload from agent_run_event where user_id=$1 and run_id=$2 and id>$3::bigint order by id limit 100", [userId, runId, after]);
+    `select e.id::text,e.kind,e.payload from agent_run_event e
+     join agent_run r on r.id=e.run_id and r.user_id=e.user_id
+     where e.user_id=$1 and e.run_id=$2 and r.execution_kind<>'main-agent-evaluation'
+       and e.id>$3::bigint order by e.id limit 100`, [userId, runId, after]);
 }
 export async function event(context: ExecutionContext, kind: string, payload: unknown) {
   await tenantQuery(context.userId, "insert into agent_run_event(user_id,run_id,kind,payload) values($1,$2,$3,$4)", [context.userId, context.runId, kind, JSON.stringify(payload)]);
@@ -132,7 +141,7 @@ export async function finishRun(context: ExecutionContext, status: RunStatus, re
       await client.query("insert into agent_memory_extraction_job(owner_id,run_id) values($1,$2) on conflict(owner_id,run_id) do nothing",
         [context.userId,context.runId]);
     await client.query("insert into agent_run_event(user_id,run_id,kind,payload) values($1,$2,'status',$3)", [context.userId, context.runId, JSON.stringify({ status: changed.rows[0].status, reply })]);
-    if (reply&&status!=="queued") await client.query(`insert into assistant_message(user_id,conversation_id,role,intent,content,metadata)
+    if (reply&&status!=="queued"&&changed.rows[0].execution_kind!=="main-agent-evaluation") await client.query(`insert into assistant_message(user_id,conversation_id,role,intent,content,metadata)
       values($1,$2,'assistant','general',$3,$4)`, [context.userId, changed.rows[0].conversation_id, reply, JSON.stringify({ runId: context.runId, status: changed.rows[0].status })]);
     await client.query("update assistant_conversation set updated_at=now() where user_id=$1 and id=$2", [context.userId, changed.rows[0].conversation_id]);
   });

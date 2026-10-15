@@ -2,6 +2,9 @@
 
 # 产品主 Agent 与开放式工具架构
 
+2026-10-15 MA24 G16：`main-agent-evaluation` 入队时新建 `deleted` 状态会话承载任务外键，不写入普通用户消息；完成后保存结果于专用任务/事件，但不写入普通助手消息。普通详情、列表和事件读取过滤评测类型。现有专用 G16 绑定查询仍按租户直接读取任务；后续专用执行器和审核入口需继续隔离输出。[工程收据](evidence/ma24-g16-ordinary-history-quarantine-2026-10-15.json)。迁移与产品数据库正向链路尚未验收；G17–G20 暂停。
+
+
 2026-10-15 MA24 G15/G16：独立测评任务采用 `main-agent-evaluation` 执行类型，保存清单哈希、题目 ID 和 baseline/candidate 路径；主 Agent 图及限定资料检索仍运行。普通任务完成时的记忆抽取仅处理 `main-agent`，现有 Skill 影子触发器也只采集该类型；G16 读取持久任务时反查专用类型和执行标识。临时启用同一影子计划的回滚事务正反例为普通任务 1、评测任务 0，回滚后计划 0。[工程收据](evidence/ma24-g16-evaluation-run-isolation-2026-10-15.json)。数据库迁移仅在回滚事务核验，实际运行器、付费准入及质量验收未完成；G17–G20 暂停。
 
 2026-10-15 MA24 G15：运行前绑定拒绝缺少源码闭包字段的旧预览。默认入口改读 v2 预览并对 280 个本地源码文件、两路工具/Prompt 配置及 UTC 日期做只读匹配；匹配结果明确 `readyForModelCalls=false`。独立来源/Gold、真实运行构建、资料权限与费用授权齐备之前不进入双路模型调用。[复核收据](evidence/ma24-g15-default-preview-drift-review-2026-10-15.json)。G17–G20 暂停。
