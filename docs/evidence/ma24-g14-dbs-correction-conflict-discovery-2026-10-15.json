@@ -1,0 +1,60 @@
+{
+  "schema": "ma24-g14-dbs-correction-conflict-discovery-v1",
+  "date": "2026-10-15",
+  "stage": "G14 official-source discovery, not a drafted or approved Gold case",
+  "release": {
+    "publisher": "UK Disclosure and Barring Service",
+    "page": "https://www.gov.uk/government/publications/dbs-annual-report-and-accounts-2024-to-2025",
+    "reportPdf": "https://assets.publishing.service.gov.uk/media/698371adafabc06c35d34413/ARA_2024-25_19.11.2025_Correction_Slip.pdf",
+    "reportPeriod": "2024-04-01 to 2025-03-31",
+    "firstPublished": "2025-11-20",
+    "pageLastUpdated": "2026-02-04",
+    "publicationPageStatement": "An amended annual report was uploaded with a correction slip noting all changes.",
+    "pdfPageCountFromOfficialWebIndex": 157,
+    "license": "OGL v3.0 except where otherwise stated, as indicated on the publication page and PDF physical page 4"
+  },
+  "correctionSlipTextCheckedInOfficialPdfIndex": [
+    {
+      "correction": 1,
+      "slipPhysicalPagesOneBased": [6],
+      "targetPrintedPage": 14,
+      "finding": "The slip changes Figure 1's final category from people on one or both barred lists to people on both lists, and reverses the 2024/2025 blue-purple legend mapping. The indexed original figure appears at physical page 17, but its colour rendering remains unverified locally."
+    },
+    {
+      "correction": 2,
+      "slipPhysicalPagesOneBased": [7],
+      "targetPrintedPage": 38,
+      "finding": "The slip assigns 2,657,121 Basic DBS checks to 2021-22 and 2,642,272 to 2022-23, reversing the stated earlier assignment. Both values occur in the official indexed chart on physical page 41; its visual year/value alignment remains unverified locally."
+    },
+    {
+      "correction": 5,
+      "slipPhysicalPagesOneBased": [7, 8],
+      "finding": "The slip says duplicate prior-year tables on PDF pages 116-117 should be removed and points to the current-year tables on pages 114-115. This is a possible stale-versus-current source question, not yet checked against the rendered pages."
+    }
+  ],
+  "possibleHardCase": "A dated-source conflict question could require the answer to prefer the correction slip over the uncorrected figure or year labels, cite both locations, and avoid treating the stale label as a separate current fact. The exact question and answer are not yet drafted.",
+  "boundedPreDiscoveryExposure": {
+    "paths": ["docs", "src", "scripts", "experiments"],
+    "filesSearched": 2830,
+    "terms": ["DBS annual report and accounts: 2024 to 2025", "ARA_2024-25_19.11.2025_Correction_Slip", "2,642,272", "2,657,121", "Individuals barred on both Barred Lists"],
+    "matches": 0,
+    "limit": "Text search excludes unrecorded prompts, binary files, remote copies and model pretraining; this is not an independence decision."
+  },
+  "localOriginalStatus": {
+    "completePdf": false,
+    "partialDownload": "tmp/ma24-independent-quarantine/dbs-2024-25-ara-corrected.pdf.partial",
+    "partialBytes": 8203520,
+    "expectedBytesFromFailedTransfer": 9981741,
+    "failure": "The workspace network proxy was unavailable; a direct transfer timed out and DNS resolution later failed. The partial file must not be parsed or registered as the source original."
+  },
+  "remainingBeforePoolAdmission": [
+    "Obtain complete official PDF bytes and record SHA-256, size and page count.",
+    "Render and inspect the slip and referenced original pages, including chart labels, colours and numerical alignments.",
+    "Check the complete family against historical and current question/answer exposure, and confirm the intended conflict-question type before Gold review.",
+    "Review product extraction and exact source coordinates in an isolated private clone."
+  ],
+  "addedToCurrentDraftPool": false,
+  "goldAdded": 0,
+  "modelCalls": 0,
+  "g17ToG20Advanced": false
+}
