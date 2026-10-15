@@ -11,7 +11,8 @@ const preview = (): Ma24G15Preview => ({ schema: "ma24-g15-config-preview-v1",
   sourceHashes: { "src/graph.ts": "graph" },
   sourceClosureMethod: "recursive-local-static-imports-v1", sourceClosureFileCount: 1,
   intendedLocalBgeFlagForBothArms: "flag=1",
-  currentLocalBgeFlagEnabled: false, sourceSetFrozen: false, goldFrozen: false,
+  currentLocalBgeFlagEnabled: false, runPromptDateGateImplemented: true,
+  sourceSetFrozen: false, goldFrozen: false,
   runtimeBuildVerified: false, transitiveCodeClosureVerified: false,
   providerTariffsVerified: false, paidCallAuthorizationConfirmed: false,
   readyForPaidEvaluation: false });
@@ -71,12 +72,13 @@ describe("MA24 G15 runtime binding", () => {
       .toThrow("paidCallAuthorizationReference drift");
   });
   it("rejects changed or missing admission decisions after a preview is frozen", () => {
-    for (const field of ["currentLocalBgeFlagEnabled", "sourceSetFrozen", "goldFrozen",
+    for (const field of ["currentLocalBgeFlagEnabled", "runPromptDateGateImplemented",
+      "sourceSetFrozen", "goldFrozen",
       "runtimeBuildVerified", "transitiveCodeClosureVerified", "providerTariffsVerified",
       "paidCallAuthorizationConfirmed", "readyForPaidEvaluation"] as const) {
       const frozen = preview();
       const loaded = structuredClone(frozen);
-      loaded[field] = true;
+      loaded[field] = !frozen[field];
       expect(() => assertMa24G15RuntimeBinding(frozen, loaded, "2026-10-15"))
         .toThrow(`${field} drift`);
       const omitted = structuredClone(frozen);
@@ -88,6 +90,12 @@ describe("MA24 G15 runtime binding", () => {
   it("rejects a different UTC prompt date before execution", () => {
     expect(() => assertMa24G15RuntimeBinding(preview(), preview(), "2026-10-16"))
       .toThrow(/UTC date drift/);
+  });
+  it("reports an unimplemented prompt-date gate as missing", () => {
+    const same = preview();
+    same.runPromptDateGateImplemented = false;
+    expect(assertMa24G15RuntimeBinding(same, same, "2026-10-15").missing)
+      .toContain("run prompt date gate not implemented");
   });
   it("rejects an older preview without an explicit prompt date", () => {
     const old = { ...preview(), productPromptDateUtc: undefined } as unknown as Ma24G15Preview;

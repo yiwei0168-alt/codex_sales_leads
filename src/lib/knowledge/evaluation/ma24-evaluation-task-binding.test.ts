@@ -35,6 +35,7 @@ const loadedCodeAndConfig: Ma24G15Preview = { schema: "ma24-g15-config-preview-v
   sourceHashes: { "src/graph.ts": "fixture" },
   sourceClosureMethod: "recursive-local-static-imports-v1", sourceClosureFileCount: 1,
   intendedLocalBgeFlagForBothArms: "flag=1", currentLocalBgeFlagEnabled: false,
+  runPromptDateGateImplemented: true,
   sourceSetFrozen: false, goldFrozen: false, runtimeBuildVerified: false,
   transitiveCodeClosureVerified: false, providerTariffsVerified: false,
   paidCallAuthorizationConfirmed: false, readyForPaidEvaluation: false };

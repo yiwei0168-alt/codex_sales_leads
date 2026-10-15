@@ -1,5 +1,7 @@
 # MA24 G15 双路径配置与调用边界草案（2026-10-14）
 
+2026-10-16 运行日期门槛核对：专用运行器已在认领前及执行中的模型/工具边界重复核验当前 UTC 提示词日期。G15 预览现在将 `runPromptDateGateImplemented` 记为 `true`，运行绑定器要求冻结值与当前值一致并报告缺失门槛；日期变化仍直接拒绝。4 组 35 项定向测试、类型与 lint 通过，[v21 只读预览](evidence/ma24-g15-config-preview-2026-10-16-v21.json)匹配当前源码且模型准入仍为 `false`。[核对收据](evidence/ma24-g15-run-prompt-date-gate-2026-10-16.json)。
+
 2026-10-16 更正：下方 v19“认领并绑定入口要求模型就绪”的记录已被本次修正取代。该底层入口只核对冻结配置与当前配置一致，允许在 `readyForModelCalls=false` 时认领并绑定隔离数据库合成任务；它不调用模型。专用 G16 运行器仍在认领前和每次模型/工具调用前检查 G15 模型准入。4 组 34 项定向测试、类型、lint 和隔离数据库认领验收通过，供应商调用 0 次。[更正收据](evidence/ma24-g15-g16-claim-binding-layer-correction-2026-10-16.json)和[v20 只读预览](evidence/ma24-g15-config-preview-2026-10-16-v20.json)记录当前实现；预览仍为 `readyForPaidEvaluation=false`。
 
 2026-10-16 补充：专用任务的“认领并绑定”入口现在也在数据库领取前要求冻结/当前 G15 配置的模型准入结果为真；运行器共用该拒绝逻辑。匹配但未就绪的配置在直接入口被拒。4 组 34 项定向测试、类型和 lint 通过；[阶段收据](evidence/ma24-g15-preclaim-model-admission-2026-10-16.json)及[v19 只读预览](evidence/ma24-g15-config-preview-2026-10-16-v19.json)记录当前源码身份。v19 仍为 `readyForPaidEvaluation=false`，G16 真实双路调用未开放。

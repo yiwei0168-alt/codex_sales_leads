@@ -108,7 +108,7 @@ console.log(JSON.stringify({schema:'ma24-g15-config-preview-v1',readOnly:true,si
   intendedLocalBgeFlagForBothArms:'ENABLE_MAIN_AGENT_LOCAL_BGE_SEARCH=1',
   currentLocalBgeFlagEnabled:process.env.ENABLE_MAIN_AGENT_LOCAL_BGE_SEARCH==='1',
   sourceSetFrozen:false,goldFrozen:false,runtimeBuildVerified:false,transitiveCodeClosureVerified:false,
-  requiredRunPromptDateUtc:promptDateUtc,runPromptDateGateImplemented:false,
+  requiredRunPromptDateUtc:promptDateUtc,runPromptDateGateImplemented:true,
   baselineRetrievalProfileVerified:false,
   providerTariffsVerified:false,paidCallAuthorizationConfirmed:false,
   paidCallAuthorizationReference:null,

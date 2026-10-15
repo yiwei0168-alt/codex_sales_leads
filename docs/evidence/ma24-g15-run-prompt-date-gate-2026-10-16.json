@@ -1,0 +1,20 @@
+{
+  "schema": "ma24-g15-run-prompt-date-gate-v1",
+  "date": "2026-10-16",
+  "change": "Declare the existing UTC run prompt-date gate implemented in the read-only G15 preview and bind that decision between frozen and loaded previews.",
+  "scope": "The G16 runner checks the current G15 preview before claiming and again at its model and tool boundaries; runtime binding also rejects an execution date different from the prompt date.",
+  "preview": "docs/evidence/ma24-g15-config-preview-2026-10-16-v21.json",
+  "previewSha256": "e81ca075617704c4147632496fe4504da12e529e202773de8afc38389a222496",
+  "runPromptDateGateImplemented": true,
+  "runtimeBindingMatched": true,
+  "readyForModelCalls": false,
+  "checks": {
+    "focusedVitest": "4 files, 35 tests passed, including date drift, missing and changed gate decisions",
+    "typescript": "node node_modules/typescript/bin/tsc --noEmit passed",
+    "eslint": "5 changed source/test/script files passed targeted lint",
+    "readOnlyRuntimeBinding": "v21 frozen/current preview matched; model admission remained false"
+  },
+  "providerCalls": 0,
+  "productionWrites": 0,
+  "remaining": ["G14 whole-set Gold freeze", "G15 build, BGE, tariff, caps and authorization preflight", "G16 real dual-arm quality acceptance"]
+}

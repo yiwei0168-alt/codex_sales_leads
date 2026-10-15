@@ -11,6 +11,7 @@ export type Ma24G15Preview = {
   arms: Arm[]; sourceHashes: Record<string, string>;
   sourceClosureMethod: string; sourceClosureFileCount: number;
   intendedLocalBgeFlagForBothArms: string; currentLocalBgeFlagEnabled: boolean;
+  runPromptDateGateImplemented: boolean;
   sourceSetFrozen: boolean; goldFrozen: boolean; runtimeBuildVerified: boolean;
   transitiveCodeClosureVerified: boolean; providerTariffsVerified: boolean;
   paidCallAuthorizationConfirmed: boolean; readyForPaidEvaluation: boolean;
@@ -43,7 +44,8 @@ export function assertMa24G15RuntimeBinding(frozen: Ma24G15Preview,
   for (const field of ["maximumProviderRequests", "maximumRequestBytes",
     "maximumOutputTokens", "hardSpendCapUsd", "paidCallAuthorizationReference"] as const)
     if (!Object.is(frozen[field], loaded[field])) throw new Error(`MA24 G15 ${field} drift`);
-  for (const field of ["currentLocalBgeFlagEnabled", "sourceSetFrozen", "goldFrozen",
+  for (const field of ["currentLocalBgeFlagEnabled", "runPromptDateGateImplemented",
+    "sourceSetFrozen", "goldFrozen",
     "runtimeBuildVerified", "transitiveCodeClosureVerified", "providerTariffsVerified",
     "paidCallAuthorizationConfirmed", "readyForPaidEvaluation"] as const)
     if (typeof frozen[field] !== "boolean" || typeof loaded[field] !== "boolean" ||
@@ -57,6 +59,7 @@ export function assertMa24G15RuntimeBinding(frozen: Ma24G15Preview,
     if (sha(frozen[field]) !== sha(loaded[field])) throw new Error(`MA24 G15 ${field} drift`);
   const missing = [
     ...(!loaded.currentLocalBgeFlagEnabled ? ["local BGE flag disabled"] : []),
+    ...(!loaded.runPromptDateGateImplemented ? ["run prompt date gate not implemented"] : []),
     ...(!loaded.sourceSetFrozen ? ["source set not frozen"] : []),
     ...(!loaded.goldFrozen ? ["Gold not frozen"] : []),
     ...(!loaded.runtimeBuildVerified ? ["runtime build not verified"] : []),
