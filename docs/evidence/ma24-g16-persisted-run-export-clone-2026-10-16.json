@@ -1,0 +1,21 @@
+{
+  "schema": "ma24-g16-persisted-run-export-clone-v1",
+  "date": "2026-10-16",
+  "command": "MA24_ADMISSION_USE_CLONE=1 node scripts/run-tsx.cjs scripts/verify-ma24-g16-tool-receipts-clone.ts",
+  "isolatedClone": true,
+  "checks": [
+    "valid-read-receipt",
+    "invented-rejected",
+    "omitted-rejected",
+    "started-rejected",
+    "input-hash-drift-rejected",
+    "write-effect-rejected",
+    "restored-read-receipt",
+    "export-valid-receipt",
+    "export-started-rejected",
+    "synthetic-rows-cleaned"
+  ],
+  "providerCalls": 0,
+  "realDualArmRuns": 0,
+  "limitation": "The check used a failed synthetic task in an isolated local database clone. It validates tenant-scoped database export and cleanup, not a completed answer, real source citations, paired model runs, or G16 quality."
+}

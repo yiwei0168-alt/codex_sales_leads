@@ -21,7 +21,8 @@ const cloneUrl = (value: string | undefined) => {
 };
 const adminUrl = cloneUrl(process.env.DATABASE_MIGRATION_URL);
 process.env.DATABASE_URL = cloneUrl(process.env.DATABASE_URL);
-const [{ verifyMa24PersistedRunBinding }, { ma24CaseQuerySha256 }, { digest }, { getPool }] =
+const [{ verifyMa24PersistedRunBinding, exportMa24PersistedRun },
+  { ma24CaseQuerySha256 }, { digest }, { getPool }] =
   await Promise.all([
     import("../src/lib/knowledge/evaluation/ma24-persisted-run-binding"),
     import("../src/lib/knowledge/evaluation/ma24-independent-comparison"),
@@ -77,11 +78,16 @@ try {
   const verify = (receiptIds = run.receiptIds) =>
     verifyMa24PersistedRunBinding(frozen, query, { ...run, receiptIds });
   assert.deepEqual((await verify()).modelCallIds, []);
+  const exportInput = { case: frozen, query, arm: run.arm, runId, manifestSha256,
+    citations: [] };
+  assert.deepEqual(await exportMa24PersistedRun(exportInput), { ...run,
+    failureReason: "Persisted task failed; no reason recorded" });
   await assert.rejects(verify([runId, callId, inventedId]), /persisted receipt list mismatch/);
   await assert.rejects(verify([runId]), /persisted receipt list mismatch/);
   await admin.query("update agent_tool_call set status='started' where id=$1 and user_id=$2",
     [callId, userId]);
   await assert.rejects(verify(), /persisted receipt list mismatch/);
+  await assert.rejects(exportMa24PersistedRun(exportInput), /persisted receipt list mismatch/);
   await admin.query("update agent_tool_call set status='completed' where id=$1 and user_id=$2",
     [callId, userId]);
   await admin.query("update agent_tool_call set input_hash=$3 where id=$1 and user_id=$2",
@@ -95,6 +101,7 @@ try {
   await admin.query("update agent_tool_call set effect='read' where id=$1 and user_id=$2",
     [callId, userId]);
   assert.deepEqual((await verify()).modelCallIds, []);
+  assert.deepEqual((await exportMa24PersistedRun(exportInput)).receiptIds, [runId, callId]);
   const count = (await admin.query<{ count: string }>(
     "select count(*)::text as count from agent_tool_call where run_id=$1 and effect='model'",
     [runId])).rows[0]?.count;
@@ -132,5 +139,6 @@ try {
 console.log(JSON.stringify({ schema: "ma24-g16-tool-receipts-clone-v1",
   isolatedClone: true, checks: ["valid-read-receipt", "invented-rejected",
     "omitted-rejected", "started-rejected", "input-hash-drift-rejected",
-    "write-effect-rejected", "restored-read-receipt", "synthetic-rows-cleaned"],
+    "write-effect-rejected", "restored-read-receipt", "export-valid-receipt",
+    "export-started-rejected", "synthetic-rows-cleaned"],
   providerCalls: 0, realDualArmRuns: 0 }));
