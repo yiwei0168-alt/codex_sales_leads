@@ -37,7 +37,7 @@ function modelVisibleSourceCalls(call: PersistedModelCall, evidenceCalls: Ma24Ev
     try {
       const output = JSON.parse((message as { content: string }).content) as { callId?: unknown };
       const source = typeof output?.callId === "string" ? sourceById.get(output.callId) : undefined;
-      return source ? [{ ...source, output }] : [];
+      return source && stableJson(output) === stableJson(source.output) ? [source] : [];
     } catch { return []; }
   });
 }

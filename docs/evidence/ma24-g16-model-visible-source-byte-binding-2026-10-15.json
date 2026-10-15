@@ -1,0 +1,19 @@
+{
+  "schema": "ma24-g16-model-visible-source-binding-v1",
+  "date": "2026-10-15",
+  "scope": "G16 persisted-run scoring preflight; G17-G20 paused",
+  "change": "A cited source read now counts as model-visible only when the parsed tool message equals the persisted source-call output as stable JSON. A matching callId and excerpt alone no longer suffice.",
+  "negativeControl": "A model input tool message retained the same persisted callId and cited excerpt but added an unrecorded claim; persisted-run binding rejected its citation.",
+  "checks": {
+    "focusedVitest": "7 passed",
+    "typecheck": "passed",
+    "eslintChangedFiles": "passed"
+  },
+  "modelCalls": 0,
+  "approvedGold": 0,
+  "realDualArmRuns": 0,
+  "limitations": [
+    "This validates saved database and model-input records; it does not prove that provider-side execution received those bytes without an admitted real run and provider evidence.",
+    "The dedicated evaluation runner, source independence, Gold freeze, paid admission and real dual-arm review remain open."
+  ]
+}

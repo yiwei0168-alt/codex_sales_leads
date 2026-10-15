@@ -168,6 +168,11 @@ describe("MA24 persisted run binding", () => {
         data: { ...sourceCall.output.data, evidence: { ...sourceCall.output.data.evidence,
           content: "A370: Other" } } })) })).toThrow("citation absent from final model input");
     expect(() => verify({ run: citedRun, evidenceCalls: [sourceCall],
+      modelCalls: withSourceMessage(JSON.stringify({ ...sourceCall.output,
+        data: { ...sourceCall.output.data, evidence: { ...sourceCall.output.data.evidence,
+          unrecordedClaim: "Same cited excerpt, different model-visible source" } } })) }))
+      .toThrow("citation absent from final model input");
+    expect(() => verify({ run: citedRun, evidenceCalls: [sourceCall],
       modelCalls: withSourceMessage(JSON.stringify({ ...sourceCall.output, callId: runId })) }))
       .toThrow("citation absent from final model input");
   });

@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+2026-10-15 G16 持久测评收据要求模型实际输入中的来源工具消息与保存的来源读数一致；相同 `callId` 和引用摘录不足以通过篡改消息反例。[工程收据](evidence/ma24-g16-model-visible-source-byte-binding-2026-10-15.json)。定向测试、类型及 lint 通过；尚无 Gold 或真实双路质量验收，G17–G20 暂停。
+
 2026-10-15 G14 GOV.UK 家族三题答案确认后，当前原件/草稿/题池哈希与题面复核一致；三题共享两原件组成一个暴露单元。定向文本屏查未见产品源码硬编码，验收脚本已使用来源事实，故仍不满足独立 Gold 冻结证据。[家族当前复核](evidence/ma24-g14-govuk-family-current-freeze-readiness-2026-10-15.json)。正式 Gold 0、真实双路 0；G17–G20 暂停。
 
 
