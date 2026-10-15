@@ -1,0 +1,47 @@
+{
+  "schema": "ma24-g14-current-27-pool-overlap-review-v1",
+  "date": "2026-10-15",
+  "inputPool": "tmp/ma24-independent-quarantine/g14-current-draft-pool-v6-2026-10-15.json",
+  "inputSha256": "2be471883c10e9c7672efd4fbd681fe47560205a5fb03341250827ba64399ddb",
+  "command": "node scripts/run-tsx.cjs scripts/audit-ma24-g14-current-pool-neighbors-local.ts tmp/ma24-independent-quarantine/g14-current-draft-pool-v6-2026-10-15.json tmp/ma24-independent-quarantine/g14-current-pool-neighbors-v6-replay-2026-10-15.json",
+  "neighborOutput": "tmp/ma24-independent-quarantine/g14-current-pool-neighbors-v6-replay-2026-10-15.json",
+  "neighborOutputSha256": "1a936e9f3cb88533fe6c2199f9421a77c2efe73b21c825ea3362c371a3e827df",
+  "scope": {
+    "drafts": 27,
+    "publicationDrafts": 24,
+    "syntheticSecurityDrafts": 3,
+    "model": "local BAAI/bge-m3",
+    "revision": "5617a9f61b028005a4858fdac845db406aefb181",
+    "cloudCalls": 0
+  },
+  "govukFamily": {
+    "caseIds": [
+      "bpi-2018-cash-accruals",
+      "govuk-bduk-taking-part-premises-vs-regional-ability",
+      "taking-part-2019-20-rural-age75-intersection-unavailable"
+    ],
+    "crossDocumentTopNeighbors": [
+      { "caseId": "taking-part-2019-20-rural-age75-intersection-unavailable", "cosine": 0.675727, "sharedOriginal": true },
+      { "caseId": "bpi-2018-cash-accruals", "cosine": 0.614243, "sharedOriginal": true },
+      { "caseId": "fcc-706-2026-school-entity-vs-student-denominator", "cosine": 0.57117, "sharedOriginal": false },
+      { "caseId": "fcc-2026-fixed-service-option-scope", "cosine": 0.542822, "sharedOriginal": false }
+    ],
+    "manualQuestionScopeReview": "All 27 current question texts were inspected. The three GOV.UK cases share two original workbooks and are one exposure unit. The cross-document case asks for BDUK cumulative premises and Taking Part regional internet ability plus causal limits; the other GOV.UK cases ask cash/accruals timing and an unavailable rural-age intersection. FCC and ONS cases also test denominator or comparison reasoning, but use different original statistics and do not disclose these GOV.UK answer values. This is a bounded current-pool question review, not final independence approval.",
+    "sameSpecificQuestionOutsideSharedExposureUnitFound": false,
+    "familyMustBeFrozenTogether": true
+  },
+  "otherHighSimilarityNotes": [
+    "The two synthetic permission cases have identical wording and deliberately different account-specific outcomes; they require separately frozen account and ACL state.",
+    "NIST cross-document and single-source cases, FCC report and press release, and the two IEEE overview cases share source families; their high similarity cannot be counted as independent family multiplicity.",
+    "Cross-family semantic proximity among FCC, IEEE, NIST, and GOV.UK questions requires source/fact review; cosine values alone do not establish leakage or independence."
+  ],
+  "independenceApproved": false,
+  "goldApproved": 0,
+  "realDualArmRuns": 0,
+  "remaining": [
+    "Full historical prompt, retrieval, and derivative-source exposure review beyond bounded local screens.",
+    "Family-level final eligibility and per-case Gold disposition with exact source snapshots.",
+    "Frozen evaluation accounts, ACLs, runtime configuration, and actual dual-arm answers and citations."
+  ],
+  "g17ToG20Advanced": false
+}
