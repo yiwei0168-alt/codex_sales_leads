@@ -1,0 +1,43 @@
+{
+  "schema": "ma24-g14-current-23-draft-coverage-v1",
+  "date": "2026-10-15",
+  "command": "node scripts/run-tsx.cjs scripts/audit-ma24-g14-current-draft-pool-v4.ts tmp/ma24-independent-quarantine/g14-current-draft-pool-v3-2026-10-15.json tmp/ma24-independent-quarantine/g14-current-draft-pool-v4-2026-10-15.json",
+  "priorReportSha256": "4703226adc9b8531ccae6fa840fb35c300cc1a6cd5f3259dad9b06a5d1a24a8b",
+  "outputSha256": "0bb3bba346d26759d773310874e359bcf8ea0f80898148455f3c6ebfe2323fa2",
+  "reproduction": "The prior v3 report was independently regenerated from its source script to the same SHA-256; v4 run against both copies produced the same SHA-256.",
+  "addedDraftId": "ntia-18ghz-g117-iss-footnote-and-manual-recommendation",
+  "addedSourceReceipt": "docs/evidence/ma24-g14-ntia-18ghz-pdf-candidate-2026-10-15.json",
+  "sourceUseReceipt": "docs/evidence/ma24-g14-ntia-18ghz-source-use-and-exposure-2026-10-15.json",
+  "excludedAlternative": "govuk-bduk-taking-part-infrastructure-vs-ability remains superseded by the revised cross-document draft and is not counted twice.",
+  "counts": {
+    "drafts": 23,
+    "provisionalPublicationFamilies": 13,
+    "primaryFormats": { "pdf": 2, "long-pdf": 7, "pptx": 8, "xlsx": 6 },
+    "wholeQuestionHardCases": {
+      "cross-document": 2,
+      "new-or-revised": 0,
+      "conflict": 0,
+      "no-answer": 1,
+      "permission": 0,
+      "injection": 0
+    }
+  },
+  "gapsAgainstProposedTargetsNotYetFrozen": {
+    "cross-document": 6,
+    "new-or-revised": 4,
+    "conflict": 3,
+    "no-answer": 1,
+    "permission": 2,
+    "injection": 1
+  },
+  "interpretation": "This is a deterministic draft inventory. It does not approve any source family, question, Gold answer or final target allocation. The NTIA source-use screen permits only bounded private attributed paraphrase and does not complete full-set contamination review.",
+  "checks": {
+    "typescriptNoEmit": "passed",
+    "eslintNewScript": "passed",
+    "scriptRun": "passed twice with identical output hash"
+  },
+  "goldCreated": 0,
+  "modelAnswerCalls": 0,
+  "productionWrites": 0,
+  "g17ToG20Advanced": false
+}
