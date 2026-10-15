@@ -1,0 +1,33 @@
+{
+  "schema": "ma24-g14-ieee-80211-2025-private-gold-drafts-v1",
+  "date": "2026-10-16",
+  "privateDraftPath": "tmp/ma24-independent-quarantine/ieee-80211-2025-two-gold-drafts-v1.json",
+  "privateDraftSha256": "e2e622e241f262335fbede5d45ecbba58a241dd7ee7baabc00233f26c142d132",
+  "sourceSha256": "3ae95a7ecdadf8cca4127e239bfbd71c25aa08e354fd0ca94d078a3e0eb11e3d",
+  "productExtractionSha256": "970674e5bb24e1ab73e2431c62d84ba7942aaf2860b9ffb8f9ad916e355f66ee",
+  "caseIds": [
+    "ieee-80211-2025-amp-bands-modes",
+    "ieee-80211-2025-elc-optical-bands"
+  ],
+  "checks": {
+    "originalSlides20And22VisuallyRechecked": true,
+    "questionsEqualCurrentV8PoolText": true,
+    "twoExcerptsMatchExactSlideAndProductTextBlock": true,
+    "all39VisualDecisionsPreviouslySavedInIsolatedClone": true,
+    "privateRegistrationAndTargetReadEvidencePreviouslyPassed": true,
+    "otherAccountDeniedInPriorClone": true,
+    "providerCalls": 0,
+    "productionKnowledgeWrites": 0
+  },
+  "sourceExposureUnit": "IEEE 802.11 2025 overview",
+  "additionalIndependentUnitsIfBothApproved": 1,
+  "reviewPacket": "docs/MA24_G14_IEEE_80211_2025_REVIEW_PACKET_2026-10-16.md",
+  "acceptanceBoundary": {
+    "userQuestionAndAnswerReview": "pending",
+    "independentGoldApprovedForTheseCases": false,
+    "fullSetFrozen": false,
+    "g15ReadyForModelCalls": false,
+    "g16RealDualArmRuns": 0,
+    "g17ToG20Advanced": false
+  }
+}

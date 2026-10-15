@@ -529,3 +529,5 @@ Taking Part 工作簿的整题无答案候选已有第 2 条隔离 Gold 草案�
 2026-10-16 NIST TN 2363 第 3.3/5.2 节的[跨章节审核包](MA24_G14_NIST_TN2363_PRIMARY_REVIEW_PACKET_2026-10-16.md)和[私有 Gold 草案](evidence/ma24-g14-nist-primary-private-gold-draft-2026-10-16.json)已核对原页与三条产品证据坐标。待用户答复题型审核许可后，再处理逐题答案和限定；该题不能提前计入已批准 Gold。随后按 v8 单独审核 NIST 报告来源单元的另外两题、派生来源和整套独立性。G15/G16 实测未解锁，G17–G20 暂停。
 
 2026-10-16 另外两道 TN 2363 题的[图表/流程审核包](MA24_G14_NIST_TN2363_REMAINING_REVIEW_PACKET_2026-10-16.md)与[私有草案](evidence/ma24-g14-nist-remaining-two-private-gold-drafts-2026-10-16.json)也已核对原图、表列算术及产品证据块。下一步在同一 NIST 报告来源单元内完成逐题内容判定，审计历史与派生暴露，才能决定其 Gold 资格；不能把三题计作三个独立来源。G15/G16 实测未解锁，G17–G20 暂停。
+
+2026-10-16 IEEE 802.11 2025 概览第 20/22 页的[两题审核包](MA24_G14_IEEE_80211_2025_REVIEW_PACKET_2026-10-16.md)与[私有草案](evidence/ma24-g14-ieee-80211-2025-private-gold-drafts-2026-10-16.json)已按原幻灯片、产品抽取块和此前完整视觉审核复核；官方页面仍将材料标为 2025 年 9 月 current projects 演示。等待进入逐题内容审核的回复，再核同一演示来源单元的资格、历史暴露和整套污染；用户可见模型引用与 G16 双路未验。G17–G20 暂停。
