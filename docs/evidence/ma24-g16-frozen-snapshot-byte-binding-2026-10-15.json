@@ -1,0 +1,20 @@
+{
+  "schema": "ma24-g16-frozen-snapshot-byte-binding-v1",
+  "date": "2026-10-15",
+  "change": "The read-only comparison scoring CLI now requires the frozen source-set, Gold, and code/config JSON snapshot files and verifies their raw SHA-256 bytes against the manifest before scoring. It also emits the observed hashes.",
+  "files": {
+    "scorerCli": "scripts/score-ma24-independent-comparison.ts",
+    "scorerLibrary": "src/lib/knowledge/evaluation/ma24-independent-comparison.ts",
+    "test": "src/lib/knowledge/evaluation/ma24-independent-comparison.test.ts"
+  },
+  "checks": {
+    "targetedVitest": "10 passed",
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "gitDiffCheck": "passed"
+  },
+  "scope": "Scorer admission only. No frozen source set or Gold exists yet; no model run, answer judgment, production load or quality acceptance was performed.",
+  "goldCreated": 0,
+  "modelCalls": 0,
+  "productionWrites": 0
+}

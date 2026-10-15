@@ -1,5 +1,6 @@
+import { createHash } from "node:crypto";
 import { describe, expect, it } from "vitest";
-import { ma24ManifestSha256, ma24RunSha256, scoreMa24IndependentComparison,
+import { assertMa24FrozenSnapshotBytes, ma24ManifestSha256, ma24RunSha256, scoreMa24IndependentComparison,
   type Ma24FrozenManifest, type Ma24Run, type Ma24Verdict } from "./ma24-independent-comparison";
 
 const manifest: Ma24FrozenManifest = {
@@ -31,6 +32,18 @@ const verdicts: Ma24Verdict[] = runs.map(run => ({
 }));
 
 describe("MA24 independent comparison", () => {
+  it("rejects snapshot bytes that differ from the frozen source, Gold or code/config hashes", () => {
+    const bytes = { sourceSet: Buffer.from("source"), gold: Buffer.from("gold"),
+      codeAndConfig: Buffer.from("config") };
+    const hash = (value: Uint8Array) => createHash("sha256").update(value).digest("hex");
+    const bound = { ...manifest, sourceSetSha256: hash(bytes.sourceSet),
+      goldSnapshotSha256: hash(bytes.gold), codeAndConfigSha256: hash(bytes.codeAndConfig) };
+    expect(() => assertMa24FrozenSnapshotBytes(bound, bytes)).not.toThrow();
+    for (const field of ["sourceSet", "gold", "codeAndConfig"] as const) {
+      const changed = { ...bytes, [field]: Buffer.from("changed") };
+      expect(() => assertMa24FrozenSnapshotBytes(bound, changed)).toThrow(/snapshot drift/);
+    }
+  });
   it("scores arbitrary frozen case counts and all required improvement groups", () => {
     const result = scoreMa24IndependentComparison({ manifest, runs, verdicts });
     expect(result.complete).toBe(true);

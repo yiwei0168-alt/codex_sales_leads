@@ -36,6 +36,20 @@ const key = (caseId: string, arm: Ma24Arm) => `${caseId}:${arm}`;
 export const ma24ManifestSha256 = (manifest: Ma24FrozenManifest) => sha(manifest);
 export const ma24RunSha256 = (run: Ma24Run) => sha(run);
 
+/** The scoring CLI must bind each claimed snapshot hash to the bytes it actually reads. */
+export function assertMa24FrozenSnapshotBytes(manifest: Ma24FrozenManifest, snapshots: {
+  sourceSet: Uint8Array; gold: Uint8Array; codeAndConfig: Uint8Array;
+}) {
+  for (const [name, expected, bytes] of [
+    ["source set", manifest.sourceSetSha256, snapshots.sourceSet],
+    ["Gold", manifest.goldSnapshotSha256, snapshots.gold],
+    ["code and config", manifest.codeAndConfigSha256, snapshots.codeAndConfig],
+  ] as const) {
+    const actual = createHash("sha256").update(bytes).digest("hex");
+    if (actual !== expected) throw new Error(`MA24 frozen ${name} snapshot drift`);
+  }
+}
+
 function validateManifest(manifest: Ma24FrozenManifest) {
   if (manifest.schema !== "ma24-g16-frozen-comparison-v1" || !manifest.cases.length ||
     ![manifest.sourceSetSha256, manifest.goldSnapshotSha256, manifest.codeAndConfigSha256].every(hex64))
