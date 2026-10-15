@@ -27,7 +27,7 @@ export type Ma24SourceSetSnapshot = {
   cases: Array<{ caseId: string; query: string }>;
 };
 export type Ma24Run = {
-  caseId: string; arm: Ma24Arm; caseSha256: string; manifestSha256: string;
+  caseId: string; arm: Ma24Arm; runId: string; caseSha256: string; manifestSha256: string;
   userId: string; knowledgeScope: Ma24KnowledgeScope[];
   status: "completed" | "failed" | "unknown"; answer: string;
   citations: GoldSourceCoordinate[]; receiptIds: string[]; modelId: string;
@@ -151,12 +151,15 @@ export function scoreMa24IndependentComparison(input: {
   const cases = new Map(manifest.cases.map(item => [item.caseId, item]));
   const goldCases = new Map(gold.cases.map(item => [item.caseId, item]));
   const runMap = new Map<string, Ma24Run>();
+  const runIds = new Set<string>();
   const receiptOwner = new Map<string, string>();
   let answerModelId: string | undefined;
   for (const run of runs) {
     const item = cases.get(run.caseId);
     const id = key(run.caseId, run.arm);
-    if (!item || !arms.includes(run.arm) || runMap.has(id)) throw new Error(`Unknown or duplicate MA24 run ${id}`);
+    if (!item || !arms.includes(run.arm) || runMap.has(id) || !uuid(run.runId) || runIds.has(run.runId))
+      throw new Error(`Unknown or duplicate MA24 run ${id}`);
+    runIds.add(run.runId);
     if (run.caseSha256 !== item.caseSha256 || run.manifestSha256 !== manifestHash)
       throw new Error(`MA24 frozen input drift ${id}`);
     if (run.userId !== item.userId || !Array.isArray(run.knowledgeScope) ||

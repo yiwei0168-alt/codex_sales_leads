@@ -21,8 +21,9 @@ const manifest: Ma24FrozenManifest = {
       userId: "22222222-2222-4222-8222-222222222222", knowledgeScope: ["industry"] },
   ],
 };
-const runs: Ma24Run[] = manifest.cases.flatMap(item => (["baseline", "candidate"] as const).map(arm => ({
-  caseId: item.caseId, arm, caseSha256: item.caseSha256, manifestSha256: ma24ManifestSha256(manifest),
+const runs: Ma24Run[] = manifest.cases.flatMap((item, index) => (["baseline", "candidate"] as const).map((arm, armIndex) => ({
+  caseId: item.caseId, arm, runId: `00000000-0000-4000-8000-${String(index * 2 + armIndex + 1).padStart(12, "0")}`,
+  caseSha256: item.caseSha256, manifestSha256: ma24ManifestSha256(manifest),
   userId: item.userId, knowledgeScope: item.knowledgeScope,
   status: "completed" as const, answer: `Recorded ${item.caseId} ${arm} answer`,
   citations: item.expectedOutcome === "route" ?
@@ -76,6 +77,10 @@ describe("MA24 independent comparison", () => {
     expect(() => assertMa24SourceSetMatchesManifest(distinctAccounts, sameText)).not.toThrow();
   });
   it("requires one answer model and distinct run receipts across both arms", () => {
+    const duplicateRunId = runs.map(run => run.caseId === "cross" && run.arm === "candidate"
+      ? { ...run, runId: runs[0].runId } : run);
+    expect(() => score({ manifest, runs: duplicateRunId, verdicts }))
+      .toThrow("Unknown or duplicate MA24 run cross:candidate");
     const otherModel = runs.map(run => run.caseId === "cross" && run.arm === "candidate"
       ? { ...run, modelId: "different-model" } : run);
     expect(() => score({ manifest, runs: otherModel, verdicts }))
