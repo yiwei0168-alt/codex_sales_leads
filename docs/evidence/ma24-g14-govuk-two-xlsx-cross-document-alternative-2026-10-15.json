@@ -1,0 +1,56 @@
+{
+  "schema": "ma24-g14-cross-document-alternative-v1",
+  "date": "2026-10-15",
+  "status": "alternative_candidate_only",
+  "purpose": "One question that requires factual citations from two distinct official XLSX originals and rejects an unsupported causal interpretation",
+  "sources": [
+    {
+      "family": "BDUK Broadband Performance Indicator March 2018",
+      "publisherPage": "https://www.gov.uk/government/statistics/broadband-performance-indicator-march-2018",
+      "originalSha256": "7d178716b667ebe66537154b0bb96f87348ccb782368b2f43920b45db9f7f5c1",
+      "localOriginal": "tmp/ma24-independent-quarantine/bpi-march-2018.xlsx",
+      "coordinates": ["Sheet1!A3:D3", "Sheet1!A26:D26", "Sheet1!A28", "Sheet1!A30"],
+      "directObservation": "The cumulative March 2018 row gives 4,852,808 premises with superfast service made available and 7,934 premises per GBP million of programme expenditure. Notes define the covered premises and DCMS funding scope."
+    },
+    {
+      "family": "Taking Part 2019/20 Internet",
+      "publisherPage": "https://www.gov.uk/government/statistics/taking-part-201920-internet",
+      "originalSha256": "90eb0ed392efc2db8ab6681bcf4b9634c41f891d3df7a95bba3bf6f9457ff614",
+      "localOriginal": "tmp/ma24-independent-quarantine/taking-part-internet-2019-20.xlsx",
+      "coordinates": ["'Table 2'!B2", "'Table 2'!B7", "'Table 2'!B32:C33"],
+      "directObservation": "Table 2 labels a 2019/20 England adult self-rating of internet ability at 7 or higher; the Rural row gives 75.6%."
+    }
+  ],
+  "originalSha256": "7d178716b667ebe66537154b0bb96f87348ccb782368b2f43920b45db9f7f5c1",
+  "sourceSha256s": [
+    "7d178716b667ebe66537154b0bb96f87348ccb782368b2f43920b45db9f7f5c1",
+    "90eb0ed392efc2db8ab6681bcf4b9634c41f891d3df7a95bba3bf6f9457ff614"
+  ],
+  "draft": {
+    "id": "govuk-bduk-taking-part-infrastructure-vs-ability",
+    "question": "Using the UK government's March 2018 Broadband Performance Indicator workbook and its Taking Part 2019/20 Internet workbook, report the cumulative number of premises made superfast service available and the cash-basis premises per GBP million at end-March 2018, then report the 2019/20 percentage of rural England adults who rated their internet ability at 7 or higher. Do these figures establish that the BDUK rollout caused that rural ability percentage? Cite cells from both workbooks and explain the limits of the comparison.",
+    "expectedOutcome": "route",
+    "answerRubric": "BDUK Sheet1!B26 is 4,852,808 premises and Sheet1!D26 is 7,934 premises per GBP million; Taking Part Table 2!C33 is 75.6% for rural England adults self-rating internet ability 7+. The first workbook reports infrastructure availability and a programme expenditure ratio cumulative through March 2018; the second reports a later, self-rated ability measure for surveyed adults in England. Their units, populations, periods and designs differ. Neither workbook links BDUK-covered premises to the rural survey respondents or estimates a causal effect; do not infer one.",
+    "requiredSourceFamilies": 2,
+    "requiredDistinctOriginals": 2,
+    "tagsProposed": ["cross-document", "official-fact"],
+    "exactCitationRequired": true
+  },
+  "relationshipToExistingDrafts": "Reuses both original source families and overlaps the BDUK single-source draft's 7,934 fact and the Taking Part no-answer draft's 75.6% marginal. Treat as an alternative requiring whole-family selection; do not count three independent Gold cases or an additional source family.",
+  "historicalQuestionNeighborScreen": {
+    "command": "node scripts/run-tsx.cjs scripts/screen-ma24-g14-question-overlap-local.ts docs/evidence/ma24-g14-govuk-two-xlsx-cross-document-alternative-2026-10-15.json tmp/ma24-independent-quarantine/govuk-two-xlsx-cross-document-neighbor-screen.json",
+    "outputSha256": "310e880c21426d2b957a20c0227ab868ecb0cee27855b401ae303a96b8ec48cb",
+    "historicalRows": 350,
+    "uniqueHistoricalQuestions": 300,
+    "localBgeRevision": "5617a9f61b028005a4858fdac845db406aefb181",
+    "topScore": 0.428691,
+    "manualTopTen": "All ten nearest historical questions ask deployment suitability of particular router or access-point products, not either government workbook metric or a causal link between them.",
+    "semanticIndependenceProven": false,
+    "cloudCalls": 0
+  },
+  "sourceUse": "Both sources have preliminary short attributed factual-use support in their separate receipts; final workbook exceptions and product attribution remain open.",
+  "fullDevelopmentExposureAuditComplete": false,
+  "twoDocumentProductReadAndCitationReviewed": false,
+  "goldFrozen": false,
+  "modelAnswerCalls": 0
+}

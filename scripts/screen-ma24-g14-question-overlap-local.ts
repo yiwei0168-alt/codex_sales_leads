@@ -7,17 +7,19 @@ import {embedTextsWithBge} from '../src/lib/rag/bge-client';
 
 const source=path.resolve(process.argv[2]??'');
 const evidenceRoot=path.resolve('docs/evidence');
-if(!source.startsWith(evidenceRoot+path.sep)||!source.endsWith('.json'))throw new Error('A committed G14 evidence JSON path is required');
+if(!source.startsWith(evidenceRoot+path.sep)||!source.endsWith('.json'))throw new Error('A G14 evidence JSON path is required');
 const raw=await readFile(source,'utf8');
-const candidate=JSON.parse(raw) as {sha256?:string;originalSha256?:string;source?:{sha256?:string};
+const candidate=JSON.parse(raw) as {sha256?:string;originalSha256?:string;sourceSha256s?:string[];source?:{sha256?:string};
  draftQuestions?:Array<{id:string;question:string}>;draftQuestion?:{id:string;question:string}|string;
  draft?:{id:string;question:string}};
 const sourceSha256=candidate.sha256??candidate.source?.sha256??candidate.originalSha256;
+const sourceSha256s=candidate.sourceSha256s??(sourceSha256?[sourceSha256]:[]);
 const draft=candidate.draft??(typeof candidate.draftQuestion==='string'
  ? {id:`source-${sourceSha256?.slice(0,12)}`,question:candidate.draftQuestion}
  : candidate.draftQuestion);
 const drafts=candidate.draftQuestions??(draft?[draft]:[]);
-if(!/^[a-f0-9]{64}$/.test(sourceSha256??'')||!Array.isArray(drafts)||!drafts.length
+if(!sourceSha256s.length||sourceSha256s.some(value=>!/^[a-f0-9]{64}$/.test(value))
+  ||(sourceSha256&&sourceSha256s[0]!==sourceSha256)||!Array.isArray(drafts)||!drafts.length
   ||drafts.some(row=>!row.id||!row.question))throw new Error('Candidate evidence lacks source hash or questions');
 const corpus=buildKnowledgeEvaluationCorpus();
 const blindPath=path.resolve('tmp/ma24-holdout-evaluation/blind-questions.json');
@@ -43,7 +45,7 @@ const similarity=questions.map((question,index)=>{
  }).sort((a,b)=>b.score-a.score).slice(0,10);
  return {id:question.id,query:question.query,neighbors};
 });
-const report={schema:'ma24-g14-question-neighbor-screen-v1',sourceSha256,
+const report={schema:'ma24-g14-question-neighbor-screen-v1',sourceSha256,sourceSha256s,
  evidenceSha256:hash(raw),oldCorpusVersion:corpus.version,oldCorpusSha256:knowledgeEvaluationCorpusHash(corpus),
  historicalBlindSha256:hash(blindRaw),oldRows:old.length,uniqueOldQueries:unique.length,
  model:'BAAI/bge-m3',revision:'5617a9f61b028005a4858fdac845db406aefb181',dimensions:1024,
