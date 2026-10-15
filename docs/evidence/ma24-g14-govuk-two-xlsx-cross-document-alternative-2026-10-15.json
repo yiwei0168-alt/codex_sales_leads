@@ -51,6 +51,24 @@
   "sourceUse": "Both sources have preliminary short attributed factual-use support in their separate receipts; final workbook exceptions and product attribution remain open.",
   "fullDevelopmentExposureAuditComplete": false,
   "twoDocumentProductReadAndCitationReviewed": false,
+  "isolatedTwoDocumentProductRead": {
+    "command": "node scripts/run-tsx.cjs scripts/verify-ma24-g14-two-xlsx-cross-document-clone.ts",
+    "verifierSha256": "262f635a7b160915bc601804194ffc863edcd3379dccb7926f0f37b201127394",
+    "bothOriginalHashesMatched": true,
+    "actualUploadWorkerJobs": 2,
+    "registeredDocuments": 2,
+    "takingPartDecorationReviewSaved": true,
+    "sameAccountFoundBoth": true,
+    "sameAccountReadBoth": true,
+    "bpiEvidenceRange": "A1:E33",
+    "takingPartEvidenceRange": "A1:M47",
+    "crossAccountSearchAndReadDenied": true,
+    "v3PointersUnchanged": true,
+    "syntheticUsersJobsReviewsAndDocumentsCleaned": true,
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "scopeLimit": "Isolated clone engineering verification of two-document search and read only; no model answer, user-visible citations, Gold, or production upload."
+  },
   "goldFrozen": false,
   "modelAnswerCalls": 0
 }
