@@ -1,4 +1,5 @@
 # MA24 执行状态台账（2026-10-13）
+2026-10-16 G01 已推送源码 `f54e0b07` 的固定 Linux 镜像通过一次性新库、HTTPS Chrome、10 个合成账号隔离和同集群备份恢复联合复验；本机镜像摘要与清理结果见[收据](evidence/ma24-g01-pinned-pilot-image-full-local-check-2026-10-16.json)。目标云部署和真实团队试用未完成，G01 未完成。
 2026-10-16 G01 全新合成试用库的归档、SHA-256 清单、同集群第二库恢复和受限账号可见公司比对通过；临时资源清理。[收据](evidence/ma24-g01-pilot-backup-restore-command-2026-10-16.json)。目标云主机备份、异地恢复和真实团队未验，G01 未完成。
 2026-10-16 G01 新空库角色初始化命令在一次性 PostgreSQL 集群通过受限角色创建、重复运行拒绝、迁移 135 和合成恢复；临时资源清理。[收据](evidence/ma24-g01-pilot-role-bootstrap-new-cluster-2026-10-16.json)。目标云库、真实凭据及团队试用尚未执行，G01 未完成。
 2026-10-16 G01 Linux 镜像与全新 TLS 库的 10 个合成账号短时并发登录、写入和隔离读取通过；一次性资源清理。[收据](evidence/ma24-g01-ten-synthetic-users-current-image-2026-10-16.json)。目标主机的持续容量、可信域名、真实成员和实际发布仍待验，G01 未完成。

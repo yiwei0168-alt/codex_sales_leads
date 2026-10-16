@@ -1,0 +1,24 @@
+{
+  "schema": "ma24-g01-pinned-pilot-image-full-local-check-v1",
+  "date": "2026-10-16",
+  "sourceCommit": "f54e0b07ccf39c3512f07aac0269af598e915d24",
+  "image": "ma24-pilot-web:f54e0b07",
+  "localImageDigest": "sha256:7d92278fcc76cd3f2da90abbd87454281d17234b33069f6a3a85c3e6bee7855e",
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --web-image=ma24-pilot-web:f54e0b07 --browser --ten-user --backup",
+  "checks": {
+    "committedSourceLinuxBuild": "passed",
+    "productionBuildAndTypeScript": "passed",
+    "containerRunsAs": "node",
+    "freshPostgresPgvectorCluster": "passed",
+    "pilotRolesAndRepeatBootstrapRefusal": "passed",
+    "freshMigrationThrough": 135,
+    "databaseTlsVerifyFull": "passed",
+    "syntheticAccountHttpCompanyWorkflow": "passed",
+    "localSelfSignedHttpsChromeWorkflow": "passed",
+    "tenConcurrentSyntheticAccountsAndIsolation": "passed",
+    "pilotDatabaseBackupAndSameClusterRestore": "passed",
+    "productionDataCopied": false,
+    "disposableContainersAndNetworksRemaining": 0
+  },
+  "limits": "Local loopback verification with synthetic data only. The image is stored locally and has not been deployed to a target cloud host or registry. A trusted public domain, actual team access, sustained target capacity, off-host backup restore, upload-volume backup, live rollback, and later real business data migration remain unverified."
+}
