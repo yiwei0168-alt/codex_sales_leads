@@ -1,0 +1,45 @@
+{
+  "schema": "ma24-g14-fcc-mba-full-review-clone-receipt-v1",
+  "date": "2026-10-16",
+  "scope": "Isolated local database replay of the private FCC Thirteenth Measuring Broadband America PDF review; no production write",
+  "sourceSha256": "cb74399d38def5adafb04390728bd3aae6aea0ad28cdac064c5f73dd1b661c4c",
+  "privateDecisionManifest": {
+    "path": "tmp/ma24-independent-quarantine/fcc-mba-thirteenth-page-decisions-v1.json",
+    "sha256": "21cb50a5efc9c2745849cd17c68aee56021e263317d49639be0d5c2e4b1242ee",
+    "sourcePhysicalPages": 65,
+    "visualReviewRecords": 62,
+    "evidence": 46,
+    "decoration": 16,
+    "unresolved": 0
+  },
+  "replay": {
+    "script": "scripts/verify-fcc-mba-full-review-clone.ts",
+    "command": "node scripts/run-tsx.cjs scripts/verify-fcc-mba-full-review-clone.ts",
+    "result": "exit 0",
+    "extractorVersion": "layout-v2.0.10",
+    "liveExtractionArtifactSha256": "5ed3770b5525cd5ec54e9553243e7c716f5f3ad55cfe4164359e955f4bf545df",
+    "liveBlocksEqualOfflineBlocks": true,
+    "sourceBoundImagesRebound": 62,
+    "decisionsSavedAndReadBack": 62,
+    "decisionCounts": { "evidence": 46, "decoration": 16 },
+    "completionReceiptReadyForRegistration": true,
+    "privateTreeStatus": "searchable",
+    "targetBlocksReadBack": 6,
+    "targetPhysicalPages": [8, 18, 19, 20],
+    "searchFound": true,
+    "otherAccountDenied": true,
+    "syntheticUsersJobsReviewsDocumentsRemaining": 0,
+    "modelCalls": 0,
+    "externalCalls": 0
+  },
+  "limits": [
+    "The saved decisions and searchable tree existed only in the isolated local clone and were cleaned up after the replay.",
+    "The check verifies source-bound storage, target excerpt retrieval, and access control; it is not a model answer or human Gold verdict.",
+    "The page-19 prose and page-20 Chart 7 caption disagree on the across-tier aggregation term. The candidate answer does not select either formula.",
+    "Family exposure, full-set independence, Gold freeze, paid admission, and G16 dual-arm quality remain open."
+  ],
+  "independentGoldApproved": 0,
+  "g15PaidAdmission": false,
+  "g16RealDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}
