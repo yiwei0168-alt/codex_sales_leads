@@ -1100,6 +1100,8 @@ MODESEL-15：53 项本地测试通过。旧入口仅返回停用提示，配置�
 
 2026-10-16 G05 [多格式失败隔离收据](evidence/ma24-g05-cross-format-worker-failure-clone-2026-10-16.json)：合成损坏 PDF 的 worker 失败没有改变并行 XLSX 的租约、另一账号作业或 v3 发布指针；XLSX 恢复后可生成视觉候选，隔离夹具清理。成功 PDF/PPTX、修订版本并发、真实引用和正式 worker 加载仍待验。
 
+2026-10-16 G01 团队试用 [Linux 主机部署模板](../deploy/pilot/README.md)已通过本机 Compose 回环 Web、上传卷与临时 Caddy HTTPS 反向代理检查；只读首页/会话、匿名上传拒绝可复验。[收据](evidence/ma24-g01-pilot-host-compose-local-2026-10-16.json)。域名、真实数据范围、云主机、团队账号、容量与实际回滚未验收。
+
 同日 [审核后修订当前源码收据](evidence/ma24-g05-current-reviewed-revision-recovery-2026-10-16.json)重跑私有/共享 PDF 原件到 PPTX 修订路径，旧版在待审和登记前失败时持续可读，登记后重放与竞争修订边界通过。合成审核不等于内容质量，生产加载和用户可见引用继续未验。
 
 2026-10-15 G13/F12 Skill 回放原始证据入口在一次性恢复库和候选正式模式网页完成页面/API/数据库验收：合成只读历史收据经来源重校后持久化，390px 手机和 1366px 桌面均可从 Skill 评测审核展开并复制完整 JSON，内容与实际审核 API 一致；默认折叠、无横向溢出，匿名 API 被拒。没有保存审核判决、调用模型或写入生产；本项不构成 Skill 业务质量、自动启用、正式部署或实际回滚证据。非邮件审批等 F12 入口仍待验。[收据](evidence/ma24-g13-f12-skill-replay-raw-json-page-clone-2026-10-15.json)。

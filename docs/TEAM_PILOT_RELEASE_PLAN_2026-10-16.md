@@ -57,3 +57,5 @@
 同日新增[Linux 试用镜像封装补验](evidence/ma24-g01-pilot-container-image-2026-10-16.json)：干净 Git 快照构建镜像，非 root 运行；迁移凭据和付费覆盖变量被入口拒绝，本机首页/会话 200、匿名上传 401。部署时仍须用目标环境新凭据与真实团队账号验证 HTTPS、手动业务写入、成员隔离、备份恢复、资源容量和实际回切；本机镜像不能视为可发邀请。
 
 后续[可重复镜像构建](evidence/ma24-g01-pilot-image-reproducible-build-2026-10-16.json)把手工 Git 归档和临时上下文清理固化为命令；已从提交 `c402d769` 实跑成功。它只封装已提交源码，发布前仍需在最终提交上重新构建并记录镜像摘要，再做目标环境验收。
+
+后续[Linux 主机启动模板](../deploy/pilot/README.md)和[本机验收](evidence/ma24-g01-pilot-host-compose-local-2026-10-16.json)补齐 Web 回环监听、持久上传卷及 Caddy 配置；本机容器内部 HTTP 与临时 HTTPS 代理检查通过。Windows 主机不能直连该 Docker Desktop host 网络回环端口，Linux 目标主机上仍须按真实域名、数据库和账号验收。正式试用入口尚未开放。

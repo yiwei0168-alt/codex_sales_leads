@@ -37,3 +37,5 @@
 2026-10-16 镜像封装补验：`da8fd831` 的干净 Git 快照加入试用容器文件后，在本机 Docker 的 Node 24 Linux 镜像中重新安装依赖并完成 Next 16.3.4 生产构建。镜像以 `node` 身份运行，不含 `.env` 文件；空值的 `DATABASE_MIGRATION_URL` 和非空的 `PAID_CALL_STAGE_OVERRIDE` 均令入口拒绝启动。以本机已有产品库连接做最小冒烟时，首页/会话 GET 为 200，匿名上传 POST 为 401。临时容器和连接文件已清理。[镜像收据](evidence/ma24-g01-pilot-container-image-2026-10-16.json)。镜像仍未在目标云主机、域名、真实团队网络和 HTTPS 下验收；本机数据库冒烟也不是目标环境容量或恢复验收。
 
 镜像构建现在使用 `node scripts/build-ma24-pilot-image.mjs`，可选第二个参数为镜像标签。命令从当前 `HEAD` 导出干净 Git 快照到 `.next-releases`，在快照中运行 Docker 构建，并清理临时上下文；未提交修改不会进入镜像。构建前先确认目标提交已推送，部署时记录完整提交 ID 和镜像摘要。`c402d769` 的脚本实跑构建通过，镜像仍不构成目标环境上线验收。[可重复构建收据](evidence/ma24-g01-pilot-image-reproducible-build-2026-10-16.json)。
+
+目标 Linux 主机的 [Web Compose 与 Caddy 模板](../deploy/pilot/README.md)已做本机验证：Web 在 host 网络只监听回环地址，上传目录可由非 root 进程写入持久卷；本地 HTTPS 反向代理可读首页和会话，临时资源已清理。[本机模板收据](evidence/ma24-g01-pilot-host-compose-local-2026-10-16.json)。这不替代目标主机的公网 DNS、可信证书、真实数据恢复和团队访问验收。目标主机上运行前还须确定备案域名与数据范围。

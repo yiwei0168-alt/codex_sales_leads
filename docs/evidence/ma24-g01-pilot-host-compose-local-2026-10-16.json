@@ -1,0 +1,39 @@
+{
+  "schema": "ma24-g01-pilot-host-compose-local-v1",
+  "date": "2026-10-16",
+  "scope": "Local Docker Compose host-network Web and temporary Caddy HTTPS proxy template verification",
+  "sourceCommitBeforeTemplateChange": "96edc567",
+  "webImage": {
+    "tag": "ma24-pilot-web:host-test-96edc567",
+    "id": "sha256:62bfba21daa6a2513b58776a385863fe43d6540133e6fdecda6bb741bea9b4ae",
+    "sizeBytes": 87914426,
+    "runtimeUser": "node",
+    "runtimeEnvFilesFound": 0,
+    "uploadDirectoryOwner": "node"
+  },
+  "checks": {
+    "composeConfigQuietExitCode": 0,
+    "webContainerHealth": "healthy",
+    "webContainerHomepageGet": 200,
+    "webContainerSessionGet": 200,
+    "webContainerAnonymousUploadPost": 401,
+    "mountedUploadVolumeWriteAndRemove": "passed as node",
+    "nonLoopbackInterfaceConnection": "ECONNREFUSED",
+    "caddyConfigValidation": "passed with caddy:2.11.4-alpine and PILOT_DOMAIN=localhost",
+    "temporaryHttpsProxyHomepageGet": 200,
+    "temporaryHttpsProxySessionGet": 200
+  },
+  "cleanup": {
+    "caddyContainerStopped": true,
+    "webContainerStopped": true,
+    "emptyTestUploadVolumeRemoved": true,
+    "temporaryDatabaseEnvFileRemoved": true,
+    "temporaryGitArchiveContextRemoved": true
+  },
+  "limits": [
+    "The test used Docker Desktop host networking; Windows host-to-container loopback was unavailable, while requests inside the shared Docker network namespace succeeded",
+    "The HTTPS proxy used a temporary local certificate; no public DNS, trusted domain certificate, mainland network, or target cloud host was tested",
+    "The mounted volume write probe did not test real upload persistence or worker storage sharing",
+    "No real team account, target database restore, capacity, or actual rollback was verified"
+  ]
+}

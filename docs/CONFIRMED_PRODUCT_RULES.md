@@ -2,6 +2,8 @@
 
 ## PILOT-01 — 团队作为首批试用者（2026-10-16）
 
+- 2026-10-16 Linux 主机模板实施补验：Web Compose 的回环监听、上传持久卷权限和临时 Caddy HTTPS 反向代理在本机验证通过；测试容器、空卷及临时凭据文件已清理。[模板](../deploy/pilot/README.md)、[收据](evidence/ma24-g01-pilot-host-compose-local-2026-10-16.json)。仍未选择/采购云主机、确定备案域名与真实数据范围，未完成团队账号或目标 HTTPS 验收；不改变首批 10 人以内的确认范围。
+
 - 2026-10-16 镜像构建流程实施补验：`scripts/build-ma24-pilot-image.mjs` 已从已提交 Git 快照实跑构建并清理临时目录，镜像以非 root 运行且无 `.env`。[收据](evidence/ma24-g01-pilot-image-reproducible-build-2026-10-16.json)。仅推进试用包可复现性；地区、域名、数据范围、目标环境与真实团队验收状态不变。
 
 - 2026-10-16 Linux 试用镜像实施补验：干净 Git 快照的容器构建与本机最小冒烟通过；镜像以非 root 身份运行，不含 `.env`，入口拒绝迁移凭据和付费覆盖变量。[收据](evidence/ma24-g01-pilot-container-image-2026-10-16.json)。这只更新实施证据，首批 10 人以内、主要大陆访问的新托管方案仍待域名、数据范围和目标云主机确认；尚未部署或验收真实团队试用。

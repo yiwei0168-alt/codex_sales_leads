@@ -1553,3 +1553,5 @@ IEEE 2014 GEPOF 教程按用户确认仅进入 PPTX 读取与引用验收。使�
 2026-10-16 G05 资料 worker 恢复补验：当前源码在隔离 MA11 库中同时处理被中断 XLSX、另一账号 XLSX 与合成损坏 PDF；PDF 失败不改变 XLSX 租约或 v3 发布指针，另一账号随后完成视觉候选，过期租约结算仍被拒。此为失败隔离工程收据，尚未覆盖成功 PDF/PPTX、修订版本并发、真实引用与生产加载。[收据](evidence/ma24-g05-cross-format-worker-failure-clone-2026-10-16.json)。
 
 2026-10-16 G05 审核后修订回放：现有隔离脚本在当前源码验证 PDF 原件到 PPTX 修订的私有与共享范围，未解决审核、篡改和登记前崩溃均不切换旧版，登记后恢复保留收据和历史；共享发布仍需管理员。判决是合成数据，正式 worker、资料语义和用户可见引用待验。[收据](evidence/ma24-g05-current-reviewed-revision-recovery-2026-10-16.json)。
+
+2026-10-16 G01 团队试用 Web 的 [Linux 主机模板](../deploy/pilot/README.md)采用固定镜像、回环 Web、上传持久卷与 Caddy HTTPS 入口；本机 Compose、Caddy 配置和容器网络内请求通过。[收据](evidence/ma24-g01-pilot-host-compose-local-2026-10-16.json)。真实服务器、域名、数据库恢复、团队账号与流量/数据回切仍须实际执行，不因模板存在而改变发布状态。
