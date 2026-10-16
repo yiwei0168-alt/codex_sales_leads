@@ -6,6 +6,7 @@
 
 1. 确认域名/地区/数据范围与团队持有的云账号；大陆节点须核适用 ICP 备案。DNS 指向主机，公网入站仅按需开放 80/443，数据库只在主机回环地址或受控内网开放。Caddy 自动 HTTPS 需要域名解析和 80/443 可达。[Caddy 官方说明](https://caddyserver.com/docs/automatic-https)。
 2. 准备 PostgreSQL 16/pgvector 和全新空库；由目标环境操作员配置迁移账号、受限应用登录角色及其 `network_copilot_app` 角色成员关系。运行 `npm run db:migrate:pilot-fresh`，它仅在空应用库执行 001–135，重复初始化会拒绝；核对不可登录占位账号外无用户、业务资料为 0，且 136–140 未安装。随后用新试用库备份复验 ACL/RLS 与账号隔离。[本机空库收据](../../docs/evidence/ma24-g01-fresh-pilot-schema-2026-10-16.json)。不要将现有产品库归档复制到试用主机；迁移凭据不放入 Web 环境文件。
+   使用受限应用连接执行 `npm run users:upsert` 为每位试用成员分别建号；操作员逐次提供 `APP_USER_EMAIL`、`APP_USER_DISPLAY_NAME`、`APP_PASSWORD_SETUP` 和 `APP_USER_ROLE=member`，按团队凭据流程交付初始密码。建号命令会同时创建个人工作区。密码仅经目标主机的临时进程环境传入，不写入 Git、Compose 文件或验收收据；创建后核对账号数与各自工作区。[本机命令与隔离收据](../../docs/evidence/ma24-g01-fresh-pilot-schema-2026-10-16.json)。
 3. 固定并推送试用提交，在目标 Linux 主机运行 `node scripts/build-ma24-pilot-image.mjs`。记录完整提交 ID、镜像标签和镜像摘要。构建命令只打包已提交的 Git 快照。
 4. 在 Git 工作树外建立权限受限的 Web 环境文件，例如 `/etc/ma24/pilot-web.env`，只放运行所需的 `DATABASE_URL`。它应指向受限应用账号；如果数据库不在同机回环地址，按应用的生产连接要求提供可验证 TLS。不要放 `DATABASE_MIGRATION_URL`、`PAID_CALL_STAGE_OVERRIDE` 或 `PAID_CALL_STAGE_OVERRIDE_USER_ID`。
 5. 在 Git 工作树外建立 Compose 变量文件，例如 `/etc/ma24/pilot-host.env`，填写 `PILOT_WEB_IMAGE`、`PILOT_WEB_ENV_FILE` 的绝对路径、`PILOT_WEB_PORT=3000` 和 `PILOT_DOMAIN`。这些变量不应包含数据库密码；账号凭据只在 Web 环境文件中。运行 Compose 的操作员与读取同一变量文件的 Caddy 服务账户须有相应读取权限。

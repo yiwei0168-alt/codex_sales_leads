@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { randomBytes, randomUUID } from "node:crypto";
+import { randomBytes } from "node:crypto";
 import { spawn } from "node:child_process";
 import nextEnv from "@next/env";
 import { Client } from "pg";
@@ -59,24 +59,42 @@ try {
       stage: true, laterStageAbsent: true });
     await app.query("rollback");
   } finally { await app.end(); }
-  const fixtureAdmin = new Client({ connectionString: migrationTarget.toString() });
-  await fixtureAdmin.connect();
-  const firstUser = randomUUID(), secondUser = randomUUID();
-  try {
-    for (const [index, userId] of [firstUser, secondUser].entries()) {
-      await fixtureAdmin.query(
-        "insert into app_user(id,email,display_name,password_hash,role,status) values($1,$2,$3,'!','member','active')",
-        [userId, `pilot-fixture-${userId}@example.invalid`, `Pilot fixture ${index + 1}`]);
-      await fixtureAdmin.query(
-        "insert into market_workspace(id,owner_id,slug,name,market,country_code,objective) values($1,$2,'global-sales',$3,'Global','WW','Synthetic pilot test')",
-        [randomUUID(), userId, `Pilot fixture ${index + 1}`]);
-    }
-  } finally { await fixtureAdmin.end(); }
+  const credentials = [1, 2].map(index => ({
+    email: `pilot-fixture-${randomBytes(12).toString("hex")}@example.invalid`,
+    password: randomBytes(32).toString("base64url"),
+    displayName: `Pilot fixture ${index}`,
+  }));
+  for (const credential of credentials) {
+    const provisioned = await new Promise<{ code: number | null; output: string }>((resolve, reject) => {
+      const env: NodeJS.ProcessEnv = { ...process.env, DATABASE_URL: appTarget.toString(),
+        APP_USER_EMAIL: credential.email, APP_USER_DISPLAY_NAME: credential.displayName,
+        APP_PASSWORD_SETUP: credential.password, APP_USER_ROLE: "member" };
+      delete env.DATABASE_MIGRATION_URL;
+      const child = spawn(process.execPath, ["scripts/run-tsx.cjs", "scripts/upsert-app-user.ts"], {
+        cwd: process.cwd(), windowsHide: true, stdio: ["ignore", "pipe", "pipe"], env,
+      });
+      let output = "";
+      child.stdout.on("data", data => { output = (output + String(data)).slice(-5000); });
+      child.stderr.on("data", data => { output = (output + String(data)).slice(-5000); });
+      child.once("error", reject);
+      child.once("exit", code => resolve({ code, output }));
+    });
+    assert.equal(provisioned.code, 0, provisioned.output);
+  }
   process.env.DATABASE_URL = appTarget.toString();
+  const { findLoginUser } = await import("../src/lib/auth/users");
+  const { verifyPassword } = await import("../src/lib/auth/password");
   const { addManualCompany } = await import("../src/lib/sales/manual-company");
   const { getCurrentWorkspace, updateCompanyState } = await import("../src/lib/sales/repository");
   const { getPool } = await import("../src/lib/rag/db");
   try {
+    const users = await Promise.all(credentials.map(async credential => {
+      const user = await findLoginUser(credential.email);
+      assert(user && verifyPassword(credential.password, user.passwordHash));
+      assert.equal(user.displayName, credential.displayName);
+      return user;
+    }));
+    const [firstUser, secondUser] = users.map(user => user.id);
     const added = await addManualCompany(firstUser, {
       name: "Synthetic Pilot Company", country: "DE", website: "https://pilot-fixture.invalid",
     });
@@ -92,6 +110,7 @@ try {
   console.log(JSON.stringify({ disposableDatabase: true, migrationThrough: 135, seededNonLoginPlaceholder: 1,
     realUsers: 0, documents: 0, applicationLoginChecked: true, stagePresent: true,
     laterStageAbsent: true, repeatRejected: true, syntheticMembers: 2,
+    membersProvisionedThroughAppRole: true, passwordsVerified: true,
     manualCompanyWrittenAndRead: true, otherMemberReadAndWriteDenied: true, copiedProductionData: false }));
 } finally {
   if (created) await admin.query(`drop database "${name}" with (force)`);
