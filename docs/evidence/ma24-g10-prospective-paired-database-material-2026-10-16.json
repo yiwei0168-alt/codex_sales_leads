@@ -1,0 +1,30 @@
+{
+  "schema": "ma24-g10-prospective-paired-database-material-v1",
+  "date": "2026-10-16",
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --prospective-material",
+  "scope": "Fresh disposable PostgreSQL/pgvector through 135, account-owned synthetic encrypted mail, production graph/journal/audit/collector/review services, scripted responses with complete request manifests",
+  "checks": {
+    "originalModelJournalTurns": 3,
+    "originalConsumedMailReceipt": 1,
+    "runtimePromptToolsModelAndScopeIdentityFrozenBeforeTask": "passed",
+    "serverPreTaskCaptureBinding": "passed",
+    "scriptedCandidateRequests": 5,
+    "candidateUsedFrozenSkill": "passed",
+    "candidateModelJournalPersisted": "passed",
+    "prospectiveObservationCollectedAndIdempotent": "passed",
+    "unifiedSummaryMaterialAvailable": "passed",
+    "unifiedReaderMatchesBothAnswersAndConsumedEvidence": "passed",
+    "materialReadAddsNoScriptedRequests": "passed",
+    "crossAccountMaterialRead": "rejected",
+    "purgedSourceMaterialRead": "rejected",
+    "lateFreezeAndSourceFreezeRevocation": "rejected",
+    "skillRemainedDisabled": true,
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "externalProviderCalls": 0,
+    "externalHttpCalls": 0,
+    "productionWrites": 0,
+    "temporaryClusterRemoved": true
+  },
+  "limits": "Complete service-to-database engineering chain with synthetic model responses and synthetic source data. The actual HTTP route/browser, natural task quality, real provider signatures and runtime attestation, production services and automatic activation remain unverified. No local Qwen result was promoted and sourceKind remains synthetic-fixture."
+}

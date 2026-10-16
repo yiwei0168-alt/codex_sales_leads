@@ -19,16 +19,17 @@ const backupCheck = args.includes("--backup");
 const crossClusterCheck = args.includes("--cross-cluster");
 const modeBusinessCheck = args.includes("--mode-business");
 const runnerAttestationCheck = args.includes("--runner-attestation");
-const prospectiveSourceCheck = args.includes("--prospective-source");
+const prospectiveMaterialCheck = args.includes("--prospective-material");
+const prospectiveSourceCheck = args.includes("--prospective-source") || prospectiveMaterialCheck;
 const rollbackImageArgument = args.find(arg => arg.startsWith("--rollback-image="));
 const rollbackImage = rollbackImageArgument?.slice("--rollback-image=".length);
-assert(args.length <= 9 && args.every(arg => ["--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", "--prospective-source", webImageArgument, rollbackImageArgument].includes(arg))
+assert(args.length <= 10 && args.every(arg => ["--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", "--prospective-source", "--prospective-material", webImageArgument, rollbackImageArgument].includes(arg))
   && (!webImageArgument || (webImage && /^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(webImage)))
   && (!rollbackImageArgument || (rollbackImage && /^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(rollbackImage)))
   && (!(browserCheck || tenUserCheck || backupCheck || crossClusterCheck || rollbackImage) || webImage)
   && (!crossClusterCheck || backupCheck)
   && (!rollbackImage || rollbackImage !== webImage),
-  "Expected --mode-business, --runner-attestation, --prospective-source, or --web-image=<tag> with optional --browser, --ten-user, --backup, --cross-cluster (with --backup), and --rollback-image=<prior-tag>");
+  "Expected --mode-business, --runner-attestation, --prospective-source, --prospective-material, or --web-image=<tag> with optional --browser, --ten-user, --backup, --cross-cluster (with --backup), and --rollback-image=<prior-tag>");
 const networkName = `ma24-pilot-net-${id}`;
 const adminPassword = randomBytes(24).toString("hex");
 const appPassword = randomBytes(24).toString("hex");
@@ -115,9 +116,10 @@ try {
     const source = await run(process.execPath,
       ["scripts/run-tsx.cjs", "scripts/verify-skill-prospective-source-db.ts"],
       { ...process.env, DATABASE_URL: appUrl.toString(), DATABASE_MIGRATION_URL: adminUrl.toString(),
-        MA24_DISPOSABLE_PROSPECTIVE_SOURCE: "1" });
+        MA24_DISPOSABLE_PROSPECTIVE_SOURCE: "1",MA24_PROSPECTIVE_FULL_MATERIAL: prospectiveMaterialCheck ? "1" : "0" });
     assert.equal(source.code, 0, source.output);
     assert(source.output.includes('"prospectiveSourceDatabase":"passed"'), source.output);
+    if(prospectiveMaterialCheck)assert(source.output.includes('"fullPairedMaterialVerified":true'),source.output);
   }
   if (runnerAttestationCheck) {
     const attested = await run(process.execPath,
@@ -396,6 +398,7 @@ try {
     runnerAttestationStoreVerified: runnerAttestationCheck,
     extraG09Migration: runnerAttestationCheck ? 141 : null,
     prospectiveSourceDatabaseVerified: prospectiveSourceCheck,
+    prospectivePairedMaterialVerified: prospectiveMaterialCheck,
     samePortPriorImageRollbackVerified: Boolean(rollbackImage) }));
 } finally {
   if (restoredContainerId) {
