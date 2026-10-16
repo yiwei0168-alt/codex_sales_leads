@@ -1,0 +1,38 @@
+{
+  "schema": "ma24-g09-safety-skill-usage-audit-v1",
+  "date": "2026-10-16",
+  "sourceCommit": "44611d44d53e0eceeaac6b547fb19410847630b7",
+  "commands": [
+    "node node_modules/vitest/vitest.mjs run src/lib/assistant/main/skill-safety-audit.test.ts src/lib/assistant/main/skill-safety-candidate.test.ts src/lib/assistant/main/skill-acceptance-composition.test.ts",
+    "node --max-old-space-size=8192 node_modules/typescript/bin/tsc --noEmit --pretty false",
+    "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --safety-skill-usage"
+  ],
+  "checks": {
+    "newAuditTests": 6,
+    "targetedTestsPassed": 25,
+    "finalTypeScriptAndTargetedLint": "passed",
+    "usageDerivedFromReconstructedFixedSkillRead": "passed",
+    "completedCandidateWithoutReadRejectedByAudit": "passed",
+    "answerClaimDoesNotSubstituteForRead": "passed",
+    "collectorRejectsWithoutCreatingBundle": "passed",
+    "baselineWithoutCandidateReadAccepted": "passed",
+    "loadedCandidateCollectedAndReadThroughUnifiedService": "passed",
+    "finalSyntheticSafetyBundles": 1,
+    "scriptedModelCalls": 6,
+    "newHumanJudgment": false,
+    "skillEnabled": false,
+    "freshMigrationThrough": 135,
+    "additionalEvaluationMigrations": false,
+    "temporaryContainersRemaining": 0,
+    "realProviderModelCalls": 0
+  },
+  "preflightIncident": {
+    "initialRestoreConnectionFailureBeforeGuardTest": true,
+    "initialDiagnosticTruncated": true,
+    "headAndTailDiagnosticsWithTemporaryCredentialRedactionAdded": true,
+    "retryPreflightAndGuardTestPassed": true,
+    "rootCause": "not determined; not recorded as fixed"
+  },
+  "limits": "Targeted synthetic safety case with actual PostgreSQL journals, graph reconstruction, collector and unified material read. The prior full-cohort evidence remains pinned to its original code. No new full-cohort HTTP/browser or target-cloud claim is made. Real model quality, binary/provider trust and final activation are still incomplete.",
+  "automaticActivation": false
+}

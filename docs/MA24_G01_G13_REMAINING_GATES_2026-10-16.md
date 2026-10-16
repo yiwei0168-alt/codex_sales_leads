@@ -26,7 +26,9 @@
 
 新增[分组组合内部函数](SKILL_ACCEPTANCE_COMPOSITION_2026-10-16.md)：单元边界和实际新库完整历史/安全/前瞻组合、追加幂等、五类统一材料回读及来源清除/冻结撤销拒绝均通过。[初始边界](evidence/ma24-g09-skill-evidence-composition-2026-10-16.json)、[完整数据库正例](evidence/ma24-g09-complete-composition-database-2026-10-16.json)。组合包自身 HTTP/页面、真实质量、可信生产 runner/提供方和最终启用事务仍未完成。
 
-代码复核还发现安全候选审计 `auditSkillSafetyArm` 未显式拒绝图返回 `candidateSkillUsed=false`；本次五个候选实际日志均包含 skill_read，但不能以这个正例代替候选未加载固定方法的拒绝守卫。后续须补该守卫及负例，再继续生产认证和启用接线。
+安全候选审计 `auditSkillSafetyArm` 现已拒绝图重建的 `candidateSkillUsed !== true`，保留基线不读候选的行为。25 项定向回归和实际新库审计/采集拒绝、正常候选统一回读通过，[收据](evidence/ma24-g09-safety-skill-usage-audit-2026-10-16.json)。生产认证和最终启用接线仍未完成。
+
+本轮前置恢复曾出现一次连接错误，重试通过但根因未归因。代码创建共享 PostgreSQL Pool 时未注册空闲连接 error 监听；须在一次性集群受控断线下验证进程存活和连接重建，再决定修复，不能用一次重试通过关闭运行恢复证据。
 
 G09 声明观察时间绑定已补强：追加与读取都核对非空观察的计划/题目/固定版本/来源和时间，声明起止由持久记录派生；33 项定向测试和新库历史记录拒绝回归通过，[收据](evidence/ma24-g09-runner-observation-time-binding-2026-10-16.json)。这不关闭下列生产认证和启用缺口。
 
