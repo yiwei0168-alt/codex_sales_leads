@@ -28,8 +28,17 @@
     "exactAnswerInLocalGitHistory": 0,
     "privateReportPath": "tmp/ma24-independent-quarantine/worldbank-findex-public-exposure-v1.json"
   },
+  "localSemanticNeighborScreen": {
+    "model": "BAAI/bge-m3",
+    "modelRevision": "5617a9f61b028005a4858fdac845db406aefb181",
+    "comparisonRows": 378,
+    "topNeighborId": "govuk-bduk-taking-part-premises-vs-regional-ability",
+    "topNeighborCosine": 0.62481,
+    "topNeighborReview": "Both questions require a denominator and inference boundary. The older GOV.UK case compares broadband premises with regional adult ability; the private Findex case checks a reported conditional share and its missing-value reporting rule. This is an editorial distinction, not an independence approval.",
+    "privateReportSha256": "c94e24adf4179a8aed229c02fce3fd608ba087658320affc5da61a4fa5b250eb"
+  },
   "limits": [
-    "The local BGE service was inaccessible from the current command sandbox, so semantic-neighbor screening is pending.",
+    "The fixed local BGE service was reached in the elevated local context; the 378-row comparison is bounded to the known local question pools.",
     "Exact text absence does not establish source-family independence or absence from model-provider context.",
     "The original workbook is not a frozen Gold source. Per-case review, product citation readback, source exposure and license checks remain pending."
   ],
