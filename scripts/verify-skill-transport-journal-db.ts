@@ -3,6 +3,7 @@ import {generateKeyPairSync,randomUUID,sign} from 'node:crypto';
 import {mkdtemp,rm,writeFile} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
+import {spawn} from 'node:child_process';
 import nextEnv from '@next/env';
 import {Pool} from 'pg';
 import {getPool} from '../src/lib/rag/db';
@@ -17,6 +18,7 @@ import {readSkillCandidateJournal} from '../src/lib/assistant/main/skill-candida
 import {skillTransportResponseHash} from '../src/lib/assistant/main/skill-model-transport-receipt';
 import {verifySkillCandidateJournalTransports} from '../src/lib/assistant/main/skill-model-transport-journal';
 import {disableLocalAnalysisTracing} from '../src/lib/assistant/main/local-analysis-boundary';
+import {createConfiguredSkillCollectorConnection} from '../src/lib/assistant/main/skill-collector-connection';
 
 nextEnv.loadEnvConfig(process.cwd());disableLocalAnalysisTracing();
 assert.equal(process.env.MA24_DISPOSABLE_TRANSPORT_JOURNAL,'1','Dedicated disposable cluster required');
@@ -25,6 +27,7 @@ assert(['localhost','127.0.0.1'].includes(admin.hostname));assert.equal(app.host
 globalThis.fetch=async()=>{throw new Error('External HTTP disabled for synthetic transport journal fixture');};
 const pool=new Pool({connectionString:admin.toString()}),owner=randomUUID(),other=randomUUID(),evaluationId=randomUUID();
 const directory=await mkdtemp(join(tmpdir(),'ma24-transport-journal-')),registryPath=join(directory,'public-registry.json');
+let dedicated:ReturnType<typeof createConfiguredSkillCollectorConnection>|undefined;
 const transaction:SkillCollectorTransaction=async(userId,work)=>{
  const client=await pool.connect();try{await client.query('begin');await client.query('set local role network_copilot_skill_collector');
   await client.query("select set_config('app.current_user_id',$1,true)",[userId]);const value=await work(client);await client.query('commit');return value;
@@ -46,11 +49,32 @@ try{
  const registry={protocol:'skill-runner-trust-registry-v1',keys:[key]};
  await writeFile(registryPath,JSON.stringify(registry));process.env.SKILL_RUNNER_TRUST_REGISTRY_FILE=registryPath;
  process.env.SKILL_RUNNER_COLLECTOR_ID=key.collectorId;process.env.SKILL_RUNNER_DEPLOYMENT_SHA256=deploymentHash;
+ const login=await pool.connect(),password=randomUUID()+randomUUID();
+ try{
+  await login.query("select set_config('ma24_fixture.password',$1,false)",[password]);
+  await login.query(`do $$ begin execute format('create role ma24_transport_fixture_login login noinherit nosuperuser nocreatedb nocreaterole nobypassrls noreplication password %L',current_setting('ma24_fixture.password')); end $$`);
+  await login.query('grant network_copilot_skill_collector to ma24_transport_fixture_login');
+ }finally{login.release();}
+ const collectorUrl=new URL(admin);collectorUrl.username='ma24_transport_fixture_login';collectorUrl.password=password;
+ process.env.SKILL_COLLECTOR_DATABASE_URL=collectorUrl.toString();dedicated=createConfiguredSkillCollectorConnection();
+ await dedicated.transaction(owner,async client=>{assert.equal((await client.query('select current_user as name')).rows[0].name,'network_copilot_skill_collector');});
+ await pool.query('grant network_copilot_app to ma24_transport_fixture_login');
+ await assert.rejects(dedicated.transaction(owner,async()=>{}),/privileges or TLS invalid/);
+ await pool.query('revoke network_copilot_app from ma24_transport_fixture_login');
+ const jobPath=join(directory,'private-job.json');
+ await writeFile(jobPath,JSON.stringify({ownerId:owner,freezeId:frozen.freezeId,evaluationId,caseId:'replay',maximumModelCalls:8,kind:'historical',runId:randomUUID()}));
+ const child=await new Promise<{code:number|null;output:string}>((resolve,reject)=>{
+  const proc=spawn(process.execPath,['tmp/skill-collector/runner.cjs','--check',jobPath],{windowsHide:true,
+   env:{...process.env,NODE_ENV:'production',NODE_OPTIONS:''},stdio:['ignore','pipe','pipe']});let output='';
+  proc.stdout.on('data',data=>{output+=String(data);});proc.stderr.on('data',()=>{});proc.once('error',reject);
+  proc.once('exit',code=>resolve({code,output}));
+ });
+ assert.equal(child.code,0,'Compiled collector database preflight failed');assert(child.output.includes('"collectorDatabasePreflight":"passed"'));
  const input={messages:[{role:'user' as const,content:'Synthetic transport request'}],profile:modeModelConfig('quick').profile!,index:0};
  const snapshotHash=digest('synthetic-snapshot'),pin={ownerId:owner,evaluationId,arm:'candidate' as const,step:0,snapshotHash,freezeId:frozen.freezeId,
   sourceKind:'production-runner-pending-verification' as const};
  // Pending classification is exercised only in this disposable fixture. It grants no production authenticity.
- const journal=createSkillModelJournal(transaction,pin),attempt=await journal.begin(input);
+ const journal=createSkillModelJournal(dedicated.transaction,pin),attempt=await journal.begin(input);
  const route=input.profile.routes[0],body={model:route.model,messages:input.messages,tools:modelFunctions,stream:true,reasoning:{effort:route.effort}};
  const message={role:'assistant',content:'Synthetic signed reply'},manifest=modelRequestManifest(body,{model:route.model,provider:'synthetic-fixture',id:'synthetic-generation'});
  const capturedAt=new Date().toISOString(),statement={protocol:'skill-model-transport-v1',keyId:key.keyId,ownerId:owner,freezeId:frozen.freezeId,evaluationId,arm:pin.arm,
@@ -74,5 +98,6 @@ try{
  await assert.rejects(verifySkillCandidateJournalTransports({userId:owner},selection,frozen),/revoked/);
  assert.equal((await pool.query('select enabled from agent_skill where id=$1',[skill.id])).rows[0].enabled,false);
  console.log(JSON.stringify({transportJournalDatabase:'passed',restrictedCollectorAppend:true,persistedSignatureVerified:true,recoveryReusesStoredOutcome:true,
-  crossAccountHidden:true,appendOnly:true,registryRevocationRejected:true,freezeRevocationRejected:true,syntheticFixture:true,binaryVerified:false,automaticActivation:false,actualModelCalls:0}));
-}finally{await pool.end();await getPool().end();await rm(directory,{recursive:true,force:true});}
+  crossAccountHidden:true,appendOnly:true,registryRevocationRejected:true,freezeRevocationRejected:true,dedicatedLoginVerified:true,appRoleMembershipRejected:true,
+  compiledCollectorDatabasePreflight:true,syntheticFixture:true,binaryVerified:false,automaticActivation:false,actualModelCalls:0}));
+}finally{await dedicated?.close();await pool.end();await getPool().end();await rm(directory,{recursive:true,force:true});}

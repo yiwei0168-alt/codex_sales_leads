@@ -190,6 +190,8 @@ try {
     assert.equal(checked.code,0,checked.output);assert(checked.output.includes('"poolRecoveryDatabase":"passed"'),checked.output);
   }
   if(transportJournalCheck){
+    const built=await run(process.execPath,['scripts/build-skill-collector.mjs']);
+    assert.equal(built.code,0,built.output);assert(built.output.includes('"collectorBuild":"passed"'),built.output);
     const checked=await run(process.execPath,['scripts/run-tsx.cjs','scripts/verify-skill-transport-journal-db.ts'],
       {...process.env,DATABASE_URL:appUrl.toString(),DATABASE_MIGRATION_URL:adminUrl.toString(),MA24_DISPOSABLE_TRANSPORT_JOURNAL:'1'});
     assert.equal(checked.code,0,checked.output);assert(checked.output.includes('"transportJournalDatabase":"passed"'),checked.output);
