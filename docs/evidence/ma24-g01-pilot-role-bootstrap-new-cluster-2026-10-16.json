@@ -1,0 +1,22 @@
+{
+  "schema": "ma24-g01-pilot-role-bootstrap-new-cluster-v1",
+  "date": "2026-10-16",
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts",
+  "bootstrapCommand": "node scripts/run-tsx.cjs scripts/bootstrap-ma24-pilot-db.ts",
+  "database": "disposable PostgreSQL 16/pgvector cluster; no production data copied",
+  "checks": {
+    "emptyApplicationSchemaPrecondition": "implemented; populated rejection not separately exercised",
+    "separateApplicationAndMigrationLoginsPrecondition": "implemented; mismatch rejection not separately exercised",
+    "restrictedApplicationRoleCreated": "passed",
+    "restrictedLoginCanSetApplicationRole": "passed",
+    "loginCannotSetSkillCollectorRole": "passed",
+    "applicationPasswordNotPrinted": true,
+    "repeatBootstrapRejectedWithoutPasswordReplacement": "passed",
+    "freshMigrationThrough135": "passed",
+    "syntheticAccountCompanyAndSameClusterRestore": "passed",
+    "temporaryContainerAndVolumeRemoved": true,
+    "typecheck": "passed",
+    "focusedEslint": "passed"
+  },
+  "limits": "Local disposable cluster only. A target cloud database, remote TLS, actual operator credentials, actual team accounts and remote backup restore have not been verified. The bootstrap command requires a newly created dedicated empty pilot database and fresh role names; it deliberately refuses to modify existing roles."
+}

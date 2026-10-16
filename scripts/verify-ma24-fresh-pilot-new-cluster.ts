@@ -76,23 +76,18 @@ try {
     catch { await probe.end().catch(() => undefined); await new Promise(wait => setTimeout(wait, 500)); }
   }
   assert(connected, "Disposable PostgreSQL did not become ready");
-  const admin = new Client({ connectionString: adminUrl.toString() });
-  await admin.connect();
-  try {
-    await admin.query(`
-      create role network_copilot_app nologin noinherit nosuperuser nocreatedb nocreaterole nobypassrls;
-      create role network_copilot_skill_collector nologin noinherit nosuperuser nocreatedb nocreaterole nobypassrls;
-      create role network_copilot_local_login login noinherit nosuperuser nocreatedb nocreaterole nobypassrls password '${appPassword}';
-      grant network_copilot_app to network_copilot_local_login;
-    `);
-    const roles = await admin.query<{ appLogin: boolean; appBypass: boolean; loginCanSetApp: boolean; loginCanSetCollector: boolean }>(`
-      select (select rolcanlogin from pg_roles where rolname='network_copilot_app') "appLogin",
-        (select rolbypassrls from pg_roles where rolname='network_copilot_app') "appBypass",
-        pg_has_role('network_copilot_local_login','network_copilot_app','MEMBER') "loginCanSetApp",
-        pg_has_role('network_copilot_local_login','network_copilot_skill_collector','MEMBER') "loginCanSetCollector"`);
-    assert.deepEqual(roles.rows[0], { appLogin: false, appBypass: false,
-      loginCanSetApp: true, loginCanSetCollector: false });
-  } finally { await admin.end(); }
+  const roles = await run(process.execPath,
+    ["scripts/run-tsx.cjs", "scripts/bootstrap-ma24-pilot-db.ts"],
+    { ...process.env, DATABASE_URL: appUrl.toString(), DATABASE_MIGRATION_URL: adminUrl.toString() });
+  assert.equal(roles.code, 0, roles.output);
+  assert(roles.output.includes('"pilotRoleBootstrap":"passed"'), roles.output);
+  assert(!roles.output.includes(appPassword), "Bootstrap exposed the disposable application password");
+  const duplicateRoles = await run(process.execPath,
+    ["scripts/run-tsx.cjs", "scripts/bootstrap-ma24-pilot-db.ts"],
+    { ...process.env, DATABASE_URL: appUrl.toString(), DATABASE_MIGRATION_URL: adminUrl.toString() });
+  assert.notEqual(duplicateRoles.code, 0, "Repeat bootstrap must not replace an existing login password");
+  assert(duplicateRoles.output.includes("Pilot roles already exist"), duplicateRoles.output);
+  assert(!duplicateRoles.output.includes(appPassword), "Rejected bootstrap exposed the disposable application password");
   const verified = await run(process.execPath,
     ["scripts/run-tsx.cjs", "scripts/verify-ma24-fresh-pilot-db.ts", "--restore"],
     { ...process.env, DATABASE_URL: appUrl.toString(), DATABASE_MIGRATION_URL: adminUrl.toString() });
@@ -217,7 +212,8 @@ try {
     }
   }
   console.log(JSON.stringify({ freshClusterPilot: "passed", image: "pgvector/pgvector:pg16",
-    publishedAddress: "127.0.0.1 only", rolesVerified: true, freshMigrationThrough: 135,
+    publishedAddress: "127.0.0.1 only", rolesVerified: true, duplicateRoleBootstrapRejected: true,
+    freshMigrationThrough: 135,
     syntheticAccountCompanyAndRestoreVerified: true, copiedProductionData: false,
     linuxWebImage: webImage ?? null, linuxWebHttpWorkflowVerified: Boolean(webImage),
     linuxWebHttpsBrowserVerified: browserCheck, tenConcurrentSyntheticAccountsVerified: tenUserCheck }));
