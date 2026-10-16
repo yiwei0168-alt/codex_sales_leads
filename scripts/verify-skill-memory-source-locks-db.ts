@@ -135,7 +135,7 @@ try{
  }finally{await taskOriginHolder.query('rollback');taskOriginHolder.release();}
  await Promise.all(taskOriginPending);
  const journalId=randomUUID(),runId=refs[0].runId;
- await pool.query('update agent_run set input=$1 where id=$2',[JSON.stringify({attachments:[{assetId}]}),runId]);
+ await pool.query('update agent_run set input=$1 where id=$2',[JSON.stringify({content:'Synthetic complete task',mode:'standard',requestKey:'synthetic-source-lock',attachments:[{assetId}]}),runId]);
  await pool.query(`insert into agent_tool_call(id,user_id,run_id,call_key,tool_id,tool_version,input_hash,input,effect,status)
   values($1,$2,$3,'existing','synthetic','v1',$4,'{}','read','completed')`,[journalId,owner,runId,digest({})]);
  const runArtifact={plan:{cases:[{id:'case',provenance:'historical-task'}]},rawReceipts:{baselineSources:{case:{runId}},candidateSources:{case:{runId}}}};

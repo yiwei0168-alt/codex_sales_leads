@@ -53,6 +53,7 @@ try{
  if(process.env.MA24_COMPOSITION_LOCKED_MATERIALS==='1'){
   await pool.query(await readFile('db/migrations/144_skill_task_origin_locks.sql','utf8'));
   await pool.query(await readFile('db/migrations/145_skill_attachment_source_locks.sql','utf8'));
+  await pool.query(await readFile('db/migrations/146_skill_model_freeze_serialization.sql','utf8'));
  }
  for(const id of [owner,other])await pool.query("insert into app_user(id,email,display_name,role,status) values($1,$2,'Synthetic prospective source','member','active')",[id,`${id}@example.invalid`]);
  await pool.query("insert into assistant_conversation(id,user_id,title) values($1,$2,'Synthetic prospective source')",[conversation,owner]);

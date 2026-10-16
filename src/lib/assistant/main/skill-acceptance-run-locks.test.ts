@@ -26,7 +26,7 @@ it('propagates missing origin migration before reading any journal',async()=>{
  expect(query).toHaveBeenCalledTimes(1);
 });
 it('derives only valid stored attachments, deduplicated and sorted',()=>{
- expect(skillAcceptanceAttachmentIds([{input:{}},{input:{attachments:[{assetId:runId},{assetId:runId}]}}])).toEqual([runId]);
+ expect(skillAcceptanceAttachmentIds([{input:{}},{input:{content:'Normal task',mode:'standard',requestKey:'request-key',attachments:[{assetId:runId},{assetId:runId}]}}])).toEqual([runId]);
  expect(()=>skillAcceptanceAttachmentIds([{input:{attachments:[{assetId:'invalid'}]}}])).toThrow();
 });
 it('fails closed if an attachment lock count differs',async()=>{

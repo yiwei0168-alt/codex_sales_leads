@@ -21,12 +21,13 @@ export function skillAcceptanceRunIds({plan,rawReceipts}:Artifact){
 }
 export function skillAcceptanceAttachmentIds(runs:ReadonlyArray<{input:unknown}>){
  const ids=new Set<string>();
- for(const run of runs)for(const attachment of messageInputSchema.pick({attachments:true}).parse(run.input).attachments)ids.add(attachment.assetId);
+ for(const run of runs)for(const attachment of z.object({attachments:messageInputSchema.shape.attachments}).parse(run.input).attachments)ids.add(attachment.assetId);
  return [...ids].sort();
 }
 /** Caller owns the account-bound transaction. Parent UPDATE locks also block new
  * journal rows via their run FK; existing rows require their own SHARE locks.
- * This does not lock external documents or authorize activation. */
+ * Attachment metadata is locked separately below. External bytes and other
+ * evidence domains still require their own protection before activation. */
 export async function lockSkillAcceptanceRunJournals(client:PoolClient,userId:string,artifact:Artifact){
  z.uuid().parse(userId);const ids=skillAcceptanceRunIds(artifact);
  const origins=(await client.query<{n:number}>('select lock_skill_task_origins($1::uuid[]) n',[ids])).rows[0]?.n;
