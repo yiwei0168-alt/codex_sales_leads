@@ -97,6 +97,7 @@ export async function verifyCompositionDatabaseFixture(input:{pool:Pool;owner:st
   assert.equal(readiness.mailReadSourcesLocked,true);assert(readiness.mailCount>0);
   assert.equal(readiness.timelineSourcesLocked,true);assert.equal(readiness.timelineCustomerCount,1);
   assert.equal(readiness.decisionMemorySourcesLocked,true);
+  assert.equal(readiness.knowledgeSourcesLocked,true);
   assert.equal(readiness.policyPassed,false);assert.equal(readiness.automaticActivation,false);assert.equal(readiness.sourceRevocationsLocked,false);
   assert(!readiness.blockers.includes('runtime-or-configuration-changed'));assert(readiness.blockers.includes('missing-judgment:replay'));
  }

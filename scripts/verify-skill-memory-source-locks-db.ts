@@ -28,6 +28,7 @@ try{
  const attachmentMigration=await readFile('db/migrations/145_skill_attachment_source_locks.sql','utf8');await pool.query(attachmentMigration);await pool.query(attachmentMigration);
  const timelineMigration=await readFile('db/migrations/147_skill_timeline_source_locks.sql','utf8');await pool.query(timelineMigration);await pool.query(timelineMigration);
  const decisionMigration=await readFile('db/migrations/148_skill_decision_memory_source_locks.sql','utf8');await pool.query(decisionMigration);await pool.query(decisionMigration);
+ const knowledgeMigration=await readFile('db/migrations/149_skill_knowledge_source_locks.sql','utf8');await pool.query(knowledgeMigration);await pool.query(knowledgeMigration);
  for(const id of [owner,other])await pool.query("insert into app_user(id,email,display_name,role,status) values($1,$2,'Synthetic source locks','member','active')",[id,`${id}@example.invalid`]);
  const expiringMemory=randomUUID(),futureMemory=randomUUID();
  for(const [id,future] of [[expiringMemory,false],[futureMemory,true]] as const){
@@ -104,6 +105,39 @@ try{
   assert.equal(waiting,3,'Document ACL, asset registration and current tree updates must wait');
  }finally{await attachmentHolder.query('rollback');attachmentHolder.release();}
  await Promise.all(attachmentPending);
+ const sharedDocument=randomUUID(),sharedAsset=randomUUID(),releaseId=randomUUID(),pointerId=randomUUID();
+ await pool.query(`insert into knowledge_document(id,collection_id,external_id,title,source_type,content_sha256,owner_id,visibility)
+  values($1,$2,$1::uuid::text,'Synthetic shared source','synthetic',$3,$4,'shared')`,[sharedDocument,collection,sha,other]);
+ await pool.query(`insert into knowledge_asset(id,document_id,storage_key,source_sha256,mime_type,byte_size,document_type,source_nature)
+  values($1,$2,'synthetic/shared.txt',$3,'text/plain',0,'text','synthetic')`,[sharedAsset,sharedDocument,sha]);
+ await pool.query(`insert into knowledge_release_v3(id,release_key,scope_kind,owner_id,extractor_profile,chunk_profile)
+  values($1,$1::uuid::text,'owner',$2,'synthetic','synthetic')`,[releaseId,owner]);
+ await pool.query("insert into knowledge_release_pointer_v3(id,scope_kind,owner_id,release_id) values($1,'owner',$2,$3)",[pointerId,owner,releaseId]);
+ const publicationHolder=await pool.connect();const publicationWrites:Array<Promise<unknown>>=[];
+ try{
+  await publicationHolder.query('begin');await publicationHolder.query('set local role network_copilot_app');
+  await publicationHolder.query("select set_config('app.current_user_id',$1,true)",[owner]);
+  await publicationHolder.query('select lock_skill_knowledge_sources()');
+  let signalPrelocked:()=>void=()=>{};const prelocked=new Promise<void>(accept=>{signalPrelocked=accept;});
+  const publisher=tenantTransaction(other,async client=>{
+   assert.equal((await client.query('select id from knowledge_asset where id=$1 for update',[sharedAsset])).rows.length,1);
+   signalPrelocked();await client.query('update knowledge_asset set registration_status=registration_status where id=$1',[sharedAsset]);
+  });
+  publicationWrites.push(publisher);void publisher.catch(()=>signalPrelocked());await prelocked;
+  const pid=(await publicationHolder.query('select pg_backend_pid() as pid')).rows[0].pid as number;
+  let waiting=0;
+  for(let i=0;i<100;i++){waiting=await waitingOn(pid);if(waiting===1)break;await new Promise(resolve=>setTimeout(resolve,20));}
+  assert.equal(waiting,1,'Prelocked asset publisher must wait at source admission');
+  await publicationHolder.query("set local statement_timeout='2s'");
+  assert.equal((await publicationHolder.query('select lock_skill_attachment_sources($1::uuid[]) n',[[sharedAsset]])).rows[0].n,1);
+  publicationWrites.push(tenantTransaction(owner,client=>client.query('update knowledge_document set status=status where id=$1',[documentId])),
+   pool.query('update knowledge_release_pointer_v3 set activated_at=activated_at where id=$1',[pointerId]),
+   pool.query("insert into knowledge_review_queue_v3(release_id,asset_id,reason) values($1,$2,'low-confidence')",[releaseId,assetId]));
+  for(const work of publicationWrites)void work.catch(()=>undefined);
+  for(let i=0;i<100;i++){waiting=await waitingOn(pid);if(waiting===4)break;await new Promise(resolve=>setTimeout(resolve,20));}
+  assert.equal(waiting,4,'Private document, shared asset, release pointer and review inserts must wait');
+ }finally{await publicationHolder.query('rollback');publicationHolder.release();}
+ await Promise.all(publicationWrites);
  const conversation=randomUUID(),quote='I found comparing original tables reduced errors.',memoryKey='source-lock-fixture';
  await pool.query("insert into assistant_conversation(id,user_id,title) values($1,$2,'Synthetic source provenance')",[conversation,owner]);
  const refs=[];
@@ -286,6 +320,6 @@ try{
  await assert.rejects(tenantTransaction(owner,client=>lockCurrentSkillExperienceSources(client,owner,version)),/changed after locking/);
  assert.equal((await pool.query("select to_regclass('public.ma24_evaluation_hard_limit') is null absent")).rows[0].absent,true);
  console.log(JSON.stringify({memorySourceLocksDatabase:'passed',correctionInvalidationAndConflictBlocked:true,allWritersResumeAfterRelease:true,
-  foreignOwnerAndInvalidIdsRejected:true,decisionMemoryWriteAndPhantomGateVerified:true,otherAccountPrivateMemoryWriteContinues:true,decisionMemoryWallClockRevalidated:true,timelineUpdatesAndPhantomInsertsBlocked:true,mailMetadataUpdatesBlocked:true,attachmentMetadataUpdatesBlocked:true,privateAttachmentForeignOwnerRejected:true,taskOriginsAndHistoryAppendBlocked:true,taskAndJournalUpdateAndAppendBlocked:true,foreignTaskJournalLockRejected:true,noObservationUpdateGrant:true,originUpdatesBlocked:true,changedOriginalMessageRejected:true,storedProvenanceLockThenRecheck:true,invalidatedProvenanceRejectedAfterLock:true,expiryAfterTransactionStartRejected:true,
+  foreignOwnerAndInvalidIdsRejected:true,knowledgePublicationAndReviewWritesBlocked:true,attachmentReadUnderPrelockedPublisherCompletes:true,decisionMemoryWriteAndPhantomGateVerified:true,otherAccountPrivateMemoryWriteContinues:true,decisionMemoryWallClockRevalidated:true,timelineUpdatesAndPhantomInsertsBlocked:true,mailMetadataUpdatesBlocked:true,attachmentMetadataUpdatesBlocked:true,privateAttachmentForeignOwnerRejected:true,taskOriginsAndHistoryAppendBlocked:true,taskAndJournalUpdateAndAppendBlocked:true,foreignTaskJournalLockRejected:true,noObservationUpdateGrant:true,originUpdatesBlocked:true,changedOriginalMessageRejected:true,storedProvenanceLockThenRecheck:true,invalidatedProvenanceRejectedAfterLock:true,expiryAfterTransactionStartRejected:true,
   deferredEvaluationMigrationsApplied:false,actualModelCalls:0,automaticActivation:false}));
 }finally{await pool.end();await getPool().end();}

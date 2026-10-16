@@ -1,0 +1,21 @@
+{
+  "stage": "MA24 G09 knowledge source publication admission",
+  "date": "2026-10-17",
+  "migration": "149_skill_knowledge_source_locks.sql",
+  "status": "wired before locked evidence read; two disposable database workflows and targeted checks passed; full composition pending",
+  "memoryDatabaseCommand": "node --import tsx scripts/verify-ma24-fresh-pilot-new-cluster.ts --memory-source-locks",
+  "policyDatabaseCommand": "node --import tsx scripts/verify-ma24-fresh-pilot-new-cluster.ts --locked-policy",
+  "migrationAppliedTwice": true,
+  "privateDocumentSharedAssetReleasePointerAndReviewWritesWait": true,
+  "writersResumeAfterRelease": true,
+  "attachmentMetadataReadCompletesWhilePublisherHoldsAssetRow": true,
+  "metadataReadStatementTimeoutSeconds": 2,
+  "targetedTests": 24,
+  "typecheck": "passed",
+  "eslint": "passed",
+  "tableWritePrivilegesAdded": false,
+  "actualModelCalls": 0,
+  "productionDeployment": false,
+  "automaticActivation": false,
+  "limitations": ["Knowledge writes globally wait during held final-source admission", "Shared admission key is reused with memory to maintain cross-domain order", "Raw source bytes and disabled trigger enforcement are outside this guarantee", "Current full snapshot f4363630 predates migration 149", "Final commit validity, source semantics and production qualification remain incomplete"]
+}
