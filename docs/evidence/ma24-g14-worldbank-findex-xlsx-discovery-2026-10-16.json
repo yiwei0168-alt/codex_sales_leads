@@ -9,7 +9,9 @@
     "localPrivatePath": "tmp/ma24-independent-quarantine/worldbank-global-findex-2025.xlsx",
     "localBytes": 17935735,
     "localSha256": "b6c991f8e46bcbd4b6423cc962d5b2fa030e3db99832b9016bb4f400f57c772f",
-    "provenanceLimit": "The official page links the named XLSX. This turn did not redownload and byte-compare the remote file; local binary identity remains provisional."
+    "officialBinaryRedownloadBytes": 17935735,
+    "officialBinaryRedownloadSha256": "b6c991f8e46bcbd4b6423cc962d5b2fa030e3db99832b9016bb4f400f57c772f",
+    "officialBinaryMatchesLocal": true
   },
   "workbookInspection": {
     "worksheets": { "Notes": 2, "Data": 8590, "Series Table": 459, "Updates": 26 },
@@ -37,10 +39,17 @@
     "topNeighborReview": "Both questions require a denominator and inference boundary. The older GOV.UK case compares broadband premises with regional adult ability; the private Findex case checks a reported conditional share and its missing-value reporting rule. This is an editorial distinction, not an independence approval.",
     "privateReportSha256": "c94e24adf4179a8aed229c02fce3fd608ba087658320affc5da61a4fa5b250eb"
   },
+  "localRegistryExactHashScreen": {
+    "transaction": "repeatable read, read only, rolled back",
+    "matchingKnowledgeAssets": 0,
+    "matchingUploadJobs": 0,
+    "matchingHistoricalGoldRows": 0,
+    "independenceProven": false
+  },
   "limits": [
     "The fixed local BGE service was reached in the elevated local context; the 378-row comparison is bounded to the known local question pools.",
     "Exact text absence does not establish source-family independence or absence from model-provider context.",
-    "The original workbook is not a frozen Gold source. Per-case review, product citation readback, source exposure and license checks remain pending."
+    "The original workbook is not a frozen Gold source. Per-case review, product citation readback, source-family exposure and final license checks remain pending."
   ],
   "independentGoldApproved": 0,
   "g15PaidAdmissionOpen": false,
