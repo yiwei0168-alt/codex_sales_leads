@@ -1,0 +1,21 @@
+{
+  "stage": "MA24 G09 original task retryable failure signing and durable fallback wiring",
+  "date": "2026-10-17",
+  "protocol": "task-model-transport-failure-v1",
+  "keyPurpose": "task-model-transport",
+  "targetedTests": 90,
+  "testFiles": ["task-model-transport-request.test.ts", "task-model-durable-signing.test.ts", "task-model-transport-receipt.test.ts", "mode-runtime.test.ts", "graph.test.ts"],
+  "typecheck": "passed",
+  "eslint": "passed",
+  "testedSignedFailures": ["HTTP 503", "connection refused", "total timeout"],
+  "testedUnsignedFailures": ["no observed request", "cancelled", "revoked key", "HTTP reason/status mismatch", "unknown error"],
+  "verifiedRejections": ["changed reason", "changed run binding", "completion outside stored window", "forged signature", "evaluation-only key purpose"],
+  "fallbackPersistence": "mock completeCall receives signed unavailable outcome before next request",
+  "modelRpcAndNetworkMocked": true,
+  "databaseMocked": true,
+  "actualModelCalls": 0,
+  "productionKeysProvisioned": false,
+  "completeOriginalTaskProvenanceVerified": false,
+  "automaticActivation": false,
+  "remaining": ["owned stored journal full-chain audit", "actual SQL signing integration", "legacy and batch coverage", "deployed binary qualification", "final activation transaction"]
+}

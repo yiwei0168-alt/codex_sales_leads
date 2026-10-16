@@ -155,7 +155,8 @@ export async function durableModel(context: ExecutionContext, messages: ModelMes
         return response;
       },
       save:async(id,index,outcome)=>{
-        await completeCall(context,id,outcome.status==='success'?result({value:outcome.value}):result({retryable:outcome.retryable,reason:outcome.reason},{status:'unavailable',missing:['Model attempt failed; no tool executed']}),{
+        await completeCall(context,id,outcome.status==='success'?result({value:outcome.value}):result({retryable:outcome.retryable,reason:outcome.reason,
+          ...(outcome.transportFailureReceipt!==undefined?{transportFailureReceipt:outcome.transportFailureReceipt}:{})},{status:'unavailable',missing:['Model attempt failed; no tool executed']}),{
           requestedModel:profile.routes[index].model,mode:profile.mode,attempt:index+1,
           ...(outcome.status==='success'?{provider:outcome.value.provider,generationId:outcome.value.generationId,usage:outcome.value.usage}:{retryable:outcome.retryable,reason:outcome.reason}),
         });

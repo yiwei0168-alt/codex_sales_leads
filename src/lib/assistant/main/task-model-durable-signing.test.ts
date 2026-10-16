@@ -1,6 +1,8 @@
 import {beforeEach,expect,it,vi} from 'vitest';
 import {durableModel} from './graph';
 import {modeModelConfig} from './mode-config';
+import {attachModeTransportFailure} from './mode-transport-failure';
+import {OpenRouterRequestError} from '@/providers/openrouter-batch';
 const m=vi.hoisted(()=>({begin:vi.fn(),save:vi.fn(),factory:vi.fn(),signed:vi.fn(),unsigned:vi.fn(),enabled:true}));
 vi.mock('./repository',async original=>({...await original<typeof import('./repository')>(),
  boundary:async()=>({control:null,instructions:[]}),beginCall:m.begin,completeCall:m.save,event:async()=>{}}));
@@ -38,4 +40,14 @@ it('persists a signing admission failure and never silently falls back to unsign
  await expect(durableModel(context,messages,0,0,modeModelConfig('quick'))).rejects.toThrow('enrollment unavailable');
  expect(m.save.mock.calls[0][2]).toMatchObject({status:'unavailable',data:{retryable:false}});
  expect(m.unsigned).not.toHaveBeenCalled();expect(m.signed).not.toHaveBeenCalled();
+});
+it('saves the original failure signature before requesting the fallback route',async()=>{
+ const error=new OpenRouterRequestError(503,'provider-unavailable'),receipt={protocol:'TEST_ONLY_FAILURE_STUB'};
+ attachModeTransportFailure(error,receipt);
+ m.signed.mockImplementationOnce(async()=>{throw error;}).mockImplementationOnce(async()=>{
+  expect(m.save).toHaveBeenCalledOnce();expect(m.save.mock.calls[0][2]).toMatchObject({status:'unavailable',data:{retryable:true,reason:'http-503',transportFailureReceipt:receipt}});
+  return response();
+ });
+ expect(await durableModel(context,messages,0,0,modeModelConfig('quick'))).toEqual(response().message);
+ expect(m.save).toHaveBeenCalledTimes(2);expect(m.unsigned).not.toHaveBeenCalled();
 });

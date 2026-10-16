@@ -12,6 +12,11 @@ import {assertLocalAnalysisBoundary} from './local-analysis-boundary';
 import {loadConfiguredSkillRunnerTrustRegistry} from './skill-runner-attestation';
 import {skillTransportResponseHash} from './skill-model-transport-receipt';
 import {taskTransportBindingSchema,taskTransportStatementSchema} from './task-model-transport-receipt';
+import {mayFallback,modeFailureCode} from './mode-fallback';
+import {attachModeTransportFailure} from './mode-transport-failure';
+import {modelRequestManifest} from './model-request-manifest';
+import {failureStatusMatches} from './skill-model-transport-failure-receipt';
+import {taskTransportFailureStatementSchema} from './task-model-transport-failure-receipt';
 
 const nativeTransport=fetch;
 const settings=['TASK_MODEL_TRANSPORT_KEY_ID','TASK_MODEL_TRANSPORT_PRIVATE_KEY_FILE','TASK_MODEL_TRANSPORT_COLLECTOR_ID','TASK_MODEL_TRANSPORT_DEPLOYMENT_SHA256'] as const;
@@ -65,16 +70,31 @@ export async function createConfiguredTaskModeRequest(context:{userId:string;run
   if(invoked)throw new Error('Task transport request already invoked');invoked=true;
   assertLocalAnalysisBoundary();controlled();requireSpend();
   if(index!==Number(p.callKey.split(':').at(-1))||digest({messages,profile,index})!==saved.input_hash||digest(await read())!==digest(saved))throw new Error('Task transport stored input changed');
-  const before=await trust(),capturedAt=new Date().toISOString();let observed=false,status:number|undefined,requestHash:string|undefined;
+  const before=await trust(),capturedAt=new Date().toISOString();let observed=false,status:number|undefined,requestHash:string|undefined,observedBody:Record<string,unknown>|undefined;
   const transport:typeof fetch=async(url,init)=>{
    requireSpend();controlled();const target=new URL(url instanceof Request?url.url:String(url));
    if(observed||target.href!=='https://openrouter.ai/api/v1/chat/completions'||init?.method!=='POST'||init.redirect!=='error'||typeof init.body!=='string')throw new Error('Task transport request boundary changed');
-   observed=true;requestHash=digest(JSON.parse(init.body));
+   observed=true;observedBody=JSON.parse(init.body);requestHash=digest(observedBody);
    const response=await modelRoutedTransport(nativeTransport,url,init)(url,init);status=response.status;
    if(response.redirected||response.url!==target.href)throw new Error('Task transport response origin changed');
    return response;
   };
-  const output=await requestModeModel(messages,profile,index,transport,signal);
+  let output:Awaited<ReturnType<typeof requestModeModel>>;
+  try{output=await requestModeModel(messages,profile,index,transport,signal);}
+  catch(error){
+   try{
+    requireSpend();controlled();assertLocalAnalysisBoundary();const after=await trust(),reason=modeFailureCode(error),httpStatus=status??null;
+    if(observedBody&&mayFallback(error)&&!signal?.aborted&&before.hash===after.hash&&digest(await read())===digest(saved)&&failureStatusMatches(reason,httpStatus)){
+     const manifest=modelRequestManifest(observedBody,null),completedAt=new Date().toISOString();
+     if(manifest.toolSchemaHash!==digest(modelFunctions)||Date.parse(completedAt)>=Date.parse(after.expiresAt))throw new Error('Task failure boundary changed');
+     const statement=taskTransportFailureStatementSchema.parse({...binding,protocol:'task-model-transport-failure-v1',keyId,
+      requestHash:manifest.requestHash,manifestHash:digest(manifest),reason,retryable:true,httpStatus,origin:'https://openrouter.ai',
+      path:'/api/v1/chat/completions',capturedAt,completedAt,expiresAt:after.expiresAt});
+     attachModeTransportFailure(error,{statement,requestManifest:manifest,signature:sign(null,Buffer.from(digest(statement),'hex'),privateKey).toString('base64url')});
+    }
+   }catch{/* Preserve the original error; unsigned failures cannot qualify provenance. */}
+   throw error;
+  }
   requireSpend();controlled();const after=await trust();
   if(before.hash!==after.hash||digest(await read())!==digest(saved)||!observed||status!==200
    ||requestHash!==output.requestManifest.requestHash||output.requestManifest.toolSchemaHash!==digest(modelFunctions)
