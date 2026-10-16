@@ -11,7 +11,7 @@ export const skillRunnerStatementSchema=z.object({
  ownerId:z.uuid(),freezeId:z.uuid(),planHash:sha,artifactHash:sha,runtimeIdentityHash:sha,
  capturedAt:z.iso.datetime(),completedAt:z.iso.datetime(),issuedAt:z.iso.datetime(),expiresAt:z.iso.datetime(),
 }).strict();
-const envelopeSchema=z.object({statement:skillRunnerStatementSchema,
+export const skillRunnerEnvelopeSchema=z.object({statement:skillRunnerStatementSchema,
  signature:z.string().regex(/^[A-Za-z0-9_-]{86}$/)}).strict();
 const registrySchema=z.object({protocol:z.literal('skill-runner-trust-registry-v1'),
  keys:z.array(z.object({keyId,collectorId:z.string().min(1).max(200),deploymentHash:sha,
@@ -35,7 +35,7 @@ export type SkillRunnerBinding=z.infer<typeof expectedSchema>;
 export function verifySkillRunnerAttestation(envelope:unknown,registryInput:unknown,
  expectedInput:SkillRunnerBinding,now:Date=new Date()){
  const registry=registrySchema.parse(registryInput),expected=expectedSchema.parse(expectedInput);
- const signed=envelopeSchema.parse(envelope),statement=signed.statement;
+ const signed=skillRunnerEnvelopeSchema.parse(envelope),statement=signed.statement;
  const current=now.getTime();
  if(!Number.isFinite(current))throw new Error('Runner attestation clock invalid');
  const key=registry.keys.find(row=>row.keyId===statement.keyId);

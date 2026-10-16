@@ -1,0 +1,27 @@
+{
+  "schema": "ma24-g09-runner-attestation-store-v1",
+  "date": "2026-10-16",
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --runner-attestation",
+  "scope": "Disposable PostgreSQL/pgvector with base migrations 001-135 and only G09 migration 141; temporary signing keys and synthetic records",
+  "checks": {
+    "migration141Repeatable": "passed",
+    "collectorAppendAndIdempotency": "passed",
+    "ordinaryAppInsert": "denied",
+    "crossAccountReadAndAppend": "denied",
+    "rowUpdateAndDelete": "denied by append-only trigger",
+    "changedArtifactBinding": "rejected",
+    "correctlySignedSyntheticBundle": "rejected",
+    "storedStatementAfterKeyDisablement": "rejected",
+    "storedStatementAfterFreezeRevocation": "rejected",
+    "skillRemainedDisabled": true,
+    "signaturePrimitiveTests": 18,
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "testContainersRemaining": 0,
+    "productionKeysCreated": false,
+    "productionMigrationApplied": false,
+    "deferredEvaluationMigrationsApplied": false,
+    "modelCalls": 0
+  },
+  "limits": "Signed-declaration storage only. Source bundles remain pending verification, not production-attested. Actual deployment/provider verification, real collector signing, prospective shadow binding, complete quality judgments and final activation transaction are still incomplete. No public evidence-ingestion endpoint was added and automatic activation remains false."
+}
