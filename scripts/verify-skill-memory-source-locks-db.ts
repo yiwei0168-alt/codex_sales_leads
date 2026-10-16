@@ -18,7 +18,38 @@ try{
  const migration=await readFile('db/migrations/142_skill_memory_source_locks.sql','utf8');await pool.query(migration);await pool.query(migration);
  const originsMigration=await readFile('db/migrations/143_skill_memory_origin_locks.sql','utf8');await pool.query(originsMigration);await pool.query(originsMigration);
  const taskOriginsMigration=await readFile('db/migrations/144_skill_task_origin_locks.sql','utf8');await pool.query(taskOriginsMigration);await pool.query(taskOriginsMigration);
+ const attachmentMigration=await readFile('db/migrations/145_skill_attachment_source_locks.sql','utf8');await pool.query(attachmentMigration);await pool.query(attachmentMigration);
  for(const id of [owner,other])await pool.query("insert into app_user(id,email,display_name,role,status) values($1,$2,'Synthetic source locks','member','active')",[id,`${id}@example.invalid`]);
+ const documentId=randomUUID(),assetId=randomUUID(),treeId=randomUUID(),sha=digest('Synthetic attachment');
+ const collection=(await pool.query('select id from knowledge_collection order by id limit 1')).rows[0].id;
+ await pool.query(`insert into knowledge_document(id,collection_id,external_id,title,source_type,content_sha256,owner_id,visibility)
+  values($1,$2,$1::uuid::text,'Synthetic attachment','synthetic',$3,$4,'private')`,[documentId,collection,sha,owner]);
+ await pool.query(`insert into knowledge_asset(id,document_id,storage_key,source_sha256,mime_type,byte_size,document_type,source_nature)
+  values($1,$2,'synthetic/source.txt',$3,'text/plain',0,'text','synthetic')`,[assetId,documentId,sha]);
+ await pool.query(`insert into knowledge_tree_version(id,document_id,asset_id,source_sha256,extractor_version,artifact_sha256,status)
+  values($1,$2,$3,$4,'synthetic',$4,'ready')`,[treeId,documentId,assetId,sha]);
+ await pool.query('update knowledge_document set current_tree_version_id=$1 where id=$2',[treeId,documentId]);
+ const attachmentLock=(ids:unknown,user=owner)=>tenantTransaction(user,async client=>(await client.query('select lock_skill_attachment_sources($1::uuid[]) n',[ids])).rows[0].n);
+ assert.equal(await attachmentLock([]),0);assert.equal(await attachmentLock([assetId]),1);
+ await assert.rejects(attachmentLock([assetId],other),/unavailable/);await assert.rejects(attachmentLock([assetId,assetId]),/Invalid/);
+ const attachmentHolder=await pool.connect();let attachmentPending:Array<Promise<unknown>>=[];
+ try{
+  await attachmentHolder.query('begin');await attachmentHolder.query('set local role network_copilot_app');
+  await attachmentHolder.query("select set_config('app.current_user_id',$1,true)",[owner]);
+  assert.equal((await attachmentHolder.query('select lock_skill_attachment_sources($1::uuid[]) n',[[assetId]])).rows[0].n,1);
+  const pid=(await attachmentHolder.query('select pg_backend_pid() as pid')).rows[0].pid as number;
+  attachmentPending=[pool.query('update knowledge_document set visibility=visibility where id=$1',[documentId]),
+   pool.query('update knowledge_asset set registration_status=registration_status where id=$1',[assetId]),
+   pool.query('update knowledge_tree_version set status=status where id=$1',[treeId])];
+  for(const work of attachmentPending)void work.catch(()=>undefined);
+  let waiting=0;
+  for(let i=0;i<100;i++){
+   waiting=Number((await pool.query('select count(*) n from pg_stat_activity where $1::int=any(pg_blocking_pids(pid))',[pid])).rows[0].n);
+   if(waiting===3)break;await new Promise(resolve=>setTimeout(resolve,20));
+  }
+  assert.equal(waiting,3,'Document ACL, asset registration and current tree updates must wait');
+ }finally{await attachmentHolder.query('rollback');attachmentHolder.release();}
+ await Promise.all(attachmentPending);
  const conversation=randomUUID(),quote='I found comparing original tables reduced errors.',memoryKey='source-lock-fixture';
  await pool.query("insert into assistant_conversation(id,user_id,title) values($1,$2,'Synthetic source provenance')",[conversation,owner]);
  const refs=[];
@@ -156,6 +187,6 @@ try{
  await assert.rejects(tenantTransaction(owner,client=>lockCurrentSkillExperienceSources(client,owner,version)),/changed after locking/);
  assert.equal((await pool.query("select to_regclass('public.ma24_evaluation_hard_limit') is null absent")).rows[0].absent,true);
  console.log(JSON.stringify({memorySourceLocksDatabase:'passed',correctionInvalidationAndConflictBlocked:true,allWritersResumeAfterRelease:true,
-  foreignOwnerAndInvalidIdsRejected:true,taskOriginsAndHistoryAppendBlocked:true,taskAndJournalUpdateAndAppendBlocked:true,foreignTaskJournalLockRejected:true,noObservationUpdateGrant:true,originUpdatesBlocked:true,changedOriginalMessageRejected:true,storedProvenanceLockThenRecheck:true,invalidatedProvenanceRejectedAfterLock:true,expiryAfterTransactionStartRejected:true,
+  foreignOwnerAndInvalidIdsRejected:true,attachmentMetadataUpdatesBlocked:true,privateAttachmentForeignOwnerRejected:true,taskOriginsAndHistoryAppendBlocked:true,taskAndJournalUpdateAndAppendBlocked:true,foreignTaskJournalLockRejected:true,noObservationUpdateGrant:true,originUpdatesBlocked:true,changedOriginalMessageRejected:true,storedProvenanceLockThenRecheck:true,invalidatedProvenanceRejectedAfterLock:true,expiryAfterTransactionStartRejected:true,
   deferredEvaluationMigrationsApplied:false,actualModelCalls:0,automaticActivation:false}));
 }finally{await pool.end();await getPool().end();}

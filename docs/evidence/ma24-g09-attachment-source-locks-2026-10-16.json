@@ -1,0 +1,22 @@
+{
+  "stage": "MA24 G09 attachment metadata lock primitive",
+  "date": "2026-10-16",
+  "migration": "145_skill_attachment_source_locks.sql",
+  "status": "database primitive verified; material reader integration pending",
+  "command": "node --import tsx scripts/verify-ma24-fresh-pilot-new-cluster.ts --memory-source-locks",
+  "disposableDatabase": "pgvector/pg16 through 135 plus exact 142–145",
+  "migrationAppliedTwice": true,
+  "documentAclAssetRegistrationAndCurrentTreeUpdatesBlocked": true,
+  "writersResumedAfterRelease": true,
+  "foreignPrivateAssetAndDuplicateIdsRejected": true,
+  "existingSourceLockRegression": "passed",
+  "typecheck": "passed",
+  "targetedEslint": "passed",
+  "materialReaderWired": false,
+  "rawSourceBytesLocked": false,
+  "qualityAccepted": false,
+  "actualModelCalls": 0,
+  "productionDeployment": false,
+  "automaticActivation": false,
+  "deferredMigrations136Through140Applied": false
+}
