@@ -1,5 +1,7 @@
 # MA24 固定提交数据库检查
 
+2026-10-17 完整验证补充：提交 `500405a4ace517086cceff3f38f000a1b00b77c8` 的 `--prospective-composition` 已实际通过，包括登记附件和五类持锁材料重建。运行期间主工作区继续开发邮件、时间线和记忆时效修改，固定快照保持原提交来源；这些后续修改没有被计入该次通过。快照及一次性数据库正常清理。
+
 命令：`node scripts/run-ma24-snapshot-check.mjs --prospective-composition`。也可单选 `--memory-source-locks`、`--transport-journal` 或 `--locked-policy`。
 
 启动时解析 HEAD 为完整提交 ID，以 Git archive 在忽略的 `tmp/ma24-snapshot-*` 下展开独立源码。核对快照锁文件与当前锁文件一致后，链接已有 node_modules；不复制环境文件，不安装依赖。检查仍通过既有一次性数据库脚本执行，标准结果包含固定提交 ID。结束时先移除依赖链接，再清理经过绝对路径范围校验的快照目录。
