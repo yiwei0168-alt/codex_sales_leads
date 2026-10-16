@@ -88,7 +88,10 @@ try {
       ageHours: Math.round((Date.now() - Date.parse(manifest.createdAt)) / 3_600_000 * 10) / 10,
       checksumMatched: true },
     readyForRelease: false,
-    remaining: ["Create a fresh backup immediately before migration", "Bind an integrated source/service release and rollback package", "Verify runtime and queues again"],
+    remaining: [schemaState === "stage-present"
+      ? "Create and verify a fresh backup immediately before team cutover"
+      : "Create and verify a fresh backup immediately before migration",
+    "Bind an integrated source/service release and rollback package", "Verify runtime and queues again"],
   }));
   assert(Object.values(prerequisiteMarkers).every(Boolean), "One or more 123-126 prerequisite markers are absent");
   assert.notEqual(schemaState, "partial-stage", "Partial 127-135 stage needs manual reconciliation");

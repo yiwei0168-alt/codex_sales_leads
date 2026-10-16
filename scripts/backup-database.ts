@@ -42,7 +42,7 @@ async function runDockerBackup(connectionString: string, outputDirectory: string
     "set -eu",
     "IFS= read -r TASK_DATABASE_URL",
     "export TASK_DATABASE_URL",
-    'pg_dump --dbname="$TASK_DATABASE_URL" --format=custom --no-owner --no-acl --file="/backup/$1"',
+    'pg_dump --dbname="$TASK_DATABASE_URL" --format=custom --no-owner --file="/backup/$1"',
     'pg_restore --list "/backup/$1" >/dev/null',
     'pg_restore --list "/backup/$1" > "/backup/$1.restore-list"',
     'TASK_SCHEMA="$(mktemp)"',
@@ -83,7 +83,8 @@ async function main(): Promise<void> {
       sha256: digest,
       format: "PostgreSQL custom archive",
       image: POSTGRES_IMAGE,
-      ownerAndAclIncluded: false,
+      ownerIncluded: false,
+      aclIncluded: true,
       portableRestoreList: `${basename(outputFile)}.restore-list`,
       portableIndexSql: `${basename(outputFile)}.portable-indexes.sql`,
     };

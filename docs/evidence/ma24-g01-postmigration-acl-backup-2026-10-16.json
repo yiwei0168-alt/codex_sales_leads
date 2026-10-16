@@ -1,0 +1,52 @@
+{
+  "schema": "ma24-g01-postmigration-acl-backup-v1",
+  "date": "2026-10-16",
+  "scope": "Local product database backup after migrations 127-135; disposable same-cluster PostgreSQL restore and synthetic old/candidate Web compatibility",
+  "archive": {
+    "file": "network_copilot_2026-10-16T06-35-27Z.dump",
+    "bytes": 194829906,
+    "sha256": "89ab7a90366c0ffceb82c31ae5de5b2ac2ec1f5553238446a82d862aa785d97c",
+    "ownerIncluded": false,
+    "aclIncluded": true,
+    "gitIgnored": true
+  },
+  "restore": {
+    "fullArchiveRestore": "passed",
+    "migrationStage": "schema-present",
+    "stageMarkers": "all 8 present",
+    "migrationReplay": false,
+    "criticalPrivileges": {
+      "applicationReviewSelect": true,
+      "applicationReviewInsert": true,
+      "applicationAcceptanceBundleInsert": false,
+      "collectorAcceptanceBundleInsert": true
+    },
+    "forcedRls": {
+      "acceptanceBundle": true,
+      "extractionReview": true
+    },
+    "oldWebAndCandidateWebOnRestoredClone": {
+      "archiveRestoredApplicationAcl": true,
+      "sourceAclGrantsCopied": 0,
+      "oldManifestStatus": 200,
+      "candidateManifestStatus": 200,
+      "syntheticLoginStatus": 200,
+      "anonymousUploadStatus": 401,
+      "authenticatedUploadStatus": 200,
+      "candidateAcceptanceReviewStatus": 200,
+      "visibleUploadJobs": 0
+    },
+    "productionChangedByRestoreTest": false,
+    "disposableDatabasesRemaining": 0
+  },
+  "regressions": {
+    "postmigrationArchiveWithoutAcl": "restores schema and RLS but is identified as lacking application grants; migrations are not replayed",
+    "premigrationArchiveWithoutAcl": "127-135 transactional rollback and commit path still passes"
+  },
+  "limits": [
+    "The restore ran in the same PostgreSQL cluster with existing global roles; a new host still needs role and credential provisioning",
+    "This is a synthetic local compatibility test, not a live database rollback or remote team launch",
+    "Backup restores data only to the archive point in time; writes after that point are not preserved by a restore",
+    "The actual team cutover needs a fresh backup and another restore check"
+  ]
+}
