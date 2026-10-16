@@ -24,6 +24,7 @@ import {runDurableRecordedSkillCandidateArm} from '../src/lib/assistant/main/ski
 import {collectSkillProspectiveAcceptance} from '../src/lib/assistant/main/skill-prospective-collector';
 import {readSkillAcceptanceReview,readSkillAcceptanceReviewCase} from '../src/lib/assistant/main/skill-acceptance-review';
 import {verifySkillProspectiveHttp} from './verify-skill-prospective-http';
+import {composeSkillAcceptanceEvidence} from '../src/lib/assistant/main/skill-acceptance-composition';
 
 nextEnv.loadEnvConfig(process.cwd());disableLocalAnalysisTracing();
 assert.equal(process.env.MA24_DISPOSABLE_PROSPECTIVE_SOURCE,'1','Dedicated disposable-cluster harness required');
@@ -130,6 +131,9 @@ try{
   assert.equal(material.baseline,baselineAnswer);assert.equal(material.candidate,candidateAnswer);assert.equal(material.receipts.length,1);
   assert.equal(material.automaticActivation,false);assert.equal(requests,5);
   await assert.rejects(readSkillAcceptanceReviewCase({userId:other},{bundleId:collectedBundle,caseId:'shadow'}));
+  const bundleCount=(await pool.query('select count(*)::int n from agent_skill_acceptance_bundle where owner_id=$1',[owner])).rows[0].n;
+  await assert.rejects(composeSkillAcceptanceEvidence({userId:owner},{bundleIds:[collectedBundle]},collector),/missing planned cases/);
+  assert.equal((await pool.query('select count(*)::int n from agent_skill_acceptance_bundle where owner_id=$1',[owner])).rows[0].n,bundleCount);
   if(process.env.MA24_PROSPECTIVE_HTTP==='1')await verifySkillProspectiveHttp(pool,{owner,other,bundleId:collectedBundle,skillId:skill.id,baseline:baselineAnswer,candidate:candidateAnswer},nativeFetch);
  }
  await assert.rejects(prepareSkillProspectiveSource({userId:other},params),/owner/);
