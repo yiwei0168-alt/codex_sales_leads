@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+2026-10-16 / MA24 G14：FCC Thirteenth MBA 2022 候选的一题在用户内容确认后，通过原报告目标页、隔离产品证据、FCC 2026 不同发布家族题义及当前公开暴露闸门的有界终审，作为 **1 个私有独立 Gold 来源单元**批准。Source/Gold 快照和精确坐标仅保存在 Git 忽略隔离区，公开只留哈希。[家族判决](evidence/ma24-g14-fcc-mba-family-gold-disposition-2026-10-16.json)。完整题集、模型可见引用、G15 调用准入与 G16 双路质量未验。
+
 2026-10-16 / MA24 G14：Glasgow 5G 小型 XLSX 候选的两天目标行按原件重筛各 2 条，原格和 Decimal 计算一致，Zenodo v2 文件 MD5、许可标注及现行公开暴露检查完成。候选只比较一个地点/设备/运营商的 4 次采样，网络全市推断限定已送用户逐题确认。[审核收据](evidence/ma24-g14-glasgow5g-per-case-source-review-2026-10-16.json)。用户回复、来源家族独立性、用户可见引用与正式 Gold 仍待验；G15/G16 未放行。
 
 2026-10-16 / MA24 G05：超过现有 200 万字符登记上限的工作簿，上传任务现会记录 `extracted-content-too-large`，资料页明确提示拆分后重传。使用已退出独立题池的 Findex 原件在隔离克隆验证失败码、无发布文档及清理，10 项相关回归、类型和 lint 通过。[工程收据](evidence/ma24-g05-large-workbook-capacity-error-2026-10-16.json)。容量上限未变，大工作簿仍无法单件登记；生产用户界面与 G05 整体质量仍待验收。

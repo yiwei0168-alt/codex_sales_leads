@@ -1,0 +1,41 @@
+{
+  "schema": "ma24-g14-fcc-mba-family-gold-disposition-v1",
+  "date": "2026-10-16",
+  "decision": "Approve one user-content-confirmed FCC Thirteenth MBA case as one private independent Gold source unit; this is a partial G14 disposition, not the full frozen evaluation set or G16 admission.",
+  "caseId": "fcc-mba-2022-idle-loaded-latency-anonymization-v2",
+  "caseSha256": "91e5368eb276f088850def57cf67d17a867b2e774efe699bae26f918a01d7c7d",
+  "userContentConfirmation": "MA24-23",
+  "source": {
+    "officialUrl": "https://docs.fcc.gov/public/attachments/FCC-24-136A6.pdf",
+    "sha256": "cb74399d38def5adafb04390728bd3aae6aea0ad28cdac064c5f73dd1b661c4c",
+    "reviewedPhysicalPages": [8, 18, 19, 20]
+  },
+  "reviewBasis": [
+    "Original target pages were reviewed at original size; the answer retains the 2022 measurement period and avoids choosing between the page-19 prose and page-20 chart-caption aggregation terms.",
+    "An isolated product clone saved and read back all 62 source-bound visual decisions, registered the private tree and read six target evidence blocks; cross-account access was denied and synthetic records were cleared.",
+    "The prior FCC 2026 Section 706 and release source family asks different facts. Four target pages shared no eight- or twelve-word exact windows with those two sources in the bounded text comparison; manual question review found no same requested fact.",
+    "Historical 300, prior blind 50 and current draft questions had no same target measurement-method and anonymity question in the bounded local review.",
+    "The candidate source title, PDF identity, question and answer first appeared within one local candidate-preparation rollout; later source-specific code matches were limited to a clone test, not product answer or retrieval rules.",
+    "The current tracked text and local Git history contain no complete question or distinctive complete answer. The actual G16 public exposure gate accepted the private source-set and Gold bytes before model admission."
+  ],
+  "privateSnapshots": {
+    "sourceSetPath": "tmp/ma24-independent-quarantine/fcc-mba-reviewed-source-set-v1.json",
+    "sourceSetSha256": "ddae28d7423610df1927c0d1f777b783abbe30310d3e50ec2721b3b86d543df4",
+    "goldPath": "tmp/ma24-independent-quarantine/fcc-mba-reviewed-gold-v1.json",
+    "goldSha256": "3ff9dc871f5f7006a870c6884046fd602592a1b94b1835905108dc9b28794975",
+    "preciseSourceCoordinates": 5,
+    "sourceAndGoldPairValidation": "passed against G16 case/source validators; complete manifest validation was not run because the full set is not frozen"
+  },
+  "sourceUseBoundary": "Private attributed factual evaluation using short excerpts and source coordinates. Do not redistribute the whole PDF, third-party material or FCC marks, or imply FCC endorsement.",
+  "limitations": [
+    "Lexical, local-rollout and near-neighbor checks are bounded; they cannot prove absence of unrecorded, semantic or provider-side exposure.",
+    "The private candidate-preparation rollout contains the question and answer. It is recorded development exposure, not a public Git question or evidence that the eventual evaluation model saw Gold at run time.",
+    "Generated answers, user-visible citations, the complete G14 coverage and G16 dual-arm quality remain untested."
+  ],
+  "approvedGoldCasesInThisUnit": 1,
+  "approvedConnectedExposureUnits": 1,
+  "fullEvaluationSetFrozen": false,
+  "g15ReadyForModelCalls": false,
+  "realDualArmRuns": 0,
+  "g17ToG20": "paused"
+}
