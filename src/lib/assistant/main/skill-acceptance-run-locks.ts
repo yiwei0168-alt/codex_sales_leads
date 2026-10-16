@@ -1,5 +1,6 @@
 import type {PoolClient} from 'pg';
 import {z} from 'zod';
+import {messageInputSchema} from './contracts';
 
 type Artifact={plan:{cases:ReadonlyArray<{id:string;provenance:string}>};rawReceipts:Record<string,unknown>};
 /** Derive exclusively from the stored bundle, never from request-supplied run IDs. */
@@ -18,6 +19,11 @@ export function skillAcceptanceRunIds({plan,rawReceipts}:Artifact){
  }
  return z.array(z.uuid()).min(1).max(100).parse([...runs].sort());
 }
+export function skillAcceptanceAttachmentIds(runs:ReadonlyArray<{input:unknown}>){
+ const ids=new Set<string>();
+ for(const run of runs)for(const attachment of messageInputSchema.pick({attachments:true}).parse(run.input).attachments)ids.add(attachment.assetId);
+ return [...ids].sort();
+}
 /** Caller owns the account-bound transaction. Parent UPDATE locks also block new
  * journal rows via their run FK; existing rows require their own SHARE locks.
  * This does not lock external documents or authorize activation. */
@@ -25,9 +31,15 @@ export async function lockSkillAcceptanceRunJournals(client:PoolClient,userId:st
  z.uuid().parse(userId);const ids=skillAcceptanceRunIds(artifact);
  const origins=(await client.query<{n:number}>('select lock_skill_task_origins($1::uuid[]) n',[ids])).rows[0]?.n;
  if(origins!==ids.length)throw new Error('Acceptance task origin lock incomplete');
- const runs=await client.query<{id:string}>(`select id from agent_run where user_id=$1 and id=any($2::uuid[])
+ const runs=await client.query<{id:string;input:unknown}>(`select id,input from agent_run where user_id=$1 and id=any($2::uuid[])
   order by id for update`,[userId,ids]);
  if(runs.rows.length!==ids.length)throw new Error('Acceptance source task unavailable');
+ const attachments=skillAcceptanceAttachmentIds(runs.rows);
+ for(let offset=0;offset<attachments.length;offset+=100){
+  const batch=attachments.slice(offset,offset+100);
+  const locked=(await client.query<{n:number}>('select lock_skill_attachment_sources($1::uuid[]) n',[batch])).rows[0]?.n;
+  if(locked!==batch.length)throw new Error('Acceptance attachment source lock incomplete');
+ }
  await client.query(`select id from agent_tool_call where user_id=$1 and run_id=any($2::uuid[]) order by id for share`,[userId,ids]);
- return {taskOriginsLocked:true as const,taskJournalsLocked:true as const,runCount:ids.length};
+ return {attachmentMetadataLocked:true as const,attachmentCount:attachments.length,taskOriginsLocked:true as const,taskJournalsLocked:true as const,runCount:ids.length};
 }

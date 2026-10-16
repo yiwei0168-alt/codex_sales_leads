@@ -16,7 +16,7 @@ const bundle={artifactHash:digest('artifact'),latestReviewHash:digest('reviews')
 const material=()=>({bundleId,caseId:'replay',artifactHash:bundle.artifactHash,observationHash:digest(observation),sourceKind:'synthetic-fixture',
  freezeStatus:{state:'active',freezeId:'freeze'},canPass:{baseline:true,candidate:true},baseline:'PRIVATE baseline',candidate:'PRIVATE candidate',receipts:['PRIVATE receipt']});
 beforeEach(()=>{vi.resetAllMocks();m.read.mockResolvedValue(bundle);m.material.mockResolvedValue(material());
- m.lock.mockResolvedValue({taskOriginsLocked:true,taskJournalsLocked:true,runCount:1});
+ m.lock.mockResolvedValue({attachmentMetadataLocked:true,attachmentCount:0,taskOriginsLocked:true,taskJournalsLocked:true,runCount:1});
  m.policy.mockResolvedValue({artifactHash:bundle.artifactHash,latestReviewHash:bundle.latestReviewHash,policyPassed:false,automaticActivation:false});});
 it('rebuilds planned material and returns hashes without private answers or receipts',async()=>{
  const out=await revalidateLockedSkillAcceptanceMaterials(client,context,bundleId);

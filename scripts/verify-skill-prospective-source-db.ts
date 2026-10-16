@@ -50,14 +50,29 @@ const collector:SkillCollectorTransaction=async(userId,work)=>{
 };
 try{
  assert.equal((await pool.query('select count(*)::int n from app_user')).rows[0].n,1,'Fresh placeholder-only database required');
- if(process.env.MA24_COMPOSITION_LOCKED_MATERIALS==='1')await pool.query(await readFile('db/migrations/144_skill_task_origin_locks.sql','utf8'));
+ if(process.env.MA24_COMPOSITION_LOCKED_MATERIALS==='1'){
+  await pool.query(await readFile('db/migrations/144_skill_task_origin_locks.sql','utf8'));
+  await pool.query(await readFile('db/migrations/145_skill_attachment_source_locks.sql','utf8'));
+ }
  for(const id of [owner,other])await pool.query("insert into app_user(id,email,display_name,role,status) values($1,$2,'Synthetic prospective source','member','active')",[id,`${id}@example.invalid`]);
  await pool.query("insert into assistant_conversation(id,user_id,title) values($1,$2,'Synthetic prospective source')",[conversation,owner]);
  const skill=await importSkill({userId:owner,role:'member'},{name:'Synthetic prospective source',source:'synthetic-test',files:{'SKILL.md':'Read and cite the recorded account evidence.'},dependencies:[]});
  const registration=await prepareShadowRegistration(owner,{skillId:skill.id,version:1,hours:1,selection:{kind:'whole-read-only-task'}});
  await pool.query(`insert into agent_skill_shadow_campaign(id,owner_id,skill_id,version,content_hash,source_hash,config,enabled,expires_at)
   values($1,$2,$3,1,$4,$5,$6,true,clock_timestamp()+interval '1 hour')`,[campaign,owner,skill.id,registration.contentHash,registration.sourceHash,JSON.stringify(registration.config)]);
- const task={content:'Read the synthetic mailbox message and summarize its single stated preference.',attachments:[]},config=modeModelConfig('standard');
+ const attachmentId=randomUUID();
+ if(fullComposition){
+  const documentId=randomUUID(),treeId=randomUUID(),sha=digest('Synthetic composition attachment');
+  const collectionId=(await pool.query('select id from knowledge_collection order by id limit 1')).rows[0].id;
+  await pool.query(`insert into knowledge_document(id,collection_id,external_id,title,source_type,content_sha256,owner_id,visibility)
+   values($1,$2,$1::uuid::text,'Synthetic composition attachment','synthetic',$3,$4,'private')`,[documentId,collectionId,sha,owner]);
+  await pool.query(`insert into knowledge_asset(id,document_id,storage_key,source_sha256,mime_type,byte_size,document_type,source_nature)
+   values($1,$2,'synthetic/composition.txt',$3,'text/plain',0,'text','synthetic')`,[attachmentId,documentId,sha]);
+  await pool.query(`insert into knowledge_tree_version(id,document_id,asset_id,source_sha256,extractor_version,artifact_sha256,status)
+   values($1,$2,$3,$4,'synthetic',$4,'ready')`,[treeId,documentId,attachmentId,sha]);
+  await pool.query('update knowledge_document set current_tree_version_id=$1 where id=$2',[treeId,documentId]);
+ }
+ const task={content:'Read the synthetic mailbox message and summarize its single stated preference.',attachments:fullComposition?[{assetId:attachmentId}]:[]},config=modeModelConfig('standard');
  const initial=initialTaskMessages({userId:owner,role:'member',mode:'standard'},task,config,[]);
  const initialWithMemory:ModelMessage[]=[initial[0],decisionMemoryMessage(await loadDecisionMemory(owner)),...initial.slice(1)];
  const composition=fullComposition?await prepareCompositionDatabaseFixture({pool,owner,skillId:skill.id,config,memory:initialWithMemory[1]}):undefined;

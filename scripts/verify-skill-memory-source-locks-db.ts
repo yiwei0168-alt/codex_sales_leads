@@ -135,6 +135,7 @@ try{
  }finally{await taskOriginHolder.query('rollback');taskOriginHolder.release();}
  await Promise.all(taskOriginPending);
  const journalId=randomUUID(),runId=refs[0].runId;
+ await pool.query('update agent_run set input=$1 where id=$2',[JSON.stringify({attachments:[{assetId}]}),runId]);
  await pool.query(`insert into agent_tool_call(id,user_id,run_id,call_key,tool_id,tool_version,input_hash,input,effect,status)
   values($1,$2,$3,'existing','synthetic','v1',$4,'{}','read','completed')`,[journalId,owner,runId,digest({})]);
  const runArtifact={plan:{cases:[{id:'case',provenance:'historical-task'}]},rawReceipts:{baselineSources:{case:{runId}},candidateSources:{case:{runId}}}};
@@ -142,21 +143,24 @@ try{
  try{
   await journalHolder.query('begin');await journalHolder.query('set local role network_copilot_app');
   await journalHolder.query("select set_config('app.current_user_id',$1,true)",[owner]);
-  assert.deepEqual(await lockSkillAcceptanceRunJournals(journalHolder,owner,runArtifact),{taskOriginsLocked:true,taskJournalsLocked:true,runCount:1});
+  assert.deepEqual(await lockSkillAcceptanceRunJournals(journalHolder,owner,runArtifact),{attachmentMetadataLocked:true,attachmentCount:1,taskOriginsLocked:true,taskJournalsLocked:true,runCount:1});
   const pid=(await journalHolder.query('select pg_backend_pid() as pid')).rows[0].pid as number;
   journalPending=[
    pool.query('update agent_run set status=status where id=$1',[runId]),
    pool.query('update agent_tool_call set output=output where id=$1',[journalId]),
    pool.query(`insert into agent_tool_call(user_id,run_id,call_key,tool_id,tool_version,input_hash,input,effect,status)
     values($1,$2,'appended','synthetic','v1',$3,'{}','read','completed')`,[owner,runId,digest({})]),
+   pool.query('update knowledge_document set visibility=visibility where id=$1',[documentId]),
+   pool.query('update knowledge_asset set registration_status=registration_status where id=$1',[assetId]),
+   pool.query('update knowledge_tree_version set status=status where id=$1',[treeId]),
   ];
   for(const work of journalPending)void work.catch(()=>undefined);
   let waiting=0;
   for(let i=0;i<100;i++){
    waiting=Number((await pool.query('select count(*) n from pg_stat_activity where $1::int=any(pg_blocking_pids(pid))',[pid])).rows[0].n);
-   if(waiting===3)break;await new Promise(resolve=>setTimeout(resolve,20));
+   if(waiting===6)break;await new Promise(resolve=>setTimeout(resolve,20));
   }
-  assert.equal(waiting,3,'Task update, existing journal update and journal append must all wait');
+  assert.equal(waiting,6,'Task/journal and stored attachment updates must all wait');
  }finally{await journalHolder.query('rollback');journalHolder.release();}
  await Promise.all(journalPending);
  await assert.rejects(tenantTransaction(other,client=>lockSkillAcceptanceRunJournals(client,other,runArtifact)),/origin unavailable/);

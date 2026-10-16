@@ -1,6 +1,6 @@
 import type {PoolClient} from 'pg';
 import {expect,it,vi} from 'vitest';
-import {skillAcceptanceRunIds,lockSkillAcceptanceRunJournals} from './skill-acceptance-run-locks';
+import {skillAcceptanceRunIds,skillAcceptanceAttachmentIds,lockSkillAcceptanceRunJournals} from './skill-acceptance-run-locks';
 const runId='00000000-0000-4000-8000-000000000001';
 const artifact={plan:{cases:[{id:'replay',provenance:'historical-task'},{id:'shadow',provenance:'prospective-task'},{id:'safe',provenance:'safety-fixture'}]},
  rawReceipts:{baselineSources:{replay:{runId}},candidateSources:{replay:{runId}},prospectiveSources:{shadow:{runId}},safetySources:{safe:{runId}}}};
@@ -24,4 +24,25 @@ it('propagates missing origin migration before reading any journal',async()=>{
  const query=vi.fn().mockRejectedValue(new Error('function lock_skill_task_origins does not exist'));
  await expect(lockSkillAcceptanceRunJournals({query} as unknown as PoolClient,runId,artifact)).rejects.toThrow('does not exist');
  expect(query).toHaveBeenCalledTimes(1);
+});
+it('derives only valid stored attachments, deduplicated and sorted',()=>{
+ expect(skillAcceptanceAttachmentIds([{input:{}},{input:{attachments:[{assetId:runId},{assetId:runId}]}}])).toEqual([runId]);
+ expect(()=>skillAcceptanceAttachmentIds([{input:{attachments:[{assetId:'invalid'}]}}])).toThrow();
+});
+it('fails closed if an attachment lock count differs',async()=>{
+ const query=vi.fn().mockResolvedValueOnce({rows:[{n:1}]}).mockResolvedValueOnce({rows:[{id:runId,input:{attachments:[{assetId:runId}]}}]})
+  .mockResolvedValueOnce({rows:[{n:0}]});
+ await expect(lockSkillAcceptanceRunJournals({query} as unknown as PoolClient,runId,artifact)).rejects.toThrow('attachment source lock incomplete');
+ expect(query).toHaveBeenCalledTimes(3);
+});
+it('batches more than 100 unique attachments without dropping any',async()=>{
+ const uuid=(n:number)=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
+ const taskIds=Array.from({length:6},(_,i)=>uuid(i+1));
+ const bundle={plan:{cases:taskIds.map((_,i)=>({id:String(i),provenance:'safety-fixture'}))},
+  rawReceipts:{safetySources:Object.fromEntries(taskIds.map((id,i)=>[String(i),{runId:id}]))}};
+ const rows=taskIds.map((id,i)=>({id,input:{attachments:Array.from({length:20},(_,j)=>({assetId:uuid(100+i*20+j)}))}}));
+ const query=vi.fn().mockResolvedValueOnce({rows:[{n:6}]}).mockResolvedValueOnce({rows})
+  .mockResolvedValueOnce({rows:[{n:100}]}).mockResolvedValueOnce({rows:[{n:20}]}).mockResolvedValueOnce({rows:[]});
+ expect(await lockSkillAcceptanceRunJournals({query} as unknown as PoolClient,runId,bundle)).toMatchObject({attachmentMetadataLocked:true,attachmentCount:120});
+ expect(query.mock.calls[2][1][0]).toHaveLength(100);expect(query.mock.calls[3][1][0]).toHaveLength(20);
 });
