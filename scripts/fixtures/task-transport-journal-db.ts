@@ -1,20 +1,17 @@
 import assert from 'node:assert/strict';
-import {generateKeyPairSync,randomUUID,sign} from 'node:crypto';
+import {generateKeyPairSync,randomUUID} from 'node:crypto';
 import {writeFile} from 'node:fs/promises';
 import {join} from 'node:path';
 import {spawn} from 'node:child_process';
 import {build} from 'esbuild';
 import type {Pool} from 'pg';
-import {digest,result} from '../../src/lib/assistant/main/contracts';
+import {digest} from '../../src/lib/assistant/main/contracts';
 import {modeModelConfig} from '../../src/lib/assistant/main/mode-config';
-import {modelFunctions} from '../../src/lib/assistant/main/model';
-import {modelRequestManifest} from '../../src/lib/assistant/main/model-request-manifest';
-import {beginCall,completeCall} from '../../src/lib/assistant/main/repository';
-import {skillTransportResponseHash} from '../../src/lib/assistant/main/skill-model-transport-receipt';
+import {beginCall} from '../../src/lib/assistant/main/repository';
 import {verifyOwnedTaskModelTransports} from '../../src/lib/assistant/main/task-model-transport-journal';
 
-/** Synthetic signatures exercise actual app-role journal persistence and audit,
- * not the request factory, provider network or production deployment identity. */
+/** Real signing closures and app-role persistence with synthetic network/billing.
+ * Does not qualify production network, billing or deployment identity. */
 export async function verifyTaskTransportJournalDatabase(pool:Pool,owner:string,other:string,directory:string){
  const runId=randomUUID(),conversationId=randomUUID(),leaseToken=randomUUID(),config=modeModelConfig('quick');
  const context={userId:owner,runId,leaseToken,role:'member' as const};
@@ -32,36 +29,28 @@ export async function verifyTaskTransportJournalDatabase(pool:Pool,owner:string,
  // Output stays under the project so external packages resolve from its node_modules.
  const compiledPath=join(process.cwd(),'tmp','task-transport-admission.cjs');
  await build({entryPoints:['scripts/fixtures/task-transport-preflight-runner.ts'],outfile:compiledPath,bundle:true,platform:'node',target:'node24',format:'cjs',packages:'external',logLevel:'warning',
-  banner:{js:`globalThis.fetch=async(url)=>{if(String(url)!=='https://openrouter.ai/api/v1/chat/completions')throw new Error('Synthetic destination rejected');const response=new Response('{}',{status:503});Object.defineProperty(response,'url',{value:String(url)});return response;};`},
+  banner:{js:String.raw`globalThis.fetch=async(url,init)=>{if(String(url)!=='https://openrouter.ai/api/v1/chat/completions')throw new Error('Synthetic destination rejected');const body=JSON.parse(init.body);const success=process.env.MA24_SYNTHETIC_RESPONSE==='success';const chunk={id:'synthetic-'+body.model,model:body.model,provider:'synthetic',choices:[{index:0,delta:{content:'Synthetic streamed reply'},finish_reason:'stop'}]};const response=success?new Response('data: '+JSON.stringify(chunk)+'\n\ndata: [DONE]\n\n',{status:200,headers:{'Content-Type':'text/event-stream'}}):new Response('{}',{status:503});Object.defineProperty(response,'url',{value:String(url)});return response;};`},
   plugins:[{name:'explicit-synthetic-network-and-billing',setup(builder){
    builder.onResolve({filter:/(?:billing\/paid-fetch|network\/model-transport)$/},()=>({path:'synthetic-adapters',namespace:'ma24-fixture'}));
    builder.onLoad({filter:/.*/,namespace:'ma24-fixture'},()=>({contents:'export const budgetedFetch=(transport)=>transport; export const modelRoutedTransport=(transport)=>transport;',loader:'js'}));
   }}]});
- const envelope=(statement:unknown)=>({statement,signature:sign(null,Buffer.from(digest(statement),'hex'),pair.privateKey).toString('base64url')});
  const outputs:unknown[]=[],ids:string[]=[];
  for(let index=0;index<2;index++){
   const request={messages:[{role:'user' as const,content:'Synthetic stored request'}],profile:config.profile!,index};
   const callKey=`mode-model:0:0:${index}`,attempt=await beginCall(context,{key:callKey,tool:'main_model',version:request.profile.version,input:request,effect:'model'});
   assert.equal(attempt.fresh,true);ids.push(attempt.id);
-  if(index===0){
+  {
    await writeFile(runnerPath,JSON.stringify({userId:owner,runId,callId:attempt.id,callKey,otherUserId:other}));
    const exit=await new Promise<{code:number|null;output:string}>((resolve,reject)=>{
     const child=spawn(process.execPath,[compiledPath,runnerPath],{windowsHide:true,stdio:['ignore','pipe','pipe'],env:{...process.env,
      NODE_ENV:'production',NODE_OPTIONS:'',NODE_EXTRA_CA_CERTS:'',SSL_CERT_FILE:'',SSL_CERT_DIR:'',NODE_USE_SYSTEM_CA:'0',NODE_TLS_REJECT_UNAUTHORIZED:'1',
      OPENROUTER_API_KEY:'SYNTHETIC_NOT_A_CREDENTIAL',OPENROUTER_BASE_URL:'https://openrouter.ai/api/v1',OPENROUTER_HTTP_REFERER:'',
-     TASK_MODEL_TRANSPORT_KEY_ID:key.keyId,TASK_MODEL_TRANSPORT_PRIVATE_KEY_FILE:keyPath}});let output='';
+     TASK_MODEL_TRANSPORT_KEY_ID:key.keyId,TASK_MODEL_TRANSPORT_PRIVATE_KEY_FILE:keyPath,MA24_SYNTHETIC_RESPONSE:index?'success':'failure'}});let output='';
     child.stdout.on('data',data=>{output+=String(data);});child.stderr.on('data',()=>{});child.once('error',reject);child.once('exit',code=>resolve({code,output}));
    });
    assert.equal(exit.code,0,'Compiled original task admission failed');assert(exit.output.includes('"originalTaskCompiledAdmission":"passed"'));
   }
-  const route=request.profile.routes[index],body={model:route.model,messages:request.messages,tools:modelFunctions,stream:true,reasoning:{effort:route.effort}};
-  const capturedAt=new Date().toISOString(),completedAt=new Date().toISOString(),message={role:'assistant',content:'Synthetic stored reply'};
-  const manifest=modelRequestManifest(body,index?{model:route.model,provider:'synthetic',id:randomUUID()}:null);
-  const common={ownerId:owner,runId,callId:attempt.id,callKey,inputHash:digest(request),collectorId,deploymentHash,keyId:key.keyId,
-   requestHash:manifest.requestHash,manifestHash:digest(manifest),origin:'https://openrouter.ai',path:'/api/v1/chat/completions',capturedAt,completedAt,expiresAt:key.expiresAt};
-  const output=index?result({value:{message,requestManifest:manifest,transportReceipt:envelope({...common,protocol:'task-model-transport-v1',status:200,responseHash:skillTransportResponseHash(message)})}})
-   :(await pool.query('select output from agent_tool_call where id=$1',[attempt.id])).rows[0].output;
-  await completeCall(context,attempt.id,output,{});outputs.push(output);
+  const output=(await pool.query('select output from agent_tool_call where id=$1',[attempt.id])).rows[0].output;outputs.push(output);
   const recovered=await beginCall(context,{key:callKey,tool:'main_model',version:request.profile.version,input:request,effect:'model'});
   assert.equal(recovered.fresh,false);assert.deepEqual(recovered.output,output);
  }
@@ -80,5 +69,5 @@ export async function verifyTaskTransportJournalDatabase(pool:Pool,owner:string,
  return {originalTaskJournalDatabase:true,originalTaskSignedFallbackReadback:true,originalTaskRecoveryReuse:true,
   originalTaskCrossAccountRejected:true,originalTaskKeyRevocationRejected:true,originalTaskTamperedSignatureRejected:true,originalTaskRouteGapRejected:true,
   originalTaskCompiledAdmissionVerified:true,originalTaskRequestFactoryAdmissionExecuted:true,originalTaskRequestClosureExecuted:true,
-  originalTaskSyntheticFailureSignedAndPersisted:true,billingAndNetworkAdaptersSynthetic:true,actualModelCalls:0};
+  originalTaskSyntheticFailureSignedAndPersisted:true,originalTaskSyntheticStreamSuccessSignedAndPersisted:true,billingAndNetworkAdaptersSynthetic:true,actualModelCalls:0};
 }
