@@ -1,0 +1,35 @@
+{
+  "stage": "G09 collector image including signed fallback transport",
+  "date": "2026-10-16",
+  "commit": "6fc080716af6db7c65c09c0996c13bbbbc956451",
+  "image": "ma24-skill-collector:6fc08071",
+  "imageId": "sha256:b7c8214619c4e4ec12ec6e8ad27a6c19696f8fdc523cb21e74faf4b19690585a",
+  "runnerSha256": "5cbe588d8fa8796e7e8d31b596527d377eb829f7977d1f798d026be651e87d1b",
+  "commands": [
+    "node scripts/build-skill-collector-image.mjs",
+    "node scripts/verify-skill-collector-image.mjs ma24-skill-collector:6fc08071",
+    "node scripts/verify-ma24-image-source.mjs ma24-skill-collector:6fc08071 6fc08071",
+    "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --collector-image=ma24-skill-collector:6fc08071"
+  ],
+  "exitCodes": [0, 0, 0, 0],
+  "checks": {
+    "sourceInputCount": 909,
+    "sourceInventoryHash": "331232a434c0703ad27549186f04f4a49a9161c28951483cc950fcc0c7a82924",
+    "runtimeInventoryEntries": 34424,
+    "nonRootReadOnlyNoNetworkIntegrityAndHelp": true,
+    "changedRunnerRejectedBeforeExecution": true,
+    "collectorImageTlsDatabasePreflight": true,
+    "dedicatedLoginAndApplicationRoleMembershipRejection": true,
+    "hostFixtureSignedFallbackPersistenceAndRecovery": true,
+    "crossAccountAndRevocationRejection": true,
+    "temporaryTestContainersAndFixturesCleaned": true
+  },
+  "actualModelCalls": 0,
+  "productionQualified": false,
+  "automaticActivation": false,
+  "limitations": [
+    "Image executed integrity/help and --check only; no --execute or live provider task was run.",
+    "Synthetic fallback receipts were created by the host database fixture, not the image's provider transport.",
+    "Self-integrity requires external trust in the approved image digest; production deployment/key enrollment and final activation remain unverified."
+  ]
+}
