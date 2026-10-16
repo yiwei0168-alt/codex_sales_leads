@@ -9,6 +9,11 @@ import {digest} from '../../src/lib/assistant/main/contracts';
 import {modeModelConfig} from '../../src/lib/assistant/main/mode-config';
 import {beginCall} from '../../src/lib/assistant/main/repository';
 import {verifyOwnedTaskModelTransports} from '../../src/lib/assistant/main/task-model-transport-journal';
+import {initialTaskMessages} from '../../src/lib/assistant/main/initial-task-messages';
+import {loadDecisionMemory} from '../../src/lib/assistant/main/memory-context';
+import {decisionMemoryMessage} from '../../src/lib/assistant/main/decision-memory-message';
+import {loadRecordedTaskChain} from '../../src/lib/assistant/main/recorded-task-source';
+import {replayRecordedGraphTrace} from '../../src/lib/assistant/main/recorded-graph-audit';
 
 /** Real signing closures and app-role persistence with synthetic network/billing.
  * Does not qualify production network, billing or deployment identity. */
@@ -18,6 +23,11 @@ export async function verifyTaskTransportJournalDatabase(pool:Pool,owner:string,
  await pool.query('insert into assistant_conversation(id,user_id,title) values($1,$2,$3)',[conversationId,owner,'Synthetic original transport']);
  await pool.query(`insert into agent_run(id,user_id,conversation_id,request_key,request_hash,input,model_config,status,execution_kind,lease_token,lease_until)
   values($1,$2,$3,$7,$4,'{}',$5,'running','main-agent',$6,now()+interval '10 minutes')`,[runId,owner,conversationId,digest('synthetic'),JSON.stringify(config),leaseToken,runId]);
+ const task={content:'Synthetic stored request',attachments:[]};
+ await pool.query('update agent_run set input=$2,request_hash=$3 where id=$1',[runId,JSON.stringify(task),digest(task)]);
+ await pool.query("insert into assistant_message(user_id,conversation_id,role,intent,content,metadata) values($1,$2,'user','general',$3,$4)",[owner,conversationId,task.content,JSON.stringify({runId})]);
+ const initial=initialTaskMessages({...context,mode:config.profile!.mode},task,config,[]);
+ const messages=[initial[0],decisionMemoryMessage(await loadDecisionMemory(owner)),...initial.slice(1)];
  const pair=generateKeyPairSync('ed25519'),collectorId='synthetic-original-task',deploymentHash=digest('synthetic-original-deployment');
  const key={keyId:randomUUID(),collectorId,deploymentHash,enabled:true,purposes:['task-model-transport'],
   publicKeyPem:pair.publicKey.export({type:'spki',format:'pem'}).toString(),notBefore:new Date(Date.now()-60000).toISOString(),expiresAt:new Date(Date.now()+3600000).toISOString()};
@@ -36,7 +46,7 @@ export async function verifyTaskTransportJournalDatabase(pool:Pool,owner:string,
   }}]});
  const outputs:unknown[]=[],ids:string[]=[];
  for(let index=0;index<2;index++){
-  const request={messages:[{role:'user' as const,content:'Synthetic stored request'}],profile:config.profile!,index};
+  const request={messages,profile:config.profile!,index};
   const callKey=`mode-model:0:0:${index}`,attempt=await beginCall(context,{key:callKey,tool:'main_model',version:request.profile.version,input:request,effect:'model'});
   assert.equal(attempt.fresh,true);ids.push(attempt.id);
   {
@@ -54,8 +64,17 @@ export async function verifyTaskTransportJournalDatabase(pool:Pool,owner:string,
   const recovered=await beginCall(context,{key:callKey,tool:'main_model',version:request.profile.version,input:request,effect:'model'});
   assert.equal(recovered.fresh,false);assert.deepEqual(recovered.output,output);
  }
- await pool.query("update agent_run set status='completed' where id=$1",[runId]);
+ await pool.query("update agent_run set status='completed',result=$2 where id=$1",[runId,JSON.stringify({reply:'Synthetic streamed reply'})]);
  const checked=await verifyOwnedTaskModelTransports({userId:owner},{runId});assert.equal(checked.transportReceiptHashes.length,2);assert.equal(checked.automaticActivation,false);
+ const taskChain=await loadRecordedTaskChain({userId:owner},{runId});assert.equal(taskChain.turns.length,1);assert.equal(taskChain.initialConversationProvenanceVerified,true);
+ await replayRecordedGraphTrace(taskChain);
+ await pool.query("update assistant_message set content='Changed original message' where user_id=$1 and metadata->>'runId'=$2",[owner,runId]);
+ await assert.rejects(loadRecordedTaskChain({userId:owner},{runId}),/original user message changed/);
+ await pool.query("update assistant_message set content=$3 where user_id=$1 and metadata->>'runId'=$2",[owner,runId,task.content]);
+ await pool.query('update agent_run set result=$2 where id=$1',[runId,JSON.stringify({reply:'Changed final reply'})]);
+ await assert.rejects(loadRecordedTaskChain({userId:owner},{runId}),/final answer/);
+ await pool.query('update agent_run set result=$2 where id=$1',[runId,JSON.stringify({reply:'Synthetic streamed reply'})]);
+ await loadRecordedTaskChain({userId:owner},{runId});
  await assert.rejects(verifyOwnedTaskModelTransports({userId:other},{runId}),/Completed owned task/);
  key.enabled=false;await writeFile(path,JSON.stringify(registry));await assert.rejects(verifyOwnedTaskModelTransports({userId:owner},{runId}),/trust/);
  key.enabled=true;await writeFile(path,JSON.stringify(registry));
@@ -70,5 +89,6 @@ export async function verifyTaskTransportJournalDatabase(pool:Pool,owner:string,
   originalTaskCrossAccountRejected:true,originalTaskKeyRevocationRejected:true,originalTaskTamperedSignatureRejected:true,originalTaskRouteGapRejected:true,
   originalTaskCompiledAdmissionVerified:true,originalTaskRequestFactoryAdmissionExecuted:true,originalTaskRequestClosureExecuted:true,
   originalTaskSyntheticFailureSignedAndPersisted:true,originalTaskSyntheticStreamSuccessSignedAndPersisted:true,
-  originalTaskOtherBillingTaskRejected:true,billingAndNetworkAdaptersSynthetic:true,actualModelCalls:0};
+  originalTaskOtherBillingTaskRejected:true,originalTaskContextChainVerified:true,originalTaskGraphReplayVerified:true,
+  originalTaskChangedUserMessageRejected:true,originalTaskChangedFinalReplyRejected:true,billingAndNetworkAdaptersSynthetic:true,actualModelCalls:0};
 }
