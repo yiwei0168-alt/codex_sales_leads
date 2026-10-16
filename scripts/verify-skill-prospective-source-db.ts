@@ -25,6 +25,7 @@ import {collectSkillProspectiveAcceptance} from '../src/lib/assistant/main/skill
 import {readSkillAcceptanceReview,readSkillAcceptanceReviewCase} from '../src/lib/assistant/main/skill-acceptance-review';
 import {verifySkillProspectiveHttp} from './verify-skill-prospective-http';
 import {composeSkillAcceptanceEvidence} from '../src/lib/assistant/main/skill-acceptance-composition';
+import {prepareCompositionDatabaseFixture,verifyCompositionDatabaseFixture} from './fixtures/skill-composition-database';
 
 nextEnv.loadEnvConfig(process.cwd());disableLocalAnalysisTracing();
 assert.equal(process.env.MA24_DISPOSABLE_PROSPECTIVE_SOURCE,'1','Dedicated disposable-cluster harness required');
@@ -38,6 +39,8 @@ const pool=new Pool({connectionString:adminUrl.toString()});
 const owner=randomUUID(),other=randomUUID(),conversation=randomUUID(),campaign=randomUUID(),run=randomUUID();
 const connection=randomUUID(),mail=randomUUID(),modelCall=randomUUID(),readCall=randomUUID();
 const fullMaterial=process.env.MA24_PROSPECTIVE_FULL_MATERIAL==='1';
+const fullComposition=process.env.MA24_PROSPECTIVE_COMPOSITION==='1';
+assert(!fullComposition||fullMaterial,'Composition requires full paired material');
 const collector:SkillCollectorTransaction=async(userId,work)=>{
  const client=await pool.connect();try{await client.query('begin');await client.query('set local role network_copilot_skill_collector');
   await client.query("select set_config('app.current_user_id',$1,true)",[userId]);const value=await work(client);
@@ -55,6 +58,7 @@ try{
  const task={content:'Read the synthetic mailbox message and summarize its single stated preference.',attachments:[]},config=modeModelConfig('standard');
  const initial=initialTaskMessages({userId:owner,role:'member',mode:'standard'},task,config,[]);
  const initialWithMemory:ModelMessage[]=[initial[0],decisionMemoryMessage(await loadDecisionMemory(owner)),...initial.slice(1)];
+ const composition=fullComposition?await prepareCompositionDatabaseFixture({pool,owner,skillId:skill.id,config,memory:initialWithMemory[1]}):undefined;
  const sqlHash=async(value:unknown)=>(await pool.query('select skill_shadow_json_hash($1::jsonb) as hash',[JSON.stringify(value)])).rows[0].hash as string;
  const requestHash=digest(task);
  const start={kind:'prospective-server-capture',campaignId:campaign,skillId:skill.id,version:1,
@@ -68,8 +72,9 @@ try{
    toolSchemaHash:fullMaterial?digest(modelFunctions):hash,modelConfigHash:digest(config),
    scopeHash:fullMaterial?digest({userId:owner,role:'member',mode:'standard',knowledgeScope:null}):hash},
   expiresAt:new Date(Date.now()+3600000).toISOString(),
-  cases:['replay','negative','injection','permissions','shadow'].map(category=>({id:category,category,
-   inputHash:digest(task),sourceHash:digest(start),provenance:category==='replay'?'historical-task':category==='shadow'?'prospective-task':'safety-fixture'}))};
+  cases:composition?[...composition.cases,{id:'shadow',category:'shadow',inputHash:digest(task),sourceHash:digest(start),provenance:'prospective-task'}]:
+   ['replay','negative','injection','permissions','shadow'].map(category=>({id:category,category,
+    inputHash:digest(task),sourceHash:digest(start),provenance:category==='replay'?'historical-task':category==='shadow'?'prospective-task':'safety-fixture'}))};
  const frozen=await freezeSkillAcceptancePlan({userId:owner},draft,collector);
  await pool.query(`insert into agent_run(id,user_id,conversation_id,request_key,request_hash,input,model_config,status,execution_kind,execution_version)
   values($1,$2,$3,$1::uuid::text,$4,$5,$6,'queued','main-agent','prospective-source-fixture')`,[run,owner,conversation,requestHash,JSON.stringify(task),JSON.stringify(config)]);
@@ -109,6 +114,7 @@ try{
  assert.equal(verified.prospectiveCaptureVerified,true);assert.equal(verified.localComparisonPromoted,false);
  assert.equal(verified.projection.runId,run);
  let collectedBundle:string|undefined;
+ let composedBundle:string|undefined;
  if(fullMaterial){
   const evaluationId=randomUUID(),candidateAnswer='Synthetic candidate: Please keep responses concise.';
   let requests=0;
@@ -134,7 +140,8 @@ try{
   const bundleCount=(await pool.query('select count(*)::int n from agent_skill_acceptance_bundle where owner_id=$1',[owner])).rows[0].n;
   await assert.rejects(composeSkillAcceptanceEvidence({userId:owner},{bundleIds:[collectedBundle]},collector),/missing planned cases/);
   assert.equal((await pool.query('select count(*)::int n from agent_skill_acceptance_bundle where owner_id=$1',[owner])).rows[0].n,bundleCount);
-  if(process.env.MA24_PROSPECTIVE_HTTP==='1')await verifySkillProspectiveHttp(pool,{owner,other,bundleId:collectedBundle,skillId:skill.id,baseline:baselineAnswer,candidate:candidateAnswer},nativeFetch);
+  if(composition)composedBundle=await verifyCompositionDatabaseFixture({pool,owner,other,skillId:skill.id,prospectiveBundleId:collectedBundle,prepared:composition,frozen,transaction:collector});
+  if(process.env.MA24_PROSPECTIVE_HTTP==='1')await verifySkillProspectiveHttp(pool,{owner,other,bundleId:composedBundle??collectedBundle,skillId:skill.id,baseline:baselineAnswer,candidate:candidateAnswer},nativeFetch);
  }
  await assert.rejects(prepareSkillProspectiveSource({userId:other},params),/owner/);
  const late=await freezeSkillAcceptancePlan({userId:owner},draft,collector);
@@ -142,12 +149,14 @@ try{
  await pool.query("update mailbox_message set metadata=jsonb_set(metadata,'{rawContentPurged}','true') where id=$1",[mail]);
  await assert.rejects(prepareSkillProspectiveSource({userId:owner},params),/Private replay source unavailable/);
  if(collectedBundle)await assert.rejects(readSkillAcceptanceReviewCase({userId:owner},{bundleId:collectedBundle,caseId:'shadow'}));
+ if(composedBundle)await assert.rejects(readSkillAcceptanceReviewCase({userId:owner},{bundleId:composedBundle,caseId:'shadow'}));
  await pool.query("update mailbox_message set metadata=metadata-'rawContentPurged' where id=$1",[mail]);
  assert.equal((await prepareSkillProspectiveSource({userId:owner},params)).projectionHash,verified.projectionHash);
  await revokeSkillAcceptanceFreeze({userId:owner},{freezeId:frozen.freezeId,reason:'Synthetic source revocation'});
  await assert.rejects(prepareSkillProspectiveSource({userId:owner},params),/revoked/);
+ if(composedBundle)await assert.rejects(readSkillAcceptanceReviewCase({userId:owner},{bundleId:composedBundle,caseId:'shadow'}));
  assert.equal((await pool.query('select enabled from agent_skill where id=$1',[skill.id])).rows[0].enabled,false);
  console.log(JSON.stringify({prospectiveSourceDatabase:'passed',serverTriggerCapture:true,preTaskFreezeBinding:true,
   realMailboxReceiptRevalidation:true,lateFreezeAndPurgedSourceRejected:true,crossAccountAndRevocationRejected:true,
-  fullPairedMaterialVerified:fullMaterial,localComparisonPromoted:false,automaticActivation:false,modelCalls:0,externalCalls:0}));
+  fullPairedMaterialVerified:fullMaterial,completeCompositionVerified:fullComposition,localComparisonPromoted:false,automaticActivation:false,modelCalls:0,externalCalls:0}));
 }finally{await pool.end();await getPool().end();}

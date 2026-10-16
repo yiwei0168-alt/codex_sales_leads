@@ -22,11 +22,12 @@ const runnerAttestationCheck = args.includes("--runner-attestation");
 const prospectiveHttpArgument = args.find(arg => arg.startsWith('--prospective-http-image='));
 const prospectiveHttpImage = prospectiveHttpArgument?.slice('--prospective-http-image='.length);
 const prospectiveBrowserCheck = args.includes('--prospective-browser');
-const prospectiveMaterialCheck = args.includes("--prospective-material") || Boolean(prospectiveHttpImage);
+const prospectiveCompositionCheck = args.includes('--prospective-composition');
+const prospectiveMaterialCheck = args.includes("--prospective-material") || Boolean(prospectiveHttpImage) || prospectiveCompositionCheck;
 const prospectiveSourceCheck = args.includes("--prospective-source") || prospectiveMaterialCheck;
 const rollbackImageArgument = args.find(arg => arg.startsWith("--rollback-image="));
 const rollbackImage = rollbackImageArgument?.slice("--rollback-image=".length);
-assert(args.length <= 12 && args.every(arg => ["--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", "--prospective-source", "--prospective-material", '--prospective-browser', prospectiveHttpArgument, webImageArgument, rollbackImageArgument].includes(arg))
+assert(args.length <= 13 && args.every(arg => ["--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", "--prospective-source", "--prospective-material", '--prospective-browser', '--prospective-composition', prospectiveHttpArgument, webImageArgument, rollbackImageArgument].includes(arg))
   && (!prospectiveBrowserCheck || prospectiveHttpImage)
   && (!prospectiveHttpArgument || (prospectiveHttpImage && /^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(prospectiveHttpImage)))
   && (!webImageArgument || (webImage && /^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(webImage)))
@@ -34,7 +35,7 @@ assert(args.length <= 12 && args.every(arg => ["--browser", "--ten-user", "--bac
   && (!(browserCheck || tenUserCheck || backupCheck || crossClusterCheck || rollbackImage) || webImage)
   && (!crossClusterCheck || backupCheck)
   && (!rollbackImage || rollbackImage !== webImage),
-  "Expected --mode-business, --runner-attestation, --prospective-source, --prospective-material, --prospective-http-image=<builder-tag>, or --web-image=<tag> with optional --browser, --ten-user, --backup, --cross-cluster (with --backup), and --rollback-image=<prior-tag>");
+  "Expected --mode-business, --runner-attestation, --prospective-source, --prospective-material, --prospective-composition, --prospective-http-image=<builder-tag> (with optional --prospective-browser), or --web-image=<tag> with optional --browser, --ten-user, --backup, --cross-cluster (with --backup), and --rollback-image=<prior-tag>");
 const networkName = `ma24-pilot-net-${id}`;
 const adminPassword = randomBytes(24).toString("hex");
 const appPassword = randomBytes(24).toString("hex");
@@ -127,12 +128,13 @@ try {
       '--workdir', '/build', '--env', `DATABASE_URL=${inContainerApp.toString()}`,
       '--env', `DATABASE_MIGRATION_URL=${inContainerAdmin.toString()}`,
       '--env', 'MA24_DISPOSABLE_PROSPECTIVE_SOURCE=1', '--env', 'MA24_PROSPECTIVE_FULL_MATERIAL=1',
+      ...(prospectiveCompositionCheck ? ['--env','MA24_PROSPECTIVE_COMPOSITION=1'] : []),
       ...(prospectiveBrowserDirectory ? ['--mount', `type=bind,source=${prospectiveBrowserDirectory},target=/probe`, '--env', 'MA24_PROSPECTIVE_BROWSER=1'] : []),
       '--env', 'MA24_PROSPECTIVE_HTTP=1', prospectiveHttpImage,
       'node', 'scripts/run-tsx.cjs', 'scripts/verify-skill-prospective-source-db.ts']) : run(process.execPath,
       ["scripts/run-tsx.cjs", "scripts/verify-skill-prospective-source-db.ts"],
       { ...process.env, DATABASE_URL: appUrl.toString(), DATABASE_MIGRATION_URL: adminUrl.toString(),
-        MA24_DISPOSABLE_PROSPECTIVE_SOURCE: "1",MA24_PROSPECTIVE_FULL_MATERIAL: prospectiveMaterialCheck ? "1" : "0" });
+        MA24_DISPOSABLE_PROSPECTIVE_SOURCE: "1",MA24_PROSPECTIVE_FULL_MATERIAL: prospectiveMaterialCheck ? "1" : "0",MA24_PROSPECTIVE_COMPOSITION:prospectiveCompositionCheck?'1':'0' });
     if(prospectiveBrowserDirectory){
       let terminal=false;void sourcePromise.finally(()=>{terminal=true;}).catch(()=>undefined);
       try{
@@ -162,6 +164,7 @@ try {
     if(prospectiveMaterialCheck)assert(source.output.includes('"fullPairedMaterialVerified":true'),source.output);
     if(prospectiveHttpImage)assert(source.output.includes('"prospectiveStandaloneHttp":"passed"'),source.output);
     if(prospectiveBrowserCheck)assert(source.output.includes('"prospectiveStandaloneBrowser":"passed"'),source.output);
+    if(prospectiveCompositionCheck)assert(source.output.includes('"completeCompositionDatabase":"passed"')&&source.output.includes('"completeCompositionVerified":true'),source.output);
   }
   if (runnerAttestationCheck) {
     const attested = await run(process.execPath,
@@ -443,6 +446,7 @@ try {
     prospectivePairedMaterialVerified: prospectiveMaterialCheck,
     prospectiveStandaloneHttpVerified: Boolean(prospectiveHttpImage),
     prospectiveStandaloneBrowserVerified: prospectiveBrowserCheck,
+    completeCompositionVerified: prospectiveCompositionCheck,
     samePortPriorImageRollbackVerified: Boolean(rollbackImage) }));
 } finally {
   if(prospectiveBrowserDirectory)rmSync(prospectiveBrowserDirectory,{recursive:true,force:true});
