@@ -3,12 +3,17 @@ import { randomBytes, randomUUID } from "node:crypto";
 import { spawn, type ChildProcess } from "node:child_process";
 import { createServer } from "node:net";
 import { readFile } from "node:fs/promises";
-import { resolve } from "node:path";
+import { resolve, sep } from "node:path";
 import { Client } from "pg";
 import { hashPassword } from "../../src/lib/auth/password";
 
 const oldRoot = resolve("tmp/ui-scroll-runtime-release");
-const candidateRoot = process.cwd();
+const standaloneRoot = process.env.MA24_CANDIDATE_STANDALONE_ROOT?.trim();
+const candidateRoot = resolve(standaloneRoot || process.cwd());
+if (standaloneRoot) {
+  assert(candidateRoot.startsWith(`${resolve(".next-releases")}${sep}`),
+    "Standalone candidate must be inside the release package directory");
+}
 const oldBuild = "QfoyXprIZIVgSWxFSZ-1K";
 const nextBin = (root: string) => resolve(root, "node_modules/next/dist/bin/next");
 
@@ -91,9 +96,14 @@ export async function verifyMa24WebCloneCompatibility(options: {
     const port = await freeLocalPort();
     const base = `http://127.0.0.1:${port}`;
     let serviceOutput = "";
-    const child = spawn(process.execPath, [nextBin(version.root), "start", "-H", "127.0.0.1", "-p", String(port)], {
+    const standaloneCandidate = version.name === "candidate-web" && Boolean(standaloneRoot);
+    const args = standaloneCandidate
+      ? [resolve(version.root, "server.js")]
+      : [nextBin(version.root), "start", "-H", "127.0.0.1", "-p", String(port)];
+    const child = spawn(process.execPath, args, {
       cwd: version.root,
-      env: { ...process.env, NODE_ENV: "production", DATABASE_URL: options.applicationDatabaseUrl,
+      env: { ...process.env, NODE_ENV: "production", PORT: String(port), HOSTNAME: "127.0.0.1",
+        DATABASE_URL: options.applicationDatabaseUrl,
         DATABASE_MIGRATION_URL: options.migrationDatabaseUrl,
         ...(version.name === "candidate-web" && options.mailboxBatchUi ? {
           OPENROUTER_API_KEY: "ma24-synthetic-unusable",

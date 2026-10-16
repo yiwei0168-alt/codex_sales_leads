@@ -1,0 +1,43 @@
+{
+  "schema": "ma24-g01-standalone-clone-compat-v1",
+  "date": "2026-10-16",
+  "candidateSourceCommit": "18ff59060e7bfcf103e35bd1c59780dcb9bd370f",
+  "candidatePackageTreeSha256": "088222361a643dec93249e2ee2643a12b1063ee951fc190ed26c5114466e28cb",
+  "candidateBuildId": "XKStVycsg2jqqFiczvVhE",
+  "backupSha256": "40dbfff588765c272794a8e7f4792abf4143a635a64f18016f9de4baba3f7f2c",
+  "verifier": "scripts/verify-ma24-backup-restore.ts --web-compat --conversation-ui --frontend-ui",
+  "candidateSelection": "MA24_CANDIDATE_STANDALONE_ROOT points to the packaged application root inside .next-releases",
+  "oldWebRollback": {
+    "buildId": "QfoyXprIZIVgSWxFSZ-1K",
+    "manifestStatus": 200,
+    "anonymousUploadStatus": 401,
+    "syntheticLoginStatus": 200,
+    "authenticatedUploadStatus": 200
+  },
+  "packagedCandidate": {
+    "manifestStatus": 200,
+    "anonymousUploadStatus": 401,
+    "syntheticLoginStatus": 200,
+    "authenticatedUploadStatus": 200,
+    "acceptanceReviewStatus": 200,
+    "conversationDeleteDesktopAndMobile": "passed; paused run rejected with 409, completed run soft-deleted, task retained",
+    "mailboxDrawerSixScenarios": "passed; focus returned, draft retained, no horizontal overflow"
+  },
+  "database": {
+    "archiveRestored": true,
+    "migrationRange": "127-135",
+    "migrationRollbackAndCommitVerified": true,
+    "criticalAclAndRlsVerified": true,
+    "disposableDatabasesRemaining": 0,
+    "productDatabaseChanged": false
+  },
+  "syntheticAccountsOnly": true,
+  "modelCalls": 0,
+  "productionDeployment": false,
+  "limits": [
+    "The compatibility check uses synthetic accounts and a disposable restored database",
+    "No real team user, external model, worker chain, or production database migration was tested",
+    "The previous restored-clone run without MA24_CANDIDATE_STANDALONE_ROOT started the repository root build CmwvjIM3pD43RUJ1FakTS and is not evidence for this package",
+    "Migrations 136-140, G14-G16 quality gates, and final domain rollout remain unverified"
+  ]
+}

@@ -12,7 +12,7 @@
 
 | 项目 | 2026-10-16 检查结果 | 发布含义 |
 | --- | --- | --- |
-| Web 包 | 更新的 `18ff5906` [隔离 standalone 包](evidence/ma24-g01-18ff5906-isolated-standalone-2026-10-16.json)已通过编译、依赖闭包、包树与本机首页/会话状态冒烟；未加载到正式 Web/worker | 只能作为候选，需绑定最终进程和真实业务路由 |
+| Web 包 | 更新的 `18ff5906` [隔离 standalone 包](evidence/ma24-g01-18ff5906-isolated-standalone-2026-10-16.json)已通过编译、依赖闭包、包树与本机状态冒烟，并在[一次性恢复库](evidence/ma24-g01-18ff5906-standalone-clone-compat-2026-10-16.json)通过合成账号的旧/新 Web 登录及会话/前端检查；未加载到正式 Web/worker | 只能作为候选，需绑定最终进程和真实团队业务路由 |
 | 数据库 | `ma24:release-preflight` 只读结果为 `stage-absent`，127–135 标记均缺失；`readyForRelease=false` | 候选代码不能直接切到现有数据库 |
 | 备份 | 2026-10-16 05:31 UTC 新归档已完成，194,731,569 字节，SHA-256 `40dbfff588765c272794a8e7f4792abf4143a635a64f18016f9de4baba3f7f2c`；在一次性数据库完整恢复，并验证 127–135 事务回滚、提交和关键 ACL/RLS | 这是当前可恢复基线；正式切换前仍需重新备份并核对增量写入 |
 | 本机服务 | 3000 监听所有接口；3019/3021、PostgreSQL、BGE、Ollama 仅监听本机；现有服务身份未绑定候选包 | 不能据此宣称团队可远程访问或可回滚 |
