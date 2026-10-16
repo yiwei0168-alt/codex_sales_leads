@@ -1,0 +1,30 @@
+{
+  "stage": "G09 policy evaluation while retaining evidence transaction locks",
+  "date": "2026-10-16",
+  "baseCommit": "70c6a350",
+  "command": "node node_modules/vitest/vitest.mjs run src/lib/assistant/main/skill-locked-acceptance-policy.test.ts src/lib/assistant/main/skill-acceptance-policy.test.ts",
+  "exitCode": 0,
+  "testFiles": 2,
+  "testsPassed": 54,
+  "checks": {
+    "sourceRunReferencesDerivedFromStoredBundle": true,
+    "historicalArmsMustUseSameRun": true,
+    "allDistinctSourceIdentitiesPreparedByServer": true,
+    "changedAndInconsistentIdentitiesRejected": true,
+    "lockedEvidenceRecheckedAfterIdentityPreparation": true,
+    "databaseClockUsed": true,
+    "revokedDevelopmentAndMissingJudgmentsDoNotPassPolicy": true,
+    "expiredPlanDoesNotPassPolicy": true,
+    "wholeProjectTypecheck": true,
+    "targetedEslint": true
+  },
+  "actualModelCalls": 0,
+  "humanApprovalCreated": false,
+  "automaticActivation": false,
+  "limitations": [
+    "Adapter tests mock locked evidence, identity preparation and database clock while running the real policy evaluator.",
+    "No full actual-database integration of this policy adapter was executed in this stage.",
+    "Identity preparation uses existing server source readers with their own transactions; complete source payload locking and production provenance remain separate.",
+    "policyPassed is a calculation result and cannot authorize activation."
+  ]
+}
