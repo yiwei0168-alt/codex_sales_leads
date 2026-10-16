@@ -1,0 +1,49 @@
+{
+  "schema": "ma24-g01-fresh-cluster-restore-v1",
+  "date": "2026-10-16",
+  "scope": "Disposable, new PostgreSQL 16/pgvector container with no published host port; local archive only",
+  "archive": {
+    "file": "network_copilot_2026-10-16T06-35-27Z.dump",
+    "sha256": "89ab7a90366c0ffceb82c31ae5de5b2ac2ec1f5553238446a82d862aa785d97c",
+    "aclIncluded": true
+  },
+  "freshCluster": {
+    "image": "pgvector/pgvector:pg16",
+    "globalRolesProvisionedBeforeRestore": [
+      "network_copilot_app: NOLOGIN, no superuser, no createdb, no createrole, no bypassrls",
+      "network_copilot_local_login: LOGIN, NOINHERIT, no superuser, no createdb, no createrole, no bypassrls; may SET network_copilot_app",
+      "network_copilot_skill_collector: NOLOGIN, no superuser, no createdb, no createrole, no bypassrls"
+    ],
+    "restoreCommandResult": "pg_restore --exit-on-error --no-owner --jobs=4 with archived ACL returned exit code 0",
+    "extensionsAfterRestore": {
+      "pgcrypto": "1.3",
+      "plpgsql": "1.0",
+      "vector": "0.8.6"
+    },
+    "stage127To135MarkersPresent": 8,
+    "criticalGrants": {
+      "applicationReviewSelect": true,
+      "applicationReviewInsert": true,
+      "applicationAcceptanceBundleInsert": false,
+      "collectorAcceptanceBundleInsert": true,
+      "collectorSkillFreezeReader": true
+    },
+    "forcedRls": {
+      "acceptanceBundle": true,
+      "extractionReview": true
+    },
+    "restrictedLogin": {
+      "canSetApplicationRole": true,
+      "canSetCollectorRole": false,
+      "applicationRoleReadOfRestoredUserTable": "passed"
+    },
+    "containerRemoved": true,
+    "publishedHostPort": false
+  },
+  "limits": [
+    "The disposable database ran in a local Docker engine, not on the selected cloud provider",
+    "A real deployment needs fresh role credentials, secure database networking and a new backup at cutover",
+    "This verifies database restore and selected privileges, not full Web, worker, HTTPS, concurrent writes or actual rollback",
+    "Restoring this archive elsewhere copies its existing data; whether real data may be migrated to a chosen hosting region remains an open user decision"
+  ]
+}

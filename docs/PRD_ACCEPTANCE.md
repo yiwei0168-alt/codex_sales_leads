@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+2026-10-16 / MA24 G01：迁移后含 ACL 的归档在未开放公网端口的全新本机 PostgreSQL 16/pgvector 容器直接恢复成功，预置受限全局角色后 8 个阶段标记、关键 ACL/RLS 和应用登录角色读取通过；采集角色不可由应用登录角色切换。[新集群恢复收据](evidence/ma24-g01-fresh-cluster-restore-2026-10-16.json)。目标云主机恢复、真实团队数据迁移决定和实际回滚仍待验。
+
 2026-10-16 / MA24 G01：提交 `7d7acf39` 在本机 Docker Linux/Node 24 中完成独立生产构建和类型检查，生成的 standalone 包在本机受限应用数据库账号下通过首页与匿名会话 GET 200。[Linux 收据](evidence/ma24-g01-linux-standalone-local-smoke-2026-10-16.json)。目标云主机、HTTPS、真实成员、业务写入、worker 及回滚未验收。
 
 2026-10-16 / PILOT-01：用户确认新托管、首批中国大陆访问、同时使用 10 人以内；已形成条件化部署方案，备案域名和真实数据迁移尚待确认。此项是发布范围确认，不是线上部署或团队验收。[实施单](TEAM_PILOT_NEW_HOSTING_2026-10-16.md)。
