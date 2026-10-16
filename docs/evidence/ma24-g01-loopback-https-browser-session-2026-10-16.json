@@ -3,7 +3,8 @@
   "date": "2026-10-16",
   "candidateSourceCommit": "18ff5906",
   "candidateBuildId": "XKStVycsg2jqqFiczvVhE",
-  "upstream": "127.0.0.1:3021",
+  "initialUpstream": "127.0.0.1:3021",
+  "latestUpstream": "127.0.0.1:3022",
   "test": {
     "script": "scripts/verify-ma24-https-browser-session.ts",
     "browser": "headless Chrome",
@@ -13,6 +14,12 @@
     "syntheticMemberLogin": true,
     "loginFormSubmittedInBrowser": true,
     "authenticatedWorkspaceRendered": true,
+    "anonymousTaskReadRejected": true,
+    "memberTaskReadPassed": true,
+    "newMemberTaskItemCount": 0,
+    "leadNavigationPassed": true,
+    "taskNavigationPassed": true,
+    "browserPageErrors": 0,
     "browserStoredSecureCookie": true,
     "browserStoredHttpOnlyCookie": true,
     "browserStoredSameSiteLaxCookie": true,
@@ -26,7 +33,7 @@
   "checks": {"typecheck": "passed", "targetedEslint": "passed", "diffCheck": "passed"},
   "limits": [
     "The TLS certificate was locally generated and accepted only by a test browser; this does not verify a real domain or trusted certificate",
-    "The test covered the login form, workspace entry, logout UI and browser cookies, not team business workflows",
+    "The test covered login, empty-member task read and lead/task navigation; it did not create leads, execute tasks or prove business result quality",
     "No team account, remote access, production secret placement, worker or business rollback was verified"
   ]
 }
