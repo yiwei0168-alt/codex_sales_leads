@@ -16,10 +16,14 @@ const webImage = webImageArgument?.startsWith("--web-image=")
 const browserCheck = args.includes("--browser");
 const tenUserCheck = args.includes("--ten-user");
 const backupCheck = args.includes("--backup");
-assert(args.length <= 4 && args.every(arg => ["--browser", "--ten-user", "--backup", webImageArgument].includes(arg))
+const rollbackImageArgument = args.find(arg => arg.startsWith("--rollback-image="));
+const rollbackImage = rollbackImageArgument?.slice("--rollback-image=".length);
+assert(args.length <= 5 && args.every(arg => ["--browser", "--ten-user", "--backup", webImageArgument, rollbackImageArgument].includes(arg))
   && (!webImageArgument || (webImage && /^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(webImage)))
-  && (!(browserCheck || tenUserCheck || backupCheck) || webImage),
-  "Expected --web-image=<tag> with optional --browser, --ten-user, and --backup");
+  && (!rollbackImageArgument || (rollbackImage && /^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(rollbackImage)))
+  && (!(browserCheck || tenUserCheck || backupCheck || rollbackImage) || webImage)
+  && (!rollbackImage || rollbackImage !== webImage),
+  "Expected --web-image=<tag> with optional --browser, --ten-user, --backup, and --rollback-image=<prior-tag>");
 const networkName = `ma24-pilot-net-${id}`;
 const adminPassword = randomBytes(24).toString("hex");
 const appPassword = randomBytes(24).toString("hex");
@@ -120,21 +124,31 @@ try {
     const certificate = await run("docker", ["exec", containerId, "cat", "/tmp/ma24-server.crt"]);
     assert.equal(certificate.code, 0, certificate.output);
     assert(certificate.output.includes("-----BEGIN CERTIFICATE-----"));
-    const webStarted = await run("docker", ["run", "--detach", "--name", `ma24-pilot-web-${id}`,
-      "--network", networkName, "--publish", `127.0.0.1:${webPort}:3000`,
-      "--env", `DATABASE_URL=${webDatabaseUrl.toString()}`,
-      "--env", `DATABASE_SSL_CA=${certificate.output.trim()}`, webImage]);
-    assert.equal(webStarted.code, 0, webStarted.output);
-    webContainerId = webStarted.output.trim();
-    assert(/^[a-f0-9]{64}$/.test(webContainerId), "Unexpected disposable Web container ID");
     const base = `http://127.0.0.1:${webPort}`;
-    let ready = false;
-    for (let attempt = 0; attempt < 60; attempt += 1) {
-      try { ready = (await fetch(`${base}/api/auth/session`)).ok; } catch { /* Still starting. */ }
-      if (ready) break;
-      await new Promise(wait => setTimeout(wait, 500));
-    }
-    assert(ready, "Disposable Linux Web did not become ready");
+    const startWeb = async (image: string) => {
+      const started = await run("docker", ["run", "--detach", "--name", `ma24-pilot-web-${id}`,
+        "--network", networkName, "--publish", `127.0.0.1:${webPort}:3000`,
+        "--env", `DATABASE_URL=${webDatabaseUrl.toString()}`,
+        "--env", `DATABASE_SSL_CA=${certificate.output.trim()}`, image]);
+      assert.equal(started.code, 0, started.output);
+      webContainerId = started.output.trim();
+      assert(/^[a-f0-9]{64}$/.test(webContainerId), "Unexpected disposable Web container ID");
+      let ready = false;
+      for (let attempt = 0; attempt < 60; attempt += 1) {
+        try { ready = (await fetch(`${base}/api/auth/session`)).ok; } catch { /* Still starting. */ }
+        if (ready) break;
+        await new Promise(wait => setTimeout(wait, 500));
+      }
+      assert(ready, "Disposable Linux Web did not become ready");
+    };
+    const switchWeb = async (image: string) => {
+      assert(webContainerId, "No disposable Web container to switch");
+      const removed = await run("docker", ["rm", "--force", "--volumes", webContainerId]);
+      assert.equal(removed.code, 0, removed.output);
+      webContainerId = undefined;
+      await startWeb(image);
+    };
+    await startWeb(webImage);
     const login = async (index: number) => {
       const response = await fetch(`${base}/api/auth/login`, { method: "POST",
         headers: { "content-type": "application/json" },
@@ -226,6 +240,28 @@ try {
         assert(!backup.output.includes(adminPassword), "Backup exposed the disposable migration password");
       } finally { rmSync(tempDirectory, { recursive: true, force: true }); }
     }
+    if (rollbackImage) {
+      const resumedCookie = await login(0);
+      await switchWeb(rollbackImage);
+      assert((await getCompanies(resumedCookie)).some(item => item.id === company.externalId),
+        "Prior image lost current-image company or session after same-port switch");
+      assert(!(await getCompanies(secondCookie)).some(item => item.id === company.externalId),
+        "Prior image exposed current-image company to another member");
+      const oldWrite = await fetch(`${base}/api/workspaces/current/companies`, { method: "POST",
+        headers: { cookie: secondCookie, "content-type": "application/json" },
+        body: JSON.stringify({ name: "Synthetic rollback image company", country: "DE",
+          website: `https://pilot-rollback-${id}.invalid` }) });
+      if (oldWrite.status !== 200) throw new Error(`Prior-image company create ${oldWrite.status}: ${await oldWrite.text()}`);
+      const oldCompany = await oldWrite.json() as { duplicate: boolean; externalId: string };
+      assert.equal(oldCompany.duplicate, false);
+      await switchWeb(webImage);
+      assert((await getCompanies(resumedCookie)).some(item => item.id === company.externalId),
+        "Current image lost its company after return switch");
+      assert((await getCompanies(secondCookie)).some(item => item.id === oldCompany.externalId),
+        "Current image cannot read prior-image company after return switch");
+      assert(!(await getCompanies(resumedCookie)).some(item => item.id === oldCompany.externalId),
+        "Current image exposed prior-image company to another member");
+    }
   }
   console.log(JSON.stringify({ freshClusterPilot: "passed", image: "pgvector/pgvector:pg16",
     publishedAddress: "127.0.0.1 only", rolesVerified: true, duplicateRoleBootstrapRejected: true,
@@ -233,7 +269,7 @@ try {
     syntheticAccountCompanyAndRestoreVerified: true, copiedProductionData: false,
     linuxWebImage: webImage ?? null, linuxWebHttpWorkflowVerified: Boolean(webImage),
     linuxWebHttpsBrowserVerified: browserCheck, tenConcurrentSyntheticAccountsVerified: tenUserCheck,
-    pilotBackupRestoreVerified: backupCheck }));
+    pilotBackupRestoreVerified: backupCheck, samePortPriorImageRollbackVerified: Boolean(rollbackImage) }));
 } finally {
   if (webContainerId) {
     const removed = await run("docker", ["rm", "--force", "--volumes", webContainerId]);

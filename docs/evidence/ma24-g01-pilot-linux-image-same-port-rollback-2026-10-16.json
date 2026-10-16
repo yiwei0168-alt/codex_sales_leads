@@ -1,0 +1,26 @@
+{
+  "schema": "ma24-g01-pilot-linux-image-same-port-rollback-v1",
+  "date": "2026-10-16",
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --web-image=ma24-pilot-web:f54e0b07 --rollback-image=ma24-pilot-web:cc50c7b6",
+  "currentImage": {
+    "tag": "ma24-pilot-web:f54e0b07",
+    "localDigest": "sha256:7d92278fcc76cd3f2da90abbd87454281d17234b33069f6a3a85c3e6bee7855e"
+  },
+  "priorImage": {
+    "tag": "ma24-pilot-web:cc50c7b6",
+    "localDigest": "sha256:ade13e11d14fefda372ff48dfd848cd7ae90f0a98f3a439fc99a3730b5577867"
+  },
+  "checks": {
+    "disposableFreshPostgresPgvectorAndMigrationThrough135": "passed",
+    "sameLoopbackPortCurrentToPriorToCurrent": "passed",
+    "currentImageCompanyVisibleAfterPriorSwitch": "passed",
+    "sessionContinuedAcrossBothImageSwitches": "passed",
+    "priorImageCompanyVisibleAfterReturnSwitch": "passed",
+    "twoMemberCompanyIsolationAcrossSwitches": "passed",
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "disposableContainersAndNetworksRemaining": 0,
+    "productionDataCopied": false
+  },
+  "limits": "Local HTTP loopback image switch against one disposable synthetic database. It verifies Web image read/write compatibility and session continuity only. It does not rehearse a target cloud Caddy or trusted HTTPS route, live user traffic, simultaneous writes, worker handoff, database rollback or restore, upload-volume recovery, or a real team release. Both tested images were locally available; their tags are not a registry deployment receipt."
+}
