@@ -1,0 +1,23 @@
+{
+  "schema": "ma24-g01-pilot-image-reproducible-build-v1",
+  "date": "2026-10-16",
+  "scope": "Reproducible local pilot Web image build from committed Git source",
+  "builder": "scripts/build-ma24-pilot-image.mjs",
+  "sourceCommit": "c402d7699b9bd49354a486738cff1751d6a824d2",
+  "imageTag": "ma24-pilot-web:repro-c402d769",
+  "imageId": "sha256:2fa1afd6758ffc501b79b047f2508b5b11a3e7a755fb71d330ff253f87c29859",
+  "results": {
+    "gitArchiveContextBuilt": true,
+    "nextProductionBuildPassed": true,
+    "typescriptPassedDuringBuild": true,
+    "runtimeUser": "node",
+    "runtimeEnvFilesFound": 0,
+    "temporaryBuildDirectoriesRemaining": 0,
+    "builderSyntaxCheckPassed": true
+  },
+  "limits": [
+    "The image was built locally from c402d769 before this builder script was committed; rebuild from the final release commit before deployment",
+    "No cloud host, real team account, trusted HTTPS domain, capacity test, or target-environment data restore was checked",
+    "The previous local application smoke applies to the app source before this builder-only change; target deployment needs its own smoke"
+  ]
+}
