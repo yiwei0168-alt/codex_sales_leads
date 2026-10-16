@@ -7,6 +7,7 @@ import { digest, result, type ExecutionContext, type ModelMessage, type ModelToo
 import { boundary, beginCall, completeCall, event, finishRun, InstructionsChangedError } from "./repository";
 import { dispatchTool } from "./executor";
 import { requestModel, requestModeModel } from "./model";
+import {createConfiguredTaskModeRequest,taskTransportSigningConfigured} from './task-model-transport-request';
 import { modeConfigSchema } from './mode-config';
 import { orderedModeDecision, ModeModelsUnavailable } from './mode-fallback';
 import { BudgetDeniedError } from "@/lib/billing/policy";
@@ -137,15 +138,19 @@ export async function durableModel(context: ExecutionContext, messages: ModelMes
   const currentMessages: ModelMessage[] = [messages[0], decisionMemoryMessage(memories), ...messages.slice(1)];
   if(config.profile){
     const profile=modeConfigSchema.parse(config.profile);
+    const attemptIds=new Map<number,string>();
     const selected=await orderedModeDecision({
       begin:async index=>{
         const latest=await boundary(context);if(latest.control)throw new Error('Task stopped at model boundary');
-        return beginCall(context,{key:`mode-model:${step}:${revision}:${index}`,tool:'main_model',version:profile.version,
+        const saved=await beginCall(context,{key:`mode-model:${step}:${revision}:${index}`,tool:'main_model',version:profile.version,
           input:{messages:currentMessages,profile,index},effect:'model'});
+        attemptIds.set(index,saved.id);return saved;
       },
       request:async index=>{
         await event(context,'model_attempt',{step,index,mode:profile.mode,model:profile.routes[index].model});
-        const response=await requestModeModel(currentMessages,profile,index);
+        const response=taskTransportSigningConfigured()
+          ?await (await createConfiguredTaskModeRequest(context,{callId:attemptIds.get(index)!,callKey:`mode-model:${step}:${revision}:${index}`}))(currentMessages,profile,index)
+          :await requestModeModel(currentMessages,profile,index);
         if(response.message.tool_calls)response.message.tool_calls=response.message.tool_calls.map((call,i)=>({...call,id:`call_${digest({run:context.runId,step,revision,index,i,id:call.id}).slice(0,40)}`}));
         return response;
       },
