@@ -1,0 +1,39 @@
+{
+  "schema": "ma24-g14-worldbank-findex-product-capacity-disposition-v1",
+  "date": "2026-10-16",
+  "scope": "Read-only product extraction and two isolated MA11 clone upload attempts for the private Global Findex 2025 workbook candidate",
+  "sourceSha256": "b6c991f8e46bcbd4b6423cc962d5b2fa030e3db99832b9016bb4f400f57c772f",
+  "extractionArtifactSha256": "b71d0a5eade7a4fe7eeb24e375c94fbf50eaaa43b498965b2e1e14ad8d5d72ac",
+  "privateEvidence": {
+    "dispositionPath": "tmp/ma24-independent-quarantine/worldbank-findex-product-capacity-disposition-2026-10-16.json",
+    "dispositionSha256": "a665c7f15517e42c8a0853b2e9e06b061e252d951562e8a6f59a8f119b7d44e0",
+    "cloneVerifierPath": "tmp/ma24-independent-quarantine/verify-findex-xlsx-clone.ts",
+    "cloneVerifierSha256": "11e0edf850e837553690a6a9c8e0383a27bd86cc59bb09403d66824c0c86a0f1",
+    "contentMeasurementPath": "tmp/ma24-independent-quarantine/measure-findex-product-content.ts",
+    "contentMeasurementSha256": "53ca6e998196107adfbab0ff7867548d475bc0d6428515597b0210401ef50f7c",
+    "postDispositionPublicExposurePath": "tmp/ma24-independent-quarantine/worldbank-findex-post-capacity-public-screen.json",
+    "postDispositionPublicExposureSha256": "18d3b1757e5f53d345a6912bd54ffc85fa63202942999fee120f2683c14600fd"
+  },
+  "result": {
+    "extractorVersion": "layout-v2.0.10",
+    "successfulSheets": 4,
+    "targetCellsPresentInOfflineExtraction": true,
+    "isolatedUploadAttempts": 2,
+    "observedUploadStatus": "failed",
+    "persistedErrorCode": "Error",
+    "measuredRegistrationContentCharacters": 11460342,
+    "productRegistrationLimitCharacters": 2000000,
+    "specificWorkerExceptionCaptured": false,
+    "syntheticUsersJobsDocumentsAndUploadDirectoryResidue": 0
+  },
+  "decision": "Current source cannot register in the product and is withdrawn from the independent Gold pool; retained privately for development/capacity regression only.",
+  "limits": [
+    "The size condition in vectorless-registration.ts necessarily rejects the measured content, but the worker persisted only a generic error code; do not claim its internal exception was directly observed.",
+    "No product size limit was relaxed using this holdout source. A future fix using it must not promote this question back to an independent holdout.",
+    "This stage used no answer model and made no production writes."
+  ],
+  "independentGoldApproved": 0,
+  "g15PaidAdmission": false,
+  "g16RealDualArmRuns": 0,
+  "g17ToG20": "paused"
+}
