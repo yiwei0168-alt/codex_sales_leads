@@ -1,0 +1,39 @@
+{
+  "schema": "ma24-g01-database-pool-recovery-v1",
+  "date": "2026-10-16",
+  "sourceCommit": "b535c6b4aa98b5d8c615f51c99c1698af70ab9d2",
+  "beforeFixApplicationBase": "9245d892",
+  "commands": [
+    "node node_modules/vitest/vitest.mjs run src/lib/rag/db.test.ts",
+    "node --max-old-space-size=8192 node_modules/typescript/bin/tsc --noEmit --pretty false",
+    "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --pool-recovery"
+  ],
+  "beforeFixProbe": {
+    "idleOwnApplicationBackendTerminated": true,
+    "processExitCode": 1,
+    "unhandledPoolError": true,
+    "sqlstate": "57P01"
+  },
+  "afterFixChecks": {
+    "unitTestsPassed": 5,
+    "typeScriptAndTargetedLint": "passed",
+    "idleDisconnectProcessSurvivesAndBackendPidChanges": "passed",
+    "poolInstancePreserved": "passed",
+    "checkedOutConnectionBetweenStatementsDisconnect": "passed",
+    "executingQueryDisconnect": "passed",
+    "originalSqlstatePreserved": "57P01",
+    "automaticTransactionRetries": 0,
+    "disconnectedTransactionWritesRolledBack": 2,
+    "subsequentExplicitWriteCommittedOnce": "passed",
+    "applicationRoleRestored": "passed",
+    "tenantScopeReinjectedAndCleared": "passed",
+    "idleErrorInvalidatesSecurityCache": "passed in unit test",
+    "logExcludesPrivateErrorTextAndClient": "passed in unit test",
+    "freshMigrationThrough": 135,
+    "preflightSyntheticMembersCompanyIsolationAndRestore": "passed",
+    "copiedProductionData": false,
+    "realModelCalls": 0,
+    "temporaryContainersRemaining": 0
+  },
+  "limits": "Controlled termination of this probe's own application backends in a fresh loopback PostgreSQL cluster. This reproduces and fixes a definite idle-pool process-exit defect; the earlier truncated restore incident is not uniquely attributed to it. Cloud network partitions, sustained load, COMMIT acknowledgement loss, compiled HTTP container recovery and target deployment remain unverified. Existing images do not include the fix."
+}
