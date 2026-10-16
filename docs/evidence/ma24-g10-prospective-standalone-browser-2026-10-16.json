@@ -1,0 +1,36 @@
+{
+  "schema": "ma24-g10-prospective-standalone-browser-v1",
+  "date": "2026-10-16",
+  "sourceCommit": "c1cae4d94a1b3c21cfc4c9bdb066617126b18e18",
+  "testBuilderImage": "ma24-skill-browser-builder:c1cae4d9",
+  "testBuilderImageDigest": "sha256:f72f47dce5db43a784245d433012af776cb49359b406440dcfabf99bb42276b5",
+  "commands": [
+    "node scripts/build-ma24-pilot-image.mjs ma24-skill-browser-builder:current --target=builder",
+    "docker tag ma24-skill-browser-builder:current ma24-skill-browser-builder:c1cae4d9",
+    "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --prospective-http-image=ma24-skill-browser-builder:c1cae4d9 --prospective-browser"
+  ],
+  "checks": {
+    "lintTypeScriptAndStandaloneBuild": "passed",
+    "freshMigrationThrough": 135,
+    "syntheticPairedSourceCollectorAndHttpRegression": "passed",
+    "actualChromeLoginViaLocalSelfSignedHttps": "passed",
+    "secureHttpOnlySessionCookie": "passed",
+    "actualKnowledgeMemorySkillReviewNavigation": "passed",
+    "bothAnswersRendered": "passed",
+    "eightFalseVerdictsAndRationaleSavedViaUi": "passed",
+    "reenterPageReadsPersistedRationale": "passed",
+    "revokeViaUi": "passed",
+    "databaseRevisions": [1, 2, 3],
+    "finalJudgmentRevoked": true,
+    "finalBaselineAndCandidateVerdicts": false,
+    "skillEnabled": false,
+    "browserPageErrors": [],
+    "temporaryDatabaseAndTestContainersRemaining": 0,
+    "temporaryCredentialDirectoriesRemaining": 0,
+    "copiedProductionData": false,
+    "realProviderModelCalls": 0
+  },
+  "limits": "Actual compiled standalone and Chrome UI with disposable synthetic materials only. Builder includes source and development dependencies and is not a team release image. Self-signed loopback HTTPS is not trusted public HTTPS. Synthetic human-kind audit rows test session attribution and UI persistence only; all verdicts fail and final judgment is revoked. Real model quality, production runtime/provider attestation, target cloud deployment and real team access remain unverified.",
+  "automaticActivation": false,
+  "realQualityApproval": false
+}

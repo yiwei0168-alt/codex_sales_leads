@@ -47,3 +47,5 @@
 实际执行完成：固定测试镜像 a831d88d 的 compiled standalone 服务通过真实登录、列表/材料读取、私有 no-store、审核保存/API 与数据库回读，匿名、跨账号、跨站及过期修订拒绝。数据库仅一条与登录 owner 绑定的合成审核，全部判定 false，Skill 禁用。完整两臂来源/冻结/收据回归也通过，临时容器已清理。[HTTP 收据](evidence/ma24-g10-prospective-standalone-http-2026-10-16.json)。仅内部回环 HTTP；实际浏览器交互、真实模型质量、生产身份和目标云部署未验。
 
 浏览器验收新增 `--prospective-browser`（须与 `--prospective-http-image=<builder-tag>` 同用）：一次性集群额外只向回环发布审核服务端口，主机 Chrome 经临时自签 HTTPS 代理访问实际页面。合成登录凭证仅通过系统临时目录与测试容器共享，结束后删除；发布应用无测试开关。计划验证知识库/个人记忆/Skill 真实导航、双臂显示、全部 false 判定保存、重新进入回读及撤销，并由临时库核对 r1/r2/r3；类型/lint 通过，实际结果待运行。
+
+浏览器实测已通过：固定测试镜像 c1cae4d9 的实际 standalone 经回环自签 HTTPS 由 Chrome 登录，沿知识库→个人记忆→Skill→验收审核进入，读取两臂答案、保存全 false 判定，重新进入回读判决依据，再撤销。浏览器无 pageerror；临时库确认修订 [1,2,3]、最终 revoked=true 且全部判定 false，Skill 未启用。[浏览器收据](evidence/ma24-g10-prospective-standalone-browser-2026-10-16.json)。原 HTTP/来源/冻结回归同时通过，容器及临时凭证目录已删除。由此补齐合成材料页面到库工程证据；真实质量、生产身份和目标部署仍待验，不将测试镜像作为团队发布镜像。
