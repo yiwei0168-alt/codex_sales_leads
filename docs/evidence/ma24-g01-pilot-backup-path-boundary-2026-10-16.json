@@ -1,0 +1,18 @@
+{
+  "schema": "ma24-g01-pilot-backup-path-boundary-v1",
+  "date": "2026-10-16",
+  "command": "node scripts/verify-ma24-pilot-backup-paths.mjs",
+  "checks": {
+    "databaseAndUploadCommands": 2,
+    "worktreeRootRefused": "passed",
+    "insideDirectoryStartingWithDotDotRefusedBeforeCreation": "passed",
+    "externalJunctionResolvingToWorktreeRefused": "passed",
+    "alternateWorkingDirectory": "passed",
+    "externalDatabaseBackupDirectoryAccepted": "passed: reached intentionally closed loopback port",
+    "externalUploadDirectoryActualSyntheticBackupRestore": "passed",
+    "businessArchiveCreatedByBoundaryTest": false,
+    "typecheck": "passed",
+    "focusedEslint": "passed"
+  },
+  "limits": "Directory validation at command startup, using synthetic credentials and a temporary Windows junction. This does not defend against a privileged actor concurrently replacing filesystem paths, nor prove target cloud backup retention or real business data restore. No actual database was contacted beyond the intentionally closed loopback test port."
+}

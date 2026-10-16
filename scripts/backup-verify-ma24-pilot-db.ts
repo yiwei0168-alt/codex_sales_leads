@@ -2,8 +2,9 @@ import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { createHash, randomBytes } from "node:crypto";
 import { createReadStream } from "node:fs";
-import { isAbsolute, join, relative, resolve } from "node:path";
-import { mkdir, readdir, rm, stat, writeFile } from "node:fs/promises";
+import { isAbsolute, join, relative, resolve, sep } from "node:path";
+import { fileURLToPath } from "node:url";
+import { mkdir, readdir, realpath, rm, stat, writeFile } from "node:fs/promises";
 import { Client } from "pg";
 
 assert.equal(process.argv.length, 2, "This backup command takes no arguments");
@@ -21,11 +22,17 @@ assert(appUrl.hostname === migrationUrl.hostname
 const database = appUrl.pathname.slice(1);
 assert(/^[a-z_][a-z0-9_]{0,62}$/i.test(database), "Invalid pilot database name");
 assert(isAbsolute(outputSource), "PILOT_BACKUP_DIR must be an absolute path outside the source worktree");
-const directory = resolve(outputSource);
-const inside = relative(process.cwd(), directory);
-assert(inside && (inside.startsWith("..") || isAbsolute(inside)), "Backups must stay outside the source worktree");
+const repositoryRoot = await realpath(fileURLToPath(new URL("..", import.meta.url)));
+const assertOutsideWorktree = (path: string) => {
+  const inside = relative(repositoryRoot, path);
+  assert(inside && (inside === ".." || inside.startsWith(`..${sep}`) || isAbsolute(inside)),
+    "Backups must stay outside the source worktree");
+};
+assertOutsideWorktree(resolve(outputSource));
 process.umask(0o077);
-await mkdir(directory, { recursive: true, mode: 0o700 });
+await mkdir(outputSource, { recursive: true, mode: 0o700 });
+const directory = await realpath(outputSource);
+assertOutsideWorktree(directory);
 if (process.platform !== "win32") {
   assert.equal((await stat(directory)).mode & 0o077, 0,
     "Pilot backup directory must not be accessible to other users");

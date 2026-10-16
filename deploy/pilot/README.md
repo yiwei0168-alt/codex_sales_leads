@@ -26,6 +26,8 @@ Web 使用 Linux 的 host 网络模式，只监听 `127.0.0.1`；Docker 不为�
 
 ## 启动与检查
 
+数据库和上传卷备份命令均按脚本所在仓库核对备份目录，并解析实际文件系统路径；即使从其他目录启动，也拒绝工作树内部、`..backup` 这类目录名和从外部指回工作树的目录联接。可运行 `node scripts/verify-ma24-pilot-backup-paths.mjs` 核对边界；Windows 回归需要允许创建临时目录联接。[路径回归](../../docs/evidence/ma24-g01-pilot-backup-path-boundary-2026-10-16.json)。
+
 上传卷备份：在同一维护窗口停止 Web 及所有资料 worker 后，设置 `PILOT_UPLOAD_VOLUME=ma24-pilot_pilot_uploads` 和工作树外的绝对目录 `PILOT_BACKUP_DIR`，运行 `node scripts/backup-verify-ma24-pilot-uploads.mjs`。命令核对卷已存在且没有运行容器挂载，以只读源卷生成私有 tar 归档和 SHA-256 清单；恢复到一次性卷后逐文件比较内容、属主及权限，并核对 uid 1000 可读，最后只删除恢复卷。源卷保留；归档与清单保留在备份目录。数据库备份应在恢复写入前完成，两个备份须作为同一维护窗口的一组保留并另存异地副本。[合成卷验收](../../docs/evidence/ma24-g01-pilot-upload-volume-backup-2026-10-16.json)。本机可运行 `node scripts/verify-ma24-pilot-upload-backup.mjs` 重验合成卷；目标主机上的真实上传原件回读和异地恢复仍须独立验收。
 
 在固定提交的工作树运行：

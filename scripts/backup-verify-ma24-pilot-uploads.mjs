@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import { createHash, randomBytes } from "node:crypto";
 import { createReadStream, mkdirSync, realpathSync, rmSync, statSync, writeFileSync } from "node:fs";
-import { isAbsolute, join, relative, sep } from "node:path";
+import { isAbsolute, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
 assert.equal(process.argv.length, 2, "This command takes no arguments");
@@ -11,12 +11,16 @@ const directoryInput = process.env.PILOT_BACKUP_DIR;
 assert(volume && /^ma24-pilot[a-zA-Z0-9_.-]*$/.test(volume), "Set an explicit ma24-pilot upload volume name");
 assert(directoryInput && isAbsolute(directoryInput), "Set an absolute PILOT_BACKUP_DIR outside the worktree");
 process.umask(0o077);
+const root = realpathSync(fileURLToPath(new URL("..", import.meta.url)));
+const assertOutsideWorktree = path => {
+  const inside = relative(root, path);
+  assert(inside && (inside === ".." || inside.startsWith(`..${sep}`) || isAbsolute(inside)),
+    "Backups must stay outside the source worktree");
+};
+assertOutsideWorktree(resolve(directoryInput));
 mkdirSync(directoryInput, { recursive: true, mode: 0o700 });
 const directory = realpathSync(directoryInput);
-const root = realpathSync(fileURLToPath(new URL("..", import.meta.url)));
-const inside = relative(root, directory);
-assert(inside && (inside === ".." || inside.startsWith(`..${sep}`) || isAbsolute(inside)),
-  "Backups must stay outside the source worktree");
+assertOutsideWorktree(directory);
 assert(!directory.includes(","), "Backup path must not contain Docker mount separators");
 if (process.platform !== "win32") assert.equal(statSync(directory).mode & 0o077, 0, "Backup directory permissions must be private");
 const helperImage = "node:24-bookworm-slim@sha256:0e0ff40c39bc087845bfb27465a0df4ea419520094bc35842ff83dd8cbe6f9b6";
