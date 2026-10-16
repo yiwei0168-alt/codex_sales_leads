@@ -1551,3 +1551,5 @@ IEEE 2014 GEPOF 教程按用户确认仅进入 PPTX 读取与引用验收。使�
 2026-10-15 G16：评测专用任务在未来被认领后须先经 `verifyMa24EvaluationTaskBinding` 核冻结来源集字节、题面、账号、case、臂、范围、标准模型配置及有效租约，再进入主 Agent 图。该绑定器已实现并通过定向测试，但尚未由专用 worker 调用；普通 worker 继续跳过这类任务，不因绑定器存在而开放付费运行。[收据](evidence/ma24-g16-evaluation-task-admission-binding-2026-10-15.json)。G17–G20 暂停。
 
 2026-10-16 G05 资料 worker 恢复补验：当前源码在隔离 MA11 库中同时处理被中断 XLSX、另一账号 XLSX 与合成损坏 PDF；PDF 失败不改变 XLSX 租约或 v3 发布指针，另一账号随后完成视觉候选，过期租约结算仍被拒。此为失败隔离工程收据，尚未覆盖成功 PDF/PPTX、修订版本并发、真实引用与生产加载。[收据](evidence/ma24-g05-cross-format-worker-failure-clone-2026-10-16.json)。
+
+2026-10-16 G05 审核后修订回放：现有隔离脚本在当前源码验证 PDF 原件到 PPTX 修订的私有与共享范围，未解决审核、篡改和登记前崩溃均不切换旧版，登记后恢复保留收据和历史；共享发布仍需管理员。判决是合成数据，正式 worker、资料语义和用户可见引用待验。[收据](evidence/ma24-g05-current-reviewed-revision-recovery-2026-10-16.json)。

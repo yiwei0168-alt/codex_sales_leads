@@ -1,0 +1,36 @@
+{
+  "schema": "ma24-g05-current-reviewed-revision-recovery-v1",
+  "date": "2026-10-16",
+  "scope": "Current-source reviewed PDF-to-PPTX revision recovery in the disposable MA11 replay database",
+  "sourceCommit": "d7993d8d",
+  "verifier": "scripts/verify-reviewed-revisions-clone.ts",
+  "result": {
+    "privateAndSharedScenariosPassed": 2,
+    "registrationProcessesKilled": 4,
+    "oldRevisionReadableWhilePending": true,
+    "unresolvedReviewRejected": true,
+    "artifactTamperKeptOld": true,
+    "beforeCommitCrashKeptOld": true,
+    "afterCommitReplaySucceeded": true,
+    "competingReviewedRevisionRejected": true,
+    "sharedPublicationRequiredAdmin": true,
+    "stableDocumentId": true,
+    "oldEvidenceRejectedAfterSwitch": true,
+    "reviewReceiptAndHistoryPreserved": true,
+    "v3PointersUnchanged": true,
+    "syntheticJudgments": true,
+    "modelCalls": 0,
+    "externalCalls": 0
+  },
+  "cleanup": {
+    "uploadJobsBeforeAndAfter": [0, 0],
+    "appUsersBeforeAndAfter": [6, 6],
+    "knowledgeDocumentsBeforeAndAfter": [367, 367]
+  },
+  "verifierExitCode": 0,
+  "limits": [
+    "The visual review decisions were synthetic and do not establish document content quality",
+    "This replays one PDF original and PPTX revision in each visibility scope, not every format and failure combination",
+    "No production worker deployment, real user-visible citation, or cloud rollback was checked"
+  ]
+}
