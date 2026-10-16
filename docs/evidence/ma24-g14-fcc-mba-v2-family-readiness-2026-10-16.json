@@ -1,0 +1,50 @@
+{
+  "schema": "ma24-g14-fcc-mba-v2-family-readiness-receipt-v1",
+  "date": "2026-10-16",
+  "scope": "Bounded source, question exposure and release-family screen for a private FCC report candidate; no Gold disposition",
+  "officialSourceUrl": "https://docs.fcc.gov/public/attachments/FCC-24-136A6.pdf",
+  "sourceSha256": "cb74399d38def5adafb04390728bd3aae6aea0ad28cdac064c5f73dd1b661c4c",
+  "privateCandidateV2": {
+    "path": "tmp/ma24-independent-quarantine/fcc-mba-thirteenth-latency-candidate-v2.json",
+    "sha256": "e99450b7af0e2a56ebeef364db92d991461af1581bc99154bac02927403aac47",
+    "changeFromV1": "Same question; repaired date-string encoding, tightened the answer's historical limitation and added original Chart 6/7 visual coordinates. The answer and scope still require per-case review."
+  },
+  "privateFamilyScreen": {
+    "path": "tmp/ma24-independent-quarantine/fcc-mba-release-family-screen-v2.json",
+    "sha256": "33fcd7113db3154d82fafceda44d04104288733eda5b18ace36125d4ebe9d114",
+    "targetPhysicalPages": [8, 18, 19, 20],
+    "fcc2026Section706SourcePhysicalPages": 178,
+    "fcc2026ReleasePhysicalPages": 2,
+    "exactSharedEightWordWindowsOnTargetPages": 0,
+    "exactSharedTwelveWordWindowsOnTargetPages": 0,
+    "existingFcc2026ItemsAskDifferentFacts": true,
+    "familyIndependenceApproved": false
+  },
+  "privatePublicGitScreen": {
+    "path": "tmp/ma24-independent-quarantine/fcc-mba-v2-public-exposure-screen.json",
+    "sha256": "dccf523414893635fa23ac1f4ce730da7c3c6e4fede40613f1cee38dcb4f9035",
+    "trackedTextFiles": 3038,
+    "exactFullQuestionHits": 0,
+    "exactFullAnswerHits": 0,
+    "exactLocalGitHistoryQuestionHits": 0,
+    "exactLocalGitHistoryAnswerHits": 0,
+    "genericQuestionFragmentsInCurrentMetadataOrVerifier": 3
+  },
+  "priorBoundedChecks": {
+    "sameQuestionLocalBgeScreen": "docs/evidence/ma24-g14-fcc-mba-local-neighbor-screen-2026-10-16.json",
+    "localRolloutBoundary": "docs/evidence/ma24-g14-fcc-mba-local-rollout-boundary-2026-10-16.json",
+    "productReadback": "docs/evidence/ma24-g14-fcc-mba-full-review-clone-2026-10-16.json"
+  },
+  "sourceUseBoundary": "The report is an official FCC attachment. Use attributed, short factual material in internal evaluation; keep the PDF quarantined. Do not infer rights for third-party material, logos, bulk redistribution or use suggesting FCC endorsement from the public URL alone.",
+  "sourceUseReference": "https://www.usa.gov/government-copyright",
+  "limits": [
+    "Exact lexical nonoverlap and BGE neighbor results do not prove semantic independence or absence of unpublished exposures.",
+    "The candidate's preparation rollout contains its full question and answer. This is known exposure and remains part of the final family/holdout audit.",
+    "The source prose and Chart 7 caption disagree about the across-tier aggregation term; the candidate answer avoids choosing either.",
+    "Per-case answer confirmation, family disposition and complete-set Gold freeze are still pending."
+  ],
+  "independentGoldApproved": 0,
+  "g15PaidAdmission": false,
+  "g16RealDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}
