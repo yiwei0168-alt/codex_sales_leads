@@ -1,0 +1,60 @@
+{
+  "schema": "ma24-g14-glasgow5g-xlsx-discovery-v1",
+  "date": "2026-10-16",
+  "source": {
+    "title": "Glasgow 5G Dataset 2025",
+    "creator": "Ahren Hart and collaborators, University of the West of Scotland",
+    "zenodoRecord": "https://zenodo.org/records/20465872",
+    "repository": "https://github.com/AhrenHart/Glasgow5GDataset2025",
+    "relatedResearchArticle": "https://www.nature.com/articles/s41597-026-07600-w",
+    "licenseStatedByRecord": "CC BY 4.0",
+    "localPrivatePath": "tmp/ma24-independent-quarantine/glasgow5g-github.xlsx",
+    "bytes": 55800,
+    "sha256": "e293c28088305e1df331edfbdd49c12ab3a0415291e1be82cebbb9a8df7af4dd",
+    "md5": "375c58bd79d1e0762724fb78f67b4230",
+    "zenodoListedMd5Matches": true
+  },
+  "workbookInspection": {
+    "worksheets": ["glasgow_5g_2025-04-06", "glasgow_5g_2025-04-07", "glasgow_5g_2025-04-08", "Averaged Dataset"],
+    "rawCompleteRowsPerDay": [240, 240, 240],
+    "rawCompleteRowsTotal": 720,
+    "rawSheetMaxRowPerDay": 255,
+    "totalZipParts": 16,
+    "macroParts": 0,
+    "externalLinkParts": 0,
+    "sourceCellArithmeticChecked": true,
+    "sourceCountCaution": "The Zenodo v2 record, related article and populated workbook rows say 720 measurements. The GitHub README says about 1,200+, so it is not used to establish the count."
+  },
+  "privateCandidate": {
+    "sha256": "8808051d3f41f0ccb2b5f451a3c44b3a1adce1dd5d7c0e610835fc9f1ad4e4f5",
+    "exactQuestionInCurrentTrackedText": 0,
+    "exactAnswerInCurrentTrackedText": 0,
+    "exactQuestionInLocalGitHistory": 0,
+    "exactAnswerInLocalGitHistory": 0,
+    "publicExposureScreenSha256": "63cd89da61037653e20eea31b4eee8de611d672588c8070a1a0790764e8fc381"
+  },
+  "localNearNeighbor": {
+    "model": "BAAI/bge-m3",
+    "revision": "5617a9f61b028005a4858fdac845db406aefb181",
+    "comparisonQuestions": 378,
+    "topNeighborId": "boundary-4-04",
+    "topCosine": 0.519529,
+    "review": "Highest-scoring old boundary questions concern 2.5G port versus 5G cellular terminology; they do not ask for this workbook's sampled device/location/date calculation.",
+    "privateReportSha256": "724fabe2a7b677120bc4f9db12cc3ee2db8504e931e88c09537944a119c51dfc"
+  },
+  "localRegistryExactHashScreen": {
+    "readOnlyRepeatableRead": true,
+    "matchingKnowledgeAssets": 0,
+    "matchingUploadJobs": 0,
+    "matchingHistoricalGoldRows": 0
+  },
+  "limits": [
+    "Zenodo HTTP download timed out in this environment. The author's GitHub binary matches Zenodo's listed MD5 but was not byte-retrieved from Zenodo itself.",
+    "Exact-hash and local-question screens do not establish model-provider non-exposure or source-family independence.",
+    "Per-case review, product extraction/citation, license and family disposition, and full Gold freeze remain pending."
+  ],
+  "independentGoldApproved": 0,
+  "g15PaidAdmissionOpen": false,
+  "g16RealDualArmRuns": 0,
+  "g17ToG20": "paused by user"
+}
