@@ -1,0 +1,27 @@
+{
+  "schema": "ma24-g05-large-workbook-capacity-error-v1",
+  "date": "2026-10-16",
+  "scope": "Private binary workbook registration exceeds the existing 2,000,000-character extracted-content limit",
+  "change": {
+    "registration": "Distinguish empty extracted content from content above the existing registration limit without changing the limit",
+    "worker": "Persist extracted-content-too-large instead of generic Error for this exact failure",
+    "interface": "Explain the 2,000,000-character limit and ask the user to split and reupload the source"
+  },
+  "verification": {
+    "isolatedClone": "MA11 replay database; previously retired World Bank Findex workbook used only as capacity regression",
+    "privateVerifierPath": "tmp/ma24-independent-quarantine/verify-findex-capacity-code-clone.ts",
+    "privateVerifierSha256": "b03b8c6c8991a2cd71fb758581d6ad490588cf659936efbdb9c03a957ce9a691",
+    "result": "failed upload, extracted-content-too-large persisted, no published document, no synthetic database or upload-directory residue",
+    "typecheck": "passed",
+    "targetedLint": "passed",
+    "uploadAndBinaryRegistrationTests": "10 passed after retry outside the sandbox temporary-cache EPERM"
+  },
+  "limits": [
+    "This is a diagnostic and recovery-message fix; large workbooks still cannot be registered as one document.",
+    "The retired Findex source and its question remain in development regression only, not independent Gold.",
+    "No production service refresh or user-visible browser check was performed. G05 complete workflow acceptance and G14-G16 quality remain open."
+  ],
+  "modelCalls": 0,
+  "productionWrites": 0,
+  "g17ToG20": "paused"
+}

@@ -1,5 +1,7 @@
 # MA24 剩余工作完整计划与 Goal
 
+2026-10-16 G05 大型工作簿容量失败诊断：沿用 200 万字符登记上限，worker 对超限改存 `extracted-content-too-large`，资料页提示拆分后重新上传。已用退出独立题池的 Findex 原件在隔离克隆验证失败代码、无发布文档及清理；类型、lint 和 10 项上传回归通过。[工程收据](evidence/ma24-g05-large-workbook-capacity-error-2026-10-16.json)。这不解决大型工作簿单件登记，也未作生产网页验收；G05 整体仍未完成，G14 完整独立 Gold 0、G15 关闭、G16 真实双路 0，G17–G20 暂停。
+
 2026-10-16 G14 World Bank Findex 大型 XLSX 候选已完成只读产品抽取和两次隔离上传诊断：原格可抽取，正文长度 **11,460,342** 超过现行 **2,000,000** 字符注册门槛，任务均失败且仅记录通用错误。[容量判决](evidence/ma24-g14-worldbank-findex-product-capacity-disposition-2026-10-16.json)。本题退出当前独立 Gold 池并保留为私有容量回归；须另补可登记的新 XLSX 来源及完整题型覆盖。独立 Gold 0，G15/G16 关闭，G17–G20 暂停。
 
 2026-10-16 G14 Glasgow 5G XLSX 候选已在隔离产品链完成真实上传、两天证据块及 10 个原格回读、跨账号拒绝和残留清理。[产品回读收据](evidence/ma24-g14-glasgow5g-product-readback-2026-10-16.json)。下一步核逐题答案与来源家族、模型可见精确引用并纳入完整来源题集终审；独立 Gold 0，G15/G16 真实运行仍关闭，G17–G20 暂停。

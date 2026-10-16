@@ -85,7 +85,7 @@ try{
     }catch(error){await tenantQuery(job.userId,`update knowledge_upload_job set status=case when status='registered' then status else 'failed' end,
       lease_token=null,lease_until=null,error_code=coalesce(error_code,case when status='registered' then 'tree-index-failed' else $2 end),updated_at=now(),metrics=metrics||$3::jsonb
       where id=$1 and user_id=$4 and lease_token=$5 and lease_until>now()`,
-      [job.id,error instanceof Error?error.name:"unknown",JSON.stringify({latencyMs:Date.now()-started,discardedReasonCounts:{processingFailed:1}}),job.userId,job.leaseToken]);failed++;}
+      [job.id,error instanceof Error&&error.message==="Extracted content exceeds registration limit"?"extracted-content-too-large":error instanceof Error?error.name:"unknown",JSON.stringify({latencyMs:Date.now()-started,discardedReasonCounts:{processingFailed:1}}),job.userId,job.leaseToken]);failed++;}
   }
   console.log(JSON.stringify({inputJobs:completed+failed+awaitingReview,completed,failed,awaitingReview,embeddingCalls:0,modelCalls:0,externalCalls:0},null,2));
 }finally{await getPool().end();}

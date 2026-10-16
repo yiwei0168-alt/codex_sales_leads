@@ -35,7 +35,8 @@ export async function registerVectorlessUpload(userId:string,jobId:string,option
   if(extracted.blocks.some(block=>!['success','blank'].includes(block.quality)))throw new Error("Unresolved extraction unit");
   assertNoSpreadsheetCachedErrors(extracted.blocks);
   const content=extracted.blocks.filter(block=>block.quality==="success").map(block=>`${block.unitType} ${block.unitIndex} · ${block.id}\n${evidenceText(block)}`).join("\n\n");
-  if(!content.trim()||content.length>2_000_000)throw new Error("Extracted content is empty or too large");
+  if(!content.trim())throw new Error("Extracted content is empty");
+  if(content.length>2_000_000)throw new Error("Extracted content exceeds registration limit");
   const contentHash=sha(content);
   if(job.revision_target_document_id)return registerBinaryRevision(userId,job,{blocks:extracted.blocks,content,contentHash,...options},actor.role);
   const registered=await tenantTransaction(userId,async client=>{
