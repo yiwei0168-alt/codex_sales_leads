@@ -1,0 +1,41 @@
+{
+  "schema": "ma24-g01-linux-standalone-local-smoke-v1",
+  "date": "2026-10-16",
+  "scope": "Local Docker Linux build and loopback smoke only; no cloud deployment",
+  "source": {
+    "commit": "7d7acf39",
+    "gitArchiveSha256": "a46c75dff02a0f5142de5d931f47c6d8bcf74200457b3faf43f3c75a63055231"
+  },
+  "build": {
+    "image": "node:24-bookworm-slim",
+    "nodeVersion": "v24.21.0",
+    "install": "npm ci --no-audit --no-fund --prefer-offline completed",
+    "nextVersion": "16.3.4",
+    "productionCompile": "passed",
+    "typescriptDuringBuild": "passed",
+    "staticPagesGenerated": 26,
+    "buildId": "k76LM2MqI4OD5FLPCNnwu",
+    "standaloneLocalArtifact": ".next-releases/ma24-pilot-linux-7d7acf39",
+    "regularFiles": 2235,
+    "regularFileBytes": 51675977,
+    "relativeSymlinks": 2,
+    "relativeSymlinkTargetsResolvedInLinux": true,
+    "environmentFilesInArtifact": 0
+  },
+  "smoke": {
+    "containerNetwork": "local Docker host network",
+    "databaseAccount": "existing restricted local application login",
+    "homeStatus": 200,
+    "sessionStatus": 200,
+    "temporaryContainerStopped": true,
+    "temporaryRuntimeEnvDeleted": true,
+    "productionDatabaseWrites": "none intentionally performed; HTTP GET only"
+  },
+  "diagnostic": "An initial container run without DATABASE_URL returned 500. Rewriting the local address to host.docker.internal was correctly rejected by the application's production remote database TLS requirement. Host networking kept the URL loopback-only and the smoke passed.",
+  "limits": [
+    "This is not a target Linux cloud VM or trusted HTTPS-domain test",
+    "Only the homepage and anonymous session route were exercised in this build; login, tenant isolation, business writes, workers, LangGraph, BGE and model calls were not exercised",
+    "Linux package size is a local artifact observation, not a cloud resource sizing result",
+    "The container did not prove backup restore or rollback on a new PostgreSQL host"
+  ]
+}
