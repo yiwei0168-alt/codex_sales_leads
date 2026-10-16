@@ -37,3 +37,9 @@
 进一步构建定位到警告来自 path.join 的静态分析，原生文件接口同样未消除它。按构建诊断要求将忽略标注放入 path.join 的参数位置，恢复常规文件接口；此前两种尝试均不作为发布通过证据。回归和 lint 通过，以下镜像实测才决定文件范围是否已收敛。
 
 最终固定源码 5977b301 镜像已通过构建（全项目追踪警告为 0）和固定 Git archive 的 890 个输入哈希比对；根目录只包含 .next、.skill-runtime-source、knowledge、node_modules、package.json、scripts、server.js。一次性 TLS 新库上的 HTTP 公司流程、自签 HTTPS 浏览器和十合成账号隔离通过，临时资源清理完成。[镜像收据](evidence/ma24-g01-skill-source-standalone-image-2026-10-16.json)。这解决材料交付和文件范围问题；Skill 审核自身的 HTTP/页面到库仍待验。
+
+### 实际 standalone HTTP 审核验收入口
+
+新增一次性 Linux builder 验收路径：`node scripts/build-ma24-pilot-image.mjs <builder-tag> --target=builder` 从固定提交构建测试镜像，再运行 `node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --prospective-http-image=<builder-tag>`。该镜像包含验收源码和开发依赖，不能作为团队发布镜像。数据库仍为随机凭证、回环暴露的一次性集群，HTTP 子进程只接收应用数据库凭证和临时邮件密钥，不接收管理员凭证。
+
+在同一 Linux/Node 与源码指纹下，先生成既有合成两臂材料，再启动实际 standalone 服务，验证真实登录、列表/材料读取、审核保存/回读、跨账号、匿名、跨站与过期修订拒绝。所有判定均为 false，临时库中的 human 字段只测试会话归属，不是任何真实题目或质量批准。脚本类型/lint 已通过；运行结果另行记录，不以工具存在宣称验收完成。

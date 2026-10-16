@@ -23,6 +23,7 @@ import {skillSourceRuntimeHash} from '../src/lib/assistant/main/skill-runtime-id
 import {runDurableRecordedSkillCandidateArm} from '../src/lib/assistant/main/skill-candidate-source';
 import {collectSkillProspectiveAcceptance} from '../src/lib/assistant/main/skill-prospective-collector';
 import {readSkillAcceptanceReview,readSkillAcceptanceReviewCase} from '../src/lib/assistant/main/skill-acceptance-review';
+import {verifySkillProspectiveHttp} from './verify-skill-prospective-http';
 
 nextEnv.loadEnvConfig(process.cwd());disableLocalAnalysisTracing();
 assert.equal(process.env.MA24_DISPOSABLE_PROSPECTIVE_SOURCE,'1','Dedicated disposable-cluster harness required');
@@ -30,6 +31,7 @@ const adminUrl=new URL(process.env.DATABASE_MIGRATION_URL!),appUrl=new URL(proce
 assert(['127.0.0.1','localhost'].includes(adminUrl.hostname));
 assert.equal(`${appUrl.host}${appUrl.pathname}`,`${adminUrl.host}${adminUrl.pathname}`);
 process.env.MAILBOX_CREDENTIAL_KEY=randomBytes(32).toString('base64url');
+const nativeFetch=globalThis.fetch;
 globalThis.fetch=async()=>{throw new Error('HTTP disabled for prospective source fixture');};
 const pool=new Pool({connectionString:adminUrl.toString()});
 const owner=randomUUID(),other=randomUUID(),conversation=randomUUID(),campaign=randomUUID(),run=randomUUID();
@@ -128,6 +130,7 @@ try{
   assert.equal(material.baseline,baselineAnswer);assert.equal(material.candidate,candidateAnswer);assert.equal(material.receipts.length,1);
   assert.equal(material.automaticActivation,false);assert.equal(requests,5);
   await assert.rejects(readSkillAcceptanceReviewCase({userId:other},{bundleId:collectedBundle,caseId:'shadow'}));
+  if(process.env.MA24_PROSPECTIVE_HTTP==='1')await verifySkillProspectiveHttp(pool,{owner,other,bundleId:collectedBundle,skillId:skill.id,baseline:baselineAnswer,candidate:candidateAnswer},nativeFetch);
  }
  await assert.rejects(prepareSkillProspectiveSource({userId:other},params),/owner/);
  const late=await freezeSkillAcceptancePlan({userId:owner},draft,collector);

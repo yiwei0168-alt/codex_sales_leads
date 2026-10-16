@@ -7,6 +7,8 @@ const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const releasesRoot = join(repoRoot, ".next-releases");
 const commit = execFileSync("git", ["rev-parse", "HEAD"], { cwd: repoRoot, encoding: "utf8" }).trim();
 const tag = process.argv[2] ?? `ma24-pilot-web:${commit.slice(0, 8)}`;
+const target = process.argv[3];
+if (process.argv.length > 4 || (target && target !== '--target=builder')) throw new Error('Only --target=builder is supported');
 if (!/^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(tag)) throw new Error("Invalid Docker image tag");
 
 mkdirSync(releasesRoot, { recursive: true });
@@ -33,7 +35,7 @@ try {
   for (const path of [".dockerignore", "Dockerfile.pilot-web", "scripts/start-ma24-pilot-container.mjs"]) {
     if (!existsSync(join(context, path))) throw new Error(`Committed image input is missing: ${path}`);
   }
-  run("docker", ["build", "--file", join(context, "Dockerfile.pilot-web"), "--tag", tag, context]);
+  run("docker", ["build", ...(target ? ['--target', 'builder'] : []), "--file", join(context, "Dockerfile.pilot-web"), "--tag", tag, context]);
   console.log(`Built ${tag} from ${commit}`);
 } finally {
   rmSync(temporaryRoot, { recursive: true, force: true });

@@ -19,17 +19,20 @@ const backupCheck = args.includes("--backup");
 const crossClusterCheck = args.includes("--cross-cluster");
 const modeBusinessCheck = args.includes("--mode-business");
 const runnerAttestationCheck = args.includes("--runner-attestation");
-const prospectiveMaterialCheck = args.includes("--prospective-material");
+const prospectiveHttpArgument = args.find(arg => arg.startsWith('--prospective-http-image='));
+const prospectiveHttpImage = prospectiveHttpArgument?.slice('--prospective-http-image='.length);
+const prospectiveMaterialCheck = args.includes("--prospective-material") || Boolean(prospectiveHttpImage);
 const prospectiveSourceCheck = args.includes("--prospective-source") || prospectiveMaterialCheck;
 const rollbackImageArgument = args.find(arg => arg.startsWith("--rollback-image="));
 const rollbackImage = rollbackImageArgument?.slice("--rollback-image=".length);
-assert(args.length <= 10 && args.every(arg => ["--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", "--prospective-source", "--prospective-material", webImageArgument, rollbackImageArgument].includes(arg))
+assert(args.length <= 11 && args.every(arg => ["--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", "--prospective-source", "--prospective-material", prospectiveHttpArgument, webImageArgument, rollbackImageArgument].includes(arg))
+  && (!prospectiveHttpArgument || (prospectiveHttpImage && /^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(prospectiveHttpImage)))
   && (!webImageArgument || (webImage && /^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(webImage)))
   && (!rollbackImageArgument || (rollbackImage && /^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(rollbackImage)))
   && (!(browserCheck || tenUserCheck || backupCheck || crossClusterCheck || rollbackImage) || webImage)
   && (!crossClusterCheck || backupCheck)
   && (!rollbackImage || rollbackImage !== webImage),
-  "Expected --mode-business, --runner-attestation, --prospective-source, --prospective-material, or --web-image=<tag> with optional --browser, --ten-user, --backup, --cross-cluster (with --backup), and --rollback-image=<prior-tag>");
+  "Expected --mode-business, --runner-attestation, --prospective-source, --prospective-material, --prospective-http-image=<builder-tag>, or --web-image=<tag> with optional --browser, --ten-user, --backup, --cross-cluster (with --backup), and --rollback-image=<prior-tag>");
 const networkName = `ma24-pilot-net-${id}`;
 const adminPassword = randomBytes(24).toString("hex");
 const appPassword = randomBytes(24).toString("hex");
@@ -113,13 +116,21 @@ try {
     assert.equal(migration.code, 0, migration.output);
   }
   if (prospectiveSourceCheck) {
-    const source = await run(process.execPath,
+    const inContainerApp = new URL(appUrl), inContainerAdmin = new URL(adminUrl);
+    inContainerApp.port = '5432'; inContainerAdmin.port = '5432';
+    const source = prospectiveHttpImage ? await run('docker', ['run', '--rm', '--network', `container:${containerId}`,
+      '--workdir', '/build', '--env', `DATABASE_URL=${inContainerApp.toString()}`,
+      '--env', `DATABASE_MIGRATION_URL=${inContainerAdmin.toString()}`,
+      '--env', 'MA24_DISPOSABLE_PROSPECTIVE_SOURCE=1', '--env', 'MA24_PROSPECTIVE_FULL_MATERIAL=1',
+      '--env', 'MA24_PROSPECTIVE_HTTP=1', prospectiveHttpImage,
+      'node', 'scripts/run-tsx.cjs', 'scripts/verify-skill-prospective-source-db.ts']) : await run(process.execPath,
       ["scripts/run-tsx.cjs", "scripts/verify-skill-prospective-source-db.ts"],
       { ...process.env, DATABASE_URL: appUrl.toString(), DATABASE_MIGRATION_URL: adminUrl.toString(),
         MA24_DISPOSABLE_PROSPECTIVE_SOURCE: "1",MA24_PROSPECTIVE_FULL_MATERIAL: prospectiveMaterialCheck ? "1" : "0" });
     assert.equal(source.code, 0, source.output);
     assert(source.output.includes('"prospectiveSourceDatabase":"passed"'), source.output);
     if(prospectiveMaterialCheck)assert(source.output.includes('"fullPairedMaterialVerified":true'),source.output);
+    if(prospectiveHttpImage)assert(source.output.includes('"prospectiveStandaloneHttp":"passed"'),source.output);
   }
   if (runnerAttestationCheck) {
     const attested = await run(process.execPath,
@@ -399,6 +410,7 @@ try {
     extraG09Migration: runnerAttestationCheck ? 141 : null,
     prospectiveSourceDatabaseVerified: prospectiveSourceCheck,
     prospectivePairedMaterialVerified: prospectiveMaterialCheck,
+    prospectiveStandaloneHttpVerified: Boolean(prospectiveHttpImage),
     samePortPriorImageRollbackVerified: Boolean(rollbackImage) }));
 } finally {
   if (restoredContainerId) {
