@@ -45,7 +45,7 @@ export async function saveMemory(context: ExecutionContext, input: MemoryInput, 
 export async function loadMemory(userId: string, scope?: { market?: string; company?: string }) {
   return tenantQuery(userId, `select m.id,m.scope,m.kind,m.memory_key,m.current_version,m.mandatory,m.source_kind,m.market_codes,m.company_ids,m.valid_until,v.content,v.source_run_id,v.source_message_id
     ,m.owner_id=app_current_user_id() as owned from agent_memory m join agent_memory_version v on v.memory_id=m.id and v.version=m.current_version
-    where m.active and m.valid_from<=now() and (m.valid_until is null or m.valid_until>now())
+    where m.active and m.valid_from<=clock_timestamp() and (m.valid_until is null or m.valid_until>clock_timestamp())
       and ($1::text is null or cardinality(m.market_codes)=0 or $1=any(m.market_codes))
       and ($2::text is null or cardinality(m.company_ids)=0 or $2=any(m.company_ids))
     order by m.mandatory desc,(m.scope='global') desc,m.updated_at desc,m.id`, [scope?.market ?? null, scope?.company ?? null]);

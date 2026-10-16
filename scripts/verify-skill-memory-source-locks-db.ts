@@ -3,11 +3,13 @@ import {randomUUID,randomBytes} from 'node:crypto';
 import {readFile} from 'node:fs/promises';
 import nextEnv from '@next/env';
 import {Pool} from 'pg';
-import {getPool,tenantTransaction} from '../src/lib/rag/db';
+import {getPool,tenantTransaction,withBoundTenantTransaction} from '../src/lib/rag/db';
 import {digest} from '../src/lib/assistant/main/contracts';
 import {lockCurrentSkillExperienceSources,type SourcedSkillVersion} from '../src/lib/assistant/main/skill-source-guard';
 import {lockSkillAcceptanceRunJournals} from '../src/lib/assistant/main/skill-acceptance-run-locks';
 import {encryptMailboxContent} from '../src/lib/mailbox/crypto';
+import {loadDecisionMemory} from '../src/lib/assistant/main/memory-context';
+import {decisionMemoryMessage,assertRecordedDecisionMemory} from '../src/lib/assistant/main/decision-memory-message';
 
 nextEnv.loadEnvConfig(process.cwd());assert.equal(process.env.MA24_DISPOSABLE_MEMORY_SOURCE_LOCKS,'1','Disposable harness required');
 process.env.PGOPTIONS='-c statement_timeout=10000';
@@ -23,6 +25,25 @@ try{
  const attachmentMigration=await readFile('db/migrations/145_skill_attachment_source_locks.sql','utf8');await pool.query(attachmentMigration);await pool.query(attachmentMigration);
  const timelineMigration=await readFile('db/migrations/147_skill_timeline_source_locks.sql','utf8');await pool.query(timelineMigration);await pool.query(timelineMigration);
  for(const id of [owner,other])await pool.query("insert into app_user(id,email,display_name,role,status) values($1,$2,'Synthetic source locks','member','active')",[id,`${id}@example.invalid`]);
+ const expiringMemory=randomUUID(),futureMemory=randomUUID();
+ for(const [id,future] of [[expiringMemory,false],[futureMemory,true]] as const){
+  await pool.query(`insert into agent_memory(id,owner_id,scope,kind,memory_key,source_kind,valid_from,valid_until)
+   values($1,$2,'account','preference',$1::uuid::text,'explicit',
+    case when $3 then clock_timestamp()+interval '2 seconds' else clock_timestamp()-interval '1 minute' end,
+    case when $3 then null else clock_timestamp()+interval '2 seconds' end)`,[id,owner,future]);
+  await pool.query("insert into agent_memory_version(memory_id,version,content,scope_snapshot) values($1,1,'Synthetic time-bound preference','{}')",[id]);
+ }
+ await tenantTransaction(owner,client=>withBoundTenantTransaction(client,owner,async()=>{
+  const before=await loadDecisionMemory(owner);
+  assert(before.some(row=>row.id===expiringMemory));assert(!before.some(row=>row.id===futureMemory));
+  const messages=[{role:'system' as const,content:'Synthetic decision snapshot'},decisionMemoryMessage(before)];
+  await client.query('select pg_sleep(2.1)');
+  assert.equal((await client.query('select transaction_timestamp()<valid_until as old_clock_before_expiry from agent_memory where id=$1',[expiringMemory])).rows[0].old_clock_before_expiry,true);
+  const after=await loadDecisionMemory(owner);
+  assert(!after.some(row=>row.id===expiringMemory));assert(after.some(row=>row.id===futureMemory));
+  assert.throws(()=>assertRecordedDecisionMemory(messages,after),/decision memory changed/);
+ }));
+ assert(!(await loadDecisionMemory(other)).some(row=>row.id===futureMemory));
  const documentId=randomUUID(),assetId=randomUUID(),treeId=randomUUID(),sha=digest('Synthetic attachment');
  const collection=(await pool.query('select id from knowledge_collection order by id limit 1')).rows[0].id;
  await pool.query(`insert into knowledge_document(id,collection_id,external_id,title,source_type,content_sha256,owner_id,visibility)
@@ -235,6 +256,6 @@ try{
  await assert.rejects(tenantTransaction(owner,client=>lockCurrentSkillExperienceSources(client,owner,version)),/changed after locking/);
  assert.equal((await pool.query("select to_regclass('public.ma24_evaluation_hard_limit') is null absent")).rows[0].absent,true);
  console.log(JSON.stringify({memorySourceLocksDatabase:'passed',correctionInvalidationAndConflictBlocked:true,allWritersResumeAfterRelease:true,
-  foreignOwnerAndInvalidIdsRejected:true,timelineUpdatesAndPhantomInsertsBlocked:true,mailMetadataUpdatesBlocked:true,attachmentMetadataUpdatesBlocked:true,privateAttachmentForeignOwnerRejected:true,taskOriginsAndHistoryAppendBlocked:true,taskAndJournalUpdateAndAppendBlocked:true,foreignTaskJournalLockRejected:true,noObservationUpdateGrant:true,originUpdatesBlocked:true,changedOriginalMessageRejected:true,storedProvenanceLockThenRecheck:true,invalidatedProvenanceRejectedAfterLock:true,expiryAfterTransactionStartRejected:true,
+  foreignOwnerAndInvalidIdsRejected:true,decisionMemoryWallClockRevalidated:true,timelineUpdatesAndPhantomInsertsBlocked:true,mailMetadataUpdatesBlocked:true,attachmentMetadataUpdatesBlocked:true,privateAttachmentForeignOwnerRejected:true,taskOriginsAndHistoryAppendBlocked:true,taskAndJournalUpdateAndAppendBlocked:true,foreignTaskJournalLockRejected:true,noObservationUpdateGrant:true,originUpdatesBlocked:true,changedOriginalMessageRejected:true,storedProvenanceLockThenRecheck:true,invalidatedProvenanceRejectedAfterLock:true,expiryAfterTransactionStartRejected:true,
   deferredEvaluationMigrationsApplied:false,actualModelCalls:0,automaticActivation:false}));
 }finally{await pool.end();await getPool().end();}

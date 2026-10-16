@@ -1,0 +1,21 @@
+{
+  "stage": "MA24 G03/G09 current decision memory validity clock",
+  "date": "2026-10-17",
+  "status": "code and disposable database verified",
+  "change": "loadMemory evaluates valid_from and valid_until using clock_timestamp instead of transaction-start now",
+  "databaseCommand": "node --import tsx scripts/verify-ma24-fresh-pilot-new-cluster.ts --memory-source-locks",
+  "sameBoundTransaction": true,
+  "before": "expiring synthetic preference visible; future preference absent",
+  "afterWallClockBoundary": "expired preference absent; future preference visible",
+  "transactionStartStillBeforeExpiry": true,
+  "recordedDecisionMemoryRejectsOldSnapshot": true,
+  "foreignAccountCannotReadFixtureMemory": true,
+  "targetedTests": 14,
+  "typecheck": "passed",
+  "eslint": "passed",
+  "existingSourceConcurrencyDatabaseRegression": "passed",
+  "actualModelCalls": 0,
+  "productionDeployment": false,
+  "automaticActivation": false,
+  "limitations": ["Validity is checked at each read, not guaranteed through future commit", "Memory write and global policy concurrency locks remain incomplete", "Full snapshot 500405a4 predates this change"]
+}
