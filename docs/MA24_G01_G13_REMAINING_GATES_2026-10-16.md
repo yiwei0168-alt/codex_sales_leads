@@ -86,3 +86,6 @@ G09 受控安全评测两臂入口已接线至配置请求工厂和持久日志�
 G09 本轮补充：[模型传输收据实现与验证范围](SKILL_MODEL_TRANSPORT_RECEIPTS_2026-10-16.md)。已实现签名用途隔离、成功请求工厂及服务器日志核对；72 项定向回归通过，包含网络/数据库读取夹具下的工厂和日志组件接线。后续[一次性新库实际入库验收](evidence/ma24-g09-transport-journal-database-2026-10-16.json)通过受限角色追加、签名回读、恢复复用、跨账号隔离、不可改写及密钥/冻结撤销拒绝；模型内容与签名密钥为合成夹具，未执行生产请求工厂。生产身份及最终启用事务仍未完成，不改变 G09 未关闭的结论。
 
 主要依据：[当前台账](MA24_EXECUTION_STATUS_2026-10-13.md)、[执行计划](MA24_REMAINING_EXECUTION_PLAN_2026-10-13.md)、[试用发布](TEAM_PILOT_RELEASE_PLAN_2026-10-16.md)、[G09 断点审计](evidence/ma24-g09-activation-readiness-audit-2026-10-15.json)、[G12 当前集成](evidence/ma24-g12-fresh-db-scripted-business-2026-10-16.json)。
+# G09 来源锁补充进展（2026-10-16）
+
+本地经验锁新增原始账号、会话、任务及用户消息保护，一次性数据库实测四类更新等待并在释放后恢复，原文变化被复查拒绝。见 [验收证据](evidence/ma24-g09-memory-origin-locks-2026-10-16.json)。此项仅关闭本地经验原始记录并发缺口；其他来源保护、可信生产评测和最终启用仍为未完成，G14–G20 暂缓。

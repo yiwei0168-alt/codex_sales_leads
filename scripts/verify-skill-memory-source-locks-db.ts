@@ -15,6 +15,7 @@ const pool=new Pool({connectionString:admin.toString()}),owner=randomUUID(),othe
 try{
  assert.equal((await pool.query('select count(*)::int n from app_user')).rows[0].n,1);
  const migration=await readFile('db/migrations/142_skill_memory_source_locks.sql','utf8');await pool.query(migration);await pool.query(migration);
+ const originsMigration=await readFile('db/migrations/143_skill_memory_origin_locks.sql','utf8');await pool.query(originsMigration);await pool.query(originsMigration);
  for(const id of [owner,other])await pool.query("insert into app_user(id,email,display_name,role,status) values($1,$2,'Synthetic source locks','member','active')",[id,`${id}@example.invalid`]);
  const conversation=randomUUID(),quote='I found comparing original tables reduced errors.',memoryKey='source-lock-fixture';
  await pool.query("insert into assistant_conversation(id,user_id,title) values($1,$2,'Synthetic source provenance')",[conversation,owner]);
@@ -50,6 +51,30 @@ try{
  const grants=(await pool.query(`select has_table_privilege('network_copilot_app','agent_memory_observation','UPDATE') as observation_update,
   has_function_privilege('network_copilot_skill_collector','lock_skill_memory_sources(uuid[])','EXECUTE') as collector_execute`)).rows[0];
  assert.deepEqual(grants,{observation_update:false,collector_execute:false});
+ const originHolder=await pool.connect();let originPending:Array<Promise<unknown>>=[];
+ try{
+  await originHolder.query('begin');await originHolder.query('set local role network_copilot_app');
+  await originHolder.query("select set_config('app.current_user_id',$1,true)",[owner]);
+  assert.equal((await originHolder.query('select lock_skill_memory_sources($1::uuid[]) as n',[[a,b]])).rows[0].n,2);
+  const pid=(await originHolder.query('select pg_backend_pid() as pid')).rows[0].pid as number;
+  originPending=[
+   pool.query('update app_user set status=status where id=$1',[owner]),
+   pool.query('update assistant_conversation set title=title where id=$1',[conversation]),
+   pool.query('update agent_run set status=status where id=$1',[refs[0].runId]),
+   pool.query('update assistant_message set content=content where id=$1',[refs[0].messageId]),
+  ];
+  for(const work of originPending)void work.catch(()=>undefined);
+  let waiting=0;
+  for(let i=0;i<100;i++){
+   waiting=Number((await pool.query('select count(*) n from pg_stat_activity where $1::int=any(pg_blocking_pids(pid))',[pid])).rows[0].n);
+   if(waiting===4)break;await new Promise(resolve=>setTimeout(resolve,20));
+  }
+  assert.equal(waiting,4,'Account, conversation, run and message updates must all wait');
+ }finally{await originHolder.query('rollback');originHolder.release();}
+ await Promise.all(originPending);
+ await pool.query('update assistant_message set content=$1 where id=$2',['Changed synthetic source',refs[0].messageId]);
+ await assert.rejects(tenantTransaction(owner,client=>lockCurrentSkillExperienceSources(client,owner,version)),/changed after locking/);
+ await pool.query('update assistant_message set content=$1 where id=$2',[quote,refs[0].messageId]);
  const holder=await pool.connect();let pending:Array<Promise<unknown>>=[];const finished=[false,false,false];
  try{
   await holder.query('begin');await holder.query('set local role network_copilot_app');
@@ -77,6 +102,6 @@ try{
  await assert.rejects(tenantTransaction(owner,client=>lockCurrentSkillExperienceSources(client,owner,version)),/changed after locking/);
  assert.equal((await pool.query("select to_regclass('public.ma24_evaluation_hard_limit') is null absent")).rows[0].absent,true);
  console.log(JSON.stringify({memorySourceLocksDatabase:'passed',correctionInvalidationAndConflictBlocked:true,allWritersResumeAfterRelease:true,
-  foreignOwnerAndInvalidIdsRejected:true,noObservationUpdateGrant:true,storedProvenanceLockThenRecheck:true,invalidatedProvenanceRejectedAfterLock:true,expiryAfterTransactionStartRejected:true,
+  foreignOwnerAndInvalidIdsRejected:true,noObservationUpdateGrant:true,originUpdatesBlocked:true,changedOriginalMessageRejected:true,storedProvenanceLockThenRecheck:true,invalidatedProvenanceRejectedAfterLock:true,expiryAfterTransactionStartRejected:true,
   deferredEvaluationMigrationsApplied:false,actualModelCalls:0,automaticActivation:false}));
 }finally{await pool.end();await getPool().end();}

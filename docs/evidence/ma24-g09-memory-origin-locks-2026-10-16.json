@@ -1,0 +1,20 @@
+{
+  "stage": "MA24 G09 local experience origin locks",
+  "date": "2026-10-16",
+  "status": "engineering subset verified",
+  "command": "node --import tsx scripts/verify-ma24-fresh-pilot-new-cluster.ts --memory-source-locks",
+  "database": "disposable local pgvector/pg16, migrations through 135 plus 142 and 143",
+  "migration143AppliedTwice": true,
+  "accountConversationRunMessageUpdatesBlocked": true,
+  "writersResumeAfterTransactionRelease": true,
+  "changedOriginalMessageRejectedAfterLock": true,
+  "correctionInvalidationConflictUpdatesBlocked": true,
+  "expiredSourceRejectedAfterTransactionStart": true,
+  "foreignOwnerAndInvalidIdsRejected": true,
+  "applicationObservationUpdateGrantAdded": false,
+  "checks": ["TypeScript noEmit passed", "targeted ESLint passed", "fresh database harness passed"],
+  "actualModelCalls": 0,
+  "automaticActivation": false,
+  "productionDeployment": false,
+  "limitations": ["Other source families remain incomplete", "Final activation transaction remains incomplete", "Synthetic provenance is not real quality evidence", "Deferred migrations 136–140 not applied"]
+}
