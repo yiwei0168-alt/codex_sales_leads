@@ -121,3 +121,5 @@ G09 本轮补充：[模型传输收据实现与验证范围](SKILL_MODEL_TRANSPO
 G09 原始任务成功签发工厂与 mode 持久执行已接线，47 项定向工程测试及类型/lint 通过；数据库、模型 RPC 与底层网络为模拟，仅验证保存参数和恢复复用。真实 SQL 贯穿、失败/回退链、生产密钥与部署认证仍待完成，自动启用保持关闭。[工作流](ORIGINAL_TASK_TRANSPORT_RECEIPTS_2026-10-17.md)、[证据](evidence/ma24-g09-original-task-transport-signing-2026-10-17.json)。G14–G20 继续暂缓。
 
 G09 原始任务可回退失败签发、验证与图执行保存接线已实现，90 项定向回归通过；失败收据先保存再回退的顺序在模拟持久层验证。实际 SQL、当前账号日志整链审核和部署资格继续待办。[更新范围](ORIGINAL_TASK_TRANSPORT_RECEIPTS_2026-10-17.md)。
+
+G09 知识库门禁加入完整组合后的固定快照 `453e88cc985b07ae7835bf5280398f70419031fa` 已实际退出成功：新 PostgreSQL 库、前瞻来源/配对材料及 completeCompositionVerified 均通过。该快照含迁移 149，不含后续原始任务签发接线；模型和内容为合成夹具，HTTP/浏览器及生产质量未由此验证。[快照收据](evidence/ma24-g09-knowledge-composition-snapshot-2026-10-17.json)。

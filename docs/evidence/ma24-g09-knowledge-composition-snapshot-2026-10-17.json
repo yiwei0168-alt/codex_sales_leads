@@ -1,0 +1,23 @@
+{
+  "stage": "MA24 G09 full material composition with knowledge publication admission",
+  "date": "2026-10-17",
+  "command": "node scripts/run-ma24-snapshot-check.mjs --prospective-composition",
+  "acceptedSnapshotCommit": "453e88cc985b07ae7835bf5280398f70419031fa",
+  "processExitCode": 0,
+  "snapshotCheck": "passed",
+  "freshClusterPilot": "passed",
+  "postgresImage": "pgvector/pgvector:pg16",
+  "prospectiveSourceDatabaseVerified": true,
+  "prospectivePairedMaterialVerified": true,
+  "completeCompositionVerified": true,
+  "migration149Included": true,
+  "originalTaskSigningCommitsIncluded": false,
+  "fixture": "synthetic task, mail, customer timeline/list, attachment and scripted model decisions",
+  "prospectiveStandaloneHttpVerified": false,
+  "prospectiveStandaloneBrowserVerified": false,
+  "actualModelCalls": 0,
+  "copiedProductionData": false,
+  "qualityAccepted": false,
+  "productionDeployment": false,
+  "automaticActivation": false
+}
