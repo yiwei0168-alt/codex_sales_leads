@@ -6,6 +6,7 @@ import { readdir, readFile, stat } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import nextEnv from "@next/env";
 import { Client } from "pg";
+import { applyVerifiedMa24Stage, ma24StageMarkers, verifiedMa24StageSql } from "./lib/ma24-stage-127-135";
 
 nextEnv.loadEnvConfig(process.cwd());
 const configured = process.env.DATABASE_MIGRATION_URL || process.env.DATABASE_URL;
@@ -32,28 +33,9 @@ const admin = new Client({ connectionString: adminUrl.toString() });
 const clone = new Client({ connectionString: cloneUrl.toString() });
 let created = false;
 let cloneConnected = false;
-const migrationFiles = [
-  "127_upload_extraction_reviews.sql", "128_upload_extraction_review_completion.sql",
-  "129_upload_visual_queue.sql", "130_skill_acceptance_evidence.sql",
-  "131_skill_model_attempt_journal.sql", "132_skill_bundle_collector.sql",
-  "133_skill_acceptance_freeze.sql", "134_skill_model_freeze_binding.sql",
-  "135_skill_freeze_current_version.sql",
-];
-const markers = async () => (await clone.query(`select
-  to_regclass('public.knowledge_upload_extraction_review') is not null as extraction_review,
-  to_regclass('public.knowledge_upload_review_completion') is not null as review_completion,
-  to_regclass('public.agent_skill_acceptance_bundle') is not null as acceptance_bundle,
-  to_regclass('public.agent_skill_model_attempt') is not null as model_attempt,
-  to_regclass('public.agent_skill_acceptance_freeze') is not null as acceptance_freeze,
-  exists(select 1 from information_schema.columns where table_schema='public' and table_name='knowledge_upload_job' and column_name='visual_retry_at') as visual_retry,
-  exists(select 1 from information_schema.columns where table_schema='public' and table_name='agent_skill_model_attempt' and column_name='freeze_id') as model_freeze_binding,
-  case when to_regrole('network_copilot_skill_collector') is null then false else
-    has_table_privilege('network_copilot_skill_collector','public.agent_skill','SELECT') and
-    has_table_privilege('network_copilot_skill_collector','public.agent_skill_version','SELECT') and
-    has_table_privilege('network_copilot_skill_collector','public.agent_run_skill','SELECT') end as skill_freeze_reader`)).rows[0] as Record<string, boolean>;
-const apply = async () => {
-  for (const name of migrationFiles) await clone.query(await readFile(`db/migrations/${name}`, "utf8"));
-};
+const stageFiles = await verifiedMa24StageSql();
+const markers = () => ma24StageMarkers(clone);
+const apply = () => applyVerifiedMa24Stage(clone, stageFiles);
 const restore = async () => {
   const binary = process.env.PG_RESTORE_PATH || "C:\\Program Files\\PostgreSQL\\16\\bin\\pg_restore.exe";
   const env = {

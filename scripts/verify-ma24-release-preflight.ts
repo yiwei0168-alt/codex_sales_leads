@@ -6,6 +6,7 @@ import { join, resolve } from "node:path";
 import nextEnv from "@next/env";
 import { Client } from "pg";
 import { databaseConnectionString, databaseSslConfiguration } from "../src/lib/rag/database-ssl";
+import { ma24StageMarkers, verifiedMa24StageSql } from "./lib/ma24-stage-127-135";
 
 nextEnv.loadEnvConfig(process.cwd());
 const application = process.env.DATABASE_URL;
@@ -18,21 +19,12 @@ assert(applicationUrl.hostname === migrationUrl.hostname
   && (applicationUrl.port || "5432") === (migrationUrl.port || "5432")
   && applicationUrl.pathname === migrationUrl.pathname, "Application and migration URLs target different databases");
 
-const migrationNames = [
-  "127_upload_extraction_reviews.sql", "128_upload_extraction_review_completion.sql",
-  "129_upload_visual_queue.sql", "130_skill_acceptance_evidence.sql",
-  "131_skill_model_attempt_journal.sql", "132_skill_bundle_collector.sql",
-  "133_skill_acceptance_freeze.sql", "134_skill_model_freeze_binding.sql",
-  "135_skill_freeze_current_version.sql",
-];
 const sha256 = async (path: string) => {
   const digest = createHash("sha256");
   for await (const part of createReadStream(path)) digest.update(part);
   return digest.digest("hex");
 };
-const files = await Promise.all(migrationNames.map(async name => ({
-  name, sha256: await sha256(resolve("db/migrations", name)),
-})));
+const files = (await verifiedMa24StageSql()).map(({ name, sha256 }) => ({ name, sha256 }));
 
 const directory = resolve("backups/database");
 const archives = (await readdir(directory)).filter(name => /^network_copilot_.*\.dump$/.test(name));
@@ -66,19 +58,7 @@ try {
     exists(select 1 from information_schema.columns where table_schema='public' and table_name='knowledge_upload_job' and column_name='revision_target_document_id') as revision_target,
     exists(select 1 from information_schema.columns where table_schema='public' and table_name='knowledge_upload_job' and column_name='revision_base_version_id') as revision_base`);
   const prerequisiteMarkers = prerequisiteResult.rows[0];
-  const result = await client.query<Record<string, boolean>>(`select
-    to_regclass('public.knowledge_upload_extraction_review') is not null as extraction_review,
-    to_regclass('public.knowledge_upload_review_completion') is not null as review_completion,
-    to_regclass('public.agent_skill_acceptance_bundle') is not null as acceptance_bundle,
-    to_regclass('public.agent_skill_model_attempt') is not null as model_attempt,
-    to_regclass('public.agent_skill_acceptance_freeze') is not null as acceptance_freeze,
-    exists(select 1 from information_schema.columns where table_schema='public' and table_name='knowledge_upload_job' and column_name='visual_retry_at') as visual_retry,
-    exists(select 1 from information_schema.columns where table_schema='public' and table_name='agent_skill_model_attempt' and column_name='freeze_id') as model_freeze_binding,
-    case when to_regrole('network_copilot_skill_collector') is null then false else
-      has_table_privilege('network_copilot_skill_collector','public.agent_skill','SELECT') and
-      has_table_privilege('network_copilot_skill_collector','public.agent_skill_version','SELECT') and
-      has_table_privilege('network_copilot_skill_collector','public.agent_run_skill','SELECT') end as skill_freeze_reader`);
-  const markers = result.rows[0];
+  const markers = await ma24StageMarkers(client);
   const values = Object.values(markers);
   const schemaState = values.every(Boolean) ? "stage-present" : values.every(value => !value) ? "stage-absent" : "partial-stage";
   const collectorRole = (await client.query<{ present: boolean; restricted: boolean }>(`select

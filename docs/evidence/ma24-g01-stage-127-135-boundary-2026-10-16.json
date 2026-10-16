@@ -1,0 +1,43 @@
+{
+  "schema": "ma24-g01-stage-127-135-boundary-v1",
+  "date": "2026-10-16",
+  "scope": "local product database migration preparation; no product schema write",
+  "sharedPlan": "scripts/lib/ma24-stage-127-135.ts",
+  "readOnlyCommand": "node scripts/run-tsx.cjs scripts/apply-ma24-stage-127-135.ts",
+  "readOnlyResult": {
+    "database": "network_copilot_local",
+    "stageState": "absent",
+    "migrationFiles": 9,
+    "fileHashesMatched": true,
+    "backupSha256": "40dbfff588765c272794a8e7f4792abf4143a635a64f18016f9de4baba3f7f2c",
+    "backupChecksumMatched": true,
+    "productionChanged": false
+  },
+  "negativeApplyChecks": {
+    "missingReviewedBackupHash": "rejected before database connection",
+    "mismatchedReviewedBackupHash": "rejected before migration transaction",
+    "exitCodes": [1, 1]
+  },
+  "disposableRestore": {
+    "archiveRestored": true,
+    "sameHashPinnedSqlPlanUsed": true,
+    "migrationRange": "127-135",
+    "transactionRollbackVerified": true,
+    "transactionCommitVerified": true,
+    "criticalAclAndRlsVerified": true,
+    "disposableDatabasesRemaining": 0
+  },
+  "postCheck": {
+    "productStageState": "absent",
+    "productDatabaseChanged": false,
+    "typecheck": "passed",
+    "eslint": "passed",
+    "diffCheck": "passed"
+  },
+  "limits": [
+    "The actual --apply CLI branch was not executed against the product database",
+    "The disposable verifier used the shared migration file list and SQL application helper, not the product-only CLI wrapper",
+    "The final migration requires a freshly verified backup less than 30 minutes old and its explicitly reviewed SHA-256",
+    "This stage intentionally excludes migrations 136-140 and does not establish G14-G16 completion or production release"
+  ]
+}
