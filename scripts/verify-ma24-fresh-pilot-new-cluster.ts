@@ -21,6 +21,7 @@ const modeBusinessCheck = args.includes("--mode-business");
 const runnerAttestationCheck = args.includes("--runner-attestation");
 const safetySkillUsageCheck = args.includes('--safety-skill-usage');
 const poolRecoveryCheck = args.includes('--pool-recovery');
+const webPoolRecoveryCheck = args.includes('--web-pool-recovery');
 const prospectiveHttpArgument = args.find(arg => arg.startsWith('--prospective-http-image='));
 const prospectiveHttpImage = prospectiveHttpArgument?.slice('--prospective-http-image='.length);
 const prospectiveBrowserCheck = args.includes('--prospective-browser');
@@ -29,7 +30,8 @@ const prospectiveMaterialCheck = args.includes("--prospective-material") || Bool
 const prospectiveSourceCheck = args.includes("--prospective-source") || prospectiveMaterialCheck;
 const rollbackImageArgument = args.find(arg => arg.startsWith("--rollback-image="));
 const rollbackImage = rollbackImageArgument?.slice("--rollback-image=".length);
-assert(args.length <= 15 && args.every(arg => ["--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", '--safety-skill-usage', '--pool-recovery', "--prospective-source", "--prospective-material", '--prospective-browser', '--prospective-composition', prospectiveHttpArgument, webImageArgument, rollbackImageArgument].includes(arg))
+assert(args.length <= 16 && args.every(arg => ["--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", '--safety-skill-usage', '--pool-recovery', '--web-pool-recovery', "--prospective-source", "--prospective-material", '--prospective-browser', '--prospective-composition', prospectiveHttpArgument, webImageArgument, rollbackImageArgument].includes(arg))
+  && (!webPoolRecoveryCheck || webImage)
   && (!prospectiveBrowserCheck || prospectiveHttpImage)
   && (!prospectiveHttpArgument || (prospectiveHttpImage && /^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(prospectiveHttpImage)))
   && (!webImageArgument || (webImage && /^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(webImage)))
@@ -37,7 +39,7 @@ assert(args.length <= 15 && args.every(arg => ["--browser", "--ten-user", "--bac
   && (!(browserCheck || tenUserCheck || backupCheck || crossClusterCheck || rollbackImage) || webImage)
   && (!crossClusterCheck || backupCheck)
   && (!rollbackImage || rollbackImage !== webImage),
-  "Expected --mode-business, --runner-attestation, --safety-skill-usage, --pool-recovery, --prospective-source, --prospective-material, --prospective-composition, --prospective-http-image=<builder-tag> (with optional --prospective-browser), or --web-image=<tag> with optional --browser, --ten-user, --backup, --cross-cluster (with --backup), and --rollback-image=<prior-tag>");
+  "Expected --mode-business, --runner-attestation, --safety-skill-usage, --pool-recovery, --prospective-source, --prospective-material, --prospective-composition, --prospective-http-image=<builder-tag> (with optional --prospective-browser), or --web-image=<tag> with optional --web-pool-recovery, --browser, --ten-user, --backup, --cross-cluster (with --backup), and --rollback-image=<prior-tag>");
 const networkName = `ma24-pilot-net-${id}`;
 const adminPassword = randomBytes(24).toString("hex");
 const appPassword = randomBytes(24).toString("hex");
@@ -223,6 +225,8 @@ try {
     webDatabaseUrl.hostname = "pilot-db";
     webDatabaseUrl.port = "5432";
     webDatabaseUrl.searchParams.set("sslmode", "verify-full");
+    const webApplicationName=`ma24-web-recovery-${id}`;
+    if(webPoolRecoveryCheck)webDatabaseUrl.searchParams.set('application_name',webApplicationName);
     const certificate = await run("docker", ["exec", containerId, "cat", "/tmp/ma24-server.crt"]);
     assert.equal(certificate.code, 0, certificate.output);
     assert(certificate.output.includes("-----BEGIN CERTIFICATE-----"));
@@ -286,6 +290,50 @@ try {
       { method: "PATCH", headers: { cookie: secondCookie, "content-type": "application/json" },
         body: JSON.stringify({ expectedRevision: 0, priority: "High" }) });
     assert.equal(denied.status, 404);
+    if(webPoolRecoveryCheck){
+      const inspect=async()=>{
+        const state=await run('docker',['inspect','--format','{{.State.Pid}} {{.State.StartedAt}} {{.RestartCount}} {{.State.Running}}',webContainerId!]);
+        assert.equal(state.code,0);assert(state.output.trim().endsWith(' true'));return state.output.trim();
+      };
+      const before=await inspect(),admin=new Client({connectionString:adminUrl.toString()});await admin.connect();
+      try{
+        const params=[webApplicationName,decodeURIComponent(webDatabaseUrl.username)];
+        const existing=await admin.query<{pid:number;state:string;ssl:boolean}>(`select a.pid,a.state,s.ssl from pg_stat_activity a
+          join pg_stat_ssl s on s.pid=a.pid where a.datname=current_database() and a.application_name=$1 and a.usename=$2`,params);
+        assert(existing.rows.length>0);assert(existing.rows.every(row=>row.state==='idle'&&row.ssl));
+        const pids=existing.rows.map(row=>row.pid);
+        const killed=await admin.query<{terminated:boolean}>(`select pg_terminate_backend(pid) terminated from pg_stat_activity
+          where datname=current_database() and application_name=$1 and usename=$2 and state='idle' and pid=any($3::int[])`,[...params,pids]);
+        assert.equal(killed.rows.length,pids.length);assert(killed.rows.every(row=>row.terminated));
+        let observed=false;
+        for(let attempt=0;attempt<30;attempt++){
+          const logs=await run('docker',['logs','--tail','40',webContainerId!]);
+          observed=(logs.output.match(/\[database\] Idle PostgreSQL connection closed/g)?.length??0)>=pids.length;
+          if(observed)break;await new Promise(done=>setTimeout(done,100));
+        }
+        assert(observed,'Standalone did not handle all terminated idle connections');
+        assert.equal(await inspect(),before,'Web process restarted during database disconnect');
+        const retained=await fetch(`${base}/api/auth/session`,{headers:{cookie:firstCookie}});
+        assert.equal(retained.status,200);assert.equal((await retained.json() as {authenticated:boolean}).authenticated,true);
+        assert((await getCompanies(firstCookie)).some(row=>row.id===company.externalId));
+        assert(!(await getCompanies(secondCookie)).some(row=>row.id===company.externalId));
+        const written=await fetch(`${base}/api/workspaces/current/companies`,{method:'POST',headers:{cookie:firstCookie,'content-type':'application/json'},
+          body:JSON.stringify({name:'Synthetic company after DB reconnect',country:'DE',website:`https://pilot-reconnected-${id}.invalid`})});
+        assert.equal(written.status,200);
+        const afterWrite=await written.json() as {duplicate:boolean;externalId:string};assert.equal(afterWrite.duplicate,false);
+        assert.equal((await getCompanies(firstCookie)).filter(row=>row.id===afterWrite.externalId).length,1);
+        assert(!(await getCompanies(secondCookie)).some(row=>row.id===afterWrite.externalId));
+        const forbidden=await fetch(`${base}/api/workspaces/current/companies/${encodeURIComponent(afterWrite.externalId)}`,{method:'PATCH',
+          headers:{cookie:secondCookie,'content-type':'application/json'},body:JSON.stringify({expectedRevision:0,priority:'High'})});
+        assert.equal(forbidden.status,404);
+        const current=await admin.query<{pid:number;ssl:boolean}>(`select a.pid,s.ssl from pg_stat_activity a join pg_stat_ssl s on s.pid=a.pid
+          where a.datname=current_database() and a.application_name=$1 and a.usename=$2`,params);
+        assert(current.rows.length>0&&current.rows.every(row=>!pids.includes(row.pid)&&row.ssl));
+        assert.equal(await inspect(),before);
+        console.log(JSON.stringify({standaloneDatabaseRecovery:'passed',terminatedOwnIdleBackends:pids.length,
+          sameProcessAndStartTime:true,originalSessionRetained:true,tlsReconnected:true,subsequentWriteReadAndIsolation:true}));
+      }finally{await admin.end();}
+    }
     const logout = await fetch(`${base}/api/auth/logout`, { method: "POST", headers: { cookie: firstCookie } });
     assert.equal(logout.status, 200);
     const session = await fetch(`${base}/api/auth/session`, { headers: { cookie: firstCookie } });
@@ -461,6 +509,7 @@ try {
     runnerAttestationStoreVerified: runnerAttestationCheck,
     safetySkillUsageVerified: safetySkillUsageCheck,
     poolRecoveryVerified: poolRecoveryCheck,
+    standaloneDatabaseRecoveryVerified: webPoolRecoveryCheck,
     extraG09Migration: runnerAttestationCheck ? 141 : null,
     prospectiveSourceDatabaseVerified: prospectiveSourceCheck,
     prospectivePairedMaterialVerified: prospectiveMaterialCheck,
