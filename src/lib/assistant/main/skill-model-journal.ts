@@ -21,7 +21,9 @@ export async function assertSkillCollector(client:PoolClient){
  if(!role||role.name!=='network_copilot_skill_collector'||role.super||role.bypass)throw new Error('Dedicated restricted Skill collector required');
 }
 function checkOutput(input:unknown,value:unknown){
- const output=outputSchema.parse(value);
+ // Hash the JSON representation actually persisted by PostgreSQL. Optional
+ // model metadata (for example usage: undefined) is omitted on serialization.
+ const output=outputSchema.parse(JSON.parse(JSON.stringify(outputSchema.parse(value))));
  if(output.status==='success'){
   modelReplySchema.parse(output.data.value.message);
   if(!auditModelProtocol({input,input_hash:digest(input),output}).bound)throw new Error('Skill model response wire binding invalid');
@@ -34,7 +36,7 @@ export function createSkillModelJournal(transaction:SkillCollectorTransaction,bi
  const pin=bindingSchema.parse(binding);
  return {
   async begin(input:unknown){
-   assertLocalAnalysisBoundary();const request=inputSchema.parse(input),hash=digest(request);
+   assertLocalAnalysisBoundary();const request=inputSchema.parse(JSON.parse(JSON.stringify(inputSchema.parse(input)))),hash=digest(request);
    return transaction(pin.ownerId,async client=>{
     await assertSkillCollector(client);
     const inserted=await client.query<{id:string}>(`insert into agent_skill_model_attempt(owner_id,evaluation_id,arm,step,route_index,source_kind,snapshot_hash,input,input_hash,freeze_id)

@@ -145,3 +145,5 @@ G09 已补两决策/三签名尝试及真实工具描述转换的实际数据库
 G09 已补真实工具执行/读取收据与签名后续输入的实际数据库联验：三决策四签名、消费读取收据、任务重建和图回放通过，收据篡改拒绝。合成客户不构成真实质量验收；完整候选入口及生产认证仍待办。[收据](evidence/ma24-g09-signed-business-read-database-2026-10-17.json)。
 
 G09 standard 模式签名任务已实际通过基线投影和候选快照构建，保留只读收据、核对输入/模型配置哈希且 Skill 仍停用。候选模型执行/收集与生产资格尚未完成。[收据](evidence/ma24-g09-signed-candidate-snapshot-database-2026-10-17.json)。
+
+G09 完整候选执行首次联验暴露可选 usage 的 JSON 入库哈希冲突，已在日志边界归一化修复，40 项回归、类型/lint 通过。实际完整入口重跑仍在进行，未记为通过。[证据](evidence/ma24-g09-model-journal-json-normalization-2026-10-17.json)。

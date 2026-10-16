@@ -1,0 +1,15 @@
+{
+  "stage": "MA24 G09 model journal persistence JSON normalization",
+  "date": "2026-10-17",
+  "defect": "actual configured candidate run rejected a model outcome because usage undefined was hashed before JSON serialization removed it",
+  "change": "normalize validated request/outcome to JSON before hashing and persistence; global digest and old records unchanged",
+  "targetedTests": 40,
+  "testFiles": ["skill-model-journal-json.test.ts", "skill-configured-recorded-runner.test.ts", "task-model-transport-request.test.ts"],
+  "regression": "simulated PostgreSQL JSON roundtrip preserves request/outcome hashes and reuses saved output with missing optional usage",
+  "typecheck": "passed",
+  "eslint": "passed",
+  "fullConfiguredCandidateDatabaseRerun": "running; not yet accepted",
+  "actualModelCalls": 0,
+  "productionQualificationGranted": false,
+  "automaticActivation": false
+}

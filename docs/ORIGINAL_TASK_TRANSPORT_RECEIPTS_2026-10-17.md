@@ -38,4 +38,6 @@
 
 签名任务到候选快照的桥接已实际验证：调用 `prepareSkillAcceptanceBaseline` 生成含三次成功决策的基线投影，再调用 `prepareRecordedSkillCandidateSnapshot`，确认候选仍停用、保留一条读取收据且任务输入/模型配置哈希与基线一致。原签名、任务链、图回放及拒绝回归继续通过，类型/lint 通过。最终夹具已改为 standard 模式并完整重跑；quick 模式不开放 Skill 工具，不用于后续候选实际读取 Skill 的正例。这仍只是快照构建，尚未执行完整候选模型与收集入口。[快照证据](evidence/ma24-g09-signed-candidate-snapshot-database-2026-10-17.json)。
 
+完整候选执行联验曾实际暴露 `Skill model outcome conflict`：模型可省略 usage，内存结果含 `usage: undefined`，JSON 入库省略它，原日志哈希因而与存储对象不一致。`skill-model-journal` 现对校验后的输入/结果按实际 JSON 表示归一化后再计算哈希和保存，未修改全局 digest 或历史记录。40 项定向回归、类型/lint 通过，覆盖缺失可选元数据的保存和恢复。完整候选数据库重跑尚在进行，不能据此记录完整入口通过。[修复证据](evidence/ma24-g09-model-journal-json-normalization-2026-10-17.json)。
+
 尚未登记生产密钥或执行生产签发。上述接线只是受控候选执行前提，不授予生产资格；完整候选入口实际 SQL 联验、legacy/batch 覆盖及部署认证仍待完成。旧无签名日志不因此取得资格。单次签名成功不证明整个任务、部署二进制、真实质量或最终启用；自动启用仍关闭。
