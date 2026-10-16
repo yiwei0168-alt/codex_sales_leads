@@ -2,6 +2,8 @@ import assert from 'node:assert/strict';
 import {generateKeyPairSync,randomUUID,sign} from 'node:crypto';
 import {writeFile} from 'node:fs/promises';
 import {join} from 'node:path';
+import {spawn} from 'node:child_process';
+import {build} from 'esbuild';
 import type {Pool} from 'pg';
 import {digest,result} from '../../src/lib/assistant/main/contracts';
 import {modeModelConfig} from '../../src/lib/assistant/main/mode-config';
@@ -25,12 +27,28 @@ export async function verifyTaskTransportJournalDatabase(pool:Pool,owner:string,
  const registry={protocol:'skill-runner-trust-registry-v1',keys:[key]},path=join(directory,'original-task-public-registry.json');
  await writeFile(path,JSON.stringify(registry));process.env.SKILL_RUNNER_TRUST_REGISTRY_FILE=path;
  process.env.TASK_MODEL_TRANSPORT_COLLECTOR_ID=collectorId;process.env.TASK_MODEL_TRANSPORT_DEPLOYMENT_SHA256=deploymentHash;
+ const keyPath=join(directory,'original-task-private.pem'),runnerPath=join(directory,'task-admission.cjs');
+ await writeFile(keyPath,pair.privateKey.export({type:'pkcs8',format:'pem'}),{mode:0o600});
+ // Output stays under the project so external packages resolve from its node_modules.
+ const compiledPath=join(process.cwd(),'tmp','task-transport-admission.cjs');
+ await build({entryPoints:['scripts/fixtures/task-transport-preflight-runner.ts'],outfile:compiledPath,bundle:true,platform:'node',target:'node24',format:'cjs',packages:'external',logLevel:'warning'});
  const envelope=(statement:unknown)=>({statement,signature:sign(null,Buffer.from(digest(statement),'hex'),pair.privateKey).toString('base64url')});
  const outputs:unknown[]=[],ids:string[]=[];
  for(let index=0;index<2;index++){
   const request={messages:[{role:'user' as const,content:'Synthetic stored request'}],profile:config.profile!,index};
   const callKey=`mode-model:0:0:${index}`,attempt=await beginCall(context,{key:callKey,tool:'main_model',version:request.profile.version,input:request,effect:'model'});
   assert.equal(attempt.fresh,true);ids.push(attempt.id);
+  if(index===0){
+   await writeFile(runnerPath,JSON.stringify({userId:owner,runId,callId:attempt.id,callKey,otherUserId:other}));
+   const exit=await new Promise<{code:number|null;output:string}>((resolve,reject)=>{
+    const child=spawn(process.execPath,[compiledPath,runnerPath],{windowsHide:true,stdio:['ignore','pipe','pipe'],env:{...process.env,
+     NODE_ENV:'production',NODE_OPTIONS:'',NODE_EXTRA_CA_CERTS:'',SSL_CERT_FILE:'',SSL_CERT_DIR:'',NODE_USE_SYSTEM_CA:'0',NODE_TLS_REJECT_UNAUTHORIZED:'1',
+     OPENROUTER_API_KEY:'SYNTHETIC_NOT_A_CREDENTIAL',OPENROUTER_BASE_URL:'https://openrouter.ai/api/v1',OPENROUTER_HTTP_REFERER:'',
+     TASK_MODEL_TRANSPORT_KEY_ID:key.keyId,TASK_MODEL_TRANSPORT_PRIVATE_KEY_FILE:keyPath}});let output='';
+    child.stdout.on('data',data=>{output+=String(data);});child.stderr.on('data',()=>{});child.once('error',reject);child.once('exit',code=>resolve({code,output}));
+   });
+   assert.equal(exit.code,0,'Compiled original task admission failed');assert(exit.output.includes('"originalTaskCompiledAdmission":"passed"'));
+  }
   const route=request.profile.routes[index],body={model:route.model,messages:request.messages,tools:modelFunctions,stream:true,reasoning:{effort:route.effort}};
   const capturedAt=new Date().toISOString(),completedAt=new Date().toISOString(),message={role:'assistant',content:'Synthetic stored reply'};
   const manifest=modelRequestManifest(body,index?{model:route.model,provider:'synthetic',id:randomUUID()}:null);
@@ -56,5 +74,5 @@ export async function verifyTaskTransportJournalDatabase(pool:Pool,owner:string,
  await verifyOwnedTaskModelTransports({userId:owner},{runId});
  return {originalTaskJournalDatabase:true,originalTaskSignedFallbackReadback:true,originalTaskRecoveryReuse:true,
   originalTaskCrossAccountRejected:true,originalTaskKeyRevocationRejected:true,originalTaskTamperedSignatureRejected:true,originalTaskRouteGapRejected:true,
-  originalTaskRequestFactoryExecuted:false,actualModelCalls:0};
+  originalTaskCompiledAdmissionVerified:true,originalTaskRequestFactoryAdmissionExecuted:true,originalTaskRequestClosureExecuted:false,actualModelCalls:0};
 }

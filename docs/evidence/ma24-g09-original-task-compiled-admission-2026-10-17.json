@@ -1,0 +1,22 @@
+{
+  "stage": "MA24 G09 compiled original task signing factory admission with actual database",
+  "date": "2026-10-17",
+  "command": "node --import tsx scripts/verify-ma24-fresh-pilot-new-cluster.ts --transport-journal",
+  "processExitCode": 0,
+  "transportJournalDatabase": "passed",
+  "originalTaskCompiledAdmissionVerified": true,
+  "originalTaskRequestFactoryAdmissionExecuted": true,
+  "originalTaskRequestClosureExecuted": false,
+  "runtime": "esbuild CJS fixture in ordinary Node child; NODE_ENV=production and empty execArgv/NODE_OPTIONS",
+  "actualDatabase": true,
+  "syntheticEphemeralKey": true,
+  "checked": ["owned running main-agent and started model call", "stored request hash and times", "configured key matches task-purpose registry", "owned billing context", "foreign run rejected", "cross-account call rejected", "missing billing rejected"],
+  "existingSignedJournalDatabaseRegression": "passed",
+  "typecheck": "passed",
+  "eslint": "passed",
+  "actualModelCalls": 0,
+  "productionKeysProvisioned": false,
+  "binaryVerified": false,
+  "automaticActivation": false,
+  "remaining": ["request closure execution with actual database", "all expected decisions and task context binding", "qualification wiring", "deployed binary qualification", "final activation transaction"]
+}
