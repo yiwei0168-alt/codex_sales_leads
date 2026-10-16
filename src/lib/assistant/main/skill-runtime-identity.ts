@@ -15,9 +15,9 @@ export async function skillSourceRuntimeHash(){
  }catch(error){if((error as NodeJS.ErrnoException).code!=='ENOENT')throw error;}
  const files:string[]=[];
  async function walk(directory:string){
-  const info=await lstat(join(root,directory));
+  const info=await lstat(/*turbopackIgnore: true*/ join(root,directory));
   if(!info.isDirectory()||info.isSymbolicLink())throw new Error('Skill runtime source links are not allowed');
-  for(const entry of await readdir(join(root,directory),{withFileTypes:true})){
+  for(const entry of await readdir(/*turbopackIgnore: true*/ join(root,directory),{withFileTypes:true})){
    if(entry.isSymbolicLink())throw new Error('Skill runtime source links are not allowed');
    const path=join(directory,entry.name);
    if(entry.isDirectory())await walk(path);
