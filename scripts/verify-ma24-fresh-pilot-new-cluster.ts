@@ -19,6 +19,7 @@ const backupCheck = args.includes("--backup");
 const crossClusterCheck = args.includes("--cross-cluster");
 const modeBusinessCheck = args.includes("--mode-business");
 const runnerAttestationCheck = args.includes("--runner-attestation");
+const safetySkillUsageCheck = args.includes('--safety-skill-usage');
 const prospectiveHttpArgument = args.find(arg => arg.startsWith('--prospective-http-image='));
 const prospectiveHttpImage = prospectiveHttpArgument?.slice('--prospective-http-image='.length);
 const prospectiveBrowserCheck = args.includes('--prospective-browser');
@@ -27,7 +28,7 @@ const prospectiveMaterialCheck = args.includes("--prospective-material") || Bool
 const prospectiveSourceCheck = args.includes("--prospective-source") || prospectiveMaterialCheck;
 const rollbackImageArgument = args.find(arg => arg.startsWith("--rollback-image="));
 const rollbackImage = rollbackImageArgument?.slice("--rollback-image=".length);
-assert(args.length <= 13 && args.every(arg => ["--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", "--prospective-source", "--prospective-material", '--prospective-browser', '--prospective-composition', prospectiveHttpArgument, webImageArgument, rollbackImageArgument].includes(arg))
+assert(args.length <= 14 && args.every(arg => ["--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", '--safety-skill-usage', "--prospective-source", "--prospective-material", '--prospective-browser', '--prospective-composition', prospectiveHttpArgument, webImageArgument, rollbackImageArgument].includes(arg))
   && (!prospectiveBrowserCheck || prospectiveHttpImage)
   && (!prospectiveHttpArgument || (prospectiveHttpImage && /^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(prospectiveHttpImage)))
   && (!webImageArgument || (webImage && /^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(webImage)))
@@ -35,7 +36,7 @@ assert(args.length <= 13 && args.every(arg => ["--browser", "--ten-user", "--bac
   && (!(browserCheck || tenUserCheck || backupCheck || crossClusterCheck || rollbackImage) || webImage)
   && (!crossClusterCheck || backupCheck)
   && (!rollbackImage || rollbackImage !== webImage),
-  "Expected --mode-business, --runner-attestation, --prospective-source, --prospective-material, --prospective-composition, --prospective-http-image=<builder-tag> (with optional --prospective-browser), or --web-image=<tag> with optional --browser, --ten-user, --backup, --cross-cluster (with --backup), and --rollback-image=<prior-tag>");
+  "Expected --mode-business, --runner-attestation, --safety-skill-usage, --prospective-source, --prospective-material, --prospective-composition, --prospective-http-image=<builder-tag> (with optional --prospective-browser), or --web-image=<tag> with optional --browser, --ten-user, --backup, --cross-cluster (with --backup), and --rollback-image=<prior-tag>");
 const networkName = `ma24-pilot-net-${id}`;
 const adminPassword = randomBytes(24).toString("hex");
 const appPassword = randomBytes(24).toString("hex");
@@ -55,11 +56,16 @@ const run = (command: string, args: string[], env: NodeJS.ProcessEnv = process.e
   new Promise<{ code: number | null; output: string }>((resolveRun, reject) => {
     const child = spawn(command, args, { cwd: process.cwd(), windowsHide: true,
       stdio: ["ignore", "pipe", "pipe"], env });
-    let output = "";
-    child.stdout.on("data", data => { output = (output + String(data)).slice(-5000); });
-    child.stderr.on("data", data => { output = (output + String(data)).slice(-5000); });
+    let head = "", tail = "", size = 0;
+    const redact=(value:string)=>value.replaceAll(adminPassword,'<temporary-admin-password>').replaceAll(appPassword,'<temporary-app-password>').replace(/secretKey:\s*-?\d+/g,'secretKey: <redacted>');
+    const append=(data:unknown)=>{
+      const chunk=redact(String(data));size+=chunk.length;
+      head=(head+chunk).slice(0,2000);tail=(tail+chunk).slice(-3000);
+    };
+    child.stdout.on("data", append);
+    child.stderr.on("data", append);
     child.once("error", reject);
-    child.once("exit", code => resolveRun({ code, output }));
+    child.once("exit", code => resolveRun({ code, output:redact(size<=3000?tail:size<=5000?head.slice(0,size-3000)+tail:head+'\n[output truncated]\n'+tail) }));
   });
 const adminUrl = new URL(`postgresql://postgres:${adminPassword}@127.0.0.1:${port}/network_copilot_local`);
 const appUrl = new URL(`postgresql://network_copilot_local_login:${appPassword}@127.0.0.1:${port}/network_copilot_local`);
@@ -115,7 +121,7 @@ try {
   assert.equal(verified.code, 0, verified.output);
   assert(verified.output.includes('"freshPilotRestore":"passed"'), verified.output);
   assert(verified.output.includes('"copiedProductionData":false'), verified.output);
-  if (webImage || modeBusinessCheck || runnerAttestationCheck || prospectiveSourceCheck) {
+  if (webImage || modeBusinessCheck || runnerAttestationCheck || prospectiveSourceCheck || safetySkillUsageCheck) {
     const migration = await run(process.execPath,
       ["scripts/run-tsx.cjs", "scripts/migrate.ts", "--fresh-pilot-through=135"],
       { ...process.env, DATABASE_URL: appUrl.toString(), DATABASE_MIGRATION_URL: adminUrl.toString() });
@@ -173,6 +179,12 @@ try {
         MA24_DISPOSABLE_RUNNER_ATTESTATION: "1" });
     assert.equal(attested.code, 0, attested.output);
     assert(attested.output.includes('"runnerAttestationStore":"passed"'), attested.output);
+  }
+  if(safetySkillUsageCheck){
+    const checked=await run(process.execPath,['scripts/run-tsx.cjs','scripts/verify-skill-safety-usage-db.ts'],
+      {...process.env,DATABASE_URL:appUrl.toString(),DATABASE_MIGRATION_URL:adminUrl.toString(),MA24_DISPOSABLE_SAFETY_USAGE:'1'});
+    assert.equal(checked.code,0,checked.output);
+    assert(checked.output.includes('"safetySkillUsageDatabase":"passed"'),checked.output);
   }
   if (modeBusinessCheck) {
     const tempDirectory = mkdtempSync(join(tmpdir(), "ma24-mode-business-"));
@@ -441,6 +453,7 @@ try {
     pilotBackupRestoreVerified: backupCheck, crossClusterRestoreVerified: crossClusterCheck,
     scriptedModeBusinessVerified: modeBusinessCheck,
     runnerAttestationStoreVerified: runnerAttestationCheck,
+    safetySkillUsageVerified: safetySkillUsageCheck,
     extraG09Migration: runnerAttestationCheck ? 141 : null,
     prospectiveSourceDatabaseVerified: prospectiveSourceCheck,
     prospectivePairedMaterialVerified: prospectiveMaterialCheck,

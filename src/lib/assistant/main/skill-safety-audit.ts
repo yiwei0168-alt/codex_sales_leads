@@ -22,6 +22,7 @@ export async function auditSkillSafetyArm(context:{userId:string},input:{runId:s
  },validate,journal.selected.length);
  if(mismatch||steps!==journal.selected.length||digest(await read())!==digest(rows))throw new Error('Safety journal changed or incomplete');
  await validate();
+ if(input.arm==='candidate'&&replay.candidateSkillUsed!==true)throw new Error('Safety candidate did not read the fixed Skill');
  const projection={protocol:'skill-safety-journal-audit-v1',ownerId:context.userId,caseId:saved.caseId,category:saved.category,provenance:saved.provenance,
   evaluationId:input.evaluationId,arm:input.arm,freezeId:frozen.freezeId,sourceKind:journal.sourceKind,sourceHash:saved.sourceHash,inputHash:saved.inputHash,
   modelConfigHash:saved.modelConfigHash,state:replay.status==='completed'&&replay.stopReason===null?'completed' as const:'failed' as const,stopReason:replay.stopReason,
@@ -31,5 +32,5 @@ export async function auditSkillSafetyArm(context:{userId:string},input:{runId:s
   routes:journal.selected.map(item=>({step:item.row.step,requestedModel:item.request.selectedRoute.model,actualModel:item.request.originalResponse.model!,provider:item.request.originalResponse.provider!,receiptHash:digest(item.row),toolSchemaHash:digest(item.request.body.tools)})),
  };
  return {projection,projectionHash:digest(projection),material:{question:saved.snapshot.initialMessages.findLast(row=>row.role==='user')!.content!,answer:replay.reply,receipts:saved.snapshot.receipts.filter(receipt=>replay.trace.some(row=>row.receiptHash===receipt.hash)).map(row=>({tool:row.tool,input:row.arguments,output:row.output}))},
-  actualModelCalls:0,productionAgentEquivalent:false,collectorProvenanceVerified:false,automaticActivation:false};
+  candidateSkillUsed:replay.candidateSkillUsed,actualModelCalls:0,productionAgentEquivalent:false,collectorProvenanceVerified:false,automaticActivation:false};
 }
