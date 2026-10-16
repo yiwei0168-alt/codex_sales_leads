@@ -1,0 +1,40 @@
+{
+  "schema": "ma24-g01-fresh-pilot-new-cluster-v1",
+  "date": "2026-10-16",
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts",
+  "scope": "Disposable new local PostgreSQL 16/pgvector container; fresh synthetic pilot database only",
+  "cluster": {
+    "image": "pgvector/pgvector:pg16",
+    "imageId": "sha256:ccc6e83d6e35e931dc7c5def2022729d5a6c370318d099181995567ff1fb4d6b",
+    "network": "random port published to 127.0.0.1 only",
+    "globalRolesCreatedBeforeMigration": [
+      "network_copilot_app NOLOGIN NOINHERIT NOBYPASSRLS",
+      "network_copilot_local_login LOGIN NOINHERIT NOBYPASSRLS; member of network_copilot_app",
+      "network_copilot_skill_collector NOLOGIN NOINHERIT NOBYPASSRLS"
+    ],
+    "appCanLogin": false,
+    "appCanBypassRls": false,
+    "loginCanSetApplicationRole": true,
+    "loginCanSetCollectorRole": false,
+    "containerRemoved": true,
+    "anonymousVolumeRemoved": true
+  },
+  "pilot": {
+    "migrationThrough": 135,
+    "migration136To140Applied": false,
+    "actualProvisioningCommandUsed": true,
+    "syntheticMembers": 2,
+    "manualCompanyWrittenAndRead": true,
+    "otherMemberDenied": true,
+    "customArchiveRestoredToSecondDisposableDatabase": true,
+    "restrictedApplicationRoleAndTenantIsolationAfterRestore": true,
+    "productionDataCopied": false,
+    "temporaryDatabasesAndArchiveRemoved": true
+  },
+  "checks": {
+    "typecheck": "passed",
+    "targetedEslint": "passed",
+    "dockerContainerInventoryAfter": 0
+  },
+  "limits": "This is a new local Docker cluster. The backup and restore both occurred within that disposable cluster; transfer to a separate cloud cluster was not tested. No target host, trusted HTTPS domain, real team account, concurrent use, production backup or real-business-data migration was tested."
+}
