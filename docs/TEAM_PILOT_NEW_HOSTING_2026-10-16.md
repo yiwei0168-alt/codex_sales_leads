@@ -1,5 +1,7 @@
 # 首批团队试用新托管实施单（2026-10-16）
 
+2026-10-16 合成成员登录补验：Linux standalone Web 接全新归档恢复库，合成成员登录 200、会话认证、空上传列表 200、退出后旧 Cookie 失效；响应 Cookie 含 Secure/HttpOnly/SameSite=Lax。合成账号与会话均归零，临时容器已清理。[登录收据](evidence/ma24-g01-linux-fresh-db-synthetic-login-2026-10-16.json)。这仍是本机 HTTP 请求检查，目标可信 HTTPS、真实成员隔离和业务写入待验。
+
 2026-10-16 Linux Web＋新恢复库联合补验：再次从 ACL 归档恢复全新本机 PostgreSQL 容器，Linux standalone Web 用受限登录连接；首页和匿名会话 GET 为 200，未登录上传 GET 为 401。临时数据库仅映射本机回环端口，测试容器已清理。[联合收据](evidence/ma24-g01-linux-fresh-db-integrated-smoke-2026-10-16.json)。这验证本机异构容器的最低运行组合，目标域名、真实账号和业务写入仍待验。
 
 2026-10-16 全新数据库容器补验：使用未发布端口的全新 PostgreSQL 16/pgvector 实例，先建受限应用、登录和 Skill 采集全局角色，含 ACL 的归档直接恢复成功。127–135 八项标记、关键授权、两表强制 RLS 通过；登录角色可切换到应用角色读取，不能切换到采集角色。扩展为 pgcrypto 1.3、plpgsql 1.0、vector 0.8.6；临时容器已清理。[恢复收据](evidence/ma24-g01-fresh-cluster-restore-2026-10-16.json)。这证明归档在新集群上可恢复的一个本机路径，不代替目标云主机实际恢复。

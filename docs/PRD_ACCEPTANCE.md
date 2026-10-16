@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+2026-10-16 / MA24 G01：Linux Web 与全新恢复库组合通过单个合成成员登录、认证会话、空上传列表、退出失效及 Secure/HttpOnly/SameSite=Lax Cookie 头检查；合成账号和会话剩余 0。[登录收据](evidence/ma24-g01-linux-fresh-db-synthetic-login-2026-10-16.json)。目标可信 HTTPS、真实团队成员隔离、业务写入及线上回滚仍未验。
+
 2026-10-16 / MA24 G01：Linux standalone Web 与全新 PostgreSQL 容器中的 ACL 归档恢复库联合运行，受限应用账号下首页/会话 GET 200，未登录上传 GET 401，容器清理。[联合收据](evidence/ma24-g01-linux-fresh-db-integrated-smoke-2026-10-16.json)。仅覆盖本机最低服务组合；真实账号、业务写入、HTTPS、云端和实际回滚未验。
 
 2026-10-16 / MA24 G01：迁移后含 ACL 的归档在未开放公网端口的全新本机 PostgreSQL 16/pgvector 容器直接恢复成功，预置受限全局角色后 8 个阶段标记、关键 ACL/RLS 和应用登录角色读取通过；采集角色不可由应用登录角色切换。[新集群恢复收据](evidence/ma24-g01-fresh-cluster-restore-2026-10-16.json)。目标云主机恢复、真实团队数据迁移决定和实际回滚仍待验。

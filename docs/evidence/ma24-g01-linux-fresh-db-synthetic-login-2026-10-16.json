@@ -1,0 +1,36 @@
+{
+  "schema": "ma24-g01-linux-fresh-db-synthetic-login-v1",
+  "date": "2026-10-16",
+  "scope": "Synthetic member login through Linux standalone Web and a separate disposable fresh PostgreSQL restore on the local Docker engine",
+  "web": {
+    "sourceCommit": "7d7acf39",
+    "buildId": "k76LM2MqI4OD5FLPCNnwu",
+    "databaseLogin": "restricted network_copilot_local_login",
+    "syntheticMemberLoginStatus": 200,
+    "sessionAuthenticated": true,
+    "secureCookieAttributes": ["Secure", "HttpOnly", "SameSite=Lax"],
+    "authenticatedUploadListStatus": 200,
+    "authenticatedUploadJobs": 0,
+    "logoutStatus": 200,
+    "oldCookieSessionAfterLogoutAuthenticated": false
+  },
+  "database": {
+    "image": "pgvector/pgvector:pg16",
+    "freshRestoreFromArchive": "network_copilot_2026-10-16T06-35-27Z.dump",
+    "syntheticUsersRemaining": 0,
+    "syntheticSessionsRemaining": 0,
+    "temporaryTestAuthentication": "trust on loopback-only local mapping; not a production configuration"
+  },
+  "cleanup": {
+    "webContainerRemoved": true,
+    "databaseContainerRemoved": true,
+    "sourceProductDatabaseChanged": false,
+    "modelCalls": 0
+  },
+  "limits": [
+    "HTTP request assertions inspect Secure cookie attributes but do not replace trusted HTTPS browser testing on the target domain",
+    "Only one temporary account and an empty upload list were checked; team account isolation and business writes were not exercised",
+    "No cloud host, external team member, worker, paid model or actual rollback was involved",
+    "The existing source archive data was restored only into a disposable local container; no remote data transfer was performed"
+  ]
+}
