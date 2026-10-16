@@ -1,0 +1,46 @@
+{
+  "schema": "ma24-g01-product-db-stage-and-local-web-v1",
+  "date": "2026-10-16",
+  "scope": "local product database and loopback Web processes; no team release",
+  "sourceCommit": "18ff5906",
+  "stageRunnerCommit": "2cfff71b",
+  "backup": {
+    "file": "backups/database/network_copilot_2026-10-16T05-52-25Z.dump",
+    "bytes": 194731569,
+    "sha256": "a17bc616eee2f6875f7155cdc3a39695f905a37096fa6196b7e3650914343a2f",
+    "createdAtUtc": "2026-10-16T05:54:31.191Z",
+    "fullDisposableRestore": "passed",
+    "stageRollbackAndCommitOnRestore": "passed",
+    "criticalAclAndRlsOnRestore": "passed"
+  },
+  "productDatabase": {
+    "name": "network_copilot_local",
+    "migrationRangeApplied": "127-135",
+    "migrationFiles": 9,
+    "stageRunnerCommitted": true,
+    "postflightSchemaState": "stage-present",
+    "targetMarkersPresent": 8,
+    "prerequisiteMarkersPresent": 9,
+    "collectorRoleRestricted": true,
+    "applicationCanSetOrInheritCollector": false,
+    "migration136To140Applied": false,
+    "preflightReadyForRelease": false
+  },
+  "loopbackWeb": {
+    "old": {"address": "127.0.0.1:3000", "homeHead": 200, "authSessionHead": 200},
+    "candidate": {"address": "127.0.0.1:3021", "homeHead": 200, "authSessionHead": 200,
+      "buildId": "XKStVycsg2jqqFiczvVhE"},
+    "syntheticSessionBoundaryBoth": "passed",
+    "syntheticFixtureRemovedBoth": true,
+    "secureCookieOnLoopbackHttp": "explicitly replayed for server-side verification",
+    "actualPaidCalls": 0
+  },
+  "verification": {"typecheck": "passed", "targetedEslint": "passed", "diffCheck": "passed"},
+  "limits": [
+    "The production-mode Secure cookie needs an HTTPS browser entry for real user acceptance; HTTP loopback replay does not prove browser persistence",
+    "Neither Web process is a remotely accessible team endpoint",
+    "No real team accounts or business workflow acceptance was performed",
+    "G14-G16 quality and paid-admission gates remain separate; G17-G20 are paused",
+    "The backup predates this migration and later writes; restoring it is not a lossless rollback"
+  ]
+}

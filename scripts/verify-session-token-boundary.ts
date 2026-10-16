@@ -59,6 +59,7 @@ try{
   await query("select app_session_revoke($1)",[tokenHash]);
   assert.equal((await query("select user_id from app_session_resolve($1)",[tokenHash])).length,0);
   let httpChecks=0;
+  let httpCookieMode="none";
   if(httpBase){
     const client=await playwrightRequest.newContext({baseURL:httpBase});
     try{
@@ -66,17 +67,27 @@ try{
       assert.equal(before.status(),200);assert.equal((await before.json()).authenticated,false);httpChecks++;
       const login=await client.post("/api/auth/login",{data:{email:`session-rls-${userId}@fixture.invalid`,password}});
       assert.equal(login.status(),200);assert.equal((await login.json()).authenticated,true);httpChecks++;
-      const active=await client.get("/api/auth/session");
+      const setCookie=login.headers()["set-cookie"] ?? "";
+      assert.match(setCookie,/^network_copilot_session=[^;]+;/);
+      assert.match(setCookie,/;\s*HttpOnly(?:;|$)/i);
+      assert.match(setCookie,/;\s*SameSite=Lax(?:;|$)/i);
+      const secure=/;\s*Secure(?:;|$)/i.test(setCookie);
+      const cookiePair=setCookie.split(";",1)[0];
+      // A production Secure cookie is deliberately not sent back by HTTP clients.
+      // Replay it explicitly to verify server-side session handling on loopback HTTP.
+      const probeOptions=secure?{headers:{cookie:cookiePair}}:undefined;
+      httpCookieMode=secure?"explicit-secure-cookie-replay":"client-cookie-jar";
+      const active=await client.get("/api/auth/session",probeOptions);
       assert.equal(active.status(),200);assert.equal((await active.json()).authenticated,true);httpChecks++;
-      const logout=await client.post("/api/auth/logout");
+      const logout=await client.post("/api/auth/logout",probeOptions);
       assert.equal(logout.status(),200);assert.equal((await logout.json()).authenticated,false);httpChecks++;
-      const after=await client.get("/api/auth/session");
+      const after=await client.get("/api/auth/session",probeOptions);
       assert.equal(after.status(),200);assert.equal((await after.json()).authenticated,false);httpChecks++;
     }finally{await client.dispose();}
   }
   console.log(JSON.stringify({sessionTokenBoundary:"passed",ownedInsert:1,foreignInsertDenied:true,
     directSelectUpdateDeleteDenied:3,activeTokenResolved:1,expiredDenied:true,disabledDenied:true,revokeVerified:true,
-    httpChecks,actualPaidCalls:0,latencyMs:Date.now()-startedAt}));
+    httpChecks,httpCookieMode,actualPaidCalls:0,latencyMs:Date.now()-startedAt}));
 }finally{
   if(created){
     const client=await admin.connect();
