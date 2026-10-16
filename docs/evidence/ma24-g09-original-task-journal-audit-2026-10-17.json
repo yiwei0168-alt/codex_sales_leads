@@ -1,0 +1,20 @@
+{
+  "stage": "MA24 G09 owned stored mode-chain transport audit component",
+  "date": "2026-10-17",
+  "targetedTests": 43,
+  "testFiles": ["task-model-transport-journal.test.ts", "task-model-transport-request.test.ts", "task-model-transport-receipt.test.ts"],
+  "typecheck": "passed",
+  "eslint": "passed",
+  "reader": "owned completed main-agent task and all model-effect/main_model journal rows; caller supplies run ID only",
+  "checked": ["nonempty completed supported rows", "stored input hash", "contiguous unique route indices per stored decision", "same request and profile across fallback", "nonoverlapping attempt windows", "signed retryable predecessors", "final signed success", "request manifest and route effort", "unique successful generation IDs", "unchanged registry and journal on reread"],
+  "databaseMocked": true,
+  "journalTestSignatureVerifiersMocked": true,
+  "cryptographicCoverage": "separate request and receipt test files",
+  "actualModelCalls": 0,
+  "acceptanceQualificationWired": false,
+  "allExpectedTaskDecisionsProvenRecorded": false,
+  "binaryVerified": false,
+  "completeTaskProvenanceVerified": false,
+  "automaticActivation": false,
+  "remaining": ["actual SQL integration", "task completeness and context binding", "qualification wiring", "deployment qualification", "final activation transaction"]
+}
