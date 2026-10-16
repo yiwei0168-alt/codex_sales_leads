@@ -31,11 +31,13 @@ const [{ assertMa24FrozenManifestComplete, assertMa24FrozenSnapshotBytes, assert
   verifyMa24LivePermissionControl, verifyMa24LivePermissionGoldEvidence,
   verifyMa24LiveRouteGoldEvidence },
 { loadCurrentMa24G15Preview }, { requireMa24G15ModelReady },
+{ assertMa24FrozenSetNotPubliclyExposed },
 { modeModelConfig }, { enqueueMa24EvaluationPair }, { stableJson }, { getPool }] = await Promise.all([
   import('../src/lib/knowledge/evaluation/ma24-independent-comparison'),
   import('../src/lib/knowledge/evaluation/ma24-corpus-snapshot'),
   import('../src/lib/knowledge/evaluation/ma24-evaluation-claim'),
   import('../src/lib/knowledge/evaluation/ma24-g15-runtime-binding'),
+  import('../src/lib/knowledge/evaluation/ma24-public-exposure-gate'),
   import('../src/lib/assistant/main/mode-config'),
   import('../src/lib/knowledge/evaluation/ma24-evaluation-pair'),
   import('../src/lib/knowledge/review-types'),
@@ -48,6 +50,7 @@ const sourceSet = JSON.parse(sourceSetBytes.toString('utf8'));
 assertMa24SourceSetMatchesManifest(manifest, sourceSet);
 const gold = JSON.parse(goldBytes.toString('utf8'));
 assertMa24GoldMatchesManifest(manifest, gold);
+assertMa24FrozenSetNotPubliclyExposed({ sourceSet, gold });
 const corpus = assertMa24CorpusSnapshotBytes(manifest, corpusSnapshotBytes,
   manifest.corpusSnapshotSha256);
 assertMa24PermissionGoldControl(manifest, corpus, gold);

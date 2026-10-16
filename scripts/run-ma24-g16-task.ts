@@ -30,17 +30,21 @@ const [manifestBytes, sourceSetBytes, goldBytes, codeAndConfigBytes,
   corpusSnapshotBytes] = await Promise.all(paths.map(path => readFile(path)));
 const [{ assertMa24FrozenManifestComplete, assertMa24FrozenSnapshotBytes, assertMa24GoldMatchesManifest,
   assertMa24SourceSetMatchesManifest }, { assertMa24CorpusSnapshotBytes },
-  { executeMa24EvaluationRun }, { getPool }] = await Promise.all([
+  { executeMa24EvaluationRun }, { assertMa24FrozenSetNotPubliclyExposed }, { getPool }] = await Promise.all([
   import('../src/lib/knowledge/evaluation/ma24-independent-comparison'),
   import('../src/lib/knowledge/evaluation/ma24-corpus-snapshot'),
   import('../src/lib/knowledge/evaluation/ma24-evaluation-runner'),
+  import('../src/lib/knowledge/evaluation/ma24-public-exposure-gate'),
   import('../src/lib/rag/db'),
 ]);
 const manifest = JSON.parse(manifestBytes.toString('utf8'));
 assertMa24FrozenSnapshotBytes(manifest, { sourceSet: sourceSetBytes, gold: goldBytes,
   codeAndConfig: codeAndConfigBytes, corpus: corpusSnapshotBytes });
-assertMa24SourceSetMatchesManifest(manifest, JSON.parse(sourceSetBytes.toString('utf8')));
-assertMa24GoldMatchesManifest(manifest, JSON.parse(goldBytes.toString('utf8')));
+const sourceSet = JSON.parse(sourceSetBytes.toString('utf8'));
+const gold = JSON.parse(goldBytes.toString('utf8'));
+assertMa24SourceSetMatchesManifest(manifest, sourceSet);
+assertMa24GoldMatchesManifest(manifest, gold);
+assertMa24FrozenSetNotPubliclyExposed({ sourceSet, gold });
 assertMa24CorpusSnapshotBytes(manifest, corpusSnapshotBytes, manifest.corpusSnapshotSha256);
 assertMa24FrozenManifestComplete(manifest);
 assert(manifest.cases.some((item: { caseId: string }) => item.caseId === caseId),

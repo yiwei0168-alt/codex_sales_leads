@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+2026-10-16 / MA24 G15/G16：专用成对入队与逐题执行 CLI 现于写入/认领前逐题核冻结题面和具辨识度的 Gold 答案在当前 Git 跟踪文本及本地历史中的公开精确暴露，当前文本还核规范化整段命中；简短通用回答不单独判为暴露，Git 缺失或错误拒绝。隔离 Git 正反例、当前三个私有候选正例与已公开五题负例、G15 306 文件源码闭包、类型和定向 lint 通过。[工程收据](evidence/ma24-g15-g16-public-exposure-preclaim-gate-2026-10-16.json)。语义/家族及远端暴露仍需 G14 审核；完整 Gold 0，G15 付费准入关闭，G16 真实双路 0；G17–G20 暂停。
+
 2026-10-16 / MA24 G14：FCC MBA、World Bank Findex 与 Glasgow 5G 三个私有新来源候选组成仅题面的临时题集，按当前 3,043 个跟踪文本和本地 Git 历史完成完整题面精确暴露筛查；各题答案另行精确筛查，完整题/答案命中均为 0。FCC/Findex 的通用片段仍有命中，语义、家族、来源许可、逐题内容、产品引用与整套覆盖未因此通过。[预检收据](evidence/ma24-g14-new-three-candidate-exposure-preflight-2026-10-16.json)。独立 Gold 0，G15 付费准入关闭，G16 真实双路 0；G17–G20 暂停。
 
 2026-10-16 / MA24 G14：用户确认 FCC MBA 私有 v2 单题的答案与限定，决定 `MA24-23` 已绑定候选、原件及 Git 忽略的精确值回复收据哈希。[公开元数据收据](evidence/ma24-g14-fcc-mba-v2-user-answer-confirmation-2026-10-16.json)。该决定只完成逐题内容确认；来源家族独立性、正式独立 Gold、模型可见引用和 G16 真实双路质量仍待验。可冻结 Gold 0，G15 付费准入关闭，G16 真实双路 0；G17–G20 暂停。

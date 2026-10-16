@@ -1,0 +1,39 @@
+{
+  "schema": "ma24-g15-g16-public-exposure-preclaim-gate-v1",
+  "date": "2026-10-16",
+  "scope": "Dedicated MA24 G16 pair-enqueue and explicit task CLI entry points",
+  "implementation": {
+    "gate": "src/lib/knowledge/evaluation/ma24-public-exposure-gate.ts",
+    "entryPoints": [
+      "scripts/enqueue-ma24-g16-pair.ts",
+      "scripts/run-ma24-g16-task.ts"
+    ],
+    "condition": "Before queue mutation or task claim, compare every frozen complete question and each distinctive Gold answer with current tracked text using exact and normalized matches, and with all local Git history using exact pickaxe; short generic answers do not independently prove exposure; Git errors fail closed.",
+    "g15SourceClosureIncludesGate": true
+  },
+  "verification": {
+    "isolatedGitControl": "node scripts/run-tsx.cjs scripts/verify-ma24-g16-public-exposure-gate-local.ts",
+    "isolatedGitControlResult": "exit 0; clean and short generic answer accepted, current question/answer and normalized answer rejected, historical question rejected, missing repository rejected",
+    "currentPrivateControl": {
+      "scriptPath": "tmp/ma24-independent-quarantine/verify-current-three-public-gate.ts",
+      "scriptSha256": "8e16d712ed0045067f8b6bbd5875da287e1b3d1508cd04971de8101ef39e0f4e",
+      "newThreeCaseSetSha256": "beef2272fc407b612cb44d682c3ddee0286c41de855feb5dc705004dc85a633e",
+      "newThreeResult": "accepted, three cases, 3211 tracked text files",
+      "knownExposedFiveSetSha256": "97ffb579162ddfe07e44d33c1bedb51d4848603f8d564bd0276f0e2a018f679e",
+      "knownExposedFiveResult": "rejected before admission"
+    },
+    "g15SourceClosureControl": "node scripts/run-tsx.cjs scripts/verify-ma24-g15-runner-source-closure-local.ts",
+    "g15SourceClosureResult": "exit 0; 306 files; readyForPaidEvaluation=false",
+    "typecheck": "npm run typecheck: exit 0",
+    "targetedEslint": "exit 0"
+  },
+  "limits": [
+    "The guard applies to the dedicated MA24 CLI entry points; it does not prove semantic independence, family separation or remote exposure absence.",
+    "A Git checkout with tracked files and history is required at these entry points; absence rejects the run.",
+    "The old five remain ineligible for independent Gold. Acceptance of three draft cases does not freeze a complete set or authorize paid calls."
+  ],
+  "independentGoldApproved": 0,
+  "g15PaidAdmission": false,
+  "g16RealDualArmRuns": 0,
+  "g17ToG20": "paused"
+}
