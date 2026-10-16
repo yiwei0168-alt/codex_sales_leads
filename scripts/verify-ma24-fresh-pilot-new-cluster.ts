@@ -147,7 +147,8 @@ try {
       'node', 'scripts/run-tsx.cjs', 'scripts/verify-skill-prospective-source-db.ts']) : run(process.execPath,
       ["scripts/run-tsx.cjs", "scripts/verify-skill-prospective-source-db.ts"],
       { ...process.env, DATABASE_URL: appUrl.toString(), DATABASE_MIGRATION_URL: adminUrl.toString(),
-        MA24_DISPOSABLE_PROSPECTIVE_SOURCE: "1",MA24_PROSPECTIVE_FULL_MATERIAL: prospectiveMaterialCheck ? "1" : "0",MA24_PROSPECTIVE_COMPOSITION:prospectiveCompositionCheck?'1':'0' });
+        MA24_DISPOSABLE_PROSPECTIVE_SOURCE: "1",MA24_PROSPECTIVE_FULL_MATERIAL: prospectiveMaterialCheck ? "1" : "0",MA24_PROSPECTIVE_COMPOSITION:prospectiveCompositionCheck?'1':'0',
+        MA24_COMPOSITION_REVIEW_LOCK:prospectiveCompositionCheck?'1':'0' });
     if(prospectiveBrowserDirectory){
       let terminal=false;void sourcePromise.finally(()=>{terminal=true;}).catch(()=>undefined);
       try{
@@ -178,6 +179,7 @@ try {
     if(prospectiveHttpImage)assert(source.output.includes('"prospectiveStandaloneHttp":"passed"'),source.output);
     if(prospectiveBrowserCheck)assert(source.output.includes('"prospectiveStandaloneBrowser":"passed"'),source.output);
     if(prospectiveCompositionCheck)assert(source.output.includes('"completeCompositionDatabase":"passed"')&&source.output.includes('"completeCompositionVerified":true'),source.output);
+    if(prospectiveCompositionCheck&&!prospectiveHttpImage)assert(source.output.includes('"developmentReviewLockCheck":true'),source.output);
   }
   if (runnerAttestationCheck) {
     const attested = await run(process.execPath,

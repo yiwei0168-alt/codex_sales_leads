@@ -1,0 +1,39 @@
+{
+  "stage": "G09 locked evidence persistence workflow database regression",
+  "date": "2026-10-16",
+  "baseCommit": "889ef702",
+  "completedCommands": [
+    "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --prospective-composition",
+    "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --runner-attestation",
+    "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --prospective-composition"
+  ],
+  "exitCodes": [0, 0, 0],
+  "checks": {
+    "historicalSafetyProspectiveCollectorPersistence": true,
+    "completeFiveCategoryThreeSourceBundleComposition": true,
+    "compositionIdempotencyAndUnifiedMaterialRead": true,
+    "sourcePurgeCrossAccountAndFreezeRevocationRejection": true,
+    "runnerDeclarationAppendIdempotencyAndRead": true,
+    "runnerDeclarationTimeBindingAndRevocationRejection": true,
+    "restrictedCollectorPermissionsSufficient": true,
+    "temporaryClustersCleaned": true,
+    "wholeProjectTypecheck": true,
+    "targetedEslint": true
+  },
+  "developmentReviewWriteCheck": {
+    "expandedCompositionRunPassed": true,
+    "assistantDevelopmentJudgmentWrittenAndRead": true,
+    "staleRevisionRejected": true,
+    "revocationRevisionTwoWrittenAndRead": true,
+    "humanApprovalCreated": false,
+    "allVerdictValuesFalse": true
+  },
+  "actualModelCalls": 0,
+  "productionQualified": false,
+  "automaticActivation": false,
+  "limitations": [
+    "All source tasks/model replies are synthetic and declaration keys are ephemeral.",
+    "This verifies normal database workflow regression after lock wiring; deliberate concurrent freeze revocation is covered by the separate serialization evidence.",
+    "No production provider, new Web browser flow or final activation transaction was exercised."
+  ]
+}

@@ -12,6 +12,7 @@ import {collectHistoricalSkillAcceptance} from '../../src/lib/assistant/main/ski
 import {collectSkillSafetyAcceptance} from '../../src/lib/assistant/main/skill-safety-collector';
 import {composeSkillAcceptanceEvidence} from '../../src/lib/assistant/main/skill-acceptance-composition';
 import {readSkillAcceptanceReview,readSkillAcceptanceReviewCase} from '../../src/lib/assistant/main/skill-acceptance-review';
+import {appendSkillAcceptanceJudgment} from '../../src/lib/assistant/main/skill-acceptance-store';
 import type {SkillCandidateCollector,SkillCandidateRequest} from '../../src/lib/assistant/main/skill-candidate-model';
 
 export async function prepareCompositionDatabaseFixture(input:{pool:Pool;owner:string;skillId:string;config:ModelConfig;memory:ModelMessage}){
@@ -84,10 +85,25 @@ export async function verifyCompositionDatabaseFixture(input:{pool:Pool;owner:st
  }
  await assert.rejects(readSkillAcceptanceReview({userId:other},combined.bundleId));
  assert.equal((await pool.query('select count(*)::int n from agent_skill_acceptance_judgment where bundle_id=$1',[combined.bundleId])).rows[0].n,0);
+ const developmentReviewLockCheck=process.env.MA24_COMPOSITION_REVIEW_LOCK==='1';
+ if(developmentReviewLockCheck){
+  const material=await readSkillAcceptanceReviewCase({userId:owner},{bundleId:combined.bundleId,caseId:'replay'});
+  assert(material.observationHash);
+  const verdict={answer:false,citation:false,permission:false,injection:false};
+  const review={bundleId:combined.bundleId,artifactHash:combined.artifactHash,expectedRevision:0,judgment:{caseId:'replay',observationHash:material.observationHash,
+   revoked:false,baseline:verdict,candidate:verdict,rationale:'Synthetic development-only write-path check; no quality approval.'}};
+  assert.equal((await appendSkillAcceptanceJudgment({userId:owner,reviewerKind:'assistant-development'},review)).revision,1);
+  const saved=await readSkillAcceptanceReviewCase({userId:owner},{bundleId:combined.bundleId,caseId:'replay'});
+  assert.equal(saved.judgment?.kind,'assistant-development');assert.equal(saved.judgment?.revoked,false);
+  await assert.rejects(appendSkillAcceptanceJudgment({userId:owner,reviewerKind:'assistant-development'},review),/revision changed/);
+  assert.equal((await appendSkillAcceptanceJudgment({userId:owner,reviewerKind:'assistant-development'},
+   {...review,expectedRevision:1,judgment:{...review.judgment,revoked:true,rationale:'Revoke synthetic development-only fixture review.'}})).revision,2);
+  assert.equal((await readSkillAcceptanceReviewCase({userId:owner},{bundleId:combined.bundleId,caseId:'replay'})).judgment?.revoked,true);
+ }
  assert.equal((await pool.query('select enabled from agent_skill where id=$1',[skillId])).rows[0].enabled,false);
  const before=calls;await readSkillAcceptanceReview({userId:owner},combined.bundleId);assert.equal(calls,before);
  console.log(JSON.stringify({completeCompositionDatabase:'passed',plannedCategories:5,sourceBundles:3,scriptedModelCalls:calls,
   actualJournalAudits:true,compositionIdempotent:true,allCasesReadThroughUnifiedReview:true,injectionReceiptConsumed:true,
-  copiedJudgments:0,realQualityApproval:false,modelCalls:0,automaticActivation:false}));
+  copiedJudgments:0,developmentReviewLockCheck,realQualityApproval:false,modelCalls:0,automaticActivation:false}));
  return combined.bundleId;
 }
