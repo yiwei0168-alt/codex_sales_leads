@@ -1,0 +1,31 @@
+{
+  "stage": "G09 locked policy adapter database integration",
+  "date": "2026-10-16",
+  "baseCommit": "26b3f014",
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --locked-policy",
+  "exitCode": 0,
+  "checks": {
+    "actualServerIdentityReconstruction": true,
+    "actualLockedEvidenceAndDatabaseClock": true,
+    "computedRuntimeIdentityMatchesFrozenServerIdentity": true,
+    "missingJudgmentsBlockPolicy": true,
+    "developmentJudgmentDoesNotGrantApproval": true,
+    "latestReviewHashChangesAfterReviewAndRevocation": true,
+    "crossAccountRejected": true,
+    "revokedFreezeRejected": true,
+    "skillRemainsDisabled": true,
+    "wholeProjectTypecheck": true,
+    "targetedEslint": true,
+    "temporaryClusterCleaned": true
+  },
+  "actualModelCalls": 0,
+  "externalHttpDisabled": true,
+  "humanApprovalCreated": false,
+  "automaticActivation": false,
+  "limitations": [
+    "The original task and five policy observations are synthetic; policy projections are inserted directly by the disposable fixture.",
+    "Actual source identity is reconstructed from the stored original task, but this run does not reconstruct candidate/safety/prospective payload material for all five observations.",
+    "Statement timeout is set to 15 seconds in this fixture; no production timeout policy is changed.",
+    "No production qualification, positive human-approved activation or final activation write was exercised."
+  ]
+}

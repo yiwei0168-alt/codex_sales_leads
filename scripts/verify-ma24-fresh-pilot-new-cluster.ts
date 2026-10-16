@@ -19,6 +19,7 @@ const backupCheck = args.includes("--backup");
 const crossClusterCheck = args.includes("--cross-cluster");
 const modeBusinessCheck = args.includes("--mode-business");
 const runnerAttestationCheck = args.includes("--runner-attestation");
+const lockedPolicyCheck = args.includes('--locked-policy');
 const safetySkillUsageCheck = args.includes('--safety-skill-usage');
 const collectorImageArgument=args.find(arg=>arg.startsWith('--collector-image='));
 const collectorImage=collectorImageArgument?.slice('--collector-image='.length);
@@ -33,7 +34,7 @@ const prospectiveMaterialCheck = args.includes("--prospective-material") || Bool
 const prospectiveSourceCheck = args.includes("--prospective-source") || prospectiveMaterialCheck;
 const rollbackImageArgument = args.find(arg => arg.startsWith("--rollback-image="));
 const rollbackImage = rollbackImageArgument?.slice("--rollback-image=".length);
-assert(args.length <= 18 && args.every(arg => ["--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", '--safety-skill-usage', '--transport-journal', '--pool-recovery', '--web-pool-recovery', "--prospective-source", "--prospective-material", '--prospective-browser', '--prospective-composition', collectorImageArgument,prospectiveHttpArgument, webImageArgument, rollbackImageArgument].includes(arg))
+assert(args.length <= 19 && args.every(arg => ["--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", '--locked-policy', '--safety-skill-usage', '--transport-journal', '--pool-recovery', '--web-pool-recovery', "--prospective-source", "--prospective-material", '--prospective-browser', '--prospective-composition', collectorImageArgument,prospectiveHttpArgument, webImageArgument, rollbackImageArgument].includes(arg))
   &&(!collectorImageArgument||(collectorImage&&/^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(collectorImage)))
   && (!webPoolRecoveryCheck || webImage)
   && (!prospectiveBrowserCheck || prospectiveHttpImage)
@@ -128,7 +129,7 @@ try {
   assert.equal(verified.code, 0, verified.output);
   assert(verified.output.includes('"freshPilotRestore":"passed"'), verified.output);
   assert(verified.output.includes('"copiedProductionData":false'), verified.output);
-  if (webImage || modeBusinessCheck || runnerAttestationCheck || prospectiveSourceCheck || safetySkillUsageCheck || transportJournalCheck || poolRecoveryCheck) {
+  if (webImage || modeBusinessCheck || runnerAttestationCheck || lockedPolicyCheck || prospectiveSourceCheck || safetySkillUsageCheck || transportJournalCheck || poolRecoveryCheck) {
     const migration = await run(process.execPath,
       ["scripts/run-tsx.cjs", "scripts/migrate.ts", "--fresh-pilot-through=135"],
       { ...process.env, DATABASE_URL: appUrl.toString(), DATABASE_MIGRATION_URL: adminUrl.toString() });
@@ -180,6 +181,12 @@ try {
     if(prospectiveBrowserCheck)assert(source.output.includes('"prospectiveStandaloneBrowser":"passed"'),source.output);
     if(prospectiveCompositionCheck)assert(source.output.includes('"completeCompositionDatabase":"passed"')&&source.output.includes('"completeCompositionVerified":true'),source.output);
     if(prospectiveCompositionCheck&&!prospectiveHttpImage)assert(source.output.includes('"developmentReviewLockCheck":true'),source.output);
+  }
+  if(lockedPolicyCheck){
+    const checked=await run(process.execPath,['scripts/run-tsx.cjs','scripts/verify-skill-locked-policy-db.ts'],
+      {...process.env,DATABASE_URL:appUrl.toString(),DATABASE_MIGRATION_URL:adminUrl.toString(),MA24_DISPOSABLE_LOCKED_POLICY:'1'});
+    assert.equal(checked.code,0,checked.output);assert(checked.output.includes('"lockedPolicyDatabase":"passed"'),checked.output);
+    console.log(checked.output.trim());
   }
   if (runnerAttestationCheck) {
     const attested = await run(process.execPath,
@@ -523,6 +530,7 @@ try {
     pilotBackupRestoreVerified: backupCheck, crossClusterRestoreVerified: crossClusterCheck,
     scriptedModeBusinessVerified: modeBusinessCheck,
     runnerAttestationStoreVerified: runnerAttestationCheck,
+    lockedPolicyDatabaseVerified: lockedPolicyCheck,
     safetySkillUsageVerified: safetySkillUsageCheck,
     transportJournalDatabaseVerified: transportJournalCheck,
     collectorImageTlsPreflightVerified: Boolean(collectorImage),
