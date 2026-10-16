@@ -1,0 +1,51 @@
+{
+  "schema": "ma24-g14-new-three-candidate-exposure-preflight-v1",
+  "date": "2026-10-16",
+  "scope": "Three private new-source candidates, checked as a question-only set and individually with their answers",
+  "script": "scripts/audit-ma24-g14-public-question-exposure.mjs",
+  "trackedTextFiles": 3043,
+  "privateQuestionSet": {
+    "path": "tmp/ma24-independent-quarantine/ma24-new-three-source-set-preflight-2026-10-16.json",
+    "sha256": "beef2272fc407b612cb44d682c3ddee0286c41de855feb5dc705004dc85a633e",
+    "caseCount": 3,
+    "reportPath": "tmp/ma24-independent-quarantine/ma24-new-three-exposure-preflight-2026-10-16.json",
+    "reportSha256": "72fa5ed20d5a0cae8b7ae660092df6004b0e7be0b6437b309896567101f4c559",
+    "failOnExposureExitCode": 0
+  },
+  "individualReports": [
+    {
+      "family": "FCC MBA historical report",
+      "path": "tmp/ma24-independent-quarantine/fcc-mba-v2-candidate-exposure-refresh-2026-10-16.json",
+      "sha256": "47c435050aa2508f61a6cbd8687836f3669e4f8bd4c516c8fa77c03ba639fd12",
+      "questionFragmentPathCount": 3
+    },
+    {
+      "family": "World Bank Global Findex 2025 workbook",
+      "path": "tmp/ma24-independent-quarantine/worldbank-findex-candidate-exposure-refresh-2026-10-16.json",
+      "sha256": "31c4842786c32c825e3ec0e9d7c420e199b7335cb1e70cda19459ababdef5ad5",
+      "questionFragmentPathCount": 1
+    },
+    {
+      "family": "Glasgow 5G 2025 workbook",
+      "path": "tmp/ma24-independent-quarantine/glasgow5g-candidate-exposure-refresh-2026-10-16.json",
+      "sha256": "cf15559ccc17e94beff89cacafe92b686db0cf3349c3ce58379149c75bc7913c",
+      "questionFragmentPathCount": 0
+    }
+  ],
+  "result": {
+    "completeQuestionExactHitsCurrentTrackedTree": 0,
+    "completeQuestionExactHitsLocalGitHistory": 0,
+    "completeAnswerExactHitsCurrentTrackedTree": 0,
+    "completeAnswerExactHitsLocalGitHistory": 0,
+    "knownSourceFactFragmentsRemain": true,
+    "independentGoldApproved": 0,
+    "g15PaidAdmission": false,
+    "g16RealDualArmRuns": 0
+  },
+  "limits": [
+    "This is an exact local public-tree and Git-history screen; fragments and semantic paraphrases still require review.",
+    "Known candidate-preparation conversation exposure is not erased by a zero public-tree hit.",
+    "Per-case content, family independence, source use, product citation and complete tag coverage remain separate gates.",
+    "This three-case preflight is not a frozen Gold set or permission to call paid models."
+  ]
+}
