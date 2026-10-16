@@ -1,0 +1,30 @@
+{
+  "stage": "G09 same-transaction locked evidence read",
+  "date": "2026-10-16",
+  "baseCommit": "1804e905",
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --runner-attestation",
+  "exitCode": 0,
+  "checks": {
+    "bundleFreezeSkillLockOrderUsed": true,
+    "currentPinDerivedFromStoredSkill": true,
+    "latestReviewHashDerivedFromStoredJudgments": true,
+    "databaseObservedConcurrentReviewWriterBlocked": true,
+    "reviewWriterCompletedAfterReaderReleasedLocks": true,
+    "nextLockedReadSawRevokedRevisionTwo": true,
+    "crossAccountReadRejected": true,
+    "revokedFreezeReadRejected": true,
+    "existingRunnerDeclarationChecksPassed": true,
+    "wholeProjectTypecheck": true,
+    "targetedEslint": true,
+    "temporaryClusterAndFixturesCleaned": true
+  },
+  "actualModelCalls": 0,
+  "humanApprovalCreated": false,
+  "automaticActivation": false,
+  "limitations": [
+    "Helper requires an existing account-isolated transaction; caller must retain it through any future final update.",
+    "Synthetic development reviews only; this helper returns revoked latest judgments for policy evaluation rather than treating them as approval.",
+    "Runtime/provider provenance and individual material sources are not authenticated or revalidated by this helper.",
+    "Final activation is not connected and previously pinned images do not include this change."
+  ]
+}

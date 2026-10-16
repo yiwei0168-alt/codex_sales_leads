@@ -33,15 +33,36 @@ async function loadBundle(client:PoolClient,userId:string,id:string){
  return {id,artifactHash:row.artifact_hash,artifact};
 }
 
-async function assertCurrentSkill(client:PoolClient,userId:string,plan:z.infer<typeof skillAcceptancePlanSchema>){
+async function assertCurrentSkill(client:PoolClient,userId:string,plan:z.infer<typeof skillAcceptancePlanSchema>,updateLock=false){
  const skill=(await client.query<SourcedSkillVersion&{current_version:number;dependencies:unknown}>(
   `select s.current_version,s.scope,s.owner_id,v.source,v.validation,v.files,v.content_hash,v.dependencies
    from agent_skill s join agent_skill_version v on v.skill_id=s.id and v.version=$3
    join app_user u on u.id=s.owner_id and u.status='active'
-   where s.id=$1 and s.owner_id=$2 for share of s`,[plan.pin.skillId,userId,plan.pin.version])).rows[0];
+   where s.id=$1 and s.owner_id=$2 ${updateLock?'for update of s':'for share of s'}`,[plan.pin.skillId,userId,plan.pin.version])).rows[0];
  if(!skill||skill.scope!=='account'||skill.current_version!==plan.pin.version||skill.content_hash!==plan.pin.contentHash
   ||digest(skill.files)!==plan.pin.contentHash||digest({source:skill.source,validation:skill.validation,dependencies:skill.dependencies})!==plan.pin.sourceHash
   ||!await skillSourcesCurrent(client,userId,skill))throw new Error('Acceptance Skill sources changed');
+ return skill;
+}
+/** Caller must own an open account-isolated transaction and retain it through
+ * final validation/update. Does not authenticate runtime/provider/material sources.
+ * Lock order matches review writes: bundle -> freeze -> Skill. */
+export async function readLockedSkillAcceptanceEvidence(client:PoolClient,context:Context,id:string){
+ z.uuid().parse(id);z.uuid().parse(context.userId);
+ await client.query('select pg_advisory_xact_lock(hashtextextended($1,0))',[`skill-acceptance:${id}`]);
+ const bundle=await loadBundle(client,context.userId,id);
+ const freezeStatus=await bundleFreezeStatus(client,context.userId,bundle,true);
+ if(freezeStatus.state!=='active')throw new Error('Locked acceptance requires an active recorded freeze');
+ const skill=await assertCurrentSkill(client,context.userId,bundle.artifact.plan,true);
+ const judgments=await latestJudgments(client,context.userId,id);
+ for(const judgment of judgments){
+  const observation=bundle.artifact.observations.find(row=>row.caseId===judgment.caseId);
+  if(!observation||judgment.observationHash!==digest(observation))throw new Error('Locked acceptance judgment binding changed');
+ }
+ return {...bundle,judgments,freezeStatus,latestReviewHash:digest(judgments),currentPin:{ownerId:context.userId,
+  skillId:bundle.artifact.plan.pin.skillId,version:skill.current_version,contentHash:skill.content_hash,
+  sourceHash:digest({source:skill.source,validation:skill.validation,dependencies:skill.dependencies})},
+  lockedEvidenceRead:true as const,sourcePayloadsRevalidated:false as const,collectorProvenanceVerified:false as const,automaticActivation:false as const};
 }
 async function latestJudgments(client:PoolClient,userId:string,id:string){
  const rows=await client.query<{judgment:unknown}>(`select distinct on(case_id) judgment from agent_skill_acceptance_judgment

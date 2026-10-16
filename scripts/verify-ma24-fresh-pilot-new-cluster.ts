@@ -188,6 +188,7 @@ try {
         MA24_DISPOSABLE_RUNNER_ATTESTATION: "1" });
     assert.equal(attested.code, 0, attested.output);
     assert(attested.output.includes('"runnerAttestationStore":"passed"'), attested.output);
+    assert(attested.output.includes('"lockedEvidenceLatestReviewSerialized":true'),attested.output);
   }
   if(poolRecoveryCheck){
     const checked=await run(process.execPath,['scripts/run-tsx.cjs','scripts/verify-ma24-pool-recovery.ts'],

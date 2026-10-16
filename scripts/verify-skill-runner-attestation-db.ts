@@ -12,6 +12,9 @@ import {freezeSkillAcceptancePlan,revokeSkillAcceptanceFreeze} from '../src/lib/
 import {appendSkillRunnerAttestation,readSkillRunnerAttestation} from '../src/lib/assistant/main/skill-runner-attestation-store';
 import type {SkillCollectorTransaction} from '../src/lib/assistant/main/skill-model-journal';
 import {disableLocalAnalysisTracing} from '../src/lib/assistant/main/local-analysis-boundary';
+import {verifyLockedEvidenceDatabase} from './fixtures/skill-locked-evidence-db';
+import {tenantTransaction} from '../src/lib/rag/db';
+import {readLockedSkillAcceptanceEvidence} from '../src/lib/assistant/main/skill-acceptance-store';
 
 nextEnv.loadEnvConfig(process.cwd());disableLocalAnalysisTracing();
 assert.equal(process.env.MA24_DISPOSABLE_RUNNER_ATTESTATION,'1','Dedicated disposable-cluster harness required');
@@ -60,6 +63,7 @@ try{
   capturedAt,completedAt:capturedAt,issuedAt:new Date().toISOString(),expiresAt:draft.expiresAt};
  const envelope={statement,signature:sign(null,Buffer.from(digest(statement),'hex'),pair.privateKey).toString('base64url')};
  const input={bundleId,envelope};
+ const lockedEvidence=await verifyLockedEvidenceDatabase(pool,owner,other,bundleId);
  const emptyArtifact={...artifact,observations:[]},emptyBundle=randomUUID();
  await pool.query(`insert into agent_skill_acceptance_bundle(id,owner_id,skill_id,version,source_kind,plan,observations,raw_receipts,artifact_hash)
   values($1,$2,$3,1,$4,$5,'[]',$6,$7)`,[emptyBundle,owner,skill.id,emptyArtifact.sourceKind,JSON.stringify(emptyArtifact.plan),JSON.stringify(emptyArtifact.rawReceipts),digest(emptyArtifact)]);
@@ -102,10 +106,11 @@ try{
  await assert.rejects(readSkillRunnerAttestation({userId:owner},saved.id),/unavailable/);
  registry.keys[0].enabled=true;await writeFile(registryPath,JSON.stringify(registry));
  await revokeSkillAcceptanceFreeze({userId:owner},{freezeId:frozen.freezeId,reason:'Synthetic revocation'});
+ await assert.rejects(tenantTransaction(owner,client=>readLockedSkillAcceptanceEvidence(client,{userId:owner},bundleId)),/active recorded freeze/);
  await assert.rejects(readSkillRunnerAttestation({userId:owner},saved.id),/inactive/);
  assert.equal((await pool.query('select enabled from agent_skill where id=$1',[skill.id])).rows[0].enabled,false);
  assert.equal((await pool.query("select to_regclass('public.ma24_evaluation_hard_limit') is null absent")).rows[0].absent,true);
- console.log(JSON.stringify({runnerAttestationStore:'passed',collectorAppendAndIdempotency:true,
+ console.log(JSON.stringify({runnerAttestationStore:'passed',collectorAppendAndIdempotency:true,...lockedEvidence,lockedReadRevokedFreezeRejected:true,
   emptyObservationAndSignedTimeDriftRejected:true,
   historicalUnboundStatementsRejectedOnRead:true,
   appInsertDenied:true,crossAccountDenied:true,appendOnly:true,signedSyntheticEvidenceRejected:true,keyDisablementAndFreezeRevocationRejected:true,
