@@ -148,6 +148,30 @@ try{
   assert.equal(waiting,2,'Model attempt and outcome append must wait on frozen evidence');
  }finally{await modelHolder.query('rollback');modelHolder.release();}
  await Promise.all(modelWrites);
+ const draft=(await pool.query('select plan_draft from agent_skill_acceptance_freeze where id=$1',[frozen.freezeId])).rows[0].plan_draft;
+ const raceFreeze=await freezeSkillAcceptancePlan({userId:owner},draft,transaction);
+ const raceJournal=createSkillModelJournal(dedicated.transaction,{...pin,evaluationId:randomUUID(),freezeId:raceFreeze.freezeId});
+ const raceAttempt=await raceJournal.begin(input),revoker=await pool.connect();let raceWrites:Array<Promise<unknown>>=[];
+ try{
+  await revoker.query('begin');await revoker.query('set local role network_copilot_app');
+  await revoker.query("select set_config('app.current_user_id',$1,true)",[owner]);
+  assert.equal(await inspectLockedSkillAcceptanceFreeze(revoker,owner,raceFreeze.freezeId,raceFreeze.plan),'active');
+  const pid=(await revoker.query('select pg_backend_pid() as pid')).rows[0].pid as number;
+  raceWrites=[createSkillModelJournal(dedicated.transaction,{...pin,evaluationId:randomUUID(),freezeId:raceFreeze.freezeId}).begin(input),
+   raceJournal.save(raceAttempt.id,0,{status:'unavailable',retryable:true,reason:'synthetic-revocation-race'})];
+  for(const work of raceWrites)void work.catch(()=>undefined);
+  let waiting=0;
+  for(let i=0;i<100;i++){
+   waiting=Number((await pool.query('select count(*) n from pg_stat_activity where $1::int=any(pg_blocking_pids(pid))',[pid])).rows[0].n);
+   if(waiting===2)break;await new Promise(resolve=>setTimeout(resolve,20));
+  }
+  assert.equal(waiting,2,'Both model writes must wait before revocation commits');
+  await revoker.query('insert into agent_skill_acceptance_freeze_revocation(freeze_id,owner_id,reason) values($1,$2,$3)',
+   [raceFreeze.freezeId,owner,'Synthetic revocation committed ahead of waiting model writes']);
+  await revoker.query('commit');
+ }finally{await revoker.query('rollback');revoker.release();}
+ const raceResults=await Promise.allSettled(raceWrites);assert.equal(raceResults.length,2);
+ for(const result of raceResults){assert.equal(result.status,'rejected');if(result.status==='rejected')assert.match(String(result.reason),/freeze unavailable/);}
  const postRevoke=createSkillModelJournal(dedicated.transaction,{...pin,evaluationId:randomUUID()}),postRevokeAttempt=await postRevoke.begin(input);
  const holder=await pool.connect();let revoking:Promise<unknown>|undefined,completed=false;
  try{
@@ -173,6 +197,6 @@ try{
  assert.equal((await pool.query('select enabled from agent_skill where id=$1',[skill.id])).rows[0].enabled,false);
  console.log(JSON.stringify({transportJournalDatabase:'passed',restrictedCollectorAppend:true,persistedSignatureVerified:true,recoveryReusesStoredOutcome:true,
   crossAccountHidden:true,appendOnly:true,registryRevocationRejected:true,freezeRevocationRejected:true,dedicatedLoginVerified:true,appRoleMembershipRejected:true,
-  compiledCollectorDatabasePreflight:true,collectorImageTlsPreflight,signedFallbackJournalVerified:true,freezeRevocationSerialized:true,modelAttemptAndOutcomeAppendSerialized:true,postRevocationModelWritesRejected:true,
+  compiledCollectorDatabasePreflight:true,collectorImageTlsPreflight,signedFallbackJournalVerified:true,freezeRevocationSerialized:true,modelAttemptAndOutcomeAppendSerialized:true,waitingModelWritesRejectCommittedRevocation:true,postRevocationModelWritesRejected:true,
   postRevocationLockedReadRejected:true,syntheticFixture:true,binaryVerified:false,automaticActivation:false,actualModelCalls:0}));
 }finally{await dedicated?.close();await pool.end();await getPool().end();await rm(directory,{recursive:true,force:true});}

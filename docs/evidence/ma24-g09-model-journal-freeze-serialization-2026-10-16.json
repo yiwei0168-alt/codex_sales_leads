@@ -9,6 +9,7 @@
   "bothResumeAfterRelease": true,
   "directSqlRevocationWaitsForHeldFreeze": true,
   "attemptAndOutcomeRejectedAfterRevocation": true,
+  "alreadyWaitingAttemptAndOutcomeRecheckCommittedRevocation": true,
   "existingSignatureFallbackIsolationAndImmutabilityChecks": "passed",
   "compiledCollectorDatabasePreflight": "passed",
   "typecheck": "passed",

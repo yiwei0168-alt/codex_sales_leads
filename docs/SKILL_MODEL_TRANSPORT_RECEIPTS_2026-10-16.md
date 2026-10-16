@@ -2,6 +2,8 @@
 
 ## Database freeze serialization (migration 146)
 
+The follow-up race check held a second freeze, observed both model writers waiting, inserted a revocation inside the holder transaction and committed it. Both waiting writers then rejected with `Skill model freeze unavailable`. This verifies the post-lock read sees committed revocation, rather than only testing newly started requests after revocation.
+
 Model-attempt and model-outcome INSERT triggers now acquire the same owner/freeze transaction advisory lock as the final evidence reader, then check freeze expiry and revocation using the database wall clock. Outcome admission derives its freeze from its existing owned attempt. A revocation INSERT trigger also acquires this lock, including direct SQL writes. Legacy rows without a freeze retain their old path; this does not make them eligible acceptance evidence.
 
 [Disposable database verification](evidence/ma24-g09-model-journal-freeze-serialization-2026-10-16.json) observed attempt/outcome appends and direct SQL revocation wait for the holder, then resume after release; both model write types reject after revocation. Repeat migration, signature/fallback, isolation, append-only checks, compiled collector database preflight, typecheck and targeted lint passed. No table write privileges were added. No real provider calls or production deployment occurred. Attached complete composition and production qualification remain separate gates.
