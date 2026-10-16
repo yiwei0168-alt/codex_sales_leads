@@ -1,0 +1,36 @@
+{
+  "schema": "ma24-g01-linux-fresh-db-two-member-lead-v1",
+  "date": "2026-10-16",
+  "scope": "Two synthetic members and one manual company through a Linux standalone Web connected to a disposable fresh PostgreSQL restore",
+  "web": {
+    "sourceCommit": "7d7acf39",
+    "buildId": "k76LM2MqI4OD5FLPCNnwu",
+    "databaseLogin": "restricted network_copilot_local_login",
+    "syntheticMemberCount": 2,
+    "memberLoginStatus": [200, 200],
+    "manualCompanyCreateStatus": 200,
+    "ownerWorkspaceRead": "company visible",
+    "otherWorkspaceRead": "company hidden",
+    "otherMemberDirectCompanyPatchStatus": 404,
+    "ownerCompanyUnchangedAfterDeniedPatch": true,
+    "paidCallReservations": 0
+  },
+  "database": {
+    "image": "pgvector/pgvector:pg16",
+    "freshRestoreFromArchive": "network_copilot_2026-10-16T06-35-27Z.dump",
+    "archiveIncludesAcl": true,
+    "temporaryAuthentication": "trust on loopback-only local mapping; not a production configuration"
+  },
+  "cleanup": {
+    "webContainerRemoved": true,
+    "databaseContainerAndSyntheticDataRemoved": true,
+    "sourceProductDatabaseChanged": false,
+    "modelCalls": 0
+  },
+  "limits": [
+    "This checks one manual company and two synthetic members, not all tenant data paths or concurrent edits",
+    "No trusted HTTPS domain, actual team account, mainland network or cloud host was used",
+    "The company was unverified and no enrichment, background worker or paid model ran",
+    "Live traffic reversal and database rollback after real writes remain unverified"
+  ]
+}

@@ -1,5 +1,7 @@
 # 首批团队试用新托管实施单（2026-10-16）
 
+2026-10-16 两成员线索补验：Linux Web 与全新恢复库中，两位合成成员分别登录；成员 A 手动新增的待核实公司由 A 回读可见、在 B 的工作区不可见，B 直接按公司 ID 修改返回 404，A 的记录不变，付费预留 0。一次性容器连同合成数据已清理。[业务收据](evidence/ma24-g01-linux-fresh-db-two-member-lead-2026-10-16.json)。此范围只覆盖单条手动公司和两账号，不代替目标 HTTPS、真实团队账号或全部租户路径验收。
+
 2026-10-16 合成成员登录补验：Linux standalone Web 接全新归档恢复库，合成成员登录 200、会话认证、空上传列表 200、退出后旧 Cookie 失效；响应 Cookie 含 Secure/HttpOnly/SameSite=Lax。合成账号与会话均归零，临时容器已清理。[登录收据](evidence/ma24-g01-linux-fresh-db-synthetic-login-2026-10-16.json)。这仍是本机 HTTP 请求检查，目标可信 HTTPS、真实成员隔离和业务写入待验。
 
 2026-10-16 Linux Web＋新恢复库联合补验：再次从 ACL 归档恢复全新本机 PostgreSQL 容器，Linux standalone Web 用受限登录连接；首页和匿名会话 GET 为 200，未登录上传 GET 为 401。临时数据库仅映射本机回环端口，测试容器已清理。[联合收据](evidence/ma24-g01-linux-fresh-db-integrated-smoke-2026-10-16.json)。这验证本机异构容器的最低运行组合，目标域名、真实账号和业务写入仍待验。
