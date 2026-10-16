@@ -1,5 +1,7 @@
 # MA24 G01–G13 当前剩余门槛（2026-10-16）
 
+G09 原始会话锁数据库组件（迁移 144）已通过账号/会话/消息更新及历史消息追加的实际并发验证；尚未接入材料入口，不能认定会话来源已获得最终保护。[组件证据](evidence/ma24-g09-task-origin-locks-2026-10-16.json)。
+
 G09 任务与工具日志锁已接入材料重建入口：从已存包派生任务、锁定任务与已有日志，阻止并发修改和追加；16 项定向回归、类型/lint 与一次性数据库并发验收通过。完整五类组合接线仍在运行，未判通过。[工作流](SKILL_ACCEPTANCE_TASK_JOURNAL_LOCKS_2026-10-16.md)、[证据](evidence/ma24-g09-task-journal-locks-2026-10-16.json)。外部来源撤销、生产认证和最终启用仍未完成。
 
 本轮补验：G10 已通过一次性 Linux compiled standalone 的 HTTP 到库及实际 Chrome 自签 HTTPS 页面读取、保存、重新进入回读与撤销，[HTTP](evidence/ma24-g10-prospective-standalone-http-2026-10-16.json)、[浏览器](evidence/ma24-g10-prospective-standalone-browser-2026-10-16.json)。真实质量和生产身份仍未关闭。所有合成审核判定为 false，最终撤销，不构成质量批准。
