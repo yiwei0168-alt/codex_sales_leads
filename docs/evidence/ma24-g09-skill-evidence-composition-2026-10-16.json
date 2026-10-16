@@ -1,0 +1,32 @@
+{
+  "schema": "ma24-g09-skill-evidence-composition-v1",
+  "date": "2026-10-16",
+  "sourceCommit": "2120ca398e858a606b77c2efa0eb246272114129",
+  "commands": [
+    "node node_modules/vitest/vitest.mjs run src/lib/assistant/main/skill-acceptance-composition.test.ts src/lib/assistant/main/skill-runner-evidence-window.test.ts src/lib/assistant/main/skill-runner-attestation.test.ts",
+    "node --max-old-space-size=8192 node_modules/typescript/bin/tsc --noEmit --pretty false",
+    "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --prospective-material"
+  ],
+  "checks": {
+    "compositionUnitTestsPassed": 10,
+    "combinedTargetedTestsPassed": 43,
+    "typeScriptAndTargetedLint": "passed",
+    "unitBoundaries": "Material reads, database and collector role are mocked in composition unit tests",
+    "completeFiveCategoryCompositionUnitCase": "passed with mocked boundaries",
+    "componentOrderIndependentArtifactHash": "passed with mocked boundaries",
+    "reviewsSignaturesAndTrustNotInherited": "passed with mocked boundaries",
+    "mixedPlanSourceFreezeAndMissingDuplicateCasesRejected": "passed with mocked boundaries",
+    "changedMaterialAndTransactionSourceRejected": "passed with mocked boundaries",
+    "freshMigrationThrough": 135,
+    "actualProspectivePairedDatabaseRegression": "passed",
+    "actualIncompleteCompositionRejectedBeforeWrite": "passed",
+    "ownerBundleCountUnchangedAfterRejection": true,
+    "completeMultiGroupDatabaseComposition": "not yet verified",
+    "productionKeysCreated": false,
+    "copiedProductionData": false,
+    "temporaryContainersRemaining": 0,
+    "realProviderModelCalls": 0
+  },
+  "nextRequiredEvidence": "Create historical, safety and prospective journals under one frozen plan; rebuild all material through actual services, append the composed bundle, verify idempotent reuse and read it through the unified review path. Production runner/provider verification and final activation transaction remain separate incomplete gates.",
+  "automaticActivation": false
+}
