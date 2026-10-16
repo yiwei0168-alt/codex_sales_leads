@@ -29,6 +29,7 @@ export async function verifyTaskTransportJournalDatabase(pool:Pool,owner:string,
  await pool.query("insert into assistant_message(user_id,conversation_id,role,intent,content,metadata) values($1,$2,'user','general',$3,$4)",[owner,conversationId,task.content,JSON.stringify({runId})]);
  const initial=initialTaskMessages({...context,mode:config.profile!.mode},task,config,[]);
  const messages=[initial[0],decisionMemoryMessage(await loadDecisionMemory(owner)),...initial.slice(1)];
+ await pool.query("insert into mailbox_customer(id,user_id,identity_key,name) values($1,$2,$3,'Synthetic signed read customer')",[randomUUID(),owner,randomUUID()]);
  const pair=generateKeyPairSync('ed25519'),collectorId='synthetic-original-task',deploymentHash=digest('synthetic-original-deployment');
  const key={keyId:randomUUID(),collectorId,deploymentHash,enabled:true,purposes:['task-model-transport'],
   publicKeyPem:pair.publicKey.export({type:'spki',format:'pem'}).toString(),notBefore:new Date(Date.now()-60000).toISOString(),expiresAt:new Date(Date.now()+3600000).toISOString()};
@@ -40,14 +41,14 @@ export async function verifyTaskTransportJournalDatabase(pool:Pool,owner:string,
  // Output stays under the project so external packages resolve from its node_modules.
  const compiledPath=join(process.cwd(),'tmp','task-transport-admission.cjs');
  await build({entryPoints:['scripts/fixtures/task-transport-preflight-runner.ts'],outfile:compiledPath,bundle:true,platform:'node',target:'node24',format:'cjs',packages:'external',logLevel:'warning',
-  banner:{js:String.raw`globalThis.fetch=async(url,init)=>{if(String(url)!=='https://openrouter.ai/api/v1/chat/completions')throw new Error('Synthetic destination rejected');const body=JSON.parse(init.body);const success=process.env.MA24_SYNTHETIC_RESPONSE!=='failure';const tool=process.env.MA24_SYNTHETIC_RESPONSE==='tool';const chunk={id:'synthetic-'+body.model,model:body.model,provider:'synthetic',choices:[{index:0,delta:tool?{tool_calls:[{index:0,id:'synthetic-description',type:'function',function:{name:'describe_tool',arguments:JSON.stringify({tool:'mail_read'})}}]}:{content:'Synthetic streamed reply'},finish_reason:tool?'tool_calls':'stop'}]};const response=success?new Response('data: '+JSON.stringify(chunk)+'\n\ndata: [DONE]\n\n',{status:200,headers:{'Content-Type':'text/event-stream'}}):new Response('{}',{status:503});Object.defineProperty(response,'url',{value:String(url)});return response;};`},
+  banner:{js:String.raw`globalThis.fetch=async(url,init)=>{if(String(url)!=='https://openrouter.ai/api/v1/chat/completions')throw new Error('Synthetic destination rejected');const body=JSON.parse(init.body);const success=process.env.MA24_SYNTHETIC_RESPONSE!=='failure';const tool=process.env.MA24_SYNTHETIC_RESPONSE==='tool';const read=process.env.MA24_SYNTHETIC_RESPONSE==='read';const chunk={id:'synthetic-'+body.model+'-'+body.messages.length,model:body.model,provider:'synthetic',choices:[{index:0,delta:(tool||read)?{tool_calls:[{index:0,id:read?'synthetic-read':'synthetic-description',type:'function',function:{name:read?'execute_tool':'describe_tool',arguments:JSON.stringify(read?{tool:'customer_timeline',arguments:{}}:{tool:'customer_timeline'})}}]}:{content:'Synthetic streamed reply'},finish_reason:(tool||read)?'tool_calls':'stop'}]};const response=success?new Response('data: '+JSON.stringify(chunk)+'\n\ndata: [DONE]\n\n',{status:200,headers:{'Content-Type':'text/event-stream'}}):new Response('{}',{status:503});Object.defineProperty(response,'url',{value:String(url)});return response;};`},
   plugins:[{name:'explicit-synthetic-network-and-billing',setup(builder){
    builder.onResolve({filter:/(?:billing\/paid-fetch|network\/model-transport)$/},()=>({path:'synthetic-adapters',namespace:'ma24-fixture'}));
    builder.onLoad({filter:/.*/,namespace:'ma24-fixture'},()=>({contents:'export const budgetedFetch=(transport)=>transport; export const modelRoutedTransport=(transport)=>transport;',loader:'js'}));
   }}]});
  const outputs:unknown[]=[],ids:string[]=[];
- for(let ordinal=0;ordinal<3;ordinal++){
-  const index=ordinal===2?0:ordinal,step=ordinal===2?1:0;
+ for(let ordinal=0;ordinal<4;ordinal++){
+  const index=ordinal>=2?0:ordinal,step=ordinal>=2?ordinal-1:0;
   const request={messages:structuredClone(messages),profile:config.profile!,index};
   const callKey=`mode-model:${step}:0:${index}`,attempt=await beginCall(context,{key:callKey,tool:'main_model',version:request.profile.version,input:request,effect:'model'});
   assert.equal(attempt.fresh,true);ids.push(attempt.id);
@@ -57,7 +58,7 @@ export async function verifyTaskTransportJournalDatabase(pool:Pool,owner:string,
     const child=spawn(process.execPath,[compiledPath,runnerPath],{windowsHide:true,stdio:['ignore','pipe','pipe'],env:{...process.env,
      NODE_ENV:'production',NODE_OPTIONS:'',NODE_EXTRA_CA_CERTS:'',SSL_CERT_FILE:'',SSL_CERT_DIR:'',NODE_USE_SYSTEM_CA:'0',NODE_TLS_REJECT_UNAUTHORIZED:'1',
      OPENROUTER_API_KEY:'SYNTHETIC_NOT_A_CREDENTIAL',OPENROUTER_BASE_URL:'https://openrouter.ai/api/v1',OPENROUTER_HTTP_REFERER:'',
-     TASK_MODEL_TRANSPORT_KEY_ID:key.keyId,TASK_MODEL_TRANSPORT_PRIVATE_KEY_FILE:keyPath,MA24_SYNTHETIC_RESPONSE:ordinal===0?'failure':ordinal===1?'tool':'success'}});let output='';
+     TASK_MODEL_TRANSPORT_KEY_ID:key.keyId,TASK_MODEL_TRANSPORT_PRIVATE_KEY_FILE:keyPath,MA24_SYNTHETIC_RESPONSE:ordinal===0?'failure':ordinal===1?'tool':ordinal===2?'read':'success'}});let output='';
     child.stdout.on('data',data=>{output+=String(data);});child.stderr.on('data',()=>{});child.once('error',reject);child.once('exit',code=>resolve({code,output}));
    });
    assert.equal(exit.code,0,'Compiled original task admission failed');assert(exit.output.includes('"originalTaskCompiledAdmission":"passed"'));
@@ -65,16 +66,21 @@ export async function verifyTaskTransportJournalDatabase(pool:Pool,owner:string,
   const output=(await pool.query('select output from agent_tool_call where id=$1',[attempt.id])).rows[0].output;outputs.push(output);
   const recovered=await beginCall(context,{key:callKey,tool:'main_model',version:request.profile.version,input:request,effect:'model'});
   assert.equal(recovered.fresh,false);assert.deepEqual(recovered.output,output);
-  if(ordinal===1){
+  if(ordinal===1||ordinal===2){
    const reply=output.data.value.message;assert.equal(reply.tool_calls.length,1);messages.push(reply);
    const description=await dispatchTool(reply.tool_calls[0],{...context,mode:config.profile!.mode});assert.equal(description.status,'success');
    messages.push({role:'tool',tool_call_id:reply.tool_calls[0].id,content:JSON.stringify(description)});
   }
  }
  await pool.query("update agent_run set status='completed',result=$2 where id=$1",[runId,JSON.stringify({reply:'Synthetic streamed reply'})]);
- const checked=await verifyOwnedTaskModelTransports({userId:owner},{runId});assert.equal(checked.transportReceiptHashes.length,3);assert.equal(checked.automaticActivation,false);
- const taskChain=await loadRecordedTaskChain({userId:owner},{runId});assert.equal(taskChain.turns.length,2);assert.equal(taskChain.initialConversationProvenanceVerified,true);
+ const checked=await verifyOwnedTaskModelTransports({userId:owner},{runId});assert.equal(checked.transportReceiptHashes.length,4);assert.equal(checked.automaticActivation,false);
+ const taskChain=await loadRecordedTaskChain({userId:owner},{runId});assert.equal(taskChain.turns.length,3);assert.equal(taskChain.initialConversationProvenanceVerified,true);
+ assert.equal(taskChain.journalClosure.consumedReads,1);
  await replayRecordedGraphTrace(taskChain);
+ const readReceipt=(await pool.query("select id,output from agent_tool_call where run_id=$1 and tool_id='customer_timeline'",[runId])).rows[0];assert(readReceipt);
+ await pool.query("update agent_tool_call set output=jsonb_set(output,'{data}','null'::jsonb) where id=$1",[readReceipt.id]);
+ await assert.rejects(loadRecordedTaskChain({userId:owner},{runId}),/receipt mismatch/);
+ await pool.query('update agent_tool_call set output=$2 where id=$1',[readReceipt.id,JSON.stringify(readReceipt.output)]);
  await pool.query("update assistant_message set content='Changed original message' where user_id=$1 and metadata->>'runId'=$2",[owner,runId]);
  await assert.rejects(loadRecordedTaskChain({userId:owner},{runId}),/original user message changed/);
  await pool.query("update assistant_message set content=$3 where user_id=$1 and metadata->>'runId'=$2",[owner,runId,task.content]);
@@ -97,6 +103,7 @@ export async function verifyTaskTransportJournalDatabase(pool:Pool,owner:string,
   originalTaskCompiledAdmissionVerified:true,originalTaskRequestFactoryAdmissionExecuted:true,originalTaskRequestClosureExecuted:true,
   originalTaskSyntheticFailureSignedAndPersisted:true,originalTaskSyntheticStreamSuccessSignedAndPersisted:true,
   originalTaskOtherBillingTaskRejected:true,originalTaskContextChainVerified:true,originalTaskGraphReplayVerified:true,
-  originalTaskChangedUserMessageRejected:true,originalTaskChangedFinalReplyRejected:true,originalTaskTwoDecisionDescriptionTransitionVerified:true,
+  originalTaskChangedUserMessageRejected:true,originalTaskChangedFinalReplyRejected:true,originalTaskDescriptionTransitionVerified:true,
+  originalTaskThreeDecisionBusinessReadVerified:true,originalTaskChangedReadReceiptRejected:true,
   billingAndNetworkAdaptersSynthetic:true,actualModelCalls:0};
 }

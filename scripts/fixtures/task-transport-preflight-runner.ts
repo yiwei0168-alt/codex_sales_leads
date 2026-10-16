@@ -32,6 +32,7 @@ async function main(){
    }else{
     const output=await request(args.messages as ModelMessage[],args.profile,args.index);
     if(process.env.MA24_SYNTHETIC_RESPONSE==='tool')assert.equal(output.message.tool_calls?.[0].function.name,'describe_tool');
+    else if(process.env.MA24_SYNTHETIC_RESPONSE==='read')assert.equal(output.message.tool_calls?.[0].function.name,'execute_tool');
     else assert.equal(output.message.content,'Synthetic streamed reply');
     assert(output.transportReceipt);
     await completeCall({...job,leaseToken:job.callId,role:'member'},job.callId,result({value:output}),{syntheticFixture:true});
