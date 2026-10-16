@@ -10,6 +10,7 @@
 - 2026-10-16 本机运行权限：候选 Web 改由移除迁移凭据与付费覆盖开关的入口启动，并复验合成登录/退出；目标环境及真实团队试用仍待验收。[运行权限收据](evidence/ma24-g01-pilot-web-runtime-boundary-2026-10-16.json)。
 - 同日只读入口补验：合成成员的任务读取及线索/任务导航通过，未验证业务写入或真实质量；不改变首批试用的发布状态。[浏览器收据](evidence/ma24-g01-loopback-https-browser-session-2026-10-16.json)。
 - 同日合成写入补验：候选 Web 创建的待核实测试公司可由候选页面及旧版 Web API 读取，夹具清理后无残留；此项不代表真实线索质量或实际回滚验收。[收据](evidence/ma24-g01-pilot-manual-lead-old-web-read-2026-10-16.json)。
+- 同日本机同入口演练：同一 HTTPS 浏览器会话经临时代理由候选切旧版再切回，合成公司持续可读。线上流量和数据库回滚仍未验收，发布状态不变。[收据](evidence/ma24-g01-loopback-https-traffic-reversal-2026-10-16.json)。
 
 ## MA24-23 — FCC MBA 私有候选答案与限定逐题确认（2026-10-16）
 

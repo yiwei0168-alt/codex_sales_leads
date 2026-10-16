@@ -4,7 +4,7 @@ import { randomBytes, randomUUID } from "node:crypto";
 import { readFile } from "node:fs/promises";
 import { createServer } from "node:https";
 import { request as httpRequest } from "node:http";
-import { chromium, request as playwrightRequest } from "@playwright/test";
+import { chromium } from "@playwright/test";
 import { Pool } from "pg";
 import { databaseConnectionString, databaseSslConfiguration } from "../src/lib/rag/database-ssl";
 import { hashPassword } from "../src/lib/auth/password";
@@ -39,10 +39,11 @@ const companyName = `MA24 pilot fixture ${userId}`;
 const companyDomain = `ma24-pilot-${userId}.invalid`;
 let created = false;
 let browser: Awaited<ReturnType<typeof chromium.launch>> | undefined;
+let routedUpstream = upstream;
 const proxy = createServer({ key: await readFile(keyPath), cert: await readFile(certPath) }, (request, response) => {
   const forwarded = httpRequest({
-    hostname: upstream.hostname, port: upstream.port, path: request.url,
-    method: request.method, headers: { ...request.headers, host: upstream.host, "x-forwarded-proto": "https" },
+    hostname: routedUpstream.hostname, port: routedUpstream.port, path: request.url,
+    method: request.method, headers: { ...request.headers, host: routedUpstream.host, "x-forwarded-proto": "https" },
   }, (upstreamResponse) => {
     response.writeHead(upstreamResponse.statusCode ?? 502, upstreamResponse.headers);
     upstreamResponse.pipe(response);
@@ -132,14 +133,25 @@ try {
   await page.getByRole("button", { name: "销售线索" }).click();
   await page.locator(".results-panel .company-cell").filter({ hasText: companyName }).waitFor();
   if (oldWeb) {
-    const oldClient = await playwrightRequest.newContext({ baseURL: oldWeb.href,
-      extraHTTPHeaders: { cookie: `network_copilot_session=${sessionCookie.value}` } });
+    routedUpstream = oldWeb;
     try {
-      const oldRead = await oldClient.get("/api/workspaces/current");
-      assert.equal(oldRead.status(), 200);
-      const oldWorkspace = await oldRead.json();
-      assert.ok(oldWorkspace.companies.some((company: { displayName: string }) => company.displayName === companyName));
-    } finally { await oldClient.dispose(); }
+      const oldLanding = await page.reload({ waitUntil: "domcontentloaded" });
+      assert.equal(oldLanding?.status(), 200);
+      const oldSession = await page.evaluate(async () => (await fetch("/api/auth/session")).json());
+      assert.equal(oldSession.authenticated, true);
+      const oldRead = await page.evaluate(async () => {
+        const response = await fetch("/api/workspaces/current", { cache: "no-store" });
+        return { status: response.status, body: await response.json() };
+      });
+      assert.equal(oldRead.status, 200);
+      assert.ok(oldRead.body.companies.some((company: { displayName: string }) => company.displayName === companyName));
+    } finally { routedUpstream = upstream; }
+    const restored = await page.reload({ waitUntil: "domcontentloaded" });
+    assert.equal(restored?.status(), 200);
+    const restoredSession = await page.evaluate(async () => (await fetch("/api/auth/session")).json());
+    assert.equal(restoredSession.authenticated, true);
+    const restoredWorkspace = await page.evaluate(async () => (await fetch("/api/workspaces/current", { cache: "no-store" })).json());
+    assert.ok(restoredWorkspace.companies.some((company: { displayName: string }) => company.displayName === companyName));
   }
   await page.getByRole("button", { name: "帮助" }).click();
   await page.getByRole("button", { name: "任务记录" }).click();
@@ -155,7 +167,7 @@ try {
   console.log(JSON.stringify({ httpsBrowserSession: "passed", browser: "chrome", secureCookie: true,
     httpOnlyCookie: true, sameSiteLax: true, loginFormAndLogoutUi: true,
     taskReadAndNavigation: true, leadNavigation: true, manualCompanyWriteReadUi: true,
-    oldWebCompanyRead: Boolean(oldWeb), actualPaidCalls: 0 }));
+    oldWebTrafficRoundTrip: Boolean(oldWeb), actualPaidCalls: 0 }));
 } finally {
   await browser?.close();
   await new Promise<void>((resolve) => proxy.close(() => resolve()));

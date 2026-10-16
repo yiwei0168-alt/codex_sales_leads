@@ -1,0 +1,27 @@
+{
+  "schema": "ma24-g01-loopback-https-traffic-reversal-v1",
+  "date": "2026-10-16",
+  "scope": "ephemeral loopback HTTPS proxy with synthetic member and company in local product database",
+  "candidate": {"sourceCommit": "18ff5906", "address": "127.0.0.1:3022"},
+  "oldWeb": {"address": "127.0.0.1:3000"},
+  "sequence": [
+    "candidate: browser login, add synthetic unverified company, workspace and sales lead page read",
+    "old Web: same HTTPS browser origin and session after proxy route switch; root and workspace read passed",
+    "candidate: same HTTPS browser origin and session after reverse switch; root and workspace read passed"
+  ],
+  "checks": {
+    "sameBrowserSecureCookieRetained": true,
+    "companyVisibleOnBothVersions": true,
+    "paidReservationsForSyntheticUser": 0,
+    "syntheticUserWorkspaceCompanyRemaining": [0, 0, 0],
+    "persistentOldAndCandidateProcessesUnchanged": true,
+    "typecheck": "passed",
+    "targetedEslint": "passed",
+    "diffCheck": "passed"
+  },
+  "limits": [
+    "The HTTPS proxy and certificate were ephemeral and local; no team traffic or trusted domain was switched",
+    "This verifies only login/session and a synthetic company read path; workers, concurrent writes, full business rollback and database restore were not exercised",
+    "The synthetic company has no independently verified quality or external enrichment"
+  ]
+}

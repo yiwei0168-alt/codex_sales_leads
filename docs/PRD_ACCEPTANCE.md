@@ -1192,3 +1192,5 @@ MODESEL-15：53 项本地测试通过。旧入口仅返回停用提示，配置�
 2026-10-16 / G01 试用入口只读补验：匿名任务接口拒绝，合成成员可读取任务列表并打开线索、任务页面；创建、执行、业务结果及真实账号仍待验收。[浏览器收据](evidence/ma24-g01-loopback-https-browser-session-2026-10-16.json)。
 
 2026-10-16 / G01 合成线索闭环：候选 HTTPS 页面可见手动添加公司的 API 写入结果，旧版 Web API 在同一迁移库可读取候选记录；测试数据完整清理，付费调用 0。真实业务质量、流量切换、worker 与数据库回滚仍待验。[收据](evidence/ma24-g01-pilot-manual-lead-old-web-read-2026-10-16.json)。
+
+2026-10-16 / G01 本机同入口回切：临时 HTTPS 代理把同一浏览器会话由候选 Web 切到旧版再切回；登录会话及合成公司回读连续通过。线上流量、worker 和数据库回滚仍需另验。[收据](evidence/ma24-g01-loopback-https-traffic-reversal-2026-10-16.json)。
