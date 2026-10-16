@@ -1,0 +1,33 @@
+{
+  "schema": "ma24-g10-prospective-standalone-http-v1",
+  "date": "2026-10-16",
+  "sourceCommit": "a831d88de09224b50b1553782f933f86147b8e47",
+  "testBuilderImage": "ma24-skill-http-builder:a831d88d",
+  "testBuilderImageDigest": "sha256:c0bb66a874ba4f938b293d1c893a4da807e5460063ad2da3220357df4a460a54",
+  "commands": [
+    "node scripts/build-ma24-pilot-image.mjs ma24-skill-http-builder:a831d88d --target=builder",
+    "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --prospective-http-image=ma24-skill-http-builder:a831d88d"
+  ],
+  "checks": {
+    "lintAndTypeScript": "passed",
+    "productionStandaloneBuild": "passed",
+    "freshMigrationThrough": 135,
+    "prospectiveServerCaptureAndFrozenIdentity": "passed",
+    "fullSyntheticPairedJournalAuditAndCollector": "passed",
+    "actualHttpLoginAndBundleList": "passed",
+    "actualHttpMaterialAnswersAndConsumedReceipt": "passed",
+    "privateNoStoreHeader": "passed",
+    "anonymousCrossAccountAndCrossSiteRejected": "passed",
+    "actualHttpReviewSaveAndSummaryReadback": "passed",
+    "staleRevisionRejected": "passed",
+    "onePersistedJudgmentBoundToSessionOwner": "passed",
+    "allBaselineAndCandidateVerdicts": false,
+    "skillEnabled": false,
+    "temporaryDatabaseAndTestContainersRemaining": 0,
+    "copiedProductionData": false,
+    "realProviderModelCalls": 0
+  },
+  "limits": "Synthetic data in a disposable Linux builder running its actual compiled standalone server. Builder includes development dependencies and source; it is not a team release image. HTTP stays inside the disposable database network namespace. Database human reviewer kind verifies authenticated session attribution only; all verdicts are false and no real quality approval is recorded. Browser interaction, real model quality, trusted public HTTPS, production runtime/provider attestation and target cloud deployment remain unverified.",
+  "automaticActivation": false,
+  "realQualityApproval": false
+}
