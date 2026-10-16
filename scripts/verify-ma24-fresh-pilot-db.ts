@@ -1,10 +1,17 @@
 import assert from "node:assert/strict";
 import { randomBytes } from "node:crypto";
 import { spawn } from "node:child_process";
+import { existsSync } from "node:fs";
+import { createServer } from "node:net";
+import { resolve } from "node:path";
 import nextEnv from "@next/env";
 import { Client } from "pg";
 
 nextEnv.loadEnvConfig(process.cwd());
+const httpCheck = process.argv.slice(2).includes("--http");
+assert(process.argv.slice(2).every(arg => arg === "--http"), "Unknown verifier argument");
+const packagedServer = resolve(".next/standalone/server.js");
+if (httpCheck) assert(existsSync(packagedServer), "Build the current standalone Web before --http");
 const appSource = process.env.DATABASE_URL;
 const migrationSource = process.env.DATABASE_MIGRATION_URL;
 assert(appSource && migrationSource, "Separate local app and migration URLs required");
@@ -106,12 +113,94 @@ try {
     await assert.rejects(updateCompanyState(added.externalId, {}, secondUser), /Company not found in current workspace/);
     const firstAgain = await getCurrentWorkspace(firstUser);
     assert(firstAgain?.companies.some(company => company.id === added.externalId));
+    if (httpCheck) {
+      const port = await new Promise<number>((resolvePort, reject) => {
+        const listener = createServer();
+        listener.once("error", reject);
+        listener.listen(0, "127.0.0.1", () => {
+          const address = listener.address();
+          assert(address && typeof address !== "string");
+          listener.close(error => error ? reject(error) : resolvePort(address.port));
+        });
+      });
+      const env: NodeJS.ProcessEnv = { PATH: process.env.PATH, SystemRoot: process.env.SystemRoot,
+        TEMP: process.env.TEMP, TMP: process.env.TMP, DATABASE_URL: appTarget.toString(),
+        NODE_ENV: "production", PORT: String(port), HOSTNAME: "127.0.0.1", NEXT_TELEMETRY_DISABLED: "1" };
+      const web = spawn(process.execPath, [resolve("scripts/start-ma24-pilot-web.mjs"), resolve(".next/standalone")], {
+        cwd: process.cwd(), windowsHide: true, stdio: ["ignore", "pipe", "pipe"], env,
+      });
+      let webOutput = "";
+      web.stdout.on("data", data => { webOutput = (webOutput + String(data)).slice(-5000); });
+      web.stderr.on("data", data => { webOutput = (webOutput + String(data)).slice(-5000); });
+      const base = `http://127.0.0.1:${port}`;
+      try {
+        let ready = false;
+        for (let attempt = 0; attempt < 60; attempt += 1) {
+          if (web.exitCode !== null) throw new Error(`Pilot Web exited early: ${webOutput}`);
+          try { ready = (await fetch(`${base}/api/auth/session`)).ok; } catch { /* Still starting. */ }
+          if (ready) break;
+          await new Promise(resolveWait => setTimeout(resolveWait, 500));
+        }
+        assert(ready, `Pilot Web did not start: ${webOutput}`);
+        const login = async (index: number) => {
+          const response = await fetch(`${base}/api/auth/login`, { method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ email: credentials[index].email, password: credentials[index].password }) });
+          assert.equal(response.status, 200, await response.text());
+          const setCookie = response.headers.get("set-cookie") ?? "";
+          const attributes = setCookie.split(";").slice(1).map(part => part.trim().toLowerCase());
+          assert(attributes.includes("secure") && attributes.includes("httponly") && attributes.includes("samesite=lax"),
+            `Unexpected cookie attributes: ${attributes.join(",")}`);
+          const cookie = setCookie.split(";")[0];
+          assert(cookie);
+          return cookie;
+        };
+        const firstCookie = await login(0), secondCookie = await login(1);
+        const createdByHttp = await fetch(`${base}/api/workspaces/current/companies`, {
+          method: "POST", headers: { cookie: firstCookie, "content-type": "application/json" },
+          body: JSON.stringify({ name: "Synthetic HTTP Pilot Company", country: "DE",
+            website: "https://http-pilot-fixture.invalid" }),
+        });
+        if (createdByHttp.status !== 200) throw new Error(`HTTP company create ${createdByHttp.status}: ${await createdByHttp.text()}`);
+        const httpCompany = await createdByHttp.json() as { duplicate: boolean; externalId: string };
+        assert.equal(httpCompany.duplicate, false);
+        const ownerResponse = await fetch(`${base}/api/workspaces/current`, { headers: { cookie: firstCookie } });
+        assert.equal(ownerResponse.status, 200);
+        const ownerWorkspace = await ownerResponse.json() as { companies: Array<{ id: string }> };
+        assert(ownerWorkspace.companies.some(company => company.id === added.externalId));
+        assert(ownerWorkspace.companies.some(company => company.id === httpCompany.externalId));
+        const otherResponse = await fetch(`${base}/api/workspaces/current`, { headers: { cookie: secondCookie } });
+        assert.equal(otherResponse.status, 200);
+        const otherWorkspace = await otherResponse.json() as { companies: Array<{ id: string }> };
+        assert(!otherWorkspace.companies.some(company => company.id === added.externalId));
+        assert(!otherWorkspace.companies.some(company => company.id === httpCompany.externalId));
+        const denied = await fetch(`${base}/api/workspaces/current/companies/${encodeURIComponent(httpCompany.externalId)}`, {
+          method: "PATCH", headers: { cookie: secondCookie, "content-type": "application/json" },
+          body: JSON.stringify({ expectedRevision: 0, priority: "High" }),
+        });
+        assert.equal(denied.status, 404);
+        const afterDenied = await fetch(`${base}/api/workspaces/current`, { headers: { cookie: firstCookie } });
+        assert.equal(afterDenied.status, 200);
+        const afterDeniedWorkspace = await afterDenied.json() as { companies: Array<{ id: string }> };
+        assert(afterDeniedWorkspace.companies.some(company => company.id === httpCompany.externalId));
+        const logout = await fetch(`${base}/api/auth/logout`, { method: "POST", headers: { cookie: firstCookie } });
+        assert.equal(logout.status, 200);
+        const loggedOut = await fetch(`${base}/api/auth/session`, { headers: { cookie: firstCookie } });
+        assert.equal((await loggedOut.json() as { authenticated: boolean }).authenticated, false);
+      } finally {
+        if (web.exitCode === null) {
+          web.kill();
+          await new Promise(resolveWait => web.once("exit", resolveWait));
+        }
+      }
+    }
   } finally { await getPool().end(); }
   console.log(JSON.stringify({ disposableDatabase: true, migrationThrough: 135, seededNonLoginPlaceholder: 1,
     realUsers: 0, documents: 0, applicationLoginChecked: true, stagePresent: true,
     laterStageAbsent: true, repeatRejected: true, syntheticMembers: 2,
     membersProvisionedThroughAppRole: true, passwordsVerified: true,
-    manualCompanyWrittenAndRead: true, otherMemberReadAndWriteDenied: true, copiedProductionData: false }));
+    manualCompanyWrittenAndRead: true, otherMemberReadAndWriteDenied: true,
+    packagedHttpLoginWriteReadIsolationAndLogout: httpCheck, copiedProductionData: false }));
 } finally {
   if (created) await admin.query(`drop database "${name}" with (force)`);
   await admin.end();
