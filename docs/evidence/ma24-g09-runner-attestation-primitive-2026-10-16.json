@@ -1,0 +1,22 @@
+{
+  "schema": "ma24-g09-runner-attestation-primitive-v1",
+  "date": "2026-10-16",
+  "command": "node node_modules/vitest/vitest.mjs run src/lib/assistant/main/skill-runner-attestation.test.ts",
+  "checks": {
+    "testsPassed": 18,
+    "signedCollectorStatement": "passed with ephemeral test keys",
+    "sevenServerBindingMismatchCases": "rejected",
+    "tamperedAndUnenrolledSignatures": "rejected",
+    "disabledRemovedDuplicatedAndMismatchedEnrollment": "rejected",
+    "invalidTimeWindowsAndClock": "rejected",
+    "privateKeyPemInPublicRegistry": "rejected",
+    "missingServerRegistry": "rejected",
+    "registryDisablementReloaded": "passed",
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "productionKeysCreated": false,
+    "modelCalls": 0,
+    "automaticActivation": false
+  },
+  "limits": "Authentication primitive only. Operator production enrollment, actual running binary/provider attestation, collector storage, prospective shadow binding, final activation transaction, and production deployment remain incomplete. A verified signature does not independently prove the collector's claims or grant activation."
+}

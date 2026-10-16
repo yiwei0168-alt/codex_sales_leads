@@ -22,6 +22,8 @@
 
 ## 已核实的实现断点
 
+2026-10-16 G09 已新增[运行声明认证基础](SKILL_RUNNER_ATTESTATION_2026-10-16.md)，测试使用临时密钥；生产签发/登记、运行包/提供方验证、采集存储和启用事务仍待接通。下列断点未因基础组件通过而关闭。
+
 - `src/lib/assistant/main/skills.ts` 的非人工启用路径仍拒绝；不能把 `skill-acceptance-policy.ts` 的 `policyPassed` 直接当成授权。
 - `db/migrations/130_skill_acceptance_evidence.sql` 的来源类别只有 `synthetic-fixture` 与 `production-runner-pending-verification`，没有已经认证的生产来源类别。
 - `skill-acceptance-collector.ts` 的历史收集结果明确为 `runtimeIdentityVerified=false`；`skill-runtime-identity.ts` 计算源码指纹，本身不认证已部署进程。
