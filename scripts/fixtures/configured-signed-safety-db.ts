@@ -14,10 +14,11 @@ import {freezeSkillAcceptancePlan} from '../../src/lib/assistant/main/skill-acce
 import {collectSkillSafetyAcceptance} from '../../src/lib/assistant/main/skill-safety-collector';
 import {readSkillAcceptanceReviewCase} from '../../src/lib/assistant/main/skill-acceptance-review';
 import type {SkillCollectorTransaction} from '../../src/lib/assistant/main/skill-model-journal';
+import type {SkillCandidateCollector} from '../../src/lib/assistant/main/skill-candidate-model';
 
 /** Three synthetic safety categories, both arms, actual configured signing/SQL.
  * Scripted responses cannot prove the behavior of a real model. */
-export async function verifyConfiguredSignedSafetyDatabase(pool:Pool,input:{owner:string;runId:string;skillId:string;directory:string;keyPath:string;keyId:string;collectorId:string;deploymentHash:string}){
+export async function verifyConfiguredSignedSafetyDatabase(pool:Pool,input:{owner:string;runId:string;skillId:string;directory:string;keyPath:string;keyId:string;collectorId:string;deploymentHash:string;frozenOverride?:NonNullable<SkillCandidateCollector['frozen']>}){
  const context={userId:input.owner},identity=await prepareSkillExecutionIdentity(context,{runId:input.runId});
  const baseline=await prepareSkillAcceptanceBaseline(context,{runId:input.runId});
  const snapshot=await prepareRecordedSkillCandidateSnapshot(context,{runId:input.runId,skillId:input.skillId,version:1});
@@ -28,7 +29,7 @@ export async function verifyConfiguredSignedSafetyDatabase(pool:Pool,input:{owne
  };
  const cases=[];
  for(const caseId of ['safety-ambiguous','safety-source-injection','safety-cross-account'])cases.push({caseId,saved:await prepareSkillSafetyCandidate(context,{runId:input.runId,skillId:input.skillId,version:1,caseId})});
- const unused=digest('unexecuted-shadow'),frozen=await freezeSkillAcceptancePlan(context,{protocol:'skill-acceptance-plan-v1',
+ const unused=digest('unexecuted-shadow'),frozen=input.frozenOverride??await freezeSkillAcceptancePlan(context,{protocol:'skill-acceptance-plan-v1',
   pin:{ownerId:input.owner,skillId:input.skillId,version:1,contentHash:snapshot.snapshot.candidate.value.content_hash,sourceHash:snapshot.skillSourceHash},identity,expiresAt:new Date(Date.now()+3600000).toISOString(),
   cases:[{id:'unexecuted-replay',category:'replay',provenance:'historical-task',inputHash:baseline.projection.inputHash,sourceHash:baseline.projectionHash},
    ...cases.map(({caseId,saved})=>({id:caseId,category:saved.category,provenance:'safety-fixture' as const,inputHash:saved.inputHash,sourceHash:saved.sourceHash})),
@@ -63,5 +64,5 @@ export async function verifyConfiguredSignedSafetyDatabase(pool:Pool,input:{owne
  const collected=await collectSkillSafetyAcceptance(context,{freezeId:frozen.freezeId,plan:frozen.plan,cases:references},transaction);
  for(const {caseId} of cases){const material=await readSkillAcceptanceReviewCase(context,{bundleId:collected.bundleId,caseId});assert.equal(material.judgment,null);assert.equal(material.automaticActivation,false);}
  assert.equal((await pool.query('select enabled from agent_skill where id=$1',[input.skillId])).rows[0].enabled,false);
- return {configuredSignedSafetyDatabaseVerified:true,safetyCasesCollected:cases.length,bothArmsSignedAndVerified:true,qualityAccepted:false,automaticActivation:false};
+ return {collectorBundleId:collected.bundleId,configuredSignedSafetyDatabaseVerified:true,safetyCasesCollected:cases.length,bothArmsSignedAndVerified:true,qualityAccepted:false,automaticActivation:false};
 }

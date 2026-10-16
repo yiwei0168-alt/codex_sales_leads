@@ -15,7 +15,7 @@ import type {SkillCandidateCollector} from '../../src/lib/assistant/main/skill-c
 
 /** Actual configured runner; network and paid-fetch adapters are synthetic. */
 export async function verifyConfiguredSignedCandidateDatabase(pool:Pool,input:{owner:string;runId:string;skillId:string;directory:string;keyPath:string;keyId:string;collectorId:string;deploymentHash:string;
- prospective?:{jobId:string;frozen:NonNullable<SkillCandidateCollector['frozen']>}}){
+ prospective?:{jobId:string;frozen:NonNullable<SkillCandidateCollector['frozen']>};frozenOverride?:NonNullable<SkillCandidateCollector['frozen']>}){
  const context={userId:input.owner},identity=await prepareSkillExecutionIdentity(context,{runId:input.runId});
  const baseline=await prepareSkillAcceptanceBaseline(context,{runId:input.runId});
  const snapshot=await prepareRecordedSkillCandidateSnapshot(context,{runId:input.runId,skillId:input.skillId,version:1});
@@ -24,7 +24,7 @@ export async function verifyConfiguredSignedCandidateDatabase(pool:Pool,input:{o
    await client.query("select set_config('app.current_user_id',$1,true)",[userId]);const value=await work(client);await client.query('commit');return value;
   }catch(error){await client.query('rollback');throw error;}finally{client.release();}
  };
- const hash=digest('synthetic-unexecuted-other-cases'),frozen=input.prospective?.frozen??await freezeSkillAcceptancePlan(context,{protocol:'skill-acceptance-plan-v1',
+ const hash=digest('synthetic-unexecuted-other-cases'),frozen=input.prospective?.frozen??input.frozenOverride??await freezeSkillAcceptancePlan(context,{protocol:'skill-acceptance-plan-v1',
   pin:{ownerId:input.owner,skillId:input.skillId,version:1,contentHash:snapshot.snapshot.candidate.value.content_hash,sourceHash:snapshot.skillSourceHash},identity,
   expiresAt:new Date(Date.now()+3600000).toISOString(),cases:[{id:'signed-replay',category:'replay',provenance:'historical-task',inputHash:baseline.projection.inputHash,sourceHash:baseline.projectionHash},
    ...(['negative','injection','permissions','shadow'] as const).map(category=>({id:category,category,provenance:category==='shadow'?'prospective-task' as const:'safety-fixture' as const,inputHash:hash,sourceHash:hash}))]},transaction);
@@ -32,7 +32,7 @@ export async function verifyConfiguredSignedCandidateDatabase(pool:Pool,input:{o
  await writeFile(jobPath,JSON.stringify({ownerId:input.owner,freezeId:frozen.freezeId,evaluationId,maximumModelCalls:8,
   ...(input.prospective?{caseId:'signed-shadow',kind:'prospective',jobId:input.prospective.jobId}:{caseId:'signed-replay',kind:'historical',runId:input.runId})}));
  await build({entryPoints:['scripts/skill-collector-runner.ts'],outfile:compiledPath,bundle:true,platform:'node',target:'node24',format:'cjs',packages:'external',logLevel:'warning',
-  banner:{js:`globalThis.fetch=async(url,init)=>{if(String(url)!=='https://openrouter.ai/api/v1/chat/completions')throw new Error('Synthetic destination rejected');const body=JSON.parse(init.body);const step=body.messages.filter(m=>m.role==='assistant').length;const call=(id,name,args)=>({index:0,id,type:'function',function:{name,arguments:JSON.stringify(args)}});let calls;if(step===0)calls=[call('candidate-describe-skill','describe_tool',{tool:'skill_read'}),{...call('candidate-describe-customers','describe_tool',{tool:'customer_timeline'}),index:1}];else if(step===1)calls=[call('candidate-read-skill','execute_tool',{tool:'skill_read',arguments:{id:process.env.MA24_CANDIDATE_SKILL_ID}})];else if(step===2)calls=[call('candidate-read-customers','execute_tool',{tool:'customer_timeline',arguments:{}})];const chunk={id:'synthetic-candidate-'+step,model:body.model,provider:'synthetic',choices:[{index:0,delta:calls?{tool_calls:calls}:{content:'Synthetic streamed reply'},finish_reason:calls?'tool_calls':'stop'}]};const nl=String.fromCharCode(10);const response=new Response('data: '+JSON.stringify(chunk)+nl+nl+'data: [DONE]'+nl+nl,{status:200,headers:{'Content-Type':'text/event-stream'}});Object.defineProperty(response,'url',{value:String(url)});return response;};`},
+  banner:{js:`globalThis.fetch=async(url,init)=>{if(String(url)!=='https://openrouter.ai/api/v1/chat/completions')throw new Error('Synthetic destination rejected');const body=JSON.parse(init.body);const step=body.messages.filter(m=>m.role==='assistant').length;const call=(id,name,args)=>({index:0,id,type:'function',function:{name,arguments:JSON.stringify(args)}});let calls;if(step===0)calls=[call('candidate-describe-skill','describe_tool',{tool:'skill_read'}),{...call('candidate-describe-customers','describe_tool',{tool:'customer_timeline'}),index:1}];else if(step===1)calls=[call('candidate-read-skill','execute_tool',{tool:'skill_read',arguments:{id:process.env.MA24_CANDIDATE_SKILL_ID}})];else if(step===2)calls=[call('candidate-read-customers','execute_tool',{tool:'customer_timeline',arguments:{}})];const chunk={id:'synthetic-candidate-'+process.env.MA24_CANDIDATE_EVALUATION_ID+'-'+step,model:body.model,provider:'synthetic',choices:[{index:0,delta:calls?{tool_calls:calls}:{content:'Synthetic streamed reply'},finish_reason:calls?'tool_calls':'stop'}]};const nl=String.fromCharCode(10);const response=new Response('data: '+JSON.stringify(chunk)+nl+nl+'data: [DONE]'+nl+nl,{status:200,headers:{'Content-Type':'text/event-stream'}});Object.defineProperty(response,'url',{value:String(url)});return response;};`},
   plugins:[{name:'explicit-synthetic-network-and-billing',setup(builder){
    builder.onLoad({filter:/skill-candidate-runner\.ts$/},async args=>({contents:(await readFile(args.path,'utf8')).replace('}catch{stopReason=stopReason??',` }catch(error){const message=error instanceof Error?error.message:'';console.error('FIXTURE_INNER:'+(/^[A-Za-z -]{1,180}$/.test(message)?message:'Candidate nonstatic validation error'));stopReason=stopReason??`),loader:'ts',resolveDir:dirname(args.path)}));
    builder.onLoad({filter:/skill-configured-recorded-runner\.ts$/},async args=>({contents:(await readFile(args.path,'utf8')).replace("throw new Error('Configured recorded candidate incomplete or changed')","throw new Error('Configured candidate '+output.status+' '+output.stopReason+' skill-used '+String(output.candidateSkillUsed))"),loader:'ts',resolveDir:dirname(args.path)}));
@@ -44,12 +44,14 @@ export async function verifyConfiguredSignedCandidateDatabase(pool:Pool,input:{o
   const child=spawn(process.execPath,[compiledPath,'--execute',jobPath],{windowsHide:true,stdio:['ignore','pipe','pipe'],env:{...process.env,
    NODE_ENV:'production',NODE_OPTIONS:'',NODE_EXTRA_CA_CERTS:'',SSL_CERT_FILE:'',SSL_CERT_DIR:'',NODE_USE_SYSTEM_CA:'0',NODE_TLS_REJECT_UNAUTHORIZED:'1',
    OPENROUTER_API_KEY:'SYNTHETIC_NOT_A_CREDENTIAL',OPENROUTER_BASE_URL:'https://openrouter.ai/api/v1',OPENROUTER_HTTP_REFERER:'',
-   MA24_CANDIDATE_SKILL_ID:input.skillId,TASK_MODEL_TRANSPORT_COLLECTOR_ID:input.collectorId,TASK_MODEL_TRANSPORT_DEPLOYMENT_SHA256:input.deploymentHash,
+   MA24_CANDIDATE_SKILL_ID:input.skillId,MA24_CANDIDATE_EVALUATION_ID:evaluationId,TASK_MODEL_TRANSPORT_COLLECTOR_ID:input.collectorId,TASK_MODEL_TRANSPORT_DEPLOYMENT_SHA256:input.deploymentHash,
    SKILL_RUNNER_COLLECTOR_ID:input.collectorId,SKILL_RUNNER_DEPLOYMENT_SHA256:input.deploymentHash,
    SKILL_MODEL_TRANSPORT_KEY_ID:input.keyId,SKILL_MODEL_TRANSPORT_PRIVATE_KEY_FILE:input.keyPath}});let output='',diagnostic='unclassified';
   child.stdout.on('data',data=>{output+=String(data);});child.stderr.on('data',data=>{for(const match of String(data).matchAll(/FIXTURE_(?:CODE|INNER):([A-Za-z -]{1,180})/g))diagnostic+='; '+match[1];});child.once('error',reject);child.once('exit',code=>resolve({code,output,diagnostic}));
  });
  assert.equal(exit.code,0,`Configured signed candidate fixture failed: ${exit.diagnostic}`);assert(exit.output.includes('"collectorExecution":"completed"'));
+ const bundles=(await pool.query<{id:string}>('select id from agent_skill_acceptance_bundle where owner_id=$1 and raw_receipts::text like $2',[input.owner,`%${evaluationId}%`])).rows;
+ assert.equal(bundles.length,1);
  assert.equal((await pool.query('select enabled from agent_skill where id=$1',[input.skillId])).rows[0].enabled,false);
- return {configuredSignedCandidateDatabaseVerified:true,configuredCandidateKind:input.prospective?'prospective':'historical',candidateSkillRemainsDisabled:true,actualModelCalls:0,automaticActivation:false};
+ return {collectorBundleId:bundles[0].id,configuredSignedCandidateDatabaseVerified:true,configuredCandidateKind:input.prospective?'prospective':'historical',candidateSkillRemainsDisabled:true,actualModelCalls:0,automaticActivation:false};
 }

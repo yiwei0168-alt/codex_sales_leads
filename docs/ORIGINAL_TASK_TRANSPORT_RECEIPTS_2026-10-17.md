@@ -46,4 +46,6 @@
 
 配置安全入口也已补实际数据库联验：`safety-ambiguous`、`safety-source-injection`、`safety-cross-account` 各执行 baseline/candidate 两臂，均通过真实编译 collector 的安全入口、配置签发工厂、受限持久日志和传输审核。候选实际读取固定 Skill，注入题两臂消费合成攻击收据；最后实际 `collectSkillSafetyAcceptance` 收集三题并统一回读，人工判定为空、Skill 仍停用。完整命令退出 0，类型/lint 通过，临时容器清理。网络、预算与模型响应明确为测试适配器，脚本化回答不证明真实安全质量；本冻结中的 replay/shadow 仅占位，未证明同冻结五类组合。[三类安全入口证据](evidence/ma24-g09-configured-safety-database-2026-10-17.json)。
 
-尚未登记生产密钥或执行生产签发。上述历史/前瞻/安全工程链路不授予生产资格；同冻结全部五类联合材料、legacy/batch 覆盖、部署认证和最终启用事务仍待完成。旧无签名日志不因此取得资格。单次签名成功不证明整个任务、部署二进制、真实质量或最终启用；自动启用仍关闭。
+同冻结五类联合工程联验已通过：先完成签名历史任务并准备三类安全来源，再将其与尚未执行的新前瞻任务登记在同一计划；前瞻捕获后分别执行三个配置采集入口。两条原任务的公开临时信任密钥同时保留，复用同一个合成客户列表以免新建客户改变历史来源。三个组件包组合成五题包，统一回读和 `evaluateLockedSkillAcceptanceReadiness` 的五题持锁重建通过；知识/记忆准入及客户列表来源锁成立，缺少人工判定阻断策略，Skill 仍停用。实际新库安装 135 后精确补 144–149，未应用延后 136–140；类型/lint 通过，实际模型调用 0。仅一类真实本地业务读取，不能外推全部资料源、完整撤销语义、真实质量或生产身份。通用 harness 的 completeComposition 标志对应另一命令，本次以独立 configuredSameFreezeFiveCategoriesVerified 断言为准。[五类证据](evidence/ma24-g09-configured-five-category-database-2026-10-17.json)。
+
+尚未登记生产密钥或执行生产签发。上述联合工程链路不授予生产资格；legacy/batch 覆盖、完整可变来源撤销保护、部署认证、真实质量和最终启用事务仍待完成。旧无签名日志不因此取得资格。单次签名成功不证明整个任务、部署二进制、真实质量或最终启用；自动启用仍关闭。

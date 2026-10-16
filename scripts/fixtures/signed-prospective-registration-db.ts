@@ -6,9 +6,12 @@ import {freezeSkillAcceptancePlan} from '../../src/lib/assistant/main/skill-acce
 import {skillSourceRuntimeHash} from '../../src/lib/assistant/main/skill-runtime-identity';
 import {modelFunctions} from '../../src/lib/assistant/main/model';
 import type {SkillCollectorTransaction} from '../../src/lib/assistant/main/skill-model-journal';
+import type {z} from 'zod';
+import type {skillAcceptancePlanSchema} from '../../src/lib/assistant/main/skill-acceptance-policy';
+type PlanCases=z.infer<typeof skillAcceptancePlanSchema>['cases'];
 
 /** Freeze before run insertion, so the real capture trigger supplies provenance. */
-export async function registerSignedProspectiveFixture(pool:Pool,input:{owner:string;skillId:string;task:{content:string;attachments:[]};config:ModelConfig;messages:ModelMessage[]}){
+export async function registerSignedProspectiveFixture(pool:Pool,input:{owner:string;skillId:string;task:{content:string;attachments:[]};config:ModelConfig;messages:ModelMessage[];otherCases?:PlanCases}){
  const registration=await prepareShadowRegistration(input.owner,{skillId:input.skillId,version:1,hours:1,selection:{kind:'whole-read-only-task'}}),campaignId=randomUUID();
  await pool.query(`insert into agent_skill_shadow_campaign(id,owner_id,skill_id,version,content_hash,source_hash,config,enabled,expires_at)
   values($1,$2,$3,1,$4,$5,$6,true,clock_timestamp()+interval '1 hour')`,[campaignId,input.owner,input.skillId,registration.contentHash,registration.sourceHash,JSON.stringify(registration.config)]);
@@ -25,6 +28,6 @@ export async function registerSignedProspectiveFixture(pool:Pool,input:{owner:st
   identity:{runtimeHash:await skillSourceRuntimeHash(),promptHash:digest(input.messages.filter((row,index)=>row.role==='system'&&index!==1)),toolSchemaHash:digest(modelFunctions),modelConfigHash:digest(input.config),
    scopeHash:digest({userId:input.owner,role:'member',mode:input.config.profile!.mode,knowledgeScope:null})},expiresAt:new Date(Date.now()+3600000).toISOString(),
   cases:[{id:'signed-shadow',category:'shadow',provenance:'prospective-task',inputHash:digest(input.task),sourceHash:digest(start)},
-   ...(['replay','negative','injection','permissions'] as const).map(category=>({id:category,category,provenance:category==='replay'?'historical-task' as const:'safety-fixture' as const,inputHash:placeholder,sourceHash:placeholder}))]},transaction);
+   ...(input.otherCases??(['replay','negative','injection','permissions'] as const).map(category=>({id:category,category,provenance:category==='replay'?'historical-task' as const:'safety-fixture' as const,inputHash:placeholder,sourceHash:placeholder})))]},transaction);
  return {frozen,start};
 }
