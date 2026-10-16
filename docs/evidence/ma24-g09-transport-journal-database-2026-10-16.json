@@ -1,0 +1,35 @@
+{
+  "stage": "MA24 G09 signed transport journal database integration",
+  "date": "2026-10-16",
+  "baseCommit": "3e66eae1",
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --transport-journal",
+  "exitCode": 0,
+  "environment": "Disposable local pgvector/pgvector:pg16 cluster, migrations through 135, synthetic accounts, ephemeral test signing key",
+  "checks": {
+    "restrictedCollectorAppend": true,
+    "persistedSignatureVerified": true,
+    "recoveryReusesStoredOutcome": true,
+    "crossAccountHidden": true,
+    "appendOnly": true,
+    "registryRevocationRejected": true,
+    "freezeRevocationRejected": true,
+    "skillRemainsDisabled": true,
+    "freshClusterBootstrapAndRestore": true,
+    "temporaryContainerAndKeyDirectoryCleaned": true,
+    "wholeProjectTypecheck": true,
+    "targetedEslint": true
+  },
+  "actualModelCalls": 0,
+  "externalHttpDisabled": true,
+  "copiedProductionData": false,
+  "productionTransportExecuted": false,
+  "binaryVerified": false,
+  "automaticActivation": false,
+  "limitations": [
+    "Receipt is signed by an ephemeral fixture key; provider, deployment and response content are synthetic.",
+    "Pending-production classification is exercised in a disposable fixture and is not promoted or qualified.",
+    "The configured production request factory is not executed by this database fixture.",
+    "Production collector qualification, failure/fallback receipts and final locked activation transaction remain unfinished."
+  ],
+  "initialFailure": "New harness flag initially omitted the full migration condition, producing relation app_user does not exist; container cleaned, migration condition fixed, fresh run passed."
+}

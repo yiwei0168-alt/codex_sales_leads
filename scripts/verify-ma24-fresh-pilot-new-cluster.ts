@@ -20,6 +20,7 @@ const crossClusterCheck = args.includes("--cross-cluster");
 const modeBusinessCheck = args.includes("--mode-business");
 const runnerAttestationCheck = args.includes("--runner-attestation");
 const safetySkillUsageCheck = args.includes('--safety-skill-usage');
+const transportJournalCheck = args.includes('--transport-journal');
 const poolRecoveryCheck = args.includes('--pool-recovery');
 const webPoolRecoveryCheck = args.includes('--web-pool-recovery');
 const prospectiveHttpArgument = args.find(arg => arg.startsWith('--prospective-http-image='));
@@ -30,7 +31,7 @@ const prospectiveMaterialCheck = args.includes("--prospective-material") || Bool
 const prospectiveSourceCheck = args.includes("--prospective-source") || prospectiveMaterialCheck;
 const rollbackImageArgument = args.find(arg => arg.startsWith("--rollback-image="));
 const rollbackImage = rollbackImageArgument?.slice("--rollback-image=".length);
-assert(args.length <= 16 && args.every(arg => ["--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", '--safety-skill-usage', '--pool-recovery', '--web-pool-recovery', "--prospective-source", "--prospective-material", '--prospective-browser', '--prospective-composition', prospectiveHttpArgument, webImageArgument, rollbackImageArgument].includes(arg))
+assert(args.length <= 17 && args.every(arg => ["--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", '--safety-skill-usage', '--transport-journal', '--pool-recovery', '--web-pool-recovery', "--prospective-source", "--prospective-material", '--prospective-browser', '--prospective-composition', prospectiveHttpArgument, webImageArgument, rollbackImageArgument].includes(arg))
   && (!webPoolRecoveryCheck || webImage)
   && (!prospectiveBrowserCheck || prospectiveHttpImage)
   && (!prospectiveHttpArgument || (prospectiveHttpImage && /^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(prospectiveHttpImage)))
@@ -39,7 +40,7 @@ assert(args.length <= 16 && args.every(arg => ["--browser", "--ten-user", "--bac
   && (!(browserCheck || tenUserCheck || backupCheck || crossClusterCheck || rollbackImage) || webImage)
   && (!crossClusterCheck || backupCheck)
   && (!rollbackImage || rollbackImage !== webImage),
-  "Expected --mode-business, --runner-attestation, --safety-skill-usage, --pool-recovery, --prospective-source, --prospective-material, --prospective-composition, --prospective-http-image=<builder-tag> (with optional --prospective-browser), or --web-image=<tag> with optional --web-pool-recovery, --browser, --ten-user, --backup, --cross-cluster (with --backup), and --rollback-image=<prior-tag>");
+  "Expected --mode-business, --runner-attestation, --safety-skill-usage, --transport-journal, --pool-recovery, --prospective-source, --prospective-material, --prospective-composition, --prospective-http-image=<builder-tag> (with optional --prospective-browser), or --web-image=<tag> with optional --web-pool-recovery, --browser, --ten-user, --backup, --cross-cluster (with --backup), and --rollback-image=<prior-tag>");
 const networkName = `ma24-pilot-net-${id}`;
 const adminPassword = randomBytes(24).toString("hex");
 const appPassword = randomBytes(24).toString("hex");
@@ -124,7 +125,7 @@ try {
   assert.equal(verified.code, 0, verified.output);
   assert(verified.output.includes('"freshPilotRestore":"passed"'), verified.output);
   assert(verified.output.includes('"copiedProductionData":false'), verified.output);
-  if (webImage || modeBusinessCheck || runnerAttestationCheck || prospectiveSourceCheck || safetySkillUsageCheck || poolRecoveryCheck) {
+  if (webImage || modeBusinessCheck || runnerAttestationCheck || prospectiveSourceCheck || safetySkillUsageCheck || transportJournalCheck || poolRecoveryCheck) {
     const migration = await run(process.execPath,
       ["scripts/run-tsx.cjs", "scripts/migrate.ts", "--fresh-pilot-through=135"],
       { ...process.env, DATABASE_URL: appUrl.toString(), DATABASE_MIGRATION_URL: adminUrl.toString() });
@@ -187,6 +188,12 @@ try {
     const checked=await run(process.execPath,['scripts/run-tsx.cjs','scripts/verify-ma24-pool-recovery.ts'],
       {...process.env,DATABASE_URL:appUrl.toString(),DATABASE_MIGRATION_URL:adminUrl.toString(),MA24_DISPOSABLE_POOL_RECOVERY:'1'});
     assert.equal(checked.code,0,checked.output);assert(checked.output.includes('"poolRecoveryDatabase":"passed"'),checked.output);
+  }
+  if(transportJournalCheck){
+    const checked=await run(process.execPath,['scripts/run-tsx.cjs','scripts/verify-skill-transport-journal-db.ts'],
+      {...process.env,DATABASE_URL:appUrl.toString(),DATABASE_MIGRATION_URL:adminUrl.toString(),MA24_DISPOSABLE_TRANSPORT_JOURNAL:'1'});
+    assert.equal(checked.code,0,checked.output);assert(checked.output.includes('"transportJournalDatabase":"passed"'),checked.output);
+    console.log(checked.output.trim());
   }
   if(safetySkillUsageCheck){
     const checked=await run(process.execPath,['scripts/run-tsx.cjs','scripts/verify-skill-safety-usage-db.ts'],
@@ -508,6 +515,7 @@ try {
     scriptedModeBusinessVerified: modeBusinessCheck,
     runnerAttestationStoreVerified: runnerAttestationCheck,
     safetySkillUsageVerified: safetySkillUsageCheck,
+    transportJournalDatabaseVerified: transportJournalCheck,
     poolRecoveryVerified: poolRecoveryCheck,
     standaloneDatabaseRecoveryVerified: webPoolRecoveryCheck,
     extraG09Migration: runnerAttestationCheck ? 141 : null,
