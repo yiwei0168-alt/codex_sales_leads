@@ -149,3 +149,5 @@ G09 standard 模式签名任务已实际通过基线投影和候选快照构建�
 G09 完整候选执行首次联验暴露可选 usage 的 JSON 入库哈希冲突，已在日志边界归一化修复，40 项回归、类型/lint 通过。实际完整入口重跑仍在进行，未记为通过。[证据](evidence/ma24-g09-model-journal-json-normalization-2026-10-17.json)。
 
 G09 完整 historical 配置入口已通过实际数据库签发/候选执行/证据收集联验，Skill 保持停用；修复此前缺失 usage 的结果入库哈希冲突。网络/预算为测试适配器，其余四类冻结题、前瞻入口、真实质量和生产认证仍待验。[收据](evidence/ma24-g09-configured-signed-candidate-database-2026-10-17.json)。
+
+G09 候选签发已补计费操作与 evaluationId 精确绑定，54 项定向回归、类型/lint 通过；完整历史候选数据库回归随后退出 0，链路通过且 Skill 保持停用。[证据](evidence/ma24-g09-evaluation-billing-binding-2026-10-17.json)。

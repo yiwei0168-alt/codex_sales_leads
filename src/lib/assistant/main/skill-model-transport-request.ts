@@ -29,8 +29,8 @@ export async function createConfiguredSkillTransportRequest(context:{userId:stri
  assertControlledProcess();
  const spendBinding=()=>{
   const scope=currentSpendContext();
-  if(!scope||scope.userId!==context.userId||!z.uuid().safeParse(scope.operationId).success||!scope.stage.trim())
-   throw new Error('Transport collector requires an owned paid-call scope');
+  if(!scope||scope.userId!==context.userId||scope.operationId!==input.evaluationId||!z.uuid().safeParse(scope.operationId).success||!scope.stage.trim())
+   throw new Error('Transport collector requires an owned paid-call scope bound to the evaluation');
   return digest(scope);
  };
  const spendHash=spendBinding();

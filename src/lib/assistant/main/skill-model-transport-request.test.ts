@@ -99,10 +99,22 @@ it('rejects invocation outside the original paid scope',async()=>{
  const run=await createConfiguredSkillTransportRequest({userId:ownerId},input);mocks.spend=undefined;
  await expect(run(request)).rejects.toThrow('owned paid-call scope');expect(mocks.rpc).not.toHaveBeenCalled();
 });
+it('rejects another evaluation of the same account before collector admission',async()=>{
+ mocks.spend={userId:ownerId,operationId:frozen.freezeId,stage:'skill-acceptance'};
+ await expect(createConfiguredSkillTransportRequest({userId:ownerId},input)).rejects.toThrow('bound to the evaluation');
+ expect(mocks.freeze).not.toHaveBeenCalled();expect(mocks.rpc).not.toHaveBeenCalled();
+});
+it.each(['network','response'] as const)('rejects another evaluation scope at the %s boundary',async boundary=>{
+ const original=mocks.rpc.getMockImplementation()!,changed={userId:ownerId,operationId:frozen.freezeId,stage:'skill-acceptance'};
+ if(boundary==='network')mocks.rpc.mockImplementation(async(...args)=>{mocks.spend=changed;return original(...args);});
+ else mocks.native.mockImplementation(async()=>{mocks.spend=changed;return response();});
+ const run=await createConfiguredSkillTransportRequest({userId:ownerId},input);
+ await expect(run(request)).rejects.toThrow('bound to the evaluation');expect(mocks.native).toHaveBeenCalledTimes(boundary==='network'?0:1);
+});
 it('rejects operation drift between factory creation and invocation',async()=>{
  const run=await createConfiguredSkillTransportRequest({userId:ownerId},input);
  mocks.spend={userId:ownerId,operationId:frozen.freezeId,stage:'skill-acceptance'};
- await expect(run(request)).rejects.toThrow('scope changed');expect(mocks.native).not.toHaveBeenCalled();
+ await expect(run(request)).rejects.toThrow('paid-call scope');expect(mocks.native).not.toHaveBeenCalled();
 });
 it('rechecks paid scope at the actual network boundary',async()=>{
  const original=mocks.rpc.getMockImplementation()!;

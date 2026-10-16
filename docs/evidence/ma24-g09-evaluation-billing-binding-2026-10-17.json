@@ -1,0 +1,18 @@
+{
+  "stage": "MA24 G09 collector spend operation bound to evaluation",
+  "date": "2026-10-17",
+  "change": "Require currentSpendContext.operationId === input.evaluationId in addition to owner and stable context hash",
+  "callerBinding": "compiled collector runs withProductSpend using job.evaluationId",
+  "targetedTests": 54,
+  "testFiles": ["skill-model-transport-request.test.ts", "skill-configured-recorded-runner.test.ts", "skill-configured-safety-runner.test.ts"],
+  "sameOwnerOtherEvaluationRejectedAt": ["factory admission", "closure invocation", "network boundary", "response boundary"],
+  "typecheck": "passed",
+  "eslint": "passed",
+  "fullConfiguredDatabaseRerun": "passed; node --import tsx scripts/verify-ma24-fresh-pilot-new-cluster.ts --transport-journal exited 0",
+  "configuredSignedCandidateDatabaseVerified": true,
+  "candidateSkillRemainsDisabled": true,
+  "billingAndNetworkAdaptersSynthetic": true,
+  "actualModelCalls": 0,
+  "productionBillingVerified": false,
+  "automaticActivation": false
+}
