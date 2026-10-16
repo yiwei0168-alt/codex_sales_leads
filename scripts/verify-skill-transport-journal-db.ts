@@ -196,7 +196,7 @@ try{
  await dedicated.transaction(owner,async client=>{assert.equal(await inspectLockedSkillAcceptanceFreeze(client,owner,frozen.freezeId,frozen.plan),'revoked');});
  await assert.rejects(verifySkillCandidateJournalTransports({userId:owner},selection,frozen),/revoked/);
  assert.equal((await pool.query('select enabled from agent_skill where id=$1',[skill.id])).rows[0].enabled,false);
- const originalTaskJournal=await verifyTaskTransportJournalDatabase(pool,owner,other,directory);
+ const originalTaskJournal=await verifyTaskTransportJournalDatabase(pool,owner,other,directory,skill.id);
  console.log(JSON.stringify({transportJournalDatabase:'passed',...originalTaskJournal,restrictedCollectorAppend:true,persistedSignatureVerified:true,recoveryReusesStoredOutcome:true,
   crossAccountHidden:true,appendOnly:true,registryRevocationRejected:true,freezeRevocationRejected:true,dedicatedLoginVerified:true,appRoleMembershipRejected:true,
   compiledCollectorDatabasePreflight:true,collectorImageTlsPreflight,signedFallbackJournalVerified:true,freezeRevocationSerialized:true,modelAttemptAndOutcomeAppendSerialized:true,waitingModelWritesRejectCommittedRevocation:true,postRevocationModelWritesRejected:true,

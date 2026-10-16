@@ -15,11 +15,13 @@ import {decisionMemoryMessage} from '../../src/lib/assistant/main/decision-memor
 import {loadRecordedTaskChain} from '../../src/lib/assistant/main/recorded-task-source';
 import {replayRecordedGraphTrace} from '../../src/lib/assistant/main/recorded-graph-audit';
 import {dispatchTool} from '../../src/lib/assistant/main/executor';
+import {prepareRecordedSkillCandidateSnapshot} from '../../src/lib/assistant/main/skill-candidate-source';
+import {prepareSkillAcceptanceBaseline} from '../../src/lib/assistant/main/skill-acceptance-baseline';
 
 /** Real signing closures and app-role persistence with synthetic network/billing.
  * Does not qualify production network, billing or deployment identity. */
-export async function verifyTaskTransportJournalDatabase(pool:Pool,owner:string,other:string,directory:string){
- const runId=randomUUID(),conversationId=randomUUID(),leaseToken=randomUUID(),config=modeModelConfig('quick');
+export async function verifyTaskTransportJournalDatabase(pool:Pool,owner:string,other:string,directory:string,skillId:string){
+ const runId=randomUUID(),conversationId=randomUUID(),leaseToken=randomUUID(),config=modeModelConfig('standard');
  const context={userId:owner,runId,leaseToken,role:'member' as const};
  await pool.query('insert into assistant_conversation(id,user_id,title) values($1,$2,$3)',[conversationId,owner,'Synthetic original transport']);
  await pool.query(`insert into agent_run(id,user_id,conversation_id,request_key,request_hash,input,model_config,status,execution_kind,lease_token,lease_until)
@@ -77,6 +79,11 @@ export async function verifyTaskTransportJournalDatabase(pool:Pool,owner:string,
  const taskChain=await loadRecordedTaskChain({userId:owner},{runId});assert.equal(taskChain.turns.length,3);assert.equal(taskChain.initialConversationProvenanceVerified,true);
  assert.equal(taskChain.journalClosure.consumedReads,1);
  await replayRecordedGraphTrace(taskChain);
+ const baseline=await prepareSkillAcceptanceBaseline({userId:owner},{runId});assert.equal(baseline.baselineJournalVerified,true);
+ assert.equal(baseline.projection.requests.length,3);
+ const candidate=await prepareRecordedSkillCandidateSnapshot({userId:owner},{runId,skillId,version:1});
+ assert.equal(candidate.snapshot.receipts.length,1);assert.equal(candidate.snapshot.candidate.listing.enabled,false);
+ assert.equal(candidate.taskInputHash,baseline.projection.inputHash);assert.equal(candidate.modelConfigHash,baseline.projection.modelConfigHash);
  const readReceipt=(await pool.query("select id,output from agent_tool_call where run_id=$1 and tool_id='customer_timeline'",[runId])).rows[0];assert(readReceipt);
  await pool.query("update agent_tool_call set output=jsonb_set(output,'{data}','null'::jsonb) where id=$1",[readReceipt.id]);
  await assert.rejects(loadRecordedTaskChain({userId:owner},{runId}),/receipt mismatch/);
@@ -105,5 +112,6 @@ export async function verifyTaskTransportJournalDatabase(pool:Pool,owner:string,
   originalTaskOtherBillingTaskRejected:true,originalTaskContextChainVerified:true,originalTaskGraphReplayVerified:true,
   originalTaskChangedUserMessageRejected:true,originalTaskChangedFinalReplyRejected:true,originalTaskDescriptionTransitionVerified:true,
   originalTaskThreeDecisionBusinessReadVerified:true,originalTaskChangedReadReceiptRejected:true,
+  signedTaskBaselineProjectionVerified:true,signedTaskCandidateSnapshotVerified:true,
   billingAndNetworkAdaptersSynthetic:true,actualModelCalls:0};
 }
