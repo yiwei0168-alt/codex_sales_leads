@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {randomUUID} from 'node:crypto';
+import {randomUUID,randomBytes} from 'node:crypto';
 import {readFile} from 'node:fs/promises';
 import nextEnv from '@next/env';
 import {Pool} from 'pg';
@@ -7,9 +7,11 @@ import {getPool,tenantTransaction} from '../src/lib/rag/db';
 import {digest} from '../src/lib/assistant/main/contracts';
 import {lockCurrentSkillExperienceSources,type SourcedSkillVersion} from '../src/lib/assistant/main/skill-source-guard';
 import {lockSkillAcceptanceRunJournals} from '../src/lib/assistant/main/skill-acceptance-run-locks';
+import {encryptMailboxContent} from '../src/lib/mailbox/crypto';
 
 nextEnv.loadEnvConfig(process.cwd());assert.equal(process.env.MA24_DISPOSABLE_MEMORY_SOURCE_LOCKS,'1','Disposable harness required');
 process.env.PGOPTIONS='-c statement_timeout=10000';
+process.env.MAILBOX_CREDENTIAL_KEY=randomBytes(32).toString('base64url');
 const admin=new URL(process.env.DATABASE_MIGRATION_URL!),app=new URL(process.env.DATABASE_URL!);
 assert(['localhost','127.0.0.1'].includes(admin.hostname));assert.equal(admin.host+admin.pathname,app.host+app.pathname);
 const pool=new Pool({connectionString:admin.toString()}),owner=randomUUID(),other=randomUUID(),a=randomUUID(),b=randomUUID(),conflict=randomUUID();
@@ -135,15 +137,22 @@ try{
  }finally{await taskOriginHolder.query('rollback');taskOriginHolder.release();}
  await Promise.all(taskOriginPending);
  const journalId=randomUUID(),runId=refs[0].runId;
+ const connectionId=randomUUID(),mailId=randomUUID();
+ await pool.query("insert into mailbox_connection(id,user_id,provider,email,display_name,credential_ciphertext) values($1,$2,'alimail-imap',$3,'Synthetic lock fixture','unusable-synthetic')",[connectionId,owner,`${connectionId}@example.invalid`]);
+ await pool.query(`insert into mailbox_message(id,user_id,connection_id,folder_path,uid_validity,message_uid,direction,content_sha256,content_ciphertext)
+  values($1,$2,$3,'Synthetic','1',1,'inbound',$4,$5)`,[mailId,owner,connectionId,digest('Synthetic mail'),
+  encryptMailboxContent(owner,{subject:'Synthetic mail',bodyText:'Synthetic body',sender:[],recipients:[]})]);
  await pool.query('update agent_run set input=$1 where id=$2',[JSON.stringify({content:'Synthetic complete task',mode:'standard',requestKey:'synthetic-source-lock',attachments:[{assetId}]}),runId]);
  await pool.query(`insert into agent_tool_call(id,user_id,run_id,call_key,tool_id,tool_version,input_hash,input,effect,status)
   values($1,$2,$3,'existing','synthetic','v1',$4,'{}','read','completed')`,[journalId,owner,runId,digest({})]);
+ await pool.query(`insert into agent_tool_call(user_id,run_id,call_key,tool_id,tool_version,input_hash,input,effect,status)
+  values($1,$2,'mail-source','mail_read','v1',$3,$4,'read','completed')`,[owner,runId,digest({messageId:mailId}),JSON.stringify({messageId:mailId})]);
  const runArtifact={plan:{cases:[{id:'case',provenance:'historical-task'}]},rawReceipts:{baselineSources:{case:{runId}},candidateSources:{case:{runId}}}};
  const journalHolder=await pool.connect();let journalPending:Array<Promise<unknown>>=[];
  try{
   await journalHolder.query('begin');await journalHolder.query('set local role network_copilot_app');
   await journalHolder.query("select set_config('app.current_user_id',$1,true)",[owner]);
-  assert.deepEqual(await lockSkillAcceptanceRunJournals(journalHolder,owner,runArtifact),{attachmentMetadataLocked:true,attachmentCount:1,taskOriginsLocked:true,taskJournalsLocked:true,runCount:1});
+  assert.deepEqual(await lockSkillAcceptanceRunJournals(journalHolder,owner,runArtifact),{mailReadSourcesLocked:true,mailCount:1,attachmentMetadataLocked:true,attachmentCount:1,taskOriginsLocked:true,taskJournalsLocked:true,runCount:1});
   const pid=(await journalHolder.query('select pg_backend_pid() as pid')).rows[0].pid as number;
   journalPending=[
    pool.query('update agent_run set status=status where id=$1',[runId]),
@@ -153,14 +162,15 @@ try{
    pool.query('update knowledge_document set visibility=visibility where id=$1',[documentId]),
    pool.query('update knowledge_asset set registration_status=registration_status where id=$1',[assetId]),
    pool.query('update knowledge_tree_version set status=status where id=$1',[treeId]),
+   pool.query('update mailbox_message set metadata=metadata where id=$1',[mailId]),
   ];
   for(const work of journalPending)void work.catch(()=>undefined);
   let waiting=0;
   for(let i=0;i<100;i++){
    waiting=Number((await pool.query('select count(*) n from pg_stat_activity where $1::int=any(pg_blocking_pids(pid))',[pid])).rows[0].n);
-   if(waiting===6)break;await new Promise(resolve=>setTimeout(resolve,20));
+   if(waiting===7)break;await new Promise(resolve=>setTimeout(resolve,20));
   }
-  assert.equal(waiting,6,'Task/journal and stored attachment updates must all wait');
+  assert.equal(waiting,7,'Task/journal, stored attachment and mail metadata updates must all wait');
  }finally{await journalHolder.query('rollback');journalHolder.release();}
  await Promise.all(journalPending);
  await assert.rejects(tenantTransaction(other,client=>lockSkillAcceptanceRunJournals(client,other,runArtifact)),/origin unavailable/);
@@ -191,6 +201,6 @@ try{
  await assert.rejects(tenantTransaction(owner,client=>lockCurrentSkillExperienceSources(client,owner,version)),/changed after locking/);
  assert.equal((await pool.query("select to_regclass('public.ma24_evaluation_hard_limit') is null absent")).rows[0].absent,true);
  console.log(JSON.stringify({memorySourceLocksDatabase:'passed',correctionInvalidationAndConflictBlocked:true,allWritersResumeAfterRelease:true,
-  foreignOwnerAndInvalidIdsRejected:true,attachmentMetadataUpdatesBlocked:true,privateAttachmentForeignOwnerRejected:true,taskOriginsAndHistoryAppendBlocked:true,taskAndJournalUpdateAndAppendBlocked:true,foreignTaskJournalLockRejected:true,noObservationUpdateGrant:true,originUpdatesBlocked:true,changedOriginalMessageRejected:true,storedProvenanceLockThenRecheck:true,invalidatedProvenanceRejectedAfterLock:true,expiryAfterTransactionStartRejected:true,
+  foreignOwnerAndInvalidIdsRejected:true,mailMetadataUpdatesBlocked:true,attachmentMetadataUpdatesBlocked:true,privateAttachmentForeignOwnerRejected:true,taskOriginsAndHistoryAppendBlocked:true,taskAndJournalUpdateAndAppendBlocked:true,foreignTaskJournalLockRejected:true,noObservationUpdateGrant:true,originUpdatesBlocked:true,changedOriginalMessageRejected:true,storedProvenanceLockThenRecheck:true,invalidatedProvenanceRejectedAfterLock:true,expiryAfterTransactionStartRejected:true,
   deferredEvaluationMigrationsApplied:false,actualModelCalls:0,automaticActivation:false}));
 }finally{await pool.end();await getPool().end();}

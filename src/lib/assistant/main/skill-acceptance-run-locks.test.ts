@@ -1,6 +1,6 @@
 import type {PoolClient} from 'pg';
 import {expect,it,vi} from 'vitest';
-import {skillAcceptanceRunIds,skillAcceptanceAttachmentIds,lockSkillAcceptanceRunJournals} from './skill-acceptance-run-locks';
+import {skillAcceptanceRunIds,skillAcceptanceAttachmentIds,skillAcceptanceMailIds,lockSkillAcceptanceRunJournals} from './skill-acceptance-run-locks';
 const runId='00000000-0000-4000-8000-000000000001';
 const artifact={plan:{cases:[{id:'replay',provenance:'historical-task'},{id:'shadow',provenance:'prospective-task'},{id:'safe',provenance:'safety-fixture'}]},
  rawReceipts:{baselineSources:{replay:{runId}},candidateSources:{replay:{runId}},prospectiveSources:{shadow:{runId}},safetySources:{safe:{runId}}}};
@@ -28,6 +28,16 @@ it('propagates missing origin migration before reading any journal',async()=>{
 it('derives only valid stored attachments, deduplicated and sorted',()=>{
  expect(skillAcceptanceAttachmentIds([{input:{}},{input:{content:'Normal task',mode:'standard',requestKey:'request-key',attachments:[{assetId:runId},{assetId:runId}]}}])).toEqual([runId]);
  expect(()=>skillAcceptanceAttachmentIds([{input:{attachments:[{assetId:'invalid'}]}}])).toThrow();
+});
+it('derives mail IDs only from valid stored mail read inputs',()=>{
+ expect(skillAcceptanceMailIds([{tool_id:'mail_read',input:{messageId:runId}},{tool_id:'mail_read',input:{messageId:runId}},
+  {tool_id:'synthetic',input:{messageId:'ignored'}}])).toEqual([runId]);
+ expect(()=>skillAcceptanceMailIds([{tool_id:'mail_read',input:{messageId:'invalid'}}])).toThrow();
+});
+it('rejects an unavailable or foreign mail row before returning lock success',async()=>{
+ const query=vi.fn().mockResolvedValueOnce({rows:[{n:1}]}).mockResolvedValueOnce({rows:[{id:runId,input:{}}]})
+  .mockResolvedValueOnce({rows:[{tool_id:'mail_read',input:{messageId:runId}}]}).mockResolvedValueOnce({rows:[]});
+ await expect(lockSkillAcceptanceRunJournals({query} as unknown as PoolClient,runId,artifact)).rejects.toThrow('mail source unavailable');
 });
 it('fails closed if an attachment lock count differs',async()=>{
  const query=vi.fn().mockResolvedValueOnce({rows:[{n:1}]}).mockResolvedValueOnce({rows:[{id:runId,input:{attachments:[{assetId:runId}]}}]})

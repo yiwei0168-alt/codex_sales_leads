@@ -24,6 +24,9 @@ export function skillAcceptanceAttachmentIds(runs:ReadonlyArray<{input:unknown}>
  for(const run of runs)for(const attachment of z.object({attachments:messageInputSchema.shape.attachments}).parse(run.input).attachments)ids.add(attachment.assetId);
  return [...ids].sort();
 }
+export function skillAcceptanceMailIds(receipts:ReadonlyArray<{tool_id:string;input:unknown}>){
+ return [...new Set(receipts.filter(row=>row.tool_id==='mail_read').map(row=>z.object({messageId:z.uuid()}).strict().parse(row.input).messageId))].sort();
+}
 /** Caller owns the account-bound transaction. Parent UPDATE locks also block new
  * journal rows via their run FK; existing rows require their own SHARE locks.
  * Attachment metadata is locked separately below. External bytes and other
@@ -41,6 +44,12 @@ export async function lockSkillAcceptanceRunJournals(client:PoolClient,userId:st
   const locked=(await client.query<{n:number}>('select lock_skill_attachment_sources($1::uuid[]) n',[batch])).rows[0]?.n;
   if(locked!==batch.length)throw new Error('Acceptance attachment source lock incomplete');
  }
- await client.query(`select id from agent_tool_call where user_id=$1 and run_id=any($2::uuid[]) order by id for share`,[userId,ids]);
- return {attachmentMetadataLocked:true as const,attachmentCount:attachments.length,taskOriginsLocked:true as const,taskJournalsLocked:true as const,runCount:ids.length};
+ const journal=await client.query<{id:string;tool_id:string;input:unknown}>(`select id,tool_id,input from agent_tool_call where user_id=$1 and run_id=any($2::uuid[]) order by id for share`,[userId,ids]);
+ const mailIds=skillAcceptanceMailIds(journal.rows);
+ for(let offset=0;offset<mailIds.length;offset+=100){
+  const batch=mailIds.slice(offset,offset+100);
+  const mail=await client.query<{id:string}>(`select id from mailbox_message where user_id=$1 and id=any($2::uuid[]) order by id for share`,[userId,batch]);
+  if(mail.rows.length!==batch.length)throw new Error('Acceptance mail source unavailable');
+ }
+ return {mailReadSourcesLocked:true as const,mailCount:mailIds.length,attachmentMetadataLocked:true as const,attachmentCount:attachments.length,taskOriginsLocked:true as const,taskJournalsLocked:true as const,runCount:ids.length};
 }

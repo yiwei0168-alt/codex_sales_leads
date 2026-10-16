@@ -1,0 +1,22 @@
+{
+  "stage": "MA24 G09 mail_read source row locks",
+  "date": "2026-10-16",
+  "status": "wired; targeted tests and actual database concurrency passed; full composition with mail locks pending",
+  "sourceIds": "derived from locked account-owned tool journal mail_read inputs",
+  "checks": {
+    "targetedTests": 23,
+    "typecheck": "passed",
+    "eslint": "passed",
+    "databaseCommand": "node --import tsx scripts/verify-ma24-fresh-pilot-new-cluster.ts --memory-source-locks",
+    "mailMetadataAndSixExistingWritersWait": true,
+    "writersResumeAfterRelease": true,
+    "invalidMailInputsAndMissingOrForeignMailUnitCaseRejected": true
+  },
+  "fixture": "synthetic encrypted mail with ephemeral local key; initial missing-ciphertext fixture corrected before acceptance",
+  "tableWritePrivilegesAdded": false,
+  "actualMailboxAccess": false,
+  "actualModelCalls": 0,
+  "productionDeployment": false,
+  "automaticActivation": false,
+  "limitations": ["Customer timeline and mailbox list sources remain separate", "Other memory and knowledge source revocations incomplete", "Running snapshot 500405a4 predates these mail locks"]
+}
