@@ -1,7 +1,7 @@
 import {expect,it,vi} from 'vitest';
 import type {PoolClient} from 'pg';
 import {digest} from './contracts';
-import {skillSourcesCurrent,type SourcedSkillVersion} from './skill-source-guard';
+import {skillSourcesCurrent,lockCurrentSkillExperienceSources,type SourcedSkillVersion} from './skill-source-guard';
 const id=(n:number)=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
 function fixture(){
   const owner=id(1),quote='I found comparing original tables reduced errors.',memoryKey='tables';
@@ -10,7 +10,7 @@ function fixture(){
   const files={'SKILL.md':'Check originals'};
   const version:SourcedSkillVersion={source:`local-experience:${fingerprint}`,scope:'account',owner_id:owner,files,content_hash:digest(files),
     validation:{sourceQuality:'repeated-user-report-unverified',methodFingerprint:fingerprint,sourceObservations:rows.map(r=>({observationId:r.id,runId:r.run_id,messageId:r.message_id,receiptSha256:digest(r.source_receipt)}))}};
-  const query=vi.fn(async()=>({rows})),client={query} as unknown as PoolClient;
+  const query=vi.fn<(sql?:string,values?:unknown[])=>Promise<{rows:Array<Record<string,unknown>>}>>(async()=>({rows})),client={query} as unknown as PoolClient;
   return {owner,rows,version,client,query};
 }
 it('accepts current exact provenance without changing quality status',async()=>{
@@ -46,4 +46,19 @@ it('preserves ordinary imported package behavior',async()=>{
 it('rejects duplicated report references',async()=>{
   const f=fixture();const v=f.version.validation as {sourceObservations:unknown[]};v.sourceObservations[1]=v.sourceObservations[0];
   expect(await skillSourcesCurrent(f.client,f.owner,f.version)).toBe(false);
+});
+it('locks stored observation IDs before rechecking their current eligibility',async()=>{
+ const f=fixture();f.query.mockImplementation(async(...args:unknown[])=>args[0]&&String(args[0]).startsWith('select lock_skill')?{rows:[{n:2}]}:{rows:f.rows});
+ expect(await lockCurrentSkillExperienceSources(f.client,f.owner,f.version)).toEqual({localExperienceSourceLocksHeld:true,observationCount:2});
+ expect(f.query.mock.calls[0]).toEqual(['select lock_skill_memory_sources($1::uuid[]) as n',[[f.rows[0].id,f.rows[1].id]]]);
+ expect(f.query).toHaveBeenCalledTimes(2);
+});
+it('rejects sources invalidated while waiting for the lock',async()=>{
+ const f=fixture();f.query.mockResolvedValueOnce({rows:[{n:2}]}).mockResolvedValueOnce({rows:[]});
+ await expect(lockCurrentSkillExperienceSources(f.client,f.owner,f.version)).rejects.toThrow('after locking');
+});
+it('does not require the memory lock function for ordinary imported packages',async()=>{
+ const f=fixture();f.version.source='user';f.version.validation={};
+ expect(await lockCurrentSkillExperienceSources(f.client,f.owner,f.version)).toEqual({localExperienceSourceLocksHeld:false,observationCount:0});
+ expect(f.query).not.toHaveBeenCalled();
 });

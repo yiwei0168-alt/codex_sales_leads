@@ -4,6 +4,8 @@ import {readFile} from 'node:fs/promises';
 import nextEnv from '@next/env';
 import {Pool} from 'pg';
 import {getPool,tenantTransaction} from '../src/lib/rag/db';
+import {digest} from '../src/lib/assistant/main/contracts';
+import {lockCurrentSkillExperienceSources,type SourcedSkillVersion} from '../src/lib/assistant/main/skill-source-guard';
 
 nextEnv.loadEnvConfig(process.cwd());assert.equal(process.env.MA24_DISPOSABLE_MEMORY_SOURCE_LOCKS,'1','Disposable harness required');
 process.env.PGOPTIONS='-c statement_timeout=10000';
@@ -14,10 +16,36 @@ try{
  assert.equal((await pool.query('select count(*)::int n from app_user')).rows[0].n,1);
  const migration=await readFile('db/migrations/142_skill_memory_source_locks.sql','utf8');await pool.query(migration);await pool.query(migration);
  for(const id of [owner,other])await pool.query("insert into app_user(id,email,display_name,role,status) values($1,$2,'Synthetic source locks','member','active')",[id,`${id}@example.invalid`]);
- for(const id of [a,b])await pool.query("insert into agent_memory_observation(id,owner_id,kind,content,source_receipt) values($1,$2,'experience','Synthetic source','{}')",[id,owner]);
+ const conversation=randomUUID(),quote='I found comparing original tables reduced errors.',memoryKey='source-lock-fixture';
+ await pool.query("insert into assistant_conversation(id,user_id,title) values($1,$2,'Synthetic source provenance')",[conversation,owner]);
+ const refs=[];
+ for(const id of [a,b]){
+  const runId=randomUUID(),messageId=randomUUID();
+  await pool.query(`insert into agent_run(id,user_id,conversation_id,request_key,request_hash,input,model_config,status,execution_kind)
+   values($1,$2,$3,$1::uuid::text,$4,'{}','{}','completed','main-agent')`,[runId,owner,conversation,digest(quote)]);
+  await pool.query("insert into assistant_message(id,user_id,conversation_id,role,intent,content,metadata) values($1,$2,$3,'user','general',$4,$5)",
+   [messageId,owner,conversation,quote,JSON.stringify({runId})]);
+  const receipt={type:'local-qwen3-extraction',usage:'unverified-user-experience',sourceQuote:quote,runId,messageId};
+  await pool.query("insert into agent_memory_observation(id,owner_id,kind,content,source_receipt,memory_key) values($1,$2,'experience',$3,$4,$5)",[id,owner,quote,JSON.stringify(receipt),memoryKey]);
+  refs.push({observationId:id,runId,messageId,receiptSha256:digest(receipt)});
+ }
+ const fingerprint=digest({version:'experience-draft-v1',memoryKey,quote}),files={'SKILL.md':'Synthetic source-lock method'};
+ const version:SourcedSkillVersion={owner_id:owner,scope:'account',files,content_hash:digest(files),source:`local-experience:${fingerprint}`,
+  validation:{sourceQuality:'repeated-user-report-unverified',methodFingerprint:fingerprint,sourceObservations:refs}};
  await pool.query("insert into agent_memory_conflict(id,owner_id,earlier_id,later_id,status) values($1,$2,$3,$4,'resolved')",[conflict,owner,a,b]);
  const lock=(ids:unknown,user=owner)=>tenantTransaction(user,async client=>(await client.query('select lock_skill_memory_sources($1::uuid[]) as n',[ids])).rows[0].n);
  assert.equal(await lock([]),0);assert.equal(await lock([a,b]),2);
+ const guarded=await tenantTransaction(owner,client=>lockCurrentSkillExperienceSources(client,owner,version));
+ assert.deepEqual(guarded,{localExperienceSourceLocksHeld:true,observationCount:2});
+ const expiring=[randomUUID(),randomUUID()];
+ for(let i=0;i<2;i++)await pool.query(`insert into agent_memory_observation(id,owner_id,kind,content,source_receipt,memory_key,valid_until)
+  select $1,owner_id,kind,content,source_receipt,memory_key,clock_timestamp()+interval '1 second' from agent_memory_observation where id=$2`,[expiring[i],[a,b][i]]);
+ const expiringVersion={...version,validation:{...(version.validation as Record<string,unknown>),sourceObservations:refs.map((ref,i)=>({...ref,observationId:expiring[i]}))}};
+ await tenantTransaction(owner,async client=>{
+  assert.equal((await client.query('select transaction_timestamp()<min(valid_until) as before_expiry from agent_memory_observation where id=any($1::uuid[])',[expiring])).rows[0].before_expiry,true);
+  await client.query('select pg_sleep(1.1)');
+  await assert.rejects(lockCurrentSkillExperienceSources(client,owner,expiringVersion),/changed after locking/);
+ });
  await assert.rejects(lock([a],other),/unavailable/);await assert.rejects(lock([a,a]),/Invalid/);await assert.rejects(lock(null),/Invalid/);
  const grants=(await pool.query(`select has_table_privilege('network_copilot_app','agent_memory_observation','UPDATE') as observation_update,
   has_function_privilege('network_copilot_skill_collector','lock_skill_memory_sources(uuid[])','EXECUTE') as collector_execute`)).rows[0];
@@ -46,7 +74,9 @@ try{
   exists(select 1 from agent_memory_observation where invalidates_id=$2) as invalidated,
   (select status from agent_memory_conflict where id=$3) as conflict`,[a,b,conflict])).rows[0];
  assert.deepEqual(state,{corrected:true,invalidated:true,conflict:'open'});
+ await assert.rejects(tenantTransaction(owner,client=>lockCurrentSkillExperienceSources(client,owner,version)),/changed after locking/);
  assert.equal((await pool.query("select to_regclass('public.ma24_evaluation_hard_limit') is null absent")).rows[0].absent,true);
  console.log(JSON.stringify({memorySourceLocksDatabase:'passed',correctionInvalidationAndConflictBlocked:true,allWritersResumeAfterRelease:true,
-  foreignOwnerAndInvalidIdsRejected:true,noObservationUpdateGrant:true,deferredEvaluationMigrationsApplied:false,actualModelCalls:0,automaticActivation:false}));
+  foreignOwnerAndInvalidIdsRejected:true,noObservationUpdateGrant:true,storedProvenanceLockThenRecheck:true,invalidatedProvenanceRejectedAfterLock:true,expiryAfterTransactionStartRejected:true,
+  deferredEvaluationMigrationsApplied:false,actualModelCalls:0,automaticActivation:false}));
 }finally{await pool.end();await getPool().end();}

@@ -11,6 +11,22 @@ const provenance=z.object({
 });
 export type SourcedSkillVersion={source:string;validation:unknown;content_hash:string;files:unknown;scope:string;owner_id:string};
 
+/** Called after locking the Skill/version, inside the final tenant transaction.
+ * IDs come from stored provenance; acquiring locks never substitutes eligibility. */
+export async function lockCurrentSkillExperienceSources(client:PoolClient,userId:string,version:SourcedSkillVersion){
+ const tagged=version.source.startsWith('local-experience:')
+  ||(version.validation as {sourceQuality?:unknown}|null)?.sourceQuality==='repeated-user-report-unverified';
+ if(!tagged)return {localExperienceSourceLocksHeld:false,observationCount:0};
+ const parsed=provenance.safeParse(version.validation);
+ if(!parsed.success||version.scope!=='account'||version.owner_id!==userId||digest(version.files)!==version.content_hash
+  ||version.source!==`local-experience:${parsed.data.methodFingerprint}`)throw new Error('Skill experience provenance changed before locking');
+ const ids=parsed.data.sourceObservations.map(row=>row.observationId);
+ if(new Set(ids).size!==ids.length)throw new Error('Skill experience provenance duplicated');
+ const count=(await client.query<{n:number}>('select lock_skill_memory_sources($1::uuid[]) as n',[[...ids].sort()])).rows[0]?.n;
+ if(count!==ids.length||!await skillSourcesCurrent(client,userId,version))throw new Error('Skill experience sources changed after locking');
+ return {localExperienceSourceLocksHeld:true,observationCount:count};
+}
+
 /** Current source eligibility only; this is never evidence of method quality or permission to enable. */
 export async function skillSourcesCurrent(client:PoolClient,userId:string,version:SourcedSkillVersion):Promise<boolean>{
   const tagged=version.source.startsWith('local-experience:')
@@ -37,7 +53,7 @@ export async function skillSourcesCurrent(client:PoolClient,userId:string,versio
       and m.source_receipt->>'usage'='unverified-user-experience'
       and m.source_receipt->>'sourceQuote'=m.content and position(m.content in msg.content)>0
       and m.corrects_id is null and m.invalidates_id is null
-      and (m.valid_from is null or m.valid_from<=now()) and (m.valid_until is null or m.valid_until>now())
+      and (m.valid_from is null or m.valid_from<=clock_timestamp()) and (m.valid_until is null or m.valid_until>clock_timestamp())
       and not exists(select 1 from agent_memory_observation x where x.owner_id=$1 and (x.corrects_id=m.id or x.invalidates_id=m.id))
       and not exists(select 1 from agent_memory_conflict c where c.owner_id=$1 and c.status='open' and (c.earlier_id=m.id or c.later_id=m.id)
         and not exists(select 1 from agent_memory_observation x where x.owner_id=$1

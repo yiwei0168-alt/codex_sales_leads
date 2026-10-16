@@ -3,7 +3,7 @@ import {z} from 'zod';
 import {tenantTransaction} from '@/lib/rag/db';
 import {inspectSkillAcceptanceFreeze,inspectLockedSkillAcceptanceFreeze} from './skill-acceptance-freeze';
 import {digest} from './contracts';
-import {skillSourcesCurrent,type SourcedSkillVersion} from './skill-source-guard';
+import {skillSourcesCurrent,lockCurrentSkillExperienceSources,type SourcedSkillVersion} from './skill-source-guard';
 import {skillAcceptancePlanSchema,skillAcceptanceObservationSchema,skillAcceptanceJudgmentSchema} from './skill-acceptance-policy';
 
 const sha=z.string().regex(/^[a-f0-9]{64}$/);
@@ -54,6 +54,7 @@ export async function readLockedSkillAcceptanceEvidence(client:PoolClient,contex
  const freezeStatus=await bundleFreezeStatus(client,context.userId,bundle,true);
  if(freezeStatus.state!=='active')throw new Error('Locked acceptance requires an active recorded freeze');
  const skill=await assertCurrentSkill(client,context.userId,bundle.artifact.plan,true);
+ const experienceLocks=await lockCurrentSkillExperienceSources(client,context.userId,skill);
  const judgments=await latestJudgments(client,context.userId,id);
  for(const judgment of judgments){
   const observation=bundle.artifact.observations.find(row=>row.caseId===judgment.caseId);
@@ -62,7 +63,7 @@ export async function readLockedSkillAcceptanceEvidence(client:PoolClient,contex
  return {...bundle,judgments,freezeStatus,latestReviewHash:digest(judgments),currentPin:{ownerId:context.userId,
   skillId:bundle.artifact.plan.pin.skillId,version:skill.current_version,contentHash:skill.content_hash,
   sourceHash:digest({source:skill.source,validation:skill.validation,dependencies:skill.dependencies})},
-  lockedEvidenceRead:true as const,sourcePayloadsRevalidated:false as const,collectorProvenanceVerified:false as const,automaticActivation:false as const};
+  ...experienceLocks,lockedEvidenceRead:true as const,sourcePayloadsRevalidated:false as const,collectorProvenanceVerified:false as const,automaticActivation:false as const};
 }
 async function latestJudgments(client:PoolClient,userId:string,id:string){
  const rows=await client.query<{judgment:unknown}>(`select distinct on(case_id) judgment from agent_skill_acceptance_judgment

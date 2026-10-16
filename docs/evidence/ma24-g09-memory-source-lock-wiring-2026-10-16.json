@@ -1,0 +1,31 @@
+{
+  "stage": "G09 lock stored local-experience references and recheck eligibility",
+  "date": "2026-10-16",
+  "baseCommit": "d3e827d4",
+  "testsPassed": 32,
+  "unitCommand": "node node_modules/vitest/vitest.mjs run src/lib/assistant/main/skill-source-guard.test.ts src/lib/assistant/main/skill-activation.test.ts",
+  "databaseCommand": "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --memory-source-locks",
+  "exitCodes": [0, 0],
+  "checks": {
+    "observationIdsDerivedFromStoredProvenance": true,
+    "provenanceCheckedBeforeLocks": true,
+    "sourceEligibilityRecheckedAfterLocks": true,
+    "actualStoredReferenceChainAccepted": true,
+    "actualCorrectionInvalidationAndConflictAfterLockRejected": true,
+    "expiryAfterTransactionStartRejected": true,
+    "ordinaryImportsDoNotCallMemoryLockFunction": true,
+    "existingAgentActivationStillRejected": true,
+    "wholeProjectTypecheck": true,
+    "targetedEslint": true,
+    "deferredEvaluationMigrationsAbsent": true,
+    "temporaryClusterCleaned": true
+  },
+  "actualModelCalls": 0,
+  "automaticActivation": false,
+  "limitations": [
+    "Reference chains are synthetic stored user-report fixtures; source quality remains repeated-user-report-unverified.",
+    "Database integration directly exercises the local-experience lock/eligibility adapter. The readLockedSkillAcceptanceEvidence call site is wired in code, but no full local-experience Skill activation cohort was executed.",
+    "Held locks cover local observations and conflicts. Original report message/task/account state is checked but not separately locked by this helper; those and other material source families remain unfinished.",
+    "Final activation remains closed."
+  ]
+}
