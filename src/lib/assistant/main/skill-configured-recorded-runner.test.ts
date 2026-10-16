@@ -3,7 +3,7 @@ import {digest} from './contracts';
 import {runConfiguredSkillRecordedCandidate} from './skill-configured-recorded-runner';
 import type {SkillCandidateCollector} from './skill-candidate-model';
 const m=vi.hoisted(()=>({freeze:vi.fn(),baseline:vi.fn(),identity:vi.fn(),prospective:vi.fn(),snapshot:vi.fn(),run:vi.fn(),
- factory:vi.fn(),verify:vi.fn(),historicalCollect:vi.fn(),prospectiveCollect:vi.fn(),request:vi.fn()}));
+ factory:vi.fn(),verify:vi.fn(),original:vi.fn(),historicalCollect:vi.fn(),prospectiveCollect:vi.fn(),request:vi.fn()}));
 vi.mock('./local-analysis-boundary',()=>({assertLocalAnalysisBoundary:()=>{}}));
 vi.mock('./skill-acceptance-freeze',()=>({requireSkillAcceptanceFreeze:m.freeze}));
 vi.mock('./skill-acceptance-baseline',()=>({prepareSkillAcceptanceBaseline:m.baseline}));
@@ -12,6 +12,7 @@ vi.mock('./skill-prospective-source',()=>({prepareSkillProspectiveSource:m.prosp
 vi.mock('./skill-candidate-source',()=>({prepareRecordedSkillCandidateSnapshot:m.snapshot,runDurableRecordedSkillCandidateArm:m.run}));
 vi.mock('./skill-model-transport-request',()=>({createConfiguredSkillTransportRequest:m.factory}));
 vi.mock('./skill-model-transport-journal',()=>({verifySkillCandidateJournalTransports:m.verify}));
+vi.mock('./task-model-transport-journal',()=>({verifyOwnedTaskModelTransports:m.original}));
 vi.mock('./skill-acceptance-collector',()=>({collectHistoricalSkillAcceptance:m.historicalCollect}));
 vi.mock('./skill-prospective-collector',()=>({collectSkillProspectiveAcceptance:m.prospectiveCollect}));
 const owner='11111111-1111-4111-8111-111111111111',runId='22222222-2222-4222-8222-222222222222',
@@ -31,6 +32,7 @@ beforeEach(()=>{
  m.prospective.mockResolvedValue({projection:{runId},projectionHash:'prospective'});m.snapshot.mockImplementation(async()=>snapshot());
  m.factory.mockResolvedValue(m.request);m.run.mockResolvedValue({status:'completed',stopReason:null,candidateSkillUsed:true,serverSnapshotHash:'snapshot'});
  m.verify.mockResolvedValue({signedSuccessfulTransportsVerified:true,binaryVerified:false,automaticActivation:false});
+ m.original.mockResolvedValue({journalHash:digest('original'),storedModeChainsVerified:true,completeTaskProvenanceVerified:false,automaticActivation:false});
  m.historicalCollect.mockResolvedValue({bundleId:'historical-bundle'});m.prospectiveCollect.mockResolvedValue({bundleId:'prospective-bundle'});
 });
 it.each([historical,prospective])('connects $kind candidate to configured transport, persisted verification and the correct collector',async input=>{
@@ -38,6 +40,8 @@ it.each([historical,prospective])('connects $kind candidate to configured transp
  expect(m.factory).toHaveBeenCalledWith(context,{evaluationId,arm:'candidate',snapshotHash:'snapshot',frozen});
  expect(m.run.mock.calls[0][3]).toEqual({evaluationId,sourceKind:'production-runner-pending-verification',transaction,request:m.request,frozen});
  expect(m.verify).toHaveBeenCalledWith(context,{evaluationId,arm:'candidate'},frozen);
+ expect(m.original).toHaveBeenCalledTimes(3);expect(m.original).toHaveBeenCalledWith(context,{runId});
+ expect(m.original.mock.invocationCallOrder[0]).toBeLessThan(m.factory.mock.invocationCallOrder[0]);
  expect(m.freeze).toHaveBeenCalledTimes(3);
  expect(out).toMatchObject({productionAgentEquivalent:false,collectorProvenanceVerified:false,automaticActivation:false});
  if(input.kind==='historical'){
@@ -81,4 +85,18 @@ it('rejects caller model callbacks and unbounded requests',async()=>{
  for(const input of [{...historical,request:()=>{}},{...historical,maximumModelCalls:65}])
   await expect(runConfiguredSkillRecordedCandidate(context,input,frozen,transaction)).rejects.toThrow();
  expect(m.factory).not.toHaveBeenCalled();
+});
+it.each([historical,prospective])('rejects unsigned original $kind tasks before candidate transport admission',async input=>{
+ m.original.mockRejectedValue(new Error('Original signature missing'));
+ await expect(runConfiguredSkillRecordedCandidate(context,input,frozen,transaction)).rejects.toThrow('Original signature missing');
+ expect(m.factory).not.toHaveBeenCalled();expect(m.run).not.toHaveBeenCalled();expect(m.historicalCollect).not.toHaveBeenCalled();expect(m.prospectiveCollect).not.toHaveBeenCalled();
+});
+it('rejects original transport changes after execution without collecting',async()=>{
+ m.original.mockResolvedValueOnce({journalHash:'before'}).mockResolvedValue({journalHash:'after'});
+ await expect(runConfiguredSkillRecordedCandidate(context,historical,frozen,transaction)).rejects.toThrow('source changed during execution');
+ expect(m.verify).not.toHaveBeenCalled();expect(m.historicalCollect).not.toHaveBeenCalled();
+});
+it('rejects original key revocation during candidate verification',async()=>{
+ m.original.mockResolvedValueOnce({journalHash:'same'}).mockResolvedValueOnce({journalHash:'same'}).mockRejectedValueOnce(new Error('Original trust revoked'));
+ await expect(runConfiguredSkillRecordedCandidate(context,historical,frozen,transaction)).rejects.toThrow('Original trust revoked');expect(m.historicalCollect).not.toHaveBeenCalled();
 });
