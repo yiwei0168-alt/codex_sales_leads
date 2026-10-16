@@ -11,7 +11,7 @@ const inputSchema=z.object({messages:z.array(modelReplySchema.extend({role:z.enu
 const bindingSchema=z.object({ownerId:z.uuid(),evaluationId:z.uuid(),arm:z.enum(['baseline','candidate']),step:z.number().int().min(0),freezeId:z.uuid().optional(),snapshotHash:sha,sourceKind:z.enum(['synthetic-fixture','production-runner-pending-verification'])}).strict();
 const outputSchema=z.discriminatedUnion('status',[
  z.object({status:z.literal('success'),data:z.object({value:z.record(z.string(),z.unknown())}).strict()}).strict(),
- z.object({status:z.literal('unavailable'),data:z.object({retryable:z.boolean(),reason:z.string().min(1).max(100)}).strict()}).strict(),
+ z.object({status:z.literal('unavailable'),data:z.object({retryable:z.boolean(),reason:z.string().min(1).max(100),transportFailureReceipt:z.unknown().optional()}).strict()}).strict(),
 ]);
 type Row={freeze_id?:string|null;id:string;owner_id:string;evaluation_id:string;arm:string;step:number;route_index:number;source_kind:string;snapshot_hash:string;input:unknown;input_hash:string};
 /** Must commit before returning. Supplied by a dedicated collector connection, never HTTP input. */
@@ -48,13 +48,14 @@ export function createSkillModelJournal(transaction:SkillCollectorTransaction,bi
     return {id:row.id,fresh:inserted.rows.length===1,output:saved?checkOutput(row.input,saved.output):null};
    });
   },
-  async save(id:string,index:number,outcome:{status:'success';value:unknown}|{status:'unavailable';retryable:boolean;reason:string}){
+  async save(id:string,index:number,outcome:{status:'success';value:unknown}|{status:'unavailable';retryable:boolean;reason:string;transportFailureReceipt?:unknown}){
    assertLocalAnalysisBoundary();z.uuid().parse(id);z.number().int().min(0).max(2).parse(index);
    return transaction(pin.ownerId,async client=>{
     await assertSkillCollector(client);
     const row=(await client.query<Row>(`select * from agent_skill_model_attempt where id=$1 and owner_id=$2 and evaluation_id=$3 and arm=$4 and step=$5 and route_index=$6`,[id,pin.ownerId,pin.evaluationId,pin.arm,pin.step,index])).rows[0];
     if(!row||(row.freeze_id??null)!==(pin.freezeId??null)||row.snapshot_hash!==pin.snapshotHash||row.source_kind!==pin.sourceKind||digest(row.input)!==row.input_hash)throw new Error('Skill model attempt unavailable');
-    const output=checkOutput(row.input,outcome.status==='success'?{status:'success',data:{value:outcome.value}}:{status:'unavailable',data:{retryable:outcome.retryable,reason:outcome.reason}});
+    const output=checkOutput(row.input,outcome.status==='success'?{status:'success',data:{value:outcome.value}}:{status:'unavailable',data:{retryable:outcome.retryable,reason:outcome.reason,
+     ...(outcome.transportFailureReceipt!==undefined?{transportFailureReceipt:outcome.transportFailureReceipt}:{})}});
     await client.query('insert into agent_skill_model_outcome(attempt_id,owner_id,output,output_hash) values($1,$2,$3,$4) on conflict(attempt_id) do nothing',[id,pin.ownerId,JSON.stringify(output),digest(output)]);
     const saved=(await client.query<{output:unknown;output_hash:string}>('select output,output_hash from agent_skill_model_outcome where owner_id=$1 and attempt_id=$2',[pin.ownerId,id])).rows[0];
     if(!saved||saved.output_hash!==digest(output)||digest(saved.output)!==digest(output))throw new Error('Skill model outcome conflict');

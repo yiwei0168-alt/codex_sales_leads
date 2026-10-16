@@ -26,6 +26,8 @@ node tmp/skill-collector/runner.cjs --execute <private-job.json>
 
 ## 已验与未验
 
+本轮源代码已新增[失败与回退签名](evidence/ma24-g09-signed-fallback-journal-2026-10-16.json)，93 项回归和一次性库完整链通过。下述 `492e5647` 镜像属于此前发布点，不含本次修改，部署前必须从新固定提交重建并核对。此前“失败/回退收据未实现”的记录保留为历史；真实提供方、终止/未知失败处理验收和最终启用仍未完成。
+
 后续[镜像到数据库的 TLS 预检](evidence/ma24-g09-collector-image-tls-preflight-2026-10-16.json)已通过：固定采集器镜像以非 root、只读、无 capabilities 方式运行 `--check`，使用挂载的公开 CA、`sslmode=verify-full`、独立应用与采集登录连接临时数据库并读取冻结记录。镜像共享数据库容器网络命名空间，经 localhost 连接；未覆盖真实云网络，也未执行 `--execute`。持久签名的合成夹具仍由宿主脚本写入，不能将其归为镜像中的提供方执行。
 
 实际镜像 `ma24-skill-collector:492e5647` 已从固定提交构建并验收，镜像 ID 为 `sha256:f19775de2884e75f868e2b73a1a705a81a37bdf1bd7009102d682212212b663c`。907 个源码输入与提交一致；运行清单含 34,422 个文件/链接并绑定 Node 可执行文件。非 root、只读、无网络条件下清单校验与帮助入口通过，挂载篡改的 runner 后在执行前拒绝。临时容器和篡改夹具已清理，[证据](evidence/ma24-g09-collector-image-2026-10-16.json)。这取代下一段“待实际镜像构建”的阶段状态，但不改变生产认证仍未通过的结论。

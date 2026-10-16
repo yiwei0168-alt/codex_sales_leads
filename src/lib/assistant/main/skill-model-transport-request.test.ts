@@ -7,6 +7,10 @@ import {digest} from './contracts';
 import {modeModelConfig} from './mode-config';
 import {modelFunctions} from './model';
 import {modelRequestManifest} from './model-request-manifest';
+import {ModelWaitError} from './model-stream';
+import {modeTransportFailure} from './mode-transport-failure';
+import {orderedModeDecision} from './mode-fallback';
+import {OpenRouterRequestError} from '@/providers/openrouter-batch';
 import {createConfiguredSkillTransportRequest} from './skill-model-transport-request';
 import type {SkillCandidateCollector,SkillCandidateRequest} from './skill-candidate-model';
 
@@ -110,4 +114,38 @@ it('does not sign a result after its paid scope changes during transport',async(
  mocks.native.mockImplementation(async()=>{mocks.spend=undefined;return response();});
  const run=await createConfiguredSkillTransportRequest({userId:ownerId},input);
  await expect(run(request)).rejects.toThrow('owned paid-call scope');expect(mocks.native).toHaveBeenCalledTimes(1);
+});
+it('signs a retryable transport failure and preserves its original error identity',async()=>{
+ const original=mocks.rpc.getMockImplementation()!,error=new ModelWaitError('first-output');
+ mocks.rpc.mockImplementation(async(...args)=>{await original(...args);throw error;});
+ const run=await createConfiguredSkillTransportRequest({userId:ownerId},input);
+ await expect(run(request)).rejects.toBe(error);
+ expect(modeTransportFailure(error)).toMatchObject({statement:{protocol:'skill-model-transport-failure-v1',reason:'timeout-first-output',httpStatus:200}});
+});
+it('persists signed failure metadata before falling back without repeating the first route',async()=>{
+ const original=mocks.rpc.getMockImplementation()!,error=new ModelWaitError('total');let calls=0;
+ mocks.rpc.mockImplementation(async(...args)=>{const out=await original(...args);if(calls++===0)throw error;return out;});
+ const run=await createConfiguredSkillTransportRequest({userId:ownerId},input),save=vi.fn().mockResolvedValue(undefined);
+ await orderedModeDecision({begin:async index=>({id:String(index),fresh:true}),request:index=>run({...request,index}),save});
+ expect(save.mock.calls[0][2]).toMatchObject({status:'unavailable',retryable:true,reason:'timeout-total',transportFailureReceipt:{statement:{routeIndex:0}}});
+ expect(save.mock.calls[1][2]).toMatchObject({status:'success',value:{transportReceipt:{statement:{routeIndex:1}}}});
+ expect(mocks.native).toHaveBeenCalledTimes(2);
+});
+it('binds retryable HTTP failures to the status actually observed',async()=>{
+ mocks.native.mockResolvedValue(response(503));const original=mocks.rpc.getMockImplementation()!,error=new OpenRouterRequestError(503,'provider-unavailable');
+ mocks.rpc.mockImplementation(async(...args)=>{await original(...args);throw error;});
+ const run=await createConfiguredSkillTransportRequest({userId:ownerId},input);await expect(run(request)).rejects.toBe(error);
+ expect(modeTransportFailure(error)).toMatchObject({statement:{reason:'http-503',httpStatus:503},requestManifest:{response:{model:null,provider:null,generationId:null,modelMatchesRequested:false}}});
+});
+it('does not certify a status fabricated by the model adapter',async()=>{
+ const original=mocks.rpc.getMockImplementation()!,error=new OpenRouterRequestError(503,'provider-unavailable');
+ mocks.rpc.mockImplementation(async(...args)=>{await original(...args);throw error;});
+ const run=await createConfiguredSkillTransportRequest({userId:ownerId},input);await expect(run(request)).rejects.toBe(error);
+ expect(modeTransportFailure(error)).toBeUndefined();
+});
+it('does not certify a failure after trust is revoked',async()=>{
+ const original=mocks.rpc.getMockImplementation()!,error=new ModelWaitError('total');
+ mocks.rpc.mockImplementation(async(...args)=>{await original(...args);(mocks.registry as {keys:Array<{enabled:boolean}>}).keys[0].enabled=false;throw error;});
+ const run=await createConfiguredSkillTransportRequest({userId:ownerId},input);await expect(run(request)).rejects.toBe(error);
+ expect(modeTransportFailure(error)).toBeUndefined();
 });

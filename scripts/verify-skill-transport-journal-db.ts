@@ -104,6 +104,23 @@ try{
  const selection={evaluationId,arm:pin.arm},checked=await verifySkillCandidateJournalTransports({userId:owner},selection,frozen);
  assert.equal(checked.signedSuccessfulTransportsVerified,true);assert.equal(checked.binaryVerified,false);assert.equal(checked.automaticActivation,false);
  assert.equal(checked.transportReceiptHashes.length,1);
+ const fallbackId=randomUUID(),fallback=createSkillModelJournal(dedicated.transaction,{...pin,evaluationId:fallbackId});
+ const failed=await fallback.begin(input),failureManifest=modelRequestManifest(body,null);
+ const {responseHash:unusedResponse,status:unusedStatus,...commonStatement}=statement;void unusedResponse;void unusedStatus;
+ const failureStatement={...commonStatement,protocol:'skill-model-transport-failure-v1',evaluationId:fallbackId,reason:'http-503',retryable:true,httpStatus:503,
+  manifestHash:digest(failureManifest),capturedAt:new Date().toISOString(),completedAt:new Date().toISOString()};
+ await fallback.save(failed.id,0,{status:'unavailable',retryable:true,reason:'http-503',transportFailureReceipt:{statement:failureStatement,requestManifest:failureManifest,
+  signature:sign(null,Buffer.from(digest(failureStatement),'hex'),pair.privateKey).toString('base64url')}});
+ const next=await fallback.begin({...input,index:1}),nextRoute=input.profile.routes[1];
+ const nextManifest=modelRequestManifest({...body,model:nextRoute.model,reasoning:{effort:nextRoute.effort}},
+  {model:nextRoute.model,provider:'synthetic-fixture',id:'synthetic-fallback-generation'});
+ const nextStatement={...statement,evaluationId:fallbackId,routeIndex:1,requestHash:nextManifest.requestHash,manifestHash:digest(nextManifest),
+  capturedAt:new Date().toISOString(),completedAt:new Date().toISOString()};
+ await fallback.save(next.id,1,{status:'success',value:{message,requestManifest:nextManifest,transportReceipt:{statement:nextStatement,
+  signature:sign(null,Buffer.from(digest(nextStatement),'hex'),pair.privateKey).toString('base64url')}}});
+ const fallbackChecked=await verifySkillCandidateJournalTransports({userId:owner},{evaluationId:fallbackId,arm:pin.arm},frozen);
+ assert.equal(fallbackChecked.signedFallbackAttemptsVerified,true);assert.equal(fallbackChecked.transportReceiptHashes.length,2);
+ assert.equal((await fallback.begin(input)).output?.status,'unavailable');assert.equal((await fallback.begin({...input,index:1})).output?.status,'success');
  assert.equal((await journal.begin(input)).fresh,false);assert.equal((await journal.begin(input)).output?.status,'success');
  assert.equal(digest(await verifySkillCandidateJournalTransports({userId:owner},selection,frozen)),digest(checked));
  assert.equal((await readSkillCandidateJournal({userId:other},selection)).length,0);
@@ -117,5 +134,5 @@ try{
  assert.equal((await pool.query('select enabled from agent_skill where id=$1',[skill.id])).rows[0].enabled,false);
  console.log(JSON.stringify({transportJournalDatabase:'passed',restrictedCollectorAppend:true,persistedSignatureVerified:true,recoveryReusesStoredOutcome:true,
   crossAccountHidden:true,appendOnly:true,registryRevocationRejected:true,freezeRevocationRejected:true,dedicatedLoginVerified:true,appRoleMembershipRejected:true,
-  compiledCollectorDatabasePreflight:true,collectorImageTlsPreflight,syntheticFixture:true,binaryVerified:false,automaticActivation:false,actualModelCalls:0}));
+  compiledCollectorDatabasePreflight:true,collectorImageTlsPreflight,signedFallbackJournalVerified:true,syntheticFixture:true,binaryVerified:false,automaticActivation:false,actualModelCalls:0}));
 }finally{await dedicated?.close();await pool.end();await getPool().end();await rm(directory,{recursive:true,force:true});}

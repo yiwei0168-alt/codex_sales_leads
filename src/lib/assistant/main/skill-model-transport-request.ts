@@ -6,6 +6,10 @@ import {currentSpendContext} from '@/lib/billing/context';
 import {modelRoutedTransport} from '@/lib/network/model-transport';
 import {digest} from './contracts';
 import {requestModeModel} from './model';
+import {modelRequestManifest} from './model-request-manifest';
+import {modeFailureCode,mayFallback} from './mode-fallback';
+import {attachModeTransportFailure} from './mode-transport-failure';
+import {failureStatusMatches,skillTransportFailureStatementSchema} from './skill-model-transport-failure-receipt';
 import {requireSkillAcceptanceFreeze} from './skill-acceptance-freeze';
 import {assertLocalAnalysisBoundary} from './local-analysis-boundary';
 import {loadConfiguredSkillRunnerTrustRegistry} from './skill-runner-attestation';
@@ -56,19 +60,37 @@ export async function createConfiguredSkillTransportRequest(context:{userId:stri
   requireSpend();
   assertLocalAnalysisBoundary();await requireSkillAcceptanceFreeze(context,frozen.freezeId,frozen.plan);const before=await trust();
   assertControlledProcess();
-  let observedHash:string|undefined,observedStatus:number|undefined,observed=false;const capturedAt=new Date().toISOString();
+  let observedHash:string|undefined,observedBody:Record<string,unknown>|undefined,observedStatus:number|undefined,observed=false;const capturedAt=new Date().toISOString();
   const transport:typeof fetch=async(url,init)=>{
    requireSpend();
    assertControlledProcess();
    const target=new URL(url instanceof Request?url.url:String(url));
    if(observed||target.href!=='https://openrouter.ai/api/v1/chat/completions'||init?.method!=='POST'||init.redirect!=='error'||typeof init.body!=='string')throw new Error('Transport request boundary changed');
-   observed=true;observedHash=digest(JSON.parse(init.body));
+   observed=true;observedBody=JSON.parse(init.body);observedHash=digest(observedBody);
    const response=await modelRoutedTransport(nativeTransport,url,init)(url,init);
    observedStatus=response.status;
    if(response.redirected||response.url!==target.href)throw new Error('Transport response origin changed');
    return response;
   };
-  const output=await requestModeModel(request.messages,request.profile,request.index,transport,request.signal);
+  let output:Awaited<ReturnType<typeof requestModeModel>>;
+  try{output=await requestModeModel(request.messages,request.profile,request.index,transport,request.signal);}
+  catch(error){
+   // A failed signature/admission check must never turn an unknown result into proof.
+   // Preserve the original error so existing reconciliation/fallback rules still apply.
+   try{
+    requireSpend();assertControlledProcess();await requireSkillAcceptanceFreeze(context,frozen.freezeId,frozen.plan);
+    const after=await trust(),reason=modeFailureCode(error),status=observedStatus??null;
+    if(observedBody&&mayFallback(error)&&!request.signal?.aborted&&after.registryHash===before.registryHash&&failureStatusMatches(reason,status)){
+     const manifest=modelRequestManifest(observedBody,null);
+     if(manifest.toolSchemaHash!==frozen.plan.identity.toolSchemaHash)throw new Error('Failure transport tools changed');
+     const statement=skillTransportFailureStatementSchema.parse({...binding,protocol:'skill-model-transport-failure-v1',keyId,
+      step:request.step,routeIndex:request.index,requestHash:manifest.requestHash,manifestHash:digest(manifest),reason,retryable:true,httpStatus:status,
+      origin:'https://openrouter.ai',path:'/api/v1/chat/completions',capturedAt,completedAt:new Date().toISOString(),expiresAt:after.expiresAt});
+     attachModeTransportFailure(error,{statement,requestManifest:manifest,signature:sign(null,Buffer.from(digest(statement),'hex'),privateKey).toString('base64url')});
+    }
+   }catch{/* The durable failure remains unsigned and cannot pass transport verification. */}
+   throw error;
+  }
   requireSpend();
   assertControlledProcess();
   await requireSkillAcceptanceFreeze(context,frozen.freezeId,frozen.plan);const after=await trust();

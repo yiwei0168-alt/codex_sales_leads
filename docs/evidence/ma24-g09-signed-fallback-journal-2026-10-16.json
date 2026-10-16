@@ -1,0 +1,32 @@
+{
+  "stage": "G09 signed retryable failure and fallback journal",
+  "date": "2026-10-16",
+  "baseCommit": "637eac2a",
+  "tests": {"files": 6, "passed": 93, "failed": 0},
+  "databaseCommand": "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --transport-journal",
+  "databaseExitCode": 0,
+  "checks": {
+    "failureMetadataSavedBeforeFallback": true,
+    "originalErrorIdentityPreserved": true,
+    "httpFailureMatchesObservedStatus": true,
+    "fabricatedHttpStatusNotSigned": true,
+    "revokedTrustFailureNotSigned": true,
+    "signedTimeoutAndConnectionFailureVerification": true,
+    "unsignedFailureAndInconsistentStatusRejected": true,
+    "actualRestrictedDatabaseFailureThenSuccessAppend": true,
+    "actualDatabaseFullFallbackSignatureVerification": true,
+    "actualDatabaseSavedOutcomesRecoverable": true,
+    "temporaryDatabaseAndTestKeysCleaned": true,
+    "wholeProjectTypecheck": true,
+    "targetedEslint": true
+  },
+  "actualModelCalls": 0,
+  "productionQualified": false,
+  "automaticActivation": false,
+  "limitations": [
+    "Network, provider and errors in factory tests are synthetic; database fallback receipts are signed directly by an ephemeral fixture key.",
+    "Only complete chains ending in success with signed retryable predecessors pass the transport audit; terminal, cancelled and unsigned unknown failures do not qualify.",
+    "No proof of provider completion or absence of a charge is inferred from a signed timeout observation.",
+    "Existing image ma24-skill-collector:492e5647 does not include this source change and must be rebuilt before deployment."
+  ]
+}
