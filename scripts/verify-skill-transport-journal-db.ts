@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {generateKeyPairSync,randomUUID,sign} from 'node:crypto';
-import {mkdtemp,rm,writeFile} from 'node:fs/promises';
+import {mkdtemp,rm,writeFile,readFile} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {spawn,execFileSync} from 'node:child_process';
@@ -12,7 +12,7 @@ import {importSkill} from '../src/lib/assistant/main/skills';
 import {modeModelConfig} from '../src/lib/assistant/main/mode-config';
 import {modelFunctions} from '../src/lib/assistant/main/model';
 import {modelRequestManifest} from '../src/lib/assistant/main/model-request-manifest';
-import {freezeSkillAcceptancePlan,revokeSkillAcceptanceFreeze,inspectLockedSkillAcceptanceFreeze} from '../src/lib/assistant/main/skill-acceptance-freeze';
+import {freezeSkillAcceptancePlan,inspectLockedSkillAcceptanceFreeze} from '../src/lib/assistant/main/skill-acceptance-freeze';
 import {createSkillModelJournal,type SkillCollectorTransaction} from '../src/lib/assistant/main/skill-model-journal';
 import {readSkillCandidateJournal} from '../src/lib/assistant/main/skill-candidate-audit';
 import {skillTransportResponseHash} from '../src/lib/assistant/main/skill-model-transport-receipt';
@@ -35,6 +35,7 @@ const transaction:SkillCollectorTransaction=async(userId,work)=>{
 };
 try{
  assert.equal((await pool.query('select count(*)::int n from app_user')).rows[0].n,1,'Fresh placeholder-only database required');
+ const serialization=await readFile('db/migrations/146_skill_model_freeze_serialization.sql','utf8');await pool.query(serialization);await pool.query(serialization);
  for(const id of [owner,other])await pool.query("insert into app_user(id,email,display_name,role,status) values($1,$2,'Synthetic transport fixture','member','active')",[id,`${id}@example.invalid`]);
  const skill=await importSkill({userId:owner,role:'member'},{name:'Synthetic transport fixture',source:'synthetic-test',files:{'SKILL.md':'Synthetic transport journal instructions.'},dependencies:[]});
  const version=(await pool.query('select * from agent_skill_version where skill_id=$1 and version=1',[skill.id])).rows[0],hash=digest('synthetic');
@@ -129,13 +130,33 @@ try{
  key.enabled=false;await writeFile(registryPath,JSON.stringify(registry));
  await assert.rejects(verifySkillCandidateJournalTransports({userId:owner},selection,frozen),/trust key unavailable/);
  key.enabled=true;await writeFile(registryPath,JSON.stringify(registry));
+ const lateJournal=createSkillModelJournal(dedicated.transaction,{...pin,evaluationId:randomUUID()}),lateAttempt=await lateJournal.begin(input);
+ const modelHolder=await pool.connect();let modelWrites:Array<Promise<unknown>>=[];
+ try{
+  await modelHolder.query('begin');await modelHolder.query('set local role network_copilot_skill_collector');
+  await modelHolder.query("select set_config('app.current_user_id',$1,true)",[owner]);
+  assert.equal(await inspectLockedSkillAcceptanceFreeze(modelHolder,owner,frozen.freezeId,frozen.plan),'active');
+  const pid=(await modelHolder.query('select pg_backend_pid() as pid')).rows[0].pid as number;
+  modelWrites=[createSkillModelJournal(dedicated.transaction,{...pin,evaluationId:randomUUID()}).begin(input),
+   lateJournal.save(lateAttempt.id,0,{status:'unavailable',retryable:true,reason:'synthetic-wait'})];
+  for(const work of modelWrites)void work.catch(()=>undefined);
+  let waiting=0;
+  for(let i=0;i<100;i++){
+   waiting=Number((await pool.query('select count(*) n from pg_stat_activity where $1::int=any(pg_blocking_pids(pid))',[pid])).rows[0].n);
+   if(waiting===2)break;await new Promise(resolve=>setTimeout(resolve,20));
+  }
+  assert.equal(waiting,2,'Model attempt and outcome append must wait on frozen evidence');
+ }finally{await modelHolder.query('rollback');modelHolder.release();}
+ await Promise.all(modelWrites);
+ const postRevoke=createSkillModelJournal(dedicated.transaction,{...pin,evaluationId:randomUUID()}),postRevokeAttempt=await postRevoke.begin(input);
  const holder=await pool.connect();let revoking:Promise<unknown>|undefined,completed=false;
  try{
   await holder.query('begin');await holder.query('set local role network_copilot_skill_collector');
   await holder.query("select set_config('app.current_user_id',$1,true)",[owner]);
   assert.equal(await inspectLockedSkillAcceptanceFreeze(holder,owner,frozen.freezeId,frozen.plan),'active');
   const pid=(await holder.query('select pg_backend_pid() as pid')).rows[0].pid as number;
-  revoking=revokeSkillAcceptanceFreeze({userId:owner},{freezeId:frozen.freezeId,reason:'Synthetic concurrent revocation'}).finally(()=>{completed=true;});
+  revoking=pool.query('insert into agent_skill_acceptance_freeze_revocation(freeze_id,owner_id,reason) values($1,$2,$3)',
+   [frozen.freezeId,owner,'Synthetic direct database concurrent revocation']).finally(()=>{completed=true;});
   void revoking.catch(()=>undefined);
   let blocked=false;
   for(let i=0;i<100&&!completed;i++){
@@ -145,11 +166,13 @@ try{
   assert.equal(blocked,true,'Revocation must wait on the live freeze transaction');assert.equal(completed,false);
  }finally{await holder.query('rollback');holder.release();}
  await revoking;
+ await assert.rejects(postRevoke.save(postRevokeAttempt.id,0,{status:'unavailable',retryable:true,reason:'synthetic-revoked'}),/freeze unavailable/);
+ await assert.rejects(createSkillModelJournal(dedicated.transaction,{...pin,evaluationId:randomUUID()}).begin(input),/freeze unavailable/);
  await dedicated.transaction(owner,async client=>{assert.equal(await inspectLockedSkillAcceptanceFreeze(client,owner,frozen.freezeId,frozen.plan),'revoked');});
  await assert.rejects(verifySkillCandidateJournalTransports({userId:owner},selection,frozen),/revoked/);
  assert.equal((await pool.query('select enabled from agent_skill where id=$1',[skill.id])).rows[0].enabled,false);
  console.log(JSON.stringify({transportJournalDatabase:'passed',restrictedCollectorAppend:true,persistedSignatureVerified:true,recoveryReusesStoredOutcome:true,
   crossAccountHidden:true,appendOnly:true,registryRevocationRejected:true,freezeRevocationRejected:true,dedicatedLoginVerified:true,appRoleMembershipRejected:true,
-  compiledCollectorDatabasePreflight:true,collectorImageTlsPreflight,signedFallbackJournalVerified:true,freezeRevocationSerialized:true,
+  compiledCollectorDatabasePreflight:true,collectorImageTlsPreflight,signedFallbackJournalVerified:true,freezeRevocationSerialized:true,modelAttemptAndOutcomeAppendSerialized:true,postRevocationModelWritesRejected:true,
   postRevocationLockedReadRejected:true,syntheticFixture:true,binaryVerified:false,automaticActivation:false,actualModelCalls:0}));
 }finally{await dedicated?.close();await pool.end();await getPool().end();await rm(directory,{recursive:true,force:true});}

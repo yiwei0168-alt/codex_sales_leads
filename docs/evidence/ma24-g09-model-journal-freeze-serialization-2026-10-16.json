@@ -1,0 +1,21 @@
+{
+  "stage": "MA24 G09 database serialization of model journal append and freeze revocation",
+  "date": "2026-10-16",
+  "migration": "146_skill_model_freeze_serialization.sql",
+  "command": "node --import tsx scripts/verify-ma24-fresh-pilot-new-cluster.ts --transport-journal",
+  "status": "passed in disposable pgvector/pg16 database",
+  "migrationAppliedTwice": true,
+  "attemptAndOutcomeAppendWaitForHeldFreeze": true,
+  "bothResumeAfterRelease": true,
+  "directSqlRevocationWaitsForHeldFreeze": true,
+  "attemptAndOutcomeRejectedAfterRevocation": true,
+  "existingSignatureFallbackIsolationAndImmutabilityChecks": "passed",
+  "compiledCollectorDatabasePreflight": "passed",
+  "typecheck": "passed",
+  "targetedEslint": "passed",
+  "actualModelCalls": 0,
+  "productionDeployment": false,
+  "binaryVerified": false,
+  "automaticActivation": false,
+  "limitations": ["Legacy journal rows without a freeze retain their existing path and gain no acceptance eligibility", "Full attached composition is a separate running check", "Production provenance and final activation remain incomplete"]
+}

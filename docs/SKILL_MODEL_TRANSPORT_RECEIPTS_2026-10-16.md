@@ -1,5 +1,11 @@
 # G09 model transport receipts — implementation stage
 
+## Database freeze serialization (migration 146)
+
+Model-attempt and model-outcome INSERT triggers now acquire the same owner/freeze transaction advisory lock as the final evidence reader, then check freeze expiry and revocation using the database wall clock. Outcome admission derives its freeze from its existing owned attempt. A revocation INSERT trigger also acquires this lock, including direct SQL writes. Legacy rows without a freeze retain their old path; this does not make them eligible acceptance evidence.
+
+[Disposable database verification](evidence/ma24-g09-model-journal-freeze-serialization-2026-10-16.json) observed attempt/outcome appends and direct SQL revocation wait for the holder, then resume after release; both model write types reject after revocation. Repeat migration, signature/fallback, isolation, append-only checks, compiled collector database preflight, typecheck and targeted lint passed. No table write privileges were added. No real provider calls or production deployment occurred. Attached complete composition and production qualification remain separate gates.
+
 This stage adds an internal collector request factory and a verifier for successful model transport receipts. It does not qualify a production runner, enable a Skill, or close G09.
 
 ## Protocol and workflow
