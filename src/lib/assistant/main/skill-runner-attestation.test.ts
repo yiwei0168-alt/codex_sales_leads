@@ -10,7 +10,8 @@ const pair=generateKeyPairSync('ed25519'),other=generateKeyPairSync('ed25519');
 const hash=(value:string)=>digest(value);
 const expected={ownerId:'11111111-1111-4111-8111-111111111111',freezeId:'22222222-2222-4222-8222-222222222222',
  planHash:hash('plan'),artifactHash:hash('artifact'),runtimeIdentityHash:hash('runtime'),deploymentHash:hash('deployment'),
- collectorId:'dedicated-collector',frozenAt:'2026-10-16T00:00:00.000Z',expiresAt:'2026-10-17T00:00:00.000Z'};
+ collectorId:'dedicated-collector',frozenAt:'2026-10-16T00:00:00.000Z',expiresAt:'2026-10-17T00:00:00.000Z',
+ capturedAt:'2026-10-16T00:01:00.000Z',completedAt:'2026-10-16T00:02:00.000Z'};
 const registry=()=>({protocol:'skill-runner-trust-registry-v1',keys:[{keyId:'runner-1',collectorId:expected.collectorId,
  deploymentHash:expected.deploymentHash,publicKeyPem:pair.publicKey.export({type:'spki',format:'pem'}).toString(),
  enabled:true,notBefore:'2026-10-15T00:00:00.000Z',expiresAt:expected.expiresAt}]});
@@ -36,6 +37,9 @@ it('rejects tampering and a signature made by an unenrolled private key',()=>{
  const signed=envelope();signed.statement.artifactHash=hash('tampered');
  expect(()=>verifySkillRunnerAttestation(signed,registry(),{...expected,artifactHash:hash('tampered')},now)).toThrow('signature');
  expect(()=>verifySkillRunnerAttestation(envelope(statement(),other.privateKey),registry(),expected,now)).toThrow('signature');
+});
+it.each(['capturedAt','completedAt'] as const)('rejects validly signed but observation-unbound %s',field=>{
+ expect(()=>verifySkillRunnerAttestation(envelope({...statement(),[field]:'2026-10-16T00:01:30.000Z'}),registry(),expected,now)).toThrow('observation time binding');
 });
 it('rejects removed, disabled, duplicated or differently enrolled trust keys',()=>{
  const removed=registry();removed.keys=[];

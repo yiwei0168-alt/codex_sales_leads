@@ -25,6 +25,7 @@ const registrySchema=z.object({protocol:z.literal('skill-runner-trust-registry-v
 const expectedSchema=z.object({ownerId:z.uuid(),freezeId:z.uuid(),planHash:sha,
  artifactHash:sha,runtimeIdentityHash:sha,deploymentHash:sha,collectorId:z.string().min(1).max(200),
  frozenAt:z.iso.datetime(),expiresAt:z.iso.datetime(),
+ capturedAt:z.iso.datetime(),completedAt:z.iso.datetime(),
 }).strict();
 export type SkillRunnerBinding=z.infer<typeof expectedSchema>;
 
@@ -47,6 +48,8 @@ export function verifySkillRunnerAttestation(envelope:unknown,registryInput:unkn
  if(!(trustedFrom<=frozen&&frozen<=captured&&captured<=completed&&completed<=issued&&issued<=current
   &&current<expiry&&expiry<=planExpiry&&expiry<=trustedUntil&&current<trustedUntil))
   throw new Error('Runner attestation time window invalid');
+ if(captured!==Date.parse(expected.capturedAt)||completed!==Date.parse(expected.completedAt))
+  throw new Error('Runner attestation observation time binding changed');
  for(const field of ['ownerId','freezeId','planHash','artifactHash','runtimeIdentityHash','deploymentHash','collectorId'] as const)
   if(statement[field]!==expected[field])throw new Error('Runner attestation binding changed');
  if(key.collectorId!==statement.collectorId||key.deploymentHash!==statement.deploymentHash)

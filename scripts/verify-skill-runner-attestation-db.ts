@@ -40,23 +40,44 @@ try{
   cases:['replay','negative','injection','permissions','shadow'].map(category=>({id:category,category,inputHash:hash,sourceHash:hash,
    provenance:category==='replay'?'historical-task':category==='shadow'?'prospective-task':'safety-fixture'}))};
  const frozen=await freezeSkillAcceptancePlan({userId:owner},draft,collector);
- const artifact={sourceKind:'production-runner-pending-verification',plan:frozen.plan,observations:[],
+ const capturedAt=new Date().toISOString(),item=frozen.plan.cases[0];
+ const arm={state:'completed',stopReason:null,answerHash:hash,evidenceHash:hash,modelReceiptHashes:[hash],requestedModel:'synthetic',actualModel:'synthetic',provider:'synthetic',identity:frozen.plan.identity,unexpectedEffects:0};
+ const observation={caseId:item.id,planHash:digest(frozen.plan),pin:frozen.plan.pin,inputHash:item.inputHash,sourceHash:item.sourceHash,provenance:item.provenance,
+  capturedAt,completedAt:capturedAt,taskStartedAt:null,sourceCurrent:true,baseline:arm,candidate:arm};
+ const artifact={sourceKind:'production-runner-pending-verification',plan:frozen.plan,observations:[observation],
   rawReceipts:{collector:{freezeId:frozen.freezeId}}};
  const bundleId=randomUUID();
  await pool.query(`insert into agent_skill_acceptance_bundle(id,owner_id,skill_id,version,source_kind,plan,observations,raw_receipts,artifact_hash)
-  values($1,$2,$3,1,$4,$5,'[]',$6,$7)`,[bundleId,owner,skill.id,artifact.sourceKind,JSON.stringify(artifact.plan),JSON.stringify(artifact.rawReceipts),digest(artifact)]);
+  values($1,$2,$3,1,$4,$5,$8,$6,$7)`,[bundleId,owner,skill.id,artifact.sourceKind,JSON.stringify(artifact.plan),JSON.stringify(artifact.rawReceipts),digest(artifact),JSON.stringify(artifact.observations)]);
  const registry={protocol:'skill-runner-trust-registry-v1',keys:[{keyId:'test-only',collectorId:'synthetic-test-collector',deploymentHash:hash,
   publicKeyPem:pair.publicKey.export({type:'spki',format:'pem'}).toString(),enabled:true,
   notBefore:new Date(Date.now()-60000).toISOString(),expiresAt:draft.expiresAt}]};
  const registryPath=join(directory,'public-registry.json');await writeFile(registryPath,JSON.stringify(registry));
  process.env.SKILL_RUNNER_TRUST_REGISTRY_FILE=registryPath;
  process.env.SKILL_RUNNER_DEPLOYMENT_SHA256=hash;process.env.SKILL_RUNNER_COLLECTOR_ID='synthetic-test-collector';
- const capturedAt=new Date().toISOString();
  const statement={protocol:'skill-runner-attestation-v1',keyId:'test-only',collectorId:'synthetic-test-collector',deploymentHash:hash,
   ownerId:owner,freezeId:frozen.freezeId,planHash:digest(frozen.plan),artifactHash:digest(artifact),runtimeIdentityHash:digest(frozen.plan.identity),
-  capturedAt,completedAt:capturedAt,issuedAt:capturedAt,expiresAt:draft.expiresAt};
+  capturedAt,completedAt:capturedAt,issuedAt:new Date().toISOString(),expiresAt:draft.expiresAt};
  const envelope={statement,signature:sign(null,Buffer.from(digest(statement),'hex'),pair.privateKey).toString('base64url')};
  const input={bundleId,envelope};
+ const emptyArtifact={...artifact,observations:[]},emptyBundle=randomUUID();
+ await pool.query(`insert into agent_skill_acceptance_bundle(id,owner_id,skill_id,version,source_kind,plan,observations,raw_receipts,artifact_hash)
+  values($1,$2,$3,1,$4,$5,'[]',$6,$7)`,[emptyBundle,owner,skill.id,emptyArtifact.sourceKind,JSON.stringify(emptyArtifact.plan),JSON.stringify(emptyArtifact.rawReceipts),digest(emptyArtifact)]);
+ const emptyStatement={...statement,artifactHash:digest(emptyArtifact)};
+ await assert.rejects(appendSkillRunnerAttestation({userId:owner},{bundleId:emptyBundle,envelope:{statement:emptyStatement,
+  signature:sign(null,Buffer.from(digest(emptyStatement),'hex'),pair.privateKey).toString('base64url')}},collector));
+ const historicalEmpty={statement:emptyStatement,signature:sign(null,Buffer.from(digest(emptyStatement),'hex'),pair.privateKey).toString('base64url')};
+ const historicalEmptyId=(await pool.query(`insert into agent_skill_runner_attestation(owner_id,bundle_id,freeze_id,artifact_hash,statement_hash,envelope)
+  values($1,$2,$3,$4,$5,$6) returning id`,[owner,emptyBundle,frozen.freezeId,digest(emptyArtifact),digest(emptyStatement),JSON.stringify(historicalEmpty)])).rows[0].id;
+ await assert.rejects(readSkillRunnerAttestation({userId:owner},historicalEmptyId));
+ const drift={...statement,capturedAt:new Date(Date.parse(capturedAt)+1).toISOString(),completedAt:new Date(Date.parse(capturedAt)+1).toISOString(),issuedAt:new Date(Date.now()+2).toISOString()};
+ // Allow signing time to elapse while retaining valid statement ordering.
+ await new Promise(done=>setTimeout(done,5));
+ await assert.rejects(appendSkillRunnerAttestation({userId:owner},{bundleId,envelope:{statement:drift,signature:sign(null,Buffer.from(digest(drift),'hex'),pair.privateKey).toString('base64url')}},collector),/observation time binding/);
+ const historicalDrift={statement:drift,signature:sign(null,Buffer.from(digest(drift),'hex'),pair.privateKey).toString('base64url')};
+ const historicalDriftId=(await pool.query(`insert into agent_skill_runner_attestation(owner_id,bundle_id,freeze_id,artifact_hash,statement_hash,envelope)
+  values($1,$2,$3,$4,$5,$6) returning id`,[owner,bundleId,frozen.freezeId,digest(artifact),digest(drift),JSON.stringify(historicalDrift)])).rows[0].id;
+ await assert.rejects(readSkillRunnerAttestation({userId:owner},historicalDriftId),/observation time binding/);
  const saved=await appendSkillRunnerAttestation({userId:owner},input,collector);
  assert.equal((await appendSkillRunnerAttestation({userId:owner},input,collector)).id,saved.id);
  assert.equal((await readSkillRunnerAttestation({userId:owner},saved.id)).signedDeclarationVerified,true);
@@ -73,7 +94,7 @@ try{
  await assert.rejects(pool.query('delete from agent_skill_runner_attestation where id=$1',[saved.id]),/append-only/);
  const syntheticArtifact={...artifact,sourceKind:'synthetic-fixture'},syntheticBundle=randomUUID();
  await pool.query(`insert into agent_skill_acceptance_bundle(id,owner_id,skill_id,version,source_kind,plan,observations,raw_receipts,artifact_hash)
-  values($1,$2,$3,1,$4,$5,'[]',$6,$7)`,[syntheticBundle,owner,skill.id,syntheticArtifact.sourceKind,JSON.stringify(syntheticArtifact.plan),JSON.stringify(syntheticArtifact.rawReceipts),digest(syntheticArtifact)]);
+  values($1,$2,$3,1,$4,$5,$8,$6,$7)`,[syntheticBundle,owner,skill.id,syntheticArtifact.sourceKind,JSON.stringify(syntheticArtifact.plan),JSON.stringify(syntheticArtifact.rawReceipts),digest(syntheticArtifact),JSON.stringify(syntheticArtifact.observations)]);
  const syntheticStatement={...statement,artifactHash:digest(syntheticArtifact)};
  await assert.rejects(appendSkillRunnerAttestation({userId:owner},{bundleId:syntheticBundle,envelope:{statement:syntheticStatement,
   signature:sign(null,Buffer.from(digest(syntheticStatement),'hex'),pair.privateKey).toString('base64url')}},collector),/pending production/);
@@ -85,6 +106,8 @@ try{
  assert.equal((await pool.query('select enabled from agent_skill where id=$1',[skill.id])).rows[0].enabled,false);
  assert.equal((await pool.query("select to_regclass('public.ma24_evaluation_hard_limit') is null absent")).rows[0].absent,true);
  console.log(JSON.stringify({runnerAttestationStore:'passed',collectorAppendAndIdempotency:true,
+  emptyObservationAndSignedTimeDriftRejected:true,
+  historicalUnboundStatementsRejectedOnRead:true,
   appInsertDenied:true,crossAccountDenied:true,appendOnly:true,signedSyntheticEvidenceRejected:true,keyDisablementAndFreezeRevocationRejected:true,
   deferredEvaluationMigrationsApplied:false,productionKeysCreated:false,automaticActivation:false,modelCalls:0}));
 }finally{

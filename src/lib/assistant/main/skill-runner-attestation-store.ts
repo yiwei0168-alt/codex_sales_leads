@@ -7,6 +7,7 @@ import {skillAcceptancePlanSchema} from './skill-acceptance-policy';
 import {inspectSkillAcceptanceFreeze} from './skill-acceptance-freeze';
 import {skillRunnerEnvelopeSchema,verifyConfiguredSkillRunnerAttestation} from './skill-runner-attestation';
 import {assertLocalAnalysisBoundary} from './local-analysis-boundary';
+import {skillRunnerEvidenceWindow} from './skill-runner-evidence-window';
 
 const sha=z.string().regex(/^[a-f0-9]{64}$/);
 type Context={userId:string};
@@ -23,6 +24,7 @@ async function loadBinding(client:PoolClient,context:Context,bundleId:string,fre
  if(await inspectSkillAcceptanceFreeze(client,context.userId,freezeId,plan)!=='active')
   throw new Error('Runner declaration freeze inactive');
  return {ownerId:context.userId,freezeId,planHash:digest(plan),artifactHash:row.artifact_hash,
+  ...skillRunnerEvidenceWindow(plan,row.observations),
   runtimeIdentityHash:digest(plan.identity),frozenAt:plan.frozenAt,expiresAt:plan.expiresAt,
   deploymentHash:sha.parse(process.env.SKILL_RUNNER_DEPLOYMENT_SHA256),
   collectorId:z.string().min(1).max(200).parse(process.env.SKILL_RUNNER_COLLECTOR_ID)};
