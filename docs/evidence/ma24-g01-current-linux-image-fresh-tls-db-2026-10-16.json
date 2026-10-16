@@ -1,0 +1,31 @@
+{
+  "schema": "ma24-g01-current-linux-image-fresh-tls-db-v1",
+  "date": "2026-10-16",
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --web-image=ma24-pilot-web:cc50c7b6",
+  "webImage": {
+    "tag": "ma24-pilot-web:cc50c7b6",
+    "id": "sha256:ade13e11d14fefda372ff48dfd848cd7ae90f0a98f3a439fc99a3730b5577867",
+    "sourceCommit": "cc50c7b61214c07ff903515466ac8dbb6d8eca9a"
+  },
+  "database": {
+    "image": "pgvector/pgvector:pg16",
+    "freshCluster": true,
+    "freshMigrationThrough": 135,
+    "applicationRoleRestricted": true,
+    "webToDatabaseTls": "verify-full with temporary self-signed CA and pilot-db DNS name",
+    "migrationCredentialInWeb": false,
+    "productionDataCopied": false
+  },
+  "checks": {
+    "sameClusterSyntheticArchiveRestore": "passed",
+    "twoSyntheticAccountsProvisioned": "passed",
+    "linuxWebLoginAndSecureCookie": "passed",
+    "syntheticManualCompanyWriteAndRead": "passed",
+    "otherAccountCannotReadOrModifyCompany": "passed",
+    "logoutInvalidatesSession": "passed",
+    "temporaryContainersAndNetworkRemoved": true,
+    "typecheck": "passed",
+    "focusedEslint": "passed"
+  },
+  "limits": "This was a loopback-only local Docker check with disposable synthetic data and a temporary DB CA. It did not test a trusted public HTTPS domain, cloud host, actual team accounts, realistic data migration, concurrency, worker flows, or live rollback. The image must be rebuilt from the final release commit and its digest checked before deployment."
+}
