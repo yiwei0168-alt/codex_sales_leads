@@ -1,0 +1,21 @@
+{
+  "schema": "ma24-g10-prospective-review-material-v1",
+  "date": "2026-10-16",
+  "command": "node node_modules/vitest/vitest.mjs run src/lib/assistant/main/skill-prospective-review.test.ts src/app/api/assistant/skills/acceptance-reviews/route.test.ts src/lib/assistant/main/skill-prospective-collector.test.ts src/lib/assistant/main/skill-prospective-source.test.ts",
+  "checks": {
+    "testsPassed": 51,
+    "unifiedSummaryProspectiveReferenceBinding": "passed",
+    "unifiedCaseReaderUsesProspectiveAdapter": "passed",
+    "rebuildObservationAndSourceBeforeMaterialRead": "passed with mocked server audits",
+    "changedAnswersModelReceiptsAndConsumedEvidence": "rejected",
+    "nonReadEvidenceAndMissingEvidence": "rejected",
+    "sourceRevocationOrReviewStateChangeBeforeReturn": "rejected",
+    "systemPromptOrUnusedModelRowsReturned": false,
+    "apiAuthenticationNoStoreAndReviewWriteRegression": "passed with mocked material service",
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "externalModelCalls": 0,
+    "productionWrites": 0
+  },
+  "limits": "Read adapter and existing API routing are wired in source. Tests mock server journal/storage boundaries; full paired database journals through persistence, actual API/browser review and real prospective quality remain unverified. No production reload or automatic Skill activation occurred."
+}

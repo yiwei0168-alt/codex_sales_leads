@@ -8,6 +8,7 @@ import {prepareSkillModelJournalAudit,readSkillCandidateJournal} from './skill-c
 import type {RecordedEvidenceReceipt} from './recorded-evidence-receipts';
 import {assertLocalAnalysisBoundary} from './local-analysis-boundary';
 import {readSkillSafetyReviewCase} from './skill-safety-review';
+import {readSkillProspectiveReviewCase,storedProspectiveReferenceSchema} from './skill-prospective-review';
 
 type Context={userId:string};
 export async function listSkillAcceptanceReviews(context:Context,input:{skillId:string;offset:number}){
@@ -19,11 +20,14 @@ export async function listSkillAcceptanceReviews(context:Context,input:{skillId:
 }
 export async function readSkillAcceptanceReview(context:Context,bundleId:string){
  const saved=await readSkillAcceptanceEvidence(context,bundleId);
+ const prospective=z.record(z.string(),storedProspectiveReferenceSchema).safeParse(saved.artifact.rawReceipts.prospectiveSources);
  return {id:bundleId,artifactHash:saved.artifactHash,version:saved.artifact.plan.pin.version,sourceKind:saved.artifact.sourceKind,
   sourcesCurrent:saved.sourcesCurrent,freezeStatus:saved.freezeStatus,automaticActivation:false,
   cases:saved.artifact.plan.cases.map(item=>{const observation=saved.artifact.observations.find(row=>row.caseId===item.id);
    return {id:item.id,category:item.category,hasObservation:Boolean(observation),materialAvailable:Boolean(observation&&(
     item.category==='replay'&&item.provenance==='historical-task'||
+    item.category==='shadow'&&item.provenance==='prospective-task'&&
+     prospective.success&&prospective.data[item.id]?.caseId===item.id||
     item.provenance==='safety-fixture'&&['negative','injection','permissions'].includes(item.category)&&
      z.record(z.string(),z.unknown()).safeParse(saved.artifact.rawReceipts.safetySources).success&&
      Object.hasOwn(saved.artifact.rawReceipts.safetySources as object,item.id))),
@@ -39,6 +43,7 @@ export async function readSkillAcceptanceReviewCase(context:Context,input:{bundl
  const before=await readSkillAcceptanceEvidence(context,input.bundleId);
  const item=before.artifact.plan.cases.find(row=>row.id===input.caseId);
  if(item?.provenance==='safety-fixture')return readSkillSafetyReviewCase(context,input);
+ if(item?.provenance==='prospective-task')return readSkillProspectiveReviewCase(context,input);
  const validated=await validateStoredSkillAcceptanceCandidate(context,input);
  const reference=z.object({runId:z.uuid(),evaluationId:z.uuid(),projectionHash:z.string()}).strict().parse(
   z.record(z.string(),z.unknown()).parse(before.artifact.rawReceipts.candidateSources)[input.caseId]);
