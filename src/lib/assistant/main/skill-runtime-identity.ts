@@ -1,4 +1,3 @@
-import {lstat,readdir,readFile} from 'node:fs/promises';
 import {join} from 'node:path';
 import {digest} from './contracts';
 import {modelFunctions} from './model';
@@ -7,6 +6,9 @@ import {assertLocalAnalysisBoundary} from './local-analysis-boundary';
 
 /** Local source/config fingerprint, not attestation of a deployed binary or provider. */
 export async function skillSourceRuntimeHash(){
+ // These files are explicitly packaged after the build. Resolve native filesystem
+ // access at runtime so Next does not trace the entire build working directory.
+ const {lstat,readdir,readFile}=process.getBuiltinModule('node:fs/promises') as typeof import('node:fs/promises');
  let root='.';
  try{
   const packed=await lstat('.skill-runtime-source');
