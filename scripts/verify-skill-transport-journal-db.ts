@@ -3,7 +3,7 @@ import {generateKeyPairSync,randomUUID,sign} from 'node:crypto';
 import {mkdtemp,rm,writeFile} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
-import {spawn} from 'node:child_process';
+import {spawn,execFileSync} from 'node:child_process';
 import nextEnv from '@next/env';
 import {Pool} from 'pg';
 import {getPool} from '../src/lib/rag/db';
@@ -70,6 +70,24 @@ try{
   proc.once('exit',code=>resolve({code,output}));
  });
  assert.equal(child.code,0,'Compiled collector database preflight failed');assert(child.output.includes('"collectorDatabasePreflight":"passed"'));
+ let collectorImageTlsPreflight=false;
+ if(process.env.MA24_COLLECTOR_TEST_IMAGE){
+  const image=process.env.MA24_COLLECTOR_TEST_IMAGE,container=process.env.MA24_COLLECTOR_TEST_CONTAINER;
+  assert(/^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(image));assert(container&&/^[a-f0-9]{64}$/.test(container));
+  const certificate=execFileSync('docker',['exec',container,'cat','/tmp/ma24-server.crt'],{encoding:'utf8'});
+  await writeFile(join(directory,'database-ca.pem'),certificate);
+  const imageApp=new URL(app),imageCollector=new URL(collectorUrl);
+  for(const url of [imageApp,imageCollector]){url.hostname='localhost';url.port='5432';url.searchParams.set('sslmode','verify-full');}
+  const result=await new Promise<number|null>((resolve,reject)=>{
+   const proc=spawn('docker',['run','--rm','--read-only','--network',`container:${container}`,'--cap-drop=ALL','--security-opt=no-new-privileges',
+    '--mount',`type=bind,source=${directory},target=/probe,readonly`,'--env',`DATABASE_URL=${imageApp.toString()}`,
+    '--env',`SKILL_COLLECTOR_DATABASE_URL=${imageCollector.toString()}`,'--env','DATABASE_SSL_CA_FILE=/probe/database-ca.pem',
+    image,'--check','/probe/private-job.json'],{windowsHide:true,stdio:['ignore','pipe','pipe']});let passed=false;
+   proc.stdout.on('data',data=>{if(String(data).includes('"collectorDatabasePreflight":"passed"'))passed=true;});proc.stderr.on('data',()=>{});
+   proc.once('error',reject);proc.once('exit',code=>resolve(passed?code:1));
+  });
+  assert.equal(result,0,'Collector image verified-TLS database preflight failed');collectorImageTlsPreflight=true;
+ }
  const input={messages:[{role:'user' as const,content:'Synthetic transport request'}],profile:modeModelConfig('quick').profile!,index:0};
  const snapshotHash=digest('synthetic-snapshot'),pin={ownerId:owner,evaluationId,arm:'candidate' as const,step:0,snapshotHash,freezeId:frozen.freezeId,
   sourceKind:'production-runner-pending-verification' as const};
@@ -99,5 +117,5 @@ try{
  assert.equal((await pool.query('select enabled from agent_skill where id=$1',[skill.id])).rows[0].enabled,false);
  console.log(JSON.stringify({transportJournalDatabase:'passed',restrictedCollectorAppend:true,persistedSignatureVerified:true,recoveryReusesStoredOutcome:true,
   crossAccountHidden:true,appendOnly:true,registryRevocationRejected:true,freezeRevocationRejected:true,dedicatedLoginVerified:true,appRoleMembershipRejected:true,
-  compiledCollectorDatabasePreflight:true,syntheticFixture:true,binaryVerified:false,automaticActivation:false,actualModelCalls:0}));
+  compiledCollectorDatabasePreflight:true,collectorImageTlsPreflight,syntheticFixture:true,binaryVerified:false,automaticActivation:false,actualModelCalls:0}));
 }finally{await dedicated?.close();await pool.end();await getPool().end();await rm(directory,{recursive:true,force:true});}

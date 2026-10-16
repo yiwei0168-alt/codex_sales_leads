@@ -1,0 +1,34 @@
+{
+  "stage": "G09 fixed collector image database TLS preflight",
+  "date": "2026-10-16",
+  "baseCommit": "a85c0e45",
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --collector-image=ma24-skill-collector:492e5647",
+  "exitCode": 0,
+  "image": "ma24-skill-collector:492e5647",
+  "imageIdPreviouslyVerified": "sha256:f19775de2884e75f868e2b73a1a705a81a37bdf1bd7009102d682212212b663c",
+  "checks": {
+    "freshDisposableDatabaseMigrationsThrough135": true,
+    "compiledCollectorDatabasePreflight": true,
+    "collectorImageTlsPreflight": true,
+    "applicationAndCollectorUseVerifyFull": true,
+    "publicCaMountedReadOnly": true,
+    "nonRootReadOnlyNoCapabilities": true,
+    "separateRestrictedCollectorLogin": true,
+    "applicationRoleMembershipRejected": true,
+    "storedSyntheticSignatureVerified": true,
+    "crossAccountHidden": true,
+    "appendOnly": true,
+    "registryAndFreezeRevocationRejected": true,
+    "temporaryContainersAndFixtureDirectoryCleaned": true,
+    "wholeProjectTypecheck": true,
+    "targetedEslint": true
+  },
+  "actualModelCalls": 0,
+  "productionQualified": false,
+  "automaticActivation": false,
+  "limitations": [
+    "Image ran --check only, not --execute; the synthetic signed journal was created by the host fixture.",
+    "Collector shares the disposable database network namespace and connects to localhost with verified TLS; this does not exercise a remote cloud network.",
+    "No live provider, production key or failure/fallback transport proof was verified."
+  ]
+}

@@ -20,7 +20,9 @@ const crossClusterCheck = args.includes("--cross-cluster");
 const modeBusinessCheck = args.includes("--mode-business");
 const runnerAttestationCheck = args.includes("--runner-attestation");
 const safetySkillUsageCheck = args.includes('--safety-skill-usage');
-const transportJournalCheck = args.includes('--transport-journal');
+const collectorImageArgument=args.find(arg=>arg.startsWith('--collector-image='));
+const collectorImage=collectorImageArgument?.slice('--collector-image='.length);
+const transportJournalCheck = args.includes('--transport-journal')||Boolean(collectorImage);
 const poolRecoveryCheck = args.includes('--pool-recovery');
 const webPoolRecoveryCheck = args.includes('--web-pool-recovery');
 const prospectiveHttpArgument = args.find(arg => arg.startsWith('--prospective-http-image='));
@@ -31,7 +33,8 @@ const prospectiveMaterialCheck = args.includes("--prospective-material") || Bool
 const prospectiveSourceCheck = args.includes("--prospective-source") || prospectiveMaterialCheck;
 const rollbackImageArgument = args.find(arg => arg.startsWith("--rollback-image="));
 const rollbackImage = rollbackImageArgument?.slice("--rollback-image=".length);
-assert(args.length <= 17 && args.every(arg => ["--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", '--safety-skill-usage', '--transport-journal', '--pool-recovery', '--web-pool-recovery', "--prospective-source", "--prospective-material", '--prospective-browser', '--prospective-composition', prospectiveHttpArgument, webImageArgument, rollbackImageArgument].includes(arg))
+assert(args.length <= 18 && args.every(arg => ["--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", '--safety-skill-usage', '--transport-journal', '--pool-recovery', '--web-pool-recovery', "--prospective-source", "--prospective-material", '--prospective-browser', '--prospective-composition', collectorImageArgument,prospectiveHttpArgument, webImageArgument, rollbackImageArgument].includes(arg))
+  &&(!collectorImageArgument||(collectorImage&&/^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(collectorImage)))
   && (!webPoolRecoveryCheck || webImage)
   && (!prospectiveBrowserCheck || prospectiveHttpImage)
   && (!prospectiveHttpArgument || (prospectiveHttpImage && /^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(prospectiveHttpImage)))
@@ -89,9 +92,9 @@ try {
     "--publish", `127.0.0.1:${port}:5432`, "--env", `POSTGRES_PASSWORD=${adminPassword}`,
     ...(prospectiveBrowserPort ? ['--publish', `127.0.0.1:${prospectiveBrowserPort}:3000`] : []),
     "--env", "POSTGRES_DB=network_copilot_local", "pgvector/pgvector:pg16",
-    ...(webImage ? ["bash", "-ec", [
+    ...(webImage||collectorImage ? ["bash", "-ec", [
       "openssl req -x509 -nodes -newkey rsa:2048 -days 1 -subj /CN=pilot-db",
-      "-addext subjectAltName=DNS:pilot-db -keyout /tmp/ma24-server.key",
+      "-addext subjectAltName=DNS:pilot-db,DNS:localhost -keyout /tmp/ma24-server.key",
       "-out /tmp/ma24-server.crt >/dev/null 2>&1;",
       "chmod 600 /tmp/ma24-server.key; chown postgres:postgres /tmp/ma24-server.key /tmp/ma24-server.crt;",
       "exec docker-entrypoint.sh postgres -c ssl=on",
@@ -193,7 +196,8 @@ try {
     const built=await run(process.execPath,['scripts/build-skill-collector.mjs']);
     assert.equal(built.code,0,built.output);assert(built.output.includes('"collectorBuild":"passed"'),built.output);
     const checked=await run(process.execPath,['scripts/run-tsx.cjs','scripts/verify-skill-transport-journal-db.ts'],
-      {...process.env,DATABASE_URL:appUrl.toString(),DATABASE_MIGRATION_URL:adminUrl.toString(),MA24_DISPOSABLE_TRANSPORT_JOURNAL:'1'});
+      {...process.env,DATABASE_URL:appUrl.toString(),DATABASE_MIGRATION_URL:adminUrl.toString(),MA24_DISPOSABLE_TRANSPORT_JOURNAL:'1',
+       ...(collectorImage?{MA24_COLLECTOR_TEST_IMAGE:collectorImage,MA24_COLLECTOR_TEST_CONTAINER:containerId}:{} )});
     assert.equal(checked.code,0,checked.output);assert(checked.output.includes('"transportJournalDatabase":"passed"'),checked.output);
     console.log(checked.output.trim());
   }
@@ -518,6 +522,7 @@ try {
     runnerAttestationStoreVerified: runnerAttestationCheck,
     safetySkillUsageVerified: safetySkillUsageCheck,
     transportJournalDatabaseVerified: transportJournalCheck,
+    collectorImageTlsPreflightVerified: Boolean(collectorImage),
     poolRecoveryVerified: poolRecoveryCheck,
     standaloneDatabaseRecoveryVerified: webPoolRecoveryCheck,
     extraG09Migration: runnerAttestationCheck ? 141 : null,

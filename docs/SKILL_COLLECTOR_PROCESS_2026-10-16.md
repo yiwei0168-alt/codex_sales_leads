@@ -26,6 +26,8 @@ node tmp/skill-collector/runner.cjs --execute <private-job.json>
 
 ## 已验与未验
 
+后续[镜像到数据库的 TLS 预检](evidence/ma24-g09-collector-image-tls-preflight-2026-10-16.json)已通过：固定采集器镜像以非 root、只读、无 capabilities 方式运行 `--check`，使用挂载的公开 CA、`sslmode=verify-full`、独立应用与采集登录连接临时数据库并读取冻结记录。镜像共享数据库容器网络命名空间，经 localhost 连接；未覆盖真实云网络，也未执行 `--execute`。持久签名的合成夹具仍由宿主脚本写入，不能将其归为镜像中的提供方执行。
+
 实际镜像 `ma24-skill-collector:492e5647` 已从固定提交构建并验收，镜像 ID 为 `sha256:f19775de2884e75f868e2b73a1a705a81a37bdf1bd7009102d682212212b663c`。907 个源码输入与提交一致；运行清单含 34,422 个文件/链接并绑定 Node 可执行文件。非 root、只读、无网络条件下清单校验与帮助入口通过，挂载篡改的 runner 后在执行前拒绝。临时容器和篡改夹具已清理，[证据](evidence/ma24-g09-collector-image-2026-10-16.json)。这取代下一段“待实际镜像构建”的阶段状态，但不改变生产认证仍未通过的结论。
 
 新增 `Dockerfile.skill-collector` 和 `scripts/build-skill-collector-image.mjs`：只从已提交 Git archive 构建，固定 Node 基础镜像摘要，以 `npm ci` 安装锁定依赖；运行包包含采集器、内部源码指纹材料和实际安装依赖。生成清单绑定包内全部普通文件、内部符号链接及 Node 可执行文件摘要，启动时核对后再运行。运行用户为非 root。清单校验器仍位于同一镜像中，需由部署方固定可信镜像摘要；自校验本身不能替代外部生产认证。新增清单内容变化/额外依赖文件测试已通过；此提交阶段尚待实际镜像构建及隔离启动验收。
