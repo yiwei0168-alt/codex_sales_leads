@@ -3,14 +3,22 @@ import { readFileSync, realpathSync, writeFileSync } from "node:fs";
 import { resolve, sep } from "node:path";
 
 const candidateArg = process.argv.find(argument => argument.startsWith("--candidate-file="));
+const sourceSetArg = process.argv.find(argument => argument.startsWith("--source-set-file="));
+if (candidateArg && sourceSetArg) throw new Error("choose candidate file or frozen source set");
 const privateRoot = realpathSync(resolve("tmp/ma24-independent-quarantine"));
 let privateCandidates;
-if (candidateArg) {
-  const candidatePath = realpathSync(resolve(candidateArg.slice("--candidate-file=".length)));
-  if (!candidatePath.startsWith(`${privateRoot}${sep}`)) throw new Error("candidate file must be in the private quarantine directory");
-  execFileSync("git", ["check-ignore", "-q", "--", candidatePath]);
-  const input = JSON.parse(readFileSync(candidatePath, "utf8"));
-  if (!Array.isArray(input.cases) || input.cases.length === 0) throw new Error("candidate file must contain nonempty cases");
+if (candidateArg || sourceSetArg) {
+  const inputArg = candidateArg || sourceSetArg;
+  const inputPath = realpathSync(resolve(inputArg.slice(inputArg.indexOf("=") + 1)));
+  if (!inputPath.startsWith(`${privateRoot}${sep}`)) throw new Error("evaluation input must be in the private quarantine directory");
+  execFileSync("git", ["check-ignore", "-q", "--", inputPath]);
+  const input = JSON.parse(readFileSync(inputPath, "utf8"));
+  if (!Array.isArray(input.cases) || input.cases.length === 0) throw new Error("evaluation input must contain nonempty cases");
+  if (sourceSetArg && input.schema !== "ma24-g16-source-set-v1") throw new Error("invalid frozen source set schema");
+  if (sourceSetArg && (Object.keys(input).sort().join("|") !== "cases|schema" ||
+    input.cases.some(item => Object.keys(item).sort().join("|") !== "caseId|query") ||
+    new Set(input.cases.map(item => item.caseId)).size !== input.cases.length))
+    throw new Error("frozen source set must contain unique case IDs and questions only");
   privateCandidates = input.cases.map(item => {
     const caseId = item.caseId || item.id;
     const question = item.query || item.question;
@@ -42,7 +50,7 @@ const historyExactCommits = value => execFileSync("git", ["log", "--all", "--for
   { encoding: "utf8" }).trim().split(/\s+/).filter(Boolean);
 let report;
 if (privateCandidates) {
-  report = { mode: "private-candidates", trackedTextFiles: textFiles.length,
+  report = { mode: sourceSetArg ? "private-source-set" : "private-candidates", trackedTextFiles: textFiles.length,
     cases: privateCandidates.map(item => ({ caseId: item.caseId, question: hits(item.question),
       localGitHistoryExactCommits: historyExactCommits(item.question),
       ...(item.answer ? { answer: hits(item.answer), localGitHistoryExactAnswerCommits: historyExactCommits(item.answer) } : {}) })) };

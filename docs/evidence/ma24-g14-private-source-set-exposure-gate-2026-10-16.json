@@ -1,0 +1,36 @@
+{
+  "schema": "ma24-g14-private-source-set-exposure-gate-receipt-v1",
+  "date": "2026-10-16",
+  "scope": "Offline pre-freeze exact public exposure check for a private ma24-g16-source-set-v1 question set",
+  "script": "scripts/audit-ma24-g14-public-question-exposure.mjs",
+  "newArgument": "--source-set-file=<ignored file under tmp/ma24-independent-quarantine>",
+  "behavior": "Require schema, unique case IDs, and question-only rows; check each complete query against current tracked text and local Git exact pickaxe; --fail-on-exposure rejects exact hits.",
+  "privateCandidateControl": {
+    "sourceSetPath": "tmp/ma24-independent-quarantine/fcc-mba-v2-source-set-test.json",
+    "reportPath": "tmp/ma24-independent-quarantine/fcc-mba-v2-source-set-exposure-screen.json",
+    "reportSha256": "8203c28b586b91cb66bf0b7d14aa5217f198c7fdfe77a31ab16277dfd9d1ab06",
+    "caseCount": 1,
+    "exactCurrentTreeQuestionHits": 0,
+    "exactLocalGitHistoryQuestionHits": 0,
+    "failOnExposureResult": "accepted"
+  },
+  "knownExposedRegression": {
+    "sourceSetPath": "tmp/ma24-independent-quarantine/approved-five-source-set-staging-v1.json",
+    "reportPath": "tmp/ma24-independent-quarantine/approved-five-source-set-exposure-regression.json",
+    "reportSha256": "e5733cde931bbd1b63b524517ccec285f6c4534d16d36e494a1f179dcd70e63a",
+    "caseCount": 5,
+    "casesWithExactCurrentTreeQuestionHits": 5,
+    "casesWithExactLocalGitHistoryQuestionHits": 5,
+    "failOnExposureResult": "rejected"
+  },
+  "limits": [
+    "This is a local pre-freeze CLI check, not yet a G15 runtime admission condition.",
+    "Exact matches and normalized fragments cannot prove semantic independence, source-family separation, remote cache absence or non-exposure to model providers.",
+    "The private FCC candidate preparation rollout already contains its complete question and answer; this known exposure is recorded separately.",
+    "Passing one new case does not freeze a complete G14 set or authorize paid model calls."
+  ],
+  "completeIndependentGoldSetFrozen": false,
+  "g15PaidAdmission": false,
+  "g16RealDualArmRuns": 0,
+  "g17ToG20Advanced": false
+}
