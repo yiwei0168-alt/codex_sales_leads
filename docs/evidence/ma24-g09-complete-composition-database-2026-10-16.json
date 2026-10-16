@@ -1,0 +1,37 @@
+{
+  "schema": "ma24-g09-complete-composition-database-v1",
+  "date": "2026-10-16",
+  "sourceCommit": "aad4e570dccb450734662f6bc1459a3511d7aa9f",
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --prospective-composition",
+  "checks": {
+    "finalTypeScriptAndTargetedLint": "passed",
+    "freshMigrationThrough": 135,
+    "historicalTaskBeforeFreezeInSeparateConversation": "passed",
+    "historicalCandidateAndCollector": "passed",
+    "negativeInjectionPermissionBaselineAndCandidateJournals": "passed",
+    "injectionFixtureReceiptConsumedByBothArms": "passed",
+    "prospectivePairedCollector": "passed",
+    "actualSourceBundles": 3,
+    "actualComposedBundles": 1,
+    "plannedCategoriesReadThroughUnifiedMaterialService": 5,
+    "reversedInputOrderReusesSameBundle": "passed",
+    "candidateEvaluationsObservedWithSkillRead": 5,
+    "persistedScriptedModelAttemptsObserved": 24,
+    "newBundleHumanJudgments": 0,
+    "crossAccountReadRejected": "passed",
+    "composedProspectiveReadAfterSourcePurgeRejected": "passed",
+    "composedProspectiveReadAfterFreezeRevocationRejected": "passed",
+    "incompleteCompositionRejectedWithoutNewBundle": "passed",
+    "skillEnabled": false,
+    "temporaryContainersRemaining": 0,
+    "copiedProductionData": false,
+    "realProviderModelCalls": 0
+  },
+  "priorFixtureFailures": [
+    "Initial same-conversation fixture omitted prior conversation context and was rejected by the existing source guard; corrected to separate conversations.",
+    "A frozen-result spread supplied extra metadata to a strict collector schema; corrected to explicit plan and freezeId projection."
+  ],
+  "limits": "Actual PostgreSQL journals, collector role and production material services with scripted synthetic model responses only. This proves engineering composition and revalidation, not real model quality, independent Gold, trusted binary/provider provenance, automatic activation or target cloud operation. No human judgments or production signatures were copied or created. Composed-bundle HTTP/browser interaction remains unverified in this run.",
+  "automaticActivation": false,
+  "realQualityApproval": false
+}
