@@ -1,0 +1,35 @@
+{
+  "schema": "ma24-g14-glasgow5g-product-readback-v1",
+  "date": "2026-10-16",
+  "scope": "Glasgow 5G workbook offline product extraction and isolated MA11 replay database upload, search and evidence readback",
+  "sourceSha256": "e293c28088305e1df331edfbdd49c12ab3a0415291e1be82cebbb9a8df7af4dd",
+  "privateArtifacts": {
+    "extractionPath": "tmp/ma24-independent-quarantine/glasgow5g.layout-v2.0.10.extraction.json",
+    "extractionSha256": "a30d2a449ec217927a14b23a1d60aa8765c80b55bbf28f87f45923141b574095",
+    "cloneVerifierPath": "tmp/ma24-independent-quarantine/verify-glasgow5g-xlsx-clone.ts",
+    "cloneVerifierSha256": "f87a660ab08a22aad487820abca043a60e44b8818474e72637568fc2387414f9",
+    "exactValuesReceiptPath": "tmp/ma24-independent-quarantine/glasgow5g-xlsx-product-readback-2026-10-16.json",
+    "exactValuesReceiptSha256": "6272e3fca01abd9e4f33e5ec0ea9db79d4ae8a56aab0506a93f686970c625d60"
+  },
+  "result": {
+    "extractorVersion": "layout-v2.0.10",
+    "worksheetsSucceeded": 4,
+    "pendingVisualOrOcrBlocks": 0,
+    "isolatedUploadRegistered": true,
+    "targetEvidenceBlocksRead": 2,
+    "originalCellsMatchedInProductEvidence": 10,
+    "otherAccountSearchAndReadDenied": true,
+    "syntheticUsersJobsDocumentsAndUploadDirectoryResidue": 0,
+    "modelCalls": 0,
+    "productionWrites": 0
+  },
+  "limits": [
+    "This verifies source-bound product ingestion and owner evidence readback, not a generated answer or user-visible citation.",
+    "The original workbook and detailed answer values remain Git ignored; this public metadata does not publish the candidate question or full Gold answer.",
+    "Per-case content, family independence, full set freeze, G15 admission and G16 dual-arm quality remain pending."
+  ],
+  "independentGoldApproved": 0,
+  "g15PaidAdmission": false,
+  "g16RealDualArmRuns": 0,
+  "g17ToG20": "paused"
+}
