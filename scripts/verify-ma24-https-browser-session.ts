@@ -82,7 +82,7 @@ try {
   const page = await context.newPage();
   const pageErrors: string[] = [];
   page.on("pageerror", (error) => pageErrors.push(error.message));
-  const landing = await page.goto(base, { waitUntil: "domcontentloaded" });
+  const landing = await page.goto(base, { waitUntil: "networkidle" });
   assert.equal(landing?.status(), 200);
   await page.getByRole("heading", { name: "登录销售线索工作台" }).waitFor();
   const before = await page.evaluate(async () => (await fetch("/api/auth/session")).json());
@@ -91,8 +91,16 @@ try {
   assert.equal(anonymousTasks, 401);
   await page.getByLabel("登录邮箱").fill(email);
   await page.getByLabel("密码").fill(password);
+  const loginResponse = page.waitForResponse(response => new URL(response.url()).pathname === "/api/auth/login" && response.request().method() === "POST");
   await page.getByRole("button", { name: "登录", exact: true }).click();
-  await page.getByRole("navigation", { name: "主导航" }).waitFor();
+  const completedLogin = await loginResponse;
+  assert.equal(completedLogin.status(), 200, `Browser login returned ${completedLogin.status()}`);
+  try { await page.getByRole("navigation", { name: "主导航" }).waitFor({ timeout: 10000 }); }
+  catch {
+    const session = await page.evaluate(async () => (await fetch("/api/auth/session")).json()).catch(() => null);
+    throw new Error(JSON.stringify({ browserNavigationMissing: true, url: page.url(),
+      authenticated: session?.authenticated ?? null, pageErrors }));
+  }
   const cookies = await context.cookies(base);
   const sessionCookie = cookies.find((cookie) => cookie.name === "network_copilot_session");
   assert.ok(sessionCookie);

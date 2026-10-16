@@ -1,17 +1,25 @@
 import assert from "node:assert/strict";
 import { randomBytes } from "node:crypto";
 import { spawn } from "node:child_process";
-import { existsSync } from "node:fs";
+import { cpSync, existsSync } from "node:fs";
 import { createServer } from "node:net";
 import { resolve } from "node:path";
 import nextEnv from "@next/env";
 import { Client } from "pg";
 
 nextEnv.loadEnvConfig(process.cwd());
-const httpCheck = process.argv.slice(2).includes("--http");
-assert(process.argv.slice(2).every(arg => arg === "--http"), "Unknown verifier argument");
+const browserCheck = process.argv.slice(2).includes("--browser");
+const httpCheck = browserCheck || process.argv.slice(2).includes("--http");
+assert(process.argv.slice(2).every(arg => ["--http", "--browser"].includes(arg)), "Unknown verifier argument");
 const packagedServer = resolve(".next/standalone/server.js");
 if (httpCheck) assert(existsSync(packagedServer), "Build the current standalone Web before --http");
+if (browserCheck) {
+  assert(process.env.MA24_HTTPS_PROBE_KEY && process.env.MA24_HTTPS_PROBE_CERT,
+    "Set ephemeral local HTTPS probe key and certificate paths for --browser");
+  const staticSource = resolve(".next/static");
+  assert(existsSync(staticSource), "Build the current static assets before --browser");
+  cpSync(staticSource, resolve(".next/standalone/.next/static"), { recursive: true, force: true });
+}
 const appSource = process.env.DATABASE_URL;
 const migrationSource = process.env.DATABASE_MIGRATION_URL;
 assert(appSource && migrationSource, "Separate local app and migration URLs required");
@@ -187,6 +195,23 @@ try {
         assert.equal(logout.status, 200);
         const loggedOut = await fetch(`${base}/api/auth/session`, { headers: { cookie: firstCookie } });
         assert.equal((await loggedOut.json() as { authenticated: boolean }).authenticated, false);
+        if (browserCheck) {
+          const result = await new Promise<{ code: number | null; output: string }>((resolveResult, reject) => {
+            const browserEnv: NodeJS.ProcessEnv = { ...process.env, DATABASE_URL: appTarget.toString(),
+              DATABASE_MIGRATION_URL: migrationTarget.toString(), MA24_HTTPS_PROBE_UPSTREAM: base };
+            delete browserEnv.MA24_HTTPS_PROBE_OLD_WEB;
+            const child = spawn(process.execPath, ["scripts/run-tsx.cjs", "scripts/verify-ma24-https-browser-session.ts"], {
+              cwd: process.cwd(), windowsHide: true, stdio: ["ignore", "pipe", "pipe"], env: browserEnv,
+            });
+            let output = "";
+            child.stdout.on("data", data => { output = (output + String(data)).slice(-5000); });
+            child.stderr.on("data", data => { output = (output + String(data)).slice(-5000); });
+            child.once("error", reject);
+            child.once("exit", code => resolveResult({ code, output }));
+          });
+          assert.equal(result.code, 0, result.output);
+          assert(result.output.includes('"httpsBrowserSession":"passed"'), result.output);
+        }
       } finally {
         if (web.exitCode === null) {
           web.kill();
@@ -200,7 +225,8 @@ try {
     laterStageAbsent: true, repeatRejected: true, syntheticMembers: 2,
     membersProvisionedThroughAppRole: true, passwordsVerified: true,
     manualCompanyWrittenAndRead: true, otherMemberReadAndWriteDenied: true,
-    packagedHttpLoginWriteReadIsolationAndLogout: httpCheck, copiedProductionData: false }));
+    packagedHttpLoginWriteReadIsolationAndLogout: httpCheck,
+    loopbackHttpsBrowserWorkflow: browserCheck, copiedProductionData: false }));
 } finally {
   if (created) await admin.query(`drop database "${name}" with (force)`);
   await admin.end();
