@@ -19,6 +19,7 @@ import {prepareRecordedSkillCandidateSnapshot} from '../../src/lib/assistant/mai
 import {prepareSkillAcceptanceBaseline} from '../../src/lib/assistant/main/skill-acceptance-baseline';
 import {verifyConfiguredSignedCandidateDatabase} from './configured-signed-candidate-db';
 import {registerSignedProspectiveFixture} from './signed-prospective-registration-db';
+import {verifyConfiguredSignedSafetyDatabase} from './configured-signed-safety-db';
 
 /** Real signing closures and app-role persistence with synthetic network/billing.
  * Does not qualify production network, billing or deployment identity. */
@@ -110,8 +111,10 @@ export async function verifyTaskTransportJournalDatabase(pool:Pool,owner:string,
  await assert.rejects(verifyOwnedTaskModelTransports({userId:owner},{runId}),/gaps/);
  await pool.query("update agent_tool_call set call_key='mode-model:0:0:1' where id=$1",[ids[1]]);
  await verifyOwnedTaskModelTransports({userId:owner},{runId});
- const configuredCandidate=await verifyConfiguredSignedCandidateDatabase(pool,{owner,runId,skillId,directory,keyPath,keyId:key.keyId,collectorId,deploymentHash,
-  prospective:prospective?{jobId:capture!.id,frozen:prospective.frozen}:undefined});
+ const collectorInput={owner,runId,skillId,directory,keyPath,keyId:key.keyId,collectorId,deploymentHash};
+ const configuredCandidate=process.env.MA24_CONFIGURED_SAFETY==='1'
+  ?await verifyConfiguredSignedSafetyDatabase(pool,collectorInput)
+  :await verifyConfiguredSignedCandidateDatabase(pool,{...collectorInput,prospective:prospective?{jobId:capture!.id,frozen:prospective.frozen}:undefined});
  return {originalTaskJournalDatabase:true,originalTaskSignedFallbackReadback:true,originalTaskRecoveryReuse:true,
   originalTaskCrossAccountRejected:true,originalTaskKeyRevocationRejected:true,originalTaskTamperedSignatureRejected:true,originalTaskRouteGapRejected:true,
   originalTaskCompiledAdmissionVerified:true,originalTaskRequestFactoryAdmissionExecuted:true,originalTaskRequestClosureExecuted:true,

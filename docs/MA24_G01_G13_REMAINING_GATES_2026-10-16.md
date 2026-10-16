@@ -153,3 +153,5 @@ G09 完整 historical 配置入口已通过实际数据库签发/候选执行/�
 G09 候选签发已补计费操作与 evaluationId 精确绑定，54 项定向回归、类型/lint 通过；完整历史候选数据库回归随后退出 0，链路通过且 Skill 保持停用。[证据](evidence/ma24-g09-evaluation-billing-binding-2026-10-17.json)。
 
 G09/G10 完整 prospective 配置入口已通过实际数据库联验：先登记/冻结，再真实触发器捕获新任务，完成签名原流程及候选执行/签发/审核/收集，Skill 保持停用。仅工程合成模型响应，其余题型联合验收、生产身份和最终启用仍待办。[收据](evidence/ma24-g09-configured-prospective-database-2026-10-17.json)。
+
+G09 三类安全题六臂配置入口签发/持久审核/收集与统一回读已通过实际数据库联验，人工判定为空，Skill 仍停用。脚本化响应不构成真实质量；同冻结五类联合材料、生产身份和最终启用事务仍待办。[收据](evidence/ma24-g09-configured-safety-database-2026-10-17.json)。

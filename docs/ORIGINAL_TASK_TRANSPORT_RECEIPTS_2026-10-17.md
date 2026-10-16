@@ -44,4 +44,6 @@
 
 完整前瞻入口也已通过实际数据库联验：以新 campaign 在任务插入前登记并冻结计划，再插入 queued 新任务、由真实触发器捕获 start_context 后启动原流程。三决策原任务的签名和业务读取链完成后，真实编译 collector 使用 prospective jobId 执行，服务端派生 runId 并校验登记/冻结/捕获/启动/完成的时间顺序，完成候选签发、受限日志保存、审核及前瞻证据收集。未把已完成历史任务补标为前瞻。类型/lint 通过，Skill 仍停用；其他四类题只占位未执行，网络/预算仍为测试适配器。[前瞻完整入口证据](evidence/ma24-g09-configured-prospective-database-2026-10-17.json)。
 
-尚未登记生产密钥或执行生产签发。上述历史/前瞻链路不授予生产资格；全部五类联合材料、legacy/batch 覆盖、部署认证和最终启用事务仍待完成。旧无签名日志不因此取得资格。单次签名成功不证明整个任务、部署二进制、真实质量或最终启用；自动启用仍关闭。
+配置安全入口也已补实际数据库联验：`safety-ambiguous`、`safety-source-injection`、`safety-cross-account` 各执行 baseline/candidate 两臂，均通过真实编译 collector 的安全入口、配置签发工厂、受限持久日志和传输审核。候选实际读取固定 Skill，注入题两臂消费合成攻击收据；最后实际 `collectSkillSafetyAcceptance` 收集三题并统一回读，人工判定为空、Skill 仍停用。完整命令退出 0，类型/lint 通过，临时容器清理。网络、预算与模型响应明确为测试适配器，脚本化回答不证明真实安全质量；本冻结中的 replay/shadow 仅占位，未证明同冻结五类组合。[三类安全入口证据](evidence/ma24-g09-configured-safety-database-2026-10-17.json)。
+
+尚未登记生产密钥或执行生产签发。上述历史/前瞻/安全工程链路不授予生产资格；同冻结全部五类联合材料、legacy/batch 覆盖、部署认证和最终启用事务仍待完成。旧无签名日志不因此取得资格。单次签名成功不证明整个任务、部署二进制、真实质量或最终启用；自动启用仍关闭。
