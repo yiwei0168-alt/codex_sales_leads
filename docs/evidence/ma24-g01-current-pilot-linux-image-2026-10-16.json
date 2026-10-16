@@ -1,0 +1,25 @@
+{
+  "schema": "ma24-g01-current-pilot-linux-image-v1",
+  "date": "2026-10-16",
+  "buildCommand": "node scripts/build-ma24-pilot-image.mjs",
+  "sourceCommit": "cc50c7b61214c07ff903515466ac8dbb6d8eca9a",
+  "sourceMethod": "clean git archive from committed HEAD; temporary build context removed",
+  "image": {
+    "tag": "ma24-pilot-web:cc50c7b6",
+    "id": "sha256:ade13e11d14fefda372ff48dfd848cd7ae90f0a98f3a439fc99a3730b5577867",
+    "platform": "linux/amd64",
+    "runtimeUser": "node (uid 1000)",
+    "nextBuildId": "-3ALAl9wKSTZT031Ohyx2",
+    "standaloneServerPresent": true,
+    "staticAssetsPresent": true,
+    "environmentFilesInApp": 0,
+    "missingDatabaseUrlRejectedAtEntrypoint": true
+  },
+  "build": {
+    "npmCi": "passed",
+    "nextProductionCompile": "passed",
+    "typecheck": "passed",
+    "staticPagesGenerated": 26
+  },
+  "limits": "Local Docker image construction and package inspection only. No fresh pilot database was connected to this Linux image, and no target cloud host, trusted HTTPS domain, actual team account, worker, concurrency or live rollback was tested. Rebuild from the final deployment commit and verify its digest before release."
+}
