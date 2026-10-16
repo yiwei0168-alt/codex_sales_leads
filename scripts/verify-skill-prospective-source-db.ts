@@ -14,6 +14,7 @@ import {disableLocalAnalysisTracing} from '../src/lib/assistant/main/local-analy
 import type {SkillCollectorTransaction} from '../src/lib/assistant/main/skill-model-journal';
 import {encryptMailboxContent} from '../src/lib/mailbox/crypto';
 import {getMailboxMessageForReview} from '../src/lib/mailbox/repository';
+import {readCustomerTimeline,listMailboxCustomers} from '../src/lib/mailbox/customer-timeline';
 import {initialTaskMessages} from '../src/lib/assistant/main/initial-task-messages';
 import {decisionMemoryMessage} from '../src/lib/assistant/main/decision-memory-message';
 import {loadDecisionMemory} from '../src/lib/assistant/main/memory-context';
@@ -54,6 +55,7 @@ try{
   await pool.query(await readFile('db/migrations/144_skill_task_origin_locks.sql','utf8'));
   await pool.query(await readFile('db/migrations/145_skill_attachment_source_locks.sql','utf8'));
   await pool.query(await readFile('db/migrations/146_skill_model_freeze_serialization.sql','utf8'));
+  await pool.query(await readFile('db/migrations/147_skill_timeline_source_locks.sql','utf8'));
  }
  for(const id of [owner,other])await pool.query("insert into app_user(id,email,display_name,role,status) values($1,$2,'Synthetic prospective source','member','active')",[id,`${id}@example.invalid`]);
  await pool.query("insert into assistant_conversation(id,user_id,title) values($1,$2,'Synthetic prospective source')",[conversation,owner]);
@@ -104,6 +106,15 @@ try{
  await pool.query(`insert into mailbox_message(id,user_id,connection_id,folder_path,uid_validity,message_uid,direction,content_sha256,content_ciphertext)
   values($1,$2,$3,'INBOX','synthetic',1,'inbound',$4,$5)`,[mail,owner,connection,hash,content]);
  const mailData=await getMailboxMessageForReview(owner,mail);assert(mailData);
+ const customerId=randomUUID(),timelineCall=randomUUID(),customerListCall=randomUUID();
+ let timelineData:Awaited<ReturnType<typeof readCustomerTimeline>>=null;
+ let customerListData:Awaited<ReturnType<typeof listMailboxCustomers>>|undefined;
+ if(fullComposition){
+  await pool.query("insert into mailbox_customer(id,user_id,identity_key,name) values($1,$2,$1::uuid::text,'Synthetic composition customer')",[customerId,owner]);
+  await pool.query('insert into mailbox_customer_message(user_id,customer_id,message_id) values($1,$2,$3)',[owner,customerId,mail]);
+  timelineData=await readCustomerTimeline(owner,customerId);assert(timelineData);assert.equal(timelineData.events.length,1);
+  customerListData=await listMailboxCustomers(owner);assert.equal(customerListData.items.length,1);
+ }
  const writeCall=async(id:string,tool:string,effect:string,args:unknown,output:unknown,key=id)=>pool.query(`insert into agent_tool_call
   (id,user_id,run_id,call_key,tool_id,tool_version,input_hash,input,effect,status,output)
   values($1,$2,$3,$9,$4,'1',$5,$6,$7,'completed',$8)`,[id,owner,run,tool,digest(args),JSON.stringify(args),effect,JSON.stringify(output),key]);
@@ -114,13 +125,25 @@ try{
   const replies:ModelMessage[]=[{role:'assistant',content:null,tool_calls:[{id:'source-describe-mail',type:'function',function:{name:'describe_tool',arguments:JSON.stringify({tool:'mail_read'})}}]},
    {role:'assistant',content:null,tool_calls:[{id:'source-mail-read',type:'function',function:{name:'execute_tool',arguments:JSON.stringify({tool:'mail_read',arguments:{messageId:mail}})}}]},
    {role:'assistant',content:baselineAnswer}];
+  if(fullComposition){
+   replies[0].tool_calls!.push({id:'source-describe-timeline',type:'function',function:{name:'describe_tool',arguments:JSON.stringify({tool:'customer_timeline'})}});
+   replies[1].tool_calls!.push(
+    {id:'source-timeline-read',type:'function',function:{name:'execute_tool',arguments:JSON.stringify({tool:'customer_timeline',arguments:{customerId}})}},
+    {id:'source-customer-list',type:'function',function:{name:'execute_tool',arguments:JSON.stringify({tool:'customer_timeline',arguments:{}})}});
+  }
   for(const [step,message] of replies.entries()){
    const request={profile,index:0,messages:structuredClone(messages)},body={model:route.model,messages:transportMessages(messages),tools:modelFunctions,stream:true,reasoning:{effort:route.effort}};
    await writeCall(randomUUID(),'main_model','model',request,result({value:{message,requestManifest:modelRequestManifest(body,{model:route.model,provider:'synthetic',id:`synthetic-source-${step}`})}}),`mode-model:${step}:0:0`);
    messages.push(message);
    if(step===0)messages.push({role:'tool',tool_call_id:'source-describe-mail',content:JSON.stringify({status:'success',data:describeTool(productTools.find(tool=>tool.id==='mail_read')!)})});
+   if(step===0&&fullComposition)messages.push({role:'tool',tool_call_id:'source-describe-timeline',content:JSON.stringify({status:'success',data:describeTool(productTools.find(tool=>tool.id==='customer_timeline')!)})});
    if(step===1){const output=result(mailData,{callId:readCall});await writeCall(readCall,'mail_read','read',{messageId:mail},output,'source-mail-read');
-    messages.push({role:'tool',tool_call_id:'source-mail-read',content:JSON.stringify(output)});}
+    messages.push({role:'tool',tool_call_id:'source-mail-read',content:JSON.stringify(output)});
+    if(fullComposition)for(const [callId,key,args,data] of [[timelineCall,'source-timeline-read',{customerId},timelineData],[customerListCall,'source-customer-list',{},customerListData]] as const){
+     const timelineOutput=result(data,{callId});await writeCall(callId,'customer_timeline','read',args,timelineOutput,key);
+     messages.push({role:'tool',tool_call_id:key,content:JSON.stringify(timelineOutput)});
+    }
+   }
   }
  }else{
   await writeCall(modelCall,'main_model','model',{synthetic:true},result({synthetic:true}));
@@ -136,24 +159,27 @@ try{
  if(fullMaterial){
   const evaluationId=randomUUID(),candidateAnswer='Synthetic candidate: Please keep responses concise.';
   let requests=0;
+  const actions=[{name:'describe_tool',args:{tool:'skill_read'}},{name:'execute_tool',args:{tool:'skill_read',arguments:{id:skill.id}}},
+   {name:'describe_tool',args:{tool:'mail_read'}},{name:'execute_tool',args:{tool:'mail_read',arguments:{messageId:mail}}},
+   ...(fullComposition?[{name:'describe_tool',args:{tool:'customer_timeline'}},{name:'execute_tool',args:{tool:'customer_timeline',arguments:{customerId}}},
+    {name:'execute_tool',args:{tool:'customer_timeline',arguments:{}}}]:[])];
   const executed=await runDurableRecordedSkillCandidateArm({userId:owner},{runId:run,skillId:skill.id,version:1},'candidate',{
    frozen,evaluationId,sourceKind:'synthetic-fixture',transaction:collector,request:async request=>{
     requests++;const step=request.step;
-    const args=step===0?{tool:'skill_read'}:step===1?{tool:'skill_read',arguments:{id:skill.id}}:
-     step===2?{tool:'mail_read'}:{tool:'mail_read',arguments:{messageId:mail}};
-    const message=step<4?{role:'assistant',content:null,tool_calls:[{id:`synthetic-candidate-${step}`,type:'function',function:{name:step%2===0?'describe_tool':'execute_tool',arguments:JSON.stringify(args)}}]}:
+    const action=actions[step];
+    const message=action?{role:'assistant',content:null,tool_calls:[{id:`synthetic-candidate-${step}`,type:'function',function:{name:action.name,arguments:JSON.stringify(action.args)}}]}:
      {role:'assistant',content:candidateAnswer};
     const route=request.profile.routes[request.index],body={model:route.model,messages:transportMessages(request.messages),tools:modelFunctions,stream:true,reasoning:{effort:route.effort}};
     return {message,requestManifest:modelRequestManifest(body,{model:route.model,provider:'synthetic',id:`synthetic-candidate-${step}`})};
    }});
-  assert.equal(executed.status,'completed');assert.equal(executed.candidateSkillUsed,true);assert.equal(requests,5);
+  assert.equal(executed.status,'completed');assert.equal(executed.candidateSkillUsed,true);assert.equal(requests,actions.length+1);
   const selection={freezeId:frozen.freezeId,plan:frozen.plan,cases:[{caseId:'shadow',jobId:capture.id,evaluationId}]};
   const collected=await collectSkillProspectiveAcceptance({userId:owner},selection,collector);collectedBundle=collected.bundleId;
   assert.equal((await collectSkillProspectiveAcceptance({userId:owner},selection,collector)).bundleId,collectedBundle);
   assert.equal((await readSkillAcceptanceReview({userId:owner},collectedBundle)).cases.find(row=>row.id==='shadow')?.materialAvailable,true);
   const material=await readSkillAcceptanceReviewCase({userId:owner},{bundleId:collectedBundle,caseId:'shadow'});
-  assert.equal(material.baseline,baselineAnswer);assert.equal(material.candidate,candidateAnswer);assert.equal(material.receipts.length,1);
-  assert.equal(material.automaticActivation,false);assert.equal(requests,5);
+  assert.equal(material.baseline,baselineAnswer);assert.equal(material.candidate,candidateAnswer);assert.equal(material.receipts.length,fullComposition?3:1);
+  assert.equal(material.automaticActivation,false);assert.equal(requests,actions.length+1);
   await assert.rejects(readSkillAcceptanceReviewCase({userId:other},{bundleId:collectedBundle,caseId:'shadow'}));
   const bundleCount=(await pool.query('select count(*)::int n from agent_skill_acceptance_bundle where owner_id=$1',[owner])).rows[0].n;
   await assert.rejects(composeSkillAcceptanceEvidence({userId:owner},{bundleIds:[collectedBundle]},collector),/missing planned cases/);

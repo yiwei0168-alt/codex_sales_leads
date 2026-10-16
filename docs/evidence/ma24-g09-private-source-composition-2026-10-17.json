@@ -1,0 +1,17 @@
+{
+  "stage": "MA24 G09 combined mail, timeline and customer list material verification",
+  "date": "2026-10-17",
+  "status": "fixture prepared; typecheck and eslint passed; full fixed snapshot check pending",
+  "fixture": "synthetic encrypted mail, one owned customer, linked mail, registered attachment",
+  "baselineReceiptsExpected": ["mail_read", "customer_timeline for explicit customer", "customer_timeline account list"],
+  "candidateScriptedDecisionsExpected": 8,
+  "assertionsAdded": ["three reconstructed source receipts", "mail source locks held", "timeline source locks held for one customer", "five material cases", "missing human review still blocks policy", "automatic activation false"],
+  "fullCommand": "node scripts/run-ma24-snapshot-check.mjs --prospective-composition",
+  "exactExtraMigrations": [144, 145, 146, 147],
+  "deferredMigrations136Through140Applied": false,
+  "actualMailboxAccess": false,
+  "actualModelCalls": 0,
+  "qualityAccepted": false,
+  "productionDeployment": false,
+  "automaticActivation": false
+}
