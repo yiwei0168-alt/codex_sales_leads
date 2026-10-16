@@ -20,7 +20,7 @@ const plan=()=>({protocol:'skill-acceptance-plan-v1',pin:{ownerId:owner,skillId:
 const row=()=>({id:job,run_id:skill,campaign_id:freeze,start_context:start,
  registered_at:new Date('2026-10-16T00:00:00Z'),captured_at:new Date('2026-10-16T01:01:00Z'),
  task_started_at:new Date('2026-10-16T01:02:00Z'),ready_at:new Date('2026-10-16T02:00:00Z'),task_input:input,model_config:config});
-const shadow=()=>({capture:{jobId:job,runId:skill,campaignId:freeze,start},config:{selection:{kind:'whole-read-only-task'}},snapshot:{bound:true}});
+const shadow=()=>({capture:{jobId:job,runId:skill,campaignId:freeze,start,final:{pinnedSkills:[] as Array<{skillId:string;version:number}>}},config:{selection:{kind:'whole-read-only-task'}},snapshot:{bound:true}});
 const args=()=>({jobId:job,freezeId:freeze,caseId:'shadow',plan:plan()});
 beforeEach(()=>{vi.resetAllMocks();mocks.query.mockResolvedValue([row()]);mocks.freeze.mockResolvedValue({});mocks.shadow.mockResolvedValue(shadow());});
 it('binds a frozen pre-task capture without using or promoting local model output',async()=>{
@@ -65,4 +65,8 @@ it('rechecks source permissions and snapshot before returning the binding',async
  await expect(prepareSkillProspectiveSource({userId:owner},args())).rejects.toThrow('revoked during');
  mocks.shadow.mockResolvedValueOnce(shadow()).mockResolvedValueOnce({...shadow(),snapshot:{bound:false}});
  await expect(prepareSkillProspectiveSource({userId:owner},args())).rejects.toThrow('source changed');
+});
+it('rejects an original task that already pinned the evaluated Skill',async()=>{
+ const saved=shadow();saved.capture.final.pinnedSkills=[{skillId:skill,version:1}];mocks.shadow.mockResolvedValue(saved);
+ await expect(prepareSkillProspectiveSource({userId:owner},args())).rejects.toThrow('baseline already used');
 });

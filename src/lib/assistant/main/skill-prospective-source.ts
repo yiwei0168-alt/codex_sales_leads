@@ -50,6 +50,9 @@ export async function prepareSkillProspectiveSource(context:{userId:string},inpu
  if(shadow.capture.jobId!==before.id||shadow.capture.runId!==before.run_id||shadow.capture.campaignId!==before.campaign_id
   ||digest(shadow.capture.start)!==digest(before.start_context)
   ||shadow.config.selection.kind!=='whole-read-only-task')throw new Error('Prospective capture selection changed');
+ const pinned=z.object({pinnedSkills:z.array(z.object({skillId:z.uuid(),version:z.number().int().positive()}).passthrough())})
+  .passthrough().parse(shadow.capture.final).pinnedSkills;
+ if(pinned.some(row=>row.skillId===plan.pin.skillId))throw new Error('Prospective baseline already used the evaluated Skill');
  // Existing shadow preparation rechecks current Skill/source permissions, completed
  // source receipts, immutable capture and unsupported added instructions. Its local
  // model output is deliberately not used as either production arm here.
@@ -61,7 +64,7 @@ export async function prepareSkillProspectiveSource(context:{userId:string},inpu
   jobId:p.jobId,campaignId:before.campaign_id,runId:before.run_id,freezeId:p.freezeId,
   caseId:p.caseId,planHash:digest(plan),inputHash:item.inputHash,sourceHash:item.sourceHash,
   capturedAt:before.captured_at.toISOString(),taskStartedAt:before.task_started_at!.toISOString(),
-  taskCompletedAt:before.ready_at!.toISOString(),snapshotHash:digest(shadow.snapshot)};
+  taskCompletedAt:before.ready_at!.toISOString(),snapshotHash:digest(shadow.snapshot),evaluatedSkillAbsentFromBaseline:true};
  return {projection,projectionHash:digest(projection),prospectiveCaptureVerified:true as const,
   localComparisonPromoted:false as const,productionAgentEquivalent:false as const,automaticActivation:false as const};
 }

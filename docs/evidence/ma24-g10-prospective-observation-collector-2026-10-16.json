@@ -1,0 +1,25 @@
+{
+  "schema": "ma24-g10-prospective-observation-collector-v1",
+  "date": "2026-10-16",
+  "commands": [
+    "node node_modules/vitest/vitest.mjs run src/lib/assistant/main/skill-prospective-collector.test.ts src/lib/assistant/main/skill-prospective-source.test.ts",
+    "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --prospective-source"
+  ],
+  "checks": {
+    "unitTestsPassed": 34,
+    "sourceAndTwoArmServerProjectionBinding": "passed with mocked journal audits",
+    "candidateFreezeSkillInputConfigAndTimeDrift": "rejected",
+    "changedSourceBaselineAndCandidateOnFinalRecheck": "rejected",
+    "missingRouteReceiptsAndFreezeRevocation": "rejected",
+    "submittedObservationsAndDuplicateReferences": "rejected",
+    "derivedArtifactAndReadbackHash": "passed with mocked collector transaction",
+    "evaluatedSkillAlreadyPinnedInOriginalTask": "rejected",
+    "actualDatabaseSourceIntegrationAfterGuardChange": "passed with synthetic source fixtures",
+    "sourceCategoryPromoted": false,
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "modelCalls": 0,
+    "productionWrites": 0
+  },
+  "limits": "The collector code is tested with mocked baseline/candidate audit and persistence boundaries. Actual database capture/source validation was rerun, but full paired model journals through collector persistence, review API/UI, real task quality and production identity remain unverified. No automatic activation was enabled."
+}
