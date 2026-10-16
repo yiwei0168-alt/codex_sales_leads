@@ -1190,3 +1190,5 @@ MODESEL-15：53 项本地测试通过。旧入口仅返回停用提示，配置�
 2026-10-16 / G01 运行权限：本机候选 Web 在移除迁移凭据与付费覆盖开关后，重新通过 HTTPS Chrome 登录及退出；试用目标环境仍须配置专用受限运行凭据。[运行权限收据](evidence/ma24-g01-pilot-web-runtime-boundary-2026-10-16.json)。
 
 2026-10-16 / G01 试用入口只读补验：匿名任务接口拒绝，合成成员可读取任务列表并打开线索、任务页面；创建、执行、业务结果及真实账号仍待验收。[浏览器收据](evidence/ma24-g01-loopback-https-browser-session-2026-10-16.json)。
+
+2026-10-16 / G01 合成线索闭环：候选 HTTPS 页面可见手动添加公司的 API 写入结果，旧版 Web API 在同一迁移库可读取候选记录；测试数据完整清理，付费调用 0。真实业务质量、流量切换、worker 与数据库回滚仍待验。[收据](evidence/ma24-g01-pilot-manual-lead-old-web-read-2026-10-16.json)。

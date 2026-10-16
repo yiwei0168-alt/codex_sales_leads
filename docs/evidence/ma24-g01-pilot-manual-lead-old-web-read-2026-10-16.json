@@ -1,0 +1,25 @@
+{
+  "schema": "ma24-g01-pilot-manual-lead-old-web-read-v1",
+  "date": "2026-10-16",
+  "scope": "local product database with synthetic account and company; no team release",
+  "candidate": {"sourceCommit": "18ff5906", "address": "127.0.0.1:3022"},
+  "oldWeb": {"address": "127.0.0.1:3000", "candidateCreatedCompanyRead": true},
+  "checks": {
+    "httpsChromeLoginForm": "passed",
+    "manualCompanyApiWrite": "passed",
+    "candidateWorkspaceApiRead": "passed",
+    "candidateSalesLeadPageRead": "passed",
+    "oldWebWorkspaceApiRead": "passed",
+    "paidReservationsForSyntheticUser": 0,
+    "actualModelSearchOrMailCalls": 0,
+    "syntheticUserWorkspaceCompanyRemaining": [0, 0, 0],
+    "typecheck": "passed",
+    "targetedEslint": "passed",
+    "diffCheck": "passed"
+  },
+  "limits": [
+    "The company was a unique synthetic record marked unverified; no real lead quality or enrichment was assessed",
+    "Old Web read compatibility does not prove a traffic switch, worker compatibility or an actual rollback",
+    "No remote HTTPS domain, real team accounts or live business task execution was verified"
+  ]
+}
