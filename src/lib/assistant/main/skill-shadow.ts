@@ -7,6 +7,7 @@ import {skillSourcesCurrent,type SourcedSkillVersion} from './skill-source-guard
 import {prepareHistoricalSkillReplay,type historicalSkillReplayInput} from './skill-replay-snapshot';
 import {localReplayModel} from './skill-replay-local';
 import {runGraphSkillReplay,SKILL_GRAPH_REPLAY_CONFIG} from './skill-graph-replay';
+import {assertSkillShadowLease} from './skill-shadow-lease';
 
 const sha=z.string().regex(/^[a-f0-9]{64}$/);
 export const SHADOW_MODEL_DIGEST='500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41';
@@ -22,7 +23,7 @@ export const shadowConfigSchema=z.object({protocol:z.literal('prospective-local-
 
 /** Operator/worker fingerprint; never reads environment files or private corpus. */
 export async function shadowRuntimeHash(){
- const files=['src/lib/assistant/main/skill-shadow.ts','src/lib/assistant/main/skill-replay-snapshot.ts',
+ const files=['src/lib/assistant/main/skill-shadow.ts','src/lib/assistant/main/skill-shadow-lease.ts','src/lib/assistant/main/skill-replay-snapshot.ts',
   'src/lib/assistant/main/local-analysis-boundary.ts',
   'src/lib/assistant/main/skill-replay.ts','src/lib/assistant/main/skill-replay-local.ts','src/lib/assistant/main/skill-replay-errors.ts',
   'src/lib/assistant/main/skill-graph-replay.ts','src/lib/assistant/main/graph.ts','src/lib/assistant/main/product.ts',
@@ -100,13 +101,8 @@ export async function prepareSkillShadow(context:Context){
  // Reconstruction may outlast the lease. Recheck with the database clock after
  // the expensive reads, rather than relying on the earlier transaction timestamp.
  if(context.leaseToken){
-  const current=await tenantQuery<{valid:boolean}>(context.userId,`select true as valid
-   from agent_skill_shadow_job j join agent_skill_shadow_campaign c on c.id=j.campaign_id and c.owner_id=j.owner_id
-   where j.id=$1 and j.owner_id=$2 and j.state='running' and j.lease_token=$3
-    and j.lease_until>clock_timestamp() and c.enabled and c.expires_at>clock_timestamp()
-    and j.ready_at>clock_timestamp()-($4::integer*interval '1 second')`,
-  [context.jobId,context.userId,context.leaseToken,config.maximumAgeSeconds]);
-  if(current.length!==1||current[0].valid!==true)throw new Error('Shadow lease or task age changed during preparation');
+  const leaseContext={...context,leaseToken:context.leaseToken};
+  await tenantTransaction(context.userId,client=>assertSkillShadowLease(client,leaseContext,config.maximumAgeSeconds));
  }
  return {capture:{jobId:job.id,campaignId:job.campaign_id,runId:job.run_id,start:job.start_context,final:job.final_context},
   config,snapshot,observedProductionResult:job.reply,

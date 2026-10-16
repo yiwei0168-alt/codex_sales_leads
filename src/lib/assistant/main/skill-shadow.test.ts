@@ -22,7 +22,7 @@ beforeEach(async()=>{
   state:'running',lease_token:id(3),lease_valid:true,ready_at:new Date(),instructions:[],reply:{reply:'Actual production observation'},
   start_context:{kind:'prospective-server-capture',campaignId:id(5),skillId:id(6),version:1,contentHash:digest(files),sourceHash,config,inputHash:'a',modelConfigHash:'b'},
   final_context:final,current_context:final};
- mocks.query.mockImplementation(async(sql:string)=>({rows:[sql.includes('select j.*')?job:version]}));
+ mocks.query.mockImplementation(async(sql:string)=>({rows:[sql.includes('select true as valid')?{valid:true}:sql.includes('select j.*')?job:version]}));
  mocks.tenant.mockImplementation(async(_u:string,sql:string)=>sql.includes('claim_skill_shadow_job')?[{id:id(2),lease_token:id(3)}]:sql.includes('select true as valid')?[{valid:true}]:[{ok:true}]);
  const receipt={tool:'knowledge_search',arguments:{question:'Synthetic count?'},result:{status:'success',data:[]}};
  const suite={id:'synthetic-shadow',ownerId:id(1),skill:{id:id(6),version:1,files,contentHash:digest(files),sourceHash},
@@ -60,7 +60,7 @@ it('revalidates after generation and discards changed sources',async()=>{
 });
 it('rejects a lease lost while reconstructing the snapshot before model access',async()=>{
  mocks.snapshot.mockImplementation(async()=>{
-  mocks.tenant.mockImplementation(async(_u:string,sql:string)=>sql.includes('select true as valid')?[]:[{ok:true}]);
+  mocks.query.mockResolvedValue({rows:[]});
   return {};
  });
  await expect(prepareSkillShadow(context)).rejects.toThrow('changed during preparation');

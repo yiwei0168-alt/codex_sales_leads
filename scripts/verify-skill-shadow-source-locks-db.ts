@@ -6,6 +6,7 @@ import {Pool} from 'pg';
 import {getPool} from '../src/lib/rag/db';
 import {digest} from '../src/lib/assistant/main/contracts';
 import {importSkill} from '../src/lib/assistant/main/skills';
+import {assertSkillShadowLease} from '../src/lib/assistant/main/skill-shadow-lease';
 nextEnv.loadEnvConfig(process.cwd());
 assert.equal(process.env.MA24_DISPOSABLE_SHADOW_SOURCE_LOCKS,'1');
 const admin=new URL(process.env.DATABASE_MIGRATION_URL!);assert(['127.0.0.1','localhost'].includes(admin.hostname));
@@ -48,6 +49,27 @@ try{
   await assert.rejects(check.query('select lock_skill_shadow_sources($1::uuid[],$2::uuid[])',[[job,job],[run,run]]),/Invalid/);
   await assert.rejects(check.query('select lock_skill_shadow_sources($1::uuid[],$2::uuid[])',[[job],[]]),/Invalid/);
   await assert.rejects(check.query('update agent_skill_shadow_job set reason=$2 where id=$1',[job,'forbidden']),/permission denied/);
- }finally{check.release();}
+ }finally{await check.query('reset role');check.release();}
+ const leaseToken=randomUUID(),leaseContext={userId:owner,jobId:job,leaseToken};
+ for(const boundary of ['lease','campaign','age'] as const){
+  await pool.query("update agent_skill_shadow_campaign set enabled=true,expires_at=clock_timestamp()+interval '1 hour' where id=$1",[campaign]);
+  await pool.query("update agent_skill_shadow_job set state='running',lease_token=$2,lease_until=clock_timestamp()+interval '1 hour',ready_at=clock_timestamp() where id=$1",[job,leaseToken]);
+  if(boundary==='lease')await pool.query("update agent_skill_shadow_job set lease_until=clock_timestamp()+interval '2 seconds' where id=$1",[job]);
+  if(boundary==='campaign')await pool.query("update agent_skill_shadow_campaign set expires_at=clock_timestamp()+interval '2 seconds' where id=$1",[campaign]);
+  const timed=await pool.connect();
+  try{
+   await timed.query('begin');await timed.query('set local role network_copilot_app');await timed.query("select set_config('app.current_user_id',$1,true)",[owner]);
+   await assertSkillShadowLease(timed,leaseContext,boundary==='age'?2:1800);
+   await timed.query('select pg_sleep(2.1)');
+   await assert.rejects(assertSkillShadowLease(timed,leaseContext,boundary==='age'?2:1800),/changed during preparation/);
+  }finally{await timed.query('rollback');timed.release();}
+ }
+ await pool.query("update agent_skill_shadow_campaign set expires_at=clock_timestamp()+interval '1 hour' where id=$1",[campaign]);
+ const isolated=await pool.connect();
+ try{
+  await isolated.query('begin');await isolated.query('set local role network_copilot_app');await isolated.query("select set_config('app.current_user_id',$1,true)",[other]);
+  await assert.rejects(assertSkillShadowLease(isolated,leaseContext,1800),/changed during preparation/);
+ }finally{await isolated.query('rollback');isolated.release();}
+ console.log(JSON.stringify({shadowLeaseWallClockDatabase:'passed',leaseExpiryInSameTransactionRejected:true,campaignExpiryInSameTransactionRejected:true,taskAgeInSameTransactionRejected:true,crossAccountLeaseRejected:true,actualModelCalls:0,automaticActivation:false}));
  console.log(JSON.stringify({shadowSourceLocksDatabase:'passed',campaignDisableWaits:true,captureRewriteWaits:true,writersResume:true,crossAccountRejected:true,wrongRunRejected:true,invalidBindingsRejected:true,noNewTableWriteGrant:true,activationWiring:false,automaticActivation:false,actualModelCalls:0}));
 }finally{await pool.end();await getPool().end();}

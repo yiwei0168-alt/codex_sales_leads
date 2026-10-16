@@ -172,3 +172,5 @@ G09 同一冻结下的配置签发五类联合材料已通过实际数据库工�
 G09 前瞻元数据锁已实现并接入：实际新库并发、28 项回归、类型/lint 通过；同冻结五类新锁回归仍运行。`sourceRevocationsLocked` 保持 false，不视为全部来源或最终启用完成。[证据](evidence/ma24-g09-prospective-source-locks-2026-10-17.json)。
 
 G09/G10 影子租约准备新增重建后数据库时钟复查，17 项回归、类型/lint 通过；实际数据库跨到期边界仍待验，修改后的完整联验不沿用上一版通过结论。[证据](evidence/ma24-g09-shadow-lease-recheck-2026-10-17.json)。
+
+影子租约后续实际新库时间边界验收已通过：同事务租约/campaign/任务年龄到期和跨账号均拒绝，产品与夹具共享检查函数；完整五类联验仍待进行，G09 未关闭。[证据](evidence/ma24-g09-shadow-lease-recheck-2026-10-17.json)。
