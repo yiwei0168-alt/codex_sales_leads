@@ -1,0 +1,38 @@
+{
+  "stage": "G09 fixed collector image packaging and isolated startup",
+  "date": "2026-10-16",
+  "commit": "492e56474414e10d9a22157e4cd7063b8180043e",
+  "image": "ma24-skill-collector:492e5647",
+  "imageId": "sha256:f19775de2884e75f868e2b73a1a705a81a37bdf1bd7009102d682212212b663c",
+  "baseImage": "node:24-bookworm-slim@sha256:0e0ff40c39bc087845bfb27465a0df4ea419520094bc35842ff83dd8cbe6f9b6",
+  "commands": [
+    "node --test scripts/skill-collector-package.test.mjs",
+    "node scripts/build-skill-collector-image.mjs",
+    "node scripts/verify-skill-collector-image.mjs ma24-skill-collector:492e5647",
+    "node scripts/verify-ma24-image-source.mjs ma24-skill-collector:492e5647 492e5647"
+  ],
+  "exitCodes": [0, 0, 0, 0],
+  "checks": {
+    "committedGitArchiveOnly": true,
+    "lockedNpmInstall": true,
+    "sourceInputCount": 907,
+    "sourceInventoryHash": "08a7274e97d5aaffe39718b8e6e9d8276c65a8e0d783a8e529c98867bc591c7a",
+    "runtimeInventoryEntries": 34422,
+    "nodeExecutableHashBound": true,
+    "nonRootReadOnlyNoNetwork": true,
+    "changedRunnerRejectedBeforeExecution": true,
+    "helpAfterIntegrityVerification": true,
+    "temporaryContainersAndTamperFileCleaned": true,
+    "targetedEslint": true
+  },
+  "releaseRoots": [".skill-runtime-source", "node_modules", "package-integrity.mjs", "package-lock.json", "package.json", "runner.cjs", "runtime-manifest.json", "start.mjs"],
+  "actualModelCalls": 0,
+  "productionQualified": false,
+  "providerAttestation": false,
+  "automaticActivation": false,
+  "limitations": [
+    "Inventory verifier and manifest are inside the same image; operator/external trust must pin the approved image digest.",
+    "No production host, registry publication, provisioned production key or live provider execution was verified.",
+    "The image was only started for integrity verification and help, not --execute."
+  ]
+}
