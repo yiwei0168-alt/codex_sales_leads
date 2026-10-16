@@ -8,7 +8,7 @@
   "regression": "simulated PostgreSQL JSON roundtrip preserves request/outcome hashes and reuses saved output with missing optional usage",
   "typecheck": "passed",
   "eslint": "passed",
-  "fullConfiguredCandidateDatabaseRerun": "running; not yet accepted",
+  "fullConfiguredCandidateDatabaseRerun": "subsequently passed with explicit synthetic network/billing adapters; see ma24-g09-configured-signed-candidate-database-2026-10-17.json",
   "actualModelCalls": 0,
   "productionQualificationGranted": false,
   "automaticActivation": false

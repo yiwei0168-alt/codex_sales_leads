@@ -17,6 +17,7 @@ import {replayRecordedGraphTrace} from '../../src/lib/assistant/main/recorded-gr
 import {dispatchTool} from '../../src/lib/assistant/main/executor';
 import {prepareRecordedSkillCandidateSnapshot} from '../../src/lib/assistant/main/skill-candidate-source';
 import {prepareSkillAcceptanceBaseline} from '../../src/lib/assistant/main/skill-acceptance-baseline';
+import {verifyConfiguredSignedCandidateDatabase} from './configured-signed-candidate-db';
 
 /** Real signing closures and app-role persistence with synthetic network/billing.
  * Does not qualify production network, billing or deployment identity. */
@@ -33,7 +34,7 @@ export async function verifyTaskTransportJournalDatabase(pool:Pool,owner:string,
  const messages=[initial[0],decisionMemoryMessage(await loadDecisionMemory(owner)),...initial.slice(1)];
  await pool.query("insert into mailbox_customer(id,user_id,identity_key,name) values($1,$2,$3,'Synthetic signed read customer')",[randomUUID(),owner,randomUUID()]);
  const pair=generateKeyPairSync('ed25519'),collectorId='synthetic-original-task',deploymentHash=digest('synthetic-original-deployment');
- const key={keyId:randomUUID(),collectorId,deploymentHash,enabled:true,purposes:['task-model-transport'],
+ const key={keyId:randomUUID(),collectorId,deploymentHash,enabled:true,purposes:['task-model-transport','model-transport'],
   publicKeyPem:pair.publicKey.export({type:'spki',format:'pem'}).toString(),notBefore:new Date(Date.now()-60000).toISOString(),expiresAt:new Date(Date.now()+3600000).toISOString()};
  const registry={protocol:'skill-runner-trust-registry-v1',keys:[key]},path=join(directory,'original-task-public-registry.json');
  await writeFile(path,JSON.stringify(registry));process.env.SKILL_RUNNER_TRUST_REGISTRY_FILE=path;
@@ -105,6 +106,7 @@ export async function verifyTaskTransportJournalDatabase(pool:Pool,owner:string,
  await assert.rejects(verifyOwnedTaskModelTransports({userId:owner},{runId}),/gaps/);
  await pool.query("update agent_tool_call set call_key='mode-model:0:0:1' where id=$1",[ids[1]]);
  await verifyOwnedTaskModelTransports({userId:owner},{runId});
+ const configuredCandidate=await verifyConfiguredSignedCandidateDatabase(pool,{owner,runId,skillId,directory,keyPath,keyId:key.keyId,collectorId,deploymentHash});
  return {originalTaskJournalDatabase:true,originalTaskSignedFallbackReadback:true,originalTaskRecoveryReuse:true,
   originalTaskCrossAccountRejected:true,originalTaskKeyRevocationRejected:true,originalTaskTamperedSignatureRejected:true,originalTaskRouteGapRejected:true,
   originalTaskCompiledAdmissionVerified:true,originalTaskRequestFactoryAdmissionExecuted:true,originalTaskRequestClosureExecuted:true,
@@ -113,5 +115,5 @@ export async function verifyTaskTransportJournalDatabase(pool:Pool,owner:string,
   originalTaskChangedUserMessageRejected:true,originalTaskChangedFinalReplyRejected:true,originalTaskDescriptionTransitionVerified:true,
   originalTaskThreeDecisionBusinessReadVerified:true,originalTaskChangedReadReceiptRejected:true,
   signedTaskBaselineProjectionVerified:true,signedTaskCandidateSnapshotVerified:true,
-  billingAndNetworkAdaptersSynthetic:true,actualModelCalls:0};
+  ...configuredCandidate,billingAndNetworkAdaptersSynthetic:true,actualModelCalls:0};
 }
