@@ -62,16 +62,13 @@ try {
   const page = await context.newPage();
   const landing = await page.goto(base, { waitUntil: "domcontentloaded" });
   assert.equal(landing?.status(), 200);
+  await page.getByRole("heading", { name: "登录销售线索工作台" }).waitFor();
   const before = await page.evaluate(async () => (await fetch("/api/auth/session")).json());
   assert.equal(before.authenticated, false);
-  const login = await page.evaluate(async ({ email, password }) => {
-    const response = await fetch("/api/auth/login", {
-      method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ email, password }),
-    });
-    return { status: response.status, body: await response.json() };
-  }, { email, password });
-  assert.equal(login.status, 200);
-  assert.equal(login.body.authenticated, true);
+  await page.getByLabel("登录邮箱").fill(email);
+  await page.getByLabel("密码").fill(password);
+  await page.getByRole("button", { name: "登录", exact: true }).click();
+  await page.getByRole("navigation", { name: "主导航" }).waitFor();
   const cookies = await context.cookies(base);
   const sessionCookie = cookies.find((cookie) => cookie.name === "network_copilot_session");
   assert.ok(sessionCookie);
@@ -81,16 +78,13 @@ try {
   const active = await page.evaluate(async () => (await fetch("/api/auth/session")).json());
   assert.equal(active.authenticated, true);
   assert.equal(active.user?.role, "member");
-  const logout = await page.evaluate(async () => {
-    const response = await fetch("/api/auth/logout", { method: "POST" });
-    return { status: response.status, body: await response.json() };
-  });
-  assert.equal(logout.status, 200);
-  assert.equal(logout.body.authenticated, false);
+  await page.getByRole("button", { name: "账户与设置" }).click();
+  await page.getByRole("button", { name: "退出登录" }).click();
+  await page.getByRole("heading", { name: "登录销售线索工作台" }).waitFor();
   const after = await page.evaluate(async () => (await fetch("/api/auth/session")).json());
   assert.equal(after.authenticated, false);
   console.log(JSON.stringify({ httpsBrowserSession: "passed", browser: "chrome", secureCookie: true,
-    httpOnlyCookie: true, sameSiteLax: true, loginAndLogout: true, actualPaidCalls: 0 }));
+    httpOnlyCookie: true, sameSiteLax: true, loginFormAndLogoutUi: true, actualPaidCalls: 0 }));
 } finally {
   await browser?.close();
   await new Promise<void>((resolve) => proxy.close(() => resolve()));

@@ -39,3 +39,5 @@
 2026-10-16 后续执行：本机产品库已使用新备份和显式哈希审核，提交 127–135；只读预检改为 `stage-present`。旧版/候选版 Web 分别在本机 3000/3021 启动，合成账户会话检查通过并清理夹具。生产模式 `Secure` Cookie 在本机 HTTP 探针中需显式回放，这只证明服务端会话，不代替 HTTPS 浏览器验收。完整结果及限制见[本机迁移与 Web 收据](evidence/ma24-g01-product-db-stage-and-local-web-2026-10-16.json)。此前各段为当时历史快照。
 
 2026-10-16 HTTPS 本机补验：候选 Web 经临时自签名 HTTPS 回环代理，在 Chrome 中实际保存 `Secure`、`HttpOnly`、`SameSite=Lax` Cookie；合成成员登录后读取会话并退出失效，夹具已清理。证书只被测试浏览器临时信任；这不等于目标域名证书、真实团队账号或页面业务闭环通过。[浏览器收据](evidence/ma24-g01-loopback-https-browser-session-2026-10-16.json)。目标 Web 运行环境只配置受限 `DATABASE_URL`，迁移凭据与发布时管理员权限不得随 Web 进程提供。
+
+同一 HTTPS 浏览器验收随后覆盖实际登录表单、进入工作区及界面“退出登录”按钮，复验通过；仍是本机合成成员路径，未扩大为真实团队或业务功能验收。

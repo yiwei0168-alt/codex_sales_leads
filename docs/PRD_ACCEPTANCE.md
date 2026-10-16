@@ -1184,3 +1184,5 @@ MODESEL-15：53 项本地测试通过。旧入口仅返回停用提示，配置�
 2026-10-16 / G01 后续执行：本机产品库在新备份和隔离恢复验证后实际提交 127–135，复核标记及 collector ACL/RLS 通过；旧版与候选版 Web 在本机通过合成账户服务端会话检查。生产 `Secure` Cookie 的真实浏览器链路仍须在 HTTPS 目标入口验收；团队账号、业务闭环与业务回切尚未验收。[执行收据](evidence/ma24-g01-product-db-stage-and-local-web-2026-10-16.json)。
 
 2026-10-16 / G01 HTTPS 本机补验：候选版在临时自签名 HTTPS 回环代理及 Chrome 中通过合成成员 Cookie 保存、会话读取和退出；目标域名的可信 TLS、真实成员及业务流程仍需另验。[浏览器收据](evidence/ma24-g01-loopback-https-browser-session-2026-10-16.json)。
+
+同项补验已复跑实际登录表单、工作区呈现和页面退出按钮；其余上线门槛不变。

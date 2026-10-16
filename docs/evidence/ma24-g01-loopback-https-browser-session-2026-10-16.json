@@ -11,19 +11,22 @@
     "untrustedCertificateIgnoredByTestBrowser": true,
     "anonymousSession": false,
     "syntheticMemberLogin": true,
+    "loginFormSubmittedInBrowser": true,
+    "authenticatedWorkspaceRendered": true,
     "browserStoredSecureCookie": true,
     "browserStoredHttpOnlyCookie": true,
     "browserStoredSameSiteLaxCookie": true,
     "authenticatedSessionRead": true,
     "memberRoleRead": true,
     "logoutRevokedSession": true,
+    "logoutButtonUsedInBrowser": true,
     "syntheticFixtureRemoved": true,
     "actualPaidCalls": 0
   },
   "checks": {"typecheck": "passed", "targetedEslint": "passed", "diffCheck": "passed"},
   "limits": [
     "The TLS certificate was locally generated and accepted only by a test browser; this does not verify a real domain or trusted certificate",
-    "The test covered browser cookies and authentication endpoints, not the full login form or team business workflows",
+    "The test covered the login form, workspace entry, logout UI and browser cookies, not team business workflows",
     "No team account, remote access, production secret placement, worker or business rollback was verified"
   ]
 }
