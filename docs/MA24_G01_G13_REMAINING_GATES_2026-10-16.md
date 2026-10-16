@@ -28,7 +28,7 @@
 
 安全候选审计 `auditSkillSafetyArm` 现已拒绝图重建的 `candidateSkillUsed !== true`，保留基线不读候选的行为。25 项定向回归和实际新库审计/采集拒绝、正常候选统一回读通过，[收据](evidence/ma24-g09-safety-skill-usage-audit-2026-10-16.json)。生产认证和最终启用接线仍未完成。
 
-共享 PostgreSQL Pool 的空闲断线退出已受控复现并修复：新库空闲/借出/执行中断线、原错误保留、不重跑事务、角色和租户范围复验通过，[收据](evidence/ma24-g01-database-pool-recovery-2026-10-16.json)。此前恢复事件完整头部丢失，仍不唯一归因。实际 standalone HTTP 容器、目标云网络及未知提交结果恢复尚未验收；最终镜像须包含修复。
+共享 PostgreSQL Pool 的断线退出已修复：[DAL 三类断线](evidence/ma24-g01-database-pool-recovery-2026-10-16.json)及[固定 standalone 镜像空闲断线](evidence/ma24-g01-standalone-database-recovery-2026-10-16.json)通过。镜像 `99f51e5b` 原进程、原会话、TLS 重连和后续读写隔离通过，并补自签 HTTPS/十合成账号检查。此前恢复事件仍不唯一归因；目标云网络、Web 执行中断线、未知提交结果及持续容量仍待验。
 
 G09 声明观察时间绑定已补强：追加与读取都核对非空观察的计划/题目/固定版本/来源和时间，声明起止由持久记录派生；33 项定向测试和新库历史记录拒绝回归通过，[收据](evidence/ma24-g09-runner-observation-time-binding-2026-10-16.json)。这不关闭下列生产认证和启用缺口。
 

@@ -1,10 +1,10 @@
 # 团队首批试用发布计划（2026-10-16）
 
-源码 `b535c6b4` 修复 PostgreSQL 空闲/借出连接断线处理及回滚覆盖原错误，实际新库三类断线与不重跑写入已验，[收据](evidence/ma24-g01-database-pool-recovery-2026-10-16.json)。旧镜像不含该修复；面向团队的新部署须在最终源码冻结后重建，并复验 HTTP 容器原进程恢复与目标云场景。
+源码 `b535c6b4` 的 PostgreSQL 断线修复已包含在新候选 `99f51e5b` 中；[DAL 三类断线](evidence/ma24-g01-database-pool-recovery-2026-10-16.json)及[实际 HTTP 容器空闲断线恢复](evidence/ma24-g01-standalone-database-recovery-2026-10-16.json)通过。目标云场景仍待验，历史镜像不会自动升级。
 
-后续源码 `9919755b` 增加 G09 签名声明与持久观察时间绑定，[收据](evidence/ma24-g09-runner-observation-time-binding-2026-10-16.json)。下述 `5977b301` 发布镜像不含该修复，接入运行声明认证前须在最终冻结点重建并验收；本轮未重复无关的手动公司流程检查。
+源码 `9919755b` 的 G09 声明时间绑定也已包含在新镜像代码中，[原验收](evidence/ma24-g09-runner-observation-time-binding-2026-10-16.json)按其范围保留；本次公司/会话流程不代替生产签发及 Skill 真实质量验收。
 
-最新本机候选为 `ma24-pilot-web:5977b301`（源码 `5977b301e29ec566535bbe3dcb6c9d689811cc86`）。修复 Skill 指纹材料缺失及动态路径全项目追踪；890 个输入与 Git archive 相同，镜像根目录范围核验、TLS 新库 HTTP、自签 HTTPS 浏览器、10 合成账号隔离通过。[本轮收据](evidence/ma24-g01-skill-source-standalone-image-2026-10-16.json)。下文 `f54e0b07` 为历史候选，其备份/回切证据不自动迁移到新镜像；新镜像未部署云端，Skill 审核页面、真实业务和生产认证仍待验。
+最新本机候选为 `ma24-pilot-web:99f51e5b`，本机摘要 `sha256:16e6ff0cf6eb57542c62b661f4976f0507de8483fd8c89a9f1a5b7061fe0e90c`。896 个源码指纹输入与固定 Git archive 相同，发布文件范围、TLS 新库 HTTP、空闲断线后原进程恢复、自签 HTTPS 浏览器及十合成账号隔离通过。[本轮收据](evidence/ma24-g01-standalone-database-recovery-2026-10-16.json)。`5977b301`、`f54e0b07` 为历史候选，其备份/回切等证据不自动迁移到新镜像；目标云、真实业务质量及生产认证仍未完成。
 
 2026-10-16 候选源码变更：G12 旧失败收据恢复新增明确失败原因检查，[收据](evidence/ma24-g12-saved-failure-recovery-boundary-2026-10-16.json)。已验证镜像 `f54e0b07` 不含此变更；开放助手模式前须在最终源码冻结后重建并验收，当前手动线索试用镜像的历史证据仍按原范围保留。
 
@@ -46,7 +46,7 @@
 
 | 项目 | 2026-10-16 检查结果 | 发布含义 |
 | --- | --- | --- |
-| Web 包 | 固定源码 `f54e0b07ccf39c3512f07aac0269af598e915d24` 的 Linux 镜像已连接一次性 TLS 新库，通过 HTTP 业务、自签 HTTPS Chrome 和 10 合成账号短时并发隔离；镜像摘要已记录，[联合收据](evidence/ma24-g01-pinned-pilot-image-full-local-check-2026-10-16.json) | 可作为目标部署候选；目标实际镜像摘要、可信域名、持续容量和团队访问仍待验。后续仅修改文档或本机验收脚本不要求重建 Web；产品构建输入变化时重建 |
+| Web 包 | 固定 `99f51e5b` 的 Linux 镜像通过 TLS 新库 HTTP、原进程空闲断线恢复、自签 HTTPS Chrome 和十合成账号短时隔离；摘要与源码范围已核，[收据](evidence/ma24-g01-standalone-database-recovery-2026-10-16.json) | 本机部署候选；目标镜像摘要、可信域名、持续容量和团队访问仍待验。仅文档/本机验收脚本变化不要求重建 Web；产品构建输入变化时重建 |
 | 试用数据库 | 一次性全新空库运行 001–135；只有不可登录内置占位账号，无现有客户或资料。两个合成成员通过实际建号命令创建并在验收后随临时库清理；136–140 未应用。全新本机 PostgreSQL/pgvector 容器的角色创建、迁移和合成业务链路也通过，[收据](evidence/ma24-g01-fresh-pilot-new-cluster-2026-10-16.json) | 目标云主机仍须独立建空库、配置角色并复验；本机产品库 127–135 的历史迁移不构成试用库初始化 |
 | 试用备份 | 自定义归档、SHA-256 清单、同集群恢复及第二个全新本机集群恢复通过；源/目标关键计数相同，两成员 RLS 隔离成立，[跨集群收据](evidence/ma24-g01-pilot-cross-cluster-restore-2026-10-16.json) | 目标主机的备份保留、异地主机副本及恢复仍待验；上传卷另行备份。真实业务数据迁移另立阶段 |
 | Web 回切 | 同一回环地址完成 `f54e0b07`→`cc50c7b6`→`f54e0b07`，会话、两版写入记录及成员隔离通过，[回切收据](evidence/ma24-g01-pilot-linux-image-same-port-rollback-2026-10-16.json) | 目标 Caddy/可信 HTTPS、真实流量、worker、数据库和上传卷恢复仍待验 |

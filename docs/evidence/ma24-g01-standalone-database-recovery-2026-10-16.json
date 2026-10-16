@@ -1,0 +1,33 @@
+{
+  "schema": "ma24-g01-standalone-database-recovery-v1",
+  "date": "2026-10-16",
+  "imageSourceCommit": "99f51e5bedb13061338afe14b490e9263d0c1383",
+  "verifierCommit": "c3a0d71ae1982a84700bd18ee7d2d9ce40e48680",
+  "image": "ma24-pilot-web:99f51e5b",
+  "localImageDigest": "sha256:16e6ff0cf6eb57542c62b661f4976f0507de8483fd8c89a9f1a5b7061fe0e90c",
+  "commands": [
+    "node scripts/build-ma24-pilot-image.mjs",
+    "node scripts/verify-ma24-image-source.mjs ma24-pilot-web:99f51e5b 99f51e5b",
+    "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --web-image=ma24-pilot-web:99f51e5b --web-pool-recovery --browser --ten-user"
+  ],
+  "checks": {
+    "productionBuildTypeScriptAndVerifierLint": "passed",
+    "sourceInputCount": 896,
+    "sourceManifestHash": "c380459c2bc17c77c2adda0388b7da000532e5b6a8462f1151c3e51b96f50782",
+    "imageInputsEqualFixedGitArchive": true,
+    "releaseRootScope": "passed",
+    "freshMigrationThrough": 135,
+    "terminatedOwnTaggedIdleTlsBackends": 5,
+    "webContainerPidStartTimeAndRestartCountUnchanged": true,
+    "originalHttpSessionRetained": true,
+    "priorCompanyReadAndIsolation": "passed",
+    "subsequentCompanyWriteReadAndCrossAccountDenial": "passed",
+    "replacementBackendsHaveNewPidsAndTls": true,
+    "separateSyntheticSessionSelfSignedHttpsChromeFlow": "passed",
+    "tenSyntheticAccountsShortConcurrentIsolation": "passed",
+    "copiedProductionData": false,
+    "realModelCalls": 0,
+    "temporaryContainersAndNetworksRemaining": 0
+  },
+  "limits": "Local compiled production standalone with synthetic accounts and data. Only idle backends belonging to the uniquely tagged test Web service were terminated. Checked-out/querying faults remain covered by the separate DAL receipt, not this HTTP probe. No target cloud deployment, trusted public HTTPS, sustained capacity, COMMIT acknowledgement-loss recovery, current-image backup/rollback or real model/mail/document quality is claimed. Image is local only; source-input equality is not production runner/provider attestation."
+}
