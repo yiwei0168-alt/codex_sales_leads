@@ -1,0 +1,23 @@
+{
+  "schema": "ma24-g01-pilot-backup-restore-command-v1",
+  "date": "2026-10-16",
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --web-image=ma24-pilot-web:cc50c7b6 --backup",
+  "backupCommand": "node scripts/run-tsx.cjs scripts/backup-verify-ma24-pilot-db.ts",
+  "scope": "Disposable local PostgreSQL 16/pgvector cluster with two synthetic members and manual company data",
+  "checks": {
+    "freshMigrationThrough135": "passed",
+    "restrictedApplicationLogin": "passed",
+    "postgresCustomArchiveCreated": "passed",
+    "archiveListRead": "passed",
+    "archiveSha256ManifestCreated": "passed",
+    "restoreToSecondDatabase": "passed",
+    "sourceAndRestoreSnapshotEqual": "passed",
+    "restrictedApplicationRoleReadAfterRestore": "passed",
+    "memberVisibilityCompared": 2,
+    "memberVisibilityMatchedBeforeAndAfterRestore": "passed",
+    "disposableArchiveAndContainersRemovedAfterVerifier": true,
+    "typecheck": "passed",
+    "focusedEslint": "passed"
+  },
+  "limits": "This verifies a same-cluster local restore of synthetic pilot data. It does not prove target cloud backup storage, off-host retention, cross-cluster restore, live writes during backup, actual team access, or later real business data migration. The standalone backup command retains its archive and manifest in an operator-specified directory outside Git; the integration verifier removes its disposable copy."
+}

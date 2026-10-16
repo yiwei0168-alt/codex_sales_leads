@@ -1,4 +1,5 @@
 # MA24 执行状态台账（2026-10-13）
+2026-10-16 G01 全新合成试用库的归档、SHA-256 清单、同集群第二库恢复和受限账号可见公司比对通过；临时资源清理。[收据](evidence/ma24-g01-pilot-backup-restore-command-2026-10-16.json)。目标云主机备份、异地恢复和真实团队未验，G01 未完成。
 2026-10-16 G01 新空库角色初始化命令在一次性 PostgreSQL 集群通过受限角色创建、重复运行拒绝、迁移 135 和合成恢复；临时资源清理。[收据](evidence/ma24-g01-pilot-role-bootstrap-new-cluster-2026-10-16.json)。目标云库、真实凭据及团队试用尚未执行，G01 未完成。
 2026-10-16 G01 Linux 镜像与全新 TLS 库的 10 个合成账号短时并发登录、写入和隔离读取通过；一次性资源清理。[收据](evidence/ma24-g01-ten-synthetic-users-current-image-2026-10-16.json)。目标主机的持续容量、可信域名、真实成员和实际发布仍待验，G01 未完成。
 2026-10-16 G01 当前 Linux 镜像和一次性 TLS 空库经本机 HTTPS Chrome 完成合成账号登录、安全 Cookie、任务/线索导航、虚构公司刷新回读与退出；临时资源清理。[收据](evidence/ma24-g01-current-linux-image-https-browser-2026-10-16.json)。目标云主机、可信域名、真实团队、实际回滚和真实业务数据接入仍未验，G01 未完成。

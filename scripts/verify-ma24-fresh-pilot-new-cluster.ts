@@ -15,10 +15,11 @@ const webImage = webImageArgument?.startsWith("--web-image=")
   ? webImageArgument.slice("--web-image=".length) : undefined;
 const browserCheck = args.includes("--browser");
 const tenUserCheck = args.includes("--ten-user");
-assert(args.length <= 3 && args.every(arg => arg === "--browser" || arg === "--ten-user" || arg === webImageArgument)
+const backupCheck = args.includes("--backup");
+assert(args.length <= 4 && args.every(arg => ["--browser", "--ten-user", "--backup", webImageArgument].includes(arg))
   && (!webImageArgument || (webImage && /^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(webImage)))
-  && (!(browserCheck || tenUserCheck) || webImage),
-  "Expected --web-image=<tag> with optional --browser and --ten-user");
+  && (!(browserCheck || tenUserCheck || backupCheck) || webImage),
+  "Expected --web-image=<tag> with optional --browser, --ten-user, and --backup");
 const networkName = `ma24-pilot-net-${id}`;
 const adminPassword = randomBytes(24).toString("hex");
 const appPassword = randomBytes(24).toString("hex");
@@ -210,13 +211,29 @@ try {
         assert(browser.output.includes('"manualCompanyWriteReadUi":true'), browser.output);
       } finally { rmSync(tempDirectory, { recursive: true, force: true }); }
     }
+    if (backupCheck) {
+      const tempDirectory = mkdtempSync(join(tmpdir(), "ma24-pilot-backup-"));
+      try {
+        const backup = await run(process.execPath,
+          ["scripts/run-tsx.cjs", "scripts/backup-verify-ma24-pilot-db.ts"],
+          { ...process.env, DATABASE_URL: appUrl.toString(), DATABASE_MIGRATION_URL: adminUrl.toString(),
+            PILOT_BACKUP_DIR: tempDirectory });
+        assert.equal(backup.code, 0, backup.output);
+        assert(backup.output.includes('"pilotBackupRestore":"passed"'), backup.output);
+        assert(backup.output.includes('"tenantMembersCompared":2'), backup.output);
+        assert(backup.output.includes('"tenantVisibilityMatched":true'), backup.output);
+        assert(!backup.output.includes(appPassword), "Backup exposed the disposable application password");
+        assert(!backup.output.includes(adminPassword), "Backup exposed the disposable migration password");
+      } finally { rmSync(tempDirectory, { recursive: true, force: true }); }
+    }
   }
   console.log(JSON.stringify({ freshClusterPilot: "passed", image: "pgvector/pgvector:pg16",
     publishedAddress: "127.0.0.1 only", rolesVerified: true, duplicateRoleBootstrapRejected: true,
     freshMigrationThrough: 135,
     syntheticAccountCompanyAndRestoreVerified: true, copiedProductionData: false,
     linuxWebImage: webImage ?? null, linuxWebHttpWorkflowVerified: Boolean(webImage),
-    linuxWebHttpsBrowserVerified: browserCheck, tenConcurrentSyntheticAccountsVerified: tenUserCheck }));
+    linuxWebHttpsBrowserVerified: browserCheck, tenConcurrentSyntheticAccountsVerified: tenUserCheck,
+    pilotBackupRestoreVerified: backupCheck }));
 } finally {
   if (webContainerId) {
     const removed = await run("docker", ["rm", "--force", "--volumes", webContainerId]);
