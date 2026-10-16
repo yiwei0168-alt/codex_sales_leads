@@ -1,0 +1,21 @@
+{
+  "schema": "ma24-g10-prospective-source-binding-v1",
+  "date": "2026-10-16",
+  "command": "node node_modules/vitest/vitest.mjs run src/lib/assistant/main/skill-prospective-source.test.ts",
+  "checks": {
+    "testsPassed": 16,
+    "frozenPreTaskCaptureBinding": "passed",
+    "invalidOrMissingTimeOrdering": "rejected",
+    "inputModelConfigAndSkillDrift": "rejected",
+    "crossAccountMissingAndNonShadowCase": "rejected",
+    "readOnlySubtaskSubstitution": "rejected",
+    "captureAndSnapshotChangesDuringRead": "rejected",
+    "sourceAndFreezeRevocationDuringRead": "rejected",
+    "localComparisonPromoted": false,
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "modelCalls": 0,
+    "productionWrites": 0
+  },
+  "limits": "Unit tests with mocked authoritative database/freeze/shadow reads. Actual database capture integration, paired production model receipts, acceptance observation collection, review API/UI and real prospective quality remain unverified. Automatic activation remains false."
+}

@@ -22,6 +22,8 @@
 
 ## 已核实的实现断点
 
+2026-10-16 G10 已新增[前瞻来源绑定基础](SKILL_PROSPECTIVE_ACCEPTANCE_2026-10-16.md)，16 项模拟服务器读取测试通过；真实捕获集成、正式两臂收据、统一观察与页面仍待接通。
+
 2026-10-16 G09 已新增[运行声明认证及独立存储](SKILL_RUNNER_ATTESTATION_2026-10-16.md)，临时库仅增加迁移 141 并使用临时密钥；生产签发/登记、运行包/提供方验证、影子绑定和启用事务仍待接通。下列断点未因基础组件及存储通过而关闭。
 
 - `src/lib/assistant/main/skills.ts` 的非人工启用路径仍拒绝；不能把 `skill-acceptance-policy.ts` 的 `policyPassed` 直接当成授权。
