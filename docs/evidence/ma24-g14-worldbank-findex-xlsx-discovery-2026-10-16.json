@@ -1,0 +1,40 @@
+{
+  "schema": "ma24-g14-xlsx-discovery-v1",
+  "date": "2026-10-16",
+  "source": {
+    "title": "The Global Findex Database 2025 country-level Excel",
+    "publisher": "World Bank",
+    "officialPage": "https://www.worldbank.org/en/publication/globalfindex/download-data",
+    "officialFileUrl": "https://thedocs.worldbank.org/en/doc/be6615202d1f08a25855c8ac2d615122-0050012025/related/GlobalFindexDatabase2025.xlsx",
+    "localPrivatePath": "tmp/ma24-independent-quarantine/worldbank-global-findex-2025.xlsx",
+    "localBytes": 17935735,
+    "localSha256": "b6c991f8e46bcbd4b6423cc962d5b2fa030e3db99832b9016bb4f400f57c772f",
+    "provenanceLimit": "The official page links the named XLSX. This turn did not redownload and byte-compare the remote file; local binary identity remains provisional."
+  },
+  "workbookInspection": {
+    "worksheets": { "Notes": 2, "Data": 8590, "Series Table": 459, "Updates": 26 },
+    "zipParts": 14,
+    "macroParts": 0,
+    "externalLinkParts": 0,
+    "candidateCellsVerified": true,
+    "denominatorAndMissingValueReviewed": true,
+    "privateCandidateSha256": "1f5ab04e7c372f3ca3f8372e9b72ff65398aa4c3d21aab85cfdac4e98563e527"
+  },
+  "publicExposureScreen": {
+    "trackedTextFiles": 3040,
+    "exactQuestionInCurrentTree": 0,
+    "exactAnswerInCurrentTree": 0,
+    "exactQuestionInLocalGitHistory": 0,
+    "exactAnswerInLocalGitHistory": 0,
+    "privateReportPath": "tmp/ma24-independent-quarantine/worldbank-findex-public-exposure-v1.json"
+  },
+  "limits": [
+    "The local BGE service was inaccessible from the current command sandbox, so semantic-neighbor screening is pending.",
+    "Exact text absence does not establish source-family independence or absence from model-provider context.",
+    "The original workbook is not a frozen Gold source. Per-case review, product citation readback, source exposure and license checks remain pending."
+  ],
+  "independentGoldApproved": 0,
+  "g15PaidAdmissionOpen": false,
+  "g16RealDualArmRuns": 0,
+  "g17ToG20": "paused by user"
+}
