@@ -1,0 +1,44 @@
+{
+  "schema": "ma24-g14-glasgow5g-per-case-source-review-v1",
+  "date": "2026-10-16",
+  "caseId": "glasgow5g-2025-partick-vodafone-s24-two-day-download-v1",
+  "privateCandidate": {
+    "path": "tmp/ma24-independent-quarantine/glasgow5g-partick-candidate-v1.json",
+    "sha256": "8808051d3f41f0ccb2b5f451a3c44b3a1adce1dd5d7c0e610835fc9f1ad4e4f5"
+  },
+  "privateReview": {
+    "path": "tmp/ma24-independent-quarantine/glasgow5g-per-case-source-review-2026-10-16.json",
+    "sha256": "ab8d0192cbf8c66386504e37849fe9b6427ac2e633c04605215f42b9014bfdba"
+  },
+  "source": {
+    "zenodoRecord": "https://zenodo.org/records/20465872",
+    "sourceSha256": "e293c28088305e1df331edfbdd49c12ab3a0415291e1be82cebbb9a8df7af4dd",
+    "zenodoListedMd5Matched": true,
+    "licenseOnRecord": "CC BY 4.0"
+  },
+  "checks": {
+    "originalMatchedRowsPerDay": [2, 2],
+    "sourceIdentifiersAndArithmetic": "passed against original worksheet cells using Decimal",
+    "isolatedProductReadback": "previously passed for both day-sheet evidence blocks and target cells",
+    "currentTrackedExactQuestionAndAnswerHits": 0,
+    "currentTrackedNormalizedFragments": 0,
+    "localGitHistoryExactQuestionAndAnswerHits": 0,
+    "sourceSpecificProductCodeHits": 0
+  },
+  "localRolloutBoundary": {
+    "privateScanScript": "tmp/ma24-independent-quarantine/scan-glasgow5g-rollout-exposure.py",
+    "privateScanScriptSha256": "05728a91f12336540deeeb858f410a4f6196ff7c22f5a11145583c7339cffcd7",
+    "rolloutFilesScanned": 133,
+    "datasetTitleFirstSeenUtc": "2026-10-15T01:05:49",
+    "targetWorksheetAndValuesFirstSeenDuringCandidatePreparation": true,
+    "interpretation": "Earlier source-title exposure is recorded; this bounded exact-marker scan does not prove zero semantic or provider-side exposure."
+  },
+  "decision": "Codex per-case source and calculation review passed; user answer-and-scope confirmation requested because the case includes a network-wide inference limit.",
+  "userContentConfirmation": "pending",
+  "sourceFamilyIndependence": "pending final bounded family review",
+  "formalGold": false,
+  "fullG14Frozen": false,
+  "g15PaidAdmission": false,
+  "g16RealDualArmRuns": 0,
+  "g17ToG20": "paused"
+}
