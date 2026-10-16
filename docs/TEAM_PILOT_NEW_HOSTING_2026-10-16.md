@@ -1,5 +1,7 @@
 # 首批团队试用新托管实施单（2026-10-16）
 
+2026-10-16 Linux Web＋新恢复库联合补验：再次从 ACL 归档恢复全新本机 PostgreSQL 容器，Linux standalone Web 用受限登录连接；首页和匿名会话 GET 为 200，未登录上传 GET 为 401。临时数据库仅映射本机回环端口，测试容器已清理。[联合收据](evidence/ma24-g01-linux-fresh-db-integrated-smoke-2026-10-16.json)。这验证本机异构容器的最低运行组合，目标域名、真实账号和业务写入仍待验。
+
 2026-10-16 全新数据库容器补验：使用未发布端口的全新 PostgreSQL 16/pgvector 实例，先建受限应用、登录和 Skill 采集全局角色，含 ACL 的归档直接恢复成功。127–135 八项标记、关键授权、两表强制 RLS 通过；登录角色可切换到应用角色读取，不能切换到采集角色。扩展为 pgcrypto 1.3、plpgsql 1.0、vector 0.8.6；临时容器已清理。[恢复收据](evidence/ma24-g01-fresh-cluster-restore-2026-10-16.json)。这证明归档在新集群上可恢复的一个本机路径，不代替目标云主机实际恢复。
 
 2026-10-16 Linux 包补验：提交 `7d7acf39` 的 Git 归档在本机 Docker 的 Node 24 Linux 镜像中完成安装、Next 16.3.4 生产构建与类型检查；standalone 包有 2,235 个常规文件、51,675,977 字节、2 个可解析相对链接、无 `.env` 文件。容器保持本机数据库回环地址，使用受限应用账号完成首页和匿名会话 GET 200；容器与临时环境文件已清理。[构建与冒烟收据](evidence/ma24-g01-linux-standalone-local-smoke-2026-10-16.json)。这关闭了 Windows 包不能直接当 Linux 包使用的构建风险，但云端 HTTPS、真实团队账号和业务写入仍待验收。

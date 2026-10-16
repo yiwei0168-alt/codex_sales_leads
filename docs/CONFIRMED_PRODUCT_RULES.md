@@ -2,6 +2,8 @@
 
 ## PILOT-01 — 团队作为首批试用者（2026-10-16）
 
+- 2026-10-16 联合运行实施补验：Linux Web 与一次性新集群恢复库使用受限账号通过首页/会话只读及匿名上传拒绝，临时容器已清理。[收据](evidence/ma24-g01-linux-fresh-db-integrated-smoke-2026-10-16.json)。本机冒烟不等于线上试用或完整产品工作流验收。
+
 - 2026-10-16 新集群恢复实施补验：归档在全新本机 PostgreSQL 容器中保留 ACL 恢复，受限应用登录及采集角色边界通过；容器已清理。[收据](evidence/ma24-g01-fresh-cluster-restore-2026-10-16.json)。此项不改变待确认的托管地区与真实数据迁移范围，也不构成云端上线验收。
 
 - 2026-10-16 Linux 构建实施补验：提交 `7d7acf39` 的独立 Linux standalone 包通过本机容器首页/会话只读冒烟，临时资源已清理。[收据](evidence/ma24-g01-linux-standalone-local-smoke-2026-10-16.json)。仅是发布包可运行证据，不构成托管或团队试用验收。

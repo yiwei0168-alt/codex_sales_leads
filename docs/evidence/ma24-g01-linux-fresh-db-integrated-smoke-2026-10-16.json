@@ -1,0 +1,36 @@
+{
+  "schema": "ma24-g01-linux-fresh-db-integrated-smoke-v1",
+  "date": "2026-10-16",
+  "scope": "Disposable local Linux standalone Web connected to a separate fresh PostgreSQL 16/pgvector container restored from the ACL-inclusive archive",
+  "web": {
+    "sourceCommit": "7d7acf39",
+    "buildId": "k76LM2MqI4OD5FLPCNnwu",
+    "image": "node:24-bookworm-slim",
+    "databaseLogin": "restricted network_copilot_local_login, no migration credential",
+    "homeGet": 200,
+    "anonymousSessionGet": 200,
+    "anonymousKnowledgeUploadsGet": 401
+  },
+  "database": {
+    "image": "pgvector/pgvector:pg16",
+    "freshCluster": true,
+    "archive": "network_copilot_2026-10-16T06-35-27Z.dump",
+    "archiveSha256": "89ab7a90366c0ffceb82c31ae5de5b2ac2ec1f5553238446a82d862aa785d97c",
+    "restrictedRolesProvisionedBeforeRestore": true,
+    "aclRestoredFromArchive": true,
+    "networkExposure": "temporary 127.0.0.1:5433 only",
+    "authentication": "temporary local test trust; not a production configuration"
+  },
+  "cleanup": {
+    "webContainerRemoved": true,
+    "databaseContainerRemoved": true,
+    "productionDatabaseChanged": false,
+    "modelCalls": 0
+  },
+  "limits": [
+    "No target cloud account, trusted HTTPS domain or remote mainland team network was used",
+    "No team login, cross-account isolation, business write or live traffic reversal was exercised in this pair",
+    "No LangGraph, BGE, worker, paid model, mailbox or knowledge processing service was started",
+    "A cutover requires a fresh backup, target-host role credentials, repeat restore checks and an actual rollback drill"
+  ]
+}
