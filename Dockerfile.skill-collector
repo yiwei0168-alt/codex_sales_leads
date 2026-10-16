@@ -1,0 +1,24 @@
+FROM node:24-bookworm-slim@sha256:0e0ff40c39bc087845bfb27465a0df4ea419520094bc35842ff83dd8cbe6f9b6 AS builder
+WORKDIR /build
+COPY package.json package-lock.json ./
+RUN npm ci --no-audit --no-fund
+COPY . .
+RUN node scripts/build-skill-collector.mjs
+
+FROM node:24-bookworm-slim@sha256:0e0ff40c39bc087845bfb27465a0df4ea419520094bc35842ff83dd8cbe6f9b6
+WORKDIR /app
+ENV NODE_ENV=production NEXT_TELEMETRY_DISABLED=1
+ARG SOURCE_COMMIT
+LABEL org.opencontainers.image.revision=$SOURCE_COMMIT
+COPY --from=builder /build/node_modules ./node_modules
+COPY --from=builder /build/package.json /build/package-lock.json ./
+COPY --from=builder /build/tmp/skill-collector/runner.cjs ./runner.cjs
+COPY --from=builder /build/src ./.skill-runtime-source/src
+COPY --from=builder /build/package.json /build/package-lock.json /build/tsconfig.json ./.skill-runtime-source/
+COPY --from=builder /build/scripts/patch-node-user.cjs ./.skill-runtime-source/scripts/patch-node-user.cjs
+COPY --from=builder /build/scripts/skill-collector-package.mjs ./package-integrity.mjs
+COPY --from=builder /build/scripts/start-skill-collector.mjs ./start.mjs
+RUN node --input-type=module -e "import {writeFile} from 'node:fs/promises'; import {collectorPackageInventory} from './package-integrity.mjs'; await writeFile('runtime-manifest.json',JSON.stringify(await collectorPackageInventory('/app')));"
+USER node
+ENTRYPOINT ["node", "/app/start.mjs"]
+CMD ["--help"]

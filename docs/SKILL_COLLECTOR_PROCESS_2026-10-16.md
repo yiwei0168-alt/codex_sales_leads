@@ -26,6 +26,8 @@ node tmp/skill-collector/runner.cjs --execute <private-job.json>
 
 ## 已验与未验
 
+新增 `Dockerfile.skill-collector` 和 `scripts/build-skill-collector-image.mjs`：只从已提交 Git archive 构建，固定 Node 基础镜像摘要，以 `npm ci` 安装锁定依赖；运行包包含采集器、内部源码指纹材料和实际安装依赖。生成清单绑定包内全部普通文件、内部符号链接及 Node 可执行文件摘要，启动时核对后再运行。运行用户为非 root。清单校验器仍位于同一镜像中，需由部署方固定可信镜像摘要；自校验本身不能替代外部生产认证。新增清单内容变化/额外依赖文件测试已通过；此提交阶段尚待实际镜像构建及隔离启动验收。
+
 基于 `13ca63d2` 的新实现已通过类型检查、定向 lint、构建及普通 Node `--help`。一次性 PostgreSQL 新库中创建专用临时登录，受限角色追加/签名回读通过；增加应用角色成员资格后被拒绝，撤销后恢复；独立编译进程 `--check` 通过。测试容器和临时任务/公钥文件清理完成。构建包含 297 个内部输入，已验入口摘要 `3b91549133b3b81b5989dd6793a2621a3b95140495a924e62a675d56fe6e9488`；这只是本轮构建证据。
 
 尚缺完整依赖与部署包认证、生产登录与密钥登记、真实提供方执行及质量审核、旧基线的可信传输来源、失败/回退收据和最终锁定启用事务。`productionQualified`、`binaryVerified` 和 `automaticActivation` 不因本轮通过而变为 true。G09 未关闭。
