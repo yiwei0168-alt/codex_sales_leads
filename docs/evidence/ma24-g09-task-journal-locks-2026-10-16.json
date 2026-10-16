@@ -1,7 +1,7 @@
 {
   "stage": "MA24 G09 task and tool journal transaction locks",
   "date": "2026-10-16",
-  "status": "targeted engineering checks passed; full composition pending",
+  "status": "targeted engineering checks and full composition passed before task-origin wiring",
   "checks": {
     "targetedTests": 16,
     "typecheck": "passed",
@@ -15,7 +15,8 @@
   },
   "databaseCommand": "node --import tsx scripts/verify-ma24-fresh-pilot-new-cluster.ts --memory-source-locks",
   "integrationCommand": "node --import tsx scripts/verify-ma24-fresh-pilot-new-cluster.ts --prospective-composition",
-  "integrationStatus": "running, not accepted yet",
+  "integrationStatus": "passed: completeCompositionVerified=true, five planned cases, locked material reconstruction and development review checks enabled",
+  "integrationSourceScope": "43ade754 source, before subsequent task-origin lock wiring",
   "productionDeployment": false,
   "actualModelCalls": 0,
   "automaticActivation": false,

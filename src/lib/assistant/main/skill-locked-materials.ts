@@ -41,7 +41,7 @@ export async function evaluateLockedSkillAcceptanceReadiness(client:PoolClient,c
   const policy=await evaluateLockedSkillAcceptancePolicy(client,context,bundleId);
   if(materials.artifactHash!==policy.artifactHash||materials.latestReviewHash!==policy.latestReviewHash)
    throw new Error('Locked material and policy snapshots differ');
-  return {...policy,taskJournalsLocked:materials.taskJournalsLocked,runCount:materials.runCount,materials:materials.materials,materialsHash:materials.materialsHash,sourcePayloadsRevalidated:true as const,
+  return {...policy,taskOriginsLocked:materials.taskOriginsLocked,taskJournalsLocked:materials.taskJournalsLocked,runCount:materials.runCount,materials:materials.materials,materialsHash:materials.materialsHash,sourcePayloadsRevalidated:true as const,
    sourceRevocationsLocked:false as const,collectorProvenanceVerified:false as const,automaticActivation:false as const};
  });
 }

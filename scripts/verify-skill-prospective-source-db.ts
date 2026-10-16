@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import {randomBytes,randomUUID} from 'node:crypto';
+import {readFile} from 'node:fs/promises';
 import nextEnv from '@next/env';
 import {Pool} from 'pg';
 import {getPool} from '../src/lib/rag/db';
@@ -49,6 +50,7 @@ const collector:SkillCollectorTransaction=async(userId,work)=>{
 };
 try{
  assert.equal((await pool.query('select count(*)::int n from app_user')).rows[0].n,1,'Fresh placeholder-only database required');
+ if(process.env.MA24_COMPOSITION_LOCKED_MATERIALS==='1')await pool.query(await readFile('db/migrations/144_skill_task_origin_locks.sql','utf8'));
  for(const id of [owner,other])await pool.query("insert into app_user(id,email,display_name,role,status) values($1,$2,'Synthetic prospective source','member','active')",[id,`${id}@example.invalid`]);
  await pool.query("insert into assistant_conversation(id,user_id,title) values($1,$2,'Synthetic prospective source')",[conversation,owner]);
  const skill=await importSkill({userId:owner,role:'member'},{name:'Synthetic prospective source',source:'synthetic-test',files:{'SKILL.md':'Read and cite the recorded account evidence.'},dependencies:[]});

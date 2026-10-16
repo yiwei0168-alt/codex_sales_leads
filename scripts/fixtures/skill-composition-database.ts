@@ -92,6 +92,7 @@ export async function verifyCompositionDatabaseFixture(input:{pool:Pool;owner:st
  if(lockedMaterialsCheck){
   const readiness=await tenantTransaction(owner,client=>evaluateLockedSkillAcceptanceReadiness(client,{userId:owner},combined.bundleId));
   assert.equal(readiness.sourcePayloadsRevalidated,true);assert.equal(readiness.materials.length,5);
+  assert.equal(readiness.taskOriginsLocked,true);assert.equal(readiness.taskJournalsLocked,true);assert(readiness.runCount>0);
   assert.equal(readiness.policyPassed,false);assert.equal(readiness.automaticActivation,false);assert.equal(readiness.sourceRevocationsLocked,false);
   assert(!readiness.blockers.includes('runtime-or-configuration-changed'));assert(readiness.blockers.includes('missing-judgment:replay'));
  }

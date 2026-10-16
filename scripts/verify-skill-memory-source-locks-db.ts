@@ -111,7 +111,7 @@ try{
  try{
   await journalHolder.query('begin');await journalHolder.query('set local role network_copilot_app');
   await journalHolder.query("select set_config('app.current_user_id',$1,true)",[owner]);
-  assert.deepEqual(await lockSkillAcceptanceRunJournals(journalHolder,owner,runArtifact),{taskJournalsLocked:true,runCount:1});
+  assert.deepEqual(await lockSkillAcceptanceRunJournals(journalHolder,owner,runArtifact),{taskOriginsLocked:true,taskJournalsLocked:true,runCount:1});
   const pid=(await journalHolder.query('select pg_backend_pid() as pid')).rows[0].pid as number;
   journalPending=[
    pool.query('update agent_run set status=status where id=$1',[runId]),
@@ -128,7 +128,7 @@ try{
   assert.equal(waiting,3,'Task update, existing journal update and journal append must all wait');
  }finally{await journalHolder.query('rollback');journalHolder.release();}
  await Promise.all(journalPending);
- await assert.rejects(tenantTransaction(other,client=>lockSkillAcceptanceRunJournals(client,other,runArtifact)),/task unavailable/);
+ await assert.rejects(tenantTransaction(other,client=>lockSkillAcceptanceRunJournals(client,other,runArtifact)),/origin unavailable/);
  const holder=await pool.connect();let pending:Array<Promise<unknown>>=[];const finished=[false,false,false];
  try{
   await holder.query('begin');await holder.query('set local role network_copilot_app');
