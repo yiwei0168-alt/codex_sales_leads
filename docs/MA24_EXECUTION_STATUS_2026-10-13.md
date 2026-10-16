@@ -1,4 +1,5 @@
 # MA24 执行状态台账（2026-10-13）
+2026-10-16 最新本机候选 `5977b301` 已包含后续 G10/G12 源码；显式交付 890 个 Skill 指纹输入并比对固定 Git archive，消除全项目追踪，TLS 新库 HTTP、自签 HTTPS 浏览器及十合成账号隔离通过。[镜像收据](evidence/ma24-g01-skill-source-standalone-image-2026-10-16.json)。历史 `f54e0b07` 的备份/回切仍仅属旧镜像；本轮不证明 Skill 页面审核、真实质量、云部署或生产认证。
 2026-10-16 G10 完整合成两臂日志已在全新数据库贯穿审计、候选图、统一观察幂等收集和审核读取，跨账号及来源清除拒绝；临时容器清理。[收据](evidence/ma24-g10-prospective-paired-database-material-2026-10-16.json)。实际 HTTP/浏览器、真实质量和生产身份仍待验。
 2026-10-16 G10 前瞻观察材料已接入统一读取及现有 API 路径，重查观察/引用/消费证据及返回前状态；51 项定向/路由回归、类型/lint 通过。[收据](evidence/ma24-g10-prospective-review-material-2026-10-16.json)。完整两臂日志到库/API/页面及真实质量仍待验。
 2026-10-16 G10 前瞻两臂日志到统一观察的追加收集代码通过与来源守卫共 34 项测试；原任务已用被评测 Skill 时拒绝，实际临时库来源路径重跑通过。[收据](evidence/ma24-g10-prospective-observation-collector-2026-10-16.json)。完整两臂数据库收集、材料 API/页面和真实质量仍待验。

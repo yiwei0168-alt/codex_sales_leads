@@ -1,0 +1,34 @@
+{
+  "schema": "ma24-g01-skill-source-standalone-image-v1",
+  "date": "2026-10-16",
+  "sourceCommit": "5977b301e29ec566535bbe3dcb6c9d689811cc86",
+  "image": "ma24-pilot-web:5977b301",
+  "localImageDigest": "sha256:d9466dd66b71163e3ed3168163c31fd972ac4a959b2048b19afb2ab13ed60dce",
+  "sourceInputs": {
+    "count": 890,
+    "manifestHash": "53fe1869f73be586b242696157cdd853d10cc459094b7556b05fb59ae579bdd2",
+    "fixedGitArchiveEqualsImage": true,
+    "imageRoots": [".next", ".skill-runtime-source", "knowledge", "node_modules", "package.json", "scripts", "server.js"],
+    "wholeProjectTracingWarnings": 0,
+    "priorImage05f8c0acRejectedForUnexpectedGithubRoot": true
+  },
+  "commands": [
+    "node scripts/build-ma24-pilot-image.mjs",
+    "node scripts/verify-ma24-image-source.mjs ma24-pilot-web:5977b301 5977b301",
+    "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --web-image=ma24-pilot-web:5977b301 --browser --ten-user"
+  ],
+  "checks": {
+    "productionBuildAndTypeScript": "passed",
+    "sourcePackagingAndFingerprintUnitChecks": "passed",
+    "lint": "passed",
+    "freshMigrationThrough": 135,
+    "tlsDatabaseHttpCompanyWorkflow": "passed",
+    "localSelfSignedHttpsBrowser": "passed",
+    "tenSyntheticAccountsIsolation": "passed",
+    "copiedProductionData": false,
+    "temporaryClusterContainersAndNetworksRemaining": 0
+  },
+  "notVerifiedThisRun": ["Skill review HTTP/browser to database", "real model quality", "binary/provider attestation", "cloud deployment", "trusted public HTTPS", "real team access", "backup restore", "rollback"],
+  "automaticActivation": false,
+  "limits": "Local synthetic verification only. Source input equality is not binary/provider attestation. Historical backup/rollback checks remain scoped to their original images. This image includes newer G12 and G10 code but those workflows are not proven by the company CRUD probe."
+}

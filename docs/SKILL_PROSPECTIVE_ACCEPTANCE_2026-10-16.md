@@ -35,3 +35,5 @@
 重建证实 turbopackIgnore 对这里的 lstat/readdir 没有消除全项目追踪；上一条仅记录尝试，不构成修复通过证据。现改为 Node 22+ 的 process.getBuiltinModule 在运行时取得原生文件接口，输入仍由显式打包器交付。新增镜像核验脚本，将镜像内全部指纹输入与固定 Git archive 逐字哈希比对，并拒绝根目录夹带 docs、experiments、tests、.github、AGENTS.md 和环境文件。定向测试、lint、类型检查通过，等待新固定提交镜像验证。
 
 进一步构建定位到警告来自 path.join 的静态分析，原生文件接口同样未消除它。按构建诊断要求将忽略标注放入 path.join 的参数位置，恢复常规文件接口；此前两种尝试均不作为发布通过证据。回归和 lint 通过，以下镜像实测才决定文件范围是否已收敛。
+
+最终固定源码 5977b301 镜像已通过构建（全项目追踪警告为 0）和固定 Git archive 的 890 个输入哈希比对；根目录只包含 .next、.skill-runtime-source、knowledge、node_modules、package.json、scripts、server.js。一次性 TLS 新库上的 HTTP 公司流程、自签 HTTPS 浏览器和十合成账号隔离通过，临时资源清理完成。[镜像收据](evidence/ma24-g01-skill-source-standalone-image-2026-10-16.json)。这解决材料交付和文件范围问题；Skill 审核自身的 HTTP/页面到库仍待验。
