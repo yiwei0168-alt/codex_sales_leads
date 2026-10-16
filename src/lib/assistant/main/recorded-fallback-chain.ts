@@ -2,6 +2,7 @@ import {z} from 'zod';
 import {digest} from './contracts';
 import {modeConfigSchema} from './mode-config';
 import type {RecordedModelCall} from './model-request-replay';
+import {retryableModeFailureReasons} from './mode-failure-reasons';
 
 type Attempt=RecordedModelCall&{id:string;call_key:string;status:string};
 /** Check persisted fallback decisions. Does not retry, infer missing receipts or authorize new calls. */
@@ -27,9 +28,7 @@ export function assertRecordedFallbackChain(attempts:Attempt[]){
    if(i===group.length-1){
     if(z.object({status:z.string()}).parse(attempt.row.output).status!=='success')throw new Error('Recorded fallback group has no selected response');
    }else{
-    z.object({status:z.literal('unavailable'),data:z.object({retryable:z.literal(true),reason:z.enum([
-     'http-429','http-500','http-502','http-503','http-504','connection-failed','timeout-first-output','timeout-total',
-    ])})}).parse(attempt.row.output);
+    z.object({status:z.literal('unavailable'),data:z.object({retryable:z.literal(true),reason:z.enum(retryableModeFailureReasons)})}).parse(attempt.row.output);
    }
   }
  }

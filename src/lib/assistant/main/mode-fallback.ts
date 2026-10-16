@@ -1,5 +1,6 @@
 import { OpenRouterRequestError } from '@/providers/openrouter-batch';
 import { ModelWaitError } from './model-stream';
+import { isRetryableModeReceipt } from './mode-failure-reasons';
 export class ModeModelsUnavailable extends Error {constructor(){super('Mode model routes exhausted or require reconciliation');}}
 export function modeFailureCode(error:unknown):string {
   if(error instanceof ModelWaitError)return `timeout-${error.kind}`;
@@ -25,7 +26,7 @@ export async function orderedModeDecision<T>(deps:{
     deps.signal?.throwIfAborted();
     if(prior.output?.status==='success')return (prior.output.data as {value:T}).value;
     if(!prior.fresh){
-      if(prior.output?.status==='unavailable'&&(prior.output.data as {retryable?:boolean}|undefined)?.retryable===true)continue;
+      if(prior.output?.status==='unavailable'&&isRetryableModeReceipt(prior.output.data))continue;
       throw new ModeModelsUnavailable();
     }
     let value:T;

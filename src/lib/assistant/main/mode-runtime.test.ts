@@ -5,6 +5,7 @@ import { collectModelStream, ModelWaitError, ModelReceiptError, withModeStream, 
 import { orderedModeDecision, mayFallback } from './mode-fallback';
 import { requestModeModel } from './model';
 import { OpenRouterRequestError } from '@/providers/openrouter-batch';
+import { retryableModeFailureReasons } from './mode-failure-reasons';
 
 afterEach(()=>{vi.useRealTimers();vi.unstubAllEnvs();});
 const frame=(delta:unknown,finish_reason:string|null=null)=>`data: ${JSON.stringify({model:'openai/gpt-6-luna',provider:'fixture',choices:[{index:0,delta,finish_reason}]})}\n\n`;
@@ -40,7 +41,7 @@ describe('mode runtime boundaries',()=>{
   });
   it('saves a failed route before advancing and reuses saved success on recovery',async()=>{
     const saved=new Map<number,{status:string;data:unknown}>(),calls:number[]=[],events:string[]=[];
-    const deps={begin:async(i:number)=>({id:String(i),fresh:!saved.has(i),output:saved.get(i)}),request:async(i:number)=>{calls.push(i);events.push(`request${i}`);if(i===0)throw new ModelWaitError('first-output');return 'answer';},save:async(id:string,i:number,value:{status:'success';value:string}|{status:'unavailable';retryable:boolean})=>{events.push(`save${i}`);saved.set(i,{status:value.status,data:value.status==='success'?{value:value.value}:{retryable:value.retryable}});}};
+    const deps={begin:async(i:number)=>({id:String(i),fresh:!saved.has(i),output:saved.get(i)}),request:async(i:number)=>{calls.push(i);events.push(`request${i}`);if(i===0)throw new ModelWaitError('first-output');return 'answer';},save:async(id:string,i:number,value:{status:'success';value:string}|{status:'unavailable';retryable:boolean;reason:string})=>{events.push(`save${i}`);saved.set(i,{status:value.status,data:value.status==='success'?{value:value.value}:{retryable:value.retryable,reason:value.reason}});}};
     expect(await orderedModeDecision(deps)).toBe('answer');
     expect(await orderedModeDecision(deps)).toBe('answer');
     expect(calls).toEqual([0,1]);expect(events).toEqual(['request0','save0','request1','save1']);
@@ -51,6 +52,21 @@ describe('mode runtime boundaries',()=>{
     expect(request).not.toHaveBeenCalled();
     await expect(orderedModeDecision({begin:async()=>({id:'1',fresh:true}),request,save:async()=>{throw new Error('storage');}})).rejects.toThrow('storage');
     expect(request).toHaveBeenCalledOnce();expect(mayFallback(new ModelReceiptError())).toBe(false);
+  });
+  it.each([undefined,null,{}, {retryable:true}, {retryable:true,reason:'http-401'},
+    {retryable:true,reason:'execution-cancelled'}, {retryable:true,reason:'unknown'},
+    {retryable:false,reason:'http-429'}])('does not advance from an unsupported saved failure: %j',async data=>{
+    const request=vi.fn(),save=vi.fn(),begin=vi.fn(async()=>({id:'saved',fresh:false,output:{status:'unavailable',data}}));
+    await expect(orderedModeDecision({begin,request,save})).rejects.toThrow();
+    expect(begin).toHaveBeenCalledTimes(1);expect(request).not.toHaveBeenCalled();expect(save).not.toHaveBeenCalled();
+  });
+  it.each(retryableModeFailureReasons)('advances from a supported saved failure %s without repeating it',async reason=>{
+    const request=vi.fn(async()=> 'recovered'),save=vi.fn();
+    const begin=vi.fn(async(index:number)=>index===0
+      ?{id:'saved',fresh:false,output:{status:'unavailable',data:{retryable:true,reason}}}
+      :{id:'next',fresh:true});
+    expect(await orderedModeDecision({begin,request,save})).toBe('recovered');
+    expect(request).toHaveBeenCalledExactlyOnceWith(1);expect(save).toHaveBeenCalledTimes(1);
   });
   it('tries exactly three routes on explicit retryable errors, but not on 401',async()=>{
     const request=vi.fn(async()=>{throw new ModelWaitError('total');}),save=vi.fn();

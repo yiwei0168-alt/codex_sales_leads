@@ -1,0 +1,18 @@
+{
+  "schema": "ma24-g12-saved-failure-recovery-boundary-v1",
+  "date": "2026-10-16",
+  "change": "Runtime recovery and recorded fallback audit share the allowed retryable failure reasons. Missing, cancelled, unauthorized, unknown, or explicitly nonretryable saved failures stop before another model request.",
+  "checks": {
+    "focusedFiles": 3,
+    "testsPassed": 60,
+    "unsupportedSavedFailureCases": 8,
+    "supportedSavedFailureReasons": 8,
+    "invalidReceiptStartsNoModelRequest": "passed",
+    "validReceiptSkipsPriorRequest": "passed",
+    "cancellationAndAuditRegression": "passed",
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "externalModelCalls": 0
+  },
+  "limits": "Deterministic recovery tests only; no actual provider failure, real business task, production process reload, or updated Linux image was verified. Legacy incomplete failure receipts now require reconciliation instead of automatic fallback."
+}

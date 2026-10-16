@@ -96,7 +96,7 @@ try{
   checks.push('deep-saved-evidence-research','deep-send-still-requires-approval');
 
   let requests=0;
-  const fallback={begin:(index:number)=>beginCall(standard,{key:`fixture-model:${index}`,tool:'main_model',version:'fixture',input:{index},effect:'model'}),request:async(index:number)=>{requests++;if(index===0)throw new ModelWaitError('total');return 'SAVED_LOCAL_RESPONSE';},save:async(id:string,_index:number,outcome:{status:'success';value:string}|{status:'unavailable';retryable:boolean})=>completeCall(standard,id,outcome.status==='success'?result({value:outcome.value}):result({retryable:outcome.retryable},{status:'unavailable'}),{synthetic:true})};
+  const fallback={begin:(index:number)=>beginCall(standard,{key:`fixture-model:${index}`,tool:'main_model',version:'fixture',input:{index},effect:'model'}),request:async(index:number)=>{requests++;if(index===0)throw new ModelWaitError('total');return 'SAVED_LOCAL_RESPONSE';},save:async(id:string,_index:number,outcome:{status:'success';value:string}|{status:'unavailable';retryable:boolean;reason:string})=>completeCall(standard,id,outcome.status==='success'?result({value:outcome.value}):result({retryable:outcome.retryable,reason:outcome.reason},{status:'unavailable'}),{synthetic:true})};
   assert.equal(await orderedModeDecision(fallback),'SAVED_LOCAL_RESPONSE');
   assert.equal(await orderedModeDecision(fallback),'SAVED_LOCAL_RESPONSE');assert.equal(requests,2);
   assert.equal((await admin.query('select count(*)::int n from paid_call_reservation where user_id=any($1::uuid[])',[owners])).rows[0].n,0);
