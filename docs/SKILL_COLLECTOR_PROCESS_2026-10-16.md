@@ -2,6 +2,8 @@
 
 ## 当前实现
 
+配套 Web 候选现为 `ma24-pilot-web:57832601`，与采集器的 909 个源码输入及 Node 二进制一致，共享源码/Node 指纹 `a2242f921e69b7bf839ec4fd1cba98aca4d926d62334b70c8a68dcddd20b8afd`。[基线证据](evidence/ma24-g01-g09-web-collector-baseline-2026-10-16.json)同时验证十个合成账号隔离、原会话和数据库断线恢复。Web 内被打包的依赖不能从顶层直接解析，完整编译运行依赖等价性仍未证实；源码身份一致不意味着生产 Agent 等价认证通过。
+
 当前已验采集发布包为 `ma24-skill-collector:6fc08071`，镜像 ID `sha256:b7c8214619c4e4ec12ec6e8ad27a6c19696f8fdc523cb21e74faf4b19690585a`，已包含失败/回退签名。909 个源码输入与提交一致，34,424 个包内文件/链接核对、非 root/只读/无网络启动、篡改拒绝及可信 CA 数据库 `--check` 均通过，[本轮证据](evidence/ma24-g09-fallback-collector-image-2026-10-16.json)。旧 `492e5647` 保留为历史，不再是当前候选。尚未执行真实提供方任务或生产部署。
 
 `node scripts/build-skill-collector.mjs` 将仓库采集入口及内部模块编译为 `tmp/skill-collector/runner.cjs`，同时写入 SHA-256 和输入文件列表。输出目录被 Git 忽略；构建没有复制环境文件、密钥或业务数据。依赖包仍从安装环境加载，当前摘要只覆盖生成的入口包，不能认证全部依赖、Node 或运行主机。

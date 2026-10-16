@@ -1,0 +1,46 @@
+{
+  "stage": "G01/G09 current Web and collector source/Node baseline",
+  "date": "2026-10-16",
+  "webCommit": "57832601da129413e7adffd99f8e8c6bc316b9cd",
+  "webImage": "ma24-pilot-web:57832601",
+  "webImageId": "sha256:936ccf5e86557d72e77bd657e39073d90b77642df54b506f5363ed135ddef890",
+  "collectorImage": "ma24-skill-collector:6fc08071",
+  "collectorImageIdPreviouslyVerified": "sha256:b7c8214619c4e4ec12ec6e8ad27a6c19696f8fdc523cb21e74faf4b19690585a",
+  "commands": [
+    "node scripts/build-ma24-pilot-image.mjs",
+    "node scripts/verify-ma24-image-source.mjs ma24-pilot-web:57832601 57832601",
+    "node scripts/verify-skill-runtime-pair.mjs ma24-pilot-web:57832601 ma24-skill-collector:6fc08071",
+    "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --web-image=ma24-pilot-web:57832601 --web-pool-recovery --ten-user"
+  ],
+  "exitCodes": [0, 0, 0, 0],
+  "sourceInputCount": 909,
+  "sourceInventoryHash": "331232a434c0703ad27549186f04f4a49a9161c28951483cc950fcc0c7a82924",
+  "sourceRuntimeHash": "a2242f921e69b7bf839ec4fd1cba98aca4d926d62334b70c8a68dcddd20b8afd",
+  "node": "24.21.0",
+  "platform": "linux",
+  "architecture": "x64",
+  "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+  "checks": {
+    "committedSourceBuildAndTypecheck": true,
+    "webSourceMatchesFixedCommit": true,
+    "webCollectorSourceAndNodeIdentityMatch": true,
+    "externalPgVersionsMatchLockfile": true,
+    "tenConcurrentSyntheticAccountsIsolated": true,
+    "terminatedOwnIdleBackends": 5,
+    "sameWebProcessAndStartTime": true,
+    "originalSessionRetained": true,
+    "tlsReconnected": true,
+    "subsequentWriteReadAndIsolation": true,
+    "temporaryResourcesCleaned": true
+  },
+  "webDirectlyResolvedPackages": {"pg": "8.23.0"},
+  "webPackagesNotDirectlyResolvable": ["zod", "@langchain/langgraph", "@langchain/core", "langsmith", "undici"],
+  "completeDependencyRuntimeEquivalenceVerified": false,
+  "productionQualified": false,
+  "actualModelCalls": 0,
+  "limitations": [
+    "The first dependency probe failed to resolve zod from the standalone root; missing packages are reported explicitly rather than treated as verified.",
+    "Source/Node fingerprint equality is narrower than compiled runtime and provider equivalence.",
+    "No fresh browser, live provider, production deployment or activation transaction was exercised."
+  ]
+}
