@@ -28,6 +28,11 @@ it('authenticates a bound collector statement without granting activation',()=>{
  expect(verifySkillRunnerAttestation(envelope(),registry(),expected,now)).toMatchObject({
   signatureVerified:true,bindingsVerified:true,automaticActivation:false});
 });
+it('does not let a transport-only key sign runner declarations',()=>{
+ const r=registry();
+ const scoped={...r,keys:r.keys.map(key=>({...key,purposes:['model-transport']}))};
+ expect(()=>verifySkillRunnerAttestation(envelope(),scoped,expected,now)).toThrow();
+});
 it.each(['ownerId','freezeId','planHash','artifactHash','runtimeIdentityHash','deploymentHash','collectorId'] as const)
  ('rejects a correctly signed statement for a different %s',field=>{
   const changed={...expected,[field]:['ownerId','freezeId'].includes(field)?'33333333-3333-4333-8333-333333333333':hash('different')};

@@ -17,6 +17,7 @@ const registrySchema=z.object({protocol:z.literal('skill-runner-trust-registry-v
  keys:z.array(z.object({keyId,collectorId:z.string().min(1).max(200),deploymentHash:sha,
   publicKeyPem:z.string().max(4096).regex(/^-----BEGIN PUBLIC KEY-----\r?\n[\s\S]+\r?\n-----END PUBLIC KEY-----\s*$/),
   enabled:z.boolean(),notBefore:z.iso.datetime(),expiresAt:z.iso.datetime(),
+  purposes:z.array(z.enum(['runner-declaration','model-transport'])).min(1).refine(values=>new Set(values).size===values.length).default(['runner-declaration']),
  }).strict()).max(100),
 }).strict().superRefine((value,context)=>{
  if(new Set(value.keys.map(key=>key.keyId)).size!==value.keys.length)
@@ -41,6 +42,7 @@ export function verifySkillRunnerAttestation(envelope:unknown,registryInput:unkn
  if(!Number.isFinite(current))throw new Error('Runner attestation clock invalid');
  const key=registry.keys.find(row=>row.keyId===statement.keyId);
  if(!key?.enabled)throw new Error('Runner attestation trust key unavailable');
+ if(!key.purposes.includes('runner-declaration'))throw new Error('Runner attestation key purpose unavailable');
  const frozen=Date.parse(expected.frozenAt),planExpiry=Date.parse(expected.expiresAt);
  const captured=Date.parse(statement.capturedAt),completed=Date.parse(statement.completedAt);
  const issued=Date.parse(statement.issuedAt),expiry=Date.parse(statement.expiresAt);
@@ -68,9 +70,12 @@ export function verifySkillRunnerAttestation(envelope:unknown,registryInput:unkn
 /** Server-configured public registry only; never take a registry/key from HTTP or tool input.
  * Reload on every check so removal/disablement takes effect. No private key is loaded here. */
 export async function verifyConfiguredSkillRunnerAttestation(envelope:unknown,expected:SkillRunnerBinding){
+ return verifySkillRunnerAttestation(envelope,await loadConfiguredSkillRunnerTrustRegistry(),expected);
+}
+export async function loadConfiguredSkillRunnerTrustRegistry(){
  const path=process.env.SKILL_RUNNER_TRUST_REGISTRY_FILE;
  if(!path)throw new Error('Runner trust registry is not configured');
  const bytes=await readFile(path);
  if(bytes.length>512_000)throw new Error('Runner trust registry too large');
- return verifySkillRunnerAttestation(envelope,JSON.parse(bytes.toString('utf8')),expected);
+ return registrySchema.parse(JSON.parse(bytes.toString('utf8')));
 }
