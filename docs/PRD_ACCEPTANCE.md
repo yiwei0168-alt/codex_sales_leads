@@ -1186,3 +1186,5 @@ MODESEL-15：53 项本地测试通过。旧入口仅返回停用提示，配置�
 2026-10-16 / G01 HTTPS 本机补验：候选版在临时自签名 HTTPS 回环代理及 Chrome 中通过合成成员 Cookie 保存、会话读取和退出；目标域名的可信 TLS、真实成员及业务流程仍需另验。[浏览器收据](evidence/ma24-g01-loopback-https-browser-session-2026-10-16.json)。
 
 同项补验已复跑实际登录表单、工作区呈现和页面退出按钮；其余上线门槛不变。
+
+2026-10-16 / G01 运行权限：本机候选 Web 在移除迁移凭据与付费覆盖开关后，重新通过 HTTPS Chrome 登录及退出；试用目标环境仍须配置专用受限运行凭据。[运行权限收据](evidence/ma24-g01-pilot-web-runtime-boundary-2026-10-16.json)。

@@ -1,0 +1,27 @@
+{
+  "schema": "ma24-g01-pilot-web-runtime-boundary-v1",
+  "date": "2026-10-16",
+  "scope": "local candidate Web process, not a remote team deployment",
+  "candidateSourceCommit": "18ff5906",
+  "candidateBuildId": "XKStVycsg2jqqFiczvVhE",
+  "launcher": "scripts/start-ma24-pilot-web.mjs",
+  "runtime": {
+    "loopbackAddress": "127.0.0.1:3022",
+    "migrationCredentialPresent": false,
+    "paidCallOverridePresent": false,
+    "packagedEnvironmentFilesAllowed": false,
+    "authSessionHeadStatus": 200,
+    "httpsChromeLoginForm": "passed",
+    "httpsChromeWorkspaceEntry": "passed",
+    "httpsChromeLogoutUi": "passed",
+    "syntheticFixtureRemoved": true,
+    "actualPaidCalls": 0,
+    "previousCandidatePort3021Stopped": true
+  },
+  "limits": [
+    "The local launcher removed privileged variables after loading the developer environment; a remote deployment must provision a dedicated runtime environment without those credentials",
+    "The actual database login is the local restricted application account; target hosting and target account grants remain unverified",
+    "Loopback HTTPS used a self-signed test certificate, not a trusted team domain",
+    "No real team users, worker identity, full business workflow or production rollback were verified"
+  ]
+}
