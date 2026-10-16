@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { randomBytes } from "node:crypto";
+import { randomBytes, randomUUID } from "node:crypto";
 import { spawn } from "node:child_process";
 import nextEnv from "@next/env";
 import { Client } from "pg";
@@ -59,9 +59,40 @@ try {
       stage: true, laterStageAbsent: true });
     await app.query("rollback");
   } finally { await app.end(); }
+  const fixtureAdmin = new Client({ connectionString: migrationTarget.toString() });
+  await fixtureAdmin.connect();
+  const firstUser = randomUUID(), secondUser = randomUUID();
+  try {
+    for (const [index, userId] of [firstUser, secondUser].entries()) {
+      await fixtureAdmin.query(
+        "insert into app_user(id,email,display_name,password_hash,role,status) values($1,$2,$3,'!','member','active')",
+        [userId, `pilot-fixture-${userId}@example.invalid`, `Pilot fixture ${index + 1}`]);
+      await fixtureAdmin.query(
+        "insert into market_workspace(id,owner_id,slug,name,market,country_code,objective) values($1,$2,'global-sales',$3,'Global','WW','Synthetic pilot test')",
+        [randomUUID(), userId, `Pilot fixture ${index + 1}`]);
+    }
+  } finally { await fixtureAdmin.end(); }
+  process.env.DATABASE_URL = appTarget.toString();
+  const { addManualCompany } = await import("../src/lib/sales/manual-company");
+  const { getCurrentWorkspace, updateCompanyState } = await import("../src/lib/sales/repository");
+  const { getPool } = await import("../src/lib/rag/db");
+  try {
+    const added = await addManualCompany(firstUser, {
+      name: "Synthetic Pilot Company", country: "DE", website: "https://pilot-fixture.invalid",
+    });
+    assert.equal(added.duplicate, false);
+    const first = await getCurrentWorkspace(firstUser);
+    const second = await getCurrentWorkspace(secondUser);
+    assert(first?.companies.some(company => company.id === added.externalId));
+    assert(second && !second.companies.some(company => company.id === added.externalId));
+    await assert.rejects(updateCompanyState(added.externalId, {}, secondUser), /Company not found in current workspace/);
+    const firstAgain = await getCurrentWorkspace(firstUser);
+    assert(firstAgain?.companies.some(company => company.id === added.externalId));
+  } finally { await getPool().end(); }
   console.log(JSON.stringify({ disposableDatabase: true, migrationThrough: 135, seededNonLoginPlaceholder: 1,
     realUsers: 0, documents: 0, applicationLoginChecked: true, stagePresent: true,
-    laterStageAbsent: true, repeatRejected: true, copiedProductionData: false }));
+    laterStageAbsent: true, repeatRejected: true, syntheticMembers: 2,
+    manualCompanyWrittenAndRead: true, otherMemberReadAndWriteDenied: true, copiedProductionData: false }));
 } finally {
   if (created) await admin.query(`drop database "${name}" with (force)`);
   await admin.end();
