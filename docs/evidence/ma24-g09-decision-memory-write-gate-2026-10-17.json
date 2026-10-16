@@ -1,0 +1,23 @@
+{
+  "stage": "MA24 G09 current and historical memory write admission",
+  "date": "2026-10-17",
+  "migration": "148_skill_decision_memory_source_locks.sql",
+  "status": "wired before locked evidence read; targeted and two disposable database workflows passed; full composition pending",
+  "protectedTables": ["agent_memory", "agent_memory_version", "user_outreach_memory", "outreach_knowledge_item", "agent_memory_observation", "agent_memory_conflict"],
+  "memoryDatabaseCommand": "node --import tsx scripts/verify-ma24-fresh-pilot-new-cluster.ts --memory-source-locks",
+  "policyDatabaseCommand": "node --import tsx scripts/verify-ma24-fresh-pilot-new-cluster.ts --locked-policy",
+  "migrationAppliedTwice": true,
+  "ownedUpdateObservationInsertAndSharedPolicyRewriteWait": true,
+  "writersResumeAfterRelease": true,
+  "otherAccountCompletePrivateMemoryWriteContinues": true,
+  "waitingChainsObservedRecursively": true,
+  "lockedPolicyReadAndReviewRejectionRegression": "passed",
+  "targetedTests": 35,
+  "typecheck": "passed",
+  "eslint": "passed",
+  "tableWritePrivilegesAdded": false,
+  "actualModelCalls": 0,
+  "productionDeployment": false,
+  "automaticActivation": false,
+  "limitations": ["Full source composition still pending", "Knowledge source locks and final commit-time validity incomplete", "Administrative and shared policy writes wait for all held global reader gates", "Database privilege holders can disable triggers; no protection against disabled enforcement claimed"]
+}

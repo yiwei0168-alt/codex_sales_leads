@@ -17,6 +17,9 @@ process.env.MAILBOX_CREDENTIAL_KEY=randomBytes(32).toString('base64url');
 const admin=new URL(process.env.DATABASE_MIGRATION_URL!),app=new URL(process.env.DATABASE_URL!);
 assert(['localhost','127.0.0.1'].includes(admin.hostname));assert.equal(admin.host+admin.pathname,app.host+app.pathname);
 const pool=new Pool({connectionString:admin.toString()}),owner=randomUUID(),other=randomUUID(),a=randomUUID(),b=randomUUID(),conflict=randomUUID();
+const waitingOn=async(pid:number)=>Number((await pool.query(`with recursive waiting(pid) as (
+ select $1::int union select a.pid from pg_stat_activity a join waiting w on w.pid=any(pg_blocking_pids(a.pid)))
+ select count(*) n from waiting where pid<>$1`,[pid])).rows[0].n);
 try{
  assert.equal((await pool.query('select count(*)::int n from app_user')).rows[0].n,1);
  const migration=await readFile('db/migrations/142_skill_memory_source_locks.sql','utf8');await pool.query(migration);await pool.query(migration);
@@ -24,6 +27,7 @@ try{
  const taskOriginsMigration=await readFile('db/migrations/144_skill_task_origin_locks.sql','utf8');await pool.query(taskOriginsMigration);await pool.query(taskOriginsMigration);
  const attachmentMigration=await readFile('db/migrations/145_skill_attachment_source_locks.sql','utf8');await pool.query(attachmentMigration);await pool.query(attachmentMigration);
  const timelineMigration=await readFile('db/migrations/147_skill_timeline_source_locks.sql','utf8');await pool.query(timelineMigration);await pool.query(timelineMigration);
+ const decisionMigration=await readFile('db/migrations/148_skill_decision_memory_source_locks.sql','utf8');await pool.query(decisionMigration);await pool.query(decisionMigration);
  for(const id of [owner,other])await pool.query("insert into app_user(id,email,display_name,role,status) values($1,$2,'Synthetic source locks','member','active')",[id,`${id}@example.invalid`]);
  const expiringMemory=randomUUID(),futureMemory=randomUUID();
  for(const [id,future] of [[expiringMemory,false],[futureMemory,true]] as const){
@@ -44,6 +48,32 @@ try{
   assert.throws(()=>assertRecordedDecisionMemory(messages,after),/decision memory changed/);
  }));
  assert(!(await loadDecisionMemory(other)).some(row=>row.id===futureMemory));
+ const globalMemory=randomUUID();
+ await pool.query("insert into agent_memory(id,owner_id,scope,kind,memory_key,source_kind) values($1,$2,'global','policy',$1::uuid::text,'explicit')",[globalMemory,owner]);
+ await pool.query("insert into agent_memory_version(memory_id,version,content,scope_snapshot) values($1,1,'Synthetic shared policy','{}')",[globalMemory]);
+ const decisionHolder=await pool.connect();let decisionWrites:Array<Promise<unknown>>=[];
+ try{
+  await decisionHolder.query('begin');await decisionHolder.query('set local role network_copilot_app');
+  await decisionHolder.query("select set_config('app.current_user_id',$1,true)",[owner]);
+  await decisionHolder.query('select lock_skill_decision_memory_sources()');
+  await tenantTransaction(other,async client=>{
+   const id=randomUUID();
+   await client.query("insert into agent_memory(id,owner_id,scope,kind,memory_key,source_kind) values($1,$2,'account','preference',$1::uuid::text,'explicit')",[id,other]);
+   await client.query("insert into agent_memory_version(memory_id,version,content,scope_snapshot) values($1,1,'Other account synthetic preference','{}')",[id]);
+  });
+  const pid=(await decisionHolder.query('select pg_backend_pid() as pid')).rows[0].pid as number;
+  decisionWrites=[tenantTransaction(owner,client=>client.query('update agent_memory set active=active where id=$1',[futureMemory])),
+   tenantTransaction(owner,client=>client.query("insert into agent_memory_observation(owner_id,kind,content,source_receipt) values($1,'experience','Synthetic memory phantom','{}')",[owner])),
+   pool.query('update agent_memory_version set content=content where memory_id=$1',[globalMemory])];
+  for(const work of decisionWrites)void work.catch(()=>undefined);
+  let waiting=0;
+  for(let i=0;i<100;i++){
+   waiting=await waitingOn(pid);
+   if(waiting===3)break;await new Promise(resolve=>setTimeout(resolve,20));
+  }
+  assert.equal(waiting,3,'Owned update, observation insert and shared-policy rewrite must wait');
+ }finally{await decisionHolder.query('rollback');decisionHolder.release();}
+ await Promise.all(decisionWrites);
  const documentId=randomUUID(),assetId=randomUUID(),treeId=randomUUID(),sha=digest('Synthetic attachment');
  const collection=(await pool.query('select id from knowledge_collection order by id limit 1')).rows[0].id;
  await pool.query(`insert into knowledge_document(id,collection_id,external_id,title,source_type,content_sha256,owner_id,visibility)
@@ -68,7 +98,7 @@ try{
   for(const work of attachmentPending)void work.catch(()=>undefined);
   let waiting=0;
   for(let i=0;i<100;i++){
-   waiting=Number((await pool.query('select count(*) n from pg_stat_activity where $1::int=any(pg_blocking_pids(pid))',[pid])).rows[0].n);
+   waiting=await waitingOn(pid);
    if(waiting===3)break;await new Promise(resolve=>setTimeout(resolve,20));
   }
   assert.equal(waiting,3,'Document ACL, asset registration and current tree updates must wait');
@@ -123,7 +153,7 @@ try{
   for(const work of originPending)void work.catch(()=>undefined);
   let waiting=0;
   for(let i=0;i<100;i++){
-   waiting=Number((await pool.query('select count(*) n from pg_stat_activity where $1::int=any(pg_blocking_pids(pid))',[pid])).rows[0].n);
+   waiting=await waitingOn(pid);
    if(waiting===4)break;await new Promise(resolve=>setTimeout(resolve,20));
   }
   assert.equal(waiting,4,'Account, conversation, run and message updates must all wait');
@@ -152,7 +182,7 @@ try{
   for(const work of taskOriginPending)void work.catch(()=>undefined);
   let waiting=0;
   for(let i=0;i<100;i++){
-   waiting=Number((await pool.query('select count(*) n from pg_stat_activity where $1::int=any(pg_blocking_pids(pid))',[pid])).rows[0].n);
+   waiting=await waitingOn(pid);
    if(waiting===4)break;await new Promise(resolve=>setTimeout(resolve,20));
   }
   assert.equal(waiting,4,'Account, conversation, message update and history append must wait');
@@ -189,7 +219,7 @@ try{
   for(const work of journalPending)void work.catch(()=>undefined);
   let waiting=0;
   for(let i=0;i<100;i++){
-   waiting=Number((await pool.query('select count(*) n from pg_stat_activity where $1::int=any(pg_blocking_pids(pid))',[pid])).rows[0].n);
+   waiting=await waitingOn(pid);
    if(waiting===7)break;await new Promise(resolve=>setTimeout(resolve,20));
   }
   assert.equal(waiting,7,'Task/journal, stored attachment and mail metadata updates must all wait');
@@ -222,7 +252,7 @@ try{
   for(const work of timelinePending)void work.catch(()=>undefined);
   let waiting=0;
   for(let i=0;i<100;i++){
-   waiting=Number((await pool.query('select count(*) n from pg_stat_activity where $1::int=any(pg_blocking_pids(pid))',[pid])).rows[0].n);
+   waiting=await waitingOn(pid);
    if(waiting===7)break;await new Promise(resolve=>setTimeout(resolve,20));
   }
   assert.equal(waiting,7,'Timeline updates and new links, notes and customers must all wait');
@@ -243,7 +273,7 @@ try{
   for(const work of pending)void work.catch(()=>undefined);
   let waiting=0;
   for(let i=0;i<100;i++){
-   waiting=Number((await pool.query('select count(*) n from pg_stat_activity where $1::int=any(pg_blocking_pids(pid))',[pid])).rows[0].n);
+   waiting=await waitingOn(pid);
    if(waiting===3)break;await new Promise(resolve=>setTimeout(resolve,20));
   }
   assert.equal(waiting,3,'Correction, invalidation and conflict update must all wait');assert.deepEqual(finished,[false,false,false]);
@@ -256,6 +286,6 @@ try{
  await assert.rejects(tenantTransaction(owner,client=>lockCurrentSkillExperienceSources(client,owner,version)),/changed after locking/);
  assert.equal((await pool.query("select to_regclass('public.ma24_evaluation_hard_limit') is null absent")).rows[0].absent,true);
  console.log(JSON.stringify({memorySourceLocksDatabase:'passed',correctionInvalidationAndConflictBlocked:true,allWritersResumeAfterRelease:true,
-  foreignOwnerAndInvalidIdsRejected:true,decisionMemoryWallClockRevalidated:true,timelineUpdatesAndPhantomInsertsBlocked:true,mailMetadataUpdatesBlocked:true,attachmentMetadataUpdatesBlocked:true,privateAttachmentForeignOwnerRejected:true,taskOriginsAndHistoryAppendBlocked:true,taskAndJournalUpdateAndAppendBlocked:true,foreignTaskJournalLockRejected:true,noObservationUpdateGrant:true,originUpdatesBlocked:true,changedOriginalMessageRejected:true,storedProvenanceLockThenRecheck:true,invalidatedProvenanceRejectedAfterLock:true,expiryAfterTransactionStartRejected:true,
+  foreignOwnerAndInvalidIdsRejected:true,decisionMemoryWriteAndPhantomGateVerified:true,otherAccountPrivateMemoryWriteContinues:true,decisionMemoryWallClockRevalidated:true,timelineUpdatesAndPhantomInsertsBlocked:true,mailMetadataUpdatesBlocked:true,attachmentMetadataUpdatesBlocked:true,privateAttachmentForeignOwnerRejected:true,taskOriginsAndHistoryAppendBlocked:true,taskAndJournalUpdateAndAppendBlocked:true,foreignTaskJournalLockRejected:true,noObservationUpdateGrant:true,originUpdatesBlocked:true,changedOriginalMessageRejected:true,storedProvenanceLockThenRecheck:true,invalidatedProvenanceRejectedAfterLock:true,expiryAfterTransactionStartRejected:true,
   deferredEvaluationMigrationsApplied:false,actualModelCalls:0,automaticActivation:false}));
 }finally{await pool.end();await getPool().end();}

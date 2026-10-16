@@ -32,6 +32,7 @@ const collector:SkillCollectorTransaction=async(userId,work)=>{
 };
 try{
  assert.equal((await pool.query('select count(*)::int n from app_user')).rows[0].n,1,'Fresh placeholder-only database required');
+ await pool.query(await readFile('db/migrations/148_skill_decision_memory_source_locks.sql','utf8'));
  await pool.query(await readFile('db/migrations/141_skill_runner_attestation.sql','utf8'));
  await pool.query(await readFile('db/migrations/141_skill_runner_attestation.sql','utf8'));
  for(const id of [owner,other])await pool.query("insert into app_user(id,email,display_name,role,status) values($1,$2,'Synthetic runner attestation','member','active')",[id,`${id}@example.invalid`]);

@@ -56,6 +56,7 @@ try{
   await pool.query(await readFile('db/migrations/145_skill_attachment_source_locks.sql','utf8'));
   await pool.query(await readFile('db/migrations/146_skill_model_freeze_serialization.sql','utf8'));
   await pool.query(await readFile('db/migrations/147_skill_timeline_source_locks.sql','utf8'));
+  await pool.query(await readFile('db/migrations/148_skill_decision_memory_source_locks.sql','utf8'));
  }
  for(const id of [owner,other])await pool.query("insert into app_user(id,email,display_name,role,status) values($1,$2,'Synthetic prospective source','member','active')",[id,`${id}@example.invalid`]);
  await pool.query("insert into assistant_conversation(id,user_id,title) values($1,$2,'Synthetic prospective source')",[conversation,owner]);
@@ -115,9 +116,12 @@ try{
   timelineData=await readCustomerTimeline(owner,customerId);assert(timelineData);assert.equal(timelineData.events.length,1);
   customerListData=await listMailboxCustomers(owner);assert.equal(customerListData.items.length,1);
  }
- const writeCall=async(id:string,tool:string,effect:string,args:unknown,output:unknown,key=id)=>pool.query(`insert into agent_tool_call
+ const writeCall=async(id:string,tool:string,effect:string,args:unknown,output:unknown,key=id)=>{
+  const normalized=effect==='read'?productTools.find(item=>item.id===tool)!.input.parse(args):args;
+  return pool.query(`insert into agent_tool_call
   (id,user_id,run_id,call_key,tool_id,tool_version,input_hash,input,effect,status,output)
-  values($1,$2,$3,$9,$4,'1',$5,$6,$7,'completed',$8)`,[id,owner,run,tool,digest(args),JSON.stringify(args),effect,JSON.stringify(output),key]);
+  values($1,$2,$3,$9,$4,'1',$5,$6,$7,'completed',$8)`,[id,owner,run,tool,digest(normalized),JSON.stringify(normalized),effect,JSON.stringify(output),key]);
+ };
  await pool.query("update agent_run set status='running' where id=$1",[run]);
  const baselineAnswer='Synthetic baseline: Please keep responses concise.';
  if(fullMaterial){

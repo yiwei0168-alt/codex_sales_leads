@@ -29,7 +29,7 @@ export async function revalidateLockedSkillAcceptanceMaterials(client:PoolClient
   const after=await readLockedSkillAcceptanceEvidence(client,context,bundleId);
   if(after.artifactHash!==before.artifactHash||after.latestReviewHash!==before.latestReviewHash||digest(after.currentPin)!==digest(before.currentPin))
    throw new Error('Locked evidence changed during material reconstruction');
-  return {...journalLocks,artifactHash:after.artifactHash,latestReviewHash:after.latestReviewHash,materials:hashes,materialsHash:digest(hashes),
+  return {...journalLocks,decisionMemorySourcesLocked:after.decisionMemorySourcesLocked,artifactHash:after.artifactHash,latestReviewHash:after.latestReviewHash,materials:hashes,materialsHash:digest(hashes),
    sourcePayloadsRevalidated:true as const,sourceRevocationsLocked:false as const,collectorProvenanceVerified:false as const,automaticActivation:false as const};
  });
 }
@@ -41,7 +41,7 @@ export async function evaluateLockedSkillAcceptanceReadiness(client:PoolClient,c
   const policy=await evaluateLockedSkillAcceptancePolicy(client,context,bundleId);
   if(materials.artifactHash!==policy.artifactHash||materials.latestReviewHash!==policy.latestReviewHash)
    throw new Error('Locked material and policy snapshots differ');
-  return {...policy,timelineSourcesLocked:materials.timelineSourcesLocked,timelineCustomerCount:materials.timelineCustomerCount,mailReadSourcesLocked:materials.mailReadSourcesLocked,mailCount:materials.mailCount,attachmentMetadataLocked:materials.attachmentMetadataLocked,attachmentCount:materials.attachmentCount,taskOriginsLocked:materials.taskOriginsLocked,taskJournalsLocked:materials.taskJournalsLocked,runCount:materials.runCount,materials:materials.materials,materialsHash:materials.materialsHash,sourcePayloadsRevalidated:true as const,
+  return {...policy,decisionMemorySourcesLocked:materials.decisionMemorySourcesLocked,timelineSourcesLocked:materials.timelineSourcesLocked,timelineCustomerCount:materials.timelineCustomerCount,mailReadSourcesLocked:materials.mailReadSourcesLocked,mailCount:materials.mailCount,attachmentMetadataLocked:materials.attachmentMetadataLocked,attachmentCount:materials.attachmentCount,taskOriginsLocked:materials.taskOriginsLocked,taskJournalsLocked:materials.taskJournalsLocked,runCount:materials.runCount,materials:materials.materials,materialsHash:materials.materialsHash,sourcePayloadsRevalidated:true as const,
    sourceRevocationsLocked:false as const,collectorProvenanceVerified:false as const,automaticActivation:false as const};
  });
 }
