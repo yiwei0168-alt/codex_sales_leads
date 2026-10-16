@@ -6,6 +6,6 @@ G09 锁内材料重建此前保护原任务和日志，却未锁定前瞻 job �
 
 `lockSkillAcceptanceRunJournals` 从已保存包的 `prospectiveSources` 派生 job/run，拒绝同一 job 指向不同任务，去重排序后分批调用函数。数量不符或迁移缺失时拒绝返回成功；锁内 readiness 暴露捕获保护标记和 job 数量，`sourceRevocationsLocked` 仍为 false，自动启用仍关闭。
 
-实际新数据库验证已通过 campaign 停用与 job 捕获改写等待、释放后恢复、跨账号/错误任务/重复绑定拒绝及直接写表拒绝；迁移重复安装通过。28 项定向回归、类型检查和 lint 通过。包含该接线的同冻结五类完整回归仍在运行，尚未记为通过。[证据](evidence/ma24-g09-prospective-source-locks-2026-10-17.json)。
+实际新数据库验证已通过 campaign 停用与 job 捕获改写等待、释放后恢复、跨账号/错误任务/重复绑定拒绝及直接写表拒绝；迁移重复安装通过。28 项定向回归、类型检查和 lint 通过。源码基线 `45a4cc6b` 包含该接线的同冻结五类完整回归已退出 0：五题组合、统一回读和持锁重建通过，前瞻捕获来源锁为 true，缺失人工判定仍阻断策略。实际模型调用 0，网络和预算为合成适配器。[证据](evidence/ma24-g09-prospective-source-locks-2026-10-17.json)。
 
 此项只覆盖所选前瞻元数据，不证明全部可变来源、自然时间失效、生产身份或最终启用事务已完成。G14–G20 继续暂缓。
