@@ -1,0 +1,25 @@
+{
+  "schema": "ma24-g01-fresh-pilot-schema-v1",
+  "date": "2026-10-16",
+  "rules": ["PILOT-01", "PILOT-02"],
+  "scope": "Disposable empty local PostgreSQL 16/pgvector database; no existing product archive used",
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-db.ts",
+  "migrationCommand": "node scripts/run-tsx.cjs scripts/migrate.ts --fresh-pilot-through=135",
+  "result": {
+    "migrationThrough": 135,
+    "internalNonLoginPlaceholderUsers": 1,
+    "realUsers": 0,
+    "businessDocuments": 0,
+    "restrictedApplicationRoleRead": true,
+    "stage135Present": true,
+    "migration139Absent": true,
+    "repeatFreshInitializationRejected": true,
+    "productionDataCopied": false,
+    "disposableDatabaseDropped": true
+  },
+  "diagnosticAttempts": [
+    "First verifier read directly through the login role and received permission denied; the product intentionally switches to network_copilot_app inside a transaction.",
+    "Second verifier expected zero app_user rows; migration 003 creates a fixed placeholder with no password. Final verifier checks its exact ID, email and null password."
+  ],
+  "limits": "Local empty-schema and permission engineering proof only. No target cloud host, HTTPS domain, actual team account, fresh backup restore, concurrent use or later real-business-data migration was tested."
+}

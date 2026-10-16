@@ -16,6 +16,12 @@ loadEnvConfig(root);
 const applicationDatabaseUrl = process.env.DATABASE_URL;
 const databaseUrl = process.env.DATABASE_MIGRATION_URL || applicationDatabaseUrl;
 if (!databaseUrl) throw new Error("DATABASE_MIGRATION_URL or DATABASE_URL is required. Copy .env.example to .env.local first.");
+const args = process.argv.slice(2);
+if (args.some(arg => arg !== "--fresh-pilot-through=135")) throw new Error("Unknown migration argument");
+const freshPilot = args.includes("--fresh-pilot-through=135");
+if (freshPilot && (!process.env.DATABASE_MIGRATION_URL || !applicationDatabaseUrl)) {
+  throw new Error("Fresh pilot migration requires separate application and migration database URLs");
+}
 if (process.env.DATABASE_MIGRATION_URL && applicationDatabaseUrl) {
   const migrationTarget = new URL(process.env.DATABASE_MIGRATION_URL);
   const applicationTarget = new URL(applicationDatabaseUrl);
@@ -32,9 +38,21 @@ const pool = new Pool({
   ssl: databaseSslConfiguration(databaseUrl),
 });
 try {
+  if (freshPilot) {
+    const existing = await pool.query<{ count: number }>(`
+      select count(*)::int as count from pg_class c join pg_namespace n on n.oid=c.relnamespace
+      where n.nspname in ('public','public_evidence','langgraph')
+        and c.relkind in ('r','p','v','m','S','f')
+        and c.relname not in ('spatial_ref_sys')`);
+    if (existing.rows[0]?.count !== 0) throw new Error("Fresh pilot migration requires empty application schemas");
+    if (new URL(databaseUrl).username === new URL(applicationDatabaseUrl!).username) {
+      throw new Error("Fresh pilot migration requires distinct migration and application logins");
+    }
+  }
   const migrationsDirectory = join(root, "db", "migrations");
   const migrations = (await readdir(migrationsDirectory))
     .filter((file) => /^\d+.*\.sql$/i.test(file))
+    .filter((file) => !freshPilot || Number(file.slice(0, 3)) <= 135)
     .sort();
   for (const migration of migrations) {
     const sql = await readFile(join(migrationsDirectory, migration), "utf8");
