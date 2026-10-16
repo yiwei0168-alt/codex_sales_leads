@@ -1,0 +1,43 @@
+{
+  "schema": "ma24-g14-glasgow5g-lineage-wording-review-v1",
+  "date": "2026-10-16",
+  "candidateV1Sha256": "8808051d3f41f0ccb2b5f451a3c44b3a1adce1dd5d7c0e610835fc9f1ad4e4f5",
+  "candidateV2PrivatePath": "tmp/ma24-independent-quarantine/glasgow5g-partick-candidate-v2.json",
+  "candidateV2Sha256": "ee90ebed9b9ef1be8f1309998f29787b6a0df5b4fd226a8236415237a0be584a",
+  "sourceWorkbookSha256": "e293c28088305e1df331edfbdd49c12ab3a0415291e1be82cebbb9a8df7af4dd",
+  "sourceLineage": {
+    "exposureUnit": "Glasgow 5G Dataset 2025, public measurements",
+    "zenodoV1": "https://zenodo.org/records/18745211",
+    "zenodoV2": "https://zenodo.org/records/20465872",
+    "authorRepository": "https://github.com/AhrenHart/Glasgow5GDataset2025",
+    "relatedPaper": "https://www.nature.com/articles/s41597-026-07600-w",
+    "bothZenodoVersionsListWorkbookMd5": "375c58bd79d1e0762724fb78f67b4230",
+    "decision": "Treat record versions, repository, plots, and related paper as one development-exposure family; do not count them as independent sources."
+  },
+  "wordingCorrection": {
+    "reason": "The paper's methods say each of 720 workbook rows is already a mean of 5–10 repeated Speedtest runs in one session.",
+    "change": "Question and answer now refer to two workbook records per date and four records overall, rather than four individual raw tests.",
+    "arithmeticAndLimitedInference": "unchanged; exact values remain in the Git-ignored candidate"
+  },
+  "currentPoolComparison": {
+    "publicationDraftsChecked": 25,
+    "sameGlasgowFamilyOrTitle": 0,
+    "productSourceSpecificCodeFiles": 0,
+    "historicalNearNeighborScreen": "378 old/current questions previously screened; no same requested fact in the highest neighbors"
+  },
+  "v2PublicExposure": {
+    "privateReportPath": "tmp/ma24-independent-quarantine/glasgow5g-v2-public-exposure-2026-10-16.json",
+    "privateReportSha256": "8ad724177bab4d89a3e36f9018a08b73d5e7862d3e6f3b09db29cdc321594648",
+    "trackedTextFiles": 3053,
+    "exactQuestionAndAnswerHits": 0,
+    "normalizedFragmentHits": 0,
+    "localGitHistoryExactQuestionAndAnswerHits": 0
+  },
+  "userReconfirmation": "requested for corrected wording, answer and scope",
+  "sourceFamilyFinalIndependence": "pending",
+  "formalGold": false,
+  "fullG14Frozen": false,
+  "g15PaidAdmission": false,
+  "g16RealDualArmRuns": 0,
+  "g17ToG20": "paused"
+}
