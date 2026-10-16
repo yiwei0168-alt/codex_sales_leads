@@ -1,0 +1,11 @@
+.git
+.env*
+node_modules
+.next
+.next-releases
+backups
+tmp
+temp
+*.log
+knowledge/uploads
+experiments/**/artifacts

@@ -1,0 +1,34 @@
+{
+  "schema": "ma24-g01-pilot-container-image-v1",
+  "date": "2026-10-16",
+  "scope": "Local Linux pilot Web image packaging and minimum startup boundary smoke",
+  "sourceCommit": "da8fd831",
+  "buildContext": "git archive HEAD plus the three new pilot container files; local environment and untracked artifacts excluded",
+  "image": {
+    "tag": "ma24-pilot-web:local-da8fd831",
+    "id": "sha256:dd67bfda8260e03b139cd8c6949d20213a55cc3a3dc08a99c293bbeec2bbd18c",
+    "sizeBytes": 87913038,
+    "base": "node:24-bookworm-slim",
+    "runtimeUser": "node",
+    "productionBuild": "passed with Next.js 16.3.4",
+    "envFilesFoundInRuntimeImage": 0
+  },
+  "startupChecks": {
+    "emptyDatabaseMigrationUrlRejected": true,
+    "paidCallStageOverrideRejected": true,
+    "homepageGetStatus": 200,
+    "sessionGetStatus": 200,
+    "anonymousUploadPostStatus": 401
+  },
+  "database": "Existing local product database through temporary Docker host-network connection; no target cloud database tested",
+  "cleanup": {
+    "smokeContainerRemoved": true,
+    "temporaryDatabaseEnvFileRemoved": true,
+    "modelCalls": 0
+  },
+  "limits": [
+    "No target cloud server, trusted HTTPS domain, real team account, mainland network test, or concurrent capacity test",
+    "No new target-environment database restore or actual traffic and data rollback",
+    "Pilot image includes Web only; worker, retrieval, model, and paid workflow dependencies remain separately gated"
+  ]
+}
