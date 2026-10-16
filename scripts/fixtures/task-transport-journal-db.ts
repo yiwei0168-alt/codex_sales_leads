@@ -14,6 +14,7 @@ import {loadDecisionMemory} from '../../src/lib/assistant/main/memory-context';
 import {decisionMemoryMessage} from '../../src/lib/assistant/main/decision-memory-message';
 import {loadRecordedTaskChain} from '../../src/lib/assistant/main/recorded-task-source';
 import {replayRecordedGraphTrace} from '../../src/lib/assistant/main/recorded-graph-audit';
+import {dispatchTool} from '../../src/lib/assistant/main/executor';
 
 /** Real signing closures and app-role persistence with synthetic network/billing.
  * Does not qualify production network, billing or deployment identity. */
@@ -39,15 +40,16 @@ export async function verifyTaskTransportJournalDatabase(pool:Pool,owner:string,
  // Output stays under the project so external packages resolve from its node_modules.
  const compiledPath=join(process.cwd(),'tmp','task-transport-admission.cjs');
  await build({entryPoints:['scripts/fixtures/task-transport-preflight-runner.ts'],outfile:compiledPath,bundle:true,platform:'node',target:'node24',format:'cjs',packages:'external',logLevel:'warning',
-  banner:{js:String.raw`globalThis.fetch=async(url,init)=>{if(String(url)!=='https://openrouter.ai/api/v1/chat/completions')throw new Error('Synthetic destination rejected');const body=JSON.parse(init.body);const success=process.env.MA24_SYNTHETIC_RESPONSE==='success';const chunk={id:'synthetic-'+body.model,model:body.model,provider:'synthetic',choices:[{index:0,delta:{content:'Synthetic streamed reply'},finish_reason:'stop'}]};const response=success?new Response('data: '+JSON.stringify(chunk)+'\n\ndata: [DONE]\n\n',{status:200,headers:{'Content-Type':'text/event-stream'}}):new Response('{}',{status:503});Object.defineProperty(response,'url',{value:String(url)});return response;};`},
+  banner:{js:String.raw`globalThis.fetch=async(url,init)=>{if(String(url)!=='https://openrouter.ai/api/v1/chat/completions')throw new Error('Synthetic destination rejected');const body=JSON.parse(init.body);const success=process.env.MA24_SYNTHETIC_RESPONSE!=='failure';const tool=process.env.MA24_SYNTHETIC_RESPONSE==='tool';const chunk={id:'synthetic-'+body.model,model:body.model,provider:'synthetic',choices:[{index:0,delta:tool?{tool_calls:[{index:0,id:'synthetic-description',type:'function',function:{name:'describe_tool',arguments:JSON.stringify({tool:'mail_read'})}}]}:{content:'Synthetic streamed reply'},finish_reason:tool?'tool_calls':'stop'}]};const response=success?new Response('data: '+JSON.stringify(chunk)+'\n\ndata: [DONE]\n\n',{status:200,headers:{'Content-Type':'text/event-stream'}}):new Response('{}',{status:503});Object.defineProperty(response,'url',{value:String(url)});return response;};`},
   plugins:[{name:'explicit-synthetic-network-and-billing',setup(builder){
    builder.onResolve({filter:/(?:billing\/paid-fetch|network\/model-transport)$/},()=>({path:'synthetic-adapters',namespace:'ma24-fixture'}));
    builder.onLoad({filter:/.*/,namespace:'ma24-fixture'},()=>({contents:'export const budgetedFetch=(transport)=>transport; export const modelRoutedTransport=(transport)=>transport;',loader:'js'}));
   }}]});
  const outputs:unknown[]=[],ids:string[]=[];
- for(let index=0;index<2;index++){
-  const request={messages,profile:config.profile!,index};
-  const callKey=`mode-model:0:0:${index}`,attempt=await beginCall(context,{key:callKey,tool:'main_model',version:request.profile.version,input:request,effect:'model'});
+ for(let ordinal=0;ordinal<3;ordinal++){
+  const index=ordinal===2?0:ordinal,step=ordinal===2?1:0;
+  const request={messages:structuredClone(messages),profile:config.profile!,index};
+  const callKey=`mode-model:${step}:0:${index}`,attempt=await beginCall(context,{key:callKey,tool:'main_model',version:request.profile.version,input:request,effect:'model'});
   assert.equal(attempt.fresh,true);ids.push(attempt.id);
   {
    await writeFile(runnerPath,JSON.stringify({userId:owner,runId,callId:attempt.id,callKey,otherUserId:other}));
@@ -55,7 +57,7 @@ export async function verifyTaskTransportJournalDatabase(pool:Pool,owner:string,
     const child=spawn(process.execPath,[compiledPath,runnerPath],{windowsHide:true,stdio:['ignore','pipe','pipe'],env:{...process.env,
      NODE_ENV:'production',NODE_OPTIONS:'',NODE_EXTRA_CA_CERTS:'',SSL_CERT_FILE:'',SSL_CERT_DIR:'',NODE_USE_SYSTEM_CA:'0',NODE_TLS_REJECT_UNAUTHORIZED:'1',
      OPENROUTER_API_KEY:'SYNTHETIC_NOT_A_CREDENTIAL',OPENROUTER_BASE_URL:'https://openrouter.ai/api/v1',OPENROUTER_HTTP_REFERER:'',
-     TASK_MODEL_TRANSPORT_KEY_ID:key.keyId,TASK_MODEL_TRANSPORT_PRIVATE_KEY_FILE:keyPath,MA24_SYNTHETIC_RESPONSE:index?'success':'failure'}});let output='';
+     TASK_MODEL_TRANSPORT_KEY_ID:key.keyId,TASK_MODEL_TRANSPORT_PRIVATE_KEY_FILE:keyPath,MA24_SYNTHETIC_RESPONSE:ordinal===0?'failure':ordinal===1?'tool':'success'}});let output='';
     child.stdout.on('data',data=>{output+=String(data);});child.stderr.on('data',()=>{});child.once('error',reject);child.once('exit',code=>resolve({code,output}));
    });
    assert.equal(exit.code,0,'Compiled original task admission failed');assert(exit.output.includes('"originalTaskCompiledAdmission":"passed"'));
@@ -63,10 +65,15 @@ export async function verifyTaskTransportJournalDatabase(pool:Pool,owner:string,
   const output=(await pool.query('select output from agent_tool_call where id=$1',[attempt.id])).rows[0].output;outputs.push(output);
   const recovered=await beginCall(context,{key:callKey,tool:'main_model',version:request.profile.version,input:request,effect:'model'});
   assert.equal(recovered.fresh,false);assert.deepEqual(recovered.output,output);
+  if(ordinal===1){
+   const reply=output.data.value.message;assert.equal(reply.tool_calls.length,1);messages.push(reply);
+   const description=await dispatchTool(reply.tool_calls[0],{...context,mode:config.profile!.mode});assert.equal(description.status,'success');
+   messages.push({role:'tool',tool_call_id:reply.tool_calls[0].id,content:JSON.stringify(description)});
+  }
  }
  await pool.query("update agent_run set status='completed',result=$2 where id=$1",[runId,JSON.stringify({reply:'Synthetic streamed reply'})]);
- const checked=await verifyOwnedTaskModelTransports({userId:owner},{runId});assert.equal(checked.transportReceiptHashes.length,2);assert.equal(checked.automaticActivation,false);
- const taskChain=await loadRecordedTaskChain({userId:owner},{runId});assert.equal(taskChain.turns.length,1);assert.equal(taskChain.initialConversationProvenanceVerified,true);
+ const checked=await verifyOwnedTaskModelTransports({userId:owner},{runId});assert.equal(checked.transportReceiptHashes.length,3);assert.equal(checked.automaticActivation,false);
+ const taskChain=await loadRecordedTaskChain({userId:owner},{runId});assert.equal(taskChain.turns.length,2);assert.equal(taskChain.initialConversationProvenanceVerified,true);
  await replayRecordedGraphTrace(taskChain);
  await pool.query("update assistant_message set content='Changed original message' where user_id=$1 and metadata->>'runId'=$2",[owner,runId]);
  await assert.rejects(loadRecordedTaskChain({userId:owner},{runId}),/original user message changed/);
@@ -90,5 +97,6 @@ export async function verifyTaskTransportJournalDatabase(pool:Pool,owner:string,
   originalTaskCompiledAdmissionVerified:true,originalTaskRequestFactoryAdmissionExecuted:true,originalTaskRequestClosureExecuted:true,
   originalTaskSyntheticFailureSignedAndPersisted:true,originalTaskSyntheticStreamSuccessSignedAndPersisted:true,
   originalTaskOtherBillingTaskRejected:true,originalTaskContextChainVerified:true,originalTaskGraphReplayVerified:true,
-  originalTaskChangedUserMessageRejected:true,originalTaskChangedFinalReplyRejected:true,billingAndNetworkAdaptersSynthetic:true,actualModelCalls:0};
+  originalTaskChangedUserMessageRejected:true,originalTaskChangedFinalReplyRejected:true,originalTaskTwoDecisionDescriptionTransitionVerified:true,
+  billingAndNetworkAdaptersSynthetic:true,actualModelCalls:0};
 }

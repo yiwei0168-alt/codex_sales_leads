@@ -23,7 +23,7 @@ async function main(){
    });
    const stored=(await tenantQuery<{input:unknown}>(job.userId,'select input from agent_tool_call where id=$1 and user_id=$2',[job.callId,job.userId]))[0];
    const args=z.object({messages:z.array(z.unknown()),profile:modeConfigSchema,index:z.number()}).parse(stored.input);
-   if(args.index===0){
+   if(process.env.MA24_SYNTHETIC_RESPONSE==='failure'){
     let receipt:unknown;
     try{await request(args.messages as ModelMessage[],args.profile,args.index);assert.fail('Synthetic HTTP failure expected');}
     catch(error){receipt=modeTransportFailure(error);assert(receipt,'Observed synthetic failure must have a signed receipt');}
@@ -31,7 +31,9 @@ async function main(){
      result({retryable:true,reason:'http-503',transportFailureReceipt:receipt},{status:'unavailable'}),{syntheticFixture:true});
    }else{
     const output=await request(args.messages as ModelMessage[],args.profile,args.index);
-    assert.equal(output.message.content,'Synthetic streamed reply');assert(output.transportReceipt);
+    if(process.env.MA24_SYNTHETIC_RESPONSE==='tool')assert.equal(output.message.tool_calls?.[0].function.name,'describe_tool');
+    else assert.equal(output.message.content,'Synthetic streamed reply');
+    assert(output.transportReceipt);
     await completeCall({...job,leaseToken:job.callId,role:'member'},job.callId,result({value:output}),{syntheticFixture:true});
    }
   });
