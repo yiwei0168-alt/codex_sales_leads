@@ -3,7 +3,10 @@
   "date": "2026-10-16",
   "rules": ["PILOT-01", "PILOT-02"],
   "scope": "Disposable empty local PostgreSQL 16/pgvector database; no existing product archive used",
-  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-db.ts --browser",
+  "commands": [
+    "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-db.ts --browser",
+    "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-db.ts --restore"
+  ],
   "migrationCommand": "node scripts/run-tsx.cjs scripts/migrate.ts --fresh-pilot-through=135",
   "result": {
     "migrationThrough": 135,
@@ -21,6 +24,7 @@
     "otherMemberReadAndWriteDenied": true,
     "packagedHttpLoginWriteReadIsolationAndLogout": true,
     "loopbackHttpsBrowserWorkflow": true,
+    "sameClusterFreshPilotBackupRestore": true,
     "productionDataCopied": false,
     "disposableDatabaseDropped": true
   },
@@ -41,11 +45,25 @@
     "browserPageErrors": 0,
     "modelCalls": 0
   },
+  "backupRestore": {
+    "source": "Disposable fresh pilot database after restricted CLI account provisioning and synthetic company write",
+    "archiveFormat": "PostgreSQL custom with ACL",
+    "archiveBytes": 792922,
+    "archiveSha256": "47493c91f0e68c7fb196d483ba9f1fb61b5fff8e7c9b3ce3adcb16cd4799886c",
+    "restoreTarget": "Second disposable database in the same local PostgreSQL cluster",
+    "pgRestoreNoOwnerFlag": true,
+    "restrictedAppRoleRead": true,
+    "restoredPasswordVerified": true,
+    "ownerCompanyVisible": true,
+    "otherMemberCompanyHidden": true,
+    "stage135PresentAndLaterStageAbsent": true,
+    "temporaryArchiveAndBothDatabasesRemoved": true
+  },
   "diagnosticAttempts": [
     "First verifier read directly through the login role and received permission denied; the product intentionally switches to network_copilot_app inside a transaction.",
     "Second verifier expected zero app_user rows; migration 003 creates a fixed placeholder with no password. Final verifier checks its exact ID, email and null password.",
     "First browser run timed out after login because the raw local standalone directory lacked .next/static. The local verifier now copies generated static assets as Dockerfile.pilot-web does.",
     "Second browser run returned login 401. A client hydration race was suspected; after waiting for network idle before filling the controlled form, the final run passed. The exact cause of that one 401 was not independently proven."
   ],
-  "limits": "Local empty-schema, service-layer, loopback HTTP and test-browser HTTPS engineering proof only. Synthetic fixture accounts used random temporary passwords; all fixture data and the database were dropped. The browser ignored a self-signed local certificate. No target cloud host, trusted HTTPS domain, real team network or account, fresh backup restore, concurrent use or later real-business-data migration was tested."
+  "limits": "Local empty-schema, service-layer, loopback HTTP, test-browser HTTPS and same-cluster backup/restore engineering proof only. Synthetic fixture accounts used random temporary passwords; all fixture data, both databases and archive were removed. The browser ignored a self-signed local certificate. No target cloud host or new-cluster restore, trusted HTTPS domain, real team network or account, concurrent use or later real-business-data migration was tested."
 }

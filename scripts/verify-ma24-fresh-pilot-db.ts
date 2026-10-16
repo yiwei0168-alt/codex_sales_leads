@@ -1,16 +1,18 @@
 import assert from "node:assert/strict";
-import { randomBytes } from "node:crypto";
+import { createHash, randomBytes } from "node:crypto";
 import { spawn } from "node:child_process";
-import { cpSync, existsSync } from "node:fs";
+import { cpSync, existsSync, mkdtempSync, readFileSync, rmdirSync, statSync, unlinkSync } from "node:fs";
 import { createServer } from "node:net";
-import { resolve } from "node:path";
+import { tmpdir } from "node:os";
+import { join, resolve } from "node:path";
 import nextEnv from "@next/env";
 import { Client } from "pg";
 
 nextEnv.loadEnvConfig(process.cwd());
 const browserCheck = process.argv.slice(2).includes("--browser");
 const httpCheck = browserCheck || process.argv.slice(2).includes("--http");
-assert(process.argv.slice(2).every(arg => ["--http", "--browser"].includes(arg)), "Unknown verifier argument");
+const restoreCheck = process.argv.slice(2).includes("--restore");
+assert(process.argv.slice(2).every(arg => ["--http", "--browser", "--restore"].includes(arg)), "Unknown verifier argument");
 const packagedServer = resolve(".next/standalone/server.js");
 if (httpCheck) assert(existsSync(packagedServer), "Build the current standalone Web before --http");
 if (browserCheck) {
@@ -219,6 +221,66 @@ try {
         }
       }
     }
+    if (restoreCheck) {
+      const restoredName = `ma24_fresh_pilot_restore_${randomBytes(6).toString("hex")}`;
+      assert(/^ma24_fresh_pilot_restore_[a-f0-9]{12}$/.test(restoredName));
+      const archiveDirectory = mkdtempSync(join(tmpdir(), "ma24-pilot-restore-"));
+      const archive = join(archiveDirectory, "synthetic-pilot.dump");
+      let restoredCreated = false;
+      try {
+        const pgEnv: NodeJS.ProcessEnv = { ...process.env, PGHOST: migrationTarget.hostname,
+          PGPORT: migrationTarget.port || "5432", PGUSER: decodeURIComponent(migrationTarget.username),
+          PGPASSWORD: decodeURIComponent(migrationTarget.password) };
+        const runPg = (binary: string, args: string[]) => new Promise<{ code: number | null; output: string }>((resolveRun, reject) => {
+          const child = spawn(binary, args, { cwd: process.cwd(), windowsHide: true,
+            stdio: ["ignore", "ignore", "pipe"], env: pgEnv });
+          let output = "";
+          child.stderr.on("data", data => { output = (output + String(data)).slice(-5000); });
+          child.once("error", reject);
+          child.once("exit", code => resolveRun({ code, output }));
+        });
+        const dumpBinary = process.env.PG_DUMP_PATH || "C:\\Program Files\\PostgreSQL\\16\\bin\\pg_dump.exe";
+        const restoreBinary = process.env.PG_RESTORE_PATH || "C:\\Program Files\\PostgreSQL\\16\\bin\\pg_restore.exe";
+        const dumped = await runPg(dumpBinary, ["--format=custom", "--file", archive, "--dbname", name]);
+        assert.equal(dumped.code, 0, dumped.output);
+        const archiveBytes = statSync(archive).size;
+        assert(archiveBytes > 0);
+        const archiveSha256 = createHash("sha256").update(readFileSync(archive)).digest("hex");
+        await admin.query(`create database "${restoredName}" template template0`);
+        restoredCreated = true;
+        const restored = await runPg(restoreBinary,
+          ["--exit-on-error", "--no-owner", "--dbname", restoredName, archive]);
+        assert.equal(restored.code, 0, restored.output);
+        const restoredAppUrl = new URL(appTarget);
+        restoredAppUrl.pathname = `/${restoredName}`;
+        const restoredApp = new Client({ connectionString: restoredAppUrl.toString() });
+        await restoredApp.connect();
+        try {
+          await restoredApp.query("begin");
+          await restoredApp.query('set local role "network_copilot_app"');
+          const passwordRow = await restoredApp.query<{ password_hash: string }>(
+            "select password_hash from app_user where email=$1 and status='active'", [credentials[0].email]);
+          assert.equal(passwordRow.rowCount, 1);
+          assert(verifyPassword(credentials[0].password, passwordRow.rows[0].password_hash));
+          const restoredStage = await restoredApp.query<{ stage: boolean; laterStageAbsent: boolean }>(
+            "select to_regclass('public.agent_skill_acceptance_freeze') is not null stage, to_regclass('public.ma24_evaluation_hard_limit') is null \"laterStageAbsent\"");
+          assert.deepEqual(restoredStage.rows[0], { stage: true, laterStageAbsent: true });
+          for (const [userId, expected] of [[firstUser, true], [secondUser, false]] as const) {
+            await restoredApp.query("select set_config('app.current_user_id',$1,true)", [userId]);
+            const visible = await restoredApp.query<{ id: string }>(
+              "select record->>'id' id from user_company_market where record->>'id'=$1", [added.externalId]);
+            assert.equal(visible.rowCount, expected ? 1 : 0);
+          }
+          await restoredApp.query("rollback");
+        } finally { await restoredApp.end(); }
+        console.log(JSON.stringify({ freshPilotRestore: "passed", archiveBytes, archiveSha256,
+          applicationRoleRead: true, ownerCompanyVisible: true, otherMemberDenied: true }));
+      } finally {
+        if (restoredCreated) await admin.query(`drop database "${restoredName}" with (force)`);
+        if (existsSync(archive)) unlinkSync(archive);
+        rmdirSync(archiveDirectory);
+      }
+    }
   } finally { await getPool().end(); }
   console.log(JSON.stringify({ disposableDatabase: true, migrationThrough: 135, seededNonLoginPlaceholder: 1,
     realUsers: 0, documents: 0, applicationLoginChecked: true, stagePresent: true,
@@ -226,7 +288,8 @@ try {
     membersProvisionedThroughAppRole: true, passwordsVerified: true,
     manualCompanyWrittenAndRead: true, otherMemberReadAndWriteDenied: true,
     packagedHttpLoginWriteReadIsolationAndLogout: httpCheck,
-    loopbackHttpsBrowserWorkflow: browserCheck, copiedProductionData: false }));
+    loopbackHttpsBrowserWorkflow: browserCheck, freshPilotRestore: restoreCheck,
+    copiedProductionData: false }));
 } finally {
   if (created) await admin.query(`drop database "${name}" with (force)`);
   await admin.end();
