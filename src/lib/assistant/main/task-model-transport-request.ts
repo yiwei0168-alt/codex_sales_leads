@@ -34,7 +34,7 @@ export async function createConfiguredTaskModeRequest(context:{userId:string;run
  const p=z.object({callId:z.uuid(),callKey:taskTransportBindingSchema.shape.callKey}).strict().parse(input);
  const spend=()=>{
   const scope=currentSpendContext();
-  if(!scope||scope.userId!==context.userId||!z.uuid().safeParse(scope.operationId).success||!scope.stage.trim())throw new Error('Task transport requires an owned paid-call scope');
+  if(!scope||scope.userId!==context.userId||scope.operationId!==context.runId||!scope.stage.trim())throw new Error('Task transport requires an owned paid-call scope bound to the task');
   return digest(scope);
  };
  const spendHash=spend(),requireSpend=()=>{if(spend()!==spendHash)throw new Error('Task transport paid-call scope changed');};

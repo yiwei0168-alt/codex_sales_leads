@@ -67,6 +67,22 @@ it('rejects process injection and unowned billing scopes',async()=>{
  vi.stubEnv('NODE_OPTIONS','--require injected.cjs');await expect(createConfiguredTaskModeRequest(context,input)).rejects.toThrow('Controlled production');
  vi.stubEnv('NODE_OPTIONS','');m.spend=undefined;await expect(createConfiguredTaskModeRequest(context,input)).rejects.toThrow('paid-call scope');expect(m.native).not.toHaveBeenCalled();
 });
+it('rejects billing scopes for another task of the same account before admission and invocation',async()=>{
+ m.spend={userId:context.userId,operationId:input.callId,stage:'main-agent'};
+ await expect(createConfiguredTaskModeRequest(context,input)).rejects.toThrow('bound to the task');expect(m.query).not.toHaveBeenCalled();
+ m.spend={userId:context.userId,operationId:context.runId,stage:'main-agent'};
+ const run=await createConfiguredTaskModeRequest(context,input);
+ m.spend={userId:context.userId,operationId:input.callId,stage:'main-agent'};
+ await expect(run(request.messages,request.profile,0)).rejects.toThrow('bound to the task');expect(m.native).not.toHaveBeenCalled();
+});
+it.each(['network','response'] as const)('rejects another task billing scope at the %s boundary without signing',async boundary=>{
+ const original=m.rpc.getMockImplementation()!,changed={userId:context.userId,operationId:input.callId,stage:'main-agent'};
+ if(boundary==='network')m.rpc.mockImplementation(async(...args)=>{m.spend=changed;return original(...args);});
+ else m.native.mockImplementation(async()=>{m.spend=changed;return response();});
+ const run=await createConfiguredTaskModeRequest(context,input);
+ await expect(run(request.messages,request.profile,0)).rejects.toThrow('bound to the task');
+ expect(m.native).toHaveBeenCalledTimes(boundary==='network'?0:1);
+});
 it.each([201,204,500])('does not sign actual HTTP %s',async status=>{
  m.native.mockResolvedValue(response(status));const run=await createConfiguredTaskModeRequest(context,input);await expect(run(request.messages,request.profile,0)).rejects.toThrow('request or trust changed');
 });

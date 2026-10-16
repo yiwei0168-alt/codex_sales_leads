@@ -1,0 +1,20 @@
+{
+  "stage": "MA24 G09 original signing billing operation bound to actual task",
+  "date": "2026-10-17",
+  "change": "Require currentSpendContext.operationId === context.runId in addition to owner and stable context hash",
+  "existingGraphBinding": "graph execution calls withProductSpend(userId, main-agent, invoke, runId)",
+  "targetedTests": 44,
+  "testFiles": ["task-model-transport-request.test.ts", "task-model-durable-signing.test.ts", "skill-configured-recorded-runner.test.ts"],
+  "sameOwnerOtherTaskRejectedAt": ["factory admission", "closure invocation", "network boundary", "response boundary"],
+  "actualDatabaseCommand": "node --import tsx scripts/verify-ma24-fresh-pilot-new-cluster.ts --transport-journal",
+  "actualDatabaseExitCode": 0,
+  "originalTaskOtherBillingTaskRejected": true,
+  "failureAndSuccessClosureDatabaseRegression": "passed",
+  "initialFixtureFailure": "wrong-run fixture now rejected by earlier billing check; updated fixture to use matching wrong-run spend context to retain SQL ownership rejection coverage",
+  "typecheck": "passed",
+  "eslint": "passed",
+  "billingAndNetworkAdaptersSynthetic": true,
+  "actualModelCalls": 0,
+  "productionBillingVerified": false,
+  "automaticActivation": false
+}

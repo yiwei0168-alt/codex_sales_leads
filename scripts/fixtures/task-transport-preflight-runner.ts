@@ -18,7 +18,9 @@ async function main(){
  try{
   await withSpendContext({userId:job.userId,operationId:job.runId,stage:'synthetic-admission'},async()=>{
    const request=await createConfiguredTaskModeRequest(job,{callId:job.callId,callKey:job.callKey});assert.equal(typeof request,'function');
-   await assert.rejects(createConfiguredTaskModeRequest({...job,runId:job.callId},{callId:job.callId,callKey:job.callKey}),/stored call unavailable/);
+   await withSpendContext({userId:job.userId,operationId:job.callId,stage:'synthetic-admission'},async()=>{
+    await assert.rejects(createConfiguredTaskModeRequest({...job,runId:job.callId},{callId:job.callId,callKey:job.callKey}),/stored call unavailable/);
+   });
    const stored=(await tenantQuery<{input:unknown}>(job.userId,'select input from agent_tool_call where id=$1 and user_id=$2',[job.callId,job.userId]))[0];
    const args=z.object({messages:z.array(z.unknown()),profile:modeConfigSchema,index:z.number()}).parse(stored.input);
    if(args.index===0){
@@ -37,6 +39,9 @@ async function main(){
    await assert.rejects(createConfiguredTaskModeRequest({userId:job.otherUserId,runId:job.runId},{callId:job.callId,callKey:job.callKey}),/stored call unavailable/);
   });
   await assert.rejects(createConfiguredTaskModeRequest(job,{callId:job.callId,callKey:job.callKey}),/paid-call scope/);
+  await withSpendContext({userId:job.userId,operationId:job.callId,stage:'synthetic-admission'},async()=>{
+   await assert.rejects(createConfiguredTaskModeRequest(job,{callId:job.callId,callKey:job.callKey}),/bound to the task/);
+  });
   console.log(JSON.stringify({originalTaskCompiledAdmission:'passed',ownedStartedCallVerified:true,crossAccountRejected:true,foreignRunRejected:true,missingBillingRejected:true,syntheticRequestExecuted:true,signedOutcomePersisted:true,actualModelCalls:0}));
  }finally{await getPool().end();}
 }
