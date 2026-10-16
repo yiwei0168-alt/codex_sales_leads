@@ -1,0 +1,32 @@
+{
+  "schema": "ma24-g01-ten-synthetic-users-current-image-v1",
+  "date": "2026-10-16",
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --web-image=ma24-pilot-web:cc50c7b6 --ten-user",
+  "image": {
+    "tag": "ma24-pilot-web:cc50c7b6",
+    "id": "sha256:ade13e11d14fefda372ff48dfd848cd7ae90f0a98f3a439fc99a3730b5577867",
+    "sourceCommit": "cc50c7b61214c07ff903515466ac8dbb6d8eca9a"
+  },
+  "environment": {
+    "database": "disposable PostgreSQL 16/pgvector cluster",
+    "freshMigrationThrough": 135,
+    "webDatabaseTls": "verify-full with temporary self-signed CA",
+    "webAddress": "127.0.0.1 only",
+    "syntheticAccounts": 10,
+    "actualBusinessDataCopied": false
+  },
+  "checks": {
+    "sameClusterSyntheticArchiveRestore": "passed",
+    "concurrentLoginRequests": 10,
+    "concurrentManualCompanyWrites": 10,
+    "distinctCompanyIds": 10,
+    "concurrentWorkspaceReads": 10,
+    "ownerSeesOwnCompany": "passed for each account",
+    "neighborAccountCompanyHidden": "passed for each account",
+    "existingCrossAccountUpdateDenied": 404,
+    "temporaryContainersAndNetworkRemoved": true,
+    "typecheck": "passed",
+    "focusedEslint": "passed"
+  },
+  "limits": "One short local burst of ten synthetic accounts and requests, not sustained load or a measured capacity guarantee. No public HTTPS entry, target cloud resources, real team members, external model or worker tasks, live rollback, or real business data migration was tested. Rebuild from the final release commit before deployment."
+}

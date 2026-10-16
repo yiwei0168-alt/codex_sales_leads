@@ -1,4 +1,5 @@
 # MA24 执行状态台账（2026-10-13）
+2026-10-16 G01 Linux 镜像与全新 TLS 库的 10 个合成账号短时并发登录、写入和隔离读取通过；一次性资源清理。[收据](evidence/ma24-g01-ten-synthetic-users-current-image-2026-10-16.json)。目标主机的持续容量、可信域名、真实成员和实际发布仍待验，G01 未完成。
 2026-10-16 G01 当前 Linux 镜像和一次性 TLS 空库经本机 HTTPS Chrome 完成合成账号登录、安全 Cookie、任务/线索导航、虚构公司刷新回读与退出；临时资源清理。[收据](evidence/ma24-g01-current-linux-image-https-browser-2026-10-16.json)。目标云主机、可信域名、真实团队、实际回滚和真实业务数据接入仍未验，G01 未完成。
 2026-10-16 G01 Linux 主机模板本机补验：Compose Web 仅监听回环、非 root 用户可写空上传持久卷，临时 Caddy HTTPS 转发首页/会话 200；本机容器及环境文件清理。[收据](evidence/ma24-g01-pilot-host-compose-local-2026-10-16.json)。未购买云资源或验证可信域名、目标数据库、真实团队和实际回滚，G01 未完成。
 2026-10-16 G05 审核后修订当前源码复验：PDF 原件到 PPTX 修订的私有/共享两条隔离路径均通过待审阻断、旧版保持、登记前中断、登记后重放、竞争修订拒绝；测试计数恢复为上传 0、用户 6、文档 367。[收据](evidence/ma24-g05-current-reviewed-revision-recovery-2026-10-16.json)。审核判决为合成，生产加载及真实引用质量未通过。

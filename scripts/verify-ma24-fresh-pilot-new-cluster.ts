@@ -14,9 +14,11 @@ const webImageArgument = args.find(arg => arg.startsWith("--web-image="));
 const webImage = webImageArgument?.startsWith("--web-image=")
   ? webImageArgument.slice("--web-image=".length) : undefined;
 const browserCheck = args.includes("--browser");
-assert(args.length <= 2 && args.every(arg => arg === "--browser" || arg === webImageArgument)
+const tenUserCheck = args.includes("--ten-user");
+assert(args.length <= 3 && args.every(arg => arg === "--browser" || arg === "--ten-user" || arg === webImageArgument)
   && (!webImageArgument || (webImage && /^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(webImage)))
-  && (!browserCheck || webImage), "Expected --web-image=<tag> with optional --browser");
+  && (!(browserCheck || tenUserCheck) || webImage),
+  "Expected --web-image=<tag> with optional --browser and --ten-user");
 const networkName = `ma24-pilot-net-${id}`;
 const adminPassword = randomBytes(24).toString("hex");
 const appPassword = randomBytes(24).toString("hex");
@@ -102,7 +104,7 @@ try {
       ["scripts/run-tsx.cjs", "scripts/migrate.ts", "--fresh-pilot-through=135"],
       { ...process.env, DATABASE_URL: appUrl.toString(), DATABASE_MIGRATION_URL: adminUrl.toString() });
     assert.equal(migration.code, 0, migration.output);
-    const credentials = [1, 2].map(index => ({
+    const credentials = Array.from({ length: tenUserCheck ? 10 : 2 }, (_, index) => ({
       email: `pilot-container-${id}-${index}@example.invalid`,
       password: randomBytes(32).toString("base64url"),
     }));
@@ -176,6 +178,25 @@ try {
     assert.equal(logout.status, 200);
     const session = await fetch(`${base}/api/auth/session`, { headers: { cookie: firstCookie } });
     assert.equal((await session.json() as { authenticated: boolean }).authenticated, false);
+    if (tenUserCheck) {
+      const cookies = await Promise.all(credentials.map((_, index) => login(index)));
+      const companies = await Promise.all(cookies.map(async (cookie, index) => {
+        const response = await fetch(`${base}/api/workspaces/current/companies`, { method: "POST",
+          headers: { cookie, "content-type": "application/json" },
+          body: JSON.stringify({ name: `Synthetic concurrent company ${index}`,
+            country: "DE", website: `https://pilot-concurrent-${id}-${index}.invalid` }) });
+        if (response.status !== 200) throw new Error(`Concurrent company ${index}: ${response.status} ${await response.text()}`);
+        const result = await response.json() as { duplicate: boolean; externalId: string };
+        assert.equal(result.duplicate, false);
+        return result.externalId;
+      }));
+      assert.equal(new Set(companies).size, 10);
+      await Promise.all(cookies.map(async (cookie, index) => {
+        const visible = await getCompanies(cookie);
+        assert(visible.some(item => item.id === companies[index]));
+        assert(!visible.some(item => item.id === companies[(index + 1) % companies.length]));
+      }));
+    }
     if (browserCheck) {
       const key = await run("docker", ["exec", containerId, "cat", "/tmp/ma24-server.key"]);
       assert.equal(key.code, 0, key.output);
@@ -199,7 +220,7 @@ try {
     publishedAddress: "127.0.0.1 only", rolesVerified: true, freshMigrationThrough: 135,
     syntheticAccountCompanyAndRestoreVerified: true, copiedProductionData: false,
     linuxWebImage: webImage ?? null, linuxWebHttpWorkflowVerified: Boolean(webImage),
-    linuxWebHttpsBrowserVerified: browserCheck }));
+    linuxWebHttpsBrowserVerified: browserCheck, tenConcurrentSyntheticAccountsVerified: tenUserCheck }));
 } finally {
   if (webContainerId) {
     const removed = await run("docker", ["rm", "--force", "--volumes", webContainerId]);
