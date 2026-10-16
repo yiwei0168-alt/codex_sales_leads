@@ -1,0 +1,32 @@
+{
+  "schema": "ma24-g01-current-linux-image-https-browser-v1",
+  "date": "2026-10-16",
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --web-image=ma24-pilot-web:cc50c7b6 --browser",
+  "image": {
+    "tag": "ma24-pilot-web:cc50c7b6",
+    "id": "sha256:ade13e11d14fefda372ff48dfd848cd7ae90f0a98f3a439fc99a3730b5577867",
+    "sourceCommit": "cc50c7b61214c07ff903515466ac8dbb6d8eca9a"
+  },
+  "environment": {
+    "database": "disposable PostgreSQL 16/pgvector cluster with synthetic records only",
+    "webDatabaseTls": "verify-full with temporary self-signed CA",
+    "browserHttps": "temporary loopback proxy with self-signed certificate trusted only by test browser",
+    "publicEndpoint": false,
+    "actualBusinessDataCopied": false
+  },
+  "checks": {
+    "freshMigrationThrough135": "passed",
+    "restrictedApplicationRole": "passed",
+    "syntheticArchiveRestore": "passed",
+    "twoSyntheticAccountHttpIsolation": "passed",
+    "chromeLoginForm": "passed",
+    "secureHttpOnlySameSiteLaxCookie": "passed",
+    "anonymousTaskReadDenied": "passed",
+    "taskAndLeadNavigation": "passed",
+    "manualCompanyWriteAndReadAfterReload": "passed",
+    "logoutInvalidatesBrowserSession": "passed",
+    "browserFixturePaidReservations": 0,
+    "temporaryContainersAndNetworkRemoved": true
+  },
+  "limits": "Local browser and Docker check only. The proxy certificate was self-signed and accepted only by headless Chrome for the test. Target cloud host, trusted domain HTTPS, real team accounts, worker workflows, concurrency, live traffic rollback and later real business data migration remain unverified. Rebuild and verify the final release image before deployment."
+}

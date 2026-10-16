@@ -1,16 +1,22 @@
 import assert from "node:assert/strict";
 import { randomBytes } from "node:crypto";
 import { spawn } from "node:child_process";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { createServer } from "node:net";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { Client } from "pg";
 
 const id = randomBytes(6).toString("hex");
 const containerName = `ma24-pilot-fresh-${id}`;
-const webImageArgument = process.argv[2];
+const args = process.argv.slice(2);
+const webImageArgument = args.find(arg => arg.startsWith("--web-image="));
 const webImage = webImageArgument?.startsWith("--web-image=")
   ? webImageArgument.slice("--web-image=".length) : undefined;
-assert(process.argv.length <= 3 && (!webImageArgument || (webImage && /^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(webImage))),
-  "Expected one local --web-image=<tag> argument");
+const browserCheck = args.includes("--browser");
+assert(args.length <= 2 && args.every(arg => arg === "--browser" || arg === webImageArgument)
+  && (!webImageArgument || (webImage && /^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(webImage)))
+  && (!browserCheck || webImage), "Expected --web-image=<tag> with optional --browser");
 const networkName = `ma24-pilot-net-${id}`;
 const adminPassword = randomBytes(24).toString("hex");
 const appPassword = randomBytes(24).toString("hex");
@@ -170,11 +176,30 @@ try {
     assert.equal(logout.status, 200);
     const session = await fetch(`${base}/api/auth/session`, { headers: { cookie: firstCookie } });
     assert.equal((await session.json() as { authenticated: boolean }).authenticated, false);
+    if (browserCheck) {
+      const key = await run("docker", ["exec", containerId, "cat", "/tmp/ma24-server.key"]);
+      assert.equal(key.code, 0, key.output);
+      assert(key.output.includes("-----BEGIN PRIVATE KEY-----"));
+      const tempDirectory = mkdtempSync(join(tmpdir(), "ma24-pilot-browser-"));
+      try {
+        const keyPath = join(tempDirectory, "key.pem"), certPath = join(tempDirectory, "cert.pem");
+        writeFileSync(keyPath, key.output, { mode: 0o600 });
+        writeFileSync(certPath, certificate.output, { mode: 0o600 });
+        const browser = await run(process.execPath,
+          ["scripts/run-tsx.cjs", "scripts/verify-ma24-https-browser-session.ts"],
+          { ...process.env, DATABASE_URL: appUrl.toString(), DATABASE_MIGRATION_URL: adminUrl.toString(),
+            MA24_HTTPS_PROBE_UPSTREAM: base, MA24_HTTPS_PROBE_KEY: keyPath, MA24_HTTPS_PROBE_CERT: certPath });
+        assert.equal(browser.code, 0, browser.output);
+        assert(browser.output.includes('"httpsBrowserSession":"passed"'), browser.output);
+        assert(browser.output.includes('"manualCompanyWriteReadUi":true'), browser.output);
+      } finally { rmSync(tempDirectory, { recursive: true, force: true }); }
+    }
   }
   console.log(JSON.stringify({ freshClusterPilot: "passed", image: "pgvector/pgvector:pg16",
     publishedAddress: "127.0.0.1 only", rolesVerified: true, freshMigrationThrough: 135,
     syntheticAccountCompanyAndRestoreVerified: true, copiedProductionData: false,
-    linuxWebImage: webImage ?? null, linuxWebHttpWorkflowVerified: Boolean(webImage) }));
+    linuxWebImage: webImage ?? null, linuxWebHttpWorkflowVerified: Boolean(webImage),
+    linuxWebHttpsBrowserVerified: browserCheck }));
 } finally {
   if (webContainerId) {
     const removed = await run("docker", ["rm", "--force", "--volumes", webContainerId]);

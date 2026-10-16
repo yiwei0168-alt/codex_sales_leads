@@ -2,6 +2,8 @@
 
 本模板适用于一台 Linux 主机上的 Web、PostgreSQL 16/pgvector 和原生 Caddy。首批规模按同时使用 10 人以内规划，当前无备案域名且首批只用全新测试数据；真实业务数据将在后续阶段单独迁移。地区、域名和云账号以[托管方案](../../docs/TEAM_PILOT_NEW_HOSTING_2026-10-16.md)中的条件决定。当前没有完成云端部署或团队邀请验收。
 
+本机可用 `node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --web-image=<已构建镜像标签> --browser` 重验镜像、一次性新库、数据库 TLS 与 HTTPS Chrome 基本流程。它会生成并清理临时库、证书、账号和容器；不使用团队真实数据。[当前镜像收据](../../docs/evidence/ma24-g01-current-linux-image-https-browser-2026-10-16.json)。目标主机仍须独立验收真实域名与证书。
+
 ## 目标主机准备
 
 1. 确认域名/地区/数据范围与团队持有的云账号；大陆节点须核适用 ICP 备案。DNS 指向主机，公网入站仅按需开放 80/443，数据库只在主机回环地址或受控内网开放。Caddy 自动 HTTPS 需要域名解析和 80/443 可达。[Caddy 官方说明](https://caddyserver.com/docs/automatic-https)。
