@@ -1,0 +1,12 @@
+{
+  "stage": "MA24 G09/G10 shadow lease after reconstruction",
+  "date": "2026-10-17",
+  "behavior": "leased shadow preparation rechecks running state, token, lease, campaign enabled/expiry and task age after snapshot reconstruction using database wall clock",
+  "targetedTestsPassed": 17,
+  "testFile": "src/lib/assistant/main/skill-shadow.test.ts",
+  "databaseIntegrationVerified": false,
+  "fullFiveCategoryRerunAfterChange": false,
+  "actualModelCalls": 0,
+  "productionQualificationGranted": false,
+  "automaticActivation": false
+}

@@ -61,7 +61,7 @@ type Job={id:string;run_id:string;campaign_id:string;state:string;lease_token:st
 export async function prepareSkillShadow(context:Context){
  z.uuid().parse(context.userId);z.uuid().parse(context.jobId);
  const job=await tenantTransaction(context.userId,async client=>{
-  const row=(await client.query<Job>(`select j.*,j.lease_until>now() as lease_valid,
+  const row=(await client.query<Job>(`select j.*,j.lease_until>clock_timestamp() as lease_valid,
    c.config,c.content_hash,c.source_hash,c.version,c.skill_id,s.current_version,s.scope,s.owner_id,
    v.files,v.dependencies,v.source,v.validation,r.result as reply,r.instructions,
    skill_shadow_run_context(j.owner_id,j.run_id) as current_context
@@ -70,7 +70,7 @@ export async function prepareSkillShadow(context:Context){
    join agent_skill_version v on v.skill_id=s.id and v.version=c.version
    join agent_run r on r.id=j.run_id and r.user_id=j.owner_id
    join app_user u on u.id=j.owner_id and u.status='active'
-   where j.id=$1 and j.owner_id=$2 and c.enabled and (not $3::boolean or c.expires_at>now()) and r.status='completed'
+   where j.id=$1 and j.owner_id=$2 and c.enabled and (not $3::boolean or c.expires_at>clock_timestamp()) and r.status='completed'
      and r.execution_kind='main-agent'`,[context.jobId,context.userId,Boolean(context.leaseToken)])).rows[0];
   if(!row||row.scope!=='account'||row.current_version!==row.version||digest(row.files)!==row.content_hash
    ||!instructionOnlySkill(row.files)||!Array.isArray(row.dependencies)||row.dependencies.length
@@ -97,6 +97,17 @@ export async function prepareSkillShadow(context:Context){
   input.subtasks=[{runId:job.run_id,readCallIds:receipts.map(r=>r.id),objective:config.selection.objective}];
  }
  const snapshot=await prepareHistoricalSkillReplay({userId:context.userId},input);
+ // Reconstruction may outlast the lease. Recheck with the database clock after
+ // the expensive reads, rather than relying on the earlier transaction timestamp.
+ if(context.leaseToken){
+  const current=await tenantQuery<{valid:boolean}>(context.userId,`select true as valid
+   from agent_skill_shadow_job j join agent_skill_shadow_campaign c on c.id=j.campaign_id and c.owner_id=j.owner_id
+   where j.id=$1 and j.owner_id=$2 and j.state='running' and j.lease_token=$3
+    and j.lease_until>clock_timestamp() and c.enabled and c.expires_at>clock_timestamp()
+    and j.ready_at>clock_timestamp()-($4::integer*interval '1 second')`,
+  [context.jobId,context.userId,context.leaseToken,config.maximumAgeSeconds]);
+  if(current.length!==1||current[0].valid!==true)throw new Error('Shadow lease or task age changed during preparation');
+ }
  return {capture:{jobId:job.id,campaignId:job.campaign_id,runId:job.run_id,start:job.start_context,final:job.final_context},
   config,snapshot,observedProductionResult:job.reply,
   interpretation:'Prospectively captured task; asynchronous local paired analysis. Production result is a separate observation, not the local baseline.',

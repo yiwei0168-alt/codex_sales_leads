@@ -23,7 +23,7 @@ beforeEach(async()=>{
   start_context:{kind:'prospective-server-capture',campaignId:id(5),skillId:id(6),version:1,contentHash:digest(files),sourceHash,config,inputHash:'a',modelConfigHash:'b'},
   final_context:final,current_context:final};
  mocks.query.mockImplementation(async(sql:string)=>({rows:[sql.includes('select j.*')?job:version]}));
- mocks.tenant.mockImplementation(async(_u:string,sql:string)=>sql.includes('claim_skill_shadow_job')?[{id:id(2),lease_token:id(3)}]:[{ok:true}]);
+ mocks.tenant.mockImplementation(async(_u:string,sql:string)=>sql.includes('claim_skill_shadow_job')?[{id:id(2),lease_token:id(3)}]:sql.includes('select true as valid')?[{valid:true}]:[{ok:true}]);
  const receipt={tool:'knowledge_search',arguments:{question:'Synthetic count?'},result:{status:'success',data:[]}};
  const suite={id:'synthetic-shadow',ownerId:id(1),skill:{id:id(6),version:1,files,contentHash:digest(files),sourceHash},
   model:{name:'qwen3:8b',digest:SHADOW_MODEL_DIGEST},cases:[{id:'case',category:'replay',provenance:'historical',sourceRunId:id(4),question:'Synthetic count?',receipts:[{...receipt,sha256:digest(receipt)}]}]};
@@ -58,6 +58,14 @@ it('revalidates after generation and discards changed sources',async()=>{
  const finish=mocks.tenant.mock.calls.find(c=>c[1].includes('finish_skill_shadow_job'))!;
  expect(finish[1]).toContain("'failed'");expect(finish[2][2]).toBeNull();
 });
+it('rejects a lease lost while reconstructing the snapshot before model access',async()=>{
+ mocks.snapshot.mockImplementation(async()=>{
+  mocks.tenant.mockImplementation(async(_u:string,sql:string)=>sql.includes('select true as valid')?[]:[{ok:true}]);
+  return {};
+ });
+ await expect(prepareSkillShadow(context)).rejects.toThrow('changed during preparation');
+ expect(mocks.model).not.toHaveBeenCalled();
+});
 it('preserves incomplete pairs as failed artifacts without activation',async()=>{
  mocks.generate.mockRejectedValue(new Error('offline'));
  expect(await processNextSkillShadow(id(1))).toMatchObject({status:'failed'});
@@ -73,7 +81,7 @@ it('keeps lost-lease completion out of accepted state',async()=>{
 });
 it('builds subtask selection only from owned completed read rows',async()=>{
  config.selection={kind:'read-only-subtask',objective:'Analyze only saved mailbox content.',tools:['mail_read']};
- mocks.tenant.mockResolvedValue([{id:id(7)}]);await prepareSkillShadow(context);
+ mocks.tenant.mockImplementation(async(_u:string,sql:string)=>sql.includes('select true as valid')?[{valid:true}]:[{id:id(7)}]);await prepareSkillShadow(context);
  expect(mocks.snapshot).toHaveBeenCalledWith({userId:id(1)},expect.objectContaining({subtasks:[{runId:id(4),readCallIds:[id(7)],objective:'Analyze only saved mailbox content.'}]}));
  expect(mocks.tenant.mock.calls[0][1]).toContain("effect='read'");
 });
