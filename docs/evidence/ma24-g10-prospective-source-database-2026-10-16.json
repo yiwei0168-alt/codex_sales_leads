@@ -1,0 +1,25 @@
+{
+  "schema": "ma24-g10-prospective-source-database-v1",
+  "date": "2026-10-16",
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --prospective-source",
+  "scope": "Disposable PostgreSQL/pgvector through migration 135; synthetic account, Skill, task, model receipt and encrypted mailbox source; production source guards and capture triggers",
+  "checks": {
+    "serverLifecycleTriggerCapturedExactStartContext": "passed",
+    "campaignThenFreezeThenTaskThenModelTimeOrdering": "passed",
+    "currentAccountEncryptedMailReceiptRevalidation": "passed",
+    "lateFreezeAfterCompletedTask": "rejected",
+    "otherAccount": "rejected",
+    "purgedMailboxSource": "rejected",
+    "sourceRestoredSameProjectionHash": "passed",
+    "revokedFreeze": "rejected",
+    "skillRemainedDisabled": true,
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "testContainersRemaining": 0,
+    "modelCalls": 0,
+    "externalHttpCalls": 0,
+    "realMailSent": 0,
+    "productionWrites": 0
+  },
+  "limits": "Database source-binding integration only. The model receipt and task answer were synthetic fixtures, not production model evidence. No local Qwen output was promoted. Paired model journal reconstruction, unified observation collection, review API/UI and actual prospective quality remain incomplete."
+}
