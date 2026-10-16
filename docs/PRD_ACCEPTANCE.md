@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+2026-10-16 / MA24 G14：用户确认 FCC MBA 私有 v2 单题的答案与限定，决定 `MA24-23` 已绑定候选、原件及 Git 忽略的精确值回复收据哈希。[公开元数据收据](evidence/ma24-g14-fcc-mba-v2-user-answer-confirmation-2026-10-16.json)。该决定只完成逐题内容确认；来源家族独立性、正式独立 Gold、模型可见引用和 G16 真实双路质量仍待验。可冻结 Gold 0，G15 付费准入关闭，G16 真实双路 0；G17–G20 暂停。
+
 2026-10-16 / MA24 G14：新增私有完整题集的冻结前公开暴露预检，已公开 5 题负例被拒，新 FCC 单题正例通过。[工程收据](evidence/ma24-g14-private-source-set-exposure-gate-2026-10-16.json)。该检查不覆盖语义改写、来源家族、远端暴露或 G15 运行时准入；完整 Gold 与 G16 真实双路仍待验收，G17–G20 暂停。
 
 2026-10-16 / MA24 G14：FCC MBA 私有 v2 题目完成原页坐标、完整题文/答案的公开 Git 精确筛查以及与现有 FCC 2026 家族资料的有界比较；保留候选准备会话接触完整内容的限制。[审核准备收据](evidence/ma24-g14-fcc-mba-v2-family-readiness-2026-10-16.json)。逐题内容、整套独立 Gold、G15 付费准入和 G16 真实质量仍未验收，G17–G20 暂停。
