@@ -18,20 +18,24 @@ import {dispatchTool} from '../../src/lib/assistant/main/executor';
 import {prepareRecordedSkillCandidateSnapshot} from '../../src/lib/assistant/main/skill-candidate-source';
 import {prepareSkillAcceptanceBaseline} from '../../src/lib/assistant/main/skill-acceptance-baseline';
 import {verifyConfiguredSignedCandidateDatabase} from './configured-signed-candidate-db';
+import {registerSignedProspectiveFixture} from './signed-prospective-registration-db';
 
 /** Real signing closures and app-role persistence with synthetic network/billing.
  * Does not qualify production network, billing or deployment identity. */
 export async function verifyTaskTransportJournalDatabase(pool:Pool,owner:string,other:string,directory:string,skillId:string){
  const runId=randomUUID(),conversationId=randomUUID(),leaseToken=randomUUID(),config=modeModelConfig('standard');
  const context={userId:owner,runId,leaseToken,role:'member' as const};
- await pool.query('insert into assistant_conversation(id,user_id,title) values($1,$2,$3)',[conversationId,owner,'Synthetic original transport']);
- await pool.query(`insert into agent_run(id,user_id,conversation_id,request_key,request_hash,input,model_config,status,execution_kind,lease_token,lease_until)
-  values($1,$2,$3,$7,$4,'{}',$5,'running','main-agent',$6,now()+interval '10 minutes')`,[runId,owner,conversationId,digest('synthetic'),JSON.stringify(config),leaseToken,runId]);
- const task={content:'Synthetic stored request',attachments:[]};
- await pool.query('update agent_run set input=$2,request_hash=$3 where id=$1',[runId,JSON.stringify(task),digest(task)]);
- await pool.query("insert into assistant_message(user_id,conversation_id,role,intent,content,metadata) values($1,$2,'user','general',$3,$4)",[owner,conversationId,task.content,JSON.stringify({runId})]);
+ const task={content:'Synthetic stored request',attachments:[] as []};
  const initial=initialTaskMessages({...context,mode:config.profile!.mode},task,config,[]);
  const messages=[initial[0],decisionMemoryMessage(await loadDecisionMemory(owner)),...initial.slice(1)];
+ const prospective=process.env.MA24_CONFIGURED_PROSPECTIVE==='1'?await registerSignedProspectiveFixture(pool,{owner,skillId,task,config,messages}):undefined;
+ await pool.query('insert into assistant_conversation(id,user_id,title) values($1,$2,$3)',[conversationId,owner,'Synthetic original transport']);
+ await pool.query(`insert into agent_run(id,user_id,conversation_id,request_key,request_hash,input,model_config,status,execution_kind,lease_token,lease_until)
+  values($1,$2,$3,$7,$4,$8,$5,'queued','main-agent',$6,now()+interval '10 minutes')`,[runId,owner,conversationId,digest(task),JSON.stringify(config),leaseToken,runId,JSON.stringify(task)]);
+ await pool.query("insert into assistant_message(user_id,conversation_id,role,intent,content,metadata) values($1,$2,'user','general',$3,$4)",[owner,conversationId,task.content,JSON.stringify({runId})]);
+ const capture=prospective?(await pool.query('select id,start_context from agent_skill_shadow_job where owner_id=$1 and run_id=$2',[owner,runId])).rows[0]:undefined;
+ if(prospective){assert(capture);assert.equal(digest(capture.start_context),digest(prospective.start));}
+ await pool.query("update agent_run set status='running' where id=$1",[runId]);
  await pool.query("insert into mailbox_customer(id,user_id,identity_key,name) values($1,$2,$3,'Synthetic signed read customer')",[randomUUID(),owner,randomUUID()]);
  const pair=generateKeyPairSync('ed25519'),collectorId='synthetic-original-task',deploymentHash=digest('synthetic-original-deployment');
  const key={keyId:randomUUID(),collectorId,deploymentHash,enabled:true,purposes:['task-model-transport','model-transport'],
@@ -106,7 +110,8 @@ export async function verifyTaskTransportJournalDatabase(pool:Pool,owner:string,
  await assert.rejects(verifyOwnedTaskModelTransports({userId:owner},{runId}),/gaps/);
  await pool.query("update agent_tool_call set call_key='mode-model:0:0:1' where id=$1",[ids[1]]);
  await verifyOwnedTaskModelTransports({userId:owner},{runId});
- const configuredCandidate=await verifyConfiguredSignedCandidateDatabase(pool,{owner,runId,skillId,directory,keyPath,keyId:key.keyId,collectorId,deploymentHash});
+ const configuredCandidate=await verifyConfiguredSignedCandidateDatabase(pool,{owner,runId,skillId,directory,keyPath,keyId:key.keyId,collectorId,deploymentHash,
+  prospective:prospective?{jobId:capture!.id,frozen:prospective.frozen}:undefined});
  return {originalTaskJournalDatabase:true,originalTaskSignedFallbackReadback:true,originalTaskRecoveryReuse:true,
   originalTaskCrossAccountRejected:true,originalTaskKeyRevocationRejected:true,originalTaskTamperedSignatureRejected:true,originalTaskRouteGapRejected:true,
   originalTaskCompiledAdmissionVerified:true,originalTaskRequestFactoryAdmissionExecuted:true,originalTaskRequestClosureExecuted:true,

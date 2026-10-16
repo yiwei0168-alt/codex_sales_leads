@@ -11,9 +11,11 @@ import {prepareSkillAcceptanceBaseline} from '../../src/lib/assistant/main/skill
 import {prepareRecordedSkillCandidateSnapshot} from '../../src/lib/assistant/main/skill-candidate-source';
 import {freezeSkillAcceptancePlan} from '../../src/lib/assistant/main/skill-acceptance-freeze';
 import type {SkillCollectorTransaction} from '../../src/lib/assistant/main/skill-model-journal';
+import type {SkillCandidateCollector} from '../../src/lib/assistant/main/skill-candidate-model';
 
 /** Actual configured runner; network and paid-fetch adapters are synthetic. */
-export async function verifyConfiguredSignedCandidateDatabase(pool:Pool,input:{owner:string;runId:string;skillId:string;directory:string;keyPath:string;keyId:string;collectorId:string;deploymentHash:string}){
+export async function verifyConfiguredSignedCandidateDatabase(pool:Pool,input:{owner:string;runId:string;skillId:string;directory:string;keyPath:string;keyId:string;collectorId:string;deploymentHash:string;
+ prospective?:{jobId:string;frozen:NonNullable<SkillCandidateCollector['frozen']>}}){
  const context={userId:input.owner},identity=await prepareSkillExecutionIdentity(context,{runId:input.runId});
  const baseline=await prepareSkillAcceptanceBaseline(context,{runId:input.runId});
  const snapshot=await prepareRecordedSkillCandidateSnapshot(context,{runId:input.runId,skillId:input.skillId,version:1});
@@ -22,12 +24,13 @@ export async function verifyConfiguredSignedCandidateDatabase(pool:Pool,input:{o
    await client.query("select set_config('app.current_user_id',$1,true)",[userId]);const value=await work(client);await client.query('commit');return value;
   }catch(error){await client.query('rollback');throw error;}finally{client.release();}
  };
- const hash=digest('synthetic-unexecuted-other-cases'),frozen=await freezeSkillAcceptancePlan(context,{protocol:'skill-acceptance-plan-v1',
+ const hash=digest('synthetic-unexecuted-other-cases'),frozen=input.prospective?.frozen??await freezeSkillAcceptancePlan(context,{protocol:'skill-acceptance-plan-v1',
   pin:{ownerId:input.owner,skillId:input.skillId,version:1,contentHash:snapshot.snapshot.candidate.value.content_hash,sourceHash:snapshot.skillSourceHash},identity,
   expiresAt:new Date(Date.now()+3600000).toISOString(),cases:[{id:'signed-replay',category:'replay',provenance:'historical-task',inputHash:baseline.projection.inputHash,sourceHash:baseline.projectionHash},
    ...(['negative','injection','permissions','shadow'] as const).map(category=>({id:category,category,provenance:category==='shadow'?'prospective-task' as const:'safety-fixture' as const,inputHash:hash,sourceHash:hash}))]},transaction);
  const evaluationId=randomUUID(),jobPath=join(input.directory,'configured-candidate-job.json'),compiledPath=join(process.cwd(),'tmp','configured-candidate-fixture.cjs');
- await writeFile(jobPath,JSON.stringify({ownerId:input.owner,freezeId:frozen.freezeId,evaluationId,caseId:'signed-replay',maximumModelCalls:8,kind:'historical',runId:input.runId}));
+ await writeFile(jobPath,JSON.stringify({ownerId:input.owner,freezeId:frozen.freezeId,evaluationId,maximumModelCalls:8,
+  ...(input.prospective?{caseId:'signed-shadow',kind:'prospective',jobId:input.prospective.jobId}:{caseId:'signed-replay',kind:'historical',runId:input.runId})}));
  await build({entryPoints:['scripts/skill-collector-runner.ts'],outfile:compiledPath,bundle:true,platform:'node',target:'node24',format:'cjs',packages:'external',logLevel:'warning',
   banner:{js:`globalThis.fetch=async(url,init)=>{if(String(url)!=='https://openrouter.ai/api/v1/chat/completions')throw new Error('Synthetic destination rejected');const body=JSON.parse(init.body);const step=body.messages.filter(m=>m.role==='assistant').length;const call=(id,name,args)=>({index:0,id,type:'function',function:{name,arguments:JSON.stringify(args)}});let calls;if(step===0)calls=[call('candidate-describe-skill','describe_tool',{tool:'skill_read'}),{...call('candidate-describe-customers','describe_tool',{tool:'customer_timeline'}),index:1}];else if(step===1)calls=[call('candidate-read-skill','execute_tool',{tool:'skill_read',arguments:{id:process.env.MA24_CANDIDATE_SKILL_ID}})];else if(step===2)calls=[call('candidate-read-customers','execute_tool',{tool:'customer_timeline',arguments:{}})];const chunk={id:'synthetic-candidate-'+step,model:body.model,provider:'synthetic',choices:[{index:0,delta:calls?{tool_calls:calls}:{content:'Synthetic streamed reply'},finish_reason:calls?'tool_calls':'stop'}]};const nl=String.fromCharCode(10);const response=new Response('data: '+JSON.stringify(chunk)+nl+nl+'data: [DONE]'+nl+nl,{status:200,headers:{'Content-Type':'text/event-stream'}});Object.defineProperty(response,'url',{value:String(url)});return response;};`},
   plugins:[{name:'explicit-synthetic-network-and-billing',setup(builder){
@@ -48,5 +51,5 @@ export async function verifyConfiguredSignedCandidateDatabase(pool:Pool,input:{o
  });
  assert.equal(exit.code,0,`Configured signed candidate fixture failed: ${exit.diagnostic}`);assert(exit.output.includes('"collectorExecution":"completed"'));
  assert.equal((await pool.query('select enabled from agent_skill where id=$1',[input.skillId])).rows[0].enabled,false);
- return {configuredSignedCandidateDatabaseVerified:true,candidateSkillRemainsDisabled:true,actualModelCalls:0,automaticActivation:false};
+ return {configuredSignedCandidateDatabaseVerified:true,configuredCandidateKind:input.prospective?'prospective':'historical',candidateSkillRemainsDisabled:true,actualModelCalls:0,automaticActivation:false};
 }
