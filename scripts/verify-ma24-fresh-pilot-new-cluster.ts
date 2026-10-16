@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { randomBytes } from "node:crypto";
 import { spawn } from "node:child_process";
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { createServer } from "node:net";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -21,11 +21,13 @@ const modeBusinessCheck = args.includes("--mode-business");
 const runnerAttestationCheck = args.includes("--runner-attestation");
 const prospectiveHttpArgument = args.find(arg => arg.startsWith('--prospective-http-image='));
 const prospectiveHttpImage = prospectiveHttpArgument?.slice('--prospective-http-image='.length);
+const prospectiveBrowserCheck = args.includes('--prospective-browser');
 const prospectiveMaterialCheck = args.includes("--prospective-material") || Boolean(prospectiveHttpImage);
 const prospectiveSourceCheck = args.includes("--prospective-source") || prospectiveMaterialCheck;
 const rollbackImageArgument = args.find(arg => arg.startsWith("--rollback-image="));
 const rollbackImage = rollbackImageArgument?.slice("--rollback-image=".length);
-assert(args.length <= 11 && args.every(arg => ["--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", "--prospective-source", "--prospective-material", prospectiveHttpArgument, webImageArgument, rollbackImageArgument].includes(arg))
+assert(args.length <= 12 && args.every(arg => ["--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", "--prospective-source", "--prospective-material", '--prospective-browser', prospectiveHttpArgument, webImageArgument, rollbackImageArgument].includes(arg))
+  && (!prospectiveBrowserCheck || prospectiveHttpImage)
   && (!prospectiveHttpArgument || (prospectiveHttpImage && /^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(prospectiveHttpImage)))
   && (!webImageArgument || (webImage && /^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(webImage)))
   && (!rollbackImageArgument || (rollbackImage && /^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(rollbackImage)))
@@ -46,6 +48,8 @@ const availablePort = () => new Promise<number>((resolvePort, reject) => {
   });
 });
 const port = await availablePort();
+const prospectiveBrowserPort = prospectiveBrowserCheck ? await availablePort() : null;
+const prospectiveBrowserDirectory = prospectiveBrowserCheck ? mkdtempSync(join(tmpdir(), 'ma24-skill-browser-')) : null;
 const run = (command: string, args: string[], env: NodeJS.ProcessEnv = process.env) =>
   new Promise<{ code: number | null; output: string }>((resolveRun, reject) => {
     const child = spawn(command, args, { cwd: process.cwd(), windowsHide: true,
@@ -72,6 +76,7 @@ try {
   const started = await run("docker", ["run", "--detach", "--name", containerName,
     ...(webImage ? ["--network", networkName, "--network-alias", "pilot-db"] : []),
     "--publish", `127.0.0.1:${port}:5432`, "--env", `POSTGRES_PASSWORD=${adminPassword}`,
+    ...(prospectiveBrowserPort ? ['--publish', `127.0.0.1:${prospectiveBrowserPort}:3000`] : []),
     "--env", "POSTGRES_DB=network_copilot_local", "pgvector/pgvector:pg16",
     ...(webImage ? ["bash", "-ec", [
       "openssl req -x509 -nodes -newkey rsa:2048 -days 1 -subj /CN=pilot-db",
@@ -118,19 +123,45 @@ try {
   if (prospectiveSourceCheck) {
     const inContainerApp = new URL(appUrl), inContainerAdmin = new URL(adminUrl);
     inContainerApp.port = '5432'; inContainerAdmin.port = '5432';
-    const source = prospectiveHttpImage ? await run('docker', ['run', '--rm', '--network', `container:${containerId}`,
+    const sourcePromise = prospectiveHttpImage ? run('docker', ['run', '--rm', '--network', `container:${containerId}`,
       '--workdir', '/build', '--env', `DATABASE_URL=${inContainerApp.toString()}`,
       '--env', `DATABASE_MIGRATION_URL=${inContainerAdmin.toString()}`,
       '--env', 'MA24_DISPOSABLE_PROSPECTIVE_SOURCE=1', '--env', 'MA24_PROSPECTIVE_FULL_MATERIAL=1',
+      ...(prospectiveBrowserDirectory ? ['--mount', `type=bind,source=${prospectiveBrowserDirectory},target=/probe`, '--env', 'MA24_PROSPECTIVE_BROWSER=1'] : []),
       '--env', 'MA24_PROSPECTIVE_HTTP=1', prospectiveHttpImage,
-      'node', 'scripts/run-tsx.cjs', 'scripts/verify-skill-prospective-source-db.ts']) : await run(process.execPath,
+      'node', 'scripts/run-tsx.cjs', 'scripts/verify-skill-prospective-source-db.ts']) : run(process.execPath,
       ["scripts/run-tsx.cjs", "scripts/verify-skill-prospective-source-db.ts"],
       { ...process.env, DATABASE_URL: appUrl.toString(), DATABASE_MIGRATION_URL: adminUrl.toString(),
         MA24_DISPOSABLE_PROSPECTIVE_SOURCE: "1",MA24_PROSPECTIVE_FULL_MATERIAL: prospectiveMaterialCheck ? "1" : "0" });
+    if(prospectiveBrowserDirectory){
+      let terminal=false;void sourcePromise.finally(()=>{terminal=true;}).catch(()=>undefined);
+      try{
+        const generated=await run('docker',['exec',containerId,'openssl','req','-x509','-nodes','-newkey','rsa:2048','-days','1','-subj','/CN=localhost','-keyout','/tmp/ma24-browser.key','-out','/tmp/ma24-browser.crt']);
+        assert.equal(generated.code,0,'Disposable browser TLS generation failed');
+        for(const [remote,local] of [['key','key.pem'],['crt','cert.pem']]){
+          const file=await run('docker',['exec',containerId,'cat',`/tmp/ma24-browser.${remote}`]);assert.equal(file.code,0);
+          writeFileSync(join(prospectiveBrowserDirectory,local),file.output,{mode:0o600});
+        }
+        const ready=join(prospectiveBrowserDirectory,'ready.json');
+        for(let attempt=0;attempt<1800&&!terminal&&!existsSync(ready);attempt++)await new Promise(done=>setTimeout(done,200));
+        assert(existsSync(ready),'Disposable standalone browser handshake missing');
+        const browser=await run(process.execPath,['scripts/run-tsx.cjs','scripts/verify-skill-prospective-browser.ts'],{
+          ...process.env,MA24_DISPOSABLE_PROSPECTIVE_BROWSER:'1',MA24_PROSPECTIVE_BROWSER_UPSTREAM:`http://127.0.0.1:${prospectiveBrowserPort}`,
+          MA24_PROSPECTIVE_BROWSER_READY:ready,MA24_HTTPS_PROBE_KEY:join(prospectiveBrowserDirectory,'key.pem'),MA24_HTTPS_PROBE_CERT:join(prospectiveBrowserDirectory,'cert.pem')});
+        const passed=browser.code===0&&browser.output.includes('"prospectiveBrowserUi":"passed"');
+        writeFileSync(join(prospectiveBrowserDirectory,'result.json'),JSON.stringify({passed}));
+        assert(passed,browser.output);
+      }catch(error){
+        writeFileSync(join(prospectiveBrowserDirectory,'result.json'),JSON.stringify({passed:false}));
+        await sourcePromise;throw error;
+      }
+    }
+    const source=await sourcePromise;
     assert.equal(source.code, 0, source.output);
     assert(source.output.includes('"prospectiveSourceDatabase":"passed"'), source.output);
     if(prospectiveMaterialCheck)assert(source.output.includes('"fullPairedMaterialVerified":true'),source.output);
     if(prospectiveHttpImage)assert(source.output.includes('"prospectiveStandaloneHttp":"passed"'),source.output);
+    if(prospectiveBrowserCheck)assert(source.output.includes('"prospectiveStandaloneBrowser":"passed"'),source.output);
   }
   if (runnerAttestationCheck) {
     const attested = await run(process.execPath,
@@ -411,8 +442,10 @@ try {
     prospectiveSourceDatabaseVerified: prospectiveSourceCheck,
     prospectivePairedMaterialVerified: prospectiveMaterialCheck,
     prospectiveStandaloneHttpVerified: Boolean(prospectiveHttpImage),
+    prospectiveStandaloneBrowserVerified: prospectiveBrowserCheck,
     samePortPriorImageRollbackVerified: Boolean(rollbackImage) }));
 } finally {
+  if(prospectiveBrowserDirectory)rmSync(prospectiveBrowserDirectory,{recursive:true,force:true});
   if (restoredContainerId) {
     const removed = await run("docker", ["rm", "--force", "--volumes", restoredContainerId]);
     assert.equal(removed.code, 0, removed.output);

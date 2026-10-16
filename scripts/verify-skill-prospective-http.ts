@@ -3,6 +3,7 @@ import {spawn} from 'node:child_process';
 import {randomBytes} from 'node:crypto';
 import {createServer} from 'node:net';
 import {resolve} from 'node:path';
+import {cp,readFile,writeFile} from 'node:fs/promises';
 import type {Pool} from 'pg';
 import {hashPassword} from '../src/lib/auth/password';
 
@@ -14,10 +15,12 @@ export async function verifySkillProspectiveHttp(pool:Pool,input:{owner:string;o
  const listener=createServer();
  await new Promise<void>(done=>listener.listen(0,'127.0.0.1',done));
  const address=listener.address();assert(address&&typeof address!=='string');
- const port=address.port;await new Promise<void>((done,reject)=>listener.close(error=>error?reject(error):done()));
+ const browserProbe=process.env.MA24_PROSPECTIVE_BROWSER==='1';
+ const port=browserProbe?3000:address.port;await new Promise<void>((done,reject)=>listener.close(error=>error?reject(error):done()));
  const base=`http://127.0.0.1:${port}`,root=resolve('.next/standalone');
+ if(browserProbe)await cp(resolve('.next/static'),resolve(root,'.next/static'),{recursive:true});
  const child=spawn(process.execPath,[resolve(root,'server.js')],{cwd:root,env:{
-  NODE_ENV:'production',HOSTNAME:'127.0.0.1',PORT:String(port),
+  NODE_ENV:'production',HOSTNAME:browserProbe?'0.0.0.0':'127.0.0.1',PORT:String(port),
   DATABASE_URL:process.env.DATABASE_URL,MAILBOX_CREDENTIAL_KEY:process.env.MAILBOX_CREDENTIAL_KEY,
   LANGSMITH_TRACING:'false',LANGSMITH_TRACING_V2:'false',LANGCHAIN_TRACING:'false',LANGCHAIN_TRACING_V2:'false',
  },stdio:['ignore','pipe','pipe']});
@@ -35,8 +38,10 @@ export async function verifySkillProspectiveHttp(pool:Pool,input:{owner:string;o
    if(ready)break;await new Promise(done=>setTimeout(done,200));
   }
   assert(ready,`Standalone did not start: ${logs}`);
+  let ownerPassword='';
   const login=async(userId:string)=>{
    const password=randomBytes(24).toString('base64url');
+   if(userId===input.owner)ownerPassword=password;
    await pool.query('update app_user set password_hash=$2 where id=$1',[userId,hashPassword(password)]);
    const response=await request('/api/auth/login',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({email:`${userId}@example.invalid`,password})});
    assert.equal(response.status,200,`Synthetic login: ${await response.text()}`);
@@ -73,6 +78,21 @@ export async function verifySkillProspectiveHttp(pool:Pool,input:{owner:string;o
   assert.equal((await pool.query('select enabled from agent_skill where id=$1',[input.skillId])).rows[0].enabled,false);
   console.log(JSON.stringify({prospectiveStandaloneHttp:'passed',materialRead:true,authenticatedReviewPersisted:true,
    crossAccountAnonymousCsrfStaleRevisionRejected:true,syntheticOnly:true,realQualityApproval:false,automaticActivation:false}));
+  if(browserProbe){
+   await writeFile('/probe/ready.json',JSON.stringify({email:`${input.owner}@example.invalid`,password:ownerPassword}),{mode:0o600});
+   let completed=false;
+   for(let attempt=0;attempt<1500;attempt++){
+    try{const outcome=JSON.parse(await readFile('/probe/result.json','utf8'));assert.equal(outcome.passed,true,'Browser probe failed');completed=true;break;}
+    catch(error){if((error as NodeJS.ErrnoException).code!=='ENOENT')throw error;}
+    await new Promise(done=>setTimeout(done,200));
+   }
+   assert(completed,'Browser probe timed out');
+   const judgments=(await pool.query('select revision,judgment from agent_skill_acceptance_judgment where bundle_id=$1 order by revision',[input.bundleId])).rows;
+   assert.deepEqual(judgments.map(row=>row.revision),[1,2,3]);assert.equal(judgments[2].judgment.revoked,true);
+   assert.deepEqual(judgments[2].judgment.baseline,verdict);assert.deepEqual(judgments[2].judgment.candidate,verdict);
+   assert.equal((await pool.query('select enabled from agent_skill where id=$1',[input.skillId])).rows[0].enabled,false);
+   console.log(JSON.stringify({prospectiveStandaloneBrowser:'passed',reviewSavedRefreshedAndRevoked:true,realQualityApproval:false,automaticActivation:false}));
+  }
  }finally{
   child.kill('SIGTERM');await exited;
  }
