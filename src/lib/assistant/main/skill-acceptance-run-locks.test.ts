@@ -1,6 +1,6 @@
 import type {PoolClient} from 'pg';
 import {expect,it,vi} from 'vitest';
-import {skillAcceptanceRunIds,skillAcceptanceAttachmentIds,skillAcceptanceMailIds,lockSkillAcceptanceRunJournals} from './skill-acceptance-run-locks';
+import {skillAcceptanceRunIds,skillAcceptanceAttachmentIds,skillAcceptanceMailIds,skillAcceptanceTimelineSelection,lockSkillAcceptanceRunJournals} from './skill-acceptance-run-locks';
 const runId='00000000-0000-4000-8000-000000000001';
 const artifact={plan:{cases:[{id:'replay',provenance:'historical-task'},{id:'shadow',provenance:'prospective-task'},{id:'safe',provenance:'safety-fixture'}]},
  rawReceipts:{baselineSources:{replay:{runId}},candidateSources:{replay:{runId}},prospectiveSources:{shadow:{runId}},safetySources:{safe:{runId}}}};
@@ -38,6 +38,27 @@ it('rejects an unavailable or foreign mail row before returning lock success',as
  const query=vi.fn().mockResolvedValueOnce({rows:[{n:1}]}).mockResolvedValueOnce({rows:[{id:runId,input:{}}]})
   .mockResolvedValueOnce({rows:[{tool_id:'mail_read',input:{messageId:runId}}]}).mockResolvedValueOnce({rows:[]});
  await expect(lockSkillAcceptanceRunJournals({query} as unknown as PoolClient,runId,artifact)).rejects.toThrow('mail source unavailable');
+});
+it('protects whole account lists alongside explicit customer references',()=>{
+ expect(skillAcceptanceTimelineSelection([{tool_id:'customer_timeline',input:{customerId:runId,offset:20}},
+  {tool_id:'customer_timeline',input:{country:'CN'}}])).toEqual({customerIds:[runId],includeAll:true});
+ expect(skillAcceptanceTimelineSelection([])).toEqual({customerIds:[],includeAll:false});
+ expect(()=>skillAcceptanceTimelineSelection([{tool_id:'customer_timeline',input:{customerId:'invalid'}}])).toThrow();
+});
+it('rejects incomplete timeline locks before returning source success',async()=>{
+ const query=vi.fn().mockResolvedValueOnce({rows:[{n:1}]}).mockResolvedValueOnce({rows:[{id:runId,input:{}}]})
+  .mockResolvedValueOnce({rows:[{tool_id:'customer_timeline',input:{customerId:runId}}]}).mockResolvedValueOnce({rows:[{n:0}]});
+ await expect(lockSkillAcceptanceRunJournals({query} as unknown as PoolClient,runId,artifact)).rejects.toThrow('timeline source lock incomplete');
+});
+it('batches explicit timeline references before protecting whole-account lists',async()=>{
+ const customerIds=Array.from({length:101},(_,i)=>`00000000-0000-4000-8000-${String(i+1).padStart(12,'0')}`);
+ const query=vi.fn().mockResolvedValueOnce({rows:[{n:1}]}).mockResolvedValueOnce({rows:[{id:runId,input:{}}]})
+  .mockResolvedValueOnce({rows:[...customerIds.map(customerId=>({tool_id:'customer_timeline',input:{customerId}})),{tool_id:'customer_timeline',input:{}}]})
+  .mockResolvedValueOnce({rows:[{n:100}]}).mockResolvedValueOnce({rows:[{n:1}]}).mockResolvedValueOnce({rows:[{n:102}]});
+ expect(await lockSkillAcceptanceRunJournals({query} as unknown as PoolClient,runId,artifact)).toMatchObject({timelineSourcesLocked:true,timelineCustomerCount:102});
+ expect(query.mock.calls[3][1]).toEqual([customerIds.slice(0,100),false]);
+ expect(query.mock.calls[4][1]).toEqual([customerIds.slice(100),false]);
+ expect(query.mock.calls[5][1]).toEqual([[],true]);
 });
 it('fails closed if an attachment lock count differs',async()=>{
  const query=vi.fn().mockResolvedValueOnce({rows:[{n:1}]}).mockResolvedValueOnce({rows:[{id:runId,input:{attachments:[{assetId:runId}]}}]})

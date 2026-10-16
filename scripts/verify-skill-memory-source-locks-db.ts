@@ -21,6 +21,7 @@ try{
  const originsMigration=await readFile('db/migrations/143_skill_memory_origin_locks.sql','utf8');await pool.query(originsMigration);await pool.query(originsMigration);
  const taskOriginsMigration=await readFile('db/migrations/144_skill_task_origin_locks.sql','utf8');await pool.query(taskOriginsMigration);await pool.query(taskOriginsMigration);
  const attachmentMigration=await readFile('db/migrations/145_skill_attachment_source_locks.sql','utf8');await pool.query(attachmentMigration);await pool.query(attachmentMigration);
+ const timelineMigration=await readFile('db/migrations/147_skill_timeline_source_locks.sql','utf8');await pool.query(timelineMigration);await pool.query(timelineMigration);
  for(const id of [owner,other])await pool.query("insert into app_user(id,email,display_name,role,status) values($1,$2,'Synthetic source locks','member','active')",[id,`${id}@example.invalid`]);
  const documentId=randomUUID(),assetId=randomUUID(),treeId=randomUUID(),sha=digest('Synthetic attachment');
  const collection=(await pool.query('select id from knowledge_collection order by id limit 1')).rows[0].id;
@@ -152,7 +153,7 @@ try{
  try{
   await journalHolder.query('begin');await journalHolder.query('set local role network_copilot_app');
   await journalHolder.query("select set_config('app.current_user_id',$1,true)",[owner]);
-  assert.deepEqual(await lockSkillAcceptanceRunJournals(journalHolder,owner,runArtifact),{mailReadSourcesLocked:true,mailCount:1,attachmentMetadataLocked:true,attachmentCount:1,taskOriginsLocked:true,taskJournalsLocked:true,runCount:1});
+  assert.deepEqual(await lockSkillAcceptanceRunJournals(journalHolder,owner,runArtifact),{timelineSourcesLocked:true,timelineCustomerCount:0,mailReadSourcesLocked:true,mailCount:1,attachmentMetadataLocked:true,attachmentCount:1,taskOriginsLocked:true,taskJournalsLocked:true,runCount:1});
   const pid=(await journalHolder.query('select pg_backend_pid() as pid')).rows[0].pid as number;
   journalPending=[
    pool.query('update agent_run set status=status where id=$1',[runId]),
@@ -173,6 +174,39 @@ try{
   assert.equal(waiting,7,'Task/journal, stored attachment and mail metadata updates must all wait');
  }finally{await journalHolder.query('rollback');journalHolder.release();}
  await Promise.all(journalPending);
+ const customerId=randomUUID(),secondMail=randomUUID(),unlinkedMail=randomUUID();
+ await pool.query("insert into mailbox_customer(id,user_id,identity_key,name) values($1,$2,$1::uuid::text,'Synthetic customer')",[customerId,owner]);
+ for(const [i,id] of [secondMail,unlinkedMail].entries())await pool.query(`insert into mailbox_message(id,user_id,connection_id,folder_path,uid_validity,message_uid,direction,content_sha256,content_ciphertext)
+  values($1,$2,$3,'Synthetic','1',$4,'inbound',$5,$6)`,[id,owner,connectionId,i+2,digest('Synthetic mail'),
+  encryptMailboxContent(owner,{subject:'Synthetic mail',bodyText:'Synthetic body',sender:[],recipients:[]})]);
+ for(const id of [mailId,secondMail])await pool.query('insert into mailbox_customer_message(user_id,customer_id,message_id) values($1,$2,$3)',[owner,customerId,id]);
+ await pool.query("insert into mailbox_timeline_note(user_id,message_id,content_hash,ciphertext,model) values($1,$2,$3,'synthetic-note','synthetic')",[owner,secondMail,digest('Synthetic mail')]);
+ await pool.query(`insert into agent_tool_call(user_id,run_id,call_key,tool_id,tool_version,input_hash,input,effect,status)
+  values($1,$2,'timeline-source','customer_timeline','v1',$3,'{}','read','completed')`,[owner,runId,digest({})]);
+ await assert.rejects(tenantTransaction(other,client=>client.query('select lock_skill_timeline_sources($1::uuid[],false)',[[customerId]])),/customer unavailable/);
+ const timelineHolder=await pool.connect();let timelinePending:Array<Promise<unknown>>=[];
+ try{
+  await timelineHolder.query('begin');await timelineHolder.query('set local role network_copilot_app');
+  await timelineHolder.query("select set_config('app.current_user_id',$1,true)",[owner]);
+  const held=await lockSkillAcceptanceRunJournals(timelineHolder,owner,runArtifact);
+  assert.equal(held.timelineSourcesLocked,true);assert.equal(held.timelineCustomerCount,1);
+  const pid=(await timelineHolder.query('select pg_backend_pid() as pid')).rows[0].pid as number;
+  timelinePending=[pool.query('update mailbox_customer set archived=archived where id=$1',[customerId]),
+   pool.query('update mailbox_customer_message set source=source where user_id=$1 and customer_id=$2 and message_id=$3',[owner,customerId,mailId]),
+   pool.query('update mailbox_message set metadata=metadata where id=$1',[mailId]),
+   pool.query('update mailbox_timeline_note set ciphertext=ciphertext where user_id=$1 and message_id=$2',[owner,secondMail]),
+   pool.query('insert into mailbox_customer_message(user_id,customer_id,message_id) values($1,$2,$3)',[owner,customerId,unlinkedMail]),
+   pool.query("insert into mailbox_timeline_note(user_id,message_id,content_hash,ciphertext,model) values($1,$2,$3,'synthetic-note','synthetic')",[owner,mailId,digest('Synthetic mail')]),
+   pool.query("insert into mailbox_customer(user_id,identity_key,name) values($1,$2,'Synthetic new customer')",[owner,randomUUID()])];
+  for(const work of timelinePending)void work.catch(()=>undefined);
+  let waiting=0;
+  for(let i=0;i<100;i++){
+   waiting=Number((await pool.query('select count(*) n from pg_stat_activity where $1::int=any(pg_blocking_pids(pid))',[pid])).rows[0].n);
+   if(waiting===7)break;await new Promise(resolve=>setTimeout(resolve,20));
+  }
+  assert.equal(waiting,7,'Timeline updates and new links, notes and customers must all wait');
+ }finally{await timelineHolder.query('rollback');timelineHolder.release();}
+ await Promise.all(timelinePending);
  await assert.rejects(tenantTransaction(other,client=>lockSkillAcceptanceRunJournals(client,other,runArtifact)),/origin unavailable/);
  const holder=await pool.connect();let pending:Array<Promise<unknown>>=[];const finished=[false,false,false];
  try{
@@ -201,6 +235,6 @@ try{
  await assert.rejects(tenantTransaction(owner,client=>lockCurrentSkillExperienceSources(client,owner,version)),/changed after locking/);
  assert.equal((await pool.query("select to_regclass('public.ma24_evaluation_hard_limit') is null absent")).rows[0].absent,true);
  console.log(JSON.stringify({memorySourceLocksDatabase:'passed',correctionInvalidationAndConflictBlocked:true,allWritersResumeAfterRelease:true,
-  foreignOwnerAndInvalidIdsRejected:true,mailMetadataUpdatesBlocked:true,attachmentMetadataUpdatesBlocked:true,privateAttachmentForeignOwnerRejected:true,taskOriginsAndHistoryAppendBlocked:true,taskAndJournalUpdateAndAppendBlocked:true,foreignTaskJournalLockRejected:true,noObservationUpdateGrant:true,originUpdatesBlocked:true,changedOriginalMessageRejected:true,storedProvenanceLockThenRecheck:true,invalidatedProvenanceRejectedAfterLock:true,expiryAfterTransactionStartRejected:true,
+  foreignOwnerAndInvalidIdsRejected:true,timelineUpdatesAndPhantomInsertsBlocked:true,mailMetadataUpdatesBlocked:true,attachmentMetadataUpdatesBlocked:true,privateAttachmentForeignOwnerRejected:true,taskOriginsAndHistoryAppendBlocked:true,taskAndJournalUpdateAndAppendBlocked:true,foreignTaskJournalLockRejected:true,noObservationUpdateGrant:true,originUpdatesBlocked:true,changedOriginalMessageRejected:true,storedProvenanceLockThenRecheck:true,invalidatedProvenanceRejectedAfterLock:true,expiryAfterTransactionStartRejected:true,
   deferredEvaluationMigrationsApplied:false,actualModelCalls:0,automaticActivation:false}));
 }finally{await pool.end();await getPool().end();}
