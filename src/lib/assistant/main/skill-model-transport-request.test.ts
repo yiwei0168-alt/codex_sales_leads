@@ -12,8 +12,9 @@ import type {SkillCandidateCollector,SkillCandidateRequest} from './skill-candid
 
 const mocks=vi.hoisted(()=>{
  const native=vi.fn();vi.stubGlobal('fetch',native);
- return {native,rpc:vi.fn(),freeze:vi.fn(),registry:undefined as unknown};
+ return {native,rpc:vi.fn(),freeze:vi.fn(),registry:undefined as unknown,spend:undefined as unknown};
 });
+vi.mock('@/lib/billing/context',async importOriginal=>({...await importOriginal<typeof import('@/lib/billing/context')>(),currentSpendContext:()=>mocks.spend}));
 vi.mock('./model',async importOriginal=>({...await importOriginal<typeof import('./model')>(),requestModeModel:mocks.rpc}));
 vi.mock('@/providers/openrouter',async importOriginal=>({...await importOriginal<typeof import('@/providers/openrouter')>(),getOpenRouterConfig:()=>({baseUrl:'https://openrouter.ai/api/v1'})}));
 vi.mock('@/lib/network/model-transport',()=>({modelRoutedTransport:(transport:typeof fetch)=>transport}));
@@ -30,6 +31,7 @@ let directory:string,originalArgv:string[];
 function response(status=200,url=endpoint){const result=new Response(status===204?null:'{}',{status});Object.defineProperty(result,'url',{value:url});return result;}
 beforeEach(async()=>{
  originalArgv=process.execArgv;process.execArgv=[];vi.useFakeTimers();vi.setSystemTime(new Date('2026-10-16T01:00:00.000Z'));
+ mocks.spend={userId:ownerId,operationId:input.evaluationId,stage:'skill-acceptance'};
  vi.stubEnv('NODE_ENV','production');for(const key of ['NODE_OPTIONS','NODE_EXTRA_CA_CERTS','SSL_CERT_FILE','SSL_CERT_DIR','NODE_USE_SYSTEM_CA','NODE_TLS_REJECT_UNAUTHORIZED'])vi.stubEnv(key,'');
  directory=await mkdtemp(join(tmpdir(),'skill-transport-test-'));const path=join(directory,'ephemeral.pem');
  await writeFile(path,pair.privateKey.export({type:'pkcs8',format:'pem'}),{mode:0o600});
@@ -83,4 +85,29 @@ it('rejects an injected request destination without sending network traffic',asy
  mocks.rpc.mockImplementation(async(_messages,_profile,_index,transport)=>transport('https://example.com',{method:'POST',redirect:'error',body:'{}'}));
  const run=await createConfiguredSkillTransportRequest({userId:ownerId},input);await expect(run(request)).rejects.toThrow('request boundary');
  expect(mocks.native).not.toHaveBeenCalled();
+});
+it.each(['missing','foreign','invalid-operation'])('rejects %s paid scope before any model call',async kind=>{
+ mocks.spend=kind==='missing'?undefined:{userId:kind==='foreign'?input.evaluationId:ownerId,operationId:kind==='invalid-operation'?'invalid':input.evaluationId,stage:'skill-acceptance'};
+ await expect(createConfiguredSkillTransportRequest({userId:ownerId},input)).rejects.toThrow('owned paid-call scope');
+ expect(mocks.rpc).not.toHaveBeenCalled();expect(mocks.native).not.toHaveBeenCalled();
+});
+it('rejects invocation outside the original paid scope',async()=>{
+ const run=await createConfiguredSkillTransportRequest({userId:ownerId},input);mocks.spend=undefined;
+ await expect(run(request)).rejects.toThrow('owned paid-call scope');expect(mocks.rpc).not.toHaveBeenCalled();
+});
+it('rejects operation drift between factory creation and invocation',async()=>{
+ const run=await createConfiguredSkillTransportRequest({userId:ownerId},input);
+ mocks.spend={userId:ownerId,operationId:frozen.freezeId,stage:'skill-acceptance'};
+ await expect(run(request)).rejects.toThrow('scope changed');expect(mocks.native).not.toHaveBeenCalled();
+});
+it('rechecks paid scope at the actual network boundary',async()=>{
+ const original=mocks.rpc.getMockImplementation()!;
+ mocks.rpc.mockImplementation(async(...args)=>{mocks.spend=undefined;return original(...args);});
+ const run=await createConfiguredSkillTransportRequest({userId:ownerId},input);
+ await expect(run(request)).rejects.toThrow('owned paid-call scope');expect(mocks.native).not.toHaveBeenCalled();
+});
+it('does not sign a result after its paid scope changes during transport',async()=>{
+ mocks.native.mockImplementation(async()=>{mocks.spend=undefined;return response();});
+ const run=await createConfiguredSkillTransportRequest({userId:ownerId},input);
+ await expect(run(request)).rejects.toThrow('owned paid-call scope');expect(mocks.native).toHaveBeenCalledTimes(1);
 });

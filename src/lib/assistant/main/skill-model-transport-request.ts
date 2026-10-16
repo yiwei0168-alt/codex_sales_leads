@@ -2,6 +2,7 @@ import {createPrivateKey,createPublicKey,sign} from 'node:crypto';
 import {readFile} from 'node:fs/promises';
 import {z} from 'zod';
 import {getOpenRouterConfig} from '@/providers/openrouter';
+import {currentSpendContext} from '@/lib/billing/context';
 import {modelRoutedTransport} from '@/lib/network/model-transport';
 import {digest} from './contracts';
 import {requestModeModel} from './model';
@@ -22,6 +23,14 @@ function assertControlledProcess(){
 export async function createConfiguredSkillTransportRequest(context:{userId:string},input:{evaluationId:string;arm:'baseline'|'candidate';snapshotHash:string;frozen:NonNullable<SkillCandidateCollector['frozen']>}):Promise<SkillCandidateRequest>{
  assertLocalAnalysisBoundary();
  assertControlledProcess();
+ const spendBinding=()=>{
+  const scope=currentSpendContext();
+  if(!scope||scope.userId!==context.userId||!z.uuid().safeParse(scope.operationId).success||!scope.stage.trim())
+   throw new Error('Transport collector requires an owned paid-call scope');
+  return digest(scope);
+ };
+ const spendHash=spendBinding();
+ const requireSpend=()=>{if(spendBinding()!==spendHash)throw new Error('Transport paid-call scope changed');};
  const {frozen}=input;await requireSkillAcceptanceFreeze(context,frozen.freezeId,frozen.plan);
  if(frozen.plan.pin.ownerId!==context.userId)throw new Error('Transport collector owner changed');
  const route=new URL(getOpenRouterConfig().baseUrl);
@@ -44,10 +53,12 @@ export async function createConfiguredSkillTransportRequest(context:{userId:stri
  };
  await trust();
  return async request=>{
+  requireSpend();
   assertLocalAnalysisBoundary();await requireSkillAcceptanceFreeze(context,frozen.freezeId,frozen.plan);const before=await trust();
   assertControlledProcess();
   let observedHash:string|undefined,observedStatus:number|undefined,observed=false;const capturedAt=new Date().toISOString();
   const transport:typeof fetch=async(url,init)=>{
+   requireSpend();
    assertControlledProcess();
    const target=new URL(url instanceof Request?url.url:String(url));
    if(observed||target.href!=='https://openrouter.ai/api/v1/chat/completions'||init?.method!=='POST'||init.redirect!=='error'||typeof init.body!=='string')throw new Error('Transport request boundary changed');
@@ -58,6 +69,7 @@ export async function createConfiguredSkillTransportRequest(context:{userId:stri
    return response;
   };
   const output=await requestModeModel(request.messages,request.profile,request.index,transport,request.signal);
+  requireSpend();
   assertControlledProcess();
   await requireSkillAcceptanceFreeze(context,frozen.freezeId,frozen.plan);const after=await trust();
   if(after.registryHash!==before.registryHash||!observed||observedStatus!==200||observedHash!==output.requestManifest.requestHash
