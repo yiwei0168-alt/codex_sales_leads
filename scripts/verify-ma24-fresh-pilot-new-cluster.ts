@@ -20,6 +20,7 @@ const crossClusterCheck = args.includes("--cross-cluster");
 const modeBusinessCheck = args.includes("--mode-business");
 const runnerAttestationCheck = args.includes("--runner-attestation");
 const safetySkillUsageCheck = args.includes('--safety-skill-usage');
+const poolRecoveryCheck = args.includes('--pool-recovery');
 const prospectiveHttpArgument = args.find(arg => arg.startsWith('--prospective-http-image='));
 const prospectiveHttpImage = prospectiveHttpArgument?.slice('--prospective-http-image='.length);
 const prospectiveBrowserCheck = args.includes('--prospective-browser');
@@ -28,7 +29,7 @@ const prospectiveMaterialCheck = args.includes("--prospective-material") || Bool
 const prospectiveSourceCheck = args.includes("--prospective-source") || prospectiveMaterialCheck;
 const rollbackImageArgument = args.find(arg => arg.startsWith("--rollback-image="));
 const rollbackImage = rollbackImageArgument?.slice("--rollback-image=".length);
-assert(args.length <= 14 && args.every(arg => ["--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", '--safety-skill-usage', "--prospective-source", "--prospective-material", '--prospective-browser', '--prospective-composition', prospectiveHttpArgument, webImageArgument, rollbackImageArgument].includes(arg))
+assert(args.length <= 15 && args.every(arg => ["--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", '--safety-skill-usage', '--pool-recovery', "--prospective-source", "--prospective-material", '--prospective-browser', '--prospective-composition', prospectiveHttpArgument, webImageArgument, rollbackImageArgument].includes(arg))
   && (!prospectiveBrowserCheck || prospectiveHttpImage)
   && (!prospectiveHttpArgument || (prospectiveHttpImage && /^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(prospectiveHttpImage)))
   && (!webImageArgument || (webImage && /^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(webImage)))
@@ -36,7 +37,7 @@ assert(args.length <= 14 && args.every(arg => ["--browser", "--ten-user", "--bac
   && (!(browserCheck || tenUserCheck || backupCheck || crossClusterCheck || rollbackImage) || webImage)
   && (!crossClusterCheck || backupCheck)
   && (!rollbackImage || rollbackImage !== webImage),
-  "Expected --mode-business, --runner-attestation, --safety-skill-usage, --prospective-source, --prospective-material, --prospective-composition, --prospective-http-image=<builder-tag> (with optional --prospective-browser), or --web-image=<tag> with optional --browser, --ten-user, --backup, --cross-cluster (with --backup), and --rollback-image=<prior-tag>");
+  "Expected --mode-business, --runner-attestation, --safety-skill-usage, --pool-recovery, --prospective-source, --prospective-material, --prospective-composition, --prospective-http-image=<builder-tag> (with optional --prospective-browser), or --web-image=<tag> with optional --browser, --ten-user, --backup, --cross-cluster (with --backup), and --rollback-image=<prior-tag>");
 const networkName = `ma24-pilot-net-${id}`;
 const adminPassword = randomBytes(24).toString("hex");
 const appPassword = randomBytes(24).toString("hex");
@@ -121,7 +122,7 @@ try {
   assert.equal(verified.code, 0, verified.output);
   assert(verified.output.includes('"freshPilotRestore":"passed"'), verified.output);
   assert(verified.output.includes('"copiedProductionData":false'), verified.output);
-  if (webImage || modeBusinessCheck || runnerAttestationCheck || prospectiveSourceCheck || safetySkillUsageCheck) {
+  if (webImage || modeBusinessCheck || runnerAttestationCheck || prospectiveSourceCheck || safetySkillUsageCheck || poolRecoveryCheck) {
     const migration = await run(process.execPath,
       ["scripts/run-tsx.cjs", "scripts/migrate.ts", "--fresh-pilot-through=135"],
       { ...process.env, DATABASE_URL: appUrl.toString(), DATABASE_MIGRATION_URL: adminUrl.toString() });
@@ -179,6 +180,11 @@ try {
         MA24_DISPOSABLE_RUNNER_ATTESTATION: "1" });
     assert.equal(attested.code, 0, attested.output);
     assert(attested.output.includes('"runnerAttestationStore":"passed"'), attested.output);
+  }
+  if(poolRecoveryCheck){
+    const checked=await run(process.execPath,['scripts/run-tsx.cjs','scripts/verify-ma24-pool-recovery.ts'],
+      {...process.env,DATABASE_URL:appUrl.toString(),DATABASE_MIGRATION_URL:adminUrl.toString(),MA24_DISPOSABLE_POOL_RECOVERY:'1'});
+    assert.equal(checked.code,0,checked.output);assert(checked.output.includes('"poolRecoveryDatabase":"passed"'),checked.output);
   }
   if(safetySkillUsageCheck){
     const checked=await run(process.execPath,['scripts/run-tsx.cjs','scripts/verify-skill-safety-usage-db.ts'],
@@ -454,6 +460,7 @@ try {
     scriptedModeBusinessVerified: modeBusinessCheck,
     runnerAttestationStoreVerified: runnerAttestationCheck,
     safetySkillUsageVerified: safetySkillUsageCheck,
+    poolRecoveryVerified: poolRecoveryCheck,
     extraG09Migration: runnerAttestationCheck ? 141 : null,
     prospectiveSourceDatabaseVerified: prospectiveSourceCheck,
     prospectivePairedMaterialVerified: prospectiveMaterialCheck,

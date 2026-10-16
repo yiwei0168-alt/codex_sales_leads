@@ -23,17 +23,43 @@ async function setApplicationRole(client: PoolClient): Promise<void> {
   await client.query(`set local role "${applicationRole()}"`);
 }
 
+/** Own checked-out connection errors until release. Never retry the callback:
+ * a disconnected COMMIT can have an unknown result. */
+function trackClientErrors(client: PoolClient) {
+  const pool = globalThis.__networkCopilotPool;
+  let failure: Error | undefined;
+  const onError = (error: Error) => { failure ??= error; };
+  client.on("error", onError);
+  return {
+    get failure() { return failure; },
+    release(discard = false) {
+      const broken = discard || Boolean(failure);
+      if (broken && globalThis.__networkCopilotPool === pool) globalThis.__networkCopilotDatabaseSecurity = undefined;
+      client.removeListener("error", onError);
+      client.release(broken);
+    },
+  };
+}
+
 export function getPool(): Pool {
   const { databaseUrl } = getRagConfig();
   if (!databaseUrl) throw new Error("DATABASE_URL is not configured");
   if (!globalThis.__networkCopilotPool) {
-    globalThis.__networkCopilotPool = new Pool({
+    const pool = new Pool({
       connectionString: databaseConnectionString(databaseUrl),
       max: 10,
       idleTimeoutMillis: 30_000,
       connectionTimeoutMillis: 5_000,
       ssl: databaseSslConfiguration(databaseUrl),
     });
+    pool.on("error", (error: Error & { code?: string }) => {
+      // pg-pool has already removed this idle client. The next caller reconnects
+      // and checks role/TLS policy again; log no client, SQL, URL or message text.
+      if (globalThis.__networkCopilotPool === pool) globalThis.__networkCopilotDatabaseSecurity = undefined;
+      const code = typeof error.code === "string" && /^[0-9A-Z]{5}$/.test(error.code) ? error.code : "unknown";
+      console.warn("[database] Idle PostgreSQL connection closed", { code });
+    });
+    globalThis.__networkCopilotPool = pool;
   }
   return globalThis.__networkCopilotPool;
 }
@@ -42,6 +68,8 @@ async function ensureDatabaseSecurity(): Promise<void> {
   if (!globalThis.__networkCopilotDatabaseSecurity) {
     globalThis.__networkCopilotDatabaseSecurity = (async () => {
       const client = await getPool().connect();
+      const tracked = trackClientErrors(client);
+      let discard = false;
       let state: { ssl: boolean; rolsuper: boolean; rolbypassrls: boolean; session_super: boolean; session_bypassrls: boolean } | undefined;
       try {
         await client.query("begin");
@@ -59,11 +87,12 @@ async function ensureDatabaseSecurity(): Promise<void> {
         // application role cannot see the session's pg_stat_ssl row on RDS.
         await setApplicationRole(client);
         await client.query("rollback");
+        if (tracked.failure) throw tracked.failure;
       } catch (error) {
-        await client.query("rollback").catch(() => undefined);
+        await client.query("rollback").catch(() => { discard = true; });
         throw error;
       } finally {
-        client.release();
+        tracked.release(discard);
       }
       if (!state) throw new Error("无法验证数据库连接安全属性");
       const { databaseUrl } = getRagConfig();
@@ -97,17 +126,20 @@ export async function query<T extends QueryResultRow>(text: string, values: unkn
 export async function transaction<T>(run: (client: PoolClient) => Promise<T>): Promise<T> {
   await ensureDatabaseSecurity();
   const client = await getPool().connect();
+  const tracked = trackClientErrors(client);
+  let discard = false;
   try {
     await client.query("begin");
     await setApplicationRole(client);
     const result = await run(client);
+    if (tracked.failure) throw tracked.failure;
     await client.query("commit");
     return result;
   } catch (error) {
-    await client.query("rollback");
+    await client.query("rollback").catch(() => { discard = true; });
     throw error;
   } finally {
-    client.release();
+    tracked.release(discard);
   }
 }
 
