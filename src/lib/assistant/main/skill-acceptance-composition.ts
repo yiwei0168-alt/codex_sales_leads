@@ -3,7 +3,7 @@ import {digest} from './contracts';
 import {readSkillAcceptanceEvidence} from './skill-acceptance-store';
 import {readSkillAcceptanceReviewCase} from './skill-acceptance-review';
 import {assertSkillCollector,type SkillCollectorTransaction} from './skill-model-journal';
-import {inspectSkillAcceptanceFreeze} from './skill-acceptance-freeze';
+import {inspectLockedSkillAcceptanceFreeze} from './skill-acceptance-freeze';
 import {skillRunnerEvidenceWindow} from './skill-runner-evidence-window';
 import {assertLocalAnalysisBoundary} from './local-analysis-boundary';
 
@@ -57,7 +57,7 @@ export async function composeSkillAcceptanceEvidence(context:{userId:string},inp
  const artifactHash=digest(artifact);
  const bundleId=await transaction(context.userId,async client=>{
   await assertSkillCollector(client);
-  if(await inspectSkillAcceptanceFreeze(client,context.userId,freezeId,plan)!=='active')throw new Error('Composition freeze inactive');
+  if(await inspectLockedSkillAcceptanceFreeze(client,context.userId,freezeId,plan)!=='active')throw new Error('Composition freeze inactive');
   for(const bundle of bundles){
    const saved=(await client.query<{source_kind:string;plan:unknown;observations:unknown;raw_receipts:unknown;artifact_hash:string}>(
     'select source_kind,plan,observations,raw_receipts,artifact_hash from agent_skill_acceptance_bundle where id=$1 and owner_id=$2',[bundle.id,context.userId])).rows[0];

@@ -5,7 +5,7 @@ import {prepareSkillProspectiveSource} from './skill-prospective-source';
 import {prepareSkillAcceptanceBaseline} from './skill-acceptance-baseline';
 import {auditDurableSkillCandidate} from './skill-candidate-audit';
 import {prepareSkillExecutionIdentity} from './skill-runtime-identity';
-import {requireSkillAcceptanceFreeze,inspectSkillAcceptanceFreeze} from './skill-acceptance-freeze';
+import {requireSkillAcceptanceFreeze,inspectLockedSkillAcceptanceFreeze} from './skill-acceptance-freeze';
 import {assertSkillCollector,type SkillCollectorTransaction} from './skill-model-journal';
 import {assertLocalAnalysisBoundary} from './local-analysis-boundary';
 
@@ -75,7 +75,7 @@ export async function collectSkillProspectiveAcceptance(context:Context,input:un
  const artifact={sourceKind,plan,observations,rawReceipts},artifactHash=digest(artifact);
  const bundleId=await transaction(context.userId,async client=>{
   await assertSkillCollector(client);
-  if(await inspectSkillAcceptanceFreeze(client,context.userId,freezeId,plan)!=='active')throw new Error('Prospective freeze changed before persistence');
+  if(await inspectLockedSkillAcceptanceFreeze(client,context.userId,freezeId,plan)!=='active')throw new Error('Prospective freeze changed before persistence');
   await client.query(`insert into agent_skill_acceptance_bundle(owner_id,skill_id,version,source_kind,plan,observations,raw_receipts,artifact_hash)
    values($1,$2,$3,$4,$5,$6,$7,$8) on conflict(owner_id,artifact_hash) do nothing`,
   [context.userId,plan.pin.skillId,plan.pin.version,sourceKind,JSON.stringify(plan),JSON.stringify(observations),JSON.stringify(rawReceipts),artifactHash]);

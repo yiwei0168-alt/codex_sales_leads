@@ -50,10 +50,22 @@ export async function requireSkillAcceptanceFreeze(context:{userId:string},freez
  if(state!=='active')throw new Error('Acceptance freeze changed or expired');
  return {freezeId,planHash:digest(plan),frozenAt:plan.frozenAt,expiresAt:plan.expiresAt};
 }
+/** Cooperative transaction lock shared by persistence, reviews and revocation.
+ * No UPDATE grant on immutable freeze tables is required. This is not protection
+ * against a privileged SQL client bypassing the application protocol. */
+export async function lockSkillAcceptanceFreeze(client:PoolClient,userId:string,freezeId:string){
+ z.uuid().parse(userId);z.uuid().parse(freezeId);
+ await client.query('select pg_advisory_xact_lock(hashtextextended($1,0))',[`skill-freeze:${userId}:${freezeId}`]);
+}
+export async function inspectLockedSkillAcceptanceFreeze(client:PoolClient,userId:string,freezeId:string,expectedPlan:unknown){
+ await lockSkillAcceptanceFreeze(client,userId,freezeId);
+ return inspectSkillAcceptanceFreeze(client,userId,freezeId,expectedPlan);
+}
 /** Append revocation; re-enabling requires a new freeze record. Internal only. */
 export async function revokeSkillAcceptanceFreeze(context:{userId:string},input:{freezeId:string;reason:string}){
  const p=z.object({freezeId:z.uuid(),reason:z.string().trim().min(1).max(2000)}).strict().parse(input);
  return tenantTransaction(context.userId,async client=>{
+  await lockSkillAcceptanceFreeze(client,context.userId,p.freezeId);
   const row=(await client.query('select id from agent_skill_acceptance_freeze where id=$1 and owner_id=$2',[p.freezeId,context.userId])).rows[0];
   if(!row)throw new Error('Acceptance freeze unavailable');
   await client.query('insert into agent_skill_acceptance_freeze_revocation(freeze_id,owner_id,reason) values($1,$2,$3) on conflict(freeze_id) do nothing',[p.freezeId,context.userId,p.reason]);

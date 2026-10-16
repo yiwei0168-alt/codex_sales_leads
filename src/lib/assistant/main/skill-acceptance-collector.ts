@@ -7,7 +7,7 @@ import {auditDurableSkillCandidate} from './skill-candidate-audit';
 import {assertSkillCollector,type SkillCollectorTransaction} from './skill-model-journal';
 import {skillSourcesCurrent,type SourcedSkillVersion} from './skill-source-guard';
 import {assertLocalAnalysisBoundary} from './local-analysis-boundary';
-import {requireSkillAcceptanceFreeze} from './skill-acceptance-freeze';
+import {requireSkillAcceptanceFreeze,inspectLockedSkillAcceptanceFreeze} from './skill-acceptance-freeze';
 import {prepareSkillExecutionIdentity} from './skill-runtime-identity';
 
 const selection=z.object({plan:skillAcceptancePlanSchema,freezeId:z.uuid().optional(),replays:z.array(z.object({caseId:z.string().min(1),runId:z.uuid(),evaluationId:z.uuid()}).strict()).min(1).max(100)}).strict();
@@ -53,6 +53,7 @@ export async function collectHistoricalSkillAcceptance(context:{userId:string},i
  const artifact={sourceKind,plan,observations,rawReceipts:{baselineSources,candidateSources,collector:{protocol:'historical-collector-v1',...(freezeId?{freezeId}:{}),freezeVerified:Boolean(freezeId),sourceIdentityChecked:Boolean(freezeId),runtimeIdentityVerified:false,automaticActivation:false}}},artifactHash=digest(artifact);
  const id=await transaction(context.userId,async client=>{
   await assertSkillCollector(client);
+  if(freezeId&&await inspectLockedSkillAcceptanceFreeze(client,context.userId,freezeId,plan)!=='active')throw new Error('Historical freeze inactive before persistence');
   await client.query(`insert into agent_skill_acceptance_bundle(owner_id,skill_id,version,source_kind,plan,observations,raw_receipts,artifact_hash)
    values($1,$2,$3,$4,$5,$6,$7,$8) on conflict(owner_id,artifact_hash) do nothing`,[context.userId,plan.pin.skillId,plan.pin.version,sourceKind,JSON.stringify(plan),JSON.stringify(observations),JSON.stringify(artifact.rawReceipts),artifactHash]);
   const row=(await client.query<{id:string;plan:unknown;observations:unknown;raw_receipts:unknown;source_kind:string}>('select id,plan,observations,raw_receipts,source_kind from agent_skill_acceptance_bundle where owner_id=$1 and artifact_hash=$2',[context.userId,artifactHash])).rows[0];

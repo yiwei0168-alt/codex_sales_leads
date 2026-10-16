@@ -1,0 +1,28 @@
+{
+  "stage": "G09 cooperative freeze transaction serialization",
+  "date": "2026-10-16",
+  "baseCommit": "4bed244c",
+  "databaseCommand": "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --transport-journal",
+  "databaseExitCode": 0,
+  "targetedTests": {"files": 4, "passed": 56, "failed": 0},
+  "checks": {
+    "wholeProjectTypecheck": true,
+    "targetedEslint": true,
+    "databaseObservedRevocationWaitingOnLiveHolder": true,
+    "revocationDidNotCompleteWhileFreezeLockHeld": true,
+    "revocationCompletedAfterHolderRollback": true,
+    "subsequentLockedStatusWasRevoked": true,
+    "transportVerifierRejectedRevokedFreeze": true,
+    "restrictedCollectorCanLockWithoutUpdateGrant": true,
+    "existingSignedFallbackPersistenceAndRecovery": true,
+    "temporaryDatabaseAndFixtureFilesCleaned": true
+  },
+  "actualModelCalls": 0,
+  "automaticActivation": false,
+  "limitations": [
+    "The advisory lock is a cooperative application protocol, not a database trigger; a privileged direct SQL client can bypass it.",
+    "Collection/composition/attestation/review write paths are wired to the same lock; this run directly exercises the lock helper against revocation, not every write path concurrently.",
+    "Final activation must acquire bundle review lock, then freeze lock, then Skill/source locks, and revalidate evidence in the same transaction; activation is not yet implemented.",
+    "Previously pinned images do not contain this source change."
+  ]
+}

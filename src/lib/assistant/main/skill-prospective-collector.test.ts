@@ -5,7 +5,7 @@ vi.mock('./skill-prospective-source',()=>({prepareSkillProspectiveSource:m.sourc
 vi.mock('./skill-acceptance-baseline',()=>({prepareSkillAcceptanceBaseline:m.baseline}));
 vi.mock('./skill-candidate-audit',()=>({auditDurableSkillCandidate:m.candidate}));
 vi.mock('./skill-runtime-identity',()=>({prepareSkillExecutionIdentity:m.identity}));
-vi.mock('./skill-acceptance-freeze',()=>({requireSkillAcceptanceFreeze:m.freeze,inspectSkillAcceptanceFreeze:m.inspect}));
+vi.mock('./skill-acceptance-freeze',()=>({requireSkillAcceptanceFreeze:m.freeze,inspectLockedSkillAcceptanceFreeze:m.inspect}));
 vi.mock('./skill-model-journal',()=>({assertSkillCollector:m.collector}));
 vi.mock('./local-analysis-boundary',()=>({assertLocalAnalysisBoundary:()=>{}}));
 import {prepareSkillProspectiveObservation,collectSkillProspectiveAcceptance} from './skill-prospective-collector';

@@ -4,7 +4,7 @@ import {tenantTransaction} from '@/lib/rag/db';
 import {digest} from './contracts';
 import {assertSkillCollector,type SkillCollectorTransaction} from './skill-model-journal';
 import {skillAcceptancePlanSchema} from './skill-acceptance-policy';
-import {inspectSkillAcceptanceFreeze} from './skill-acceptance-freeze';
+import {inspectSkillAcceptanceFreeze,lockSkillAcceptanceFreeze} from './skill-acceptance-freeze';
 import {skillRunnerEnvelopeSchema,verifyConfiguredSkillRunnerAttestation} from './skill-runner-attestation';
 import {assertLocalAnalysisBoundary} from './local-analysis-boundary';
 import {skillRunnerEvidenceWindow} from './skill-runner-evidence-window';
@@ -36,6 +36,7 @@ export async function appendSkillRunnerAttestation(context:Context,input:unknown
  const p=z.object({bundleId:z.uuid(),envelope:skillRunnerEnvelopeSchema}).strict().parse(input);
  return transaction(context.userId,async client=>{
   await assertSkillCollector(client);
+  await lockSkillAcceptanceFreeze(client,context.userId,p.envelope.statement.freezeId);
   const expected=await loadBinding(client,context,p.bundleId,p.envelope.statement.freezeId);
   const verified=await verifyConfiguredSkillRunnerAttestation(p.envelope,expected);
   await client.query(`insert into agent_skill_runner_attestation(owner_id,bundle_id,freeze_id,artifact_hash,statement_hash,envelope)

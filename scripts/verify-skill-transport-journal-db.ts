@@ -12,7 +12,7 @@ import {importSkill} from '../src/lib/assistant/main/skills';
 import {modeModelConfig} from '../src/lib/assistant/main/mode-config';
 import {modelFunctions} from '../src/lib/assistant/main/model';
 import {modelRequestManifest} from '../src/lib/assistant/main/model-request-manifest';
-import {freezeSkillAcceptancePlan,revokeSkillAcceptanceFreeze} from '../src/lib/assistant/main/skill-acceptance-freeze';
+import {freezeSkillAcceptancePlan,revokeSkillAcceptanceFreeze,inspectLockedSkillAcceptanceFreeze} from '../src/lib/assistant/main/skill-acceptance-freeze';
 import {createSkillModelJournal,type SkillCollectorTransaction} from '../src/lib/assistant/main/skill-model-journal';
 import {readSkillCandidateJournal} from '../src/lib/assistant/main/skill-candidate-audit';
 import {skillTransportResponseHash} from '../src/lib/assistant/main/skill-model-transport-receipt';
@@ -129,10 +129,27 @@ try{
  key.enabled=false;await writeFile(registryPath,JSON.stringify(registry));
  await assert.rejects(verifySkillCandidateJournalTransports({userId:owner},selection,frozen),/trust key unavailable/);
  key.enabled=true;await writeFile(registryPath,JSON.stringify(registry));
- await revokeSkillAcceptanceFreeze({userId:owner},{freezeId:frozen.freezeId,reason:'Synthetic transport fixture finished'});
+ const holder=await pool.connect();let revoking:Promise<unknown>|undefined,completed=false;
+ try{
+  await holder.query('begin');await holder.query('set local role network_copilot_skill_collector');
+  await holder.query("select set_config('app.current_user_id',$1,true)",[owner]);
+  assert.equal(await inspectLockedSkillAcceptanceFreeze(holder,owner,frozen.freezeId,frozen.plan),'active');
+  const pid=(await holder.query('select pg_backend_pid() as pid')).rows[0].pid as number;
+  revoking=revokeSkillAcceptanceFreeze({userId:owner},{freezeId:frozen.freezeId,reason:'Synthetic concurrent revocation'}).finally(()=>{completed=true;});
+  void revoking.catch(()=>undefined);
+  let blocked=false;
+  for(let i=0;i<100&&!completed;i++){
+   blocked=(await pool.query('select exists(select 1 from pg_stat_activity where $1::int=any(pg_blocking_pids(pid))) as waiting',[pid])).rows[0].waiting;
+   if(blocked)break;await new Promise(resolve=>setTimeout(resolve,20));
+  }
+  assert.equal(blocked,true,'Revocation must wait on the live freeze transaction');assert.equal(completed,false);
+ }finally{await holder.query('rollback');holder.release();}
+ await revoking;
+ await dedicated.transaction(owner,async client=>{assert.equal(await inspectLockedSkillAcceptanceFreeze(client,owner,frozen.freezeId,frozen.plan),'revoked');});
  await assert.rejects(verifySkillCandidateJournalTransports({userId:owner},selection,frozen),/revoked/);
  assert.equal((await pool.query('select enabled from agent_skill where id=$1',[skill.id])).rows[0].enabled,false);
  console.log(JSON.stringify({transportJournalDatabase:'passed',restrictedCollectorAppend:true,persistedSignatureVerified:true,recoveryReusesStoredOutcome:true,
   crossAccountHidden:true,appendOnly:true,registryRevocationRejected:true,freezeRevocationRejected:true,dedicatedLoginVerified:true,appRoleMembershipRejected:true,
-  compiledCollectorDatabasePreflight:true,collectorImageTlsPreflight,signedFallbackJournalVerified:true,syntheticFixture:true,binaryVerified:false,automaticActivation:false,actualModelCalls:0}));
+  compiledCollectorDatabasePreflight:true,collectorImageTlsPreflight,signedFallbackJournalVerified:true,freezeRevocationSerialized:true,
+  postRevocationLockedReadRejected:true,syntheticFixture:true,binaryVerified:false,automaticActivation:false,actualModelCalls:0}));
 }finally{await dedicated?.close();await pool.end();await getPool().end();await rm(directory,{recursive:true,force:true});}

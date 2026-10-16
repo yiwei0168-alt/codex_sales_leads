@@ -2,7 +2,7 @@ import {z} from 'zod';
 import {digest} from './contracts';
 import {skillAcceptancePlanSchema,skillAcceptanceObservationSchema} from './skill-acceptance-policy';
 import {auditSkillSafetyArm} from './skill-safety-audit';
-import {requireSkillAcceptanceFreeze} from './skill-acceptance-freeze';
+import {requireSkillAcceptanceFreeze,inspectLockedSkillAcceptanceFreeze} from './skill-acceptance-freeze';
 import {assertSkillCollector,type SkillCollectorTransaction} from './skill-model-journal';
 import {assertLocalAnalysisBoundary} from './local-analysis-boundary';
 
@@ -32,6 +32,7 @@ export async function collectSkillSafetyAcceptance(context:{userId:string},input
  const artifact={sourceKind,plan,observations,rawReceipts},artifactHash=digest(artifact);
  const bundleId=await transaction(context.userId,async client=>{
   await assertSkillCollector(client);
+  if(await inspectLockedSkillAcceptanceFreeze(client,context.userId,freezeId,plan)!=='active')throw new Error('Safety freeze inactive before persistence');
   await client.query(`insert into agent_skill_acceptance_bundle(owner_id,skill_id,version,source_kind,plan,observations,raw_receipts,artifact_hash)
    values($1,$2,$3,$4,$5,$6,$7,$8) on conflict(owner_id,artifact_hash) do nothing`,[context.userId,plan.pin.skillId,plan.pin.version,sourceKind,JSON.stringify(plan),JSON.stringify(observations),JSON.stringify(rawReceipts),artifactHash]);
   const row=(await client.query<{id:string;source_kind:string;plan:unknown;observations:unknown;raw_receipts:unknown}>('select id,source_kind,plan,observations,raw_receipts from agent_skill_acceptance_bundle where owner_id=$1 and artifact_hash=$2',[context.userId,artifactHash])).rows[0];
