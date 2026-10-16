@@ -1,0 +1,52 @@
+{
+  "schema": "ma24-g01-isolated-standalone-candidate-v1",
+  "date": "2026-10-16",
+  "sourceCommit": "18ff59060e7bfcf103e35bd1c59780dcb9bd370f",
+  "sourceArchive": {
+    "path": "tmp/ma24-current-build-18ff5906.tar",
+    "sha256": "04900fbb6f4342a4ee9970cd6343fa7667a1374b3fcfa4c652305e90f176fc24",
+    "method": "git archive HEAD extracted into an isolated workspace directory"
+  },
+  "build": {
+    "directory": "tmp/ma24-current-build-18ff5906",
+    "nextVersion": "16.3.4",
+    "productionCompile": "passed",
+    "typescript": "passed",
+    "staticPagesGenerated": 26,
+    "buildId": "XKStVycsg2jqqFiczvVhE",
+    "buildManifestSha256": "8196ce15b2f19489fb3cbcb6c64c3f3773e5b5675f8e914a18be080926cf3a53",
+    "regularFiles": 3490,
+    "treeSha256": "700175f1f060f0408c8ab3b8267034ea1d0fe551f7849dea372d2ec0dc3983b3",
+    "traceManifests": 172,
+    "tracedDependencyPaths": 30784,
+    "missingTracedDependencyPaths": 0,
+    "environmentFiles": 0
+  },
+  "package": {
+    "path": ".next-releases/ma24-g01-18ff5906-standalone",
+    "appRelativePath": "tmp/ma24-current-build-18ff5906",
+    "regularFiles": 2265,
+    "regularBytes": 33341929,
+    "treeSha256": "088222361a643dec93249e2ee2643a12b1063ee951fc190ed26c5114466e28cb",
+    "treeUnchangedAfterSmoke": true,
+    "remainingJunctions": 0,
+    "environmentFiles": 0
+  },
+  "localRuntimeSmoke": {
+    "scope": "Temporary packaged server on 127.0.0.1:3032; curl HEAD with explicit proxy bypass",
+    "homeStatus": 200,
+    "sessionStatus": 200,
+    "testProcessStopped": true,
+    "port3032ListenerAfterStop": false,
+    "initialInvokeWebRequestProbe": "No response despite ready server log; result was not accepted as a pass"
+  },
+  "modelCalls": 0,
+  "intentionalProductionWrites": 0,
+  "productionDeployment": false,
+  "limits": [
+    "Two local status-only routes do not verify application workflows, database migration, cross-account behavior or business quality",
+    "The package has not been loaded by the active Web or worker services",
+    "The current product database still lacks migrations 127-135",
+    "G14-G16 quality and paid-admission gates remain incomplete"
+  ]
+}

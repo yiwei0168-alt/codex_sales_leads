@@ -1,5 +1,7 @@
 # MA24 候选发布范围与最小依赖（2026-10-14）
 
+**2026-10-16 新隔离候选。** 提交 `18ff5906` 的 Git 归档独立构建 Next 16.3.4，生产编译、TypeScript 和 26 个静态页通过；172 份追踪清单的 30,784 条依赖路径无缺失。standalone 包 `.next-releases/ma24-g01-18ff5906-standalone` 有 2,265 个常规文件、33,341,929 字节、0 个链接、0 个环境文件，启动后包树哈希未变。本机 3032 端口以代理绕过的 HEAD 请求验证首页和会话接口均为 200，临时进程已停止。[候选收据](evidence/ma24-g01-18ff5906-isolated-standalone-2026-10-16.json)。它尚未绑定正式 Web/worker、完成真实业务与账号隔离验收，也未迁移正式库或发布到团队入口；G14–G16 的质量和付费门槛仍独立待验。
+
 **2026-10-16 standalone 本地候选。** 提交 `e5037ea8` 开启 Next standalone 输出；其 Git 归档在隔离目录完成生产编译、TypeScript 与 26 个静态页。脚本将 Next 在 Windows 生成的 3 个工作区 junction 转为包内实体依赖，加入静态资源后得到 `.next-releases/ma24-g01-e5037ea8-standalone`：2265 个常规文件、33,341,411 字节、0 个链接、0 个环境文件。带包外 CommonJS 依赖加载守卫的本机 3026 启动返回主页/会话/构建清单 200；同一隔离构建使用既有 `next start` 在 3027 复核这三条路径亦均为 200。测试进程和临时环境链接已移除。[独立包收据](evidence/ma24-g01-e5037ea8-standalone-package-2026-10-16.json)。这是本地三路径冒烟和包内文件核验，其他路由、正式进程身份、数据库迁移及 G14–G16 质量/付费门槛仍须分别验收；G17–G20 暂停。
 
 **2026-10-16 当前本地候选。** 从提交 `efb97331` 的 Git 归档隔离构建 Next 16.3.4，生产编译、TypeScript 与 26 个静态页通过；build ID `HVFrKKso8yYPtbPlZOzLN`。候选快照 `.next-releases/ma24-g01-efb97331-layout/.next` 与原构建 1,282 个常规文件逐一相符，87 份 trace 的 15,780 个依赖路径均存在，无环境文件。临时本机 3021 页面/会话/新构建清单分别返回 200，旧构建清单返回 404；进程和临时环境链接已清理。[本地构建及启动收据](evidence/ma24-g01-efb97331-isolated-build-and-smoke-2026-10-16.json)。快照仍依赖工作区外部 `node_modules` junction，未绑定正式 Web/worker 进程或生产资料/迁移；G14–G16 的质量与付费准入仍独立待验，G17–G20 暂停。下文各旧候选均保留为历史记录。
