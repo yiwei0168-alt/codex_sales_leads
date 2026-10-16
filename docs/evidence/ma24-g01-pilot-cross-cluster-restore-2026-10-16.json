@@ -1,0 +1,23 @@
+{
+  "schema": "ma24-g01-pilot-cross-cluster-restore-v1",
+  "date": "2026-10-16",
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --web-image=ma24-pilot-web:f54e0b07 --backup --cross-cluster",
+  "scope": "Two disposable local PostgreSQL 16/pgvector containers with separate credentials; synthetic pilot data only",
+  "checks": {
+    "sourceFreshMigrationThrough135": "passed",
+    "sourceLinuxWebSyntheticCompanyWorkflow": "passed",
+    "customArchiveAndSha256Manifest": "passed",
+    "sourceSameClusterRestore": "passed",
+    "targetNewClusterAndSeparateRestrictedRoles": "passed",
+    "targetPgRestoreExitOnError": "passed",
+    "targetStage135PresentAndLaterStageAbsent": "passed",
+    "sourceAndTargetUserWorkspaceCompanyDocumentCountsEqual": "passed",
+    "targetRestrictedAppRoleConnects": "passed",
+    "targetTwoMemberCompanyRlsIsolation": "passed",
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "disposableContainersAndNetworksRemaining": 0,
+    "productionDataCopied": false
+  },
+  "limits": "Local cross-cluster restore of synthetic database data only. This does not verify target cloud backup retention, an off-host copy, trusted public HTTPS, actual team access, upload-volume backup, live writes or production rollback, nor any later real business data migration."
+}

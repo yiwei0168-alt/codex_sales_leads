@@ -16,14 +16,16 @@ const webImage = webImageArgument?.startsWith("--web-image=")
 const browserCheck = args.includes("--browser");
 const tenUserCheck = args.includes("--ten-user");
 const backupCheck = args.includes("--backup");
+const crossClusterCheck = args.includes("--cross-cluster");
 const rollbackImageArgument = args.find(arg => arg.startsWith("--rollback-image="));
 const rollbackImage = rollbackImageArgument?.slice("--rollback-image=".length);
-assert(args.length <= 5 && args.every(arg => ["--browser", "--ten-user", "--backup", webImageArgument, rollbackImageArgument].includes(arg))
+assert(args.length <= 6 && args.every(arg => ["--browser", "--ten-user", "--backup", "--cross-cluster", webImageArgument, rollbackImageArgument].includes(arg))
   && (!webImageArgument || (webImage && /^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(webImage)))
   && (!rollbackImageArgument || (rollbackImage && /^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(rollbackImage)))
-  && (!(browserCheck || tenUserCheck || backupCheck || rollbackImage) || webImage)
+  && (!(browserCheck || tenUserCheck || backupCheck || crossClusterCheck || rollbackImage) || webImage)
+  && (!crossClusterCheck || backupCheck)
   && (!rollbackImage || rollbackImage !== webImage),
-  "Expected --web-image=<tag> with optional --browser, --ten-user, --backup, and --rollback-image=<prior-tag>");
+  "Expected --web-image=<tag> with optional --browser, --ten-user, --backup, --cross-cluster (with --backup), and --rollback-image=<prior-tag>");
 const networkName = `ma24-pilot-net-${id}`;
 const adminPassword = randomBytes(24).toString("hex");
 const appPassword = randomBytes(24).toString("hex");
@@ -51,6 +53,7 @@ const adminUrl = new URL(`postgresql://postgres:${adminPassword}@127.0.0.1:${por
 const appUrl = new URL(`postgresql://network_copilot_local_login:${appPassword}@127.0.0.1:${port}/network_copilot_local`);
 let containerId: string | undefined;
 let webContainerId: string | undefined;
+let restoredContainerId: string | undefined;
 let networkId: string | undefined;
 try {
   if (webImage) {
@@ -238,6 +241,91 @@ try {
         assert(backup.output.includes('"tenantVisibilityMatched":true'), backup.output);
         assert(!backup.output.includes(appPassword), "Backup exposed the disposable application password");
         assert(!backup.output.includes(adminPassword), "Backup exposed the disposable migration password");
+        if (crossClusterCheck) {
+          const receiptLine = backup.output.trim().split(/\r?\n/).find(line => line.includes('"pilotBackupRestore":"passed"'));
+          assert(receiptLine, "Pilot backup did not return its archive receipt");
+          const receipt = JSON.parse(receiptLine) as { archiveFile: string };
+          assert(/^ma24_pilot_[a-zA-Z0-9_.-]+\.dump$/.test(receipt.archiveFile), "Unexpected pilot archive file");
+          const restoredPort = await availablePort();
+          const restoredAdminPassword = randomBytes(24).toString("hex");
+          const restoredAppPassword = randomBytes(24).toString("hex");
+          const restoredName = `ma24-pilot-restored-${id}`;
+          const restoredStarted = await run("docker", ["run", "--detach", "--name", restoredName,
+            "--publish", `127.0.0.1:${restoredPort}:5432`,
+            "--env", `POSTGRES_PASSWORD=${restoredAdminPassword}`,
+            "--env", "POSTGRES_DB=network_copilot_local", "pgvector/pgvector:pg16"]);
+          assert.equal(restoredStarted.code, 0, restoredStarted.output);
+          restoredContainerId = restoredStarted.output.trim();
+          assert(/^[a-f0-9]{64}$/.test(restoredContainerId), "Unexpected disposable restored container ID");
+          const restoredAdminUrl = new URL(adminUrl);
+          restoredAdminUrl.port = String(restoredPort);
+          restoredAdminUrl.password = restoredAdminPassword;
+          const restoredAppUrl = new URL(appUrl);
+          restoredAppUrl.port = String(restoredPort);
+          restoredAppUrl.password = restoredAppPassword;
+          let restoredReady = false;
+          for (let attempt = 0; attempt < 60; attempt += 1) {
+            const probe = new Client({ connectionString: restoredAdminUrl.toString(), connectionTimeoutMillis: 1000 });
+            try { await probe.connect(); restoredReady = true; await probe.end(); break; }
+            catch { await probe.end().catch(() => undefined); await new Promise(wait => setTimeout(wait, 500)); }
+          }
+          assert(restoredReady, "Second disposable PostgreSQL did not become ready");
+          const restoredRoles = await run(process.execPath,
+            ["scripts/run-tsx.cjs", "scripts/bootstrap-ma24-pilot-db.ts"],
+            { ...process.env, DATABASE_URL: restoredAppUrl.toString(),
+              DATABASE_MIGRATION_URL: restoredAdminUrl.toString() });
+          assert.equal(restoredRoles.code, 0, restoredRoles.output);
+          assert(restoredRoles.output.includes('"pilotRoleBootstrap":"passed"'), restoredRoles.output);
+          const pgRestore = process.env.PG_RESTORE_PATH || (process.platform === "win32"
+            ? "C:\\Program Files\\PostgreSQL\\16\\bin\\pg_restore.exe" : "pg_restore");
+          const restoredArchive = await run(pgRestore,
+            ["--exit-on-error", "--no-owner", "--dbname", "network_copilot_local",
+              join(tempDirectory, receipt.archiveFile)],
+            { ...process.env, PGHOST: "127.0.0.1", PGPORT: String(restoredPort),
+              PGUSER: "postgres", PGPASSWORD: restoredAdminPassword });
+          assert.equal(restoredArchive.code, 0, restoredArchive.output);
+          const restoredAdmin = new Client({ connectionString: restoredAdminUrl.toString() });
+          await restoredAdmin.connect();
+          let memberIds: string[];
+          try {
+            const members = await restoredAdmin.query<{ id: string }>(
+              "select id from app_user where email = any($1::text[]) order by email",
+              [credentials.slice(0, 2).map(value => value.email)]);
+            memberIds = members.rows.map(row => row.id);
+            assert.equal(memberIds.length, 2);
+            const stage = await restoredAdmin.query<{ stage135: boolean; laterStage: boolean }>(
+              `select to_regclass('public.agent_skill_acceptance_freeze') is not null "stage135",
+                to_regclass('public.ma24_evaluation_hard_limit') is not null "laterStage"`);
+            assert.deepEqual(stage.rows[0], { stage135: true, laterStage: false });
+            const countSql = `select (select count(*)::int from app_user) users,
+              (select count(*)::int from market_workspace) workspaces,
+              (select count(*)::int from workspace_company) companies,
+              (select count(*)::int from knowledge_document) documents`;
+            const sourceAdmin = new Client({ connectionString: adminUrl.toString() });
+            await sourceAdmin.connect();
+            try {
+              assert.deepEqual((await restoredAdmin.query(countSql)).rows[0],
+                (await sourceAdmin.query(countSql)).rows[0],
+                "Cross-cluster restored account, workspace, company, or document count differs");
+            } finally { await sourceAdmin.end(); }
+          } finally { await restoredAdmin.end(); }
+          const restoredApp = new Client({ connectionString: restoredAppUrl.toString() });
+          await restoredApp.connect();
+          try {
+            for (const [index, memberId] of memberIds.entries()) {
+              await restoredApp.query("begin");
+              try {
+                await restoredApp.query('set local role "network_copilot_app"');
+                await restoredApp.query("select set_config('app.current_user_id',$1,true)", [memberId]);
+                const visible = await restoredApp.query<{ id: string }>(
+                  "select record->>'id' as id from user_company_market");
+                assert.equal(visible.rows.some(row => row.id === company.externalId), index === 0,
+                  "Cross-cluster restored company visibility differs by member");
+              } finally { await restoredApp.query("rollback"); }
+            }
+          } finally { await restoredApp.end(); }
+          assert(!restoredArchive.output.includes(restoredAdminPassword), "Restore exposed the disposable password");
+        }
       } finally { rmSync(tempDirectory, { recursive: true, force: true }); }
     }
     if (rollbackImage) {
@@ -269,8 +357,13 @@ try {
     syntheticAccountCompanyAndRestoreVerified: true, copiedProductionData: false,
     linuxWebImage: webImage ?? null, linuxWebHttpWorkflowVerified: Boolean(webImage),
     linuxWebHttpsBrowserVerified: browserCheck, tenConcurrentSyntheticAccountsVerified: tenUserCheck,
-    pilotBackupRestoreVerified: backupCheck, samePortPriorImageRollbackVerified: Boolean(rollbackImage) }));
+    pilotBackupRestoreVerified: backupCheck, crossClusterRestoreVerified: crossClusterCheck,
+    samePortPriorImageRollbackVerified: Boolean(rollbackImage) }));
 } finally {
+  if (restoredContainerId) {
+    const removed = await run("docker", ["rm", "--force", "--volumes", restoredContainerId]);
+    assert.equal(removed.code, 0, removed.output);
+  }
   if (webContainerId) {
     const removed = await run("docker", ["rm", "--force", "--volumes", webContainerId]);
     assert.equal(removed.code, 0, removed.output);

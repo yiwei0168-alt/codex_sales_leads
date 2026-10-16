@@ -4,6 +4,8 @@
 
 本机可用 `node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --web-image=ma24-pilot-web:f54e0b07 --rollback-image=ma24-pilot-web:cc50c7b6` 重验同一回环入口的两版 Web 切换、会话延续、公司记录回读与隔离。[回切收据](../../docs/evidence/ma24-g01-pilot-linux-image-same-port-rollback-2026-10-16.json)。目标主机的可信 HTTPS 路由、实际流量及 worker/数据库/上传卷恢复须独立验收。
 
+本机可用 `node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --web-image=ma24-pilot-web:f54e0b07 --backup --cross-cluster` 复验合成试用库从源 PostgreSQL 集群向第二个全新集群的角色重建和归档恢复。[跨集群收据](../../docs/evidence/ma24-g01-pilot-cross-cluster-restore-2026-10-16.json)。目标主机仍需保存异地备份副本并实际演练恢复；上传持久卷须另行备份。
+
 本模板适用于一台 Linux 主机上的 Web、PostgreSQL 16/pgvector 和原生 Caddy。首批规模按同时使用 10 人以内规划，当前无备案域名且首批只用全新测试数据；真实业务数据将在后续阶段单独迁移。地区、域名和云账号以[托管方案](../../docs/TEAM_PILOT_NEW_HOSTING_2026-10-16.md)中的条件决定。当前没有完成云端部署或团队邀请验收。
 
 本机可用 `node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --web-image=<已构建镜像标签> --browser` 重验镜像、一次性新库、数据库 TLS 与 HTTPS Chrome 基本流程。它会生成并清理临时库、证书、账号和容器；不使用团队真实数据。[当前镜像收据](../../docs/evidence/ma24-g01-current-linux-image-https-browser-2026-10-16.json)。目标主机仍须独立验收真实域名与证书。

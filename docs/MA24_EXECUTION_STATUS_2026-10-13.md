@@ -1,4 +1,5 @@
 # MA24 执行状态台账（2026-10-13）
+2026-10-16 G01 全新合成试用库的自定义归档已在第二个独立 PostgreSQL/pgvector 容器恢复：新角色、迁移边界、关键计数及两成员 RLS 隔离通过，容器清理。[收据](evidence/ma24-g01-pilot-cross-cluster-restore-2026-10-16.json)。目标云异地备份与恢复尚未执行，G01 未完成。
 2026-10-16 G01 本机两版 Linux 镜像在同一回环地址按当前→前版→当前切换，同一新库中两个合成成员会话与各自公司记录保持可用、隔离；资源已清理。[收据](evidence/ma24-g01-pilot-linux-image-same-port-rollback-2026-10-16.json)。线上路由、流量、worker、数据库与上传卷回滚未验，G01 未完成。
 2026-10-16 G01 已推送源码 `f54e0b07` 的固定 Linux 镜像通过一次性新库、HTTPS Chrome、10 个合成账号隔离和同集群备份恢复联合复验；本机镜像摘要与清理结果见[收据](evidence/ma24-g01-pinned-pilot-image-full-local-check-2026-10-16.json)。目标云部署和真实团队试用未完成，G01 未完成。
 2026-10-16 G01 全新合成试用库的归档、SHA-256 清单、同集群第二库恢复和受限账号可见公司比对通过；临时资源清理。[收据](evidence/ma24-g01-pilot-backup-restore-command-2026-10-16.json)。目标云主机备份、异地恢复和真实团队未验，G01 未完成。
