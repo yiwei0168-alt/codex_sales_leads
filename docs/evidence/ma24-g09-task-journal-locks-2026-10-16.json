@@ -1,0 +1,23 @@
+{
+  "stage": "MA24 G09 task and tool journal transaction locks",
+  "date": "2026-10-16",
+  "status": "targeted engineering checks passed; full composition pending",
+  "checks": {
+    "targetedTests": 16,
+    "typecheck": "passed",
+    "eslint": "passed",
+    "disposableDatabase": "passed",
+    "taskUpdateBlocked": true,
+    "existingJournalUpdateBlocked": true,
+    "newJournalInsertBlocked": true,
+    "writersResumedAfterRelease": true,
+    "foreignAccountRejected": true
+  },
+  "databaseCommand": "node --import tsx scripts/verify-ma24-fresh-pilot-new-cluster.ts --memory-source-locks",
+  "integrationCommand": "node --import tsx scripts/verify-ma24-fresh-pilot-new-cluster.ts --prospective-composition",
+  "integrationStatus": "running, not accepted yet",
+  "productionDeployment": false,
+  "actualModelCalls": 0,
+  "automaticActivation": false,
+  "limitations": ["External source revocation locks incomplete", "Production collector provenance unverified", "Final activation transaction incomplete"]
+}

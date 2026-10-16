@@ -2,7 +2,8 @@ import type {PoolClient} from 'pg';
 import {beforeEach,expect,it,vi} from 'vitest';
 import {digest} from './contracts';
 import {revalidateLockedSkillAcceptanceMaterials,evaluateLockedSkillAcceptanceReadiness} from './skill-locked-materials';
-const m=vi.hoisted(()=>({read:vi.fn(),material:vi.fn(),policy:vi.fn()}));
+const m=vi.hoisted(()=>({read:vi.fn(),material:vi.fn(),policy:vi.fn(),lock:vi.fn()}));
+vi.mock('./skill-acceptance-run-locks',()=>({lockSkillAcceptanceRunJournals:m.lock}));
 vi.mock('@/lib/rag/db',()=>({withBoundTenantTransaction:async(_client:unknown,_user:string,work:()=>Promise<unknown>)=>work()}));
 vi.mock('./skill-acceptance-store',()=>({readLockedSkillAcceptanceEvidence:m.read}));
 vi.mock('./skill-acceptance-review',()=>({readSkillAcceptanceReviewCase:m.material}));
@@ -15,6 +16,7 @@ const bundle={artifactHash:digest('artifact'),latestReviewHash:digest('reviews')
 const material=()=>({bundleId,caseId:'replay',artifactHash:bundle.artifactHash,observationHash:digest(observation),sourceKind:'synthetic-fixture',
  freezeStatus:{state:'active',freezeId:'freeze'},canPass:{baseline:true,candidate:true},baseline:'PRIVATE baseline',candidate:'PRIVATE candidate',receipts:['PRIVATE receipt']});
 beforeEach(()=>{vi.resetAllMocks();m.read.mockResolvedValue(bundle);m.material.mockResolvedValue(material());
+ m.lock.mockResolvedValue({taskJournalsLocked:true,runCount:1});
  m.policy.mockResolvedValue({artifactHash:bundle.artifactHash,latestReviewHash:bundle.latestReviewHash,policyPassed:false,automaticActivation:false});});
 it('rebuilds planned material and returns hashes without private answers or receipts',async()=>{
  const out=await revalidateLockedSkillAcceptanceMaterials(client,context,bundleId);
@@ -37,6 +39,11 @@ it('rejects changed final review state',async()=>{
 it('propagates an unavailable source without returning partial success',async()=>{
  m.material.mockRejectedValue(new Error('Source purged'));
  await expect(revalidateLockedSkillAcceptanceMaterials(client,context,bundleId)).rejects.toThrow('Source purged');
+});
+it('rejects unavailable task locks before reading private materials',async()=>{
+ m.lock.mockRejectedValue(new Error('Acceptance source task unavailable'));
+ await expect(revalidateLockedSkillAcceptanceMaterials(client,context,bundleId)).rejects.toThrow('task unavailable');
+ expect(m.material).not.toHaveBeenCalled();
 });
 it('combines material reconstruction and policy while keeping activation and source-lock gates closed',async()=>{
  const out=await evaluateLockedSkillAcceptanceReadiness(client,context,bundleId);

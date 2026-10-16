@@ -6,6 +6,7 @@ import {Pool} from 'pg';
 import {getPool,tenantTransaction} from '../src/lib/rag/db';
 import {digest} from '../src/lib/assistant/main/contracts';
 import {lockCurrentSkillExperienceSources,type SourcedSkillVersion} from '../src/lib/assistant/main/skill-source-guard';
+import {lockSkillAcceptanceRunJournals} from '../src/lib/assistant/main/skill-acceptance-run-locks';
 
 nextEnv.loadEnvConfig(process.cwd());assert.equal(process.env.MA24_DISPOSABLE_MEMORY_SOURCE_LOCKS,'1','Disposable harness required');
 process.env.PGOPTIONS='-c statement_timeout=10000';
@@ -75,6 +76,32 @@ try{
  await pool.query('update assistant_message set content=$1 where id=$2',['Changed synthetic source',refs[0].messageId]);
  await assert.rejects(tenantTransaction(owner,client=>lockCurrentSkillExperienceSources(client,owner,version)),/changed after locking/);
  await pool.query('update assistant_message set content=$1 where id=$2',[quote,refs[0].messageId]);
+ const journalId=randomUUID(),runId=refs[0].runId;
+ await pool.query(`insert into agent_tool_call(id,user_id,run_id,call_key,tool_id,tool_version,input_hash,input,effect,status)
+  values($1,$2,$3,'existing','synthetic','v1',$4,'{}','read','completed')`,[journalId,owner,runId,digest({})]);
+ const runArtifact={plan:{cases:[{id:'case',provenance:'historical-task'}]},rawReceipts:{baselineSources:{case:{runId}},candidateSources:{case:{runId}}}};
+ const journalHolder=await pool.connect();let journalPending:Array<Promise<unknown>>=[];
+ try{
+  await journalHolder.query('begin');await journalHolder.query('set local role network_copilot_app');
+  await journalHolder.query("select set_config('app.current_user_id',$1,true)",[owner]);
+  assert.deepEqual(await lockSkillAcceptanceRunJournals(journalHolder,owner,runArtifact),{taskJournalsLocked:true,runCount:1});
+  const pid=(await journalHolder.query('select pg_backend_pid() as pid')).rows[0].pid as number;
+  journalPending=[
+   pool.query('update agent_run set status=status where id=$1',[runId]),
+   pool.query('update agent_tool_call set output=output where id=$1',[journalId]),
+   pool.query(`insert into agent_tool_call(user_id,run_id,call_key,tool_id,tool_version,input_hash,input,effect,status)
+    values($1,$2,'appended','synthetic','v1',$3,'{}','read','completed')`,[owner,runId,digest({})]),
+  ];
+  for(const work of journalPending)void work.catch(()=>undefined);
+  let waiting=0;
+  for(let i=0;i<100;i++){
+   waiting=Number((await pool.query('select count(*) n from pg_stat_activity where $1::int=any(pg_blocking_pids(pid))',[pid])).rows[0].n);
+   if(waiting===3)break;await new Promise(resolve=>setTimeout(resolve,20));
+  }
+  assert.equal(waiting,3,'Task update, existing journal update and journal append must all wait');
+ }finally{await journalHolder.query('rollback');journalHolder.release();}
+ await Promise.all(journalPending);
+ await assert.rejects(tenantTransaction(other,client=>lockSkillAcceptanceRunJournals(client,other,runArtifact)),/task unavailable/);
  const holder=await pool.connect();let pending:Array<Promise<unknown>>=[];const finished=[false,false,false];
  try{
   await holder.query('begin');await holder.query('set local role network_copilot_app');
@@ -102,6 +129,6 @@ try{
  await assert.rejects(tenantTransaction(owner,client=>lockCurrentSkillExperienceSources(client,owner,version)),/changed after locking/);
  assert.equal((await pool.query("select to_regclass('public.ma24_evaluation_hard_limit') is null absent")).rows[0].absent,true);
  console.log(JSON.stringify({memorySourceLocksDatabase:'passed',correctionInvalidationAndConflictBlocked:true,allWritersResumeAfterRelease:true,
-  foreignOwnerAndInvalidIdsRejected:true,noObservationUpdateGrant:true,originUpdatesBlocked:true,changedOriginalMessageRejected:true,storedProvenanceLockThenRecheck:true,invalidatedProvenanceRejectedAfterLock:true,expiryAfterTransactionStartRejected:true,
+  foreignOwnerAndInvalidIdsRejected:true,taskAndJournalUpdateAndAppendBlocked:true,foreignTaskJournalLockRejected:true,noObservationUpdateGrant:true,originUpdatesBlocked:true,changedOriginalMessageRejected:true,storedProvenanceLockThenRecheck:true,invalidatedProvenanceRejectedAfterLock:true,expiryAfterTransactionStartRejected:true,
   deferredEvaluationMigrationsApplied:false,actualModelCalls:0,automaticActivation:false}));
 }finally{await pool.end();await getPool().end();}
