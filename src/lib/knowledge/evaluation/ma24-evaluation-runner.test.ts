@@ -10,6 +10,7 @@ const mocks = vi.hoisted(() => ({
   spendContext: vi.fn(), financialOverride: vi.fn(),
   hardLimit: vi.fn(),
   tariffCoverage: vi.fn(),
+  publicExposure: vi.fn(),
   bgeHealth: vi.fn(),
   dispatch: vi.fn(), skillGuard: vi.fn(), memoryGuard: vi.fn(), knowledgeGuard: vi.fn(),
 }));
@@ -58,6 +59,9 @@ vi.mock('./ma24-g15-hard-limit-binding', () => ({
 vi.mock('./ma24-g15-tariff-coverage', () => ({
   assertMa24G15TariffCoverage: mocks.tariffCoverage,
 }));
+vi.mock('./ma24-public-exposure-gate', () => ({
+  assertMa24FrozenSetNotPubliclyExposed: mocks.publicExposure,
+}));
 
 import { assertMa24EvaluationBaselineToolResult, executeMa24EvaluationRun,
   startMa24EvaluationHeartbeat } from './ma24-evaluation-runner';
@@ -66,8 +70,10 @@ const userId = '11111111-1111-4111-8111-111111111111';
 const runId = '22222222-2222-4222-8222-222222222222';
 const leaseToken = '33333333-3333-4333-8333-333333333333';
 const input = { manifest: { cases: [{ caseId: 'case-1', userId }] },
-  sourceSetBytes: new TextEncoder().encode('frozen question bytes'),
-  goldBytes: new TextEncoder().encode('PRIVATE_GOLD_SENTINEL'),
+  sourceSetBytes: new TextEncoder().encode(JSON.stringify({ schema: 'ma24-g16-source-set-v1',
+    cases: [{ caseId: 'case-1', query: 'What does the source say?' }] })),
+  goldBytes: new TextEncoder().encode(JSON.stringify({ schema: 'ma24-g16-gold-snapshot-v1',
+    cases: [{ caseId: 'case-1', expectedAnswer: 'PRIVATE_GOLD_SENTINEL' }] })),
   codeAndConfigBytes: new TextEncoder().encode('frozen config bytes'),
   runId, caseId: 'case-1', arm: 'baseline', workerId: 'synthetic-worker' } as unknown as
   Parameters<typeof executeMa24EvaluationRun>[0];
@@ -139,6 +145,23 @@ it('renews the lease while a synthetic provider call lasts beyond 90 seconds', a
     expect(mocks.finish).toHaveBeenCalledWith(expect.any(Object), 'completed',
       'Synthetic answer');
   } finally { vi.useRealTimers(); }
+});
+
+it('rejects public exposure before model admission or a task claim', async () => {
+  mocks.publicExposure.mockImplementationOnce(() => {
+    throw new Error('MA24 question is publicly exposed or invalid: case-1');
+  });
+  await expect(executeMa24EvaluationRun(input))
+    .rejects.toThrow('MA24 question is publicly exposed');
+  expect(mocks.publicExposure).toHaveBeenCalledWith({
+    sourceSet: { schema: 'ma24-g16-source-set-v1',
+      cases: [{ caseId: 'case-1', query: 'What does the source say?' }] },
+    gold: { schema: 'ma24-g16-gold-snapshot-v1',
+      cases: [{ caseId: 'case-1', expectedAnswer: 'PRIVATE_GOLD_SENTINEL' }] },
+  });
+  expect(mocks.preview).not.toHaveBeenCalled();
+  expect(mocks.claim).not.toHaveBeenCalled();
+  expect(mocks.model).not.toHaveBeenCalled();
 });
 
 it('rejects stage financial bypass or inherited tariff overrides before claiming', async () => {

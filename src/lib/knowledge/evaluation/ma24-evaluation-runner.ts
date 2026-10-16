@@ -18,7 +18,9 @@ import { verifyMa24EvaluationTaskBinding } from './ma24-evaluation-task-binding'
 import { requireMa24G15ModelReady } from './ma24-g15-runtime-binding';
 import { verifyMa24EvaluationHardLimit } from './ma24-g15-hard-limit-binding';
 import { assertMa24G15TariffCoverage } from './ma24-g15-tariff-coverage';
-import { ma24ManifestSha256 } from './ma24-independent-comparison';
+import { ma24ManifestSha256, type Ma24GoldSnapshot,
+  type Ma24SourceSetSnapshot } from './ma24-independent-comparison';
+import { assertMa24FrozenSetNotPubliclyExposed } from './ma24-public-exposure-gate';
 import { assertBgeServiceReady } from '../../rag/bge-client';
 
 type EvaluationInput = Parameters<typeof claimAndBindMa24EvaluationRun>[0];
@@ -74,6 +76,9 @@ export function assertMa24EvaluationBaselineToolResult(call: ModelToolCall,
 export async function executeMa24EvaluationRun(input: EvaluationInput) {
   const entry = input.manifest.cases.find(item => item.caseId === input.caseId);
   if (!entry) throw new Error('MA24 evaluation case absent from frozen manifest');
+  const sourceSet = JSON.parse(Buffer.from(input.sourceSetBytes).toString('utf8')) as Ma24SourceSetSnapshot;
+  const gold = JSON.parse(Buffer.from(input.goldBytes).toString('utf8')) as Ma24GoldSnapshot;
+  assertMa24FrozenSetNotPubliclyExposed({ sourceSet, gold });
   assertMa24EvaluationSpendBoundary(entry.userId, input.runId);
   const initialPreview = assertMa24EvaluationModelReady(); // Before a lease or any provider request.
   assertMa24G15TariffCoverage(initialPreview);

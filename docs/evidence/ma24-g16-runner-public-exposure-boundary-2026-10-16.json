@@ -1,0 +1,31 @@
+{
+  "schema": "ma24-g16-runner-public-exposure-boundary-v1",
+  "date": "2026-10-16",
+  "scope": "Direct MA24 evaluation runner invocation before paid admission, lease claim or model work",
+  "implementation": {
+    "runner": "src/lib/knowledge/evaluation/ma24-evaluation-runner.ts",
+    "gate": "src/lib/knowledge/evaluation/ma24-public-exposure-gate.ts",
+    "position": "After frozen case lookup; before financial boundary, G15 preview, tariff, BGE, hard limit, task claim and graph",
+    "inputs": "Private frozen sourceSetBytes and goldBytes; no question or answer text in this public receipt"
+  },
+  "verification": {
+    "runnerTestCommand": "node node_modules/vitest/vitest.mjs run src/lib/knowledge/evaluation/ma24-evaluation-runner.test.ts with TEMP/TMP/TMPDIR under workspace tmp",
+    "runnerTestResult": "19/19 passed, including direct-call exposure rejection before preview, claim and model",
+    "typecheck": "npm run typecheck: exit 0",
+    "targetedEslint": "exit 0",
+    "g15SourceClosure": "node scripts/run-tsx.cjs scripts/verify-ma24-g15-runner-source-closure-local.ts: exit 0",
+    "sourceClosureFileCount": 306,
+    "runnerSha256": "18c61ad89b98cb01333c2fe1ff0947322a3d8f6a647495d0b7c2b2fe769d8d27",
+    "readyForPaidEvaluation": false,
+    "providerCalls": 0
+  },
+  "limits": [
+    "The test suite required a workspace-local temporary directory because the sandbox default temporary directory rejected Vitest rename before tests loaded.",
+    "This is a runner safety boundary, not proof of semantic/source-family independence or complete independent Gold.",
+    "No real task was claimed, no paid model was called and no G16 answer or citation quality was assessed."
+  ],
+  "independentGoldApproved": 0,
+  "g15PaidAdmission": false,
+  "g16RealDualArmRuns": 0,
+  "g17ToG20": "paused"
+}
