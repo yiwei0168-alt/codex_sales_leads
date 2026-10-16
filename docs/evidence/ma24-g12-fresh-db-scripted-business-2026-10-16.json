@@ -1,0 +1,26 @@
+{
+  "schema": "ma24-g12-fresh-db-scripted-business-v1",
+  "date": "2026-10-16",
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --mode-business",
+  "scope": "Fresh disposable local PostgreSQL 16/pgvector, migrations through 135, production graph factory and tool executor, scripted model decisions",
+  "checks": {
+    "businessGroupsPassed": 12,
+    "quickOwnEncryptedMailAndCrossAccountDenial": "passed",
+    "quickWriteAndSyncRestriction": "passed",
+    "graphResultPersistenceAndIsolation": "passed",
+    "standardDraftEditAndStaleRevisionDenial": "passed",
+    "durableToolReceiptReuse": "passed",
+    "standardResearchRestriction": "passed",
+    "deepSavedEvidenceResearch": "passed",
+    "deepSendApprovalAndNoOutboundMail": "passed",
+    "fallbackReasonPersistedAndRecoveryReusesSavedResponse": "passed",
+    "scriptedRequestsBeforeAndAfterRecovery": 2,
+    "externalCalls": 0,
+    "paidReservations": 0,
+    "realMailSent": 0,
+    "fixturesAndDisposableClusterCleaned": true,
+    "typecheck": "passed",
+    "focusedEslint": "passed"
+  },
+  "limits": "Synthetic database business integration with scripted model decisions. This does not prove real provider failure handling, natural task quality, production workers, public HTTPS access, or production deployment. No historical evidence file was overwritten; the integration report was written to and removed from a temporary directory."
+}

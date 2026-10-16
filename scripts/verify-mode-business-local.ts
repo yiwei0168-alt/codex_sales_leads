@@ -114,5 +114,5 @@ try{
   await admin.end();await getPool().end();
 }
 const report={synthetic:true,model:'scripted-local',graph:'production LangGraph factory',database:'local PostgreSQL with application RLS',checks,passed:checks.length,externalCalls:0,realMailSent:0,fixtureCleaned:true};
-await writeFile('docs/evidence/mode-business-local-2026-10-10.json',JSON.stringify(report,null,2)+'\n');
+await writeFile(process.env.MA24_MODE_BUSINESS_REPORT??'docs/evidence/mode-business-local-2026-10-10.json',JSON.stringify(report,null,2)+'\n');
 console.log(JSON.stringify(report));

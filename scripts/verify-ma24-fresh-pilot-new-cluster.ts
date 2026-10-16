@@ -17,15 +17,16 @@ const browserCheck = args.includes("--browser");
 const tenUserCheck = args.includes("--ten-user");
 const backupCheck = args.includes("--backup");
 const crossClusterCheck = args.includes("--cross-cluster");
+const modeBusinessCheck = args.includes("--mode-business");
 const rollbackImageArgument = args.find(arg => arg.startsWith("--rollback-image="));
 const rollbackImage = rollbackImageArgument?.slice("--rollback-image=".length);
-assert(args.length <= 6 && args.every(arg => ["--browser", "--ten-user", "--backup", "--cross-cluster", webImageArgument, rollbackImageArgument].includes(arg))
+assert(args.length <= 7 && args.every(arg => ["--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", webImageArgument, rollbackImageArgument].includes(arg))
   && (!webImageArgument || (webImage && /^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(webImage)))
   && (!rollbackImageArgument || (rollbackImage && /^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(rollbackImage)))
   && (!(browserCheck || tenUserCheck || backupCheck || crossClusterCheck || rollbackImage) || webImage)
   && (!crossClusterCheck || backupCheck)
   && (!rollbackImage || rollbackImage !== webImage),
-  "Expected --web-image=<tag> with optional --browser, --ten-user, --backup, --cross-cluster (with --backup), and --rollback-image=<prior-tag>");
+  "Expected --mode-business or --web-image=<tag> with optional --browser, --ten-user, --backup, --cross-cluster (with --backup), and --rollback-image=<prior-tag>");
 const networkName = `ma24-pilot-net-${id}`;
 const adminPassword = randomBytes(24).toString("hex");
 const appPassword = randomBytes(24).toString("hex");
@@ -102,11 +103,26 @@ try {
   assert.equal(verified.code, 0, verified.output);
   assert(verified.output.includes('"freshPilotRestore":"passed"'), verified.output);
   assert(verified.output.includes('"copiedProductionData":false'), verified.output);
-  if (webImage) {
+  if (webImage || modeBusinessCheck) {
     const migration = await run(process.execPath,
       ["scripts/run-tsx.cjs", "scripts/migrate.ts", "--fresh-pilot-through=135"],
       { ...process.env, DATABASE_URL: appUrl.toString(), DATABASE_MIGRATION_URL: adminUrl.toString() });
     assert.equal(migration.code, 0, migration.output);
+  }
+  if (modeBusinessCheck) {
+    const tempDirectory = mkdtempSync(join(tmpdir(), "ma24-mode-business-"));
+    try {
+      const business = await run(process.execPath,
+        ["scripts/run-tsx.cjs", "scripts/verify-mode-business-local.ts"],
+        { ...process.env, DATABASE_URL: appUrl.toString(), DATABASE_MIGRATION_URL: adminUrl.toString(),
+          MA24_MODE_BUSINESS_REPORT: join(tempDirectory, "report.json") });
+      assert.equal(business.code, 0, business.output);
+      assert(business.output.includes('"passed":12'), business.output);
+      assert(business.output.includes('"fixtureCleaned":true'), business.output);
+      assert(business.output.includes('"externalCalls":0'), business.output);
+    } finally { rmSync(tempDirectory, { recursive: true, force: true }); }
+  }
+  if (webImage) {
     const credentials = Array.from({ length: tenUserCheck ? 10 : 2 }, (_, index) => ({
       email: `pilot-container-${id}-${index}@example.invalid`,
       password: randomBytes(32).toString("base64url"),
@@ -358,6 +374,7 @@ try {
     linuxWebImage: webImage ?? null, linuxWebHttpWorkflowVerified: Boolean(webImage),
     linuxWebHttpsBrowserVerified: browserCheck, tenConcurrentSyntheticAccountsVerified: tenUserCheck,
     pilotBackupRestoreVerified: backupCheck, crossClusterRestoreVerified: crossClusterCheck,
+    scriptedModeBusinessVerified: modeBusinessCheck,
     samePortPriorImageRollbackVerified: Boolean(rollbackImage) }));
 } finally {
   if (restoredContainerId) {
