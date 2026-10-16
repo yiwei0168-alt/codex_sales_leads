@@ -1,0 +1,18 @@
+{
+  "schema": "ma24-g01-pilot-upload-volume-backup-v1",
+  "date": "2026-10-16",
+  "command": "node scripts/verify-ma24-pilot-upload-backup.mjs",
+  "backupCommand": "node scripts/backup-verify-ma24-pilot-uploads.mjs",
+  "checks": {
+    "syntheticFiles": 3,
+    "binaryUnicodeEmptyAndReviewFiles": "passed",
+    "activeSourceMountRefusedWithoutArchive": "passed",
+    "sourceMountedReadOnly": true,
+    "restoreToSeparateDisposableVolume": "passed",
+    "fileContentDirectoryOwnershipAndPermissionsMatched": "passed",
+    "nodeUid1000Read": "passed",
+    "archiveSha256AndManifest": "passed",
+    "fixtureVolumesAndTemporaryArchiveCleaned": true
+  },
+  "limits": "Local Docker volumes with synthetic files only. Target cloud storage, off-host archive retention and recovery, database/file point-in-time consistency, actual uploaded document readback, workers, and real business data remain unverified. Operators must stop all writers and back up database and uploads during the same maintenance window. The backup command retains archive and manifest outside Git; this verifier removes only its disposable fixtures."
+}
