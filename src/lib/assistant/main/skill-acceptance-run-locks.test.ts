@@ -1,9 +1,9 @@
 import type {PoolClient} from 'pg';
 import {expect,it,vi} from 'vitest';
-import {skillAcceptanceRunIds,skillAcceptanceAttachmentIds,skillAcceptanceMailIds,skillAcceptanceTimelineSelection,lockSkillAcceptanceRunJournals} from './skill-acceptance-run-locks';
+import {skillAcceptanceRunIds,skillAcceptanceAttachmentIds,skillAcceptanceMailIds,skillAcceptanceTimelineSelection,skillAcceptanceProspectiveBindings,lockSkillAcceptanceRunJournals} from './skill-acceptance-run-locks';
 const runId='00000000-0000-4000-8000-000000000001';
 const artifact={plan:{cases:[{id:'replay',provenance:'historical-task'},{id:'shadow',provenance:'prospective-task'},{id:'safe',provenance:'safety-fixture'}]},
- rawReceipts:{baselineSources:{replay:{runId}},candidateSources:{replay:{runId}},prospectiveSources:{shadow:{runId}},safetySources:{safe:{runId}}}};
+ rawReceipts:{baselineSources:{replay:{runId}},candidateSources:{replay:{runId}},prospectiveSources:{shadow:{runId,jobId:runId}},safetySources:{safe:{runId}}}};
 it('derives and deduplicates runs across all stored source families',()=>{
  expect(skillAcceptanceRunIds(artifact)).toEqual([runId]);
 });
@@ -54,11 +54,22 @@ it('batches explicit timeline references before protecting whole-account lists',
  const customerIds=Array.from({length:101},(_,i)=>`00000000-0000-4000-8000-${String(i+1).padStart(12,'0')}`);
  const query=vi.fn().mockResolvedValueOnce({rows:[{n:1}]}).mockResolvedValueOnce({rows:[{id:runId,input:{}}]})
   .mockResolvedValueOnce({rows:[...customerIds.map(customerId=>({tool_id:'customer_timeline',input:{customerId}})),{tool_id:'customer_timeline',input:{}}]})
-  .mockResolvedValueOnce({rows:[{n:100}]}).mockResolvedValueOnce({rows:[{n:1}]}).mockResolvedValueOnce({rows:[{n:102}]});
+  .mockResolvedValueOnce({rows:[{n:100}]}).mockResolvedValueOnce({rows:[{n:1}]}).mockResolvedValueOnce({rows:[{n:102}]}).mockResolvedValueOnce({rows:[{n:1}]});
  expect(await lockSkillAcceptanceRunJournals({query} as unknown as PoolClient,runId,artifact)).toMatchObject({timelineSourcesLocked:true,timelineCustomerCount:102});
  expect(query.mock.calls[3][1]).toEqual([customerIds.slice(0,100),false]);
  expect(query.mock.calls[4][1]).toEqual([customerIds.slice(100),false]);
  expect(query.mock.calls[5][1]).toEqual([[],true]);
+});
+it('derives capture/run pairs only from stored prospective references',()=>{
+ expect(skillAcceptanceProspectiveBindings(artifact)).toEqual([{jobId:runId,runId}]);
+ expect(()=>skillAcceptanceProspectiveBindings({...artifact,rawReceipts:{prospectiveSources:{shadow:{runId}}}})).toThrow();
+ const duplicated={...artifact,plan:{cases:[{id:'shadow',provenance:'prospective-task'},{id:'other',provenance:'prospective-task'}]},rawReceipts:{prospectiveSources:{shadow:{jobId:runId,runId},other:{jobId:runId,runId:'00000000-0000-4000-8000-000000000002'}}}};
+ expect(()=>skillAcceptanceProspectiveBindings(duplicated)).toThrow('binding differs');
+});
+it('rejects incomplete prospective locks instead of reporting source protection',async()=>{
+ const query=vi.fn().mockResolvedValueOnce({rows:[{n:1}]}).mockResolvedValueOnce({rows:[{id:runId,input:{}}]}).mockResolvedValueOnce({rows:[]}).mockResolvedValueOnce({rows:[{n:0}]});
+ await expect(lockSkillAcceptanceRunJournals({query} as unknown as PoolClient,runId,artifact)).rejects.toThrow('prospective source lock incomplete');
+ expect(query.mock.calls[3][1]).toEqual([[runId],[runId]]);
 });
 it('fails closed if an attachment lock count differs',async()=>{
  const query=vi.fn().mockResolvedValueOnce({rows:[{n:1}]}).mockResolvedValueOnce({rows:[{id:runId,input:{attachments:[{assetId:runId}]}}]})

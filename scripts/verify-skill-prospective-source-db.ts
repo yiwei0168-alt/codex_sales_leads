@@ -58,6 +58,7 @@ try{
   await pool.query(await readFile('db/migrations/147_skill_timeline_source_locks.sql','utf8'));
   await pool.query(await readFile('db/migrations/148_skill_decision_memory_source_locks.sql','utf8'));
   await pool.query(await readFile('db/migrations/149_skill_knowledge_source_locks.sql','utf8'));
+  await pool.query(await readFile('db/migrations/150_skill_shadow_source_locks.sql','utf8'));
  }
  for(const id of [owner,other])await pool.query("insert into app_user(id,email,display_name,role,status) values($1,$2,'Synthetic prospective source','member','active')",[id,`${id}@example.invalid`]);
  await pool.query("insert into assistant_conversation(id,user_id,title) values($1,$2,'Synthetic prospective source')",[conversation,owner]);

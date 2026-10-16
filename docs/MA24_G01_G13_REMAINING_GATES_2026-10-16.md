@@ -157,3 +157,5 @@ G09/G10 完整 prospective 配置入口已通过实际数据库联验：先登�
 G09 三类安全题六臂配置入口签发/持久审核/收集与统一回读已通过实际数据库联验，人工判定为空，Skill 仍停用。脚本化响应不构成真实质量；同冻结五类联合材料、生产身份和最终启用事务仍待办。[收据](evidence/ma24-g09-configured-safety-database-2026-10-17.json)。
 
 G09 同一冻结下的配置签发五类联合材料已通过实际数据库工程联验：两条签名原任务、三组证据组合、五题统一回读及持锁重建通过，缺失人工判定阻断，Skill 仍停用。仍需生产来源/提供方认证、真实质量、完整可变来源撤销保护、最终启用事务及最终镜像/目标环境验收；本结果不推进 G14–G20。[收据](evidence/ma24-g09-configured-five-category-database-2026-10-17.json)。
+
+G09 前瞻元数据锁已实现并接入：实际新库并发、28 项回归、类型/lint 通过；同冻结五类新锁回归仍运行。`sourceRevocationsLocked` 保持 false，不视为全部来源或最终启用完成。[证据](evidence/ma24-g09-prospective-source-locks-2026-10-17.json)。

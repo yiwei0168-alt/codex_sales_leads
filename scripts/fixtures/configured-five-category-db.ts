@@ -51,10 +51,11 @@ export async function verifyCombinedConfiguredDatabase(pool:Pool,original:Signed
   const readiness=await tenantTransaction(original.owner,client=>evaluateLockedSkillAcceptanceReadiness(client,context,combined.bundleId));
   assert.equal(readiness.materials.length,5);assert.equal(readiness.policyPassed,false);assert.equal(readiness.automaticActivation,false);
   assert.equal(readiness.knowledgeSourcesLocked,true);assert.equal(readiness.decisionMemorySourcesLocked,true);assert.equal(readiness.timelineSourcesLocked,true);
+  assert.equal(readiness.prospectiveCaptureSourcesLocked,true);assert.equal(readiness.prospectiveJobCount,1);
   assert(readiness.blockers.includes('missing-judgment:signed-replay'));assert.equal(readiness.sourceRevocationsLocked,false);
   assert.equal((await pool.query('select enabled from agent_skill where id=$1',[original.skillId])).rows[0].enabled,false);
   return {configuredSameFreezeFiveCategoriesVerified:true,collectedCases:5,combinedArtifactHash:combined.artifactHash,
-   frozenPlanHash:digest(registration.frozen.plan),lockedMaterialsVerified:true,missingHumanJudgmentBlocksPolicy:true,
+   frozenPlanHash:digest(registration.frozen.plan),lockedMaterialsVerified:true,prospectiveCaptureSourcesLocked:true,missingHumanJudgmentBlocksPolicy:true,
    realQualityAccepted:false,productionQualificationGranted:false,automaticActivation:false};
  });
 }

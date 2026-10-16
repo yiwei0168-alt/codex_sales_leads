@@ -21,6 +21,7 @@ const modeBusinessCheck = args.includes("--mode-business");
 const runnerAttestationCheck = args.includes("--runner-attestation");
 const lockedPolicyCheck = args.includes('--locked-policy');
 const memorySourceLocksCheck = args.includes('--memory-source-locks');
+const shadowSourceLocksCheck = args.includes('--shadow-source-locks');
 const safetySkillUsageCheck = args.includes('--safety-skill-usage');
 const collectorImageArgument=args.find(arg=>arg.startsWith('--collector-image='));
 const collectorImage=collectorImageArgument?.slice('--collector-image='.length);
@@ -35,7 +36,7 @@ const prospectiveMaterialCheck = args.includes("--prospective-material") || Bool
 const prospectiveSourceCheck = args.includes("--prospective-source") || prospectiveMaterialCheck;
 const rollbackImageArgument = args.find(arg => arg.startsWith("--rollback-image="));
 const rollbackImage = rollbackImageArgument?.slice("--rollback-image=".length);
-assert(args.length <= 20 && args.every(arg => ["--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", '--locked-policy', '--memory-source-locks', '--safety-skill-usage', '--transport-journal', '--pool-recovery', '--web-pool-recovery', "--prospective-source", "--prospective-material", '--prospective-browser', '--prospective-composition', collectorImageArgument,prospectiveHttpArgument, webImageArgument, rollbackImageArgument].includes(arg))
+assert(args.length <= 20 && args.every(arg => ["--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", '--locked-policy', '--memory-source-locks', '--shadow-source-locks', '--safety-skill-usage', '--transport-journal', '--pool-recovery', '--web-pool-recovery', "--prospective-source", "--prospective-material", '--prospective-browser', '--prospective-composition', collectorImageArgument,prospectiveHttpArgument, webImageArgument, rollbackImageArgument].includes(arg))
   &&(!collectorImageArgument||(collectorImage&&/^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(collectorImage)))
   && (!webPoolRecoveryCheck || webImage)
   && (!prospectiveBrowserCheck || prospectiveHttpImage)
@@ -130,7 +131,7 @@ try {
   assert.equal(verified.code, 0, verified.output);
   assert(verified.output.includes('"freshPilotRestore":"passed"'), verified.output);
   assert(verified.output.includes('"copiedProductionData":false'), verified.output);
-  if (webImage || modeBusinessCheck || runnerAttestationCheck || lockedPolicyCheck || memorySourceLocksCheck || prospectiveSourceCheck || safetySkillUsageCheck || transportJournalCheck || poolRecoveryCheck) {
+  if (webImage || modeBusinessCheck || runnerAttestationCheck || lockedPolicyCheck || memorySourceLocksCheck || shadowSourceLocksCheck || prospectiveSourceCheck || safetySkillUsageCheck || transportJournalCheck || poolRecoveryCheck) {
     const migration = await run(process.execPath,
       ["scripts/run-tsx.cjs", "scripts/migrate.ts", "--fresh-pilot-through=135"],
       { ...process.env, DATABASE_URL: appUrl.toString(), DATABASE_MIGRATION_URL: adminUrl.toString() });
@@ -183,6 +184,11 @@ try {
     if(prospectiveCompositionCheck)assert(source.output.includes('"completeCompositionDatabase":"passed"')&&source.output.includes('"completeCompositionVerified":true'),source.output);
     if(prospectiveCompositionCheck&&!prospectiveHttpImage)assert(source.output.includes('"developmentReviewLockCheck":true'),source.output);
     if(prospectiveCompositionCheck&&!prospectiveHttpImage)assert(source.output.includes('"lockedMaterialsCheck":true'),source.output);
+  }
+  if(shadowSourceLocksCheck){
+    const checked=await run(process.execPath,['scripts/run-tsx.cjs','scripts/verify-skill-shadow-source-locks-db.ts'],
+      {...process.env,DATABASE_URL:appUrl.toString(),DATABASE_MIGRATION_URL:adminUrl.toString(),MA24_DISPOSABLE_SHADOW_SOURCE_LOCKS:'1'});
+    assert.equal(checked.code,0,checked.output);assert(checked.output.includes('"shadowSourceLocksDatabase":"passed"'),checked.output);console.log(checked.output.trim());
   }
   if(memorySourceLocksCheck){
     const checked=await run(process.execPath,['scripts/run-tsx.cjs','scripts/verify-skill-memory-source-locks-db.ts'],
@@ -539,6 +545,7 @@ try {
     runnerAttestationStoreVerified: runnerAttestationCheck,
     lockedPolicyDatabaseVerified: lockedPolicyCheck,
     memorySourceLocksVerified: memorySourceLocksCheck,
+    shadowSourceLocksVerified: shadowSourceLocksCheck,
     safetySkillUsageVerified: safetySkillUsageCheck,
     transportJournalDatabaseVerified: transportJournalCheck,
     collectorImageTlsPreflightVerified: Boolean(collectorImage),

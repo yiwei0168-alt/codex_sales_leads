@@ -238,7 +238,7 @@ try{
  try{
   await journalHolder.query('begin');await journalHolder.query('set local role network_copilot_app');
   await journalHolder.query("select set_config('app.current_user_id',$1,true)",[owner]);
-  assert.deepEqual(await lockSkillAcceptanceRunJournals(journalHolder,owner,runArtifact),{timelineSourcesLocked:true,timelineCustomerCount:0,mailReadSourcesLocked:true,mailCount:1,attachmentMetadataLocked:true,attachmentCount:1,taskOriginsLocked:true,taskJournalsLocked:true,runCount:1});
+  assert.deepEqual(await lockSkillAcceptanceRunJournals(journalHolder,owner,runArtifact),{prospectiveCaptureSourcesLocked:true,prospectiveJobCount:0,timelineSourcesLocked:true,timelineCustomerCount:0,mailReadSourcesLocked:true,mailCount:1,attachmentMetadataLocked:true,attachmentCount:1,taskOriginsLocked:true,taskJournalsLocked:true,runCount:1});
   const pid=(await journalHolder.query('select pg_backend_pid() as pid')).rows[0].pid as number;
   journalPending=[
    pool.query('update agent_run set status=status where id=$1',[runId]),

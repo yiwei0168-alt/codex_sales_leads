@@ -35,6 +35,15 @@ export function skillAcceptanceTimelineSelection(receipts:ReadonlyArray<{tool_id
  }
  return {customerIds:[...ids].sort(),includeAll};
 }
+export function skillAcceptanceProspectiveBindings({plan,rawReceipts}:Artifact){
+ const jobs=new Map<string,string>();
+ for(const item of plan.cases.filter(row=>row.provenance==='prospective-task')){
+  const value=z.object({jobId:z.uuid(),runId:z.uuid()}).passthrough().parse(z.record(z.string(),z.unknown()).parse(rawReceipts.prospectiveSources)[item.id]);
+  if(jobs.has(value.jobId)&&jobs.get(value.jobId)!==value.runId)throw new Error('Prospective capture run binding differs');
+  jobs.set(value.jobId,value.runId);
+ }
+ return [...jobs].sort(([a],[b])=>a.localeCompare(b)).map(([jobId,runId])=>({jobId,runId}));
+}
 /** Caller owns the account-bound transaction. Parent UPDATE locks also block new
  * journal rows via their run FK; existing rows require their own SHARE locks.
  * Attachment metadata is locked separately below. External bytes and other
@@ -72,5 +81,11 @@ export async function lockSkillAcceptanceRunJournals(client:PoolClient,userId:st
   const mail=await client.query<{id:string}>(`select id from mailbox_message where user_id=$1 and id=any($2::uuid[]) order by id for share`,[userId,batch]);
   if(mail.rows.length!==batch.length)throw new Error('Acceptance mail source unavailable');
  }
- return {timelineSourcesLocked:true as const,timelineCustomerCount,mailReadSourcesLocked:true as const,mailCount:mailIds.length,attachmentMetadataLocked:true as const,attachmentCount:attachments.length,taskOriginsLocked:true as const,taskJournalsLocked:true as const,runCount:ids.length};
+ const prospective=skillAcceptanceProspectiveBindings(artifact);
+ for(let offset=0;offset<prospective.length;offset+=100){
+  const batch=prospective.slice(offset,offset+100);
+  const count=(await client.query<{n:number}>('select lock_skill_shadow_sources($1::uuid[],$2::uuid[]) n',[batch.map(row=>row.jobId),batch.map(row=>row.runId)])).rows[0]?.n;
+  if(count!==batch.length)throw new Error('Acceptance prospective source lock incomplete');
+ }
+ return {prospectiveCaptureSourcesLocked:true as const,prospectiveJobCount:prospective.length,timelineSourcesLocked:true as const,timelineCustomerCount,mailReadSourcesLocked:true as const,mailCount:mailIds.length,attachmentMetadataLocked:true as const,attachmentCount:attachments.length,taskOriginsLocked:true as const,taskJournalsLocked:true as const,runCount:ids.length};
 }
