@@ -2,7 +2,8 @@
   "stage": "MA24 G09 customer timeline and list source locks",
   "date": "2026-10-16",
   "migration": "147_skill_timeline_source_locks.sql",
-  "status": "wired; targeted and disposable database checks passed; full composition pending",
+  "status": "wired; targeted, disposable database and fixed snapshot full composition passed",
+  "acceptedFullCompositionCommit": "f436363022c60753dc68378aac5d7678d192d0a5",
   "sourceSelection": "derived from stored locked customer_timeline journal inputs",
   "databaseCommand": "node --import tsx scripts/verify-ma24-fresh-pilot-new-cluster.ts --memory-source-locks",
   "migrationAppliedTwice": true,
@@ -19,5 +20,5 @@
   "actualModelCalls": 0,
   "productionDeployment": false,
   "automaticActivation": false,
-  "limitations": ["Full composition including timeline locks pending", "List validation holds an account row UPDATE lock until transaction completion and temporarily blocks new owner-FK records", "Other knowledge and memory source revocations remain incomplete", "Snapshot 500405a4 does not include mail or timeline locks"]
+  "limitations": ["Accepted f4363630 includes timeline locks but excludes migration 149", "List validation holds an account row UPDATE lock until transaction completion and temporarily blocks new owner-FK records", "Final source qualification and production acceptance remain incomplete"]
 }

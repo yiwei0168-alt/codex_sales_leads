@@ -73,6 +73,10 @@ it('requires server registry configuration instead of accepting caller self-cert
  vi.stubEnv('SKILL_RUNNER_TRUST_REGISTRY_FILE','');
  await expect(verifyConfiguredSkillRunnerAttestation(envelope(),expected)).rejects.toThrow('not configured');
 });
+it('recognizes original-task key enrollment without authorizing runner declarations',()=>{
+ const r=registry();const taskOnly={...r,keys:r.keys.map(key=>({...key,purposes:['task-model-transport']}))};
+ expect(()=>verifySkillRunnerAttestation(envelope(),taskOnly,expected,now)).toThrow('purpose');
+});
 it('reloads the configured public registry so disabled keys reject the next check',async()=>{
  const directory=await mkdtemp(join(tmpdir(),'skill-runner-public-registry-'));
  try{

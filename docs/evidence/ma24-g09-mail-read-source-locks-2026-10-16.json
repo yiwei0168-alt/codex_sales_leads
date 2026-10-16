@@ -1,7 +1,8 @@
 {
   "stage": "MA24 G09 mail_read source row locks",
   "date": "2026-10-16",
-  "status": "wired; targeted tests and actual database concurrency passed; full composition with mail locks pending",
+  "status": "wired; targeted, database concurrency and fixed snapshot full composition passed",
+  "acceptedFullCompositionCommit": "f436363022c60753dc68378aac5d7678d192d0a5",
   "sourceIds": "derived from locked account-owned tool journal mail_read inputs",
   "checks": {
     "targetedTests": 23,
@@ -18,5 +19,5 @@
   "actualModelCalls": 0,
   "productionDeployment": false,
   "automaticActivation": false,
-  "limitations": ["Customer timeline and mailbox list sources remain separate", "Other memory and knowledge source revocations incomplete", "Running snapshot 500405a4 predates these mail locks"]
+  "limitations": ["Accepted f4363630 includes mail, timeline and list locks through migration 148", "Migration 149 and new original-task transport verification are not covered by that snapshot", "Final source qualification and production acceptance remain incomplete"]
 }
