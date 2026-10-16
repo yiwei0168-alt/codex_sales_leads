@@ -1,4 +1,5 @@
 # MA24 执行状态台账（2026-10-13）
+2026-10-16 G09 修复声明时间未绑定观察的问题：服务器从非空且逐条匹配计划的持久观察派生采集起止，签名时间必须一致；新追加及旧记录读取均拒绝空包和正确签名的时间漂移。33 项测试、类型/lint、一次性数据库权限/幂等/撤销回归通过。[收据](evidence/ma24-g09-runner-observation-time-binding-2026-10-16.json)。未创建生产密钥或启用 Skill；生产运行包/提供方验证及最终启用事务仍未完成。
 2026-10-16 G10 实际 Chrome 经自签回环 HTTPS 完成知识库→个人记忆→Skill→验收审核导航，两臂显示、全 false 判定保存、重新进入回读及撤销通过；临时库确认 r1/r2/r3 且最终撤销，Skill 始终禁用。[浏览器收据](evidence/ma24-g10-prospective-standalone-browser-2026-10-16.json)。合成页面到库链路已验，真实质量、生产身份及目标部署仍待验；临时凭证和容器已清理。
 2026-10-16 G10 在一次性 Linux builder 的实际 compiled standalone 服务完成登录、审核列表/材料读取、审核保存及 API/数据库回读；匿名、跨账号、跨站和过期修订被拒，Skill 禁用不变。[HTTP 收据](evidence/ma24-g10-prospective-standalone-http-2026-10-16.json)。合成判定全部 false，human 字段仅验证会话归属；不代表真实质量批准。实际浏览器交互、真实质量、生产身份及目标部署仍待验。
 2026-10-16 最新本机候选 `5977b301` 已包含后续 G10/G12 源码；显式交付 890 个 Skill 指纹输入并比对固定 Git archive，消除全项目追踪，TLS 新库 HTTP、自签 HTTPS 浏览器及十合成账号隔离通过。[镜像收据](evidence/ma24-g01-skill-source-standalone-image-2026-10-16.json)。历史 `f54e0b07` 的备份/回切仍仅属旧镜像；本轮不证明 Skill 页面审核、真实质量、云部署或生产认证。

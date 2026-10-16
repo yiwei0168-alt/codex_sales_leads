@@ -1,0 +1,33 @@
+{
+  "schema": "ma24-g09-runner-observation-time-binding-v1",
+  "date": "2026-10-16",
+  "sourceCommit": "9919755b4d8e7435b636868cad70d70ad8239e15",
+  "commands": [
+    "node node_modules/vitest/vitest.mjs run src/lib/assistant/main/skill-runner-attestation.test.ts src/lib/assistant/main/skill-runner-evidence-window.test.ts",
+    "node --max-old-space-size=8192 node_modules/typescript/bin/tsc --noEmit --pretty false",
+    "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --runner-attestation"
+  ],
+  "checks": {
+    "targetedTestsPassed": 33,
+    "typeScriptAndTargetedLint": "passed",
+    "serverDerivesMinimumCaptureAndMaximumCompletion": "passed",
+    "emptyDuplicateUnknownMalformedAndUnboundObservationsRejected": "passed",
+    "frozenWindowAndProspectiveTaskStartChecked": "passed",
+    "correctlySignedTimeDriftRejectedOnAppend": "passed",
+    "historicalEmptyAndTimeDriftDeclarationsRejectedOnRead": "passed",
+    "collectorAppendAndIdempotency": "passed",
+    "applicationWriteCrossAccountAndRewriteRejected": "passed",
+    "syntheticSourceKeyDisablementAndFreezeRevocationRejected": "passed",
+    "freshMigrationThrough": 135,
+    "additionalMigration": 141,
+    "deferredMigrations136Through140Applied": false,
+    "productionKeysCreated": false,
+    "copiedProductionData": false,
+    "temporaryContainersRemaining": 0,
+    "temporaryKeyDirectoriesRemaining": 0,
+    "realProviderModelCalls": 0,
+    "skillEnabled": false
+  },
+  "limits": "Synthetic isolated database and temporary signing keys only. Partial observation groups remain signable; this does not prove complete coverage or quality. Source currency, real binary/provider verification, production signer enrollment and the final activation transaction remain separate incomplete requirements. No production evidence or automatic activation is granted.",
+  "automaticActivation": false
+}
