@@ -1,0 +1,34 @@
+{
+  "stage": "G09 same-transaction five-category material reconstruction and policy",
+  "date": "2026-10-16",
+  "baseCommit": "d9d28291",
+  "unitCommand": "node node_modules/vitest/vitest.mjs run src/lib/assistant/main/skill-locked-materials.test.ts src/lib/rag/db.test.ts src/lib/assistant/main/skill-locked-acceptance-policy.test.ts",
+  "unitTestsPassed": 34,
+  "databaseCommand": "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --prospective-composition",
+  "exitCodes": [0, 0],
+  "checks": {
+    "fivePlannedCasesRebuiltThroughUnifiedReaders": true,
+    "artifactObservationAnswerAndFreezeBindingsChecked": true,
+    "baselineAndCandidateCompletionChecked": true,
+    "sameTenantTransactionScopeForNestedReaders": true,
+    "materialAndPolicyReviewHashesMatch": true,
+    "policyBlocksMissingJudgments": true,
+    "runtimeIdentityMatchesFrozenIdentity": true,
+    "onlyMaterialHashesReturnedByAdapter": true,
+    "existingCompositionAndDevelopmentReviewRegression": true,
+    "wholeProjectTypecheck": true,
+    "targetedEslint": true,
+    "temporaryClusterCleaned": true
+  },
+  "actualModelCalls": 0,
+  "humanApprovalCreated": false,
+  "sourceRevocationsLocked": false,
+  "productionQualified": false,
+  "automaticActivation": false,
+  "limitations": [
+    "Original/candidate/safety/prospective task data are synthetic fixtures; this is actual database integration, not real provider quality evidence.",
+    "This reconstructs the payloads supported by current unified readers; it does not upgrade their remaining complete source-permission/output-semantics gates.",
+    "Knowledge, mailbox, memory and other mutable source revocations are not all locked through a final activation write.",
+    "Final activation is not connected and existing pinned images do not contain this new module."
+  ]
+}

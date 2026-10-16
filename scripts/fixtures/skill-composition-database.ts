@@ -13,6 +13,8 @@ import {collectSkillSafetyAcceptance} from '../../src/lib/assistant/main/skill-s
 import {composeSkillAcceptanceEvidence} from '../../src/lib/assistant/main/skill-acceptance-composition';
 import {readSkillAcceptanceReview,readSkillAcceptanceReviewCase} from '../../src/lib/assistant/main/skill-acceptance-review';
 import {appendSkillAcceptanceJudgment} from '../../src/lib/assistant/main/skill-acceptance-store';
+import {tenantTransaction} from '../../src/lib/rag/db';
+import {evaluateLockedSkillAcceptanceReadiness} from '../../src/lib/assistant/main/skill-locked-materials';
 import type {SkillCandidateCollector,SkillCandidateRequest} from '../../src/lib/assistant/main/skill-candidate-model';
 
 export async function prepareCompositionDatabaseFixture(input:{pool:Pool;owner:string;skillId:string;config:ModelConfig;memory:ModelMessage}){
@@ -86,6 +88,13 @@ export async function verifyCompositionDatabaseFixture(input:{pool:Pool;owner:st
  await assert.rejects(readSkillAcceptanceReview({userId:other},combined.bundleId));
  assert.equal((await pool.query('select count(*)::int n from agent_skill_acceptance_judgment where bundle_id=$1',[combined.bundleId])).rows[0].n,0);
  const developmentReviewLockCheck=process.env.MA24_COMPOSITION_REVIEW_LOCK==='1';
+ const lockedMaterialsCheck=process.env.MA24_COMPOSITION_LOCKED_MATERIALS==='1';
+ if(lockedMaterialsCheck){
+  const readiness=await tenantTransaction(owner,client=>evaluateLockedSkillAcceptanceReadiness(client,{userId:owner},combined.bundleId));
+  assert.equal(readiness.sourcePayloadsRevalidated,true);assert.equal(readiness.materials.length,5);
+  assert.equal(readiness.policyPassed,false);assert.equal(readiness.automaticActivation,false);assert.equal(readiness.sourceRevocationsLocked,false);
+  assert(!readiness.blockers.includes('runtime-or-configuration-changed'));assert(readiness.blockers.includes('missing-judgment:replay'));
+ }
  if(developmentReviewLockCheck){
   const material=await readSkillAcceptanceReviewCase({userId:owner},{bundleId:combined.bundleId,caseId:'replay'});
   assert(material.observationHash);
@@ -104,6 +113,6 @@ export async function verifyCompositionDatabaseFixture(input:{pool:Pool;owner:st
  const before=calls;await readSkillAcceptanceReview({userId:owner},combined.bundleId);assert.equal(calls,before);
  console.log(JSON.stringify({completeCompositionDatabase:'passed',plannedCategories:5,sourceBundles:3,scriptedModelCalls:calls,
   actualJournalAudits:true,compositionIdempotent:true,allCasesReadThroughUnifiedReview:true,injectionReceiptConsumed:true,
-  copiedJudgments:0,developmentReviewLockCheck,realQualityApproval:false,modelCalls:0,automaticActivation:false}));
+  copiedJudgments:0,developmentReviewLockCheck,lockedMaterialsCheck,realQualityApproval:false,modelCalls:0,automaticActivation:false}));
  return combined.bundleId;
 }

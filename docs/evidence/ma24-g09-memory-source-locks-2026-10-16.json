@@ -1,0 +1,30 @@
+{
+  "stage": "G09 local memory observation source-lock primitive",
+  "date": "2026-10-16",
+  "baseCommit": "d9d28291",
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --memory-source-locks",
+  "exitCode": 0,
+  "migrationApplied": 142,
+  "checks": {
+    "migrationRepeatInstall": true,
+    "correctionInsertBlockedBySourceLock": true,
+    "invalidationInsertBlockedBySourceLock": true,
+    "existingConflictStatusUpdateBlocked": true,
+    "allThreeWritersResumeAfterLockRelease": true,
+    "foreignOwnerDuplicateAndNullInputRejected": true,
+    "emptyListReturnsZero": true,
+    "applicationObservationUpdateGrantAbsent": true,
+    "collectorExecuteGrantAbsent": true,
+    "deferredEvaluationMigrationsAbsent": true,
+    "wholeProjectTypecheck": true,
+    "targetedEslint": true,
+    "temporaryClusterCleaned": true
+  },
+  "actualModelCalls": 0,
+  "automaticActivation": false,
+  "limitations": [
+    "This only implements owner-scoped local observation/conflict locks; source eligibility must be rechecked after acquisition.",
+    "The primitive is not yet connected to final activation and does not cover all knowledge/mail/customer sources.",
+    "No production migration, human approval or live provider execution occurred."
+  ]
+}
