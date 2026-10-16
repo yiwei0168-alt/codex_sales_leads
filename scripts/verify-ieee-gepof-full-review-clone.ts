@@ -93,6 +93,13 @@ for (const item of proposals.values()) {
 assert.deepEqual(Object.fromEntries(["evidence", "decoration", "unresolved"].map(decision =>
   [decision, [...proposals.values()].filter(item => item.proposedDecision === decision).length])),
 { evidence: 107, decoration: 22, unresolved: 0 });
+const nativeLineTables: Proposed[] = [
+  { blockId: "slide-54-table-3", proposedDecision: "evidence", evidenceText: "The 2014 tutorial's projected schedule spans 2014–2023 and separates Automotive, O-GEAR (Japan), and IEEE 802.3 Ethernet for Automotive rows. The milestones and connecting lines require their separate slide evidence; this table alone does not establish completed events.", reason: "The original slide shows these row and year labels; the native table omits timeline connectors." },
+  { blockId: "slide-58-table-2", proposedDecision: "evidence", evidenceText: "The tutorial compares POF, PCF, GOF-MM and GOF-SM. Its core diameter row reads 980, 200, 50/62.5 and 9 μm, respectively; these are values presented by the 2014 tutorial.", reason: "Headers, row alignment and units were checked against the original slide." },
+  { blockId: "slide-59-table-26", proposedDecision: "decoration", reason: "The extracted table associates ControlNet with the Fieldbus header, but that association is not visible in the original slide rendering. The visible logos and their row placement are covered by separately reviewed visual blocks." },
+  { blockId: "slide-60-table-5", proposedDecision: "evidence", evidenceText: "The tutorial's MICE table labels 1 as commercial, 2 as light industrial and 3 as heavy industrial. Mechanical, Ingress, Chemical and EMC rows use the corresponding M1–M3, I1–I3, C1–C3 and E1–E3 labels.", reason: "The four rows and three environment columns were checked against the original slide; this does not certify a particular installation." },
+];
+for (const item of nativeLineTables) { assert(!proposals.has(item.blockId)); proposals.set(item.blockId, item); }
 
 const pool = new Pool({ connectionString: url.toString() });
 const owner = randomUUID();
@@ -150,25 +157,33 @@ try {
     normalized.documents[0].storageKey = old.documents[0].storageKey;
     if (live.extractorVersion !== old.extractorVersion) {
       assert.equal(old.extractorVersion, "layout-v2.0.6");
-      assert.equal(live.extractorVersion, "layout-v2.0.7");
+      assert.equal(live.extractorVersion, "layout-v2.0.10");
       normalized.extractorVersion = old.extractorVersion;
       normalized.documents[0].extractorVersion = old.documents[0].extractorVersion;
       for (const block of normalized.documents[0].blocks) block.extractorVersion = old.extractorVersion;
     }
+    for (const item of nativeLineTables) {
+      const liveBlock = normalized.documents[0].blocks.find((block: { id: string }) => block.id === item.blockId);
+      const oldBlock = old.documents[0].blocks.find((block: { id: string }) => block.id === item.blockId);
+      assert(liveBlock && oldBlock);
+      assert.equal(liveBlock.quality, "pending-ocr");
+      assert.equal(liveBlock.metadata?.reviewReason, "table-with-native-lines");
+      assert.equal(oldBlock.quality, "success");
+      liveBlock.quality = oldBlock.quality;
+      delete liveBlock.metadata;
+    }
     assert.deepEqual(normalized, old);
     assert.equal(old.documents[0].blocks.length, 563);
-    artifactParity = live.extractorVersion === old.extractorVersion
-      ? "identical-blocks-storage-key-only-difference"
-      : "identical-blocks-after-version-normalization-and-storage-key";
+    artifactParity = "identical-blocks-after-version-storage-key-and-four-reviewed-table-status-normalization";
   }
-  assert.equal(first.total, 129);
+  assert.equal(first.total, 133);
   const ids: string[] = [];
   for (let offset = 0; offset < first.total; offset += 20) {
     const page = await getExtractionReview(owner, job.id, offset);
     ids.push(...page.blocks.map(item => item.block.id));
   }
-  assert.equal(ids.length, 129);
-  assert.deepEqual(new Set(ids), candidateIds);
+  assert.equal(ids.length, 133);
+  assert.deepEqual(new Set(ids), new Set([...candidateIds, ...nativeLineTables.map(item => item.blockId)]));
   for (const id of ids) {
     const proposal = proposals.get(id);
     if (!proposal) continue;
@@ -177,7 +192,7 @@ try {
       evidenceText: proposal.proposedDecision === "evidence" ? proposal.evidenceText : "", note: proposal.reason });
   }
   const reviewed = await getExtractionReview(owner, job.id);
-  assert.equal(reviewed.resolved, 129);
+  assert.equal(reviewed.resolved, 133);
   let saved = 0;
   for (let offset = 0; offset < reviewed.total; offset += 20) {
     const page = await getExtractionReview(owner, job.id, offset);
@@ -190,10 +205,10 @@ try {
       saved++;
     }
   }
-  assert.equal(saved, 129);
+  assert.equal(saved, 133);
   const rows = await pool.query<{ decision: string; count: number }>(
     "select decision,count(*)::int count from knowledge_upload_extraction_review where owner_id=$1 and job_id=$2 group by decision", [owner, job.id]);
-  assert.deepEqual(Object.fromEntries(rows.rows.map(row => [row.decision, row.count])), { evidence: 107, decoration: 22 });
+  assert.deepEqual(Object.fromEntries(rows.rows.map(row => [row.decision, row.count])), { evidence: 110, decoration: 23 });
   const receipt = await completeExtractionReview(owner, job.id, reviewed.artifactSha256, reviewed.decisionSha256);
   assert.equal(receipt.readyForRegistration, true);
   const registered = await registerVectorlessUpload(owner, job.id, { language: "en", authorityLevel: 2,
@@ -233,16 +248,17 @@ try {
       (select count(*)::int from knowledge_document where owner_id=$1) documents,
       (select count(*)::int from knowledge_tree_node where version_id=$3 and node_kind='evidence') evidence_nodes`,
     [owner, job.id, registered.versionId]);
-  assert.equal(after.rows[0].reviews, 129);
+  assert.equal(after.rows[0].reviews, 133);
   assert.equal(after.rows[0].completions, 1);
   assert.equal(after.rows[0].documents, 1);
   assert(after.rows[0].evidence_nodes > 0);
   console.log(JSON.stringify({ cloneOnly: true, sourceSha256: first.sourceSha256, artifactSha256: first.artifactSha256,
     artifactParity, reviewTotal: first.total, reviewSavedAndReadBack: saved, reviewResolved: reviewed.resolved,
-    remainingUnreviewed: 0, decisions: { evidence: 107, decoration: 22 },
+    remainingUnreviewed: 0, decisions: { evidence: 110, decoration: 23 },
     completionReceipt: true, treeStatus: registered.treeStatus, syntheticPublishedDocuments: 1,
     citedSlides: checked.map(item => item.slide), citedBlockIds: checked.map(item => item.blockId),
-    exactPhrasesChecked: checked.length, searchFound: true, otherAccountDenied: true,
+    exactPhrasesChecked: checked.length, nativeLineTableReviewIds: nativeLineTables.map(item => item.blockId),
+    searchFound: true, otherAccountDenied: true,
     wrongCollectionDenied: true, evidenceNodes: after.rows[0].evidence_nodes,
     externalCalls: 0, modelCalls: 0, qualityAccepted: false, goldCreated: 0 }));
 } finally {

@@ -1,0 +1,37 @@
+{
+  "schema": "ma24-gepof-native-line-tables-current-clone-v1",
+  "date": "2026-10-16",
+  "ruleId": "MA24-18",
+  "scope": "Current layout-v2.0.10 extractor and disposable local replay database; PPTX reading and source-coordinate engineering check only",
+  "command": "node scripts/run-tsx.cjs scripts/verify-ieee-gepof-full-review-clone.ts",
+  "sourceSha256": "030a730584498f8b98109a1bf2da22a29cc443021c63fbd1c18cf2bad2da6910",
+  "finalRunExtractionArtifactSha256": "7f25422b9e7b63b67ecd5dea9cdd67de89a44f86344d1d89fa6906ce4490639c",
+  "artifactHashNote": "The synthetic storage key changes per isolated upload, so the artifact hash is per run.",
+  "comparisonToHistoricalArtifact": "563 original block identities and contents match after normalizing extractor version, synthetic storage key and the four table status changes listed below",
+  "originalSlidesInspected": [54, 58, 59, 60],
+  "newPendingTables": [
+    { "blockId": "slide-54-table-3", "decision": "evidence", "reason": "Year columns and three schedule row labels match the rendered original; timeline milestones and connectors are separate evidence." },
+    { "blockId": "slide-58-table-2", "decision": "evidence", "reason": "Fiber types, core diameter row and units match the rendered original." },
+    { "blockId": "slide-59-table-26", "decision": "decoration", "reason": "Extracted ControlNet row association is not supported by the rendered original; the visible protocol logos already have separate reviewed visual blocks." },
+    { "blockId": "slide-60-table-5", "decision": "evidence", "reason": "Three environment columns and four MICE category rows match the rendered original." }
+  ],
+  "reviewTotal": 133,
+  "judgmentsSavedAndReadBack": 133,
+  "decisions": { "evidence": 110, "decoration": 23, "unresolved": 0 },
+  "reviewCompletionReceiptCreated": true,
+  "syntheticTreeStatus": "searchable",
+  "evidenceNodes": 540,
+  "citationTargets": [
+    { "slide": 5, "blockId": "slide-5-text-2", "phrase": "Specify operation over at least 15m of POF with 4 POF connections" },
+    { "slide": 22, "blockId": "slide-22-text-2", "phrase": "SG has not adopted technical proposals" }
+  ],
+  "searchFoundBothTargets": true,
+  "otherAccountDenied": true,
+  "wrongCollectionDenied": true,
+  "syntheticDataCleaned": true,
+  "externalCalls": 0,
+  "modelCalls": 0,
+  "independentGoldCreated": 0,
+  "userVisibleModelAnswerAccepted": false,
+  "productionRuntimeAccepted": false
+}
