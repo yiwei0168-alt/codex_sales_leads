@@ -54,6 +54,14 @@ try{
  // Pause immediately before candidate binding after actual local OCR has run.
  await supervisor(target.id,'visual-before-bind');
  const held=await stored(target.id);assert.equal(held.status,'extracted');assert.equal(held.error_code,'extraction-review-required');assert.equal(held.metrics.visualReviewKey,undefined);assert.equal(held.visual_attempts,1);assert(held.visual_lease_token);
+ // A malformed PDF failure must not change the stranded XLSX lease or another XLSX job.
+ const badPdf=await createKnowledgeUploadJob(peerOwner,{...input,title:'Malformed PDF fixture',originalFilename:'malformed.pdf',mimeType:'application/pdf',bytes:Buffer.from('%PDF-1.4\nnot a valid PDF body\n')});
+ await supervisor(badPdf.id);
+ const badPdfState=await stored(badPdf.id);assert.equal(badPdfState.status,'failed');assert(badPdfState.error_code);assert.equal(badPdfState.lease_token,null);
+ assert.equal((await stored(target.id)).visual_lease_token,held.visual_lease_token);
+ assert.equal((await stored(target.id)).visual_attempts,1);
+ assert.equal((await stored(peer.id)).status,'pending');
+ assert.equal(JSON.stringify((await pool.query('select * from knowledge_release_pointer_v3 order by scope_kind,owner_id')).rows),pointers);
  // A different account can finish its own visual job while the target lease is stranded.
  await supervisor(peer.id);
  // --once runs extraction and visual workers concurrently; visual may poll before extraction completes.
@@ -74,7 +82,7 @@ try{
  assert.equal((await pool.query('select count(*)::int as n from knowledge_document where owner_id=$1',[owner])).rows[0].n,0);
  assert.equal((await pool.query('select count(*)::int as n from knowledge_document where owner_id=$1',[peerOwner])).rows[0].n,0);
  assert.equal(JSON.stringify((await pool.query('select * from knowledge_release_pointer_v3 order by scope_kind,owner_id')).rows),pointers);
- const result={cloneOnly:true,platform:process.platform,actualSupervisorKills:2,descendantsStopped:true,extractionLeaseHeld:true,extractionExpiredRecovery:true,visualLeaseHeld:true,peerAccountCompletedWhileTargetHeld:true,peerVisualReady:true,expiredFinishRejected:true,visualExpiredRecovery:true,ocrExecutionsOnResume:0,ocrCheckpointReuses:1,unrelatedJobUnchanged:true,v3PointersUnchanged:true,documentsPublished:0,judgments:0,externalCalls:0,syntheticFixture:true,qualityAccepted:false};
+ const result={cloneOnly:true,platform:process.platform,actualSupervisorKills:2,descendantsStopped:true,extractionLeaseHeld:true,extractionExpiredRecovery:true,visualLeaseHeld:true,malformedPdfFailedWithoutCrossJobEffect:true,peerAccountCompletedWhileTargetHeld:true,peerVisualReady:true,expiredFinishRejected:true,visualExpiredRecovery:true,ocrExecutionsOnResume:0,ocrCheckpointReuses:1,unrelatedJobUnchanged:true,v3PointersUnchanged:true,documentsPublished:0,judgments:0,externalCalls:0,syntheticFixture:true,qualityAccepted:false};
  await writeFile('tmp/knowledge-supervisor-clone-result.json',JSON.stringify(result,null,2));console.log(JSON.stringify(result));
 }finally{
  for(const userId of [owner,peerOwner]){

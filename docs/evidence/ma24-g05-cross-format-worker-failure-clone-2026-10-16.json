@@ -1,0 +1,40 @@
+{
+  "schema": "ma24-g05-cross-format-worker-failure-clone-v1",
+  "date": "2026-10-16",
+  "scope": "Disposable MA11 replay database, two synthetic accounts, XLSX interruption and malformed PDF failure",
+  "sourceCommitBeforeVerifierChange": "f3ca5087",
+  "verifier": "scripts/verify-knowledge-supervisor-clone.ts",
+  "result": {
+    "supervisorKills": 2,
+    "descendantsStopped": true,
+    "xlsxExtractionLeaseHeldUntilExpiry": true,
+    "xlsxVisualLeaseHeldUntilExpiry": true,
+    "malformedPdfStatus": "failed",
+    "malformedPdfFailurePreservedOtherJobState": true,
+    "otherAccountXlsxVisualReady": true,
+    "expiredVisualFinishRejected": true,
+    "ocrCheckpointReuses": 1,
+    "unrelatedJobUnchanged": true,
+    "v3PointersUnchanged": true,
+    "documentsPublished": 0,
+    "modelCalls": 0,
+    "externalCalls": 0
+  },
+  "cleanup": {
+    "uploadJobsBeforeAndAfter": [0, 0],
+    "appUsersBeforeAndAfter": [6, 6],
+    "knowledgeDocumentsBeforeAndAfter": [367, 367],
+    "syntheticUploadDirectoriesRemovedByVerifier": true
+  },
+  "checks": {
+    "verifierExitCode": 0,
+    "typescript": "passed",
+    "focusedEslint": "passed",
+    "diffCheck": "passed"
+  },
+  "limits": [
+    "The PDF is deliberately malformed and tests worker failure isolation, not successful PDF extraction",
+    "No revised-version multi-job failure matrix, real user-visible citation, or production worker deployment was checked",
+    "Synthetic clone evidence does not close G05 content quality or production acceptance"
+  ]
+}
