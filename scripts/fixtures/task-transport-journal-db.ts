@@ -31,7 +31,12 @@ export async function verifyTaskTransportJournalDatabase(pool:Pool,owner:string,
  await writeFile(keyPath,pair.privateKey.export({type:'pkcs8',format:'pem'}),{mode:0o600});
  // Output stays under the project so external packages resolve from its node_modules.
  const compiledPath=join(process.cwd(),'tmp','task-transport-admission.cjs');
- await build({entryPoints:['scripts/fixtures/task-transport-preflight-runner.ts'],outfile:compiledPath,bundle:true,platform:'node',target:'node24',format:'cjs',packages:'external',logLevel:'warning'});
+ await build({entryPoints:['scripts/fixtures/task-transport-preflight-runner.ts'],outfile:compiledPath,bundle:true,platform:'node',target:'node24',format:'cjs',packages:'external',logLevel:'warning',
+  banner:{js:`globalThis.fetch=async(url)=>{if(String(url)!=='https://openrouter.ai/api/v1/chat/completions')throw new Error('Synthetic destination rejected');const response=new Response('{}',{status:503});Object.defineProperty(response,'url',{value:String(url)});return response;};`},
+  plugins:[{name:'explicit-synthetic-network-and-billing',setup(builder){
+   builder.onResolve({filter:/(?:billing\/paid-fetch|network\/model-transport)$/},()=>({path:'synthetic-adapters',namespace:'ma24-fixture'}));
+   builder.onLoad({filter:/.*/,namespace:'ma24-fixture'},()=>({contents:'export const budgetedFetch=(transport)=>transport; export const modelRoutedTransport=(transport)=>transport;',loader:'js'}));
+  }}]});
  const envelope=(statement:unknown)=>({statement,signature:sign(null,Buffer.from(digest(statement),'hex'),pair.privateKey).toString('base64url')});
  const outputs:unknown[]=[],ids:string[]=[];
  for(let index=0;index<2;index++){
@@ -55,7 +60,7 @@ export async function verifyTaskTransportJournalDatabase(pool:Pool,owner:string,
   const common={ownerId:owner,runId,callId:attempt.id,callKey,inputHash:digest(request),collectorId,deploymentHash,keyId:key.keyId,
    requestHash:manifest.requestHash,manifestHash:digest(manifest),origin:'https://openrouter.ai',path:'/api/v1/chat/completions',capturedAt,completedAt,expiresAt:key.expiresAt};
   const output=index?result({value:{message,requestManifest:manifest,transportReceipt:envelope({...common,protocol:'task-model-transport-v1',status:200,responseHash:skillTransportResponseHash(message)})}})
-   :result({retryable:true,reason:'http-503',transportFailureReceipt:{...envelope({...common,protocol:'task-model-transport-failure-v1',reason:'http-503',retryable:true,httpStatus:503}),requestManifest:manifest}},{status:'unavailable'});
+   :(await pool.query('select output from agent_tool_call where id=$1',[attempt.id])).rows[0].output;
   await completeCall(context,attempt.id,output,{});outputs.push(output);
   const recovered=await beginCall(context,{key:callKey,tool:'main_model',version:request.profile.version,input:request,effect:'model'});
   assert.equal(recovered.fresh,false);assert.deepEqual(recovered.output,output);
@@ -74,5 +79,6 @@ export async function verifyTaskTransportJournalDatabase(pool:Pool,owner:string,
  await verifyOwnedTaskModelTransports({userId:owner},{runId});
  return {originalTaskJournalDatabase:true,originalTaskSignedFallbackReadback:true,originalTaskRecoveryReuse:true,
   originalTaskCrossAccountRejected:true,originalTaskKeyRevocationRejected:true,originalTaskTamperedSignatureRejected:true,originalTaskRouteGapRejected:true,
-  originalTaskCompiledAdmissionVerified:true,originalTaskRequestFactoryAdmissionExecuted:true,originalTaskRequestClosureExecuted:false,actualModelCalls:0};
+  originalTaskCompiledAdmissionVerified:true,originalTaskRequestFactoryAdmissionExecuted:true,originalTaskRequestClosureExecuted:true,
+  originalTaskSyntheticFailureSignedAndPersisted:true,billingAndNetworkAdaptersSynthetic:true,actualModelCalls:0};
 }
