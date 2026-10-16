@@ -3,6 +3,7 @@ import {beforeEach,expect,it,vi} from 'vitest';
 import {digest} from './contracts';
 import {evaluateLockedSkillAcceptancePolicy} from './skill-locked-acceptance-policy';
 const m=vi.hoisted(()=>({read:vi.fn(),identity:vi.fn(),query:vi.fn()}));
+vi.mock('@/lib/rag/db',()=>({withBoundTenantTransaction:async(_client:unknown,_userId:string,work:()=>Promise<unknown>)=>work()}));
 vi.mock('./skill-acceptance-store',()=>({readLockedSkillAcceptanceEvidence:m.read}));
 vi.mock('./skill-runtime-identity',()=>({prepareSkillExecutionIdentity:m.identity}));
 vi.mock('./local-analysis-boundary',()=>({assertLocalAnalysisBoundary:()=>{}}));

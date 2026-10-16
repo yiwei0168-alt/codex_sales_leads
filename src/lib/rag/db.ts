@@ -1,4 +1,5 @@
 import { Pool, type PoolClient, type QueryResultRow } from "pg";
+import {AsyncLocalStorage} from 'node:async_hooks';
 import { getRagConfig } from "./config";
 import {
   databaseConnectionString,
@@ -12,6 +13,27 @@ declare global {
 }
 
 export type AppDatabaseRole = "admin" | "member";
+const boundTenantTransaction=new AsyncLocalStorage<{client:PoolClient;userId:string;role:AppDatabaseRole;active:boolean}>();
+
+/** Trusted internal composition only. Reuse an already-open tenant transaction;
+ * validate account/role and transaction identity before and after the callback. */
+export async function withBoundTenantTransaction<T>(client:PoolClient,userId:string,run:()=>Promise<T>):Promise<T>{
+ const prior=boundTenantTransaction.getStore();
+ if(prior&&(!prior.active||prior.client!==client||prior.userId!==userId))throw new Error('Bound tenant transaction scope changed');
+ const state=async()=>(await client.query<{user_id:string;role:string;database_role:string;transaction_id:string}>(
+  "select current_setting('app.current_user_id',true) as user_id,current_setting('app.current_user_role',true) as role,current_user as database_role,pg_current_xact_id()::text as transaction_id")).rows[0];
+ const before=await state();
+ if(!before||!userId||before.user_id!==userId||!['admin','member'].includes(before.role)||before.database_role!==applicationRole())
+  throw new Error('Bound tenant transaction account or role invalid');
+ if(prior&&prior.role!==before.role)throw new Error('Bound tenant transaction scope changed');
+ const check=async()=>{const after=await state();if(!after||after.transaction_id!==before.transaction_id||after.user_id!==before.user_id
+  ||after.role!==before.role||after.database_role!==before.database_role)throw new Error('Bound tenant transaction identity changed');};
+ // An autocommit client gets a new transaction ID and is rejected before work.
+ await check();
+ const scope={client,userId,role:before.role as AppDatabaseRole,active:true};
+ try{const value=await boundTenantTransaction.run(scope,run);await check();return value;}
+ finally{scope.active=false;}
+}
 
 function applicationRole(): string {
   const role = process.env.DATABASE_APPLICATION_ROLE?.trim() || "network_copilot_app";
@@ -124,6 +146,7 @@ export async function query<T extends QueryResultRow>(text: string, values: unkn
 }
 
 export async function transaction<T>(run: (client: PoolClient) => Promise<T>): Promise<T> {
+  if(boundTenantTransaction.getStore())throw new Error('Unscoped transaction inside a bound tenant operation');
   await ensureDatabaseSecurity();
   const client = await getPool().connect();
   const tracked = trackClientErrors(client);
@@ -146,10 +169,16 @@ export async function transaction<T>(run: (client: PoolClient) => Promise<T>): P
 export async function tenantTransaction<T>(
   userId: string,
   run: (client: PoolClient) => Promise<T>,
-  role: AppDatabaseRole = "member",
+  role?: AppDatabaseRole,
 ): Promise<T> {
+  const bound=boundTenantTransaction.getStore();
+  if(bound){
+    if(!bound.active)throw new Error('Bound tenant transaction scope ended');
+    if(bound.userId!==userId||role!==undefined&&role!==bound.role)throw new Error('Bound tenant transaction account or role changed');
+    return run(bound.client);
+  }
   return transaction(async (client) => {
-    await client.query("select set_config('app.current_user_id', $1, true), set_config('app.current_user_role', $2, true)", [userId, role]);
+    await client.query("select set_config('app.current_user_id', $1, true), set_config('app.current_user_role', $2, true)", [userId, role??'member']);
     return run(client);
   });
 }
@@ -158,7 +187,7 @@ export async function tenantQuery<T extends QueryResultRow>(
   userId: string,
   text: string,
   values: unknown[] = [],
-  role: AppDatabaseRole = "member",
+  role?: AppDatabaseRole,
 ): Promise<T[]> {
   return tenantTransaction(userId, async (client) => (await client.query<T>(text, values)).rows, role);
 }

@@ -1,0 +1,32 @@
+{
+  "stage": "G09 nested source readers share the locked tenant transaction",
+  "date": "2026-10-16",
+  "baseCommit": "25e2de4d",
+  "unitCommand": "node node_modules/vitest/vitest.mjs run src/lib/rag/db.test.ts src/lib/assistant/main/skill-locked-acceptance-policy.test.ts",
+  "testsPassed": 22,
+  "databaseCommand": "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --locked-policy",
+  "exitCodes": [0, 0],
+  "checks": {
+    "samePostgresBackendForNestedTenantReaders": true,
+    "ordinaryShareReaderCompletesUnderOwnUpdateLock": true,
+    "actualIdentityAndPolicyReadWithinBoundTransaction": true,
+    "noNestedBeginCommitOrPoolConnectionInUnitScope": true,
+    "ownerAndExplicitRoleSwitchRejected": true,
+    "wrongInitialDatabaseRoleRejected": true,
+    "autocommitClientRejectedBeforeCallback": true,
+    "sessionAndTransactionIdentityDriftRejected": true,
+    "escapedAsyncDescendantRejectedAfterScopeEnd": true,
+    "unscopedNestedTransactionsRejected": true,
+    "wholeProjectTypecheck": true,
+    "targetedEslint": true,
+    "temporaryClusterCleaned": true
+  },
+  "actualModelCalls": 0,
+  "humanApprovalCreated": false,
+  "automaticActivation": false,
+  "limitations": [
+    "Bound composition is an internal trusted-callback API; it is not exposed to HTTP or Agent input.",
+    "The actual database fixture reconstructs a stored synthetic original task; it does not yet rebuild every candidate/safety/prospective material payload under this scope.",
+    "No production provider qualification or final activation write was performed."
+  ]
+}

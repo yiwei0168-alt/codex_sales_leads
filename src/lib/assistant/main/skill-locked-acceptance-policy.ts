@@ -1,5 +1,6 @@
 import type {PoolClient} from 'pg';
 import {z} from 'zod';
+import {withBoundTenantTransaction} from '@/lib/rag/db';
 import {digest} from './contracts';
 import {assertLocalAnalysisBoundary} from './local-analysis-boundary';
 import {readLockedSkillAcceptanceEvidence} from './skill-acceptance-store';
@@ -7,10 +8,11 @@ import {prepareSkillExecutionIdentity} from './skill-runtime-identity';
 import {evaluateSkillAcceptancePolicy} from './skill-acceptance-policy';
 
 /** Internal policy projection while retaining the caller's evidence locks. Source
- * identity preparation uses its existing server readers; full source locking and
+ * identity preparation reuses the caller transaction; full source locking and
  * production provenance remain separate. Never use policyPassed as authorization. */
 export async function evaluateLockedSkillAcceptancePolicy(client:PoolClient,context:{userId:string},bundleId:string){
  assertLocalAnalysisBoundary();
+ return withBoundTenantTransaction(client,context.userId,async()=>{
  const before=await readLockedSkillAcceptanceEvidence(client,context,bundleId),{plan,rawReceipts}=before.artifact;
  const runs=new Set<string>();
  const reference=(name:string,caseId:string)=>{
@@ -38,4 +40,5 @@ export async function evaluateLockedSkillAcceptancePolicy(client:PoolClient,cont
   currentPin:after.currentPin,currentIdentity:identity,now:time.toISOString()});
  return {...policy,artifactHash:after.artifactHash,latestReviewHash:after.latestReviewHash,currentRuntimeIdentityHash:digest(identity),
   lockedEvidencePolicyEvaluated:true as const,sourcePayloadsRevalidated:false as const,collectorProvenanceVerified:false as const,automaticActivation:false as const};
+ });
 }

@@ -2,14 +2,14 @@ import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
 import nextEnv from '@next/env';
 import {Pool} from 'pg';
-import {getPool,tenantTransaction} from '../src/lib/rag/db';
+import {getPool,tenantTransaction,tenantQuery,withBoundTenantTransaction} from '../src/lib/rag/db';
 import {digest} from '../src/lib/assistant/main/contracts';
 import {importSkill} from '../src/lib/assistant/main/skills';
 import {modeModelConfig} from '../src/lib/assistant/main/mode-config';
 import {decisionMemoryMessage} from '../src/lib/assistant/main/decision-memory-message';
 import {prepareSkillExecutionIdentity} from '../src/lib/assistant/main/skill-runtime-identity';
 import {freezeSkillAcceptancePlan,revokeSkillAcceptanceFreeze} from '../src/lib/assistant/main/skill-acceptance-freeze';
-import {appendSkillAcceptanceJudgment} from '../src/lib/assistant/main/skill-acceptance-store';
+import {appendSkillAcceptanceJudgment,readLockedSkillAcceptanceEvidence,readSkillAcceptanceEvidence} from '../src/lib/assistant/main/skill-acceptance-store';
 import {evaluateLockedSkillAcceptancePolicy} from '../src/lib/assistant/main/skill-locked-acceptance-policy';
 import {disableLocalAnalysisTracing} from '../src/lib/assistant/main/local-analysis-boundary';
 import type {SkillCollectorTransaction} from '../src/lib/assistant/main/skill-model-journal';
@@ -49,7 +49,15 @@ try{
  const artifact={sourceKind:'synthetic-fixture',plan:frozen.plan,observations,rawReceipts};
  await pool.query(`insert into agent_skill_acceptance_bundle(id,owner_id,skill_id,version,source_kind,plan,observations,raw_receipts,artifact_hash)
   values($1,$2,$3,1,$4,$5,$6,$7,$8)`,[bundleId,owner,skill.id,artifact.sourceKind,JSON.stringify(artifact.plan),JSON.stringify(observations),JSON.stringify(rawReceipts),digest(artifact)]);
- const evaluate=()=>tenantTransaction(owner,client=>evaluateLockedSkillAcceptancePolicy(client,{userId:owner},bundleId));
+ const evaluate=()=>tenantTransaction(owner,client=>withBoundTenantTransaction(client,owner,async()=>{
+  const pid=(await client.query('select pg_backend_pid() as pid')).rows[0].pid;
+  await readLockedSkillAcceptanceEvidence(client,{userId:owner},bundleId);
+  // The existing reader takes FOR SHARE on the same Skill. A separate connection
+  // would wait on this transaction's FOR UPDATE lock and hit statement_timeout.
+  const ordinary=await readSkillAcceptanceEvidence({userId:owner},bundleId);assert.equal(ordinary.sourcesCurrent,true);
+  assert.equal((await tenantQuery<{pid:number}>(owner,'select pg_backend_pid() as pid'))[0].pid,pid);
+  return evaluateLockedSkillAcceptancePolicy(client,{userId:owner},bundleId);
+ }));
  const initial=await evaluate();assert.equal(initial.lockedEvidencePolicyEvaluated,true);assert.equal(initial.policyPassed,false);
  assert(initial.blockers.includes('missing-judgment:replay'));assert(!initial.blockers.includes('runtime-or-configuration-changed'));
  assert.equal(initial.currentRuntimeIdentityHash,digest(identity));assert.equal(initial.automaticActivation,false);
@@ -66,6 +74,7 @@ try{
  await assert.rejects(evaluate(),/active recorded freeze/);
  assert.equal((await pool.query('select enabled from agent_skill where id=$1',[skill.id])).rows[0].enabled,false);
  console.log(JSON.stringify({lockedPolicyDatabase:'passed',actualServerIdentityReconstruction:true,actualLockedPolicyAndDatabaseClock:true,
+  nestedReadersUseSameBackend:true,shareReadUnderOwnUpdateLockCompletes:true,
   missingAndDevelopmentReviewsRejected:true,latestRevocationChangesReviewHash:true,crossAccountAndFreezeRevocationRejected:true,
   syntheticPolicyProjections:true,fullSourcePayloadReconstruction:false,actualModelCalls:0,humanApprovalCreated:false,automaticActivation:false}));
 }finally{await pool.end();await getPool().end();}
