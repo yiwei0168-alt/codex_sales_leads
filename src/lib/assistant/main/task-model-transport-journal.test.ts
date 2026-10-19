@@ -23,7 +23,8 @@ function row(index:number,success:boolean){
 beforeEach(()=>{
  vi.stubEnv('TASK_MODEL_TRANSPORT_COLLECTOR_ID','synthetic');vi.stubEnv('TASK_MODEL_TRANSPORT_DEPLOYMENT_SHA256',digest('deployment'));
  m.task=true;m.rows=[row(0,false),row(1,true)];m.query.mockReset().mockImplementation(async(sql:string)=>({rows:sql.includes('from agent_run')?(m.task?[{created_at:'2026-10-17T00:00:00Z'}]:[]):m.rows}));
- const checked={validBefore:'2026-10-20T00:00:00.000Z',registryHash:digest({keys:[]}),statementHash:digest('statement')};m.success.mockReset().mockResolvedValue(checked);m.failure.mockReset().mockResolvedValue(checked);
+ const checked={validBefore:'2026-10-20T00:00:00.000Z',registryHash:digest({keys:[]}),statementHash:digest('statement'),
+  signingEnrollment:{keyId:'task-key',collectorId:'synthetic',deploymentHash:digest('deployment'),purpose:'task-model-transport'}};m.success.mockReset().mockResolvedValue(checked);m.failure.mockReset().mockResolvedValue(checked);
 });
 it('loads owned completed rows and verifies every predecessor before success without claiming full provenance',async()=>{
  expect(await verifyOwnedTaskModelTransports(context,input)).toMatchObject({storedModeChainsVerified:true,completeTaskProvenanceVerified:false,automaticActivation:false});
@@ -33,10 +34,12 @@ it('loads owned completed rows and verifies every predecessor before success wit
 });
 it('forwards database time to every fallback signature and retains the earliest expiry',async()=>{
  const now=new Date('2026-10-19T01:00:00.000Z');
- m.failure.mockResolvedValue({validBefore:'2026-10-19T02:00:00.000Z',registryHash:digest({keys:[]}),statementHash:digest('failure')});
+ m.failure.mockResolvedValue({validBefore:'2026-10-19T02:00:00.000Z',registryHash:digest({keys:[]}),statementHash:digest('failure'),
+  signingEnrollment:{keyId:'fallback-key',collectorId:'synthetic',deploymentHash:digest('deployment'),purpose:'task-model-transport'}});
  const result=await verifyOwnedTaskModelTransports(context,input,now);
  expect(m.failure.mock.calls[0][2]).toBe(now);expect(m.success.mock.calls[0][2]).toBe(now);
  expect(result.transportValidBefore).toBe('2026-10-19T02:00:00.000Z');
+ expect(result.signingEnrollments.map(row=>row.keyId)).toEqual(['fallback-key','task-key']);
 });
 it.each(['missing-task','empty','gap','incomplete','legacy','changed-hash','no-success','early-success','changed-request','overlap'] as const)('rejects %s journals',async kind=>{
  if(kind==='missing-task')m.task=false;

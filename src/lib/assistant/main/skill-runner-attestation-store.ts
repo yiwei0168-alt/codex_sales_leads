@@ -140,6 +140,7 @@ export async function readLockedSkillRunnerAttestation(client:PoolClient,context
    throw new Error('Locked runner declaration stored binding changed');
   const envelope=skillRunnerEnvelopeSchema.parse(row.envelope);
   return {runnerDeclarationRequired:true as const,runnerDeclarationRevalidated:true as const,
+   runnerSigningEnrollment:verified.signingEnrollment,
    runnerDeclarationId:row.id,runnerStatementHash:verified.statementHash,runnerRegistryHash:verified.registryHash,
    runnerDeclarationCheckedAt:now.toISOString(),runnerDeclarationValidBefore:envelope.statement.expiresAt,
    collectorProvenanceVerified:false as const,automaticActivation:false as const};

@@ -193,8 +193,12 @@ it('rejects a consumed observation expiring during preparation',async()=>{
  await expect(evaluateLockedSkillAcceptanceReadiness(client,context,bundleId)).rejects.toThrow('Memory context validation failed');
  expect(m.times).not.toHaveBeenCalled();
 });
-const declaration={runnerDeclarationRequired:true,runnerDeclarationRevalidated:true,runnerDeclarationId:'declaration',runnerStatementHash:'statement',runnerRegistryHash:'registry',runnerDeclarationCheckedAt:'2026-10-19T01:00:00.000Z',runnerDeclarationValidBefore:'2026-10-19T01:30:00.000Z'};
+const runnerEnrollment={keyId:'runner-key',collectorId:'runner',deploymentHash:digest('runner-package'),purpose:'runner-declaration' as const};
+const transportEnrollments=[{keyId:'task-key',collectorId:'task',deploymentHash:digest('task-package'),purpose:'task-model-transport' as const},
+ {keyId:'evaluation-key',collectorId:'evaluation',deploymentHash:digest('evaluation-package'),purpose:'model-transport' as const}];
+const declaration={runnerDeclarationRequired:true,runnerDeclarationRevalidated:true,runnerDeclarationId:'declaration',runnerStatementHash:'statement',runnerRegistryHash:digest('registry'),runnerSigningEnrollment:runnerEnrollment,runnerDeclarationCheckedAt:'2026-10-19T01:00:00.000Z',runnerDeclarationValidBefore:'2026-10-19T01:30:00.000Z'};
 it('rechecks the signed declaration after preparation without qualifying production provenance',async()=>{
+ m.transports.mockResolvedValue(transports);
  m.runner.mockResolvedValueOnce(declaration).mockResolvedValueOnce({...declaration,runnerDeclarationCheckedAt:'2026-10-19T01:01:00.000Z'});
  const out=await evaluateLockedSkillAcceptanceReadiness(client,context,bundleId);
  expect(out).toMatchObject({runnerDeclarationRevalidated:true,runnerDeclarationCheckedAt:'2026-10-19T01:01:00.000Z',collectorProvenanceVerified:false,automaticActivation:false});
@@ -211,16 +215,32 @@ it('rejects a declaration expiring or being disabled during preparation',async()
  m.runner.mockResolvedValueOnce(declaration).mockRejectedValueOnce(new Error('Runner attestation time window invalid'));
  await expect(evaluateLockedSkillAcceptanceReadiness(client,context,bundleId)).rejects.toThrow('time window invalid');
 });
-const transports={transportReceiptsRequired:true,transportReceiptsRevalidated:true,transportAuditHash:'audit',transportRegistryHash:'registry',transportValidBefore:'2026-10-19T01:15:00.000Z'};
+const transports={transportReceiptsRequired:true,transportReceiptsRevalidated:true,transportAuditHash:'audit',transportRegistryHash:digest('registry'),transportSigningEnrollments:transportEnrollments,transportValidBefore:'2026-10-19T01:15:00.000Z'};
 it('rechecks transports after policy and before the final declaration without granting activation',async()=>{
  m.transports.mockResolvedValue(transports);m.runner.mockResolvedValue(declaration);
  const out=await evaluateLockedSkillAcceptanceReadiness(client,context,bundleId);
  expect(out).toMatchObject({...transports,automaticActivation:false,collectorProvenanceVerified:false});expect(m.transports).toHaveBeenCalledTimes(2);
+ expect(out).toMatchObject({signingEnrollmentCoverageRequired:true,signingEnrollmentCoverageRevalidated:true,signingEnrollmentCount:3});
  expect(m.transports.mock.invocationCallOrder[0]).toBeLessThan(m.policy.mock.invocationCallOrder[0]);
  expect(m.policy.mock.invocationCallOrder[0]).toBeLessThan(m.transports.mock.invocationCallOrder[1]);
  expect(m.transports.mock.invocationCallOrder[1]).toBeLessThan(m.runner.mock.invocationCallOrder[1]);
  expect(m.times).toHaveBeenCalledWith(client,context.userId,bundle.artifact,{
   runnerDeclarationValidBefore:declaration.runnerDeclarationValidBefore,transportValidBefore:transports.transportValidBefore});
+});
+it('rejects runner enrollment drift even if a mocked statement hash is unchanged',async()=>{
+ m.transports.mockResolvedValue(transports);
+ m.runner.mockResolvedValueOnce(declaration).mockResolvedValueOnce({...declaration,runnerSigningEnrollment:{...runnerEnrollment,deploymentHash:digest('changed')}});
+ await expect(evaluateLockedSkillAcceptanceReadiness(client,context,bundleId)).rejects.toThrow('Runner declaration changed');
+});
+it('rejects transport enrollment drift even if a mocked audit hash is unchanged',async()=>{
+ m.runner.mockResolvedValue(declaration);
+ m.transports.mockResolvedValueOnce(transports).mockResolvedValueOnce({...transports,transportSigningEnrollments:[
+  {...transportEnrollments[0],deploymentHash:digest('changed')},transportEnrollments[1]]});
+ await expect(evaluateLockedSkillAcceptanceReadiness(client,context,bundleId)).rejects.toThrow('transport receipts changed');
+});
+it('rejects missing verified transport enrollments before returning readiness',async()=>{
+ m.runner.mockResolvedValue(declaration);m.transports.mockResolvedValue({...transports,transportSigningEnrollments:undefined});
+ await expect(evaluateLockedSkillAcceptanceReadiness(client,context,bundleId)).rejects.toThrow('Signing enrollment coverage unavailable');
 });
 it('rejects a changed final transport audit',async()=>{
  m.transports.mockResolvedValueOnce(transports).mockResolvedValueOnce({...transports,transportAuditHash:'changed'});

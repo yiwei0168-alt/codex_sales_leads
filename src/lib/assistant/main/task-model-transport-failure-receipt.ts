@@ -40,5 +40,6 @@ export async function verifyConfiguredTaskTransportFailure(envelope:unknown,inpu
  if(publicKey.asymmetricKeyType!=='ed25519'||signature.length!==64||signature.toString('base64url')!==signed.signature
   ||!verify(null,Buffer.from(digest(s),'hex'),publicKey,signature))throw new Error('Task failure signature invalid');
  return {taskTransportFailureSignatureVerified:true as const,validBefore:s.expiresAt,statementHash:digest(s),registryHash:digest(registry),keyId:key.keyId,
+  signingEnrollment:{keyId:key.keyId,collectorId:key.collectorId,deploymentHash:key.deploymentHash,purpose:'task-model-transport' as const},
   completeTaskProvenanceVerified:false as const,automaticActivation:false as const};
 }

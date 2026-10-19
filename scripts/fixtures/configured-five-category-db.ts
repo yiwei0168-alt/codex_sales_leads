@@ -107,6 +107,13 @@ export async function verifyCombinedConfiguredDatabase(pool:Pool,original:Signed
   assert.equal(readiness.transportOriginalTaskCount,2);assert.equal(readiness.transportEvaluationArmCount,8);assert(readiness.transportReceiptCount!>8);
   assert.equal(readiness.runnerDeclarationRevalidated,true);assert.equal(readiness.transportRegistryHash,readiness.runnerRegistryHash);
   assert.equal(readiness.collectorProvenanceVerified,false);
+  assert.equal(readiness.signingEnrollmentCoverageRequired,true);assert.equal(readiness.signingEnrollmentCoverageRevalidated,true);
+  assert(readiness.signingEnrollments&&readiness.signingEnrollmentCount!>=3);
+  assert.deepEqual([...new Set(readiness.signingEnrollments.map(row=>row.purpose))].sort(),['model-transport','runner-declaration','task-model-transport']);
+  for(const binding of readiness.signingEnrollments){
+   const enrolled=registry.keys.find((row:{keyId:string})=>row.keyId===binding.keyId);assert(enrolled);
+   assert.equal(binding.collectorId,enrolled.collectorId);assert.equal(binding.deploymentHash,enrolled.deploymentHash);assert(enrolled.purposes.includes(binding.purpose));
+  }
   assert.equal(readiness.attachmentBytesCount,1);assert.equal(readiness.attachmentImmutableSnapshotCount,1);
   assert.equal(readiness.attachmentReadOnlyMountVerified,false);
   const assetId=task.attachments[0].assetId;
@@ -130,6 +137,7 @@ export async function verifyCombinedConfiguredDatabase(pool:Pool,original:Signed
   return {configuredSameFreezeFiveCategoriesVerified:true,lockedTransportReceiptsRevalidated:true,transportOriginalTaskCount:2,transportEvaluationArmCount:8,disabledTransportKeyRejected:true,collectedCases:5,combinedArtifactHash:combined.artifactHash,
    frozenPlanHash:digest(registration.frozen.plan),lockedMaterialsVerified:true,prospectiveCaptureSourcesLocked:true,missingHumanJudgmentBlocksPolicy:true,
    immutableAttachmentSnapshotVerified:true,withdrawnSnapshotSourceRejected:true,restoredCanonicalSnapshotRevalidated:true,
+   signingEnrollmentCoverageVerified:true,signingEnrollmentCount:readiness.signingEnrollmentCount,signingEnrollmentCoverageHash:readiness.signingEnrollmentCoverageHash,
    databaseTrustRegistryReadinessVerified:databaseTrust,registryDisablementBlockedUntilReadinessTransactionCommit:databaseTrust,
    realQualityAccepted:false,productionQualificationGranted:false,automaticActivation:false};
   }finally{if(priorRegistryMode===undefined)delete process.env.SKILL_RUNNER_TRUST_REGISTRY_MODE;else process.env.SKILL_RUNNER_TRUST_REGISTRY_MODE=priorRegistryMode;}

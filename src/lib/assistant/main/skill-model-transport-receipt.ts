@@ -36,5 +36,6 @@ export async function verifyConfiguredSkillTransportReceipt(envelope:unknown,inp
  const publicKey=createPublicKey(key.publicKeyPem),signature=Buffer.from(signed.signature,'base64url');
  if(publicKey.asymmetricKeyType!=='ed25519'||signature.length!==64||signature.toString('base64url')!==signed.signature
   ||!verify(null,Buffer.from(digest(s),'hex'),publicKey,signature))throw new Error('Transport signature invalid');
- return {transportSignatureVerified:true as const,validBefore:s.expiresAt,statementHash:digest(s),registryHash:digest(registry),automaticActivation:false as const};
+ return {transportSignatureVerified:true as const,validBefore:s.expiresAt,statementHash:digest(s),registryHash:digest(registry),
+  signingEnrollment:{keyId:key.keyId,collectorId:key.collectorId,deploymentHash:key.deploymentHash,purpose:'model-transport' as const},automaticActivation:false as const};
 }

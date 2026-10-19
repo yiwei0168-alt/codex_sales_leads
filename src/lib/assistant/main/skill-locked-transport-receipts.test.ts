@@ -22,11 +22,13 @@ function evidence(){return {artifactHash:digest('artifact'),freezeStatus:{freeze
 beforeEach(()=>{vi.resetAllMocks();m.read.mockResolvedValue(evidence());m.registry.mockResolvedValue(registry);
  m.query.mockResolvedValue({rows:[{checked_at:now}]});
  const audit={registryHash:digest(registry),journalHash:digest('PRIVATE journal'),transportReceiptHashes:[digest('PRIVATE receipt')],transportValidBefore:expiresAt};
- m.task.mockResolvedValue(audit);m.candidate.mockResolvedValue(audit);
+ m.task.mockResolvedValue({...audit,signingEnrollments:[{keyId:'task-key',collectorId:'task',deploymentHash:digest('task'),purpose:'task-model-transport'}]});
+ m.candidate.mockResolvedValue({...audit,signingEnrollments:[{keyId:'eval-key',collectorId:'eval',deploymentHash:digest('eval'),purpose:'model-transport'}]});
 });
 it('audits two original tasks and all eight case arms using one DB time, returning hashes only',async()=>{
  const out=await revalidateLockedSkillTransportReceipts(client,context,bundleId);
  expect(out).toMatchObject({transportReceiptsRequired:true,transportReceiptsRevalidated:true,transportOriginalTaskCount:2,transportEvaluationArmCount:8,transportReceiptCount:10});
+ expect(out.transportSigningEnrollments).toHaveLength(2);
  expect(m.task).toHaveBeenCalledTimes(2);expect(m.candidate).toHaveBeenCalledTimes(8);
  expect(m.task).toHaveBeenCalledWith(context,{runId},now);expect(m.task).toHaveBeenCalledWith(context,{runId:id(6)},now);
  for(const evaluationId of [id(8),id(9),id(10)])for(const arm of ['baseline','candidate'])

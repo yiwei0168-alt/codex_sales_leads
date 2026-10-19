@@ -53,6 +53,7 @@ it.each([['http-503',503],['timeout-first-output',200],['timeout-total',null],['
   mocks.query.mockResolvedValue([failure(reason,status),fixture(0,'fallback-generation',1)]);
   const out=await verifySkillCandidateJournalTransports(context,input,frozen);
   expect(out.signedFallbackAttemptsVerified).toBe(true);expect(out.transportReceiptHashes).toHaveLength(2);
+  expect(out.signingEnrollments).toEqual([{keyId:'test-key',collectorId:'test-collector',deploymentHash:digest('deployment'),purpose:'model-transport'}]);
  });
 it('rejects missing predecessor signatures and inconsistent signed failure status',async()=>{
  const row=failure();row.output={status:'unavailable',data:{retryable:true,reason:'http-503'}};row.output_hash=digest(row.output);

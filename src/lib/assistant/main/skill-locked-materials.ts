@@ -17,6 +17,7 @@ import {revalidateLockedSkillTransportReceipts} from './skill-locked-transport-r
 import {configuredSkillRunnerTrustRegistryMode} from './skill-runner-attestation';
 import {readLockedSkillRunnerTrustRegistry} from './skill-runner-trust-registry-store';
 import {requireCanonicalSkillAcceptanceOriginals} from './skill-canonical-original-coverage';
+import {skillSigningEnrollmentCoverage} from './skill-signing-enrollment';
 
 /** Keep consumed receipts in a private closure inside the owning transaction;
  * public wrappers expose hashes/counts only, never source contents or callbacks. */
@@ -101,16 +102,19 @@ export async function evaluateLockedSkillAcceptanceReadiness(client:PoolClient,c
   const finalTransports=await revalidateLockedSkillTransportReceipts(client,context,bundleId);
   if(transports.transportReceiptsRequired!==finalTransports.transportReceiptsRequired
    ||transports.transportReceiptsRevalidated!==finalTransports.transportReceiptsRevalidated
-   ||transports.transportReceiptsRequired&&finalTransports.transportReceiptsRequired&&transports.transportAuditHash!==finalTransports.transportAuditHash)
+   ||transports.transportReceiptsRequired&&finalTransports.transportReceiptsRequired&&(transports.transportAuditHash!==finalTransports.transportAuditHash
+    ||digest(transports.transportSigningEnrollments??null)!==digest(finalTransports.transportSigningEnrollments??null)))
    throw new Error('Acceptance transport receipts changed during preparation');
   const finalDeclaration=await readLockedSkillRunnerAttestation(client,context,bundleId);
   if(declaration.runnerDeclarationRequired!==finalDeclaration.runnerDeclarationRequired
    ||declaration.runnerDeclarationRevalidated!==finalDeclaration.runnerDeclarationRevalidated
    ||declaration.runnerDeclarationRequired&&finalDeclaration.runnerDeclarationRequired&&(
     declaration.runnerDeclarationId!==finalDeclaration.runnerDeclarationId||declaration.runnerStatementHash!==finalDeclaration.runnerStatementHash
-    ||declaration.runnerRegistryHash!==finalDeclaration.runnerRegistryHash))throw new Error('Runner declaration changed during acceptance preparation');
+    ||declaration.runnerRegistryHash!==finalDeclaration.runnerRegistryHash
+    ||digest(declaration.runnerSigningEnrollment??null)!==digest(finalDeclaration.runnerSigningEnrollment??null)))throw new Error('Runner declaration changed during acceptance preparation');
   if(finalTransports.transportReceiptsRequired&&finalDeclaration.runnerDeclarationRequired
    &&finalTransports.transportRegistryHash!==finalDeclaration.runnerRegistryHash)throw new Error('Runner and transport trust snapshots differ');
+  const signingCoverage=skillSigningEnrollmentCoverage(finalDeclaration,finalTransports);
   const methodTimes=await revalidateLockedSkillExperienceTimes(client,context.userId,final.artifact,{
    ...(finalDeclaration.runnerDeclarationRequired?{runnerDeclarationValidBefore:finalDeclaration.runnerDeclarationValidBefore}:{}),
    ...(finalTransports.transportReceiptsRequired?{transportValidBefore:finalTransports.transportValidBefore}:{})});
@@ -127,6 +131,7 @@ export async function evaluateLockedSkillAcceptanceReadiness(client:PoolClient,c
    ...memoryReceipts,
    ...finalDeclaration,
    ...finalTransports,
+   ...signingCoverage,
    pinnedMethodVersionCount:materials.pinnedMethodVersionCount,pinnedMethodExperienceObservationCount:materials.pinnedMethodExperienceObservationCount,
    sourceRevocationsLocked:false as const,collectorProvenanceVerified:false as const,automaticActivation:false as const};
   });

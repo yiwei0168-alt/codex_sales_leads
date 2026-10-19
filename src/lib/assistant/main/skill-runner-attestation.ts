@@ -57,6 +57,7 @@ export function verifySkillRunnerAttestation(envelope:unknown,registryInput:unkn
   ||!verify(null,Buffer.from(digest(statement),'hex'),publicKey,signature))
   throw new Error('Runner attestation signature invalid');
  return {signatureVerified:true as const,bindingsVerified:true as const,
+  signingEnrollment:{keyId:key.keyId,collectorId:key.collectorId,deploymentHash:key.deploymentHash,purpose:'runner-declaration' as const},
   statementHash:digest(statement),registryHash:digest(registry),keyId:key.keyId,
   automaticActivation:false as const};
 }
