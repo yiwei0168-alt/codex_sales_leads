@@ -28,6 +28,19 @@ it.each(['before','after'])('defers instead of completing when source changes %s
   expect(client.query.mock.calls.some(call=>call[0].includes("status='ready'"))).toBe(false);
   expect(mock.query.mock.calls.at(-1)?.[2]).toContain('source_changed');
 });
+it('queues without writing when source-lock acquisition is unavailable',async()=>{
+ mock.query.mockResolvedValueOnce([job]).mockResolvedValueOnce([{run_id:'run-1'}]).mockResolvedValue([{run_id:'run-1'}]);
+ const client={query:vi.fn(async(sql:string)=>{
+  if(sql.includes('lock_local_memory_extraction_source'))throw new Error('source lock unavailable');
+  return {rows:[{run_id:'run-1'}],rowCount:1};
+ })};
+ mock.transaction.mockImplementation(async(_user,run)=>run(client));
+ const fetcher:typeof fetch=async url=>String(url).endsWith('/api/tags')?response({models:[model]}):response({message:{content:'{"items":[]}'}});
+ expect(await processLocalMemoryExtraction('user-1','run-1',fetcher)).toBe('queued');
+ expect(mock.observe).not.toHaveBeenCalled();
+ expect(client.query.mock.calls.some(call=>call[0].includes("status='ready'"))).toBe(false);
+ expect(mock.query.mock.calls.at(-1)?.[2]).toContain('memory_storage_error');
+});
 it.each([
   ['preference','I prefer short summaries.','Please summarize. Customer said: QUOTE'],
   ['preference','I prefer short summaries.','Please summarize.\n> QUOTE'],
@@ -69,6 +82,7 @@ it("stores only schema-valid preferences with exact source quotes and marks read
     response({message:{content:JSON.stringify({items:[{memoryKey:"answer-style",content:"Prefers concise answers",
       sourceQuote:"I prefer concise answers",confidence:0.91}]})}}));
   expect(await processLocalMemoryExtraction("user-1","run-1",fetcher as typeof fetch)).toBe("ready");
+  expect(client.query.mock.calls[1]).toEqual(['select lock_local_memory_extraction_source($1,$2,$3)',['run-1',job.message_id,job.message_content]]);
   expect(fetcher).toHaveBeenCalledTimes(2);
   expect(mock.observe).toHaveBeenCalledWith(client,"user-1",expect.objectContaining({kind:"preference",confidence:0.91,
     sourceReceipt:{type:"local-qwen3-extraction",runId:"run-1",messageId:"message-1",sourceQuote:"I prefer concise answers",model:"qwen3:8b",usage:"private-preference"}}));

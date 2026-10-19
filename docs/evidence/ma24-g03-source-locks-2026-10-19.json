@@ -1,0 +1,30 @@
+{
+  "stage": "MA24 G03 ordinary extraction source protection through storage commit",
+  "date": "2026-10-19",
+  "baseCommit": "e2b705d5",
+  "migration": 154,
+  "implementation": [
+    "After model work, lock the current extraction job first, then memory admission, active account, conversation, completed main-agent run and conversation messages.",
+    "Compare captured first-message ID and exact text after locks; retain existing before/after checks and lease wall-clock validation.",
+    "Conversation UPDATE lock fences inserts/moves through FK; message SHARE locks fence edits that could change first-message ordering until transaction completion.",
+    "New fresh-schema option 154 and current-schema marker check; historical 135/153 migration options remain supported."
+  ],
+  "checks": {
+    "unitTests": "33 passed",
+    "typecheck": "exit 0",
+    "focusedEslint": "exit 0",
+    "realDatabaseRaceMatrix": {"exitCode": 0, "log": "tmp/ma24-memory-source-lock-final-2026-10-19.log", "cases": 7},
+    "earlySourceChanges": "Message edit, account disabled, run failed during synthetic model response: rejected, zero observation/notice, queued source_changed, restored-source retry exactly one observation.",
+    "lateSourceChanges": "After observing the extraction INSERT held at an AFTER INSERT fixture trigger, concurrent message edit/account disable/run edit/earlier-message insert each visibly waits on the extraction backend. Release trigger: extraction commits ready first, mutation completes afterward, ready reuse does not duplicate.",
+    "existingCorrectionRegression": {"exitCode": 0, "log": "tmp/ma24-memory-correction-after154-2026-10-19.log"},
+    "fresh154AndRestore": {"exitCode": 0, "log": "tmp/ma24-fresh-schema154-2026-10-19.log", "localMemorySourceGatePresent": true, "nonemptyMailboxCrossClusterRestoreVerified": true},
+    "cleanup": "Synthetic accounts/rows, scoped fixture triggers/functions and disposable containers/network removed. Migration 154 remains installed only on the existing isolated replay clone; no business DB migration."
+  },
+  "limits": [
+    "Synthetic local model adapter, zero real model/network calls and no real-user quality approval.",
+    "Ordinary storage transaction only; earlier receipt-learning and correction transactions keep separate boundaries. Changes after commit are allowed; no automatic invalidation of a committed observation is claimed.",
+    "No sustained contention/load or natural lease-expiry wait injection. Existing final lease check remains active.",
+    "Fresh-154 Web smoke uses older fixed 25f5acd3 image, which does not contain this new extraction code. Direct clone verifier exercises the current extraction code. Neither production loading nor full current-source signed composition is established.",
+    "Clone emits its existing development security warning; this is not production TLS/login acceptance or deployment."
+  ]
+}

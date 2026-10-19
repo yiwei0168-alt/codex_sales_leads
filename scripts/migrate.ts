@@ -17,9 +17,9 @@ const applicationDatabaseUrl = process.env.DATABASE_URL;
 const databaseUrl = process.env.DATABASE_MIGRATION_URL || applicationDatabaseUrl;
 if (!databaseUrl) throw new Error("DATABASE_MIGRATION_URL or DATABASE_URL is required. Copy .env.example to .env.local first.");
 const args = process.argv.slice(2);
-if (args.length>1||args.some(arg => !["--fresh-pilot-through=135","--fresh-pilot-through=153"].includes(arg))) throw new Error("Unknown migration argument");
+if (args.length>1||args.some(arg => !["--fresh-pilot-through=135","--fresh-pilot-through=153","--fresh-pilot-through=154"].includes(arg))) throw new Error("Unknown migration argument");
 const freshPilot = args.length===1;
-const freshPilotThrough = args[0]==="--fresh-pilot-through=153"?153:135;
+const freshPilotThrough = args.length?Number(args[0].split('=')[1]):135;
 if (freshPilot && (!process.env.DATABASE_MIGRATION_URL || !applicationDatabaseUrl)) {
   throw new Error("Fresh pilot migration requires separate application and migration database URLs");
 }

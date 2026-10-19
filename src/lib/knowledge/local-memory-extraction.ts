@@ -185,6 +185,9 @@ export async function processLocalMemoryExtraction(userId:string,runId:string,fe
     return await tenantTransaction(userId,async client=>{
       const locked=await client.query("select run_id from agent_memory_extraction_job where owner_id=$1 and run_id=$2 and status='processing' and lease_token=$3 and updated_at>clock_timestamp()-interval '5 minutes' for update",[userId,runId,lease]);
       if(!locked.rowCount)return "busy";
+      // Model work has finished. Keep the job-before-source order used by the
+      // correction worker; then hold source rows only for this storage commit.
+      await client.query('select lock_local_memory_extraction_source($1,$2,$3)',[runId,job.message_id,job.message_content]);
       const recheckSource=async()=>{
         const current=(await client.query<{message_id:string;message_content:string}>(
           `select m.id as message_id,m.content as message_content from agent_run r
