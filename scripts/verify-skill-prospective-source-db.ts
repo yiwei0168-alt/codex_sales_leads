@@ -21,6 +21,7 @@ import {loadDecisionMemory} from '../src/lib/assistant/main/memory-context';
 import {modelFunctions,transportMessages} from '../src/lib/assistant/main/model';
 import {modelRequestManifest} from '../src/lib/assistant/main/model-request-manifest';
 import {describeTool,productTools} from '../src/lib/assistant/main/tools';
+import {knowledgeOriginalsTool} from '../src/lib/assistant/main/knowledge-originals-tool';
 import {skillSourceRuntimeHash} from '../src/lib/assistant/main/skill-runtime-identity';
 import {runDurableRecordedSkillCandidateArm} from '../src/lib/assistant/main/skill-candidate-source';
 import {collectSkillProspectiveAcceptance} from '../src/lib/assistant/main/skill-prospective-collector';
@@ -115,7 +116,7 @@ try{
  await pool.query(`insert into mailbox_message(id,user_id,connection_id,folder_path,uid_validity,message_uid,direction,content_sha256,content_ciphertext)
   values($1,$2,$3,'INBOX','synthetic',1,'inbound',$4,$5)`,[mail,owner,connection,hash,content]);
  const mailData=await getMailboxMessageForReview(owner,mail);assert(mailData);
- const customerId=randomUUID(),timelineCall=randomUUID(),customerListCall=randomUUID();
+ const customerId=randomUUID(),timelineCall=randomUUID(),customerListCall=randomUUID(),originalCall=randomUUID();
  let timelineData:Awaited<ReturnType<typeof readCustomerTimeline>>=null;
  let customerListData:Awaited<ReturnType<typeof listMailboxCustomers>>|undefined;
  if(fullComposition){
@@ -132,6 +133,9 @@ try{
  };
  await pool.query("update agent_run set status='running' where id=$1",[run]);
  const baselineAnswer='Synthetic baseline: Please keep responses concise.';
+ const originalOutput=fullComposition?await knowledgeOriginalsTool.execute({query:'',assetId:attachmentId},
+  {userId:owner,runId:run,leaseToken:'synthetic-local-read-only',role:'member',mode:'standard'}):null;
+ if(originalOutput)assert.equal(originalOutput.status,'success');
  if(fullMaterial){
   const messages:ModelMessage[]=structuredClone(initialWithMemory),profile=config.profile!,route=profile.routes[0];
   const replies:ModelMessage[]=[{role:'assistant',content:null,tool_calls:[{id:'source-describe-mail',type:'function',function:{name:'describe_tool',arguments:JSON.stringify({tool:'mail_read'})}}]},
@@ -139,9 +143,11 @@ try{
    {role:'assistant',content:baselineAnswer}];
   if(fullComposition){
    replies[0].tool_calls!.push({id:'source-describe-timeline',type:'function',function:{name:'describe_tool',arguments:JSON.stringify({tool:'customer_timeline'})}});
+   replies[0].tool_calls!.push({id:'source-describe-original',type:'function',function:{name:'describe_tool',arguments:JSON.stringify({tool:'knowledge_originals'})}});
    replies[1].tool_calls!.push(
     {id:'source-timeline-read',type:'function',function:{name:'execute_tool',arguments:JSON.stringify({tool:'customer_timeline',arguments:{customerId}})}},
-    {id:'source-customer-list',type:'function',function:{name:'execute_tool',arguments:JSON.stringify({tool:'customer_timeline',arguments:{}})}});
+    {id:'source-customer-list',type:'function',function:{name:'execute_tool',arguments:JSON.stringify({tool:'customer_timeline',arguments:{}})}},
+    {id:'source-original',type:'function',function:{name:'execute_tool',arguments:JSON.stringify({tool:'knowledge_originals',arguments:{query:'',assetId:attachmentId}})}});
   }
   for(const [step,message] of replies.entries()){
    const request={profile,index:0,messages:structuredClone(messages)},body={model:route.model,messages:transportMessages(messages),tools:modelFunctions,stream:true,reasoning:{effort:route.effort}};
@@ -149,11 +155,16 @@ try{
    messages.push(message);
    if(step===0)messages.push({role:'tool',tool_call_id:'source-describe-mail',content:JSON.stringify({status:'success',data:describeTool(productTools.find(tool=>tool.id==='mail_read')!)})});
    if(step===0&&fullComposition)messages.push({role:'tool',tool_call_id:'source-describe-timeline',content:JSON.stringify({status:'success',data:describeTool(productTools.find(tool=>tool.id==='customer_timeline')!)})});
+   if(step===0&&fullComposition)messages.push({role:'tool',tool_call_id:'source-describe-original',content:JSON.stringify({status:'success',data:describeTool(knowledgeOriginalsTool)})});
    if(step===1){const output=result(mailData,{callId:readCall});await writeCall(readCall,'mail_read','read',{messageId:mail},output,'source-mail-read');
     messages.push({role:'tool',tool_call_id:'source-mail-read',content:JSON.stringify(output)});
     if(fullComposition)for(const [callId,key,args,data] of [[timelineCall,'source-timeline-read',{customerId},timelineData],[customerListCall,'source-customer-list',{},customerListData]] as const){
      const timelineOutput=result(data,{callId});await writeCall(callId,'customer_timeline','read',args,timelineOutput,key);
      messages.push({role:'tool',tool_call_id:key,content:JSON.stringify(timelineOutput)});
+    }
+    if(originalOutput){const output={...originalOutput,callId:originalCall};
+     await writeCall(originalCall,'knowledge_originals','read',{query:'',assetId:attachmentId},output,'source-original');
+     messages.push({role:'tool',tool_call_id:'source-original',content:JSON.stringify(output)});
     }
    }
   }
@@ -174,7 +185,8 @@ try{
   const actions=[{name:'describe_tool',args:{tool:'skill_read'}},{name:'execute_tool',args:{tool:'skill_read',arguments:{id:skill.id}}},
    {name:'describe_tool',args:{tool:'mail_read'}},{name:'execute_tool',args:{tool:'mail_read',arguments:{messageId:mail}}},
    ...(fullComposition?[{name:'describe_tool',args:{tool:'customer_timeline'}},{name:'execute_tool',args:{tool:'customer_timeline',arguments:{customerId}}},
-    {name:'execute_tool',args:{tool:'customer_timeline',arguments:{}}}]:[])];
+    {name:'execute_tool',args:{tool:'customer_timeline',arguments:{}}},
+    {name:'describe_tool',args:{tool:'knowledge_originals'}},{name:'execute_tool',args:{tool:'knowledge_originals',arguments:{query:'',assetId:attachmentId}}}]:[])];
   const executed=await runDurableRecordedSkillCandidateArm({userId:owner},{runId:run,skillId:skill.id,version:1},'candidate',{
    frozen,evaluationId,sourceKind:'synthetic-fixture',transaction:collector,request:async request=>{
     requests++;const step=request.step;
@@ -190,7 +202,7 @@ try{
   assert.equal((await collectSkillProspectiveAcceptance({userId:owner},selection,collector)).bundleId,collectedBundle);
   assert.equal((await readSkillAcceptanceReview({userId:owner},collectedBundle)).cases.find(row=>row.id==='shadow')?.materialAvailable,true);
   const material=await readSkillAcceptanceReviewCase({userId:owner},{bundleId:collectedBundle,caseId:'shadow'});
-  assert.equal(material.baseline,baselineAnswer);assert.equal(material.candidate,candidateAnswer);assert.equal(material.receipts.length,fullComposition?3:1);
+  assert.equal(material.baseline,baselineAnswer);assert.equal(material.candidate,candidateAnswer);assert.equal(material.receipts.length,fullComposition?4:1);
   assert.equal(material.automaticActivation,false);assert.equal(requests,actions.length+1);
   await assert.rejects(readSkillAcceptanceReviewCase({userId:other},{bundleId:collectedBundle,caseId:'shadow'}));
   const bundleCount=(await pool.query('select count(*)::int n from agent_skill_acceptance_bundle where owner_id=$1',[owner])).rows[0].n;

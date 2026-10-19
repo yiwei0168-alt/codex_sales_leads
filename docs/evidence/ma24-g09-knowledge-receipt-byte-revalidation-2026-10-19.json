@@ -1,0 +1,48 @@
+{
+  "stage": "MA24 G09 consumed knowledge receipt original bytes",
+  "date": "2026-10-19",
+  "sourceBaseCommit": "cf147d1a5ce7d808aa9ca0a98ae229aa72891e54",
+  "checks": {
+    "focusedVitest": "60 passed across receipt mapping, actual file bytes, material preparation and run locks; overlaps prior stage tests",
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "diffCheck": "passed",
+    "freshClusterMemorySourceLocks": "passed",
+    "latestFixedSnapshotFiveCategoryComposition": "pending"
+  },
+  "implementation": {
+    "inputs": "Only consumed historical/prospective receipts returned by the existing authenticated journal/material reconstruction",
+    "tools": ["knowledge_search", "knowledge_facts", "knowledge_compare", "knowledge_originals", "vectorless_read"],
+    "checksAfterMaterialAndAfterPolicy": true,
+    "privateReceiptClosureNotReturnedByPublicFunctions": true,
+    "currentV3ReleaseMappingRequired": true,
+    "currentTreeVersionMappingRequired": true,
+    "databaseOnlyLegacyChunksAndRevisionTreesPreserved": true,
+    "adversarialSafetyFixtureSourcesExcluded": true,
+    "validPartialNoAccessibleOriginalsResultPreserved": true,
+    "filesystemLease": false,
+    "automaticActivation": false
+  },
+  "database": {
+    "command": "node --import tsx scripts/verify-ma24-fresh-pilot-new-cluster.ts --memory-source-locks",
+    "exitCode": 0,
+    "allFiveKnowledgeToolsMapped": true,
+    "realRawByteHashAndLength": true,
+    "sameSizeTamperRejected": true,
+    "crossAccountRejected": true,
+    "withdrawnAssetRejected": true,
+    "withdrawnReleaseRejected": true,
+    "databaseOnlyLegacySourcePreserved": true,
+    "priorMemoryMethodTaskAndSourceLockMatrixPassed": true,
+    "temporaryContainerRemoved": true,
+    "actualModelCalls": 0,
+    "productionDatabaseModified": false,
+    "scope": "Focused real-SQL mapping and actual file checks. Synthetic minimal source rows do not establish full semantic review or independent answer quality."
+  },
+  "compositionFixture": "Now journals one real knowledge_originals read and checks that the retained-source readiness result counts its file. Pending fixed-snapshot execution; earlier snapshots do not cover this change.",
+  "limitations": [
+    "Current content, hash, coordinate and journal provenance guards remain prerequisites; this helper does not replace them.",
+    "Before/after byte checks are not immutable storage or a final commit-time source lease.",
+    "Production collector/provider qualification, human quality and final activation remain open; LAN deployment is deferred."
+  ]
+}

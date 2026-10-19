@@ -2,7 +2,8 @@ import type {PoolClient} from 'pg';
 import {beforeEach,expect,it,vi} from 'vitest';
 import {digest} from './contracts';
 import {revalidateLockedSkillAcceptanceMaterials,evaluateLockedSkillAcceptanceReadiness} from './skill-locked-materials';
-const m=vi.hoisted(()=>({read:vi.fn(),material:vi.fn(),policy:vi.fn(),lock:vi.fn(),methods:vi.fn(),query:vi.fn(),memoryBoundary:vi.fn(),times:vi.fn(),bytes:vi.fn()}));
+const m=vi.hoisted(()=>({read:vi.fn(),material:vi.fn(),policy:vi.fn(),lock:vi.fn(),methods:vi.fn(),query:vi.fn(),memoryBoundary:vi.fn(),times:vi.fn(),bytes:vi.fn(),knowledgeBytes:vi.fn()}));
+vi.mock('./skill-knowledge-receipt-bytes',()=>({revalidateLockedSkillKnowledgeReceiptBytes:m.knowledgeBytes}));
 vi.mock('./skill-attachment-bytes',()=>({revalidateLockedSkillAttachmentBytes:m.bytes}));
 vi.mock('./skill-acceptance-run-locks',()=>({lockSkillAcceptanceRunJournals:m.lock}));
 vi.mock('./skill-pinned-method-locks',()=>({lockSkillAcceptancePinnedMethods:m.methods}));
@@ -21,6 +22,7 @@ const material=()=>({bundleId,caseId:'replay',artifactHash:bundle.artifactHash,o
  freezeStatus:{state:'active',freezeId:'freeze'},canPass:{baseline:true,candidate:true},baseline:'PRIVATE baseline',candidate:'PRIVATE candidate',receipts:['PRIVATE receipt']});
 beforeEach(()=>{vi.resetAllMocks();m.read.mockResolvedValue(bundle);m.material.mockResolvedValue(material());
  m.bytes.mockResolvedValue({attachmentBytesRevalidated:true,attachmentBytesCount:1,attachmentBytesManifestHash:'manifest'});
+ m.knowledgeBytes.mockResolvedValue({knowledgeReceiptBytesRevalidated:true,knowledgeReceiptAssetCount:1,knowledgeReceiptDatabaseOnlyCount:0,knowledgeReceiptBytesManifestHash:'knowledge-manifest'});
  m.query.mockResolvedValue({rows:[]});m.memoryBoundary.mockImplementation(async(_user:string,work:()=>Promise<unknown>)=>work());
  m.times.mockResolvedValue({methodExperienceTimesRevalidated:true,methodExperienceTimeCheckedAt:'2026-10-19T01:00:00.000Z',methodExperienceValidBefore:'2026-10-19T02:00:00.000Z',methodExperienceTimeObservationCount:2});
  m.methods.mockResolvedValue({pinnedMethodSourcesLocked:true,pinnedMethodPinCount:2,pinnedMethodVersionCount:1,pinnedMethodExperienceObservationCount:2});
@@ -31,6 +33,7 @@ it('rebuilds planned material and returns hashes without private answers or rece
  expect(out).toMatchObject({sourcePayloadsRevalidated:true,sourceRevocationsLocked:false,automaticActivation:false});
  expect(m.material).toHaveBeenCalledExactlyOnceWith(context,{bundleId,caseId:'replay'});expect(m.read).toHaveBeenCalledTimes(2);
  expect(JSON.stringify(out)).not.toContain('PRIVATE');expect(out.materials).toHaveLength(1);
+ expect(out).not.toHaveProperty('recheckKnowledgeBytes');
  expect(out).toMatchObject({pinnedMethodSourcesLocked:true,pinnedMethodPinCount:2});
  expect(m.lock.mock.invocationCallOrder[0]).toBeLessThan(m.methods.mock.invocationCallOrder[0]);
  expect(m.methods.mock.invocationCallOrder[0]).toBeLessThan(m.material.mock.invocationCallOrder[0]);
@@ -108,4 +111,26 @@ it('rejects same-sized file tampering during preparation',async()=>{
 it('rejects attachment registration drift even when both byte reads succeed',async()=>{
  m.bytes.mockResolvedValueOnce({attachmentBytesManifestHash:'manifest'}).mockResolvedValueOnce({attachmentBytesManifestHash:'changed'});
  await expect(evaluateLockedSkillAcceptanceReadiness(client,context,bundleId)).rejects.toThrow('registration changed');
+});
+it('retains only authenticated task receipt references for the final byte check',async()=>{
+ const receipt={tool:'knowledge_originals',output:{status:'success',data:{documents:[]}}};
+ m.read.mockResolvedValue({...bundle,artifact:{...bundle.artifact,plan:{cases:[{id:'replay',provenance:'historical-task'}]}}});
+ m.material.mockResolvedValue({...material(),receipts:[receipt]});
+ const out=await evaluateLockedSkillAcceptanceReadiness(client,context,bundleId);
+ expect(m.knowledgeBytes).toHaveBeenCalledTimes(2);
+ expect(m.knowledgeBytes).toHaveBeenLastCalledWith(client,context.userId,[receipt]);
+ expect(m.policy.mock.invocationCallOrder[0]).toBeLessThan(m.knowledgeBytes.mock.invocationCallOrder[1]);
+ expect(out).toMatchObject({knowledgeReceiptBytesRevalidated:true,knowledgeReceiptAssetCount:1});
+ expect(JSON.stringify(out)).not.toContain('knowledge_originals');
+});
+it('does not interpret adversarial safety fixture receipts as real knowledge assets',async()=>{
+ m.read.mockResolvedValue({...bundle,artifact:{...bundle.artifact,plan:{cases:[{id:'replay',provenance:'safety-fixture'}]}}});
+ await evaluateLockedSkillAcceptanceReadiness(client,context,bundleId);
+ expect(m.knowledgeBytes).toHaveBeenLastCalledWith(client,context.userId,[]);
+});
+it('rejects a knowledge file changing after policy preparation',async()=>{
+ m.knowledgeBytes.mockResolvedValueOnce({knowledgeReceiptBytesRevalidated:true,knowledgeReceiptAssetCount:1,knowledgeReceiptDatabaseOnlyCount:0,knowledgeReceiptBytesManifestHash:'knowledge-manifest'})
+  .mockRejectedValueOnce(new Error('Acceptance attachment bytes changed'));
+ await expect(evaluateLockedSkillAcceptanceReadiness(client,context,bundleId)).rejects.toThrow('bytes changed');
+ expect(m.times).not.toHaveBeenCalled();
 });

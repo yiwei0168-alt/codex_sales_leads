@@ -109,6 +109,7 @@ export async function verifyCompositionDatabaseFixture(input:{pool:Pool;owner:st
   assert.equal(readiness.taskOriginsLocked,true);assert.equal(readiness.taskJournalsLocked,true);assert(readiness.runCount>0);
   assert.equal(readiness.attachmentMetadataLocked,true);assert.equal(readiness.attachmentCount,1);
   assert.equal(readiness.attachmentBytesRevalidated,true);assert.equal(readiness.attachmentBytesCount,1);
+  assert.equal(readiness.knowledgeReceiptBytesRevalidated,true);assert.equal(readiness.knowledgeReceiptAssetCount,1);
   assert.equal(readiness.mailReadSourcesLocked,true);assert(readiness.mailCount>0);
   assert.equal(readiness.timelineSourcesLocked,true);assert.equal(readiness.timelineCustomerCount,1);
   assert.equal(readiness.decisionMemorySourcesLocked,true);

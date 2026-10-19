@@ -14,6 +14,12 @@ export async function revalidateLockedSkillAttachmentBytes(client:PoolClient,use
  const tasks=await client.query<{input:unknown}>(`select input from agent_run where user_id=$1 and id=any($2::uuid[]) order by id`,[userId,runs]);
  if(tasks.rows.length!==runs.length)throw new Error('Acceptance attachment task unavailable');
  const ids=skillAcceptanceAttachmentIds(tasks.rows);
+ const checked=await revalidateLockedKnowledgeAssetBytes(client,userId,ids);
+ return {attachmentBytesRevalidated:true as const,attachmentBytesCount:checked.count,attachmentBytesManifestHash:checked.manifestHash};
+}
+/** Internal account-bound metadata must be protected by knowledge admission. */
+export async function revalidateLockedKnowledgeAssetBytes(client:PoolClient,userId:string,assetIds:string[]){
+ z.uuid().parse(userId);const ids=[...new Set(z.array(z.uuid()).max(10000).parse(assetIds))].sort();
  const manifest:Array<{id:string;storage_key:string;source_sha256:string;byte_size:string}>=[];
  for(let offset=0;offset<ids.length;offset+=100){
   const batch=ids.slice(offset,offset+100);
@@ -45,5 +51,5 @@ export async function revalidateLockedSkillAttachmentBytes(client:PoolClient,use
    manifest.push(asset);
   }
  }
- return {attachmentBytesRevalidated:true as const,attachmentBytesCount:ids.length,attachmentBytesManifestHash:digest(manifest)};
+ return {count:ids.length,manifestHash:digest(manifest)};
 }

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
-import {randomUUID,randomBytes} from 'node:crypto';
-import {readFile} from 'node:fs/promises';
+import {createHash,randomUUID,randomBytes} from 'node:crypto';
+import {mkdir,readFile,unlink,writeFile} from 'node:fs/promises';
 import nextEnv from '@next/env';
 import {Pool} from 'pg';
 import {getPool,tenantTransaction,withBoundTenantTransaction} from '../src/lib/rag/db';
@@ -13,6 +13,7 @@ import {loadDecisionMemory} from '../src/lib/assistant/main/memory-context';
 import {decisionMemoryMessage,assertRecordedDecisionMemory} from '../src/lib/assistant/main/decision-memory-message';
 import {withCurrentDecisionMemory,MemoryContextChangedError} from '../src/lib/assistant/main/memory-message-guard';
 import {revalidateLockedSkillExperienceTimes} from '../src/lib/assistant/main/skill-experience-time-check';
+import {verifyKnowledgeReceiptByteDatabase} from './fixtures/skill-knowledge-byte-database';
 
 nextEnv.loadEnvConfig(process.cwd());assert.equal(process.env.MA24_DISPOSABLE_MEMORY_SOURCE_LOCKS,'1','Disposable harness required');
 process.env.PGOPTIONS='-c statement_timeout=10000';
@@ -20,6 +21,7 @@ process.env.MAILBOX_CREDENTIAL_KEY=randomBytes(32).toString('base64url');
 const admin=new URL(process.env.DATABASE_MIGRATION_URL!),app=new URL(process.env.DATABASE_URL!);
 assert(['localhost','127.0.0.1'].includes(admin.hostname));assert.equal(admin.host+admin.pathname,app.host+app.pathname);
 const pool=new Pool({connectionString:admin.toString()}),owner=randomUUID(),other=randomUUID(),a=randomUUID(),b=randomUUID(),conflict=randomUUID();
+const attachmentKey=`knowledge/ma24-memory-source-${randomUUID()}.txt`;let attachmentWritten=false;
 const waitingOn=async(pid:number)=>Number((await pool.query(`with recursive waiting(pid) as (
  select $1::int union select a.pid from pg_stat_activity a join waiting w on w.pid=any(pg_blocking_pids(a.pid)))
  select count(*) n from waiting where pid<>$1`,[pid])).rows[0].n);
@@ -90,12 +92,14 @@ try{
   assert.equal(waiting,3,'Owned update, observation insert and shared-policy rewrite must wait');
  }finally{await decisionHolder.query('rollback');decisionHolder.release();}
  await Promise.all(decisionWrites);
- const documentId=randomUUID(),assetId=randomUUID(),treeId=randomUUID(),sha=digest('Synthetic attachment');
+ const bytes=Buffer.from('Synthetic attachment');
+ const documentId=randomUUID(),assetId=randomUUID(),treeId=randomUUID(),sha=createHash('sha256').update(bytes).digest('hex');
+ await mkdir('knowledge',{recursive:true});await writeFile(attachmentKey,bytes,{flag:'wx'});attachmentWritten=true;
  const collection=(await pool.query('select id from knowledge_collection order by id limit 1')).rows[0].id;
  await pool.query(`insert into knowledge_document(id,collection_id,external_id,title,source_type,content_sha256,owner_id,visibility)
   values($1,$2,$1::uuid::text,'Synthetic attachment','synthetic',$3,$4,'private')`,[documentId,collection,sha,owner]);
  await pool.query(`insert into knowledge_asset(id,document_id,storage_key,source_sha256,mime_type,byte_size,document_type,source_nature)
-  values($1,$2,'synthetic/source.txt',$3,'text/plain',0,'text','synthetic')`,[assetId,documentId,sha]);
+  values($1,$2,$4,$3,'text/plain',$5,'text','synthetic')`,[assetId,documentId,sha,attachmentKey,bytes.length]);
  await pool.query(`insert into knowledge_tree_version(id,document_id,asset_id,source_sha256,extractor_version,artifact_sha256,status)
   values($1,$2,$3,$4,'synthetic',$4,'ready')`,[treeId,documentId,assetId,sha]);
  await pool.query('update knowledge_document set current_tree_version_id=$1 where id=$2',[treeId,documentId]);
@@ -413,7 +417,8 @@ try{
  assert.deepEqual(state,{corrected:true,invalidated:true,conflict:'open'});
  await assert.rejects(tenantTransaction(owner,client=>lockCurrentSkillExperienceSources(client,owner,version)),/changed after locking/);
  assert.equal((await pool.query("select to_regclass('public.ma24_evaluation_hard_limit') is null absent")).rows[0].absent,true);
+ await verifyKnowledgeReceiptByteDatabase(pool,{owner,other,documentId,assetId,treeId,sha,key:attachmentKey,bytes});
  console.log(JSON.stringify({memorySourceLocksDatabase:'passed',methodExperienceExpiryAfterPreparationRejected:true,methodExperienceCommonDatabaseClockVerified:true,decisionMemoryFinalPreparationBoundaryRejected:true,pinnedMethodSixWritersBlocked:true,pinnedMethodRevocationAndOriginalChangeRejected:true,pinnedMethodPrivilegesUnchanged:true,correctionInvalidationAndConflictBlocked:true,allWritersResumeAfterRelease:true,
   foreignOwnerAndInvalidIdsRejected:true,knowledgePublicationAndReviewWritesBlocked:true,attachmentReadUnderPrelockedPublisherCompletes:true,decisionMemoryWriteAndPhantomGateVerified:true,otherAccountPrivateMemoryWriteContinues:true,decisionMemoryWallClockRevalidated:true,timelineUpdatesAndPhantomInsertsBlocked:true,mailMetadataUpdatesBlocked:true,attachmentMetadataUpdatesBlocked:true,privateAttachmentForeignOwnerRejected:true,taskOriginsAndHistoryAppendBlocked:true,taskAndJournalUpdateAndAppendBlocked:true,foreignTaskJournalLockRejected:true,noObservationUpdateGrant:true,originUpdatesBlocked:true,changedOriginalMessageRejected:true,storedProvenanceLockThenRecheck:true,invalidatedProvenanceRejectedAfterLock:true,expiryAfterTransactionStartRejected:true,
   deferredEvaluationMigrationsApplied:false,actualModelCalls:0,automaticActivation:false}));
-}finally{await pool.end();await getPool().end();}
+}finally{try{if(attachmentWritten)await unlink(attachmentKey);}finally{await pool.end();await getPool().end();}}
