@@ -3,7 +3,7 @@ import {createHash} from "node:crypto";
 import {readFile} from "node:fs/promises";
 import {resolve} from "node:path";
 import {tenantQuery,tenantTransaction} from "@/lib/rag/db";
-import {assertResolvedInsideKnowledgeRoot,safeKnowledgeStorageKey} from "./document-repository";
+import {assertResolvedInsideKnowledgeRoot,safeKnowledgeStorageKey,inspectKnowledgeAssetBytes} from "./document-repository";
 
 const digest=(value:Uint8Array|string)=>createHash("sha256").update(value).digest("hex");
 type Artifact={documents?:Array<{sourceSha256:string;extractorVersion:string;blocks:Block[]}>};
@@ -20,10 +20,8 @@ export async function indexExtractedDocument(userId:string,jobId:string,leaseTok
      from knowledge_upload_job where id=$1 and user_id=$2`,[jobId,userId]);
   if(!job||job.status!=="registered"||!job.published_document_id||!job.published_asset_id||!job.extraction_artifact_key)throw new Error("Registered extracted document required");
   if(job.visibility==="shared"&&actor.role!=="admin")throw new Error("Shared tree requires administrator");
-  const sourcePath=resolve(safeKnowledgeStorageKey(job.storage_key));assertResolvedInsideKnowledgeRoot(sourcePath);
   const artifactPath=resolve(safeKnowledgeStorageKey(job.extraction_artifact_key));assertResolvedInsideKnowledgeRoot(artifactPath);
-  const [sourceBytes,artifactBytes]=await Promise.all([readFile(sourcePath),readFile(artifactPath)]);
-  if(digest(sourceBytes)!==job.source_sha256)throw new Error("Source hash mismatch");
+  const [source,artifactBytes]=await Promise.all([inspectKnowledgeAssetBytes(job.storage_key,job.source_sha256),readFile(artifactPath)]);
   const artifactHash=digest(artifactBytes);
   if(!job.metrics.artifactSha256||artifactHash!==job.metrics.artifactSha256)throw new Error("Artifact hash mismatch");
   await verifyReviewedExtraction(userId,jobId,artifactBytes);
@@ -39,13 +37,17 @@ export async function indexExtractedDocument(userId:string,jobId:string,leaseTok
       if(!lease.rows[0])throw new Error("Upload lease expired or changed");
     }
     await client.query("select pg_advisory_xact_lock(hashtextextended($1,0))",[job.published_document_id]);
-    const asset=await client.query<{id:string}>(`select a.id from knowledge_asset a join knowledge_document d on d.id=a.document_id
+    const asset=await client.query<{id:string;byte_size:string}>(`select a.id,a.byte_size::text from knowledge_asset a join knowledge_document d on d.id=a.document_id
       where a.id=$1 and d.id=$2 and a.source_sha256=$3 and a.registration_status='registered' and d.status='active'
-        and d.owner_id=$4 and d.metadata->>'sourceSha256'=$3 for update of d`,
-      [job.published_asset_id,job.published_document_id,job.source_sha256,userId]);
+        and d.owner_id=$4 and d.metadata->>'sourceSha256'=$3 and a.storage_key=$5 for update of d`,
+      [job.published_asset_id,job.published_document_id,job.source_sha256,userId,job.storage_key]);
     if(!asset.rows[0])throw new Error("Approved source no longer current");
+    if(Number(asset.rows[0].byte_size)!==source.byteSize)throw new Error('Registered source size changed');
     const tree=await writeExtractedTree(client,{documentId:job.published_document_id,assetId:job.published_asset_id,sourceSha256:job.source_sha256,extractorVersion:doc.extractorVersion,artifactHash,blocks:doc.blocks});
     await client.query("update knowledge_document set current_tree_version_id=$2 where id=$1",[job.published_document_id,tree.versionId]);
+    const finalSource=await inspectKnowledgeAssetBytes(job.storage_key,job.source_sha256);
+    if(finalSource.byteSize!==source.byteSize)throw new Error('Source bytes changed during tree indexing');
+    await inspectKnowledgeAssetBytes(job.extraction_artifact_key,artifactHash);
     return tree;
   },actor.role);
 }

@@ -1,12 +1,12 @@
 import {createHash} from "node:crypto";
 import {beforeEach,expect,it,vi} from "vitest";
-const mock=vi.hoisted(()=>({query:vi.fn(),transaction:vi.fn(),read:vi.fn()}));
+const mock=vi.hoisted(()=>({query:vi.fn(),transaction:vi.fn(),read:vi.fn(),inspect:vi.fn()}));
 vi.mock("@/lib/rag/db",()=>({tenantQuery:mock.query,tenantTransaction:mock.transaction}));
-vi.mock("./document-repository",()=>({safeKnowledgeStorageKey:(key:string)=>key,assertResolvedInsideKnowledgeRoot:vi.fn()}));
+vi.mock("./document-repository",()=>({safeKnowledgeStorageKey:(key:string)=>key,assertResolvedInsideKnowledgeRoot:vi.fn(),inspectKnowledgeAssetBytes:mock.inspect}));
 vi.mock("node:fs/promises",()=>({readFile:mock.read}));
 import {cjkQueryFragments,evidenceText,indexExtractedDocument,latinQueryTerms,modelTokensInQuery,technicalQueryAnchors} from "./vectorless";
 const sha=(bytes:Uint8Array)=>createHash("sha256").update(bytes).digest("hex");
-beforeEach(()=>{mock.query.mockReset();mock.transaction.mockReset();mock.read.mockReset();});
+beforeEach(()=>{mock.query.mockReset();mock.transaction.mockReset();mock.read.mockReset();mock.inspect.mockReset();});
 it("keeps exact model suffixes and distinct models for document narrowing",()=>{
   expect(modelTokensInQuery("比较 WR3000和WR6500H 的端口")).toEqual(["wr3000","wr6500h"]);
   expect(modelTokensInQuery("AP3000_P 和 AP3000 是否相同？")).toEqual(["ap3000_p","ap3000"]);
@@ -35,17 +35,17 @@ it("keeps table rows and headers as original evidence",()=>{
     .toBe("Model\tPorts\nA\t8\nB\t16");
 });
 it("rejects changed source bytes before a tree transaction",async()=>{
-  const source=Buffer.from("changed source");
   mock.query.mockResolvedValueOnce([{role:"admin"}]).mockResolvedValueOnce([{id:"job",status:"registered",published_document_id:"doc",published_asset_id:"asset",source_sha256:"a".repeat(64),extractor_version:"layout-v2.0.0",storage_key:"knowledge/source.pdf",extraction_artifact_key:"knowledge/artifact.json",metrics:{artifactSha256:sha(Buffer.from("{}"))}}]);
-  mock.read.mockResolvedValueOnce(source).mockResolvedValueOnce(Buffer.from("{}"));
-  await expect(indexExtractedDocument("owner","job")).rejects.toThrow("Source hash mismatch");
+  mock.inspect.mockRejectedValueOnce(new Error('Knowledge asset no longer matches approved hash'));
+  mock.read.mockResolvedValueOnce(Buffer.from("{}"));
+  await expect(indexExtractedDocument("owner","job")).rejects.toThrow("no longer matches approved hash");
   expect(mock.transaction).not.toHaveBeenCalled();
 });
 it("rejects incomplete extraction before a tree transaction",async()=>{
   const source=Buffer.from("source");
   const artifact=Buffer.from(JSON.stringify({documents:[{sourceSha256:sha(source),extractorVersion:"layout-v2.0.0",blocks:[{id:"page-1",unitType:"page",unitIndex:1,blockType:"pending-ocr",quality:"pending-ocr"}]}]}));
   mock.query.mockResolvedValueOnce([{role:"admin"}]).mockResolvedValueOnce([{id:"job",status:"registered",published_document_id:"doc",published_asset_id:"asset",source_sha256:sha(source),extractor_version:"layout-v2.0.0",storage_key:"knowledge/source.pdf",extraction_artifact_key:"knowledge/artifact.json",metrics:{artifactSha256:sha(artifact)}}]);
-  mock.read.mockResolvedValueOnce(source).mockResolvedValueOnce(artifact);
+  mock.inspect.mockResolvedValueOnce({sha256:sha(source),byteSize:source.length});mock.read.mockResolvedValueOnce(artifact);
   await expect(indexExtractedDocument("owner","job")).rejects.toThrow("Unresolved extraction units");
   expect(mock.transaction).not.toHaveBeenCalled();
 });

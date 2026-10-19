@@ -1,0 +1,166 @@
+{
+  "stage": "MA24 G05/G09 final tree original and artifact byte checks",
+  "date": "2026-10-19",
+  "sourceBaseCommit": "fd16ab9f",
+  "implementation": {
+    "initialOriginalUsesStableDescriptorInspector": true,
+    "registeredAssetStorageKeyAndByteSizeBound": true,
+    "finalOriginalAndArtifactDigestsRecheckedInsideTreeTransactionAfterPointerWrite": true,
+    "lateMismatchRejectsTransaction": true,
+    "immutableStorageLease": false
+  },
+  "checks": {
+    "focusedVitest": {
+      "files": 4,
+      "passed": 30,
+      "scope": "Includes five tree transaction tests with injected source/artifact hash failures, late/registered size mismatch and successful binding; existing parsing/search and publication regressions."
+    },
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "diffCheck": "passed",
+    "actualDatabaseRace": {
+      "command": "node --require ./scripts/patch-node-user.cjs --import tsx scripts/verify-binary-publication-race-clone.ts",
+      "exitCode": 0,
+      "result": {
+        "binaryPublicationRaceClone": "passed",
+        "cases": [
+          {
+            "visibility": "private",
+            "revision": false,
+            "initialReadCompletedBeforeObservedRowWait": true,
+            "equalSizeMutationAfterWait": true,
+            "lateHashRejected": true,
+            "allPublicationRowsRolledBack": true,
+            "oldPointerPreserved": false,
+            "retryAfterRestorePassed": true
+          },
+          {
+            "visibility": "private",
+            "revision": true,
+            "initialReadCompletedBeforeObservedRowWait": true,
+            "equalSizeMutationAfterWait": true,
+            "lateHashRejected": true,
+            "allPublicationRowsRolledBack": true,
+            "oldPointerPreserved": true,
+            "retryAfterRestorePassed": true
+          },
+          {
+            "visibility": "shared",
+            "revision": false,
+            "initialReadCompletedBeforeObservedRowWait": true,
+            "equalSizeMutationAfterWait": true,
+            "lateHashRejected": true,
+            "allPublicationRowsRolledBack": true,
+            "oldPointerPreserved": false,
+            "retryAfterRestorePassed": true
+          },
+          {
+            "visibility": "shared",
+            "revision": true,
+            "initialReadCompletedBeforeObservedRowWait": true,
+            "equalSizeMutationAfterWait": true,
+            "lateHashRejected": true,
+            "allPublicationRowsRolledBack": true,
+            "oldPointerPreserved": true,
+            "retryAfterRestorePassed": true
+          }
+        ],
+        "treeCases": [
+          {
+            "visibility": "private",
+            "revision": false,
+            "changed": "original",
+            "observedWaitAfterInitialInspection": true,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "private",
+            "revision": false,
+            "changed": "artifact",
+            "observedWaitAfterInitialInspection": true,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "private",
+            "revision": true,
+            "changed": "original",
+            "observedWaitAfterInitialInspection": true,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "private",
+            "revision": true,
+            "changed": "artifact",
+            "observedWaitAfterInitialInspection": true,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "shared",
+            "revision": false,
+            "changed": "original",
+            "observedWaitAfterInitialInspection": true,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "shared",
+            "revision": false,
+            "changed": "artifact",
+            "observedWaitAfterInitialInspection": true,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "shared",
+            "revision": true,
+            "changed": "original",
+            "observedWaitAfterInitialInspection": true,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "shared",
+            "revision": true,
+            "changed": "artifact",
+            "observedWaitAfterInitialInspection": true,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          }
+        ],
+        "actualModelCalls": 0,
+        "syntheticExtraction": true,
+        "qualityAccepted": false,
+        "productionQualificationGranted": false,
+        "automaticActivation": false
+      },
+      "temporaryAccountsRowsAndFilesCleaned": true,
+      "scope": "Real filesystem and PostgreSQL isolated clone. Original/artifact bytes change after observed document-advisory-lock wait, before candidate tree rows/pointer are written. Newly created tree rows and pointer update roll back; restored bytes succeed. Each disposable candidate is explicitly reset to a null pointer and has its candidate tree deleted before the indexing race, ensuring a fresh tree is inserted. This does not claim preservation of a non-null old pointer in these tree cases."
+    }
+  },
+  "limitations": [
+    "Original/artifact rechecks are point-in-time checks; they do not prevent privileged file changes after checking or establish immutable storage through commit.",
+    "Synthetic extraction JSON and test originals exercise transaction behavior, not parser or human content-quality accuracy.",
+    "Earlier formal-worker six-group acceptance predates this tree-stage change; no new full worker/parser matrix is claimed.",
+    "Production qualification, complete source revocation protection and final Skill activation remain incomplete."
+  ],
+  "actualModelCalls": 0,
+  "automaticActivation": false,
+  "filesSha256": {
+    "src/lib/knowledge/vectorless.ts": "acffc7da62e3e96593595f7bfc9c3788732accb6f7d90bd6d2f4ed8038c210de",
+    "src/lib/knowledge/vectorless.test.ts": "f99633c52c93e3371b7c77fb993fa01344b6f524ac3c5e60af9bad583a00a027",
+    "src/lib/knowledge/tree-publication-integrity.test.ts": "2346ceb00616aa46cf36267c65e68716807dd81c8893b9d54b5b05b27389a75c",
+    "scripts/verify-binary-publication-race-clone.ts": "e5d118a33d8f8d99e0e1c1dfa298eadafe5220f0fee3956de718e6f86422475a"
+  }
+}
