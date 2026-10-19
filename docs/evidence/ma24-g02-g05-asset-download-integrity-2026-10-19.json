@@ -1,0 +1,32 @@
+{
+  "stage": "MA24 G02/G05 registered-original download byte integrity and final access check",
+  "date": "2026-10-19",
+  "sourceBaseCommit": "d5ca1d76",
+  "filesSha256": {
+    "src/app/api/knowledge/assets/[assetId]/route.ts": "daa07a10f1d6a94e50fa09886a4afe17cc6b1c6d821c012eac26b069ebadf6c8",
+    "src/app/api/knowledge/assets/[assetId]/route.test.ts": "8d9de3d2d55f7726b98adc03e2b54a2658e8e017b2b7c57837df29028e1431a6"
+  },
+  "checks": {
+    "focusedVitest": "16 passed",
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "diffCheck": "passed"
+  },
+  "verifiedBehavior": [
+    "Full 200 and partial 206 responses contain exact registered bytes.",
+    "The lookup requires both registered asset and active document under account access constraints.",
+    "Same-size replacement and file growth between stat and read return 410 without file content.",
+    "Loss of access during file reading returns 404 without file content.",
+    "Changed storage key, hash, byte size or MIME at the final lookup returns 410.",
+    "Invalid ranges return 416 only after byte integrity and final access checks.",
+    "Malformed UUIDs and anonymous requests are rejected before file access."
+  ],
+  "scope": "Direct GET handler/native Request-Response tests with real SHA-256 and byte-range operations; session, filesystem and tenant-query boundaries are mocked.",
+  "limitations": [
+    "No live HTTP server, real document quality review or production deployment was exercised.",
+    "Final access lookup is a point-in-time check, not a grant that survives later revocation.",
+    "Does not establish whole-source byte locking for G09 activation."
+  ],
+  "actualModelCalls": 0,
+  "productDatabaseModified": false
+}
