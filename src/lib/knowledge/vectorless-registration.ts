@@ -7,6 +7,7 @@ import {assertResolvedInsideKnowledgeRoot,safeKnowledgeStorageKey,inspectKnowled
 import {evidenceText,indexExtractedDocument} from "./vectorless";
 import {assertNoSpreadsheetCachedErrors} from "./extracted-tree";
 import {registerBinaryRevision,type BinaryRevisionJob} from './binary-revision';
+import {assertCurrentKnowledgePublisher} from './publication-authorization';
 
 const sha=(value:Uint8Array|string)=>createHash("sha256").update(value).digest("hex");
 type Job=BinaryRevisionJob;
@@ -52,6 +53,7 @@ export async function registerVectorlessUpload(userId:string,jobId:string,option
       ||current.metrics.artifactSha256!==job.metrics.artifactSha256||!['extracted','registered'].includes(current.status))throw new Error("Upload changed during registration");
     if(current.status==="registered"){
       if(!current.published_document_id||!current.published_asset_id)throw new Error("Incomplete prior registration");
+      await assertCurrentKnowledgePublisher(client,userId,job.visibility);
       return {documentId:current.published_document_id,assetId:current.published_asset_id,reused:true};
     }
     const existing=await client.query<{id:string;source_sha256:string}>(`select id,metadata->>'sourceSha256' as source_sha256 from knowledge_document
@@ -81,6 +83,7 @@ export async function registerVectorlessUpload(userId:string,jobId:string,option
     if(finalSource.byteSize!==Number(job.byte_size))throw new Error('Source bytes changed during registration');
     await inspectKnowledgeAssetBytes(job.extraction_artifact_key!,job.metrics.artifactSha256!);
     await revalidateReviewedExtraction(client,userId,jobId,artifactBytes);
+    await assertCurrentKnowledgePublisher(client,userId,job.visibility);
     return {documentId,assetId:asset.rows[0].id,reused:false};
   },actor.role);
   try{

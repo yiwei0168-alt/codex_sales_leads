@@ -1,4 +1,5 @@
 import {verifyReviewedExtraction,revalidateReviewedExtraction} from './reviewed-extraction';
+import {assertCurrentKnowledgePublisher} from './publication-authorization';
 import {createHash} from "node:crypto";
 import {readFile} from "node:fs/promises";
 import {resolve} from "node:path";
@@ -49,6 +50,7 @@ export async function indexExtractedDocument(userId:string,jobId:string,leaseTok
     if(finalSource.byteSize!==source.byteSize)throw new Error('Source bytes changed during tree indexing');
     await inspectKnowledgeAssetBytes(job.extraction_artifact_key,artifactHash);
     await revalidateReviewedExtraction(client,userId,jobId,artifactBytes);
+    await assertCurrentKnowledgePublisher(client,userId,job.visibility);
     return tree;
   },actor.role);
 }

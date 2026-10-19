@@ -15,7 +15,7 @@ const url=new URL(configured);assert(['localhost','127.0.0.1','::1'].includes(ur
 const state=JSON.parse(await readFile('tmp/ma11-replay-state.json','utf8'));
 assert(/^ma11_replay_[a-f0-9]{12}$/.test(state.database));url.pathname=`/${state.database}`;process.env.DATABASE_URL=url.toString();
 globalThis.fetch=async()=>{throw new Error('External HTTP disabled for synthetic publication race fixture');};
-const mutation=process.env.MA24_PUBLICATION_MUTATION??'original';assert(['original','artifact','review'].includes(mutation));
+const mutation=process.env.MA24_PUBLICATION_MUTATION??'original';assert(['original','artifact','review','account'].includes(mutation));
 const pool=new Pool({connectionString:url.toString()}),owners:string[]=[],directories:string[]=[],results:unknown[]=[],treeResults:unknown[]=[];
 const sha=(bytes:Uint8Array)=>createHash('sha256').update(bytes).digest('hex');
 try{
@@ -72,22 +72,25 @@ try{
     if(row.n>0){waiting=true;break;}await new Promise(done=>setTimeout(done,25));
    }
    assert(waiting,'Publication did not reach the locked job after initial original inspection');
-   if(mutation==='review')await pool.query('delete from knowledge_upload_review_completion where job_id=$1 and owner_id=$2',[job.id,owner]);
+   if(mutation==='account')await pool.query('update app_user set status=$2,role=$3 where id=$1',[owner,visibility==='private'?'disabled':'active',visibility==='shared'?'member':'admin']);
+   else if(mutation==='review')await pool.query('delete from knowledge_upload_review_completion where job_id=$1 and owner_id=$2',[job.id,owner]);
    else await writeFile(changedPath,Buffer.alloc(changedBytes.length,120));
    await holder.query('rollback');
    const outcome=await pending;
-   assert(outcome.error instanceof Error);assert.match(outcome.error.message,mutation==='review'?/Invalid extraction review receipt/:/Knowledge asset no longer matches approved hash/);
+   assert(outcome.error instanceof Error);assert.match(outcome.error.message,mutation==='account'?/Publication account is no longer authorized|Active owned binary revision target required/:mutation==='review'?/Invalid extraction review receipt/:/Knowledge asset no longer matches approved hash/);
    assert.deepEqual(await snapshot(),before,'Rejected publication committed document/asset/tree/revision changes');
    const saved=(await pool.query('select status,published_document_id,published_asset_id from knowledge_upload_job where id=$1',[job.id])).rows[0];
    assert.deepEqual(saved,{status:'extracted',published_document_id:null,published_asset_id:null});
    await writeFile(changedPath,changedBytes);
    if(mutation==='review')await job.restoreReview();
+   if(mutation==='account')await pool.query("update app_user set status='active',role='admin' where id=$1",[owner]);
    assert.equal((await registerVectorlessUpload(owner,job.id,{language:'en',authorityLevel:3})).treeStatus,'searchable');
-   results.push({visibility,revision,changed:mutation,initialReadCompletedBeforeObservedRowWait:true,equalSizeMutationAfterWait:mutation!=='review',reviewReceiptDeletedAfterWait:mutation==='review',lateHashRejected:mutation!=='review',lateReviewRejected:mutation==='review',allPublicationRowsRolledBack:true,oldPointerPreserved:revision,retryAfterRestorePassed:true});
+   results.push({visibility,revision,changed:mutation,initialReadCompletedBeforeObservedRowWait:true,equalSizeMutationAfterWait:['original','artifact'].includes(mutation),reviewReceiptDeletedAfterWait:mutation==='review',lateHashRejected:['original','artifact'].includes(mutation),lateReviewRejected:mutation==='review',lateAccountRejected:mutation==='account',allPublicationRowsRolledBack:true,oldPointerPreserved:revision,retryAfterRestorePassed:true});
   }finally{
    await holder.query('rollback');holder.release();if(pending)await pending;await writeFile(changedPath,changedBytes);
+   if(mutation==='account')await pool.query("update app_user set status='active',role='admin' where id=$1",[owner]);
   }
-  for(const changed of ['original','artifact',...(mutation==='review'?['review' as const]:[])] as const){
+  for(const changed of ['original','artifact',...(mutation==='review'?['review' as const]:[]),...(mutation==='account'?['account' as const]:[])] as const){
    const registered=(await pool.query('select published_document_id document_id from knowledge_upload_job where id=$1',[job.id])).rows[0];
    const documentId=registered.document_id;
    const current=(await pool.query('select current_tree_version_id version_id from knowledge_document where id=$1 and owner_id=$2',[documentId,owner])).rows[0];
@@ -107,16 +110,19 @@ try{
      if(row.n>0){waiting=true;break;}await new Promise(done=>setTimeout(done,25));
     }
     assert(waiting,'Tree indexing did not reach its advisory wait after source/artifact inspection');
-    if(changed==='review')await pool.query('delete from knowledge_upload_review_completion where job_id=$1 and owner_id=$2',[job.id,owner]);
+    if(changed==='account')await pool.query('update app_user set status=$2,role=$3 where id=$1',[owner,visibility==='private'?'disabled':'active',visibility==='shared'?'member':'admin']);
+    else if(changed==='review')await pool.query('delete from knowledge_upload_review_completion where job_id=$1 and owner_id=$2',[job.id,owner]);
     else await writeFile(path,Buffer.alloc(bytes.length,120));
     await treeHolder.query('rollback');
-    const outcome=await indexing;assert(outcome.error instanceof Error);assert.match(outcome.error.message,changed==='review'?/Invalid extraction review receipt/:/Knowledge asset no longer matches approved hash/);
+    const outcome=await indexing;assert(outcome.error instanceof Error);assert.match(outcome.error.message,changed==='account'?/Publication account is no longer authorized/:changed==='review'?/Invalid extraction review receipt/:/Knowledge asset no longer matches approved hash/);
     assert.deepEqual(await snapshot(),beforeTree,'Rejected indexing committed candidate tree rows');
     assert.equal((await pool.query('select current_tree_version_id from knowledge_document where id=$1',[documentId])).rows[0].current_tree_version_id,null);
     await writeFile(path,bytes);if(changed==='review')await job.restoreReview();
+    if(changed==='account')await pool.query("update app_user set status='active',role='admin' where id=$1",[owner]);
     assert.equal((await indexExtractedDocument(owner,job.id)).reused,false);
     treeResults.push({visibility,revision,changed,observedWaitAfterInitialInspection:true,newTreeRowsAndPointerRolledBack:true,retryAfterRestorePassed:true,fixtureStartedWithNullPointer:true});
-   }finally{await treeHolder.query('rollback');treeHolder.release();if(indexing)await indexing;await writeFile(path,bytes);}
+   }finally{await treeHolder.query('rollback');treeHolder.release();if(indexing)await indexing;await writeFile(path,bytes);
+    if(changed==='account')await pool.query("update app_user set status='active',role='admin' where id=$1",[owner]);}
   }
  }
  const result={binaryPublicationRaceClone:'passed',cases:results,treeCases:treeResults,actualModelCalls:0,syntheticExtraction:true,qualityAccepted:false,productionQualificationGranted:false,automaticActivation:false};

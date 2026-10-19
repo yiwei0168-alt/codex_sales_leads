@@ -26,6 +26,7 @@ function arrange(revision:boolean,changedBinding=false){
  const value={...job,revision_target_document_id:revision?'document':null,revision_base_version_id:revision?'tree-old':null};
  m.tenant.mockResolvedValueOnce([{role:'member'}]).mockResolvedValueOnce([value]);
  m.query.mockImplementation(async(sql:string)=>{
+  if(sql.includes('select role from app_user'))return {rows:[{role:'admin'}]};
   if(sql.includes('from knowledge_upload_job'))return {rows:[changedBinding?{...value,storage_key:'knowledge/replaced.pdf'}:value]};
   if(sql.includes('select pg_advisory'))return {rows:[]};
   if(sql.includes('select d.id,d.current_tree_version_id'))return {rows:[{id:'document',current_tree_version_id:'tree-old',source_sha256:'old',asset_id:'old-asset'}]};
@@ -40,6 +41,12 @@ it.each([false,true])('rejects a late original hash change inside the owning pub
  await expect(registerVectorlessUpload('owner','job',{language:'en',authorityLevel:3})).rejects.toThrow('no longer matches approved hash');
  expect(m.inspect).toHaveBeenLastCalledWith(job.storage_key,sourceHash);expect(m.committed).toBe(0);expect(m.rolledBack).toBe(1);
  expect(m.index).not.toHaveBeenCalled();
+});
+it.each([false,true])('rejects a publication account disabled after initial admission; revision=%s',async revision=>{
+ arrange(revision);const query=m.query.getMockImplementation()!;
+ m.query.mockImplementation((sql:string)=>sql.includes('select role from app_user')?Promise.resolve({rows:[]}):query(sql));
+ await expect(registerVectorlessUpload('owner','job',{language:'en',authorityLevel:3})).rejects.toThrow('Publication account is no longer authorized');
+ expect(m.committed).toBe(0);expect(m.rolledBack).toBe(1);
 });
 it.each([false,true])('rejects a late original size mismatch; revision=%s',async revision=>{
  arrange(revision);m.inspect.mockResolvedValueOnce({storageKey:job.storage_key,sha256:sourceHash,byteSize:10}).mockResolvedValueOnce({storageKey:job.storage_key,sha256:sourceHash,byteSize:11});

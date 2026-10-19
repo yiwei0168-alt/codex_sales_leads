@@ -3,6 +3,7 @@ import {tenantTransaction} from '@/lib/rag/db';
 import {writeExtractedTree,type Block} from './extracted-tree';
 import {inspectKnowledgeAssetBytes} from './document-repository';
 import {revalidateReviewedExtraction} from './reviewed-extraction';
+import {assertCurrentKnowledgePublisher} from './publication-authorization';
 
 export type BinaryRevisionJob={id:string;status:string;visibility:'private'|'shared';collection_slug:string;title:string;source_url:string|null;entity_key:string|null;
  storage_key:string;extraction_artifact_key:string|null;source_sha256:string;extractor_version:string|null;mime_type:string;byte_size:string;
@@ -34,6 +35,7 @@ export async function registerBinaryRevision(userId:string,job:BinaryRevisionJob
   if(current.status==='registered'){
     if(target.source_sha256!==job.source_sha256||target.id!==current.published_document_id||target.asset_id!==current.published_asset_id)
       throw new Error('Revision is no longer current; refusing to restore an old version');
+    await assertCurrentKnowledgePublisher(client,userId,job.visibility);
     return {documentId:target.id,assetId:target.asset_id,versionId:target.current_tree_version_id,reused:true,treeStatus:'searchable' as const};
   }
   if(target.current_tree_version_id!==job.revision_base_version_id)throw new BinaryRevisionError('revision-conflict','Document version changed; revision conflict');
@@ -55,6 +57,7 @@ export async function registerBinaryRevision(userId:string,job:BinaryRevisionJob
   if(finalSource.byteSize!==Number(job.byte_size))throw new Error('Source bytes changed during revision registration');
   await inspectKnowledgeAssetBytes(job.extraction_artifact_key!,job.metrics.artifactSha256!);
   await revalidateReviewedExtraction(client,userId,job.id,input.artifactBytes);
+  await assertCurrentKnowledgePublisher(client,userId,job.visibility);
   return {documentId:target.id,assetId:asset.id,versionId:tree.versionId,reused:false,treeStatus:'searchable' as const};
  },role);
 }

@@ -1,0 +1,227 @@
+{
+  "stage": "MA24 G02/G05/G09 current publication account authorization",
+  "date": "2026-10-19",
+  "sourceBaseCommit": "a20218b0",
+  "implementation": {
+    "sameClientChecksCurrentActiveAccount": true,
+    "privateAllowsMemberOrAdmin": true,
+    "sharedRequiresCurrentAdmin": true,
+    "newRevisionAndTreeFinalChecks": true,
+    "newAndRevisionReusePathsAlsoChecked": true,
+    "accountAdministrationLease": false
+  },
+  "checks": {
+    "focusedVitest": {
+      "files": 6,
+      "passed": 51,
+      "scope": "Final publication and indexing rejection for disabled accounts plus current shared-role/private-role/unknown-visibility checks and existing integrity regressions."
+    },
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "diffCheck": "passed",
+    "actualDatabaseRace": {
+      "command": "PowerShell: $env:MA24_PUBLICATION_MUTATION='account'; node --require ./scripts/patch-node-user.cjs --import tsx scripts/verify-binary-publication-race-clone.ts",
+      "exitCode": 0,
+      "result": {
+        "binaryPublicationRaceClone": "passed",
+        "cases": [
+          {
+            "visibility": "private",
+            "revision": false,
+            "changed": "account",
+            "initialReadCompletedBeforeObservedRowWait": true,
+            "equalSizeMutationAfterWait": false,
+            "reviewReceiptDeletedAfterWait": false,
+            "lateHashRejected": false,
+            "lateReviewRejected": false,
+            "lateAccountRejected": true,
+            "allPublicationRowsRolledBack": true,
+            "oldPointerPreserved": false,
+            "retryAfterRestorePassed": true
+          },
+          {
+            "visibility": "private",
+            "revision": true,
+            "changed": "account",
+            "initialReadCompletedBeforeObservedRowWait": true,
+            "equalSizeMutationAfterWait": false,
+            "reviewReceiptDeletedAfterWait": false,
+            "lateHashRejected": false,
+            "lateReviewRejected": false,
+            "lateAccountRejected": true,
+            "allPublicationRowsRolledBack": true,
+            "oldPointerPreserved": true,
+            "retryAfterRestorePassed": true
+          },
+          {
+            "visibility": "shared",
+            "revision": false,
+            "changed": "account",
+            "initialReadCompletedBeforeObservedRowWait": true,
+            "equalSizeMutationAfterWait": false,
+            "reviewReceiptDeletedAfterWait": false,
+            "lateHashRejected": false,
+            "lateReviewRejected": false,
+            "lateAccountRejected": true,
+            "allPublicationRowsRolledBack": true,
+            "oldPointerPreserved": false,
+            "retryAfterRestorePassed": true
+          },
+          {
+            "visibility": "shared",
+            "revision": true,
+            "changed": "account",
+            "initialReadCompletedBeforeObservedRowWait": true,
+            "equalSizeMutationAfterWait": false,
+            "reviewReceiptDeletedAfterWait": false,
+            "lateHashRejected": false,
+            "lateReviewRejected": false,
+            "lateAccountRejected": true,
+            "allPublicationRowsRolledBack": true,
+            "oldPointerPreserved": true,
+            "retryAfterRestorePassed": true
+          }
+        ],
+        "treeCases": [
+          {
+            "visibility": "private",
+            "revision": false,
+            "changed": "original",
+            "observedWaitAfterInitialInspection": true,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "private",
+            "revision": false,
+            "changed": "artifact",
+            "observedWaitAfterInitialInspection": true,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "private",
+            "revision": false,
+            "changed": "account",
+            "observedWaitAfterInitialInspection": true,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "private",
+            "revision": true,
+            "changed": "original",
+            "observedWaitAfterInitialInspection": true,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "private",
+            "revision": true,
+            "changed": "artifact",
+            "observedWaitAfterInitialInspection": true,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "private",
+            "revision": true,
+            "changed": "account",
+            "observedWaitAfterInitialInspection": true,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "shared",
+            "revision": false,
+            "changed": "original",
+            "observedWaitAfterInitialInspection": true,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "shared",
+            "revision": false,
+            "changed": "artifact",
+            "observedWaitAfterInitialInspection": true,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "shared",
+            "revision": false,
+            "changed": "account",
+            "observedWaitAfterInitialInspection": true,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "shared",
+            "revision": true,
+            "changed": "original",
+            "observedWaitAfterInitialInspection": true,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "shared",
+            "revision": true,
+            "changed": "artifact",
+            "observedWaitAfterInitialInspection": true,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "shared",
+            "revision": true,
+            "changed": "account",
+            "observedWaitAfterInitialInspection": true,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          }
+        ],
+        "actualModelCalls": 0,
+        "syntheticExtraction": true,
+        "qualityAccepted": false,
+        "productionQualificationGranted": false,
+        "automaticActivation": false
+      },
+      "registrationAccountCases": 4,
+      "treeAccountCases": 4,
+      "treeByteMutationCases": 8,
+      "temporaryAccountsRowsAndFilesCleaned": true,
+      "scope": "Actual isolated clone and random synthetic accounts. Observe upload-row/document-advisory wait after initial admission, disable private owner or downgrade shared owner from admin to member, then release. Registration/indexing rejects, rows/pointers roll back and restored authorization permits retry. Existing revision target authorization may reject earlier than the added final check; these cases do not isolate final-helper execution."
+    }
+  },
+  "limitations": [
+    "Authorization is checked at a point in time; account updates are not locked through the later database commit.",
+    "No product user-administration feature or production account changes were made; test mutation uses privileged SQL only on generated accounts.",
+    "Synthetic originals/extraction exercise integrity and authorization, not independent real content quality.",
+    "Tree fixtures begin with deliberately cleared candidate pointers; historical pointer preservation is asserted in revision-registration cases.",
+    "Complete source protection, immutable storage, production qualification and final Skill activation remain incomplete."
+  ],
+  "actualModelCalls": 0,
+  "automaticActivation": false,
+  "filesSha256": {
+    "src/lib/knowledge/publication-authorization.ts": "99f2e4ba6e7aac67b59469f843887042240aeab6a852e625e193eea409f4470f",
+    "src/lib/knowledge/publication-authorization.test.ts": "d7215a787d37503ef7de8ec6da60dbde35e658f0141d2f71a56ea0d4e2d16d6c",
+    "src/lib/knowledge/vectorless-registration.ts": "3b16372bfe5928d5d8b223ece388e497b58a469d1f98b7f6fb377857c7a2b76a",
+    "src/lib/knowledge/binary-revision.ts": "f2e91839e2e72a8ece1875c8723d94e20a8e663e37ae14cb2f3d9395b43421c5",
+    "src/lib/knowledge/vectorless.ts": "a3ccb2c851ba8bf2f18fa0d059316b0e664fc0732646f7ce958115754dc4f836",
+    "src/lib/knowledge/binary-publication-integrity.test.ts": "8d9783347b29b0465f2fbbc3a38b150631cc64f9ab41fe15a4309b74d00fce64",
+    "src/lib/knowledge/tree-publication-integrity.test.ts": "95311c9bdd0511b421a09f0d964e6391e984fb81233ebdabd8d01bef610ff3ca",
+    "scripts/verify-binary-publication-race-clone.ts": "b2c36741dcdce5511300bb82aa369f5ad2f757f870dad191ca0739583dbaaf23"
+  }
+}

@@ -14,7 +14,7 @@ beforeEach(()=>{
  m.tenant.mockResolvedValueOnce([{role:'member'}]).mockResolvedValueOnce([{id:'job',status:'registered',visibility:'private',published_document_id:'document',published_asset_id:'asset',source_sha256:hash,extractor_version:'test',storage_key:'knowledge/original.txt',extraction_artifact_key:'knowledge/artifact.json',metrics:{artifactSha256:artifactHash}}]);
  m.read.mockResolvedValue(artifact);m.inspect.mockResolvedValue({sha256:hash,byteSize:10});
  m.tree.mockResolvedValue({versionId:'new-tree',reused:false,nodes:2});
- m.query.mockImplementation(async(sql:string)=>({rows:sql.includes('select a.id')?[{id:'asset',byte_size:'10'}]:[]}));
+ m.query.mockImplementation(async(sql:string)=>({rows:sql.includes('select a.id')?[{id:'asset',byte_size:'10'}]:sql.includes('select role from app_user')?[{role:'admin'}]:[]}));
  m.transaction.mockImplementation(async(_owner:string,work:(client:unknown)=>Promise<unknown>)=>{
   try{const value=await work({query:m.query});m.commits++;return value;}catch(error){m.rollbacks++;throw error;}
  });
@@ -47,5 +47,11 @@ it('rejects registered size drift before writing the tree',async()=>{
 it('rejects a late review invalidation after tree writes',async()=>{
  m.review.mockRejectedValueOnce(new Error('Invalid extraction review receipt'));
  await expect(indexExtractedDocument('owner','job')).rejects.toThrow('Invalid extraction review receipt');
+ expect(m.tree).toHaveBeenCalledOnce();expect(m.commits).toBe(0);expect(m.rollbacks).toBe(1);
+});
+it('rejects an account disabled during indexing after tree writes',async()=>{
+ const query=m.query.getMockImplementation()!;
+ m.query.mockImplementation((sql:string)=>sql.includes('select role from app_user')?Promise.resolve({rows:[]}):query(sql));
+ await expect(indexExtractedDocument('owner','job')).rejects.toThrow('Publication account is no longer authorized');
  expect(m.tree).toHaveBeenCalledOnce();expect(m.commits).toBe(0);expect(m.rollbacks).toBe(1);
 });
