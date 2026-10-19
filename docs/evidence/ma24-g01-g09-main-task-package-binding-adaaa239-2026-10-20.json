@@ -1,0 +1,136 @@
+{
+  "stage": "G01/G09 main task transport package binding actual fixed images",
+  "commit": "adaaa23900201cf013c1f991c90272ce91514ef5",
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --web-image=ma24-pilot-web:adaaa239 --current-schema --main-runtime-image=ma24-main-agent-runtime:adaaa239 --main-runtime-task-enrollment",
+  "exitCode": 0,
+  "buildExitCodes": {
+    "mainRuntime": 0,
+    "web": 0
+  },
+  "buildLogs": {
+    "tmp/ma24-main-runtime-adaaa239-build-2026-10-20.log": "d991a1b22e0f0d73a01e10c4fa369df71aa35db8b91268e2102058c6c1a8d0ff",
+    "tmp/ma24-web-adaaa239-build-2026-10-20.log": "78207df44559f1b59cac43343444fc6ba98c79859e5cf83e75bd4e0e9e935e8c"
+  },
+  "pairLog": "tmp/ma24-main-runtime-pair-adaaa239-2026-10-20.log",
+  "pairLogSha256": "3911a3a603dd9d108f5ae70318789334a971f07ccf37e2610ba68304bcd797c8",
+  "runLog": "tmp/ma24-main-task-binding-adaaa239-2026-10-20.log",
+  "runLogSha256": "e62a9b08fe7170cc55c888ff4cd5b7681f2a93b076f2d05dff3872cd16a3ee50",
+  "checks": {
+    "packageAndBoundaryTests": 20,
+    "testExitCode": 0,
+    "typecheckExitCode": 0,
+    "focusedLintExitCode": 0,
+    "syntaxExitCode": 0
+  },
+  "freshMigrationThrough": 158,
+  "pair": {
+    "mainAgentRuntimePair": "passed",
+    "web": "ma24-pilot-web:adaaa239",
+    "runtime": "ma24-main-agent-runtime:adaaa239",
+    "sourceCommit": "adaaa23900201cf013c1f991c90272ce91514ef5",
+    "webImageId": "sha256:7ed6cbc8f5bc078806e9130f47d538e36b55395181fd6b248bbc8edf89c298f8",
+    "mainRuntimeImageId": "sha256:9901fc56a5a0d1208ae6677818ea65a37f37be72293687428b797fb63c5e5b6e",
+    "inspectionUsesImmutableImageIds": true,
+    "runtimeHash": "e1f20b4bf1521924175314c7bc7a9935ea1a1ee319103c161db5dd2e634724ac",
+    "sourceInputs": 966,
+    "node": "24.21.0",
+    "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+    "platform": "linux",
+    "arch": "x64",
+    "webPackages": {
+      "pg": "8.23.0"
+    },
+    "mainRuntimePackages": {
+      "pg": "8.23.0",
+      "zod": "4.4.3",
+      "@langchain/langgraph": "1.4.15",
+      "@langchain/core": "1.2.9",
+      "langsmith": "0.9.0",
+      "undici": "8.10.0"
+    },
+    "webUnresolved": [
+      "zod",
+      "@langchain/langgraph",
+      "@langchain/core",
+      "langsmith",
+      "undici"
+    ],
+    "mainRuntimeUnresolved": [],
+    "completeDependencyRuntimeEquivalenceVerified": false,
+    "productionQualified": false,
+    "actualModelCalls": 0
+  },
+  "result": {
+    "mainRuntimeWorker": "passed",
+    "passed": true,
+    "image": "ma24-main-agent-runtime:adaaa239",
+    "immutableImageId": "sha256:9901fc56a5a0d1208ae6677818ea65a37f37be72293687428b797fb63c5e5b6e",
+    "sourceCommit": "adaaa23900201cf013c1f991c90272ce91514ef5",
+    "integrity": {
+      "mainAgentRuntimeIntegrity": "passed",
+      "files": 34516,
+      "deploymentHash": "dcde990f69c63ef278282b0675a65f7fa5c6320010b2b56d81b42c7467053aab",
+      "taskTransportPackageBindingRequired": false,
+      "taskTransportPackageBindingVerified": false,
+      "runtimeBoundaryVerified": true,
+      "processNonRoot": true,
+      "noNewPrivileges": true,
+      "capabilitiesEmpty": true,
+      "rootReadOnly": true,
+      "packageAndNodeReadOnly": true,
+      "productionQualified": false
+    },
+    "actualLangGraphApi": true,
+    "actualCompiledQueueWorker": true,
+    "postgresCheckpointRecovery": true,
+    "cases": [
+      {
+        "sourceWithdrawn": false,
+        "status": "completed",
+        "modelAttempts": 0,
+        "extractionJobs": 1,
+        "actualClaimedLease": true
+      },
+      {
+        "sourceWithdrawn": true,
+        "status": "partial",
+        "modelAttempts": 0,
+        "extractionJobs": 0,
+        "actualClaimedLease": true
+      }
+    ],
+    "durabilityResult": null,
+    "commitLossResult": null,
+    "uncommittedLossResult": null,
+    "taskEnrollmentResult": {
+      "deploymentHash": "dcde990f69c63ef278282b0675a65f7fa5c6320010b2b56d81b42c7467053aab",
+      "independentManifestDigestVerified": true,
+      "inspectionWithoutEnrollment": true,
+      "matchingInspectionBindingVerified": true,
+      "rejected": [
+        "wrong-deployment",
+        "malformed-deployment",
+        "missing-deployment",
+        "partial-operational-settings",
+        "missing-key-path-setting",
+        "wrong-operational-deployment"
+      ],
+      "operationalSettingsSynthetic": true,
+      "signingPrivateKeyLoaded": false,
+      "productionQualificationGranted": false,
+      "actualMatchingApiAndWorkerVerified": true
+    },
+    "syntheticCheckpointSeed": true,
+    "actualModelCalls": 0,
+    "externalActions": 0,
+    "firstModelExecutionVerified": false,
+    "productionQualified": false,
+    "automaticActivation": false
+  },
+  "limitations": [
+    "Matching operational settings are synthetic and private-key path is unmounted; no actual original-task signing or provider call",
+    "Completed checkpoint recovery, not first real model execution or business quality",
+    "Not the complete five-category signed workflow inside these Linux images",
+    "No latest-image crash, named-volume restart, COMMIT fault, coordinated restore, browser/full UI or production qualification claimed"
+  ]
+}
