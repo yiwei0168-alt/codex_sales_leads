@@ -63,7 +63,7 @@ G09 任务与工具日志锁已接入材料重建入口：从已存包派生任�
 | 项目 | 已有依据 | 仍缺的实现或验收 | 下一项能关闭缺口的证据 |
 | --- | --- | --- | --- |
 | G01 发布基线 | 固定 Linux 镜像、本机 HTTPS、10 合成成员隔离、两版 Web 回切、数据库跨集群恢复及上传卷恢复均有局部收据 | 目标云账号/主机、域名及成员未确定；目标部署、可信 HTTPS、异地副本、实际资料与数据库一致恢复、资源观察未验 | 目标主机上的实际包摘要、成员业务、备份恢复和回切记录；产品源码变化后在最终冻结点重建一次 |
-| G02 来源撤销 | 真实图、旧 checkpoint、隔离模型及局部 HTTP 证据 | 当前服务上真实账号有界任务的生成期撤销、后续工具阻断和最终保存核对 | 获授权的专门来源/账号任务及撤销前后收据；新付费请求另列具体清单 |
+| G02 来源撤销 | 真实图、旧 checkpoint、隔离模型及局部 HTTP；当前构建的登记原件下载通过认证、Range、篡改和请求间撤回的真实 HTTP 验证 ([收据](evidence/ma24-g02-g05-asset-download-http-clone-2026-10-19.json)) | 当前服务上真实账号有界任务的生成期撤销、后续工具阻断和最终保存核对 | 获授权的专门来源/账号任务及撤销前后收据；新付费请求另列具体清单 |
 | G03 纠正与双时间 | 来源归属和自然纠正局部修复、隔离恢复证据 | 真实偏好/经历/业务事实与纠正样本不足；当前候选完整链路、通知/撤销/历史时间和本地 worker 试点未验 | 对照原句与更正内容的自然样本判决，以及当前 worker 的持久记录 |
 | G04 记忆图谱 | outbox、租约、故障恢复及 PostgreSQL 降级局部工程证据 | 当前版本获准真实样本的连续抽取、投影、时间/权限回校、撤销召回未验 | 连续消费及图谱停机/恢复的同一批来源收据 |
 | G05 Incremental knowledge | Formal workers pass PDF/PPTX/XLSX × private/shared revision matrix: failure/hold/tamper keeps old reads, one winner, exact unit 2 citations, history/retry and peer access match visibility ([six-group matrix](evidence/ma24-g05-formal-worker-six-group-revision-matrix-2026-10-19.json)) | Real-user sources, independent visual/content judgment, actual business answer citations and production worker remain unverified; this matrix does not repeat registration-process crash checks | Review approved real sources and actual answer citations; retain separate registration-recovery evidence and perform target deployment acceptance when resumed |
@@ -245,3 +245,5 @@ G09 current-source collector image TLS preflight (2026-10-19): rebuilt from the 
 2026-10-19 / G01 当前流程生产构建：基于提交 1876cb63 的工作区应用源码，npm.cmd run build 退出 0；Next.js 16.3.4 编译、构建内 TypeScript 与 26/26 页面生成通过，standalone server 已生成。新记忆回执、知识回执、附件字节及材料准备模块在 runtime-source 包内与当前源文件逐字节一致。仅本机构建及四个来源文件的打包检查，不是部署二进制/提供方资格、服务启动或团队发布验收；原有 next-env.d.ts 与实验文件变更未提交。[构建证据](evidence/ma24-g01-production-build-1876cb63-2026-10-19.json)。
 
 2026-10-19 固定 80c24c2b 完整五类组合已退出 0：实际本地 memory_read 和 knowledge_originals 回执经候选精确回放、材料重建及策略后的末尾检查贯通，前瞻材料五条回执、显式记忆回执计一条。临时容器与源码快照清理完成，实际模型调用 0。真实观察准备期到期/明确历史时点的负例另见同收据的独立数据库案例；此次正向组合不是全链路注入到期测试，最终启用仍关闭。[记忆回执收据](evidence/ma24-g09-consumed-memory-receipt-recheck-2026-10-19.json)。
+
+2026-10-19 / G02、G05 原件下载真实 HTTP：在真实备份恢复的临时库，当前构建 J-fdhzwzNRSmES5T8ywYZ 通过受限应用角色和两个合成账号验证完整 200、三类 206 Range、非法 Range 416、匿名 401、私有跨账号 404；等长篡改、截短及缺失文件 410，原件撤回/文档归档 404，共享可读与撤回共享后拒绝、当前文件名头、no-store/nosniff 均通过。路径穿越在写入存储键时已被数据库约束 23514 拒绝，未绕过约束来伪造 HTTP 覆盖。临时文档、资产、账号、文件、Web 进程及恢复库均清理。此次不注入读取过程中的同步撤回竞态，也不证明模型答案、真实业务资料或生产交付。[HTTP 收据](evidence/ma24-g02-g05-asset-download-http-clone-2026-10-19.json)。

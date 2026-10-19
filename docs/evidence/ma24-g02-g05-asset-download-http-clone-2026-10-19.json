@@ -1,0 +1,62 @@
+{
+  "stage": "MA24 G02 G05 authenticated compiled HTTP original download",
+  "date": "2026-10-19",
+  "sourceBaseCommit": "3aa5578e87f110b5a8bc83554bdc650040139fae",
+  "candidateBuildSourceCommit": "1876cb63",
+  "candidateBuildId": "J-fdhzwzNRSmES5T8ywYZ",
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-backup-restore.ts --web-compat --asset-download",
+  "checks": {
+    "exitCode": 0,
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "diffCheck": "passed"
+  },
+  "restoredClone": {
+    "archive": "network_copilot_2026-10-16T06-35-27Z.dump",
+    "archiveSha256": "89ab7a90366c0ffceb82c31ae5de5b2ac2ec1f5553238446a82d862aa785d97c",
+    "temporaryDatabase": "ma24_restore_5525a7f17cb4",
+    "fullIntegrityRestore": true,
+    "archiveAclRestored": true,
+    "markers127Through135Unchanged": true,
+    "applicationCannotInsertAcceptanceBundle": true,
+    "collectorAndForcedRlsBoundaryPreserved": true,
+    "productionChanged": false
+  },
+  "result": {
+    "actualCompiledHttp": true,
+    "authenticatedSessions": 2,
+    "completeDownloadMatches": true,
+    "threeRangeFormsVerified": true,
+    "invalidRangesRejected": true,
+    "anonymousAndPeerPrivateDenied": true,
+    "sameSizeTamperRejected": true,
+    "truncationRejected": true,
+    "missingOriginalRejected": true,
+    "storageTraversalRejectedByDatabase": true,
+    "withdrawnAssetRejected": true,
+    "archivedDocumentRejected": true,
+    "sharingThenWithdrawalVerified": true,
+    "currentDownloadTitleVerified": true,
+    "modelCalls": 0,
+    "externalCalls": 0,
+    "productionWrites": 0
+  },
+  "cleanup": {
+    "syntheticDocumentAssetAndPeerAbsent": true,
+    "ownedFileUnlinked": true,
+    "webProcessTreesStopped": true,
+    "temporaryDatabaseDropped": true
+  },
+  "initialFixtureFailure": "The first run attempted to store knowledge/../package.json to test the HTTP path guard. The existing database storage-key constraint rejected it first with SQLSTATE 23514. The corrected fixture asserts database rejection and unchanged accessible original; no constraint was bypassed or weakened.",
+  "limitations": [
+    "Synthetic text original and temporary authenticated accounts on a local restored clone; not real business material or team deployment.",
+    "Revocation is exercised between requests; synchronized mid-read revocation remains unit-boundary evidence only.",
+    "Path traversal is rejected by the database before HTTP can read it; no actual HTTP traversal attempt or constraint bypass is claimed.",
+    "Old and candidate Web startup compatibility is checked; no live traffic rollback is claimed."
+  ],
+  "verifierFilesSha256": {
+    "scripts/lib/verify-ma24-asset-download-clone.ts": "b5e04f4c34debd0fe39274988e94d070c473a3d5fcb82c0cf16ce9d88f444cd4",
+    "scripts/lib/verify-ma24-web-clone-compatibility.ts": "0223eb5a78b862aca87c27c417a6a3133071655564f19cca2b206b280938d917",
+    "scripts/verify-ma24-backup-restore.ts": "7dc1daa8d8c1b964d6085b64632a175224affd496b4f424a9fa83550d2b2f153"
+  }
+}

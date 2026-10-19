@@ -224,7 +224,8 @@ try {
       agentLibraryUi: process.argv.includes("--agent-library-ui"),
       rawJsonUi: process.argv.includes("--raw-json-ui"),
       skillReplayRawJsonUi: process.argv.includes("--skill-replay-raw-json-ui"),
-      nonMailApprovalRawJsonUi: process.argv.includes("--non-mail-approval-raw-json-ui") });
+      nonMailApprovalRawJsonUi: process.argv.includes("--non-mail-approval-raw-json-ui"),
+      assetDownload: process.argv.includes("--asset-download") });
   }
   console.log(JSON.stringify({ archive: selected, archiveSha256: manifest.sha256, restored: true,
     migrationRange: "127-135", backupStageState: structurePresent ? "schema-present" : "schema-absent",

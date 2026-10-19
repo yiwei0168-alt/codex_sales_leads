@@ -78,6 +78,7 @@ export async function verifyMa24WebCloneCompatibility(options: {
   rawJsonUi?: boolean;
   skillReplayRawJsonUi?: boolean;
   nonMailApprovalRawJsonUi?: boolean;
+  assetDownload?: boolean;
 }): Promise<unknown> {
   assert.equal(await readFile(resolve(oldRoot, ".next/BUILD_ID"), "utf8").then(value => value.trim()), oldBuild);
   const candidateBuild = (await readFile(resolve(candidateRoot, ".next/BUILD_ID"), "utf8")).trim();
@@ -176,6 +177,7 @@ export async function verifyMa24WebCloneCompatibility(options: {
       let rawJsonPage: unknown;
       let skillReplayRawJsonPage: unknown;
       let nonMailApprovalRawJsonPage: unknown;
+      let assetDownload: unknown;
       if (version.name === "candidate-web" && options.reviewUi) {
         const { verifyMa24ReviewPageClone } = await import("./verify-ma24-review-page-clone");
         try {
@@ -247,6 +249,10 @@ export async function verifyMa24WebCloneCompatibility(options: {
         const { verifyMa24NonMailApprovalRawJsonClone } = await import("./verify-ma24-non-mail-approval-raw-json-clone");
         nonMailApprovalRawJsonPage = await verifyMa24NonMailApprovalRawJsonClone({ admin: options.admin, base, cookie, userId });
       }
+      if (version.name === "candidate-web" && options.assetDownload) {
+        const { verifyMa24AssetDownloadClone } = await import("./verify-ma24-asset-download-clone");
+        assetDownload = await verifyMa24AssetDownloadClone({ admin: options.admin, base, cookie, userId });
+      }
       results.push({ version: version.name, buildId: version.buildId, manifestStatus: manifest.status,
         anonymousUploadStatus: denied.status, syntheticLoginStatus: login.status,
         authenticatedUploadStatus: list.status, visibleUploadJobs: listed.jobs.length,
@@ -264,7 +270,8 @@ export async function verifyMa24WebCloneCompatibility(options: {
         ...(agentLibraryPage ? { agentLibraryPage } : {}),
         ...(rawJsonPage ? { rawJsonPage } : {}),
         ...(skillReplayRawJsonPage ? { skillReplayRawJsonPage } : {}),
-        ...(nonMailApprovalRawJsonPage ? { nonMailApprovalRawJsonPage } : {}) });
+        ...(nonMailApprovalRawJsonPage ? { nonMailApprovalRawJsonPage } : {}),
+        ...(assetDownload ? { assetDownload } : {}) });
     } finally {
       await stopOwnedServer(child);
     }
