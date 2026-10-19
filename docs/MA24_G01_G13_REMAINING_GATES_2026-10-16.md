@@ -1,6 +1,6 @@
 # MA24 G01–G13 当前剩余门槛（2026-10-16）
 
-## 当前结论（2026-10-19，源码基线 8a968d36）
+## 当前结论（2026-10-19，源码基线 cd4c9e95）
 
 执行范围仍为 G01–G13；G14–G20 暂缓，完整 Goal 未完成。下方按阶段保留的记录描述当时状态；其中“待重跑”“仍待接线”等历史表述，应结合其后的验收收据判断，不能单独作为当前结论。
 
@@ -193,3 +193,5 @@ G01 current-source production build (2026-10-19): `npm.cmd run build` passed on 
 G05 successful PDF/PPTX worker isolation rerun (2026-10-19): actual formal workers extracted synthetic text-plus-image PDF and PPTX, preserved extracted text/coordinates, and queued both for visual review while an unrelated held job and v3 pointers remained unchanged. No documents were published. [Receipt](evidence/ma24-g05-successful-pdf-pptx-worker-isolation-2026-10-19.json).
 
 G05 synthetic PDF/PPTX end-to-end review and citation isolation (2026-10-19): formal worker extraction, synthetic visual-review completion, private registration, search and exact source-location readback passed; cross-account search/tree/evidence reads were denied. Cleanup assertions confirmed no synthetic accounts, jobs, review rows or documents remain. [Receipt](evidence/ma24-g05-pdf-pptx-review-register-search-citation-isolation-2026-10-19.json). This is engineering evidence only; real source quality and user-facing answer citation remain unaccepted.
+
+G13 review UI backup-clone rerun (2026-10-19): restored a real backup to a disposable database and exercised old Web, candidate Web, and old Web after candidate upload using a synthetic account. Candidate review page passed desktop/mobile layout, source download match, revision conflict, refresh recovery, changed-original rejection and unchanged release pointer. Review remained unresolved and zero documents were published; real business material, actual review completion, usage accounting and production rollback remain open. [Receipt](evidence/ma24-g13-review-ui-backup-clone-2026-10-19.json).

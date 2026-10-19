@@ -1,0 +1,53 @@
+{
+  "date": "2026-10-19",
+  "scope": "G13 isolated native document-review UI and rollback compatibility",
+  "command": "npm.cmd run ma24:verify-review-ui-clone",
+  "sourceBackup": {
+    "file": "network_copilot_2026-10-16T06-35-27Z.dump",
+    "sha256": "89ab7a90366c0ffceb82c31ae5de5b2ac2ec1f5553238446a82d862aa785d97c",
+    "fullIntegrityRestore": true,
+    "ownerAndAclIncluded": true
+  },
+  "database": {
+    "temporaryName": "ma24_restore_75fd9a98f065",
+    "migrationRange": "127-135",
+    "allEightMarkersPresentBeforeAndAfter": true,
+    "applicationSelectInsertOnReviewTable": true,
+    "applicationInsertOnAcceptanceBundle": false,
+    "collectorInsertAndForcedRlsOnAcceptanceBundle": true,
+    "productDatabaseChanged": false,
+    "temporaryDatabaseRemovedByVerifierCleanup": true
+  },
+  "webCompatibility": {
+    "cloneOnly": true,
+    "syntheticAccountOnly": true,
+    "modelCalls": null,
+    "workerUsageCountersCaptured": false,
+    "versions": [
+      { "name": "old-web-rollback", "buildId": "QfoyXprIZIVgSWxFSZ-1K", "buildManifestStatus": 200, "anonymousUploadListStatus": 401, "syntheticLoginStatus": 200, "authenticatedUploadListStatus": 200, "visibleUploadJobs": 0 },
+      {
+        "name": "candidate-web", "buildId": "PAKgyAMG8AyMpxcx0pKSd", "buildManifestStatus": 200,
+        "anonymousUploadListStatus": 401, "syntheticLoginStatus": 200, "authenticatedUploadListStatus": 200,
+        "acceptanceReviewStatus": 200,
+        "reviewPage": {
+          "uploadStatus": 202, "localExtractionExitCode": 0, "visualObjects": 63, "pageOpened": true,
+          "originalDownloadMatched": true, "smartArtCopiedFromApi": true, "connectorCopiedFromApi": true,
+          "connectorMobileNoOverflow": true, "savedRevision": 1, "databaseDecision": "unresolved",
+          "successfulTextPageNumberExcluded": true, "successfulTextDesktopAndMobileRendered": true,
+          "staleWriteStatus": 409, "secondPageObjects": 20, "refreshRestoredNote": true,
+          "mobileNoHorizontalOverflow": true, "changedOriginalRejected": true, "releasePointerUnchanged": true,
+          "completedReview": false, "publishedDocuments": 0, "cloudCredentialsClearedInWorker": true,
+          "workerUsageCountersCaptured": false
+        }
+      },
+      { "name": "old-web-after-candidate-upload", "buildId": "QfoyXprIZIVgSWxFSZ-1K", "buildManifestStatus": 200, "anonymousUploadListStatus": 401, "syntheticLoginStatus": 200, "authenticatedUploadListStatus": 200, "visibleUploadJobs": 1 }
+    ]
+  },
+  "cleanup": { "verifierCompletedSuccessfully": true, "ownedWebProcessesStoppedByVerifier": true, "temporaryDatabaseDroppedByVerifier": true },
+  "realCustomerRecordsMutated": false,
+  "limits": [
+    "The review page stayed unresolved; no human review was completed and zero documents were published.",
+    "The uploaded document and account were synthetic. This does not establish real-user readability, content quality, reviewer completion or production safety.",
+    "The test did not exercise real mailboxes, business tasks, model citations, usage accounting, production authentication, a product port switch or an actual production rollback."
+  ]
+}
