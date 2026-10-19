@@ -2,6 +2,7 @@ import { z } from "zod";
 import { tenantQuery, tenantTransaction } from "@/lib/rag/db";
 import type {PoolClient} from "pg";
 import { observeMemoryInTransaction } from "@/lib/knowledge/temporal-memory";
+import {lockMemorySourceAdmission} from '@/lib/knowledge/memory-source-admission';
 import type { ExecutionContext } from "./contracts";
 export const memoryInputSchema = z.object({
   key: z.string().min(1).max(160), content: z.string().min(1).max(8000),
@@ -15,6 +16,7 @@ export async function saveMemory(context: ExecutionContext, input: MemoryInput, 
   if ((p.scope === "global" || p.mandatory) && context.role !== "admin") throw new Error("Administrator policy required");
   if (automatic && (p.kind !== "preference" || p.scope !== "account")) throw new Error("Only account preferences may be automatic");
   return tenantTransaction(context.userId, async client => {
+    await lockMemorySourceAdmission(client,context.userId,p.scope==='global');
     await client.query("select pg_advisory_xact_lock(hashtextextended($1,0))", [`memory:${context.userId}:${p.scope}:${p.kind}:${p.key}`]);
     const current = await client.query<{ id: string; current_version: number; source_kind: string; active:boolean }>("select id,current_version,source_kind,active from agent_memory where owner_id=$1 and scope=$2 and kind=$3 and memory_key=$4 for update", [context.userId, p.scope, p.kind, p.key]);
     const prior = current.rows[0];
@@ -54,6 +56,9 @@ export async function undoMemory(userId: string, id: string, version: number, ro
   return tenantTransaction(userId, client => undoMemoryInTransaction(client,userId,id,version), role);
 }
 export async function undoMemoryInTransaction(client:PoolClient,userId:string,id:string,version:number){
+    // Legacy records can be global even after their owner's role changes.
+    // Take the global gate before locking the row, rather than upgrading later.
+    await lockMemorySourceAdmission(client,userId,true);
     const rows = await client.query<{ current_version: number; active:boolean; memory_key:string; scope_snapshot:{previousVersion?:number|null;previousActive?:boolean} }>(`select m.current_version,m.active,m.memory_key,v.scope_snapshot from agent_memory m
       join agent_memory_version v on v.memory_id=m.id and v.version=m.current_version where m.owner_id=$1 and m.id=$2 for update of m`, [userId, id]);
     const current=rows.rows[0];

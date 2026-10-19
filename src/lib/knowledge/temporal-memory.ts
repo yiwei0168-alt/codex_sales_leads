@@ -2,6 +2,7 @@ import {createHash} from "node:crypto";
 import type {PoolClient} from "pg";
 import {tenantQuery,tenantTransaction} from "@/lib/rag/db";
 import {memoryConflictExclusionSql} from './memory-conflict-sql';
+import {lockMemorySourceAdmission} from './memory-source-admission';
 
 export type MemoryObservationInput={kind:"preference"|"experience"|"business-fact"|"method";content:string;sourceReceipt:Record<string,unknown>;memoryKey?:string;idempotencyKey?:string;marketCode?:string;companyId?:string;marketCodes?:string[];companyIds?:string[];validFrom?:string|null;validUntil?:string|null;confidence?:number;correctsId?:string;invalidatesId?:string};
 
@@ -34,6 +35,7 @@ export async function observeMemoryInTransaction(client:PoolClient,userId:string
     correctsId:input.correctsId??null,invalidatesId:input.invalidatesId??null,
   })).digest("hex");
   {
+    await lockMemorySourceAdmission(client,userId);
     if(memoryKey)await client.query("select pg_advisory_xact_lock(hashtextextended($1,0))",[`${userId}:${input.kind}:${memoryKey}:${input.marketCode??""}:${input.companyId??""}:${marketCodes.join(",")}:${companyIds.join(",")}`]);
     for(const targetId of [input.correctsId,input.invalidatesId].filter(Boolean)){
       await client.query('select pg_advisory_xact_lock(hashtextextended($1,0))',[`memory-target:${userId}:${targetId}`]);
@@ -80,6 +82,7 @@ export async function undoMemory(userId:string,targetId:string){
       "select source_receipt from agent_memory_observation where id=$1 and owner_id=$2",[targetId,userId]);
     if(!target.rows[0])throw new Error("Memory target is unavailable");
     const receipt=target.rows[0].source_receipt;
+    await lockMemorySourceAdmission(client,userId,receipt.type==='agent-memory-version');
     // Legacy undo locks its original version first; keep the same order as saveMemory.
     if(receipt.type!=='agent-memory-version')await client.query('select pg_advisory_xact_lock(hashtextextended($1,0))',[`memory-target:${userId}:${targetId}`]);
     const corrected=await client.query('select id from agent_memory_observation where owner_id=$1 and corrects_id=$2 limit 1',[userId,targetId]);

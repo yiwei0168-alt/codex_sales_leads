@@ -6,6 +6,7 @@ import {observeMemoryInTransaction,type MemoryObservationInput} from './temporal
 import {parseMemoryCorrectionCommand} from './memory-correction-command';
 import {validateNaturalCorrection,type NaturalCorrectionProposal} from './natural-memory-correction';
 import {isDirectMemorySpan} from './memory-source-context';
+import {lockMemorySourceAdmission} from './memory-source-admission';
 
 const businessTimeSchema=z.object({validFrom:z.iso.datetime({offset:true}).nullable(),validUntil:z.iso.datetime({offset:true}).nullable()}).strict()
   .refine(p=>!p.validFrom||!p.validUntil||Date.parse(p.validUntil)>Date.parse(p.validFrom),{message:'Invalid business validity interval'});
@@ -26,6 +27,7 @@ export async function correctMemory(userId:string,input:z.input<typeof memoryCor
 
 type MessageSource={runId:string;messageId:string;messageSha256:string;sourceQuote:string;recognizer?:string};
 async function correctInTransaction(client:PoolClient,userId:string,p:z.output<typeof memoryCorrectionSchema>,source?:MessageSource){
+    await lockMemorySourceAdmission(client,userId);
     const target=(await client.query<Target>(`select id,kind,content,memory_key,market_code,company_id,
       market_codes,company_ids,valid_from,valid_until,confidence,invalidates_id,source_receipt
       from agent_memory_observation where owner_id=$1 and id=$2`,[userId,p.id])).rows[0];

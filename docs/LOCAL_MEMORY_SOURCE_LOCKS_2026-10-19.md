@@ -9,6 +9,8 @@ G03 普通偏好、业务事实及经历抽取在本地模型返回之后，进�
 
 没有在模型调用期间持锁。job-before-source 的顺序与已有纠正 Worker 一致；来源内部采用 admission → account → conversation → run → message 顺序，避免先拿来源行再等待记忆 admission。
 
+后续兼容补强已将观察、纠正、撤销及旧版记忆写入统一为 admission 在记忆键/目标/行锁之前，避免与这里的来源锁形成反向顺序；实际五例并发验证通过。[锁顺序与剩余负载边界](MEMORY_WRITE_ADMISSION_ORDER_2026-10-19.md)。
+
 ## 迁移及部署边界
 
 新代码必须先安装 `154_local_memory_extraction_source_locks.sql`。缺少函数会令存储失败并按已有机制排队，不会降级为无锁写入。函数为账号绑定 SECURITY DEFINER，未给应用增加表级更新权限；PUBLIC 和 collector 无执行权限。

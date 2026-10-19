@@ -1,0 +1,29 @@
+{
+  "stage": "MA24 G03 memory write admission ordering",
+  "date": "2026-10-19",
+  "baseCommit": "eed7027c",
+  "status": "specified-write-path-ordering-passed; production-and-load-pending",
+  "implementation": [
+    "Observation, correction, undo and legacy version mutations acquire source admission before memory-key/target/row locks.",
+    "Use the existing global and owner advisory keys; admins/global operations acquire global exclusive admission.",
+    "Legacy undo acquires global admission before row locks; temporal undo bridging a legacy observation does so before nesting, avoiding a later shared-to-exclusive upgrade."
+  ],
+  "checks": {
+    "targetedTests": "79 passed in six files",
+    "typecheck": "exit 0",
+    "focusedEslint": "exit 0",
+    "diffCheck": "exit 0",
+    "actualDatabaseMatrix": {"exitCode": 0, "log": "tmp/ma24-memory-admission-order-final-2026-10-19.log", "cases": ["observation", "correction", "undo", "legacy-save", "legacy-undo"]},
+    "sequence": "One real transaction holds migration-154 source locks. Each competing production write function is observed waiting on admission; holder writes the same memory key within 2s lock_timeout, commits, then the waiting writer completes.",
+    "sourceRaceRegression": {"exitCode": 0, "log": "tmp/ma24-memory-source-after-admission-2026-10-19.log", "cases": 7},
+    "correctionRegression": {"exitCode": 0, "log": "tmp/ma24-memory-correction-after-admission-2026-10-19.log"},
+    "cleanup": "Synthetic users, conversations, runs/events, legacy memory/version rows, observations/notices/conflicts and outbox rows removed from the isolated replay clone."
+  },
+  "limits": [
+    "Synthetic local clone only; zero model/network calls. No business DB migration, production Worker or deployment.",
+    "This is a controlled transaction sequence using actual source-lock and write functions, not simultaneous full scheduler/worker processes or a production deadlock reproduction.",
+    "Does not exclude all deadlocks, sustained contention, crashes or administrative migration conflicts. Legacy undo's global exclusive admission needs target-load observation.",
+    "Current changes postdate the verified 25f5acd3 image and full signed composition. New production loading and full current-source composition are not established.",
+    "Existing development clone security warning remains; production TLS/login, real memory quality and automatic activation are not approved."
+  ]
+}
