@@ -9,7 +9,8 @@
   "typecheckPassed": true,
   "targetedLintPassed": true,
   "fix": "Compare the same registration projection on both sides; retain separate snapshot count and manifest equality guards",
-  "completeIntegrationAfterFix": "pending fixed-source rerun",
+  "completeIntegrationAfterFix": "passed on fixed 6770a54788d3e5b3a934839014391207b877e140",
+  "completeIntegrationEvidence": "ma24-g09-signed-canonical-composition-6770a547-2026-10-19.json",
   "productionQualified": false,
   "automaticActivation": false
 }
