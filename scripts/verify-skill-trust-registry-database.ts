@@ -4,7 +4,7 @@ import {readFile,writeFile} from 'node:fs/promises';
 import nextEnv from '@next/env';
 import {Pool,type PoolClient} from 'pg';
 import {digest} from '../src/lib/assistant/main/contracts';
-import {readLockedSkillRunnerTrustRegistry} from '../src/lib/assistant/main/skill-runner-trust-registry-store';
+import {readLockedSkillRunnerTrustRegistry,readLockedCollectorSkillRunnerTrustRegistry} from '../src/lib/assistant/main/skill-runner-trust-registry-store';
 import {withBoundTenantTransaction} from '../src/lib/rag/db';
 import {loadConfiguredSkillRunnerTrustRegistry} from '../src/lib/assistant/main/skill-runner-attestation';
 
@@ -80,6 +80,19 @@ try{
   await pool.query('select publish_skill_runner_trust_registry($1,$2)',[registry,'0'.repeat(64)]);
   await bind(reader);await assert.rejects(readLockedSkillRunnerTrustRegistry(reader,actor),/digest changed/);await reader.query('rollback');
   await bind(reader);await assert.rejects(configuredRead(reader),/digest changed/);await reader.query('rollback');
+  await pool.query('select publish_skill_runner_trust_registry($1,$2)',[registry,digest(registry)]);
+  await bind(reader);await assert.rejects(readLockedCollectorSkillRunnerTrustRegistry(reader,actor),/account or role invalid/);await reader.query('rollback');
+  await reader.query('begin');await reader.query('set local role network_copilot_skill_collector');
+  await reader.query("select set_config('app.current_user_id',$1,true)",[actor]);
+  await assert.rejects(readLockedCollectorSkillRunnerTrustRegistry(reader,randomUUID()),/account or role invalid/);
+  assert.deepEqual(await loadConfiguredSkillRunnerTrustRegistry(actor,reader),registry);
+  await reader.query('rollback');
+  await reader.query('set role network_copilot_skill_collector');
+  try{
+   await reader.query("select set_config('app.current_user_id',$1,false)",[actor]);
+   await assert.rejects(readLockedCollectorSkillRunnerTrustRegistry(reader,actor),/transaction changed/);
+  }finally{await reader.query('reset role');await reader.query("select set_config('app.current_user_id','',false)");}
+  results.push('collector client configuration reuses exact owned transaction and rejects app role, cross-account and autocommit');
   await pool.query('select publish_skill_runner_trust_registry($1,$2)',[{...registry,extra:true},digest({...registry,extra:true})]);
   await bind(reader);await assert.rejects(readLockedSkillRunnerTrustRegistry(reader,actor));await reader.query('rollback');
   results.push('immutable versions, stale snapshot isolation, corrupt digest and non-strict schema reject');

@@ -41,7 +41,7 @@ export async function appendSkillRunnerAttestation(context:Context,input:unknown
   await assertSkillCollector(client);
   await lockSkillAcceptanceFreeze(client,context.userId,p.envelope.statement.freezeId);
   const expected=await loadBinding(client,context,p.bundleId,p.envelope.statement.freezeId);
-  const verified=await verifyConfiguredSkillRunnerAttestation(p.envelope,expected);
+  const verified=await verifyConfiguredSkillRunnerAttestation(p.envelope,expected,client);
   await client.query(`insert into agent_skill_runner_attestation(owner_id,bundle_id,freeze_id,artifact_hash,statement_hash,envelope)
    values($1,$2,$3,$4,$5,$6) on conflict(owner_id,bundle_id,statement_hash) do nothing`,
   [context.userId,p.bundleId,expected.freezeId,expected.artifactHash,verified.statementHash,JSON.stringify(p.envelope)]);
@@ -49,7 +49,7 @@ export async function appendSkillRunnerAttestation(context:Context,input:unknown
    where owner_id=$1 and bundle_id=$2 and statement_hash=$3`,[context.userId,p.bundleId,verified.statementHash])).rows[0];
   if(!saved||digest(saved.envelope)!==digest(p.envelope))throw new Error('Runner declaration stored statement changed');
   const after=await loadBinding(client,context,p.bundleId,expected.freezeId);
-  const rechecked=await verifyConfiguredSkillRunnerAttestation(saved.envelope,after);
+  const rechecked=await verifyConfiguredSkillRunnerAttestation(saved.envelope,after,client);
   if(digest(after)!==digest(expected)||rechecked.registryHash!==verified.registryHash)throw new Error('Runner declaration trust changed during append');
   return {id:saved.id,statementHash:verified.statementHash,signedDeclarationVerified:true,automaticActivation:false};
  });
@@ -68,7 +68,7 @@ export async function appendConfiguredSkillRunnerAttestation(context:Context,inp
   if(!row)throw new Error('Runner declaration bundle unavailable');
   const freezeId=z.object({collector:z.object({freezeId:z.uuid()})}).parse(row.raw_receipts).collector.freezeId;
   await lockSkillAcceptanceFreeze(client,context.userId,freezeId);
-  const expected=await loadBinding(client,context,p.bundleId,freezeId),registry=await loadConfiguredSkillRunnerTrustRegistry(context.userId);
+  const expected=await loadBinding(client,context,p.bundleId,freezeId),registry=await loadConfiguredSkillRunnerTrustRegistry(context.userId,client);
   const keyId=z.string().min(1).max(100).parse(process.env.SKILL_RUNNER_DECLARATION_KEY_ID),key=registry.keys.find(item=>item.keyId===keyId);
   if(!key?.enabled||!key.purposes.includes('runner-declaration')||key.collectorId!==expected.collectorId||key.deploymentHash!==expected.deploymentHash)
    throw new Error('Runner declaration signing enrollment unavailable');

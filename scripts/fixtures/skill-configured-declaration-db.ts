@@ -6,13 +6,15 @@ import {spawn,execFileSync} from 'node:child_process';
 import {build} from 'esbuild';
 import type {Pool} from 'pg';
 import {loadConfiguredSkillRunnerTrustRegistry} from '../../src/lib/assistant/main/skill-runner-attestation';
-import {readSkillRunnerAttestation} from '../../src/lib/assistant/main/skill-runner-attestation-store';
+import {readSkillRunnerAttestation,appendSkillRunnerAttestation} from '../../src/lib/assistant/main/skill-runner-attestation-store';
+import {digest} from '../../src/lib/assistant/main/contracts';
 
 /** Actual native compiled CLI or measured Linux image + restricted login and test keys.
  * No provider/model call and no production identity or source promotion. */
 export async function verifyConfiguredDeclarationDatabase(pool:Pool,input:{owner:string;other:string;bundleId:string;syntheticBundle:string;directory:string}){
  const registryPath=process.env.SKILL_RUNNER_TRUST_REGISTRY_FILE!,originalText=await readFile(registryPath,'utf8');
  const registry=await loadConfiguredSkillRunnerTrustRegistry(),pair=generateKeyPairSync('ed25519'),keyId=randomUUID();
+ const databaseTrust=process.env.MA24_DECLARATION_DATABASE_TRUST==='1',priorMode=process.env.SKILL_RUNNER_TRUST_REGISTRY_MODE;
  const originalDeployment=process.env.SKILL_RUNNER_DEPLOYMENT_SHA256;
  const image=process.env.MA24_DECLARATION_TEST_IMAGE,container=process.env.MA24_DECLARATION_TEST_CONTAINER;
  let measuredDeployment:string|undefined,imageId:string|undefined;
@@ -31,6 +33,10 @@ export async function verifyConfiguredDeclarationDatabase(pool:Pool,input:{owner
   ...(measuredDeployment?{deploymentHash:measuredDeployment}:{}),
   publicKeyPem:pair.publicKey.export({type:'spki',format:'pem'}).toString()};
  const configuredRegistry={...registry,keys:[...registry.keys,enrolled]};
+ const persist=async()=>{
+  await writeFile(registryPath,JSON.stringify(configuredRegistry));
+  if(databaseTrust)await pool.query('select publish_skill_runner_trust_registry($1,$2)',[configuredRegistry,digest(configuredRegistry)]);
+ };
  const keyPath=join(input.directory,'configured-declaration.pem'),wrongPath=join(input.directory,'wrong-declaration.pem'),jobPath=join(input.directory,'declaration-job.json');
  const compiled=resolve('tmp',`skill-declaration-${randomUUID()}.cjs`);
  assert(compiled.startsWith(resolve('tmp')+sep));
@@ -71,8 +77,13 @@ export async function verifyConfiguredDeclarationDatabase(pool:Pool,input:{owner
   });
  };
  try{
+  if(databaseTrust){
+   assert(!imageId,'Database declaration mode requires a newly built native fixture at this stage');
+   await pool.query(await readFile('db/migrations/157_skill_runner_trust_registry.sql','utf8'));
+   process.env.SKILL_RUNNER_TRUST_REGISTRY_MODE='database';
+  }
   if(measuredDeployment)process.env.SKILL_RUNNER_DEPLOYMENT_SHA256=measuredDeployment;
-  await writeFile(registryPath,JSON.stringify(configuredRegistry));
+  await persist();
   await writeFile(keyPath,pair.privateKey.export({type:'pkcs8',format:'pem'}),{mode:0o600});
   await writeFile(wrongPath,generateKeyPairSync('ed25519').privateKey.export({type:'pkcs8',format:'pem'}),{mode:0o600});
   if(!imageId)await build({entryPoints:['scripts/skill-collector-runner.ts'],outfile:compiled,bundle:true,platform:'node',target:'node24',format:'cjs',packages:'external',logLevel:'warning'});
@@ -93,14 +104,42 @@ export async function verifyConfiguredDeclarationDatabase(pool:Pool,input:{owner
   await denied(job,{SKILL_RUNNER_DECLARATION_PRIVATE_KEY_FILE:wrongPath});
   await denied(job,{SKILL_RUNNER_DECLARATION_KEY_ID:'missing-key'});
   await denied(job,{NODE_OPTIONS:'--no-warnings'});
-  enrolled.enabled=false;await writeFile(registryPath,JSON.stringify(configuredRegistry));await denied();
-  enrolled.enabled=true;enrolled.purposes=['model-transport'];await writeFile(registryPath,JSON.stringify(configuredRegistry));await denied();
+  if(databaseTrust){
+   const row=(await pool.query<{envelope:unknown}>('select envelope from agent_skill_runner_attestation where id=$1',[saved.declarationId])).rows[0];
+   const writer=await pool.connect();let publication:Promise<{error?:unknown}>|undefined;
+   try{
+    await appendSkillRunnerAttestation({userId:input.owner},{bundleId:input.bundleId,envelope:row.envelope},async(owner,work)=>{
+     const reader=await pool.connect();try{
+      await reader.query('begin');await reader.query('set local role network_copilot_skill_collector');
+      await reader.query("select set_config('app.current_user_id',$1,true)",[owner]);
+      const result=await work(reader);
+      const readerPid=(await reader.query('select pg_backend_pid() pid')).rows[0].pid,writerPid=(await writer.query('select pg_backend_pid() pid')).rows[0].pid;
+      const disabled={...configuredRegistry,keys:configuredRegistry.keys.map(key=>({...key,enabled:false}))};
+      publication=writer.query('select publish_skill_runner_trust_registry($1,$2)',[disabled,digest(disabled)]).then(()=>({}),error=>({error}));
+      let blocked=false;for(let n=0;n<80;n++){
+       blocked=(await pool.query('select $1::int=any(pg_blocking_pids($2)) blocked',[readerPid,writerPid])).rows[0].blocked;
+       if(blocked)break;await new Promise(done=>setTimeout(done,25));
+      }
+      assert(blocked,'Registry disablement must wait for exact collector transaction after append returns');
+      await reader.query('commit');return result;
+     }catch(error){await reader.query('rollback');throw error;}finally{reader.release();}
+    });
+    assert(publication);assert.equal((await publication).error,undefined);
+    // File enrollment deliberately remains enabled: database mode must not fall back.
+    await denied();await assert.rejects(readSkillRunnerAttestation({userId:input.owner},saved.declarationId),/unavailable/);
+    await persist();
+   }finally{if(publication)await publication;writer.release();}
+  }
+  enrolled.enabled=false;await persist();await denied();
+  enrolled.enabled=true;enrolled.purposes=['model-transport'];await persist();await denied();
   return {configuredDeclarationCliDatabaseVerified:true,configuredDeclarationLinuxImageVerified:!!imageId,
    ...(imageId?{declarationImageId:imageId,declarationMeasuredDeploymentHash:measuredDeployment,declarationMissingTlsRootAndMismatchedDeploymentRejected:true}:{}),
-   configuredDeclarationRetryReusesStatement:true,
+   configuredDeclarationRetryReusesStatement:true,configuredDeclarationDatabaseTrustVerified:databaseTrust,
+   configuredDeclarationRegistryDisablementWaitsForCollectorCommit:databaseTrust,
    configuredDeclarationCrossAccountAndSyntheticRejected:true,configuredDeclarationCallerBindingRejected:true,
    configuredDeclarationAppLoginRejected:true,configuredDeclarationWrongKeyPurposeRevocationAndNodeOptionsRejected:true};
  }finally{
+  if(priorMode===undefined)delete process.env.SKILL_RUNNER_TRUST_REGISTRY_MODE;else process.env.SKILL_RUNNER_TRUST_REGISTRY_MODE=priorMode;
   if(originalDeployment===undefined)delete process.env.SKILL_RUNNER_DEPLOYMENT_SHA256;else process.env.SKILL_RUNNER_DEPLOYMENT_SHA256=originalDeployment;
   await writeFile(registryPath,originalText);await rm(compiled,{force:true});
  }
