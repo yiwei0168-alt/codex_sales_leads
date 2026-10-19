@@ -1,0 +1,34 @@
+{
+  "date": "2026-10-19",
+  "scope": "G09 runner-attestation store on a fresh disposable PostgreSQL cluster",
+  "command": "node scripts/verify-ma24-fresh-pilot-new-cluster.ts --runner-attestation",
+  "result": {
+    "freshClusterPilot": "passed",
+    "image": "pgvector/pgvector:pg16",
+    "publishedAddress": "127.0.0.1 only",
+    "rolesVerified": true,
+    "duplicateRoleBootstrapRejected": true,
+    "freshMigrationThrough": 135,
+    "runnerAttestationStoreVerified": true,
+    "extraG09Migration": 141,
+    "signedDeclarationAppendAndIdempotency": true,
+    "observationAndTimeDriftRejected": true,
+    "historicalUnboundStatementsRejectedOnRead": true,
+    "applicationInsertDenied": true,
+    "crossAccountDenied": true,
+    "appendOnly": true,
+    "syntheticEvidenceSourceRejected": true,
+    "keyDisablementAndFreezeRevocationRejected": true,
+    "lockedEvidenceLatestReviewSerialized": true,
+    "automaticActivation": false,
+    "modelCalls": 0,
+    "productionKeysCreated": false,
+    "copiedProductionData": false
+  },
+  "cleanup": { "containerAndVolumeRemovedByHarness": true },
+  "limits": [
+    "The trust key, collector, deployment identity, plan, observations and source data were synthetic.",
+    "This validates signed-declaration storage and current binding checks only. It does not establish trusted production collector/provider identity, complete source revocation protection, human quality acceptance or the final activation transaction.",
+    "No product database was migrated and no Skill was enabled."
+  ]
+}

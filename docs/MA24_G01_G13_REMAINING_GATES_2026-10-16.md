@@ -1,6 +1,6 @@
 # MA24 G01–G13 当前剩余门槛（2026-10-16）
 
-## 当前结论（2026-10-19，源码基线 cd4c9e95）
+## 当前结论（2026-10-19，源码基线 faa4692f）
 
 执行范围仍为 G01–G13；G14–G20 暂缓，完整 Goal 未完成。下方按阶段保留的记录描述当时状态；其中“待重跑”“仍待接线”等历史表述，应结合其后的验收收据判断，不能单独作为当前结论。
 
@@ -197,3 +197,5 @@ G05 synthetic PDF/PPTX end-to-end review and citation isolation (2026-10-19): fo
 G13 review UI backup-clone rerun (2026-10-19): restored a real backup to a disposable database and exercised old Web, candidate Web, and old Web after candidate upload using a synthetic account. Candidate review page passed desktop/mobile layout, source download match, revision conflict, refresh recovery, changed-original rejection and unchanged release pointer. Review remained unresolved and zero documents were published; real business material, actual review completion, usage accounting and production rollback remain open. [Receipt](evidence/ma24-g13-review-ui-backup-clone-2026-10-19.json).
 
 G10/G13 Skill acceptance review UI rerun (2026-10-19): corrected the synthetic safety replay fixture so it executes the fixed Skill read through the recorded graph and accurately asserts five journaled calls per arm. Full isolated browser-to-database review, exact receipt copy, revision refresh/revocation, durable recovery and tenant isolation passed with zero actual model calls. Synthetic review only; reviewer quality, runtime attestation, production permissions and activation remain unverified/disabled. [Receipt](evidence/ma24-g10-skill-review-ui-safety-fixture-rerun-2026-10-19.json).
+
+G09 runner-attestation store fresh-cluster rerun (2026-10-19): disposable Docker PostgreSQL verification passed migration/role setup, signed synthetic declaration binding and idempotency, drift/empty evidence rejection, app-write and cross-account denial, append-only enforcement, disabled-key and revoked-freeze rejection, and serialized latest-review reads. The harness removed its container and volume. Production collector/provider identity, complete source revocation, human quality and final enable transaction remain unverified; no product migration/key/activation occurred. [Receipt](evidence/ma24-g09-runner-attestation-fresh-cluster-rerun-2026-10-19.json).
