@@ -16,7 +16,9 @@ for(let n=0;n<200;n++){
 if(!input?.key||!input?.cert)throw new Error('Disposable proxy TLS configuration missing');
 await unlink(configuration);
 const stats={ready:false,armed:false,downstreamTlsConnections:0,verifiedUpstreamTlsConnections:0,
- targetCommitCommands:0,backendCommitCompletions:0,suppressedCommitCompletions:0,suppressedReadyForQuery:0,droppedCommitAcks:0,protocolFailures:0};
+ targetCommitCommands:0,backendCommitCompletions:0,suppressedCommitCompletions:0,suppressedReadyForQuery:0,droppedCommitAcks:0,
+ blockedCommitCommands:0,blockedAfterSuccessfulInsert:0,protocolFailures:0};
+let faultMode='after-commit';
 const sslRequest=Buffer.from([0,0,0,8,4,210,22,47]);
 const sockets=new Set();
 const fail=(...connections)=>{stats.protocolFailures++;for(const socket of connections)socket?.destroy();};
@@ -36,8 +38,8 @@ function frames(consume){
 const decrypted=tls.createServer({key:input.key,cert:input.cert,minVersion:'TLSv1.2'},async downstream=>{
  stats.downstreamTlsConnections++;sockets.add(downstream);downstream.pause();
  const raw=net.connect({host:'pilot-db',port:5432});sockets.add(raw);
- let upstream;
- const close=()=>{downstream.destroy();upstream?.destroy();raw.destroy();sockets.delete(downstream);sockets.delete(raw);if(upstream)sockets.delete(upstream);};
+ let upstream,closed=false;
+ const close=()=>{if(closed)return;closed=true;downstream.destroy();upstream?.destroy();raw.destroy();sockets.delete(downstream);sockets.delete(raw);if(upstream)sockets.delete(upstream);};
  downstream.on('error',close);downstream.on('close',close);raw.on('error',close);
  try{
   await new Promise((resolve,reject)=>{raw.once('connect',resolve);raw.once('error',reject);});
@@ -51,22 +53,34 @@ const decrypted=tls.createServer({key:input.key,cert:input.cert,minVersion:'TLSv
   await new Promise((resolve,reject)=>{upstream.once('secureConnect',resolve);upstream.once('error',reject);});
   if(!upstream.authorized)throw new Error('Upstream TLS verification failed');
   stats.verifiedUpstreamTlsConnections++;
-  let candidate=false,suppress=false,commitComplete=false;
+  let candidate=false,suppress=false,commitComplete=false,awaitingExtraction=false,extractionCompleted=false;
   const frontend=frames((type,body,packet)=>{
+   if(closed)return;
    const query=type==='Q'?body.subarray(0,-1).toString('utf8'):type==='P'?body.subarray(body.indexOf(0)+1).toString('utf8').split('\0',1)[0]:undefined;
    if(query!==undefined){
     const normalized=query.trim().replace(/\s+/g,' ').toLowerCase();
-    if(/^(begin|rollback)\b/.test(normalized))candidate=false;
+    if(/^(begin|rollback)\b/.test(normalized)){candidate=false;awaitingExtraction=false;extractionCompleted=false;}
     // The actual finishRun transaction writes this job only after a successful
     // completed main-agent UPDATE. An earlier rollback clears the candidate.
-    if(normalized.startsWith('insert into agent_memory_extraction_job(owner_id,run_id) values($1,$2)'))candidate=true;
+    if(normalized.startsWith('insert into agent_memory_extraction_job(owner_id,run_id) values($1,$2)')){candidate=true;awaitingExtraction=true;}
     if(normalized==='commit'&&candidate&&stats.armed){
-     stats.armed=false;stats.targetCommitCommands++;suppress=true;
+     stats.armed=false;stats.targetCommitCommands++;
+     if(faultMode==='before-commit'){
+      if(!extractionCompleted)throw new Error('Target insert did not complete before commit');
+      // The real INSERT already succeeded inside the open transaction. Do not
+      // forward COMMIT; closing upstream forces PostgreSQL to roll it back.
+      stats.blockedCommitCommands++;stats.blockedAfterSuccessfulInsert++;close();return;
+     }
+     suppress=true;
     }
    }
    upstream.write(packet);
   });
   const backend=frames((type,body,packet)=>{
+   if(closed)return;
+   if(type==='C'&&awaitingExtraction){
+    extractionCompleted=body.toString('utf8')==='INSERT 0 1\0';awaitingExtraction=false;
+   }
    if(suppress){
     if(type==='C'&&body.toString('utf8')==='COMMIT\0'){
      stats.backendCommitCompletions++;stats.suppressedCommitCompletions++;commitComplete=true;return;
@@ -106,6 +120,9 @@ const server=net.createServer(socket=>{
 const control=http.createServer((request,response)=>{
  response.setHeader('content-type','application/json');
  if(request.method==='POST'&&request.url==='/arm'&&!stats.armed&&!stats.targetCommitCommands){stats.armed=true;response.end(JSON.stringify(stats));return;}
+ if(request.method==='POST'&&request.url==='/arm-before-commit'&&!stats.armed&&stats.droppedCommitAcks===1&&!stats.blockedCommitCommands){
+  faultMode='before-commit';stats.armed=true;response.end(JSON.stringify(stats));return;
+ }
  if(request.method==='GET'&&request.url==='/status'){response.end(JSON.stringify(stats));return;}
  response.writeHead(409);response.end('{}');
 });

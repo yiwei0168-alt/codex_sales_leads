@@ -1,0 +1,112 @@
+{
+  "stage": "G01/G02 both PostgreSQL final-settlement commit outcomes",
+  "runtimeSourceCommit": "96b7487ea728bb2c47086c856f74ec7013fc1611",
+  "harnessBaseCommit": "eb4df37f706a6291964b454921cfd4f253617843",
+  "harnessFileHashes": {
+    "scripts/lib/ma24-pg-commit-ack-proxy.mjs": "656d598c14c7a4c3d1d93817ed84af5d6bbb87c4dce1ef79715aa3d3d0caccfe",
+    "scripts/verify-main-runtime-worker-db.ts": "199e332eef1157f2018e790949a6c1c85f0e2aa7deab12ec66c495e3cb67b2c0",
+    "scripts/verify-ma24-fresh-pilot-new-cluster.ts": "0fbe020ff64853b2a7ff3eb096360d68ed54b444bda3d839563624aea7af92c5"
+  },
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --web-image=ma24-pilot-web:96b7487e --current-schema --main-runtime-image=ma24-main-agent-runtime:96b7487e --main-runtime-commit-loss",
+  "exitCode": 0,
+  "log": "tmp/ma24-main-runtime-pg-uncommitted-loss-96b7487e-2026-10-20.log",
+  "logSha256": "09a36d516e304b24840df728f7f103703b7f2ae13ee46c94cf84f427ab512955",
+  "freshMigrationThrough": 158,
+  "checks": {
+    "typecheckExitCode": 0,
+    "focusedLintExitCode": 0,
+    "nodeProxySyntaxExitCode": 0
+  },
+  "result": {
+    "passed": true,
+    "image": "ma24-main-agent-runtime:96b7487e",
+    "immutableImageId": "sha256:054f9287cc72959d0da80a9d59a809c382292e664c31a5a60a6606b7e3a73204",
+    "sourceCommit": "96b7487ea728bb2c47086c856f74ec7013fc1611",
+    "integrity": {
+      "mainAgentRuntimeIntegrity": "passed",
+      "files": 34513,
+      "runtimeBoundaryVerified": true,
+      "processNonRoot": true,
+      "noNewPrivileges": true,
+      "capabilitiesEmpty": true,
+      "rootReadOnly": true,
+      "packageAndNodeReadOnly": true,
+      "productionQualified": false
+    },
+    "actualLangGraphApi": true,
+    "actualCompiledQueueWorker": true,
+    "postgresCheckpointRecovery": true,
+    "cases": [
+      {
+        "sourceWithdrawn": false,
+        "status": "completed",
+        "modelAttempts": 0,
+        "extractionJobs": 1,
+        "actualClaimedLease": true
+      },
+      {
+        "sourceWithdrawn": true,
+        "status": "partial",
+        "modelAttempts": 0,
+        "extractionJobs": 0,
+        "actualClaimedLease": true
+      }
+    ],
+    "durabilityResult": null,
+    "commitLossResult": {
+      "ready": true,
+      "armed": false,
+      "downstreamTlsConnections": 4,
+      "verifiedUpstreamTlsConnections": 4,
+      "targetCommitCommands": 1,
+      "backendCommitCompletions": 1,
+      "suppressedCommitCompletions": 1,
+      "suppressedReadyForQuery": 1,
+      "droppedCommitAcks": 1,
+      "blockedCommitCommands": 0,
+      "blockedAfterSuccessfulInsert": 0,
+      "protocolFailures": 0,
+      "actualPostgresCommitAcknowledgmentLost": true,
+      "committedTaskRetained": true,
+      "noDuplicateReplyEventOrExtractionJob": true,
+      "subsequentWorkerMakesNoReplay": true,
+      "originalSourceRevalidated": true,
+      "actualQueueLeaseClaimed": true
+    },
+    "uncommittedLossResult": {
+      "ready": true,
+      "armed": false,
+      "downstreamTlsConnections": 7,
+      "verifiedUpstreamTlsConnections": 7,
+      "targetCommitCommands": 2,
+      "backendCommitCompletions": 1,
+      "suppressedCommitCompletions": 1,
+      "suppressedReadyForQuery": 1,
+      "droppedCommitAcks": 1,
+      "blockedCommitCommands": 1,
+      "blockedAfterSuccessfulInsert": 1,
+      "protocolFailures": 0,
+      "commitPreventedAfterRealInsert": true,
+      "speculativeExtractionInsertRolledBack": true,
+      "uncommittedAnswerNotPublished": true,
+      "safePartialPersistedOnce": true,
+      "subsequentWorkerMakesNoReplay": true,
+      "actualApiDatabasePoolRecoveryVerified": true,
+      "earlierCommittedTaskUnchanged": true,
+      "actualModelCalls": 0
+    },
+    "syntheticCheckpointSeed": true,
+    "actualModelCalls": 0,
+    "externalActions": 0,
+    "firstModelExecutionVerified": false,
+    "productionQualified": false,
+    "automaticActivation": false
+  },
+  "limitations": [
+    "Synthetic completed checkpoint seeds, not first model execution or real business quality",
+    "Final application database settlement only; external-action unknown outcomes not covered",
+    "Manual resume of the interrupted task not exercised; automatic replay correctly withheld",
+    "No forced process crash, coordinated offhost recovery, target load or production deployment",
+    "Fault injector and harness outside the unchanged immutable product image"
+  ]
+}

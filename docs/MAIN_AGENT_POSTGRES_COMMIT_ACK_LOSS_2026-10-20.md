@@ -1,5 +1,7 @@
 # G01/G02 实际 PostgreSQL COMMIT 确认丢失
 
+后续同一固定运行镜像已补齐 COMMIT 未送达后的回滚分支、单次安全 partial、空队列不重放及同一 API 后续新任务的数据库连接恢复。[两种结果的终态](MAIN_AGENT_POSTGRES_COMMIT_OUTCOMES_2026-10-20.md)。下文保留本阶段仅覆盖已提交分支的原始范围。
+
 ## 验收机制
 
 新增一次性验收参数 `--main-runtime-commit-loss`，必须配合 `--main-runtime-image`、`--web-image` 和 `--current-schema`。产品运行包不改写、不注入模型或存储适配器。专用代理在独立临时容器执行，应用与代理之间、代理与真实 PostgreSQL 之间都启用 TLS，证书及上游主机名校验保持有效。

@@ -237,7 +237,8 @@ try {
         MA24_MAIN_RUNTIME_DATABASE_CONTAINER:containerId,MA24_MAIN_RUNTIME_NETWORK:networkName,MA24_MAIN_RUNTIME_DATABASE_URL:inRuntimeApp.toString(),MA24_MAIN_RUNTIME_DATABASE_CA:rootCertificate.output.trim()});
     assert.equal(mainRuntime.code,0,mainRuntime.output);assert(mainRuntime.output.includes('"mainRuntimeWorker":"passed"'),mainRuntime.output);
     if(mainRuntimeDurability)assert(mainRuntime.output.includes('"committedTaskSurvivesLostHttpResponse":true'),mainRuntime.output);
-    if(mainRuntimeCommitLoss)assert(mainRuntime.output.includes('"actualPostgresCommitAcknowledgmentLost":true'),mainRuntime.output);console.log(mainRuntime.output.trim());
+    if(mainRuntimeCommitLoss){assert(mainRuntime.output.includes('"actualPostgresCommitAcknowledgmentLost":true'),mainRuntime.output);
+      assert(mainRuntime.output.includes('"commitPreventedAfterRealInsert":true'),mainRuntime.output);}console.log(mainRuntime.output.trim());
   }
   if (prospectiveSourceCheck) {
     const inContainerApp = new URL(appUrl), inContainerAdmin = new URL(adminUrl);

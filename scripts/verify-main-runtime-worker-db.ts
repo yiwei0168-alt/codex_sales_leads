@@ -122,7 +122,7 @@ try{
   cases.push({sourceWithdrawn:withdraw,status:row.status,modelAttempts:row.models,extractionJobs:row.jobs,actualClaimedLease:true});
   completedTasks.push({id:task.id,row});
  }
- let commitLossResult:unknown=null;
+ let commitLossResult:unknown=null,uncommittedLossResult:unknown=null;
  if(commitLoss){
   assert(pgProxy);await admin.query("update knowledge_document set visibility='shared' where id=$1",[document]);
   const {task,reply}=await prepareTask();
@@ -138,6 +138,25 @@ try{
   assert.equal((await api(pgProxy,'/status','GET',undefined,5541)).droppedCommitAcks,1);
   commitLossResult={...stats,actualPostgresCommitAcknowledgmentLost:true,committedTaskRetained:true,noDuplicateReplyEventOrExtractionJob:true,
    subsequentWorkerMakesNoReplay:true,originalSourceRevalidated:true,actualQueueLeaseClaimed:true};
+  const uncommitted=await prepareTask();
+  assert.equal((await api(pgProxy,'/arm-before-commit','POST',{},5541)).armed,true);
+  await startWorker();await finishWorker();const rolledBack=await readTask(uncommitted.task.id);
+  assert.equal(rolledBack.status,'partial');assert.equal(rolledBack.reply,'任务运行连接中断，已保存的结果仍可查询。恢复前会核对执行记录。');
+  assert.notEqual(rolledBack.reply,uncommitted.reply);assert.deepEqual(rolledBack.messages,[rolledBack.reply]);
+  assert.equal(rolledBack.jobs,0);assert.equal(rolledBack.models,0);assert.equal(rolledBack.status_events,1);assert(rolledBack.lease_token);
+  const beforeCommitStats=await api(pgProxy,'/status','GET',undefined,5541);
+  assert.equal(beforeCommitStats.targetCommitCommands,2);assert.equal(beforeCommitStats.blockedCommitCommands,1);
+  assert.equal(beforeCommitStats.blockedAfterSuccessfulInsert,1);assert.equal(beforeCommitStats.backendCommitCompletions,1);
+  assert.equal(beforeCommitStats.droppedCommitAcks,1);assert.equal(beforeCommitStats.protocolFailures,0);
+  await startWorker();await finishWorker();assert.deepEqual(await readTask(uncommitted.task.id),rolledBack);
+  // Exercise the API's database pool again, not merely an empty queue worker.
+  const recovery=await prepareTask();await startWorker();await finishWorker();const recovered=await readTask(recovery.task.id);
+  assert.equal(recovered.status,'completed');assert.equal(recovered.reply,recovery.reply);assert.deepEqual(recovered.messages,[recovery.reply]);
+  assert.equal(recovered.jobs,1);assert.equal(recovered.models,0);assert.equal(recovered.status_events,1);
+  assert.deepEqual(await readTask(task.id),committed);assert.deepEqual(await readTask(uncommitted.task.id),rolledBack);
+  uncommittedLossResult={...beforeCommitStats,commitPreventedAfterRealInsert:true,speculativeExtractionInsertRolledBack:true,
+   uncommittedAnswerNotPublished:true,safePartialPersistedOnce:true,subsequentWorkerMakesNoReplay:true,
+   actualApiDatabasePoolRecoveryVerified:true,earlierCommittedTaskUnchanged:true,actualModelCalls:0};
  }
  let durabilityResult:unknown=null;
  if(durability){
@@ -177,7 +196,7 @@ try{
    priorTaskRowsUnchangedAfterRestart:true,gracefulApiExitCode:0,committedTaskSurvivesLostHttpResponse:true,noDuplicateReplyEventOrExtractionJob:true,subsequentWorkerMakesNoReplayRequest:true,forwardedApiRequests:1};
  }
  const receipt={passed:true,image,immutableImageId:metadata.id,sourceCommit:metadata.revision,integrity,actualLangGraphApi:true,actualCompiledQueueWorker:true,postgresCheckpointRecovery:true,cases,
-  durabilityResult,commitLossResult,syntheticCheckpointSeed:true,actualModelCalls:0,externalActions:0,firstModelExecutionVerified:false,productionQualified:false,automaticActivation:false};
+  durabilityResult,commitLossResult,uncommittedLossResult,syntheticCheckpointSeed:true,actualModelCalls:0,externalActions:0,firstModelExecutionVerified:false,productionQualified:false,automaticActivation:false};
  await writeFile('tmp/ma24-main-runtime-worker-result.json',JSON.stringify(receipt,null,2)+'\n');console.log(JSON.stringify({mainRuntimeWorker:'passed',...receipt}));
 }finally{
  if(worker)await docker(['rm','--force','--volumes',worker]);
