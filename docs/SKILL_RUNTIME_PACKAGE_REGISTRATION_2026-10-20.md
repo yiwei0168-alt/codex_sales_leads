@@ -1,5 +1,28 @@
 # G09 运行包登记与签名使用时间
 
+## 后续运维接线与真实数据库终态
+
+运维 CLI 与读取组件已完成本阶段接线：只接受不可变镜像 ID、当前 keyId、用途、明确截止时间、请求 UUID 和预期版本；不能提交调用者自报的测量文件。实际 Docker 执行完整清单/Node/非 root/只读/无 capabilities 检查，独立读取清单摘要及源码指纹，再复测部署哈希绑定。登记从已检查镜像和当前数据库公钥登记派生；业务角色、自动提交和事务变更拒绝。远程数据库要求 verify-full TLS。撤销使用独立的追加式运维入口；不重试结果未知的提交。
+
+2026-10-20 工作区验证均退出 0：
+
+- `node scripts/run-tsx.cjs scripts/verify-skill-runtime-package-publication.ts --image-id=sha256:9901fc56a5a0d1208ae6677818ea65a37f37be72293687428b797fb63c5e5b6e`：实际主运行镜像 `adaaa239`，966 项源码输入、34,516 包文件，部署摘要 `dcde990f69c63ef278282b0675a65f7fa5c6320010b2b56d81b42c7467053aab`。运维 register CLI 的发布及精确请求重试通过；真实登记读取组件的缺迁移/缺登记、事后登记、源码不符、公钥轮换、到期、撤销及共享锁保留到外层提交通过；排队发布期间新读取明确未登记。使用一次性库、迁移 157/159 及合成公钥，未签发模型收据。
+- `node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --web-image=ma24-pilot-web:adaaa239 --current-schema`：全新库从零迁移至 159，15 项当前 schema 标记均为 true，固定旧 Web 的实际 HTTP 登录及账号隔离兼容通过。日志 `tmp/ma24-schema159-web-adaaa239-2026-10-20.log`。不包含浏览器、联合恢复或新代码已进入旧镜像的声明。
+- 9 文件、175 项定向测试通过。类型及定向 lint 通过。运维用途选择的 collector 分支有定向测试；本轮实际镜像操作只验证 main-agent，不能推导 collector 镜像发布或三用途完整组合。
+
+上述替代下文基础阶段“CLI 未实现/读取组件实库未验”状态，原阶段证据仍保留。新签名使用范围的固定完整组合、当前 Linux 全流程、全部来源保护、生产/提供方资格、真实质量及最终启用仍待完成。新代码尚未由本轮构建为 Web/采集器镜像。
+
+### 运维命令
+
+仅在运维环境设置 `DATABASE_MIGRATION_URL`，按已审核实际值填写，不把连接串或密钥放入参数/版本库：
+
+```text
+node scripts/run-tsx.cjs scripts/publish-skill-runtime-package.ts register --image-id=sha256:<实际镜像ID> --key-id=<当前密钥ID> --purpose=<task-model-transport|model-transport|runner-declaration> --valid-until=<明确UTC截止时间> --request-id=<UUID> --expected-revision=<none或当前版本>
+node scripts/run-tsx.cjs scripts/publish-skill-runtime-package.ts withdraw --request-id=<独立UUID> --revision=<登记版本> --reason=<审核后的撤销原因>
+```
+
+应用登记只读查询不使用运维连接。发生错误时先按请求 UUID 对账，不自动补发新 UUID。包登记不改变密钥登记，也不启用 Skill。
+
 ## 本阶段实现
 
 沿用 MA24-06，不新增用户确认或默认有效期。运行包登记是可信运行资格的必要组件，不能单独证明提供方身份、真实质量或允许启用。

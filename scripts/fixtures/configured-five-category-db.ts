@@ -133,11 +133,14 @@ export async function verifyCombinedConfiguredDatabase(pool:Pool,original:Signed
   assert.equal(readiness.knowledgeSourcesLocked,true);assert.equal(readiness.decisionMemorySourcesLocked,true);assert.equal(readiness.timelineSourcesLocked,true);
   assert.equal(readiness.prospectiveCaptureSourcesLocked,true);assert.equal(readiness.prospectiveJobCount,1);
   assert(readiness.blockers.includes('missing-judgment:signed-replay'));assert.equal(readiness.sourceRevocationsLocked,false);
+  assert.equal(readiness.runtimePackagesRequired,true);assert.equal(readiness.runtimePackagesRegistered,false);
+  assert.deepEqual(readiness.runtimePackageBlockers,[databaseTrust?'registration-schema-unavailable':'database-trust-required']);
   assert.equal((await pool.query('select enabled from agent_skill where id=$1',[original.skillId])).rows[0].enabled,false);
   return {configuredSameFreezeFiveCategoriesVerified:true,lockedTransportReceiptsRevalidated:true,transportOriginalTaskCount:2,transportEvaluationArmCount:8,disabledTransportKeyRejected:true,collectedCases:5,combinedArtifactHash:combined.artifactHash,
    frozenPlanHash:digest(registration.frozen.plan),lockedMaterialsVerified:true,prospectiveCaptureSourcesLocked:true,missingHumanJudgmentBlocksPolicy:true,
    immutableAttachmentSnapshotVerified:true,withdrawnSnapshotSourceRejected:true,restoredCanonicalSnapshotRevalidated:true,
    signingEnrollmentCoverageVerified:true,signingEnrollmentCount:readiness.signingEnrollmentCount,signingEnrollmentCoverageHash:readiness.signingEnrollmentCoverageHash,
+   signingUsageWindowsVerified:true,runtimePackagesRegistered:readiness.runtimePackagesRegistered,runtimePackageBlockers:readiness.runtimePackageBlockers,
    databaseTrustRegistryReadinessVerified:databaseTrust,registryDisablementBlockedUntilReadinessTransactionCommit:databaseTrust,
    realQualityAccepted:false,productionQualificationGranted:false,automaticActivation:false};
   }finally{if(priorRegistryMode===undefined)delete process.env.SKILL_RUNNER_TRUST_REGISTRY_MODE;else process.env.SKILL_RUNNER_TRUST_REGISTRY_MODE=priorRegistryMode;}

@@ -1,0 +1,51 @@
+{
+  "stage": "MA24 G09 runtime package operator publication",
+  "date": "2026-10-20",
+  "orchestrationScope": "working tree after 7a31f0fe; fixed image subject recorded separately",
+  "subject": {
+    "role": "main-agent",
+    "imageId": "sha256:9901fc56a5a0d1208ae6677818ea65a37f37be72293687428b797fb63c5e5b6e",
+    "sourceCommit": "adaaa23900201cf013c1f991c90272ce91514ef5",
+    "deploymentHash": "dcde990f69c63ef278282b0675a65f7fa5c6320010b2b56d81b42c7467053aab",
+    "runtimeHash": "e1f20b4bf1521924175314c7bc7a9935ea1a1ee319103c161db5dd2e634724ac",
+    "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+    "node": "24.21.0",
+    "sourceInputs": 966,
+    "files": 34516
+  },
+  "operatorAndReader": {
+    "command": "node scripts/run-tsx.cjs scripts/verify-skill-runtime-package-publication.ts --image-id=sha256:9901fc56a5a0d1208ae6677818ea65a37f37be72293687428b797fb63c5e5b6e",
+    "exitCode": 0,
+    "database": "disposable; migrations 157 and 159; synthetic public key",
+    "actualRegisterCliAndIdempotentRetry": true,
+    "actualReadinessPackageReader": true,
+    "missingSchemaAndRegistrationDenied": true,
+    "retroactiveRegistrationDenied": true,
+    "sourceMismatchAndPublicKeyRotationDenied": true,
+    "withdrawalWaitedForOuterCommit": true,
+    "queuedPublicationDeniedNewReader": true,
+    "latestWithdrawalAndExpiryDenied": true,
+    "autocommitAndApplicationOperatorDenied": true
+  },
+  "independentFreshSchemaCompatibility": {
+    "command": "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --web-image=ma24-pilot-web:adaaa239 --current-schema",
+    "exitCode": 0,
+    "freshMigrationThrough": 159,
+    "schemaMarkersPassed": 15,
+    "fixedExistingWebHttpLoginAndIsolation": true,
+    "logPath": "tmp/ma24-schema159-web-adaaa239-2026-10-20.log",
+    "logSha256": "9084c24b05198bd0bfa981daa0f074940cb284eac703a2bf6e1709fe6419bc1e"
+  },
+  "tests": {"files": 9, "passed": 175, "typecheck": "passed", "targetedLint": "passed"},
+  "limits": {
+    "actualCollectorImagePublicationVerified": false,
+    "newCodeBuiltIntoImages": false,
+    "fixedFiveCategoryCompositionVerifiedAtThisStage": false,
+    "providerIdentityVerified": false,
+    "realQualityAccepted": false,
+    "productionQualified": false,
+    "automaticActivation": false,
+    "actualModelCalls": 0,
+    "copiedProductionData": false
+  }
+}
