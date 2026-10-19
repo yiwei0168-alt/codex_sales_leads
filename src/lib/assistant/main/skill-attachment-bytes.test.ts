@@ -1,8 +1,22 @@
 import {createHash,randomUUID} from 'node:crypto';
-import {mkdir,unlink,writeFile} from 'node:fs/promises';
+import {mkdir,unlink,writeFile,rename,readFile} from 'node:fs/promises';
 import type {PoolClient} from 'pg';
 import {afterEach,beforeEach,expect,it,vi} from 'vitest';
 import {revalidateLockedSkillAttachmentBytes} from './skill-attachment-bytes';
+import {revalidateLockedSkillKnowledgeReceiptBytes} from './skill-knowledge-receipt-bytes';
+
+const interleave=vi.hoisted(()=>({afterDescriptorStat:undefined as undefined|(()=>Promise<void>)}));
+vi.mock('node:fs/promises',async importOriginal=>{
+ const actual=await importOriginal<typeof import('node:fs/promises')>();
+ return {...actual,open:async(...args:Parameters<typeof actual.open>)=>{
+  const file=await actual.open(...args),hook=interleave.afterDescriptorStat;
+  if(!hook)return file;
+  let stats=0;
+  return {read:file.read.bind(file),close:file.close.bind(file),stat:async()=>{
+   const info=await file.stat();if(++stats===2)await hook();return info;
+  }};
+ }};
+});
 
 const owner=randomUUID(),run=randomUUID(),assetId=randomUUID();
 const artifact={plan:{cases:[{id:'case',provenance:'safety-fixture'}]},rawReceipts:{safetySources:{case:{runId:run}}}};
@@ -11,6 +25,7 @@ const query=vi.fn(),client={query} as unknown as PoolClient;
 const bytes=Buffer.from('registered original');
 const asset=()=>({id:assetId,storage_key:key,byte_size:String(bytes.length),source_sha256:createHash('sha256').update(bytes).digest('hex')});
 beforeEach(async()=>{
+ interleave.afterDescriptorStat=undefined;
  query.mockReset();await mkdir('knowledge',{recursive:true});key=`knowledge/ma24-byte-test-${randomUUID()}.txt`;
  await writeFile(key,bytes,{flag:'wx'});files.push(key);
  query.mockResolvedValueOnce({rows:[{input:{attachments:[{assetId}]}}]}).mockResolvedValueOnce({rows:[asset()]});
@@ -28,6 +43,20 @@ it('hashes real bytes selected from stored task attachments and exposes only cou
 it('rejects real same-size tampering',async()=>{
  await writeFile(key,Buffer.alloc(bytes.length,120));
  await expect(revalidateLockedSkillAttachmentBytes(client,owner,artifact)).rejects.toThrow('bytes changed');
+});
+it.each(['attachment','knowledge-originals'])('rejects same-path file replacement during %s verification',async kind=>{
+ const backup=`${key}.old`;files.push(backup);let replaced=false;
+ interleave.afterDescriptorStat=async()=>{
+  await rename(key,backup);await writeFile(key,Buffer.alloc(bytes.length,120),{flag:'wx'});replaced=true;
+ };
+ const check=kind==='attachment'?revalidateLockedSkillAttachmentBytes(client,owner,artifact):(()=>{
+  query.mockReset();query.mockResolvedValueOnce({rows:[asset()]});
+  return revalidateLockedSkillKnowledgeReceiptBytes(client,owner,[{tool:'knowledge_originals',output:{status:'success',data:{documents:[{id:assetId}]}}}]);
+ })();
+ await expect(check).rejects.toThrow('bytes changed');
+ expect(replaced).toBe(true);
+ expect(await readFile(key)).toEqual(Buffer.alloc(bytes.length,120));
+ expect(await readFile(backup)).toEqual(bytes);
 });
 it('rejects truncated originals',async()=>{
  await writeFile(key,'short');await expect(revalidateLockedSkillAttachmentBytes(client,owner,artifact)).rejects.toThrow('bytes changed');

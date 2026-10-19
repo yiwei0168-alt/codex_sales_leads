@@ -1,0 +1,23 @@
+{
+  "stage": "MA24 G09 source byte validation",
+  "date": "2026-10-19",
+  "implementation": "Acceptance attachment and consumed knowledge-original byte checks reuse inspectKnowledgeAssetBytes, checking descriptor and current-path device/inode/size/times and approved digest. Recorded database size is checked separately; outward byte-change failures and manifest shape are preserved.",
+  "verified": {
+    "tests": "67 passed across skill-attachment-bytes, skill-knowledge-receipt-bytes, skill-locked-materials and document-repository suites",
+    "typecheck": "npm.cmd run typecheck: exit 0",
+    "lint": "focused ESLint: exit 0",
+    "newCases": "Two real-filesystem replacements: task attachment and knowledge_originals receipt. An fs wrapper interleaves actual rename/write after the descriptor final stat is captured; canonical path remains the same. Current-path identity rejects; original bytes remain in backup and replacement bytes are observed at the registered path.",
+    "dependencyScope": "Filesystem bytes/rename/write/stat are real; database metadata is mocked. The scheduling hook does not invent stat results or rejection errors."
+  },
+  "limits": [
+    "Point-in-time validation, not immutable storage or a lease through activation commit.",
+    "No actual database race, production identity qualification, provider calls or quality approval in these tests.",
+    "Prior full signed composition f3d2623e predates this change; new fixed-snapshot run is separate and initially pending.",
+    "sourceRevocationsLocked, collectorProvenanceVerified and automaticActivation remain false."
+  ],
+  "filesSha256": {
+    "src/lib/assistant/main/skill-attachment-bytes.ts": "32ef404181ee224bc1b66b45a7858767f5ee2aa92bb57f71aaa38a4ed4cb041f",
+    "src/lib/assistant/main/skill-attachment-bytes.test.ts": "b94c008c3aebaf7e5a3277f3133b8f084da70462d5a19441a6c92de56a0049f7",
+    "src/lib/knowledge/document-repository.ts": "70e6e01a2ea081a25ee8ecb4acda34c4a23b8cbd02dfc22461e232ebbf83bf5b"
+  }
+}

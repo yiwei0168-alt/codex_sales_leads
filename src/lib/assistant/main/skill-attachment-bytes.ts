@@ -1,9 +1,6 @@
-import {createHash} from 'node:crypto';
-import {open,realpath} from 'node:fs/promises';
-import {resolve} from 'node:path';
 import type {PoolClient} from 'pg';
 import {z} from 'zod';
-import {safeKnowledgeStorageKey,assertResolvedInsideKnowledgeRoot} from '@/lib/knowledge/document-repository';
+import {inspectKnowledgeAssetBytes} from '@/lib/knowledge/document-repository';
 import {skillAcceptanceRunIds,skillAcceptanceAttachmentIds} from './skill-acceptance-run-locks';
 import {digest} from './contracts';
 
@@ -31,23 +28,14 @@ export async function revalidateLockedKnowledgeAssetBytes(client:PoolClient,user
   for(const asset of assets.rows){
    const size=z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER).parse(Number(asset.byte_size));
    z.string().regex(/^[0-9a-f]{64}$/).parse(asset.source_sha256);
-   const path=await realpath(resolve(safeKnowledgeStorageKey(asset.storage_key)));assertResolvedInsideKnowledgeRoot(path);
-   const file=await open(path,'r');
    try{
-    const before=await file.stat();
-    if(!before.isFile()||before.size!==size)throw new Error('Acceptance attachment bytes changed');
-    const hash=createHash('sha256'),buffer=Buffer.alloc(64*1024);let length=0;
-    while(true){
-     const {bytesRead}=await file.read(buffer,0,Math.min(buffer.length,size-length+1),null);
-     if(!bytesRead)break;
-     length+=bytesRead;if(length>size)throw new Error('Acceptance attachment bytes changed');
-     hash.update(buffer.subarray(0,bytesRead));
-    }
-    const after=await file.stat();
-    if(length!==size||hash.digest('hex')!==asset.source_sha256||after.size!==before.size
-     ||after.mtimeMs!==before.mtimeMs||after.ctimeMs!==before.ctimeMs
-     ||await realpath(resolve(asset.storage_key))!==path)throw new Error('Acceptance attachment bytes changed');
-   }finally{await file.close();}
+    const inspected=await inspectKnowledgeAssetBytes(asset.storage_key,asset.source_sha256);
+    if(inspected.byteSize!==size)throw new Error('Acceptance attachment bytes changed');
+   }catch(error){
+    if(error instanceof Error&&/^Knowledge asset (changed during registration|no longer matches approved hash|is not a valid file)$/.test(error.message))
+     throw new Error('Acceptance attachment bytes changed',{cause:error});
+    throw error;
+   }
    manifest.push(asset);
   }
  }
