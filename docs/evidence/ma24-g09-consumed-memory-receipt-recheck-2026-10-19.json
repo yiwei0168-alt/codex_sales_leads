@@ -8,7 +8,7 @@
     "focusedEslint": "passed",
     "diffCheck": "passed",
     "freshClusterMemorySourceLocks": "passed",
-    "fixedSnapshotFiveCategoryComposition": "pending"
+    "fixedSnapshotFiveCategoryComposition": "passed on 80c24c2b"
   },
   "implementation": {
     "receiptTools": [
@@ -40,7 +40,21 @@
     "productionDatabaseModified": false,
     "scope": "Real PostgreSQL observation queries and helper validation under retained admission. Not a full readiness-flow injected-expiry case."
   },
-  "compositionFixture": "Adds a real synthetic account preference and an actual memory_read receipt to baseline and exact candidate replay; checks one consumed memory receipt at readiness. Still eight scripted candidate model requests. Fixed-snapshot execution pending.",
+  "compositionFixture": "Adds a real synthetic account preference and an actual memory_read receipt to baseline and exact candidate replay; checks one consumed memory receipt at readiness. Eight scripted candidate requests. Fixed snapshot 80c24c2b5fb80b66d3438330a7d1af7748b74070 passed.",
+  "compositionDatabase": {
+    "command": "node scripts/run-ma24-snapshot-check.mjs --prospective-composition",
+    "commit": "80c24c2b5fb80b66d3438330a7d1af7748b74070",
+    "exitCode": 0,
+    "completeCompositionVerified": true,
+    "prospectivePairedMaterialVerified": true,
+    "consumedMemoryReceiptCount": 1,
+    "prospectiveMaterialReceiptCount": 5,
+    "temporaryContainerRemoved": true,
+    "snapshotDirectoryRemoved": true,
+    "actualModelCalls": 0,
+    "automaticActivation": false,
+    "scope": "Positive full workflow with actual local memory_read receipt and before/after preparation checks. The real observation expiry/as-of negative case is separate focused database evidence, not a full-workflow injected expiry."
+  },
   "limitations": [
     "Revalidates consumed rows with their original explicit as-of semantics; does not assert equality of an entire historical search result set.",
     "Time of preparation is not a commit-time validity lease.",
