@@ -2,6 +2,7 @@
 import {useEffect,useState} from 'react';
 import type {listSkillAcceptanceReviews,readSkillAcceptanceReview,readSkillAcceptanceReviewCase} from '@/lib/assistant/main/skill-acceptance-review';
 import {SkillReviewEvidence} from './skill-review-evidence';
+import {SkillAcceptanceOriginals} from './skill-acceptance-originals';
 import './skill-replay-reviews.css';
 type Summary=Awaited<ReturnType<typeof readSkillAcceptanceReview>>;
 type Material=Awaited<ReturnType<typeof readSkillAcceptanceReviewCase>>;
@@ -30,6 +31,7 @@ export function SkillAcceptanceReviews({skillId,name,onClose}:{skillId:string;na
    <nav aria-label="验收题目"><label>题目 <select disabled={busy||dirty} value={caseId} onChange={e=>setCaseId(e.target.value)}>{selected.cases.map((row,index)=><option key={row.id} value={row.id}>{index+1}. {names[row.category]} · {row.id}{row.hasObservation?'':'（未采集）'}</option>)}</select></label>
     <button disabled={busy||dirty} onClick={()=>setSelected(null)}>返回验收列表</button></nav>
    <p>{selected.sourceKind==='synthetic-fixture'?'合成测试材料':'生产采集材料（尚未通过完整验收）'}；{states[selected.freezeStatus.state]}。{!selected.sourcesCurrent&&'Skill 来源已变化。'}</p>
+   <SkillAcceptanceOriginals key={selected.id} bundleId={selected.id} disabled={busy||dirty} setBusy={setBusy}/>
    {selected.cases.find(row=>row.id===caseId)&&<AcceptanceCase key={`${selected.id}:${caseId}`} summary={selected} item={selected.cases.find(row=>row.id===caseId)!} setBusy={setBusy} setDirty={setDirty}/>}
   </>:<>
    {(loading||busy)&&<p role="status">正在读取…</p>}

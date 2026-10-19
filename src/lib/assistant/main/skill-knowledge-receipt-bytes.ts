@@ -9,6 +9,18 @@ const list=(v:unknown)=>z.array(z.unknown()).max(10000).parse(v);
  * current source semantics under retained locks. Safety-fixture receipts are
  * intentionally excluded by the caller: they are predefined adversarial input. */
 export async function revalidateLockedSkillKnowledgeReceiptBytes(client:PoolClient,userId:string,receipts:Receipt[]){
+ const {assetIds,databaseOnlyCount}=await resolveLockedSkillKnowledgeReceiptAssets(client,userId,receipts);
+ const checked=await revalidateLockedKnowledgeAssetBytes(client,userId,assetIds);
+ return {knowledgeReceiptBytesRevalidated:true as const,knowledgeReceiptAssetCount:checked.count,
+  knowledgeReceiptReadOnlyMountVerified:checked.readOnlyMountVerified,
+  knowledgeReceiptImmutableSnapshotCount:checked.immutableSnapshotCount,
+  knowledgeReceiptImmutableSnapshotManifestHash:checked.immutableSnapshotManifestHash,
+  knowledgeReceiptDatabaseOnlyCount:databaseOnlyCount,knowledgeReceiptBytesManifestHash:checked.manifestHash};
+}
+/** Internal selection only. Caller retains account/source/journal locks; this
+ * maps owned receipt references without reading filesystem bytes or certifying
+ * that the complete material has passed acceptance. */
+export async function resolveLockedSkillKnowledgeReceiptAssets(client:PoolClient,userId:string,receipts:Receipt[]){
  z.uuid().parse(userId);
  const assets=new Set<string>(),chunks=new Set<string>(),v3Required=new Set<string>(),nodes=new Set<string>();
  const addChunks=(v:unknown)=>{for(const value of list(v)){
@@ -56,10 +68,5 @@ export async function revalidateLockedSkillKnowledgeReceiptBytes(client:PoolClie
    if(matches[0].asset_id===null)databaseOnlyCount++;else assets.add(z.uuid().parse(matches[0].asset_id));
   }
  }
- const checked=await revalidateLockedKnowledgeAssetBytes(client,userId,[...assets]);
- return {knowledgeReceiptBytesRevalidated:true as const,knowledgeReceiptAssetCount:checked.count,
-  knowledgeReceiptReadOnlyMountVerified:checked.readOnlyMountVerified,
-  knowledgeReceiptImmutableSnapshotCount:checked.immutableSnapshotCount,
-  knowledgeReceiptImmutableSnapshotManifestHash:checked.immutableSnapshotManifestHash,
-  knowledgeReceiptDatabaseOnlyCount:databaseOnlyCount,knowledgeReceiptBytesManifestHash:checked.manifestHash};
+ return {assetIds:[...assets],databaseOnlyCount};
 }

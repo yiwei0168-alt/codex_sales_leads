@@ -4,8 +4,9 @@ import {z} from 'zod';
 import {withBoundTenantTransaction} from '@/lib/rag/db';
 import {readKnowledgeAssetSnapshot} from './document-repository';
 
-/** Internal, explicit capture in the caller's bound tenant transaction. No HTTP
- * write endpoint, backfill, source promotion or activation permission. */
+/** Internal, explicit capture in the caller's bound tenant transaction. Public
+ * actions must derive source IDs from owned server records. No backfill,
+ * source promotion or activation permission is granted by this primitive. */
 export async function captureImmutableKnowledgeAsset(client:PoolClient,userId:string,assetId:string){
  z.uuid().parse(userId);z.uuid().parse(assetId);
  return withBoundTenantTransaction(client,userId,async()=>{

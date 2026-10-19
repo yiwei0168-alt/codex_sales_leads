@@ -17,6 +17,7 @@ const webImage = webImageArgument?.startsWith("--web-image=")
 const browserCheck = args.includes("--browser");
 const currentSchemaCheck = args.includes('--current-schema');
 const snapshotDownloadCheck=args.includes('--snapshot-download');
+const acceptanceOriginalsCheck=args.includes('--acceptance-originals');
 const localMemoryWorkerCheck=args.includes('--local-memory-worker');
 const localMemoryGraphCheck=args.includes('--local-memory-graph-worker');
 const localMemoryChineseCheck=args.includes('--local-memory-chinese');
@@ -63,13 +64,14 @@ assert(!currentSchemaCheck||(webImage&&pristineDatabaseChecks===0&&!modeBusiness
 assert(!frontendUiCheck||(webImage&&currentSchemaCheck&&browserCheck),'--frontend-ui requires --web-image, --current-schema and --browser');
 assert(!extendedUiCheck||frontendUiCheck,'--extended-ui requires --frontend-ui');
 assert(!snapshotDownloadCheck||(webImage&&currentSchemaCheck),'--snapshot-download requires --web-image and --current-schema');
+assert(!acceptanceOriginalsCheck||(webImage&&currentSchemaCheck),'--acceptance-originals requires --web-image and --current-schema');
 assert(!localMemoryWorkerCheck||(webImage&&currentSchemaCheck),'--local-memory-worker requires --web-image and --current-schema');
 assert(!localMemoryGraphCheck||localMemoryWorkerCheck,'--local-memory-graph-worker requires --local-memory-worker');
 assert(!localMemoryChineseCheck||localMemoryWorkerCheck,'--local-memory-chinese requires --local-memory-worker');
 assert(!localMemoryHttpCheck||(localMemoryGraphCheck&&localMemoryChineseCheck),'--local-memory-http requires Chinese memory and graph Worker checks');
 const rollbackImageArgument = args.find(arg => arg.startsWith("--rollback-image="));
 const rollbackImage = rollbackImageArgument?.slice("--rollback-image=".length);
-assert(args.length <= 20 && args.every(arg => ["--local-memory-http", "--local-memory-chinese", "--local-memory-graph-worker", "--local-memory-worker", "--snapshot-download", "--extended-ui", "--frontend-ui", "--current-schema", "--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", '--locked-policy', '--memory-source-locks', '--method-catalog-locks', '--shadow-source-locks', '--safety-skill-usage', '--transport-journal', '--pool-recovery', '--web-pool-recovery', "--prospective-source", "--prospective-material", '--prospective-browser', '--prospective-composition', declarationImageArgument,collectorImageArgument,prospectiveHttpArgument, webImageArgument, rollbackImageArgument].includes(arg))
+assert(args.length <= 20 && args.every(arg => ["--acceptance-originals", "--local-memory-http", "--local-memory-chinese", "--local-memory-graph-worker", "--local-memory-worker", "--snapshot-download", "--extended-ui", "--frontend-ui", "--current-schema", "--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", '--locked-policy', '--memory-source-locks', '--method-catalog-locks', '--shadow-source-locks', '--safety-skill-usage', '--transport-journal', '--pool-recovery', '--web-pool-recovery', "--prospective-source", "--prospective-material", '--prospective-browser', '--prospective-composition', declarationImageArgument,collectorImageArgument,prospectiveHttpArgument, webImageArgument, rollbackImageArgument].includes(arg))
   &&(!declarationImageArgument||(declarationImage&&/^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(declarationImage)))
   &&(!collectorImageArgument||(collectorImage&&/^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(collectorImage)))
   && (!webPoolRecoveryCheck || webImage)
@@ -376,6 +378,22 @@ try {
       return cookie;
     };
     const firstCookie = await login(0), secondCookie = await login(1);
+    if(acceptanceOriginalsCheck){
+      const originalHttp=process.env.MA24_ORIGINALS_HTTP==='1';
+      const originalDirectory=originalHttp?mkdtempSync(join(tmpdir(),'ma24-originals-browser-')):undefined;
+      try{
+      if(originalDirectory){
+        for(const [file,source] of [['key.pem','/tmp/ma24-server.key'],['cert.pem','/tmp/ma24-server.crt']]){
+          const data=await run('docker',['exec',containerId!,'cat',source]);assert.equal(data.code,0);
+          writeFileSync(join(originalDirectory,file),data.output,{mode:0o600});
+        }
+      }
+      const checked=await run(process.execPath,['scripts/run-tsx.cjs','scripts/verify-skill-acceptance-originals-db.ts'],
+        {...process.env,DATABASE_URL:appUrl.toString(),DATABASE_MIGRATION_URL:adminUrl.toString(),MA24_DISPOSABLE_ORIGINAL_CAPTURE:'1',
+          ...(originalDirectory?{MA24_ORIGINALS_HTTP_BASE:base,MA24_ORIGINALS_OWNER_COOKIE:firstCookie,MA24_ORIGINALS_PEER_COOKIE:secondCookie,MA24_ORIGINALS_TLS_KEY:join(originalDirectory,'key.pem'),MA24_ORIGINALS_TLS_CERT:join(originalDirectory,'cert.pem')}:{})});
+      assert.equal(checked.code,0,checked.output);assert(checked.output.includes('"actualFilesAndDatabase":true'),checked.output);console.log(checked.output.trim());
+      }finally{if(originalDirectory)rmSync(originalDirectory,{recursive:true,force:true});}
+    }
     if(localMemoryWorkerCheck){
       const {verifyMa24LocalMemoryWorker}=await import('./lib/verify-ma24-local-memory-worker');
       const onObservationsReady=localMemoryHttpCheck?async(ids:{originalId:string;correctedId:string})=>{
