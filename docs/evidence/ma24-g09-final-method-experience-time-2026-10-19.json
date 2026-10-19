@@ -1,0 +1,41 @@
+{
+  "stage": "MA24 G09 common final method-experience database clock",
+  "date": "2026-10-19",
+  "sourceBaseCommit": "5582289d",
+  "filesSha256": {
+    "src/lib/assistant/main/skill-experience-time-check.ts": "25c0a13959993da7cf7eaa151b36dcb6d59dc3574ebcd98c715f1efd8f64c18a",
+    "src/lib/assistant/main/skill-experience-time-check.test.ts": "a8a82b83a6d4cceb688b2c030e1e6dd76b38bd88e31c43433869d7d7db7cd55a",
+    "src/lib/assistant/main/skill-locked-materials.ts": "60dc3a3adcad3e97fc8d9cd4614ac9686870b2a3e59a9af9fca5077414a85692",
+    "scripts/verify-skill-memory-source-locks-db.ts": "6f448471dccf1fef5393c6e75f53a3f10b1ebb951a333e110a77029c9693e9c6"
+  },
+  "checks": {
+    "focusedVitest": "43 passed",
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "diffCheck": "passed",
+    "freshClusterMemorySourceLocks": "passed",
+    "fixedSnapshotFiveCategoryComposition": "pending"
+  },
+  "database": {
+    "command": "node scripts/verify-ma24-fresh-pilot-new-cluster.ts --memory-source-locks",
+    "methodExperienceExpiryAfterPreparationRejected": true,
+    "methodExperienceCommonDatabaseClockVerified": true,
+    "candidateRemainedCurrent": true,
+    "expiredSourceBelongedToAnotherPinnedMethod": true,
+    "fullProvenanceAndLocksCheckedBeforeExpiry": true,
+    "transactionTimestampStillPrecededExpiry": true,
+    "expiredPlanRejected": true,
+    "distinctObservationsInExpiryCase": 4,
+    "observationImmutabilityPreserved": true,
+    "deferredEvaluationMigrationsApplied": false,
+    "actualModelCalls": 0,
+    "automaticActivation": false
+  },
+  "initialFixtureFailure": "Changing an existing observation valid_until was rejected as immutable. The corrected fixture inserts new short-lived observations and a separate pinned method; no immutability bypass or table-write grant was added.",
+  "scope": "Full source eligibility and retained locks are prerequisites. The final query checks target existence, plan expiry and local-experience time bounds at one wall-clock instant, returning only times and a deduplicated count.",
+  "limitations": [
+    "Point-in-time preparation check, not a lease or final activation grant.",
+    "Explicit historical observation queries and final update-time clock conditions remain separate.",
+    "Original file-byte protection, production identities, human quality and final activation remain incomplete."
+  ]
+}

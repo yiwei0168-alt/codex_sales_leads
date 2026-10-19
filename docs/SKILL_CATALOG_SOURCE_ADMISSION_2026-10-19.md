@@ -15,3 +15,9 @@
 目录写入锁不会阻止时间自然流逝。`evaluateLockedSkillAcceptanceReadiness` 现在先检查本地分析边界，在来源锁下捕获决策记忆，然后以已有 `withCurrentDecisionMemory` 守卫包住全部材料重建与策略计算；结束时重读数据库当前有效记忆并比较快照。准备期间到期或开始生效导致快照改变时，不返回准备结果；返回的 `decisionMemorySnapshotRevalidated` 只说明前后快照已核对。
 
 30 项定向回归、类型/lint 与一次性 PostgreSQL 的实际准备期到期拒绝通过。没有新建启用权限，也未把此项当成全部来源时效或提交点保证：观察查询中的显式历史时间、其他 Skill 经验期限、原件字节、生产身份和最终启用 SQL 的时钟条件仍须分别完成。新源码完整五类组合尚待复核，不能沿用较早目录快照的结果。[证据](evidence/ma24-g09-final-decision-memory-snapshot-2026-10-19.json)。
+
+## 目标与固定方法经验的统一时刻
+
+准备流程在策略计算后再次核锁内审核包，再从当前目标版本及已存任务的全部固定版本派生本地经验观察。`revalidateLockedSkillExperienceTimes` 用单个 PostgreSQL `clock_timestamp()` 同时核观察存在性、有效期和计划到期；同一观察去重。返回检查时刻、经验数量和最早经验/计划期限，不返回原文或观察 ID，也不把该时刻当作可跨事务使用的许可。
+
+43 项回归、类型/lint 和一次性实库验证通过：目标方法仍有效，另一固定方法的经验在初次资格与行锁检查后自然到期，末尾统一时刻检查拒绝；此时 `transaction_timestamp()` 仍早于到期。第一次夹具尝试更新已有观察被不可变守卫拒绝，改为插入带短期限的合成观察和方法绑定，没有绕过守卫。该源码完整五类快照仍待验；显式历史观察查询、原件字节、生产身份及最终启用 SQL 仍单独验收。[证据](evidence/ma24-g09-final-method-experience-time-2026-10-19.json)。

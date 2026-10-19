@@ -2,10 +2,11 @@ import type {PoolClient} from 'pg';
 import {beforeEach,expect,it,vi} from 'vitest';
 import {digest} from './contracts';
 import {revalidateLockedSkillAcceptanceMaterials,evaluateLockedSkillAcceptanceReadiness} from './skill-locked-materials';
-const m=vi.hoisted(()=>({read:vi.fn(),material:vi.fn(),policy:vi.fn(),lock:vi.fn(),methods:vi.fn(),query:vi.fn(),memoryBoundary:vi.fn()}));
+const m=vi.hoisted(()=>({read:vi.fn(),material:vi.fn(),policy:vi.fn(),lock:vi.fn(),methods:vi.fn(),query:vi.fn(),memoryBoundary:vi.fn(),times:vi.fn()}));
 vi.mock('./skill-acceptance-run-locks',()=>({lockSkillAcceptanceRunJournals:m.lock}));
 vi.mock('./skill-pinned-method-locks',()=>({lockSkillAcceptancePinnedMethods:m.methods}));
 vi.mock('./memory-message-guard',()=>({withCurrentDecisionMemory:m.memoryBoundary}));
+vi.mock('./skill-experience-time-check',()=>({revalidateLockedSkillExperienceTimes:m.times}));
 vi.mock('@/lib/rag/db',()=>({withBoundTenantTransaction:async(_client:unknown,_user:string,work:()=>Promise<unknown>)=>work()}));
 vi.mock('./skill-acceptance-store',()=>({readLockedSkillAcceptanceEvidence:m.read}));
 vi.mock('./skill-acceptance-review',()=>({readSkillAcceptanceReviewCase:m.material}));
@@ -19,6 +20,7 @@ const material=()=>({bundleId,caseId:'replay',artifactHash:bundle.artifactHash,o
  freezeStatus:{state:'active',freezeId:'freeze'},canPass:{baseline:true,candidate:true},baseline:'PRIVATE baseline',candidate:'PRIVATE candidate',receipts:['PRIVATE receipt']});
 beforeEach(()=>{vi.resetAllMocks();m.read.mockResolvedValue(bundle);m.material.mockResolvedValue(material());
  m.query.mockResolvedValue({rows:[]});m.memoryBoundary.mockImplementation(async(_user:string,work:()=>Promise<unknown>)=>work());
+ m.times.mockResolvedValue({methodExperienceTimesRevalidated:true,methodExperienceTimeCheckedAt:'2026-10-19T01:00:00.000Z',methodExperienceValidBefore:'2026-10-19T02:00:00.000Z',methodExperienceTimeObservationCount:2});
  m.methods.mockResolvedValue({pinnedMethodSourcesLocked:true,pinnedMethodPinCount:2,pinnedMethodVersionCount:1,pinnedMethodExperienceObservationCount:2});
  m.lock.mockResolvedValue({timelineSourcesLocked:true,timelineCustomerCount:0,mailReadSourcesLocked:true,mailCount:0,attachmentMetadataLocked:true,attachmentCount:0,taskOriginsLocked:true,taskJournalsLocked:true,runCount:1});
  m.policy.mockResolvedValue({artifactHash:bundle.artifactHash,latestReviewHash:bundle.latestReviewHash,policyPassed:false,automaticActivation:false});});
@@ -63,6 +65,8 @@ it('combines material reconstruction and policy while keeping activation and sou
  expect(out).toMatchObject({pinnedMethodSourcesLocked:true,pinnedMethodPinCount:2,pinnedMethodExperienceObservationCount:2});
  expect(out.skillCatalogSourcesLocked).toBe(true);
  expect(out.decisionMemorySnapshotRevalidated).toBe(true);
+ expect(out.methodExperienceTimesRevalidated).toBe(true);
+ expect(m.policy.mock.invocationCallOrder[0]).toBeLessThan(m.times.mock.invocationCallOrder[0]);
  expect(m.query).toHaveBeenCalledExactlyOnceWith('select lock_skill_knowledge_sources()');
  expect(m.query.mock.invocationCallOrder[0]).toBeLessThan(m.memoryBoundary.mock.invocationCallOrder[0]);
  expect(JSON.stringify(out)).not.toContain('PRIVATE');expect(m.policy).toHaveBeenCalledExactlyOnceWith(client,context,bundleId);
@@ -80,4 +84,9 @@ it('does not inspect private memory or material when source admission fails',asy
  m.query.mockRejectedValue(new Error('Source admission unavailable'));
  await expect(evaluateLockedSkillAcceptanceReadiness(client,context,bundleId)).rejects.toThrow('Source admission unavailable');
  expect(m.memoryBoundary).not.toHaveBeenCalled();expect(m.material).not.toHaveBeenCalled();
+});
+it('rejects local experience expiry after material and policy preparation',async()=>{
+ m.times.mockRejectedValue(new Error('Acceptance method experience time changed after preparation'));
+ await expect(evaluateLockedSkillAcceptanceReadiness(client,context,bundleId)).rejects.toThrow('experience time changed after preparation');
+ expect(m.policy).toHaveBeenCalledOnce();
 });

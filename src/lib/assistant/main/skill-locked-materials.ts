@@ -8,6 +8,7 @@ import {evaluateLockedSkillAcceptancePolicy} from './skill-locked-acceptance-pol
 import {lockSkillAcceptanceRunJournals} from './skill-acceptance-run-locks';
 import {lockSkillAcceptancePinnedMethods} from './skill-pinned-method-locks';
 import {withCurrentDecisionMemory} from './memory-message-guard';
+import {revalidateLockedSkillExperienceTimes} from './skill-experience-time-check';
 
 /** Rebuild every planned case under retained evidence locks. Only hashes leave this
  * function. Source revocation rows are not yet locked through the final update. */
@@ -50,10 +51,15 @@ export async function evaluateLockedSkillAcceptanceReadiness(client:PoolClient,c
   const policy=await evaluateLockedSkillAcceptancePolicy(client,context,bundleId);
   if(materials.artifactHash!==policy.artifactHash||materials.latestReviewHash!==policy.latestReviewHash)
    throw new Error('Locked material and policy snapshots differ');
+  const final=await readLockedSkillAcceptanceEvidence(client,context,bundleId);
+  if(final.artifactHash!==materials.artifactHash||final.latestReviewHash!==materials.latestReviewHash)
+   throw new Error('Locked acceptance changed before final experience time check');
+  const methodTimes=await revalidateLockedSkillExperienceTimes(client,context.userId,final.artifact);
   return {...policy,prospectiveCaptureSourcesLocked:materials.prospectiveCaptureSourcesLocked,prospectiveJobCount:materials.prospectiveJobCount,knowledgeSourcesLocked:materials.knowledgeSourcesLocked,decisionMemorySourcesLocked:materials.decisionMemorySourcesLocked,timelineSourcesLocked:materials.timelineSourcesLocked,timelineCustomerCount:materials.timelineCustomerCount,mailReadSourcesLocked:materials.mailReadSourcesLocked,mailCount:materials.mailCount,attachmentMetadataLocked:materials.attachmentMetadataLocked,attachmentCount:materials.attachmentCount,taskOriginsLocked:materials.taskOriginsLocked,taskJournalsLocked:materials.taskJournalsLocked,runCount:materials.runCount,materials:materials.materials,materialsHash:materials.materialsHash,sourcePayloadsRevalidated:true as const,
    pinnedMethodSourcesLocked:materials.pinnedMethodSourcesLocked,pinnedMethodPinCount:materials.pinnedMethodPinCount,
    skillCatalogSourcesLocked:materials.skillCatalogSourcesLocked,
    decisionMemorySnapshotRevalidated:true as const,
+   ...methodTimes,
    pinnedMethodVersionCount:materials.pinnedMethodVersionCount,pinnedMethodExperienceObservationCount:materials.pinnedMethodExperienceObservationCount,
    sourceRevocationsLocked:false as const,collectorProvenanceVerified:false as const,automaticActivation:false as const};
   });

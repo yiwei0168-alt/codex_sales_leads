@@ -12,6 +12,7 @@ import {encryptMailboxContent} from '../src/lib/mailbox/crypto';
 import {loadDecisionMemory} from '../src/lib/assistant/main/memory-context';
 import {decisionMemoryMessage,assertRecordedDecisionMemory} from '../src/lib/assistant/main/decision-memory-message';
 import {withCurrentDecisionMemory,MemoryContextChangedError} from '../src/lib/assistant/main/memory-message-guard';
+import {revalidateLockedSkillExperienceTimes} from '../src/lib/assistant/main/skill-experience-time-check';
 
 nextEnv.loadEnvConfig(process.cwd());assert.equal(process.env.MA24_DISPOSABLE_MEMORY_SOURCE_LOCKS,'1','Disposable harness required');
 process.env.PGOPTIONS='-c statement_timeout=10000';
@@ -229,6 +230,29 @@ try{
  await assert.rejects(methodLock(),/sources changed after locking/);
  await pool.query('update assistant_message set content=$2 where id=$1',[refs[0].messageId,quote]);
  assert.deepEqual(await methodLock(),{pinnedMethodSourcesLocked:true,pinnedMethodPinCount:4,pinnedMethodVersionCount:3,pinnedMethodExperienceObservationCount:2});
+ const timeArtifact={...methodArtifact,plan:{...methodArtifact.plan,pin:{ownerId:owner,skillId:methodId,version:1},expiresAt:new Date(Date.now()+3600000).toISOString()}};
+ const timeCheck=()=>tenantTransaction(owner,client=>revalidateLockedSkillExperienceTimes(client,owner,timeArtifact));
+ assert.equal((await timeCheck()).methodExperienceTimeObservationCount,2);
+ await assert.rejects(tenantTransaction(owner,client=>revalidateLockedSkillExperienceTimes(client,owner,
+  {...timeArtifact,plan:{...timeArtifact.plan,expiresAt:new Date(Date.now()-1000).toISOString()}})),/time changed after preparation/);
+ const timedIds=[randomUUID(),randomUUID()],timedMethod=randomUUID();
+ for(let i=0;i<2;i++)await pool.query(`insert into agent_memory_observation(id,owner_id,kind,content,source_receipt,memory_key,valid_from,valid_until)
+  select $1,owner_id,kind,content,source_receipt,memory_key,valid_from,clock_timestamp()+interval '3 seconds'
+  from agent_memory_observation where id=$2`,[timedIds[i],[a,b][i]]);
+ const timedVersion={...version,validation:{...(version.validation as Record<string,unknown>),sourceObservations:refs.map((ref,i)=>({...ref,observationId:timedIds[i]}))}};
+ await pool.query("insert into agent_skill(id,owner_id,name,scope,enabled) values($1,$2,'Synthetic expiring experience method','account',true)",[timedMethod,owner]);
+ await pool.query('insert into agent_skill_version(skill_id,version,content_hash,source,files,validation) values($1,1,$2,$3,$4,$5)',
+  [timedMethod,timedVersion.content_hash,timedVersion.source,JSON.stringify(timedVersion.files),JSON.stringify(timedVersion.validation)]);
+ await pool.query('insert into agent_run_skill(user_id,run_id,skill_id,version) values($1,$2,$3,1)',[owner,refs[0].runId,timedMethod]);
+ const timedArtifact=timeArtifact; // The candidate stays valid; only another pinned method expires.
+ await assert.rejects(tenantTransaction(owner,client=>withBoundTenantTransaction(client,owner,async()=>{
+  await client.query('select lock_skill_knowledge_sources()');
+  await lockSkillAcceptancePinnedMethods(client,owner,timedArtifact);
+  assert.equal((await revalidateLockedSkillExperienceTimes(client,owner,timedArtifact)).methodExperienceTimeObservationCount,4);
+  await client.query('select pg_sleep(3.1)');
+  assert.equal((await client.query('select transaction_timestamp()<min(valid_until) as old_clock_before_expiry from agent_memory_observation where id=any($1::uuid[])',[timedIds])).rows[0].old_clock_before_expiry,true);
+  return revalidateLockedSkillExperienceTimes(client,owner,timedArtifact);
+ })),/time changed after preparation/);
  const expiring=[randomUUID(),randomUUID()];
  for(let i=0;i<2;i++)await pool.query(`insert into agent_memory_observation(id,owner_id,kind,content,source_receipt,memory_key,valid_until)
   select $1,owner_id,kind,content,source_receipt,memory_key,clock_timestamp()+interval '1 second' from agent_memory_observation where id=$2`,[expiring[i],[a,b][i]]);
@@ -389,7 +413,7 @@ try{
  assert.deepEqual(state,{corrected:true,invalidated:true,conflict:'open'});
  await assert.rejects(tenantTransaction(owner,client=>lockCurrentSkillExperienceSources(client,owner,version)),/changed after locking/);
  assert.equal((await pool.query("select to_regclass('public.ma24_evaluation_hard_limit') is null absent")).rows[0].absent,true);
- console.log(JSON.stringify({memorySourceLocksDatabase:'passed',decisionMemoryFinalPreparationBoundaryRejected:true,pinnedMethodSixWritersBlocked:true,pinnedMethodRevocationAndOriginalChangeRejected:true,pinnedMethodPrivilegesUnchanged:true,correctionInvalidationAndConflictBlocked:true,allWritersResumeAfterRelease:true,
+ console.log(JSON.stringify({memorySourceLocksDatabase:'passed',methodExperienceExpiryAfterPreparationRejected:true,methodExperienceCommonDatabaseClockVerified:true,decisionMemoryFinalPreparationBoundaryRejected:true,pinnedMethodSixWritersBlocked:true,pinnedMethodRevocationAndOriginalChangeRejected:true,pinnedMethodPrivilegesUnchanged:true,correctionInvalidationAndConflictBlocked:true,allWritersResumeAfterRelease:true,
   foreignOwnerAndInvalidIdsRejected:true,knowledgePublicationAndReviewWritesBlocked:true,attachmentReadUnderPrelockedPublisherCompletes:true,decisionMemoryWriteAndPhantomGateVerified:true,otherAccountPrivateMemoryWriteContinues:true,decisionMemoryWallClockRevalidated:true,timelineUpdatesAndPhantomInsertsBlocked:true,mailMetadataUpdatesBlocked:true,attachmentMetadataUpdatesBlocked:true,privateAttachmentForeignOwnerRejected:true,taskOriginsAndHistoryAppendBlocked:true,taskAndJournalUpdateAndAppendBlocked:true,foreignTaskJournalLockRejected:true,noObservationUpdateGrant:true,originUpdatesBlocked:true,changedOriginalMessageRejected:true,storedProvenanceLockThenRecheck:true,invalidatedProvenanceRejectedAfterLock:true,expiryAfterTransactionStartRejected:true,
   deferredEvaluationMigrationsApplied:false,actualModelCalls:0,automaticActivation:false}));
 }finally{await pool.end();await getPool().end();}
