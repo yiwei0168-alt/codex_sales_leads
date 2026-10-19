@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {generateKeyPairSync,randomUUID} from 'node:crypto';
+import {generateKeyPairSync,randomUUID,createHash} from 'node:crypto';
 import {readFile,writeFile} from 'node:fs/promises';
 import {join} from 'node:path';
 import {spawn} from 'node:child_process';
@@ -21,6 +21,7 @@ import {verifyConfiguredSignedCandidateDatabase} from './configured-signed-candi
 import {registerSignedProspectiveFixture} from './signed-prospective-registration-db';
 import {verifyConfiguredSignedSafetyDatabase} from './configured-signed-safety-db';
 import {verifyCombinedConfiguredDatabase} from './configured-five-category-db';
+import {tenantTransaction} from '../../src/lib/rag/db';
 export type SignedFixtureContext={owner:string;runId:string;skillId:string;directory:string;keyPath:string;keyId:string;collectorId:string;deploymentHash:string;trustKeys:unknown[]};
 type Registration=Awaited<ReturnType<typeof registerSignedProspectiveFixture>>;
 type Options={registration?:Registration;reuseCustomers?:boolean;additionalTrustKeys?:unknown[];onReady?:(context:SignedFixtureContext)=>Promise<Record<string,unknown>>};
@@ -28,10 +29,27 @@ type Options={registration?:Registration;reuseCustomers?:boolean;additionalTrust
 /** Real signing closures and app-role persistence with synthetic network/billing.
  * Does not qualify production network, billing or deployment identity. */
 export async function verifyTaskTransportJournalDatabase(pool:Pool,owner:string,other:string,directory:string,skillId:string,options:Options={}):Promise<Record<string,unknown>>{
- if(process.env.MA24_CONFIGURED_COMBINED==='1')for(const name of ['141_skill_runner_attestation.sql','144_skill_task_origin_locks.sql','145_skill_attachment_source_locks.sql','147_skill_timeline_source_locks.sql','148_skill_decision_memory_source_locks.sql','149_skill_knowledge_source_locks.sql','150_skill_shadow_source_locks.sql','151_skill_pinned_method_source_locks.sql','152_skill_catalog_source_admission.sql'])await pool.query(await readFile(join('db/migrations',name),'utf8'));
+ if(process.env.MA24_CONFIGURED_COMBINED==='1')for(const name of ['141_skill_runner_attestation.sql','144_skill_task_origin_locks.sql','145_skill_attachment_source_locks.sql','147_skill_timeline_source_locks.sql','148_skill_decision_memory_source_locks.sql','149_skill_knowledge_source_locks.sql','150_skill_shadow_source_locks.sql','151_skill_pinned_method_source_locks.sql','152_skill_catalog_source_admission.sql','156_knowledge_asset_immutable_snapshot.sql'])await pool.query(await readFile(join('db/migrations',name),'utf8'));
  const runId=randomUUID(),conversationId=randomUUID(),leaseToken=randomUUID(),config=modeModelConfig('standard');
  const context={userId:owner,runId,leaseToken,role:'member' as const};
- const task={content:'Synthetic stored request',attachments:[] as []};
+ const attachments:Array<{assetId:string}>=[];
+ if(process.env.MA24_CONFIGURED_COMBINED==='1'){
+  let asset=(await pool.query<{id:string}>(`select a.id from knowledge_asset a join knowledge_document d on d.id=a.document_id
+   where d.owner_id=$1 and d.external_id='ma24-configured-canonical-snapshot'`,[owner])).rows[0];
+  if(!asset){
+   const collection=randomUUID(),document=randomUUID(),id=randomUUID(),bytes=Buffer.from('Synthetic signed-composition original\n');
+   const sha=createHash('sha256').update(bytes).digest('hex');
+   await pool.query("insert into knowledge_collection(id,slug,name,base_type) values($1,$1::uuid::text,'Synthetic signed original','industry')",[collection]);
+   await pool.query(`insert into knowledge_document(id,collection_id,external_id,title,source_type,content_sha256,owner_id,visibility)
+    values($1,$2,'ma24-configured-canonical-snapshot','Synthetic signed original','synthetic',$3,$4,'private')`,[document,collection,sha,owner]);
+   await pool.query(`insert into knowledge_asset(id,document_id,storage_key,source_sha256,mime_type,byte_size,document_type,source_nature)
+    values($1,$2,$3,$4,'text/plain',$5,'text','synthetic')`,[id,document,`knowledge/nonexistent-${id}.txt`,sha,bytes.length]);
+   await tenantTransaction(owner,client=>client.query('select capture_immutable_asset_snapshot($1,$2,$3)',[id,sha,bytes]));
+   asset={id};
+  }
+  attachments.push({assetId:asset.id});
+ }
+ const task={content:'Synthetic stored request',attachments};
  const initial=initialTaskMessages({...context,mode:config.profile!.mode},task,config,[]);
  const messages=[initial[0],decisionMemoryMessage(await loadDecisionMemory(owner)),...initial.slice(1)];
  const prospective=options.registration??(process.env.MA24_CONFIGURED_PROSPECTIVE==='1'?await registerSignedProspectiveFixture(pool,{owner,skillId,task,config,messages}):undefined);

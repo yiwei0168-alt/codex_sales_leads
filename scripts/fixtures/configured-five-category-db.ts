@@ -32,7 +32,8 @@ export async function verifyCombinedConfiguredDatabase(pool:Pool,original:Signed
   const saved=await prepareSkillSafetyCandidate(context,{runId:original.runId,skillId:original.skillId,version:1,caseId});
   otherCases.push({id:caseId,category:saved.category,provenance:'safety-fixture',inputHash:saved.inputHash,sourceHash:saved.sourceHash});
  }
- const task={content:'Synthetic stored request',attachments:[] as []},config=modeModelConfig('standard');
+ const task=(await pool.query<{input:{content:string;attachments:Array<{assetId:string}>}}>('select input from agent_run where id=$1 and user_id=$2',[original.runId,original.owner])).rows[0].input;
+ assert.equal(task.attachments.length,1);const config=modeModelConfig('standard');
  const initial=initialTaskMessages({userId:original.owner,role:'member',mode:'standard'},task,config,[]);
  const messages=[initial[0],decisionMemoryMessage(await loadDecisionMemory(original.owner)),...initial.slice(1)];
  const registration=await registerSignedProspectiveFixture(pool,{owner:original.owner,skillId:original.skillId,task,config,messages,otherCases});
@@ -74,6 +75,14 @@ export async function verifyCombinedConfiguredDatabase(pool:Pool,original:Signed
   assert.equal(readiness.transportOriginalTaskCount,2);assert.equal(readiness.transportEvaluationArmCount,8);assert(readiness.transportReceiptCount!>8);
   assert.equal(readiness.runnerDeclarationRevalidated,true);assert.equal(readiness.transportRegistryHash,readiness.runnerRegistryHash);
   assert.equal(readiness.collectorProvenanceVerified,false);
+  assert.equal(readiness.attachmentBytesCount,1);assert.equal(readiness.attachmentImmutableSnapshotCount,1);
+  assert.equal(readiness.attachmentReadOnlyMountVerified,false);
+  const assetId=task.attachments[0].assetId;
+  await pool.query("update knowledge_asset set registration_status='withdrawn' where id=$1",[assetId]);
+  try{await assert.rejects(tenantTransaction(original.owner,client=>evaluateLockedSkillAcceptanceReadiness(client,context,combined.bundleId)),/attachment|Attachment|material/);}
+  finally{await pool.query("update knowledge_asset set registration_status='registered' where id=$1",[assetId]);}
+  const restored=await tenantTransaction(original.owner,client=>evaluateLockedSkillAcceptanceReadiness(client,context,combined.bundleId));
+  assert.equal(restored.attachmentImmutableSnapshotManifestHash,readiness.attachmentImmutableSnapshotManifestHash);
   const key=registry.keys.find((row:{keyId:string})=>row.keyId===prospective.keyId);key.enabled=false;
   try{await writeFile(registryPath,JSON.stringify(registry));
    await assert.rejects(tenantTransaction(original.owner,client=>revalidateLockedSkillTransportReceipts(client,context,combined.bundleId)),{message:'Task failure trust unavailable'});
@@ -85,6 +94,7 @@ export async function verifyCombinedConfiguredDatabase(pool:Pool,original:Signed
   assert.equal((await pool.query('select enabled from agent_skill where id=$1',[original.skillId])).rows[0].enabled,false);
   return {configuredSameFreezeFiveCategoriesVerified:true,lockedTransportReceiptsRevalidated:true,transportOriginalTaskCount:2,transportEvaluationArmCount:8,disabledTransportKeyRejected:true,collectedCases:5,combinedArtifactHash:combined.artifactHash,
    frozenPlanHash:digest(registration.frozen.plan),lockedMaterialsVerified:true,prospectiveCaptureSourcesLocked:true,missingHumanJudgmentBlocksPolicy:true,
+   immutableAttachmentSnapshotVerified:true,withdrawnSnapshotSourceRejected:true,restoredCanonicalSnapshotRevalidated:true,
    realQualityAccepted:false,productionQualificationGranted:false,automaticActivation:false};
  });
 }

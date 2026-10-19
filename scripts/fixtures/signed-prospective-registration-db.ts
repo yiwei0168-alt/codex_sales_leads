@@ -11,7 +11,7 @@ import type {skillAcceptancePlanSchema} from '../../src/lib/assistant/main/skill
 type PlanCases=z.infer<typeof skillAcceptancePlanSchema>['cases'];
 
 /** Freeze before run insertion, so the real capture trigger supplies provenance. */
-export async function registerSignedProspectiveFixture(pool:Pool,input:{owner:string;skillId:string;task:{content:string;attachments:[]};config:ModelConfig;messages:ModelMessage[];otherCases?:PlanCases}){
+export async function registerSignedProspectiveFixture(pool:Pool,input:{owner:string;skillId:string;task:{content:string;attachments:Array<{assetId:string}>};config:ModelConfig;messages:ModelMessage[];otherCases?:PlanCases}){
  const registration=await prepareShadowRegistration(input.owner,{skillId:input.skillId,version:1,hours:1,selection:{kind:'whole-read-only-task'}}),campaignId=randomUUID();
  await pool.query(`insert into agent_skill_shadow_campaign(id,owner_id,skill_id,version,content_hash,source_hash,config,enabled,expires_at)
   values($1,$2,$3,1,$4,$5,$6,true,clock_timestamp()+interval '1 hour')`,[campaignId,input.owner,input.skillId,registration.contentHash,registration.sourceHash,JSON.stringify(registration.config)]);
