@@ -178,4 +178,6 @@ G09/G10 影子租约准备新增重建后数据库时钟复查，17 项回归、
 
 2026-10-19 固定快照复核：基于 `8a968d361a4958ad1c24480c761fe08ed229f214`，`node scripts/run-ma24-snapshot-check.mjs --transport-journal` 退出码 0；同一冻结版本五类材料、锁定材料及前瞻来源锁通过，完整数据见 [G09 证据](evidence/ma24-g09-prospective-source-locks-2026-10-17.json)。真实质量仍未接受，计费/网络适配仍为合成，来源撤销锁未全部完成，生产资格与自动启用均为 false。
 
-G01 内网试点配置：用户已选择公司 LAN/VPN 内访问。Compose 与 Caddy 配置静态校验通过，验证值为占位内网 DNS/IP；服务未启动、端口未开放。公司目标主机、固定内网 IP/网段、内部 DNS 和防火墙/证书分发尚待提供与验收，故未部署。[验证证据](evidence/ma24-g01-pilot-lan-template-validation-2026-10-19.json)。
+G01 内网试点配置：用户已选择公司 LAN/VPN 内访问，后续明确本次暂不上线。Compose 与 Caddy 模板静态校验通过；用户提供主机 LAN IP `192.168.0.170`，尚未核实固定/冲突。目标主机、内部 DNS 和防火墙/证书分发尚待提供与验收，服务未启动、端口未开放。[验证证据](evidence/ma24-g01-pilot-lan-template-validation-2026-10-19.json)。
+
+G11 IMAP 分页修复（2026-10-19）：首次同步改为按最早 UID 开始取页，解析失败或缺少原文时抛错且不返回前进游标，避免续跑跳过旧邮件或把不可解析邮件默默当已处理。定向 3 项、类型检查、相关 ESLint 通过。[工程证据](evidence/ma24-g11-imap-oldest-first-pagination-2026-10-19.json)。仍未完成真实邮箱全范围对账、断线恢复和客户归属/摘要质量验收。

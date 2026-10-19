@@ -1,0 +1,24 @@
+{
+  "stage": "MA24 G11 IMAP pagination and checkpoint safety fix",
+  "date": "2026-10-19",
+  "sourceCommit": "144e6cfe3b6b9d2d1332dab0f4db6b2b59cd8dd8",
+  "files": {
+    "src/lib/mailbox/alimail-imap.ts": "a627acea488fde458a9dfa7d6d51a2db71209d506f67a952c2a4f84d96ebd015",
+    "src/lib/mailbox/alimail-imap.test.ts": "406ae8314e802635bd70020c9fafb493fe3462d123fd01ea73c5955e5883e95a"
+  },
+  "changes": [
+    "Fresh mailbox scans now take the oldest remaining UIDs first, preserving complete chronological paging across capped runs.",
+    "A message parsing error or missing message source fails the page so no advanced cursor is returned and no partial page is persisted by the caller."
+  ],
+  "checks": {
+    "focusedVitest": "passed",
+    "focusedTests": 3,
+    "typecheck": "passed",
+    "eslint": "passed"
+  },
+  "scopeLimitations": [
+    "Only mocked IMAP data was used.",
+    "No real mailbox was connected or modified.",
+    "Real provider pagination, disconnection recovery, customer attribution, and summary quality remain unverified."
+  ]
+}

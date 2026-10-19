@@ -161,7 +161,9 @@ export async function readAliMailMessages(input: {
         discovered += allUids.length;
         await input.onProgress?.({ phase: "fetching", folders: folders.length, discovered, processed: messages.length });
         const remaining = input.maxMessages - messages.length;
-        const selected = remaining === 0 ? [] : lastUid === 0 ? allUids.slice(-remaining) : allUids.slice(0, remaining);
+        // Always page from the oldest remaining UID. Starting at the newest on a
+        // fresh sync and then advancing the cursor would permanently skip older mail.
+        const selected = remaining === 0 ? [] : allUids.slice(0, remaining);
         let highestUid = lastUid;
         if (selected.length > 0) {
           for await (const message of client.fetch(selected, {
@@ -170,8 +172,11 @@ export async function readAliMailMessages(input: {
             size: true,
             source: { maxLength: MAX_SOURCE_BYTES },
           }, { uid: true })) {
-            const parsed = await parseMessage(message, folder, uidValidity).catch(() => null);
-            if (parsed) messages.push(parsed);
+            let parsed:ImportedMailboxMessage|null;
+            try{parsed=await parseMessage(message,folder,uidValidity);}
+            catch{throw new Error('Mailbox message parsing failed; sync checkpoint was not advanced');}
+            if(!parsed)throw new Error('Mailbox message source unavailable; sync checkpoint was not advanced');
+            messages.push(parsed);
             await input.onProgress?.({
               phase: "fetching", folders: folders.length, discovered, processed: messages.length,
               currentSubject: parsed?.subject || undefined,
