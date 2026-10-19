@@ -35,7 +35,16 @@
   "revalidationAttempt": {
     "date": "2026-10-19",
     "composeConfig": "passed",
-    "caddyContainerValidation": "blocked",
-    "reason": "The Docker CLI could parse Compose configuration, but Docker Desktop denied access to npipe:////./pipe/dockerDesktopLinuxEngine when starting the Caddy validation container."
+    "caddyContainerValidation": "passed",
+    "caddyOutput": "Valid configuration",
+    "execution": "ephemeral docker run caddy:2.11.4-alpine caddy validate",
+    "serviceStarted": false,
+    "portsOpened": false,
+    "note": "The regular command sandbox could not access the named pipe; the validation container ran successfully with authorized Docker access."
+  },
+  "validationValues": {
+    "PILOT_LAN_ADDRESS": "192.168.0.170",
+    "PILOT_DOMAIN": "ma24-pilot.intra (placeholder; internal DNS name not yet provided)",
+    "PILOT_WEB_PORT": "3000"
   }
 }
