@@ -19,5 +19,11 @@
     "src/lib/assistant/main/skill-attachment-bytes.ts": "32ef404181ee224bc1b66b45a7858767f5ee2aa92bb57f71aaa38a4ed4cb041f",
     "src/lib/assistant/main/skill-attachment-bytes.test.ts": "b94c008c3aebaf7e5a3277f3133b8f084da70462d5a19441a6c92de56a0049f7",
     "src/lib/knowledge/document-repository.ts": "70e6e01a2ea081a25ee8ecb4acda34c4a23b8cbd02dfc22461e232ebbf83bf5b"
+  },
+  "fullSignedComposition": {
+    "sourceCommit": "e2891a90fbb4ed6d1a5b0617c1625f77f82fc379",
+    "exitCode": 0,
+    "evidence": "ma24-g09-signed-composition-e2891a90-2026-10-19.json",
+    "scope": "Includes this shared inspector change; later G03/G04/G12 remain separate."
   }
 }

@@ -1,5 +1,7 @@
 # MA24 固定提交数据库检查
 
+2026-10-19 完整签名联验完成：固定 `e2891a90` 退出 0，同冻结五类组合、实际 CLI 签发、统一回读、持锁材料重建及 2 条原任务/8 条评测臂传输复核通过，缺失人工判定仍阻断。该快照包含原件当前路径身份校验，不含后续 G03/G04/G12 修改；模型/网络/预算合成，实际调用 0，不授予生产或自动启用资格。[收据](evidence/ma24-g09-signed-composition-e2891a90-2026-10-19.json)。
+
 2026-10-17 完整验证补充：提交 `500405a4ace517086cceff3f38f000a1b00b77c8` 的 `--prospective-composition` 已实际通过，包括登记附件和五类持锁材料重建。运行期间主工作区继续开发邮件、时间线和记忆时效修改，固定快照保持原提交来源；这些后续修改没有被计入该次通过。快照及一次性数据库正常清理。
 
 命令：`node scripts/run-ma24-snapshot-check.mjs --prospective-composition`。也可单选 `--memory-source-locks`、`--transport-journal` 或 `--locked-policy`。
