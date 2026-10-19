@@ -10,7 +10,7 @@
 - 固定 `c3f620b5`、`cf147d1a`、`3f511d38` 及最新 `80c24c2b` 的完整五类组合均已退出 0：分别补齐方法经验时刻、附件字节、知识回执原件及显式记忆回执接线。最新快照含实际原件/记忆读取、五条前瞻回执和策略后的字节/记忆复核；较早 ca45488d 的白名单失败保留为历史。所有结论仍限合成任务与隔离工程验收，未授予生产资格、人工质量批准或自动启用。
 - G01 首批入口已改为公司 LAN/VPN 内网访问，无需以备案域名作为该内网方案的前置项；Caddy 内部 CA 与内网 IP 绑定模板已准备。用户提供目标 LAN IP `192.168.0.170`，但目标主机地址固定/冲突、内部 DNS、防火墙和证书信任分发尚未验收，当前没有线上交付证据。[部署实施单](TEAM_PILOT_NEW_HOSTING_2026-10-16.md)。
 - 固定 `9b0c78e7` 的 CLI 签发完整五类组合已退出 0，包含传输收据复核及统一末尾到期时刻检查；同版本采集器镜像另通过只读、非 root 的签发矩阵。两项均使用合成业务内容和临时测试密钥，不构成生产身份或真实质量验收。[签发及完整组合](evidence/ma24-g09-configured-declaration-cli-2026-10-19.json)、[镜像矩阵](evidence/ma24-g09-configured-declaration-linux-image-2026-10-19.json)。
-- Web Linux 镜像仍早于当前源码；固定 `20c00e73` 已完成独立目录的本地 Web 构建与 945 个运行源码文件比对，同源采集器镜像已通过包哈希与防篡改检查。该新镜像尚未完成数据库签发/提供方验证；`9b0c78e7` 的旧镜像签发证据不能替代它。最终发布仍需冻结最终源码并在目标环境验收。[本地构建证据](evidence/ma24-g01-g09-local-release-build-2026-10-19.json)。
+- Web Linux 镜像仍早于当前源码；固定 `20c00e73` 已完成独立目录的本地 Web 构建与 945 个运行源码文件比对，同源采集器镜像通过包哈希、防篡改及实际 TLS 数据库签发矩阵。该版本尚无提供方/真实质量/生产认证，也不包含后续发布租约修改。最终发布仍需冻结最终源码并在目标环境验收。[本地构建证据](evidence/ma24-g01-g09-local-release-build-2026-10-19.json)。
 - 用户后续明确“本次任务暂时不上线到内网，继续其他未完成任务”；当前不执行部署、端口开放或团队邀请。上面的内网条件作为将来恢复上线时的清单，不作为当前代码推进的阻塞。
 
 ## 阶段记录与逐项门槛
@@ -318,3 +318,6 @@ G09 current-source collector image TLS preflight (2026-10-19): rebuilt from the 
 
 
 2026-10-19 / local release baseline: source 20c00e73dab84dd1dd15a76635bd0479535980a1 built successfully with Next 16.3.4 in a separate output directory, BUILD_ID 3GGcRWoFZyh5eTALR4BT8. All 945 packaged runtime-source files match the clean code/config/lock baseline after removal of two Next-generated output-directory type includes; no private env or storage roots are bundled. The first sandbox build failed on junction creation; an approved isolated-output retry passed. Collector image ma24-skill-collector:20c00e73 (sha256:1436ff8c597de902dd184a610f9cd927dc8e8ae75569db9415b7004cb01a41dc) passed 34,460-file measured-package/read-only/non-root/no-network/tamper checks; deploymentHash 81f278adca72fbd363428ffc0fcd4b336027cd015e3bb045c698d43c0effbb03. No Web Linux image, actual new-image database/provider run, deployment, independent quality or production qualification is implied. [Receipt](evidence/ma24-g01-g09-local-release-build-2026-10-19.json).
+
+
+2026-10-19 / fixed collector image database acceptance completed: ma24-skill-collector:20c00e73 passed actual measured --attest execution against a fresh TLS database, signed issuance/readback, retry reuse and owner/source/key/purpose/revocation/NODE_OPTIONS/TLS-root/package-hash rejection. Exit 0; temporary cluster/network removed; 0 model calls and no production keys. This source-specific result does not cover later publication lease changes or establish provider/real-quality/production qualification. [Release receipt](evidence/ma24-g01-g09-local-release-build-2026-10-19.json).
