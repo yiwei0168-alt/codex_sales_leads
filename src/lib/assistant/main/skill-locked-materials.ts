@@ -11,6 +11,7 @@ import {withCurrentDecisionMemory} from './memory-message-guard';
 import {revalidateLockedSkillExperienceTimes} from './skill-experience-time-check';
 import {revalidateLockedSkillAttachmentBytes} from './skill-attachment-bytes';
 import {revalidateLockedSkillKnowledgeReceiptBytes} from './skill-knowledge-receipt-bytes';
+import {revalidateLockedSkillMemoryReceipts} from './skill-memory-receipt-check';
 
 /** Keep consumed receipts in a private closure inside the owning transaction;
  * public wrappers expose hashes/counts only, never source contents or callbacks. */
@@ -21,7 +22,7 @@ async function prepareLockedSkillAcceptanceMaterials(client:PoolClient,context:{
   const journalLocks={...await lockSkillAcceptanceRunJournals(client,context.userId,before.artifact),
    ...await lockSkillAcceptancePinnedMethods(client,context.userId,before.artifact)};
   const attachmentBytes=await revalidateLockedSkillAttachmentBytes(client,context.userId,before.artifact);
-  const knowledgeReceipts:Array<{tool:string;output:unknown}>=[];
+  const consumedReceipts:Array<{tool:string;input:unknown;output:unknown}>=[];
   for(const item of before.artifact.plan.cases){
    const observation=before.artifact.observations.find(row=>row.caseId===item.id);
    if(!observation)throw new Error('Locked material observation missing');
@@ -33,14 +34,16 @@ async function prepareLockedSkillAcceptanceMaterials(client:PoolClient,context:{
     ||digest(material.baseline)!==observation.baseline.answerHash||digest(material.candidate)!==observation.candidate.answerHash)
     throw new Error('Locked material binding or completed arms changed');
    hashes.push({caseId:item.id,observationHash:material.observationHash,materialHash:digest(material)});
-   if(item.provenance==='historical-task'||item.provenance==='prospective-task')knowledgeReceipts.push(...material.receipts);
+   if(item.provenance==='historical-task'||item.provenance==='prospective-task')consumedReceipts.push(...material.receipts);
   }
-  const recheckKnowledgeBytes=()=>revalidateLockedSkillKnowledgeReceiptBytes(client,context.userId,knowledgeReceipts);
+  const recheckKnowledgeBytes=()=>revalidateLockedSkillKnowledgeReceiptBytes(client,context.userId,consumedReceipts);
   const knowledgeBytes=await recheckKnowledgeBytes();
+  const recheckMemoryReceipts=()=>revalidateLockedSkillMemoryReceipts(client,context.userId,consumedReceipts);
+  const memoryReceipts=await recheckMemoryReceipts();
   const after=await readLockedSkillAcceptanceEvidence(client,context,bundleId);
   if(after.artifactHash!==before.artifactHash||after.latestReviewHash!==before.latestReviewHash||digest(after.currentPin)!==digest(before.currentPin))
    throw new Error('Locked evidence changed during material reconstruction');
-  return {recheckKnowledgeBytes,materials:{...journalLocks,...attachmentBytes,...knowledgeBytes,knowledgeSourcesLocked:after.knowledgeSourcesLocked,decisionMemorySourcesLocked:after.decisionMemorySourcesLocked,artifactHash:after.artifactHash,latestReviewHash:after.latestReviewHash,materials:hashes,materialsHash:digest(hashes),
+  return {recheckKnowledgeBytes,recheckMemoryReceipts,materials:{...journalLocks,...attachmentBytes,...knowledgeBytes,...memoryReceipts,knowledgeSourcesLocked:after.knowledgeSourcesLocked,decisionMemorySourcesLocked:after.decisionMemorySourcesLocked,artifactHash:after.artifactHash,latestReviewHash:after.latestReviewHash,materials:hashes,materialsHash:digest(hashes),
    skillCatalogSourcesLocked:after.skillCatalogSourcesLocked,
    sourcePayloadsRevalidated:true as const,sourceRevocationsLocked:false as const,collectorProvenanceVerified:false as const,automaticActivation:false as const}};
  });
@@ -70,6 +73,8 @@ export async function evaluateLockedSkillAcceptanceReadiness(client:PoolClient,c
   if(digest(knowledgeBytes)!==digest({knowledgeReceiptBytesRevalidated:materials.knowledgeReceiptBytesRevalidated,
    knowledgeReceiptAssetCount:materials.knowledgeReceiptAssetCount,knowledgeReceiptDatabaseOnlyCount:materials.knowledgeReceiptDatabaseOnlyCount,
    knowledgeReceiptBytesManifestHash:materials.knowledgeReceiptBytesManifestHash}))throw new Error('Acceptance knowledge receipt sources changed after preparation');
+  const memoryReceipts=await preparation.recheckMemoryReceipts();
+  if(memoryReceipts.memoryReceiptCount!==materials.memoryReceiptCount)throw new Error('Acceptance memory receipt coverage changed after preparation');
   const methodTimes=await revalidateLockedSkillExperienceTimes(client,context.userId,final.artifact);
   return {...policy,prospectiveCaptureSourcesLocked:materials.prospectiveCaptureSourcesLocked,prospectiveJobCount:materials.prospectiveJobCount,knowledgeSourcesLocked:materials.knowledgeSourcesLocked,decisionMemorySourcesLocked:materials.decisionMemorySourcesLocked,timelineSourcesLocked:materials.timelineSourcesLocked,timelineCustomerCount:materials.timelineCustomerCount,mailReadSourcesLocked:materials.mailReadSourcesLocked,mailCount:materials.mailCount,attachmentMetadataLocked:materials.attachmentMetadataLocked,attachmentCount:materials.attachmentCount,taskOriginsLocked:materials.taskOriginsLocked,taskJournalsLocked:materials.taskJournalsLocked,runCount:materials.runCount,materials:materials.materials,materialsHash:materials.materialsHash,sourcePayloadsRevalidated:true as const,
    pinnedMethodSourcesLocked:materials.pinnedMethodSourcesLocked,pinnedMethodPinCount:materials.pinnedMethodPinCount,
@@ -78,6 +83,7 @@ export async function evaluateLockedSkillAcceptanceReadiness(client:PoolClient,c
    ...methodTimes,
    ...attachmentBytes,
    ...knowledgeBytes,
+   ...memoryReceipts,
    pinnedMethodVersionCount:materials.pinnedMethodVersionCount,pinnedMethodExperienceObservationCount:materials.pinnedMethodExperienceObservationCount,
    sourceRevocationsLocked:false as const,collectorProvenanceVerified:false as const,automaticActivation:false as const};
   });

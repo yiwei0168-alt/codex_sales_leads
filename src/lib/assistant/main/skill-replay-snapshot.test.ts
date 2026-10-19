@@ -1,6 +1,7 @@
 import {beforeEach,expect,it,vi} from 'vitest';
 import {digest} from './contracts';
-const mocks=vi.hoisted(()=>({query:vi.fn(),guard:vi.fn(),privateGuard:vi.fn(),sources:vi.fn(),generate:vi.fn(),generateAgent:vi.fn(),close:vi.fn()}));
+const mocks=vi.hoisted(()=>({query:vi.fn(),guard:vi.fn(),memoryGuard:vi.fn(),privateGuard:vi.fn(),sources:vi.fn(),generate:vi.fn(),generateAgent:vi.fn(),close:vi.fn()}));
+vi.mock('./memory-message-guard',()=>({assertCurrentMemoryMessages:mocks.memoryGuard}));
 vi.mock('@/lib/rag/db',()=>({tenantTransaction:async(_u:string,f:(client:unknown)=>unknown)=>f({query:mocks.query})}));
 vi.mock('./skill-source-guard',()=>({skillSourcesCurrent:mocks.sources}));
 vi.mock('./knowledge-message-guard',()=>({assertCurrentKnowledgeMessages:mocks.guard}));
@@ -11,7 +12,7 @@ const id=(n:number)=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
 const context={userId:id(1)},input={skillId:id(2),version:1,runIds:[id(3)]};
 let version:Record<string,unknown>,run:Record<string,unknown>,calls:Array<Record<string,unknown>>;
 beforeEach(()=>{
-  vi.clearAllMocks();mocks.sources.mockResolvedValue(true);mocks.guard.mockResolvedValue(undefined);mocks.privateGuard.mockResolvedValue(undefined);mocks.generate.mockResolvedValue({kind:'answer',text:'Synthetic answer'});
+  vi.clearAllMocks();mocks.sources.mockResolvedValue(true);mocks.guard.mockResolvedValue(undefined);mocks.memoryGuard.mockResolvedValue(undefined);mocks.privateGuard.mockResolvedValue(undefined);mocks.generate.mockResolvedValue({kind:'answer',text:'Synthetic answer'});
   mocks.generateAgent.mockResolvedValue({role:'assistant',content:'Synthetic native answer'});
   const files={'SKILL.md':'Check original evidence.'};
   version={files,content_hash:digest(files),dependencies:[],source:'user',validation:{},scope:'account',owner_id:context.userId};
@@ -43,6 +44,18 @@ it.each([{kind:'document-candidates',documents:[]},{kind:'document-candidates',d
 it('rejects fact receipts without an authoritative chunk binding',async()=>{
  calls[0]={...calls[0],tool_id:'knowledge_facts',output:{status:'success',data:[{id:id(6),typedValue:2,rawValue:'2',unit:'ports'}]}};
  await expect(prepareHistoricalSkillReplay(context,input)).rejects.toThrow();
+});
+it.each(['memory_read','memory_history_search','memory_observation_search'])('admits %s only with a nonempty source envelope and live memory guard',async tool=>{
+ const rows=[{id:id(6),content:'Saved memory'}],data=tool==='memory_read'?rows:tool==='memory_history_search'?{items:rows}:{rows};
+ calls[0]={...calls[0],tool_id:tool,output:{status:'success',data}};
+ expect((await prepareHistoricalSkillReplay(context,input)).suite.cases[0].receipts[0].tool).toBe(tool);
+ expect(mocks.memoryGuard).toHaveBeenCalledWith(context.userId,expect.any(Array));
+ mocks.memoryGuard.mockRejectedValue(new Error('Memory source changed'));
+ await expect(prepareHistoricalSkillReplay(context,input)).rejects.toThrow('Memory source changed');
+});
+it.each(['memory_read','memory_history_search','memory_observation_search'])('rejects empty %s evidence before memory access',async tool=>{
+ calls[0]={...calls[0],tool_id:tool,output:{status:'success',data:tool==='memory_read'?[]:tool==='memory_history_search'?{items:[]}:{rows:[]}}};
+ await expect(prepareHistoricalSkillReplay(context,input)).rejects.toThrow();expect(mocks.memoryGuard).not.toHaveBeenCalled();
 });
 it.each(['effect','version','hash','status','unsupported','empty','oversized'] as const)('rejects %s receipt sets',async kind=>{
   if(kind==='effect')calls[0].effect='send';if(kind==='version')calls[0].tool_version='2';if(kind==='hash')calls[0].input_hash='wrong';

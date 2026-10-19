@@ -16,9 +16,11 @@ function call(name:string,input:unknown,callId='call'){
   return {role:'assistant',content:null,tool_calls:[{id:callId,type:'function',function:{name,arguments:JSON.stringify(input)}}]};
 }
 const answer={role:'assistant',content:'A: two; B: three.'};
-it.each(['knowledge_originals','knowledge_facts'])('exposes %s only through described exact recorded reads',async tool=>{
+it.each(['knowledge_originals','knowledge_facts','memory_read','memory_history_search','memory_observation_search'])('exposes %s only through described exact recorded reads',async tool=>{
  disableLocalAnalysisTracing();
- const s:SkillReplaySuite=skillReplaySuiteSchema.parse(fixture()),arguments_=tool==='knowledge_originals'?{query:'',assetId:id}:{entity:'Synthetic A',attributes:['ports']};
+ const s:SkillReplaySuite=skillReplaySuiteSchema.parse(fixture());
+ const arguments_=tool==='knowledge_originals'?{query:'',assetId:id}:tool==='knowledge_facts'?{entity:'Synthetic A',attributes:['ports']}:
+  tool==='memory_read'?{}:tool==='memory_history_search'?{query:'past',offset:0,limit:20}:{query:'past'};
  const receipt={tool,arguments:arguments_,result:{status:'success',data:{synthetic:true}}};
  s.cases[0].receipts=[{...receipt,sha256:digest(receipt)}];let steps=0;
  const out=await runGraphSkillReplay(s,async()=>{

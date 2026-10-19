@@ -1,0 +1,56 @@
+{
+  "stage": "MA24 G03 G07 G08 G09 consumed memory receipt final revalidation",
+  "date": "2026-10-19",
+  "sourceBaseCommit": "3f511d382025fc5f977deb23363f59eb81ac41d8",
+  "checks": {
+    "focusedVitest": "130 passed across seven test files; overlapping earlier stage regressions",
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "diffCheck": "passed",
+    "freshClusterMemorySourceLocks": "passed",
+    "fixedSnapshotFiveCategoryComposition": "pending"
+  },
+  "implementation": {
+    "receiptTools": [
+      "memory_read",
+      "memory_history_search",
+      "memory_observation_search"
+    ],
+    "onlyAuthenticatedHistoricalAndProspectiveConsumedReceipts": true,
+    "checksAfterMaterialAndAfterPolicy": true,
+    "databaseClockUsedForOmittedObservationTimes": true,
+    "explicitBusinessAtAndKnownAtPreserved": true,
+    "privateReceiptCallbackNotReturnedByPublicFunctions": true,
+    "historicalEnvelopeAndLiveMemoryGuardAdmission": true,
+    "nativeAndLocalReplayExactRecordedResultsOnly": true,
+    "shadowFingerprintIncludesMemoryGuardDependencies": true,
+    "automaticActivation": false
+  },
+  "database": {
+    "command": "node --import tsx scripts/verify-ma24-fresh-pilot-new-cluster.ts --memory-source-locks",
+    "exitCode": 0,
+    "sameTransactionImplicitObservationExpiryRejected": true,
+    "explicitHistoricalTimesPreservedAfterCurrentExpiry": true,
+    "transactionTimestampStillBeforeExpiry": true,
+    "crossAccountRejected": true,
+    "priorMemoryMethodSourceAndKnowledgeByteMatrixPassed": true,
+    "temporaryContainerRemoved": true,
+    "graphServiceCalls": 0,
+    "actualModelCalls": 0,
+    "productionDatabaseModified": false,
+    "scope": "Real PostgreSQL observation queries and helper validation under retained admission. Not a full readiness-flow injected-expiry case."
+  },
+  "compositionFixture": "Adds a real synthetic account preference and an actual memory_read receipt to baseline and exact candidate replay; checks one consumed memory receipt at readiness. Still eight scripted candidate model requests. Fixed-snapshot execution pending.",
+  "limitations": [
+    "Revalidates consumed rows with their original explicit as-of semantics; does not assert equality of an entire historical search result set.",
+    "Time of preparation is not a commit-time validity lease.",
+    "Immutable file storage, production identities, human quality, final activation and deployment remain incomplete or deferred."
+  ],
+  "filesSha256": {
+    "src/lib/assistant/main/skill-memory-receipt-check.ts": "58ca397e2d528672fc7a0d14926959f758b50f45bee62293d408694d11763620",
+    "src/lib/assistant/main/memory-message-guard.ts": "c96db6c8fcbb9e89cb426d8209bf65fd037ece8c498a322235ee341d22228dc1",
+    "src/lib/assistant/main/skill-locked-materials.ts": "62417a1e5deb70354d9617a7c999e6e13cdad131ff1da767d712b142302d33d8",
+    "src/lib/assistant/main/skill-replay-snapshot.ts": "638adb201d3989173a8b2db19c8e16c3f84c525babd99a261bb3865ee45d1c75",
+    "scripts/fixtures/skill-memory-receipt-database.ts": "f571867811277dd24fd2f853c78253b5fb5f97e6eb833723f3c2c02285a17b3a"
+  }
+}

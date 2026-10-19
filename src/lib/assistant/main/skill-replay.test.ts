@@ -20,7 +20,7 @@ it('pairs the same fixtures, captures exact hashes and leaves all quality decisi
   expect(model.mock.calls[0][0].some(m=>m.content.includes('Untrusted Skill'))).toBe(false);
   expect(model.mock.calls[2][0].some(m=>m.content.includes('Untrusted Skill'))).toBe(true);
 });
-it.each(['knowledge_originals','knowledge_facts'])('replays only the exact recorded %s result',async tool=>{
+it.each(['knowledge_originals','knowledge_facts','memory_read','memory_history_search','memory_observation_search'])('replays only the exact recorded %s result',async tool=>{
  const s=suite(),receipt={...s.cases[0].receipts[0],tool};
  s.cases[0].receipts=[{...receipt,sha256:digest({tool:receipt.tool,arguments:receipt.arguments,result:receipt.result})}];
  const out=await runSkillReplay(s,async messages=>messages.at(-1)!.content.includes('recordedToolResult')?

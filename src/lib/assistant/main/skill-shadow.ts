@@ -11,7 +11,7 @@ import {assertSkillShadowLease} from './skill-shadow-lease';
 
 const sha=z.string().regex(/^[a-f0-9]{64}$/);
 export const SHADOW_MODEL_DIGEST='500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41';
-const readTools=z.enum(['knowledge_search','knowledge_facts','knowledge_compare','knowledge_originals','vectorless_read','mail_read','customer_timeline']);
+const readTools=z.enum(['knowledge_search','knowledge_facts','knowledge_compare','knowledge_originals','vectorless_read','memory_read','memory_history_search','memory_observation_search','mail_read','customer_timeline']);
 export const shadowSelectionSchema=z.discriminatedUnion('kind',[
  z.object({kind:z.literal('whole-read-only-task')}).strict(),
  z.object({kind:z.literal('read-only-subtask'),objective:z.string().trim().min(10).max(4000),
@@ -29,6 +29,8 @@ export async function shadowRuntimeHash(){
   'src/lib/assistant/main/skill-graph-replay.ts','src/lib/assistant/main/graph.ts','src/lib/assistant/main/product.ts',
   'src/lib/assistant/main/tools.ts','src/lib/assistant/main/model-request-manifest.ts','src/lib/assistant/main/decision-memory-message.ts','src/lib/assistant/main/initial-task-messages.ts','src/lib/assistant/main/model.ts','src/lib/assistant/main/skill-source-guard.ts',
   'src/lib/assistant/main/private-replay-guard.ts','src/lib/assistant/main/knowledge-message-guard.ts',
+  'src/lib/assistant/main/memory-message-guard.ts','src/lib/assistant/main/memory-context.ts','src/lib/assistant/main/memory.ts',
+  'src/lib/knowledge/memory-graph-search.ts','src/lib/knowledge/memory-conflict-sql.ts',
   'src/lib/mailbox/repository.ts','src/lib/mailbox/customer-timeline.ts','package-lock.json'];
  // Runtime hashes require the local source checkout, not a bundle of the whole
  // workspace (which also contains private originals outside this allowlist).

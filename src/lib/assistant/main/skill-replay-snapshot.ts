@@ -3,6 +3,7 @@ import {tenantTransaction} from '@/lib/rag/db';
 import {digest,toolResultSchema,type ExecutionContext,type ModelMessage} from './contracts';
 import {skillSourcesCurrent,type SourcedSkillVersion} from './skill-source-guard';
 import {assertCurrentKnowledgeMessages} from './knowledge-message-guard';
+import {assertCurrentMemoryMessages} from './memory-message-guard';
 import {assertCurrentPrivateReplayMessages,PRIVATE_REPLAY_TOOLS} from './private-replay-guard';
 import {skillReplaySuiteSchema,runSkillReplay,type ReplayPair} from './skill-replay';
 import {localReplayModel} from './skill-replay-local';
@@ -15,7 +16,8 @@ export const historicalSkillReplayInput=z.object({skillId:z.uuid(),version:z.num
 }).strict().refine(p=>!p.subtasks||(p.subtasks.length===p.runIds.length&&new Set(p.subtasks.map(s=>s.runId)).size===p.runIds.length&&p.subtasks.every(s=>p.runIds.includes(s.runId))),
   {message:'Subtasks must explicitly cover exactly the supplied runs'});
 type SnapshotInput=z.infer<typeof historicalSkillReplayInput>;
-const supported=new Set(['knowledge_search','knowledge_facts','knowledge_compare','knowledge_originals','vectorless_read',...PRIVATE_REPLAY_TOOLS]);
+const supported=new Set(['knowledge_search','knowledge_facts','knowledge_compare','knowledge_originals','vectorless_read',
+ 'memory_read','memory_history_search','memory_observation_search',...PRIVATE_REPLAY_TOOLS]);
 const model={name:'qwen3:8b' as const,digest:'500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41'};
 type Call={id:string;tool_id:string;tool_version:string;effect:string;status:string;input_hash:string;input:Record<string,unknown>;output:unknown};
 
@@ -73,6 +75,10 @@ export async function prepareHistoricalSkillReplay(context:Pick<ExecutionContext
           evidence:z.array(z.object({id:z.uuid(),content:z.string()})),verifiedFacts:z.array(z.object({id:z.uuid(),chunkId:z.uuid()}))})).length(2)})
           .refine(data=>data.entities.some(e=>e.evidence.length||e.verifiedFacts.length)).parse(output.data);
         if(call.tool_id==='vectorless_read')z.object({evidence:z.object({id:z.uuid(),content:z.string(),source_sha256:z.string(),source_location:z.unknown()})}).parse(output.data);
+        const memoryRows=z.array(z.object({id:z.uuid()}).passthrough()).min(1).max(1000);
+        if(call.tool_id==='memory_read')memoryRows.parse(output.data);
+        if(call.tool_id==='memory_history_search')z.object({items:memoryRows}).parse(output.data);
+        if(call.tool_id==='memory_observation_search')z.object({rows:memoryRows}).parse(output.data);
         messages.push({role:'assistant',content:null,tool_calls:[{id:call.id,type:'function',function:{name:'execute_tool',arguments:JSON.stringify({tool:call.tool_id,arguments:call.input})}}]},
           {role:'tool',tool_call_id:call.id,content:JSON.stringify(call.output)});
         const receipt={tool:call.tool_id,arguments:call.input,result:call.output};
@@ -98,6 +104,7 @@ export async function prepareHistoricalSkillReplay(context:Pick<ExecutionContext
   // This guard re-reads current ACL, document/release hashes, raw content and verified-fact state.
   for(const group of snapshot.evidenceGroups){
     await assertCurrentKnowledgeMessages(context.userId,group.messages,group.scope);
+    await assertCurrentMemoryMessages(context.userId,group.messages);
     await assertCurrentPrivateReplayMessages(context.userId,group.messages);
   }
   return {suite:snapshot.suite,bindings:snapshot.bindings,bindingHash:digest(snapshot.bindings),suiteHash:digest(snapshot.suite)};

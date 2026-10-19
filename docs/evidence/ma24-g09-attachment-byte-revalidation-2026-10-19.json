@@ -7,7 +7,7 @@
     "typecheck": "passed",
     "focusedEslint": "passed",
     "diffCheck": "passed",
-    "fixedSnapshotFiveCategoryComposition": "pending"
+    "fixedSnapshotFiveCategoryComposition": "passed at cf147d1a; excludes subsequent knowledge receipt and memory changes"
   },
   "implementation": {
     "assetIdsDerivedFromStoredAcceptanceTasks": true,
@@ -26,7 +26,19 @@
     "Traversal rejection, inaccessible registration, missing stored task and no-attachment task",
     "Preparation order, second byte-check rejection and registration manifest drift"
   ],
-  "databaseFixture": "Five-category fixture now creates a real exclusive synthetic knowledge file and uses its raw-byte SHA-256 and length. It asserts readiness byte counts, rejects same-size tampering under retained database locks, restores and rechecks the file, and unlinks only that generated file in finally. Actual execution pending.",
+  "databaseFixture": "Five-category fixture creates a real exclusive synthetic knowledge file and uses its raw-byte SHA-256 and length. It asserts readiness byte counts, rejects same-size tampering under retained database locks, restores and rechecks the file, and unlinks only that generated file in finally. Passed on the fixed cf147d1a snapshot.",
+  "compositionDatabase": {
+    "command": "node scripts/run-ma24-snapshot-check.mjs --prospective-composition",
+    "commit": "cf147d1a5ce7d808aa9ca0a98ae229aa72891e54",
+    "exitCode": 0,
+    "completeCompositionVerified": true,
+    "attachmentBytesRevalidated": true,
+    "sameSizeTamperingUnderRetainedLocksRejected": true,
+    "temporaryContainerRemoved": true,
+    "snapshotDirectoryRemoved": true,
+    "actualModelCalls": 0,
+    "scope": "Excludes subsequent ca45488d knowledge receipt and 3f511d38 replay admission changes."
+  },
   "limitations": [
     "Scope is stored task attachments; original assets behind search, facts, originals and vectorless receipts remain separate work.",
     "Before/after checks do not prevent filesystem writes after the check or establish immutable storage.",

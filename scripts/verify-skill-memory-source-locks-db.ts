@@ -14,6 +14,7 @@ import {decisionMemoryMessage,assertRecordedDecisionMemory} from '../src/lib/ass
 import {withCurrentDecisionMemory,MemoryContextChangedError} from '../src/lib/assistant/main/memory-message-guard';
 import {revalidateLockedSkillExperienceTimes} from '../src/lib/assistant/main/skill-experience-time-check';
 import {verifyKnowledgeReceiptByteDatabase} from './fixtures/skill-knowledge-byte-database';
+import {verifyMemoryReceiptDatabase} from './fixtures/skill-memory-receipt-database';
 
 nextEnv.loadEnvConfig(process.cwd());assert.equal(process.env.MA24_DISPOSABLE_MEMORY_SOURCE_LOCKS,'1','Disposable harness required');
 process.env.PGOPTIONS='-c statement_timeout=10000';
@@ -418,6 +419,7 @@ try{
  await assert.rejects(tenantTransaction(owner,client=>lockCurrentSkillExperienceSources(client,owner,version)),/changed after locking/);
  assert.equal((await pool.query("select to_regclass('public.ma24_evaluation_hard_limit') is null absent")).rows[0].absent,true);
  await verifyKnowledgeReceiptByteDatabase(pool,{owner,other,documentId,assetId,treeId,sha,key:attachmentKey,bytes});
+ await verifyMemoryReceiptDatabase(pool,owner,other);
  console.log(JSON.stringify({memorySourceLocksDatabase:'passed',methodExperienceExpiryAfterPreparationRejected:true,methodExperienceCommonDatabaseClockVerified:true,decisionMemoryFinalPreparationBoundaryRejected:true,pinnedMethodSixWritersBlocked:true,pinnedMethodRevocationAndOriginalChangeRejected:true,pinnedMethodPrivilegesUnchanged:true,correctionInvalidationAndConflictBlocked:true,allWritersResumeAfterRelease:true,
   foreignOwnerAndInvalidIdsRejected:true,knowledgePublicationAndReviewWritesBlocked:true,attachmentReadUnderPrelockedPublisherCompletes:true,decisionMemoryWriteAndPhantomGateVerified:true,otherAccountPrivateMemoryWriteContinues:true,decisionMemoryWallClockRevalidated:true,timelineUpdatesAndPhantomInsertsBlocked:true,mailMetadataUpdatesBlocked:true,attachmentMetadataUpdatesBlocked:true,privateAttachmentForeignOwnerRejected:true,taskOriginsAndHistoryAppendBlocked:true,taskAndJournalUpdateAndAppendBlocked:true,foreignTaskJournalLockRejected:true,noObservationUpdateGrant:true,originUpdatesBlocked:true,changedOriginalMessageRejected:true,storedProvenanceLockThenRecheck:true,invalidatedProvenanceRejectedAfterLock:true,expiryAfterTransactionStartRejected:true,
   deferredEvaluationMigrationsApplied:false,actualModelCalls:0,automaticActivation:false}));

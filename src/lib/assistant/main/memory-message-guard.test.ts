@@ -29,6 +29,19 @@ it('rechecks observations at explicit historical times using saved IDs, without 
   await assertCurrentMemoryMessages(id,messages('memory_observation_search',args,{rows:[saved]}));
   expect(m.observations).toHaveBeenCalledWith(id,'Past',args.businessAt,args.knownAt,{marketCode:'DE',companyId:undefined},expect.any(Function));
 });
+it('uses a supplied database clock only for omitted observation times',async()=>{
+ const clock='2026-10-19T01:02:03.000Z';
+ await assertCurrentMemoryMessages(id,messages('memory_observation_search',{query:'preference'},{rows:[row]}),clock);
+ expect(m.observations).toHaveBeenLastCalledWith(id,'preference',clock,clock,{marketCode:undefined,companyId:undefined},expect.any(Function));
+ const businessAt='2020-01-01T00:00:00.000Z';
+ await assertCurrentMemoryMessages(id,messages('memory_observation_search',{query:'preference',businessAt},{rows:[row]}),clock);
+ expect(m.observations).toHaveBeenLastCalledWith(id,'preference',businessAt,clock,expect.any(Object),expect.any(Function));
+});
+it('rejects an invalid trusted clock before source access',async()=>{
+ await expect(assertCurrentMemoryMessages(id,messages('memory_observation_search',{query:'preference'},{rows:[row]}),'not-a-date'))
+  .rejects.toBeInstanceOf(MemoryContextChangedError);
+ expect(m.observations).not.toHaveBeenCalled();
+});
 it('rejects forged content even if its identity is unchanged',async()=>{
   await expect(assertCurrentMemoryMessages(id,messages('memory_read',{},[{...row,content:'Forged'}]))).rejects.toBeInstanceOf(MemoryContextChangedError);
 });

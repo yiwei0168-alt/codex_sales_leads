@@ -10,7 +10,7 @@ import {prepareSkillShadow,prepareShadowRegistration,processNextSkillShadow,shad
 const id=(n:number)=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
 const context={userId:id(1),jobId:id(2),leaseToken:id(3)},files={'SKILL.md':'Read only the saved original.'};
 it('allows explicit original/fact read subtasks but still rejects effects',()=>{
- const selection={kind:'read-only-subtask',objective:'Read only the recorded original and verified fact.',tools:['knowledge_originals','knowledge_facts']};
+ const selection={kind:'read-only-subtask',objective:'Read only the recorded originals, facts and memory.',tools:['knowledge_originals','knowledge_facts','memory_read','memory_history_search','memory_observation_search']};
  expect(shadowSelectionSchema.parse(selection)).toEqual(selection);
  expect(()=>shadowSelectionSchema.parse({...selection,tools:['mail_send']})).toThrow();
 });

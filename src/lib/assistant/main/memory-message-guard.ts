@@ -28,8 +28,11 @@ export async function withCurrentDecisionMemory<T>(userId:string,model:()=>Promi
 }
 
 /** Re-read only deterministic local stores; graph and model services are never called here. */
-export async function assertCurrentMemoryMessages(userId:string,messages:ModelMessage[]){
+export async function assertCurrentMemoryMessages(userId:string,messages:ModelMessage[],validationTime?:string){
   try{
+    // Acceptance callers can supply their database wall clock. Explicit as-of
+    // arguments retain their meaning; this only replaces omitted times.
+    const observationTime=validationTime===undefined?undefined:z.iso.datetime().parse(validationTime);
     const calls=new Map<string,{tool:string;arguments:unknown}>();
     for(const message of messages)if(message.role==='assistant')for(const call of message.tool_calls??[]){
       if(call.function.name!=='execute_tool')continue;
@@ -45,7 +48,7 @@ export async function assertCurrentMemoryMessages(userId:string,messages:ModelMe
       }else if(call.tool==='memory_history_search'){
         saved=output.data?.items;current=(await searchHistoricalMemory(userId,historicalMemoryInput.parse(call.arguments))).items;
       }else{
-        const p=observationSchema.parse(call.arguments),now=new Date().toISOString();
+        const p=observationSchema.parse(call.arguments),now=observationTime??new Date().toISOString();
         saved=output.data?.rows;const ids=rowsSchema.parse(saved).map(r=>r.id);
         current=(await searchMemoryWithGraph(userId,p.query,p.businessAt??now,p.knownAt??now,
           {marketCode:p.marketCode,companyId:p.companyId},async()=>ids)).rows;

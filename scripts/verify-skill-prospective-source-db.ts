@@ -84,6 +84,10 @@ try{
   await pool.query(`insert into knowledge_tree_version(id,document_id,asset_id,source_sha256,extractor_version,artifact_sha256,status)
    values($1,$2,$3,$4,'synthetic',$4,'ready')`,[treeId,documentId,attachmentId,sha]);
   await pool.query('update knowledge_document set current_tree_version_id=$1 where id=$2',[treeId,documentId]);
+  const memoryId=randomUUID();
+  await pool.query(`insert into agent_memory(id,owner_id,scope,kind,memory_key,source_kind)
+   values($1,$2,'account','preference',$1::uuid::text,'explicit')`,[memoryId,owner]);
+  await pool.query("insert into agent_memory_version(memory_id,version,content,scope_snapshot) values($1,1,'Synthetic preference: cite the original source.','{}')",[memoryId]);
  }
  const task={content:'Read the synthetic mailbox message and summarize its single stated preference.',attachments:fullComposition?[{assetId:attachmentId}]:[]},config=modeModelConfig('standard');
  const initial=initialTaskMessages({userId:owner,role:'member',mode:'standard'},task,config,[]);
@@ -116,7 +120,7 @@ try{
  await pool.query(`insert into mailbox_message(id,user_id,connection_id,folder_path,uid_validity,message_uid,direction,content_sha256,content_ciphertext)
   values($1,$2,$3,'INBOX','synthetic',1,'inbound',$4,$5)`,[mail,owner,connection,hash,content]);
  const mailData=await getMailboxMessageForReview(owner,mail);assert(mailData);
- const customerId=randomUUID(),timelineCall=randomUUID(),customerListCall=randomUUID(),originalCall=randomUUID();
+ const customerId=randomUUID(),timelineCall=randomUUID(),customerListCall=randomUUID(),originalCall=randomUUID(),memoryCall=randomUUID();
  let timelineData:Awaited<ReturnType<typeof readCustomerTimeline>>=null;
  let customerListData:Awaited<ReturnType<typeof listMailboxCustomers>>|undefined;
  if(fullComposition){
@@ -136,6 +140,9 @@ try{
  const originalOutput=fullComposition?await knowledgeOriginalsTool.execute({query:'',assetId:attachmentId},
   {userId:owner,runId:run,leaseToken:'synthetic-local-read-only',role:'member',mode:'standard'}):null;
  if(originalOutput)assert.equal(originalOutput.status,'success');
+ const memoryOutput=fullComposition?await productTools.find(tool=>tool.id==='memory_read')!.execute({},
+  {userId:owner,runId:run,leaseToken:'synthetic-local-read-only',role:'member',mode:'standard'}):null;
+ if(memoryOutput){assert.equal(memoryOutput.status,'success');assert.equal((memoryOutput.data as unknown[]).length,1);}
  if(fullMaterial){
   const messages:ModelMessage[]=structuredClone(initialWithMemory),profile=config.profile!,route=profile.routes[0];
   const replies:ModelMessage[]=[{role:'assistant',content:null,tool_calls:[{id:'source-describe-mail',type:'function',function:{name:'describe_tool',arguments:JSON.stringify({tool:'mail_read'})}}]},
@@ -144,10 +151,12 @@ try{
   if(fullComposition){
    replies[0].tool_calls!.push({id:'source-describe-timeline',type:'function',function:{name:'describe_tool',arguments:JSON.stringify({tool:'customer_timeline'})}});
    replies[0].tool_calls!.push({id:'source-describe-original',type:'function',function:{name:'describe_tool',arguments:JSON.stringify({tool:'knowledge_originals'})}});
+   replies[0].tool_calls!.push({id:'source-describe-memory',type:'function',function:{name:'describe_tool',arguments:JSON.stringify({tool:'memory_read'})}});
    replies[1].tool_calls!.push(
     {id:'source-timeline-read',type:'function',function:{name:'execute_tool',arguments:JSON.stringify({tool:'customer_timeline',arguments:{customerId}})}},
     {id:'source-customer-list',type:'function',function:{name:'execute_tool',arguments:JSON.stringify({tool:'customer_timeline',arguments:{}})}},
-    {id:'source-original',type:'function',function:{name:'execute_tool',arguments:JSON.stringify({tool:'knowledge_originals',arguments:{query:'',assetId:attachmentId}})}});
+    {id:'source-original',type:'function',function:{name:'execute_tool',arguments:JSON.stringify({tool:'knowledge_originals',arguments:{query:'',assetId:attachmentId}})}},
+    {id:'source-memory',type:'function',function:{name:'execute_tool',arguments:JSON.stringify({tool:'memory_read',arguments:{}})}});
   }
   for(const [step,message] of replies.entries()){
    const request={profile,index:0,messages:structuredClone(messages)},body={model:route.model,messages:transportMessages(messages),tools:modelFunctions,stream:true,reasoning:{effort:route.effort}};
@@ -156,6 +165,7 @@ try{
    if(step===0)messages.push({role:'tool',tool_call_id:'source-describe-mail',content:JSON.stringify({status:'success',data:describeTool(productTools.find(tool=>tool.id==='mail_read')!)})});
    if(step===0&&fullComposition)messages.push({role:'tool',tool_call_id:'source-describe-timeline',content:JSON.stringify({status:'success',data:describeTool(productTools.find(tool=>tool.id==='customer_timeline')!)})});
    if(step===0&&fullComposition)messages.push({role:'tool',tool_call_id:'source-describe-original',content:JSON.stringify({status:'success',data:describeTool(knowledgeOriginalsTool)})});
+   if(step===0&&fullComposition)messages.push({role:'tool',tool_call_id:'source-describe-memory',content:JSON.stringify({status:'success',data:describeTool(productTools.find(tool=>tool.id==='memory_read')!)})});
    if(step===1){const output=result(mailData,{callId:readCall});await writeCall(readCall,'mail_read','read',{messageId:mail},output,'source-mail-read');
     messages.push({role:'tool',tool_call_id:'source-mail-read',content:JSON.stringify(output)});
     if(fullComposition)for(const [callId,key,args,data] of [[timelineCall,'source-timeline-read',{customerId},timelineData],[customerListCall,'source-customer-list',{},customerListData]] as const){
@@ -165,6 +175,10 @@ try{
     if(originalOutput){const output={...originalOutput,callId:originalCall};
      await writeCall(originalCall,'knowledge_originals','read',{query:'',assetId:attachmentId},output,'source-original');
      messages.push({role:'tool',tool_call_id:'source-original',content:JSON.stringify(output)});
+    }
+    if(memoryOutput){const output={...memoryOutput,callId:memoryCall};
+     await writeCall(memoryCall,'memory_read','read',{},output,'source-memory');
+     messages.push({role:'tool',tool_call_id:'source-memory',content:JSON.stringify(output)});
     }
    }
   }
@@ -194,6 +208,8 @@ try{
      {role:'assistant',content:candidateAnswer};
     if(fullComposition&&(step===4||step===6)&&'tool_calls' in message)message.tool_calls!.push({id:`synthetic-candidate-${step}-original`,type:'function',
      function:{name:step===4?'describe_tool':'execute_tool',arguments:JSON.stringify(step===4?{tool:'knowledge_originals'}:{tool:'knowledge_originals',arguments:{query:'',assetId:attachmentId}})}});
+    if(fullComposition&&(step===4||step===6)&&'tool_calls' in message)message.tool_calls!.push({id:`synthetic-candidate-${step}-memory`,type:'function',
+     function:{name:step===4?'describe_tool':'execute_tool',arguments:JSON.stringify(step===4?{tool:'memory_read'}:{tool:'memory_read',arguments:{}})}});
     const route=request.profile.routes[request.index],body={model:route.model,messages:transportMessages(request.messages),tools:modelFunctions,stream:true,reasoning:{effort:route.effort}};
     return {message,requestManifest:modelRequestManifest(body,{model:route.model,provider:'synthetic',id:`synthetic-candidate-${step}`})};
    }});
@@ -203,7 +219,7 @@ try{
   assert.equal((await collectSkillProspectiveAcceptance({userId:owner},selection,collector)).bundleId,collectedBundle);
   assert.equal((await readSkillAcceptanceReview({userId:owner},collectedBundle)).cases.find(row=>row.id==='shadow')?.materialAvailable,true);
   const material=await readSkillAcceptanceReviewCase({userId:owner},{bundleId:collectedBundle,caseId:'shadow'});
-  assert.equal(material.baseline,baselineAnswer);assert.equal(material.candidate,candidateAnswer);assert.equal(material.receipts.length,fullComposition?4:1);
+  assert.equal(material.baseline,baselineAnswer);assert.equal(material.candidate,candidateAnswer);assert.equal(material.receipts.length,fullComposition?5:1);
   assert.equal(material.automaticActivation,false);assert.equal(requests,actions.length+1);
   await assert.rejects(readSkillAcceptanceReviewCase({userId:other},{bundleId:collectedBundle,caseId:'shadow'}));
   const bundleCount=(await pool.query('select count(*)::int n from agent_skill_acceptance_bundle where owner_id=$1',[owner])).rows[0].n;
