@@ -159,7 +159,7 @@ try {
   assert(verified.output.includes('"copiedProductionData":false'), verified.output);
   if (webImage || modeBusinessCheck || runnerAttestationCheck || lockedPolicyCheck || memorySourceLocksCheck || methodCatalogLocksCheck || shadowSourceLocksCheck || prospectiveSourceCheck || safetySkillUsageCheck || transportJournalCheck || poolRecoveryCheck) {
     const migration = await run(process.execPath,
-      ["scripts/run-tsx.cjs", "scripts/migrate.ts", currentSchemaCheck?"--fresh-pilot-through=154":"--fresh-pilot-through=135"],
+      ["scripts/run-tsx.cjs", "scripts/migrate.ts", currentSchemaCheck?"--fresh-pilot-through=155":"--fresh-pilot-through=135"],
       { ...process.env, DATABASE_URL: appUrl.toString(), DATABASE_MIGRATION_URL: adminUrl.toString() });
     assert.equal(migration.code, 0, migration.output);
     if(currentSchemaCheck){
@@ -171,7 +171,8 @@ try {
           exists(select 1 from pg_constraint where conrelid='public.mailbox_sync_run'::regclass and conname='mailbox_sync_run_worker_binding_check') as mailbox_binding_constraint,
           to_regprocedure('public.lock_skill_knowledge_sources()') is not null as knowledge_source_gate,
           to_regprocedure('public.lock_skill_task_origins(uuid[])') is not null as task_origin_gate,
-          to_regprocedure('public.lock_local_memory_extraction_source(uuid,uuid,text)') is not null as local_memory_source_gate
+          to_regprocedure('public.lock_local_memory_extraction_source(uuid,uuid,text)') is not null as local_memory_source_gate,
+          to_regprocedure('public.lock_local_memory_receipt_source(uuid)') is not null as receipt_source_gate
         `)).rows[0];
         assert(Object.values(currentSchemaMarkers).every(Boolean),'Current Web schema incomplete');
       }finally{await inspect.end();}
@@ -540,6 +541,10 @@ try {
               const binding=await restoredAdmin.query<{present:boolean}>(`select count(*)=2 present from information_schema.columns
                 where table_schema='public' and table_name='mailbox_sync_run' and column_name in ('work_job_id','work_lease_token')`);
               assert.equal(binding.rows[0].present,true,'Restored current mailbox lease binding missing');
+              const sourceLocks=await restoredAdmin.query<{present:boolean}>(`select
+                to_regprocedure('public.lock_local_memory_extraction_source(uuid,uuid,text)') is not null
+                and to_regprocedure('public.lock_local_memory_receipt_source(uuid)') is not null present`);
+              assert.equal(sourceLocks.rows[0].present,true,'Restored memory source locks missing');
             }
             const countSql = `select (select count(*)::int from app_user) users,
               (select count(*)::int from market_workspace) workspaces,
@@ -598,7 +603,7 @@ try {
   }
   console.log(JSON.stringify({ freshClusterPilot: "passed", image: "pgvector/pgvector:pg16",
     publishedAddress: "127.0.0.1 only", rolesVerified: true, duplicateRoleBootstrapRejected: true,
-    freshMigrationThrough: currentSchemaCheck?154:135,currentSchemaMarkers,freshMailboxUiVerified:frontendUiCheck,extendedFrontendUiVerified:extendedUiCheck,
+    freshMigrationThrough: currentSchemaCheck?155:135,currentSchemaMarkers,freshMailboxUiVerified:frontendUiCheck,extendedFrontendUiVerified:extendedUiCheck,
     syntheticAccountCompanyAndRestoreVerified: true, copiedProductionData: false,
     linuxWebImage: webImage ?? null, linuxWebHttpWorkflowVerified: Boolean(webImage),
     linuxWebHttpsBrowserVerified: browserCheck, tenConcurrentSyntheticAccountsVerified: tenUserCheck,

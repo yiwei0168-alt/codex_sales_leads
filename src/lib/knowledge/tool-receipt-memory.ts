@@ -64,6 +64,7 @@ export async function learnToolReceiptMemories(userId:string,runId:string,lease:
         and j.updated_at>clock_timestamp()-interval '5 minutes' and r.status='completed' and r.execution_kind='main-agent'
       for update of j`,[userId,runId,lease]);
     if(!owned.rowCount)return {owned:false,observations:0,limited:false};
+    await client.query('select lock_local_memory_receipt_source($1)',[runId]);
     // Page a completed run's immutable receipts rather than silently dropping later calls.
     let cursorTime:string|null=null,cursorId:string|null=null,observations=0;
     while(true){

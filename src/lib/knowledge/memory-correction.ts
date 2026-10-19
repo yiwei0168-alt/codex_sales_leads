@@ -86,6 +86,7 @@ export async function processMessageMemoryCorrection(userId:string,runId:string,
     if(!source)return {owned:false,handled:false};
     const parsed=proposal?validateNaturalCorrection(source.content,proposal):parseMemoryCorrectionCommand(source.content);
     if(!parsed.recognized)return {owned:true,handled:false};
+    await client.query('select lock_local_memory_extraction_source($1,$2,$3)',[runId,source.message_id,source.content]);
     const key=`message-correction:${source.message_id}`;
     const prior=await client.query('select id from agent_memory_observation where owner_id=$1 and idempotency_key=$2',[userId,key]);
     if(!prior.rows.length){

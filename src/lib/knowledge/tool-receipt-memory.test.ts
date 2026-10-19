@@ -44,10 +44,10 @@ it('writes account-scoped observations with hashes but no copied raw data or inv
 });
 it('continues after the first page and retains the exact database timestamp cursor',async()=>{
   const first=Array.from({length:100},(_,index)=>({...receipt,id:`00000000-0000-4000-8000-${String(index).padStart(12,'0')}`,cursor_created_at:'2026-10-10 01:02:03.123456+00'}));
-  const query=vi.fn().mockResolvedValueOnce({rowCount:1}).mockResolvedValueOnce({rows:first}).mockResolvedValueOnce({rows:[receipt]}).mockResolvedValueOnce({rowCount:1});
+  const query=vi.fn().mockResolvedValueOnce({rowCount:1}).mockResolvedValueOnce({rows:[]}).mockResolvedValueOnce({rows:first}).mockResolvedValueOnce({rows:[receipt]}).mockResolvedValueOnce({rowCount:1});
   mock.transaction.mockImplementation(async(_u,run)=>run({query}));
   expect(await learnToolReceiptMemories('owner','run','lease')).toMatchObject({observations:101,limited:false});
-  expect(query.mock.calls[2][1]).toEqual(['owner','run',first[99].cursor_created_at,first[99].id]);
+  expect(query.mock.calls[3][1]).toEqual(['owner','run',first[99].cursor_created_at,first[99].id]);
   expect(mock.observe).toHaveBeenCalledTimes(101);
 });
 it('throws rather than renewing an expired lease after receipt writes',async()=>{
@@ -58,6 +58,16 @@ it('throws rather than renewing an expired lease after receipt writes',async()=>
  expect(mock.observe).toHaveBeenCalledOnce();
  expect(query.mock.calls[0][0]).toContain('clock_timestamp()');
  expect(query.mock.calls.at(-1)?.[0]).toContain("updated_at>clock_timestamp()-interval '5 minutes'");
+});
+it('does not read receipts or write observations when the locked run source changed',async()=>{
+ const query=vi.fn(async(sql:string)=>{
+  if(sql.includes('lock_local_memory_receipt_source'))throw new Error('source_changed');
+  return {rows:[],rowCount:1};
+ });
+ mock.transaction.mockImplementation(async(_u,run)=>run({query}));
+ await expect(learnToolReceiptMemories('owner','run','lease')).rejects.toThrow('source_changed');
+ expect(query.mock.calls.some(call=>call[0].includes('from agent_tool_call'))).toBe(false);
+ expect(mock.observe).not.toHaveBeenCalled();
 });
 it.each(['status','attribute','evidence','duplicate-fact'])('rejects internally inconsistent comparison: %s',change=>{
   const i={entities:['A','B'],attributes:['ports']};

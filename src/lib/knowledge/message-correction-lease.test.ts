@@ -16,3 +16,13 @@ it.each([0,1])('requires a current lease in the final correction update (rows=%s
  expect(query.mock.calls[0][0]).toContain('clock_timestamp()');
  expect(query.mock.calls.at(-1)?.[0]).toContain("updated_at>clock_timestamp()-interval '5 minutes'");
 });
+it('does not correct or complete a changed instruction source',async()=>{
+ const query=vi.fn(async(sql:string)=>{
+  if(sql.includes('lock_local_memory_extraction_source'))throw new Error('source_changed');
+  return {rows:[{message_id:'message',content:'更正记忆：“旧的偏好”改为“新的偏好”。',created_at:'2026-10-19'}],rowCount:1};
+ });
+ m.transaction.mockImplementation(async(_u,run)=>run({query}));
+ await expect(processMessageMemoryCorrection('owner','run','lease')).rejects.toThrow('source_changed');
+ expect(m.observe).not.toHaveBeenCalled();
+ expect(query.mock.calls.some(call=>call[0].startsWith('update agent_memory_extraction_job'))).toBe(false);
+});

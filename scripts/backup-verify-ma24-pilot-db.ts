@@ -68,6 +68,8 @@ const snapshotSql = `select
   (select md5(coalesce(string_agg(id::text || ':' || email, ',' order by id),'')) from app_user) "accountDigest",
   to_regclass('public.agent_skill_acceptance_freeze') is not null "stage135Present",
   to_regclass('public.ma24_evaluation_hard_limit') is null "laterStageAbsent",
+  to_regprocedure('public.lock_local_memory_extraction_source(uuid,uuid,text)') is not null "localMemorySourceLockPresent",
+  to_regprocedure('public.lock_local_memory_receipt_source(uuid)') is not null "receiptSourceLockPresent",
   (select count(*)=2 from information_schema.columns where table_schema='public' and table_name='mailbox_sync_run'
     and column_name in ('work_job_id','work_lease_token')) "mailboxWorkerBinding",
   (select md5(coalesce(string_agg(md5(to_jsonb(t)::text),'' order by md5(to_jsonb(t)::text)),'')) from mailbox_connection t) "mailboxConnectionsDigest",

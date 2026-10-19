@@ -1,0 +1,36 @@
+{
+  "stage": "MA24 G03 correction instruction and learned receipt source locks",
+  "date": "2026-10-19",
+  "baseCommit": "b314e444",
+  "migration": 155,
+  "status": "bounded-source-transactions-passed; full-lineage-and-production-pending",
+  "implementation": [
+    "Recognized correction commands lock and revalidate captured run/message/exact content through the correction transaction using migration 154.",
+    "Receipt learning locks active owner, completed main-agent run and its tool-call rows under source admission using migration 155. Run UPDATE fences FK inserts/moves; receipt SHARE fences edits/deletes.",
+    "Both paths retain extraction-job-first admission order and final fresh lease checks. No source kind, quality grade or activation guard is relaxed.",
+    "Fresh schema and explicit migration option advance to 155; source/restore snapshot records both functions and cross-instance restore checks their presence."
+  ],
+  "checks": {
+    "unitTests": "75 passed across four files",
+    "typecheck": "exit 0",
+    "focusedEslint": "exit 0",
+    "actualSourceMatrix": {"exitCode": 0, "log": "tmp/ma24-memory-secondary-source-2026-10-19.log", "cases": 8},
+    "earlyCases": "Hold owner admission, observe the function waiting, commit instruction edit/account disable/run failure, release admission: source_changed and zero observations/notices.",
+    "lateCases": "Hold actual observation INSERT with an owner-scoped test trigger; observe concurrent instruction/account/run/receipt edit or receipt insertion waiting on the worker backend. Release: memory transaction commits first and source mutation completes afterward.",
+    "fresh155Restore": {"exitCode": 0, "log": "tmp/ma24-fresh-schema155-2026-10-19.log", "bothSourceFunctionsVerifiedAfterRestore": true, "nonemptyMailboxCrossClusterRestoreVerified": true},
+    "regressions": [
+      {"exitCode": 0, "log": "tmp/ma24-correction-after155-2026-10-19.log"},
+      {"exitCode": 0, "log": "tmp/ma24-receipt-after155-2026-10-19.log"},
+      {"exitCode": 0, "log": "tmp/ma24-lease-after155-2026-10-19.log", "cases": 4},
+      {"exitCode": 0, "log": "tmp/ma24-admission-after155-2026-10-19.log", "cases": 5}
+    ],
+    "cleanup": "Synthetic accounts/data, scoped triggers/functions and temporary fresh containers/network/archive directory cleaned. Migration 155 remains only on the isolated replay clone; no business database migration."
+  },
+  "limits": [
+    "Natural correction's older observation-origin messages retain existing attribution/quote checks; complete lineage row protection is not claimed.",
+    "Receipt, correction and ordinary extraction remain separate transactions. Post-commit edits do not automatically retract previously committed observations.",
+    "Clone data and model responses synthetic, zero external model/network calls. Existing development connection warning remains; production roles/TLS/loading are not qualified.",
+    "No complete scheduler/Worker crash/load matrix or all-deadlock proof. Fresh Web smoke uses the older 25f5acd3 image and does not run the new extraction code.",
+    "Latest code has not been rebuilt into the product image or full signed composition. No deployment, real quality approval or automatic activation."
+  ]
+}
