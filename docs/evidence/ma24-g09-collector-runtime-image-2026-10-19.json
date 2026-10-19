@@ -1,0 +1,25 @@
+{
+  "stage": "MA24 G09 fixed collector runtime entrypoint acceptance",
+  "date": "2026-10-19",
+  "sourceCommit": "3f5c1556a446b45227cb68813dec47fa9ac7bd4c",
+  "image": "ma24-skill-collector:3f5c1556",
+  "imageId": "sha256:7f2b13a5e08e78de4d052098e46f9bfc2448bbec1f3da9042d4bb7f869b7f78c",
+  "deploymentHash": "5641715f056b39cf4b4a983389e23e37252de4ce898cb2bdd111dc6c54ff806b",
+  "packageFiles": 34470,
+  "commands": ["node scripts/build-skill-collector-image.mjs", "node scripts/verify-skill-collector-image.mjs ma24-skill-collector:3f5c1556"],
+  "exitCodes": [0, 0],
+  "logs": ["tmp/ma24-collector-runtime-build-2026-10-19.log", "tmp/ma24-collector-runtime-image-2026-10-19.log"],
+  "observed": [
+    "Actual new entrypoint reports runtime boundary, read-only root and empty capabilities before package verification.",
+    "Measured enrollment succeeds; missing/malformed/mismatched deployment hashes reject before runner, while matched enrollment reaches runner job handling.",
+    "Writable root, root user, added CHOWN capability and writable package submount each reject at bootstrap before private job processing.",
+    "NODE_OPTIONS injection and changed runner bytes reject; normal help succeeds.",
+    "All probes use no-network disposable containers; tamper fixture directory and containers are removed."
+  ],
+  "limits": [
+    "The same-image TLS declaration matrix passed separately; see ma24-g09-collector-runtime-declaration-2026-10-19.json. It does not establish full five-category execution inside this image.",
+    "No actual model calls, production keys, provider attestation, source promotion or activation. productionQualified remains false.",
+    "Process-local package/privilege checks do not exclude host/backing-store aliases, malicious operator enrollment or shared-library replacement outside the manifest.",
+    "Full five-category signed composition passed only at earlier dd7daff5 in a local compiled process; it was not executed inside this new image."
+  ]
+}
