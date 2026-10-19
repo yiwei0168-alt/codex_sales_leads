@@ -1,0 +1,77 @@
+{
+  "date": "2026-10-19",
+  "scope": "G09 engineering evidence matrix from separate fresh disposable PostgreSQL clusters",
+  "harness": "node scripts/verify-ma24-fresh-pilot-new-cluster.ts",
+  "runs": {
+    "runnerAttestation": {
+      "flag": "--runner-attestation",
+      "passed": true,
+      "migration": 141,
+      "signedDeclarationBindingAndIdempotency": true,
+      "emptyEvidenceAndTimeDriftRejected": true,
+      "applicationWriteAndCrossAccountDenied": true,
+      "appendOnly": true,
+      "disabledKeyAndRevokedFreezeRejected": true,
+      "lockedLatestReviewSerialization": true,
+      "productionKeysCreated": false
+    },
+    "shadowSourceLocks": {
+      "flag": "--shadow-source-locks",
+      "passed": true,
+      "campaignDisableAndCaptureRewriteWait": true,
+      "leaseExpiryRecheckedInTransaction": true,
+      "crossAccountWrongRunAndInvalidBindingsRejected": true,
+      "activationWiring": false
+    },
+    "memorySourceLocks": {
+      "flag": "--memory-source-locks",
+      "passed": true,
+      "taskJournalAttachmentTimelineMemoryAndKnowledgeWritersSerialized": true,
+      "phantomAndChangedOriginalRejected": true,
+      "sourceProvenanceRecheckedAfterLock": true,
+      "databaseClockExpiryRechecked": true
+    },
+    "lockedPolicy": {
+      "flag": "--locked-policy",
+      "passed": true,
+      "serverIdentityAndDatabaseClockReconstructed": true,
+      "latestReviewRevocationChangesPolicyHash": true,
+      "crossAccountAndFreezeRevocationRejected": true,
+      "fullSourcePayloadReconstruction": false,
+      "humanApprovalCreated": false
+    },
+    "safetySkillUsage": {
+      "flag": "--safety-skill-usage",
+      "passed": true
+    },
+    "prospectiveComposition": {
+      "flag": "--prospective-composition",
+      "passed": true,
+      "prospectiveSourceDatabase": true,
+      "fullPairedMaterial": true,
+      "fiveCategoryComposition": true,
+      "developmentReviewLock": true,
+      "lockedMaterialsSourcePayloadCheck": true,
+      "sourceRevocationRejected": true,
+      "automaticActivation": false
+    },
+    "transportJournal": {
+      "flag": "--transport-journal",
+      "passed": true,
+      "signedRequestClosureAndStoredRecovery": true,
+      "GraphReplayAndChangedSourceRejection": true,
+      "FailureAndStreamSuccessPersisted": true,
+      "CrossAccountTamperKeyAndFreezeRevocationRejected": true,
+      "collectorBuildAndDatabasePreflight": true,
+      "binaryVerified": false,
+      "collectorImageTlsPreflight": false,
+      "networkAndBillingAdaptersSynthetic": true
+    }
+  },
+  "commonLimits": [
+    "Each selected verifier ran on its own fresh cluster because its fixture requires a pristine one-placeholder-account database. An exploratory combined invocation reused synthetic fixture accounts; the later fresh-database check correctly rejected that contaminated clone, and the outer harness removed it. All listed checks were then run independently to clean completion.",
+    "All source data, reviewers, trust keys and model/provider outcomes were synthetic; actual model and external API calls were zero.",
+    "This matrix does not establish a production collector/provider identity, all mutable-source revocation paths, full source-payload reconstruction for locked policy, real human quality, or the final lock-held enable transaction.",
+    "No production database/key was changed and no Skill was enabled. Temporary containers and volumes were removed by each successful harness run."
+  ]
+}
