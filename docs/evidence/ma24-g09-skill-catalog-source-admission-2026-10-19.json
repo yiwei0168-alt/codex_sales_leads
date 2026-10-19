@@ -19,7 +19,7 @@
     "diffCheck": "passed",
     "freshClusterCatalogLocks": "passed",
     "mixedPristineFlagsRejectedBeforeDocker": true,
-    "fixedSnapshotFiveCategoryComposition": "pending"
+    "fixedSnapshotFiveCategoryComposition": "passed"
   },
   "database": {
     "command": "node scripts/verify-ma24-fresh-pilot-new-cluster.ts --method-catalog-locks",
@@ -39,6 +39,21 @@
     "productDatabaseModified": false,
     "actualModelCalls": 0,
     "automaticActivation": false
+  },
+  "compositionDatabase": {
+    "command": "node scripts/run-ma24-snapshot-check.mjs --prospective-composition",
+    "commit": "600c371c9d54ab2dd480fd991c9d467a3bb549b8",
+    "source": "git archive",
+    "exitCode": 0,
+    "prospectiveSourceDatabaseVerified": true,
+    "prospectivePairedMaterialVerified": true,
+    "completeCompositionVerified": true,
+    "catalogAndPinnedSourceLocksAsserted": true,
+    "developmentReviewLockCheck": true,
+    "temporaryContainerRemoved": true,
+    "snapshotDirectoryRemoved": true,
+    "productionAttestation": false,
+    "scope": "Catalog admission at commit 600c371c only; does not include the later d5ca1d76 decision-memory boundary or 23d59ced original-download changes."
   },
   "initialFixtureFailure": "An application-role FOR SHARE assertion on another owner's private row returned zero under the existing RLS update policy. The fixture now calls the authorized migration-151 pinned-method lock function; RLS was not broadened.",
   "limitations": [
