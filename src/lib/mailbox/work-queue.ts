@@ -71,7 +71,11 @@ export async function processMailboxWork(){
         totals.remaining=Math.max(0,page.discovered-page.imported-page.skipped);
         totals.discovered=Math.max(totals.discovered,totals.processed+totals.remaining);
         await tenantQuery(job.user_id,"update mailbox_work_job set result=$4,updated_at=now() where user_id=$1 and id=$2 and lease_token=$3 and status='running'",[...params,JSON.stringify(totals)]);
-        if(page.imported===0){if(page.discovered>0)throw new Error("部分邮件解析失败，保留已导入结果，请检查后重试");break;}
+        if(page.imported===0){
+          if(page.discovered>0&&page.skipped>0)continue; // Concurrent duplicate imports still advance the persisted cursor.
+          if(page.discovered>0)throw new Error("部分邮件解析失败，保留已导入结果，请检查后重试");
+          break;
+        }
       }
       result=totals;
     }

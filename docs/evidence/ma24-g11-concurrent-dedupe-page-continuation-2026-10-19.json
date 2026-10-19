@@ -1,0 +1,20 @@
+{
+  "stage": "MA24 G11 continue mailbox sync after concurrent duplicate-page skips",
+  "date": "2026-10-19",
+  "sourceCommit": "412983a2",
+  "files": {
+    "src/lib/mailbox/work-queue.ts": "63e7aba2359dbb4f4a66f07a4bb56f298455e5e283fd4ebbae43236dc14daa20",
+    "src/lib/mailbox/work-queue.test.ts": "fc779a4ba680d8d5cfa6fd560218b8609d1f7eba00951c689726b891a3951d97"
+  },
+  "checks": {
+    "focusedVitest": "passed",
+    "focusedTests": 6,
+    "typecheck": "passed",
+    "eslint": "passed"
+  },
+  "behavior": "If a page discovers messages but all are skipped as already imported by a concurrent sync, the worker continues with the persisted UID cursor. It still fails closed when messages are discovered but neither imported nor skipped.",
+  "limitations": [
+    "Mocked worker/provider responses only.",
+    "No real mailbox connection or provider failure was exercised."
+  ]
+}
