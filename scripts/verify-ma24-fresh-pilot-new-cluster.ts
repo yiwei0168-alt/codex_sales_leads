@@ -16,6 +16,7 @@ const webImage = webImageArgument?.startsWith("--web-image=")
   ? webImageArgument.slice("--web-image=".length) : undefined;
 const browserCheck = args.includes("--browser");
 const currentSchemaCheck = args.includes('--current-schema');
+const snapshotDownloadCheck=args.includes('--snapshot-download');
 const frontendUiCheck = args.includes('--frontend-ui');
 const extendedUiCheck = args.includes('--extended-ui');
 const tenUserCheck = args.includes("--ten-user");
@@ -57,9 +58,10 @@ assert(!currentSchemaCheck||(webImage&&pristineDatabaseChecks===0&&!modeBusiness
   '--current-schema is for isolated Web acceptance only; G09 fixtures retain their historical schema bootstrap');
 assert(!frontendUiCheck||(webImage&&currentSchemaCheck&&browserCheck),'--frontend-ui requires --web-image, --current-schema and --browser');
 assert(!extendedUiCheck||frontendUiCheck,'--extended-ui requires --frontend-ui');
+assert(!snapshotDownloadCheck||(webImage&&currentSchemaCheck),'--snapshot-download requires --web-image and --current-schema');
 const rollbackImageArgument = args.find(arg => arg.startsWith("--rollback-image="));
 const rollbackImage = rollbackImageArgument?.slice("--rollback-image=".length);
-assert(args.length <= 20 && args.every(arg => ["--extended-ui", "--frontend-ui", "--current-schema", "--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", '--locked-policy', '--memory-source-locks', '--method-catalog-locks', '--shadow-source-locks', '--safety-skill-usage', '--transport-journal', '--pool-recovery', '--web-pool-recovery', "--prospective-source", "--prospective-material", '--prospective-browser', '--prospective-composition', declarationImageArgument,collectorImageArgument,prospectiveHttpArgument, webImageArgument, rollbackImageArgument].includes(arg))
+assert(args.length <= 20 && args.every(arg => ["--snapshot-download", "--extended-ui", "--frontend-ui", "--current-schema", "--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", '--locked-policy', '--memory-source-locks', '--method-catalog-locks', '--shadow-source-locks', '--safety-skill-usage', '--transport-journal', '--pool-recovery', '--web-pool-recovery', "--prospective-source", "--prospective-material", '--prospective-browser', '--prospective-composition', declarationImageArgument,collectorImageArgument,prospectiveHttpArgument, webImageArgument, rollbackImageArgument].includes(arg))
   &&(!declarationImageArgument||(declarationImage&&/^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(declarationImage)))
   &&(!collectorImageArgument||(collectorImage&&/^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(collectorImage)))
   && (!webPoolRecoveryCheck || webImage)
@@ -109,6 +111,7 @@ let webContainerId: string | undefined;
 let restoredContainerId: string | undefined;
 let networkId: string | undefined;
 let currentSchemaMarkers:Record<string,boolean>|null=null;
+let snapshotDownloadResult:unknown=null;
 try {
   if (webImage) {
     const created = await run("docker", ["network", "create", networkName]);
@@ -159,7 +162,7 @@ try {
   assert(verified.output.includes('"copiedProductionData":false'), verified.output);
   if (webImage || modeBusinessCheck || runnerAttestationCheck || lockedPolicyCheck || memorySourceLocksCheck || methodCatalogLocksCheck || shadowSourceLocksCheck || prospectiveSourceCheck || safetySkillUsageCheck || transportJournalCheck || poolRecoveryCheck) {
     const migration = await run(process.execPath,
-      ["scripts/run-tsx.cjs", "scripts/migrate.ts", currentSchemaCheck?"--fresh-pilot-through=155":"--fresh-pilot-through=135"],
+      ["scripts/run-tsx.cjs", "scripts/migrate.ts", currentSchemaCheck?"--fresh-pilot-through=156":"--fresh-pilot-through=135"],
       { ...process.env, DATABASE_URL: appUrl.toString(), DATABASE_MIGRATION_URL: adminUrl.toString() });
     assert.equal(migration.code, 0, migration.output);
     if(currentSchemaCheck){
@@ -172,7 +175,8 @@ try {
           to_regprocedure('public.lock_skill_knowledge_sources()') is not null as knowledge_source_gate,
           to_regprocedure('public.lock_skill_task_origins(uuid[])') is not null as task_origin_gate,
           to_regprocedure('public.lock_local_memory_extraction_source(uuid,uuid,text)') is not null as local_memory_source_gate,
-          to_regprocedure('public.lock_local_memory_receipt_source(uuid)') is not null as receipt_source_gate
+          to_regprocedure('public.lock_local_memory_receipt_source(uuid)') is not null as receipt_source_gate,
+          to_regprocedure('public.capture_immutable_asset_snapshot(uuid,text,bytea)') is not null as immutable_snapshot_capture
         `)).rows[0];
         assert(Object.values(currentSchemaMarkers).every(Boolean),'Current Web schema incomplete');
       }finally{await inspect.end();}
@@ -359,6 +363,12 @@ try {
       return cookie;
     };
     const firstCookie = await login(0), secondCookie = await login(1);
+    if(snapshotDownloadCheck){
+      const admin=new Client({connectionString:adminUrl.toString()});await admin.connect();
+      try{const {verifyMa24SnapshotDownload}=await import('./lib/verify-ma24-snapshot-download');
+        snapshotDownloadResult=await verifyMa24SnapshotDownload({admin,base,ownerCookie:firstCookie,peerCookie:secondCookie,ownerEmail:credentials[0].email,disposableContainerId:containerId!});
+      }finally{await admin.end();}
+    }
     const created = await fetch(`${base}/api/workspaces/current/companies`, { method: "POST",
       headers: { cookie: firstCookie, "content-type": "application/json" },
       body: JSON.stringify({ name: "Synthetic Linux Pilot Company", country: "DE",
@@ -543,19 +553,23 @@ try {
               assert.equal(binding.rows[0].present,true,'Restored current mailbox lease binding missing');
               const sourceLocks=await restoredAdmin.query<{present:boolean}>(`select
                 to_regprocedure('public.lock_local_memory_extraction_source(uuid,uuid,text)') is not null
-                and to_regprocedure('public.lock_local_memory_receipt_source(uuid)') is not null present`);
-              assert.equal(sourceLocks.rows[0].present,true,'Restored memory source locks missing');
+                and to_regprocedure('public.lock_local_memory_receipt_source(uuid)') is not null
+                and to_regprocedure('public.capture_immutable_asset_snapshot(uuid,text,bytea)') is not null present`);
+              assert.equal(sourceLocks.rows[0].present,true,'Restored source locks or immutable snapshot capture missing');
             }
             const countSql = `select (select count(*)::int from app_user) users,
               (select count(*)::int from market_workspace) workspaces,
               (select count(*)::int from workspace_company) companies,
-              (select count(*)::int from knowledge_document) documents`;
+              (select count(*)::int from knowledge_document) documents,
+              ${currentSchemaCheck?`(select count(*)::int from knowledge_asset_immutable_snapshot)`:'0::int'} snapshots,
+              ${currentSchemaCheck?`(select md5(coalesce(string_agg(id::text || ':' || asset_id::text || ':' || source_sha256 || ':' || byte_size::text || ':' || encode(digest(body,'sha256'),'hex'),',' order by id),'')) from knowledge_asset_immutable_snapshot)`:'null::text'} snapshot_digest`;
             const sourceAdmin = new Client({ connectionString: adminUrl.toString() });
             await sourceAdmin.connect();
             try {
-              assert.deepEqual((await restoredAdmin.query(countSql)).rows[0],
-                (await sourceAdmin.query(countSql)).rows[0],
-                "Cross-cluster restored account, workspace, company, or document count differs");
+              const source=(await sourceAdmin.query(countSql)).rows[0];
+              if(snapshotDownloadCheck)assert(source.snapshots>0,'Snapshot restore must use nonempty original bytes');
+              assert.deepEqual((await restoredAdmin.query(countSql)).rows[0],source,
+                "Cross-cluster restored account, document, or snapshot digest differs");
             } finally { await sourceAdmin.end(); }
           } finally { await restoredAdmin.end(); }
           const restoredApp = new Client({ connectionString: restoredAppUrl.toString() });
@@ -603,7 +617,7 @@ try {
   }
   console.log(JSON.stringify({ freshClusterPilot: "passed", image: "pgvector/pgvector:pg16",
     publishedAddress: "127.0.0.1 only", rolesVerified: true, duplicateRoleBootstrapRejected: true,
-    freshMigrationThrough: currentSchemaCheck?155:135,currentSchemaMarkers,freshMailboxUiVerified:frontendUiCheck,extendedFrontendUiVerified:extendedUiCheck,
+    freshMigrationThrough: currentSchemaCheck?156:135,currentSchemaMarkers,snapshotDownloadResult,freshMailboxUiVerified:frontendUiCheck,extendedFrontendUiVerified:extendedUiCheck,
     syntheticAccountCompanyAndRestoreVerified: true, copiedProductionData: false,
     linuxWebImage: webImage ?? null, linuxWebHttpWorkflowVerified: Boolean(webImage),
     linuxWebHttpsBrowserVerified: browserCheck, tenConcurrentSyntheticAccountsVerified: tenUserCheck,

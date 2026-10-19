@@ -70,6 +70,8 @@ const snapshotSql = `select
   to_regclass('public.ma24_evaluation_hard_limit') is null "laterStageAbsent",
   to_regprocedure('public.lock_local_memory_extraction_source(uuid,uuid,text)') is not null "localMemorySourceLockPresent",
   to_regprocedure('public.lock_local_memory_receipt_source(uuid)') is not null "receiptSourceLockPresent",
+  to_regprocedure('public.capture_immutable_asset_snapshot(uuid,text,bytea)') is not null "immutableAssetCapturePresent",
+  ${currentSchema?`(select md5(coalesce(string_agg(id::text || ':' || asset_id::text || ':' || source_sha256 || ':' || byte_size::text || ':' || encode(digest(body,'sha256'),'hex'),',' order by id),'')) from knowledge_asset_immutable_snapshot)`:'null::text'} "immutableAssetSnapshotDigest",
   (select count(*)=2 from information_schema.columns where table_schema='public' and table_name='mailbox_sync_run'
     and column_name in ('work_job_id','work_lease_token')) "mailboxWorkerBinding",
   (select md5(coalesce(string_agg(md5(to_jsonb(t)::text),'' order by md5(to_jsonb(t)::text)),'')) from mailbox_connection t) "mailboxConnectionsDigest",
