@@ -1,0 +1,239 @@
+{
+  "stage": "MA24 G05/G09 actual latest extraction judgment supersession",
+  "date": "2026-10-19",
+  "applicationSourceCommit": "f3d2623e",
+  "verifier": "scripts/verify-binary-publication-race-clone.ts",
+  "verifierSha256": "d1656647f014a89878884c082d7396da36f48229578f5c64c9821e9a82fa8f57",
+  "checks": {
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "diffCheck": "passed",
+    "actualDatabaseRace": {
+      "command": "PowerShell: $env:MA24_PUBLICATION_MUTATION='judgment'; node --require ./scripts/patch-node-user.cjs --import tsx scripts/verify-binary-publication-race-clone.ts",
+      "exitCode": 0,
+      "result": {
+        "binaryPublicationRaceClone": "passed",
+        "cases": [
+          {
+            "visibility": "private",
+            "revision": false,
+            "changed": "judgment",
+            "initialReadCompletedBeforeObservedRowWait": true,
+            "equalSizeMutationAfterWait": false,
+            "reviewReceiptDeletedAfterWait": false,
+            "judgmentSupersededAfterWait": true,
+            "lateHashRejected": false,
+            "lateReviewRejected": true,
+            "lateAccountRejected": false,
+            "lateLeaseExpiryRejected": false,
+            "transactionStartedBeforeLeaseExpiry": false,
+            "allPublicationRowsRolledBack": true,
+            "oldPointerPreserved": false,
+            "retryAfterRestorePassed": true
+          },
+          {
+            "visibility": "private",
+            "revision": true,
+            "changed": "judgment",
+            "initialReadCompletedBeforeObservedRowWait": true,
+            "equalSizeMutationAfterWait": false,
+            "reviewReceiptDeletedAfterWait": false,
+            "judgmentSupersededAfterWait": true,
+            "lateHashRejected": false,
+            "lateReviewRejected": true,
+            "lateAccountRejected": false,
+            "lateLeaseExpiryRejected": false,
+            "transactionStartedBeforeLeaseExpiry": false,
+            "allPublicationRowsRolledBack": true,
+            "oldPointerPreserved": true,
+            "retryAfterRestorePassed": true
+          },
+          {
+            "visibility": "shared",
+            "revision": false,
+            "changed": "judgment",
+            "initialReadCompletedBeforeObservedRowWait": true,
+            "equalSizeMutationAfterWait": false,
+            "reviewReceiptDeletedAfterWait": false,
+            "judgmentSupersededAfterWait": true,
+            "lateHashRejected": false,
+            "lateReviewRejected": true,
+            "lateAccountRejected": false,
+            "lateLeaseExpiryRejected": false,
+            "transactionStartedBeforeLeaseExpiry": false,
+            "allPublicationRowsRolledBack": true,
+            "oldPointerPreserved": false,
+            "retryAfterRestorePassed": true
+          },
+          {
+            "visibility": "shared",
+            "revision": true,
+            "changed": "judgment",
+            "initialReadCompletedBeforeObservedRowWait": true,
+            "equalSizeMutationAfterWait": false,
+            "reviewReceiptDeletedAfterWait": false,
+            "judgmentSupersededAfterWait": true,
+            "lateHashRejected": false,
+            "lateReviewRejected": true,
+            "lateAccountRejected": false,
+            "lateLeaseExpiryRejected": false,
+            "transactionStartedBeforeLeaseExpiry": false,
+            "allPublicationRowsRolledBack": true,
+            "oldPointerPreserved": true,
+            "retryAfterRestorePassed": true
+          }
+        ],
+        "treeCases": [
+          {
+            "visibility": "private",
+            "revision": false,
+            "changed": "original",
+            "observedWaitAfterInitialInspection": true,
+            "transactionStartedBeforeLeaseExpiry": false,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "private",
+            "revision": false,
+            "changed": "artifact",
+            "observedWaitAfterInitialInspection": true,
+            "transactionStartedBeforeLeaseExpiry": false,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "private",
+            "revision": false,
+            "changed": "judgment",
+            "observedWaitAfterInitialInspection": true,
+            "transactionStartedBeforeLeaseExpiry": false,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "private",
+            "revision": true,
+            "changed": "original",
+            "observedWaitAfterInitialInspection": true,
+            "transactionStartedBeforeLeaseExpiry": false,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "private",
+            "revision": true,
+            "changed": "artifact",
+            "observedWaitAfterInitialInspection": true,
+            "transactionStartedBeforeLeaseExpiry": false,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "private",
+            "revision": true,
+            "changed": "judgment",
+            "observedWaitAfterInitialInspection": true,
+            "transactionStartedBeforeLeaseExpiry": false,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "shared",
+            "revision": false,
+            "changed": "original",
+            "observedWaitAfterInitialInspection": true,
+            "transactionStartedBeforeLeaseExpiry": false,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "shared",
+            "revision": false,
+            "changed": "artifact",
+            "observedWaitAfterInitialInspection": true,
+            "transactionStartedBeforeLeaseExpiry": false,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "shared",
+            "revision": false,
+            "changed": "judgment",
+            "observedWaitAfterInitialInspection": true,
+            "transactionStartedBeforeLeaseExpiry": false,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "shared",
+            "revision": true,
+            "changed": "original",
+            "observedWaitAfterInitialInspection": true,
+            "transactionStartedBeforeLeaseExpiry": false,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "shared",
+            "revision": true,
+            "changed": "artifact",
+            "observedWaitAfterInitialInspection": true,
+            "transactionStartedBeforeLeaseExpiry": false,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "shared",
+            "revision": true,
+            "changed": "judgment",
+            "observedWaitAfterInitialInspection": true,
+            "transactionStartedBeforeLeaseExpiry": false,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          }
+        ],
+        "actualModelCalls": 0,
+        "syntheticExtraction": true,
+        "qualityAccepted": false,
+        "productionQualificationGranted": false,
+        "automaticActivation": false
+      },
+      "applicationRoleInsertsNewJudgmentRevision": true,
+      "initialReviewReceiptAndArtifactRemainUnchanged": true,
+      "specificLatestUnresolvedJudgmentErrorRequired": true,
+      "registrationJudgmentCases": 4,
+      "treeJudgmentCases": 4,
+      "treeByteMutationCases": 8,
+      "fixtureAccountsRowsAndFilesCleaned": true,
+      "scope": "Real isolated clone/filesystem. A synthetic decoration judgment revision 1 initially reconstructs the artifact. After observing the publisher wait on a job row, a tenant-bound application transaction appends revision 2 unresolved. The publisher then rejects reconstruction against latest rows. Fixture-only privileged deletion of revision 2 permits retry. NO KEY UPDATE holder blocks publisher FOR UPDATE while allowing the review append foreign-key KEY SHARE."
+    }
+  },
+  "retainedFixtureFailure": {
+    "firstRunExitCode": 1,
+    "reason": "Initial holder FOR UPDATE also blocked new judgment foreign-key KEY SHARE; the main test awaited insertion while retaining the holder.",
+    "recovery": "Canceled only the uniquely marked synthetic review insertion in the isolated clone; test finally released locks and cleaned fixtures. No service or other verifier stopped.",
+    "resolution": "Change only fixture holder to NO KEY UPDATE for judgment races; product job locks remain FOR UPDATE. Retry passes."
+  },
+  "limitations": [
+    "The superseding decision is synthetic and inserted via the application database role, not a human UI approval or independent quality judgment.",
+    "Tree cases start with deliberately cleared candidate pointers; registration revision cases preserve their prior pointer.",
+    "This stage changes the verifier only, not production qualification or automatic activation.",
+    "Full f3d2623e configured signed composition is separately running in session 79790.",
+    "Complete source protection, immutable storage, production provenance and final Skill activation remain unfinished."
+  ],
+  "actualModelCalls": 0,
+  "automaticActivation": false
+}

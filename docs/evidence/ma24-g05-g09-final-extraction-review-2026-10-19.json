@@ -205,7 +205,7 @@
   "limitations": [
     "Reviewer decisions and extraction content are synthetic fixtures, not independent human approval of real documents.",
     "The test uses privileged SQL to withdraw the test receipt; it does not introduce an application delete API or new user approval workflow.",
-    "Actual late latest-judgment supersession is not separately injected here; existing artifact reconstruction checks latest judgment rows.",
+    "The initial run did not inject latest-judgment supersession; a subsequent actual application-role append matrix now covers it, with separate evidence.",
     "Final byte/review checks remain point-in-time checks, not immutable storage or full source revocation coverage through a later commit.",
     "Production qualification, independent business quality and final Skill activation remain unfinished."
   ],
@@ -218,5 +218,6 @@
     "src/lib/knowledge/binary-publication-integrity.test.ts": "5084f2067d4e86b2db7929bff70da0d800f9f01c606d9268f83d90b5bc94dbec",
     "src/lib/knowledge/tree-publication-integrity.test.ts": "7df2c582e3b2acb60b1a53a83927940f62b19bf19438e9da35d9d01c048c6ee6",
     "scripts/verify-binary-publication-race-clone.ts": "a8b481f8e73573f78518c1720b6b463b2b99711b5efa2952e91ffbccb055b4c1"
-  }
+  },
+  "subsequentLatestJudgmentEvidence": "ma24-g05-g09-latest-judgment-race-2026-10-19.json"
 }

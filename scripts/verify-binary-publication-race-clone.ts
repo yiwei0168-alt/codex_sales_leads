@@ -4,7 +4,7 @@ import {mkdir,readFile,writeFile,rm} from 'node:fs/promises';
 import {resolve,sep} from 'node:path';
 import nextEnv from '@next/env';
 import {Pool} from 'pg';
-import {getPool} from '../src/lib/rag/db';
+import {getPool,tenantQuery} from '../src/lib/rag/db';
 import {registerVectorlessUpload} from '../src/lib/knowledge/vectorless-registration';
 import {indexExtractedDocument} from '../src/lib/knowledge/vectorless';
 import {deriveReviewedExtraction} from '../src/lib/knowledge/reviewed-extraction';
@@ -15,8 +15,9 @@ const url=new URL(configured);assert(['localhost','127.0.0.1','::1'].includes(ur
 const state=JSON.parse(await readFile('tmp/ma11-replay-state.json','utf8'));
 assert(/^ma11_replay_[a-f0-9]{12}$/.test(state.database));url.pathname=`/${state.database}`;process.env.DATABASE_URL=url.toString();
 globalThis.fetch=async()=>{throw new Error('External HTTP disabled for synthetic publication race fixture');};
-const mutation=process.env.MA24_PUBLICATION_MUTATION??'original';assert(['original','artifact','review','account','lease','job'].includes(mutation));
-const failureFor=(kind:string)=>kind==='job'?/Upload changed during registration|Revision job changed during registration|Upload changed during tree indexing/:kind==='lease'?/Upload lease expired after publication preparation/:kind==='account'?/Publication account is no longer authorized|Active owned binary revision target required/:kind==='review'?/Invalid extraction review receipt/:/Knowledge asset no longer matches approved hash/;
+const mutation=process.env.MA24_PUBLICATION_MUTATION??'original';assert(['original','artifact','review','account','lease','job','judgment'].includes(mutation));
+const reviewedFixture=['review','judgment'].includes(mutation);
+const failureFor=(kind:string)=>kind==='judgment'?/Unresolved or mismatched review decision/:kind==='job'?/Upload changed during registration|Revision job changed during registration|Upload changed during tree indexing/:kind==='lease'?/Upload lease expired after publication preparation/:kind==='account'?/Publication account is no longer authorized|Active owned binary revision target required/:kind==='review'?/Invalid extraction review receipt/:/Knowledge asset no longer matches approved hash/;
 const pool=new Pool({connectionString:url.toString()}),owners:string[]=[],directories:string[]=[],results:unknown[]=[],treeResults:unknown[]=[];
 const sha=(bytes:Uint8Array)=>createHash('sha256').update(bytes).digest('hex');
 try{
@@ -28,10 +29,10 @@ try{
   const makeJob=async(label:string,target?:{documentId:string;versionId:string})=>{
    const id=randomUUID(),bytes=Buffer.from(`Synthetic ${label} original; not a parsed business source.`),sourceHash=sha(bytes);
    const storageKey=`knowledge/ma24-publication-race-${owner}/${id}.txt`,artifactKey=`knowledge/ma24-publication-race-${owner}/${id}.json`;
-   const originalArtifact=Buffer.from(JSON.stringify({documents:[{sourceSha256:sourceHash,extractorVersion:'synthetic-race-v1',blocks:[{id:'document-1',unitType:'document',unitIndex:1,blockType:'paragraph',quality:'success',text:`Synthetic ${label} evidence`},...(mutation==='review'?[{id:'visual',unitType:'document',unitIndex:1,quality:'pending-ocr'}]:[])]}]}));
+   const originalArtifact=Buffer.from(JSON.stringify({documents:[{sourceSha256:sourceHash,extractorVersion:'synthetic-race-v1',blocks:[{id:'document-1',unitType:'document',unitIndex:1,blockType:'paragraph',quality:'success',text:`Synthetic ${label} evidence`},...(reviewedFixture?[{id:'visual',unitType:'document',unitIndex:1,quality:'pending-ocr'}]:[])]}]}));
    const receiptId=randomUUID(),originalKey=`knowledge/ma24-publication-race-${owner}/${id}.original.json`;
    const judgment={block_id:'visual',revision:1,decision:'decoration',evidence_text:'',source_sha256:sourceHash,extractor_version:'synthetic-race-v1'};
-   const artifact=mutation==='review'?deriveReviewedExtraction(originalArtifact,{receiptId,sourceSha256:sourceHash,artifactSha256:sha(originalArtifact),extractorVersion:'synthetic-race-v1'},[judgment]):originalArtifact;
+   const artifact=reviewedFixture?deriveReviewedExtraction(originalArtifact,{receiptId,sourceSha256:sourceHash,artifactSha256:sha(originalArtifact),extractorVersion:'synthetic-race-v1'},[judgment]):originalArtifact;
    await writeFile(storageKey,bytes);await writeFile(artifactKey,artifact);
    await pool.query(`insert into knowledge_upload_job(id,user_id,collection_slug,status,title,original_filename,storage_key,extraction_artifact_key,mime_type,byte_size,source_sha256,visibility,extractor_version,metrics,revision_target_document_id,revision_base_version_id)
     values($1,$2,'industry','extracted','Synthetic publication race','original.txt',$3,$4,'text/plain',$5,$6,$7,'synthetic-race-v1',$8,$9,$10)`,
@@ -40,13 +41,20 @@ try{
     await pool.query(`insert into knowledge_upload_review_completion(id,owner_id,job_id,source_sha256,original_artifact_key,original_artifact_sha256,reviewed_artifact_key,reviewed_artifact_sha256,extractor_version)
      values($1,$2,$3,$4,$5,$6,$7,$8,'synthetic-race-v1')`,[receiptId,owner,id,sourceHash,originalKey,sha(originalArtifact),artifactKey,sha(artifact)]);
    };
-   if(mutation==='review'){
+   if(reviewedFixture){
     await writeFile(originalKey,originalArtifact);
     await pool.query(`insert into knowledge_upload_extraction_review(owner_id,job_id,source_sha256,artifact_sha256,extractor_version,block_id,revision,decision,evidence_text,note,source_location,reviewer_id)
      values($1,$2,$3,$4,'synthetic-race-v1','visual',1,'decoration','','Synthetic fixture decision only','{}',$1)`,[owner,id,sourceHash,sha(originalArtifact)]);
     await restoreReview();
    }
-   return {id,bytes,storageKey,artifactKey,restoreReview};
+   const supersedeJudgment=async()=>{
+    const rows=await tenantQuery<{revision:number}>(owner,`insert into knowledge_upload_extraction_review(owner_id,job_id,source_sha256,artifact_sha256,extractor_version,block_id,revision,decision,evidence_text,note,source_location,reviewer_id)
+     select owner_id,job_id,source_sha256,artifact_sha256,extractor_version,block_id,2,'unresolved','','Synthetic superseding decision only',source_location,reviewer_id
+     from knowledge_upload_extraction_review where owner_id=$1 and job_id=$2 and block_id='visual' and revision=1 returning revision`,[owner,id],'admin');
+    assert.equal(rows.length,1);assert.equal(rows[0].revision,2);
+   };
+   const restoreJudgment=()=>pool.query("delete from knowledge_upload_extraction_review where owner_id=$1 and job_id=$2 and revision=2",[owner,id]);
+   return {id,bytes,storageKey,artifactKey,restoreReview,supersedeJudgment,restoreJudgment};
   };
   let target:{documentId:string;versionId:string}|undefined;
   if(revision){
@@ -69,7 +77,7 @@ try{
   let pending:Promise<{value?:unknown;error?:unknown}>|undefined;
   try{
    await holder.query('begin');const pid=Number((await holder.query('select pg_backend_pid() pid')).rows[0].pid);
-   await holder.query('select id from knowledge_upload_job where id=$1 and user_id=$2 for update',[job.id,owner]);
+   await holder.query(`select id from knowledge_upload_job where id=$1 and user_id=$2 for ${mutation==='judgment'?'no key update':'update'}`,[job.id,owner]);
    pending=registerVectorlessUpload(owner,job.id,options).then(value=>({value}),error=>({error}));
    let waiting=false;
    for(let attempt=0;attempt<200;attempt++){
@@ -77,7 +85,8 @@ try{
     if(row.n>0){waiting=true;break;}await new Promise(done=>setTimeout(done,25));
    }
    assert(waiting,'Publication did not reach the locked job after initial original inspection');
-   if(mutation==='job')await holder.query("update knowledge_upload_job set title=title||' changed after inspection' where id=$1",[job.id]);
+   if(mutation==='judgment')await job.supersedeJudgment();
+   else if(mutation==='job')await holder.query("update knowledge_upload_job set title=title||' changed after inspection' where id=$1",[job.id]);
    else if(mutation==='lease'){
     await holder.query('select pg_sleep(2.2)');
     const expired=(await pool.query(`select count(*)::int n from pg_stat_activity a join knowledge_upload_job j on j.id=$2
@@ -93,15 +102,16 @@ try{
    assert.deepEqual(saved,{status:'extracted',published_document_id:null,published_asset_id:null});
    await writeFile(changedPath,changedBytes);
    if(mutation==='review')await job.restoreReview();
+   if(mutation==='judgment')await job.restoreJudgment();
    if(mutation==='account')await pool.query("update app_user set status='active',role='admin' where id=$1",[owner]);
    if(mutation==='job')await pool.query("update knowledge_upload_job set title='Synthetic publication race' where id=$1",[job.id]);
    await renewLease(300);assert.equal((await registerVectorlessUpload(owner,job.id,options)).treeStatus,'searchable');
-   results.push({visibility,revision,changed:mutation,initialReadCompletedBeforeObservedRowWait:true,equalSizeMutationAfterWait:['original','artifact'].includes(mutation),reviewReceiptDeletedAfterWait:mutation==='review',lateHashRejected:['original','artifact'].includes(mutation),lateReviewRejected:mutation==='review',lateAccountRejected:mutation==='account',lateLeaseExpiryRejected:mutation==='lease',transactionStartedBeforeLeaseExpiry:mutation==='lease',allPublicationRowsRolledBack:true,oldPointerPreserved:revision,retryAfterRestorePassed:true});
+   results.push({visibility,revision,changed:mutation,initialReadCompletedBeforeObservedRowWait:true,equalSizeMutationAfterWait:['original','artifact'].includes(mutation),reviewReceiptDeletedAfterWait:mutation==='review',judgmentSupersededAfterWait:mutation==='judgment',lateHashRejected:['original','artifact'].includes(mutation),lateReviewRejected:['review','judgment'].includes(mutation),lateAccountRejected:mutation==='account',lateLeaseExpiryRejected:mutation==='lease',transactionStartedBeforeLeaseExpiry:mutation==='lease',allPublicationRowsRolledBack:true,oldPointerPreserved:revision,retryAfterRestorePassed:true});
   }finally{
    await holder.query('rollback');holder.release();if(pending)await pending;await writeFile(changedPath,changedBytes);
    if(mutation==='account')await pool.query("update app_user set status='active',role='admin' where id=$1",[owner]);
   }
-  for(const changed of ['original','artifact',...(mutation==='review'?['review' as const]:[]),...(mutation==='account'?['account' as const]:[]),...(mutation==='lease'?['lease' as const]:[]),...(mutation==='job'?['job' as const]:[])] as const){
+  for(const changed of ['original','artifact',...(mutation==='review'?['review' as const]:[]),...(mutation==='account'?['account' as const]:[]),...(mutation==='lease'?['lease' as const]:[]),...(mutation==='job'?['job' as const]:[]),...(mutation==='judgment'?['judgment' as const]:[])] as const){
    await renewLease(changed==='lease'?2:300);
    const registered=(await pool.query('select published_document_id document_id from knowledge_upload_job where id=$1',[job.id])).rows[0];
    const documentId=registered.document_id;
@@ -114,16 +124,17 @@ try{
    const treeHolder=await pool.connect();let indexing:Promise<{value?:unknown;error?:unknown}>|undefined;
    try{
     await treeHolder.query('begin');const pid=Number((await treeHolder.query('select pg_backend_pid() pid')).rows[0].pid);
-    if(changed==='job')await treeHolder.query('select id from knowledge_upload_job where id=$1 and user_id=$2 for update',[job.id,owner]);
+    if(changed==='job'||changed==='judgment')await treeHolder.query(`select id from knowledge_upload_job where id=$1 and user_id=$2 for ${changed==='judgment'?'no key update':'update'}`,[job.id,owner]);
     else await treeHolder.query('select pg_advisory_xact_lock(hashtextextended($1,0))',[documentId]);
     indexing=indexExtractedDocument(owner,job.id,leaseToken).then(value=>({value}),error=>({error}));
     let waiting=false;
     for(let attempt=0;attempt<200;attempt++){
-     const row=(await pool.query(`select count(*)::int n from pg_stat_activity where $1=any(pg_blocking_pids(pid)) and query like $2`,[pid,changed==='job'?'%knowledge_upload_job%':'%pg_advisory_xact_lock%'])).rows[0];
+     const row=(await pool.query(`select count(*)::int n from pg_stat_activity where $1=any(pg_blocking_pids(pid)) and query like $2`,[pid,changed==='job'||changed==='judgment'?'%knowledge_upload_job%':'%pg_advisory_xact_lock%'])).rows[0];
      if(row.n>0){waiting=true;break;}await new Promise(done=>setTimeout(done,25));
     }
     assert(waiting,'Tree indexing did not reach its advisory wait after source/artifact inspection');
-    if(changed==='job')await treeHolder.query("update knowledge_upload_job set extractor_version='synthetic-race-v2' where id=$1",[job.id]);
+    if(changed==='judgment')await job.supersedeJudgment();
+    else if(changed==='job')await treeHolder.query("update knowledge_upload_job set extractor_version='synthetic-race-v2' where id=$1",[job.id]);
     else if(changed==='lease'){
      await treeHolder.query('select pg_sleep(2.2)');
      const expired=(await pool.query(`select count(*)::int n from pg_stat_activity a join knowledge_upload_job j on j.id=$2
@@ -136,6 +147,7 @@ try{
     assert.deepEqual(await snapshot(),beforeTree,'Rejected indexing committed candidate tree rows');
     assert.equal((await pool.query('select current_tree_version_id from knowledge_document where id=$1',[documentId])).rows[0].current_tree_version_id,null);
     await writeFile(path,bytes);if(changed==='review')await job.restoreReview();
+    if(changed==='judgment')await job.restoreJudgment();
     if(changed==='account')await pool.query("update app_user set status='active',role='admin' where id=$1",[owner]);
     if(changed==='job')await pool.query("update knowledge_upload_job set extractor_version='synthetic-race-v1' where id=$1",[job.id]);
     await renewLease(300);assert.equal((await indexExtractedDocument(owner,job.id,leaseToken)).reused,false);
