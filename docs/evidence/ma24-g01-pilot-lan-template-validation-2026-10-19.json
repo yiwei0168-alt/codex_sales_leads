@@ -34,7 +34,8 @@
   ],
   "revalidationAttempt": {
     "date": "2026-10-19",
-    "result": "blocked",
-    "reason": "Docker Desktop Linux engine named pipe denied access; Compose/Caddy container validation could not be repeated in this session."
+    "composeConfig": "passed",
+    "caddyContainerValidation": "blocked",
+    "reason": "The Docker CLI could parse Compose configuration, but Docker Desktop denied access to npipe:////./pipe/dockerDesktopLinuxEngine when starting the Caddy validation container."
   }
 }
