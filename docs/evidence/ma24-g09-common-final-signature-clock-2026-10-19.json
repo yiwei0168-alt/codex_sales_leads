@@ -1,0 +1,50 @@
+{
+  "stage": "MA24 G09 final common DB clock for authenticated signature deadlines",
+  "date": "2026-10-19",
+  "sourceBaseCommit": "87938dc3",
+  "implementation": {
+    "runnerAndTransportDeadlinesDerivedFromFinalSignatureAudits": true,
+    "sameDatabaseInstantChecksPlanMethodsAndSignatureExpiry": true,
+    "expiryBoundaryExclusive": true,
+    "earliestAcceptanceValidBeforeReturned": true,
+    "methodDeadlineMetadataPreserved": true,
+    "publicResultHasTimesOnly": true,
+    "automaticActivation": false
+  },
+  "checks": {
+    "focusedVitest": {
+      "files": 3,
+      "passed": 55
+    },
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "diffCheck": "passed",
+    "freshClusterMemorySourceLocks": "passed",
+    "fullFiveCategorySnapshotWithThisChange": "not yet run"
+  },
+  "database": {
+    "command": "node --import tsx scripts/verify-ma24-fresh-pilot-new-cluster.ts --memory-source-locks",
+    "exitCode": 0,
+    "bothRunnerDeclarationAndTransportDeadlinesInitiallyAccepted": true,
+    "bothExpiredDeadlinesRejectedAfterPgSleepInSameTransaction": true,
+    "transactionTimestampStillBeforeSignatureExpiry": true,
+    "methodSourcesStillValidAfterSignatureExpiry": true,
+    "acceptanceAndMethodClockIdentical": true,
+    "existingSourceLockAndByteReceiptMatricesPassed": true,
+    "actualModelCalls": 0,
+    "automaticActivation": false,
+    "temporaryContainerRemoved": true,
+    "scope": "Actual PostgreSQL component time boundary using already-authenticated-deadline inputs; it does not mint signatures or inject expiry into a full five-category signature run."
+  },
+  "limitations": [
+    "Preparation time metadata is not an activation grant or a guarantee at a later transaction commit.",
+    "Production binary/provider qualification, real quality, complete source protection and final activation remain unfinished.",
+    "The successful 2142510f signed composition predates this change; it is not evidence of the later common deadline wiring.",
+    "No production migration, keys, deployment or enabled Skill."
+  ],
+  "filesSha256": {
+    "src/lib/assistant/main/skill-experience-time-check.ts": "81e0c972b2cc9f2010b933d1709253a1a36042c823473fe2933a0faa4a07580f",
+    "src/lib/assistant/main/skill-locked-materials.ts": "1dabdf03391a7a60e62463e5652e21bb7270e083c321373b0fb140f961ceaf58",
+    "scripts/verify-skill-memory-source-locks-db.ts": "01fa8537270471bfdf86433b0504a69408f86eadb1a742f0b10d475d21cfd06a"
+  }
+}

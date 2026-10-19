@@ -92,7 +92,9 @@ export async function evaluateLockedSkillAcceptanceReadiness(client:PoolClient,c
     ||declaration.runnerRegistryHash!==finalDeclaration.runnerRegistryHash))throw new Error('Runner declaration changed during acceptance preparation');
   if(finalTransports.transportReceiptsRequired&&finalDeclaration.runnerDeclarationRequired
    &&finalTransports.transportRegistryHash!==finalDeclaration.runnerRegistryHash)throw new Error('Runner and transport trust snapshots differ');
-  const methodTimes=await revalidateLockedSkillExperienceTimes(client,context.userId,final.artifact);
+  const methodTimes=await revalidateLockedSkillExperienceTimes(client,context.userId,final.artifact,{
+   ...(finalDeclaration.runnerDeclarationRequired?{runnerDeclarationValidBefore:finalDeclaration.runnerDeclarationValidBefore}:{}),
+   ...(finalTransports.transportReceiptsRequired?{transportValidBefore:finalTransports.transportValidBefore}:{})});
   return {...policy,prospectiveCaptureSourcesLocked:materials.prospectiveCaptureSourcesLocked,prospectiveJobCount:materials.prospectiveJobCount,knowledgeSourcesLocked:materials.knowledgeSourcesLocked,decisionMemorySourcesLocked:materials.decisionMemorySourcesLocked,timelineSourcesLocked:materials.timelineSourcesLocked,timelineCustomerCount:materials.timelineCustomerCount,mailReadSourcesLocked:materials.mailReadSourcesLocked,mailCount:materials.mailCount,attachmentMetadataLocked:materials.attachmentMetadataLocked,attachmentCount:materials.attachmentCount,taskOriginsLocked:materials.taskOriginsLocked,taskJournalsLocked:materials.taskJournalsLocked,runCount:materials.runCount,materials:materials.materials,materialsHash:materials.materialsHash,sourcePayloadsRevalidated:true as const,
    pinnedMethodSourcesLocked:materials.pinnedMethodSourcesLocked,pinnedMethodPinCount:materials.pinnedMethodPinCount,
    skillCatalogSourcesLocked:materials.skillCatalogSourcesLocked,

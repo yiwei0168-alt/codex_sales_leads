@@ -10,6 +10,7 @@ it('checks the stored target and task pins with a common database clock and retu
  const result=await revalidateLockedSkillExperienceTimes({query} as unknown as PoolClient,owner,artifact);
  expect(query.mock.calls[0][1]).toEqual([owner,[run],skill,1,artifact.plan.expiresAt]);
  expect(result).toEqual({methodExperienceTimesRevalidated:true,methodExperienceTimeCheckedAt:valid.checked_at.toISOString(),
+  acceptanceTimeCheckedAt:valid.checked_at.toISOString(),acceptanceValidBefore:valid.valid_before.toISOString(),
   methodExperienceValidBefore:valid.valid_before.toISOString(),methodExperienceTimeObservationCount:2});
  expect(JSON.stringify(result)).not.toContain(owner);
 });
@@ -23,5 +24,22 @@ it.each([{valid:false},{checked_at:'invalid'},{valid_before:valid.checked_at},{o
 });
 it('rejects a different owner before querying source metadata',async()=>{
  const query=vi.fn();await expect(revalidateLockedSkillExperienceTimes({query} as unknown as PoolClient,skill,artifact)).rejects.toThrow('owner changed');
+ expect(query).not.toHaveBeenCalled();
+});
+it('returns the earliest already-verified signature and method deadline at the same DB instant',async()=>{
+ const query=vi.fn().mockResolvedValue({rows:[valid]});
+ const result=await revalidateLockedSkillExperienceTimes({query} as unknown as PoolClient,owner,artifact,{
+  runnerDeclarationValidBefore:'2026-10-19T01:20:00.000Z',transportValidBefore:'2026-10-19T01:15:00.000Z'});
+ expect(result.acceptanceValidBefore).toBe('2026-10-19T01:15:00.000Z');
+ expect(result.methodExperienceValidBefore).toBe(valid.valid_before.toISOString());
+ expect(result.acceptanceTimeCheckedAt).toBe(result.methodExperienceTimeCheckedAt);
+});
+it.each(['runnerDeclarationValidBefore','transportValidBefore'] as const)('rejects %s expiry while method sources are still valid',async field=>{
+ const query=vi.fn().mockResolvedValue({rows:[valid]});
+ await expect(revalidateLockedSkillExperienceTimes({query} as unknown as PoolClient,owner,artifact,{[field]:valid.checked_at.toISOString()})).rejects.toThrow('signed evidence expired');
+});
+it('rejects malformed signed deadlines before any DB read',async()=>{
+ const query=vi.fn();
+ await expect(revalidateLockedSkillExperienceTimes({query} as unknown as PoolClient,owner,artifact,{transportValidBefore:'invalid'})).rejects.toThrow();
  expect(query).not.toHaveBeenCalled();
 });

@@ -152,7 +152,7 @@ it('rejects a consumed observation expiring during preparation',async()=>{
  await expect(evaluateLockedSkillAcceptanceReadiness(client,context,bundleId)).rejects.toThrow('Memory context validation failed');
  expect(m.times).not.toHaveBeenCalled();
 });
-const declaration={runnerDeclarationRequired:true,runnerDeclarationRevalidated:true,runnerDeclarationId:'declaration',runnerStatementHash:'statement',runnerRegistryHash:'registry',runnerDeclarationCheckedAt:'2026-10-19T01:00:00.000Z'};
+const declaration={runnerDeclarationRequired:true,runnerDeclarationRevalidated:true,runnerDeclarationId:'declaration',runnerStatementHash:'statement',runnerRegistryHash:'registry',runnerDeclarationCheckedAt:'2026-10-19T01:00:00.000Z',runnerDeclarationValidBefore:'2026-10-19T01:30:00.000Z'};
 it('rechecks the signed declaration after preparation without qualifying production provenance',async()=>{
  m.runner.mockResolvedValueOnce(declaration).mockResolvedValueOnce({...declaration,runnerDeclarationCheckedAt:'2026-10-19T01:01:00.000Z'});
  const out=await evaluateLockedSkillAcceptanceReadiness(client,context,bundleId);
@@ -170,7 +170,7 @@ it('rejects a declaration expiring or being disabled during preparation',async()
  m.runner.mockResolvedValueOnce(declaration).mockRejectedValueOnce(new Error('Runner attestation time window invalid'));
  await expect(evaluateLockedSkillAcceptanceReadiness(client,context,bundleId)).rejects.toThrow('time window invalid');
 });
-const transports={transportReceiptsRequired:true,transportReceiptsRevalidated:true,transportAuditHash:'audit',transportRegistryHash:'registry'};
+const transports={transportReceiptsRequired:true,transportReceiptsRevalidated:true,transportAuditHash:'audit',transportRegistryHash:'registry',transportValidBefore:'2026-10-19T01:15:00.000Z'};
 it('rechecks transports after policy and before the final declaration without granting activation',async()=>{
  m.transports.mockResolvedValue(transports);m.runner.mockResolvedValue(declaration);
  const out=await evaluateLockedSkillAcceptanceReadiness(client,context,bundleId);
@@ -178,6 +178,8 @@ it('rechecks transports after policy and before the final declaration without gr
  expect(m.transports.mock.invocationCallOrder[0]).toBeLessThan(m.policy.mock.invocationCallOrder[0]);
  expect(m.policy.mock.invocationCallOrder[0]).toBeLessThan(m.transports.mock.invocationCallOrder[1]);
  expect(m.transports.mock.invocationCallOrder[1]).toBeLessThan(m.runner.mock.invocationCallOrder[1]);
+ expect(m.times).toHaveBeenCalledWith(client,context.userId,bundle.artifact,{
+  runnerDeclarationValidBefore:declaration.runnerDeclarationValidBefore,transportValidBefore:transports.transportValidBefore});
 });
 it('rejects a changed final transport audit',async()=>{
  m.transports.mockResolvedValueOnce(transports).mockResolvedValueOnce({...transports,transportAuditHash:'changed'});
@@ -187,4 +189,10 @@ it('rejects a changed final transport audit',async()=>{
 it('rejects mismatched transport and declaration trust snapshots',async()=>{
  m.transports.mockResolvedValue({...transports,transportRegistryHash:'other'});m.runner.mockResolvedValue(declaration);
  await expect(evaluateLockedSkillAcceptanceReadiness(client,context,bundleId)).rejects.toThrow('trust snapshots differ');
+});
+it('does not return readiness if a signature expires after both final signature audits',async()=>{
+ m.transports.mockResolvedValue(transports);m.runner.mockResolvedValue(declaration);
+ m.times.mockRejectedValue(new Error('Acceptance signed evidence expired after preparation'));
+ await expect(evaluateLockedSkillAcceptanceReadiness(client,context,bundleId)).rejects.toThrow('signed evidence expired');
+ expect(m.transports).toHaveBeenCalledTimes(2);expect(m.runner).toHaveBeenCalledTimes(2);
 });

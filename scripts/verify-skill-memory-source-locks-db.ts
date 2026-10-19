@@ -238,6 +238,17 @@ try{
  const timeArtifact={...methodArtifact,plan:{...methodArtifact.plan,pin:{ownerId:owner,skillId:methodId,version:1},expiresAt:new Date(Date.now()+3600000).toISOString()}};
  const timeCheck=()=>tenantTransaction(owner,client=>revalidateLockedSkillExperienceTimes(client,owner,timeArtifact));
  assert.equal((await timeCheck()).methodExperienceTimeObservationCount,2);
+ for(const field of ['runnerDeclarationValidBefore','transportValidBefore'] as const){
+  await tenantTransaction(owner,async client=>{
+   const expires=(await client.query<{until:Date}>("select clock_timestamp()+interval '2 seconds' until")).rows[0].until.toISOString();
+   const first=await revalidateLockedSkillExperienceTimes(client,owner,timeArtifact,{[field]:expires});
+   assert.equal(first.acceptanceValidBefore,expires);assert.equal(first.acceptanceTimeCheckedAt,first.methodExperienceTimeCheckedAt);
+   await client.query('select pg_sleep(2.1)');
+   assert.equal((await client.query('select transaction_timestamp()<$1::timestamptz old_clock',[expires])).rows[0].old_clock,true);
+   await assert.rejects(revalidateLockedSkillExperienceTimes(client,owner,timeArtifact,{[field]:expires}),/signed evidence expired after preparation/);
+   assert.equal((await revalidateLockedSkillExperienceTimes(client,owner,timeArtifact)).methodExperienceTimeObservationCount,2);
+  });
+ }
  await assert.rejects(tenantTransaction(owner,client=>revalidateLockedSkillExperienceTimes(client,owner,
   {...timeArtifact,plan:{...timeArtifact.plan,expiresAt:new Date(Date.now()-1000).toISOString()}})),/time changed after preparation/);
  const timedIds=[randomUUID(),randomUUID()],timedMethod=randomUUID();
@@ -420,7 +431,7 @@ try{
  assert.equal((await pool.query("select to_regclass('public.ma24_evaluation_hard_limit') is null absent")).rows[0].absent,true);
  await verifyKnowledgeReceiptByteDatabase(pool,{owner,other,documentId,assetId,treeId,sha,key:attachmentKey,bytes});
  await verifyMemoryReceiptDatabase(pool,owner,other);
- console.log(JSON.stringify({memorySourceLocksDatabase:'passed',methodExperienceExpiryAfterPreparationRejected:true,methodExperienceCommonDatabaseClockVerified:true,decisionMemoryFinalPreparationBoundaryRejected:true,pinnedMethodSixWritersBlocked:true,pinnedMethodRevocationAndOriginalChangeRejected:true,pinnedMethodPrivilegesUnchanged:true,correctionInvalidationAndConflictBlocked:true,allWritersResumeAfterRelease:true,
+ console.log(JSON.stringify({memorySourceLocksDatabase:'passed',signedTransportAndDeclarationFinalExpiryRejected:true,signedDeadlinesUseSameMethodDatabaseClock:true,methodExperienceExpiryAfterPreparationRejected:true,methodExperienceCommonDatabaseClockVerified:true,decisionMemoryFinalPreparationBoundaryRejected:true,pinnedMethodSixWritersBlocked:true,pinnedMethodRevocationAndOriginalChangeRejected:true,pinnedMethodPrivilegesUnchanged:true,correctionInvalidationAndConflictBlocked:true,allWritersResumeAfterRelease:true,
   foreignOwnerAndInvalidIdsRejected:true,knowledgePublicationAndReviewWritesBlocked:true,attachmentReadUnderPrelockedPublisherCompletes:true,decisionMemoryWriteAndPhantomGateVerified:true,otherAccountPrivateMemoryWriteContinues:true,decisionMemoryWallClockRevalidated:true,timelineUpdatesAndPhantomInsertsBlocked:true,mailMetadataUpdatesBlocked:true,attachmentMetadataUpdatesBlocked:true,privateAttachmentForeignOwnerRejected:true,taskOriginsAndHistoryAppendBlocked:true,taskAndJournalUpdateAndAppendBlocked:true,foreignTaskJournalLockRejected:true,noObservationUpdateGrant:true,originUpdatesBlocked:true,changedOriginalMessageRejected:true,storedProvenanceLockThenRecheck:true,invalidatedProvenanceRejectedAfterLock:true,expiryAfterTransactionStartRejected:true,
   deferredEvaluationMigrationsApplied:false,actualModelCalls:0,automaticActivation:false}));
 }finally{try{if(attachmentWritten)await unlink(attachmentKey);}finally{await pool.end();await getPool().end();}}

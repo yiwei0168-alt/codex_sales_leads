@@ -64,3 +64,6 @@ Readiness repeats this audit after policy preparation and compares stable audit 
 
 
 2026-10-19 signed-integration result: exit 1 is preserved. After the explicitly recorded temporary migration-141 setup repair, readiness returned with two original tasks, eight evaluation arms, signed receipt revalidation and matching runner/transport registry hashes. Disabling the enrolled key correctly raised `Task failure trust unavailable`; the fixture expected a different error text. Its assertion now matches that exact existing error. Later assertions were not reached. A fresh corrected-bootstrap rerun is required; this first run is not recorded as passed. Application guards were unchanged. [Evidence](evidence/ma24-g09-locked-transport-receipts-2026-10-19.json).
+
+
+2026-10-19 clean fixed snapshot 2142510f passed the configured signed five-category run: two original tasks, eight evaluation arms, locked transport/declaration audits, all material checks, disabled-key rejection and missing-human-judgment policy blocking. No mid-run repair was performed. The initial failed fixture run remains recorded; real quality, production qualification and activation are false. This snapshot predates the later common final-clock change. [Receipt](evidence/ma24-g09-locked-transport-receipts-2026-10-19.json).

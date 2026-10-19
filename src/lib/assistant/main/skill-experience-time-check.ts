@@ -3,14 +3,18 @@ import {z} from 'zod';
 import {skillAcceptanceRunIds} from './skill-acceptance-run-locks';
 
 type Artifact=Parameters<typeof skillAcceptanceRunIds>[0]&{plan:{pin:{ownerId:string;skillId:string;version:number};expiresAt:string}};
+const signedDeadlinesSchema=z.object({runnerDeclarationValidBefore:z.iso.datetime().optional(),transportValidBefore:z.iso.datetime().optional()}).strict();
 /** Full provenance and source locks must already be established. Recheck every
  * target/pinned method's local-experience clock at one database instant after
- * preparation; the returned time is not a lease or permission to activate. */
-export async function revalidateLockedSkillExperienceTimes(client:PoolClient,userId:string,artifact:Artifact){
+ * preparation, including previously authenticated signature deadlines. The
+ * returned time is not a lease or permission to activate. */
+export async function revalidateLockedSkillExperienceTimes(client:PoolClient,userId:string,artifact:Artifact,signedDeadlines:z.infer<typeof signedDeadlinesSchema>={}){
  z.uuid().parse(userId);
  const pin=z.object({ownerId:z.uuid(),skillId:z.uuid(),version:z.number().int().positive()}).passthrough().parse(artifact.plan.pin);
  if(pin.ownerId!==userId)throw new Error('Acceptance experience time owner changed');
  const expiresAt=z.iso.datetime().parse(artifact.plan.expiresAt),runs=skillAcceptanceRunIds(artifact);
+ const deadlines=signedDeadlinesSchema.parse(signedDeadlines);
+ const signedUntil=Math.min(Date.parse(expiresAt),...Object.values(deadlines).filter((value):value is string=>typeof value==='string').map(Date.parse));
  const row=(await client.query<{checked_at:Date;valid:boolean;observation_count:number;valid_before:Date}>(`
   with checked as materialized(select clock_timestamp() checked_at), target as (
    select v.skill_id,v.version,v.source,v.validation from agent_skill_version v join agent_skill s on s.id=v.skill_id
@@ -42,6 +46,10 @@ export async function revalidateLockedSkillExperienceTimes(client:PoolClient,use
   ||!(row.valid_before instanceof Date)||!Number.isFinite(row.valid_before.getTime())||row.valid_before.getTime()<=row.checked_at.getTime()
   ||!Number.isSafeInteger(row.observation_count)||row.observation_count<0)
   throw new Error('Acceptance method experience time changed after preparation');
+ // The last declaration/source read can outlive a previously verified signature.
+ // Use the very same DB instant as the method/plan check, never the app clock.
+ if(row.checked_at.getTime()>=signedUntil)throw new Error('Acceptance signed evidence expired after preparation');
  return {methodExperienceTimesRevalidated:true as const,methodExperienceTimeCheckedAt:row.checked_at.toISOString(),
+  acceptanceTimeCheckedAt:row.checked_at.toISOString(),acceptanceValidBefore:new Date(Math.min(row.valid_before.getTime(),signedUntil)).toISOString(),
   methodExperienceValidBefore:row.valid_before.toISOString(),methodExperienceTimeObservationCount:row.observation_count};
 }

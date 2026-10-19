@@ -18,7 +18,7 @@
       "eightRuntimeModulesByteIdentical": true,
       "sourceScope": "Application files committed as 662874d3; build executed before that commit, with eight runtime modules compared byte-for-byte. No later application-source edits."
     },
-    "configuredSignedFiveCategoryDatabase": "failed at fixture error-text assertion; clean rerun pending",
+    "configuredSignedFiveCategoryDatabase": "passed in corrected clean fixed snapshot 2142510f",
     "diffCheck": "passed",
     "fixedSnapshotSyntheticComposition": {
       "commit": "662874d3e653010de18756d3d8635556311981db",
@@ -39,7 +39,27 @@
     "collectorProvenanceVerified": false,
     "automaticActivation": false
   },
-  "database": {
+  "limitations": [
+    "The clean fixed snapshot 2142510f passed; its earlier exit-1 run and explicit setup repair remain preserved under initialDatabaseRun.",
+    "Signed statements do not qualify deployed binaries/providers or independent quality.",
+    "Time/registry rechecks are preparation points, not an immutable registry lease or final activation commit.",
+    "No production migration, deployment, port opening, or Skill activation; G14-G20 remain deferred.",
+    "The later common final signature deadline check is not in this fixed snapshot and has its own component/database evidence."
+  ],
+  "filesSha256": {
+    "src/lib/assistant/main/skill-locked-transport-receipts.ts": "ecad46df807b3563e2cd314469d1cdb215b1f650326153a0ed153e9358bf07af",
+    "src/lib/assistant/main/skill-locked-materials.ts": "87817f77895846939b31c031e2fa0316fad137ddec64b3f1a18e71faef2c7466",
+    "src/lib/assistant/main/skill-model-transport-journal.ts": "1af354708e1dcdc5b4e3a1b0c8999f2eda6fba9212e52d10bb7f4839f1141375",
+    "src/lib/assistant/main/task-model-transport-journal.ts": "e360b5a05b13037bf76640def0a6fa7e414c548f32d8fdb6d6865d6185d6dac9",
+    "src/lib/assistant/main/skill-model-transport-receipt.ts": "6fe5dbb59aecd9667a208084ed05a3282bb7ef6409234829d1ef5f01ef79bd4d",
+    "src/lib/assistant/main/skill-model-transport-failure-receipt.ts": "29e9f0105c4d3443becf616fb21640ac504d371c65f413f8071ab1c458062b2a",
+    "src/lib/assistant/main/task-model-transport-receipt.ts": "aaefbd7b1acef2881985dcb525b00c02335be7dfb3e924c649ffbfe93fbaea2c",
+    "src/lib/assistant/main/task-model-transport-failure-receipt.ts": "57090418da46592ff55cae5abad12e9d41b5b06c03506d4fc36db8ff962ed4a4",
+    "scripts/fixtures/configured-five-category-db.ts": "6892f6a5b2053210f1ee20d717cae5552729eeba557b4d7e22d4361ebb1ec62d",
+    "scripts/fixtures/task-transport-journal-db.ts": "da52f77952539d633896386b4c1aa63164de6c23527f07fee7b6b0b46d60bb1e"
+  },
+  "implementationCommit": "662874d3",
+  "initialDatabaseRun": {
     "command": "PowerShell: $env:MA24_CONFIGURED_COMBINED='1'; node --import tsx scripts/verify-ma24-fresh-pilot-new-cluster.ts --transport-journal",
     "status": "failed",
     "expectedOriginalTaskCount": 2,
@@ -77,23 +97,30 @@
     "fixtureAssertionRepair": "Use the exact existing Task failure trust unavailable error for the deliberately disabled original-task failed fallback signature. No signature/time/trust guard changed.",
     "temporaryContainerRemoved": true
   },
-  "limitations": [
-    "The first configured signed integration exited 1 on a fixture error-text mismatch after positive transport/declaration assertions; a clean corrected-bootstrap rerun is still required.",
-    "Signed statements do not qualify deployed binaries/providers or independent quality.",
-    "Time/registry rechecks are preparation points, not an immutable registry lease or final activation commit.",
-    "No production migration, deployment, port opening, or Skill activation; G14-G20 remain deferred."
-  ],
-  "filesSha256": {
-    "src/lib/assistant/main/skill-locked-transport-receipts.ts": "ecad46df807b3563e2cd314469d1cdb215b1f650326153a0ed153e9358bf07af",
-    "src/lib/assistant/main/skill-locked-materials.ts": "87817f77895846939b31c031e2fa0316fad137ddec64b3f1a18e71faef2c7466",
-    "src/lib/assistant/main/skill-model-transport-journal.ts": "1af354708e1dcdc5b4e3a1b0c8999f2eda6fba9212e52d10bb7f4839f1141375",
-    "src/lib/assistant/main/task-model-transport-journal.ts": "e360b5a05b13037bf76640def0a6fa7e414c548f32d8fdb6d6865d6185d6dac9",
-    "src/lib/assistant/main/skill-model-transport-receipt.ts": "6fe5dbb59aecd9667a208084ed05a3282bb7ef6409234829d1ef5f01ef79bd4d",
-    "src/lib/assistant/main/skill-model-transport-failure-receipt.ts": "29e9f0105c4d3443becf616fb21640ac504d371c65f413f8071ab1c458062b2a",
-    "src/lib/assistant/main/task-model-transport-receipt.ts": "aaefbd7b1acef2881985dcb525b00c02335be7dfb3e924c649ffbfe93fbaea2c",
-    "src/lib/assistant/main/task-model-transport-failure-receipt.ts": "57090418da46592ff55cae5abad12e9d41b5b06c03506d4fc36db8ff962ed4a4",
-    "scripts/fixtures/configured-five-category-db.ts": "6892f6a5b2053210f1ee20d717cae5552729eeba557b4d7e22d4361ebb1ec62d",
-    "scripts/fixtures/task-transport-journal-db.ts": "da52f77952539d633896386b4c1aa63164de6c23527f07fee7b6b0b46d60bb1e"
-  },
-  "implementationCommit": "662874d3"
+  "database": {
+    "command": "PowerShell: $env:MA24_CONFIGURED_COMBINED='1'; node scripts/run-ma24-snapshot-check.mjs --transport-journal",
+    "commit": "2142510f94a2f4b33edc629c76449136213bdf64",
+    "status": "passed",
+    "exitCode": 0,
+    "configuredSameFreezeFiveCategoriesVerified": true,
+    "lockedTransportReceiptsRevalidated": true,
+    "transportOriginalTaskCount": 2,
+    "transportEvaluationArmCount": 8,
+    "disabledTransportKeyRejected": true,
+    "collectedCases": 5,
+    "combinedArtifactHash": "33377e2f66eaf9a1223f4bbb1e7405c753c23e5be3b2264e90488059b6de4641",
+    "frozenPlanHash": "b93e86fd872a449520559825a7952b27b1a8d7e57cfd6371cacd44eef2e56258",
+    "lockedMaterialsVerified": true,
+    "missingHumanJudgmentBlocksPolicy": true,
+    "realQualityAccepted": false,
+    "productionQualificationGranted": false,
+    "automaticActivation": false,
+    "actualModelCalls": 0,
+    "billingAndNetworkAdaptersSynthetic": true,
+    "binaryVerified": false,
+    "temporaryContainerAndSourceSnapshotRemoved": true,
+    "midRunSetupRepairs": false,
+    "genericCompleteCompositionFlag": false,
+    "genericFlagScope": "The generic flag tracks --prospective-composition, not this separately asserted configured signed composition."
+  }
 }
