@@ -1,0 +1,19 @@
+{
+  "schema": "ma24-g01-current-source-production-build-v1",
+  "date": "2026-10-19",
+  "sourceCommit": "11276bc4",
+  "command": "npm.cmd run build",
+  "result": "passed",
+  "nextjsVersion": "16.3.4",
+  "buildId": "PAKgyAMG8AyMpxcx0pKSd",
+  "typecheck": "passed as part of production build",
+  "checks": {
+    "exitCode": 0,
+    "staticPagesGenerated": 26
+  },
+  "limits": [
+    "Local build only; no service was started and no port was opened.",
+    "This is not a clean deployment archive, target-host image, HTTPS, migration, backup/restore, team-account or production qualification.",
+    "The build used the existing local configuration; no configuration values or secrets are included in this receipt."
+  ]
+}

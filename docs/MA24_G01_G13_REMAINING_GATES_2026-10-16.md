@@ -187,3 +187,5 @@ G05 当前正式 worker 复跑（2026-10-19）：隔离 MA11 回放库的监督�
 G11 并发去重续页补强（2026-10-19）：同步页仅因并发导入而整页跳过时，worker 继续处理后续 UID 页；无导入、无去重且仍发现邮件时仍按解析失败保留任务错误。真实邮箱及 provider 故障恢复仍待验。[工程证据](evidence/ma24-g11-concurrent-dedupe-page-continuation-2026-10-19.json)。
 
 G09 transport-journal current-snapshot rerun (2026-10-19): the transport-journal disposable database check passed from the `7ebc47d7` git archive, including signed request closure, journal persistence/recovery, cross-account isolation, revocation and tamper rejection. The candidate Skill remains disabled and model calls were 0. [Receipt](evidence/ma24-g09-transport-journal-current-snapshot-rerun-2026-10-19.json). This mode does not cover the full five-category source composition; real quality, production identity, binary qualification and final activation remain incomplete.
+
+G01 current-source production build (2026-10-19): `npm.cmd run build` passed on `11276bc4` with Next.js 16.3.4 and generated 26 static pages. [Build receipt](evidence/ma24-g01-current-source-production-build-2026-10-19.json). Local build only; no service started, no port opened, and target-host/HTTPS/backup/team acceptance remains incomplete.
