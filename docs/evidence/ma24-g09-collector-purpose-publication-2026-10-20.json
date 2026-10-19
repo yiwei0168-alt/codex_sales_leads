@@ -1,0 +1,106 @@
+{
+  "stage": "MA24 G09 collector purpose operator publication",
+  "date": "2026-10-20",
+  "orchestrationScope": "working tree after 176616a6",
+  "runs": [
+    {
+      "logPath": "tmp/ma24-collector-model-transport-publication-2026-10-20.log",
+      "logSha256": "e221bb31fd604c7f73af8d5ded2e88024fa18a5438e462a4a9efe623a70a826c",
+      "exitCode": 0,
+      "result": {
+        "runtimePackagePublication": "passed",
+        "purpose": "model-transport",
+        "inspection": {
+          "role": "skill-collector",
+          "imageId": "sha256:552736d03d615396e1de466a6a42c306132ada282efca2f9cd2377c180cb9c74",
+          "sourceCommit": "dddb9bfcc9fd6c6cf5f8b60d85b949e396991ebc",
+          "deploymentHash": "dc855e12fa40b34ff353aa56b2d6e6fa2dd558ba24d3aa3dc9fb3c6908a5f642",
+          "runtimeHash": "87c0a4f05cf1f5372bc8e2aba6721e5909d32d95e232106dc46748b33f61e5e1",
+          "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+          "node": "24.21.0",
+          "platform": "linux",
+          "arch": "x64",
+          "sourceInputs": 958,
+          "files": 34473
+        },
+        "schemas": [
+          157,
+          159
+        ],
+        "disposable": true,
+        "actualOperatorCli": true,
+        "idempotentCliRetry": true,
+        "actualWithdrawalCli": true,
+        "idempotentWithdrawalCli": true,
+        "changedWithdrawalRequestDenied": true,
+        "realReadinessPackageReader": true,
+        "missingSchemaAndRegistrationDenied": true,
+        "retroactiveRegistrationDenied": true,
+        "sourceMismatchDenied": true,
+        "publicKeyRotationDenied": true,
+        "withdrawalWaitedForOuterCommit": true,
+        "queuedPublicationDeniedNewReader": true,
+        "latestWithdrawalAndExpiryDenied": true,
+        "autocommitAndApplicationOperatorDenied": true,
+        "fullSchemaOrFiveCategoryComposition": false,
+        "providerIdentityVerified": false,
+        "productionQualified": false,
+        "automaticActivation": false,
+        "actualModelCalls": 0
+      }
+    },
+    {
+      "logPath": "tmp/ma24-collector-runner-declaration-publication-2026-10-20.log",
+      "logSha256": "34aa62ebca55a53c883c317b1d57195853b7039f40d3a195a61455c7379c6d9f",
+      "exitCode": 0,
+      "result": {
+        "runtimePackagePublication": "passed",
+        "purpose": "runner-declaration",
+        "inspection": {
+          "role": "skill-collector",
+          "imageId": "sha256:552736d03d615396e1de466a6a42c306132ada282efca2f9cd2377c180cb9c74",
+          "sourceCommit": "dddb9bfcc9fd6c6cf5f8b60d85b949e396991ebc",
+          "deploymentHash": "dc855e12fa40b34ff353aa56b2d6e6fa2dd558ba24d3aa3dc9fb3c6908a5f642",
+          "runtimeHash": "87c0a4f05cf1f5372bc8e2aba6721e5909d32d95e232106dc46748b33f61e5e1",
+          "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+          "node": "24.21.0",
+          "platform": "linux",
+          "arch": "x64",
+          "sourceInputs": 958,
+          "files": 34473
+        },
+        "schemas": [
+          157,
+          159
+        ],
+        "disposable": true,
+        "actualOperatorCli": true,
+        "idempotentCliRetry": true,
+        "actualWithdrawalCli": true,
+        "idempotentWithdrawalCli": true,
+        "changedWithdrawalRequestDenied": true,
+        "realReadinessPackageReader": true,
+        "missingSchemaAndRegistrationDenied": true,
+        "retroactiveRegistrationDenied": true,
+        "sourceMismatchDenied": true,
+        "publicKeyRotationDenied": true,
+        "withdrawalWaitedForOuterCommit": true,
+        "queuedPublicationDeniedNewReader": true,
+        "latestWithdrawalAndExpiryDenied": true,
+        "autocommitAndApplicationOperatorDenied": true,
+        "fullSchemaOrFiveCategoryComposition": false,
+        "providerIdentityVerified": false,
+        "productionQualified": false,
+        "automaticActivation": false,
+        "actualModelCalls": 0
+      }
+    }
+  ],
+  "limits": {
+    "independentDisposableDatabases": true,
+    "sameReleaseAsMainRuntime": false,
+    "fullFiveCategoryComposition": false,
+    "productionQualified": false,
+    "actualModelCalls": 0
+  }
+}
