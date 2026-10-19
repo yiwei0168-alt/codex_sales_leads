@@ -9,6 +9,7 @@ import {assertNoSpreadsheetCachedErrors} from "./extracted-tree";
 import {registerBinaryRevision,type BinaryRevisionJob} from './binary-revision';
 import {assertCurrentKnowledgePublisher} from './publication-authorization';
 import {assertCurrentUploadLease} from './publication-lease';
+import {publicationJobColumns,samePublicationJobBinding} from './publication-job';
 
 const sha=(value:Uint8Array|string)=>createHash("sha256").update(value).digest("hex");
 type Job=BinaryRevisionJob;
@@ -18,8 +19,7 @@ type Block={id:string;unitType:"page"|"slide"|"sheet"|"document";unitIndex:numbe
 export async function registerVectorlessUpload(userId:string,jobId:string,options:{language:string;authorityLevel:1|2|3|4|5;expectedSourceSha256?:string;leaseToken?:string}){
   const [actor]=await tenantQuery<{role:string}>(userId,"select role from app_user where id=$1 and status='active'",[userId]);
   if(actor?.role!=="admin"&&actor?.role!=="member")throw new Error("Active account required");
-  const [job]=await tenantQuery<Job>(userId,`select id,status,visibility,collection_slug,title,source_url,entity_key,storage_key,extraction_artifact_key,
-    source_sha256,extractor_version,mime_type,byte_size::text,metrics,published_document_id,published_asset_id,revision_target_document_id,revision_base_version_id
+  const [job]=await tenantQuery<Job>(userId,`select ${publicationJobColumns}
     from knowledge_upload_job where id=$1 and user_id=$2`,[jobId,userId]);
   if(!job||!job.extraction_artifact_key||!job.extractor_version||!['extracted','registered'].includes(job.status))throw new Error("Completed owned extraction required");
   if(options.expectedSourceSha256&&options.expectedSourceSha256!==job.source_sha256)throw new Error("Observed source hash changed");
@@ -45,13 +45,10 @@ export async function registerVectorlessUpload(userId:string,jobId:string,option
       const lease=await client.query("select id from knowledge_upload_job where id=$1 and user_id=$2 and lease_token=$3 and lease_until>clock_timestamp() for update",[jobId,userId,options.leaseToken]);
       if(!lease.rows[0])throw new Error("Upload lease expired or changed");
     }
-    const selected=await client.query<Job>(`select id,status,visibility,storage_key,byte_size::text,source_sha256,extractor_version,extraction_artifact_key,metrics,published_document_id,published_asset_id
+    const selected=await client.query<Job>(`select ${publicationJobColumns}
       from knowledge_upload_job where id=$1 and user_id=$2 for update`,[jobId,userId]);
     const current=selected.rows[0];
-    if(!current||current.source_sha256!==job.source_sha256||current.visibility!==job.visibility
-      ||current.storage_key!==job.storage_key||current.byte_size!==job.byte_size
-      ||current.extractor_version!==job.extractor_version||current.extraction_artifact_key!==job.extraction_artifact_key
-      ||current.metrics.artifactSha256!==job.metrics.artifactSha256||!['extracted','registered'].includes(current.status))throw new Error("Upload changed during registration");
+    if(!current||!samePublicationJobBinding(current,job)||!['extracted','registered'].includes(current.status))throw new Error("Upload changed during registration");
     if(current.status==="registered"){
       if(!current.published_document_id||!current.published_asset_id)throw new Error("Incomplete prior registration");
       await assertCurrentKnowledgePublisher(client,userId,job.visibility);

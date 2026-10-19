@@ -1,0 +1,266 @@
+{
+  "stage": "MA24 G05/G09 locked publication job snapshot binding",
+  "date": "2026-10-19",
+  "sourceBaseCommit": "68d05b6a",
+  "implementation": {
+    "sharedSelectionAndComparisonForAllPreparedPublicationInputs": true,
+    "fields": [
+      "id",
+      "visibility",
+      "collection_slug",
+      "title",
+      "source_url",
+      "entity_key",
+      "storage_key",
+      "extraction_artifact_key",
+      "source_sha256",
+      "extractor_version",
+      "mime_type",
+      "byte_size",
+      "revision_target_document_id",
+      "revision_base_version_id",
+      "metrics.artifactSha256"
+    ],
+    "newAndRevisionCheckAfterTaskRowLock": true,
+    "treeLocksTaskRowForAllCallersBeforeDocumentAdvisoryLock": true,
+    "treeAlsoChecksRegisteredStatusAndPublicationIds": true,
+    "registrationStillAllowsConcurrentSuccessStatusAndIdAdvancement": true
+  },
+  "checks": {
+    "focusedVitest": {
+      "files": 7,
+      "passed": 60,
+      "newMetadataCases": 3,
+      "scope": "New/revision prepared metadata drift rejected before writes; tree locked extractor drift rejected; existing source/review/authorization/lease regressions."
+    },
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "diffCheck": "passed",
+    "actualDatabaseRace": {
+      "command": "PowerShell: $env:MA24_PUBLICATION_MUTATION='job'; node --require ./scripts/patch-node-user.cjs --import tsx scripts/verify-binary-publication-race-clone.ts",
+      "exitCode": 0,
+      "result": {
+        "binaryPublicationRaceClone": "passed",
+        "cases": [
+          {
+            "visibility": "private",
+            "revision": false,
+            "changed": "job",
+            "initialReadCompletedBeforeObservedRowWait": true,
+            "equalSizeMutationAfterWait": false,
+            "reviewReceiptDeletedAfterWait": false,
+            "lateHashRejected": false,
+            "lateReviewRejected": false,
+            "lateAccountRejected": false,
+            "lateLeaseExpiryRejected": false,
+            "transactionStartedBeforeLeaseExpiry": false,
+            "allPublicationRowsRolledBack": true,
+            "oldPointerPreserved": false,
+            "retryAfterRestorePassed": true
+          },
+          {
+            "visibility": "private",
+            "revision": true,
+            "changed": "job",
+            "initialReadCompletedBeforeObservedRowWait": true,
+            "equalSizeMutationAfterWait": false,
+            "reviewReceiptDeletedAfterWait": false,
+            "lateHashRejected": false,
+            "lateReviewRejected": false,
+            "lateAccountRejected": false,
+            "lateLeaseExpiryRejected": false,
+            "transactionStartedBeforeLeaseExpiry": false,
+            "allPublicationRowsRolledBack": true,
+            "oldPointerPreserved": true,
+            "retryAfterRestorePassed": true
+          },
+          {
+            "visibility": "shared",
+            "revision": false,
+            "changed": "job",
+            "initialReadCompletedBeforeObservedRowWait": true,
+            "equalSizeMutationAfterWait": false,
+            "reviewReceiptDeletedAfterWait": false,
+            "lateHashRejected": false,
+            "lateReviewRejected": false,
+            "lateAccountRejected": false,
+            "lateLeaseExpiryRejected": false,
+            "transactionStartedBeforeLeaseExpiry": false,
+            "allPublicationRowsRolledBack": true,
+            "oldPointerPreserved": false,
+            "retryAfterRestorePassed": true
+          },
+          {
+            "visibility": "shared",
+            "revision": true,
+            "changed": "job",
+            "initialReadCompletedBeforeObservedRowWait": true,
+            "equalSizeMutationAfterWait": false,
+            "reviewReceiptDeletedAfterWait": false,
+            "lateHashRejected": false,
+            "lateReviewRejected": false,
+            "lateAccountRejected": false,
+            "lateLeaseExpiryRejected": false,
+            "transactionStartedBeforeLeaseExpiry": false,
+            "allPublicationRowsRolledBack": true,
+            "oldPointerPreserved": true,
+            "retryAfterRestorePassed": true
+          }
+        ],
+        "treeCases": [
+          {
+            "visibility": "private",
+            "revision": false,
+            "changed": "original",
+            "observedWaitAfterInitialInspection": true,
+            "transactionStartedBeforeLeaseExpiry": false,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "private",
+            "revision": false,
+            "changed": "artifact",
+            "observedWaitAfterInitialInspection": true,
+            "transactionStartedBeforeLeaseExpiry": false,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "private",
+            "revision": false,
+            "changed": "job",
+            "observedWaitAfterInitialInspection": true,
+            "transactionStartedBeforeLeaseExpiry": false,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "private",
+            "revision": true,
+            "changed": "original",
+            "observedWaitAfterInitialInspection": true,
+            "transactionStartedBeforeLeaseExpiry": false,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "private",
+            "revision": true,
+            "changed": "artifact",
+            "observedWaitAfterInitialInspection": true,
+            "transactionStartedBeforeLeaseExpiry": false,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "private",
+            "revision": true,
+            "changed": "job",
+            "observedWaitAfterInitialInspection": true,
+            "transactionStartedBeforeLeaseExpiry": false,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "shared",
+            "revision": false,
+            "changed": "original",
+            "observedWaitAfterInitialInspection": true,
+            "transactionStartedBeforeLeaseExpiry": false,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "shared",
+            "revision": false,
+            "changed": "artifact",
+            "observedWaitAfterInitialInspection": true,
+            "transactionStartedBeforeLeaseExpiry": false,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "shared",
+            "revision": false,
+            "changed": "job",
+            "observedWaitAfterInitialInspection": true,
+            "transactionStartedBeforeLeaseExpiry": false,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "shared",
+            "revision": true,
+            "changed": "original",
+            "observedWaitAfterInitialInspection": true,
+            "transactionStartedBeforeLeaseExpiry": false,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "shared",
+            "revision": true,
+            "changed": "artifact",
+            "observedWaitAfterInitialInspection": true,
+            "transactionStartedBeforeLeaseExpiry": false,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "shared",
+            "revision": true,
+            "changed": "job",
+            "observedWaitAfterInitialInspection": true,
+            "transactionStartedBeforeLeaseExpiry": false,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          }
+        ],
+        "actualModelCalls": 0,
+        "syntheticExtraction": true,
+        "qualityAccepted": false,
+        "productionQualificationGranted": false,
+        "automaticActivation": false
+      },
+      "registrationJobChangeCases": 4,
+      "treeJobChangeCases": 4,
+      "treeByteMutationCases": 8,
+      "temporaryAccountsRowsAndFilesCleaned": true,
+      "scope": "Actual clone/real filesystem. A holder commits changed title after observing registration blocked on its job row, or commits changed extractor version after observing indexing blocked on its job row. Locked current snapshots reject before candidate writes; metadata restoration permits retry. Counts and pointers remain unchanged. The raw result uses generic rollback flags even though job-binding failures occur before candidate writes."
+    },
+    "retainedDevelopmentFailures": [
+      "Initial unit run: the broadened job query mock also returned a row to the final expired-lease query; fixture corrected to distinguish lease checks, no product guard relaxed.",
+      "Initial typecheck: full job type made publication IDs nullable across callback; capture validated non-null IDs before callback and final checks pass."
+    ]
+  },
+  "limitations": [
+    "Actual metadata injection covers title changes for registration and extractor-version changes for indexing; other compared fields are covered by the shared comparison implementation rather than individual actual SQL mutation cases.",
+    "Row locks protect the selected task record through this transaction; they do not make files immutable or protect every external source.",
+    "Synthetic task/source/extraction data do not establish independent real quality or production qualification.",
+    "Earlier build/image source 20c00e73 predates this job-binding change. Complete G09 production/source/final-activation gates remain incomplete."
+  ],
+  "actualModelCalls": 0,
+  "automaticActivation": false,
+  "filesSha256": {
+    "src/lib/knowledge/publication-job.ts": "c45b9454817c44dcdf297cef83459c1f2f860d52b9da913e603ea888169cd082",
+    "src/lib/knowledge/vectorless-registration.ts": "e9954c52f653fb36aa743c9f4a45f2f3573a37c52b8bcc66775d4106ad1c89fd",
+    "src/lib/knowledge/binary-revision.ts": "f91298c39ece982a8c3d962d1277aa4197805fe27b804f4989aafe6b3aecadde",
+    "src/lib/knowledge/vectorless.ts": "1890319611fd4d626b8f75cb7f9a7d6abc7ac2b7f9c5586f6e0ee4132e844058",
+    "src/lib/knowledge/binary-publication-integrity.test.ts": "a17045dfd48a7ccf280cd2444b0f56db27ab35bf3dc8fc6a298b61fbc0726371",
+    "src/lib/knowledge/tree-publication-integrity.test.ts": "e36d5106616990694a58b0b36f58d2016f898699562f6430451c23bdfa0ddcbb",
+    "scripts/verify-binary-publication-race-clone.ts": "b3ebf4b313f74897a41fe5a086586b8fd97550c4c757b8e822d76fddf89a6c4b"
+  }
+}

@@ -15,7 +15,8 @@ const url=new URL(configured);assert(['localhost','127.0.0.1','::1'].includes(ur
 const state=JSON.parse(await readFile('tmp/ma11-replay-state.json','utf8'));
 assert(/^ma11_replay_[a-f0-9]{12}$/.test(state.database));url.pathname=`/${state.database}`;process.env.DATABASE_URL=url.toString();
 globalThis.fetch=async()=>{throw new Error('External HTTP disabled for synthetic publication race fixture');};
-const mutation=process.env.MA24_PUBLICATION_MUTATION??'original';assert(['original','artifact','review','account','lease'].includes(mutation));
+const mutation=process.env.MA24_PUBLICATION_MUTATION??'original';assert(['original','artifact','review','account','lease','job'].includes(mutation));
+const failureFor=(kind:string)=>kind==='job'?/Upload changed during registration|Revision job changed during registration|Upload changed during tree indexing/:kind==='lease'?/Upload lease expired after publication preparation/:kind==='account'?/Publication account is no longer authorized|Active owned binary revision target required/:kind==='review'?/Invalid extraction review receipt/:/Knowledge asset no longer matches approved hash/;
 const pool=new Pool({connectionString:url.toString()}),owners:string[]=[],directories:string[]=[],results:unknown[]=[],treeResults:unknown[]=[];
 const sha=(bytes:Uint8Array)=>createHash('sha256').update(bytes).digest('hex');
 try{
@@ -76,29 +77,31 @@ try{
     if(row.n>0){waiting=true;break;}await new Promise(done=>setTimeout(done,25));
    }
    assert(waiting,'Publication did not reach the locked job after initial original inspection');
-   if(mutation==='lease'){
+   if(mutation==='job')await holder.query("update knowledge_upload_job set title=title||' changed after inspection' where id=$1",[job.id]);
+   else if(mutation==='lease'){
     await holder.query('select pg_sleep(2.2)');
     const expired=(await pool.query(`select count(*)::int n from pg_stat_activity a join knowledge_upload_job j on j.id=$2
      where $1=any(pg_blocking_pids(a.pid)) and a.xact_start<j.lease_until and j.lease_until<=clock_timestamp()`,[pid,job.id])).rows[0];assert.equal(expired.n,1);
    }else if(mutation==='account')await pool.query('update app_user set status=$2,role=$3 where id=$1',[owner,visibility==='private'?'disabled':'active',visibility==='shared'?'member':'admin']);
    else if(mutation==='review')await pool.query('delete from knowledge_upload_review_completion where job_id=$1 and owner_id=$2',[job.id,owner]);
    else await writeFile(changedPath,Buffer.alloc(changedBytes.length,120));
-   await holder.query('rollback');
+   await holder.query(mutation==='job'?'commit':'rollback');
    const outcome=await pending;
-   assert(outcome.error instanceof Error);assert.match(outcome.error.message,mutation==='lease'?/Upload lease expired after publication preparation/:mutation==='account'?/Publication account is no longer authorized|Active owned binary revision target required/:mutation==='review'?/Invalid extraction review receipt/:/Knowledge asset no longer matches approved hash/);
+   assert(outcome.error instanceof Error);assert.match(outcome.error.message,failureFor(mutation));
    assert.deepEqual(await snapshot(),before,'Rejected publication committed document/asset/tree/revision changes');
    const saved=(await pool.query('select status,published_document_id,published_asset_id from knowledge_upload_job where id=$1',[job.id])).rows[0];
    assert.deepEqual(saved,{status:'extracted',published_document_id:null,published_asset_id:null});
    await writeFile(changedPath,changedBytes);
    if(mutation==='review')await job.restoreReview();
    if(mutation==='account')await pool.query("update app_user set status='active',role='admin' where id=$1",[owner]);
+   if(mutation==='job')await pool.query("update knowledge_upload_job set title='Synthetic publication race' where id=$1",[job.id]);
    await renewLease(300);assert.equal((await registerVectorlessUpload(owner,job.id,options)).treeStatus,'searchable');
    results.push({visibility,revision,changed:mutation,initialReadCompletedBeforeObservedRowWait:true,equalSizeMutationAfterWait:['original','artifact'].includes(mutation),reviewReceiptDeletedAfterWait:mutation==='review',lateHashRejected:['original','artifact'].includes(mutation),lateReviewRejected:mutation==='review',lateAccountRejected:mutation==='account',lateLeaseExpiryRejected:mutation==='lease',transactionStartedBeforeLeaseExpiry:mutation==='lease',allPublicationRowsRolledBack:true,oldPointerPreserved:revision,retryAfterRestorePassed:true});
   }finally{
    await holder.query('rollback');holder.release();if(pending)await pending;await writeFile(changedPath,changedBytes);
    if(mutation==='account')await pool.query("update app_user set status='active',role='admin' where id=$1",[owner]);
   }
-  for(const changed of ['original','artifact',...(mutation==='review'?['review' as const]:[]),...(mutation==='account'?['account' as const]:[]),...(mutation==='lease'?['lease' as const]:[])] as const){
+  for(const changed of ['original','artifact',...(mutation==='review'?['review' as const]:[]),...(mutation==='account'?['account' as const]:[]),...(mutation==='lease'?['lease' as const]:[]),...(mutation==='job'?['job' as const]:[])] as const){
    await renewLease(changed==='lease'?2:300);
    const registered=(await pool.query('select published_document_id document_id from knowledge_upload_job where id=$1',[job.id])).rows[0];
    const documentId=registered.document_id;
@@ -111,27 +114,30 @@ try{
    const treeHolder=await pool.connect();let indexing:Promise<{value?:unknown;error?:unknown}>|undefined;
    try{
     await treeHolder.query('begin');const pid=Number((await treeHolder.query('select pg_backend_pid() pid')).rows[0].pid);
-    await treeHolder.query('select pg_advisory_xact_lock(hashtextextended($1,0))',[documentId]);
+    if(changed==='job')await treeHolder.query('select id from knowledge_upload_job where id=$1 and user_id=$2 for update',[job.id,owner]);
+    else await treeHolder.query('select pg_advisory_xact_lock(hashtextextended($1,0))',[documentId]);
     indexing=indexExtractedDocument(owner,job.id,leaseToken).then(value=>({value}),error=>({error}));
     let waiting=false;
     for(let attempt=0;attempt<200;attempt++){
-     const row=(await pool.query(`select count(*)::int n from pg_stat_activity where $1=any(pg_blocking_pids(pid)) and query like '%pg_advisory_xact_lock%'`,[pid])).rows[0];
+     const row=(await pool.query(`select count(*)::int n from pg_stat_activity where $1=any(pg_blocking_pids(pid)) and query like $2`,[pid,changed==='job'?'%knowledge_upload_job%':'%pg_advisory_xact_lock%'])).rows[0];
      if(row.n>0){waiting=true;break;}await new Promise(done=>setTimeout(done,25));
     }
     assert(waiting,'Tree indexing did not reach its advisory wait after source/artifact inspection');
-    if(changed==='lease'){
+    if(changed==='job')await treeHolder.query("update knowledge_upload_job set extractor_version='synthetic-race-v2' where id=$1",[job.id]);
+    else if(changed==='lease'){
      await treeHolder.query('select pg_sleep(2.2)');
      const expired=(await pool.query(`select count(*)::int n from pg_stat_activity a join knowledge_upload_job j on j.id=$2
       where $1=any(pg_blocking_pids(a.pid)) and a.xact_start<j.lease_until and j.lease_until<=clock_timestamp()`,[pid,job.id])).rows[0];assert.equal(expired.n,1);
     }else if(changed==='account')await pool.query('update app_user set status=$2,role=$3 where id=$1',[owner,visibility==='private'?'disabled':'active',visibility==='shared'?'member':'admin']);
     else if(changed==='review')await pool.query('delete from knowledge_upload_review_completion where job_id=$1 and owner_id=$2',[job.id,owner]);
     else await writeFile(path,Buffer.alloc(bytes.length,120));
-    await treeHolder.query('rollback');
-    const outcome=await indexing;assert(outcome.error instanceof Error);assert.match(outcome.error.message,changed==='lease'?/Upload lease expired after publication preparation/:changed==='account'?/Publication account is no longer authorized/:changed==='review'?/Invalid extraction review receipt/:/Knowledge asset no longer matches approved hash/);
+    await treeHolder.query(changed==='job'?'commit':'rollback');
+    const outcome=await indexing;assert(outcome.error instanceof Error);assert.match(outcome.error.message,failureFor(changed));
     assert.deepEqual(await snapshot(),beforeTree,'Rejected indexing committed candidate tree rows');
     assert.equal((await pool.query('select current_tree_version_id from knowledge_document where id=$1',[documentId])).rows[0].current_tree_version_id,null);
     await writeFile(path,bytes);if(changed==='review')await job.restoreReview();
     if(changed==='account')await pool.query("update app_user set status='active',role='admin' where id=$1",[owner]);
+    if(changed==='job')await pool.query("update knowledge_upload_job set extractor_version='synthetic-race-v1' where id=$1",[job.id]);
     await renewLease(300);assert.equal((await indexExtractedDocument(owner,job.id,leaseToken)).reused,false);
     treeResults.push({visibility,revision,changed,observedWaitAfterInitialInspection:true,transactionStartedBeforeLeaseExpiry:changed==='lease',newTreeRowsAndPointerRolledBack:true,retryAfterRestorePassed:true,fixtureStartedWithNullPointer:true});
    }finally{await treeHolder.query('rollback');treeHolder.release();if(indexing)await indexing;await writeFile(path,bytes);

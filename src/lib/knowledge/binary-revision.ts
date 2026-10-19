@@ -5,23 +5,19 @@ import {inspectKnowledgeAssetBytes} from './document-repository';
 import {revalidateReviewedExtraction} from './reviewed-extraction';
 import {assertCurrentKnowledgePublisher} from './publication-authorization';
 import {assertCurrentUploadLease} from './publication-lease';
+import {publicationJobColumns,samePublicationJobBinding,type BinaryPublicationJob} from './publication-job';
 
-export type BinaryRevisionJob={id:string;status:string;visibility:'private'|'shared';collection_slug:string;title:string;source_url:string|null;entity_key:string|null;
- storage_key:string;extraction_artifact_key:string|null;source_sha256:string;extractor_version:string|null;mime_type:string;byte_size:string;
- metrics:{artifactSha256?:string};revision_target_document_id:string|null;revision_base_version_id:string|null;published_document_id:string|null;published_asset_id:string|null};
+export type BinaryRevisionJob=BinaryPublicationJob;
 class BinaryRevisionError extends Error{constructor(code:string,message:string){super(message);this.name=code;}}
 
 /** Original bytes and extraction identity are checked by registerVectorlessUpload before entry.
  * Everything newly visible (revision, asset, tree, metadata, pointer) commits together. */
 export async function registerBinaryRevision(userId:string,job:BinaryRevisionJob,input:{blocks:Block[];content:string;contentHash:string;artifactBytes:Uint8Array;language:string;authorityLevel:number;leaseToken?:string},role:'admin'|'member'){
  return tenantTransaction(userId,async client=>{
-  const locked=await client.query<BinaryRevisionJob&{lease_token:string|null;lease_valid:boolean}>(`select *,lease_until>clock_timestamp() as lease_valid
+  const locked=await client.query<BinaryRevisionJob&{lease_token:string|null;lease_valid:boolean}>(`select ${publicationJobColumns},lease_token,lease_until>clock_timestamp() as lease_valid
     from knowledge_upload_job where id=$1 and user_id=$2 for update`,[job.id,userId]);
   const current=locked.rows[0];
-  if(!current||!['extracted','registered'].includes(current.status)||current.source_sha256!==job.source_sha256||current.extractor_version!==job.extractor_version
-    ||current.extraction_artifact_key!==job.extraction_artifact_key||current.metrics.artifactSha256!==job.metrics.artifactSha256
-    ||current.revision_target_document_id!==job.revision_target_document_id||current.revision_base_version_id!==job.revision_base_version_id
-    ||current.visibility!==job.visibility||current.storage_key!==job.storage_key||current.byte_size!==job.byte_size)throw new Error('Revision job changed during registration');
+  if(!current||!['extracted','registered'].includes(current.status)||!samePublicationJobBinding(current,job))throw new Error('Revision job changed during registration');
   if(input.leaseToken&&(current.lease_token!==input.leaseToken||!current.lease_valid))throw new Error('Upload lease expired or changed');
   await client.query('select pg_advisory_xact_lock(hashtextextended($1,0))',[job.revision_target_document_id]);
   const selected=await client.query<{id:string;current_tree_version_id:string;source_sha256:string;asset_id:string}>(`select d.id,d.current_tree_version_id,v.source_sha256,v.asset_id

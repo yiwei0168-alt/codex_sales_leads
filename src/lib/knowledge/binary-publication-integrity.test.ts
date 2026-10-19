@@ -83,3 +83,11 @@ it.each([false,true])('rejects lease expiry after publication preparation; revis
  await expect(registerVectorlessUpload('owner','job',{language:'en',authorityLevel:3,leaseToken:'token'})).rejects.toThrow('expired after publication preparation');
  expect(m.committed).toBe(0);expect(m.rolledBack).toBe(1);expect(m.index).not.toHaveBeenCalled();
 });
+it.each([false,true])('rejects changed publication metadata after locking; revision=%s',async revision=>{
+ arrange(revision);const query=m.query.getMockImplementation()!;
+ m.query.mockImplementation(async(sql:string)=>{
+  const result=await query(sql);return sql.includes('from knowledge_upload_job')?{rows:result.rows.map((row:Record<string,unknown>)=>({...row,title:'Changed title',collection_slug:'company'}))}:result;
+ });
+ await expect(registerVectorlessUpload('owner','job',{language:'en',authorityLevel:3})).rejects.toThrow('changed during registration');
+ expect(m.query.mock.calls.some(([sql])=>/insert into|update knowledge_/i.test(sql))).toBe(false);expect(m.committed).toBe(0);
+});
