@@ -73,10 +73,12 @@ export async function evaluateLockedSkillAcceptanceReadiness(client:PoolClient,c
    throw new Error('Locked acceptance changed before final experience time check');
   const attachmentBytes=await revalidateLockedSkillAttachmentBytes(client,context.userId,final.artifact);
   if(attachmentBytes.attachmentBytesManifestHash!==materials.attachmentBytesManifestHash)throw new Error('Acceptance attachment registration changed after preparation');
+  if(attachmentBytes.attachmentReadOnlyMountVerified!==materials.attachmentReadOnlyMountVerified)throw new Error('Acceptance attachment mount protection changed after preparation');
   const knowledgeBytes=await preparation.recheckKnowledgeBytes();
-  if(digest(knowledgeBytes)!==digest({knowledgeReceiptBytesRevalidated:materials.knowledgeReceiptBytesRevalidated,
+  if(digest({...knowledgeBytes,knowledgeReceiptReadOnlyMountVerified:knowledgeBytes.knowledgeReceiptReadOnlyMountVerified??false})!==digest({knowledgeReceiptBytesRevalidated:materials.knowledgeReceiptBytesRevalidated,
    knowledgeReceiptAssetCount:materials.knowledgeReceiptAssetCount,knowledgeReceiptDatabaseOnlyCount:materials.knowledgeReceiptDatabaseOnlyCount,
-   knowledgeReceiptBytesManifestHash:materials.knowledgeReceiptBytesManifestHash}))throw new Error('Acceptance knowledge receipt sources changed after preparation');
+   knowledgeReceiptBytesManifestHash:materials.knowledgeReceiptBytesManifestHash,
+   knowledgeReceiptReadOnlyMountVerified:materials.knowledgeReceiptReadOnlyMountVerified??false}))throw new Error('Acceptance knowledge receipt sources changed after preparation');
   const memoryReceipts=await preparation.recheckMemoryReceipts();
   if(memoryReceipts.memoryReceiptCount!==materials.memoryReceiptCount)throw new Error('Acceptance memory receipt coverage changed after preparation');
   const finalTransports=await revalidateLockedSkillTransportReceipts(client,context,bundleId);

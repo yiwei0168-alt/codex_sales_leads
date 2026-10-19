@@ -1,6 +1,7 @@
 import type {PoolClient} from 'pg';
 import {z} from 'zod';
 import {inspectKnowledgeAssetBytes} from '@/lib/knowledge/document-repository';
+import {knowledgeAssetHasReadOnlyMount} from '@/lib/knowledge/read-only-mount';
 import {skillAcceptanceRunIds,skillAcceptanceAttachmentIds} from './skill-acceptance-run-locks';
 import {digest} from './contracts';
 
@@ -12,12 +13,14 @@ export async function revalidateLockedSkillAttachmentBytes(client:PoolClient,use
  if(tasks.rows.length!==runs.length)throw new Error('Acceptance attachment task unavailable');
  const ids=skillAcceptanceAttachmentIds(tasks.rows);
  const checked=await revalidateLockedKnowledgeAssetBytes(client,userId,ids);
- return {attachmentBytesRevalidated:true as const,attachmentBytesCount:checked.count,attachmentBytesManifestHash:checked.manifestHash};
+ return {attachmentBytesRevalidated:true as const,attachmentBytesCount:checked.count,attachmentBytesManifestHash:checked.manifestHash,
+  attachmentReadOnlyMountVerified:checked.readOnlyMountVerified};
 }
 /** Internal account-bound metadata must be protected by knowledge admission. */
 export async function revalidateLockedKnowledgeAssetBytes(client:PoolClient,userId:string,assetIds:string[]){
  z.uuid().parse(userId);const ids=[...new Set(z.array(z.uuid()).max(10000).parse(assetIds))].sort();
  const manifest:Array<{id:string;storage_key:string;source_sha256:string;byte_size:string}>=[];
+ let readOnlyMountVerified=true;
  for(let offset=0;offset<ids.length;offset+=100){
   const batch=ids.slice(offset,offset+100);
   const assets=await client.query<{id:string;storage_key:string;source_sha256:string;byte_size:string}>(`
@@ -37,7 +40,8 @@ export async function revalidateLockedKnowledgeAssetBytes(client:PoolClient,user
     throw error;
    }
    manifest.push(asset);
+   if(!await knowledgeAssetHasReadOnlyMount(asset.storage_key))readOnlyMountVerified=false;
   }
  }
- return {count:ids.length,manifestHash:digest(manifest)};
+ return {count:ids.length,manifestHash:digest(manifest),readOnlyMountVerified};
 }

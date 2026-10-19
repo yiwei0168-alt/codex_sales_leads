@@ -1,0 +1,28 @@
+{
+  "stage": "MA24 G09 process-local original-file mount protection",
+  "date": "2026-10-19",
+  "baseCommit": "0b5e5e98",
+  "status": "component-and-wiring-passed; immutable-source-protection-pending",
+  "changes": [
+    "Descriptor mount ID resolves to a unique current Linux mount record; only per-mount ro without rw qualifies.",
+    "Registered task attachments and consumed knowledge originals report separate read-only mount evidence; byte checks and permissions remain required.",
+    "Final readiness reconstruction rejects changes in attachment/knowledge mount protection instead of silently returning an older positive result.",
+    "Unsupported platforms, missing/invalid proc data, missing file, path escape or changed file identity report false."
+  ],
+  "checks": {
+    "targetedVitest": "75 passed across four files",
+    "typecheck": "exit 0",
+    "focusedEslint": "exit 0",
+    "actualLinuxReadOnlyBind": {"exitCode": 0, "check": true, "actualWriteDenied": true},
+    "actualLinuxWritableBindControl": {"exitCode": 0, "check": false, "actualWriteSucceeded": true},
+    "probe": "Current source bundled with esbuild, executed in ma24-pilot-web:4a1ee07f; read-only root, no network, no capabilities, no new privileges, default non-root image user, auto-remove.",
+    "initialRegressionFailure": "New diagnostic field required normalization in the final knowledge-summary digest; initial 17 mocked-readiness failures corrected, final 75 tests pass."
+  },
+  "limits": [
+    "Read-only is local to the current mount namespace. Writable aliases and host/other-process mutations are not excluded; this is not an immutable-store or filesystem lease claim.",
+    "No file requirement means true only for an empty checked set; combine flags with asset counts.",
+    "Full current-source signed composition, product build, production trust enrollment and real quality remain unverified for this change.",
+    "No database migration, deployment, provider/model call or enabled Skill. sourceRevocationsLocked, collectorProvenanceVerified and automaticActivation remain false."
+  ],
+  "source": "https://docs.kernel.org/filesystems/proc.html"
+}

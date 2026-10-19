@@ -196,3 +196,15 @@ it('does not return readiness if a signature expires after both final signature 
  await expect(evaluateLockedSkillAcceptanceReadiness(client,context,bundleId)).rejects.toThrow('signed evidence expired');
  expect(m.transports).toHaveBeenCalledTimes(2);expect(m.runner).toHaveBeenCalledTimes(2);
 });
+it('rejects attachment mount protection drifting from read-only to writable during preparation',async()=>{
+ const value={attachmentBytesRevalidated:true,attachmentBytesCount:1,attachmentBytesManifestHash:'manifest'};
+ m.bytes.mockResolvedValueOnce({...value,attachmentReadOnlyMountVerified:true}).mockResolvedValueOnce({...value,attachmentReadOnlyMountVerified:false});
+ await expect(evaluateLockedSkillAcceptanceReadiness(client,context,bundleId)).rejects.toThrow('attachment mount protection changed');
+ expect(m.times).not.toHaveBeenCalled();
+});
+it('rejects knowledge receipt mount protection drifting during preparation',async()=>{
+ const value={knowledgeReceiptBytesRevalidated:true,knowledgeReceiptAssetCount:1,knowledgeReceiptDatabaseOnlyCount:0,knowledgeReceiptBytesManifestHash:'knowledge-manifest'};
+ m.knowledgeBytes.mockResolvedValueOnce({...value,knowledgeReceiptReadOnlyMountVerified:true}).mockResolvedValueOnce({...value,knowledgeReceiptReadOnlyMountVerified:false});
+ await expect(evaluateLockedSkillAcceptanceReadiness(client,context,bundleId)).rejects.toThrow('knowledge receipt sources changed');
+ expect(m.times).not.toHaveBeenCalled();
+});

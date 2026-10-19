@@ -58,5 +58,6 @@ export async function revalidateLockedSkillKnowledgeReceiptBytes(client:PoolClie
  }
  const checked=await revalidateLockedKnowledgeAssetBytes(client,userId,[...assets]);
  return {knowledgeReceiptBytesRevalidated:true as const,knowledgeReceiptAssetCount:checked.count,
+  knowledgeReceiptReadOnlyMountVerified:checked.readOnlyMountVerified,
   knowledgeReceiptDatabaseOnlyCount:databaseOnlyCount,knowledgeReceiptBytesManifestHash:checked.manifestHash};
 }
