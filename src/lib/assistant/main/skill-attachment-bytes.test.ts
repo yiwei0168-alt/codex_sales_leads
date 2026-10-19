@@ -52,6 +52,16 @@ it('binds matching immutable snapshot IDs without exposing bytes',async()=>{
 it('reports zero immutable coverage when no captured snapshot is available',async()=>{
  expect((await revalidateLockedSkillAttachmentBytes(client,owner,artifact)).attachmentImmutableSnapshotCount).toBe(0);
 });
+it.each(['missing','tampered'])('uses captured original bytes when the filesystem original is %s',async state=>{
+ interleave.snapshot.mockResolvedValue({snapshotId:randomUUID(),sourceSha256:asset().source_sha256,byteSize:bytes.length,bytes});
+ if(state==='missing')await unlink(key);else await writeFile(key,Buffer.alloc(bytes.length,120));
+ const out=await revalidateLockedSkillAttachmentBytes(client,owner,artifact);
+ expect(out).toMatchObject({attachmentImmutableSnapshotCount:1,attachmentReadOnlyMountVerified:false});
+});
+it('rejects a snapshot whose length differs from current registered metadata',async()=>{
+ interleave.snapshot.mockResolvedValue({snapshotId:randomUUID(),sourceSha256:asset().source_sha256,byteSize:bytes.length+1,bytes});
+ await expect(revalidateLockedSkillAttachmentBytes(client,owner,artifact)).rejects.toThrow('snapshot changed');
+});
 it('propagates snapshot integrity or database failures instead of accepting filesystem-only evidence',async()=>{
  interleave.snapshot.mockRejectedValue(new Error('Immutable snapshot integrity mismatch'));
  await expect(revalidateLockedSkillAttachmentBytes(client,owner,artifact)).rejects.toThrow('snapshot integrity mismatch');

@@ -59,6 +59,13 @@ try{
  await writeFile(key,'tampered file');
  await assert.rejects(captureImmutableKnowledgeAsset(client,owner,asset),/matches approved hash/);
  assert.deepEqual((await readImmutableKnowledgeAsset(client,owner,asset,sha))?.bytes,bytes);results.push('filesystem-tamper-rejected-existing-snapshot-unchanged');
+ const retained=await revalidateLockedKnowledgeAssetBytes(client,owner,[asset]);
+ assert.equal(retained.immutableSnapshotManifestHash,attachment.immutableSnapshotManifestHash);
+ await unlink(key);
+ const missing=await revalidateLockedSkillKnowledgeReceiptBytes(client,owner,[{tool:'knowledge_originals',output:{status:'success',data:{documents:[{id:asset}]}}}]);
+ assert.equal(missing.knowledgeReceiptImmutableSnapshotManifestHash,receipt.knowledgeReceiptImmutableSnapshotManifestHash);
+ assert.equal(missing.knowledgeReceiptReadOnlyMountVerified,false);
+ await writeFile(key,bytes,{flag:'wx'});results.push('acceptance-uses-identical-canonical-snapshot-after-file-tamper-and-removal');
  for(const [change,restore] of [
   ["update knowledge_document set status='archived' where id=$1","update knowledge_document set status='active' where id=$1"],
   ["update knowledge_asset set source_sha256=repeat('0',64) where document_id=$1","update knowledge_asset set source_sha256=$2 where document_id=$1"],
