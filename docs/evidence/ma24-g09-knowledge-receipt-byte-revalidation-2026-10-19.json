@@ -8,7 +8,7 @@
     "focusedEslint": "passed",
     "diffCheck": "passed",
     "freshClusterMemorySourceLocks": "passed",
-    "latestFixedSnapshotFiveCategoryComposition": "ca45488d failed before byte checks; replay original-receipt admission fix and rerun pending"
+    "latestFixedSnapshotFiveCategoryComposition": "passed on corrected 3f511d38 snapshot; original ca45488d failure retained below"
   },
   "implementation": {
     "inputs": "Only consumed historical/prospective receipts returned by the existing authenticated journal/material reconstruction",
@@ -39,7 +39,7 @@
     "productionDatabaseModified": false,
     "scope": "Focused real-SQL mapping and actual file checks. Synthetic minimal source rows do not establish full semantic review or independent answer quality."
   },
-  "compositionFixture": "Now journals one real knowledge_originals read and checks that the retained-source readiness result counts its file. ca45488de587d0a5b74b4e02607b3cadbad69d56 exited 1 in prepareHistoricalSkillReplay: the older replay allowlist did not admit knowledge_originals. Byte checks were not reached. Corrective replay admission with explicit envelope/current-source/exact-recorded-read guards is pending full rerun. Earlier snapshots do not cover this change.",
+  "compositionFixture": "Journals one real knowledge_originals read and checks that retained-source readiness counts its file. ca45488de587d0a5b74b4e02607b3cadbad69d56 exited 1 before byte checks because the older replay allowlist did not admit knowledge_originals. Corrected snapshot 3f511d382025fc5f977deb23363f59eb81ac41d8 passed the full workflow. Subsequent 80c24c2b consumed-memory receipt changes are excluded.",
   "correctiveReplayAdmission": {
     "tools": ["knowledge_originals", "knowledge_facts"],
     "historicalEnvelopeAndCurrentSourceChecks": true,
@@ -50,7 +50,23 @@
     "regressionTests": "108 passed across six test files; overlaps previous stage tests",
     "typecheck": "passed",
     "focusedEslint": "passed",
-    "fullCompositionAfterCorrection": "pending"
+    "fullCompositionAfterCorrection": "passed on 3f511d38"
+  },
+  "compositionDatabase": {
+    "command": "node scripts/run-ma24-snapshot-check.mjs --prospective-composition",
+    "commit": "3f511d382025fc5f977deb23363f59eb81ac41d8",
+    "exitCode": 0,
+    "completeCompositionVerified": true,
+    "prospectivePairedMaterialVerified": true,
+    "consumedOriginalReceiptRevalidatedInReadiness": true,
+    "knowledgeReceiptAssetCount": 1,
+    "prospectiveMaterialReceiptCount": 4,
+    "originalToolReceiptCount": 1,
+    "temporaryContainerRemoved": true,
+    "snapshotDirectoryRemoved": true,
+    "actualModelCalls": 0,
+    "automaticActivation": false,
+    "scope": "Positive full workflow includes original-receipt admission and final byte checks. Focused real-SQL negative checks are recorded separately above; no full-workflow injected file mutation is claimed."
   },
   "limitations": [
     "Current content, hash, coordinate and journal provenance guards remain prerequisites; this helper does not replace them.",
