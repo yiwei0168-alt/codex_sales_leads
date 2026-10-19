@@ -1,0 +1,33 @@
+{
+  "date": "2026-10-19",
+  "scope": "G10/G13 isolated Skill acceptance review UI and durable safety replay",
+  "command": "npm.cmd run ma24:verify-skill-review-ui-clone",
+  "fixtureCorrection": "Updated the synthetic safety candidate adapter to exercise the production graph's discover/describe/skill_list/skill_read sequence and to expect five journaled turns per arm. Candidate replay now proves fixed-Skill use; baseline replay proves the candidate was not used.",
+  "checks": {
+    "cloneOnly": true,
+    "disposableDatabaseOnly": true,
+    "externalNetworkDenied": true,
+    "loopbackWebOnly": true,
+    "actualModelCalls": 0,
+    "baselineAndCandidateDurableSafety": true,
+    "candidateSkillUseReconstructedFromJournal": true,
+    "safetyReviewMaterialAndTenantIsolation": true,
+    "skillReviewPageOpened": true,
+    "reviewMaterialFromDatabase": true,
+    "exactRawReceiptCopiedFromDatabase": true,
+    "mobileNoHorizontalOverflow": true,
+    "savedHumanRouteRevision": 1,
+    "refreshRestoredRevision": true,
+    "revokedRevision": 2,
+    "skillRemainedDisabledAfterRevocation": true,
+    "candidateAndBaselineSourceEvidenceBound": true,
+    "durableCandidateJournalRecovery": true,
+    "readOnlyJournalAuditAndTenantIsolation": true,
+    "productionChanged": false
+  },
+  "remainingLimits": [
+    "The browser, source, model responses and reviewer action were synthetic. No quality decision was accepted.",
+    "Runtime attestation and production source-permission revalidation were not established by this run.",
+    "Execution authorization and automatic Skill activation remain false; this does not prove trusted production collector/provider identity or enablement transaction safety."
+  ]
+}
