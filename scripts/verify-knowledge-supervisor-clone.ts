@@ -7,7 +7,9 @@ import nextEnv from '@next/env';
 import {Pool} from 'pg';
 import {getPool} from '../src/lib/rag/db';
 import {createKnowledgeUploadJob} from '../src/lib/knowledge/upload';
-import {getExtractionReview} from '../src/lib/knowledge/extraction-review';
+import {completeExtractionReview,getExtractionReview,recordExtractionReview} from '../src/lib/knowledge/extraction-review';
+import {registerVectorlessUpload} from '../src/lib/knowledge/vectorless-registration';
+import {browseTree,readEvidence,searchDocuments} from '../src/lib/knowledge/vectorless';
 import {finishVisualReviewJob} from '../src/lib/knowledge/visual-queue';
 nextEnv.loadEnvConfig(process.cwd());
 assert.equal(process.platform,'win32');
@@ -17,6 +19,7 @@ const {database}=JSON.parse(await readFile('tmp/ma11-replay-state.json','utf8'))
 url.pathname=`/${database}`;process.env.DATABASE_URL=url.toString();
 const pool=new Pool({connectionString:url.toString()}),owner=randomUUID(),peerOwner=randomUUID();
 const fixtureDirectory=resolve('tmp');let multiFormatDirectory:string|undefined;
+const publishedDocumentIds:string[]=[];
 try{
 await mkdir(fixtureDirectory,{recursive:true});
 multiFormatDirectory=await mkdtemp(resolve(fixtureDirectory,'g05-successful-multiformat-'));
@@ -59,6 +62,39 @@ async function supervisor(id:string,phase?:string){
   await rm(marker,{force:true});
  }
 }
+async function reviewRegisterAndSearch(userId:string,otherUserId:string,jobId:string,expectedText:string,unitType:'page'|'slide'){
+ const review=await getExtractionReview(userId,jobId,0,'pending');
+ assert(review.blocks.length>0,`${expectedText} has no reviewable visual blocks`);
+ for(const item of review.blocks){
+  assert.equal(item.block.quality,'pending-ocr');
+  assert(item.candidate?.imageFile,`${item.block.id} has no verified review image`);
+  await recordExtractionReview(userId,{jobId,artifactSha256:review.artifactSha256,blockId:item.block.id,
+   expectedRevision:0,decision:'decoration',evidenceText:'',
+   note:'Synthetic fixture only: the verifier generated a plain blue square with no factual content.'});
+ }
+ const completedReview=await getExtractionReview(userId,jobId,0,'pending');
+ assert.equal(completedReview.pendingResolved,completedReview.pendingTotal);
+ const completion=await completeExtractionReview(userId,jobId,completedReview.artifactSha256,completedReview.decisionSha256);
+ assert.equal(completion.readyForRegistration,true);
+ const registered=await registerVectorlessUpload(userId,jobId,{language:'en',authorityLevel:2});
+ assert.equal(registered.treeStatus,'searchable');publishedDocumentIds.push(registered.documentId);
+ const matches=await searchDocuments(userId,expectedText,{collections:['industry']});
+ const match=matches.find(row=>row.documentId===registered.documentId);assert(match,`${expectedText} was not retrievable`);
+ const roots=await browseTree(userId,registered.documentId,null,0,20,['industry']);
+ const unit=roots.find(row=>row.node_kind==='unit'&&row.unit_type===unitType);assert(unit,`${expectedText} source unit missing`);
+ const nodes=await browseTree(userId,registered.documentId,unit.id,0,20,['industry']);
+ const citation=nodes.find(row=>row.node_kind==='evidence'&&row.unit_type===unitType);assert(citation,`${expectedText} evidence node missing`);
+ const evidence=await readEvidence(userId,citation.id,['industry']);
+ assert(evidence?.content.includes(expectedText),`${expectedText} citation text does not match source`);
+ assert.equal(evidence?.source_sha256,(await stored(jobId)).source_sha256);
+ if(unitType==='page')assert(Array.isArray(evidence?.source_location.bbox)&&evidence.source_location.bbox.length===4);
+ else assert(Array.isArray(evidence?.source_location.shapePath)&&Array.isArray(evidence?.source_location.shapeIdPath));
+ const otherAccountMatches=await searchDocuments(otherUserId,expectedText,{collections:['industry']});
+ assert(!otherAccountMatches.some(row=>row.documentId===registered.documentId),'Private document leaked to peer account');
+ assert.equal((await browseTree(otherUserId,registered.documentId,null,0,20,['industry'])).length,0);
+ assert.equal(await readEvidence(otherUserId,citation.id,['industry']),null);
+ return {documentId:registered.documentId,reason:match.reason,sourceSha256:evidence?.source_sha256,sourceLocation:evidence?.source_location};
+}
  await pool.query("insert into app_user(id,email,display_name,password_hash,role,status) values($1,$2,'Supervisor fixture','!','member','active')",[owner,`${owner}@example.invalid`]);
  await pool.query("insert into app_user(id,email,display_name,password_hash,role,status) values($1,$2,'Supervisor peer fixture','!','member','active')",[peerOwner,`${peerOwner}@example.invalid`]);
  const pointers=JSON.stringify((await pool.query('select * from knowledge_release_pointer_v3 order by scope_kind,owner_id')).rows);
@@ -86,6 +122,7 @@ async function supervisor(id:string,phase?:string){
  // for review while unrelated held jobs and release pointers remain untouched.
  const successfulPdf=await createKnowledgeUploadJob(owner,{...input,title:'Successful PDF worker fixture',originalFilename:'successful-fixture.pdf',mimeType:'application/pdf',bytes:await readFile(pdfPath)});
  const successfulPptx=await createKnowledgeUploadJob(peerOwner,{...input,title:'Successful PPTX worker fixture',originalFilename:'successful-fixture.pptx',mimeType:'application/vnd.openxmlformats-officedocument.presentationml.presentation',bytes:await readFile(pptxPath)});
+const syntheticCitations:Array<Record<string,unknown>>=[];
  for(const job of [successfulPdf,successfulPptx]){
   await supervisor(job.id);
   if(!(await stored(job.id)).metrics.visualReviewKey)await supervisor(job.id);
@@ -101,6 +138,8 @@ async function supervisor(id:string,phase?:string){
   assert.equal(review.visualState,'ready');assert(review.total>0);
   const candidate=JSON.parse(await readFile(resolve(state.metrics.visualReviewKey),'utf8'));
   assert(candidate.records.some((record:{status:string})=>record.status==='review-required'));
+  syntheticCitations.push(await reviewRegisterAndSearch(job===successfulPdf?owner:peerOwner,job===successfulPdf?peerOwner:owner,job.id,
+   job===successfulPdf?'Synthetic PDF worker fixture':'Synthetic PPTX worker fixture',job===successfulPdf?'page':'slide'));
  }
  assert.equal((await stored(target.id)).visual_lease_token,held.visual_lease_token);
  assert.equal(JSON.stringify((await pool.query('select * from knowledge_release_pointer_v3 order by scope_kind,owner_id')).rows),pointers);
@@ -121,15 +160,25 @@ async function supervisor(id:string,phase?:string){
  const candidate=JSON.parse(await readFile(resolve(ready.metrics.visualReviewKey),'utf8'));
  assert.equal(candidate.ocrImageExecutions,0);assert.equal(candidate.ocrCheckpointReuses,1);
  assert.equal(JSON.stringify(await stored(unrelated.id)),untouched);
- assert.equal((await pool.query('select count(*)::int as n from knowledge_document where owner_id=$1',[owner])).rows[0].n,0);
- assert.equal((await pool.query('select count(*)::int as n from knowledge_document where owner_id=$1',[peerOwner])).rows[0].n,0);
+ assert.equal((await pool.query('select count(*)::int as n from knowledge_document where owner_id=$1',[owner])).rows[0].n,1);
+ assert.equal((await pool.query('select count(*)::int as n from knowledge_document where owner_id=$1',[peerOwner])).rows[0].n,1);
  assert.equal(JSON.stringify((await pool.query('select * from knowledge_release_pointer_v3 order by scope_kind,owner_id')).rows),pointers);
- const result={cloneOnly:true,platform:process.platform,actualSupervisorKills:2,descendantsStopped:true,extractionLeaseHeld:true,extractionExpiredRecovery:true,visualLeaseHeld:true,malformedPdfFailedWithoutCrossJobEffect:true,successfulPdfWorkerHandoff:true,successfulPdfTextExtracted:true,successfulPptxWorkerHandoff:true,successfulPptxTextExtracted:true,successfulFormatsAwaitingHumanReview:true,peerAccountCompletedWhileTargetHeld:true,peerVisualReady:true,expiredFinishRejected:true,visualExpiredRecovery:true,ocrExecutionsOnResume:0,ocrCheckpointReuses:1,unrelatedJobUnchanged:true,v3PointersUnchanged:true,documentsPublished:0,judgments:0,externalCalls:0,syntheticFixture:true,qualityAccepted:false};
+ const result={cloneOnly:true,platform:process.platform,actualSupervisorKills:2,descendantsStopped:true,extractionLeaseHeld:true,extractionExpiredRecovery:true,visualLeaseHeld:true,malformedPdfFailedWithoutCrossJobEffect:true,successfulPdfWorkerHandoff:true,successfulPdfTextExtracted:true,successfulPptxWorkerHandoff:true,successfulPptxTextExtracted:true,syntheticVisualJudgments:2,reviewCompletionVerified:true,vectorlessRegistrationVerified:true,searchAndSourceCitationVerified:true,syntheticCitations,peerAccountCompletedWhileTargetHeld:true,peerVisualReady:true,expiredFinishRejected:true,visualExpiredRecovery:true,ocrExecutionsOnResume:0,ocrCheckpointReuses:1,unrelatedJobUnchanged:true,v3PointersUnchanged:true,syntheticDocumentsRegistered:2,externalCalls:0,syntheticFixture:true,qualityAccepted:false};
  await writeFile('tmp/knowledge-supervisor-clone-result.json',JSON.stringify(result,null,2));console.log(JSON.stringify(result));
 }finally{
  for(const userId of [owner,peerOwner]){
+  await pool.query('delete from knowledge_upload_extraction_review where owner_id=$1',[userId]);
+  await pool.query('delete from knowledge_upload_review_completion where owner_id=$1',[userId]);
   await pool.query('delete from knowledge_upload_job where user_id=$1',[userId]);
+  await pool.query('delete from knowledge_document where id=any($1::uuid[]) and owner_id=$2',[publishedDocumentIds,userId]);
   await pool.query('delete from app_user where id=$1',[userId]);
+  const residue=await pool.query<{users:string;jobs:string;documents:string;reviews:string;completions:string}>(`select
+   (select count(*) from app_user where id=$1)::text as users,
+   (select count(*) from knowledge_upload_job where user_id=$1)::text as jobs,
+   (select count(*) from knowledge_document where owner_id=$1)::text as documents,
+   (select count(*) from knowledge_upload_extraction_review where owner_id=$1)::text as reviews,
+   (select count(*) from knowledge_upload_review_completion where owner_id=$1)::text as completions`,[userId]);
+  assert.deepEqual(residue.rows[0],{users:'0',jobs:'0',documents:'0',reviews:'0',completions:'0'});
  }
  await pool.end();await getPool().end();
  for(const userId of [owner,peerOwner]){

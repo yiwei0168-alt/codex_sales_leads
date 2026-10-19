@@ -1,0 +1,95 @@
+{
+  "schema": "ma24-g05-pdf-pptx-review-register-search-citation-isolation-v1",
+  "date": "2026-10-19",
+  "sourceCommitBeforeVerifierChange": "879e3f27",
+  "verifier": "scripts/verify-knowledge-supervisor-clone.ts",
+  "verifierSha256": "1d0b358e32160df5b527bc571a441a458aae800c9b4b077357e9e30de7945949",
+  "scope": "Disposable MA11 replay database; random synthetic private accounts; generated text-plus-image PDF/PPTX fixtures; current formal workers and PostgreSQL vectorless search/tree.",
+  "result": {
+    "cloneOnly": true,
+    "platform": "win32",
+    "actualSupervisorKills": 2,
+    "descendantsStopped": true,
+    "extractionLeaseHeld": true,
+    "extractionExpiredRecovery": true,
+    "visualLeaseHeld": true,
+    "malformedPdfFailedWithoutCrossJobEffect": true,
+    "successfulPdfWorkerHandoff": true,
+    "successfulPdfTextExtracted": true,
+    "successfulPptxWorkerHandoff": true,
+    "successfulPptxTextExtracted": true,
+    "syntheticVisualJudgments": 2,
+    "reviewCompletionVerified": true,
+    "vectorlessRegistrationVerified": true,
+    "searchAndSourceCitationVerified": true,
+    "syntheticCitations": [
+      {
+        "documentId": "d5be6f53-6873-4cda-8b97-02f7aeabda0c",
+        "reason": "fulltext",
+        "sourceSha256": "af54b0b1fbc5f64b0bafaaede7b45463be9692f2910d8e2e5ad1a9d70559077d",
+        "sourceLocation": {
+          "bbox": [
+            50,
+            38.17499923706055,
+            189.36996459960938,
+            53.28900146484375
+          ],
+          "blockId": "page-1-block-1",
+          "startRow": null,
+          "unitType": "page",
+          "unitIndex": 1
+        }
+      },
+      {
+        "documentId": "3f348a41-1e9b-4566-a470-409aab8c8288",
+        "reason": "fulltext",
+        "sourceSha256": "a14268fb02d21d7652ed4c9a910d074e53f6a31d60e85a93f00a6a0efcfd2559",
+        "sourceLocation": {
+          "bbox": null,
+          "blockId": "slide-1-text-1",
+          "startRow": null,
+          "unitType": "slide",
+          "shapePath": [
+            1
+          ],
+          "unitIndex": 1,
+          "shapeIdPath": [
+            2
+          ]
+        }
+      }
+    ],
+    "peerAccountCompletedWhileTargetHeld": true,
+    "peerVisualReady": true,
+    "expiredFinishRejected": true,
+    "visualExpiredRecovery": true,
+    "ocrExecutionsOnResume": 0,
+    "ocrCheckpointReuses": 1,
+    "unrelatedJobUnchanged": true,
+    "v3PointersUnchanged": true,
+    "syntheticDocumentsRegistered": 2,
+    "externalCalls": 0,
+    "syntheticFixture": true,
+    "qualityAccepted": false
+  },
+  "cleanup": {
+    "twoRandomSyntheticAccountsDeleted": true,
+    "uploadJobsAndOriginalsDeleted": true,
+    "reviewJudgmentsAndCompletionReceiptsDeleted": true,
+    "registeredPrivateDocumentsDeleted": true,
+    "perAccountResidueAssertionsPassed": true,
+    "temporaryFixtureDirectoryDeleted": true
+  },
+  "checks": {
+    "verifierExitCode": 0,
+    "extractorUnitTests": "10 passed",
+    "typescript": "passed",
+    "focusedEslint": "passed",
+    "diffCheck": "passed"
+  },
+  "limits": [
+    "Human-review API was exercised with explicit synthetic-fixture judgments; no real reviewer or business-quality judgment was involved.",
+    "Search and source-coordinate reads used current server functions, but no assistant response or real user-facing business answer was evaluated.",
+    "No real documents, external calls, model calls, shared release updates or production deployment were involved; this does not close G05 quality or production acceptance."
+  ]
+}
