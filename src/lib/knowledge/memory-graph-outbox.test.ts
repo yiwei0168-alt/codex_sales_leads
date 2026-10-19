@@ -37,3 +37,19 @@ it("requeues a local graph failure without marking delivered",async()=>{
     expect.arrayContaining([row.id]));
   expect(mock.query.mock.calls.some(([,sql])=>String(sql).includes("delivered_at=now()"))).toBe(false);
 });
+
+it('rechecks active owner and lease before giving observation text to the projector',async()=>{
+  mock.query.mockResolvedValueOnce([{observation_id:row.id}]).mockResolvedValueOnce([]).mockResolvedValueOnce([]);
+  const project=vi.fn();
+  expect(await processMemoryGraphOutbox(row.owner_id,row.id,project)).toBe('queued');
+  expect(project).not.toHaveBeenCalled();
+  expect(mock.query.mock.calls[0][1]).toContain("u.status='active'");
+  expect(mock.query.mock.calls[1][1]).toContain("o.leased_at>clock_timestamp()");
+});
+
+it('does not report delivery after lease loss or owner disablement during projection',async()=>{
+  mock.query.mockResolvedValueOnce([{observation_id:row.id}]).mockResolvedValueOnce([row]).mockResolvedValueOnce([]);
+  expect(await processMemoryGraphOutbox(row.owner_id,row.id,vi.fn().mockResolvedValue(undefined))).toBe('busy');
+  expect(mock.query.mock.calls[2][1]).toContain("leased_at>clock_timestamp()");
+  expect(mock.query.mock.calls[2][1]).toContain("u.status='active'");
+});

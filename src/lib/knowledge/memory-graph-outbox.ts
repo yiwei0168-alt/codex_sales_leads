@@ -50,20 +50,26 @@ export async function processMemoryGraphOutbox(userId:string,observationId:strin
     set lease_token=$3,leased_at=now(),attempt_count=attempt_count+1
     where o.observation_id=$2 and o.delivered_at is null and o.next_attempt_at<=now()
       and (o.lease_token is null or o.leased_at<now()-interval '5 minutes')
-      and exists(select 1 from agent_memory_observation m where m.id=o.observation_id and m.owner_id=$1)
+      and exists(select 1 from agent_memory_observation m join app_user u on u.id=m.owner_id and u.status='active'
+        where m.id=o.observation_id and m.owner_id=$1)
     returning o.observation_id`,[userId,observationId,lease]);
   if(!claimed.length)return "busy";
   try{
     const rows=await tenantQuery<{id:string;owner_id:string;kind:string;content:string;recorded_at:Date;valid_from:Date|null;valid_until:Date|null}>(userId,
-      `select id,owner_id,kind,content,recorded_at,valid_from,valid_until
-       from agent_memory_observation where id=$1 and owner_id=$2`,[observationId,userId]);
+      `select m.id,m.owner_id,m.kind,m.content,m.recorded_at,m.valid_from,m.valid_until
+       from agent_memory_observation m join app_user u on u.id=m.owner_id and u.status='active'
+       where m.id=$1 and m.owner_id=$2 and exists(select 1 from agent_memory_graph_outbox o
+         where o.observation_id=m.id and o.lease_token=$3 and o.delivered_at is null
+         and o.leased_at>clock_timestamp()-interval '5 minutes')`,[observationId,userId,lease]);
     const row=rows[0];
     if(!row)throw new Error("Observation unavailable");
     await project({ownerId:row.owner_id,observationId:row.id,kind:row.kind,content:row.content,
       recordedAt:row.recorded_at,validFrom:row.valid_from,validUntil:row.valid_until});
     const delivered=await tenantQuery<{observation_id:string}>(userId,`update agent_memory_graph_outbox
       set delivered_at=now(),lease_token=null,leased_at=null,last_error=null
-      where observation_id=$1 and lease_token=$2 and delivered_at is null returning observation_id`,[observationId,lease]);
+      where observation_id=$1 and lease_token=$2 and delivered_at is null
+      and leased_at>clock_timestamp()-interval '5 minutes'
+      and exists(select 1 from app_user u where u.id=$3 and u.status='active') returning observation_id`,[observationId,lease,userId]);
     return delivered.length?"delivered":"busy";
   }catch{
     await tenantQuery(userId,`update agent_memory_graph_outbox

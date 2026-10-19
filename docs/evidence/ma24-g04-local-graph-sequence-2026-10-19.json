@@ -1,0 +1,42 @@
+{
+  "stage": "MA24 G04 local graph projection and PostgreSQL authority",
+  "date": "2026-10-19",
+  "implementation": [
+    "Outbox claim and text load require a currently active account; load also checks the owned token and five-minute wall-clock lease.",
+    "Delivery update rechecks active owner and lease age; lost/expired leases do not report delivered.",
+    "Graph worker catches dependency/query failures, logs a sanitized retry reason and backs off instead of exiting its loop. --once provides bounded maintenance execution."
+  ],
+  "checks": {
+    "unitTests": "10 passed across memory-graph-outbox, memory-graph-search and memory-graph-worker-runtime tests",
+    "workerRuntimeTest": "Actual worker module loop with mocked queue: first read rejects, 30-second backoff is requested, next job succeeds, stop callback and pool cleanup run; raw exception is not logged. No actual 30-second wait or database disconnect is claimed.",
+    "typecheck": "npm.cmd run typecheck: exit 0",
+    "lint": "focused ESLint: exit 0",
+    "actualSequenceVerifier": "scripts/verify-memory-graph-sequence-clone.ts",
+    "actualSequenceResult": "exit 0; localhost isolated replay PostgreSQL, actual local Graphiti/Neo4j and pinned local embedding model; two synthetic observations projected",
+    "actualCases": [
+      "Disabled synthetic owner cannot claim/project; simulated projection outage defers, future retry is not run, restored due time permits actual projection.",
+      "Graph lookup separates two synthetic owners, duplicate delivered job does not project again.",
+      "Correction projects a second node; fresh PostgreSQL filtering returns corrected observation while earlier knowledge time returns original.",
+      "Injected graph lookup outage returns PostgreSQL path with the same current result.",
+      "Undo excludes corrected memory without resurrecting original although stale graph candidate nodes still exist.",
+      "Projector callback ages only its synthetic lease; final update refuses delivery."
+    ],
+    "cleanup": "Specific synthetic graph observation IDs/account node cleaned through existing scoped cleanup script; synthetic PostgreSQL records/accounts removed with clone-only maintenance cleanup."
+  },
+  "retainedCorrection": "Worker test initially under scripts/ was excluded by Vitest discovery, so only 9 tests ran. Moved it to src/lib/knowledge/ and reran: 10 tests in 3 files passed.",
+  "limits": [
+    "Observations, outage injections and lease-age changes are synthetic; actual local embedding requests occur, cloud model calls are zero. Local request count is not measured.",
+    "Actual sequence exercises production projection/search helpers, not the long-running worker loop; retry-loop evidence is the separate mocked module test.",
+    "Owner/lease checks are point-in-time and do not revoke a graph subprocess already started. PostgreSQL remains authoritative; historical graph nodes are not automatically erased by undo.",
+    "Real-user extraction quality, continual production ingestion and deployment are not accepted.",
+    "Development database emits its existing production-security warning; no production TLS/login qualification.",
+    "The running fixed e2891a90 G09 composition predates this change."
+  ],
+  "filesSha256": {
+    "src/lib/knowledge/memory-graph-outbox.ts": "04489e6116b746f5f45b8d55bc4a7a1208dbf7da4ed8a58bea7df2ba5859aa6f",
+    "src/lib/knowledge/memory-graph-outbox.test.ts": "7bb5cc95f29360c02811d1e4a94d7aa191ff872afd906a8d396ae885d16eeddc",
+    "src/lib/knowledge/memory-graph-worker-runtime.test.ts": "d67b7dcab0e2752ef96b3c7e46136ac445a83bae2b3d1df2c49fab3d649f7079",
+    "scripts/run-memory-graph-worker.ts": "7ecef825820507068665423b709a8962ca441acce61eca3e6dcce9d1548a6e82",
+    "scripts/verify-memory-graph-sequence-clone.ts": "0094215eb3c623f914771b0376c654fbc84fd5be9b2972e17132b23b5bb1d2ca"
+  }
+}
