@@ -62,15 +62,15 @@ G09 任务与工具日志锁已接入材料重建入口：从已存包派生任�
 
 | 项目 | 已有依据 | 仍缺的实现或验收 | 下一项能关闭缺口的证据 |
 | --- | --- | --- | --- |
-| G01 发布基线 | 固定 Linux 镜像、本机 HTTPS、10 合成成员隔离、两版 Web 回切、数据库跨集群恢复及上传卷恢复均有局部收据 | 目标云账号/主机、域名及成员未确定；目标部署、可信 HTTPS、异地副本、实际资料与数据库一致恢复、资源观察未验 | 目标主机上的实际包摘要、成员业务、备份恢复和回切记录；产品源码变化后在最终冻结点重建一次 |
+| G01 发布基线 | 固定 Linux 镜像、本机 HTTPS、10 合成成员隔离、两版 Web 回切、数据库跨集群恢复及上传卷恢复均有局部收据 | 用户已选公司 LAN/VPN、IP 192.168.0.170，后续明确本次暂不上线；最终冻结包、目标主机 HTTPS/证书信任、异地副本、资料与数据库一致恢复及资源观察未验 | 本次继续本地固定包及隔离验收，不以云账号或备案域名为前置；恢复上线后在目标主机核包摘要、成员业务、备份恢复和回切 |
 | G02 来源撤销 | 真实图、旧 checkpoint、隔离模型及局部 HTTP；当前构建的登记原件下载通过认证、Range、篡改和请求间撤回的真实 HTTP 验证 ([收据](evidence/ma24-g02-g05-asset-download-http-clone-2026-10-19.json)) | 当前服务上真实账号有界任务的生成期撤销、后续工具阻断和最终保存核对 | 获授权的专门来源/账号任务及撤销前后收据；新付费请求另列具体清单 |
 | G03 纠正与双时间 | 来源归属和自然纠正局部修复、隔离恢复证据 | 真实偏好/经历/业务事实与纠正样本不足；当前候选完整链路、通知/撤销/历史时间和本地 worker 试点未验 | 对照原句与更正内容的自然样本判决，以及当前 worker 的持久记录 |
 | G04 记忆图谱 | outbox、租约、故障恢复及 PostgreSQL 降级局部工程证据 | 当前版本获准真实样本的连续抽取、投影、时间/权限回校、撤销召回未验 | 连续消费及图谱停机/恢复的同一批来源收据 |
 | G05 Incremental knowledge | Formal workers pass PDF/PPTX/XLSX × private/shared revision matrix: failure/hold/tamper keeps old reads, one winner, exact unit 2 citations, history/retry and peer access match visibility ([six-group matrix](evidence/ma24-g05-formal-worker-six-group-revision-matrix-2026-10-19.json)) | Real-user sources, independent visual/content judgment, actual business answer citations and production worker remain unverified; this matrix does not repeat registration-process crash checks | Review approved real sources and actual answer citations; retain separate registration-recovery evidence and perform target deployment acceptance when resumed |
 | G06 安全 | 已定位旧歧义与注入失败，工具模型视图等边界已有修复 | 修复后固定协议的真实模型回答、独立安全判分不足；既有本地超时不能判通过 | 有明确请求范围的有效模型回答及答案/引用/权限/注入人工判决；相同超时配置不重复试跑 |
 | G07 真实回放 | 服务器持久收据与只读回放适配已实现；历史资格审计已有排除结果 | 尚无满足当前来源、Skill 相关性及完整收据要求的真实任务 | 同账号有效的完整只读任务或精确收据限定的子任务，固定版本回放和独立审核 |
-| G08 前瞻影子 | 原有登记、采集、局部影子/审核机制存在 | 真实任务开始前配置登记、原流程与候选的真实结果、可信生产身份不足 | 一次前瞻登记到执行、持久收据及审核的完整链；不能把历史任务补标成前瞻 |
-| G09 自动启用 | 冻结、存储、政策计算、恢复版本后停用等已实现 | **代码未完成**：可信生产 runner/collector 来源类别及其认证，最终启用事务对 Skill/来源/冻结/最新审核的锁定和重校尚未接通 | 服务器可验证运行来源、完整安全/回放/影子材料和最新审核；隔离正反例实际启用/拒绝/停用后再做有界试点 |
+| G08 前瞻影子 | 任务前登记/捕获、签名原流程/候选、统一材料及受限持久化已有合成数据库贯通证据；未将历史任务改标前瞻 | 真实任务的原流程/候选结果、可信生产身份及真实质量仍未验收 | 在既有授权范围内取得任务前登记到执行、持久收据及审核的真实完整链 |
+| G09 自动启用 | 冻结、存储、政策计算、同事务来源锁、运行声明及模型传输收据复核接线已实现；签名完整组合的新快照仍待返回 | **代码未完成**：可信生产 runner/collector 来源类别及其认证，最终启用事务对 Skill/来源/冻结/最新审核的锁定和重校尚未接通 | 服务器可验证运行包/提供方、完整安全/回放/影子材料和最新审核；隔离正反例实际启用/拒绝/停用后再做有界试点 |
 | G10 审核 | 前瞻合成两臂日志到数据库、compiled standalone HTTP 及 Chrome 页面读取、保存/回读、撤销和拒绝边界通过 | 完整真实人工材料、真实质量、生产身份及目标入口未验 | 在既有授权边界内准备真实同版本/冻结材料，逐题核对真实质量及生产入口 |
 | G11 邮箱/客户 | 同步进度、批量、并发冲突、阅读区等已有隔离工程证据 | 真实 IMAP 日期范围、全分页、断线续传/去重，客户归属/摘要质量及 worker 运行验收未完成 | 已授权账号及日期范围上的收件/已发送对账、恢复与逐例归属判定；历史提供方对账单独保留 |
 | G12 三模式 | 恢复原因白名单修复，60 项定向测试及全新库 12 组脚本业务通过 | 真实只读业务回答、提供方失败/迟到/未知结果恢复及正式加载未验 | 有界真实任务和隔离提供方响应的持久收据；已消耗的 MODESEL-14 授权不复用 |
@@ -264,3 +264,6 @@ G09 current-source collector image TLS preflight (2026-10-19): rebuilt from the 
 
 
 2026-10-19 / MA24-06 G09 measured package binding: the collector image launcher now compares the actual package/Node inventory SHA-256 with SKILL_RUNNER_DEPLOYMENT_SHA256 before --check or --execute can start the runner. Missing, malformed or mismatched hashes reject; --verify/--help can inspect without enrollment, and --verify reports the measured hash. Node execution arguments, NODE_OPTIONS and NODE_PATH are rejected. The image TLS fixture passes the independently measured package hash. Syntax, one inventory test, typecheck and lint passed; new Linux image and actual image/TLS checks are pending. This does not grant binary/provider/quality qualification, source promotion or activation, and introduces no new user confirmation. [Evidence](evidence/ma24-g09-measured-collector-deployment-binding-2026-10-19.json).
+
+
+2026-10-19 measured-package image verification completed: fixed image ma24-skill-collector:5baff449 (source 5baff449919e830ab945d6f09621c9d2e6e7cc42) passed actual read-only/non-root/no-network checks for 34,455 files, matching hash admission, missing/malformed/mismatched hash rejection, changed-runner rejection and NODE_OPTIONS refusal. A fresh database run passed actual Linux-image measured-hash TLS/collector-role preflight and the separate native signed historical fixture, with zero real model calls and the Skill disabled. This is not image --execute provider qualification or a full five-category image run. [Receipt](evidence/ma24-g09-measured-collector-deployment-binding-2026-10-19.json).

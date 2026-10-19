@@ -51,3 +51,12 @@
 
 
 2026-10-19 / MA24-06 G09 measured package binding: the collector image launcher now compares the actual package/Node inventory SHA-256 with SKILL_RUNNER_DEPLOYMENT_SHA256 before --check or --execute can start the runner. Missing, malformed or mismatched hashes reject; --verify/--help can inspect without enrollment, and --verify reports the measured hash. Node execution arguments, NODE_OPTIONS and NODE_PATH are rejected. The image TLS fixture passes the independently measured package hash. Syntax, one inventory test, typecheck and lint passed; new Linux image and actual image/TLS checks are pending. This does not grant binary/provider/quality qualification, source promotion or activation, and introduces no new user confirmation. [Evidence](evidence/ma24-g09-measured-collector-deployment-binding-2026-10-19.json).
+
+### 运行包哈希口径
+
+新 launcher 的 `deploymentHash` 是 `JSON.stringify(actualInventory)` 的 UTF-8 字节的 SHA-256，其中 `actualInventory` 为实际 `skill-collector-package-v1` 清单，包含 Node 可执行文件与包内文件。它不是单个 `runner.cjs` 哈希，也不是 Docker 镜像 ID。对固定镜像以只读、无网络方式执行 `--verify` 可取得该值；未提供预期值时，输出的 `deploymentEnrollmentVerified` 为 false。
+
+执行 `--check`/`--execute` 前，操作员配置的 `SKILL_RUNNER_DEPLOYMENT_SHA256` 必须等于该实测值，签名公钥登记中的 `deploymentHash` 也须沿用同一口径。旧的任意声明值不能用于新 launcher。公钥登记、受控镜像启动、运行期及提供方认证仍各自需要证据；配置匹配本身不产生生产资格或启用许可。本次没有创建或登记生产密钥，也没有启动团队服务。
+
+
+2026-10-19 measured-package image verification completed: fixed image ma24-skill-collector:5baff449 (source 5baff449919e830ab945d6f09621c9d2e6e7cc42) passed actual read-only/non-root/no-network checks for 34,455 files, matching hash admission, missing/malformed/mismatched hash rejection, changed-runner rejection and NODE_OPTIONS refusal. A fresh database run passed actual Linux-image measured-hash TLS/collector-role preflight and the separate native signed historical fixture, with zero real model calls and the Skill disabled. This is not image --execute provider qualification or a full five-category image run. [Receipt](evidence/ma24-g09-measured-collector-deployment-binding-2026-10-19.json).

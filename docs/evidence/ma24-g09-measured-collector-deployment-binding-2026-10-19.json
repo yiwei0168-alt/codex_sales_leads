@@ -18,19 +18,61 @@
     "packageInventoryTests": "1 passed",
     "focusedEslint": "passed",
     "typecheck": "passed",
-    "fixedCommitLinuxImageBuild": "pending",
-    "actualImageAdversarialVerification": "pending",
-    "actualImageTlsDatabasePreflight": "pending"
+    "fixedCommitLinuxImageBuild": "passed",
+    "actualImageAdversarialVerification": "passed",
+    "actualImageTlsDatabasePreflight": "passed"
   },
   "limitations": [
     "A matching configured package hash does not authenticate who launched the process, its later lifetime, a real provider, or independent quality.",
     "No production keys, registry enrollment, signed source promotion, Skill activation or deployment.",
     "Native compiled pending-kind synthetic runners do not acquire measured-package qualification.",
-    "Actual new-image execution remains pending; prior images do not prove this implementation."
+    "Linux image --check is a database preflight; no Linux-image --execute provider request or full five-category image run was performed."
   ],
   "filesSha256": {
     "scripts/start-skill-collector.mjs": "ca3286bf0d02a64d3ac8d2efcbe075f0fff5b896400839e3897f0d8f28bd0a52",
     "scripts/verify-skill-collector-image.mjs": "0880c4ca16c23637a9c54a56455b4a28554b54fb8ab1edd320ad7e98e8b9eacc",
     "scripts/verify-skill-transport-journal-db.ts": "4e61d3716416b2f988041d07276192aa98cea5c9976df4e58c9e659181802ee8"
+  },
+  "implementationCommit": "5baff449919e830ab945d6f09621c9d2e6e7cc42",
+  "image": {
+    "buildCommand": "node scripts/build-skill-collector-image.mjs",
+    "verificationCommand": "node scripts/verify-skill-collector-image.mjs ma24-skill-collector:5baff449",
+    "exitCode": 0,
+    "name": "ma24-skill-collector:5baff449",
+    "imageId": "sha256:b2c3dcff47e925013b5f3e32fe011f6005c7635066f9dd7b838225242c52ea5d",
+    "sourceCommit": "5baff449919e830ab945d6f09621c9d2e6e7cc42",
+    "packageFiles": 34455,
+    "deploymentHash": "50968fd62d01a5ac2e6bca41b5a252cca6aba8679fbe5541077c593774e3b28b",
+    "measuredHashConfigurationMatchVerified": true,
+    "missingMalformedAndMismatchedHashRejectedBeforeRunner": true,
+    "matchedHashReachesRunner": true,
+    "changedRunnerRejectedBeforeExecution": true,
+    "nodeOptionsRejected": true,
+    "containersNonRootReadOnlyAndNoNetwork": true,
+    "actualModelCalls": 0,
+    "productionQualified": false
+  },
+  "database": {
+    "command": "node --import tsx scripts/verify-ma24-fresh-pilot-new-cluster.ts --collector-image=ma24-skill-collector:5baff449",
+    "exitCode": 0,
+    "freshClusterPilot": "passed",
+    "transportJournalDatabase": "passed",
+    "collectorImageTlsPreflight": true,
+    "restrictedCollectorRoleVerified": true,
+    "appRoleMembershipRejected": true,
+    "originalTaskSignedFallbackReadback": true,
+    "originalTaskRecoveryReuse": true,
+    "originalTaskCrossAccountRejected": true,
+    "originalTaskKeyRevocationRejected": true,
+    "originalTaskTamperedSignatureRejected": true,
+    "originalTaskRouteGapRejected": true,
+    "configuredSignedHistoricalCandidateDatabaseVerified": true,
+    "candidateSkillRemainsDisabled": true,
+    "billingAndNetworkAdaptersSynthetic": true,
+    "actualModelCalls": 0,
+    "binaryVerified": false,
+    "completeCompositionVerified": false,
+    "temporaryDatabaseContainerRemoved": true,
+    "scope": "Actual measured-hash image launcher and verified-TLS database preflight; subsequent signing/business-read history runs in native compiled fixtures, not the Linux image. Not a qualified production collector execution."
   }
 }
