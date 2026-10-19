@@ -1,5 +1,7 @@
 # G01/G02 普通主任务运行包
 
+2026-10-20 终态：固定 `66924a48` 的 Web/普通主运行镜像构建、源码/Node 核对及实际 API/编译 worker 链均通过。初次 `server-only` 失败保留，下方“待验”为历史。[本轮完整范围](MAIN_AGENT_RUNTIME_ACCEPTANCE_2026-10-20.md)。
+
 新增独立主任务镜像构建入口：`node scripts/build-main-agent-runtime-image.mjs`。构建只读取当前 Git 提交的 archive，固定 Node 24 基础镜像摘要和 npm 锁文件；worker 与 `mainAgentWorkflowGraph` 分别编译为 ESM，保留输入清单及 SHA-256。普通 worker 在 --once 或停止循环结束后关闭数据库池。
 
 镜像包含 server/worker 两个角色。server 使用现有 LangGraph API，监听本容器 `127.0.0.1:2024`；worker 可在同一网络命名空间连接此地址。外层 API 的本地状态文件写 `/runtime`，应用内层 checkpoint 和权威任务收据仍在 PostgreSQL。`/runtime` 的目标环境持久化与备份尚未验收。

@@ -1,5 +1,7 @@
 # G01/G09 固定运行包构建与核对（2026-10-19）
 
+2026-10-20 普通主任务包：`66924a48` Web/主 API-worker 镜像已通过同源/Node、受限包和真实队列/API/checkpoint 恢复的正常与撤回分支；不是采集器镜像。下方 `dddb9bfc` 仍是单独的 Web/Skill 采集器已验组合，不能跨提交拼成同一认证候选。[主任务范围](MAIN_AGENT_RUNTIME_ACCEPTANCE_2026-10-20.md)。
+
 最新双镜像已固定到 `dddb9bfc`，源码/Node 指纹、入口、迁移 157 Web/恢复、数据库模式 Linux 声明及当前十套合成 UI 分别通过；旧 `d6ffb7a1` 收据保留为历史。完整依赖/提供方/真实质量和最终启用仍未完成。[当前固定包范围](RUNTIME_PAIR_DDDB9BFC_SCHEMA157_2026-10-19.md)。
 
 ## 修复
