@@ -185,3 +185,5 @@ G11 IMAP 分页修复（2026-10-19）：首次同步改为按最早 UID 开始�
 G05 当前正式 worker 复跑（2026-10-19）：隔离 MA11 回放库的监督进程中断、租约恢复、跨账号并行与损坏 PDF 失败隔离通过，OCR 检查点复用；无资料发布、无模型/外部调用。[工程证据](evidence/ma24-g05-supervisor-recovery-rerun-2026-10-19.json)。成功 PDF/PPTX、修订多作业矩阵、用户可见引用及生产部署仍待验。
 
 G11 并发去重续页补强（2026-10-19）：同步页仅因并发导入而整页跳过时，worker 继续处理后续 UID 页；无导入、无去重且仍发现邮件时仍按解析失败保留任务错误。真实邮箱及 provider 故障恢复仍待验。[工程证据](evidence/ma24-g11-concurrent-dedupe-page-continuation-2026-10-19.json)。
+
+G09 transport-journal current-snapshot rerun (2026-10-19): the transport-journal disposable database check passed from the `7ebc47d7` git archive, including signed request closure, journal persistence/recovery, cross-account isolation, revocation and tamper rejection. The candidate Skill remains disabled and model calls were 0. [Receipt](evidence/ma24-g09-transport-journal-current-snapshot-rerun-2026-10-19.json). This mode does not cover the full five-category source composition; real quality, production identity, binary qualification and final activation remain incomplete.

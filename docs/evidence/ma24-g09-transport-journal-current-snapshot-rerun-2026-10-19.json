@@ -1,0 +1,37 @@
+{
+  "schema": "ma24-g09-transport-journal-current-snapshot-rerun-v1",
+  "date": "2026-10-19",
+  "sourceCommit": "7ebc47d77b0895eecc11a26282bb03bc01b60d79",
+  "runner": "node scripts/run-ma24-snapshot-check.mjs --transport-journal",
+  "scope": "Fresh git-archive source snapshot; disposable local PostgreSQL cluster and transport-journal database verifier.",
+  "result": {
+    "snapshotCheck": "passed",
+    "transportJournalDatabase": "passed",
+    "originalTaskSignedFallbackReadback": true,
+    "recoveryReuse": true,
+    "crossAccountRejected": true,
+    "keyAndFreezeRevocationRejected": true,
+    "tamperedSignatureRejected": true,
+    "requestClosureExecuted": true,
+    "syntheticFailureAndStreamSuccessPersisted": true,
+    "signedBusinessReadAndGraphReplayVerified": true,
+    "candidateSkillRemainsDisabled": true,
+    "actualModelCalls": 0,
+    "automaticActivation": false,
+    "billingAndNetworkAdaptersSynthetic": true,
+    "binaryVerified": false,
+    "collectorImageTlsPreflightVerified": false,
+    "completeCompositionVerified": false,
+    "linuxWebHttpWorkflowVerified": false
+  },
+  "checks": {
+    "snapshotVerifierExitCode": 0,
+    "source": "git archive",
+    "dependencyLockMatched": true
+  },
+  "limits": [
+    "This mode checks the transport journal and original-task signing closure only; it does not assert the full G09 five-category source-lock composition.",
+    "No real model calls, candidate Skill activation, binary qualification, or deployment attestation occurred.",
+    "The recheck does not close G09 real-quality, mutable-source revocation, production identity, or final activation gates."
+  ]
+}
