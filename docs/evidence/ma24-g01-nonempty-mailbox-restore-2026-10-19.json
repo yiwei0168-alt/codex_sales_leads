@@ -1,0 +1,30 @@
+{
+  "stage": "MA24 G01 nonempty synthetic mailbox cross-cluster restore",
+  "date": "2026-10-19",
+  "status": "passed; integrated-file-and-production-recovery-pending",
+  "harnessBaseCommit": "d10320f0",
+  "applicationImage": "ma24-pilot-web:4a1ee07f",
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --web-image=ma24-pilot-web:4a1ee07f --current-schema --backup --cross-cluster",
+  "attempts": [
+    {"exitCode": 1, "log": "tmp/ma24-nonempty-mailbox-backup-2026-10-19.log", "reason": "Synthetic fixture omitted required mailbox_connection.display_name; transaction rolled back and temporary cluster cleaned."},
+    {"exitCode": 0, "log": "tmp/ma24-nonempty-mailbox-backup-retry-2026-10-19.log", "change": "Supply the required synthetic display name."}
+  ],
+  "coverage": [
+    "One synthetic disabled mailbox connection with encrypted unusable credential, one encrypted message, one UID cursor, one running sync work job and one run bound to its job ID/lease token.",
+    "Migration 153 fresh source, exported-snapshot pg_dump, same-instance restore and separate-instance role bootstrap/restore all pass.",
+    "Five mailbox tables compare exact full JSON rows across instances in UTC, including ciphertext, timestamps, UID and job/lease binding.",
+    "Restored plaintext subject/body columns remain empty; actual mailbox crypto decrypts content and credential with the same ephemeral key.",
+    "Wrong key cannot decrypt content or credential; a different owner cannot decrypt the original owner's content.",
+    "Restricted application role under original owner sees the fixture row in each of five tables; peer owner sees zero fixture rows in all five.",
+    "Temporary restore database, both PostgreSQL containers, source Web, network and disposable archive directory are removed."
+  ],
+  "checks": {"typecheck": "exit 0", "focusedEslint": "exit 0", "diffCheck": "exit 0"},
+  "result": {"freshMigrationThrough": 153, "pilotBackupRestoreVerified": true, "crossClusterRestoreVerified": true, "nonemptyMailboxCrossClusterRestoreVerified": true},
+  "limits": [
+    "All data and encryption keys are synthetic, ephemeral and confined to this disposable local run. No real mailbox, model, external provider or production database calls.",
+    "The encryption key is retained only inside the verifier process. This does not prove separate key backup/distribution, rotation or operator recovery procedures.",
+    "Disabled connection and synthetic running job do not exercise IMAP access, worker restart, stale lease reclamation or resumed processing after restore.",
+    "No restored Web, browser or TLS acceptance on the target database. Web HTTP smoke belongs to the source temporary database.",
+    "No physical upload volume/database consistent recovery, off-host backup, target-host deployment or cutover rollback. G01 remains incomplete."
+  ]
+}

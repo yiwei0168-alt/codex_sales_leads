@@ -6,6 +6,7 @@ import { createServer } from "node:net";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { Client } from "pg";
+import {prepareMailboxRestoreFixture} from './lib/ma24-mailbox-restore-fixture';
 
 const id = randomBytes(6).toString("hex");
 const containerName = `ma24-pilot-fresh-${id}`;
@@ -464,6 +465,8 @@ try {
       } finally { rmSync(tempDirectory, { recursive: true, force: true }); }
     }
     if (backupCheck) {
+      const verifyMailboxRestore=currentSchemaCheck?await prepareMailboxRestoreFixture(
+        adminUrl.toString(),credentials[0].email,credentials[1].email):undefined;
       const tempDirectory = mkdtempSync(join(tmpdir(), "ma24-pilot-backup-"));
       try {
         const backup = await run(process.execPath,
@@ -564,6 +567,7 @@ try {
               } finally { await restoredApp.query("rollback"); }
             }
           } finally { await restoredApp.end(); }
+          if(verifyMailboxRestore)await verifyMailboxRestore(restoredAdminUrl.toString(),restoredAppUrl.toString());
           assert(!restoredArchive.output.includes(restoredAdminPassword), "Restore exposed the disposable password");
         }
       } finally { rmSync(tempDirectory, { recursive: true, force: true }); }
@@ -598,6 +602,7 @@ try {
     linuxWebImage: webImage ?? null, linuxWebHttpWorkflowVerified: Boolean(webImage),
     linuxWebHttpsBrowserVerified: browserCheck, tenConcurrentSyntheticAccountsVerified: tenUserCheck,
     pilotBackupRestoreVerified: backupCheck, crossClusterRestoreVerified: crossClusterCheck,
+    nonemptyMailboxCrossClusterRestoreVerified:currentSchemaCheck&&backupCheck&&crossClusterCheck,
     scriptedModeBusinessVerified: modeBusinessCheck,
     runnerAttestationStoreVerified: runnerAttestationCheck,
     collectorDeclarationImageVerified: Boolean(declarationImage),
