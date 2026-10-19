@@ -5,7 +5,7 @@ import {observeMemoryInTransaction} from "./temporal-memory";
 import {proposeExperienceSkillInTransaction} from './experience-skill-draft';
 import {learnToolReceiptMemories} from './tool-receipt-memory';
 import {processMessageMemoryCorrection} from './memory-correction';
-import {correctionMessageHash,mayContainMemoryCorrection,naturalCorrectionSchema,validateNaturalCorrection} from './natural-memory-correction';
+import {prepareNaturalCorrectionProposal,mayContainMemoryCorrection,naturalCorrectionSchema,validateNaturalCorrection} from './natural-memory-correction';
 import {isDirectMemorySpan} from './memory-source-context';
 
 const itemSchema=z.object({
@@ -101,7 +101,7 @@ async function extractCorrection(text:string,base:URL,fetcher:Fetcher){
   const payload=await response.json() as {message?:{content?:string}};
   let output:unknown;try{output=JSON.parse(payload.message?.content??'');}catch{throw new Error('schema_invalid');}
   const parsed=naturalCorrectionSchema.safeParse(output);if(!parsed.success)throw new Error('schema_invalid');
-  const proposal={messageSha256:correctionMessageHash(text),output:parsed.data};
+  const proposal=prepareNaturalCorrectionProposal(text,parsed.data);
   validateNaturalCorrection(text,proposal);return proposal;
 }
 export async function extractLocalMemoryCorrection(text:string,fetcher:Fetcher=fetch){

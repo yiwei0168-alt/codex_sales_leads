@@ -8,7 +8,7 @@ import {Client} from 'pg';
 
 /** Actual --once worker and local model, only in the owning disposable cluster.
  * The loopback relay forwards bytes unchanged and bounds/counts model requests. */
-export async function verifyMa24LocalMemoryWorker(options:{adminUrl:string;appUrl:string;ownerEmail:string;disposableContainerId:string;graphWorker?:boolean}){
+export async function verifyMa24LocalMemoryWorker(options:{adminUrl:string;appUrl:string;ownerEmail:string;disposableContainerId:string;graphWorker?:boolean;chinese?:boolean}){
  assert(/^[a-f0-9]{64}$/.test(options.disposableContainerId));assert(options.ownerEmail.endsWith('@example.invalid'));
  const adminUrl=new URL(options.adminUrl),appUrl=new URL(options.appUrl);
  assert.equal(adminUrl.hostname,'127.0.0.1');assert.equal(appUrl.host+appUrl.pathname,adminUrl.host+adminUrl.pathname);
@@ -74,16 +74,27 @@ export async function verifyMa24LocalMemoryWorker(options:{adminUrl:string;appUr
    if(expectedRun)assert(events.some(row=>row.event===event&&(graph?row.observationId:row.runId)===expectedRun&&row.status===(graph?'delivered':'ready')));
    else assert(!events.some(row=>row.event===event));
   };
-  const first=await queue('I prefer long reports.');await once(first.run);
-  const original=(await admin.query("select id,kind,source_receipt from agent_memory_observation where owner_id=$1 and source_receipt->>'runId'=$2",[owner,first.run])).rows;
+  const firstText=options.chinese?'我喜欢详细报告。':'I prefer long reports.';
+  const correctionText=options.chinese?'我之前说我喜欢详细报告，那不对。纠正一下，我喜欢简短报告。':'I previously said I prefer long reports. That was wrong. I prefer concise reports.';
+  const first=await queue(firstText);await once(first.run);
+  const original=(await admin.query("select id,kind,source_receipt,valid_from,valid_until from agent_memory_observation where owner_id=$1 and source_receipt->>'runId'=$2",[owner,first.run])).rows;
   assert.equal(original.length,1);assert.equal(original[0].kind,'preference');assert.equal(original[0].source_receipt.messageId,first.message);
-  const second=await queue('I previously said I prefer long reports. That was wrong. I prefer concise reports.');await once(second.run);
-  const corrected=(await admin.query('select id,content,source_receipt from agent_memory_observation where owner_id=$1 and corrects_id=$2',[owner,original[0].id])).rows;
-  assert.equal(corrected.length,1);assert(['I prefer concise reports','I prefer concise reports.'].includes(corrected[0].content));
+  const second=await queue(correctionText);await once(second.run);
+  const corrected=(await admin.query('select id,content,source_receipt,valid_from,valid_until from agent_memory_observation where owner_id=$1 and corrects_id=$2',[owner,original[0].id])).rows;
+  assert.equal(corrected.length,1);assert((options.chinese?['我喜欢简短报告','我喜欢简短报告。']:['I prefer concise reports','I prefer concise reports.']).includes(corrected[0].content));
   assert.equal(corrected[0].source_receipt.messageId,second.message);
+  if(corrected[0].source_receipt.framingNormalization){
+   assert.equal(corrected[0].source_receipt.framingNormalization.normalizer,'leading-self-report-v1');
+   assert(correctionText.startsWith(corrected[0].source_receipt.framingNormalization.oldContentBefore));
+  }
   for(const id of [original[0].id,corrected[0].id])for(const table of ['agent_memory_notice','agent_memory_graph_outbox'])
    assert.equal((await admin.query(`select count(*)::int n from ${table} where observation_id=$1`,[id])).rows[0].n,1);
-  const calls=chats;await once();assert.equal(chats,calls);assert.equal(chats,2);assert.deepEqual(errors,[]);
+  if(options.chinese){
+   const third=await queue('客户说：“我喜欢详细报告。”');await once(third.run);
+   assert.equal((await admin.query("select count(*)::int n from agent_memory_observation where owner_id=$1 and source_receipt->>'runId'=$2",[owner,third.run])).rows[0].n,0,'Quoted customer preference must not become account memory');
+   for(const row of [...original,...corrected]){assert.equal(row.valid_from,null);assert.equal(row.valid_until,null);}
+  }
+  const calls=chats;await once();assert.equal(chats,calls);assert.equal(chats,options.chinese?3:2);assert.deepEqual(errors,[]);
   if(options.graphWorker){
    graphOwner=owner;graphIds.push(original[0].id,corrected[0].id);
    await writeFile(`${directory}/graph-fixture.json`,JSON.stringify({ownerId:owner,observationIds:graphIds})+'\n');
@@ -94,7 +105,9 @@ export async function verifyMa24LocalMemoryWorker(options:{adminUrl:string;appUr
   }
   const after=(await admin.query(`select (select count(*)::int from product_fact) p,(select count(*)::int from knowledge_fact) k,
    (select count(*)::int from knowledge_fact_v3) v,(select count(*)::int from lead_scoring_policy) s`)).rows[0];assert.deepEqual(after,before);
-  const result={actualWorkerCli:true,workerOnceInvocations:3,queueSelectionAndReadyVerified:true,preferenceAndNaturalCorrection:true,
+  const result={actualWorkerCli:true,workerOnceInvocations:options.chinese?4:3,queueSelectionAndReadyVerified:true,preferenceAndNaturalCorrection:true,
+   language:options.chinese?'zh-CN':'en',quotedCustomerPreferenceRejected:!!options.chinese,unknownBusinessDatesPreserved:!!options.chinese,
+   correctionFramingNormalizationRecorded:!!corrected[0].source_receipt.framingNormalization,
    noticesAndOutboxExactlyOnce:true,emptyQueueMakesNoModelCall:true,formalFactAndPolicyCountsUnchanged:true,model:'qwen3:8b',modelDigest:digest,
    actualLocalChatCalls:chats,tagCalls:tags,rawDirectory:directory,rawResponseHashes:await Promise.all(Array.from({length:chats},async(_,i)=>{
     const {readFile}=await import('node:fs/promises');return createHash('sha256').update(await readFile(`${directory}/chat-${i+1}.json`)).digest('hex');})),

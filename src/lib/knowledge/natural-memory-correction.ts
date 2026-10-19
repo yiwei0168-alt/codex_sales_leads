@@ -1,14 +1,31 @@
 import {createHash} from 'node:crypto';
 import {z} from 'zod';
-import {hasAttributedMemoryText} from './memory-source-context';
+import {hasAttributedMemoryText,isDirectMemorySpan} from './memory-source-context';
 
 export const naturalCorrectionSchema=z.object({
   intent:z.enum(['correction','not-correction','uncertain']),
   oldContent:z.string().trim().min(3).max(800).nullable(),
   content:z.string().trim().min(3).max(800).nullable(),
 }).strict();
-export type NaturalCorrectionProposal={messageSha256:string;output:z.infer<typeof naturalCorrectionSchema>};
+export type NaturalCorrectionProposal={messageSha256:string;output:z.infer<typeof naturalCorrectionSchema>;
+  framingNormalization?:{normalizer:'leading-self-report-v1';oldContentBefore:string}};
 export const correctionMessageHash=(text:string)=>createHash('sha256').update(text).digest('hex');
+
+/** Remove only a fixed self-report frame from the model's old span at the very
+ * beginning of the active message. Never summarize, select a target or rewrite
+ * a proposition. The unchanged validator must accept both verbatim spans. */
+export function prepareNaturalCorrectionProposal(text:string,output:z.infer<typeof naturalCorrectionSchema>):NaturalCorrectionProposal{
+  const proposal:NaturalCorrectionProposal={messageSha256:correctionMessageHash(text),output:naturalCorrectionSchema.parse(output)};
+  const old=proposal.output.oldContent;
+  if(proposal.output.intent!=='correction'||!old||!text.trimStart().startsWith(old))return proposal;
+  const content=old.replace(/^(?:我之前说\s*|I previously said\s+)/i,'');
+  if(content===old||!/^(?:我(?:们)?|I\b|we\b|our\b)/i.test(content)||!proposal.output.content
+    ||!isDirectMemorySpan(text,content)||!isDirectMemorySpan(text,proposal.output.content))return proposal;
+  const normalized={...proposal,output:{...proposal.output,oldContent:content}};
+  const checked=validateNaturalCorrection(text,normalized);
+  if(!('correction' in checked)||!checked.correction)return proposal;
+  return {...normalized,framingNormalization:{normalizer:'leading-self-report-v1',oldContentBefore:old}};
+}
 
 /** Ingestion hint only; it neither routes Agent tasks nor selects a memory target. */
 export function mayContainMemoryCorrection(text:string){

@@ -25,7 +25,7 @@ export async function correctMemory(userId:string,input:z.input<typeof memoryCor
   return tenantTransaction(userId,client=>correctInTransaction(client,userId,p));
 }
 
-type MessageSource={runId:string;messageId:string;messageSha256:string;sourceQuote:string;recognizer?:string};
+type MessageSource={runId:string;messageId:string;messageSha256:string;sourceQuote:string;recognizer?:string;framingNormalization?:NaturalCorrectionProposal['framingNormalization']};
 async function correctInTransaction(client:PoolClient,userId:string,p:z.output<typeof memoryCorrectionSchema>,source?:MessageSource){
     await lockMemorySourceAdmission(client,userId);
     const target=(await client.query<Target>(`select id,kind,content,memory_key,market_code,company_id,
@@ -66,7 +66,8 @@ async function correctInTransaction(client:PoolClient,userId:string,p:z.output<t
       sourceReceipt:{type:source?'user-message-correction':'user-correction',targetId:p.id,sourceQuote:p.content,reason:p.reason,
         ...(p.businessTime?{businessTimeCorrection:{explicit:true,before:{validFrom:target.valid_from,validUntil:target.valid_until},after:{validFrom,validUntil}}}:{}),
         ...(source?{runId:source.runId,messageId:source.messageId,messageSha256:source.messageSha256,commandQuote:source.sourceQuote,
-          ...(source.recognizer?{recognizer:source.recognizer}:{})}:{}),
+          ...(source.recognizer?{recognizer:source.recognizer}:{}),
+          ...(source.framingNormalization?{framingNormalization:source.framingNormalization}:{})}:{}),
         usage:'unverified-internal-only',successVerified:false,observationBasis:'user-correction'},
     });
 }
@@ -136,7 +137,7 @@ export async function processMessageMemoryCorrection(userId:string,runId:string,
           try{
             await correctInTransaction(client,userId,{id:targets.rows[0].id,content:parsed.correction.content,reason:'用户在对话中明确更正'},
               {runId,messageId:source.message_id,messageSha256:createHash('sha256').update(source.content).digest('hex'),sourceQuote:source.content,
-                ...(proposal?{recognizer:'local-qwen3-exact-spans-v1'}:{})});
+                ...(proposal?{recognizer:'local-qwen3-exact-spans-v1',...(proposal.framingNormalization?{framingNormalization:proposal.framingNormalization}:{})}:{})});
             corrected=true;
           }catch(error){
             if(!(error instanceof Error)||!['Memory version changed','Memory conflict requires review','Memory correction is unchanged'].includes(error.message))throw error;
@@ -148,7 +149,7 @@ export async function processMessageMemoryCorrection(userId:string,runId:string,
         content:`收到记忆更正请求，但未自动替换：${reason}。请到记忆中心核对原记录并更正。`,idempotencyKey:key,
         sourceReceipt:{type:'unresolved-memory-correction',runId,messageId:source.message_id,
           messageSha256:createHash('sha256').update(source.content).digest('hex'),reason,usage:'review-notice-only',successVerified:false,
-          ...(proposal?{recognizer:'local-qwen3-exact-spans-v1',proposal:proposal.output}: {})}});
+          ...(proposal?{recognizer:'local-qwen3-exact-spans-v1',proposal:proposal.output,...(proposal.framingNormalization?{framingNormalization:proposal.framingNormalization}:{})}: {})}});
     }
     const completed=await client.query(`update agent_memory_extraction_job set status='ready',lease_token=null,error_code=null,updated_at=clock_timestamp()
       where owner_id=$1 and run_id=$2 and status='processing' and lease_token=$3

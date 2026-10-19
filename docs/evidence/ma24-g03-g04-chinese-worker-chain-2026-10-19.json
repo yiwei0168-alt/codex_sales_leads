@@ -1,0 +1,74 @@
+{
+  "date": "2026-10-19",
+  "scope": "Modified worktree based on bc999545; host Workers on disposable schema 156; Web d6ffb7a1 is the older fixed HTTP environment",
+  "exitCode": 0,
+  "log": "tmp/ma24-chinese-memory-worker-chain-normalized-2026-10-19.log",
+  "workerChain": {
+    "actualWorkerCli": true,
+    "workerOnceInvocations": 4,
+    "queueSelectionAndReadyVerified": true,
+    "preferenceAndNaturalCorrection": true,
+    "language": "zh-CN",
+    "quotedCustomerPreferenceRejected": true,
+    "unknownBusinessDatesPreserved": true,
+    "correctionFramingNormalizationRecorded": true,
+    "noticesAndOutboxExactlyOnce": true,
+    "emptyQueueMakesNoModelCall": true,
+    "formalFactAndPolicyCountsUnchanged": true,
+    "model": "qwen3:8b",
+    "modelDigest": "500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41",
+    "actualLocalChatCalls": 3,
+    "tagCalls": 3,
+    "rawDirectory": "tmp/ma24-real-memory-worker-d7b22ef6-05f1-459c-a532-f29dca603919",
+    "rawResponseHashes": [
+      "2aad90bfb29b96f37159d8b676d3bfdacbd44fb5d2ea6b2affa7101bd4ce549b",
+      "1abe2abb2cc8ef33c0d0157130c97695a1b1a9d9cb8d3bbe3471303eb1458c4d",
+      "c5a16ffac3759f514f07cdaadfb25a4f20f98d90ab3c223d118c093f6049af37"
+    ],
+    "actualGraphWorkerCli": true,
+    "graphWorkerOnceInvocations": 3,
+    "graphOutboxDeliveredExactlyOnce": true,
+    "scopedGraphCleanupVerified": true,
+    "syntheticInputsOnly": true,
+    "cloudCalls": 0,
+    "productionWrites": 0,
+    "qualityAccepted": false
+  },
+  "englishContract": {
+    "passed": true,
+    "actualLocalModelContract": true,
+    "model": "qwen3:8b",
+    "language": "en",
+    "actualChatCalls": 1,
+    "tagCalls": 1,
+    "rawResponseSha256": "c2556b7a57af0747135ced4f30c2d5016641c38d4465967ef56f79c4d0436c98",
+    "normalized": false,
+    "databaseOrWorkerFlowVerified": false,
+    "syntheticSourceOnly": true,
+    "cloudCalls": 0,
+    "productionWrites": 0,
+    "independentQualityAccepted": false
+  },
+  "regressionTestsPassed": 83,
+  "typescriptPassed": true,
+  "focusedLintPassed": true,
+  "temporaryClusterRemoved": true,
+  "earlierFailures": [
+    {
+      "log": "tmp/ma24-chinese-memory-worker-chain-2026-10-19.log",
+      "rawDirectory": "tmp/ma24-real-memory-worker-cd23e198-969f-4f9b-8c83-d55109feee1c",
+      "result": "Model oldContent includes self-report framing; strict validation routes to review rather than automatic replacement"
+    },
+    {
+      "log": "tmp/ma24-chinese-memory-worker-chain-fewshot-2026-10-19.log",
+      "rawDirectory": "tmp/ma24-real-memory-worker-f894cb6d-35d9-4e31-8b49-0cc8657f545d",
+      "result": "Different-content format examples did not correct model span framing; examples removed"
+    }
+  ],
+  "independentGold": false,
+  "realBusinessQualityAccepted": false,
+  "continuousPilotVerified": false,
+  "fullHistoricalUndoRetrievalReverified": false,
+  "productionQualified": false,
+  "automaticActivation": false
+}
