@@ -1,0 +1,42 @@
+{
+  "schema": "ma24-g05-supervisor-recovery-rerun-v1",
+  "date": "2026-10-19",
+  "scope": "Disposable MA11 replay database; current formal knowledge worker; synthetic accounts and local upload fixtures only.",
+  "sourceCommit": "c2c278f0",
+  "verifier": "scripts\\verify-knowledge-supervisor-clone.ts",
+  "verifierSha256": "d996941db3f0e4245aa1b858823cd174e39a3c520571b614dc7caf548e978073",
+  "result": {
+    "cloneOnly": true,
+    "platform": "win32",
+    "actualSupervisorKills": 2,
+    "descendantsStopped": true,
+    "extractionLeaseHeld": true,
+    "extractionExpiredRecovery": true,
+    "visualLeaseHeld": true,
+    "malformedPdfFailedWithoutCrossJobEffect": true,
+    "peerAccountCompletedWhileTargetHeld": true,
+    "peerVisualReady": true,
+    "expiredFinishRejected": true,
+    "visualExpiredRecovery": true,
+    "ocrExecutionsOnResume": 0,
+    "ocrCheckpointReuses": 1,
+    "unrelatedJobUnchanged": true,
+    "v3PointersUnchanged": true,
+    "documentsPublished": 0,
+    "judgments": 0,
+    "externalCalls": 0,
+    "syntheticFixture": true,
+    "qualityAccepted": false
+  },
+  "checks": {
+    "verifierExitCode": 0,
+    "typescript": "passed",
+    "focusedEslint": "passed",
+    "diffCheck": "passed"
+  },
+  "limits": [
+    "Revalidates worker interruption, lease recovery, cross-account isolation and malformed-PDF failure only.",
+    "Does not cover successful PDF/PPTX ingestion, revised-version multi-job matrix, user-visible citations, production deployment, or content quality.",
+    "No provider calls or external services were used."
+  ]
+}

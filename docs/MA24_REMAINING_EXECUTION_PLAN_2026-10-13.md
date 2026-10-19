@@ -395,7 +395,7 @@ G16 冻结清单现强制 `no-answer` 标签与预期行为双向一致，且权
 
 ### R1：关闭 G02–G05 的具体缺口
 
-2026-10-16 G05 多格式失败隔离补验：在既有三作业 XLSX 中断/续租演练中加入合成损坏 PDF。PDF worker 失败后，目标 XLSX 视觉租约、另一账号待处理 XLSX 和 v3 发布指针均未变化；另一账号后续视觉候选成功，测试数据库计数恢复原值。[收据](evidence/ma24-g05-cross-format-worker-failure-clone-2026-10-16.json)。这只覆盖一类 PDF 失败与 XLSX 并行恢复，不替代成功 PDF/PPTX 或修订版本的多作业矩阵；G05 质量和部署仍未完成。
+2026-10-16 G05 多格式失败隔离补验：在既有三作业 XLSX 中断/续租演练中加入合成损坏 PDF。PDF worker 失败后，目标 XLSX 视觉租约、另一账号待处理 XLSX 和 v3 发布指针均未变化；另一账号后续视觉候选成功，测试数据库计数恢复原值。[收据](evidence/ma24-g05-cross-format-worker-failure-clone-2026-10-16.json)。这只覆盖一类 PDF 失败与 XLSX 并行恢复，不替代成功 PDF/PPTX 或修订版本的多作业矩阵；G05 质量和部署仍未完成。\n\n2026-10-19 G05 当前 worker 复跑：在 disposable MA11 回放数据库重跑正式 supervisor 验证器，2 次监督进程中断、租约恢复、跨账号隔离、损坏 PDF 不影响并行 XLSX、OCR 检查点复用均通过；无资料发布、无判题、无外部调用。[复跑收据](evidence/ma24-g05-supervisor-recovery-rerun-2026-10-19.json)。此项重验不增加成功 PDF/PPTX、修订多作业矩阵、用户可见引用或生产部署证据，内容质量仍未接受。
 
 同日 G05 当前源码修订回放：现有审核后修订脚本在隔离库重新覆盖 PDF 原件、PPTX 修订及私有/共享两类范围；待审、篡改、登记前中断均保留旧版，登记后重放与竞争修订拒绝通过，v3 指针未变。[收据](evidence/ma24-g05-current-reviewed-revision-recovery-2026-10-16.json)。这是合成审核工程路径，仍缺全部格式组合、真实用户引用和正式 worker 加载。
 
