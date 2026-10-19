@@ -1,0 +1,30 @@
+{
+  "stage": "MA24 G13 current Linux mailbox UI integration",
+  "date": "2026-10-19",
+  "status": "candidate-static-checks-passed; rebuilt-image-runtime-pending",
+  "harness": {
+    "command": "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --web-image=<fixed-image> --current-schema --browser --frontend-ui",
+    "scope": "Four existing drawer/batch/sync/reader suites, each with a new synthetic account in a fresh migration-153 disposable cluster. One ephemeral mailbox content key is shared only by the disposable Web and fixture process; gateway value is synthetic-unusable and workers are not started.",
+    "tls": "Optional self-signed certificate bypass is constrained to HTTPS loopback URLs; historical fixture defaults do not bypass certificate verification.",
+    "flagGuard": "--frontend-ui without current-schema/Web/browser rejected before Docker initialization"
+  },
+  "firstAttempt": {
+    "image": "ma24-pilot-web:e36ac0f5",
+    "exitCode": 1,
+    "failure": "Drawer suite on authenticated initial page load recorded React hydration error 418; kept page-error assertion and stopped acceptance. Temporary cluster/Web/network removed by parent finally.",
+    "sourceFinding": "AssistantHome computed a local-hour greeting with useMemo during server and browser first renders. Linux/server and browser local time zones may produce different text.",
+    "reference": "https://react.dev/errors/418"
+  },
+  "candidateFix": "useSyncExternalStore now supplies a stable server/hydration greeting and the existing device-local greeting after browser takeover. No error suppression or dropped assertion.",
+  "checks": {
+    "typecheck": "npm.cmd run typecheck: exit 0",
+    "lint": "focused ESLint: exit 0",
+    "runtime": "New fixed candidate image build and full four-suite retry pending"
+  },
+  "limits": [
+    "No current four-suite pass is claimed until rebuilt candidate is verified.",
+    "Synthetic mailbox fixtures, no real IMAP/SMTP/provider calls and no worker execution.",
+    "Extra UI fixture accounts are confined to the disposable cluster and removed with the cluster; they are not product/team accounts.",
+    "Real business quality, production certificate trust and deployment remain pending."
+  ]
+}

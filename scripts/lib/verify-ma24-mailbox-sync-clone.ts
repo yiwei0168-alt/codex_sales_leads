@@ -1,9 +1,10 @@
 import assert from "node:assert/strict";
 import { chromium, expect } from "@playwright/test";
 import type { Client } from "pg";
+import {ma24BrowserContext} from './ma24-browser-context';
 
 export async function verifyMa24MailboxSyncClone(options: {
-  admin: Client; base: string; cookie: string; userId: string;
+  admin: Client; base: string; cookie: string; userId: string; allowSelfSignedLoopback?:boolean;
 }): Promise<unknown> {
   const connection = await options.admin.query<{ id: string }>(
     `insert into mailbox_connection(user_id,provider,email,display_name,credential_ciphertext,host,status)
@@ -28,7 +29,7 @@ export async function verifyMa24MailboxSyncClone(options: {
   assert(cookieName && cookieValue);
   try {
     for (const viewport of [{ width: 390, height: 760 }, { width: 1366, height: 900 }]) {
-      const context = await browser.newContext({ viewport });
+      const context = await ma24BrowserContext(browser,options,{ viewport });
       await context.addCookies([{ name: cookieName, value: cookieValue, url: options.base }]);
       try {
         const page = await context.newPage();

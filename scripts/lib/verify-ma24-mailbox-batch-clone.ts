@@ -3,9 +3,10 @@ import { createHash } from "node:crypto";
 import { chromium, expect } from "@playwright/test";
 import type { Client } from "pg";
 import { encryptMailboxContent } from "../../src/lib/mailbox/crypto";
+import {ma24BrowserContext} from './ma24-browser-context';
 
 export async function verifyMa24MailboxBatchClone(options: {
-  admin: Client; base: string; cookie: string; userId: string;
+  admin: Client; base: string; cookie: string; userId: string; allowSelfSignedLoopback?:boolean;
 }): Promise<unknown> {
   const connection = await options.admin.query<{ id: string }>(
     `insert into mailbox_connection(user_id,provider,email,display_name,credential_ciphertext,host,status)
@@ -35,7 +36,7 @@ export async function verifyMa24MailboxBatchClone(options: {
   const results: Array<Record<string, unknown>> = [];
   try {
     for (const viewport of [{ width: 1366, height: 900 }, { width: 390, height: 760 }]) {
-      const context = await browser.newContext({ viewport });
+      const context = await ma24BrowserContext(browser,options,{ viewport });
       const [name, value] = options.cookie.split("=");
       assert(name && value);
       await context.addCookies([{ name, value, url: options.base }]);
@@ -68,7 +69,7 @@ export async function verifyMa24MailboxBatchClone(options: {
         await context.close();
       }
     }
-    const context = await browser.newContext({ viewport: { width: 1366, height: 900 } });
+    const context = await ma24BrowserContext(browser,options,{ viewport: { width: 1366, height: 900 } });
     const [name, value] = options.cookie.split("=");
     assert(name && value);
     await context.addCookies([{ name, value, url: options.base }]);
@@ -106,7 +107,7 @@ export async function verifyMa24MailboxBatchClone(options: {
       && job.payload.consent === true
       && job.payload.contentSha256 === messageDigests.get(job.target_id)));
     assert.equal((await options.admin.query("select count(*)::int as n from mailbox_sync_run where user_id=$1", [options.userId])).rows[0].n, 0);
-    const partialContext = await browser.newContext({ viewport: { width: 1366, height: 900 } });
+    const partialContext = await ma24BrowserContext(browser,options,{ viewport: { width: 1366, height: 900 } });
     const [partialCookieName, partialCookieValue] = options.cookie.split("=");
     assert(partialCookieName && partialCookieValue);
     await partialContext.addCookies([{ name: partialCookieName, value: partialCookieValue, url: options.base }]);
@@ -140,7 +141,7 @@ export async function verifyMa24MailboxBatchClone(options: {
     } finally {
       await partialContext.close();
     }
-    const reviewContext = await browser.newContext({ viewport: { width: 390, height: 760 } });
+    const reviewContext = await ma24BrowserContext(browser,options,{ viewport: { width: 390, height: 760 } });
     await reviewContext.addCookies([{ name: partialCookieName, value: partialCookieValue, url: options.base }]);
     try {
       const page = await reviewContext.newPage();
@@ -214,7 +215,7 @@ export async function verifyMa24MailboxBatchClone(options: {
       );
       savedCandidates.push(inserted.rows[0].id);
     }
-    const realContext = await browser.newContext({ viewport: { width: 1366, height: 900 } });
+    const realContext = await ma24BrowserContext(browser,options,{ viewport: { width: 1366, height: 900 } });
     await realContext.addCookies([{ name: partialCookieName, value: partialCookieValue, url: options.base }]);
     try {
       const page = await realContext.newPage();
@@ -255,7 +256,7 @@ export async function verifyMa24MailboxBatchClone(options: {
     } finally {
       await realContext.close();
     }
-    const skipContext = await browser.newContext({ viewport: { width: 1366, height: 900 } });
+    const skipContext = await ma24BrowserContext(browser,options,{ viewport: { width: 1366, height: 900 } });
     await skipContext.addCookies([{ name: partialCookieName, value: partialCookieValue, url: options.base }]);
     try {
       const page = await skipContext.newPage();

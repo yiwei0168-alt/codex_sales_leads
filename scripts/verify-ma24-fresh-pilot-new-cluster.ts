@@ -15,6 +15,7 @@ const webImage = webImageArgument?.startsWith("--web-image=")
   ? webImageArgument.slice("--web-image=".length) : undefined;
 const browserCheck = args.includes("--browser");
 const currentSchemaCheck = args.includes('--current-schema');
+const frontendUiCheck = args.includes('--frontend-ui');
 const tenUserCheck = args.includes("--ten-user");
 const backupCheck = args.includes("--backup");
 const crossClusterCheck = args.includes("--cross-cluster");
@@ -52,9 +53,10 @@ assert(pristineDatabaseChecks <= 1,
   "Each G09 disposable database fixture requires a pristine placeholder-only database; run one fixture flag per fresh-cluster invocation.");
 assert(!currentSchemaCheck||(webImage&&pristineDatabaseChecks===0&&!modeBusinessCheck&&!poolRecoveryCheck),
   '--current-schema is for isolated Web acceptance only; G09 fixtures retain their historical schema bootstrap');
+assert(!frontendUiCheck||(webImage&&currentSchemaCheck&&browserCheck),'--frontend-ui requires --web-image, --current-schema and --browser');
 const rollbackImageArgument = args.find(arg => arg.startsWith("--rollback-image="));
 const rollbackImage = rollbackImageArgument?.slice("--rollback-image=".length);
-assert(args.length <= 20 && args.every(arg => ["--current-schema", "--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", '--locked-policy', '--memory-source-locks', '--method-catalog-locks', '--shadow-source-locks', '--safety-skill-usage', '--transport-journal', '--pool-recovery', '--web-pool-recovery', "--prospective-source", "--prospective-material", '--prospective-browser', '--prospective-composition', declarationImageArgument,collectorImageArgument,prospectiveHttpArgument, webImageArgument, rollbackImageArgument].includes(arg))
+assert(args.length <= 20 && args.every(arg => ["--frontend-ui", "--current-schema", "--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", '--locked-policy', '--memory-source-locks', '--method-catalog-locks', '--shadow-source-locks', '--safety-skill-usage', '--transport-journal', '--pool-recovery', '--web-pool-recovery', "--prospective-source", "--prospective-material", '--prospective-browser', '--prospective-composition', declarationImageArgument,collectorImageArgument,prospectiveHttpArgument, webImageArgument, rollbackImageArgument].includes(arg))
   &&(!declarationImageArgument||(declarationImage&&/^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(declarationImage)))
   &&(!collectorImageArgument||(collectorImage&&/^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(collectorImage)))
   && (!webPoolRecoveryCheck || webImage)
@@ -69,6 +71,7 @@ assert(args.length <= 20 && args.every(arg => ["--current-schema", "--browser", 
 const networkName = `ma24-pilot-net-${id}`;
 const adminPassword = randomBytes(24).toString("hex");
 const appPassword = randomBytes(24).toString("hex");
+const mailboxFixtureKey = frontendUiCheck?randomBytes(32).toString('base64url'):undefined;
 const availablePort = () => new Promise<number>((resolvePort, reject) => {
   const listener = createServer();
   listener.once("error", reject);
@@ -313,7 +316,8 @@ try {
       const started = await run("docker", ["run", "--detach", "--name", `ma24-pilot-web-${id}`,
         "--network", networkName, "--publish", `127.0.0.1:${webPort}:3000`,
         "--env", `DATABASE_URL=${webDatabaseUrl.toString()}`,
-        "--env", `DATABASE_SSL_CA=${certificate.output.trim()}`, image]);
+        "--env", `DATABASE_SSL_CA=${certificate.output.trim()}`,
+        ...(mailboxFixtureKey?['--env',`MAILBOX_CREDENTIAL_KEY=${mailboxFixtureKey}`,'--env','OPENROUTER_API_KEY=synthetic-unusable']:[]), image]);
       assert.equal(started.code, 0, started.output);
       webContainerId = started.output.trim();
       assert(/^[a-f0-9]{64}$/.test(webContainerId), "Unexpected disposable Web container ID");
@@ -447,10 +451,12 @@ try {
         const browser = await run(process.execPath,
           ["scripts/run-tsx.cjs", "scripts/verify-ma24-https-browser-session.ts"],
           { ...process.env, DATABASE_URL: appUrl.toString(), DATABASE_MIGRATION_URL: adminUrl.toString(),
-            MA24_HTTPS_PROBE_UPSTREAM: base, MA24_HTTPS_PROBE_KEY: keyPath, MA24_HTTPS_PROBE_CERT: certPath });
+            MA24_HTTPS_PROBE_UPSTREAM: base, MA24_HTTPS_PROBE_KEY: keyPath, MA24_HTTPS_PROBE_CERT: certPath,
+            ...(mailboxFixtureKey?{MAILBOX_CREDENTIAL_KEY:mailboxFixtureKey,MA24_FRESH_WEB_FRONTEND_UI:'1',MA24_FRESH_WEB_DISPOSABLE:'1'}:{}) });
         assert.equal(browser.code, 0, browser.output);
         assert(browser.output.includes('"httpsBrowserSession":"passed"'), browser.output);
         assert(browser.output.includes('"manualCompanyWriteReadUi":true'), browser.output);
+        if(frontendUiCheck)assert(browser.output.includes('"freshMailboxUiCases":4'),browser.output);
       } finally { rmSync(tempDirectory, { recursive: true, force: true }); }
     }
     if (backupCheck) {
@@ -578,7 +584,7 @@ try {
   }
   console.log(JSON.stringify({ freshClusterPilot: "passed", image: "pgvector/pgvector:pg16",
     publishedAddress: "127.0.0.1 only", rolesVerified: true, duplicateRoleBootstrapRejected: true,
-    freshMigrationThrough: currentSchemaCheck?153:135,currentSchemaMarkers,
+    freshMigrationThrough: currentSchemaCheck?153:135,currentSchemaMarkers,freshMailboxUiVerified:frontendUiCheck,
     syntheticAccountCompanyAndRestoreVerified: true, copiedProductionData: false,
     linuxWebImage: webImage ?? null, linuxWebHttpWorkflowVerified: Boolean(webImage),
     linuxWebHttpsBrowserVerified: browserCheck, tenConcurrentSyntheticAccountsVerified: tenUserCheck,

@@ -2,9 +2,10 @@ import assert from "node:assert/strict";
 import { mkdir } from "node:fs/promises";
 import { chromium, expect } from "@playwright/test";
 import type { Client } from "pg";
+import {ma24BrowserContext} from './ma24-browser-context';
 
 export async function verifyMa24MailboxDrawerClone(options: {
-  admin: Client; base: string; cookie: string; userId: string;
+  admin: Client; base: string; cookie: string; userId: string; allowSelfSignedLoopback?:boolean;
 }): Promise<unknown> {
   const browser = await chromium.launch({ channel: "chrome", headless: true });
   const results: Array<Record<string, unknown>> = [];
@@ -19,7 +20,7 @@ export async function verifyMa24MailboxDrawerClone(options: {
       );
     }
     for (const viewport of [{ width: 1366, height: 900 }, { width: 1366, height: 360 }, { width: 390, height: 760 }]) {
-      const context = await browser.newContext({ viewport });
+      const context = await ma24BrowserContext(browser,options,{ viewport });
       const [name, value] = options.cookie.split("=");
       assert(name && value);
       await context.addCookies([{ name, value, url: options.base }]);

@@ -3,10 +3,11 @@ import { createHash } from "node:crypto";
 import { mkdir } from "node:fs/promises";
 import { chromium, expect } from "@playwright/test";
 import type { Client } from "pg";
+import {ma24BrowserContext} from './ma24-browser-context';
 import { encryptMailboxContent } from "../../src/lib/mailbox/crypto";
 
 export async function verifyMa24MailboxReaderClone(options: {
-  admin: Client; base: string; cookie: string; userId: string;
+  admin: Client; base: string; cookie: string; userId: string; allowSelfSignedLoopback?:boolean;
 }): Promise<unknown> {
   const connection = await options.admin.query<{ id: string }>(
     `insert into mailbox_connection(user_id,provider,email,display_name,credential_ciphertext,host,status)
@@ -39,7 +40,7 @@ export async function verifyMa24MailboxReaderClone(options: {
   try {
     await mkdir("tmp/ma24-mailbox-reader-clone", { recursive: true });
     for (const viewport of [{ width: 1366, height: 900 }, { width: 1366, height: 360 }, { width: 390, height: 760 }]) {
-      const context = await browser.newContext({ viewport });
+      const context = await ma24BrowserContext(browser,options,{ viewport });
       const [name, value] = options.cookie.split("=");
       assert(name && value);
       await context.addCookies([{ name, value, url: options.base }]);

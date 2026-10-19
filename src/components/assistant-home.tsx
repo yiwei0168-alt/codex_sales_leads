@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from "react";
+import { Fragment, useCallback, useEffect, useRef, useState, useSyncExternalStore, type FormEvent } from "react";
 import { AgentRunCard, useAgentRuns } from "./agent-runs";
 import {AgentAttachments} from "./agent-attachments";
 import { TaskDetailView } from "./task-detail-view";
@@ -13,6 +13,12 @@ import type { AgentMode } from '@/lib/assistant/main/mode-prompts';
 import {AgentModePicker,agentModeDescriptions} from './agent-mode-picker';
 
 const pendingInputs = new Map<string, string>();
+const subscribeGreeting = () => () => {};
+const serverGreeting = () => "你好";
+const deviceGreeting = () => {
+  const hour = new Date().getHours();
+  return hour < 12 ? "早上好" : hour < 18 ? "下午好" : "晚上好";
+};
 export function startNewConversationInput() { pendingInputs.delete("new"); }
 export function clearPendingConversationInputs() { pendingInputs.clear(); }
 
@@ -126,7 +132,7 @@ export function AssistantHome({ userName, initialConversationId, onConversationC
   const messages = conversation?.messages ?? [];
   const actions = conversation?.actions ?? [];
   const anchoredRunIds = new Set(messages.filter(message => message.role === "user").map(message => message.metadata.runId).filter((id): id is string => Boolean(id)));
-  const greeting = useMemo(() => new Date().getHours() < 12 ? "早上好" : new Date().getHours() < 18 ? "下午好" : "晚上好", []);
+  const greeting = useSyncExternalStore(subscribeGreeting, deviceGreeting, serverGreeting);
 
   return <div className="ai-home-shell">
     <section className="ai-chat-panel">
