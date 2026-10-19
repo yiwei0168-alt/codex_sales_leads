@@ -5,6 +5,7 @@ import { claimRun, heartbeat, finishRun } from "../src/lib/assistant/main/reposi
 import type { ExecutionContext } from "../src/lib/assistant/main/contracts";
 import { dispatchDueSchedule } from "../src/lib/assistant/main/schedules";
 import {pollDueModelBatch} from "../src/lib/assistant/main/model-batch";
+import {getPool} from '../src/lib/rag/db';
 
 nextEnv.loadEnvConfig(process.cwd());
 const client = new Client({ apiUrl: process.env.LANGGRAPH_API_URL || "http://127.0.0.1:2024", apiKey: null, callerOptions: { maxRetries: 0 } });
@@ -12,7 +13,7 @@ const workerId = `main-agent-${randomUUID()}`;
 let stopping = false;
 process.on("SIGINT", () => { stopping = true; });
 process.on("SIGTERM", () => { stopping = true; });
-do {
+try { do {
   await pollDueModelBatch();
   await dispatchDueSchedule();
   const run = await claimRun(workerId);
@@ -31,3 +32,4 @@ do {
     await finishRun(context, "partial", "任务运行连接中断，已保存的结果仍可查询。恢复前会核对执行记录。").catch(() => undefined);
   } finally { clearInterval(timer); }
 } while (!stopping && !process.argv.includes("--once"));
+} finally {await getPool().end();}
