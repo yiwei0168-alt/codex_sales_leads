@@ -1,0 +1,139 @@
+{
+  "sourceCommit": "d6ffb7a14a773546b0a934bfe4260197d3cd6bba",
+  "webBuild": {
+    "exitCode": 0,
+    "log": "tmp/ma24-web-build-d6ffb7a1-2026-10-19.log"
+  },
+  "collectorBuild": {
+    "exitCode": 0,
+    "log": "tmp/ma24-collector-build-d6ffb7a1-2026-10-19.log"
+  },
+  "verificationScriptSha256": "4f78a1038179ca8a5a05e8c267791892c7637b599dccefab6d3767bc67c22f8b",
+  "pair": {
+    "skillSourceRuntimePair": "passed",
+    "web": "ma24-pilot-web:d6ffb7a1",
+    "collector": "ma24-skill-collector:d6ffb7a1",
+    "sourceCommit": "d6ffb7a14a773546b0a934bfe4260197d3cd6bba",
+    "webImageId": "sha256:95875c83d9caab7d4fd018caff9f6fb99b26f5b0676ae9e4d7e07cb2dc585171",
+    "collectorImageId": "sha256:dcc60f52061956eb1f58e4baa62e4f11c6d1083e84d4c3503a09b214205975c1",
+    "inspectionUsesImmutableImageIds": true,
+    "runtimeHash": "99a02fe1359eaa890b7a21de52cf196e3668c5f264d07353426f8acd57de223e",
+    "sourceInputs": 956,
+    "node": "24.21.0",
+    "platform": "linux",
+    "arch": "x64",
+    "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+    "webPackages": {
+      "pg": "8.23.0"
+    },
+    "collectorPackages": {
+      "pg": "8.23.0",
+      "zod": "4.4.3",
+      "@langchain/langgraph": "1.4.15",
+      "@langchain/core": "1.2.9",
+      "langsmith": "0.9.0",
+      "undici": "8.10.0"
+    },
+    "webUnresolved": [
+      "zod",
+      "@langchain/langgraph",
+      "@langchain/core",
+      "langsmith",
+      "undici"
+    ],
+    "collectorUnresolved": [],
+    "completeDependencyRuntimeEquivalenceVerified": false,
+    "productionQualified": false,
+    "actualModelCalls": 0
+  },
+  "negativeCases": {
+    "missingRevisionLabelRejected": {
+      "passed": true,
+      "verificationExitCode": 1
+    },
+    "differentRevisionsRejected": {
+      "passed": true,
+      "verificationExitCode": 1
+    }
+  },
+  "collectorEntry": {
+    "collectorImageVerification": "passed",
+    "image": "ma24-skill-collector:d6ffb7a1",
+    "imageId": "sha256:dcc60f52061956eb1f58e4baa62e4f11c6d1083e84d4c3503a09b214205975c1",
+    "commit": "d6ffb7a14a773546b0a934bfe4260197d3cd6bba",
+    "packageFiles": 34471,
+    "deploymentHash": "bd2ac1e041b9fd7968a7908d93a0f65cc58f088a5334a2ec299274d755df7c1f",
+    "measuredEnrollmentVerified": true,
+    "missingMalformedAndMismatchedEnrollmentRejectedBeforeRunner": true,
+    "matchedEnrollmentReachesRunner": true,
+    "nodeOptionsRejected": true,
+    "nonRootReadOnlyNoNetwork": true,
+    "changedRunnerRejectedBeforeExecution": true,
+    "actualModelCalls": 0,
+    "productionQualified": false
+  },
+  "webRuntime": {
+    "freshClusterPilot": "passed",
+    "image": "pgvector/pgvector:pg16",
+    "publishedAddress": "127.0.0.1 only",
+    "rolesVerified": true,
+    "duplicateRoleBootstrapRejected": true,
+    "freshMigrationThrough": 156,
+    "currentSchemaMarkers": {
+      "mailbox_work_binding": true,
+      "mailbox_lease_binding": true,
+      "mailbox_binding_constraint": true,
+      "knowledge_source_gate": true,
+      "task_origin_gate": true,
+      "local_memory_source_gate": true,
+      "receipt_source_gate": true,
+      "immutable_snapshot_capture": true
+    },
+    "snapshotDownloadResult": {
+      "actualCompiledHttp": true,
+      "actualSnapshotDatabase": true,
+      "noFilesystemOriginal": true,
+      "threeRangeForms": true,
+      "anonymousAndPeerDenied": true,
+      "sharedToPrivateDenied": true,
+      "withdrawnAndArchivedDenied": true,
+      "restoredAccessMatches": true,
+      "modelCalls": 0
+    },
+    "localMemoryWorkerResult": null,
+    "freshMailboxUiVerified": false,
+    "extendedFrontendUiVerified": false,
+    "syntheticAccountCompanyAndRestoreVerified": true,
+    "copiedProductionData": false,
+    "linuxWebImage": "ma24-pilot-web:d6ffb7a1",
+    "linuxWebHttpWorkflowVerified": true,
+    "linuxWebHttpsBrowserVerified": true,
+    "tenConcurrentSyntheticAccountsVerified": true,
+    "pilotBackupRestoreVerified": false,
+    "crossClusterRestoreVerified": false,
+    "nonemptyMailboxCrossClusterRestoreVerified": false,
+    "scriptedModeBusinessVerified": false,
+    "runnerAttestationStoreVerified": false,
+    "collectorDeclarationImageVerified": false,
+    "lockedPolicyDatabaseVerified": false,
+    "memorySourceLocksVerified": false,
+    "methodCatalogSourceLocksVerified": false,
+    "shadowSourceLocksVerified": false,
+    "safetySkillUsageVerified": false,
+    "transportJournalDatabaseVerified": false,
+    "collectorImageTlsPreflightVerified": false,
+    "poolRecoveryVerified": false,
+    "standaloneDatabaseRecoveryVerified": false,
+    "extraG09Migration": null,
+    "prospectiveSourceDatabaseVerified": false,
+    "prospectivePairedMaterialVerified": false,
+    "prospectiveStandaloneHttpVerified": false,
+    "prospectiveStandaloneBrowserVerified": false,
+    "completeCompositionVerified": false,
+    "samePortPriorImageRollbackVerified": false
+  },
+  "positiveChecksExitCode": 0,
+  "negativeCaseHarnessExitCode": 0,
+  "separateTlsDeclarationStatus": "running; not included in this receipt",
+  "scope": "Same-commit image/source/Node inspection, collector startup matrix, fresh156 TLS DB and local HTTPS browser with synthetic users. No provider or full dependency execution qualification."
+}

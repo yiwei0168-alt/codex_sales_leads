@@ -24,9 +24,9 @@ console.log(JSON.stringify({runtimeHash:digest({protocol:'skill-local-source-run
  sourceInputs:files.length,node:process.versions.node,platform:process.platform,arch:process.arch,nodeSha256:sha(fs.readFileSync(process.execPath)),packages,unresolved}));`;
 // Resolve mutable tags once. All subsequent execution uses immutable image IDs.
 const metadata=image=>{
- const output=execFileSync('docker',['image','inspect','--format','{{.Id}} {{index .Config.Labels "org.opencontainers.image.revision"}}',image],{encoding:'utf8'}).trim();
- const [id,revision,...extra]=output.split(/\s+/);
- assert(extra.length===0&&/^sha256:[a-f0-9]{64}$/.test(id)&&/^[a-f0-9]{40}$/.test(revision),'Runtime pair requires immutable image IDs and fixed revision labels');
+ const output=execFileSync('docker',['image','inspect','--format','{"id":{{json .Id}},"revision":{{with index .Config "Labels"}}{{json (index . "org.opencontainers.image.revision")}}{{else}}null{{end}}}',image],{encoding:'utf8'}).trim();
+ const {id,revision}=JSON.parse(output);
+ assert(typeof id==='string'&&/^sha256:[a-f0-9]{64}$/.test(id)&&typeof revision==='string'&&/^[a-f0-9]{40}$/.test(revision),'Runtime pair requires immutable image IDs and fixed revision labels');
  return {id,revision};
 };
 const webImage=metadata(web),collectorImage=metadata(collector);

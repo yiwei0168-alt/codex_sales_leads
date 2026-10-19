@@ -2,6 +2,8 @@
 
 ## 当前结论（2026-10-19，按固定源码快照分别核验）
 
+G01/G09 最新同源双镜像固定于 `d6ffb7a1`：构建、commit/revision/镜像 ID、956 源码输入及 Node 二进制一致；采集器入口矩阵和 Web 全新 156/TLS/HTTPS/十合成账号/快照通过。独立 TLS 声明矩阵待终态；完整依赖执行、提供方、真实质量与最终启用未完成。[固定包收据](evidence/ma24-g01-g09-fixed-runtime-pair-d6ffb7a1-2026-10-19.json)。
+
 G09 修复后固定 `6770a547` 完整签名组合已退出 0：同冻结五类、CLI 签发、统一回读/持锁重建、两原任务/八评测臂传输、实际快照读取及撤销/恢复通过。缺人工判定仍阻断；模型/网络/预算合成，未授予生产、质量或启用资格，旧 `3b44c10c` 失败保留。[终态证据](evidence/ma24-g09-signed-canonical-composition-6770a547-2026-10-19.json)。
 
 G03–G04 实际 Worker 同批串联通过：两个合成输入、两次本机 Qwen、抽取与图谱 Worker 各三次 `--once`，同一 outbox 经本机固定嵌入/Graphiti/Neo4j 投影，次数/租约及限定清理检查通过。不是持续试点、真实质量或检索完整重验。[串联证据](LOCAL_MEMORY_GRAPH_WORKER_CHAIN_2026-10-19.md)。
