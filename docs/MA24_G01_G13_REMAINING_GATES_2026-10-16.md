@@ -52,7 +52,7 @@ G09 任务与工具日志锁已接入材料重建入口：从已存包派生任�
 | G02 来源撤销 | 真实图、旧 checkpoint、隔离模型及局部 HTTP 证据 | 当前服务上真实账号有界任务的生成期撤销、后续工具阻断和最终保存核对 | 获授权的专门来源/账号任务及撤销前后收据；新付费请求另列具体清单 |
 | G03 纠正与双时间 | 来源归属和自然纠正局部修复、隔离恢复证据 | 真实偏好/经历/业务事实与纠正样本不足；当前候选完整链路、通知/撤销/历史时间和本地 worker 试点未验 | 对照原句与更正内容的自然样本判决，以及当前 worker 的持久记录 |
 | G04 记忆图谱 | outbox、租约、故障恢复及 PostgreSQL 降级局部工程证据 | 当前版本获准真实样本的连续抽取、投影、时间/权限回校、撤销召回未验 | 连续消费及图谱停机/恢复的同一批来源收据 |
-| G05 增量资料 | 多格式原件、审核/登记/坐标、局部多作业与修订恢复证据 | 成功 PDF/PPTX 等未覆盖的多作业组合、当前正式 worker、实际账号的用户可见引用仍缺 | 原件到审核、检索/引用的完整任务证据与未覆盖矩阵；不把开发原件计作独立 Gold |
+| G05 Incremental knowledge | Multi-format originals, review/registration/coordinates, and isolated worker evidence; this run proved successful synthetic PDF/PPTX extraction and visual-review handoff through the formal workers | Both formats still await human visual judgment; real-user searchable citations, revised-version multi-job coverage, and production worker deployment remain unverified | Review each visual object, register and retrieve the source with a user-visible citation; verify revision isolation and target-environment workers |
 | G06 安全 | 已定位旧歧义与注入失败，工具模型视图等边界已有修复 | 修复后固定协议的真实模型回答、独立安全判分不足；既有本地超时不能判通过 | 有明确请求范围的有效模型回答及答案/引用/权限/注入人工判决；相同超时配置不重复试跑 |
 | G07 真实回放 | 服务器持久收据与只读回放适配已实现；历史资格审计已有排除结果 | 尚无满足当前来源、Skill 相关性及完整收据要求的真实任务 | 同账号有效的完整只读任务或精确收据限定的子任务，固定版本回放和独立审核 |
 | G08 前瞻影子 | 原有登记、采集、局部影子/审核机制存在 | 真实任务开始前配置登记、原流程与候选的真实结果、可信生产身份不足 | 一次前瞻登记到执行、持久收据及审核的完整链；不能把历史任务补标成前瞻 |
@@ -189,3 +189,5 @@ G11 并发去重续页补强（2026-10-19）：同步页仅因并发导入而整
 G09 transport-journal current-snapshot rerun (2026-10-19): the transport-journal disposable database check passed from the `7ebc47d7` git archive, including signed request closure, journal persistence/recovery, cross-account isolation, revocation and tamper rejection. The candidate Skill remains disabled and model calls were 0. [Receipt](evidence/ma24-g09-transport-journal-current-snapshot-rerun-2026-10-19.json). This mode does not cover the full five-category source composition; real quality, production identity, binary qualification and final activation remain incomplete.
 
 G01 current-source production build (2026-10-19): `npm.cmd run build` passed on `11276bc4` with Next.js 16.3.4 and generated 26 static pages. [Build receipt](evidence/ma24-g01-current-source-production-build-2026-10-19.json). Local build only; no service started, no port opened, and target-host/HTTPS/backup/team acceptance remains incomplete.
+
+G05 successful PDF/PPTX worker isolation rerun (2026-10-19): actual formal workers extracted synthetic text-plus-image PDF and PPTX, preserved extracted text/coordinates, and queued both for visual review while an unrelated held job and v3 pointers remained unchanged. No documents were published. [Receipt](evidence/ma24-g05-successful-pdf-pptx-worker-isolation-2026-10-19.json).

@@ -1,0 +1,47 @@
+{
+  "schema": "ma24-g05-successful-pdf-pptx-worker-isolation-v1",
+  "date": "2026-10-19",
+  "sourceCommitBeforeVerifierChange": "fcd0fb81",
+  "verifier": "scripts/verify-knowledge-supervisor-clone.ts",
+  "verifierSha256": "9941e96b459d524770ef1c3640721adecaca6a5537af8a4d812689278157332c",
+  "scope": "Disposable MA11 replay database; random synthetic accounts; generated text-plus-image PDF and PPTX fixtures; current formal knowledge worker.",
+  "result": {
+    "cloneOnly": true,
+    "actualSupervisorKills": 2,
+    "descendantsStopped": true,
+    "extractionLeaseHeld": true,
+    "extractionExpiredRecovery": true,
+    "visualLeaseHeld": true,
+    "malformedPdfFailedWithoutCrossJobEffect": true,
+    "successfulPdfWorkerHandoff": true,
+    "successfulPdfTextExtracted": true,
+    "successfulPptxWorkerHandoff": true,
+    "successfulPptxTextExtracted": true,
+    "successfulFormatsAwaitingHumanReview": true,
+    "peerAccountCompletedWhileTargetHeld": true,
+    "peerVisualReady": true,
+    "expiredFinishRejected": true,
+    "visualExpiredRecovery": true,
+    "ocrExecutionsOnResume": 0,
+    "ocrCheckpointReuses": 1,
+    "unrelatedJobUnchanged": true,
+    "v3PointersUnchanged": true,
+    "documentsPublished": 0,
+    "judgments": 0,
+    "externalCalls": 0,
+    "syntheticFixture": true,
+    "qualityAccepted": false
+  },
+  "checks": {
+    "verifierExitCode": 0,
+    "extractorUnitTests": "10 passed",
+    "typescript": "passed",
+    "focusedEslint": "passed",
+    "diffCheck": "passed"
+  },
+  "limits": [
+    "The successful PDF and PPTX worker runs stopped at the required human visual-review boundary; neither was registered or published.",
+    "No human visual judgments, searchable citations, real-user documents, production deployment, model calls or external calls were included.",
+    "This closes a local multi-format worker handoff gap only; it does not close G05 real quality or production acceptance."
+  ]
+}

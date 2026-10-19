@@ -7,6 +7,7 @@
 2026-10-16 G01 首批团队试用边界补充：用户已确认主要从中国大陆访问、同时使用不超过 10 人，目前没有备案域名，只用全新测试数据。新托管可按香港近端节点准备，但须先拿到团队持有的云账号/试用域名并实测团队网络，随后做目标 HTTPS、真实成员、备份恢复和回切验收；当前尚未部署或发邀请。[规则](CONFIRMED_PRODUCT_RULES.md)、[实施单](TEAM_PILOT_NEW_HOSTING_2026-10-16.md)。本轮范围止于 G13，G14–G20 留待后续。
 
 2026-10-16 G05 IEEE 2014 PPTX 当前抽取器回归：`layout-v2.0.10` 新增 4 个原生表格待审，原页核对后在隔离克隆完成 133/133 判决、登记、搜索和第 5、22 页坐标回读；第 59 页错误关联被排除，合成记录清理。[收据](evidence/ma24-g05-ieee-gepof-native-line-tables-current-clone-2026-10-16.json)。它仅满足 PPTX 原件读取与来源坐标的本地工程检查；正式服务用户可见模型引用、生产加载尚未验收，不计独立 Gold。
+2026-10-19 G05 successful-format worker matrix: the current formal supervisor extracted synthetic PDF and PPTX text, generated review packages for their visual content, and kept both pending human review; unrelated account state and release pointers remained unchanged. The worker resumes the visual queue after extraction races. No registration, publication, judgment, external call, or real citation was involved. [Receipt](evidence/ma24-g05-successful-pdf-pptx-worker-isolation-2026-10-19.json).
 
 2026-10-16 [G15 领取前费率覆盖闸门](evidence/ma24-g15-preclaim-tariff-coverage-2026-10-16.json)：三条标准模式路由均须有当前有效、覆盖实际输出 token 和冻结请求大小的计费规则；缺项、过期、过小或借用其他工作流合同均在领取前拒绝。现行规则三路全缺，v30 只读预览保持关闭。后续须结合实际提供方与公开报价审核新规则，并同来源/Gold、运行包、真实账号、持久限额和用户付费授权一并冻结，之后才能运行 G16；G17–G20 暂停。
 2026-10-16 [G15 OpenRouter 公开端点报价复核](evidence/ma24-g15-public-openrouter-tariff-surface-2026-10-16.json)：当前 v29 预览三条路由共核 41 个公开端点，报价和长输入阶梯价会随端点变化。最终入场须在已冻结的实际请求路由上重新抓取价格，明确允许的提供方或按可达端点上界预留，再与账号/BYOK 条款、请求上限、持久限额及用户付费授权一起审核。本次不把只读价目表直接设为已验证费率，G15/G16 调用仍关闭，G17–G20 暂停。
