@@ -1,0 +1,54 @@
+{
+  "stage": "MA24 G03 actual local Ollama service-level memory flow",
+  "date": "2026-10-19",
+  "applicationSourceCommit": "dd7daff57db0ff8c53a58b3a020be03ecefa81ca",
+  "command": "node scripts/run-tsx.cjs scripts/verify-local-memory-product-flow-clone.ts",
+  "exitCode": 0,
+  "harness": "New verifier based on current committed application functions; fresh synthetic owner and peer in the isolated replay clone. Guard rejects non-loopback/non-Ollama endpoints and caps chat calls at six.",
+  "serverReportedModelDigest": "500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41",
+  "responseReceipts": [
+    {
+      "file": "chat-1.json",
+      "sha256": "ade9a123318d00740078a43e0ecd2bbeff19d27a3e2cb98a611dcc6166880eda"
+    },
+    {
+      "file": "chat-2.json",
+      "sha256": "09150a534f851fbec1262d7b44a6262cde2fa744e99fc688cbf69cabdfdb226c"
+    }
+  ],
+  "result": {
+    "result": {
+      "passed": true,
+      "model": "qwen3:8b",
+      "chatCalls": 2,
+      "tagCalls": 3,
+      "syntheticInputs": [
+        "I prefer long reports.",
+        "I prefer concise reports."
+      ],
+      "preferenceAndNaturalCorrectionPersisted": true,
+      "noticeOutboxExactlyOnce": true,
+      "readyReuseWithoutModel": true,
+      "undoNoResurrection": true,
+      "peerIsolation": true,
+      "formalFactAndPolicyCountsUnchanged": true,
+      "cloudCalls": 0,
+      "productionWrites": 0,
+      "rawDirectory": "tmp/ma24-real-memory-flow-359f06c8-d36a-4776-9c4e-e588cb3e45c0"
+    },
+    "fixtureCleanupCompleted": true
+  },
+  "checks": {
+    "typecheck": "exit 0",
+    "focusedEslint": "exit 0",
+    "diffCheck": "exit 0"
+  },
+  "limits": [
+    "Two actual native HTTP requests to loopback Ollama, no synthetic model response adapter. Server-advertised digest is checked; binary/weights attestation and production provider qualification are not established.",
+    "Single synthetic English preference/correction sequence only, not naturally occurring business tasks, representative quality, independent Gold or human acceptance.",
+    "Runs service functions directly, not Web UI or a background Worker/scheduler process. No graph projection or Graphiti/Neo4j recovery in this run.",
+    "Notification/outbox rows and SQL timeline are checked; delivery/push UI and graph consumption are not covered.",
+    "Formal fact/policy counts stay unchanged; private memory remains unverified. No business database writes, cloud call or deployment.",
+    "Actual local-model flow and the separate signed-composition synthetic run have different model evidence; neither grants Skill activation."
+  ]
+}
