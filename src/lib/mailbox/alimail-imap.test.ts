@@ -1,6 +1,6 @@
 import { beforeEach, expect, it, vi } from "vitest";
 
-const mock = vi.hoisted(() => ({ searches: [] as string[], fetches: [] as Array<{ folder: string; uids: number[] }>, emptySourceUid:0,inboxUids:[1,2],sentUids:[3,4] }));
+const mock = vi.hoisted(() => ({ searches: [] as string[], fetches: [] as Array<{ folder: string; uids: number[] }>, emptySourceUid:0,omitUid:0,duplicateUid:0,inboxUids:[1,2],sentUids:[3,4] }));
 vi.mock("./connection-config", () => ({ publicMailAddresses: async () => ["127.0.0.1"] }));
 vi.mock("imapflow", () => ({
   ImapFlow: class {
@@ -13,7 +13,12 @@ vi.mock("imapflow", () => ({
     async search() { mock.searches.push(this.folder); return this.folder === "INBOX" ? mock.inboxUids : mock.sentUids; }
     async *fetch(uids: number[]) {
       mock.fetches.push({ folder: this.folder, uids });
-      for (const uid of uids) yield { uid, source: uid===mock.emptySourceUid?undefined:Buffer.from(`From: source@example.invalid\r\nTo: owner@example.invalid\r\nSubject: Synthetic ${uid}\r\n\r\nBody ${uid}`) };
+      for (const uid of uids) {
+        if(uid===mock.omitUid)continue;
+        const message={ uid, source: uid===mock.emptySourceUid?undefined:Buffer.from(`From: source@example.invalid\r\nTo: owner@example.invalid\r\nSubject: Synthetic ${uid}\r\n\r\nBody ${uid}`) };
+        yield message;
+        if(uid===mock.duplicateUid)yield message;
+      }
     }
     async logout() { return; }
     close() { return; }
@@ -22,7 +27,7 @@ vi.mock("imapflow", () => ({
 
 import { readAliMailMessages } from "./alimail-imap";
 
-beforeEach(() => { mock.searches = []; mock.fetches = []; mock.emptySourceUid=0;mock.inboxUids=[1,2];mock.sentUids=[3,4]; });
+beforeEach(() => { mock.searches = []; mock.fetches = []; mock.emptySourceUid=0;mock.omitUid=0;mock.duplicateUid=0;mock.inboxUids=[1,2];mock.sentUids=[3,4]; });
 
 it("discovers all selected folders after the page fetch cap is reached", async () => {
   const result = await readAliMailMessages({
@@ -52,4 +57,16 @@ it('fails the page without returning an advanced cursor when message source is m
  mock.emptySourceUid=1;
  await expect(readAliMailMessages({email:'owner@example.invalid',password:'synthetic',host:'imap.example.invalid',
   cursors:new Map(),since:new Date('2026-10-01T00:00:00Z'),maxMessages:2})).rejects.toThrow('checkpoint was not advanced');
+});
+
+it('fails without a cursor when the server omits a selected UID',async()=>{
+ mock.inboxUids=[1,2,3];mock.omitUid=2;
+ await expect(readAliMailMessages({email:'owner@example.invalid',password:'synthetic',host:'imap.example.invalid',
+  cursors:new Map(),since:new Date('2026-10-01T00:00:00Z'),maxMessages:3})).rejects.toThrow('omitted a selected UID');
+});
+
+it('fails without a cursor when the server returns a duplicate UID',async()=>{
+ mock.inboxUids=[1,2];mock.duplicateUid=1;
+ await expect(readAliMailMessages({email:'owner@example.invalid',password:'synthetic',host:'imap.example.invalid',
+  cursors:new Map(),since:new Date('2026-10-01T00:00:00Z'),maxMessages:2})).rejects.toThrow('unexpected or duplicate UID');
 });

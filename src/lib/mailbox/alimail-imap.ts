@@ -166,12 +166,18 @@ export async function readAliMailMessages(input: {
         const selected = remaining === 0 ? [] : allUids.slice(0, remaining);
         let highestUid = lastUid;
         if (selected.length > 0) {
+          const selectedUids = new Set(selected);
+          const fetchedUids = new Set<number>();
           for await (const message of client.fetch(selected, {
             uid: true,
             internalDate: true,
             size: true,
             source: { maxLength: MAX_SOURCE_BYTES },
           }, { uid: true })) {
+            if (!selectedUids.has(message.uid) || fetchedUids.has(message.uid)) {
+              throw new Error('Mailbox fetch returned an unexpected or duplicate UID; sync checkpoint was not advanced');
+            }
+            fetchedUids.add(message.uid);
             let parsed:ImportedMailboxMessage|null;
             try{parsed=await parseMessage(message,folder,uidValidity);}
             catch{throw new Error('Mailbox message parsing failed; sync checkpoint was not advanced');}
@@ -182,6 +188,9 @@ export async function readAliMailMessages(input: {
               currentSubject: parsed?.subject || undefined,
             });
             highestUid = Math.max(highestUid, message.uid);
+          }
+          if (fetchedUids.size !== selectedUids.size) {
+            throw new Error('Mailbox fetch omitted a selected UID; sync checkpoint was not advanced');
           }
         }
         cursors.push({ folderPath: folder.path, uidValidity, lastUid: highestUid });

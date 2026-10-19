@@ -1,0 +1,21 @@
+{
+  "stage": "MA24 G11 fail-closed IMAP page UID integrity",
+  "date": "2026-10-19",
+  "files": {
+    "src/lib/mailbox/alimail-imap.ts": "df8b0fe86ddf277e1abe403679a5896620bf2ca4fef26e30b876de55ce7b8a61",
+    "src/lib/mailbox/alimail-imap.test.ts": "278d0eab559170e8c039c51aeb73f1faaf6e0f6cc69d746e1a6e8edad9d09a47"
+  },
+  "behavior": "A selected IMAP UID page is rejected without returning an advanced cursor if the server omits a selected UID, returns a duplicate UID, or returns a UID outside the requested page.",
+  "checks": {
+    "focusedVitest": "passed",
+    "focusedTests": 5,
+    "typecheck": "passed",
+    "eslint": "passed",
+    "gitDiffCheck": "passed"
+  },
+  "testEnvironment": "Synthetic ImapFlow mock; no real mailbox credentials or network access.",
+  "limitations": [
+    "No live provider behavior or real mailbox reconciliation was exercised.",
+    "Customer attribution and message-summary quality remain separate acceptance items."
+  ]
+}
