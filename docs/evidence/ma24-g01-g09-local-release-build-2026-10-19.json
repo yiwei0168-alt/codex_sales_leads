@@ -1,0 +1,64 @@
+{
+  "stage": "MA24 G01/G09 local fixed-source Web build and measured collector package",
+  "date": "2026-10-19",
+  "sourceCommit": "20c00e73dab84dd1dd15a76635bd0479535980a1",
+  "sourceTrackedCodeConfigAndLockDiffAgainstHead": "clean before/after build, apart from Next generated includes restored as noted",
+  "web": {
+    "command": "PowerShell: $env:NEXT_DIST_DIR='.next-releases/ma24-g01-20c00e73-local'; npm.cmd run build",
+    "exitCode": 0,
+    "nextVersion": "16.3.4",
+    "outputDirectory": ".next-releases/ma24-g01-20c00e73-local",
+    "receipt": {
+      "sourceCommit": "20c00e73dab84dd1dd15a76635bd0479535980a1",
+      "buildId": "3GGcRWoFZyh5eTALR4BT8",
+      "runtimeSourceFilesCompared": 945,
+      "allRuntimeSourceFilesEqualWorktree": true,
+      "sourceConfigNormalization": "Next added two output-directory type includes; only those includes were removed and packaged tsconfig replaced with the restored clean source config after build. Application code and module resolution settings unchanged.",
+      "runtimeSourceManifestHash": "5b68681df51d45127ba51bd7b72b1976a955a286d6903b11f539b9b7d667c809",
+      "privateEnvironmentFilesBundled": false,
+      "privateStorageRootsBundled": false,
+      "productionQualified": false,
+      "automaticActivation": false
+    },
+    "buildEnvironment": "Local .env.local loaded by Next; no values recorded and private env files absent from standalone output",
+    "firstAttempt": {
+      "exitCode": 1,
+      "directory": ".next-releases/ma24-g01-20c00e73",
+      "reason": "Windows sandbox denied Turbopack junction creation, os error 5",
+      "resolution": "Approved local build retry outside restricted sandbox in a separate output directory"
+    }
+  },
+  "collector": {
+    "buildCommand": "node scripts/build-skill-collector-image.mjs",
+    "buildExitCode": 0,
+    "source": "git archive of fixed HEAD; Docker build",
+    "verificationCommand": "node scripts/verify-skill-collector-image.mjs ma24-skill-collector:20c00e73",
+    "verificationExitCode": 0,
+    "receipt": {
+      "collectorImageVerification": "passed",
+      "image": "ma24-skill-collector:20c00e73",
+      "imageId": "sha256:1436ff8c597de902dd184a610f9cd927dc8e8ae75569db9415b7004cb01a41dc",
+      "commit": "20c00e73dab84dd1dd15a76635bd0479535980a1",
+      "packageFiles": 34460,
+      "deploymentHash": "81f278adca72fbd363428ffc0fcd4b336027cd015e3bb045c698d43c0effbb03",
+      "measuredEnrollmentVerified": true,
+      "missingMalformedAndMismatchedEnrollmentRejectedBeforeRunner": true,
+      "matchedEnrollmentReachesRunner": true,
+      "nodeOptionsRejected": true,
+      "nonRootReadOnlyNoNetwork": true,
+      "changedRunnerRejectedBeforeExecution": true,
+      "actualModelCalls": 0,
+      "productionQualified": false
+    }
+  },
+  "limitations": [
+    "The local Web build is not a Linux Web image, startup/HTTP/business acceptance or deployment.",
+    "Next generated two custom-output type include paths; only those additions were removed and the runtime-source tsconfig replaced with clean baseline configuration after build.",
+    "Collector package integrity/enrollment checks do not qualify the production binary/provider or independent real quality; this stage does not execute --attest/--execute against a database or provider.",
+    "The earlier Linux-image signing/database matrix used source 9b0c78e7, not this newly built image.",
+    "No LAN port, team invitation, production keys or activation changed. G14-G20 remain deferred."
+  ],
+  "actualModelCalls": 0,
+  "productionQualificationGranted": false,
+  "automaticActivation": false
+}
