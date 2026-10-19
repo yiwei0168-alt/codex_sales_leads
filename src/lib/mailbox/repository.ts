@@ -119,13 +119,23 @@ export async function getMailboxCursors(userId: string, connectionId: string): P
 }
 
 export async function startMailboxSyncRun(userId: string, connectionId: string, model?: string): Promise<string> {
-  const rows = await tenantQuery<{ id: string }>(userId,
-    `insert into mailbox_sync_run (user_id, connection_id, phase, model)
-     values ($1, $2, 'queued', $3) returning id`,
-    [userId, connectionId, model],
-  );
-  if (!rows[0]) throw new Error("邮箱同步任务未能启动");
-  return rows[0].id;
+  return tenantTransaction(userId, async (client) => {
+    // Share the connection lock with disconnect/delete before admitting a run.
+    const connection = await client.query<{ status: MailboxConnectionRecord["status"] }>(
+      `select status from mailbox_connection where user_id = $1 and id = $2 for update`,
+      [userId, connectionId],
+    );
+    if (!connection.rows[0] || connection.rows[0].status === "disabled") {
+      throw new Error("邮箱连接不存在或已断开");
+    }
+    const result = await client.query<{ id: string }>(
+      `insert into mailbox_sync_run (user_id, connection_id, phase, model)
+       values ($1, $2, 'queued', $3) returning id`,
+      [userId, connectionId, model],
+    );
+    if (!result.rows[0]) throw new Error("邮箱同步任务未能启动");
+    return result.rows[0].id;
+  });
 }
 
 export async function updateMailboxSyncProgress(input: {
@@ -168,11 +178,19 @@ export async function persistMailboxImport(input: {
   return tenantTransaction(input.userId, async (client) => {
     let imported = 0;
     const storedMessages: StoredMailboxMessage[] = [];
-    const connection = await client.query<{ email: string }>(
-      `select email from mailbox_connection where id = $1 and user_id = $2 limit 1`,
+    const connection = await client.query<{ email: string; status: MailboxConnectionRecord["status"] }>(
+      `select email, status from mailbox_connection where id = $1 and user_id = $2 for update`,
       [input.connectionId, input.userId],
     );
-    if (!connection.rows[0]) throw new Error("邮箱连接不存在");
+    if (!connection.rows[0] || connection.rows[0].status === "disabled") {
+      throw new Error("邮箱连接不存在或已断开");
+    }
+    const run = await client.query<{ id: string }>(
+      `select id from mailbox_sync_run
+       where id = $1 and user_id = $2 and connection_id = $3 and status = 'running' for update`,
+      [input.runId, input.userId, input.connectionId],
+    );
+    if (!run.rows[0]) throw new Error("邮箱同步任务已结束或不属于此连接");
     const products = await client.query<{ model: string; product_name: string }>(
       `select model, product_name from product_catalog order by model limit 5000`,
     );

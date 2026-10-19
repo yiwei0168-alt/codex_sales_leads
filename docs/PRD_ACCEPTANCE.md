@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+2026-10-19 / MA24 G11、MAILCRM-02：同步启动在连接锁内复核状态，导入先检查当前连接及同账号/连接的运行任务。22 项定向测试、类型/lint、隔离数据库连接锁等待后禁用拒绝、并发唯一入场、断开/删除拒绝及失效导入不推进游标通过。实际导入仅为空消息夹具，真实 IMAP 日期/分页/恢复及业务质量继续待验。[收据](evidence/ma24-g11-mailbox-sync-admission-2026-10-19.json)。
+
 2026-10-16 / MA24 G01：Linux Web 加全新恢复库完成两合成成员登录和单条手动公司写入/回读；另一成员工作区不可见、直接修改返回 404，原记录未变，付费预留 0。[业务收据](evidence/ma24-g01-linux-fresh-db-two-member-lead-2026-10-16.json)。只验证一条本机业务路径；目标云环境、可信 HTTPS、真实团队成员和完整租户隔离仍待验。
 
 2026-10-16 / MA24 G01：Linux Web 与全新恢复库组合通过单个合成成员登录、认证会话、空上传列表、退出失效及 Secure/HttpOnly/SameSite=Lax Cookie 头检查；合成账号和会话剩余 0。[登录收据](evidence/ma24-g01-linux-fresh-db-synthetic-login-2026-10-16.json)。目标可信 HTTPS、真实团队成员隔离、业务写入及线上回滚仍未验。

@@ -1,0 +1,44 @@
+{
+  "stage": "MA24 G11 / MAILCRM-02",
+  "date": "2026-10-19",
+  "status": "engineering-checks-passed; real-mailbox-acceptance-pending",
+  "implementation": {
+    "admission": "Lock the owned connection in the run-creation transaction; reject missing/disabled connections after lock waits.",
+    "import": "Lock connection then the owned running sync run bound to that connection before message/cursor writes.",
+    "compatibility": "Error-status connections may retry; existing unique running-run index and disconnect/delete refusal policy remain."
+  },
+  "checks": {
+    "unitCommand": "node node_modules/vitest/vitest.mjs run src/lib/mailbox/repository.test.ts src/lib/mailbox/service.test.ts src/lib/mailbox/alimail-imap.test.ts src/lib/mailbox/sync-options.test.ts",
+    "unitResult": "22 passed across 4 files, workspace TEMP/TMP",
+    "typecheck": "npm.cmd run typecheck: exit 0",
+    "lint": "focused ESLint for repository, tests and verifier: exit 0",
+    "databaseVerifier": "scripts/verify-mailbox-sync-admission-clone.ts",
+    "databaseResult": "exit 0; localhost isolated replay clone; synthetic member accounts cleaned",
+    "actualDatabaseCases": [
+      "Observed admission waiting on the held connection row; committed disablement then rejects with zero inserted runs.",
+      "Admitted running sync prevents disconnect and local deletion.",
+      "Foreign-owner admission rejects.",
+      "Concurrent same-connection admissions yield one running winner; separate connection can start.",
+      "Wrong-connection and cancelled-run imports reject with zero cursor advancement.",
+      "Disabled connection cannot import even with an existing running run.",
+      "Valid owned running empty import advances the synthetic cursor to UID 7.",
+      "Completed run allows disconnect; later admission rejects."
+    ]
+  },
+  "retainedFailures": [
+    "Initial test table spread the empty-array fixture into zero arguments; corrected fixture object. Typecheck caught the same shape.",
+    "Restricted localhost attempt failed EACCES; retried with approved escalation.",
+    "First accessible clone attempt omitted required synthetic display_name; fixtures cleaned, verifier corrected and retry passed."
+  ],
+  "limitations": [
+    "Zero actual IMAP/SMTP/model calls; no real business data or deployment.",
+    "Actual imports use empty messages and synthetic cursors; not message parsing/encryption, real pagination or reconnect acceptance.",
+    "Configuration snapshot changes and worker recovery require separate checks.",
+    "No production qualification, quality approval or new confirmation."
+  ],
+  "filesSha256": {
+    "src/lib/mailbox/repository.ts": "4f2351954c97b18776cae0d45200450f44c69071accc28d5dec3625f3c4f2e29",
+    "src/lib/mailbox/repository.test.ts": "dc976675a43b9da6f8caa81a870050a40bb6560d31963f1574fc029937f19ce1",
+    "scripts/verify-mailbox-sync-admission-clone.ts": "1bad59c6656c5b2ee7c6bd0cebbe8d6cc7357093df6a3bf33dfdf29c27a91814"
+  }
+}
