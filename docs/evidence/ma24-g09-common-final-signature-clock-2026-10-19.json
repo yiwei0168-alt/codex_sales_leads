@@ -20,7 +20,7 @@
     "focusedEslint": "passed",
     "diffCheck": "passed",
     "freshClusterMemorySourceLocks": "passed",
-    "fullFiveCategorySnapshotWithThisChange": "running"
+    "fullFiveCategorySnapshotWithThisChange": "passed"
   },
   "database": {
     "command": "node --import tsx scripts/verify-ma24-fresh-pilot-new-cluster.ts --memory-source-locks",
@@ -51,7 +51,20 @@
   "fixedSnapshot": {
     "commit": "06dfe3b900967da0524f6e160843bbf606b341b4",
     "command": "PowerShell: $env:MA24_CONFIGURED_COMBINED='1'; node scripts/run-ma24-snapshot-check.mjs --transport-journal",
-    "status": "running",
-    "scope": "Configured signed full five-category wiring with latest common deadline check; no production model calls."
+    "status": "passed",
+    "scope": "Positive configured signed five-category wiring at fixed 06dfe3b9, including common final clock. Declaration was manually signed in the fixture; this predates the configured --attest CLI. Does not inject expiry into the full workflow.",
+    "exitCode": 0,
+    "configuredSameFreezeFiveCategoriesVerified": true,
+    "lockedTransportReceiptsRevalidated": true,
+    "originalTaskCount": 2,
+    "evaluationArms": 8,
+    "cases": 5,
+    "disabledTransportKeyRejected": true,
+    "combinedArtifactHash": "66d5f081f5eb3fde49efaf1af8b7a16718ad91968690b5d8cae9ecdf68be206d",
+    "frozenPlanHash": "3fa42ad01ebf2d4d607b6c58222022940d007b782c82bd8e06cb89080d646310",
+    "actualModelCalls": 0,
+    "realQualityAccepted": false,
+    "productionQualificationGranted": false,
+    "automaticActivation": false
   }
 }
