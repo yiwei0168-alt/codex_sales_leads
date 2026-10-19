@@ -241,3 +241,5 @@ G09 current-source collector image TLS preflight (2026-10-19): rebuilt from the 
 2026-10-19 固定快照 3f511d38 的完整五类组合已退出 0：原件回执准入修复、真实本地 knowledge_originals 读取、候选精确回放、统一材料和策略后的原件字节检查贯通，前瞻材料包含四条已消费回执并计一个知识原件。此前 ca45488d 的白名单失败保留；含后续显式记忆回执的 80c24c2b 尚待完成。临时数据库与源码快照已清理，实际模型调用 0，自动启用仍 false。[收据](evidence/ma24-g09-knowledge-receipt-byte-revalidation-2026-10-19.json)。
 
 2026-10-19 / G05 正式 worker 六组修订矩阵通过：PDF/PPTX/XLSX 各覆盖 private/shared。解析失败、审核未完成、原件等长篡改、抽取文件等长篡改均不切换旧版；重复上传/登记复用，竞争修订只接受一个，旧引用切版后拒绝，新引用准确到第 2 页/幻灯片/工作表（XLSX 含 A1:B2 单元格范围）。共享发布须管理员；私有跨账号拒绝，共享读取对另一账号可用。18 条装饰判决均针对脚本生成的蓝色方块，不构成独立质量批准。初次 XLSX 失败来自夹具误读顶层图片字段，已改用现有嵌套图片预览读取服务并验 PNG 字节/哈希，没有放宽产品守卫。实际进程中断/租约恢复、无关作业和 v3 指针不变及全部本轮资源清理通过；类型/lint 通过。本矩阵未重做登记进程崩溃场景，真实业务资料、模型答案引用、生产和团队试用仍未验收。[六组收据](evidence/ma24-g05-formal-worker-six-group-revision-matrix-2026-10-19.json)。
+
+2026-10-19 / G01 当前流程生产构建：基于提交 1876cb63 的工作区应用源码，npm.cmd run build 退出 0；Next.js 16.3.4 编译、构建内 TypeScript 与 26/26 页面生成通过，standalone server 已生成。新记忆回执、知识回执、附件字节及材料准备模块在 runtime-source 包内与当前源文件逐字节一致。仅本机构建及四个来源文件的打包检查，不是部署二进制/提供方资格、服务启动或团队发布验收；原有 next-env.d.ts 与实验文件变更未提交。[构建证据](evidence/ma24-g01-production-build-1876cb63-2026-10-19.json)。

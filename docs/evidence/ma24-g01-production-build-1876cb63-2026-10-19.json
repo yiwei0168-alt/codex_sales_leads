@@ -1,0 +1,30 @@
+{
+  "stage": "MA24 G01 current workflow production build",
+  "date": "2026-10-19",
+  "sourceCommit": "1876cb63",
+  "command": "npm.cmd run build",
+  "exitCode": 0,
+  "nextVersion": "16.3.4",
+  "buildId": "J-fdhzwzNRSmES5T8ywYZ",
+  "checks": {
+    "compiledSuccessfully": true,
+    "buildTypeScriptPassed": true,
+    "pageGeneration": "26/26",
+    "standaloneServerExists": true,
+    "newRuntimeSourcesPackagedIdentically": true
+  },
+  "packagedSourceSha256": {
+    "src/lib/assistant/main/skill-memory-receipt-check.ts": "58ca397e2d528672fc7a0d14926959f758b50f45bee62293d408694d11763620",
+    "src/lib/assistant/main/skill-knowledge-receipt-bytes.ts": "6af8d0c0c735ef40719feb406859ce8763bdf52d353e82ee836be0e6685202f5",
+    "src/lib/assistant/main/skill-attachment-bytes.ts": "e4e05f00af27e33f0c9e57252c54e4ef0f0a8f59b104564a176fe794d0b04026",
+    "src/lib/assistant/main/skill-locked-materials.ts": "62417a1e5deb70354d9617a7c999e6e13cdad131ff1da767d712b142302d33d8"
+  },
+  "workspaceNote": "Existing generated next-env.d.ts worktree modification and unrelated experimental artifacts were excluded from commits.",
+  "limitations": [
+    "Local compilation and selected source-byte packaging checks only; not deployed-binary or provider qualification.",
+    "No service, LAN entry, production database migration or team release acceptance was performed.",
+    "Earlier full workflow checks remain bound to their own fixed commits; pending consumed-memory composition is separate."
+  ],
+  "releaseGranted": false,
+  "automaticActivation": false
+}
