@@ -1,0 +1,387 @@
+{
+  "schema": "ma24-g05-formal-worker-six-group-revision-matrix-v1",
+  "date": "2026-10-19",
+  "sourceCommitBeforeVerifierChange": "ba52ac97",
+  "verifier": "scripts/verify-knowledge-supervisor-clone.ts",
+  "verifierSha256": "1616295fe6605d410edebf1b582978ae9982e3b7d8d2c8b22044a233c76201d2",
+  "command": "node --require ./scripts/patch-node-user.cjs --import tsx scripts/verify-knowledge-supervisor-clone.ts",
+  "result": {
+    "cloneOnly": true,
+    "platform": "win32",
+    "actualSupervisorKills": 2,
+    "descendantsStopped": true,
+    "extractionLeaseHeld": true,
+    "extractionExpiredRecovery": true,
+    "visualLeaseHeld": true,
+    "malformedPdfFailedWithoutCrossJobEffect": true,
+    "successfulPdfWorkerHandoff": true,
+    "successfulPdfTextExtracted": true,
+    "successfulPptxWorkerHandoff": true,
+    "successfulPptxTextExtracted": true,
+    "successfulXlsxWorkerHandoff": true,
+    "syntheticVisualJudgments": 18,
+    "reviewCompletionVerified": true,
+    "vectorlessRegistrationVerified": true,
+    "searchAndSourceCitationVerified": true,
+    "syntheticCitations": [
+      {
+        "documentId": "65ef18da-56cc-467a-9d4e-f65267a8fae4",
+        "reason": "fulltext",
+        "sourceSha256": "20a1c8c5d8954d8396a711e3248b3b88f8098ea68bded7a9f6acd04a19315e2a",
+        "sourceLocation": {
+          "bbox": [
+            50,
+            38.17499923706055,
+            189.36996459960938,
+            53.28900146484375
+          ],
+          "blockId": "page-1-block-1",
+          "startRow": null,
+          "unitType": "page",
+          "unitIndex": 1
+        }
+      },
+      {
+        "documentId": "01a47406-b4d2-446b-ba99-fd53fc93271f",
+        "reason": "fulltext",
+        "sourceSha256": "2a6b155b613768ba8a2554564ce8cc855c50ecf0fa841f96530c147efdac5190",
+        "sourceLocation": {
+          "bbox": null,
+          "blockId": "slide-1-text-1",
+          "startRow": null,
+          "unitType": "slide",
+          "shapePath": [
+            1
+          ],
+          "unitIndex": 1,
+          "shapeIdPath": [
+            2
+          ]
+        }
+      },
+      {
+        "documentId": "470b2fbf-87d0-4626-be47-cdadc2bd4389",
+        "reason": "fulltext",
+        "sourceSha256": "dccccb642b7b46fde9065d0d779c74cca08c94b57a1a6cc23ceeab8254851370",
+        "sourceLocation": {
+          "bbox": null,
+          "blockId": "sheet-1-table",
+          "startRow": 2,
+          "unitType": "sheet",
+          "cellRange": "A1:B2",
+          "headerRow": 1,
+          "sheetName": "Original",
+          "unitIndex": 1,
+          "startColumn": 1
+        }
+      },
+      {
+        "documentId": "2a5c78ee-1b5c-40a7-b7d1-fd204e00f7a6",
+        "reason": "fulltext",
+        "sourceSha256": "20a1c8c5d8954d8396a711e3248b3b88f8098ea68bded7a9f6acd04a19315e2a",
+        "sourceLocation": {
+          "bbox": [
+            50,
+            38.17499923706055,
+            189.36996459960938,
+            53.28900146484375
+          ],
+          "blockId": "page-1-block-1",
+          "startRow": null,
+          "unitType": "page",
+          "unitIndex": 1
+        }
+      },
+      {
+        "documentId": "4e12cab0-9a06-4940-86ce-00120077c341",
+        "reason": "fulltext",
+        "sourceSha256": "2a6b155b613768ba8a2554564ce8cc855c50ecf0fa841f96530c147efdac5190",
+        "sourceLocation": {
+          "bbox": null,
+          "blockId": "slide-1-text-1",
+          "startRow": null,
+          "unitType": "slide",
+          "shapePath": [
+            1
+          ],
+          "unitIndex": 1,
+          "shapeIdPath": [
+            2
+          ]
+        }
+      },
+      {
+        "documentId": "40630c31-926b-467e-88d1-362e3302418f",
+        "reason": "fulltext",
+        "sourceSha256": "dccccb642b7b46fde9065d0d779c74cca08c94b57a1a6cc23ceeab8254851370",
+        "sourceLocation": {
+          "bbox": null,
+          "blockId": "sheet-1-table",
+          "startRow": 2,
+          "unitType": "sheet",
+          "cellRange": "A1:B2",
+          "headerRow": 1,
+          "sheetName": "Original",
+          "unitIndex": 1,
+          "startColumn": 1
+        }
+      }
+    ],
+    "revisionResults": [
+      {
+        "format": "pdf",
+        "visibility": "private",
+        "stableDocumentId": true,
+        "parserFailureKeepsOld": true,
+        "oldReadableDuringProcessingAndReview": true,
+        "crossAccountRevisionRejected": true,
+        "duplicateReused": true,
+        "unresolvedRegistrationRejected": true,
+        "oneReviewedWinner": true,
+        "competingRevisionRejected": true,
+        "sourceTamperKeepsOld": true,
+        "artifactTamperKeepsOld": true,
+        "sharedRequiresAdmin": false,
+        "peerAccessMatchesVisibility": true,
+        "oldEvidenceRejectedAfterSwitch": true,
+        "historyStatusVerified": true,
+        "exactSecondUnitCitation": {
+          "documentId": "65ef18da-56cc-467a-9d4e-f65267a8fae4",
+          "reason": "fulltext",
+          "sourceSha256": "3bdca03ff482d8afc1aa89130ed7619db144f4e5904da2debe2afdda3be53009",
+          "sourceLocation": {
+            "bbox": [
+              50,
+              68.17500305175781,
+              194.26498413085938,
+              83.28900146484375
+            ],
+            "blockId": "page-2-block-1",
+            "startRow": null,
+            "unitType": "page",
+            "unitIndex": 2
+          }
+        },
+        "registrationReplayReused": true
+      },
+      {
+        "format": "pptx",
+        "visibility": "private",
+        "stableDocumentId": true,
+        "parserFailureKeepsOld": true,
+        "oldReadableDuringProcessingAndReview": true,
+        "crossAccountRevisionRejected": true,
+        "duplicateReused": true,
+        "unresolvedRegistrationRejected": true,
+        "oneReviewedWinner": true,
+        "competingRevisionRejected": true,
+        "sourceTamperKeepsOld": true,
+        "artifactTamperKeepsOld": true,
+        "sharedRequiresAdmin": false,
+        "peerAccessMatchesVisibility": true,
+        "oldEvidenceRejectedAfterSwitch": true,
+        "historyStatusVerified": true,
+        "exactSecondUnitCitation": {
+          "documentId": "01a47406-b4d2-446b-ba99-fd53fc93271f",
+          "reason": "fulltext",
+          "sourceSha256": "e8f4df1021f2c955c998df5e8dbe4a4d0280cf0c8c809e3bd1dbf3583acc3009",
+          "sourceLocation": {
+            "bbox": null,
+            "blockId": "slide-2-text-1",
+            "startRow": null,
+            "unitType": "slide",
+            "shapePath": [
+              1
+            ],
+            "unitIndex": 2,
+            "shapeIdPath": [
+              2
+            ]
+          }
+        },
+        "registrationReplayReused": true
+      },
+      {
+        "format": "xlsx",
+        "visibility": "private",
+        "stableDocumentId": true,
+        "parserFailureKeepsOld": true,
+        "oldReadableDuringProcessingAndReview": true,
+        "crossAccountRevisionRejected": true,
+        "duplicateReused": true,
+        "unresolvedRegistrationRejected": true,
+        "oneReviewedWinner": true,
+        "competingRevisionRejected": true,
+        "sourceTamperKeepsOld": true,
+        "artifactTamperKeepsOld": true,
+        "sharedRequiresAdmin": false,
+        "peerAccessMatchesVisibility": true,
+        "oldEvidenceRejectedAfterSwitch": true,
+        "historyStatusVerified": true,
+        "exactSecondUnitCitation": {
+          "documentId": "470b2fbf-87d0-4626-be47-cdadc2bd4389",
+          "reason": "fulltext",
+          "sourceSha256": "902f19f78ddc148288cc8cc89f87c92c77fe85a51e6852a2098b3f031c1322ba",
+          "sourceLocation": {
+            "bbox": null,
+            "blockId": "sheet-2-table",
+            "startRow": 2,
+            "unitType": "sheet",
+            "cellRange": "A1:B2",
+            "headerRow": 1,
+            "sheetName": "revision",
+            "unitIndex": 2,
+            "startColumn": 1
+          }
+        },
+        "registrationReplayReused": true
+      },
+      {
+        "format": "pdf",
+        "visibility": "shared",
+        "stableDocumentId": true,
+        "parserFailureKeepsOld": true,
+        "oldReadableDuringProcessingAndReview": true,
+        "crossAccountRevisionRejected": true,
+        "duplicateReused": true,
+        "unresolvedRegistrationRejected": true,
+        "oneReviewedWinner": true,
+        "competingRevisionRejected": true,
+        "sourceTamperKeepsOld": true,
+        "artifactTamperKeepsOld": true,
+        "sharedRequiresAdmin": true,
+        "peerAccessMatchesVisibility": true,
+        "oldEvidenceRejectedAfterSwitch": true,
+        "historyStatusVerified": true,
+        "exactSecondUnitCitation": {
+          "documentId": "2a5c78ee-1b5c-40a7-b7d1-fd204e00f7a6",
+          "reason": "fulltext",
+          "sourceSha256": "3bdca03ff482d8afc1aa89130ed7619db144f4e5904da2debe2afdda3be53009",
+          "sourceLocation": {
+            "bbox": [
+              50,
+              68.17500305175781,
+              194.26498413085938,
+              83.28900146484375
+            ],
+            "blockId": "page-2-block-1",
+            "startRow": null,
+            "unitType": "page",
+            "unitIndex": 2
+          }
+        },
+        "registrationReplayReused": true
+      },
+      {
+        "format": "pptx",
+        "visibility": "shared",
+        "stableDocumentId": true,
+        "parserFailureKeepsOld": true,
+        "oldReadableDuringProcessingAndReview": true,
+        "crossAccountRevisionRejected": true,
+        "duplicateReused": true,
+        "unresolvedRegistrationRejected": true,
+        "oneReviewedWinner": true,
+        "competingRevisionRejected": true,
+        "sourceTamperKeepsOld": true,
+        "artifactTamperKeepsOld": true,
+        "sharedRequiresAdmin": true,
+        "peerAccessMatchesVisibility": true,
+        "oldEvidenceRejectedAfterSwitch": true,
+        "historyStatusVerified": true,
+        "exactSecondUnitCitation": {
+          "documentId": "4e12cab0-9a06-4940-86ce-00120077c341",
+          "reason": "fulltext",
+          "sourceSha256": "e8f4df1021f2c955c998df5e8dbe4a4d0280cf0c8c809e3bd1dbf3583acc3009",
+          "sourceLocation": {
+            "bbox": null,
+            "blockId": "slide-2-text-1",
+            "startRow": null,
+            "unitType": "slide",
+            "shapePath": [
+              1
+            ],
+            "unitIndex": 2,
+            "shapeIdPath": [
+              2
+            ]
+          }
+        },
+        "registrationReplayReused": true
+      },
+      {
+        "format": "xlsx",
+        "visibility": "shared",
+        "stableDocumentId": true,
+        "parserFailureKeepsOld": true,
+        "oldReadableDuringProcessingAndReview": true,
+        "crossAccountRevisionRejected": true,
+        "duplicateReused": true,
+        "unresolvedRegistrationRejected": true,
+        "oneReviewedWinner": true,
+        "competingRevisionRejected": true,
+        "sourceTamperKeepsOld": true,
+        "artifactTamperKeepsOld": true,
+        "sharedRequiresAdmin": true,
+        "peerAccessMatchesVisibility": true,
+        "oldEvidenceRejectedAfterSwitch": true,
+        "historyStatusVerified": true,
+        "exactSecondUnitCitation": {
+          "documentId": "40630c31-926b-467e-88d1-362e3302418f",
+          "reason": "fulltext",
+          "sourceSha256": "902f19f78ddc148288cc8cc89f87c92c77fe85a51e6852a2098b3f031c1322ba",
+          "sourceLocation": {
+            "bbox": null,
+            "blockId": "sheet-2-table",
+            "startRow": 2,
+            "unitType": "sheet",
+            "cellRange": "A1:B2",
+            "headerRow": 1,
+            "sheetName": "revision",
+            "unitIndex": 2,
+            "startColumn": 1
+          }
+        },
+        "registrationReplayReused": true
+      }
+    ],
+    "peerAccountCompletedWhileTargetHeld": true,
+    "peerVisualReady": true,
+    "expiredFinishRejected": true,
+    "visualExpiredRecovery": true,
+    "ocrExecutionsOnResume": 0,
+    "ocrCheckpointReuses": 1,
+    "unrelatedJobUnchanged": true,
+    "v3PointersUnchanged": true,
+    "syntheticDocumentsRegistered": 6,
+    "externalCalls": 0,
+    "syntheticFixture": true,
+    "qualityAccepted": false
+  },
+  "checks": {
+    "verifierExitCode": 0,
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "diffCheck": "passed"
+  },
+  "previewVerification": {
+    "actualPreviewReadService": true,
+    "pngSignatureChecked": true,
+    "nestedSheetObjectImageSelection": true,
+    "hashAndSourceBindingPreserved": true
+  },
+  "initialFixtureFailure": "The first expanded run expected a top-level imageFile for XLSX. XLSX correctly stores images under sheetObjects[].images[]. The fixture now reads the existing preview service with objectIndex/imageIndex and verifies actual PNG bytes; no product guard was relaxed.",
+  "cleanup": {
+    "syntheticAccountsJobsDocumentsReviewsAndCompletionsAbsent": true,
+    "generatedUploadTreesRemoved": true,
+    "generatedFormatFixturesRemoved": true,
+    "assertionsExecutedInFinally": true
+  },
+  "limits": [
+    "Local MA11 replay clone and generated documents; not a production role/TLS or browser/team release qualification.",
+    "18 decoration decisions for known synthetic blue squares are not independent human content quality judgments.",
+    "Actual source-coordinate readback is not real business model-answer citation quality.",
+    "Supervisor kills cover extraction/visual recovery; registration-process crash is covered only by separate earlier receipts, not newly exercised by this six-group matrix.",
+    "No production publication, external/model calls or deployment."
+  ]
+}

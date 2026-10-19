@@ -7,7 +7,7 @@ import nextEnv from '@next/env';
 import {Pool} from 'pg';
 import {getPool} from '../src/lib/rag/db';
 import {createKnowledgeUploadJob,listKnowledgeUploadJobs} from '../src/lib/knowledge/upload';
-import {completeExtractionReview,getExtractionReview,recordExtractionReview} from '../src/lib/knowledge/extraction-review';
+import {completeExtractionReview,getExtractionReview,getExtractionReviewImage,recordExtractionReview} from '../src/lib/knowledge/extraction-review';
 import {registerVectorlessUpload} from '../src/lib/knowledge/vectorless-registration';
 import {browseTree,readEvidence,searchDocuments} from '../src/lib/knowledge/vectorless';
 import {finishVisualReviewJob} from '../src/lib/knowledge/visual-queue';
@@ -34,13 +34,17 @@ const makeFixtures=spawnSync(process.env.PYTHON_BINARY?.trim()||'python',['-c',[
  'from PIL import Image',
  'from pptx import Presentation',
  'from pptx.util import Inches',
+ 'from openpyxl import Workbook, load_workbook',
+ 'from openpyxl.drawing.image import Image as SheetImage',
  'pdf_path,pptx_path,image_path=sys.argv[1:]',
  'Image.new("RGB",(64,64),(20,80,140)).save(image_path)',
  'doc=fitz.open(); page=doc.new_page(); page.insert_text((50,50),"Synthetic PDF worker fixture"); page.insert_image(fitz.Rect(50,80,114,144),filename=image_path); doc.save(pdf_path); doc.close()',
  'deck=Presentation(); slide=deck.slides.add_slide(deck.slide_layouts[6]); shape=slide.shapes.add_textbox(0,0,Inches(4),Inches(1)); shape.text="Synthetic PPTX worker fixture"; slide.shapes.add_picture(image_path,Inches(1),Inches(1),width=Inches(1),height=Inches(1)); deck.save(pptx_path)',
+ 'xlsx_path=Path(pdf_path).parent/"successful-fixture.xlsx"; book=Workbook(); sheet=book.active; sheet.title="Original"; sheet.append(["Field","Value"]); sheet.append(["Marker","Synthetic XLSX worker fixture"]); sheet.add_image(SheetImage(image_path),"D4"); book.save(xlsx_path)',
  'for label in ["revision","competing"]:',
  '    doc=fitz.open(pdf_path); page=doc.new_page(); page.insert_text((50,80),"Synthetic "+label+" PDF fixture"); doc.save(str(Path(pdf_path).parent/(label+".pdf"))); doc.close()',
  '    deck=Presentation(pptx_path); slide=deck.slides.add_slide(deck.slide_layouts[6]); slide.shapes.add_textbox(Inches(1),Inches(1),Inches(7),Inches(1)).text="Synthetic "+label+" PPTX fixture"; deck.save(str(Path(pptx_path).parent/(label+".pptx")))',
+ '    book=load_workbook(xlsx_path); sheet=book.create_sheet(label); sheet.append(["Field","Value"]); sheet.append(["Marker","Synthetic "+label+" XLSX fixture"]); book.save(Path(pdf_path).parent/(label+".xlsx"))',
 ].join('\n'),pdfPath,pptxPath,imagePath],{encoding:'utf8',windowsHide:true});
 assert.equal(makeFixtures.status,0,makeFixtures.stderr||'Could not create synthetic PDF/PPTX fixtures');
 const stored=async(id:string)=>(await pool.query('select * from knowledge_upload_job where id=$1',[id])).rows[0];
@@ -65,12 +69,22 @@ async function supervisor(id:string,phase?:string){
   await rm(marker,{force:true});
  }
 }
-async function reviewRegisterAndSearch(userId:string,otherUserId:string,jobId:string,expectedText:string,unitType:'page'|'slide'){
+async function reviewRegisterAndSearch(userId:string,otherUserId:string,jobId:string,expectedText:string,unitType:'page'|'slide'|'sheet',visibility:'private'|'shared'='private'){
  const review=await getExtractionReview(userId,jobId,0,'pending');
  assert(review.blocks.length>0,`${expectedText} has no reviewable visual blocks`);
  for(const item of review.blocks){
   assert.equal(item.block.quality,'pending-ocr');
-  assert(item.candidate?.imageFile,`${item.block.id} has no verified review image`);
+  assert(item.candidate,`${item.block.id} has no verified review candidate`);
+  let image:Uint8Array;
+  if(unitType==='sheet'){
+   const object=item.candidate.sheetObjects?.[0],preview=object?.images?.[0];
+   assert(object&&preview?.imageFile,`${item.block.id} has no verified nested sheet image`);
+   image=await getExtractionReviewImage(userId,jobId,review.artifactSha256,item.block.id,object.objectIndex,preview.imageIndex);
+  }else{
+   assert(item.candidate.imageFile,`${item.block.id} has no verified review image`);
+   image=await getExtractionReviewImage(userId,jobId,review.artifactSha256,item.block.id);
+  }
+  assert.equal(Buffer.from(image).subarray(0,8).toString('hex'),'89504e470d0a1a0a');
   await recordExtractionReview(userId,{jobId,artifactSha256:review.artifactSha256,blockId:item.block.id,
    expectedRevision:0,decision:'decoration',evidenceText:'',
    note:'Synthetic fixture only: the verifier generated a plain blue square with no factual content.'});
@@ -79,7 +93,7 @@ async function reviewRegisterAndSearch(userId:string,otherUserId:string,jobId:st
  assert.equal(completedReview.pendingResolved,completedReview.pendingTotal);
  const completion=await completeExtractionReview(userId,jobId,completedReview.artifactSha256,completedReview.decisionSha256);
  assert.equal(completion.readyForRegistration,true);
- const registered=await registerVectorlessUpload(userId,jobId,{language:'en',authorityLevel:2});
+ const registered=await registerVectorlessUpload(userId,jobId,{language:'en',authorityLevel:2,expectedSourceSha256:(await stored(jobId)).source_sha256});
  assert.equal(registered.treeStatus,'searchable');publishedDocumentIds.push(registered.documentId);
  const matches=await searchDocuments(userId,expectedText,{collections:['industry']});
  const match=matches.find(row=>row.documentId===registered.documentId);assert(match,`${expectedText} was not retrievable`);
@@ -97,11 +111,18 @@ async function reviewRegisterAndSearch(userId:string,otherUserId:string,jobId:st
  assert(evidence?.content.includes(expectedText),`${expectedText} citation text does not match source`);
  assert.equal(evidence?.source_sha256,(await stored(jobId)).source_sha256);
  if(unitType==='page')assert(Array.isArray(evidence?.source_location.bbox)&&evidence.source_location.bbox.length===4);
- else assert(Array.isArray(evidence?.source_location.shapePath)&&Array.isArray(evidence?.source_location.shapeIdPath));
+ else if(unitType==='slide')assert(Array.isArray(evidence?.source_location.shapePath)&&Array.isArray(evidence?.source_location.shapeIdPath));
+ else {assert.equal(typeof evidence?.source_location.sheetName,'string');assert.equal(typeof evidence?.source_location.cellRange,'string');}
  const otherAccountMatches=await searchDocuments(otherUserId,expectedText,{collections:['industry']});
- assert(!otherAccountMatches.some(row=>row.documentId===registered.documentId),'Private document leaked to peer account');
- assert.equal((await browseTree(otherUserId,registered.documentId,null,0,20,['industry'])).length,0);
- assert.equal(await readEvidence(otherUserId,citation.id,['industry']),null);
+ if(visibility==='private'){
+  assert(!otherAccountMatches.some(row=>row.documentId===registered.documentId),'Private document leaked to peer account');
+  assert.equal((await browseTree(otherUserId,registered.documentId,null,0,20,['industry'])).length,0);
+  assert.equal(await readEvidence(otherUserId,citation.id,['industry']),null);
+ }else{
+  assert(otherAccountMatches.some(row=>row.documentId===registered.documentId),'Approved shared source unavailable to peer account');
+  assert((await browseTree(otherUserId,registered.documentId,null,0,20,['industry'])).length>0);
+  assert.equal((await readEvidence(otherUserId,citation.id,['industry']))?.content,evidence?.content);
+ }
  return {documentId:registered.documentId,reason:match.reason,sourceSha256:evidence?.source_sha256,sourceLocation:evidence?.source_location};
 }
  await pool.query("insert into app_user(id,email,display_name,password_hash,role,status) values($1,$2,'Supervisor fixture','!','member','active')",[owner,`${owner}@example.invalid`]);
@@ -129,11 +150,18 @@ async function reviewRegisterAndSearch(userId:string,otherUserId:string,jobId:st
  assert.equal(JSON.stringify((await pool.query('select * from knowledge_release_pointer_v3 order by scope_kind,owner_id')).rows),pointers);
  // Successful PDF and PPTX jobs must both extract and hand off their visual objects
  // for review while unrelated held jobs and release pointers remain untouched.
- const successfulPdf=await createKnowledgeUploadJob(owner,{...input,title:'Successful PDF worker fixture',originalFilename:'successful-fixture.pdf',mimeType:'application/pdf',bytes:await readFile(pdfPath)});
- const successfulPptx=await createKnowledgeUploadJob(peerOwner,{...input,title:'Successful PPTX worker fixture',originalFilename:'successful-fixture.pptx',mimeType:'application/vnd.openxmlformats-officedocument.presentationml.presentation',bytes:await readFile(pptxPath)});
 const syntheticCitations:Array<Record<string,unknown>>=[];
 const revisionResults:Array<Record<string,unknown>>=[];
- for(const job of [successfulPdf,successfulPptx]){
+ const formats=[{format:'pdf',unitType:'page',mimeType:'application/pdf'},
+  {format:'pptx',unitType:'slide',mimeType:'application/vnd.openxmlformats-officedocument.presentationml.presentation'},
+  {format:'xlsx',unitType:'sheet',mimeType:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}] as const;
+ for(const visibility of ['private','shared'] as const){
+ if(visibility==='shared')await pool.query("update app_user set role='admin' where id=any($1::uuid[])",[[owner,peerOwner]]);
+ for(const {format,unitType,mimeType} of formats){
+  const userId=format==='pptx'?peerOwner:owner,otherUserId=format==='pptx'?owner:peerOwner;
+  const expectedText=`Synthetic ${format.toUpperCase()} worker fixture`;
+  const job=await createKnowledgeUploadJob(userId,{...input,visibility,title:`Successful ${format} ${visibility} worker fixture`,
+   originalFilename:`successful-fixture.${format}`,mimeType,bytes:await readFile(resolve(multiFormatDirectory,`successful-fixture.${format}`))});
   await supervisor(job.id);
   if(!(await stored(job.id)).metrics.visualReviewKey)await supervisor(job.id);
   const state=await stored(job.id);
@@ -141,16 +169,13 @@ const revisionResults:Array<Record<string,unknown>>=[];
   assert(state.extraction_artifact_key);assert(state.metrics.visualReviewKey);
   const artifact=JSON.parse(await readFile(resolve(state.extraction_artifact_key),'utf8'));
   const document=artifact.documents?.[0];
-  const expectedText=job===successfulPdf?'Synthetic PDF worker fixture':'Synthetic PPTX worker fixture';
-  assert(document?.blocks?.some((block:{text?:string})=>block.text===expectedText),`${expectedText} was not extracted`);
+  assert(document?.blocks?.some((block:{text?:string;table?:unknown})=>block.text?.includes(expectedText)||JSON.stringify(block.table??{}).includes(expectedText)),`${expectedText} was not extracted`);
   assert(document.blocks.some((block:{quality?:string})=>block.quality==='pending-ocr'));
-  const review=await getExtractionReview(job===successfulPdf?owner:peerOwner,job.id);
+  const review=await getExtractionReview(userId,job.id);
   assert.equal(review.visualState,'ready');assert(review.total>0);
   const candidate=JSON.parse(await readFile(resolve(state.metrics.visualReviewKey),'utf8'));
   assert(candidate.records.some((record:{status:string})=>record.status==='review-required'));
-  syntheticCitations.push(await reviewRegisterAndSearch(job===successfulPdf?owner:peerOwner,job===successfulPdf?peerOwner:owner,job.id,
-   job===successfulPdf?'Synthetic PDF worker fixture':'Synthetic PPTX worker fixture',job===successfulPdf?'page':'slide'));
-  const userId=job===successfulPdf?owner:peerOwner,otherUserId=job===successfulPdf?peerOwner:owner,format=job===successfulPdf?'pdf':'pptx',unitType=job===successfulPdf?'page':'slide';
+  syntheticCitations.push(await reviewRegisterAndSearch(userId,otherUserId,job.id,expectedText,unitType,visibility));
   const original=await stored(job.id),documentId=original.published_document_id;
   const oldVersion=(await pool.query('select current_tree_version_id from knowledge_document where id=$1',[documentId])).rows[0].current_tree_version_id;
   const oldEvidence=(await pool.query("select id from knowledge_tree_node where version_id=$1 and node_kind='evidence' and position($2 in content)>0 order by id limit 1",[oldVersion,expectedText])).rows[0];assert(oldEvidence);
@@ -159,8 +184,7 @@ const revisionResults:Array<Record<string,unknown>>=[];
    assert.equal((await pool.query('select current_tree_version_id from knowledge_document where id=$1',[documentId])).rows[0].current_tree_version_id,oldVersion);
    assert((await readEvidence(userId,oldNode))?.content.includes(expectedText));
   };
-  const revisionInput={...input,title:`Synthetic revision ${format}`,originalFilename:`revision.${format}`,
-   mimeType:job===successfulPdf?'application/pdf':'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+  const revisionInput={...input,visibility,title:`Synthetic revision ${format} ${visibility}`,originalFilename:`revision.${format}`,mimeType,
    bytes:await readFile(resolve(multiFormatDirectory,`revision.${format}`)),revisionDocumentId:documentId,revisionBaseVersionId:oldVersion};
   await assert.rejects(createKnowledgeUploadJob(otherUserId,revisionInput),/owned/);
   const failed=await createKnowledgeUploadJob(userId,{...revisionInput,originalFilename:'invalid.pdf',mimeType:'application/pdf',bytes:Buffer.from('%PDF-1.4\nnot a revision PDF\n')});
@@ -173,19 +197,32 @@ const revisionResults:Array<Record<string,unknown>>=[];
    assert.equal((await getExtractionReview(userId,pending.id)).visualState,'ready');await assertOld();
   }
   await assert.rejects(registerVectorlessUpload(userId,revision.id,{language:'en',authorityLevel:2}),/Unresolved/);await assertOld();
-  const citation=await reviewRegisterAndSearch(userId,otherUserId,revision.id,`Synthetic revision ${format.toUpperCase()} fixture`,unitType);
+  const pendingState=await stored(revision.id);
+  for(const [key,pattern] of [[pendingState.storage_key,/Source bytes changed/],[pendingState.extraction_artifact_key,/artifact hash mismatch/]] as const){
+   const path=resolve(key);assert(path.startsWith(resolve('knowledge/uploads',userId)+sep));const bytes=await readFile(path);
+   try{await writeFile(path,Buffer.alloc(bytes.length,120));await assert.rejects(registerVectorlessUpload(userId,revision.id,{language:'en',authorityLevel:2}),pattern);await assertOld();}
+   finally{await writeFile(path,bytes);}
+  }
+  if(visibility==='shared'){
+   await pool.query("update app_user set role='member' where id=$1",[userId]);
+   try{await assert.rejects(registerVectorlessUpload(userId,revision.id,{language:'en',authorityLevel:2}),/administrator/);await assertOld();}
+   finally{await pool.query("update app_user set role='admin' where id=$1",[userId]);}
+  }
+  const citation=await reviewRegisterAndSearch(userId,otherUserId,revision.id,`Synthetic revision ${format.toUpperCase()} fixture`,unitType,visibility);
   assert.equal(citation.documentId,documentId);assert.equal((citation.sourceLocation as {unitIndex:number}).unitIndex,2);
   const newVersion=(await pool.query('select current_tree_version_id from knowledge_document where id=$1',[documentId])).rows[0].current_tree_version_id;
   assert.notEqual(newVersion,oldVersion);assert.equal(await readEvidence(userId,oldNode),null);
-  await assert.rejects(reviewRegisterAndSearch(userId,otherUserId,competing.id,`Synthetic competing ${format.toUpperCase()} fixture`,unitType),/version changed/);
+  await assert.rejects(reviewRegisterAndSearch(userId,otherUserId,competing.id,`Synthetic competing ${format.toUpperCase()} fixture`,unitType,visibility),/version changed/);
   assert.equal((await pool.query('select current_tree_version_id from knowledge_document where id=$1',[documentId])).rows[0].current_tree_version_id,newVersion);
   assert((await registerVectorlessUpload(userId,revision.id,{language:'en',authorityLevel:2})).reused);
   const jobs=await listKnowledgeUploadJobs(userId,0,50);
   assert.equal(jobs.find(row=>row.id===job.id)?.treeStatus,'historical');assert.equal(jobs.find(row=>row.id===revision.id)?.treeStatus,'searchable');
   assert.equal((await pool.query('select count(*)::int n from knowledge_tree_version where document_id=$1',[documentId])).rows[0].n,2);
-  revisionResults.push({format,stableDocumentId:true,parserFailureKeepsOld:true,oldReadableDuringProcessingAndReview:true,
+  revisionResults.push({format,visibility,stableDocumentId:true,parserFailureKeepsOld:true,oldReadableDuringProcessingAndReview:true,
    crossAccountRevisionRejected:true,duplicateReused:true,unresolvedRegistrationRejected:true,oneReviewedWinner:true,competingRevisionRejected:true,
-   oldEvidenceRejectedAfterSwitch:true,historyStatusVerified:true,exactSecondUnitCitation:citation,registrationReplayReused:true});
+   sourceTamperKeepsOld:true,artifactTamperKeepsOld:true,sharedRequiresAdmin:visibility==='shared',
+   peerAccessMatchesVisibility:true,oldEvidenceRejectedAfterSwitch:true,historyStatusVerified:true,exactSecondUnitCitation:citation,registrationReplayReused:true});
+ }
  }
  assert.equal((await stored(target.id)).visual_lease_token,held.visual_lease_token);
  assert.equal(JSON.stringify((await pool.query('select * from knowledge_release_pointer_v3 order by scope_kind,owner_id')).rows),pointers);
@@ -206,11 +243,11 @@ const revisionResults:Array<Record<string,unknown>>=[];
  const candidate=JSON.parse(await readFile(resolve(ready.metrics.visualReviewKey),'utf8'));
  assert.equal(candidate.ocrImageExecutions,0);assert.equal(candidate.ocrCheckpointReuses,1);
  assert.equal(JSON.stringify(await stored(unrelated.id)),untouched);
- assert.equal((await pool.query('select count(*)::int as n from knowledge_document where owner_id=$1',[owner])).rows[0].n,1);
- assert.equal((await pool.query('select count(*)::int as n from knowledge_document where owner_id=$1',[peerOwner])).rows[0].n,1);
+ assert.equal((await pool.query('select count(*)::int as n from knowledge_document where owner_id=$1',[owner])).rows[0].n,4);
+ assert.equal((await pool.query('select count(*)::int as n from knowledge_document where owner_id=$1',[peerOwner])).rows[0].n,2);
  assert.equal(JSON.stringify((await pool.query('select * from knowledge_release_pointer_v3 order by scope_kind,owner_id')).rows),pointers);
  const syntheticVisualJudgments=(await pool.query('select count(*)::int n from knowledge_upload_extraction_review where owner_id=any($1::uuid[])',[[owner,peerOwner]])).rows[0].n;
- const result={cloneOnly:true,platform:process.platform,actualSupervisorKills:2,descendantsStopped:true,extractionLeaseHeld:true,extractionExpiredRecovery:true,visualLeaseHeld:true,malformedPdfFailedWithoutCrossJobEffect:true,successfulPdfWorkerHandoff:true,successfulPdfTextExtracted:true,successfulPptxWorkerHandoff:true,successfulPptxTextExtracted:true,syntheticVisualJudgments,reviewCompletionVerified:true,vectorlessRegistrationVerified:true,searchAndSourceCitationVerified:true,syntheticCitations,revisionResults,peerAccountCompletedWhileTargetHeld:true,peerVisualReady:true,expiredFinishRejected:true,visualExpiredRecovery:true,ocrExecutionsOnResume:0,ocrCheckpointReuses:1,unrelatedJobUnchanged:true,v3PointersUnchanged:true,syntheticDocumentsRegistered:2,externalCalls:0,syntheticFixture:true,qualityAccepted:false};
+ const result={cloneOnly:true,platform:process.platform,actualSupervisorKills:2,descendantsStopped:true,extractionLeaseHeld:true,extractionExpiredRecovery:true,visualLeaseHeld:true,malformedPdfFailedWithoutCrossJobEffect:true,successfulPdfWorkerHandoff:true,successfulPdfTextExtracted:true,successfulPptxWorkerHandoff:true,successfulPptxTextExtracted:true,successfulXlsxWorkerHandoff:true,syntheticVisualJudgments,reviewCompletionVerified:true,vectorlessRegistrationVerified:true,searchAndSourceCitationVerified:true,syntheticCitations,revisionResults,peerAccountCompletedWhileTargetHeld:true,peerVisualReady:true,expiredFinishRejected:true,visualExpiredRecovery:true,ocrExecutionsOnResume:0,ocrCheckpointReuses:1,unrelatedJobUnchanged:true,v3PointersUnchanged:true,syntheticDocumentsRegistered:6,externalCalls:0,syntheticFixture:true,qualityAccepted:false};
  await writeFile('tmp/knowledge-supervisor-clone-result.json',JSON.stringify(result,null,2));console.log(JSON.stringify(result));
 }finally{
  for(const userId of [owner,peerOwner]){
