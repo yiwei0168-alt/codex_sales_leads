@@ -3,6 +3,7 @@ import {digest,type ModelMessage} from './contracts';
 import {runGraphSkillReplay} from './skill-graph-replay';
 import {CallbackManager} from '@langchain/core/callbacks/manager';
 import {disableLocalAnalysisTracing} from './local-analysis-boundary';
+import {skillReplaySuiteSchema,type SkillReplaySuite} from './skill-replay';
 const id='00000000-0000-4000-8000-000000000001';
 const args={entities:['Synthetic A','Synthetic B'],attributes:['ports']};
 function fixture(){
@@ -15,6 +16,18 @@ function call(name:string,input:unknown,callId='call'){
   return {role:'assistant',content:null,tool_calls:[{id:callId,type:'function',function:{name,arguments:JSON.stringify(input)}}]};
 }
 const answer={role:'assistant',content:'A: two; B: three.'};
+it.each(['knowledge_originals','knowledge_facts'])('exposes %s only through described exact recorded reads',async tool=>{
+ disableLocalAnalysisTracing();
+ const s:SkillReplaySuite=skillReplaySuiteSchema.parse(fixture()),arguments_=tool==='knowledge_originals'?{query:'',assetId:id}:{entity:'Synthetic A',attributes:['ports']};
+ const receipt={tool,arguments:arguments_,result:{status:'success',data:{synthetic:true}}};
+ s.cases[0].receipts=[{...receipt,sha256:digest(receipt)}];let steps=0;
+ const out=await runGraphSkillReplay(s,async()=>{
+  const step=steps++%3;
+  return step===0?call('describe_tool',{tool}):step===1?call('execute_tool',{tool,arguments:arguments_}):answer;
+ },async()=>{});
+ expect(out.pairs[0].baseline.status).toBe('completed');expect(out.pairs[0].candidate.status).toBe('completed');
+ expect(out.pairs[0].candidate.calls.some(row=>row.receiptHash===digest(receipt))).toBe(true);
+});
 it('rejects inherited tracing before model access and runs only with tracing explicitly disabled',async()=>{
  vi.stubEnv('LANGSMITH_TRACING','true');vi.stubEnv('LANGCHAIN_TRACING_V2','true');
  const network=vi.fn(async()=>{throw new Error('No external tracing permitted');});vi.stubGlobal('fetch',network);

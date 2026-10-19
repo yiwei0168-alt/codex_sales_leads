@@ -11,7 +11,7 @@ import {assertSkillShadowLease} from './skill-shadow-lease';
 
 const sha=z.string().regex(/^[a-f0-9]{64}$/);
 export const SHADOW_MODEL_DIGEST='500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41';
-const readTools=z.enum(['knowledge_search','knowledge_compare','vectorless_read','mail_read','customer_timeline']);
+const readTools=z.enum(['knowledge_search','knowledge_facts','knowledge_compare','knowledge_originals','vectorless_read','mail_read','customer_timeline']);
 export const shadowSelectionSchema=z.discriminatedUnion('kind',[
  z.object({kind:z.literal('whole-read-only-task')}).strict(),
  z.object({kind:z.literal('read-only-subtask'),objective:z.string().trim().min(10).max(4000),

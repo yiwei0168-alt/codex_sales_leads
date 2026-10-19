@@ -14,7 +14,7 @@
     "focusedEslint": "passed",
     "diffCheck": "passed",
     "freshClusterMemorySourceLocks": "passed",
-    "fixedSnapshotFiveCategoryComposition": "pending"
+    "fixedSnapshotFiveCategoryComposition": "passed on c3f620b5; excludes subsequent file-byte changes"
   },
   "database": {
     "command": "node scripts/verify-ma24-fresh-pilot-new-cluster.ts --memory-source-locks",
@@ -30,6 +30,18 @@
     "deferredEvaluationMigrationsApplied": false,
     "actualModelCalls": 0,
     "automaticActivation": false
+  },
+  "compositionDatabase": {
+    "command": "node scripts/run-ma24-snapshot-check.mjs --prospective-composition",
+    "commit": "c3f620b5b93a6c0aa41087bfc971f5a32bbfd3c5",
+    "exitCode": 0,
+    "completeCompositionVerified": true,
+    "prospectivePairedMaterialVerified": true,
+    "methodExperienceTimesRevalidated": true,
+    "temporaryContainerRemoved": true,
+    "snapshotDirectoryRemoved": true,
+    "actualModelCalls": 0,
+    "scope": "This positive workflow includes common final method-experience time checks and excludes cf147d1a attachment bytes and ca45488d knowledge receipt changes."
   },
   "initialFixtureFailure": "Changing an existing observation valid_until was rejected as immutable. The corrected fixture inserts new short-lived observations and a separate pinned method; no immutability bypass or table-write grant was added.",
   "scope": "Full source eligibility and retained locks are prerequisites. The final query checks target existence, plan expiry and local-experience time bounds at one wall-clock instant, returning only times and a deduplicated count.",

@@ -8,7 +8,7 @@
     "focusedEslint": "passed",
     "diffCheck": "passed",
     "freshClusterMemorySourceLocks": "passed",
-    "latestFixedSnapshotFiveCategoryComposition": "pending"
+    "latestFixedSnapshotFiveCategoryComposition": "ca45488d failed before byte checks; replay original-receipt admission fix and rerun pending"
   },
   "implementation": {
     "inputs": "Only consumed historical/prospective receipts returned by the existing authenticated journal/material reconstruction",
@@ -39,7 +39,19 @@
     "productionDatabaseModified": false,
     "scope": "Focused real-SQL mapping and actual file checks. Synthetic minimal source rows do not establish full semantic review or independent answer quality."
   },
-  "compositionFixture": "Now journals one real knowledge_originals read and checks that the retained-source readiness result counts its file. Pending fixed-snapshot execution; earlier snapshots do not cover this change.",
+  "compositionFixture": "Now journals one real knowledge_originals read and checks that the retained-source readiness result counts its file. ca45488de587d0a5b74b4e02607b3cadbad69d56 exited 1 in prepareHistoricalSkillReplay: the older replay allowlist did not admit knowledge_originals. Byte checks were not reached. Corrective replay admission with explicit envelope/current-source/exact-recorded-read guards is pending full rerun. Earlier snapshots do not cover this change.",
+  "correctiveReplayAdmission": {
+    "tools": ["knowledge_originals", "knowledge_facts"],
+    "historicalEnvelopeAndCurrentSourceChecks": true,
+    "localAndNativeGraphExactRecordedReadsOnly": true,
+    "explicitShadowReadSelectionSupported": true,
+    "noEvidenceOrMalformedEnvelopeRejected": true,
+    "syntheticCompositionCandidateCallsRemainEight": true,
+    "regressionTests": "108 passed across six test files; overlaps previous stage tests",
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "fullCompositionAfterCorrection": "pending"
+  },
   "limitations": [
     "Current content, hash, coordinate and journal provenance guards remain prerequisites; this helper does not replace them.",
     "Before/after byte checks are not immutable storage or a final commit-time source lease.",

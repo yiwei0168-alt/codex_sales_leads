@@ -15,7 +15,7 @@ export const historicalSkillReplayInput=z.object({skillId:z.uuid(),version:z.num
 }).strict().refine(p=>!p.subtasks||(p.subtasks.length===p.runIds.length&&new Set(p.subtasks.map(s=>s.runId)).size===p.runIds.length&&p.subtasks.every(s=>p.runIds.includes(s.runId))),
   {message:'Subtasks must explicitly cover exactly the supplied runs'});
 type SnapshotInput=z.infer<typeof historicalSkillReplayInput>;
-const supported=new Set(['knowledge_search','knowledge_compare','vectorless_read',...PRIVATE_REPLAY_TOOLS]);
+const supported=new Set(['knowledge_search','knowledge_facts','knowledge_compare','knowledge_originals','vectorless_read',...PRIVATE_REPLAY_TOOLS]);
 const model={name:'qwen3:8b' as const,digest:'500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41'};
 type Call={id:string;tool_id:string;tool_version:string;effect:string;status:string;input_hash:string;input:Record<string,unknown>;output:unknown};
 
@@ -64,6 +64,11 @@ export async function prepareHistoricalSkillReplay(context:Pick<ExecutionContext
         if(!['success','partial'].includes(output.status))throw new Error('Historical receipt is not completed evidence');
         // Fail closed on absent or malformed evidence envelopes, rather than letting the guard see zero sources.
         if(call.tool_id==='knowledge_search')z.array(z.object({id:z.uuid(),content:z.string()})).min(1).parse(output.data);
+        if(call.tool_id==='knowledge_facts')z.array(z.object({id:z.uuid(),chunkId:z.uuid(),typedValue:z.unknown(),rawValue:z.string(),unit:z.string().nullable()})).min(1).parse(output.data);
+        if(call.tool_id==='knowledge_originals'){
+          const documents=z.array(z.object({id:z.uuid(),title:z.string(),mime:z.string(),sha256:z.string().regex(/^[a-f0-9]{64}$/)})).min(1).max(20);
+          z.union([documents,z.object({kind:z.literal('document-candidates'),documents})]).parse(output.data);
+        }
         if(call.tool_id==='knowledge_compare')z.object({kind:z.literal('comparison-evidence'),entities:z.array(z.object({
           evidence:z.array(z.object({id:z.uuid(),content:z.string()})),verifiedFacts:z.array(z.object({id:z.uuid(),chunkId:z.uuid()}))})).length(2)})
           .refine(data=>data.entities.some(e=>e.evidence.length||e.verifiedFacts.length)).parse(output.data);

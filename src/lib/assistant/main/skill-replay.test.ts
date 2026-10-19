@@ -20,6 +20,14 @@ it('pairs the same fixtures, captures exact hashes and leaves all quality decisi
   expect(model.mock.calls[0][0].some(m=>m.content.includes('Untrusted Skill'))).toBe(false);
   expect(model.mock.calls[2][0].some(m=>m.content.includes('Untrusted Skill'))).toBe(true);
 });
+it.each(['knowledge_originals','knowledge_facts'])('replays only the exact recorded %s result',async tool=>{
+ const s=suite(),receipt={...s.cases[0].receipts[0],tool};
+ s.cases[0].receipts=[{...receipt,sha256:digest({tool:receipt.tool,arguments:receipt.arguments,result:receipt.result})}];
+ const out=await runSkillReplay(s,async messages=>messages.at(-1)!.content.includes('recordedToolResult')?
+  {kind:'answer',text:'Recorded evidence only'}:{kind:'read',tool,receiptId:'r1'});
+ expect(out.pairs[0].baseline.status).toBe('completed');expect(out.pairs[0].candidate.status).toBe('completed');
+ expect(out.pairs[0].candidate.steps[0].receiptHash).toBe(s.cases[0].receipts[0].sha256);
+});
 it('alternates arm ordering without mixing their contexts',async()=>{
   const s=suite();s.cases.push({...s.cases[0],id:'second'});
   const order:boolean[]=[];

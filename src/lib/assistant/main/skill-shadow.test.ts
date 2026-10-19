@@ -6,9 +6,14 @@ vi.mock('@/lib/rag/db',()=>({tenantQuery:mocks.tenant,tenantTransaction:async(_u
 vi.mock('./skill-source-guard',()=>({skillSourcesCurrent:mocks.sources}));
 vi.mock('./skill-replay-snapshot',()=>({prepareHistoricalSkillReplay:mocks.snapshot}));
 vi.mock('./skill-replay-local',()=>({localReplayModel:mocks.model}));
-import {prepareSkillShadow,prepareShadowRegistration,processNextSkillShadow,shadowRuntimeHash,SHADOW_MODEL_DIGEST} from './skill-shadow';
+import {prepareSkillShadow,prepareShadowRegistration,processNextSkillShadow,shadowRuntimeHash,SHADOW_MODEL_DIGEST,shadowSelectionSchema} from './skill-shadow';
 const id=(n:number)=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
 const context={userId:id(1),jobId:id(2),leaseToken:id(3)},files={'SKILL.md':'Read only the saved original.'};
+it('allows explicit original/fact read subtasks but still rejects effects',()=>{
+ const selection={kind:'read-only-subtask',objective:'Read only the recorded original and verified fact.',tools:['knowledge_originals','knowledge_facts']};
+ expect(shadowSelectionSchema.parse(selection)).toEqual(selection);
+ expect(()=>shadowSelectionSchema.parse({...selection,tools:['mail_send']})).toThrow();
+});
 let job:Record<string,unknown>,version:Record<string,unknown>,config:Record<string,unknown>;
 beforeEach(async()=>{
  vi.clearAllMocks();mocks.sources.mockResolvedValue(true);mocks.generate.mockResolvedValue({role:'assistant',content:'Synthetic response.'});mocks.close.mockResolvedValue(undefined);

@@ -185,14 +185,15 @@ try{
   const actions=[{name:'describe_tool',args:{tool:'skill_read'}},{name:'execute_tool',args:{tool:'skill_read',arguments:{id:skill.id}}},
    {name:'describe_tool',args:{tool:'mail_read'}},{name:'execute_tool',args:{tool:'mail_read',arguments:{messageId:mail}}},
    ...(fullComposition?[{name:'describe_tool',args:{tool:'customer_timeline'}},{name:'execute_tool',args:{tool:'customer_timeline',arguments:{customerId}}},
-    {name:'execute_tool',args:{tool:'customer_timeline',arguments:{}}},
-    {name:'describe_tool',args:{tool:'knowledge_originals'}},{name:'execute_tool',args:{tool:'knowledge_originals',arguments:{query:'',assetId:attachmentId}}}]:[])];
+    {name:'execute_tool',args:{tool:'customer_timeline',arguments:{}}}]:[])];
   const executed=await runDurableRecordedSkillCandidateArm({userId:owner},{runId:run,skillId:skill.id,version:1},'candidate',{
    frozen,evaluationId,sourceKind:'synthetic-fixture',transaction:collector,request:async request=>{
     requests++;const step=request.step;
     const action=actions[step];
     const message=action?{role:'assistant',content:null,tool_calls:[{id:`synthetic-candidate-${step}`,type:'function',function:{name:action.name,arguments:JSON.stringify(action.args)}}]}:
      {role:'assistant',content:candidateAnswer};
+    if(fullComposition&&(step===4||step===6)&&'tool_calls' in message)message.tool_calls!.push({id:`synthetic-candidate-${step}-original`,type:'function',
+     function:{name:step===4?'describe_tool':'execute_tool',arguments:JSON.stringify(step===4?{tool:'knowledge_originals'}:{tool:'knowledge_originals',arguments:{query:'',assetId:attachmentId}})}});
     const route=request.profile.routes[request.index],body={model:route.model,messages:transportMessages(request.messages),tools:modelFunctions,stream:true,reasoning:{effort:route.effort}};
     return {message,requestManifest:modelRequestManifest(body,{model:route.model,provider:'synthetic',id:`synthetic-candidate-${step}`})};
    }});

@@ -1230,3 +1230,7 @@ MODESEL-15：53 项本地测试通过。旧入口仅返回停用提示，配置�
 2026-10-19 / G09 任务附件字节复核：材料重建前、策略准备后核真实原件 SHA-256/长度和登记清单；存量任务决定检查范围，账号权限和 active/registered 不满足时拒绝。44 项回归、类型/lint 通过；完整数据库快照待验。仅覆盖任务附件，其他回执原件、不可变存储、生产身份及最终启用仍待完成。[工作流](SKILL_CATALOG_SOURCE_ADMISSION_2026-10-19.md)、[证据](evidence/ma24-g09-attachment-byte-revalidation-2026-10-19.json)。
 
 2026-10-19 / G09 知识回执原件复核：历史/前瞻任务已消费的五类知识工具回执映射到原件，材料重建后及策略准备后验证字节和清单；旧数据库文本及安全夹具保持各自语义。60 项定向测试、类型/lint、一次性实库五类映射和篡改/跨账号/撤回拒绝通过，完整组合新快照待验。不可变文件、生产资格、真实质量及最终启用仍待完成。[工作流](SKILL_CATALOG_SOURCE_ADMISSION_2026-10-19.md)、[证据](evidence/ma24-g09-knowledge-receipt-byte-revalidation-2026-10-19.json)。
+
+2026-10-19 固定 c3f620b5 完整五类组合退出 0：目录来源锁、决策记忆结束边界和方法经验统一时刻正向贯穿通过，临时数据库与源码快照已清理；后续文件字节修改不在该快照。[收据](evidence/ma24-g09-final-method-experience-time-2026-10-19.json)。
+
+知识回执完整组合在 ca45488d 失败：旧回放/影子工具白名单未接受 knowledge_originals。当前补齐 knowledge_originals 和 knowledge_facts 的格式准入、当前来源守卫及仅精确已存回执的本地/图回放接线；不新增真实检索、外部执行或启用权限。无匹配结果不构成回放证据；格式缺失/错误哈希/缺少事实 chunk 绑定仍拒绝。108 项回放、影子、原件与材料回归、类型/lint 通过；修复后完整组合待验。[失败与后续记录](evidence/ma24-g09-knowledge-receipt-byte-revalidation-2026-10-19.json)。

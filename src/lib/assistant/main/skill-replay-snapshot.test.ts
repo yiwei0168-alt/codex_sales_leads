@@ -26,6 +26,24 @@ it('binds owned saved messages and receipts to a historical suite and checks cur
   expect(snapshot.suite.cases[0]).toMatchObject({provenance:'historical',category:'replay',sourceRunId:id(3)});
   expect(snapshot.bindings[0].calls[0].id).toBe(id(5));expect(mocks.guard).toHaveBeenCalledWith(context.userId,expect.any(Array),undefined);
 });
+it.each(['knowledge_originals','knowledge_facts'])('admits structurally valid %s receipts only with current-source revalidation',async tool=>{
+ const data=tool==='knowledge_originals'?{kind:'document-candidates',documents:[{id:id(6),title:'Original',mime:'text/plain',sha256:'a'.repeat(64)}]}:
+  [{id:id(6),chunkId:id(7),typedValue:2,rawValue:'2',unit:'ports'}];
+ calls[0]={...calls[0],tool_id:tool,output:{status:'success',data}};
+ const saved=await prepareHistoricalSkillReplay(context,input);
+ expect(saved.suite.cases[0].receipts[0].tool).toBe(tool);expect(mocks.guard).toHaveBeenCalled();
+ mocks.guard.mockRejectedValue(new Error('Source revoked'));
+ await expect(prepareHistoricalSkillReplay(context,input)).rejects.toThrow('Source revoked');
+});
+it.each([{kind:'document-candidates',documents:[]},{kind:'document-candidates',documents:[{id:id(6),title:'Original',mime:'text/plain',sha256:'bad'}]},
+ {kind:'insufficient-evidence',reason:'no-accessible-match'}])('rejects original receipts without actual hash-bound evidence %j',async data=>{
+ calls[0]={...calls[0],tool_id:'knowledge_originals',output:{status:'partial',data}};
+ await expect(prepareHistoricalSkillReplay(context,input)).rejects.toThrow();
+});
+it('rejects fact receipts without an authoritative chunk binding',async()=>{
+ calls[0]={...calls[0],tool_id:'knowledge_facts',output:{status:'success',data:[{id:id(6),typedValue:2,rawValue:'2',unit:'ports'}]}};
+ await expect(prepareHistoricalSkillReplay(context,input)).rejects.toThrow();
+});
 it.each(['effect','version','hash','status','unsupported','empty','oversized'] as const)('rejects %s receipt sets',async kind=>{
   if(kind==='effect')calls[0].effect='send';if(kind==='version')calls[0].tool_version='2';if(kind==='hash')calls[0].input_hash='wrong';
   if(kind==='status')calls[0].status='started';if(kind==='unsupported')calls[0].tool_id='mail_send';
