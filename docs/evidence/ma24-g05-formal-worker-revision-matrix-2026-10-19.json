@@ -1,0 +1,158 @@
+{
+  "schema": "ma24-g05-formal-worker-pdf-pptx-revision-matrix-v1",
+  "date": "2026-10-19",
+  "sourceCommitBeforeVerifierChange": "80c24c2b5fb80b66d3438330a7d1af7748b74070",
+  "verifier": "scripts/verify-knowledge-supervisor-clone.ts",
+  "verifierSha256": "8f30ccbbcd621202e11329dbf7c2822a165e993df65367d1c61e7187bcb7136a",
+  "command": "node --require ./scripts/patch-node-user.cjs --import tsx scripts/verify-knowledge-supervisor-clone.ts",
+  "result": {
+    "cloneOnly": true,
+    "platform": "win32",
+    "actualSupervisorKills": 2,
+    "descendantsStopped": true,
+    "extractionLeaseHeld": true,
+    "extractionExpiredRecovery": true,
+    "visualLeaseHeld": true,
+    "malformedPdfFailedWithoutCrossJobEffect": true,
+    "successfulPdfWorkerHandoff": true,
+    "successfulPdfTextExtracted": true,
+    "successfulPptxWorkerHandoff": true,
+    "successfulPptxTextExtracted": true,
+    "syntheticVisualJudgments": 6,
+    "reviewCompletionVerified": true,
+    "vectorlessRegistrationVerified": true,
+    "searchAndSourceCitationVerified": true,
+    "syntheticCitations": [
+      {
+        "documentId": "ee3f0884-51d3-4074-adad-160c16e8086e",
+        "reason": "fulltext",
+        "sourceSha256": "72b7488248775f836c21f39bfd03e95816c42ee49785ab318e1f0e734ef7254c",
+        "sourceLocation": {
+          "bbox": [
+            50,
+            38.17499923706055,
+            189.36996459960938,
+            53.28900146484375
+          ],
+          "blockId": "page-1-block-1",
+          "startRow": null,
+          "unitType": "page",
+          "unitIndex": 1
+        }
+      },
+      {
+        "documentId": "b922503d-9d34-466b-b3b1-af2a91e71248",
+        "reason": "fulltext",
+        "sourceSha256": "6c783933478a183d15620c67650eccd5404dde0b213e0176656a80158a344f61",
+        "sourceLocation": {
+          "bbox": null,
+          "blockId": "slide-1-text-1",
+          "startRow": null,
+          "unitType": "slide",
+          "shapePath": [
+            1
+          ],
+          "unitIndex": 1,
+          "shapeIdPath": [
+            2
+          ]
+        }
+      }
+    ],
+    "revisionResults": [
+      {
+        "format": "pdf",
+        "stableDocumentId": true,
+        "parserFailureKeepsOld": true,
+        "oldReadableDuringProcessingAndReview": true,
+        "crossAccountRevisionRejected": true,
+        "duplicateReused": true,
+        "unresolvedRegistrationRejected": true,
+        "oneReviewedWinner": true,
+        "competingRevisionRejected": true,
+        "oldEvidenceRejectedAfterSwitch": true,
+        "historyStatusVerified": true,
+        "exactSecondUnitCitation": {
+          "documentId": "ee3f0884-51d3-4074-adad-160c16e8086e",
+          "reason": "fulltext",
+          "sourceSha256": "675447b212f54ef7ef16255bf18702618ef2aa68a993425a77cbc31cb148be15",
+          "sourceLocation": {
+            "bbox": [
+              50,
+              68.17500305175781,
+              194.26498413085938,
+              83.28900146484375
+            ],
+            "blockId": "page-2-block-1",
+            "startRow": null,
+            "unitType": "page",
+            "unitIndex": 2
+          }
+        },
+        "registrationReplayReused": true
+      },
+      {
+        "format": "pptx",
+        "stableDocumentId": true,
+        "parserFailureKeepsOld": true,
+        "oldReadableDuringProcessingAndReview": true,
+        "crossAccountRevisionRejected": true,
+        "duplicateReused": true,
+        "unresolvedRegistrationRejected": true,
+        "oneReviewedWinner": true,
+        "competingRevisionRejected": true,
+        "oldEvidenceRejectedAfterSwitch": true,
+        "historyStatusVerified": true,
+        "exactSecondUnitCitation": {
+          "documentId": "b922503d-9d34-466b-b3b1-af2a91e71248",
+          "reason": "fulltext",
+          "sourceSha256": "c8608bf330862ac79939bee94ff19c1c99e07210a44745c3202b8da01d563194",
+          "sourceLocation": {
+            "bbox": null,
+            "blockId": "slide-2-text-1",
+            "startRow": null,
+            "unitType": "slide",
+            "shapePath": [
+              1
+            ],
+            "unitIndex": 2,
+            "shapeIdPath": [
+              2
+            ]
+          }
+        },
+        "registrationReplayReused": true
+      }
+    ],
+    "peerAccountCompletedWhileTargetHeld": true,
+    "peerVisualReady": true,
+    "expiredFinishRejected": true,
+    "visualExpiredRecovery": true,
+    "ocrExecutionsOnResume": 0,
+    "ocrCheckpointReuses": 1,
+    "unrelatedJobUnchanged": true,
+    "v3PointersUnchanged": true,
+    "syntheticDocumentsRegistered": 2,
+    "externalCalls": 0,
+    "syntheticFixture": true,
+    "qualityAccepted": false
+  },
+  "checks": {
+    "verifierExitCode": 0,
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "diffCheck": "passed"
+  },
+  "cleanup": {
+    "syntheticAccountsJobsDocumentsReviewsAndCompletionsAbsent": true,
+    "generatedUploadTreesRemoved": true,
+    "generatedFormatFixturesRemoved": true,
+    "assertionsExecutedInFinally": true
+  },
+  "limits": [
+    "Synthetic locally generated PDF/PPTX with plain decorative squares; six synthetic review decisions are not human quality acceptance.",
+    "PDF/PPTX same-format private revisions only; current XLSX revision and shared-revision worker matrix remain separate.",
+    "Local MA11 replay clone used its development database connection; not a production database-role, TLS, browser or team release qualification.",
+    "Exact source readback is not model-answer citation quality; no production publishing or deployment occurred."
+  ]
+}
