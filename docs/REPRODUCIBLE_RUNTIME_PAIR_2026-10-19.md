@@ -10,6 +10,8 @@
 
 ## 当前阶段
 
+后续同一采集器镜像的实际 TLS 声明矩阵已退出 0，镜像 ID 和测量 deploymentHash 与入口矩阵一致：签发/回读/重试、权限与绑定、错误用途/禁钥/撤销/到期、错误 TLS 根及部署哈希、Node 参数拒绝通过。临时容器/网络清理；未创建生产密钥或人工批准。[声明终态](evidence/ma24-g09-fixed-runtime-declaration-d6ffb7a1-2026-10-19.json)。下面“声明仍运行”为此前记录，以此终态为准。
+
 固定 `d6ffb7a14a773546b0a934bfe4260197d3cd6bba` 双镜像构建、同 revision/不可变镜像 ID 检查、956 项源码输入和实际 Node 二进制相等检查均已通过。Node 为 24.21.0，linux/x64。缺 revision 与混合 revision 负例均明确拒绝；最初缺标签触发 Docker 模板错误，宿主校验器改用可空标签解析后重跑正反例通过。[固定包收据](evidence/ma24-g01-g09-fixed-runtime-pair-d6ffb7a1-2026-10-19.json)。
 
 Web ID `sha256:95875c83d9caab7d4fd018caff9f6fb99b26f5b0676ae9e4d7e07cb2dc585171`；采集器 ID `sha256:dcc60f52061956eb1f58e4baa62e4f11c6d1083e84d4c3503a09b214205975c1`。采集器 34,471 文件清单、测量登记和已有实际启动/篡改/运行边界拒绝矩阵通过。Web 全新 156/TLS 库、HTTPS 浏览器、十合成账号隔离和快照下载通过。

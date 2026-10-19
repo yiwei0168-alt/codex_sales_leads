@@ -134,6 +134,7 @@
   },
   "positiveChecksExitCode": 0,
   "negativeCaseHarnessExitCode": 0,
-  "separateTlsDeclarationStatus": "running; not included in this receipt",
-  "scope": "Same-commit image/source/Node inspection, collector startup matrix, fresh156 TLS DB and local HTTPS browser with synthetic users. No provider or full dependency execution qualification."
+  "separateTlsDeclarationStatus": "passed",
+  "scope": "Same-commit image/source/Node inspection, collector startup matrix, fresh156 TLS DB and local HTTPS browser with synthetic users. No provider or full dependency execution qualification.",
+  "separateTlsDeclarationEvidence": "ma24-g09-fixed-runtime-declaration-d6ffb7a1-2026-10-19.json"
 }
