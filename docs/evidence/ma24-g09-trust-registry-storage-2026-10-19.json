@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "results": [
+    "unbound, cross-account and unenrolled reads reject",
+    "key disablement blocked by exact reader PID, stable enabled revision until commit, next transaction sees disabled key",
+    "reader waiting behind publisher reads newly committed version after admission",
+    "application and collector cannot publish or mutate pointer",
+    "immutable versions, stale snapshot isolation, corrupt digest and non-strict schema reject"
+  ],
+  "disposableDatabaseRemoved": true,
+  "migrationAppliedToBusinessDatabase": false,
+  "configuredReadersWired": false,
+  "modelCalls": 0,
+  "productionQualified": false,
+  "automaticActivation": false,
+  "scope": "G09 transaction storage building block; not configured-reader or activation integration",
+  "signatureRegressionTestsPassed": 22,
+  "typescriptPassed": true
+}
