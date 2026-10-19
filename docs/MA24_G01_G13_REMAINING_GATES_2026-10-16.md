@@ -12,6 +12,8 @@
 
 ## 阶段记录与逐项门槛
 
+2026-10-19 G09 fresh-cluster 验收脚本新增早期夹具隔离检查：多个各自要求全新占位账号数据库的子检查不能在同一次运行中组合，须逐个 fresh-cluster 执行。负向组合在 Docker 初始化前按预期拒绝，`npm.cmd run typecheck` 与 `git diff --check` 通过。[工程证据](evidence/ma24-g09-fresh-cluster-fixture-preflight-2026-10-19.json)。这只修复验收编排，不改变产品门槛或 G09 质量/生产验收状态。
+
 2026-10-17 固定快照 f4363630 的完整私有资料组合已通过，覆盖邮件/单客户时间线/列表、记忆门禁、三条来源收据及五类材料。知识发布门禁 149 不在该快照，仍需完整验收。[组合证据](evidence/ma24-g09-private-source-composition-2026-10-17.json)。原始任务传输签名验证组件已通过 48 项回归、类型/lint；生产签发、日志/失败链接线、二进制资格和最终启用仍未完成。[工作流](ORIGINAL_TASK_TRANSPORT_RECEIPTS_2026-10-17.md)。
 
 2026-10-17 知识发布门禁（迁移 149）已接入：实际文档/原件/指针/审核写入等待、释放恢复，以及写入线程先持原件行时元数据复核可完成；锁内策略数据库、24 项回归、类型/lint 通过。持锁期间所有知识写入等待，生产等待/容量、原件字节、最终时效与来源语义仍待验。当前完整快照 f4363630 不包含 149。[证据](evidence/ma24-g09-knowledge-publication-gate-2026-10-17.json)、[工作流](SKILL_KNOWLEDGE_SOURCE_ADMISSION_2026-10-17.md)。

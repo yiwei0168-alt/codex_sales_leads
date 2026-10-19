@@ -34,6 +34,17 @@ const prospectiveBrowserCheck = args.includes('--prospective-browser');
 const prospectiveCompositionCheck = args.includes('--prospective-composition');
 const prospectiveMaterialCheck = args.includes("--prospective-material") || Boolean(prospectiveHttpImage) || prospectiveCompositionCheck;
 const prospectiveSourceCheck = args.includes("--prospective-source") || prospectiveMaterialCheck;
+const pristineDatabaseChecks = [
+  runnerAttestationCheck,
+  lockedPolicyCheck,
+  memorySourceLocksCheck,
+  shadowSourceLocksCheck,
+  safetySkillUsageCheck,
+  transportJournalCheck,
+  prospectiveSourceCheck,
+].filter(Boolean).length;
+assert(pristineDatabaseChecks <= 1,
+  "Each G09 disposable database fixture requires a pristine placeholder-only database; run one fixture flag per fresh-cluster invocation.");
 const rollbackImageArgument = args.find(arg => arg.startsWith("--rollback-image="));
 const rollbackImage = rollbackImageArgument?.slice("--rollback-image=".length);
 assert(args.length <= 20 && args.every(arg => ["--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", '--locked-policy', '--memory-source-locks', '--shadow-source-locks', '--safety-skill-usage', '--transport-journal', '--pool-recovery', '--web-pool-recovery', "--prospective-source", "--prospective-material", '--prospective-browser', '--prospective-composition', collectorImageArgument,prospectiveHttpArgument, webImageArgument, rollbackImageArgument].includes(arg))

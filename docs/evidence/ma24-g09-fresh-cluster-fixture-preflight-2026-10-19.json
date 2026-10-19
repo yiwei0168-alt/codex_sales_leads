@@ -1,0 +1,22 @@
+{
+  "date": "2026-10-19",
+  "goal": "G09",
+  "scope": "Prevent combining G09 child checks that each require a pristine disposable placeholder-only database.",
+  "change": {
+    "file": "scripts/verify-ma24-fresh-pilot-new-cluster.ts",
+    "behavior": "The harness rejects more than one pristine-database fixture check before Docker setup, with instructions to run one fixture flag per fresh-cluster invocation."
+  },
+  "verification": {
+    "negativePreflight": {
+      "command": "node scripts/verify-ma24-fresh-pilot-new-cluster.ts --runner-attestation --shadow-source-locks",
+      "result": "rejected before Docker setup with the expected pristine-placeholder-only database message"
+    },
+    "typecheck": "npm.cmd run typecheck passed",
+    "diffCheck": "git diff --check passed"
+  },
+  "limits": [
+    "This validates fixture orchestration only; it is not new product acceptance evidence.",
+    "It does not close G09 source revocation, trusted production identity, independent quality review, or final activation transaction gates.",
+    "Automatic Skill activation remains disabled."
+  ]
+}
