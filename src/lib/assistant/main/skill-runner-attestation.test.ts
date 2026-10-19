@@ -4,7 +4,7 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {afterEach,expect,it,vi} from 'vitest';
 import {digest} from './contracts';
-import {verifySkillRunnerAttestation,verifyConfiguredSkillRunnerAttestation} from './skill-runner-attestation';
+import {verifySkillRunnerAttestation,verifyConfiguredSkillRunnerAttestation,loadConfiguredSkillRunnerTrustRegistry} from './skill-runner-attestation';
 
 const pair=generateKeyPairSync('ed25519'),other=generateKeyPairSync('ed25519');
 const hash=(value:string)=>digest(value);
@@ -72,6 +72,14 @@ it('rejects expired or not-yet-enrolled keys, invalid clocks and private key reg
 it('requires server registry configuration instead of accepting caller self-certification',async()=>{
  vi.stubEnv('SKILL_RUNNER_TRUST_REGISTRY_FILE','');
  await expect(verifyConfiguredSkillRunnerAttestation(envelope(),expected)).rejects.toThrow('not configured');
+});
+it('rejects unknown registry modes instead of falling back to a file',async()=>{
+ vi.stubEnv('SKILL_RUNNER_TRUST_REGISTRY_MODE','databsae');
+ await expect(loadConfiguredSkillRunnerTrustRegistry(expected.ownerId)).rejects.toThrow('mode invalid');
+});
+it('requires an account binding for database registry reads before opening a connection',async()=>{
+ vi.stubEnv('SKILL_RUNNER_TRUST_REGISTRY_MODE','database');
+ await expect(loadConfiguredSkillRunnerTrustRegistry()).rejects.toThrow();
 });
 it('recognizes original-task key enrollment without authorizing runner declarations',()=>{
  const r=registry();const taskOnly={...r,keys:r.keys.map(key=>({...key,purposes:['task-model-transport']}))};

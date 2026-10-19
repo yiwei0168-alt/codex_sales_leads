@@ -30,7 +30,7 @@ export async function verifyConfiguredTaskTransportFailure(envelope:unknown,inpu
   ||s.requestHash!==m.requestHash||s.manifestHash!==digest(m)||s.reason!==input.reason||!failureStatusMatches(s.reason,s.httpStatus))
   throw new Error('Task failure request or outcome changed');
  for(const field of Object.keys(b) as Array<keyof typeof b>)if(b[field]!==s[field])throw new Error('Task failure binding changed');
- const registry=await loadConfiguredSkillRunnerTrustRegistry(),key=registry.keys.find(row=>row.keyId===s.keyId);
+ const registry=await loadConfiguredSkillRunnerTrustRegistry(b.ownerId),key=registry.keys.find(row=>row.keyId===s.keyId);
  if(!key?.enabled||!key.purposes.includes('task-model-transport')||key.collectorId!==s.collectorId||key.deploymentHash!==s.deploymentHash)throw new Error('Task failure trust unavailable');
  const created=Date.parse(z.iso.datetime().parse(input.taskCreatedAt)),started=Date.parse(z.iso.datetime().parse(input.callStartedAt)),finished=Date.parse(z.iso.datetime().parse(input.callCompletedAt));
  const captured=Date.parse(s.capturedAt),completed=Date.parse(s.completedAt),expiry=Date.parse(s.expiresAt),time=now.getTime();

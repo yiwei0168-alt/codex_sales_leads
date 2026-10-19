@@ -49,7 +49,7 @@ export async function createConfiguredSkillTransportRequest(context:{userId:stri
   evaluationId:input.evaluationId,arm:input.arm,planHash:digest(frozen.plan),snapshotHash:input.snapshotHash,
   collectorId:process.env.SKILL_RUNNER_COLLECTOR_ID,deploymentHash:process.env.SKILL_RUNNER_DEPLOYMENT_SHA256});
  const trust=async()=>{
-  const registry=await loadConfiguredSkillRunnerTrustRegistry(),key=registry.keys.find(row=>row.keyId===keyId);
+  const registry=await loadConfiguredSkillRunnerTrustRegistry(context.userId),key=registry.keys.find(row=>row.keyId===keyId);
   if(!key?.enabled||!key.purposes.includes('model-transport')||key.collectorId!==binding.collectorId||key.deploymentHash!==binding.deploymentHash
    ||!createPublicKey(key.publicKeyPem).export({type:'spki',format:'der'}).equals(publicKey))throw new Error('Transport signing enrollment unavailable');
   const now=Date.now();if(!(Date.parse(key.notBefore)<=Date.parse(frozen.plan.frozenAt)&&now<Date.parse(key.expiresAt)&&now<Date.parse(frozen.plan.expiresAt)))throw new Error('Transport signing enrollment expired');

@@ -70,7 +70,39 @@ export async function verifyCombinedConfiguredDatabase(pool:Pool,original:Signed
   });
   assert.equal(declaration.code,0,'Configured combined declaration CLI failed');
   assert.equal(JSON.parse(declaration.output.trim()).collectorDeclaration,'completed');
-  const readiness=await tenantTransaction(original.owner,client=>evaluateLockedSkillAcceptanceReadiness(client,context,combined.bundleId));
+  const databaseTrust=process.env.MA24_DATABASE_TRUST==='1',priorRegistryMode=process.env.SKILL_RUNNER_TRUST_REGISTRY_MODE;
+  if(databaseTrust){
+   await pool.query('select publish_skill_runner_trust_registry($1,$2)',[registry,digest(registry)]);
+   process.env.SKILL_RUNNER_TRUST_REGISTRY_MODE='database';
+  }
+  try{
+  const publisher=databaseTrust?await pool.connect():undefined;
+  let publication:Promise<{error?:unknown}>|undefined;
+  let readiness:Awaited<ReturnType<typeof evaluateLockedSkillAcceptanceReadiness>>;
+  try{
+   readiness=await tenantTransaction(original.owner,async client=>{
+    const ready=await evaluateLockedSkillAcceptanceReadiness(client,context,combined.bundleId);
+    if(publisher){
+     const readerPid=(await client.query('select pg_backend_pid() pid')).rows[0].pid;
+     const publisherPid=(await publisher.query('select pg_backend_pid() pid')).rows[0].pid;
+     const disabled={...registry,keys:registry.keys.map((key:Record<string,unknown>)=>({...key,enabled:false}))};
+     publication=publisher.query('select publish_skill_runner_trust_registry($1,$2)',[disabled,digest(disabled)]).then(()=>({}),error=>({error}));
+     let blocked=false;
+     for(let n=0;n<80;n++){
+      blocked=(await pool.query('select $1::int=any(pg_blocking_pids($2)) blocked',[readerPid,publisherPid])).rows[0].blocked;
+      if(blocked)break;await new Promise(done=>setTimeout(done,25));
+     }
+     assert(blocked,'Registry disablement must wait for the exact readiness transaction after readiness returns');
+    }
+    return ready;
+   });
+   if(publication){assert.equal((await publication).error,undefined);
+    await assert.rejects(tenantTransaction(original.owner,client=>evaluateLockedSkillAcceptanceReadiness(client,context,combined.bundleId)),/trust key unavailable/);
+    await pool.query('select publish_skill_runner_trust_registry($1,$2)',[registry,digest(registry)]);
+   }
+  }finally{if(publication)await publication;publisher?.release();}
+  assert.equal(readiness.trustRegistryLocked,databaseTrust);
+  if(databaseTrust){assert(readiness.trustRegistryRevision);assert.equal(readiness.trustRegistryHash,digest(registry));}
   assert.equal(readiness.transportReceiptsRequired,true);assert.equal(readiness.transportReceiptsRevalidated,true);
   assert.equal(readiness.transportOriginalTaskCount,2);assert.equal(readiness.transportEvaluationArmCount,8);assert(readiness.transportReceiptCount!>8);
   assert.equal(readiness.runnerDeclarationRevalidated,true);assert.equal(readiness.transportRegistryHash,readiness.runnerRegistryHash);
@@ -85,8 +117,11 @@ export async function verifyCombinedConfiguredDatabase(pool:Pool,original:Signed
   assert.equal(restored.attachmentImmutableSnapshotManifestHash,readiness.attachmentImmutableSnapshotManifestHash);
   const key=registry.keys.find((row:{keyId:string})=>row.keyId===prospective.keyId);key.enabled=false;
   try{await writeFile(registryPath,JSON.stringify(registry));
+   if(databaseTrust)await pool.query('select publish_skill_runner_trust_registry($1,$2)',[registry,digest(registry)]);
    await assert.rejects(tenantTransaction(original.owner,client=>revalidateLockedSkillTransportReceipts(client,context,combined.bundleId)),{message:'Task failure trust unavailable'});
-  }finally{key.enabled=true;await writeFile(registryPath,JSON.stringify(registry));}
+   if(databaseTrust)await assert.rejects(tenantTransaction(original.owner,client=>evaluateLockedSkillAcceptanceReadiness(client,context,combined.bundleId)),/trust key unavailable/);
+  }finally{key.enabled=true;await writeFile(registryPath,JSON.stringify(registry));
+   if(databaseTrust)await pool.query('select publish_skill_runner_trust_registry($1,$2)',[registry,digest(registry)]);}
   assert.equal(readiness.materials.length,5);assert.equal(readiness.policyPassed,false);assert.equal(readiness.automaticActivation,false);
   assert.equal(readiness.knowledgeSourcesLocked,true);assert.equal(readiness.decisionMemorySourcesLocked,true);assert.equal(readiness.timelineSourcesLocked,true);
   assert.equal(readiness.prospectiveCaptureSourcesLocked,true);assert.equal(readiness.prospectiveJobCount,1);
@@ -95,6 +130,8 @@ export async function verifyCombinedConfiguredDatabase(pool:Pool,original:Signed
   return {configuredSameFreezeFiveCategoriesVerified:true,lockedTransportReceiptsRevalidated:true,transportOriginalTaskCount:2,transportEvaluationArmCount:8,disabledTransportKeyRejected:true,collectedCases:5,combinedArtifactHash:combined.artifactHash,
    frozenPlanHash:digest(registration.frozen.plan),lockedMaterialsVerified:true,prospectiveCaptureSourcesLocked:true,missingHumanJudgmentBlocksPolicy:true,
    immutableAttachmentSnapshotVerified:true,withdrawnSnapshotSourceRejected:true,restoredCanonicalSnapshotRevalidated:true,
+   databaseTrustRegistryReadinessVerified:databaseTrust,registryDisablementBlockedUntilReadinessTransactionCommit:databaseTrust,
    realQualityAccepted:false,productionQualificationGranted:false,automaticActivation:false};
+  }finally{if(priorRegistryMode===undefined)delete process.env.SKILL_RUNNER_TRUST_REGISTRY_MODE;else process.env.SKILL_RUNNER_TRUST_REGISTRY_MODE=priorRegistryMode;}
  });
 }

@@ -39,7 +39,7 @@ export async function revalidateLockedSkillTransportReceipts(client:PoolClient,c
   const runs=skillAcceptanceRunIds(evidence.artifact),arms=skillAcceptanceTransportArms(evidence.artifact);
   if(!arms.length)throw new Error('Acceptance transport coverage empty');
   await lockSkillAcceptanceRunJournals(client,context.userId,evidence.artifact);
-  const registryHash=digest(await loadConfiguredSkillRunnerTrustRegistry()),now=await databaseTime(client);
+  const registryHash=digest(await loadConfiguredSkillRunnerTrustRegistry(context.userId)),now=await databaseTime(client);
   const audits:Array<{sourceHash:string;journalHash:string;receiptHashes:string[];validBefore:string}>=[];
   const retain=(source:unknown,out:{registryHash:string|undefined;journalHash:string;transportReceiptHashes:string[];transportValidBefore:string})=>{
    if(out.registryHash!==registryHash||!out.transportReceiptHashes.length)throw new Error('Acceptance transport trust or coverage changed');
@@ -48,7 +48,7 @@ export async function revalidateLockedSkillTransportReceipts(client:PoolClient,c
   for(const runId of runs)retain({runId},await verifyOwnedTaskModelTransports(context,{runId},now));
   for(const ref of arms)retain(ref,await verifySkillCandidateJournalTransports(context,ref,{freezeId,plan:evidence.artifact.plan},now));
   const after=await readLockedSkillAcceptanceEvidence(client,context,bundleId);
-  if(after.artifactHash!==evidence.artifactHash||digest(await loadConfiguredSkillRunnerTrustRegistry())!==registryHash)
+  if(after.artifactHash!==evidence.artifactHash||digest(await loadConfiguredSkillRunnerTrustRegistry(context.userId))!==registryHash)
    throw new Error('Acceptance transport evidence or trust changed during audit');
   const validBefore=Math.min(Date.parse(evidence.artifact.plan.expiresAt),...audits.map(row=>Date.parse(row.validBefore)));
   const checkedAt=await databaseTime(client);

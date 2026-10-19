@@ -14,6 +14,8 @@ import {revalidateLockedSkillKnowledgeReceiptBytes} from './skill-knowledge-rece
 import {revalidateLockedSkillMemoryReceipts} from './skill-memory-receipt-check';
 import {readLockedSkillRunnerAttestation} from './skill-runner-attestation-store';
 import {revalidateLockedSkillTransportReceipts} from './skill-locked-transport-receipts';
+import {configuredSkillRunnerTrustRegistryMode} from './skill-runner-attestation';
+import {readLockedSkillRunnerTrustRegistry} from './skill-runner-trust-registry-store';
 
 /** Keep consumed receipts in a private closure inside the owning transaction;
  * public wrappers expose hashes/counts only, never source contents or callbacks. */
@@ -58,6 +60,10 @@ export async function revalidateLockedSkillAcceptanceMaterials(client:PoolClient
 export async function evaluateLockedSkillAcceptanceReadiness(client:PoolClient,context:{userId:string},bundleId:string){
  assertLocalAnalysisBoundary();
  return withBoundTenantTransaction(client,context.userId,async()=>{
+  // Acquire trust admission before source/freeze/journal locks. Publication
+  // touches only registry tables and never waits on these product locks.
+  const registry=configuredSkillRunnerTrustRegistryMode()==='database'
+   ?await readLockedSkillRunnerTrustRegistry(client,context.userId):undefined;
   // Hold admission before capturing the memory snapshot. Row locks cannot stop
   // valid_from/valid_until from crossing while materials and policy are rebuilt.
   await client.query('select lock_skill_knowledge_sources()');
@@ -110,6 +116,8 @@ export async function evaluateLockedSkillAcceptanceReadiness(client:PoolClient,c
    pinnedMethodSourcesLocked:materials.pinnedMethodSourcesLocked,pinnedMethodPinCount:materials.pinnedMethodPinCount,
    skillCatalogSourcesLocked:materials.skillCatalogSourcesLocked,
    decisionMemorySnapshotRevalidated:true as const,
+   trustRegistryLocked:!!registry,
+   ...(registry?{trustRegistryRevision:registry.revision,trustRegistryHash:registry.registryHash}:{}),
    ...methodTimes,
    ...attachmentBytes,
    ...knowledgeBytes,

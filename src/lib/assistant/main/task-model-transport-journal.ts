@@ -62,7 +62,7 @@ export async function verifyOwnedTaskModelTransports(context:{userId:string},inp
    if(registryHash&&registryHash!==checked.registryHash)throw new Error('Task transport trust changed');registryHash=checked.registryHash;hashes.push(checked.statementHash);expiries.push(checked.validBefore);
   }
  }
- if(digest(await read())!==digest(saved)||digest(await loadConfiguredSkillRunnerTrustRegistry())!==registryHash)throw new Error('Task journal or trust changed during audit');
+ if(digest(await read())!==digest(saved)||digest(await loadConfiguredSkillRunnerTrustRegistry(context.userId))!==registryHash)throw new Error('Task journal or trust changed during audit');
  return {transportValidBefore:new Date(Math.min(...expiries.map(Date.parse))).toISOString(),journalHash:digest(saved),transportReceiptHashes:hashes,registryHash,storedModeChainsVerified:true as const,
   completeTaskProvenanceVerified:false as const,binaryVerified:false as const,automaticActivation:false as const};
 }

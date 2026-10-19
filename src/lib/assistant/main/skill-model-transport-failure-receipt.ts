@@ -33,7 +33,7 @@ export async function verifyConfiguredSkillTransportFailure(envelope:unknown,inp
   ||s.requestHash!==m.requestHash||s.manifestHash!==digest(m)||s.reason!==input.reason||!failureStatusMatches(s.reason,s.httpStatus))
   throw new Error('Transport failure request or outcome changed');
  for(const key of Object.keys(b) as Array<keyof typeof b>)if(b[key]!==s[key])throw new Error('Transport failure binding changed');
- const registry=await loadConfiguredSkillRunnerTrustRegistry(),key=registry.keys.find(row=>row.keyId===s.keyId);
+ const registry=await loadConfiguredSkillRunnerTrustRegistry(b.ownerId),key=registry.keys.find(row=>row.keyId===s.keyId);
  if(!key?.enabled||!key.purposes.includes('model-transport')||key.collectorId!==s.collectorId||key.deploymentHash!==s.deploymentHash)throw new Error('Transport failure trust unavailable');
  if(!(Date.parse(key.notBefore)<=Date.parse(input.frozenAt)&&Date.parse(input.frozenAt)<=Date.parse(s.capturedAt)
   &&Date.parse(s.capturedAt)<=Date.parse(s.completedAt)&&Date.parse(s.completedAt)<=now.getTime()&&now.getTime()<Date.parse(s.expiresAt)

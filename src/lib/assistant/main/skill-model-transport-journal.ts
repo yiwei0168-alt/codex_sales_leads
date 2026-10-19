@@ -43,7 +43,7 @@ export async function verifySkillCandidateJournalTransports(context:{userId:stri
   receiptHashes.push(checked.statementHash);expiries.push(checked.validBefore);
  }
  await requireSkillAcceptanceFreeze(context,frozen.freezeId,frozen.plan);
- if(digest(await readSkillCandidateJournal(context,input))!==digest(rows)||digest(await loadConfiguredSkillRunnerTrustRegistry())!==registryHash)
+ if(digest(await readSkillCandidateJournal(context,input))!==digest(rows)||digest(await loadConfiguredSkillRunnerTrustRegistry(context.userId))!==registryHash)
   throw new Error('Transport journal or trust changed during audit');
  return {transportValidBefore:new Date(Math.min(...expiries.map(Date.parse))).toISOString(),journalHash:audit.journalHash,transportReceiptHashes:receiptHashes,registryHash,
   signedSuccessfulTransportsVerified:true as const,signedFallbackAttemptsVerified:true as const,binaryVerified:false as const,automaticActivation:false as const};

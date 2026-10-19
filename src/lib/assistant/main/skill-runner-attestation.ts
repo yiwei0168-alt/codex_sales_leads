@@ -3,6 +3,8 @@ import {readFile} from 'node:fs/promises';
 import {z} from 'zod';
 import {digest} from './contracts';
 import {skillRunnerTrustRegistrySchema as registrySchema} from './skill-runner-trust-registry-schema';
+import {tenantTransaction} from '@/lib/rag/db';
+import {readLockedSkillRunnerTrustRegistry} from './skill-runner-trust-registry-store';
 
 const sha=z.string().regex(/^[a-f0-9]{64}$/);
 const keyId=z.string().regex(/^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,99}$/);
@@ -61,9 +63,20 @@ export function verifySkillRunnerAttestation(envelope:unknown,registryInput:unkn
 /** Server-configured public registry only; never take a registry/key from HTTP or tool input.
  * Reload on every check so removal/disablement takes effect. No private key is loaded here. */
 export async function verifyConfiguredSkillRunnerAttestation(envelope:unknown,expected:SkillRunnerBinding){
- return verifySkillRunnerAttestation(envelope,await loadConfiguredSkillRunnerTrustRegistry(),expected);
+ return verifySkillRunnerAttestation(envelope,await loadConfiguredSkillRunnerTrustRegistry(expected.ownerId),expected);
 }
-export async function loadConfiguredSkillRunnerTrustRegistry(){
+export function configuredSkillRunnerTrustRegistryMode(){
+ const mode=process.env.SKILL_RUNNER_TRUST_REGISTRY_MODE??'file';
+ if(mode!=='file'&&mode!=='database')throw new Error('Runner trust registry mode invalid');
+ return mode;
+}
+export async function loadConfiguredSkillRunnerTrustRegistry(ownerId?:string){
+ if(configuredSkillRunnerTrustRegistryMode()==='database'){
+  const actor=z.uuid().parse(ownerId);
+  // Reuses an enclosing bound tenant transaction during final readiness. Other
+  // callers get a point-in-time read; no lock survives their short transaction.
+  return tenantTransaction(actor,async client=>(await readLockedSkillRunnerTrustRegistry(client,actor)).registry);
+ }
  const path=process.env.SKILL_RUNNER_TRUST_REGISTRY_FILE;
  if(!path)throw new Error('Runner trust registry is not configured');
  const bytes=await readFile(path);

@@ -68,7 +68,7 @@ export async function appendConfiguredSkillRunnerAttestation(context:Context,inp
   if(!row)throw new Error('Runner declaration bundle unavailable');
   const freezeId=z.object({collector:z.object({freezeId:z.uuid()})}).parse(row.raw_receipts).collector.freezeId;
   await lockSkillAcceptanceFreeze(client,context.userId,freezeId);
-  const expected=await loadBinding(client,context,p.bundleId,freezeId),registry=await loadConfiguredSkillRunnerTrustRegistry();
+  const expected=await loadBinding(client,context,p.bundleId,freezeId),registry=await loadConfiguredSkillRunnerTrustRegistry(context.userId);
   const keyId=z.string().min(1).max(100).parse(process.env.SKILL_RUNNER_DECLARATION_KEY_ID),key=registry.keys.find(item=>item.keyId===keyId);
   if(!key?.enabled||!key.purposes.includes('runner-declaration')||key.collectorId!==expected.collectorId||key.deploymentHash!==expected.deploymentHash)
    throw new Error('Runner declaration signing enrollment unavailable');
@@ -132,7 +132,7 @@ export async function readLockedSkillRunnerAttestation(client:PoolClient,context
    where owner_id=$1 and bundle_id=$2 and freeze_id=$3 order by created_at desc,id desc limit 1`,[context.userId,bundleId,freezeId])).rows[0];
   if(!row)throw new Error('Locked runner declaration unavailable');
   const expected=await loadBinding(client,context,bundleId,freezeId);
-  const registry=await loadConfiguredSkillRunnerTrustRegistry();
+  const registry=await loadConfiguredSkillRunnerTrustRegistry(context.userId);
   const now=(await client.query<{checked_at:Date}>('select clock_timestamp() checked_at')).rows[0]?.checked_at;
   if(!(now instanceof Date)||!Number.isFinite(now.getTime()))throw new Error('Locked runner declaration clock unavailable');
   const verified=verifySkillRunnerAttestation(row.envelope,registry,expected,now);

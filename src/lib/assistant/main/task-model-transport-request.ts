@@ -59,7 +59,7 @@ export async function createConfiguredTaskModeRequest(context:{userId:string;run
  const binding=taskTransportBindingSchema.parse({ownerId:context.userId,runId:context.runId,...p,inputHash:saved.input_hash,
   collectorId:process.env.TASK_MODEL_TRANSPORT_COLLECTOR_ID,deploymentHash:process.env.TASK_MODEL_TRANSPORT_DEPLOYMENT_SHA256});
  const trust=async()=>{
-  const registry=await loadConfiguredSkillRunnerTrustRegistry(),key=registry.keys.find(row=>row.keyId===keyId);
+  const registry=await loadConfiguredSkillRunnerTrustRegistry(context.userId),key=registry.keys.find(row=>row.keyId===keyId);
   if(!key?.enabled||!key.purposes.includes('task-model-transport')||key.collectorId!==binding.collectorId||key.deploymentHash!==binding.deploymentHash
    ||!createPublicKey(key.publicKeyPem).export({type:'spki',format:'der'}).equals(publicKey))throw new Error('Task transport enrollment unavailable');
   if(!(Date.parse(key.notBefore)<=Date.now()&&Date.now()<Date.parse(key.expiresAt)))throw new Error('Task transport enrollment expired');

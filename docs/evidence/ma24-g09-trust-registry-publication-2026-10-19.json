@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "results": [
+    "concurrent stale publisher waits then rejects; initial publication normalizes default purposes",
+    "autocommit, invalid key windows, non-Ed25519 public keys and application publication reject without new versions",
+    "actual CLI publishes disabled-key version and rejects a repeated stale expected revision"
+  ],
+  "disposableDatabaseRemoved": true,
+  "publicFixtureRemoved": true,
+  "businessDatabaseModified": false,
+  "realModelCalls": 0,
+  "productionQualified": false,
+  "automaticActivation": false,
+  "typescriptPassed": true,
+  "focusedLintPassed": true
+}

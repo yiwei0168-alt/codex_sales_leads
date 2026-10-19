@@ -26,7 +26,7 @@ export async function verifyConfiguredTaskTransportReceipt(envelope:unknown,inpu
  const signed=taskTransportEnvelopeSchema.parse(envelope),s=signed.statement,binding=taskTransportBindingSchema.parse(input.binding);
  const created=Date.parse(z.iso.datetime().parse(input.taskCreatedAt));
  const started=Date.parse(z.iso.datetime().parse(input.callStartedAt)),finished=Date.parse(z.iso.datetime().parse(input.callCompletedAt));
- const registry=await loadConfiguredSkillRunnerTrustRegistry(),key=registry.keys.find(row=>row.keyId===s.keyId);
+ const registry=await loadConfiguredSkillRunnerTrustRegistry(binding.ownerId),key=registry.keys.find(row=>row.keyId===s.keyId);
  if(!key?.enabled||!key.purposes.includes('task-model-transport'))throw new Error('Task transport trust key unavailable');
  for(const field of Object.keys(binding) as Array<keyof typeof binding>)if(s[field]!==binding[field])throw new Error('Task transport binding changed');
  if(key.collectorId!==binding.collectorId||key.deploymentHash!==binding.deploymentHash)throw new Error('Task transport enrollment changed');

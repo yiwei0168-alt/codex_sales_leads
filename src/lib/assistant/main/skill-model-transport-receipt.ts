@@ -22,7 +22,7 @@ export function skillTransportResponseHash(input:unknown){
 }
 export async function verifyConfiguredSkillTransportReceipt(envelope:unknown,input:{binding:z.infer<typeof skillTransportBindingSchema>;manifest:unknown;message:unknown;frozenAt:string;expiresAt:string},now=new Date()){
  const signed=skillTransportEnvelopeSchema.parse(envelope),s=signed.statement,binding=skillTransportBindingSchema.parse(input.binding);
- const registry=await loadConfiguredSkillRunnerTrustRegistry(),key=registry.keys.find(row=>row.keyId===s.keyId);
+ const registry=await loadConfiguredSkillRunnerTrustRegistry(binding.ownerId),key=registry.keys.find(row=>row.keyId===s.keyId);
  if(!key?.enabled||!key.purposes.includes('model-transport'))throw new Error('Transport trust key unavailable');
  for(const name of Object.keys(binding) as Array<keyof typeof binding>)if(binding[name]!==s[name])throw new Error('Transport receipt binding changed');
  if(key.collectorId!==s.collectorId||key.deploymentHash!==s.deploymentHash)throw new Error('Transport enrollment changed');
