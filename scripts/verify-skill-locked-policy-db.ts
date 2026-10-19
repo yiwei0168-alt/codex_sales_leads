@@ -32,6 +32,7 @@ try{
  assert.equal((await pool.query('select count(*)::int n from app_user')).rows[0].n,1);
  await pool.query(await readFile('db/migrations/148_skill_decision_memory_source_locks.sql','utf8'));
  await pool.query(await readFile('db/migrations/149_skill_knowledge_source_locks.sql','utf8'));
+ await pool.query(await readFile('db/migrations/152_skill_catalog_source_admission.sql','utf8'));
  for(const id of [owner,other])await pool.query("insert into app_user(id,email,display_name,role,status) values($1,$2,'Synthetic locked policy','member','active')",[id,`${id}@example.invalid`]);
  const skill=await importSkill({userId:owner,role:'member'},{name:'Synthetic locked policy',source:'synthetic-test',files:{'SKILL.md':'Synthetic locked policy instructions.'},dependencies:[]});
  const config=modeModelConfig('standard'),prepared=await prepareCompositionDatabaseFixture({pool,owner,skillId:skill.id,config,memory:decisionMemoryMessage([])});

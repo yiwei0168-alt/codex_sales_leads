@@ -7,6 +7,7 @@ const positive='I found comparing original tables reduced errors.';
 let reports:Array<{id:string;run_id:string;message_id:string;message_content:string;source_receipt:object}>=[];
 let existing=false;
 const query=vi.fn(async(sql:string)=>{
+  if(sql.includes('to_regprocedure'))return {rows:[{configured:true}]};
   if(sql.startsWith('select s.id'))return {rows:existing?[{id:'skill'}]:[]};
   if(sql.includes('select distinct on(r.id)'))return {rows:reports};
   if(sql.startsWith('insert into agent_skill('))return {rows:[{id:'skill'}]};
@@ -33,6 +34,7 @@ it('requires repeated distinct completed task receipts before creating a draft',
 it('creates only a disabled account draft with pending quality checks',async()=>{
   reports=[1,2].map(n=>({id:`obs-${n}`,run_id:`run-${n}`,message_id:`message-${n}`,message_content:positive,source_receipt:{n}}));
   expect(await proposeExperienceSkillInTransaction(client,'owner','method',positive)).toEqual({id:'skill',created:true});
+  expect(query.mock.calls[1][0]).toBe('select lock_skill_method_catalog_writes($1::uuid)');
   expect(query.mock.calls.find(([sql])=>sql.startsWith('insert into agent_skill('))?.[0]).toContain("'account',false,false");
   const call=query.mock.calls.find(([sql])=>sql.startsWith('insert into agent_skill_version'));
   expect(call).toBeDefined();

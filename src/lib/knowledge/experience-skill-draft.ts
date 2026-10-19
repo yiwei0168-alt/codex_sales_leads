@@ -2,6 +2,7 @@ import type {PoolClient} from 'pg';
 import {digest} from '@/lib/assistant/main/contracts';
 import {instructionOnlySkill,skillImportSchema} from '@/lib/assistant/main/skills';
 import {isDirectMemorySpan} from './memory-source-context';
+import {admitSkillCatalogWrite} from '@/lib/assistant/main/skill-catalog-admission';
 
 /** Repetition is a nomination signal, never evidence that replay/shadow tests have passed. */
 export function experienceDraftPackage(memoryKey:string,quote:string){
@@ -17,6 +18,7 @@ export function experienceDraftPackage(memoryKey:string,quote:string){
 /** Runs in the observation transaction. Never modifies an existing Skill or enables one. */
 export async function proposeExperienceSkillInTransaction(client:PoolClient,userId:string,memoryKey:string,quote:string){
   const draft=experienceDraftPackage(memoryKey,quote);if(!draft)return null;
+  await admitSkillCatalogWrite(client);
   await client.query('select pg_advisory_xact_lock(hashtextextended($1,0))',[`experience-skill:${userId}:${draft.fingerprint}`]);
   const existing=await client.query<{id:string}>(`select s.id from agent_skill s join agent_skill_version v on v.skill_id=s.id
     where s.owner_id=$1 and v.source=$2 limit 1`,[userId,draft.source]);

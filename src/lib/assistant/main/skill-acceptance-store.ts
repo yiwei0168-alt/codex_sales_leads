@@ -50,6 +50,7 @@ async function assertCurrentSkill(client:PoolClient,userId:string,plan:z.infer<t
 export async function readLockedSkillAcceptanceEvidence(client:PoolClient,context:Context,id:string){
  z.uuid().parse(id);z.uuid().parse(context.userId);
  await client.query('select lock_skill_knowledge_sources()');
+ await client.query('select lock_skill_method_catalog_sources()');
  await client.query('select pg_advisory_xact_lock(hashtextextended($1,0))',[`skill-acceptance:${id}`]);
  const bundle=await loadBundle(client,context.userId,id);
  const freezeStatus=await bundleFreezeStatus(client,context.userId,bundle,true);
@@ -64,7 +65,7 @@ export async function readLockedSkillAcceptanceEvidence(client:PoolClient,contex
  return {...bundle,judgments,freezeStatus,latestReviewHash:digest(judgments),currentPin:{ownerId:context.userId,
   skillId:bundle.artifact.plan.pin.skillId,version:skill.current_version,contentHash:skill.content_hash,
   sourceHash:digest({source:skill.source,validation:skill.validation,dependencies:skill.dependencies})},
-  ...experienceLocks,knowledgeSourcesLocked:true as const,decisionMemorySourcesLocked:true as const,lockedEvidenceRead:true as const,sourcePayloadsRevalidated:false as const,collectorProvenanceVerified:false as const,automaticActivation:false as const};
+  ...experienceLocks,skillCatalogSourcesLocked:true as const,knowledgeSourcesLocked:true as const,decisionMemorySourcesLocked:true as const,lockedEvidenceRead:true as const,sourcePayloadsRevalidated:false as const,collectorProvenanceVerified:false as const,automaticActivation:false as const};
 }
 async function latestJudgments(client:PoolClient,userId:string,id:string){
  const rows=await client.query<{judgment:unknown}>(`select distinct on(case_id) judgment from agent_skill_acceptance_judgment

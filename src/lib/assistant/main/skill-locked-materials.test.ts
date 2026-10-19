@@ -12,7 +12,7 @@ vi.mock('./local-analysis-boundary',()=>({assertLocalAnalysisBoundary:()=>{}}));
 vi.mock('./skill-locked-acceptance-policy',()=>({evaluateLockedSkillAcceptancePolicy:m.policy}));
 const context={userId:'owner'},client={} as PoolClient,bundleId='bundle';
 const observation={caseId:'replay',baseline:{answerHash:digest('PRIVATE baseline')},candidate:{answerHash:digest('PRIVATE candidate')}};
-const bundle={knowledgeSourcesLocked:true,decisionMemorySourcesLocked:true,artifactHash:digest('artifact'),latestReviewHash:digest('reviews'),currentPin:{version:1},freezeStatus:{freezeId:'freeze'},
+const bundle={skillCatalogSourcesLocked:true,knowledgeSourcesLocked:true,decisionMemorySourcesLocked:true,artifactHash:digest('artifact'),latestReviewHash:digest('reviews'),currentPin:{version:1},freezeStatus:{freezeId:'freeze'},
  artifact:{sourceKind:'synthetic-fixture',plan:{cases:[{id:'replay'}]},observations:[observation]}};
 const material=()=>({bundleId,caseId:'replay',artifactHash:bundle.artifactHash,observationHash:digest(observation),sourceKind:'synthetic-fixture',
  freezeStatus:{state:'active',freezeId:'freeze'},canPass:{baseline:true,candidate:true},baseline:'PRIVATE baseline',candidate:'PRIVATE candidate',receipts:['PRIVATE receipt']});
@@ -59,6 +59,7 @@ it('combines material reconstruction and policy while keeping activation and sou
  const out=await evaluateLockedSkillAcceptanceReadiness(client,context,bundleId);
  expect(out).toMatchObject({sourcePayloadsRevalidated:true,policyPassed:false,sourceRevocationsLocked:false,collectorProvenanceVerified:false,automaticActivation:false});
  expect(out).toMatchObject({pinnedMethodSourcesLocked:true,pinnedMethodPinCount:2,pinnedMethodExperienceObservationCount:2});
+ expect(out.skillCatalogSourcesLocked).toBe(true);
  expect(JSON.stringify(out)).not.toContain('PRIVATE');expect(m.policy).toHaveBeenCalledExactlyOnceWith(client,context,bundleId);
 });
 it('rejects different material and policy snapshots',async()=>{

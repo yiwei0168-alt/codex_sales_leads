@@ -1,0 +1,50 @@
+{
+  "stage": "MA24 G09 visible Skill catalog source admission",
+  "date": "2026-10-19",
+  "sourceBaseCommit": "768143d4",
+  "filesSha256": {
+    "db/migrations/152_skill_catalog_source_admission.sql": "53fa1617d43caba3569e8d3c9c92e82d4101a7cf02e28858b29de9ccc8ec0218",
+    "src/lib/assistant/main/skill-catalog-admission.ts": "afad022c600efab2bcd5b876f7fb265c9dd8bd87d0ef4e0f0997d01a78e0de2f",
+    "src/lib/assistant/main/skill-acceptance-store.ts": "3eefd09d6fba81b8c8eecbb1468ba04c7cc6bedddeb8ece4b159f6f25b450f4d",
+    "src/lib/assistant/main/skills.ts": "c14b822bd55631b25c598b8c1ce7430d513e0a6295c8f3bda2451ad3132c3669",
+    "src/lib/knowledge/experience-skill-draft.ts": "7a46764b4ecf11f0070a4c84e3eecbb6a4fac82250267f25c9dbe1931add1a4a",
+    "src/lib/assistant/main/skill-locked-materials.ts": "f646411f97083c3d15283d5f8dd8d1c0092fe6a9a2990e15960f3f96f81d4d8e",
+    "scripts/verify-skill-method-catalog-db.ts": "c1b4f002e26d5c7e8834353459215f65e8c4c2a3c965b079fce2cfcff036ec53",
+    "scripts/verify-ma24-fresh-pilot-new-cluster.ts": "60b295dbc49417a7151c055a6c01b4a67afd258c5c79c8bedbf8f6dfcdc71b0a"
+  },
+  "checks": {
+    "focusedVitest": "48 passed",
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "diffCheck": "passed",
+    "freshClusterCatalogLocks": "passed",
+    "mixedPristineFlagsRejectedBeforeDocker": true,
+    "fixedSnapshotFiveCategoryComposition": "pending"
+  },
+  "database": {
+    "command": "node scripts/verify-ma24-fresh-pilot-new-cluster.ts --method-catalog-locks",
+    "methodCatalogSourceLocksDatabase": "passed",
+    "legacyWriteWithoutReaderMigrationVerified": true,
+    "eightCatalogWritersBlocked": true,
+    "writersResumeAfterRelease": true,
+    "otherAccountPrivateCreationContinues": true,
+    "catalogStableWhileHeld": true,
+    "productWriterAdmissionPrecedesRowLocks": true,
+    "ownerUpdateUnderSourceGateCompletes": true,
+    "formerlySharedPinnedMethodStillProtected": true,
+    "scopedPrivilegedVersionRewriteBlocked": true,
+    "migrationIdempotent": true,
+    "tableWriteGrantsUnchanged": true,
+    "productionDataCopied": false,
+    "productDatabaseModified": false,
+    "actualModelCalls": 0,
+    "automaticActivation": false
+  },
+  "initialFixtureFailure": "An application-role FOR SHARE assertion on another owner's private row returned zero under the existing RLS update policy. The fixture now calls the authorized migration-151 pinned-method lock function; RLS was not broadened.",
+  "limitations": [
+    "No production rollout, real user quality approval or automatic activation.",
+    "Global writer queues may delay later private writers; production capacity is unverified.",
+    "Arbitrary privileged SQL that prelocks rows before admission may be aborted for deadlock.",
+    "Original file bytes, final time-bound checks, production identities and final activation remain incomplete."
+  ]
+}

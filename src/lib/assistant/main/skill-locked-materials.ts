@@ -32,6 +32,7 @@ export async function revalidateLockedSkillAcceptanceMaterials(client:PoolClient
   if(after.artifactHash!==before.artifactHash||after.latestReviewHash!==before.latestReviewHash||digest(after.currentPin)!==digest(before.currentPin))
    throw new Error('Locked evidence changed during material reconstruction');
   return {...journalLocks,knowledgeSourcesLocked:after.knowledgeSourcesLocked,decisionMemorySourcesLocked:after.decisionMemorySourcesLocked,artifactHash:after.artifactHash,latestReviewHash:after.latestReviewHash,materials:hashes,materialsHash:digest(hashes),
+   skillCatalogSourcesLocked:after.skillCatalogSourcesLocked,
    sourcePayloadsRevalidated:true as const,sourceRevocationsLocked:false as const,collectorProvenanceVerified:false as const,automaticActivation:false as const};
  });
 }
@@ -45,6 +46,7 @@ export async function evaluateLockedSkillAcceptanceReadiness(client:PoolClient,c
    throw new Error('Locked material and policy snapshots differ');
   return {...policy,prospectiveCaptureSourcesLocked:materials.prospectiveCaptureSourcesLocked,prospectiveJobCount:materials.prospectiveJobCount,knowledgeSourcesLocked:materials.knowledgeSourcesLocked,decisionMemorySourcesLocked:materials.decisionMemorySourcesLocked,timelineSourcesLocked:materials.timelineSourcesLocked,timelineCustomerCount:materials.timelineCustomerCount,mailReadSourcesLocked:materials.mailReadSourcesLocked,mailCount:materials.mailCount,attachmentMetadataLocked:materials.attachmentMetadataLocked,attachmentCount:materials.attachmentCount,taskOriginsLocked:materials.taskOriginsLocked,taskJournalsLocked:materials.taskJournalsLocked,runCount:materials.runCount,materials:materials.materials,materialsHash:materials.materialsHash,sourcePayloadsRevalidated:true as const,
    pinnedMethodSourcesLocked:materials.pinnedMethodSourcesLocked,pinnedMethodPinCount:materials.pinnedMethodPinCount,
+   skillCatalogSourcesLocked:materials.skillCatalogSourcesLocked,
    pinnedMethodVersionCount:materials.pinnedMethodVersionCount,pinnedMethodExperienceObservationCount:materials.pinnedMethodExperienceObservationCount,
    sourceRevocationsLocked:false as const,collectorProvenanceVerified:false as const,automaticActivation:false as const};
  });

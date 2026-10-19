@@ -4,6 +4,7 @@ const db=vi.hoisted(()=>({queries:[] as Array<{sql:string;args:unknown[]}>,
   scope:"account",files:{'SKILL.md':'Check original evidence'} as Record<string,string>,dependencies:[] as string[]}));
 vi.mock("@/lib/rag/db",()=>({tenantQuery:vi.fn(),tenantTransaction:async(_userId:string,run:(client:{query:(sql:string,args:unknown[])=>Promise<unknown>})=>Promise<unknown>)=>run({
   query:async(sql:string,args:unknown[])=>{db.queries.push({sql,args});
+    if(sql.includes('to_regprocedure'))return {rows:[{configured:true}],rowCount:1};
     if(sql.startsWith("insert into agent_skill("))return {rows:[{id:"00000000-0000-4000-8000-000000000001"}],rowCount:1};
     if(sql.startsWith("select v.validation"))return {rows:[{validation:db.validation,scope:db.scope,files:db.files,dependencies:db.dependencies,source:'user'}],rowCount:1};
     return {rows:[],rowCount:1};},
@@ -14,6 +15,7 @@ beforeEach(()=>{db.queries=[];db.validation={scripts:"unverified-requires-sandbo
 it("imports a package with a script as disabled",async()=>{
   await importSkill(context,{name:"Audit",source:"user",files:{"SKILL.md":"Read the audit script","scripts/audit.py":"print('ok')"},dependencies:[]});
   expect(db.queries.find(call=>call.sql.startsWith("insert into agent_skill("))?.sql).toContain("false");
+  expect(db.queries[1].sql).toBe('select lock_skill_method_catalog_writes($1::uuid)');
 });
 it("stores a pure instruction import disabled pending replay and shadow checks",async()=>{
   await importSkill(context,{name:"Guidance",source:"user",files:{"SKILL.md":"Check the evidence"},dependencies:[]});

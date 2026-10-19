@@ -2,6 +2,7 @@ import { z } from "zod";
 import { tenantQuery, tenantTransaction } from "@/lib/rag/db";
 import { digest, type ExecutionContext } from "./contracts";
 import {skillSourcesCurrent,type SourcedSkillVersion} from './skill-source-guard';
+import {admitSkillCatalogWrite} from './skill-catalog-admission';
 
 export function safeSkillPath(path: string) {
   return path.length <= 180 && /^[a-z0-9_.\-/]+$/i.test(path) && !path.startsWith("/") && path.split("/").every(p => p !== ".." && p !== "." && p !== "" && !/^(\.env(?:\..*)?|\.git|node_modules|id_rsa|id_ed25519)$/i.test(p)) && !path.startsWith("-");
@@ -30,6 +31,7 @@ export async function importSkill(context: Pick<ExecutionContext, "userId" | "ro
   const validation = { instructions: "available", autoEnable: "pending-replay-and-shadow", scripts: instructionOnlySkill(p.files) ? "none" : "unverified-requires-sandbox", dependencies: p.dependencies.length ? "not-installed" : /^(?:github:|https:\/\/)/.test(p.source) ? "not-declared" : "none",
     warnings: Object.values(p.files).some(text => /docker\.sock|\.env|OAuth.?Token|API.?KEY|host filesystem/i.test(text)) ? ["Package references sensitive resources; such access is not granted"] : [] };
   return tenantTransaction(context.userId, async client => {
+    await admitSkillCatalogWrite(client,p.skillId);
     let id = p.skillId, version = 1;
     if (id) {
       const current = await client.query<{ current_version: number }>("select current_version from agent_skill where id=$1 and owner_id=$2 for update", [id, context.userId]);
@@ -63,6 +65,7 @@ export async function listOwnedSkillVersions(userId:string,skillId:string){
 }
 export async function readSkill(context: ExecutionContext, skillId: string) {
   return tenantTransaction(context.userId, async client => {
+    await admitSkillCatalogWrite(client);
     const accessible = await client.query<{ current_version: number }>("select current_version from agent_skill where id=$1 and enabled", [skillId]);
     if (!accessible.rows[0]) return null;
     const pinned = await client.query("select version from agent_run_skill where user_id=$1 and run_id=$2 and skill_id=$3", [context.userId, context.runId, skillId]);
@@ -75,6 +78,7 @@ export async function readSkill(context: ExecutionContext, skillId: string) {
 export async function changeSkill(context: Pick<ExecutionContext, "userId" | "role">, input: { id: string; version: number; operation: "enable" | "disable" | "publish" | "rollback" },humanInitiated=false) {
   if (input.operation === "publish" && context.role !== "admin") throw new Error("Administrator required");
   return tenantTransaction(context.userId, async client => {
+    await admitSkillCatalogWrite(client,input.id);
     const version = await client.query<SourcedSkillVersion&{validation:{scripts?:string;dependencies?:string;autoEnable?:string};dependencies:unknown}>("select v.validation,s.scope,v.files,v.dependencies,v.source,v.content_hash,s.owner_id from agent_skill s join agent_skill_version v on v.skill_id=s.id where s.id=$1 and s.owner_id=$2 and v.version=$3 for update of s", [input.id, context.userId, input.version]);
     if (!version.rowCount) throw new Error("Skill/version not owned");
     if(input.operation!=="disable"&&!await skillSourcesCurrent(client,context.userId,version.rows[0]))

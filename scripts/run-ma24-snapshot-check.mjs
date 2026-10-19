@@ -6,7 +6,7 @@ import {fileURLToPath} from 'node:url';
 
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
 const [mode,...extra]=process.argv.slice(2);
-assert(extra.length===0&&['--memory-source-locks','--transport-journal','--prospective-composition','--locked-policy'].includes(mode),
+assert(extra.length===0&&['--memory-source-locks','--method-catalog-locks','--transport-journal','--prospective-composition','--locked-policy'].includes(mode),
  'Choose exactly one supported disposable database check');
 const commit=execFileSync('git',['rev-parse','--verify','HEAD^{commit}'],{cwd:root,encoding:'utf8'}).trim();
 assert(/^[a-f0-9]{40}$/.test(commit));
