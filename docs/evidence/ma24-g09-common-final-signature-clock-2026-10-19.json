@@ -20,7 +20,7 @@
     "focusedEslint": "passed",
     "diffCheck": "passed",
     "freshClusterMemorySourceLocks": "passed",
-    "fullFiveCategorySnapshotWithThisChange": "not yet run"
+    "fullFiveCategorySnapshotWithThisChange": "running"
   },
   "database": {
     "command": "node --import tsx scripts/verify-ma24-fresh-pilot-new-cluster.ts --memory-source-locks",
@@ -46,5 +46,12 @@
     "src/lib/assistant/main/skill-experience-time-check.ts": "81e0c972b2cc9f2010b933d1709253a1a36042c823473fe2933a0faa4a07580f",
     "src/lib/assistant/main/skill-locked-materials.ts": "1dabdf03391a7a60e62463e5652e21bb7270e083c321373b0fb140f961ceaf58",
     "scripts/verify-skill-memory-source-locks-db.ts": "01fa8537270471bfdf86433b0504a69408f86eadb1a742f0b10d475d21cfd06a"
+  },
+  "implementationCommit": "06dfe3b900967da0524f6e160843bbf606b341b4",
+  "fixedSnapshot": {
+    "commit": "06dfe3b900967da0524f6e160843bbf606b341b4",
+    "command": "PowerShell: $env:MA24_CONFIGURED_COMBINED='1'; node scripts/run-ma24-snapshot-check.mjs --transport-journal",
+    "status": "running",
+    "scope": "Configured signed full five-category wiring with latest common deadline check; no production model calls."
   }
 }

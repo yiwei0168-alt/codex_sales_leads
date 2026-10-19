@@ -227,6 +227,8 @@ try {
     assert.equal(attested.code, 0, attested.output);
     assert(attested.output.includes('"runnerAttestationStore":"passed"'), attested.output);
     assert(attested.output.includes('"lockedEvidenceLatestReviewSerialized":true'),attested.output);
+    assert(attested.output.includes('"configuredDeclarationCliDatabaseVerified":true'),attested.output);
+    console.log(attested.output.trim());
   }
   if(poolRecoveryCheck){
     const checked=await run(process.execPath,['scripts/run-tsx.cjs','scripts/verify-ma24-pool-recovery.ts'],

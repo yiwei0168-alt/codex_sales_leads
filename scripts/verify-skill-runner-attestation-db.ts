@@ -15,6 +15,7 @@ import {disableLocalAnalysisTracing} from '../src/lib/assistant/main/local-analy
 import {verifyLockedEvidenceDatabase} from './fixtures/skill-locked-evidence-db';
 import {tenantTransaction} from '../src/lib/rag/db';
 import {readLockedSkillAcceptanceEvidence} from '../src/lib/assistant/main/skill-acceptance-store';
+import {verifyConfiguredDeclarationDatabase} from './fixtures/skill-configured-declaration-db';
 
 nextEnv.loadEnvConfig(process.cwd());disableLocalAnalysisTracing();
 assert.equal(process.env.MA24_DISPOSABLE_RUNNER_ATTESTATION,'1','Dedicated disposable-cluster harness required');
@@ -149,13 +150,14 @@ try{
  registry.keys[0].enabled=false;await writeFile(registryPath,JSON.stringify(registry));
  await assert.rejects(readSkillRunnerAttestation({userId:owner},saved.id),/unavailable/);
  registry.keys[0].enabled=true;await writeFile(registryPath,JSON.stringify(registry));
+ const configuredDeclaration=await verifyConfiguredDeclarationDatabase(pool,{owner,other,bundleId,syntheticBundle,directory});
  await revokeSkillAcceptanceFreeze({userId:owner},{freezeId:frozen.freezeId,reason:'Synthetic revocation'});
  await assert.rejects(tenantTransaction(owner,client=>readLockedSkillAcceptanceEvidence(client,{userId:owner},bundleId)),/active recorded freeze/);
  await assert.rejects(readSkillRunnerAttestation({userId:owner},saved.id),/inactive/);
  await assert.rejects(lockedDeclaration(),/active recorded freeze/);
  assert.equal((await pool.query('select enabled from agent_skill where id=$1',[skill.id])).rows[0].enabled,false);
  assert.equal((await pool.query("select to_regclass('public.ma24_evaluation_hard_limit') is null absent")).rows[0].absent,true);
- console.log(JSON.stringify({runnerAttestationStore:'passed',collectorAppendAndIdempotency:true,...lockedEvidence,lockedReadRevokedFreezeRejected:true,
+ console.log(JSON.stringify({runnerAttestationStore:'passed',collectorAppendAndIdempotency:true,...lockedEvidence,...configuredDeclaration,lockedReadRevokedFreezeRejected:true,
   lockedDeclarationDatabaseClockExpiryRejected:true,lockedDeclarationRegistryDisablementRejected:true,
   declarationAppendWaitsAndResumes:true,latestDeclarationSelected:true,syntheticDeclarationNotRequired:true,
   emptyObservationAndSignedTimeDriftRejected:true,

@@ -1,8 +1,7 @@
 import assert from 'node:assert/strict';
-import {sign} from 'node:crypto';
+import {spawn} from 'node:child_process';
 import {readFile,writeFile} from 'node:fs/promises';
-import {appendSkillRunnerAttestation} from '../../src/lib/assistant/main/skill-runner-attestation-store';
-import {skillRunnerEvidenceWindow} from '../../src/lib/assistant/main/skill-runner-evidence-window';
+import {join} from 'node:path';
 import {revalidateLockedSkillTransportReceipts} from '../../src/lib/assistant/main/skill-locked-transport-receipts';
 import type {Pool} from 'pg';
 import {digest} from '../../src/lib/assistant/main/contracts';
@@ -60,13 +59,16 @@ export async function verifyCombinedConfiguredDatabase(pool:Pool,original:Signed
   registry.keys.find((key:{keyId:string})=>key.keyId===prospective.keyId).purposes.push('runner-declaration');
   await writeFile(registryPath,JSON.stringify(registry));
   process.env.SKILL_RUNNER_COLLECTOR_ID=prospective.collectorId;process.env.SKILL_RUNNER_DEPLOYMENT_SHA256=prospective.deploymentHash;
-  const bundle=(await pool.query('select observations from agent_skill_acceptance_bundle where id=$1',[combined.bundleId])).rows[0];
-  const statement={protocol:'skill-runner-attestation-v1',keyId:prospective.keyId,collectorId:prospective.collectorId,deploymentHash:prospective.deploymentHash,
-   ownerId:original.owner,freezeId:registration.frozen.freezeId,planHash:digest(registration.frozen.plan),artifactHash:combined.artifactHash,
-   runtimeIdentityHash:digest(registration.frozen.plan.identity),...skillRunnerEvidenceWindow(registration.frozen.plan,bundle.observations),
-   issuedAt:new Date().toISOString(),expiresAt:registration.frozen.plan.expiresAt};
-  await appendSkillRunnerAttestation(context,{bundleId:combined.bundleId,envelope:{statement,
-   signature:sign(null,Buffer.from(digest(statement),'hex'),await readFile(prospective.keyPath,'utf8')).toString('base64url')}},transaction);
+  const declarationJob=join(prospective.directory,'combined-declaration-job.json');
+  await writeFile(declarationJob,JSON.stringify({ownerId:original.owner,bundleId:combined.bundleId}));
+  const declaration=await new Promise<{code:number|null;output:string}>((accept,reject)=>{
+   const child=spawn(process.execPath,['tmp/skill-collector/runner.cjs','--attest',declarationJob],{windowsHide:true,stdio:['ignore','pipe','pipe'],env:{...process.env,
+    NODE_ENV:'production',NODE_OPTIONS:'',NODE_PATH:'',SKILL_RUNNER_DECLARATION_KEY_ID:prospective.keyId,SKILL_RUNNER_DECLARATION_PRIVATE_KEY_FILE:prospective.keyPath}});
+   let output='';child.stdout.on('data',data=>{output+=String(data);});child.stderr.on('data',()=>{});
+   child.once('error',reject);child.once('exit',code=>accept({code,output}));
+  });
+  assert.equal(declaration.code,0,'Configured combined declaration CLI failed');
+  assert.equal(JSON.parse(declaration.output.trim()).collectorDeclaration,'completed');
   const readiness=await tenantTransaction(original.owner,client=>evaluateLockedSkillAcceptanceReadiness(client,context,combined.bundleId));
   assert.equal(readiness.transportReceiptsRequired,true);assert.equal(readiness.transportReceiptsRevalidated,true);
   assert.equal(readiness.transportOriginalTaskCount,2);assert.equal(readiness.transportEvaluationArmCount,8);assert(readiness.transportReceiptCount!>8);

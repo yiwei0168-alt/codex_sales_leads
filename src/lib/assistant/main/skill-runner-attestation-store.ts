@@ -1,5 +1,7 @@
 import type {PoolClient} from 'pg';
 import {z} from 'zod';
+import {createPrivateKey,createPublicKey,sign} from 'node:crypto';
+import {readFile} from 'node:fs/promises';
 import {tenantTransaction,withBoundTenantTransaction} from '@/lib/rag/db';
 import {digest} from './contracts';
 import {assertSkillCollector,type SkillCollectorTransaction} from './skill-model-journal';
@@ -50,6 +52,51 @@ export async function appendSkillRunnerAttestation(context:Context,input:unknown
   const rechecked=await verifyConfiguredSkillRunnerAttestation(saved.envelope,after);
   if(digest(after)!==digest(expected)||rechecked.registryHash!==verified.registryHash)throw new Error('Runner declaration trust changed during append');
   return {id:saved.id,statementHash:verified.statementHash,signedDeclarationVerified:true,automaticActivation:false};
+ });
+}
+/** Configured collector signing only. Bindings come from owned server records,
+ * never a submitted statement. This signs a declaration, not production proof. */
+export async function appendConfiguredSkillRunnerAttestation(context:Context,input:unknown,transaction:SkillCollectorTransaction){
+ assertLocalAnalysisBoundary();z.uuid().parse(context.userId);
+ const p=z.object({bundleId:z.uuid()}).strict().parse(input);
+ if(process.env.NODE_ENV!=='production'||process.execArgv.length||process.env.NODE_OPTIONS?.trim()||process.env.NODE_PATH?.trim())
+  throw new Error('Controlled runner declaration process required');
+ return transaction(context.userId,async client=>{
+  await assertSkillCollector(client); // Reject an app role before reading a private key.
+  const row=(await client.query<{raw_receipts:unknown}>(
+   'select raw_receipts from agent_skill_acceptance_bundle where id=$1 and owner_id=$2',[p.bundleId,context.userId])).rows[0];
+  if(!row)throw new Error('Runner declaration bundle unavailable');
+  const freezeId=z.object({collector:z.object({freezeId:z.uuid()})}).parse(row.raw_receipts).collector.freezeId;
+  await lockSkillAcceptanceFreeze(client,context.userId,freezeId);
+  const expected=await loadBinding(client,context,p.bundleId,freezeId),registry=await loadConfiguredSkillRunnerTrustRegistry();
+  const keyId=z.string().min(1).max(100).parse(process.env.SKILL_RUNNER_DECLARATION_KEY_ID),key=registry.keys.find(item=>item.keyId===keyId);
+  if(!key?.enabled||!key.purposes.includes('runner-declaration')||key.collectorId!==expected.collectorId||key.deploymentHash!==expected.deploymentHash)
+   throw new Error('Runner declaration signing enrollment unavailable');
+  const path=process.env.SKILL_RUNNER_DECLARATION_PRIVATE_KEY_FILE;if(!path)throw new Error('Runner declaration signing key not configured');
+  const bytes=await readFile(/*turbopackIgnore: true*/ path);if(bytes.length>16384)throw new Error('Runner declaration signing key too large');
+  const privateKey=createPrivateKey(bytes);
+  if(privateKey.asymmetricKeyType!=='ed25519'||!createPublicKey(privateKey).export({type:'spki',format:'der'}).equals(createPublicKey(key.publicKeyPem).export({type:'spki',format:'der'})))
+   throw new Error('Runner declaration signing key enrollment changed');
+  const now=(await client.query<{checked_at:Date}>('select clock_timestamp() checked_at')).rows[0]?.checked_at;
+  if(!(now instanceof Date)||!Number.isFinite(now.getTime()))throw new Error('Runner declaration signing clock unavailable');
+  const previous=(await client.query<{envelope:unknown;artifact_hash:string;statement_hash:string}>(`select envelope,artifact_hash,statement_hash from agent_skill_runner_attestation
+   where owner_id=$1 and bundle_id=$2 and freeze_id=$3 order by created_at desc,id desc limit 1`,[context.userId,p.bundleId,freezeId])).rows[0];
+  const latest=previous?skillRunnerEnvelopeSchema.parse(previous.envelope):undefined;
+  const reused=!!latest&&latest.statement.keyId===keyId&&Date.parse(latest.statement.expiresAt)>now.getTime();
+  const statement={protocol:'skill-runner-attestation-v1' as const,keyId,collectorId:expected.collectorId,deploymentHash:expected.deploymentHash,
+   ownerId:context.userId,freezeId,planHash:expected.planHash,artifactHash:expected.artifactHash,runtimeIdentityHash:expected.runtimeIdentityHash,
+   capturedAt:expected.capturedAt,completedAt:expected.completedAt,issuedAt:now.toISOString(),
+   expiresAt:new Date(Math.min(Date.parse(expected.expiresAt),Date.parse(key.expiresAt))).toISOString()};
+  const envelope=reused?latest!:{statement,signature:sign(null,Buffer.from(digest(statement),'hex'),privateKey).toString('base64url')};
+  const verified=verifySkillRunnerAttestation(envelope,registry,expected,now);
+  if(reused&&(previous!.artifact_hash!==expected.artifactHash||previous!.statement_hash!==verified.statementHash))
+   throw new Error('Runner declaration stored signing binding changed');
+  // Reuse the same collector client and freeze lock; opening another transaction
+  // here would wait on our own lock. Existing append rechecks records and trust.
+  const result=await appendSkillRunnerAttestation(context,{bundleId:p.bundleId,envelope},async(owner,work)=>{
+   if(owner!==context.userId)throw new Error('Runner declaration signing owner changed');return work(client);
+  });
+  return {...result,reused,productionQualified:false as const,automaticActivation:false as const};
  });
 }
 /** Caller-owned statement, rebuilt against current server configuration. No HTTP caller can

@@ -5,12 +5,24 @@ import {disableLocalAnalysisTracing} from '../src/lib/assistant/main/local-analy
 async function main(){
  const args=process.argv.slice(2);
  if(args.length===1&&args[0]==='--help'){
-  console.log('node runner.cjs --check|--execute <private-job.json>');return;
+  console.log('node runner.cjs --check|--execute|--attest <private-job.json>');return;
  }
- if(args.length!==2||!['--check','--execute'].includes(args[0]))throw new Error('Expected --check or --execute and one private job file');
+ if(args.length!==2||!['--check','--execute','--attest'].includes(args[0]))throw new Error('Expected --check, --execute or --attest and one private job file');
  if(process.env.NODE_ENV!=='production'||process.execArgv.length||process.env.NODE_OPTIONS?.trim())throw new Error('Plain production Node process required');
  disableLocalAnalysisTracing();
  const bytes=await readFile(args[1]);if(bytes.length>16000)throw new Error('Collector job too large');
+ if(args[0]==='--attest'){
+  const job=z.object({ownerId:z.uuid(),bundleId:z.uuid()}).strict().parse(JSON.parse(bytes.toString('utf8')));
+  const [{getPool},{createConfiguredSkillCollectorConnection},{appendConfiguredSkillRunnerAttestation}]=await Promise.all([
+   import('../src/lib/rag/db'),import('../src/lib/assistant/main/skill-collector-connection'),import('../src/lib/assistant/main/skill-runner-attestation-store')]);
+  const collector=createConfiguredSkillCollectorConnection();
+  try{
+   const out=await appendConfiguredSkillRunnerAttestation({userId:job.ownerId},{bundleId:job.bundleId},collector.transaction);
+   console.log(JSON.stringify({collectorDeclaration:'completed',declarationId:out.id,statementHash:out.statementHash,reused:out.reused,
+    automaticActivation:false,productionQualified:false}));
+  }finally{await collector.close();await getPool().end();}
+  return;
+ }
  const common={ownerId:z.uuid(),freezeId:z.uuid(),evaluationId:z.uuid(),caseId:z.string().min(1).max(120),maximumModelCalls:z.number().int().min(1).max(64)};
  const job=z.discriminatedUnion('kind',[
   z.object({...common,kind:z.literal('safety'),runId:z.uuid(),arm:z.enum(['baseline','candidate'])}).strict(),

@@ -1,0 +1,78 @@
+{
+  "stage": "MA24 G09 configured collector declaration signing CLI",
+  "date": "2026-10-19",
+  "sourceBaseCommit": "06dfe3b900967da0524f6e160843bbf606b341b4",
+  "implementation": {
+    "cli": "node runner.cjs --attest <private-job.json>",
+    "strictJobFields": [
+      "ownerId",
+      "bundleId"
+    ],
+    "bindingsDerivedFromOwnedStoredArtifactAndServerConfig": true,
+    "dedicatedCollectorRoleCheckedBeforePrivateKeyRead": true,
+    "separateDeclarationKeyEnv": [
+      "SKILL_RUNNER_DECLARATION_KEY_ID",
+      "SKILL_RUNNER_DECLARATION_PRIVATE_KEY_FILE"
+    ],
+    "ed25519PublicPrivateKeyMatchAndRunnerPurposeRequired": true,
+    "issuedAtUsesDatabaseClock": true,
+    "expiryLimitedByPlanAndEnrolledKey": true,
+    "validLatestConfiguredKeyStatementReused": true,
+    "sameCollectorClientAndFreezeLockRetainedThroughAppendRechecks": true,
+    "plainProductionNodeRequired": true,
+    "rawResponsesStatementsAndPrivateKeysNotPrinted": true,
+    "sourceKindRemainsPending": true,
+    "productionQualified": false,
+    "automaticActivation": false
+  },
+  "checks": {
+    "regressionVitest": {
+      "files": 3,
+      "passed": 69,
+      "scope": "Existing signature primitive, observation window and locked readiness regression suites; actual signer behavior is covered by the database CLI matrix."
+    },
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "freshClusterRunnerAttestation": "passed including explicit configured CLI marker gate",
+    "fullConfiguredFiveCategoryWithCliSigning": "pending",
+    "linuxImageAttestExecution": "not yet run"
+  },
+  "database": {
+    "command": "node --import tsx scripts/verify-ma24-fresh-pilot-new-cluster.ts --runner-attestation",
+    "firstExitCode": 0,
+    "compiledActualCliAndDedicatedLogin": true,
+    "freshSigningVerifiedByServerReadback": true,
+    "retryReusesDeclarationIdAndDoesNotAppend": true,
+    "foreignOwnerAndSyntheticBundleRejected": true,
+    "callerSelectedDeploymentBindingRejected": true,
+    "appLoginWrongPrivateKeyMissingKeyDisabledKeyWrongPurposeAndNodeOptionsRejected": true,
+    "rejectionsDoNotAppendStatements": true,
+    "existingSignatureStoreAndLockedDeclarationCasesPassed": true,
+    "testKeysEphemeral": true,
+    "productionKeysCreated": false,
+    "actualModelCalls": 0,
+    "automaticActivation": false,
+    "temporaryContainerRemoved": true,
+    "gatedRerunExitCode": 0,
+    "configuredDeclarationCliDatabaseVerified": true,
+    "configuredDeclarationRetryReusesStatement": true,
+    "configuredDeclarationCrossAccountAndSyntheticRejected": true,
+    "configuredDeclarationCallerBindingRejected": true,
+    "configuredDeclarationAppLoginRejected": true,
+    "configuredDeclarationWrongKeyPurposeRevocationAndNodeOptionsRejected": true
+  },
+  "limitations": [
+    "Signs a server-bound declaration only; it does not qualify the deployed binary/provider or independent quality.",
+    "The native compiled CLI database fixture is not Linux-image --attest execution.",
+    "The adapted five-category fixture now calls the real CLI but has not yet completed its new full fixed-snapshot run.",
+    "No source classification promotion, production registry/key enrollment, Skill activation or deployment."
+  ],
+  "filesSha256": {
+    "src/lib/assistant/main/skill-runner-attestation-store.ts": "08e5b5697f6341ddee62d14a472929004b7ab039c4bda898abe536fe8250b0ee",
+    "scripts/skill-collector-runner.ts": "de8d4ed576c4ab4dcb6512833b896e4cce59efabc06f50bb4a36c87c9db0df97",
+    "scripts/fixtures/skill-configured-declaration-db.ts": "0c1a6cee7951f5591c8d6a7661a512632c6b6ad956df492758c0fa376dec2613",
+    "scripts/verify-skill-runner-attestation-db.ts": "9ea71dd751e4fdd887e9718461b80e91ee036e49edfa53cf9d1374fc970c4841",
+    "scripts/fixtures/configured-five-category-db.ts": "f127cffdd39f40981e5ac7b98e3452d430ac6b3034e8cee0c67dd637edb50ab9",
+    "scripts/verify-ma24-fresh-pilot-new-cluster.ts": "fea19892d0a034ca73c61493943bb4a0e48ab61d84d2da8feeb4062ef4adafe6"
+  }
+}

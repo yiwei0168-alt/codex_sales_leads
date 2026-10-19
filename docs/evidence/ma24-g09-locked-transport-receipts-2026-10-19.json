@@ -16,13 +16,21 @@
       "buildId": "Bh25rNBKTAVh28VN4H8fO",
       "standaloneServerExists": true,
       "eightRuntimeModulesByteIdentical": true,
-      "sourceScope": "Application files committed as 662874d3; build executed before that commit, with eight runtime modules compared byte-for-byte. No later application-source edits."
+      "sourceScope": "Application files committed as 662874d3; build executed before that commit, with eight runtime modules compared byte-for-byte. The later common-clock changes in 06dfe3b9 are not included."
     },
     "configuredSignedFiveCategoryDatabase": "passed in corrected clean fixed snapshot 2142510f",
     "diffCheck": "passed",
     "fixedSnapshotSyntheticComposition": {
       "commit": "662874d3e653010de18756d3d8635556311981db",
-      "status": "running"
+      "status": "passed",
+      "exitCode": 0,
+      "completeCompositionVerified": true,
+      "prospectiveSourceDatabaseVerified": true,
+      "prospectivePairedMaterialVerified": true,
+      "syntheticTransportAndDeclarationNotPromoted": true,
+      "actualModelCalls": 0,
+      "automaticActivation": false,
+      "temporaryContainerAndSourceSnapshotRemoved": true
     }
   },
   "implementation": {
