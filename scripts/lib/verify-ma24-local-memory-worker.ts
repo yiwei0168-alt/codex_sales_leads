@@ -8,7 +8,8 @@ import {Client} from 'pg';
 
 /** Actual --once worker and local model, only in the owning disposable cluster.
  * The loopback relay forwards bytes unchanged and bounds/counts model requests. */
-export async function verifyMa24LocalMemoryWorker(options:{adminUrl:string;appUrl:string;ownerEmail:string;disposableContainerId:string;graphWorker?:boolean;chinese?:boolean}){
+export async function verifyMa24LocalMemoryWorker(options:{adminUrl:string;appUrl:string;ownerEmail:string;disposableContainerId:string;graphWorker?:boolean;chinese?:boolean;
+ onObservationsReady?:(ids:{originalId:string;correctedId:string})=>Promise<{invalidationId:string;[key:string]:unknown}>}){
  assert(/^[a-f0-9]{64}$/.test(options.disposableContainerId));assert(options.ownerEmail.endsWith('@example.invalid'));
  const adminUrl=new URL(options.adminUrl),appUrl=new URL(options.appUrl);
  assert.equal(adminUrl.hostname,'127.0.0.1');assert.equal(appUrl.host+appUrl.pathname,adminUrl.host+adminUrl.pathname);
@@ -77,10 +78,10 @@ export async function verifyMa24LocalMemoryWorker(options:{adminUrl:string;appUr
   const firstText=options.chinese?'我喜欢详细报告。':'I prefer long reports.';
   const correctionText=options.chinese?'我之前说我喜欢详细报告，那不对。纠正一下，我喜欢简短报告。':'I previously said I prefer long reports. That was wrong. I prefer concise reports.';
   const first=await queue(firstText);await once(first.run);
-  const original=(await admin.query("select id,kind,source_receipt,valid_from,valid_until from agent_memory_observation where owner_id=$1 and source_receipt->>'runId'=$2",[owner,first.run])).rows;
+  const original=(await admin.query("select id,kind,source_receipt,valid_from,valid_until,recorded_at::text as recorded_at from agent_memory_observation where owner_id=$1 and source_receipt->>'runId'=$2",[owner,first.run])).rows;
   assert.equal(original.length,1);assert.equal(original[0].kind,'preference');assert.equal(original[0].source_receipt.messageId,first.message);
   const second=await queue(correctionText);await once(second.run);
-  const corrected=(await admin.query('select id,content,source_receipt,valid_from,valid_until from agent_memory_observation where owner_id=$1 and corrects_id=$2',[owner,original[0].id])).rows;
+  const corrected=(await admin.query('select id,content,source_receipt,valid_from,valid_until,recorded_at::text as recorded_at from agent_memory_observation where owner_id=$1 and corrects_id=$2',[owner,original[0].id])).rows;
   assert.equal(corrected.length,1);assert((options.chinese?['我喜欢简短报告','我喜欢简短报告。']:['I prefer concise reports','I prefer concise reports.']).includes(corrected[0].content));
   assert.equal(corrected[0].source_receipt.messageId,second.message);
   if(corrected[0].source_receipt.framingNormalization){
@@ -95,13 +96,34 @@ export async function verifyMa24LocalMemoryWorker(options:{adminUrl:string;appUr
    for(const row of [...original,...corrected]){assert.equal(row.valid_from,null);assert.equal(row.valid_until,null);}
   }
   const calls=chats;await once();assert.equal(chats,calls);assert.equal(chats,options.chinese?3:2);assert.deepEqual(errors,[]);
+  let httpFlow:Record<string,unknown>|undefined,recallBefore:unknown,recallAfter:unknown;
+  const recall=async(afterUndo:boolean)=>{
+   const result=await new Promise<{code:number|null;output:string}>((done,reject)=>{
+    const child=spawn(process.execPath,['--import','tsx','scripts/verify-ma24-memory-recall.ts'],{windowsHide:true,stdio:['pipe','pipe','pipe'],
+     env:{...process.env,DATABASE_URL:options.appUrl,DATABASE_MIGRATION_URL:'',LANGSMITH_TRACING:'false',LANGCHAIN_TRACING_V2:'false',OPENAI_API_KEY:'',OPENROUTER_API_KEY:'',ANTHROPIC_API_KEY:'',GOOGLE_API_KEY:'',LANGSMITH_API_KEY:''}});
+    let output='';child.stdout.on('data',data=>{output+=String(data);if(output.length>8192)child.kill();});child.stderr.on('data',()=>{});
+    const timer=setTimeout(()=>child.kill(),30000);child.once('error',error=>{clearTimeout(timer);reject(error);});child.once('exit',code=>{clearTimeout(timer);done({code,output});});
+    child.stdin.end(JSON.stringify({owner,originalId:original[0].id,correctedId:corrected[0].id,originalKnownAt:original[0].recorded_at,correctedKnownAt:corrected[0].recorded_at,afterUndo}));
+   });
+   assert.equal(result.code,0,'Actual graph recall and PostgreSQL revalidation failed');
+   return JSON.parse(result.output.trim());
+  };
   if(options.graphWorker){
    graphOwner=owner;graphIds.push(original[0].id,corrected[0].id);
    await writeFile(`${directory}/graph-fixture.json`,JSON.stringify({ownerId:owner,observationIds:graphIds})+'\n');
-   await once(original[0].id,true);await once(corrected[0].id,true);await once(undefined,true);
+   await once(original[0].id,true);await once(corrected[0].id,true);
+   if(options.onObservationsReady){
+    recallBefore=await recall(false);
+    const {invalidationId,...flow}=await options.onObservationsReady({originalId:original[0].id,correctedId:corrected[0].id});httpFlow=flow;
+    graphIds.push(invalidationId);await writeFile(`${directory}/graph-fixture.json`,JSON.stringify({ownerId:owner,observationIds:graphIds})+'\n');
+    recallAfter=await recall(true); // The graph still has its pre-undo candidates.
+    await once(invalidationId,true);
+    for(const table of ['agent_memory_notice','agent_memory_graph_outbox'])assert.equal((await admin.query(`select count(*)::int n from ${table} where observation_id=$1`,[invalidationId])).rows[0].n,1);
+   }
+   await once(undefined,true);
    const delivered=(await admin.query(`select count(*)::int n from agent_memory_graph_outbox where observation_id=any($1::uuid[])
     and delivered_at is not null and lease_token is null and leased_at is null and attempt_count=1`,[graphIds])).rows[0].n;
-   assert.equal(delivered,2);assert.equal(chats,calls);await cleanupGraph();
+   assert.equal(delivered,options.onObservationsReady?3:2);assert.equal(chats,calls);await cleanupGraph();
   }
   const after=(await admin.query(`select (select count(*)::int from product_fact) p,(select count(*)::int from knowledge_fact) k,
    (select count(*)::int from knowledge_fact_v3) v,(select count(*)::int from lead_scoring_policy) s`)).rows[0];assert.deepEqual(after,before);
@@ -111,7 +133,8 @@ export async function verifyMa24LocalMemoryWorker(options:{adminUrl:string;appUr
    noticesAndOutboxExactlyOnce:true,emptyQueueMakesNoModelCall:true,formalFactAndPolicyCountsUnchanged:true,model:'qwen3:8b',modelDigest:digest,
    actualLocalChatCalls:chats,tagCalls:tags,rawDirectory:directory,rawResponseHashes:await Promise.all(Array.from({length:chats},async(_,i)=>{
     const {readFile}=await import('node:fs/promises');return createHash('sha256').update(await readFile(`${directory}/chat-${i+1}.json`)).digest('hex');})),
-   actualGraphWorkerCli:options.graphWorker??false,graphWorkerOnceInvocations:options.graphWorker?3:0,graphOutboxDeliveredExactlyOnce:options.graphWorker??false,
+   actualGraphWorkerCli:options.graphWorker??false,graphWorkerOnceInvocations:options.graphWorker?(options.onObservationsReady?4:3):0,graphOutboxDeliveredExactlyOnce:options.graphWorker??false,
+   ...(httpFlow?{authenticatedMemoryHttp:httpFlow,recallBeforeUndo:recallBefore,recallAfterUndo:recallAfter}:{}),
    scopedGraphCleanupVerified:options.graphWorker??false,syntheticInputsOnly:true,cloudCalls:0,productionWrites:0,qualityAccepted:false};
   await writeFile(`${directory}/result.json`,JSON.stringify(result,null,2)+'\n');return result;
  }finally{try{await cleanupGraph();}finally{await new Promise<void>((done,reject)=>relay.close(error=>error?reject(error):done()));await admin.end();}}
