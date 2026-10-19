@@ -2,10 +2,12 @@ import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
 import { chromium, expect } from "@playwright/test";
 import type { Client } from "pg";
+import {ma24BrowserContext,ma24FixtureFetch} from './ma24-browser-context';
 
 export async function verifyMa24RunHistoryClone(options: {
-  admin: Client; base: string; cookie: string; userId: string;
+  admin: Client; base: string; cookie: string; userId: string;allowSelfSignedLoopback?:boolean;
 }): Promise<unknown> {
+  const fetch=(input:string,init?:RequestInit)=>ma24FixtureFetch(options,input,init);
   const conversationId = randomUUID();
   const runId = randomUUID();
   await options.admin.query(
@@ -38,7 +40,7 @@ export async function verifyMa24RunHistoryClone(options: {
   try {
     for (const [iteration, viewport] of [{ width: 390, height: 760 }, { width: 1366, height: 900 }].entries()) {
       const pageEventCount = totalEvents + iteration;
-      const context = await browser.newContext({ viewport });
+      const context = await ma24BrowserContext(browser,options,{ viewport });
       const [name, value] = options.cookie.split("=");
       assert(name && value);
       await context.addCookies([{ name, value, url: options.base }]);

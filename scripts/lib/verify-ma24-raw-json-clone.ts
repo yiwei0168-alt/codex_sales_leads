@@ -7,13 +7,15 @@ import { buildLeadWorkflowGraph } from "../../src/lib/leads/workflow/graph";
 import type { LeadWorkflowDependencies } from "../../src/lib/leads/workflow/graph";
 import { checkpointInvocation } from "../../src/lib/leads/workflow/pause";
 import { plan as checkpointPlan } from "../workflow-recovery-fixtures";
+import {ma24BrowserContext,ma24FixtureFetch} from './ma24-browser-context';
 
 const digest = (value: string) => createHash("sha256").update(value).digest("hex");
 
 export async function verifyMa24RawJsonClone(options: {
-  admin: Client; base: string; cookie: string; userId: string;
+  admin: Client; base: string; cookie: string; userId: string;allowSelfSignedLoopback?:boolean;
   migrationDatabaseUrl: string; applicationDatabaseUrl: string;
 }): Promise<unknown> {
+  const fetch=(input:string,init?:RequestInit)=>ma24FixtureFetch(options,input,init);
   const collection = randomUUID();
   const documentId = randomUUID();
   const assetId = randomUUID();
@@ -177,7 +179,7 @@ export async function verifyMa24RawJsonClone(options: {
   const browser = await chromium.launch({ channel: "chrome", headless: true });
   try {
     for (const viewport of [{ width: 390, height: 760 }, { width: 1366, height: 900 }]) {
-      const context = await browser.newContext({ viewport });
+      const context = await ma24BrowserContext(browser,options,{ viewport });
       const [name, value] = options.cookie.split("=");
       assert(name && value);
       await context.addCookies([{ name, value, url: options.base }]);

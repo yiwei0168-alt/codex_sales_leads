@@ -3,10 +3,12 @@ import { randomUUID } from "node:crypto";
 import { chromium, expect } from "@playwright/test";
 import type { Client } from "pg";
 import { hashPassword } from "../../src/lib/auth/password";
+import {ma24BrowserContext,ma24FixtureFetch} from './ma24-browser-context';
 
 export async function verifyMa24AttachmentSelectorClone(options: {
-  admin: Client; base: string; cookie: string; userId: string;
+  admin: Client; base: string; cookie: string; userId: string;allowSelfSignedLoopback?:boolean;
 }): Promise<unknown> {
+  const fetch=(input:string,init?:RequestInit)=>ma24FixtureFetch(options,input,init);
   const prefix = `MA24-F08-${randomUUID().slice(0, 8)}`;
   const collection = randomUUID();
   await options.admin.query(
@@ -72,7 +74,7 @@ export async function verifyMa24AttachmentSelectorClone(options: {
   try {
     let submittedRunId = "";
     for (const viewport of [{ width: 390, height: 560 }, { width: 1366, height: 620 }]) {
-      const context = await browser.newContext({ viewport });
+      const context = await ma24BrowserContext(browser,options,{ viewport });
       const [name, value] = options.cookie.split("=");
       assert(name && value);
       await context.addCookies([{ name, value, url: options.base }]);

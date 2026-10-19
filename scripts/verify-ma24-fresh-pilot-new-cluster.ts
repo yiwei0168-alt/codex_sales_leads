@@ -16,6 +16,7 @@ const webImage = webImageArgument?.startsWith("--web-image=")
 const browserCheck = args.includes("--browser");
 const currentSchemaCheck = args.includes('--current-schema');
 const frontendUiCheck = args.includes('--frontend-ui');
+const extendedUiCheck = args.includes('--extended-ui');
 const tenUserCheck = args.includes("--ten-user");
 const backupCheck = args.includes("--backup");
 const crossClusterCheck = args.includes("--cross-cluster");
@@ -54,9 +55,10 @@ assert(pristineDatabaseChecks <= 1,
 assert(!currentSchemaCheck||(webImage&&pristineDatabaseChecks===0&&!modeBusinessCheck&&!poolRecoveryCheck),
   '--current-schema is for isolated Web acceptance only; G09 fixtures retain their historical schema bootstrap');
 assert(!frontendUiCheck||(webImage&&currentSchemaCheck&&browserCheck),'--frontend-ui requires --web-image, --current-schema and --browser');
+assert(!extendedUiCheck||frontendUiCheck,'--extended-ui requires --frontend-ui');
 const rollbackImageArgument = args.find(arg => arg.startsWith("--rollback-image="));
 const rollbackImage = rollbackImageArgument?.slice("--rollback-image=".length);
-assert(args.length <= 20 && args.every(arg => ["--frontend-ui", "--current-schema", "--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", '--locked-policy', '--memory-source-locks', '--method-catalog-locks', '--shadow-source-locks', '--safety-skill-usage', '--transport-journal', '--pool-recovery', '--web-pool-recovery', "--prospective-source", "--prospective-material", '--prospective-browser', '--prospective-composition', declarationImageArgument,collectorImageArgument,prospectiveHttpArgument, webImageArgument, rollbackImageArgument].includes(arg))
+assert(args.length <= 20 && args.every(arg => ["--extended-ui", "--frontend-ui", "--current-schema", "--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", '--locked-policy', '--memory-source-locks', '--method-catalog-locks', '--shadow-source-locks', '--safety-skill-usage', '--transport-journal', '--pool-recovery', '--web-pool-recovery', "--prospective-source", "--prospective-material", '--prospective-browser', '--prospective-composition', declarationImageArgument,collectorImageArgument,prospectiveHttpArgument, webImageArgument, rollbackImageArgument].includes(arg))
   &&(!declarationImageArgument||(declarationImage&&/^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(declarationImage)))
   &&(!collectorImageArgument||(collectorImage&&/^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(collectorImage)))
   && (!webPoolRecoveryCheck || webImage)
@@ -452,11 +454,13 @@ try {
           ["scripts/run-tsx.cjs", "scripts/verify-ma24-https-browser-session.ts"],
           { ...process.env, DATABASE_URL: appUrl.toString(), DATABASE_MIGRATION_URL: adminUrl.toString(),
             MA24_HTTPS_PROBE_UPSTREAM: base, MA24_HTTPS_PROBE_KEY: keyPath, MA24_HTTPS_PROBE_CERT: certPath,
-            ...(mailboxFixtureKey?{MAILBOX_CREDENTIAL_KEY:mailboxFixtureKey,MA24_FRESH_WEB_FRONTEND_UI:'1',MA24_FRESH_WEB_DISPOSABLE:'1'}:{}) });
+            ...(mailboxFixtureKey?{MAILBOX_CREDENTIAL_KEY:mailboxFixtureKey,MA24_FRESH_WEB_FRONTEND_UI:'1',MA24_FRESH_WEB_DISPOSABLE:'1'}:{}),
+            ...(extendedUiCheck?{MA24_FRESH_WEB_EXTENDED_UI:'1',LANGSMITH_TRACING:'false',LANGCHAIN_TRACING_V2:'false'}:{}) });
         assert.equal(browser.code, 0, browser.output);
         assert(browser.output.includes('"httpsBrowserSession":"passed"'), browser.output);
         assert(browser.output.includes('"manualCompanyWriteReadUi":true'), browser.output);
         if(frontendUiCheck)assert(browser.output.includes('"freshMailboxUiCases":4'),browser.output);
+        if(extendedUiCheck)assert(browser.output.includes('"freshExtendedUiCases":6'),browser.output);
       } finally { rmSync(tempDirectory, { recursive: true, force: true }); }
     }
     if (backupCheck) {
@@ -584,7 +588,7 @@ try {
   }
   console.log(JSON.stringify({ freshClusterPilot: "passed", image: "pgvector/pgvector:pg16",
     publishedAddress: "127.0.0.1 only", rolesVerified: true, duplicateRoleBootstrapRejected: true,
-    freshMigrationThrough: currentSchemaCheck?153:135,currentSchemaMarkers,freshMailboxUiVerified:frontendUiCheck,
+    freshMigrationThrough: currentSchemaCheck?153:135,currentSchemaMarkers,freshMailboxUiVerified:frontendUiCheck,extendedFrontendUiVerified:extendedUiCheck,
     syntheticAccountCompanyAndRestoreVerified: true, copiedProductionData: false,
     linuxWebImage: webImage ?? null, linuxWebHttpWorkflowVerified: Boolean(webImage),
     linuxWebHttpsBrowserVerified: browserCheck, tenConcurrentSyntheticAccountsVerified: tenUserCheck,

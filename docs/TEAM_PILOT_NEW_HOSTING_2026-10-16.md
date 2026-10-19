@@ -1,5 +1,7 @@
 # 首批团队试用新托管实施单（2026-10-16）
 
+2026-10-19 增加 `--extended-ui`（须配合 `--frontend-ui` 及现有 Web/当前结构/浏览器参数），在同一临时服务中为另外六套附件、历史、管理、JSON、非邮件审批场景分别建合成账号。固定 4a1ee07f 的十套页面联验退出 0，类型/lint 通过；自签 API 例外限定相同回环 HTTPS 源，重定向拒绝。临时数据/服务清理，没有启动 Worker 或上线，真实业务仍待验。[收据](evidence/ma24-g13-current-extended-ui-2026-10-19.json)。
+
 2026-10-19 邮箱页面验证入口增加 `--frontend-ui`（须同时指定固定 Web 镜像、`--current-schema --browser`），四套分别使用合成账号及临时加密密钥。首次 e36ac0f5 的 React 418 已由稳定问候首帧修复；固定 4a1ee07f 镜像构建、来源比对和四套页面重验退出 0，类型/lint 通过，临时服务清理。未恢复上线，不覆盖真实邮箱/模型质量。[状态](evidence/ma24-g13-current-mailbox-ui-2026-10-19.json)。
 
 2026-10-19 本地候选更新（未上线）：固定 `e36ac0f5` 的 Linux Web 镜像已构建，949 个运行源码文件与该提交 Git 导出逐字节一致；导出与 Git blob 的差异仅为 LF/CRLF。实际隔离验收使用 `--web-image=ma24-pilot-web:e36ac0f5 --current-schema --browser --ten-user`，全新数据库安装至 153，HTTPS 浏览器和十合成账号隔离通过，临时服务/网络已移除。新的当前结构模式只用于隔离 Web 验收；历史 G09 仍从 135 启动自己的固定夹具。该结果不恢复内网上线，不代表全部业务或生产验收。[收据](evidence/ma24-g01-current-linux-web-2026-10-19.json)。

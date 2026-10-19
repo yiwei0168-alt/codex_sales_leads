@@ -41,6 +41,8 @@ let created = false;
 let browser: Awaited<ReturnType<typeof chromium.launch>> | undefined;
 let routedUpstream = upstream;
 const frontendUi=process.env.MA24_FRESH_WEB_FRONTEND_UI==='1';
+const extendedUi=process.env.MA24_FRESH_WEB_EXTENDED_UI==='1';
+assert(!extendedUi||frontendUi,'Extended UI requires disposable frontend orchestration');
 if(frontendUi)assert.equal(process.env.MA24_FRESH_WEB_DISPOSABLE,'1','Mailbox UI fixtures require disposable Web/database orchestration');
 const frontendResults:Array<{name:string;result:unknown}>=[];
 const proxy = createServer({ key: await readFile(keyPath), cert: await readFile(certPath) }, (request, response) => {
@@ -148,10 +150,18 @@ try {
     const {verifyMa24MailboxBatchClone}=await import('./lib/verify-ma24-mailbox-batch-clone');
     const {verifyMa24MailboxSyncClone}=await import('./lib/verify-ma24-mailbox-sync-clone');
     const {verifyMa24MailboxReaderClone}=await import('./lib/verify-ma24-mailbox-reader-clone');
+    const extendedCases=extendedUi?[
+      ['attachments',(await import('./lib/verify-ma24-attachment-selector-clone')).verifyMa24AttachmentSelectorClone],
+      ['run-history',(await import('./lib/verify-ma24-run-history-clone')).verifyMa24RunHistoryClone],
+      ['revision-history',(await import('./lib/verify-ma24-revision-history-clone')).verifyMa24RevisionHistoryClone],
+      ['agent-library',(await import('./lib/verify-ma24-agent-library-clone')).verifyMa24AgentLibraryClone],
+      ['raw-json',(await import('./lib/verify-ma24-raw-json-clone')).verifyMa24RawJsonClone],
+      ['non-mail-approval',(await import('./lib/verify-ma24-non-mail-approval-raw-json-clone')).verifyMa24NonMailApprovalRawJsonClone],
+    ] as const:[];
     const fixtureAdmin=new Client({connectionString:databaseConnectionString(migrationUrl),ssl:databaseSslConfiguration(migrationUrl)});
     await fixtureAdmin.connect();
     try{
-      for(const [name,verify] of [['drawer',verifyMa24MailboxDrawerClone],['batch',verifyMa24MailboxBatchClone],['sync',verifyMa24MailboxSyncClone],['reader',verifyMa24MailboxReaderClone]] as const){
+      for(const [name,verify] of [['drawer',verifyMa24MailboxDrawerClone],['batch',verifyMa24MailboxBatchClone],['sync',verifyMa24MailboxSyncClone],['reader',verifyMa24MailboxReaderClone],...extendedCases] as const){
         const fixtureId=randomUUID(),fixtureEmail=`ma24-fresh-ui-${fixtureId}@example.invalid`,fixturePassword=randomBytes(32).toString('base64url');
         await fixtureAdmin.query("insert into app_user(id,email,display_name,password_hash,role,status) values($1,$2,'Disposable mailbox UI',$3,'member','active')",[fixtureId,fixtureEmail,hashPassword(fixturePassword)]);
         const fixtureContext=await browser.newContext({ignoreHTTPSErrors:true});
@@ -159,7 +169,9 @@ try {
           const login=await fixtureContext.request.post(`${base}/api/auth/login`,{headers:{origin:base},data:{email:fixtureEmail,password:fixturePassword}});
           assert.equal(login.status(),200);
           const session=(await fixtureContext.cookies(base)).find(cookie=>cookie.name==='network_copilot_session');assert(session);
-          frontendResults.push({name,result:await verify({admin:fixtureAdmin,base,cookie:`${session.name}=${session.value}`,userId:fixtureId,allowSelfSignedLoopback:true})});
+          const probe={admin:fixtureAdmin,base,cookie:`${session.name}=${session.value}`,userId:fixtureId,allowSelfSignedLoopback:true,
+            migrationDatabaseUrl:migrationUrl,applicationDatabaseUrl:appUrl};
+          frontendResults.push({name,result:await verify(probe)});
         }finally{await fixtureContext.close();}
       }
     }finally{await fixtureAdmin.end();}
@@ -199,7 +211,9 @@ try {
   console.log(JSON.stringify({ httpsBrowserSession: "passed", browser: "chrome", secureCookie: true,
     httpOnlyCookie: true, sameSiteLax: true, loginFormAndLogoutUi: true,
     taskReadAndNavigation: true, leadNavigation: true, manualCompanyWriteReadUi: true,
-    oldWebTrafficRoundTrip: Boolean(oldWeb), actualPaidCalls: 0,freshMailboxUiCases:frontendResults.length,frontendResults }));
+    oldWebTrafficRoundTrip: Boolean(oldWeb), actualPaidCalls: 0,
+    freshMailboxUiCases:frontendResults.filter(item=>['drawer','batch','sync','reader'].includes(item.name)).length,
+    freshExtendedUiCases:frontendResults.filter(item=>!['drawer','batch','sync','reader'].includes(item.name)).length,frontendResults }));
 } finally {
   await browser?.close();
   await new Promise<void>((resolve) => proxy.close(() => resolve()));
