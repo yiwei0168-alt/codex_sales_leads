@@ -17,8 +17,9 @@ const applicationDatabaseUrl = process.env.DATABASE_URL;
 const databaseUrl = process.env.DATABASE_MIGRATION_URL || applicationDatabaseUrl;
 if (!databaseUrl) throw new Error("DATABASE_MIGRATION_URL or DATABASE_URL is required. Copy .env.example to .env.local first.");
 const args = process.argv.slice(2);
-if (args.some(arg => arg !== "--fresh-pilot-through=135")) throw new Error("Unknown migration argument");
-const freshPilot = args.includes("--fresh-pilot-through=135");
+if (args.length>1||args.some(arg => !["--fresh-pilot-through=135","--fresh-pilot-through=153"].includes(arg))) throw new Error("Unknown migration argument");
+const freshPilot = args.length===1;
+const freshPilotThrough = args[0]==="--fresh-pilot-through=153"?153:135;
 if (freshPilot && (!process.env.DATABASE_MIGRATION_URL || !applicationDatabaseUrl)) {
   throw new Error("Fresh pilot migration requires separate application and migration database URLs");
 }
@@ -52,7 +53,7 @@ try {
   const migrationsDirectory = join(root, "db", "migrations");
   const migrations = (await readdir(migrationsDirectory))
     .filter((file) => /^\d+.*\.sql$/i.test(file))
-    .filter((file) => !freshPilot || Number(file.slice(0, 3)) <= 135)
+    .filter((file) => !freshPilot || Number(file.slice(0, 3)) <= freshPilotThrough)
     .sort();
   for (const migration of migrations) {
     const sql = await readFile(join(migrationsDirectory, migration), "utf8");

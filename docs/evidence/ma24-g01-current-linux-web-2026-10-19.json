@@ -1,0 +1,100 @@
+{
+  "stage": "MA24 G01/G13 current Linux Web candidate",
+  "date": "2026-10-19",
+  "sourceCommit": "e36ac0f5d16cbb537155e0aa971a34bd74c5110a",
+  "build": {
+    "command": "node scripts/build-ma24-pilot-image.mjs ma24-pilot-web:e36ac0f5",
+    "exitCode": 0,
+    "source": "Fixed Git archive; Linux Dockerfile.pilot-web builder and standalone output; no workspace env files supplied",
+    "deployed": false
+  },
+  "sourceAudit": {
+    "command": "node scripts/verify-ma24-web-image-source.mjs ma24-pilot-web:e36ac0f5 e36ac0f5d16cbb537155e0aa971a34bd74c5110a",
+    "exitCode": 0,
+    "scope": "Immutable image ID, non-root/read-only/no-network. Exact runtime-source inventory and bytes compared with fixed Git archive export, then export/blob changes verified to be EOL only; static files present and private environment/storage files absent.",
+    "retainedFailure": "Initial direct Git-blob hash comparison rejected package-lock.json because this Windows Git archive exports CRLF. Exact export comparison passed for all 949 files; all 949 export/blob differences are LF/CRLF only. No application source/config semantic normalization was performed.",
+    "result": {
+      "webImageSourceVerification": "passed",
+      "image": "ma24-pilot-web:e36ac0f5",
+      "imageId": "sha256:3caa64cb759b873ffee953aca2df4f633ed5551c95c90a10d44f52e5ece439e6",
+      "sourceCommit": "e36ac0f5d16cbb537155e0aa971a34bd74c5110a",
+      "buildId": "JahjyW5iaBVdFou_YqXtF",
+      "runtimeSourceFileCount": 949,
+      "runtimeSourceMatchesFixedGitExport": true,
+      "exportEolDifferences": 949,
+      "runtimeSourceManifestHash": "1bc990722bcc68a586efb3e48e39e6bf121614aa0320c0c67c07f3738747b3d1",
+      "privateEnvironmentFiles": false,
+      "privateStorageFiles": false,
+      "staticAssetsPresent": true,
+      "nonRootReadOnlyNoNetwork": true,
+      "productionQualified": false
+    }
+  },
+  "freshWebAcceptance": {
+    "command": "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --web-image=ma24-pilot-web:e36ac0f5 --current-schema --browser --ten-user",
+    "exitCode": 0,
+    "scope": "New disposable PostgreSQL/pgvector, migrations through 153, separate restricted application login, temporary self-signed local HTTPS and ten synthetic concurrent accounts; no production copy",
+    "cleanup": "Temporary Web/database containers and Docker network removed by successful verifier finally blocks",
+    "result": {
+      "freshClusterPilot": "passed",
+      "image": "pgvector/pgvector:pg16",
+      "publishedAddress": "127.0.0.1 only",
+      "rolesVerified": true,
+      "duplicateRoleBootstrapRejected": true,
+      "freshMigrationThrough": 153,
+      "currentSchemaMarkers": {
+        "mailbox_work_binding": true,
+        "mailbox_lease_binding": true,
+        "mailbox_binding_constraint": true,
+        "knowledge_source_gate": true,
+        "task_origin_gate": true
+      },
+      "syntheticAccountCompanyAndRestoreVerified": true,
+      "copiedProductionData": false,
+      "linuxWebImage": "ma24-pilot-web:e36ac0f5",
+      "linuxWebHttpWorkflowVerified": true,
+      "linuxWebHttpsBrowserVerified": true,
+      "tenConcurrentSyntheticAccountsVerified": true,
+      "pilotBackupRestoreVerified": false,
+      "crossClusterRestoreVerified": false,
+      "scriptedModeBusinessVerified": false,
+      "runnerAttestationStoreVerified": false,
+      "collectorDeclarationImageVerified": false,
+      "lockedPolicyDatabaseVerified": false,
+      "memorySourceLocksVerified": false,
+      "methodCatalogSourceLocksVerified": false,
+      "shadowSourceLocksVerified": false,
+      "safetySkillUsageVerified": false,
+      "transportJournalDatabaseVerified": false,
+      "collectorImageTlsPreflightVerified": false,
+      "poolRecoveryVerified": false,
+      "standaloneDatabaseRecoveryVerified": false,
+      "extraG09Migration": null,
+      "prospectiveSourceDatabaseVerified": false,
+      "prospectivePairedMaterialVerified": false,
+      "prospectiveStandaloneHttpVerified": false,
+      "prospectiveStandaloneBrowserVerified": false,
+      "completeCompositionVerified": false,
+      "samePortPriorImageRollbackVerified": false
+    }
+  },
+  "harnessChanges": {
+    "migration": "Adds explicit --fresh-pilot-through=153 with the existing empty-schema/distinct-login safeguards; historical 135 remains supported.",
+    "web": "--current-schema is admitted only for Web acceptance, rejects combination with pristine G09 fixtures before Docker initialization, and verifies current mailbox/source-gate schema markers.",
+    "typecheck": "npm.cmd run typecheck: exit 0",
+    "lint": "focused ESLint: exit 0",
+    "invalidFlagCombination": "--current-schema --transport-journal rejected before Docker initialization"
+  },
+  "limits": [
+    "Current application image is fixed e36ac0f5, not the later verifier-only commit. Earlier images and independent collector images have separate source-specific receipts.",
+    "Browser/HTTP checks cover login/session, manual company write/read and synthetic tenant isolation; not complete mailbox, knowledge, model or approval business workflows.",
+    "Migration 153 is verified in a fresh database; no upgrade of an existing production database occurred.",
+    "No production certificate trust, real team use, persistent deployment, LAN opening, live backup/rollback or production qualification.",
+    "Real quality and G09 final automatic activation remain incomplete."
+  ],
+  "filesSha256": {
+    "scripts/migrate.ts": "d4d837abe45dc800dcaf075a85624b287982f7183338a8af164f070f51b63ef0",
+    "scripts/verify-ma24-fresh-pilot-new-cluster.ts": "ec63e8fdd92edbd7c3a1e5b06e23c1cdc17e6c2a71e47c503031e1dc8b114298",
+    "scripts/verify-ma24-web-image-source.mjs": "82b980a6d09f40ac2c00c2decd134736e3d2687c555fc6b1900cf48a7558ff5b"
+  }
+}

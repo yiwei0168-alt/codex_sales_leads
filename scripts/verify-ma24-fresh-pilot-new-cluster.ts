@@ -14,6 +14,7 @@ const webImageArgument = args.find(arg => arg.startsWith("--web-image="));
 const webImage = webImageArgument?.startsWith("--web-image=")
   ? webImageArgument.slice("--web-image=".length) : undefined;
 const browserCheck = args.includes("--browser");
+const currentSchemaCheck = args.includes('--current-schema');
 const tenUserCheck = args.includes("--ten-user");
 const backupCheck = args.includes("--backup");
 const crossClusterCheck = args.includes("--cross-cluster");
@@ -49,9 +50,11 @@ const pristineDatabaseChecks = [
 ].filter(Boolean).length;
 assert(pristineDatabaseChecks <= 1,
   "Each G09 disposable database fixture requires a pristine placeholder-only database; run one fixture flag per fresh-cluster invocation.");
+assert(!currentSchemaCheck||(webImage&&pristineDatabaseChecks===0&&!modeBusinessCheck&&!poolRecoveryCheck),
+  '--current-schema is for isolated Web acceptance only; G09 fixtures retain their historical schema bootstrap');
 const rollbackImageArgument = args.find(arg => arg.startsWith("--rollback-image="));
 const rollbackImage = rollbackImageArgument?.slice("--rollback-image=".length);
-assert(args.length <= 20 && args.every(arg => ["--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", '--locked-policy', '--memory-source-locks', '--method-catalog-locks', '--shadow-source-locks', '--safety-skill-usage', '--transport-journal', '--pool-recovery', '--web-pool-recovery', "--prospective-source", "--prospective-material", '--prospective-browser', '--prospective-composition', declarationImageArgument,collectorImageArgument,prospectiveHttpArgument, webImageArgument, rollbackImageArgument].includes(arg))
+assert(args.length <= 20 && args.every(arg => ["--current-schema", "--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", '--locked-policy', '--memory-source-locks', '--method-catalog-locks', '--shadow-source-locks', '--safety-skill-usage', '--transport-journal', '--pool-recovery', '--web-pool-recovery', "--prospective-source", "--prospective-material", '--prospective-browser', '--prospective-composition', declarationImageArgument,collectorImageArgument,prospectiveHttpArgument, webImageArgument, rollbackImageArgument].includes(arg))
   &&(!declarationImageArgument||(declarationImage&&/^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(declarationImage)))
   &&(!collectorImageArgument||(collectorImage&&/^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(collectorImage)))
   && (!webPoolRecoveryCheck || webImage)
@@ -62,7 +65,7 @@ assert(args.length <= 20 && args.every(arg => ["--browser", "--ten-user", "--bac
   && (!(browserCheck || tenUserCheck || backupCheck || crossClusterCheck || rollbackImage) || webImage)
   && (!crossClusterCheck || backupCheck)
   && (!rollbackImage || rollbackImage !== webImage),
-  "Expected --mode-business, --runner-attestation, --declaration-image=<tag>, --safety-skill-usage, --transport-journal, --pool-recovery, --prospective-source, --prospective-material, --prospective-composition, --prospective-http-image=<builder-tag> (with optional --prospective-browser), or --web-image=<tag> with optional --web-pool-recovery, --browser, --ten-user, --backup, --cross-cluster (with --backup), and --rollback-image=<prior-tag>");
+  "Expected --mode-business, --runner-attestation, --declaration-image=<tag>, --safety-skill-usage, --transport-journal, --pool-recovery, --prospective-source, --prospective-material, --prospective-composition, --prospective-http-image=<builder-tag> (with optional --prospective-browser), or --web-image=<tag> with optional --current-schema, --web-pool-recovery, --browser, --ten-user, --backup, --cross-cluster (with --backup), and --rollback-image=<prior-tag>");
 const networkName = `ma24-pilot-net-${id}`;
 const adminPassword = randomBytes(24).toString("hex");
 const appPassword = randomBytes(24).toString("hex");
@@ -99,6 +102,7 @@ let containerId: string | undefined;
 let webContainerId: string | undefined;
 let restoredContainerId: string | undefined;
 let networkId: string | undefined;
+let currentSchemaMarkers:Record<string,boolean>|null=null;
 try {
   if (webImage) {
     const created = await run("docker", ["network", "create", networkName]);
@@ -149,9 +153,22 @@ try {
   assert(verified.output.includes('"copiedProductionData":false'), verified.output);
   if (webImage || modeBusinessCheck || runnerAttestationCheck || lockedPolicyCheck || memorySourceLocksCheck || methodCatalogLocksCheck || shadowSourceLocksCheck || prospectiveSourceCheck || safetySkillUsageCheck || transportJournalCheck || poolRecoveryCheck) {
     const migration = await run(process.execPath,
-      ["scripts/run-tsx.cjs", "scripts/migrate.ts", "--fresh-pilot-through=135"],
+      ["scripts/run-tsx.cjs", "scripts/migrate.ts", currentSchemaCheck?"--fresh-pilot-through=153":"--fresh-pilot-through=135"],
       { ...process.env, DATABASE_URL: appUrl.toString(), DATABASE_MIGRATION_URL: adminUrl.toString() });
     assert.equal(migration.code, 0, migration.output);
+    if(currentSchemaCheck){
+      const inspect=new Client({connectionString:adminUrl.toString()});await inspect.connect();
+      try{
+        currentSchemaMarkers=(await inspect.query<Record<string,boolean>>(`select
+          exists(select 1 from information_schema.columns where table_schema='public' and table_name='mailbox_sync_run' and column_name='work_job_id') as mailbox_work_binding,
+          exists(select 1 from information_schema.columns where table_schema='public' and table_name='mailbox_sync_run' and column_name='work_lease_token') as mailbox_lease_binding,
+          exists(select 1 from pg_constraint where conrelid='public.mailbox_sync_run'::regclass and conname='mailbox_sync_run_worker_binding_check') as mailbox_binding_constraint,
+          to_regprocedure('public.lock_skill_knowledge_sources()') is not null as knowledge_source_gate,
+          to_regprocedure('public.lock_skill_task_origins(uuid[])') is not null as task_origin_gate
+        `)).rows[0];
+        assert(Object.values(currentSchemaMarkers).every(Boolean),'Current Web schema incomplete');
+      }finally{await inspect.end();}
+    }
   }
   if (prospectiveSourceCheck) {
     const inContainerApp = new URL(appUrl), inContainerAdmin = new URL(adminUrl);
@@ -561,7 +578,7 @@ try {
   }
   console.log(JSON.stringify({ freshClusterPilot: "passed", image: "pgvector/pgvector:pg16",
     publishedAddress: "127.0.0.1 only", rolesVerified: true, duplicateRoleBootstrapRejected: true,
-    freshMigrationThrough: 135,
+    freshMigrationThrough: currentSchemaCheck?153:135,currentSchemaMarkers,
     syntheticAccountCompanyAndRestoreVerified: true, copiedProductionData: false,
     linuxWebImage: webImage ?? null, linuxWebHttpWorkflowVerified: Boolean(webImage),
     linuxWebHttpsBrowserVerified: browserCheck, tenConcurrentSyntheticAccountsVerified: tenUserCheck,
