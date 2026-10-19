@@ -1,7 +1,9 @@
 import {execFileSync} from 'node:child_process';
 import {mkdirSync,mkdtempSync,rmSync} from 'node:fs';
 import {resolve,join,relative,isAbsolute} from 'node:path';
+import {requireWindowsSystemDiskSpace} from './lib/windows-system-disk-space.mjs';
 if(process.argv.length!==2)throw new Error('No image build arguments accepted');
+requireWindowsSystemDiskSpace();
 const root=resolve('.next-releases');mkdirSync(root,{recursive:true});
 const commit=execFileSync('git',['rev-parse','--verify','HEAD^{commit}'],{encoding:'utf8'}).trim();
 if(!/^[a-f0-9]{40}$/.test(commit))throw new Error('Fixed commit required');

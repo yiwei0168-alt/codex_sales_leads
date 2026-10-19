@@ -2,6 +2,9 @@ import { execFileSync, spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, mkdtempSync, rmSync } from "node:fs";
 import { dirname, isAbsolute, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import {requireWindowsSystemDiskSpace} from './lib/windows-system-disk-space.mjs';
+
+requireWindowsSystemDiskSpace();
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const releasesRoot = join(repoRoot, ".next-releases");
