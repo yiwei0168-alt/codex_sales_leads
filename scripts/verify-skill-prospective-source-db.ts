@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
-import {randomBytes,randomUUID} from 'node:crypto';
-import {readFile} from 'node:fs/promises';
+import {createHash,randomBytes,randomUUID} from 'node:crypto';
+import {mkdir,readFile,unlink,writeFile} from 'node:fs/promises';
 import nextEnv from '@next/env';
 import {Pool} from 'pg';
 import {getPool} from '../src/lib/rag/db';
@@ -40,6 +40,8 @@ globalThis.fetch=async()=>{throw new Error('HTTP disabled for prospective source
 const pool=new Pool({connectionString:adminUrl.toString()});
 const owner=randomUUID(),other=randomUUID(),conversation=randomUUID(),campaign=randomUUID(),run=randomUUID();
 const connection=randomUUID(),mail=randomUUID(),modelCall=randomUUID(),readCall=randomUUID();
+const attachmentKey=`knowledge/ma24-synthetic-composition-${randomUUID()}.txt`;
+let attachmentWritten=false;
 const fullMaterial=process.env.MA24_PROSPECTIVE_FULL_MATERIAL==='1';
 const fullComposition=process.env.MA24_PROSPECTIVE_COMPOSITION==='1';
 assert(!fullComposition||fullMaterial,'Composition requires full paired material');
@@ -70,12 +72,14 @@ try{
   values($1,$2,$3,1,$4,$5,$6,true,clock_timestamp()+interval '1 hour')`,[campaign,owner,skill.id,registration.contentHash,registration.sourceHash,JSON.stringify(registration.config)]);
  const attachmentId=randomUUID();
  if(fullComposition){
-  const documentId=randomUUID(),treeId=randomUUID(),sha=digest('Synthetic composition attachment');
+  const bytes=Buffer.from('Synthetic composition attachment');
+  const documentId=randomUUID(),treeId=randomUUID(),sha=createHash('sha256').update(bytes).digest('hex');
+  await mkdir('knowledge',{recursive:true});await writeFile(attachmentKey,bytes,{flag:'wx'});attachmentWritten=true;
   const collectionId=(await pool.query('select id from knowledge_collection order by id limit 1')).rows[0].id;
   await pool.query(`insert into knowledge_document(id,collection_id,external_id,title,source_type,content_sha256,owner_id,visibility)
    values($1,$2,$1::uuid::text,'Synthetic composition attachment','synthetic',$3,$4,'private')`,[documentId,collectionId,sha,owner]);
   await pool.query(`insert into knowledge_asset(id,document_id,storage_key,source_sha256,mime_type,byte_size,document_type,source_nature)
-   values($1,$2,'synthetic/composition.txt',$3,'text/plain',0,'text','synthetic')`,[attachmentId,documentId,sha]);
+   values($1,$2,$4,$3,'text/plain',$5,'text','synthetic')`,[attachmentId,documentId,sha,attachmentKey,bytes.length]);
   await pool.query(`insert into knowledge_tree_version(id,document_id,asset_id,source_sha256,extractor_version,artifact_sha256,status)
    values($1,$2,$3,$4,'synthetic',$4,'ready')`,[treeId,documentId,attachmentId,sha]);
   await pool.query('update knowledge_document set current_tree_version_id=$1 where id=$2',[treeId,documentId]);
@@ -192,7 +196,7 @@ try{
   const bundleCount=(await pool.query('select count(*)::int n from agent_skill_acceptance_bundle where owner_id=$1',[owner])).rows[0].n;
   await assert.rejects(composeSkillAcceptanceEvidence({userId:owner},{bundleIds:[collectedBundle]},collector),/missing planned cases/);
   assert.equal((await pool.query('select count(*)::int n from agent_skill_acceptance_bundle where owner_id=$1',[owner])).rows[0].n,bundleCount);
-  if(composition)composedBundle=await verifyCompositionDatabaseFixture({pool,owner,other,skillId:skill.id,prospectiveBundleId:collectedBundle,prepared:composition,frozen,transaction:collector});
+  if(composition)composedBundle=await verifyCompositionDatabaseFixture({pool,owner,other,skillId:skill.id,prospectiveBundleId:collectedBundle,attachmentKey,prepared:composition,frozen,transaction:collector});
   if(process.env.MA24_PROSPECTIVE_HTTP==='1')await verifySkillProspectiveHttp(pool,{owner,other,bundleId:composedBundle??collectedBundle,skillId:skill.id,baseline:baselineAnswer,candidate:candidateAnswer},nativeFetch);
  }
  await assert.rejects(prepareSkillProspectiveSource({userId:other},params),/owner/);
@@ -211,4 +215,4 @@ try{
  console.log(JSON.stringify({prospectiveSourceDatabase:'passed',serverTriggerCapture:true,preTaskFreezeBinding:true,
   realMailboxReceiptRevalidation:true,lateFreezeAndPurgedSourceRejected:true,crossAccountAndRevocationRejected:true,
   fullPairedMaterialVerified:fullMaterial,completeCompositionVerified:fullComposition,localComparisonPromoted:false,automaticActivation:false,modelCalls:0,externalCalls:0}));
-}finally{await pool.end();await getPool().end();}
+}finally{try{if(attachmentWritten)await unlink(attachmentKey);}finally{await pool.end();await getPool().end();}}

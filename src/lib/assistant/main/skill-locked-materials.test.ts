@@ -2,7 +2,8 @@ import type {PoolClient} from 'pg';
 import {beforeEach,expect,it,vi} from 'vitest';
 import {digest} from './contracts';
 import {revalidateLockedSkillAcceptanceMaterials,evaluateLockedSkillAcceptanceReadiness} from './skill-locked-materials';
-const m=vi.hoisted(()=>({read:vi.fn(),material:vi.fn(),policy:vi.fn(),lock:vi.fn(),methods:vi.fn(),query:vi.fn(),memoryBoundary:vi.fn(),times:vi.fn()}));
+const m=vi.hoisted(()=>({read:vi.fn(),material:vi.fn(),policy:vi.fn(),lock:vi.fn(),methods:vi.fn(),query:vi.fn(),memoryBoundary:vi.fn(),times:vi.fn(),bytes:vi.fn()}));
+vi.mock('./skill-attachment-bytes',()=>({revalidateLockedSkillAttachmentBytes:m.bytes}));
 vi.mock('./skill-acceptance-run-locks',()=>({lockSkillAcceptanceRunJournals:m.lock}));
 vi.mock('./skill-pinned-method-locks',()=>({lockSkillAcceptancePinnedMethods:m.methods}));
 vi.mock('./memory-message-guard',()=>({withCurrentDecisionMemory:m.memoryBoundary}));
@@ -19,6 +20,7 @@ const bundle={skillCatalogSourcesLocked:true,knowledgeSourcesLocked:true,decisio
 const material=()=>({bundleId,caseId:'replay',artifactHash:bundle.artifactHash,observationHash:digest(observation),sourceKind:'synthetic-fixture',
  freezeStatus:{state:'active',freezeId:'freeze'},canPass:{baseline:true,candidate:true},baseline:'PRIVATE baseline',candidate:'PRIVATE candidate',receipts:['PRIVATE receipt']});
 beforeEach(()=>{vi.resetAllMocks();m.read.mockResolvedValue(bundle);m.material.mockResolvedValue(material());
+ m.bytes.mockResolvedValue({attachmentBytesRevalidated:true,attachmentBytesCount:1,attachmentBytesManifestHash:'manifest'});
  m.query.mockResolvedValue({rows:[]});m.memoryBoundary.mockImplementation(async(_user:string,work:()=>Promise<unknown>)=>work());
  m.times.mockResolvedValue({methodExperienceTimesRevalidated:true,methodExperienceTimeCheckedAt:'2026-10-19T01:00:00.000Z',methodExperienceValidBefore:'2026-10-19T02:00:00.000Z',methodExperienceTimeObservationCount:2});
  m.methods.mockResolvedValue({pinnedMethodSourcesLocked:true,pinnedMethodPinCount:2,pinnedMethodVersionCount:1,pinnedMethodExperienceObservationCount:2});
@@ -89,4 +91,21 @@ it('rejects local experience expiry after material and policy preparation',async
  m.times.mockRejectedValue(new Error('Acceptance method experience time changed after preparation'));
  await expect(evaluateLockedSkillAcceptanceReadiness(client,context,bundleId)).rejects.toThrow('experience time changed after preparation');
  expect(m.policy).toHaveBeenCalledOnce();
+});
+it('checks bytes before material and again after policy, without granting filesystem locks',async()=>{
+ const out=await evaluateLockedSkillAcceptanceReadiness(client,context,bundleId);
+ expect(out).toMatchObject({attachmentBytesRevalidated:true,attachmentBytesCount:1,sourceRevocationsLocked:false,automaticActivation:false});
+ expect(m.bytes).toHaveBeenCalledTimes(2);
+ expect(m.bytes.mock.invocationCallOrder[0]).toBeLessThan(m.material.mock.invocationCallOrder[0]);
+ expect(m.policy.mock.invocationCallOrder[0]).toBeLessThan(m.bytes.mock.invocationCallOrder[1]);
+ expect(m.bytes.mock.invocationCallOrder[1]).toBeLessThan(m.times.mock.invocationCallOrder[0]);
+});
+it('rejects same-sized file tampering during preparation',async()=>{
+ m.bytes.mockResolvedValueOnce({attachmentBytesManifestHash:'manifest'}).mockRejectedValueOnce(new Error('Acceptance attachment bytes changed'));
+ await expect(evaluateLockedSkillAcceptanceReadiness(client,context,bundleId)).rejects.toThrow('attachment bytes changed');
+ expect(m.times).not.toHaveBeenCalled();
+});
+it('rejects attachment registration drift even when both byte reads succeed',async()=>{
+ m.bytes.mockResolvedValueOnce({attachmentBytesManifestHash:'manifest'}).mockResolvedValueOnce({attachmentBytesManifestHash:'changed'});
+ await expect(evaluateLockedSkillAcceptanceReadiness(client,context,bundleId)).rejects.toThrow('registration changed');
 });

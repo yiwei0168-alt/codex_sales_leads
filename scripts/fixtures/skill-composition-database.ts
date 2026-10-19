@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
+import {readFile,writeFile} from 'node:fs/promises';
 import type {Pool} from 'pg';
 import {digest,result,type ModelMessage,type ModelConfig} from '../../src/lib/assistant/main/contracts';
 import {initialTaskMessages} from '../../src/lib/assistant/main/initial-task-messages';
@@ -15,6 +16,8 @@ import {readSkillAcceptanceReview,readSkillAcceptanceReviewCase} from '../../src
 import {appendSkillAcceptanceJudgment} from '../../src/lib/assistant/main/skill-acceptance-store';
 import {tenantTransaction} from '../../src/lib/rag/db';
 import {evaluateLockedSkillAcceptanceReadiness} from '../../src/lib/assistant/main/skill-locked-materials';
+import {readLockedSkillAcceptanceEvidence} from '../../src/lib/assistant/main/skill-acceptance-store';
+import {revalidateLockedSkillAttachmentBytes} from '../../src/lib/assistant/main/skill-attachment-bytes';
 import type {SkillCandidateCollector,SkillCandidateRequest} from '../../src/lib/assistant/main/skill-candidate-model';
 
 export async function prepareCompositionDatabaseFixture(input:{pool:Pool;owner:string;skillId:string;config:ModelConfig;memory:ModelMessage}){
@@ -43,7 +46,7 @@ export async function prepareCompositionDatabaseFixture(input:{pool:Pool;owner:s
  return {runId,cases,safety};
 }
 
-export async function verifyCompositionDatabaseFixture(input:{pool:Pool;owner:string;other:string;skillId:string;prospectiveBundleId:string;
+export async function verifyCompositionDatabaseFixture(input:{pool:Pool;owner:string;other:string;skillId:string;prospectiveBundleId:string;attachmentKey:string;
  prepared:Awaited<ReturnType<typeof prepareCompositionDatabaseFixture>>;frozen:NonNullable<SkillCandidateCollector['frozen']>;transaction:SkillCandidateCollector['transaction']}){
  const {pool,owner,other,skillId,prepared,frozen,transaction}=input;
  let calls=0;
@@ -90,10 +93,22 @@ export async function verifyCompositionDatabaseFixture(input:{pool:Pool;owner:st
  const developmentReviewLockCheck=process.env.MA24_COMPOSITION_REVIEW_LOCK==='1';
  const lockedMaterialsCheck=process.env.MA24_COMPOSITION_LOCKED_MATERIALS==='1';
  if(lockedMaterialsCheck){
-  const readiness=await tenantTransaction(owner,client=>evaluateLockedSkillAcceptanceReadiness(client,{userId:owner},combined.bundleId));
+  const readiness=await tenantTransaction(owner,async client=>{
+   const ready=await evaluateLockedSkillAcceptanceReadiness(client,{userId:owner},combined.bundleId);
+   const locked=await readLockedSkillAcceptanceEvidence(client,{userId:owner},combined.bundleId);
+   const bytes=await readFile(input.attachmentKey);
+   try{
+    await writeFile(input.attachmentKey,Buffer.alloc(bytes.length,120));
+    await assert.rejects(revalidateLockedSkillAttachmentBytes(client,owner,locked.artifact),/attachment bytes changed/);
+   }finally{await writeFile(input.attachmentKey,bytes);}
+   const restored=await revalidateLockedSkillAttachmentBytes(client,owner,locked.artifact);
+   assert.equal(restored.attachmentBytesManifestHash,ready.attachmentBytesManifestHash);
+   return ready;
+  });
   assert.equal(readiness.sourcePayloadsRevalidated,true);assert.equal(readiness.materials.length,5);
   assert.equal(readiness.taskOriginsLocked,true);assert.equal(readiness.taskJournalsLocked,true);assert(readiness.runCount>0);
   assert.equal(readiness.attachmentMetadataLocked,true);assert.equal(readiness.attachmentCount,1);
+  assert.equal(readiness.attachmentBytesRevalidated,true);assert.equal(readiness.attachmentBytesCount,1);
   assert.equal(readiness.mailReadSourcesLocked,true);assert(readiness.mailCount>0);
   assert.equal(readiness.timelineSourcesLocked,true);assert.equal(readiness.timelineCustomerCount,1);
   assert.equal(readiness.decisionMemorySourcesLocked,true);
@@ -122,6 +137,6 @@ export async function verifyCompositionDatabaseFixture(input:{pool:Pool;owner:st
  const before=calls;await readSkillAcceptanceReview({userId:owner},combined.bundleId);assert.equal(calls,before);
  console.log(JSON.stringify({completeCompositionDatabase:'passed',plannedCategories:5,sourceBundles:3,scriptedModelCalls:calls,
   actualJournalAudits:true,compositionIdempotent:true,allCasesReadThroughUnifiedReview:true,injectionReceiptConsumed:true,
-  copiedJudgments:0,developmentReviewLockCheck,lockedMaterialsCheck,realQualityApproval:false,modelCalls:0,automaticActivation:false}));
+  copiedJudgments:0,developmentReviewLockCheck,lockedMaterialsCheck,attachmentByteTamperRejected:lockedMaterialsCheck,realQualityApproval:false,modelCalls:0,automaticActivation:false}));
  return combined.bundleId;
 }

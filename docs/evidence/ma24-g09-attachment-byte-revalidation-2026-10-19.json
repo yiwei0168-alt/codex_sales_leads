@@ -1,0 +1,35 @@
+{
+  "stage": "MA24 G09 stored task attachment byte revalidation",
+  "date": "2026-10-19",
+  "sourceBaseCommit": "c3f620b5b93a6c0aa41087bfc971f5a32bbfd3c5",
+  "checks": {
+    "focusedVitest": "44 passed across attachment bytes, locked materials and run locks",
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "diffCheck": "passed",
+    "fixedSnapshotFiveCategoryComposition": "pending"
+  },
+  "implementation": {
+    "assetIdsDerivedFromStoredAcceptanceTasks": true,
+    "activeDocumentRegisteredAssetAndAccountAccessRequired": true,
+    "hashesActualBytesThroughOpenedFileHandle": true,
+    "boundedReadBufferBytes": 65536,
+    "checksBeforeMaterialAndAfterPolicy": true,
+    "comparesRegistrationManifestAcrossPreparation": true,
+    "returnsPrivateContentsOrPaths": false,
+    "filesystemLease": false,
+    "sourceRevocationsLocked": false,
+    "automaticActivation": false
+  },
+  "unitEvidence": [
+    "Actual temporary file success, same-size tamper, truncation, missing file and empty file",
+    "Traversal rejection, inaccessible registration, missing stored task and no-attachment task",
+    "Preparation order, second byte-check rejection and registration manifest drift"
+  ],
+  "databaseFixture": "Five-category fixture now creates a real exclusive synthetic knowledge file and uses its raw-byte SHA-256 and length. It asserts readiness byte counts, rejects same-size tampering under retained database locks, restores and rechecks the file, and unlinks only that generated file in finally. Actual execution pending.",
+  "limitations": [
+    "Scope is stored task attachments; original assets behind search, facts, originals and vectorless receipts remain separate work.",
+    "Before/after checks do not prevent filesystem writes after the check or establish immutable storage.",
+    "Production identities, human quality, final activation and deployment remain incomplete or deferred."
+  ]
+}
