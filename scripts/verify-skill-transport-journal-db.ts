@@ -76,6 +76,8 @@ try{
  if(process.env.MA24_COLLECTOR_TEST_IMAGE){
   const image=process.env.MA24_COLLECTOR_TEST_IMAGE,container=process.env.MA24_COLLECTOR_TEST_CONTAINER;
   assert(/^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(image));assert(container&&/^[a-f0-9]{64}$/.test(container));
+  const measured=JSON.parse(execFileSync('docker',['run','--rm','--read-only','--network','none','--cap-drop=ALL','--security-opt=no-new-privileges',image,'--verify'],{encoding:'utf8'}).trim());
+  assert.equal(measured.collectorPackageIntegrity,'passed');assert.match(measured.deploymentHash,/^[a-f0-9]{64}$/);
   const certificate=execFileSync('docker',['exec',container,'cat','/tmp/ma24-server.crt'],{encoding:'utf8'});
   await writeFile(join(directory,'database-ca.pem'),certificate);
   const imageApp=new URL(app),imageCollector=new URL(collectorUrl);
@@ -84,6 +86,7 @@ try{
    const proc=spawn('docker',['run','--rm','--read-only','--network',`container:${container}`,'--cap-drop=ALL','--security-opt=no-new-privileges',
     '--mount',`type=bind,source=${directory},target=/probe,readonly`,'--env',`DATABASE_URL=${imageApp.toString()}`,
     '--env',`SKILL_COLLECTOR_DATABASE_URL=${imageCollector.toString()}`,'--env','DATABASE_SSL_CA_FILE=/probe/database-ca.pem',
+    '--env',`SKILL_RUNNER_DEPLOYMENT_SHA256=${measured.deploymentHash}`,
     image,'--check','/probe/private-job.json'],{windowsHide:true,stdio:['ignore','pipe','pipe']});let passed=false;
    proc.stdout.on('data',data=>{if(String(data).includes('"collectorDatabasePreflight":"passed"'))passed=true;});proc.stderr.on('data',()=>{});
    proc.once('error',reject);proc.once('exit',code=>resolve(passed?code:1));

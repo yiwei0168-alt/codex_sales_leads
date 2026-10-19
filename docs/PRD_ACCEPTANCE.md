@@ -1258,3 +1258,6 @@ MODESEL-15：53 项本地测试通过。旧入口仅返回停用提示，配置�
 
 
 2026-10-19 fixed snapshot 02c45e8e completed with exit 0: full five-category composition, paired prospective material and synthetic-source declaration non-promotion passed. Temporary database and source snapshot were removed. This snapshot does not include the later transport-audit code in 662874d3 and does not qualify signed pending-production evidence, deployed binary/provider or real quality. [Declaration evidence](evidence/ma24-g09-locked-runner-declaration-2026-10-19.json).
+
+
+2026-10-19 / MA24-06 G09 measured package binding: the collector image launcher now compares the actual package/Node inventory SHA-256 with SKILL_RUNNER_DEPLOYMENT_SHA256 before --check or --execute can start the runner. Missing, malformed or mismatched hashes reject; --verify/--help can inspect without enrollment, and --verify reports the measured hash. Node execution arguments, NODE_OPTIONS and NODE_PATH are rejected. The image TLS fixture passes the independently measured package hash. Syntax, one inventory test, typecheck and lint passed; new Linux image and actual image/TLS checks are pending. This does not grant binary/provider/quality qualification, source promotion or activation, and introduces no new user confirmation. [Evidence](evidence/ma24-g09-measured-collector-deployment-binding-2026-10-19.json).

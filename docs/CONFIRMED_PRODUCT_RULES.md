@@ -2405,3 +2405,6 @@ MA24-06 / G09、G10 后续实际新库验收：共享产品租约函数在应用
 
 
 2026-10-19 / MA24-06、G09 末尾模型传输收据：从已存审核包派生原任务及候选/安全两臂，不接受调用方指定收据。持有账号事务与任务日志锁，以数据库时刻审核成功和失败回退签名；跨全部审核比较信任登记，在审核结束复查最早收据/计划到期，并在策略后重做及核对运行声明的登记哈希。公共结果仅含哈希、数量和时间，合成材料不升格。100 项定向回归、类型/lint、Next.js 16.3.4 生产构建与八个来源模块打包字节核对通过；两条原任务、八臂的完整配置签名数据库组合仍运行，暂不判通过。二进制/提供方、真实质量和最终启用未完成，无新用户确认。[传输工作流](ORIGINAL_TASK_TRANSPORT_RECEIPTS_2026-10-17.md)、[证据](evidence/ma24-g09-locked-transport-receipts-2026-10-19.json)。
+
+
+2026-10-19 / MA24-06 G09 measured package binding: the collector image launcher now compares the actual package/Node inventory SHA-256 with SKILL_RUNNER_DEPLOYMENT_SHA256 before --check or --execute can start the runner. Missing, malformed or mismatched hashes reject; --verify/--help can inspect without enrollment, and --verify reports the measured hash. Node execution arguments, NODE_OPTIONS and NODE_PATH are rejected. The image TLS fixture passes the independently measured package hash. Syntax, one inventory test, typecheck and lint passed; new Linux image and actual image/TLS checks are pending. This does not grant binary/provider/quality qualification, source promotion or activation, and introduces no new user confirmation. [Evidence](evidence/ma24-g09-measured-collector-deployment-binding-2026-10-19.json).

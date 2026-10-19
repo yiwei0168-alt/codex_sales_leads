@@ -1,0 +1,36 @@
+{
+  "stage": "MA24 G09 measured collector package deployment binding",
+  "date": "2026-10-19",
+  "sourceBaseCommit": "2142510f94a2f4b33edc629c76449136213bdf64",
+  "implementation": {
+    "inventoryAndNodeBinaryMeasuredBeforeRunner": true,
+    "deploymentHash": "SHA-256 of JSON.stringify(actual skill-collector-package-v1 inventory)",
+    "checkAndExecuteRequireMatchingServerConfiguredDeploymentHash": true,
+    "inspectionWithoutEnrollmentPermittedForVerifyAndHelpOnly": true,
+    "nodeExecArgvNodeOptionsAndNodePathRejected": true,
+    "runnerReceivesSameValidatedDeploymentEnvironment": true,
+    "imageTlsFixtureUsesMeasuredHash": true,
+    "productionQualified": false,
+    "automaticActivation": false
+  },
+  "checks": {
+    "nodeSyntax": "passed for launcher and image verifier",
+    "packageInventoryTests": "1 passed",
+    "focusedEslint": "passed",
+    "typecheck": "passed",
+    "fixedCommitLinuxImageBuild": "pending",
+    "actualImageAdversarialVerification": "pending",
+    "actualImageTlsDatabasePreflight": "pending"
+  },
+  "limitations": [
+    "A matching configured package hash does not authenticate who launched the process, its later lifetime, a real provider, or independent quality.",
+    "No production keys, registry enrollment, signed source promotion, Skill activation or deployment.",
+    "Native compiled pending-kind synthetic runners do not acquire measured-package qualification.",
+    "Actual new-image execution remains pending; prior images do not prove this implementation."
+  ],
+  "filesSha256": {
+    "scripts/start-skill-collector.mjs": "ca3286bf0d02a64d3ac8d2efcbe075f0fff5b896400839e3897f0d8f28bd0a52",
+    "scripts/verify-skill-collector-image.mjs": "0880c4ca16c23637a9c54a56455b4a28554b54fb8ab1edd320ad7e98e8b9eacc",
+    "scripts/verify-skill-transport-journal-db.ts": "4e61d3716416b2f988041d07276192aa98cea5c9976df4e58c9e659181802ee8"
+  }
+}

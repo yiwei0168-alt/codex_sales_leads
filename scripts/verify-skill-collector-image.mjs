@@ -14,11 +14,26 @@ const run=(extra,args)=>spawnSync('docker',['run','--rm','--read-only','--networ
 try{
  const verified=run([],['--verify']);assert.equal(verified.status,0,verified.stderr);
  const receipt=JSON.parse(verified.stdout.trim());assert.equal(receipt.collectorPackageIntegrity,'passed');
+ assert.match(receipt.deploymentHash,/^[a-f0-9]{64}$/);assert.equal(receipt.deploymentEnrollmentVerified,false);
+ const enrolled=run(['--env',`SKILL_RUNNER_DEPLOYMENT_SHA256=${receipt.deploymentHash}`],['--verify']);
+ assert.equal(enrolled.status,0,enrolled.stderr);assert.equal(JSON.parse(enrolled.stdout.trim()).deploymentEnrollmentVerified,true);
+ for(const hash of [undefined,'invalid','0'.repeat(64)]){
+  const denied=run(hash===undefined?[]:['--env',`SKILL_RUNNER_DEPLOYMENT_SHA256=${hash}`],['--check','/missing-private-job.json']);
+  assert.equal(denied.status,1);assert(denied.stderr.includes('Collector package integrity verification failed'));
+  assert(!denied.stderr.includes('Skill collector failed'),'Enrollment must reject before the runner reads a job');
+ }
+ const admitted=run(['--env',`SKILL_RUNNER_DEPLOYMENT_SHA256=${receipt.deploymentHash}`],['--check','/missing-private-job.json']);
+ assert.equal(admitted.status,1);assert(admitted.stderr.includes('Skill collector failed'));
+ assert(!admitted.stderr.includes('Collector package integrity verification failed'),'Measured enrollment must reach the runner');
+ const injected=run(['--env','NODE_OPTIONS=--no-warnings'],['--verify']);
+ assert.equal(injected.status,1);assert(injected.stderr.includes('Collector package integrity verification failed'));
  const help=run([],['--help']);assert.equal(help.status,0,help.stderr);assert(help.stdout.includes('--check|--execute'));
  const fake=join(temporary,'runner.cjs');writeFileSync(fake,"throw new Error('tampered code must not execute');");
  const tampered=run(['--mount',`type=bind,source=${fake},target=/app/runner.cjs,readonly`],['--help']);
  assert.equal(tampered.status,1);assert(tampered.stderr.includes('Collector package integrity verification failed'));
  assert(!tampered.stderr.includes('tampered code must not execute'));
  console.log(JSON.stringify({collectorImageVerification:'passed',image,imageId:config.Id,commit:config.Config.Labels['org.opencontainers.image.revision'],
-  packageFiles:receipt.files,nonRootReadOnlyNoNetwork:true,changedRunnerRejectedBeforeExecution:true,actualModelCalls:0,productionQualified:false}));
+  packageFiles:receipt.files,deploymentHash:receipt.deploymentHash,measuredEnrollmentVerified:true,
+  missingMalformedAndMismatchedEnrollmentRejectedBeforeRunner:true,matchedEnrollmentReachesRunner:true,nodeOptionsRejected:true,
+  nonRootReadOnlyNoNetwork:true,changedRunnerRejectedBeforeExecution:true,actualModelCalls:0,productionQualified:false}));
 }finally{rmSync(temporary,{recursive:true,force:true});}
