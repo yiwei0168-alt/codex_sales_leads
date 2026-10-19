@@ -1,0 +1,51 @@
+{
+  "stage": "MA24 G01 fixed current Linux candidate integrated local acceptance",
+  "date": "2026-10-19",
+  "sourceCommit": "25f5acd30c86bbb372290863f0e27d3b75e26434",
+  "image": "ma24-pilot-web:25f5acd3",
+  "imageId": "sha256:54f9c3934e4c3cc2287ce535a891b8d594c6c813a6028435bc3de481226ccda5",
+  "buildId": "a511LxceSBvzFcciOeG1n",
+  "commands": [
+    "node scripts/build-ma24-pilot-image.mjs ma24-pilot-web:25f5acd3",
+    "node scripts/verify-ma24-web-image-source.mjs ma24-pilot-web:25f5acd3 25f5acd30c86bbb372290863f0e27d3b75e26434",
+    "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --web-image=ma24-pilot-web:25f5acd3 --current-schema --browser --ten-user --backup --cross-cluster"
+  ],
+  "exitCodes": [0, 0, 0],
+  "logs": [
+    "tmp/ma24-web-build-25f5acd3-2026-10-19.log",
+    "tmp/ma24-web-source-25f5acd3-2026-10-19.log",
+    "tmp/ma24-current-candidate-25f5acd3-2026-10-19.log"
+  ],
+  "sourceAudit": {
+    "runtimeSourceFileCount": 951,
+    "runtimeSourceMatchesFixedGitExport": true,
+    "exportEolDifferences": 951,
+    "runtimeSourceManifestHash": "f2fcdcd66bb501e922464a7e7264de47d8fe9ca2783c7572644e1e7b9df16b2f",
+    "privateEnvironmentFiles": false,
+    "privateStorageFiles": false,
+    "staticAssetsPresent": true,
+    "nonRootReadOnlyNoNetwork": true
+  },
+  "observed": {
+    "nextVersion": "16.3.4",
+    "staticPagesGenerated": 26,
+    "freshMigrationThrough": 153,
+    "sourceDatabaseTls": true,
+    "linuxWebHttpWorkflowVerified": true,
+    "linuxWebHttpsBrowserVerified": true,
+    "tenConcurrentSyntheticAccountsVerified": true,
+    "pilotBackupRestoreVerified": true,
+    "crossClusterRestoreVerified": true,
+    "nonemptyMailboxCrossClusterRestoreVerified": true,
+    "copiedProductionData": false,
+    "cleanupCompleted": true
+  },
+  "limits": [
+    "All acceptance data synthetic and temporary; local loopback only. No deployment, real mailbox, external model or production qualification.",
+    "Source Git archive export has EOL changes only; verifier compares each exported file with the image and separately checks Git blob equivalence after EOL normalization.",
+    "HTTPS browser covers the login/manual-company/session workflow. The ten extended frontend suites remain separately verified on 4a1ee07f; they were not repeated here.",
+    "Cross-instance database recovery includes exact synthetic mailbox rows, same-process ephemeral-key decryption and tenant SQL isolation. Restored Web, production key backup/distribution and resumed Worker are not covered.",
+    "No physical upload-volume/database consistency, off-host copy, target certificate trust, long-running capacity, same-port rollback or production activation acceptance. G01 remains incomplete.",
+    "The complete G09 signed-composition run is separate from this image/HTTP acceptance; no result is inferred from this receipt."
+  ]
+}
