@@ -16,7 +16,22 @@
     "focusedEslint": "passed",
     "diffCheck": "passed",
     "freshClusterMemorySourceLocks": "passed",
-    "fiveCategoryComposition": "running"
+    "fiveCategoryComposition": "passed"
+  },
+  "compositionDatabase": {
+    "command": "node scripts/verify-ma24-fresh-pilot-new-cluster.ts --prospective-composition",
+    "codeCommit": "470665b1",
+    "exitCode": 0,
+    "prospectiveSourceDatabaseVerified": true,
+    "prospectivePairedMaterialVerified": true,
+    "completeCompositionVerified": true,
+    "lockedMaterialsCheck": true,
+    "developmentReviewLockCheck": true,
+    "temporaryContainerRemoved": true,
+    "actualModelCalls": 0,
+    "humanQualityAccepted": false,
+    "automaticActivation": false,
+    "scope": "The existing synthetic five-category fixture traversed the new lock entry after installing migration 151. Positive multi-method and local-experience provenance locking is separately covered by the six-writer fixture."
   },
   "database": {
     "command": "node scripts/verify-ma24-fresh-pilot-new-cluster.ts --memory-source-locks",
