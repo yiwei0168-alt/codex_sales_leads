@@ -23,13 +23,20 @@ function row(index:number,success:boolean){
 beforeEach(()=>{
  vi.stubEnv('TASK_MODEL_TRANSPORT_COLLECTOR_ID','synthetic');vi.stubEnv('TASK_MODEL_TRANSPORT_DEPLOYMENT_SHA256',digest('deployment'));
  m.task=true;m.rows=[row(0,false),row(1,true)];m.query.mockReset().mockImplementation(async(sql:string)=>({rows:sql.includes('from agent_run')?(m.task?[{created_at:'2026-10-17T00:00:00Z'}]:[]):m.rows}));
- const checked={registryHash:digest({keys:[]}),statementHash:digest('statement')};m.success.mockReset().mockResolvedValue(checked);m.failure.mockReset().mockResolvedValue(checked);
+ const checked={validBefore:'2026-10-20T00:00:00.000Z',registryHash:digest({keys:[]}),statementHash:digest('statement')};m.success.mockReset().mockResolvedValue(checked);m.failure.mockReset().mockResolvedValue(checked);
 });
 it('loads owned completed rows and verifies every predecessor before success without claiming full provenance',async()=>{
  expect(await verifyOwnedTaskModelTransports(context,input)).toMatchObject({storedModeChainsVerified:true,completeTaskProvenanceVerified:false,automaticActivation:false});
  expect(m.query.mock.calls[0][1]).toEqual([input.runId,context.userId]);
  expect(m.failure).toHaveBeenCalledOnce();expect(m.success).toHaveBeenCalledOnce();
  expect(m.failure.mock.calls[0][1]).toMatchObject({binding:{ownerId:context.userId,runId:input.runId,callId:m.rows[0].id},callCompletedAt:'2026-10-17T00:01:00.000Z'});
+});
+it('forwards database time to every fallback signature and retains the earliest expiry',async()=>{
+ const now=new Date('2026-10-19T01:00:00.000Z');
+ m.failure.mockResolvedValue({validBefore:'2026-10-19T02:00:00.000Z',registryHash:digest({keys:[]}),statementHash:digest('failure')});
+ const result=await verifyOwnedTaskModelTransports(context,input,now);
+ expect(m.failure.mock.calls[0][2]).toBe(now);expect(m.success.mock.calls[0][2]).toBe(now);
+ expect(result.transportValidBefore).toBe('2026-10-19T02:00:00.000Z');
 });
 it.each(['missing-task','empty','gap','incomplete','legacy','changed-hash','no-success','early-success','changed-request','overlap'] as const)('rejects %s journals',async kind=>{
  if(kind==='missing-task')m.task=false;

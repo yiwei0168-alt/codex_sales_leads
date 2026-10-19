@@ -1,4 +1,9 @@
 import assert from 'node:assert/strict';
+import {sign} from 'node:crypto';
+import {readFile,writeFile} from 'node:fs/promises';
+import {appendSkillRunnerAttestation} from '../../src/lib/assistant/main/skill-runner-attestation-store';
+import {skillRunnerEvidenceWindow} from '../../src/lib/assistant/main/skill-runner-evidence-window';
+import {revalidateLockedSkillTransportReceipts} from '../../src/lib/assistant/main/skill-locked-transport-receipts';
 import type {Pool} from 'pg';
 import {digest} from '../../src/lib/assistant/main/contracts';
 import {modeModelConfig} from '../../src/lib/assistant/main/mode-config';
@@ -48,13 +53,35 @@ export async function verifyCombinedConfiguredDatabase(pool:Pool,original:Signed
    const material=await readSkillAcceptanceReviewCase(context,{bundleId:combined.bundleId,caseId:item.id});
    assert.equal(material.judgment,null);assert.equal(material.canPass.baseline,true);assert.equal(material.canPass.candidate,true);assert.equal(material.automaticActivation,false);
   }
+  // Synthetic enrolled declaration binds the actual composed artifact. It is
+  // not production identity, provider evidence, or a human quality judgment.
+  const registryPath=process.env.SKILL_RUNNER_TRUST_REGISTRY_FILE!;
+  const registry=JSON.parse(await readFile(registryPath,'utf8'));
+  registry.keys.find((key:{keyId:string})=>key.keyId===prospective.keyId).purposes.push('runner-declaration');
+  await writeFile(registryPath,JSON.stringify(registry));
+  process.env.SKILL_RUNNER_COLLECTOR_ID=prospective.collectorId;process.env.SKILL_RUNNER_DEPLOYMENT_SHA256=prospective.deploymentHash;
+  const bundle=(await pool.query('select observations from agent_skill_acceptance_bundle where id=$1',[combined.bundleId])).rows[0];
+  const statement={protocol:'skill-runner-attestation-v1',keyId:prospective.keyId,collectorId:prospective.collectorId,deploymentHash:prospective.deploymentHash,
+   ownerId:original.owner,freezeId:registration.frozen.freezeId,planHash:digest(registration.frozen.plan),artifactHash:combined.artifactHash,
+   runtimeIdentityHash:digest(registration.frozen.plan.identity),...skillRunnerEvidenceWindow(registration.frozen.plan,bundle.observations),
+   issuedAt:new Date().toISOString(),expiresAt:registration.frozen.plan.expiresAt};
+  await appendSkillRunnerAttestation(context,{bundleId:combined.bundleId,envelope:{statement,
+   signature:sign(null,Buffer.from(digest(statement),'hex'),await readFile(prospective.keyPath,'utf8')).toString('base64url')}},transaction);
   const readiness=await tenantTransaction(original.owner,client=>evaluateLockedSkillAcceptanceReadiness(client,context,combined.bundleId));
+  assert.equal(readiness.transportReceiptsRequired,true);assert.equal(readiness.transportReceiptsRevalidated,true);
+  assert.equal(readiness.transportOriginalTaskCount,2);assert.equal(readiness.transportEvaluationArmCount,8);assert(readiness.transportReceiptCount!>8);
+  assert.equal(readiness.runnerDeclarationRevalidated,true);assert.equal(readiness.transportRegistryHash,readiness.runnerRegistryHash);
+  assert.equal(readiness.collectorProvenanceVerified,false);
+  const key=registry.keys.find((row:{keyId:string})=>row.keyId===prospective.keyId);key.enabled=false;
+  try{await writeFile(registryPath,JSON.stringify(registry));
+   await assert.rejects(tenantTransaction(original.owner,client=>revalidateLockedSkillTransportReceipts(client,context,combined.bundleId)),/trust key unavailable/);
+  }finally{key.enabled=true;await writeFile(registryPath,JSON.stringify(registry));}
   assert.equal(readiness.materials.length,5);assert.equal(readiness.policyPassed,false);assert.equal(readiness.automaticActivation,false);
   assert.equal(readiness.knowledgeSourcesLocked,true);assert.equal(readiness.decisionMemorySourcesLocked,true);assert.equal(readiness.timelineSourcesLocked,true);
   assert.equal(readiness.prospectiveCaptureSourcesLocked,true);assert.equal(readiness.prospectiveJobCount,1);
   assert(readiness.blockers.includes('missing-judgment:signed-replay'));assert.equal(readiness.sourceRevocationsLocked,false);
   assert.equal((await pool.query('select enabled from agent_skill where id=$1',[original.skillId])).rows[0].enabled,false);
-  return {configuredSameFreezeFiveCategoriesVerified:true,collectedCases:5,combinedArtifactHash:combined.artifactHash,
+  return {configuredSameFreezeFiveCategoriesVerified:true,lockedTransportReceiptsRevalidated:true,transportOriginalTaskCount:2,transportEvaluationArmCount:8,disabledTransportKeyRejected:true,collectedCases:5,combinedArtifactHash:combined.artifactHash,
    frozenPlanHash:digest(registration.frozen.plan),lockedMaterialsVerified:true,prospectiveCaptureSourcesLocked:true,missingHumanJudgmentBlocksPolicy:true,
    realQualityAccepted:false,productionQualificationGranted:false,automaticActivation:false};
  });

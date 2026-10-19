@@ -69,6 +69,17 @@ it('loads tenant-scoped persisted records and verifies receipts with the real jo
  expect(mocks.query.mock.calls[0][0]).toBe(context.userId);
  expect(mocks.query.mock.calls[0][2]).toEqual([context.userId,input.evaluationId,input.arm]);
 });
+it('uses the supplied database time despite an earlier application clock',async()=>{
+ mocks.query.mockResolvedValue([fixture()]);
+ await expect(verifySkillCandidateJournalTransports(context,input,frozen,new Date(frozen.plan.expiresAt))).rejects.toThrow('time invalid');
+});
+it('retains the earliest signed expiry including an unsuccessful predecessor',async()=>{
+ const row=failure(),output=row.output as {data:{transportFailureReceipt:{statement:{expiresAt:string};signature:string}}};
+ output.data.transportFailureReceipt.statement.expiresAt='2026-10-16T02:00:00.000Z';
+ output.data.transportFailureReceipt.signature=sign(null,Buffer.from(digest(output.data.transportFailureReceipt.statement),'hex'),pair.privateKey).toString('base64url');
+ row.output_hash=digest(row.output);mocks.query.mockResolvedValue([row,fixture(0,'fallback-generation',1)]);
+ expect((await verifySkillCandidateJournalTransports(context,input,frozen)).transportValidBefore).toBe('2026-10-16T02:00:00.000Z');
+});
 it.each(['synthetic','wrong-freeze','missing-start','missing-end','late-start','early-end','wrong-owner'] as const)('rejects %s stored journal',async kind=>{
  const row=fixture();
  if(kind==='synthetic')row.source_kind='synthetic-fixture';

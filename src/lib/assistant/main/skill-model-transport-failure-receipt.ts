@@ -40,5 +40,5 @@ export async function verifyConfiguredSkillTransportFailure(envelope:unknown,inp
   &&Date.parse(s.expiresAt)<=Date.parse(key.expiresAt)&&Date.parse(s.expiresAt)<=Date.parse(input.expiresAt)))throw new Error('Transport failure time invalid');
  const publicKey=createPublicKey(key.publicKeyPem),signature=Buffer.from(signed.signature,'base64url');
  if(publicKey.asymmetricKeyType!=='ed25519'||signature.toString('base64url')!==signed.signature||!verify(null,Buffer.from(digest(s),'hex'),publicKey,signature))throw new Error('Transport failure signature invalid');
- return {statementHash:digest(s),registryHash:digest(registry),automaticActivation:false as const};
+ return {validBefore:s.expiresAt,statementHash:digest(s),registryHash:digest(registry),automaticActivation:false as const};
 }

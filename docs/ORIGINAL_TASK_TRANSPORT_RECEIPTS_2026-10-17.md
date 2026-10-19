@@ -49,3 +49,12 @@
 同冻结五类联合工程联验已通过：先完成签名历史任务并准备三类安全来源，再将其与尚未执行的新前瞻任务登记在同一计划；前瞻捕获后分别执行三个配置采集入口。两条原任务的公开临时信任密钥同时保留，复用同一个合成客户列表以免新建客户改变历史来源。三个组件包组合成五题包，统一回读和 `evaluateLockedSkillAcceptanceReadiness` 的五题持锁重建通过；知识/记忆准入及客户列表来源锁成立，缺少人工判定阻断策略，Skill 仍停用。实际新库安装 135 后精确补 144–149，未应用延后 136–140；类型/lint 通过，实际模型调用 0。仅一类真实本地业务读取，不能外推全部资料源、完整撤销语义、真实质量或生产身份。通用 harness 的 completeComposition 标志对应另一命令，本次以独立 configuredSameFreezeFiveCategoriesVerified 断言为准。[五类证据](evidence/ma24-g09-configured-five-category-database-2026-10-17.json)。
 
 尚未登记生产密钥或执行生产签发。上述联合工程链路不授予生产资格；legacy/batch 覆盖、完整可变来源撤销保护、部署认证、真实质量和最终启用事务仍待完成。旧无签名日志不因此取得资格。单次签名成功不证明整个任务、部署二进制、真实质量或最终启用；自动启用仍关闭。
+
+
+## 2026-10-19 - Retained-transaction transport audit
+
+`revalidateLockedSkillTransportReceipts` derives deduplicated original tasks and evaluation arms from the stored artifact. Historical/prospective baselines use original task journals; all three safety categories require both arms. It retains the account-bound transaction, standard source/bundle/freeze/Skill lock order and task journal locks. Every signed failed fallback and successful response uses database wall time. The audit reloads and compares server registry hashes and checks the earliest signed receipt/plan expiry again at its end.
+
+Readiness repeats this audit after policy preparation and compares stable audit hashes, then checks the final runner declaration against the same registry. Public results expose counts, hashes and times, without task/evaluation IDs or private prompts/receipts. Synthetic artifacts explicitly return not-required/not-revalidated. These preparation points do not grant a registry lease, deployed binary/provider qualification, complete provenance, independent quality acceptance or activation.
+
+100 focused tests, typecheck, lint, current Next.js production build and byte equality of eight packaged runtime modules passed. The actual configured signed five-category database run is still running. Its fixture explicitly enrolls the latest temporary signing key for runner-declaration and signs the actual composed artifact; it does not bypass the missing-declaration guard. [Evidence](evidence/ma24-g09-locked-transport-receipts-2026-10-19.json).

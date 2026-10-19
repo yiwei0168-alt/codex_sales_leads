@@ -39,6 +39,6 @@ export async function verifyConfiguredTaskTransportFailure(envelope:unknown,inpu
  const publicKey=createPublicKey(key.publicKeyPem),signature=Buffer.from(signed.signature,'base64url');
  if(publicKey.asymmetricKeyType!=='ed25519'||signature.length!==64||signature.toString('base64url')!==signed.signature
   ||!verify(null,Buffer.from(digest(s),'hex'),publicKey,signature))throw new Error('Task failure signature invalid');
- return {taskTransportFailureSignatureVerified:true as const,statementHash:digest(s),registryHash:digest(registry),keyId:key.keyId,
+ return {taskTransportFailureSignatureVerified:true as const,validBefore:s.expiresAt,statementHash:digest(s),registryHash:digest(registry),keyId:key.keyId,
   completeTaskProvenanceVerified:false as const,automaticActivation:false as const};
 }

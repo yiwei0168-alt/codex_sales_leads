@@ -1,0 +1,63 @@
+{
+  "stage": "MA24 G09 retained-transaction model transport receipt audits",
+  "date": "2026-10-19",
+  "sourceBaseCommit": "02c45e8ed51028699a185a79da6abc4ec74e752d",
+  "checks": {
+    "focusedVitest": {
+      "files": 6,
+      "passed": 100
+    },
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "productionBuild": {
+      "status": "passed",
+      "nextVersion": "16.3.4",
+      "staticPages": 26,
+      "buildId": "Bh25rNBKTAVh28VN4H8fO",
+      "standaloneServerExists": true,
+      "eightRuntimeModulesByteIdentical": true
+    },
+    "configuredSignedFiveCategoryDatabase": "running",
+    "diffCheck": "passed"
+  },
+  "implementation": {
+    "bindingsDerivedFromStoredArtifactOnly": true,
+    "originalTaskAndEverySafetyArmIncluded": true,
+    "taskJournalsLockedInRetainedTenantTransaction": true,
+    "successAndFailedFallbackSignaturesRevalidated": true,
+    "databaseWallClockUsed": true,
+    "auditEndChecksEarliestReceiptExpiry": true,
+    "registryReloadedAndComparedAcrossAllAuditsAndDeclaration": true,
+    "auditsRepeatedAfterPolicy": true,
+    "publicResultContainsHashesCountsAndTimesOnly": true,
+    "syntheticEvidenceNotPromoted": true,
+    "collectorProvenanceVerified": false,
+    "automaticActivation": false
+  },
+  "database": {
+    "command": "PowerShell: $env:MA24_CONFIGURED_COMBINED='1'; node --import tsx scripts/verify-ma24-fresh-pilot-new-cluster.ts --transport-journal",
+    "status": "running",
+    "expectedOriginalTaskCount": 2,
+    "expectedEvaluationArmCount": 8,
+    "actualModelCalls": 0,
+    "networkAndBudgetAdapters": "synthetic",
+    "productionKeysEnrolled": false
+  },
+  "limitations": [
+    "Database integration still running; unit fixtures are not substituted for its result.",
+    "Signed statements do not qualify deployed binaries/providers or independent quality.",
+    "Time/registry rechecks are preparation points, not an immutable registry lease or final activation commit.",
+    "No production migration, deployment, port opening, or Skill activation; G14-G20 remain deferred."
+  ],
+  "filesSha256": {
+    "src/lib/assistant/main/skill-locked-transport-receipts.ts": "ecad46df807b3563e2cd314469d1cdb215b1f650326153a0ed153e9358bf07af",
+    "src/lib/assistant/main/skill-locked-materials.ts": "87817f77895846939b31c031e2fa0316fad137ddec64b3f1a18e71faef2c7466",
+    "src/lib/assistant/main/skill-model-transport-journal.ts": "1af354708e1dcdc5b4e3a1b0c8999f2eda6fba9212e52d10bb7f4839f1141375",
+    "src/lib/assistant/main/task-model-transport-journal.ts": "e360b5a05b13037bf76640def0a6fa7e414c548f32d8fdb6d6865d6185d6dac9",
+    "src/lib/assistant/main/skill-model-transport-receipt.ts": "6fe5dbb59aecd9667a208084ed05a3282bb7ef6409234829d1ef5f01ef79bd4d",
+    "src/lib/assistant/main/skill-model-transport-failure-receipt.ts": "29e9f0105c4d3443becf616fb21640ac504d371c65f413f8071ab1c458062b2a",
+    "src/lib/assistant/main/task-model-transport-receipt.ts": "aaefbd7b1acef2881985dcb525b00c02335be7dfb3e924c649ffbfe93fbaea2c",
+    "src/lib/assistant/main/task-model-transport-failure-receipt.ts": "57090418da46592ff55cae5abad12e9d41b5b06c03506d4fc36db8ff962ed4a4",
+    "scripts/fixtures/configured-five-category-db.ts": "ff0c0456dd9aeb7949a33a63ce99c45e31cc27da30a837e18f08b8f29b0612e6"
+  }
+}
