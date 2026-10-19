@@ -198,7 +198,7 @@ const revisionResults:Array<Record<string,unknown>>=[];
   }
   await assert.rejects(registerVectorlessUpload(userId,revision.id,{language:'en',authorityLevel:2}),/Unresolved/);await assertOld();
   const pendingState=await stored(revision.id);
-  for(const [key,pattern] of [[pendingState.storage_key,/Source bytes changed/],[pendingState.extraction_artifact_key,/artifact hash mismatch/]] as const){
+  for(const [key,pattern] of [[pendingState.storage_key,/Knowledge asset no longer matches approved hash/],[pendingState.extraction_artifact_key,/artifact hash mismatch/]] as const){
    const path=resolve(key);assert(path.startsWith(resolve('knowledge/uploads',userId)+sep));const bytes=await readFile(path);
    try{await writeFile(path,Buffer.alloc(bytes.length,120));await assert.rejects(registerVectorlessUpload(userId,revision.id,{language:'en',authorityLevel:2}),pattern);await assertOld();}
    finally{await writeFile(path,bytes);}

@@ -1,0 +1,45 @@
+{
+  "stage": "MA24 G05/G09 formal binary publication final original recheck",
+  "date": "2026-10-19",
+  "sourceBaseCommit": "71f326b1",
+  "implementation": {
+    "stableOriginalInspectorSharedWithLegacyRegistration": true,
+    "formalInitialReadUsesDescriptorHashAndCanonicalPathCheck": true,
+    "newAndRevisionJobLockChecksStorageKeyAndByteSize": true,
+    "newAndRevisionPublicationRechecksApprovedOriginalInsideOwningTransactionAfterWrites": true,
+    "lateMismatchRejectsTransactionCallback": true,
+    "automaticActivation": false
+  },
+  "checks": {
+    "focusedVitest": {
+      "files": 4,
+      "passed": 27,
+      "newFormalCases": 8,
+      "scope": "Filesystem/DB mocks; both new/revision publication paths, stable success, late hash rejection, late size rejection, locked storage binding change rejected before writes. Transaction mock records callback rejection, not actual PostgreSQL rollback."
+    },
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "diffCheck": "passed",
+    "formalWorkerCloneMatrix": {
+      "status": "running",
+      "sessionId": 1895,
+      "command": "node --require ./scripts/patch-node-user.cjs --import tsx scripts/verify-knowledge-supervisor-clone.ts",
+      "log": "tmp/ma24-formal-publication-integrity-2026-10-19.log",
+      "scope": "Actual existing isolated-clone formal PDF/PPTX/XLSX private/shared matrix. Existing corruption tests mutate originals before invocation; this matrix does not inject late transaction-time file mutation."
+    }
+  },
+  "limitations": [
+    "The final recheck is a point-in-time file read before transaction return; it does not provide filesystem immutability through a later commit or later reads.",
+    "Extraction artifact and human review identity retain their existing checks; this stage adds final original-byte revalidation only.",
+    "No current production caller of the legacy registerExtractedSharedBinary entry was found; formal paths are registerVectorlessUpload and registerBinaryRevision. The legacy document-upsert partial-write limitation remains.",
+    "Complete G09 source protection, production identity/provider qualification, independent quality and final Skill activation are not achieved."
+  ],
+  "actualModelCalls": 0,
+  "filesSha256": {
+    "src/lib/knowledge/document-repository.ts": "70e6e01a2ea081a25ee8ecb4acda34c4a23b8cbd02dfc22461e232ebbf83bf5b",
+    "src/lib/knowledge/vectorless-registration.ts": "4eb18b5f47722ec31e5cb701aeff59140fb29d60775c07ef192c1ce11d9bbcdb",
+    "src/lib/knowledge/binary-revision.ts": "4cba3c698df2a8a523aaa5ea0fc086bfc5cb3c9f13fef2effa1021167babd40f",
+    "src/lib/knowledge/binary-publication-integrity.test.ts": "12ea9a50acb782ded86d2f8417c10e8b5cd4d490e06d31ae523f02e9a54fb84d",
+    "scripts/verify-knowledge-supervisor-clone.ts": "b2b901ac44f768a5a3ef43611949e3c97059909878dcc11b12b4096c5240be68"
+  }
+}

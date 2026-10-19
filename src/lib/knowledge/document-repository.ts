@@ -13,9 +13,9 @@ export function safeKnowledgeStorageKey(storageKey:string):string{
 
 /** A stable read for registration, not an immutable-storage lease. Later readers
  * still verify the registered digest and current access before using the file. */
-export async function registerKnowledgeAsset(userId:string,input:{documentId:string;storageKey:string;documentType:string;version?:string;market?:string;language?:string;sourceNature:string;externallyDisclosable?:boolean;expectedSha256?:string}){
-  if(input.expectedSha256!==undefined&&!/^[a-f0-9]{64}$/.test(input.expectedSha256))throw new Error("Invalid expected knowledge asset hash");
-  const storageKey=safeKnowledgeStorageKey(input.storageKey),requested=resolve(storageKey),path=await realpath(requested);
+export async function inspectKnowledgeAssetBytes(key:string,expectedSha256?:string){
+  if(expectedSha256!==undefined&&!/^[a-f0-9]{64}$/.test(expectedSha256))throw new Error("Invalid expected knowledge asset hash");
+  const storageKey=safeKnowledgeStorageKey(key),requested=resolve(storageKey),path=await realpath(requested);
   assertResolvedInsideKnowledgeRoot(path);
   const file=await open(path,"r");let hash:string,byteSize:number;
   try{
@@ -35,11 +35,16 @@ export async function registerKnowledgeAsset(userId:string,input:{documentId:str
       ||value.dev!==info.dev||value.ino!==info.ino||value.size!==info.size
       ||value.mtimeMs!==info.mtimeMs||value.ctimeMs!==info.ctimeMs))throw new Error("Knowledge asset changed during registration");
     hash=digest.digest("hex");byteSize=info.size;
-    if(input.expectedSha256!==undefined&&hash!==input.expectedSha256)throw new Error("Knowledge asset no longer matches approved hash");
+    if(expectedSha256!==undefined&&hash!==expectedSha256)throw new Error("Knowledge asset no longer matches approved hash");
   }finally{await file.close();}
+  return {storageKey,sha256:hash,byteSize};
+}
+
+export async function registerKnowledgeAsset(userId:string,input:{documentId:string;storageKey:string;documentType:string;version?:string;market?:string;language?:string;sourceNature:string;externallyDisclosable?:boolean;expectedSha256?:string}){
+  const {storageKey,sha256:hash,byteSize}=await inspectKnowledgeAssetBytes(input.storageKey,input.expectedSha256);
   const rows=await tenantQuery<{id:string}>(userId,`insert into knowledge_asset(document_id,storage_key,source_sha256,mime_type,byte_size,document_type,document_version,market,language,source_nature,externally_disclosable)
     values($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) on conflict(document_id,storage_key,source_sha256) do update set document_type=excluded.document_type,document_version=excluded.document_version,market=excluded.market,language=excluded.language,source_nature=excluded.source_nature,externally_disclosable=excluded.externally_disclosable,registration_status='registered',updated_at=now() returning id`,
-    [input.documentId,storageKey,hash,MIME[extname(requested).toLowerCase()]??"application/octet-stream",byteSize,input.documentType,input.version??null,input.market??null,input.language??null,input.sourceNature,input.externallyDisclosable??false],"admin");
+    [input.documentId,storageKey,hash,MIME[extname(storageKey).toLowerCase()]??"application/octet-stream",byteSize,input.documentType,input.version??null,input.market??null,input.language??null,input.sourceNature,input.externallyDisclosable??false],"admin");
   return {id:rows[0].id,sha256:hash,byteSize};
 }
 

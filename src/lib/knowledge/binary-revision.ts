@@ -1,6 +1,7 @@
 import {extname} from 'node:path';
 import {tenantTransaction} from '@/lib/rag/db';
 import {writeExtractedTree,type Block} from './extracted-tree';
+import {inspectKnowledgeAssetBytes} from './document-repository';
 
 export type BinaryRevisionJob={id:string;status:string;visibility:'private'|'shared';collection_slug:string;title:string;source_url:string|null;entity_key:string|null;
  storage_key:string;extraction_artifact_key:string|null;source_sha256:string;extractor_version:string|null;mime_type:string;byte_size:string;
@@ -17,7 +18,7 @@ export async function registerBinaryRevision(userId:string,job:BinaryRevisionJob
   if(!current||!['extracted','registered'].includes(current.status)||current.source_sha256!==job.source_sha256||current.extractor_version!==job.extractor_version
     ||current.extraction_artifact_key!==job.extraction_artifact_key||current.metrics.artifactSha256!==job.metrics.artifactSha256
     ||current.revision_target_document_id!==job.revision_target_document_id||current.revision_base_version_id!==job.revision_base_version_id
-    ||current.visibility!==job.visibility)throw new Error('Revision job changed during registration');
+    ||current.visibility!==job.visibility||current.storage_key!==job.storage_key||current.byte_size!==job.byte_size)throw new Error('Revision job changed during registration');
   if(input.leaseToken&&(current.lease_token!==input.leaseToken||!current.lease_valid))throw new Error('Upload lease expired or changed');
   await client.query('select pg_advisory_xact_lock(hashtextextended($1,0))',[job.revision_target_document_id]);
   const selected=await client.query<{id:string;current_tree_version_id:string;source_sha256:string;asset_id:string}>(`select d.id,d.current_tree_version_id,v.source_sha256,v.asset_id
@@ -49,6 +50,8 @@ export async function registerBinaryRevision(userId:string,job:BinaryRevisionJob
     language=$6,authority_level=$7,metadata=metadata||$8::jsonb,updated_at=now() where id=$1`,[target.id,tree.versionId,job.title,job.source_url,input.contentHash,input.language,input.authorityLevel,
       JSON.stringify({uploadJobId:job.id,sourceSha256:job.source_sha256,extractorArtifactSha256:job.metrics.artifactSha256})]);
   await client.query(`update knowledge_upload_job set status='registered',published_document_id=$2,published_asset_id=$3,error_code=null,updated_at=now() where id=$1`,[job.id,target.id,asset.id]);
+  const finalSource=await inspectKnowledgeAssetBytes(job.storage_key,job.source_sha256);
+  if(finalSource.byteSize!==Number(job.byte_size))throw new Error('Source bytes changed during revision registration');
   return {documentId:target.id,assetId:asset.id,versionId:tree.versionId,reused:false,treeStatus:'searchable' as const};
  },role);
 }

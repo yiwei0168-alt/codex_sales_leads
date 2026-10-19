@@ -3,7 +3,7 @@ import {createHash} from "node:crypto";
 import {readFile} from "node:fs/promises";
 import {extname,resolve} from "node:path";
 import {tenantQuery,tenantTransaction} from "@/lib/rag/db";
-import {assertResolvedInsideKnowledgeRoot,safeKnowledgeStorageKey} from "./document-repository";
+import {assertResolvedInsideKnowledgeRoot,safeKnowledgeStorageKey,inspectKnowledgeAssetBytes} from "./document-repository";
 import {evidenceText,indexExtractedDocument} from "./vectorless";
 import {assertNoSpreadsheetCachedErrors} from "./extracted-tree";
 import {registerBinaryRevision,type BinaryRevisionJob} from './binary-revision';
@@ -23,10 +23,9 @@ export async function registerVectorlessUpload(userId:string,jobId:string,option
   if(options.expectedSourceSha256&&options.expectedSourceSha256!==job.source_sha256)throw new Error("Observed source hash changed");
   if(job.visibility==="shared"&&actor.role!=="admin")throw new Error("Shared publication requires administrator");
   if(job.collection_slug==="product"&&!job.entity_key)throw new Error("Product model/SKU required");
-  const source=resolve(safeKnowledgeStorageKey(job.storage_key));assertResolvedInsideKnowledgeRoot(source);
   const artifactPath=resolve(safeKnowledgeStorageKey(job.extraction_artifact_key));assertResolvedInsideKnowledgeRoot(artifactPath);
-  const [sourceBytes,artifactBytes]=await Promise.all([readFile(source),readFile(artifactPath)]);
-  if(sourceBytes.length!==Number(job.byte_size)||sha(sourceBytes)!==job.source_sha256)throw new Error("Source bytes changed after upload");
+  const [source,artifactBytes]=await Promise.all([inspectKnowledgeAssetBytes(job.storage_key,job.source_sha256),readFile(artifactPath)]);
+  if(source.byteSize!==Number(job.byte_size))throw new Error("Source bytes changed after upload");
   if(!job.metrics.artifactSha256||sha(artifactBytes)!==job.metrics.artifactSha256)throw new Error("Extraction artifact hash mismatch");
   await verifyReviewedExtraction(userId,jobId,artifactBytes);
   const artifact=JSON.parse(artifactBytes.toString("utf8")) as {documents?:Array<{sourceSha256?:string;extractorVersion?:string;blocks?:Block[]}>};
@@ -44,10 +43,11 @@ export async function registerVectorlessUpload(userId:string,jobId:string,option
       const lease=await client.query("select id from knowledge_upload_job where id=$1 and user_id=$2 and lease_token=$3 and lease_until>now() for update",[jobId,userId,options.leaseToken]);
       if(!lease.rows[0])throw new Error("Upload lease expired or changed");
     }
-    const selected=await client.query<Job>(`select id,status,visibility,source_sha256,extractor_version,extraction_artifact_key,metrics,published_document_id,published_asset_id
+    const selected=await client.query<Job>(`select id,status,visibility,storage_key,byte_size::text,source_sha256,extractor_version,extraction_artifact_key,metrics,published_document_id,published_asset_id
       from knowledge_upload_job where id=$1 and user_id=$2 for update`,[jobId,userId]);
     const current=selected.rows[0];
     if(!current||current.source_sha256!==job.source_sha256||current.visibility!==job.visibility
+      ||current.storage_key!==job.storage_key||current.byte_size!==job.byte_size
       ||current.extractor_version!==job.extractor_version||current.extraction_artifact_key!==job.extraction_artifact_key
       ||current.metrics.artifactSha256!==job.metrics.artifactSha256||!['extracted','registered'].includes(current.status))throw new Error("Upload changed during registration");
     if(current.status==="registered"){
@@ -76,6 +76,9 @@ export async function registerVectorlessUpload(userId:string,jobId:string,option
         job.visibility==="shared"?"admin-uploaded-binary":"private-uploaded-binary"]);
     await client.query(`update knowledge_upload_job set status='registered',published_document_id=$2,published_asset_id=$3,error_code=null,updated_at=now()
       where id=$1`,[jobId,documentId,asset.rows[0].id]);
+    // A late mismatch rejects the owning transaction, including its new document.
+    const finalSource=await inspectKnowledgeAssetBytes(job.storage_key,job.source_sha256);
+    if(finalSource.byteSize!==Number(job.byte_size))throw new Error('Source bytes changed during registration');
     return {documentId,assetId:asset.rows[0].id,reused:false};
   },actor.role);
   try{
