@@ -14,7 +14,7 @@
 
 目录写入锁不会阻止时间自然流逝。`evaluateLockedSkillAcceptanceReadiness` 现在先检查本地分析边界，在来源锁下捕获决策记忆，然后以已有 `withCurrentDecisionMemory` 守卫包住全部材料重建与策略计算；结束时重读数据库当前有效记忆并比较快照。准备期间到期或开始生效导致快照改变时，不返回准备结果；返回的 `decisionMemorySnapshotRevalidated` 只说明前后快照已核对。
 
-30 项定向回归、类型/lint 与一次性 PostgreSQL 的实际准备期到期拒绝通过。没有新建启用权限，也未把此项当成全部来源时效或提交点保证：观察查询中的显式历史时间、其他 Skill 经验期限、原件字节、生产身份和最终启用 SQL 的时钟条件仍须分别完成。新源码完整五类组合尚待复核，不能沿用较早目录快照的结果。[证据](evidence/ma24-g09-final-decision-memory-snapshot-2026-10-19.json)。
+30 项定向回归、类型/lint 与一次性 PostgreSQL 的实际准备期到期拒绝通过；固定提交 `d5ca1d76` 的完整五类组合随后退出 0，真实调用此准备守卫的正向材料/策略/开发审核链路通过，临时数据库与快照已清理。该提交不含后续其他方法统一时刻或原件下载改动，也不把此项当成全部来源时效或最终启用提交点保证。[证据](evidence/ma24-g09-final-decision-memory-snapshot-2026-10-19.json)。
 
 ## 目标与固定方法经验的统一时刻
 

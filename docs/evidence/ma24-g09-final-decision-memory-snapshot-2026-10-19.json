@@ -14,7 +14,7 @@
     "focusedEslint": "passed",
     "diffCheck": "passed",
     "freshClusterMemorySourceLocks": "passed",
-    "fixedSnapshotFiveCategoryComposition": "pending"
+    "fixedSnapshotFiveCategoryComposition": "passed"
   },
   "database": {
     "command": "node scripts/verify-ma24-fresh-pilot-new-cluster.ts --memory-source-locks",
@@ -28,7 +28,22 @@
     "actualModelCalls": 0,
     "automaticActivation": false
   },
-  "scope": "The actual guard rejects a database-clock expiry inside a retained-source transaction; unit integration verifies that readiness encloses both material and policy preparation in this guard. No whole-workflow expiry case is claimed.",
+  "compositionDatabase": {
+    "command": "node scripts/run-ma24-snapshot-check.mjs --prospective-composition",
+    "commit": "d5ca1d76b96ef4460a34d9e0475a8b15593226d9",
+    "source": "git archive",
+    "exitCode": 0,
+    "completeCompositionVerified": true,
+    "prospectivePairedMaterialVerified": true,
+    "decisionMemorySnapshotRevalidated": true,
+    "developmentReviewLockCheck": true,
+    "temporaryContainerRemoved": true,
+    "snapshotDirectoryRemoved": true,
+    "humanQualityAccepted": false,
+    "productionAttestation": false,
+    "scope": "The d5ca1d76 positive five-category workflow includes the decision-memory boundary; it does not include later 03256e02 method-time or 23d59ced original-download changes."
+  },
+  "scope": "The actual guard rejects a database-clock expiry inside a retained-source transaction; unit integration and the fixed d5ca1d76 positive full workflow verify the readiness wrapper. No whole-workflow injected-expiry case is claimed.",
   "limitations": [
     "Before/after decision-memory snapshot comparison only, not a transaction commit-time grant.",
     "Explicit historical observation times and pinned experience time bounds require separate final checks.",
