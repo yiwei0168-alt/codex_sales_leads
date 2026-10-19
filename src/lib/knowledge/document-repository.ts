@@ -14,19 +14,31 @@ export function safeKnowledgeStorageKey(storageKey:string):string{
 /** A stable read for registration, not an immutable-storage lease. Later readers
  * still verify the registered digest and current access before using the file. */
 export async function inspectKnowledgeAssetBytes(key:string,expectedSha256?:string){
+  const {bytes:unused,...metadata}=await readAssetBytes(key,expectedSha256,false);void unused;return metadata;
+}
+
+/** Explicit snapshot capture only; uses the same descriptor/hash/identity checks. */
+export async function readKnowledgeAssetSnapshot(key:string,expectedSha256:string){
+  return readAssetBytes(key,expectedSha256,true);
+}
+
+async function readAssetBytes(key:string,expectedSha256:string|undefined,capture:boolean){
   if(expectedSha256!==undefined&&!/^[a-f0-9]{64}$/.test(expectedSha256))throw new Error("Invalid expected knowledge asset hash");
   const storageKey=safeKnowledgeStorageKey(key),requested=resolve(storageKey),path=await realpath(requested);
   assertResolvedInsideKnowledgeRoot(path);
   const file=await open(path,"r");let hash:string,byteSize:number;
+  const chunks:Buffer[]=[];
   try{
     const info=await file.stat();
     if(!info.isFile()||!Number.isSafeInteger(info.size)||info.size<0)throw new Error("Knowledge asset is not a valid file");
+    if(capture&&info.size>50*1024*1024)throw new Error('Immutable snapshot exceeds supported upload size');
     const digest=createHash("sha256"),buffer=Buffer.alloc(64*1024);let length=0;
     while(true){
       const {bytesRead}=await file.read(buffer,0,Math.min(buffer.length,info.size-length+1),null);
       if(!bytesRead)break;
       length+=bytesRead;if(length>info.size)throw new Error("Knowledge asset changed during registration");
       digest.update(buffer.subarray(0,bytesRead));
+      if(capture)chunks.push(Buffer.from(buffer.subarray(0,bytesRead)));
     }
     const after=await file.stat(),currentPath=await realpath(requested);
     assertResolvedInsideKnowledgeRoot(currentPath);
@@ -37,7 +49,7 @@ export async function inspectKnowledgeAssetBytes(key:string,expectedSha256?:stri
     hash=digest.digest("hex");byteSize=info.size;
     if(expectedSha256!==undefined&&hash!==expectedSha256)throw new Error("Knowledge asset no longer matches approved hash");
   }finally{await file.close();}
-  return {storageKey,sha256:hash,byteSize};
+  return {storageKey,sha256:hash,byteSize,bytes:capture?Buffer.concat(chunks):undefined};
 }
 
 export async function registerKnowledgeAsset(userId:string,input:{documentId:string;storageKey:string;documentType:string;version?:string;market?:string;language?:string;sourceNature:string;externallyDisclosable?:boolean;expectedSha256?:string}){
