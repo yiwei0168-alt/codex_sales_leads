@@ -14,6 +14,7 @@ import {
   updateMailboxSyncProgress, upsertMailboxConnection,
 } from "./repository";
 import { smtpConnectionPassword } from "./repository";
+import type { MailboxSyncWorkerLease } from "./repository";
 
 export async function connectMailbox(userId: string, details: MailboxConnectionInput): Promise<string> {
   const input = mailboxConnectionSchema.parse(details);
@@ -43,10 +44,10 @@ export async function syncAliMail(userId: string, connectionId: string, options:
   folderScope?:"both"|"inbox"|"sent";
   from?:string;
   through?:string;
-} = {}): Promise<{ runId: string; imported: number; skipped: number; discovered: number; awaitingReview: number }> {
+} = {}, workerLease?: MailboxSyncWorkerLease): Promise<{ runId: string; imported: number; skipped: number; discovered: number; awaitingReview: number }> {
   const connection = await getMailboxConnection(userId, connectionId);
   if (!connection || connection.status === "disabled") throw new Error("Mailbox connection not found");
-  const runId = await startMailboxSyncRun(userId, connectionId);
+  const runId = await startMailboxSyncRun(userId, connectionId, undefined, workerLease);
   try {
     const retentionDays = Math.min(Math.max(Number(process.env.MAILBOX_RAW_RETENTION_DAYS ?? 365) || 365, 30), 3650);
     await purgeExpiredMailboxContent(userId, connectionId, retentionDays);
@@ -72,7 +73,7 @@ export async function syncAliMail(userId: string, connectionId: string, options:
     const persisted = await persistMailboxImport({
       runId, userId, connectionId,
       messages: result.messages, cursors: options.from?[]:result.cursors,
-      folders: result.folders, discovered: result.discovered,
+      folders: result.folders, discovered: result.discovered, workerLease,
     });
     const awaitingReview = persisted.storedMessages.filter((item) => item.learningStatus === "pending").length;
     await completeMailboxImport(runId, userId, awaitingReview);

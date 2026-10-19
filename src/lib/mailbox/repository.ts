@@ -5,6 +5,19 @@ import { ALIMAIL_IMAP_HOST, type MailboxConnectionInput } from "./connection-con
 import type { KimiMailboxLearningResult } from "./kimi";
 import { screenMailboxMessage, type MailboxScreeningBucket } from "./screening";
 import { matchImportedCompany } from "./company-links";
+import type { PoolClient } from "pg";
+
+export interface MailboxSyncWorkerLease { jobId: string; leaseToken: string }
+
+async function requireSyncWorkerLease(client: PoolClient, userId: string, connectionId: string, lease?: MailboxSyncWorkerLease) {
+  if (!lease) return;
+  const result = await client.query(
+    `select id from mailbox_work_job where user_id=$1 and id=$2 and target_id=$3 and kind='sync'
+     and status='running' and lease_token=$4 and lease_until>clock_timestamp() for update`,
+    [userId, lease.jobId, connectionId, lease.leaseToken],
+  );
+  if (!result.rows[0]) throw new Error("邮箱同步 Worker 租约已失效");
+}
 
 export interface MailboxConnectionRecord {
   id: string;
@@ -118,7 +131,7 @@ export async function getMailboxCursors(userId: string, connectionId: string): P
   }]));
 }
 
-export async function startMailboxSyncRun(userId: string, connectionId: string, model?: string): Promise<string> {
+export async function startMailboxSyncRun(userId: string, connectionId: string, model?: string, lease?: MailboxSyncWorkerLease): Promise<string> {
   return tenantTransaction(userId, async (client) => {
     // Share the connection lock with disconnect/delete before admitting a run.
     const connection = await client.query<{ status: MailboxConnectionRecord["status"] }>(
@@ -128,10 +141,17 @@ export async function startMailboxSyncRun(userId: string, connectionId: string, 
     if (!connection.rows[0] || connection.rows[0].status === "disabled") {
       throw new Error("邮箱连接不存在或已断开");
     }
+    await requireSyncWorkerLease(client, userId, connectionId, lease);
+    if (lease) await client.query(
+      `update mailbox_sync_run set status='cancelled',phase='interrupted',error_message='Worker lease replaced',
+       current_subject=null,finished_at=now(),updated_at=now()
+       where user_id=$1 and connection_id=$2 and status='running' and work_job_id=$3 and work_lease_token<>$4`,
+      [userId, connectionId, lease.jobId, lease.leaseToken],
+    );
     const result = await client.query<{ id: string }>(
-      `insert into mailbox_sync_run (user_id, connection_id, phase, model)
-       values ($1, $2, 'queued', $3) returning id`,
-      [userId, connectionId, model],
+      `insert into mailbox_sync_run (user_id, connection_id, phase, model, work_job_id, work_lease_token)
+       values ($1, $2, 'queued', $3, $4, $5) returning id`,
+      [userId, connectionId, model, lease?.jobId ?? null, lease?.leaseToken ?? null],
     );
     if (!result.rows[0]) throw new Error("邮箱同步任务未能启动");
     return result.rows[0].id;
@@ -174,6 +194,7 @@ export async function persistMailboxImport(input: {
   cursors: MailboxCursor[];
   folders: number;
   discovered: number;
+  workerLease?: MailboxSyncWorkerLease;
 }): Promise<{ imported: number; skipped: number; storedMessages: StoredMailboxMessage[] }> {
   return tenantTransaction(input.userId, async (client) => {
     let imported = 0;
@@ -185,10 +206,12 @@ export async function persistMailboxImport(input: {
     if (!connection.rows[0] || connection.rows[0].status === "disabled") {
       throw new Error("邮箱连接不存在或已断开");
     }
+    await requireSyncWorkerLease(client, input.userId, input.connectionId, input.workerLease);
     const run = await client.query<{ id: string }>(
       `select id from mailbox_sync_run
-       where id = $1 and user_id = $2 and connection_id = $3 and status = 'running' for update`,
-      [input.runId, input.userId, input.connectionId],
+       where id = $1 and user_id = $2 and connection_id = $3 and status = 'running'
+       and work_job_id is not distinct from $4::uuid and work_lease_token is not distinct from $5::uuid for update`,
+      [input.runId, input.userId, input.connectionId, input.workerLease?.jobId ?? null, input.workerLease?.leaseToken ?? null],
     );
     if (!run.rows[0]) throw new Error("邮箱同步任务已结束或不属于此连接");
     const products = await client.query<{ model: string; product_name: string }>(
@@ -265,6 +288,7 @@ export async function persistMailboxImport(input: {
        where id = $1 and user_id = $7`,
       [input.runId, input.folders, input.discovered, imported, skipped, storedMessages.length, input.userId],
     );
+    await requireSyncWorkerLease(client, input.userId, input.connectionId, input.workerLease);
     return { imported, skipped, storedMessages };
   });
 }
@@ -357,19 +381,25 @@ export async function failMailboxSyncRun(runId: string, userId: string, error: s
   await tenantQuery(userId,
     `update mailbox_sync_run set status = 'failed', phase = 'failed', error_message = $3,
      current_subject = null, finished_at = now(), updated_at = now()
-     where id = $1 and user_id = $2`,
+     where id = $1 and user_id = $2 and status = 'running'`,
     [runId, userId, error.slice(0, 2_000)],
   );
 }
 
 export async function completeMailboxImport(runId: string, userId: string, pending: number): Promise<void> {
-  await tenantQuery(userId,
-    `update mailbox_sync_run set status = 'completed', phase = 'awaiting-review',
+  const rows = await tenantQuery(userId,
+    `update mailbox_sync_run r set status = 'completed', phase = 'awaiting-review',
      learning_total = $3, learning_processed = 0, learning_failed = 0, candidate_count = 0,
      current_subject = null, finished_at = now(), updated_at = now()
-     where id = $1 and user_id = $2`,
+     where r.id = $1 and r.user_id = $2 and r.status = 'running'
+     and (r.work_job_id is null or exists (
+       select 1 from mailbox_work_job w where w.id=r.work_job_id and w.user_id=r.user_id
+       and w.target_id=r.connection_id and w.kind='sync' and w.status='running'
+       and w.lease_token=r.work_lease_token and w.lease_until>clock_timestamp()
+     )) returning r.id`,
     [runId, userId, pending],
   );
+  if (!rows[0]) throw new Error("邮箱同步任务已结束或 Worker 租约已失效");
 }
 
 export async function getMailboxMessageForLearning(userId: string, messageId: string): Promise<ImportedMailboxMessage | null> {

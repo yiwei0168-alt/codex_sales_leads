@@ -1,0 +1,54 @@
+{
+  "stage": "MA24 G11 / MAILCRM-02 worker recovery",
+  "date": "2026-10-19",
+  "status": "engineering-verified; real-IMAP-and-production-pending",
+  "implementation": [
+    "Migration 153 binds sync batches to a worker job and lease token; nullable pairs preserve interactive/legacy batches.",
+    "A currently valid owned sync-job lease may cancel only older running batches for the same job/connection before starting its new batch.",
+    "Import locks connection then worker job then sync batch, matches the saved lease binding and rechecks wall-clock expiry after writes in the same transaction.",
+    "Completion requires a running batch and a currently matching valid worker lease; late failure cannot overwrite cancelled/completed batches.",
+    "Heartbeats/progress/final job updates do not revive an expired lease.",
+    "Recovered progress is reconstructed from batch counters committed with message imports, rather than reset or trusted only to the separate job-progress update."
+  ],
+  "checks": {
+    "unitTests": "35 passed across repository/service/IMAP/sync-options/work-queue suites",
+    "typecheck": "npm.cmd run typecheck: exit 0 after fixture hold-marker correction",
+    "lint": "focused ESLint: exit 0",
+    "databaseVerifier": "scripts/verify-mailbox-worker-recovery-clone.ts",
+    "databaseVerifierResult": "exit 0; final run log tmp/ma24-mailbox-worker-recovery-final-2026-10-19.log",
+    "databaseMigration": "153 applied twice successfully, only to existing localhost isolated replay clone; not production",
+    "actualWorkerKill": "One worker child process killed after first committed page while second batch waits in the synthetic read adapter.",
+    "actualRecovery": "Real claim_mailbox_work() reclaims the expired synthetic job; new worker cancels old batch and completes the remaining fixed-range pages.",
+    "actualAssertions": [
+      "Expired old lease cannot start, import a cursor at UID 999, or complete the held run.",
+      "Three unique messages persist with encrypted content and empty plaintext subject/body; content decrypts correctly using ephemeral fixture key.",
+      "Final job totals include the pre-crash page: imported=3, processed=3, discovered=3, remaining=0.",
+      "Frozen range is retained; custom-range sync creates no global cursors.",
+      "Old worker cannot overwrite cancelled batch via late completion/failure or start with the replaced lease."
+    ],
+    "priorAdmissionMatrix": "Earlier isolated admission verifier rerun on migration 153: passed",
+    "fixtureCleanup": "Synthetic messages, batches, queue jobs and account removed; worker children terminated. Generated worker bundle remains in ignored tmp directory."
+  },
+  "retainedCorrections": [
+    "First recovery run passed but exposed that totals reset on restart; added authoritative batch-counter reconstruction and repeated the actual kill/recovery check with exact totals assertion.",
+    "Typecheck rejected fixture-only phase fixture-hold; changed fixture to supported fetching phase with a synthetic current-subject marker. Final typecheck and actual verifier passed."
+  ],
+  "limits": [
+    "IMAP read adapter alone is synthetic; real queue claim, worker process, service orchestration, repository, encrypted persistence and database are exercised. No IMAP/SMTP/model calls.",
+    "Development database setup emits its existing production TLS/application-login warning; no production connection or security qualification is claimed.",
+    "Legacy unbound or unrelated running sync batches are not automatically cancelled; they require separate reconciliation.",
+    "Actual late-expiry injection during import writes is not part of this database verifier; final-check rejection is covered by the unit fixture.",
+    "No guarantee of lease validity after the last check through commit; real mailbox dates/pagination/reconnect, message quality and production deployment remain pending.",
+    "Current application now requires migration 153 before use; prior built release images do not include this change."
+  ],
+  "filesSha256": {
+    "db/migrations/153_mailbox_sync_worker_binding.sql": "2bf21e186da758a0ab9392be2fbd3c9683a1f9df74b10d0c4fad1d9856925a99",
+    "src/lib/mailbox/repository.ts": "3017ff9e0bec9c7a18fc2f80066b1a670667ade547a8c2fdb1904a73ebfa42ee",
+    "src/lib/mailbox/service.ts": "fdd9b99c2768b0a5dd62a42a6278ad8b7bc86358d1a76092cc729ceb5f38c7dd",
+    "src/lib/mailbox/work-queue.ts": "0ad434c5051ac4d59c89d84ba32e6e2efaad82821bc515c4a8929bac412b91f5",
+    "src/lib/mailbox/repository.test.ts": "1c6173bbbbd8e809240e43b6a6e4da2f835e6e06167c5389a2e1d1771f9e41bd",
+    "src/lib/mailbox/work-queue.test.ts": "c1f7c7694d2ee1abb01a004d25bf6fd6423cb67460d3738c633bbc63c8013138",
+    "scripts/fixtures/ma24-mailbox-recovery-imap.ts": "fd22246096e84de89c151310fcebf63857f9027b2cf2118b2236795d385688df",
+    "scripts/verify-mailbox-worker-recovery-clone.ts": "4025f13289f40a09e871f3acde68df21c7f36c7611757fd8e7cecabcac9f8d81"
+  }
+}

@@ -46,6 +46,7 @@ it('keeps whole-range sync counts across bounded pages',async()=>{
  mocks.sync.mockResolvedValueOnce({imported:0,skipped:0,discovered:0});
  await processMailboxWork();
  expect(mocks.sync).toHaveBeenCalledTimes(3);
+ expect(mocks.sync.mock.calls[0][3]).toEqual({jobId:'job',leaseToken:'token'});
  const progress=mocks.tenant.mock.calls.filter(call=>String(call[1]).includes('set result=$4'));
  expect(progress.map(call=>JSON.parse(call[2][3]))).toEqual([
   {imported:100,processed:100,discovered:150,remaining:50},
@@ -68,4 +69,19 @@ it('continues after a page is entirely skipped as concurrent duplicates',async()
  expect(mocks.sync).toHaveBeenCalledTimes(3);
  expect(mocks.tenant.mock.calls.at(-1)?.[1]).toContain("status='completed'");
  expect(mocks.tenant.mock.calls.at(-1)?.[2]?.[3]).toContain('"imported":2');
+});
+
+it('restores committed batch counts after recovery before processing remaining pages',async()=>{
+ mocks.query.mockResolvedValue([{id:'job',user_id:'owner',lease_token:'new-token'}]);
+ mocks.tenant.mockImplementation((_user:string,sql:string)=>{
+  if(sql.includes('select kind,target_id,payload'))return Promise.resolve([{kind:'sync',target_id:'00000000-0000-4000-8000-000000000001',payload:{connectionId:'00000000-0000-4000-8000-000000000001',from:'2026-10-01',through:'2026-10-15'}}]);
+  if(sql.includes('sum(imported_count)'))return Promise.resolve([{imported:100,processed:100,discovered:150}]);
+  if(sql.includes('select id from mailbox_work_job'))return Promise.resolve([{id:'job'}]);
+  return Promise.resolve([]);
+ });
+ mocks.sync.mockResolvedValueOnce({imported:50,skipped:0,discovered:50})
+  .mockResolvedValueOnce({imported:0,skipped:0,discovered:0});
+ await processMailboxWork();
+ const completed=mocks.tenant.mock.calls.find(call=>String(call[1]).includes("status='completed'"));
+ expect(JSON.parse(completed?.[2][3])).toEqual({imported:150,processed:150,discovered:150,remaining:0});
 });

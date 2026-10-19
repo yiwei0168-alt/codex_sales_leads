@@ -47,7 +47,7 @@ export async function processMailboxWork(){
     "select kind,target_id,payload from mailbox_work_job where user_id=$1 and id=$2 and lease_token=$3 and status='running'",params);
   if(!row)return true;
   const heartbeat=setInterval(()=>void tenantQuery(job.user_id,`update mailbox_work_job set lease_until=now()+interval '90 seconds'
-    where user_id=$1 and id=$2 and lease_token=$3 and status='running'`,params).catch(()=>undefined),20000);
+    where user_id=$1 and id=$2 and lease_token=$3 and status='running' and lease_until>clock_timestamp()`,params).catch(()=>undefined),20000);
   try{
     let result:unknown;
     if(row.kind==='timeline'){
@@ -58,19 +58,23 @@ export async function processMailboxWork(){
       result=await reviewMailboxMessageForLearning(job.user_id,row.target_id,'authorize');
     }else{
       const options=mailboxSyncSchema.parse(row.payload);
-      const totals={imported:0,processed:0,discovered:0,remaining:0};
-      let firstPage=true;
+      // Batch counters commit with messages, unlike the later job-progress write.
+      // Rebuild them after a crash so a committed page is neither lost nor counted twice.
+      const [prior]=await tenantQuery<{imported:number;processed:number;discovered:number}>(job.user_id,
+        `select coalesce(sum(imported_count),0)::int imported,coalesce(sum(processed_count),0)::int processed,
+         coalesce(max(discovered_count),0)::int discovered from mailbox_sync_run where user_id=$1 and work_job_id=$2`,
+        [job.user_id,job.id]);
+      const totals={imported:prior?.imported??0,processed:prior?.processed??0,discovered:prior?.discovered??0,remaining:0};
       // Each page is committed; retry skips stored messages within the frozen range.
       for(;;){
-        const state=await tenantQuery(job.user_id,"select id from mailbox_work_job where user_id=$1 and id=$2 and lease_token=$3 and status='running' and lease_until>now()",params);
+        const state=await tenantQuery(job.user_id,"select id from mailbox_work_job where user_id=$1 and id=$2 and lease_token=$3 and status='running' and lease_until>clock_timestamp()",params);
         if(!state.length)throw new Error("任务已停止");
-        const page=await syncAliMail(job.user_id,row.target_id,options);
-        if(firstPage){totals.discovered=page.discovered;firstPage=false;}
+        const page=await syncAliMail(job.user_id,row.target_id,options,{jobId:job.id,leaseToken:job.lease_token});
         totals.imported+=page.imported;
         totals.processed+=page.imported+page.skipped;
         totals.remaining=Math.max(0,page.discovered-page.imported-page.skipped);
         totals.discovered=Math.max(totals.discovered,totals.processed+totals.remaining);
-        await tenantQuery(job.user_id,"update mailbox_work_job set result=$4,updated_at=now() where user_id=$1 and id=$2 and lease_token=$3 and status='running'",[...params,JSON.stringify(totals)]);
+        await tenantQuery(job.user_id,"update mailbox_work_job set result=$4,updated_at=now() where user_id=$1 and id=$2 and lease_token=$3 and status='running' and lease_until>clock_timestamp()",[...params,JSON.stringify(totals)]);
         if(page.imported===0){
           if(page.discovered>0&&page.skipped>0)continue; // Concurrent duplicate imports still advance the persisted cursor.
           if(page.discovered>0)throw new Error("部分邮件解析失败，保留已导入结果，请检查后重试");
@@ -79,10 +83,10 @@ export async function processMailboxWork(){
       }
       result=totals;
     }
-    await tenantQuery(job.user_id,"update mailbox_work_job set status='completed',result=$4,error=null,updated_at=now() where user_id=$1 and id=$2 and lease_token=$3 and status='running'",[...params,JSON.stringify(result)]);
+    await tenantQuery(job.user_id,"update mailbox_work_job set status='completed',result=$4,error=null,updated_at=now() where user_id=$1 and id=$2 and lease_token=$3 and status='running' and lease_until>clock_timestamp()",[...params,JSON.stringify(result)]);
   }catch(error){
     // Provider transport failures are conservatively held for receipt reconciliation.
-    await tenantQuery(job.user_id,"update mailbox_work_job set status=$4,error=$5,updated_at=now() where user_id=$1 and id=$2 and lease_token=$3 and status='running'",[...params,row.kind==='learn'?'uncertain':'failed',error instanceof Error?error.message:'处理失败']);
+    await tenantQuery(job.user_id,"update mailbox_work_job set status=$4,error=$5,updated_at=now() where user_id=$1 and id=$2 and lease_token=$3 and status='running' and lease_until>clock_timestamp()",[...params,row.kind==='learn'?'uncertain':'failed',error instanceof Error?error.message:'处理失败']);
   }finally{clearInterval(heartbeat);}
   return true;
 }

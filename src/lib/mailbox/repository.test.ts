@@ -6,7 +6,7 @@ const { queryMock, transactionMock, clientQuery } = vi.hoisted(() => ({
 
 vi.mock("@/lib/rag/db", () => ({ tenantQuery: queryMock, tenantTransaction: transactionMock }));
 
-import { getMailboxConnection, getMailboxCursors, listMailboxConnections,updateMailboxConnectionSettings,listMailboxLearningQueue, startMailboxSyncRun, persistMailboxImport } from "./repository";
+import { getMailboxConnection, getMailboxCursors, listMailboxConnections,updateMailboxConnectionSettings,listMailboxLearningQueue, startMailboxSyncRun, persistMailboxImport, completeMailboxImport, failMailboxSyncRun } from "./repository";
 
 describe("private mailbox repository", () => {
   beforeEach(() => {
@@ -28,11 +28,59 @@ describe("private mailbox repository", () => {
     clientQuery.mockResolvedValueOnce({ rows: [{ status }] }).mockResolvedValueOnce({ rows: [{ id: "run-a" }] });
     await expect(startMailboxSyncRun("user-a", "connection-a", "model-a")).resolves.toBe("run-a");
     expect(transactionMock.mock.calls[0][0]).toBe("user-a");
-    expect(clientQuery.mock.calls[1][1]).toEqual(["user-a", "connection-a", "model-a"]);
+    expect(clientQuery.mock.calls[1][1]).toEqual(["user-a", "connection-a", "model-a", null, null]);
     expect(queryMock).not.toHaveBeenCalled();
   });
 
   const importInput = { userId: "user-a", connectionId: "connection-a", runId: "run-a", messages: [], cursors: [], folders: 1, discovered: 0 };
+  const workerLease = { jobId: "job-a", leaseToken: "lease-a" };
+
+  it("rejects a lost worker lease before retiring old runs or creating a new run", async () => {
+    clientQuery.mockResolvedValueOnce({ rows: [{ status: "active" }] });
+    await expect(startMailboxSyncRun("user-a", "connection-a", undefined, workerLease)).rejects.toThrow("Worker 租约已失效");
+    expect(clientQuery).toHaveBeenCalledTimes(2);
+    expect(clientQuery.mock.calls[1][0]).toContain("lease_until>clock_timestamp() for update");
+  });
+
+  it("retires only the same job's older lease before admitting its recovered run", async () => {
+    clientQuery.mockResolvedValueOnce({ rows: [{ status: "active" }] })
+      .mockResolvedValueOnce({ rows: [{ id: "job-a" }] })
+      .mockResolvedValueOnce({ rows: [] })
+      .mockResolvedValueOnce({ rows: [{ id: "new-run" }] });
+    await expect(startMailboxSyncRun("user-a", "connection-a", undefined, workerLease)).resolves.toBe("new-run");
+    expect(clientQuery.mock.calls[2][0]).toContain("work_job_id=$3 and work_lease_token<>$4");
+    expect(clientQuery.mock.calls[2][1]).toEqual(["user-a", "connection-a", "job-a", "lease-a"]);
+    expect(clientQuery.mock.calls[3][1]).toEqual(["user-a", "connection-a", undefined, "job-a", "lease-a"]);
+  });
+
+  it("rejects stale-worker imports before reading products or writing cursors", async () => {
+    clientQuery.mockResolvedValueOnce({ rows: [{ status: "active" }] });
+    await expect(persistMailboxImport({ ...importInput, workerLease })).rejects.toThrow("Worker 租约已失效");
+    expect(clientQuery).toHaveBeenCalledTimes(2);
+  });
+
+  it("rejects worker lease expiry at the final import check", async () => {
+    clientQuery.mockImplementation(async (sql: string) => {
+      if (sql.includes("select email")) return { rows: [{ status: "active", email: "fixture@example.invalid" }] };
+      if (sql.includes("select id from mailbox_sync_run")) return { rows: [{ id: "run-a" }] };
+      return { rows: [] };
+    });
+    clientQuery.mockResolvedValueOnce({ rows: [{ status: "active" }] })
+      .mockResolvedValueOnce({ rows: [{ id: "job-a" }] });
+    await expect(persistMailboxImport({ ...importInput, workerLease })).rejects.toThrow("Worker 租约已失效");
+    expect(clientQuery.mock.calls.at(-1)?.[0]).toContain("lease_until>clock_timestamp()");
+  });
+
+  it("does not complete an interrupted run or a run with an expired worker lease", async () => {
+    await expect(completeMailboxImport("run-a", "user-a", 0)).rejects.toThrow("Worker 租约已失效");
+    expect(queryMock.mock.calls[0][1]).toContain("w.lease_token=r.work_lease_token");
+    expect(queryMock.mock.calls[0][1]).toContain("r.status = 'running'");
+  });
+
+  it("does not overwrite a completed/cancelled run with a late failure", async () => {
+    await failMailboxSyncRun("run-a", "user-a", "late failure");
+    expect(queryMock.mock.calls[0][1]).toContain("status = 'running'");
+  });
 
   it("does not import or advance cursors for a disabled connection", async () => {
     clientQuery.mockResolvedValueOnce({ rows: [{ email: "fixture@example.invalid", status: "disabled" }] });
@@ -45,7 +93,7 @@ describe("private mailbox repository", () => {
     await expect(persistMailboxImport(importInput)).rejects.toThrow("邮箱同步任务已结束或不属于此连接");
     expect(clientQuery).toHaveBeenCalledTimes(2);
     expect(clientQuery.mock.calls[1]).toEqual([
-      expect.stringContaining("connection_id = $3 and status = 'running' for update"), ["run-a", "user-a", "connection-a"],
+      expect.stringContaining("connection_id = $3 and status = 'running'"), ["run-a", "user-a", "connection-a", null, null],
     ]);
   });
 
