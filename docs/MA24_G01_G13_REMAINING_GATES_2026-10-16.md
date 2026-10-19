@@ -9,7 +9,8 @@
 - G09 仍缺完整可变来源撤销保护、生产采集器/提供方资格、真实质量判决及最终启用事务；自动启用保持关闭。下表的其他真实业务和生产门槛也未因合成联验关闭。
 - 固定 `c3f620b5`、`cf147d1a`、`3f511d38` 及最新 `80c24c2b` 的完整五类组合均已退出 0：分别补齐方法经验时刻、附件字节、知识回执原件及显式记忆回执接线。最新快照含实际原件/记忆读取、五条前瞻回执和策略后的字节/记忆复核；较早 ca45488d 的白名单失败保留为历史。所有结论仍限合成任务与隔离工程验收，未授予生产资格、人工质量批准或自动启用。
 - G01 首批入口已改为公司 LAN/VPN 内网访问，无需以备案域名作为该内网方案的前置项；Caddy 内部 CA 与内网 IP 绑定模板已准备。用户提供目标 LAN IP `192.168.0.170`，但目标主机地址固定/冲突、内部 DNS、防火墙和证书信任分发尚未验收，当前没有线上交付证据。[部署实施单](TEAM_PILOT_NEW_HOSTING_2026-10-16.md)。
-- 现有 Web/采集器镜像早于当前源码；最终发布需从冻结源码重建，并在目标环境验收。内部主机与网段信息仍待公司侧提供。
+- 固定 `9b0c78e7` 的 CLI 签发完整五类组合已退出 0，包含传输收据复核及统一末尾到期时刻检查；同版本采集器镜像另通过只读、非 root 的签发矩阵。两项均使用合成业务内容和临时测试密钥，不构成生产身份或真实质量验收。[签发及完整组合](evidence/ma24-g09-configured-declaration-cli-2026-10-19.json)、[镜像矩阵](evidence/ma24-g09-configured-declaration-linux-image-2026-10-19.json)。
+- Web 镜像仍早于当前源码；采集器 `9b0c78e7` 只在隔离环境完成指定检查。最终发布仍需从冻结源码重建，并在目标环境验收。
 - 用户后续明确“本次任务暂时不上线到内网，继续其他未完成任务”；当前不执行部署、端口开放或团队邀请。上面的内网条件作为将来恢复上线时的清单，不作为当前代码推进的阻塞。
 
 ## 阶段记录与逐项门槛
@@ -70,7 +71,7 @@ G09 任务与工具日志锁已接入材料重建入口：从已存包派生任�
 | G06 安全 | 已定位旧歧义与注入失败，工具模型视图等边界已有修复 | 修复后固定协议的真实模型回答、独立安全判分不足；既有本地超时不能判通过 | 有明确请求范围的有效模型回答及答案/引用/权限/注入人工判决；相同超时配置不重复试跑 |
 | G07 真实回放 | 服务器持久收据与只读回放适配已实现；历史资格审计已有排除结果 | 尚无满足当前来源、Skill 相关性及完整收据要求的真实任务 | 同账号有效的完整只读任务或精确收据限定的子任务，固定版本回放和独立审核 |
 | G08 前瞻影子 | 任务前登记/捕获、签名原流程/候选、统一材料及受限持久化已有合成数据库贯通证据；未将历史任务改标前瞻 | 真实任务的原流程/候选结果、可信生产身份及真实质量仍未验收 | 在既有授权范围内取得任务前登记到执行、持久收据及审核的真实完整链 |
-| G09 自动启用 | 冻结、存储、政策计算、同事务来源锁、运行声明及模型传输收据复核接线已实现；签名完整组合的新快照仍待返回 | **代码未完成**：可信生产 runner/collector 来源类别及其认证，最终启用事务对 Skill/来源/冻结/最新审核的锁定和重校尚未接通 | 服务器可验证运行包/提供方、完整安全/回放/影子材料和最新审核；隔离正反例实际启用/拒绝/停用后再做有界试点 |
+| G09 自动启用 | 冻结、存储、政策计算、同事务来源锁、运行声明及模型传输收据复核已接通；固定 9b0c78e7 的实际 CLI 签发完整五类组合和独立 Linux 镜像签发矩阵通过，统一末尾时刻复核通过 | **代码未完成**：完整来源撤销及文件存储保护、可信生产 runner/collector 来源类别及认证、最终启用事务尚未接通；真实质量未验收 | 受控运行包/提供方认证、不可变来源及完整安全/回放/影子材料、最新人工审核；隔离正反例实际启用/拒绝/停用后再做有界试点 |
 | G10 审核 | 前瞻合成两臂日志到数据库、compiled standalone HTTP 及 Chrome 页面读取、保存/回读、撤销和拒绝边界通过 | 完整真实人工材料、真实质量、生产身份及目标入口未验 | 在既有授权边界内准备真实同版本/冻结材料，逐题核对真实质量及生产入口 |
 | G11 邮箱/客户 | 同步进度、批量、并发冲突、阅读区等已有隔离工程证据 | 真实 IMAP 日期范围、全分页、断线续传/去重，客户归属/摘要质量及 worker 运行验收未完成 | 已授权账号及日期范围上的收件/已发送对账、恢复与逐例归属判定；历史提供方对账单独保留 |
 | G12 三模式 | 恢复原因白名单修复，60 项定向测试及全新库 12 组脚本业务通过 | 真实只读业务回答、提供方失败/迟到/未知结果恢复及正式加载未验 | 有界真实任务和隔离提供方响应的持久收据；已消耗的 MODESEL-14 授权不复用 |
@@ -287,3 +288,6 @@ G09 current-source collector image TLS preflight (2026-10-19): rebuilt from the 
 
 
 2026-10-19 / MA24-06 Linux declaration execution: fixed application image ma24-skill-collector:9b0c78e7 (image ID sha256:5c974dcc3a4dd2efd26eff9696f204d4385660789db9c77be13cdcea4e5a76bd; measured package deployment hash 08c7505c8964733da2bed7481c62958bf9c1ab684463354135320ad0c1872708) passed actual non-root/read-only --attest execution against a disposable TLS database. Issuance/server readback, idempotent retry, foreign-owner/synthetic-source/caller-binding/app-login/wrong-key/purpose/revocation/NODE_OPTIONS rejection, missing TLS root and mismatched package hash all passed without rejected appends. The test harness now accepts --declaration-image and pins the immutable image ID. Typecheck and focused lint passed. The initial missing fixture TLS bootstrap failure is retained in the receipt. Real model calls: 0; no production keys, source promotion, production qualification or activation. The full CLI-signed five-category snapshot remains separate and pending. [Receipt](evidence/ma24-g09-configured-declaration-linux-image-2026-10-19.json).
+
+
+2026-10-19 / MA24-06 full configured CLI composition: fixed snapshot 9b0c78e79a91753f565cdd4f29c8c59340c12478 completed with exit 0. Actual compiled --attest issuance, five-case same-freeze composition, unified readback, locked material reconstruction, 2 original-task and 8 evaluation-arm transport audits, disabled-key rejection and common final deadline wiring passed. Missing human judgment still blocks policy. Temporary source snapshot/database were removed. Model/network/billing adapters remain synthetic (0 actual model calls); binary/provider qualification, independent real quality and final activation remain unfinished. The separate Linux-image --attest matrix does not constitute the full five-category workflow inside the image. [Receipt](evidence/ma24-g09-configured-declaration-cli-2026-10-19.json).

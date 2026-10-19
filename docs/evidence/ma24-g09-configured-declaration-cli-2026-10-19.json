@@ -34,7 +34,7 @@
     "typecheck": "passed",
     "focusedEslint": "passed",
     "freshClusterRunnerAttestation": "passed including explicit configured CLI marker gate",
-    "fullConfiguredFiveCategoryWithCliSigning": "pending",
+    "fullConfiguredFiveCategoryWithCliSigning": "passed",
     "linuxImageAttestExecution": "passed; see linked Linux-image matrix"
   },
   "database": {
@@ -64,7 +64,7 @@
   "limitations": [
     "Signs a server-bound declaration only; it does not qualify the deployed binary/provider or independent quality.",
     "Native CLI and Linux-image matrices have separate receipts; neither grants production qualification.",
-    "The adapted five-category fixture now calls the real CLI but has not yet completed its new full fixed-snapshot run.",
+    "The complete fixed-snapshot CLI-signed composition passed using synthetic model/network/billing adapters; independent quality and production identity remain unverified.",
     "No source classification promotion, production registry/key enrollment, Skill activation or deployment."
   ],
   "filesSha256": {
@@ -75,5 +75,29 @@
     "scripts/fixtures/configured-five-category-db.ts": "f127cffdd39f40981e5ac7b98e3452d430ac6b3034e8cee0c67dd637edb50ab9",
     "scripts/verify-ma24-fresh-pilot-new-cluster.ts": "fea19892d0a034ca73c61493943bb4a0e48ab61d84d2da8feeb4062ef4adafe6"
   },
-  "linuxImageEvidence": "ma24-g09-configured-declaration-linux-image-2026-10-19.json"
+  "linuxImageEvidence": "ma24-g09-configured-declaration-linux-image-2026-10-19.json",
+  "fullConfiguredSnapshot": {
+    "commit": "9b0c78e79a91753f565cdd4f29c8c59340c12478",
+    "command": "PowerShell: $env:MA24_CONFIGURED_COMBINED='1'; node scripts/run-ma24-snapshot-check.mjs --transport-journal",
+    "exitCode": 0,
+    "configuredSameFreezeFiveCategoriesVerified": true,
+    "lockedTransportReceiptsRevalidated": true,
+    "transportOriginalTaskCount": 2,
+    "transportEvaluationArmCount": 8,
+    "collectedCases": 5,
+    "disabledTransportKeyRejected": true,
+    "combinedArtifactHash": "1b580f49c4ef08036fe51f621b6877f3fe33108149cd7dac44da4dbfc0537ec6",
+    "frozenPlanHash": "4b546d37b9568c10f41e32c5a2b07ed8a02291ecc5451720ee5b979ec30cfec1",
+    "lockedMaterialsVerified": true,
+    "prospectiveCaptureSourcesLocked": true,
+    "missingHumanJudgmentBlocksPolicy": true,
+    "billingAndNetworkAdaptersSynthetic": true,
+    "actualModelCalls": 0,
+    "binaryVerified": false,
+    "realQualityAccepted": false,
+    "productionQualificationGranted": false,
+    "automaticActivation": false,
+    "temporaryDatabaseAndSourceSnapshotRemoved": true,
+    "scope": "Actual native compiled --attest CLI and full same-freeze composition. Separate Linux-image receipt covers --attest matrix, not this entire workflow inside the image."
+  }
 }
