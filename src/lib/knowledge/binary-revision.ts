@@ -52,6 +52,7 @@ export async function registerBinaryRevision(userId:string,job:BinaryRevisionJob
   await client.query(`update knowledge_upload_job set status='registered',published_document_id=$2,published_asset_id=$3,error_code=null,updated_at=now() where id=$1`,[job.id,target.id,asset.id]);
   const finalSource=await inspectKnowledgeAssetBytes(job.storage_key,job.source_sha256);
   if(finalSource.byteSize!==Number(job.byte_size))throw new Error('Source bytes changed during revision registration');
+  await inspectKnowledgeAssetBytes(job.extraction_artifact_key!,job.metrics.artifactSha256!);
   return {documentId:target.id,assetId:asset.id,versionId:tree.versionId,reused:false,treeStatus:'searchable' as const};
  },role);
 }

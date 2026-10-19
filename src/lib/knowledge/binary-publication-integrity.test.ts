@@ -52,8 +52,15 @@ it.each([false,true])('rejects a locked job whose storage binding changed before
  expect(m.query.mock.calls.some(([sql])=>/insert into|update knowledge_/i.test(sql))).toBe(false);
  expect(m.committed).toBe(0);expect(m.rolledBack).toBe(1);
 });
-it.each([false,true])('commits stable original bytes with a second approved-hash check; revision=%s',async revision=>{
+it.each([false,true])('rejects a late extraction artifact hash change; revision=%s',async revision=>{
+ arrange(revision);m.inspect.mockResolvedValueOnce({sha256:sourceHash,byteSize:10}).mockResolvedValueOnce({sha256:sourceHash,byteSize:10}).mockRejectedValueOnce(new Error('Knowledge asset no longer matches approved hash'));
+ await expect(registerVectorlessUpload('owner','job',{language:'en',authorityLevel:3})).rejects.toThrow('no longer matches approved hash');
+ expect(m.inspect).toHaveBeenLastCalledWith(job.extraction_artifact_key,job.metrics.artifactSha256);
+ expect(m.committed).toBe(0);expect(m.rolledBack).toBe(1);expect(m.index).not.toHaveBeenCalled();
+});
+it.each([false,true])('commits only after original and extraction-artifact hash rechecks; revision=%s',async revision=>{
  arrange(revision);
  expect(await registerVectorlessUpload('owner','job',{language:'en',authorityLevel:3})).toMatchObject({documentId:'document',assetId:'asset',treeStatus:'searchable'});
- expect(m.inspect).toHaveBeenCalledTimes(2);expect(m.committed).toBe(1);expect(m.rolledBack).toBe(0);
+ expect(m.inspect).toHaveBeenCalledTimes(3);expect(m.inspect).toHaveBeenLastCalledWith(job.extraction_artifact_key,job.metrics.artifactSha256);
+ expect(m.committed).toBe(1);expect(m.rolledBack).toBe(0);
 });

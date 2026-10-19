@@ -79,6 +79,7 @@ export async function registerVectorlessUpload(userId:string,jobId:string,option
     // A late mismatch rejects the owning transaction, including its new document.
     const finalSource=await inspectKnowledgeAssetBytes(job.storage_key,job.source_sha256);
     if(finalSource.byteSize!==Number(job.byte_size))throw new Error('Source bytes changed during registration');
+    await inspectKnowledgeAssetBytes(job.extraction_artifact_key!,job.metrics.artifactSha256!);
     return {documentId,assetId:asset.rows[0].id,reused:false};
   },actor.role);
   try{

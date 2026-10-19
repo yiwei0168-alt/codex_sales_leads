@@ -1,0 +1,307 @@
+{
+  "stage": "MA24 G05/G09 final extraction artifact binding in formal publication",
+  "date": "2026-10-19",
+  "sourceBaseCommit": "29ae620c",
+  "implementation": {
+    "newAndRevisionRegistrationCheckOriginalAndExtractionArtifactAfterTransactionWrites": true,
+    "artifactExpectedHashMatchesPreviouslyValidatedExtraction": true,
+    "lateMismatchRejectsOwningTransaction": true,
+    "immutableStorageLease": false
+  },
+  "checks": {
+    "focusedVitest": {
+      "files": 4,
+      "passed": 32,
+      "scope": "Adds late artifact-hash failures in both formal new/revision publication paths; existing source/tree/path/size and parsing regressions."
+    },
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "diffCheck": "passed",
+    "actualDatabaseRuns": {
+      "original": {
+        "mutationEnv": "MA24_PUBLICATION_MUTATION=original",
+        "exitCode": 0,
+        "result": {
+          "binaryPublicationRaceClone": "passed",
+          "cases": [
+            {
+              "visibility": "private",
+              "revision": false,
+              "changed": "original",
+              "initialReadCompletedBeforeObservedRowWait": true,
+              "equalSizeMutationAfterWait": true,
+              "lateHashRejected": true,
+              "allPublicationRowsRolledBack": true,
+              "oldPointerPreserved": false,
+              "retryAfterRestorePassed": true
+            },
+            {
+              "visibility": "private",
+              "revision": true,
+              "changed": "original",
+              "initialReadCompletedBeforeObservedRowWait": true,
+              "equalSizeMutationAfterWait": true,
+              "lateHashRejected": true,
+              "allPublicationRowsRolledBack": true,
+              "oldPointerPreserved": true,
+              "retryAfterRestorePassed": true
+            },
+            {
+              "visibility": "shared",
+              "revision": false,
+              "changed": "original",
+              "initialReadCompletedBeforeObservedRowWait": true,
+              "equalSizeMutationAfterWait": true,
+              "lateHashRejected": true,
+              "allPublicationRowsRolledBack": true,
+              "oldPointerPreserved": false,
+              "retryAfterRestorePassed": true
+            },
+            {
+              "visibility": "shared",
+              "revision": true,
+              "changed": "original",
+              "initialReadCompletedBeforeObservedRowWait": true,
+              "equalSizeMutationAfterWait": true,
+              "lateHashRejected": true,
+              "allPublicationRowsRolledBack": true,
+              "oldPointerPreserved": true,
+              "retryAfterRestorePassed": true
+            }
+          ],
+          "treeCases": [
+            {
+              "visibility": "private",
+              "revision": false,
+              "changed": "original",
+              "observedWaitAfterInitialInspection": true,
+              "newTreeRowsAndPointerRolledBack": true,
+              "retryAfterRestorePassed": true,
+              "fixtureStartedWithNullPointer": true
+            },
+            {
+              "visibility": "private",
+              "revision": false,
+              "changed": "artifact",
+              "observedWaitAfterInitialInspection": true,
+              "newTreeRowsAndPointerRolledBack": true,
+              "retryAfterRestorePassed": true,
+              "fixtureStartedWithNullPointer": true
+            },
+            {
+              "visibility": "private",
+              "revision": true,
+              "changed": "original",
+              "observedWaitAfterInitialInspection": true,
+              "newTreeRowsAndPointerRolledBack": true,
+              "retryAfterRestorePassed": true,
+              "fixtureStartedWithNullPointer": true
+            },
+            {
+              "visibility": "private",
+              "revision": true,
+              "changed": "artifact",
+              "observedWaitAfterInitialInspection": true,
+              "newTreeRowsAndPointerRolledBack": true,
+              "retryAfterRestorePassed": true,
+              "fixtureStartedWithNullPointer": true
+            },
+            {
+              "visibility": "shared",
+              "revision": false,
+              "changed": "original",
+              "observedWaitAfterInitialInspection": true,
+              "newTreeRowsAndPointerRolledBack": true,
+              "retryAfterRestorePassed": true,
+              "fixtureStartedWithNullPointer": true
+            },
+            {
+              "visibility": "shared",
+              "revision": false,
+              "changed": "artifact",
+              "observedWaitAfterInitialInspection": true,
+              "newTreeRowsAndPointerRolledBack": true,
+              "retryAfterRestorePassed": true,
+              "fixtureStartedWithNullPointer": true
+            },
+            {
+              "visibility": "shared",
+              "revision": true,
+              "changed": "original",
+              "observedWaitAfterInitialInspection": true,
+              "newTreeRowsAndPointerRolledBack": true,
+              "retryAfterRestorePassed": true,
+              "fixtureStartedWithNullPointer": true
+            },
+            {
+              "visibility": "shared",
+              "revision": true,
+              "changed": "artifact",
+              "observedWaitAfterInitialInspection": true,
+              "newTreeRowsAndPointerRolledBack": true,
+              "retryAfterRestorePassed": true,
+              "fixtureStartedWithNullPointer": true
+            }
+          ],
+          "actualModelCalls": 0,
+          "syntheticExtraction": true,
+          "qualityAccepted": false,
+          "productionQualificationGranted": false,
+          "automaticActivation": false
+        },
+        "fixtureAccountsRowsAndFilesCleaned": true
+      },
+      "artifact": {
+        "mutationEnv": "MA24_PUBLICATION_MUTATION=artifact",
+        "exitCode": 0,
+        "result": {
+          "binaryPublicationRaceClone": "passed",
+          "cases": [
+            {
+              "visibility": "private",
+              "revision": false,
+              "changed": "artifact",
+              "initialReadCompletedBeforeObservedRowWait": true,
+              "equalSizeMutationAfterWait": true,
+              "lateHashRejected": true,
+              "allPublicationRowsRolledBack": true,
+              "oldPointerPreserved": false,
+              "retryAfterRestorePassed": true
+            },
+            {
+              "visibility": "private",
+              "revision": true,
+              "changed": "artifact",
+              "initialReadCompletedBeforeObservedRowWait": true,
+              "equalSizeMutationAfterWait": true,
+              "lateHashRejected": true,
+              "allPublicationRowsRolledBack": true,
+              "oldPointerPreserved": true,
+              "retryAfterRestorePassed": true
+            },
+            {
+              "visibility": "shared",
+              "revision": false,
+              "changed": "artifact",
+              "initialReadCompletedBeforeObservedRowWait": true,
+              "equalSizeMutationAfterWait": true,
+              "lateHashRejected": true,
+              "allPublicationRowsRolledBack": true,
+              "oldPointerPreserved": false,
+              "retryAfterRestorePassed": true
+            },
+            {
+              "visibility": "shared",
+              "revision": true,
+              "changed": "artifact",
+              "initialReadCompletedBeforeObservedRowWait": true,
+              "equalSizeMutationAfterWait": true,
+              "lateHashRejected": true,
+              "allPublicationRowsRolledBack": true,
+              "oldPointerPreserved": true,
+              "retryAfterRestorePassed": true
+            }
+          ],
+          "treeCases": [
+            {
+              "visibility": "private",
+              "revision": false,
+              "changed": "original",
+              "observedWaitAfterInitialInspection": true,
+              "newTreeRowsAndPointerRolledBack": true,
+              "retryAfterRestorePassed": true,
+              "fixtureStartedWithNullPointer": true
+            },
+            {
+              "visibility": "private",
+              "revision": false,
+              "changed": "artifact",
+              "observedWaitAfterInitialInspection": true,
+              "newTreeRowsAndPointerRolledBack": true,
+              "retryAfterRestorePassed": true,
+              "fixtureStartedWithNullPointer": true
+            },
+            {
+              "visibility": "private",
+              "revision": true,
+              "changed": "original",
+              "observedWaitAfterInitialInspection": true,
+              "newTreeRowsAndPointerRolledBack": true,
+              "retryAfterRestorePassed": true,
+              "fixtureStartedWithNullPointer": true
+            },
+            {
+              "visibility": "private",
+              "revision": true,
+              "changed": "artifact",
+              "observedWaitAfterInitialInspection": true,
+              "newTreeRowsAndPointerRolledBack": true,
+              "retryAfterRestorePassed": true,
+              "fixtureStartedWithNullPointer": true
+            },
+            {
+              "visibility": "shared",
+              "revision": false,
+              "changed": "original",
+              "observedWaitAfterInitialInspection": true,
+              "newTreeRowsAndPointerRolledBack": true,
+              "retryAfterRestorePassed": true,
+              "fixtureStartedWithNullPointer": true
+            },
+            {
+              "visibility": "shared",
+              "revision": false,
+              "changed": "artifact",
+              "observedWaitAfterInitialInspection": true,
+              "newTreeRowsAndPointerRolledBack": true,
+              "retryAfterRestorePassed": true,
+              "fixtureStartedWithNullPointer": true
+            },
+            {
+              "visibility": "shared",
+              "revision": true,
+              "changed": "original",
+              "observedWaitAfterInitialInspection": true,
+              "newTreeRowsAndPointerRolledBack": true,
+              "retryAfterRestorePassed": true,
+              "fixtureStartedWithNullPointer": true
+            },
+            {
+              "visibility": "shared",
+              "revision": true,
+              "changed": "artifact",
+              "observedWaitAfterInitialInspection": true,
+              "newTreeRowsAndPointerRolledBack": true,
+              "retryAfterRestorePassed": true,
+              "fixtureStartedWithNullPointer": true
+            }
+          ],
+          "actualModelCalls": 0,
+          "syntheticExtraction": true,
+          "qualityAccepted": false,
+          "productionQualificationGranted": false,
+          "automaticActivation": false
+        },
+        "fixtureAccountsRowsAndFilesCleaned": true
+      }
+    },
+    "actualDistinctRegistrationCases": 8,
+    "actualDistinctTreeCases": 8,
+    "actualCaseExecutions": 24,
+    "scope": "Real filesystem and isolated PostgreSQL clone. Both original and artifact registration mutations occur after observing upload-row-lock wait following initial inspection. Row counts/published IDs and old revision pointer remain unchanged on rejection; restoring bytes allows retry. The eight tree cases repeat in each run and start from deliberately reset null pointers, as documented in the prior tree receipt."
+  },
+  "limitations": [
+    "Synthetic test originals and extraction JSON test integrity and rollback, not actual parsing or independent human quality.",
+    "Final byte checks do not provide immutable storage through commit or protect files after the last inspection.",
+    "Production qualification, complete source revocation protection and final Skill activation remain incomplete.",
+    "Earlier formal worker six-group results predate these additional artifact checks; no new full parser/worker matrix is claimed."
+  ],
+  "actualModelCalls": 0,
+  "automaticActivation": false,
+  "filesSha256": {
+    "src/lib/knowledge/vectorless-registration.ts": "6edf86b7270ad83ffe16a2c8fc887a94f1acadfa96db9a1d0b756da19d480af8",
+    "src/lib/knowledge/binary-revision.ts": "831ef49aa80855a882b401cae7aa4e9beb876439a815ea47e8485741cee6b45a",
+    "src/lib/knowledge/binary-publication-integrity.test.ts": "5a91fdf91b6c65884115f221e30246fdf7c49c698c4391abf638d0b3ddf3320b",
+    "scripts/verify-binary-publication-race-clone.ts": "c04a25b53889996e602bf79a593e5e304d749f507bba454b94559ec2881a6b67"
+  }
+}

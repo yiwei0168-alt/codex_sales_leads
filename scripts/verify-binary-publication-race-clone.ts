@@ -14,6 +14,7 @@ const url=new URL(configured);assert(['localhost','127.0.0.1','::1'].includes(ur
 const state=JSON.parse(await readFile('tmp/ma11-replay-state.json','utf8'));
 assert(/^ma11_replay_[a-f0-9]{12}$/.test(state.database));url.pathname=`/${state.database}`;process.env.DATABASE_URL=url.toString();
 globalThis.fetch=async()=>{throw new Error('External HTTP disabled for synthetic publication race fixture');};
+const mutation=process.env.MA24_PUBLICATION_MUTATION??'original';assert(['original','artifact'].includes(mutation));
 const pool=new Pool({connectionString:url.toString()}),owners:string[]=[],directories:string[]=[],results:unknown[]=[],treeResults:unknown[]=[];
 const sha=(bytes:Uint8Array)=>createHash('sha256').update(bytes).digest('hex');
 try{
@@ -44,6 +45,7 @@ try{
    (select count(*)::int from knowledge_tree_version v join knowledge_document d on d.id=v.document_id where d.owner_id=$1) trees,
    (select count(*)::int from knowledge_document_revision r join knowledge_document d on d.id=r.document_id where d.owner_id=$1) revisions,
    (select current_tree_version_id from knowledge_document where id=$2 and owner_id=$1) pointer`,[owner,target?.documentId??null])).rows[0];
+  const changedPath=mutation==='original'?job.storageKey:job.artifactKey,changedBytes=await readFile(changedPath);
   const before=await snapshot(),holder=await pool.connect();
   let pending:Promise<{value?:unknown;error?:unknown}>|undefined;
   try{
@@ -56,18 +58,18 @@ try{
     if(row.n>0){waiting=true;break;}await new Promise(done=>setTimeout(done,25));
    }
    assert(waiting,'Publication did not reach the locked job after initial original inspection');
-   await writeFile(job.storageKey,Buffer.alloc(job.bytes.length,120));
+   await writeFile(changedPath,Buffer.alloc(changedBytes.length,120));
    await holder.query('rollback');
    const outcome=await pending;
    assert(outcome.error instanceof Error);assert.match(outcome.error.message,/Knowledge asset no longer matches approved hash/);
    assert.deepEqual(await snapshot(),before,'Rejected publication committed document/asset/tree/revision changes');
    const saved=(await pool.query('select status,published_document_id,published_asset_id from knowledge_upload_job where id=$1',[job.id])).rows[0];
    assert.deepEqual(saved,{status:'extracted',published_document_id:null,published_asset_id:null});
-   await writeFile(job.storageKey,job.bytes);
+   await writeFile(changedPath,changedBytes);
    assert.equal((await registerVectorlessUpload(owner,job.id,{language:'en',authorityLevel:3})).treeStatus,'searchable');
-   results.push({visibility,revision,initialReadCompletedBeforeObservedRowWait:true,equalSizeMutationAfterWait:true,lateHashRejected:true,allPublicationRowsRolledBack:true,oldPointerPreserved:revision,retryAfterRestorePassed:true});
+   results.push({visibility,revision,changed:mutation,initialReadCompletedBeforeObservedRowWait:true,equalSizeMutationAfterWait:true,lateHashRejected:true,allPublicationRowsRolledBack:true,oldPointerPreserved:revision,retryAfterRestorePassed:true});
   }finally{
-   await holder.query('rollback');holder.release();if(pending)await pending;await writeFile(job.storageKey,job.bytes);
+   await holder.query('rollback');holder.release();if(pending)await pending;await writeFile(changedPath,changedBytes);
   }
   for(const changed of ['original','artifact'] as const){
    const registered=(await pool.query('select published_document_id document_id from knowledge_upload_job where id=$1',[job.id])).rows[0];
