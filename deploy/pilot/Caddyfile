@@ -1,4 +1,11 @@
-{$PILOT_DOMAIN} {
+http://{$PILOT_DOMAIN} {
+	bind {$PILOT_LAN_ADDRESS}
+	redir https://{$PILOT_DOMAIN}{uri} permanent
+}
+
+https://{$PILOT_DOMAIN} {
+	bind {$PILOT_LAN_ADDRESS}
+	tls internal
 	encode zstd gzip
 	reverse_proxy 127.0.0.1:{$PILOT_WEB_PORT:3000}
 }

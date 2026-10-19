@@ -1,5 +1,9 @@
 # 团队首批试用发布计划（2026-10-16）
 
+## 当前入口决策（2026-10-19）
+
+首批最多 10 人统一通过公司内网访问；用户已确认采用不配置 ICP 备案域名的局域网方案。使用内部 DNS 与固定内网 IP，Caddy 内部 CA 提供 HTTPS，防火墙仅允许办公网/VPN 子网，禁止公网 DNS、NAT/端口转发和公网入口。首批仍只使用全新测试数据。目标主机与内网地址、DNS 和证书信任安装尚待公司侧落地；本更新不代表已经上线。
+
 源码 `b535c6b4` 的 PostgreSQL 断线修复已包含在新候选 `99f51e5b` 中；[DAL 三类断线](evidence/ma24-g01-database-pool-recovery-2026-10-16.json)及[实际 HTTP 容器空闲断线恢复](evidence/ma24-g01-standalone-database-recovery-2026-10-16.json)通过。目标云场景仍待验，历史镜像不会自动升级。
 
 源码 `9919755b` 的 G09 声明时间绑定也已包含在新镜像代码中，[原验收](evidence/ma24-g09-runner-observation-time-binding-2026-10-16.json)按其范围保留；本次公司/会话流程不代替生产签发及 Skill 真实质量验收。
@@ -92,3 +96,5 @@
 后续[可重复镜像构建](evidence/ma24-g01-pilot-image-reproducible-build-2026-10-16.json)把手工 Git 归档和临时上下文清理固化为命令；已从提交 `c402d769` 实跑成功。它只封装已提交源码，发布前仍需在最终提交上重新构建并记录镜像摘要，再做目标环境验收。
 
 后续[Linux 主机启动模板](../deploy/pilot/README.md)和[本机验收](evidence/ma24-g01-pilot-host-compose-local-2026-10-16.json)补齐 Web 回环监听、持久上传卷及 Caddy 配置；本机容器内部 HTTP 与临时 HTTPS 代理检查通过。Windows 主机不能直连该 Docker Desktop host 网络回环端口，Linux 目标主机上仍须按真实域名、数据库和账号验收。正式试用入口尚未开放。
+
+2026-10-19 用户确认：首批成员统一经公司 LAN 访问，按不配置 ICP 备案域名的方案执行。模板与约束见[内网托管实施单](TEAM_PILOT_NEW_HOSTING_2026-10-16.md)及[用户规则 PILOT-01](CONFIRMED_PRODUCT_RULES.md)。

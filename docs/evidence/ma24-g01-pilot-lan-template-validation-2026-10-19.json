@@ -1,0 +1,40 @@
+{
+  "stage": "MA24 G01 LAN-only team pilot deployment template validation",
+  "date": "2026-10-19",
+  "validatedTreeBasedOnCommit": "8a968d361a4958ad1c24480c761fe08ed229f214",
+  "scope": {
+    "maximumPilotUsers": 10,
+    "access": "company LAN or company VPN only",
+    "data": "synthetic test data"
+  },
+  "templateFiles": {
+    "deploy/pilot/Caddyfile": "46fceb62486bd6f63430c69bdef75d1d192b39f031f50a8012609d01eefe587e",
+    "deploy/pilot/compose.web.yaml": "34eb83b44f1ca2c0e3e268d6eaeab995e4c0d86415be4f24c2806abc381ebf6d"
+  },
+  "composeConfigValidation": "passed",
+  "caddyValidation": {
+    "image": "caddy:2.11.4-alpine",
+    "result": "passed",
+    "tls": "internal CA",
+    "binding": "configured LAN address"
+  },
+  "valuesUsedArePlaceholders": true,
+  "serviceStarted": false,
+  "portsOpened": false,
+  "targetHostVerified": false,
+  "internalDnsVerified": false,
+  "firewallIsolationVerified": false,
+  "clientTrustDistributionVerified": false,
+  "realBusinessDataUsed": false,
+  "deploymentStatus": "not deployed; target company host and network details not supplied",
+  "limitations": [
+    "Static configuration validation only.",
+    "Must validate inbound access from office/VPN subnet and rejection from outside on the target host.",
+    "Distribute only the public CA root certificate; keep Caddy CA private key on the server."
+  ],
+  "revalidationAttempt": {
+    "date": "2026-10-19",
+    "result": "blocked",
+    "reason": "Docker Desktop Linux engine named pipe denied access; Compose/Caddy container validation could not be repeated in this session."
+  }
+}
