@@ -1,4 +1,5 @@
-import {readFile,mkdir} from 'node:fs/promises';
+import {readFile,mkdir,open,unlink} from 'node:fs/promises';
+import {randomUUID} from 'node:crypto';
 import {collectorPackageInventory,assertCollectorRuntimeBoundary} from './package-integrity.mjs';
 
 let phase='startup';
@@ -18,6 +19,8 @@ try{
    // The API's outer run/store files live outside the immutable package. Inner
    // business checkpoints and authoritative task receipts remain in PostgreSQL.
    await mkdir('/runtime',{recursive:true});
+   phase='state-directory';const probe=`/runtime/.main-agent-write-check-${randomUUID()}`;
+   const descriptor=await open(probe,'wx',0o600);await descriptor.close();await unlink(probe);
    phase='api';const {startServer}=await import('@langchain/langgraph-api/server');
    const runtime=await startServer({host:'127.0.0.1',port:2024,nWorkers:1,cwd:'/runtime',graphs:{main_agent_workflow:'/app/server.mjs:mainAgentWorkflowGraph'}});
    let closing=false;

@@ -29,27 +29,43 @@ const docker=(args:string[])=>new Promise<{code:number|null;output:string}>((don
 const execute=async(args:string[])=>{const value=await docker(args);assert.equal(value.code,0,value.output);return value.output.trim();};
 const restricted=['--read-only','--cap-drop=ALL','--security-opt','no-new-privileges','--tmpfs','/tmp:rw,noexec,nosuid,size=64m'];
 const environment=['--env',`DATABASE_URL=${runtimeUrl}`,'--env',`DATABASE_SSL_CA=${ca}`,'--env','LANGCHAIN_TRACING_V2=false','--env','LANGSMITH_TRACING=false'];
-let server:string|undefined,worker:string|undefined;
+const durability=process.env.MA24_MAIN_RUNTIME_DURABILITY==='1';
+let server:string|undefined,worker:string|undefined,volume:string|undefined,proxy:string|undefined;
+const api=async(container:string,path:string,method='GET',body?:unknown,port=2024)=>{
+ assert.match(path,/^\/[a-zA-Z0-9_/-]+$/);
+ // This is a literal Node argv, not shell text; request data never enters a shell.
+ const code=`const r=await fetch('http://127.0.0.1:${port}${path}',{method:${JSON.stringify(method)},headers:{'content-type':'application/json'},${body===undefined?'':`body:JSON.stringify(${JSON.stringify(body)}),`}});if(!r.ok)throw new Error('Fixture API status '+r.status);console.log(JSON.stringify(await r.json()));`;
+ return JSON.parse(await execute(['exec',container,'node','--input-type=module','-e',code]));
+};
 try{
  assert.equal(Number((await admin.query('select count(*) n from agent_run')).rows[0].n),0,'Compiled queue test requires a pristine task table');
  const metadata=JSON.parse(await execute(['image','inspect','--format','{"id":{{json .Id}},"revision":{{json (index .Config.Labels "org.opencontainers.image.revision")}}}',image]));
  assert.match(metadata.id,/^sha256:[a-f0-9]{64}$/);assert.match(metadata.revision,/^[a-f0-9]{40}$/);
  const integrity=JSON.parse(await execute(['run','--rm','--network','none',...restricted,metadata.id,'--verify']));assert.equal(integrity.mainAgentRuntimeIntegrity,'passed');
  const injected=await docker(['run','--rm','--network','none',...restricted,'--env','NODE_OPTIONS=--trace-warnings',metadata.id,'--verify']);assert.notEqual(injected.code,0);
- server=await execute(['run','--detach','--name',`ma24-main-runtime-${randomUUID().slice(0,8)}`,'--network',network,...restricted,'--tmpfs','/runtime:rw,noexec,nosuid,uid=1000,gid=1000,mode=0700,size=64m',...environment,metadata.id,'server']);assert.match(server,/^[a-f0-9]{64}$/);
+ if(durability){
+  const name=`ma24-main-state-${randomUUID()}`;assert.notEqual((await docker(['volume','inspect',name])).code,0);
+  assert.equal(await execute(['volume','create','--label','ma24-purpose=main-runtime-verification',name]),name);volume=name;
+ }
+ const startServer=async()=>{
+ server=await execute(['run','--detach','--name',`ma24-main-runtime-${randomUUID().slice(0,8)}`,'--network',network,...restricted,
+  ...(volume?['--mount',`type=volume,source=${volume},target=/runtime`]:['--tmpfs','/runtime:rw,noexec,nosuid,uid=1000,gid=1000,mode=0700,size=64m']),...environment,metadata.id,'server']);assert.match(server,/^[a-f0-9]{64}$/);
  let ready=false;for(let i=0;i<120;i++){
   const logs=await execute(['logs',server]);if(logs.includes('"mainAgentApi":"ready"')){ready=true;break;}
   if((await execute(['inspect','--format','{{.State.Running}}',server]))!=='true')throw new Error('Main runtime exited before readiness: '+logs);
   await new Promise(done=>setTimeout(done,500));
  }
  assert(ready,'Actual LangGraph API did not become ready');
+ };
+ const stopServer=async()=>{assert(server);await execute(['stop','--time','15',server]);assert.equal(await execute(['inspect','--format','{{.State.ExitCode}}',server]),'0','API must flush and exit normally');await execute(['rm','--volumes',server]);server=undefined;};
+ await startServer();
  const owner=randomUUID(),sourceOwner=randomUUID(),document=randomUUID(),chunk=randomUUID(),content='Synthetic compiled worker source',hash=createHash('sha256').update(content).digest('hex');
  for(const id of [owner,sourceOwner])await admin.query("insert into app_user(id,email,display_name,role,status) values($1,$2,'Synthetic runtime','member','active')",[id,`${id}@example.invalid`]);
  await admin.query(`insert into knowledge_document(id,collection_id,external_id,title,source_type,content_sha256,owner_id,visibility)
   values($1,(select id from knowledge_collection where slug='product'),$1::uuid::text,'Synthetic runtime source','text',$2,$3,'shared')`,[document,hash,sourceOwner]);
  await admin.query('insert into knowledge_chunk(id,document_id,chunk_index,content,token_estimate,content_sha256) values($1,$2,0,$3,10,$4)',[chunk,document,content,hash]);
  const cases=[];
- for(const withdraw of [false,true]){
+ const prepareTask=async()=>{
   const task=await enqueueRun(owner,{content:'Synthetic compiled recovery',attachments:[],knowledgeScope:['product'],requestKey:randomUUID()},{model:'synthetic-unusable',providers:['synthetic-unusable'],version:'synthetic'});
   const callId=randomUUID(),callKey=randomUUID(),input={query:'Synthetic runtime source',collections:['product']},output=result([{id:chunk,documentId:document,content}],{callId}),reply=`Synthetic checkpoint answer ${randomUUID()}`;
   await admin.query(`insert into agent_tool_call(id,user_id,run_id,call_key,tool_id,tool_version,input,input_hash,effect,status,output)
@@ -59,23 +75,71 @@ try{
   const policyRevision=digest(await loadDecisionMemory(owner));
   const seed=buildMainAgentGraph({boundary:async()=>({control:null,instructions:[],policyRevision}),model:async()=>({role:'assistant',content:reply}),tool:async()=>{throw new Error('No synthetic action expected');}},new PostgresSaver(getPool(),undefined,{schema:'langgraph'}));
   assert.equal((await seed.invoke({messages,pending:[],steps:0,status:'running',reply:'',seen:{},instructionIds:[]},{configurable:{thread_id:`main-agent:${owner}:${task.id}`,checkpoint_ns:''},recursionLimit:40})).status,'completed');
-  if(withdraw)await admin.query("update knowledge_document set visibility='private' where id=$1",[document]);
-  worker=await execute(['run','--detach','--name',`ma24-main-worker-${randomUUID().slice(0,8)}`,'--network',`container:${server}`,...restricted,...environment,'--env','LANGGRAPH_API_URL=http://127.0.0.1:2024',metadata.id,'worker','--once']);assert.match(worker,/^[a-f0-9]{64}$/);
-  const exit=await execute(['wait',worker]),logs=await execute(['logs',worker]);assert.equal(exit,'0',logs);
-  const row=(await admin.query<{status:string;reply:string;lease_token:string;messages:string[];jobs:number;models:number}>(`select r.status,r.result->>'reply' reply,r.lease_token,
-   coalesce((select array_agg(content) from assistant_message where user_id=r.user_id and metadata->>'runId'=r.id::text and role='assistant'),'{}') messages,
+  return {task,reply};
+ };
+ const startWorker=async(apiPort=2024)=>{
+  worker=await execute(['run','--detach','--name',`ma24-main-worker-${randomUUID().slice(0,8)}`,'--network',`container:${server}`,...restricted,...environment,'--env',`LANGGRAPH_API_URL=http://127.0.0.1:${apiPort}`,metadata.id,'worker','--once']);assert.match(worker,/^[a-f0-9]{64}$/);
+ };
+ const finishWorker=async()=>{assert(worker);const exit=await execute(['wait',worker]),logs=await execute(['logs',worker]);assert.equal(exit,'0',logs);await execute(['rm','--volumes',worker]);worker=undefined;return logs;};
+ const readTask=async(runId:string)=>(await admin.query<{status:string;reply:string;lease_token:string;messages:string[];jobs:number;models:number;status_events:number}>(`select r.status,r.result->>'reply' reply,r.lease_token,
+   coalesce((select array_agg(content order by created_at) from assistant_message where user_id=r.user_id and metadata->>'runId'=r.id::text and role='assistant'),'{}') messages,
    (select count(*)::integer from agent_memory_extraction_job where owner_id=r.user_id and run_id=r.id) jobs,
-   (select count(*)::integer from agent_tool_call where user_id=r.user_id and run_id=r.id and tool_id='main_model') models from agent_run r where r.id=$1`,[task.id])).rows[0];
-  assert.equal(row.status,withdraw?'partial':'completed',redact(JSON.stringify({row,logs,serverLogs:await execute(['logs',server])})));
+   (select count(*)::integer from agent_tool_call where user_id=r.user_id and run_id=r.id and tool_id='main_model') models,
+   (select count(*)::integer from agent_run_event where user_id=r.user_id and run_id=r.id and kind='status') status_events from agent_run r where r.id=$1`,[runId])).rows[0];
+ const completedTasks:Array<{id:string;row:Awaited<ReturnType<typeof readTask>>}>=[];
+ for(const withdraw of [false,true]){
+  const {task,reply}=await prepareTask();
+  if(withdraw)await admin.query("update knowledge_document set visibility='private' where id=$1",[document]);
+  await startWorker();const logs=await finishWorker(),row=await readTask(task.id);
+  assert.equal(row.status,withdraw?'partial':'completed',redact(JSON.stringify({row,logs,serverLogs:await execute(['logs',server!])})));
   assert.equal(row.reply,withdraw?SOURCE_CHANGED_REPLY:reply);assert.deepEqual(row.messages,[row.reply]);assert.equal(row.jobs,withdraw?0:1);assert.equal(row.models,0);assert(row.lease_token,'Worker must claim the task');
   cases.push({sourceWithdrawn:withdraw,status:row.status,modelAttempts:row.models,extractionJobs:row.jobs,actualClaimedLease:true});
-  await execute(['rm','--force','--volumes',worker]);worker=undefined;
+  completedTasks.push({id:task.id,row});
+ }
+ let durabilityResult:unknown=null;
+ if(durability){
+  assert(volume&&server);const threadId=randomUUID(),marker=randomUUID();
+  await api(server,'/threads','POST',{thread_id:threadId,metadata:{synthetic_marker:marker}});
+  const before=await api(server,`/threads/${threadId}`);assert.equal(before.metadata.synthetic_marker,marker);
+  const oldServer=server;await stopServer();
+  const stateInspection=JSON.parse(await execute(['run','--rm','--network','none',...restricted,'--mount',`type=volume,source=${volume},target=/runtime,readonly`,'--entrypoint','node',metadata.id,'-e',
+   "const fs=require('node:fs'),c=require('node:crypto'),s=fs.statSync('/runtime');const files=fs.readdirSync('/runtime/.langgraph_api').sort().map(name=>({name,sha256:c.createHash('sha256').update(fs.readFileSync('/runtime/.langgraph_api/'+name)).digest('hex')}));console.log(JSON.stringify({uid:s.uid,mode:s.mode&511,files}));"]));
+  assert.equal(stateInspection.uid,1000);assert.equal(stateInspection.mode,448);assert(stateInspection.files.length>=3);
+  await startServer();assert.notEqual(server,oldServer);assert.deepEqual(await api(server!,`/threads/${threadId}`),before);
+  for(const saved of completedTasks)assert.deepEqual(await readTask(saved.id),saved.row);
+  await admin.query("update knowledge_document set visibility='shared' where id=$1",[document]);
+  const {task,reply}=await prepareTask();
+  // A local forwarding proxy executes the real API request but withholds its
+  // response until the observer sees the authoritative task commit.
+  const proxyCode=String.raw`const http=require('node:http');let pending,forwarded=0;
+   http.createServer((req,res)=>{
+    if(req.url==='/_control/status'){res.end(JSON.stringify({forwarded,pending:Boolean(pending)}));return;}
+    if(req.url==='/_control/drop'){const dropped=Boolean(pending);pending?.destroy();pending=undefined;res.end(JSON.stringify({dropped,forwarded}));return;}
+    forwarded++;pending=res;const up=http.request({hostname:'127.0.0.1',port:2024,path:req.url,method:req.method,headers:req.headers},response=>response.resume());
+    up.on('error',()=>res.destroy());req.pipe(up);
+   }).listen(2025,'127.0.0.1',()=>console.log('ackProxyReady'));`;
+  proxy=await execute(['run','--detach','--name',`ma24-main-ack-proxy-${randomUUID().slice(0,8)}`,'--network',`container:${server}`,...restricted,'--entrypoint','node',metadata.id,'-e',proxyCode]);assert.match(proxy,/^[a-f0-9]{64}$/);
+  for(let i=0;i<40;i++){if((await execute(['logs',proxy])).includes('ackProxyReady'))break;await new Promise(done=>setTimeout(done,100));}
+  await startWorker(2025);
+  let committed=false;for(let i=0;i<300;i++){if((await readTask(task.id)).status==='completed'){committed=true;break;}await new Promise(done=>setTimeout(done,100));}
+  assert(committed,'Real API did not complete the task while response was withheld');
+  const held=await api(proxy,'/_control/status','GET',undefined,2025);assert.deepEqual(held,{forwarded:1,pending:true});
+  assert.equal((await api(proxy,'/_control/drop','POST',{},2025)).dropped,true);await finishWorker();
+  const afterLoss=await readTask(task.id);assert.equal(afterLoss.status,'completed');assert.equal(afterLoss.reply,reply);assert.deepEqual(afterLoss.messages,[reply]);assert.equal(afterLoss.jobs,1);assert.equal(afterLoss.models,0);assert.equal(afterLoss.status_events,1);
+  await startWorker(2025);await finishWorker();assert.deepEqual(await readTask(task.id),afterLoss);
+  assert.equal((await api(proxy,'/_control/status','GET',undefined,2025)).forwarded,1);
+  await execute(['rm','--force','--volumes',proxy]);proxy=undefined;
+  await stopServer();
+  durabilityResult={namedVolumeUid:stateInspection.uid,namedVolumeMode:stateInspection.mode,stateFiles:stateInspection.files,actualThreadReadbackAfterContainerReplacement:true,
+   priorTaskRowsUnchangedAfterRestart:true,gracefulApiExitCode:0,committedTaskSurvivesLostHttpResponse:true,noDuplicateReplyEventOrExtractionJob:true,subsequentWorkerMakesNoReplayRequest:true,forwardedApiRequests:1};
  }
  const receipt={passed:true,image,immutableImageId:metadata.id,sourceCommit:metadata.revision,integrity,actualLangGraphApi:true,actualCompiledQueueWorker:true,postgresCheckpointRecovery:true,cases,
-  syntheticCheckpointSeed:true,actualModelCalls:0,externalActions:0,firstModelExecutionVerified:false,productionQualified:false,automaticActivation:false};
+  durabilityResult,syntheticCheckpointSeed:true,actualModelCalls:0,externalActions:0,firstModelExecutionVerified:false,productionQualified:false,automaticActivation:false};
  await writeFile('tmp/ma24-main-runtime-worker-result.json',JSON.stringify(receipt,null,2)+'\n');console.log(JSON.stringify({mainRuntimeWorker:'passed',...receipt}));
 }finally{
  if(worker)await docker(['rm','--force','--volumes',worker]);
+ if(proxy)await docker(['rm','--force','--volumes',proxy]);
  if(server){await docker(['stop','--time','10',server]);await docker(['rm','--force','--volumes',server]);}
+ if(volume){assert.equal(await execute(['volume','inspect','--format','{{index .Labels "ma24-purpose"}}',volume]),'main-runtime-verification');await execute(['volume','rm',volume]);}
  await Promise.allSettled([admin.end(),getPool().end()]);
 }
