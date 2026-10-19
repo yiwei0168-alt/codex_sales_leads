@@ -1,5 +1,7 @@
 # G09 验签后的签名身份覆盖
 
+后续普通主运行入口的签名部署哈希实测绑定已实施，固定镜像实际验收待验；其余生产/质量/启用边界保持。[绑定工作流](MAIN_AGENT_TASK_TRANSPORT_PACKAGE_BINDING_2026-10-20.md)。
+
 ## 固定完整组合终态
 
 固定 `73cceaf9a151801059b470dd2c1a5ed36e4f26a1` 的 Git archive 源码，以 `MA24_CONFIGURED_COMBINED=1 MA24_DATABASE_TRUST=1` 执行完整五类签名组合，退出 0。下方“待运行/待验”为本阶段此前记录，以此终态为准。

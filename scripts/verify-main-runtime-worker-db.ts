@@ -32,6 +32,8 @@ const restricted=['--read-only','--cap-drop=ALL','--security-opt','no-new-privil
 const environment=['--env',`DATABASE_URL=${runtimeUrl}`,'--env',`DATABASE_SSL_CA=${ca}`,'--env','LANGCHAIN_TRACING_V2=false','--env','LANGSMITH_TRACING=false'];
 const durability=process.env.MA24_MAIN_RUNTIME_DURABILITY==='1';
 const commitLoss=process.env.MA24_MAIN_RUNTIME_COMMIT_LOSS==='1';
+const taskEnrollment=process.env.MA24_MAIN_RUNTIME_TASK_ENROLLMENT==='1';
+let signingEnvironment:string[]=[],taskEnrollmentResult:Record<string,unknown>|null=null;
 let server:string|undefined,worker:string|undefined,volume:string|undefined,proxy:string|undefined,pgProxy:string|undefined;
 let proxyAddress:string|undefined,serverRuntimeUrl=runtimeUrl;
 const api=async(container:string,path:string,method='GET',body?:unknown,port=2024)=>{
@@ -46,6 +48,34 @@ try{
  assert.match(metadata.id,/^sha256:[a-f0-9]{64}$/);assert.match(metadata.revision,/^[a-f0-9]{40}$/);
  const integrity=JSON.parse(await execute(['run','--rm','--network','none',...restricted,metadata.id,'--verify']));assert.equal(integrity.mainAgentRuntimeIntegrity,'passed');
  const injected=await docker(['run','--rm','--network','none',...restricted,'--env','NODE_OPTIONS=--trace-warnings',metadata.id,'--verify']);assert.notEqual(injected.code,0);
+ if(taskEnrollment){
+  assert.match(integrity.deploymentHash,/^[a-f0-9]{64}$/);
+  const independent=await execute(['run','--rm','--network','none',...restricted,'--entrypoint','node',metadata.id,'-e',
+   "const fs=require('node:fs'),crypto=require('node:crypto');console.log(crypto.createHash('sha256').update(fs.readFileSync('/app/runtime-manifest.json')).digest('hex'));" ]);
+  assert.equal(integrity.deploymentHash,independent,'Measured inventory must match the independent manifest byte digest');
+  assert.equal(integrity.taskTransportPackageBindingRequired,false);assert.equal(integrity.taskTransportPackageBindingVerified,false);
+  const field='TASK_MODEL_TRANSPORT_DEPLOYMENT_SHA256',hash=integrity.deploymentHash;
+  const matching=JSON.parse(await execute(['run','--rm','--network','none',...restricted,'--env',`${field}=${hash}`,metadata.id,'--verify']));
+  assert.equal(matching.deploymentHash,hash);assert.equal(matching.taskTransportPackageBindingVerified,true);
+  signingEnvironment=['--env','TASK_MODEL_TRANSPORT_KEY_ID=synthetic-not-enrolled','--env','TASK_MODEL_TRANSPORT_COLLECTOR_ID=synthetic-not-enrolled',
+   '--env','TASK_MODEL_TRANSPORT_PRIVATE_KEY_FILE=/unmounted-synthetic-key.pem','--env',`${field}=${hash}`];
+  const missingKeyPath=signingEnvironment.filter((value,index)=>value!=='TASK_MODEL_TRANSPORT_PRIVATE_KEY_FILE=/unmounted-synthetic-key.pem'
+   &&!(value==='--env'&&signingEnvironment[index+1]==='TASK_MODEL_TRANSPORT_PRIVATE_KEY_FILE=/unmounted-synthetic-key.pem'));
+  const rejected=[];
+  for(const [label,settings,args] of [
+   ['wrong-deployment',['--env',`${field}=${'0'.repeat(64)}`],['--verify']],
+   ['malformed-deployment',['--env',`${field}=invalid`],['--verify']],
+   ['missing-deployment',['--env','TASK_MODEL_TRANSPORT_KEY_ID=synthetic-not-enrolled'],['worker','--once']],
+   ['partial-operational-settings',['--env',`${field}=${hash}`],['worker','--once']],
+   ['missing-key-path-setting',missingKeyPath,['server']],
+   ['wrong-operational-deployment',signingEnvironment.map(value=>value===`${field}=${hash}`?`${field}=${'0'.repeat(64)}`:value),['server']],
+  ] as Array<[string,string[],string[]]>){
+   const denied=await docker(['run','--rm','--network','none',...restricted,...settings,metadata.id,...args]);
+   assert.notEqual(denied.code,0,label);assert(denied.output.includes('"phase":"task-transport-package-binding"'),denied.output);rejected.push(label);
+  }
+  taskEnrollmentResult={deploymentHash:hash,independentManifestDigestVerified:true,inspectionWithoutEnrollment:true,matchingInspectionBindingVerified:true,rejected,
+   operationalSettingsSynthetic:true,signingPrivateKeyLoaded:false,productionQualificationGranted:false};
+ }
  if(durability){
   const name=`ma24-main-state-${randomUUID()}`;assert.notEqual((await docker(['volume','inspect',name])).code,0);
   assert.equal(await execute(['volume','create','--label','ma24-purpose=main-runtime-verification',name]),name);volume=name;
@@ -73,9 +103,12 @@ try{
  const startServer=async()=>{
  server=await execute(['run','--detach','--name',`ma24-main-runtime-${randomUUID().slice(0,8)}`,'--network',network,...restricted,
   ...(volume?['--mount',`type=volume,source=${volume},target=/runtime`]:['--tmpfs','/runtime:rw,noexec,nosuid,uid=1000,gid=1000,mode=0700,size=64m']),
-  ...(proxyAddress?['--add-host',`pilot-db:${proxyAddress}`]:[]),...environment,'--env',`DATABASE_URL=${serverRuntimeUrl}`,metadata.id,'server']);assert.match(server,/^[a-f0-9]{64}$/);
+  ...(proxyAddress?['--add-host',`pilot-db:${proxyAddress}`]:[]),...environment,...signingEnvironment,'--env',`DATABASE_URL=${serverRuntimeUrl}`,metadata.id,'server']);assert.match(server,/^[a-f0-9]{64}$/);
  let ready=false;for(let i=0;i<120;i++){
-  const logs=await execute(['logs',server]);if(logs.includes('"mainAgentApi":"ready"')){ready=true;break;}
+  const logs=await execute(['logs',server]);if(logs.includes('"mainAgentApi":"ready"')){
+   if(taskEnrollment){const started=JSON.parse(logs.split('\n').find(line=>line.includes('"mainAgentApi":"ready"'))!);
+    assert.equal(started.deploymentHash,integrity.deploymentHash);assert.equal(started.taskTransportPackageBindingVerified,true);}
+   ready=true;break;}
   if((await execute(['inspect','--format','{{.State.Running}}',server]))!=='true')throw new Error('Main runtime exited before readiness: '+logs);
   await new Promise(done=>setTimeout(done,500));
  }
@@ -103,7 +136,7 @@ try{
  };
  const startWorker=async(apiPort=2024)=>{
   // container:server shares its host mapping too; use the same TLS proxy port.
-  worker=await execute(['run','--detach','--name',`ma24-main-worker-${randomUUID().slice(0,8)}`,'--network',`container:${server}`,...restricted,...environment,
+  worker=await execute(['run','--detach','--name',`ma24-main-worker-${randomUUID().slice(0,8)}`,'--network',`container:${server}`,...restricted,...environment,...signingEnvironment,
    '--env',`DATABASE_URL=${serverRuntimeUrl}`,'--env',`LANGGRAPH_API_URL=http://127.0.0.1:${apiPort}`,metadata.id,'worker','--once']);assert.match(worker,/^[a-f0-9]{64}$/);
  };
  const finishWorker=async()=>{assert(worker);const exit=await execute(['wait',worker]),logs=await execute(['logs',worker]);assert.equal(exit,'0',logs);await execute(['rm','--volumes',worker]);worker=undefined;return logs;};
@@ -122,6 +155,7 @@ try{
   cases.push({sourceWithdrawn:withdraw,status:row.status,modelAttempts:row.models,extractionJobs:row.jobs,actualClaimedLease:true});
   completedTasks.push({id:task.id,row});
  }
+ if(taskEnrollmentResult)taskEnrollmentResult.actualMatchingApiAndWorkerVerified=true;
  let commitLossResult:unknown=null,uncommittedLossResult:unknown=null;
  if(commitLoss){
   assert(pgProxy);await admin.query("update knowledge_document set visibility='shared' where id=$1",[document]);
@@ -196,7 +230,7 @@ try{
    priorTaskRowsUnchangedAfterRestart:true,gracefulApiExitCode:0,committedTaskSurvivesLostHttpResponse:true,noDuplicateReplyEventOrExtractionJob:true,subsequentWorkerMakesNoReplayRequest:true,forwardedApiRequests:1};
  }
  const receipt={passed:true,image,immutableImageId:metadata.id,sourceCommit:metadata.revision,integrity,actualLangGraphApi:true,actualCompiledQueueWorker:true,postgresCheckpointRecovery:true,cases,
-  durabilityResult,commitLossResult,uncommittedLossResult,syntheticCheckpointSeed:true,actualModelCalls:0,externalActions:0,firstModelExecutionVerified:false,productionQualified:false,automaticActivation:false};
+  durabilityResult,commitLossResult,uncommittedLossResult,taskEnrollmentResult,syntheticCheckpointSeed:true,actualModelCalls:0,externalActions:0,firstModelExecutionVerified:false,productionQualified:false,automaticActivation:false};
  await writeFile('tmp/ma24-main-runtime-worker-result.json',JSON.stringify(receipt,null,2)+'\n');console.log(JSON.stringify({mainRuntimeWorker:'passed',...receipt}));
 }finally{
  if(worker)await docker(['rm','--force','--volumes',worker]);
