@@ -82,6 +82,6 @@
     "Source exported EOL differences are verified to be only LF/CRLF. This is a fixed Git archive image, not production enrollment.",
     "Cross-instance restore checks both 154/155 functions and nonempty synthetic mailbox state/ephemeral-key decryption. No restored Web/Worker or independent key recovery.",
     "No upload-volume/database consistent restore, off-host backup, sustained load, target certificate trust or final activation.",
-    "The separate complete signed-composition run is still pending; no result is inferred from this image acceptance."
+    "The same-source complete signed composition passed separately; see ma24-g09-signed-composition-dd7daff5-2026-10-19.json. It did not run in this Web image and predates the 3f5c1556 collector bootstrap boundary."
   ]
 }
