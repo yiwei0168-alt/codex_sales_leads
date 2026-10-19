@@ -467,7 +467,7 @@ try {
       const tempDirectory = mkdtempSync(join(tmpdir(), "ma24-pilot-backup-"));
       try {
         const backup = await run(process.execPath,
-          ["scripts/run-tsx.cjs", "scripts/backup-verify-ma24-pilot-db.ts"],
+          ["scripts/run-tsx.cjs", "scripts/backup-verify-ma24-pilot-db.ts",...(currentSchemaCheck?['--current-schema']:[])],
           { ...process.env, DATABASE_URL: appUrl.toString(), DATABASE_MIGRATION_URL: adminUrl.toString(),
             PILOT_BACKUP_DIR: tempDirectory });
         assert.equal(backup.code, 0, backup.output);
@@ -531,7 +531,12 @@ try {
             const stage = await restoredAdmin.query<{ stage135: boolean; laterStage: boolean }>(
               `select to_regclass('public.agent_skill_acceptance_freeze') is not null "stage135",
                 to_regclass('public.ma24_evaluation_hard_limit') is not null "laterStage"`);
-            assert.deepEqual(stage.rows[0], { stage135: true, laterStage: false });
+            assert.deepEqual(stage.rows[0], { stage135: true, laterStage: currentSchemaCheck });
+            if(currentSchemaCheck){
+              const binding=await restoredAdmin.query<{present:boolean}>(`select count(*)=2 present from information_schema.columns
+                where table_schema='public' and table_name='mailbox_sync_run' and column_name in ('work_job_id','work_lease_token')`);
+              assert.equal(binding.rows[0].present,true,'Restored current mailbox lease binding missing');
+            }
             const countSql = `select (select count(*)::int from app_user) users,
               (select count(*)::int from market_workspace) workspaces,
               (select count(*)::int from workspace_company) companies,

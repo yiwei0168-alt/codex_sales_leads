@@ -1,0 +1,40 @@
+{
+  "stage": "MA24 G01 current-schema database backup and restore",
+  "date": "2026-10-19",
+  "status": "isolated-current-schema-restore-passed; integrated-data-recovery-pending",
+  "applicationImage": "ma24-pilot-web:4a1ee07f",
+  "applicationSourceCommit": "4a1ee07fb829210e80ee02d6f6431da9582875ad",
+  "harnessBaseCommit": "1fb9ef1d",
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --web-image=ma24-pilot-web:4a1ee07f --current-schema --backup --cross-cluster",
+  "exitCode": 0,
+  "localLog": "tmp/ma24-current-backup-2026-10-19.log",
+  "implemented": [
+    "Explicit --current-schema backup mode accepts the mailbox job/lease binding introduced by migration 153; default historical schema mode remains available.",
+    "Source logical checks and pg_dump use one exported repeatable-read snapshot; the exporting transaction stays open until pg_dump exits successfully.",
+    "Restore compares account, workspace, company and document counts, account digest, schema markers and five mailbox table row digests in UTC.",
+    "SHA256 archive manifest, restricted application reads, two-member visibility comparison and random temporary restore database cleanup remain required."
+  ],
+  "observed": {
+    "freshMigrationThrough": 153,
+    "pilotBackupRestoreVerified": true,
+    "crossClusterRestoreVerified": true,
+    "tenantMembersCompared": 2,
+    "restoredMailboxBindingColumnsPresent": true,
+    "sourceWebSyntheticHttpWorkflowVerified": true,
+    "copiedProductionData": false,
+    "temporaryContainersAndNetworkRemoved": true
+  },
+  "checks": {
+    "typecheck": "exit 0",
+    "focusedEslint": "exit 0",
+    "diffCheck": "exit 0 after removing trailing blank line"
+  },
+  "limits": [
+    "Synthetic disposable database only; no production database, deployment, paid model or real mailbox calls.",
+    "Mailbox tables were empty: digest equality does not establish nonempty encrypted message, cursor or worker-state recovery, nor key availability or decryption.",
+    "Cross-instance assertions cover schema, counts, restricted application access and member company visibility; full mailbox digest comparison is performed only by the same-instance restore verifier.",
+    "No restored Web instance or browser acceptance was performed; the Web HTTP workflow belongs to the source disposable database.",
+    "No concurrent-write fault injection was performed during pg_dump. Snapshot binding is implemented but that interleaving is not separately exercised.",
+    "No physical upload-volume/database consistent recovery, off-host copy, target-host certificate acceptance or cutover rollback package. G01 remains incomplete."
+  ]
+}

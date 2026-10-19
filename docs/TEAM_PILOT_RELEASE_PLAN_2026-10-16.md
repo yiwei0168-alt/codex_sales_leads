@@ -98,3 +98,8 @@
 后续[Linux 主机启动模板](../deploy/pilot/README.md)和[本机验收](evidence/ma24-g01-pilot-host-compose-local-2026-10-16.json)补齐 Web 回环监听、持久上传卷及 Caddy 配置；本机容器内部 HTTP 与临时 HTTPS 代理检查通过。Windows 主机不能直连该 Docker Desktop host 网络回环端口，Linux 目标主机上仍须按真实域名、数据库和账号验收。正式试用入口尚未开放。
 
 2026-10-19 用户确认：首批成员统一经公司 LAN 访问，按不配置 ICP 备案域名的方案执行。模板与约束见[内网托管实施单](TEAM_PILOT_NEW_HOSTING_2026-10-16.md)及[用户规则 PILOT-01](CONFIRMED_PRODUCT_RULES.md)。
+# 当前结构备份补充（2026-10-19）
+
+本次仍暂不上线。隔离迁移 153 数据库已通过显式 `--current-schema --backup --cross-cluster`，备份工具将逻辑核对与归档绑定到同一导出快照，并保留受限应用角色及两成员可见范围恢复检查。[收据与限制](evidence/ma24-g01-current-schema-backup-2026-10-19.json)。
+
+此轮邮箱表为空，不能替代非空邮件、密钥解密、文件卷与数据库的一致恢复、恢复后 Web 或目标主机验收。历史迁移 135 的默认命令仍保留；当前候选应显式使用 `--current-schema`。

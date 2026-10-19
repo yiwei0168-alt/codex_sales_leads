@@ -7,7 +7,9 @@ import { fileURLToPath } from "node:url";
 import { mkdir, readdir, realpath, rm, stat, writeFile } from "node:fs/promises";
 import { Client } from "pg";
 
-assert.equal(process.argv.length, 2, "This backup command takes no arguments");
+const args=process.argv.slice(2);
+assert(args.length<=1&&args.every(arg=>arg==='--current-schema'),"Only --current-schema is supported");
+const currentSchema=args.includes('--current-schema');
 const appSource = process.env.DATABASE_URL;
 const migrationSource = process.env.DATABASE_MIGRATION_URL;
 const outputSource = process.env.PILOT_BACKUP_DIR;
@@ -65,7 +67,14 @@ const snapshotSql = `select
   (select count(*)::int from knowledge_document) documents,
   (select md5(coalesce(string_agg(id::text || ':' || email, ',' order by id),'')) from app_user) "accountDigest",
   to_regclass('public.agent_skill_acceptance_freeze') is not null "stage135Present",
-  to_regclass('public.ma24_evaluation_hard_limit') is null "laterStageAbsent"`;
+  to_regclass('public.ma24_evaluation_hard_limit') is null "laterStageAbsent",
+  (select count(*)=2 from information_schema.columns where table_schema='public' and table_name='mailbox_sync_run'
+    and column_name in ('work_job_id','work_lease_token')) "mailboxWorkerBinding",
+  (select md5(coalesce(string_agg(md5(to_jsonb(t)::text),'' order by md5(to_jsonb(t)::text)),'')) from mailbox_connection t) "mailboxConnectionsDigest",
+  (select md5(coalesce(string_agg(md5(to_jsonb(t)::text),'' order by md5(to_jsonb(t)::text)),'')) from mailbox_work_job t) "mailboxWorkDigest",
+  (select md5(coalesce(string_agg(md5(to_jsonb(t)::text),'' order by md5(to_jsonb(t)::text)),'')) from mailbox_sync_run t) "mailboxRunsDigest",
+  (select md5(coalesce(string_agg(md5(to_jsonb(t)::text),'' order by md5(to_jsonb(t)::text)),'')) from mailbox_message t) "mailboxMessagesDigest",
+  (select md5(coalesce(string_agg(md5(to_jsonb(t)::text),'' order by md5(to_jsonb(t)::text)),'')) from mailbox_sync_cursor t) "mailboxCursorsDigest"`;
 const visibleCompanies = async (connectionString: string, userId: string) => {
   const app = new Client({ connectionString, connectionTimeoutMillis: 5_000 });
   await app.connect();
@@ -88,12 +97,20 @@ try {
   const source = new Client({ connectionString: migrationUrl.toString(), connectionTimeoutMillis: 5_000 });
   await source.connect();
   let sourceSnapshot: Record<string, unknown>;
-  try { sourceSnapshot = (await source.query(snapshotSql)).rows[0]; }
-  finally { await source.end(); }
-  assert(sourceSnapshot.stage135Present && sourceSnapshot.laterStageAbsent,
-    "Pilot backup requires the fresh-pilot migration boundary through 135");
-  const dumped = await run(pgDump, ["--format=custom", "--no-owner", "--file", archive, "--dbname", database]);
-  assert.equal(dumped.code, 0, dumped.output);
+  try {
+    await source.query('begin isolation level repeatable read read only');
+    await source.query("set local timezone='UTC'");
+    sourceSnapshot = (await source.query(snapshotSql)).rows[0];
+    assert(sourceSnapshot.stage135Present&&(currentSchema
+      ?!sourceSnapshot.laterStageAbsent&&sourceSnapshot.mailboxWorkerBinding
+      :sourceSnapshot.laterStageAbsent&&!sourceSnapshot.mailboxWorkerBinding),
+      currentSchema?"Pilot backup requires current schema through 153":"Pilot backup requires historical schema through 135");
+    const snapshot=(await source.query<{snapshot:string}>('select pg_export_snapshot() snapshot')).rows[0].snapshot;
+    assert(/^[0-9a-f-]+$/i.test(snapshot),'Invalid exported snapshot ID');
+    const dumped = await run(pgDump, ["--format=custom", "--no-owner", "--snapshot",snapshot,"--file", archive, "--dbname", database]);
+    assert.equal(dumped.code, 0, dumped.output);
+    await source.query('commit');
+  }catch(error){await source.query('rollback');throw error;}finally { await source.end(); }
   const listed = await run(pgRestore, ["--list", archive]);
   assert.equal(listed.code, 0, listed.output);
   const bytes = (await stat(archive)).size;
@@ -112,6 +129,7 @@ try {
   await restoredAdmin.connect();
   let memberIds: string[];
   try {
+    await restoredAdmin.query("set timezone='UTC'");
     assert.deepEqual((await restoredAdmin.query(snapshotSql)).rows[0], sourceSnapshot,
       "Restored pilot account, workspace, and document snapshot differs from source");
     memberIds = (await restoredAdmin.query<{ id: string }>(
@@ -137,14 +155,15 @@ try {
     file: filename, bytes, sha256, format: "PostgreSQL custom archive", ownerIncluded: false,
     aclIncluded: true, restoredToSecondDatabase: true, restrictedApplicationRead: true,
     tenantVisibilityMatched: true, tenantMembersCompared: memberIds.length,
-    sourceSnapshot };
+    consistentExportedSnapshot:true,currentSchema,mailboxLogicalDigestsMatched:true,sourceSnapshot };
   await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, { encoding: "utf8", flag: "wx" });
   const entries = await readdir(directory);
   assert(entries.includes(filename) && entries.includes(`${filename}.json`));
   success = true;
   console.log(JSON.stringify({ pilotBackupRestore: "passed", archiveFile: filename,
     bytes, sha256, restoredToSecondDatabase: true, restrictedApplicationRead: true,
-    tenantVisibilityMatched: true, tenantMembersCompared: memberIds.length }));
+    tenantVisibilityMatched: true, tenantMembersCompared: memberIds.length,
+    consistentExportedSnapshot:true,currentSchema,mailboxLogicalDigestsMatched:true }));
 } finally {
   try {
     if (restoredCreated) await admin.query(`drop database "${restoredDatabase}" with (force)`);
