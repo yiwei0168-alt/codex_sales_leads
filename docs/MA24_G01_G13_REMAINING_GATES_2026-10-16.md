@@ -12,6 +12,8 @@
 
 ## 阶段记录与逐项门槛
 
+2026-10-19 G09 固定方法来源锁：材料重建现锁定原任务的全部 Skill 固定绑定、状态和版本，并锁后复查本地经验来源。56 项定向回归、类型/lint 及一次性新库六类并发写入等待/恢复与撤销拒绝通过；完整五类组合本轮验证中。发现目录、文件字节、最终时效、生产资格与最终启用仍未全部完成。[工作流](SKILL_ACCEPTANCE_TASK_JOURNAL_LOCKS_2026-10-16.md)、[证据](evidence/ma24-g09-pinned-method-source-locks-2026-10-19.json)。
+
 2026-10-19 G09 fresh-cluster 验收脚本新增早期夹具隔离检查：多个各自要求全新占位账号数据库的子检查不能在同一次运行中组合，须逐个 fresh-cluster 执行。负向组合在 Docker 初始化前按预期拒绝，`npm.cmd run typecheck` 与 `git diff --check` 通过。[工程证据](evidence/ma24-g09-fresh-cluster-fixture-preflight-2026-10-19.json)。这只修复验收编排，不改变产品门槛或 G09 质量/生产验收状态。
 
 2026-10-17 固定快照 f4363630 的完整私有资料组合已通过，覆盖邮件/单客户时间线/列表、记忆门禁、三条来源收据及五类材料。知识发布门禁 149 不在该快照，仍需完整验收。[组合证据](evidence/ma24-g09-private-source-composition-2026-10-17.json)。原始任务传输签名验证组件已通过 48 项回归、类型/lint；生产签发、日志/失败链接线、二进制资格和最终启用仍未完成。[工作流](ORIGINAL_TASK_TRANSPORT_RECEIPTS_2026-10-17.md)。

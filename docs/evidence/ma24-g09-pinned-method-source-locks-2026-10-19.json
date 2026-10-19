@@ -1,0 +1,49 @@
+{
+  "stage": "MA24 G09 pinned method source revocation locks",
+  "date": "2026-10-19",
+  "sourceBaseCommit": "ff131f98",
+  "filesSha256": {
+    "db/migrations/151_skill_pinned_method_source_locks.sql": "deb535c8f0a57b611b1050f2a85fd38f7be5f117c800bf6d9b918c62b26cfce7",
+    "src/lib/assistant/main/skill-pinned-method-locks.ts": "46abe54f4aa8fab14624964bdcda8ea13e065deb2f96b5b918dd64a53906ee14",
+    "src/lib/assistant/main/skill-pinned-method-locks.test.ts": "19a4662423403c6a7287b4dc82a2ed492b8b8a105981e12d85e2be488ecd8c95",
+    "src/lib/assistant/main/skill-locked-materials.ts": "2e29819ff2d84bd4708e0fe0b472a4dd0175bffe17834c56d7d07c2d8acbd682",
+    "scripts/verify-skill-memory-source-locks-db.ts": "99f69020fd0edac1a0481e241c0a20c95641dd8ac5fdcf1ef52953fcc0822099",
+    "scripts/verify-skill-prospective-source-db.ts": "6d58508c03996264cfd5fa7fd9527236870f95ee64194808a266c3dcf8d2c8f9"
+  },
+  "checks": {
+    "focusedVitest": "56 passed",
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "diffCheck": "passed",
+    "freshClusterMemorySourceLocks": "passed",
+    "fiveCategoryComposition": "running"
+  },
+  "database": {
+    "command": "node scripts/verify-ma24-fresh-pilot-new-cluster.ts --memory-source-locks",
+    "engine": "pgvector/pgvector:pg16",
+    "temporaryLocalCluster": true,
+    "migration151InstalledTwice": true,
+    "sixWritersObservedBlocked": [
+      "account method disable",
+      "global method publication withdrawal",
+      "pinned version rewrite",
+      "existing task pin rewrite",
+      "new task pin insertion",
+      "local experience original message edit"
+    ],
+    "allWritersResumedAfterRelease": true,
+    "subsequentDisableWithdrawalContentAndOriginalChangesRejected": true,
+    "foreignTaskAndInvalidArgumentsRejected": true,
+    "applicationVersionAndPinUpdateGrants": false,
+    "collectorFunctionExecutionGranted": false,
+    "productionDataCopied": false,
+    "productDatabaseModified": false,
+    "actualModelCalls": 0,
+    "automaticActivation": false
+  },
+  "limitations": [
+    "Covers methods pinned by original tasks and their stored local-experience provenance.",
+    "Does not certify complete discovery-catalog protection, original file bytes or final time-bound revalidation.",
+    "Production collector/provider identity, real human quality and final activation transaction remain incomplete."
+  ]
+}

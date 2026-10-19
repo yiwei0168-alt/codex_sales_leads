@@ -7,6 +7,7 @@ import {getPool,tenantTransaction,withBoundTenantTransaction} from '../src/lib/r
 import {digest} from '../src/lib/assistant/main/contracts';
 import {lockCurrentSkillExperienceSources,type SourcedSkillVersion} from '../src/lib/assistant/main/skill-source-guard';
 import {lockSkillAcceptanceRunJournals} from '../src/lib/assistant/main/skill-acceptance-run-locks';
+import {lockSkillAcceptancePinnedMethods} from '../src/lib/assistant/main/skill-pinned-method-locks';
 import {encryptMailboxContent} from '../src/lib/mailbox/crypto';
 import {loadDecisionMemory} from '../src/lib/assistant/main/memory-context';
 import {decisionMemoryMessage,assertRecordedDecisionMemory} from '../src/lib/assistant/main/decision-memory-message';
@@ -29,6 +30,7 @@ try{
  const timelineMigration=await readFile('db/migrations/147_skill_timeline_source_locks.sql','utf8');await pool.query(timelineMigration);await pool.query(timelineMigration);
  const decisionMigration=await readFile('db/migrations/148_skill_decision_memory_source_locks.sql','utf8');await pool.query(decisionMigration);await pool.query(decisionMigration);
  const knowledgeMigration=await readFile('db/migrations/149_skill_knowledge_source_locks.sql','utf8');await pool.query(knowledgeMigration);await pool.query(knowledgeMigration);
+ const pinnedMethodMigration=await readFile('db/migrations/151_skill_pinned_method_source_locks.sql','utf8');await pool.query(pinnedMethodMigration);await pool.query(pinnedMethodMigration);
  for(const id of [owner,other])await pool.query("insert into app_user(id,email,display_name,role,status) values($1,$2,'Synthetic source locks','member','active')",[id,`${id}@example.invalid`]);
  const expiringMemory=randomUUID(),futureMemory=randomUUID();
  for(const [id,future] of [[expiringMemory,false],[futureMemory,true]] as const){
@@ -159,6 +161,62 @@ try{
  assert.equal(await lock([]),0);assert.equal(await lock([a,b]),2);
  const guarded=await tenantTransaction(owner,client=>lockCurrentSkillExperienceSources(client,owner,version));
  assert.deepEqual(guarded,{localExperienceSourceLocksHeld:true,observationCount:2});
+ const methodId=randomUUID(),globalMethodId=randomUUID(),lateMethodId=randomUUID();
+ for(const [id,methodOwner,scope,methodVersion] of [[methodId,owner,'account',version],
+  [globalMethodId,other,'global',{...version,source:'synthetic-import',validation:{}}],
+  [lateMethodId,owner,'account',{...version,source:'synthetic-import',validation:{}}]] as const){
+  await pool.query("insert into agent_skill(id,owner_id,name,scope,enabled,published) values($1,$2,'Synthetic pinned method',$3,true,$4)",[id,methodOwner,scope,scope==='global']);
+  await pool.query('insert into agent_skill_version(skill_id,version,content_hash,source,files,validation) values($1,1,$2,$3,$4,$5)',
+   [id,methodVersion.content_hash,methodVersion.source,JSON.stringify(methodVersion.files),JSON.stringify(methodVersion.validation)]);
+ }
+ for(const [runId,skillId] of [[refs[0].runId,methodId],[refs[1].runId,methodId],[refs[0].runId,globalMethodId]])
+  await pool.query('insert into agent_run_skill(user_id,run_id,skill_id,version) values($1,$2,$3,1)',[owner,runId,skillId]);
+ const methodArtifact={plan:{cases:refs.map((_,i)=>({id:String(i),provenance:'safety-fixture'}))},
+  rawReceipts:{safetySources:Object.fromEntries(refs.map((ref,i)=>[String(i),{runId:ref.runId}]))}};
+ const methodLock=()=>tenantTransaction(owner,client=>lockSkillAcceptancePinnedMethods(client,owner,methodArtifact));
+ assert.deepEqual(await methodLock(),{pinnedMethodSourcesLocked:true,pinnedMethodPinCount:3,pinnedMethodVersionCount:2,pinnedMethodExperienceObservationCount:2});
+ const methodRequest=(ids:unknown,user=owner)=>tenantTransaction(user,async client=>(await client.query('select lock_skill_pinned_method_sources($1::uuid[]) n',[ids])).rows[0].n);
+ assert.equal(await methodRequest([]),0);
+ await assert.rejects(methodRequest([refs[0].runId],other),/task unavailable/);
+ await assert.rejects(methodRequest([refs[0].runId,refs[0].runId]),/Invalid/);
+ await assert.rejects(methodRequest(null),/Invalid/);
+ const methodGrants=(await pool.query(`select
+  has_table_privilege('network_copilot_app','agent_skill_version','UPDATE') as version_update,
+  has_table_privilege('network_copilot_app','agent_run_skill','UPDATE') as pin_update,
+  has_function_privilege('network_copilot_skill_collector','lock_skill_pinned_method_sources(uuid[])','EXECUTE') as collector_execute`)).rows[0];
+ assert.deepEqual(methodGrants,{version_update:false,pin_update:false,collector_execute:false});
+ const methodHolder=await pool.connect();let methodWrites:Array<Promise<unknown>>=[];
+ try{
+  await methodHolder.query('begin');await methodHolder.query('set local role network_copilot_app');
+  await methodHolder.query("select set_config('app.current_user_id',$1,true)",[owner]);
+  await methodHolder.query('select lock_skill_decision_memory_sources()');
+  assert.equal((await lockSkillAcceptancePinnedMethods(methodHolder,owner,methodArtifact)).pinnedMethodPinCount,3);
+  const pid=(await methodHolder.query('select pg_backend_pid() as pid')).rows[0].pid as number;
+  methodWrites=[
+   pool.query('update agent_skill set enabled=false where id=$1',[methodId]),
+   pool.query('update agent_skill set published=false where id=$1',[globalMethodId]),
+   pool.query('update agent_skill_version set source=source where skill_id=$1',[methodId]),
+   pool.query('update agent_run_skill set version=version where user_id=$1 and run_id=$2 and skill_id=$3',[owner,refs[0].runId,methodId]),
+   pool.query('insert into agent_run_skill(user_id,run_id,skill_id,version) values($1,$2,$3,1)',[owner,refs[0].runId,lateMethodId]),
+   pool.query('update assistant_message set content=content where id=$1',[refs[0].messageId]),
+  ];
+  for(const work of methodWrites)void work.catch(()=>undefined);
+  let waiting=0;
+  for(let i=0;i<100;i++){waiting=await waitingOn(pid);if(waiting===6)break;await new Promise(resolve=>setTimeout(resolve,20));}
+  assert.equal(waiting,6,'Method disable, global withdrawal, version/pin rewrite, new pin and original-message edit must wait');
+ }finally{await methodHolder.query('rollback');methodHolder.release();}
+ await Promise.all(methodWrites);
+ await assert.rejects(methodLock(),/method source changed/);
+ await pool.query('update agent_skill set enabled=true where id=$1',[methodId]);
+ await assert.rejects(methodLock(),/method source changed/);
+ await pool.query('update agent_skill set published=true where id=$1',[globalMethodId]);
+ await pool.query('update agent_skill_version set files=$2 where skill_id=$1',[methodId,JSON.stringify({'SKILL.md':'Changed synthetic method'})]);
+ await assert.rejects(methodLock(),/method source changed/);
+ await pool.query('update agent_skill_version set files=$2 where skill_id=$1',[methodId,JSON.stringify(files)]);
+ await pool.query('update assistant_message set content=$2 where id=$1',[refs[0].messageId,'Changed synthetic method original']);
+ await assert.rejects(methodLock(),/sources changed after locking/);
+ await pool.query('update assistant_message set content=$2 where id=$1',[refs[0].messageId,quote]);
+ assert.deepEqual(await methodLock(),{pinnedMethodSourcesLocked:true,pinnedMethodPinCount:4,pinnedMethodVersionCount:3,pinnedMethodExperienceObservationCount:2});
  const expiring=[randomUUID(),randomUUID()];
  for(let i=0;i<2;i++)await pool.query(`insert into agent_memory_observation(id,owner_id,kind,content,source_receipt,memory_key,valid_until)
   select $1,owner_id,kind,content,source_receipt,memory_key,clock_timestamp()+interval '1 second' from agent_memory_observation where id=$2`,[expiring[i],[a,b][i]]);
@@ -319,7 +377,7 @@ try{
  assert.deepEqual(state,{corrected:true,invalidated:true,conflict:'open'});
  await assert.rejects(tenantTransaction(owner,client=>lockCurrentSkillExperienceSources(client,owner,version)),/changed after locking/);
  assert.equal((await pool.query("select to_regclass('public.ma24_evaluation_hard_limit') is null absent")).rows[0].absent,true);
- console.log(JSON.stringify({memorySourceLocksDatabase:'passed',correctionInvalidationAndConflictBlocked:true,allWritersResumeAfterRelease:true,
+ console.log(JSON.stringify({memorySourceLocksDatabase:'passed',pinnedMethodSixWritersBlocked:true,pinnedMethodRevocationAndOriginalChangeRejected:true,pinnedMethodPrivilegesUnchanged:true,correctionInvalidationAndConflictBlocked:true,allWritersResumeAfterRelease:true,
   foreignOwnerAndInvalidIdsRejected:true,knowledgePublicationAndReviewWritesBlocked:true,attachmentReadUnderPrelockedPublisherCompletes:true,decisionMemoryWriteAndPhantomGateVerified:true,otherAccountPrivateMemoryWriteContinues:true,decisionMemoryWallClockRevalidated:true,timelineUpdatesAndPhantomInsertsBlocked:true,mailMetadataUpdatesBlocked:true,attachmentMetadataUpdatesBlocked:true,privateAttachmentForeignOwnerRejected:true,taskOriginsAndHistoryAppendBlocked:true,taskAndJournalUpdateAndAppendBlocked:true,foreignTaskJournalLockRejected:true,noObservationUpdateGrant:true,originUpdatesBlocked:true,changedOriginalMessageRejected:true,storedProvenanceLockThenRecheck:true,invalidatedProvenanceRejectedAfterLock:true,expiryAfterTransactionStartRejected:true,
   deferredEvaluationMigrationsApplied:false,actualModelCalls:0,automaticActivation:false}));
 }finally{await pool.end();await getPool().end();}
