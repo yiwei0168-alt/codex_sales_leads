@@ -15,3 +15,5 @@
 `MA24_CONFIGURED_COMBINED=1 node scripts/run-ma24-snapshot-check.mjs --transport-journal`
 
 本段不表示完整组合已经通过；结果将以固定提交、实际进程退出状态和收据更新。
+
+已固定 `3b44c10c9f72bb2abda3b9655fcd16f135e226ba` 启动完整组合，结果待实际进程结束。独立的同提交 Web 镜像构建及全新 156/TLS 数据库登录、账号隔离、原件快照 HTTP 场景已退出 0；此局部通过不替代完整签名组合。[本机候选收据](evidence/ma24-g01-current-candidate-3b44c10c-2026-10-19.json)。
