@@ -126,6 +126,10 @@ export async function processMessageMemoryCorrection(userId:string,runId:string,
           if(!origin||typeof receipt.sourceQuote!=='string'||!isDirectMemorySpan(origin.content,receipt.sourceQuote)){
             targets.rows[0].auto_eligible=false;
             reason='旧记忆原句属于引用或转述，或来源已变化，需在记忆中心核对';
+          }else{
+            // The current correction command is already locked. Retain the old
+            // local extraction's exact original as well, until this commit.
+            await client.query('select lock_local_memory_extraction_source($1,$2,$3)',[receipt.runId,receipt.messageId,origin.content]);
           }
         }
         if(targets.rows.length===1&&targets.rows[0].auto_eligible){

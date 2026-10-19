@@ -1,0 +1,30 @@
+{
+  "stage": "MA24 G03 natural correction direct local-extraction origin lock",
+  "date": "2026-10-19",
+  "baseCommit": "cb0581b3",
+  "status": "direct-origin-protection-passed; broader-lineage-and-production-pending",
+  "implementation": [
+    "After the existing original-source attribution/quote check succeeds for a natural correction of local-qwen3-extraction, lock that exact original run/message/content using migration 154 before applying the correction.",
+    "Current command and the direct old original remain protected through the same correction storage commit. An original changed while awaiting the lock throws source_changed and rolls back.",
+    "Attributed/missing originals retain their review-only behavior; no new source kinds or quality authority are accepted. No migration change."
+  ],
+  "checks": {
+    "targetedTests": "81 passed across five files, including stable original, changed original and attributed-original review behavior",
+    "typecheck": "exit 0",
+    "focusedEslint": "exit 0",
+    "diffCheck": "exit 0",
+    "actualSourceMatrix": {"exitCode": 0, "log": "tmp/ma24-natural-origin-lock-2026-10-19.log", "cases": 10},
+    "earlyOrigin": "Hold the old conversation row, observe natural correction waiting in the old-source lock function after reading original text, edit the old message in the holder and commit. Source mismatch rejects; pre-existing observation/notice counts are unchanged.",
+    "lateOrigin": "Hold correction observation INSERT after both source locks. A concurrent edit of the old message is observed waiting on the correction backend. Release: correction commits first, then the old-message edit completes; exactly one new observation/notice.",
+    "existingSourceCases": "Prior eight instruction/account/run/receipt mutation cases still pass with the same assertions.",
+    "correctionRegression": {"exitCode": 0, "log": "tmp/ma24-natural-origin-regression-2026-10-19.log"},
+    "leaseRegression": {"exitCode": 0, "log": "tmp/ma24-natural-origin-lease-regression-2026-10-19.log", "cases": 4},
+    "cleanup": "Scoped test trigger/functions and all synthetic old/current conversations, runs/messages, receipts, jobs and observation-related records removed from the isolated clone."
+  },
+  "limits": [
+    "Only the direct old source of a local-qwen3-extraction observation used by natural correction is newly locked. This is not recursive verification of arbitrary historical user-correction chains or imported provenance.",
+    "Post-commit edits are allowed and do not automatically retract the committed correction. Other evidence readers retain their own source-currentness checks.",
+    "No new migration, business DB update, model/network call, deployment or quality approval. Clone's existing development security warning remains.",
+    "Product image, full signed current-source composition, sustained concurrency/capacity and production acceptance remain unverified for this change. Automatic activation remains closed."
+  ]
+}
