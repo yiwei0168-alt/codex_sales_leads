@@ -7,6 +7,7 @@ import {readSkillAcceptanceReviewCase} from './skill-acceptance-review';
 import {evaluateLockedSkillAcceptancePolicy} from './skill-locked-acceptance-policy';
 import {lockSkillAcceptanceRunJournals} from './skill-acceptance-run-locks';
 import {lockSkillAcceptancePinnedMethods} from './skill-pinned-method-locks';
+import {withCurrentDecisionMemory} from './memory-message-guard';
 
 /** Rebuild every planned case under retained evidence locks. Only hashes leave this
  * function. Source revocation rows are not yet locked through the final update. */
@@ -39,7 +40,12 @@ export async function revalidateLockedSkillAcceptanceMaterials(client:PoolClient
 /** Complete read-side preparation, not an activation grant: mutable source
  * revocations and production provenance still need final transaction validation. */
 export async function evaluateLockedSkillAcceptanceReadiness(client:PoolClient,context:{userId:string},bundleId:string){
+ assertLocalAnalysisBoundary();
  return withBoundTenantTransaction(client,context.userId,async()=>{
+  // Hold admission before capturing the memory snapshot. Row locks cannot stop
+  // valid_from/valid_until from crossing while materials and policy are rebuilt.
+  await client.query('select lock_skill_knowledge_sources()');
+  return withCurrentDecisionMemory(context.userId,async()=>{
   const materials=await revalidateLockedSkillAcceptanceMaterials(client,context,bundleId);
   const policy=await evaluateLockedSkillAcceptancePolicy(client,context,bundleId);
   if(materials.artifactHash!==policy.artifactHash||materials.latestReviewHash!==policy.latestReviewHash)
@@ -47,7 +53,9 @@ export async function evaluateLockedSkillAcceptanceReadiness(client:PoolClient,c
   return {...policy,prospectiveCaptureSourcesLocked:materials.prospectiveCaptureSourcesLocked,prospectiveJobCount:materials.prospectiveJobCount,knowledgeSourcesLocked:materials.knowledgeSourcesLocked,decisionMemorySourcesLocked:materials.decisionMemorySourcesLocked,timelineSourcesLocked:materials.timelineSourcesLocked,timelineCustomerCount:materials.timelineCustomerCount,mailReadSourcesLocked:materials.mailReadSourcesLocked,mailCount:materials.mailCount,attachmentMetadataLocked:materials.attachmentMetadataLocked,attachmentCount:materials.attachmentCount,taskOriginsLocked:materials.taskOriginsLocked,taskJournalsLocked:materials.taskJournalsLocked,runCount:materials.runCount,materials:materials.materials,materialsHash:materials.materialsHash,sourcePayloadsRevalidated:true as const,
    pinnedMethodSourcesLocked:materials.pinnedMethodSourcesLocked,pinnedMethodPinCount:materials.pinnedMethodPinCount,
    skillCatalogSourcesLocked:materials.skillCatalogSourcesLocked,
+   decisionMemorySnapshotRevalidated:true as const,
    pinnedMethodVersionCount:materials.pinnedMethodVersionCount,pinnedMethodExperienceObservationCount:materials.pinnedMethodExperienceObservationCount,
    sourceRevocationsLocked:false as const,collectorProvenanceVerified:false as const,automaticActivation:false as const};
+  });
  });
 }

@@ -1,0 +1,37 @@
+{
+  "stage": "MA24 G09 end-of-preparation decision memory snapshot",
+  "date": "2026-10-19",
+  "sourceBaseCommit": "600c371c",
+  "filesSha256": {
+    "src/lib/assistant/main/skill-locked-materials.ts": "95ac795d2596bfba64f5cf6e8b85300a28ea15425edcd71fb7b550c60a6d050c",
+    "src/lib/assistant/main/skill-locked-materials.test.ts": "2b2e51696a0b7093e08f3fe8bfaf163e824f01c9e5e43172857b640e65228b61",
+    "scripts/verify-skill-memory-source-locks-db.ts": "f458feeee8ebf5873144f546a085a9fcdd9ceea29809ddb4e43f1fc580bf579e",
+    "scripts/fixtures/skill-composition-database.ts": "a96c2a94894e177e178fe2d717d0c70248699745a3709914da1fa3b25eeed738"
+  },
+  "checks": {
+    "focusedVitest": "30 passed",
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "diffCheck": "passed",
+    "freshClusterMemorySourceLocks": "passed",
+    "fixedSnapshotFiveCategoryComposition": "pending"
+  },
+  "database": {
+    "command": "node scripts/verify-ma24-fresh-pilot-new-cluster.ts --memory-source-locks",
+    "decisionMemoryFinalPreparationBoundaryRejected": true,
+    "sourceAdmissionHeld": true,
+    "boundTenantTransactionUsed": true,
+    "actualGuard": "withCurrentDecisionMemory",
+    "callback": "synthetic preparation with PostgreSQL pg_sleep crossing valid_until",
+    "error": "MemoryContextChangedError",
+    "productDatabaseModified": false,
+    "actualModelCalls": 0,
+    "automaticActivation": false
+  },
+  "scope": "The actual guard rejects a database-clock expiry inside a retained-source transaction; unit integration verifies that readiness encloses both material and policy preparation in this guard. No whole-workflow expiry case is claimed.",
+  "limitations": [
+    "Before/after decision-memory snapshot comparison only, not a transaction commit-time grant.",
+    "Explicit historical observation times and pinned experience time bounds require separate final checks.",
+    "File bytes, production identities, human quality and final activation remain incomplete."
+  ]
+}

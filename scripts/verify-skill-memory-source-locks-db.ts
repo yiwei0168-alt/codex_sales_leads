@@ -11,6 +11,7 @@ import {lockSkillAcceptancePinnedMethods} from '../src/lib/assistant/main/skill-
 import {encryptMailboxContent} from '../src/lib/mailbox/crypto';
 import {loadDecisionMemory} from '../src/lib/assistant/main/memory-context';
 import {decisionMemoryMessage,assertRecordedDecisionMemory} from '../src/lib/assistant/main/decision-memory-message';
+import {withCurrentDecisionMemory,MemoryContextChangedError} from '../src/lib/assistant/main/memory-message-guard';
 
 nextEnv.loadEnvConfig(process.cwd());assert.equal(process.env.MA24_DISPOSABLE_MEMORY_SOURCE_LOCKS,'1','Disposable harness required');
 process.env.PGOPTIONS='-c statement_timeout=10000';
@@ -51,6 +52,17 @@ try{
   assert.throws(()=>assertRecordedDecisionMemory(messages,after),/decision memory changed/);
  }));
  assert(!(await loadDecisionMemory(other)).some(row=>row.id===futureMemory));
+ const preparationMemory=randomUUID();
+ await pool.query(`insert into agent_memory(id,owner_id,scope,kind,memory_key,source_kind,valid_from,valid_until)
+  values($1,$2,'account','preference',$1::uuid::text,'explicit',clock_timestamp()-interval '1 minute',clock_timestamp()+interval '2 seconds')`,[preparationMemory,owner]);
+ await pool.query("insert into agent_memory_version(memory_id,version,content,scope_snapshot) values($1,1,'Synthetic preparation-time preference','{}')",[preparationMemory]);
+ await assert.rejects(tenantTransaction(owner,client=>withBoundTenantTransaction(client,owner,async()=>{
+  await client.query('select lock_skill_knowledge_sources()');
+  return withCurrentDecisionMemory(owner,async()=>{
+   assert((await loadDecisionMemory(owner)).some(row=>row.id===preparationMemory));
+   await client.query('select pg_sleep(2.1)');return {syntheticReadiness:true};
+  });
+ })),MemoryContextChangedError);
  const globalMemory=randomUUID();
  await pool.query("insert into agent_memory(id,owner_id,scope,kind,memory_key,source_kind) values($1,$2,'global','policy',$1::uuid::text,'explicit')",[globalMemory,owner]);
  await pool.query("insert into agent_memory_version(memory_id,version,content,scope_snapshot) values($1,1,'Synthetic shared policy','{}')",[globalMemory]);
@@ -377,7 +389,7 @@ try{
  assert.deepEqual(state,{corrected:true,invalidated:true,conflict:'open'});
  await assert.rejects(tenantTransaction(owner,client=>lockCurrentSkillExperienceSources(client,owner,version)),/changed after locking/);
  assert.equal((await pool.query("select to_regclass('public.ma24_evaluation_hard_limit') is null absent")).rows[0].absent,true);
- console.log(JSON.stringify({memorySourceLocksDatabase:'passed',pinnedMethodSixWritersBlocked:true,pinnedMethodRevocationAndOriginalChangeRejected:true,pinnedMethodPrivilegesUnchanged:true,correctionInvalidationAndConflictBlocked:true,allWritersResumeAfterRelease:true,
+ console.log(JSON.stringify({memorySourceLocksDatabase:'passed',decisionMemoryFinalPreparationBoundaryRejected:true,pinnedMethodSixWritersBlocked:true,pinnedMethodRevocationAndOriginalChangeRejected:true,pinnedMethodPrivilegesUnchanged:true,correctionInvalidationAndConflictBlocked:true,allWritersResumeAfterRelease:true,
   foreignOwnerAndInvalidIdsRejected:true,knowledgePublicationAndReviewWritesBlocked:true,attachmentReadUnderPrelockedPublisherCompletes:true,decisionMemoryWriteAndPhantomGateVerified:true,otherAccountPrivateMemoryWriteContinues:true,decisionMemoryWallClockRevalidated:true,timelineUpdatesAndPhantomInsertsBlocked:true,mailMetadataUpdatesBlocked:true,attachmentMetadataUpdatesBlocked:true,privateAttachmentForeignOwnerRejected:true,taskOriginsAndHistoryAppendBlocked:true,taskAndJournalUpdateAndAppendBlocked:true,foreignTaskJournalLockRejected:true,noObservationUpdateGrant:true,originUpdatesBlocked:true,changedOriginalMessageRejected:true,storedProvenanceLockThenRecheck:true,invalidatedProvenanceRejectedAfterLock:true,expiryAfterTransactionStartRejected:true,
   deferredEvaluationMigrationsApplied:false,actualModelCalls:0,automaticActivation:false}));
 }finally{await pool.end();await getPool().end();}

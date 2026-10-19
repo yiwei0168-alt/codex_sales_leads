@@ -99,6 +99,7 @@ export async function verifyCompositionDatabaseFixture(input:{pool:Pool;owner:st
   assert.equal(readiness.decisionMemorySourcesLocked,true);
   assert.equal(readiness.knowledgeSourcesLocked,true);
   assert.equal(readiness.skillCatalogSourcesLocked,true);assert.equal(readiness.pinnedMethodSourcesLocked,true);
+  assert.equal(readiness.decisionMemorySnapshotRevalidated,true);
   assert.equal(readiness.policyPassed,false);assert.equal(readiness.automaticActivation,false);assert.equal(readiness.sourceRevocationsLocked,false);
   assert(!readiness.blockers.includes('runtime-or-configuration-changed'));assert(readiness.blockers.includes('missing-judgment:replay'));
  }
