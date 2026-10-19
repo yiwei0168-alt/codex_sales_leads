@@ -390,7 +390,7 @@ try {
       }
       const checked=await run(process.execPath,['scripts/run-tsx.cjs','scripts/verify-skill-acceptance-originals-db.ts'],
         {...process.env,DATABASE_URL:appUrl.toString(),DATABASE_MIGRATION_URL:adminUrl.toString(),MA24_DISPOSABLE_ORIGINAL_CAPTURE:'1',
-          ...(originalDirectory?{MA24_ORIGINALS_HTTP_BASE:base,MA24_ORIGINALS_OWNER_COOKIE:firstCookie,MA24_ORIGINALS_PEER_COOKIE:secondCookie,MA24_ORIGINALS_TLS_KEY:join(originalDirectory,'key.pem'),MA24_ORIGINALS_TLS_CERT:join(originalDirectory,'cert.pem')}:{})});
+          ...(originalDirectory?{MA24_ORIGINALS_HTTP_BASE:base,MA24_ORIGINALS_OWNER_COOKIE:firstCookie,MA24_ORIGINALS_PEER_COOKIE:secondCookie,MA24_ORIGINALS_WEB_CONTAINER:webContainerId!,MA24_ORIGINALS_TLS_KEY:join(originalDirectory,'key.pem'),MA24_ORIGINALS_TLS_CERT:join(originalDirectory,'cert.pem')}:{})});
       assert.equal(checked.code,0,checked.output);assert(checked.output.includes('"actualFilesAndDatabase":true'),checked.output);console.log(checked.output.trim());
       }finally{if(originalDirectory)rmSync(originalDirectory,{recursive:true,force:true});}
     }

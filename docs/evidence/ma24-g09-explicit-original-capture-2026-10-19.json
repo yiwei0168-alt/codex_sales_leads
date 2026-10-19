@@ -1,0 +1,62 @@
+{
+  "stage": "G09 explicit acceptance original capture",
+  "applicationCommit": "6b7089c997e8ea750f642c47caa21ba2109932da",
+  "webImage": "ma24-pilot-web:6b7089c9",
+  "webImageId": "sha256:4303810b1da2b88a8180724eeab7ec63913c65673c4f160f60807bdc2cafd31b",
+  "databaseMigrationThrough": 157,
+  "buildExitCode": 0,
+  "typecheckExitCode": 0,
+  "lintExitCode": 0,
+  "focusedTests": {"files": 4, "passed": 80},
+  "actualFilesAndDatabase": {
+    "passed": true,
+    "previewDoesNotWrite": true,
+    "serverDerivedAttachmentAndKnowledgeReceiptAssets": true,
+    "foreignAccountAndExtraCallerSelectorsRejected": true,
+    "staleManifestRejected": true,
+    "oversizeRejectedBeforeWrites": true,
+    "lateCorruptFileRollsBackEarlierCopies": true,
+    "idempotentSnapshotReuseAfterHostFilesRemoved": true,
+    "sharedWithdrawalDisabledAccountAndFreezeRevocationRejected": true
+  },
+  "compiledHttp": {"passed": true, "realLogin": true, "ownerPreview": true, "foreignAccountRejected": true, "foreignOriginRejected": true},
+  "httpsBrowser": {
+    "passed": true,
+    "explicitSaveFromTwoPendingToTwoCaptured": true,
+    "saveDisabledAfterSuccess": true,
+    "noPageErrors": true,
+    "noHorizontalOverflow": true,
+    "screenshot": "tmp/ma24-originals-ui-eb908049-3350-48ef-9185-a5cac7fa1898.png",
+    "screenshotVisuallyInspected": true
+  },
+  "successfulRun": {
+    "command": "MA24_ORIGINALS_HTTP=1 node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --web-image=ma24-pilot-web:6b7089c9 --current-schema --acceptance-originals",
+    "exitCode": 0,
+    "log": "tmp/ma24-originals-http-browser-6b7089c9-fixture-files.log",
+    "logSha256": "d19d67ac133214a780265636a6a25c69edcfb1b4a6a636f59b9a9ef1ede87e28",
+    "fixtureSha256": "dfd5dbacae5debe31020833102f9bce338ece7f56c950bc14b4d3b89987b5289",
+    "browserVerifierSha256": "25a415f7ed3a7ee93f505ce976268d815e618c9c667bf7582cbc962214e42d8f",
+    "clusterHarnessSha256": "24220516e4ac422bc9a81b40830b100d667a1dfa7aa69ab9a4b507d46d00b8f0"
+  },
+  "retainedInitialFailure": {
+    "exitCode": 1,
+    "log": "tmp/ma24-originals-http-browser-6b7089c9.log",
+    "browserCaptureStatus": 409,
+    "fixtureIssue": "Synthetic original files existed on host only; isolated Web container had no copies.",
+    "repair": "Copy only the two random synthetic fixture originals into the temporary Web container; rerun same application image."
+  },
+  "scope": {
+    "syntheticSourcesOnly": true,
+    "fixtureCases": "Five historical replay references to one synthetic task; not a complete five-category acceptance.",
+    "hostCorpusMounted": false,
+    "harnessChangedAfterApplicationCommit": true,
+    "temporaryFilesContainersNetworksAndTlsDirectoryCleaned": true,
+    "humanJudgmentCreated": false,
+    "actualModelCalls": 0,
+    "automaticActivation": false,
+    "productionQualified": false,
+    "g01ThroughG13Complete": false,
+    "g14ThroughG20Advanced": false,
+    "lanDeployed": false
+  }
+}

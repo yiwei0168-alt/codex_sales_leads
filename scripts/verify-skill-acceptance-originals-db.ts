@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import {createHash,randomUUID} from 'node:crypto';
 import {mkdir,writeFile,unlink} from 'node:fs/promises';
+import {execFileSync} from 'node:child_process';
 import nextEnv from '@next/env';
 import {Pool} from 'pg';
 import {getPool} from '../src/lib/rag/db';
@@ -23,7 +24,8 @@ const transaction:SkillCollectorTransaction=async(actor,work)=>{const client=awa
  }catch(error){await client.query('rollback');throw error;}finally{client.release();}};
 const results:string[]=[];
 const http=process.env.MA24_ORIGINALS_HTTP_BASE,ownerCookie=process.env.MA24_ORIGINALS_OWNER_COOKIE,peerCookie=process.env.MA24_ORIGINALS_PEER_COOKIE;
-if(http){assert(ownerCookie&&peerCookie);assert.equal(new URL(http).hostname,'127.0.0.1');}
+const webContainer=process.env.MA24_ORIGINALS_WEB_CONTAINER;
+if(http){assert(ownerCookie&&peerCookie);assert.equal(new URL(http).hostname,'127.0.0.1');assert.match(webContainer??'',/^[a-f0-9]{64}$/);}
 let browserResult:unknown;
 try{
  for(const id of [owner,peer])await pool.query("insert into app_user(id,email,display_name,role,status) values($1,$2,'Synthetic originals','member','active')",[id,`${id}@example.invalid`]);
@@ -66,6 +68,9 @@ try{
  await assert.rejects(captureSkillAcceptanceOriginals(context,input));assert.equal(await count(),0,'Earlier capture must roll back when later bytes mismatch');
  await writeFile(files[1],bytes[1]);
  if(http){
+  // Only these two random synthetic files enter the disposable container. The
+  // host corpus is neither mounted nor copied into the isolated Web runtime.
+  for(const path of files)execFileSync('docker',['cp',path,`${webContainer}:/app/${path}`],{windowsHide:true,stdio:'pipe'});
   const endpoint=`${http}/api/assistant/skills/acceptance-originals`;
   // The fixture uses dedicated users above; create real sessions using a
   // test-only password update, never caller-selected ownership on the endpoint.
@@ -82,6 +87,7 @@ try{
   const {verifyOriginalsBrowser}=await import('./lib/verify-ma24-originals-browser');
   browserResult=await verifyOriginalsBrowser({base:http,cookie:ownedCookie,keyPath:process.env.MA24_ORIGINALS_TLS_KEY!,certPath:process.env.MA24_ORIGINALS_TLS_CERT!,skillName:'Synthetic original preservation'});
   assert.equal(await count(),2);results.push('actual HTTP ownership/origin checks and HTTPS browser explicit preview/save pass');
+  for(const path of files)execFileSync('docker',['exec',webContainer!,'node','-e','require("node:fs").unlinkSync(process.argv[1])',`/app/${path}`],{windowsHide:true,stdio:'pipe'});
  }
  const saved=await captureSkillAcceptanceOriginals(context,input);assert.equal(saved.capturedCount,2);assert.equal(saved.pendingCount,0);assert.equal(await count(),2);
  results.push('oversize rejects before capture; late file hash mismatch rolls back all copies; explicit capture succeeds');
