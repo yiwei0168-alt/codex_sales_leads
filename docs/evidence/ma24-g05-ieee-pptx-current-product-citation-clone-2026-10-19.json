@@ -1,0 +1,34 @@
+{
+  "date": "2026-10-19",
+  "goal": "G05",
+  "ruleId": "MA24-18",
+  "command": "node scripts/run-tsx.cjs scripts/verify-ieee-gepof-full-review-clone.ts",
+  "result": {
+    "exitCode": 0,
+    "cloneOnly": true,
+    "sourceSha256": "030a730584498f8b98109a1bf2da22a29cc443021c63fbd1c18cf2bad2da6910",
+    "officialDownloadMatchedQuarantinedOriginal": true,
+    "artifactParity": "identical blocks after extractor-version, storage-key and four reviewed-table-status normalization",
+    "reviewTotal": 133,
+    "reviewSavedAndReadBack": 133,
+    "reviewResolved": 133,
+    "treeStatus": "searchable",
+    "evidenceNodes": 540,
+    "exactCitations": [
+      {"slide": 5, "blockId": "slide-5-text-2", "phrase": "Specify operation over at least 15m of POF with 4 POF connections"},
+      {"slide": 22, "blockId": "slide-22-text-2", "phrase": "SG has not adopted technical proposals"}
+    ],
+    "otherAccountDenied": true,
+    "wrongCollectionDenied": true,
+    "syntheticFixtureRowsAndFilesCleaned": true,
+    "externalCalls": 0,
+    "modelCalls": 0,
+    "independentQualityGoldCreated": 0,
+    "productionWrites": 0
+  },
+  "limits": [
+    "The task covers only PPTX reading and source-coordinate citation acceptance, as previously authorized.",
+    "Reviewer identities and decisions are synthetic; the verifier does not evaluate a model answer or establish independent answer quality.",
+    "This is an isolated local-clone result, not deployed production runtime acceptance or full G05 completion."
+  ]
+}
