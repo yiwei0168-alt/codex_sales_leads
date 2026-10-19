@@ -1,0 +1,34 @@
+{
+  "stage": "MA24 G03 ordinary local memory extraction source binding",
+  "date": "2026-10-19",
+  "implementation": [
+    "Initial and final selection use the same deterministic created_at,id ordering for the first run-bound user message.",
+    "Before and after ordinary extraction writes, the owning transaction reads the current active account, completed main-agent run, and first message identity/exact content; changes reject and roll back this transaction.",
+    "Initial job lock and final ready update require the current lease token and a five-minute wall-clock window. Final expiry throws rather than committing partial ordinary extraction writes.",
+    "source_changed and extraction_lease_expired are recorded as queued retry reasons through the existing defer path."
+  ],
+  "checks": {
+    "unitTests": "32 passed in local-memory-extraction.test.ts, including changes before/after observation writes",
+    "typecheck": "npm.cmd run typecheck: exit 0",
+    "lint": "focused ESLint for extraction, tests and verifier: exit 0",
+    "verifier": "scripts/verify-local-memory-source-race-clone.ts",
+    "actualDatabase": "exit 0 on localhost isolated replay clone; four cases: message edited during synthetic model response, account disabled, run made failed, and message edited after observed insertion wait",
+    "lateMutation": "A scoped fixture AFTER INSERT trigger waits on a held advisory lock; after observing the actual extraction INSERT waiting, another transaction commits a source edit. Releasing the holder reaches final source rejection and rolls back the observation/notice.",
+    "retry": "Each case has zero observations/notices after rejection and job queued with source_changed; restoring source/account/run and retrying creates exactly one observation.",
+    "existingCorrectionRegression": "verify-message-memory-correction-clone.ts: exit 0, explicit/natural correction, notice/outbox idempotence, undo, missing/changed/attributed sources and cross-account boundaries retained",
+    "fixtureCleanup": "Scoped fixture triggers/functions, accounts, messages, jobs, observations and downstream records removed. Cleanup uses existing clone-only privileged maintenance pattern, not a product deletion API."
+  },
+  "limits": [
+    "Local model responses are synthetic; no actual model/network calls or real user quality evaluation.",
+    "This change covers the ordinary preference/business-fact/experience storage transaction. Earlier tool-receipt learning and correction transactions retain their own guards; this is not whole-job atomicity.",
+    "Source checks are fresh point-in-time reads, not retained locks against source changes through commit. No account/source lease through commit is claimed.",
+    "Actual natural lease expiry after writes is not injected by this verifier.",
+    "Development clone connection emits its existing production security warning; no production TLS/login qualification or deployment.",
+    "The running fixed e2891a90 signed G09 composition does not contain this later change."
+  ],
+  "filesSha256": {
+    "src/lib/knowledge/local-memory-extraction.ts": "f11fb10f46fd1ff61168fdfcd5c6a55cc029caec60acd4e4d6a1653b1a8834b5",
+    "src/lib/knowledge/local-memory-extraction.test.ts": "08f275df0804963362b9a35199c944a2bc6d39b8856876dc677d3a5187bdec24",
+    "scripts/verify-local-memory-source-race-clone.ts": "8aae8cb6b189fbb1346ec633344af2320244db094f0568eb237258a69de70c99"
+  }
+}

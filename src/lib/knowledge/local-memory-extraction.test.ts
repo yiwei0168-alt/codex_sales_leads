@@ -11,6 +11,23 @@ import {extractLocalBusinessFacts,extractLocalPreferences,extractLocalExperience
 const job={status:"queued",updated_at:"2026-09-24",next_attempt_at:"2026-09-24",message_id:"message-1",message_content:"I prefer concise answers for my work."};
 const model={name:"qwen3:8b",digest:"500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41"};
 const response=(value:unknown,ok=true)=>({ok,json:async()=>value}) as Response;
+const extractionClient=(content=job.message_content)=>({query:vi.fn(async(sql:string)=>sql.includes('select m.id as message_id')
+  ?{rows:[{message_id:job.message_id,message_content:content}],rowCount:1}:{rows:[{run_id:'run-1'}],rowCount:1})});
+
+it.each(['before','after'])('defers instead of completing when source changes %s memory writes',async boundary=>{
+  mock.query.mockResolvedValueOnce([job]).mockResolvedValueOnce([{run_id:'run-1'}]).mockResolvedValue([{run_id:'run-1'}]);
+  let checks=0;
+  const client={query:vi.fn(async(sql:string)=>{
+    if(sql.includes('select m.id as message_id'))return {rows:[{message_id:job.message_id,message_content:++checks===(boundary==='before'?1:2)?'changed':job.message_content}],rowCount:1};
+    return {rows:[{run_id:'run-1'}],rowCount:1};
+  })};
+  mock.transaction.mockImplementation(async(_user,run)=>run(client));
+  const fetcher=vi.fn(async(url:URL)=>url.pathname==='/api/tags'?response({models:[model]}):response({message:{content:JSON.stringify({items:[{memoryKey:'answer-style',content:'Concise',sourceQuote:'I prefer concise answers',confidence:0.9}]})}}));
+  expect(await processLocalMemoryExtraction('user-1','run-1',fetcher as typeof fetch)).toBe('queued');
+  expect(mock.observe).toHaveBeenCalledTimes(boundary==='before'?0:1);
+  expect(client.query.mock.calls.some(call=>call[0].includes("status='ready'"))).toBe(false);
+  expect(mock.query.mock.calls.at(-1)?.[2]).toContain('source_changed');
+});
 it.each([
   ['preference','I prefer short summaries.','Please summarize. Customer said: QUOTE'],
   ['preference','I prefer short summaries.','Please summarize.\n> QUOTE'],
@@ -45,7 +62,7 @@ it("rejects a different artifact under the same model name",async()=>{
 
 it("stores only schema-valid preferences with exact source quotes and marks ready atomically",async()=>{
   mock.query.mockResolvedValueOnce([job]).mockResolvedValueOnce([{run_id:"run-1"}]);
-  const client={query:vi.fn(async()=>({rows:[{run_id:"run-1"}],rowCount:1}))};
+  const client=extractionClient();
   mock.transaction.mockImplementation(async(_user:string,run:(dbClient:typeof client)=>Promise<unknown>)=>run(client));
   mock.observe.mockResolvedValue("observation-1");
   const fetcher=vi.fn(async(url:URL)=>url.pathname==="/api/tags"?response({models:[model]}):
@@ -143,7 +160,7 @@ it("does not learn an instruction override as an account preference",async()=>{
 
 it("stores an explicit company fact only as unverified internal memory",async()=>{
   mock.query.mockResolvedValueOnce([{...job,message_content:"Our distributor signed a contract in 2024."}]).mockResolvedValueOnce([{run_id:"run-1"}]);
-  const client={query:vi.fn(async()=>({rows:[{run_id:"run-1"}],rowCount:1}))};
+  const client=extractionClient("Our distributor signed a contract in 2024.");
   mock.transaction.mockImplementation(async(_user:string,run:(dbClient:typeof client)=>Promise<unknown>)=>run(client));
   mock.observe.mockResolvedValue("observation-1");
   const fetcher=vi.fn(async(url:URL)=>url.pathname==="/api/tags"?response({models:[model]}):
@@ -177,7 +194,7 @@ it("rejects a non-loopback model URL before reading a private source",async()=>{
 it('keeps a reported outcome as its exact source and never certifies method success',async()=>{
   const quote='I found comparing original tables reduced missed specifications.';
   mock.query.mockResolvedValueOnce([{...job,message_content:quote}]).mockResolvedValueOnce([{run_id:'run-1'}]);
-  const client={query:vi.fn(async()=>({rows:[{run_id:'run-1'}],rowCount:1}))};
+  const client=extractionClient(quote);
   mock.transaction.mockImplementation(async(_user,run)=>run(client));
   const fetcher=vi.fn(async(url:URL,options?:RequestInit)=>{
     expect(options?.redirect).toBe('error');

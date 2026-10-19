@@ -132,7 +132,7 @@ export async function processLocalMemoryExtraction(userId:string,runId:string,fe
     from agent_memory_extraction_job j join agent_run r on r.user_id=j.owner_id and r.id=j.run_id
     join app_user u on u.id=j.owner_id and u.status='active'
     left join lateral(select id,content from assistant_message where user_id=j.owner_id and conversation_id=r.conversation_id
-      and metadata->>'runId'=j.run_id::text and role='user' order by created_at asc limit 1) m on true
+      and metadata->>'runId'=j.run_id::text and role='user' order by created_at,id limit 1) m on true
     where j.owner_id=$1 and j.run_id=$2 and r.status='completed' and r.execution_kind='main-agent'`,[userId,runId]);
   const job=rows[0];
   if(!job)return "unavailable";
@@ -183,8 +183,21 @@ export async function processLocalMemoryExtraction(userId:string,runId:string,fe
       ...experiences.map(item=>({...item,kind:'experience' as const}))];
     phase='memory_storage';
     return await tenantTransaction(userId,async client=>{
-      const locked=await client.query("select run_id from agent_memory_extraction_job where owner_id=$1 and run_id=$2 and status='processing' and lease_token=$3 for update",[userId,runId,lease]);
+      const locked=await client.query("select run_id from agent_memory_extraction_job where owner_id=$1 and run_id=$2 and status='processing' and lease_token=$3 and updated_at>clock_timestamp()-interval '5 minutes' for update",[userId,runId,lease]);
       if(!locked.rowCount)return "busy";
+      const recheckSource=async()=>{
+        const current=(await client.query<{message_id:string;message_content:string}>(
+          `select m.id as message_id,m.content as message_content from agent_run r
+           join app_user u on u.id=r.user_id and u.status='active'
+           join lateral(select id,content from assistant_message where user_id=r.user_id
+             and conversation_id=r.conversation_id and metadata->>'runId'=r.id::text and role='user'
+             order by created_at,id limit 1) m on true
+           where r.user_id=$1 and r.id=$2 and r.status='completed' and r.execution_kind='main-agent'`,
+          [userId,runId])).rows[0];
+        if(!current||current.message_id!==job.message_id||current.message_content!==job.message_content)
+          throw new Error('source_changed');
+      };
+      await recheckSource();
       for(const item of items){
         const fingerprint=createHash("sha256").update(JSON.stringify([item.kind,item.memoryKey,item.content,item.sourceQuote])).digest("hex");
         await observeMemoryInTransaction(client,userId,{kind:item.kind,content:item.content,memoryKey:item.memoryKey,
@@ -195,11 +208,13 @@ export async function processLocalMemoryExtraction(userId:string,runId:string,fe
             ...(item.kind==='experience'?{successVerified:false,observationBasis:'user-report'}:{})}});
         if(item.kind==='experience')await proposeExperienceSkillInTransaction(client,userId,item.memoryKey,item.content);
       }
-      await client.query("update agent_memory_extraction_job set status='ready',lease_token=null,error_code=null,updated_at=now() where owner_id=$1 and run_id=$2 and lease_token=$3",[userId,runId,lease]);
+      await recheckSource();
+      const completed=await client.query("update agent_memory_extraction_job set status='ready',lease_token=null,error_code=null,updated_at=now() where owner_id=$1 and run_id=$2 and lease_token=$3 and status='processing' and updated_at>clock_timestamp()-interval '5 minutes' returning run_id",[userId,runId,lease]);
+      if(!completed.rowCount)throw new Error('extraction_lease_expired');
       return "ready";
     });
   }catch(error){
-    const code=error instanceof Error&&error.message==="schema_invalid"?"schema_invalid":`${phase}_error`;
+    const code=error instanceof Error&&['schema_invalid','source_changed','extraction_lease_expired'].includes(error.message)?error.message:`${phase}_error`;
     return defer(code,600);
   }
 }
