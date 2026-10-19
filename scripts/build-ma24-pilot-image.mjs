@@ -5,7 +5,8 @@ import { fileURLToPath } from "node:url";
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const releasesRoot = join(repoRoot, ".next-releases");
-const commit = execFileSync("git", ["rev-parse", "HEAD"], { cwd: repoRoot, encoding: "utf8" }).trim();
+const commit = execFileSync("git", ["rev-parse", "--verify", "HEAD^{commit}"], { cwd: repoRoot, encoding: "utf8" }).trim();
+if(!/^[a-f0-9]{40}$/.test(commit))throw new Error('Fixed commit required');
 const tag = process.argv[2] ?? `ma24-pilot-web:${commit.slice(0, 8)}`;
 const target = process.argv[3];
 if (process.argv.length > 4 || (target && target !== '--target=builder')) throw new Error('Only --target=builder is supported');
@@ -30,12 +31,12 @@ function run(command, args) {
 
 try {
   console.log(`Building ${tag} from committed source ${commit}`);
-  run("git", ["archive", "--format=tar", "HEAD", "-o", archive]);
+  run("git", ["archive", "--format=tar", commit, "-o", archive]);
   run("tar", ["-xf", archive, "-C", context]);
   for (const path of [".dockerignore", "Dockerfile.pilot-web", "scripts/start-ma24-pilot-container.mjs"]) {
     if (!existsSync(join(context, path))) throw new Error(`Committed image input is missing: ${path}`);
   }
-  run("docker", ["build", ...(target ? ['--target', 'builder'] : []), "--file", join(context, "Dockerfile.pilot-web"), "--tag", tag, context]);
+  run("docker", ["build", ...(target ? ['--target', 'builder'] : []), "--file", join(context, "Dockerfile.pilot-web"), "--build-arg", `SOURCE_COMMIT=${commit}`, "--tag", tag, context]);
   console.log(`Built ${tag} from ${commit}`);
 } finally {
   rmSync(temporaryRoot, { recursive: true, force: true });

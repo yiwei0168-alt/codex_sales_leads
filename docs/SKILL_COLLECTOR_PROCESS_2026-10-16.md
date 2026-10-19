@@ -1,5 +1,7 @@
 # G09 独立采集进程
 
+2026-10-19 构建可复现性修复：Web 与采集器统一既有固定 Node 基础摘要，两构建器按先前解析的确切 commit 归档，Web 补 revision label，运行包检查按不可变镜像 ID 执行并要求 revision 一致。当前为语法/差异检查阶段，实际同提交双镜像检查待执行；不认证完整依赖、提供方或启用。[修复范围](REPRODUCIBLE_RUNTIME_PAIR_2026-10-19.md)。
+
 ## 当前实现
 
 配套 Web 候选现为 `ma24-pilot-web:57832601`，与采集器的 909 个源码输入及 Node 二进制一致，共享源码/Node 指纹 `a2242f921e69b7bf839ec4fd1cba98aca4d926d62334b70c8a68dcddd20b8afd`。[基线证据](evidence/ma24-g01-g09-web-collector-baseline-2026-10-16.json)同时验证十个合成账号隔离、原会话和数据库断线恢复。Web 内被打包的依赖不能从顶层直接解析，完整编译运行依赖等价性仍未证实；源码身份一致不意味着生产 Agent 等价认证通过。

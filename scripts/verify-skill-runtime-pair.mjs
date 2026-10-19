@@ -22,11 +22,21 @@ for(const name of ['pg','zod','@langchain/langgraph','@langchain/core','langsmit
 }
 console.log(JSON.stringify({runtimeHash:digest({protocol:'skill-local-source-runtime-v1',node:process.versions.node,platform:process.platform,arch:process.arch,files:hashes}),
  sourceInputs:files.length,node:process.versions.node,platform:process.platform,arch:process.arch,nodeSha256:sha(fs.readFileSync(process.execPath)),packages,unresolved}));`;
-const read=image=>JSON.parse(execFileSync('docker',['run','--rm','--network','none','--read-only','--cap-drop=ALL','--entrypoint','node',image,'-e',inspect],{encoding:'utf8',maxBuffer:2*1024*1024}));
-const actualWeb=read(web),actualCollector=read(collector);
+// Resolve mutable tags once. All subsequent execution uses immutable image IDs.
+const metadata=image=>{
+ const output=execFileSync('docker',['image','inspect','--format','{{.Id}} {{index .Config.Labels "org.opencontainers.image.revision"}}',image],{encoding:'utf8'}).trim();
+ const [id,revision,...extra]=output.split(/\s+/);
+ assert(extra.length===0&&/^sha256:[a-f0-9]{64}$/.test(id)&&/^[a-f0-9]{40}$/.test(revision),'Runtime pair requires immutable image IDs and fixed revision labels');
+ return {id,revision};
+};
+const webImage=metadata(web),collectorImage=metadata(collector);
+assert.equal(webImage.revision,collectorImage.revision,'Web and collector build revisions differ');
+const read=image=>JSON.parse(execFileSync('docker',['run','--rm','--network','none','--read-only','--cap-drop=ALL','--entrypoint','node',image.id,'-e',inspect],{encoding:'utf8',maxBuffer:2*1024*1024}));
+const actualWeb=read(webImage),actualCollector=read(collectorImage);
 const {packages:webPackages,unresolved:webUnresolved,...webIdentity}=actualWeb;
 const {packages:collectorPackages,unresolved:collectorUnresolved,...collectorIdentity}=actualCollector;
 assert.deepEqual(webIdentity,collectorIdentity,'Web and collector source/Node identity differs');
 for(const [name,version] of Object.entries(webPackages))if(collectorPackages[name])assert.equal(collectorPackages[name],version,'External package versions differ');
-console.log(JSON.stringify({skillSourceRuntimePair:'passed',web,collector,...webIdentity,webPackages,collectorPackages,webUnresolved,collectorUnresolved,
+console.log(JSON.stringify({skillSourceRuntimePair:'passed',web,collector,sourceCommit:webImage.revision,webImageId:webImage.id,collectorImageId:collectorImage.id,
+ inspectionUsesImmutableImageIds:true,...webIdentity,webPackages,collectorPackages,webUnresolved,collectorUnresolved,
  completeDependencyRuntimeEquivalenceVerified:false,productionQualified:false,actualModelCalls:0}));
