@@ -4,7 +4,8 @@ import { getPool, tenantQuery } from "@/lib/rag/db";
 import { withProductSpend } from "@/lib/billing/context";
 import {initialTaskMessages} from "./initial-task-messages";
 import { digest, result, type ExecutionContext, type ModelMessage, type ModelToolCall, type RunStatus, type ToolResult, type ModelConfig } from "./contracts";
-import { boundary, beginCall, completeCall, event, finishRun, InstructionsChangedError } from "./repository";
+import { boundary, beginCall, completeCall, event, InstructionsChangedError } from "./repository";
+import {settleMainAgentRun} from './final-main-agent-settlement';
 import { dispatchTool } from "./executor";
 import { requestModel, requestModeModel } from "./model";
 import {createConfiguredTaskModeRequest,taskTransportSigningConfigured} from './task-model-transport-request';
@@ -233,12 +234,9 @@ export async function executeMainAgentRun(userId: string, runId: string, leaseTo
   const old = snapshot.values as Partial<typeof MainAgentState.State>;
   let initial: Partial<typeof MainAgentState.State>;
   if (old.messages?.length) {
-    if (!snapshot.next.length && (old.status === "completed" || old.status === "cancelled")) {
-      if(old.status==='completed')try{await validateContext(old.messages);}catch(error){
-        await finishRun(context,'partial',error instanceof SkillContextChangedError?SKILL_CHANGED_REPLY:error instanceof MemoryContextChangedError?MEMORY_CHANGED_REPLY:SOURCE_CHANGED_REPLY);return {status:'partial'};
-      }
-      await finishRun(context, old.status, old.reply ?? "");
-      return { status: old.status };
+    if (!snapshot.next.length && (old.status === "completed" || old.status === "cancelled")
+      && !run.instructions.some(item=>!old.instructionIds?.includes(item.id))) {
+      return settleMainAgentRun(context,{status:old.status,reply:old.reply??'',messages:old.messages,instructionIds:old.instructionIds??[],policyRevision:old.policyRevision});
     }
     // A new lease always enters START -> safe_boundary. Resuming a pending node
     // with null would skip controls/instructions recorded since process loss.
@@ -254,9 +252,5 @@ export async function executeMainAgentRun(userId: string, runId: string, leaseTo
       pending: [], steps: 0, seen: {}, instructionIds: [],decisionRevision:0,policyRevision:"",status: "running", reply: "" };
   }
   const final = await withProductSpend(userId, "main-agent", () => graph.invoke(initial, config), runId);
-  if(final.status==='completed')try{await validateContext(final.messages);}catch(error){
-    await finishRun(context,'partial',error instanceof SkillContextChangedError?SKILL_CHANGED_REPLY:error instanceof MemoryContextChangedError?MEMORY_CHANGED_REPLY:SOURCE_CHANGED_REPLY);return {status:'partial'};
-  }
-  await finishRun(context, final.status, final.reply);
-  return { status: final.status };
+  return settleMainAgentRun(context,final);
 }

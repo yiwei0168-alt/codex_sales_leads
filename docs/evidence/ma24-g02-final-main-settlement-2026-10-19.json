@@ -1,0 +1,50 @@
+{
+  "stage": "G02 ordinary main-agent retained-source final settlement",
+  "hashes": {
+    "finalSettlement": "b3d6767d6bef43b2672640889b8930980a58de863fa0cc645dde2db7cd76529c",
+    "repository": "d1ce9469ba911a98c9a5bdc9fa1f18100dd9c7fd4ebcd65999fc8c1888ad0b01",
+    "graph": "ad2f951e6687798faccbcec0a41e70dd1d15a8659b93b075f509d8a17490ae28",
+    "sharedTaskSourceLocks": "fb6370cea3c64c57c1dd8610edd062e5fff69c3cedf90dcc4083234b11c00dcf",
+    "verifier": "89f5fb55d8ecce4372c0b24c4146d5013dce05c32911c929b4d0820548785e5b"
+  },
+  "focusedTests": {"files": 5, "passed": 74, "log": "tmp/ma24-final-settlement-tests.log"},
+  "typecheckExitCode": 0,
+  "lintExitCode": 0,
+  "databaseRun": {
+    "command": "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --web-image=ma24-pilot-web:6b7089c9 --current-schema --final-settlement",
+    "exitCode": 0,
+    "fullFreshMigrationThrough": 158,
+    "log": "tmp/ma24-final-main-settlement-checkpoint-db.log",
+    "logSha256": "962739970c1e03c016e35a90cfa71644affc6d12ca850b2d20dcd77398d82f13",
+    "actualPostgresFinalPersistence": true,
+    "answerResultEventAndExtractionJobAtomicPositive": true,
+    "unavailableReadWithoutSourceDataDoesNotInventDependency": true,
+    "scopeAndSharingChangeAfterSuccessfulPrecheckRejectOldAnswer": true,
+    "sourceSqlErrorSavepointRecoveryPassed": true,
+    "newInstructionRequeuesWithoutOldAnswer": true,
+    "latestPauseCancelAndDisabledAccountChecked": true,
+    "actualAnswerInsertHeldByTableLock": true,
+    "exactSourceWriterObservedWaitingUntilSettlementCommit": true,
+    "leaseExpiryAfterTransactionStartRollsBackAllWrites": true,
+    "policyExpiryDuringInsertWaitRollsBackSpeculativeWritesAndCommitsSafePartial": true,
+    "actualEntrypointPostgresCheckpointRecoveryPassed": true,
+    "temporaryContainersAndNetworksCleaned": true
+  },
+  "retainedEarlierSuccessfulRuns": ["tmp/ma24-final-main-settlement-db.log", "tmp/ma24-final-main-settlement-negative-read-db.log"],
+  "scope": {
+    "syntheticTaskAndSourceData": true,
+    "actualModelCalls": 0,
+    "externalActions": 0,
+    "firstModelToFinalQueueWorkerBusinessChainVerified": false,
+    "newCompiledWorkerVerified": false,
+    "oldWebImageUsedOnlyForSeparateCompatibility": "ma24-pilot-web:6b7089c9",
+    "allSuccessfulPrivateReceiptCombinationsVerified": false,
+    "unknownCommitRecoveryVerified": false,
+    "physicalCommitInstantTemporalLeaseGuaranteed": false,
+    "sourceRevocationsLocked": false,
+    "automaticActivation": false,
+    "productionQualified": false,
+    "g14ThroughG20Advanced": false,
+    "lanDeployed": false
+  }
+}

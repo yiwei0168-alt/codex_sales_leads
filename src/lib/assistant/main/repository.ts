@@ -123,11 +123,11 @@ export async function controlRun(userId: string, id: string, action: "pause" | "
   });
 }
 export async function finishRun(context: ExecutionContext, status: RunStatus, reply: string) {
-  await tenantTransaction(context.userId, async client => {
+  return tenantTransaction(context.userId, async client => {
     const changed = await client.query<{ conversation_id: string; status: RunStatus; execution_kind:string }>(`update agent_run set
       status=case when control='cancel' then 'cancelled' when control='pause' then 'paused' else $4 end,
       result=$5,lease_until=null,updated_at=now()
-      where user_id=$1 and id=$2 and lease_token=$3 and status='running' and lease_until>now() returning conversation_id,status,execution_kind`,
+      where user_id=$1 and id=$2 and lease_token=$3 and status='running' and lease_until>clock_timestamp() returning conversation_id,status,execution_kind`,
     [context.userId, context.runId, context.leaseToken, status, JSON.stringify({ reply })]);
     if (!changed.rows[0]) throw new LeaseLostError();
     if (changed.rows[0].status === "waiting_user") {
@@ -144,6 +144,7 @@ export async function finishRun(context: ExecutionContext, status: RunStatus, re
     if (reply&&status!=="queued"&&changed.rows[0].execution_kind!=="main-agent-evaluation") await client.query(`insert into assistant_message(user_id,conversation_id,role,intent,content,metadata)
       values($1,$2,'assistant','general',$3,$4)`, [context.userId, changed.rows[0].conversation_id, reply, JSON.stringify({ runId: context.runId, status: changed.rows[0].status })]);
     await client.query("update assistant_conversation set updated_at=now() where user_id=$1 and id=$2", [context.userId, changed.rows[0].conversation_id]);
+    return {status:changed.rows[0].status};
   });
 }
 export async function beginCall(context: ExecutionContext, call: { key: string; tool: string; version: string; input: unknown; effect: string; approvalId?: string }) {

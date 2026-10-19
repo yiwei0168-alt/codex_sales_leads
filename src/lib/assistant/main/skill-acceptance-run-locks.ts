@@ -49,7 +49,13 @@ export function skillAcceptanceProspectiveBindings({plan,rawReceipts}:Artifact){
  * Attachment metadata is locked separately below. External bytes and other
  * evidence domains still require their own protection before activation. */
 export async function lockSkillAcceptanceRunJournals(client:PoolClient,userId:string,artifact:Artifact){
- z.uuid().parse(userId);const ids=skillAcceptanceRunIds(artifact);
+ return lockRecordedTaskRunJournals(client,userId,skillAcceptanceRunIds(artifact),{prospective:skillAcceptanceProspectiveBindings(artifact)});
+}
+/** Shared retained source locks for acceptance and ordinary final settlement.
+ * IDs are derived by their server caller; no HTTP/task input can select them. */
+export async function lockRecordedTaskRunJournals(client:PoolClient,userId:string,runIds:string[],options:{prospective?:Array<{jobId:string;runId:string}>;successfulReadSourcesOnly?:boolean}={}){
+ z.uuid().parse(userId);const ids=[...new Set(z.array(z.uuid()).min(1).max(100).parse(runIds))].sort();
+ const prospective=options.prospective??[];
  const origins=(await client.query<{n:number}>('select lock_skill_task_origins($1::uuid[]) n',[ids])).rows[0]?.n;
  if(origins!==ids.length)throw new Error('Acceptance task origin lock incomplete');
  const runs=await client.query<{id:string;input:unknown}>(`select id,input from agent_run where user_id=$1 and id=any($2::uuid[])
@@ -61,8 +67,9 @@ export async function lockSkillAcceptanceRunJournals(client:PoolClient,userId:st
   const locked=(await client.query<{n:number}>('select lock_skill_attachment_sources($1::uuid[]) n',[batch])).rows[0]?.n;
   if(locked!==batch.length)throw new Error('Acceptance attachment source lock incomplete');
  }
- const journal=await client.query<{id:string;tool_id:string;input:unknown}>(`select id,tool_id,input from agent_tool_call where user_id=$1 and run_id=any($2::uuid[]) order by id for share`,[userId,ids]);
- const timeline=skillAcceptanceTimelineSelection(journal.rows);let timelineCustomerCount=0;
+ const journal=await client.query<{id:string;tool_id:string;input:unknown;effect:string;status:string;output:unknown}>(`select id,tool_id,input,effect,status,output from agent_tool_call where user_id=$1 and run_id=any($2::uuid[]) order by id for share`,[userId,ids]);
+ const sourceRows=options.successfulReadSourcesOnly?journal.rows.filter(row=>row.effect==='read'&&row.status==='completed'&&['success','partial'].includes(String((row.output as {status?:unknown}|null)?.status))):journal.rows;
+ const timeline=skillAcceptanceTimelineSelection(sourceRows);let timelineCustomerCount=0;
  const lockTimeline=async(customerIds:string[],includeAll:boolean)=>{
   const locked=(await client.query<{n:number}>('select lock_skill_timeline_sources($1::uuid[],$2::boolean) n',[customerIds,includeAll])).rows[0]?.n;
   if(typeof locked!=='number'||!Number.isInteger(locked)||locked<customerIds.length
@@ -75,13 +82,12 @@ export async function lockSkillAcceptanceRunJournals(client:PoolClient,userId:st
   if(all<timelineCustomerCount)throw new Error('Acceptance timeline source lock incomplete');
   timelineCustomerCount=all;
  }
- const mailIds=skillAcceptanceMailIds(journal.rows);
+ const mailIds=skillAcceptanceMailIds(sourceRows);
  for(let offset=0;offset<mailIds.length;offset+=100){
   const batch=mailIds.slice(offset,offset+100);
   const mail=await client.query<{id:string}>(`select id from mailbox_message where user_id=$1 and id=any($2::uuid[]) order by id for share`,[userId,batch]);
   if(mail.rows.length!==batch.length)throw new Error('Acceptance mail source unavailable');
  }
- const prospective=skillAcceptanceProspectiveBindings(artifact);
  for(let offset=0;offset<prospective.length;offset+=100){
   const batch=prospective.slice(offset,offset+100);
   const count=(await client.query<{n:number}>('select lock_skill_shadow_sources($1::uuid[],$2::uuid[]) n',[batch.map(row=>row.jobId),batch.map(row=>row.runId)])).rows[0]?.n;
