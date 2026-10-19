@@ -29,7 +29,7 @@ it("reuses a recorded registration without a second embedding",async()=>{
   expect(await registerExtractedSharedBinary("owner",request)).toMatchObject({status:"registered",reused:true,assetId:"asset",ragV3:"pending-release"});
   expect(m.upsert).not.toHaveBeenCalled();
 });
-it("registers only hash-matched extracted content and reports RAG v3 as pending",async()=>{
+it.each([false,true])("binds extracted registration to the approved source; final hash rejection=%s",async(rejectFinalHash)=>{
   const digest=(value:Buffer)=>createHash("sha256").update(value).digest("hex");
   const binary=Buffer.from("%PDF-fixture");
   const sourceSha256=digest(binary);
@@ -38,9 +38,17 @@ it("registers only hash-matched extracted content and reports RAG v3 as pending"
     .mockResolvedValueOnce([{id:request.jobId}]);
   m.read.mockResolvedValueOnce(binary).mockResolvedValueOnce(artifact);
   m.upsert.mockResolvedValueOnce({documentId:"doc",chunks:1,skipped:false});
+  if(rejectFinalHash){
+    m.asset.mockRejectedValueOnce(new Error('Knowledge asset no longer matches approved hash'));
+    await expect(registerExtractedSharedBinary("owner",{...request,sourceSha256})).rejects.toThrow('no longer matches approved hash');
+    expect(m.asset.mock.calls[0][1]).toMatchObject({expectedSha256:sourceSha256});
+    expect(m.query).toHaveBeenCalledTimes(2);
+    return;
+  }
   m.asset.mockResolvedValueOnce({id:"asset"});
   const saved=await registerExtractedSharedBinary("owner",{...request,sourceSha256});
   expect(saved).toMatchObject({status:"registered",documentId:"doc",assetId:"asset",ragV3:"pending-release"});
   expect(m.upsert.mock.calls[0][1]).toMatchObject({visibility:"shared",content:"page 1 · page-1\nEvidence sentence"});
+  expect(m.asset.mock.calls[0][1]).toMatchObject({expectedSha256:sourceSha256});
   expect(m.query.mock.calls[2][2]).toEqual([request.jobId,"owner","doc","asset",sourceSha256]);
 });

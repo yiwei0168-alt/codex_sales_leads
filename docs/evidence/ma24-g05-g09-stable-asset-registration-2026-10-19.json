@@ -1,0 +1,41 @@
+{
+  "stage": "MA24 G05/G09 stable original-asset registration and approval digest binding",
+  "date": "2026-10-19",
+  "sourceBaseCommit": "2be66e57",
+  "implementation": {
+    "canonicalPathMustRemainInsideKnowledgeRoot": true,
+    "boundedMemoryDescriptorHashing": true,
+    "sizeAndDigestFromSameDescriptorRead": true,
+    "descriptorAndCurrentPathDeviceInodeSizeMtimeCtimeCompared": true,
+    "truncationGrowthAndPathReplacementRejectedBeforeAssetWrite": true,
+    "sharedBinaryRegistrationSuppliesApprovedSourceHash": true,
+    "finalMismatchDoesNotMarkUploadRegistered": true,
+    "immutableStorageLease": false
+  },
+  "checks": {
+    "focusedVitest": {
+      "files": 3,
+      "passed": 19,
+      "command": "node node_modules/vitest/vitest.mjs run src/lib/knowledge/document-repository.test.ts src/lib/knowledge/binary-registration.test.ts src/lib/knowledge/asset-response.test.ts",
+      "scope": "Deterministic filesystem/database mocks for stable registration, escaped/retargeted paths, same-size mutation, same-path inode replacement, growth, truncation and approval mismatch; existing range/path and registration authorization regressions."
+    },
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "diffCheck": "passed",
+    "initialTestAttempt": "No tests executed: sandbox temporary transform-cache rename failed with EPERM. Same suites passed with TEMP/TMP scoped to workspace tmp/ma24-registration-tests."
+  },
+  "limitations": [
+    "This is a point-in-time stable read, not filesystem immutability or an activation lease. A file may still change after checking; consumers must continue verifying bytes and permissions.",
+    "Filesystem and database races are injected through mocks; no real-user upload, actual HTTP/worker/database integration or production deployment was performed in this stage.",
+    "Shared document upsert precedes asset registration; rejected final asset binding does not mark the upload registered but does not roll back the earlier document upsert.",
+    "G09 complete source protection, trusted production qualification, independent quality and final activation transaction remain incomplete."
+  ],
+  "actualModelCalls": 0,
+  "automaticActivation": false,
+  "filesSha256": {
+    "src/lib/knowledge/document-repository.ts": "9bf6347b4e00225abd05542ec3a70e76ea5c957fcf0b50638bda4b2f1dbfc0a2",
+    "src/lib/knowledge/document-repository.test.ts": "5c725fddaea5995beeb6f661367a060ba2e0c8ade1b458fed8de80d4e6f85ab1",
+    "src/lib/knowledge/binary-registration.ts": "02f213584e3342b02e627a0187fe6eab998ebefe1e435c364a0327d9008ffab0",
+    "src/lib/knowledge/binary-registration.test.ts": "2f84b2e3a252d51dc14288c2df96c9fe6da5cbef0cc8c62fecba9ecab4239d22"
+  }
+}

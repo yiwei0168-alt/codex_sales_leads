@@ -51,7 +51,7 @@ export async function registerExtractedSharedBinary(userId:string,input:{jobId:s
     companyId:job.collection_slug==="company"?"cudy-technology":undefined,
     metadata:{uploadJobId:job.id,sourceSha256:job.source_sha256,extractorArtifactSha256:job.metrics.artifactSha256}},"admin");
   const asset=await registerKnowledgeAsset(userId,{documentId:saved.documentId,storageKey:job.storage_key,
-    documentType:extname(job.storage_key).slice(1).toUpperCase(),sourceNature:"admin-uploaded-binary",language:input.language});
+    documentType:extname(job.storage_key).slice(1).toUpperCase(),sourceNature:"admin-uploaded-binary",language:input.language,expectedSha256:job.source_sha256});
   const updated=await tenantQuery<{id:string}>(userId,`update knowledge_upload_job set status='registered',visibility='shared',published_document_id=$3,published_asset_id=$4,updated_at=now()
     where id=$1 and user_id=$2 and status='extracted' and source_sha256=$5 returning id`,[job.id,userId,saved.documentId,asset.id,job.source_sha256],"admin");
   if(!updated[0])throw new Error("Upload registration changed during publication; inspect saved document and asset before retry");
