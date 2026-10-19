@@ -1,5 +1,7 @@
 # G09 运行包登记与签名使用时间
 
+最新固定完整组合 `e0c5403a` 已退出1：Docker清理API500，不能记为通过；Desktop当时stopping，原验收错误未由旧脚本完整保留。错误保留修复的4项回归、类型/lint通过，恢复后需实库重验；此前主运行与两种采集器用途的独立发布证据各自保留。[中断与恢复](MA24_DOCKER_INTERRUPTION_2026-10-20.md)。
+
 ## 后续运维接线与真实数据库终态
 
 后续采集器两用途实际运维发布已退出 0：`model-transport` 和 `runner-declaration` 分别在新建一次性库中，对旧固定 `dddb9bfc` 镜像完成 register CLI 发布/精确请求重试、实际读取、公钥轮换、事后登记拒绝、期限及并发撤销；withdraw CLI 的实际撤销/幂等及相同 UUID 不同内容拒绝也通过。检查脚本增加可选 `--purpose`，默认为原任务用途；生产发布代码没有变化。类型/lint通过。[两份原始日志摘要及结果](evidence/ma24-g09-collector-purpose-publication-2026-10-20.json)。

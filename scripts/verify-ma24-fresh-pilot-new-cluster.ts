@@ -4,9 +4,10 @@ import { spawn } from "node:child_process";
 import { existsSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { createServer } from "node:net";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join,resolve,sep,basename } from "node:path";
 import { Client } from "pg";
 import {prepareMailboxRestoreFixture} from './lib/ma24-mailbox-restore-fixture';
+import {completeDisposableCheck} from './lib/ma24-disposable-cleanup';
 
 const id = randomBytes(6).toString("hex");
 const containerName = `ma24-pilot-fresh-${id}`;
@@ -141,6 +142,8 @@ let currentSchemaMarkers:Record<string,boolean>|null=null;
 let snapshotDownloadResult:unknown=null;
 let localMemoryWorkerResult:unknown=null;
 let trustRegistryRestoreResult:unknown=null;
+let primaryFailure:{error:unknown}|undefined;
+let acceptanceResult:Record<string,unknown>|undefined;
 try {
   if (webImage) {
     const created = await run("docker", ["network", "create", networkName]);
@@ -708,7 +711,7 @@ try {
         "Current image exposed prior-image company to another member");
     }
   }
-  console.log(JSON.stringify({ freshClusterPilot: "passed", image: "pgvector/pgvector:pg16",
+  acceptanceResult={ freshClusterPilot: "passed", image: "pgvector/pgvector:pg16",
     publishedAddress: "127.0.0.1 only", rolesVerified: true, duplicateRoleBootstrapRejected: true,
     freshMigrationThrough: currentSchemaCheck?159:135,currentSchemaMarkers,snapshotLifecycleVerified:snapshotLifecycleCheck,knowledgeScopeSourcesVerified:knowledgeScopeSourcesCheck,finalSettlementVerified:finalSettlementCheck,compiledMainRuntimeVerified:Boolean(mainRuntimeImage),mainRuntimeDurabilityVerified:mainRuntimeDurability,mainRuntimeCommitLossVerified:mainRuntimeCommitLoss,mainRuntimeTaskEnrollmentVerified:mainRuntimeTaskEnrollment,snapshotDownloadResult,localMemoryWorkerResult,trustRegistryRestoreResult,freshMailboxUiVerified:frontendUiCheck,extendedFrontendUiVerified:extendedUiCheck,
     syntheticAccountCompanyAndRestoreVerified: true, copiedProductionData: false,
@@ -734,23 +737,27 @@ try {
     prospectiveStandaloneHttpVerified: Boolean(prospectiveHttpImage),
     prospectiveStandaloneBrowserVerified: prospectiveBrowserCheck,
     completeCompositionVerified: prospectiveCompositionCheck,
-    samePortPriorImageRollbackVerified: Boolean(rollbackImage) }));
-} finally {
-  if(prospectiveBrowserDirectory)rmSync(prospectiveBrowserDirectory,{recursive:true,force:true});
-  if (restoredContainerId) {
-    const removed = await run("docker", ["rm", "--force", "--volumes", restoredContainerId]);
-    assert.equal(removed.code, 0, removed.output);
+    samePortPriorImageRollbackVerified: Boolean(rollbackImage) };
+} catch(error) {primaryFailure={error};}
+finally {
+  const steps:Array<{name:string;run:()=>Promise<unknown>}>=[];
+  if(prospectiveBrowserDirectory)steps.push({name:'browser-directory',run:async()=>{
+    const target=resolve(prospectiveBrowserDirectory);
+    assert(target.startsWith(resolve(tmpdir())+sep)&&basename(target).startsWith('ma24-skill-browser-'),'Disposable browser directory escaped temporary root');
+    rmSync(target,{recursive:true,force:true});
+  }});
+  for(const [name,target] of [['restored-container',restoredContainerId],['web-container',webContainerId],['database-container',containerId]] as const){
+    if(target)steps.push({name,run:async()=>{
+      assert(/^[a-f0-9]{64}$/.test(target),'Disposable container ID invalid');
+      const removed=await run('docker',['rm','--force','--volumes',target]);assert.equal(removed.code,0,removed.output);
+    }});
   }
-  if (webContainerId) {
-    const removed = await run("docker", ["rm", "--force", "--volumes", webContainerId]);
-    assert.equal(removed.code, 0, removed.output);
-  }
-  if (containerId) {
-    const removed = await run("docker", ["rm", "--force", "--volumes", containerId]);
-    assert.equal(removed.code, 0, removed.output);
-  }
-  if (networkId) {
-    const removed = await run("docker", ["network", "rm", networkId]);
-    assert.equal(removed.code, 0, removed.output);
-  }
+  const networkTarget=networkId;
+  if(networkTarget)steps.push({name:'network',run:async()=>{
+    assert(/^[a-f0-9]{64}$/.test(networkTarget),'Disposable network ID invalid');
+    const removed=await run('docker',['network','rm',networkTarget]);assert.equal(removed.code,0,removed.output);
+  }});
+  await completeDisposableCheck(primaryFailure,steps);
 }
+assert(acceptanceResult,'Disposable acceptance result missing');
+console.log(JSON.stringify(acceptanceResult));
