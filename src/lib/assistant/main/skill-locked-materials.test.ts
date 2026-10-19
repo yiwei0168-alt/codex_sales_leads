@@ -3,7 +3,8 @@ import {beforeEach,expect,it,vi} from 'vitest';
 import {digest} from './contracts';
 import {requireCanonicalSkillAcceptanceOriginals} from './skill-canonical-original-coverage';
 import {revalidateLockedSkillAcceptanceMaterials,evaluateLockedSkillAcceptanceReadiness} from './skill-locked-materials';
-const m=vi.hoisted(()=>({read:vi.fn(),material:vi.fn(),policy:vi.fn(),lock:vi.fn(),methods:vi.fn(),query:vi.fn(),memoryBoundary:vi.fn(),times:vi.fn(),bytes:vi.fn(),knowledgeBytes:vi.fn(),memoryReceipts:vi.fn(),runner:vi.fn(),transports:vi.fn()}));
+const m=vi.hoisted(()=>({read:vi.fn(),material:vi.fn(),policy:vi.fn(),lock:vi.fn(),methods:vi.fn(),query:vi.fn(),memoryBoundary:vi.fn(),times:vi.fn(),bytes:vi.fn(),knowledgeBytes:vi.fn(),memoryReceipts:vi.fn(),runner:vi.fn(),transports:vi.fn(),packages:vi.fn()}));
+vi.mock('./skill-runtime-package-store',()=>({readLockedSkillRuntimePackages:m.packages}));
 vi.mock('./skill-locked-transport-receipts',()=>({revalidateLockedSkillTransportReceipts:m.transports}));
 vi.mock('./skill-runner-attestation-store',()=>({readLockedSkillRunnerAttestation:m.runner}));
 vi.mock('./skill-memory-receipt-check',()=>({revalidateLockedSkillMemoryReceipts:m.memoryReceipts}));
@@ -21,7 +22,7 @@ vi.mock('./skill-locked-acceptance-policy',()=>({evaluateLockedSkillAcceptancePo
 const context={userId:'owner'},client={query:m.query} as unknown as PoolClient,bundleId='bundle';
 const observation={caseId:'replay',baseline:{answerHash:digest('PRIVATE baseline')},candidate:{answerHash:digest('PRIVATE candidate')}};
 const bundle={skillCatalogSourcesLocked:true,knowledgeSourcesLocked:true,decisionMemorySourcesLocked:true,artifactHash:digest('artifact'),latestReviewHash:digest('reviews'),currentPin:{version:1},freezeStatus:{freezeId:'freeze'},
- artifact:{sourceKind:'synthetic-fixture',plan:{cases:[{id:'replay'}]},observations:[observation]}};
+ artifact:{sourceKind:'synthetic-fixture',plan:{identity:{runtimeHash:digest('runtime')},cases:[{id:'replay'}]},observations:[observation]}};
 const material=()=>({bundleId,caseId:'replay',artifactHash:bundle.artifactHash,observationHash:digest(observation),sourceKind:'synthetic-fixture',
  freezeStatus:{state:'active',freezeId:'freeze'},canPass:{baseline:true,candidate:true},baseline:'PRIVATE baseline',candidate:'PRIVATE candidate',receipts:['PRIVATE receipt']});
 const canonicalBytes={attachmentBytesRevalidated:true,attachmentBytesCount:1,attachmentBytesManifestHash:digest('attachment'),
@@ -34,7 +35,7 @@ function pendingOriginals(){
  m.material.mockResolvedValue({...material(),sourceKind});
  m.bytes.mockResolvedValue(canonicalBytes);m.knowledgeBytes.mockResolvedValue(canonicalKnowledge);
 }
-beforeEach(()=>{vi.resetAllMocks();m.read.mockResolvedValue(bundle);m.material.mockResolvedValue(material());
+beforeEach(()=>{vi.resetAllMocks();m.packages.mockResolvedValue({runtimePackagesRequired:true,runtimePackagesRegistered:false,runtimePackageBlockers:['package-registration-missing']});m.read.mockResolvedValue(bundle);m.material.mockResolvedValue(material());
  m.bytes.mockResolvedValue({attachmentBytesRevalidated:true,attachmentBytesCount:1,attachmentBytesManifestHash:'manifest'});
  m.knowledgeBytes.mockResolvedValue({knowledgeReceiptBytesRevalidated:true,knowledgeReceiptAssetCount:1,knowledgeReceiptDatabaseOnlyCount:0,knowledgeReceiptBytesManifestHash:'knowledge-manifest'});
  m.memoryReceipts.mockResolvedValue({memoryReceiptSourcesRevalidated:true,memoryReceiptCount:1,memoryReceiptCheckedAt:'2026-10-19T01:02:03.000Z'});
@@ -196,7 +197,8 @@ it('rejects a consumed observation expiring during preparation',async()=>{
 const runnerEnrollment={keyId:'runner-key',collectorId:'runner',deploymentHash:digest('runner-package'),purpose:'runner-declaration' as const};
 const transportEnrollments=[{keyId:'task-key',collectorId:'task',deploymentHash:digest('task-package'),purpose:'task-model-transport' as const},
  {keyId:'evaluation-key',collectorId:'evaluation',deploymentHash:digest('evaluation-package'),purpose:'model-transport' as const}];
-const declaration={runnerDeclarationRequired:true,runnerDeclarationRevalidated:true,runnerDeclarationId:'declaration',runnerStatementHash:'statement',runnerRegistryHash:digest('registry'),runnerSigningEnrollment:runnerEnrollment,runnerDeclarationCheckedAt:'2026-10-19T01:00:00.000Z',runnerDeclarationValidBefore:'2026-10-19T01:30:00.000Z'};
+const windowOf=(row:typeof runnerEnrollment|typeof transportEnrollments[number])=>({...row,requiredFrom:'2026-10-19T00:00:00.000Z',requiredThrough:'2026-10-19T00:01:00.000Z'});
+const declaration={runnerDeclarationRequired:true,runnerDeclarationRevalidated:true,runnerDeclarationId:'declaration',runnerStatementHash:'statement',runnerRegistryHash:digest('registry'),runnerSigningEnrollment:runnerEnrollment,runnerSigningEnrollmentWindow:windowOf(runnerEnrollment),runnerDeclarationCheckedAt:'2026-10-19T01:00:00.000Z',runnerDeclarationValidBefore:'2026-10-19T01:30:00.000Z'};
 it('rechecks the signed declaration after preparation without qualifying production provenance',async()=>{
  m.transports.mockResolvedValue(transports);
  m.runner.mockResolvedValueOnce(declaration).mockResolvedValueOnce({...declaration,runnerDeclarationCheckedAt:'2026-10-19T01:01:00.000Z'});
@@ -215,7 +217,26 @@ it('rejects a declaration expiring or being disabled during preparation',async()
  m.runner.mockResolvedValueOnce(declaration).mockRejectedValueOnce(new Error('Runner attestation time window invalid'));
  await expect(evaluateLockedSkillAcceptanceReadiness(client,context,bundleId)).rejects.toThrow('time window invalid');
 });
-const transports={transportReceiptsRequired:true,transportReceiptsRevalidated:true,transportAuditHash:'audit',transportRegistryHash:digest('registry'),transportSigningEnrollments:transportEnrollments,transportValidBefore:'2026-10-19T01:15:00.000Z'};
+const transports={transportReceiptsRequired:true,transportReceiptsRevalidated:true,transportAuditHash:'audit',transportRegistryHash:digest('registry'),transportSigningEnrollments:transportEnrollments,transportSigningEnrollmentWindows:transportEnrollments.map(windowOf),transportValidBefore:'2026-10-19T01:15:00.000Z'};
+it('checks package registration after final signatures and limits final time without granting activation',async()=>{
+ m.runner.mockResolvedValue(declaration);m.transports.mockResolvedValue(transports);
+ const runtimePackageValidBefore='2026-10-19T01:03:00.000Z';
+ m.packages.mockResolvedValue({runtimePackagesRequired:true,runtimePackagesRegistered:true,runtimePackageValidBefore,runtimePackageBlockers:[]});
+ const out=await evaluateLockedSkillAcceptanceReadiness(client,context,bundleId);
+ expect(m.packages).toHaveBeenCalledExactlyOnceWith(client,context.userId,{
+  registryHash:declaration.runnerRegistryHash,runtimeHash:bundle.artifact.plan.identity.runtimeHash,
+  windows:expect.arrayContaining([windowOf(runnerEnrollment),...transportEnrollments.map(windowOf)])});
+ expect(m.runner.mock.invocationCallOrder[1]).toBeLessThan(m.packages.mock.invocationCallOrder[0]);
+ expect(m.packages.mock.invocationCallOrder[0]).toBeLessThan(m.times.mock.invocationCallOrder[0]);
+ expect(m.times.mock.calls[0][3]).toMatchObject({runtimePackageValidBefore});
+ expect(out).toMatchObject({runtimePackagesRegistered:true,collectorProvenanceVerified:false,automaticActivation:false});
+});
+it('returns a missing-package blocker without substituting a package deadline or qualifying production',async()=>{
+ m.runner.mockResolvedValue(declaration);m.transports.mockResolvedValue(transports);
+ const out=await evaluateLockedSkillAcceptanceReadiness(client,context,bundleId);
+ expect(out).toMatchObject({runtimePackagesRequired:true,runtimePackagesRegistered:false,runtimePackageBlockers:['package-registration-missing'],automaticActivation:false});
+ expect(m.times.mock.calls[0][3]).not.toHaveProperty('runtimePackageValidBefore');
+});
 it('rechecks transports after policy and before the final declaration without granting activation',async()=>{
  m.transports.mockResolvedValue(transports);m.runner.mockResolvedValue(declaration);
  const out=await evaluateLockedSkillAcceptanceReadiness(client,context,bundleId);

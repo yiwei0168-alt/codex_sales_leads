@@ -18,6 +18,7 @@ import {configuredSkillRunnerTrustRegistryMode} from './skill-runner-attestation
 import {readLockedSkillRunnerTrustRegistry} from './skill-runner-trust-registry-store';
 import {requireCanonicalSkillAcceptanceOriginals} from './skill-canonical-original-coverage';
 import {skillSigningEnrollmentCoverage} from './skill-signing-enrollment';
+import {readLockedSkillRuntimePackages} from './skill-runtime-package-store';
 
 /** Keep consumed receipts in a private closure inside the owning transaction;
  * public wrappers expose hashes/counts only, never source contents or callbacks. */
@@ -103,7 +104,8 @@ export async function evaluateLockedSkillAcceptanceReadiness(client:PoolClient,c
   if(transports.transportReceiptsRequired!==finalTransports.transportReceiptsRequired
    ||transports.transportReceiptsRevalidated!==finalTransports.transportReceiptsRevalidated
    ||transports.transportReceiptsRequired&&finalTransports.transportReceiptsRequired&&(transports.transportAuditHash!==finalTransports.transportAuditHash
-    ||digest(transports.transportSigningEnrollments??null)!==digest(finalTransports.transportSigningEnrollments??null)))
+    ||digest(transports.transportSigningEnrollments??null)!==digest(finalTransports.transportSigningEnrollments??null)
+    ||digest(transports.transportSigningEnrollmentWindows??null)!==digest(finalTransports.transportSigningEnrollmentWindows??null)))
    throw new Error('Acceptance transport receipts changed during preparation');
   const finalDeclaration=await readLockedSkillRunnerAttestation(client,context,bundleId);
   if(declaration.runnerDeclarationRequired!==finalDeclaration.runnerDeclarationRequired
@@ -111,13 +113,18 @@ export async function evaluateLockedSkillAcceptanceReadiness(client:PoolClient,c
    ||declaration.runnerDeclarationRequired&&finalDeclaration.runnerDeclarationRequired&&(
     declaration.runnerDeclarationId!==finalDeclaration.runnerDeclarationId||declaration.runnerStatementHash!==finalDeclaration.runnerStatementHash
     ||declaration.runnerRegistryHash!==finalDeclaration.runnerRegistryHash
-    ||digest(declaration.runnerSigningEnrollment??null)!==digest(finalDeclaration.runnerSigningEnrollment??null)))throw new Error('Runner declaration changed during acceptance preparation');
+    ||digest(declaration.runnerSigningEnrollment??null)!==digest(finalDeclaration.runnerSigningEnrollment??null)
+    ||digest(declaration.runnerSigningEnrollmentWindow??null)!==digest(finalDeclaration.runnerSigningEnrollmentWindow??null)))throw new Error('Runner declaration changed during acceptance preparation');
   if(finalTransports.transportReceiptsRequired&&finalDeclaration.runnerDeclarationRequired
    &&finalTransports.transportRegistryHash!==finalDeclaration.runnerRegistryHash)throw new Error('Runner and transport trust snapshots differ');
   const signingCoverage=skillSigningEnrollmentCoverage(finalDeclaration,finalTransports);
+  const packages=signingCoverage.signingEnrollmentCoverageRequired
+   ?await readLockedSkillRuntimePackages(client,context.userId,{registryHash:finalDeclaration.runnerRegistryHash!,runtimeHash:final.artifact.plan.identity.runtimeHash,windows:signingCoverage.signingEnrollmentWindows})
+   :{runtimePackagesRequired:false as const,runtimePackagesRegistered:false as const,runtimePackageBlockers:[] as string[]};
   const methodTimes=await revalidateLockedSkillExperienceTimes(client,context.userId,final.artifact,{
    ...(finalDeclaration.runnerDeclarationRequired?{runnerDeclarationValidBefore:finalDeclaration.runnerDeclarationValidBefore}:{}),
-   ...(finalTransports.transportReceiptsRequired?{transportValidBefore:finalTransports.transportValidBefore}:{})});
+   ...(finalTransports.transportReceiptsRequired?{transportValidBefore:finalTransports.transportValidBefore}:{}),
+   ...(packages.runtimePackagesRegistered?{runtimePackageValidBefore:packages.runtimePackageValidBefore}:{})});
   return {...policy,prospectiveCaptureSourcesLocked:materials.prospectiveCaptureSourcesLocked,prospectiveJobCount:materials.prospectiveJobCount,knowledgeSourcesLocked:materials.knowledgeSourcesLocked,decisionMemorySourcesLocked:materials.decisionMemorySourcesLocked,timelineSourcesLocked:materials.timelineSourcesLocked,timelineCustomerCount:materials.timelineCustomerCount,mailReadSourcesLocked:materials.mailReadSourcesLocked,mailCount:materials.mailCount,attachmentMetadataLocked:materials.attachmentMetadataLocked,attachmentCount:materials.attachmentCount,taskOriginsLocked:materials.taskOriginsLocked,taskJournalsLocked:materials.taskJournalsLocked,runCount:materials.runCount,materials:materials.materials,materialsHash:materials.materialsHash,sourcePayloadsRevalidated:true as const,
    pinnedMethodSourcesLocked:materials.pinnedMethodSourcesLocked,pinnedMethodPinCount:materials.pinnedMethodPinCount,
    skillCatalogSourcesLocked:materials.skillCatalogSourcesLocked,
@@ -132,6 +139,7 @@ export async function evaluateLockedSkillAcceptanceReadiness(client:PoolClient,c
    ...finalDeclaration,
    ...finalTransports,
    ...signingCoverage,
+   ...packages,
    pinnedMethodVersionCount:materials.pinnedMethodVersionCount,pinnedMethodExperienceObservationCount:materials.pinnedMethodExperienceObservationCount,
    sourceRevocationsLocked:false as const,collectorProvenanceVerified:false as const,automaticActivation:false as const};
   });

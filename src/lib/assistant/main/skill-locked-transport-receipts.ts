@@ -8,7 +8,7 @@ import {lockSkillAcceptanceRunJournals,skillAcceptanceRunIds} from './skill-acce
 import {verifyOwnedTaskModelTransports} from './task-model-transport-journal';
 import {verifySkillCandidateJournalTransports} from './skill-model-transport-journal';
 import {loadConfiguredSkillRunnerTrustRegistry} from './skill-runner-attestation';
-import {mergeSkillSigningEnrollments,type SkillSigningEnrollment} from './skill-signing-enrollment';
+import {mergeSkillSigningEnrollments,mergeSkillSigningEnrollmentWindows,type SkillSigningEnrollment,type SkillSigningEnrollmentWindow} from './skill-signing-enrollment';
 
 /** Rebuild coverage from persisted case bindings. Historical/prospective baselines
  * use the original task journal; safety cases have two evaluation journals. */
@@ -41,12 +41,14 @@ export async function revalidateLockedSkillTransportReceipts(client:PoolClient,c
   if(!arms.length)throw new Error('Acceptance transport coverage empty');
   await lockSkillAcceptanceRunJournals(client,context.userId,evidence.artifact);
   const registryHash=digest(await loadConfiguredSkillRunnerTrustRegistry(context.userId)),now=await databaseTime(client);
-  const audits:Array<{sourceHash:string;journalHash:string;receiptHashes:string[];validBefore:string;signingEnrollmentHash:string}>=[],enrollments:SkillSigningEnrollment[]=[];
-  const retain=(source:unknown,out:{registryHash:string|undefined;journalHash:string;transportReceiptHashes:string[];transportValidBefore:string;signingEnrollments:SkillSigningEnrollment[]})=>{
+  const audits:Array<{sourceHash:string;journalHash:string;receiptHashes:string[];validBefore:string;signingEnrollmentHash:string;signingWindowHash:string}>=[],enrollments:SkillSigningEnrollment[]=[],windows:SkillSigningEnrollmentWindow[]=[];
+  const retain=(source:unknown,out:{registryHash:string|undefined;journalHash:string;transportReceiptHashes:string[];transportValidBefore:string;signingEnrollments:SkillSigningEnrollment[];signingEnrollmentWindows:SkillSigningEnrollmentWindow[]})=>{
    if(out.registryHash!==registryHash||!out.transportReceiptHashes.length)throw new Error('Acceptance transport trust or coverage changed');
    const bindings=mergeSkillSigningEnrollments(out.signingEnrollments);
    if(!bindings.length)throw new Error('Acceptance transport signing enrollment empty');enrollments.push(...bindings);
-   audits.push({sourceHash:digest(source),journalHash:out.journalHash,receiptHashes:out.transportReceiptHashes,validBefore:out.transportValidBefore,signingEnrollmentHash:digest(bindings)});
+   const ranges=mergeSkillSigningEnrollmentWindows(out.signingEnrollmentWindows);windows.push(...ranges);
+   if(digest(ranges.map(({keyId,collectorId,deploymentHash,purpose})=>({keyId,collectorId,deploymentHash,purpose})))!==digest(bindings))throw new Error('Acceptance signing window coverage changed');
+   audits.push({sourceHash:digest(source),journalHash:out.journalHash,receiptHashes:out.transportReceiptHashes,validBefore:out.transportValidBefore,signingEnrollmentHash:digest(bindings),signingWindowHash:digest(ranges)});
   };
   for(const runId of runs)retain({runId},await verifyOwnedTaskModelTransports(context,{runId},now));
   for(const ref of arms)retain(ref,await verifySkillCandidateJournalTransports(context,ref,{freezeId,plan:evidence.artifact.plan},now));
@@ -58,6 +60,7 @@ export async function revalidateLockedSkillTransportReceipts(client:PoolClient,c
   if(!Number.isFinite(validBefore)||checkedAt.getTime()>=validBefore)throw new Error('Acceptance transport expired during audit');
   return {transportReceiptsRequired:true as const,transportReceiptsRevalidated:true as const,
    transportSigningEnrollments:mergeSkillSigningEnrollments(enrollments),
+   transportSigningEnrollmentWindows:mergeSkillSigningEnrollmentWindows(windows),
    transportAuditHash:digest(audits),transportRegistryHash:registryHash,transportOriginalTaskCount:runs.length,transportEvaluationArmCount:arms.length,
    transportReceiptCount:audits.reduce((count,row)=>count+row.receiptHashes.length,0),
    transportCheckedAt:checkedAt.toISOString(),transportValidBefore:new Date(validBefore).toISOString()};

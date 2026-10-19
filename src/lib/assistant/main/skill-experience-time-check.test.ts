@@ -34,7 +34,7 @@ it('returns the earliest already-verified signature and method deadline at the s
  expect(result.methodExperienceValidBefore).toBe(valid.valid_before.toISOString());
  expect(result.acceptanceTimeCheckedAt).toBe(result.methodExperienceTimeCheckedAt);
 });
-it.each(['runnerDeclarationValidBefore','transportValidBefore'] as const)('rejects %s expiry while method sources are still valid',async field=>{
+it.each(['runnerDeclarationValidBefore','transportValidBefore','runtimePackageValidBefore'] as const)('rejects %s expiry while method sources are still valid',async field=>{
  const query=vi.fn().mockResolvedValue({rows:[valid]});
  await expect(revalidateLockedSkillExperienceTimes({query} as unknown as PoolClient,owner,artifact,{[field]:valid.checked_at.toISOString()})).rejects.toThrow('signed evidence expired');
 });
@@ -42,4 +42,10 @@ it('rejects malformed signed deadlines before any DB read',async()=>{
  const query=vi.fn();
  await expect(revalidateLockedSkillExperienceTimes({query} as unknown as PoolClient,owner,artifact,{transportValidBefore:'invalid'})).rejects.toThrow();
  expect(query).not.toHaveBeenCalled();
+});
+it('limits the common final deadline to the registered package lifetime',async()=>{
+ const query=vi.fn().mockResolvedValue({rows:[valid]});
+ const out=await revalidateLockedSkillExperienceTimes({query} as unknown as PoolClient,owner,artifact,{
+  runnerDeclarationValidBefore:'2026-10-19T01:20:00.000Z',transportValidBefore:'2026-10-19T01:15:00.000Z',runtimePackageValidBefore:'2026-10-19T01:05:00.000Z'});
+ expect(out.acceptanceValidBefore).toBe('2026-10-19T01:05:00.000Z');
 });

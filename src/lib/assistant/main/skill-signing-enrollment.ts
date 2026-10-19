@@ -8,6 +8,19 @@ export const skillSigningEnrollmentSchema=z.object({
  purpose:z.enum(['runner-declaration','model-transport','task-model-transport']),
 }).strict();
 export type SkillSigningEnrollment=z.infer<typeof skillSigningEnrollmentSchema>;
+export const skillSigningEnrollmentWindowSchema=skillSigningEnrollmentSchema.extend({requiredFrom:z.iso.datetime(),requiredThrough:z.iso.datetime()})
+ .refine(row=>Date.parse(row.requiredFrom)<=Date.parse(row.requiredThrough),'Signing enrollment time range invalid');
+export type SkillSigningEnrollmentWindow=z.infer<typeof skillSigningEnrollmentWindowSchema>;
+export function mergeSkillSigningEnrollmentWindows(values:readonly unknown[]){
+ if(!Array.isArray(values))throw new Error('Signing enrollment windows unavailable');
+ const rows=values.map(value=>skillSigningEnrollmentWindowSchema.parse(value));
+ const identities=mergeSkillSigningEnrollments(rows.map(({keyId,collectorId,deploymentHash,purpose})=>({keyId,collectorId,deploymentHash,purpose})));
+ return identities.map(identity=>{
+  const matching=rows.filter(row=>row.keyId===identity.keyId&&row.purpose===identity.purpose);
+  return {...identity,requiredFrom:new Date(Math.min(...matching.map(row=>Date.parse(row.requiredFrom)))).toISOString(),
+   requiredThrough:new Date(Math.max(...matching.map(row=>Date.parse(row.requiredThrough)))).toISOString()};
+ });
+}
 
 /** Only aggregate results of actual signature verifiers. This projection is not
  * a signature verifier, package certification or production qualification. */
@@ -25,8 +38,8 @@ export function mergeSkillSigningEnrollments(values:readonly unknown[]){
 
 /** Call inside the retained readiness transaction, with server-generated
  * verifier results only. No HTTP/tool input is accepted by this component. */
-export function skillSigningEnrollmentCoverage(runner:{runnerDeclarationRequired:boolean;runnerDeclarationRevalidated:boolean;runnerRegistryHash?:string;runnerSigningEnrollment?:unknown},
- transport:{transportReceiptsRequired:boolean;transportReceiptsRevalidated:boolean;transportRegistryHash?:string;transportSigningEnrollments?:readonly unknown[]}){
+export function skillSigningEnrollmentCoverage(runner:{runnerDeclarationRequired:boolean;runnerDeclarationRevalidated:boolean;runnerRegistryHash?:string;runnerSigningEnrollment?:unknown;runnerSigningEnrollmentWindow?:unknown},
+ transport:{transportReceiptsRequired:boolean;transportReceiptsRevalidated:boolean;transportRegistryHash?:string;transportSigningEnrollments?:readonly unknown[];transportSigningEnrollmentWindows?:readonly unknown[]}){
  if(!runner.runnerDeclarationRequired&&!transport.transportReceiptsRequired)return {
   signingEnrollmentCoverageRequired:false as const,signingEnrollmentCoverageRevalidated:false as const};
  if(!runner.runnerDeclarationRequired||!runner.runnerDeclarationRevalidated||!transport.transportReceiptsRequired||!transport.transportReceiptsRevalidated)
@@ -39,7 +52,10 @@ export function skillSigningEnrollmentCoverage(runner:{runnerDeclarationRequired
  if(receipts.some(row=>row.purpose==='runner-declaration')||!receipts.some(row=>row.purpose==='task-model-transport')
   ||!receipts.some(row=>row.purpose==='model-transport'))throw new Error('Signing enrollment transport role missing or invalid');
  const enrollments=mergeSkillSigningEnrollments([declaration,...receipts]);
+ const windows=mergeSkillSigningEnrollmentWindows([runner.runnerSigningEnrollmentWindow,...(transport.transportSigningEnrollmentWindows??[])]);
+ if(digest(windows.map(({keyId,collectorId,deploymentHash,purpose})=>({keyId,collectorId,deploymentHash,purpose})))!==digest(enrollments))
+  throw new Error('Signing enrollment window coverage changed');
  return {signingEnrollmentCoverageRequired:true as const,signingEnrollmentCoverageRevalidated:true as const,
-  signingEnrollments:enrollments,signingEnrollmentCount:enrollments.length,
-  signingEnrollmentCoverageHash:digest({protocol:'skill-signing-enrollment-coverage-v1',registryHash,enrollments})};
+  signingEnrollments:enrollments,signingEnrollmentWindows:windows,signingEnrollmentCount:enrollments.length,
+  signingEnrollmentCoverageHash:digest({protocol:'skill-signing-enrollment-coverage-v2',registryHash,enrollments,windows})};
 }

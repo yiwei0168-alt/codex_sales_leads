@@ -22,8 +22,10 @@ function evidence(){return {artifactHash:digest('artifact'),freezeStatus:{freeze
 beforeEach(()=>{vi.resetAllMocks();m.read.mockResolvedValue(evidence());m.registry.mockResolvedValue(registry);
  m.query.mockResolvedValue({rows:[{checked_at:now}]});
  const audit={registryHash:digest(registry),journalHash:digest('PRIVATE journal'),transportReceiptHashes:[digest('PRIVATE receipt')],transportValidBefore:expiresAt};
- m.task.mockResolvedValue({...audit,signingEnrollments:[{keyId:'task-key',collectorId:'task',deploymentHash:digest('task'),purpose:'task-model-transport'}]});
- m.candidate.mockResolvedValue({...audit,signingEnrollments:[{keyId:'eval-key',collectorId:'eval',deploymentHash:digest('eval'),purpose:'model-transport'}]});
+ const task={keyId:'task-key',collectorId:'task',deploymentHash:digest('task'),purpose:'task-model-transport'};
+ m.task.mockResolvedValue({...audit,signingEnrollments:[task],signingEnrollmentWindows:[{...task,requiredFrom:now.toISOString(),requiredThrough:now.toISOString()}]});
+ const candidate={keyId:'eval-key',collectorId:'eval',deploymentHash:digest('eval'),purpose:'model-transport'};
+ m.candidate.mockResolvedValue({...audit,signingEnrollments:[candidate],signingEnrollmentWindows:[{...candidate,requiredFrom:now.toISOString(),requiredThrough:now.toISOString()}]});
 });
 it('audits two original tasks and all eight case arms using one DB time, returning hashes only',async()=>{
  const out=await revalidateLockedSkillTransportReceipts(client,context,bundleId);

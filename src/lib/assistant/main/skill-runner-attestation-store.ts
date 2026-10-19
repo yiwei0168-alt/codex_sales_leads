@@ -141,6 +141,7 @@ export async function readLockedSkillRunnerAttestation(client:PoolClient,context
   const envelope=skillRunnerEnvelopeSchema.parse(row.envelope);
   return {runnerDeclarationRequired:true as const,runnerDeclarationRevalidated:true as const,
    runnerSigningEnrollment:verified.signingEnrollment,
+   runnerSigningEnrollmentWindow:{...verified.signingEnrollment,requiredFrom:envelope.statement.issuedAt,requiredThrough:envelope.statement.issuedAt},
    runnerDeclarationId:row.id,runnerStatementHash:verified.statementHash,runnerRegistryHash:verified.registryHash,
    runnerDeclarationCheckedAt:now.toISOString(),runnerDeclarationValidBefore:envelope.statement.expiresAt,
    collectorProvenanceVerified:false as const,automaticActivation:false as const};

@@ -1,13 +1,14 @@
 import {expect,it} from 'vitest';
 import {digest} from './contracts';
-import {mergeSkillSigningEnrollments,skillSigningEnrollmentCoverage} from './skill-signing-enrollment';
+import {mergeSkillSigningEnrollmentWindows,mergeSkillSigningEnrollments,skillSigningEnrollmentCoverage} from './skill-signing-enrollment';
 
 const registry=digest('registry');
 const runner={keyId:'runner',collectorId:'collector',deploymentHash:digest('collector-package'),purpose:'runner-declaration' as const};
 const task={keyId:'task',collectorId:'main-runtime',deploymentHash:digest('main-package'),purpose:'task-model-transport' as const};
 const evaluation={keyId:'evaluation',collectorId:'collector',deploymentHash:digest('collector-package'),purpose:'model-transport' as const};
-const declaration={runnerDeclarationRequired:true,runnerDeclarationRevalidated:true,runnerRegistryHash:registry,runnerSigningEnrollment:runner};
-const transport={transportReceiptsRequired:true,transportReceiptsRevalidated:true,transportRegistryHash:registry,transportSigningEnrollments:[task,evaluation]};
+const windowOf=(row:typeof task|typeof evaluation|typeof runner)=>({...row,requiredFrom:'2026-10-19T00:00:00.000Z',requiredThrough:'2026-10-19T00:01:00.000Z'});
+const declaration={runnerDeclarationRequired:true,runnerDeclarationRevalidated:true,runnerRegistryHash:registry,runnerSigningEnrollment:runner,runnerSigningEnrollmentWindow:windowOf(runner)};
+const transport={transportReceiptsRequired:true,transportReceiptsRevalidated:true,transportRegistryHash:registry,transportSigningEnrollments:[task,evaluation],transportSigningEnrollmentWindows:[task,evaluation].map(windowOf)};
 
 it('binds the exact original, evaluation and declaration roles with deterministic deduplication',()=>{
  const out=skillSigningEnrollmentCoverage(declaration,transport);
@@ -18,7 +19,7 @@ it('binds the exact original, evaluation and declaration roles with deterministi
 });
 it('retains separate fallback signing keys instead of qualifying only the selected route',()=>{
  const fallback={...task,keyId:'fallback',collectorId:'older-main',deploymentHash:digest('older-package')};
- expect(skillSigningEnrollmentCoverage(declaration,{...transport,transportSigningEnrollments:[task,evaluation,fallback]}).signingEnrollmentCount).toBe(4);
+ expect(skillSigningEnrollmentCoverage(declaration,{...transport,transportSigningEnrollments:[task,evaluation,fallback],transportSigningEnrollmentWindows:[task,evaluation,fallback].map(windowOf)}).signingEnrollmentCount).toBe(4);
 });
 it('binds enrollment coverage to the current registry even with unchanged key identities',()=>{
  const changed=digest('new registry');
@@ -43,4 +44,15 @@ it('rejects incomplete signature-role checks and missing or mismatched enrollmen
 it('does not claim verified coverage for synthetic unsigned preparation',()=>{
  expect(skillSigningEnrollmentCoverage({runnerDeclarationRequired:false,runnerDeclarationRevalidated:false},
   {transportReceiptsRequired:false,transportReceiptsRevalidated:false})).toEqual({signingEnrollmentCoverageRequired:false,signingEnrollmentCoverageRevalidated:false});
+});
+it('keeps the earliest attempt start and latest completion across repeated uses of each identity',()=>{
+ const first=windowOf(task),later={...first,requiredFrom:'2026-10-19T00:02:00.000Z',requiredThrough:'2026-10-19T00:03:00.000Z'};
+ expect(mergeSkillSigningEnrollmentWindows([later,first,first])).toEqual([{...first,requiredThrough:later.requiredThrough}]);
+ expect(()=>mergeSkillSigningEnrollmentWindows([{...later,requiredFrom:later.requiredThrough,requiredThrough:first.requiredFrom}])).toThrow('range invalid');
+});
+it('requires one usage range for every authenticated signing identity and binds the range to coverage',()=>{
+ expect(()=>skillSigningEnrollmentCoverage(declaration,{...transport,transportSigningEnrollmentWindows:[windowOf(task)]})).toThrow('window coverage changed');
+ const changed={...windowOf(task),requiredThrough:'2026-10-19T00:04:00.000Z'};
+ expect(skillSigningEnrollmentCoverage(declaration,{...transport,transportSigningEnrollmentWindows:[changed,windowOf(evaluation)]}).signingEnrollmentCoverageHash)
+  .not.toBe(skillSigningEnrollmentCoverage(declaration,transport).signingEnrollmentCoverageHash);
 });
