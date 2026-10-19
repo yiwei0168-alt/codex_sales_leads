@@ -81,7 +81,10 @@ export async function evaluateLockedSkillAcceptanceReadiness(client:PoolClient,c
   if(knowledgeBytes.knowledgeReceiptImmutableSnapshotCount!==materials.knowledgeReceiptImmutableSnapshotCount
    ||knowledgeBytes.knowledgeReceiptImmutableSnapshotManifestHash!==materials.knowledgeReceiptImmutableSnapshotManifestHash)
    throw new Error('Acceptance knowledge receipt snapshots changed after preparation');
-  if(digest({...knowledgeBytes,knowledgeReceiptReadOnlyMountVerified:knowledgeBytes.knowledgeReceiptReadOnlyMountVerified??false})!==digest({knowledgeReceiptBytesRevalidated:materials.knowledgeReceiptBytesRevalidated,
+  if(digest({knowledgeReceiptBytesRevalidated:knowledgeBytes.knowledgeReceiptBytesRevalidated,
+   knowledgeReceiptAssetCount:knowledgeBytes.knowledgeReceiptAssetCount,knowledgeReceiptDatabaseOnlyCount:knowledgeBytes.knowledgeReceiptDatabaseOnlyCount,
+   knowledgeReceiptBytesManifestHash:knowledgeBytes.knowledgeReceiptBytesManifestHash,
+   knowledgeReceiptReadOnlyMountVerified:knowledgeBytes.knowledgeReceiptReadOnlyMountVerified??false})!==digest({knowledgeReceiptBytesRevalidated:materials.knowledgeReceiptBytesRevalidated,
    knowledgeReceiptAssetCount:materials.knowledgeReceiptAssetCount,knowledgeReceiptDatabaseOnlyCount:materials.knowledgeReceiptDatabaseOnlyCount,
    knowledgeReceiptBytesManifestHash:materials.knowledgeReceiptBytesManifestHash,
    knowledgeReceiptReadOnlyMountVerified:materials.knowledgeReceiptReadOnlyMountVerified??false}))throw new Error('Acceptance knowledge receipt sources changed after preparation');

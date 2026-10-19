@@ -2,6 +2,8 @@
 
 ## 当前结论（2026-10-19，按固定源码快照分别核验）
 
+G09 完整签名组合 `3b44c10c` 已退出 1，发现最终 knowledge receipt 摘要投影不一致导致误拒绝。回归已复现并修复；完整修复重跑尚待终态。较早“仍运行”的记录已被此终态取代，G09 不标通过。[失败及修复记录](MA24_SIGNED_COMPOSITION_CANONICAL_SNAPSHOT_2026-10-19.md)。
+
 G03 实际 Worker 已补验：全新合成库、三次 `--once`、两次本机 Qwen chat，覆盖取队列、偏好与自然纠正、通知/outbox 幂等、空队列及正式事实/政策计数不变。仅合成英文输入，非持续试点或代表性质量；G03 整体仍未完成。[Worker 收据](LOCAL_MEMORY_WORKER_ACTUAL_FLOW_2026-10-19.md)。
 
 最新固定 Web 镜像为 `ma24-pilot-web:3b44c10c`，构建及全新 156/TLS 数据库实际登录/隔离/快照 HTTP 通过，包含近期原件来源锁。HTTPS 浏览器、扩展 UI 和备份仍按各自旧版收据保留；该提交完整签名组合已启动但尚无终态，不标通过。[候选收据](evidence/ma24-g01-current-candidate-3b44c10c-2026-10-19.json)。

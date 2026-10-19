@@ -2,6 +2,8 @@
 
 ### MA24-06 / G09 — 显式原件快照（2026-10-19，实施补充）
 
+固定 `3b44c10c` 的完整签名联验已失败：最终 knowledge receipt 比较遗漏新增字段的对照，误拒绝稳定材料。已通过回归复现并对齐登记字段投影，快照数量/清单变化拒绝仍保留；完整修复重跑待终态，不标 G09 通过。[记录](MA24_SIGNED_COMPOSITION_CANONICAL_SNAPSHOT_2026-10-19.md)。此前“已启动待终态”为历史进度；Web HTTP 局部通过范围不变。
+
 固定 `3b44c10c` 已构建包含原件来源锁的 Web 镜像，并通过全新 156/TLS 库登录、账号隔离和实际快照 HTTP 场景；未重验 HTTPS 浏览器、扩展 UI 或备份，不将旧收据扩称为新镜像实测。含快照的完整签名组合已启动，尚待终态。[本机候选](evidence/ma24-g01-current-candidate-3b44c10c-2026-10-19.json)、[组合说明](MA24_SIGNED_COMPOSITION_CANONICAL_SNAPSHOT_2026-10-19.md)。
 
 原件重建入口进一步自行核对绑定账号事务并在读取前取得来源 admission。70 项定向回归、五组实际克隆（身份拒绝及四类来源写入等待确切 reader PID、提交后拒读）、类型/lint 通过。[范围](IMMUTABLE_SNAPSHOT_SOURCE_ADMISSION_2026-10-19.md)。不再依赖调用者约定补锁；仍不表示全部来源或最终启用完成，不新增用户确认。

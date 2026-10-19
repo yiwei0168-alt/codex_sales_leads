@@ -222,3 +222,10 @@ it('rejects knowledge snapshot identity changing before final readiness',async()
  await expect(evaluateLockedSkillAcceptanceReadiness(client,context,bundleId)).rejects.toThrow('knowledge receipt snapshots changed');
  expect(m.times).not.toHaveBeenCalled();
 });
+it.each([0,1])('accepts stable complete knowledge snapshot fields with %i assets through final readiness',async count=>{
+ m.knowledgeBytes.mockResolvedValue({knowledgeReceiptBytesRevalidated:true,knowledgeReceiptAssetCount:count,knowledgeReceiptDatabaseOnlyCount:0,
+  knowledgeReceiptBytesManifestHash:'stable-assets',knowledgeReceiptReadOnlyMountVerified:count===0,
+  knowledgeReceiptImmutableSnapshotCount:count,knowledgeReceiptImmutableSnapshotManifestHash:'stable-snapshots'});
+ expect(await evaluateLockedSkillAcceptanceReadiness(client,context,bundleId)).toMatchObject({
+  knowledgeReceiptImmutableSnapshotCount:count,knowledgeReceiptImmutableSnapshotManifestHash:'stable-snapshots',automaticActivation:false});
+});

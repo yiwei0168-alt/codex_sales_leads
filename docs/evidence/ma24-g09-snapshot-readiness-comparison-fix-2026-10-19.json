@@ -1,0 +1,15 @@
+{
+  "failedSourceCommit": "3b44c10c9f72bb2abda3b9655fcd16f135e226ba",
+  "failedIntegrationExitCode": 1,
+  "failedIntegrationLog": "tmp/ma24-signed-canonical-3b44c10c-2026-10-19.log",
+  "failure": "Acceptance knowledge receipt sources changed after preparation",
+  "cause": "Final digest spread included immutable snapshot fields absent from the comparison projection",
+  "regressionReproducedBeforeFix": true,
+  "targetedTestsPassedAfterFix": 72,
+  "typecheckPassed": true,
+  "targetedLintPassed": true,
+  "fix": "Compare the same registration projection on both sides; retain separate snapshot count and manifest equality guards",
+  "completeIntegrationAfterFix": "pending fixed-source rerun",
+  "productionQualified": false,
+  "automaticActivation": false
+}
