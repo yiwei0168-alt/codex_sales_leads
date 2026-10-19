@@ -208,3 +208,17 @@ it('rejects knowledge receipt mount protection drifting during preparation',asyn
  await expect(evaluateLockedSkillAcceptanceReadiness(client,context,bundleId)).rejects.toThrow('knowledge receipt sources changed');
  expect(m.times).not.toHaveBeenCalled();
 });
+it('rejects attachment snapshot coverage disappearing before final readiness',async()=>{
+ const value={attachmentBytesRevalidated:true,attachmentBytesCount:1,attachmentBytesManifestHash:'manifest'};
+ m.bytes.mockResolvedValueOnce({...value,attachmentImmutableSnapshotCount:1,attachmentImmutableSnapshotManifestHash:'snapshot'})
+  .mockResolvedValueOnce({...value,attachmentImmutableSnapshotCount:0,attachmentImmutableSnapshotManifestHash:'empty'});
+ await expect(evaluateLockedSkillAcceptanceReadiness(client,context,bundleId)).rejects.toThrow('attachment snapshots changed');
+ expect(m.times).not.toHaveBeenCalled();
+});
+it('rejects knowledge snapshot identity changing before final readiness',async()=>{
+ const value={knowledgeReceiptBytesRevalidated:true,knowledgeReceiptAssetCount:1,knowledgeReceiptDatabaseOnlyCount:0,knowledgeReceiptBytesManifestHash:'knowledge-manifest',knowledgeReceiptImmutableSnapshotCount:1};
+ m.knowledgeBytes.mockResolvedValueOnce({...value,knowledgeReceiptImmutableSnapshotManifestHash:'first'})
+  .mockResolvedValueOnce({...value,knowledgeReceiptImmutableSnapshotManifestHash:'second'});
+ await expect(evaluateLockedSkillAcceptanceReadiness(client,context,bundleId)).rejects.toThrow('knowledge receipt snapshots changed');
+ expect(m.times).not.toHaveBeenCalled();
+});

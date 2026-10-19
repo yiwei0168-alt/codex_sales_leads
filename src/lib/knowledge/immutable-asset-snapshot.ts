@@ -35,3 +35,12 @@ export async function readImmutableKnowledgeAsset(client:PoolClient,userId:strin
   return {snapshotId:row.id,sourceSha256:row.source_sha256,byteSize:row.body.length,bytes:row.body};
  });
 }
+
+/** Compatibility for historical read-only acceptance clones. Absence means no
+ * immutable evidence, never permission to qualify a filesystem-only source. */
+export async function readAvailableImmutableKnowledgeAsset(client:PoolClient,userId:string,assetId:string,expectedSha256:string){
+ return withBoundTenantTransaction(client,userId,async()=>{
+  const available=(await client.query<{available:boolean}>("select to_regclass('public.knowledge_asset_immutable_snapshot') is not null available")).rows[0]?.available;
+  return available?readImmutableKnowledgeAsset(client,userId,assetId,expectedSha256):null;
+ });
+}

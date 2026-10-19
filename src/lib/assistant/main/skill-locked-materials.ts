@@ -74,7 +74,13 @@ export async function evaluateLockedSkillAcceptanceReadiness(client:PoolClient,c
   const attachmentBytes=await revalidateLockedSkillAttachmentBytes(client,context.userId,final.artifact);
   if(attachmentBytes.attachmentBytesManifestHash!==materials.attachmentBytesManifestHash)throw new Error('Acceptance attachment registration changed after preparation');
   if(attachmentBytes.attachmentReadOnlyMountVerified!==materials.attachmentReadOnlyMountVerified)throw new Error('Acceptance attachment mount protection changed after preparation');
+  if(attachmentBytes.attachmentImmutableSnapshotCount!==materials.attachmentImmutableSnapshotCount
+   ||attachmentBytes.attachmentImmutableSnapshotManifestHash!==materials.attachmentImmutableSnapshotManifestHash)
+   throw new Error('Acceptance attachment snapshots changed after preparation');
   const knowledgeBytes=await preparation.recheckKnowledgeBytes();
+  if(knowledgeBytes.knowledgeReceiptImmutableSnapshotCount!==materials.knowledgeReceiptImmutableSnapshotCount
+   ||knowledgeBytes.knowledgeReceiptImmutableSnapshotManifestHash!==materials.knowledgeReceiptImmutableSnapshotManifestHash)
+   throw new Error('Acceptance knowledge receipt snapshots changed after preparation');
   if(digest({...knowledgeBytes,knowledgeReceiptReadOnlyMountVerified:knowledgeBytes.knowledgeReceiptReadOnlyMountVerified??false})!==digest({knowledgeReceiptBytesRevalidated:materials.knowledgeReceiptBytesRevalidated,
    knowledgeReceiptAssetCount:materials.knowledgeReceiptAssetCount,knowledgeReceiptDatabaseOnlyCount:materials.knowledgeReceiptDatabaseOnlyCount,
    knowledgeReceiptBytesManifestHash:materials.knowledgeReceiptBytesManifestHash,

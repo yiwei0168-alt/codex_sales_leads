@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "results": [
+    "actual-file-capture-and-idempotent-read",
+    "actual-acceptance-attachment-and-knowledge-receipt-snapshot-binding",
+    "hash-size-and-direct-write-rejection",
+    "private-peer-read-and-capture-denied",
+    "shared-to-private-current-visibility",
+    "filesystem-tamper-rejected-existing-snapshot-unchanged",
+    "archived-hash-and-size-changes-deny-stale-read",
+    "withdrawal-denies-existing-snapshot",
+    "privileged-ordinary-mutation-trigger-rejection",
+    "metadata-deletion-unblocked-orphan-inaccessible"
+  ],
+  "migrationAndFixturesRolledBack": true,
+  "modelAndNetworkCalls": 0,
+  "productionQualified": false,
+  "activationEnabled": false
+}

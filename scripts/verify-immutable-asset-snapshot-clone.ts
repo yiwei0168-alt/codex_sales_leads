@@ -4,6 +4,8 @@ import {mkdir,readFile,writeFile,unlink} from 'node:fs/promises';
 import nextEnv from '@next/env';
 import {Pool} from 'pg';
 import {captureImmutableKnowledgeAsset,readImmutableKnowledgeAsset} from '../src/lib/knowledge/immutable-asset-snapshot';
+import {revalidateLockedKnowledgeAssetBytes} from '../src/lib/assistant/main/skill-attachment-bytes';
+import {revalidateLockedSkillKnowledgeReceiptBytes} from '../src/lib/assistant/main/skill-knowledge-receipt-bytes';
 
 nextEnv.loadEnvConfig(process.cwd());
 const configured=process.env.DATABASE_MIGRATION_URL||process.env.DATABASE_URL;assert(configured);
@@ -38,6 +40,11 @@ try{
  const captured=await captureImmutableKnowledgeAsset(client,owner,asset);
  assert.equal((await captureImmutableKnowledgeAsset(client,owner,asset)).snapshotId,captured.snapshotId);
  assert.deepEqual((await readImmutableKnowledgeAsset(client,owner,asset,sha))?.bytes,bytes);results.push('actual-file-capture-and-idempotent-read');
+ const attachment=await revalidateLockedKnowledgeAssetBytes(client,owner,[asset]);
+ const receipt=await revalidateLockedSkillKnowledgeReceiptBytes(client,owner,[{tool:'knowledge_originals',output:{status:'success',data:{documents:[{id:asset}]}}}]);
+ assert.equal(attachment.immutableSnapshotCount,1);assert.equal(receipt.knowledgeReceiptImmutableSnapshotCount,1);
+ assert.equal(attachment.immutableSnapshotManifestHash,receipt.knowledgeReceiptImmutableSnapshotManifestHash);
+ results.push('actual-acceptance-attachment-and-knowledge-receipt-snapshot-binding');
  await rejected('select capture_immutable_asset_snapshot($1,$2,$3)',[asset,sha,Buffer.from('wrong')]);
  await rejected('select capture_immutable_asset_snapshot($1,$2,$3)',[asset,'0'.repeat(64),bytes]);
  for(const sql of ['update knowledge_asset_immutable_snapshot set body=body','delete from knowledge_asset_immutable_snapshot','truncate knowledge_asset_immutable_snapshot',"insert into knowledge_asset_immutable_snapshot(asset_id,source_sha256,byte_size,body,captured_by) values($1,$2,$3,$4,$5)"]){await rejected(sql,sql.startsWith('insert')?[asset,sha,bytes.length,bytes,owner]:[]);}

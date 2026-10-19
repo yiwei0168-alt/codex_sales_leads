@@ -5,7 +5,8 @@ import {afterEach,beforeEach,expect,it,vi} from 'vitest';
 import {revalidateLockedSkillAttachmentBytes} from './skill-attachment-bytes';
 import {revalidateLockedSkillKnowledgeReceiptBytes} from './skill-knowledge-receipt-bytes';
 
-const interleave=vi.hoisted(()=>({afterDescriptorStat:undefined as undefined|(()=>Promise<void>)}));
+const interleave=vi.hoisted(()=>({afterDescriptorStat:undefined as undefined|(()=>Promise<void>),snapshot:vi.fn()}));
+vi.mock('@/lib/knowledge/immutable-asset-snapshot',()=>({readAvailableImmutableKnowledgeAsset:interleave.snapshot}));
 vi.mock('node:fs/promises',async importOriginal=>{
  const actual=await importOriginal<typeof import('node:fs/promises')>();
  return {...actual,open:async(...args:Parameters<typeof actual.open>)=>{
@@ -26,6 +27,7 @@ const bytes=Buffer.from('registered original');
 const asset=()=>({id:assetId,storage_key:key,byte_size:String(bytes.length),source_sha256:createHash('sha256').update(bytes).digest('hex')});
 beforeEach(async()=>{
  interleave.afterDescriptorStat=undefined;
+ interleave.snapshot.mockReset();interleave.snapshot.mockResolvedValue(null);
  query.mockReset();await mkdir('knowledge',{recursive:true});key=`knowledge/ma24-byte-test-${randomUUID()}.txt`;
  await writeFile(key,bytes,{flag:'wx'});files.push(key);
  query.mockResolvedValueOnce({rows:[{input:{attachments:[{assetId}]}}]}).mockResolvedValueOnce({rows:[asset()]});
@@ -39,6 +41,20 @@ it('hashes real bytes selected from stored task attachments and exposes only cou
  expect(query.mock.calls[0][1]).toEqual([owner,[run]]);
  expect(query.mock.calls[1][1]).toEqual([[assetId],owner]);
  expect(query.mock.calls[1][0]).toContain("d.status='active'");
+});
+it('binds matching immutable snapshot IDs without exposing bytes',async()=>{
+ const snapshotId=randomUUID();interleave.snapshot.mockResolvedValue({snapshotId,sourceSha256:asset().source_sha256,byteSize:bytes.length,bytes});
+ const out=await revalidateLockedSkillAttachmentBytes(client,owner,artifact);
+ expect(out.attachmentImmutableSnapshotCount).toBe(1);
+ expect(out.attachmentImmutableSnapshotManifestHash).toMatch(/^[a-f0-9]{64}$/);
+ expect(JSON.stringify(out)).not.toContain(snapshotId);expect(JSON.stringify(out)).not.toContain(bytes.toString());
+});
+it('reports zero immutable coverage when no captured snapshot is available',async()=>{
+ expect((await revalidateLockedSkillAttachmentBytes(client,owner,artifact)).attachmentImmutableSnapshotCount).toBe(0);
+});
+it('propagates snapshot integrity or database failures instead of accepting filesystem-only evidence',async()=>{
+ interleave.snapshot.mockRejectedValue(new Error('Immutable snapshot integrity mismatch'));
+ await expect(revalidateLockedSkillAttachmentBytes(client,owner,artifact)).rejects.toThrow('snapshot integrity mismatch');
 });
 it('rejects real same-size tampering',async()=>{
  await writeFile(key,Buffer.alloc(bytes.length,120));
