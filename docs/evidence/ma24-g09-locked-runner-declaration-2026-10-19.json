@@ -1,0 +1,55 @@
+{
+  "stage": "MA24 G09 retained-transaction runner declaration recheck",
+  "date": "2026-10-19",
+  "sourceBaseCommit": "1d49bffc",
+  "checks": {
+    "focusedVitest": "65 passed across material preparation, attestation and evidence-window tests; overlaps earlier stages",
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "diffCheck": "passed",
+    "freshClusterRunnerAttestation": "passed",
+    "fixedSnapshotFiveCategoryComposition": "pending"
+  },
+  "implementation": {
+    "standardSourceBundleFreezeSkillLockOrder": true,
+    "serverSelectsLatestOwnerBundleFreezeDeclaration": true,
+    "expectationsDerivedFromStoredArtifactAndServerConfig": true,
+    "databaseWallClockUsed": true,
+    "registryReloadedBeforeAndAfterPreparation": true,
+    "statementIdHashAndRegistryHashCompared": true,
+    "syntheticSourceNotPromoted": true,
+    "collectorProvenanceVerified": false,
+    "automaticActivation": false
+  },
+  "database": {
+    "command": "node --import tsx scripts/verify-ma24-fresh-pilot-new-cluster.ts --runner-attestation",
+    "exitCode": 0,
+    "missingDeclarationAndCrossAccountRejected": true,
+    "declarationAppendWaitsAndResumes": true,
+    "registryDisablementInsideHeldTransactionRejected": true,
+    "sameTransactionDeclarationExpiryRejected": true,
+    "transactionTimestampStillBeforeDeclarationExpiry": true,
+    "latestRenewedDeclarationSelected": true,
+    "expiredLatestDeclarationDoesNotFallBackToOlderValidRow": true,
+    "syntheticDeclarationNotRequiredOrAuthenticated": true,
+    "freezeRevocationRejected": true,
+    "priorSignatureStorageAndRoleBoundaryMatrixPassed": true,
+    "productionKeysCreated": false,
+    "temporaryContainerRemoved": true,
+    "temporaryRegistryRemoved": true,
+    "actualModelCalls": 0,
+    "scope": "Actual pending-kind synthetic declaration, local temporary signing key and public registry; validates the locked declaration component, not a full production readiness workflow."
+  },
+  "initialFixtureFailure": "The manually constructed concurrent reader set app.current_user_id but omitted app.current_user_role. The bound transaction guard rejected it. The fixture now sets member, matching tenantTransaction; the product account/role guard was not weakened.",
+  "limitations": [
+    "A signature authenticates an enrolled statement; binary, provider and independent quality qualification remain separate and false/unverified.",
+    "Registry comparison and database time are preparation checks, not a filesystem trust-registry lease or final activation grant.",
+    "Full synthetic five-category readiness integration is pending its new fixed-snapshot run.",
+    "No production migration, trust enrollment, Skill activation or deployment."
+  ],
+  "filesSha256": {
+    "src/lib/assistant/main/skill-runner-attestation-store.ts": "5353443624fff127cac99993eb68c30a40d728542c33ad44c0319c3584b4c6bb",
+    "src/lib/assistant/main/skill-locked-materials.ts": "4878b1d068e5e1ea67d3533f2591d11d8ebcc572ec3d89f66f92cd040ec7be24",
+    "scripts/verify-skill-runner-attestation-db.ts": "6d26c8e3fc9122d26abd63093d14434b7dedd586877104d2ece80e8a881e12ee"
+  }
+}

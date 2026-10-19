@@ -9,7 +9,7 @@ import {getPool} from '../src/lib/rag/db';
 import {digest} from '../src/lib/assistant/main/contracts';
 import {importSkill} from '../src/lib/assistant/main/skills';
 import {freezeSkillAcceptancePlan,revokeSkillAcceptanceFreeze} from '../src/lib/assistant/main/skill-acceptance-freeze';
-import {appendSkillRunnerAttestation,readSkillRunnerAttestation} from '../src/lib/assistant/main/skill-runner-attestation-store';
+import {appendSkillRunnerAttestation,readSkillRunnerAttestation,readLockedSkillRunnerAttestation} from '../src/lib/assistant/main/skill-runner-attestation-store';
 import type {SkillCollectorTransaction} from '../src/lib/assistant/main/skill-model-journal';
 import {disableLocalAnalysisTracing} from '../src/lib/assistant/main/local-analysis-boundary';
 import {verifyLockedEvidenceDatabase} from './fixtures/skill-locked-evidence-db';
@@ -66,6 +66,8 @@ try{
   capturedAt,completedAt:capturedAt,issuedAt:new Date().toISOString(),expiresAt:draft.expiresAt};
  const envelope={statement,signature:sign(null,Buffer.from(digest(statement),'hex'),pair.privateKey).toString('base64url')};
  const input={bundleId,envelope};
+ const lockedDeclaration=(userId=owner)=>tenantTransaction(userId,client=>readLockedSkillRunnerAttestation(client,{userId},bundleId));
+ await assert.rejects(lockedDeclaration(),/Locked runner declaration unavailable/);
  const lockedEvidence=await verifyLockedEvidenceDatabase(pool,owner,other,bundleId);
  const emptyArtifact={...artifact,observations:[]},emptyBundle=randomUUID();
  await pool.query(`insert into agent_skill_acceptance_bundle(id,owner_id,skill_id,version,source_kind,plan,observations,raw_receipts,artifact_hash)
@@ -88,6 +90,43 @@ try{
  const saved=await appendSkillRunnerAttestation({userId:owner},input,collector);
  assert.equal((await appendSkillRunnerAttestation({userId:owner},input,collector)).id,saved.id);
  assert.equal((await readSkillRunnerAttestation({userId:owner},saved.id)).signedDeclarationVerified,true);
+ const declaration=await lockedDeclaration();assert(declaration.runnerDeclarationRequired);
+ assert.equal(declaration.runnerDeclarationId,saved.id);assert.equal(declaration.runnerDeclarationRevalidated,true);
+ assert.equal(declaration.collectorProvenanceVerified,false);assert.equal(declaration.automaticActivation,false);
+ await assert.rejects(lockedDeclaration(other),/unavailable/);
+ const holder=await pool.connect();let pending:ReturnType<typeof appendSkillRunnerAttestation>|undefined;let finished=false;
+ try{
+  await holder.query('begin');await holder.query('set local role network_copilot_app');
+  await holder.query("select set_config('app.current_user_id',$1,true),set_config('app.current_user_role','member',true)",[owner]);
+  assert.equal((await readLockedSkillRunnerAttestation(holder,{userId:owner},bundleId)).runnerDeclarationRevalidated,true);
+  const pid=(await holder.query('select pg_backend_pid() pid')).rows[0].pid;
+  pending=appendSkillRunnerAttestation({userId:owner},input,collector).finally(()=>{finished=true;});void pending.catch(()=>undefined);
+  let waiting=false;
+  for(let i=0;i<100;i++){
+   waiting=(await pool.query('select exists(select 1 from pg_stat_activity where $1::int=any(pg_blocking_pids(pid))) waiting',[pid])).rows[0].waiting;
+   if(waiting)break;await new Promise(resolve=>setTimeout(resolve,20));
+  }
+  assert(waiting,'Declaration append must wait for final-preparation freeze lock');assert.equal(finished,false);
+  registry.keys[0].enabled=false;await writeFile(registryPath,JSON.stringify(registry));
+  await assert.rejects(readLockedSkillRunnerAttestation(holder,{userId:owner},bundleId),/unavailable/);
+ }finally{
+  registry.keys[0].enabled=true;await writeFile(registryPath,JSON.stringify(registry));
+  await holder.query('rollback');holder.release();
+ }
+ assert(pending);assert.equal((await pending).id,saved.id);
+ const shortStatement={...statement,issuedAt:new Date().toISOString(),expiresAt:new Date(Date.now()+2000).toISOString()};
+ const shortEnvelope={statement:shortStatement,signature:sign(null,Buffer.from(digest(shortStatement),'hex'),pair.privateKey).toString('base64url')};
+ const short=await appendSkillRunnerAttestation({userId:owner},{bundleId,envelope:shortEnvelope},collector);
+ await tenantTransaction(owner,async client=>{
+  const first=await readLockedSkillRunnerAttestation(client,{userId:owner},bundleId);assert(first.runnerDeclarationRequired);
+  assert.equal(first.runnerDeclarationId,short.id);await client.query('select pg_sleep(2.1)');
+  assert.equal((await client.query('select transaction_timestamp()<$1::timestamptz old_clock',[shortStatement.expiresAt])).rows[0].old_clock,true);
+  await assert.rejects(readLockedSkillRunnerAttestation(client,{userId:owner},bundleId),/time window invalid/);
+ });
+ const renewedStatement={...statement,issuedAt:new Date().toISOString()};
+ const renewedEnvelope={statement:renewedStatement,signature:sign(null,Buffer.from(digest(renewedStatement),'hex'),pair.privateKey).toString('base64url')};
+ const renewed=await appendSkillRunnerAttestation({userId:owner},{bundleId,envelope:renewedEnvelope},collector);
+ const latest=await lockedDeclaration();assert(latest.runnerDeclarationRequired);assert.equal(latest.runnerDeclarationId,renewed.id);
  await assert.rejects(readSkillRunnerAttestation({userId:other},saved.id),/unavailable/);
  await assert.rejects(appendSkillRunnerAttestation({userId:other},input,collector),/pending production/);
  await assert.rejects(appendSkillRunnerAttestation({userId:owner},{bundleId,envelope:{...envelope,statement:{...statement,artifactHash:digest('changed')}}},collector),/binding/);
@@ -105,15 +144,20 @@ try{
  const syntheticStatement={...statement,artifactHash:digest(syntheticArtifact)};
  await assert.rejects(appendSkillRunnerAttestation({userId:owner},{bundleId:syntheticBundle,envelope:{statement:syntheticStatement,
   signature:sign(null,Buffer.from(digest(syntheticStatement),'hex'),pair.privateKey).toString('base64url')}},collector),/pending production/);
+ const skipped=await tenantTransaction(owner,client=>readLockedSkillRunnerAttestation(client,{userId:owner},syntheticBundle));
+ assert.equal(skipped.runnerDeclarationRequired,false);assert.equal(skipped.runnerDeclarationRevalidated,false);
  registry.keys[0].enabled=false;await writeFile(registryPath,JSON.stringify(registry));
  await assert.rejects(readSkillRunnerAttestation({userId:owner},saved.id),/unavailable/);
  registry.keys[0].enabled=true;await writeFile(registryPath,JSON.stringify(registry));
  await revokeSkillAcceptanceFreeze({userId:owner},{freezeId:frozen.freezeId,reason:'Synthetic revocation'});
  await assert.rejects(tenantTransaction(owner,client=>readLockedSkillAcceptanceEvidence(client,{userId:owner},bundleId)),/active recorded freeze/);
  await assert.rejects(readSkillRunnerAttestation({userId:owner},saved.id),/inactive/);
+ await assert.rejects(lockedDeclaration(),/active recorded freeze/);
  assert.equal((await pool.query('select enabled from agent_skill where id=$1',[skill.id])).rows[0].enabled,false);
  assert.equal((await pool.query("select to_regclass('public.ma24_evaluation_hard_limit') is null absent")).rows[0].absent,true);
  console.log(JSON.stringify({runnerAttestationStore:'passed',collectorAppendAndIdempotency:true,...lockedEvidence,lockedReadRevokedFreezeRejected:true,
+  lockedDeclarationDatabaseClockExpiryRejected:true,lockedDeclarationRegistryDisablementRejected:true,
+  declarationAppendWaitsAndResumes:true,latestDeclarationSelected:true,syntheticDeclarationNotRequired:true,
   emptyObservationAndSignedTimeDriftRejected:true,
   historicalUnboundStatementsRejectedOnRead:true,
   appInsertDenied:true,crossAccountDenied:true,appendOnly:true,signedSyntheticEvidenceRejected:true,keyDisablementAndFreezeRevocationRejected:true,

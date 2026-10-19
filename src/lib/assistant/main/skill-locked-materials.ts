@@ -12,6 +12,7 @@ import {revalidateLockedSkillExperienceTimes} from './skill-experience-time-chec
 import {revalidateLockedSkillAttachmentBytes} from './skill-attachment-bytes';
 import {revalidateLockedSkillKnowledgeReceiptBytes} from './skill-knowledge-receipt-bytes';
 import {revalidateLockedSkillMemoryReceipts} from './skill-memory-receipt-check';
+import {readLockedSkillRunnerAttestation} from './skill-runner-attestation-store';
 
 /** Keep consumed receipts in a private closure inside the owning transaction;
  * public wrappers expose hashes/counts only, never source contents or callbacks. */
@@ -60,6 +61,7 @@ export async function evaluateLockedSkillAcceptanceReadiness(client:PoolClient,c
   // valid_from/valid_until from crossing while materials and policy are rebuilt.
   await client.query('select lock_skill_knowledge_sources()');
   return withCurrentDecisionMemory(context.userId,async()=>{
+  const declaration=await readLockedSkillRunnerAttestation(client,context,bundleId);
   const preparation=await prepareLockedSkillAcceptanceMaterials(client,context,bundleId),materials=preparation.materials;
   const policy=await evaluateLockedSkillAcceptancePolicy(client,context,bundleId);
   if(materials.artifactHash!==policy.artifactHash||materials.latestReviewHash!==policy.latestReviewHash)
@@ -75,6 +77,12 @@ export async function evaluateLockedSkillAcceptanceReadiness(client:PoolClient,c
    knowledgeReceiptBytesManifestHash:materials.knowledgeReceiptBytesManifestHash}))throw new Error('Acceptance knowledge receipt sources changed after preparation');
   const memoryReceipts=await preparation.recheckMemoryReceipts();
   if(memoryReceipts.memoryReceiptCount!==materials.memoryReceiptCount)throw new Error('Acceptance memory receipt coverage changed after preparation');
+  const finalDeclaration=await readLockedSkillRunnerAttestation(client,context,bundleId);
+  if(declaration.runnerDeclarationRequired!==finalDeclaration.runnerDeclarationRequired
+   ||declaration.runnerDeclarationRevalidated!==finalDeclaration.runnerDeclarationRevalidated
+   ||declaration.runnerDeclarationRequired&&finalDeclaration.runnerDeclarationRequired&&(
+    declaration.runnerDeclarationId!==finalDeclaration.runnerDeclarationId||declaration.runnerStatementHash!==finalDeclaration.runnerStatementHash
+    ||declaration.runnerRegistryHash!==finalDeclaration.runnerRegistryHash))throw new Error('Runner declaration changed during acceptance preparation');
   const methodTimes=await revalidateLockedSkillExperienceTimes(client,context.userId,final.artifact);
   return {...policy,prospectiveCaptureSourcesLocked:materials.prospectiveCaptureSourcesLocked,prospectiveJobCount:materials.prospectiveJobCount,knowledgeSourcesLocked:materials.knowledgeSourcesLocked,decisionMemorySourcesLocked:materials.decisionMemorySourcesLocked,timelineSourcesLocked:materials.timelineSourcesLocked,timelineCustomerCount:materials.timelineCustomerCount,mailReadSourcesLocked:materials.mailReadSourcesLocked,mailCount:materials.mailCount,attachmentMetadataLocked:materials.attachmentMetadataLocked,attachmentCount:materials.attachmentCount,taskOriginsLocked:materials.taskOriginsLocked,taskJournalsLocked:materials.taskJournalsLocked,runCount:materials.runCount,materials:materials.materials,materialsHash:materials.materialsHash,sourcePayloadsRevalidated:true as const,
    pinnedMethodSourcesLocked:materials.pinnedMethodSourcesLocked,pinnedMethodPinCount:materials.pinnedMethodPinCount,
@@ -84,6 +92,7 @@ export async function evaluateLockedSkillAcceptanceReadiness(client:PoolClient,c
    ...attachmentBytes,
    ...knowledgeBytes,
    ...memoryReceipts,
+   ...finalDeclaration,
    pinnedMethodVersionCount:materials.pinnedMethodVersionCount,pinnedMethodExperienceObservationCount:materials.pinnedMethodExperienceObservationCount,
    sourceRevocationsLocked:false as const,collectorProvenanceVerified:false as const,automaticActivation:false as const};
   });

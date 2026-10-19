@@ -1,11 +1,12 @@
 import type {PoolClient} from 'pg';
 import {z} from 'zod';
-import {tenantTransaction} from '@/lib/rag/db';
+import {tenantTransaction,withBoundTenantTransaction} from '@/lib/rag/db';
 import {digest} from './contracts';
 import {assertSkillCollector,type SkillCollectorTransaction} from './skill-model-journal';
 import {skillAcceptancePlanSchema} from './skill-acceptance-policy';
 import {inspectSkillAcceptanceFreeze,lockSkillAcceptanceFreeze} from './skill-acceptance-freeze';
-import {skillRunnerEnvelopeSchema,verifyConfiguredSkillRunnerAttestation} from './skill-runner-attestation';
+import {skillRunnerEnvelopeSchema,verifyConfiguredSkillRunnerAttestation,verifySkillRunnerAttestation,loadConfiguredSkillRunnerTrustRegistry} from './skill-runner-attestation';
+import {readLockedSkillAcceptanceEvidence} from './skill-acceptance-store';
 import {assertLocalAnalysisBoundary} from './local-analysis-boundary';
 import {skillRunnerEvidenceWindow} from './skill-runner-evidence-window';
 
@@ -65,5 +66,35 @@ export async function readSkillRunnerAttestation(context:Context,id:string){
   if(row.artifact_hash!==expected.artifactHash||row.statement_hash!==verified.statementHash)throw new Error('Runner declaration stored binding changed');
   return {id,bundleId:row.bundle_id,freezeId:row.freeze_id,signedDeclarationVerified:true,
    statementHash:verified.statementHash,registryHash:verified.registryHash,automaticActivation:false};
+ });
+}
+/** Final-preparation component only. Source/bundle/freeze locks are acquired in
+ * the standard order. The freeze lock also serializes declaration appends.
+ * A signed declaration does not qualify a binary/provider or grant activation. */
+export async function readLockedSkillRunnerAttestation(client:PoolClient,context:Context,bundleId:string){
+ assertLocalAnalysisBoundary();
+ return withBoundTenantTransaction(client,context.userId,async()=>{
+  const evidence=await readLockedSkillAcceptanceEvidence(client,context,bundleId);
+  if(evidence.artifact.sourceKind==='synthetic-fixture')return {
+   runnerDeclarationRequired:false as const,runnerDeclarationRevalidated:false as const,
+   collectorProvenanceVerified:false as const,automaticActivation:false as const};
+  const freezeId=evidence.freezeStatus.freezeId;
+  if(!freezeId)throw new Error('Locked runner declaration freeze unavailable');
+  const row=(await client.query<{id:string;artifact_hash:string;statement_hash:string;envelope:unknown}>(`
+   select id,artifact_hash,statement_hash,envelope from agent_skill_runner_attestation
+   where owner_id=$1 and bundle_id=$2 and freeze_id=$3 order by created_at desc,id desc limit 1`,[context.userId,bundleId,freezeId])).rows[0];
+  if(!row)throw new Error('Locked runner declaration unavailable');
+  const expected=await loadBinding(client,context,bundleId,freezeId);
+  const registry=await loadConfiguredSkillRunnerTrustRegistry();
+  const now=(await client.query<{checked_at:Date}>('select clock_timestamp() checked_at')).rows[0]?.checked_at;
+  if(!(now instanceof Date)||!Number.isFinite(now.getTime()))throw new Error('Locked runner declaration clock unavailable');
+  const verified=verifySkillRunnerAttestation(row.envelope,registry,expected,now);
+  if(row.artifact_hash!==evidence.artifactHash||row.artifact_hash!==expected.artifactHash||row.statement_hash!==verified.statementHash)
+   throw new Error('Locked runner declaration stored binding changed');
+  const envelope=skillRunnerEnvelopeSchema.parse(row.envelope);
+  return {runnerDeclarationRequired:true as const,runnerDeclarationRevalidated:true as const,
+   runnerDeclarationId:row.id,runnerStatementHash:verified.statementHash,runnerRegistryHash:verified.registryHash,
+   runnerDeclarationCheckedAt:now.toISOString(),runnerDeclarationValidBefore:envelope.statement.expiresAt,
+   collectorProvenanceVerified:false as const,automaticActivation:false as const};
  });
 }

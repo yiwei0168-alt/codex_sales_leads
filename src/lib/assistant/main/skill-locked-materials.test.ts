@@ -2,7 +2,8 @@ import type {PoolClient} from 'pg';
 import {beforeEach,expect,it,vi} from 'vitest';
 import {digest} from './contracts';
 import {revalidateLockedSkillAcceptanceMaterials,evaluateLockedSkillAcceptanceReadiness} from './skill-locked-materials';
-const m=vi.hoisted(()=>({read:vi.fn(),material:vi.fn(),policy:vi.fn(),lock:vi.fn(),methods:vi.fn(),query:vi.fn(),memoryBoundary:vi.fn(),times:vi.fn(),bytes:vi.fn(),knowledgeBytes:vi.fn(),memoryReceipts:vi.fn()}));
+const m=vi.hoisted(()=>({read:vi.fn(),material:vi.fn(),policy:vi.fn(),lock:vi.fn(),methods:vi.fn(),query:vi.fn(),memoryBoundary:vi.fn(),times:vi.fn(),bytes:vi.fn(),knowledgeBytes:vi.fn(),memoryReceipts:vi.fn(),runner:vi.fn()}));
+vi.mock('./skill-runner-attestation-store',()=>({readLockedSkillRunnerAttestation:m.runner}));
 vi.mock('./skill-memory-receipt-check',()=>({revalidateLockedSkillMemoryReceipts:m.memoryReceipts}));
 vi.mock('./skill-knowledge-receipt-bytes',()=>({revalidateLockedSkillKnowledgeReceiptBytes:m.knowledgeBytes}));
 vi.mock('./skill-attachment-bytes',()=>({revalidateLockedSkillAttachmentBytes:m.bytes}));
@@ -25,6 +26,7 @@ beforeEach(()=>{vi.resetAllMocks();m.read.mockResolvedValue(bundle);m.material.m
  m.bytes.mockResolvedValue({attachmentBytesRevalidated:true,attachmentBytesCount:1,attachmentBytesManifestHash:'manifest'});
  m.knowledgeBytes.mockResolvedValue({knowledgeReceiptBytesRevalidated:true,knowledgeReceiptAssetCount:1,knowledgeReceiptDatabaseOnlyCount:0,knowledgeReceiptBytesManifestHash:'knowledge-manifest'});
  m.memoryReceipts.mockResolvedValue({memoryReceiptSourcesRevalidated:true,memoryReceiptCount:1,memoryReceiptCheckedAt:'2026-10-19T01:02:03.000Z'});
+ m.runner.mockResolvedValue({runnerDeclarationRequired:false,runnerDeclarationRevalidated:false,collectorProvenanceVerified:false,automaticActivation:false});
  m.query.mockResolvedValue({rows:[]});m.memoryBoundary.mockImplementation(async(_user:string,work:()=>Promise<unknown>)=>work());
  m.times.mockResolvedValue({methodExperienceTimesRevalidated:true,methodExperienceTimeCheckedAt:'2026-10-19T01:00:00.000Z',methodExperienceValidBefore:'2026-10-19T02:00:00.000Z',methodExperienceTimeObservationCount:2});
  m.methods.mockResolvedValue({pinnedMethodSourcesLocked:true,pinnedMethodPinCount:2,pinnedMethodVersionCount:1,pinnedMethodExperienceObservationCount:2});
@@ -147,4 +149,22 @@ it('rejects a consumed observation expiring during preparation',async()=>{
  m.memoryReceipts.mockResolvedValueOnce({memoryReceiptCount:1}).mockRejectedValueOnce(new Error('Memory context validation failed'));
  await expect(evaluateLockedSkillAcceptanceReadiness(client,context,bundleId)).rejects.toThrow('Memory context validation failed');
  expect(m.times).not.toHaveBeenCalled();
+});
+const declaration={runnerDeclarationRequired:true,runnerDeclarationRevalidated:true,runnerDeclarationId:'declaration',runnerStatementHash:'statement',runnerRegistryHash:'registry',runnerDeclarationCheckedAt:'2026-10-19T01:00:00.000Z'};
+it('rechecks the signed declaration after preparation without qualifying production provenance',async()=>{
+ m.runner.mockResolvedValueOnce(declaration).mockResolvedValueOnce({...declaration,runnerDeclarationCheckedAt:'2026-10-19T01:01:00.000Z'});
+ const out=await evaluateLockedSkillAcceptanceReadiness(client,context,bundleId);
+ expect(out).toMatchObject({runnerDeclarationRevalidated:true,runnerDeclarationCheckedAt:'2026-10-19T01:01:00.000Z',collectorProvenanceVerified:false,automaticActivation:false});
+ expect(m.runner.mock.invocationCallOrder[0]).toBeLessThan(m.material.mock.invocationCallOrder[0]);
+ expect(m.policy.mock.invocationCallOrder[0]).toBeLessThan(m.runner.mock.invocationCallOrder[1]);
+ expect(m.runner.mock.invocationCallOrder[1]).toBeLessThan(m.times.mock.invocationCallOrder[0]);
+});
+it.each(['runnerDeclarationId','runnerStatementHash','runnerRegistryHash'])('rejects declaration drift in %s',async field=>{
+ m.runner.mockResolvedValueOnce(declaration).mockResolvedValueOnce({...declaration,[field]:'changed'});
+ await expect(evaluateLockedSkillAcceptanceReadiness(client,context,bundleId)).rejects.toThrow('Runner declaration changed');
+ expect(m.times).not.toHaveBeenCalled();
+});
+it('rejects a declaration expiring or being disabled during preparation',async()=>{
+ m.runner.mockResolvedValueOnce(declaration).mockRejectedValueOnce(new Error('Runner attestation time window invalid'));
+ await expect(evaluateLockedSkillAcceptanceReadiness(client,context,bundleId)).rejects.toThrow('time window invalid');
 });
