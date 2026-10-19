@@ -1,0 +1,38 @@
+{
+  "passed": true,
+  "results": [
+    {
+      "kind": "unbound-and-cross-account",
+      "rejectedBeforeSourceRead": true
+    },
+    {
+      "kind": "withdraw",
+      "mutationBlockedByExactReaderPid": true,
+      "retainedCanonicalManifest": true,
+      "nextTransactionRejected": true
+    },
+    {
+      "kind": "private",
+      "mutationBlockedByExactReaderPid": true,
+      "retainedCanonicalManifest": true,
+      "nextTransactionRejected": true
+    },
+    {
+      "kind": "hash",
+      "mutationBlockedByExactReaderPid": true,
+      "retainedCanonicalManifest": true,
+      "nextTransactionRejected": true
+    },
+    {
+      "kind": "delete",
+      "mutationBlockedByExactReaderPid": true,
+      "retainedCanonicalManifest": true,
+      "nextTransactionRejected": true
+    }
+  ],
+  "fixtureCleanupCompleted": true,
+  "exactMigrationsInstalledOnlyInValidatedClone": false,
+  "modelAndNetworkCalls": 0,
+  "productionQualified": false,
+  "automaticActivation": false
+}

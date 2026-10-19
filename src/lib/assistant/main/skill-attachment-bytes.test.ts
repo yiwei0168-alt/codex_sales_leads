@@ -7,6 +7,7 @@ import {revalidateLockedSkillKnowledgeReceiptBytes} from './skill-knowledge-rece
 
 const interleave=vi.hoisted(()=>({afterDescriptorStat:undefined as undefined|(()=>Promise<void>),snapshot:vi.fn()}));
 vi.mock('@/lib/knowledge/immutable-asset-snapshot',()=>({readAvailableImmutableKnowledgeAsset:interleave.snapshot}));
+vi.mock('@/lib/rag/db',()=>({withBoundTenantTransaction:async(_client:unknown,_user:string,work:()=>Promise<unknown>)=>work()}));
 vi.mock('node:fs/promises',async importOriginal=>{
  const actual=await importOriginal<typeof import('node:fs/promises')>();
  return {...actual,open:async(...args:Parameters<typeof actual.open>)=>{
@@ -22,12 +23,13 @@ vi.mock('node:fs/promises',async importOriginal=>{
 const owner=randomUUID(),run=randomUUID(),assetId=randomUUID();
 const artifact={plan:{cases:[{id:'case',provenance:'safety-fixture'}]},rawReceipts:{safetySources:{case:{runId:run}}}};
 const files:string[]=[];let key:string;
-const query=vi.fn(),client={query} as unknown as PoolClient;
+const query=vi.fn(),admission=vi.fn(),client={query:(sql:string,...args:unknown[])=>sql==='select lock_skill_knowledge_sources()'?admission(sql):query(sql,...args)} as unknown as PoolClient;
 const bytes=Buffer.from('registered original');
 const asset=()=>({id:assetId,storage_key:key,byte_size:String(bytes.length),source_sha256:createHash('sha256').update(bytes).digest('hex')});
 beforeEach(async()=>{
  interleave.afterDescriptorStat=undefined;
  interleave.snapshot.mockReset();interleave.snapshot.mockResolvedValue(null);
+ admission.mockReset();admission.mockResolvedValue({rows:[]});
  query.mockReset();await mkdir('knowledge',{recursive:true});key=`knowledge/ma24-byte-test-${randomUUID()}.txt`;
  await writeFile(key,bytes,{flag:'wx'});files.push(key);
  query.mockResolvedValueOnce({rows:[{input:{attachments:[{assetId}]}}]}).mockResolvedValueOnce({rows:[asset()]});
@@ -65,6 +67,15 @@ it('rejects a snapshot whose length differs from current registered metadata',as
 it('propagates snapshot integrity or database failures instead of accepting filesystem-only evidence',async()=>{
  interleave.snapshot.mockRejectedValue(new Error('Immutable snapshot integrity mismatch'));
  await expect(revalidateLockedSkillAttachmentBytes(client,owner,artifact)).rejects.toThrow('snapshot integrity mismatch');
+});
+it('takes source admission before querying metadata or reading bytes',async()=>{
+ await revalidateLockedSkillAttachmentBytes(client,owner,artifact);
+ expect(admission).toHaveBeenCalledOnce();expect(admission.mock.invocationCallOrder[0]).toBeLessThan(query.mock.invocationCallOrder[1]);
+});
+it('fails closed before metadata or filesystem checks if source admission is unavailable',async()=>{
+ admission.mockRejectedValue(new Error('source admission unavailable'));
+ await expect(revalidateLockedSkillAttachmentBytes(client,owner,artifact)).rejects.toThrow('source admission unavailable');
+ expect(query).toHaveBeenCalledTimes(1);expect(interleave.snapshot).not.toHaveBeenCalled();
 });
 it('rejects real same-size tampering',async()=>{
  await writeFile(key,Buffer.alloc(bytes.length,120));

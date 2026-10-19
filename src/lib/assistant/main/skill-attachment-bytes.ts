@@ -1,4 +1,5 @@
 import type {PoolClient} from 'pg';
+import {withBoundTenantTransaction} from '@/lib/rag/db';
 import {z} from 'zod';
 import {inspectKnowledgeAssetBytes,safeKnowledgeStorageKey} from '@/lib/knowledge/document-repository';
 import {readAvailableImmutableKnowledgeAsset} from '@/lib/knowledge/immutable-asset-snapshot';
@@ -19,9 +20,12 @@ export async function revalidateLockedSkillAttachmentBytes(client:PoolClient,use
   attachmentReadOnlyMountVerified:checked.readOnlyMountVerified,
   attachmentImmutableSnapshotCount:checked.immutableSnapshotCount,attachmentImmutableSnapshotManifestHash:checked.immutableSnapshotManifestHash};
 }
-/** Internal account-bound metadata must be protected by knowledge admission. */
+/** Acquire source admission inside the caller's validated account transaction;
+ * it remains held after this function returns, until that transaction ends. */
 export async function revalidateLockedKnowledgeAssetBytes(client:PoolClient,userId:string,assetIds:string[]){
  z.uuid().parse(userId);const ids=[...new Set(z.array(z.uuid()).max(10000).parse(assetIds))].sort();
+ return withBoundTenantTransaction(client,userId,async()=>{
+ if(ids.length)await client.query('select lock_skill_knowledge_sources()');
  const manifest:Array<{id:string;storage_key:string;source_sha256:string;byte_size:string}>=[];
  const snapshots:Array<{assetId:string;snapshotId:string;sourceSha256:string;byteSize:number}>=[];
  let readOnlyMountVerified=true;
@@ -58,4 +62,5 @@ export async function revalidateLockedKnowledgeAssetBytes(client:PoolClient,user
  }
  return {count:ids.length,manifestHash:digest(manifest),readOnlyMountVerified,
   immutableSnapshotCount:snapshots.length,immutableSnapshotManifestHash:digest(snapshots)};
+ });
 }
