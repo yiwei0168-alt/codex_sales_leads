@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {randomUUID,createHash} from 'node:crypto';
 import {spawn} from 'node:child_process';
-import {writeFile} from 'node:fs/promises';
+import {readFile,writeFile} from 'node:fs/promises';
 import nextEnv from '@next/env';
 import {Client} from 'pg';
 import {PostgresSaver} from '@langchain/langgraph-checkpoint-postgres';
@@ -21,16 +21,19 @@ assert.equal(new URL(url).hostname,'127.0.0.1');assert.equal(new URL(url).host+n
 assert.equal(new URL(runtimeUrl).hostname,'pilot-db');assert.equal(new URL(runtimeUrl).searchParams.get('sslmode'),'verify-full');
 const admin=new Client({connectionString:url});await admin.connect();
 const redact=(text:string)=>[url,appUrl,runtimeUrl].reduce((value,connection)=>value.replaceAll(new URL(connection).password,'<temporary-password>'),text);
-const docker=(args:string[])=>new Promise<{code:number|null;output:string}>((done,reject)=>{
- const child=spawn('docker',args,{windowsHide:true,stdio:['ignore','pipe','pipe']});let output='';
- child.stdout.on('data',chunk=>output=redact(output+String(chunk)).slice(-30000));child.stderr.on('data',chunk=>output=redact(output+String(chunk)).slice(-30000));
+const docker=(args:string[],input?:string)=>new Promise<{code:number|null;output:string}>((done,reject)=>{
+ const child=spawn('docker',args,{windowsHide:true,stdio:[input===undefined?'ignore':'pipe','pipe','pipe']});let output='';
+ child.stdout!.on('data',chunk=>output=redact(output+String(chunk)).slice(-30000));child.stderr!.on('data',chunk=>output=redact(output+String(chunk)).slice(-30000));
+ if(input!==undefined){child.stdin!.on('error',reject);child.stdin!.end(input);}
  child.on('error',reject);child.on('exit',code=>done({code,output}));
 });
 const execute=async(args:string[])=>{const value=await docker(args);assert.equal(value.code,0,value.output);return value.output.trim();};
 const restricted=['--read-only','--cap-drop=ALL','--security-opt','no-new-privileges','--tmpfs','/tmp:rw,noexec,nosuid,size=64m'];
 const environment=['--env',`DATABASE_URL=${runtimeUrl}`,'--env',`DATABASE_SSL_CA=${ca}`,'--env','LANGCHAIN_TRACING_V2=false','--env','LANGSMITH_TRACING=false'];
 const durability=process.env.MA24_MAIN_RUNTIME_DURABILITY==='1';
-let server:string|undefined,worker:string|undefined,volume:string|undefined,proxy:string|undefined;
+const commitLoss=process.env.MA24_MAIN_RUNTIME_COMMIT_LOSS==='1';
+let server:string|undefined,worker:string|undefined,volume:string|undefined,proxy:string|undefined,pgProxy:string|undefined;
+let proxyAddress:string|undefined,serverRuntimeUrl=runtimeUrl;
 const api=async(container:string,path:string,method='GET',body?:unknown,port=2024)=>{
  assert.match(path,/^\/[a-zA-Z0-9_/-]+$/);
  // This is a literal Node argv, not shell text; request data never enters a shell.
@@ -47,9 +50,30 @@ try{
   const name=`ma24-main-state-${randomUUID()}`;assert.notEqual((await docker(['volume','inspect',name])).code,0);
   assert.equal(await execute(['volume','create','--label','ma24-purpose=main-runtime-verification',name]),name);volume=name;
  }
+ if(commitLoss){
+  const databaseContainer=process.env.MA24_MAIN_RUNTIME_DATABASE_CONTAINER!;assert.match(databaseContainer,/^[a-f0-9]{64}$/);
+  const code=await readFile(new URL('./lib/ma24-pg-commit-ack-proxy.mjs',import.meta.url),'utf8');
+  pgProxy=await execute(['run','--detach','--name',`ma24-pg-commit-proxy-${randomUUID().slice(0,8)}`,'--network',network,...restricted,
+   '--entrypoint','node',metadata.id,'--input-type=module','-e',code]);assert.match(pgProxy,/^[a-f0-9]{64}$/);
+  // Transient fixture key goes directly from the disposable DB process to a
+  // same-UID tmpfs file via stdin; no argv/env/log/host file contains the key.
+  const key=await execute(['exec',databaseContainer,'cat','/tmp/ma24-server.key']);
+  const supplied=await docker(['exec','--interactive',pgProxy,'node','-e',
+   "let chunks=[];process.stdin.on('data',chunk=>chunks.push(chunk));process.stdin.on('end',()=>require('node:fs').writeFileSync('/tmp/ma24-pg-proxy-config.json',Buffer.concat(chunks),{mode:0o600,flag:'wx'}));"],JSON.stringify({key,cert:ca}));
+  assert.equal(supplied.code,0,supplied.output);
+  let ready=false;for(let n=0;n<80;n++){
+   const logs=await execute(['logs',pgProxy]);if(logs.includes('disposableCommitProxyReady')){ready=true;break;}
+   if((await execute(['inspect','--format','{{.State.Running}}',pgProxy]))!=='true')throw new Error('Commit proxy stopped before readiness');
+   await new Promise(done=>setTimeout(done,100));
+  }
+  assert(ready,'Commit proxy did not start');
+  proxyAddress=await execute(['inspect','--format',`{{(index .NetworkSettings.Networks "${network}").IPAddress}}`,pgProxy]);assert.match(proxyAddress,/^\d+\.\d+\.\d+\.\d+$/);
+  const proxied=new URL(runtimeUrl);proxied.port='5540';serverRuntimeUrl=proxied.toString();
+ }
  const startServer=async()=>{
  server=await execute(['run','--detach','--name',`ma24-main-runtime-${randomUUID().slice(0,8)}`,'--network',network,...restricted,
-  ...(volume?['--mount',`type=volume,source=${volume},target=/runtime`]:['--tmpfs','/runtime:rw,noexec,nosuid,uid=1000,gid=1000,mode=0700,size=64m']),...environment,metadata.id,'server']);assert.match(server,/^[a-f0-9]{64}$/);
+  ...(volume?['--mount',`type=volume,source=${volume},target=/runtime`]:['--tmpfs','/runtime:rw,noexec,nosuid,uid=1000,gid=1000,mode=0700,size=64m']),
+  ...(proxyAddress?['--add-host',`pilot-db:${proxyAddress}`]:[]),...environment,'--env',`DATABASE_URL=${serverRuntimeUrl}`,metadata.id,'server']);assert.match(server,/^[a-f0-9]{64}$/);
  let ready=false;for(let i=0;i<120;i++){
   const logs=await execute(['logs',server]);if(logs.includes('"mainAgentApi":"ready"')){ready=true;break;}
   if((await execute(['inspect','--format','{{.State.Running}}',server]))!=='true')throw new Error('Main runtime exited before readiness: '+logs);
@@ -78,7 +102,9 @@ try{
   return {task,reply};
  };
  const startWorker=async(apiPort=2024)=>{
-  worker=await execute(['run','--detach','--name',`ma24-main-worker-${randomUUID().slice(0,8)}`,'--network',`container:${server}`,...restricted,...environment,'--env',`LANGGRAPH_API_URL=http://127.0.0.1:${apiPort}`,metadata.id,'worker','--once']);assert.match(worker,/^[a-f0-9]{64}$/);
+  // container:server shares its host mapping too; use the same TLS proxy port.
+  worker=await execute(['run','--detach','--name',`ma24-main-worker-${randomUUID().slice(0,8)}`,'--network',`container:${server}`,...restricted,...environment,
+   '--env',`DATABASE_URL=${serverRuntimeUrl}`,'--env',`LANGGRAPH_API_URL=http://127.0.0.1:${apiPort}`,metadata.id,'worker','--once']);assert.match(worker,/^[a-f0-9]{64}$/);
  };
  const finishWorker=async()=>{assert(worker);const exit=await execute(['wait',worker]),logs=await execute(['logs',worker]);assert.equal(exit,'0',logs);await execute(['rm','--volumes',worker]);worker=undefined;return logs;};
  const readTask=async(runId:string)=>(await admin.query<{status:string;reply:string;lease_token:string;messages:string[];jobs:number;models:number;status_events:number}>(`select r.status,r.result->>'reply' reply,r.lease_token,
@@ -95,6 +121,23 @@ try{
   assert.equal(row.reply,withdraw?SOURCE_CHANGED_REPLY:reply);assert.deepEqual(row.messages,[row.reply]);assert.equal(row.jobs,withdraw?0:1);assert.equal(row.models,0);assert(row.lease_token,'Worker must claim the task');
   cases.push({sourceWithdrawn:withdraw,status:row.status,modelAttempts:row.models,extractionJobs:row.jobs,actualClaimedLease:true});
   completedTasks.push({id:task.id,row});
+ }
+ let commitLossResult:unknown=null;
+ if(commitLoss){
+  assert(pgProxy);await admin.query("update knowledge_document set visibility='shared' where id=$1",[document]);
+  const {task,reply}=await prepareTask();
+  assert.equal((await api(pgProxy,'/arm','POST',{},5541)).armed,true);
+  await startWorker();await finishWorker();const committed=await readTask(task.id);
+  assert.equal(committed.status,'completed');assert.equal(committed.reply,reply);assert.deepEqual(committed.messages,[reply]);
+  assert.equal(committed.jobs,1);assert.equal(committed.models,0);assert.equal(committed.status_events,1);assert(committed.lease_token);
+  const stats=await api(pgProxy,'/status','GET',undefined,5541);
+  assert.equal(stats.targetCommitCommands,1);assert.equal(stats.backendCommitCompletions,1);
+  assert.equal(stats.suppressedCommitCompletions,1);assert.equal(stats.suppressedReadyForQuery,1);assert.equal(stats.droppedCommitAcks,1);
+  assert.equal(stats.protocolFailures,0);assert(stats.downstreamTlsConnections>0);assert(stats.verifiedUpstreamTlsConnections>0);
+  await startWorker();await finishWorker();assert.deepEqual(await readTask(task.id),committed);
+  assert.equal((await api(pgProxy,'/status','GET',undefined,5541)).droppedCommitAcks,1);
+  commitLossResult={...stats,actualPostgresCommitAcknowledgmentLost:true,committedTaskRetained:true,noDuplicateReplyEventOrExtractionJob:true,
+   subsequentWorkerMakesNoReplay:true,originalSourceRevalidated:true,actualQueueLeaseClaimed:true};
  }
  let durabilityResult:unknown=null;
  if(durability){
@@ -134,12 +177,13 @@ try{
    priorTaskRowsUnchangedAfterRestart:true,gracefulApiExitCode:0,committedTaskSurvivesLostHttpResponse:true,noDuplicateReplyEventOrExtractionJob:true,subsequentWorkerMakesNoReplayRequest:true,forwardedApiRequests:1};
  }
  const receipt={passed:true,image,immutableImageId:metadata.id,sourceCommit:metadata.revision,integrity,actualLangGraphApi:true,actualCompiledQueueWorker:true,postgresCheckpointRecovery:true,cases,
-  durabilityResult,syntheticCheckpointSeed:true,actualModelCalls:0,externalActions:0,firstModelExecutionVerified:false,productionQualified:false,automaticActivation:false};
+  durabilityResult,commitLossResult,syntheticCheckpointSeed:true,actualModelCalls:0,externalActions:0,firstModelExecutionVerified:false,productionQualified:false,automaticActivation:false};
  await writeFile('tmp/ma24-main-runtime-worker-result.json',JSON.stringify(receipt,null,2)+'\n');console.log(JSON.stringify({mainRuntimeWorker:'passed',...receipt}));
 }finally{
  if(worker)await docker(['rm','--force','--volumes',worker]);
  if(proxy)await docker(['rm','--force','--volumes',proxy]);
  if(server){await docker(['stop','--time','10',server]);await docker(['rm','--force','--volumes',server]);}
+ if(pgProxy)await docker(['rm','--force','--volumes',pgProxy]);
  if(volume){assert.equal(await execute(['volume','inspect','--format','{{index .Labels "ma24-purpose"}}',volume]),'main-runtime-verification');await execute(['volume','rm',volume]);}
  await Promise.allSettled([admin.end(),getPool().end()]);
 }
