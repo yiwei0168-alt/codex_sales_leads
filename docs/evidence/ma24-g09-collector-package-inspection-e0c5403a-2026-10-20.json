@@ -1,0 +1,22 @@
+{
+  "stage": "MA24 G09 collector package inspection",
+  "inspectorSourceCommit": "e0c5403a21c666cc1686e728dabf0989de12d777",
+  "exitCode": 0,
+  "inspection": {
+    "role": "skill-collector",
+    "imageId": "sha256:552736d03d615396e1de466a6a42c306132ada282efca2f9cd2377c180cb9c74",
+    "sourceCommit": "dddb9bfcc9fd6c6cf5f8b60d85b949e396991ebc",
+    "deploymentHash": "dc855e12fa40b34ff353aa56b2d6e6fa2dd558ba24d3aa3dc9fb3c6908a5f642",
+    "runtimeHash": "87c0a4f05cf1f5372bc8e2aba6721e5909d32d95e232106dc46748b33f61e5e1",
+    "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+    "node": "24.21.0",
+    "platform": "linux",
+    "arch": "x64",
+    "sourceInputs": 958,
+    "files": 34473
+  },
+  "logPath": "tmp/ma24-collector-package-inspection-e0c5403a-2026-10-20.log",
+  "logSha256": "94a3ef803d2f46582ecc799e9aa29251b2aaf50bb8058f3e96637f0e243af284",
+  "checks": {"fullPackageInventory": true, "independentManifestDigest": true, "sourceAndNodeMeasured": true, "restrictedLinuxBoundary": true, "deploymentBindingRechecked": true},
+  "limits": {"operatorPublicationPerformed": false, "sameReleaseAsMainRuntime": false, "productionQualified": false, "actualModelCalls": 0}
+}
