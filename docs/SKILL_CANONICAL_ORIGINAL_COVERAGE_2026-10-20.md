@@ -1,5 +1,15 @@
 # G09 验收准备的原件副本覆盖门槛
 
+## 固定版本完整签名组合终态
+
+固定 `69ed7f97cfccfd1155047b29ce2af22d45688fac` 的 Git archive 源码，设置 `MA24_CONFIGURED_COMBINED=1 MA24_DATABASE_TRUST=1` 执行 `node scripts/run-ma24-snapshot-check.mjs --transport-journal`，退出 0。下方“完整组合待运行”是本阶段先前记录，以此终态为准。
+
+同一冻结计划的五类材料、实际编译 CLI 声明签发、两份签名原任务与八个评测臂的传输复核、完整持锁重建及新原件覆盖门槛通过。不可变附件实际读取，撤回来源后拒绝，恢复后同一副本清单通过。数据库信任登记禁用等待 readiness 外层事务提交，提交后新检查拒绝，恢复登记后可继续读取。缺少真实人工判定仍阻断，Skill 保持未启用。
+
+组合包哈希 `13bc525a1e31e08ff40259808abff3ee5dee67fa82296080ca1a286286be358d`；冻结计划哈希 `5b3d04d19c9ce86bf5a674b3e6d24c6206586f6e283da6955c46260e3f38a2c7`。[固定终态证据](evidence/ma24-g09-canonical-original-composition-69ed7f97-2026-10-20.json)。临时数据库、网络和源码归档已清理，仅保留既有三个业务容器。
+
+本组合在宿主固定源码/共享已安装依赖上运行，基础库到 135 加夹具列明的精确迁移（含 156/157），不等于当前全量 158 库或 Linux 采集镜像内的完整组合。总编排的 `completeCompositionVerified=false` 属于另一独立参数分支；此处以实际 `configuredSameFreezeFiveCategoriesVerified=true` 及终态退出 0 证明上述签名五类范围。模型、网络和计费适配仍为合成，实际模型调用 0；生产身份、完整来源保护、真实质量及最终启用均未验收完成。
+
 ## 实施范围
 
 沿用 MA24-06 的审核、来源和启用边界，无新用户确认。`production-runner-pending-verification` 验收包在持锁 readiness 的第二次实际字节核对后，必须满足：所有附件原件、实际消耗知识回执的文件资产都已有经过字节校验的数据库不可变副本；两类数量分别相等，数量及清单哈希完整有效。只读挂载不替代副本，未捕获时要求使用既有显式原件保存入口。
