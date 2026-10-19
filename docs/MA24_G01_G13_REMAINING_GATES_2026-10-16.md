@@ -1,5 +1,7 @@
 # MA24 G01–G13 当前剩余门槛（2026-10-16）
 
+环境后续：C盘0字节、F盘约540GiB，Docker数据盘约40.63GiB；Web构建已因引擎EOF退出1。完整组合仍未通过，同版三包核对待恢复；未自动删除数据库或迁移数据盘。[空间恢复选项](MA24_DOCKER_STORAGE_RECOVERY_PLAN_2026-10-20.md)。
+
 最新终态：固定 e0c5403a 完整组合退出1，Docker清理API500，不能判通过。Docker Desktop显示stopping；新同版7a850163的主运行/采集器构建通过，Web仍待终态，三包核对未验。清理错误保留修复的4项回归、类型/lint通过；引擎恢复后需核对遗留资源并重验。[中断与恢复记录](MA24_DOCKER_INTERRUPTION_2026-10-20.md)。
 
 G09 采集器实际发布补验已完成：旧固定包的评测传输与运行声明分别通过 register/withdraw CLI 幂等、请求冲突拒绝及真实登记读取的轮换/撤销/期限/事务边界；不等于同版三用途或完整生产验收。下方“Collector实际发布未验”由本限定取代，固定五类组合仍待终态。[两用途证据](SKILL_RUNTIME_PACKAGE_REGISTRATION_2026-10-20.md)。

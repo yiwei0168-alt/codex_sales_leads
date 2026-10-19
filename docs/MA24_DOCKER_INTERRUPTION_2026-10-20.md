@@ -1,5 +1,7 @@
 # MA24 本地 Docker 中断与验收错误保留
 
+后续已核实 C 盘可用字节为 0、F 盘约 540 GiB；Docker 数据盘约 40.63 GiB。Web 构建已因引擎 EOF 退出1，旧“进程尚未退出”由此更新。日志另见 containerd bus error 与 WSL 卸载失败；一次官方 CLI 后台重启最后观察为 starting，未证明恢复。停止新的镜像构建；未自动删除数据或迁移 VHDX。[可审核的空间恢复方案](MA24_DOCKER_STORAGE_RECOVERY_PLAN_2026-10-20.md)。
+
 ## 已观察的事实
 
 - 固定 `e0c5403a21c666cc1686e728dabf0989de12d777` 的完整五类签名组合已退出 1，不能记为通过。最终可见异常来自测试库容器清理：Docker API 1.55 的容器删除返回 HTTP 500。旧 finally 直接抛出清理断言，无法据此恢复或判定此前验收异常的具体原因。
