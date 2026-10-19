@@ -1,6 +1,7 @@
 import type {PoolClient} from 'pg';
 import {beforeEach,expect,it,vi} from 'vitest';
 import {digest} from './contracts';
+import {requireCanonicalSkillAcceptanceOriginals} from './skill-canonical-original-coverage';
 import {revalidateLockedSkillAcceptanceMaterials,evaluateLockedSkillAcceptanceReadiness} from './skill-locked-materials';
 const m=vi.hoisted(()=>({read:vi.fn(),material:vi.fn(),policy:vi.fn(),lock:vi.fn(),methods:vi.fn(),query:vi.fn(),memoryBoundary:vi.fn(),times:vi.fn(),bytes:vi.fn(),knowledgeBytes:vi.fn(),memoryReceipts:vi.fn(),runner:vi.fn(),transports:vi.fn()}));
 vi.mock('./skill-locked-transport-receipts',()=>({revalidateLockedSkillTransportReceipts:m.transports}));
@@ -23,6 +24,16 @@ const bundle={skillCatalogSourcesLocked:true,knowledgeSourcesLocked:true,decisio
  artifact:{sourceKind:'synthetic-fixture',plan:{cases:[{id:'replay'}]},observations:[observation]}};
 const material=()=>({bundleId,caseId:'replay',artifactHash:bundle.artifactHash,observationHash:digest(observation),sourceKind:'synthetic-fixture',
  freezeStatus:{state:'active',freezeId:'freeze'},canPass:{baseline:true,candidate:true},baseline:'PRIVATE baseline',candidate:'PRIVATE candidate',receipts:['PRIVATE receipt']});
+const canonicalBytes={attachmentBytesRevalidated:true,attachmentBytesCount:1,attachmentBytesManifestHash:digest('attachment'),
+ attachmentImmutableSnapshotCount:1,attachmentImmutableSnapshotManifestHash:digest('attachment-snapshot')};
+const canonicalKnowledge={knowledgeReceiptBytesRevalidated:true,knowledgeReceiptAssetCount:1,knowledgeReceiptDatabaseOnlyCount:0,
+ knowledgeReceiptBytesManifestHash:digest('knowledge'),knowledgeReceiptImmutableSnapshotCount:1,knowledgeReceiptImmutableSnapshotManifestHash:digest('knowledge-snapshot')};
+function pendingOriginals(){
+ const sourceKind='production-runner-pending-verification';
+ m.read.mockResolvedValue({...bundle,artifact:{...bundle.artifact,sourceKind}});
+ m.material.mockResolvedValue({...material(),sourceKind});
+ m.bytes.mockResolvedValue(canonicalBytes);m.knowledgeBytes.mockResolvedValue(canonicalKnowledge);
+}
 beforeEach(()=>{vi.resetAllMocks();m.read.mockResolvedValue(bundle);m.material.mockResolvedValue(material());
  m.bytes.mockResolvedValue({attachmentBytesRevalidated:true,attachmentBytesCount:1,attachmentBytesManifestHash:'manifest'});
  m.knowledgeBytes.mockResolvedValue({knowledgeReceiptBytesRevalidated:true,knowledgeReceiptAssetCount:1,knowledgeReceiptDatabaseOnlyCount:0,knowledgeReceiptBytesManifestHash:'knowledge-manifest'});
@@ -76,11 +87,41 @@ it('combines material reconstruction and policy while keeping activation and sou
  expect(out).toMatchObject({pinnedMethodSourcesLocked:true,pinnedMethodPinCount:2,pinnedMethodExperienceObservationCount:2});
  expect(out.skillCatalogSourcesLocked).toBe(true);
  expect(out.decisionMemorySnapshotRevalidated).toBe(true);
+ expect(out).toMatchObject({canonicalOriginalCoverageRequired:false,canonicalOriginalCoverageRevalidated:false});
  expect(out.methodExperienceTimesRevalidated).toBe(true);
  expect(m.policy.mock.invocationCallOrder[0]).toBeLessThan(m.times.mock.invocationCallOrder[0]);
  expect(m.query).toHaveBeenCalledExactlyOnceWith('select lock_skill_knowledge_sources()');
  expect(m.query.mock.invocationCallOrder[0]).toBeLessThan(m.memoryBoundary.mock.invocationCallOrder[0]);
  expect(JSON.stringify(out)).not.toContain('PRIVATE');expect(m.policy).toHaveBeenCalledExactlyOnceWith(client,context,bundleId);
+});
+it('requires canonical originals for pending production preparation without granting activation',async()=>{
+ pendingOriginals();const out=await evaluateLockedSkillAcceptanceReadiness(client,context,bundleId);
+ expect(out).toMatchObject({canonicalOriginalCoverageRequired:true,canonicalOriginalCoverageRevalidated:true,
+  sourceRevocationsLocked:false,collectorProvenanceVerified:false,automaticActivation:false});
+ expect(out.canonicalOriginalCoverageHash).toMatch(/^[a-f0-9]{64}$/);
+});
+it.each(['attachment','knowledge'])('rejects uncaptured %s originals even on a readonly mount',async domain=>{
+ pendingOriginals();
+ if(domain==='attachment')m.bytes.mockResolvedValue({...canonicalBytes,attachmentImmutableSnapshotCount:0,attachmentReadOnlyMountVerified:true});
+ else m.knowledgeBytes.mockResolvedValue({...canonicalKnowledge,knowledgeReceiptImmutableSnapshotCount:0,knowledgeReceiptReadOnlyMountVerified:true});
+ await expect(evaluateLockedSkillAcceptanceReadiness(client,context,bundleId)).rejects.toThrow('explicit canonical capture');
+ expect(m.times).not.toHaveBeenCalled();
+});
+it.each([
+ {attachmentImmutableSnapshotCount:undefined},{knowledgeReceiptImmutableSnapshotCount:-1},
+ {attachmentBytesCount:1.5},{attachmentImmutableSnapshotCount:10001},
+ {knowledgeReceiptImmutableSnapshotManifestHash:undefined},{attachmentBytesManifestHash:'invalid'},
+ {attachmentBytesRevalidated:false},
+])('rejects missing or malformed original coverage %j',change=>{
+ expect(()=>requireCanonicalSkillAcceptanceOriginals('production-runner-pending-verification',{
+  ...canonicalBytes,...canonicalKnowledge,...change})).toThrow('evidence missing or invalid');
+});
+it('requires explicit zero-file manifests while permitting database-only evidence without invented files',()=>{
+ const empty={...canonicalBytes,...canonicalKnowledge,attachmentBytesCount:0,attachmentImmutableSnapshotCount:0,
+  knowledgeReceiptAssetCount:0,knowledgeReceiptImmutableSnapshotCount:0,knowledgeReceiptDatabaseOnlyCount:3};
+ expect(requireCanonicalSkillAcceptanceOriginals('production-runner-pending-verification',empty)).toMatchObject({canonicalOriginalCoverageRevalidated:true});
+ expect(()=>requireCanonicalSkillAcceptanceOriginals('production-runner-pending-verification',{})).toThrow('evidence missing or invalid');
+ expect(()=>requireCanonicalSkillAcceptanceOriginals('unknown',empty)).toThrow('Unsupported');
 });
 it('rejects different material and policy snapshots',async()=>{
  m.policy.mockResolvedValue({artifactHash:'changed',latestReviewHash:bundle.latestReviewHash});

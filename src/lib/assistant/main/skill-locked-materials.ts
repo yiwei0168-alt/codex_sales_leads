@@ -16,6 +16,7 @@ import {readLockedSkillRunnerAttestation} from './skill-runner-attestation-store
 import {revalidateLockedSkillTransportReceipts} from './skill-locked-transport-receipts';
 import {configuredSkillRunnerTrustRegistryMode} from './skill-runner-attestation';
 import {readLockedSkillRunnerTrustRegistry} from './skill-runner-trust-registry-store';
+import {requireCanonicalSkillAcceptanceOriginals} from './skill-canonical-original-coverage';
 
 /** Keep consumed receipts in a private closure inside the owning transaction;
  * public wrappers expose hashes/counts only, never source contents or callbacks. */
@@ -94,6 +95,7 @@ export async function evaluateLockedSkillAcceptanceReadiness(client:PoolClient,c
    knowledgeReceiptAssetCount:materials.knowledgeReceiptAssetCount,knowledgeReceiptDatabaseOnlyCount:materials.knowledgeReceiptDatabaseOnlyCount,
    knowledgeReceiptBytesManifestHash:materials.knowledgeReceiptBytesManifestHash,
    knowledgeReceiptReadOnlyMountVerified:materials.knowledgeReceiptReadOnlyMountVerified??false}))throw new Error('Acceptance knowledge receipt sources changed after preparation');
+  const canonicalOriginals=requireCanonicalSkillAcceptanceOriginals(final.artifact.sourceKind,{...attachmentBytes,...knowledgeBytes});
   const memoryReceipts=await preparation.recheckMemoryReceipts();
   if(memoryReceipts.memoryReceiptCount!==materials.memoryReceiptCount)throw new Error('Acceptance memory receipt coverage changed after preparation');
   const finalTransports=await revalidateLockedSkillTransportReceipts(client,context,bundleId);
@@ -121,6 +123,7 @@ export async function evaluateLockedSkillAcceptanceReadiness(client:PoolClient,c
    ...methodTimes,
    ...attachmentBytes,
    ...knowledgeBytes,
+   ...canonicalOriginals,
    ...memoryReceipts,
    ...finalDeclaration,
    ...finalTransports,

@@ -4,13 +4,18 @@ import {mkdir,writeFile,unlink} from 'node:fs/promises';
 import {execFileSync} from 'node:child_process';
 import nextEnv from '@next/env';
 import {Pool} from 'pg';
-import {getPool} from '../src/lib/rag/db';
+import {getPool,tenantTransaction,withBoundTenantTransaction} from '../src/lib/rag/db';
 import {digest} from '../src/lib/assistant/main/contracts';
 import {importSkill} from '../src/lib/assistant/main/skills';
 import {freezeSkillAcceptancePlan,revokeSkillAcceptanceFreeze} from '../src/lib/assistant/main/skill-acceptance-freeze';
 import type {SkillCollectorTransaction} from '../src/lib/assistant/main/skill-model-journal';
 import {previewSkillAcceptanceOriginals,captureSkillAcceptanceOriginals} from '../src/lib/assistant/main/skill-acceptance-originals';
 import {disableLocalAnalysisTracing} from '../src/lib/assistant/main/local-analysis-boundary';
+import {readLockedSkillAcceptanceEvidence} from '../src/lib/assistant/main/skill-acceptance-store';
+import {lockSkillAcceptanceRunJournals} from '../src/lib/assistant/main/skill-acceptance-run-locks';
+import {revalidateLockedSkillAttachmentBytes} from '../src/lib/assistant/main/skill-attachment-bytes';
+import {revalidateLockedSkillKnowledgeReceiptBytes} from '../src/lib/assistant/main/skill-knowledge-receipt-bytes';
+import {requireCanonicalSkillAcceptanceOriginals} from '../src/lib/assistant/main/skill-canonical-original-coverage';
 
 nextEnv.loadEnvConfig(process.cwd());disableLocalAnalysisTracing();
 assert.equal(process.env.MA24_DISPOSABLE_ORIGINAL_CAPTURE,'1');
@@ -53,6 +58,20 @@ try{
  await pool.query(`insert into agent_skill_acceptance_bundle(id,owner_id,skill_id,version,source_kind,plan,observations,raw_receipts,artifact_hash)
   values($1,$2,$3,1,$4,$5,'[]',$6,$7)`,[bundleId,owner,skill.id,artifact.sourceKind,JSON.stringify(artifact.plan),JSON.stringify(artifact.rawReceipts),digest(artifact)]);
  const context={userId:owner},preview=await previewSkillAcceptanceOriginals(context,bundleId);
+ // Exercise the pending-production component with actual source-locked byte
+ // adapters, without relabeling this synthetic bundle as production evidence.
+ const checkCanonical=()=>tenantTransaction(owner,client=>withBoundTenantTransaction(client,owner,async()=>{
+  const evidence=await readLockedSkillAcceptanceEvidence(client,context,bundleId);
+  await lockSkillAcceptanceRunJournals(client,owner,evidence.artifact);
+  const receipts=await client.query<{tool:string;output:unknown}>(`select tool_id as tool,output from agent_tool_call
+   where user_id=$1 and run_id=$2 and effect='read' and status='completed' and output->>'status' in ('success','partial')`,[owner,run]);
+  const attachments=await revalidateLockedSkillAttachmentBytes(client,owner,evidence.artifact);
+  const knowledge=await revalidateLockedSkillKnowledgeReceiptBytes(client,owner,receipts.rows);
+  assert.equal(attachments.attachmentBytesCount,1);assert.equal(knowledge.knowledgeReceiptAssetCount,1);
+  return requireCanonicalSkillAcceptanceOriginals('production-runner-pending-verification',{...attachments,...knowledge});
+ }));
+ await assert.rejects(checkCanonical(),/explicit canonical capture/);
+ results.push('pending-production coverage component rejects two readable but uncaptured actual originals');
  assert.equal(preview.assetCount,2);assert.equal(preview.pendingCount,2);
  const count=async()=>Number((await pool.query('select count(*) n from knowledge_asset_immutable_snapshot where asset_id=any($1::uuid[])',[assets])).rows[0].n);
  assert.equal(await count(),0);await assert.rejects(previewSkillAcceptanceOriginals({userId:peer},bundleId));
@@ -93,6 +112,8 @@ try{
  results.push('oversize rejects before capture; late file hash mismatch rolls back all copies; explicit capture succeeds');
  for(const path of files)await unlink(path);
  assert.equal((await captureSkillAcceptanceOriginals(context,input)).capturedCount,2);assert.equal(await count(),2);
+ assert.equal((await checkCanonical()).canonicalOriginalCoverageRevalidated,true);
+ results.push('actual attachment and knowledge byte adapters pass canonical coverage after explicit capture and filesystem removal');
  results.push('repeated action reuses verified canonical bytes after original files disappear');
  await pool.query("update knowledge_document set visibility='private' where id=$1",[documents[1]]);
  await assert.rejects(previewSkillAcceptanceOriginals(context,bundleId));await assert.rejects(captureSkillAcceptanceOriginals(context,input));
