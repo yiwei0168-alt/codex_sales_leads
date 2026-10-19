@@ -2,6 +2,8 @@
 
 ## 当前结论（2026-10-19，按固定源码快照分别核验）
 
+G03–G04 实际 Worker 同批串联通过：两个合成输入、两次本机 Qwen、抽取与图谱 Worker 各三次 `--once`，同一 outbox 经本机固定嵌入/Graphiti/Neo4j 投影，次数/租约及限定清理检查通过。不是持续试点、真实质量或检索完整重验。[串联证据](LOCAL_MEMORY_GRAPH_WORKER_CHAIN_2026-10-19.md)。
+
 G09 完整签名组合 `3b44c10c` 已退出 1，发现最终 knowledge receipt 摘要投影不一致导致误拒绝。回归已复现并修复；完整修复重跑尚待终态。较早“仍运行”的记录已被此终态取代，G09 不标通过。[失败及修复记录](MA24_SIGNED_COMPOSITION_CANONICAL_SNAPSHOT_2026-10-19.md)。
 
 G03 实际 Worker 已补验：全新合成库、三次 `--once`、两次本机 Qwen chat，覆盖取队列、偏好与自然纠正、通知/outbox 幂等、空队列及正式事实/政策计数不变。仅合成英文输入，非持续试点或代表性质量；G03 整体仍未完成。[Worker 收据](LOCAL_MEMORY_WORKER_ACTUAL_FLOW_2026-10-19.md)。
@@ -139,8 +141,8 @@ G09 任务与工具日志锁已接入材料重建入口：从已存包派生任�
 | --- | --- | --- | --- |
 | G01 发布基线 | 固定 Linux 镜像、本机 HTTPS、10 合成成员隔离、两版 Web 回切、数据库跨集群恢复及上传卷恢复均有局部收据 | 用户已选公司 LAN/VPN、IP 192.168.0.170，后续明确本次暂不上线；最终冻结包、目标主机 HTTPS/证书信任、异地副本、资料与数据库一致恢复及资源观察未验 | 本次继续本地固定包及隔离验收，不以云账号或备案域名为前置；恢复上线后在目标主机核包摘要、成员业务、备份恢复和回切 |
 | G02 来源撤销 | 真实图、旧 checkpoint、隔离模型及局部 HTTP；当前构建的登记原件下载通过认证、Range、篡改和请求间撤回的真实 HTTP 验证 ([收据](evidence/ma24-g02-g05-asset-download-http-clone-2026-10-19.json)) | 当前服务上真实账号有界任务的生成期撤销、后续工具阻断和最终保存核对 | 获授权的专门来源/账号任务及撤销前后收据；新付费请求另列具体清单 |
-| G03 纠正与双时间 | 来源归属和自然纠正局部修复、隔离恢复证据 | 真实偏好/经历/业务事实与纠正样本不足；当前候选完整链路、通知/撤销/历史时间和本地 worker 试点未验 | 对照原句与更正内容的自然样本判决，以及当前 worker 的持久记录 |
-| G04 记忆图谱 | outbox、租约、故障恢复及 PostgreSQL 降级局部工程证据 | 当前版本获准真实样本的连续抽取、投影、时间/权限回校、撤销召回未验 | 连续消费及图谱停机/恢复的同一批来源收据 |
+| G03 纠正与双时间 | 来源归属、自然纠正和隔离恢复；实际 Qwen 与 Worker 偏好/纠正/通知/outbox 有界流程通过 | 自然偏好/经历/业务事实与纠正样本不足；完整用户入口、撤销/历史时间的当前流程及持续 Worker 试点未验 | 对照原句与更正内容的自然样本判决，以及连续 Worker 的持久记录 |
+| G04 记忆图谱 | outbox、租约、故障恢复及 PostgreSQL 降级服务证据；同批两个实际 Worker 与本机图谱投影有界串联通过 | 获准真实样本的持续抽取/投影、当前完整流程中的时间/权限回校及撤销召回未验 | 连续消费及图谱停机/恢复的同一批来源收据 |
 | G05 Incremental knowledge | Formal workers pass PDF/PPTX/XLSX × private/shared revision matrix: failure/hold/tamper keeps old reads, one winner, exact unit 2 citations, history/retry and peer access match visibility ([six-group matrix](evidence/ma24-g05-formal-worker-six-group-revision-matrix-2026-10-19.json)) | Real-user sources, independent visual/content judgment, actual business answer citations and production worker remain unverified; this matrix does not repeat registration-process crash checks | Review approved real sources and actual answer citations; retain separate registration-recovery evidence and perform target deployment acceptance when resumed |
 | G06 安全 | 已定位旧歧义与注入失败，工具模型视图等边界已有修复 | 修复后固定协议的真实模型回答、独立安全判分不足；既有本地超时不能判通过 | 有明确请求范围的有效模型回答及答案/引用/权限/注入人工判决；相同超时配置不重复试跑 |
 | G07 真实回放 | 服务器持久收据与只读回放适配已实现；历史资格审计已有排除结果 | 尚无满足当前来源、Skill 相关性及完整收据要求的真实任务 | 同账号有效的完整只读任务或精确收据限定的子任务，固定版本回放和独立审核 |

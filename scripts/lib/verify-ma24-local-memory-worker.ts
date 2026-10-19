@@ -3,11 +3,12 @@ import {randomUUID,createHash} from 'node:crypto';
 import {spawn} from 'node:child_process';
 import {mkdir,writeFile} from 'node:fs/promises';
 import {createServer} from 'node:http';
+import {resolve} from 'node:path';
 import {Client} from 'pg';
 
 /** Actual --once worker and local model, only in the owning disposable cluster.
  * The loopback relay forwards bytes unchanged and bounds/counts model requests. */
-export async function verifyMa24LocalMemoryWorker(options:{adminUrl:string;appUrl:string;ownerEmail:string;disposableContainerId:string}){
+export async function verifyMa24LocalMemoryWorker(options:{adminUrl:string;appUrl:string;ownerEmail:string;disposableContainerId:string;graphWorker?:boolean}){
  assert(/^[a-f0-9]{64}$/.test(options.disposableContainerId));assert(options.ownerEmail.endsWith('@example.invalid'));
  const adminUrl=new URL(options.adminUrl),appUrl=new URL(options.appUrl);
  assert.equal(adminUrl.hostname,'127.0.0.1');assert.equal(appUrl.host+appUrl.pathname,adminUrl.host+adminUrl.pathname);
@@ -15,6 +16,20 @@ export async function verifyMa24LocalMemoryWorker(options:{adminUrl:string;appUr
  const directory=`tmp/ma24-real-memory-worker-${randomUUID()}`;await mkdir(directory,{recursive:true});
  const digest='500a1f067a9f782620b40bee6f7b0c89e17ae61f686b92c24933e4ca4b2b8b41';
  let chats=0,tags=0;const errors:string[]=[];
+ const graphIds:string[]=[];let graphOwner:string|undefined;
+ const cleanupGraph=async()=>{
+  while(graphIds.length){
+   const id=graphIds[0];assert(graphOwner);
+   await new Promise<void>((done,reject)=>{
+    const child=spawn(resolve('.venv-graphiti-local',process.platform==='win32'?'Scripts/python.exe':'bin/python'),['scripts/cleanup-memory-graph-probe.py'],
+     {windowsHide:true,stdio:['pipe','pipe','pipe'],env:{...process.env,GRAPHITI_TELEMETRY_ENABLED:'false',OPENAI_API_KEY:'',OPENROUTER_API_KEY:''}});
+    let output='';child.stdout.on('data',data=>{output+=String(data);if(output.length>4096)child.kill();});child.stderr.on('data',()=>{});
+    const timer=setTimeout(()=>child.kill(),20000);child.once('error',error=>{clearTimeout(timer);reject(error);});
+    child.once('exit',code=>{clearTimeout(timer);try{assert.equal(code,0);const receipt=JSON.parse(output);assert.equal(receipt.removed,true);assert.equal(receipt.observationId,id);done();}catch{reject(new Error('Scoped synthetic graph cleanup failed'));}});
+    child.stdin.end(JSON.stringify({ownerId:graphOwner,observationId:id}));
+   });graphIds.shift();
+  }
+ };
  const relay=createServer(async(request,response)=>{
   try{
    assert(['/api/tags','/api/chat'].includes(request.url??''));assert.equal(request.method,request.url==='/api/tags'?'GET':'POST');
@@ -44,19 +59,20 @@ export async function verifyMa24LocalMemoryWorker(options:{adminUrl:string;appUr
    await admin.query("insert into assistant_message(id,user_id,conversation_id,role,intent,content,metadata) values($1,$2,$3,'user','general',$4,$5)",[message,owner,conversation,content,JSON.stringify({runId:run})]);
    await admin.query('insert into agent_memory_extraction_job(owner_id,run_id) values($1,$2)',[owner,run]);return {run,message};
   };
-  const once=async(expectedRun?:string)=>{
+  const once=async(expectedRun?:string,graph=false)=>{
    const env={...process.env,DATABASE_URL:options.appUrl,DATABASE_MIGRATION_URL:'',ENABLE_LOCAL_MEMORY_EXTRACTION:'1',OLLAMA_LOCAL_URL:`http://127.0.0.1:${address.port}`,
-    LANGSMITH_TRACING:'false',LANGCHAIN_TRACING_V2:'false',OPENAI_API_KEY:'',OPENROUTER_API_KEY:'',ANTHROPIC_API_KEY:'',GOOGLE_API_KEY:'',LANGSMITH_API_KEY:''};
+    ENABLE_MEMORY_GRAPH_PROJECTION:graph?'1':'0',LANGSMITH_TRACING:'false',LANGCHAIN_TRACING_V2:'false',OPENAI_API_KEY:'',OPENROUTER_API_KEY:'',ANTHROPIC_API_KEY:'',GOOGLE_API_KEY:'',LANGSMITH_API_KEY:''};
    const result=await new Promise<{code:number|null;output:string}>((done,reject)=>{
-    const child=spawn(process.execPath,['--import','tsx','scripts/run-local-memory-worker.ts','--once'],{env,windowsHide:true,stdio:['ignore','pipe','pipe']});
+    const child=spawn(process.execPath,['--import','tsx',graph?'scripts/run-memory-graph-worker.ts':'scripts/run-local-memory-worker.ts','--once'],{env,windowsHide:true,stdio:['ignore','pipe','pipe']});
     let output='';const collect=(data:Buffer)=>{output+=data.toString();if(output.length>16384)child.kill();};child.stdout.on('data',collect);child.stderr.on('data',collect);
     const timer=setTimeout(()=>child.kill(),180000);child.once('error',error=>{clearTimeout(timer);reject(error);});
     child.once('exit',code=>{clearTimeout(timer);done({code,output});});
    });
-   assert.equal(result.code,0,'Actual local memory Worker failed');
+   assert.equal(result.code,0,graph?'Actual graph Worker failed':'Actual local memory Worker failed');
    const events=result.output.split(/\r?\n/).filter(line=>line.startsWith('{')).map(line=>JSON.parse(line));
-   if(expectedRun)assert(events.some(row=>row.event==='local-memory-extraction'&&row.runId===expectedRun&&row.status==='ready'));
-   else assert(!events.some(row=>row.event==='local-memory-extraction'));
+   const event=graph?'memory-graph-outbox':'local-memory-extraction';
+   if(expectedRun)assert(events.some(row=>row.event===event&&(graph?row.observationId:row.runId)===expectedRun&&row.status===(graph?'delivered':'ready')));
+   else assert(!events.some(row=>row.event===event));
   };
   const first=await queue('I prefer long reports.');await once(first.run);
   const original=(await admin.query("select id,kind,source_receipt from agent_memory_observation where owner_id=$1 and source_receipt->>'runId'=$2",[owner,first.run])).rows;
@@ -68,13 +84,22 @@ export async function verifyMa24LocalMemoryWorker(options:{adminUrl:string;appUr
   for(const id of [original[0].id,corrected[0].id])for(const table of ['agent_memory_notice','agent_memory_graph_outbox'])
    assert.equal((await admin.query(`select count(*)::int n from ${table} where observation_id=$1`,[id])).rows[0].n,1);
   const calls=chats;await once();assert.equal(chats,calls);assert.equal(chats,2);assert.deepEqual(errors,[]);
+  if(options.graphWorker){
+   graphOwner=owner;graphIds.push(original[0].id,corrected[0].id);
+   await writeFile(`${directory}/graph-fixture.json`,JSON.stringify({ownerId:owner,observationIds:graphIds})+'\n');
+   await once(original[0].id,true);await once(corrected[0].id,true);await once(undefined,true);
+   const delivered=(await admin.query(`select count(*)::int n from agent_memory_graph_outbox where observation_id=any($1::uuid[])
+    and delivered_at is not null and lease_token is null and leased_at is null and attempt_count=1`,[graphIds])).rows[0].n;
+   assert.equal(delivered,2);assert.equal(chats,calls);await cleanupGraph();
+  }
   const after=(await admin.query(`select (select count(*)::int from product_fact) p,(select count(*)::int from knowledge_fact) k,
    (select count(*)::int from knowledge_fact_v3) v,(select count(*)::int from lead_scoring_policy) s`)).rows[0];assert.deepEqual(after,before);
   const result={actualWorkerCli:true,workerOnceInvocations:3,queueSelectionAndReadyVerified:true,preferenceAndNaturalCorrection:true,
    noticesAndOutboxExactlyOnce:true,emptyQueueMakesNoModelCall:true,formalFactAndPolicyCountsUnchanged:true,model:'qwen3:8b',modelDigest:digest,
    actualLocalChatCalls:chats,tagCalls:tags,rawDirectory:directory,rawResponseHashes:await Promise.all(Array.from({length:chats},async(_,i)=>{
     const {readFile}=await import('node:fs/promises');return createHash('sha256').update(await readFile(`${directory}/chat-${i+1}.json`)).digest('hex');})),
-   syntheticInputsOnly:true,cloudCalls:0,productionWrites:0,qualityAccepted:false};
+   actualGraphWorkerCli:options.graphWorker??false,graphWorkerOnceInvocations:options.graphWorker?3:0,graphOutboxDeliveredExactlyOnce:options.graphWorker??false,
+   scopedGraphCleanupVerified:options.graphWorker??false,syntheticInputsOnly:true,cloudCalls:0,productionWrites:0,qualityAccepted:false};
   await writeFile(`${directory}/result.json`,JSON.stringify(result,null,2)+'\n');return result;
- }finally{await new Promise<void>((done,reject)=>relay.close(error=>error?reject(error):done()));await admin.end();}
+ }finally{try{await cleanupGraph();}finally{await new Promise<void>((done,reject)=>relay.close(error=>error?reject(error):done()));await admin.end();}}
 }

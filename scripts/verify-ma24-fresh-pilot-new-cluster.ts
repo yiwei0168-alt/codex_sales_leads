@@ -18,6 +18,7 @@ const browserCheck = args.includes("--browser");
 const currentSchemaCheck = args.includes('--current-schema');
 const snapshotDownloadCheck=args.includes('--snapshot-download');
 const localMemoryWorkerCheck=args.includes('--local-memory-worker');
+const localMemoryGraphCheck=args.includes('--local-memory-graph-worker');
 const frontendUiCheck = args.includes('--frontend-ui');
 const extendedUiCheck = args.includes('--extended-ui');
 const tenUserCheck = args.includes("--ten-user");
@@ -61,9 +62,10 @@ assert(!frontendUiCheck||(webImage&&currentSchemaCheck&&browserCheck),'--fronten
 assert(!extendedUiCheck||frontendUiCheck,'--extended-ui requires --frontend-ui');
 assert(!snapshotDownloadCheck||(webImage&&currentSchemaCheck),'--snapshot-download requires --web-image and --current-schema');
 assert(!localMemoryWorkerCheck||(webImage&&currentSchemaCheck),'--local-memory-worker requires --web-image and --current-schema');
+assert(!localMemoryGraphCheck||localMemoryWorkerCheck,'--local-memory-graph-worker requires --local-memory-worker');
 const rollbackImageArgument = args.find(arg => arg.startsWith("--rollback-image="));
 const rollbackImage = rollbackImageArgument?.slice("--rollback-image=".length);
-assert(args.length <= 20 && args.every(arg => ["--local-memory-worker", "--snapshot-download", "--extended-ui", "--frontend-ui", "--current-schema", "--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", '--locked-policy', '--memory-source-locks', '--method-catalog-locks', '--shadow-source-locks', '--safety-skill-usage', '--transport-journal', '--pool-recovery', '--web-pool-recovery', "--prospective-source", "--prospective-material", '--prospective-browser', '--prospective-composition', declarationImageArgument,collectorImageArgument,prospectiveHttpArgument, webImageArgument, rollbackImageArgument].includes(arg))
+assert(args.length <= 20 && args.every(arg => ["--local-memory-graph-worker", "--local-memory-worker", "--snapshot-download", "--extended-ui", "--frontend-ui", "--current-schema", "--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", '--locked-policy', '--memory-source-locks', '--method-catalog-locks', '--shadow-source-locks', '--safety-skill-usage', '--transport-journal', '--pool-recovery', '--web-pool-recovery', "--prospective-source", "--prospective-material", '--prospective-browser', '--prospective-composition', declarationImageArgument,collectorImageArgument,prospectiveHttpArgument, webImageArgument, rollbackImageArgument].includes(arg))
   &&(!declarationImageArgument||(declarationImage&&/^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(declarationImage)))
   &&(!collectorImageArgument||(collectorImage&&/^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(collectorImage)))
   && (!webPoolRecoveryCheck || webImage)
@@ -368,7 +370,7 @@ try {
     const firstCookie = await login(0), secondCookie = await login(1);
     if(localMemoryWorkerCheck){
       const {verifyMa24LocalMemoryWorker}=await import('./lib/verify-ma24-local-memory-worker');
-      localMemoryWorkerResult=await verifyMa24LocalMemoryWorker({adminUrl:adminUrl.toString(),appUrl:appUrl.toString(),ownerEmail:credentials[0].email,disposableContainerId:containerId!});
+      localMemoryWorkerResult=await verifyMa24LocalMemoryWorker({adminUrl:adminUrl.toString(),appUrl:appUrl.toString(),ownerEmail:credentials[0].email,disposableContainerId:containerId!,graphWorker:localMemoryGraphCheck});
     }
     if(snapshotDownloadCheck){
       const admin=new Client({connectionString:adminUrl.toString()});await admin.connect();
