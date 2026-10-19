@@ -1,0 +1,31 @@
+{
+  "stage": "MA24 G03 correction and tool-receipt learning lease expiry",
+  "date": "2026-10-19",
+  "baseCommit": "da0c6471",
+  "status": "wall-clock-commit-guard-passed; production-pending",
+  "implementation": [
+    "Both initial claim reads use clock_timestamp instead of transaction-start now for the five-minute lease window.",
+    "Message correction requires the current owner/run/token/processing state and unexpired wall clock in the final ready UPDATE RETURNING; zero rows throws extraction_lease_expired.",
+    "Receipt learning requires the same fresh lease before renewing updated_at; an expired lease cannot be revived. Zero rows throws and rolls back receipt-derived observations.",
+    "Existing extraction orchestration requeues extraction_lease_expired under its original lease token, without contacting the model or overwriting a different lease."
+  ],
+  "checks": {
+    "unitTests": "73 passed across four files, including correction final-update rejection, receipt renewal rejection, and orchestrator retry for both failures",
+    "typecheck": "exit 0",
+    "focusedEslint": "exit 0",
+    "diffCheck": "exit 0",
+    "actualExpiry": {"exitCode": 0, "log": "tmp/ma24-memory-lease-expiry-2026-10-19.log", "cases": 4},
+    "expirySequence": "For each function, seed a processing job aged 299 seconds, then delay its actual observation INSERT by 2.2 seconds via an owner-scoped AFTER INSERT trigger. Final wall-clock lease rejection rolls back the entire function transaction; observation/notice/outbox counts remain unchanged and job status/token/updated_at remain exactly original.",
+    "positiveControl": "The same 2.2s delay with a fresh lease commits one observation/notice/outbox. Correction reaches ready and clears token; receipt learning stays processing with its original token and renewed time.",
+    "correctionRegression": {"exitCode": 0, "log": "tmp/ma24-correction-lease-regression-2026-10-19.log"},
+    "receiptRegression": {"exitCode": 0, "log": "tmp/ma24-receipt-lease-regression-2026-10-19.log"},
+    "cleanup": "Scoped trigger/functions and synthetic accounts, runs/messages, receipts, extraction jobs, observations/notices/conflicts/outbox removed from the isolated clone."
+  },
+  "limits": [
+    "Expiry verifier calls the two actual transaction functions directly. Database rollback and orchestrator requeue are proven separately by database and unit checks, not as a complete running Worker flow.",
+    "A near-expiry seeded timestamp plus real delay crosses the natural clock boundary; the verifier does not wait a full five minutes or inject scheduler death/new-owner takeover during this interval.",
+    "Earlier receipt learning, correction and ordinary extraction remain separate transactions; this is not whole-job atomicity or a new complete source-row protection claim for correction/receipt learning.",
+    "No new migration or business DB update, no real model/network requests, no real quality or production acceptance. Existing clone development security warning remains.",
+    "Current code is newer than the verified 25f5acd3 image and signed snapshot; neither is claimed to contain these changes. No deployment or automatic Skill activation."
+  ]
+}

@@ -61,7 +61,7 @@ export async function learnToolReceiptMemories(userId:string,runId:string,lease:
       join agent_run r on r.id=j.run_id and r.user_id=j.owner_id
       join app_user u on u.id=j.owner_id and u.status='active'
       where j.owner_id=$1 and j.run_id=$2 and j.status='processing' and j.lease_token=$3
-        and j.updated_at>now()-interval '5 minutes' and r.status='completed' and r.execution_kind='main-agent'
+        and j.updated_at>clock_timestamp()-interval '5 minutes' and r.status='completed' and r.execution_kind='main-agent'
       for update of j`,[userId,runId,lease]);
     if(!owned.rowCount)return {owned:false,observations:0,limited:false};
     // Page a completed run's immutable receipts rather than silently dropping later calls.
@@ -88,8 +88,10 @@ export async function learnToolReceiptMemories(userId:string,runId:string,lease:
     cursorTime=last.cursor_created_at;cursorId=last.id;
     }
     // Give the following bounded local extraction its full lease after receipt pagination.
-    await client.query(`update agent_memory_extraction_job set updated_at=clock_timestamp()
-      where owner_id=$1 and run_id=$2 and lease_token=$3 and status='processing'`,[userId,runId,lease]);
+    const renewed=await client.query(`update agent_memory_extraction_job set updated_at=clock_timestamp()
+      where owner_id=$1 and run_id=$2 and lease_token=$3 and status='processing'
+      and updated_at>clock_timestamp()-interval '5 minutes' returning run_id`,[userId,runId,lease]);
+    if(!renewed.rowCount)throw new Error('extraction_lease_expired');
     return {owned:true,observations,limited:false};
   });
 }

@@ -41,6 +41,14 @@ it('queues without writing when source-lock acquisition is unavailable',async()=
  expect(client.query.mock.calls.some(call=>call[0].includes("status='ready'"))).toBe(false);
  expect(mock.query.mock.calls.at(-1)?.[2]).toContain('memory_storage_error');
 });
+it.each(['receipt','correction'])('requeues an expired %s transaction without contacting the model',async stage=>{
+ mock.query.mockResolvedValueOnce([job]).mockResolvedValueOnce([{run_id:'run-1'}]).mockResolvedValue([{run_id:'run-1'}]);
+ (stage==='receipt'?mock.receipts:mock.correction).mockRejectedValue(new Error('extraction_lease_expired'));
+ const fetcher=vi.fn();
+ expect(await processLocalMemoryExtraction('user-1','run-1',fetcher)).toBe('queued');
+ expect(fetcher).not.toHaveBeenCalled();expect(mock.observe).not.toHaveBeenCalled();
+ expect(mock.query.mock.calls.at(-1)?.[2]).toContain('extraction_lease_expired');
+});
 it.each([
   ['preference','I prefer short summaries.','Please summarize. Customer said: QUOTE'],
   ['preference','I prefer short summaries.','Please summarize.\n> QUOTE'],

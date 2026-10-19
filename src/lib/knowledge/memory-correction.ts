@@ -81,7 +81,7 @@ export async function processMessageMemoryCorrection(userId:string,runId:string,
         and conversation_id=r.conversation_id and role='user' and metadata->>'runId'=r.id::text
         order by created_at,id limit 1) m on true
       where j.owner_id=$1 and j.run_id=$2 and j.status='processing' and j.lease_token=$3
-        and j.updated_at>now()-interval '5 minutes' and r.status='completed' and r.execution_kind='main-agent'
+        and j.updated_at>clock_timestamp()-interval '5 minutes' and r.status='completed' and r.execution_kind='main-agent'
       for update of j`,[userId,runId,lease])).rows[0];
     if(!source)return {owned:false,handled:false};
     const parsed=proposal?validateNaturalCorrection(source.content,proposal):parseMemoryCorrectionCommand(source.content);
@@ -145,8 +145,10 @@ export async function processMessageMemoryCorrection(userId:string,runId:string,
           messageSha256:createHash('sha256').update(source.content).digest('hex'),reason,usage:'review-notice-only',successVerified:false,
           ...(proposal?{recognizer:'local-qwen3-exact-spans-v1',proposal:proposal.output}: {})}});
     }
-    await client.query(`update agent_memory_extraction_job set status='ready',lease_token=null,error_code=null,updated_at=now()
-      where owner_id=$1 and run_id=$2 and status='processing' and lease_token=$3`,[userId,runId,lease]);
+    const completed=await client.query(`update agent_memory_extraction_job set status='ready',lease_token=null,error_code=null,updated_at=clock_timestamp()
+      where owner_id=$1 and run_id=$2 and status='processing' and lease_token=$3
+      and updated_at>clock_timestamp()-interval '5 minutes' returning run_id`,[userId,runId,lease]);
+    if(!completed.rowCount)throw new Error('extraction_lease_expired');
     return {owned:true,handled:true};
   });
 }
