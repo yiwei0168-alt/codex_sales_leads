@@ -8,6 +8,7 @@ import {evidenceText,indexExtractedDocument} from "./vectorless";
 import {assertNoSpreadsheetCachedErrors} from "./extracted-tree";
 import {registerBinaryRevision,type BinaryRevisionJob} from './binary-revision';
 import {assertCurrentKnowledgePublisher} from './publication-authorization';
+import {assertCurrentUploadLease} from './publication-lease';
 
 const sha=(value:Uint8Array|string)=>createHash("sha256").update(value).digest("hex");
 type Job=BinaryRevisionJob;
@@ -41,7 +42,7 @@ export async function registerVectorlessUpload(userId:string,jobId:string,option
   if(job.revision_target_document_id)return registerBinaryRevision(userId,job,{blocks:extracted.blocks,content,contentHash,artifactBytes,...options},actor.role);
   const registered=await tenantTransaction(userId,async client=>{
     if(options.leaseToken){
-      const lease=await client.query("select id from knowledge_upload_job where id=$1 and user_id=$2 and lease_token=$3 and lease_until>now() for update",[jobId,userId,options.leaseToken]);
+      const lease=await client.query("select id from knowledge_upload_job where id=$1 and user_id=$2 and lease_token=$3 and lease_until>clock_timestamp() for update",[jobId,userId,options.leaseToken]);
       if(!lease.rows[0])throw new Error("Upload lease expired or changed");
     }
     const selected=await client.query<Job>(`select id,status,visibility,storage_key,byte_size::text,source_sha256,extractor_version,extraction_artifact_key,metrics,published_document_id,published_asset_id
@@ -54,6 +55,7 @@ export async function registerVectorlessUpload(userId:string,jobId:string,option
     if(current.status==="registered"){
       if(!current.published_document_id||!current.published_asset_id)throw new Error("Incomplete prior registration");
       await assertCurrentKnowledgePublisher(client,userId,job.visibility);
+      await assertCurrentUploadLease(client,userId,jobId,options.leaseToken);
       return {documentId:current.published_document_id,assetId:current.published_asset_id,reused:true};
     }
     const existing=await client.query<{id:string;source_sha256:string}>(`select id,metadata->>'sourceSha256' as source_sha256 from knowledge_document
@@ -84,6 +86,7 @@ export async function registerVectorlessUpload(userId:string,jobId:string,option
     await inspectKnowledgeAssetBytes(job.extraction_artifact_key!,job.metrics.artifactSha256!);
     await revalidateReviewedExtraction(client,userId,jobId,artifactBytes);
     await assertCurrentKnowledgePublisher(client,userId,job.visibility);
+    await assertCurrentUploadLease(client,userId,jobId,options.leaseToken);
     return {documentId,assetId:asset.rows[0].id,reused:false};
   },actor.role);
   try{
@@ -91,7 +94,7 @@ export async function registerVectorlessUpload(userId:string,jobId:string,option
     return {...registered,treeStatus:"searchable" as const,versionId:tree.versionId};
   }catch(error){
     await tenantQuery(userId,`update knowledge_upload_job set error_code='tree-index-failed',updated_at=now() where id=$1 and user_id=$2
-      and ($3::uuid is null or (lease_token=$3 and lease_until>now()))`,[jobId,userId,options.leaseToken??null]);
+      and ($3::uuid is null or (lease_token=$3 and lease_until>clock_timestamp()))`,[jobId,userId,options.leaseToken??null]);
     return {...registered,treeStatus:"failed" as const,treeError:error instanceof Error?error.message:"unknown"};
   }
 }

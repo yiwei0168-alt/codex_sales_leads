@@ -55,3 +55,9 @@ it('rejects an account disabled during indexing after tree writes',async()=>{
  await expect(indexExtractedDocument('owner','job')).rejects.toThrow('Publication account is no longer authorized');
  expect(m.tree).toHaveBeenCalledOnce();expect(m.commits).toBe(0);expect(m.rollbacks).toBe(1);
 });
+it('rejects lease expiry after tree writes',async()=>{
+ const query=m.query.getMockImplementation()!;
+ m.query.mockImplementation((sql:string)=>sql.includes('lease_until>clock_timestamp() for update')?Promise.resolve({rows:[{id:'job'}]}):query(sql));
+ await expect(indexExtractedDocument('owner','job','token')).rejects.toThrow('expired after publication preparation');
+ expect(m.tree).toHaveBeenCalledOnce();expect(m.commits).toBe(0);expect(m.rollbacks).toBe(1);
+});

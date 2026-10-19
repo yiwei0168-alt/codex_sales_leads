@@ -1,0 +1,250 @@
+{
+  "stage": "MA24 G05/G09 publication worker lease wall-clock revalidation",
+  "date": "2026-10-19",
+  "applicationSourceBaseCommit": "20c00e73dab84dd1dd15a76635bd0479535980a1",
+  "implementation": {
+    "initialWorkerLeaseChecksUseClockTimestamp": true,
+    "finalNewRevisionAndTreeChecksUseSameClientDatabaseWallClock": true,
+    "reusePathsRecheckLease": true,
+    "errorRecordingRequiresCurrentLease": true,
+    "interactiveCallersWithoutWorkerLeaseUnaffected": true,
+    "checkDoesNotRenewLease": true
+  },
+  "checks": {
+    "focusedVitest": {
+      "files": 7,
+      "passed": 57,
+      "scope": "Optional lease behavior, owner/job/token binding and late expiry failures in new/revision/tree transaction callbacks, plus existing authorization/byte/review regression suites."
+    },
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "diffCheck": "passed",
+    "actualDatabaseRace": {
+      "command": "PowerShell: $env:MA24_PUBLICATION_MUTATION='lease'; node --require ./scripts/patch-node-user.cjs --import tsx scripts/verify-binary-publication-race-clone.ts",
+      "exitCode": 0,
+      "result": {
+        "binaryPublicationRaceClone": "passed",
+        "cases": [
+          {
+            "visibility": "private",
+            "revision": false,
+            "changed": "lease",
+            "initialReadCompletedBeforeObservedRowWait": true,
+            "equalSizeMutationAfterWait": false,
+            "reviewReceiptDeletedAfterWait": false,
+            "lateHashRejected": false,
+            "lateReviewRejected": false,
+            "lateAccountRejected": false,
+            "lateLeaseExpiryRejected": true,
+            "transactionStartedBeforeLeaseExpiry": true,
+            "allPublicationRowsRolledBack": true,
+            "oldPointerPreserved": false,
+            "retryAfterRestorePassed": true
+          },
+          {
+            "visibility": "private",
+            "revision": true,
+            "changed": "lease",
+            "initialReadCompletedBeforeObservedRowWait": true,
+            "equalSizeMutationAfterWait": false,
+            "reviewReceiptDeletedAfterWait": false,
+            "lateHashRejected": false,
+            "lateReviewRejected": false,
+            "lateAccountRejected": false,
+            "lateLeaseExpiryRejected": true,
+            "transactionStartedBeforeLeaseExpiry": true,
+            "allPublicationRowsRolledBack": true,
+            "oldPointerPreserved": true,
+            "retryAfterRestorePassed": true
+          },
+          {
+            "visibility": "shared",
+            "revision": false,
+            "changed": "lease",
+            "initialReadCompletedBeforeObservedRowWait": true,
+            "equalSizeMutationAfterWait": false,
+            "reviewReceiptDeletedAfterWait": false,
+            "lateHashRejected": false,
+            "lateReviewRejected": false,
+            "lateAccountRejected": false,
+            "lateLeaseExpiryRejected": true,
+            "transactionStartedBeforeLeaseExpiry": true,
+            "allPublicationRowsRolledBack": true,
+            "oldPointerPreserved": false,
+            "retryAfterRestorePassed": true
+          },
+          {
+            "visibility": "shared",
+            "revision": true,
+            "changed": "lease",
+            "initialReadCompletedBeforeObservedRowWait": true,
+            "equalSizeMutationAfterWait": false,
+            "reviewReceiptDeletedAfterWait": false,
+            "lateHashRejected": false,
+            "lateReviewRejected": false,
+            "lateAccountRejected": false,
+            "lateLeaseExpiryRejected": true,
+            "transactionStartedBeforeLeaseExpiry": true,
+            "allPublicationRowsRolledBack": true,
+            "oldPointerPreserved": true,
+            "retryAfterRestorePassed": true
+          }
+        ],
+        "treeCases": [
+          {
+            "visibility": "private",
+            "revision": false,
+            "changed": "original",
+            "observedWaitAfterInitialInspection": true,
+            "transactionStartedBeforeLeaseExpiry": false,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "private",
+            "revision": false,
+            "changed": "artifact",
+            "observedWaitAfterInitialInspection": true,
+            "transactionStartedBeforeLeaseExpiry": false,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "private",
+            "revision": false,
+            "changed": "lease",
+            "observedWaitAfterInitialInspection": true,
+            "transactionStartedBeforeLeaseExpiry": true,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "private",
+            "revision": true,
+            "changed": "original",
+            "observedWaitAfterInitialInspection": true,
+            "transactionStartedBeforeLeaseExpiry": false,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "private",
+            "revision": true,
+            "changed": "artifact",
+            "observedWaitAfterInitialInspection": true,
+            "transactionStartedBeforeLeaseExpiry": false,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "private",
+            "revision": true,
+            "changed": "lease",
+            "observedWaitAfterInitialInspection": true,
+            "transactionStartedBeforeLeaseExpiry": true,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "shared",
+            "revision": false,
+            "changed": "original",
+            "observedWaitAfterInitialInspection": true,
+            "transactionStartedBeforeLeaseExpiry": false,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "shared",
+            "revision": false,
+            "changed": "artifact",
+            "observedWaitAfterInitialInspection": true,
+            "transactionStartedBeforeLeaseExpiry": false,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "shared",
+            "revision": false,
+            "changed": "lease",
+            "observedWaitAfterInitialInspection": true,
+            "transactionStartedBeforeLeaseExpiry": true,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "shared",
+            "revision": true,
+            "changed": "original",
+            "observedWaitAfterInitialInspection": true,
+            "transactionStartedBeforeLeaseExpiry": false,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "shared",
+            "revision": true,
+            "changed": "artifact",
+            "observedWaitAfterInitialInspection": true,
+            "transactionStartedBeforeLeaseExpiry": false,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "shared",
+            "revision": true,
+            "changed": "lease",
+            "observedWaitAfterInitialInspection": true,
+            "transactionStartedBeforeLeaseExpiry": true,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          }
+        ],
+        "actualModelCalls": 0,
+        "syntheticExtraction": true,
+        "qualityAccepted": false,
+        "productionQualificationGranted": false,
+        "automaticActivation": false
+      },
+      "registrationExpiryCases": 4,
+      "treeExpiryCases": 4,
+      "treeByteMutationCases": 8,
+      "observedWaitingTransactionStartedBeforeLeaseUntil": true,
+      "observedWallClockAfterLeaseUntilBeforeRelease": true,
+      "uniqueFinalPreparationExpiryErrorRequired": true,
+      "temporaryAccountsRowsAndFilesCleaned": true,
+      "scope": "Real isolated PostgreSQL clone/filesystem. A two-second lease is valid at transaction start, then expires naturally while a held upload-row/document-advisory lock blocks progress. No token/row mutation forces expiry. Final preparation check rejects and all candidate writes roll back; fixture renews lease and retry succeeds. Tree fixtures start with cleared candidate pointers; revision registration preserves prior pointer."
+    }
+  },
+  "limitations": [
+    "The final clock check does not extend the lease or guarantee validity after the check at a later commit.",
+    "Lease renewal in this verifier is privileged test setup, not a new product worker-renewal implementation.",
+    "Synthetic source/extraction data do not establish real content quality or production identity.",
+    "Build/image source 20c00e73 predates this lease change; its successful signing matrix does not verify this new application behavior.",
+    "Complete source protection, immutable storage, production qualification and final Skill activation remain incomplete."
+  ],
+  "actualModelCalls": 0,
+  "automaticActivation": false,
+  "filesSha256": {
+    "src/lib/knowledge/publication-lease.ts": "0cc2deaeb038b46e8239afef8a83a86516c5b55457765b032b2cacddbb8b69e7",
+    "src/lib/knowledge/publication-lease.test.ts": "45cabdc03304f54536d9516f29ccded2f486a5995e9185128ce4273a8cc5e5a8",
+    "src/lib/knowledge/vectorless-registration.ts": "9e497f81be31fdd84216b002ffab381ed7f4739cd781d3930243a92595fc2d97",
+    "src/lib/knowledge/binary-revision.ts": "509ad6bcd8c8a9595b41f0bdaf07eaf89a7d3f1928bba82a23e2b017c706c1a8",
+    "src/lib/knowledge/vectorless.ts": "c7ca3e7108d04b4352367b94e5959407e5488cf4715d6bb06de9b6ba8e60c9de",
+    "src/lib/knowledge/binary-publication-integrity.test.ts": "82867e837503613d85b7ec477d328e8270b49ef5938ae967eddbe8d5b760a157",
+    "src/lib/knowledge/tree-publication-integrity.test.ts": "3fd3e1f44ed201ea0341f66156d82ead67f1f840ca944c30229c25ac579765ea",
+    "scripts/verify-binary-publication-race-clone.ts": "ee361c12f7944dcb8111d92609f5425dd0881c4b249ffa66d36f5bb38ba331bc"
+  }
+}

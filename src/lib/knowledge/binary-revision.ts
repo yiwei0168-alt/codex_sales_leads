@@ -4,6 +4,7 @@ import {writeExtractedTree,type Block} from './extracted-tree';
 import {inspectKnowledgeAssetBytes} from './document-repository';
 import {revalidateReviewedExtraction} from './reviewed-extraction';
 import {assertCurrentKnowledgePublisher} from './publication-authorization';
+import {assertCurrentUploadLease} from './publication-lease';
 
 export type BinaryRevisionJob={id:string;status:string;visibility:'private'|'shared';collection_slug:string;title:string;source_url:string|null;entity_key:string|null;
  storage_key:string;extraction_artifact_key:string|null;source_sha256:string;extractor_version:string|null;mime_type:string;byte_size:string;
@@ -14,7 +15,7 @@ class BinaryRevisionError extends Error{constructor(code:string,message:string){
  * Everything newly visible (revision, asset, tree, metadata, pointer) commits together. */
 export async function registerBinaryRevision(userId:string,job:BinaryRevisionJob,input:{blocks:Block[];content:string;contentHash:string;artifactBytes:Uint8Array;language:string;authorityLevel:number;leaseToken?:string},role:'admin'|'member'){
  return tenantTransaction(userId,async client=>{
-  const locked=await client.query<BinaryRevisionJob&{lease_token:string|null;lease_valid:boolean}>(`select *,lease_until>now() as lease_valid
+  const locked=await client.query<BinaryRevisionJob&{lease_token:string|null;lease_valid:boolean}>(`select *,lease_until>clock_timestamp() as lease_valid
     from knowledge_upload_job where id=$1 and user_id=$2 for update`,[job.id,userId]);
   const current=locked.rows[0];
   if(!current||!['extracted','registered'].includes(current.status)||current.source_sha256!==job.source_sha256||current.extractor_version!==job.extractor_version
@@ -36,6 +37,7 @@ export async function registerBinaryRevision(userId:string,job:BinaryRevisionJob
     if(target.source_sha256!==job.source_sha256||target.id!==current.published_document_id||target.asset_id!==current.published_asset_id)
       throw new Error('Revision is no longer current; refusing to restore an old version');
     await assertCurrentKnowledgePublisher(client,userId,job.visibility);
+    await assertCurrentUploadLease(client,userId,job.id,input.leaseToken);
     return {documentId:target.id,assetId:target.asset_id,versionId:target.current_tree_version_id,reused:true,treeStatus:'searchable' as const};
   }
   if(target.current_tree_version_id!==job.revision_base_version_id)throw new BinaryRevisionError('revision-conflict','Document version changed; revision conflict');
@@ -58,6 +60,7 @@ export async function registerBinaryRevision(userId:string,job:BinaryRevisionJob
   await inspectKnowledgeAssetBytes(job.extraction_artifact_key!,job.metrics.artifactSha256!);
   await revalidateReviewedExtraction(client,userId,job.id,input.artifactBytes);
   await assertCurrentKnowledgePublisher(client,userId,job.visibility);
+  await assertCurrentUploadLease(client,userId,job.id,input.leaseToken);
   return {documentId:target.id,assetId:asset.id,versionId:tree.versionId,reused:false,treeStatus:'searchable' as const};
  },role);
 }

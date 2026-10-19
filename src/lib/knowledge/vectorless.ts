@@ -1,5 +1,6 @@
 import {verifyReviewedExtraction,revalidateReviewedExtraction} from './reviewed-extraction';
 import {assertCurrentKnowledgePublisher} from './publication-authorization';
+import {assertCurrentUploadLease} from './publication-lease';
 import {createHash} from "node:crypto";
 import {readFile} from "node:fs/promises";
 import {resolve} from "node:path";
@@ -34,7 +35,7 @@ export async function indexExtractedDocument(userId:string,jobId:string,leaseTok
   if(!blocks.length||blocks.some(block=>!block.id||!Number.isInteger(block.unitIndex)||block.unitIndex<1))throw new Error("No complete evidence blocks");
   return tenantTransaction(userId,async client=>{
     if(leaseToken){
-      const lease=await client.query("select id from knowledge_upload_job where id=$1 and user_id=$2 and lease_token=$3 and lease_until>now() for update",[jobId,userId,leaseToken]);
+      const lease=await client.query("select id from knowledge_upload_job where id=$1 and user_id=$2 and lease_token=$3 and lease_until>clock_timestamp() for update",[jobId,userId,leaseToken]);
       if(!lease.rows[0])throw new Error("Upload lease expired or changed");
     }
     await client.query("select pg_advisory_xact_lock(hashtextextended($1,0))",[job.published_document_id]);
@@ -51,6 +52,7 @@ export async function indexExtractedDocument(userId:string,jobId:string,leaseTok
     await inspectKnowledgeAssetBytes(job.extraction_artifact_key,artifactHash);
     await revalidateReviewedExtraction(client,userId,jobId,artifactBytes);
     await assertCurrentKnowledgePublisher(client,userId,job.visibility);
+    await assertCurrentUploadLease(client,userId,jobId,leaseToken);
     return tree;
   },actor.role);
 }

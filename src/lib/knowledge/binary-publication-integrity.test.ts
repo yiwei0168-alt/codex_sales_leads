@@ -23,7 +23,7 @@ beforeEach(()=>{
  m.index.mockResolvedValue({versionId:'tree-new'});m.tree.mockResolvedValue({versionId:'tree-new',reused:false});
 });
 function arrange(revision:boolean,changedBinding=false){
- const value={...job,revision_target_document_id:revision?'document':null,revision_base_version_id:revision?'tree-old':null};
+ const value={...job,lease_token:'token',lease_valid:true,revision_target_document_id:revision?'document':null,revision_base_version_id:revision?'tree-old':null};
  m.tenant.mockResolvedValueOnce([{role:'member'}]).mockResolvedValueOnce([value]);
  m.query.mockImplementation(async(sql:string)=>{
   if(sql.includes('select role from app_user'))return {rows:[{role:'admin'}]};
@@ -75,5 +75,11 @@ it.each([false,true])('commits only after original and extraction-artifact hash 
 it.each([false,true])('rejects a late review invalidation; revision=%s',async revision=>{
  arrange(revision);m.review.mockRejectedValueOnce(new Error('Invalid extraction review receipt'));
  await expect(registerVectorlessUpload('owner','job',{language:'en',authorityLevel:3})).rejects.toThrow('Invalid extraction review receipt');
+ expect(m.committed).toBe(0);expect(m.rolledBack).toBe(1);expect(m.index).not.toHaveBeenCalled();
+});
+it.each([false,true])('rejects lease expiry after publication preparation; revision=%s',async revision=>{
+ arrange(revision);const query=m.query.getMockImplementation()!;
+ m.query.mockImplementation((sql:string)=>sql.includes('lease_until>clock_timestamp()')&&!sql.includes('for update')?Promise.resolve({rows:[]}):query(sql));
+ await expect(registerVectorlessUpload('owner','job',{language:'en',authorityLevel:3,leaseToken:'token'})).rejects.toThrow('expired after publication preparation');
  expect(m.committed).toBe(0);expect(m.rolledBack).toBe(1);expect(m.index).not.toHaveBeenCalled();
 });
