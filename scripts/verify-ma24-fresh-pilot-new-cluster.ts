@@ -17,6 +17,7 @@ const webImage = webImageArgument?.startsWith("--web-image=")
 const browserCheck = args.includes("--browser");
 const currentSchemaCheck = args.includes('--current-schema');
 const snapshotDownloadCheck=args.includes('--snapshot-download');
+const localMemoryWorkerCheck=args.includes('--local-memory-worker');
 const frontendUiCheck = args.includes('--frontend-ui');
 const extendedUiCheck = args.includes('--extended-ui');
 const tenUserCheck = args.includes("--ten-user");
@@ -59,9 +60,10 @@ assert(!currentSchemaCheck||(webImage&&pristineDatabaseChecks===0&&!modeBusiness
 assert(!frontendUiCheck||(webImage&&currentSchemaCheck&&browserCheck),'--frontend-ui requires --web-image, --current-schema and --browser');
 assert(!extendedUiCheck||frontendUiCheck,'--extended-ui requires --frontend-ui');
 assert(!snapshotDownloadCheck||(webImage&&currentSchemaCheck),'--snapshot-download requires --web-image and --current-schema');
+assert(!localMemoryWorkerCheck||(webImage&&currentSchemaCheck),'--local-memory-worker requires --web-image and --current-schema');
 const rollbackImageArgument = args.find(arg => arg.startsWith("--rollback-image="));
 const rollbackImage = rollbackImageArgument?.slice("--rollback-image=".length);
-assert(args.length <= 20 && args.every(arg => ["--snapshot-download", "--extended-ui", "--frontend-ui", "--current-schema", "--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", '--locked-policy', '--memory-source-locks', '--method-catalog-locks', '--shadow-source-locks', '--safety-skill-usage', '--transport-journal', '--pool-recovery', '--web-pool-recovery', "--prospective-source", "--prospective-material", '--prospective-browser', '--prospective-composition', declarationImageArgument,collectorImageArgument,prospectiveHttpArgument, webImageArgument, rollbackImageArgument].includes(arg))
+assert(args.length <= 20 && args.every(arg => ["--local-memory-worker", "--snapshot-download", "--extended-ui", "--frontend-ui", "--current-schema", "--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", '--locked-policy', '--memory-source-locks', '--method-catalog-locks', '--shadow-source-locks', '--safety-skill-usage', '--transport-journal', '--pool-recovery', '--web-pool-recovery', "--prospective-source", "--prospective-material", '--prospective-browser', '--prospective-composition', declarationImageArgument,collectorImageArgument,prospectiveHttpArgument, webImageArgument, rollbackImageArgument].includes(arg))
   &&(!declarationImageArgument||(declarationImage&&/^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(declarationImage)))
   &&(!collectorImageArgument||(collectorImage&&/^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(collectorImage)))
   && (!webPoolRecoveryCheck || webImage)
@@ -112,6 +114,7 @@ let restoredContainerId: string | undefined;
 let networkId: string | undefined;
 let currentSchemaMarkers:Record<string,boolean>|null=null;
 let snapshotDownloadResult:unknown=null;
+let localMemoryWorkerResult:unknown=null;
 try {
   if (webImage) {
     const created = await run("docker", ["network", "create", networkName]);
@@ -363,6 +366,10 @@ try {
       return cookie;
     };
     const firstCookie = await login(0), secondCookie = await login(1);
+    if(localMemoryWorkerCheck){
+      const {verifyMa24LocalMemoryWorker}=await import('./lib/verify-ma24-local-memory-worker');
+      localMemoryWorkerResult=await verifyMa24LocalMemoryWorker({adminUrl:adminUrl.toString(),appUrl:appUrl.toString(),ownerEmail:credentials[0].email,disposableContainerId:containerId!});
+    }
     if(snapshotDownloadCheck){
       const admin=new Client({connectionString:adminUrl.toString()});await admin.connect();
       try{const {verifyMa24SnapshotDownload}=await import('./lib/verify-ma24-snapshot-download');
@@ -617,7 +624,7 @@ try {
   }
   console.log(JSON.stringify({ freshClusterPilot: "passed", image: "pgvector/pgvector:pg16",
     publishedAddress: "127.0.0.1 only", rolesVerified: true, duplicateRoleBootstrapRejected: true,
-    freshMigrationThrough: currentSchemaCheck?156:135,currentSchemaMarkers,snapshotDownloadResult,freshMailboxUiVerified:frontendUiCheck,extendedFrontendUiVerified:extendedUiCheck,
+    freshMigrationThrough: currentSchemaCheck?156:135,currentSchemaMarkers,snapshotDownloadResult,localMemoryWorkerResult,freshMailboxUiVerified:frontendUiCheck,extendedFrontendUiVerified:extendedUiCheck,
     syntheticAccountCompanyAndRestoreVerified: true, copiedProductionData: false,
     linuxWebImage: webImage ?? null, linuxWebHttpWorkflowVerified: Boolean(webImage),
     linuxWebHttpsBrowserVerified: browserCheck, tenConcurrentSyntheticAccountsVerified: tenUserCheck,
