@@ -14,6 +14,7 @@ const run=(extra,args)=>spawnSync('docker',['run','--rm','--read-only','--networ
 try{
  const verified=run([],['--verify']);assert.equal(verified.status,0,verified.stderr);
  const receipt=JSON.parse(verified.stdout.trim());assert.equal(receipt.collectorPackageIntegrity,'passed');
+ assert.equal(receipt.runtimeBoundaryVerified,true);assert.equal(receipt.rootReadOnly,true);assert.equal(receipt.capabilitiesEmpty,true);
  assert.match(receipt.deploymentHash,/^[a-f0-9]{64}$/);assert.equal(receipt.deploymentEnrollmentVerified,false);
  const enrolled=run(['--env',`SKILL_RUNNER_DEPLOYMENT_SHA256=${receipt.deploymentHash}`],['--verify']);
  assert.equal(enrolled.status,0,enrolled.stderr);assert.equal(JSON.parse(enrolled.stdout.trim()).deploymentEnrollmentVerified,true);
@@ -25,6 +26,11 @@ try{
  const admitted=run(['--env',`SKILL_RUNNER_DEPLOYMENT_SHA256=${receipt.deploymentHash}`],['--check','/missing-private-job.json']);
  assert.equal(admitted.status,1);assert(admitted.stderr.includes('Skill collector failed'));
  assert(!admitted.stderr.includes('Collector package integrity verification failed'),'Measured enrollment must reach the runner');
+ for(const extra of [['--read-only=false'],['--user=0'],['--cap-add=CHOWN'],['--tmpfs','/app/runtime-extra']]){
+  const unsafe=run(['--env',`SKILL_RUNNER_DEPLOYMENT_SHA256=${receipt.deploymentHash}`,...extra],['--check','/missing-private-job.json']);
+  assert.equal(unsafe.status,1);assert(unsafe.stderr.includes('Collector package integrity verification failed'));
+  assert(!unsafe.stderr.includes('Skill collector failed'),'Unsafe runtime must reject before private job processing');
+ }
  const injected=run(['--env','NODE_OPTIONS=--no-warnings'],['--verify']);
  assert.equal(injected.status,1);assert(injected.stderr.includes('Collector package integrity verification failed'));
  const help=run([],['--help']);assert.equal(help.status,0,help.stderr);assert(help.stdout.includes('--check|--execute'));

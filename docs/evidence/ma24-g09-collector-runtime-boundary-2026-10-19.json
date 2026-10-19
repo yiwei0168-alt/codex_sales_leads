@@ -1,0 +1,34 @@
+{
+  "stage": "MA24 G09 collector Linux runtime admission component",
+  "date": "2026-10-19",
+  "baseCommit": "4ab661fa",
+  "status": "component-passed; rebuilt-image-entrypoint-and-signing-matrix-pending",
+  "implementation": [
+    "Collector bootstrap checks process/root/package/Node runtime boundary before inventory and before runner spawn.",
+    "Require non-root matching real/effective/saved/filesystem UIDs, NoNewPrivs=1 and empty CapInh/CapPrm/CapEff/CapBnd/CapAmb.",
+    "Require read-only root/package/Node mounts and no writable package submount; reject malformed/duplicate protected mount records.",
+    "Image verifier now asserts runtime diagnostics and rejection before private job handling for writable-root/root-user/added-capability/writable-submount cases."
+  ],
+  "checks": {
+    "nodeTests": "20 passed in skill-collector-package.test.mjs and skill-collector-runtime-boundary.test.mjs",
+    "focusedEslint": "exit 0",
+    "actualLinuxComponentProbe": "Current module bind-mounted read-only into ma24-pilot-web:dd7daff5; direct runtime-boundary function call, not its old collector entrypoint.",
+    "actualCases": [
+      {"case": "read-only non-root, all caps dropped, no-new-privileges", "exitCode": 0, "admitted": true},
+      {"case": "writable root", "exitCode": 0, "expectedRejectionObserved": true},
+      {"case": "root user", "exitCode": 0, "expectedRejectionObserved": true},
+      {"case": "no-new-privileges missing", "exitCode": 0, "expectedRejectionObserved": true},
+      {"case": "capability bounding set not dropped", "exitCode": 0, "expectedRejectionObserved": true},
+      {"case": "writable package submount", "exitCode": 0, "expectedRejectionObserved": true}
+    ],
+    "probeExitMeaning": "Negative probes exit 0 only after asserting the runtime component rejects the expected configuration; they do not represent a successful collector run.",
+    "cleanup": "All six probe containers auto-removed; no network, DB, private job or signing key used."
+  },
+  "limits": [
+    "Full new collector image entrypoint, signing/TLS database matrix and deployment enrollment remain pending. Added verifier assertions have not yet run against a rebuilt image.",
+    "Current mount/process checks do not exclude writable backing-store aliases or host/admin changes. This is not immutable source storage or a complete binary/provider attestation.",
+    "No source-category promotion, real quality approval, production qualification or automatic activation; all existing hard gates remain closed.",
+    "The running dd7daff5 full signed composition predates this bootstrap change and must be reported under its own fixed source scope."
+  ],
+  "sources": ["https://docs.kernel.org/filesystems/proc.html", "https://docs.kernel.org/userspace-api/no_new_privs.html"]
+}
