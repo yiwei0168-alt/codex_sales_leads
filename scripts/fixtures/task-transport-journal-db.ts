@@ -28,7 +28,7 @@ type Options={registration?:Registration;reuseCustomers?:boolean;additionalTrust
 /** Real signing closures and app-role persistence with synthetic network/billing.
  * Does not qualify production network, billing or deployment identity. */
 export async function verifyTaskTransportJournalDatabase(pool:Pool,owner:string,other:string,directory:string,skillId:string,options:Options={}):Promise<Record<string,unknown>>{
- if(process.env.MA24_CONFIGURED_COMBINED==='1')for(const name of ['144_skill_task_origin_locks.sql','145_skill_attachment_source_locks.sql','147_skill_timeline_source_locks.sql','148_skill_decision_memory_source_locks.sql','149_skill_knowledge_source_locks.sql','150_skill_shadow_source_locks.sql','151_skill_pinned_method_source_locks.sql','152_skill_catalog_source_admission.sql'])await pool.query(await readFile(join('db/migrations',name),'utf8'));
+ if(process.env.MA24_CONFIGURED_COMBINED==='1')for(const name of ['141_skill_runner_attestation.sql','144_skill_task_origin_locks.sql','145_skill_attachment_source_locks.sql','147_skill_timeline_source_locks.sql','148_skill_decision_memory_source_locks.sql','149_skill_knowledge_source_locks.sql','150_skill_shadow_source_locks.sql','151_skill_pinned_method_source_locks.sql','152_skill_catalog_source_admission.sql'])await pool.query(await readFile(join('db/migrations',name),'utf8'));
  const runId=randomUUID(),conversationId=randomUUID(),leaseToken=randomUUID(),config=modeModelConfig('standard');
  const context={userId:owner,runId,leaseToken,role:'member' as const};
  const task={content:'Synthetic stored request',attachments:[] as []};

@@ -74,7 +74,7 @@ export async function verifyCombinedConfiguredDatabase(pool:Pool,original:Signed
   assert.equal(readiness.collectorProvenanceVerified,false);
   const key=registry.keys.find((row:{keyId:string})=>row.keyId===prospective.keyId);key.enabled=false;
   try{await writeFile(registryPath,JSON.stringify(registry));
-   await assert.rejects(tenantTransaction(original.owner,client=>revalidateLockedSkillTransportReceipts(client,context,combined.bundleId)),/trust key unavailable/);
+   await assert.rejects(tenantTransaction(original.owner,client=>revalidateLockedSkillTransportReceipts(client,context,combined.bundleId)),{message:'Task failure trust unavailable'});
   }finally{key.enabled=true;await writeFile(registryPath,JSON.stringify(registry));}
   assert.equal(readiness.materials.length,5);assert.equal(readiness.policyPassed,false);assert.equal(readiness.automaticActivation,false);
   assert.equal(readiness.knowledgeSourcesLocked,true);assert.equal(readiness.decisionMemorySourcesLocked,true);assert.equal(readiness.timelineSourcesLocked,true);

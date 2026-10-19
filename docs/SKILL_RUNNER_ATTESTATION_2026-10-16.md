@@ -45,3 +45,6 @@
 材料/策略准备前后各调用一次该组件，重载公钥登记，比较声明 ID、声明哈希和登记哈希；末尾时间单独复核，检查时刻自然变化不误判漂移。冻结锁同时使合规声明追加等待，避免准备中更换服务器选择的声明。返回声明检查元数据；collectorProvenanceVerified 与 automaticActivation 保持 false，尚未完成二进制、提供方、质量和最终启用事务。
 
 65 项定向回归、类型/lint 和全新一次性 PostgreSQL 通过：缺声明/跨账号、持锁禁钥、同事务到期（事务开始仍早于到期）、最新续签选择、过期最新声明不回退旧声明、追加等待/释放恢复、冻结撤销及既有存储权限。首个并发夹具漏设 member 角色上下文，被原守卫正确拒绝；夹具补齐后通过，未放宽守卫。完整五类合成工作流新快照待验；此次实际库验证只证明声明组件，没有生产认证结论。[证据](evidence/ma24-g09-locked-runner-declaration-2026-10-19.json)。
+
+
+2026-10-19 fixed snapshot 02c45e8e completed with exit 0: full five-category composition, paired prospective material and synthetic-source declaration non-promotion passed. Temporary database and source snapshot were removed. This snapshot does not include the later transport-audit code in 662874d3 and does not qualify signed pending-production evidence, deployed binary/provider or real quality. [Declaration evidence](evidence/ma24-g09-locked-runner-declaration-2026-10-19.json).

@@ -252,3 +252,12 @@ G09 current-source collector image TLS preflight (2026-10-19): rebuilt from the 
 
 
 2026-10-19 / MA24-06、G09 末尾模型传输收据：从已存审核包派生原任务及候选/安全两臂，不接受调用方指定收据。持有账号事务与任务日志锁，以数据库时刻审核成功和失败回退签名；跨全部审核比较信任登记，在审核结束复查最早收据/计划到期，并在策略后重做及核对运行声明的登记哈希。公共结果仅含哈希、数量和时间，合成材料不升格。100 项定向回归、类型/lint、Next.js 16.3.4 生产构建与八个来源模块打包字节核对通过；两条原任务、八臂的完整配置签名数据库组合仍运行，暂不判通过。二进制/提供方、真实质量和最终启用未完成，无新用户确认。[传输工作流](ORIGINAL_TASK_TRANSPORT_RECEIPTS_2026-10-17.md)、[证据](evidence/ma24-g09-locked-transport-receipts-2026-10-19.json)。
+
+
+2026-10-19 fixture setup correction: the combined signed transport fixture now explicitly applies migration 141 before the declaration check. The in-flight disposable database lacked this table; the same existing migration was applied only to that named temporary container and the table presence was verified. Application sources and validation guards were unchanged. This repaired in-flight run is recorded separately from an uninterrupted execution of the corrected bootstrap. [Receipt](evidence/ma24-g09-locked-transport-receipts-2026-10-19.json).
+
+
+2026-10-19 fixed snapshot 02c45e8e completed with exit 0: full five-category composition, paired prospective material and synthetic-source declaration non-promotion passed. Temporary database and source snapshot were removed. This snapshot does not include the later transport-audit code in 662874d3 and does not qualify signed pending-production evidence, deployed binary/provider or real quality. [Declaration evidence](evidence/ma24-g09-locked-runner-declaration-2026-10-19.json).
+
+
+2026-10-19 signed-integration result: exit 1 is preserved. After the explicitly recorded temporary migration-141 setup repair, readiness returned with two original tasks, eight evaluation arms, signed receipt revalidation and matching runner/transport registry hashes. Disabling the enrolled key correctly raised `Task failure trust unavailable`; the fixture expected a different error text. Its assertion now matches that exact existing error. Later assertions were not reached. A fresh corrected-bootstrap rerun is required; this first run is not recorded as passed. Application guards were unchanged. [Evidence](evidence/ma24-g09-locked-transport-receipts-2026-10-19.json).

@@ -15,10 +15,15 @@
       "staticPages": 26,
       "buildId": "Bh25rNBKTAVh28VN4H8fO",
       "standaloneServerExists": true,
-      "eightRuntimeModulesByteIdentical": true
+      "eightRuntimeModulesByteIdentical": true,
+      "sourceScope": "Application files committed as 662874d3; build executed before that commit, with eight runtime modules compared byte-for-byte. No later application-source edits."
     },
-    "configuredSignedFiveCategoryDatabase": "running",
-    "diffCheck": "passed"
+    "configuredSignedFiveCategoryDatabase": "failed at fixture error-text assertion; clean rerun pending",
+    "diffCheck": "passed",
+    "fixedSnapshotSyntheticComposition": {
+      "commit": "662874d3e653010de18756d3d8635556311981db",
+      "status": "running"
+    }
   },
   "implementation": {
     "bindingsDerivedFromStoredArtifactOnly": true,
@@ -36,15 +41,44 @@
   },
   "database": {
     "command": "PowerShell: $env:MA24_CONFIGURED_COMBINED='1'; node --import tsx scripts/verify-ma24-fresh-pilot-new-cluster.ts --transport-journal",
-    "status": "running",
+    "status": "failed",
     "expectedOriginalTaskCount": 2,
     "expectedEvaluationArmCount": 8,
     "actualModelCalls": 0,
     "networkAndBudgetAdapters": "synthetic",
-    "productionKeysEnrolled": false
+    "productionKeysEnrolled": false,
+    "fixtureSetupRepair": {
+      "cause": "Combined transport fixture omitted migration 141 before newly required runner declaration persistence.",
+      "correctedSetupFile": "scripts/fixtures/task-transport-journal-db.ts",
+      "runningDisposableContainer": "ma24-pilot-fresh-eaa17f6ed568",
+      "initialTablePresent": false,
+      "existingMigration141AppliedToOnlyThisDisposableDatabase": true,
+      "tablePresentAfterRepair": true,
+      "sqlExitCode": 0,
+      "loadedApplicationSourcesChanged": false,
+      "scope": "This in-flight run has an explicit setup repair; it is not an uninterrupted rerun of the corrected bootstrap.",
+      "migrationSha256": "f66a007c4d327276d304b7515ff539ba76b573b82877e3ca0c08a2f106335aa5"
+    },
+    "exitCode": 1,
+    "observedBeforeFailure": {
+      "lockedReadinessReturned": true,
+      "transportReceiptsRequired": true,
+      "transportReceiptsRevalidated": true,
+      "originalTaskCount": 2,
+      "evaluationArmCount": 8,
+      "transportReceiptCountGreaterThanEight": true,
+      "runnerDeclarationRevalidated": true,
+      "transportAndRunnerRegistryEqual": true,
+      "collectorProvenanceVerified": false,
+      "disabledKeyRejectedWith": "Task failure trust unavailable",
+      "fixtureExpectedDifferentErrorText": true,
+      "laterPostRejectionAssertionsNotReached": true
+    },
+    "fixtureAssertionRepair": "Use the exact existing Task failure trust unavailable error for the deliberately disabled original-task failed fallback signature. No signature/time/trust guard changed.",
+    "temporaryContainerRemoved": true
   },
   "limitations": [
-    "Database integration still running; unit fixtures are not substituted for its result.",
+    "The first configured signed integration exited 1 on a fixture error-text mismatch after positive transport/declaration assertions; a clean corrected-bootstrap rerun is still required.",
     "Signed statements do not qualify deployed binaries/providers or independent quality.",
     "Time/registry rechecks are preparation points, not an immutable registry lease or final activation commit.",
     "No production migration, deployment, port opening, or Skill activation; G14-G20 remain deferred."
@@ -58,6 +92,8 @@
     "src/lib/assistant/main/skill-model-transport-failure-receipt.ts": "29e9f0105c4d3443becf616fb21640ac504d371c65f413f8071ab1c458062b2a",
     "src/lib/assistant/main/task-model-transport-receipt.ts": "aaefbd7b1acef2881985dcb525b00c02335be7dfb3e924c649ffbfe93fbaea2c",
     "src/lib/assistant/main/task-model-transport-failure-receipt.ts": "57090418da46592ff55cae5abad12e9d41b5b06c03506d4fc36db8ff962ed4a4",
-    "scripts/fixtures/configured-five-category-db.ts": "ff0c0456dd9aeb7949a33a63ce99c45e31cc27da30a837e18f08b8f29b0612e6"
-  }
+    "scripts/fixtures/configured-five-category-db.ts": "6892f6a5b2053210f1ee20d717cae5552729eeba557b4d7e22d4361ebb1ec62d",
+    "scripts/fixtures/task-transport-journal-db.ts": "da52f77952539d633896386b4c1aa63164de6c23527f07fee7b6b0b46d60bb1e"
+  },
+  "implementationCommit": "662874d3"
 }
