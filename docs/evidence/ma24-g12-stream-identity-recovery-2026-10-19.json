@@ -1,0 +1,44 @@
+{
+  "stage": "MA24 G12 / MODESEL-10 streamed identity and late deltas",
+  "date": "2026-10-19",
+  "implementation": [
+    "Reject changing generation id, model or provider between present SSE identity fields instead of overwriting the prior identity.",
+    "After a finish reason, reject additional non-empty content, reasoning/details or tool-call deltas. Content on the initial terminal frame remains allowed.",
+    "Preserve content-free final usage frames that repeat the same finish reason; no change to the fallback allowlist."
+  ],
+  "protocolReference": {
+    "url": "https://openrouter.ai/docs/api_reference/streaming",
+    "checked": "2026-10-19",
+    "scope": "Official final Chat Completions usage-frame description permits a content-free delta and repeated finish reason. Identity consistency is the product's existing source-integrity enforcement, not a claim that this page certifies all provider variants."
+  },
+  "checks": {
+    "tests": "57 passed across mode-runtime, model-sync and model-cancellation suites",
+    "typecheck": "npm.cmd run typecheck: exit 0 after verifier return-type annotation",
+    "lint": "focused ESLint: exit 0",
+    "verifier": "scripts/verify-mode-stream-recovery-clone.ts",
+    "actualDatabaseAndHttp": "exit 0; 12 scenarios across quick/standard/deep; isolated localhost replay clone and an actual loopback SSE peer",
+    "scenariosPerMode": [
+      "Identity drift persists one non-retryable unavailable attempt; recovery starts no new request/fallback.",
+      "Tool-call delta after finish persists one non-retryable unavailable attempt; recovery starts no new request/fallback.",
+      "Valid final usage frame persists success and reuses it after recovery, preserving content and usage.",
+      "An attempt begun without any result remains unknown; repeated recovery makes zero HTTP requests and no fallback."
+    ],
+    "requests": "9 synthetic localhost requests; 12 durable attempts; external provider/model calls 0",
+    "cleanup": "Synthetic calls/events/runs/conversations/account and localhost server cleaned. No business tool effects executed."
+  },
+  "retainedFailures": [
+    "First 9-scenario run completed assertions but cleanup referenced nonexistent agent_run_approval. Scoped maintenance verified exactly one synthetic account marker and 9 attempts, cleaned it with the correct agent_approval table, then corrected verifier passed.",
+    "Initial verifier typecheck found recursive implicit-any inference in the request/result generic; added an explicit synthetic response type and final typecheck passed."
+  ],
+  "limits": [
+    "Exercises stream collector, ordered recovery, real attempt storage and loopback HTTP. It does not run real OpenRouter/provider admission, billing, the full Agent graph or actual business tools.",
+    "Independent real model quality, real provider failures/cancellation/billing and final production loading remain unverified.",
+    "Development database emits its existing production security warning; no production TLS/login qualification or deployment.",
+    "The separately running fixed e2891a90 G09 composition does not contain this change."
+  ],
+  "filesSha256": {
+    "src/lib/assistant/main/model-stream.ts": "40f91fad57376307352166763a675921c89c79c0db4914624b457ee3c8a0a7f3",
+    "src/lib/assistant/main/mode-runtime.test.ts": "40ad48fa6562bd53cdd6a3714694838b8dab531964b9f0fbbb33122397b7511d",
+    "scripts/verify-mode-stream-recovery-clone.ts": "3b24332a9212f395daf22aa717dd3a23c388002dfb8d79bd2105840771235ec4"
+  }
+}

@@ -39,6 +39,26 @@ describe('mode runtime boundaries',()=>{
   it.each([frame({content:'partial'}),frame({content:'partial'},'length')+'data: [DONE]\n\n','data: {"error":{"message":"private"}}\n\n'])('rejects incomplete or failed streams',async text=>{
     await expect(collectModelStream(sse(text),new AbortController().signal,()=>{})).rejects.toThrow();
   });
+  it.each(['id','model','provider'])('rejects a changed %s instead of merging different stream identities',async key=>{
+    const chunk=(value:string,finish_reason:string|null)=>`data: ${JSON.stringify({id:'gen-first',model:'openai/gpt-6-luna',provider:'fixture',[key]:value,choices:[{index:0,delta:{content:'answer'},finish_reason}]})}\n\n`;
+    await expect(collectModelStream(sse(chunk('first',null)+chunk('second','stop')+'data: [DONE]\n\n'),new AbortController().signal,()=>{})).rejects.toThrow('invalid model stream');
+  });
+  it.each([{content:'late'},{reasoning:'late'},{reasoning_details:[{type:'reasoning.text',text:'late'}]},
+    {tool_calls:[{index:0,id:'late-tool',type:'function',function:{name:'execute_tool',arguments:'{}'}}]}])('rejects a content-bearing delta after terminal finish: %j',async delta=>{
+    await expect(collectModelStream(sse(frame({content:'finished'},'stop')+frame(delta)+'data: [DONE]\n\n'),new AbortController().signal,()=>{})).rejects.toThrow('invalid model stream');
+  });
+  it('accepts the documented content-free usage frame with a repeated finish reason',async()=>{
+    const usage=`data: ${JSON.stringify({model:'openai/gpt-6-luna',provider:'fixture',choices:[{index:0,delta:{content:'',role:'assistant'},finish_reason:'stop'}],usage:{prompt_tokens:3,completion_tokens:2}})}\n\n`;
+    const out=await collectModelStream(sse(frame({content:'answer'},'stop')+usage+'data: [DONE]\n\n'),new AbortController().signal,()=>{});
+    expect(await out.json()).toMatchObject({choices:[{message:{content:'answer'}}],usage:{prompt_tokens:3,completion_tokens:2}});
+  });
+  it('persists protocol failure without advancing to a fallback route',async()=>{
+    const request=vi.fn(async()=>collectModelStream(sse(frame({content:'finished'},'stop')+frame({content:'late'})+'data: [DONE]\n\n'),new AbortController().signal,()=>{}));
+    const save=vi.fn();
+    await expect(orderedModeDecision({begin:async()=>({id:'attempt',fresh:true}),request,save})).rejects.toThrow('invalid model stream');
+    expect(request).toHaveBeenCalledOnce();
+    expect(save).toHaveBeenCalledWith('attempt',0,{status:'unavailable',retryable:false,reason:'requires-reconciliation-or-configuration'});
+  });
   it('saves a failed route before advancing and reuses saved success on recovery',async()=>{
     const saved=new Map<number,{status:string;data:unknown}>(),calls:number[]=[],events:string[]=[];
     const deps={begin:async(i:number)=>({id:String(i),fresh:!saved.has(i),output:saved.get(i)}),request:async(i:number)=>{calls.push(i);events.push(`request${i}`);if(i===0)throw new ModelWaitError('first-output');return 'answer';},save:async(id:string,i:number,value:{status:'success';value:string}|{status:'unavailable';retryable:boolean;reason:string})=>{events.push(`save${i}`);saved.set(i,{status:value.status,data:value.status==='success'?{value:value.value}:{retryable:value.retryable,reason:value.reason}});}};

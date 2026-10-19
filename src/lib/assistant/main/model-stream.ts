@@ -37,11 +37,17 @@ export async function collectModelStream(response:Response,signal:AbortSignal,on
     if(doneMarker)throw new ModelStreamError();
     const chunk=chunkSchema.parse(JSON.parse(data));
     if(chunk.error)throw new ModelStreamError();
+    for(const key of ['id','model','provider'] as const){
+      if(chunk[key]!==undefined&&meta[key]!==undefined&&chunk[key]!==meta[key])throw new ModelStreamError();
+    }
     meta={...meta,...(chunk.id?{id:chunk.id}:{}),...(chunk.model?{model:chunk.model}:{}),...(chunk.provider?{provider:chunk.provider}:{}),...(chunk.usage?{usage:chunk.usage}:{})};
     for(const choice of chunk.choices??[]){
       if((choice.index??0)!==0)throw new ModelStreamError();
+      const d=choice.delta;
+      if(finish&&(d?.content||d?.reasoning||d?.reasoning_details?.some(part=>part.text||part.data||part.summary)||d?.tool_calls?.length))
+        throw new ModelStreamError();
       if(choice.finish_reason){if(finish&&finish!==choice.finish_reason)throw new ModelStreamError();finish=choice.finish_reason;}
-      const d=choice.delta;if(!d)continue;
+      if(!d)continue;
       if(d.content||d.reasoning||d.reasoning_details?.some(v=>v.text||v.data||v.summary)||d.tool_calls?.some(c=>c.id||c.function?.name||c.function?.arguments))onProgress();
       content+=d.content??'';reasoning+=d.reasoning??'';
       for(const [i,part] of (d.reasoning_details??[]).entries()){
