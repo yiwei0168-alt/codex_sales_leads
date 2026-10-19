@@ -48,3 +48,13 @@ it("rechecks cache hits before model use as well as after generation",async()=>{
   expect(mocks.search).toHaveBeenCalledTimes(1);expect(mocks.generate).not.toHaveBeenCalled();
   expect(result.citations).toEqual([]);
 });
+it('keeps the selected collection scope at both authorization boundaries during generation',async()=>{
+ let moved=false;
+ mocks.authorize.mockImplementation(async(_owner,_ids,scope)=>{
+  expect(scope).toEqual(['industry']);return moved?new Set():new Set([id]);
+ });
+ mocks.generate.mockImplementation(async()=>{moved=true;return `Derived from moved source [KB:${id}]`;});
+ const result=await answerWithRag('synthetic-owner',{question:'Read the selected industry source',filters:{collections:['industry']}});
+ expect(result.reasonCode).toBe('evidence-access-changed');expect(result.answer).not.toContain('Derived from moved source');
+ expect(result.citations).toEqual([]);expect(mocks.log).not.toHaveBeenCalled();
+});

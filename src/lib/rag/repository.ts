@@ -271,13 +271,13 @@ export async function knowledgeRevisionToken(userId: string): Promise<string> {
   return rows[0]?.token ?? "none:v1";
 }
 
-export async function authorizedKnowledgeChunkIds(userId: string, chunkIds: string[]): Promise<Set<string>> {
-  return new Set((await currentKnowledgeChunkEvidence(userId,chunkIds)).map(row=>row.id));
+export async function authorizedKnowledgeChunkIds(userId: string, chunkIds: string[],collections?:KnowledgeBaseType[]): Promise<Set<string>> {
+  return new Set((await currentKnowledgeChunkEvidence(userId,chunkIds,collections)).map(row=>row.id));
 }
 
 /** Current source check also exposes exact text for resumed Agent evidence validation. */
 export interface CurrentKnowledgeEvidence {id:string;content:string;documentId?:string;releaseId?:string;sourceLocation?:unknown;sourceSha256?:string;}
-export async function currentKnowledgeChunkEvidence(userId:string,chunkIds:string[]):Promise<CurrentKnowledgeEvidence[]> {
+export async function currentKnowledgeChunkEvidence(userId:string,chunkIds:string[],collections?:KnowledgeBaseType[]):Promise<CurrentKnowledgeEvidence[]> {
   if (!chunkIds.length) return [];
   const releaseId=await activeV3Release(userId);
   if(releaseId){
@@ -290,13 +290,15 @@ export async function currentKnowledgeChunkEvidence(userId:string,chunkIds:strin
         and(d.visibility='shared' or d.owner_id=$3)
         and a.registration_status='registered' and a.source_sha256=sr.source_sha256
         and (d.current_tree_version_id is null or
-          (v.status='ready' and v.asset_id=a.id and v.source_sha256=sr.source_sha256))`,[releaseId,chunkIds,userId]);
+          (v.status='ready' and v.asset_id=a.id and v.source_sha256=sr.source_sha256))
+        and ($4::text[] is null or exists(select 1 from knowledge_collection kc where kc.id=d.collection_id and kc.slug=any($4)))`,[releaseId,chunkIds,userId,collections?.length?collections:null]);
     return rows;
   }
   const rows = await tenantQuery<CurrentKnowledgeEvidence>(userId, `select ch.id,ch.content,ch.document_id as "documentId"
       from knowledge_chunk ch join knowledge_document d on d.id=ch.document_id
      where ch.id=any($1::uuid[]) and d.status='active'
-       and (d.visibility='shared' or d.owner_id=$2)`, [chunkIds, userId]);
+       and (d.visibility='shared' or d.owner_id=$2)
+       and ($3::text[] is null or exists(select 1 from knowledge_collection kc where kc.id=d.collection_id and kc.slug=any($3)))`, [chunkIds, userId,collections?.length?collections:null]);
   return rows;
 }
 

@@ -112,7 +112,7 @@ export const productTools: ProductTool[] = [
       const chunks=localBgeEnabled
         ?await hybridSearch(c.userId,i.query,null,filters,i.limit,bgeEmbedding)
         :await hybridSearch(c.userId,i.query,null,filters,i.limit);
-      const allowed=await authorizedKnowledgeChunkIds(c.userId,chunks.map(chunk=>chunk.id));
+      const allowed=await authorizedKnowledgeChunkIds(c.userId,chunks.map(chunk=>chunk.id),filters.collections);
       return result(chunks.filter(chunk=>allowed.has(chunk.id)),degraded
         ?{cost:'known',status:'partial',missing:['Local BGE unavailable; vector lane omitted']}
         :{cost:'known'});

@@ -45,6 +45,7 @@ async function answerWithRagImpl(userId: string, input: RagQuery): Promise<RagAn
   const startedAt = Date.now();
   const config = getRagConfig();
   const maxChunks = Math.min(Math.max(input.maxChunks ?? config.maxContextChunks, 1), 12);
+  const collections=input.filters?.collections?.length?input.filters.collections:['industry','company','product'] as const;
   const revision = await knowledgeRevisionToken(userId);
   const bgeEmbedding = await withSuccessfulKnowledgeCache({
     key: knowledgeCacheKey("query-embedding-bge", {
@@ -72,7 +73,7 @@ async function answerWithRagImpl(userId: string, input: RagQuery): Promise<RagAn
   });
   let retrieved = evidenceResult.value;
   if (retrieved.length) {
-    const authorized = await authorizedKnowledgeChunkIds(userId, retrieved.map((chunk) => chunk.id));
+    const authorized = await authorizedKnowledgeChunkIds(userId, retrieved.map((chunk) => chunk.id),[...collections]);
     retrieved = retrieved.filter((chunk) => authorized.has(chunk.id));
   }
   const chunks = retrieved.filter((chunk) => chunk.score >= config.minScore);
@@ -105,9 +106,9 @@ async function answerWithRagImpl(userId: string, input: RagQuery): Promise<RagAn
   const answer = await withProductSpend(userId,"rag-grounded-answer",()=>generateGroundedAnswer(disclosure.question, disclosure.chunks));
   // Recheck every supplied source, including uncited ones: the model can have
   // used any of them while access or the active release changed in flight.
-  const stillAuthorized = await authorizedKnowledgeChunkIds(userId, disclosure.chunks.map(chunk => chunk.id));
+  const stillAuthorized = await authorizedKnowledgeChunkIds(userId, disclosure.chunks.map(chunk => chunk.id),[...collections]);
   if (disclosure.chunks.some(chunk => !stillAuthorized.has(chunk.id))) {
-    return {answer:"资料权限或可用版本在回答期间发生变化，本次生成内容已停止展示。请在当前授权范围内重新查询；如需他人私有资料，请先通过正常共享流程取得授权。",
+    return {answer:"资料权限、所属范围或可用版本在回答期间发生变化，本次生成内容已停止展示。请在当前授权范围内重新查询；如需他人私有资料，请先通过正常共享流程取得授权。",
       citations:[],grounded:false,model:config.ragAnswerModel,latencyMs:Date.now()-startedAt,
       warnings:["来源回校未通过，未返回生成内容或来源元数据。"],degradedLanes,generationUsed:true,
       reasonCode:"evidence-access-changed",externalDisclosure:{excludedChunks:disclosure.excludedChunks,redactedPatterns:disclosure.redactionCount},

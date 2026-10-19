@@ -1,0 +1,47 @@
+{
+  "stage": "G02/G09 current collection scope source revalidation",
+  "focusedTests": {"files": 8, "passed": 79, "log": "tmp/ma24-knowledge-scope-tests.log"},
+  "typecheckExitCode": 0,
+  "lintExitCode": 0,
+  "databaseRun": {
+    "command": "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --web-image=ma24-pilot-web:6b7089c9 --current-schema --knowledge-scope-sources",
+    "exitCode": 0,
+    "freshMigrationThrough": 158,
+    "log": "tmp/ma24-knowledge-scope-sources-db.log",
+    "logSha256": "e3d8df3a3db3ac2e2454c1c57c3e22c940ad3280adb498a9d725a106e57a3a78",
+    "verifierSha256": "e66eb5075858e38c9f2227f63f5710ed0c6c13e4793f3d543d3b916773f3008b",
+    "actualPostgresSources": true,
+    "productionGraphImplementation": true,
+    "matrix": ["legacy/private", "legacy/shared", "v3/private", "v3/shared"],
+    "actualOriginalToolMetadata": true,
+    "peerPrivateDeniedSharedAllowed": true,
+    "scopeMoveWithTextHashAclUnchanged": true,
+    "moveDuringSyntheticGenerationWithholdsReplyAndPendingAction": true,
+    "resumedActionRejectedBeforeAdapter": true,
+    "collectionRestorationPositivePassed": true,
+    "boundSourceReaderBlocksExactCollectionWriter": true,
+    "scopeQueryRejectsAfterWriterCommit": true,
+    "temporaryDatabaseContainersAndNetworksCleaned": true
+  },
+  "hashesRecordedAfterDatabaseRun": {
+    "repository": "e828721060a33a1daf7c9eb2d3ec429e8ced67a704e995a9868f8940a1da7a64",
+    "ragService": "b64c488a34b9769eed1adc40a0fa45ec2e5111d3e18acb1cd7b0c8776582def2",
+    "knowledgeGuard": "d24a89c1914903cbb24655187afc8e56582496d17c497b93b76020a4623b37fd",
+    "postRunChange": "Only two Chinese source-change messages gained scope wording; the subsequent 79-test run passed."
+  },
+  "scope": {
+    "modelAndActionAdapters": "synthetic",
+    "actualModelCalls": 0,
+    "externalActions": 0,
+    "actualFilesystemOriginalBytesVerified": false,
+    "durableWorkerFinalPersistenceVerified": false,
+    "compiledHttpFixVerified": false,
+    "webImageUsedForSeparateExistingLoginChecks": "ma24-pilot-web:6b7089c9",
+    "newSourceCodeInsideThatWebImage": false,
+    "productionQualified": false,
+    "sourceRevocationsLocked": false,
+    "automaticActivation": false,
+    "g14ThroughG20Advanced": false,
+    "lanDeployed": false
+  }
+}

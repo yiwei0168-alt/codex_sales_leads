@@ -41,7 +41,7 @@ export const knowledgeCompareTool=defineTool({id:'knowledge_compare',
       return {entity,facts,searches,selected};
     }));
     const ids=[...new Set(packets.flatMap(p=>[...p.selected.map(s=>s.id),...p.facts.flatMap(f=>f.chunkId?[f.chunkId]:[])]))];
-    const allowed=await authorizedKnowledgeChunkIds(c.userId,ids);
+    const allowed=await authorizedKnowledgeChunkIds(c.userId,ids,['product']);
     const entities=packets.map(packet=>{
       const evidence=packet.selected.filter(s=>allowed.has(s.id));
       const verifiedFacts=packet.facts.filter(f=>f.status==='verified'&&f.chunkId&&allowed.has(f.chunkId));
