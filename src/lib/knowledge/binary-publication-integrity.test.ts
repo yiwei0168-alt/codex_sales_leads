@@ -1,10 +1,10 @@
 import {createHash} from 'node:crypto';
 import {beforeEach,expect,it,vi} from 'vitest';
-const m=vi.hoisted(()=>({tenant:vi.fn(),transaction:vi.fn(),query:vi.fn(),inspect:vi.fn(),read:vi.fn(),index:vi.fn(),tree:vi.fn(),committed:0,rolledBack:0}));
+const m=vi.hoisted(()=>({tenant:vi.fn(),transaction:vi.fn(),query:vi.fn(),inspect:vi.fn(),read:vi.fn(),index:vi.fn(),tree:vi.fn(),review:vi.fn(),committed:0,rolledBack:0}));
 vi.mock('@/lib/rag/db',()=>({tenantQuery:m.tenant,tenantTransaction:m.transaction}));
 vi.mock('node:fs/promises',()=>({readFile:m.read}));
 vi.mock('./document-repository',()=>({inspectKnowledgeAssetBytes:m.inspect,safeKnowledgeStorageKey:(v:string)=>v,assertResolvedInsideKnowledgeRoot:vi.fn()}));
-vi.mock('./reviewed-extraction',()=>({verifyReviewedExtraction:vi.fn()}));
+vi.mock('./reviewed-extraction',()=>({verifyReviewedExtraction:vi.fn(),revalidateReviewedExtraction:m.review}));
 vi.mock('./vectorless',()=>({evidenceText:()=> 'Approved evidence',indexExtractedDocument:m.index}));
 vi.mock('./extracted-tree',()=>({assertNoSpreadsheetCachedErrors:vi.fn(),writeExtractedTree:m.tree}));
 import {registerVectorlessUpload} from './vectorless-registration';
@@ -63,4 +63,10 @@ it.each([false,true])('commits only after original and extraction-artifact hash 
  expect(await registerVectorlessUpload('owner','job',{language:'en',authorityLevel:3})).toMatchObject({documentId:'document',assetId:'asset',treeStatus:'searchable'});
  expect(m.inspect).toHaveBeenCalledTimes(3);expect(m.inspect).toHaveBeenLastCalledWith(job.extraction_artifact_key,job.metrics.artifactSha256);
  expect(m.committed).toBe(1);expect(m.rolledBack).toBe(0);
+});
+
+it.each([false,true])('rejects a late review invalidation; revision=%s',async revision=>{
+ arrange(revision);m.review.mockRejectedValueOnce(new Error('Invalid extraction review receipt'));
+ await expect(registerVectorlessUpload('owner','job',{language:'en',authorityLevel:3})).rejects.toThrow('Invalid extraction review receipt');
+ expect(m.committed).toBe(0);expect(m.rolledBack).toBe(1);expect(m.index).not.toHaveBeenCalled();
 });

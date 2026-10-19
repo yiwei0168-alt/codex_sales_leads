@@ -1,7 +1,8 @@
 import {createHash} from 'node:crypto';
 import {readFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
-import {tenantQuery} from '@/lib/rag/db';
+import {tenantQuery,withBoundTenantTransaction} from '@/lib/rag/db';
+import type {PoolClient} from 'pg';
 import {extractionReadiness} from './extraction-readiness';
 import {assertResolvedInsideKnowledgeRoot,safeKnowledgeStorageKey} from './document-repository';
 import type {Block} from './extracted-tree';
@@ -51,4 +52,10 @@ export async function verifyReviewedExtraction(userId:string,jobId:string,bytes:
     from knowledge_upload_extraction_review where owner_id=$1 and job_id=$2 and artifact_sha256=$3 order by block_id,revision desc`,[userId,jobId,receipt.original_artifact_sha256]);
   const reconstructed=deriveReviewedExtraction(original,{receiptId:receipt.id,sourceSha256:receipt.source_sha256,artifactSha256:receipt.original_artifact_sha256,extractorVersion:receipt.extractor_version},judgments);
   if(!Buffer.from(bytes).equals(reconstructed))throw new Error('Reviewed extraction differs from saved judgments');
+}
+
+/** Reuse the publisher's authenticated transaction so late review reads observe
+ * its source admission and cannot silently open a second connection. */
+export async function revalidateReviewedExtraction(client:PoolClient,userId:string,jobId:string,bytes:Uint8Array){
+  return withBoundTenantTransaction(client,userId,()=>verifyReviewedExtraction(userId,jobId,bytes));
 }

@@ -1,0 +1,222 @@
+{
+  "stage": "MA24 G05/G09 final extraction review revalidation in publication transaction",
+  "date": "2026-10-19",
+  "sourceBaseCommit": "1c3ebed9",
+  "implementation": {
+    "newRevisionAndTreePublicationRevalidateReviewedExtractionAfterWrites": true,
+    "sameAuthenticatedClientAndTransactionThroughWithBoundTenantTransaction": true,
+    "rebuildsArtifactAgainstCurrentSavedReceiptAndLatestJudgments": true,
+    "revisionReceivesPreviouslyValidatedArtifactBytes": true,
+    "automaticActivation": false
+  },
+  "checks": {
+    "focusedVitest": {
+      "files": 5,
+      "passed": 41,
+      "scope": "Late review failures in new/revision/tree callbacks plus original/artifact/path/size and reviewed-artifact derivation regression tests."
+    },
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "diffCheck": "passed",
+    "actualDatabaseRace": {
+      "command": "PowerShell: $env:MA24_PUBLICATION_MUTATION='review'; node --require ./scripts/patch-node-user.cjs --import tsx scripts/verify-binary-publication-race-clone.ts",
+      "exitCode": 0,
+      "result": {
+        "binaryPublicationRaceClone": "passed",
+        "cases": [
+          {
+            "visibility": "private",
+            "revision": false,
+            "changed": "review",
+            "initialReadCompletedBeforeObservedRowWait": true,
+            "equalSizeMutationAfterWait": false,
+            "reviewReceiptDeletedAfterWait": true,
+            "lateHashRejected": false,
+            "lateReviewRejected": true,
+            "allPublicationRowsRolledBack": true,
+            "oldPointerPreserved": false,
+            "retryAfterRestorePassed": true
+          },
+          {
+            "visibility": "private",
+            "revision": true,
+            "changed": "review",
+            "initialReadCompletedBeforeObservedRowWait": true,
+            "equalSizeMutationAfterWait": false,
+            "reviewReceiptDeletedAfterWait": true,
+            "lateHashRejected": false,
+            "lateReviewRejected": true,
+            "allPublicationRowsRolledBack": true,
+            "oldPointerPreserved": true,
+            "retryAfterRestorePassed": true
+          },
+          {
+            "visibility": "shared",
+            "revision": false,
+            "changed": "review",
+            "initialReadCompletedBeforeObservedRowWait": true,
+            "equalSizeMutationAfterWait": false,
+            "reviewReceiptDeletedAfterWait": true,
+            "lateHashRejected": false,
+            "lateReviewRejected": true,
+            "allPublicationRowsRolledBack": true,
+            "oldPointerPreserved": false,
+            "retryAfterRestorePassed": true
+          },
+          {
+            "visibility": "shared",
+            "revision": true,
+            "changed": "review",
+            "initialReadCompletedBeforeObservedRowWait": true,
+            "equalSizeMutationAfterWait": false,
+            "reviewReceiptDeletedAfterWait": true,
+            "lateHashRejected": false,
+            "lateReviewRejected": true,
+            "allPublicationRowsRolledBack": true,
+            "oldPointerPreserved": true,
+            "retryAfterRestorePassed": true
+          }
+        ],
+        "treeCases": [
+          {
+            "visibility": "private",
+            "revision": false,
+            "changed": "original",
+            "observedWaitAfterInitialInspection": true,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "private",
+            "revision": false,
+            "changed": "artifact",
+            "observedWaitAfterInitialInspection": true,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "private",
+            "revision": false,
+            "changed": "review",
+            "observedWaitAfterInitialInspection": true,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "private",
+            "revision": true,
+            "changed": "original",
+            "observedWaitAfterInitialInspection": true,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "private",
+            "revision": true,
+            "changed": "artifact",
+            "observedWaitAfterInitialInspection": true,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "private",
+            "revision": true,
+            "changed": "review",
+            "observedWaitAfterInitialInspection": true,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "shared",
+            "revision": false,
+            "changed": "original",
+            "observedWaitAfterInitialInspection": true,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "shared",
+            "revision": false,
+            "changed": "artifact",
+            "observedWaitAfterInitialInspection": true,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "shared",
+            "revision": false,
+            "changed": "review",
+            "observedWaitAfterInitialInspection": true,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "shared",
+            "revision": true,
+            "changed": "original",
+            "observedWaitAfterInitialInspection": true,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "shared",
+            "revision": true,
+            "changed": "artifact",
+            "observedWaitAfterInitialInspection": true,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          },
+          {
+            "visibility": "shared",
+            "revision": true,
+            "changed": "review",
+            "observedWaitAfterInitialInspection": true,
+            "newTreeRowsAndPointerRolledBack": true,
+            "retryAfterRestorePassed": true,
+            "fixtureStartedWithNullPointer": true
+          }
+        ],
+        "actualModelCalls": 0,
+        "syntheticExtraction": true,
+        "qualityAccepted": false,
+        "productionQualificationGranted": false,
+        "automaticActivation": false
+      },
+      "syntheticReviewerDecisions": true,
+      "privilegedFixtureDeletesTestCompletionReceiptAfterObservedWait": true,
+      "registrationReviewWithdrawalCases": 4,
+      "treeReviewWithdrawalCases": 4,
+      "treeByteMutationCases": 8,
+      "temporaryAccountsRowsAndFilesCleaned": true,
+      "scope": "Actual isolated PostgreSQL clone and filesystem. Review receipt deletion occurs after initial review verification and observed upload-row or document-advisory wait. Final same-client review revalidation rejects; publication rows/tree pointer roll back; restoring the same test receipt allows retry. Tree cases start with deliberately cleared candidate pointers; registration revision cases preserve a real prior pointer."
+    }
+  },
+  "limitations": [
+    "Reviewer decisions and extraction content are synthetic fixtures, not independent human approval of real documents.",
+    "The test uses privileged SQL to withdraw the test receipt; it does not introduce an application delete API or new user approval workflow.",
+    "Actual late latest-judgment supersession is not separately injected here; existing artifact reconstruction checks latest judgment rows.",
+    "Final byte/review checks remain point-in-time checks, not immutable storage or full source revocation coverage through a later commit.",
+    "Production qualification, independent business quality and final Skill activation remain unfinished."
+  ],
+  "actualModelCalls": 0,
+  "filesSha256": {
+    "src/lib/knowledge/reviewed-extraction.ts": "297ebb655991c6d46a6bed3dad40d1b400acd9827085e9451f2e954016e02ac3",
+    "src/lib/knowledge/vectorless-registration.ts": "2dce28b38abbef8f1cd73cf902b78ab1946fc7e953cab907137bc45fcf2356fb",
+    "src/lib/knowledge/binary-revision.ts": "2e062a07239bb7b7869d411d0f35abe654836addee07a073ac91e79a1ef4e7ec",
+    "src/lib/knowledge/vectorless.ts": "704b72052448805eedc1195d2a09d6d39206a52aea5d08550251742ec71ee0e7",
+    "src/lib/knowledge/binary-publication-integrity.test.ts": "5084f2067d4e86b2db7929bff70da0d800f9f01c606d9268f83d90b5bc94dbec",
+    "src/lib/knowledge/tree-publication-integrity.test.ts": "7df2c582e3b2acb60b1a53a83927940f62b19bf19438e9da35d9d01c048c6ee6",
+    "scripts/verify-binary-publication-race-clone.ts": "a8b481f8e73573f78518c1720b6b463b2b99711b5efa2952e91ffbccb055b4c1"
+  }
+}

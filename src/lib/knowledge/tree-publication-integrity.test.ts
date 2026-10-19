@@ -1,10 +1,10 @@
 import {createHash} from 'node:crypto';
 import {beforeEach,expect,it,vi} from 'vitest';
-const m=vi.hoisted(()=>({tenant:vi.fn(),transaction:vi.fn(),query:vi.fn(),inspect:vi.fn(),read:vi.fn(),tree:vi.fn(),commits:0,rollbacks:0}));
+const m=vi.hoisted(()=>({tenant:vi.fn(),transaction:vi.fn(),query:vi.fn(),inspect:vi.fn(),read:vi.fn(),tree:vi.fn(),review:vi.fn(),commits:0,rollbacks:0}));
 vi.mock('@/lib/rag/db',()=>({tenantQuery:m.tenant,tenantTransaction:m.transaction}));
 vi.mock('node:fs/promises',()=>({readFile:m.read}));
 vi.mock('./document-repository',()=>({inspectKnowledgeAssetBytes:m.inspect,safeKnowledgeStorageKey:(v:string)=>v,assertResolvedInsideKnowledgeRoot:vi.fn()}));
-vi.mock('./reviewed-extraction',()=>({verifyReviewedExtraction:vi.fn()}));
+vi.mock('./reviewed-extraction',()=>({verifyReviewedExtraction:vi.fn(),revalidateReviewedExtraction:m.review}));
 vi.mock('./extracted-tree',()=>({writeExtractedTree:m.tree,evidenceText:(block:{text:string})=>block.text}));
 import {indexExtractedDocument} from './vectorless';
 const hash='a'.repeat(64),artifact=Buffer.from(JSON.stringify({documents:[{sourceSha256:hash,extractorVersion:'test',blocks:[{id:'unit-1',unitType:'document',unitIndex:1,quality:'success',text:'Synthetic evidence'}]}]}));
@@ -42,4 +42,10 @@ it('rejects registered size drift before writing the tree',async()=>{
  m.query.mockImplementation(async(sql:string)=>({rows:sql.includes('select a.id')?[{id:'asset',byte_size:'11'}]:[]}));
  await expect(indexExtractedDocument('owner','job')).rejects.toThrow('Registered source size changed');
  expect(m.tree).not.toHaveBeenCalled();expect(m.commits).toBe(0);
+});
+
+it('rejects a late review invalidation after tree writes',async()=>{
+ m.review.mockRejectedValueOnce(new Error('Invalid extraction review receipt'));
+ await expect(indexExtractedDocument('owner','job')).rejects.toThrow('Invalid extraction review receipt');
+ expect(m.tree).toHaveBeenCalledOnce();expect(m.commits).toBe(0);expect(m.rollbacks).toBe(1);
 });

@@ -1,4 +1,4 @@
-import {verifyReviewedExtraction} from './reviewed-extraction';
+import {verifyReviewedExtraction,revalidateReviewedExtraction} from './reviewed-extraction';
 import {createHash} from "node:crypto";
 import {readFile} from "node:fs/promises";
 import {extname,resolve} from "node:path";
@@ -37,7 +37,7 @@ export async function registerVectorlessUpload(userId:string,jobId:string,option
   if(!content.trim())throw new Error("Extracted content is empty");
   if(content.length>2_000_000)throw new Error("Extracted content exceeds registration limit");
   const contentHash=sha(content);
-  if(job.revision_target_document_id)return registerBinaryRevision(userId,job,{blocks:extracted.blocks,content,contentHash,...options},actor.role);
+  if(job.revision_target_document_id)return registerBinaryRevision(userId,job,{blocks:extracted.blocks,content,contentHash,artifactBytes,...options},actor.role);
   const registered=await tenantTransaction(userId,async client=>{
     if(options.leaseToken){
       const lease=await client.query("select id from knowledge_upload_job where id=$1 and user_id=$2 and lease_token=$3 and lease_until>now() for update",[jobId,userId,options.leaseToken]);
@@ -80,6 +80,7 @@ export async function registerVectorlessUpload(userId:string,jobId:string,option
     const finalSource=await inspectKnowledgeAssetBytes(job.storage_key,job.source_sha256);
     if(finalSource.byteSize!==Number(job.byte_size))throw new Error('Source bytes changed during registration');
     await inspectKnowledgeAssetBytes(job.extraction_artifact_key!,job.metrics.artifactSha256!);
+    await revalidateReviewedExtraction(client,userId,jobId,artifactBytes);
     return {documentId,assetId:asset.rows[0].id,reused:false};
   },actor.role);
   try{
