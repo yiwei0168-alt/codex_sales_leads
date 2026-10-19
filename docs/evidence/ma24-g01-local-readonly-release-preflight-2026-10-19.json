@@ -1,0 +1,37 @@
+{
+  "stage": "MA24 G01 local read-only release preflight",
+  "date": "2026-10-19",
+  "command": "npm.cmd run ma24:release-preflight",
+  "result": {
+    "schemaState": "stage-present",
+    "prerequisiteMarkers": "all present",
+    "stageMarkers127To135": "all present",
+    "collectorRole": {
+      "present": true,
+      "restricted": true
+    },
+    "applicationCollectorAccess": {
+      "canSetRole": false,
+      "inheritsRole": false
+    },
+    "backup": {
+      "file": "network_copilot_2026-10-16T06-35-27Z.dump",
+      "bytes": 194829906,
+      "sha256": "89ab7a90366c0ffceb82c31ae5de5b2ac2ec1f5553238446a82d862aa785d97c",
+      "createdAt": "2026-10-16T06:37:22.608Z",
+      "ageHoursAtCheck": 68.6,
+      "checksumMatched": true
+    },
+    "readyForRelease": false,
+    "remaining": [
+      "Create and verify a fresh backup immediately before any team cutover",
+      "Bind an integrated source/service release and rollback package",
+      "Verify runtime and queues again"
+    ]
+  },
+  "scope": "Read-only inspection of the explicitly local PostgreSQL database and backup archive. No migration, service start, port opening, or deployment.",
+  "checks": {
+    "preflight": "passed",
+    "gitDiffCheck": "passed"
+  }
+}
