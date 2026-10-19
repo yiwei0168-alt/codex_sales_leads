@@ -6,6 +6,8 @@
 
 当前已验采集发布包为 `ma24-skill-collector:6fc08071`，镜像 ID `sha256:b7c8214619c4e4ec12ec6e8ad27a6c19696f8fdc523cb21e74faf4b19690585a`，已包含失败/回退签名。909 个源码输入与提交一致，34,424 个包内文件/链接核对、非 root/只读/无网络启动、篡改拒绝及可信 CA 数据库 `--check` 均通过，[本轮证据](evidence/ma24-g09-fallback-collector-image-2026-10-16.json)。旧 `492e5647` 保留为历史，不再是当前候选。尚未执行真实提供方任务或生产部署。
 
+2026-10-19 从 Git 提交 `42f71deddc76c273d7e170de881496fa3df75401` 固定归档重建了镜像 `ma24-skill-collector:42f71ded`，并在新 PostgreSQL 集群完成受限 collector 登录及 TLS `verify-full` `--check`。[证据](evidence/ma24-g09-current-collector-image-tls-preflight-2026-10-19.json)。它更新的是当前源码验收镜像；生产资格仍为 false，未执行 `--execute`、模型或真实提供方请求，不能据此认证部署二进制或启用 Skill。
+
 `node scripts/build-skill-collector.mjs` 将仓库采集入口及内部模块编译为 `tmp/skill-collector/runner.cjs`，同时写入 SHA-256 和输入文件列表。输出目录被 Git 忽略；构建没有复制环境文件、密钥或业务数据。依赖包仍从安装环境加载，当前摘要只覆盖生成的入口包，不能认证全部依赖、Node 或运行主机。
 
 普通 Node 启动方式：

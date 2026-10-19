@@ -1,0 +1,34 @@
+{
+  "date": "2026-10-19",
+  "goal": "G09",
+  "sourceCommit": "42f71deddc76c273d7e170de881496fa3df75401",
+  "image": {
+    "tag": "ma24-skill-collector:42f71ded",
+    "imageId": "sha256:323ae8e5a9c11e003426d201d0bce32510b53f28aa716000d65e7cc1d5842674",
+    "collectorRunnerSha256": "40d182eba83cb5b399a291900d25838044d48501b0ecf31d1701f2861641f6d4",
+    "build": "node scripts/build-skill-collector-image.mjs"
+  },
+  "verification": {
+    "command": "node scripts/verify-ma24-fresh-pilot-new-cluster.ts --collector-image=ma24-skill-collector:42f71ded",
+    "exitCode": 0,
+    "freshDisposablePostgres": true,
+    "migrationsThrough": 135,
+    "collectorImageTlsPreflight": true,
+    "databaseSslMode": "verify-full",
+    "caMountedReadOnly": true,
+    "applicationAndRestrictedCollectorLogins": true,
+    "containerReadOnlyNonRootAndNoCapabilities": true,
+    "signedSyntheticJournalRecoveryAndRevocationChecks": true,
+    "candidateSkillRemainsDisabled": true,
+    "temporaryContainersAndVolumesCleaned": true
+  },
+  "limits": [
+    "The image performed --check only; it did not execute a production evaluation or model request.",
+    "The disposable database and its trust, job and source data were synthetic; no production keys or data were used.",
+    "The verifier explicitly reports binaryVerified=false: a self-checked image and local TLS preflight do not independently authenticate a production deployment or provider.",
+    "This does not close complete mutable-source revocation protection, human quality review or the final activation transaction."
+  ],
+  "actualModelCalls": 0,
+  "productionQualified": false,
+  "automaticActivation": false
+}
