@@ -1,0 +1,17 @@
+{
+  "scope": "source route handler tests; not compiled HTTP or production acceptance",
+  "testFiles": ["src/app/api/knowledge/assets/[assetId]/route.test.ts", "src/lib/knowledge/asset-response.test.ts"],
+  "testsPassed": 21,
+  "newSnapshotCases": [
+    "captured bytes served without filesystem access",
+    "byte range from verified complete snapshot",
+    "snapshot integrity error never falls back to filesystem",
+    "invalid snapshot length rejected before partial response",
+    "access withdrawn during snapshot read withholds bytes"
+  ],
+  "sessionAndSnapshotDependenciesMocked": true,
+  "actualSnapshotDatabaseIntegrationEvidence": "ma24-g09-immutable-snapshot-wiring-2026-10-19.json",
+  "modelCalls": 0,
+  "deployed": false,
+  "automaticActivation": false
+}
