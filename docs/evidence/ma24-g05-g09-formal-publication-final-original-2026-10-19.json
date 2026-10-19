@@ -21,11 +21,368 @@
     "focusedEslint": "passed",
     "diffCheck": "passed",
     "formalWorkerCloneMatrix": {
-      "status": "running",
+      "status": "passed",
       "sessionId": 1895,
       "command": "node --require ./scripts/patch-node-user.cjs --import tsx scripts/verify-knowledge-supervisor-clone.ts",
       "log": "tmp/ma24-formal-publication-integrity-2026-10-19.log",
-      "scope": "Actual existing isolated-clone formal PDF/PPTX/XLSX private/shared matrix. Existing corruption tests mutate originals before invocation; this matrix does not inject late transaction-time file mutation."
+      "scope": "Actual formal worker PDF/PPTX/XLSX private/shared six-group matrix, supervisor extraction/visual kill recovery, publication/citation/history/tamper/peer access. Existing corruption cases mutate before invocation; separate actualLateMutationDatabaseRace covers transaction-time original changes.",
+      "exitCode": 0,
+      "applicationCommit": "7767175e",
+      "applicationFilesMatchRecordedHashes": true,
+      "result": {
+        "cloneOnly": true,
+        "platform": "win32",
+        "actualSupervisorKills": 2,
+        "descendantsStopped": true,
+        "extractionLeaseHeld": true,
+        "extractionExpiredRecovery": true,
+        "visualLeaseHeld": true,
+        "malformedPdfFailedWithoutCrossJobEffect": true,
+        "successfulPdfWorkerHandoff": true,
+        "successfulPdfTextExtracted": true,
+        "successfulPptxWorkerHandoff": true,
+        "successfulPptxTextExtracted": true,
+        "successfulXlsxWorkerHandoff": true,
+        "syntheticVisualJudgments": 18,
+        "reviewCompletionVerified": true,
+        "vectorlessRegistrationVerified": true,
+        "searchAndSourceCitationVerified": true,
+        "syntheticCitations": [
+          {
+            "documentId": "b91ba619-0adb-4548-b5d7-62c62dcbd6b3",
+            "reason": "fulltext",
+            "sourceSha256": "3361bbd47a2b9b5ff854bd131f30c784f9bd1a140f644089a6e01f0b2b61b9da",
+            "sourceLocation": {
+              "bbox": [
+                50,
+                38.17499923706055,
+                189.36996459960938,
+                53.28900146484375
+              ],
+              "blockId": "page-1-block-1",
+              "startRow": null,
+              "unitType": "page",
+              "unitIndex": 1
+            }
+          },
+          {
+            "documentId": "8e9368cc-bc0f-41bb-8221-7a3271665ad7",
+            "reason": "fulltext",
+            "sourceSha256": "0591f37b7ce2644e2313a1e2a38e2ea77c65d09616134039e7092dd7fb1f8f7c",
+            "sourceLocation": {
+              "bbox": null,
+              "blockId": "slide-1-text-1",
+              "startRow": null,
+              "unitType": "slide",
+              "shapePath": [
+                1
+              ],
+              "unitIndex": 1,
+              "shapeIdPath": [
+                2
+              ]
+            }
+          },
+          {
+            "documentId": "872410b7-e43e-4543-97ed-135b5ffd7b14",
+            "reason": "fulltext",
+            "sourceSha256": "56eaeab05277aa1beae69ae17e39849b6ad0993a0ba4d5aeb6dd8b4446d6f19e",
+            "sourceLocation": {
+              "bbox": null,
+              "blockId": "sheet-1-table",
+              "startRow": 2,
+              "unitType": "sheet",
+              "cellRange": "A1:B2",
+              "headerRow": 1,
+              "sheetName": "Original",
+              "unitIndex": 1,
+              "startColumn": 1
+            }
+          },
+          {
+            "documentId": "3b99c163-615d-42fa-ae91-293c11222ce4",
+            "reason": "fulltext",
+            "sourceSha256": "3361bbd47a2b9b5ff854bd131f30c784f9bd1a140f644089a6e01f0b2b61b9da",
+            "sourceLocation": {
+              "bbox": [
+                50,
+                38.17499923706055,
+                189.36996459960938,
+                53.28900146484375
+              ],
+              "blockId": "page-1-block-1",
+              "startRow": null,
+              "unitType": "page",
+              "unitIndex": 1
+            }
+          },
+          {
+            "documentId": "b232daf6-2ec8-4da2-8742-a164cdadce4d",
+            "reason": "fulltext",
+            "sourceSha256": "0591f37b7ce2644e2313a1e2a38e2ea77c65d09616134039e7092dd7fb1f8f7c",
+            "sourceLocation": {
+              "bbox": null,
+              "blockId": "slide-1-text-1",
+              "startRow": null,
+              "unitType": "slide",
+              "shapePath": [
+                1
+              ],
+              "unitIndex": 1,
+              "shapeIdPath": [
+                2
+              ]
+            }
+          },
+          {
+            "documentId": "f30f6463-bd2e-4550-bb32-8247840dc1df",
+            "reason": "fulltext",
+            "sourceSha256": "56eaeab05277aa1beae69ae17e39849b6ad0993a0ba4d5aeb6dd8b4446d6f19e",
+            "sourceLocation": {
+              "bbox": null,
+              "blockId": "sheet-1-table",
+              "startRow": 2,
+              "unitType": "sheet",
+              "cellRange": "A1:B2",
+              "headerRow": 1,
+              "sheetName": "Original",
+              "unitIndex": 1,
+              "startColumn": 1
+            }
+          }
+        ],
+        "revisionResults": [
+          {
+            "format": "pdf",
+            "visibility": "private",
+            "stableDocumentId": true,
+            "parserFailureKeepsOld": true,
+            "oldReadableDuringProcessingAndReview": true,
+            "crossAccountRevisionRejected": true,
+            "duplicateReused": true,
+            "unresolvedRegistrationRejected": true,
+            "oneReviewedWinner": true,
+            "competingRevisionRejected": true,
+            "sourceTamperKeepsOld": true,
+            "artifactTamperKeepsOld": true,
+            "sharedRequiresAdmin": false,
+            "peerAccessMatchesVisibility": true,
+            "oldEvidenceRejectedAfterSwitch": true,
+            "historyStatusVerified": true,
+            "exactSecondUnitCitation": {
+              "documentId": "b91ba619-0adb-4548-b5d7-62c62dcbd6b3",
+              "reason": "fulltext",
+              "sourceSha256": "11972f68117cb50da9028874f9ea08c80062e47676427321e8286e028474b3ad",
+              "sourceLocation": {
+                "bbox": [
+                  50,
+                  68.17500305175781,
+                  194.26498413085938,
+                  83.28900146484375
+                ],
+                "blockId": "page-2-block-1",
+                "startRow": null,
+                "unitType": "page",
+                "unitIndex": 2
+              }
+            },
+            "registrationReplayReused": true
+          },
+          {
+            "format": "pptx",
+            "visibility": "private",
+            "stableDocumentId": true,
+            "parserFailureKeepsOld": true,
+            "oldReadableDuringProcessingAndReview": true,
+            "crossAccountRevisionRejected": true,
+            "duplicateReused": true,
+            "unresolvedRegistrationRejected": true,
+            "oneReviewedWinner": true,
+            "competingRevisionRejected": true,
+            "sourceTamperKeepsOld": true,
+            "artifactTamperKeepsOld": true,
+            "sharedRequiresAdmin": false,
+            "peerAccessMatchesVisibility": true,
+            "oldEvidenceRejectedAfterSwitch": true,
+            "historyStatusVerified": true,
+            "exactSecondUnitCitation": {
+              "documentId": "8e9368cc-bc0f-41bb-8221-7a3271665ad7",
+              "reason": "fulltext",
+              "sourceSha256": "56f5293380398369d255ce84fdff0ee6f6d550ebb13adf4ac0b5a5584fc3a1c4",
+              "sourceLocation": {
+                "bbox": null,
+                "blockId": "slide-2-text-1",
+                "startRow": null,
+                "unitType": "slide",
+                "shapePath": [
+                  1
+                ],
+                "unitIndex": 2,
+                "shapeIdPath": [
+                  2
+                ]
+              }
+            },
+            "registrationReplayReused": true
+          },
+          {
+            "format": "xlsx",
+            "visibility": "private",
+            "stableDocumentId": true,
+            "parserFailureKeepsOld": true,
+            "oldReadableDuringProcessingAndReview": true,
+            "crossAccountRevisionRejected": true,
+            "duplicateReused": true,
+            "unresolvedRegistrationRejected": true,
+            "oneReviewedWinner": true,
+            "competingRevisionRejected": true,
+            "sourceTamperKeepsOld": true,
+            "artifactTamperKeepsOld": true,
+            "sharedRequiresAdmin": false,
+            "peerAccessMatchesVisibility": true,
+            "oldEvidenceRejectedAfterSwitch": true,
+            "historyStatusVerified": true,
+            "exactSecondUnitCitation": {
+              "documentId": "872410b7-e43e-4543-97ed-135b5ffd7b14",
+              "reason": "fulltext",
+              "sourceSha256": "b98dd7d28b1835d9f056071ea71826505010c2208daf0e365af51c44e25abe15",
+              "sourceLocation": {
+                "bbox": null,
+                "blockId": "sheet-2-table",
+                "startRow": 2,
+                "unitType": "sheet",
+                "cellRange": "A1:B2",
+                "headerRow": 1,
+                "sheetName": "revision",
+                "unitIndex": 2,
+                "startColumn": 1
+              }
+            },
+            "registrationReplayReused": true
+          },
+          {
+            "format": "pdf",
+            "visibility": "shared",
+            "stableDocumentId": true,
+            "parserFailureKeepsOld": true,
+            "oldReadableDuringProcessingAndReview": true,
+            "crossAccountRevisionRejected": true,
+            "duplicateReused": true,
+            "unresolvedRegistrationRejected": true,
+            "oneReviewedWinner": true,
+            "competingRevisionRejected": true,
+            "sourceTamperKeepsOld": true,
+            "artifactTamperKeepsOld": true,
+            "sharedRequiresAdmin": true,
+            "peerAccessMatchesVisibility": true,
+            "oldEvidenceRejectedAfterSwitch": true,
+            "historyStatusVerified": true,
+            "exactSecondUnitCitation": {
+              "documentId": "3b99c163-615d-42fa-ae91-293c11222ce4",
+              "reason": "fulltext",
+              "sourceSha256": "11972f68117cb50da9028874f9ea08c80062e47676427321e8286e028474b3ad",
+              "sourceLocation": {
+                "bbox": [
+                  50,
+                  68.17500305175781,
+                  194.26498413085938,
+                  83.28900146484375
+                ],
+                "blockId": "page-2-block-1",
+                "startRow": null,
+                "unitType": "page",
+                "unitIndex": 2
+              }
+            },
+            "registrationReplayReused": true
+          },
+          {
+            "format": "pptx",
+            "visibility": "shared",
+            "stableDocumentId": true,
+            "parserFailureKeepsOld": true,
+            "oldReadableDuringProcessingAndReview": true,
+            "crossAccountRevisionRejected": true,
+            "duplicateReused": true,
+            "unresolvedRegistrationRejected": true,
+            "oneReviewedWinner": true,
+            "competingRevisionRejected": true,
+            "sourceTamperKeepsOld": true,
+            "artifactTamperKeepsOld": true,
+            "sharedRequiresAdmin": true,
+            "peerAccessMatchesVisibility": true,
+            "oldEvidenceRejectedAfterSwitch": true,
+            "historyStatusVerified": true,
+            "exactSecondUnitCitation": {
+              "documentId": "b232daf6-2ec8-4da2-8742-a164cdadce4d",
+              "reason": "fulltext",
+              "sourceSha256": "56f5293380398369d255ce84fdff0ee6f6d550ebb13adf4ac0b5a5584fc3a1c4",
+              "sourceLocation": {
+                "bbox": null,
+                "blockId": "slide-2-text-1",
+                "startRow": null,
+                "unitType": "slide",
+                "shapePath": [
+                  1
+                ],
+                "unitIndex": 2,
+                "shapeIdPath": [
+                  2
+                ]
+              }
+            },
+            "registrationReplayReused": true
+          },
+          {
+            "format": "xlsx",
+            "visibility": "shared",
+            "stableDocumentId": true,
+            "parserFailureKeepsOld": true,
+            "oldReadableDuringProcessingAndReview": true,
+            "crossAccountRevisionRejected": true,
+            "duplicateReused": true,
+            "unresolvedRegistrationRejected": true,
+            "oneReviewedWinner": true,
+            "competingRevisionRejected": true,
+            "sourceTamperKeepsOld": true,
+            "artifactTamperKeepsOld": true,
+            "sharedRequiresAdmin": true,
+            "peerAccessMatchesVisibility": true,
+            "oldEvidenceRejectedAfterSwitch": true,
+            "historyStatusVerified": true,
+            "exactSecondUnitCitation": {
+              "documentId": "f30f6463-bd2e-4550-bb32-8247840dc1df",
+              "reason": "fulltext",
+              "sourceSha256": "b98dd7d28b1835d9f056071ea71826505010c2208daf0e365af51c44e25abe15",
+              "sourceLocation": {
+                "bbox": null,
+                "blockId": "sheet-2-table",
+                "startRow": 2,
+                "unitType": "sheet",
+                "cellRange": "A1:B2",
+                "headerRow": 1,
+                "sheetName": "revision",
+                "unitIndex": 2,
+                "startColumn": 1
+              }
+            },
+            "registrationReplayReused": true
+          }
+        ],
+        "peerAccountCompletedWhileTargetHeld": true,
+        "peerVisualReady": true,
+        "expiredFinishRejected": true,
+        "visualExpiredRecovery": true,
+        "ocrExecutionsOnResume": 0,
+        "ocrCheckpointReuses": 1,
+        "unrelatedJobUnchanged": true,
+        "v3PointersUnchanged": true,
+        "syntheticDocumentsRegistered": 6,
+        "externalCalls": 0,
+        "syntheticFixture": true,
+        "qualityAccepted": false
+      },
+      "cleanupCompleted": true
     },
     "actualLateMutationDatabaseRace": {
       "applicationCommit": "7767175e",
