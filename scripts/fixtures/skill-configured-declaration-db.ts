@@ -58,7 +58,7 @@ export async function verifyConfiguredDeclarationDatabase(pool:Pool,input:{owner
    for(const url of [imageApp,imageCollector]){url.hostname='localhost';url.port='5432';url.searchParams.set('sslmode','verify-full');}
    const imageEnv:Partial<NodeJS.ProcessEnv>={NODE_ENV:'production',NODE_OPTIONS:'',NODE_PATH:'',DATABASE_URL:imageApp.toString(),
     SKILL_COLLECTOR_DATABASE_URL:imageCollector.toString(),DATABASE_SSL_CA_FILE:'/probe/declaration-db-ca.pem',
-    SKILL_RUNNER_TRUST_REGISTRY_FILE:`/probe/${basename(registryPath)}`,SKILL_RUNNER_COLLECTOR_ID:enrolled.collectorId,
+    SKILL_RUNNER_TRUST_REGISTRY_FILE:`/probe/${basename(registryPath)}`,SKILL_RUNNER_TRUST_REGISTRY_MODE:databaseTrust?'database':'file',SKILL_RUNNER_COLLECTOR_ID:enrolled.collectorId,
     SKILL_RUNNER_DEPLOYMENT_SHA256:measuredDeployment,SKILL_RUNNER_DECLARATION_KEY_ID:keyId,
     SKILL_RUNNER_DECLARATION_PRIVATE_KEY_FILE:'/probe/configured-declaration.pem',...extra};
    if(extra.SKILL_RUNNER_DECLARATION_PRIVATE_KEY_FILE===wrongPath)imageEnv.SKILL_RUNNER_DECLARATION_PRIVATE_KEY_FILE='/probe/wrong-declaration.pem';
@@ -78,7 +78,6 @@ export async function verifyConfiguredDeclarationDatabase(pool:Pool,input:{owner
  };
  try{
   if(databaseTrust){
-   assert(!imageId,'Database declaration mode requires a newly built native fixture at this stage');
    await pool.query(await readFile('db/migrations/157_skill_runner_trust_registry.sql','utf8'));
    process.env.SKILL_RUNNER_TRUST_REGISTRY_MODE='database';
   }

@@ -72,6 +72,9 @@ const snapshotSql = `select
   to_regprocedure('public.lock_local_memory_receipt_source(uuid)') is not null "receiptSourceLockPresent",
   to_regprocedure('public.capture_immutable_asset_snapshot(uuid,text,bytea)') is not null "immutableAssetCapturePresent",
   ${currentSchema?`(select md5(coalesce(string_agg(id::text || ':' || asset_id::text || ':' || source_sha256 || ':' || byte_size::text || ':' || encode(digest(body,'sha256'),'hex'),',' order by id),'')) from knowledge_asset_immutable_snapshot)`:'null::text'} "immutableAssetSnapshotDigest",
+  ${currentSchema?`(select count(*)::int from skill_runner_trust_registry_version)`:'0::int'} "trustRegistryVersions",
+  ${currentSchema?`(select md5(coalesce(string_agg(to_jsonb(v)::text,'|' order by revision),'')) from skill_runner_trust_registry_version v)`:'null::text'} "trustRegistryVersionDigest",
+  ${currentSchema?`(select md5(coalesce(string_agg(to_jsonb(c)::text,'|'),'')) from skill_runner_trust_registry_current c)`:'null::text'} "trustRegistryPointerDigest",
   (select count(*)=2 from information_schema.columns where table_schema='public' and table_name='mailbox_sync_run'
     and column_name in ('work_job_id','work_lease_token')) "mailboxWorkerBinding",
   (select md5(coalesce(string_agg(md5(to_jsonb(t)::text),'' order by md5(to_jsonb(t)::text)),'')) from mailbox_connection t) "mailboxConnectionsDigest",
@@ -167,7 +170,8 @@ try {
   console.log(JSON.stringify({ pilotBackupRestore: "passed", archiveFile: filename,
     bytes, sha256, restoredToSecondDatabase: true, restrictedApplicationRead: true,
     tenantVisibilityMatched: true, tenantMembersCompared: memberIds.length,
-    consistentExportedSnapshot:true,currentSchema,mailboxLogicalDigestsMatched:true }));
+    consistentExportedSnapshot:true,currentSchema,mailboxLogicalDigestsMatched:true,
+    trustRegistryVersionsCompared:sourceSnapshot.trustRegistryVersions,trustRegistryDigestsMatched:currentSchema }));
 } finally {
   try {
     if (restoredCreated) await admin.query(`drop database "${restoredDatabase}" with (force)`);

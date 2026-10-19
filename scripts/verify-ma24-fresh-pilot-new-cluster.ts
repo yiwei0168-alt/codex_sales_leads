@@ -121,6 +121,7 @@ let networkId: string | undefined;
 let currentSchemaMarkers:Record<string,boolean>|null=null;
 let snapshotDownloadResult:unknown=null;
 let localMemoryWorkerResult:unknown=null;
+let trustRegistryRestoreResult:unknown=null;
 try {
   if (webImage) {
     const created = await run("docker", ["network", "create", networkName]);
@@ -171,7 +172,7 @@ try {
   assert(verified.output.includes('"copiedProductionData":false'), verified.output);
   if (webImage || modeBusinessCheck || runnerAttestationCheck || lockedPolicyCheck || memorySourceLocksCheck || methodCatalogLocksCheck || shadowSourceLocksCheck || prospectiveSourceCheck || safetySkillUsageCheck || transportJournalCheck || poolRecoveryCheck) {
     const migration = await run(process.execPath,
-      ["scripts/run-tsx.cjs", "scripts/migrate.ts", currentSchemaCheck?"--fresh-pilot-through=156":"--fresh-pilot-through=135"],
+      ["scripts/run-tsx.cjs", "scripts/migrate.ts", currentSchemaCheck?"--fresh-pilot-through=157":"--fresh-pilot-through=135"],
       { ...process.env, DATABASE_URL: appUrl.toString(), DATABASE_MIGRATION_URL: adminUrl.toString() });
     assert.equal(migration.code, 0, migration.output);
     if(currentSchemaCheck){
@@ -185,7 +186,10 @@ try {
           to_regprocedure('public.lock_skill_task_origins(uuid[])') is not null as task_origin_gate,
           to_regprocedure('public.lock_local_memory_extraction_source(uuid,uuid,text)') is not null as local_memory_source_gate,
           to_regprocedure('public.lock_local_memory_receipt_source(uuid)') is not null as receipt_source_gate,
-          to_regprocedure('public.capture_immutable_asset_snapshot(uuid,text,bytea)') is not null as immutable_snapshot_capture
+          to_regprocedure('public.capture_immutable_asset_snapshot(uuid,text,bytea)') is not null as immutable_snapshot_capture,
+          to_regclass('public.skill_runner_trust_registry_version') is not null as trust_registry_versions,
+          to_regclass('public.skill_runner_trust_registry_current') is not null as trust_registry_pointer,
+          to_regprocedure('public.publish_skill_runner_trust_registry(jsonb,text)') is not null as trust_registry_publication
         `)).rows[0];
         assert(Object.values(currentSchemaMarkers).every(Boolean),'Current Web schema incomplete');
       }finally{await inspect.end();}
@@ -494,6 +498,7 @@ try {
       } finally { rmSync(tempDirectory, { recursive: true, force: true }); }
     }
     if (backupCheck) {
+      const verifyTrustRegistryRestore=currentSchemaCheck?await (await import('./lib/ma24-trust-registry-restore-fixture')).prepareTrustRegistryRestoreFixture(adminUrl.toString(),containerId!):undefined;
       const verifyMailboxRestore=currentSchemaCheck?await prepareMailboxRestoreFixture(
         adminUrl.toString(),credentials[0].email,credentials[1].email):undefined;
       const tempDirectory = mkdtempSync(join(tmpdir(), "ma24-pilot-backup-"));
@@ -506,6 +511,7 @@ try {
         assert(backup.output.includes('"pilotBackupRestore":"passed"'), backup.output);
         assert(backup.output.includes('"tenantMembersCompared":2'), backup.output);
         assert(backup.output.includes('"tenantVisibilityMatched":true'), backup.output);
+        if(currentSchemaCheck){assert(backup.output.includes('"trustRegistryVersionsCompared":2'),backup.output);assert(backup.output.includes('"trustRegistryDigestsMatched":true'),backup.output);}
         assert(!backup.output.includes(appPassword), "Backup exposed the disposable application password");
         assert(!backup.output.includes(adminPassword), "Backup exposed the disposable migration password");
         if (crossClusterCheck) {
@@ -571,7 +577,8 @@ try {
               const sourceLocks=await restoredAdmin.query<{present:boolean}>(`select
                 to_regprocedure('public.lock_local_memory_extraction_source(uuid,uuid,text)') is not null
                 and to_regprocedure('public.lock_local_memory_receipt_source(uuid)') is not null
-                and to_regprocedure('public.capture_immutable_asset_snapshot(uuid,text,bytea)') is not null present`);
+                and to_regprocedure('public.capture_immutable_asset_snapshot(uuid,text,bytea)') is not null
+                and to_regprocedure('public.publish_skill_runner_trust_registry(jsonb,text)') is not null present`);
               assert.equal(sourceLocks.rows[0].present,true,'Restored source locks or immutable snapshot capture missing');
             }
             const countSql = `select (select count(*)::int from app_user) users,
@@ -588,6 +595,7 @@ try {
               assert.deepEqual((await restoredAdmin.query(countSql)).rows[0],source,
                 "Cross-cluster restored account, document, or snapshot digest differs");
             } finally { await sourceAdmin.end(); }
+            if(verifyTrustRegistryRestore)trustRegistryRestoreResult=await verifyTrustRegistryRestore(restoredAdminUrl.toString(),restoredAppUrl.toString());
           } finally { await restoredAdmin.end(); }
           const restoredApp = new Client({ connectionString: restoredAppUrl.toString() });
           await restoredApp.connect();
@@ -634,7 +642,7 @@ try {
   }
   console.log(JSON.stringify({ freshClusterPilot: "passed", image: "pgvector/pgvector:pg16",
     publishedAddress: "127.0.0.1 only", rolesVerified: true, duplicateRoleBootstrapRejected: true,
-    freshMigrationThrough: currentSchemaCheck?156:135,currentSchemaMarkers,snapshotDownloadResult,localMemoryWorkerResult,freshMailboxUiVerified:frontendUiCheck,extendedFrontendUiVerified:extendedUiCheck,
+    freshMigrationThrough: currentSchemaCheck?157:135,currentSchemaMarkers,snapshotDownloadResult,localMemoryWorkerResult,trustRegistryRestoreResult,freshMailboxUiVerified:frontendUiCheck,extendedFrontendUiVerified:extendedUiCheck,
     syntheticAccountCompanyAndRestoreVerified: true, copiedProductionData: false,
     linuxWebImage: webImage ?? null, linuxWebHttpWorkflowVerified: Boolean(webImage),
     linuxWebHttpsBrowserVerified: browserCheck, tenConcurrentSyntheticAccountsVerified: tenUserCheck,

@@ -1,5 +1,7 @@
 # G01/G09 固定运行包构建与核对（2026-10-19）
 
+最新双镜像已固定到 `dddb9bfc`，源码/Node 指纹、入口、迁移 157 Web/恢复、数据库模式 Linux 声明及当前十套合成 UI 分别通过；旧 `d6ffb7a1` 收据保留为历史。完整依赖/提供方/真实质量和最终启用仍未完成。[当前固定包范围](RUNTIME_PAIR_DDDB9BFC_SCHEMA157_2026-10-19.md)。
+
 ## 修复
 
 - Web 的 builder/runtime 基础镜像与采集器共用既有 Node 24 Bookworm slim 摘要 `sha256:0e0ff40c39bc087845bfb27465a0df4ea419520094bc35842ff83dd8cbe6f9b6`，消除浮动标签更新造成的潜在 Node 差异。
