@@ -18,6 +18,7 @@ const browserCheck = args.includes("--browser");
 const currentSchemaCheck = args.includes('--current-schema');
 const snapshotDownloadCheck=args.includes('--snapshot-download');
 const acceptanceOriginalsCheck=args.includes('--acceptance-originals');
+const snapshotLifecycleCheck=args.includes('--snapshot-lifecycle');
 const localMemoryWorkerCheck=args.includes('--local-memory-worker');
 const localMemoryGraphCheck=args.includes('--local-memory-graph-worker');
 const localMemoryChineseCheck=args.includes('--local-memory-chinese');
@@ -65,13 +66,14 @@ assert(!frontendUiCheck||(webImage&&currentSchemaCheck&&browserCheck),'--fronten
 assert(!extendedUiCheck||frontendUiCheck,'--extended-ui requires --frontend-ui');
 assert(!snapshotDownloadCheck||(webImage&&currentSchemaCheck),'--snapshot-download requires --web-image and --current-schema');
 assert(!acceptanceOriginalsCheck||(webImage&&currentSchemaCheck),'--acceptance-originals requires --web-image and --current-schema');
+assert(!snapshotLifecycleCheck||(webImage&&currentSchemaCheck),'--snapshot-lifecycle requires --web-image and --current-schema');
 assert(!localMemoryWorkerCheck||(webImage&&currentSchemaCheck),'--local-memory-worker requires --web-image and --current-schema');
 assert(!localMemoryGraphCheck||localMemoryWorkerCheck,'--local-memory-graph-worker requires --local-memory-worker');
 assert(!localMemoryChineseCheck||localMemoryWorkerCheck,'--local-memory-chinese requires --local-memory-worker');
 assert(!localMemoryHttpCheck||(localMemoryGraphCheck&&localMemoryChineseCheck),'--local-memory-http requires Chinese memory and graph Worker checks');
 const rollbackImageArgument = args.find(arg => arg.startsWith("--rollback-image="));
 const rollbackImage = rollbackImageArgument?.slice("--rollback-image=".length);
-assert(args.length <= 20 && args.every(arg => ["--acceptance-originals", "--local-memory-http", "--local-memory-chinese", "--local-memory-graph-worker", "--local-memory-worker", "--snapshot-download", "--extended-ui", "--frontend-ui", "--current-schema", "--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", '--locked-policy', '--memory-source-locks', '--method-catalog-locks', '--shadow-source-locks', '--safety-skill-usage', '--transport-journal', '--pool-recovery', '--web-pool-recovery', "--prospective-source", "--prospective-material", '--prospective-browser', '--prospective-composition', declarationImageArgument,collectorImageArgument,prospectiveHttpArgument, webImageArgument, rollbackImageArgument].includes(arg))
+assert(args.length <= 20 && args.every(arg => ["--snapshot-lifecycle", "--acceptance-originals", "--local-memory-http", "--local-memory-chinese", "--local-memory-graph-worker", "--local-memory-worker", "--snapshot-download", "--extended-ui", "--frontend-ui", "--current-schema", "--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", '--locked-policy', '--memory-source-locks', '--method-catalog-locks', '--shadow-source-locks', '--safety-skill-usage', '--transport-journal', '--pool-recovery', '--web-pool-recovery', "--prospective-source", "--prospective-material", '--prospective-browser', '--prospective-composition', declarationImageArgument,collectorImageArgument,prospectiveHttpArgument, webImageArgument, rollbackImageArgument].includes(arg))
   &&(!declarationImageArgument||(declarationImage&&/^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(declarationImage)))
   &&(!collectorImageArgument||(collectorImage&&/^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(collectorImage)))
   && (!webPoolRecoveryCheck || webImage)
@@ -174,7 +176,7 @@ try {
   assert(verified.output.includes('"copiedProductionData":false'), verified.output);
   if (webImage || modeBusinessCheck || runnerAttestationCheck || lockedPolicyCheck || memorySourceLocksCheck || methodCatalogLocksCheck || shadowSourceLocksCheck || prospectiveSourceCheck || safetySkillUsageCheck || transportJournalCheck || poolRecoveryCheck) {
     const migration = await run(process.execPath,
-      ["scripts/run-tsx.cjs", "scripts/migrate.ts", currentSchemaCheck?"--fresh-pilot-through=157":"--fresh-pilot-through=135"],
+      ["scripts/run-tsx.cjs", "scripts/migrate.ts", currentSchemaCheck?"--fresh-pilot-through=158":"--fresh-pilot-through=135"],
       { ...process.env, DATABASE_URL: appUrl.toString(), DATABASE_MIGRATION_URL: adminUrl.toString() });
     assert.equal(migration.code, 0, migration.output);
     if(currentSchemaCheck){
@@ -189,6 +191,7 @@ try {
           to_regprocedure('public.lock_local_memory_extraction_source(uuid,uuid,text)') is not null as local_memory_source_gate,
           to_regprocedure('public.lock_local_memory_receipt_source(uuid)') is not null as receipt_source_gate,
           to_regprocedure('public.capture_immutable_asset_snapshot(uuid,text,bytea)') is not null as immutable_snapshot_capture,
+          to_regprocedure('public.prune_orphan_asset_snapshots(uuid,jsonb,text)') is not null as immutable_snapshot_lifecycle,
           to_regclass('public.skill_runner_trust_registry_version') is not null as trust_registry_versions,
           to_regclass('public.skill_runner_trust_registry_current') is not null as trust_registry_pointer,
           to_regprocedure('public.publish_skill_runner_trust_registry(jsonb,text)') is not null as trust_registry_publication
@@ -196,6 +199,11 @@ try {
         assert(Object.values(currentSchemaMarkers).every(Boolean),'Current Web schema incomplete');
       }finally{await inspect.end();}
     }
+  }
+  if(snapshotLifecycleCheck){
+    const lifecycle=await run(process.execPath,['scripts/run-tsx.cjs','scripts/verify-immutable-snapshot-lifecycle-db.ts'],
+      {...process.env,DATABASE_URL:appUrl.toString(),DATABASE_MIGRATION_URL:adminUrl.toString(),MA24_DISPOSABLE_SNAPSHOT_LIFECYCLE:'1'});
+    assert.equal(lifecycle.code,0,lifecycle.output);assert(lifecycle.output.includes('"snapshotLifecycle":"passed"'),lifecycle.output);console.log(lifecycle.output.trim());
   }
   if (prospectiveSourceCheck) {
     const inContainerApp = new URL(appUrl), inContainerAdmin = new URL(adminUrl);
@@ -660,7 +668,7 @@ try {
   }
   console.log(JSON.stringify({ freshClusterPilot: "passed", image: "pgvector/pgvector:pg16",
     publishedAddress: "127.0.0.1 only", rolesVerified: true, duplicateRoleBootstrapRejected: true,
-    freshMigrationThrough: currentSchemaCheck?157:135,currentSchemaMarkers,snapshotDownloadResult,localMemoryWorkerResult,trustRegistryRestoreResult,freshMailboxUiVerified:frontendUiCheck,extendedFrontendUiVerified:extendedUiCheck,
+    freshMigrationThrough: currentSchemaCheck?158:135,currentSchemaMarkers,snapshotLifecycleVerified:snapshotLifecycleCheck,snapshotDownloadResult,localMemoryWorkerResult,trustRegistryRestoreResult,freshMailboxUiVerified:frontendUiCheck,extendedFrontendUiVerified:extendedUiCheck,
     syntheticAccountCompanyAndRestoreVerified: true, copiedProductionData: false,
     linuxWebImage: webImage ?? null, linuxWebHttpWorkflowVerified: Boolean(webImage),
     linuxWebHttpsBrowserVerified: browserCheck, tenConcurrentSyntheticAccountsVerified: tenUserCheck,
