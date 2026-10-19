@@ -18,7 +18,9 @@ const tenUserCheck = args.includes("--ten-user");
 const backupCheck = args.includes("--backup");
 const crossClusterCheck = args.includes("--cross-cluster");
 const modeBusinessCheck = args.includes("--mode-business");
-const runnerAttestationCheck = args.includes("--runner-attestation");
+const declarationImageArgument=args.find(arg=>arg.startsWith('--declaration-image='));
+const declarationImage=declarationImageArgument?.slice('--declaration-image='.length);
+const runnerAttestationCheck = args.includes("--runner-attestation")||Boolean(declarationImage);
 const lockedPolicyCheck = args.includes('--locked-policy');
 const memorySourceLocksCheck = args.includes('--memory-source-locks');
 const methodCatalogLocksCheck = args.includes('--method-catalog-locks');
@@ -49,7 +51,8 @@ assert(pristineDatabaseChecks <= 1,
   "Each G09 disposable database fixture requires a pristine placeholder-only database; run one fixture flag per fresh-cluster invocation.");
 const rollbackImageArgument = args.find(arg => arg.startsWith("--rollback-image="));
 const rollbackImage = rollbackImageArgument?.slice("--rollback-image=".length);
-assert(args.length <= 20 && args.every(arg => ["--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", '--locked-policy', '--memory-source-locks', '--method-catalog-locks', '--shadow-source-locks', '--safety-skill-usage', '--transport-journal', '--pool-recovery', '--web-pool-recovery', "--prospective-source", "--prospective-material", '--prospective-browser', '--prospective-composition', collectorImageArgument,prospectiveHttpArgument, webImageArgument, rollbackImageArgument].includes(arg))
+assert(args.length <= 20 && args.every(arg => ["--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", '--locked-policy', '--memory-source-locks', '--method-catalog-locks', '--shadow-source-locks', '--safety-skill-usage', '--transport-journal', '--pool-recovery', '--web-pool-recovery', "--prospective-source", "--prospective-material", '--prospective-browser', '--prospective-composition', declarationImageArgument,collectorImageArgument,prospectiveHttpArgument, webImageArgument, rollbackImageArgument].includes(arg))
+  &&(!declarationImageArgument||(declarationImage&&/^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(declarationImage)))
   &&(!collectorImageArgument||(collectorImage&&/^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(collectorImage)))
   && (!webPoolRecoveryCheck || webImage)
   && (!prospectiveBrowserCheck || prospectiveHttpImage)
@@ -59,7 +62,7 @@ assert(args.length <= 20 && args.every(arg => ["--browser", "--ten-user", "--bac
   && (!(browserCheck || tenUserCheck || backupCheck || crossClusterCheck || rollbackImage) || webImage)
   && (!crossClusterCheck || backupCheck)
   && (!rollbackImage || rollbackImage !== webImage),
-  "Expected --mode-business, --runner-attestation, --safety-skill-usage, --transport-journal, --pool-recovery, --prospective-source, --prospective-material, --prospective-composition, --prospective-http-image=<builder-tag> (with optional --prospective-browser), or --web-image=<tag> with optional --web-pool-recovery, --browser, --ten-user, --backup, --cross-cluster (with --backup), and --rollback-image=<prior-tag>");
+  "Expected --mode-business, --runner-attestation, --declaration-image=<tag>, --safety-skill-usage, --transport-journal, --pool-recovery, --prospective-source, --prospective-material, --prospective-composition, --prospective-http-image=<builder-tag> (with optional --prospective-browser), or --web-image=<tag> with optional --web-pool-recovery, --browser, --ten-user, --backup, --cross-cluster (with --backup), and --rollback-image=<prior-tag>");
 const networkName = `ma24-pilot-net-${id}`;
 const adminPassword = randomBytes(24).toString("hex");
 const appPassword = randomBytes(24).toString("hex");
@@ -108,7 +111,7 @@ try {
     "--publish", `127.0.0.1:${port}:5432`, "--env", `POSTGRES_PASSWORD=${adminPassword}`,
     ...(prospectiveBrowserPort ? ['--publish', `127.0.0.1:${prospectiveBrowserPort}:3000`] : []),
     "--env", "POSTGRES_DB=network_copilot_local", "pgvector/pgvector:pg16",
-    ...(webImage||collectorImage ? ["bash", "-ec", [
+    ...(webImage||collectorImage||declarationImage ? ["bash", "-ec", [
       "openssl req -x509 -nodes -newkey rsa:2048 -days 1 -subj /CN=pilot-db",
       "-addext subjectAltName=DNS:pilot-db,DNS:localhost -keyout /tmp/ma24-server.key",
       "-out /tmp/ma24-server.crt >/dev/null 2>&1;",
@@ -223,11 +226,13 @@ try {
     const attested = await run(process.execPath,
       ["scripts/run-tsx.cjs", "scripts/verify-skill-runner-attestation-db.ts"],
       { ...process.env, DATABASE_URL: appUrl.toString(), DATABASE_MIGRATION_URL: adminUrl.toString(),
-        MA24_DISPOSABLE_RUNNER_ATTESTATION: "1" });
+        MA24_DISPOSABLE_RUNNER_ATTESTATION: "1",
+        ...(declarationImage?{MA24_DECLARATION_TEST_IMAGE:declarationImage,MA24_DECLARATION_TEST_CONTAINER:containerId}:{}) });
     assert.equal(attested.code, 0, attested.output);
     assert(attested.output.includes('"runnerAttestationStore":"passed"'), attested.output);
     assert(attested.output.includes('"lockedEvidenceLatestReviewSerialized":true'),attested.output);
     assert(attested.output.includes('"configuredDeclarationCliDatabaseVerified":true'),attested.output);
+    if(declarationImage)assert(attested.output.includes('"configuredDeclarationLinuxImageVerified":true'),attested.output);
     console.log(attested.output.trim());
   }
   if(poolRecoveryCheck){
@@ -563,6 +568,7 @@ try {
     pilotBackupRestoreVerified: backupCheck, crossClusterRestoreVerified: crossClusterCheck,
     scriptedModeBusinessVerified: modeBusinessCheck,
     runnerAttestationStoreVerified: runnerAttestationCheck,
+    collectorDeclarationImageVerified: Boolean(declarationImage),
     lockedPolicyDatabaseVerified: lockedPolicyCheck,
     memorySourceLocksVerified: memorySourceLocksCheck,
     methodCatalogSourceLocksVerified: methodCatalogLocksCheck,

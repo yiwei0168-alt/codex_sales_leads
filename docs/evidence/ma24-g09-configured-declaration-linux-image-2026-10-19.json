@@ -1,0 +1,91 @@
+{
+  "stage": "MA24 G09 configured declaration Linux-image execution",
+  "date": "2026-10-19",
+  "applicationImageSourceCommit": "9b0c78e79a91753f565cdd4f29c8c59340c12478",
+  "fixtureBaseCommit": "0e665997",
+  "fixtureChangesIncludedInThisStage": [
+    "scripts/fixtures/skill-configured-declaration-db.ts",
+    "scripts/verify-ma24-fresh-pilot-new-cluster.ts"
+  ],
+  "command": "node --import tsx scripts/verify-ma24-fresh-pilot-new-cluster.ts --declaration-image=ma24-skill-collector:9b0c78e7",
+  "exitCode": 0,
+  "checks": {
+    "typecheck": "passed",
+    "focusedEslint": "passed",
+    "diffCheck": "passed",
+    "linuxImageDatabaseMatrix": {
+      "runnerAttestationStore": "passed",
+      "collectorAppendAndIdempotency": true,
+      "lockedEvidenceLatestReviewSerialized": true,
+      "lockedEvidenceCrossAccountRejected": true,
+      "lockedPinDerivedFromCurrentSkill": true,
+      "lockedReadRetainsRevokedLatestReview": true,
+      "humanApprovalCreated": false,
+      "automaticActivation": false,
+      "configuredDeclarationCliDatabaseVerified": true,
+      "configuredDeclarationLinuxImageVerified": true,
+      "declarationImageId": "sha256:5c974dcc3a4dd2efd26eff9696f204d4385660789db9c77be13cdcea4e5a76bd",
+      "declarationMeasuredDeploymentHash": "08c7505c8964733da2bed7481c62958bf9c1ab684463354135320ad0c1872708",
+      "declarationMissingTlsRootAndMismatchedDeploymentRejected": true,
+      "configuredDeclarationRetryReusesStatement": true,
+      "configuredDeclarationCrossAccountAndSyntheticRejected": true,
+      "configuredDeclarationCallerBindingRejected": true,
+      "configuredDeclarationAppLoginRejected": true,
+      "configuredDeclarationWrongKeyPurposeRevocationAndNodeOptionsRejected": true,
+      "lockedReadRevokedFreezeRejected": true,
+      "lockedDeclarationDatabaseClockExpiryRejected": true,
+      "lockedDeclarationRegistryDisablementRejected": true,
+      "declarationAppendWaitsAndResumes": true,
+      "latestDeclarationSelected": true,
+      "syntheticDeclarationNotRequired": true,
+      "emptyObservationAndSignedTimeDriftRejected": true,
+      "historicalUnboundStatementsRejectedOnRead": true,
+      "appInsertDenied": true,
+      "crossAccountDenied": true,
+      "appendOnly": true,
+      "signedSyntheticEvidenceRejected": true,
+      "keyDisablementAndFreezeRevocationRejected": true,
+      "deferredEvaluationMigrationsApplied": false,
+      "productionKeysCreated": false,
+      "modelCalls": 0
+    }
+  },
+  "execution": {
+    "immutableImageIdPinned": true,
+    "nonRootUser": "node",
+    "readOnlyFilesystem": true,
+    "capabilitiesDropped": "ALL",
+    "noNewPrivileges": true,
+    "databaseTls": "verify-full with disposable public CA",
+    "testDirectoryMount": "read-only",
+    "credentialsPassedUsingPrivateTemporaryEnvFile": true,
+    "portsPublished": "127.0.0.1 only",
+    "temporaryDatabaseAndNetworkRemoved": true,
+    "actualModelCalls": 0,
+    "productionKeysCreated": false,
+    "productionQualificationGranted": false,
+    "automaticActivation": false
+  },
+  "retainedFailures": [
+    {
+      "session": 70579,
+      "outcome": "exit 1: declaration image mode omitted disposable PostgreSQL TLS certificate setup",
+      "resolution": "Include declarationImage in existing TLS bootstrap condition; no product gate weakened"
+    },
+    {
+      "session": 65049,
+      "outcome": "terminal output unavailable; handle missing on recovery",
+      "resolution": "Revalidated process state then reran with persisted sanitized output; successful session 2162"
+    }
+  ],
+  "limitations": [
+    "The image package and restricted signer executed against a disposable database with ephemeral test keys; this is not deployed provider or production identity qualification.",
+    "The bundle remains pending verification; synthetic content is not independent business quality evidence.",
+    "This image matrix is not a five-category full-workflow image run.",
+    "No HTTP/Agent signing endpoint, source promotion, Skill activation or team deployment."
+  ],
+  "filesSha256": {
+    "scripts/fixtures/skill-configured-declaration-db.ts": "326d00ef6f027d2d31c71ab49dd41e9a3c9816da88974a041390c532fe50d50a",
+    "scripts/verify-ma24-fresh-pilot-new-cluster.ts": "b9b058310458c05f67e481654b74ff7ccc7629c2072fda5556ee85e77c77fbdb"
+  }
+}

@@ -35,7 +35,7 @@
     "focusedEslint": "passed",
     "freshClusterRunnerAttestation": "passed including explicit configured CLI marker gate",
     "fullConfiguredFiveCategoryWithCliSigning": "pending",
-    "linuxImageAttestExecution": "not yet run"
+    "linuxImageAttestExecution": "passed; see linked Linux-image matrix"
   },
   "database": {
     "command": "node --import tsx scripts/verify-ma24-fresh-pilot-new-cluster.ts --runner-attestation",
@@ -63,7 +63,7 @@
   },
   "limitations": [
     "Signs a server-bound declaration only; it does not qualify the deployed binary/provider or independent quality.",
-    "The native compiled CLI database fixture is not Linux-image --attest execution.",
+    "Native CLI and Linux-image matrices have separate receipts; neither grants production qualification.",
     "The adapted five-category fixture now calls the real CLI but has not yet completed its new full fixed-snapshot run.",
     "No source classification promotion, production registry/key enrollment, Skill activation or deployment."
   ],
@@ -74,5 +74,6 @@
     "scripts/verify-skill-runner-attestation-db.ts": "9ea71dd751e4fdd887e9718461b80e91ee036e49edfa53cf9d1374fc970c4841",
     "scripts/fixtures/configured-five-category-db.ts": "f127cffdd39f40981e5ac7b98e3452d430ac6b3034e8cee0c67dd637edb50ab9",
     "scripts/verify-ma24-fresh-pilot-new-cluster.ts": "fea19892d0a034ca73c61493943bb4a0e48ab61d84d2da8feeb4062ef4adafe6"
-  }
+  },
+  "linuxImageEvidence": "ma24-g09-configured-declaration-linux-image-2026-10-19.json"
 }
