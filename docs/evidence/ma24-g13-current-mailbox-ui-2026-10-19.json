@@ -1,7 +1,7 @@
 {
   "stage": "MA24 G13 current Linux mailbox UI integration",
   "date": "2026-10-19",
-  "status": "candidate-static-checks-passed; rebuilt-image-runtime-pending",
+  "status": "four-synthetic-mailbox-ui-suites-passed-on-rebuilt-candidate",
   "harness": {
     "command": "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --web-image=<fixed-image> --current-schema --browser --frontend-ui",
     "scope": "Four existing drawer/batch/sync/reader suites, each with a new synthetic account in a fresh migration-153 disposable cluster. One ephemeral mailbox content key is shared only by the disposable Web and fixture process; gateway value is synthetic-unusable and workers are not started.",
@@ -19,12 +19,105 @@
   "checks": {
     "typecheck": "npm.cmd run typecheck: exit 0",
     "lint": "focused ESLint: exit 0",
-    "runtime": "New fixed candidate image build and full four-suite retry pending"
+    "runtime": "Fixed candidate 4a1ee07f built and four-suite retry exited 0; original page-error assertions retained",
+    "trustGuard": "Non-loopback HTTPS and loopback plain HTTP rejected before browser context creation"
   },
   "limits": [
-    "No current four-suite pass is claimed until rebuilt candidate is verified.",
     "Synthetic mailbox fixtures, no real IMAP/SMTP/provider calls and no worker execution.",
     "Extra UI fixture accounts are confined to the disposable cluster and removed with the cluster; they are not product/team accounts.",
-    "Real business quality, production certificate trust and deployment remain pending."
-  ]
+    "Real business quality, production certificate trust and deployment remain pending.",
+    "This is a four-suite mailbox UI engineering check, not all G13 workflows or the later worker/provider processing. The running G09 snapshot 45d5e9b3 predates this UI fix."
+  ],
+  "rebuiltCandidate": {
+    "sourceCommit": "4a1ee07fb829210e80ee02d6f6431da9582875ad",
+    "image": "ma24-pilot-web:4a1ee07f",
+    "buildExitCode": 0,
+    "sourceAudit": {
+      "webImageSourceVerification": "passed",
+      "image": "ma24-pilot-web:4a1ee07f",
+      "imageId": "sha256:523db7857a5acdc8cd6fda9974b67023aa54c48beec0090ee70e3a8b578b6f76",
+      "sourceCommit": "4a1ee07fb829210e80ee02d6f6431da9582875ad",
+      "buildId": "3j0vnpDDytEmORqWasoqL",
+      "runtimeSourceFileCount": 949,
+      "runtimeSourceMatchesFixedGitExport": true,
+      "exportEolDifferences": 949,
+      "runtimeSourceManifestHash": "f2e8e9e3be8fd54e62131502baf63b9456bfef6d9a2c57313298193850c6e261",
+      "privateEnvironmentFiles": false,
+      "privateStorageFiles": false,
+      "staticAssetsPresent": true,
+      "nonRootReadOnlyNoNetwork": true,
+      "productionQualified": false
+    },
+    "freshAcceptance": {
+      "freshClusterPilot": "passed",
+      "image": "pgvector/pgvector:pg16",
+      "publishedAddress": "127.0.0.1 only",
+      "rolesVerified": true,
+      "duplicateRoleBootstrapRejected": true,
+      "freshMigrationThrough": 153,
+      "currentSchemaMarkers": {
+        "mailbox_work_binding": true,
+        "mailbox_lease_binding": true,
+        "mailbox_binding_constraint": true,
+        "knowledge_source_gate": true,
+        "task_origin_gate": true
+      },
+      "freshMailboxUiVerified": true,
+      "syntheticAccountCompanyAndRestoreVerified": true,
+      "copiedProductionData": false,
+      "linuxWebImage": "ma24-pilot-web:4a1ee07f",
+      "linuxWebHttpWorkflowVerified": true,
+      "linuxWebHttpsBrowserVerified": true,
+      "tenConcurrentSyntheticAccountsVerified": false,
+      "pilotBackupRestoreVerified": false,
+      "crossClusterRestoreVerified": false,
+      "scriptedModeBusinessVerified": false,
+      "runnerAttestationStoreVerified": false,
+      "collectorDeclarationImageVerified": false,
+      "lockedPolicyDatabaseVerified": false,
+      "memorySourceLocksVerified": false,
+      "methodCatalogSourceLocksVerified": false,
+      "shadowSourceLocksVerified": false,
+      "safetySkillUsageVerified": false,
+      "transportJournalDatabaseVerified": false,
+      "collectorImageTlsPreflightVerified": false,
+      "poolRecoveryVerified": false,
+      "standaloneDatabaseRecoveryVerified": false,
+      "extraG09Migration": null,
+      "prospectiveSourceDatabaseVerified": false,
+      "prospectivePairedMaterialVerified": false,
+      "prospectiveStandaloneHttpVerified": false,
+      "prospectiveStandaloneBrowserVerified": false,
+      "completeCompositionVerified": false,
+      "samePortPriorImageRollbackVerified": false
+    },
+    "cleanup": "Temporary Web/database/network removed after success; synthetic extra users removed with disposable database"
+  },
+  "coverage": [
+    "Drawer empty/four connected: desktop, short viewport, mobile, internal scroll, Escape/focus return and draft retention",
+    "Batch: ten selected across pages, durable queued consent jobs, controlled partial-response UI and actual synthetic candidate-rejection/stale-hash/skip database states",
+    "Sync: saved range/progress rendering and exact-range queued continuation with zero sync runs",
+    "Reader: encrypted long/short originals, inline/modal reading, list/detail retry, stale body clearing, scroll and no horizontal overflow"
+  ],
+  "visualReview": {
+    "files": [
+      "tmp/ma24-mailbox-drawer-clone/four-connected-390x760.png",
+      "tmp/ma24-mailbox-reader-clone/390x760-drawer.png"
+    ],
+    "finding": "Viewed: opaque mobile overlay, visible fixed header/close button, wrapped reading content and scroll position; no overlap seen",
+    "sha256": {
+      "tmp/ma24-mailbox-drawer-clone/four-connected-390x760.png": "ff01fa97c5151bc8e5ac0e1063c701582b3019cde19ee501fa50c19263979266",
+      "tmp/ma24-mailbox-reader-clone/390x760-drawer.png": "7db40c618204c0b89a0140f9602b25a27d5b7a24b565e857fb472e67baa765a6"
+    }
+  },
+  "filesSha256": {
+    "src/components/assistant-home.tsx": "1059590c1c131e0f341c45679259ee6986c0103609326d334a24b2df659b0e19",
+    "scripts/lib/ma24-browser-context.ts": "654a1f6ef087b3699597c405f8ad7d0140e8bbf164ba642dac617802971a00f8",
+    "scripts/verify-ma24-fresh-pilot-new-cluster.ts": "3a5681959882a860670db75217ad10fdade66ad98b3e5fe7f863c76249879eb9",
+    "scripts/verify-ma24-https-browser-session.ts": "2de3f78f2ae7f0dc10842689e3900a86b58839dbc71e9c2dcf9331c0ecfadee2",
+    "scripts/lib/verify-ma24-mailbox-drawer-clone.ts": "c774a4a1bfecf7d3dd101e5495db87f4ec7180b90d7c3fcc20ba54ba953d2e06",
+    "scripts/lib/verify-ma24-mailbox-batch-clone.ts": "75f56391e9db16ce62b177a11fa2883a8e00e4a4e37c6a917f1b637e7f1741de",
+    "scripts/lib/verify-ma24-mailbox-sync-clone.ts": "19fff6235dfe4522058cd3a24645a5ba607cb46ff297d3bd085c03b5ae64923b",
+    "scripts/lib/verify-ma24-mailbox-reader-clone.ts": "9bd3313aa2e54a1e8c773eebf0bf1fb82a8912f309677f7d15702d61936f0f12"
+  }
 }
