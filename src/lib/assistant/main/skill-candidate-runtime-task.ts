@@ -116,3 +116,18 @@ export async function settleSkillCandidateRuntimeTask(context:ExecutionContext,i
   return settled;
  });
 }
+
+/** Read-only admission for a completed hidden task. A stored runner flag is not
+ * accepted as proof; rebuild the same source, scope and frozen-plan binding. */
+export async function readCompletedSkillCandidateRuntimeTask(context:{userId:string},input:Selection&{taskId:string},expectedPlan:unknown){
+ const {taskId,...pin}=input;z.uuid().parse(taskId);
+ return withPreparedTask(context,pin,expectedPlan,async prepared=>tenantTransaction(context.userId,async client=>{
+  const row=(await client.query<{result:unknown;completed_at:string}>(`select result,updated_at::text completed_at from agent_run
+   where id=$1 and user_id=$2 and status='completed' and control is null and execution_kind='main-agent-evaluation'
+    and execution_spec=$3::jsonb and input=$4::jsonb and model_config=$5::jsonb`,
+  [taskId,context.userId,JSON.stringify(prepared.spec),JSON.stringify(prepared.input),JSON.stringify(prepared.model)])).rows[0];
+  if(!row)throw new Error('Completed Skill runtime task unavailable or changed');
+  return {taskId,spec:prepared.spec,specHash:digest(prepared.spec),reply:z.object({reply:z.string()}).strict().parse(row.result).reply,
+   completedAt:row.completed_at,role:prepared.role,mode:prepared.input.mode,knowledgeScope:prepared.originalKnowledgeScope};
+ }));
+}

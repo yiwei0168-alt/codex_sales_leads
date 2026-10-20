@@ -7,6 +7,7 @@ import {prepareRecordedSkillCandidateSnapshot} from '../../src/lib/assistant/mai
 import {modelFunctions,transportMessages} from '../../src/lib/assistant/main/model';
 import {modelRequestManifest} from '../../src/lib/assistant/main/model-request-manifest';
 import type {SkillCandidateCollector} from '../../src/lib/assistant/main/skill-candidate-model';
+import {auditSkillRuntimeCandidate} from '../../src/lib/assistant/main/skill-runtime-candidate-audit';
 
 export async function verifySkillRuntimeCandidateDatabase(pool:Pool,owner:string,pin:Parameters<typeof enqueueSkillCandidateRuntimeTask>[1],
  frozen:NonNullable<SkillCandidateCollector['frozen']>,transaction:SkillCandidateCollector['transaction']){
@@ -43,6 +44,8 @@ export async function verifySkillRuntimeCandidateDatabase(pool:Pool,owner:string
  assert.equal((await pool.query('select status from agent_run where id=$1',[created.runId])).rows[0].status,'running');
  const saved=(await pool.query('select payload from agent_skill_candidate_checkpoint where evaluation_id=$1',[selection.evaluationId])).rows[0];
  assert.equal(saved.payload.state.status,'completed');assert.equal(saved.payload.candidateSkillUsed,true);
+ const auditInput={...selection,taskId:created.runId};
+ await assert.rejects(auditSkillRuntimeCandidate(context,auditInput,frozen.plan),/Completed Skill runtime task unavailable/);
  const tools=(await pool.query('select id,tool_id,status,output from agent_tool_call where run_id=$1 order by tool_id',[created.runId])).rows;
  assert.deepEqual(tools.map(row=>row.tool_id),['customer_timeline','skill_read']);assert(tools.every(row=>row.status==='completed'));
  const recovered=await runSkillRuntimeCandidate(claimed.context,selection,collector);
@@ -51,7 +54,18 @@ export async function verifySkillRuntimeCandidateDatabase(pool:Pool,owner:string
  assert.deepEqual((await pool.query('select id,step,input_hash from agent_skill_model_attempt where evaluation_id=$1 order by step',[selection.evaluationId])).rows,before);
  assert.deepEqual((await pool.query('select id,tool_id,status,output from agent_tool_call where run_id=$1 order by tool_id',[created.runId])).rows,tools);
  assert.equal((await pool.query('select enabled from agent_skill where id=$1',[pin.skillId])).rows[0].enabled,false);
+ const audit=await auditSkillRuntimeCandidate(context,auditInput,frozen.plan);
+ assert.equal(audit.completeToolJournalVerified,true);assert.equal(audit.projection.candidateSkillUsed,true);
+ assert.equal(audit.projection.toolReceipts.length,2);
+ assert.deepEqual((await pool.query('select id,tool_id,status,output from agent_tool_call where run_id=$1 order by tool_id',[created.runId])).rows,tools);
+ assert.deepEqual(requests,[0,1,2,3,4]);
+ const skillRead=tools.find(row=>row.tool_id==='skill_read');assert(skillRead);
+ const tampered=structuredClone(skillRead.output);tampered.data.files['SKILL.md']='Synthetic tampered persisted instructions';
+ await pool.query('update agent_tool_call set output=$2 where id=$1',[skillRead.id,tampered]);
+ try{await assert.rejects(auditSkillRuntimeCandidate(context,auditInput,frozen.plan),/saved output differs/);}
+ finally{await pool.query('update agent_tool_call set output=$2 where id=$1',[skillRead.id,skillRead.output]);}
  return {skillRuntimeCandidateGraphVerified:true,skillRuntimeCandidateModelAndRegisteredReadJournalsVerified:true,
+  skillRuntimeIndependentGraphAuditVerified:true,skillRuntimeAuditRejectsUnsettledTaskAndPersistedToolTamper:true,skillRuntimeAuditDoesNotWriteOrRequest:true,
   skillRuntimeSettlementRollbackAndTerminalRecoveryVerified:true,skillRuntimeRecoveryNoModelOrToolReplay:true,
   skillRuntimeVirtualSkillDoesNotEnableAccount:true,actualModelCalls:0,productionAgentEquivalent:false,automaticActivation:false};
 }
