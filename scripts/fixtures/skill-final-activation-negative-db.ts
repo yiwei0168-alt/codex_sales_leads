@@ -9,6 +9,7 @@ import {digest,type ExecutionContext} from '../../src/lib/assistant/main/contrac
 import {changeSkill,readSkill,listSkills,listSkillsPage} from '../../src/lib/assistant/main/skills';
 import {assertCurrentSkillMessages,SkillContextChangedError} from '../../src/lib/assistant/main/skill-message-guard';
 import {withBoundTenantTransaction} from '../../src/lib/rag/db';
+import {lockSkillAcceptancePinnedMethods} from '../../src/lib/assistant/main/skill-pinned-method-locks';
 import {productNodeBuildOptions} from '../lib/product-node-build.mjs';
 
 /** Disposable database only. The real producer must reject missing evidence.
@@ -107,6 +108,11 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
       assert.equal(page.items.find(row=>row.id===skillId)?.enabled,valid,'UI list follows qualification');
       if(valid)await assertCurrentSkillMessages(committed,[]);
       else await assert.rejects(assertCurrentSkillMessages(committed,[]),SkillContextChangedError);
+      const dependentArtifact={plan:{cases:[{id:'dependent',provenance:'historical-task'}]},rawReceipts:{
+       baselineSources:{dependent:{runId:committed.runId}},candidateSources:{dependent:{runId:committed.runId}}}};
+      const checkDependency=()=>lockSkillAcceptancePinnedMethods(lifecycleClient,owner,dependentArtifact);
+      if(valid)assert.equal((await checkDependency()).pinnedMethodVersionCount,1);
+      else await assert.rejects(checkDependency(),/activation qualification changed/);
      });
      return valid;
     }
@@ -160,7 +166,7 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
    positiveQualificationProducerMocked:true,humanApprovalCreated:false,productionQualificationGranted:false,modelCalls:0}));
   console.log(JSON.stringify({skillActivationLifecycle:'passed',registryChangeDenied:true,freezeRevocationDenied:true,packageWithdrawalDenied:true,
    packageSupersessionDenied:true,reviewRevisionChangeDenied:true,expiredBindingDenied:true,manualDisableClearsBinding:true,
-   actualReadAndModelListAndUiListAndPinnedGuard:true,bindingClearBeforeCommitRollsBack:true,qualificationProducerMocked:true,humanApprovalCreated:false}));
+   actualReadAndModelListAndUiListAndPinnedGuard:true,dependentAcceptanceMethodInvalidation:true,bindingClearBeforeCommitRollsBack:true,qualificationProducerMocked:true,humanApprovalCreated:false}));
  }finally{
   await pool.query(`drop trigger if exists ${trigger} on agent_run_event; drop trigger if exists ${trigger} on agent_skill; drop function if exists ${trigger}()`);
   if(priorMode===undefined)delete process.env.SKILL_RUNNER_TRUST_REGISTRY_MODE;else process.env.SKILL_RUNNER_TRUST_REGISTRY_MODE=priorMode;

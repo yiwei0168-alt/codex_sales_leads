@@ -3,15 +3,16 @@ import {beforeEach,expect,it,vi} from 'vitest';
 import {digest} from './contracts';
 import {lockSkillAcceptancePinnedMethods} from './skill-pinned-method-locks';
 
-const m=vi.hoisted(()=>({experience:vi.fn()}));
+const m=vi.hoisted(()=>({experience:vi.fn(),activation:vi.fn()}));
 vi.mock('./skill-source-guard',()=>({lockCurrentSkillExperienceSources:m.experience}));
+vi.mock('./skill-activation-binding',()=>({skillActivationCurrent:m.activation}));
 const userId='00000000-0000-4000-8000-000000000001',runId='00000000-0000-4000-8000-000000000002';
 const artifact={plan:{cases:[{id:'case',provenance:'historical-task'}]},rawReceipts:{baselineSources:{case:{runId}},candidateSources:{case:{runId}}}};
 const files={'SKILL.md':'Synthetic pinned method'};
 const pin={run_id:runId,skill_id:userId,version:1,enabled:true,published:false,owner_id:userId,scope:'account',
  source:'synthetic',validation:{},files,content_hash:digest(files)};
 const client=(pins:unknown[],count=pins.length)=>({query:vi.fn().mockResolvedValueOnce({rows:[{n:count}]}).mockResolvedValueOnce({rows:pins})});
-beforeEach(()=>{vi.resetAllMocks();m.experience.mockResolvedValue({observationCount:0});});
+beforeEach(()=>{vi.resetAllMocks();m.experience.mockResolvedValue({observationCount:0});m.activation.mockResolvedValue(true);});
 
 it('locks shared versions once while retaining every run pin',async()=>{
  m.experience.mockResolvedValue({observationCount:2});const db=client([pin,{...pin,run_id:userId}]);
@@ -38,4 +39,9 @@ it('propagates revoked experience provenance and missing migration without repor
  await expect(lockSkillAcceptancePinnedMethods(client([pin]) as unknown as PoolClient,userId,artifact)).rejects.toThrow('Experience original changed');
  const query=vi.fn().mockRejectedValue(new Error('function does not exist'));
  await expect(lockSkillAcceptancePinnedMethods({query} as unknown as PoolClient,userId,artifact)).rejects.toThrow('function does not exist');expect(query).toHaveBeenCalledTimes(1);
+});
+it('refuses a still-enabled method whose automatic activation qualification was withdrawn',async()=>{
+ m.activation.mockResolvedValue(false);
+ await expect(lockSkillAcceptancePinnedMethods(client([pin]) as unknown as PoolClient,userId,artifact)).rejects.toThrow('activation qualification changed');
+ expect(m.experience).not.toHaveBeenCalled();
 });

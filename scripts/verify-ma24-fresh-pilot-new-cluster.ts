@@ -85,8 +85,8 @@ const pristineDatabaseChecks = [
 ].filter(Boolean).length;
 assert(pristineDatabaseChecks <= 1,
   "Each G09 disposable database fixture requires a pristine placeholder-only database; run one fixture flag per fresh-cluster invocation.");
-assert(!currentSchemaCheck||(webImage&&pristineDatabaseChecks===0&&!modeBusinessCheck&&!poolRecoveryCheck),
-  '--current-schema is for isolated Web acceptance only; G09 fixtures retain their historical schema bootstrap');
+assert(!currentSchemaCheck||((webImage&&pristineDatabaseChecks===0||lockedPolicyCheck&&pristineDatabaseChecks===1&&!webImage)&&!modeBusinessCheck&&!poolRecoveryCheck),
+  '--current-schema requires isolated Web acceptance or the locked-policy fixture; other G09 fixtures retain their historical schema bootstrap');
 assert(!frontendUiCheck||(webImage&&currentSchemaCheck&&browserCheck),'--frontend-ui requires --web-image, --current-schema and --browser');
 assert(!extendedUiCheck||frontendUiCheck,'--extended-ui requires --frontend-ui');
 assert(!snapshotDownloadCheck||(webImage&&currentSchemaCheck),'--snapshot-download requires --web-image and --current-schema');
@@ -224,7 +224,7 @@ try {
   assert(verified.output.includes('"copiedProductionData":false'), verified.output);
   if (webImage || modeBusinessCheck || runnerAttestationCheck || lockedPolicyCheck || memorySourceLocksCheck || methodCatalogLocksCheck || shadowSourceLocksCheck || prospectiveSourceCheck || safetySkillUsageCheck || transportJournalCheck || poolRecoveryCheck) {
     const migration = await run(process.execPath,
-      ["scripts/run-tsx.cjs", "scripts/migrate.ts", currentSchemaCheck?"--fresh-pilot-through=159":"--fresh-pilot-through=135"],
+      ["scripts/run-tsx.cjs", "scripts/migrate.ts", currentSchemaCheck?"--fresh-pilot-through=161":"--fresh-pilot-through=135"],
       { ...process.env, DATABASE_URL: appUrl.toString(), DATABASE_MIGRATION_URL: adminUrl.toString() });
     assert.equal(migration.code, 0, migration.output);
     if(currentSchemaCheck){
@@ -245,7 +245,12 @@ try {
           to_regprocedure('public.publish_skill_runner_trust_registry(jsonb,text)') is not null as trust_registry_publication,
           to_regclass('public.skill_runtime_package_registration') is not null as runtime_package_registrations,
           to_regclass('public.skill_runtime_package_withdrawal') is not null as runtime_package_withdrawals,
-          to_regprocedure('public.register_skill_runtime_package(jsonb,text,uuid,bigint)') is not null as runtime_package_publication
+          to_regprocedure('public.register_skill_runtime_package(jsonb,text,uuid,bigint)') is not null as runtime_package_publication,
+          to_regprocedure('public.skill_activation_is_current(uuid,uuid,integer)') is not null as skill_activation_lifecycle,
+          exists(select 1 from pg_trigger where tgrelid='public.agent_run_event'::regclass and tgname='skill_activation_commit_guard'
+           and tgdeferrable and tginitdeferred and tgenabled in('O','A') and not tgisinternal) as skill_activation_commit_guard,
+          exists(select 1 from pg_trigger where tgrelid='public.agent_run_event'::regclass and tgname='skill_activation_binding_commit_guard'
+           and tgdeferrable and tginitdeferred and tgenabled in('O','A') and not tgisinternal) as skill_activation_binding_guard
         `)).rows[0];
         assert(Object.values(currentSchemaMarkers).every(Boolean),'Current Web schema incomplete');
       }finally{await inspect.end();}
@@ -807,7 +812,7 @@ try {
     scheduleWorkerCrashVerified:Boolean(scheduleWorkerImage)&&!scheduleWorkerCommitCheck,
     scheduleWorkerCommitVerified:Boolean(scheduleWorkerImage)&&scheduleWorkerCommitCheck,
     publishedAddress: "127.0.0.1 only", rolesVerified: true, duplicateRoleBootstrapRejected: true,
-    freshMigrationThrough: currentSchemaCheck?159:135,currentSchemaMarkers,snapshotLifecycleVerified:snapshotLifecycleCheck,knowledgeScopeSourcesVerified:knowledgeScopeSourcesCheck,finalSettlementVerified:finalSettlementCheck,compiledMainRuntimeVerified:Boolean(mainRuntimeImage),mainRuntimeDurabilityVerified:mainRuntimeDurability,mainRuntimeCrashRecoveryVerified:mainRuntimeCrashRecovery,mainRuntimeInterruptionVerified:mainRuntimeInterruption,mainRuntimeNetworkLossVerified:mainRuntimeNetworkLoss,mainRuntimeResumeRevocationVerified:mainRuntimeResumeRevocation,mainRuntimeCommitLossVerified:mainRuntimeCommitLoss,mainRuntimeTaskEnrollmentVerified:mainRuntimeTaskEnrollment,snapshotDownloadResult,localMemoryWorkerResult,trustRegistryRestoreResult,freshMailboxUiVerified:frontendUiCheck,extendedFrontendUiVerified:extendedUiCheck,
+    freshMigrationThrough: currentSchemaCheck?161:135,currentSchemaMarkers,snapshotLifecycleVerified:snapshotLifecycleCheck,knowledgeScopeSourcesVerified:knowledgeScopeSourcesCheck,finalSettlementVerified:finalSettlementCheck,compiledMainRuntimeVerified:Boolean(mainRuntimeImage),mainRuntimeDurabilityVerified:mainRuntimeDurability,mainRuntimeCrashRecoveryVerified:mainRuntimeCrashRecovery,mainRuntimeInterruptionVerified:mainRuntimeInterruption,mainRuntimeNetworkLossVerified:mainRuntimeNetworkLoss,mainRuntimeResumeRevocationVerified:mainRuntimeResumeRevocation,mainRuntimeCommitLossVerified:mainRuntimeCommitLoss,mainRuntimeTaskEnrollmentVerified:mainRuntimeTaskEnrollment,snapshotDownloadResult,localMemoryWorkerResult,trustRegistryRestoreResult,freshMailboxUiVerified:frontendUiCheck,extendedFrontendUiVerified:extendedUiCheck,
     syntheticAccountCompanyAndRestoreVerified: true, copiedProductionData: false,
     linuxWebImage: webImage ?? null, linuxWebHttpWorkflowVerified: Boolean(webImage),
     linuxWebHttpsBrowserVerified: browserCheck, tenConcurrentSyntheticAccountsVerified: tenUserCheck,
