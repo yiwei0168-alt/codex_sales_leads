@@ -14,6 +14,8 @@
 
 # 产品主 Agent 与开放式工具架构
 
+2026-10-21 / 共享模型响应新源码e1a59caf已通过固定双包/新167签名五类和实测包登记组合；来源撤回恢复、登记停用等待提交、缺人工判断阻断均通过。整组使用固定Node/deps的归档夹具而非完整正式包装器/TLS，新包TLS声明另启动待终态；不代表真实提供方/质量或完整执行等价。[收据](evidence/ma24-g09-shared-model-measured-composition-2026-10-21.json)。
+
 2026-10-21 / 正式API/Worker在新167/TLS/Internal网络实际恢复已完成与已开始无回执的Skill调用；前者精确复用一次，后者返回unknown需核对，均不再执行工具/启用，原记录和Skill不变。模型0，构造初态不等于真实先前启用或崩溃/未知COMMIT注入，完整等价仍缺。[收据](evidence/ma24-g09-started-receipt-worker-recovery-2026-10-21.json)。
 
 2026-10-20 / e1a59caf共享模型响应已进入新固定主运行/采集器双包，源码、完整依赖字节、ESM及采集器边界通过。一次性库的同包完整签名登记组合仍运行，未作为通过证据；完整控制/工具/租约/恢复等价仍待验。[证据](evidence/ma24-g09-shared-model-fixed-packages-2026-10-20.json)。

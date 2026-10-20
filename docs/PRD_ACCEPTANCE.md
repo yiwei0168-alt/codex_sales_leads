@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+2026-10-21 / G09 e1a59caf双包新167签名五类/测量登记组合退出0，登记与来源真实读者、原件撤回恢复及停用事务等待通过，缺人工判断仍阻断。新包TLS正式声明另运行；整组非正式包装器/TLS，模型与身份合成，完整执行等价/真实质量/启用仍缺。[收据](evidence/ma24-g09-shared-model-measured-composition-2026-10-21.json)。
+
 2026-10-21 / G09固定e1a59caf正式Worker恢复completed与started无回执两分支实跑通过；复用/unknown、不重做及Skill/原记录不变，模型0。仅构造检查点/调用状态，真实启用、崩溃/未知COMMIT同链路及质量仍缺。[收据](evidence/ma24-g09-started-receipt-worker-recovery-2026-10-21.json)。
 
 2026-10-20 / G09新固定e1a59caf双包构建、997源码/完整依赖字节/ESM及采集器边界通过；同包完整签名登记组合仍运行，未记通过。完整执行等价、真实质量及启用仍缺。[证据](evidence/ma24-g09-shared-model-fixed-packages-2026-10-20.json)。

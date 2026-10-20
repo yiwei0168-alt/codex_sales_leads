@@ -1,5 +1,7 @@
 # 用户确认规则登记表
 
+MA24-06 / G09共享模型新包组合（2026-10-21，工程验收，无新增确认）：e1a59caf双包/同提交夹具/新167签名五类与测量登记退出0，登记/来源组合真实读者、原件撤回恢复及登记停用事务等待通过，缺人工判断仍阻断；合成模型/临时身份，非整组正式包装器/TLS，不授予完整执行等价/质量/启用资格。新包TLS声明另在运行。[收据](evidence/ma24-g09-shared-model-measured-composition-2026-10-21.json)。
+
 MA24-06 / G09无回执Worker恢复（2026-10-21，工程验收，无新增确认）：e1a59caf正式API/Worker、新167/TLS/Internal网络实跑退出0，completed复用与started无回执返回unknown均不重做，Skill/原记录不变，模型0；构造初始状态，不证明真实启用/崩溃/未知COMMIT或质量，完整执行等价仍缺。[收据](evidence/ma24-g09-started-receipt-worker-recovery-2026-10-21.json)。
 
 MA24-06 / G09新固定包（2026-10-20，工程验收，无新增确认）：e1a59caf双包构建、997源码/完整依赖字节/ESM及采集器边界通过；同包完整签名登记组合正在一次性库执行，未记通过。完整执行等价、真实质量和启用资格仍缺。[证据](evidence/ma24-g09-shared-model-fixed-packages-2026-10-20.json)。
