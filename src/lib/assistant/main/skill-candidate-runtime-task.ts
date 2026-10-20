@@ -7,11 +7,12 @@ import {inspectLockedSkillAcceptanceFreeze} from './skill-acceptance-freeze';
 import {prepareRecordedSkillCandidateSnapshot} from './skill-candidate-source';
 import {prepareSkillAcceptanceBaseline} from './skill-acceptance-baseline';
 import {prepareSkillExecutionIdentity} from './skill-runtime-identity';
+import {prepareSkillProspectiveSource} from './skill-prospective-source';
 import {skillCandidateTaskSpecSchema} from './evaluation-task-spec';
 import {assertLocalAnalysisBoundary} from './local-analysis-boundary';
 
 const selection=z.object({runId:z.uuid(),skillId:z.uuid(),version:z.number().int().positive(),freezeId:z.uuid(),
- caseId:z.string().min(1).max(200),evaluationId:z.uuid(),arm:z.enum(['baseline','candidate'])}).strict();
+ caseId:z.string().min(1).max(200),evaluationId:z.uuid(),prospectiveJobId:z.uuid().optional(),arm:z.enum(['baseline','candidate'])}).strict();
 type Selection=z.infer<typeof selection>;
 type Prepared={spec:z.infer<typeof skillCandidateTaskSpecSchema>;input:z.infer<typeof messageInputSchema>;model:ModelConfig;role:'member'|'admin';originalKnowledgeScope?:ExecutionContext['knowledgeScope']};
 
@@ -29,14 +30,16 @@ async function withPreparedTask<T>(context:{userId:string},input:Selection,expec
   const baseline=await prepareSkillAcceptanceBaseline(context,{runId:p.runId});
   const identity=await prepareSkillExecutionIdentity(context,{runId:p.runId});
   const item=plan.cases.find(row=>row.id===p.caseId);
-  if(!item||item.category!=='replay'||item.provenance!=='historical-task'||item.inputHash!==saved.taskInputHash
-   ||item.sourceHash!==baseline.projectionHash||plan.pin.contentHash!==saved.snapshot.candidate.value.content_hash
+  const prospective=p.prospectiveJobId?await prepareSkillProspectiveSource(context,{jobId:p.prospectiveJobId,caseId:p.caseId,freezeId:p.freezeId,plan}):null;
+  if(!item||(prospective?item.category!=='shadow'||item.provenance!=='prospective-task'||prospective.projection.runId!==p.runId
+   :item.category!=='replay'||item.provenance!=='historical-task')||item.inputHash!==saved.taskInputHash
+   ||item.sourceHash!==(prospective?prospective.projection.sourceHash:baseline.projectionHash)||plan.pin.contentHash!==saved.snapshot.candidate.value.content_hash
    ||plan.pin.sourceHash!==saved.skillSourceHash||digest(plan.identity)!==digest(identity)
    ||digest(original.model_config)!==saved.modelConfigHash||original.role!==saved.snapshot.context.role)
    throw new Error('Skill runtime task sources or frozen identity changed');
   const spec=skillCandidateTaskSpecSchema.parse({schema:'skill-candidate-task-v1',freezeId:p.freezeId,planHash:digest(plan),caseId:p.caseId,
    evaluationId:p.evaluationId,arm:p.arm,originalRunId:p.runId,skillId:p.skillId,version:p.version,contentHash:plan.pin.contentHash,
-   snapshotHash:saved.sourceHash,inputHash:saved.taskInputHash,sourceHash:baseline.projectionHash,identityHash:digest(identity)});
+   snapshotHash:saved.sourceHash,inputHash:saved.taskInputHash,sourceHash:item.sourceHash,identityHash:digest(identity),...(prospective?{prospectiveJobId:p.prospectiveJobId,prospectiveProjectionHash:prospective.projectionHash}:{})});
   const taskInput=messageInputSchema.parse({content:original.input.content,requestKey:`skill-runtime:${digest(spec)}`,
    attachments:[],mode:saved.snapshot.profile.mode,knowledgeScope:original.input.knowledgeScope??['industry','company','product']});
   const result=await work({spec,input:taskInput,model:original.model_config,role:original.role,originalKnowledgeScope:original.input.knowledgeScope});
@@ -114,7 +117,7 @@ export async function assertSkillCandidateRuntimeTaskContext(context:ExecutionCo
  });
  const {spec,plan}=saved;
  return assertSkillCandidateRuntimeTask(context,{runId:spec.originalRunId,skillId:spec.skillId,version:spec.version,freezeId:spec.freezeId,
-  caseId:spec.caseId,evaluationId:spec.evaluationId,arm:spec.arm},plan);
+  caseId:spec.caseId,evaluationId:spec.evaluationId,arm:spec.arm,...(spec.prospectiveJobId?{prospectiveJobId:spec.prospectiveJobId}:{})},plan);
 }
 
 /** Same owning application transaction for task settlement and source rebuild.

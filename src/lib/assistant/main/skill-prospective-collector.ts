@@ -3,13 +3,13 @@ import {digest} from './contracts';
 import {skillAcceptancePlanSchema,skillAcceptanceObservationSchema} from './skill-acceptance-policy';
 import {prepareSkillProspectiveSource} from './skill-prospective-source';
 import {prepareSkillAcceptanceBaseline} from './skill-acceptance-baseline';
-import {auditDurableSkillCandidate} from './skill-candidate-audit';
+import {auditProspectiveSkillCandidate,skillProspectiveReferenceSchema} from './skill-prospective-candidate-reference';
+export {skillProspectiveReferenceSchema} from './skill-prospective-candidate-reference';
 import {prepareSkillExecutionIdentity} from './skill-runtime-identity';
 import {requireSkillAcceptanceFreeze,inspectLockedSkillAcceptanceFreeze} from './skill-acceptance-freeze';
 import {assertSkillCollector,type SkillCollectorTransaction} from './skill-model-journal';
 import {assertLocalAnalysisBoundary} from './local-analysis-boundary';
 
-export const skillProspectiveReferenceSchema=z.object({caseId:z.string().min(1).max(200),jobId:z.uuid(),evaluationId:z.uuid()}).strict();
 const preparedInput=z.object({freezeId:z.uuid(),plan:skillAcceptancePlanSchema,reference:skillProspectiveReferenceSchema}).strict();
 type Context={userId:string};
 /** Rebuild both arms from current server journals. The local Qwen comparison is not
@@ -22,8 +22,8 @@ export async function prepareSkillProspectiveObservation(context:Context,input:u
  const identity=()=>prepareSkillExecutionIdentity(context,{runId:s.runId});
  if(digest(await identity())!==digest(plan.identity))throw new Error('Prospective runtime identity changed');
  const base=await prepareSkillAcceptanceBaseline(context,{runId:s.runId}),b=base.projection;
- const candidateInput={runId:s.runId,skillId:plan.pin.skillId,version:plan.pin.version,evaluationId:reference.evaluationId,arm:'candidate' as const};
- const candidate=await auditDurableSkillCandidate(context,candidateInput),c=candidate.projection;
+ const candidateInput={runId:s.runId,skillId:plan.pin.skillId,version:plan.pin.version,reference,freezeId,plan};
+ const candidate=await auditProspectiveSkillCandidate(context,candidateInput),c=candidate.projection;
  if(c.freezeId!==freezeId||!c.candidateSkillUsed)throw new Error('Prospective candidate freeze or Skill binding changed');
  if(s.inputHash!==b.inputHash||c.taskInputHash!==b.inputHash
   ||b.modelConfigHash!==plan.identity.modelConfigHash||c.modelConfigHash!==plan.identity.modelConfigHash)
@@ -48,11 +48,12 @@ export async function prepareSkillProspectiveObservation(context:Context,input:u
  });
  if((await prepareSkillProspectiveSource(context,sourceInput)).projectionHash!==source.projectionHash
   ||(await prepareSkillAcceptanceBaseline(context,{runId:s.runId})).projectionHash!==base.projectionHash
-  ||(await auditDurableSkillCandidate(context,candidateInput)).projectionHash!==candidate.projectionHash
+  ||(await auditProspectiveSkillCandidate(context,candidateInput)).projectionHash!==candidate.projectionHash
   ||digest(await identity())!==digest(plan.identity))throw new Error('Prospective journals changed during collection');
  await requireSkillAcceptanceFreeze(context,freezeId,plan);
  return {observation,sourceKind:c.sourceKind,reference:{...reference,runId:s.runId,
   sourceProjectionHash:source.projectionHash,baselineProjectionHash:base.projectionHash,candidateProjectionHash:candidate.projectionHash},
+  ...(candidate.candidateProtocol==='runtime'?{runtimeToolReceipts:candidate.projection.toolReceipts,runtimeTaskHash:candidate.projection.completedTaskHash}:{}),
   productionAgentEquivalent:false as const,automaticActivation:false as const};
 }
 
@@ -70,7 +71,7 @@ export async function collectSkillProspectiveAcceptance(context:Context,input:un
  const sourceKind=prepared[0].sourceKind;
  if(prepared.some(row=>row.sourceKind!==sourceKind))throw new Error('Prospective collector cannot mix source categories');
  const observations=prepared.map(row=>row.observation),prospectiveSources=Object.fromEntries(prepared.map(row=>[row.observation.caseId,row.reference]));
- const rawReceipts={prospectiveSources,collector:{protocol:'prospective-collector-v1',freezeId,freezeVerified:true,
+ const rawReceipts={prospectiveSources,collector:{protocol:p.cases.some(row=>row.taskId)?'prospective-collector-v2':'prospective-collector-v1',freezeId,freezeVerified:true,
   sourceIdentityChecked:true,runtimeIdentityVerified:false,automaticActivation:false}};
  const artifact={sourceKind,plan,observations,rawReceipts},artifactHash=digest(artifact);
  const bundleId=await transaction(context.userId,async client=>{

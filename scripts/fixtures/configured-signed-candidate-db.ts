@@ -10,6 +10,11 @@ import {digest} from '../../src/lib/assistant/main/contracts';
 import {prepareSkillExecutionIdentity} from '../../src/lib/assistant/main/skill-runtime-identity';
 import {prepareSkillAcceptanceBaseline} from '../../src/lib/assistant/main/skill-acceptance-baseline';
 import {prepareRecordedSkillCandidateSnapshot} from '../../src/lib/assistant/main/skill-candidate-source';
+import {tenantTransaction} from '../../src/lib/rag/db';
+import {readSkillAcceptanceEvidence} from '../../src/lib/assistant/main/skill-acceptance-store';
+import {lockSkillRuntimeMaterialSources} from '../../src/lib/assistant/main/skill-runtime-material-sources';
+import {readCompletedSkillCandidateRuntimeTask} from '../../src/lib/assistant/main/skill-candidate-runtime-task';
+import {readSkillAcceptanceReviewCase} from '../../src/lib/assistant/main/skill-acceptance-review';
 import {freezeSkillAcceptancePlan} from '../../src/lib/assistant/main/skill-acceptance-freeze';
 import type {SkillCollectorTransaction} from '../../src/lib/assistant/main/skill-model-journal';
 import type {SkillCandidateCollector} from '../../src/lib/assistant/main/skill-candidate-model';
@@ -53,16 +58,18 @@ export async function verifyConfiguredSignedCandidateDatabase(pool:Pool,input:{o
  });
  const exit=await launch();
  assert.equal(exit.code,0,`Configured signed candidate fixture failed: ${exit.diagnostic}`);assert(exit.output.includes('"collectorExecution":"completed"'));
- const bundles=(await pool.query<{id:string;raw_receipts:{collector:{protocol:string};candidateSources:Record<string,{taskId:string}>}}>('select id,raw_receipts from agent_skill_acceptance_bundle where owner_id=$1 and raw_receipts::text like $2',[input.owner,`%${evaluationId}%`])).rows;
+ const bundles=(await pool.query<{id:string;raw_receipts:{collector:{protocol:string};candidateSources?:Record<string,{taskId:string}>;prospectiveSources?:Record<string,{taskId:string}>}}>('select id,raw_receipts from agent_skill_acceptance_bundle where owner_id=$1 and raw_receipts::text like $2',[input.owner,`%${evaluationId}%`])).rows;
  assert.equal(bundles.length,1);
- let runtimeTaskBindingVerified=false,completedRuntimeNoRequestReuseVerified=false;
- if(!input.prospective){
-  assert.equal(bundles[0].raw_receipts.collector.protocol,'historical-collector-v2');
-  const taskId=bundles[0].raw_receipts.candidateSources['signed-replay'].taskId;
+ let runtimeTaskBindingVerified=false,completedRuntimeNoRequestReuseVerified=false,runtimeMaterialLockVerified=false,prospectiveCaptureMismatchRejected=false;
+ {
+  const prospective=Boolean(input.prospective),caseId=prospective?'signed-shadow':'signed-replay';
+  assert.equal(bundles[0].raw_receipts.collector.protocol,prospective?'prospective-collector-v2':'historical-collector-v2');
+  const taskId=(prospective?bundles[0].raw_receipts.prospectiveSources:bundles[0].raw_receipts.candidateSources)![caseId].taskId;
   const task=(await pool.query('select status,execution_kind,execution_spec from agent_run where id=$1 and user_id=$2',[taskId,input.owner])).rows[0];
   assert.equal(task.status,'completed');assert.equal(task.execution_kind,'main-agent-evaluation');
   assert.equal(task.execution_spec.schema,'skill-candidate-task-v1');assert.equal(task.execution_spec.originalRunId,input.runId);
   assert.equal(task.execution_spec.evaluationId,evaluationId);assert.equal(task.execution_spec.freezeId,frozen.freezeId);
+  assert.equal(task.execution_spec.prospectiveJobId,input.prospective?.jobId);if(prospective)assert.match(task.execution_spec.prospectiveProjectionHash,/^[a-f0-9]{64}$/);
   const tools=(await pool.query('select id,tool_id,status,output from agent_tool_call where run_id=$1 order by tool_id',[taskId])).rows;
   assert.deepEqual(tools.map(row=>row.tool_id),['customer_timeline','skill_read']);assert(tools.every(row=>row.status==='completed'));
   const attempts=(await pool.query('select id,step,snapshot_hash,input_hash from agent_skill_model_attempt where evaluation_id=$1 order by step',[evaluationId])).rows;
@@ -74,9 +81,25 @@ export async function verifyConfiguredSignedCandidateDatabase(pool:Pool,input:{o
   assert.deepEqual((await pool.query('select id,step,snapshot_hash,input_hash from agent_skill_model_attempt where evaluation_id=$1 order by step',[evaluationId])).rows,attempts);
   assert.deepEqual((await pool.query('select id,tool_id,status,output from agent_tool_call where run_id=$1 order by tool_id',[taskId])).rows,tools);
   assert.deepEqual((await pool.query('select id from agent_skill_acceptance_bundle where owner_id=$1 and raw_receipts::text like $2',[input.owner,`%${evaluationId}%`])).rows,[{id:bundles[0].id}]);
+  const review=await readSkillAcceptanceReviewCase(context,{bundleId:bundles[0].id,caseId});
+  assert.equal(review.judgment,null);assert.equal(review.automaticActivation,false);
+  assert(review.receipts.some(row=>'arm' in row&&row.arm==='baseline'));assert(review.receipts.some(row=>'arm' in row&&row.arm==='candidate'));
+  const material=await readSkillAcceptanceEvidence(context,bundles[0].id);
+  const locked=await tenantTransaction(input.owner,client=>lockSkillRuntimeMaterialSources(client,input.owner,material.artifact));
+  assert.equal(locked.runtimeTaskCount,1);assert.match(locked.runtimeTaskLedgerHash!,/^[a-f0-9]{64}$/);runtimeMaterialLockVerified=true;
+  if(input.prospective){
+   const changed=structuredClone(material.artifact),sources=changed.rawReceipts.prospectiveSources as Record<string,{sourceProjectionHash:string}>;
+   sources[caseId].sourceProjectionHash=digest('changed-capture-projection');
+   await assert.rejects(tenantTransaction(input.owner,client=>lockSkillRuntimeMaterialSources(client,input.owner,changed)),/Runtime material task binding changed/);
+   const pin={taskId,runId:input.runId,skillId:input.skillId,version:1,freezeId:frozen.freezeId,caseId,evaluationId,arm:'candidate' as const};
+   await assert.rejects(readCompletedSkillCandidateRuntimeTask(context,pin,frozen.plan),/Skill runtime task sources or frozen identity changed/);
+   await assert.rejects(readCompletedSkillCandidateRuntimeTask(context,{...pin,prospectiveJobId:randomUUID()},frozen.plan),/Prospective capture unavailable/);
+   await readCompletedSkillCandidateRuntimeTask(context,{...pin,prospectiveJobId:input.prospective.jobId},frozen.plan);
+   prospectiveCaptureMismatchRejected=true;
+  }
   completedRuntimeNoRequestReuseVerified=true;
  }
 
  assert.equal((await pool.query('select enabled from agent_skill where id=$1',[input.skillId])).rows[0].enabled,false);
- return {collectorBundleId:bundles[0].id,configuredSignedCandidateDatabaseVerified:true,runtimeTaskBindingVerified,completedRuntimeNoRequestReuseVerified,configuredCandidateKind:input.prospective?'prospective':'historical',candidateSkillRemainsDisabled:true,actualModelCalls:0,automaticActivation:false};
+ return {collectorBundleId:bundles[0].id,configuredSignedCandidateDatabaseVerified:true,runtimeTaskBindingVerified,completedRuntimeNoRequestReuseVerified,runtimeTwoArmReviewVerified:true,runtimeMaterialLockVerified,prospectiveCaptureMismatchRejected,configuredCandidateKind:input.prospective?'prospective':'historical',candidateSkillRemainsDisabled:true,actualModelCalls:0,automaticActivation:false};
 }

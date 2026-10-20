@@ -2,6 +2,7 @@ import {z} from 'zod';
 import type {PoolClient} from 'pg';
 import {withBoundTenantTransaction} from '@/lib/rag/db';
 import {digest} from './contracts';
+import {storedProspectiveReferenceSchema} from './skill-prospective-candidate-reference';
 import {historicalCandidateReferenceSchema} from './skill-historical-candidate-reference';
 import {skillAcceptancePlanSchema} from './skill-acceptance-policy';
 import {skillCandidateTaskSpecSchema} from './evaluation-task-spec';
@@ -11,12 +12,19 @@ type Artifact={plan:unknown;rawReceipts:unknown};
  * and execution identities. Runtime task IDs own new journals, never originals. */
 export function skillRuntimeMaterialReferences(artifact:Artifact){
  const plan=z.object({cases:z.array(z.object({id:z.string(),provenance:z.string()}).passthrough())}).passthrough().parse(artifact.plan);
- const references:Array<{caseId:string;runId:string;evaluationId:string;taskId:string}>=[];
- for(const item of plan.cases.filter(row=>row.provenance==='historical-task')){
-  const raw=z.record(z.string(),z.unknown()).parse(z.record(z.string(),z.unknown()).parse(artifact.rawReceipts).candidateSources)[item.id];
+ const references:Array<{caseId:string;runId:string;evaluationId:string;taskId:string;prospectiveJobId?:string;prospectiveProjectionHash?:string}>=[];
+ for(const item of plan.cases.filter(row=>['historical-task','prospective-task'].includes(row.provenance))){
+  const group=z.record(z.string(),z.unknown()).parse(artifact.rawReceipts)[item.provenance==='prospective-task'?'prospectiveSources':'candidateSources'];
+  if(group===undefined)continue;
+  const raw=z.record(z.string(),z.unknown()).parse(group)[item.id];if(raw===undefined)continue;
   if(!z.object({taskId:z.uuid().optional()}).passthrough().parse(raw).taskId)continue;
-  const reference=historicalCandidateReferenceSchema.parse(raw);
-  if(reference.taskId)references.push({caseId:item.id,runId:reference.runId,evaluationId:reference.evaluationId,taskId:reference.taskId});
+  if(item.provenance==='prospective-task'){
+   const reference=storedProspectiveReferenceSchema.parse(raw);if(reference.caseId!==item.id)throw new Error('Runtime prospective case binding changed');
+   references.push({caseId:item.id,runId:reference.runId,evaluationId:reference.evaluationId,taskId:reference.taskId!,prospectiveJobId:reference.jobId,prospectiveProjectionHash:reference.sourceProjectionHash});
+  }else{
+   const reference=historicalCandidateReferenceSchema.parse(raw);
+   if(reference.taskId)references.push({caseId:item.id,runId:reference.runId,evaluationId:reference.evaluationId,taskId:reference.taskId});
+  }
  }
  if(references.length>100||new Set(references.map(row=>row.taskId)).size!==references.length)throw new Error('Runtime material task references duplicate or oversized');
  return references.sort((a,b)=>a.taskId.localeCompare(b.taskId));
@@ -39,6 +47,7 @@ export async function lockSkillRuntimeMaterialSources(client:PoolClient,userId:s
    if(task.user_id!==userId||task.status!=='completed'||task.execution_kind!=='main-agent-evaluation'||!item
     ||spec.freezeId!==freezeId||spec.planHash!==digest(plan)||spec.originalRunId!==ref.runId||spec.evaluationId!==ref.evaluationId||spec.arm!=='candidate'
     ||spec.caseId!==ref.caseId||spec.skillId!==plan.pin.skillId||spec.version!==plan.pin.version||spec.contentHash!==plan.pin.contentHash
+    ||spec.prospectiveJobId!==ref.prospectiveJobId||spec.prospectiveProjectionHash!==ref.prospectiveProjectionHash
     ||spec.identityHash!==digest(plan.identity)||spec.inputHash!==item.inputHash||spec.sourceHash!==item.sourceHash)
     throw new Error('Runtime material task binding changed');
    z.object({reply:z.string()}).strict().parse(task.snapshot.result);

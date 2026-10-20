@@ -13,3 +13,12 @@ it('rejects duplicated task identity and malformed task markers',()=>{
  expect(()=>skillRuntimeMaterialReferences({plan:{cases:[...plan.cases,{id:'other',provenance:'historical-task'}]},rawReceipts:{candidateSources:{case:ref,other:ref}}})).toThrow('duplicate');
  expect(()=>skillRuntimeMaterialReferences({plan,rawReceipts:{candidateSources:{case:{...ref,taskId:'invalid'}}}})).toThrow();
 });
+
+it('includes prospective task and capture identity without replacing original run identity',()=>{
+ const prospective={caseId:'shadow',jobId:id(4),evaluationId:id(5),runId:id(6),taskId:id(7),sourceProjectionHash:'b'.repeat(64),baselineProjectionHash:'c'.repeat(64),candidateProjectionHash:'d'.repeat(64)};
+ const artifact={plan:{cases:[...plan.cases,{id:'shadow',provenance:'prospective-task'}]},rawReceipts:{candidateSources:{case:ref},prospectiveSources:{shadow:prospective}}};
+ expect(skillRuntimeMaterialReferences(artifact)).toEqual([{caseId:'case',runId:id(1),evaluationId:id(2),taskId:id(3)},
+  {caseId:'shadow',runId:id(6),evaluationId:id(5),taskId:id(7),prospectiveJobId:id(4),prospectiveProjectionHash:'b'.repeat(64)}]);
+ expect(()=>skillRuntimeMaterialReferences({...artifact,rawReceipts:{...artifact.rawReceipts,prospectiveSources:{shadow:{...prospective,caseId:'wrong'}}}})).toThrow('case binding');
+ expect(()=>skillRuntimeMaterialReferences({...artifact,rawReceipts:{...artifact.rawReceipts,prospectiveSources:{shadow:{...prospective,taskId:id(3)}}}})).toThrow('duplicate');
+});

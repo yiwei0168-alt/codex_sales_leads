@@ -43,10 +43,12 @@ beforeEach(()=>{
 });
 it.each([historical,prospective])('connects $kind candidate to configured transport, persisted verification and the correct collector',async input=>{
  const out=await runConfiguredSkillRecordedCandidate(context,input,frozen,transaction);
- expect(m.factory).toHaveBeenCalledWith(context,{evaluationId,arm:'candidate',snapshotHash:input.kind==='historical'?runtimeSnapshotHash:'snapshot',frozen});
- expect(input.kind==='historical'?m.runtime.mock.calls[0][2]:m.run.mock.calls[0][3]).toEqual({evaluationId,sourceKind:'production-runner-pending-verification',transaction,request:m.request,frozen});
+ expect(m.factory).toHaveBeenCalledWith(context,{evaluationId,arm:'candidate',snapshotHash:runtimeSnapshotHash,frozen});
+ expect(m.runtime.mock.calls[0][2]).toEqual({evaluationId,sourceKind:'production-runner-pending-verification',transaction,request:m.request,frozen});
+ expect(m.run).not.toHaveBeenCalled();
  expect(m.verify).toHaveBeenCalledWith(context,{evaluationId,arm:'candidate'},frozen);
  expect(m.original).toHaveBeenCalledTimes(3);expect(m.original).toHaveBeenCalledWith(context,{runId});
+ expect(m.enqueue.mock.calls[0][1]).toMatchObject(input.kind==='historical'?{runId,caseId:'replay'}:{runId,caseId:'shadow',prospectiveJobId:jobId});
  expect(m.original.mock.invocationCallOrder[0]).toBeLessThan(m.factory.mock.invocationCallOrder[0]);
  expect(m.freeze).toHaveBeenCalledTimes(3);
  expect(out).toMatchObject({productionAgentEquivalent:false,collectorProvenanceVerified:false,automaticActivation:false});
@@ -54,7 +56,7 @@ it.each([historical,prospective])('connects $kind candidate to configured transp
   expect(m.historicalCollect).toHaveBeenCalledWith(context,{freezeId:frozen.freezeId,plan:frozen.plan,replays:[{caseId:'replay',runId,evaluationId,taskId}]},transaction);
   expect(m.prospectiveCollect).not.toHaveBeenCalled();
  }else{
-  expect(m.prospectiveCollect).toHaveBeenCalledWith(context,{freezeId:frozen.freezeId,plan:frozen.plan,cases:[{caseId:'shadow',jobId,evaluationId}]},transaction);
+  expect(m.prospectiveCollect).toHaveBeenCalledWith(context,{freezeId:frozen.freezeId,plan:frozen.plan,cases:[{caseId:'shadow',jobId,evaluationId,taskId}]},transaction);
   expect(m.historicalCollect).not.toHaveBeenCalled();
  }
  expect(m.verify.mock.invocationCallOrder[0]).toBeLessThan((input.kind==='historical'?m.historicalCollect:m.prospectiveCollect).mock.invocationCallOrder[0]);

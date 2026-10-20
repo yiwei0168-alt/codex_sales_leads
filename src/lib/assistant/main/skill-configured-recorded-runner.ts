@@ -5,7 +5,7 @@ import {requireSkillAcceptanceFreeze} from './skill-acceptance-freeze';
 import {prepareSkillAcceptanceBaseline} from './skill-acceptance-baseline';
 import {prepareSkillExecutionIdentity} from './skill-runtime-identity';
 import {prepareSkillProspectiveSource} from './skill-prospective-source';
-import {prepareRecordedSkillCandidateSnapshot,runDurableRecordedSkillCandidateArm} from './skill-candidate-source';
+import {prepareRecordedSkillCandidateSnapshot} from './skill-candidate-source';
 import {createConfiguredSkillTransportRequest} from './skill-model-transport-request';
 import {verifySkillCandidateJournalTransports} from './skill-model-transport-journal';
 import {verifyOwnedTaskModelTransports} from './task-model-transport-journal';
@@ -52,30 +52,25 @@ export async function runConfiguredSkillRecordedCandidate(context:{userId:string
  };
  const bound=await bind();let runtimeTaskId:string|undefined;
  const output=await(async()=>{
-  if(p.kind==='historical'){
-   const pin={runId:bound.runId,skillId:plan.pin.skillId,version:plan.pin.version,freezeId,caseId:p.caseId,evaluationId:p.evaluationId,arm:'candidate' as const};
-   const task=await enqueueSkillCandidateRuntimeTask(context,pin,plan);runtimeTaskId=task.runId;
-   const taskInput={...pin,taskId:task.runId},state=await inspectSkillCandidateRuntimeTask(context,taskInput,plan);
-   const snapshotHash=digest({protocol:'skill-runtime-candidate-v1',sourceHash:bound.snapshotHash,taskId:task.runId,specHash:task.specHash});
-   if(state.status==='completed'){
-    const audit=await auditSkillRuntimeCandidate(context,taskInput,plan),completed=await readCompletedSkillCandidateRuntimeTask(context,taskInput,plan);
-    if(audit.projection.runtimeSnapshotHash!==snapshotHash||audit.projection.completedTaskHash!==digest(completed))throw new Error('Configured completed runtime task changed');
-    return {protocol:'skill-instruction-overlay-runtime-v1',status:'completed',stopReason:null,candidateSkillUsed:audit.projection.candidateSkillUsed,
-     reply:completed.reply,serverSnapshotHash:bound.snapshotHash,runtimeSnapshotHash:snapshotHash,taskId:task.runId,taskStatus:'completed',
-     modelCalls:audit.projection.selectedModels.length,registeredToolJournalUsed:true,reusedCompletedTask:true};
-   }
-   if(state.control||!['queued','running'].includes(state.status))throw new Error('Configured runtime task requires reconciliation');
-   // Key, registry, transport and paid-scope preflight precede the live claim.
-   const request=await createConfiguredSkillTransportRequest(context,{evaluationId:p.evaluationId,arm:'candidate',snapshotHash,frozen});
-   const claimed=await claimSkillCandidateRuntimeTask(context,{...taskInput,workerId:`skill-collector-${p.evaluationId}`},plan);
-   const result=await runSkillRuntimeCandidate(claimed.context,pin,
-    {evaluationId:p.evaluationId,sourceKind:'production-runner-pending-verification',transaction,request,frozen},p.maximumModelCalls);
-   if(result.taskStatus!=='completed'||result.runtimeSnapshotHash!==snapshotHash)throw new Error('Configured recorded candidate incomplete or changed');
-   return {...result,reusedCompletedTask:false};
+  const pin={runId:bound.runId,skillId:plan.pin.skillId,version:plan.pin.version,freezeId,caseId:p.caseId,evaluationId:p.evaluationId,arm:'candidate' as const,...(p.kind==='prospective'?{prospectiveJobId:p.jobId}:{})};
+  const task=await enqueueSkillCandidateRuntimeTask(context,pin,plan);runtimeTaskId=task.runId;
+  const taskInput={...pin,taskId:task.runId},state=await inspectSkillCandidateRuntimeTask(context,taskInput,plan);
+  const snapshotHash=digest({protocol:'skill-runtime-candidate-v1',sourceHash:bound.snapshotHash,taskId:task.runId,specHash:task.specHash});
+  if(state.status==='completed'){
+   const audit=await auditSkillRuntimeCandidate(context,taskInput,plan),completed=await readCompletedSkillCandidateRuntimeTask(context,taskInput,plan);
+   if(audit.projection.runtimeSnapshotHash!==snapshotHash||audit.projection.completedTaskHash!==digest(completed))throw new Error('Configured completed runtime task changed');
+   return {protocol:'skill-instruction-overlay-runtime-v1',status:'completed',stopReason:null,candidateSkillUsed:audit.projection.candidateSkillUsed,
+    reply:completed.reply,serverSnapshotHash:bound.snapshotHash,runtimeSnapshotHash:snapshotHash,taskId:task.runId,taskStatus:'completed',
+    modelCalls:audit.projection.selectedModels.length,registeredToolJournalUsed:true,reusedCompletedTask:true};
   }
-  const request=await createConfiguredSkillTransportRequest(context,{evaluationId:p.evaluationId,arm:'candidate',snapshotHash:bound.snapshotHash,frozen});
-  return runDurableRecordedSkillCandidateArm(context,{runId:bound.runId,skillId:plan.pin.skillId,version:plan.pin.version},'candidate',
+  if(state.control||!['queued','running'].includes(state.status))throw new Error('Configured runtime task requires reconciliation');
+  // Key, registry, transport and paid-scope preflight precede the live claim.
+  const request=await createConfiguredSkillTransportRequest(context,{evaluationId:p.evaluationId,arm:'candidate',snapshotHash,frozen});
+  const claimed=await claimSkillCandidateRuntimeTask(context,{...taskInput,workerId:`skill-collector-${p.evaluationId}`},plan);
+  const result=await runSkillRuntimeCandidate(claimed.context,pin,
    {evaluationId:p.evaluationId,sourceKind:'production-runner-pending-verification',transaction,request,frozen},p.maximumModelCalls);
+  if(result.taskStatus!=='completed'||result.runtimeSnapshotHash!==snapshotHash)throw new Error('Configured recorded candidate incomplete or changed');
+  return {...result,reusedCompletedTask:false};
  })();
  if(output.status!=='completed'||output.stopReason!==null||!output.candidateSkillUsed||output.serverSnapshotHash!==bound.snapshotHash)
   throw new Error('Configured recorded candidate incomplete or changed');
@@ -84,7 +79,7 @@ export async function runConfiguredSkillRecordedCandidate(context:{userId:string
  if(digest(await bind())!==digest(bound))throw new Error('Configured recorded source changed during verification');
  const collected=p.kind==='historical'
   ?await collectHistoricalSkillAcceptance(context,{freezeId,plan,replays:[{caseId:p.caseId,runId:bound.runId,evaluationId:p.evaluationId,taskId:runtimeTaskId}]},transaction)
-  :await collectSkillProspectiveAcceptance(context,{freezeId,plan,cases:[{caseId:p.caseId,jobId:p.jobId,evaluationId:p.evaluationId}]},transaction);
+  :await collectSkillProspectiveAcceptance(context,{freezeId,plan,cases:[{caseId:p.caseId,jobId:p.jobId,evaluationId:p.evaluationId,taskId:runtimeTaskId}]},transaction);
  return {...output,collected,transportVerification:transport,transportVerificationHash:digest(transport),
   originalTransportVerificationHash:bound.originalTransportHash,
   productionAgentEquivalent:false as const,collectorProvenanceVerified:false as const,automaticActivation:false as const};

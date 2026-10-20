@@ -1,8 +1,9 @@
 import {beforeEach,expect,it,vi} from 'vitest';
 import {digest} from './contracts';
-const m=vi.hoisted(()=>({source:vi.fn(),baseline:vi.fn(),candidate:vi.fn(),identity:vi.fn(),freeze:vi.fn(),inspect:vi.fn(),collector:vi.fn()}));
+const m=vi.hoisted(()=>({source:vi.fn(),baseline:vi.fn(),candidate:vi.fn(),identity:vi.fn(),freeze:vi.fn(),inspect:vi.fn(),collector:vi.fn(),runtime:vi.fn()}));
 vi.mock('./skill-prospective-source',()=>({prepareSkillProspectiveSource:m.source}));
 vi.mock('./skill-acceptance-baseline',()=>({prepareSkillAcceptanceBaseline:m.baseline}));
+vi.mock('./skill-runtime-candidate-audit',()=>({auditSkillRuntimeCandidate:m.runtime}));
 vi.mock('./skill-candidate-audit',()=>({auditDurableSkillCandidate:m.candidate}));
 vi.mock('./skill-runtime-identity',()=>({prepareSkillExecutionIdentity:m.identity}));
 vi.mock('./skill-acceptance-freeze',()=>({requireSkillAcceptanceFreeze:m.freeze,inspectLockedSkillAcceptanceFreeze:m.inspect}));
@@ -86,4 +87,18 @@ it('refuses an inactive freeze inside the persistence transaction before insert'
  const transaction=async(_user:string,work:(client:unknown)=>Promise<unknown>)=>work({query});
  await expect(collectSkillProspectiveAcceptance({userId:owner},{freezeId:freeze,plan:plan(),cases:[reference]},transaction as never)).rejects.toThrow('before persistence');
  expect(query).not.toHaveBeenCalled();
+});
+
+it('routes task-marked prospective material through independent runtime audit twice',async()=>{
+ const taskId='77777777-7777-4777-8777-777777777777';
+ m.runtime.mockResolvedValue({...candidate(),projection:{...candidate().projection,toolReceipts:[{id:taskId,hash:h}],completedTaskHash:h}});
+ const result=await prepareSkillProspectiveObservation({userId:owner},{...input(),reference:{...reference,taskId}});
+ expect(m.runtime).toHaveBeenCalledTimes(2);expect(m.candidate).not.toHaveBeenCalled();
+ expect(m.runtime.mock.calls[0][1]).toMatchObject({taskId,prospectiveJobId:job,runId:run,freezeId:freeze});
+ expect(result).toMatchObject({reference:{taskId},runtimeTaskHash:h,runtimeToolReceipts:[{id:taskId,hash:h}]});
+});
+it('never reverts task-marked prospective material to legacy on audit rejection',async()=>{
+ m.runtime.mockRejectedValue(new Error('Runtime capture binding changed'));
+ await expect(prepareSkillProspectiveObservation({userId:owner},{...input(),reference:{...reference,taskId:run}})).rejects.toThrow('capture binding changed');
+ expect(m.candidate).not.toHaveBeenCalled();
 });

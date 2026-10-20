@@ -84,3 +84,22 @@ it('routes a prospective case through the unified reader and advertises only val
  const wrongCase=saved();wrongCase.artifact.rawReceipts.prospectiveSources.shadow.caseId='other';
  m.evidence.mockResolvedValue(wrongCase);expect((await readSkillAcceptanceReview({userId:owner},bundle)).cases[0].materialAvailable).toBe(false);
 });
+
+it('preserves task reference and exposes independently reconstructed candidate reads with arm labels',async()=>{
+ const taskId='88888888-8888-4888-8888-888888888888',runtime={...receipt(),id:taskId,run_id:taskId,tool_id:'skill_read'};
+ const original=saved(),rebuiltValue=rebuilt();
+ const ref={...reference(),taskId};original.artifact.rawReceipts.prospectiveSources.shadow=ref;
+ m.evidence.mockResolvedValue(original);m.rebuild.mockResolvedValue({...rebuiltValue,reference:ref,runtimeToolReceipts:[{id:runtime.id,hash:digest(runtime)}]});
+ m.query.mockImplementation(async(_user:string,_sql:string,args:unknown[])=>args[1]===taskId?[runtime]:[receipt()]);
+ const result=await readSkillProspectiveReviewCase({userId:owner},input);
+ expect(m.rebuild.mock.calls[0][1].reference.taskId).toBe(taskId);
+ expect(result.receipts).toEqual([{tool:receipt().tool_id,input:receipt().input,output:receipt().output,arm:'baseline'},
+  {tool:runtime.tool_id,input:runtime.input,output:runtime.output,arm:'candidate'}]);
+});
+it('rejects candidate evidence that differs from independently reconstructed hashes',async()=>{
+ const taskId='88888888-8888-4888-8888-888888888888',ref={...reference(),taskId},original=saved();
+ original.artifact.rawReceipts.prospectiveSources.shadow=ref;m.evidence.mockResolvedValue(original);
+ m.rebuild.mockResolvedValue({...rebuilt(),reference:ref,runtimeToolReceipts:[{id:taskId,hash:digest('expected')}]});
+ m.query.mockImplementation(async(_user:string,_sql:string,args:unknown[])=>args[1]===taskId?[{...receipt(),id:taskId,output:{changed:true}}]:[receipt()]);
+ await expect(readSkillProspectiveReviewCase({userId:owner},input)).rejects.toThrow('runtime evidence changed');
+});
