@@ -81,8 +81,9 @@ export async function claimRun(workerId: string) {
   return (await query<{ id: string; user_id: string; lease_token: string }>("select * from claim_next_agent_run($1)", [workerId]))[0];
 }
 export async function heartbeat(context: ExecutionContext,deadline?:DatabaseDeadline) {
-  const rows = await tenantQuery(context.userId, `update agent_run set lease_until=now()+interval '90 seconds'
-    where user_id=$1 and id=$2 and lease_token=$3 and status='running' and lease_until>now() returning id`, [context.userId, context.runId, context.leaseToken],undefined,deadline);
+  const rows = await tenantQuery(context.userId, `update agent_run set lease_until=clock_timestamp()+interval '90 seconds'
+    where user_id=$1 and id=$2 and lease_token=$3 and status='running' and control is null and lease_until>clock_timestamp()
+     and exists(select 1 from app_user u where u.id=agent_run.user_id and u.status='active') returning id`, [context.userId, context.runId, context.leaseToken],undefined,deadline);
   return rows.length === 1;
 }
 export class LeaseLostError extends Error { constructor() { super("Agent lease lost"); } }
@@ -93,7 +94,7 @@ export function assertCurrentInstructions(context: ExecutionContext, instruction
 export async function boundary(context: ExecutionContext) {
   const rows = await tenantQuery<AgentRun & { role: "admin" | "member" }>(context.userId,
     `select r.*,u.role from agent_run r join app_user u on u.id=r.user_id
-     where r.user_id=$1 and r.id=$2 and r.lease_token=$3 and r.status='running' and r.lease_until>now() and u.status='active'`, [context.userId, context.runId, context.leaseToken]);
+     where r.user_id=$1 and r.id=$2 and r.lease_token=$3 and r.status='running' and r.lease_until>clock_timestamp() and u.status='active'`, [context.userId, context.runId, context.leaseToken]);
   if (!rows[0]) throw new LeaseLostError();
   context.role = rows[0].role;
   return rows[0];
@@ -113,7 +114,9 @@ export async function controlRun(userId: string, id: string, action: "pause" | "
       if (run.status === "running") throw new Error("Task is already running");
       await client.query("update agent_run set status='queued',control=null,lease_token=null,lease_until=null,next_attempt_at=now(),updated_at=now() where user_id=$1 and id=$2", [userId, id]);
     } else if (run.status === "running") {
-      await client.query("update agent_run set control=$3,updated_at=now() where user_id=$1 and id=$2", [userId, id, action]);
+      await client.query(`update agent_run set control=$3,
+        status=case when lease_until>clock_timestamp() then status else $4 end,updated_at=clock_timestamp()
+        where user_id=$1 and id=$2`,[userId,id,action,action==='pause'?'paused':'cancelled']);
     } else {
       await client.query("update agent_run set status=$3,control=null,updated_at=now() where user_id=$1 and id=$2", [userId, id, action === "pause" ? "paused" : "cancelled"]);
     }

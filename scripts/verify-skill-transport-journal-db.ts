@@ -23,6 +23,7 @@ import {createConfiguredSkillCollectorConnection} from '../src/lib/assistant/mai
 import {verifyTaskTransportJournalDatabase} from './fixtures/task-transport-journal-db';
 import {verifySkillCandidateExecutionDatabase} from './fixtures/skill-candidate-execution-db';
 import {verifySkillCandidateCheckpointDatabase} from './fixtures/skill-candidate-checkpoint-db';
+import {verifyAgentRunLeaseDatabase} from './fixtures/agent-run-lease-db';
 import {verifySkillCandidateLeaseDatabase} from './fixtures/skill-candidate-lease-db';
 
 nextEnv.loadEnvConfig(process.cwd());disableLocalAnalysisTracing();
@@ -65,6 +66,8 @@ try{
  }finally{login.release();}
  const collectorUrl=new URL(admin);collectorUrl.username='ma24_transport_fixture_login';collectorUrl.password=password;
  process.env.SKILL_COLLECTOR_DATABASE_URL=collectorUrl.toString();dedicated=createConfiguredSkillCollectorConnection();
+ const sharedTaskLease=process.env.MA24_SHARED_TASK_LEASE==='1'?await verifyAgentRunLeaseDatabase(pool,owner):{sharedAgentRunLeaseDatabaseVerified:false};
+ if(process.env.MA24_SHARED_TASK_LEASE==='1')console.log(JSON.stringify({sharedAgentRunLeaseComponent:'passed',...sharedTaskLease}));
  const executionOwnership=await verifySkillCandidateExecutionDatabase(pool,owner,dedicated.transaction);
  const graphCheckpoint=await verifySkillCandidateCheckpointDatabase(pool,owner,other,skill.id,dedicated.transaction);
  const timedLease=await verifySkillCandidateLeaseDatabase(pool,owner,other,dedicated.transaction,frozen);
@@ -223,7 +226,7 @@ try{
  await assert.rejects(verifySkillCandidateJournalTransports({userId:owner},selection,frozen),/revoked/);
  assert.equal((await pool.query('select enabled from agent_skill where id=$1',[skill.id])).rows[0].enabled,false);
  const originalTaskJournal=await verifyTaskTransportJournalDatabase(pool,owner,other,directory,skill.id);
- console.log(JSON.stringify({transportJournalDatabase:'passed',...executionOwnership,...graphCheckpoint,...timedLease,...originalTaskJournal,rejectedCompletedResponseKinds:3,rejectedCompletedResponsesPersistedAsNonretryable:true,rejectedResponseRecoveryNoReplay:true,rejectedResponsesNotTransportQualified:true,restrictedCollectorAppend:true,persistedSignatureVerified:true,recoveryReusesStoredOutcome:true,
+ console.log(JSON.stringify({transportJournalDatabase:'passed',...sharedTaskLease,...executionOwnership,...graphCheckpoint,...timedLease,...originalTaskJournal,rejectedCompletedResponseKinds:3,rejectedCompletedResponsesPersistedAsNonretryable:true,rejectedResponseRecoveryNoReplay:true,rejectedResponsesNotTransportQualified:true,restrictedCollectorAppend:true,persistedSignatureVerified:true,recoveryReusesStoredOutcome:true,
   crossAccountHidden:true,appendOnly:true,registryRevocationRejected:true,freezeRevocationRejected:true,dedicatedLoginVerified:true,appRoleMembershipRejected:true,
   compiledCollectorDatabasePreflight:true,collectorImageTlsPreflight,signedFallbackJournalVerified:true,freezeRevocationSerialized:true,modelAttemptAndOutcomeAppendSerialized:true,waitingModelWritesRejectCommittedRevocation:true,postRevocationModelWritesRejected:true,
   postRevocationLockedReadRejected:true,syntheticFixture:true,binaryVerified:false,automaticActivation:false,actualModelCalls:0}));
