@@ -274,6 +274,36 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
     }
     finally{await lifecycleClient.query('reset role');}
    };
+   // Actual separate backends: qualification retains operator admission gates
+   // until TX end, and an in-flight operator makes new use fail without waiting.
+   for(const gate of ['skill-runner-trust-registry-v1','skill-runtime-packages-v1']){
+    const operator=await pool.connect();
+    try{
+     await lifecycleClient.query('begin');await operator.query('begin');
+     assert.equal(await current(),true);
+     const exclusive=async()=> (await operator.query('select pg_try_advisory_xact_lock(hashtextextended($1::text,0)) admitted',[gate])).rows[0].admitted;
+     assert.equal(await exclusive(),false,`${gate}: current use retains gate`);
+     await lifecycleClient.query('rollback');
+     assert.equal(await exclusive(),true,`${gate}: transaction end releases gate`);
+     await lifecycleClient.query('begin');
+     await lifecycleClient.query('set local role network_copilot_app');
+     await lifecycleClient.query("select set_config('app.current_user_id',$1,true),set_config('app.current_user_role','member',true)",[owner]);
+     await lifecycleClient.query("set local statement_timeout='3s'");
+     assert.equal(await skillActivationCurrent(lifecycleClient,owner,skillId,1,binding),false,`${gate}: busy gate denies without waiting`);
+     await lifecycleClient.query('rollback');await operator.query('rollback');
+     await lifecycleClient.query('begin');assert.equal(await current(),true,`${gate}: operator rollback restores eligibility`);
+    }finally{
+     await lifecycleClient.query('rollback');await operator.query('rollback');operator.release();
+    }
+   }
+   for(const isolation of ['repeatable read','serializable']){
+    await lifecycleClient.query(`begin isolation level ${isolation}`);
+    try{
+     await lifecycleClient.query('set local role network_copilot_app');
+     await lifecycleClient.query("select set_config('app.current_user_id',$1,true),set_config('app.current_user_role','member',true)",[owner]);
+     assert.equal(await skillActivationCurrent(lifecycleClient,owner,skillId,1,binding),false,`${isolation}: stale snapshots cannot qualify`);
+    }finally{await lifecycleClient.query('rollback');}
+   }
    const mutations:Array<[string,()=>Promise<unknown>]>=[
     ['registry',()=>lifecycleClient.query('select publish_skill_runner_trust_registry($1,$2)',[{...registry,fixtureChange:true},digest('changed synthetic registry')])],
     ['freeze',()=>lifecycleClient.query("insert into agent_skill_acceptance_freeze_revocation(freeze_id,owner_id,reason) values($1,$2,'Synthetic lifecycle withdrawal')",[binding.freezeId,owner])],
@@ -432,6 +462,9 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
   console.log(JSON.stringify({activationDeclarationSerialization:'passed',rawCollectorAppendWaitsForActualReader:true,
    actualAdvisoryWaitVerified:true,uppercaseBundleReaderRetainsCanonicalGate:true,writerCompletesAfterReaderEnds:true,unsignedComponentAppendRolledBack:true,
    disabledGuardRejectsAdapterAndDirectSealing:true,declarationTruncateRejected:true,humanApprovalCreated:false,productionQualificationGranted:false,modelCalls:0}));
+  console.log(JSON.stringify({activationUseAdmission:'passed',actualSeparateBackends:true,trustAndPackageGatesRetainedUntilTransactionEnd:true,
+   busyOperatorRefusesUseWithoutWaiting:true,operatorRollbackRestoresEligibility:true,repeatableReadAndSerializableDenied:true,
+   qualificationProducerMocked:true,humanApprovalCreated:false,productionQualificationGranted:false,modelCalls:0}));
   console.log(JSON.stringify({activationSourceReadiness:'passed',missingRetainedLocksRejected:true,missingPackageGateRejected:true,
    allRetainedGatesAccepted:true,disabledLegacyGuardRejectsProducerAndDirectSealing:true,unprotectedDirectSealingRejected:true,
    sealedAuditRequiresActualFence:true,positiveOtherQualificationMocked:true,humanApprovalCreated:false,productionQualificationGranted:false,modelCalls:0}));

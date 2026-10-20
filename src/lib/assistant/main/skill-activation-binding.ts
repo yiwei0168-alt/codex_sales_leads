@@ -33,6 +33,16 @@ export async function skillActivationCurrent(client:PoolClient,userId:string,ski
  const checking=checkingSources.getStore()??new Set<string>(),key=`${userId}:${skillId}:${version}`;
  if(checking.has(key)||checking.size>=16)return false;
  return checkingSources.run(checking,()=>withBoundTenantTransaction(client,userId,async()=>{
+  const isolation=(await client.query<{isolation:string}>("select current_setting('transaction_isolation') isolation")).rows[0]?.isolation;
+  if(isolation!=='read committed')return false;
+  // Callers may already hold business-source locks. Never wait in the reverse
+  // admission order: deny this use if an operator is publishing/withdrawing.
+  // Successful shared locks survive every recheck until the owning TX ends.
+  for(const gate of ['skill-runner-trust-registry-v1','skill-runtime-packages-v1']){
+   const admitted=(await client.query<{admitted:boolean}>(
+    'select pg_try_advisory_xact_lock_shared(hashtextextended($1::text,0)) admitted',[gate])).rows[0]?.admitted;
+   if(admitted!==true)return false;
+  }
   const current=async()=>(await client.query<{current:boolean}>('select skill_activation_is_current($1::uuid,$2::uuid,$3::integer) current',
    [userId,skillId,version])).rows[0]?.current===true;
   if(!await current())return false;
