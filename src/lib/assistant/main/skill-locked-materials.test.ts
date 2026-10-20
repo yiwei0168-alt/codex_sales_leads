@@ -53,7 +53,7 @@ beforeEach(()=>{vi.resetAllMocks();m.packages.mockResolvedValue({runtimePackages
  m.query.mockResolvedValue({rows:[]});m.memoryBoundary.mockImplementation(async(_user:string,work:()=>Promise<unknown>)=>work());
  m.times.mockResolvedValue({methodExperienceTimesRevalidated:true,methodExperienceTimeCheckedAt:'2026-10-19T01:00:00.000Z',methodExperienceValidBefore:'2026-10-19T02:00:00.000Z',methodExperienceTimeObservationCount:2});
  m.methods.mockResolvedValue({pinnedMethodSourcesLocked:true,pinnedMethodPinCount:2,pinnedMethodVersionCount:1,pinnedMethodExperienceObservationCount:2});
- m.lock.mockResolvedValue({timelineSourcesLocked:true,timelineCustomerCount:0,mailReadSourcesLocked:true,mailCount:0,attachmentMetadataLocked:true,attachmentCount:0,taskOriginsLocked:true,taskJournalsLocked:true,runCount:1});
+ m.lock.mockResolvedValue({prospectiveCaptureSourcesLocked:true,prospectiveJobCount:0,timelineSourcesLocked:true,timelineCustomerCount:0,mailReadSourcesLocked:true,mailCount:0,attachmentMetadataLocked:true,attachmentCount:0,taskOriginsLocked:true,taskJournalsLocked:true,runCount:1});
  m.policy.mockResolvedValue({artifactHash:bundle.artifactHash,latestReviewHash:bundle.latestReviewHash,policyPassed:false,automaticActivation:false});});
 it('rebuilds planned material and returns hashes without private answers or receipts',async()=>{
  const out=await revalidateLockedSkillAcceptanceMaterials(client,context,bundleId);
@@ -273,8 +273,12 @@ it('composes authenticated registered collector provenance while keeping quality
   m.packages.mockResolvedValue({runtimePackagesRequired:true,runtimePackagesRegistered:true,runtimePackageCount:3,
    runtimePackageRegistrationHash:digest('registrations'),runtimePackageRevisions:['1','2','3'],runtimePackageValidBefore:'2026-10-19T01:10:00.000Z',
    runtimePackageBytesPairRevalidated:true,runtimePackageBytesPairHash:digest('bytes'),runtimeModuleFormatPairRevalidated:true});
+  m.times.mockResolvedValue({methodExperienceTimesRevalidated:true,acceptanceTimeCheckedAt:'2026-10-19T01:00:00.000Z',acceptanceValidBefore:'2026-10-19T01:10:00.000Z'});
+  m.query.mockImplementation(async(sql:string)=>sql.startsWith('select to_regprocedure')?{rows:[{available:true}]}:
+   sql.includes('skill_activation_sources_ready')?{rows:[{ready:true,transaction_id:'42'}]}:{rows:[]});
   const out=await evaluateLockedSkillAcceptanceReadiness(client,{userId:id(1)},acceptedBundle);
-  expect(out).toMatchObject({collectorProvenanceVerified:true,collectorProvenanceBlockers:[],policyPassed:false,sourceRevocationsLocked:false,automaticActivation:false});
+  expect(out).toMatchObject({collectorProvenanceVerified:true,collectorProvenanceBlockers:[],policyPassed:false,
+   sourceRevocationGuardsReady:true,sourceRevocationsLocked:false,sourceProtectionTransactionId:'42',automaticActivation:false});
   expect(out).toHaveProperty('collectorProvenanceHash',expect.stringMatching(/^[a-f0-9]{64}$/));expect(out).not.toHaveProperty('productionAgentEquivalent');
   m.packages.mockResolvedValue({runtimePackagesRequired:true,runtimePackagesRegistered:false,runtimePackageBlockers:['latest-package-registration-withdrawn']});
   expect(await evaluateLockedSkillAcceptanceReadiness(client,{userId:id(1)},acceptedBundle)).toMatchObject({collectorProvenanceVerified:false,automaticActivation:false});

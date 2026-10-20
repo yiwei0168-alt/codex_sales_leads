@@ -76,12 +76,19 @@ export async function verifyCombinedConfiguredDatabase(pool:Pool,original:Signed
    process.env.SKILL_RUNNER_TRUST_REGISTRY_MODE='database';
   }
   try{
+  const sourceProtectionSchemaAvailable=(await pool.query("select to_regprocedure('public.skill_activation_sources_ready(uuid,uuid,text)') is not null available")).rows[0].available;
   const publisher=databaseTrust?await pool.connect():undefined;
   let publication:Promise<{error?:unknown}>|undefined;
   let readiness:Awaited<ReturnType<typeof evaluateLockedSkillAcceptanceReadiness>>;
   try{
    readiness=await tenantTransaction(original.owner,async client=>{
     const ready=await evaluateLockedSkillAcceptanceReadiness(client,context,combined.bundleId);
+    assert.equal(ready.sourceRevocationGuardsReady,databaseTrust&&sourceProtectionSchemaAvailable);
+    if(ready.sourceRevocationGuardsReady){
+     assert('sourceProtectionTransactionId' in ready);
+     assert.equal(ready.sourceProtectionTransactionId,(await client.query('select pg_current_xact_id()::text transaction_id')).rows[0].transaction_id);
+    }
+    assert.equal(ready.sourceRevocationsLocked,false,'Readiness must not claim the activation fence was armed');
     if(publisher){
      const readerPid=(await client.query('select pg_backend_pid() pid')).rows[0].pid;
      const publisherPid=(await publisher.query('select pg_backend_pid() pid')).rows[0].pid;
@@ -142,6 +149,7 @@ export async function verifyCombinedConfiguredDatabase(pool:Pool,original:Signed
    immutableAttachmentSnapshotVerified:true,withdrawnSnapshotSourceRejected:true,restoredCanonicalSnapshotRevalidated:true,
    signingEnrollmentCoverageVerified:true,signingEnrollmentCount:readiness.signingEnrollmentCount,signingEnrollmentCoverageHash:readiness.signingEnrollmentCoverageHash,
    signingUsageWindowsVerified:true,runtimeRegistrationSchemaAvailable:registrationSchema,runtimePackagesRegistered:readiness.runtimePackagesRegistered,runtimePackageBlockers:readiness.runtimePackageBlockers,
+   sourceProtectionSchemaAvailable,sourceRevocationGuardsReady:readiness.sourceRevocationGuardsReady,sourcePreparedWithoutSealing:true,
    databaseTrustRegistryReadinessVerified:databaseTrust,registryDisablementBlockedUntilReadinessTransactionCommit:databaseTrust,
    realQualityAccepted:false,productionQualificationGranted:false,automaticActivation:false};
   }finally{if(priorRegistryMode===undefined)delete process.env.SKILL_RUNNER_TRUST_REGISTRY_MODE;else process.env.SKILL_RUNNER_TRUST_REGISTRY_MODE=priorRegistryMode;}

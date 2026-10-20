@@ -4,7 +4,7 @@ import {readFile,writeFile,mkdtemp,rm,unlink} from 'node:fs/promises';
 import {join,resolve,dirname,sep} from 'node:path';
 import {spawn} from 'node:child_process';
 import {build} from 'esbuild';
-import type {Pool} from 'pg';
+import type {Pool,PoolClient} from 'pg';
 import {digest,type ExecutionContext} from '../../src/lib/assistant/main/contracts';
 import {changeSkill,readSkill,listSkills,listSkillsPage} from '../../src/lib/assistant/main/skills';
 import {assertCurrentSkillMessages,SkillContextChangedError} from '../../src/lib/assistant/main/skill-message-guard';
@@ -38,6 +38,7 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
  const sourceFence=await readFile('db/migrations/162_skill_activation_source_fence.sql','utf8');await pool.query(sourceFence);await pool.query(sourceFence);
  const reviewGuard=await readFile('db/migrations/163_skill_acceptance_review_serialization.sql','utf8');await pool.query(reviewGuard);await pool.query(reviewGuard);
  const declarationGuard=await readFile('db/migrations/164_skill_runner_attestation_serialization.sql','utf8');await pool.query(declarationGuard);await pool.query(declarationGuard);
+ const readinessGuard=await readFile('db/migrations/165_skill_activation_source_readiness.sql','utf8');await pool.query(readinessGuard);await pool.query(readinessGuard);
  // Explicitly unqualified synthetic registrations for the mocked component only.
  const packageRevisions:string[]=[];
  for(const purpose of ['runner-declaration','model-transport','task-model-transport']){
@@ -89,7 +90,7 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
    values($1,$2,$3,'candidate',0,0,'synthetic-fixture',$4,'{}',$5,$6)`,[attemptId,owner,randomUUID(),digest('unqualified component'),digest({}),freezeId]);
   const sourceSnapshot=await tenantTransaction(owner,client=>withBoundTenantTransaction(client,owner,()=>captureSkillActivationSources(client,owner,skillAcceptanceRunIds(artifact))));
   const sourceRunId=sourceSnapshot.activationSources[0].runId;
-  const flags=['policyPassed','acceptanceLedgerRevalidated','activationSourcesRevalidated','trustRegistryLocked','sourceRevocationsLocked','collectorProvenanceVerified','productionAgentEquivalent','canonicalOriginalCoverageRequired','canonicalOriginalCoverageRevalidated',
+  const flags=['policyPassed','acceptanceLedgerRevalidated','activationSourcesRevalidated','trustRegistryLocked','sourceRevocationGuardsReady','collectorProvenanceVerified','productionAgentEquivalent','canonicalOriginalCoverageRequired','canonicalOriginalCoverageRevalidated',
    'runnerDeclarationRequired','runnerDeclarationRevalidated','transportReceiptsRequired','transportReceiptsRevalidated','signingEnrollmentCoverageRequired','signingEnrollmentCoverageRevalidated',
    'runtimePackagesRequired','runtimePackagesRegistered','runtimePackageBytesPairRevalidated','runtimeModuleFormatPairRevalidated','methodExperienceTimesRevalidated','decisionMemorySnapshotRevalidated',
    'memoryReceiptSourcesRevalidated','memoryTimeFenceRevalidated','privateReceiptSourcesRevalidated','lockedEvidencePolicyEvaluated','sourcePayloadsRevalidated','knowledgeSourcesLocked','decisionMemorySourcesLocked',
@@ -101,7 +102,12 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
    const now=(await client.query('select clock_timestamp() checked_at')).rows[0].checked_at;
    const fence=await captureSkillMemoryTimeFence(client,context.userId,[]);
    const ledger=await captureSkillAcceptanceLedger(client,context.userId,bundleId,row.artifact_hash);
+   await client.query("select pg_advisory_xact_lock_shared(hashtextextended('skill-runtime-packages-v1',0))");
+   const protectedSource=(await client.query('select pg_current_xact_id()::text transaction_id,skill_activation_sources_ready($1,$2,$3) ready',
+    [bundleId,'${freezeId}',row.artifact_hash])).rows[0];
+   if(protectedSource.ready!==true)throw new Error('Source protection component unavailable');
    return {...${JSON.stringify(Object.fromEntries(flags.map(key=>[key,true])))},artifactHash:row.artifact_hash,latestReviewHash:${JSON.stringify(digest([]))},
+    sourceRevocationsLocked:false,sourceProtectionHash:'${digest('mock source preparation')}',sourceProtectionTransactionId:protectedSource.transaction_id,
     materialsHash:'${digest('mock materials')}',currentRuntimeIdentityHash:'${digest(artifact.plan.identity)}',trustRegistryHash:'${digest(registry)}',runtimePackageRegistrationHash:'${digest('mock package')}',
     runtimePackageRevisions:${JSON.stringify(packageRevisions)},...fence,...ledger,blockers:[],acceptanceTimeCheckedAt:now.toISOString(),acceptanceValidBefore:new Date(Math.min(
      now.getTime()+(process.env.MA24_ACTIVATION_EXPIRY==='1'?2000:3600000),fence.memoryTimeValidBefore?Date.parse(fence.memoryTimeValidBefore):Infinity,
@@ -120,6 +126,35 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
    });
    assert.equal(out.code,0,'Disposable activation component failed');return JSON.parse(out.output.trim());
   };
+  const retainSources=async(client:PoolClient,packages=true)=>{
+   const {readLockedSkillRunnerTrustRegistry}=await import('../../src/lib/assistant/main/skill-runner-trust-registry-store');
+   await readLockedSkillRunnerTrustRegistry(client,owner);
+   await readLockedSkillAcceptanceEvidence(client,{userId:owner},pending);
+   await captureSkillAcceptanceLedger(client,owner,pending,digest(artifact));
+   if(packages)await client.query("select pg_advisory_xact_lock_shared(hashtextextended('skill-runtime-packages-v1',0))");
+  };
+  const sourceReady=(client:PoolClient)=>client.query<{ready:boolean}>('select skill_activation_sources_ready($1,$2,$3) ready',[pending,freezeId,digest(artifact)]);
+  await tenantTransaction(owner,client=>withBoundTenantTransaction(client,owner,async()=>{
+   assert.equal((await sourceReady(client)).rows[0].ready,false);
+   await retainSources(client,false);assert.equal((await sourceReady(client)).rows[0].ready,false);
+   await client.query("select pg_advisory_xact_lock_shared(hashtextextended('skill-runtime-packages-v1',0))");
+   assert.equal((await sourceReady(client)).rows[0].ready,true);
+  }));
+  const unprotected=await makeActor();
+  await assert.rejects(tenantTransaction(owner,client=>withBoundTenantTransaction(client,owner,()=>client.query(
+   'select begin_skill_activation_source_fence($1,$2,$3,$4,$5,$6,$7,$8)',
+   [unprotected.runId,unprotected.callId,skillId,1,pending,digest('unprotected seal component'),artifact.plan.expiresAt,unprotected.leaseToken]))),/source protection not ready/);
+  assert.deepEqual(await inspect(unprotected),{enabled:false,status:'started',output:null,events:0});
+  await pool.query('alter table agent_memory disable trigger skill_memory_source_statement');
+  try{
+   const disabled=await makeActor();assert.equal((await run(disabled,true)).activationReturnedBeforeCommit,false);
+   assert.deepEqual(await inspect(disabled),{enabled:false,status:'started',output:null,events:0});
+   await assert.rejects(tenantTransaction(owner,client=>withBoundTenantTransaction(client,owner,async()=>{
+    await retainSources(client);
+    return client.query('select begin_skill_activation_source_fence($1,$2,$3,$4,$5,$6,$7,$8)',
+     [disabled.runId,disabled.callId,skillId,1,pending,digest('disabled legacy source guard'),artifact.plan.expiresAt,disabled.leaseToken]);
+   })),/source protection not ready/);
+  }finally{await pool.query('alter table agent_memory enable trigger skill_memory_source_statement');}
   await pool.query('alter table agent_memory disable trigger skill_activation_source_write');
   try{
    const disabled=await makeActor(),outcome=await run(disabled,true);
@@ -152,9 +187,9 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
   for(const sql of ['select * from skill_activation_source_fence','update skill_activation_source_fence set skill_written=false','delete from skill_activation_source_fence'])
    await assert.rejects(tenantTransaction(owner,client=>client.query(sql)),/permission denied/);
   const incomplete=await makeActor();
-  await assert.rejects(tenantTransaction(owner,client=>withBoundTenantTransaction(client,owner,()=>client.query(
+  await assert.rejects(tenantTransaction(owner,client=>withBoundTenantTransaction(client,owner,async()=>{await retainSources(client);return client.query(
    'select begin_skill_activation_source_fence($1,$2,$3,$4,$5,$6,$7,$8)',
-   [incomplete.runId,incomplete.callId,skillId,1,pending,digest('incomplete component fence'),artifact.plan.expiresAt,incomplete.leaseToken]))),/source fence incomplete or expired at commit/);
+   [incomplete.runId,incomplete.callId,skillId,1,pending,digest('incomplete component fence'),artifact.plan.expiresAt,incomplete.leaseToken]);})),/source fence incomplete or expired at commit/);
   assert.deepEqual(await inspect(incomplete),{enabled:false,status:'started',output:null,events:0});
   const committed=await makeActor(),first=await run(committed),state=await inspect(committed);
   assert.equal(state.enabled,true);assert.equal(state.status,'completed');assert.equal(state.events,1);assert.equal(state.output.data.activationProofHash,first.data.activationProofHash);
@@ -163,6 +198,8 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
   const binding=(await pool.query('select activation_binding from agent_skill where id=$1',[skillId])).rows[0].activation_binding;
   assert.equal(binding.callId,committed.callId);assert.deepEqual(binding.runtimePackageRevisions,packageRevisions);
   assert.equal(binding.runtimeHash,artifact.plan.identity.runtimeHash);
+  const sealedAudit=(await pool.query("select payload from agent_run_event where user_id=$1 and run_id=$2 and kind='skill_activated'",[owner,committed.runId])).rows[0].payload;
+  assert.equal(sealedAudit.sourceRevocationsLocked,true);assert.equal(sealedAudit.sourceProtectionHash,digest('mock source preparation'));
   const probeBlocked=async(sql:string,params:unknown[],writerRole?:'network_copilot_app'|'network_copilot_skill_collector')=>{
    const holder=await pool.connect(),writer=await pool.connect();let mutation:Promise<unknown>|undefined;
    try{
@@ -395,6 +432,9 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
   console.log(JSON.stringify({activationDeclarationSerialization:'passed',rawCollectorAppendWaitsForActualReader:true,
    actualAdvisoryWaitVerified:true,uppercaseBundleReaderRetainsCanonicalGate:true,writerCompletesAfterReaderEnds:true,unsignedComponentAppendRolledBack:true,
    disabledGuardRejectsAdapterAndDirectSealing:true,declarationTruncateRejected:true,humanApprovalCreated:false,productionQualificationGranted:false,modelCalls:0}));
+  console.log(JSON.stringify({activationSourceReadiness:'passed',missingRetainedLocksRejected:true,missingPackageGateRejected:true,
+   allRetainedGatesAccepted:true,disabledLegacyGuardRejectsProducerAndDirectSealing:true,unprotectedDirectSealingRejected:true,
+   sealedAuditRequiresActualFence:true,positiveOtherQualificationMocked:true,humanApprovalCreated:false,productionQualificationGranted:false,modelCalls:0}));
  }finally{
   await pool.query(`drop trigger if exists ${trigger} on agent_run_event; drop trigger if exists ${trigger} on agent_skill; drop function if exists ${trigger}()`);
   if(priorMode===undefined)delete process.env.SKILL_RUNNER_TRUST_REGISTRY_MODE;else process.env.SKILL_RUNNER_TRUST_REGISTRY_MODE=priorMode;

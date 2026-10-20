@@ -25,6 +25,7 @@ import {captureSkillActivationSources} from './skill-activation-sources';
 import {skillAcceptanceRunIds} from './skill-acceptance-run-locks';
 import {captureSkillAcceptanceLedger} from './skill-acceptance-ledger';
 import {qualifySkillCollectorProvenance} from './skill-collector-provenance';
+import {prepareSkillSourceProtection} from './skill-source-protection';
 
 /** Keep consumed receipts in a private closure inside the owning transaction;
  * public wrappers expose hashes/counts only, never source contents or callbacks. */
@@ -145,6 +146,11 @@ export async function evaluateLockedSkillAcceptanceReadiness(client:PoolClient,c
    ...(memoryTimeValidBefore?{memoryTimeValidBefore}:{}),
    ...(activationSources.activationSourcesValidBefore?{activationSourcesValidBefore:activationSources.activationSourcesValidBefore}:{}),
    ...(packages.runtimePackagesRegistered?{runtimePackageValidBefore:packages.runtimePackageValidBefore}:{})});
+  const sourceProtection=await prepareSkillSourceProtection(client,{...materials,...memoryReceipts,...privateReceipts,
+   ...canonicalOriginals,...activationSources,...acceptanceLedger,...methodTimes,
+   ownerId:context.userId,bundleId,freezeId:final.freezeStatus.freezeId,sourceKind:final.artifact.sourceKind,
+   currentRuntimeIdentityHash:policy.currentRuntimeIdentityHash,frozenRuntimeIdentityHash:digest(final.artifact.plan.identity),
+   decisionMemorySnapshotRevalidated:true,memoryTimeFenceRevalidated:true,trustRegistryLocked:!!registry});
   return {...policy,prospectiveCaptureSourcesLocked:materials.prospectiveCaptureSourcesLocked,prospectiveJobCount:materials.prospectiveJobCount,knowledgeSourcesLocked:materials.knowledgeSourcesLocked,decisionMemorySourcesLocked:materials.decisionMemorySourcesLocked,timelineSourcesLocked:materials.timelineSourcesLocked,timelineCustomerCount:materials.timelineCustomerCount,mailReadSourcesLocked:materials.mailReadSourcesLocked,mailCount:materials.mailCount,attachmentMetadataLocked:materials.attachmentMetadataLocked,attachmentCount:materials.attachmentCount,taskOriginsLocked:materials.taskOriginsLocked,taskJournalsLocked:materials.taskJournalsLocked,runCount:materials.runCount,materials:materials.materials,materialsHash:materials.materialsHash,sourcePayloadsRevalidated:true as const,
    pinnedMethodSourcesLocked:materials.pinnedMethodSourcesLocked,pinnedMethodPinCount:materials.pinnedMethodPinCount,
    skillCatalogSourcesLocked:materials.skillCatalogSourcesLocked,
@@ -165,8 +171,9 @@ export async function evaluateLockedSkillAcceptanceReadiness(client:PoolClient,c
    ...activationSources,
    ...acceptanceLedger,
    ...collector,
+   ...sourceProtection,
    pinnedMethodVersionCount:materials.pinnedMethodVersionCount,pinnedMethodExperienceObservationCount:materials.pinnedMethodExperienceObservationCount,
-   sourceRevocationsLocked:false as const,automaticActivation:false as const};
+   automaticActivation:false as const};
   });
  });
 }

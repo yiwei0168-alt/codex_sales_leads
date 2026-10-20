@@ -22,13 +22,14 @@ const runtimeIdentity={runtimeHash:digest('runtimeHash')};
 // This is a mock of the future fully qualified producer. No real collector or
 // human judgment is inserted and no genuine production eligibility is asserted.
 const qualified=()=>Object.fromEntries([
- ...['policyPassed','trustRegistryLocked','sourceRevocationsLocked','collectorProvenanceVerified','productionAgentEquivalent','canonicalOriginalCoverageRequired','canonicalOriginalCoverageRevalidated',
+ ...['policyPassed','trustRegistryLocked','sourceRevocationGuardsReady','collectorProvenanceVerified','productionAgentEquivalent','canonicalOriginalCoverageRequired','canonicalOriginalCoverageRevalidated',
  'runnerDeclarationRequired','runnerDeclarationRevalidated','transportReceiptsRequired','transportReceiptsRevalidated','signingEnrollmentCoverageRequired','signingEnrollmentCoverageRevalidated',
  'runtimePackagesRequired','runtimePackagesRegistered','runtimePackageBytesPairRevalidated','runtimeModuleFormatPairRevalidated','methodExperienceTimesRevalidated',
  'decisionMemorySnapshotRevalidated','activationSourcesRevalidated','memoryReceiptSourcesRevalidated','memoryTimeFenceRevalidated','privateReceiptSourcesRevalidated','lockedEvidencePolicyEvaluated','sourcePayloadsRevalidated',
  'knowledgeSourcesLocked','decisionMemorySourcesLocked','skillCatalogSourcesLocked','pinnedMethodSourcesLocked','taskOriginsLocked','taskJournalsLocked',
  'prospectiveCaptureSourcesLocked','timelineSourcesLocked','mailReadSourcesLocked','attachmentMetadataLocked'].map(key=>[key,true]),
- ...['artifactHash','latestReviewHash','materialsHash','currentRuntimeIdentityHash','trustRegistryHash','runtimePackageRegistrationHash','acceptanceLedgerHash'].map(key=>[key,digest(key)]),
+ ...['artifactHash','latestReviewHash','materialsHash','currentRuntimeIdentityHash','trustRegistryHash','runtimePackageRegistrationHash','acceptanceLedgerHash','sourceProtectionHash'].map(key=>[key,digest(key)]),
+ ['sourceRevocationsLocked',false],['sourceProtectionTransactionId','42'],
  ['acceptanceLedgerRevalidated',true],
  ['artifactHash',bundle.artifact_hash],['blockers',[]],['acceptanceTimeCheckedAt','2026-10-20T00:00:00.000Z'],['acceptanceValidBefore','2026-10-20T01:00:00.000Z'],
  ['runtimePackageRevisions',['1','2','3']],
@@ -52,6 +53,7 @@ beforeEach(()=>{
   if(sql==='select skill_activation_declaration_guard_ready() ready')return {rows:[{ready:true}]};
   if(sql.startsWith('set constraints'))return {rows:[]};
   if(sql.startsWith('select begin_skill_activation_source_fence'))return {rows:[{fence_id:id(10)}]};
+  if(sql==='select pg_current_xact_id()::text transaction_id')return {rows:[{transaction_id:'42'}]};
   if(sql.startsWith('select id,artifact_hash')){m.latestCalls++;return {rows:[m.newBundle&&m.latestCalls>1?{...bundle,id:id(9)}:bundle]};}
   if(sql.startsWith('with changed')){if(m.writeCount===1){m.state.enabled=true;m.state.output=JSON.parse(String(params[7]));}return {rows:[{n:m.writeCount}]};}
   if(sql.startsWith('insert into agent_run_event')){if(m.eventFails)throw new Error('Audit unavailable');m.state.audit.push(JSON.parse(String(params[2])));return {rowCount:1};}
@@ -71,6 +73,7 @@ it('uses registry -> catalog admission -> bundle/Skill evidence order and atomic
  expect(JSON.parse(params[9])).toMatchObject({freezeId:id(7),reviewVersions:[],runtimePackageRevisions:['1','2','3'],callId:actor.callId});
  expect(JSON.parse(params[9]).sourceFenceId).toBe(id(10));
  expect(JSON.parse(params[9]).runtimeHash).toBe(runtimeIdentity.runtimeHash);
+ expect(m.state.audit[0]).toMatchObject({sourceRevocationsLocked:true,sourceProtectionHash:digest('sourceProtectionHash')});
  expect(m.commits).toBe(1);expect(m.rollbacks).toBe(0);
 });
 it('refuses a readiness runtime identity differing from the frozen plan',async()=>{
@@ -78,10 +81,20 @@ it('refuses a readiness runtime identity differing from the frozen plan',async()
  await expect(activateAgentSkill(actor,action)).rejects.toThrow('gate unavailable');
  expect(m.state).toEqual({enabled:false,output:null,audit:[]});
 });
-it.each(['sourceRevocationsLocked','acceptanceLedgerRevalidated','activationSourcesRevalidated','collectorProvenanceVerified','productionAgentEquivalent','runtimePackagesRegistered','runtimePackageBytesPairRevalidated','runtimeModuleFormatPairRevalidated','canonicalOriginalCoverageRevalidated','policyPassed'])('refuses incomplete %s without any effect',async key=>{
+it.each(['sourceRevocationGuardsReady','acceptanceLedgerRevalidated','activationSourcesRevalidated','collectorProvenanceVerified','productionAgentEquivalent','runtimePackagesRegistered','runtimePackageBytesPairRevalidated','runtimeModuleFormatPairRevalidated','canonicalOriginalCoverageRevalidated','policyPassed'])('refuses incomplete %s without any effect',async key=>{
  m.readiness.mockResolvedValue({...qualified(),[key]:false});
  await expect(activateAgentSkill(actor,action)).rejects.toThrow('trusted production evidence gate unavailable');
  expect(m.state).toEqual({enabled:false,output:null,audit:[]});expect(m.query.mock.calls.some(([sql])=>sql.startsWith('with changed'))).toBe(false);
+});
+it('refuses a preparation claiming it already sealed the transaction',async()=>{
+ m.readiness.mockResolvedValue({...qualified(),sourceRevocationsLocked:true});
+ await expect(activateAgentSkill(actor,action)).rejects.toThrow('gate unavailable');expect(m.state.enabled).toBe(false);
+});
+it('refuses source protection prepared in another transaction',async()=>{
+ m.readiness.mockResolvedValue({...qualified(),sourceProtectionTransactionId:'43'});
+ await expect(activateAgentSkill(actor,action)).rejects.toThrow('source protection transaction changed');
+ expect(m.state).toEqual({enabled:false,output:null,audit:[]});
+ expect(m.query.mock.calls.some(([sql])=>sql.startsWith('select begin_skill_activation_source_fence'))).toBe(false);
 });
 it('rejects an incomplete source manifest or a proof extending beyond a dependency deadline',async()=>{
  const proof=qualified(),sources=proof.activationSources as Array<{runId:string;validBefore:string|null}>;

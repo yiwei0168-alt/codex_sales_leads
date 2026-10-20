@@ -147,20 +147,21 @@ const availablePort = () => new Promise<number>((resolvePort, reject) => {
 const port = await availablePort();
 const prospectiveBrowserPort = prospectiveBrowserCheck ? await availablePort() : null;
 const prospectiveBrowserDirectory = prospectiveBrowserCheck ? mkdtempSync(join(tmpdir(), 'ma24-skill-browser-')) : null;
-const run = (command: string, args: string[], env: NodeJS.ProcessEnv = process.env) =>
+const run = (command: string, args: string[], env: NodeJS.ProcessEnv = process.env,retainedOutput=5000) =>
   new Promise<{ code: number | null; output: string }>((resolveRun, reject) => {
     const child = spawn(command, args, { cwd: process.cwd(), windowsHide: true,
       stdio: ["ignore", "pipe", "pipe"], env });
+    const headLimit=Math.floor(retainedOutput*0.4),tailLimit=retainedOutput-headLimit;
     let head = "", tail = "", size = 0;
     const redact=(value:string)=>value.replaceAll(adminPassword,'<temporary-admin-password>').replaceAll(appPassword,'<temporary-app-password>').replace(/secretKey:\s*-?\d+/g,'secretKey: <redacted>');
     const append=(data:unknown)=>{
       const chunk=redact(String(data));size+=chunk.length;
-      head=(head+chunk).slice(0,2000);tail=(tail+chunk).slice(-3000);
+      head=(head+chunk).slice(0,headLimit);tail=(tail+chunk).slice(-tailLimit);
     };
     child.stdout.on("data", append);
     child.stderr.on("data", append);
     child.once("error", reject);
-    child.once("exit", code => resolveRun({ code, output:redact(size<=3000?tail:size<=5000?head.slice(0,size-3000)+tail:head+'\n[output truncated]\n'+tail) }));
+    child.once("exit", code => resolveRun({ code, output:redact(size<=tailLimit?tail:size<=retainedOutput?head.slice(0,size-tailLimit)+tail:head+'\n[output truncated]\n'+tail) }));
   });
 const adminUrl = new URL(`postgresql://postgres:${adminPassword}@127.0.0.1:${port}/network_copilot_local`);
 const appUrl = new URL(`postgresql://network_copilot_local_login:${appPassword}@127.0.0.1:${port}/network_copilot_local`);
@@ -224,7 +225,7 @@ try {
   assert(verified.output.includes('"copiedProductionData":false'), verified.output);
   if (webImage || modeBusinessCheck || runnerAttestationCheck || lockedPolicyCheck || memorySourceLocksCheck || methodCatalogLocksCheck || shadowSourceLocksCheck || prospectiveSourceCheck || safetySkillUsageCheck || transportJournalCheck || poolRecoveryCheck) {
     const migration = await run(process.execPath,
-      ["scripts/run-tsx.cjs", "scripts/migrate.ts", currentSchemaCheck?"--fresh-pilot-through=164":"--fresh-pilot-through=135"],
+      ["scripts/run-tsx.cjs", "scripts/migrate.ts", currentSchemaCheck?"--fresh-pilot-through=165":"--fresh-pilot-through=135"],
       { ...process.env, DATABASE_URL: appUrl.toString(), DATABASE_MIGRATION_URL: adminUrl.toString() });
     assert.equal(migration.code, 0, migration.output);
     if(currentSchemaCheck){
@@ -250,6 +251,7 @@ try {
           public.skill_activation_source_fence_ready() as skill_activation_sources_sealed,
           public.skill_activation_review_guard_ready() as skill_activation_reviews_serialized,
           public.skill_activation_declaration_guard_ready() as skill_activation_declarations_serialized,
+          public.skill_activation_source_guard_health() as skill_activation_source_guard_health,
           exists(select 1 from pg_trigger where tgrelid='public.agent_run_event'::regclass and tgname='skill_activation_commit_guard'
            and tgdeferrable and tginitdeferred and tgenabled in('O','A') and not tgisinternal) as skill_activation_commit_guard,
           exists(select 1 from pg_trigger where tgrelid='public.agent_run_event'::regclass and tgname='skill_activation_binding_commit_guard'
@@ -406,7 +408,7 @@ try {
   }
   if(lockedPolicyCheck){
     const checked=await run(process.execPath,['scripts/run-tsx.cjs','scripts/verify-skill-locked-policy-db.ts'],
-      {...process.env,DATABASE_URL:appUrl.toString(),DATABASE_MIGRATION_URL:adminUrl.toString(),MA24_DISPOSABLE_LOCKED_POLICY:'1'});
+      {...process.env,DATABASE_URL:appUrl.toString(),DATABASE_MIGRATION_URL:adminUrl.toString(),MA24_DISPOSABLE_LOCKED_POLICY:'1'},24000);
     assert.equal(checked.code,0,checked.output);assert(checked.output.includes('"lockedPolicyDatabase":"passed"'),checked.output);
     console.log(checked.output.trim());
   }
@@ -437,7 +439,7 @@ try {
     assert.equal(built.code,0,built.output);assert(built.output.includes('"collectorBuild":"passed"'),built.output);
     const checked=await run(process.execPath,['scripts/run-tsx.cjs','scripts/verify-skill-transport-journal-db.ts'],
       {...process.env,DATABASE_URL:appUrl.toString(),DATABASE_MIGRATION_URL:adminUrl.toString(),MA24_DISPOSABLE_TRANSPORT_JOURNAL:'1',
-       ...(collectorImage?{MA24_COLLECTOR_TEST_IMAGE:collectorImage,MA24_COLLECTOR_TEST_CONTAINER:containerId}:{} )});
+       ...(collectorImage?{MA24_COLLECTOR_TEST_IMAGE:collectorImage,MA24_COLLECTOR_TEST_CONTAINER:containerId}:{} )},24000);
     assert.equal(checked.code,0,checked.output);assert(checked.output.includes('"transportJournalDatabase":"passed"'),checked.output);
     console.log(checked.output.trim());
   }
@@ -819,7 +821,7 @@ try {
     scheduleWorkerCrashVerified:Boolean(scheduleWorkerImage)&&!scheduleWorkerCommitCheck,
     scheduleWorkerCommitVerified:Boolean(scheduleWorkerImage)&&scheduleWorkerCommitCheck,
     publishedAddress: "127.0.0.1 only", rolesVerified: true, duplicateRoleBootstrapRejected: true,
-    freshMigrationThrough: currentSchemaCheck?164:135,currentSchemaMarkers,snapshotLifecycleVerified:snapshotLifecycleCheck,knowledgeScopeSourcesVerified:knowledgeScopeSourcesCheck,finalSettlementVerified:finalSettlementCheck,compiledMainRuntimeVerified:Boolean(mainRuntimeImage),mainRuntimeDurabilityVerified:mainRuntimeDurability,mainRuntimeCrashRecoveryVerified:mainRuntimeCrashRecovery,mainRuntimeInterruptionVerified:mainRuntimeInterruption,mainRuntimeNetworkLossVerified:mainRuntimeNetworkLoss,mainRuntimeResumeRevocationVerified:mainRuntimeResumeRevocation,mainRuntimeCommitLossVerified:mainRuntimeCommitLoss,mainRuntimeTaskEnrollmentVerified:mainRuntimeTaskEnrollment,snapshotDownloadResult,localMemoryWorkerResult,trustRegistryRestoreResult,freshMailboxUiVerified:frontendUiCheck,extendedFrontendUiVerified:extendedUiCheck,
+    freshMigrationThrough: currentSchemaCheck?165:135,currentSchemaMarkers,snapshotLifecycleVerified:snapshotLifecycleCheck,knowledgeScopeSourcesVerified:knowledgeScopeSourcesCheck,finalSettlementVerified:finalSettlementCheck,compiledMainRuntimeVerified:Boolean(mainRuntimeImage),mainRuntimeDurabilityVerified:mainRuntimeDurability,mainRuntimeCrashRecoveryVerified:mainRuntimeCrashRecovery,mainRuntimeInterruptionVerified:mainRuntimeInterruption,mainRuntimeNetworkLossVerified:mainRuntimeNetworkLoss,mainRuntimeResumeRevocationVerified:mainRuntimeResumeRevocation,mainRuntimeCommitLossVerified:mainRuntimeCommitLoss,mainRuntimeTaskEnrollmentVerified:mainRuntimeTaskEnrollment,snapshotDownloadResult,localMemoryWorkerResult,trustRegistryRestoreResult,freshMailboxUiVerified:frontendUiCheck,extendedFrontendUiVerified:extendedUiCheck,
     syntheticAccountCompanyAndRestoreVerified: true, copiedProductionData: false,
     linuxWebImage: webImage ?? null, linuxWebHttpWorkflowVerified: Boolean(webImage),
     linuxWebHttpsBrowserVerified: browserCheck, tenConcurrentSyntheticAccountsVerified: tenUserCheck,

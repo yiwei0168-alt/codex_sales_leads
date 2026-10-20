@@ -16,7 +16,8 @@ const actorSchema=z.object({userId:z.uuid(),role:z.enum(['admin','member']),runI
 const dataSchema=z.object({updated:z.literal(true),acceptanceBundleId:z.uuid(),acceptanceArtifactHash:sha,activationProofHash:sha}).strict();
 const proofSchema=z.object({policyPassed:z.literal(true),blockers:z.array(z.string()).max(0),
  artifactHash:sha,latestReviewHash:sha,materialsHash:sha,currentRuntimeIdentityHash:sha,
- trustRegistryLocked:z.literal(true),trustRegistryHash:sha,sourceRevocationsLocked:z.literal(true),collectorProvenanceVerified:z.literal(true),productionAgentEquivalent:z.literal(true),
+ trustRegistryLocked:z.literal(true),trustRegistryHash:sha,sourceRevocationsLocked:z.literal(false),collectorProvenanceVerified:z.literal(true),productionAgentEquivalent:z.literal(true),
+ sourceRevocationGuardsReady:z.literal(true),sourceProtectionHash:sha,sourceProtectionTransactionId:z.string().regex(/^[1-9][0-9]*$/),
  canonicalOriginalCoverageRequired:z.literal(true),canonicalOriginalCoverageRevalidated:z.literal(true),
  runnerDeclarationRequired:z.literal(true),runnerDeclarationRevalidated:z.literal(true),
  transportReceiptsRequired:z.literal(true),transportReceiptsRevalidated:z.literal(true),
@@ -125,8 +126,12 @@ export async function activateAgentSkill(context:Pick<ExecutionContext,'userId'|
      throw new Error('Skill activation declaration source guard unavailable');
     await client.query('set constraints skill_activation_commit_guard,skill_activation_binding_commit_guard,skill_activation_source_commit_guard deferred');
     requireLive(await readCall(client,actor,action,true),actor);
+    if((await client.query<{transaction_id:string}>('select pg_current_xact_id()::text transaction_id')).rows[0]?.transaction_id!==proof.sourceProtectionTransactionId)
+     throw new Error('Skill activation source protection transaction changed');
+    // This commitment is persisted only after the database actually seals the
+    // transaction and returns its private fence identity.
     const activationProofHash=digest({protocol:'skill-final-activation-v1',bundleId:bundle.id,ownerId:context.userId,
-     skillId:action.id,version:action.version,proof});
+     skillId:action.id,version:action.version,proof:{...proof,sourceRevocationsLocked:true}});
     const data=dataSchema.parse({updated:true,acceptanceBundleId:bundle.id,acceptanceArtifactHash:proof.artifactHash,activationProofHash});
     const sourceFenceId=z.uuid().parse((await client.query<{fence_id:string}>(
      'select begin_skill_activation_source_fence($1,$2,$3,$4,$5,$6,$7,$8) fence_id',
@@ -152,7 +157,8 @@ export async function activateAgentSkill(context:Pick<ExecutionContext,'userId'|
     if(saved!==1)throw new Error('Skill activation changed or expired before commit');
     await client.query("insert into agent_run_event(user_id,run_id,kind,payload) values($1,$2,'skill_activated',$3)",
      [context.userId,actor.runId,JSON.stringify({protocol:'skill-final-activation-v1',validBefore:proof.acceptanceValidBefore,actorRole:actor.role,
-      callId:actor.callId,skillId:action.id,version:action.version,...data,latestReviewHash:proof.latestReviewHash,sourceFenceId})]);
+      callId:actor.callId,skillId:action.id,version:action.version,...data,latestReviewHash:proof.latestReviewHash,sourceFenceId,sourceRevocationsLocked:true,
+      sourceProtectionHash:proof.sourceProtectionHash})]);
     const time=(await client.query<{valid:boolean}>(`select clock_timestamp()<$1::timestamptz and exists(select 1 from agent_run
      where user_id=$2 and id=$3 and lease_token=$4 and status='running' and control is null and lease_until>clock_timestamp()) valid`,
     [proof.acceptanceValidBefore,context.userId,actor.runId,actor.leaseToken])).rows[0]?.valid;
