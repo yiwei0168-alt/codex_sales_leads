@@ -45,7 +45,9 @@ export async function verifyConfiguredSignedCandidateDatabase(pool:Pool,input:{o
   const child=spawn(process.execPath,[compiledPath,'--execute',jobPath],{windowsHide:true,stdio:['ignore','pipe','pipe'],env:{...process.env,
    NODE_ENV:'production',NODE_OPTIONS:'',NODE_EXTRA_CA_CERTS:'',SSL_CERT_FILE:'',SSL_CERT_DIR:'',NODE_USE_SYSTEM_CA:'0',NODE_TLS_REJECT_UNAUTHORIZED:'1',
    OPENROUTER_API_KEY:'SYNTHETIC_NOT_A_CREDENTIAL',OPENROUTER_BASE_URL:'https://openrouter.ai/api/v1',OPENROUTER_HTTP_REFERER:'',
-   MA24_CANDIDATE_SKILL_ID:input.skillId,MA24_CANDIDATE_EVALUATION_ID:evaluationId,TASK_MODEL_TRANSPORT_COLLECTOR_ID:input.collectorId,TASK_MODEL_TRANSPORT_DEPLOYMENT_SHA256:input.deploymentHash,
+   MA24_CANDIDATE_SKILL_ID:input.skillId,MA24_CANDIDATE_EVALUATION_ID:evaluationId,
+   TASK_MODEL_TRANSPORT_COLLECTOR_ID:process.env.MA24_MEASURED_RUNTIME_PACKAGES_FILE?process.env.TASK_MODEL_TRANSPORT_COLLECTOR_ID:input.collectorId,
+   TASK_MODEL_TRANSPORT_DEPLOYMENT_SHA256:process.env.MA24_MEASURED_RUNTIME_PACKAGES_FILE?process.env.TASK_MODEL_TRANSPORT_DEPLOYMENT_SHA256:input.deploymentHash,
    SKILL_RUNNER_COLLECTOR_ID:input.collectorId,SKILL_RUNNER_DEPLOYMENT_SHA256:input.deploymentHash,
    SKILL_MODEL_TRANSPORT_KEY_ID:input.keyId,SKILL_MODEL_TRANSPORT_PRIVATE_KEY_FILE:input.keyPath}});let output='',diagnostic='unclassified';
   child.stdout.on('data',data=>{output+=String(data);});child.stderr.on('data',data=>{for(const match of String(data).matchAll(/FIXTURE_(?:CODE|INNER):([A-Za-z -]{1,180})/g))diagnostic+='; '+match[1];});child.once('error',reject);child.once('exit',code=>resolve({code,output,diagnostic}));

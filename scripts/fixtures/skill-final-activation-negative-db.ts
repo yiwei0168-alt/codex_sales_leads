@@ -39,6 +39,7 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
  const reviewGuard=await readFile('db/migrations/163_skill_acceptance_review_serialization.sql','utf8');await pool.query(reviewGuard);await pool.query(reviewGuard);
  const declarationGuard=await readFile('db/migrations/164_skill_runner_attestation_serialization.sql','utf8');await pool.query(declarationGuard);await pool.query(declarationGuard);
  const readinessGuard=await readFile('db/migrations/165_skill_activation_source_readiness.sql','utf8');await pool.query(readinessGuard);await pool.query(readinessGuard);
+ const useGuard=await readFile('db/migrations/166_skill_activation_use_commit_guard.sql','utf8');await pool.query(useGuard);await pool.query(useGuard);
  // Explicitly unqualified synthetic registrations for the mocked component only.
  const packageRevisions:string[]=[];
  for(const purpose of ['runner-declaration','model-transport','task-model-transport']){
@@ -306,7 +307,10 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
    }
    await lifecycleClient.query('begin');
    try{
+    await lifecycleClient.query('savepoint before_original_binding_use');
     assert.equal(await current(),true);
+    await lifecycleClient.query('rollback to savepoint before_original_binding_use');
+    await lifecycleClient.query('release savepoint before_original_binding_use');
     const renewed={...binding,callId:randomUUID()};
     await lifecycleClient.query('update agent_skill set activation_binding=$2 where id=$1',[skillId,renewed]);
     await lifecycleClient.query('set local role network_copilot_app');
@@ -315,6 +319,42 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
     assert.equal(await skillActivationCurrent(lifecycleClient,owner,skillId,1,binding),false,'Old binding cannot borrow a different current activation');
     assert.equal(await skillActivationCurrent(lifecycleClient,owner,skillId,1,renewed),true,'Exact current component binding still reads');
    }finally{await lifecycleClient.query('rollback');}
+   const beginAppUse=async()=>{
+    await lifecycleClient.query('set local role network_copilot_app');
+    await lifecycleClient.query("select set_config('app.current_user_id',$1,true),set_config('app.current_user_role','member',true)",[owner]);
+   };
+   await lifecycleClient.query('begin');
+   try{
+    await beginAppUse();assert.equal(await skillActivationCurrent(lifecycleClient,owner,skillId,1,binding),true);
+    await lifecycleClient.query('commit');
+   }finally{await lifecycleClient.query('rollback');}
+   await lifecycleClient.query('begin');
+   try{
+    await lifecycleClient.query('alter table skill_activation_use_fence disable trigger skill_activation_use_commit_guard');
+    await beginAppUse();assert.equal(await skillActivationCurrent(lifecycleClient,owner,skillId,1,binding),false,'Disabled use guard cannot retain eligibility');
+   }finally{await lifecycleClient.query('rollback');}
+   await lifecycleClient.query('begin');
+   try{
+    await lifecycleClient.query("set local statement_timeout='45s'");
+    const deadline=(await lifecycleClient.query("select clock_timestamp()+interval '30 seconds' deadline")).rows[0].deadline as Date;
+    const expiring={...binding,validBefore:deadline.toISOString()};
+    await lifecycleClient.query('update agent_skill set activation_binding=$2 where id=$1',[skillId,expiring]);
+    await beginAppUse();assert.equal(await skillActivationCurrent(lifecycleClient,owner,skillId,1,expiring),true,'Use returns while qualification is live');
+    await lifecycleClient.query('select pg_sleep(greatest(0,extract(epoch from($1::timestamptz-clock_timestamp())))+0.05)',[expiring.validBefore]);
+    await assert.rejects(lifecycleClient.query('commit'),/Skill activation use expired or changed at commit/);
+   }finally{await lifecycleClient.query('rollback');}
+   assert.deepEqual((await pool.query('select activation_binding from agent_skill where id=$1',[skillId])).rows[0].activation_binding,binding,'Expired use rolls back its binding edit');
+   await lifecycleClient.query('begin');
+   try{
+    await beginAppUse();assert.equal(await skillActivationCurrent(lifecycleClient,owner,skillId,1,binding),true);
+    await lifecycleClient.query('reset role');
+    await lifecycleClient.query('update agent_skill set activation_binding=jsonb_set(activation_binding,\'{callId}\',to_jsonb($2::text)) where id=$1',[skillId,randomUUID()]);
+    await lifecycleClient.query('set local role network_copilot_app');
+    await assert.rejects(lifecycleClient.query('commit'),/Skill activation use expired or changed at commit/);
+   }finally{await lifecycleClient.query('rollback');}
+   await lifecycleClient.query('begin');
+   try{await beginAppUse();await assert.rejects(lifecycleClient.query('delete from skill_activation_use_fence'),/permission denied/);}
+   finally{await lifecycleClient.query('rollback');}
    const mutations:Array<[string,()=>Promise<unknown>]>=[
     ['registry',()=>lifecycleClient.query('select publish_skill_runner_trust_registry($1,$2)',[{...registry,fixtureChange:true},digest('changed synthetic registry')])],
     ['freeze',()=>lifecycleClient.query("insert into agent_skill_acceptance_freeze_revocation(freeze_id,owner_id,reason) values($1,$2,'Synthetic lifecycle withdrawal')",[binding.freezeId,owner])],
@@ -478,6 +518,9 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
    qualificationProducerMocked:true,humanApprovalCreated:false,productionQualificationGranted:false,modelCalls:0}));
   console.log(JSON.stringify({activationBindingSnapshot:'passed',metadataOnlyStillCurrent:true,oldBindingCannotBorrowCurrentQualification:true,
    exactCurrentBindingAccepted:true,fixtureRenewalRolledBack:true,qualificationProducerMocked:true,humanApprovalCreated:false,modelCalls:0}));
+  console.log(JSON.stringify({activationUseCommitGuard:'passed',normalUseCommits:true,actualClockExpiryAfterReturnRollsBack:true,
+   changedBindingAfterReturnRollsBack:true,disabledDeferredGuardRefusesUse:true,privateGuardDeleteDenied:true,
+   qualificationProducerMocked:true,humanApprovalCreated:false,productionQualificationGranted:false,modelCalls:0}));
   console.log(JSON.stringify({activationSourceReadiness:'passed',missingRetainedLocksRejected:true,missingPackageGateRejected:true,
    allRetainedGatesAccepted:true,disabledLegacyGuardRejectsProducerAndDirectSealing:true,unprotectedDirectSealingRejected:true,
    sealedAuditRequiresActualFence:true,positiveOtherQualificationMocked:true,humanApprovalCreated:false,productionQualificationGranted:false,modelCalls:0}));

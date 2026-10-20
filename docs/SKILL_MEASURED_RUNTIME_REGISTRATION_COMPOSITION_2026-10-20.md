@@ -1,5 +1,7 @@
 # G09 实际测量运行包登记联合验收准备
 
+第二次终态：固定6737b211夹具重跑退出1，已通过首次登记，配置候选子进程在复核原任务失败回执时报告Task failure binding changed。原因是夹具分离主任务/采集器部署后，仍把采集器身份写到TASK_MODEL_TRANSPORT_*；现测量模式保留原主任务环境身份，SKILL_*继续使用独立采集器身份，默认旧夹具路径保持。完整联合仍未通过；下一次需与新产品源码一致的固定包，不能复用源码已不同的旧镜像。[第二次失败](evidence/ma24-g09-measured-registration-second-attempt-2026-10-20.json)。
+
 首跑终态：8a8acb17夹具在37a2ef90固定镜像中退出1，正式登记SQL拒绝“Runtime package revision changed”。原因是首次登记传入预期修订0，正式函数的无旧版本契约为NULL；现仅将夹具改为NULL，未放宽正式校验。入口新增显式MA24_MEASURED_FIXTURE_COMMIT，避免初始化期间HEAD变化影响验收版本；语法、类型和2文件lint通过。失败收据保留，修复后完整重跑待启动/终态。[失败及修复](evidence/ma24-g09-measured-registration-first-attempt-2026-10-20.json)。
 
 对应MA24-06，无新增确认。已有固定37a2ef90 Linux五类验证通过，但运行包登记缺失；真实readiness仍返回collectorProvenanceVerified=false。本阶段为隔离工程夹具接入实际测量包登记正例，不改变产品资格、人工质量或启用规则。

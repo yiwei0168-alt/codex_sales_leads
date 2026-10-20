@@ -61,7 +61,9 @@ export async function skillActivationCurrent(client:PoolClient,userId:string,ski
    const after=await captureSkillAcceptanceLedger(client,userId,parsed.data.bundleId,parsed.data.artifactHash);
    if(after.acceptanceLedgerHash!==before.acceptanceLedgerHash)return false;
    if(await skillSourceRuntimeHash()!==parsed.data.runtimeHash)return false;
-   return await current();
+   if(!await current())return false;
+   return (await client.query<{retained:boolean}>('select retain_skill_activation_use($1::uuid,$2::integer,$3::jsonb) retained',
+    [skillId,version,parsed.data])).rows[0]?.retained===true;
   }catch{return false;}finally{checking.delete(key);}
  }));
 }
