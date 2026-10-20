@@ -257,7 +257,7 @@
     "databaseTlsVerifiedForFiveCategoryFixture": false,
     "secretsFromHostEnvironmentInherited": false
   },
-  "separate943bbecdHostSnapshot": "running; not accepted",
+  "separate943bbecdHostSnapshot": "passed; see ma24-g09-shared-dispatch-full165-2026-10-20.json; excludes later fallback deadline fix",
   "limitations": {
     "realModelCalls": 0,
     "humanQualityApproved": false,
