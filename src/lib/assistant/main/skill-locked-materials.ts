@@ -24,6 +24,7 @@ import {captureSkillMemoryTimeFence,earliestSkillMemoryTimeFence} from './skill-
 import {captureSkillActivationSources} from './skill-activation-sources';
 import {skillAcceptanceRunIds} from './skill-acceptance-run-locks';
 import {captureSkillAcceptanceLedger} from './skill-acceptance-ledger';
+import {qualifySkillCollectorProvenance} from './skill-collector-provenance';
 
 /** Keep consumed receipts in a private closure inside the owning transaction;
  * public wrappers expose hashes/counts only, never source contents or callbacks. */
@@ -134,6 +135,10 @@ export async function evaluateLockedSkillAcceptanceReadiness(client:PoolClient,c
    ?await readLockedSkillRuntimePackages(client,context.userId,{registryHash:finalDeclaration.runnerRegistryHash!,runtimeHash:final.artifact.plan.identity.runtimeHash,windows:signingCoverage.signingEnrollmentWindows})
    :{runtimePackagesRequired:false as const,runtimePackagesRegistered:false as const,runtimePackageBlockers:[] as string[]};
   const memoryTimeValidBefore=earliestSkillMemoryTimeFence(decisionTimeFence,materials,memoryReceipts);
+  const collector=qualifySkillCollectorProvenance({ownerId:context.userId,bundleId,freezeId:final.freezeStatus.freezeId,
+   artifactHash:final.artifactHash,sourceKind:final.artifact.sourceKind,trustRegistryLocked:!!registry,trustRegistryHash:registry?.registryHash,
+   currentRuntimeIdentityHash:policy.currentRuntimeIdentityHash,frozenRuntimeIdentityHash:digest(final.artifact.plan.identity),
+   declaration:finalDeclaration,transports:finalTransports,coverage:signingCoverage,packages});
   const methodTimes=await revalidateLockedSkillExperienceTimes(client,context.userId,final.artifact,{
    ...(finalDeclaration.runnerDeclarationRequired?{runnerDeclarationValidBefore:finalDeclaration.runnerDeclarationValidBefore}:{}),
    ...(finalTransports.transportReceiptsRequired?{transportValidBefore:finalTransports.transportValidBefore}:{}),
@@ -159,8 +164,9 @@ export async function evaluateLockedSkillAcceptanceReadiness(client:PoolClient,c
    ...packages,
    ...activationSources,
    ...acceptanceLedger,
+   ...collector,
    pinnedMethodVersionCount:materials.pinnedMethodVersionCount,pinnedMethodExperienceObservationCount:materials.pinnedMethodExperienceObservationCount,
-   sourceRevocationsLocked:false as const,collectorProvenanceVerified:false as const,automaticActivation:false as const};
+   sourceRevocationsLocked:false as const,automaticActivation:false as const};
   });
  });
 }

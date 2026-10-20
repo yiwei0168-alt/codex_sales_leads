@@ -256,6 +256,30 @@ it('rejects a declaration expiring or being disabled during preparation',async()
  await expect(evaluateLockedSkillAcceptanceReadiness(client,context,bundleId)).rejects.toThrow('time window invalid');
 });
 const transports={transportReceiptsRequired:true,transportReceiptsRevalidated:true,transportAuditHash:'audit',transportRegistryHash:digest('registry'),transportSigningEnrollments:transportEnrollments,transportSigningEnrollmentWindows:transportEnrollments.map(windowOf),transportValidBefore:'2026-10-19T01:15:00.000Z'};
+it('composes authenticated registered collector provenance while keeping quality and activation separate',async()=>{
+ const registryModule=await import('./skill-runner-trust-registry-store'),modeModule=await import('./skill-runner-attestation');
+ const registry=vi.spyOn(registryModule,'readLockedSkillRunnerTrustRegistry').mockResolvedValue({registryHash:digest('registry')} as never);
+ const mode=vi.spyOn(modeModule,'configuredSkillRunnerTrustRegistryMode').mockReturnValue('database');
+ const id=(n:number)=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
+ const acceptedBundle=id(2),freezeId=id(3);
+ try{
+  pendingOriginals();
+  m.read.mockResolvedValue({...bundle,freezeStatus:{freezeId},artifact:{...bundle.artifact,sourceKind:'production-runner-pending-verification'}});
+  m.material.mockResolvedValue({...material(),bundleId:acceptedBundle,sourceKind:'production-runner-pending-verification',freezeStatus:{state:'active',freezeId}});
+  m.policy.mockResolvedValue({artifactHash:bundle.artifactHash,latestReviewHash:bundle.latestReviewHash,policyPassed:false,
+   currentRuntimeIdentityHash:digest(bundle.artifact.plan.identity),automaticActivation:false});
+  m.runner.mockResolvedValue({...declaration,runnerDeclarationId:id(4),runnerStatementHash:digest('statement')});
+  m.transports.mockResolvedValue({...transports,transportAuditHash:digest('audit'),transportOriginalTaskCount:2,transportEvaluationArmCount:8,transportReceiptCount:10});
+  m.packages.mockResolvedValue({runtimePackagesRequired:true,runtimePackagesRegistered:true,runtimePackageCount:3,
+   runtimePackageRegistrationHash:digest('registrations'),runtimePackageRevisions:['1','2','3'],runtimePackageValidBefore:'2026-10-19T01:10:00.000Z',
+   runtimePackageBytesPairRevalidated:true,runtimePackageBytesPairHash:digest('bytes'),runtimeModuleFormatPairRevalidated:true});
+  const out=await evaluateLockedSkillAcceptanceReadiness(client,{userId:id(1)},acceptedBundle);
+  expect(out).toMatchObject({collectorProvenanceVerified:true,collectorProvenanceBlockers:[],policyPassed:false,sourceRevocationsLocked:false,automaticActivation:false});
+  expect(out).toHaveProperty('collectorProvenanceHash',expect.stringMatching(/^[a-f0-9]{64}$/));expect(out).not.toHaveProperty('productionAgentEquivalent');
+  m.packages.mockResolvedValue({runtimePackagesRequired:true,runtimePackagesRegistered:false,runtimePackageBlockers:['latest-package-registration-withdrawn']});
+  expect(await evaluateLockedSkillAcceptanceReadiness(client,{userId:id(1)},acceptedBundle)).toMatchObject({collectorProvenanceVerified:false,automaticActivation:false});
+ }finally{registry.mockRestore();mode.mockRestore();}
+});
 it('checks package registration after final signatures and limits final time without granting activation',async()=>{
  m.runner.mockResolvedValue(declaration);m.transports.mockResolvedValue(transports);
  const runtimePackageValidBefore='2026-10-19T01:03:00.000Z';
