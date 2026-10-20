@@ -1,0 +1,86 @@
+{
+  "stage": "MA24 G11 actual IMAP protocol over isolated verified TLS",
+  "date": "2026-10-20",
+  "baseCommit": "2020e3dbf0c842d164543bae5066f1e9ba8f8264",
+  "command": "$env:MA24_IMAP_WIRE='1'; npx.cmd vitest run src/lib/mailbox/alimail-imap.wire.test.ts src/lib/mailbox/alimail-imap.test.ts src/lib/mailbox/sync-options.test.ts",
+  "log": "tmp/ma24-mailbox-imap-wire-sequence-confirmed.log",
+  "exitCode": 0,
+  "testFiles": 3,
+  "testsPassed": 9,
+  "versions": {
+    "imapflow": "1.7.1",
+    "mailparser": "3.9.24"
+  },
+  "sha256": {
+    "src/lib/mailbox/alimail-imap.ts": "df8b0fe86ddf277e1abe403679a5896620bf2ca4fef26e30b876de55ce7b8a61",
+    "src/lib/mailbox/alimail-imap.wire.test.ts": "8d3e0d48e4332e7fdd3c2fe93930e9aca3acfc5567b7778c6e7df2520a596f50",
+    "package-lock.json": "e5d9da189f80706b3cb537e435851f79270dfcdb764286c487f70632f3d49f02"
+  },
+  "scope": {
+    "realLibraries": [
+      "ImapFlow",
+      "mailparser"
+    ],
+    "productReaderUnchanged": true,
+    "server": "Local synthetic IMAP4rev1 TLS listener on random 127.0.0.1 port",
+    "substitutions": [
+      "publicMailAddresses returns loopback only within this test",
+      "ImapFlow constructor wrapper adds ephemeral public fixture CA to existing TLS options"
+    ],
+    "preservedGuards": [
+      "secure TLS",
+      "rejectUnauthorized true",
+      "original servername hostname validation",
+      "readOnly mailbox lock",
+      "source limits"
+    ],
+    "certificate": "Docker openssl temporary self-signed certificate, private key only in memory, generator container removed; no key file committed",
+    "fixtureMessages": 6,
+    "dateWindow": "2026-10-02 inclusive through 2026-10-04 exclusive",
+    "pageSize": 2,
+    "databaseWrites": 0,
+    "realMailboxConnections": 0,
+    "modelCalls": 0,
+    "sentMessages": 0,
+    "fetchSequence": "Actual per-folder sequence number, independent of UID gaps"
+  },
+  "verified": [
+    "SINCE and BEFORE filters exclude UIDs outside date window",
+    "Oldest-first INBOX page with UID holes followed by Sent page and outbound direction",
+    "Folder/UIDVALIDITY/UID known-message deduplication yields no messages on repeat",
+    "UIDVALIDITY 1 to 2 ignores old cursor and known keys and rereads selected inbox messages",
+    "Observed processed=1 from real parser callback before closing that same TLS connection; whole read rejects without returning cursors",
+    "Retry using original empty cursor returns the complete two-message page",
+    "Wrong hostname certificate fails before any LOGIN",
+    "EXAMINE only; BODY.PEEK used; no SELECT/APPEND/STORE/EXPUNGE/MOVE/COPY"
+  ],
+  "checks": {
+    "typecheck": "passed",
+    "targetedEslint": "passed",
+    "gitDiffCheck": "passed"
+  },
+  "initialFixtureFailures": [
+    {
+      "log": "tmp/ma24-mailbox-imap-wire.log",
+      "exitCode": 1,
+      "reason": "Fixture replied to LIST empty-root request with actual folders, causing namespace prefix Sent/Sent; corrected root-only response; product unchanged"
+    },
+    {
+      "log": "tmp/ma24-mailbox-imap-wire-corrected.log",
+      "exitCode": 0,
+      "scope": "Initial date/paging/UID reset and connection-failure flow before stronger partial-progress assertion"
+    },
+    {
+      "log": "tmp/ma24-mailbox-imap-wire-final.log",
+      "exitCode": 1,
+      "reason": "Immediate socket destruction occurred before client parsed first response; expected processed=1 was actually 0. Replaced injection with close only after actual first-message callback; product unchanged"
+    }
+  ],
+  "limits": [
+    "In-process opt-in Vitest fixture, not fixed Linux Worker or real mailbox provider",
+    "DNS public-address validation is substituted; not a DNS/SSRF acceptance test",
+    "No persistence/database/Worker combination; earlier DB recovery evidence remains separate",
+    "No real customer attribution, summaries or independent quality evaluation",
+    "G01-G13 remain incomplete; G14-G20 and LAN deployment remain deferred"
+  ]
+}

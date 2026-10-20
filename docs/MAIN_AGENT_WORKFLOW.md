@@ -2,6 +2,8 @@
 
 # 产品主 Agent 与开放式工具架构
 
+2026-10-20 G11 读取流程补验：实际 ImapFlow/mailparser 与产品读取器经本地 TLS 协议验证日期范围、跨收发件分页、去重、UIDVALIDITY 变化和首封解析后断线/原游标重读；证书主机名错误在登录前拒绝。9项测试、类型/lint通过，测试仅替换 DNS/追加 CA，不使用真实邮箱或发信。与既有数据库 Worker 恢复证据分开，尚未覆盖两者联合运行及真实客户归属质量。[证据](evidence/ma24-g11-local-imap-wire-2026-10-20.json)。
+
 G01/G02 批处理提交恢复（2026-10-20）：固定 b1a5d549 正式 Worker、全新159/TLS实库两种提交故障通过。真实COMMIT丢确认保留单份回执；最终UPDATE成功但COMMIT未送达则相关写入回滚，原90秒租约自然到期后新token保存一次，后续空Worker快照不变。共享代理定时派发双分支回归通过，3次合成状态GET、0真实提供方调用，临时资源清理，类型/lint/语法通过。真实模型业务链、全入口与生产/质量仍待验。[证据](evidence/ma24-g01-batch-worker-commit-2026-10-20.json)。
 
 2026-10-20 G01/G02 固定b1a5d549批处理Worker：通过同源Web/Worker构建、34,524项包完整性和精确归档源码/编译产物核对。真实fetch向隔离HTTPS状态服务GET，网关仍要求openrouter.ai，测试容器通过独立DNS映射和只读临时证书信任连接本地服务，没有关闭TLS验证。正常回执保存、实际最终批次UPDATE等待中SIGKILL137/整体回滚、原90秒租约自然到期后新token恢复、每批仅一份费用观察和空Worker快照不变通过。取消任务只收迟到回执不重启，3次合成GET、0推理POST，资源清理。真实提供方、后续规划和批处理COMMIT丢确认仍待验。[收据](evidence/ma24-g01-batch-worker-crash-2026-10-20.json)。
