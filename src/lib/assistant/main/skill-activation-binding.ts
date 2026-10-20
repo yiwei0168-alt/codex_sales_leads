@@ -16,6 +16,7 @@ export const skillActivationBindingSchema=z.object({
  validBefore:z.iso.datetime(),activationProofHash:sha,callId:z.uuid(),
  sources:skillActivationSourcesSchema,
  acceptanceLedgerHash:sha,
+ sourceFenceId:z.uuid(),
 }).strict();
 export type ActivationBoundSkill={activation_binding?:unknown;activation_binding_hash?:string};
 export function skillActivationFingerprint(skill:ActivationBoundSkill){

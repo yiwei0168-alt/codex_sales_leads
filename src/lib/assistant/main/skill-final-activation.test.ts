@@ -47,6 +47,7 @@ beforeEach(()=>{
   if(sql.startsWith('select lock_skill'))return {rows:[]};
   if(sql.startsWith('select exists(select 1 from pg_trigger'))return {rows:[{ready:true}]};
   if(sql.startsWith('set constraints'))return {rows:[]};
+  if(sql.startsWith('select begin_skill_activation_source_fence'))return {rows:[{fence_id:id(10)}]};
   if(sql.startsWith('select id,artifact_hash')){m.latestCalls++;return {rows:[m.newBundle&&m.latestCalls>1?{...bundle,id:id(9)}:bundle]};}
   if(sql.startsWith('with changed')){if(m.writeCount===1){m.state.enabled=true;m.state.output=JSON.parse(String(params[7]));}return {rows:[{n:m.writeCount}]};}
   if(sql.startsWith('insert into agent_run_event')){if(m.eventFails)throw new Error('Audit unavailable');m.state.audit.push(JSON.parse(String(params[2])));return {rowCount:1};}
@@ -64,6 +65,7 @@ it('uses registry -> catalog admission -> bundle/Skill evidence order and atomic
  const [sql,params]=m.query.mock.calls.find(([sql])=>sql.startsWith('with changed'))!;
  expect(sql).toContain('clock_timestamp()<$4');expect(sql).toContain('r.lease_until>clock_timestamp()');expect(params[8]).toBe(actor.leaseToken);
  expect(JSON.parse(params[9])).toMatchObject({freezeId:id(7),reviewVersions:[],runtimePackageRevisions:['1','2','3'],callId:actor.callId});
+ expect(JSON.parse(params[9]).sourceFenceId).toBe(id(10));
  expect(m.commits).toBe(1);expect(m.rollbacks).toBe(0);
 });
 it.each(['sourceRevocationsLocked','acceptanceLedgerRevalidated','activationSourcesRevalidated','collectorProvenanceVerified','productionAgentEquivalent','runtimePackagesRegistered','runtimePackageBytesPairRevalidated','runtimeModuleFormatPairRevalidated','canonicalOriginalCoverageRevalidated','policyPassed'])('refuses incomplete %s without any effect',async key=>{
@@ -77,6 +79,19 @@ it('rejects an incomplete source manifest or a proof extending beyond a dependen
  await expect(activateAgentSkill(actor,action)).rejects.toThrow('gate unavailable');
  m.readiness.mockResolvedValue({...proof,activationSources:sources.map(row=>({...row,validBefore:'2026-10-20T00:30:00.000Z'}))});
  await expect(activateAgentSkill(actor,action)).rejects.toThrow('gate unavailable');expect(m.state.enabled).toBe(false);
+});
+it('refuses a missing source commit guard before arming or writing',async()=>{
+ const query=m.query.getMockImplementation()!;
+ m.query.mockImplementation((sql:string,params:unknown[])=>sql.includes("tgname='skill_activation_source_commit_guard'")?{rows:[{ready:false}]}:query(sql,params));
+ await expect(activateAgentSkill(actor,action)).rejects.toThrow('source fence unavailable');
+ expect(m.state).toEqual({enabled:false,output:null,audit:[]});
+ expect(m.query.mock.calls.some(([sql])=>sql.startsWith('select begin_skill_activation_source_fence'))).toBe(false);
+});
+it('does not write when the database fails to return a valid fence identity',async()=>{
+ const query=m.query.getMockImplementation()!;
+ m.query.mockImplementation((sql:string,params:unknown[])=>sql.startsWith('select begin_skill_activation_source_fence')?{rows:[{fence_id:'invalid'}]}:query(sql,params));
+ await expect(activateAgentSkill(actor,action)).rejects.toThrow();
+ expect(m.state).toEqual({enabled:false,output:null,audit:[]});
 });
 it('does not fall back to an older bundle if selection changes while acquiring the Skill lock',async()=>{
  m.newBundle=true;await expect(activateAgentSkill(actor,action)).rejects.toThrow('gate unavailable');expect(m.readiness).not.toHaveBeenCalled();

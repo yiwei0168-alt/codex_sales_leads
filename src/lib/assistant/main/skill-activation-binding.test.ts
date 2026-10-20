@@ -8,7 +8,7 @@ vi.mock('./skill-activation-sources',()=>({assertSkillActivationSourcesCurrent:m
 vi.mock('./skill-acceptance-ledger',()=>({captureSkillAcceptanceLedger:m.ledger}));
 const id=(n:number)=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
 const binding={protocol:'skill-activation-binding-v1',ownerId:id(1),skillId:id(2),version:1,bundleId:id(3),freezeId:id(4),
- artifactHash:digest('artifact'),reviewHash:digest('reviews'),reviewVersions:[],registryHash:digest('registry'),runtimePackageRevisions:['1','2','3'],acceptanceLedgerHash:'4'.repeat(64),
+ artifactHash:digest('artifact'),reviewHash:digest('reviews'),reviewVersions:[],registryHash:digest('registry'),runtimePackageRevisions:['1','2','3'],acceptanceLedgerHash:'4'.repeat(64),sourceFenceId:id(7),
  validBefore:'2026-10-20T18:00:00.000Z',activationProofHash:digest('proof'),callId:id(5),sources:[{runId:id(6),sourceHash:digest('source'),chainHash:digest('chain'),initialSourceHash:digest('initial'),attachmentHash:digest('attachments'),knowledgeHash:digest('knowledge'),pinnedMethodsHash:digest('pins'),validBefore:null}]};
 it('keeps manual/old-schema Skills compatible without a qualification query',async()=>{
  const query=vi.fn(),client={query} as unknown as PoolClient;

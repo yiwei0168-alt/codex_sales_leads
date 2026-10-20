@@ -28,8 +28,11 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
   await pool.query(await readFile(`db/migrations/${migration}`,'utf8'));
  await pool.query(await readFile('db/migrations/157_skill_runner_trust_registry.sql','utf8'));
  await pool.query(await readFile('db/migrations/159_skill_runtime_package_registration.sql','utf8'));
+ await pool.query(await readFile('db/migrations/156_knowledge_asset_immutable_snapshot.sql','utf8'));
+ await pool.query(await readFile('db/migrations/158_immutable_snapshot_orphan_lifecycle.sql','utf8'));
  const commitGuard=await readFile('db/migrations/160_skill_activation_commit_guard.sql','utf8');await pool.query(commitGuard);await pool.query(commitGuard);
  const lifecycle=await readFile('db/migrations/161_skill_activation_lifecycle.sql','utf8');await pool.query(lifecycle);await pool.query(lifecycle);
+ const sourceFence=await readFile('db/migrations/162_skill_activation_source_fence.sql','utf8');await pool.query(sourceFence);await pool.query(sourceFence);
  // Explicitly unqualified synthetic registrations for the mocked component only.
  const packageRevisions:string[]=[];
  for(const purpose of ['runner-declaration','model-transport','task-model-transport']){
@@ -89,7 +92,7 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
   const mock=`import {captureSkillMemoryTimeFence} from './skill-memory-time-fence';
    import {captureSkillAcceptanceLedger} from './skill-acceptance-ledger';
    export async function evaluateLockedSkillAcceptanceReadiness(client,context,bundleId){
-   const row=(await client.query('select artifact_hash from agent_skill_acceptance_bundle where id=$1 and owner_id=$2',[bundleId,context.userId])).rows[0];
+   const row=(await client.query('select artifact_hash,plan from agent_skill_acceptance_bundle where id=$1 and owner_id=$2',[bundleId,context.userId])).rows[0];
    const now=(await client.query('select clock_timestamp() checked_at')).rows[0].checked_at;
    const fence=await captureSkillMemoryTimeFence(client,context.userId,[]);
    const ledger=await captureSkillAcceptanceLedger(client,context.userId,bundleId,row.artifact_hash);
@@ -97,13 +100,14 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
     materialsHash:'${digest('mock materials')}',currentRuntimeIdentityHash:'${digest('mock runtime')}',trustRegistryHash:'${digest(registry)}',runtimePackageRegistrationHash:'${digest('mock package')}',
     runtimePackageRevisions:${JSON.stringify(packageRevisions)},...fence,...ledger,blockers:[],acceptanceTimeCheckedAt:now.toISOString(),acceptanceValidBefore:new Date(Math.min(
      now.getTime()+(process.env.MA24_ACTIVATION_EXPIRY==='1'?2000:3600000),fence.memoryTimeValidBefore?Date.parse(fence.memoryTimeValidBefore):Infinity,
+     Date.parse(row.plan.expiresAt),
      ${JSON.stringify(sourceSnapshot.activationSourcesValidBefore)}?Date.parse(${JSON.stringify(sourceSnapshot.activationSourcesValidBefore)}):Infinity)).toISOString(),
      activationSources:${JSON.stringify(sourceSnapshot.activationSources)}};}`;
   const compiled=join(directory,'transaction.mjs');
   await build({...productNodeBuildOptions(),entryPoints:['scripts/fixtures/skill-final-activation-transaction-runner.ts'],outfile:compiled,
    plugins:[{name:'explicit-test-only-qualified-producer',setup(builder){builder.onLoad({filter:/skill-locked-materials\.ts$/},args=>({contents:mock,loader:'ts',resolveDir:dirname(args.path)}));}}]});
-  const run=async(actor:Awaited<ReturnType<typeof makeActor>>,failure=false,expiry=false,commitDelay=false,bindingClear=false,commitDelaySeconds=2.1)=>{
-   const job=join(directory,'job.json');await writeFile(job,JSON.stringify({actor,action,failure,commitDelay,bindingClear,commitDelaySeconds}));
+  const run=async(actor:Awaited<ReturnType<typeof makeActor>>,failure=false,expiry=false,commitDelay=false,bindingClear=false,commitDelaySeconds=2.1,lateWrite?:string)=>{
+   const job=join(directory,'job.json');await writeFile(job,JSON.stringify({actor,action,failure,commitDelay,bindingClear,commitDelaySeconds,lateWrite}));
    const out=await new Promise<{code:number|null;output:string}>((accept,reject)=>{
     const child=spawn(process.execPath,[compiled,job],{windowsHide:true,stdio:['ignore','pipe','pipe'],env:{...process.env,NODE_ENV:'production',NODE_OPTIONS:'',NODE_PATH:'',
      MA24_DISPOSABLE_FINAL_ACTIVATION:'1',MA24_ACTIVATION_EXPIRY:expiry?'1':'0'}});let output='';
@@ -111,6 +115,19 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
    });
    assert.equal(out.code,0,'Disposable activation component failed');return JSON.parse(out.output.trim());
   };
+  await pool.query('alter table agent_memory disable trigger skill_activation_source_write');
+  try{
+   const disabled=await makeActor(),outcome=await run(disabled,true);
+   assert.equal(outcome.activationReturnedBeforeCommit,false);
+   assert.deepEqual(await inspect(disabled),{enabled:false,status:'started',output:null,events:0});
+  }finally{await pool.query('alter table agent_memory enable trigger skill_activation_source_write');}
+  for(const sql of ['select * from skill_activation_source_fence','update skill_activation_source_fence set skill_written=false','delete from skill_activation_source_fence'])
+   await assert.rejects(tenantTransaction(owner,client=>client.query(sql)),/permission denied/);
+  const incomplete=await makeActor();
+  await assert.rejects(tenantTransaction(owner,client=>withBoundTenantTransaction(client,owner,()=>client.query(
+   'select begin_skill_activation_source_fence($1,$2,$3,$4,$5,$6,$7,$8)',
+   [incomplete.runId,incomplete.callId,skillId,1,pending,digest('incomplete component fence'),artifact.plan.expiresAt,incomplete.leaseToken]))),/source fence incomplete or expired at commit/);
+  assert.deepEqual(await inspect(incomplete),{enabled:false,status:'started',output:null,events:0});
   const committed=await makeActor(),first=await run(committed),state=await inspect(committed);
   assert.equal(state.enabled,true);assert.equal(state.status,'completed');assert.equal(state.events,1);assert.equal(state.output.data.activationProofHash,first.data.activationProofHash);
   const metrics=(await pool.query('select metrics from agent_tool_call where id=$1',[committed.callId])).rows[0].metrics;
@@ -241,6 +258,13 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
   const bindingCleared=await makeActor();
   assert.equal((await run(bindingCleared,true,false,false,true)).activationTransaction,'rejected');
   assert.deepEqual(await inspect(bindingCleared),{enabled:false,status:'started',output:null,events:0});
+  const customerId=randomUUID();
+  await pool.query("insert into mailbox_customer(id,user_id,identity_key,name) values($1,$2,$1::uuid::text,'Synthetic late-write source')",[customerId,owner]);
+  for(const lateWrite of ['memory','source-run','source-message','receipt','knowledge','mail','rearm','guc-reset','early-constraints','empty-source-write']){
+   const actor=await makeActor(),outcome=await run(actor,true,false,false,false,2.1,lateWrite);
+   assert.equal(outcome.activationReturnedBeforeCommit,true,lateWrite);assert.equal(outcome.sourceFenceRejected,true,lateWrite);
+   assert.deepEqual(await inspect(actor),{enabled:false,status:'started',output:null,events:0});
+  }
   // A real memory clock fence feeds the otherwise mocked qualification. No
   // source write occurs during activation; only wall-clock time advances.
   for(const boundary of ['expiry','activation']){
@@ -272,6 +296,10 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
    captureTimingAndModelQualityNotQualified:true,humanApprovalCreated:false,modelCalls:0}));
   console.log(JSON.stringify({memoryTimeCommitFence:'passed',actualDecisionMemoryExpiryCommitRejected:true,actualFutureMemoryActivationCommitRejected:true,
    activationReturnedBeforeCommit:true,sourceEditsDuringActivation:0,temporalFenceProducerReal:true,otherQualificationProducerMocked:true,humanApprovalCreated:false,modelCalls:0}));
+  console.log(JSON.stringify({activationSourceTransactionFence:'passed',lateMemoryTaskMessageReceiptKnowledgeAndMailWritesRejected:true,
+   rearmRejected:true,customGucResetCannotUnseal:true,earlyConstraintFlushCannotUnseal:true,emptySourceStatementRejected:true,allEffectsRolledBack:true,
+   disabledSourceGuardRefusesArming:true,privateFenceSelectUpdateDeleteDenied:true,incompleteTupleCommitRejected:true,
+   qualificationProducerMocked:true,humanApprovalCreated:false,productionQualificationGranted:false,modelCalls:0}));
  }finally{
   await pool.query(`drop trigger if exists ${trigger} on agent_run_event; drop trigger if exists ${trigger} on agent_skill; drop function if exists ${trigger}()`);
   if(priorMode===undefined)delete process.env.SKILL_RUNNER_TRUST_REGISTRY_MODE;else process.env.SKILL_RUNNER_TRUST_REGISTRY_MODE=priorMode;
