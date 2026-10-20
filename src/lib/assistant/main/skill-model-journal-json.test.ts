@@ -4,8 +4,9 @@ import {modeModelConfig} from './mode-config';
 import {modelFunctions} from './model';
 import {modelRequestManifest} from './model-request-manifest';
 import {createSkillModelJournal,type SkillCollectorTransaction} from './skill-model-journal';
+import {auditModelProtocol} from './model-protocol-audit';
 vi.mock('./local-analysis-boundary',()=>({assertLocalAnalysisBoundary:()=>{}}));
-it('hashes the actual JSON stored by PostgreSQL when optional model metadata is undefined',async()=>{
+it.each(['valid','empty','duplicate','wrong-role'])('hashes persisted JSON and retains %s response without qualifying rejected completion',async(kind)=>{
  const ownerId='11111111-1111-4111-8111-111111111111',evaluationId='22222222-2222-4222-8222-222222222222',id='33333333-3333-4333-8333-333333333333';
  let attempt:Record<string,unknown>|undefined,outcome:Record<string,unknown>|undefined;
  const query=vi.fn(async(sql:string,args:unknown[]=[])=>{
@@ -23,6 +24,19 @@ it('hashes the actual JSON stored by PostgreSQL when optional model metadata is 
  const journal=createSkillModelJournal(transaction,{ownerId,evaluationId,arm:'candidate',step:0,snapshotHash:digest('snapshot'),sourceKind:'synthetic-fixture'});
  const profile=modeModelConfig('standard').profile!,input={messages:[{role:'user',content:'Synthetic request',reasoning:undefined}],profile,index:0};
  const started=await journal.begin(input);expect(attempt!.input_hash).toBe(digest(attempt!.input));
+ if(kind!=='valid'){
+  const message=kind==='empty'?{role:'assistant',content:''}:kind==='wrong-role'?{role:'user',content:'Invalid provider role'}:
+   {role:'assistant',content:null,tool_calls:[0,1].map(()=>({id:'duplicate',type:'function',function:{name:'discover_tools',arguments:'{}'}}))};
+  const raw={message,transportReceipt:{synthetic:'preserved-untrusted-receipt'}};
+  await expect(journal.save(started.id,0,{status:'unavailable',retryable:true,reason:'completed-response-rejected',rejectedCompletedResponse:raw})).rejects.toThrow('must require reconciliation');
+  await expect(journal.save(started.id,0,{status:'unavailable',retryable:false,reason:'http-503',rejectedCompletedResponse:raw})).rejects.toThrow('must require reconciliation');
+  await journal.save(started.id,0,{status:'unavailable',retryable:false,reason:'completed-response-rejected',rejectedCompletedResponse:raw});
+  const recovered=await journal.begin(input);expect(recovered.fresh).toBe(false);
+  expect(recovered.output).toEqual({status:'unavailable',data:{retryable:false,reason:'completed-response-rejected',rejectedCompletedResponse:raw}});
+  expect(outcome!.output_hash).toBe(digest(outcome!.output));
+  expect(auditModelProtocol({input:attempt!.input,input_hash:String(attempt!.input_hash),output:recovered.output}).bound).toBe(false);
+  return;
+ }
  const body={model:profile.routes[0].model,messages:[{role:'user',content:'Synthetic request'}],tools:modelFunctions,stream:true,reasoning:{effort:profile.routes[0].effort}};
  await journal.save(started.id,0,{status:'success',value:{message:{role:'assistant',content:'Synthetic reply'},usage:undefined,
   requestManifest:modelRequestManifest(body,{model:profile.routes[0].model,provider:'synthetic',id:'synthetic-generation'})}});

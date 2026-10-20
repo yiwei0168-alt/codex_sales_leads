@@ -79,12 +79,13 @@ it.each(['empty','duplicate','wrong-role'])('preserves rejected %s completed rec
  const raw={...response(),message};m.signed.mockResolvedValue(raw);
  await expect(durableModel(context,messages,2,1,modeModelConfig('quick'))).rejects.toThrow();
  expect(m.signed).toHaveBeenCalledTimes(1);expect(m.save).toHaveBeenCalledTimes(1);
- expect(m.save.mock.calls[0][2]).toMatchObject({status:'success',data:{value:raw}});
+ expect(m.save.mock.calls[0][2]).toMatchObject({status:'unavailable',data:{retryable:false,reason:'completed-response-rejected',rejectedCompletedResponse:raw}});
  const request=vi.fn(async()=>raw);
  await expect(candidate(request)(decision())).rejects.toThrow();
- expect(request).toHaveBeenCalledTimes(1);expect(m.candidateSave).toHaveBeenCalledExactlyOnceWith(callId,0,{status:'success',value:raw});
- m.begin.mockResolvedValue({id:callId,fresh:false,output:{status:'success',data:{value:raw}}});
- m.candidateBegin.mockResolvedValue({id:callId,fresh:false,output:{status:'success',data:{value:raw}}});
+ expect(request).toHaveBeenCalledTimes(1);expect(m.candidateSave).toHaveBeenCalledExactlyOnceWith(callId,0,{status:'unavailable',retryable:false,reason:'completed-response-rejected',rejectedCompletedResponse:raw});
+ const rejected={status:'unavailable',data:{retryable:false,reason:'completed-response-rejected',rejectedCompletedResponse:raw}};
+ m.begin.mockResolvedValue({id:callId,fresh:false,output:rejected});
+ m.candidateBegin.mockResolvedValue({id:callId,fresh:false,output:rejected});
  await expect(durableModel(context,messages,2,1,modeModelConfig('quick'))).rejects.toThrow();
  await expect(candidate(request)(decision())).rejects.toThrow();
  expect(m.signed).toHaveBeenCalledTimes(1);expect(request).toHaveBeenCalledTimes(1);

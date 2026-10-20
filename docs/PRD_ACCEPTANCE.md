@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+2026-10-21 / G09异常完成响应改为非重试失败证据并保留原回执；此前mock成功保存不能证明真实日志接受，现53项回归/类型/7文件lint与新167实际受限日志保存、回读、恢复不重发及传输资格拒绝通过。e1a59caf的TLS声明独立通过，但旧包不含本修正；新包和完整等价/质量待验。[范围](SKILL_REJECTED_COMPLETED_RESPONSE_2026-10-21.md)。
+
 2026-10-21 / G09 e1a59caf双包新167签名五类/测量登记组合退出0，登记与来源真实读者、原件撤回恢复及停用事务等待通过，缺人工判断仍阻断。新包TLS正式声明另运行；整组非正式包装器/TLS，模型与身份合成，完整执行等价/真实质量/启用仍缺。[收据](evidence/ma24-g09-shared-model-measured-composition-2026-10-21.json)。
 
 2026-10-21 / G09固定e1a59caf正式Worker恢复completed与started无回执两分支实跑通过；复用/unknown、不重做及Skill/原记录不变，模型0。仅构造检查点/调用状态，真实启用、崩溃/未知COMMIT同链路及质量仍缺。[收据](evidence/ma24-g09-started-receipt-worker-recovery-2026-10-21.json)。

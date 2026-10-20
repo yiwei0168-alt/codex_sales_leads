@@ -14,6 +14,7 @@ import {modelFunctions} from '../src/lib/assistant/main/model';
 import {modelRequestManifest} from '../src/lib/assistant/main/model-request-manifest';
 import {freezeSkillAcceptancePlan,inspectLockedSkillAcceptanceFreeze} from '../src/lib/assistant/main/skill-acceptance-freeze';
 import {createSkillModelJournal,type SkillCollectorTransaction} from '../src/lib/assistant/main/skill-model-journal';
+import {runJournaledModeModel} from '../src/lib/assistant/main/journaled-mode-model';
 import {readSkillCandidateJournal} from '../src/lib/assistant/main/skill-candidate-audit';
 import {skillTransportResponseHash} from '../src/lib/assistant/main/skill-model-transport-receipt';
 import {verifySkillCandidateJournalTransports} from '../src/lib/assistant/main/skill-model-transport-journal';
@@ -109,6 +110,20 @@ try{
  const selection={evaluationId,arm:pin.arm},checked=await verifySkillCandidateJournalTransports({userId:owner},selection,frozen);
  assert.equal(checked.signedSuccessfulTransportsVerified,true);assert.equal(checked.binaryVerified,false);assert.equal(checked.automaticActivation,false);
  assert.equal(checked.transportReceiptHashes.length,1);
+ for(const kind of ['empty','duplicate','wrong-role']){
+  const rejectedId=randomUUID(),rejected=createSkillModelJournal(dedicated.transaction,{...pin,evaluationId:rejectedId});
+  const message=kind==='empty'?{role:'assistant',content:''}:kind==='wrong-role'?{role:'user',content:'Invalid synthetic role'}:
+   {role:'assistant',content:null,tool_calls:[0,1].map(()=>({id:'duplicate',type:'function',function:{name:'discover_tools',arguments:'{}'}}))};
+  const raw={...value,message};let requests=0;
+  const run=()=>runJournaledModeModel({begin:index=>rejected.begin({...input,index}),save:rejected.save,
+   callScope:index=>({evaluation:rejectedId,index}),request:async()=>{requests++;return raw;}});
+  await assert.rejects(run());await assert.rejects(run(),/Mode model routes exhausted or require reconciliation/);
+  assert.equal(requests,1);
+  const stored=await readSkillCandidateJournal({userId:owner},{evaluationId:rejectedId,arm:pin.arm});assert.equal(stored.length,1);
+  assert.deepEqual(stored[0].output,{status:'unavailable',data:{retryable:false,reason:'completed-response-rejected',rejectedCompletedResponse:raw}});
+  assert.equal(stored[0].output_hash,digest(stored[0].output));
+  await assert.rejects(verifySkillCandidateJournalTransports({userId:owner},{evaluationId:rejectedId,arm:pin.arm},frozen));
+ }
  const fallbackId=randomUUID(),fallback=createSkillModelJournal(dedicated.transaction,{...pin,evaluationId:fallbackId});
  const failed=await fallback.begin(input),failureManifest=modelRequestManifest(body,null);
  const {responseHash:unusedResponse,status:unusedStatus,...commonStatement}=statement;void unusedResponse;void unusedStatus;
@@ -200,7 +215,7 @@ try{
  await assert.rejects(verifySkillCandidateJournalTransports({userId:owner},selection,frozen),/revoked/);
  assert.equal((await pool.query('select enabled from agent_skill where id=$1',[skill.id])).rows[0].enabled,false);
  const originalTaskJournal=await verifyTaskTransportJournalDatabase(pool,owner,other,directory,skill.id);
- console.log(JSON.stringify({transportJournalDatabase:'passed',...originalTaskJournal,restrictedCollectorAppend:true,persistedSignatureVerified:true,recoveryReusesStoredOutcome:true,
+ console.log(JSON.stringify({transportJournalDatabase:'passed',...originalTaskJournal,rejectedCompletedResponseKinds:3,rejectedCompletedResponsesPersistedAsNonretryable:true,rejectedResponseRecoveryNoReplay:true,rejectedResponsesNotTransportQualified:true,restrictedCollectorAppend:true,persistedSignatureVerified:true,recoveryReusesStoredOutcome:true,
   crossAccountHidden:true,appendOnly:true,registryRevocationRejected:true,freezeRevocationRejected:true,dedicatedLoginVerified:true,appRoleMembershipRejected:true,
   compiledCollectorDatabasePreflight:true,collectorImageTlsPreflight,signedFallbackJournalVerified:true,freezeRevocationSerialized:true,modelAttemptAndOutcomeAppendSerialized:true,waitingModelWritesRejectCommittedRevocation:true,postRevocationModelWritesRejected:true,
   postRevocationLockedReadRejected:true,syntheticFixture:true,binaryVerified:false,automaticActivation:false,actualModelCalls:0}));

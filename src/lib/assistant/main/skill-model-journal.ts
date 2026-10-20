@@ -11,7 +11,7 @@ const inputSchema=z.object({messages:z.array(modelReplySchema.extend({role:z.enu
 const bindingSchema=z.object({ownerId:z.uuid(),evaluationId:z.uuid(),arm:z.enum(['baseline','candidate']),step:z.number().int().min(0),freezeId:z.uuid().optional(),snapshotHash:sha,sourceKind:z.enum(['synthetic-fixture','production-runner-pending-verification'])}).strict();
 const outputSchema=z.discriminatedUnion('status',[
  z.object({status:z.literal('success'),data:z.object({value:z.record(z.string(),z.unknown())}).strict()}).strict(),
- z.object({status:z.literal('unavailable'),data:z.object({retryable:z.boolean(),reason:z.string().min(1).max(100),transportFailureReceipt:z.unknown().optional()}).strict()}).strict(),
+ z.object({status:z.literal('unavailable'),data:z.object({retryable:z.boolean(),reason:z.string().min(1).max(100),transportFailureReceipt:z.unknown().optional(),rejectedCompletedResponse:z.record(z.string(),z.unknown()).optional()}).strict()}).strict(),
 ]);
 type Row={freeze_id?:string|null;id:string;owner_id:string;evaluation_id:string;arm:string;step:number;route_index:number;source_kind:string;snapshot_hash:string;input:unknown;input_hash:string};
 /** Must commit before returning. Supplied by a dedicated collector connection, never HTTP input. */
@@ -24,6 +24,11 @@ function checkOutput(input:unknown,value:unknown){
  // Hash the JSON representation actually persisted by PostgreSQL. Optional
  // model metadata (for example usage: undefined) is omitted on serialization.
  const output=outputSchema.parse(JSON.parse(JSON.stringify(outputSchema.parse(value))));
+ if(output.status==='unavailable'){
+  const rejected=output.data.rejectedCompletedResponse!==undefined;
+  if(rejected!==(output.data.reason==='completed-response-rejected')||rejected&&(output.data.retryable||output.data.transportFailureReceipt!==undefined))
+   throw new Error('Rejected completed response must require reconciliation');
+ }
  if(output.status==='success'){
   modelReplySchema.parse(output.data.value.message);
   if(!auditModelProtocol({input,input_hash:digest(input),output}).bound)throw new Error('Skill model response wire binding invalid');
@@ -50,13 +55,14 @@ export function createSkillModelJournal(transaction:SkillCollectorTransaction,bi
     return {id:row.id,fresh:inserted.rows.length===1,output:saved?checkOutput(row.input,saved.output):null};
    });
   },
-  async save(id:string,index:number,outcome:{status:'success';value:unknown}|{status:'unavailable';retryable:boolean;reason:string;transportFailureReceipt?:unknown}){
+  async save(id:string,index:number,outcome:{status:'success';value:unknown}|{status:'unavailable';retryable:boolean;reason:string;transportFailureReceipt?:unknown;rejectedCompletedResponse?:unknown}){
    assertLocalAnalysisBoundary();z.uuid().parse(id);z.number().int().min(0).max(2).parse(index);
    return transaction(pin.ownerId,async client=>{
     await assertSkillCollector(client);
     const row=(await client.query<Row>(`select * from agent_skill_model_attempt where id=$1 and owner_id=$2 and evaluation_id=$3 and arm=$4 and step=$5 and route_index=$6`,[id,pin.ownerId,pin.evaluationId,pin.arm,pin.step,index])).rows[0];
     if(!row||(row.freeze_id??null)!==(pin.freezeId??null)||row.snapshot_hash!==pin.snapshotHash||row.source_kind!==pin.sourceKind||digest(row.input)!==row.input_hash)throw new Error('Skill model attempt unavailable');
     const output=checkOutput(row.input,outcome.status==='success'?{status:'success',data:{value:outcome.value}}:{status:'unavailable',data:{retryable:outcome.retryable,reason:outcome.reason,
+     ...(outcome.rejectedCompletedResponse!==undefined?{rejectedCompletedResponse:outcome.rejectedCompletedResponse}:{}),
      ...(outcome.transportFailureReceipt!==undefined?{transportFailureReceipt:outcome.transportFailureReceipt}:{})}});
     await client.query('insert into agent_skill_model_outcome(attempt_id,owner_id,output,output_hash) values($1,$2,$3,$4) on conflict(attempt_id) do nothing',[id,pin.ownerId,JSON.stringify(output),digest(output)]);
     const saved=(await client.query<{output:unknown;output_hash:string}>('select output,output_hash from agent_skill_model_outcome where owner_id=$1 and attempt_id=$2',[pin.ownerId,id])).rows[0];

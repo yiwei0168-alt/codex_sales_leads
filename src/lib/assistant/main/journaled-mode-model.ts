@@ -17,7 +17,15 @@ function reply(value:unknown){
 export async function runJournaledModeModel<T extends Record<string,unknown>>(deps:Journal<T>&{
  callScope:(index:number)=>Record<string,unknown>;
 }):Promise<T&{message:ReturnType<typeof reply>}>{
- const selected=await orderedModeDecision<T>({signal:deps.signal,begin:deps.begin,save:deps.save,
+ const selected=await orderedModeDecision<T>({signal:deps.signal,begin:deps.begin,
+  save:async(id,index,outcome)=>{
+   if(outcome.status==='success'){
+    try{reply(outcome.value.message);}catch{
+     await deps.save(id,index,{status:'unavailable',retryable:false,reason:'completed-response-rejected',rejectedCompletedResponse:outcome.value});return;
+    }
+   }
+   await deps.save(id,index,outcome);
+  },
   request:async index=>{
    const response=await deps.request(index);
    let message:ReturnType<typeof reply>;

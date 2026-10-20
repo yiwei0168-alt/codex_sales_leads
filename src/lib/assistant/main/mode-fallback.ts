@@ -19,7 +19,7 @@ export async function orderedModeDecision<T>(deps:{
   signal?:AbortSignal;
   begin:(index:number)=>Promise<{id:string;fresh:boolean;output?:{status:string;data?:unknown}|null}>;
   request:(index:number)=>Promise<T>;
-  save:(id:string,index:number,value:{status:'success';value:T}|{status:'unavailable';retryable:boolean;reason:string;transportFailureReceipt?:unknown})=>Promise<void>;
+  save:(id:string,index:number,value:{status:'success';value:T}|{status:'unavailable';retryable:boolean;reason:string;transportFailureReceipt?:unknown;rejectedCompletedResponse?:unknown})=>Promise<void>;
 }):Promise<T>{
   for(let index=0;index<3;index++){
     deps.signal?.throwIfAborted();
