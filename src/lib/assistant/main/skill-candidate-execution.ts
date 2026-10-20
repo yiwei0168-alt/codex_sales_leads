@@ -9,7 +9,7 @@ const selection=z.object({ownerId:z.uuid(),evaluationId:z.uuid(),arm:z.enum(['ba
  * The lock is released by PostgreSQL on transaction/connection loss. Recovery
  * replays the existing journal; this does not grant execution equivalence. */
 export async function withSkillCandidateExecution<T>(transaction:SkillCollectorTransaction,input:z.infer<typeof selection>,
- work:(assertOwned:()=>Promise<void>)=>Promise<T>):Promise<T>{
+ work:(assertOwned:()=>Promise<void>,executionToken:string)=>Promise<T>):Promise<T>{
  const pin=selection.parse(input);
  return (transaction.execution??transaction)(pin.ownerId,async client=>{
   await assertSkillCollector(client);
@@ -28,7 +28,7 @@ export async function withSkillCandidateExecution<T>(transaction:SkillCollectorT
    if(!active||!current||current.role!==initial.role||current.owner!==initial.owner||current.transaction_id!==initial.transaction_id)
     throw new Error('Skill candidate execution ownership changed');
   };
-  try{await assertOwned();const output=await work(assertOwned);await assertOwned();return output;}
+  try{await assertOwned();const output=await work(assertOwned,initial.transaction_id);await assertOwned();return output;}
   finally{active=false;}
  });
 }

@@ -30,6 +30,7 @@ export const MainAgentState = Annotation.Root({
   decisionRevision: Annotation<number>(), policyRevision: Annotation<string>(),
 });
 export interface MainGraphDependencies {
+  checkpoint?: (state:typeof MainAgentState.State)=>Promise<void>;
   validateEvidence?: (messages:ModelMessage[])=>Promise<void>;
   boundary: () => Promise<{ control: "pause" | "cancel" | null; instructions: Array<{ id: string; content: string }>; policyRevision?:string }>;
   model: (messages: ModelMessage[], step: number,revision:number) => Promise<ModelMessage>;
@@ -50,8 +51,11 @@ function isPlaceholderEvidenceRead(call: ModelToolCall): boolean {
   } catch { return false; }
 }
 export function buildMainAgentGraph(deps: MainGraphDependencies, checkpointer?: BaseCheckpointSaver) {
+  const persist=(work:(state:typeof MainAgentState.State)=>Promise<Partial<typeof MainAgentState.State>>)=>async(state:typeof MainAgentState.State)=>{
+    const update=await work(state);await deps.checkpoint?.({...state,...update});return update;
+  };
   return new StateGraph(MainAgentState)
-    .addNode("safe_boundary", async state => {
+    .addNode("safe_boundary", persist(async state => {
       const current = await deps.boundary();
       if (current.control) return { status: (current.control === "cancel" ? "cancelled" : "paused") as RunStatus };
       const added = current.instructions.filter(i => !state.instructionIds.includes(i.id));
@@ -66,8 +70,8 @@ export function buildMainAgentGraph(deps: MainGraphDependencies, checkpointer?: 
         messages: [...state.messages,...abandoned,...added.map(i => ({ role: "user" as const, content: i.content })),...(policyChanged?[{role:"system" as const,content:"Account preferences or policies changed. Replan from the current policy records before further actions."}]:[])],
         instructionIds: [...state.instructionIds,...added.map(i => i.id)],policyRevision:current.policyRevision??state.policyRevision??"",
         decisionRevision:(state.decisionRevision??0)+(changed?1:0), ...(changed ? { seen: {},pending:[] } : {}) };
-    })
-    .addNode("main_model", async state => {
+    }))
+    .addNode("main_model", persist(async state => {
       if (state.steps >= 80) return { status: "partial" as RunStatus, reply: "任务已保存部分结果，达到本轮执行步数限制。可以继续或调整要求。" };
       try {
         await deps.validateEvidence?.(state.messages);
@@ -95,8 +99,8 @@ export function buildMainAgentGraph(deps: MainGraphDependencies, checkpointer?: 
         if(error instanceof OpenRouterRequestError&&error.status===429)return {steps:state.steps+1,status:"partial" as RunStatus,reply:"模型服务返回 HTTP 429：请求受到限流或配额限制。本次已停止立即重试，任务和已有结果已保存；请稍后恢复任务。"};
         return { steps: state.steps + 1, status: "partial" as RunStatus, reply: "主模型暂时不可用，已保存任务和已有工具结果。请恢复任务后继续。" };
       }
-    })
-    .addNode("execute_tool", async state => {
+    }))
+    .addNode("execute_tool", persist(async state => {
       const call = state.pending[0];
       if (isPlaceholderEvidenceRead(call)) {
         const missing = "资料会话或证据编号是占位值，未执行读取；请提供明确的型号、资料标题或资产 ID。";
@@ -127,7 +131,7 @@ export function buildMainAgentGraph(deps: MainGraphDependencies, checkpointer?: 
       const projected = content.length <= 100_000 ? content : JSON.stringify(result(null, { status: "partial", missing: ["Result too large for this turn; narrow the query or retrieve a specific document"], artifacts: output.artifacts, sources: output.sources }));
       return { messages: [...state.messages, { role: "tool" as const, tool_call_id: call.id, content: projected }],
         pending: state.pending.slice(1), seen: { ...state.seen, [key]: count } };
-    })
+    }))
     .addEdge(START, "safe_boundary")
     .addConditionalEdges("safe_boundary", s => s.status !== "running" ? END : s.pending.length ? "execute_tool" : "main_model")
     .addConditionalEdges("main_model", s => s.status === "running"||s.status==="completed" ? "safe_boundary" : END)

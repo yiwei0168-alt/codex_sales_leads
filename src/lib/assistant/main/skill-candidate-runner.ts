@@ -7,6 +7,7 @@ import {modelReplySchema} from './model';
 import {modeConfigSchema,type ModeConfig} from './mode-config';
 import {instructionOnlySkill} from './skills';
 import {assertLocalAnalysisBoundary} from './local-analysis-boundary';
+import {skillCandidateCheckpointSchema,type SkillCandidateCheckpointStore} from './skill-candidate-checkpoint';
 
 type SkillListing={id:string;name:string;scope:string;current_version:number;enabled:boolean;published:boolean;owned:boolean};
 type Snapshot={context:Pick<ExecutionContext,'userId'|'role'|'mode'|'knowledgeScope'>;
@@ -22,7 +23,7 @@ type Model=(input:{messages:ModelMessage[];profile:ModeConfig;step:number;signal
  * Skill availability changes only through normal skill_list/skill_read results;
  * the original task and system prompts receive no replay or candidate instructions.
  */
-export async function runSkillCandidateArm(input:Snapshot,arm:'baseline'|'candidate',model:Model,validateCurrent:()=>Promise<void>,maximumModelCalls=8){
+export async function runSkillCandidateArm(input:Snapshot,arm:'baseline'|'candidate',model:Model,validateCurrent:()=>Promise<void>,maximumModelCalls=8,checkpoint?:SkillCandidateCheckpointStore){
  assertLocalAnalysisBoundary();z.number().int().min(1).max(64).parse(maximumModelCalls);
  const snapshot=structuredClone(input),profile=modeConfigSchema.parse(snapshot.profile),candidate=snapshot.candidate;
  if(profile.mode!==snapshot.context.mode||candidate.listing.scope!=='account'||candidate.listing.enabled||!candidate.listing.owned
@@ -36,7 +37,21 @@ export async function runSkillCandidateArm(input:Snapshot,arm:'baseline'|'candid
  let calls=0,stopReason:string|null=null,candidateSkillUsed=false;
  const trace:Array<{id:string;name:string;argumentsHash:string;outputHash:string;receiptHash?:string}>=[];
  const check=async()=>{assertLocalAnalysisBoundary();await validateCurrent();};
+ await check();const inputHash=digest(snapshot),saved=await checkpoint?.load();
+ const restored=saved?skillCandidateCheckpointSchema.parse(saved):null;
+ if(restored){
+  if(restored.inputHash!==inputHash||restored.arm!==arm||restored.maximumModelCalls!==maximumModelCalls||restored.calls>maximumModelCalls)
+   throw new Error('Candidate checkpoint input changed');
+  calls=restored.calls;stopReason=restored.stopReason;candidateSkillUsed=restored.candidateSkillUsed;
+  for(const name of restored.described)described.add(name);
+  for(const id of restored.seenCalls)seenCalls.add(id);
+  trace.push(...restored.trace);
+ }
  const graph=buildMainAgentGraph({
+  checkpoint:checkpoint?async state=>{
+   await check();await checkpoint.save({protocol:'skill-candidate-graph-checkpoint-v1',inputHash,arm,maximumModelCalls,state,
+    calls,stopReason,candidateSkillUsed,described:[...described],seenCalls:[...seenCalls],trace:structuredClone(trace)});
+  }:undefined,
   boundary:async()=>{await check();return {control:stopReason?'pause':null,instructions:[]};},
   validateEvidence:check,
   model:async(messages,step)=>{
@@ -90,7 +105,10 @@ export async function runSkillCandidateArm(input:Snapshot,arm:'baseline'|'candid
   },
  });
  await check();
- const final=await graph.invoke({messages:[snapshot.initialMessages[0],...snapshot.initialMessages.slice(2)],pending:[],steps:0,status:'running',reply:'',seen:{},instructionIds:[],decisionRevision:0,policyRevision:''},{recursionLimit:maximumModelCalls*32});
+ const initial=restored?.state??{messages:[snapshot.initialMessages[0],...snapshot.initialMessages.slice(2)],pending:[],steps:0,status:'running' as const,reply:'',seen:{},instructionIds:[],decisionRevision:0,policyRevision:''};
+ // Pending recovery enters START -> safe_boundary, just like a new production
+ // lease. A terminal checkpoint is read-only reuse after current-source checks.
+ const final=initial.status==='running'?await graph.invoke(initial,{recursionLimit:maximumModelCalls*32}):initial;
  await check();
  return {protocol:'skill-instruction-overlay-v1',arm,status:final.status,reply:final.reply,messages:final.messages,
   inputHash:digest(snapshot),profileHash:digest(profile),candidateContentHash:candidate.value.content_hash,

@@ -8,6 +8,7 @@ import {runSkillCandidateArm} from './skill-candidate-runner';
 import {productTools} from './tools';
 import {dispatchTool} from './executor';
 import {orderedModeDecision,ModeModelsUnavailable} from './mode-fallback';
+import type {SkillCandidateCheckpoint,SkillCandidateCheckpointStore} from './skill-candidate-checkpoint';
 const execution=vi.hoisted(()=>({run:vi.fn()}));
 vi.mock('./tool-execution',()=>({executeRegisteredTool:execution.run}));
 const owner='00000000-0000-4000-8000-000000000001',id='00000000-0000-4000-8000-000000000002';
@@ -24,6 +25,30 @@ function fixture(){
 }
 function call(name:string,args:unknown,id:string){return {role:'assistant',content:null,tool_calls:[{id,type:'function',function:{name,arguments:JSON.stringify(args)}}]};}
 const answer={role:'assistant',content:'Synthetic answer.'};
+it('recovers a persisted pending read through the safe boundary with graph metadata intact',async()=>{
+ const snapshot=fixture();let saved:SkillCandidateCheckpoint|null=null,crash=true;
+ const checkpoint:SkillCandidateCheckpointStore={load:async()=>structuredClone(saved),save:async value=>{
+  saved=structuredClone(value);
+  if(crash&&value.state.pending[0]?.id==='read'){crash=false;throw new Error('Synthetic checkpoint commit acknowledgement loss');}
+ }};
+ const steps=[call('describe_tool',{tool:'skill_read'},'describe'),call('execute_tool',{tool:'skill_read',arguments:{id}},'read'),answer];
+ const model=vi.fn(async({step}:{step:number})=>steps[step]);
+ await expect(runSkillCandidateArm(snapshot,'candidate',model,async()=>{},8,checkpoint)).rejects.toThrow('checkpoint commit');
+ expect(model).toHaveBeenCalledTimes(2);expect(saved!.state.pending[0].id).toBe('read');
+ const out=await runSkillCandidateArm(snapshot,'candidate',model,async()=>{},8,checkpoint);
+ expect(model).toHaveBeenCalledTimes(3);expect(out).toMatchObject({status:'completed',modelCalls:3,candidateSkillUsed:true,stopReason:null});
+ expect(out.trace).toHaveLength(2);expect(out.messages.filter(row=>row.tool_call_id==='read')).toHaveLength(1);
+ const noModel=vi.fn(async()=>{throw new Error('Terminal checkpoint must not call model');});
+ const reused=await runSkillCandidateArm(snapshot,'candidate',noModel,async()=>{},8,checkpoint);
+ expect(reused).toEqual(out);expect(noModel).not.toHaveBeenCalled();
+ await expect(runSkillCandidateArm(snapshot,'candidate',noModel,async()=>{},7,checkpoint)).rejects.toThrow('checkpoint input changed');
+ await expect(runSkillCandidateArm(snapshot,'candidate',noModel,async()=>{throw new Error('Source revoked');},8,checkpoint)).rejects.toThrow('Source revoked');
+});
+it('does not advance the graph after a failed checkpoint save',async()=>{
+ const model=vi.fn(async()=>answer),checkpoint:SkillCandidateCheckpointStore={load:async()=>null,save:async()=>{throw new Error('Checkpoint storage unavailable');}};
+ await expect(runSkillCandidateArm(fixture(),'candidate',model,async()=>{},8,checkpoint)).rejects.toThrow('storage unavailable');
+ expect(model).not.toHaveBeenCalled();
+});
 it('preserves the actual initial prompt/config and introduces Skill only via list/read',async()=>{
  const snapshot=fixture(),original=digest(snapshot),inputs:ModelMessage[][]=[];
  const steps=[call('describe_tool',{tool:'skill_list'},'d-list'),call('execute_tool',{tool:'skill_list',arguments:{}},'list'),call('describe_tool',{tool:'skill_read'},'d-read'),call('execute_tool',{tool:'skill_read',arguments:{id}},'read'),answer];

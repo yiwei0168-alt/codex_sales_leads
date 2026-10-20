@@ -14,6 +14,8 @@
 
 # 产品主 Agent 与开放式工具架构
 
+2026-10-21 / 候选图节点推进前持久保存恢复状态；新所有者使用事务令牌/版本CAS，恢复待执行状态先进入安全边界，终态仅复核来源后复用。168私有表不替代追加模型证据；57项回归和实际数据库恢复/篡改/权限/旧写拒绝通过。原正式PostgresSaver保留，完整等价与同链路SIGKILL/未知COMMIT仍待验。[范围](SKILL_CANDIDATE_GRAPH_CHECKPOINT_2026-10-21.md)。
+
 2026-10-21 / 所有权保护16ef7e73已通过固定双包/新167完整签名五类与测量登记，实际并发容量/后端终止后晚到回执重入通过，人工判断缺失仍阻断。后续checkpoint独立推进；整组非生产包装器/TLS，完整执行等价仍未授予。[收据](evidence/ma24-g09-candidate-ownership-fixed-composition-2026-10-21.json)。
 
 2026-10-21 / 持久候选与安全两臂共用非阻塞事务所有权保护，图/模型消费边界复查事务/账号/角色，配置连接独立回执池保留提交能力；新167实际并发、回滚与后端终止后晚到回执重读通过。完整时限租约、控制和checkpoint接管仍待实现，不授予productionAgentEquivalent。[范围](SKILL_CANDIDATE_EXECUTION_OWNERSHIP_2026-10-21.md)。

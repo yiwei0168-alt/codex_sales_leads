@@ -22,6 +22,7 @@ import {disableLocalAnalysisTracing} from '../src/lib/assistant/main/local-analy
 import {createConfiguredSkillCollectorConnection} from '../src/lib/assistant/main/skill-collector-connection';
 import {verifyTaskTransportJournalDatabase} from './fixtures/task-transport-journal-db';
 import {verifySkillCandidateExecutionDatabase} from './fixtures/skill-candidate-execution-db';
+import {verifySkillCandidateCheckpointDatabase} from './fixtures/skill-candidate-checkpoint-db';
 
 nextEnv.loadEnvConfig(process.cwd());disableLocalAnalysisTracing();
 assert.equal(process.env.MA24_DISPOSABLE_TRANSPORT_JOURNAL,'1','Dedicated disposable cluster required');
@@ -39,6 +40,7 @@ const transaction:SkillCollectorTransaction=async(userId,work)=>{
 try{
  assert.equal((await pool.query('select count(*)::int n from app_user')).rows[0].n,1,'Fresh placeholder-only database required');
  const serialization=await readFile('db/migrations/146_skill_model_freeze_serialization.sql','utf8');await pool.query(serialization);await pool.query(serialization);
+ const checkpoints=await readFile('db/migrations/168_skill_candidate_checkpoint.sql','utf8');await pool.query(checkpoints);await pool.query(checkpoints);
  for(const id of [owner,other])await pool.query("insert into app_user(id,email,display_name,role,status) values($1,$2,'Synthetic transport fixture','member','active')",[id,`${id}@example.invalid`]);
  const skill=await importSkill({userId:owner,role:'member'},{name:'Synthetic transport fixture',source:'synthetic-test',files:{'SKILL.md':'Synthetic transport journal instructions.'},dependencies:[]});
  const version=(await pool.query('select * from agent_skill_version where skill_id=$1 and version=1',[skill.id])).rows[0],hash=digest('synthetic');
@@ -62,6 +64,7 @@ try{
  const collectorUrl=new URL(admin);collectorUrl.username='ma24_transport_fixture_login';collectorUrl.password=password;
  process.env.SKILL_COLLECTOR_DATABASE_URL=collectorUrl.toString();dedicated=createConfiguredSkillCollectorConnection();
  const executionOwnership=await verifySkillCandidateExecutionDatabase(pool,owner,dedicated.transaction);
+ const graphCheckpoint=await verifySkillCandidateCheckpointDatabase(pool,owner,other,skill.id,dedicated.transaction);
  await dedicated.transaction(owner,async client=>{assert.equal((await client.query('select current_user as name')).rows[0].name,'network_copilot_skill_collector');});
  await pool.query('grant network_copilot_app to ma24_transport_fixture_login');
  await assert.rejects(dedicated.transaction(owner,async()=>{}),/privileges or TLS invalid/);
@@ -217,7 +220,7 @@ try{
  await assert.rejects(verifySkillCandidateJournalTransports({userId:owner},selection,frozen),/revoked/);
  assert.equal((await pool.query('select enabled from agent_skill where id=$1',[skill.id])).rows[0].enabled,false);
  const originalTaskJournal=await verifyTaskTransportJournalDatabase(pool,owner,other,directory,skill.id);
- console.log(JSON.stringify({transportJournalDatabase:'passed',...executionOwnership,...originalTaskJournal,rejectedCompletedResponseKinds:3,rejectedCompletedResponsesPersistedAsNonretryable:true,rejectedResponseRecoveryNoReplay:true,rejectedResponsesNotTransportQualified:true,restrictedCollectorAppend:true,persistedSignatureVerified:true,recoveryReusesStoredOutcome:true,
+ console.log(JSON.stringify({transportJournalDatabase:'passed',...executionOwnership,...graphCheckpoint,...originalTaskJournal,rejectedCompletedResponseKinds:3,rejectedCompletedResponsesPersistedAsNonretryable:true,rejectedResponseRecoveryNoReplay:true,rejectedResponsesNotTransportQualified:true,restrictedCollectorAppend:true,persistedSignatureVerified:true,recoveryReusesStoredOutcome:true,
   crossAccountHidden:true,appendOnly:true,registryRevocationRejected:true,freezeRevocationRejected:true,dedicatedLoginVerified:true,appRoleMembershipRejected:true,
   compiledCollectorDatabasePreflight:true,collectorImageTlsPreflight,signedFallbackJournalVerified:true,freezeRevocationSerialized:true,modelAttemptAndOutcomeAppendSerialized:true,waitingModelWritesRejectCommittedRevocation:true,postRevocationModelWritesRejected:true,
   postRevocationLockedReadRejected:true,syntheticFixture:true,binaryVerified:false,automaticActivation:false,actualModelCalls:0}));

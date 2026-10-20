@@ -11,6 +11,7 @@ import {createDurableSkillCandidateModel,type SkillCandidateCollector} from './s
 import {requireSkillAcceptanceFreeze} from './skill-acceptance-freeze';
 import {prepareSkillExecutionIdentity} from './skill-runtime-identity';
 import {withSkillCandidateExecution} from './skill-candidate-execution';
+import {prepareSkillCandidateCheckpoint} from './skill-candidate-checkpoint';
 
 type Snapshot=Parameters<typeof runSkillCandidateArm>[0];
 const selection=z.object({runId:z.uuid(),skillId:z.uuid(),version:z.number().int().positive()}).strict();
@@ -76,11 +77,14 @@ export async function runDurableRecordedSkillCandidateArm(context:{userId:string
     ||digest(plan.identity)!==digest(await prepareSkillExecutionIdentity(context,{runId:input.runId})))throw new Error('Frozen execution identity changed');
   }
  };
- return withSkillCandidateExecution(collector.transaction,{ownerId:context.userId,evaluationId:collector.evaluationId,arm},async assertOwned=>{
+ return withSkillCandidateExecution(collector.transaction,{ownerId:context.userId,evaluationId:collector.evaluationId,arm},async(assertOwned,executionToken)=>{
  const guarded=async()=>{await assertOwned();await validate();await assertOwned();};
  const durable=createDurableSkillCandidateModel({ownerId:context.userId,snapshotHash:saved.sourceHash,arm},collector,guarded);
  await guarded();
- const output=await runSkillCandidateArm(saved.snapshot,arm,durable.model,guarded,maximumModelCalls);
+ const checkpoint=await prepareSkillCandidateCheckpoint(collector.transaction,{ownerId:context.userId,evaluationId:collector.evaluationId,arm,
+  snapshotHash:digest({sourceHash:saved.sourceHash,maximumModelCalls}),sourceKind:collector.sourceKind,
+  ...(collector.frozen?{freezeId:collector.frozen.freezeId}:{})},executionToken,guarded);
+ const output=await runSkillCandidateArm(saved.snapshot,arm,durable.model,guarded,maximumModelCalls,checkpoint);
  await guarded();
  return {...output,evaluationId:collector.evaluationId,sourceKind:collector.sourceKind,serverSnapshotHash:saved.sourceHash,taskInputHash:saved.taskInputHash,modelConfigHash:saved.modelConfigHash,
   modelAttemptReceipts:durable.receipts,serverSnapshotRevalidated:true,

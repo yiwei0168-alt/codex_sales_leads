@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+2026-10-21 / G09候选checkpoint已接入私有168及持久候选/安全图；57项回归、类型/11文件lint与实际168保存后应用中断恢复、终态不重发、令牌/版本/绑定/篡改/权限拒绝和编译历史候选通过。不是SIGKILL或真实PG未知COMMIT注入，新固定包及完整租约/控制/恢复等价、真实质量/启用仍缺。[范围](SKILL_CANDIDATE_GRAPH_CHECKPOINT_2026-10-21.md)。
+
 2026-10-21 / 16ef7e73所有权固定包新167完整五类/实测登记、实际并发及后端终止晚到回执恢复通过，缺人工判断仍阻断。与独立TLS声明分开记录；不含后续checkpoint，完整执行等价/质量/启用未完成。[收据](evidence/ma24-g09-candidate-ownership-fixed-composition-2026-10-21.json)。
 
 2026-10-21 / G09候选执行事务所有权接入持久历史/前瞻与安全两臂，独立所有权/回执池；69项回归/类型/8文件lint和新167同臂拒绝、双臂回执并行提交、终止所有权后端后的晚到回执保留/重新接管通过。完整时限租约/控制/checkpoint等价及新固定包完整链待验，真实质量/启用未通过。[范围](SKILL_CANDIDATE_EXECUTION_OWNERSHIP_2026-10-21.md)。
