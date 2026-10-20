@@ -1,0 +1,33 @@
+{
+  "date": "2026-10-20",
+  "rule": "MA24-06",
+  "baselineCommit": "943bbecdbe69cd330090fdc5d3ffa9c0fac09165",
+  "unit": {
+    "files": 3,
+    "testsPassed": 50,
+    "actualOrderedModeDecisionWithFakeClock": true,
+    "perRouteConfiguredMs": 1000,
+    "firstRetryableFailureAfterMs": 900,
+    "secondSuccessAfterAdditionalMs": 900,
+    "aggregateCompletedMs": 1800,
+    "completeCallbackLimitMs": 3000,
+    "hangingCallbackAbortAndLateToolIgnored": true,
+    "networkCalls": 0
+  },
+  "typecheckExitCode": 0,
+  "eslint": {
+    "files": 2,
+    "exitCode": 0
+  },
+  "sourceHashes": {
+    "src/lib/assistant/main/skill-candidate-runner.ts": "0be0b3402cfbff29ef90a799d60b72491e8dc752ac9e864ed236c8d0124966b5",
+    "src/lib/assistant/main/skill-candidate-runner.test.ts": "a1ca135eb6475a336b239e555ab6c475fff0200e035d149845ea35ead7d1a9f8"
+  },
+  "limitations": {
+    "productionAgentEquivalent": false,
+    "realModelOrProviderVerified": false,
+    "productionQualificationGranted": false,
+    "fullSignedCompositionForThisChangeVerified": false,
+    "prior943bbecdSnapshot": "running separately; not accepted and does not contain this change"
+  }
+}

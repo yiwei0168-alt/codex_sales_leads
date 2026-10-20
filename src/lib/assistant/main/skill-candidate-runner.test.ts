@@ -7,6 +7,7 @@ import {disableLocalAnalysisTracing} from './local-analysis-boundary';
 import {runSkillCandidateArm} from './skill-candidate-runner';
 import {productTools} from './tools';
 import {dispatchTool} from './executor';
+import {orderedModeDecision} from './mode-fallback';
 const execution=vi.hoisted(()=>({run:vi.fn()}));
 vi.mock('./tool-execution',()=>({executeRegisteredTool:execution.run}));
 const owner='00000000-0000-4000-8000-000000000001',id='00000000-0000-4000-8000-000000000002';
@@ -82,6 +83,25 @@ it('aborts a timed-out model callback and ignores its late tool call',async()=>{
   signal.addEventListener('abort',()=>{aborted=true;resolve(call('execute_tool',{tool:'mail_send',arguments:{}},'late'));},{once:true});
  }),async()=>{});
  expect(out).toMatchObject({modelCalls:1,stopReason:'model-deadline',businessToolExecutions:0,trace:[]});expect(aborted).toBe(true);
+});
+it('allows legal ordered fallback beyond one route budget while retaining the aggregate bound',async()=>{
+ vi.useFakeTimers();
+ try{
+  const snapshot=fixture();snapshot.profile.firstOutputMs=1000;snapshot.profile.totalMs=1000;
+  const attempts:number[]=[],saved:number[]=[];
+  const output=runSkillCandidateArm(snapshot,'candidate',request=>orderedModeDecision({signal:request.signal,
+   begin:async index=>({id:String(index),fresh:true}),
+   request:async index=>{
+    attempts.push(index);await new Promise(resolve=>setTimeout(resolve,900));
+    if(index===0)throw Object.assign(new Error('Synthetic retryable connection failure'),{code:'ECONNREFUSED'});
+    return answer;
+   },
+   save:async(_id,index)=>{saved.push(index);},
+  }),async()=>{});
+  await vi.advanceTimersByTimeAsync(1800);
+  expect(await output).toMatchObject({status:'completed',reply:answer.content,modelCalls:1,stopReason:null});
+  expect(attempts).toEqual([0,1]);expect(saved).toEqual([0,1]);expect(fetch).not.toHaveBeenCalled();
+ }finally{vi.useRealTimers();}
 });
 it.each(['active','script','dependency','owner','hash','version','missing-list'])('rejects %s candidate before model access',async kind=>{
  const snapshot=fixture();if(kind==='active')snapshot.candidate.listing.enabled=true;if(kind==='script')snapshot.candidate.value.files['SKILL.md']='```bash\necho hi\n```';if(kind==='dependency')snapshot.candidate.value.dependencies=['package'] as never[];if(kind==='owner')snapshot.candidate.value.owner_id=id;if(kind==='hash')snapshot.candidate.value.content_hash=digest('bad');if(kind==='version')snapshot.candidate.value.version=2;if(kind==='missing-list')snapshot.skills=[];

@@ -43,7 +43,10 @@ export async function runSkillCandidateArm(input:Snapshot,arm:'baseline'|'candid
    await check();if(calls>=maximumModelCalls){stopReason='model-call-limit';throw new Error(stopReason);}calls++;
    const controller=new AbortController();let timer:ReturnType<typeof setTimeout>|undefined;
    try{
-    const deadline=new Promise<never>((_,reject)=>{timer=setTimeout(()=>{stopReason='model-deadline';reject(new Error(stopReason));controller.abort();},profile.totalMs);});
+    // requestModeModel applies totalMs separately to each selected route.
+    // The outer callback bound must allow the complete ordered fallback, rather
+    // than aborting a valid second/third route after the first route's budget.
+    const deadline=new Promise<never>((_,reject)=>{timer=setTimeout(()=>{stopReason='model-deadline';reject(new Error(stopReason));controller.abort();},profile.totalMs*profile.routes.length);});
     const reply=modelReplySchema.parse(await Promise.race([model({messages:structuredClone([messages[0],snapshot.initialMessages[1],...messages.slice(1)]),profile:structuredClone(profile),step,signal:controller.signal}),deadline]));
     await check();
     if(!reply.content?.trim()&&!reply.tool_calls?.length)throw new Error('empty reply');
