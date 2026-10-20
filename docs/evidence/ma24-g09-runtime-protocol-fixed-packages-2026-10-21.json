@@ -1,0 +1,145 @@
+{
+  "date": "2026-10-21",
+  "rule": "MA24-06",
+  "sourceCommit": "6d7003957ceb69d9662d81c41b9a428be20a23e8",
+  "checks": [
+    {
+      "log": "tmp/ma24-runtime-protocol-main-build.log",
+      "sha256": "3e47f9a4c42a06646f4385699e086857358fe01ba97f61306f64851f8db0ae43",
+      "exitCode": 0,
+      "result": {
+        "mainAgentRuntimeImageBuild": "passed",
+        "commit": "6d7003957ceb69d9662d81c41b9a428be20a23e8",
+        "image": "ma24-main-agent-runtime:6d700395",
+        "productionQualified": false
+      }
+    },
+    {
+      "log": "tmp/ma24-runtime-protocol-collector-build.log",
+      "sha256": "edc7fec4148fd830b1027a1cbd204f23a98767c959502c89348d53e3ad50e63b",
+      "exitCode": 0,
+      "result": {
+        "collectorImageBuild": "passed",
+        "commit": "6d7003957ceb69d9662d81c41b9a428be20a23e8",
+        "image": "ma24-skill-collector:6d700395",
+        "productionQualified": false
+      }
+    },
+    {
+      "log": "tmp/ma24-runtime-protocol-package-pair.log",
+      "sha256": "025a78b32c4412bca690e954a8baad98093f39b389e358dcf955277358394d15",
+      "exitCode": 0,
+      "result": {
+        "localRuntimeDependencyPair": "passed",
+        "mainInspection": {
+          "role": "main-agent",
+          "imageId": "sha256:420fbe5f9ee96f252aace38792a22cb0a259e9dab952ae727abe4e440132ec63",
+          "sourceCommit": "6d7003957ceb69d9662d81c41b9a428be20a23e8",
+          "deploymentHash": "f5d44815f88c887d5c974fd9321a694626810fbe50ff90694c70b0263946d3ae",
+          "runtimeHash": "215c9bcf4cc647e65f868e194bf02edde37496e46a6c48350714f274958a771d",
+          "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+          "node": "24.21.0",
+          "platform": "linux",
+          "arch": "x64",
+          "sourceInputs": 1016,
+          "files": 34568,
+          "dependencyManifestHash": "d3edb974b4ae6e725cbb62205c8f0e65606b061fd97bce214289279ccca20137",
+          "dependencyFiles": 33503,
+          "runtimeModuleFormat": "esm"
+        },
+        "collectorInspection": {
+          "role": "skill-collector",
+          "imageId": "sha256:b869441adb1c8602c82cd59c253e4fd2d9827db6ab79cbba973aaea773550cba",
+          "sourceCommit": "6d7003957ceb69d9662d81c41b9a428be20a23e8",
+          "deploymentHash": "bf47da3952e9672ff3f08e3a240e621fbb75bc1394c7c64bf8c86c41aea0fbb2",
+          "runtimeHash": "215c9bcf4cc647e65f868e194bf02edde37496e46a6c48350714f274958a771d",
+          "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+          "node": "24.21.0",
+          "platform": "linux",
+          "arch": "x64",
+          "sourceInputs": 1016,
+          "files": 34532,
+          "dependencyManifestHash": "d3edb974b4ae6e725cbb62205c8f0e65606b061fd97bce214289279ccca20137",
+          "dependencyFiles": 33503,
+          "runtimeModuleFormat": "esm"
+        },
+        "comparison": {
+          "runtimePackageBytesPairRevalidated": true,
+          "runtimePackageBytesPairBlockers": [],
+          "runtimeModuleFormatPairRevalidated": true,
+          "runtimeModuleFormatPairBlockers": [],
+          "runtimePackageBytesPairHash": "d25fff1ebe1310f8492622f1c28f2de4099928fe90ba89ee4575977dc9ad7dd8"
+        },
+        "esmModuleFormatPairVerified": true,
+        "runtimeRegistrationsPublished": false,
+        "completeDependencyRuntimeEquivalenceVerified": false,
+        "productionQualified": false,
+        "automaticActivation": false,
+        "modelCalls": 0
+      }
+    },
+    {
+      "log": "tmp/ma24-runtime-protocol-collector-integrity.log",
+      "sha256": "da0262b2a65c77d8d6ae14417b81b80bd797c9373618dbaca131ddf5be7e265e",
+      "exitCode": 0,
+      "result": {
+        "collectorImageVerification": "passed",
+        "image": "sha256:b869441adb1c8602c82cd59c253e4fd2d9827db6ab79cbba973aaea773550cba",
+        "imageId": "sha256:b869441adb1c8602c82cd59c253e4fd2d9827db6ab79cbba973aaea773550cba",
+        "commit": "6d7003957ceb69d9662d81c41b9a428be20a23e8",
+        "packageFiles": 34532,
+        "deploymentHash": "bf47da3952e9672ff3f08e3a240e621fbb75bc1394c7c64bf8c86c41aea0fbb2",
+        "measuredEnrollmentVerified": true,
+        "missingMalformedAndMismatchedEnrollmentRejectedBeforeRunner": true,
+        "matchedEnrollmentReachesRunner": true,
+        "nodeOptionsRejected": true,
+        "nonRootReadOnlyNoNetwork": true,
+        "changedRunnerRejectedBeforeExecution": true,
+        "actualModelCalls": 0,
+        "productionQualified": false
+      }
+    },
+    {
+      "log": "tmp/ma24-runtime-protocol-web-build.log",
+      "sha256": "df1e8c4c0f7be8b915f1cfb322b1d8b3146ce2b93ca13fe6ce1ed7e73ba32be8",
+      "exitCode": 0,
+      "result": {
+        "webImageBuild": "passed",
+        "sourceCommit": "6d7003957ceb69d9662d81c41b9a428be20a23e8"
+      }
+    },
+    {
+      "log": "tmp/ma24-runtime-protocol-web-source.log",
+      "sha256": "2072fc72af40cb476566e60711a6cbdb885e73ed8f46269c65968eaeb87a1ba0",
+      "exitCode": 0,
+      "result": {
+        "webImageSourceVerification": "passed",
+        "image": "ma24-pilot-web:6d700395",
+        "imageId": "sha256:221e718267146cc9708877b03f2a1113cc4a40128ddff8aeaee4749a7717c434",
+        "sourceCommit": "6d7003957ceb69d9662d81c41b9a428be20a23e8",
+        "buildId": "fOjK-Yty4Os1e8Ff2Ev9r",
+        "runtimeSourceFileCount": 1016,
+        "runtimeSourceMatchesFixedGitExport": true,
+        "exportEolDifferences": 1016,
+        "runtimeSourceManifestHash": "728954d623d0a16d5dbafd64009c1c413d0c4ffbc4bdc47874be7c186aa26374",
+        "privateEnvironmentFiles": false,
+        "privateStorageFiles": false,
+        "staticAssetsPresent": true,
+        "nonRootReadOnlyNoNetwork": true,
+        "productionQualified": false
+      }
+    }
+  ],
+  "nativeFiveCategoryCompositionStatus": "passed",
+  "runtimeRegistrationsPublished": false,
+  "fullImageFiveCategoryVerified": false,
+  "completeDependencyRuntimeEquivalenceVerified": false,
+  "productionQualified": false,
+  "automaticActivation": false,
+  "actualModelCalls": 0,
+  "webSourceMatchesFixedGitExport": true,
+  "webHttpAcceptanceVerified": false,
+  "nativeCompositionReceipt": "ma24-g09-runtime-five-category-composition-2026-10-21.json",
+  "temporaryVerificationContainersRemoved": true,
+  "fixedImagesRetained": true
+}

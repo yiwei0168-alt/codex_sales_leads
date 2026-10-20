@@ -84,6 +84,7 @@ export async function verifyCombinedConfiguredDatabase(pool:Pool,original:Signed
   try{
    readiness=await tenantTransaction(original.owner,async client=>{
     const ready=await evaluateLockedSkillAcceptanceReadiness(client,context,combined.bundleId);
+    assert.equal(ready.acceptanceLedgerRuntimeTaskCount,8);assert.match(ready.acceptanceLedgerHash,/^[a-f0-9]{64}$/);
     assert.equal(ready.sourceRevocationGuardsReady,databaseTrust&&sourceProtectionSchemaAvailable);
     if(ready.sourceRevocationGuardsReady){
      assert('sourceProtectionTransactionId' in ready);
@@ -148,7 +149,7 @@ export async function verifyCombinedConfiguredDatabase(pool:Pool,original:Signed
   const registrationSchema=(await pool.query("select to_regclass('public.skill_runtime_package_registration') is not null available")).rows[0].available;
   assert.deepEqual(readiness.runtimePackageBlockers,measuredRegistered?[]:[databaseTrust?(registrationSchema?'package-registration-missing':'registration-schema-unavailable'):'database-trust-required']);
   assert.equal((await pool.query('select enabled from agent_skill where id=$1',[original.skillId])).rows[0].enabled,false);
-  return {configuredSameFreezeFiveCategoriesVerified:true,lockedTransportReceiptsRevalidated:true,transportOriginalTaskCount:2,transportEvaluationArmCount:8,disabledTransportKeyRejected:true,collectedCases:5,combinedArtifactHash:combined.artifactHash,
+  return {configuredSameFreezeFiveCategoriesVerified:true,runtimeProtocolEightTasksComposed:true,runtimeTaskLedgerCount:readiness.acceptanceLedgerRuntimeTaskCount,lockedTransportReceiptsRevalidated:true,transportOriginalTaskCount:2,transportEvaluationArmCount:8,disabledTransportKeyRejected:true,collectedCases:5,combinedArtifactHash:combined.artifactHash,
    frozenPlanHash:digest(registration.frozen.plan),lockedMaterialsVerified:true,prospectiveCaptureSourcesLocked:true,missingHumanJudgmentBlocksPolicy:true,
    immutableAttachmentSnapshotVerified:true,withdrawnSnapshotSourceRejected:true,restoredCanonicalSnapshotRevalidated:true,
    signingEnrollmentCoverageVerified:true,signingEnrollmentCount:readiness.signingEnrollmentCount,signingEnrollmentCoverageHash:readiness.signingEnrollmentCoverageHash,
