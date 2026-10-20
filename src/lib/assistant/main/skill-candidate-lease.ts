@@ -65,7 +65,12 @@ export async function withSkillCandidateLease<T>(transaction:SkillCollectorTrans
     and control is null and lease_until>clock_timestamp() and ${currentFreeze}
    returning floor(extract(epoch from (lease_until-clock_timestamp()))*1000)::integer remaining_ms`,args)).rows[0];
   })
-   .then(row=>{if(active){if(row)armDeadline(at,row.remaining_ms);else lost();}}).catch(lost).finally(()=>{pending=false;});
+   .then(row=>{if(active){if(row)armDeadline(at,row.remaining_ms);else lost();}}).catch(error=>{
+    // Our checkpoint transaction retains a shared lock on this same row. A
+    // NOWAIT conflict confirms no renewal; keep the previously confirmed local
+    // deadline and retry only on the next normal tick. Never extend on conflict.
+    if((error as {code?:unknown})?.code!=='55P03')lost();
+   }).finally(()=>{pending=false;});
  },HEARTBEAT_MS);
  const assertOwned=async()=>{
   if(!active)throw new Error('Skill candidate execution scope ended');controller.signal.throwIfAborted();
