@@ -14,6 +14,8 @@
 
 # 产品主 Agent 与开放式工具架构
 
+2026-10-21 / bcc2c6e0异常完成响应修正已通过同固定双包/新167完整签名五类与测量登记联合；受限日志中的异常回执保存为非重试失败、恢复不重发且拒绝资格。缺人工判断阻断保持；整组归档夹具与独立正式TLS声明分别记录，完整执行等价/真实质量及启用未完成。[收据](evidence/ma24-g09-rejected-response-fixed-composition-2026-10-21.json)。
+
 2026-10-21 / 异常响应修正bcc2c6e0固定采集器的正式TLS声明入口、新167数据库信任和停用等待提交已通过；完整签名组合仍运行，未授予完整执行等价/质量/启用。[收据](evidence/ma24-g09-rejected-response-fixed-declaration-2026-10-21.json)。
 
 2026-10-21 / 模型响应消费校验失败后，正式及候选均保留原完成响应为unavailable、retryable=false、completed-response-rejected，恢复需核对且不再请求/回退，不作为成功协议或签名资格。53项回归及新167真实受限日志三类异常验证通过；新固定包完整链待验。旧e1a59caf正式TLS声明补验通过，仍不含本修正。[范围](SKILL_REJECTED_COMPLETED_RESPONSE_2026-10-21.md)。
