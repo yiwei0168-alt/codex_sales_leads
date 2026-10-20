@@ -2,6 +2,8 @@
 
 # 产品主 Agent 与开放式工具架构
 
+2026-10-20 G11 固定2a1fb556：正式邮箱入口经完整性/归档源码/编译产物核对，在全新159数据库以受限verify-full TLS登录、非root/只读/空capabilities空队列退出0；参数/数据库/迁移连接拒绝通过。同源Web另库HTTP通过，资源清理。仅验证镜像入口及空队列，完整IMAP恢复仍沿用独立源码证据，尚未在固定镜像中复验。[证据](evidence/ma24-g11-mailbox-runtime-package-2026-10-20.json)。
+
 2026-10-20 G11 打包：`build-main-agent-runtime.mjs` 增加独立邮箱Worker，镜像以 `mailbox-worker [--once]` 复用完整性及受限数据库启动守卫；原主任务Worker/API保持独立入口。邮箱进程退出关闭池，单次领取失败向上抛出，持续模式仍记录通用错误后重试。编译/类型/lint/语法通过；固定Linux实跑待验，不表示生产或真实邮箱验收。[证据](evidence/ma24-g11-mailbox-runtime-package-2026-10-20.json)。
 
 2026-10-20 G11 同步恢复：重建队列累计统计仅汇总各批次与入库同事务保存的 imported_count+skipped_count；processed_count 包含实时解析进度，不能用于恢复累计。实际本地TLS IMAP→真实读取器→编译源码Worker→新159库先复现4封误计5封，再验证首个2封批次提交/次页解析1封后SIGKILL、原90秒租约到期恢复为4/4/4/0，邮件唯一加密、跨账号拒绝、旧批次取消与空Worker快照不变。16项回归及类型/lint通过。源码Worker为NODE_ENV=test，DNS只替换临时包中的测试域名，保留TLS验证；含修复Linux包、真实服务商和质量仍待验。[证据](evidence/ma24-g11-imap-worker-count-recovery-2026-10-20.json)。

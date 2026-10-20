@@ -1,5 +1,7 @@
 # 多邮箱私有学习接入
 
+2026-10-20 / G11 固定Linux入口验收：`2a1fb556` 同源Web/主运行镜像已从干净归档构建。正式 `mailbox-worker --once` 在全新159库以受限登录、verify-full TLS及非root/只读/空capabilities运行，空队列退出0；非法参数、缺少数据库配置和携带迁移连接拒绝。34,526项完整性、精确归档队列源码及编译邮箱产物哈希通过，同源Web在另一个新159库的登录/账号隔离HTTP通过，临时资源清理。该入口包含计数修复；本轮不含非空IMAP/中断恢复，先前源码Worker联合证据不升级为镜像证据。真实服务商、持续运行与质量仍待验。[证据](evidence/ma24-g11-mailbox-runtime-package-2026-10-20.json)。
+
 2026-10-20 / G11 运行包接线：主运行包新增独立 `mailbox-worker.mjs` 构建产物与 `mailbox-worker [--once]` 入口，复用既有完整性/非root/只读/受限数据库入口检查。邮箱CLI结束时关闭连接池，单次领取失败向调用方返回失败；持续模式保留既有保守重试行为。三产物编译、类型/lint和语法通过，固定Linux镜像与实际数据库运行待验；未部署或连接真实邮箱。[证据](evidence/ma24-g11-mailbox-runtime-package-2026-10-20.json)。
 
 2026-10-20 / G11 协议与 Worker 联合恢复：全新159实库复现同步半页中断后的统计偏大，实际4封邮件却显示 processed/discovered=5。恢复汇总现仅使用与入库事务一同提交的 imported_count+skipped_count，不再累加尚未入库的解析进度 processed_count。实际读取器/ImapFlow/mailparser、本地验证TLS、编译源码Worker和受限应用数据库角色联合复验通过：收件箱2封提交后，已发送页首封解析进度持久化再SIGKILL，原90秒租约不改写并自然到期，恢复为4封唯一加密邮件和4/4/4/0统计；跨账号拒绝、旧批次取消、全局游标不变及空Worker快照不变通过。16项回归、类型/lint通过，临时资源清理。仅在临时编译包替换精确测试域名DNS并追加测试CA；原读取器与TLS校验未改。Worker为本机NODE_ENV=test源码包，旧b1a5d549 Web仅验兼容；含修复Linux部署包、真实服务商、持续运行和归属/摘要质量仍待验。[证据](evidence/ma24-g11-imap-worker-count-recovery-2026-10-20.json)。

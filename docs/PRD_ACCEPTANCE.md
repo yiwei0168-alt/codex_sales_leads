@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+2026-10-20 / G11 固定Linux镜像：2a1fb556邮箱Worker包/源码/产物哈希一致及全新159/受限TLS/只读非root空队列通过，非法参数、缺数据库和迁移连接拒绝。同提交Web构建及另一个新159库的账号隔离/登录HTTP通过，临时资源清理。替代本阶段“Linux入口待验”，不替代镜像非空IMAP/中断恢复、真实服务商和质量验收。[证据](evidence/ma24-g11-mailbox-runtime-package-2026-10-20.json)。
+
 2026-10-20 / G11 邮箱Worker打包：独立产物、镜像复制和受既有边界守卫约束的入口已实现，退出关闭数据库池，单次领取失败向上抛出。三产物编译、类型/lint和语法通过；固定Linux镜像、实际队列与协议恢复仍待验，未部署或扩大邮箱访问。[证据](evidence/ma24-g11-mailbox-runtime-package-2026-10-20.json)。
 
 2026-10-20 / G11 联合恢复统计：已保留实库4封邮件误计 processed/discovered=5 的失败证据，并修复恢复时累加未入库解析进度的问题。实际读取器/ImapFlow/mailparser、本地验证TLS、编译源码Worker及新159实库的SIGKILL/原90秒租约自然到期复验通过，结果为4封唯一加密邮件、4/4/4/0统计；跨账号拒绝、旧批次取消、全局游标和空Worker快照不变。16项回归、类型/lint通过，资源清理。该Worker为本机NODE_ENV=test源码包；旧Web仅验兼容，不授予新Linux包、真实服务商或内容质量资格，G11仍未关闭。[证据](evidence/ma24-g11-imap-worker-count-recovery-2026-10-20.json)。
