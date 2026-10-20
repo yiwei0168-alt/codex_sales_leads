@@ -1,0 +1,225 @@
+{
+  "protocol": "ma24-main-api-forced-crash-recovery-v1",
+  "date": "2026-10-20",
+  "fixedSourceCommit": "c88d0c13c444869cf868a13e0493908803c923ea",
+  "previousFailure": {
+    "image": "ma24-main-agent-runtime:7d1f382c",
+    "processExitCode": 1,
+    "observation": "acknowledged thread GET returned 404 after SIGKILL and replacement",
+    "logSha256": "0956e059a21b8f2568a4547739938f4205b9eb94088e7c8767b136905457139a"
+  },
+  "checks": {
+    "fileTestsPassed": 5,
+    "typecheckPassed": true,
+    "focusedLintPassed": true,
+    "syntaxPassed": true,
+    "webBuildExitCode": 0,
+    "mainBuildExitCode": 0,
+    "actualAcceptanceExitCode": 0,
+    "temporaryResourcesRemoved": true,
+    "originalThreeServicesRemainRunning": true
+  },
+  "sourceHashes": {
+    "scripts/lib/main-runtime-durable-persistence.mjs": "ae178ae8964f555cc7f40a0eb6c405a7f2687506835739d130c0f9f086674bc5",
+    "scripts/lib/main-runtime-durable-persistence.test.mjs": "fa425c396fb151579da5084e915b2c8345d4e6717695762136698439f8d5c3cb",
+    "scripts/start-main-agent-runtime.mjs": "8348cd5452af6fb4a5ad3a63b48c0a75bfc67cb1bd85856c10baa816e95336b9",
+    "scripts/verify-main-runtime-worker-db.ts": "71075fb734e461b62a6b228ef3f0d32eceb5f0c7b74cf1d7248a28f596e6b9c3",
+    "scripts/verify-ma24-fresh-pilot-new-cluster.ts": "c5ce1e7eff077a561de45ade0aae94fa106ae83b6b31de8b0fcbf958697f6c00",
+    "Dockerfile.main-agent-runtime": "dab7043cdd577c59b4293872bfd743e13f99feb0474c97f0b34a51087c092fe7"
+  },
+  "sourceNodePair": {
+    "skillSourceRuntimePair": "passed",
+    "web": "ma24-pilot-web:c88d0c13",
+    "collector": "ma24-main-agent-runtime:c88d0c13",
+    "sourceCommit": "c88d0c13c444869cf868a13e0493908803c923ea",
+    "webImageId": "sha256:24e259ed1d36d782d3318ff2e944ac448e379f0f5acdec8fdd54e168dd477675",
+    "collectorImageId": "sha256:8ec4c1fdfca36447dac50283190b5bd1964c9e66eb06fc9415c723732b4c7a6f",
+    "inspectionUsesImmutableImageIds": true,
+    "runtimeHash": "84fd74472b65f8f7e6b5829ee447d2bc424488e253ca512f49d2242adbf24623",
+    "sourceInputs": 972,
+    "node": "24.21.0",
+    "platform": "linux",
+    "arch": "x64",
+    "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+    "webPackages": {
+      "pg": "8.23.0"
+    },
+    "collectorPackages": {
+      "pg": "8.23.0",
+      "zod": "4.4.3",
+      "@langchain/langgraph": "1.4.15",
+      "@langchain/core": "1.2.9",
+      "langsmith": "0.9.0",
+      "undici": "8.10.0"
+    },
+    "webUnresolved": [
+      "zod",
+      "@langchain/langgraph",
+      "@langchain/core",
+      "langsmith",
+      "undici"
+    ],
+    "collectorUnresolved": [],
+    "completeDependencyRuntimeEquivalenceVerified": false,
+    "productionQualified": false,
+    "actualModelCalls": 0
+  },
+  "mainRuntime": {
+    "mainRuntimeWorker": "passed",
+    "passed": true,
+    "image": "ma24-main-agent-runtime:c88d0c13",
+    "immutableImageId": "sha256:8ec4c1fdfca36447dac50283190b5bd1964c9e66eb06fc9415c723732b4c7a6f",
+    "sourceCommit": "c88d0c13c444869cf868a13e0493908803c923ea",
+    "integrity": {
+      "mainAgentRuntimeIntegrity": "passed",
+      "files": 34523,
+      "deploymentHash": "ef5d804b4a11c4365dfc57991494ad120ee4b7952e330286276bd5db9c1b6451",
+      "taskTransportPackageBindingRequired": false,
+      "taskTransportPackageBindingVerified": false,
+      "runtimeBoundaryVerified": true,
+      "processNonRoot": true,
+      "noNewPrivileges": true,
+      "capabilitiesEmpty": true,
+      "rootReadOnly": true,
+      "packageAndNodeReadOnly": true,
+      "productionQualified": false
+    },
+    "actualLangGraphApi": true,
+    "actualCompiledQueueWorker": true,
+    "postgresCheckpointRecovery": true,
+    "cases": [
+      {
+        "sourceWithdrawn": false,
+        "status": "completed",
+        "modelAttempts": 0,
+        "extractionJobs": 1,
+        "actualClaimedLease": true
+      },
+      {
+        "sourceWithdrawn": true,
+        "status": "partial",
+        "modelAttempts": 0,
+        "extractionJobs": 0,
+        "actualClaimedLease": true
+      }
+    ],
+    "durabilityResult": {
+      "namedVolumeUid": 1000,
+      "namedVolumeMode": 448,
+      "stateFiles": [
+        {
+          "name": ".langgraphjs_api.checkpointer.json",
+          "sha256": "4d80387f900bd86ccc8d15678b4d9afba6b60082d66ac4f563a0c5ec3cb766cc"
+        },
+        {
+          "name": ".langgraphjs_api.store.json",
+          "sha256": "e69dd60770ed05991257c3817414d932dedb810355f6d1e56a76eb04c63de8c1"
+        },
+        {
+          "name": ".langgraphjs_ops.json",
+          "sha256": "d3e46d2107f6124259aa5fcc46e6cda5726dec59fc0d369990e6572ee9dc1618"
+        }
+      ],
+      "actualThreadReadbackAfterContainerReplacement": true,
+      "priorTaskRowsUnchangedAfterRestart": true,
+      "gracefulApiExitCode": 0,
+      "committedTaskSurvivesLostHttpResponse": true,
+      "noDuplicateReplyEventOrExtractionJob": true,
+      "subsequentWorkerMakesNoReplayRequest": true,
+      "forwardedApiRequests": 1,
+      "crashResult": {
+        "signal": "SIGKILL",
+        "exitCode": 137,
+        "acknowledgedThreadRetained": true,
+        "previouslyFlushedThreadRetained": true,
+        "businessRowsUnchanged": true,
+        "flushDelayInserted": false,
+        "inFlightTaskCrashVerified": false,
+        "powerLossVerified": false
+      }
+    },
+    "commitLossResult": null,
+    "uncommittedLossResult": null,
+    "taskEnrollmentResult": null,
+    "syntheticCheckpointSeed": true,
+    "actualModelCalls": 0,
+    "externalActions": 0,
+    "firstModelExecutionVerified": false,
+    "productionQualified": false,
+    "automaticActivation": false
+  },
+  "freshCluster": {
+    "freshClusterPilot": "passed",
+    "image": "pgvector/pgvector:pg16",
+    "publishedAddress": "127.0.0.1 only",
+    "rolesVerified": true,
+    "duplicateRoleBootstrapRejected": true,
+    "freshMigrationThrough": 159,
+    "currentSchemaMarkers": {
+      "mailbox_work_binding": true,
+      "mailbox_lease_binding": true,
+      "mailbox_binding_constraint": true,
+      "knowledge_source_gate": true,
+      "task_origin_gate": true,
+      "local_memory_source_gate": true,
+      "receipt_source_gate": true,
+      "immutable_snapshot_capture": true,
+      "immutable_snapshot_lifecycle": true,
+      "trust_registry_versions": true,
+      "trust_registry_pointer": true,
+      "trust_registry_publication": true,
+      "runtime_package_registrations": true,
+      "runtime_package_withdrawals": true,
+      "runtime_package_publication": true
+    },
+    "snapshotLifecycleVerified": false,
+    "knowledgeScopeSourcesVerified": false,
+    "finalSettlementVerified": false,
+    "compiledMainRuntimeVerified": true,
+    "mainRuntimeDurabilityVerified": true,
+    "mainRuntimeCrashRecoveryVerified": true,
+    "mainRuntimeCommitLossVerified": false,
+    "mainRuntimeTaskEnrollmentVerified": false,
+    "snapshotDownloadResult": null,
+    "localMemoryWorkerResult": null,
+    "trustRegistryRestoreResult": null,
+    "freshMailboxUiVerified": false,
+    "extendedFrontendUiVerified": false,
+    "syntheticAccountCompanyAndRestoreVerified": true,
+    "copiedProductionData": false,
+    "linuxWebImage": "ma24-pilot-web:c88d0c13",
+    "linuxWebHttpWorkflowVerified": true,
+    "linuxWebHttpsBrowserVerified": false,
+    "tenConcurrentSyntheticAccountsVerified": false,
+    "pilotBackupRestoreVerified": false,
+    "crossClusterRestoreVerified": false,
+    "nonemptyMailboxCrossClusterRestoreVerified": false,
+    "scriptedModeBusinessVerified": false,
+    "runnerAttestationStoreVerified": false,
+    "collectorDeclarationImageVerified": false,
+    "lockedPolicyDatabaseVerified": false,
+    "memorySourceLocksVerified": false,
+    "methodCatalogSourceLocksVerified": false,
+    "shadowSourceLocksVerified": false,
+    "safetySkillUsageVerified": false,
+    "transportJournalDatabaseVerified": false,
+    "collectorImageTlsPreflightVerified": false,
+    "poolRecoveryVerified": false,
+    "standaloneDatabaseRecoveryVerified": false,
+    "extraG09Migration": null,
+    "prospectiveSourceDatabaseVerified": false,
+    "prospectivePairedMaterialVerified": false,
+    "prospectiveStandaloneHttpVerified": false,
+    "prospectiveStandaloneBrowserVerified": false,
+    "completeCompositionVerified": false,
+    "samePortPriorImageRollbackVerified": false
+  },
+  "actualLogSha256": "9d5acff52f25fd77ee2b9ec9b4c7216e518fe95bfd204792320035d6c3839c44",
+  "limitations": [
+    "synthetic completed checkpoints; no first real model task",
+    "no in-flight task SIGKILL",
+    "no host power-loss or partial-file fault injection",
+    "no coordinated multi-file or off-host recovery",
+    "no current load or production qualification"
+  ]
+}

@@ -1,8 +1,10 @@
 # MA24 G01–G13 当前剩余门槛（2026-10-16）
 
+G01 强制结束修复后已补验：固定c88d0c13 Web/主运行、972项源码/Node、全新159实际API/Worker通过；刚确认线程在SIGKILL137后替换读回，已写盘线程/业务行保留。响应丢失与下一Worker不重放也通过，资源清理，0模型。下方本阶段“新镜像待验”已取代；运行中任务、断电/一致异地恢复、当前负载及真实质量/生产资格仍未验。[实际终态](MAIN_AGENT_FORCED_CRASH_RECOVERY_2026-10-20.md)。
+
 G01 新发现与修复：固定7d1f382c在API确认线程创建后实际SIGKILL并替换容器，读取404，不能关闭强制崩溃门槛。已实现同步原子快照/损坏拒绝/上游实现精确校验，5项文件测试通过；修复后固定镜像仍待验。[范围](MAIN_AGENT_FORCED_CRASH_RECOVERY_2026-10-20.md)。
 
-2026-10-20 最新环境终态：经用户确认，Docker 40.63GiB 数据盘已离线备份并物理迁移至 `F:\DockerDesktopData`，原 C 盘路径通过目录联接兼容；备份与迁移后独立哈希一致，原三个服务及业务库/图谱/模型只读检查通过。C 盘约45.1GiB可用。下方“迁移待选择/引擎待恢复”为历史状态。同版 `7d1f382c` Web/主运行/采集器构建、972项源码与Node核对、全新159数据库实际Web HTTP验证通过并清理资源；固定完整签名组合仍运行，暂不判通过。G01–G13继续，G14–G20与内网上线暂缓。[迁移与验证证据](MA24_DOCKER_STORAGE_RECOVERY_PLAN_2026-10-20.md)。 [2026-10-20 follow-up: fixed composition exited 0; temporary resources removed. Host archive plus precise fixture migrations only; runtime package registration reports registration-schema-unavailable. No full159 image workflow, real quality, or production qualification claim.]
+2026-10-20 最新环境终态：经用户确认，Docker 40.63GiB 数据盘已离线备份并物理迁移至 `F:\DockerDesktopData`，原 C 盘路径通过目录联接兼容；备份与迁移后独立哈希一致，原三个服务及业务库/图谱/模型只读检查通过。C 盘约45.1GiB可用。下方“迁移待选择/引擎待恢复”为历史状态。同版 `7d1f382c` Web/主运行/采集器构建、972项源码与Node核对、全新159数据库实际Web HTTP验证通过并清理资源；固定完整签名组合后续退出0并清理资源，仅宿主/精确迁移夹具，运行包登记报告schema不可用，不是159或镜像内完整组合。G01–G13继续，G14–G20与内网上线暂缓。[迁移与验证证据](MA24_DOCKER_STORAGE_RECOVERY_PLAN_2026-10-20.md)。
 
 环境补强后续：三种镜像构建新增Windows系统盘完全耗尽时的调用前拒绝，真实C盘0字节检查已拒绝且未调用Docker；13项相关测试、类型/lint通过。未清理或迁移数据，恢复选择仍待答复；不视为镜像或组合验收通过。[空间恢复与检查器](MA24_DOCKER_STORAGE_RECOVERY_PLAN_2026-10-20.md)。
 

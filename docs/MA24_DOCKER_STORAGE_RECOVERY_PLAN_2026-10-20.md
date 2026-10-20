@@ -14,7 +14,7 @@
 
 ## 恢复后固定发布核对
 
-恢复后固定提交 `7d1f382cf07d9410fd09fcb202e1e6620857682d` 的 Web、普通主运行、采集器镜像均构建成功。两个独立只读/无网络镜像配对检查通过：972 项源码、Node 24.21.0 及 Node 二进制摘要一致；检查器明确不授予完整依赖运行时等价或生产资格。新 Web 镜像在全新数据库迁移至159后，角色隔离、合成账号/公司及实际 HTTP 工作流通过并清理临时资源。完整签名组合仍在运行，不能由上述结果代替。详见[恢复后验收记录](evidence/ma24-post-docker-migration-recovery-2026-10-20.json)。 [2026-10-20 follow-up: fixed composition exited 0; temporary resources removed. Host archive plus precise fixture migrations only; runtime package registration reports registration-schema-unavailable. No full159 image workflow, real quality, or production qualification claim.]
+恢复后固定提交 `7d1f382cf07d9410fd09fcb202e1e6620857682d` 的 Web、普通主运行、采集器镜像均构建成功。两个独立只读/无网络镜像配对检查通过：972 项源码、Node 24.21.0 及 Node 二进制摘要一致；检查器明确不授予完整依赖运行时等价或生产资格。新 Web 镜像在全新数据库迁移至159后，角色隔离、合成账号/公司及实际 HTTP 工作流通过并清理临时资源。完整签名组合后续退出0、临时资源已清理；仅宿主固定快照与精确迁移夹具，运行包登记报告 registration-schema-unavailable，不是全新159或镜像内完整组合。详见[恢复后验收记录](evidence/ma24-post-docker-migration-recovery-2026-10-20.json)。
 
 ## 以下为迁移前方案与历史观测
 
