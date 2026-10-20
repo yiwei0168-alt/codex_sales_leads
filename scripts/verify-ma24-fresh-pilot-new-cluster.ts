@@ -12,7 +12,9 @@ import {completeDisposableCheck} from './lib/ma24-disposable-cleanup';
 const id = randomBytes(6).toString("hex");
 const containerName = `ma24-pilot-fresh-${id}`;
 const scheduleDispatchCheck=process.argv.includes('--schedule-dispatch');
-const args = process.argv.slice(2).filter(arg=>arg!=='--schedule-dispatch');
+const scheduleWorkerArgument=process.argv.slice(2).find(arg=>arg.startsWith('--schedule-worker-image='));
+const scheduleWorkerImage=scheduleWorkerArgument?.slice('--schedule-worker-image='.length);
+const args = process.argv.slice(2).filter(arg=>arg!=='--schedule-dispatch'&&arg!==scheduleWorkerArgument);
 const webImageArgument = args.find(arg => arg.startsWith("--web-image="));
 const webImage = webImageArgument?.startsWith("--web-image=")
   ? webImageArgument.slice("--web-image=".length) : undefined;
@@ -83,6 +85,7 @@ assert(!snapshotLifecycleCheck||(webImage&&currentSchemaCheck),'--snapshot-lifec
 assert(!knowledgeScopeSourcesCheck||(webImage&&currentSchemaCheck),'--knowledge-scope-sources requires --web-image and --current-schema');
 assert(!finalSettlementCheck||(webImage&&currentSchemaCheck),'--final-settlement requires --web-image and --current-schema');
 assert(!scheduleDispatchCheck||(webImage&&currentSchemaCheck),'--schedule-dispatch requires --web-image and --current-schema');
+assert(!scheduleWorkerArgument||(scheduleWorkerImage&&/^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(scheduleWorkerImage)&&webImage&&currentSchemaCheck),'--schedule-worker-image requires a fixed image, Web and current schema');
 assert(!mainRuntimeArgument||(mainRuntimeImage&&/^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(mainRuntimeImage)&&webImage&&currentSchemaCheck
   &&![snapshotLifecycleCheck,knowledgeScopeSourcesCheck,finalSettlementCheck,acceptanceOriginalsCheck,localMemoryWorkerCheck].some(Boolean)),
  '--main-runtime-image requires a standalone current-schema Web invocation');
@@ -249,6 +252,14 @@ try {
     const schedules=await run(process.execPath,['scripts/run-tsx.cjs','scripts/verify-schedule-dispatch-db.ts'],
       {...process.env,DATABASE_URL:appUrl.toString(),DATABASE_MIGRATION_URL:adminUrl.toString(),MA24_DISPOSABLE_SCHEDULE_DISPATCH:'1'});
     assert.equal(schedules.code,0,schedules.output);assert(schedules.output.includes('"scheduleDispatch":"passed"'),schedules.output);console.log(schedules.output.trim());
+  }
+  if(scheduleWorkerImage){
+    const runtimeApp=new URL(appUrl);runtimeApp.hostname='pilot-db';runtimeApp.port='5432';runtimeApp.searchParams.set('sslmode','verify-full');
+    const certificate=await run('docker',['exec',containerId!,'cat','/tmp/ma24-server.crt']);assert.equal(certificate.code,0);
+    const scheduledWorker=await run(process.execPath,['scripts/run-tsx.cjs','scripts/verify-schedule-worker-db.ts'],
+      {...process.env,DATABASE_URL:appUrl.toString(),DATABASE_MIGRATION_URL:adminUrl.toString(),MA24_DISPOSABLE_SCHEDULE_WORKER:'1',
+        MA24_SCHEDULE_WORKER_IMAGE:scheduleWorkerImage,MA24_SCHEDULE_NETWORK:networkName,MA24_SCHEDULE_RUNTIME_DATABASE_URL:runtimeApp.toString(),MA24_SCHEDULE_CA:certificate.output.trim()});
+    assert.equal(scheduledWorker.code,0,scheduledWorker.output);assert(scheduledWorker.output.includes('"scheduleWorkerCrash":"passed"'),scheduledWorker.output);console.log(scheduledWorker.output.trim());
   }
   const verifyMainRuntime=async(http?:{base:string;ownerCookie:string;peerCookie:string;ownerEmail:string})=>{
     if(!mainRuntimeImage)return;
@@ -736,6 +747,7 @@ try {
   }
   acceptanceResult={ freshClusterPilot: "passed", image: "pgvector/pgvector:pg16",
     scheduleDispatchVerified:scheduleDispatchCheck,
+    scheduleWorkerCrashVerified:Boolean(scheduleWorkerImage),
     publishedAddress: "127.0.0.1 only", rolesVerified: true, duplicateRoleBootstrapRejected: true,
     freshMigrationThrough: currentSchemaCheck?159:135,currentSchemaMarkers,snapshotLifecycleVerified:snapshotLifecycleCheck,knowledgeScopeSourcesVerified:knowledgeScopeSourcesCheck,finalSettlementVerified:finalSettlementCheck,compiledMainRuntimeVerified:Boolean(mainRuntimeImage),mainRuntimeDurabilityVerified:mainRuntimeDurability,mainRuntimeCrashRecoveryVerified:mainRuntimeCrashRecovery,mainRuntimeInterruptionVerified:mainRuntimeInterruption,mainRuntimeNetworkLossVerified:mainRuntimeNetworkLoss,mainRuntimeResumeRevocationVerified:mainRuntimeResumeRevocation,mainRuntimeCommitLossVerified:mainRuntimeCommitLoss,mainRuntimeTaskEnrollmentVerified:mainRuntimeTaskEnrollment,snapshotDownloadResult,localMemoryWorkerResult,trustRegistryRestoreResult,freshMailboxUiVerified:frontendUiCheck,extendedFrontendUiVerified:extendedUiCheck,
     syntheticAccountCompanyAndRestoreVerified: true, copiedProductionData: false,

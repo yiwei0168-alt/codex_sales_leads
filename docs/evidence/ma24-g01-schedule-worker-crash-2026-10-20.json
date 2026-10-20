@@ -1,0 +1,63 @@
+{
+  "stage": "MA24 G01/G02 fixed Linux schedule dispatch SIGKILL and natural lease recovery",
+  "date": "2026-10-20",
+  "sourceCommit": "6255598facea5b868e406b0fb8f9c51461e57eaa",
+  "builds": {
+    "source": "Fixed Git archives, excluding unstaged user files",
+    "main": {"image":"ma24-main-agent-runtime:6255598f","id":"sha256:1bc3e24ddcff0855bf358874df4c2429c8d849765c1fa65dd2d411be3b212f73","passed":true},
+    "web": {"image":"ma24-pilot-web:6255598f","id":"sha256:3a74aad884b38f47af1bb7c1d16b725226af5e58f13e9c4c9df18b35e8640183","passed":true}
+  },
+  "verification": {
+    "command": "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --web-image=ma24-pilot-web:6255598f --current-schema --schedule-worker-image=ma24-main-agent-runtime:6255598f",
+    "log": "tmp/ma24-schedule-worker-crash-6255598f.log",
+    "exitCode": 0,
+    "freshMigrationThrough": 159,
+    "scheduleWorkerCrashVerified": true,
+    "webHttpWorkflowAndAccountIsolation": true,
+    "databaseTransport": "TLS verify-full against the generated cluster CA",
+    "publishedAddress": "127.0.0.1 only",
+    "actualWorkerEntrypoint": true,
+    "actualPostEnqueueWait": "Observed active UPDATE agent_schedule SET active_run_id with PgSleep after enqueue/event writes in the same transaction",
+    "fixtureTriggerDelaySeconds": 10,
+    "actualSigkillExitCode": 137,
+    "noCommittedTaskConversationMessageOrEventAfterKill": true,
+    "noActiveTransactionAfterKill": true,
+    "originalScheduleLeaseUnchanged": true,
+    "existingLeaseSeconds": 60,
+    "recoveredAfterActualLeaseExpiry": true,
+    "storedLeaseOrDueTimeRewritten": false,
+    "newLeaseToken": true,
+    "finalScheduledTasks": 1,
+    "finalConversations": 1,
+    "finalMessages": 2,
+    "finalEvents": 2,
+    "subsequentWorkerNoAdditionalRows": true,
+    "finalTaskStatus": "partial",
+    "apiUnavailableIntentionally": true,
+    "modelCalls": 0,
+    "externalActions": 0,
+    "memoryExtractionJobs": 0,
+    "fixtureRowsWorkersAndFreshClusterCleaned": true,
+    "originalDatabaseChanged": false
+  },
+  "packageIntegrity": {
+    "files": 34524,
+    "deploymentHash": "ebbc7efd6255b1a824442705fd5800a8e69530fba4b23355bd66fdf7019a8f98",
+    "runtimeBoundaryVerified": true,
+    "processNonRoot": true,
+    "noNewPrivileges": true,
+    "capabilitiesEmpty": true,
+    "rootAndPackageReadOnly": true,
+    "archivedScheduleSourceSha256": "6d9689d263941be94d9095ecde7b4e0c2dd1d7e2dfa90fa048d3e6dcdc92bf54",
+    "packagedScheduleMatchesExactArchiveBytes": true,
+    "compiledWorkerSha256": "fefaa3dfc19b14a368a014201951017a72ae5d57b3106928b9d2ed2a02c2505f",
+    "compiledWorkerMatchesBuildManifest": true
+  },
+  "checks": {"mainImageBuild":"passed","webImageBuild":"passed","typecheck":"passed","targetedEslint":"passed","gitDiffCheck":"passed"},
+  "limits": [
+    "Actual fixed Worker process death before schedule dispatch COMMIT; not acknowledgment loss after COMMIT",
+    "Recovery API is intentionally unavailable at loopback port 1; final partial is expected and does not verify model/task completion",
+    "No provider batch settlement, real model, full account lifecycle, production or independent quality acceptance",
+    "G01-G13 remain incomplete; G14-G20 and LAN deployment remain deferred"
+  ]
+}
