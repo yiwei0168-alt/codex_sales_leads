@@ -5,7 +5,7 @@ import {resolve} from 'node:path';
 
 if(process.argv.length!==2)throw new Error('No build arguments accepted');
 const directory=resolve('tmp/main-agent-runtime');await mkdir(directory,{recursive:true});
-const entries=[['worker','scripts/run-main-agent-worker.ts'],['server','src/lib/assistant/main/server.ts']];
+const entries=[['worker','scripts/run-main-agent-worker.ts'],['mailbox-worker','scripts/run-mailbox-worker.ts'],['server','src/lib/assistant/main/server.ts']];
 const artifacts={};
 for(const [name,entry] of entries){
  const outfile=resolve(directory,`${name}.mjs`);

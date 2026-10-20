@@ -8,7 +8,8 @@ let phase='startup';
 try{
  if(process.execArgv.length||process.env.NODE_OPTIONS?.trim()||process.env.NODE_PATH?.trim())throw new Error('Plain Node process required');
  const args=process.argv.slice(2),mode=args[0];
- if(!['--verify','server','worker'].includes(mode)||args.length>(mode==='worker'?2:1)||(args.length===2&&args[1]!=='--once'))throw new Error('Expected server, worker [--once], or --verify');
+ const workerMode=mode==='worker'||mode==='mailbox-worker';
+ if(!['--verify','server','worker','mailbox-worker'].includes(mode)||args.length>(workerMode?2:1)||(args.length===2&&args[1]!=='--once'))throw new Error('Expected server, worker/mailbox-worker [--once], or --verify');
  phase='package-integrity';const boundary=await assertCollectorRuntimeBoundary('/app');
  const expected=await readFile('/app/runtime-manifest.json','utf8'),actual=await collectorPackageInventory('/app');
  if(JSON.stringify(actual)!==expected)throw new Error('Runtime package differs from manifest');
@@ -25,7 +26,7 @@ try{
  }else{
   phase='database-configuration';
   if(process.env.NODE_ENV!=='production'||!process.env.DATABASE_URL||process.env.DATABASE_MIGRATION_URL)throw new Error('Restricted application database connection required');
-  if(mode==='worker'){phase='worker';await import('./worker.mjs');}
+  if(workerMode){phase=mode;await import(mode==='mailbox-worker'?'./mailbox-worker.mjs':'./worker.mjs');}
   else{
    // The API's outer run/store files live outside the immutable package. Inner
    // business checkpoints and authoritative task receipts remain in PostgreSQL.

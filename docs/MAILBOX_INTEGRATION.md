@@ -1,5 +1,7 @@
 # 多邮箱私有学习接入
 
+2026-10-20 / G11 运行包接线：主运行包新增独立 `mailbox-worker.mjs` 构建产物与 `mailbox-worker [--once]` 入口，复用既有完整性/非root/只读/受限数据库入口检查。邮箱CLI结束时关闭连接池，单次领取失败向调用方返回失败；持续模式保留既有保守重试行为。三产物编译、类型/lint和语法通过，固定Linux镜像与实际数据库运行待验；未部署或连接真实邮箱。[证据](evidence/ma24-g11-mailbox-runtime-package-2026-10-20.json)。
+
 2026-10-20 / G11 协议与 Worker 联合恢复：全新159实库复现同步半页中断后的统计偏大，实际4封邮件却显示 processed/discovered=5。恢复汇总现仅使用与入库事务一同提交的 imported_count+skipped_count，不再累加尚未入库的解析进度 processed_count。实际读取器/ImapFlow/mailparser、本地验证TLS、编译源码Worker和受限应用数据库角色联合复验通过：收件箱2封提交后，已发送页首封解析进度持久化再SIGKILL，原90秒租约不改写并自然到期，恢复为4封唯一加密邮件和4/4/4/0统计；跨账号拒绝、旧批次取消、全局游标不变及空Worker快照不变通过。16项回归、类型/lint通过，临时资源清理。仅在临时编译包替换精确测试域名DNS并追加测试CA；原读取器与TLS校验未改。Worker为本机NODE_ENV=test源码包，旧b1a5d549 Web仅验兼容；含修复Linux部署包、真实服务商、持续运行和归属/摘要质量仍待验。[证据](evidence/ma24-g11-imap-worker-count-recovery-2026-10-20.json)。
 
 2026-10-20 / G11 实际 IMAP 协议补验：新增显式设置 `MA24_IMAP_WIRE=1` 才运行的本地 TLS 测试，使用实际 ImapFlow 1.7.1 与 mailparser（具体安装版本见收据）；仅替换 DNS 地址和添加本轮测试 CA，产品读取器不替换，证书校验仍开启。覆盖日期 SINCE/BEFORE、收件/发件跨页、UID 空洞、已知邮件去重、UIDVALIDITY 变化后重读，以及确认首封解析进度后断线/原游标完整重读；证书主机名错误在 LOGIN 前拒绝，只读 EXAMINE/BODY.PEEK 且无写邮箱指令。连同既有日期/读取器测试共9项通过，类型/lint通过。初次 LIST 根响应和过早断线夹具失败保留；测试不连接真实邮箱、不落数据库，不替代真实 IMAP 服务、Worker/入库联合恢复或客户归属质量验收。[证据](evidence/ma24-g11-local-imap-wire-2026-10-20.json)。
