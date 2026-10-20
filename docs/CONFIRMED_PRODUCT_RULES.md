@@ -1,5 +1,7 @@
 # 用户确认规则登记表
 
+2026-10-21 / MA24-06 G09 configured historical entry: compiled collector now creates/claims a server-bound hidden runtime task and collects v2 references; signed model snapshots include task/spec binding. Completed retry independently audits persisted metadata/journals without a request adapter or new claim. 64 focused tests, typecheck, five-file lint and two fresh-169 native database runs passed; the second explicitly forbids network on retry and verifies unchanged model/tool rows and unique bundle ID. Skill stays disabled, real model calls 0. Prospective/safety adaptation, Worker/checkpoint unification, new fixed Linux packages, real quality and activation remain pending. No new user confirmation. [Scope](SKILL_CONFIGURED_RUNTIME_ENTRY_2026-10-21.md).
+
 MA24-06 / G09统一新材料（2026-10-21，工程实施/验收，无新增确认）：带任务引用的历史收集、存储复核及统一审核读取接通，必须有冻结且失败不降级；新任务/工具持锁并纳入应用侧持续来源指纹，旧引用与无隐藏任务的原指纹内容保留。72项回归/类型/12文件lint、新169实际材料往返、两臂证据/私有来源、更新锁等待、结果变化指纹和回滚恢复、落库篡改拒绝通过。无人工判断或启用；CLI/签名整链与真实质量仍待办。[范围](SKILL_RUNTIME_UNIFIED_MATERIALS_2026-10-21.md)。
 
 MA24-06 / G09新协议只读重建（2026-10-21，工程验收，无新增确认）：服务器重建完成任务、模型和正式read日志，不信运行器标志；全部调用闭合、来源值、call ID、原请求文本及结算结果核对，JSONB键序从原请求恢复但来源语义不放宽。54项回归/类型/4文件lint、新169实际未结算/落库篡改拒绝和正向重建通过，审核无新请求/工具记录；两次失败保留。统一材料/CLI/页面尚未接通，非人工质量或生产等价通过。[范围](SKILL_RUNTIME_CANDIDATE_AUDIT_2026-10-21.md)。

@@ -11,7 +11,7 @@ import {skillCandidateTaskSpecSchema} from './evaluation-task-spec';
 import {assertLocalAnalysisBoundary} from './local-analysis-boundary';
 
 const selection=z.object({runId:z.uuid(),skillId:z.uuid(),version:z.number().int().positive(),freezeId:z.uuid(),
- caseId:z.string().min(1).max(120),evaluationId:z.uuid(),arm:z.enum(['baseline','candidate'])}).strict();
+ caseId:z.string().min(1).max(200),evaluationId:z.uuid(),arm:z.enum(['baseline','candidate'])}).strict();
 type Selection=z.infer<typeof selection>;
 type Prepared={spec:z.infer<typeof skillCandidateTaskSpecSchema>;input:z.infer<typeof messageInputSchema>;model:ModelConfig;role:'member'|'admin';originalKnowledgeScope?:ExecutionContext['knowledgeScope']};
 
@@ -52,6 +52,19 @@ export async function enqueueSkillCandidateRuntimeTask(context:{userId:string},i
   const run=await enqueueRun(context.userId,prepared.input,prepared.model,{kind:'main-agent-evaluation',spec:prepared.spec});
   return {runId:run.id,specHash:digest(prepared.spec),productionAgentEquivalent:false,executionAuthorized:false,automaticActivation:false};
  });
+}
+
+/** Inspect only the exact server-derived task before selecting claim or
+ * completed-result reuse. No arbitrary task ID or supplied status is trusted. */
+export async function inspectSkillCandidateRuntimeTask(context:{userId:string},input:Selection&{taskId:string},expectedPlan:unknown){
+ const {taskId,...pin}=input;z.uuid().parse(taskId);
+ return withPreparedTask(context,pin,expectedPlan,async prepared=>tenantTransaction(context.userId,async client=>{
+  const row=(await client.query<{status:string;control:string|null}>(`select status,control from agent_run
+   where id=$1 and user_id=$2 and execution_kind='main-agent-evaluation' and execution_spec=$3::jsonb
+    and input=$4::jsonb and model_config=$5::jsonb`,
+  [taskId,context.userId,JSON.stringify(prepared.spec),JSON.stringify(prepared.input),JSON.stringify(prepared.model)])).rows[0];
+  if(!row)throw new Error('Skill runtime task unavailable or changed');return row;
+ }));
 }
 
 /** Explicit claim only: ordinary and G16 workers cannot claim this schema. */

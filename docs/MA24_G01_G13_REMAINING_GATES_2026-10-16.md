@@ -1,5 +1,7 @@
 # MA24 G01–G13 当前剩余门槛（2026-10-16）
 
+2026-10-21 / MA24-06 G09 configured historical entry: compiled collector now creates/claims a server-bound hidden runtime task and collects v2 references; signed model snapshots include task/spec binding. Completed retry independently audits persisted metadata/journals without a request adapter or new claim. 64 focused tests, typecheck, five-file lint and two fresh-169 native database runs passed; the second explicitly forbids network on retry and verifies unchanged model/tool rows and unique bundle ID. Skill stays disabled, real model calls 0. Prospective/safety adaptation, Worker/checkpoint unification, new fixed Linux packages, real quality and activation remain pending. No new user confirmation. [Scope](SKILL_CONFIGURED_RUNTIME_ENTRY_2026-10-21.md).
+
 G09最新：新协议统一历史收集、复核和审核材料接通，两臂实际回执及新任务摘要持续校验；新任务/工具锁和应用侧来源指纹保留。72项回归/类型/12文件lint、新169材料往返、私有来源/更新锁等待/指纹变化回滚/落库篡改拒绝通过，资源清理。配置采集入口与新签名整链、前瞻/安全适配、Worker/checkpoint统一、固定新包、真实身份/质量和启用仍待办。[范围](SKILL_RUNTIME_UNIFIED_MATERIALS_2026-10-21.md)。
 
 G09新协议只读审核可从服务器模型/工具日志重建完整图并核对已结算结果，拒绝未结算任务和实际落库篡改；54项回归/类型/4文件lint及新169实跑通过，审核无新请求/工具记录。JSONB键序两次失败保留，结构顺序恢复不放宽来源值校验。统一材料/CLI/页面、新协议签名整链、前瞻/安全适配、Worker/checkpoint统一与最终资格、真实质量仍待办。[范围](SKILL_RUNTIME_CANDIDATE_AUDIT_2026-10-21.md)。

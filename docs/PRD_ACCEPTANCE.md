@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+2026-10-21 / MA24-06 G09 configured historical entry: compiled collector now creates/claims a server-bound hidden runtime task and collects v2 references; signed model snapshots include task/spec binding. Completed retry independently audits persisted metadata/journals without a request adapter or new claim. 64 focused tests, typecheck, five-file lint and two fresh-169 native database runs passed; the second explicitly forbids network on retry and verifies unchanged model/tool rows and unique bundle ID. Skill stays disabled, real model calls 0. Prospective/safety adaptation, Worker/checkpoint unification, new fixed Linux packages, real quality and activation remain pending. No new user confirmation. [Scope](SKILL_CONFIGURED_RUNTIME_ENTRY_2026-10-21.md).
+
 2026-10-21 / G09新协议已接统一历史收集、候选复核与审核读取，两臂回执按任务绑定；新任务/工具行锁和持续来源指纹接入。72项回归/类型/12文件lint、新169材料往返、私有来源、实际更新锁等待及结果指纹变化/回滚、落库篡改拒绝通过。无人工批准、资格提升或启用；配置采集入口和新协议完整签名/生产/质量验收仍待办。[验收](SKILL_RUNTIME_UNIFIED_MATERIALS_2026-10-21.md)。
 
 2026-10-21 / G09新协议只读审核从服务器模型与正式工具日志重建，不执行工具或模型；核对全部调用、原来源、原请求与已结算结果。54项回归/类型/4文件lint、新169正向重建及未结算/实际落库篡改拒绝通过，审核无新请求/工具记录；JSONB键序问题两次失败保留，按已存请求恢复结构顺序并保持来源值严格核对。统一材料/CLI/页面及真实质量未完成。[验收](SKILL_RUNTIME_CANDIDATE_AUDIT_2026-10-21.md)。

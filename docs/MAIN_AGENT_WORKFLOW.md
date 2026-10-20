@@ -1,5 +1,7 @@
 > MA15 变更：采用已确认的半透明紫色视觉、三个业务入口及资料默认页；四阶段已实现，模式/资料隔离、六组布局/路由、真实批准与模拟断线恢复、构建及静态资源通过；验收边界见 MA15_UI_ACCEPTANCE_2026-09-21.md。精确规则与状态见 [规则](CONFIRMED_PRODUCT_RULES.md) 和 [工作流](FRONTEND_SIMPLIFICATION_PLAN_2026-09-21.md)。
 
+2026-10-21 / MA24-06 G09 configured historical entry: compiled collector now creates/claims a server-bound hidden runtime task and collects v2 references; signed model snapshots include task/spec binding. Completed retry independently audits persisted metadata/journals without a request adapter or new claim. 64 focused tests, typecheck, five-file lint and two fresh-169 native database runs passed; the second explicitly forbids network on retry and verifies unchanged model/tool rows and unique bundle ID. Skill stays disabled, real model calls 0. Prospective/safety adaptation, Worker/checkpoint unification, new fixed Linux packages, real quality and activation remain pending. No new user confirmation. [Scope](SKILL_CONFIGURED_RUNTIME_ENTRY_2026-10-21.md).
+
 2026-10-21 / G09带taskId的历史来源必须走新审计且绑定冻结，收集v2保存精确任务引用，统一审核返回两臂消费证据并复查任务摘要；原任务身份与隐藏任务日志分开保留。新任务/工具锁和指纹纳入材料/验收来源账本，无隐藏任务时保留原指纹内容。72项回归/类型/lint与新169材料往返、私有来源/锁等待/指纹回滚/篡改拒绝通过，未创建人工判定或启用。[工作流](SKILL_RUNTIME_UNIFIED_MATERIALS_2026-10-21.md)。
 
 2026-10-21 / G09新增auditSkillRuntimeCandidate只读路径：重建完成任务的来源、模型请求及工具合同/输出/消费闭合，不调用分发器或工具处理器。按原请求恢复JSONB键序后仍严格校验来源值及工具模型屏蔽视图。54项回归/类型/lint与新169实际正例、未结算及落库篡改拒绝通过，审核不新增请求/工具记录；统一材料/页面和配置CLI待接线，资格不提升。[工作流与失败保留](SKILL_RUNTIME_CANDIDATE_AUDIT_2026-10-21.md)。
