@@ -1,0 +1,70 @@
+{
+  "date": "2026-10-21",
+  "rule": "MA24-06",
+  "sourcePair": {
+    "skillSourceRuntimePair": "passed",
+    "web": "ma24-main-agent-runtime:16ef7e73",
+    "collector": "ma24-skill-collector:16ef7e73",
+    "sourceCommit": "16ef7e73cc53cfd59d64f4b86f2bfe1cbcd4db43",
+    "webImageId": "sha256:b733fd1880880b0ae26d89ed856466ca2fec9b62a5d2450d45cbb82c75a28c77",
+    "collectorImageId": "sha256:e72bc28fdc106688f77ffcc3b20a0ad6f7119cf3a368c189bbbe773920f4010d",
+    "inspectionUsesImmutableImageIds": true,
+    "runtimeHash": "f041d05c96b0a2a7cbcf49ff4b6bdb059b0f21452214dc7356cef28b8b18f83a",
+    "sourceInputs": 999,
+    "node": "24.21.0",
+    "platform": "linux",
+    "arch": "x64",
+    "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+    "webPackages": {
+      "pg": "8.23.0",
+      "zod": "4.4.3",
+      "@langchain/langgraph": "1.4.15",
+      "@langchain/core": "1.2.9",
+      "langsmith": "0.9.0",
+      "undici": "8.10.0"
+    },
+    "collectorPackages": {
+      "pg": "8.23.0",
+      "zod": "4.4.3",
+      "@langchain/langgraph": "1.4.15",
+      "@langchain/core": "1.2.9",
+      "langsmith": "0.9.0",
+      "undici": "8.10.0"
+    },
+    "webUnresolved": [],
+    "collectorUnresolved": [],
+    "completeDependencyRuntimeEquivalenceVerified": false,
+    "productionQualified": false,
+    "actualModelCalls": 0
+  },
+  "collectorBoundary": {
+    "collectorImageVerification": "passed",
+    "image": "sha256:e72bc28fdc106688f77ffcc3b20a0ad6f7119cf3a368c189bbbe773920f4010d",
+    "imageId": "sha256:e72bc28fdc106688f77ffcc3b20a0ad6f7119cf3a368c189bbbe773920f4010d",
+    "commit": "16ef7e73cc53cfd59d64f4b86f2bfe1cbcd4db43",
+    "packageFiles": 34515,
+    "deploymentHash": "995e58237960a6a22dbf7abde02bfd70239dfa3aa7b3122459647581ba8a9085",
+    "measuredEnrollmentVerified": true,
+    "missingMalformedAndMismatchedEnrollmentRejectedBeforeRunner": true,
+    "matchedEnrollmentReachesRunner": true,
+    "nodeOptionsRejected": true,
+    "nonRootReadOnlyNoNetwork": true,
+    "changedRunnerRejectedBeforeExecution": true,
+    "actualModelCalls": 0,
+    "productionQualified": false
+  },
+  "fullSignedComposition": {
+    "status": "running-not-accepted",
+    "sessionId": 28642,
+    "log": "tmp/ma24-candidate-ownership-fixed-composition.log"
+  },
+  "formalTlsDeclaration": {
+    "status": "running-not-accepted",
+    "sessionId": 37077,
+    "log": "tmp/ma24-candidate-ownership-fixed-declaration.log"
+  },
+  "actualModelCalls": 0,
+  "productionAgentEquivalent": false,
+  "productionQualified": false,
+  "automaticActivation": false
+}
