@@ -85,8 +85,8 @@ const pristineDatabaseChecks = [
 ].filter(Boolean).length;
 assert(pristineDatabaseChecks <= 1,
   "Each G09 disposable database fixture requires a pristine placeholder-only database; run one fixture flag per fresh-cluster invocation.");
-assert(!currentSchemaCheck||((webImage&&pristineDatabaseChecks===0||(lockedPolicyCheck||transportJournalCheck)&&pristineDatabaseChecks===1&&!webImage)&&!modeBusinessCheck&&!poolRecoveryCheck),
-  '--current-schema requires isolated Web acceptance, locked-policy or transport-journal; other G09 fixtures retain their historical schema bootstrap');
+assert(!currentSchemaCheck||((webImage&&pristineDatabaseChecks===0||(lockedPolicyCheck||transportJournalCheck||runnerAttestationCheck)&&pristineDatabaseChecks===1&&!webImage)&&!modeBusinessCheck&&!poolRecoveryCheck),
+  '--current-schema requires isolated Web acceptance, locked-policy, transport-journal or runner-attestation; other G09 fixtures retain their historical schema bootstrap');
 assert(!frontendUiCheck||(webImage&&currentSchemaCheck&&browserCheck),'--frontend-ui requires --web-image, --current-schema and --browser');
 assert(!extendedUiCheck||frontendUiCheck,'--extended-ui requires --frontend-ui');
 assert(!snapshotDownloadCheck||(webImage&&currentSchemaCheck),'--snapshot-download requires --web-image and --current-schema');
@@ -412,7 +412,7 @@ try {
     const attested = await run(process.execPath,
       ["scripts/run-tsx.cjs", "scripts/verify-skill-runner-attestation-db.ts"],
       { ...process.env, DATABASE_URL: appUrl.toString(), DATABASE_MIGRATION_URL: adminUrl.toString(),
-        MA24_DISPOSABLE_RUNNER_ATTESTATION: "1",
+        MA24_DISPOSABLE_RUNNER_ATTESTATION: "1",MA24_RUNNER_CURRENT_SCHEMA:currentSchemaCheck?'1':'0',
         ...(declarationImage?{MA24_DECLARATION_TEST_IMAGE:declarationImage,MA24_DECLARATION_TEST_CONTAINER:containerId}:{}) });
     assert.equal(attested.code, 0, attested.output);
     assert(attested.output.includes('"runnerAttestationStore":"passed"'), attested.output);

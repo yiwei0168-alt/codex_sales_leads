@@ -156,14 +156,15 @@ try{
  await assert.rejects(readSkillRunnerAttestation({userId:owner},saved.id),/inactive/);
  await assert.rejects(lockedDeclaration(),/active recorded freeze/);
  assert.equal((await pool.query('select enabled from agent_skill where id=$1',[skill.id])).rows[0].enabled,false);
- assert.equal((await pool.query("select to_regclass('public.ma24_evaluation_hard_limit') is null absent")).rows[0].absent,true);
+ const evaluationSchemaPresent=!(await pool.query("select to_regclass('public.ma24_evaluation_hard_limit') is null absent")).rows[0].absent;
+ assert.equal(evaluationSchemaPresent,process.env.MA24_RUNNER_CURRENT_SCHEMA==='1');
  console.log(JSON.stringify({runnerAttestationStore:'passed',collectorAppendAndIdempotency:true,...lockedEvidence,...configuredDeclaration,lockedReadRevokedFreezeRejected:true,
   lockedDeclarationDatabaseClockExpiryRejected:true,lockedDeclarationRegistryDisablementRejected:true,
   declarationAppendWaitsAndResumes:true,latestDeclarationSelected:true,syntheticDeclarationNotRequired:true,
   emptyObservationAndSignedTimeDriftRejected:true,
   historicalUnboundStatementsRejectedOnRead:true,
   appInsertDenied:true,crossAccountDenied:true,appendOnly:true,signedSyntheticEvidenceRejected:true,keyDisablementAndFreezeRevocationRejected:true,
-  deferredEvaluationMigrationsApplied:false,productionKeysCreated:false,automaticActivation:false,modelCalls:0}));
+  evaluationSchemaPresent,deferredEvaluationMigrationsApplied:false,productionKeysCreated:false,automaticActivation:false,modelCalls:0}));
 }finally{
  await pool.end();await getPool().end();await rm(directory,{recursive:true,force:true});
 }
