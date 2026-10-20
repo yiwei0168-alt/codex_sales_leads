@@ -135,7 +135,8 @@ export async function verifyCombinedConfiguredDatabase(pool:Pool,original:Signed
   const key=registry.keys.find((row:{keyId:string})=>row.keyId===prospective.keyId);key.enabled=false;
   try{await writeFile(registryPath,JSON.stringify(registry));
    if(databaseTrust)await pool.query('select publish_skill_runner_trust_registry($1,$2)',[registry,digest(registry)]);
-   await assert.rejects(tenantTransaction(original.owner,client=>revalidateLockedSkillTransportReceipts(client,context,combined.bundleId)),{message:'Task failure trust unavailable'});
+   await assert.rejects(tenantTransaction(original.owner,client=>revalidateLockedSkillTransportReceipts(client,context,combined.bundleId)),
+    {message:measuredRegistered?'Transport trust key unavailable':'Task failure trust unavailable'});
    if(databaseTrust)await assert.rejects(tenantTransaction(original.owner,client=>evaluateLockedSkillAcceptanceReadiness(client,context,combined.bundleId)),/trust key unavailable/);
   }finally{key.enabled=true;await writeFile(registryPath,JSON.stringify(registry));
    if(databaseTrust)await pool.query('select publish_skill_runner_trust_registry($1,$2)',[registry,digest(registry)]);}

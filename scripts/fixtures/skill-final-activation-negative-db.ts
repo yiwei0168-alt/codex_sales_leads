@@ -40,6 +40,7 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
  const declarationGuard=await readFile('db/migrations/164_skill_runner_attestation_serialization.sql','utf8');await pool.query(declarationGuard);await pool.query(declarationGuard);
  const readinessGuard=await readFile('db/migrations/165_skill_activation_source_readiness.sql','utf8');await pool.query(readinessGuard);await pool.query(readinessGuard);
  const useGuard=await readFile('db/migrations/166_skill_activation_use_commit_guard.sql','utf8');await pool.query(useGuard);await pool.query(useGuard);
+ const scopedUse=await readFile('db/migrations/167_skill_activation_use_scoped_role.sql','utf8');await pool.query(scopedUse);await pool.query(scopedUse);
  // Explicitly unqualified synthetic registrations for the mocked component only.
  const packageRevisions:string[]=[];
  for(const purpose of ['runner-declaration','model-transport','task-model-transport']){
@@ -355,6 +356,20 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
    await lifecycleClient.query('begin');
    try{await beginAppUse();await assert.rejects(lifecycleClient.query('delete from skill_activation_use_fence'),/permission denied/);}
    finally{await lifecycleClient.query('rollback');}
+   await lifecycleClient.query('begin');
+   try{
+    await lifecycleClient.query("update app_user set role='admin' where id=$1",[owner]);
+    await beginAppUse();
+    assert.equal((await lifecycleClient.query('select retain_skill_activation_use($1,1,$2) retained',[skillId,binding])).rows[0].retained,true,'Admin account may use member-scoped read transaction');
+    await lifecycleClient.query('commit');
+   }finally{
+    await lifecycleClient.query('rollback');await pool.query("update app_user set role='member' where id=$1",[owner]);
+   }
+   await lifecycleClient.query('begin');
+   try{
+    await beginAppUse();await lifecycleClient.query("select set_config('app.current_user_role','admin',true)");
+    assert.equal((await lifecycleClient.query('select retain_skill_activation_use($1,1,$2) retained',[skillId,binding])).rows[0].retained,false,'Member account cannot claim admin access');
+   }finally{await lifecycleClient.query('rollback');}
    const mutations:Array<[string,()=>Promise<unknown>]>=[
     ['registry',()=>lifecycleClient.query('select publish_skill_runner_trust_registry($1,$2)',[{...registry,fixtureChange:true},digest('changed synthetic registry')])],
     ['freeze',()=>lifecycleClient.query("insert into agent_skill_acceptance_freeze_revocation(freeze_id,owner_id,reason) values($1,$2,'Synthetic lifecycle withdrawal')",[binding.freezeId,owner])],
@@ -521,6 +536,9 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
   console.log(JSON.stringify({activationUseCommitGuard:'passed',normalUseCommits:true,actualClockExpiryAfterReturnRollsBack:true,
    changedBindingAfterReturnRollsBack:true,disabledDeferredGuardRefusesUse:true,privateGuardDeleteDenied:true,
    qualificationProducerMocked:true,humanApprovalCreated:false,productionQualificationGranted:false,modelCalls:0}));
+  console.log(JSON.stringify({activationUseScopedRole:'passed',actualAdminAccountMemberScopedGuardCommits:true,
+   memberClaimingAdminRefused:true,actualRoleRestored:true,guardComponentOnly:true,qualificationProducerMocked:true,
+   completeAdminSourceWorkflowVerified:false,humanApprovalCreated:false,productionQualificationGranted:false,modelCalls:0}));
   console.log(JSON.stringify({activationSourceReadiness:'passed',missingRetainedLocksRejected:true,missingPackageGateRejected:true,
    allRetainedGatesAccepted:true,disabledLegacyGuardRejectsProducerAndDirectSealing:true,unprotectedDirectSealingRejected:true,
    sealedAuditRequiresActualFence:true,positiveOtherQualificationMocked:true,humanApprovalCreated:false,productionQualificationGranted:false,modelCalls:0}));

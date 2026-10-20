@@ -1,0 +1,16 @@
+{
+  "date": "2026-10-20",
+  "rule": "MA24-06",
+  "fixtureAndRuntimeCommit": "c47e9f7c9d4478b3a827ece27d76a4e2700e73b7",
+  "databaseSchema": 166,
+  "exitCode": 1,
+  "failure": "Disabled collector key assertion expected Task failure trust unavailable, actual Transport trust key unavailable",
+  "previousFullReadinessAndCollectorProvenanceAssertionsReachedAndPassed": true,
+  "positiveRuntimePackagesFinalAssertionNotReached": true,
+  "cause": "Separate measured signing keys preserve original task trust when collector key is disabled",
+  "fix": "Strict expected message follows measured collector-purpose branch; old single-identity branch unchanged",
+  "fullCompositionAccepted": false,
+  "humanApprovalCreated": false,
+  "actualModelCalls": 0,
+  "productionQualificationGranted": false
+}
