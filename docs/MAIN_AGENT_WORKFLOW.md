@@ -2,6 +2,8 @@
 
 # 产品主 Agent 与开放式工具架构
 
+2026-10-20 G11 固定镜像联合恢复：2a1fb556正式邮箱入口在生产NODE_ENV/非root只读边界下，经真实读取器/DNS守卫、隔离TLS IMAP及新159受限verify-full数据库完成首批提交/次页半读后SIGKILL137、原90秒租约自然到期恢复，最终4封唯一加密邮件、统计4/4/4/0。旧批次取消、账号隔离、全局游标与后续空Worker数据库/协议快照不变通过；16项回归、类型/lint及同源Web HTTP通过。容器hosts映射和追加CA仅用于内部无外部路由的合成服务，不改镜像或TLS守卫；真实提供商、持续工作负载和质量仍未验收。[证据](evidence/ma24-g11-fixed-image-imap-recovery-2026-10-20.json)。
+
 2026-10-20 G11 固定2a1fb556：正式邮箱入口经完整性/归档源码/编译产物核对，在全新159数据库以受限verify-full TLS登录、非root/只读/空capabilities空队列退出0；参数/数据库/迁移连接拒绝通过。同源Web另库HTTP通过，资源清理。仅验证镜像入口及空队列，完整IMAP恢复仍沿用独立源码证据，尚未在固定镜像中复验。[证据](evidence/ma24-g11-mailbox-runtime-package-2026-10-20.json)。
 
 2026-10-20 G11 打包：`build-main-agent-runtime.mjs` 增加独立邮箱Worker，镜像以 `mailbox-worker [--once]` 复用完整性及受限数据库启动守卫；原主任务Worker/API保持独立入口。邮箱进程退出关闭池，单次领取失败向上抛出，持续模式仍记录通用错误后重试。编译/类型/lint/语法通过；固定Linux实跑待验，不表示生产或真实邮箱验收。[证据](evidence/ma24-g11-mailbox-runtime-package-2026-10-20.json)。

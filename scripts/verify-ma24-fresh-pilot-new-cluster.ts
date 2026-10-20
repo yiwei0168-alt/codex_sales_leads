@@ -15,6 +15,7 @@ const scheduleDispatchCheck=process.argv.includes('--schedule-dispatch');
 const mailboxImapWorkerCheck=process.argv.includes('--mailbox-imap-worker');
 const mailboxImageArgument=process.argv.slice(2).find(arg=>arg.startsWith('--mailbox-worker-image='));
 const mailboxWorkerImage=mailboxImageArgument?.slice('--mailbox-worker-image='.length);
+const mailboxWorkerImapImageCheck=process.argv.includes('--mailbox-worker-imap');
 const batchSettlementCheck=process.argv.includes('--batch-settlement');
 const batchWorkerArgument=process.argv.slice(2).find(arg=>arg.startsWith('--batch-worker-image='));
 const batchWorkerImage=batchWorkerArgument?.slice('--batch-worker-image='.length);
@@ -22,7 +23,7 @@ const batchWorkerCommitCheck=process.argv.includes('--batch-worker-commit');
 const scheduleWorkerArgument=process.argv.slice(2).find(arg=>arg.startsWith('--schedule-worker-image='));
 const scheduleWorkerImage=scheduleWorkerArgument?.slice('--schedule-worker-image='.length);
 const scheduleWorkerCommitCheck=process.argv.includes('--schedule-worker-commit');
-const args = process.argv.slice(2).filter(arg=>arg!==mailboxImageArgument&&arg!=='--mailbox-imap-worker'&&arg!=='--schedule-dispatch'&&arg!=='--batch-settlement'&&arg!=='--schedule-worker-commit'&&arg!=='--batch-worker-commit'&&arg!==scheduleWorkerArgument&&arg!==batchWorkerArgument);
+const args = process.argv.slice(2).filter(arg=>arg!=='--mailbox-worker-imap'&&arg!==mailboxImageArgument&&arg!=='--mailbox-imap-worker'&&arg!=='--schedule-dispatch'&&arg!=='--batch-settlement'&&arg!=='--schedule-worker-commit'&&arg!=='--batch-worker-commit'&&arg!==scheduleWorkerArgument&&arg!==batchWorkerArgument);
 const webImageArgument = args.find(arg => arg.startsWith("--web-image="));
 const webImage = webImageArgument?.startsWith("--web-image=")
   ? webImageArgument.slice("--web-image=".length) : undefined;
@@ -95,6 +96,7 @@ assert(!finalSettlementCheck||(webImage&&currentSchemaCheck),'--final-settlement
 assert(!scheduleDispatchCheck||(webImage&&currentSchemaCheck),'--schedule-dispatch requires --web-image and --current-schema');
 assert(!mailboxImapWorkerCheck||(webImage&&currentSchemaCheck),'--mailbox-imap-worker requires --web-image and --current-schema');
 assert(!mailboxImageArgument||(mailboxWorkerImage&&/^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(mailboxWorkerImage)&&webImage&&currentSchemaCheck),'--mailbox-worker-image requires fixed image, Web and current schema');
+assert(!mailboxWorkerImapImageCheck||mailboxWorkerImage,'--mailbox-worker-imap requires --mailbox-worker-image');
 assert(!batchSettlementCheck||(webImage&&currentSchemaCheck),'--batch-settlement requires --web-image and --current-schema');
 assert(!batchWorkerArgument||(batchWorkerImage&&/^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(batchWorkerImage)&&webImage&&currentSchemaCheck),'--batch-worker-image requires fixed image, Web and current schema');
 assert(!scheduleWorkerArgument||(scheduleWorkerImage&&/^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(scheduleWorkerImage)&&webImage&&currentSchemaCheck),'--schedule-worker-image requires a fixed image, Web and current schema');
@@ -265,10 +267,10 @@ try {
   if(mailboxWorkerImage){
     const runtimeApp=new URL(appUrl);runtimeApp.hostname='pilot-db';runtimeApp.port='5432';runtimeApp.searchParams.set('sslmode','verify-full');
     const certificate=await run('docker',['exec',containerId!,'cat','/tmp/ma24-server.crt']);assert.equal(certificate.code,0);
-    const mailboxImage=await run(process.execPath,['scripts/run-tsx.cjs','scripts/verify-mailbox-worker-image.ts'],
-      {...process.env,MA24_DISPOSABLE_MAILBOX_IMAGE:'1',MA24_MAILBOX_IMAGE:mailboxWorkerImage,MA24_MAILBOX_NETWORK:networkName,
+    const mailboxImage=await run(process.execPath,['scripts/run-tsx.cjs',mailboxWorkerImapImageCheck?'scripts/verify-mailbox-imap-image-db.ts':'scripts/verify-mailbox-worker-image.ts'],
+      {...process.env,DATABASE_URL:appUrl.toString(),DATABASE_MIGRATION_URL:adminUrl.toString(),MA24_MAILBOX_DATABASE_CONTAINER:containerId!,MA24_DISPOSABLE_MAILBOX_IMAGE:'1',MA24_MAILBOX_IMAGE:mailboxWorkerImage,MA24_MAILBOX_NETWORK:networkName,
         MA24_MAILBOX_RUNTIME_DATABASE_URL:runtimeApp.toString(),MA24_MAILBOX_CA:certificate.output.trim()});
-    assert.equal(mailboxImage.code,0,mailboxImage.output);assert(mailboxImage.output.includes('"mailboxWorkerImage":"passed"'),mailboxImage.output);console.log(mailboxImage.output.trim());
+    assert.equal(mailboxImage.code,0,mailboxImage.output);assert(mailboxImage.output.includes(mailboxWorkerImapImageCheck?'"mailboxWorkerImapImage":"passed"':'"mailboxWorkerImage":"passed"'),mailboxImage.output);console.log(mailboxImage.output.trim());
   }
   if(mailboxImapWorkerCheck){
     const mailboxWorker=await run(process.execPath,['scripts/run-tsx.cjs','scripts/verify-mailbox-imap-worker-db.ts'],
@@ -787,7 +789,8 @@ try {
   }
   acceptanceResult={ freshClusterPilot: "passed", image: "pgvector/pgvector:pg16",
     mailboxImapWorkerVerified:mailboxImapWorkerCheck,
-    mailboxWorkerImageVerified:Boolean(mailboxWorkerImage),
+    mailboxWorkerImageVerified:Boolean(mailboxWorkerImage)&&!mailboxWorkerImapImageCheck,
+    mailboxWorkerImapImageVerified:Boolean(mailboxWorkerImage)&&mailboxWorkerImapImageCheck,
     scheduleDispatchVerified:scheduleDispatchCheck,
     batchSettlementVerified:batchSettlementCheck,
     batchWorkerCrashVerified:Boolean(batchWorkerImage)&&!batchWorkerCommitCheck,

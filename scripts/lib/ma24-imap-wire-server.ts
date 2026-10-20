@@ -18,15 +18,15 @@ const imapDate=(value:string)=>{
  return `${year}-${String(months.findIndex(m=>m.toLowerCase()===month.toLowerCase())+1).padStart(2,'0')}-${day.padStart(2,'0')}`;
 };
 
-export async function startMa24ImapWireServer(fixture:ImapWireFixtureState){
+export async function startMa24ImapWireServer(fixture:ImapWireFixtureState,provided?:{key:string;cert:string;host:string}){
  let partialSocket:tls.TLSSocket|undefined;
  const sockets=new Set<tls.TLSSocket>();
  // Ephemeral test key stays in memory; no key or real credentials are logged.
- const pem=execFileSync('docker',['run','--rm','--network','none','--entrypoint','openssl','pgvector/pgvector:pg16',
+ const pem=provided?'':execFileSync('docker',['run','--rm','--network','none','--entrypoint','openssl','pgvector/pgvector:pg16',
   'req','-x509','-nodes','-newkey','rsa:2048','-days','1','-subj','/CN=imap.example.invalid',
   '-addext','subjectAltName=DNS:imap.example.invalid','-keyout','/dev/stdout','-out','/dev/stdout'],{windowsHide:true,stdio:['ignore','pipe','pipe']}).toString();
- const key=pem.match(/-----BEGIN PRIVATE KEY-----[\s\S]*?-----END PRIVATE KEY-----/)?.[0];
- fixture.ca=pem.match(/-----BEGIN CERTIFICATE-----[\s\S]*?-----END CERTIFICATE-----/)?.[0]??'';
+ const key=provided?.key??pem.match(/-----BEGIN PRIVATE KEY-----[\s\S]*?-----END PRIVATE KEY-----/)?.[0];
+ fixture.ca=provided?.cert??pem.match(/-----BEGIN CERTIFICATE-----[\s\S]*?-----END CERTIFICATE-----/)?.[0]??'';
  assert(key);assert(fixture.ca);
  const server=tls.createServer({key,cert:fixture.ca},socket=>{
   sockets.add(socket);socket.on('close',()=>sockets.delete(socket));socket.on('error',()=>undefined);
@@ -73,8 +73,8 @@ export async function startMa24ImapWireServer(fixture:ImapWireFixtureState){
    }
   });
  });
- await new Promise<void>(resolve=>server!.listen(0,'127.0.0.1',resolve));fixture.port=(server.address() as AddressInfo).port;
+ await new Promise<void>(resolve=>server!.listen(0,provided?.host??'127.0.0.1',resolve));fixture.port=(server.address() as AddressInfo).port;
 
- return {ca:fixture.ca,port:fixture.port,disconnectHeld:()=>{if(!partialSocket)return false;partialSocket.destroy();partialSocket=undefined;return true;},
+ return {ca:fixture.ca,port:fixture.port,held:()=>Boolean(partialSocket&&!partialSocket.destroyed),disconnectHeld:()=>{if(!partialSocket)return false;partialSocket.destroy();partialSocket=undefined;return true;},
   close:async()=>{for(const socket of sockets)socket.destroy();await new Promise<void>(resolve=>server.close(()=>resolve()));}};
 }

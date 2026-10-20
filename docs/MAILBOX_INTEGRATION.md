@@ -1,5 +1,7 @@
 # 多邮箱私有学习接入
 
+2026-10-20 / G11 固定镜像完整IMAP恢复：固定2a1fb556正式 `mailbox-worker --once`、生产NODE_ENV、非root/只读/无capabilities与新159/受限verify-full数据库联合通过。收件箱2封提交、已发送次页解析1封后SIGKILL137，原90秒租约不改写并自然到期，新Worker恢复4封唯一加密邮件和4/4/4/0统计；跨账号拒绝、旧批次取消、全局游标不变，后续空Worker数据库与协议快照不变。同源Web HTTP通过，16项回归、类型/lint通过，资源清理。真实读取器及DNS地址守卫未改，隔离邮件服务使用无外部路由的Docker内部网络、容器hosts映射和只读测试CA；不关闭TLS校验。此前固定镜像非空恢复待验由此取代；真实服务商、持续运行、客户归属/内容质量和生产资格仍待验。[证据](evidence/ma24-g11-fixed-image-imap-recovery-2026-10-20.json)。
+
 2026-10-20 / G11 固定Linux入口验收：`2a1fb556` 同源Web/主运行镜像已从干净归档构建。正式 `mailbox-worker --once` 在全新159库以受限登录、verify-full TLS及非root/只读/空capabilities运行，空队列退出0；非法参数、缺少数据库配置和携带迁移连接拒绝。34,526项完整性、精确归档队列源码及编译邮箱产物哈希通过，同源Web在另一个新159库的登录/账号隔离HTTP通过，临时资源清理。该入口包含计数修复；本轮不含非空IMAP/中断恢复，先前源码Worker联合证据不升级为镜像证据。真实服务商、持续运行与质量仍待验。[证据](evidence/ma24-g11-mailbox-runtime-package-2026-10-20.json)。
 
 2026-10-20 / G11 运行包接线：主运行包新增独立 `mailbox-worker.mjs` 构建产物与 `mailbox-worker [--once]` 入口，复用既有完整性/非root/只读/受限数据库入口检查。邮箱CLI结束时关闭连接池，单次领取失败向调用方返回失败；持续模式保留既有保守重试行为。三产物编译、类型/lint和语法通过，固定Linux镜像与实际数据库运行待验；未部署或连接真实邮箱。[证据](evidence/ma24-g11-mailbox-runtime-package-2026-10-20.json)。
