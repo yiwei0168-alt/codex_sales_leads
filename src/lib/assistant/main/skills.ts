@@ -3,6 +3,7 @@ import { tenantQuery, tenantTransaction } from "@/lib/rag/db";
 import { digest, type ExecutionContext } from "./contracts";
 import {skillSourcesCurrent,lockCurrentSkillExperienceSources,type SourcedSkillVersion} from './skill-source-guard';
 import {admitSkillCatalogWrite} from './skill-catalog-admission';
+import {skillActivationCurrent,skillActivationFingerprint,skillEnabledExpression,type ActivationBoundSkill} from './skill-activation-binding';
 
 export function safeSkillPath(path: string) {
   return path.length <= 180 && /^[a-z0-9_.\-/]+$/i.test(path) && !path.startsWith("/") && path.split("/").every(p => p !== ".." && p !== "." && p !== "" && !/^(\.env(?:\..*)?|\.git|node_modules|id_rsa|id_ed25519)$/i.test(p)) && !path.startsWith("-");
@@ -48,15 +49,21 @@ export async function importSkill(context: Pick<ExecutionContext, "userId" | "ro
   }, context.role);
 }
 export async function listSkills(userId: string) {
-  return tenantQuery(userId, "select id,name,scope,current_version,enabled,published,owner_id=$1 as owned from agent_skill order by name,id", [userId]);
+  return tenantTransaction(userId,async client=>{
+    const enabled=await skillEnabledExpression(client);
+    return (await client.query(`select s.id,s.name,s.scope,s.current_version,(${enabled}) enabled,s.published,s.owner_id=$1 as owned from agent_skill s order by s.name,s.id`,[userId])).rows;
+  });
 }
 export async function listSkillsPage(userId:string,offset:number){
-  const rows=await tenantQuery<{id:string;name:string;scope:string;current_version:number;enabled:boolean;published:boolean;owned:boolean;
-    source:string;validation:Record<string,unknown>;created_at:string}>(userId,`select s.id,s.name,s.scope,s.current_version,s.enabled,s.published,s.owner_id=$1 as owned,
+  return tenantTransaction(userId,async client=>{
+  const enabled=await skillEnabledExpression(client);
+  const rows=(await client.query<{id:string;name:string;scope:string;current_version:number;enabled:boolean;published:boolean;owned:boolean;
+    source:string;validation:Record<string,unknown>;created_at:string}>(`select s.id,s.name,s.scope,s.current_version,(${enabled}) enabled,s.published,s.owner_id=$1 as owned,
     v.source,v.validation,v.created_at::text from agent_skill s join agent_skill_version v
       on v.skill_id=s.id and v.version=s.current_version
-    order by s.updated_at desc,s.id limit 13 offset $2`,[userId,offset]);
+    order by s.updated_at desc,s.id limit 13 offset $2`,[userId,offset])).rows;
   return {items:rows.slice(0,12),hasMore:rows.length>12};
+  });
 }
 export async function listOwnedSkillVersions(userId:string,skillId:string){
   return tenantQuery<{version:number;source:string;validation:Record<string,unknown>;created_at:string}>(userId,`select v.version,v.source,v.validation,v.created_at::text
@@ -70,9 +77,11 @@ export async function readSkill(context: ExecutionContext, skillId: string) {
     if (!accessible.rows[0]) return null;
     const pinned = await client.query("select version from agent_run_skill where user_id=$1 and run_id=$2 and skill_id=$3", [context.userId, context.runId, skillId]);
     if (!pinned.rowCount) await client.query("insert into agent_run_skill(user_id,run_id,skill_id,version) values($1,$2,$3,$4) on conflict do nothing", [context.userId, context.runId, skillId, accessible.rows[0].current_version]);
-    const selected=(await client.query<SourcedSkillVersion&{version:number}>("select v.*,s.owner_id,s.scope from agent_skill_version v join agent_skill s on s.id=v.skill_id join agent_run_skill p on p.skill_id=v.skill_id and p.version=v.version where p.user_id=$1 and p.run_id=$2 and p.skill_id=$3", [context.userId, context.runId, skillId])).rows[0];
+    const selected=(await client.query<SourcedSkillVersion&ActivationBoundSkill&{version:number}>("select v.*,s.owner_id,s.scope,to_jsonb(s)->'activation_binding' activation_binding from agent_skill_version v join agent_skill s on s.id=v.skill_id join agent_run_skill p on p.skill_id=v.skill_id and p.version=v.version where p.user_id=$1 and p.run_id=$2 and p.skill_id=$3", [context.userId, context.runId, skillId])).rows[0];
     if(!selected||!await skillSourcesCurrent(client,context.userId,selected))return null;
-    return selected;
+    if(!await skillActivationCurrent(client,context.userId,skillId,selected.version,selected.activation_binding))return null;
+    const {activation_binding,...visible}=selected;
+    return activation_binding==null?visible:{...visible,activation_binding_hash:skillActivationFingerprint(selected)};
   }, context.role);
 }
 export async function changeSkill(context: Pick<ExecutionContext, "userId" | "role">, input: { id: string; version: number; operation: "enable" | "disable" | "publish" | "rollback" },humanInitiated=false) {

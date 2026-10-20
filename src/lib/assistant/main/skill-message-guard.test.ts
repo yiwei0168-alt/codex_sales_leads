@@ -1,6 +1,7 @@
 import {beforeEach,expect,it,vi} from 'vitest';
 import {digest,type ModelMessage} from './contracts';
-const mocks=vi.hoisted(()=>({query:vi.fn(),sources:vi.fn()}));
+const mocks=vi.hoisted(()=>({query:vi.fn(),sources:vi.fn(),activation:vi.fn()}));
+vi.mock('./skill-activation-binding',async original=>({...await original<typeof import('./skill-activation-binding')>(),skillActivationCurrent:mocks.activation}));
 vi.mock('@/lib/rag/db',()=>({tenantTransaction:async(_u:string,f:(client:unknown)=>unknown)=>f({query:mocks.query})}));
 vi.mock('./skill-source-guard',()=>({skillSourcesCurrent:mocks.sources}));
 import {assertCurrentSkillMessages,SkillContextChangedError,SKILL_CHANGED_REPLY} from './skill-message-guard';
@@ -11,13 +12,21 @@ let pin:Record<string,unknown>,messages:ModelMessage[];
 beforeEach(()=>{
   vi.clearAllMocks();const files={'SKILL.md':'Read the original evidence'};
   pin={skill_id:skillId,version:1,files,content_hash:digest(files),dependencies:[],source:'user',validation:{},scope:'account',owner_id:id,enabled:true,published:false};
-  mocks.sources.mockResolvedValue(true);mocks.query.mockImplementation(async()=>({rows:[pin]}));
+  mocks.sources.mockResolvedValue(true);mocks.activation.mockResolvedValue(true);mocks.query.mockImplementation(async()=>({rows:[pin]}));
   messages=[{role:'assistant',content:null,tool_calls:[{id:'read',type:'function',function:{name:'execute_tool',arguments:JSON.stringify({tool:'skill_read',arguments:{id:skillId}})}}]},
     {role:'tool',tool_call_id:'read',content:JSON.stringify({status:'success',data:structuredClone(pin)})}];
 });
 it('accepts the saved pinned version without requiring the current pointer to match',async()=>{
   pin.current_version=2;await expect(assertCurrentSkillMessages(context,messages)).resolves.toBeUndefined();
   expect(mocks.sources).toHaveBeenCalledWith(expect.anything(),id,pin);
+});
+it('stops an existing task after qualification is revoked even though content and enabled state are unchanged',async()=>{
+ mocks.activation.mockResolvedValue(false);
+ await expect(assertCurrentSkillMessages(context,messages)).rejects.toBeInstanceOf(SkillContextChangedError);
+});
+it('does not silently renew a running task onto a new activation binding',async()=>{
+ pin.activation_binding={protocol:'fixture-binding',callId:'new'};
+ await expect(assertCurrentSkillMessages(context,messages)).rejects.toBeInstanceOf(SkillContextChangedError);
 });
 it.each(['disabled','withdrawn-global','changed-content','missing-pin','source-revoked'])('blocks %s before reusing context',async kind=>{
   if(kind==='disabled')pin.enabled=false;

@@ -1,19 +1,20 @@
 import {tenantTransaction} from '@/lib/rag/db';
 import {digest,type ExecutionContext,type ModelMessage} from './contracts';
 import {skillSourcesCurrent,type SourcedSkillVersion} from './skill-source-guard';
+import {skillActivationCurrent,skillActivationFingerprint,type ActivationBoundSkill} from './skill-activation-binding';
 
 export const SKILL_CHANGED_REPLY='本任务使用的 Skill 已停用、权限或经验来源已变化，或暂时无法复核。已停止使用旧方法和执行后续操作，请重新发起任务以读取当前版本。';
 export class SkillContextChangedError extends Error {constructor(){super('Pinned Skill context validation failed');}}
-type Pinned=SourcedSkillVersion&{skill_id:string;version:number;dependencies:unknown;enabled:boolean;published:boolean};
+type Pinned=SourcedSkillVersion&ActivationBoundSkill&{skill_id:string;version:number;dependencies:unknown;enabled:boolean;published:boolean};
 const fingerprint=(s:Pinned)=>digest({skill_id:s.skill_id,version:s.version,source:s.source,files:s.files,
-  content_hash:s.content_hash,dependencies:s.dependencies,validation:s.validation,scope:s.scope,owner_id:s.owner_id});
+  content_hash:s.content_hash,dependencies:s.dependencies,validation:s.validation,scope:s.scope,owner_id:s.owner_id,activation:skillActivationFingerprint(s)});
 
 /** Stop the task rather than trying to remove every conclusion derived from withdrawn instructions. */
 export async function assertCurrentSkillMessages(context:Pick<ExecutionContext,'userId'|'runId'>,messages:ModelMessage[]){
   try{
     await tenantTransaction(context.userId,async client=>{
       const pins=(await client.query<Pinned>(`select p.skill_id,p.version,v.source,v.files,v.content_hash,v.dependencies,v.validation,
-          s.scope,s.owner_id,s.enabled,s.published
+          s.scope,s.owner_id,s.enabled,s.published,to_jsonb(s)->'activation_binding' activation_binding
         from agent_run_skill p left join agent_skill_version v on v.skill_id=p.skill_id and v.version=p.version
         left join agent_skill s on s.id=p.skill_id
         where p.user_id=$1 and p.run_id=$2`,[context.userId,context.runId])).rows;
@@ -21,6 +22,7 @@ export async function assertCurrentSkillMessages(context:Pick<ExecutionContext,'
         if(!pin.enabled||!(pin.owner_id===context.userId||(pin.scope==='global'&&pin.published))
           ||!pin.files||digest(pin.files)!==pin.content_hash||!await skillSourcesCurrent(client,context.userId,pin))
           throw new SkillContextChangedError();
+        if(!await skillActivationCurrent(client,context.userId,pin.skill_id,pin.version,pin.activation_binding))throw new SkillContextChangedError();
       }
       const calls=new Map<string,string>();
       for(const message of messages)if(message.role==='assistant')for(const call of message.tool_calls??[]){

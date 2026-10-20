@@ -6,6 +6,7 @@ import {instructionOnlySkill} from './skills';
 import {admitSkillCatalogWrite} from './skill-catalog-admission';
 import {configuredSkillRunnerTrustRegistryMode} from './skill-runner-attestation';
 import {LeaseLostError,InstructionsChangedError} from './repository';
+import {skillActivationBindingSchema} from './skill-activation-binding';
 
 const unavailable='Skill replay and shadow acceptance required before Agent activation: trusted production evidence gate unavailable';
 const sha=z.string().regex(/^[a-f0-9]{64}$/);
@@ -20,6 +21,7 @@ const proofSchema=z.object({policyPassed:z.literal(true),blockers:z.array(z.stri
  transportReceiptsRequired:z.literal(true),transportReceiptsRevalidated:z.literal(true),
  signingEnrollmentCoverageRequired:z.literal(true),signingEnrollmentCoverageRevalidated:z.literal(true),
  runtimePackagesRequired:z.literal(true),runtimePackagesRegistered:z.literal(true),runtimePackageRegistrationHash:sha,
+ runtimePackageRevisions:skillActivationBindingSchema.shape.runtimePackageRevisions,
  runtimePackageBytesPairRevalidated:z.literal(true),runtimeModuleFormatPairRevalidated:z.literal(true),
  methodExperienceTimesRevalidated:z.literal(true),decisionMemorySnapshotRevalidated:z.literal(true),
  lockedEvidencePolicyEvaluated:z.literal(true),sourcePayloadsRevalidated:z.literal(true),knowledgeSourcesLocked:z.literal(true),
@@ -102,14 +104,23 @@ export async function activateAgentSkill(context:Pick<ExecutionContext,'userId'|
      and tgrelid='public.agent_run_event'::regclass and tgfoid=to_regprocedure('public.check_skill_activation_commit()')
      and tgdeferrable and tginitdeferred and tgenabled in('O','A') and not tgisinternal) ready`)).rows[0]?.ready;
     if(guard!==true)throw new Error('Skill activation commit guard unavailable');
-    await client.query('set constraints skill_activation_commit_guard deferred');
+    const bindingGuard=(await client.query<{ready:boolean}>(`select exists(select 1 from pg_trigger where tgname='skill_activation_binding_commit_guard'
+     and tgrelid='public.agent_run_event'::regclass and tgfoid=to_regprocedure('public.check_skill_activation_binding_commit()')
+     and tgdeferrable and tginitdeferred and tgenabled in('O','A') and not tgisinternal) ready`)).rows[0]?.ready;
+    if(bindingGuard!==true)throw new Error('Skill activation binding guard unavailable');
+    await client.query('set constraints skill_activation_commit_guard,skill_activation_binding_commit_guard deferred');
     requireLive(await readCall(client,actor,action,true),actor);
     const activationProofHash=digest({protocol:'skill-final-activation-v1',bundleId:bundle.id,ownerId:context.userId,
      skillId:action.id,version:action.version,proof});
     const data=dataSchema.parse({updated:true,acceptanceBundleId:bundle.id,acceptanceArtifactHash:proof.artifactHash,activationProofHash});
+    const binding=skillActivationBindingSchema.parse({protocol:'skill-activation-binding-v1',ownerId:context.userId,skillId:action.id,version:action.version,
+     bundleId:bundle.id,artifactHash:proof.artifactHash,freezeId:evidence.freezeStatus.freezeId,reviewHash:proof.latestReviewHash,
+     reviewVersions:evidence.judgments.map(judgment=>({caseId:judgment.caseId,revision:judgment.revision})),
+     registryHash:registry.registryHash,runtimePackageRevisions:proof.runtimePackageRevisions,validBefore:proof.acceptanceValidBefore,
+     activationProofHash,callId:actor.callId});
     const output=result(data,{cost:'known',callId:actor.callId});
     const saved=(await client.query<{n:number}>(`with changed as (
-     update agent_skill set enabled=true,published=false,updated_at=clock_timestamp()
+     update agent_skill set enabled=true,published=false,activation_binding=$10::jsonb,updated_at=clock_timestamp()
       where owner_id=$1 and id=$2 and current_version=$3 and scope='account' and clock_timestamp()<$4::timestamptz
        and exists(select 1 from agent_run r where r.user_id=$1 and r.id=$5 and r.lease_token=$9
         and r.status='running' and r.control is null and r.lease_until>clock_timestamp()) returning id
@@ -118,7 +129,7 @@ export async function activateAgentSkill(context:Pick<ExecutionContext,'userId'|
        metrics=metrics||jsonb_build_object('inputItems',1,'validOutputItems',1,'apiCredits',0,'costUsd',0,'costState','known','usageBoundary','atomic-skill-activation')
       where user_id=$1 and run_id=$5 and id=$6 and status='started' and input_hash=$7 and exists(select 1 from changed) returning id
      ) select count(*)::integer n from completed`,
-    [context.userId,action.id,action.version,proof.acceptanceValidBefore,actor.runId,actor.callId,digest(action),JSON.stringify(output),actor.leaseToken])).rows[0]?.n;
+    [context.userId,action.id,action.version,proof.acceptanceValidBefore,actor.runId,actor.callId,digest(action),JSON.stringify(output),actor.leaseToken,JSON.stringify(binding)])).rows[0]?.n;
     if(saved!==1)throw new Error('Skill activation changed or expired before commit');
     await client.query("insert into agent_run_event(user_id,run_id,kind,payload) values($1,$2,'skill_activated',$3)",
      [context.userId,actor.runId,JSON.stringify({protocol:'skill-final-activation-v1',validBefore:proof.acceptanceValidBefore,actorRole:actor.role,

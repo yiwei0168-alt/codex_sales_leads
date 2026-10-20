@@ -29,12 +29,13 @@ const qualified=()=>Object.fromEntries([
  'prospectiveCaptureSourcesLocked','timelineSourcesLocked','mailReadSourcesLocked','attachmentMetadataLocked'].map(key=>[key,true]),
  ...['artifactHash','latestReviewHash','materialsHash','currentRuntimeIdentityHash','trustRegistryHash','runtimePackageRegistrationHash'].map(key=>[key,digest(key)]),
  ['artifactHash',bundle.artifact_hash],['blockers',[]],['acceptanceTimeCheckedAt','2026-10-20T00:00:00.000Z'],['acceptanceValidBefore','2026-10-20T01:00:00.000Z'],
+ ['runtimePackageRevisions',['1','2','3']],
 ]);
 beforeEach(()=>{
  vi.resetAllMocks();m.state={enabled:false,output:null,audit:[]};m.commits=0;m.rollbacks=0;m.latestCalls=0;m.newBundle=false;
  m.live=true;m.liveAtWrite=true;m.postValid=true;m.eventFails=false;m.writeCount=1;
  m.mode.mockReturnValue('database');m.registry.mockResolvedValue({registryHash:digest('trustRegistryHash')});
- m.evidence.mockResolvedValue({artifactHash:bundle.artifact_hash,latestReviewHash:digest('latestReviewHash'),currentPin:{ownerId:actor.userId,skillId:action.id,version:1}});
+ m.evidence.mockResolvedValue({artifactHash:bundle.artifact_hash,latestReviewHash:digest('latestReviewHash'),currentPin:{ownerId:actor.userId,skillId:action.id,version:1},freezeStatus:{freezeId:id(7)},judgments:[]});
  m.readiness.mockResolvedValue(qualified());m.memory.mockImplementation(async(_user:string,work:()=>Promise<unknown>)=>work());
  m.query.mockImplementation(async(sql:string,params:unknown[])=>{
   if(sql.startsWith('select v.validation'))return {rows:[selection],rowCount:1};
@@ -59,6 +60,7 @@ it('uses registry -> catalog admission -> bundle/Skill evidence order and atomic
  expect(m.query.mock.calls.filter(([sql])=>sql.startsWith('select v.validation')).every(([sql])=>!sql.includes('for update'))).toBe(true);
  const [sql,params]=m.query.mock.calls.find(([sql])=>sql.startsWith('with changed'))!;
  expect(sql).toContain('clock_timestamp()<$4');expect(sql).toContain('r.lease_until>clock_timestamp()');expect(params[8]).toBe(actor.leaseToken);
+ expect(JSON.parse(params[9])).toMatchObject({freezeId:id(7),reviewVersions:[],runtimePackageRevisions:['1','2','3'],callId:actor.callId});
  expect(m.commits).toBe(1);expect(m.rollbacks).toBe(0);
 });
 it.each(['sourceRevocationsLocked','collectorProvenanceVerified','productionAgentEquivalent','runtimePackagesRegistered','runtimePackageBytesPairRevalidated','runtimeModuleFormatPairRevalidated','canonicalOriginalCoverageRevalidated','policyPassed'])('refuses incomplete %s without any effect',async key=>{
