@@ -1,0 +1,132 @@
+{
+  "date": "2026-10-21",
+  "rule": "MA24-06",
+  "productSourceCommit": "d2bde5b9f2bba1334f1930fdb9ff93eafd092038",
+  "buildExitCodes": {
+    "main": 0,
+    "collector": 0,
+    "web": 0
+  },
+  "checkExitCodes": {
+    "pair": 0,
+    "collector": 0,
+    "web": 0
+  },
+  "logs": {
+    "tmp/ma24-checkpoint-main-image-build.log": "d889c8af5c6bc404acdd773478e4ccc1abdfee8d74715845f215369054313740",
+    "tmp/ma24-checkpoint-collector-image-build.log": "4d95ac674fd03507ad2cf066b3942ac125ad01b3f665a31fb38f25a2ebf22a5e",
+    "tmp/ma24-checkpoint-web-image-build.log": "8b7bab0fcf393ac20914354fd82d11e1b317a9f74f081a96bb67472e21ca1465",
+    "tmp/ma24-checkpoint-runtime-pair.log": "034804ba8c01ac4b5beea24efc5838164c7d4872dbf4b7c064eb3d1b03a33ece",
+    "tmp/ma24-checkpoint-collector-boundary.log": "66ffb3693a38ab3d03ec3846319363b456dc93e107198c13e19ec30bfdfcb6cc",
+    "tmp/ma24-checkpoint-web-source.log": "0bf5c41bfce8a5ebcaf2b61b07216441e31b15cbdc63d1ff267f70e6ee4d09de"
+  },
+  "results": {
+    "tmp/ma24-checkpoint-runtime-pair.log": [
+      {
+        "localRuntimeDependencyPair": "passed",
+        "mainInspection": {
+          "role": "main-agent",
+          "imageId": "sha256:a712dfe1f92242fea991804fa7def24ef0f0772dc07f2d4b621ca28ca6f346ee",
+          "sourceCommit": "d2bde5b9f2bba1334f1930fdb9ff93eafd092038",
+          "deploymentHash": "174dbe389a9b87134daefd0433448c11621c0fe7d397a4e2bc304de5dde93a1e",
+          "runtimeHash": "be2071733d8bb63b9ca52d941badf06817e0a7d897bd4a06a5b9bddd22a89777",
+          "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+          "node": "24.21.0",
+          "platform": "linux",
+          "arch": "x64",
+          "sourceInputs": 1020,
+          "files": 34572,
+          "dependencyManifestHash": "d3edb974b4ae6e725cbb62205c8f0e65606b061fd97bce214289279ccca20137",
+          "dependencyFiles": 33503,
+          "runtimeModuleFormat": "esm"
+        },
+        "collectorInspection": {
+          "role": "skill-collector",
+          "imageId": "sha256:f71db6c5175f9f0bd5d2ca8b18c49cae9883dce7c583892bf31703468b1b3cf1",
+          "sourceCommit": "d2bde5b9f2bba1334f1930fdb9ff93eafd092038",
+          "deploymentHash": "ba8930659d99c820eb7cf8cb74a920c16223ed0e710ed61efffea3f6f269ecf0",
+          "runtimeHash": "be2071733d8bb63b9ca52d941badf06817e0a7d897bd4a06a5b9bddd22a89777",
+          "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+          "node": "24.21.0",
+          "platform": "linux",
+          "arch": "x64",
+          "sourceInputs": 1020,
+          "files": 34536,
+          "dependencyManifestHash": "d3edb974b4ae6e725cbb62205c8f0e65606b061fd97bce214289279ccca20137",
+          "dependencyFiles": 33503,
+          "runtimeModuleFormat": "esm"
+        },
+        "comparison": {
+          "runtimePackageBytesPairRevalidated": true,
+          "runtimePackageBytesPairBlockers": [],
+          "runtimeModuleFormatPairRevalidated": true,
+          "runtimeModuleFormatPairBlockers": [],
+          "runtimePackageBytesPairHash": "a32ba1f55aecc316fd3e427dc23353c78bd2672270ee62f6d6a868e03f23d285"
+        },
+        "esmModuleFormatPairVerified": true,
+        "runtimeRegistrationsPublished": false,
+        "completeDependencyRuntimeEquivalenceVerified": false,
+        "productionQualified": false,
+        "automaticActivation": false,
+        "modelCalls": 0
+      }
+    ],
+    "tmp/ma24-checkpoint-collector-boundary.log": [
+      {
+        "collectorImageVerification": "passed",
+        "image": "sha256:f71db6c5175f9f0bd5d2ca8b18c49cae9883dce7c583892bf31703468b1b3cf1",
+        "imageId": "sha256:f71db6c5175f9f0bd5d2ca8b18c49cae9883dce7c583892bf31703468b1b3cf1",
+        "commit": "d2bde5b9f2bba1334f1930fdb9ff93eafd092038",
+        "packageFiles": 34536,
+        "deploymentHash": "ba8930659d99c820eb7cf8cb74a920c16223ed0e710ed61efffea3f6f269ecf0",
+        "measuredEnrollmentVerified": true,
+        "missingMalformedAndMismatchedEnrollmentRejectedBeforeRunner": true,
+        "matchedEnrollmentReachesRunner": true,
+        "nodeOptionsRejected": true,
+        "nonRootReadOnlyNoNetwork": true,
+        "changedRunnerRejectedBeforeExecution": true,
+        "actualModelCalls": 0,
+        "productionQualified": false
+      }
+    ],
+    "tmp/ma24-checkpoint-web-source.log": [
+      {
+        "webImageSourceVerification": "passed",
+        "image": "ma24-pilot-web:d2bde5b9",
+        "imageId": "sha256:26767d40e936c1b265312f600db2a8c4a3d67a67157033bc1c3ea93f1255f0ae",
+        "sourceCommit": "d2bde5b9f2bba1334f1930fdb9ff93eafd092038",
+        "buildId": "eXHhSx7gLB4JzIO3B0m_j",
+        "runtimeSourceFileCount": 1020,
+        "runtimeSourceMatchesFixedGitExport": true,
+        "exportEolDifferences": 1020,
+        "runtimeSourceManifestHash": "432e959e7446694d74c2a136d7b6e68d0a793b8e6fc3101278b3ce5280a065c6",
+        "privateEnvironmentFiles": false,
+        "privateStorageFiles": false,
+        "staticAssetsPresent": true,
+        "nonRootReadOnlyNoNetwork": true,
+        "productionQualified": false
+      }
+    ]
+  },
+  "databaseAcceptance": {
+    "ordinaryApiWorkerReceiptRecovery": {
+      "sessionId": 50700,
+      "exitCode": 0,
+      "receipt": "ma24-g09-checkpoint-fixed-sdk-worker-2026-10-21.json"
+    },
+    "linuxFullCompositionAndFormalRecovery": {
+      "sessionId": 1418,
+      "log": "tmp/ma24-checkpoint-fixed-linux-recovery.log",
+      "status": "running-not-accepted"
+    },
+    "independentDeclarationTls": {
+      "sessionId": 10438,
+      "exitCode": 0,
+      "receipt": "ma24-g09-checkpoint-declaration-tls-2026-10-21.json"
+    }
+  },
+  "productionQualified": false,
+  "realQualityAccepted": false,
+  "automaticActivation": false,
+  "deployment": false
+}
