@@ -2,6 +2,8 @@
 
 ## 联合验收终态
 
+固定镜像162/TLS声明修复重跑已退出0，原断言失败保留；实际结果为**文件信任模式**（`configuredDeclarationDatabaseTrustVerified=false`），不是数据库信任模式。通用 `MA24_DATABASE_TRUST` 开关不作用于声明夹具，已改以专用 `MA24_DECLARATION_DATABASE_TRUST=1` 补验，并要求返回数据库模式和登记禁用等待两个true字段。专用重跑仍在进行，不能判通过。[文件模式终态与待验记录](evidence/ma24-g09-current162-declaration-file-trust-2026-10-20.json)。
+
 全新162顺序初始化后的完整配置签名五类流程退出0：两条原任务/八个评测臂、五类统一材料、实际ESM声明CLI、附件不可变快照与撤销/恢复、数据库信任登记禁用等待readiness事务提交均通过。登记表存在但无登记记录时正确返回 `package-registration-missing`，缺人工判定仍阻断；Skill未启用。执行在Windows宿主，模型/网络/预算适配仍合成，实际模型调用0，不是固定Linux五类流程、真实质量或生产资格。[终态证据](evidence/ma24-g09-current162-signed-composition-2026-10-20.json)。
 
 固定b4e75e97采集器非root/只读/无网络、部署绑定及缺失/错误配置、Node参数注入、篡改拒绝检查也退出0。当前162库的固定镜像TLS声明检查首次在最后一条“旧版库不应有评测表”断言失败，前面的声明检查没有报错，但整个首次运行不能判通过。夹具现根据显式current-schema核对表存在性，不执行评测；保留失败日志，数据库信任模式下的重跑仍在进行。两文件类型/lint已通过。

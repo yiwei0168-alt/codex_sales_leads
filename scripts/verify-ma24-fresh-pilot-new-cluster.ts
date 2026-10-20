@@ -419,6 +419,10 @@ try {
     assert(attested.output.includes('"lockedEvidenceLatestReviewSerialized":true'),attested.output);
     assert(attested.output.includes('"configuredDeclarationCliDatabaseVerified":true'),attested.output);
     if(declarationImage)assert(attested.output.includes('"configuredDeclarationLinuxImageVerified":true'),attested.output);
+    if(process.env.MA24_DECLARATION_DATABASE_TRUST==='1'){
+      assert(attested.output.includes('"configuredDeclarationDatabaseTrustVerified":true'),attested.output);
+      assert(attested.output.includes('"configuredDeclarationRegistryDisablementWaitsForCollectorCommit":true'),attested.output);
+    }
     console.log(attested.output.trim());
   }
   if(poolRecoveryCheck){
