@@ -14,10 +14,12 @@ for(let n=0;n<200;n++){
  catch(error){if(error.code!=='ENOENT')throw error;await new Promise(done=>setTimeout(done,100));}
 }
 if(!input?.key||!input?.cert)throw new Error('Disposable proxy TLS configuration missing');
+const targetKind=input.target??'main-settlement';
+if(!['main-settlement','schedule-dispatch'].includes(targetKind))throw new Error('Invalid disposable commit target');
 await unlink(configuration);
 const stats={ready:false,armed:false,downstreamTlsConnections:0,verifiedUpstreamTlsConnections:0,
  targetCommitCommands:0,backendCommitCompletions:0,suppressedCommitCompletions:0,suppressedReadyForQuery:0,droppedCommitAcks:0,
- blockedCommitCommands:0,blockedAfterSuccessfulInsert:0,protocolFailures:0};
+ blockedCommitCommands:0,blockedAfterSuccessfulInsert:0,blockedAfterSuccessfulScheduleUpdate:0,targetStatementsCompleted:0,targetKind,protocolFailures:0};
 let faultMode='after-commit';
 const sslRequest=Buffer.from([0,0,0,8,4,210,22,47]);
 const sockets=new Set();
@@ -60,16 +62,20 @@ const decrypted=tls.createServer({key:input.key,cert:input.cert,minVersion:'TLSv
    if(query!==undefined){
     const normalized=query.trim().replace(/\s+/g,' ').toLowerCase();
     if(/^(begin|rollback)\b/.test(normalized)){candidate=false;awaitingExtraction=false;extractionCompleted=false;}
-    // The actual finishRun transaction writes this job only after a successful
-    // completed main-agent UPDATE. An earlier rollback clears the candidate.
-    if(normalized.startsWith('insert into agent_memory_extraction_job(owner_id,run_id) values($1,$2)')){candidate=true;awaitingExtraction=true;}
+    // Only the chosen fixture's final write marks its transaction. An earlier
+    // rollback clears the candidate; ordinary claims are never fault targets.
+    const targeted=targetKind==='schedule-dispatch'?normalized.startsWith('update agent_schedule set active_run_id=')
+     :normalized.startsWith('insert into agent_memory_extraction_job(owner_id,run_id) values($1,$2)');
+    if(targeted){candidate=true;awaitingExtraction=true;}
     if(normalized==='commit'&&candidate&&stats.armed){
      stats.armed=false;stats.targetCommitCommands++;
      if(faultMode==='before-commit'){
-      if(!extractionCompleted)throw new Error('Target insert did not complete before commit');
-      // The real INSERT already succeeded inside the open transaction. Do not
+      if(!extractionCompleted)throw new Error('Target statement did not complete before commit');
+      // The real target write succeeded inside the open transaction. Do not
       // forward COMMIT; closing upstream forces PostgreSQL to roll it back.
-      stats.blockedCommitCommands++;stats.blockedAfterSuccessfulInsert++;close();return;
+      stats.blockedCommitCommands++;
+      if(targetKind==='schedule-dispatch')stats.blockedAfterSuccessfulScheduleUpdate++;else stats.blockedAfterSuccessfulInsert++;
+      close();return;
      }
      suppress=true;
     }
@@ -79,7 +85,8 @@ const decrypted=tls.createServer({key:input.key,cert:input.cert,minVersion:'TLSv
   const backend=frames((type,body,packet)=>{
    if(closed)return;
    if(type==='C'&&awaitingExtraction){
-    extractionCompleted=body.toString('utf8')==='INSERT 0 1\0';awaitingExtraction=false;
+    extractionCompleted=body.toString('utf8')===(targetKind==='schedule-dispatch'?'UPDATE 1\0':'INSERT 0 1\0');awaitingExtraction=false;
+    if(extractionCompleted)stats.targetStatementsCompleted++;
    }
    if(suppress){
     if(type==='C'&&body.toString('utf8')==='COMMIT\0'){
