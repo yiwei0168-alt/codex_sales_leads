@@ -153,10 +153,19 @@ export async function beginCall(context: ExecutionContext, call: { key: string; 
   await boundary(context);
   return tenantTransaction(context.userId, async client => {
     // Serialize with controls and lease claims. A stale worker cannot start a new action.
-    const lease = await client.query<{instructions: AgentRun["instructions"]}>(`select id,instructions from agent_run where user_id=$1 and id=$2 and lease_token=$3
-      and status='running' and control is null and lease_until>now() for update`, [context.userId, context.runId, context.leaseToken]);
+    const lease = await client.query(`select id from agent_run where user_id=$1 and id=$2 and lease_token=$3
+      and status='running' and control is null for update`, [context.userId, context.runId, context.leaseToken]);
     if (!lease.rowCount) throw new LeaseLostError();
-    assertCurrentInstructions(context, lease.rows[0].instructions);
+    // A predicate evaluated before a row-lock wait, or transaction-start now(),
+    // cannot prove that this owner is still live after the lock is acquired.
+    const assertLease=async()=>{
+      const current=await client.query<{instructions:AgentRun["instructions"]}>(`select r.instructions from agent_run r join app_user u on u.id=r.user_id
+        where r.user_id=$1 and r.id=$2 and r.lease_token=$3 and r.status='running' and r.control is null
+         and r.lease_until>clock_timestamp() and u.status='active'`,[context.userId,context.runId,context.leaseToken]);
+      if(!current.rows[0])throw new LeaseLostError();
+      assertCurrentInstructions(context,current.rows[0].instructions);
+    };
+    await assertLease();
     const previous = await client.query<{id:string}>("select id from agent_tool_call where user_id=$1 and run_id=$2 and (call_key=$3 or ($4::uuid is not null and approval_id=$4))", [context.userId, context.runId, call.key,call.approvalId??null]);
     if(previous.rows.length>1)throw new Error("Conflicting call/approval identity");
     if (!previous.rowCount && ["send", "destructive", "publish"].includes(call.effect)) {
@@ -174,6 +183,7 @@ export async function beginCall(context: ExecutionContext, call: { key: string; 
     const row = stored.rows[0];
     if (row.input_hash !== digest(call.input) || row.tool_id !== call.tool || row.tool_version !== call.version) throw new Error("Persisted call identity mismatch");
     if (inserted.rowCount && call.approvalId) await client.query("update agent_tool_call set approval_id=$2 where id=$1", [row.id, call.approvalId]);
+    await assertLease();
     return { ...row, fresh: Boolean(inserted.rowCount) };
   });
 }
