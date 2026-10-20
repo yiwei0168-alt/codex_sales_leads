@@ -1,0 +1,34 @@
+{
+  "date": "2026-10-20",
+  "rule": "MA24-06",
+  "baselineCommit": "8d8f32e1e01e4654f55a704cca0db131ca76c380",
+  "scriptSyntaxExitCode": 0,
+  "typecheckExitCode": 0,
+  "eslint": {
+    "files": 4,
+    "exitCode": 0
+  },
+  "firstTypecheckIssuesFixed": [
+    "Narrow collector provenance union before reading proof hash",
+    "Use BigInt(0) compatible with configured TypeScript target"
+  ],
+  "sourceHashes": {
+    "scripts/run-skill-transport-linux-check.mjs": "5240e9b398b915de58405c8ae60f967ade33e3746503e5a9ef78d3d35037005e",
+    "scripts/fixtures/measured-runtime-package-registration.ts": "812c5ba92daf6f2e9c0ac016b11c879e783482469677ff947e765c95b58bc424",
+    "scripts/fixtures/task-transport-journal-db.ts": "6fdbc442f236ced797b38d6b62d5817172ff67d7ed1e3dff9f569fffa4b36778",
+    "scripts/fixtures/configured-five-category-db.ts": "93b69c4fa3192d951344c701d5a3d308114d7b9015c8f93a9d2a8aaf87335116"
+  },
+  "actualMeasuredRegistrationFullComposition": "not run yet; requires committed fixture archive",
+  "plannedImages": {
+    "main": "sha256:7ceb50b43dc6d36a6e2719cdaaefc6ba97fa84923e62712683e017f7d36551fc",
+    "collector": "sha256:276e0ef507403aa511499ba2fc6841ba4d2c15dcb0a4beb695fad6472c2677f0"
+  },
+  "limitations": {
+    "noRuntimeRegistrationsPublishedToBusinessDatabase": true,
+    "humanApprovalCreated": false,
+    "actualModelCalls": 0,
+    "productionAgentEquivalent": false,
+    "productionQualificationGranted": false,
+    "automaticActivation": false
+  }
+}

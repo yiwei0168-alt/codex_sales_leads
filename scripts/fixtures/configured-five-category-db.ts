@@ -57,7 +57,8 @@ export async function verifyCombinedConfiguredDatabase(pool:Pool,original:Signed
   // not production identity, provider evidence, or a human quality judgment.
   const registryPath=process.env.SKILL_RUNNER_TRUST_REGISTRY_FILE!;
   const registry=JSON.parse(await readFile(registryPath,'utf8'));
-  registry.keys.find((key:{keyId:string})=>key.keyId===prospective.keyId).purposes.push('runner-declaration');
+  const declarationKey=registry.keys.find((key:{keyId:string})=>key.keyId===prospective.keyId);
+  if(!declarationKey.purposes.includes('runner-declaration'))declarationKey.purposes.push('runner-declaration');
   await writeFile(registryPath,JSON.stringify(registry));
   process.env.SKILL_RUNNER_COLLECTOR_ID=prospective.collectorId;process.env.SKILL_RUNNER_DEPLOYMENT_SHA256=prospective.deploymentHash;
   const declarationJob=join(prospective.directory,'combined-declaration-job.json');
@@ -113,7 +114,9 @@ export async function verifyCombinedConfiguredDatabase(pool:Pool,original:Signed
   assert.equal(readiness.transportReceiptsRequired,true);assert.equal(readiness.transportReceiptsRevalidated,true);
   assert.equal(readiness.transportOriginalTaskCount,2);assert.equal(readiness.transportEvaluationArmCount,8);assert(readiness.transportReceiptCount!>8);
   assert.equal(readiness.runnerDeclarationRevalidated,true);assert.equal(readiness.transportRegistryHash,readiness.runnerRegistryHash);
-  assert.equal(readiness.collectorProvenanceVerified,false);
+  const measuredRegistered=!!process.env.MA24_MEASURED_RUNTIME_PACKAGES_FILE;
+  assert.equal(readiness.collectorProvenanceVerified,measuredRegistered);
+  if(measuredRegistered){assert(databaseTrust);assert('collectorProvenanceHash' in readiness);assert(readiness.collectorProvenanceHash);}
   assert.equal(readiness.signingEnrollmentCoverageRequired,true);assert.equal(readiness.signingEnrollmentCoverageRevalidated,true);
   assert(readiness.signingEnrollments&&readiness.signingEnrollmentCount!>=3);
   assert.deepEqual([...new Set(readiness.signingEnrollments.map(row=>row.purpose))].sort(),['model-transport','runner-declaration','task-model-transport']);
@@ -140,15 +143,15 @@ export async function verifyCombinedConfiguredDatabase(pool:Pool,original:Signed
   assert.equal(readiness.knowledgeSourcesLocked,true);assert.equal(readiness.decisionMemorySourcesLocked,true);assert.equal(readiness.timelineSourcesLocked,true);
   assert.equal(readiness.prospectiveCaptureSourcesLocked,true);assert.equal(readiness.prospectiveJobCount,1);
   assert(readiness.blockers.includes('missing-judgment:signed-replay'));assert.equal(readiness.sourceRevocationsLocked,false);
-  assert.equal(readiness.runtimePackagesRequired,true);assert.equal(readiness.runtimePackagesRegistered,false);
+  assert.equal(readiness.runtimePackagesRequired,true);assert.equal(readiness.runtimePackagesRegistered,measuredRegistered);
   const registrationSchema=(await pool.query("select to_regclass('public.skill_runtime_package_registration') is not null available")).rows[0].available;
-  assert.deepEqual(readiness.runtimePackageBlockers,[databaseTrust?(registrationSchema?'package-registration-missing':'registration-schema-unavailable'):'database-trust-required']);
+  assert.deepEqual(readiness.runtimePackageBlockers,measuredRegistered?[]:[databaseTrust?(registrationSchema?'package-registration-missing':'registration-schema-unavailable'):'database-trust-required']);
   assert.equal((await pool.query('select enabled from agent_skill where id=$1',[original.skillId])).rows[0].enabled,false);
   return {configuredSameFreezeFiveCategoriesVerified:true,lockedTransportReceiptsRevalidated:true,transportOriginalTaskCount:2,transportEvaluationArmCount:8,disabledTransportKeyRejected:true,collectedCases:5,combinedArtifactHash:combined.artifactHash,
    frozenPlanHash:digest(registration.frozen.plan),lockedMaterialsVerified:true,prospectiveCaptureSourcesLocked:true,missingHumanJudgmentBlocksPolicy:true,
    immutableAttachmentSnapshotVerified:true,withdrawnSnapshotSourceRejected:true,restoredCanonicalSnapshotRevalidated:true,
    signingEnrollmentCoverageVerified:true,signingEnrollmentCount:readiness.signingEnrollmentCount,signingEnrollmentCoverageHash:readiness.signingEnrollmentCoverageHash,
-   signingUsageWindowsVerified:true,runtimeRegistrationSchemaAvailable:registrationSchema,runtimePackagesRegistered:readiness.runtimePackagesRegistered,runtimePackageBlockers:readiness.runtimePackageBlockers,
+   signingUsageWindowsVerified:true,measuredRuntimeRegistrationCompositionVerified:measuredRegistered,collectorProvenanceVerified:readiness.collectorProvenanceVerified,runtimeRegistrationSchemaAvailable:registrationSchema,runtimePackagesRegistered:readiness.runtimePackagesRegistered,runtimePackageBlockers:readiness.runtimePackageBlockers,
    sourceProtectionSchemaAvailable,sourceRevocationGuardsReady:readiness.sourceRevocationGuardsReady,sourcePreparedWithoutSealing:true,
    databaseTrustRegistryReadinessVerified:databaseTrust,registryDisablementBlockedUntilReadinessTransactionCommit:databaseTrust,
    realQualityAccepted:false,productionQualificationGranted:false,automaticActivation:false};

@@ -1,3 +1,4 @@
+import {measuredFixtureRuntimePackages,registerMeasuredFixtureKey} from './measured-runtime-package-registration';
 import assert from 'node:assert/strict';
 import {generateKeyPairSync,randomUUID,createHash} from 'node:crypto';
 import {readFile,writeFile} from 'node:fs/promises';
@@ -66,10 +67,15 @@ export async function verifyTaskTransportJournalDatabase(pool:Pool,owner:string,
  if(prospective){assert(capture);assert.equal(digest(capture.start_context),digest(prospective.start));}
  await pool.query("update agent_run set status='running' where id=$1",[runId]);
  if(!options.reuseCustomers)await pool.query("insert into mailbox_customer(id,user_id,identity_key,name) values($1,$2,$3,'Synthetic signed read customer')",[randomUUID(),owner,randomUUID()]);
- const pair=generateKeyPairSync('ed25519'),collectorId='synthetic-original-task',deploymentHash=digest('synthetic-original-deployment');
- const key={keyId:randomUUID(),collectorId,deploymentHash,enabled:true,purposes:['task-model-transport','model-transport'],
+ const measured=await measuredFixtureRuntimePackages();
+ const pair=generateKeyPairSync('ed25519'),collectorId='synthetic-original-task',deploymentHash=measured?.mainInspection.deploymentHash??digest('synthetic-original-deployment');
+ const key={keyId:randomUUID(),collectorId,deploymentHash,enabled:true,purposes:measured?['task-model-transport']:['task-model-transport','model-transport'],
   publicKeyPem:pair.publicKey.export({type:'spki',format:'pem'}).toString(),notBefore:new Date((prospective?Date.parse(prospective.frozen.plan.frozenAt):Date.now())-60000).toISOString(),expiresAt:new Date(Date.now()+3600000).toISOString()};
- const registry={protocol:'skill-runner-trust-registry-v1',keys:[...(options.additionalTrustKeys??[]),key]},path=join(directory,'original-task-public-registry.json');
+ const collectorPair=measured?generateKeyPairSync('ed25519'):undefined;
+ const collectorKey=measured?{...key,keyId:randomUUID(),collectorId:'synthetic-measured-collector',deploymentHash:measured.collectorInspection.deploymentHash,
+  purposes:['model-transport','runner-declaration'],publicKeyPem:collectorPair!.publicKey.export({type:'spki',format:'pem'}).toString()}:key;
+ if(measured){await registerMeasuredFixtureKey(pool,key,measured.mainInspection);await registerMeasuredFixtureKey(pool,collectorKey,measured.collectorInspection);}
+ const registry={protocol:'skill-runner-trust-registry-v1',keys:[...(options.additionalTrustKeys??[]),key,...(measured?[collectorKey]:[])]},path=join(directory,'original-task-public-registry.json');
  await writeFile(path,JSON.stringify(registry));process.env.SKILL_RUNNER_TRUST_REGISTRY_FILE=path;
  process.env.TASK_MODEL_TRANSPORT_COLLECTOR_ID=collectorId;process.env.TASK_MODEL_TRANSPORT_DEPLOYMENT_SHA256=deploymentHash;
  const keyPath=join(directory,'original-task-private.pem'),runnerPath=join(directory,'task-admission.cjs');
@@ -139,7 +145,9 @@ export async function verifyTaskTransportJournalDatabase(pool:Pool,owner:string,
  await assert.rejects(verifyOwnedTaskModelTransports({userId:owner},{runId}),/gaps/);
  await pool.query("update agent_tool_call set call_key='mode-model:0:0:1' where id=$1",[ids[1]]);
  await verifyOwnedTaskModelTransports({userId:owner},{runId});
- const collectorInput={owner,runId,skillId,directory,keyPath,keyId:key.keyId,collectorId,deploymentHash,trustKeys:registry.keys};
+ const collectorKeyPath=measured?join(directory,`measured-collector-${collectorKey.keyId}.pem`):keyPath;
+ if(collectorPair)await writeFile(collectorKeyPath,collectorPair.privateKey.export({type:'pkcs8',format:'pem'}),{mode:0o600});
+ const collectorInput={owner,runId,skillId,directory,keyPath:collectorKeyPath,keyId:collectorKey.keyId,collectorId:collectorKey.collectorId,deploymentHash:collectorKey.deploymentHash,trustKeys:registry.keys};
  const configuredCandidate:Record<string,unknown>=options.onReady?await options.onReady(collectorInput)
   :process.env.MA24_CONFIGURED_COMBINED==='1'?await verifyCombinedConfiguredDatabase(pool,collectorInput,async(registration,onReady)=>
    verifyTaskTransportJournalDatabase(pool,owner,other,directory,skillId,{registration,reuseCustomers:true,additionalTrustKeys:registry.keys,onReady}))
