@@ -76,6 +76,10 @@ export async function readSkill(context: ExecutionContext, skillId: string) {
   }, context.role);
 }
 export async function changeSkill(context: Pick<ExecutionContext, "userId" | "role">, input: { id: string; version: number; operation: "enable" | "disable" | "publish" | "rollback" },humanInitiated=false) {
+  if(!humanInitiated&&input.operation==='enable'){
+    const {activateAgentSkill}=await import('./skill-final-activation');
+    return activateAgentSkill(context,{...input,operation:'enable'});
+  }
   if (input.operation === "publish" && context.role !== "admin") throw new Error("Administrator required");
   return tenantTransaction(context.userId, async client => {
     await admitSkillCatalogWrite(client,input.id);

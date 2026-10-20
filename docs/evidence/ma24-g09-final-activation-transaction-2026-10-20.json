@@ -1,0 +1,68 @@
+{
+    "stage":  "MA24 G09 guarded final activation transaction adapter",
+    "date":  "2026-10-20",
+    "sourceBaseCommit":  "c65654beba2c67517bc921c012f8898bc1a11946",
+    "command":  "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --locked-policy",
+    "log":  "tmp/ma24-final-skill-activation-transaction.log",
+    "exitCode":  0,
+    "result":  {
+                   "finalSkillActivationDatabase":  "passed",
+                   "realProducerSyntheticAndUnsignedRejected":  true,
+                   "foreignOwnerRejected":  true,
+                   "atomicSkillToolReceiptAndEventCommitted":  true,
+                   "committedReceiptReconciledWithoutReenable":  true,
+                   "auditFailureRollsBackAll":  true,
+                   "postWriteExpiryRollsBackAll":  true,
+                   "commitExpiryRollsBackAll":  true,
+                   "positiveQualificationProducerMocked":  true,
+                   "humanApprovalCreated":  false,
+                   "productionQualificationGranted":  false,
+                   "modelCalls":  0
+               },
+    "implementation":  {
+                           "callerCannotSubmitBundleOrProof":  true,
+                           "latestBundleRecheckedAfterSkillLock":  true,
+                           "gatesNotPromoted":  true,
+                           "requiredProductionGates":  [
+                                                           "sourceRevocationsLocked",
+                                                           "collectorProvenanceVerified",
+                                                           "productionAgentEquivalent"
+                                                       ],
+                           "serverSelectsLatestBundle":  true,
+                           "knownZeroExternalCallStatePreserved":  true,
+                           "lockOrder":  "trust admission -\u003e catalog write admission -\u003e source/bundle/freeze -\u003e Skill -\u003e nonwaiting current run/call",
+                           "deadlineAndLeaseCheckedAtWriteAndAfterAudit":  true,
+                           "committedReceiptReuseDoesNotReenable":  true,
+                           "deferredCommitGuardRequired":  160,
+                           "humanChangesAndAgentRollbackUnchanged":  true,
+                           "atomicSkillReceiptAndAudit":  true
+                       },
+    "checks":  {
+                   "negativeDatabaseCase":  "real producer rejects synthetic and missing declaration, foreign owner hidden",
+                   "typecheck":  "tsc --noEmit --incremental false exited0",
+                   "vitest":  "63 passed across five suites",
+                   "eslint":  "six changed TypeScript files exited0",
+                   "positiveDatabaseCase":  "real SQL/tenant transaction/call/event and commit guard; only readiness producer replaced by explicit test double",
+                   "migration160":  "installed twice in disposable database; actual deferred constraint rejects expiry after function returns before COMMIT",
+                   "cleanup":  "fresh pilot containers and networks empty"
+               },
+    "initialFailure":  {
+                           "exitCode":  1,
+                           "reason":  "Disposable fixture lacked141 declaration table; transaction failure was surfaced as memory validation failure. Added141 only in fixture; source and production guards unchanged",
+                           "log":  "tmp/ma24-final-skill-activation-initial-bootstrap-failure.log"
+                       },
+    "priorPasses":  [
+                        "tmp/ma24-final-skill-activation-first-pass.log",
+                        "tmp/ma24-final-skill-activation-pre-equivalence-gate-pass.log",
+                        "tmp/ma24-final-skill-activation-before-commit-guard-pass.log"
+                    ],
+    "limits":  [
+                   "Actual current readiness producer does not provide complete source/collector/production-equivalence proof; genuine activation remains unavailable",
+                   "Positive SQL transaction tests simulate a future fully qualified producer; no human judgment or production eligibility is created",
+                   "Fresh135 plus explicit141/148/149/152/157/160 fixture components; not a full current160 initialization or fixed Linux package acceptance",
+                   "Migration160 not applied to the business database; no new package deployed",
+                   "No real provider/model calls, paid operations or production Skill activation",
+                   "Commit acknowledgement loss/process crash and production positive qualification still require separate acceptance",
+                   "G01-G13 incomplete; G14-G20 and LAN deployment deferred"
+               ]
+}
