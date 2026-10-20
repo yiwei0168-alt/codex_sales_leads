@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+2026-10-21 / MA24-06 固定包：7541219d 三镜像构建、1018 源码/33503 依赖字节/ESM、采集器边界及 Web 源码检查通过，共享租约修复已入新包。新包完整 Linux 组合/独立 TLS 数据库验收仍运行；不沿用旧版本结果，无部署/启用或真实质量结论。[固定包](SHARED_LEASE_FIXED_PACKAGES_2026-10-21.md)。
+
 2026-10-21 / MA24-06 普通 Worker/G09 共享租约验收：29 项定向测试、类型/8 文件 lint 和新 169 库通过。实际续租、事务跨到期后的拒绝、编译 Worker 初始暂停/运行中暂停与取消/传输失败不重放、过期任务直接控制、G09 取消不运行模型并结算、历史候选提交后 SIGKILL 与默认租约自然到期恢复均通过。临时资源已清理，无真实模型或生产写入。完整 checkpoint/使用生命周期、含本轮修改的固定包及真实身份/质量继续待验。[范围与原始结果](SHARED_AGENT_RUN_LEASE_2026-10-21.md)。
 
 2026-10-21 / MA24-06 G01/G09 current fixed-image acceptance: 6d700395 immutable main/collector measurements and byte-identical runtime source with e410c1d7 fixtures passed fresh-169 Linux full five-category/eight-task composition. Actual runtime-package readers return registered/provenance true and no package blockers; missing human judgment still blocks. The same collector production declaration entry independently passed fresh-169 TLS issuance/readback/retry, registry-disablement commit waiting and CA/deployment/account/key/purpose/revocation/NODE_OPTIONS rejection. Both runs use synthetic tasks/keys/network adapters, no production keys/model calls/activation. Whole-fixture production wrapper/TLS, fixed-image process-crash recovery, ordinary Worker/checkpoint integration, use lifecycle and real quality remain pending. [Scope and receipts](SKILL_RUNTIME_PROTOCOL_MEASURED_LINUX_2026-10-21.md).

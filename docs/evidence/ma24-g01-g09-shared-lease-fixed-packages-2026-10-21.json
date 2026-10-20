@@ -1,0 +1,116 @@
+{
+  "date": "2026-10-21",
+  "rule": "MA24-06",
+  "sourceCommit": "7541219d7f98697ee6fc99ddced938e5205898a9",
+  "buildExitCodes": {
+    "main": 0,
+    "collector": 0,
+    "web": 0
+  },
+  "checkExitCodes": {
+    "pair": 0,
+    "collector": 0,
+    "web": 0
+  },
+  "logs": {
+    "tmp/ma24-shared-lease-main-image-build.log": "4d7c89ed16564fe3070e34e105e3ff630ca1fbfbee18169cf05298d70bed5f46",
+    "tmp/ma24-shared-lease-collector-image-build.log": "c8a6ab28a5577f410717cec10f3c382144f14cff3beb4c8e4aaa491f27518da8",
+    "tmp/ma24-shared-lease-web-image-build.log": "b3998abf6fe4a4a01477aad97620053a799e463cdb1e232368a133ab403f0132",
+    "tmp/ma24-shared-lease-runtime-pair.log": "bdcd4e399fab868fce1170657dad69ecfdb472067bd30e35af630ff0600d0943",
+    "tmp/ma24-shared-lease-collector-boundary.log": "79ad2c28bd6c47a6f0d72dab359e020fd7318103544ef635ad10b8a8619df5b0",
+    "tmp/ma24-shared-lease-web-source.log": "575c40796e8b66869ae751a810156c1b75032fb89dd826cabf862bd1b6e14307"
+  },
+  "results": {
+    "tmp/ma24-shared-lease-runtime-pair.log": [
+      {
+        "localRuntimeDependencyPair": "passed",
+        "mainInspection": {
+          "role": "main-agent",
+          "imageId": "sha256:7fe5373654612362e2151151ec875ee28d584c84edbc3a6707f53ea8bde6f11f",
+          "sourceCommit": "7541219d7f98697ee6fc99ddced938e5205898a9",
+          "deploymentHash": "9ad7f4293b1a0e7f0957cf65983445ec869f508b23634a2d0c67e129e495b413",
+          "runtimeHash": "50e9a7e03e619c828a5a5ba5c2b8c4b2eaf446742dee3c86e672a6cdb59615a0",
+          "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+          "node": "24.21.0",
+          "platform": "linux",
+          "arch": "x64",
+          "sourceInputs": 1018,
+          "files": 34570,
+          "dependencyManifestHash": "d3edb974b4ae6e725cbb62205c8f0e65606b061fd97bce214289279ccca20137",
+          "dependencyFiles": 33503,
+          "runtimeModuleFormat": "esm"
+        },
+        "collectorInspection": {
+          "role": "skill-collector",
+          "imageId": "sha256:7a374d7db0d56d2a1b97fe4849129c16a996ffbdee83af3ab38362fa745e0f8b",
+          "sourceCommit": "7541219d7f98697ee6fc99ddced938e5205898a9",
+          "deploymentHash": "465f39278c961ce9a146bedd63656c1b55e7bcd45324451a89934e9854b74768",
+          "runtimeHash": "50e9a7e03e619c828a5a5ba5c2b8c4b2eaf446742dee3c86e672a6cdb59615a0",
+          "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+          "node": "24.21.0",
+          "platform": "linux",
+          "arch": "x64",
+          "sourceInputs": 1018,
+          "files": 34534,
+          "dependencyManifestHash": "d3edb974b4ae6e725cbb62205c8f0e65606b061fd97bce214289279ccca20137",
+          "dependencyFiles": 33503,
+          "runtimeModuleFormat": "esm"
+        },
+        "comparison": {
+          "runtimePackageBytesPairRevalidated": true,
+          "runtimePackageBytesPairBlockers": [],
+          "runtimeModuleFormatPairRevalidated": true,
+          "runtimeModuleFormatPairBlockers": [],
+          "runtimePackageBytesPairHash": "71f7e38d363be06da991c4aa402ec996237e7cbde5194c6965e5c5dbf26e9329"
+        },
+        "esmModuleFormatPairVerified": true,
+        "runtimeRegistrationsPublished": false,
+        "completeDependencyRuntimeEquivalenceVerified": false,
+        "productionQualified": false,
+        "automaticActivation": false,
+        "modelCalls": 0
+      }
+    ],
+    "tmp/ma24-shared-lease-collector-boundary.log": [
+      {
+        "collectorImageVerification": "passed",
+        "image": "sha256:7a374d7db0d56d2a1b97fe4849129c16a996ffbdee83af3ab38362fa745e0f8b",
+        "imageId": "sha256:7a374d7db0d56d2a1b97fe4849129c16a996ffbdee83af3ab38362fa745e0f8b",
+        "commit": "7541219d7f98697ee6fc99ddced938e5205898a9",
+        "packageFiles": 34534,
+        "deploymentHash": "465f39278c961ce9a146bedd63656c1b55e7bcd45324451a89934e9854b74768",
+        "measuredEnrollmentVerified": true,
+        "missingMalformedAndMismatchedEnrollmentRejectedBeforeRunner": true,
+        "matchedEnrollmentReachesRunner": true,
+        "nodeOptionsRejected": true,
+        "nonRootReadOnlyNoNetwork": true,
+        "changedRunnerRejectedBeforeExecution": true,
+        "actualModelCalls": 0,
+        "productionQualified": false
+      }
+    ],
+    "tmp/ma24-shared-lease-web-source.log": [
+      {
+        "webImageSourceVerification": "passed",
+        "image": "ma24-pilot-web:7541219d",
+        "imageId": "sha256:122a143e4fd911e096181b068f4782445dd76e3a2042f6822e271047792c13fd",
+        "sourceCommit": "7541219d7f98697ee6fc99ddced938e5205898a9",
+        "buildId": "_ofbCKK4NB6uWZfPD4-Z0",
+        "runtimeSourceFileCount": 1018,
+        "runtimeSourceMatchesFixedGitExport": true,
+        "exportEolDifferences": 1018,
+        "runtimeSourceManifestHash": "5e84aed0d9af9463dd773b2d8270426fa80e9b2f8ead906fdaa09183b32af77b",
+        "privateEnvironmentFiles": false,
+        "privateStorageFiles": false,
+        "staticAssetsPresent": true,
+        "nonRootReadOnlyNoNetwork": true,
+        "productionQualified": false
+      }
+    ]
+  },
+  "fixedLinuxCompositionCurrentRun": "running-session-17952",
+  "fixedDeclarationTlsCurrentRun": "running-session-76358",
+  "productionQualified": false,
+  "automaticActivation": false,
+  "deployment": false
+}

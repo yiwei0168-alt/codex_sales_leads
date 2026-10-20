@@ -1,5 +1,7 @@
 # 用户确认规则登记表
 
+2026-10-21 / MA24-06 固定包更新：7541219d 三镜像构建、双包 1018 源码/33503 依赖字节/ESM、采集器测量登记与隔离边界、Web 源码/静态/私密文件检查均通过。共享租约修复已入新固定包；新包完整 Linux 组合与独立 TLS 数据库验收正在运行，未记通过。无部署/启用或真实质量提升。[固定包与范围](SHARED_LEASE_FIXED_PACKAGES_2026-10-21.md)。
+
 2026-10-21 / MA24-06 实现与验收更新（无新增确认）：普通 Worker/G09 共用 90 秒任务租约与 20 秒续租、本地截止取消和控制结算；过期 running 任务可直接暂停/取消，续租及边界按数据库墙钟拒绝过期/控制/停用账号。29 项定向测试、类型/8 文件 lint、新 169 库实际续租与编译 Worker 控制/传输异常、G09 控制及历史候选 SIGKILL 自然到期恢复通过，测试资源清理。仍不代表完整 Worker/checkpoint 统一、固定新包、完整使用生命周期或真实质量通过；Skill 关闭，G14–G20 与部署暂缓。[范围与证据](SHARED_AGENT_RUN_LEASE_2026-10-21.md)。
 
 2026-10-21 / MA24-06 G01/G09 current fixed-image acceptance: 6d700395 immutable main/collector measurements and byte-identical runtime source with e410c1d7 fixtures passed fresh-169 Linux full five-category/eight-task composition. Actual runtime-package readers return registered/provenance true and no package blockers; missing human judgment still blocks. The same collector production declaration entry independently passed fresh-169 TLS issuance/readback/retry, registry-disablement commit waiting and CA/deployment/account/key/purpose/revocation/NODE_OPTIONS rejection. Both runs use synthetic tasks/keys/network adapters, no production keys/model calls/activation. Whole-fixture production wrapper/TLS, fixed-image process-crash recovery, ordinary Worker/checkpoint integration, use lifecycle and real quality remain pending. [Scope and receipts](SKILL_RUNTIME_PROTOCOL_MEASURED_LINUX_2026-10-21.md).
