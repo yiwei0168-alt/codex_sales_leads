@@ -1,0 +1,72 @@
+{
+  "stage": "MA24 G09 memory clock boundaries through COMMIT",
+  "date": "2026-10-20",
+  "baseCommit": "3c025221",
+  "unitTestsPassed": 109,
+  "unitTestFiles": 5,
+  "typescript": "passed",
+  "eslintFiles": 14,
+  "eslint": "passed",
+  "databaseExitCode": 0,
+  "memoryCommit": {
+    "memoryTimeCommitFence": "passed",
+    "actualDecisionMemoryExpiryCommitRejected": true,
+    "actualFutureMemoryActivationCommitRejected": true,
+    "activationReturnedBeforeCommit": true,
+    "sourceEditsDuringActivation": 0,
+    "temporalFenceProducerReal": true,
+    "otherQualificationProducerMocked": true,
+    "humanApprovalCreated": false,
+    "modelCalls": 0
+  },
+  "memoryReceipts": {
+    "memoryReceiptDatabase": "passed",
+    "sameTransactionImplicitObservationExpiryRejected": true,
+    "explicitHistoricalTimesPreserved": true,
+    "implicitReceiptDeadlineCaptured": true,
+    "explicitHistoricalReceiptNotExpiredByWallClock": true,
+    "transactionTimestampStillBeforeExpiry": true,
+    "crossAccountRejected": true,
+    "graphServiceCalls": 0,
+    "modelCalls": 0,
+    "automaticActivation": false
+  },
+  "freshInitializationThrough": 161,
+  "currentSchemaMarkers": {
+    "mailbox_work_binding": true,
+    "mailbox_lease_binding": true,
+    "mailbox_binding_constraint": true,
+    "knowledge_source_gate": true,
+    "task_origin_gate": true,
+    "local_memory_source_gate": true,
+    "receipt_source_gate": true,
+    "immutable_snapshot_capture": true,
+    "immutable_snapshot_lifecycle": true,
+    "trust_registry_versions": true,
+    "trust_registry_pointer": true,
+    "trust_registry_publication": true,
+    "runtime_package_registrations": true,
+    "runtime_package_withdrawals": true,
+    "runtime_package_publication": true,
+    "skill_activation_lifecycle": true,
+    "skill_activation_commit_guard": true,
+    "skill_activation_binding_guard": true
+  },
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --current-schema --locked-policy",
+  "localLogs": [
+    "tmp/ma24-memory-time-fence-unit.log",
+    "tmp/ma24-memory-time-fence-types.log",
+    "tmp/ma24-memory-time-fence-lint.log",
+    "tmp/ma24-memory-time-fence-db.log"
+  ],
+  "boundaries": {
+    "temporalProducerReal": true,
+    "otherQualificationProducerMocked": true,
+    "productionQualificationGranted": false,
+    "businessDatabaseChanged": false,
+    "currentSourceFixedLinuxRebuilt": false,
+    "wholeSourceLifecycleVerified": false,
+    "humanJudgmentsCreated": 0,
+    "modelCalls": 0
+  }
+}

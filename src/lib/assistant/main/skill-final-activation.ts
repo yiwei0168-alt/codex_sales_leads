@@ -29,6 +29,7 @@ const proofSchema=z.object({policyPassed:z.literal(true),blockers:z.array(z.stri
  taskOriginsLocked:z.literal(true),taskJournalsLocked:z.literal(true),prospectiveCaptureSourcesLocked:z.literal(true),
  timelineSourcesLocked:z.literal(true),mailReadSourcesLocked:z.literal(true),attachmentMetadataLocked:z.literal(true),
  memoryReceiptSourcesRevalidated:z.literal(true),privateReceiptSourcesRevalidated:z.literal(true),
+ memoryTimeFenceRevalidated:z.literal(true),
  acceptanceTimeCheckedAt:z.iso.datetime(),acceptanceValidBefore:z.iso.datetime(),
 }).passthrough();
 type Action=z.infer<typeof inputSchema>;

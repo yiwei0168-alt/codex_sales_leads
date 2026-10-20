@@ -2,6 +2,7 @@ import type {PoolClient} from 'pg';
 import {z} from 'zod';
 import type {ModelMessage} from './contracts';
 import {assertCurrentMemoryMessages} from './memory-message-guard';
+import {captureSkillMemoryTimeFence} from './skill-memory-time-fence';
 
 const tools=new Set(['memory_read','memory_history_search','memory_observation_search']);
 /** Requires authenticated, consumed receipts and retained source admission.
@@ -17,9 +18,8 @@ export async function revalidateLockedSkillMemoryReceipts(client:PoolClient,user
   messages.push({role:'assistant',content:null,tool_calls:[{id,type:'function',function:{name:'execute_tool',arguments:JSON.stringify({tool:receipt.tool,arguments:args})}}]},
    {role:'tool',tool_call_id:id,content:JSON.stringify(receipt.output)});
  }
- const clock=(await client.query<{checked_at:Date}>('select clock_timestamp() checked_at')).rows[0]?.checked_at;
- if(!(clock instanceof Date)||!Number.isFinite(clock.getTime()))throw new Error('Acceptance memory receipt clock unavailable');
- const checkedAt=clock.toISOString();
+ const fence=await captureSkillMemoryTimeFence(client,userId,receipts);
+ const checkedAt=fence.memoryTimeCheckedAt;
  await assertCurrentMemoryMessages(userId,messages,checkedAt);
- return {memoryReceiptSourcesRevalidated:true as const,memoryReceiptCount:count,memoryReceiptCheckedAt:checkedAt};
+ return {...fence,memoryReceiptSourcesRevalidated:true as const,memoryReceiptCount:count,memoryReceiptCheckedAt:checkedAt};
 }

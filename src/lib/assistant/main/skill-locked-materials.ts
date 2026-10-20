@@ -20,6 +20,7 @@ import {readLockedSkillRunnerTrustRegistry} from './skill-runner-trust-registry-
 import {requireCanonicalSkillAcceptanceOriginals} from './skill-canonical-original-coverage';
 import {skillSigningEnrollmentCoverage} from './skill-signing-enrollment';
 import {readLockedSkillRuntimePackages} from './skill-runtime-package-store';
+import {captureSkillMemoryTimeFence,earliestSkillMemoryTimeFence} from './skill-memory-time-fence';
 
 /** Keep consumed receipts in a private closure inside the owning transaction;
  * public wrappers expose hashes/counts only, never source contents or callbacks. */
@@ -73,6 +74,7 @@ export async function evaluateLockedSkillAcceptanceReadiness(client:PoolClient,c
   // Hold admission before capturing the memory snapshot. Row locks cannot stop
   // valid_from/valid_until from crossing while materials and policy are rebuilt.
   await client.query('select lock_skill_knowledge_sources()');
+  const decisionTimeFence=await captureSkillMemoryTimeFence(client,context.userId,[]);
   return withCurrentDecisionMemory(context.userId,async()=>{
   const declaration=await readLockedSkillRunnerAttestation(client,context,bundleId);
   const preparation=await prepareLockedSkillAcceptanceMaterials(client,context,bundleId),materials=preparation.materials;
@@ -126,9 +128,11 @@ export async function evaluateLockedSkillAcceptanceReadiness(client:PoolClient,c
   const packages=signingCoverage.signingEnrollmentCoverageRequired
    ?await readLockedSkillRuntimePackages(client,context.userId,{registryHash:finalDeclaration.runnerRegistryHash!,runtimeHash:final.artifact.plan.identity.runtimeHash,windows:signingCoverage.signingEnrollmentWindows})
    :{runtimePackagesRequired:false as const,runtimePackagesRegistered:false as const,runtimePackageBlockers:[] as string[]};
+  const memoryTimeValidBefore=earliestSkillMemoryTimeFence(decisionTimeFence,materials,memoryReceipts);
   const methodTimes=await revalidateLockedSkillExperienceTimes(client,context.userId,final.artifact,{
    ...(finalDeclaration.runnerDeclarationRequired?{runnerDeclarationValidBefore:finalDeclaration.runnerDeclarationValidBefore}:{}),
    ...(finalTransports.transportReceiptsRequired?{transportValidBefore:finalTransports.transportValidBefore}:{}),
+   ...(memoryTimeValidBefore?{memoryTimeValidBefore}:{}),
    ...(packages.runtimePackagesRegistered?{runtimePackageValidBefore:packages.runtimePackageValidBefore}:{})});
   return {...policy,prospectiveCaptureSourcesLocked:materials.prospectiveCaptureSourcesLocked,prospectiveJobCount:materials.prospectiveJobCount,knowledgeSourcesLocked:materials.knowledgeSourcesLocked,decisionMemorySourcesLocked:materials.decisionMemorySourcesLocked,timelineSourcesLocked:materials.timelineSourcesLocked,timelineCustomerCount:materials.timelineCustomerCount,mailReadSourcesLocked:materials.mailReadSourcesLocked,mailCount:materials.mailCount,attachmentMetadataLocked:materials.attachmentMetadataLocked,attachmentCount:materials.attachmentCount,taskOriginsLocked:materials.taskOriginsLocked,taskJournalsLocked:materials.taskJournalsLocked,runCount:materials.runCount,materials:materials.materials,materialsHash:materials.materialsHash,sourcePayloadsRevalidated:true as const,
    pinnedMethodSourcesLocked:materials.pinnedMethodSourcesLocked,pinnedMethodPinCount:materials.pinnedMethodPinCount,
@@ -142,6 +146,7 @@ export async function evaluateLockedSkillAcceptanceReadiness(client:PoolClient,c
    ...canonicalOriginals,
    ...memoryReceipts,
    ...privateReceipts,
+   memoryTimeFenceRevalidated:true as const,memoryTimeValidBefore:memoryTimeValidBefore??null,
    ...finalDeclaration,
    ...finalTransports,
    ...signingCoverage,

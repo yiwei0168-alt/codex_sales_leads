@@ -16,6 +16,7 @@ import {disableLocalAnalysisTracing} from '../src/lib/assistant/main/local-analy
 import type {SkillCollectorTransaction} from '../src/lib/assistant/main/skill-model-journal';
 import {prepareCompositionDatabaseFixture} from './fixtures/skill-composition-database';
 import {verifyFinalActivationDatabase} from './fixtures/skill-final-activation-negative-db';
+import {verifyMemoryReceiptDatabase} from './fixtures/skill-memory-receipt-database';
 
 nextEnv.loadEnvConfig(process.cwd());disableLocalAnalysisTracing();
 assert.equal(process.env.MA24_DISPOSABLE_LOCKED_POLICY,'1','Disposable cluster harness required');
@@ -67,6 +68,7 @@ try{
  assert(initial.blockers.includes('missing-judgment:replay'));assert(!initial.blockers.includes('runtime-or-configuration-changed'));
  assert.equal(initial.currentRuntimeIdentityHash,digest(identity));assert.equal(initial.automaticActivation,false);
  await verifyFinalActivationDatabase(pool,owner,other,skill.id,bundleId);
+ await verifyMemoryReceiptDatabase(pool,owner,other);
  const verdict={answer:false,citation:false,permission:false,injection:false},observation=observations.find(row=>row.caseId==='replay')!;
  const review={bundleId,artifactHash:digest(artifact),expectedRevision:0,judgment:{caseId:'replay',observationHash:digest(observation),revoked:false,
   baseline:verdict,candidate:verdict,rationale:'Synthetic development-only policy check; no quality approval.'}};

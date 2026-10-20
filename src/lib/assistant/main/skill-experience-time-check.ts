@@ -3,7 +3,7 @@ import {z} from 'zod';
 import {skillAcceptanceRunIds} from './skill-acceptance-run-locks';
 
 type Artifact=Parameters<typeof skillAcceptanceRunIds>[0]&{plan:{pin:{ownerId:string;skillId:string;version:number};expiresAt:string}};
-const signedDeadlinesSchema=z.object({runnerDeclarationValidBefore:z.iso.datetime().optional(),transportValidBefore:z.iso.datetime().optional(),runtimePackageValidBefore:z.iso.datetime().optional()}).strict();
+const signedDeadlinesSchema=z.object({runnerDeclarationValidBefore:z.iso.datetime().optional(),transportValidBefore:z.iso.datetime().optional(),runtimePackageValidBefore:z.iso.datetime().optional(),memoryTimeValidBefore:z.iso.datetime().optional()}).strict();
 /** Full provenance and source locks must already be established. Recheck every
  * target/pinned method's local-experience clock at one database instant after
  * preparation, including previously authenticated signature deadlines. The

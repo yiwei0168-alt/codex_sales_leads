@@ -64,19 +64,22 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
   const flags=['policyPassed','trustRegistryLocked','sourceRevocationsLocked','collectorProvenanceVerified','productionAgentEquivalent','canonicalOriginalCoverageRequired','canonicalOriginalCoverageRevalidated',
    'runnerDeclarationRequired','runnerDeclarationRevalidated','transportReceiptsRequired','transportReceiptsRevalidated','signingEnrollmentCoverageRequired','signingEnrollmentCoverageRevalidated',
    'runtimePackagesRequired','runtimePackagesRegistered','runtimePackageBytesPairRevalidated','runtimeModuleFormatPairRevalidated','methodExperienceTimesRevalidated','decisionMemorySnapshotRevalidated',
-   'memoryReceiptSourcesRevalidated','privateReceiptSourcesRevalidated','lockedEvidencePolicyEvaluated','sourcePayloadsRevalidated','knowledgeSourcesLocked','decisionMemorySourcesLocked',
+   'memoryReceiptSourcesRevalidated','memoryTimeFenceRevalidated','privateReceiptSourcesRevalidated','lockedEvidencePolicyEvaluated','sourcePayloadsRevalidated','knowledgeSourcesLocked','decisionMemorySourcesLocked',
    'skillCatalogSourcesLocked','pinnedMethodSourcesLocked','taskOriginsLocked','taskJournalsLocked','prospectiveCaptureSourcesLocked','timelineSourcesLocked','mailReadSourcesLocked','attachmentMetadataLocked'];
-  const mock=`export async function evaluateLockedSkillAcceptanceReadiness(client,context,bundleId){
+  const mock=`import {captureSkillMemoryTimeFence} from './skill-memory-time-fence';
+   export async function evaluateLockedSkillAcceptanceReadiness(client,context,bundleId){
    const row=(await client.query('select artifact_hash from agent_skill_acceptance_bundle where id=$1 and owner_id=$2',[bundleId,context.userId])).rows[0];
    const now=(await client.query('select clock_timestamp() checked_at')).rows[0].checked_at;
+   const fence=await captureSkillMemoryTimeFence(client,context.userId,[]);
    return {...${JSON.stringify(Object.fromEntries(flags.map(key=>[key,true])))},artifactHash:row.artifact_hash,latestReviewHash:${JSON.stringify(digest([]))},
     materialsHash:'${digest('mock materials')}',currentRuntimeIdentityHash:'${digest('mock runtime')}',trustRegistryHash:'${digest(registry)}',runtimePackageRegistrationHash:'${digest('mock package')}',
-    runtimePackageRevisions:${JSON.stringify(packageRevisions)},blockers:[],acceptanceTimeCheckedAt:now.toISOString(),acceptanceValidBefore:new Date(now.getTime()+(process.env.MA24_ACTIVATION_EXPIRY==='1'?2000:3600000)).toISOString()};}`;
+    runtimePackageRevisions:${JSON.stringify(packageRevisions)},...fence,blockers:[],acceptanceTimeCheckedAt:now.toISOString(),acceptanceValidBefore:new Date(Math.min(
+     now.getTime()+(process.env.MA24_ACTIVATION_EXPIRY==='1'?2000:3600000),fence.memoryTimeValidBefore?Date.parse(fence.memoryTimeValidBefore):Infinity)).toISOString()};}`;
   const compiled=join(directory,'transaction.mjs');
   await build({...productNodeBuildOptions(),entryPoints:['scripts/fixtures/skill-final-activation-transaction-runner.ts'],outfile:compiled,
    plugins:[{name:'explicit-test-only-qualified-producer',setup(builder){builder.onLoad({filter:/skill-locked-materials\.ts$/},args=>({contents:mock,loader:'ts',resolveDir:dirname(args.path)}));}}]});
-  const run=async(actor:Awaited<ReturnType<typeof makeActor>>,failure=false,expiry=false,commitDelay=false,bindingClear=false)=>{
-   const job=join(directory,'job.json');await writeFile(job,JSON.stringify({actor,action,failure,commitDelay,bindingClear}));
+  const run=async(actor:Awaited<ReturnType<typeof makeActor>>,failure=false,expiry=false,commitDelay=false,bindingClear=false,commitDelaySeconds=2.1)=>{
+   const job=join(directory,'job.json');await writeFile(job,JSON.stringify({actor,action,failure,commitDelay,bindingClear,commitDelaySeconds}));
    const out=await new Promise<{code:number|null;output:string}>((accept,reject)=>{
     const child=spawn(process.execPath,[compiled,job],{windowsHide:true,stdio:['ignore','pipe','pipe'],env:{...process.env,NODE_ENV:'production',NODE_OPTIONS:'',NODE_PATH:'',
      MA24_DISPOSABLE_FINAL_ACTIVATION:'1',MA24_ACTIVATION_EXPIRY:expiry?'1':'0'}});let output='';
@@ -160,6 +163,21 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
   const bindingCleared=await makeActor();
   assert.equal((await run(bindingCleared,true,false,false,true)).activationTransaction,'rejected');
   assert.deepEqual(await inspect(bindingCleared),{enabled:false,status:'started',output:null,events:0});
+  // A real memory clock fence feeds the otherwise mocked qualification. No
+  // source write occurs during activation; only wall-clock time advances.
+  for(const boundary of ['expiry','activation']){
+   const memoryId=randomUUID(),actor=await makeActor();
+   await pool.query(`insert into agent_memory(id,owner_id,scope,kind,memory_key,source_kind,valid_from,valid_until)
+    values($1,$2,'account','preference',$1::uuid::text,'explicit',
+     case when $3='activation' then clock_timestamp()+interval '5 seconds' else '2000-01-01'::timestamptz end,
+     case when $3='expiry' then clock_timestamp()+interval '5 seconds' else null end)`,[memoryId,owner,boundary]);
+   await pool.query("insert into agent_memory_version(memory_id,version,content,scope_snapshot) values($1,1,'Synthetic temporal fence','{}')",[memoryId]);
+   try{
+    const outcome=await run(actor,true,false,true,false,5.2);
+    assert.equal(outcome.activationTransaction,'rejected');assert.equal(outcome.activationReturnedBeforeCommit,true);
+    assert.deepEqual(await inspect(actor),{enabled:false,status:'started',output:null,events:0});
+   }finally{await pool.query('delete from agent_memory_version where memory_id=$1',[memoryId]);await pool.query('delete from agent_memory where id=$1',[memoryId]);}
+  }
   assert.equal((await pool.query("select count(*)::int n from agent_skill_acceptance_judgment where reviewer_kind='human'")).rows[0].n,0);
   console.log(JSON.stringify({finalSkillActivationDatabase:'passed',realProducerSyntheticAndUnsignedRejected:true,foreignOwnerRejected:true,
    atomicSkillToolReceiptAndEventCommitted:true,committedReceiptReconciledWithoutReenable:true,auditFailureRollsBackAll:true,postWriteExpiryRollsBackAll:true,commitExpiryRollsBackAll:true,
@@ -167,6 +185,8 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
   console.log(JSON.stringify({skillActivationLifecycle:'passed',registryChangeDenied:true,freezeRevocationDenied:true,packageWithdrawalDenied:true,
    packageSupersessionDenied:true,reviewRevisionChangeDenied:true,expiredBindingDenied:true,manualDisableClearsBinding:true,
    actualReadAndModelListAndUiListAndPinnedGuard:true,dependentAcceptanceMethodInvalidation:true,bindingClearBeforeCommitRollsBack:true,qualificationProducerMocked:true,humanApprovalCreated:false}));
+  console.log(JSON.stringify({memoryTimeCommitFence:'passed',actualDecisionMemoryExpiryCommitRejected:true,actualFutureMemoryActivationCommitRejected:true,
+   activationReturnedBeforeCommit:true,sourceEditsDuringActivation:0,temporalFenceProducerReal:true,otherQualificationProducerMocked:true,humanApprovalCreated:false,modelCalls:0}));
  }finally{
   await pool.query(`drop trigger if exists ${trigger} on agent_run_event; drop trigger if exists ${trigger} on agent_skill; drop function if exists ${trigger}()`);
   if(priorMode===undefined)delete process.env.SKILL_RUNNER_TRUST_REGISTRY_MODE;else process.env.SKILL_RUNNER_TRUST_REGISTRY_MODE=priorMode;

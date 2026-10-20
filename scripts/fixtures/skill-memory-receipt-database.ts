@@ -5,6 +5,7 @@ import {tenantTransaction,withBoundTenantTransaction} from '../../src/lib/rag/db
 import {searchMemoryWithGraph} from '../../src/lib/knowledge/memory-graph-search';
 import {revalidateLockedSkillMemoryReceipts} from '../../src/lib/assistant/main/skill-memory-receipt-check';
 import {MemoryContextChangedError} from '../../src/lib/assistant/main/memory-message-guard';
+import {captureSkillMemoryTimeFence} from '../../src/lib/assistant/main/skill-memory-time-fence';
 
 export async function verifyMemoryReceiptDatabase(pool:Pool,owner:string,other:string){
  const id=randomUUID(),query=`Synthetic receipt expiry ${randomUUID()}`;
@@ -20,7 +21,10 @@ export async function verifyMemoryReceiptDatabase(pool:Pool,owner:string,other:s
   assert.equal(historical.rows.length,1);
   const receipt=(input:Record<string,unknown>,rows:unknown)=>({tool:'memory_observation_search',input,output:{status:'success',data:{rows}}});
   const implicit=receipt({query},current.rows),explicit=receipt({query,businessAt:historicalAt,knownAt},historical.rows);
-  assert.equal((await revalidateLockedSkillMemoryReceipts(client,owner,[implicit,explicit])).memoryReceiptCount,2);
+  const initial=await revalidateLockedSkillMemoryReceipts(client,owner,[implicit,explicit]);
+  assert.equal(initial.memoryReceiptCount,2);assert(initial.memoryTimeValidBefore);
+  const explicitFence=await captureSkillMemoryTimeFence(client,owner,[explicit]);
+  assert.equal(explicitFence.memoryTimeValidBefore,null);
   await client.query('select pg_sleep(2.1)');
   assert.equal((await client.query('select transaction_timestamp()<valid_until old_clock from agent_memory_observation where id=$1',[id])).rows[0].old_clock,true);
   await assert.rejects(revalidateLockedSkillMemoryReceipts(client,owner,[implicit]),MemoryContextChangedError);
@@ -32,5 +36,6 @@ export async function verifyMemoryReceiptDatabase(pool:Pool,owner:string,other:s
    output:{status:'success',data:{rows:[{id,content:query}]}}}]);
  })),MemoryContextChangedError);
  console.log(JSON.stringify({memoryReceiptDatabase:'passed',sameTransactionImplicitObservationExpiryRejected:true,
-  explicitHistoricalTimesPreserved:true,transactionTimestampStillBeforeExpiry:true,crossAccountRejected:true,graphServiceCalls:0,modelCalls:0,automaticActivation:false}));
+  explicitHistoricalTimesPreserved:true,implicitReceiptDeadlineCaptured:true,explicitHistoricalReceiptNotExpiredByWallClock:true,
+  transactionTimestampStillBeforeExpiry:true,crossAccountRejected:true,graphServiceCalls:0,modelCalls:0,automaticActivation:false}));
 }

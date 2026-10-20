@@ -3,7 +3,8 @@ import {beforeEach,expect,it,vi} from 'vitest';
 import {digest} from './contracts';
 import {requireCanonicalSkillAcceptanceOriginals} from './skill-canonical-original-coverage';
 import {revalidateLockedSkillAcceptanceMaterials,evaluateLockedSkillAcceptanceReadiness} from './skill-locked-materials';
-const m=vi.hoisted(()=>({read:vi.fn(),material:vi.fn(),policy:vi.fn(),lock:vi.fn(),methods:vi.fn(),query:vi.fn(),memoryBoundary:vi.fn(),times:vi.fn(),bytes:vi.fn(),knowledgeBytes:vi.fn(),memoryReceipts:vi.fn(),privateReceipts:vi.fn(),runner:vi.fn(),transports:vi.fn(),packages:vi.fn()}));
+const m=vi.hoisted(()=>({read:vi.fn(),material:vi.fn(),policy:vi.fn(),lock:vi.fn(),methods:vi.fn(),query:vi.fn(),memoryBoundary:vi.fn(),times:vi.fn(),bytes:vi.fn(),knowledgeBytes:vi.fn(),memoryReceipts:vi.fn(),privateReceipts:vi.fn(),runner:vi.fn(),transports:vi.fn(),packages:vi.fn(),timeFence:vi.fn()}));
+vi.mock('./skill-memory-time-fence',async original=>({...await original<typeof import('./skill-memory-time-fence')>(),captureSkillMemoryTimeFence:m.timeFence}));
 vi.mock('./skill-private-receipt-check',()=>({revalidateLockedSkillPrivateReceipts:m.privateReceipts}));
 vi.mock('./skill-runtime-package-store',()=>({readLockedSkillRuntimePackages:m.packages}));
 vi.mock('./skill-locked-transport-receipts',()=>({revalidateLockedSkillTransportReceipts:m.transports}));
@@ -37,9 +38,10 @@ function pendingOriginals(){
  m.bytes.mockResolvedValue(canonicalBytes);m.knowledgeBytes.mockResolvedValue(canonicalKnowledge);
 }
 beforeEach(()=>{vi.resetAllMocks();m.packages.mockResolvedValue({runtimePackagesRequired:true,runtimePackagesRegistered:false,runtimePackageBlockers:['package-registration-missing']});m.read.mockResolvedValue(bundle);m.material.mockResolvedValue(material());
+ m.timeFence.mockResolvedValue({memoryTimeFenceRevalidated:true,memoryTimeCheckedAt:'2026-10-19T01:00:00.000Z',memoryTimeValidBefore:null});
  m.bytes.mockResolvedValue({attachmentBytesRevalidated:true,attachmentBytesCount:1,attachmentBytesManifestHash:'manifest'});
  m.knowledgeBytes.mockResolvedValue({knowledgeReceiptBytesRevalidated:true,knowledgeReceiptAssetCount:1,knowledgeReceiptDatabaseOnlyCount:0,knowledgeReceiptBytesManifestHash:'knowledge-manifest'});
- m.memoryReceipts.mockResolvedValue({memoryReceiptSourcesRevalidated:true,memoryReceiptCount:1,memoryReceiptCheckedAt:'2026-10-19T01:02:03.000Z'});
+ m.memoryReceipts.mockResolvedValue({memoryReceiptSourcesRevalidated:true,memoryReceiptCount:1,memoryReceiptCheckedAt:'2026-10-19T01:02:03.000Z',memoryTimeFenceRevalidated:true,memoryTimeValidBefore:null});
  m.privateReceipts.mockResolvedValue({privateReceiptSourcesRevalidated:true,privateReceiptCount:0});
  m.transports.mockResolvedValue({transportReceiptsRequired:false,transportReceiptsRevalidated:false});
  m.runner.mockResolvedValue({runnerDeclarationRequired:false,runnerDeclarationRevalidated:false,collectorProvenanceVerified:false,automaticActivation:false});
@@ -77,6 +79,14 @@ it('does not expose a private recheck closure and requires stable receipt covera
  expect(out).not.toHaveProperty('recheckPrivateReceipts');
  m.privateReceipts.mockResolvedValueOnce({privateReceiptCount:1}).mockResolvedValueOnce({privateReceiptCount:0});
  await expect(evaluateLockedSkillAcceptanceReadiness(client,context,bundleId)).rejects.toThrow('private receipt coverage changed');
+});
+it('passes the earliest decision/preparation/final memory boundary into the final database-clock gate',async()=>{
+ m.timeFence.mockResolvedValue({memoryTimeFenceRevalidated:true,memoryTimeValidBefore:'2026-10-19T01:04:00.000Z'});
+ m.memoryReceipts.mockResolvedValueOnce({memoryReceiptSourcesRevalidated:true,memoryReceiptCount:1,memoryTimeValidBefore:'2026-10-19T01:03:00.000Z'})
+  .mockResolvedValueOnce({memoryReceiptSourcesRevalidated:true,memoryReceiptCount:1,memoryTimeValidBefore:'2026-10-19T01:05:00.000Z'});
+ const out=await evaluateLockedSkillAcceptanceReadiness(client,context,bundleId);
+ expect(m.times).toHaveBeenCalledWith(client,context.userId,expect.anything(),expect.objectContaining({memoryTimeValidBefore:'2026-10-19T01:03:00.000Z'}));
+ expect(out).toMatchObject({memoryTimeFenceRevalidated:true,memoryTimeValidBefore:'2026-10-19T01:03:00.000Z'});
 });
 it.each([{artifactHash:'different'},{observationHash:'different'},{sourceKind:'different'},{baseline:'tampered'},
  {freezeStatus:{state:'revoked',freezeId:'freeze'}},{canPass:{baseline:true,candidate:false}}])('rejects changed material %j',async change=>{

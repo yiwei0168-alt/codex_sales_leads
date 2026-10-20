@@ -24,7 +24,7 @@ const qualified=()=>Object.fromEntries([
  ...['policyPassed','trustRegistryLocked','sourceRevocationsLocked','collectorProvenanceVerified','productionAgentEquivalent','canonicalOriginalCoverageRequired','canonicalOriginalCoverageRevalidated',
  'runnerDeclarationRequired','runnerDeclarationRevalidated','transportReceiptsRequired','transportReceiptsRevalidated','signingEnrollmentCoverageRequired','signingEnrollmentCoverageRevalidated',
  'runtimePackagesRequired','runtimePackagesRegistered','runtimePackageBytesPairRevalidated','runtimeModuleFormatPairRevalidated','methodExperienceTimesRevalidated',
- 'decisionMemorySnapshotRevalidated','memoryReceiptSourcesRevalidated','privateReceiptSourcesRevalidated','lockedEvidencePolicyEvaluated','sourcePayloadsRevalidated',
+ 'decisionMemorySnapshotRevalidated','memoryReceiptSourcesRevalidated','memoryTimeFenceRevalidated','privateReceiptSourcesRevalidated','lockedEvidencePolicyEvaluated','sourcePayloadsRevalidated',
  'knowledgeSourcesLocked','decisionMemorySourcesLocked','skillCatalogSourcesLocked','pinnedMethodSourcesLocked','taskOriginsLocked','taskJournalsLocked',
  'prospectiveCaptureSourcesLocked','timelineSourcesLocked','mailReadSourcesLocked','attachmentMetadataLocked'].map(key=>[key,true]),
  ...['artifactHash','latestReviewHash','materialsHash','currentRuntimeIdentityHash','trustRegistryHash','runtimePackageRegistrationHash'].map(key=>[key,digest(key)]),

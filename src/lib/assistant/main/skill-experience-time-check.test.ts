@@ -34,7 +34,7 @@ it('returns the earliest already-verified signature and method deadline at the s
  expect(result.methodExperienceValidBefore).toBe(valid.valid_before.toISOString());
  expect(result.acceptanceTimeCheckedAt).toBe(result.methodExperienceTimeCheckedAt);
 });
-it.each(['runnerDeclarationValidBefore','transportValidBefore','runtimePackageValidBefore'] as const)('rejects %s expiry while method sources are still valid',async field=>{
+it.each(['runnerDeclarationValidBefore','transportValidBefore','runtimePackageValidBefore','memoryTimeValidBefore'] as const)('rejects %s expiry while method sources are still valid',async field=>{
  const query=vi.fn().mockResolvedValue({rows:[valid]});
  await expect(revalidateLockedSkillExperienceTimes({query} as unknown as PoolClient,owner,artifact,{[field]:valid.checked_at.toISOString()})).rejects.toThrow('signed evidence expired');
 });
