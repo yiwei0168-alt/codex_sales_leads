@@ -1,0 +1,47 @@
+{
+  "stage": "MA24 G09 acceptance journal and capture lifecycle",
+  "date": "2026-10-20",
+  "baseCommit": "c63cf57e",
+  "unitTestsPassed": 95,
+  "unitTestFiles": 4,
+  "typescript": "passed",
+  "eslintFiles": 9,
+  "eslint": "passed",
+  "databaseExitCode": 0,
+  "actualDatabaseLedgerLifecycle": {
+    "acceptanceLedgerLifecycle": "passed",
+    "sameFreezeAttemptAppendDenied": true,
+    "outcomeAppendDenied": true,
+    "captureStartFinalAndReadyChangeDenied": true,
+    "campaignDisableAndConfigChangeDenied": true,
+    "declarationAppendDenied": true,
+    "unusedLeaseAndLocalOutcomeIgnored": true,
+    "unrelatedEvaluationIgnored": true,
+    "appendAndCampaignWritesWaitForRetainedLocks": true,
+    "realLedgerProducer": true,
+    "qualificationProducerMocked": true,
+    "captureTimingAndModelQualityNotQualified": true,
+    "humanApprovalCreated": false,
+    "modelCalls": 0
+  },
+  "freshInitializationThrough": 161,
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --current-schema --locked-policy",
+  "localLogs": [
+    "tmp/ma24-acceptance-ledger-unit.log",
+    "tmp/ma24-acceptance-ledger-types.log",
+    "tmp/ma24-acceptance-ledger-lint.log",
+    "tmp/ma24-acceptance-ledger-db.log"
+  ],
+  "boundaries": {
+    "ledgerProducerReal": true,
+    "otherQualificationProducerMocked": true,
+    "postTaskCaptureMetadataExplicitlyUnqualified": true,
+    "productionQualificationGranted": false,
+    "humanJudgmentsCreated": 0,
+    "modelCalls": 0,
+    "businessDatabaseChanged": false,
+    "currentSourceFixedLinuxRebuilt": false,
+    "fullCommitSourceProtectionVerified": false,
+    "fiveCategoryCompleteFlowRepeated": false
+  }
+}

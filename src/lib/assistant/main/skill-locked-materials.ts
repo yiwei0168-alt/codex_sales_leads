@@ -23,6 +23,7 @@ import {readLockedSkillRuntimePackages} from './skill-runtime-package-store';
 import {captureSkillMemoryTimeFence,earliestSkillMemoryTimeFence} from './skill-memory-time-fence';
 import {captureSkillActivationSources} from './skill-activation-sources';
 import {skillAcceptanceRunIds} from './skill-acceptance-run-locks';
+import {captureSkillAcceptanceLedger} from './skill-acceptance-ledger';
 
 /** Keep consumed receipts in a private closure inside the owning transaction;
  * public wrappers expose hashes/counts only, never source contents or callbacks. */
@@ -85,6 +86,7 @@ export async function evaluateLockedSkillAcceptanceReadiness(client:PoolClient,c
   if(materials.artifactHash!==policy.artifactHash||materials.latestReviewHash!==policy.latestReviewHash)
    throw new Error('Locked material and policy snapshots differ');
   const final=await readLockedSkillAcceptanceEvidence(client,context,bundleId);
+  const acceptanceLedger=await captureSkillAcceptanceLedger(client,context.userId,bundleId,final.artifactHash);
   if(final.artifactHash!==materials.artifactHash||final.latestReviewHash!==materials.latestReviewHash)
    throw new Error('Locked acceptance changed before final experience time check');
   const attachmentBytes=await revalidateLockedSkillAttachmentBytes(client,context.userId,final.artifact);
@@ -156,6 +158,7 @@ export async function evaluateLockedSkillAcceptanceReadiness(client:PoolClient,c
    ...signingCoverage,
    ...packages,
    ...activationSources,
+   ...acceptanceLedger,
    pinnedMethodVersionCount:materials.pinnedMethodVersionCount,pinnedMethodExperienceObservationCount:materials.pinnedMethodExperienceObservationCount,
    sourceRevocationsLocked:false as const,collectorProvenanceVerified:false as const,automaticActivation:false as const};
   });

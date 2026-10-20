@@ -14,6 +14,7 @@ import {captureSkillActivationSources} from '../../src/lib/assistant/main/skill-
 import {skillAcceptanceRunIds} from '../../src/lib/assistant/main/skill-acceptance-run-locks';
 import {skillActivationCurrent} from '../../src/lib/assistant/main/skill-activation-binding';
 import {tenantTransaction} from '../../src/lib/rag/db';
+import {captureSkillAcceptanceLedger} from '../../src/lib/assistant/main/skill-acceptance-ledger';
 import {productNodeBuildOptions} from '../lib/product-node-build.mjs';
 
 /** Disposable database only. The real producer must reject missing evidence.
@@ -23,7 +24,7 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
  assert.equal(process.env.MA24_DISPOSABLE_LOCKED_POLICY,'1');
  assert.equal((await pool.query('select count(*)::int n from app_user')).rows[0].n,3);
  await pool.query(await readFile('db/migrations/141_skill_runner_attestation.sql','utf8'));
- for(const migration of ['144_skill_task_origin_locks.sql','147_skill_timeline_source_locks.sql','151_skill_pinned_method_source_locks.sql'])
+ for(const migration of ['144_skill_task_origin_locks.sql','146_skill_model_freeze_serialization.sql','147_skill_timeline_source_locks.sql','150_skill_shadow_source_locks.sql','151_skill_pinned_method_source_locks.sql'])
   await pool.query(await readFile(`db/migrations/${migration}`,'utf8'));
  await pool.query(await readFile('db/migrations/157_skill_runner_trust_registry.sql','utf8'));
  await pool.query(await readFile('db/migrations/159_skill_runtime_package_registration.sql','utf8'));
@@ -67,21 +68,34 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
    values($1,$2,$3,1,$4,$5,$6,$7,$8)`,[pending,owner,skillId,artifact.sourceKind,JSON.stringify(artifact.plan),JSON.stringify(artifact.observations),JSON.stringify(artifact.rawReceipts),digest(artifact)]);
   await assert.rejects(changeSkill(rejected,action),/declaration unavailable/);
   assert.deepEqual(await inspect(rejected),{enabled:false,status:'started',output:null,events:0});
+  // Deliberately unqualified component metadata. Created AFTER the source task,
+  // never presented as a real prospective capture or successful model execution.
+  const freezeId=artifact.rawReceipts.collector.freezeId,campaignId=randomUUID(),captureId=randomUUID(),attemptId=randomUUID();
+  const componentRun=skillAcceptanceRunIds(artifact)[0];
+  await pool.query(`insert into agent_skill_shadow_campaign(id,owner_id,skill_id,version,content_hash,source_hash,config,enabled,expires_at)
+   values($1,$2,$3,1,$4,$5,$6,true,clock_timestamp()+interval '1 hour')`,
+  [campaignId,owner,skillId,artifact.plan.pin.contentHash,artifact.plan.pin.sourceHash,{fixture:'unqualified-ledger-component-only'}]);
+  await pool.query('insert into agent_skill_shadow_job(id,owner_id,run_id,campaign_id,start_context) values($1,$2,$3,$4,$5)',
+   [captureId,owner,componentRun,campaignId,{fixture:'post-task-negative-only-not-prospective-proof'}]);
+  await pool.query(`insert into agent_skill_model_attempt(id,owner_id,evaluation_id,arm,step,route_index,source_kind,snapshot_hash,input,input_hash,freeze_id)
+   values($1,$2,$3,'candidate',0,0,'synthetic-fixture',$4,'{}',$5,$6)`,[attemptId,owner,randomUUID(),digest('unqualified component'),digest({}),freezeId]);
   const sourceSnapshot=await tenantTransaction(owner,client=>withBoundTenantTransaction(client,owner,()=>captureSkillActivationSources(client,owner,skillAcceptanceRunIds(artifact))));
   const sourceRunId=sourceSnapshot.activationSources[0].runId;
-  const flags=['policyPassed','activationSourcesRevalidated','trustRegistryLocked','sourceRevocationsLocked','collectorProvenanceVerified','productionAgentEquivalent','canonicalOriginalCoverageRequired','canonicalOriginalCoverageRevalidated',
+  const flags=['policyPassed','acceptanceLedgerRevalidated','activationSourcesRevalidated','trustRegistryLocked','sourceRevocationsLocked','collectorProvenanceVerified','productionAgentEquivalent','canonicalOriginalCoverageRequired','canonicalOriginalCoverageRevalidated',
    'runnerDeclarationRequired','runnerDeclarationRevalidated','transportReceiptsRequired','transportReceiptsRevalidated','signingEnrollmentCoverageRequired','signingEnrollmentCoverageRevalidated',
    'runtimePackagesRequired','runtimePackagesRegistered','runtimePackageBytesPairRevalidated','runtimeModuleFormatPairRevalidated','methodExperienceTimesRevalidated','decisionMemorySnapshotRevalidated',
    'memoryReceiptSourcesRevalidated','memoryTimeFenceRevalidated','privateReceiptSourcesRevalidated','lockedEvidencePolicyEvaluated','sourcePayloadsRevalidated','knowledgeSourcesLocked','decisionMemorySourcesLocked',
    'skillCatalogSourcesLocked','pinnedMethodSourcesLocked','taskOriginsLocked','taskJournalsLocked','prospectiveCaptureSourcesLocked','timelineSourcesLocked','mailReadSourcesLocked','attachmentMetadataLocked'];
   const mock=`import {captureSkillMemoryTimeFence} from './skill-memory-time-fence';
+   import {captureSkillAcceptanceLedger} from './skill-acceptance-ledger';
    export async function evaluateLockedSkillAcceptanceReadiness(client,context,bundleId){
    const row=(await client.query('select artifact_hash from agent_skill_acceptance_bundle where id=$1 and owner_id=$2',[bundleId,context.userId])).rows[0];
    const now=(await client.query('select clock_timestamp() checked_at')).rows[0].checked_at;
    const fence=await captureSkillMemoryTimeFence(client,context.userId,[]);
+   const ledger=await captureSkillAcceptanceLedger(client,context.userId,bundleId,row.artifact_hash);
    return {...${JSON.stringify(Object.fromEntries(flags.map(key=>[key,true])))},artifactHash:row.artifact_hash,latestReviewHash:${JSON.stringify(digest([]))},
     materialsHash:'${digest('mock materials')}',currentRuntimeIdentityHash:'${digest('mock runtime')}',trustRegistryHash:'${digest(registry)}',runtimePackageRegistrationHash:'${digest('mock package')}',
-    runtimePackageRevisions:${JSON.stringify(packageRevisions)},...fence,blockers:[],acceptanceTimeCheckedAt:now.toISOString(),acceptanceValidBefore:new Date(Math.min(
+    runtimePackageRevisions:${JSON.stringify(packageRevisions)},...fence,...ledger,blockers:[],acceptanceTimeCheckedAt:now.toISOString(),acceptanceValidBefore:new Date(Math.min(
      now.getTime()+(process.env.MA24_ACTIVATION_EXPIRY==='1'?2000:3600000),fence.memoryTimeValidBefore?Date.parse(fence.memoryTimeValidBefore):Infinity,
      ${JSON.stringify(sourceSnapshot.activationSourcesValidBefore)}?Date.parse(${JSON.stringify(sourceSnapshot.activationSourcesValidBefore)}):Infinity)).toISOString(),
      activationSources:${JSON.stringify(sourceSnapshot.activationSources)}};}`;
@@ -103,6 +117,30 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
   assert.equal(metrics.costState,'known');assert.equal(metrics.apiCredits,0);assert.equal(metrics.costUsd,0);
   const binding=(await pool.query('select activation_binding from agent_skill where id=$1',[skillId])).rows[0].activation_binding;
   assert.equal(binding.callId,committed.callId);assert.deepEqual(binding.runtimePackageRevisions,packageRevisions);
+  const probeBlocked=async(sql:string,params:unknown[])=>{
+   const holder=await pool.connect(),writer=await pool.connect();let mutation:Promise<unknown>|undefined;
+   try{
+    await holder.query('begin');await holder.query('set local role network_copilot_app');
+    await holder.query("select set_config('app.current_user_id',$1,true),set_config('app.current_user_role','member',true)",[owner]);
+    const snapshot=await withBoundTenantTransaction(holder,owner,()=>captureSkillAcceptanceLedger(holder,owner,pending,digest(artifact)));
+    assert.equal(snapshot.acceptanceLedgerHash,binding.acceptanceLedgerHash);
+    const holderPid=(await holder.query('select pg_backend_pid() pid')).rows[0].pid;
+    await writer.query('begin');const writerPid=(await writer.query('select pg_backend_pid() pid')).rows[0].pid;
+    mutation=writer.query(sql,params);void mutation.catch(()=>undefined);
+    let blocked=false;
+    for(let attempt=0;attempt<100;attempt++){
+     blocked=(await pool.query('select $1::int=any(pg_blocking_pids($2::int)) blocked',[holderPid,writerPid])).rows[0].blocked;
+     if(blocked)break;await new Promise(resolve=>setTimeout(resolve,20));
+    }
+    assert.equal(blocked,true,'Ledger mutation must wait for the retained source transaction');
+   }finally{
+    try{await holder.query('rollback');holder.release();if(mutation)await mutation;}
+    finally{await writer.query('rollback');writer.release();}
+   }
+  };
+  await probeBlocked(`insert into agent_skill_model_attempt(owner_id,evaluation_id,arm,step,route_index,source_kind,snapshot_hash,input,input_hash,freeze_id)
+   values($1,$2,'candidate',0,0,'synthetic-fixture',$3,'{}',$4,$5)`,[owner,randomUUID(),digest('blocked component append'),digest({}),freezeId]);
+  await probeBlocked('update agent_skill_shadow_campaign set enabled=false where id=$1',[campaignId]);
   // Each mutation is rolled back. Never append a human approval or leave a
   // withdrawn fixture frozen for the later acceptance cases in this same DB.
   const lifecycleClient=await pool.connect();
@@ -151,12 +189,34 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
       values($1,$2,'account','preference',$1::uuid::text,'explicit')`,[memoryId,owner]);
      return lifecycleClient.query("insert into agent_memory_version(memory_id,version,content,scope_snapshot) values($1,1,'Synthetic changed source context','{}')",[memoryId]);
     }],
+    ['evaluation-append',()=>lifecycleClient.query(`insert into agent_skill_model_attempt(owner_id,evaluation_id,arm,step,route_index,source_kind,snapshot_hash,input,input_hash,freeze_id)
+     values($1,$2,'candidate',0,0,'synthetic-fixture',$3,'{}',$4,$5)`,[owner,randomUUID(),digest('late component attempt'),digest({}),freezeId])],
+    ['evaluation-outcome',()=>lifecycleClient.query('insert into agent_skill_model_outcome(attempt_id,owner_id,output,output_hash) values($1,$2,$3,$4)',
+     [attemptId,owner,{fixture:'unqualified late outcome'},digest({fixture:'unqualified late outcome'})])],
+    ['capture-start',()=>lifecycleClient.query("update agent_skill_shadow_job set start_context='{}' where id=$1",[captureId])],
+    ['capture-final',()=>lifecycleClient.query("update agent_skill_shadow_job set final_context='{}' where id=$1",[captureId])],
+    ['capture-ready',()=>lifecycleClient.query('update agent_skill_shadow_job set ready_at=clock_timestamp() where id=$1',[captureId])],
+    ['capture-campaign',()=>lifecycleClient.query('update agent_skill_shadow_campaign set enabled=false where id=$1',[campaignId])],
+    ['capture-config',()=>lifecycleClient.query("update agent_skill_shadow_campaign set config='{}' where id=$1",[campaignId])],
+    ['declaration-append',()=>{
+     const statement={ownerId:owner,freezeId,artifactHash:digest(artifact)};
+     return lifecycleClient.query(`insert into agent_skill_runner_attestation(owner_id,bundle_id,freeze_id,artifact_hash,statement_hash,envelope)
+      values($1,$2,$3,$4,$5,$6)`,[owner,pending,freezeId,digest(artifact),digest(statement),{statement,signature:'unqualified-component-only'}]);
+    }],
    ];
    for(const [name,mutate] of mutations){
     await lifecycleClient.query('begin');
     try{assert.equal(await current(),true,`${name}: baseline current`);await mutate();assert.equal(await current(),false,`${name}: withdrawn qualification must deny`);}
     finally{await lifecycleClient.query('rollback');}
    }
+   await lifecycleClient.query('begin');
+   try{
+    await lifecycleClient.query("update agent_skill_shadow_job set state='running',lease_token=$2,lease_until=clock_timestamp()+interval '1 hour',result='{}' where id=$1",[captureId,randomUUID()]);
+    assert.equal(await current(),true,'Unused local outcome and lease changes are not production evidence');
+    await lifecycleClient.query(`insert into agent_skill_model_attempt(owner_id,evaluation_id,arm,step,route_index,source_kind,snapshot_hash,input,input_hash)
+     values($1,$2,'candidate',0,0,'synthetic-fixture',$3,'{}',$4)`,[owner,randomUUID(),digest('unrelated freeze-less attempt'),digest({})]);
+    assert.equal(await current(),true,'Unrelated evaluation family must not invalidate qualification');
+   }finally{await lifecycleClient.query('rollback');}
   }finally{lifecycleClient.release();}
   await pool.query('update agent_skill set enabled=false where id=$1',[skillId]);
   assert.equal((await pool.query('select activation_binding from agent_skill where id=$1',[skillId])).rows[0].activation_binding,null);
@@ -206,6 +266,10 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
   console.log(JSON.stringify({activationBusinessSourceLifecycle:'passed',actualSourceSnapshots:true,sourceTaskRevocationDenied:true,
    sourceConversationArchiveDenied:true,sourceMessageChangeDenied:true,sourceDecisionMemoryChangeDenied:true,
    freshReadAndListsAndRunningAndDependentGuards:true,qualificationProducerMocked:true,humanApprovalCreated:false,modelCalls:0}));
+  console.log(JSON.stringify({acceptanceLedgerLifecycle:'passed',sameFreezeAttemptAppendDenied:true,outcomeAppendDenied:true,
+   captureStartFinalAndReadyChangeDenied:true,campaignDisableAndConfigChangeDenied:true,declarationAppendDenied:true,
+   unusedLeaseAndLocalOutcomeIgnored:true,unrelatedEvaluationIgnored:true,appendAndCampaignWritesWaitForRetainedLocks:true,realLedgerProducer:true,qualificationProducerMocked:true,
+   captureTimingAndModelQualityNotQualified:true,humanApprovalCreated:false,modelCalls:0}));
   console.log(JSON.stringify({memoryTimeCommitFence:'passed',actualDecisionMemoryExpiryCommitRejected:true,actualFutureMemoryActivationCommitRejected:true,
    activationReturnedBeforeCommit:true,sourceEditsDuringActivation:0,temporalFenceProducerReal:true,otherQualificationProducerMocked:true,humanApprovalCreated:false,modelCalls:0}));
  }finally{

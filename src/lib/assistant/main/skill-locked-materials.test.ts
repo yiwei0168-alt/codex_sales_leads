@@ -3,7 +3,8 @@ import {beforeEach,expect,it,vi} from 'vitest';
 import {digest} from './contracts';
 import {requireCanonicalSkillAcceptanceOriginals} from './skill-canonical-original-coverage';
 import {revalidateLockedSkillAcceptanceMaterials,evaluateLockedSkillAcceptanceReadiness} from './skill-locked-materials';
-const m=vi.hoisted(()=>({read:vi.fn(),material:vi.fn(),policy:vi.fn(),lock:vi.fn(),methods:vi.fn(),query:vi.fn(),memoryBoundary:vi.fn(),times:vi.fn(),bytes:vi.fn(),knowledgeBytes:vi.fn(),memoryReceipts:vi.fn(),privateReceipts:vi.fn(),runner:vi.fn(),transports:vi.fn(),packages:vi.fn(),timeFence:vi.fn(),sources:vi.fn()}));
+const m=vi.hoisted(()=>({read:vi.fn(),material:vi.fn(),policy:vi.fn(),lock:vi.fn(),methods:vi.fn(),query:vi.fn(),memoryBoundary:vi.fn(),times:vi.fn(),bytes:vi.fn(),knowledgeBytes:vi.fn(),memoryReceipts:vi.fn(),privateReceipts:vi.fn(),runner:vi.fn(),transports:vi.fn(),packages:vi.fn(),timeFence:vi.fn(),sources:vi.fn(),ledger:vi.fn()}));
+vi.mock('./skill-acceptance-ledger',()=>({captureSkillAcceptanceLedger:m.ledger}));
 vi.mock('./skill-activation-sources',()=>({captureSkillActivationSources:m.sources}));
 vi.mock('./skill-memory-time-fence',async original=>({...await original<typeof import('./skill-memory-time-fence')>(),captureSkillMemoryTimeFence:m.timeFence}));
 vi.mock('./skill-private-receipt-check',()=>({revalidateLockedSkillPrivateReceipts:m.privateReceipts}));
@@ -42,6 +43,7 @@ function pendingOriginals(){
 beforeEach(()=>{vi.resetAllMocks();m.packages.mockResolvedValue({runtimePackagesRequired:true,runtimePackagesRegistered:false,runtimePackageBlockers:['package-registration-missing']});m.read.mockResolvedValue(bundle);m.material.mockResolvedValue(material());
  m.timeFence.mockResolvedValue({memoryTimeFenceRevalidated:true,memoryTimeCheckedAt:'2026-10-19T01:00:00.000Z',memoryTimeValidBefore:null});
  m.sources.mockResolvedValue({activationSourcesRevalidated:true,activationSources:[],activationSourcesValidBefore:null});
+ m.ledger.mockResolvedValue({acceptanceLedgerRevalidated:true,acceptanceLedgerHash:digest('ledger')});
  m.bytes.mockResolvedValue({attachmentBytesRevalidated:true,attachmentBytesCount:1,attachmentBytesManifestHash:'manifest'});
  m.knowledgeBytes.mockResolvedValue({knowledgeReceiptBytesRevalidated:true,knowledgeReceiptAssetCount:1,knowledgeReceiptDatabaseOnlyCount:0,knowledgeReceiptBytesManifestHash:'knowledge-manifest'});
  m.memoryReceipts.mockResolvedValue({memoryReceiptSourcesRevalidated:true,memoryReceiptCount:1,memoryReceiptCheckedAt:'2026-10-19T01:02:03.000Z',memoryTimeFenceRevalidated:true,memoryTimeValidBefore:null});

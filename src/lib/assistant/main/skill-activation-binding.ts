@@ -15,6 +15,7 @@ export const skillActivationBindingSchema=z.object({
   .refine(items=>new Set(items).size===items.length),
  validBefore:z.iso.datetime(),activationProofHash:sha,callId:z.uuid(),
  sources:skillActivationSourcesSchema,
+ acceptanceLedgerHash:sha,
 }).strict();
 export type ActivationBoundSkill={activation_binding?:unknown;activation_binding_hash?:string};
 export function skillActivationFingerprint(skill:ActivationBoundSkill){
@@ -35,8 +36,13 @@ export async function skillActivationCurrent(client:PoolClient,userId:string,ski
   if(!await current())return false;
   checking.add(key);
   try{
+   const {captureSkillAcceptanceLedger}=await import('./skill-acceptance-ledger');
+   const before=await captureSkillAcceptanceLedger(client,userId,parsed.data.bundleId,parsed.data.artifactHash);
+   if(before.acceptanceLedgerHash!==parsed.data.acceptanceLedgerHash)return false;
    const {assertSkillActivationSourcesCurrent}=await import('./skill-activation-sources');
    await assertSkillActivationSourcesCurrent(client,userId,parsed.data.sources);
+   const after=await captureSkillAcceptanceLedger(client,userId,parsed.data.bundleId,parsed.data.artifactHash);
+   if(after.acceptanceLedgerHash!==before.acceptanceLedgerHash)return false;
    return await current();
   }catch{return false;}finally{checking.delete(key);}
  }));

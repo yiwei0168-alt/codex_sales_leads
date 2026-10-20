@@ -27,7 +27,8 @@ const qualified=()=>Object.fromEntries([
  'decisionMemorySnapshotRevalidated','activationSourcesRevalidated','memoryReceiptSourcesRevalidated','memoryTimeFenceRevalidated','privateReceiptSourcesRevalidated','lockedEvidencePolicyEvaluated','sourcePayloadsRevalidated',
  'knowledgeSourcesLocked','decisionMemorySourcesLocked','skillCatalogSourcesLocked','pinnedMethodSourcesLocked','taskOriginsLocked','taskJournalsLocked',
  'prospectiveCaptureSourcesLocked','timelineSourcesLocked','mailReadSourcesLocked','attachmentMetadataLocked'].map(key=>[key,true]),
- ...['artifactHash','latestReviewHash','materialsHash','currentRuntimeIdentityHash','trustRegistryHash','runtimePackageRegistrationHash'].map(key=>[key,digest(key)]),
+ ...['artifactHash','latestReviewHash','materialsHash','currentRuntimeIdentityHash','trustRegistryHash','runtimePackageRegistrationHash','acceptanceLedgerHash'].map(key=>[key,digest(key)]),
+ ['acceptanceLedgerRevalidated',true],
  ['artifactHash',bundle.artifact_hash],['blockers',[]],['acceptanceTimeCheckedAt','2026-10-20T00:00:00.000Z'],['acceptanceValidBefore','2026-10-20T01:00:00.000Z'],
  ['runtimePackageRevisions',['1','2','3']],
  ['activationSources',[{runId:id(8),sourceHash:digest('source'),chainHash:digest('chain'),initialSourceHash:digest('initial'),attachmentHash:digest('attachments'),knowledgeHash:digest('knowledge'),pinnedMethodsHash:digest('pins'),validBefore:null}]],
@@ -65,7 +66,7 @@ it('uses registry -> catalog admission -> bundle/Skill evidence order and atomic
  expect(JSON.parse(params[9])).toMatchObject({freezeId:id(7),reviewVersions:[],runtimePackageRevisions:['1','2','3'],callId:actor.callId});
  expect(m.commits).toBe(1);expect(m.rollbacks).toBe(0);
 });
-it.each(['sourceRevocationsLocked','activationSourcesRevalidated','collectorProvenanceVerified','productionAgentEquivalent','runtimePackagesRegistered','runtimePackageBytesPairRevalidated','runtimeModuleFormatPairRevalidated','canonicalOriginalCoverageRevalidated','policyPassed'])('refuses incomplete %s without any effect',async key=>{
+it.each(['sourceRevocationsLocked','acceptanceLedgerRevalidated','activationSourcesRevalidated','collectorProvenanceVerified','productionAgentEquivalent','runtimePackagesRegistered','runtimePackageBytesPairRevalidated','runtimeModuleFormatPairRevalidated','canonicalOriginalCoverageRevalidated','policyPassed'])('refuses incomplete %s without any effect',async key=>{
  m.readiness.mockResolvedValue({...qualified(),[key]:false});
  await expect(activateAgentSkill(actor,action)).rejects.toThrow('trusted production evidence gate unavailable');
  expect(m.state).toEqual({enabled:false,output:null,audit:[]});expect(m.query.mock.calls.some(([sql])=>sql.startsWith('with changed'))).toBe(false);

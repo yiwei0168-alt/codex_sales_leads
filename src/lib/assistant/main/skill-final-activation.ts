@@ -32,6 +32,7 @@ const proofSchema=z.object({policyPassed:z.literal(true),blockers:z.array(z.stri
  memoryReceiptSourcesRevalidated:z.literal(true),privateReceiptSourcesRevalidated:z.literal(true),
  memoryTimeFenceRevalidated:z.literal(true),
  activationSourcesRevalidated:z.literal(true),activationSources:skillActivationBindingSchema.shape.sources,
+ acceptanceLedgerRevalidated:z.literal(true),acceptanceLedgerHash:sha,
  acceptanceTimeCheckedAt:z.iso.datetime(),acceptanceValidBefore:z.iso.datetime(),
 }).passthrough();
 type Action=z.infer<typeof inputSchema>;
@@ -122,7 +123,7 @@ export async function activateAgentSkill(context:Pick<ExecutionContext,'userId'|
      bundleId:bundle.id,artifactHash:proof.artifactHash,freezeId:evidence.freezeStatus.freezeId,reviewHash:proof.latestReviewHash,
      reviewVersions:evidence.judgments.map(judgment=>({caseId:judgment.caseId,revision:judgment.revision})),
      registryHash:registry.registryHash,runtimePackageRevisions:proof.runtimePackageRevisions,validBefore:proof.acceptanceValidBefore,
-     activationProofHash,callId:actor.callId,sources:proof.activationSources});
+     activationProofHash,callId:actor.callId,sources:proof.activationSources,acceptanceLedgerHash:proof.acceptanceLedgerHash});
     const output=result(data,{cost:'known',callId:actor.callId});
     const saved=(await client.query<{n:number}>(`with changed as (
      update agent_skill set enabled=true,published=false,activation_binding=$10::jsonb,updated_at=clock_timestamp()
