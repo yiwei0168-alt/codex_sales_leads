@@ -2,6 +2,8 @@
 
 # 产品主 Agent 与开放式工具架构
 
+2026-10-20 G11 同步恢复：重建队列累计统计仅汇总各批次与入库同事务保存的 imported_count+skipped_count；processed_count 包含实时解析进度，不能用于恢复累计。实际本地TLS IMAP→真实读取器→编译源码Worker→新159库先复现4封误计5封，再验证首个2封批次提交/次页解析1封后SIGKILL、原90秒租约到期恢复为4/4/4/0，邮件唯一加密、跨账号拒绝、旧批次取消与空Worker快照不变。16项回归及类型/lint通过。源码Worker为NODE_ENV=test，DNS只替换临时包中的测试域名，保留TLS验证；含修复Linux包、真实服务商和质量仍待验。[证据](evidence/ma24-g11-imap-worker-count-recovery-2026-10-20.json)。
+
 2026-10-20 G11 读取流程补验：实际 ImapFlow/mailparser 与产品读取器经本地 TLS 协议验证日期范围、跨收发件分页、去重、UIDVALIDITY 变化和首封解析后断线/原游标重读；证书主机名错误在登录前拒绝。9项测试、类型/lint通过，测试仅替换 DNS/追加 CA，不使用真实邮箱或发信。与既有数据库 Worker 恢复证据分开，尚未覆盖两者联合运行及真实客户归属质量。[证据](evidence/ma24-g11-local-imap-wire-2026-10-20.json)。
 
 G01/G02 批处理提交恢复（2026-10-20）：固定 b1a5d549 正式 Worker、全新159/TLS实库两种提交故障通过。真实COMMIT丢确认保留单份回执；最终UPDATE成功但COMMIT未送达则相关写入回滚，原90秒租约自然到期后新token保存一次，后续空Worker快照不变。共享代理定时派发双分支回归通过，3次合成状态GET、0真实提供方调用，临时资源清理，类型/lint/语法通过。真实模型业务链、全入口与生产/质量仍待验。[证据](evidence/ma24-g01-batch-worker-commit-2026-10-20.json)。

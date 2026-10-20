@@ -58,10 +58,10 @@ export async function processMailboxWork(){
       result=await reviewMailboxMessageForLearning(job.user_id,row.target_id,'authorize');
     }else{
       const options=mailboxSyncSchema.parse(row.payload);
-      // Batch counters commit with messages, unlike the later job-progress write.
-      // Rebuild them after a crash so a committed page is neither lost nor counted twice.
+      // Imported/skipped counts commit with messages. processed_count also tracks
+      // live parsing of an uncommitted page and must not be replayed into totals.
       const [prior]=await tenantQuery<{imported:number;processed:number;discovered:number}>(job.user_id,
-        `select coalesce(sum(imported_count),0)::int imported,coalesce(sum(processed_count),0)::int processed,
+        `select coalesce(sum(imported_count),0)::int imported,coalesce(sum(imported_count+skipped_count),0)::int processed,
          coalesce(max(discovered_count),0)::int discovered from mailbox_sync_run where user_id=$1 and work_job_id=$2`,
         [job.user_id,job.id]);
       const totals={imported:prior?.imported??0,processed:prior?.processed??0,discovered:prior?.discovered??0,remaining:0};

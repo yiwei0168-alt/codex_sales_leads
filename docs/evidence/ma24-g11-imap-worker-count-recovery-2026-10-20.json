@@ -1,0 +1,106 @@
+{
+  "stage": "MA24 G11 real IMAP protocol plus compiled source Worker and PostgreSQL recovery",
+  "date": "2026-10-20",
+  "baseCommit": "e4b4b1e7a80d802864d3739fe8bb85834aae8eba",
+  "sha256": {
+    "src/lib/mailbox/work-queue.ts": "70a9b841c3c9fc996d2a62bf65e9e559328764d59befc08b29a7133b99e142d1",
+    "src/lib/mailbox/alimail-imap.ts": "df8b0fe86ddf277e1abe403679a5896620bf2ca4fef26e30b876de55ce7b8a61",
+    "scripts/verify-mailbox-imap-worker-db.ts": "8add7fe83ce57e00e7cd15eb238c837c994717e64e1f91b9051cef8d886564c5",
+    "scripts/lib/ma24-imap-wire-server.ts": "5b19ef1add9237f79000ee996b738c82fa8d03934b4a851fcbadaf6ebf6147fb",
+    "src/lib/mailbox/alimail-imap.wire.test.ts": "ebd7dc7d2af400da11e2ab9d735d36eea6932548141baf6516f6dc98a8be4371"
+  },
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --web-image=ma24-pilot-web:b1a5d549 --current-schema --mailbox-imap-worker",
+  "before": {
+    "exitCode": 1,
+    "log": "tmp/ma24-mailbox-imap-worker-before.log",
+    "defect": "Live processed_count from an uncommitted partially parsed page contributed to recovered totals",
+    "actualRecoveredResult": {
+      "imported": 4,
+      "processed": 5,
+      "discovered": 5,
+      "remaining": 0
+    },
+    "expectedResult": {
+      "imported": 4,
+      "processed": 4,
+      "discovered": 4,
+      "remaining": 0
+    }
+  },
+  "fix": "Restore processed totals from imported_count + skipped_count committed in the same transaction as imported messages; do not sum live processed_count",
+  "after": {
+    "exitCode": 0,
+    "log": "tmp/ma24-mailbox-imap-worker-fixed.log",
+    "workerResult": {
+      "mailboxImapWorker": "passed",
+      "actualImapFlowAndMailparser": true,
+      "readerUnchanged": true,
+      "compiledSourceWorker": true,
+      "isolatedDnsOverrideOnly": true,
+      "tlsVerificationEnabled": true,
+      "actualSigkillAfterFirstPageAndPartialNextPage": true,
+      "partialPageParsedProgress": 1,
+      "originalLeaseUnchanged": true,
+      "recoveredAfterActual90SecondLease": true,
+      "newLeaseToken": true,
+      "jobResult": {
+        "imported": 4,
+        "processed": 4,
+        "remaining": 0,
+        "discovered": 4
+      },
+      "uniqueEncryptedMessages": 4,
+      "customRangeGlobalCursorUnchanged": true,
+      "peerReadsRejected": true,
+      "heldBatchCancelled": true,
+      "subsequentEmptyWorkerExactRowsUnchanged": true,
+      "realMailboxConnections": 0,
+      "sentMessages": 0,
+      "modelCalls": 0,
+      "fixtureAccountsRowsChildrenTlsListenerAndPublicCaCleaned": true
+    },
+    "cluster": {
+      "freshClusterPilot": "passed",
+      "freshMigrationThrough": 159,
+      "mailboxImapWorkerVerified": true,
+      "linuxWebImage": "ma24-pilot-web:b1a5d549",
+      "linuxWebHttpWorkflowVerified": true,
+      "copiedProductionData": false,
+      "publishedAddress": "127.0.0.1 only"
+    }
+  },
+  "scope": {
+    "freshDisposableDatabases": 2,
+    "migrationThrough": 159,
+    "fixtureMessages": 6,
+    "selectedMessages": 4,
+    "pageSize": 2,
+    "worker": "Compiled current source function processMailboxWork in native Node child with NODE_ENV=test; not a fixed-image production Worker",
+    "reader": "Unmodified actual readAliMailMessages, ImapFlow and mailparser",
+    "substitution": "Only connection-config publicMailAddresses patched in disposable compiled bundle for exact imap.example.invalid; every other hostname throws",
+    "tls": "Node verifies fixture CA loaded by child-only NODE_EXTRA_CA_CERTS; original imap.example.invalid servername and rejectUnauthorized true preserved",
+    "database": "Loopback restricted application login and tenant RLS; native helper database connection is local without TLS. Generic Web fixture has separate TLS setup",
+    "credentials": "Random mailbox encryption key and synthetic password; child environment allowlist excludes provider keys; external HTTP disabled",
+    "fault": "First INBOX page commits two messages; actual Sent parsing progress reaches one message while page uncommitted, then child SIGKILL",
+    "lease": "Original stored token/deadline unchanged; natural 90-second expiry precedes fresh claim",
+    "recovery": "Old held run cancelled by recovered Worker; two Sent messages reread and committed once; exact job total 4/4/4/0",
+    "cleanup": "Own random accounts/messages/runs/jobs, child processes, local TLS server, public certificate directory and parent cluster/network removed",
+    "privateKey": "Ephemeral test key exists only in memory; no host private-key file",
+    "webImageLimit": "b1a5d549 Web checked only generic HTTP compatibility; it predates the current source Worker count fix"
+  },
+  "checks": {
+    "typecheck": "passed",
+    "targetedEslint": "passed",
+    "gitDiffCheck": "passed",
+    "focusedRegressionFiles": 4,
+    "focusedRegressionTests": 16,
+    "regressionLog": "tmp/ma24-mailbox-imap-worker-regressions.log"
+  },
+  "limits": [
+    "Synthetic local IMAP service and actual protocol library, not real mailbox provider acceptance",
+    "No provider/model calls, SMTP sending or production data changes",
+    "No fixed Linux Worker package or production NODE_ENV acceptance of this count fix",
+    "No independent customer attribution, content/summary quality or sustained team trial",
+    "G11 and G01-G13 remain incomplete; G14-G20 and LAN deployment remain deferred"
+  ]
+}

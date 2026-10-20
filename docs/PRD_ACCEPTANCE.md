@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+2026-10-20 / G11 联合恢复统计：已保留实库4封邮件误计 processed/discovered=5 的失败证据，并修复恢复时累加未入库解析进度的问题。实际读取器/ImapFlow/mailparser、本地验证TLS、编译源码Worker及新159实库的SIGKILL/原90秒租约自然到期复验通过，结果为4封唯一加密邮件、4/4/4/0统计；跨账号拒绝、旧批次取消、全局游标和空Worker快照不变。16项回归、类型/lint通过，资源清理。该Worker为本机NODE_ENV=test源码包；旧Web仅验兼容，不授予新Linux包、真实服务商或内容质量资格，G11仍未关闭。[证据](evidence/ma24-g11-imap-worker-count-recovery-2026-10-20.json)。
+
 2026-10-20 / G11 本地 IMAP 协议：实际读取器、ImapFlow/mailparser 的 TLS 日期分页、已知 UID 去重、UIDVALIDITY 重置、半页断线拒绝/原游标重读及主机名错误登录前拒绝通过。共9项测试与类型/lint通过；首次 LIST 根目录和过早断线夹具失败保留。未使用真实邮箱/发信/模型，不写数据库；实际服务、Worker/持久化联合恢复、真实归属/摘要质量仍未验收，G11不关闭。[证据](evidence/ma24-g11-local-imap-wire-2026-10-20.json)。
 
 2026-10-20 / MA24 G01/G02 批处理提交恢复：固定 b1a5d549 正式 Worker、全新159/TLS实库两种提交故障通过。真实COMMIT丢确认保留单份回执；最终UPDATE成功但COMMIT未送达则费用/调用/终态/事件回滚，原90秒租约自然到期后新token保存一次，后续空Worker快照不变。共享代理定时派发双分支回归通过，3次合成状态GET、0真实提供方调用，临时资源清理，类型/lint/语法通过。仅关闭本地提交恢复工程检查，G01–G13仍未整体完成。[证据](evidence/ma24-g01-batch-worker-commit-2026-10-20.json)。
