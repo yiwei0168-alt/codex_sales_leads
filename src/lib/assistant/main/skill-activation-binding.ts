@@ -43,8 +43,11 @@ export async function skillActivationCurrent(client:PoolClient,userId:string,ski
     'select pg_try_advisory_xact_lock_shared(hashtextextended($1::text,0)) admitted',[gate])).rows[0]?.admitted;
    if(admitted!==true)return false;
   }
-  const current=async()=>(await client.query<{current:boolean}>('select skill_activation_is_current($1::uuid,$2::uuid,$3::integer) current',
-   [userId,skillId,version])).rows[0]?.current===true;
+  // Qualification and the exact binding snapshot must agree in one statement.
+  // A newer valid activation is not proof for an older caller's source ledger.
+  const current=async()=>(await client.query<{current:boolean}>(`select skill_activation_is_current($1::uuid,$2::uuid,$3::integer)
+   and exists(select 1 from agent_skill where owner_id=$1 and id=$2 and current_version=$3 and activation_binding=$4::jsonb) current`,
+   [userId,skillId,version,parsed.data])).rows[0]?.current===true;
   if(!await current())return false;
   checking.add(key);
   try{

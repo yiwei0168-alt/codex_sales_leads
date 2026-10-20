@@ -18,7 +18,7 @@ it('keeps manual/old-schema Skills compatible without a qualification query',asy
 it('checks the actual database for a bound Skill and denies withdrawn eligibility',async()=>{
  const query=vi.fn().mockResolvedValue({rows:[{current:false,admitted:true,isolation:'read committed'}]}),client={query} as unknown as PoolClient;
  expect(await skillActivationCurrent(client,id(1),id(2),1,binding)).toBe(false);
- expect(query).toHaveBeenCalledWith(expect.stringContaining('skill_activation_is_current'),[id(1),id(2),1]);
+ expect(query).toHaveBeenCalledWith(expect.stringContaining('activation_binding=$4::jsonb'),[id(1),id(2),1,binding]);
  query.mockResolvedValue({rows:[{current:true,admitted:true,isolation:'read committed'}]});expect(await skillActivationCurrent(client,id(1),id(2),1,binding)).toBe(true);
 });
 it('refuses malformed bindings and version substitution; missing guard does not fall back',async()=>{

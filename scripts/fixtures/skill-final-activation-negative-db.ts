@@ -304,6 +304,17 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
      assert.equal(await skillActivationCurrent(lifecycleClient,owner,skillId,1,binding),false,`${isolation}: stale snapshots cannot qualify`);
     }finally{await lifecycleClient.query('rollback');}
    }
+   await lifecycleClient.query('begin');
+   try{
+    assert.equal(await current(),true);
+    const renewed={...binding,callId:randomUUID()};
+    await lifecycleClient.query('update agent_skill set activation_binding=$2 where id=$1',[skillId,renewed]);
+    await lifecycleClient.query('set local role network_copilot_app');
+    await lifecycleClient.query("select set_config('app.current_user_id',$1,true),set_config('app.current_user_role','member',true)",[owner]);
+    assert.equal((await lifecycleClient.query('select skill_activation_is_current($1,$2,1) current',[owner,skillId])).rows[0].current,true,'SQL metadata alone still accepts the current unqualified component binding');
+    assert.equal(await skillActivationCurrent(lifecycleClient,owner,skillId,1,binding),false,'Old binding cannot borrow a different current activation');
+    assert.equal(await skillActivationCurrent(lifecycleClient,owner,skillId,1,renewed),true,'Exact current component binding still reads');
+   }finally{await lifecycleClient.query('rollback');}
    const mutations:Array<[string,()=>Promise<unknown>]>=[
     ['registry',()=>lifecycleClient.query('select publish_skill_runner_trust_registry($1,$2)',[{...registry,fixtureChange:true},digest('changed synthetic registry')])],
     ['freeze',()=>lifecycleClient.query("insert into agent_skill_acceptance_freeze_revocation(freeze_id,owner_id,reason) values($1,$2,'Synthetic lifecycle withdrawal')",[binding.freezeId,owner])],
@@ -465,6 +476,8 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
   console.log(JSON.stringify({activationUseAdmission:'passed',actualSeparateBackends:true,trustAndPackageGatesRetainedUntilTransactionEnd:true,
    busyOperatorRefusesUseWithoutWaiting:true,operatorRollbackRestoresEligibility:true,repeatableReadAndSerializableDenied:true,
    qualificationProducerMocked:true,humanApprovalCreated:false,productionQualificationGranted:false,modelCalls:0}));
+  console.log(JSON.stringify({activationBindingSnapshot:'passed',metadataOnlyStillCurrent:true,oldBindingCannotBorrowCurrentQualification:true,
+   exactCurrentBindingAccepted:true,fixtureRenewalRolledBack:true,qualificationProducerMocked:true,humanApprovalCreated:false,modelCalls:0}));
   console.log(JSON.stringify({activationSourceReadiness:'passed',missingRetainedLocksRejected:true,missingPackageGateRejected:true,
    allRetainedGatesAccepted:true,disabledLegacyGuardRejectsProducerAndDirectSealing:true,unprotectedDirectSealingRejected:true,
    sealedAuditRequiresActualFence:true,positiveOtherQualificationMocked:true,humanApprovalCreated:false,productionQualificationGranted:false,modelCalls:0}));
