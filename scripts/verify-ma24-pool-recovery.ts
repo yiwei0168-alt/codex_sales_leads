@@ -3,6 +3,7 @@ import {randomUUID} from 'node:crypto';
 import nextEnv from '@next/env';
 import {Client} from 'pg';
 import {getPool,query,tenantQuery,transaction} from '../src/lib/rag/db';
+import type {DatabaseDeadline} from '../src/lib/rag/database-deadline';
 
 nextEnv.loadEnvConfig(process.cwd());
 assert.equal(process.env.MA24_DISPOSABLE_POOL_RECOVERY,'1','Dedicated disposable-cluster harness required');
@@ -47,6 +48,33 @@ try{
   assert.equal((await query<{n:number}>('select count(*)::int n from ma24_pool_recovery_probe where token=$1',[token]))[0].n,0);
  }
  const committed=randomUUID();let executions=0;
+ const abortedTokens:string[]=[];
+ for(const duringQuery of [false,true]){
+  const token=randomUUID();abortedTokens.push(token);const controller=new AbortController();
+  const scope:DatabaseDeadline={signal:controller.signal,remainingMs:()=>10000};
+  let pid=0,attempts=0,ready!:()=>void,continueWork!:()=>void;
+  const started=new Promise<void>(done=>{ready=done;}),gate=new Promise<void>(done=>{continueWork=done;});
+  const pending=transaction(async client=>{
+   attempts++;await client.query('insert into ma24_pool_recovery_probe(token) values($1)',[token]);
+   const state=(await client.query("select pg_backend_pid() pid,current_setting('statement_timeout') statement,current_setting('idle_in_transaction_session_timeout') idle")).rows[0];
+   pid=state.pid;assert.equal(state.statement,'10s');assert.equal(state.idle,'10s');ready();
+   if(duringQuery)await client.query('select pg_sleep(20)');else await gate;
+   await client.query('select 1');
+  },scope);
+  void pending.catch(()=>undefined);await deadline(started);
+  if(duringQuery){let observed=false;for(let i=0;i<80;i++){
+   observed=(await admin.query("select exists(select 1 from pg_stat_activity where pid=$1 and wait_event='PgSleep') active",[pid])).rows[0].active;
+   if(observed)break;await new Promise(done=>setTimeout(done,20));
+  }assert(observed,'Observe actual active query before cancelling');}
+  controller.abort();await assert.rejects(pending,error=>(error as {code?:string}).code==='DATABASE_DEADLINE_EXCEEDED');continueWork();
+  // A busy backend need not notice TCP close before its server-side statement
+  // timeout. Observe the configured 10s guard plus polling margin, not 1.6s.
+  let gone=false;for(let i=0;i<120;i++){
+   gone=Number((await admin.query('select count(*) n from pg_stat_activity where pid=$1',[pid])).rows[0].n)===0;
+   if(gone)break;await new Promise(done=>setTimeout(done,100));
+  }assert(gone,'Cancelled backend must close instead of retaining transaction locks');
+  assert.equal(attempts,1);assert.equal((await query<{n:number}>('select count(*)::int n from ma24_pool_recovery_probe where token=$1',[token]))[0].n,0);
+ }
  await transaction(async client=>{executions++;await client.query('insert into ma24_pool_recovery_probe(token) values($1)',[committed]);});
  assert.equal(executions,1);
  assert.equal((await query<{n:number}>('select count(*)::int n from ma24_pool_recovery_probe'))[0].n,1);
@@ -57,5 +85,6 @@ try{
  const outside=(await query<{owner:string|null}>("select current_setting('app.current_user_id',true) owner"))[0];assert(!outside.owner);
  console.log(JSON.stringify({poolRecoveryDatabase:'passed',idleDisconnectRecovered:true,checkedOutAndQueryDisconnectRecovered:true,
   originalSqlstatePreserved:true,automaticTransactionRetries:0,rolledBackDisconnectedWrites:disconnectedTokens.length,
-  subsequentWriteCommittedOnce:true,tenantScopeReinjected:true,realModelCalls:0}));
+  subsequentWriteCommittedOnce:true,tenantScopeReinjected:true,deadlineActiveAndIdleTransactionsAborted:true,
+  cancelledBackendConnectionsClosed:true,deadlineServerGuardsVerified:true,rolledBackAbortedWrites:abortedTokens.length,realModelCalls:0}));
 }finally{await getPool().end();await admin.end();}

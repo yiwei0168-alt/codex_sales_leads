@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import type {DatabaseDeadline} from '../../rag/database-deadline';
 import { tenantQuery, tenantTransaction, query } from "@/lib/rag/db";
 import type { AgentRun, ExecutionContext, MessageInput, ModelConfig, RunStatus, ToolResult } from "./contracts";
 import { digest } from "./contracts";
@@ -81,9 +82,9 @@ export async function event(context: ExecutionContext, kind: string, payload: un
 export async function claimRun(workerId: string) {
   return (await query<{ id: string; user_id: string; lease_token: string }>("select * from claim_next_agent_run($1)", [workerId]))[0];
 }
-export async function heartbeat(context: ExecutionContext) {
+export async function heartbeat(context: ExecutionContext,deadline?:DatabaseDeadline) {
   const rows = await tenantQuery(context.userId, `update agent_run set lease_until=now()+interval '90 seconds'
-    where user_id=$1 and id=$2 and lease_token=$3 and status='running' and lease_until>now() returning id`, [context.userId, context.runId, context.leaseToken]);
+    where user_id=$1 and id=$2 and lease_token=$3 and status='running' and lease_until>now() returning id`, [context.userId, context.runId, context.leaseToken],undefined,deadline);
   return rows.length === 1;
 }
 export class LeaseLostError extends Error { constructor() { super("Agent lease lost"); } }
@@ -122,7 +123,7 @@ export async function controlRun(userId: string, id: string, action: "pause" | "
     return true;
   });
 }
-export async function finishRun(context: ExecutionContext, status: RunStatus, reply: string) {
+export async function finishRun(context: ExecutionContext, status: RunStatus, reply: string,deadline?:DatabaseDeadline) {
   return tenantTransaction(context.userId, async client => {
     const changed = await client.query<{ conversation_id: string; status: RunStatus; execution_kind:string }>(`update agent_run set
       status=case when control='cancel' then 'cancelled' when control='pause' then 'paused' else $4 end,
@@ -145,7 +146,7 @@ export async function finishRun(context: ExecutionContext, status: RunStatus, re
       values($1,$2,'assistant','general',$3,$4)`, [context.userId, changed.rows[0].conversation_id, reply, JSON.stringify({ runId: context.runId, status: changed.rows[0].status })]);
     await client.query("update assistant_conversation set updated_at=now() where user_id=$1 and id=$2", [context.userId, changed.rows[0].conversation_id]);
     return {status:changed.rows[0].status};
-  });
+  },undefined,deadline);
 }
 export async function beginCall(context: ExecutionContext, call: { key: string; tool: string; version: string; input: unknown; effect: string; approvalId?: string }) {
   await boundary(context);

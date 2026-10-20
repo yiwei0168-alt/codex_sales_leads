@@ -7,6 +7,7 @@ vi.mock('pg',()=>({Pool:vi.fn(function(){return m.pool;})}));
 vi.mock('./config',()=>({getRagConfig:()=>({databaseUrl:'postgresql://synthetic@127.0.0.1/test'})}));
 import {getPool,transaction,tenantTransaction,tenantQuery,withBoundTenantTransaction} from './db';
 import type {PoolClient} from 'pg';
+import type {DatabaseDeadline} from './database-deadline';
 
 beforeEach(()=>{
  globalThis.__networkCopilotPool=undefined;
@@ -15,6 +16,46 @@ beforeEach(()=>{
  m.pool=Object.assign(new EventEmitter(),{connect:vi.fn(async()=>m.client)});
 });
 afterEach(()=>{globalThis.__networkCopilotPool=undefined;globalThis.__networkCopilotDatabaseSecurity=undefined;vi.restoreAllMocks();});
+
+function budget(){const controller=new AbortController();return {controller,deadline:{signal:controller.signal,remainingMs:()=>1000} satisfies DatabaseDeadline};}
+it('aborts an active query, discards once and does not queue rollback on the dead connection',async()=>{
+ const {controller,deadline}=budget();let started!:()=>void;const ready=new Promise<void>(resolve=>{started=resolve;});
+ m.client.query.mockImplementation((sql:string)=>sql==='blocked'?new Promise(()=>{started();}):Promise.resolve({rows:[]}));
+ const pending=transaction(client=>client.query('blocked'),deadline);await ready;controller.abort();
+ await expect(pending).rejects.toMatchObject({code:'DATABASE_DEADLINE_EXCEEDED'});
+ expect(m.client.release).toHaveBeenCalledExactlyOnceWith(true);
+ expect(m.client.query.mock.calls.some(row=>row[0]==='rollback')).toBe(false);
+ expect(m.client.listenerCount('error')).toBe(0);
+});
+it('rejects late SQL from a callback after its aborted transaction was released',async()=>{
+ const {controller,deadline}=budget();let proceed!:()=>void,started!:()=>void,ended!:()=>void;
+ const gate=new Promise<void>(resolve=>{proceed=resolve;}),ready=new Promise<void>(resolve=>{started=resolve;}),done=new Promise<void>(resolve=>{ended=resolve;});
+ const pending=transaction(async client=>{started();await gate;try{await client.query('late write');}catch{ended();}},deadline);
+ await ready;controller.abort();await expect(pending).rejects.toMatchObject({code:'DATABASE_DEADLINE_EXCEEDED'});proceed();await done;
+ expect(m.client.query.mock.calls.some(row=>row[0]==='late write')).toBe(false);expect(m.client.release).toHaveBeenCalledExactlyOnceWith(true);
+});
+it('disposes a connection acquired after the caller deadline',async()=>{
+ const {controller,deadline}=budget();let acquired!:(client:ClientDouble)=>void,started!:()=>void;
+ const ready=new Promise<void>(resolve=>{started=resolve;});
+ m.pool.connect.mockImplementation(()=>new Promise(resolve=>{acquired=resolve;started();}));
+ const pending=transaction(async()=>{throw new Error('Must not execute');},deadline);await ready;controller.abort();
+ await expect(pending).rejects.toMatchObject({code:'DATABASE_DEADLINE_EXCEEDED'});acquired(m.client);await Promise.resolve();
+ expect(m.client.release).toHaveBeenCalledExactlyOnceWith(true);expect(m.client.query).not.toHaveBeenCalled();
+});
+it('does not retry work or send rollback when COMMIT outcome becomes unknown on abort',async()=>{
+ const {controller,deadline}=budget();let committing!:()=>void,executions=0;
+ const ready=new Promise<void>(resolve=>{committing=resolve;});
+ m.client.query.mockImplementation((sql:string)=>sql==='commit'?new Promise(()=>{committing();}):Promise.resolve({rows:[]}));
+ const pending=transaction(async()=>{executions++;return 'candidate';},deadline);await ready;controller.abort();
+ await expect(pending).rejects.toMatchObject({code:'DATABASE_DEADLINE_EXCEEDED'});expect(executions).toBe(1);
+ expect(m.client.query.mock.calls.filter(row=>row[0]==='commit')).toHaveLength(1);
+ expect(m.client.query.mock.calls.some(row=>row[0]==='rollback')).toBe(false);expect(m.client.release).toHaveBeenCalledExactlyOnceWith(true);
+});
+it('sets server statement and idle-transaction guards only for the explicit deadline scope',async()=>{
+ const {deadline}=budget();await transaction(async()=>undefined,deadline);
+ expect(m.client.query.mock.calls).toContainEqual(["select set_config('statement_timeout',$1,true),set_config('idle_in_transaction_session_timeout',$1,true)",['1000ms']]);
+ expect(m.client.release).toHaveBeenCalledExactlyOnceWith(false);
+});
 
 it('handles idle pool errors, invalidates security cache and logs only bounded SQLSTATE',()=>{
  const warn=vi.spyOn(console,'warn').mockImplementation(()=>undefined),pool=getPool();

@@ -8,6 +8,7 @@ import {assertCurrentSkillMessages,SkillContextChangedError,SKILL_CHANGED_REPLY}
 import {assertCurrentMemoryMessages,MemoryContextChangedError,MEMORY_CHANGED_REPLY,withCurrentDecisionMemory} from './memory-message-guard';
 import {assertCurrentPrivateReplayMessages} from './private-replay-guard';
 import {loadDecisionMemory} from './memory-context';
+import {databaseDeadline} from '../../rag/database-deadline';
 
 type FinalState={status:RunStatus;reply:string;messages:ModelMessage[];instructionIds:string[];policyRevision?:string};
 /** Ordinary main-agent settlement only. Retain DB source admission through the
@@ -62,5 +63,7 @@ export async function settleMainAgentRun(context:ExecutionContext,final:FinalSta
    const reply=error instanceof SkillContextChangedError?SKILL_CHANGED_REPLY:error instanceof MemoryContextChangedError?MEMORY_CHANGED_REPLY:SOURCE_CHANGED_REPLY;
    return save('partial',reply);
   }
- }),context.role);
+ // Match the existing maximum task lease window. This transport cap never
+ // grants a lease: the transaction still checks the exact DB lease repeatedly.
+ }),context.role,databaseDeadline(90_000));
 }

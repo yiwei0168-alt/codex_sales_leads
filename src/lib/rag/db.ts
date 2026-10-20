@@ -1,5 +1,6 @@
 import { Pool, type PoolClient, type QueryResultRow } from "pg";
 import {AsyncLocalStorage} from 'node:async_hooks';
+import {assertDatabaseDeadline,awaitDatabaseDeadline,databaseDeadlineError,type DatabaseDeadline} from './database-deadline';
 import { getRagConfig } from "./config";
 import {
   databaseConnectionString,
@@ -47,18 +48,36 @@ async function setApplicationRole(client: PoolClient): Promise<void> {
 
 /** Own checked-out connection errors until release. Never retry the callback:
  * a disconnected COMMIT can have an unknown result. */
-function trackClientErrors(client: PoolClient) {
+function trackClientErrors(client: PoolClient,deadline?:DatabaseDeadline) {
   const pool = globalThis.__networkCopilotPool;
   let failure: Error | undefined;
+  let released=false,active=true;
   const onError = (error: Error) => { failure ??= error; };
   client.on("error", onError);
+  const release=(broken:boolean)=>{
+    if(released)return;released=true;
+    if(broken&&globalThis.__networkCopilotPool===pool)globalThis.__networkCopilotDatabaseSecurity=undefined;
+    client.release(broken);
+  };
+  const abort=()=>{failure??=databaseDeadlineError();release(true);};
+  deadline?.signal.addEventListener('abort',abort,{once:true});
+  if(deadline?.signal.aborted)abort();
+  const guarded=deadline?new Proxy(client,{get(target,key){
+    if(key==='query')return (...args:unknown[])=>{
+      if(!active||failure)return Promise.reject(failure??databaseDeadlineError());
+      try{assertDatabaseDeadline(deadline);}catch(error){return Promise.reject(error);}
+      return awaitDatabaseDeadline(Reflect.apply(target.query,target,args),deadline);
+    };
+    const value=Reflect.get(target,key,target);return typeof value==='function'?value.bind(target):value;
+  }}):client;
   return {
+    client:guarded,
     get failure() { return failure; },
     release(discard = false) {
+      active=false;deadline?.signal.removeEventListener('abort',abort);
       const broken = discard || Boolean(failure);
-      if (broken && globalThis.__networkCopilotPool === pool) globalThis.__networkCopilotDatabaseSecurity = undefined;
       client.removeListener("error", onError);
-      client.release(broken);
+      release(broken);
     },
   };
 }
@@ -86,15 +105,25 @@ export function getPool(): Pool {
   return globalThis.__networkCopilotPool;
 }
 
-async function ensureDatabaseSecurity(): Promise<void> {
+async function acquireClient(deadline?:DatabaseDeadline):Promise<PoolClient>{
+ assertDatabaseDeadline(deadline);
+ return awaitDatabaseDeadline(getPool().connect(),deadline,client=>client.release(true));
+}
+async function setDatabaseDeadline(client:PoolClient,deadline?:DatabaseDeadline){
+ if(!deadline)return;
+ assertDatabaseDeadline(deadline);const value=`${Math.max(1,deadline.remainingMs())}ms`;
+ await client.query("select set_config('statement_timeout',$1,true),set_config('idle_in_transaction_session_timeout',$1,true)",[value]);
+}
+async function ensureDatabaseSecurity(deadline?:DatabaseDeadline): Promise<void> {
   if (!globalThis.__networkCopilotDatabaseSecurity) {
     globalThis.__networkCopilotDatabaseSecurity = (async () => {
-      const client = await getPool().connect();
-      const tracked = trackClientErrors(client);
+      const acquired = await acquireClient(deadline);
+      const tracked = trackClientErrors(acquired,deadline),client=tracked.client;
       let discard = false;
       let state: { ssl: boolean; rolsuper: boolean; rolbypassrls: boolean; session_super: boolean; session_bypassrls: boolean } | undefined;
       try {
         await client.query("begin");
+        await setDatabaseDeadline(client,deadline);
         const result = await client.query<typeof state & QueryResultRow>(
           `select coalesce(s.ssl, false) as ssl, r.rolsuper, r.rolbypassrls,
                   sr.rolsuper as session_super, sr.rolbypassrls as session_bypassrls
@@ -138,23 +167,24 @@ async function ensureDatabaseSecurity(): Promise<void> {
       throw error;
     });
   }
-  return globalThis.__networkCopilotDatabaseSecurity;
+  return awaitDatabaseDeadline(globalThis.__networkCopilotDatabaseSecurity,deadline);
 }
 
 export async function query<T extends QueryResultRow>(text: string, values: unknown[] = []): Promise<T[]> {
   return transaction(async (client) => (await client.query<T>(text, values)).rows);
 }
 
-export async function transaction<T>(run: (client: PoolClient) => Promise<T>): Promise<T> {
+export async function transaction<T>(run: (client: PoolClient) => Promise<T>,deadline?:DatabaseDeadline): Promise<T> {
   if(boundTenantTransaction.getStore())throw new Error('Unscoped transaction inside a bound tenant operation');
-  await ensureDatabaseSecurity();
-  const client = await getPool().connect();
-  const tracked = trackClientErrors(client);
+  await ensureDatabaseSecurity(deadline);
+  const acquired = await acquireClient(deadline);
+  const tracked = trackClientErrors(acquired,deadline),client=tracked.client;
   let discard = false;
   try {
     await client.query("begin");
+    await setDatabaseDeadline(client,deadline);
     await setApplicationRole(client);
-    const result = await run(client);
+    const result = await awaitDatabaseDeadline(run(client),deadline);
     if (tracked.failure) throw tracked.failure;
     await client.query("commit");
     return result;
@@ -170,9 +200,11 @@ export async function tenantTransaction<T>(
   userId: string,
   run: (client: PoolClient) => Promise<T>,
   role?: AppDatabaseRole,
+  deadline?:DatabaseDeadline,
 ): Promise<T> {
   const bound=boundTenantTransaction.getStore();
   if(bound){
+    if(deadline)throw new Error('Cannot replace a bound transaction deadline');
     if(!bound.active)throw new Error('Bound tenant transaction scope ended');
     if(bound.userId!==userId||role!==undefined&&role!==bound.role)throw new Error('Bound tenant transaction account or role changed');
     return run(bound.client);
@@ -180,7 +212,7 @@ export async function tenantTransaction<T>(
   return transaction(async (client) => {
     await client.query("select set_config('app.current_user_id', $1, true), set_config('app.current_user_role', $2, true)", [userId, role??'member']);
     return run(client);
-  });
+  },deadline);
 }
 
 export async function tenantQuery<T extends QueryResultRow>(
@@ -188,6 +220,7 @@ export async function tenantQuery<T extends QueryResultRow>(
   text: string,
   values: unknown[] = [],
   role?: AppDatabaseRole,
+  deadline?:DatabaseDeadline,
 ): Promise<T[]> {
-  return tenantTransaction(userId, async (client) => (await client.query<T>(text, values)).rows, role);
+  return tenantTransaction(userId, async (client) => (await client.query<T>(text, values)).rows, role,deadline);
 }

@@ -33,6 +33,8 @@ const environment=['--env',`DATABASE_URL=${runtimeUrl}`,'--env',`DATABASE_SSL_CA
 const durability=process.env.MA24_MAIN_RUNTIME_DURABILITY==='1';
 const crashRecovery=process.env.MA24_MAIN_RUNTIME_CRASH_RECOVERY==='1';
 const interruption=process.env.MA24_MAIN_RUNTIME_INTERRUPTION==='1';
+const networkLoss=process.env.MA24_MAIN_RUNTIME_NETWORK_LOSS==='1';
+assert(!networkLoss||interruption,'Network loss requires in-flight interruption');
 assert(!interruption||durability,'In-flight interruption requires a dedicated persistent state volume');
 assert(!crashRecovery||durability,'Crash recovery requires a dedicated persistent state volume');
 const commitLoss=process.env.MA24_MAIN_RUNTIME_COMMIT_LOSS==='1';
@@ -104,7 +106,7 @@ try{
   proxyAddress=await execute(['inspect','--format',`{{(index .NetworkSettings.Networks "${network}").IPAddress}}`,pgProxy]);assert.match(proxyAddress,/^\d+\.\d+\.\d+\.\d+$/);
   const proxied=new URL(runtimeUrl);proxied.port='5540';serverRuntimeUrl=proxied.toString();
  }
- if(interruption){
+ if(interruption&&!networkLoss){
   // API death must not tear down the Worker's network/DB connections. A
   // separate fixture owns the namespace; it contains no product state.
   networkAnchor=await execute(['run','--detach','--name',`ma24-main-net-anchor-${randomUUID().slice(0,8)}`,'--network',network,...restricted,
@@ -205,13 +207,13 @@ try{
    uncommittedAnswerNotPublished:true,safePartialPersistedOnce:true,subsequentWorkerMakesNoReplay:true,
    actualApiDatabasePoolRecoveryVerified:true,earlierCommittedTaskUnchanged:true,actualModelCalls:0};
  }
- let interruptionResult:unknown=null;
+ let interruptionResult:unknown=null,networkLossResult:unknown=null;
  if(interruption){
   const base=process.env.MA24_MAIN_RUNTIME_WEB_BASE!,ownerCookie=process.env.MA24_MAIN_RUNTIME_OWNER_COOKIE!,peerCookie=process.env.MA24_MAIN_RUNTIME_PEER_COOKIE!;
   assert.match(base,/^http:\/\/127\.0\.0\.1:\d+$/);assert(ownerCookie&&peerCookie);
   await admin.query("update knowledge_document set visibility='shared' where id=$1",[document]);
   const pending=await prepareTask(),blocker=new Client({connectionString:url});await blocker.connect();
-  let killedLease:string;
+  let killedLease:string,killedAt=0;
   try{
    await blocker.query('begin');await blocker.query('lock table assistant_message in share mode');
    const blockerPid=(await blocker.query('select pg_backend_pid() pid')).rows[0].pid;
@@ -224,16 +226,38 @@ try{
    assert(observed,'Actual API final answer INSERT must be blocked before SIGKILL');
    const running=await readTask(pending.task.id);assert.equal(running.status,'running');assert.deepEqual(running.messages,[]);assert.equal(running.jobs,0);
    killedLease=running.lease_token;assert(killedLease);
-   const killed=server!;assert.match(killed,/^[a-f0-9]{64}$/);await execute(['kill','--signal','KILL',killed]);
+   const killed=server!;assert.match(killed,/^[a-f0-9]{64}$/);killedAt=Date.now();await execute(['kill','--signal','KILL',killed]);
    assert.equal(await execute(['wait',killed]),'137');
    // Keep the stopped namespace owner until its attached Worker has exited.
   }finally{await blocker.query('rollback');await blocker.end();}
   await finishWorker();await execute(['rm','--volumes',server!]);server=undefined;
   const stopped=await readTask(pending.task.id);
+  const resume=(cookie?:string)=>fetch(`${base}/api/assistant/runs/${pending.task.id}/control`,{method:'POST',headers:{'content-type':'application/json',...(cookie?{cookie}:{})},body:JSON.stringify({action:'resume'})});
+  if(networkLoss){
+   const exitAfterKillMs=Date.now()-killedAt;assert(exitAfterKillMs<120000,'Worker must exit within the lease recovery observation bound');
+   assert(['running','partial'].includes(stopped.status));assert.notEqual(stopped.reply,pending.reply);
+   assert(!stopped.messages.includes(pending.reply));assert.equal(stopped.jobs,0);assert.equal(stopped.models,0);
+   // No transaction or lease is force-edited. Observe expiry and lock release
+   // after the old namespace vanished, then recover on a new namespace.
+   let expired=stopped.status==='partial';for(let i=0;i<100&&!expired;i++){
+    expired=(await admin.query('select lease_until<=clock_timestamp() expired from agent_run where id=$1',[pending.task.id])).rows[0].expired;
+    if(!expired)await new Promise(done=>setTimeout(done,1000));
+   }assert(expired,'Observe real lease expiry before reclaiming interrupted work');
+   await startServer();
+   if(stopped.status==='partial'){const accepted=await resume(ownerCookie);assert.equal(accepted.status,200);}
+   await startWorker();await finishWorker();const recovered=await readTask(pending.task.id);
+   assert.equal(recovered.status,'completed');assert.equal(recovered.reply,pending.reply);assert.notEqual(recovered.lease_token,killedLease!);
+   assert.equal(recovered.messages.filter(value=>value===pending.reply).length,1);assert.equal(recovered.jobs,1);assert.equal(recovered.models,0);
+   assert.equal((await resume(ownerCookie)).status,409);await startWorker();await finishWorker();assert.deepEqual(await readTask(pending.task.id),recovered);
+   networkLossResult={combinedApiAndNetworkLossVerified:true,sharedApiNamespaceRemoved:true,actualFinalInsertWaitObserved:true,
+    apiExitCode:137,workerExitAfterKillMs:exitAfterKillMs,workerExitObservationBoundMs:120000,
+    interruptedStatus:stopped.status,unknownOutcomeNotPresentedAsSavedPartial:stopped.status==='running',
+    realLeaseExpiryOrConfirmedPartialObserved:true,noForcedDatabaseLeaseEdits:true,newNamespaceRecoveryVerified:true,
+    finalAnswerPublishedOnce:true,extractionJobCount:1,subsequentWorkerMakesNoReplay:true,actualModelCalls:0};
+  }else{
   assert.equal(stopped.status,'partial');assert.notEqual(stopped.reply,pending.reply);assert.deepEqual(stopped.messages,[stopped.reply]);
   assert.equal(stopped.jobs,0);assert.equal(stopped.models,0);assert.equal(stopped.status_events,1);
   await startServer();await startWorker();await finishWorker();assert.deepEqual(await readTask(pending.task.id),stopped);
-  const resume=(cookie?:string)=>fetch(`${base}/api/assistant/runs/${pending.task.id}/control`,{method:'POST',headers:{'content-type':'application/json',...(cookie?{cookie}:{})},body:JSON.stringify({action:'resume'})});
   assert.equal((await resume()).status,401);assert.equal((await resume(peerCookie)).status,404);
   assert.deepEqual(await readTask(pending.task.id),stopped);
   const accepted=await resume(ownerCookie);assert.equal(accepted.status,200);assert.deepEqual(await accepted.json(),{accepted:true});
@@ -247,6 +271,7 @@ try{
    safePartialPersistedOnce:true,noAutomaticReplayBeforeResume:true,actualHttpManualResumeVerified:true,unauthenticatedRejected:true,peerHidden:true,
    freshLeaseAfterResume:true,completedCheckpointRevalidated:true,finalAnswerPublishedOnce:true,extractionJobCount:1,
    explicitResumeEventCount:1,terminalResumeRejected:true,subsequentWorkerMakesNoReplay:true,syntheticCompletedCheckpoint:true,actualModelCalls:0};
+  }
  }
  let durabilityResult:unknown=null;
  if(durability){
@@ -304,7 +329,7 @@ try{
    priorTaskRowsUnchangedAfterRestart:true,gracefulApiExitCode:0,committedTaskSurvivesLostHttpResponse:true,noDuplicateReplyEventOrExtractionJob:true,subsequentWorkerMakesNoReplayRequest:true,forwardedApiRequests:1,crashResult};
  }
  const receipt={passed:true,image,immutableImageId:metadata.id,sourceCommit:metadata.revision,integrity,actualLangGraphApi:true,actualCompiledQueueWorker:true,postgresCheckpointRecovery:true,cases,
-  durabilityResult,commitLossResult,uncommittedLossResult,taskEnrollmentResult,interruptionResult,syntheticCheckpointSeed:true,actualModelCalls:0,externalActions:0,firstModelExecutionVerified:false,productionQualified:false,automaticActivation:false};
+  durabilityResult,commitLossResult,uncommittedLossResult,taskEnrollmentResult,interruptionResult,networkLossResult,syntheticCheckpointSeed:true,actualModelCalls:0,externalActions:0,firstModelExecutionVerified:false,productionQualified:false,automaticActivation:false};
  await writeFile('tmp/ma24-main-runtime-worker-result.json',JSON.stringify(receipt,null,2)+'\n');console.log(JSON.stringify({mainRuntimeWorker:'passed',...receipt}));
 }finally{
  if(worker)await docker(['rm','--force','--volumes',worker]);
