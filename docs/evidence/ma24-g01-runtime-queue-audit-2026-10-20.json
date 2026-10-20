@@ -1,0 +1,32 @@
+{
+  "stage": "MA24 G01 local read-only runtime queue audit",
+  "date": "2026-10-20",
+  "checkedAtUtc": "2026-10-20T03:07:23.860122Z",
+  "command": "npm.cmd run ma24:audit-runtime-queues",
+  "result": {
+    "schema": "ma24-runtime-queue-audit-v1",
+    "mode": "read-only",
+    "queues": {
+      "mainAgent": [
+        { "state": "cancelled", "count": 2, "expired_lease": 0, "missing_lease": 0 },
+        { "state": "completed", "count": 17, "expired_lease": 0, "missing_lease": 0 },
+        { "state": "failed", "count": 1, "expired_lease": 0, "missing_lease": 0 },
+        { "state": "partial", "count": 12, "expired_lease": 0, "missing_lease": 0 }
+      ],
+      "leadWorkflow": [
+        { "state": "failed", "count": 2, "expired_lease": 0, "missing_lease": 0 }
+      ],
+      "knowledgeUpload": [],
+      "skillShadow": [],
+      "mailboxSync": [
+        { "state": "completed", "count": 12, "older_than_one_hour": 0 },
+        { "state": "failed", "count": 8, "older_than_one_hour": 0 }
+      ]
+    }
+  },
+  "scope": "Read-only transaction over the five queue families configured in scripts/audit-ma24-runtime-queues.ts. No running rows or expired/missing leases were returned. This does not cover external workers, all database queues, production traffic, or load capacity.",
+  "checks": {
+    "auditCommand": "passed",
+    "gitDiffCheck": "passed"
+  }
+}
