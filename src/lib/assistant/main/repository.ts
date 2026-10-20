@@ -4,18 +4,16 @@ import { tenantQuery, tenantTransaction, query } from "@/lib/rag/db";
 import type { AgentRun, ExecutionContext, MessageInput, ModelConfig, RunStatus, ToolResult } from "./contracts";
 import { digest } from "./contracts";
 import { approvalDigest } from "./approvals";
+import {evaluationTaskSpecSchema,type EvaluationTaskSpec} from './evaluation-task-spec';
 
 type RunServerOptions = { kind:"mail"; spec:unknown; paused:true } | {
   kind:"main-agent-evaluation";
-  spec:{schema:"ma24-evaluation-run-v1";manifestSha256:string;caseId:string;arm:"baseline"|"candidate"};
+  spec:EvaluationTaskSpec;
 };
 export async function enqueueRun(userId: string, input: MessageInput, model: ModelConfig, serverOptions?: RunServerOptions): Promise<AgentRun> {
   if(serverOptions?.kind==="main-agent-evaluation"&&(
     input.conversationId!==undefined||input.attachments?.length!==0||!input.knowledgeScope?.length||
-    serverOptions.spec.schema!=="ma24-evaluation-run-v1"||
-    !["baseline","candidate"].includes(serverOptions.spec.arm)||
-    !/^[0-9a-f]{64}$/.test(serverOptions.spec.manifestSha256)||
-    !serverOptions.spec.caseId.trim()||serverOptions.spec.caseId.length>120))
+    !evaluationTaskSpecSchema.safeParse(serverOptions.spec).success))
     throw new Error("Invalid MA24 evaluation task scope or identity");
   return tenantTransaction(userId, async client => {
     await client.query("select pg_advisory_xact_lock(hashtextextended($1,0))", [`agent-request:${userId}:${input.requestKey}`]);

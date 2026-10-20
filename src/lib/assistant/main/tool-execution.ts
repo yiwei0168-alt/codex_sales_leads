@@ -8,12 +8,16 @@ export async function executeRegisteredTool(tool: ProductTool, input: unknown, c
   if (current.control) throw new LeaseLostError();
   assertCurrentInstructions(context, current.instructions);
   if (current.execution_kind === 'main-agent-evaluation') {
-    const spec = current.execution_spec as { arm?: unknown } | null;
-    if (!context.evaluationArm || spec?.arm !== context.evaluationArm || tool.effect !== 'read' ||
+    const spec = current.execution_spec as { arm?: unknown;schema?:unknown } | null;
+    if(spec?.schema==='skill-candidate-task-v1'){
+      if(!context.evaluationArm||tool.effect!=='read')throw new Error('Skill runtime task may execute read tools only');
+      const {assertSkillCandidateRuntimeTaskContext}=await import('./skill-candidate-runtime-task');
+      await assertSkillCandidateRuntimeTaskContext(context);
+    }else if (context.skillTaskSpecHash||!context.evaluationArm || spec?.arm !== context.evaluationArm || tool.effect !== 'read' ||
       !context.knowledgeScope?.length ||
       stableJson(context.knowledgeScope) !== stableJson(current.input.knowledgeScope))
       throw new Error('MA24 evaluation tool context does not match the leased task');
-  } else if (context.evaluationArm) {
+  } else if (context.evaluationArm||context.skillTaskSpecHash) {
     throw new Error('MA24 evaluation arm cannot execute an ordinary task');
   }
   if (!modeAllowsTool(context.mode,tool.id)) return result(null,{status:'unavailable',missing:['当前模式不支持此操作，请切换模式。']});

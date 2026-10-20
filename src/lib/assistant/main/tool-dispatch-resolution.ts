@@ -3,7 +3,7 @@ import {availableTools,describeTool,productTools} from './tools';
 import {result,type ExecutionContext,type ModelToolCall,type ProductTool,type ToolResult} from './contracts';
 import {modeAllowsTool} from './mode-tools';
 
-type Context=Pick<ExecutionContext,'userId'|'role'|'mode'|'knowledgeScope'|'evaluationArm'>;
+type Context=Pick<ExecutionContext,'userId'|'role'|'mode'|'knowledgeScope'|'evaluationArm'|'skillTaskSpecHash'>;
 type Resolution={kind:'return';output:ToolResult;rejected?:string;describedToolId?:string}
  |{kind:'execute';tool:ProductTool;input:unknown};
 const invocation=z.object({tool:z.string().max(120),arguments:z.record(z.string(),z.unknown())}).strict();

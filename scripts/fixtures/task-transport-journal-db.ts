@@ -24,6 +24,7 @@ import {registerSignedProspectiveFixture} from './signed-prospective-registratio
 import {verifyConfiguredSignedSafetyDatabase} from './configured-signed-safety-db';
 import {verifyCombinedConfiguredDatabase} from './configured-five-category-db';
 import {tenantTransaction} from '../../src/lib/rag/db';
+import {verifySkillCandidateRuntimeTaskDatabase} from './skill-candidate-runtime-task-db';
 export type SignedFixtureContext={owner:string;runId:string;skillId:string;directory:string;keyPath:string;keyId:string;collectorId:string;deploymentHash:string;trustKeys:unknown[]};
 type Registration=Awaited<ReturnType<typeof registerSignedProspectiveFixture>>;
 type Options={registration?:Registration;reuseCustomers?:boolean;additionalTrustKeys?:unknown[];onReady?:(context:SignedFixtureContext)=>Promise<Record<string,unknown>>};
@@ -122,6 +123,7 @@ export async function verifyTaskTransportJournalDatabase(pool:Pool,owner:string,
  const baseline=await prepareSkillAcceptanceBaseline({userId:owner},{runId});assert.equal(baseline.baselineJournalVerified,true);
  assert.equal(baseline.projection.requests.length,3);
  const candidate=await prepareRecordedSkillCandidateSnapshot({userId:owner},{runId,skillId,version:1});
+ const runtimeTask=process.env.MA24_SKILL_RUNTIME_TASK==='1'?await verifySkillCandidateRuntimeTaskDatabase(pool,owner,other,runId,skillId):{skillRuntimeTaskAdmissionDatabaseVerified:false};
  assert.equal(candidate.snapshot.receipts.length,1);assert.equal(candidate.snapshot.candidate.listing.enabled,false);
  assert.equal(candidate.taskInputHash,baseline.projection.inputHash);assert.equal(candidate.modelConfigHash,baseline.projection.modelConfigHash);
  const readReceipt=(await pool.query("select id,output from agent_tool_call where run_id=$1 and tool_id='customer_timeline'",[runId])).rows[0];assert(readReceipt);
@@ -154,7 +156,7 @@ export async function verifyTaskTransportJournalDatabase(pool:Pool,owner:string,
   :process.env.MA24_CONFIGURED_SAFETY==='1'
   ?await verifyConfiguredSignedSafetyDatabase(pool,collectorInput)
   :await verifyConfiguredSignedCandidateDatabase(pool,{...collectorInput,prospective:prospective?{jobId:capture!.id,frozen:prospective.frozen}:undefined});
- return {originalTaskJournalDatabase:true,originalTaskSignedFallbackReadback:true,originalTaskRecoveryReuse:true,
+ return {...runtimeTask,originalTaskJournalDatabase:true,originalTaskSignedFallbackReadback:true,originalTaskRecoveryReuse:true,
   originalTaskCrossAccountRejected:true,originalTaskKeyRevocationRejected:true,originalTaskTamperedSignatureRejected:true,originalTaskRouteGapRejected:true,
   originalTaskCompiledAdmissionVerified:true,originalTaskRequestFactoryAdmissionExecuted:true,originalTaskRequestClosureExecuted:true,
   originalTaskSyntheticFailureSignedAndPersisted:true,originalTaskSyntheticStreamSuccessSignedAndPersisted:true,

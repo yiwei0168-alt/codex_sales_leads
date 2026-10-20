@@ -220,8 +220,8 @@ export const productTools: ProductTool[] = [
     input: z.object({ plan: z.string().min(1).max(8000), scale: z.string().min(1).max(1000), uncertainty: z.string().max(2000), requestedEstimate: z.string().max(1000).optional() }).strict(), effect: "publish", recovery: "idempotent",
     execute: async i => result({ approvedPlan: i }, { cost: "known" }) }),
 ];
-export function availableTools(context: Pick<ExecutionContext, "role" | "knowledgeScope" | "mode" | "evaluationArm"> & Partial<Pick<ExecutionContext,'userId'>>, tools = productTools) {
-  if (context.evaluationArm && (!context.userId || !context.knowledgeScope?.length)) return [];
+export function availableTools(context: Pick<ExecutionContext, "role" | "knowledgeScope" | "mode" | "evaluationArm" | "skillTaskSpecHash"> & Partial<Pick<ExecutionContext,'userId'>>, tools = productTools) {
+  if (context.evaluationArm && (!context.userId || (!context.knowledgeScope?.length&&!context.skillTaskSpecHash))) return [];
   const scopedShadow=Boolean(context.userId&&(process.env.VECTORLESS_AGENT_SHADOW_USER_IDS??'').split(',').map(id=>id.trim()).includes(context.userId));
   return tools.filter(t => (t.role === "member" || context.role === "admin")
     && (!context.evaluationArm || t.effect === "read")
