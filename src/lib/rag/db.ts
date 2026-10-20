@@ -15,6 +15,25 @@ declare global {
 
 export type AppDatabaseRole = "admin" | "member";
 const boundTenantTransaction=new AsyncLocalStorage<{client:PoolClient;userId:string;role:AppDatabaseRole;active:boolean}>();
+const boundDatabaseDeadline=new AsyncLocalStorage<DatabaseDeadline>();
+
+function effectiveDatabaseDeadline(explicit?:DatabaseDeadline):DatabaseDeadline|undefined{
+ const inherited=boundDatabaseDeadline.getStore();
+ if(!inherited||inherited===explicit)return explicit??inherited;
+ if(!explicit)return inherited;
+ return {signal:AbortSignal.any([inherited.signal,explicit.signal]),remainingMs:()=>Math.min(inherited.remainingMs(),explicit.remainingMs())};
+}
+
+/** Trusted worker composition. All nested database operations share one budget;
+ * late callbacks retain that expired budget and cannot start more database work. */
+export async function withDatabaseDeadline<T>(deadline:DatabaseDeadline,run:()=>Promise<T>):Promise<T>{
+ if(boundTenantTransaction.getStore())throw new Error('Cannot replace a bound transaction deadline');
+ const effective=effectiveDatabaseDeadline(deadline)!;
+ assertDatabaseDeadline(effective);
+ return boundDatabaseDeadline.run(effective,()=>awaitDatabaseDeadline(Promise.resolve().then(()=>{
+  assertDatabaseDeadline(effective);return run();
+ }),effective));
+}
 
 /** Trusted internal composition only. Reuse an already-open tenant transaction;
  * validate account/role and transaction identity before and after the callback. */
@@ -175,6 +194,7 @@ export async function query<T extends QueryResultRow>(text: string, values: unkn
 }
 
 export async function transaction<T>(run: (client: PoolClient) => Promise<T>,deadline?:DatabaseDeadline): Promise<T> {
+  deadline=effectiveDatabaseDeadline(deadline);
   if(boundTenantTransaction.getStore())throw new Error('Unscoped transaction inside a bound tenant operation');
   await ensureDatabaseSecurity(deadline);
   const acquired = await acquireClient(deadline);

@@ -7,7 +7,7 @@ import { claimRun, heartbeat, finishRun } from "../src/lib/assistant/main/reposi
 import type { ExecutionContext } from "../src/lib/assistant/main/contracts";
 import { dispatchDueSchedule } from "../src/lib/assistant/main/schedules";
 import {pollDueModelBatch} from "../src/lib/assistant/main/model-batch";
-import {getPool} from '../src/lib/rag/db';
+import {getPool,withDatabaseDeadline} from '../src/lib/rag/db';
 
 nextEnv.loadEnvConfig(process.cwd());
 const client = new Client({ apiUrl: process.env.LANGGRAPH_API_URL || "http://127.0.0.1:2024", apiKey: null, callerOptions: { maxRetries: 0 } });
@@ -16,10 +16,10 @@ let stopping = false;
 process.on("SIGINT", () => { stopping = true; });
 process.on("SIGTERM", () => { stopping = true; });
 try { do {
-  await pollDueModelBatch();
-  await dispatchDueSchedule();
+  await withDatabaseDeadline(databaseDeadline(20_000),()=>pollDueModelBatch());
+  await withDatabaseDeadline(databaseDeadline(20_000),()=>dispatchDueSchedule());
   const claimStarted=performance.now();
-  const run = await claimRun(workerId);
+  const run = await withDatabaseDeadline(databaseDeadline(20_000),()=>claimRun(workerId));
   if (!run) {
     if (process.argv.includes("--once")) break;
     await new Promise(resolve => setTimeout(resolve, 2000));

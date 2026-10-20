@@ -1,0 +1,38 @@
+{
+  "stage": "MA24 G01 initial worker database deadline",
+  "date": "2026-10-20",
+  "sourceState": "Working tree based on 161f8e2e; source hashes below identify the verified product files",
+  "implementation": {
+    "perPreparationStepMilliseconds": 20000,
+    "steps": ["batch receipt polling", "schedule dispatch", "main run claim"],
+    "nestedDatabaseOperationsInheritDeadline": true,
+    "ExplicitDeadlineCanOnlyShortenScope": true,
+    "lateDatabaseWorkRejected": true,
+    "automaticReplayAdded": false
+  },
+  "verification": {
+    "command": "node scripts/run-tsx.cjs scripts/verify-main-agent-preclaim-deadline.ts",
+    "passed": true,
+    "cases": [
+      {"phase":"batch","networkReplySuppressed":true,"elapsedMs":19994,"exitCode":1,"committedPriorPhases":[],"blockedClaimRolledBack":true,"noActiveTransaction":true},
+      {"phase":"schedule","networkReplySuppressed":true,"elapsedMs":20035,"exitCode":1,"committedPriorPhases":["batch"],"blockedClaimRolledBack":true,"noActiveTransaction":true},
+      {"phase":"run","networkReplySuppressed":true,"elapsedMs":20028,"exitCode":1,"committedPriorPhases":["batch","schedule"],"blockedClaimRolledBack":true,"noActiveTransaction":true}
+    ],
+    "normalEmptyWorkerVerified": true,
+    "disposableContainerRemoved": true,
+    "modelCalls": 0,
+    "sourceDatabaseChanged": false,
+    "fixture": "Actual source Worker with synthetic empty claim functions in a new PostgreSQL container. A TCP proxy forwards the targeted claim statement, then suppresses both directions before its reply/COMMIT. Only prior successful phases persist their trace rows."
+  },
+  "sources": [
+    {"file":"src/lib/rag/db.ts","sha256":"280a90f71c99c5b0a90012f10ee65fabb4d64d6d4981ca8f4e7ea8df503abd40"},
+    {"file":"scripts/run-main-agent-worker.ts","sha256":"8b8e006a8af99fa79b78662c0256f9be1dab9b26119e03846b37e2aa7c7329d9"}
+  ],
+  "checks": {"unitTestsPassed":19,"typecheck":"passed","targetedEslint":"passed","gitDiffCheck":"passed"},
+  "limits": [
+    "Source Worker verification; no rebuilt fixed Linux runtime image",
+    "Empty synthetic claims; no queued real task, due schedule enqueue or provider batch result settlement",
+    "Does not prove every database entry point, external transport cancellation, real-model quality or production acceptance",
+    "G01-G13 remain incomplete; G14-G20 and LAN deployment remain deferred"
+  ]
+}

@@ -5,7 +5,7 @@ type PoolDouble=EventEmitter&{connect:ReturnType<typeof vi.fn>};
 const m=vi.hoisted(()=>({pool:undefined as unknown as PoolDouble,client:undefined as unknown as ClientDouble}));
 vi.mock('pg',()=>({Pool:vi.fn(function(){return m.pool;})}));
 vi.mock('./config',()=>({getRagConfig:()=>({databaseUrl:'postgresql://synthetic@127.0.0.1/test'})}));
-import {getPool,transaction,tenantTransaction,tenantQuery,withBoundTenantTransaction} from './db';
+import {getPool,transaction,tenantTransaction,tenantQuery,withBoundTenantTransaction,withDatabaseDeadline,query} from './db';
 import type {PoolClient} from 'pg';
 import type {DatabaseDeadline} from './database-deadline';
 
@@ -18,6 +18,27 @@ beforeEach(()=>{
 afterEach(()=>{globalThis.__networkCopilotPool=undefined;globalThis.__networkCopilotDatabaseSecurity=undefined;vi.restoreAllMocks();});
 
 function budget(){const controller=new AbortController();return {controller,deadline:{signal:controller.signal,remainingMs:()=>1000} satisfies DatabaseDeadline};}
+it('inherits one worker database budget for queue queries and rejects late follow-up work',async()=>{
+ const {controller,deadline}=budget();let started!:()=>void,proceed!:()=>void;
+ const ready=new Promise<void>(resolve=>{started=resolve;}),gate=new Promise<void>(resolve=>{proceed=resolve;});
+ const pending=withDatabaseDeadline(deadline,async()=>{
+  await query('first queue');started();await gate;return query('late queue write');
+ });
+ await ready;controller.abort();await expect(pending).rejects.toMatchObject({code:'DATABASE_DEADLINE_EXCEEDED'});
+ const acquisitions=m.pool.connect.mock.calls.length;proceed();await new Promise(resolve=>setImmediate(resolve));
+ expect(m.pool.connect).toHaveBeenCalledTimes(acquisitions);
+ expect(m.client.query.mock.calls.some(row=>row[0]==='late queue write')).toBe(false);
+ await expect(query('next independent worker')).resolves.toEqual([]);
+});
+it.each(['worker','transaction'])('honors the earlier %s cancellation in a nested database budget',async source=>{
+ const outer=budget(),inner=budget();let started!:()=>void;
+ const ready=new Promise<void>(resolve=>{started=resolve;});
+ m.client.query.mockImplementation((sql:string)=>sql==='blocked queue'?new Promise(()=>{started();}):Promise.resolve({rows:[]}));
+ const pending=withDatabaseDeadline(outer.deadline,()=>transaction(client=>client.query('blocked queue'),inner.deadline));
+ await ready;(source==='worker'?outer:inner).controller.abort();await expect(pending).rejects.toMatchObject({code:'DATABASE_DEADLINE_EXCEEDED'});
+ expect(m.client.release).toHaveBeenCalledExactlyOnceWith(true);
+ expect((source==='worker'?inner:outer).controller.signal.aborted).toBe(false);
+});
 it('aborts an active query, discards once and does not queue rollback on the dead connection',async()=>{
  const {controller,deadline}=budget();let started!:()=>void;const ready=new Promise<void>(resolve=>{started=resolve;});
  m.client.query.mockImplementation((sql:string)=>sql==='blocked'?new Promise(()=>{started();}):Promise.resolve({rows:[]}));
