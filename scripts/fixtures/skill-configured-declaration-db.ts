@@ -4,6 +4,7 @@ import {readFile,writeFile,rm} from 'node:fs/promises';
 import {basename,join,resolve,sep} from 'node:path';
 import {spawn,execFileSync} from 'node:child_process';
 import {build} from 'esbuild';
+import {productNodeBuildOptions} from '../lib/product-node-build.mjs';
 import type {Pool} from 'pg';
 import {loadConfiguredSkillRunnerTrustRegistry} from '../../src/lib/assistant/main/skill-runner-attestation';
 import {readSkillRunnerAttestation,appendSkillRunnerAttestation} from '../../src/lib/assistant/main/skill-runner-attestation-store';
@@ -38,7 +39,7 @@ export async function verifyConfiguredDeclarationDatabase(pool:Pool,input:{owner
   if(databaseTrust)await pool.query('select publish_skill_runner_trust_registry($1,$2)',[configuredRegistry,digest(configuredRegistry)]);
  };
  const keyPath=join(input.directory,'configured-declaration.pem'),wrongPath=join(input.directory,'wrong-declaration.pem'),jobPath=join(input.directory,'declaration-job.json');
- const compiled=resolve('tmp',`skill-declaration-${randomUUID()}.cjs`);
+ const compiled=resolve('tmp',`skill-declaration-${randomUUID()}.mjs`);
  assert(compiled.startsWith(resolve('tmp')+sep));
  const appUrl=new URL(process.env.DATABASE_URL!),collectorUrl=new URL(appUrl),password=randomUUID()+randomUUID();
  const login=await pool.connect();try{
@@ -85,7 +86,7 @@ export async function verifyConfiguredDeclarationDatabase(pool:Pool,input:{owner
   await persist();
   await writeFile(keyPath,pair.privateKey.export({type:'pkcs8',format:'pem'}),{mode:0o600});
   await writeFile(wrongPath,generateKeyPairSync('ed25519').privateKey.export({type:'pkcs8',format:'pem'}),{mode:0o600});
-  if(!imageId)await build({entryPoints:['scripts/skill-collector-runner.ts'],outfile:compiled,bundle:true,platform:'node',target:'node24',format:'cjs',packages:'external',logLevel:'warning'});
+  if(!imageId)await build({...productNodeBuildOptions(),entryPoints:['scripts/skill-collector-runner.ts'],outfile:compiled});
   const job={ownerId:input.owner,bundleId:input.bundleId},before=await count(),first=await run(job);
   assert.equal(first.code,0,'Configured declaration CLI failed');
   const saved=JSON.parse(first.output.trim());assert.equal(saved.collectorDeclaration,'completed');assert.equal(saved.reused,false);

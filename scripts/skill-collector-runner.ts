@@ -5,7 +5,7 @@ import {disableLocalAnalysisTracing} from '../src/lib/assistant/main/local-analy
 async function main(){
  const args=process.argv.slice(2);
  if(args.length===1&&args[0]==='--help'){
-  console.log('node runner.cjs --check|--execute|--attest <private-job.json>');return;
+  console.log('node runner.mjs --check|--execute|--attest <private-job.json>');return;
  }
  if(args.length!==2||!['--check','--execute','--attest'].includes(args[0]))throw new Error('Expected --check, --execute or --attest and one private job file');
  if(process.env.NODE_ENV!=='production'||process.execArgv.length||process.env.NODE_OPTIONS?.trim())throw new Error('Plain production Node process required');

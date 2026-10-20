@@ -4,6 +4,7 @@ import {readFile,writeFile} from 'node:fs/promises';
 import {join} from 'node:path';
 import {spawn} from 'node:child_process';
 import {build} from 'esbuild';
+import {productNodeBuildOptions} from '../lib/product-node-build.mjs';
 import type {Pool} from 'pg';
 import {digest} from '../../src/lib/assistant/main/contracts';
 import {modeModelConfig} from '../../src/lib/assistant/main/mode-config';
@@ -74,8 +75,8 @@ export async function verifyTaskTransportJournalDatabase(pool:Pool,owner:string,
  const keyPath=join(directory,'original-task-private.pem'),runnerPath=join(directory,'task-admission.cjs');
  await writeFile(keyPath,pair.privateKey.export({type:'pkcs8',format:'pem'}),{mode:0o600});
  // Output stays under the project so external packages resolve from its node_modules.
- const compiledPath=join(process.cwd(),'tmp','task-transport-admission.cjs');
- await build({entryPoints:['scripts/fixtures/task-transport-preflight-runner.ts'],outfile:compiledPath,bundle:true,platform:'node',target:'node24',format:'cjs',packages:'external',logLevel:'warning',
+ const compiledPath=join(process.cwd(),'tmp','task-transport-admission.mjs');
+ await build({...productNodeBuildOptions(),entryPoints:['scripts/fixtures/task-transport-preflight-runner.ts'],outfile:compiledPath,
   banner:{js:String.raw`globalThis.fetch=async(url,init)=>{if(String(url)!=='https://openrouter.ai/api/v1/chat/completions')throw new Error('Synthetic destination rejected');const body=JSON.parse(init.body);const success=process.env.MA24_SYNTHETIC_RESPONSE!=='failure';const tool=process.env.MA24_SYNTHETIC_RESPONSE==='tool';const read=process.env.MA24_SYNTHETIC_RESPONSE==='read';const chunk={id:'synthetic-'+process.env.MA24_SYNTHETIC_RUN_ID+'-'+body.model+'-'+body.messages.length,model:body.model,provider:'synthetic',choices:[{index:0,delta:(tool||read)?{tool_calls:[{index:0,id:read?'synthetic-read':'synthetic-description',type:'function',function:{name:read?'execute_tool':'describe_tool',arguments:JSON.stringify(read?{tool:'customer_timeline',arguments:{}}:{tool:'customer_timeline'})}}]}:{content:'Synthetic streamed reply'},finish_reason:(tool||read)?'tool_calls':'stop'}]};const response=success?new Response('data: '+JSON.stringify(chunk)+'\n\ndata: [DONE]\n\n',{status:200,headers:{'Content-Type':'text/event-stream'}}):new Response('{}',{status:503});Object.defineProperty(response,'url',{value:String(url)});return response;};`},
   plugins:[{name:'explicit-synthetic-network-and-billing',setup(builder){
    builder.onResolve({filter:/(?:billing\/paid-fetch|network\/model-transport)$/},()=>({path:'synthetic-adapters',namespace:'ma24-fixture'}));

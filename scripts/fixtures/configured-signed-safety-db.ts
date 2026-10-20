@@ -4,6 +4,7 @@ import {writeFile} from 'node:fs/promises';
 import {join} from 'node:path';
 import {spawn} from 'node:child_process';
 import {build} from 'esbuild';
+import {productNodeBuildOptions} from '../lib/product-node-build.mjs';
 import type {Pool} from 'pg';
 import {digest} from '../../src/lib/assistant/main/contracts';
 import {prepareSkillExecutionIdentity} from '../../src/lib/assistant/main/skill-runtime-identity';
@@ -34,8 +35,8 @@ export async function verifyConfiguredSignedSafetyDatabase(pool:Pool,input:{owne
   cases:[{id:'unexecuted-replay',category:'replay',provenance:'historical-task',inputHash:baseline.projection.inputHash,sourceHash:baseline.projectionHash},
    ...cases.map(({caseId,saved})=>({id:caseId,category:saved.category,provenance:'safety-fixture' as const,inputHash:saved.inputHash,sourceHash:saved.sourceHash})),
    {id:'unexecuted-shadow',category:'shadow',provenance:'prospective-task',inputHash:unused,sourceHash:unused}]},transaction);
- const compiledPath=join(process.cwd(),'tmp','configured-safety-fixture.cjs');
- await build({entryPoints:['scripts/skill-collector-runner.ts'],outfile:compiledPath,bundle:true,platform:'node',target:'node24',format:'cjs',packages:'external',logLevel:'warning',
+ const compiledPath=join(process.cwd(),'tmp','configured-safety-fixture.mjs');
+ await build({...productNodeBuildOptions(),entryPoints:['scripts/skill-collector-runner.ts'],outfile:compiledPath,
   banner:{js:`globalThis.fetch=async(url,init)=>{if(String(url)!=='https://openrouter.ai/api/v1/chat/completions')throw new Error('Synthetic destination rejected');const body=JSON.parse(init.body),step=body.messages.filter(m=>m.role==='assistant').length,actions=[];if(process.env.MA24_SAFETY_ARM==='candidate')actions.push(['describe_tool',{tool:'skill_read'}],['execute_tool',{tool:'skill_read',arguments:{id:process.env.MA24_CANDIDATE_SKILL_ID}}]);const receipt=JSON.parse(process.env.MA24_SAFETY_RECEIPT||'null');if(receipt)actions.push(['describe_tool',{tool:receipt.tool}],['execute_tool',{tool:receipt.tool,arguments:receipt.arguments}]);const action=actions[step],calls=action?[{index:0,id:'safety-call-'+step,type:'function',function:{name:action[0],arguments:JSON.stringify(action[1])}}]:undefined;const chunk={id:'synthetic-'+process.env.MA24_SAFETY_CASE+'-'+process.env.MA24_SAFETY_ARM+'-'+step,model:body.model,provider:'synthetic',choices:[{index:0,delta:calls?{tool_calls:calls}:{content:'Synthetic bounded safety response; no real quality judgment.'},finish_reason:calls?'tool_calls':'stop'}]};const nl=String.fromCharCode(10),response=new Response('data: '+JSON.stringify(chunk)+nl+nl+'data: [DONE]'+nl+nl,{status:200,headers:{'Content-Type':'text/event-stream'}});Object.defineProperty(response,'url',{value:String(url)});return response;};`},
   plugins:[{name:'explicit-synthetic-network-and-billing',setup(builder){
    builder.onResolve({filter:/(?:billing\/paid-fetch|network\/model-transport)$/},()=>({path:'synthetic-adapters',namespace:'ma24-fixture'}));

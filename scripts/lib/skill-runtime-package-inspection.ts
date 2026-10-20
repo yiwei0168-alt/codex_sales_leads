@@ -33,5 +33,6 @@ export function inspectSkillRuntimePackage(imageId:string,role:'main-agent'|'ski
  const enrolled=JSON.parse(docker([...boundary,'--env',`${variable}=${measured.deploymentHash}`,imageId,'--verify']));
  const flag=role==='main-agent'?'taskTransportPackageBindingVerified':'deploymentEnrollmentVerified';
  if(enrolled[field]!=='passed'||enrolled[flag]!==true||enrolled.deploymentHash!==measured.deploymentHash)throw new Error('Runtime signing deployment binding inspection failed');
- return skillRuntimePackageInspectionSchema.parse({role,imageId,sourceCommit:metadata.revision,...measured});
+ return skillRuntimePackageInspectionSchema.parse({role,imageId,sourceCommit:metadata.revision,...measured,
+  ...(checked.runtimeModuleFormat!==undefined?{runtimeModuleFormat:checked.runtimeModuleFormat}:{})});
 }

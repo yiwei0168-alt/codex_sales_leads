@@ -15,6 +15,7 @@ try{
  const verified=run([],['--verify']);assert.equal(verified.status,0,verified.stderr);
  const receipt=JSON.parse(verified.stdout.trim());assert.equal(receipt.collectorPackageIntegrity,'passed');
  assert.equal(receipt.runtimeBoundaryVerified,true);assert.equal(receipt.rootReadOnly,true);assert.equal(receipt.capabilitiesEmpty,true);
+ assert.equal(receipt.runtimeModuleFormat,'esm');
  assert.match(receipt.deploymentHash,/^[a-f0-9]{64}$/);assert.equal(receipt.deploymentEnrollmentVerified,false);
  const enrolled=run(['--env',`SKILL_RUNNER_DEPLOYMENT_SHA256=${receipt.deploymentHash}`],['--verify']);
  assert.equal(enrolled.status,0,enrolled.stderr);assert.equal(JSON.parse(enrolled.stdout.trim()).deploymentEnrollmentVerified,true);
@@ -34,8 +35,8 @@ try{
  const injected=run(['--env','NODE_OPTIONS=--no-warnings'],['--verify']);
  assert.equal(injected.status,1);assert(injected.stderr.includes('Collector package integrity verification failed'));
  const help=run([],['--help']);assert.equal(help.status,0,help.stderr);assert(help.stdout.includes('--check|--execute'));
- const fake=join(temporary,'runner.cjs');writeFileSync(fake,"throw new Error('tampered code must not execute');");
- const tampered=run(['--mount',`type=bind,source=${fake},target=/app/runner.cjs,readonly`],['--help']);
+ const fake=join(temporary,'runner.mjs');writeFileSync(fake,"throw new Error('tampered code must not execute');");
+ const tampered=run(['--mount',`type=bind,source=${fake},target=/app/runner.mjs,readonly`],['--help']);
  assert.equal(tampered.status,1);assert(tampered.stderr.includes('Collector package integrity verification failed'));
  assert(!tampered.stderr.includes('tampered code must not execute'));
  console.log(JSON.stringify({collectorImageVerification:'passed',image,imageId:config.Id,commit:config.Config.Labels['org.opencontainers.image.revision'],

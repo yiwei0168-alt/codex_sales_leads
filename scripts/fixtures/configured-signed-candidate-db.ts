@@ -4,6 +4,7 @@ import {readFile,writeFile} from 'node:fs/promises';
 import {dirname,join} from 'node:path';
 import {spawn} from 'node:child_process';
 import {build} from 'esbuild';
+import {productNodeBuildOptions} from '../lib/product-node-build.mjs';
 import type {Pool} from 'pg';
 import {digest} from '../../src/lib/assistant/main/contracts';
 import {prepareSkillExecutionIdentity} from '../../src/lib/assistant/main/skill-runtime-identity';
@@ -28,10 +29,10 @@ export async function verifyConfiguredSignedCandidateDatabase(pool:Pool,input:{o
   pin:{ownerId:input.owner,skillId:input.skillId,version:1,contentHash:snapshot.snapshot.candidate.value.content_hash,sourceHash:snapshot.skillSourceHash},identity,
   expiresAt:new Date(Date.now()+3600000).toISOString(),cases:[{id:'signed-replay',category:'replay',provenance:'historical-task',inputHash:baseline.projection.inputHash,sourceHash:baseline.projectionHash},
    ...(['negative','injection','permissions','shadow'] as const).map(category=>({id:category,category,provenance:category==='shadow'?'prospective-task' as const:'safety-fixture' as const,inputHash:hash,sourceHash:hash}))]},transaction);
- const evaluationId=randomUUID(),jobPath=join(input.directory,'configured-candidate-job.json'),compiledPath=join(process.cwd(),'tmp','configured-candidate-fixture.cjs');
+ const evaluationId=randomUUID(),jobPath=join(input.directory,'configured-candidate-job.json'),compiledPath=join(process.cwd(),'tmp','configured-candidate-fixture.mjs');
  await writeFile(jobPath,JSON.stringify({ownerId:input.owner,freezeId:frozen.freezeId,evaluationId,maximumModelCalls:8,
   ...(input.prospective?{caseId:'signed-shadow',kind:'prospective',jobId:input.prospective.jobId}:{caseId:'signed-replay',kind:'historical',runId:input.runId})}));
- await build({entryPoints:['scripts/skill-collector-runner.ts'],outfile:compiledPath,bundle:true,platform:'node',target:'node24',format:'cjs',packages:'external',logLevel:'warning',
+ await build({...productNodeBuildOptions(),entryPoints:['scripts/skill-collector-runner.ts'],outfile:compiledPath,
   banner:{js:`globalThis.fetch=async(url,init)=>{if(String(url)!=='https://openrouter.ai/api/v1/chat/completions')throw new Error('Synthetic destination rejected');const body=JSON.parse(init.body);const step=body.messages.filter(m=>m.role==='assistant').length;const call=(id,name,args)=>({index:0,id,type:'function',function:{name,arguments:JSON.stringify(args)}});let calls;if(step===0)calls=[call('candidate-describe-skill','describe_tool',{tool:'skill_read'}),{...call('candidate-describe-customers','describe_tool',{tool:'customer_timeline'}),index:1}];else if(step===1)calls=[call('candidate-read-skill','execute_tool',{tool:'skill_read',arguments:{id:process.env.MA24_CANDIDATE_SKILL_ID}})];else if(step===2)calls=[call('candidate-read-customers','execute_tool',{tool:'customer_timeline',arguments:{}})];const chunk={id:'synthetic-candidate-'+process.env.MA24_CANDIDATE_EVALUATION_ID+'-'+step,model:body.model,provider:'synthetic',choices:[{index:0,delta:calls?{tool_calls:calls}:{content:'Synthetic streamed reply'},finish_reason:calls?'tool_calls':'stop'}]};const nl=String.fromCharCode(10);const response=new Response('data: '+JSON.stringify(chunk)+nl+nl+'data: [DONE]'+nl+nl,{status:200,headers:{'Content-Type':'text/event-stream'}});Object.defineProperty(response,'url',{value:String(url)});return response;};`},
   plugins:[{name:'explicit-synthetic-network-and-billing',setup(builder){
    builder.onLoad({filter:/skill-candidate-runner\.ts$/},async args=>({contents:(await readFile(args.path,'utf8')).replace('}catch{stopReason=stopReason??',` }catch(error){const message=error instanceof Error?error.message:'';console.error('FIXTURE_INNER:'+(/^[A-Za-z -]{1,180}$/.test(message)?message:'Candidate nonstatic validation error'));stopReason=stopReason??`),loader:'ts',resolveDir:dirname(args.path)}));

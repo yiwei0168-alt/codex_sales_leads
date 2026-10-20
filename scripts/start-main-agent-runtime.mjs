@@ -13,6 +13,10 @@ try{
  phase='package-integrity';const boundary=await assertCollectorRuntimeBoundary('/app');
  const expected=await readFile('/app/runtime-manifest.json','utf8'),actual=await collectorPackageInventory('/app');
  if(JSON.stringify(actual)!==expected)throw new Error('Runtime package differs from manifest');
+ const build=JSON.parse(await readFile('/app/build-manifest.json','utf8'));
+ if(build.protocol!=='main-agent-runtime-build-v1'||build.moduleFormat!=='esm'
+  ||['worker','mailbox-worker','server'].some(name=>build.artifacts?.[name]?.sha256!==actual.files[`${name}.mjs`]?.sha256))
+  throw new Error('Main runtime ESM build binding unavailable');
  const deploymentHash=createHash('sha256').update(JSON.stringify(actual)).digest('hex');
  const signingSettings=['TASK_MODEL_TRANSPORT_KEY_ID','TASK_MODEL_TRANSPORT_PRIVATE_KEY_FILE','TASK_MODEL_TRANSPORT_COLLECTOR_ID','TASK_MODEL_TRANSPORT_DEPLOYMENT_SHA256'];
  const signingConfigured=signingSettings.some(key=>Boolean(process.env[key]?.trim()));
@@ -22,7 +26,7 @@ try{
   ||mode!=='--verify'&&signingSettings.some(key=>!process.env[key]?.trim())))throw new Error('Task transport package enrollment unavailable');
  const taskBinding={taskTransportPackageBindingRequired:signingConfigured,taskTransportPackageBindingVerified:signingConfigured};
  if(mode==='--verify'){
-  console.log(JSON.stringify({mainAgentRuntimeIntegrity:'passed',files:Object.keys(actual.files).length,deploymentHash,...taskBinding,...boundary,productionQualified:false}));
+  console.log(JSON.stringify({mainAgentRuntimeIntegrity:'passed',files:Object.keys(actual.files).length,deploymentHash,runtimeModuleFormat:'esm',...taskBinding,...boundary,productionQualified:false}));
  }else{
   phase='database-configuration';
   if(process.env.NODE_ENV!=='production'||!process.env.DATABASE_URL||process.env.DATABASE_MIGRATION_URL)throw new Error('Restricted application database connection required');

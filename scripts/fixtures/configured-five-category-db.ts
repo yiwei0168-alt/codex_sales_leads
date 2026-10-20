@@ -63,7 +63,7 @@ export async function verifyCombinedConfiguredDatabase(pool:Pool,original:Signed
   const declarationJob=join(prospective.directory,'combined-declaration-job.json');
   await writeFile(declarationJob,JSON.stringify({ownerId:original.owner,bundleId:combined.bundleId}));
   const declaration=await new Promise<{code:number|null;output:string}>((accept,reject)=>{
-   const child=spawn(process.execPath,['tmp/skill-collector/runner.cjs','--attest',declarationJob],{windowsHide:true,stdio:['ignore','pipe','pipe'],env:{...process.env,
+   const child=spawn(process.execPath,['tmp/skill-collector/runner.mjs','--attest',declarationJob],{windowsHide:true,stdio:['ignore','pipe','pipe'],env:{...process.env,
     NODE_ENV:'production',NODE_OPTIONS:'',NODE_PATH:'',SKILL_RUNNER_DECLARATION_KEY_ID:prospective.keyId,SKILL_RUNNER_DECLARATION_PRIVATE_KEY_FILE:prospective.keyPath}});
    let output='';child.stdout.on('data',data=>{output+=String(data);});child.stderr.on('data',()=>{});
    child.once('error',reject);child.once('exit',code=>accept({code,output}));

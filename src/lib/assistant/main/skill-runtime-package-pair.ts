@@ -22,6 +22,10 @@ export function compareInspectedSkillRuntimeBytes(input:readonly unknown[]){
   node:p.node,nodeSha256:p.nodeSha256,platform:p.platform,arch:p.arch,
   dependencyManifestHash:p.dependencyManifestHash??null,dependencyFiles:p.dependencyFiles??null}));
  if(new Set(identities.map(digest)).size>1)blockers.add('runtime-package-byte-identities-differ');
+ const moduleBlockers=[...blockers].filter(reason=>reason.startsWith('missing-package-purpose:'));
+ if(rows.some(row=>row.inspection.runtimeModuleFormat===undefined))moduleBlockers.push('runtime-module-format-unavailable');
+ if(rows.some(row=>row.inspection.runtimeModuleFormat!==undefined&&row.inspection.runtimeModuleFormat!=='esm'))moduleBlockers.push('runtime-esm-format-required');
  return {runtimePackageBytesPairRevalidated:blockers.size===0,runtimePackageBytesPairBlockers:[...blockers].sort(),
+  runtimeModuleFormatPairRevalidated:moduleBlockers.length===0,runtimeModuleFormatPairBlockers:moduleBlockers.sort(),
   ...(blockers.size===0?{runtimePackageBytesPairHash:digest({protocol:'skill-runtime-package-bytes-pair-v1',identities})}:{})};
 }

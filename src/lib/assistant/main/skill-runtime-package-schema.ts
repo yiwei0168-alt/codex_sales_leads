@@ -12,6 +12,7 @@ export const skillRuntimePackageInspectionSchema=z.object({
  deploymentHash:sha,runtimeHash:sha,nodeSha256:sha,node:z.string().regex(/^\d+\.\d+\.\d+$/),platform:z.literal('linux'),arch:z.enum(['x64','arm64']),
  sourceInputs:z.number().int().positive(),files:z.number().int().positive(),
  dependencyManifestHash:sha.optional(),dependencyFiles:z.number().int().positive().optional(),
+ runtimeModuleFormat:z.enum(['esm','cjs']).optional(),
 }).strict().superRefine((row,context)=>{
  if((row.dependencyManifestHash===undefined)!==(row.dependencyFiles===undefined))context.addIssue({code:'custom',message:'Runtime dependency inventory incomplete'});
  if(row.dependencyFiles!==undefined&&row.dependencyFiles>row.files)context.addIssue({code:'custom',message:'Runtime dependency count exceeds package inventory'});

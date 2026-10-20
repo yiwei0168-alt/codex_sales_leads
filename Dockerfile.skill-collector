@@ -12,7 +12,7 @@ ARG SOURCE_COMMIT
 LABEL org.opencontainers.image.revision=$SOURCE_COMMIT
 COPY --from=builder /build/node_modules ./node_modules
 COPY --from=builder /build/package.json /build/package-lock.json ./
-COPY --from=builder /build/tmp/skill-collector/runner.cjs ./runner.cjs
+COPY --from=builder /build/tmp/skill-collector/runner.mjs /build/tmp/skill-collector/build-manifest.json ./
 COPY --from=builder /build/src ./.skill-runtime-source/src
 COPY --from=builder /build/package.json /build/package-lock.json /build/tsconfig.json ./.skill-runtime-source/
 COPY --from=builder /build/scripts/patch-node-user.cjs ./.skill-runtime-source/scripts/patch-node-user.cjs

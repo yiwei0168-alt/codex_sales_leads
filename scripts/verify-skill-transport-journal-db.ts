@@ -66,7 +66,7 @@ try{
  const jobPath=join(directory,'private-job.json');
  await writeFile(jobPath,JSON.stringify({ownerId:owner,freezeId:frozen.freezeId,evaluationId,caseId:'replay',maximumModelCalls:8,kind:'historical',runId:randomUUID()}));
  const child=await new Promise<{code:number|null;output:string}>((resolve,reject)=>{
-  const proc=spawn(process.execPath,['tmp/skill-collector/runner.cjs','--check',jobPath],{windowsHide:true,
+  const proc=spawn(process.execPath,['tmp/skill-collector/runner.mjs','--check',jobPath],{windowsHide:true,
    env:{...process.env,NODE_ENV:'production',NODE_OPTIONS:''},stdio:['ignore','pipe','pipe']});let output='';
   proc.stdout.on('data',data=>{output+=String(data);});proc.stderr.on('data',()=>{});proc.once('error',reject);
   proc.once('exit',code=>resolve({code,output}));
