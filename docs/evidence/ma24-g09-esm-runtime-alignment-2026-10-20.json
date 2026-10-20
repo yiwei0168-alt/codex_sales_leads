@@ -1,0 +1,321 @@
+{
+    "stage":  "MA24 G09 shared Node ESM builds, fixed image entry/declaration and workspace five-category acceptance",
+    "date":  "2026-10-20",
+    "applicationCommit":  "ad3aeaf6d3f6d5daa189b5f64c9f600001a81451",
+    "before":  {
+                   "scope":  "six package entry samples demonstrate concrete conditional-export differences; not complete dependency semantics",
+                   "result":  {
+                                  "loaderConditionalEntries":  [
+                                                                   {
+                                                                       "specifier":  "zod",
+                                                                       "esm":  "node_modules/zod/index.js",
+                                                                       "cjs":  "node_modules/zod/index.cjs",
+                                                                       "sameEntry":  false,
+                                                                       "esmSha256":  "c733a1897d6b4b30dad6998597f6896b265b094a65534359ada34b08ecf8932c",
+                                                                       "cjsSha256":  "2a3455cecff4f7021c92d0a3e2e5fc170c0448dc5cc261160127e08f4888a9c2"
+                                                                   },
+                                                                   {
+                                                                       "specifier":  "@langchain/langgraph",
+                                                                       "esm":  "node_modules/@langchain/langgraph/dist/index.js",
+                                                                       "cjs":  "node_modules/@langchain/langgraph/dist/index.cjs",
+                                                                       "sameEntry":  false,
+                                                                       "esmSha256":  "8893be27cbd80998532d1a2dc5491b60a9bb1f11e64c5fb0c44ff6dba661486f",
+                                                                       "cjsSha256":  "befc9456e9104051a95a57bd784f0bc4686d5f4c4b9571161c6e267a580c9609"
+                                                                   },
+                                                                   {
+                                                                       "specifier":  "@langchain/core/messages",
+                                                                       "esm":  "node_modules/@langchain/core/dist/messages/index.js",
+                                                                       "cjs":  "node_modules/@langchain/core/dist/messages/index.cjs",
+                                                                       "sameEntry":  false,
+                                                                       "esmSha256":  "6f89a9272523e68470f01618bc77af72278d459d850499c86f85f390933ac79c",
+                                                                       "cjsSha256":  "2eb8f58ff6da25611bcea29568870ca494eef4b68b5efec6c6a53a3293e8fedb"
+                                                                   },
+                                                                   {
+                                                                       "specifier":  "langsmith",
+                                                                       "esm":  "node_modules/langsmith/index.js",
+                                                                       "cjs":  "node_modules/langsmith/index.cjs",
+                                                                       "sameEntry":  false,
+                                                                       "esmSha256":  "c98517664512e9f8bc990db01c296a4d667a53cef785bd5cbc4c4298dbded589",
+                                                                       "cjsSha256":  "6aabf776f885086e83be216265cf51f7c1e184ba5eadf633cf862db4af9a0e9b"
+                                                                   },
+                                                                   {
+                                                                       "specifier":  "pg",
+                                                                       "esm":  "node_modules/pg/esm/index.mjs",
+                                                                       "cjs":  "node_modules/pg/lib/index.js",
+                                                                       "sameEntry":  false,
+                                                                       "esmSha256":  "5ef4d06556eeb775987759c2c09229dca2139421ee40e819b566612db2b4a8dc",
+                                                                       "cjsSha256":  "3fad6e6d3d976edbabe0cbc9e1d39f4340bcb719bbbb186a0d3a24f3dbd4a94c"
+                                                                   },
+                                                                   {
+                                                                       "specifier":  "undici",
+                                                                       "esm":  "node_modules/undici/index.js",
+                                                                       "cjs":  "node_modules/undici/index.js",
+                                                                       "sameEntry":  true,
+                                                                       "esmSha256":  "93fc85c00a59b58f410c901e5477d56770de3816bfbe183e751624aeb4a5e6a5",
+                                                                       "cjsSha256":  "93fc85c00a59b58f410c901e5477d56770de3816bfbe183e751624aeb4a5e6a5"
+                                                                   }
+                                                               ],
+                                  "modelCalls":  0
+                              },
+                   "log":  "tmp/ma24-esm-cjs-before-627f1990.log"
+               },
+    "builds":  {
+                   "main":  "tmp/ma24-esm-main-image-ad3aeaf6-build.log",
+                   "bothExitedZero":  true,
+                   "source":  "clean fixed Git archive, excluding unstaged files",
+                   "collector":  "tmp/ma24-esm-collector-image-ad3aeaf6-build.log"
+               },
+    "pair":  {
+                 "exitCode":  0,
+                 "result":  {
+                                "localRuntimeDependencyPair":  "passed",
+                                "mainInspection":  {
+                                                       "role":  "main-agent",
+                                                       "imageId":  "sha256:fa8b7a031134db4fa0c6946ee4f97465931bb97da6b642604a6f9052d3c796f9",
+                                                       "sourceCommit":  "ad3aeaf6d3f6d5daa189b5f64c9f600001a81451",
+                                                       "deploymentHash":  "00ddf1cb1091fcadca28c5cde6959bd44e6192929e6bb69ae3aab32866e81c40",
+                                                       "runtimeHash":  "83ec975c99a3cc2caba438707faca3d62e3aef4f825831fe97660ae92054cdab",
+                                                       "nodeSha256":  "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+                                                       "node":  "24.21.0",
+                                                       "platform":  "linux",
+                                                       "arch":  "x64",
+                                                       "sourceInputs":  981,
+                                                       "files":  34533,
+                                                       "dependencyManifestHash":  "d3edb974b4ae6e725cbb62205c8f0e65606b061fd97bce214289279ccca20137",
+                                                       "dependencyFiles":  33503,
+                                                       "runtimeModuleFormat":  "esm"
+                                                   },
+                                "collectorInspection":  {
+                                                            "role":  "skill-collector",
+                                                            "imageId":  "sha256:7fd4854b72b22cc1d715b153d5c1ccc1929088f0da65be1ada9b6910b209a591",
+                                                            "sourceCommit":  "ad3aeaf6d3f6d5daa189b5f64c9f600001a81451",
+                                                            "deploymentHash":  "f0e13641d46fd884716b0fb5cf8b8ba35b2788c2f9b20685f72420081388766c",
+                                                            "runtimeHash":  "83ec975c99a3cc2caba438707faca3d62e3aef4f825831fe97660ae92054cdab",
+                                                            "nodeSha256":  "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+                                                            "node":  "24.21.0",
+                                                            "platform":  "linux",
+                                                            "arch":  "x64",
+                                                            "sourceInputs":  981,
+                                                            "files":  34497,
+                                                            "dependencyManifestHash":  "d3edb974b4ae6e725cbb62205c8f0e65606b061fd97bce214289279ccca20137",
+                                                            "dependencyFiles":  33503,
+                                                            "runtimeModuleFormat":  "esm"
+                                                        },
+                                "comparison":  {
+                                                   "runtimePackageBytesPairRevalidated":  true,
+                                                   "runtimePackageBytesPairBlockers":  [
+
+                                                                                       ],
+                                                   "runtimeModuleFormatPairRevalidated":  true,
+                                                   "runtimeModuleFormatPairBlockers":  [
+
+                                                                                       ],
+                                                   "runtimePackageBytesPairHash":  "776d060b0a5f339fbe0089371a228415d03f1db42543279bbf1a41ac39e31b57"
+                                               },
+                                "esmModuleFormatPairVerified":  true,
+                                "runtimeRegistrationsPublished":  false,
+                                "completeDependencyRuntimeEquivalenceVerified":  false,
+                                "productionQualified":  false,
+                                "automaticActivation":  false,
+                                "modelCalls":  0
+                            },
+                 "log":  "tmp/ma24-esm-runtime-pair-ad3aeaf6.log",
+                 "requireEsmFlag":  true
+             },
+    "entry":  {
+                  "exitCode":  0,
+                  "result":  {
+                                 "collectorImageVerification":  "passed",
+                                 "image":  "sha256:7fd4854b72b22cc1d715b153d5c1ccc1929088f0da65be1ada9b6910b209a591",
+                                 "imageId":  "sha256:7fd4854b72b22cc1d715b153d5c1ccc1929088f0da65be1ada9b6910b209a591",
+                                 "commit":  "ad3aeaf6d3f6d5daa189b5f64c9f600001a81451",
+                                 "packageFiles":  34497,
+                                 "deploymentHash":  "f0e13641d46fd884716b0fb5cf8b8ba35b2788c2f9b20685f72420081388766c",
+                                 "measuredEnrollmentVerified":  true,
+                                 "missingMalformedAndMismatchedEnrollmentRejectedBeforeRunner":  true,
+                                 "matchedEnrollmentReachesRunner":  true,
+                                 "nodeOptionsRejected":  true,
+                                 "nonRootReadOnlyNoNetwork":  true,
+                                 "changedRunnerRejectedBeforeExecution":  true,
+                                 "actualModelCalls":  0,
+                                 "productionQualified":  false
+                             },
+                  "log":  "tmp/ma24-esm-collector-entry-ad3aeaf6.log"
+              },
+    "declaration":  {
+                        "extraMigration":  141,
+                        "exitCode":  0,
+                        "command":  "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --declaration-image=sha256:7fd4854b72b22cc1d715b153d5c1ccc1929088f0da65be1ada9b6910b209a591",
+                        "result":  {
+                                       "runnerAttestationStore":  "passed",
+                                       "collectorAppendAndIdempotency":  true,
+                                       "lockedEvidenceLatestReviewSerialized":  true,
+                                       "lockedEvidenceCrossAccountRejected":  true,
+                                       "lockedPinDerivedFromCurrentSkill":  true,
+                                       "lockedReadRetainsRevokedLatestReview":  true,
+                                       "humanApprovalCreated":  false,
+                                       "automaticActivation":  false,
+                                       "configuredDeclarationCliDatabaseVerified":  true,
+                                       "configuredDeclarationLinuxImageVerified":  true,
+                                       "declarationImageId":  "sha256:7fd4854b72b22cc1d715b153d5c1ccc1929088f0da65be1ada9b6910b209a591",
+                                       "declarationMeasuredDeploymentHash":  "f0e13641d46fd884716b0fb5cf8b8ba35b2788c2f9b20685f72420081388766c",
+                                       "declarationMissingTlsRootAndMismatchedDeploymentRejected":  true,
+                                       "configuredDeclarationRetryReusesStatement":  true,
+                                       "configuredDeclarationDatabaseTrustVerified":  false,
+                                       "configuredDeclarationRegistryDisablementWaitsForCollectorCommit":  false,
+                                       "configuredDeclarationCrossAccountAndSyntheticRejected":  true,
+                                       "configuredDeclarationCallerBindingRejected":  true,
+                                       "configuredDeclarationAppLoginRejected":  true,
+                                       "configuredDeclarationWrongKeyPurposeRevocationAndNodeOptionsRejected":  true,
+                                       "lockedReadRevokedFreezeRejected":  true,
+                                       "lockedDeclarationDatabaseClockExpiryRejected":  true,
+                                       "lockedDeclarationRegistryDisablementRejected":  true,
+                                       "declarationAppendWaitsAndResumes":  true,
+                                       "latestDeclarationSelected":  true,
+                                       "syntheticDeclarationNotRequired":  true,
+                                       "emptyObservationAndSignedTimeDriftRejected":  true,
+                                       "historicalUnboundStatementsRejectedOnRead":  true,
+                                       "appInsertDenied":  true,
+                                       "crossAccountDenied":  true,
+                                       "appendOnly":  true,
+                                       "signedSyntheticEvidenceRejected":  true,
+                                       "keyDisablementAndFreezeRevocationRejected":  true,
+                                       "deferredEvaluationMigrationsApplied":  false,
+                                       "productionKeysCreated":  false,
+                                       "modelCalls":  0
+                                   },
+                        "freshMigrationThrough":  135,
+                        "additionalFixtureMigrations":  [
+                                                            148,
+                                                            149,
+                                                            152
+                                                        ],
+                        "log":  "tmp/ma24-esm-declaration-linux-ad3aeaf6.log"
+                    },
+    "workspaceCombined":  {
+                              "additionalFixtureMigrations":  [
+                                                                  141,
+                                                                  144,
+                                                                  145,
+                                                                  146,
+                                                                  147,
+                                                                  148,
+                                                                  149,
+                                                                  150,
+                                                                  151,
+                                                                  152,
+                                                                  156,
+                                                                  157
+                                                              ],
+                              "environment":  {
+                                                  "MA24_DATABASE_TRUST":  "1",
+                                                  "MA24_CONFIGURED_COMBINED":  "1"
+                                              },
+                              "freshMigrationThrough":  135,
+                              "command":  "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --transport-journal",
+                              "log":  "tmp/ma24-esm-five-category-workspace.log",
+                              "runtimeRegistrationSchema159Installed":  false,
+                              "exitCode":  0,
+                              "scope":  "workspace native ESM builds and explicit synthetic network/billing adapters; not fixed Linux full-flow execution",
+                              "result":  {
+                                             "transportJournalDatabase":  "passed",
+                                             "originalTaskJournalDatabase":  true,
+                                             "originalTaskSignedFallbackReadback":  true,
+                                             "originalTaskRecoveryReuse":  true,
+                                             "originalTaskCrossAccountRejected":  true,
+                                             "originalTaskKeyRevocationRejected":  true,
+                                             "originalTaskTamperedSignatureRejected":  true,
+                                             "originalTaskRouteGapRejected":  true,
+                                             "originalTaskCompiledAdmissionVerified":  true,
+                                             "originalTaskRequestFactoryAdmissionExecuted":  true,
+                                             "originalTaskRequestClosureExecuted":  true,
+                                             "originalTaskSyntheticFailureSignedAndPersisted":  true,
+                                             "originalTaskSyntheticStreamSuccessSignedAndPersisted":  true,
+                                             "originalTaskOtherBillingTaskRejected":  true,
+                                             "originalTaskContextChainVerified":  true,
+                                             "originalTaskGraphReplayVerified":  true,
+                                             "originalTaskChangedUserMessageRejected":  true,
+                                             "originalTaskChangedFinalReplyRejected":  true,
+                                             "originalTaskDescriptionTransitionVerified":  true,
+                                             "originalTaskThreeDecisionBusinessReadVerified":  true,
+                                             "originalTaskChangedReadReceiptRejected":  true,
+                                             "signedTaskBaselineProjectionVerified":  true,
+                                             "signedTaskCandidateSnapshotVerified":  true,
+                                             "configuredSameFreezeFiveCategoriesVerified":  true,
+                                             "lockedTransportReceiptsRevalidated":  true,
+                                             "transportOriginalTaskCount":  2,
+                                             "transportEvaluationArmCount":  8,
+                                             "disabledTransportKeyRejected":  true,
+                                             "collectedCases":  5,
+                                             "combinedArtifactHash":  "6c26f8c6401c6cd307ceb6b1c4b3ce61b99e7910e10a2bab57e62837204e2f08",
+                                             "frozenPlanHash":  "cb5cc7c91b5da6e161037eb1bcc182e0f565a0b1ecbd5fd6bf4a6b905e15b894",
+                                             "lockedMaterialsVerified":  true,
+                                             "prospectiveCaptureSourcesLocked":  true,
+                                             "missingHumanJudgmentBlocksPolicy":  true,
+                                             "immutableAttachmentSnapshotVerified":  true,
+                                             "withdrawnSnapshotSourceRejected":  true,
+                                             "restoredCanonicalSnapshotRevalidated":  true,
+                                             "signingEnrollmentCoverageVerified":  true,
+                                             "signingEnrollmentCount":  4,
+                                             "signingEnrollmentCoverageHash":  "d9deb3107ebb58d144ed3d8b2e7bfb3b2bd57aae24b8f32194f2ae909076cca3",
+                                             "signingUsageWindowsVerified":  true,
+                                             "runtimePackagesRegistered":  false,
+                                             "runtimePackageBlockers":  [
+                                                                            "registration-schema-unavailable"
+                                                                        ],
+                                             "databaseTrustRegistryReadinessVerified":  true,
+                                             "registryDisablementBlockedUntilReadinessTransactionCommit":  true,
+                                             "realQualityAccepted":  false,
+                                             "productionQualificationGranted":  false,
+                                             "automaticActivation":  false,
+                                             "billingAndNetworkAdaptersSynthetic":  true,
+                                             "actualModelCalls":  0,
+                                             "restrictedCollectorAppend":  true,
+                                             "persistedSignatureVerified":  true,
+                                             "recoveryReusesStoredOutcome":  true,
+                                             "crossAccountHidden":  true,
+                                             "appendOnly":  true,
+                                             "registryRevocationRejected":  true,
+                                             "freezeRevocationRejected":  true,
+                                             "dedicatedLoginVerified":  true,
+                                             "appRoleMembershipRejected":  true,
+                                             "compiledCollectorDatabasePreflight":  true,
+                                             "collectorImageTlsPreflight":  false,
+                                             "signedFallbackJournalVerified":  true,
+                                             "freezeRevocationSerialized":  true,
+                                             "modelAttemptAndOutcomeAppendSerialized":  true,
+                                             "waitingModelWritesRejectCommittedRevocation":  true,
+                                             "postRevocationModelWritesRejected":  true,
+                                             "postRevocationLockedReadRejected":  true,
+                                             "syntheticFixture":  true,
+                                             "binaryVerified":  false
+                                         }
+                          },
+    "basicTransport":  {
+                           "scope":  "base native ESM preflight, original task and historical candidate before enabling combined fixture",
+                           "exitCode":  0,
+                           "log":  "tmp/ma24-esm-transport-journal-workspace.log"
+                       },
+    "checks":  {
+                   "vitest":  "99 passed across four focused suites",
+                   "nodeTests":  "21 passed",
+                   "typecheck":  "passed",
+                   "eslint":  "19 files passed",
+                   "nativeCollectorBuildAndHelp":  "passed",
+                   "nativeMainBuild":  "passed"
+               },
+    "limits":  [
+                   "No real provider/model calls, production keys, real human quality judgment or automatic Skill activation",
+                   "Full five-category flow ran in the Windows workspace with installed dependencies and local config; fixed Linux evidence is entry, byte/format pair and actual declaration matrix only",
+                   "No complete dynamic import/conditional-export/provider or remote-host execution equivalence claim",
+                   "Runtime package159 registration schema was absent in the combined fixture and readiness correctly reports registration-schema-unavailable; no production registration published",
+                   "Source revocation lifetime, trusted production qualification, final automatic activation transaction and real quality remain incomplete",
+                   "G01-G13 incomplete; G14-G20 and LAN deployment deferred"
+               ],
+    "cleanup":  {
+                    "freshPilotContainers":  "empty",
+                    "fixedCollectorProbeContainers":  "empty",
+                    "allExecutionHandlesTerminal":  true,
+                    "freshPilotNetworks":  "empty"
+                }
+}
