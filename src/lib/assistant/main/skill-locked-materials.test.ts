@@ -3,7 +3,8 @@ import {beforeEach,expect,it,vi} from 'vitest';
 import {digest} from './contracts';
 import {requireCanonicalSkillAcceptanceOriginals} from './skill-canonical-original-coverage';
 import {revalidateLockedSkillAcceptanceMaterials,evaluateLockedSkillAcceptanceReadiness} from './skill-locked-materials';
-const m=vi.hoisted(()=>({read:vi.fn(),material:vi.fn(),policy:vi.fn(),lock:vi.fn(),methods:vi.fn(),query:vi.fn(),memoryBoundary:vi.fn(),times:vi.fn(),bytes:vi.fn(),knowledgeBytes:vi.fn(),memoryReceipts:vi.fn(),privateReceipts:vi.fn(),runner:vi.fn(),transports:vi.fn(),packages:vi.fn(),timeFence:vi.fn()}));
+const m=vi.hoisted(()=>({read:vi.fn(),material:vi.fn(),policy:vi.fn(),lock:vi.fn(),methods:vi.fn(),query:vi.fn(),memoryBoundary:vi.fn(),times:vi.fn(),bytes:vi.fn(),knowledgeBytes:vi.fn(),memoryReceipts:vi.fn(),privateReceipts:vi.fn(),runner:vi.fn(),transports:vi.fn(),packages:vi.fn(),timeFence:vi.fn(),sources:vi.fn()}));
+vi.mock('./skill-activation-sources',()=>({captureSkillActivationSources:m.sources}));
 vi.mock('./skill-memory-time-fence',async original=>({...await original<typeof import('./skill-memory-time-fence')>(),captureSkillMemoryTimeFence:m.timeFence}));
 vi.mock('./skill-private-receipt-check',()=>({revalidateLockedSkillPrivateReceipts:m.privateReceipts}));
 vi.mock('./skill-runtime-package-store',()=>({readLockedSkillRuntimePackages:m.packages}));
@@ -12,7 +13,7 @@ vi.mock('./skill-runner-attestation-store',()=>({readLockedSkillRunnerAttestatio
 vi.mock('./skill-memory-receipt-check',()=>({revalidateLockedSkillMemoryReceipts:m.memoryReceipts}));
 vi.mock('./skill-knowledge-receipt-bytes',()=>({revalidateLockedSkillKnowledgeReceiptBytes:m.knowledgeBytes}));
 vi.mock('./skill-attachment-bytes',()=>({revalidateLockedSkillAttachmentBytes:m.bytes}));
-vi.mock('./skill-acceptance-run-locks',()=>({lockSkillAcceptanceRunJournals:m.lock}));
+vi.mock('./skill-acceptance-run-locks',async original=>({...await original<typeof import('./skill-acceptance-run-locks')>(),lockSkillAcceptanceRunJournals:m.lock}));
 vi.mock('./skill-pinned-method-locks',()=>({lockSkillAcceptancePinnedMethods:m.methods}));
 vi.mock('./memory-message-guard',()=>({withCurrentDecisionMemory:m.memoryBoundary}));
 vi.mock('./skill-experience-time-check',()=>({revalidateLockedSkillExperienceTimes:m.times}));
@@ -24,7 +25,8 @@ vi.mock('./skill-locked-acceptance-policy',()=>({evaluateLockedSkillAcceptancePo
 const context={userId:'owner'},client={query:m.query} as unknown as PoolClient,bundleId='bundle';
 const observation={caseId:'replay',baseline:{answerHash:digest('PRIVATE baseline')},candidate:{answerHash:digest('PRIVATE candidate')}};
 const bundle={skillCatalogSourcesLocked:true,knowledgeSourcesLocked:true,decisionMemorySourcesLocked:true,artifactHash:digest('artifact'),latestReviewHash:digest('reviews'),currentPin:{version:1},freezeStatus:{freezeId:'freeze'},
- artifact:{sourceKind:'synthetic-fixture',plan:{identity:{runtimeHash:digest('runtime')},cases:[{id:'replay'}]},observations:[observation]}};
+ artifact:{sourceKind:'synthetic-fixture',plan:{identity:{runtimeHash:digest('runtime')},cases:[{id:'replay',provenance:'historical-task'}]},observations:[observation],
+  rawReceipts:{baselineSources:{replay:{runId:'00000000-0000-4000-8000-000000000008'}},candidateSources:{replay:{runId:'00000000-0000-4000-8000-000000000008'}}}}};
 const material=()=>({bundleId,caseId:'replay',artifactHash:bundle.artifactHash,observationHash:digest(observation),sourceKind:'synthetic-fixture',
  freezeStatus:{state:'active',freezeId:'freeze'},canPass:{baseline:true,candidate:true},baseline:'PRIVATE baseline',candidate:'PRIVATE candidate',receipts:['PRIVATE receipt']});
 const canonicalBytes={attachmentBytesRevalidated:true,attachmentBytesCount:1,attachmentBytesManifestHash:digest('attachment'),
@@ -39,6 +41,7 @@ function pendingOriginals(){
 }
 beforeEach(()=>{vi.resetAllMocks();m.packages.mockResolvedValue({runtimePackagesRequired:true,runtimePackagesRegistered:false,runtimePackageBlockers:['package-registration-missing']});m.read.mockResolvedValue(bundle);m.material.mockResolvedValue(material());
  m.timeFence.mockResolvedValue({memoryTimeFenceRevalidated:true,memoryTimeCheckedAt:'2026-10-19T01:00:00.000Z',memoryTimeValidBefore:null});
+ m.sources.mockResolvedValue({activationSourcesRevalidated:true,activationSources:[],activationSourcesValidBefore:null});
  m.bytes.mockResolvedValue({attachmentBytesRevalidated:true,attachmentBytesCount:1,attachmentBytesManifestHash:'manifest'});
  m.knowledgeBytes.mockResolvedValue({knowledgeReceiptBytesRevalidated:true,knowledgeReceiptAssetCount:1,knowledgeReceiptDatabaseOnlyCount:0,knowledgeReceiptBytesManifestHash:'knowledge-manifest'});
  m.memoryReceipts.mockResolvedValue({memoryReceiptSourcesRevalidated:true,memoryReceiptCount:1,memoryReceiptCheckedAt:'2026-10-19T01:02:03.000Z',memoryTimeFenceRevalidated:true,memoryTimeValidBefore:null});
@@ -204,7 +207,8 @@ it('retains only authenticated task receipt references for the final byte check'
  expect(JSON.stringify(out)).not.toContain('knowledge_originals');
 });
 it('does not interpret adversarial safety fixture receipts as real knowledge assets',async()=>{
- m.read.mockResolvedValue({...bundle,artifact:{...bundle.artifact,plan:{cases:[{id:'replay',provenance:'safety-fixture'}]}}});
+ m.read.mockResolvedValue({...bundle,artifact:{...bundle.artifact,plan:{cases:[{id:'replay',provenance:'safety-fixture'}]},
+  rawReceipts:{...bundle.artifact.rawReceipts,safetySources:{replay:{runId:'00000000-0000-4000-8000-000000000008'}}}}});
  await evaluateLockedSkillAcceptanceReadiness(client,context,bundleId);
  expect(m.knowledgeBytes).toHaveBeenLastCalledWith(client,context.userId,[]);
 });

@@ -10,6 +10,10 @@ import {changeSkill,readSkill,listSkills,listSkillsPage} from '../../src/lib/ass
 import {assertCurrentSkillMessages,SkillContextChangedError} from '../../src/lib/assistant/main/skill-message-guard';
 import {withBoundTenantTransaction} from '../../src/lib/rag/db';
 import {lockSkillAcceptancePinnedMethods} from '../../src/lib/assistant/main/skill-pinned-method-locks';
+import {captureSkillActivationSources} from '../../src/lib/assistant/main/skill-activation-sources';
+import {skillAcceptanceRunIds} from '../../src/lib/assistant/main/skill-acceptance-run-locks';
+import {skillActivationCurrent} from '../../src/lib/assistant/main/skill-activation-binding';
+import {tenantTransaction} from '../../src/lib/rag/db';
 import {productNodeBuildOptions} from '../lib/product-node-build.mjs';
 
 /** Disposable database only. The real producer must reject missing evidence.
@@ -19,6 +23,8 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
  assert.equal(process.env.MA24_DISPOSABLE_LOCKED_POLICY,'1');
  assert.equal((await pool.query('select count(*)::int n from app_user')).rows[0].n,3);
  await pool.query(await readFile('db/migrations/141_skill_runner_attestation.sql','utf8'));
+ for(const migration of ['144_skill_task_origin_locks.sql','147_skill_timeline_source_locks.sql','151_skill_pinned_method_source_locks.sql'])
+  await pool.query(await readFile(`db/migrations/${migration}`,'utf8'));
  await pool.query(await readFile('db/migrations/157_skill_runner_trust_registry.sql','utf8'));
  await pool.query(await readFile('db/migrations/159_skill_runtime_package_registration.sql','utf8'));
  const commitGuard=await readFile('db/migrations/160_skill_activation_commit_guard.sql','utf8');await pool.query(commitGuard);await pool.query(commitGuard);
@@ -61,7 +67,9 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
    values($1,$2,$3,1,$4,$5,$6,$7,$8)`,[pending,owner,skillId,artifact.sourceKind,JSON.stringify(artifact.plan),JSON.stringify(artifact.observations),JSON.stringify(artifact.rawReceipts),digest(artifact)]);
   await assert.rejects(changeSkill(rejected,action),/declaration unavailable/);
   assert.deepEqual(await inspect(rejected),{enabled:false,status:'started',output:null,events:0});
-  const flags=['policyPassed','trustRegistryLocked','sourceRevocationsLocked','collectorProvenanceVerified','productionAgentEquivalent','canonicalOriginalCoverageRequired','canonicalOriginalCoverageRevalidated',
+  const sourceSnapshot=await tenantTransaction(owner,client=>withBoundTenantTransaction(client,owner,()=>captureSkillActivationSources(client,owner,skillAcceptanceRunIds(artifact))));
+  const sourceRunId=sourceSnapshot.activationSources[0].runId;
+  const flags=['policyPassed','activationSourcesRevalidated','trustRegistryLocked','sourceRevocationsLocked','collectorProvenanceVerified','productionAgentEquivalent','canonicalOriginalCoverageRequired','canonicalOriginalCoverageRevalidated',
    'runnerDeclarationRequired','runnerDeclarationRevalidated','transportReceiptsRequired','transportReceiptsRevalidated','signingEnrollmentCoverageRequired','signingEnrollmentCoverageRevalidated',
    'runtimePackagesRequired','runtimePackagesRegistered','runtimePackageBytesPairRevalidated','runtimeModuleFormatPairRevalidated','methodExperienceTimesRevalidated','decisionMemorySnapshotRevalidated',
    'memoryReceiptSourcesRevalidated','memoryTimeFenceRevalidated','privateReceiptSourcesRevalidated','lockedEvidencePolicyEvaluated','sourcePayloadsRevalidated','knowledgeSourcesLocked','decisionMemorySourcesLocked',
@@ -74,7 +82,9 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
    return {...${JSON.stringify(Object.fromEntries(flags.map(key=>[key,true])))},artifactHash:row.artifact_hash,latestReviewHash:${JSON.stringify(digest([]))},
     materialsHash:'${digest('mock materials')}',currentRuntimeIdentityHash:'${digest('mock runtime')}',trustRegistryHash:'${digest(registry)}',runtimePackageRegistrationHash:'${digest('mock package')}',
     runtimePackageRevisions:${JSON.stringify(packageRevisions)},...fence,blockers:[],acceptanceTimeCheckedAt:now.toISOString(),acceptanceValidBefore:new Date(Math.min(
-     now.getTime()+(process.env.MA24_ACTIVATION_EXPIRY==='1'?2000:3600000),fence.memoryTimeValidBefore?Date.parse(fence.memoryTimeValidBefore):Infinity)).toISOString()};}`;
+     now.getTime()+(process.env.MA24_ACTIVATION_EXPIRY==='1'?2000:3600000),fence.memoryTimeValidBefore?Date.parse(fence.memoryTimeValidBefore):Infinity,
+     ${JSON.stringify(sourceSnapshot.activationSourcesValidBefore)}?Date.parse(${JSON.stringify(sourceSnapshot.activationSourcesValidBefore)}):Infinity)).toISOString(),
+     activationSources:${JSON.stringify(sourceSnapshot.activationSources)}};}`;
   const compiled=join(directory,'transaction.mjs');
   await build({...productNodeBuildOptions(),entryPoints:['scripts/fixtures/skill-final-activation-transaction-runner.ts'],outfile:compiled,
    plugins:[{name:'explicit-test-only-qualified-producer',setup(builder){builder.onLoad({filter:/skill-locked-materials\.ts$/},args=>({contents:mock,loader:'ts',resolveDir:dirname(args.path)}));}}]});
@@ -101,7 +111,7 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
     await lifecycleClient.query('set local role network_copilot_app');
     await lifecycleClient.query("select set_config('app.current_user_id',$1,true),set_config('app.current_user_role','member',true)",[owner]);
     try{
-     const valid=(await lifecycleClient.query('select skill_activation_is_current($1,$2,1) current',[owner,skillId])).rows[0].current;
+     const valid=await skillActivationCurrent(lifecycleClient,owner,skillId,1,binding);
      await withBoundTenantTransaction(lifecycleClient,owner,async()=>{
       const selected=await readSkill(committed as ExecutionContext,skillId);
       assert.equal(selected!==null,valid,'actual skill_read follows qualification');
@@ -133,6 +143,14 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
      values($1,$2,'synthetic-lifecycle',1,$2,'assistant-development',$3,$4)`,[pending,owner,digest('synthetic observation'),
       {caseId:'synthetic-lifecycle',revision:1,reviewerId:owner,kind:'assistant-development',observationHash:digest('synthetic observation')}])],
     ['expiry',()=>lifecycleClient.query("update agent_skill set activation_binding=jsonb_set(activation_binding,'{validBefore}',to_jsonb((clock_timestamp()-interval '1 second')::text)) where id=$1",[skillId])],
+    ['source-task',()=>lifecycleClient.query("update agent_run set status='failed' where user_id=$1 and id=$2",[owner,sourceRunId])],
+    ['source-conversation',()=>lifecycleClient.query("update assistant_conversation set status='archived' where user_id=$1 and id=(select conversation_id from agent_run where id=$2 and user_id=$1)",[owner,sourceRunId])],
+    ['source-message',()=>lifecycleClient.query("update assistant_message set content='Synthetic withdrawn original' where user_id=$1 and metadata->>'runId'=$2 and role='user'",[owner,sourceRunId])],
+    ['source-current-memory',async()=>{
+     const memoryId=randomUUID();await lifecycleClient.query(`insert into agent_memory(id,owner_id,scope,kind,memory_key,source_kind)
+      values($1,$2,'account','preference',$1::uuid::text,'explicit')`,[memoryId,owner]);
+     return lifecycleClient.query("insert into agent_memory_version(memory_id,version,content,scope_snapshot) values($1,1,'Synthetic changed source context','{}')",[memoryId]);
+    }],
    ];
    for(const [name,mutate] of mutations){
     await lifecycleClient.query('begin');
@@ -185,6 +203,9 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
   console.log(JSON.stringify({skillActivationLifecycle:'passed',registryChangeDenied:true,freezeRevocationDenied:true,packageWithdrawalDenied:true,
    packageSupersessionDenied:true,reviewRevisionChangeDenied:true,expiredBindingDenied:true,manualDisableClearsBinding:true,
    actualReadAndModelListAndUiListAndPinnedGuard:true,dependentAcceptanceMethodInvalidation:true,bindingClearBeforeCommitRollsBack:true,qualificationProducerMocked:true,humanApprovalCreated:false}));
+  console.log(JSON.stringify({activationBusinessSourceLifecycle:'passed',actualSourceSnapshots:true,sourceTaskRevocationDenied:true,
+   sourceConversationArchiveDenied:true,sourceMessageChangeDenied:true,sourceDecisionMemoryChangeDenied:true,
+   freshReadAndListsAndRunningAndDependentGuards:true,qualificationProducerMocked:true,humanApprovalCreated:false,modelCalls:0}));
   console.log(JSON.stringify({memoryTimeCommitFence:'passed',actualDecisionMemoryExpiryCommitRejected:true,actualFutureMemoryActivationCommitRejected:true,
    activationReturnedBeforeCommit:true,sourceEditsDuringActivation:0,temporalFenceProducerReal:true,otherQualificationProducerMocked:true,humanApprovalCreated:false,modelCalls:0}));
  }finally{

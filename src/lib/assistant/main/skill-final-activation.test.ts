@@ -24,18 +24,20 @@ const qualified=()=>Object.fromEntries([
  ...['policyPassed','trustRegistryLocked','sourceRevocationsLocked','collectorProvenanceVerified','productionAgentEquivalent','canonicalOriginalCoverageRequired','canonicalOriginalCoverageRevalidated',
  'runnerDeclarationRequired','runnerDeclarationRevalidated','transportReceiptsRequired','transportReceiptsRevalidated','signingEnrollmentCoverageRequired','signingEnrollmentCoverageRevalidated',
  'runtimePackagesRequired','runtimePackagesRegistered','runtimePackageBytesPairRevalidated','runtimeModuleFormatPairRevalidated','methodExperienceTimesRevalidated',
- 'decisionMemorySnapshotRevalidated','memoryReceiptSourcesRevalidated','memoryTimeFenceRevalidated','privateReceiptSourcesRevalidated','lockedEvidencePolicyEvaluated','sourcePayloadsRevalidated',
+ 'decisionMemorySnapshotRevalidated','activationSourcesRevalidated','memoryReceiptSourcesRevalidated','memoryTimeFenceRevalidated','privateReceiptSourcesRevalidated','lockedEvidencePolicyEvaluated','sourcePayloadsRevalidated',
  'knowledgeSourcesLocked','decisionMemorySourcesLocked','skillCatalogSourcesLocked','pinnedMethodSourcesLocked','taskOriginsLocked','taskJournalsLocked',
  'prospectiveCaptureSourcesLocked','timelineSourcesLocked','mailReadSourcesLocked','attachmentMetadataLocked'].map(key=>[key,true]),
  ...['artifactHash','latestReviewHash','materialsHash','currentRuntimeIdentityHash','trustRegistryHash','runtimePackageRegistrationHash'].map(key=>[key,digest(key)]),
  ['artifactHash',bundle.artifact_hash],['blockers',[]],['acceptanceTimeCheckedAt','2026-10-20T00:00:00.000Z'],['acceptanceValidBefore','2026-10-20T01:00:00.000Z'],
  ['runtimePackageRevisions',['1','2','3']],
+ ['activationSources',[{runId:id(8),sourceHash:digest('source'),chainHash:digest('chain'),initialSourceHash:digest('initial'),attachmentHash:digest('attachments'),knowledgeHash:digest('knowledge'),pinnedMethodsHash:digest('pins'),validBefore:null}]],
 ]);
 beforeEach(()=>{
  vi.resetAllMocks();m.state={enabled:false,output:null,audit:[]};m.commits=0;m.rollbacks=0;m.latestCalls=0;m.newBundle=false;
  m.live=true;m.liveAtWrite=true;m.postValid=true;m.eventFails=false;m.writeCount=1;
  m.mode.mockReturnValue('database');m.registry.mockResolvedValue({registryHash:digest('trustRegistryHash')});
- m.evidence.mockResolvedValue({artifactHash:bundle.artifact_hash,latestReviewHash:digest('latestReviewHash'),currentPin:{ownerId:actor.userId,skillId:action.id,version:1},freezeStatus:{freezeId:id(7)},judgments:[]});
+ m.evidence.mockResolvedValue({artifactHash:bundle.artifact_hash,latestReviewHash:digest('latestReviewHash'),currentPin:{ownerId:actor.userId,skillId:action.id,version:1},freezeStatus:{freezeId:id(7)},judgments:[],
+  artifact:{plan:{cases:[{id:'source',provenance:'historical-task'}]},rawReceipts:{baselineSources:{source:{runId:id(8)}},candidateSources:{source:{runId:id(8)}}}}});
  m.readiness.mockResolvedValue(qualified());m.memory.mockImplementation(async(_user:string,work:()=>Promise<unknown>)=>work());
  m.query.mockImplementation(async(sql:string,params:unknown[])=>{
   if(sql.startsWith('select v.validation'))return {rows:[selection],rowCount:1};
@@ -63,10 +65,17 @@ it('uses registry -> catalog admission -> bundle/Skill evidence order and atomic
  expect(JSON.parse(params[9])).toMatchObject({freezeId:id(7),reviewVersions:[],runtimePackageRevisions:['1','2','3'],callId:actor.callId});
  expect(m.commits).toBe(1);expect(m.rollbacks).toBe(0);
 });
-it.each(['sourceRevocationsLocked','collectorProvenanceVerified','productionAgentEquivalent','runtimePackagesRegistered','runtimePackageBytesPairRevalidated','runtimeModuleFormatPairRevalidated','canonicalOriginalCoverageRevalidated','policyPassed'])('refuses incomplete %s without any effect',async key=>{
+it.each(['sourceRevocationsLocked','activationSourcesRevalidated','collectorProvenanceVerified','productionAgentEquivalent','runtimePackagesRegistered','runtimePackageBytesPairRevalidated','runtimeModuleFormatPairRevalidated','canonicalOriginalCoverageRevalidated','policyPassed'])('refuses incomplete %s without any effect',async key=>{
  m.readiness.mockResolvedValue({...qualified(),[key]:false});
  await expect(activateAgentSkill(actor,action)).rejects.toThrow('trusted production evidence gate unavailable');
  expect(m.state).toEqual({enabled:false,output:null,audit:[]});expect(m.query.mock.calls.some(([sql])=>sql.startsWith('with changed'))).toBe(false);
+});
+it('rejects an incomplete source manifest or a proof extending beyond a dependency deadline',async()=>{
+ const proof=qualified(),sources=proof.activationSources as Array<{runId:string;validBefore:string|null}>;
+ m.readiness.mockResolvedValue({...proof,activationSources:sources.map(row=>({...row,runId:id(9)}))});
+ await expect(activateAgentSkill(actor,action)).rejects.toThrow('gate unavailable');
+ m.readiness.mockResolvedValue({...proof,activationSources:sources.map(row=>({...row,validBefore:'2026-10-20T00:30:00.000Z'}))});
+ await expect(activateAgentSkill(actor,action)).rejects.toThrow('gate unavailable');expect(m.state.enabled).toBe(false);
 });
 it('does not fall back to an older bundle if selection changes while acquiring the Skill lock',async()=>{
  m.newBundle=true;await expect(activateAgentSkill(actor,action)).rejects.toThrow('gate unavailable');expect(m.readiness).not.toHaveBeenCalled();

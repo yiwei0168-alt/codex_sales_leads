@@ -2,10 +2,13 @@ import {expect,it,vi} from 'vitest';
 import type {PoolClient} from 'pg';
 import {digest} from './contracts';
 import {skillActivationCurrent,skillActivationFingerprint,skillEnabledExpression} from './skill-activation-binding';
+const m=vi.hoisted(()=>({sources:vi.fn(async()=>{})}));
+vi.mock('@/lib/rag/db',()=>({withBoundTenantTransaction:async(_client:unknown,_user:string,work:()=>Promise<unknown>)=>work()}));
+vi.mock('./skill-activation-sources',()=>({assertSkillActivationSourcesCurrent:m.sources}));
 const id=(n:number)=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
 const binding={protocol:'skill-activation-binding-v1',ownerId:id(1),skillId:id(2),version:1,bundleId:id(3),freezeId:id(4),
  artifactHash:digest('artifact'),reviewHash:digest('reviews'),reviewVersions:[],registryHash:digest('registry'),runtimePackageRevisions:['1','2','3'],
- validBefore:'2026-10-20T18:00:00.000Z',activationProofHash:digest('proof'),callId:id(5)};
+ validBefore:'2026-10-20T18:00:00.000Z',activationProofHash:digest('proof'),callId:id(5),sources:[{runId:id(6),sourceHash:digest('source'),chainHash:digest('chain'),initialSourceHash:digest('initial'),attachmentHash:digest('attachments'),knowledgeHash:digest('knowledge'),pinnedMethodsHash:digest('pins'),validBefore:null}]};
 it('keeps manual/old-schema Skills compatible without a qualification query',async()=>{
  const query=vi.fn(),client={query} as unknown as PoolClient;
  expect(await skillActivationCurrent(client,id(1),id(2),1,null)).toBe(true);expect(query).not.toHaveBeenCalled();
@@ -27,6 +30,18 @@ it('matches opaque read receipts to database bindings and detects renewal/cleari
  expect(skillActivationFingerprint({activation_binding_hash:hash!})).toBe(hash);
  expect(skillActivationFingerprint({activation_binding:{...binding,callId:id(9)}})).not.toBe(hash);
  expect(skillActivationFingerprint({})).not.toBe(hash);
+});
+it('denies revoked business sources even while SQL qualification remains current',async()=>{
+ const query=vi.fn().mockResolvedValue({rows:[{current:true}]}),client={query} as unknown as PoolClient;
+ m.sources.mockRejectedValueOnce(new Error('Source withdrawn'));
+ expect(await skillActivationCurrent(client,id(1),id(2),1,binding)).toBe(false);
+});
+it('rejects recursive qualification dependencies without unbounded revalidation',async()=>{
+ const query=vi.fn().mockResolvedValue({rows:[{current:true}]}),client={query} as unknown as PoolClient;
+ m.sources.mockImplementationOnce(async()=>{
+  if(!await skillActivationCurrent(client,id(1),id(2),1,binding))throw new Error('Cyclic method source');
+ });
+ expect(await skillActivationCurrent(client,id(1),id(2),1,binding)).toBe(false);
 });
 it('lists bound Skills as unavailable when their database guard is absent',async()=>{
  const query=vi.fn().mockResolvedValue({rows:[{available:false}]});

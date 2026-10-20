@@ -3,7 +3,8 @@ import {createHash,randomBytes,randomUUID} from 'node:crypto';
 import {mkdir,readFile,unlink,writeFile} from 'node:fs/promises';
 import nextEnv from '@next/env';
 import {Pool} from 'pg';
-import {getPool} from '../src/lib/rag/db';
+import {getPool,tenantTransaction,withBoundTenantTransaction} from '../src/lib/rag/db';
+import {captureSkillActivationSources,assertSkillActivationSourcesCurrent} from '../src/lib/assistant/main/skill-activation-sources';
 import {digest,result,type ModelMessage} from '../src/lib/assistant/main/contracts';
 import {modeModelConfig} from '../src/lib/assistant/main/mode-config';
 import {importSkill} from '../src/lib/assistant/main/skills';
@@ -225,7 +226,35 @@ try{
   const bundleCount=(await pool.query('select count(*)::int n from agent_skill_acceptance_bundle where owner_id=$1',[owner])).rows[0].n;
   await assert.rejects(composeSkillAcceptanceEvidence({userId:owner},{bundleIds:[collectedBundle]},collector),/missing planned cases/);
   assert.equal((await pool.query('select count(*)::int n from agent_skill_acceptance_bundle where owner_id=$1',[owner])).rows[0].n,bundleCount);
-  if(composition)composedBundle=await verifyCompositionDatabaseFixture({pool,owner,other,skillId:skill.id,prospectiveBundleId:collectedBundle,attachmentKey,prepared:composition,frozen,transaction:collector});
+  if(composition){
+   composedBundle=await verifyCompositionDatabaseFixture({pool,owner,other,skillId:skill.id,prospectiveBundleId:collectedBundle,attachmentKey,prepared:composition,frozen,transaction:collector});
+   const sources=await tenantTransaction(owner,client=>withBoundTenantTransaction(client,owner,()=>captureSkillActivationSources(client,owner,[run,composition.runId])));
+   const verify=()=>tenantTransaction(owner,client=>withBoundTenantTransaction(client,owner,()=>assertSkillActivationSourcesCurrent(client,owner,sources.activationSources)));
+   await verify();
+   const mutations:Array<[string,unknown[]]>=[
+    ["update knowledge_document set status='archived' where id=(select document_id from knowledge_asset where id=$1)",[attachmentId]],
+    ['update agent_memory set active=false where owner_id=$1',[owner]],
+    ['update mailbox_customer set archived=true where user_id=$1 and id=$2',[owner,customerId]],
+    ["update mailbox_message set metadata=jsonb_set(metadata,'{rawContentPurged}','true') where user_id=$1 and id=$2",[owner,mail]],
+   ];
+   for(const [sql,params] of mutations){
+    const client=await pool.connect();
+    try{
+     await client.query('begin');await client.query(sql,params);
+     await client.query('set local role network_copilot_app');
+     await client.query("select set_config('app.current_user_id',$1,true),set_config('app.current_user_role','member',true)",[owner]);
+     await assert.rejects(withBoundTenantTransaction(client,owner,()=>assertSkillActivationSourcesCurrent(client,owner,sources.activationSources)));
+    }finally{await client.query('rollback');client.release();}
+    await verify();
+   }
+   const originalBytes=await readFile(attachmentKey);
+   try{await writeFile(attachmentKey,Buffer.alloc(originalBytes.length,120));await assert.rejects(verify());}
+   finally{await writeFile(attachmentKey,originalBytes);}
+   await verify();
+   console.log(JSON.stringify({activationBusinessSourceComposition:'passed',originalTasks:2,consumedReadTools:5,
+    knowledgeArchiveDenied:true,memoryWithdrawalDenied:true,customerArchiveDenied:true,mailPurgeDenied:true,attachmentTamperDenied:true,
+    restoredSourcesAccepted:true,sourceChecksUseRealReaders:true,qualificationGranted:false,humanApprovalCreated:false,modelCalls:0}));
+  }
   if(process.env.MA24_PROSPECTIVE_HTTP==='1')await verifySkillProspectiveHttp(pool,{owner,other,bundleId:composedBundle??collectedBundle,skillId:skill.id,baseline:baselineAnswer,candidate:candidateAnswer},nativeFetch);
  }
  await assert.rejects(prepareSkillProspectiveSource({userId:other},params),/owner/);

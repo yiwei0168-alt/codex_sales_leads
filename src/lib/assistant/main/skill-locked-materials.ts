@@ -21,6 +21,8 @@ import {requireCanonicalSkillAcceptanceOriginals} from './skill-canonical-origin
 import {skillSigningEnrollmentCoverage} from './skill-signing-enrollment';
 import {readLockedSkillRuntimePackages} from './skill-runtime-package-store';
 import {captureSkillMemoryTimeFence,earliestSkillMemoryTimeFence} from './skill-memory-time-fence';
+import {captureSkillActivationSources} from './skill-activation-sources';
+import {skillAcceptanceRunIds} from './skill-acceptance-run-locks';
 
 /** Keep consumed receipts in a private closure inside the owning transaction;
  * public wrappers expose hashes/counts only, never source contents or callbacks. */
@@ -107,6 +109,7 @@ export async function evaluateLockedSkillAcceptanceReadiness(client:PoolClient,c
   if(memoryReceipts.memoryReceiptCount!==materials.memoryReceiptCount)throw new Error('Acceptance memory receipt coverage changed after preparation');
   const privateReceipts=await preparation.recheckPrivateReceipts();
   if(privateReceipts.privateReceiptCount!==materials.privateReceiptCount)throw new Error('Acceptance private receipt coverage changed after preparation');
+  const activationSources=await captureSkillActivationSources(client,context.userId,skillAcceptanceRunIds(final.artifact));
   const finalTransports=await revalidateLockedSkillTransportReceipts(client,context,bundleId);
   if(transports.transportReceiptsRequired!==finalTransports.transportReceiptsRequired
    ||transports.transportReceiptsRevalidated!==finalTransports.transportReceiptsRevalidated
@@ -133,6 +136,7 @@ export async function evaluateLockedSkillAcceptanceReadiness(client:PoolClient,c
    ...(finalDeclaration.runnerDeclarationRequired?{runnerDeclarationValidBefore:finalDeclaration.runnerDeclarationValidBefore}:{}),
    ...(finalTransports.transportReceiptsRequired?{transportValidBefore:finalTransports.transportValidBefore}:{}),
    ...(memoryTimeValidBefore?{memoryTimeValidBefore}:{}),
+   ...(activationSources.activationSourcesValidBefore?{activationSourcesValidBefore:activationSources.activationSourcesValidBefore}:{}),
    ...(packages.runtimePackagesRegistered?{runtimePackageValidBefore:packages.runtimePackageValidBefore}:{})});
   return {...policy,prospectiveCaptureSourcesLocked:materials.prospectiveCaptureSourcesLocked,prospectiveJobCount:materials.prospectiveJobCount,knowledgeSourcesLocked:materials.knowledgeSourcesLocked,decisionMemorySourcesLocked:materials.decisionMemorySourcesLocked,timelineSourcesLocked:materials.timelineSourcesLocked,timelineCustomerCount:materials.timelineCustomerCount,mailReadSourcesLocked:materials.mailReadSourcesLocked,mailCount:materials.mailCount,attachmentMetadataLocked:materials.attachmentMetadataLocked,attachmentCount:materials.attachmentCount,taskOriginsLocked:materials.taskOriginsLocked,taskJournalsLocked:materials.taskJournalsLocked,runCount:materials.runCount,materials:materials.materials,materialsHash:materials.materialsHash,sourcePayloadsRevalidated:true as const,
    pinnedMethodSourcesLocked:materials.pinnedMethodSourcesLocked,pinnedMethodPinCount:materials.pinnedMethodPinCount,
@@ -151,6 +155,7 @@ export async function evaluateLockedSkillAcceptanceReadiness(client:PoolClient,c
    ...finalTransports,
    ...signingCoverage,
    ...packages,
+   ...activationSources,
    pinnedMethodVersionCount:materials.pinnedMethodVersionCount,pinnedMethodExperienceObservationCount:materials.pinnedMethodExperienceObservationCount,
    sourceRevocationsLocked:false as const,collectorProvenanceVerified:false as const,automaticActivation:false as const};
   });

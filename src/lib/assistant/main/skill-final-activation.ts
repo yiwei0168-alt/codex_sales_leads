@@ -7,6 +7,7 @@ import {admitSkillCatalogWrite} from './skill-catalog-admission';
 import {configuredSkillRunnerTrustRegistryMode} from './skill-runner-attestation';
 import {LeaseLostError,InstructionsChangedError} from './repository';
 import {skillActivationBindingSchema} from './skill-activation-binding';
+import {skillAcceptanceRunIds} from './skill-acceptance-run-locks';
 
 const unavailable='Skill replay and shadow acceptance required before Agent activation: trusted production evidence gate unavailable';
 const sha=z.string().regex(/^[a-f0-9]{64}$/);
@@ -30,6 +31,7 @@ const proofSchema=z.object({policyPassed:z.literal(true),blockers:z.array(z.stri
  timelineSourcesLocked:z.literal(true),mailReadSourcesLocked:z.literal(true),attachmentMetadataLocked:z.literal(true),
  memoryReceiptSourcesRevalidated:z.literal(true),privateReceiptSourcesRevalidated:z.literal(true),
  memoryTimeFenceRevalidated:z.literal(true),
+ activationSourcesRevalidated:z.literal(true),activationSources:skillActivationBindingSchema.shape.sources,
  acceptanceTimeCheckedAt:z.iso.datetime(),acceptanceValidBefore:z.iso.datetime(),
 }).passthrough();
 type Action=z.infer<typeof inputSchema>;
@@ -101,6 +103,8 @@ export async function activateAgentSkill(context:Pick<ExecutionContext,'userId'|
     const proof=checked.data;
     if(proof.artifactHash!==evidence.artifactHash||proof.latestReviewHash!==evidence.latestReviewHash
      ||proof.trustRegistryHash!==registry.registryHash||Date.parse(proof.acceptanceTimeCheckedAt)>=Date.parse(proof.acceptanceValidBefore))throw new Error(unavailable);
+    if(digest(proof.activationSources.map(row=>row.runId).sort())!==digest(skillAcceptanceRunIds(evidence.artifact)))throw new Error(unavailable);
+    if(proof.activationSources.some(row=>row.validBefore!==null&&Date.parse(row.validBefore)<Date.parse(proof.acceptanceValidBefore)))throw new Error(unavailable);
     const guard=(await client.query<{ready:boolean}>(`select exists(select 1 from pg_trigger where tgname='skill_activation_commit_guard'
      and tgrelid='public.agent_run_event'::regclass and tgfoid=to_regprocedure('public.check_skill_activation_commit()')
      and tgdeferrable and tginitdeferred and tgenabled in('O','A') and not tgisinternal) ready`)).rows[0]?.ready;
@@ -118,7 +122,7 @@ export async function activateAgentSkill(context:Pick<ExecutionContext,'userId'|
      bundleId:bundle.id,artifactHash:proof.artifactHash,freezeId:evidence.freezeStatus.freezeId,reviewHash:proof.latestReviewHash,
      reviewVersions:evidence.judgments.map(judgment=>({caseId:judgment.caseId,revision:judgment.revision})),
      registryHash:registry.registryHash,runtimePackageRevisions:proof.runtimePackageRevisions,validBefore:proof.acceptanceValidBefore,
-     activationProofHash,callId:actor.callId});
+     activationProofHash,callId:actor.callId,sources:proof.activationSources});
     const output=result(data,{cost:'known',callId:actor.callId});
     const saved=(await client.query<{n:number}>(`with changed as (
      update agent_skill set enabled=true,published=false,activation_binding=$10::jsonb,updated_at=clock_timestamp()

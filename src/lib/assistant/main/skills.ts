@@ -3,7 +3,7 @@ import { tenantQuery, tenantTransaction } from "@/lib/rag/db";
 import { digest, type ExecutionContext } from "./contracts";
 import {skillSourcesCurrent,lockCurrentSkillExperienceSources,type SourcedSkillVersion} from './skill-source-guard';
 import {admitSkillCatalogWrite} from './skill-catalog-admission';
-import {skillActivationCurrent,skillActivationFingerprint,skillEnabledExpression,type ActivationBoundSkill} from './skill-activation-binding';
+import {skillActivationCurrent,skillActivationFingerprint,skillEnabledExpression,filterSkillActivationRows,type ActivationBoundSkill} from './skill-activation-binding';
 
 export function safeSkillPath(path: string) {
   return path.length <= 180 && /^[a-z0-9_.\-/]+$/i.test(path) && !path.startsWith("/") && path.split("/").every(p => p !== ".." && p !== "." && p !== "" && !/^(\.env(?:\..*)?|\.git|node_modules|id_rsa|id_ed25519)$/i.test(p)) && !path.startsWith("-");
@@ -51,18 +51,20 @@ export async function importSkill(context: Pick<ExecutionContext, "userId" | "ro
 export async function listSkills(userId: string) {
   return tenantTransaction(userId,async client=>{
     const enabled=await skillEnabledExpression(client);
-    return (await client.query(`select s.id,s.name,s.scope,s.current_version,(${enabled}) enabled,s.published,s.owner_id=$1 as owned from agent_skill s order by s.name,s.id`,[userId])).rows;
+    const rows=(await client.query<{id:string;name:string;scope:string;published:boolean;owned:boolean;current_version:number;enabled:boolean;activation_binding:unknown}>(`select s.id,s.name,s.scope,s.current_version,(${enabled}) enabled,s.published,s.owner_id=$1 as owned,
+     to_jsonb(s)->'activation_binding' activation_binding from agent_skill s order by s.name,s.id`,[userId])).rows;
+    return filterSkillActivationRows(client,userId,rows);
   });
 }
 export async function listSkillsPage(userId:string,offset:number){
   return tenantTransaction(userId,async client=>{
   const enabled=await skillEnabledExpression(client);
   const rows=(await client.query<{id:string;name:string;scope:string;current_version:number;enabled:boolean;published:boolean;owned:boolean;
-    source:string;validation:Record<string,unknown>;created_at:string}>(`select s.id,s.name,s.scope,s.current_version,(${enabled}) enabled,s.published,s.owner_id=$1 as owned,
+    source:string;validation:Record<string,unknown>;created_at:string;activation_binding:unknown}>(`select s.id,s.name,s.scope,s.current_version,(${enabled}) enabled,s.published,s.owner_id=$1 as owned,to_jsonb(s)->'activation_binding' activation_binding,
     v.source,v.validation,v.created_at::text from agent_skill s join agent_skill_version v
       on v.skill_id=s.id and v.version=s.current_version
     order by s.updated_at desc,s.id limit 13 offset $2`,[userId,offset])).rows;
-  return {items:rows.slice(0,12),hasMore:rows.length>12};
+  return {items:await filterSkillActivationRows(client,userId,rows.slice(0,12)),hasMore:rows.length>12};
   });
 }
 export async function listOwnedSkillVersions(userId:string,skillId:string){
