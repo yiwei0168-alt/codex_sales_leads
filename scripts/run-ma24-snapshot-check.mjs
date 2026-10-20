@@ -6,7 +6,7 @@ import {fileURLToPath} from 'node:url';
 
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
 const [mode,...extra]=process.argv.slice(2);
-assert(extra.length===0&&['--memory-source-locks','--method-catalog-locks','--transport-journal','--prospective-composition','--locked-policy'].includes(mode),
+assert((extra.length===0||extra.length===1&&extra[0]==='--current-schema'&&['--transport-journal','--locked-policy'].includes(mode))&&['--memory-source-locks','--method-catalog-locks','--transport-journal','--prospective-composition','--locked-policy'].includes(mode),
  'Choose exactly one supported disposable database check');
 const commit=execFileSync('git',['rev-parse','--verify','HEAD^{commit}'],{cwd:root,encoding:'utf8'}).trim();
 assert(/^[a-f0-9]{40}$/.test(commit));
@@ -22,14 +22,14 @@ try{
  assert((await readFile(join(snapshot,'package-lock.json'))).equals(await readFile(join(root,'package-lock.json'))),
   'Current dependency lock differs from committed snapshot');
  await symlink(join(root,'node_modules'),join(snapshot,'node_modules'),process.platform==='win32'?'junction':'dir');linked=true;
- console.log(JSON.stringify({snapshotCheck:'started',commit,mode,source:'git archive',dependencies:'shared installed node_modules; not deployment attestation'}));
+ console.log(JSON.stringify({snapshotCheck:'started',commit,mode,currentSchema:extra.includes('--current-schema'),source:'git archive',dependencies:'shared installed node_modules; not deployment attestation'}));
  const code=await new Promise((accept,reject)=>{
-  const child=spawn(process.execPath,['--import','tsx','scripts/verify-ma24-fresh-pilot-new-cluster.ts',mode],
+  const child=spawn(process.execPath,['--import','tsx','scripts/verify-ma24-fresh-pilot-new-cluster.ts',mode,...extra],
    {cwd:snapshot,env:process.env,windowsHide:true,stdio:'inherit'});
   child.once('error',reject);child.once('exit',(status,signal)=>accept(signal?1:status??1));
  });
  process.exitCode=code;
- console.log(JSON.stringify({snapshotCheck:code===0?'passed':'failed',commit,mode}));
+ console.log(JSON.stringify({snapshotCheck:code===0?'passed':'failed',commit,mode,currentSchema:extra.includes('--current-schema')}));
 }finally{
  // Remove the dependency link itself before recursively removing the checked path.
  if(linked){if(process.platform==='win32')await rmdir(join(snapshot,'node_modules'));else await unlink(join(snapshot,'node_modules'));}

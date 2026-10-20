@@ -85,8 +85,8 @@ const pristineDatabaseChecks = [
 ].filter(Boolean).length;
 assert(pristineDatabaseChecks <= 1,
   "Each G09 disposable database fixture requires a pristine placeholder-only database; run one fixture flag per fresh-cluster invocation.");
-assert(!currentSchemaCheck||((webImage&&pristineDatabaseChecks===0||lockedPolicyCheck&&pristineDatabaseChecks===1&&!webImage)&&!modeBusinessCheck&&!poolRecoveryCheck),
-  '--current-schema requires isolated Web acceptance or the locked-policy fixture; other G09 fixtures retain their historical schema bootstrap');
+assert(!currentSchemaCheck||((webImage&&pristineDatabaseChecks===0||(lockedPolicyCheck||transportJournalCheck)&&pristineDatabaseChecks===1&&!webImage)&&!modeBusinessCheck&&!poolRecoveryCheck),
+  '--current-schema requires isolated Web acceptance, locked-policy or transport-journal; other G09 fixtures retain their historical schema bootstrap');
 assert(!frontendUiCheck||(webImage&&currentSchemaCheck&&browserCheck),'--frontend-ui requires --web-image, --current-schema and --browser');
 assert(!extendedUiCheck||frontendUiCheck,'--extended-ui requires --frontend-ui');
 assert(!snapshotDownloadCheck||(webImage&&currentSchemaCheck),'--snapshot-download requires --web-image and --current-schema');
