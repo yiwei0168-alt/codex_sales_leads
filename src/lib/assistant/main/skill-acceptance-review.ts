@@ -9,6 +9,8 @@ import type {RecordedEvidenceReceipt} from './recorded-evidence-receipts';
 import {assertLocalAnalysisBoundary} from './local-analysis-boundary';
 import {readSkillSafetyReviewCase} from './skill-safety-review';
 import {readSkillProspectiveReviewCase,storedProspectiveReferenceSchema} from './skill-prospective-review';
+import {historicalCandidateReferenceSchema} from './skill-historical-candidate-reference';
+import {readCompletedSkillCandidateRuntimeTask} from './skill-candidate-runtime-task';
 
 type Context={userId:string};
 export async function listSkillAcceptanceReviews(context:Context,input:{skillId:string;offset:number}){
@@ -45,7 +47,7 @@ export async function readSkillAcceptanceReviewCase(context:Context,input:{bundl
  if(item?.provenance==='safety-fixture')return readSkillSafetyReviewCase(context,input);
  if(item?.provenance==='prospective-task')return readSkillProspectiveReviewCase(context,input);
  const validated=await validateStoredSkillAcceptanceCandidate(context,input);
- const reference=z.object({runId:z.uuid(),evaluationId:z.uuid(),projectionHash:z.string()}).strict().parse(
+ const reference=historicalCandidateReferenceSchema.parse(
   z.record(z.string(),z.unknown()).parse(before.artifact.rawReceipts.candidateSources)[input.caseId]);
  const chain=await loadRecordedTaskChain(context,{runId:reference.runId});
  if(digest({sourceHash:chain.sourceHash,chainHash:chain.chainHash,initialSourceHash:chain.initialSourceHash})!==digest(validated.original))throw new Error('Review original source changed');
@@ -62,15 +64,27 @@ export async function readSkillAcceptanceReviewCase(context:Context,input:{bundl
    where user_id=$1 and run_id=$2 and id=any($3::uuid[]) order by id`,[context.userId,reference.runId,[...references.keys()]]):Promise.resolve([]);
  const receipts=await readReceipts();
  if(receipts.length!==references.size||receipts.some(row=>digest(row)!==references.get(row.id)))throw new Error('Review evidence changed');
+ const readRuntimeReceipts=()=>reference.taskId?tenantQuery<RecordedEvidenceReceipt>(context.userId,
+  `select id,user_id,run_id,call_key,tool_id,tool_version,input,input_hash,effect,status,output,approval_id from agent_tool_call
+   where user_id=$1 and run_id=$2 order by id`,[context.userId,reference.taskId]):Promise.resolve([]);
+ const runtimeReceipts=await readRuntimeReceipts(),runtimeHashes=new Map(validated.runtimeToolReceipts?.map(row=>[row.id,row.hash])??[]);
+ if(runtimeReceipts.length!==runtimeHashes.size||runtimeReceipts.some(row=>digest(row)!==runtimeHashes.get(row.id)))throw new Error('Review runtime evidence changed');
  const question=chain.requests[0].body.messages.findLast(message=>message.role==='user')?.content;
  if(typeof question!=='string')throw new Error('Review task question unavailable');
  // Revalidate current source permissions and mutable history after assembling private material.
  if(digest(await loadRecordedTaskChain(context,{runId:reference.runId}))!==digest(chain)||digest(await readJournal())!==digest(rows)
-  ||digest(await readReceipts())!==digest(receipts))throw new Error('Review material changed during reading');
+  ||digest(await readReceipts())!==digest(receipts)||digest(await readRuntimeReceipts())!==digest(runtimeReceipts))throw new Error('Review material changed during reading');
+ if(reference.taskId){
+  if(!before.freezeStatus?.freezeId)throw new Error('Review runtime freeze unavailable');
+  const completed=await readCompletedSkillCandidateRuntimeTask(context,{taskId:reference.taskId,runId:reference.runId,evaluationId:reference.evaluationId,
+   skillId:before.artifact.plan.pin.skillId,version:before.artifact.plan.pin.version,caseId:input.caseId,freezeId:before.freezeStatus.freezeId,arm:'candidate'},before.artifact.plan);
+  if(digest(completed)!==validated.runtimeTaskHash)throw new Error('Review runtime task changed during reading');
+ }
  const after=await readSkillAcceptanceEvidence(context,input.bundleId);
  if(digest(after)!==digest(before)||validated.artifactHash!==before.artifactHash)throw new Error('Review state changed during reading');
  return {bundleId:input.bundleId,caseId:input.caseId,artifactHash:before.artifactHash,observationHash:digest(observation),
-  question,baseline,candidate,receipts:receipts.map(row=>({tool:row.tool_id,input:row.input,output:row.output})),
+  question,baseline,candidate,receipts:reference.taskId?[...receipts.map(row=>({tool:row.tool_id,input:row.input,output:row.output,arm:'baseline' as const})),
+   ...runtimeReceipts.map(row=>({tool:row.tool_id,input:row.input,output:row.output,arm:'candidate' as const}))]:receipts.map(row=>({tool:row.tool_id,input:row.input,output:row.output})),
   canPass:{baseline:true,candidate:true},
   sourceKind:before.artifact.sourceKind,freezeStatus:before.freezeStatus,judgment:before.judgments.find(row=>row.caseId===input.caseId)??null,
   automaticActivation:false,productionAgentEquivalent:false};

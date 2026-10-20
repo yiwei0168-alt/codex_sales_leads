@@ -4,6 +4,7 @@ import {withBoundTenantTransaction} from '@/lib/rag/db';
 import {digest} from './contracts';
 import {lockSkillAcceptanceFreeze} from './skill-acceptance-freeze';
 import {skillAcceptanceRunIds,lockRecordedTaskRunJournals} from './skill-acceptance-run-locks';
+import {lockSkillRuntimeMaterialSources} from './skill-runtime-material-sources';
 
 const limit=10000;
 /** Lifecycle fingerprint only. Empty/unqualified fixture journals can be
@@ -23,6 +24,7 @@ export async function captureSkillAcceptanceLedger(client:PoolClient,userId:stri
   await lockSkillAcceptanceFreeze(client,userId,freezeId);
   const runIds=skillAcceptanceRunIds(artifact as Parameters<typeof skillAcceptanceRunIds>[0]);
   await lockRecordedTaskRunJournals(client,userId,runIds,{successfulReadSourcesOnly:true});
+  const runtime=await lockSkillRuntimeMaterialSources(client,userId,artifact);
   const selectCaptures=async()=>(await client.query<{id:string;run_id:string;capture:unknown;campaign:unknown}>(`select j.id,j.run_id,
    jsonb_build_object('id',j.id,'ownerId',j.owner_id,'runId',j.run_id,'campaignId',j.campaign_id,'start',j.start_context,'final',j.final_context,'capturedAt',j.created_at,'readyAt',j.ready_at) capture,
    jsonb_build_object('id',c.id,'ownerId',c.owner_id,'skillId',c.skill_id,'version',c.version,'contentHash',c.content_hash,'sourceHash',c.source_hash,'config',c.config,'enabled',c.enabled,'registeredAt',c.created_at,'expiresAt',c.expires_at) campaign
@@ -45,7 +47,8 @@ export async function captureSkillAcceptanceLedger(client:PoolClient,userId:stri
    throw new Error('Acceptance ledger declaration schema unavailable');
   const declarations=declarationsAvailable?(await client.query('select to_jsonb(a) declaration from agent_skill_runner_attestation a where owner_id=$1 and bundle_id=$2 order by id limit 10001',[userId,bundleId])).rows:[];
   if(declarations.length>limit)throw new Error('Acceptance ledger declaration limit exceeded');
-  return {acceptanceLedgerRevalidated:true as const,acceptanceLedgerHash:digest({protocol:'skill-acceptance-ledger-v1',artifactHash,freezeId,attempts,captures,declarationsAvailable,declarations}),
+  return {acceptanceLedgerRevalidated:true as const,acceptanceLedgerHash:digest({protocol:'skill-acceptance-ledger-v1',artifactHash,freezeId,attempts,captures,declarationsAvailable,declarations,
+   ...(runtime.runtimeTaskCount?{runtimeTaskLedgerHash:runtime.runtimeTaskLedgerHash}:{})}),acceptanceLedgerRuntimeTaskCount:runtime.runtimeTaskCount,
    acceptanceLedgerAttemptCount:attempts.length,acceptanceLedgerCaptureCount:captures.length,acceptanceLedgerDeclarationCount:declarations.length};
  });
 }

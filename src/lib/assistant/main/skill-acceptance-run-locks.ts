@@ -1,6 +1,7 @@
 import type {PoolClient} from 'pg';
 import {z} from 'zod';
 import {messageInputSchema} from './contracts';
+import {lockSkillRuntimeMaterialSources} from './skill-runtime-material-sources';
 
 type Artifact={plan:{cases:ReadonlyArray<{id:string;provenance:string}>};rawReceipts:Record<string,unknown>};
 /** Derive exclusively from the stored bundle, never from request-supplied run IDs. */
@@ -49,7 +50,8 @@ export function skillAcceptanceProspectiveBindings({plan,rawReceipts}:Artifact){
  * Attachment metadata is locked separately below. External bytes and other
  * evidence domains still require their own protection before activation. */
 export async function lockSkillAcceptanceRunJournals(client:PoolClient,userId:string,artifact:Artifact){
- return lockRecordedTaskRunJournals(client,userId,skillAcceptanceRunIds(artifact),{prospective:skillAcceptanceProspectiveBindings(artifact)});
+ const original=await lockRecordedTaskRunJournals(client,userId,skillAcceptanceRunIds(artifact),{prospective:skillAcceptanceProspectiveBindings(artifact)});
+ return {...original,...await lockSkillRuntimeMaterialSources(client,userId,artifact)};
 }
 /** Shared retained source locks for acceptance and ordinary final settlement.
  * IDs are derived by their server caller; no HTTP/task input can select them. */

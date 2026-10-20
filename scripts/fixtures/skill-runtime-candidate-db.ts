@@ -8,6 +8,8 @@ import {modelFunctions,transportMessages} from '../../src/lib/assistant/main/mod
 import {modelRequestManifest} from '../../src/lib/assistant/main/model-request-manifest';
 import type {SkillCandidateCollector} from '../../src/lib/assistant/main/skill-candidate-model';
 import {auditSkillRuntimeCandidate} from '../../src/lib/assistant/main/skill-runtime-candidate-audit';
+import {verifySkillRuntimeMaterialDatabase} from './skill-runtime-material-db';
+import {readSkillAcceptanceReviewCase} from '../../src/lib/assistant/main/skill-acceptance-review';
 
 export async function verifySkillRuntimeCandidateDatabase(pool:Pool,owner:string,pin:Parameters<typeof enqueueSkillCandidateRuntimeTask>[1],
  frozen:NonNullable<SkillCandidateCollector['frozen']>,transaction:SkillCandidateCollector['transaction']){
@@ -60,11 +62,14 @@ export async function verifySkillRuntimeCandidateDatabase(pool:Pool,owner:string
  assert.deepEqual((await pool.query('select id,tool_id,status,output from agent_tool_call where run_id=$1 order by tool_id',[created.runId])).rows,tools);
  assert.deepEqual(requests,[0,1,2,3,4]);
  const skillRead=tools.find(row=>row.tool_id==='skill_read');assert(skillRead);
+ const material=process.env.MA24_SKILL_RUNTIME_MATERIAL==='1'
+  ?await verifySkillRuntimeMaterialDatabase(pool,owner,auditInput,frozen,transaction,recovered.reply)
+  :{bundleId:undefined,checks:{runtimeUnifiedMaterialReviewVerified:false}};
  const tampered=structuredClone(skillRead.output);tampered.data.files['SKILL.md']='Synthetic tampered persisted instructions';
  await pool.query('update agent_tool_call set output=$2 where id=$1',[skillRead.id,tampered]);
- try{await assert.rejects(auditSkillRuntimeCandidate(context,auditInput,frozen.plan),/saved output differs/);}
+ try{await assert.rejects(material.bundleId?readSkillAcceptanceReviewCase(context,{bundleId:material.bundleId,caseId:selection.caseId}):auditSkillRuntimeCandidate(context,auditInput,frozen.plan),/saved output differs/);}
  finally{await pool.query('update agent_tool_call set output=$2 where id=$1',[skillRead.id,skillRead.output]);}
- return {skillRuntimeCandidateGraphVerified:true,skillRuntimeCandidateModelAndRegisteredReadJournalsVerified:true,
+ return {...material.checks,skillRuntimeCandidateGraphVerified:true,skillRuntimeCandidateModelAndRegisteredReadJournalsVerified:true,
   skillRuntimeIndependentGraphAuditVerified:true,skillRuntimeAuditRejectsUnsettledTaskAndPersistedToolTamper:true,skillRuntimeAuditDoesNotWriteOrRequest:true,
   skillRuntimeSettlementRollbackAndTerminalRecoveryVerified:true,skillRuntimeRecoveryNoModelOrToolReplay:true,
   skillRuntimeVirtualSkillDoesNotEnableAccount:true,actualModelCalls:0,productionAgentEquivalent:false,automaticActivation:false};

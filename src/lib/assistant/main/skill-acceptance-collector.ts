@@ -3,14 +3,14 @@ import {tenantTransaction} from '@/lib/rag/db';
 import {digest} from './contracts';
 import {skillAcceptancePlanSchema,skillAcceptanceObservationSchema} from './skill-acceptance-policy';
 import {prepareSkillAcceptanceBaseline} from './skill-acceptance-baseline';
-import {auditDurableSkillCandidate} from './skill-candidate-audit';
+import {auditHistoricalSkillCandidateSource,historicalReplaySelectionSchema} from './skill-historical-candidate-reference';
 import {assertSkillCollector,type SkillCollectorTransaction} from './skill-model-journal';
 import {skillSourcesCurrent,type SourcedSkillVersion} from './skill-source-guard';
 import {assertLocalAnalysisBoundary} from './local-analysis-boundary';
 import {requireSkillAcceptanceFreeze,inspectLockedSkillAcceptanceFreeze} from './skill-acceptance-freeze';
 import {prepareSkillExecutionIdentity} from './skill-runtime-identity';
 
-const selection=z.object({plan:skillAcceptancePlanSchema,freezeId:z.uuid().optional(),replays:z.array(z.object({caseId:z.string().min(1),runId:z.uuid(),evaluationId:z.uuid()}).strict()).min(1).max(100)}).strict();
+const selection=z.object({plan:skillAcceptancePlanSchema,freezeId:z.uuid().optional(),replays:z.array(historicalReplaySelectionSchema).min(1).max(100)}).strict();
 /** Append historical collection snapshots, not reviewer judgments or activation grants.
  * Runtime identities remain unverified; optional freeze references are checked against server records. */
 export async function collectHistoricalSkillAcceptance(context:{userId:string},input:unknown,transaction:SkillCollectorTransaction){
@@ -31,7 +31,8 @@ export async function collectHistoricalSkillAcceptance(context:{userId:string},i
   const item=plan.cases.find(row=>row.id===ref.caseId);
   if(!item||item.category!=='replay'||item.provenance!=='historical-task')throw new Error('Collector case is not historical replay');
   if(freezeId&&digest(plan.identity)!==digest(await prepareSkillExecutionIdentity(context,{runId:ref.runId})))throw new Error('Frozen collector identity changed');
-  const base=await prepareSkillAcceptanceBaseline(context,{runId:ref.runId}),candidate=await auditDurableSkillCandidate(context,{runId:ref.runId,skillId:plan.pin.skillId,version:plan.pin.version,evaluationId:ref.evaluationId,arm:'candidate'});
+  const base=await prepareSkillAcceptanceBaseline(context,{runId:ref.runId}),candidate=await auditHistoricalSkillCandidateSource(context,{reference:ref,
+   skillId:plan.pin.skillId,version:plan.pin.version,caseId:ref.caseId,freezeId,plan});
   const b=base.projection,c=candidate.projection;
   if(freezeId&&c.freezeId!==freezeId)throw new Error('Candidate journal freeze binding mismatch');
   if(freezeId&&(Date.parse(c.capturedAt)<Date.parse(plan.frozenAt)||Date.parse(c.completedAt)>=Date.parse(plan.expiresAt)))throw new Error('Candidate outside frozen plan interval');
@@ -46,11 +47,11 @@ export async function collectHistoricalSkillAcceptance(context:{userId:string},i
    baseline:{...common,requestedModel:baselineRoutes[0].requestedModel,actualModel:baselineRoutes[0].actualModel,provider:baselineRoutes[0].provider,answerHash:b.answerHash,evidenceHash:b.evidenceHash,modelReceiptHashes:b.modelReceiptHashes,routing:{protocol:'per-decision-v2',decisions:baselineRoutes}},
    candidate:{...common,requestedModel:candidateRoutes[0].requestedModel,actualModel:candidateRoutes[0].actualModel,provider:candidateRoutes[0].provider,answerHash:c.answerHash,evidenceHash:c.evidenceHash,modelReceiptHashes:c.modelAttemptReceipts.map(row=>row.hash),routing:{protocol:'per-decision-v2',decisions:candidateRoutes}},
   }));
-  baselineSources[item.id]={runId:ref.runId,projectionHash:base.projectionHash};candidateSources[item.id]={runId:ref.runId,evaluationId:ref.evaluationId,projectionHash:candidate.projectionHash};
+  baselineSources[item.id]={runId:ref.runId,projectionHash:base.projectionHash};candidateSources[item.id]={runId:ref.runId,evaluationId:ref.evaluationId,projectionHash:candidate.projectionHash,...(ref.taskId?{taskId:ref.taskId}:{})};
  }
  await checkSkill();
  if(freezeId)await requireSkillAcceptanceFreeze(context,freezeId,plan);
- const artifact={sourceKind,plan,observations,rawReceipts:{baselineSources,candidateSources,collector:{protocol:'historical-collector-v1',...(freezeId?{freezeId}:{}),freezeVerified:Boolean(freezeId),sourceIdentityChecked:Boolean(freezeId),runtimeIdentityVerified:false,automaticActivation:false}}},artifactHash=digest(artifact);
+ const artifact={sourceKind,plan,observations,rawReceipts:{baselineSources,candidateSources,collector:{protocol:replays.some(row=>row.taskId)?'historical-collector-v2':'historical-collector-v1',...(freezeId?{freezeId}:{}),freezeVerified:Boolean(freezeId),sourceIdentityChecked:Boolean(freezeId),runtimeIdentityVerified:false,automaticActivation:false}}},artifactHash=digest(artifact);
  const id=await transaction(context.userId,async client=>{
   await assertSkillCollector(client);
   if(freezeId&&await inspectLockedSkillAcceptanceFreeze(client,context.userId,freezeId,plan)!=='active')throw new Error('Historical freeze inactive before persistence');

@@ -111,12 +111,14 @@ export async function auditSkillRuntimeCandidate(context:{userId:string},input:P
  if(digest(await readModels())!==digest(rows)||digest(await readTools())!==digest(tools)
   ||digest(await readCompletedSkillCandidateRuntimeTask(context,input,expectedPlan))!==digest(completed))throw new Error('Skill runtime audit records changed');
  const projection={protocol:'skill-runtime-candidate-audit-v1',ownerId:context.userId,taskId:input.taskId,evaluationId:input.evaluationId,arm:input.arm,
-  freezeId:input.freezeId,sourceKind:prepared.sourceKind,taskSpecHash:completed.specHash,serverSnapshotHash:saved.sourceHash,runtimeSnapshotHash,
+  freezeId:input.freezeId,sourceKind:prepared.sourceKind,taskSpecHash:completed.specHash,completedTaskHash:digest(completed),serverSnapshotHash:saved.sourceHash,runtimeSnapshotHash,
   capturedAt:new Date(Math.min(...rows.map(row=>Date.parse(row.started_at??'')))).toISOString(),completedAt:new Date(completed.completedAt).toISOString(),
   taskInputHash:saved.taskInputHash,modelConfigHash:saved.modelConfigHash,journalHash:prepared.journalHash,toolJournalHash:digest(tools),
   answerHash:digest(replay.reply),messagesHash:digest(replay.messages),traceHash:digest(replay.trace),candidateSkillUsed:replay.candidateSkillUsed,
   evidenceHash:digest(replay.trace.filter(row=>row.receiptHash).map(row=>row.receiptHash)),
-  modelAttemptReceipts:prepared.ordered.map(row=>({id:row.id,hash:digest(row)})),toolReceipts:tools.map(row=>({id:row.id,hash:digest(row)}))};
+  modelAttemptReceipts:prepared.ordered.map(row=>({id:row.id,hash:digest(row)})),toolReceipts:tools.map(row=>({id:row.id,hash:digest(row)})),
+  selectedModels:prepared.selected.map(item=>({step:item.row.step,requestedModel:item.request.selectedRoute.model,model:item.request.originalResponse.model,
+   provider:item.request.originalResponse.provider,requestHash:item.request.requestHash,receiptHash:digest(item.row),toolSchemaHash:digest(item.request.body.tools)}))};
  return {projection,projectionHash:digest(projection),graphReconstructed:true,completeModelJournalVerified:true,completeToolJournalVerified:true,
   actualModelCalls:0,productionAgentEquivalent:false,collectorProvenanceVerified:false,automaticActivation:false};
 }

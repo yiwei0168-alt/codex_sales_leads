@@ -2,10 +2,11 @@ import {beforeEach,it,expect,vi} from 'vitest';
 import {digest} from './contracts';
 import {disableLocalAnalysisTracing} from './local-analysis-boundary';
 import {validateStoredSkillAcceptanceCandidate} from './skill-acceptance-candidate';
-const mocks=vi.hoisted(()=>({read:vi.fn(),baseline:vi.fn(),audit:vi.fn()}));
+const mocks=vi.hoisted(()=>({read:vi.fn(),baseline:vi.fn(),audit:vi.fn(),runtime:vi.fn()}));
 vi.mock('./skill-acceptance-store',()=>({readSkillAcceptanceEvidence:mocks.read}));
 vi.mock('./skill-acceptance-baseline',()=>({validateStoredSkillAcceptanceBaseline:mocks.baseline}));
 vi.mock('./skill-candidate-audit',()=>({auditDurableSkillCandidate:mocks.audit}));
+vi.mock('./skill-runtime-candidate-audit',()=>({auditSkillRuntimeCandidate:mocks.runtime}));
 const id='00000000-0000-4000-8000-000000000001',other='00000000-0000-4000-8000-000000000002',h=digest('fixture');
 function fixture(){
  const candidate={state:'completed',stopReason:null,unexpectedEffects:0,answerHash:h,evidenceHash:h,modelReceiptHashes:[h],identity:{modelConfigHash:h,toolSchemaHash:h},requestedModel:'fixture/model',actualModel:'fixture/model',provider:'fixture'};
@@ -48,4 +49,20 @@ it('rejects revocation during validation',async()=>{
  mocks.read.mockResolvedValueOnce({...fixture(),freezeStatus:{state:'active',freezeId:id}}).mockResolvedValueOnce({...fixture(),freezeStatus:{state:'revoked',freezeId:id}});
  mocks.audit.mockResolvedValue({...audit(),projection:{...audit().projection,freezeId:id}});
  await expect(run()).rejects.toThrow('review changed');
+});
+it('rebuilds a stored task reference through the new audit without legacy fallback',async()=>{
+ const f=fixture(),plan=f.artifact.plan;
+ const runtime={...f,freezeStatus:{state:'active',freezeId:id},artifact:{...f.artifact,rawReceipts:{...f.artifact.rawReceipts,
+  candidateSources:{case:{...f.artifact.rawReceipts.candidateSources.case,taskId:other}}}}};
+ mocks.read.mockResolvedValue(runtime);
+ mocks.runtime.mockResolvedValue({...audit(),projection:{...audit().projection,freezeId:id,completedTaskHash:h,toolReceipts:[{id:other,hash:h}]}});
+ expect(await run()).toMatchObject({runtimeTaskHash:h,runtimeToolReceipts:[{id:other,hash:h}],automaticActivation:false});
+ expect(mocks.audit).not.toHaveBeenCalled();
+ expect(mocks.runtime).toHaveBeenCalledWith({userId:id},{runId:id,evaluationId:id,taskId:other,skillId:id,version:1,caseId:'case',freezeId:id,arm:'candidate'},plan);
+ mocks.runtime.mockRejectedValue(new Error('runtime changed'));await expect(run()).rejects.toThrow('runtime changed');expect(mocks.audit).not.toHaveBeenCalled();
+});
+it('does not downgrade a task reference without a recorded freeze',async()=>{
+ const f=fixture();mocks.read.mockResolvedValue({...f,artifact:{...f.artifact,rawReceipts:{...f.artifact.rawReceipts,
+  candidateSources:{case:{...f.artifact.rawReceipts.candidateSources.case,taskId:other}}}}});
+ await expect(run()).rejects.toThrow('requires a recorded freeze');expect(mocks.audit).not.toHaveBeenCalled();expect(mocks.runtime).not.toHaveBeenCalled();
 });
