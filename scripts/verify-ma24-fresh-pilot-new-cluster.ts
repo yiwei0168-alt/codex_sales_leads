@@ -25,6 +25,7 @@ const finalSettlementCheck=args.includes('--final-settlement');
 const mainRuntimeArgument=args.find(arg=>arg.startsWith('--main-runtime-image='));
 const mainRuntimeImage=mainRuntimeArgument?.slice('--main-runtime-image='.length);
 const mainRuntimeDurability=args.includes('--main-runtime-durability');
+const mainRuntimeCrashRecovery=args.includes('--main-runtime-crash-recovery');
 const mainRuntimeCommitLoss=args.includes('--main-runtime-commit-loss');
 const mainRuntimeTaskEnrollment=args.includes('--main-runtime-task-enrollment');
 const localMemoryWorkerCheck=args.includes('--local-memory-worker');
@@ -81,6 +82,7 @@ assert(!mainRuntimeArgument||(mainRuntimeImage&&/^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/
   &&![snapshotLifecycleCheck,knowledgeScopeSourcesCheck,finalSettlementCheck,acceptanceOriginalsCheck,localMemoryWorkerCheck].some(Boolean)),
  '--main-runtime-image requires a standalone current-schema Web invocation');
 assert(!mainRuntimeDurability||mainRuntimeImage,'--main-runtime-durability requires --main-runtime-image');
+assert(!mainRuntimeCrashRecovery||mainRuntimeDurability,'--main-runtime-crash-recovery requires --main-runtime-durability');
 assert(!mainRuntimeCommitLoss||mainRuntimeImage,'--main-runtime-commit-loss requires --main-runtime-image');
 assert(!mainRuntimeTaskEnrollment||mainRuntimeImage,'--main-runtime-task-enrollment requires --main-runtime-image');
 assert(!localMemoryWorkerCheck||(webImage&&currentSchemaCheck),'--local-memory-worker requires --web-image and --current-schema');
@@ -89,7 +91,7 @@ assert(!localMemoryChineseCheck||localMemoryWorkerCheck,'--local-memory-chinese 
 assert(!localMemoryHttpCheck||(localMemoryGraphCheck&&localMemoryChineseCheck),'--local-memory-http requires Chinese memory and graph Worker checks');
 const rollbackImageArgument = args.find(arg => arg.startsWith("--rollback-image="));
 const rollbackImage = rollbackImageArgument?.slice("--rollback-image=".length);
-assert(args.length <= 22 && args.every(arg => ['--main-runtime-task-enrollment', '--main-runtime-commit-loss', '--main-runtime-durability', mainRuntimeArgument, "--final-settlement", "--knowledge-scope-sources", "--snapshot-lifecycle", "--acceptance-originals", "--local-memory-http", "--local-memory-chinese", "--local-memory-graph-worker", "--local-memory-worker", "--snapshot-download", "--extended-ui", "--frontend-ui", "--current-schema", "--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", '--locked-policy', '--memory-source-locks', '--method-catalog-locks', '--shadow-source-locks', '--safety-skill-usage', '--transport-journal', '--pool-recovery', '--web-pool-recovery', "--prospective-source", "--prospective-material", '--prospective-browser', '--prospective-composition', declarationImageArgument,collectorImageArgument,prospectiveHttpArgument, webImageArgument, rollbackImageArgument].includes(arg))
+assert(args.length <= 22 && args.every(arg => ['--main-runtime-crash-recovery', '--main-runtime-task-enrollment', '--main-runtime-commit-loss', '--main-runtime-durability', mainRuntimeArgument, "--final-settlement", "--knowledge-scope-sources", "--snapshot-lifecycle", "--acceptance-originals", "--local-memory-http", "--local-memory-chinese", "--local-memory-graph-worker", "--local-memory-worker", "--snapshot-download", "--extended-ui", "--frontend-ui", "--current-schema", "--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", '--locked-policy', '--memory-source-locks', '--method-catalog-locks', '--shadow-source-locks', '--safety-skill-usage', '--transport-journal', '--pool-recovery', '--web-pool-recovery', "--prospective-source", "--prospective-material", '--prospective-browser', '--prospective-composition', declarationImageArgument,collectorImageArgument,prospectiveHttpArgument, webImageArgument, rollbackImageArgument].includes(arg))
   &&(!declarationImageArgument||(declarationImage&&/^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(declarationImage)))
   &&(!collectorImageArgument||(collectorImage&&/^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(collectorImage)))
   && (!webPoolRecoveryCheck || webImage)
@@ -241,11 +243,12 @@ try {
     const rootCertificate=await run('docker',['exec',containerId!,'cat','/tmp/ma24-server.crt']);assert.equal(rootCertificate.code,0);
     const mainRuntime=await run(process.execPath,['scripts/run-tsx.cjs','scripts/verify-main-runtime-worker-db.ts'],
       {...process.env,DATABASE_URL:appUrl.toString(),DATABASE_MIGRATION_URL:adminUrl.toString(),MA24_DISPOSABLE_MAIN_RUNTIME:'1',MA24_MAIN_RUNTIME_IMAGE:mainRuntimeImage,
-        MA24_MAIN_RUNTIME_DURABILITY:mainRuntimeDurability?'1':'0',MA24_MAIN_RUNTIME_COMMIT_LOSS:mainRuntimeCommitLoss?'1':'0',
+        MA24_MAIN_RUNTIME_DURABILITY:mainRuntimeDurability?'1':'0',MA24_MAIN_RUNTIME_CRASH_RECOVERY:mainRuntimeCrashRecovery?'1':'0',MA24_MAIN_RUNTIME_COMMIT_LOSS:mainRuntimeCommitLoss?'1':'0',
         MA24_MAIN_RUNTIME_TASK_ENROLLMENT:mainRuntimeTaskEnrollment?'1':'0',
         MA24_MAIN_RUNTIME_DATABASE_CONTAINER:containerId,MA24_MAIN_RUNTIME_NETWORK:networkName,MA24_MAIN_RUNTIME_DATABASE_URL:inRuntimeApp.toString(),MA24_MAIN_RUNTIME_DATABASE_CA:rootCertificate.output.trim()});
     assert.equal(mainRuntime.code,0,mainRuntime.output);assert(mainRuntime.output.includes('"mainRuntimeWorker":"passed"'),mainRuntime.output);
     if(mainRuntimeDurability)assert(mainRuntime.output.includes('"committedTaskSurvivesLostHttpResponse":true'),mainRuntime.output);
+    if(mainRuntimeCrashRecovery)assert(mainRuntime.output.includes('"acknowledgedThreadRetained":true'),mainRuntime.output);
     if(mainRuntimeCommitLoss){assert(mainRuntime.output.includes('"actualPostgresCommitAcknowledgmentLost":true'),mainRuntime.output);
       assert(mainRuntime.output.includes('"commitPreventedAfterRealInsert":true'),mainRuntime.output);}
     if(mainRuntimeTaskEnrollment)assert(mainRuntime.output.includes('"actualMatchingApiAndWorkerVerified":true'),mainRuntime.output);console.log(mainRuntime.output.trim());
@@ -713,7 +716,7 @@ try {
   }
   acceptanceResult={ freshClusterPilot: "passed", image: "pgvector/pgvector:pg16",
     publishedAddress: "127.0.0.1 only", rolesVerified: true, duplicateRoleBootstrapRejected: true,
-    freshMigrationThrough: currentSchemaCheck?159:135,currentSchemaMarkers,snapshotLifecycleVerified:snapshotLifecycleCheck,knowledgeScopeSourcesVerified:knowledgeScopeSourcesCheck,finalSettlementVerified:finalSettlementCheck,compiledMainRuntimeVerified:Boolean(mainRuntimeImage),mainRuntimeDurabilityVerified:mainRuntimeDurability,mainRuntimeCommitLossVerified:mainRuntimeCommitLoss,mainRuntimeTaskEnrollmentVerified:mainRuntimeTaskEnrollment,snapshotDownloadResult,localMemoryWorkerResult,trustRegistryRestoreResult,freshMailboxUiVerified:frontendUiCheck,extendedFrontendUiVerified:extendedUiCheck,
+    freshMigrationThrough: currentSchemaCheck?159:135,currentSchemaMarkers,snapshotLifecycleVerified:snapshotLifecycleCheck,knowledgeScopeSourcesVerified:knowledgeScopeSourcesCheck,finalSettlementVerified:finalSettlementCheck,compiledMainRuntimeVerified:Boolean(mainRuntimeImage),mainRuntimeDurabilityVerified:mainRuntimeDurability,mainRuntimeCrashRecoveryVerified:mainRuntimeCrashRecovery,mainRuntimeCommitLossVerified:mainRuntimeCommitLoss,mainRuntimeTaskEnrollmentVerified:mainRuntimeTaskEnrollment,snapshotDownloadResult,localMemoryWorkerResult,trustRegistryRestoreResult,freshMailboxUiVerified:frontendUiCheck,extendedFrontendUiVerified:extendedUiCheck,
     syntheticAccountCompanyAndRestoreVerified: true, copiedProductionData: false,
     linuxWebImage: webImage ?? null, linuxWebHttpWorkflowVerified: Boolean(webImage),
     linuxWebHttpsBrowserVerified: browserCheck, tenConcurrentSyntheticAccountsVerified: tenUserCheck,

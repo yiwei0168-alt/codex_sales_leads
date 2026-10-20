@@ -31,6 +31,8 @@ const execute=async(args:string[])=>{const value=await docker(args);assert.equal
 const restricted=['--read-only','--cap-drop=ALL','--security-opt','no-new-privileges','--tmpfs','/tmp:rw,noexec,nosuid,size=64m'];
 const environment=['--env',`DATABASE_URL=${runtimeUrl}`,'--env',`DATABASE_SSL_CA=${ca}`,'--env','LANGCHAIN_TRACING_V2=false','--env','LANGSMITH_TRACING=false'];
 const durability=process.env.MA24_MAIN_RUNTIME_DURABILITY==='1';
+const crashRecovery=process.env.MA24_MAIN_RUNTIME_CRASH_RECOVERY==='1';
+assert(!crashRecovery||durability,'Crash recovery requires a dedicated persistent state volume');
 const commitLoss=process.env.MA24_MAIN_RUNTIME_COMMIT_LOSS==='1';
 const taskEnrollment=process.env.MA24_MAIN_RUNTIME_TASK_ENROLLMENT==='1';
 let signingEnvironment:string[]=[],taskEnrollmentResult:Record<string,unknown>|null=null;
@@ -203,6 +205,24 @@ try{
   assert.equal(stateInspection.uid,1000);assert.equal(stateInspection.mode,448);assert(stateInspection.files.length>=3);
   await startServer();assert.notEqual(server,oldServer);assert.deepEqual(await api(server!,`/threads/${threadId}`),before);
   for(const saved of completedTasks)assert.deepEqual(await readTask(saved.id),saved.row);
+  let crashResult:Record<string,unknown>|null=null;
+  if(crashRecovery){
+   // Kill immediately after an acknowledged write, without a flush delay or
+   // graceful shutdown. A previously flushed thread alone is insufficient.
+   const acknowledgedId=randomUUID(),acknowledgedMarker=randomUUID();
+   const acknowledged=await api(server!,'/threads','POST',{thread_id:acknowledgedId,metadata:{synthetic_marker:acknowledgedMarker}});
+   assert.equal(acknowledged.metadata.synthetic_marker,acknowledgedMarker);
+   const killed=server!;assert.match(killed,/^[a-f0-9]{64}$/);
+   await execute(['kill','--signal','KILL',killed]);
+   assert.equal(await execute(['wait',killed]),'137','Fixture must observe actual SIGKILL, not graceful cleanup');
+   await execute(['rm','--volumes',killed]);server=undefined;
+   await startServer();assert.notEqual(server,killed);
+   assert.deepEqual(await api(server!,`/threads/${acknowledgedId}`),acknowledged,'Acknowledged thread must survive immediate forced API death');
+   assert.deepEqual(await api(server!,`/threads/${threadId}`),before);
+   for(const saved of completedTasks)assert.deepEqual(await readTask(saved.id),saved.row);
+   crashResult={signal:'SIGKILL',exitCode:137,acknowledgedThreadRetained:true,previouslyFlushedThreadRetained:true,
+    businessRowsUnchanged:true,flushDelayInserted:false,inFlightTaskCrashVerified:false,powerLossVerified:false};
+  }
   await admin.query("update knowledge_document set visibility='shared' where id=$1",[document]);
   const {task,reply}=await prepareTask();
   // A local forwarding proxy executes the real API request but withholds its
@@ -227,7 +247,7 @@ try{
   await execute(['rm','--force','--volumes',proxy]);proxy=undefined;
   await stopServer();
   durabilityResult={namedVolumeUid:stateInspection.uid,namedVolumeMode:stateInspection.mode,stateFiles:stateInspection.files,actualThreadReadbackAfterContainerReplacement:true,
-   priorTaskRowsUnchangedAfterRestart:true,gracefulApiExitCode:0,committedTaskSurvivesLostHttpResponse:true,noDuplicateReplyEventOrExtractionJob:true,subsequentWorkerMakesNoReplayRequest:true,forwardedApiRequests:1};
+   priorTaskRowsUnchangedAfterRestart:true,gracefulApiExitCode:0,committedTaskSurvivesLostHttpResponse:true,noDuplicateReplyEventOrExtractionJob:true,subsequentWorkerMakesNoReplayRequest:true,forwardedApiRequests:1,crashResult};
  }
  const receipt={passed:true,image,immutableImageId:metadata.id,sourceCommit:metadata.revision,integrity,actualLangGraphApi:true,actualCompiledQueueWorker:true,postgresCheckpointRecovery:true,cases,
   durabilityResult,commitLossResult,uncommittedLossResult,taskEnrollmentResult,syntheticCheckpointSeed:true,actualModelCalls:0,externalActions:0,firstModelExecutionVerified:false,productionQualified:false,automaticActivation:false};

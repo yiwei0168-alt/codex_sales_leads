@@ -1,5 +1,7 @@
 import {readFile,mkdir,open,unlink} from 'node:fs/promises';
 import {randomUUID,createHash} from 'node:crypto';
+import {createRequire} from 'node:module';
+import {pathToFileURL} from 'node:url';
 import {collectorPackageInventory,assertCollectorRuntimeBoundary} from './package-integrity.mjs';
 
 let phase='startup';
@@ -30,6 +32,12 @@ try{
    await mkdir('/runtime',{recursive:true});
    phase='state-directory';const probe=`/runtime/.main-agent-write-check-${randomUUID()}`;
    const descriptor=await open(probe,'wx',0o600);await descriptor.close();await unlink(probe);
+   phase='durable-api-state';
+   const require=createRequire(import.meta.url),serverUrl=pathToFileURL(require.resolve('@langchain/langgraph-api/server'));
+   const persistenceUrl=new URL('./storage/persist.mjs',serverUrl);
+   if(createHash('sha256').update(await readFile(persistenceUrl)).digest('hex')!=='127d8a480f67026a95197e424ba9c6669da0856ac19bd4c2a29746851251e21a')throw new Error('Unsupported API persistence implementation');
+   const {installDurablePersistence}=await import('./durable-persistence.mjs');
+   installDurablePersistence(await import(persistenceUrl.href));
    phase='api';const {startServer}=await import('@langchain/langgraph-api/server');
    const runtime=await startServer({host:'127.0.0.1',port:2024,nWorkers:1,cwd:'/runtime',graphs:{main_agent_workflow:'/app/server.mjs:mainAgentWorkflowGraph'}});
    let closing=false;
