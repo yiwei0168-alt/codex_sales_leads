@@ -16,6 +16,7 @@ import {skillActivationCurrent} from '../../src/lib/assistant/main/skill-activat
 import {tenantTransaction} from '../../src/lib/rag/db';
 import {captureSkillAcceptanceLedger} from '../../src/lib/assistant/main/skill-acceptance-ledger';
 import {productNodeBuildOptions} from '../lib/product-node-build.mjs';
+import {skillCommitFault} from '../lib/ma24-skill-commit-fault';
 
 /** Disposable database only. The real producer must reject missing evidence.
  * SQL commit/rollback cases then replace ONLY that producer with an explicit
@@ -106,10 +107,10 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
   const compiled=join(directory,'transaction.mjs');
   await build({...productNodeBuildOptions(),entryPoints:['scripts/fixtures/skill-final-activation-transaction-runner.ts'],outfile:compiled,
    plugins:[{name:'explicit-test-only-qualified-producer',setup(builder){builder.onLoad({filter:/skill-locked-materials\.ts$/},args=>({contents:mock,loader:'ts',resolveDir:dirname(args.path)}));}}]});
-  const run=async(actor:Awaited<ReturnType<typeof makeActor>>,failure=false,expiry=false,commitDelay=false,bindingClear=false,commitDelaySeconds=2.1,lateWrite?:string)=>{
+  const run=async(actor:Awaited<ReturnType<typeof makeActor>>,failure=false,expiry=false,commitDelay=false,bindingClear=false,commitDelaySeconds=2.1,lateWrite?:string,databaseUrl?:string)=>{
    const job=join(directory,'job.json');await writeFile(job,JSON.stringify({actor,action,failure,commitDelay,bindingClear,commitDelaySeconds,lateWrite}));
    const out=await new Promise<{code:number|null;output:string}>((accept,reject)=>{
-    const child=spawn(process.execPath,[compiled,job],{windowsHide:true,stdio:['ignore','pipe','pipe'],env:{...process.env,NODE_ENV:'production',NODE_OPTIONS:'',NODE_PATH:'',
+    const child=spawn(process.execPath,[compiled,job],{windowsHide:true,stdio:['ignore','pipe','pipe'],env:{...process.env,...databaseUrl?{DATABASE_URL:databaseUrl}:{},NODE_ENV:'production',NODE_OPTIONS:'',NODE_PATH:'',
      MA24_DISPOSABLE_FINAL_ACTIVATION:'1',MA24_ACTIVATION_EXPIRY:expiry?'1':'0'}});let output='';
     child.stdout.on('data',chunk=>{output+=String(chunk);});child.stderr.on('data',()=>{});child.once('error',reject);child.once('exit',code=>accept({code,output}));
    });
@@ -238,6 +239,29 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
   await pool.query('update agent_skill set enabled=false where id=$1',[skillId]);
   assert.equal((await pool.query('select activation_binding from agent_skill where id=$1',[skillId])).rows[0].activation_binding,null);
   assert.deepEqual((await run(committed)).data,first.data);assert.equal((await inspect(committed)).enabled,false);assert.equal((await inspect(committed)).events,1);
+  const fault=await skillCommitFault(process.env.DATABASE_URL!);
+  let commitFaultStats:typeof fault.stats;
+  try{
+   const lostAck=await makeActor();fault.arm('after');
+   assert.equal((await run(lostAck,true,false,false,false,2.1,undefined,fault.url)).activationTransaction,'rejected');
+   const saved=await inspect(lostAck);
+   assert.equal(saved.enabled,true);assert.equal(saved.status,'completed');assert.equal(saved.events,1);
+   assert.equal(fault.stats.targetCommits,1);assert.equal(fault.stats.backendCommits,1);assert.equal(fault.stats.droppedCommitAcks,1);
+   await pool.query('update agent_skill set enabled=false where id=$1',[skillId]);
+   const reconciled=await run(lostAck,false,false,false,false,2.1,undefined,fault.url);
+   assert.deepEqual(reconciled.data,saved.output.data);assert.equal((await inspect(lostAck)).enabled,false);assert.equal((await inspect(lostAck)).events,1);
+   const notCommitted=await makeActor();fault.arm('before');
+   assert.equal((await run(notCommitted,true,false,false,false,2.1,undefined,fault.url)).activationTransaction,'rejected');
+   assert.deepEqual(await inspect(notCommitted),{enabled:false,status:'started',output:null,events:0});
+   assert.equal(fault.stats.targetCommits,2);assert.equal(fault.stats.backendCommits,1);assert.equal(fault.stats.blockedCommits,1);
+   const retried=await run(notCommitted,false,false,false,false,2.1,undefined,fault.url);
+   const recovered=await inspect(notCommitted);
+   assert.equal(recovered.enabled,true);assert.equal(recovered.status,'completed');assert.equal(recovered.events,1);assert.deepEqual(recovered.output.data,retried.data);
+   assert.deepEqual((await run(notCommitted,false,false,false,false,2.1,undefined,fault.url)).data,retried.data);
+   assert.equal((await inspect(notCommitted)).events,1);assert.equal(fault.stats.protocolFailures,0);
+   commitFaultStats={...fault.stats};
+   await pool.query('update agent_skill set enabled=false where id=$1',[skillId]);
+  }finally{await fault.close();}
   const audit=await makeActor();
   await pool.query(`create function ${trigger}() returns trigger language plpgsql as $$ begin
    if new.run_id='${audit.runId}'::uuid and new.kind='skill_activated' then raise exception 'Activation fixture audit failure'; end if; return new; end $$;
@@ -300,6 +324,9 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
    rearmRejected:true,customGucResetCannotUnseal:true,earlyConstraintFlushCannotUnseal:true,emptySourceStatementRejected:true,allEffectsRolledBack:true,
    disabledSourceGuardRefusesArming:true,privateFenceSelectUpdateDeleteDenied:true,incompleteTupleCommitRejected:true,
    qualificationProducerMocked:true,humanApprovalCreated:false,productionQualificationGranted:false,modelCalls:0}));
+  console.log(JSON.stringify({activationCommitOutcomes:'passed',actualPostgresWireFault:true,loopbackPlaintextOnly:true,
+   committedTupleRetainedAfterLostAck:true,reconcileDoesNotReenable:true,unforwardedCommitRollsBackAll:true,explicitRetryCommitsOnce:true,
+   automaticTransactionReplay:false,proxyStats:commitFaultStats,qualificationProducerMocked:true,humanApprovalCreated:false,productionQualificationGranted:false,modelCalls:0}));
  }finally{
   await pool.query(`drop trigger if exists ${trigger} on agent_run_event; drop trigger if exists ${trigger} on agent_skill; drop function if exists ${trigger}()`);
   if(priorMode===undefined)delete process.env.SKILL_RUNNER_TRUST_REGISTRY_MODE;else process.env.SKILL_RUNNER_TRUST_REGISTRY_MODE=priorMode;
