@@ -1,0 +1,65 @@
+{
+  "stage": "MA24 G01 fresh local backup and isolated restore check",
+  "date": "2026-10-20",
+  "checkedAtUtc": "2026-10-20T03:14:31Z",
+  "backup": {
+    "file": "network_copilot_2026-10-20T03-09-10Z.dump",
+    "createdAt": "2026-10-20T03:11:02.266Z",
+    "bytes": 194911119,
+    "sha256": "f455fa74f7207030566962888643ea00279ed3db1733db9a5029e45dcac76bda",
+    "format": "PostgreSQL custom archive",
+    "restoreListPresent": true,
+    "portableIndexSqlPresent": true,
+    "independentSizeAndSha256Check": "passed",
+    "gitIgnored": true
+  },
+  "postBackupReadOnlyReleasePreflight": {
+    "schemaState": "stage-present",
+    "stageMarkers127To135": "all present",
+    "collectorRoleRestricted": true,
+    "applicationCanSetOrInheritCollectorRole": false,
+    "backupAgeHours": 0,
+    "backupChecksumMatched": true,
+    "readyForRelease": false,
+    "remaining": [
+      "Create a fresh backup immediately before any future team cutover",
+      "Bind an integrated source/service release and rollback package",
+      "Repeat runtime and queue checks immediately before any future cutover"
+    ]
+  },
+  "isolatedRestore": {
+    "database": "ma24_restore_efb9a06d5dd3",
+    "archiveRestored": true,
+    "fullIntegrityRestore": true,
+    "schemaMarkers127To135": "all present",
+    "aclIncludedInArchive": true,
+    "applicationBundleInsert": false,
+    "collectorBundleInsert": true,
+    "forcedRlsOnBundleAndReview": true,
+    "oldWebRollbackCompatibility": {
+      "manifest": 200,
+      "anonymousUpload": 401,
+      "syntheticLogin": 200,
+      "authenticatedUpload": 200
+    },
+    "candidateWebCompatibility": {
+      "manifest": 200,
+      "anonymousUpload": 401,
+      "syntheticLogin": 200,
+      "authenticatedUpload": 200,
+      "acceptanceReview": 200
+    },
+    "productionChanged": false,
+    "modelCalls": 0,
+    "cloneDropped": true
+  },
+  "scope": "Fresh local database archive and disposable same-host database restore with old/candidate Web route compatibility. This does not exercise a separate physical upload-volume restore, off-host recovery, target-host deployment, live traffic reversal, or production team access.",
+  "checks": {
+    "backupCommandAndPgRestoreList": "passed",
+    "independentArchiveSizeAndSha256": "passed",
+    "readOnlyReleasePreflight": "passed",
+    "isolatedFullRestoreAndWebCompatibility": "passed",
+    "cloneCleanup": "passed",
+    "gitDiffCheck": "passed"
+  }
+}
