@@ -1,0 +1,57 @@
+{
+  "stage": "MA24 G01/G02 atomic schedule dispatch",
+  "date": "2026-10-20",
+  "sourceState": "Working tree based on 746e4f4a; modified source dispatcher, not a newly compiled runtime image",
+  "source": {
+    "file": "src/lib/assistant/main/schedules.ts",
+    "baselineSha256": "0f6bd9b18e7e3028dff1864271130c1e670dcf64ceeef11530659c124f65fc2b",
+    "verifiedSha256": "72275e9494ab77032d5bf1b55c4a57ce11e41712984fcd3c5eaa831e30ffbc7a"
+  },
+  "implementation": {
+    "enqueueAndScheduleSettlementShareTenantTransaction": true,
+    "occurrenceRequestKeyPreserved": true,
+    "finalLeaseTokenAndEnabledAndWallClockCheck": true,
+    "existingClaimLeaseSecondsUnchanged": 60,
+    "automaticRetryAdded": false
+  },
+  "reproduction": {
+    "command": "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --web-image=ma24-pilot-web:558a7598 --current-schema --schedule-dispatch",
+    "beforeLog": "tmp/ma24-schedule-dispatch-before.log",
+    "beforeExitCode": 1,
+    "failure": "Failed schedule settlement left a separately committed queued task",
+    "actualAfterInjectedSettlementFailure": {"runs":1,"conversations":1,"messages":1,"events":1},
+    "expected": {"runs":0,"conversations":0,"messages":0,"events":0}
+  },
+  "verification": {
+    "afterLog": "tmp/ma24-schedule-dispatch-after.log",
+    "exitCode": 0,
+    "freshMigrationThrough": 159,
+    "atomicSettlementFailureRollback": true,
+    "nestedDeadlineRollback": true,
+    "fixtureCancellationBudgetMilliseconds": 400,
+    "realLeaseExpiryRollback": true,
+    "existingLeaseSeconds": 60,
+    "fixturePostEnqueueSleepSeconds": 61,
+    "storedLeaseOrDueTimesRewritten": false,
+    "recoveryAfterActualLeaseExpiry": true,
+    "onceAndIntervalDispatch": true,
+    "concurrentClaimSingleTask": true,
+    "disabledScheduleNotClaimed": true,
+    "peerScheduleListEmpty": true,
+    "finalDistinctRuns": 5,
+    "finalConversationMessageAndQueuedEventCountsEach": 5,
+    "webHttpCompatibility": "Fixed older 558a7598 image on fresh schema 159; not the modified dispatcher image",
+    "fixtureAccountsAndRowsCleaned": true,
+    "freshClusterResourcesRemoved": true,
+    "modelCalls": 0,
+    "externalActions": 0,
+    "originalDatabaseChanged": false
+  },
+  "checks": {"focusedUnitTests":24,"typecheck":"passed","targetedEslint":"passed","gitDiffCheck":"passed"},
+  "limits": [
+    "Actual source dispatcher and database enqueue, not execution of the queued tasks",
+    "New fixed compiled Worker image, actual process death and COMMIT acknowledgment loss during this schedule transaction remain unverified",
+    "No first model call, provider batch result settlement, full account lifecycle, production or independent quality acceptance",
+    "G01-G13 remain incomplete; G14-G20 and LAN deployment remain deferred"
+  ]
+}

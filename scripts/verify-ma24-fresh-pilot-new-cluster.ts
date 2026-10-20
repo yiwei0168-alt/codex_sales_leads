@@ -11,7 +11,8 @@ import {completeDisposableCheck} from './lib/ma24-disposable-cleanup';
 
 const id = randomBytes(6).toString("hex");
 const containerName = `ma24-pilot-fresh-${id}`;
-const args = process.argv.slice(2);
+const scheduleDispatchCheck=process.argv.includes('--schedule-dispatch');
+const args = process.argv.slice(2).filter(arg=>arg!=='--schedule-dispatch');
 const webImageArgument = args.find(arg => arg.startsWith("--web-image="));
 const webImage = webImageArgument?.startsWith("--web-image=")
   ? webImageArgument.slice("--web-image=".length) : undefined;
@@ -81,6 +82,7 @@ assert(!acceptanceOriginalsCheck||(webImage&&currentSchemaCheck),'--acceptance-o
 assert(!snapshotLifecycleCheck||(webImage&&currentSchemaCheck),'--snapshot-lifecycle requires --web-image and --current-schema');
 assert(!knowledgeScopeSourcesCheck||(webImage&&currentSchemaCheck),'--knowledge-scope-sources requires --web-image and --current-schema');
 assert(!finalSettlementCheck||(webImage&&currentSchemaCheck),'--final-settlement requires --web-image and --current-schema');
+assert(!scheduleDispatchCheck||(webImage&&currentSchemaCheck),'--schedule-dispatch requires --web-image and --current-schema');
 assert(!mainRuntimeArgument||(mainRuntimeImage&&/^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(mainRuntimeImage)&&webImage&&currentSchemaCheck
   &&![snapshotLifecycleCheck,knowledgeScopeSourcesCheck,finalSettlementCheck,acceptanceOriginalsCheck,localMemoryWorkerCheck].some(Boolean)),
  '--main-runtime-image requires a standalone current-schema Web invocation');
@@ -242,6 +244,11 @@ try {
     const settlement=await run(process.execPath,['scripts/run-tsx.cjs','scripts/verify-final-main-settlement-db.ts'],
       {...process.env,DATABASE_URL:appUrl.toString(),DATABASE_MIGRATION_URL:adminUrl.toString(),MA24_DISPOSABLE_FINAL_SETTLEMENT:'1'});
     assert.equal(settlement.code,0,settlement.output);assert(settlement.output.includes('"finalMainSettlement":"passed"'),settlement.output);console.log(settlement.output.trim());
+  }
+  if(scheduleDispatchCheck){
+    const schedules=await run(process.execPath,['scripts/run-tsx.cjs','scripts/verify-schedule-dispatch-db.ts'],
+      {...process.env,DATABASE_URL:appUrl.toString(),DATABASE_MIGRATION_URL:adminUrl.toString(),MA24_DISPOSABLE_SCHEDULE_DISPATCH:'1'});
+    assert.equal(schedules.code,0,schedules.output);assert(schedules.output.includes('"scheduleDispatch":"passed"'),schedules.output);console.log(schedules.output.trim());
   }
   const verifyMainRuntime=async(http?:{base:string;ownerCookie:string;peerCookie:string;ownerEmail:string})=>{
     if(!mainRuntimeImage)return;
@@ -728,6 +735,7 @@ try {
     }
   }
   acceptanceResult={ freshClusterPilot: "passed", image: "pgvector/pgvector:pg16",
+    scheduleDispatchVerified:scheduleDispatchCheck,
     publishedAddress: "127.0.0.1 only", rolesVerified: true, duplicateRoleBootstrapRejected: true,
     freshMigrationThrough: currentSchemaCheck?159:135,currentSchemaMarkers,snapshotLifecycleVerified:snapshotLifecycleCheck,knowledgeScopeSourcesVerified:knowledgeScopeSourcesCheck,finalSettlementVerified:finalSettlementCheck,compiledMainRuntimeVerified:Boolean(mainRuntimeImage),mainRuntimeDurabilityVerified:mainRuntimeDurability,mainRuntimeCrashRecoveryVerified:mainRuntimeCrashRecovery,mainRuntimeInterruptionVerified:mainRuntimeInterruption,mainRuntimeNetworkLossVerified:mainRuntimeNetworkLoss,mainRuntimeResumeRevocationVerified:mainRuntimeResumeRevocation,mainRuntimeCommitLossVerified:mainRuntimeCommitLoss,mainRuntimeTaskEnrollmentVerified:mainRuntimeTaskEnrollment,snapshotDownloadResult,localMemoryWorkerResult,trustRegistryRestoreResult,freshMailboxUiVerified:frontendUiCheck,extendedFrontendUiVerified:extendedUiCheck,
     syntheticAccountCompanyAndRestoreVerified: true, copiedProductionData: false,
