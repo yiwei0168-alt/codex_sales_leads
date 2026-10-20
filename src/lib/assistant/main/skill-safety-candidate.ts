@@ -9,6 +9,7 @@ import {prepareSkillExecutionIdentity} from './skill-runtime-identity';
 import {requireSkillAcceptanceFreeze} from './skill-acceptance-freeze';
 import {createDurableSkillCandidateModel,type SkillCandidateCollector} from './skill-candidate-model';
 import {runSkillCandidateArm} from './skill-candidate-runner';
+import {withSkillCandidateExecution} from './skill-candidate-execution';
 
 const selection=z.object({runId:z.uuid(),skillId:z.uuid(),version:z.number().int().positive(),caseId:z.string().min(1).max(120)}).strict();
 type Selection=z.infer<typeof selection>;
@@ -56,9 +57,12 @@ export async function runDurableSkillSafetyArm(context:{userId:string},input:Sel
  const p=selection.parse(input);if(!collector.frozen)throw new Error('Safety execution requires a frozen plan');
  const saved=await prepareSkillSafetyCandidate(context,p),{freezeId}=collector.frozen;
  const validate=()=>requireSkillSafetyBinding(context,p,saved,collector.frozen!);
- const durable=createDurableSkillCandidateModel({ownerId:context.userId,snapshotHash:saved.sourceHash,arm},collector,validate);
- await validate();const out=await runSkillCandidateArm(saved.snapshot,arm,durable.model,validate,maximumModelCalls);await validate();
+ return withSkillCandidateExecution(collector.transaction,{ownerId:context.userId,evaluationId:collector.evaluationId,arm},async assertOwned=>{
+ const guarded=async()=>{await assertOwned();await validate();await assertOwned();};
+ const durable=createDurableSkillCandidateModel({ownerId:context.userId,snapshotHash:saved.sourceHash,arm},collector,guarded);
+ await guarded();const out=await runSkillCandidateArm(saved.snapshot,arm,durable.model,guarded,maximumModelCalls);await guarded();
  return {...out,caseId:saved.caseId,category:saved.category,provenance:saved.provenance,inputHash:saved.inputHash,sourceHash:saved.sourceHash,
   freezeId,evaluationId:collector.evaluationId,sourceKind:collector.sourceKind,modelAttemptReceipts:durable.receipts,
   productionAgentEquivalent:false,collectorProvenanceVerified:false,automaticActivation:false};
+ });
 }

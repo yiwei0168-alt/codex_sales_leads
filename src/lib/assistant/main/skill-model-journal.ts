@@ -15,7 +15,9 @@ const outputSchema=z.discriminatedUnion('status',[
 ]);
 type Row={freeze_id?:string|null;id:string;owner_id:string;evaluation_id:string;arm:string;step:number;route_index:number;source_kind:string;snapshot_hash:string;input:unknown;input_hash:string};
 /** Must commit before returning. Supplied by a dedicated collector connection, never HTTP input. */
-export type SkillCollectorTransaction=<T>(ownerId:string,work:(client:PoolClient)=>Promise<T>)=>Promise<T>;
+export type SkillCollectorTransaction={<T>(ownerId:string,work:(client:PoolClient)=>Promise<T>):Promise<T>;
+ /** Separate connection channel for long-lived execution ownership. */
+ execution?:SkillCollectorTransaction};
 export async function assertSkillCollector(client:PoolClient){
  const role=(await client.query<{name:string;super:boolean;bypass:boolean}>('select current_user as name,rolsuper as super,rolbypassrls as bypass from pg_roles where rolname=current_user')).rows[0];
  if(!role||role.name!=='network_copilot_skill_collector'||role.super||role.bypass)throw new Error('Dedicated restricted Skill collector required');

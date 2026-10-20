@@ -10,6 +10,7 @@ import type {RecordedEvidenceReceipt} from './recorded-evidence-receipts';
 import {createDurableSkillCandidateModel,type SkillCandidateCollector} from './skill-candidate-model';
 import {requireSkillAcceptanceFreeze} from './skill-acceptance-freeze';
 import {prepareSkillExecutionIdentity} from './skill-runtime-identity';
+import {withSkillCandidateExecution} from './skill-candidate-execution';
 
 type Snapshot=Parameters<typeof runSkillCandidateArm>[0];
 const selection=z.object({runId:z.uuid(),skillId:z.uuid(),version:z.number().int().positive()}).strict();
@@ -75,10 +76,14 @@ export async function runDurableRecordedSkillCandidateArm(context:{userId:string
     ||digest(plan.identity)!==digest(await prepareSkillExecutionIdentity(context,{runId:input.runId})))throw new Error('Frozen execution identity changed');
   }
  };
- const durable=createDurableSkillCandidateModel({ownerId:context.userId,snapshotHash:saved.sourceHash,arm},collector,validate);
- await validate();
- const output=await runSkillCandidateArm(saved.snapshot,arm,durable.model,validate,maximumModelCalls);
+ return withSkillCandidateExecution(collector.transaction,{ownerId:context.userId,evaluationId:collector.evaluationId,arm},async assertOwned=>{
+ const guarded=async()=>{await assertOwned();await validate();await assertOwned();};
+ const durable=createDurableSkillCandidateModel({ownerId:context.userId,snapshotHash:saved.sourceHash,arm},collector,guarded);
+ await guarded();
+ const output=await runSkillCandidateArm(saved.snapshot,arm,durable.model,guarded,maximumModelCalls);
+ await guarded();
  return {...output,evaluationId:collector.evaluationId,sourceKind:collector.sourceKind,serverSnapshotHash:saved.sourceHash,taskInputHash:saved.taskInputHash,modelConfigHash:saved.modelConfigHash,
   modelAttemptReceipts:durable.receipts,serverSnapshotRevalidated:true,
   productionAgentEquivalent:false,collectorProvenanceVerified:false,automaticActivation:false};
+ });
 }

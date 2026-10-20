@@ -14,10 +14,13 @@ export function createConfiguredSkillCollectorConnection(){
   throw new Error('Dedicated collector login targeting the application database required');
  if(isRemoteDatabase(source)&&url.searchParams.get('sslmode')!=='verify-full')throw new Error('Remote collector requires verified TLS');
  const pool=new Pool({connectionString:databaseConnectionString(source),ssl:databaseSslConfiguration(source),max:2,connectionTimeoutMillis:5000,idleTimeoutMillis:30000});
- let idleFailure=false;pool.on('error',()=>{idleFailure=true;});
- const transaction:SkillCollectorTransaction=async(ownerId,work)=>{
+ // Execution ownership must not occupy the journal pool: concurrent arms must
+ // retain independent capacity to commit their model attempt/outcome receipts.
+ const executionPool=new Pool({connectionString:databaseConnectionString(source),ssl:databaseSslConfiguration(source),max:2,connectionTimeoutMillis:5000,idleTimeoutMillis:30000});
+ let idleFailure=false;for(const current of [pool,executionPool])current.on('error',()=>{idleFailure=true;});
+ const createTransaction=(channel:Pool):SkillCollectorTransaction=>async(ownerId,work)=>{
   z.uuid().parse(ownerId);if(idleFailure)throw new Error('Collector connection failed; restart and reconcile');
-  const client=await pool.connect();let failed=false;
+  const client=await channel.connect();let failed=false;
   const onError=()=>{failed=true;};client.on('error',onError);
   try{
    await client.query('begin');
@@ -36,5 +39,6 @@ export function createConfiguredSkillCollectorConnection(){
   }catch(error){try{await client.query('rollback');}catch{failed=true;}throw error;
   }finally{client.removeListener('error',onError);client.release(failed);}
  };
- return {transaction,close:()=>pool.end()};
+ const transaction=createTransaction(pool);transaction.execution=createTransaction(executionPool);
+ return {transaction,close:async()=>{await Promise.all([pool.end(),executionPool.end()]);}};
 }
