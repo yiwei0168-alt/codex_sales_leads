@@ -1,5 +1,7 @@
 # G09 实际测量运行包登记联合验收准备
 
+首跑终态：8a8acb17夹具在37a2ef90固定镜像中退出1，正式登记SQL拒绝“Runtime package revision changed”。原因是首次登记传入预期修订0，正式函数的无旧版本契约为NULL；现仅将夹具改为NULL，未放宽正式校验。入口新增显式MA24_MEASURED_FIXTURE_COMMIT，避免初始化期间HEAD变化影响验收版本；语法、类型和2文件lint通过。失败收据保留，修复后完整重跑待启动/终态。[失败及修复](evidence/ma24-g09-measured-registration-first-attempt-2026-10-20.json)。
+
 对应MA24-06，无新增确认。已有固定37a2ef90 Linux五类验证通过，但运行包登记缺失；真实readiness仍返回collectorProvenanceVerified=false。本阶段为隔离工程夹具接入实际测量包登记正例，不改变产品资格、人工质量或启用规则。
 
 ## 实施

@@ -1,0 +1,25 @@
+{
+  "date": "2026-10-20",
+  "rule": "MA24-06",
+  "failedFixtureCommit": "8a8acb176e2cfddd596ab934c12cba077ed8baa9",
+  "runtimeSourceCommit": "37a2ef904bcaaed5de52ebed0ee4c78202ef4559",
+  "firstAttemptExitCode": 1,
+  "failure": "Runtime package revision changed",
+  "cause": "Fixture expected revision 0; formal SQL requires NULL for no existing key/purpose registration",
+  "fix": "Only fixture uses null expected revision; production SQL unchanged",
+  "syntaxExitCode": 0,
+  "typecheckExitCode": 0,
+  "eslint": {
+    "files": 2,
+    "exitCode": 0
+  },
+  "sourceHashes": {
+    "scripts/fixtures/measured-runtime-package-registration.ts": "ce1da1bc026fd33dddda1d9b2fcb33e718e13f698f5a815f5ed38dbf17b834a0",
+    "scripts/run-skill-transport-linux-check.mjs": "f91a4fc94d35d7e1b7f2f1a2e6e4389ba886df0e4092c48ae79f673e8ef42065"
+  },
+  "completeRerun": "not started yet; not accepted",
+  "productionQualificationGranted": false,
+  "realQualityAccepted": false,
+  "humanApprovalCreated": false,
+  "actualModelCalls": 0
+}

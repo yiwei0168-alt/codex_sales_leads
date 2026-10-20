@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+2026-10-20 / 测量登记联合首跑因夹具首次修订0与正式NULL契约不符退出1，保留失败；仅修正夹具并支持显式固定归档提交，语法/类型/2文件lint通过，重跑尚未判通过。[范围](SKILL_MEASURED_RUNTIME_REGISTRATION_COMPOSITION_2026-10-20.md)。
+
 2026-10-20 / G09实际测量登记联合夹具已接通，语法/类型通过，完整联合实跑未验收。运行包测量来自不可变镜像，测试源码与固定镜像运行源码逐字节核对；临时签名和合成模型不构成生产资格，人工判定与自动启用门槛不变。[范围](SKILL_MEASURED_RUNTIME_REGISTRATION_COMPOSITION_2026-10-20.md)。
 
 2026-10-20 / 37a2ef90固定镜像内165签名五类退出0，实际Linux Node/依赖、同修订源码与固定编译声明入口，来源准备同事务/撤销恢复通过。缺包登记与人工判定仍阻断，非整组生产包装器/TLS/真实质量资格；下方该Linux“仍运行”由此取代。[收据](evidence/ma24-g09-current165-linux-five-category-2026-10-20.json)。

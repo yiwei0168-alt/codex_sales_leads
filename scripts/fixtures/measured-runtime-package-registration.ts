@@ -33,7 +33,7 @@ export async function registerMeasuredFixtureKey(pool:Pool,keyInput:unknown,insp
   const registration=skillRuntimePackageRegistrationSchema.parse({protocol:'skill-runtime-package-registration-v1',
    binding:{keyId:key.keyId,collectorId:key.collectorId,deploymentHash:key.deploymentHash,purpose,publicKeyHash:skillRuntimePublicKeyHash(key.publicKeyPem)},
    inspection,validUntil:key.expiresAt});
-  const result=await pool.query('select register_skill_runtime_package($1,$2,$3,0) revision',[registration,digest(registration),randomUUID()]);
+  const result=await pool.query('select register_skill_runtime_package($1,$2,$3,null) revision',[registration,digest(registration),randomUUID()]);
   assert(BigInt(result.rows[0].revision)>BigInt(0));
  }
 }

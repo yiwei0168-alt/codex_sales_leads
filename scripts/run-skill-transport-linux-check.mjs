@@ -15,7 +15,7 @@ const measuredMain=process.env.MA24_MEASURED_MAIN_IMAGE;
 if(measuredMain)assert.match(measuredMain,/^sha256:[a-f0-9]{64}$/);
 // New fixture-only changes may exercise the fixed runtime without rebuilding it.
 // Every runtime source/config byte is checked against /app before execution.
-const fixtureCommit=measuredMain?execFileSync('git',['rev-parse','--verify','HEAD^{commit}'],{encoding:'utf8'}).trim():commit;
+const fixtureCommit=measuredMain?(process.env.MA24_MEASURED_FIXTURE_COMMIT??execFileSync('git',['rev-parse','--verify','HEAD^{commit}'],{encoding:'utf8'}).trim()):commit;
 assert.match(fixtureCommit,/^[a-f0-9]{40}$/);
 const db=JSON.parse(execFileSync('docker',['inspect','--format','{{json .}}',container],{encoding:'utf8'}));
 assert.equal(db.Id,container);assert(db.Name.startsWith('/ma24-pilot-fresh-')&&db.State.Running,'Fresh disposable database required');
