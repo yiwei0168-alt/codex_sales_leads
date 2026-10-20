@@ -12,6 +12,7 @@ import {modelRequestManifest} from '../../src/lib/assistant/main/model-request-m
 import {initialTaskMessages} from '../../src/lib/assistant/main/initial-task-messages';
 import {decisionMemoryMessage} from '../../src/lib/assistant/main/decision-memory-message';
 import {digest} from '../../src/lib/assistant/main/contracts';
+import {verifySkillCandidateProcessCrashDatabase} from './skill-candidate-process-crash-db';
 
 export async function verifySkillCandidateCheckpointDatabase(pool:Pool,owner:string,other:string,skillId:string,transaction:SkillCollectorTransaction){
  const config=modeModelConfig('standard'),context={userId:owner,role:'member' as const,mode:'standard' as const};
@@ -72,7 +73,8 @@ export async function verifySkillCandidateCheckpointDatabase(pool:Pool,owner:str
   await app.query('begin');await app.query('set local role network_copilot_app');await app.query("select set_config('app.current_user_id',$1,true)",[owner]);
   await assert.rejects(app.query('select * from agent_skill_candidate_checkpoint'),(error:unknown)=>(error as {code?:string}).code==='42501');
  }finally{await app.query('rollback');app.release();}
- return {candidateGraphCheckpointDatabaseVerified:true,pendingCheckpointRecoveryReusesModelJournal:true,terminalCheckpointNoModelReplay:true,
+ const processCrash=process.env.MA24_CANDIDATE_PROCESS_CRASH==='1'?await verifySkillCandidateProcessCrashDatabase(pool,snapshot):{candidateProcessCrashRecoveryVerified:false};
+ return {...processCrash,candidateGraphCheckpointDatabaseVerified:true,pendingCheckpointRecoveryReusesModelJournal:true,terminalCheckpointNoModelReplay:true,
   checkpointStaleOwnerAndRevisionWritesRejected:true,checkpointBindingAndTamperRejected:true,checkpointAppAndCrossAccountHidden:true,
   checkpointDelayedOldClaimRejected:true,
   syntheticFixture:true,actualModelCalls:0,productionAgentEquivalent:false};
