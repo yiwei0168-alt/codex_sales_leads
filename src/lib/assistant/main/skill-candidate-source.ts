@@ -10,7 +10,7 @@ import type {RecordedEvidenceReceipt} from './recorded-evidence-receipts';
 import {createDurableSkillCandidateModel,type SkillCandidateCollector} from './skill-candidate-model';
 import {requireSkillAcceptanceFreeze} from './skill-acceptance-freeze';
 import {prepareSkillExecutionIdentity} from './skill-runtime-identity';
-import {withSkillCandidateExecution} from './skill-candidate-execution';
+import {withSkillCandidateLease} from './skill-candidate-lease';
 import {prepareSkillCandidateCheckpoint} from './skill-candidate-checkpoint';
 
 type Snapshot=Parameters<typeof runSkillCandidateArm>[0];
@@ -77,14 +77,15 @@ export async function runDurableRecordedSkillCandidateArm(context:{userId:string
     ||digest(plan.identity)!==digest(await prepareSkillExecutionIdentity(context,{runId:input.runId})))throw new Error('Frozen execution identity changed');
   }
  };
- return withSkillCandidateExecution(collector.transaction,{ownerId:context.userId,evaluationId:collector.evaluationId,arm},async(assertOwned,executionToken)=>{
+ return withSkillCandidateLease(collector.transaction,{ownerId:context.userId,evaluationId:collector.evaluationId,arm,sourceKind:collector.sourceKind,
+  ...(collector.frozen?{freezeId:collector.frozen.freezeId,expiresAt:collector.frozen.plan.expiresAt}:{})},async(assertOwned,executionToken,signal)=>{
  const guarded=async()=>{await assertOwned();await validate();await assertOwned();};
  const durable=createDurableSkillCandidateModel({ownerId:context.userId,snapshotHash:saved.sourceHash,arm},collector,guarded);
  await guarded();
  const checkpoint=await prepareSkillCandidateCheckpoint(collector.transaction,{ownerId:context.userId,evaluationId:collector.evaluationId,arm,
   snapshotHash:digest({sourceHash:saved.sourceHash,maximumModelCalls}),sourceKind:collector.sourceKind,
   ...(collector.frozen?{freezeId:collector.frozen.freezeId}:{})},executionToken,guarded);
- const output=await runSkillCandidateArm(saved.snapshot,arm,durable.model,guarded,maximumModelCalls,checkpoint);
+ const output=await runSkillCandidateArm(saved.snapshot,arm,durable.model,guarded,maximumModelCalls,checkpoint,signal);
  await guarded();
  return {...output,evaluationId:collector.evaluationId,sourceKind:collector.sourceKind,serverSnapshotHash:saved.sourceHash,taskInputHash:saved.taskInputHash,modelConfigHash:saved.modelConfigHash,
   modelAttemptReceipts:durable.receipts,serverSnapshotRevalidated:true,

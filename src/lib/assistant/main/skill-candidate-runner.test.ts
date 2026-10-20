@@ -49,6 +49,16 @@ it('does not advance the graph after a failed checkpoint save',async()=>{
  await expect(runSkillCandidateArm(fixture(),'candidate',model,async()=>{},8,checkpoint)).rejects.toThrow('storage unavailable');
  expect(model).not.toHaveBeenCalled();
 });
+it('forwards execution cancellation to the model and rejects its late tool output',async()=>{
+ const controller=new AbortController();let aborted=false,entered!:()=>void;
+ const ready=new Promise<void>(resolve=>{entered=resolve;});
+ const model=vi.fn(({signal}:{signal:AbortSignal})=>new Promise(resolve=>{
+  signal.addEventListener('abort',()=>{aborted=true;resolve(call('discover_tools',{},'late'));},{once:true});entered();
+ }));
+ const pending=runSkillCandidateArm(fixture(),'candidate',model,async()=>{},8,undefined,controller.signal);
+ await ready;controller.abort(new Error('Synthetic execution stopped'));
+ await expect(pending).rejects.toThrow('Synthetic execution stopped');expect(aborted).toBe(true);expect(model).toHaveBeenCalledTimes(1);
+});
 it('preserves the actual initial prompt/config and introduces Skill only via list/read',async()=>{
  const snapshot=fixture(),original=digest(snapshot),inputs:ModelMessage[][]=[];
  const steps=[call('describe_tool',{tool:'skill_list'},'d-list'),call('execute_tool',{tool:'skill_list',arguments:{}},'list'),call('describe_tool',{tool:'skill_read'},'d-read'),call('execute_tool',{tool:'skill_read',arguments:{id}},'read'),answer];

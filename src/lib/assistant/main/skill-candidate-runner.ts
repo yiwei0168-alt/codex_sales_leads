@@ -23,7 +23,7 @@ type Model=(input:{messages:ModelMessage[];profile:ModeConfig;step:number;signal
  * Skill availability changes only through normal skill_list/skill_read results;
  * the original task and system prompts receive no replay or candidate instructions.
  */
-export async function runSkillCandidateArm(input:Snapshot,arm:'baseline'|'candidate',model:Model,validateCurrent:()=>Promise<void>,maximumModelCalls=8,checkpoint?:SkillCandidateCheckpointStore){
+export async function runSkillCandidateArm(input:Snapshot,arm:'baseline'|'candidate',model:Model,validateCurrent:()=>Promise<void>,maximumModelCalls=8,checkpoint?:SkillCandidateCheckpointStore,executionSignal?:AbortSignal){
  assertLocalAnalysisBoundary();z.number().int().min(1).max(64).parse(maximumModelCalls);
  const snapshot=structuredClone(input),profile=modeConfigSchema.parse(snapshot.profile),candidate=snapshot.candidate;
  if(profile.mode!==snapshot.context.mode||candidate.listing.scope!=='account'||candidate.listing.enabled||!candidate.listing.owned
@@ -36,7 +36,7 @@ export async function runSkillCandidateArm(input:Snapshot,arm:'baseline'|'candid
  const skills=snapshot.skills.map(row=>row.id===candidate.listing.id?{...row,enabled:arm==='candidate'}:row);
  let calls=0,stopReason:string|null=null,candidateSkillUsed=false;
  const trace:Array<{id:string;name:string;argumentsHash:string;outputHash:string;receiptHash?:string}>=[];
- const check=async()=>{assertLocalAnalysisBoundary();await validateCurrent();};
+ const check=async()=>{executionSignal?.throwIfAborted();assertLocalAnalysisBoundary();await validateCurrent();executionSignal?.throwIfAborted();};
  await check();const inputHash=digest(snapshot),saved=await checkpoint?.load();
  const restored=saved?skillCandidateCheckpointSchema.parse(saved):null;
  if(restored){
@@ -57,6 +57,8 @@ export async function runSkillCandidateArm(input:Snapshot,arm:'baseline'|'candid
   model:async(messages,step)=>{
    await check();if(calls>=maximumModelCalls){stopReason='model-call-limit';throw new Error(stopReason);}calls++;
    const controller=new AbortController();let timer:ReturnType<typeof setTimeout>|undefined;
+   const cancelled=()=>controller.abort(executionSignal?.reason);
+   executionSignal?.addEventListener('abort',cancelled,{once:true});if(executionSignal?.aborted)cancelled();
    try{
     // requestModeModel applies totalMs separately to each selected route.
     // The outer callback bound must allow the complete ordered fallback, rather
@@ -68,7 +70,7 @@ export async function runSkillCandidateArm(input:Snapshot,arm:'baseline'|'candid
     for(const call of reply.tool_calls??[]){if(seenCalls.has(call.id))throw new Error('duplicate call');seenCalls.add(call.id);}
     return {...reply,content:reply.content??null};
    }catch(error){stopReason=stopReason??'model-or-source-unavailable';throw error;}
-   finally{clearTimeout(timer);controller.abort();}
+   finally{clearTimeout(timer);executionSignal?.removeEventListener('abort',cancelled);controller.abort();}
   },
   tool:async call=>{
    await check();let receiptHash:string|undefined;

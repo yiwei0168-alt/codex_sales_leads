@@ -16,7 +16,7 @@ export function createConfiguredSkillCollectorConnection(){
  const pool=new Pool({connectionString:databaseConnectionString(source),ssl:databaseSslConfiguration(source),max:2,connectionTimeoutMillis:5000,idleTimeoutMillis:30000});
  // Execution ownership must not occupy the journal pool: concurrent arms must
  // retain independent capacity to commit their model attempt/outcome receipts.
- const executionPool=new Pool({connectionString:databaseConnectionString(source),ssl:databaseSslConfiguration(source),max:2,connectionTimeoutMillis:5000,idleTimeoutMillis:30000});
+ const executionPool=new Pool({connectionString:databaseConnectionString(source),ssl:databaseSslConfiguration(source),max:2,connectionTimeoutMillis:5000,idleTimeoutMillis:30000,statement_timeout:15000,query_timeout:20000});
  let idleFailure=false;for(const current of [pool,executionPool])current.on('error',()=>{idleFailure=true;});
  const createTransaction=(channel:Pool):SkillCollectorTransaction=>async(ownerId,work)=>{
   z.uuid().parse(ownerId);if(idleFailure)throw new Error('Collector connection failed; restart and reconcile');
