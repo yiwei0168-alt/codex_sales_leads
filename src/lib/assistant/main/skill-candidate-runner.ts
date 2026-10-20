@@ -52,7 +52,7 @@ export async function runSkillCandidateArm(input:Snapshot,arm:'baseline'|'candid
     if(!reply.content?.trim()&&!reply.tool_calls?.length)throw new Error('empty reply');
     for(const call of reply.tool_calls??[]){if(seenCalls.has(call.id))throw new Error('duplicate call');seenCalls.add(call.id);}
     return {...reply,content:reply.content??null};
-   }catch{stopReason=stopReason??'model-or-source-unavailable';throw new Error(stopReason);}
+   }catch(error){stopReason=stopReason??'model-or-source-unavailable';throw error;}
    finally{clearTimeout(timer);controller.abort();}
   },
   tool:async call=>{

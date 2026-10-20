@@ -1,7 +1,5 @@
 import {z} from 'zod';
-import {digest} from './contracts';
-import {modelReplySchema} from './model';
-import {orderedModeDecision} from './mode-fallback';
+import {runJournaledModeModel} from './journaled-mode-model';
 import {createSkillModelJournal,type SkillCollectorTransaction} from './skill-model-journal';
 import type {runSkillCandidateArm} from './skill-candidate-runner';
 import type {skillAcceptancePlanSchema} from './skill-acceptance-policy';
@@ -17,7 +15,8 @@ export function createDurableSkillCandidateModel(pin:{ownerId:string;snapshotHas
  const receipts:Array<{id:string;step:number;index:number;recovered:boolean}>=[];
  const model=async(input:Decision)=>{
   const journal=createSkillModelJournal(collector.transaction,{...pin,evaluationId:collector.evaluationId,sourceKind:collector.sourceKind,step:input.step,...(collector.frozen?{freezeId:collector.frozen.freezeId}:{})});
-  const selected=await orderedModeDecision<Record<string,unknown>>({signal:input.signal,
+  const selected=await runJournaledModeModel<Record<string,unknown>>({signal:input.signal,
+   callScope:index=>({evaluation:collector.evaluationId,arm:pin.arm,step:input.step,index}),
    begin:async index=>{
     await validate();input.signal.throwIfAborted();
     const prior=await journal.begin({messages:input.messages,profile:input.profile,index});
@@ -25,15 +24,11 @@ export function createDurableSkillCandidateModel(pin:{ownerId:string;snapshotHas
    },
    request:async index=>{
     await validate();input.signal.throwIfAborted();
-    const response=await collector.request({...input,index});
-    const message=modelReplySchema.parse(response.message);
-    // Stable journal call IDs, matching the production approach without a real task pin.
-    if(message.tool_calls)message.tool_calls=message.tool_calls.map((call,i)=>({...call,id:`call_${digest({evaluation:collector.evaluationId,arm:pin.arm,step:input.step,index,i,id:call.id}).slice(0,40)}`}));
-    return {...response,message};
+    return collector.request({...input,index});
    },
    save:journal.save,
   });
-  await validate();input.signal.throwIfAborted();return modelReplySchema.parse(selected.message);
+  await validate();input.signal.throwIfAborted();return selected.message;
  };
  return {model,receipts};
 }

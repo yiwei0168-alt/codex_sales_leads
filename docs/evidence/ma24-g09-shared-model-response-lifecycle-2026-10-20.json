@@ -1,0 +1,40 @@
+{
+  "date": "2026-10-20",
+  "rule": "MA24-06",
+  "baselineCommit": "ce96d93835b5722bfdf2346ac5a5e32088bf312f",
+  "unit": {
+    "files": 5,
+    "testsPassed": 95,
+    "productionAndCandidateAdaptersActuallyInvoked": true,
+    "journalAndRequestDependenciesMocked": true,
+    "establishedNamespacesPreserved": true,
+    "signatureMetadataAndOriginalResponsePreserved": true,
+    "emptyDuplicateIdWrongRoleRejectedAfterReceiptSaved": true,
+    "recoveryDoesNotRequestOrSaveAgain": true,
+    "formalFailureTypePreservedForSharedGraph": true
+  },
+  "typecheckExitCode": 0,
+  "eslint": {
+    "files": 7,
+    "exitCode": 0
+  },
+  "sourceHashes": {
+    "src/lib/assistant/main/journaled-mode-model.ts": "b3b67205aa2d28767a2beac117c040eec74f59a90a4d62f3ea94af5d0108c1c8",
+    "src/lib/assistant/main/graph.ts": "36f061ae7e027f2dfd3acefe10f89c874609e1aba55f5568f6e5a055b23d529c",
+    "src/lib/assistant/main/skill-candidate-model.ts": "b9a9883d0767f0dcc684162e59d3f819a460523a6f87347c2c7241ccb4fdd7df",
+    "src/lib/assistant/main/task-model-durable-signing.test.ts": "5eb28df6bcb07ea9b081e5ddfd2dc66595ff075361adaaecef786592bebd26e3",
+    "src/lib/assistant/main/skill-candidate-runner.ts": "dec6f6f4c24ae5dd29d9234c84bed5fc345cbac3180b7d1268e0e26703651565",
+    "src/lib/assistant/main/skill-candidate-runner.test.ts": "111cad103cd7065edd897826944b5f03fbb0d955b03d28516a314405a4ac9043",
+    "scripts/fixtures/configured-signed-candidate-db.ts": "89e40aa7058a5368d215de6d983abe4ad2a67dc852bf36b757cc4730891e5c7b"
+  },
+  "limitations": {
+    "responseMustBeReturnedByAdapterToPreserveRejectedCompletedReceipt": true,
+    "fullControlLeaseToolAndCheckpointEquivalenceVerified": false,
+    "productionAgentEquivalent": false,
+    "actualModelCalls": 0,
+    "humanApprovalCreated": false,
+    "productionQualificationGranted": false,
+    "currentFixedC47e9f7cIncludesThisChange": false,
+    "newFixedFullSignedCompositionVerified": false
+  }
+}

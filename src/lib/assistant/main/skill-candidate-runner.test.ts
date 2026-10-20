@@ -7,7 +7,7 @@ import {disableLocalAnalysisTracing} from './local-analysis-boundary';
 import {runSkillCandidateArm} from './skill-candidate-runner';
 import {productTools} from './tools';
 import {dispatchTool} from './executor';
-import {orderedModeDecision} from './mode-fallback';
+import {orderedModeDecision,ModeModelsUnavailable} from './mode-fallback';
 const execution=vi.hoisted(()=>({run:vi.fn()}));
 vi.mock('./tool-execution',()=>({executeRegisteredTool:execution.run}));
 const owner='00000000-0000-4000-8000-000000000001',id='00000000-0000-4000-8000-000000000002';
@@ -76,6 +76,11 @@ it('bounds model calls and rejects reused call IDs',async()=>{
  expect(limited.modelCalls).toBe(1);expect(limited.stopReason).toBe('model-call-limit');
  const duplicated=await runSkillCandidateArm(fixture(),'candidate',async()=>call('discover_tools',{},'d'),async()=>{});
  expect(duplicated.stopReason).toBe('model-or-source-unavailable');expect(duplicated.modelCalls).toBe(2);
+});
+it('preserves the formal failure class for the shared graph recovery response',async()=>{
+ const out=await runSkillCandidateArm(fixture(),'candidate',async()=>{throw new ModeModelsUnavailable();},async()=>{});
+ expect(out.status).toBe('partial');expect(out.reply).toContain('当前模式的模型尝试已结束');
+ expect(out.stopReason).toBe('model-or-source-unavailable');expect(out.modelCalls).toBe(1);expect(out.trace).toEqual([]);
 });
 it('aborts a timed-out model callback and ignores its late tool call',async()=>{
  const snapshot=fixture();snapshot.profile.firstOutputMs=1000;snapshot.profile.totalMs=1000;let aborted=false;

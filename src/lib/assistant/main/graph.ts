@@ -10,7 +10,8 @@ import { dispatchTool } from "./executor";
 import { requestModel, requestModeModel } from "./model";
 import {createConfiguredTaskModeRequest,taskTransportSigningConfigured} from './task-model-transport-request';
 import { modeConfigSchema } from './mode-config';
-import { orderedModeDecision, ModeModelsUnavailable } from './mode-fallback';
+import { ModeModelsUnavailable } from './mode-fallback';
+import {runJournaledModeModel} from './journaled-mode-model';
 import { BudgetDeniedError } from "@/lib/billing/policy";
 import { loadDecisionMemory } from "./memory-context";
 import {decisionMemoryMessage} from "./decision-memory-message";
@@ -140,7 +141,8 @@ export async function durableModel(context: ExecutionContext, messages: ModelMes
   if(config.profile){
     const profile=modeConfigSchema.parse(config.profile);
     const attemptIds=new Map<number,string>();
-    const selected=await orderedModeDecision({
+    const selected=await runJournaledModeModel({
+      callScope:index=>({run:context.runId,step,revision,index}),
       begin:async index=>{
         const latest=await boundary(context);if(latest.control)throw new Error('Task stopped at model boundary');
         const saved=await beginCall(context,{key:`mode-model:${step}:${revision}:${index}`,tool:'main_model',version:profile.version,
@@ -152,7 +154,6 @@ export async function durableModel(context: ExecutionContext, messages: ModelMes
         const response=taskTransportSigningConfigured()
           ?await (await createConfiguredTaskModeRequest(context,{callId:attemptIds.get(index)!,callKey:`mode-model:${step}:${revision}:${index}`}))(currentMessages,profile,index)
           :await requestModeModel(currentMessages,profile,index);
-        if(response.message.tool_calls)response.message.tool_calls=response.message.tool_calls.map((call,i)=>({...call,id:`call_${digest({run:context.runId,step,revision,index,i,id:call.id}).slice(0,40)}`}));
         return response;
       },
       save:async(id,index,outcome)=>{
