@@ -10,6 +10,7 @@ import {freezeSkillAcceptancePlan,revokeSkillAcceptanceFreeze} from '../../src/l
 import {enqueueSkillCandidateRuntimeTask,claimSkillCandidateRuntimeTask,assertSkillCandidateRuntimeTask} from '../../src/lib/assistant/main/skill-candidate-runtime-task';
 import {getRun,listRuns,readEvents,claimRun,controlRun} from '../../src/lib/assistant/main/repository';
 import {dispatchTool} from '../../src/lib/assistant/main/executor';
+import {verifySkillRuntimeCandidateDatabase} from './skill-runtime-candidate-db';
 
 export async function verifySkillCandidateRuntimeTaskDatabase(pool:Pool,owner:string,other:string,runId:string,skillId:string){
  const context={userId:owner},selection={runId,skillId,version:1},connection=createConfiguredSkillCollectorConnection();
@@ -50,6 +51,7 @@ export async function verifySkillCandidateRuntimeTaskDatabase(pool:Pool,owner:st
   const tool=(await pool.query('select tool_id,effect,status from agent_tool_call where id=$1',[output.callId])).rows[0];
   assert.deepEqual(tool,{tool_id:'skill_list',effect:'read',status:'completed'});
   await assertSkillCandidateRuntimeTask(claimed.context,pin,frozen.plan);
+  const graph=process.env.MA24_SKILL_RUNTIME_GRAPH==='1'?await verifySkillRuntimeCandidateDatabase(pool,owner,pin,frozen,connection.transaction):{skillRuntimeCandidateGraphVerified:false};
   await controlRun(owner,created.runId,'cancel');await assert.rejects(assertSkillCandidateRuntimeTask(claimed.context,pin,frozen.plan),/lease or context changed/);
   await revokeSkillAcceptanceFreeze(context,{freezeId:frozen.freezeId,reason:'Synthetic runtime admission revocation'});
   await assert.rejects(enqueueSkillCandidateRuntimeTask(context,{...pin,arm:'baseline'},frozen.plan),/freeze unavailable/);
@@ -57,7 +59,7 @@ export async function verifySkillCandidateRuntimeTaskDatabase(pool:Pool,owner:st
   assert.deepEqual((await pool.query('select id,output from agent_tool_call where run_id=$1 order by id',[runId])).rows,oldCalls);
   assert.equal((await pool.query('select enabled from agent_skill where id=$1',[skillId])).rows[0].enabled,false);
   assert.equal((await pool.query('select count(*)::int n from agent_memory_extraction_job where run_id=$1',[created.runId])).rows[0].n,0);
-  return {skillRuntimeTaskAdmissionDatabaseVerified:true,skillRuntimeHiddenTaskAndIdempotencyVerified:true,skillRuntimeOrdinaryAndG16ClaimRejected:true,
+  return {...graph,skillRuntimeTaskAdmissionDatabaseVerified:true,skillRuntimeHiddenTaskAndIdempotencyVerified:true,skillRuntimeOrdinaryAndG16ClaimRejected:true,
    skillRuntimeExplicitClaimAndContextVerified:true,skillRuntimeRegisteredReadVerified:true,skillRuntimeCancellationAndFreezeRevocationRejected:true,
    skillRuntimeOriginalTaskAndSkillUnchanged:true,actualModelCalls:0,productionAgentEquivalent:false,automaticActivation:false};
  }finally{await connection.close();}

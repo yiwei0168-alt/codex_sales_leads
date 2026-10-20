@@ -1,7 +1,7 @@
 import {z} from 'zod';
 import {tenantTransaction,withBoundTenantTransaction} from '@/lib/rag/db';
 import {digest,messageInputSchema,type AgentRun,type ExecutionContext,type ModelConfig} from './contracts';
-import {enqueueRun} from './repository';
+import {enqueueRun,finishRun} from './repository';
 import {skillAcceptancePlanSchema} from './skill-acceptance-policy';
 import {inspectLockedSkillAcceptanceFreeze} from './skill-acceptance-freeze';
 import {prepareRecordedSkillCandidateSnapshot} from './skill-candidate-source';
@@ -102,4 +102,17 @@ export async function assertSkillCandidateRuntimeTaskContext(context:ExecutionCo
  const {spec,plan}=saved;
  return assertSkillCandidateRuntimeTask(context,{runId:spec.originalRunId,skillId:spec.skillId,version:spec.version,freezeId:spec.freezeId,
   caseId:spec.caseId,evaluationId:spec.evaluationId,arm:spec.arm},plan);
+}
+
+/** Same owning application transaction for task settlement and source rebuild.
+ * A failed result write rolls back without discarding independent model receipts. */
+export async function settleSkillCandidateRuntimeTask(context:ExecutionContext,input:Selection,expectedPlan:unknown,status:'completed'|'partial',reply:string){
+ return withPreparedTask(context,input,expectedPlan,async prepared=>{
+  await assertSkillCandidateRuntimeTask(context,input,expectedPlan);
+  const settled=await finishRun(context,status,reply);
+  await withPreparedTask(context,input,expectedPlan,async after=>{
+   if(digest(after.spec)!==digest(prepared.spec))throw new Error('Skill runtime sources changed during settlement');
+  });
+  return settled;
+ });
 }

@@ -1,6 +1,6 @@
 import {z} from 'zod';
 import {buildMainAgentGraph} from './graph';
-import {digest,result,toolResultSchema,type ExecutionContext,type ModelMessage} from './contracts';
+import {digest,result,toolResultSchema,type ExecutionContext,type ModelMessage,type ModelToolCall,type ToolResult} from './contracts';
 import {availableTools} from './tools';
 import {resolveToolDispatch} from './tool-dispatch-resolution';
 import {modelReplySchema} from './model';
@@ -15,6 +15,7 @@ type Snapshot={context:Pick<ExecutionContext,'userId'|'role'|'mode'|'knowledgeSc
  candidate:{listing:SkillListing;value:{skill_id:string;version:number;files:Record<string,string>;content_hash:string;dependencies:unknown[];owner_id:string;scope:string;[key:string]:unknown}};
  receipts:Array<{tool:string;arguments:Record<string,unknown>;output:unknown;hash:string}>};
 type Model=(input:{messages:ModelMessage[];profile:ModeConfig;step:number;signal:AbortSignal})=>Promise<unknown>;
+export type SkillRuntimeDispatch=(call:ModelToolCall)=>Promise<{output:ToolResult;receiptHash?:string;candidateSkillUsed?:boolean;stopReason?:string}>;
 
 /**
  * Isolated mechanism, not an authorization/production-equivalence claim. The
@@ -23,7 +24,7 @@ type Model=(input:{messages:ModelMessage[];profile:ModeConfig;step:number;signal
  * Skill availability changes only through normal skill_list/skill_read results;
  * the original task and system prompts receive no replay or candidate instructions.
  */
-export async function runSkillCandidateArm(input:Snapshot,arm:'baseline'|'candidate',model:Model,validateCurrent:()=>Promise<void>,maximumModelCalls=8,checkpoint?:SkillCandidateCheckpointStore,executionSignal?:AbortSignal){
+export async function runSkillCandidateArm(input:Snapshot,arm:'baseline'|'candidate',model:Model,validateCurrent:()=>Promise<void>,maximumModelCalls=8,checkpoint?:SkillCandidateCheckpointStore,executionSignal?:AbortSignal,runtimeDispatch?:SkillRuntimeDispatch){
  assertLocalAnalysisBoundary();z.number().int().min(1).max(64).parse(maximumModelCalls);
  const snapshot=structuredClone(input),profile=modeConfigSchema.parse(snapshot.profile),candidate=snapshot.candidate;
  if(profile.mode!==snapshot.context.mode||candidate.listing.scope!=='account'||candidate.listing.enabled||!candidate.listing.owned
@@ -102,7 +103,10 @@ export async function runSkillCandidateArm(input:Snapshot,arm:'baseline'|'candid
     if(receipt.hash!==digest({tool:receipt.tool,arguments:receipt.arguments,output:receipt.output}))return blocked('receipt-changed');
     receiptHash=receipt.hash;return toolResultSchema.parse(structuredClone(receipt.output));
    };
-   const output=dispatch();await check();
+   const applied=runtimeDispatch?await runtimeDispatch(call):undefined;
+   const output=applied?toolResultSchema.parse(applied.output):dispatch();
+   if(applied){receiptHash=applied.receiptHash;candidateSkillUsed=candidateSkillUsed||applied.candidateSkillUsed===true;stopReason=applied.stopReason??stopReason;}
+   await check();
    trace.push({id:call.id,name:call.function.name,argumentsHash:digest(call.function.arguments),outputHash:digest(output),...(receiptHash?{receiptHash}:{})});return output;
   },
  });
@@ -112,8 +116,8 @@ export async function runSkillCandidateArm(input:Snapshot,arm:'baseline'|'candid
  // lease. A terminal checkpoint is read-only reuse after current-source checks.
  const final=initial.status==='running'?await graph.invoke(initial,{recursionLimit:maximumModelCalls*32}):initial;
  await check();
- return {protocol:'skill-instruction-overlay-v1',arm,status:final.status,reply:final.reply,messages:final.messages,
+ return {protocol:runtimeDispatch?'skill-instruction-overlay-runtime-v1':'skill-instruction-overlay-v1',arm,status:final.status,reply:final.reply,messages:final.messages,
   inputHash:digest(snapshot),profileHash:digest(profile),candidateContentHash:candidate.value.content_hash,
   modelCalls:calls,trace,stopReason,candidateSkillUsed,businessToolExecutions:0,
-  productionGraphReused:true,productionAgentEquivalent:false,collectorProvenanceVerified:false,automaticActivation:false};
+  registeredToolJournalUsed:Boolean(runtimeDispatch),productionGraphReused:true,productionAgentEquivalent:false,collectorProvenanceVerified:false,automaticActivation:false};
 }
