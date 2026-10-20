@@ -64,7 +64,10 @@ const shadowSourceLocksCheck = args.includes('--shadow-source-locks');
 const safetySkillUsageCheck = args.includes('--safety-skill-usage');
 const collectorImageArgument=args.find(arg=>arg.startsWith('--collector-image='));
 const collectorImage=collectorImageArgument?.slice('--collector-image='.length);
-const transportJournalCheck = args.includes('--transport-journal')||Boolean(collectorImage);
+const transportLinuxArgument=args.find(arg=>arg.startsWith('--transport-linux-image='));
+const transportLinuxImage=transportLinuxArgument?.slice('--transport-linux-image='.length);
+assert(!transportLinuxArgument||args.every(arg=>arg==='--current-schema'||arg===transportLinuxArgument),'Linux five-category check requires its own fresh database; use only --current-schema and --transport-linux-image=<immutable-id>');
+const transportJournalCheck = args.includes('--transport-journal')||Boolean(collectorImage)||Boolean(transportLinuxImage);
 const poolRecoveryCheck = args.includes('--pool-recovery');
 const webPoolRecoveryCheck = args.includes('--web-pool-recovery');
 const prospectiveHttpArgument = args.find(arg => arg.startsWith('--prospective-http-image='));
@@ -119,8 +122,9 @@ assert(!localMemoryChineseCheck||localMemoryWorkerCheck,'--local-memory-chinese 
 assert(!localMemoryHttpCheck||(localMemoryGraphCheck&&localMemoryChineseCheck),'--local-memory-http requires Chinese memory and graph Worker checks');
 const rollbackImageArgument = args.find(arg => arg.startsWith("--rollback-image="));
 const rollbackImage = rollbackImageArgument?.slice("--rollback-image=".length);
-assert(args.length <= 22 && args.every(arg => ['--main-runtime-resume-revocation', '--main-runtime-network-loss', '--main-runtime-interruption', '--main-runtime-crash-recovery', '--main-runtime-task-enrollment', '--main-runtime-commit-loss', '--main-runtime-durability', mainRuntimeArgument, "--final-settlement", "--knowledge-scope-sources", "--snapshot-lifecycle", "--acceptance-originals", "--local-memory-http", "--local-memory-chinese", "--local-memory-graph-worker", "--local-memory-worker", "--snapshot-download", "--extended-ui", "--frontend-ui", "--current-schema", "--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", '--locked-policy', '--memory-source-locks', '--method-catalog-locks', '--shadow-source-locks', '--safety-skill-usage', '--transport-journal', '--pool-recovery', '--web-pool-recovery', "--prospective-source", "--prospective-material", '--prospective-browser', '--prospective-composition', declarationImageArgument,collectorImageArgument,prospectiveHttpArgument, webImageArgument, rollbackImageArgument].includes(arg))
+assert(args.length <= 22 && args.every(arg => ['--main-runtime-resume-revocation', '--main-runtime-network-loss', '--main-runtime-interruption', '--main-runtime-crash-recovery', '--main-runtime-task-enrollment', '--main-runtime-commit-loss', '--main-runtime-durability', mainRuntimeArgument, "--final-settlement", "--knowledge-scope-sources", "--snapshot-lifecycle", "--acceptance-originals", "--local-memory-http", "--local-memory-chinese", "--local-memory-graph-worker", "--local-memory-worker", "--snapshot-download", "--extended-ui", "--frontend-ui", "--current-schema", "--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", '--locked-policy', '--memory-source-locks', '--method-catalog-locks', '--shadow-source-locks', '--safety-skill-usage', '--transport-journal', '--pool-recovery', '--web-pool-recovery', "--prospective-source", "--prospective-material", '--prospective-browser', '--prospective-composition', declarationImageArgument,collectorImageArgument,transportLinuxArgument,prospectiveHttpArgument, webImageArgument, rollbackImageArgument].includes(arg))
   &&(!declarationImageArgument||(declarationImage&&/^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(declarationImage)))
+  &&(!transportLinuxArgument||(currentSchemaCheck&&transportLinuxImage&&/^sha256:[a-f0-9]{64}$/.test(transportLinuxImage)))
   &&(!collectorImageArgument||(collectorImage&&/^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(collectorImage)))
   && (!webPoolRecoveryCheck || webImage)
   && (!prospectiveBrowserCheck || prospectiveHttpImage)
@@ -435,12 +439,15 @@ try {
     assert.equal(checked.code,0,checked.output);assert(checked.output.includes('"poolRecoveryDatabase":"passed"'),checked.output);
   }
   if(transportJournalCheck){
-    const built=await run(process.execPath,['scripts/build-skill-collector.mjs']);
-    assert.equal(built.code,0,built.output);assert(built.output.includes('"collectorBuild":"passed"'),built.output);
-    const checked=await run(process.execPath,['scripts/run-tsx.cjs','scripts/verify-skill-transport-journal-db.ts'],
+    if(!transportLinuxImage){
+     const built=await run(process.execPath,['scripts/build-skill-collector.mjs']);
+     assert.equal(built.code,0,built.output);assert(built.output.includes('"collectorBuild":"passed"'),built.output);
+    }
+    const checked=await run(process.execPath,transportLinuxImage?['scripts/run-skill-transport-linux-check.mjs',transportLinuxImage,containerId!]:['scripts/run-tsx.cjs','scripts/verify-skill-transport-journal-db.ts'],
       {...process.env,DATABASE_URL:appUrl.toString(),DATABASE_MIGRATION_URL:adminUrl.toString(),MA24_DISPOSABLE_TRANSPORT_JOURNAL:'1',
        ...(collectorImage?{MA24_COLLECTOR_TEST_IMAGE:collectorImage,MA24_COLLECTOR_TEST_CONTAINER:containerId}:{} )},24000);
     assert.equal(checked.code,0,checked.output);assert(checked.output.includes('"transportJournalDatabase":"passed"'),checked.output);
+    if(transportLinuxImage)assert(checked.output.includes('"linuxFiveCategoryTransport":"passed"'),checked.output);
     console.log(checked.output.trim());
   }
   if(safetySkillUsageCheck){
@@ -836,6 +843,7 @@ try {
     shadowSourceLocksVerified: shadowSourceLocksCheck,
     safetySkillUsageVerified: safetySkillUsageCheck,
     transportJournalDatabaseVerified: transportJournalCheck,
+    linuxFiveCategoryTransportVerified:Boolean(transportLinuxImage),
     collectorImageTlsPreflightVerified: Boolean(collectorImage),
     poolRecoveryVerified: poolRecoveryCheck,
     standaloneDatabaseRecoveryVerified: webPoolRecoveryCheck,
