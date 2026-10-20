@@ -3,7 +3,8 @@ import {beforeEach,expect,it,vi} from 'vitest';
 import {digest} from './contracts';
 import {requireCanonicalSkillAcceptanceOriginals} from './skill-canonical-original-coverage';
 import {revalidateLockedSkillAcceptanceMaterials,evaluateLockedSkillAcceptanceReadiness} from './skill-locked-materials';
-const m=vi.hoisted(()=>({read:vi.fn(),material:vi.fn(),policy:vi.fn(),lock:vi.fn(),methods:vi.fn(),query:vi.fn(),memoryBoundary:vi.fn(),times:vi.fn(),bytes:vi.fn(),knowledgeBytes:vi.fn(),memoryReceipts:vi.fn(),runner:vi.fn(),transports:vi.fn(),packages:vi.fn()}));
+const m=vi.hoisted(()=>({read:vi.fn(),material:vi.fn(),policy:vi.fn(),lock:vi.fn(),methods:vi.fn(),query:vi.fn(),memoryBoundary:vi.fn(),times:vi.fn(),bytes:vi.fn(),knowledgeBytes:vi.fn(),memoryReceipts:vi.fn(),privateReceipts:vi.fn(),runner:vi.fn(),transports:vi.fn(),packages:vi.fn()}));
+vi.mock('./skill-private-receipt-check',()=>({revalidateLockedSkillPrivateReceipts:m.privateReceipts}));
 vi.mock('./skill-runtime-package-store',()=>({readLockedSkillRuntimePackages:m.packages}));
 vi.mock('./skill-locked-transport-receipts',()=>({revalidateLockedSkillTransportReceipts:m.transports}));
 vi.mock('./skill-runner-attestation-store',()=>({readLockedSkillRunnerAttestation:m.runner}));
@@ -39,6 +40,7 @@ beforeEach(()=>{vi.resetAllMocks();m.packages.mockResolvedValue({runtimePackages
  m.bytes.mockResolvedValue({attachmentBytesRevalidated:true,attachmentBytesCount:1,attachmentBytesManifestHash:'manifest'});
  m.knowledgeBytes.mockResolvedValue({knowledgeReceiptBytesRevalidated:true,knowledgeReceiptAssetCount:1,knowledgeReceiptDatabaseOnlyCount:0,knowledgeReceiptBytesManifestHash:'knowledge-manifest'});
  m.memoryReceipts.mockResolvedValue({memoryReceiptSourcesRevalidated:true,memoryReceiptCount:1,memoryReceiptCheckedAt:'2026-10-19T01:02:03.000Z'});
+ m.privateReceipts.mockResolvedValue({privateReceiptSourcesRevalidated:true,privateReceiptCount:0});
  m.transports.mockResolvedValue({transportReceiptsRequired:false,transportReceiptsRevalidated:false});
  m.runner.mockResolvedValue({runnerDeclarationRequired:false,runnerDeclarationRevalidated:false,collectorProvenanceVerified:false,automaticActivation:false});
  m.query.mockResolvedValue({rows:[]});m.memoryBoundary.mockImplementation(async(_user:string,work:()=>Promise<unknown>)=>work());
@@ -52,9 +54,29 @@ it('rebuilds planned material and returns hashes without private answers or rece
  expect(m.material).toHaveBeenCalledExactlyOnceWith(context,{bundleId,caseId:'replay'});expect(m.read).toHaveBeenCalledTimes(2);
  expect(JSON.stringify(out)).not.toContain('PRIVATE');expect(out.materials).toHaveLength(1);
  expect(out).not.toHaveProperty('recheckKnowledgeBytes');
+ expect(out).not.toHaveProperty('recheckPrivateReceipts');
  expect(out).toMatchObject({pinnedMethodSourcesLocked:true,pinnedMethodPinCount:2});
  expect(m.lock.mock.invocationCallOrder[0]).toBeLessThan(m.methods.mock.invocationCallOrder[0]);
  expect(m.methods.mock.invocationCallOrder[0]).toBeLessThan(m.material.mock.invocationCallOrder[0]);
+});
+it('rechecks consumed private receipts after policy and rejects changed live sources',async()=>{
+ const receipt={tool:'mail_read',input:{messageId:'saved-message'},output:{status:'success',data:{bodyText:'PRIVATE'}}};
+ m.read.mockResolvedValue({...bundle,artifact:{...bundle.artifact,plan:{...bundle.artifact.plan,cases:[{id:'replay',provenance:'historical-task'}]}}});
+ m.material.mockResolvedValue({...material(),receipts:[receipt]});
+ m.privateReceipts.mockResolvedValueOnce({privateReceiptSourcesRevalidated:true,privateReceiptCount:1})
+  .mockRejectedValueOnce(new Error('Private replay source changed'));
+ await expect(evaluateLockedSkillAcceptanceReadiness(client,context,bundleId)).rejects.toThrow('Private replay source changed');
+ expect(m.privateReceipts).toHaveBeenNthCalledWith(1,context.userId,[receipt]);
+ expect(m.privateReceipts).toHaveBeenNthCalledWith(2,context.userId,[receipt]);
+ expect(m.policy.mock.invocationCallOrder[0]).toBeLessThan(m.privateReceipts.mock.invocationCallOrder[1]);
+ expect(m.times).not.toHaveBeenCalled();
+});
+it('does not expose a private recheck closure and requires stable receipt coverage',async()=>{
+ const out=await evaluateLockedSkillAcceptanceReadiness(client,context,bundleId);
+ expect(out).toMatchObject({privateReceiptSourcesRevalidated:true,privateReceiptCount:0,automaticActivation:false});
+ expect(out).not.toHaveProperty('recheckPrivateReceipts');
+ m.privateReceipts.mockResolvedValueOnce({privateReceiptCount:1}).mockResolvedValueOnce({privateReceiptCount:0});
+ await expect(evaluateLockedSkillAcceptanceReadiness(client,context,bundleId)).rejects.toThrow('private receipt coverage changed');
 });
 it.each([{artifactHash:'different'},{observationHash:'different'},{sourceKind:'different'},{baseline:'tampered'},
  {freezeStatus:{state:'revoked',freezeId:'freeze'}},{canPass:{baseline:true,candidate:false}}])('rejects changed material %j',async change=>{

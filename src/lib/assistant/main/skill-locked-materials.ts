@@ -12,6 +12,7 @@ import {revalidateLockedSkillExperienceTimes} from './skill-experience-time-chec
 import {revalidateLockedSkillAttachmentBytes} from './skill-attachment-bytes';
 import {revalidateLockedSkillKnowledgeReceiptBytes} from './skill-knowledge-receipt-bytes';
 import {revalidateLockedSkillMemoryReceipts} from './skill-memory-receipt-check';
+import {revalidateLockedSkillPrivateReceipts} from './skill-private-receipt-check';
 import {readLockedSkillRunnerAttestation} from './skill-runner-attestation-store';
 import {revalidateLockedSkillTransportReceipts} from './skill-locked-transport-receipts';
 import {configuredSkillRunnerTrustRegistryMode} from './skill-runner-attestation';
@@ -47,10 +48,12 @@ async function prepareLockedSkillAcceptanceMaterials(client:PoolClient,context:{
   const knowledgeBytes=await recheckKnowledgeBytes();
   const recheckMemoryReceipts=()=>revalidateLockedSkillMemoryReceipts(client,context.userId,consumedReceipts);
   const memoryReceipts=await recheckMemoryReceipts();
+  const recheckPrivateReceipts=()=>revalidateLockedSkillPrivateReceipts(context.userId,consumedReceipts);
+  const privateReceipts=await recheckPrivateReceipts();
   const after=await readLockedSkillAcceptanceEvidence(client,context,bundleId);
   if(after.artifactHash!==before.artifactHash||after.latestReviewHash!==before.latestReviewHash||digest(after.currentPin)!==digest(before.currentPin))
    throw new Error('Locked evidence changed during material reconstruction');
-  return {recheckKnowledgeBytes,recheckMemoryReceipts,materials:{...journalLocks,...attachmentBytes,...knowledgeBytes,...memoryReceipts,knowledgeSourcesLocked:after.knowledgeSourcesLocked,decisionMemorySourcesLocked:after.decisionMemorySourcesLocked,artifactHash:after.artifactHash,latestReviewHash:after.latestReviewHash,materials:hashes,materialsHash:digest(hashes),
+  return {recheckKnowledgeBytes,recheckMemoryReceipts,recheckPrivateReceipts,materials:{...journalLocks,...attachmentBytes,...knowledgeBytes,...memoryReceipts,...privateReceipts,knowledgeSourcesLocked:after.knowledgeSourcesLocked,decisionMemorySourcesLocked:after.decisionMemorySourcesLocked,artifactHash:after.artifactHash,latestReviewHash:after.latestReviewHash,materials:hashes,materialsHash:digest(hashes),
    skillCatalogSourcesLocked:after.skillCatalogSourcesLocked,
    sourcePayloadsRevalidated:true as const,sourceRevocationsLocked:false as const,collectorProvenanceVerified:false as const,automaticActivation:false as const}};
  });
@@ -100,6 +103,8 @@ export async function evaluateLockedSkillAcceptanceReadiness(client:PoolClient,c
   const canonicalOriginals=requireCanonicalSkillAcceptanceOriginals(final.artifact.sourceKind,{...attachmentBytes,...knowledgeBytes});
   const memoryReceipts=await preparation.recheckMemoryReceipts();
   if(memoryReceipts.memoryReceiptCount!==materials.memoryReceiptCount)throw new Error('Acceptance memory receipt coverage changed after preparation');
+  const privateReceipts=await preparation.recheckPrivateReceipts();
+  if(privateReceipts.privateReceiptCount!==materials.privateReceiptCount)throw new Error('Acceptance private receipt coverage changed after preparation');
   const finalTransports=await revalidateLockedSkillTransportReceipts(client,context,bundleId);
   if(transports.transportReceiptsRequired!==finalTransports.transportReceiptsRequired
    ||transports.transportReceiptsRevalidated!==finalTransports.transportReceiptsRevalidated
@@ -136,6 +141,7 @@ export async function evaluateLockedSkillAcceptanceReadiness(client:PoolClient,c
    ...knowledgeBytes,
    ...canonicalOriginals,
    ...memoryReceipts,
+   ...privateReceipts,
    ...finalDeclaration,
    ...finalTransports,
    ...signingCoverage,
