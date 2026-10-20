@@ -1,0 +1,22 @@
+{
+  "date": "2026-10-21",
+  "rule": "MA24-06",
+  "productSourceCommit": "d2bde5b9f2bba1334f1930fdb9ff93eafd092038",
+  "fixtureCommit": "d2bde5b9f2bba1334f1930fdb9ff93eafd092038",
+  "sessionId": 1418,
+  "exitCode": 1,
+  "log": "tmp/ma24-checkpoint-fixed-linux-recovery.log",
+  "logSha256": "e0e62ee580ab91ce174d59a0767b9314b1edfcd7e4a00bfe5815188a33f69160",
+  "priorSharedTaskLeaseComponentPassed": true,
+  "failedAt": "configured prospective signed candidate",
+  "observedError": "Skill candidate execution lease lost or controlled",
+  "underlyingSqlErrorCodePreserved": false,
+  "rootCauseProven": false,
+  "nextInvestigation": "Deterministically hold the candidate lease row shared during NOWAIT heartbeat, observe exact SQL 55P03 and verify existing deadline behavior. Do not extend lease or relax ownership checks.",
+  "cleanup": {
+    "disposableHarnessResourcesRemoved": true,
+    "originalThreeServicesRemain": true
+  },
+  "productionQualified": false,
+  "automaticActivation": false
+}

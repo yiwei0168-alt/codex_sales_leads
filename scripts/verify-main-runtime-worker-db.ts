@@ -14,6 +14,9 @@ import {SOURCE_CHANGED_REPLY} from '../src/lib/assistant/main/knowledge-message-
 import {disableLocalAnalysisTracing} from '../src/lib/assistant/main/local-analysis-boundary';
 import {importSkill} from '../src/lib/assistant/main/skills';
 import {productTools} from '../src/lib/assistant/main/tools';
+import {modeModelConfig} from '../src/lib/assistant/main/mode-config';
+import {initialTaskMessages} from '../src/lib/assistant/main/initial-task-messages';
+import {decisionMemoryMessage} from '../src/lib/assistant/main/decision-memory-message';
 
 nextEnv.loadEnvConfig(process.cwd());disableLocalAnalysisTracing();assert.equal(process.env.MA24_DISPOSABLE_MAIN_RUNTIME,'1');
 const image=process.env.MA24_MAIN_RUNTIME_IMAGE!,network=process.env.MA24_MAIN_RUNTIME_NETWORK!,runtimeUrl=process.env.MA24_MAIN_RUNTIME_DATABASE_URL!,ca=process.env.MA24_MAIN_RUNTIME_DATABASE_CA!;
@@ -176,6 +179,37 @@ try{
   completedTasks.push({id:task.id,row});
  }
  if(taskEnrollmentResult)taskEnrollmentResult.actualMatchingApiAndWorkerVerified=true;
+ let modelReceiptRecoveryResult:unknown=null;
+ if(process.env.MA24_MAIN_RUNTIME_MODEL_RECEIPT==='1'){
+  const config=modeModelConfig('standard'),task=await enqueueRun(owner,
+   {content:'Synthetic empty-checkpoint model receipt recovery',attachments:[],requestKey:randomUUID(),mode:'standard'},config);
+  assert(config.profile);const thread=`main-agent:${owner}:${task.id}`;
+  assert.equal((await admin.query('select count(*)::int n from langgraph.checkpoints where thread_id=$1',[thread])).rows[0].n,0);
+  const initial=initialTaskMessages({userId:owner,role:'member',mode:'standard'},task.input,config,[]);
+  const messages=[initial[0],decisionMemoryMessage(await loadDecisionMemory(owner)),...initial.slice(1)];
+  const input={messages,profile:config.profile,index:0},callId=randomUUID(),reply=`Synthetic saved model answer ${randomUUID()}`;
+  const output=result({value:{message:{role:'assistant',content:reply},provider:'synthetic-saved-model',generationId:'synthetic-not-a-provider-receipt'}});
+  await admin.query(`insert into agent_tool_call(id,user_id,run_id,call_key,tool_id,tool_version,input,input_hash,effect,status,output)
+   values($1,$2,$3,'mode-model:0:0:0','main_model',$4,$5,$6,'model','completed',$7)`,
+  [callId,owner,task.id,config.profile.version,JSON.stringify(input),digest(input),JSON.stringify(output)]);
+  const before=(await admin.query('select to_jsonb(c) snapshot from agent_tool_call c where id=$1',[callId])).rows[0].snapshot;
+  await startWorker();await finishWorker();const row=await readTask(task.id);
+  assert.equal(row.status,'completed');assert.equal(row.reply,reply);assert.deepEqual(row.messages,[reply]);
+  assert.equal(row.jobs,1);assert.equal(row.models,1);assert.equal(row.status_events,1);
+  const checkpoint=await new PostgresSaver(getPool(),undefined,{schema:'langgraph'}).getTuple({configurable:{thread_id:thread,checkpoint_ns:''}});
+  assert(checkpoint);assert.equal(checkpoint.checkpoint.channel_values.steps,1);assert.equal(checkpoint.checkpoint.channel_values.reply,reply);
+  assert.equal(checkpoint.checkpoint.channel_values.status,'completed');
+  const events=(await admin.query("select kind,count(*)::int n from agent_run_event where run_id=$1 and kind in('model_attempt','model_turn','tool_started') group by kind",[task.id])).rows;
+  assert.deepEqual(events,[{kind:'model_turn',n:1}]);
+  assert.deepEqual((await admin.query('select to_jsonb(c) snapshot from agent_tool_call c where id=$1',[callId])).rows[0].snapshot,before);
+  await startWorker();await finishWorker();assert.deepEqual(await readTask(task.id),row);
+  assert.deepEqual((await admin.query('select to_jsonb(c) snapshot from agent_tool_call c where id=$1',[callId])).rows[0].snapshot,before);
+  completedTasks.push({id:task.id,row});
+  modelReceiptRecoveryResult={emptyCheckpointModelNodeRecoveryVerified:true,actualStandardModeAndMainGraph:true,graphSteps:1,
+   savedModelRowUnchanged:true,newModelAttemptEvents:0,modelTurnEvents:1,newToolStartedEvents:0,assistantReplies:1,extractionJobs:1,
+   subsequentEmptyWorkerNoReplay:true,syntheticSavedModelReceipt:true,actualModelCalls:0,firstProviderExecutionVerified:false,
+   originalExecutionCrashInjected:false,realQualityApproved:false};
+ }
  let skillReceiptRecoveryResult:unknown=null;
  if(process.env.MA24_MAIN_RUNTIME_SKILL_RECEIPT==='1'){
   const cases=[];
@@ -401,7 +435,7 @@ try{
    priorTaskRowsUnchangedAfterRestart:true,gracefulApiExitCode:0,committedTaskSurvivesLostHttpResponse:true,noDuplicateReplyEventOrExtractionJob:true,subsequentWorkerMakesNoReplayRequest:true,forwardedApiRequests:1,crashResult};
  }
  const receipt={passed:true,image,immutableImageId:metadata.id,sourceCommit:metadata.revision,integrity,actualLangGraphApi:true,actualCompiledQueueWorker:true,postgresCheckpointRecovery:true,cases,
-  durabilityResult,commitLossResult,uncommittedLossResult,taskEnrollmentResult,interruptionResult,networkLossResult,skillReceiptRecoveryResult,syntheticCheckpointSeed:true,actualModelCalls:0,externalActions:0,firstModelExecutionVerified:false,productionQualified:false,automaticActivation:false};
+  durabilityResult,commitLossResult,uncommittedLossResult,taskEnrollmentResult,interruptionResult,networkLossResult,skillReceiptRecoveryResult,modelReceiptRecoveryResult,syntheticCheckpointSeed:true,actualModelCalls:0,externalActions:0,firstModelExecutionVerified:false,productionQualified:false,automaticActivation:false};
  await writeFile('tmp/ma24-main-runtime-worker-result.json',JSON.stringify(receipt,null,2)+'\n');console.log(JSON.stringify({mainRuntimeWorker:'passed',...receipt}));
 }finally{
  if(worker)await docker(['rm','--force','--volumes',worker]);

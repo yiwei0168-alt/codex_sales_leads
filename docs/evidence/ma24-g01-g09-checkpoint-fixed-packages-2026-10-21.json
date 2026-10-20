@@ -116,8 +116,9 @@
     },
     "linuxFullCompositionAndFormalRecovery": {
       "sessionId": 1418,
-      "log": "tmp/ma24-checkpoint-fixed-linux-recovery.log",
-      "status": "running-not-accepted"
+      "exitCode": 1,
+      "status": "failed-not-accepted",
+      "receipt": "ma24-g09-checkpoint-fixed-linux-failure-2026-10-21.json"
     },
     "independentDeclarationTls": {
       "sessionId": 10438,
