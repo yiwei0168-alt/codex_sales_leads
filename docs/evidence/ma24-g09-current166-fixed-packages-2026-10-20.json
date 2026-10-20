@@ -246,7 +246,7 @@
       }
     ]
   },
-  "measuredRegistrationComposition": "third attempt failed at strict disabled-collector-key diagnostic assertion; corrected; not accepted",
+  "measuredRegistrationComposition": "fourth attempt passed on schema167 with fixture04433870 and runtimec47e9f7c; see measured-registration-composition receipt",
   "limitations": {
     "runtimeMeasurementsAreNotFullExecutionEquivalence": true,
     "productionQualificationGranted": false,

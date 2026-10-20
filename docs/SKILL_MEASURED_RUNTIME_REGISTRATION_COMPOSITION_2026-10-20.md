@@ -1,5 +1,9 @@
 # G09 实际测量运行包登记联合验收准备
 
+第四次终态：04433870固定夹具、c47e9f7c实际双镜像、全新167隔离数据库退出0。实际测量登记由真实读者回读，runtimePackagesRegistered=true、collectorProvenanceVerified=true；五类签名、2原任务/8评测臂、材料/原件撤销恢复、登记禁用等待及分用途停用拒绝通过。readiness仍未封闭，缺人工判定仍阻断，Skill未启用。前三次失败保留；下文“联合未通过/待重跑”由此取代。[完整终态](evidence/ma24-g09-measured-registration-composition-2026-10-20.json)。
+
+这是实际测量包与真实SQL/签名读者的工程组合正例，模型/网络/预算仍合成，签名键临时且仅在一次性库登记，不证明真实提供方、生产身份、执行等价性或独立质量。镜像/app不被修改，较新夹具的运行源码/配置逐字节等于固定镜像；本组数据库回环分支非TLS，另有同固定包166/TLS声明收据，不能混称同一链路。
+
 第三次终态：c47e9f7c同修订新固定双包/夹具在166退出1；完整五类、初次readiness及collectorProvenanceVerified=true断言已执行通过，随后停用采集器键的负例期待旧Task failure trust unavailable，实际为Transport trust key unavailable。用途分离后原任务键仍有效，产品按正确的模型传输用途拒绝；现测量模式严格期待后者，旧未登记模式仍期待前者，没有放宽为任意错误。完整联合尚未判通过，修复后需新固定夹具归档重跑；应用源码与c47e9f7c镜像相同，可经字节比对复用，不重建无变化应用。[第三次失败](evidence/ma24-g09-measured-registration-third-attempt-2026-10-20.json)。
 
 第二次终态：固定6737b211夹具重跑退出1，已通过首次登记，配置候选子进程在复核原任务失败回执时报告Task failure binding changed。原因是夹具分离主任务/采集器部署后，仍把采集器身份写到TASK_MODEL_TRANSPORT_*；现测量模式保留原主任务环境身份，SKILL_*继续使用独立采集器身份，默认旧夹具路径保持。完整联合仍未通过；下一次需与新产品源码一致的固定包，不能复用源码已不同的旧镜像。[第二次失败](evidence/ma24-g09-measured-registration-second-attempt-2026-10-20.json)。
