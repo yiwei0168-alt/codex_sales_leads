@@ -1,5 +1,7 @@
 # 用户确认规则登记表
 
+MA24-06 / G09无回执Worker恢复（2026-10-21，工程验收，无新增确认）：e1a59caf正式API/Worker、新167/TLS/Internal网络实跑退出0，completed复用与started无回执返回unknown均不重做，Skill/原记录不变，模型0；构造初始状态，不证明真实启用/崩溃/未知COMMIT或质量，完整执行等价仍缺。[收据](evidence/ma24-g09-started-receipt-worker-recovery-2026-10-21.json)。
+
 MA24-06 / G09新固定包（2026-10-20，工程验收，无新增确认）：e1a59caf双包构建、997源码/完整依赖字节/ESM及采集器边界通过；同包完整签名登记组合正在一次性库执行，未记通过。完整执行等价、真实质量和启用资格仍缺。[证据](evidence/ma24-g09-shared-model-fixed-packages-2026-10-20.json)。
 
 MA24-06 / G09共用模型响应生命周期（2026-10-20，工程实施/验收，无新增确认）：正式/候选共用路线、响应校验/规范化与恢复处理；保留原编号/签名，不可消费的已完成响应保留原回执且同决策恢复不重发，候选保留正式错误类型。95项回归、类型/7文件lint通过，存储/请求模拟；旧固定包不含新源码，完整控制/工具/租约/恢复等价与真实质量仍缺，不授予productionAgentEquivalent或启用资格。[范围](SKILL_SHARED_MODEL_RESPONSE_LIFECYCLE_2026-10-20.md)。

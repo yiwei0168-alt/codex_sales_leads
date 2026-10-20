@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+2026-10-21 / G09固定e1a59caf正式Worker恢复completed与started无回执两分支实跑通过；复用/unknown、不重做及Skill/原记录不变，模型0。仅构造检查点/调用状态，真实启用、崩溃/未知COMMIT同链路及质量仍缺。[收据](evidence/ma24-g09-started-receipt-worker-recovery-2026-10-21.json)。
+
 2026-10-20 / G09新固定e1a59caf双包构建、997源码/完整依赖字节/ESM及采集器边界通过；同包完整签名登记组合仍运行，未记通过。完整执行等价、真实质量及启用仍缺。[证据](evidence/ma24-g09-shared-model-fixed-packages-2026-10-20.json)。
 
 2026-10-20 / G09正式/候选共用模型响应处理接通，95项回归、类型/7文件lint通过；保留编号及签名元数据，异常已完成响应保留回执再拒绝消费，恢复不重发，候选正式错误类型保留。模拟依赖验证不代表完整执行等价或真实质量；旧固定包不含新源码，新固定完整链待验。[范围](SKILL_SHARED_MODEL_RESPONSE_LIFECYCLE_2026-10-20.md)。

@@ -1,5 +1,7 @@
 # MA24 G01–G13 当前剩余门槛（2026-10-16）
 
+G09恢复补验终态：e1a59caf固定正式API/Worker、新167/TLS/Internal网络，completed复用和started无回执返回unknown两分支退出0，原记录/Skill不变、无新工具执行/启用/模型；资源清理。仅构造初态，真实启用/同链路崩溃或未知COMMIT、完整执行等价及质量仍未完成；签名五类新包组合仍运行未判通过。[收据](evidence/ma24-g09-started-receipt-worker-recovery-2026-10-21.json)。
+
 G09最新固定包：e1a59caf双包构建、997源码/完整依赖字节/ESM及采集器边界通过；下方“新代码未入固定包”仅为此前状态。同包完整签名登记组合已启动但尚未退出，未记通过；会话23806，日志`tmp/ma24-shared-model-measured-composition.log`。完整执行等价、真实身份/质量和最终启用仍未完成。[证据](evidence/ma24-g09-shared-model-fixed-packages-2026-10-20.json)。
 
 G09执行差异收敛：正式/候选共用模型响应/回执处理及错误类型保留，95项回归/类型/7文件lint通过；原编号/签名、异常完成回执保留与恢复不重发已在模拟依赖验证。c47e9f7c包/登记联合不含新源码，新固定包完整链待验；控制/工具/租约/恢复完整等价、真实身份/质量及最终启用仍待办。[范围](SKILL_SHARED_MODEL_RESPONSE_LIFECYCLE_2026-10-20.md)。
