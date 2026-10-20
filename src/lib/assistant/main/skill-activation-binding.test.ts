@@ -2,13 +2,14 @@ import {expect,it,vi} from 'vitest';
 import type {PoolClient} from 'pg';
 import {digest} from './contracts';
 import {skillActivationCurrent,skillActivationFingerprint,skillEnabledExpression} from './skill-activation-binding';
-const m=vi.hoisted(()=>({sources:vi.fn(async()=>{}),ledger:vi.fn(async()=>({acceptanceLedgerHash:'4'.repeat(64)}))}));
+const m=vi.hoisted(()=>({sources:vi.fn(async()=>{}),ledger:vi.fn(async()=>({acceptanceLedgerHash:'4'.repeat(64)})),runtime:vi.fn(async()=>'5'.repeat(64))}));
+vi.mock('./skill-runtime-identity',()=>({skillSourceRuntimeHash:m.runtime}));
 vi.mock('@/lib/rag/db',()=>({withBoundTenantTransaction:async(_client:unknown,_user:string,work:()=>Promise<unknown>)=>work()}));
 vi.mock('./skill-activation-sources',()=>({assertSkillActivationSourcesCurrent:m.sources}));
 vi.mock('./skill-acceptance-ledger',()=>({captureSkillAcceptanceLedger:m.ledger}));
 const id=(n:number)=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
 const binding={protocol:'skill-activation-binding-v1',ownerId:id(1),skillId:id(2),version:1,bundleId:id(3),freezeId:id(4),
- artifactHash:digest('artifact'),reviewHash:digest('reviews'),reviewVersions:[],registryHash:digest('registry'),runtimePackageRevisions:['1','2','3'],acceptanceLedgerHash:'4'.repeat(64),sourceFenceId:id(7),
+ artifactHash:digest('artifact'),reviewHash:digest('reviews'),reviewVersions:[],registryHash:digest('registry'),runtimePackageRevisions:['1','2','3'],acceptanceLedgerHash:'4'.repeat(64),sourceFenceId:id(7),runtimeHash:'5'.repeat(64),
  validBefore:'2026-10-20T18:00:00.000Z',activationProofHash:digest('proof'),callId:id(5),sources:[{runId:id(6),sourceHash:digest('source'),chainHash:digest('chain'),initialSourceHash:digest('initial'),attachmentHash:digest('attachments'),knowledgeHash:digest('knowledge'),pinnedMethodsHash:digest('pins'),validBefore:null}]};
 it('keeps manual/old-schema Skills compatible without a qualification query',async()=>{
  const query=vi.fn(),client={query} as unknown as PoolClient;
@@ -31,6 +32,25 @@ it('matches opaque read receipts to database bindings and detects renewal/cleari
  expect(skillActivationFingerprint({activation_binding_hash:hash!})).toBe(hash);
  expect(skillActivationFingerprint({activation_binding:{...binding,callId:id(9)}})).not.toBe(hash);
  expect(skillActivationFingerprint({})).not.toBe(hash);
+});
+it('denies foreign owners and old automatic bindings without a runtime fingerprint',async()=>{
+ const query=vi.fn(),client={query} as unknown as PoolClient;
+ expect(await skillActivationCurrent(client,id(9),id(2),1,binding)).toBe(false);
+ const {runtimeHash,...old}=binding;expect(runtimeHash).toHaveLength(64);
+ expect(await skillActivationCurrent(client,id(1),id(2),1,old)).toBe(false);expect(query).not.toHaveBeenCalled();
+});
+it('denies changed or unavailable runtimes before source reconstruction',async()=>{
+ const query=vi.fn().mockResolvedValue({rows:[{current:true}]}),client={query} as unknown as PoolClient;
+ m.sources.mockClear();m.runtime.mockResolvedValueOnce(digest('new runtime'));
+ expect(await skillActivationCurrent(client,id(1),id(2),1,binding)).toBe(false);expect(m.sources).not.toHaveBeenCalled();
+ m.runtime.mockRejectedValueOnce(new Error('Source inventory unavailable'));
+ expect(await skillActivationCurrent(client,id(1),id(2),1,binding)).toBe(false);
+});
+it('rejects a runtime change during business-source revalidation',async()=>{
+ const query=vi.fn().mockResolvedValue({rows:[{current:true}]}),client={query} as unknown as PoolClient;
+ m.runtime.mockResolvedValueOnce(binding.runtimeHash).mockResolvedValueOnce(digest('late runtime'));
+ expect(await skillActivationCurrent(client,id(1),id(2),1,binding)).toBe(false);
+ expect(query).toHaveBeenCalledTimes(1);
 });
 it('denies revoked business sources even while SQL qualification remains current',async()=>{
  const query=vi.fn().mockResolvedValue({rows:[{current:true}]}),client={query} as unknown as PoolClient;

@@ -18,6 +18,7 @@ const id=(n:number)=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
 const actor={userId:id(1),role:'member' as const,runId:id(2),leaseToken:id(3),callId:id(4),instructionIds:[]};
 const action={id:id(5),version:1,operation:'enable' as const},bundle={id:id(6),artifact_hash:digest('artifact'),source_kind:'production-runner-pending-verification'};
 const selection={scope:'account',files:{'SKILL.md':'Read original evidence'},dependencies:[],validation:{scripts:'none',dependencies:'none'}};
+const runtimeIdentity={runtimeHash:digest('runtimeHash')};
 // This is a mock of the future fully qualified producer. No real collector or
 // human judgment is inserted and no genuine production eligibility is asserted.
 const qualified=()=>Object.fromEntries([
@@ -31,6 +32,7 @@ const qualified=()=>Object.fromEntries([
  ['acceptanceLedgerRevalidated',true],
  ['artifactHash',bundle.artifact_hash],['blockers',[]],['acceptanceTimeCheckedAt','2026-10-20T00:00:00.000Z'],['acceptanceValidBefore','2026-10-20T01:00:00.000Z'],
  ['runtimePackageRevisions',['1','2','3']],
+ ['currentRuntimeIdentityHash',digest(runtimeIdentity)],
  ['activationSources',[{runId:id(8),sourceHash:digest('source'),chainHash:digest('chain'),initialSourceHash:digest('initial'),attachmentHash:digest('attachments'),knowledgeHash:digest('knowledge'),pinnedMethodsHash:digest('pins'),validBefore:null}]],
 ]);
 beforeEach(()=>{
@@ -38,7 +40,7 @@ beforeEach(()=>{
  m.live=true;m.liveAtWrite=true;m.postValid=true;m.eventFails=false;m.writeCount=1;
  m.mode.mockReturnValue('database');m.registry.mockResolvedValue({registryHash:digest('trustRegistryHash')});
  m.evidence.mockResolvedValue({artifactHash:bundle.artifact_hash,latestReviewHash:digest('latestReviewHash'),currentPin:{ownerId:actor.userId,skillId:action.id,version:1},freezeStatus:{freezeId:id(7)},judgments:[],
-  artifact:{plan:{cases:[{id:'source',provenance:'historical-task'}]},rawReceipts:{baselineSources:{source:{runId:id(8)}},candidateSources:{source:{runId:id(8)}}}}});
+  artifact:{plan:{identity:runtimeIdentity,cases:[{id:'source',provenance:'historical-task'}]},rawReceipts:{baselineSources:{source:{runId:id(8)}},candidateSources:{source:{runId:id(8)}}}}});
  m.readiness.mockResolvedValue(qualified());m.memory.mockImplementation(async(_user:string,work:()=>Promise<unknown>)=>work());
  m.query.mockImplementation(async(sql:string,params:unknown[])=>{
   if(sql.startsWith('select v.validation'))return {rows:[selection],rowCount:1};
@@ -66,7 +68,13 @@ it('uses registry -> catalog admission -> bundle/Skill evidence order and atomic
  expect(sql).toContain('clock_timestamp()<$4');expect(sql).toContain('r.lease_until>clock_timestamp()');expect(params[8]).toBe(actor.leaseToken);
  expect(JSON.parse(params[9])).toMatchObject({freezeId:id(7),reviewVersions:[],runtimePackageRevisions:['1','2','3'],callId:actor.callId});
  expect(JSON.parse(params[9]).sourceFenceId).toBe(id(10));
+ expect(JSON.parse(params[9]).runtimeHash).toBe(runtimeIdentity.runtimeHash);
  expect(m.commits).toBe(1);expect(m.rollbacks).toBe(0);
+});
+it('refuses a readiness runtime identity differing from the frozen plan',async()=>{
+ m.readiness.mockResolvedValue({...qualified(),currentRuntimeIdentityHash:digest('different identity')});
+ await expect(activateAgentSkill(actor,action)).rejects.toThrow('gate unavailable');
+ expect(m.state).toEqual({enabled:false,output:null,audit:[]});
 });
 it.each(['sourceRevocationsLocked','acceptanceLedgerRevalidated','activationSourcesRevalidated','collectorProvenanceVerified','productionAgentEquivalent','runtimePackagesRegistered','runtimePackageBytesPairRevalidated','runtimeModuleFormatPairRevalidated','canonicalOriginalCoverageRevalidated','policyPassed'])('refuses incomplete %s without any effect',async key=>{
  m.readiness.mockResolvedValue({...qualified(),[key]:false});

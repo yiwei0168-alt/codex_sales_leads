@@ -17,6 +17,7 @@ export const skillActivationBindingSchema=z.object({
  sources:skillActivationSourcesSchema,
  acceptanceLedgerHash:sha,
  sourceFenceId:z.uuid(),
+ runtimeHash:sha,
 }).strict();
 export type ActivationBoundSkill={activation_binding?:unknown;activation_binding_hash?:string};
 export function skillActivationFingerprint(skill:ActivationBoundSkill){
@@ -28,7 +29,7 @@ export function skillActivationFingerprint(skill:ActivationBoundSkill){
 export async function skillActivationCurrent(client:PoolClient,userId:string,skillId:string,version:number,binding:unknown){
  if(binding==null)return true;
  const parsed=skillActivationBindingSchema.safeParse(binding);
- if(!parsed.success||parsed.data.skillId!==skillId||parsed.data.version!==version)return false;
+ if(!parsed.success||parsed.data.ownerId!==userId||parsed.data.skillId!==skillId||parsed.data.version!==version)return false;
  const checking=checkingSources.getStore()??new Set<string>(),key=`${userId}:${skillId}:${version}`;
  if(checking.has(key)||checking.size>=16)return false;
  return checkingSources.run(checking,()=>withBoundTenantTransaction(client,userId,async()=>{
@@ -37,6 +38,8 @@ export async function skillActivationCurrent(client:PoolClient,userId:string,ski
   if(!await current())return false;
   checking.add(key);
   try{
+   const {skillSourceRuntimeHash}=await import('./skill-runtime-identity');
+   if(await skillSourceRuntimeHash()!==parsed.data.runtimeHash)return false;
    const {captureSkillAcceptanceLedger}=await import('./skill-acceptance-ledger');
    const before=await captureSkillAcceptanceLedger(client,userId,parsed.data.bundleId,parsed.data.artifactHash);
    if(before.acceptanceLedgerHash!==parsed.data.acceptanceLedgerHash)return false;
@@ -44,6 +47,7 @@ export async function skillActivationCurrent(client:PoolClient,userId:string,ski
    await assertSkillActivationSourcesCurrent(client,userId,parsed.data.sources);
    const after=await captureSkillAcceptanceLedger(client,userId,parsed.data.bundleId,parsed.data.artifactHash);
    if(after.acceptanceLedgerHash!==before.acceptanceLedgerHash)return false;
+   if(await skillSourceRuntimeHash()!==parsed.data.runtimeHash)return false;
    return await current();
   }catch{return false;}finally{checking.delete(key);}
  }));

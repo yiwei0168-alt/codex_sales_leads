@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
-import {readFile,writeFile,mkdtemp,rm} from 'node:fs/promises';
+import {readFile,writeFile,mkdtemp,rm,unlink} from 'node:fs/promises';
 import {join,resolve,dirname,sep} from 'node:path';
 import {spawn} from 'node:child_process';
 import {build} from 'esbuild';
@@ -98,7 +98,7 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
    const fence=await captureSkillMemoryTimeFence(client,context.userId,[]);
    const ledger=await captureSkillAcceptanceLedger(client,context.userId,bundleId,row.artifact_hash);
    return {...${JSON.stringify(Object.fromEntries(flags.map(key=>[key,true])))},artifactHash:row.artifact_hash,latestReviewHash:${JSON.stringify(digest([]))},
-    materialsHash:'${digest('mock materials')}',currentRuntimeIdentityHash:'${digest('mock runtime')}',trustRegistryHash:'${digest(registry)}',runtimePackageRegistrationHash:'${digest('mock package')}',
+    materialsHash:'${digest('mock materials')}',currentRuntimeIdentityHash:'${digest(artifact.plan.identity)}',trustRegistryHash:'${digest(registry)}',runtimePackageRegistrationHash:'${digest('mock package')}',
     runtimePackageRevisions:${JSON.stringify(packageRevisions)},...fence,...ledger,blockers:[],acceptanceTimeCheckedAt:now.toISOString(),acceptanceValidBefore:new Date(Math.min(
      now.getTime()+(process.env.MA24_ACTIVATION_EXPIRY==='1'?2000:3600000),fence.memoryTimeValidBefore?Date.parse(fence.memoryTimeValidBefore):Infinity,
      Date.parse(row.plan.expiresAt),
@@ -135,6 +135,7 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
   assert.equal(metrics.costState,'known');assert.equal(metrics.apiCredits,0);assert.equal(metrics.costUsd,0);
   const binding=(await pool.query('select activation_binding from agent_skill where id=$1',[skillId])).rows[0].activation_binding;
   assert.equal(binding.callId,committed.callId);assert.deepEqual(binding.runtimePackageRevisions,packageRevisions);
+  assert.equal(binding.runtimeHash,artifact.plan.identity.runtimeHash);
   const probeBlocked=async(sql:string,params:unknown[])=>{
    const holder=await pool.connect(),writer=await pool.connect();let mutation:Promise<unknown>|undefined;
    try{
@@ -222,6 +223,16 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
       values($1,$2,$3,$4,$5,$6)`,[owner,pending,freezeId,digest(artifact),digest(statement),{statement,signature:'unqualified-component-only'}]);
     }],
    ];
+   const runtimeMarker=resolve('src',`.ma24-runtime-transition-${randomUUID()}.json`);
+   assert(runtimeMarker.startsWith(resolve('src')+sep));
+   await lifecycleClient.query('begin');
+   try{
+    assert.equal(await current(),true);
+    await writeFile(runtimeMarker,JSON.stringify({syntheticRuntimeTransition:true}),{flag:'wx'});
+    try{assert.equal(await current(),false,'Actual source inventory change must invalidate bound Skill');}
+    finally{await unlink(runtimeMarker);}
+    assert.equal(await current(),true,'Restoring identical runtime bytes restores component eligibility');
+   }finally{await lifecycleClient.query('rollback');}
    for(const [name,mutate] of mutations){
     await lifecycleClient.query('begin');
     try{assert.equal(await current(),true,`${name}: baseline current`);await mutate();assert.equal(await current(),false,`${name}: withdrawn qualification must deny`);}
@@ -327,6 +338,8 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
   console.log(JSON.stringify({activationCommitOutcomes:'passed',actualPostgresWireFault:true,loopbackPlaintextOnly:true,
    committedTupleRetainedAfterLostAck:true,reconcileDoesNotReenable:true,unforwardedCommitRollsBackAll:true,explicitRetryCommitsOnce:true,
    automaticTransactionReplay:false,proxyStats:commitFaultStats,qualificationProducerMocked:true,humanApprovalCreated:false,productionQualificationGranted:false,modelCalls:0}));
+  console.log(JSON.stringify({activationRuntimeLifecycle:'passed',actualFilesystemSourceInventoryChangeDenied:true,restoredRuntimeIdentityAccepted:true,
+   actualReadAndListsAndRunningAndDependentGuards:true,qualificationProducerMocked:true,humanApprovalCreated:false,productionQualificationGranted:false,modelCalls:0}));
  }finally{
   await pool.query(`drop trigger if exists ${trigger} on agent_run_event; drop trigger if exists ${trigger} on agent_skill; drop function if exists ${trigger}()`);
   if(priorMode===undefined)delete process.env.SKILL_RUNNER_TRUST_REGISTRY_MODE;else process.env.SKILL_RUNNER_TRUST_REGISTRY_MODE=priorMode;

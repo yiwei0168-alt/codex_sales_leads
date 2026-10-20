@@ -102,7 +102,8 @@ export async function activateAgentSkill(context:Pick<ExecutionContext,'userId'|
     const checked=proofSchema.safeParse(await evaluateLockedSkillAcceptanceReadiness(client,context,bundle.id));
     if(!checked.success)throw new Error(unavailable);
     const proof=checked.data;
-    if(proof.artifactHash!==evidence.artifactHash||proof.latestReviewHash!==evidence.latestReviewHash
+    if(proof.currentRuntimeIdentityHash!==digest(evidence.artifact.plan.identity)
+     ||proof.artifactHash!==evidence.artifactHash||proof.latestReviewHash!==evidence.latestReviewHash
      ||proof.trustRegistryHash!==registry.registryHash||Date.parse(proof.acceptanceTimeCheckedAt)>=Date.parse(proof.acceptanceValidBefore))throw new Error(unavailable);
     if(digest(proof.activationSources.map(row=>row.runId).sort())!==digest(skillAcceptanceRunIds(evidence.artifact)))throw new Error(unavailable);
     if(proof.activationSources.some(row=>row.validBefore!==null&&Date.parse(row.validBefore)<Date.parse(proof.acceptanceValidBefore)))throw new Error(unavailable);
@@ -130,7 +131,8 @@ export async function activateAgentSkill(context:Pick<ExecutionContext,'userId'|
      bundleId:bundle.id,artifactHash:proof.artifactHash,freezeId:evidence.freezeStatus.freezeId,reviewHash:proof.latestReviewHash,
      reviewVersions:evidence.judgments.map(judgment=>({caseId:judgment.caseId,revision:judgment.revision})),
      registryHash:registry.registryHash,runtimePackageRevisions:proof.runtimePackageRevisions,validBefore:proof.acceptanceValidBefore,
-     activationProofHash,callId:actor.callId,sources:proof.activationSources,acceptanceLedgerHash:proof.acceptanceLedgerHash,sourceFenceId});
+     activationProofHash,callId:actor.callId,sources:proof.activationSources,acceptanceLedgerHash:proof.acceptanceLedgerHash,sourceFenceId,
+     runtimeHash:evidence.artifact.plan.identity.runtimeHash});
     const output=result(data,{cost:'known',callId:actor.callId});
     const saved=(await client.query<{n:number}>(`with changed as (
      update agent_skill set enabled=true,published=false,activation_binding=$10::jsonb,updated_at=clock_timestamp()
