@@ -1,0 +1,38 @@
+{
+  "date": "2026-10-20",
+  "rule": "MA24-06",
+  "baselineCommit": "d463419c97181265a1c934a0c310566d8fa147b3",
+  "unit": {
+    "files": 6,
+    "testsPassed": 63,
+    "crossPathDiscoveryDescriptionNormalizedReadVerified": true,
+    "candidateBusinessExecutionCalls": 0,
+    "productionExecutionAdapterMocked": true,
+    "initialFixtureFailure": "Production mock omitted normal ToolResult schema defaults; normalized fixture output; strict cross-path hashes retained."
+  },
+  "typecheckExitCode": 0,
+  "eslint": {
+    "files": 4,
+    "exitCode": 0
+  },
+  "sourceHashes": {
+    "src/lib/assistant/main/executor.ts": "3786b3b9f8190107e906b73eb2064741ff73b3b621a96abfa9b32630b1836240",
+    "src/lib/assistant/main/tool-dispatch-resolution.ts": "27808fa12639056763175e3067a5968ed577ffdbce1c8a4da601775e65b0060d",
+    "src/lib/assistant/main/skill-candidate-runner.ts": "b5e588a297dfe559ad42307d2800261d85ea4babb2af4a03736eec67b0bf2307",
+    "src/lib/assistant/main/skill-candidate-runner.test.ts": "0c3a3c84e1fbf9aaf1b93184847756082ae3acbf9e59ac198793bfd76be46e41"
+  },
+  "behavior": {
+    "sharedModelToolResolution": true,
+    "productionDurableDispatcherRetained": true,
+    "candidateExactReadAndDescriptionAdmissionRetained": true,
+    "candidateDiscoveryMatchesProductionForAnyValidJson": true
+  },
+  "limitations": {
+    "fullConfiguredSnapshotForNewChangesVerified": false,
+    "modelAdapterAndLifecycleEquivalenceVerified": false,
+    "productionAgentEquivalent": false,
+    "humanApprovalCreated": false,
+    "actualModelCalls": 0,
+    "productionQualificationGranted": false
+  }
+}

@@ -1,11 +1,14 @@
 import {beforeEach,afterEach,it,expect,vi} from 'vitest';
-import {digest,type ModelMessage} from './contracts';
+import {digest,toolResultSchema,type ModelMessage} from './contracts';
 import {modeModelConfig} from './mode-config';
 import {initialTaskMessages} from './initial-task-messages';
 import {decisionMemoryMessage} from './decision-memory-message';
 import {disableLocalAnalysisTracing} from './local-analysis-boundary';
 import {runSkillCandidateArm} from './skill-candidate-runner';
 import {productTools} from './tools';
+import {dispatchTool} from './executor';
+const execution=vi.hoisted(()=>({run:vi.fn()}));
+vi.mock('./tool-execution',()=>({executeRegisteredTool:execution.run}));
 const owner='00000000-0000-4000-8000-000000000001',id='00000000-0000-4000-8000-000000000002';
 beforeEach(()=>{disableLocalAnalysisTracing();vi.stubGlobal('fetch',vi.fn(async()=>{throw new Error('No network in candidate mechanism test');}));});
 afterEach(()=>{vi.unstubAllGlobals();vi.unstubAllEnvs();});
@@ -37,6 +40,21 @@ it('returns only the exact recorded read result and records its hash',async()=>{
  const snapshot=fixture();let index=0;const steps=[call('describe_tool',{tool:'knowledge_search'},'d'),call('execute_tool',{tool:'knowledge_search',arguments:{query:'original sources'}},'r'),answer];
  const out=await runSkillCandidateArm(snapshot,'candidate',async()=>steps[index++],async()=>{});
  expect(out.status).toBe('completed');expect(out.trace[1].receiptHash).toBe(snapshot.receipts[0].hash);expect(out.candidateSkillUsed).toBe(false);expect(fetch).not.toHaveBeenCalled();
+});
+it('shares production discovery, description and normalized read arguments without executing business tools',async()=>{
+ const snapshot=fixture();execution.run.mockReset();
+ const steps=[call('discover_tools',{ignoredByProduction:true},'discovery'),call('describe_tool',{tool:'knowledge_search'},'description'),
+  call('execute_tool',{tool:'knowledge_search',arguments:{query:'original sources'}},'read'),answer];
+ let index=0;const candidate=await runSkillCandidateArm(snapshot,'candidate',async()=>steps[index++],async()=>{});
+ expect(candidate.status).toBe('completed');expect(execution.run).not.toHaveBeenCalled();
+ execution.run.mockResolvedValue(toolResultSchema.parse(snapshot.receipts[0].output));
+ for(let i=0;i<3;i++){
+  const message=steps[i];if(!('tool_calls' in message))throw new Error('Expected tool call');
+  const output=await dispatchTool(message.tool_calls[0] as Parameters<typeof dispatchTool>[0],{...snapshot.context,runId:id,leaseToken:id});
+  expect(candidate.trace[i].outputHash,`cross-path call ${i}`).toBe(digest(output));
+ }
+ expect(execution.run).toHaveBeenCalledTimes(1);
+ expect(execution.run).toHaveBeenCalledWith(expect.objectContaining({id:'knowledge_search'}),snapshot.receipts[0].arguments,'read',expect.objectContaining({userId:owner}));
 });
 it.each(['mail_send','skill_manage','knowledge_private_delete'])('cannot dispatch %s even when exposed by the normal mode prompt',async tool=>{
  const out=await runSkillCandidateArm(fixture(),'candidate',async()=>call('execute_tool',{tool,arguments:{}},'effect'),async()=>{});

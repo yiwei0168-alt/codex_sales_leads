@@ -1,28 +1,11 @@
-import { z } from "zod";
-import { availableTools, describeTool, productTools } from "./tools";
-import { result, type ExecutionContext, type ModelToolCall, type ToolResult } from "./contracts";
-import { executeRegisteredTool } from "./tool-execution";
-import { modeAllowsTool } from './mode-tools';
-export { executeRegisteredTool } from "./tool-execution";
+import {productTools} from './tools';
+import type {ExecutionContext,ModelToolCall,ToolResult} from './contracts';
+import {executeRegisteredTool} from './tool-execution';
+import {resolveToolDispatch} from './tool-dispatch-resolution';
+export {executeRegisteredTool} from './tool-execution';
 
-const invocation = z.object({ tool: z.string().max(120), arguments: z.record(z.string(), z.unknown()) }).strict();
-export async function dispatchTool(call: ModelToolCall, context: ExecutionContext, tools = productTools): Promise<ToolResult> {
-  let parsed: unknown;
-  try { parsed = JSON.parse(call.function.arguments); } catch { return result(null, { status: "missing_input", missing: ["Valid JSON arguments required"] }); }
-  const allowed = availableTools(context, tools);
-  if (call.function.name === "discover_tools") return result(allowed.map(t => ({ id: t.id, description: t.description, effect: t.effect, cost: t.cost })), { cost: "known" });
-  if (call.function.name === "describe_tool") {
-    const p = z.object({ tool: z.string() }).strict().safeParse(parsed);
-    const tool = p.success ? allowed.find(t => t.id === p.data.tool) : undefined;
-    return tool ? result(describeTool(tool), { cost: "known" }) : result(null, { status: "unavailable", missing: ["Registered accessible tool"] });
-  }
-  const p = invocation.safeParse(parsed);
-  if (call.function.name !== "execute_tool" || !p.success) return result(null, { status: "missing_input", missing: ["execute_tool requires tool and arguments; server identity cannot be supplied"] });
-  if (p.data.tool === "workspace_mode_update") return result({ code: "capability_removed" }, { status: "unavailable", cost: "known", missing: ["全局市场模式能力已移除；此历史调用未执行。请使用具体任务的业务目标。"] });
-  if(!modeAllowsTool(context.mode,p.data.tool))return result(null,{status:'unavailable',missing:['当前模式不支持此操作，请手动切换模式后新建任务。']});
-  const tool = allowed.find(t => t.id === p.data.tool);
-  if (!tool) return result(null, { status: "unavailable", missing: ["Registered accessible tool"] });
-  const input = tool.input.safeParse(p.data.arguments);
-  if (!input.success) return result(null, { status: "missing_input", missing: input.error.issues.map(e => `${e.path.join(".")}: ${e.message}`) });
-  return executeRegisteredTool(tool, input.data, call.id, context);
+export async function dispatchTool(call:ModelToolCall,context:ExecutionContext,tools=productTools):Promise<ToolResult>{
+ const resolved=resolveToolDispatch(call,context,tools);
+ if(resolved.kind==='return')return resolved.output;
+ return executeRegisteredTool(resolved.tool,resolved.input,call.id,context);
 }

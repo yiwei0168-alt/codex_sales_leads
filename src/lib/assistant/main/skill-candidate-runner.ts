@@ -1,7 +1,8 @@
 import {z} from 'zod';
 import {buildMainAgentGraph} from './graph';
 import {digest,result,toolResultSchema,type ExecutionContext,type ModelMessage} from './contracts';
-import {availableTools,describeTool} from './tools';
+import {availableTools} from './tools';
+import {resolveToolDispatch} from './tool-dispatch-resolution';
 import {modelReplySchema} from './model';
 import {modeConfigSchema,type ModeConfig} from './mode-config';
 import {instructionOnlySkill} from './skills';
@@ -56,24 +57,26 @@ export async function runSkillCandidateArm(input:Snapshot,arm:'baseline'|'candid
    const blocked=(reason:string)=>{stopReason=reason;return result(null,{status:'unavailable',missing:[reason]});};
    const dispatch=()=>{
     let args:unknown;try{args=JSON.parse(call.function.arguments);}catch{return blocked('invalid-call-json');}
-    if(call.function.name==='discover_tools')return z.object({}).strict().safeParse(args).success
-     ?result(tools.map(tool=>({id:tool.id,description:tool.description,effect:tool.effect,cost:tool.cost})),{cost:'known'}):blocked('invalid-discovery-input');
-    if(call.function.name==='describe_tool'){
-     const parsed=z.object({tool:z.string()}).strict().safeParse(args),tool=parsed.success?tools.find(row=>row.id===parsed.data.tool):undefined;
-     if(!tool)return blocked('tool-not-accessible');described.add(tool.id);return result(describeTool(tool),{cost:'known'});
+    // Reject effects before schema parsing; never execute a registered tool.
+    if(call.function.name==='execute_tool'&&typeof args==='object'&&args!==null&&'tool' in args){
+     const requested=tools.find(row=>row.id===args.tool);
+     if(!requested||requested.effect!=='read')return blocked('effect-or-tool-not-allowed');
     }
-    const parsed=z.object({tool:z.string(),arguments:z.record(z.string(),z.unknown())}).strict().safeParse(args);
-    if(call.function.name!=='execute_tool'||!parsed.success)return blocked('invalid-execution-input');
-    const tool=tools.find(row=>row.id===parsed.data.tool);
-    if(!tool||tool.effect!=='read')return blocked('effect-or-tool-not-allowed');
+    const resolved=resolveToolDispatch(call,snapshot.context);
+    if(resolved.kind==='return'){
+     if(resolved.rejected)return blocked(resolved.rejected);
+     if(resolved.describedToolId)described.add(resolved.describedToolId);
+     return resolved.output;
+    }
+    const {tool,input}=resolved;
+    if(tool.effect!=='read')return blocked('effect-or-tool-not-allowed');
     if(!described.has(tool.id))return blocked('tool-not-described');
-    const checked=tool.input.safeParse(parsed.data.arguments);if(!checked.success)return blocked('tool-schema-mismatch');
     if(tool.id==='skill_list')return result(structuredClone(skills),{cost:'known'});
-    if(tool.id==='skill_read'&&(checked.data as {id?:string}).id===candidate.listing.id){
+    if(tool.id==='skill_read'&&(input as {id?:string}).id===candidate.listing.id){
      if(arm==='baseline')return result(null,{cost:'known'});
      candidateSkillUsed=true;return result(structuredClone(candidate.value),{cost:'known'});
     }
-    const matches=snapshot.receipts.filter(row=>row.tool===tool.id&&digest(row.arguments)===digest(checked.data));
+    const matches=snapshot.receipts.filter(row=>row.tool===tool.id&&digest(row.arguments)===digest(input));
     if(matches.length!==1)return blocked('no-unique-recorded-receipt');
     const receipt=matches[0];
     if(receipt.hash!==digest({tool:receipt.tool,arguments:receipt.arguments,output:receipt.output}))return blocked('receipt-changed');
