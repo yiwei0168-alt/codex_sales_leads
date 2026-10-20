@@ -49,6 +49,7 @@ beforeEach(()=>{
   if(sql.startsWith('select lock_skill'))return {rows:[]};
   if(sql.startsWith('select exists(select 1 from pg_trigger'))return {rows:[{ready:true}]};
   if(sql==='select skill_activation_review_guard_ready() ready')return {rows:[{ready:true}]};
+  if(sql==='select skill_activation_declaration_guard_ready() ready')return {rows:[{ready:true}]};
   if(sql.startsWith('set constraints'))return {rows:[]};
   if(sql.startsWith('select begin_skill_activation_source_fence'))return {rows:[{fence_id:id(10)}]};
   if(sql.startsWith('select id,artifact_hash')){m.latestCalls++;return {rows:[m.newBundle&&m.latestCalls>1?{...bundle,id:id(9)}:bundle]};}
@@ -102,10 +103,10 @@ it('does not write when the database fails to return a valid fence identity',asy
  await expect(activateAgentSkill(actor,action)).rejects.toThrow();
  expect(m.state).toEqual({enabled:false,output:null,audit:[]});
 });
-it('refuses disabled review source guards before sealing or writing',async()=>{
+it.each(['review','declaration'])('refuses disabled %s source guards before sealing or writing',async guard=>{
  const query=m.query.getMockImplementation()!;
- m.query.mockImplementation((sql:string,params:unknown[])=>sql==='select skill_activation_review_guard_ready() ready'?{rows:[{ready:false}]}:query(sql,params));
- await expect(activateAgentSkill(actor,action)).rejects.toThrow('review source guard unavailable');
+ m.query.mockImplementation((sql:string,params:unknown[])=>sql===`select skill_activation_${guard}_guard_ready() ready`?{rows:[{ready:false}]}:query(sql,params));
+ await expect(activateAgentSkill(actor,action)).rejects.toThrow(`${guard} source guard unavailable`);
  expect(m.state).toEqual({enabled:false,output:null,audit:[]});
  expect(m.query.mock.calls.some(([sql])=>sql.startsWith('select begin_skill_activation_source_fence'))).toBe(false);
 });

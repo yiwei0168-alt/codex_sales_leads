@@ -55,7 +55,7 @@ export async function requireSkillAcceptanceFreeze(context:{userId:string},freez
  * against a privileged SQL client bypassing the application protocol. */
 export async function lockSkillAcceptanceFreeze(client:PoolClient,userId:string,freezeId:string){
  z.uuid().parse(userId);z.uuid().parse(freezeId);
- await client.query('select pg_advisory_xact_lock(hashtextextended($1,0))',[`skill-freeze:${userId}:${freezeId}`]);
+ await client.query("select pg_advisory_xact_lock(hashtextextended('skill-freeze:'||$1::uuid::text||':'||$2::uuid::text,0))",[userId,freezeId]);
 }
 export async function inspectLockedSkillAcceptanceFreeze(client:PoolClient,userId:string,freezeId:string,expectedPlan:unknown){
  await lockSkillAcceptanceFreeze(client,userId,freezeId);

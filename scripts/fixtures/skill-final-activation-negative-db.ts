@@ -37,6 +37,7 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
  const lifecycle=await readFile('db/migrations/161_skill_activation_lifecycle.sql','utf8');await pool.query(lifecycle);await pool.query(lifecycle);
  const sourceFence=await readFile('db/migrations/162_skill_activation_source_fence.sql','utf8');await pool.query(sourceFence);await pool.query(sourceFence);
  const reviewGuard=await readFile('db/migrations/163_skill_acceptance_review_serialization.sql','utf8');await pool.query(reviewGuard);await pool.query(reviewGuard);
+ const declarationGuard=await readFile('db/migrations/164_skill_runner_attestation_serialization.sql','utf8');await pool.query(declarationGuard);await pool.query(declarationGuard);
  // Explicitly unqualified synthetic registrations for the mocked component only.
  const packageRevisions:string[]=[];
  for(const purpose of ['runner-declaration','model-transport','task-model-transport']){
@@ -134,8 +135,17 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
     'select begin_skill_activation_source_fence($1,$2,$3,$4,$5,$6,$7,$8)',
     [disabled.runId,disabled.callId,skillId,1,pending,digest('disabled review guard component'),artifact.plan.expiresAt,disabled.leaseToken]))),/review source guard unavailable/);
   }finally{await pool.query('alter table agent_skill_acceptance_judgment enable trigger skill_acceptance_judgment_admission');}
+  await pool.query('alter table agent_skill_runner_attestation disable trigger skill_runner_attestation_admission');
+  try{
+   const disabled=await makeActor();
+   assert.equal((await run(disabled,true)).activationReturnedBeforeCommit,false);
+   assert.deepEqual(await inspect(disabled),{enabled:false,status:'started',output:null,events:0});
+   await assert.rejects(tenantTransaction(owner,client=>withBoundTenantTransaction(client,owner,()=>client.query(
+    'select begin_skill_activation_source_fence($1,$2,$3,$4,$5,$6,$7,$8)',
+    [disabled.runId,disabled.callId,skillId,1,pending,digest('disabled declaration guard component'),artifact.plan.expiresAt,disabled.leaseToken]))),/declaration source guard unavailable/);
+  }finally{await pool.query('alter table agent_skill_runner_attestation enable trigger skill_runner_attestation_admission');}
   const truncateClient=await pool.connect();
-  try{for(const sql of ['truncate agent_skill_acceptance_judgment','truncate agent_skill_acceptance_bundle cascade']){
+  try{for(const sql of ['truncate agent_skill_acceptance_judgment','truncate agent_skill_acceptance_bundle cascade','truncate agent_skill_runner_attestation']){
    await truncateClient.query('begin');
    try{await assert.rejects(truncateClient.query(sql),/append-only/);}finally{await truncateClient.query('rollback');}
   }}finally{truncateClient.release();}
@@ -153,19 +163,19 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
   const binding=(await pool.query('select activation_binding from agent_skill where id=$1',[skillId])).rows[0].activation_binding;
   assert.equal(binding.callId,committed.callId);assert.deepEqual(binding.runtimePackageRevisions,packageRevisions);
   assert.equal(binding.runtimeHash,artifact.plan.identity.runtimeHash);
-  const probeBlocked=async(sql:string,params:unknown[],applicationWriter=false)=>{
+  const probeBlocked=async(sql:string,params:unknown[],writerRole?:'network_copilot_app'|'network_copilot_skill_collector')=>{
    const holder=await pool.connect(),writer=await pool.connect();let mutation:Promise<unknown>|undefined;
    try{
     await holder.query('begin');await holder.query('set local role network_copilot_app');
     await holder.query("select set_config('app.current_user_id',$1,true),set_config('app.current_user_role','member',true)",[owner]);
     const snapshot=await withBoundTenantTransaction(holder,owner,async()=>{
-     await readLockedSkillAcceptanceEvidence(holder,{userId:owner},pending);
-     return captureSkillAcceptanceLedger(holder,owner,pending,digest(artifact));
+     await readLockedSkillAcceptanceEvidence(holder,{userId:owner},pending.toUpperCase());
+     return captureSkillAcceptanceLedger(holder,owner,pending.toUpperCase(),digest(artifact));
     });
     assert.equal(snapshot.acceptanceLedgerHash,binding.acceptanceLedgerHash);
     const holderPid=(await holder.query('select pg_backend_pid() pid')).rows[0].pid;
     await writer.query('begin');
-    if(applicationWriter){await writer.query('set local role network_copilot_app');
+    if(writerRole){await writer.query(`set local role ${writerRole}`);
      await writer.query("select set_config('app.current_user_id',$1,true),set_config('app.current_user_role','member',true)",[owner]);}
     const writerPid=(await writer.query('select pg_backend_pid() pid')).rows[0].pid;
     mutation=writer.query(sql,params);void mutation.catch(()=>undefined);
@@ -175,8 +185,9 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
      if(blocked)break;await new Promise(resolve=>setTimeout(resolve,20));
     }
     assert.equal(blocked,true,'Ledger mutation must wait for the retained source transaction');
+    if(writerRole)assert.equal((await pool.query("select exists(select 1 from pg_locks where pid=$1 and locktype='advisory' and not granted) waiting",[writerPid])).rows[0].waiting,true);
    }finally{
-    try{await holder.query('rollback');holder.release();if(mutation){const effect=await mutation as {rowCount:number};if(applicationWriter)assert.equal(effect.rowCount,1);}}
+    try{await holder.query('rollback');holder.release();if(mutation){const effect=await mutation as {rowCount:number};if(writerRole)assert.equal(effect.rowCount,1);}}
     finally{await writer.query('rollback');writer.release();}
    }
   };
@@ -190,9 +201,14 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
   const syntheticReview=skillAcceptanceJudgmentSchema.parse({caseId:reviewCase.caseId,observationHash:digest(reviewCase),reviewerId:owner,
    kind:'assistant-development',revision,revoked:true,baseline:verdict,candidate:verdict,rationale:'Synthetic concurrent raw-DML rejection component; not a human approval.'});
   await probeBlocked(`insert into agent_skill_acceptance_judgment(owner_id,bundle_id,case_id,revision,reviewer_id,reviewer_kind,observation_hash,judgment)
-   values($1,$2,$3,$4,$1,'assistant-development',$5,$6)`,[owner,pending,reviewCase.caseId,revision,digest(reviewCase),syntheticReview],true);
+   values($1,$2,$3,$4,$1,'assistant-development',$5,$6)`,[owner,pending,reviewCase.caseId,revision,digest(reviewCase),syntheticReview],'network_copilot_app');
   assert.equal(Number((await pool.query('select count(*) from agent_skill_acceptance_judgment where owner_id=$1 and bundle_id=$2 and case_id=$3 and revision=$4',
    [owner,pending,reviewCase.caseId,revision])).rows[0].count),0);
+  const unsignedStatement={ownerId:owner,freezeId,artifactHash:digest(artifact),fixture:'unsigned append serialization only',nonce:randomUUID()};
+  await probeBlocked(`insert into agent_skill_runner_attestation(owner_id,bundle_id,freeze_id,artifact_hash,statement_hash,envelope)
+   values($1,$2,$3,$4,$5,$6)`,[owner,pending,freezeId,digest(artifact),digest(unsignedStatement),{statement:unsignedStatement,signature:'unqualified-component-only'}],'network_copilot_skill_collector');
+  assert.equal(Number((await pool.query('select count(*) from agent_skill_runner_attestation where owner_id=$1 and bundle_id=$2 and statement_hash=$3',
+   [owner,pending,digest(unsignedStatement)])).rows[0].count),0);
   // Each mutation is rolled back. Never append a human approval or leave a
   // withdrawn fixture frozen for the later acceptance cases in this same DB.
   const lifecycleClient=await pool.connect();
@@ -376,6 +392,9 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
   console.log(JSON.stringify({activationReviewSerialization:'passed',rawApplicationJudgmentAppendWaitsForActualReader:true,
    writerCompletesAfterReaderEnds:true,syntheticReviewRolledBack:true,disabledGuardRejectsAdapterAndDirectSealing:true,
    bundleAndJudgmentTruncateRejected:true,humanApprovalCreated:false,productionQualificationGranted:false,modelCalls:0}));
+  console.log(JSON.stringify({activationDeclarationSerialization:'passed',rawCollectorAppendWaitsForActualReader:true,
+   actualAdvisoryWaitVerified:true,uppercaseBundleReaderRetainsCanonicalGate:true,writerCompletesAfterReaderEnds:true,unsignedComponentAppendRolledBack:true,
+   disabledGuardRejectsAdapterAndDirectSealing:true,declarationTruncateRejected:true,humanApprovalCreated:false,productionQualificationGranted:false,modelCalls:0}));
  }finally{
   await pool.query(`drop trigger if exists ${trigger} on agent_run_event; drop trigger if exists ${trigger} on agent_skill; drop function if exists ${trigger}()`);
   if(priorMode===undefined)delete process.env.SKILL_RUNNER_TRUST_REGISTRY_MODE;else process.env.SKILL_RUNNER_TRUST_REGISTRY_MODE=priorMode;

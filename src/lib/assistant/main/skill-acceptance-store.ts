@@ -51,7 +51,7 @@ export async function readLockedSkillAcceptanceEvidence(client:PoolClient,contex
  z.uuid().parse(id);z.uuid().parse(context.userId);
  await client.query('select lock_skill_knowledge_sources()');
  await client.query('select lock_skill_method_catalog_sources()');
- await client.query('select pg_advisory_xact_lock(hashtextextended($1,0))',[`skill-acceptance:${id}`]);
+ await client.query("select pg_advisory_xact_lock(hashtextextended('skill-acceptance:'||$1::uuid::text,0))",[id]);
  const bundle=await loadBundle(client,context.userId,id);
  const freezeStatus=await bundleFreezeStatus(client,context.userId,bundle,true);
  if(freezeStatus.state!=='active')throw new Error('Locked acceptance requires an active recorded freeze');
@@ -108,7 +108,7 @@ export async function appendSkillAcceptanceJudgment(context:Context&{reviewerKin
  const kind=z.enum(['human','assistant-development']).parse(context.reviewerKind);
  return tenantTransaction(context.userId,async client=>{
   // Future activation must take this same lock before reading latest judgments.
-  await client.query('select pg_advisory_xact_lock(hashtextextended($1,0))',[`skill-acceptance:${p.bundleId}`]);
+  await client.query("select pg_advisory_xact_lock(hashtextextended('skill-acceptance:'||$1::uuid::text,0))",[p.bundleId]);
   const bundle=await loadBundle(client,context.userId,p.bundleId);
   if(bundle.artifactHash!==p.artifactHash)throw new Error('Stale acceptance artifact');
   const observation=bundle.artifact.observations.find(row=>row.caseId===p.judgment.caseId);

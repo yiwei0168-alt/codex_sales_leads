@@ -121,6 +121,8 @@ export async function activateAgentSkill(context:Pick<ExecutionContext,'userId'|
     if(sourceGuard!==true)throw new Error('Skill activation source fence unavailable');
     if((await client.query<{ready:boolean}>('select skill_activation_review_guard_ready() ready')).rows[0]?.ready!==true)
      throw new Error('Skill activation review source guard unavailable');
+    if((await client.query<{ready:boolean}>('select skill_activation_declaration_guard_ready() ready')).rows[0]?.ready!==true)
+     throw new Error('Skill activation declaration source guard unavailable');
     await client.query('set constraints skill_activation_commit_guard,skill_activation_binding_commit_guard,skill_activation_source_commit_guard deferred');
     requireLive(await readCall(client,actor,action,true),actor);
     const activationProofHash=digest({protocol:'skill-final-activation-v1',bundleId:bundle.id,ownerId:context.userId,

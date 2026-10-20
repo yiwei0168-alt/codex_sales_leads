@@ -13,7 +13,7 @@ export async function captureSkillAcceptanceLedger(client:PoolClient,userId:stri
  z.uuid().parse(userId);z.uuid().parse(bundleId);z.string().regex(/^[a-f0-9]{64}$/).parse(artifactHash);
  return withBoundTenantTransaction(client,userId,async()=>{
   await client.query('select lock_skill_knowledge_sources()');
-  await client.query('select pg_advisory_xact_lock(hashtextextended($1,0))',[`skill-acceptance:${bundleId}`]);
+  await client.query("select pg_advisory_xact_lock(hashtextextended('skill-acceptance:'||$1::uuid::text,0))",[bundleId]);
   const row=(await client.query<{owner_id:string;skill_id:string;version:number;source_kind:string;plan:unknown;observations:unknown;raw_receipts:unknown;artifact_hash:string}>(
    'select owner_id,skill_id,version,source_kind,plan,observations,raw_receipts,artifact_hash from agent_skill_acceptance_bundle where owner_id=$1 and id=$2',[userId,bundleId])).rows[0];
   if(!row||row.artifact_hash!==artifactHash)throw new Error('Acceptance ledger bundle unavailable');
