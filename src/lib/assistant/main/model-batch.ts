@@ -1,4 +1,4 @@
-import {tenantQuery,tenantTransaction,query} from "@/lib/rag/db";
+import {tenantQuery,tenantTransaction,query,withBoundTenantTransaction} from "@/lib/rag/db";
 import {reservePaidCallInTransaction,settlePaidCall} from "@/lib/billing/repository";
 import {providerUsageObservation} from "@/lib/billing/provider-usage";
 import {reportedDollarsToMicros} from "@/lib/billing/openrouter-cost-report";
@@ -11,7 +11,7 @@ import {recordConsumedToolOutputs} from "./consumption";
 export class ModelBatchPending extends Error {constructor(){super("Model batch is awaiting an asynchronous provider result");}}
 type ModelResult=ReturnType<typeof parseModelResponse>;
 interface BatchRow {id:string;user_id:string;run_id:string;call_id:string;reservation_id:string;model:string;provider:string;custom_id:string;remote_id:string|null;
-  status:string;output:ModelResult|null;submitted_at:string;poll_count:number;poll_failures:number;http_latency_ms:string;poll_token:string|null}
+  status:string;output:ModelResult|null;submitted_at:string;poll_count:number;poll_failures:number;http_latency_ms:string;poll_token:string|null;poll_lease_until:string|Date|null}
 const readJob=async(userId:string,callId:string)=>(await tenantQuery<BatchRow>(userId,"select * from agent_model_batch where user_id=$1 and call_id=$2",[userId,callId]))[0];
 
 /** Validate identity and completion; a 202 acknowledgement is never a model answer. */
@@ -89,25 +89,37 @@ export async function pollDueModelBatch(id?:string,transport:typeof fetch=fetch)
   const started=Date.now();let batch:OpenRouterBatch;
   try {batch=await readOpenRouterBatch(job.remote_id,transport,job.model);}
   catch {
-    await tenantQuery(job.user_id,"update agent_model_batch set poll_count=poll_count+1,poll_failures=poll_failures+1,poll_lease_until=null,next_poll_at=now()+least(600,30*power(2,least(poll_failures,4))) * interval '1 second',http_latency_ms=http_latency_ms+$4 where user_id=$1 and id=$2 and poll_token=$3",[job.user_id,job.id,claim.poll_token,Date.now()-started]);
-    return true;
+    const saved=await tenantQuery(job.user_id,"update agent_model_batch set poll_count=poll_count+1,poll_failures=poll_failures+1,poll_lease_until=null,next_poll_at=now()+least(600,30*power(2,least(poll_failures,4))) * interval '1 second',http_latency_ms=http_latency_ms+$4 where user_id=$1 and id=$2 and poll_token=$3 and status='pending' and poll_lease_until>clock_timestamp() returning id",[job.user_id,job.id,claim.poll_token,Date.now()-started]);
+    return saved.length===1;
   }
   let output:ModelResult|undefined,reason:string|undefined;
   try {output=batchModelResult(batch,{model:job.model,customId:job.custom_id});}
   catch {reason="batch-result-unavailable";}
   if(!output&&!reason) {
-    await tenantQuery(job.user_id,"update agent_model_batch set provider_status=$4,poll_count=poll_count+1,poll_failures=0,poll_lease_until=null,next_poll_at=now()+interval '30 seconds',http_latency_ms=http_latency_ms+$5 where user_id=$1 and id=$2 and poll_token=$3",[job.user_id,job.id,claim.poll_token,batch.status,Date.now()-started]);
-    return true;
+    const saved=await tenantQuery(job.user_id,"update agent_model_batch set provider_status=$4,poll_count=poll_count+1,poll_failures=0,poll_lease_until=null,next_poll_at=now()+interval '30 seconds',http_latency_ms=http_latency_ms+$5 where user_id=$1 and id=$2 and poll_token=$3 and status='pending' and poll_lease_until>clock_timestamp() returning id",[job.user_id,job.id,claim.poll_token,batch.status,Date.now()-started]);
+    return saved.length===1;
   }
   if(output?.message.tool_calls)output.message.tool_calls=output.message.tool_calls.map((call,index)=>({...call,id:`call_${digest({call:job.call_id,index,id:call.id}).slice(0,40)}`}));
   // Settle once only from a final matched result. 202 and status polls have no
   // valid model output, and never create additional paid reservations.
-  await settlePaidCall(job.user_id,job.reservation_id,{reportedMicros:reportedDollarsToMicros(batch.usage?.cost),latencyMs:Date.now()-new Date(job.submitted_at).getTime(),responseBytes:Buffer.byteLength(JSON.stringify(batch)),
+  return tenantTransaction(job.user_id,client=>withBoundTenantTransaction(client,job.user_id,async()=>{
+   const current=(await client.query<BatchRow>("select * from agent_model_batch where user_id=$1 and id=$2 and poll_token=$3 and status='pending' and poll_lease_until>clock_timestamp() for update",[job.user_id,job.id,claim.poll_token])).rows[0];
+   if(!current)return false;
+   const identity=['run_id','call_id','reservation_id','model','provider','custom_id','remote_id'] as const;
+   if(identity.some(key=>current[key]!==job[key]))throw new Error('Batch receipt identity changed');
+   const storedOutput=output?result({message:output.message}):result(null,{status:'unavailable',missing:[reason!]});
+   const call=(await client.query<{status:string;output:unknown}>("select status,output from agent_tool_call where user_id=$1 and id=$2 and run_id=$3 for update",[job.user_id,job.call_id,job.run_id])).rows[0];
+   if(!call)throw new Error('Batch call unavailable');
+   if((call.status!=='started'||call.output!==null)&&!(call.status==='completed'&&digest(call.output)===digest(storedOutput)))throw new Error('Batch call receipt conflicts');
+   await settlePaidCall(job.user_id,job.reservation_id,{reportedMicros:reportedDollarsToMicros(batch.usage?.cost),latencyMs:Date.now()-new Date(job.submitted_at).getTime(),responseBytes:Buffer.byteLength(JSON.stringify(batch)),
     inputTokens:batch.usage?.prompt_tokens??null,outputTokens:batch.usage?.completion_tokens??null,succeeded:Boolean(output),providerUsage:providerUsageObservation(batch,{httpStatus:200})});
   const context:ExecutionContext={userId:job.user_id,runId:job.run_id,leaseToken:"receipt-only",role:"member"};
-  await completeCall(context,job.call_id,output?result({message:output.message}):result(null,{status:"unavailable",missing:[reason!]}),batchMetrics({...job,poll_count:job.poll_count+1},output??null,reason));
-  await tenantQuery(job.user_id,"update agent_model_batch set status=$4,provider_status=$5,output=$6,finished_at=now(),poll_lease_until=null,poll_count=poll_count+1,http_latency_ms=http_latency_ms+$7 where user_id=$1 and id=$2 and poll_token=$3",[job.user_id,job.id,claim.poll_token,output?"completed":"failed",batch.status,output?JSON.stringify(output):null,Date.now()-started]);
+  await completeCall(context,job.call_id,storedOutput,batchMetrics({...job,poll_count:job.poll_count+1},output??null,reason));
+  const saved=await client.query("update agent_model_batch set status=$4,provider_status=$5,output=$6,finished_at=now(),poll_lease_until=null,poll_count=poll_count+1,http_latency_ms=http_latency_ms+$7 where user_id=$1 and id=$2 and poll_token=$3 and status='pending' and poll_lease_until>clock_timestamp() returning id",[job.user_id,job.id,claim.poll_token,output?"completed":"failed",batch.status,output?JSON.stringify(output):null,Date.now()-started]);
+  if(saved.rowCount!==1)throw new Error('Batch poll lease expired before settlement');
   await tenantQuery(job.user_id,"update agent_run set next_attempt_at=now() where user_id=$1 and id=$2 and status='queued'",[job.user_id,job.run_id]);
   await event(context,"model_batch_result",{status:batch.status,validOutputItems:output?1:0});
+  if(!(await client.query<{valid:boolean}>('select $1::timestamptz>clock_timestamp() as valid',[current.poll_lease_until])).rows[0]?.valid)throw new Error('Batch poll lease expired before settlement');
   return true;
+  }));
 }

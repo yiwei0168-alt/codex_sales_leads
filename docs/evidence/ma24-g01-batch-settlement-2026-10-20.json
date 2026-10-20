@@ -1,0 +1,97 @@
+{
+  "stage": "MA24 G01/G02 atomic batch receipt settlement and stale poll protection",
+  "date": "2026-10-20",
+  "sourceState": "Modified source based on 26df94f9; no rebuilt Worker image containing this fix",
+  "source": {
+    "file": "src/lib/assistant/main/model-batch.ts",
+    "baselineSha256": "854ade65298e9eb2840f529abbfa3122847495ace54458f3e904125a24a97474",
+    "verifiedSha256": "4e96212a34293953cf50e69254f66285c8abcec235f999d3147d74aa95d23c19"
+  },
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --web-image=ma24-pilot-web:6255598f --current-schema --batch-settlement",
+  "reproduction": {
+    "log": "tmp/ma24-batch-settlement-before.log",
+    "exitCode": 1,
+    "fault": "Injected exception in the final agent_model_batch terminal status update",
+    "failure": "Batch final write failure left committed billing receipt",
+    "actualReservationStatus": "reported",
+    "expectedReservationStatus": "reserved"
+  },
+  "afterLog": "tmp/ma24-batch-settlement-after.log",
+  "exitCode": 0,
+  "implementation": {
+    "terminalReceiptWritesShareTenantTransaction": true,
+    "lockedPendingBatchAndCurrentPollTokenRequired": true,
+    "pollLeaseCheckedAtDatabaseWallClock": true,
+    "savedJobIdentityRechecked": true,
+    "conflictingPriorCallOutputNotOverwritten": true,
+    "finalLeaseCheckedAfterReceiptWrites": true,
+    "nonterminalUpdatesRequireCurrentPendingLease": true,
+    "automaticInferenceRetryAdded": false
+  },
+  "checks": {
+    "focusedUnitTestsPassed": 28,
+    "typecheck": "passed",
+    "targetedEslint": "passed",
+    "gitDiffCheck": "passed"
+  },
+  "scope": {
+    "freshSyntheticMigrationThrough": 159,
+    "seededReservationAndProviderJobRows": true,
+    "statusResponses": "In-process injected transport, not provider HTTP or real inference",
+    "actualLeaseSeconds": 90,
+    "storedLeaseOrPollTimeRewritten": false,
+    "originalDatabaseChanged": false,
+    "fixtureRowsAndClusterCleaned": true,
+    "webCompatibility": "Existing fixed 6255598f Web HTTP workflow on the fresh cluster; not a Worker containing the new batch fix"
+  },
+  "limits": [
+    "Source polling/settlement code and real database writes; no fixed compiled Worker verification of this fix yet",
+    "No real provider submission, budget admission, invoice validation or actual model output quality",
+    "Old-poll expiry and takeover tested together; not every mid-transaction expiry or account lifecycle race",
+    "Actual process death and COMMIT acknowledgment loss for this new batch settlement transaction remain unverified",
+    "G01-G13 remain incomplete; G14-G20 and LAN deployment remain deferred"
+  ],
+  "actualResult": {
+    "batchSettlement": "passed",
+    "atomicFinalWriteFailureRollback": true,
+    "actualLeaseSeconds": 90,
+    "leaseOrPollTimeRewritten": false,
+    "expiredPollSupersededByRealClaim": true,
+    "obsoleteResultIgnored": true,
+    "settledSnapshotUnchanged": true,
+    "normalAndInProgressPolls": true,
+    "terminalDuplicateNoTransportCall": true,
+    "conflictingHistoricalReceiptRejected": true,
+    "cancelledDisabledAccountReceiptSavedWithoutResume": true,
+    "simulatedStatusPolls": 9,
+    "realProviderCalls": 0,
+    "actualInferenceSubmissions": 0,
+    "syntheticReservationAndJobRows": true,
+    "fixtureRowsCleaned": true
+  },
+  "actualCluster": {
+    "freshMigrationThrough": 159,
+    "currentSchemaMarkers": {
+      "mailbox_work_binding": true,
+      "mailbox_lease_binding": true,
+      "mailbox_binding_constraint": true,
+      "knowledge_source_gate": true,
+      "task_origin_gate": true,
+      "local_memory_source_gate": true,
+      "receipt_source_gate": true,
+      "immutable_snapshot_capture": true,
+      "immutable_snapshot_lifecycle": true,
+      "trust_registry_versions": true,
+      "trust_registry_pointer": true,
+      "trust_registry_publication": true,
+      "runtime_package_registrations": true,
+      "runtime_package_withdrawals": true,
+      "runtime_package_publication": true
+    },
+    "batchSettlementVerified": true,
+    "publishedAddress": "127.0.0.1 only",
+    "linuxWebImage": "ma24-pilot-web:6255598f",
+    "linuxWebHttpWorkflowVerified": true,
+    "copiedProductionData": false
+  }
+}

@@ -1,5 +1,7 @@
 # PRD v0.3 Acceptance Report
 
+2026-10-20 / MA24 G01/G02 批处理回执：已复现并修复终态失败但费用回执提交的分事务缺陷。28项回归、类型/lint及全新159实库原子回滚、真实90秒poll租约接管/旧响应拒绝、进行中/终态/重复/冲突与取消且停用账号迟到回执通过，0真实提供方调用，资源清理。范围为源码与合成状态传输；旧6255598f Web仅验HTTP兼容，含修复Worker、进程/提交丢确认、真实提供方和质量仍待验。[证据](evidence/ma24-g01-batch-settlement-2026-10-20.json)。
+
 2026-10-20 / MA24 G01/G02 定时派发COMMIT：固定6255598f实际Worker在全新159/TLS库的真实COMMIT完成/idle确认丢失后保留已提交任务；成功UPDATE后阻断COMMIT则回滚，租约自然到期后仅派发一份任务。后续空Worker逐行快照不变；共享代理旧主任务提交双分支回归通过，协议失败0，类型/lint/语法通过，0模型，临时资源清理。恢复任务因夹具关闭API而partial；首次模型、提供方、生产与质量仍缺。[证据](evidence/ma24-g01-schedule-worker-commit-2026-10-20.json)。
 
 2026-10-20 / MA24 G01/G02 定时派发：固定6255598f同源Web/Worker已构建，在全新159/TLS库的实际派发UPDATE等待中SIGKILL137，无未提交任务碎片或残留事务；原租约自然到期后新token恢复单份任务，后续空Worker无新增记录。最终partial来自夹具有意关闭API，0模型；资源清理、类型/lint通过。此为新镜像提交前中断分支，COMMIT丢确认和真实模型仍缺。[证据](evidence/ma24-g01-schedule-worker-crash-2026-10-20.json)。
