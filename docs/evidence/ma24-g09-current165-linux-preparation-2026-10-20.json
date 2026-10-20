@@ -251,7 +251,7 @@
     "typecheckExitCode": 0,
     "eslintFiles": 2,
     "eslintExitCode": 0,
-    "firstActualRun": "running; not accepted",
+    "firstActualRun": "passed; see ma24-g09-current165-linux-five-category-2026-10-20.json",
     "sourceMode": "image-revision Git archive; installed Linux dependencies and Node from immutable collector image",
     "wholeFixtureProductionEntrypointWrapper": false,
     "databaseTlsVerifiedForFiveCategoryFixture": false,
