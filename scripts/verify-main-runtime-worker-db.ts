@@ -32,11 +32,13 @@ const restricted=['--read-only','--cap-drop=ALL','--security-opt','no-new-privil
 const environment=['--env',`DATABASE_URL=${runtimeUrl}`,'--env',`DATABASE_SSL_CA=${ca}`,'--env','LANGCHAIN_TRACING_V2=false','--env','LANGSMITH_TRACING=false'];
 const durability=process.env.MA24_MAIN_RUNTIME_DURABILITY==='1';
 const crashRecovery=process.env.MA24_MAIN_RUNTIME_CRASH_RECOVERY==='1';
+const interruption=process.env.MA24_MAIN_RUNTIME_INTERRUPTION==='1';
+assert(!interruption||durability,'In-flight interruption requires a dedicated persistent state volume');
 assert(!crashRecovery||durability,'Crash recovery requires a dedicated persistent state volume');
 const commitLoss=process.env.MA24_MAIN_RUNTIME_COMMIT_LOSS==='1';
 const taskEnrollment=process.env.MA24_MAIN_RUNTIME_TASK_ENROLLMENT==='1';
 let signingEnvironment:string[]=[],taskEnrollmentResult:Record<string,unknown>|null=null;
-let server:string|undefined,worker:string|undefined,volume:string|undefined,proxy:string|undefined,pgProxy:string|undefined;
+let server:string|undefined,worker:string|undefined,volume:string|undefined,proxy:string|undefined,pgProxy:string|undefined,networkAnchor:string|undefined;
 let proxyAddress:string|undefined,serverRuntimeUrl=runtimeUrl;
 const api=async(container:string,path:string,method='GET',body?:unknown,port=2024)=>{
  assert.match(path,/^\/[a-zA-Z0-9_/-]+$/);
@@ -102,10 +104,17 @@ try{
   proxyAddress=await execute(['inspect','--format',`{{(index .NetworkSettings.Networks "${network}").IPAddress}}`,pgProxy]);assert.match(proxyAddress,/^\d+\.\d+\.\d+\.\d+$/);
   const proxied=new URL(runtimeUrl);proxied.port='5540';serverRuntimeUrl=proxied.toString();
  }
+ if(interruption){
+  // API death must not tear down the Worker's network/DB connections. A
+  // separate fixture owns the namespace; it contains no product state.
+  networkAnchor=await execute(['run','--detach','--name',`ma24-main-net-anchor-${randomUUID().slice(0,8)}`,'--network',network,...restricted,
+   ...(proxyAddress?['--add-host',`pilot-db:${proxyAddress}`]:[]),'--entrypoint','node',metadata.id,'-e','setInterval(()=>{},1000)']);
+  assert.match(networkAnchor,/^[a-f0-9]{64}$/);
+ }
  const startServer=async()=>{
- server=await execute(['run','--detach','--name',`ma24-main-runtime-${randomUUID().slice(0,8)}`,'--network',network,...restricted,
+ server=await execute(['run','--detach','--name',`ma24-main-runtime-${randomUUID().slice(0,8)}`,'--network',networkAnchor?`container:${networkAnchor}`:network,...restricted,
   ...(volume?['--mount',`type=volume,source=${volume},target=/runtime`]:['--tmpfs','/runtime:rw,noexec,nosuid,uid=1000,gid=1000,mode=0700,size=64m']),
-  ...(proxyAddress?['--add-host',`pilot-db:${proxyAddress}`]:[]),...environment,...signingEnvironment,'--env',`DATABASE_URL=${serverRuntimeUrl}`,metadata.id,'server']);assert.match(server,/^[a-f0-9]{64}$/);
+  ...(proxyAddress&&!networkAnchor?['--add-host',`pilot-db:${proxyAddress}`]:[]),...environment,...signingEnvironment,'--env',`DATABASE_URL=${serverRuntimeUrl}`,metadata.id,'server']);assert.match(server,/^[a-f0-9]{64}$/);
  let ready=false;for(let i=0;i<120;i++){
   const logs=await execute(['logs',server]);if(logs.includes('"mainAgentApi":"ready"')){
    if(taskEnrollment){const started=JSON.parse(logs.split('\n').find(line=>line.includes('"mainAgentApi":"ready"'))!);
@@ -118,8 +127,10 @@ try{
  };
  const stopServer=async()=>{assert(server);await execute(['stop','--time','15',server]);assert.equal(await execute(['inspect','--format','{{.State.ExitCode}}',server]),'0','API must flush and exit normally');await execute(['rm','--volumes',server]);server=undefined;};
  await startServer();
- const owner=randomUUID(),sourceOwner=randomUUID(),document=randomUUID(),chunk=randomUUID(),content='Synthetic compiled worker source',hash=createHash('sha256').update(content).digest('hex');
- for(const id of [owner,sourceOwner])await admin.query("insert into app_user(id,email,display_name,role,status) values($1,$2,'Synthetic runtime','member','active')",[id,`${id}@example.invalid`]);
+ const owner=interruption?(await admin.query<{id:string}>("select id from app_user where email=$1 and role='member' and status='active'",[process.env.MA24_MAIN_RUNTIME_OWNER_EMAIL])).rows[0]?.id:randomUUID();
+ assert(owner,'Interruption fixture requires the authenticated synthetic member');
+ const sourceOwner=randomUUID(),document=randomUUID(),chunk=randomUUID(),content='Synthetic compiled worker source',hash=createHash('sha256').update(content).digest('hex');
+ for(const id of interruption?[sourceOwner]:[owner,sourceOwner])await admin.query("insert into app_user(id,email,display_name,role,status) values($1,$2,'Synthetic runtime','member','active')",[id,`${id}@example.invalid`]);
  await admin.query(`insert into knowledge_document(id,collection_id,external_id,title,source_type,content_sha256,owner_id,visibility)
   values($1,(select id from knowledge_collection where slug='product'),$1::uuid::text,'Synthetic runtime source','text',$2,$3,'shared')`,[document,hash,sourceOwner]);
  await admin.query('insert into knowledge_chunk(id,document_id,chunk_index,content,token_estimate,content_sha256) values($1,$2,0,$3,10,$4)',[chunk,document,content,hash]);
@@ -138,7 +149,7 @@ try{
  };
  const startWorker=async(apiPort=2024)=>{
   // container:server shares its host mapping too; use the same TLS proxy port.
-  worker=await execute(['run','--detach','--name',`ma24-main-worker-${randomUUID().slice(0,8)}`,'--network',`container:${server}`,...restricted,...environment,...signingEnvironment,
+  worker=await execute(['run','--detach','--name',`ma24-main-worker-${randomUUID().slice(0,8)}`,'--network',`container:${networkAnchor??server}`,...restricted,...environment,...signingEnvironment,
    '--env',`DATABASE_URL=${serverRuntimeUrl}`,'--env',`LANGGRAPH_API_URL=http://127.0.0.1:${apiPort}`,metadata.id,'worker','--once']);assert.match(worker,/^[a-f0-9]{64}$/);
  };
  const finishWorker=async()=>{assert(worker);const exit=await execute(['wait',worker]),logs=await execute(['logs',worker]);assert.equal(exit,'0',logs);await execute(['rm','--volumes',worker]);worker=undefined;return logs;};
@@ -193,6 +204,49 @@ try{
   uncommittedLossResult={...beforeCommitStats,commitPreventedAfterRealInsert:true,speculativeExtractionInsertRolledBack:true,
    uncommittedAnswerNotPublished:true,safePartialPersistedOnce:true,subsequentWorkerMakesNoReplay:true,
    actualApiDatabasePoolRecoveryVerified:true,earlierCommittedTaskUnchanged:true,actualModelCalls:0};
+ }
+ let interruptionResult:unknown=null;
+ if(interruption){
+  const base=process.env.MA24_MAIN_RUNTIME_WEB_BASE!,ownerCookie=process.env.MA24_MAIN_RUNTIME_OWNER_COOKIE!,peerCookie=process.env.MA24_MAIN_RUNTIME_PEER_COOKIE!;
+  assert.match(base,/^http:\/\/127\.0\.0\.1:\d+$/);assert(ownerCookie&&peerCookie);
+  await admin.query("update knowledge_document set visibility='shared' where id=$1",[document]);
+  const pending=await prepareTask(),blocker=new Client({connectionString:url});await blocker.connect();
+  let killedLease:string;
+  try{
+   await blocker.query('begin');await blocker.query('lock table assistant_message in share mode');
+   const blockerPid=(await blocker.query('select pg_backend_pid() pid')).rows[0].pid;
+   await startWorker();let observed=false;
+   for(let i=0;i<300;i++){
+    observed=(await admin.query(`select exists(select 1 from pg_stat_activity a where a.datname=current_database()
+      and $1::int=any(pg_blocking_pids(a.pid)) and a.query ilike '%insert into assistant_message%') blocked`,[blockerPid])).rows[0].blocked;
+    if(observed)break;await new Promise(done=>setTimeout(done,100));
+   }
+   assert(observed,'Actual API final answer INSERT must be blocked before SIGKILL');
+   const running=await readTask(pending.task.id);assert.equal(running.status,'running');assert.deepEqual(running.messages,[]);assert.equal(running.jobs,0);
+   killedLease=running.lease_token;assert(killedLease);
+   const killed=server!;assert.match(killed,/^[a-f0-9]{64}$/);await execute(['kill','--signal','KILL',killed]);
+   assert.equal(await execute(['wait',killed]),'137');
+   // Keep the stopped namespace owner until its attached Worker has exited.
+  }finally{await blocker.query('rollback');await blocker.end();}
+  await finishWorker();await execute(['rm','--volumes',server!]);server=undefined;
+  const stopped=await readTask(pending.task.id);
+  assert.equal(stopped.status,'partial');assert.notEqual(stopped.reply,pending.reply);assert.deepEqual(stopped.messages,[stopped.reply]);
+  assert.equal(stopped.jobs,0);assert.equal(stopped.models,0);assert.equal(stopped.status_events,1);
+  await startServer();await startWorker();await finishWorker();assert.deepEqual(await readTask(pending.task.id),stopped);
+  const resume=(cookie?:string)=>fetch(`${base}/api/assistant/runs/${pending.task.id}/control`,{method:'POST',headers:{'content-type':'application/json',...(cookie?{cookie}:{})},body:JSON.stringify({action:'resume'})});
+  assert.equal((await resume()).status,401);assert.equal((await resume(peerCookie)).status,404);
+  assert.deepEqual(await readTask(pending.task.id),stopped);
+  const accepted=await resume(ownerCookie);assert.equal(accepted.status,200);assert.deepEqual(await accepted.json(),{accepted:true});
+  const queued=await readTask(pending.task.id);assert.equal(queued.status,'queued');assert.equal(queued.lease_token,null);
+  await startWorker();await finishWorker();const recovered=await readTask(pending.task.id);
+  assert.equal(recovered.status,'completed');assert.equal(recovered.reply,pending.reply);assert.notEqual(recovered.lease_token,killedLease!);
+  assert.deepEqual(recovered.messages,[stopped.reply,pending.reply]);assert.equal(recovered.jobs,1);assert.equal(recovered.models,0);assert.equal(recovered.status_events,2);
+  assert.equal(Number((await admin.query("select count(*) n from agent_run_event where run_id=$1 and user_id=$2 and kind='control' and payload->>'action'='resume'",[pending.task.id,owner])).rows[0].n),1);
+  assert.equal((await resume(ownerCookie)).status,409);await startWorker();await finishWorker();assert.deepEqual(await readTask(pending.task.id),recovered);
+  interruptionResult={actualFinalInsertWaitObserved:true,apiSignal:'SIGKILL',apiExitCode:137,uncommittedAnswerNotPublished:true,
+   safePartialPersistedOnce:true,noAutomaticReplayBeforeResume:true,actualHttpManualResumeVerified:true,unauthenticatedRejected:true,peerHidden:true,
+   freshLeaseAfterResume:true,completedCheckpointRevalidated:true,finalAnswerPublishedOnce:true,extractionJobCount:1,
+   explicitResumeEventCount:1,terminalResumeRejected:true,subsequentWorkerMakesNoReplay:true,syntheticCompletedCheckpoint:true,actualModelCalls:0};
  }
  let durabilityResult:unknown=null;
  if(durability){
@@ -250,12 +304,13 @@ try{
    priorTaskRowsUnchangedAfterRestart:true,gracefulApiExitCode:0,committedTaskSurvivesLostHttpResponse:true,noDuplicateReplyEventOrExtractionJob:true,subsequentWorkerMakesNoReplayRequest:true,forwardedApiRequests:1,crashResult};
  }
  const receipt={passed:true,image,immutableImageId:metadata.id,sourceCommit:metadata.revision,integrity,actualLangGraphApi:true,actualCompiledQueueWorker:true,postgresCheckpointRecovery:true,cases,
-  durabilityResult,commitLossResult,uncommittedLossResult,taskEnrollmentResult,syntheticCheckpointSeed:true,actualModelCalls:0,externalActions:0,firstModelExecutionVerified:false,productionQualified:false,automaticActivation:false};
+  durabilityResult,commitLossResult,uncommittedLossResult,taskEnrollmentResult,interruptionResult,syntheticCheckpointSeed:true,actualModelCalls:0,externalActions:0,firstModelExecutionVerified:false,productionQualified:false,automaticActivation:false};
  await writeFile('tmp/ma24-main-runtime-worker-result.json',JSON.stringify(receipt,null,2)+'\n');console.log(JSON.stringify({mainRuntimeWorker:'passed',...receipt}));
 }finally{
  if(worker)await docker(['rm','--force','--volumes',worker]);
  if(proxy)await docker(['rm','--force','--volumes',proxy]);
  if(server){await docker(['stop','--time','10',server]);await docker(['rm','--force','--volumes',server]);}
+ if(networkAnchor)await execute(['rm','--force','--volumes',networkAnchor]);
  if(pgProxy)await docker(['rm','--force','--volumes',pgProxy]);
  if(volume){assert.equal(await execute(['volume','inspect','--format','{{index .Labels "ma24-purpose"}}',volume]),'main-runtime-verification');await execute(['volume','rm',volume]);}
  await Promise.allSettled([admin.end(),getPool().end()]);
