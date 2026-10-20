@@ -12,6 +12,7 @@ import {completeDisposableCheck} from './lib/ma24-disposable-cleanup';
 const id = randomBytes(6).toString("hex");
 const containerName = `ma24-pilot-fresh-${id}`;
 const scheduleDispatchCheck=process.argv.includes('--schedule-dispatch');
+const reviewDraftUiCheck=process.argv.includes('--review-draft-ui');
 const mailboxImapWorkerCheck=process.argv.includes('--mailbox-imap-worker');
 const mailboxImageArgument=process.argv.slice(2).find(arg=>arg.startsWith('--mailbox-worker-image='));
 const mailboxWorkerImage=mailboxImageArgument?.slice('--mailbox-worker-image='.length);
@@ -23,7 +24,7 @@ const batchWorkerCommitCheck=process.argv.includes('--batch-worker-commit');
 const scheduleWorkerArgument=process.argv.slice(2).find(arg=>arg.startsWith('--schedule-worker-image='));
 const scheduleWorkerImage=scheduleWorkerArgument?.slice('--schedule-worker-image='.length);
 const scheduleWorkerCommitCheck=process.argv.includes('--schedule-worker-commit');
-const args = process.argv.slice(2).filter(arg=>arg!=='--mailbox-worker-imap'&&arg!==mailboxImageArgument&&arg!=='--mailbox-imap-worker'&&arg!=='--schedule-dispatch'&&arg!=='--batch-settlement'&&arg!=='--schedule-worker-commit'&&arg!=='--batch-worker-commit'&&arg!==scheduleWorkerArgument&&arg!==batchWorkerArgument);
+const args = process.argv.slice(2).filter(arg=>arg!=='--review-draft-ui'&&arg!=='--mailbox-worker-imap'&&arg!==mailboxImageArgument&&arg!=='--mailbox-imap-worker'&&arg!=='--schedule-dispatch'&&arg!=='--batch-settlement'&&arg!=='--schedule-worker-commit'&&arg!=='--batch-worker-commit'&&arg!==scheduleWorkerArgument&&arg!==batchWorkerArgument);
 const webImageArgument = args.find(arg => arg.startsWith("--web-image="));
 const webImage = webImageArgument?.startsWith("--web-image=")
   ? webImageArgument.slice("--web-image=".length) : undefined;
@@ -95,6 +96,7 @@ assert(!knowledgeScopeSourcesCheck||(webImage&&currentSchemaCheck),'--knowledge-
 assert(!finalSettlementCheck||(webImage&&currentSchemaCheck),'--final-settlement requires --web-image and --current-schema');
 assert(!scheduleDispatchCheck||(webImage&&currentSchemaCheck),'--schedule-dispatch requires --web-image and --current-schema');
 assert(!mailboxImapWorkerCheck||(webImage&&currentSchemaCheck),'--mailbox-imap-worker requires --web-image and --current-schema');
+assert(!reviewDraftUiCheck||(webImage&&currentSchemaCheck),'--review-draft-ui requires --web-image and --current-schema');
 assert(!mailboxImageArgument||(mailboxWorkerImage&&/^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(mailboxWorkerImage)&&webImage&&currentSchemaCheck),'--mailbox-worker-image requires fixed image, Web and current schema');
 assert(!mailboxWorkerImapImageCheck||mailboxWorkerImage,'--mailbox-worker-imap requires --mailbox-worker-image');
 assert(!batchSettlementCheck||(webImage&&currentSchemaCheck),'--batch-settlement requires --web-image and --current-schema');
@@ -263,6 +265,12 @@ try {
     const settlement=await run(process.execPath,['scripts/run-tsx.cjs','scripts/verify-final-main-settlement-db.ts'],
       {...process.env,DATABASE_URL:appUrl.toString(),DATABASE_MIGRATION_URL:adminUrl.toString(),MA24_DISPOSABLE_FINAL_SETTLEMENT:'1'});
     assert.equal(settlement.code,0,settlement.output);assert(settlement.output.includes('"finalMainSettlement":"passed"'),settlement.output);console.log(settlement.output.trim());
+  }
+  if(reviewDraftUiCheck){
+    const review=await run(process.execPath,['scripts/run-tsx.cjs','scripts/verify-skill-review-draft-image-db.ts'],
+      {...process.env,DATABASE_URL:appUrl.toString(),DATABASE_MIGRATION_URL:adminUrl.toString(),MA24_DISPOSABLE_REVIEW_IMAGE:'1',
+        MA24_REVIEW_IMAGE:webImage!,MA24_REVIEW_NETWORK:networkName,MA24_REVIEW_DATABASE_CONTAINER:containerId!});
+    assert.equal(review.code,0,review.output);assert(review.output.includes('"fixedReviewDraftDatabase":"passed"')&&review.output.includes('"fixedReviewDraftDatabaseCleaned":true'),review.output);console.log(review.output.trim());
   }
   if(mailboxWorkerImage){
     const runtimeApp=new URL(appUrl);runtimeApp.hostname='pilot-db';runtimeApp.port='5432';runtimeApp.searchParams.set('sslmode','verify-full');
@@ -788,6 +796,7 @@ try {
     }
   }
   acceptanceResult={ freshClusterPilot: "passed", image: "pgvector/pgvector:pg16",
+    reviewDraftFixedImageVerified:reviewDraftUiCheck,
     mailboxImapWorkerVerified:mailboxImapWorkerCheck,
     mailboxWorkerImageVerified:Boolean(mailboxWorkerImage)&&!mailboxWorkerImapImageCheck,
     mailboxWorkerImapImageVerified:Boolean(mailboxWorkerImage)&&mailboxWorkerImapImageCheck,

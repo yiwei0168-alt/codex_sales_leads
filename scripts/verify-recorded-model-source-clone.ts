@@ -25,23 +25,36 @@ import {hashPassword} from '../src/lib/auth/password';
 nextEnv.loadEnvConfig(process.cwd());disableLocalAnalysisTracing();
 const base=process.env.DATABASE_MIGRATION_URL||process.env.DATABASE_URL;
 assert(base&&['localhost','127.0.0.1','::1'].includes(new URL(base).hostname));
-const state=JSON.parse(await readFile('tmp/ma11-replay-state.json','utf8'));assert(/^ma11_replay_[a-f0-9]{12}$/.test(state.database));
+const disposableReviewDatabase=process.env.MA24_REVIEW_DATABASE;
+if(disposableReviewDatabase)assert.equal(process.env.MA24_DISPOSABLE_REVIEW_IMAGE,'1');
+const state=disposableReviewDatabase?{database:disposableReviewDatabase}:JSON.parse(await readFile('tmp/ma11-replay-state.json','utf8'));assert(/^ma11_replay_[a-f0-9]{12}$/.test(state.database));
 const applicationBase=process.env.DATABASE_URL;assert(applicationBase&&['localhost','127.0.0.1','::1'].includes(new URL(applicationBase).hostname));
 const applicationUrl=new URL(applicationBase);applicationUrl.pathname=`/${state.database}`;
 const url=new URL(base);url.pathname=`/${state.database}`;process.env.DATABASE_URL=url.toString();
 const pool=new Pool({connectionString:url.toString()}),owner=randomUUID(),other=randomUUID(),conversation=randomUUID(),runId=randomUUID(),callId=randomUUID(),memoryId=randomUUID(),readCallId=randomUUID();
-const skillReviewUiPassword=process.argv.includes('--skill-review-ui')?randomBytes(24).toString('base64url'):null;
+const fixedReviewImage=process.env.MA24_REVIEW_IMAGE;
+if(fixedReviewImage)assert(disposableReviewDatabase);
+const skillReviewUiPassword=process.argv.includes('--skill-review-ui')||fixedReviewImage?randomBytes(24).toString('base64url'):null;
 globalThis.fetch=async()=>{throw Error('No network in clone verification');};
 try{
+ if(disposableReviewDatabase){
+  const current=(await pool.query(`select exists(select 1 from information_schema.columns where table_schema='public' and table_name='agent_skill_model_attempt' and column_name='freeze_id') as binding,
+   exists(select 1 from pg_trigger where tgrelid='agent_skill_model_outcome'::regclass and tgname='skill_model_outcome_freeze_admission') as outcome_guard,
+   position('tg_table_name' in lower(pg_get_functiondef('check_skill_model_freeze()'::regprocedure)))>0 as current_guard`)).rows[0];
+  assert(current.binding&&current.outcome_guard&&current.current_guard,'Fresh current schema must retain latest freeze guards');
+ }else{
  await pool.query(await readFile('db/migrations/130_skill_acceptance_evidence.sql','utf8'));
  await pool.query(await readFile('db/migrations/131_skill_model_attempt_journal.sql','utf8'));
  await pool.query(await readFile('db/migrations/132_skill_bundle_collector.sql','utf8'));
  await pool.query(await readFile('db/migrations/133_skill_acceptance_freeze.sql','utf8'));
  await pool.query(await readFile('db/migrations/134_skill_model_freeze_binding.sql','utf8'));
  await pool.query(await readFile('db/migrations/135_skill_freeze_current_version.sql','utf8'));
+ }
  for(const id of [owner,other])await pool.query("insert into app_user(id,email,display_name,password_hash,role,status) values($1,$2,'Model source fixture',$3,'member','active')",[id,`${id}@example.invalid`,id===owner&&skillReviewUiPassword?hashPassword(skillReviewUiPassword):'!']);
- console.log(JSON.stringify({skillModelJournal:await verifySkillModelJournalFixture(pool,owner,other),cloneOnly:true}));
- console.log(JSON.stringify({skillAcceptanceFreeze:await verifyAcceptanceFreezeFixture(pool,owner,other),cloneOnly:true}));
+ if(!fixedReviewImage){
+  console.log(JSON.stringify({skillModelJournal:await verifySkillModelJournalFixture(pool,owner,other),cloneOnly:true}));
+  console.log(JSON.stringify({skillAcceptanceFreeze:await verifyAcceptanceFreezeFixture(pool,owner,other),cloneOnly:true}));
+ }
  await pool.query("insert into assistant_conversation(id,user_id,title) values($1,$2,'Model source fixture')",[conversation,owner]);
  await pool.query("insert into agent_memory(id,owner_id,scope,kind,memory_key,source_kind) values($1,$2,'account','preference','synthetic-replay','explicit')",[memoryId,owner]);
  await pool.query("insert into agent_memory_version(memory_id,version,content,scope_snapshot) values($1,1,'Synthetic preference','{}')",[memoryId]);
@@ -109,12 +122,16 @@ try{
   await pool.query('delete from agent_tool_call where id=$1 and user_id=$2',[hiddenId,owner]);
  }
  const graphAudit=await auditRecordedGraphExecution(context,{runId});assert.equal(graphAudit.recordedDecisions,3);assert.equal(graphAudit.recordedTools,2);assert.equal(graphAudit.modelCalls,0);
- const acceptanceBaseline=await verifyAcceptanceBaselineFixture(pool,owner,other,runId);
- console.log(JSON.stringify({acceptanceBaseline,cloneOnly:true,modelCalls:0}));
+ if(!fixedReviewImage){const acceptanceBaseline=await verifyAcceptanceBaselineFixture(pool,owner,other,runId);
+  console.log(JSON.stringify({acceptanceBaseline,cloneOnly:true,modelCalls:0}));}
  const candidateSource=await verifyCandidateSourceFixture(pool,owner,other,runId,skillReviewUiPassword?async(bundleId,skillId)=>{
+  if(fixedReviewImage){
+   const {verifySkillDraftFixedWeb}=await import('./lib/verify-skill-draft-fixed-web');
+   return verifySkillDraftFixedWeb({pool,owner,email:`${owner}@example.invalid`,password:skillReviewUiPassword,bundleId,skillId,applicationDatabaseUrl:applicationUrl.toString()});
+  }
   const {verifyMa24SkillReviewUiClone}=await import('./lib/verify-ma24-skill-review-ui-clone');
   console.log(JSON.stringify({skillReviewUi:await verifyMa24SkillReviewUiClone({pool,owner,email:`${owner}@example.invalid`,password:skillReviewUiPassword,applicationDatabaseUrl:applicationUrl.toString(),migrationDatabaseUrl:url.toString(),bundleId,skillId}),cloneOnly:true}));
- }:undefined);
+ }:undefined,Boolean(fixedReviewImage));
  console.log(JSON.stringify({candidateSource,cloneOnly:true,modelCalls:0}));
  const clarification='Synthetic clarification after recorded reads';
  await pool.query('update agent_run set instructions=$2 where id=$1',[runId,JSON.stringify([{id:randomUUID(),content:clarification}])]);

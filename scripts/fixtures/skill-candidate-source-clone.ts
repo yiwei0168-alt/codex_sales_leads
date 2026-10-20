@@ -5,9 +5,10 @@ import {runRecordedSkillCandidateArm} from '../../src/lib/assistant/main/skill-c
 import {loadRecordedTaskChain} from '../../src/lib/assistant/main/recorded-task-source';
 import {digest,toolResultSchema} from '../../src/lib/assistant/main/contracts';
 import {verifyDurableCandidateFixture} from './skill-durable-candidate-clone';
+import type {CandidateReviewReady} from './skill-candidate-acceptance-clone';
 
 /** Synthetic accounts and task only; caller blocks network and asserts clone database. */
-export async function verifyCandidateSourceFixture(pool:Pool,owner:string,other:string,runId:string,onReviewReady?:(bundleId:string,skillId:string)=>Promise<void>){
+export async function verifyCandidateSourceFixture(pool:Pool,owner:string,other:string,runId:string,onReviewReady?:CandidateReviewReady,reviewMaterialOnly=false){
  assert(/^ma11_replay_[a-f0-9]{12}$/.test((await pool.query('select current_database() as name')).rows[0].name));
  const context={userId:owner},original=await loadRecordedTaskChain(context,{runId});
  const skill=await importSkill({...context,role:'member'},{name:'Candidate source fixture',source:'synthetic-fixture',files:{'SKILL.md':'Check original evidence.'},dependencies:[]});
@@ -16,8 +17,10 @@ export async function verifyCandidateSourceFixture(pool:Pool,owner:string,other:
  const steps=[call('describe_tool',{tool:'skill_read'},'describe'),call('execute_tool',{tool:'skill_read',arguments:{id:skill.id}},'read'),
   call('describe_tool',{tool:'memory_read'},'describe-memory'),call('execute_tool',{tool:'memory_read',arguments:{}},'read-memory'),{role:'assistant',content:'Synthetic candidate response.'}];
  try{
-  const durableCandidate=await verifyDurableCandidateFixture(pool,owner,input,onReviewReady);
+  assert(!reviewMaterialOnly||onReviewReady);
+  const durableCandidate=await verifyDurableCandidateFixture(pool,owner,input,onReviewReady,reviewMaterialOnly);
   console.log(JSON.stringify({durableCandidate,cloneOnly:true}));
+  if(reviewMaterialOnly)return {durableReviewMaterial:true,actualModelCalls:0,automaticActivation:false};
   for(const arm of ['baseline','candidate'] as const){
    let index=0;
    const out=await runRecordedSkillCandidateArm(context,input,arm,async request=>{

@@ -1,0 +1,117 @@
+{
+  "stage": "MA24 G10/G13 fixed Web image review draft actual HTTPS/Chrome/database acceptance",
+  "date": "2026-10-20",
+  "verificationBaseCommit": "21ade59d31de3324c76f3ac2a19095175df2d6df",
+  "applicationCommit": "21ade59d31de3324c76f3ac2a19095175df2d6df",
+  "verificationSourceSha256": {
+    "scripts/lib/verify-skill-draft-fixed-web.ts": "909f69c5de7dfcdd3f3e2de778922b74eac9385562b4d65755305ab7861f154c",
+    "scripts/verify-skill-review-draft-image-db.ts": "a01e1a92502b3d3f6d6ee3d604118b12ed3aabdc7f68d20c02457f85a04466c7",
+    "scripts/verify-recorded-model-source-clone.ts": "b2bd10742c4039a595a7046fc01fa4ffb3400218a20b1965967bab7decca634a",
+    "scripts/fixtures/skill-candidate-acceptance-clone.ts": "0bd595ac7ba67f18058322d67f3de9bba057b0d35d2f7205f403e76af4ffc1ae",
+    "scripts/fixtures/skill-candidate-source-clone.ts": "07618e035732b73d9c2b9bfb1f21fd90a9268ffef80addfc5ca84ec99528abd7",
+    "scripts/fixtures/skill-durable-candidate-clone.ts": "8736468bb1a2fe11e6ff75d6b79ba43b5d9b40cabdca8ca458a2bcbe581c8092",
+    "scripts/verify-ma24-fresh-pilot-new-cluster.ts": "af52014a45a8315913fa2b50d7173f6e4ac77cbeeb4b7247e7955f1a5959728a"
+  },
+  "build": {
+    "log": "tmp/ma24-review-draft-web-21ade59d-build.log",
+    "passed": true,
+    "packagedComponent": {
+      "sourceSha256": "4e284b306a8341742fddd31a8304b6d7dff6f3a2a3fb566be3407f71627dd09f",
+      "buildId": "pXq3DzzgK6N0X4YgDe8sF"
+    },
+    "sourceComparison": "Exact git archive bytes, including archive newline handling; unstaged files excluded"
+  },
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --web-image=ma24-pilot-web:21ade59d --current-schema --review-draft-ui",
+  "log": "tmp/ma24-review-draft-fixed-image-21ade59d-final.log",
+  "exitCode": 0,
+  "result": {
+    "fixedReviewDraftDatabase": "passed",
+    "browser": {
+      "skillReviewDraftFixedWeb": "passed",
+      "database": "ma11_replay_cf3003fe3c75",
+      "image": "ma24-pilot-web:21ade59d",
+      "immutableImageId": "sha256:fccac52e944f3e02fc84abf7797a85ffbafc71e5dcd9bb204ad044a5b48b564a",
+      "sourceCommit": "21ade59d31de3324c76f3ac2a19095175df2d6df",
+      "actualChromeAndHttpAndDatabase": true,
+      "secureSession": true,
+      "initialRevisionRaceReconciled": true,
+      "dirtyDraftKeptUntilExplicitChoice": true,
+      "staleRevision409": true,
+      "confirmedWriteWithReadbackFaultPreserved": true,
+      "adoptLatest": true,
+      "revokedRevision": 7,
+      "humanRevisionCount": 7,
+      "allSyntheticVerdictsFalse": true,
+      "skillRemainedDisabled": true,
+      "mobileNoHorizontalOverflow": true,
+      "realQualityApproval": false,
+      "modelCalls": 0
+    },
+    "freshTemplateOnly": true,
+    "modelsCalled": 0,
+    "realQualityApproval": false
+  },
+  "cluster": {
+    "freshClusterPilot": "passed",
+    "freshMigrationThrough": 159,
+    "reviewDraftFixedImageVerified": true,
+    "linuxWebImage": "ma24-pilot-web:21ade59d",
+    "linuxWebHttpWorkflowVerified": true,
+    "rolesVerified": true,
+    "copiedProductionData": false,
+    "publishedAddress": "127.0.0.1 only"
+  },
+  "scope": {
+    "data": "Fresh migration159 placeholder-only instance and a separately named database cloned from it; no original database/business data read or changed",
+    "material": "Existing durable synthetic historical-read-only graph/journal collector produces review materials; all original product material checks retained",
+    "web": "Unmodified fixed image, non-root with capabilities dropped/no-new-privileges; restricted application DB login and verify-full TLS",
+    "browser": "Actual Chrome navigation, secure HttpOnly session, HTTPS loopback proxy with ephemeral test certificate; browser ignores errors for this test certificate only",
+    "writes": "Seven actual authenticated review-route revisions, all baseline/candidate metrics false; current row values and exact revision sequence checked in PostgreSQL",
+    "faults": "Concurrent revision writes use real endpoint; only one summary GET is fault-injected as503 after a real successful POST",
+    "cleanup": "Seven synthetic human-route judgments removed by exact asserted count, fixture rows cleaned and owned database dropped; Web/browser/proxy and parent instance/network stopped",
+    "privateKey": "Disposable database certificate key read into memory only; no host private-key file",
+    "runtimeIdentityLimit": "Native fixture producer is not certified production-equivalent to the Linux Web runtime; no production provenance or quality claim",
+    "automaticActivation": false,
+    "modelCalls": 0
+  },
+  "initialRuns": [
+    {
+      "log": "tmp/ma24-review-draft-fixed-image-21ade59d.log",
+      "innerLog": "tmp/ma24-skill-review-fixed-web-initial-bootstrap-failure.log",
+      "exitCode": 1,
+      "reason": "Legacy fixture replayed migration134 over current146 function used by outcome trigger; NEW.freeze_id missing. No browser checks reached. Current-schema branch now verifies and retains latest guards; no product guard changed"
+    },
+    {
+      "log": "tmp/ma24-review-draft-fixed-image-21ade59d-current-schema.log",
+      "exitCode": 0,
+      "scope": "Original broader fixture and seven revision actual browser/database flow passed; initial mobile screenshot still showed open navigation"
+    },
+    {
+      "log": "tmp/ma24-review-draft-fixed-image-21ade59d-mobile-final.log",
+      "exitCode": 0,
+      "scope": "Focused review-material path passed; screenshot caught navigation transition. Final run explicitly waits for hidden backdrop and offscreen navigation"
+    }
+  ],
+  "mobile": {
+    "width": 390,
+    "height": 800,
+    "navigationOutsideViewport": true,
+    "backdropHidden": true,
+    "noHorizontalOverflow": true,
+    "screenshot": "docs/evidence/ma24-g10-review-draft-fixed-web-mobile-2026-10-20.png",
+    "sha256": "3cfeb5063de3d775ed39c481122103201a15cc5cff124dabbcac21bca56f22c0",
+    "viewed": true
+  },
+  "checks": {
+    "typecheck": "passed",
+    "targetedEslint": "passed",
+    "gitDiffCheck": "passed"
+  },
+  "limits": [
+    "Historical material and verdicts are synthetic; no independent real-user quality approval or Skill activation",
+    "Ancillary canonical-original preview is unavailable for this fixture; original-source guard remains unchanged and is not accepted by this run",
+    "Focused final path does not repeat unrelated standalone journal/freeze/safety matrices; broader current-schema pass retained separately",
+    "No complete five-category production acceptance, deployed runner qualification or activation transaction completion",
+    "G01-G13 incomplete; G14-G20 and LAN deployment deferred"
+  ]
+}

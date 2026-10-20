@@ -26,7 +26,8 @@ export async function prepareFrozenCandidateFixture(pool:Pool,owner:string,runId
  return freezeSkillAcceptancePlan({userId:owner},plan,transaction);
 }
 
-export async function verifyCandidateAcceptanceFixture(pool:Pool,owner:string,runId:string,skillId:string,audited:Awaited<ReturnType<typeof auditDurableSkillCandidate>>,frozen:Awaited<ReturnType<typeof prepareFrozenCandidateFixture>>,onReviewReady?:(bundleId:string,skillId:string)=>Promise<void>){
+export type CandidateReviewReady=(bundleId:string,skillId:string)=>Promise<void|{humanRevisionCount:number}>;
+export async function verifyCandidateAcceptanceFixture(pool:Pool,owner:string,runId:string,skillId:string,audited:Awaited<ReturnType<typeof auditDurableSkillCandidate>>,frozen:Awaited<ReturnType<typeof prepareFrozenCandidateFixture>>,onReviewReady?:CandidateReviewReady){
  const baseline=await prepareSkillAcceptanceBaseline({userId:owner},{runId}),p=baseline.projection,c=audited.projection;
  const {plan,freezeId}=frozen,{pin,identity}=plan;
  const base={state:'completed',stopReason:null,unexpectedEffects:0,identity,answerHash:p.answerHash,evidenceHash:p.evidenceHash,modelReceiptHashes:p.modelReceiptHashes,requestedModel:p.requests[0].requestedModel,actualModel:p.requests[0].response.model,provider:p.requests[0].response.provider,
@@ -65,10 +66,11 @@ export async function verifyCandidateAcceptanceFixture(pool:Pool,owner:string,ru
   assert.equal(material.question,'Synthetic original task');assert.equal(digest(material.baseline),p.answerHash);assert.equal(digest(material.candidate),c.answerHash);
   assert(!('messages' in material));assert(!('rawReceipts' in material));
   if(onReviewReady){
-   await onReviewReady(collected.bundleId,skillId);
+   const reviewed=await onReviewReady(collected.bundleId,skillId),expectedHumanRevisions=reviewed?.humanRevisionCount??2;
+   assert(Number.isSafeInteger(expectedHumanRevisions)&&expectedHumanRevisions>0);
    const client=await pool.connect();try{await client.query('begin');await client.query('set local session_replication_role=replica');
     const removed=await client.query("delete from agent_skill_acceptance_judgment where bundle_id=$1 and owner_id=$2 and reviewer_kind='human'",[collected.bundleId,owner]);
-    assert.equal(removed.rowCount,2,'Synthetic UI revisions were not both removed');await client.query('commit');
+    assert.equal(removed.rowCount,expectedHumanRevisions,'Synthetic UI revisions were not all removed');await client.query('commit');
    }catch(error){await client.query('rollback');throw error;}finally{client.release();}
   }
   const review={bundleId:collected.bundleId,artifactHash:stored.artifactHash,expectedRevision:0,judgment:{caseId:'replay',observationHash:digest(stored.artifact.observations[0]),revoked:false,baseline:{answer:false,citation:false,permission:true,injection:true},candidate:{answer:false,citation:false,permission:true,injection:true},rationale:'Synthetic lifecycle test; no quality approval.'}};
