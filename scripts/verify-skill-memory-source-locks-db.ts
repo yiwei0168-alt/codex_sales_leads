@@ -15,6 +15,7 @@ import {withCurrentDecisionMemory,MemoryContextChangedError} from '../src/lib/as
 import {revalidateLockedSkillExperienceTimes} from '../src/lib/assistant/main/skill-experience-time-check';
 import {verifyKnowledgeReceiptByteDatabase} from './fixtures/skill-knowledge-byte-database';
 import {verifyMemoryReceiptDatabase} from './fixtures/skill-memory-receipt-database';
+import {verifyManualSkillSourceDatabase} from './fixtures/skill-manual-activation-source-db';
 
 nextEnv.loadEnvConfig(process.cwd());assert.equal(process.env.MA24_DISPOSABLE_MEMORY_SOURCE_LOCKS,'1','Disposable harness required');
 process.env.PGOPTIONS='-c statement_timeout=10000';
@@ -187,6 +188,8 @@ try{
   await pool.query('insert into agent_skill_version(skill_id,version,content_hash,source,files,validation) values($1,1,$2,$3,$4,$5)',
    [id,methodVersion.content_hash,methodVersion.source,JSON.stringify(methodVersion.files),JSON.stringify(methodVersion.validation)]);
  }
+ await verifyManualSkillSourceDatabase(pool,{owner,skillId:methodId,messageId:refs[0].messageId,quote});
+ await pool.query('update agent_skill set enabled=true where id=$1',[methodId]);
  for(const [runId,skillId] of [[refs[0].runId,methodId],[refs[1].runId,methodId],[refs[0].runId,globalMethodId]])
   await pool.query('insert into agent_run_skill(user_id,run_id,skill_id,version) values($1,$2,$3,1)',[owner,runId,skillId]);
  const methodArtifact={plan:{cases:refs.map((_,i)=>({id:String(i),provenance:'safety-fixture'}))},

@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { tenantQuery, tenantTransaction } from "@/lib/rag/db";
 import { digest, type ExecutionContext } from "./contracts";
-import {skillSourcesCurrent,type SourcedSkillVersion} from './skill-source-guard';
+import {skillSourcesCurrent,lockCurrentSkillExperienceSources,type SourcedSkillVersion} from './skill-source-guard';
 import {admitSkillCatalogWrite} from './skill-catalog-admission';
 
 export function safeSkillPath(path: string) {
@@ -81,8 +81,13 @@ export async function changeSkill(context: Pick<ExecutionContext, "userId" | "ro
     await admitSkillCatalogWrite(client,input.id);
     const version = await client.query<SourcedSkillVersion&{validation:{scripts?:string;dependencies?:string;autoEnable?:string};dependencies:unknown}>("select v.validation,s.scope,v.files,v.dependencies,v.source,v.content_hash,s.owner_id from agent_skill s join agent_skill_version v on v.skill_id=s.id where s.id=$1 and s.owner_id=$2 and v.version=$3 for update of s", [input.id, context.userId, input.version]);
     if (!version.rowCount) throw new Error("Skill/version not owned");
-    if(input.operation!=="disable"&&!await skillSourcesCurrent(client,context.userId,version.rows[0]))
-      throw new Error("Skill experience sources changed; review a new version before activation");
+    if(input.operation!=="disable"){
+      // Catalog admission protects method writes, but does not lock the original
+      // messages/runs behind local experience. Retain those locks through commit.
+      await lockCurrentSkillExperienceSources(client,context.userId,version.rows[0]);
+      if(!await skillSourcesCurrent(client,context.userId,version.rows[0]))
+        throw new Error("Skill experience sources changed; review a new version before activation");
+    }
     if(!humanInitiated&&["enable","rollback"].includes(input.operation)){
       const selected=version.rows[0];
       if(selected.scope!=="account"||selected.validation.scripts!=="none"||selected.validation.dependencies!=="none"

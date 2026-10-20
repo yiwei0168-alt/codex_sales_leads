@@ -1,0 +1,44 @@
+{
+  "stage": "MA24 G09 manual Skill mutation source lifetime",
+  "date": "2026-10-20",
+  "baseCommit": "b4c16ffa",
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --memory-source-locks",
+  "beforeFix": {
+    "log": "tmp/ma24-manual-skill-source-before-fix.log",
+    "exitCode": 1,
+    "failure": "Manual activation must retain original-message protection until its owning transaction ends",
+    "observed": "Concurrent original-message edit completed instead of waiting after actual changeSkill returned inside an open bound tenant transaction"
+  },
+  "afterFix": {
+    "log": "tmp/ma24-manual-skill-source-after-fix.log",
+    "exitCode": 0,
+    "manualSkillSourceDatabase": "passed",
+    "actualChangeSkill": true,
+    "originalEditWaitsUntilOuterCommit": true,
+    "changedSourceEnableRejected": true,
+    "disableAfterSourceChangeAllowed": true,
+    "syntheticHumanAction": true,
+    "memorySourceLocksDatabase": "passed",
+    "freshClusterPilot": "passed",
+    "freshMigrationThrough": 135,
+    "fixtureMigrations": [142, 143, 144, 145, 147, 148, 149, 151],
+    "publishedAddress": "127.0.0.1 only",
+    "copiedProductionData": false,
+    "modelCalls": 0,
+    "automaticActivation": false
+  },
+  "checks": {
+    "vitest": "46 tests passed in skills-source-locks, skill-activation, skill-source-guard and skills suites",
+    "typecheck": "tsc --noEmit --incremental false exited 0",
+    "eslint": "four changed TypeScript files exited 0",
+    "cleanup": "docker ps -a name=ma24-pilot-fresh and network ls name=ma24-pilot-net both empty"
+  },
+  "limits": [
+    "Native current workspace execution against fresh disposable PostgreSQL with exact fixture migrations; no current159 or fixed-image joint acceptance",
+    "Synthetic account-owned experience provenance and explicit test-only humanInitiated invocation; no real human review or quality judgment",
+    "Real database concurrency case covers original-message edit; other origin locks reuse existing143 primitive and its separate evidence",
+    "Sources can change after commit; this stage does not implement automatic post-commit deactivation or prove natural-time expiry cannot cross the final write",
+    "Trusted production runner/collector qualification and final automatic activation transaction remain incomplete",
+    "G01-G13 incomplete; G14-G20 and LAN deployment deferred"
+  ]
+}
