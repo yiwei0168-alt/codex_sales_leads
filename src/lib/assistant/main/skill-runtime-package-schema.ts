@@ -11,7 +11,11 @@ export const skillRuntimePackageInspectionSchema=z.object({
  role:z.enum(['main-agent','skill-collector']),imageId:z.string().regex(/^sha256:[a-f0-9]{64}$/),sourceCommit:z.string().regex(/^[a-f0-9]{40}$/),
  deploymentHash:sha,runtimeHash:sha,nodeSha256:sha,node:z.string().regex(/^\d+\.\d+\.\d+$/),platform:z.literal('linux'),arch:z.enum(['x64','arm64']),
  sourceInputs:z.number().int().positive(),files:z.number().int().positive(),
-}).strict();
+ dependencyManifestHash:sha.optional(),dependencyFiles:z.number().int().positive().optional(),
+}).strict().superRefine((row,context)=>{
+ if((row.dependencyManifestHash===undefined)!==(row.dependencyFiles===undefined))context.addIssue({code:'custom',message:'Runtime dependency inventory incomplete'});
+ if(row.dependencyFiles!==undefined&&row.dependencyFiles>row.files)context.addIssue({code:'custom',message:'Runtime dependency count exceeds package inventory'});
+});
 export const skillRuntimePackageRegistrationSchema=z.object({protocol:z.literal('skill-runtime-package-registration-v1'),
  binding:skillSigningEnrollmentSchema.extend({publicKeyHash:sha}),inspection:skillRuntimePackageInspectionSchema,validUntil:z.iso.datetime(),
 }).strict().superRefine((row,context)=>{

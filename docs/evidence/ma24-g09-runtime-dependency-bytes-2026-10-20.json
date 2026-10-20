@@ -1,0 +1,92 @@
+{
+    "stage":  "MA24 G09 measured runtime dependency bytes and locked registration pair comparison",
+    "date":  "2026-10-20",
+    "applicationCommit":  "627f1990dbc6997b53e817e3de920dce81bbea8b",
+    "command":  "node scripts/run-tsx.cjs scripts/verify-skill-runtime-dependency-pair.ts sha256:56f6472620c11b38aa2c4cfbb1888bbeda8eca609d33f4a0d4b06426cedaf510 sha256:bcf192b44bc869fbdd3203b6a024cb9ef35d2f34663a056129746e975eb52b04",
+    "log":  "tmp/ma24-runtime-dependency-pair-627f1990.log",
+    "exitCode":  0,
+    "result":  {
+                   "localRuntimeDependencyPair":  "passed",
+                   "mainInspection":  {
+                                          "role":  "main-agent",
+                                          "imageId":  "sha256:56f6472620c11b38aa2c4cfbb1888bbeda8eca609d33f4a0d4b06426cedaf510",
+                                          "sourceCommit":  "627f1990dbc6997b53e817e3de920dce81bbea8b",
+                                          "deploymentHash":  "425041cdf37699cac6ecb707f51d6aff2ca84de074a86068348deeeb858a2f69",
+                                          "runtimeHash":  "34ebed8b01920477894e6b6cbbb4e2447e55a2bbb0b0dc0f7235ae18e7afdccd",
+                                          "nodeSha256":  "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+                                          "node":  "24.21.0",
+                                          "platform":  "linux",
+                                          "arch":  "x64",
+                                          "sourceInputs":  977,
+                                          "files":  34529,
+                                          "dependencyManifestHash":  "d3edb974b4ae6e725cbb62205c8f0e65606b061fd97bce214289279ccca20137",
+                                          "dependencyFiles":  33503
+                                      },
+                   "collectorInspection":  {
+                                               "role":  "skill-collector",
+                                               "imageId":  "sha256:bcf192b44bc869fbdd3203b6a024cb9ef35d2f34663a056129746e975eb52b04",
+                                               "sourceCommit":  "627f1990dbc6997b53e817e3de920dce81bbea8b",
+                                               "deploymentHash":  "0bedc56984807a1bbf489da580b90bfdf96ef50eb80cde653c68f3acaf9f7351",
+                                               "runtimeHash":  "34ebed8b01920477894e6b6cbbb4e2447e55a2bbb0b0dc0f7235ae18e7afdccd",
+                                               "nodeSha256":  "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+                                               "node":  "24.21.0",
+                                               "platform":  "linux",
+                                               "arch":  "x64",
+                                               "sourceInputs":  977,
+                                               "files":  34492,
+                                               "dependencyManifestHash":  "d3edb974b4ae6e725cbb62205c8f0e65606b061fd97bce214289279ccca20137",
+                                               "dependencyFiles":  33503
+                                           },
+                   "comparison":  {
+                                      "runtimePackageBytesPairRevalidated":  true,
+                                      "runtimePackageBytesPairBlockers":  [
+
+                                                                          ],
+                                      "runtimePackageBytesPairHash":  "6025885bd198f6999bf6860abfdda3d9e657eb2570e100f2b62bbe326826457e"
+                                  },
+                   "runtimeRegistrationsPublished":  false,
+                   "completeDependencyRuntimeEquivalenceVerified":  false,
+                   "productionQualified":  false,
+                   "automaticActivation":  false,
+                   "modelCalls":  0
+               },
+    "builds":  {
+                   "bothExitedZero":  true,
+                   "mainLog":  "tmp/ma24-dependency-main-build-627f1990.log",
+                   "source":  "clean fixed Git archive, excluding unstaged files",
+                   "collectorLog":  "tmp/ma24-dependency-collector-build-627f1990.log"
+               },
+    "initialFailure":  {
+                           "action":  "Rejected old image; rebuilt clean627f1990 pair, no integrity bypass",
+                           "entrypointRejected":  true,
+                           "exitCode":  1,
+                           "imageId":  "sha256:3737529e726b52c89266dd2e802856e1f9ba47fc1109b10d35e235a3335e0062",
+                           "diagnostic":  {
+                                              "actualFiles":  34487,
+                                              "nodeMatches":  true,
+                                              "mismatchCount":  1,
+                                              "mismatchPaths":  [
+                                                                    "runner.cjs"
+                                                                ],
+                                              "boundaryPassed":  true,
+                                              "expectedFiles":  34487
+                                          },
+                           "log":  "tmp/ma24-runtime-dependency-pair-7d1f382c.log"
+                       },
+    "checks":  {
+                   "storeCoverage":  "mocked locked latest-registration reader covers three-purpose matching pair and divergent-dependency refusal",
+                   "measurement":  "actual offline read-only non-root fixed Docker images, six entrypoint/measurement/enrollment probes total",
+                   "typecheck":  "tsc --noEmit --incremental false exited0",
+                   "vitest":  "107 tests passed across five suites",
+                   "eslint":  "nine changed TypeScript files exited0"
+               },
+    "limits":  [
+                   "No production key enrollment, runtime registration publication, database writes or model calls",
+                   "Old immutable registrations retain basic validity but lack byte-pair qualification without explicit dependency measurements",
+                   "Readiness receives pair diagnostics; production provenance and automatic activation remain false",
+                   "Matching dependency bytes do not prove ESM/CJS loader semantics, host deployment, provider identity or answer quality",
+                   "Fixed images are627f1990 applications; new inspection/store code was executed from the workspace, not rebuilt into those images",
+                   "No new real-database publication/readback acceptance for the added fields; prior SQL/locks unchanged",
+                   "G01-G13 incomplete; G14-G20 and LAN deployment deferred"
+               ]
+}

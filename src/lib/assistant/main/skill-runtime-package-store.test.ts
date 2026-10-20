@@ -34,6 +34,7 @@ beforeEach(()=>{
 it('retains shared admission before latest registration reads and binds current key, exact windows and source',async()=>{
  const out=await read();expect(out).toMatchObject({runtimePackagesRequired:true,runtimePackagesRegistered:true,runtimePackageCount:1,runtimePackageRevisions:['3'],runtimePackageValidBefore:registration.validUntil});
  expect(out).not.toHaveProperty('collectorProvenanceVerified');expect(out).not.toHaveProperty('automaticActivation');
+ expect(out).toMatchObject({runtimePackageBytesPairRevalidated:false});
  const calls=m.query.mock.calls;expect(calls.findIndex(([sql])=>sql.includes('pg_try_advisory'))).toBeLessThan(calls.findIndex(([sql])=>sql.includes('order by')));
  const [sql,params]=calls.find(([sql])=>sql.includes('registered_at>='))!;
  expect(sql).toContain('registered_at<=$4::timestamptz');expect(sql).toContain('clock_timestamp()<least');
@@ -71,4 +72,26 @@ it('rejects role substitution and incomplete package claims',()=>{
  expect(()=>skillRuntimePackageRegistrationSchema.parse({...registration,inspection:{...registration.inspection,role:'skill-collector'}})).toThrow('role');
  expect(()=>skillRuntimePackageRegistrationSchema.parse({...registration,inspection:{...registration.inspection,deploymentHash:digest('other')}})).toThrow('deployment');
  expect(()=>skillRuntimePackageRegistrationSchema.parse({...registration,productionQualified:true})).toThrow();
+});
+it('compares the entire locked three-purpose registration set instead of treating individual registration as equivalence',async()=>{
+ const purposes=['task-model-transport','model-transport','runner-declaration'] as const;
+ const docs=purposes.map(purpose=>{
+  const deployed=digest(purpose),role=purpose==='task-model-transport'?'main-agent' as const:'skill-collector' as const;
+  return {...registration,binding:{...registration.binding,keyId:purpose,purpose,deploymentHash:deployed},inspection:{...registration.inspection,role,deploymentHash:deployed,
+   dependencyFiles:32000,dependencyManifestHash:digest('dependencies')}};
+ });
+ m.registry.mockResolvedValue({...trust,registry:{keys:docs.map(row=>({...trust.registry.keys[0],...row.binding,purposes:[row.binding.purpose]}))}});
+ m.query.mockImplementation(async(sql:string,params:unknown[])=>{
+  if(sql.includes('to_regclass'))return {rows:[{supported:true}]};
+  if(sql.includes('pg_try_advisory'))return {rows:[{admitted:true}]};
+  if(sql.includes('registered_at>='))return {rows:[{valid:true}]};
+  const doc=docs.find(row=>row.binding.keyId===params[0]);
+  if(!doc)throw new Error('Unexpected signing key');
+  return {rows:[{revision:String(docs.indexOf(doc)+1),key_id:doc.binding.keyId,purpose:doc.binding.purpose,registration:doc,registration_hash:digest(doc),withdrawn:false}]};
+ });
+ const readAll=()=>readLockedSkillRuntimePackages(client,'owner',{registryHash,runtimeHash,windows:docs.map(doc=>({...window,keyId:doc.binding.keyId,purpose:doc.binding.purpose,deploymentHash:doc.binding.deploymentHash}))});
+ expect(await readAll()).toMatchObject({runtimePackagesRegistered:true,runtimePackageBytesPairRevalidated:true,runtimePackageCount:3});
+ docs[1].inspection.dependencyManifestHash=digest('different dependency bytes');
+ expect(await readAll()).toMatchObject({runtimePackagesRegistered:true,runtimePackageBytesPairRevalidated:false,
+  runtimePackageBytesPairBlockers:['runtime-package-byte-identities-differ']});
 });

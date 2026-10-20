@@ -1,9 +1,10 @@
 import {execFileSync} from 'node:child_process';
 import {skillRuntimePackageInspectionSchema} from '../../src/lib/assistant/main/skill-runtime-package-schema';
+import {measureSkillRuntimeDependencies} from '../../src/lib/assistant/main/skill-runtime-dependencies';
 
 // Mirrors skill-local-source-runtime-v1. This measures a local immutable Docker
 // image; it does not attest a remote host, provider or business answer quality.
-const measurement=String.raw`
+const measurement=`const measureDependencies=${measureSkillRuntimeDependencies.toString()};\n`+String.raw`
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
 function canonical(v){if(Array.isArray(v))return '['+v.map(canonical).join(',')+']';if(v&&typeof v==='object')return '{'+Object.entries(v).sort(([a],[b])=>a.localeCompare(b)).map(([k,x])=>JSON.stringify(k)+':'+canonical(x)).join(',')+'}';return JSON.stringify(v)??'null';}
 const sha=v=>crypto.createHash('sha256').update(v).digest('hex'),digest=v=>sha(canonical(v)),root='/app/.skill-runtime-source',files=[];
@@ -13,7 +14,7 @@ const hashes={};for(const p of files)hashes[p]=digest(fs.readFileSync(path.join(
 const bytes=fs.readFileSync('/app/runtime-manifest.json'),manifest=JSON.parse(bytes);
 console.log(JSON.stringify({runtimeHash:digest({protocol:'skill-local-source-runtime-v1',node:process.versions.node,platform:process.platform,arch:process.arch,files:hashes}),
 sourceInputs:files.length,node:process.versions.node,platform:process.platform,arch:process.arch,nodeSha256:sha(fs.readFileSync(process.execPath)),
-deploymentHash:sha(bytes),files:Object.keys(manifest.files).length}));`;
+deploymentHash:sha(bytes),files:Object.keys(manifest.files).length,...measureDependencies(manifest.files,digest)}));`;
 
 export function inspectSkillRuntimePackage(imageId:string,role:'main-agent'|'skill-collector'){
  if(!/^sha256:[a-f0-9]{64}$/.test(imageId))throw new Error('Runtime registration requires an immutable Docker image ID');

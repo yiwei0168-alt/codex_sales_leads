@@ -6,6 +6,7 @@ import {configuredSkillRunnerTrustRegistryMode} from './skill-runner-attestation
 import {readLockedSkillRunnerTrustRegistry} from './skill-runner-trust-registry-store';
 import {mergeSkillSigningEnrollmentWindows} from './skill-signing-enrollment';
 import {skillRuntimePackageRegistrationSchema,skillRuntimePublicKeyHash} from './skill-runtime-package-schema';
+import {compareSkillRuntimePackageBytes} from './skill-runtime-package-pair';
 
 const hash=z.string().regex(/^[a-f0-9]{64}$/);
 /** Necessary package-registration component, not provider/quality certification.
@@ -24,6 +25,7 @@ export async function readLockedSkillRuntimePackages(client:PoolClient,userId:st
   const admitted=(await client.query<{admitted:boolean}>("select pg_try_advisory_xact_lock_shared(hashtextextended('skill-runtime-packages-v1',0)) admitted")).rows[0]?.admitted;
   if(!admitted)return blocked('package-publication-in-progress');
   const registrations:Array<{revision:string;registrationHash:string;windowHash:string}>=[],expiries:string[]=[];
+  const packages:Array<z.infer<typeof skillRuntimePackageRegistrationSchema>>=[];
   for(const window of windows){
    const key=trust.registry.keys.find(row=>row.keyId===window.keyId);
    if(!key?.enabled||!key.purposes.includes(window.purpose)||key.collectorId!==window.collectorId||key.deploymentHash!==window.deploymentHash)
@@ -44,10 +46,10 @@ export async function readLockedSkillRuntimePackages(client:PoolClient,userId:st
     and $6::timestamptz<=$3::timestamptz and clock_timestamp()<least($3::timestamptz,$6::timestamptz) valid
     from public.skill_runtime_package_registration where revision=$1`,[row.revision,key.notBefore,key.expiresAt,window.requiredFrom,window.requiredThrough,registration.validUntil])).rows[0]?.valid;
    if(!valid)return blocked('package-registration-time-window');
-   registrations.push({revision:row.revision,registrationHash:row.registration_hash,windowHash:digest(window)});expiries.push(registration.validUntil);
+   registrations.push({revision:row.revision,registrationHash:row.registration_hash,windowHash:digest(window)});expiries.push(registration.validUntil);packages.push(registration);
   }
   return {runtimePackagesRequired:true as const,runtimePackagesRegistered:true as const,runtimePackageBlockers:[] as string[],runtimePackageCount:registrations.length,
    runtimePackageRegistrationHash:digest(registrations),runtimePackageRevisions:registrations.map(row=>row.revision),
-   runtimePackageValidBefore:new Date(Math.min(...expiries.map(Date.parse))).toISOString()};
+   runtimePackageValidBefore:new Date(Math.min(...expiries.map(Date.parse))).toISOString(),...compareSkillRuntimePackageBytes(packages)};
  });
 }
