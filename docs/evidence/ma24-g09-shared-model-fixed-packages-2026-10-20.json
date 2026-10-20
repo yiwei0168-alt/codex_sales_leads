@@ -1,0 +1,77 @@
+{
+  "date": "2026-10-20",
+  "sourceCommit": "e1a59caf3af77277b6183f503a384c5289247bb9",
+  "sourcePair": {
+    "skillSourceRuntimePair": "passed",
+    "web": "ma24-main-agent-runtime:e1a59caf",
+    "collector": "ma24-skill-collector:e1a59caf",
+    "sourceCommit": "e1a59caf3af77277b6183f503a384c5289247bb9",
+    "webImageId": "sha256:d54e3025664c951d77f7d8c992b0ba72cf8ab2274c5fc63a8717882ead14a534",
+    "collectorImageId": "sha256:5f3ed7383d5992b82ba12bcb5f48d24ac37f59c2d3f554272e716070a631f825",
+    "inspectionUsesImmutableImageIds": true,
+    "runtimeHash": "1e064c5a6ae4e5c23906076c516e537e96143448e664ccae2b2f025926e78047",
+    "sourceInputs": 997,
+    "node": "24.21.0",
+    "platform": "linux",
+    "arch": "x64",
+    "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+    "webPackages": {
+      "pg": "8.23.0",
+      "zod": "4.4.3",
+      "@langchain/langgraph": "1.4.15",
+      "@langchain/core": "1.2.9",
+      "langsmith": "0.9.0",
+      "undici": "8.10.0"
+    },
+    "collectorPackages": {
+      "pg": "8.23.0",
+      "zod": "4.4.3",
+      "@langchain/langgraph": "1.4.15",
+      "@langchain/core": "1.2.9",
+      "langsmith": "0.9.0",
+      "undici": "8.10.0"
+    },
+    "webUnresolved": [],
+    "collectorUnresolved": [],
+    "completeDependencyRuntimeEquivalenceVerified": false,
+    "productionQualified": false,
+    "actualModelCalls": 0
+  },
+  "dependencyPairComparison": {
+    "runtimePackageBytesPairRevalidated": true,
+    "runtimePackageBytesPairBlockers": [],
+    "runtimeModuleFormatPairRevalidated": true,
+    "runtimeModuleFormatPairBlockers": [],
+    "runtimePackageBytesPairHash": "14ef28683b57bb24a7cb99605d87a3696f53c86d2ceb542e7e507437f4ceec9b"
+  },
+  "esmModuleFormatPairVerified": true,
+  "collectorBoundary": {
+    "collectorImageVerification": "passed",
+    "image": "sha256:5f3ed7383d5992b82ba12bcb5f48d24ac37f59c2d3f554272e716070a631f825",
+    "imageId": "sha256:5f3ed7383d5992b82ba12bcb5f48d24ac37f59c2d3f554272e716070a631f825",
+    "commit": "e1a59caf3af77277b6183f503a384c5289247bb9",
+    "packageFiles": 34513,
+    "deploymentHash": "9bd175773821790f6871da6d24860539f367fe265123109bf0a2842023d616aa",
+    "measuredEnrollmentVerified": true,
+    "missingMalformedAndMismatchedEnrollmentRejectedBeforeRunner": true,
+    "matchedEnrollmentReachesRunner": true,
+    "nodeOptionsRejected": true,
+    "nonRootReadOnlyNoNetwork": true,
+    "changedRunnerRejectedBeforeExecution": true,
+    "actualModelCalls": 0,
+    "productionQualified": false
+  },
+  "fullSignedComposition": {
+    "status": "running-not-accepted",
+    "sessionId": 23806,
+    "log": "tmp/ma24-shared-model-measured-composition.log",
+    "fixtureCommit": "e1a59caf3af77277b6183f503a384c5289247bb9",
+    "disposableDatabase": true,
+    "syntheticModelAndNetwork": true
+  },
+  "productionAgentEquivalent": false,
+  "productionQualified": false,
+  "automaticActivation": false,
+  "actualModelCalls": 0,
+  "humanApprovalCreated": false
+}
