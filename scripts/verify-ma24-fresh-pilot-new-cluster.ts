@@ -15,10 +15,11 @@ const scheduleDispatchCheck=process.argv.includes('--schedule-dispatch');
 const batchSettlementCheck=process.argv.includes('--batch-settlement');
 const batchWorkerArgument=process.argv.slice(2).find(arg=>arg.startsWith('--batch-worker-image='));
 const batchWorkerImage=batchWorkerArgument?.slice('--batch-worker-image='.length);
+const batchWorkerCommitCheck=process.argv.includes('--batch-worker-commit');
 const scheduleWorkerArgument=process.argv.slice(2).find(arg=>arg.startsWith('--schedule-worker-image='));
 const scheduleWorkerImage=scheduleWorkerArgument?.slice('--schedule-worker-image='.length);
 const scheduleWorkerCommitCheck=process.argv.includes('--schedule-worker-commit');
-const args = process.argv.slice(2).filter(arg=>arg!=='--schedule-dispatch'&&arg!=='--batch-settlement'&&arg!=='--schedule-worker-commit'&&arg!==scheduleWorkerArgument&&arg!==batchWorkerArgument);
+const args = process.argv.slice(2).filter(arg=>arg!=='--schedule-dispatch'&&arg!=='--batch-settlement'&&arg!=='--schedule-worker-commit'&&arg!=='--batch-worker-commit'&&arg!==scheduleWorkerArgument&&arg!==batchWorkerArgument);
 const webImageArgument = args.find(arg => arg.startsWith("--web-image="));
 const webImage = webImageArgument?.startsWith("--web-image=")
   ? webImageArgument.slice("--web-image=".length) : undefined;
@@ -93,6 +94,7 @@ assert(!batchSettlementCheck||(webImage&&currentSchemaCheck),'--batch-settlement
 assert(!batchWorkerArgument||(batchWorkerImage&&/^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(batchWorkerImage)&&webImage&&currentSchemaCheck),'--batch-worker-image requires fixed image, Web and current schema');
 assert(!scheduleWorkerArgument||(scheduleWorkerImage&&/^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(scheduleWorkerImage)&&webImage&&currentSchemaCheck),'--schedule-worker-image requires a fixed image, Web and current schema');
 assert(!scheduleWorkerCommitCheck||scheduleWorkerImage,'--schedule-worker-commit requires --schedule-worker-image');
+assert(!batchWorkerCommitCheck||batchWorkerImage,'--batch-worker-commit requires --batch-worker-image');
 assert(!mainRuntimeArgument||(mainRuntimeImage&&/^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(mainRuntimeImage)&&webImage&&currentSchemaCheck
   &&![snapshotLifecycleCheck,knowledgeScopeSourcesCheck,finalSettlementCheck,acceptanceOriginalsCheck,localMemoryWorkerCheck].some(Boolean)),
  '--main-runtime-image requires a standalone current-schema Web invocation');
@@ -260,8 +262,8 @@ try {
     const certificate=await run('docker',['exec',containerId!,'cat','/tmp/ma24-server.crt']);assert.equal(certificate.code,0);
     const batchWorker=await run(process.execPath,['scripts/run-tsx.cjs','scripts/verify-batch-worker-db.ts'],
       {...process.env,DATABASE_URL:appUrl.toString(),DATABASE_MIGRATION_URL:adminUrl.toString(),MA24_DISPOSABLE_BATCH_WORKER:'1',MA24_BATCH_WORKER_IMAGE:batchWorkerImage,
-        MA24_BATCH_NETWORK:networkName,MA24_BATCH_DATABASE_CONTAINER:containerId!,MA24_BATCH_RUNTIME_DATABASE_URL:runtimeApp.toString(),MA24_BATCH_CA:certificate.output.trim()});
-    assert.equal(batchWorker.code,0,batchWorker.output);assert(batchWorker.output.includes('"batchWorkerCrash":"passed"'),batchWorker.output);console.log(batchWorker.output.trim());
+        MA24_BATCH_WORKER_COMMIT:batchWorkerCommitCheck?'1':'0',MA24_BATCH_NETWORK:networkName,MA24_BATCH_DATABASE_CONTAINER:containerId!,MA24_BATCH_RUNTIME_DATABASE_URL:runtimeApp.toString(),MA24_BATCH_CA:certificate.output.trim()});
+    assert.equal(batchWorker.code,0,batchWorker.output);assert(batchWorker.output.includes(batchWorkerCommitCheck?'"batchWorkerCommit":"passed"':'"batchWorkerCrash":"passed"'),batchWorker.output);console.log(batchWorker.output.trim());
   }
   if(batchSettlementCheck){
     const batch=await run(process.execPath,['scripts/run-tsx.cjs','scripts/verify-batch-settlement-db.ts'],
@@ -768,7 +770,8 @@ try {
   acceptanceResult={ freshClusterPilot: "passed", image: "pgvector/pgvector:pg16",
     scheduleDispatchVerified:scheduleDispatchCheck,
     batchSettlementVerified:batchSettlementCheck,
-    batchWorkerCrashVerified:Boolean(batchWorkerImage),
+    batchWorkerCrashVerified:Boolean(batchWorkerImage)&&!batchWorkerCommitCheck,
+    batchWorkerCommitVerified:Boolean(batchWorkerImage)&&batchWorkerCommitCheck,
     scheduleWorkerCrashVerified:Boolean(scheduleWorkerImage)&&!scheduleWorkerCommitCheck,
     scheduleWorkerCommitVerified:Boolean(scheduleWorkerImage)&&scheduleWorkerCommitCheck,
     publishedAddress: "127.0.0.1 only", rolesVerified: true, duplicateRoleBootstrapRejected: true,
