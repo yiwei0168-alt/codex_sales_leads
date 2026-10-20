@@ -50,3 +50,29 @@ it('rejects changed instructions after taking the lock',async()=>{
  await expect(beginCall({...context,instructionIds:[]},call)).rejects.toThrow('instructions');
  expect(f.query.mock.calls.some(([sql])=>String(sql).includes('agent_tool_call'))).toBe(false);
 });
+
+const approvedCall={...call,tool:'mail_send',effect:'send',approvalId:'55555555-5555-4555-8555-555555555555'};
+function approvalQueries(live:boolean){
+ const original=f.query.getMockImplementation()!;
+ f.query.mockImplementation(async(...args:unknown[])=>{
+  const sql=String(args[0]);
+  if(sql.startsWith('update agent_approval'))return rows([{id:approvedCall.approvalId}]);
+  if(sql.startsWith('select r.instructions'))return rows([{instructions:[],approval_live:live}]);
+  if(sql.startsWith('update agent_tool_call'))return rows([]);
+  if(sql.startsWith('select * from agent_tool_call'))return rows([{...stored,tool_id:approvedCall.tool}]);
+  return original(...args);
+ });
+}
+it('rechecks newly consumed approval with wall time after call writes',async()=>{
+ approvalQueries(true);expect((await beginCall(context,approvedCall)).fresh).toBe(true);
+ const statements=f.query.mock.calls.map(([sql])=>String(sql));
+ expect(statements.find(sql=>sql.startsWith('update agent_approval'))).toContain('expires_at>clock_timestamp()');
+ const final=f.query.mock.calls.at(-1)!;
+ expect(String(final[0])).toContain("a.status='consumed'");expect(String(final[0])).toContain('a.expires_at>clock_timestamp()');
+ expect(String(final[0])).toContain('r.lease_until>clock_timestamp()');
+ expect((final[1] as unknown[])[3]).toBe(approvedCall.approvalId);
+ expect(statements.at(-1)).toContain('select r.instructions');
+});
+it('rejects if approval expired after consumption or while writing its new call',async()=>{
+ approvalQueries(false);await expect(beginCall(context,approvedCall)).rejects.toThrow('Approval changed, expired, revoked or consumed');
+});

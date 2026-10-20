@@ -158,22 +158,29 @@ export async function beginCall(context: ExecutionContext, call: { key: string; 
     if (!lease.rowCount) throw new LeaseLostError();
     // A predicate evaluated before a row-lock wait, or transaction-start now(),
     // cannot prove that this owner is still live after the lock is acquired.
-    const assertLease=async()=>{
-      const current=await client.query<{instructions:AgentRun["instructions"]}>(`select r.instructions from agent_run r join app_user u on u.id=r.user_id
+    const assertLease=async(checkApproval=false)=>{
+      const current=await client.query<{instructions:AgentRun["instructions"];approval_live:boolean}>(`select r.instructions,
+        ($4::uuid is null or exists(select 1 from agent_approval a where a.id=$4 and a.user_id=r.user_id and a.run_id=r.id
+         and a.tool_id=$5 and a.tool_version=$6 and a.parameter_hash=$7 and a.status='consumed' and a.expires_at>clock_timestamp())) approval_live
+        from agent_run r join app_user u on u.id=r.user_id
         where r.user_id=$1 and r.id=$2 and r.lease_token=$3 and r.status='running' and r.control is null
-         and r.lease_until>clock_timestamp() and u.status='active'`,[context.userId,context.runId,context.leaseToken]);
+         and r.lease_until>clock_timestamp() and u.status='active'`,[context.userId,context.runId,context.leaseToken,
+        checkApproval?call.approvalId:null,call.tool,call.version,approvalDigest({id:call.tool,version:call.version},call.input)]);
       if(!current.rows[0])throw new LeaseLostError();
+      if(checkApproval&&!current.rows[0].approval_live)throw new Error("Approval changed, expired, revoked or consumed");
       assertCurrentInstructions(context,current.rows[0].instructions);
     };
     await assertLease();
     const previous = await client.query<{id:string}>("select id from agent_tool_call where user_id=$1 and run_id=$2 and (call_key=$3 or ($4::uuid is not null and approval_id=$4))", [context.userId, context.runId, call.key,call.approvalId??null]);
     if(previous.rows.length>1)throw new Error("Conflicting call/approval identity");
+    let consumedApproval=false;
     if (!previous.rowCount && ["send", "destructive", "publish"].includes(call.effect)) {
       if (!call.approvalId) throw new Error("Exact approval required");
       const approved = await client.query(`update agent_approval set status='consumed' where id=$1 and user_id=$2 and run_id=$3
-        and tool_id=$4 and tool_version=$5 and parameter_hash=$6 and status='approved' and expires_at>now() returning id`,
+        and tool_id=$4 and tool_version=$5 and parameter_hash=$6 and status='approved' and expires_at>clock_timestamp() returning id`,
       [call.approvalId, context.userId, context.runId, call.tool, call.version, approvalDigest({ id: call.tool, version: call.version }, call.input)]);
       if (!approved.rowCount) throw new Error("Approval changed, expired, revoked or consumed");
+      consumedApproval=true;
     }
     const inserted = previous.rowCount ? {rowCount:0} : await client.query(`insert into agent_tool_call(user_id,run_id,call_key,tool_id,tool_version,input_hash,input,effect,status)
       values($1,$2,$3,$4,$5,$6,$7,$8,'started') on conflict(user_id,run_id,call_key) do nothing returning id`,
@@ -183,7 +190,10 @@ export async function beginCall(context: ExecutionContext, call: { key: string; 
     const row = stored.rows[0];
     if (row.input_hash !== digest(call.input) || row.tool_id !== call.tool || row.tool_version !== call.version) throw new Error("Persisted call identity mismatch");
     if (inserted.rowCount && call.approvalId) await client.query("update agent_tool_call set approval_id=$2 where id=$1", [row.id, call.approvalId]);
-    await assertLease();
+    // UPDATE can itself wait for a row lock, and later call writes can wait too.
+    // Retain the consumed approval lock and recheck wall time before returning;
+    // failure rolls back both consumption and the newly inserted call.
+    await assertLease(consumedApproval);
     return { ...row, fresh: Boolean(inserted.rowCount) };
   });
 }
