@@ -1,5 +1,7 @@
 # G09 候选图的持久恢复状态
 
+e2a6d31e固定双包/同提交夹具/新168完整签名五类与实测登记组合退出0；checkpoint中断恢复、终态不重发、旧令牌/版本/绑定/篡改/权限拒绝和既有所有权/签名/来源撤回通过，缺人工判断仍阻断。4236已退出并清理，正式TLS声明及正式Worker另有通过收据。[完整收据](evidence/ma24-g09-candidate-checkpoint-fixed-composition-2026-10-21.json)。此包不含后续169时限租约；整组仍非生产包装器/TLS，不代表完整执行等价或真实质量。
+
 e2a6d31e共享图修改后的正式API/Worker、新168/TLS/Internal网络恢复退出0：知识正常/撤回两例及Skill completed回执复用、started无回执unknown两例通过，原记录/禁用Skill不变，模型0。32784已结束并清理，完整签名4236仍运行；合成初始状态不代表真实启用/SIGKILL/未知COMMIT同链路。[正式Worker收据](evidence/ma24-g09-candidate-checkpoint-formal-worker-2026-10-21.json)。
 
 e2a6d31e正式TLS声明已退出0：新168、数据库信任及登记停用等待collector提交和既有拒绝矩阵通过。下方56601“仍运行”为历史；完整签名4236与正式Worker32784仍待终态。[TLS收据](evidence/ma24-g09-candidate-checkpoint-fixed-declaration-2026-10-21.json)。
