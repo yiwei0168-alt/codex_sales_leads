@@ -34,6 +34,8 @@ const durability=process.env.MA24_MAIN_RUNTIME_DURABILITY==='1';
 const crashRecovery=process.env.MA24_MAIN_RUNTIME_CRASH_RECOVERY==='1';
 const interruption=process.env.MA24_MAIN_RUNTIME_INTERRUPTION==='1';
 const networkLoss=process.env.MA24_MAIN_RUNTIME_NETWORK_LOSS==='1';
+const resumeRevocation=process.env.MA24_MAIN_RUNTIME_RESUME_REVOCATION==='1';
+assert(!resumeRevocation||(interruption&&!networkLoss),'Resume revocation requires isolated API interruption');
 assert(!networkLoss||interruption,'Network loss requires in-flight interruption');
 assert(!interruption||durability,'In-flight interruption requires a dedicated persistent state volume');
 assert(!crashRecovery||durability,'Crash recovery requires a dedicated persistent state volume');
@@ -260,17 +262,39 @@ try{
   await startServer();await startWorker();await finishWorker();assert.deepEqual(await readTask(pending.task.id),stopped);
   assert.equal((await resume()).status,401);assert.equal((await resume(peerCookie)).status,404);
   assert.deepEqual(await readTask(pending.task.id),stopped);
+  const journalBefore=(await admin.query('select id,input_hash,output from agent_tool_call where run_id=$1 order by id',[pending.task.id])).rows;
+  if(resumeRevocation)await admin.query("update knowledge_document set visibility='private' where id=$1",[document]);
   const accepted=await resume(ownerCookie);assert.equal(accepted.status,200);assert.deepEqual(await accepted.json(),{accepted:true});
   const queued=await readTask(pending.task.id);assert.equal(queued.status,'queued');assert.equal(queued.lease_token,null);
-  await startWorker();await finishWorker();const recovered=await readTask(pending.task.id);
+  await startWorker();await finishWorker();
+  let withheldLease:string|undefined;
+  if(resumeRevocation){
+   const withheld=await readTask(pending.task.id);withheldLease=withheld.lease_token;
+   assert.equal(withheld.status,'partial');assert.equal(withheld.reply,SOURCE_CHANGED_REPLY);assert.notEqual(withheldLease,killedLease!);
+   assert.deepEqual(withheld.messages,[stopped.reply,SOURCE_CHANGED_REPLY]);assert.equal(withheld.jobs,0);assert.equal(withheld.models,0);assert.equal(withheld.status_events,2);
+   assert(!withheld.messages.includes(pending.reply));
+   await startWorker();await finishWorker();assert.deepEqual(await readTask(pending.task.id),withheld);
+   // Restore only the synthetic source's original visibility. A second real
+   // user resume must obtain another lease and revalidate the same source.
+   await admin.query("update knowledge_document set visibility='shared' where id=$1",[document]);
+   const again=await resume(ownerCookie);assert.equal(again.status,200);assert.deepEqual(await again.json(),{accepted:true});
+   await startWorker();await finishWorker();
+  }
+  const recovered=await readTask(pending.task.id);
   assert.equal(recovered.status,'completed');assert.equal(recovered.reply,pending.reply);assert.notEqual(recovered.lease_token,killedLease!);
-  assert.deepEqual(recovered.messages,[stopped.reply,pending.reply]);assert.equal(recovered.jobs,1);assert.equal(recovered.models,0);assert.equal(recovered.status_events,2);
-  assert.equal(Number((await admin.query("select count(*) n from agent_run_event where run_id=$1 and user_id=$2 and kind='control' and payload->>'action'='resume'",[pending.task.id,owner])).rows[0].n),1);
+  if(withheldLease)assert.notEqual(recovered.lease_token,withheldLease);
+  assert.deepEqual(recovered.messages,resumeRevocation?[stopped.reply,SOURCE_CHANGED_REPLY,pending.reply]:[stopped.reply,pending.reply]);
+  assert.equal(recovered.jobs,1);assert.equal(recovered.models,0);assert.equal(recovered.status_events,resumeRevocation?3:2);
+  assert.deepEqual((await admin.query('select id,input_hash,output from agent_tool_call where run_id=$1 order by id',[pending.task.id])).rows,journalBefore);
+  const resumeCount=resumeRevocation?2:1;
+  assert.equal(Number((await admin.query("select count(*) n from agent_run_event where run_id=$1 and user_id=$2 and kind='control' and payload->>'action'='resume'",[pending.task.id,owner])).rows[0].n),resumeCount);
   assert.equal((await resume(ownerCookie)).status,409);await startWorker();await finishWorker();assert.deepEqual(await readTask(pending.task.id),recovered);
   interruptionResult={actualFinalInsertWaitObserved:true,apiSignal:'SIGKILL',apiExitCode:137,uncommittedAnswerNotPublished:true,
    safePartialPersistedOnce:true,noAutomaticReplayBeforeResume:true,actualHttpManualResumeVerified:true,unauthenticatedRejected:true,peerHidden:true,
    freshLeaseAfterResume:true,completedCheckpointRevalidated:true,finalAnswerPublishedOnce:true,extractionJobCount:1,
-   explicitResumeEventCount:1,terminalResumeRejected:true,subsequentWorkerMakesNoReplay:true,syntheticCompletedCheckpoint:true,actualModelCalls:0};
+   explicitResumeEventCount:resumeCount,terminalResumeRejected:true,subsequentWorkerMakesNoReplay:true,
+   sourceVisibilityRevokedBeforeResume:resumeRevocation,withdrawnCheckpointAnswerWithheld:resumeRevocation,
+   sourceRestoredSecondResumeVerified:resumeRevocation,originalReadJournalUnchanged:true,syntheticCompletedCheckpoint:true,actualModelCalls:0};
   }
  }
  let durabilityResult:unknown=null;
