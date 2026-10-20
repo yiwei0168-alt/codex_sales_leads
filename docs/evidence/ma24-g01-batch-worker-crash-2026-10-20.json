@@ -1,0 +1,127 @@
+{
+  "stage": "MA24 G01/G02 fixed Linux batch Worker local TLS status and SIGKILL recovery",
+  "date": "2026-10-20",
+  "sourceCommit": "b1a5d54999270d27f69407dfe603cf71e842884f",
+  "builds": {
+    "source": "Separate fixed Git archives; unstaged user files excluded",
+    "main": {
+      "image": "ma24-main-agent-runtime:b1a5d549",
+      "id": "sha256:f82e900b7421e08c72048c308a4fc26e8f72f188cb2be92fe3ef7c50a3845b6e",
+      "passed": true
+    },
+    "web": {
+      "image": "ma24-pilot-web:b1a5d549",
+      "id": "sha256:38a7321a6685f924ce8f912ab444d5bdf01748bef77b2182b1460e37e037c38d",
+      "passed": true
+    }
+  },
+  "command": "node scripts/run-tsx.cjs scripts/verify-ma24-fresh-pilot-new-cluster.ts --web-image=ma24-pilot-web:b1a5d549 --current-schema --batch-worker-image=ma24-main-agent-runtime:b1a5d549",
+  "log": "tmp/ma24-batch-worker-crash-b1a5d549.log",
+  "exitCode": 0,
+  "scope": {
+    "freshSyntheticMigrationThrough": 159,
+    "worker": "Unmodified fixed-image Worker entrypoint, production Node environment and real fetch",
+    "statusTransport": "Isolated HTTPS fixture mapped only inside Worker to openrouter.ai:8443, preserving the product gateway URL validator",
+    "trust": "Generated openrouter.ai test certificate mounted read-only in the Worker; NODE_EXTRA_CA_CERTS set only for fixture containers; no TLS-verification disable or global trust-store changes",
+    "credentials": "Synthetic stub-only API key; no real provider credential in Worker",
+    "privateKeyHandling": "Generated inside disposable database container and transferred via stdin to private stub tmpfs; no host private-key file",
+    "certificateVolume": "Public certificate only, purpose-labeled and removed after use",
+    "fault": "Observed actual final UPDATE agent_model_batch SET status waiting after uncommitted billing/call writes, then SIGKILL 137",
+    "existingPollLeaseSeconds": 90,
+    "storedLeaseOrPollTimeRewritten": false,
+    "taskState": "Seeded pending provider jobs/reservations attached to cancelled synthetic tasks; no real submission or inference",
+    "originalDatabaseChanged": false,
+    "allFixtureRowsContainersNetworksAndCertificateVolumeCleaned": true
+  },
+  "checks": {
+    "mainImageBuild": "passed",
+    "webImageBuild": "passed",
+    "typecheck": "passed",
+    "targetedEslint": "passed",
+    "stubSyntax": "passed",
+    "gitDiffCheck": "passed"
+  },
+  "limits": [
+    "Actual fixed Worker and actual TLS GET to a local synthetic service; not the real OpenRouter service or real model quality",
+    "Tests normal receipt persistence and pre-COMMIT process death; batch settlement COMMIT acknowledgment loss remains unverified",
+    "Synthetic seeded job/reservation rows do not verify paid admission, real provider submission or invoices",
+    "Cancelled task receipt-only recovery does not verify subsequent model planning or external actions",
+    "G01-G13 remain incomplete; G14-G20 and LAN deployment remain deferred"
+  ],
+  "actualResult": {
+    "batchWorkerCrash": "passed",
+    "image": "ma24-main-agent-runtime:b1a5d549",
+    "immutableImageId": "sha256:f82e900b7421e08c72048c308a4fc26e8f72f188cb2be92fe3ef7c50a3845b6e",
+    "sourceCommit": "b1a5d54999270d27f69407dfe603cf71e842884f",
+    "integrity": {
+      "mainAgentRuntimeIntegrity": "passed",
+      "files": 34524,
+      "deploymentHash": "155cb99f423dfab6787a25e57ac63db249bf25a4483a8c37bccb87dc07663b69",
+      "taskTransportPackageBindingRequired": false,
+      "taskTransportPackageBindingVerified": false,
+      "runtimeBoundaryVerified": true,
+      "processNonRoot": true,
+      "noNewPrivileges": true,
+      "capabilitiesEmpty": true,
+      "rootReadOnly": true,
+      "packageAndNodeReadOnly": true,
+      "productionQualified": false
+    },
+    "archivedBatchSourceSha256": "ce55d29e73d2bb70e9f5831fcb6160c61d31688fbae0eb81133213d552f06d2d",
+    "compiledWorkerSha256": "231cfed5adacab372971a01b0f593e367bd1e373f8529ba379e1fff48b73e887",
+    "localSyntheticHttpsStatus": true,
+    "gatewayValidationUnchanged": true,
+    "tlsVerificationEnabled": true,
+    "normalReceiptSaved": true,
+    "actualFinalBatchUpdateWait": true,
+    "actualSigkillExitCode": 137,
+    "uncommittedReceiptSnapshotRolledBack": true,
+    "noActiveTransactionAfterKill": true,
+    "originalPollLeaseUnchanged": true,
+    "recoveredAfterActual90SecondLease": true,
+    "newPollToken": true,
+    "oneCostObservationPerBatch": true,
+    "cancelledTasksNotResumed": true,
+    "subsequentWorkerExactRowsUnchanged": true,
+    "syntheticStatusGets": 3,
+    "inferencePosts": 0,
+    "realProviderCalls": 0,
+    "syntheticReservationAndJobRows": true,
+    "fixtureRowsWorkersStatusServiceAndCertificateVolumeCleaned": true
+  },
+  "actualCluster": {
+    "freshMigrationThrough": 159,
+    "currentSchemaMarkers": {
+      "mailbox_work_binding": true,
+      "mailbox_lease_binding": true,
+      "mailbox_binding_constraint": true,
+      "knowledge_source_gate": true,
+      "task_origin_gate": true,
+      "local_memory_source_gate": true,
+      "receipt_source_gate": true,
+      "immutable_snapshot_capture": true,
+      "immutable_snapshot_lifecycle": true,
+      "trust_registry_versions": true,
+      "trust_registry_pointer": true,
+      "trust_registry_publication": true,
+      "runtime_package_registrations": true,
+      "runtime_package_withdrawals": true,
+      "runtime_package_publication": true
+    },
+    "batchWorkerCrashVerified": true,
+    "publishedAddress": "127.0.0.1 only",
+    "linuxWebImage": "ma24-pilot-web:b1a5d549",
+    "linuxWebHttpWorkflowVerified": true,
+    "copiedProductionData": false
+  },
+  "fixtureSources": [
+    {
+      "file": "scripts/verify-batch-worker-db.ts",
+      "sha256": "0ecfd20189bb1b3af12a6ea578bfdaaed8246169698cea15c7a99000de80cfaa"
+    },
+    {
+      "file": "scripts/lib/ma24-batch-status-stub.mjs",
+      "sha256": "77a7f982aaa96999f3d59c442145f934fc0637beefba56b4d12290da7e1bec8f"
+    }
+  ]
+}
