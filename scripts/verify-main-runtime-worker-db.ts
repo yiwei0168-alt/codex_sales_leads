@@ -12,6 +12,8 @@ import {loadDecisionMemory} from '../src/lib/assistant/main/memory-context';
 import {digest,result,type ModelMessage} from '../src/lib/assistant/main/contracts';
 import {SOURCE_CHANGED_REPLY} from '../src/lib/assistant/main/knowledge-message-guard';
 import {disableLocalAnalysisTracing} from '../src/lib/assistant/main/local-analysis-boundary';
+import {importSkill} from '../src/lib/assistant/main/skills';
+import {productTools} from '../src/lib/assistant/main/tools';
 
 nextEnv.loadEnvConfig(process.cwd());disableLocalAnalysisTracing();assert.equal(process.env.MA24_DISPOSABLE_MAIN_RUNTIME,'1');
 const image=process.env.MA24_MAIN_RUNTIME_IMAGE!,network=process.env.MA24_MAIN_RUNTIME_NETWORK!,runtimeUrl=process.env.MA24_MAIN_RUNTIME_DATABASE_URL!,ca=process.env.MA24_MAIN_RUNTIME_DATABASE_CA!;
@@ -51,6 +53,7 @@ const api=async(container:string,path:string,method='GET',body?:unknown,port=202
  return JSON.parse(await execute(['exec',container,'node','--input-type=module','-e',code]));
 };
 try{
+ if(process.env.MA24_MAIN_RUNTIME_EXPECT_INTERNAL==='1')assert.equal(await execute(['network','inspect','--format','{{.Internal}}',network]),'true','Runtime network must prohibit external egress');
  assert.equal(Number((await admin.query('select count(*) n from agent_run')).rows[0].n),0,'Compiled queue test requires a pristine task table');
  const metadata=JSON.parse(await execute(['image','inspect','--format','{"id":{{json .Id}},"revision":{{json (index .Config.Labels "org.opencontainers.image.revision")}}}',image]));
  assert.match(metadata.id,/^sha256:[a-f0-9]{64}$/);assert.match(metadata.revision,/^[a-f0-9]{40}$/);
@@ -173,6 +176,39 @@ try{
   completedTasks.push({id:task.id,row});
  }
  if(taskEnrollmentResult)taskEnrollmentResult.actualMatchingApiAndWorkerVerified=true;
+ let skillReceiptRecoveryResult:unknown=null;
+ if(process.env.MA24_MAIN_RUNTIME_SKILL_RECEIPT==='1'){
+  const skill=await importSkill({userId:owner,role:'member'},{name:'Synthetic disabled receipt recovery',source:'synthetic-test',files:{'SKILL.md':'Synthetic recovery instructions only.'},dependencies:[]});
+  const task=await enqueueRun(owner,{content:'Synthetic prior completed Skill receipt recovery',attachments:[],requestKey:randomUUID()},
+   {model:'synthetic-unusable',providers:['synthetic-unusable'],version:'synthetic'});
+  const callId=randomUUID(),callKey=randomUUID(),input={id:skill.id,version:1,operation:'enable'};
+  // This is a deliberately synthetic past receipt, not a real activation grant.
+  const output=result({updated:true,acceptanceBundleId:randomUUID(),acceptanceArtifactHash:digest('unqualified synthetic prior receipt'),activationProofHash:digest('unqualified synthetic proof')},{callId,cost:'known'});
+  const spec=productTools.find(row=>row.id==='skill_manage');assert(spec);
+  await admin.query(`insert into agent_tool_call(id,user_id,run_id,call_key,tool_id,tool_version,input,input_hash,effect,status,output)
+   values($1,$2,$3,$4,'skill_manage',$5,$6,$7,'reversible','completed',$8)`,[callId,owner,task.id,callKey,spec.version,input,digest(input),output]);
+  const call={id:callKey,type:'function' as const,function:{name:'execute_tool',arguments:JSON.stringify({tool:'skill_manage',arguments:input})}};
+  const policyRevision=digest(await loadDecisionMemory(owner));
+  const seed=buildMainAgentGraph({boundary:async()=>{throw new Error('Checkpoint seed only');},model:async()=>{throw new Error('No model in receipt recovery');},tool:async()=>{throw new Error('No fixture tool execution');}},new PostgresSaver(getPool(),undefined,{schema:'langgraph'}));
+  const config={configurable:{thread_id:`main-agent:${owner}:${task.id}`,checkpoint_ns:''}};
+  // A legal last-turn pending call. The next production model node stops at its
+  // existing 80-step bound, ensuring recovery performs no model/provider call.
+  await seed.updateState(config,{messages:[{role:'user',content:'Synthetic prior completed Skill receipt recovery'},{role:'assistant',content:null,tool_calls:[call]}],
+   pending:[call],steps:80,status:'running',reply:'',seen:{},instructionIds:[],decisionRevision:0,policyRevision},'main_model');
+  const before=(await admin.query('select enabled,current_version,activation_binding,published from agent_skill where id=$1',[skill.id])).rows[0];assert.equal(before.enabled,false);
+  await startWorker();await finishWorker();
+  const state=await seed.getState(config),values=state.values as {pending:unknown[];messages:ModelMessage[]};
+  assert.deepEqual(values.pending,[]);
+  const echoed=values.messages.filter(row=>row.role==='tool'&&row.tool_call_id===callKey);assert.equal(echoed.length,1);assert.deepEqual(JSON.parse(echoed[0].content!),output);
+  assert.deepEqual((await admin.query('select enabled,current_version,activation_binding,published from agent_skill where id=$1',[skill.id])).rows[0],before);
+  assert.deepEqual((await admin.query('select output from agent_tool_call where id=$1',[callId])).rows[0].output,output);
+  const row=await readTask(task.id);assert.equal(row.status,'partial');assert(row.reply.includes('执行步数限制'));assert.equal(row.models,0);assert.equal(row.jobs,0);
+  const extra=(await admin.query(`select count(*)::int n from agent_run_event where user_id=$1 and run_id=$2 and kind in('skill_activated','tool_started')`,[owner,task.id])).rows[0].n;
+  assert.equal(extra,0);completedTasks.push({id:task.id,row});
+  skillReceiptRecoveryResult={syntheticPendingCheckpointAndPriorReceipt:true,actualCompiledWorkerAndExecutor:true,completedReceiptEchoedExactlyOnce:true,
+   disabledSkillNotReenabled:true,storedReceiptAndSkillStateUnchanged:true,newActivationOrToolStartedEvents:0,actualModelAttempts:0,
+   productionStepLimitAvoidsModelCall:true,priorActivationNotExecuted:true,realQualityApproved:false,unknownCommitAndOriginalProcessCrashNotInjected:true};
+ }
  let commitLossResult:unknown=null,uncommittedLossResult:unknown=null;
  if(commitLoss){
   assert(pgProxy);await admin.query("update knowledge_document set visibility='shared' where id=$1",[document]);
@@ -353,7 +389,7 @@ try{
    priorTaskRowsUnchangedAfterRestart:true,gracefulApiExitCode:0,committedTaskSurvivesLostHttpResponse:true,noDuplicateReplyEventOrExtractionJob:true,subsequentWorkerMakesNoReplayRequest:true,forwardedApiRequests:1,crashResult};
  }
  const receipt={passed:true,image,immutableImageId:metadata.id,sourceCommit:metadata.revision,integrity,actualLangGraphApi:true,actualCompiledQueueWorker:true,postgresCheckpointRecovery:true,cases,
-  durabilityResult,commitLossResult,uncommittedLossResult,taskEnrollmentResult,interruptionResult,networkLossResult,syntheticCheckpointSeed:true,actualModelCalls:0,externalActions:0,firstModelExecutionVerified:false,productionQualified:false,automaticActivation:false};
+  durabilityResult,commitLossResult,uncommittedLossResult,taskEnrollmentResult,interruptionResult,networkLossResult,skillReceiptRecoveryResult,syntheticCheckpointSeed:true,actualModelCalls:0,externalActions:0,firstModelExecutionVerified:false,productionQualified:false,automaticActivation:false};
  await writeFile('tmp/ma24-main-runtime-worker-result.json',JSON.stringify(receipt,null,2)+'\n');console.log(JSON.stringify({mainRuntimeWorker:'passed',...receipt}));
 }finally{
  if(worker)await docker(['rm','--force','--volumes',worker]);

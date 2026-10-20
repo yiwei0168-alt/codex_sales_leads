@@ -14,6 +14,8 @@
 
 # 产品主 Agent 与开放式工具架构
 
+2026-10-20 / G09恢复组件：新增独立Runtime验收入口，内部网络隔离外网、数据库管理桥接与TLS内部连接分开；固定正式API/Worker从合成待处理检查点恢复，仅精确复用完成回执，不再执行启用，Skill状态不变。类型/2文件lint、新167/TLS通过；真实先前启用/崩溃/未知提交/质量仍未通过。[范围](SKILL_COMMITTED_RECEIPT_WORKER_RECOVERY_2026-10-20.md)。
+
 2026-10-20 / G09测量登记联合正例通过：实际固定包先测量，再按主任务/采集器用途以临时键登记，完整签名五类和锁内readiness真实读者复核通过；来源组合true不替代缺人工判定、未封闭和未启用边界，生产/真实质量及执行等价未通过。见[完整终态](evidence/ma24-g09-measured-registration-composition-2026-10-20.json)。
 
 2026-10-20 / 167使用守卫区分实际账号角色与事务读取权限：允许admin降权member，拒绝member声明admin，提交仍核真实账号角色。全新167组件及既有提交/来源回归通过，非完整管理员来源验收。当前应用c47e9f7c固定双包/依赖/ESM与166/TLS声明通过，登记联合严格停用键断言修复待完整重跑。[角色](SKILL_ACTIVATION_USE_SCOPED_ROLE_2026-10-20.md)、[固定包](SKILL_CURRENT166_FIXED_PACKAGES_2026-10-20.md)。

@@ -1,5 +1,7 @@
 # 用户确认规则登记表
 
+MA24-06 / G09正式Worker回执恢复（2026-10-20，工程验收，无新增确认）：c47e9f7c固定API/Worker、新167/TLS、Internal网络实跑通过，构造的合成已完成启用回执/待处理检查点仅精确回显一次，Skill/回执不变、无新启用事件/模型尝试，正式80步上限终止。类型/2文件lint通过，前三次启动夹具失败保留；不证明实际先前启用、原进程崩溃/未知COMMIT或真实质量全链。[范围](SKILL_COMMITTED_RECEIPT_WORKER_RECOVERY_2026-10-20.md)。
+
 MA24-06 / G09测量登记联合终态（2026-10-20，工程验收，无新增确认）：04433870夹具/c47e9f7c实际双包/新167完整五类退出0，真实登记、签名、材料和来源准备读者组合使runtimePackagesRegistered及collectorProvenanceVerified为true；缺人工判定、未封闭/未启用仍保持。前三次失败保留，模型/网络/预算/临时身份合成，仅一次性库登记，非生产/提供方/执行等价/独立质量资格。[范围](SKILL_MEASURED_RUNTIME_REGISTRATION_COMPOSITION_2026-10-20.md)。
 
 MA24-06 / G09读取角色兼容与新固定包（2026-10-20，工程验收，无新增确认）：167实库验证admin账号/member降权读取守卫可提交、member冒充admin拒绝，既有时效/绑定/来源回归通过；仅组件，非完整管理员来源流程。c47e9f7c双包996源码/Node/33503依赖字节/ESM、采集器边界及166/TLS数据库信任声明通过。登记联合第三次在停用采集器键的旧错误断言处失败，已按用途保持严格断言修正，完整重跑待验。[角色](SKILL_ACTIVATION_USE_SCOPED_ROLE_2026-10-20.md)、[固定包](SKILL_CURRENT166_FIXED_PACKAGES_2026-10-20.md)、[登记联合](SKILL_MEASURED_RUNTIME_REGISTRATION_COMPOSITION_2026-10-20.md)。
