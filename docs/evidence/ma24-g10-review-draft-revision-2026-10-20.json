@@ -1,0 +1,69 @@
+{
+  "stage": "MA24 G10/G13 review draft revision reconciliation and write acknowledgement",
+  "date": "2026-10-20",
+  "baseCommit": "c160f8969bc01308656cb5b0f096e47b9a3cda13",
+  "sourceSha256": {
+    "src/components/skill-acceptance-reviews.tsx": "e65a1a83045bee50e9b91baaa57ceadca2064609838b15331f5045708849ce3b",
+    "scripts/verify-skill-acceptance-draft-ui.ts": "caf8bde6925714e9f082651ba2d97d4c56af1b1652aab2b14a80f00a4c380820"
+  },
+  "before": {
+    "log": "tmp/ma24-skill-review-draft-before.log",
+    "exitCode": 1,
+    "actualRationale": "Stored judgment r1",
+    "latestMaterialRationale": "Stored judgment r2",
+    "defect": "Material refresh updated latest revision while preserving stale values without a dirty draft; dirty refresh also silently advanced save expectedRevision"
+  },
+  "implementation": [
+    "Adopt latest judgment values and revision together when no draft exists",
+    "Keep dirty draft pinned to its original revision; concurrent refresh blocks save until user explicitly retains draft or adopts latest judgment",
+    "Display latest judgment and rationale during reconciliation",
+    "Acknowledge a successful write even if subsequent summary read fails; block further revocation until rechecked"
+  ],
+  "browser": {
+    "command": "node scripts/run-tsx.cjs scripts/verify-skill-acceptance-draft-ui.ts",
+    "log": "tmp/ma24-skill-review-draft-final.log",
+    "exitCode": 0,
+    "result": {
+      "skillAcceptanceDraftUi": "passed",
+      "actualReactComponent": true,
+      "realChrome": true,
+      "syntheticHttpResponses": true,
+      "checks": [
+        "Initial material refresh adopts latest values and revision together",
+        "Reload preserves draft; concurrent revision blocks save until explicit reconciliation",
+        "Adopting latest judgment discards only the explicit draft and releases navigation",
+        "Successful write remains acknowledged when readback fails; recheck restores current state"
+      ],
+      "realJudgmentsWritten": 0,
+      "modelCalls": 0
+    },
+    "mobileViewport": {
+      "width": 390,
+      "height": 800
+    },
+    "noHorizontalOverflow": true,
+    "screenshotViewed": "tmp/skill-acceptance-draft-ui/conflict-mobile.png"
+  },
+  "checks": {
+    "typecheck": "passed",
+    "targetedEslint": "passed",
+    "gitDiffCheck": "passed",
+    "routeRegressionTests": 8,
+    "routeRegressionLog": "tmp/ma24-skill-review-draft-route-regression.log"
+  },
+  "scope": {
+    "actualReactComponent": true,
+    "browser": "Real headless Chrome on random loopback HTTP listener",
+    "api": "In-memory synthetic HTTP responses with revision comparison, not actual Next route/database",
+    "verdicts": "All synthetic metrics false; no independent quality judgment fabricated",
+    "realJudgmentsWritten": 0,
+    "modelCalls": 0,
+    "automaticActivation": false
+  },
+  "limits": [
+    "Component browser acceptance and separate route regression, not fixed Web image/database end-to-end acceptance of this new UI code",
+    "No production identity, independent quality or automatic Skill activation qualification",
+    "G09 activation/provenance/source gates remain unfinished; G01-G13 incomplete",
+    "G14-G20 and LAN deployment remain deferred"
+  ]
+}

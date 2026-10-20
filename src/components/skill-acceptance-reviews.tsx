@@ -1,5 +1,5 @@
 'use client';
-import {useEffect,useState} from 'react';
+import {useEffect,useRef,useState} from 'react';
 import type {listSkillAcceptanceReviews,readSkillAcceptanceReview,readSkillAcceptanceReviewCase} from '@/lib/assistant/main/skill-acceptance-review';
 import {SkillReviewEvidence} from './skill-review-evidence';
 import {SkillAcceptanceOriginals} from './skill-acceptance-originals';
@@ -13,6 +13,7 @@ const names={replay:'历史回放',negative:'错误案例',injection:'注入防�
 const states={active:'冻结有效',revoked:'冻结已撤销',expired:'冻结已到期',missing:'冻结记录缺失',changed:'冻结内容已变化','not-recorded':'未登记冻结'};
 type Verdict=Record<keyof typeof metrics,boolean|null>;
 const blank=():Verdict=>({answer:null,citation:null,permission:null,injection:null});
+const judgmentValues=(judgment:Summary['cases'][number]['judgment'])=>({baseline:judgment?.baseline??blank(),candidate:judgment?.candidate??blank(),rationale:judgment?.rationale??''});
 async function json<T>(response:Response):Promise<T>{const value=await response.json();if(!response.ok)throw new Error(value.error||'读取失败，请重试');return value;}
 export function SkillAcceptanceReviews({skillId,name,onClose}:{skillId:string;name:string;onClose:()=>void}){
  const [offset,setOffset]=useState(0),[items,setItems]=useState<List>({items:[],hasMore:false}),[selected,setSelected]=useState<Summary|null>(null),[caseId,setCaseId]=useState('');
@@ -43,23 +44,38 @@ export function SkillAcceptanceReviews({skillId,name,onClose}:{skillId:string;na
 }
 function AcceptanceCase({summary,item,setBusy,setDirty}:{summary:Summary;item:Summary['cases'][number];setBusy:(value:boolean)=>void;setDirty:(value:boolean)=>void}){
  const [material,setMaterial]=useState<Material|null>(null),[prior,setPrior]=useState(item.judgment),[working,setWorking]=useState(item.materialAvailable),[error,setError]=useState(''),[notice,setNotice]=useState(''),[reload,setReload]=useState(0),[dirty,dirtyState]=useState(false);
+ const draft=useRef({revision:item.judgment?.revision??0,dirty:false});
+ const [conflict,setConflict]=useState(false),[needsReload,setNeedsReload]=useState(false);
  const [values,setValues]=useState<{baseline:Verdict;candidate:Verdict;rationale:string}>({baseline:prior?.baseline??blank(),candidate:prior?.candidate??blank(),rationale:prior?.rationale??''});
- function mark(value:boolean){dirtyState(value);setDirty(value);}
+ function mark(value:boolean){draft.current.dirty=value;dirtyState(value);setDirty(value);}
  useEffect(()=>{if(!item.materialAvailable)return;const controller=new AbortController();setBusy(true);
   fetch(`${endpoint}?id=${summary.id}&caseId=${encodeURIComponent(item.id)}`,{signal:controller.signal,cache:'no-store'}).then(json<Material>)
-   .then(value=>{if(!controller.signal.aborted){setMaterial(value);setPrior(value.judgment);setError('');}}).catch(e=>{if(!controller.signal.aborted){setMaterial(null);setError(e.message);}})
+   .then(value=>{if(!controller.signal.aborted){
+    const revision=value.judgment?.revision??0;
+    setMaterial(value);setPrior(value.judgment);setError('');setNeedsReload(false);
+    if(!draft.current.dirty){draft.current.revision=revision;setValues(judgmentValues(value.judgment));setConflict(false);}
+    else setConflict(draft.current.revision!==revision);
+   }}).catch(e=>{if(!controller.signal.aborted){setMaterial(null);setError(e.message);}})
    .finally(()=>{if(!controller.signal.aborted){setWorking(false);setBusy(false);}});
   return()=>controller.abort();
  },[summary.id,item.id,item.materialAvailable,reload,setBusy]);
- const ready=material&&(['baseline','candidate'] as const).every(side=>Object.values(values[side]).every(value=>typeof value==='boolean'))&&values.rationale.trim();
+ const ready=material&&!conflict&&!needsReload&&(['baseline','candidate'] as const).every(side=>Object.values(values[side]).every(value=>typeof value==='boolean'))&&values.rationale.trim();
  async function save(revoked=false){setWorking(true);setBusy(true);setError('');setNotice('');try{
-  await json(await fetch(endpoint,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({bundleId:summary.id,artifactHash:material?.artifactHash??summary.artifactHash,expectedRevision:prior?.revision??0,
+  const saved=await json<{revision:number}>(await fetch(endpoint,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({bundleId:summary.id,artifactHash:material?.artifactHash??summary.artifactHash,expectedRevision:draft.current.revision,
    judgment:{caseId:item.id,observationHash:material?.observationHash??item.observationHash,revoked,...(revoked&&prior?{baseline:prior.baseline,candidate:prior.candidate,rationale:prior.rationale}:values)}})}));
-  mark(false);setNotice(revoked?'判决已撤销':'本题判决已保存');setMaterial(null);
-  const latest=await json<Summary>(await fetch(`${endpoint}?id=${summary.id}`,{cache:'no-store'}));setPrior(latest.cases.find(row=>row.id===item.id)?.judgment??null);
+  draft.current.revision=saved.revision;mark(false);setConflict(false);setNeedsReload(true);setNotice(revoked?'判决已撤销':'本题判决已保存');setMaterial(null);
+  try{
+   const latest=await json<Summary>(await fetch(`${endpoint}?id=${summary.id}`,{cache:'no-store'})),judgment=latest.cases.find(row=>row.id===item.id)?.judgment??null;
+   setPrior(judgment);draft.current.revision=judgment?.revision??0;setValues(judgmentValues(judgment));setNeedsReload(false);
+  }catch{setError('判决已保存，但最新状态暂时无法读取；请重新核对后继续。');}
  }catch(e){setError(e instanceof Error?e.message:'保存失败');}finally{setWorking(false);setBusy(false);}}
  return <div className="skill-review-case">
-  {working&&<p role="status">正在核对当前来源，请稍候…</p>}{notice&&<p role="status">{notice}</p>}{error&&<p role="alert">{error} 未保存的草稿仍保留。</p>}
+  {working&&<p role="status">正在核对当前来源，请稍候…</p>}{notice&&<p role="status">{notice}</p>}{error&&<p role="alert">{error}{dirty&&' 草稿仍保留。'}</p>}
+  {conflict&&<aside role="alert"><p>本题已有更新的判决 r{prior?.revision??0}。草稿仍保留，请核对后选择如何继续。</p>
+   <details><summary>查看最新判决</summary><p>{prior?.rationale??'当前没有已保存判决。'}</p>{prior&&(['baseline','candidate'] as const).map(side=><p key={side}>{side==='baseline'?'原流程':'候选 Skill'}：{(Object.entries(metrics) as Array<[keyof Verdict,string]>).map(([key,label])=>`${label}${prior[side][key]?'通过':'不通过'}`).join('；')}</p>)}</details>
+   <button disabled={working} onClick={()=>{draft.current.revision=prior?.revision??0;setConflict(false);mark(true);}}>已核对最新判决，继续使用草稿</button>
+   <button disabled={working} onClick={()=>{setValues(judgmentValues(prior));draft.current.revision=prior?.revision??0;setConflict(false);mark(false);}}>采用最新判决</button>
+  </aside>}
   {!item.materialAvailable&&<p>本题尚无可审核的完整材料，不能提交通过判决。</p>}
   {material&&<><h4>{material.question}</h4><div className="skill-review-arms">{(['baseline','candidate'] as const).map(side=><fieldset key={side} disabled={working}><legend>{side==='baseline'?'原流程':'候选 Skill'}</legend>
    <div className="skill-review-answer">{material[side]}</div>
@@ -68,8 +84,8 @@ function AcceptanceCase({summary,item,setBusy,setDirty}:{summary:Summary;item:Su
   {(material||dirty)&&<label>判决依据<textarea aria-label="判决依据" disabled={working} maxLength={4000} value={values.rationale} onChange={e=>{setValues(v=>({...v,rationale:e.target.value}));mark(true);}}/></label>}
   <footer><span>{dirty?'有未保存的修改':prior?`当前判决 r${prior.revision}${prior.revoked?'（已撤销）':''}`:'尚未保存判决'}</span>
    {item.materialAvailable&&<button disabled={working} onClick={()=>{setWorking(true);setReload(v=>v+1);}}>重新核对并保留草稿</button>}
-   {dirty&&<button disabled={working} onClick={()=>{setValues({baseline:prior?.baseline??blank(),candidate:prior?.candidate??blank(),rationale:prior?.rationale??''});mark(false);}}>放弃修改</button>}
-   {prior&&!prior.revoked&&<button disabled={working||dirty} onClick={()=>void save(true)}>撤销本题判决</button>}
+   {dirty&&<button disabled={working} onClick={()=>{setValues(judgmentValues(prior));draft.current.revision=prior?.revision??0;setConflict(false);mark(false);}}>放弃修改</button>}
+   {prior&&!prior.revoked&&<button disabled={working||dirty||needsReload||conflict} onClick={()=>void save(true)}>撤销本题判决</button>}
    <button disabled={working||!ready} onClick={()=>void save()}>保存本题判决</button>
   </footer>
  </div>;
