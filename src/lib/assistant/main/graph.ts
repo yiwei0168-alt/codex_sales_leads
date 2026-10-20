@@ -1,6 +1,6 @@
 import { Annotation, END, START, StateGraph, type BaseCheckpointSaver } from "@langchain/langgraph";
-import { PostgresSaver } from "@langchain/langgraph-checkpoint-postgres";
-import { getPool, tenantQuery } from "@/lib/rag/db";
+import { tenantQuery } from "@/lib/rag/db";
+import {AgentRunCheckpointer} from './agent-run-checkpointer';
 import { withProductSpend } from "@/lib/billing/context";
 import {initialTaskMessages} from "./initial-task-messages";
 import { digest, result, type ExecutionContext, type ModelMessage, type ModelToolCall, type RunStatus, type ToolResult, type ModelConfig } from "./contracts";
@@ -228,7 +228,7 @@ export async function executeMainAgentRun(userId: string, runId: string, leaseTo
     await assertCurrentMemoryMessages(userId,messages);
     await assertCurrentKnowledgeMessages(userId,messages,context.knowledgeScope);
   };
-  const checkpointer = new PostgresSaver(getPool(), undefined, { schema: "langgraph" });
+  const checkpointer = new AgentRunCheckpointer(context);
   const graph = buildMainAgentGraph({
     validateEvidence:validateContext,
     boundary: async () => ({...await boundary(context),policyRevision:digest(await loadDecisionMemory(userId))}),
