@@ -4,7 +4,7 @@ import {assertLocalAnalysisBoundary} from './local-analysis-boundary';
 import {readSkillAcceptanceEvidence} from './skill-acceptance-store';
 import {assertSkillAcceptanceRoutes} from './skill-acceptance-policy';
 import {auditSkillSafetyArm} from './skill-safety-audit';
-import {skillSafetyReferenceSchema} from './skill-safety-collector';
+import {storedSkillSafetyReferenceSchema,assertSafetyTaskReferencePair} from './skill-safety-reference';
 
 /** Rebuild both answers from the frozen, account-owned model journal before review. */
 export async function readSkillSafetyReviewCase(context:{userId:string},input:{bundleId:string;caseId:string}){
@@ -13,12 +13,13 @@ export async function readSkillSafetyReviewCase(context:{userId:string},input:{b
  if(before.freezeStatus.state!=='active'||!before.freezeStatus.freezeId||!before.sourcesCurrent)throw new Error('Safety review freeze or source changed');
  const item=before.artifact.plan.cases.find(row=>row.id===input.caseId);
  if(!item||item.provenance!=='safety-fixture'||!['negative','injection','permissions'].includes(item.category))throw new Error('Safety case unavailable');
- const source=z.object({...skillSafetyReferenceSchema.shape,baselineProjectionHash:z.string().regex(/^[a-f0-9]{64}$/),candidateProjectionHash:z.string().regex(/^[a-f0-9]{64}$/)}).strict().parse(
+ const source=storedSkillSafetyReferenceSchema.parse(
   z.record(z.string(),z.unknown()).parse(before.artifact.rawReceipts.safetySources)[item.id]);
+ assertSafetyTaskReferencePair(source);
  if(source.caseId!==item.id)throw new Error('Safety reference changed');
  const frozen={freezeId:before.freezeStatus.freezeId,plan:before.artifact.plan},run={...source,skillId:before.artifact.plan.pin.skillId,version:before.artifact.plan.pin.version};
- const baseline=await auditSkillSafetyArm(context,{...run,arm:'baseline'},frozen);
- const candidate=await auditSkillSafetyArm(context,{...run,arm:'candidate'},frozen);
+ const baseline=await auditSkillSafetyArm(context,{...run,arm:'baseline',taskId:source.baselineTaskId},frozen);
+ const candidate=await auditSkillSafetyArm(context,{...run,arm:'candidate',taskId:source.candidateTaskId},frozen);
  const observation=before.artifact.observations.find(row=>row.caseId===item.id);
  if(!observation||baseline.projectionHash!==source.baselineProjectionHash||candidate.projectionHash!==source.candidateProjectionHash
   ||baseline.projection.sourceKind!==before.artifact.sourceKind||candidate.projection.sourceKind!==before.artifact.sourceKind
@@ -30,10 +31,15 @@ export async function readSkillSafetyReviewCase(context:{userId:string},input:{b
    ||saved.identity.modelConfigHash!==actual.modelConfigHash)throw new Error('Safety observation differs from model journal');
   assertSkillAcceptanceRoutes(saved,actual.routes);
  }
+ if(source.baselineTaskId){
+  if(digest(await auditSkillSafetyArm(context,{...run,arm:'baseline',taskId:source.baselineTaskId},frozen))!==digest(baseline)
+   ||digest(await auditSkillSafetyArm(context,{...run,arm:'candidate',taskId:source.candidateTaskId},frozen))!==digest(candidate))throw new Error('Safety runtime material changed while reading');
+ }
  const after=await readSkillAcceptanceEvidence(context,input.bundleId);
  if(digest(before)!==digest(after)||!after.sourcesCurrent||after.freezeStatus.state!=='active')throw new Error('Safety review state changed');
  const canPass=(side:'baseline'|'candidate')=>observation[side].state==='completed'&&observation[side].stopReason===null&&observation[side].unexpectedEffects===0;
- const receipts=[...baseline.material.receipts,...candidate.material.receipts];
+ const receipts=source.baselineTaskId?[...baseline.material.receipts.map(row=>({...row,arm:'baseline' as const})),
+  ...candidate.material.receipts.map(row=>({...row,arm:'candidate' as const}))]:[...baseline.material.receipts,...candidate.material.receipts];
  return {bundleId:input.bundleId,caseId:item.id,artifactHash:before.artifactHash,observationHash:digest(observation),
   question:baseline.material.question,baseline:baseline.material.answer,candidate:candidate.material.answer,
   receipts:receipts.filter((row,index)=>receipts.findIndex(other=>digest(other)===digest(row))===index),

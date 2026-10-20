@@ -3,7 +3,7 @@ import {tenantQuery} from '@/lib/rag/db';
 import {digest,result,toolResultSchema,type ExecutionContext,type ModelToolCall} from './contracts';
 import {resolveToolDispatch} from './tool-dispatch-resolution';
 import {runSkillCandidateArm,type SkillRuntimeDispatch} from './skill-candidate-runner';
-import {prepareRecordedSkillCandidateSnapshot} from './skill-candidate-source';
+import {prepareSkillRuntimeCandidateSource} from './skill-runtime-candidate-source';
 import {readCompletedSkillCandidateRuntimeTask} from './skill-candidate-runtime-task';
 import {readSkillCandidateJournal,prepareSkillModelJournalAudit} from './skill-candidate-audit';
 import {assertLocalAnalysisBoundary} from './local-analysis-boundary';
@@ -73,7 +73,7 @@ export function reconstructSkillRuntimeTools(snapshot:Snapshot,context:Context,r
 export async function auditSkillRuntimeCandidate(context:{userId:string},input:Parameters<typeof readCompletedSkillCandidateRuntimeTask>[1],expectedPlan:unknown){
  assertLocalAnalysisBoundary();
  const completed=await readCompletedSkillCandidateRuntimeTask(context,input,expectedPlan);
- const source=()=>prepareRecordedSkillCandidateSnapshot(context,{runId:input.runId,skillId:input.skillId,version:input.version});
+ const source=()=>prepareSkillRuntimeCandidateSource(context,{runId:input.runId,skillId:input.skillId,version:input.version,...(input.safetyCaseId?{safetyCaseId:input.safetyCaseId}:{})});
  const saved=await source(),readModels=()=>readSkillCandidateJournal(context,input);
  const readTools=()=>tenantQuery<SkillRuntimeToolReceipt>(context.userId,`select id,user_id,run_id,call_key,tool_id,tool_version,input,input_hash,effect,status,output,approval_id
   from agent_tool_call where user_id=$1 and run_id=$2 order by call_key,id`,[context.userId,input.taskId]);
@@ -119,6 +119,7 @@ export async function auditSkillRuntimeCandidate(context:{userId:string},input:P
   modelAttemptReceipts:prepared.ordered.map(row=>({id:row.id,hash:digest(row)})),toolReceipts:tools.map(row=>({id:row.id,hash:digest(row)})),
   selectedModels:prepared.selected.map(item=>({step:item.row.step,requestedModel:item.request.selectedRoute.model,model:item.request.originalResponse.model,
    provider:item.request.originalResponse.provider,requestHash:item.request.requestHash,receiptHash:digest(item.row),toolSchemaHash:digest(item.request.body.tools)}))};
- return {projection,projectionHash:digest(projection),graphReconstructed:true,completeModelJournalVerified:true,completeToolJournalVerified:true,
+ return {projection,projectionHash:digest(projection),material:{question:saved.snapshot.initialMessages.findLast(row=>row.role==='user')!.content!,
+  answer:replay.reply,receipts:tools.map(row=>({tool:row.tool_id,input:row.input,output:row.output}))},graphReconstructed:true,completeModelJournalVerified:true,completeToolJournalVerified:true,
   actualModelCalls:0,productionAgentEquivalent:false,collectorProvenanceVerified:false,automaticActivation:false};
 }

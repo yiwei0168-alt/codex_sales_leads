@@ -34,7 +34,7 @@ const snapshot=()=>({sourceHash:'snapshot',skillSourceHash:'skill-source',taskIn
  snapshot:{candidate:{value:{content_hash:'content'}}}});
 beforeEach(()=>{
  vi.resetAllMocks();m.enqueue.mockResolvedValue({runId:taskId,specHash});m.inspect.mockResolvedValue({status:'queued',control:null});
- m.claim.mockResolvedValue({context:{...context,runId:taskId}});m.runtime.mockResolvedValue({status:'completed',stopReason:null,candidateSkillUsed:true,serverSnapshotHash:'snapshot',runtimeSnapshotHash,taskStatus:'completed'});m.identity.mockResolvedValue(identity);m.baseline.mockResolvedValue({projection:{inputHash:'task'},projectionHash:'baseline'});
+ m.claim.mockResolvedValue({context:{...context,runId:taskId}});m.runtime.mockResolvedValue({status:'completed',stopReason:null,candidateSkillUsed:true,serverSnapshotHash:'snapshot',runtimeSnapshotHash,taskId,taskStatus:'completed'});m.identity.mockResolvedValue(identity);m.baseline.mockResolvedValue({projection:{inputHash:'task'},projectionHash:'baseline'});
  m.prospective.mockResolvedValue({projection:{runId},projectionHash:'prospective'});m.snapshot.mockImplementation(async()=>snapshot());
  m.factory.mockResolvedValue(m.request);m.run.mockResolvedValue({status:'completed',stopReason:null,candidateSkillUsed:true,serverSnapshotHash:'snapshot'});
  m.verify.mockResolvedValue({signedSuccessfulTransportsVerified:true,binaryVerified:false,automaticActivation:false});
@@ -74,7 +74,7 @@ it('rejects changed runtime identity before selecting transport',async()=>{
  await expect(runConfiguredSkillRecordedCandidate(context,historical,frozen,transaction)).rejects.toThrow('identity changed');expect(m.factory).not.toHaveBeenCalled();
 });
 it.each([{status:'failed'},{stopReason:'limit'},{candidateSkillUsed:false},{serverSnapshotHash:'other'}])('does not collect an invalid candidate %j',async change=>{
- m.runtime.mockResolvedValue({status:'completed',stopReason:null,candidateSkillUsed:true,serverSnapshotHash:'snapshot',runtimeSnapshotHash,taskStatus:'completed',...change});
+ m.runtime.mockResolvedValue({status:'completed',stopReason:null,candidateSkillUsed:true,serverSnapshotHash:'snapshot',runtimeSnapshotHash,taskId,taskStatus:'completed',...change});
  await expect(runConfiguredSkillRecordedCandidate(context,historical,frozen,transaction)).rejects.toThrow('incomplete or changed');expect(m.historicalCollect).not.toHaveBeenCalled();
 });
 it('rejects snapshot change after execution',async()=>{

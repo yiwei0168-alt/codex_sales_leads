@@ -1,9 +1,10 @@
 import {beforeEach,expect,it,vi} from 'vitest';
 import {digest} from './contracts';
 import type {SkillCandidateCollector} from './skill-candidate-model';
-const m=vi.hoisted(()=>({prepare:vi.fn(),validate:vi.fn(),read:vi.fn(),audit:vi.fn(),run:vi.fn(),used:undefined as unknown,reply:'Synthetic reply'}));
+const m=vi.hoisted(()=>({prepare:vi.fn(),validate:vi.fn(),read:vi.fn(),audit:vi.fn(),run:vi.fn(),used:undefined as unknown,reply:'Synthetic reply',runtime:vi.fn()}));
 vi.mock('./skill-safety-candidate',()=>({prepareSkillSafetyCandidate:m.prepare,requireSkillSafetyBinding:m.validate}));
 vi.mock('./skill-candidate-audit',()=>({readSkillCandidateJournal:m.read,prepareSkillModelJournalAudit:m.audit}));
+vi.mock('./skill-runtime-candidate-audit',()=>({auditSkillRuntimeCandidate:m.runtime}));
 vi.mock('./skill-candidate-runner',()=>({runSkillCandidateArm:m.run}));
 vi.mock('./local-analysis-boundary',()=>({assertLocalAnalysisBoundary:()=>{}}));
 import {auditSkillSafetyArm} from './skill-safety-audit';
@@ -36,4 +37,19 @@ it('does not treat an answer claiming usage as graph evidence',async()=>{
 });
 it('keeps baseline eligible without reading the candidate method',async()=>{
  m.used=false;expect(await auditSkillSafetyArm({userId:owner},{...selection,arm:'baseline'},frozen)).toMatchObject({candidateSkillUsed:false,automaticActivation:false});
+});
+
+it('binds task-marked safety audit to the formal task with no legacy replay',async()=>{
+ m.runtime.mockResolvedValue({projectionHash:hash,material:{question:'Synthetic question',answer:'Synthetic reply',receipts:[]},projection:{
+  sourceKind:'synthetic-fixture',answerHash:hash,evidenceHash:hash,capturedAt:'2026-10-16T00:01:00Z',completedAt:'2026-10-16T00:02:00Z',
+  journalHash:hash,modelAttemptReceipts:[{id,hash}],completedTaskHash:hash,toolReceipts:[],selectedModels:[],candidateSkillUsed:true}});
+ const result=await auditSkillSafetyArm({userId:owner},{...selection,arm:'candidate',taskId:id},frozen);
+ expect(m.runtime.mock.calls[0][1]).toMatchObject({taskId:id,safetyCaseId:selection.caseId,arm:'candidate',freezeId:id});
+ expect(result.projection).toMatchObject({protocol:'skill-safety-runtime-audit-v1',taskId:id,runtimeProjectionHash:hash});
+ expect(m.run).not.toHaveBeenCalled();expect(m.read).not.toHaveBeenCalled();
+});
+it('never falls back when task-marked safety reconstruction fails',async()=>{
+ m.runtime.mockRejectedValue(new Error('Safety task changed'));
+ await expect(auditSkillSafetyArm({userId:owner},{...selection,arm:'candidate',taskId:id},frozen)).rejects.toThrow('Safety task changed');
+ expect(m.run).not.toHaveBeenCalled();expect(m.read).not.toHaveBeenCalled();
 });

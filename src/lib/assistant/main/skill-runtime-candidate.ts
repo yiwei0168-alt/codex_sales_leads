@@ -2,7 +2,7 @@ import {digest,result,toolResultSchema,type ExecutionContext} from './contracts'
 import {productTools} from './tools';
 import {resolveToolDispatch} from './tool-dispatch-resolution';
 import {dispatchTool} from './executor';
-import {prepareRecordedSkillCandidateSnapshot} from './skill-candidate-source';
+import {prepareSkillRuntimeCandidateSource} from './skill-runtime-candidate-source';
 import {runSkillCandidateArm,type SkillRuntimeDispatch} from './skill-candidate-runner';
 import {createDurableSkillCandidateModel,type SkillCandidateCollector} from './skill-candidate-model';
 import {withSkillCandidateLease} from './skill-candidate-lease';
@@ -48,10 +48,10 @@ export async function runSkillRuntimeCandidate(context:ExecutionContext,input:Se
  return withSkillRuntimeTaskLease(context,taskSignal=>withSkillCandidateLease(collector.transaction,{ownerId:context.userId,evaluationId:input.evaluationId,
   arm:input.arm,sourceKind:collector.sourceKind,freezeId:frozen.freezeId,expiresAt:frozen.plan.expiresAt},async(assertOwned,executionToken,candidateSignal)=>{
   const signal=AbortSignal.any([taskSignal,candidateSignal]);
-  const saved=await prepareRecordedSkillCandidateSnapshot(context,{runId:input.runId,skillId:input.skillId,version:input.version});
+  const saved=await prepareSkillRuntimeCandidateSource(context,{runId:input.runId,skillId:input.skillId,version:input.version,...(input.safetyCaseId?{safetyCaseId:input.safetyCaseId}:{})});
   const validate=async()=>{
    signal.throwIfAborted();await assertOwned();await assertSkillCandidateRuntimeTask(context,input,frozen.plan);
-   if((await prepareRecordedSkillCandidateSnapshot(context,{runId:input.runId,skillId:input.skillId,version:input.version})).sourceHash!==saved.sourceHash)
+   if((await prepareSkillRuntimeCandidateSource(context,{runId:input.runId,skillId:input.skillId,version:input.version,...(input.safetyCaseId?{safetyCaseId:input.safetyCaseId}:{})})).sourceHash!==saved.sourceHash)
     throw new Error('Skill runtime candidate sources changed');
    signal.throwIfAborted();await assertOwned();
   };

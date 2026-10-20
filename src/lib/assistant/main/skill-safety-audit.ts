@@ -7,11 +7,26 @@ import type {SkillCandidateCollector} from './skill-candidate-model';
 import {assertLocalAnalysisBoundary} from './local-analysis-boundary';
 
 /** Reconstruct a fixed safety case from account-owned append-only model receipts. No model calls. */
-export async function auditSkillSafetyArm(context:{userId:string},input:{runId:string;skillId:string;version:number;caseId:string;evaluationId:string;arm:'baseline'|'candidate'},frozen:NonNullable<SkillCandidateCollector['frozen']>){
+export async function auditSkillSafetyArm(context:{userId:string},input:{runId:string;skillId:string;version:number;caseId:string;evaluationId:string;taskId?:string;arm:'baseline'|'candidate'},frozen:NonNullable<SkillCandidateCollector['frozen']>){
  assertLocalAnalysisBoundary();z.uuid().parse(input.evaluationId);z.enum(['baseline','candidate']).parse(input.arm);
  const selection={runId:input.runId,skillId:input.skillId,version:input.version,caseId:input.caseId};
  const saved=await prepareSkillSafetyCandidate(context,selection),validate=()=>requireSkillSafetyBinding(context,selection,saved,frozen);
- await validate();const read=()=>readSkillCandidateJournal(context,input),rows=await read();
+ await validate();
+ if(input.taskId){
+  const {auditSkillRuntimeCandidate}=await import('./skill-runtime-candidate-audit');
+  const runtime=await auditSkillRuntimeCandidate(context,{...selection,taskId:input.taskId,evaluationId:input.evaluationId,arm:input.arm,
+   freezeId:frozen.freezeId,safetyCaseId:input.caseId},frozen.plan),r=runtime.projection;
+  const projection={protocol:'skill-safety-runtime-audit-v1',ownerId:context.userId,caseId:saved.caseId,category:saved.category,provenance:saved.provenance,
+   evaluationId:input.evaluationId,arm:input.arm,freezeId:frozen.freezeId,sourceKind:r.sourceKind,sourceHash:saved.sourceHash,inputHash:saved.inputHash,
+   modelConfigHash:saved.modelConfigHash,state:'completed' as const,stopReason:null,unexpectedEffects:0,answerHash:r.answerHash,evidenceHash:r.evidenceHash,
+   capturedAt:r.capturedAt,completedAt:r.completedAt,journalHash:r.journalHash,modelReceiptHashes:r.modelAttemptReceipts.map(row=>row.hash),
+   taskId:input.taskId,completedTaskHash:r.completedTaskHash,runtimeProjectionHash:runtime.projectionHash,toolReceipts:r.toolReceipts,
+   routes:r.selectedModels.map(row=>({step:row.step,requestedModel:row.requestedModel,actualModel:row.model!,provider:row.provider!,receiptHash:row.receiptHash,toolSchemaHash:row.toolSchemaHash}))};
+  await validate();
+  return {projection,projectionHash:digest(projection),material:runtime.material,candidateSkillUsed:r.candidateSkillUsed,
+   actualModelCalls:0,productionAgentEquivalent:false,collectorProvenanceVerified:false,automaticActivation:false};
+ }
+ const read=()=>readSkillCandidateJournal(context,input),rows=await read();
  const journal=prepareSkillModelJournalAudit({...context,evaluationId:input.evaluationId,arm:input.arm},rows);
  if(journal.freezeId!==frozen.freezeId||journal.snapshotHash!==saved.sourceHash)throw new Error('Safety journal frozen source mismatch');
  let steps=0,mismatch=false;

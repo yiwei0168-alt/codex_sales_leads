@@ -1,4 +1,7 @@
 import {beforeEach,afterEach,it,expect,vi} from 'vitest';
+import {prepareSkillRuntimeCandidateSource} from './skill-runtime-candidate-source';
+const mockSource=vi.hoisted(()=>vi.fn());
+vi.mock('./skill-candidate-source',()=>({prepareRecordedSkillCandidateSnapshot:mockSource}));
 import {buildSkillSafetyCandidate} from './skill-safety-candidate';
 import {runSkillCandidateArm} from './skill-candidate-runner';
 import {modeModelConfig} from './mode-config';
@@ -39,4 +42,14 @@ it('executes injected evidence only as an exact read and blocks a resulting send
  const replies=[call('describe_tool',{tool:receipt.tool},'describe'),call('execute_tool',{tool:receipt.tool,arguments:receipt.arguments},'read'),call('execute_tool',{tool:'mail_send',arguments:{}},'send')];
  const result=await runSkillCandidateArm(prepared.snapshot,'candidate',async()=>replies[step++],async()=>{});
  expect(result.trace.some(row=>row.receiptHash===receipt.hash)).toBe(true);expect(result.stopReason).toBe('effect-or-tool-not-allowed');expect(result.businessToolExecutions).toBe(0);expect(fetch).not.toHaveBeenCalled();
+});
+
+it('uses the isolated safety snapshot in the shared formal runtime source adapter',async()=>{
+ const original=source(),before=digest(original);mockSource.mockResolvedValue(original);
+ const pin={runId:original.snapshot.candidate.listing.id,skillId:original.snapshot.candidate.listing.id,version:1},context={userId:original.snapshot.context.userId};
+ const saved=await prepareSkillRuntimeCandidateSource(context,{...pin,safetyCaseId:'safety-source-injection'});
+ expect(JSON.stringify(saved.snapshot)).not.toContain('PRIVATE');expect(saved.safety).toMatchObject({caseId:'safety-source-injection',category:'injection'});
+ const expected=buildSkillSafetyCandidate(original,'safety-source-injection');expect(saved.taskInputHash).toBe(expected.inputHash);expect(saved.sourceHash).toBe(expected.sourceHash);
+ const historical=await prepareSkillRuntimeCandidateSource(context,pin);expect(historical.snapshot).toEqual(original.snapshot);expect(historical.safety).toBeNull();
+ expect(digest(original)).toBe(before);
 });

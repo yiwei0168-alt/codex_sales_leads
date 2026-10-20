@@ -54,7 +54,7 @@ async function main(){
    return runConfiguredSkillRecordedCandidate({userId:ownerId},input,frozen,collector.transaction);
   },job.evaluationId);
   // Do not print private responses, messages, source material or credentials.
-  console.log(JSON.stringify({collectorExecution:'completed',evaluationId:job.evaluationId,
+  console.log(JSON.stringify({collectorExecution:'completed',evaluationId:job.evaluationId,taskId:output.taskId,
    transportVerificationHash:output.transportVerificationHash,automaticActivation:false,productionQualified:false}));
  }finally{await collector.close();await getPool().end();}
 }

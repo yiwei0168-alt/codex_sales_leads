@@ -5,6 +5,6 @@ export const ma24EvaluationTaskSpecSchema=z.object({schema:z.literal('ma24-evalu
  caseId:z.string().trim().min(1).max(120),arm}).strict();
 export const skillCandidateTaskSpecSchema=z.object({schema:z.literal('skill-candidate-task-v1'),freezeId:z.uuid(),planHash:sha,
  caseId:z.string().min(1).max(200),evaluationId:z.uuid(),arm,originalRunId:z.uuid(),skillId:z.uuid(),version:z.number().int().positive(),
- contentHash:sha,snapshotHash:sha,inputHash:sha,sourceHash:sha,identityHash:sha,prospectiveJobId:z.uuid().optional(),prospectiveProjectionHash:sha.optional()}).strict();
+ contentHash:sha,snapshotHash:sha,inputHash:sha,sourceHash:sha,identityHash:sha,prospectiveJobId:z.uuid().optional(),prospectiveProjectionHash:sha.optional(),safetyCaseId:z.string().min(1).max(120).optional()}).strict();
 export const evaluationTaskSpecSchema=z.discriminatedUnion('schema',[ma24EvaluationTaskSpecSchema,skillCandidateTaskSpecSchema]);
 export type EvaluationTaskSpec=z.infer<typeof evaluationTaskSpecSchema>;

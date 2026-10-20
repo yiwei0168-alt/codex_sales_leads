@@ -22,3 +22,13 @@ it('includes prospective task and capture identity without replacing original ru
  expect(()=>skillRuntimeMaterialReferences({...artifact,rawReceipts:{...artifact.rawReceipts,prospectiveSources:{shadow:{...prospective,caseId:'wrong'}}}})).toThrow('case binding');
  expect(()=>skillRuntimeMaterialReferences({...artifact,rawReceipts:{...artifact.rawReceipts,prospectiveSources:{shadow:{...prospective,taskId:id(3)}}}})).toThrow('duplicate');
 });
+
+it('retains both distinct safety arms and rejects partial or reused task identities',()=>{
+ const safety={caseId:'safe',runId:id(1),evaluationId:id(2),baselineTaskId:id(8),candidateTaskId:id(9),baselineProjectionHash:'a'.repeat(64),candidateProjectionHash:'b'.repeat(64)};
+ const artifact={plan:{cases:[{id:'safe',provenance:'safety-fixture'}]},rawReceipts:{safetySources:{safe:safety}}};
+ expect(skillRuntimeMaterialReferences(artifact)).toEqual([
+  {caseId:'safe',runId:id(1),evaluationId:id(2),taskId:id(8),safetyCaseId:'safe',arm:'baseline'},
+  {caseId:'safe',runId:id(1),evaluationId:id(2),taskId:id(9),safetyCaseId:'safe',arm:'candidate'}]);
+ for(const changed of [{...safety,candidateTaskId:undefined},{...safety,candidateTaskId:id(8)}])
+  expect(()=>skillRuntimeMaterialReferences({...artifact,rawReceipts:{safetySources:{safe:changed}}})).toThrow('distinct pair');
+});

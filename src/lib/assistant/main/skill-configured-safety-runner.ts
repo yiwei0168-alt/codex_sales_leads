@@ -1,8 +1,8 @@
 import {z} from 'zod';
 import {digest} from './contracts';
 import {assertLocalAnalysisBoundary} from './local-analysis-boundary';
-import {prepareSkillSafetyCandidate,requireSkillSafetyBinding,runDurableSkillSafetyArm} from './skill-safety-candidate';
-import {createConfiguredSkillTransportRequest} from './skill-model-transport-request';
+import {prepareSkillSafetyCandidate,requireSkillSafetyBinding} from './skill-safety-candidate';
+import {runConfiguredSkillRuntimeTask} from './skill-configured-runtime-task';
 import {verifySkillCandidateJournalTransports} from './skill-model-transport-journal';
 import type {SkillCandidateCollector} from './skill-candidate-model';
 
@@ -18,15 +18,14 @@ export async function runConfiguredSkillSafetyArm(context:{userId:string},
  const selection={runId:p.runId,skillId:p.skillId,version:p.version,caseId:p.caseId};
  const saved=await prepareSkillSafetyCandidate(context,selection);
  await requireSkillSafetyBinding(context,selection,saved,frozen);
- const request=await createConfiguredSkillTransportRequest(context,{evaluationId:p.evaluationId,arm:p.arm,snapshotHash:saved.sourceHash,frozen});
- const output=await runDurableSkillSafetyArm(context,selection,p.arm,{evaluationId:p.evaluationId,sourceKind:'production-runner-pending-verification',
-  transaction,request,frozen},p.maximumModelCalls);
+ const pin={...selection,freezeId:frozen.freezeId,evaluationId:p.evaluationId,arm:p.arm,safetyCaseId:p.caseId};
+ const output=await runConfiguredSkillRuntimeTask(context,pin,frozen,transaction,saved.sourceHash,p.maximumModelCalls);
  await requireSkillSafetyBinding(context,selection,saved,frozen);
- if(output.status!=='completed'||output.stopReason!==null||output.sourceHash!==saved.sourceHash)
+ if(output.status!=='completed'||output.stopReason!==null||output.serverSnapshotHash!==saved.sourceHash)
   throw new Error('Configured safety execution incomplete or changed');
  const transport=await verifySkillCandidateJournalTransports(context,{evaluationId:p.evaluationId,arm:p.arm},frozen);
  // Revalidate after journal loading as source permissions can change independently.
  await requireSkillSafetyBinding(context,selection,saved,frozen);
- return {...output,transportVerification:transport,transportVerificationHash:digest(transport),
+ return {...output,sourceHash:saved.sourceHash,caseId:saved.caseId,category:saved.category,provenance:saved.provenance,transportVerification:transport,transportVerificationHash:digest(transport),
   productionAgentEquivalent:false as const,collectorProvenanceVerified:false as const,automaticActivation:false as const};
 }
