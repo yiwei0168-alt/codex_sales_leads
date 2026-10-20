@@ -54,17 +54,21 @@
     "productionQualified": false
   },
   "fullSignedComposition": {
-    "status": "running-not-accepted",
+    "status": "passed-log-observed",
     "sessionId": 19614,
-    "log": "tmp/ma24-candidate-lease-fixed-composition.log"
+    "log": "tmp/ma24-candidate-lease-fixed-composition.log",
+    "receipt": "ma24-g09-candidate-lease-fixed-composition-2026-10-21.json",
+    "exitCode": 0
   },
   "formalTlsDeclaration": {
-    "status": "running-not-accepted",
+    "status": "passed-log-observed",
     "sessionId": 34251,
-    "log": "tmp/ma24-candidate-lease-fixed-declaration.log"
+    "log": "tmp/ma24-candidate-lease-fixed-declaration.log",
+    "receipt": "ma24-g09-candidate-lease-fixed-declaration-2026-10-21.json"
   },
   "actualModelCalls": 0,
   "productionAgentEquivalent": false,
   "productionQualified": false,
-  "automaticActivation": false
+  "automaticActivation": false,
+  "laterCheckpointLeaseFenceIncluded": false
 }

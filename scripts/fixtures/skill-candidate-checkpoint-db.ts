@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
 import type {Pool} from 'pg';
-import {withSkillCandidateExecution} from '../../src/lib/assistant/main/skill-candidate-execution';
+import {withSkillCandidateLease} from '../../src/lib/assistant/main/skill-candidate-lease';
 import {prepareSkillCandidateCheckpoint,type SkillCandidateCheckpointStore} from '../../src/lib/assistant/main/skill-candidate-checkpoint';
 import {createDurableSkillCandidateModel} from '../../src/lib/assistant/main/skill-candidate-model';
 import {runSkillCandidateArm} from '../../src/lib/assistant/main/skill-candidate-runner';
@@ -19,9 +19,9 @@ export async function verifySkillCandidateCheckpointDatabase(pool:Pool,owner:str
  const value=(await pool.query('select v.*,s.owner_id,s.scope from agent_skill_version v join agent_skill s on s.id=v.skill_id where s.id=$1 and v.version=1',[skillId])).rows[0];
  const listing={id:skillId,name:'Synthetic checkpoint Skill',scope:'account',current_version:1,enabled:false,published:false,owned:true};
  const snapshot={context,initialMessages:[initial[0],decisionMemoryMessage([]),...initial.slice(1)],profile:config.profile!,skills:[listing],candidate:{listing,value},receipts:[]};
- const pin={ownerId:owner,evaluationId:randomUUID(),arm:'candidate' as const},binding={...pin,snapshotHash:digest(snapshot),sourceKind:'synthetic-fixture' as const};
+ const pin={ownerId:owner,evaluationId:randomUUID(),arm:'candidate' as const,sourceKind:'synthetic-fixture' as const},binding={...pin,snapshotHash:digest(snapshot)};
  let requests=0,crash=true;
- const run=()=>withSkillCandidateExecution(transaction,pin,async(check,executionToken)=>{
+ const run=()=>withSkillCandidateLease(transaction,pin,async(check,executionToken)=>{
   const store=await prepareSkillCandidateCheckpoint(transaction,binding,executionToken,check);assert(store);
   const durable=createDurableSkillCandidateModel({ownerId:owner,snapshotHash:binding.snapshotHash,arm:pin.arm},
    {evaluationId:pin.evaluationId,sourceKind:'synthetic-fixture',transaction,request:async request=>{
@@ -46,14 +46,18 @@ export async function verifySkillCandidateCheckpointDatabase(pool:Pool,owner:str
 
  // Intentionally omit the in-memory scope check to exercise the SQL token fence
  // against a writer that had passed its precheck before losing ownership.
- let stale:SkillCandidateCheckpointStore|undefined;
- await withSkillCandidateExecution(transaction,pin,async(_check,executionToken)=>{
+ let stale:SkillCandidateCheckpointStore|undefined,staleToken='';
+ await withSkillCandidateLease(transaction,pin,async(_check,executionToken)=>{
+  staleToken=executionToken;
   stale=await prepareSkillCandidateCheckpoint(transaction,binding,executionToken,async()=>{});
  });
- await withSkillCandidateExecution(transaction,pin,async(check,executionToken)=>{
+ await withSkillCandidateLease(transaction,pin,async(check,executionToken)=>{
   const fresh=await prepareSkillCandidateCheckpoint(transaction,binding,executionToken,check);assert(fresh&&stale);
   const payload=await fresh.load();assert(payload);
-  await assert.rejects(stale.save(payload),/ownership or revision changed/);
+  await assert.rejects(stale.save(payload),/ownership.*changed/);
+  await assert.rejects(prepareSkillCandidateCheckpoint(transaction,binding,staleToken,async()=>{}),/lease ownership changed/);
+  const retained=(await pool.query('select execution_token from agent_skill_candidate_checkpoint where owner_id=$1 and evaluation_id=$2',[owner,pin.evaluationId])).rows[0];
+  assert.equal(retained.execution_token,executionToken,'Delayed old claim cannot replace the new checkpoint owner');
   const concurrent=await prepareSkillCandidateCheckpoint(transaction,binding,executionToken,check);assert(concurrent);
   await fresh.save(payload);await assert.rejects(concurrent.save(payload),/ownership or revision changed/);
   await assert.rejects(prepareSkillCandidateCheckpoint(transaction,{...binding,snapshotHash:digest('changed')},executionToken,check),/binding changed/);
@@ -70,5 +74,6 @@ export async function verifySkillCandidateCheckpointDatabase(pool:Pool,owner:str
  }finally{await app.query('rollback');app.release();}
  return {candidateGraphCheckpointDatabaseVerified:true,pendingCheckpointRecoveryReusesModelJournal:true,terminalCheckpointNoModelReplay:true,
   checkpointStaleOwnerAndRevisionWritesRejected:true,checkpointBindingAndTamperRejected:true,checkpointAppAndCrossAccountHidden:true,
+  checkpointDelayedOldClaimRejected:true,
   syntheticFixture:true,actualModelCalls:0,productionAgentEquivalent:false};
 }
