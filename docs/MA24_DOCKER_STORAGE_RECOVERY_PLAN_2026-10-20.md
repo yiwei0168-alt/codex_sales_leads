@@ -1,4 +1,20 @@
-# Docker 空间恢复方案（待选择）
+# Docker 空间恢复方案（已确认迁移至 F 盘）
+
+## 执行结果（2026-10-20）
+
+- 用户确认后，完全停止 Docker Desktop 和唯一的 docker-desktop WSL 分发，取得 VHDX 独占读取句柄才开始备份。未重置 Docker 或注销分发。
+- 离线备份：`F:\DockerDesktopDataBackup\20261020T003354Z-65d4b2b0\docker_data.vhdx`，43,622,858,752 字节；源流与独立备份读取的 SHA256 均为 `f36042e5b2115f1cb0daff6c7497c73dde4d2d53f2b0fc9db2ee6f39ba5a20fc`。备份与清单保留。原盘此前异常停止，因此这是离线崩溃一致性备份，不是已完成异机恢复演练的业务备份。
+- Computer Use 初始化经重试仍失败：`failed to write kernel assets` / os error 3，未执行 UI 操作。已向用户说明改为离线文件迁移：将原 VHDX 移到 `F:\DockerDesktopData\docker_data.vhdx`，独占重读确认同一 SHA256 后，将原 C 盘 `wsl\disk` 目录改为指向该 F 盘目录的 Junction。保留原空目录和备份，沿用目录权限。未修改 Docker 设置；设置页面仍可能显示 C 盘路径，实际文件存储在 F 盘。后续维护须保留此联接及目标，不能当普通空目录清理。
+- 迁移状态清单：`F:\DockerDesktopDataBackup\20261020T003354Z-65d4b2b0\migration-state.json`。其中迁移完成时的 `ServiceRecoveryVerified:false` 是启动前历史状态；以下恢复检查是后续证据。
+- 官方 CLI 启动 Docker Desktop 后，引擎版本 29.7.2 可读；原 Neo4j、Ollama 自动恢复，原 PostgreSQL 容器手动启动并达到 healthy，未新建业务容器或初始化业务卷。
+- 原业务库 `network_copilot_local`：145 张 public 表、9 张 public_evidence 表、4 张 langgraph 表，379 条 knowledge_document 可读；默认 `network_copilot` 无 public 表，不将其作为业务恢复证据。无迁移前逐表清单，以上只证明恢复后的可读性，不证明所有业务行逐项一致。
+- 原图谱只读计数为 17 个节点、16 条关系；Ollama 保留 nomic-embed-text:latest 和 qwen3:8b。未调用模型。原有版本镜像仍可列出，包括 7a850163 主运行与采集器，以及 adaaa239 Web/主运行对。
+- 完整 ID 核对后清理本轮遗留的一次性容器 `ma24-pilot-fresh-d97645b6d931`（`0bdf1713ac1c17f5db9b577da2be77821be61f94ffe3701311ca2fd39cb82992`）及匿名测试卷，保留三个原有服务。
+- 物理迁移后 C 盘可用 48,438,984,704 字节（约45.1 GiB）。恢复服务不等于产品完整验收；此前失败的 Web 构建和完整组合仍须重新运行。继续 G01–G13，G14–G20 和内网上线暂缓。
+
+## 以下为迁移前方案与历史观测
+
+2026-10-20 用户已确认“将数据迁移到F盘后继续”，按 `OPS-DOCKER-01` 执行迁移与恢复验收。此前“待选择/待答复”为历史状态；尚未声明迁移完成。开始执行时 C 盘已恢复约4.3 GiB、F盘约540 GiB，目标 `F:\DockerDesktopData` 尚不存在。
 
 后续已补齐构建前检查：Web、普通主运行包、采集器三种镜像构建，在任何 Docker 调用及临时构建目录创建前检查 Windows 系统盘；0 可用字节抛出 `MA24_SYSTEM_DISK_FULL`，元数据不可读则明确报检查失败。非 Windows 不检查 Windows 卷，正数空间不新增硬性最低门槛；此检查不估计构建所需总量，也不清理或迁移数据。9 项检查器测试及4项错误保留测试（共13项）、类型/lint通过。当前真实C盘0字节的检查结果为 denied，未调用Docker。空间恢复选择仍待用户答复。
 
