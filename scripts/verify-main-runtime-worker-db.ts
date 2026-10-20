@@ -178,6 +178,8 @@ try{
  if(taskEnrollmentResult)taskEnrollmentResult.actualMatchingApiAndWorkerVerified=true;
  let skillReceiptRecoveryResult:unknown=null;
  if(process.env.MA24_MAIN_RUNTIME_SKILL_RECEIPT==='1'){
+  const cases=[];
+  for(const receiptStatus of ['completed','started'] as const){
   const skill=await importSkill({userId:owner,role:'member'},{name:'Synthetic disabled receipt recovery',source:'synthetic-test',files:{'SKILL.md':'Synthetic recovery instructions only.'},dependencies:[]});
   const task=await enqueueRun(owner,{content:'Synthetic prior completed Skill receipt recovery',attachments:[],requestKey:randomUUID()},
    {model:'synthetic-unusable',providers:['synthetic-unusable'],version:'synthetic'});
@@ -186,7 +188,7 @@ try{
   const output=result({updated:true,acceptanceBundleId:randomUUID(),acceptanceArtifactHash:digest('unqualified synthetic prior receipt'),activationProofHash:digest('unqualified synthetic proof')},{callId,cost:'known'});
   const spec=productTools.find(row=>row.id==='skill_manage');assert(spec);
   await admin.query(`insert into agent_tool_call(id,user_id,run_id,call_key,tool_id,tool_version,input,input_hash,effect,status,output)
-   values($1,$2,$3,$4,'skill_manage',$5,$6,$7,'reversible','completed',$8)`,[callId,owner,task.id,callKey,spec.version,input,digest(input),output]);
+   values($1,$2,$3,$4,'skill_manage',$5,$6,$7,'reversible',$8,$9)`,[callId,owner,task.id,callKey,spec.version,input,digest(input),receiptStatus,receiptStatus==='completed'?output:null]);
   const call={id:callKey,type:'function' as const,function:{name:'execute_tool',arguments:JSON.stringify({tool:'skill_manage',arguments:input})}};
   const policyRevision=digest(await loadDecisionMemory(owner));
   const seed=buildMainAgentGraph({boundary:async()=>{throw new Error('Checkpoint seed only');},model:async()=>{throw new Error('No model in receipt recovery');},tool:async()=>{throw new Error('No fixture tool execution');}},new PostgresSaver(getPool(),undefined,{schema:'langgraph'}));
@@ -199,13 +201,23 @@ try{
   await startWorker();await finishWorker();
   const state=await seed.getState(config),values=state.values as {pending:unknown[];messages:ModelMessage[]};
   assert.deepEqual(values.pending,[]);
-  const echoed=values.messages.filter(row=>row.role==='tool'&&row.tool_call_id===callKey);assert.equal(echoed.length,1);assert.deepEqual(JSON.parse(echoed[0].content!),output);
+  const echoed=values.messages.filter(row=>row.role==='tool'&&row.tool_call_id===callKey);assert.equal(echoed.length,1);
+  const recoveredOutput=JSON.parse(echoed[0].content!);
+  if(receiptStatus==='completed')assert.deepEqual(recoveredOutput,output);
+  else{
+   assert.equal(recoveredOutput.status,'unknown');assert.equal(recoveredOutput.data.callId,callId);
+   assert(recoveredOutput.missing.includes('Previous execution has no saved receipt; reconcile before repeating'));
+  }
   assert.deepEqual((await admin.query('select enabled,current_version,activation_binding,published from agent_skill where id=$1',[skill.id])).rows[0],before);
-  assert.deepEqual((await admin.query('select output from agent_tool_call where id=$1',[callId])).rows[0].output,output);
+  const stored=(await admin.query('select status,output from agent_tool_call where id=$1',[callId])).rows[0];
+  assert.deepEqual(stored,{status:receiptStatus,output:receiptStatus==='completed'?output:null});
   const row=await readTask(task.id);assert.equal(row.status,'partial');assert(row.reply.includes('执行步数限制'));assert.equal(row.models,0);assert.equal(row.jobs,0);
   const extra=(await admin.query(`select count(*)::int n from agent_run_event where user_id=$1 and run_id=$2 and kind in('skill_activated','tool_started')`,[owner,task.id])).rows[0].n;
   assert.equal(extra,0);completedTasks.push({id:task.id,row});
-  skillReceiptRecoveryResult={syntheticPendingCheckpointAndPriorReceipt:true,actualCompiledWorkerAndExecutor:true,completedReceiptEchoedExactlyOnce:true,
+  cases.push({receiptStatus,outputStatus:recoveredOutput.status,echoedExactlyOnce:true,storedCallUnchanged:true,disabledSkillUnchanged:true});
+  }
+  skillReceiptRecoveryResult={cases,syntheticPendingCheckpointAndPriorReceipt:true,actualCompiledWorkerAndExecutor:true,completedReceiptEchoedExactlyOnce:true,
+   startedWithoutReceiptReturnsUnknownWithoutExecution:true,
    disabledSkillNotReenabled:true,storedReceiptAndSkillStateUnchanged:true,newActivationOrToolStartedEvents:0,actualModelAttempts:0,
    productionStepLimitAvoidsModelCall:true,priorActivationNotExecuted:true,realQualityApproved:false,unknownCommitAndOriginalProcessCrashNotInjected:true};
  }

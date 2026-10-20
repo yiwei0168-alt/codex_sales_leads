@@ -1,5 +1,7 @@
 # G09 已完成启用回执的正式Worker恢复组件
 
+2026-10-21补验进行中：同一夹具新增`started`且output为空的旧调用分支，要求正式Worker仅回显unknown/需核对，原started记录和Skill不变、无新工具执行或启用。类型/单文件lint通过；固定e1a59caf主运行镜像、新167/TLS/Internal网络的实际两分支检查仍运行（会话34848，`tmp/ma24-started-skill-worker-actual.log`），尚未记通过。原先completed通过证据继续保留；新分支也是构造检查点/调用记录，不等于真实进程崩溃或未知COMMIT注入。
+
 对应MA24-06，无新增确认。验证固定正式LangGraph API和主队列Worker恢复待处理检查点时，会复用已完成skill_manage回执，且不改变已禁用Skill。仅为合成恢复组件，不是真实启用质量或原进程崩溃/未知COMMIT的联合证明。
 
 ## 验收入口与隔离
