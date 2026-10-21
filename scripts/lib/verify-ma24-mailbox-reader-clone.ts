@@ -35,6 +35,14 @@ export async function verifyMa24MailboxReaderClone(options: {
       encryptMailboxContent(options.userId,
         { subject: shortSubject, bodyText: shortBody, sender: [], recipients: [] })],
   );
+  const sentSubject="Synthetic sent mail",sentBody="Synthetic sent original.";
+  await options.admin.query(
+    `insert into mailbox_message(user_id,connection_id,folder_path,uid_validity,message_uid,
+      internet_message_id,direction,subject,body_text,content_sha256,content_ciphertext,screening_bucket,screened_at)
+     values($1,$2,'Sent','ma24-reader',3,'<ma24-reader-sent@example.invalid>','outbound','', '',$3,$4,'review',now())`,
+    [options.userId,connection.rows[0].id,createHash('sha256').update(sentBody).digest('hex'),
+      encryptMailboxContent(options.userId,{subject:sentSubject,bodyText:sentBody,sender:[],recipients:[]})],
+  );
   const browser = await chromium.launch({ channel: "chrome", headless: true });
   const results: Array<Record<string, unknown>> = [];
   try {
@@ -86,6 +94,11 @@ export async function verifyMa24MailboxReaderClone(options: {
         await detailAlert.getByRole("button", { name: "重试邮件原文" }).click();
         await expect(reader.locator("pre")).toContainText("Line 80: synthetic mailbox content");
         await expect(detailAlert).toHaveCount(0);
+        if(viewport.width>=700){
+          const previousReads=detailRequests;await item.click();
+          await expect(reader.locator('pre')).toContainText('Line 80: synthetic mailbox content');
+          assert.equal(detailRequests,previousReads+1);
+        }
         if (viewport.width >= 700) {
           failDetail = true;
           await page.getByRole("button", { name: "刷新", exact: true }).click();
@@ -94,6 +107,12 @@ export async function verifyMa24MailboxReaderClone(options: {
           await detailAlert.getByRole("button", { name: "重试邮件原文" }).click();
           await expect(reader.locator("pre")).toContainText("Line 80: synthetic mailbox content");
         }
+        await page.getByRole('tab',{name:'已发送',exact:true}).click();
+        await page.locator('.mail-reader-list > button').filter({hasText:sentSubject}).click();
+        await expect(reader.getByRole('heading',{name:sentSubject,exact:true})).toBeVisible();
+        await expect(reader.locator('pre')).toHaveText(sentBody);
+        await page.getByRole('tab',{name:'收件箱',exact:true}).click();await item.click();
+        await expect(reader.locator('pre')).toContainText('Line 80: synthetic mailbox content');
         const scroll = await reader.evaluate(element => ({ content: element.scrollHeight, viewport: element.clientHeight }));
         if (viewport.height < 500) {
           const shell = page.locator(".main-shell");
@@ -162,13 +181,14 @@ export async function verifyMa24MailboxReaderClone(options: {
         results.push({ viewport, listRequests, detailRequests, listRetry: true, detailRetry: true,
           longOriginalDrawer: true, shortOriginalInline: true, inlineOriginalRetry: true,
           refreshFailureClearsStaleBody: viewport.width >= 700,
+          currentMailReselection:viewport.width>=700,sentAndInboxReadIdentityVerified:true,
           readingScroll: viewport.height < 500 ? "main-shell" : "reading-area",
           noHorizontalOverflow: true, pageErrors: 0 });
       } finally {
         await context.close();
       }
     }
-    return { candidatePage: true, syntheticEncryptedMessages: 2, modelCalls: 0, mailSends: 0, results };
+    return { candidatePage: true, syntheticEncryptedMessages: 3, modelCalls: 0, mailSends: 0, results };
   } finally {
     await browser.close();
   }

@@ -1,0 +1,42 @@
+import assert from 'node:assert/strict';
+import {createServer} from 'node:http';
+import {mkdir,readFile,writeFile} from 'node:fs/promises';
+import {build} from 'esbuild';
+import {chromium,expect} from '@playwright/test';
+
+const ids={a:'11111111-1111-4111-8111-111111111111',b:'22222222-2222-4222-8222-222222222222',c:'33333333-3333-4333-8333-333333333333'};
+const mail=(key:keyof typeof ids)=>({id:ids[key],subject:`Generated ${key.toUpperCase()}`,bodyText:`Generated ${key.toUpperCase()} body `+'LongMailCoordinate'.repeat(60),direction:'inbound',sender:[{address:'synthetic@example.invalid'}],recipients:[],sentAt:'2026-10-22T00:00:00Z'});
+const built=await build({stdin:{contents:`import React from'react';import{createRoot}from'react-dom/client';import{MailboxReader}from'./src/components/mailbox-reader';createRoot(document.getElementById('root')).render(<MailboxReader direction="inbound"/>);`,resolveDir:process.cwd(),loader:'tsx'},bundle:true,write:false,jsx:'automatic',define:{'process.env.NODE_ENV':'"production"'}});
+const css=(await Promise.all(['src/app/globals.css','src/app/conversation-theme.css'].map(path=>readFile(path,'utf8')))).join('\n');
+const server=createServer((req,res)=>{if(req.url==='/component.js'){res.setHeader('content-type','application/javascript');res.end(built.outputFiles[0].text);}else if(req.url==='/styles.css'){res.setHeader('content-type','text/css');res.end(css);}else{res.setHeader('content-type','text/html');res.end('<!doctype html><html lang="zh"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="/styles.css"><body class="conversation-theme"><main style="padding:16px"><div id="root"></div></main><script src="/component.js"></script></body></html>');}});
+await new Promise<void>(done=>server.listen(0,'127.0.0.1',done));const address=server.address();assert(address&&typeof address!=='string');const base=`http://127.0.0.1:${address.port}`;
+const browser=await chromium.launch({channel:'chrome',headless:true}),results:unknown[]=[],screenshots:string[]=[];
+const watchdog=setTimeout(()=>{console.error('Mailbox reader UI watchdog expired');process.exit(1);},90000);watchdog.unref();
+try{
+ await mkdir('tmp/mailbox-reader-recovery',{recursive:true});
+ for(const width of [1366,390,320]){
+  const context=await browser.newContext({viewport:{width,height:760}});
+  await context.addInitScript(()=>{const original=window.fetch;window.fetch=(input,init)=>original(input,String(input).includes('/api/mailbox/messages/')?{...init,signal:undefined}:init);});
+  const page=await context.newPage(),errors:string[]=[];page.on('pageerror',error=>errors.push(error.message));
+  let listFails=false,listMalformed=false,wrongDetail=false,holdA=false,released=false,release:(()=>void)|undefined,listRequests=0,detailRequests=0;
+  await context.route('**/api/mailbox/messages**',async route=>{
+   const url=new URL(route.request().url());
+   if(url.pathname==='/api/mailbox/messages'){listRequests++;return route.fulfill(listFails?{status:503,json:{}}:listMalformed?{json:{messages:[null],hasMore:false}}:{json:{messages:Number(url.searchParams.get('offset'))===20?[mail('c')]:[mail('a'),mail('b')],hasMore:Number(url.searchParams.get('offset'))===0}});}
+   detailRequests++;const key=(Object.keys(ids) as Array<keyof typeof ids>).find(key=>url.pathname.endsWith(ids[key]));assert(key);const held=holdA&&key==='a';
+   if(held)await new Promise<void>(done=>{release=done;});
+   await route.fulfill({json:{message:wrongDetail?mail('c'):{...mail(key),...(held?{subject:'Late A',bodyText:'Late A must not replace current mail'}:{})}}}).catch(()=>{});if(held)released=true;
+  });
+  await page.goto(base);const reader=page.getByRole('region',{name:'邮件阅读区'}),list=page.locator('.mail-reader-list'),a=list.getByRole('button').filter({hasText:'Generated A'}),b=list.getByRole('button').filter({hasText:'Generated B'});
+  const showList=async()=>{if(width<700&&await page.locator('.mail-reader').evaluate(element=>element.classList.contains('has-selection')))await reader.getByRole('button',{name:'\u8fd4\u56de\u90ae\u4ef6\u5217\u8868'}).click();};const choose=async(button:typeof a)=>{await showList();await button.click();};
+  await expect(a).toBeVisible();await choose(a);await expect(reader.getByRole('heading',{name:'Generated A',exact:true})).toBeVisible();const before=detailRequests;await choose(a);
+  await expect(reader.getByRole('heading',{name:'Generated A',exact:true})).toBeVisible().catch(async error=>{console.log(JSON.stringify({mailboxReselectFailure:{detailRequestsBefore:before,detailRequestsAfter:detailRequests,readerText:await reader.textContent(),pageErrors:errors}}));throw error;});assert.equal(detailRequests,before+1);
+  await choose(b);await expect(reader.getByRole('heading',{name:'Generated B',exact:true})).toBeVisible();holdA=true;await choose(a);await expect.poll(()=>Boolean(release)).toBe(true);await choose(b);await expect(reader.getByRole('heading',{name:'Generated B',exact:true})).toBeVisible();release!();release=undefined;await expect.poll(()=>released).toBe(true);await page.evaluate(()=>new Promise<void>(done=>requestAnimationFrame(()=>requestAnimationFrame(()=>done()))));await expect(reader.getByRole('heading',{name:'Generated B',exact:true})).toBeVisible();await expect(reader).not.toContainText('Late A');holdA=false;
+  await showList();listFails=true;await page.getByRole('button',{name:'刷新',exact:true}).click();await expect(page.locator('.mail-reader aside').getByRole('alert')).toContainText('邮件列表读取失败');await expect(list.getByRole('button')).toHaveCount(0);await expect(reader.locator('pre')).toHaveCount(0);await expect(page.getByText('没有已同步邮件。',{exact:false})).toHaveCount(0);
+  listFails=false;listMalformed=true;await page.getByRole('button',{name:'重试邮件列表'}).click();await expect(page.locator('.mail-reader aside').getByRole('alert')).toContainText('邮件列表读取失败');assert.deepEqual(errors,[]);listMalformed=false;await page.getByRole('button',{name:'重试邮件列表'}).click();await expect(a).toBeVisible();
+  wrongDetail=true;await choose(a);await expect(reader.getByRole('alert')).toContainText('邮件原文读取失败');await expect(reader.locator('pre')).toHaveCount(0);wrongDetail=false;const listsBefore=listRequests;await reader.getByRole('button',{name:'重试邮件原文'}).click();await expect(reader.getByRole('heading',{name:'Generated A',exact:true})).toBeVisible();assert.equal(listRequests,listsBefore);
+  await showList();await page.getByRole('button',{name:'下一页',exact:true}).click();await expect(list.getByRole('button').filter({hasText:'Generated C'})).toBeVisible();await expect(reader.locator('pre')).toHaveCount(0);await expect(page.getByRole('button',{name:'下一页',exact:true})).toBeDisabled();await page.getByRole('button',{name:'上一页',exact:true}).click();await expect(a).toBeVisible();
+  if(width===1366){holdA=true;released=false;await choose(a);await expect.poll(()=>Boolean(release)).toBe(true);await expect(reader.getByRole('alert')).toContainText('邮件原文读取失败',{timeout:13000});holdA=false;await reader.getByRole('button',{name:'重试邮件原文'}).click();await expect(reader.getByRole('heading',{name:'Generated A',exact:true})).toBeVisible();release!();release=undefined;await expect.poll(()=>released).toBe(true);await page.evaluate(()=>new Promise<void>(done=>requestAnimationFrame(()=>requestAnimationFrame(()=>done()))));await expect(reader).not.toContainText('Late A');}else{await choose(a);await expect(reader.getByRole('heading',{name:'Generated A',exact:true})).toBeVisible();}
+  assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));assert.deepEqual(errors,[]);const screenshot=`tmp/mailbox-reader-recovery/recovered-${width}.png`;await page.screenshot({path:screenshot,fullPage:true});screenshots.push(screenshot);await context.close();results.push({width,reselectCurrentMailReadsAgain:width>700,mobileReturnAndReselect:width<700,lateResponseIgnoringCancellationCannotReplaceSelection:true,failedAndMalformedListClearOldRowsAndReader:true,wrongMessageIdentityRefused:true,originalRetryDoesNotReloadList:true,pagingClearsReader:true,actualDeadlineVerified:width===1366,noPageErrors:true});
+ }
+ const result={mailboxReaderRecoveryComponent:'passed',results,screenshots,syntheticHttpOnly:true,actualModelCalls:0};await writeFile('tmp/mailbox-reader-recovery/result.json',JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify(result));
+}finally{clearTimeout(watchdog);await browser.close();server.closeAllConnections();await new Promise<void>(done=>server.close(()=>done()));}
