@@ -166,9 +166,9 @@ export function AssistantHome({ userName, initialConversationId, onConversationC
               {(message.metadata.webCitations?.length ?? 0) > 0 && <div className="ai-citations"><strong>外部网页证据</strong>{message.metadata.webCitations?.map((citation, index) => <a key={citation.url} href={citation.url} target="_blank" rel="noreferrer"><span>[WEB:{index + 1}]</span><b>{citation.title}</b></a>)}</div>}
               {message.metadata.grounded === false && <small className="ai-evidence-warning">回答尚未获得充分引用，请人工复核。</small>}
             </div>
-          </article>{run && <AgentRunCard run={run} events={agentRuns.eventsByRun[run.id]} now={agentRuns.now} onControl={agentRuns.control} onUndo={agentRuns.undo} statusCurrent={agentRuns.statusCurrent}/>}</Fragment>;
+          </article>{run && <AgentRunCard run={run} events={agentRuns.eventsByRun[run.id]} now={agentRuns.now} onControl={agentRuns.control} onUndo={agentRuns.undo} statusCurrent={agentRuns.statusCurrent} onReconcileInstruction={agentRuns.reconcileInstruction}/>}</Fragment>;
         })}
-        {agentRuns.runs.filter(run => !anchoredRunIds.has(run.id)).map(run => <AgentRunCard key={run.id} run={run} events={agentRuns.eventsByRun[run.id]} now={agentRuns.now} onControl={agentRuns.control} onUndo={agentRuns.undo} statusCurrent={agentRuns.statusCurrent}/>)}
+        {agentRuns.runs.filter(run => !anchoredRunIds.has(run.id)).map(run => <AgentRunCard key={run.id} run={run} events={agentRuns.eventsByRun[run.id]} now={agentRuns.now} onControl={agentRuns.control} onUndo={agentRuns.undo} statusCurrent={agentRuns.statusCurrent} onReconcileInstruction={agentRuns.reconcileInstruction}/>)}
         {agentRuns.error && <p className="ai-submit-state" role="status">{agentRuns.error}</p>}
         {agentRuns.notice&&<p className="ai-submit-state" role="status">{agentRuns.notice}</p>}
         {busy && <p className="ai-submit-state" role="status">正在保存任务…</p>}

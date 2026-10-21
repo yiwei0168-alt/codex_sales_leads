@@ -5,6 +5,8 @@ import type { RunStatus } from "@/lib/assistant/main/contracts";
 import { mergeRunEvents, parseRunEventPage, type RunEvent } from "@/lib/assistant/main/run-events";
 import { AgentApprovals } from "./agent-approvals";
 import type { AgentApproval } from "@/lib/assistant/main/approvals";
+import {pendingInstructionSubmissions,prepareInstructionSubmission} from '@/lib/assistant/instruction-submissions';
+import type {InstructionSubmissionReceipt} from '@/lib/assistant/main/run-control';
 
 type Run = { id: string; conversation_id: string; status: RunStatus; result: { reply: string } | null; approvals?: AgentApproval[];
   memories?: Array<{ id: string; key: string; version: number }>;
@@ -48,7 +50,7 @@ export function useAgentRuns(conversationId: string | undefined, onUpdated: () =
   const [eventsByRun, setEventsByRun] = useState<Record<string, RunEvent[]>>({});
   const [readState,setReadState]=useState<{conversationId:string;current:boolean;error:string}>();
   const [eventError,setEventError]=useState<{conversationId:string;message:string}>();
-  const [controlError,setControlError]=useState<{conversationId:string|undefined;message:string;kind?:"read-required"}>();
+  const [controlError,setControlError]=useState<{conversationId:string|undefined;message:string;kind?:"read-required";runId?:string}>();
   const [notice,setNotice]=useState<{conversationId:string|undefined;message:string}>();
   const scope=useRef<string|undefined>(undefined),fresh=useRef<string|undefined>(undefined),epoch=useRef(0);
   const [now, setNow] = useState(0);
@@ -103,15 +105,15 @@ export function useAgentRuns(conversationId: string | undefined, onUpdated: () =
     return () => { controller.abort();window.clearInterval(timer);window.clearInterval(clock);if(scope.current===conversationId){scope.current=undefined;fresh.current=undefined;} };
   }, [conversationId, onUpdated]);
   function invalidate(){if(scope.current===conversationId){epoch.current++;fresh.current=undefined;if(conversationId)setReadState({conversationId,current:false,error:""});}}
-  async function control(id: string, action: string, instruction?: string) {
+  async function control(id: string, action: string, instruction?: string,requestKey?:string) {
     setControlError(undefined);
     if(!conversationId||fresh.current!==conversationId){setControlError({conversationId,message:"任务状态尚未核实，请等待刷新后操作",kind:"read-required"});return false;}
     setNotice(undefined);
     try {
-      const response = await fetch(`/api/assistant/runs/${id}/control`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action, ...(action === "instruct" ? { content: instruction } : {}) }) });
+      const response = await fetch(`/api/assistant/runs/${id}/control`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action, ...(action === "instruct" ? { content: instruction,...(requestKey?{requestKey}:{}) } : {}) }) });
       if (!response.ok) throw new Error();
       if(scope.current===conversationId){invalidate();setNotice({conversationId,message:action==="instruct"?"追加要求已保存。":"任务操作请求已保存。"});onUpdated();}return true;
-    } catch { if(scope.current===conversationId)setControlError({conversationId,message:"操作结果未确认，请刷新状态后核对"});return false; }
+    } catch { if(scope.current===conversationId)setControlError({conversationId,runId:id,message:"操作结果未确认，请刷新状态后核对"});return false; }
   }
   async function undo(id: string, version: number) {
     setControlError(undefined);
@@ -121,26 +123,58 @@ export function useAgentRuns(conversationId: string | undefined, onUpdated: () =
       if (!response.ok) throw new Error();if(scope.current===conversationId){invalidate();setNotice({conversationId,message:"撤销请求已保存。"});onUpdated();}
     } catch { if(scope.current===conversationId)setControlError({conversationId,message:"撤销结果未确认，请刷新后核对"}); }
   }
+  async function reconcileInstruction(id:string,requestKey:string):Promise<InstructionSubmissionReceipt|null>{
+    if(scope.current!==conversationId||!conversationId)return null;
+    try{
+      const response=await fetch(`/api/assistant/runs/${id}/control?requestKey=${encodeURIComponent(requestKey)}`,{cache:'no-store',signal:AbortSignal.timeout(10_000)});
+      if(!response.ok)throw new Error();const data=await response.json();
+      if((data.recorded===false&&typeof data.terminal==='boolean')||(data.recorded===true&&typeof data.content==='string'))
+        if(scope.current===conversationId)setControlError(current=>current?.conversationId===conversationId&&current.runId===id?undefined:current);
+      if(data.recorded===false&&typeof data.terminal==='boolean')return {recorded:false,terminal:data.terminal};
+      if(data.recorded===true&&typeof data.content==='string')return {recorded:true,content:data.content};throw new Error();
+    }catch{if(scope.current===conversationId)setControlError({conversationId,runId:id,message:'追加要求的保存结果尚未确认，请稍后核对'});return null;}
+  }
   return { runs: runs.filter(run => run.conversation_id === conversationId), eventsByRun,
     statusCurrent:Boolean(readState&&readState.conversationId===conversationId&&readState.current),
     error:(readState?.conversationId===conversationId?readState?.error:"")||(controlError?.conversationId===conversationId?controlError?.message:"")||(eventError?.conversationId===conversationId?eventError?.message:""),
-    notice:notice?.conversationId===conversationId?notice?.message:"",now, control, undo };
+    notice:notice?.conversationId===conversationId?notice?.message:"",now, control, undo,reconcileInstruction };
 }
 
-export function AgentRunCard({run, events = [], now, onControl, onUndo,statusCurrent=true}: {run: Run; events?: RunEvent[]; now: number;statusCurrent?:boolean;
-  onControl: (id: string, action: string, instruction?: string) => Promise<boolean>;
+export function AgentRunCard({run, events = [], now, onControl, onUndo,statusCurrent=true,onReconcileInstruction}: {run: Run; events?: RunEvent[]; now: number;statusCurrent?:boolean;
+  onControl: (id: string, action: string, instruction?: string,requestKey?:string) => Promise<boolean>;
+  onReconcileInstruction?:(id:string,requestKey:string)=>Promise<InstructionSubmissionReceipt|null>;
   onUndo: (id: string, version: number) => Promise<void>}) {
   const [instruction, setInstruction] = useState("");
   const [eventCount,setEventCount]=useState(16);
   const [controlling,setControlling]=useState(false);
+  const inFlight=useRef(false);
+  const mounted=useRef(true);
+  useEffect(()=>{mounted.current=true;return()=>{mounted.current=false;};},[]);
+  const [pendingInstructions,setPendingInstructions]=useState(()=>pendingInstructionSubmissions(run.id));
+  const [instructionNotice,setInstructionNotice]=useState('');
   async function control(action:string){
-    if(controlling||!statusCurrent)return;
+    if(inFlight.current||!statusCurrent)return;inFlight.current=true;
     const submitted=instruction;
-    setControlling(true);
+    setControlling(true);setInstructionNotice('');
     try{
-      const accepted=await onControl(run.id,action,action==="instruct"?submitted:undefined);
-      if(accepted&&action==="instruct")setInstruction(current=>current===submitted?"":current);
-    }finally{setControlling(false);}
+      const ticket=action==='instruct'?await prepareInstructionSubmission(run.id,submitted):undefined;
+      const accepted=await onControl(run.id,action,action==="instruct"?submitted:undefined,ticket?.requestKey);
+      if(accepted&&action==="instruct"&&mounted.current){ticket?.acknowledge();setInstruction(current=>current===submitted?"":current);}
+    }catch{setInstructionNotice('追加结果尚未确认，请保留原文后核对。');}
+    finally{setPendingInstructions(pendingInstructionSubmissions(run.id));inFlight.current=false;setControlling(false);}
+  }
+  async function reconcile(){
+    if(inFlight.current||!onReconcileInstruction)return;inFlight.current=true;setControlling(true);setInstructionNotice('');let recorded=0,unconfirmed=0,notSaved=0;
+    try{
+      for(const ticket of pendingInstructions){
+        const receipt=await onReconcileInstruction(run.id,ticket.requestKey);
+        if(!mounted.current)return;
+        if(receipt?.recorded){ticket.acknowledge();recorded++;}
+        else if(receipt&&!receipt.recorded&&receipt.terminal){ticket.acknowledge();notSaved++;}else unconfirmed++;
+      }
+      setInstructionNotice(`已核实：${recorded} 次追加要求已保存。${notSaved?`${notSaved} 次未保存，任务已结束，请新建任务。`:''}${unconfirmed?`另有 ${unconfirmed} 次仍待核对，请保留原文。`:''}`);
+    }catch{setInstructionNotice('保存结果尚未确认，请保留原文后稍后核对。');}
+    finally{setPendingInstructions(pendingInstructionSubmissions(run.id));inFlight.current=false;setControlling(false);}
   }
   return <section id={`agent-run-${run.id}`} aria-label="当前任务" className="agent-runs ai-run-inline"><article className="agent-run">
       <div className="agent-run-actions"><strong>{statusCurrent?"":"上次读取："}{labels[run.status]}</strong>
@@ -153,6 +187,8 @@ export function AgentRunCard({run, events = [], now, onControl, onUndo,statusCur
       <AgentApprovals items={run.approvals ?? []} disabled={!statusCurrent}/>
       {run.memories?.map(memory => <p key={memory.id} className="text-sm">已记住偏好：{memory.key} <button type="button" disabled={!statusCurrent} onClick={() => void onUndo(memory.id, memory.version)}>撤销</button></p>)}
       {events.length > 0 && <details className="agent-run-timeline"><summary>查看执行详情（{events.length} 条）</summary>{events.length>eventCount&&<button onClick={()=>setEventCount(v=>v+32)}>加载更早记录（剩余 {events.length-eventCount} 条）</button>}<ol>{events.slice(-eventCount).map(event => <EventReceipt key={event.id} event={event}/>)}</ol></details>}
+      {pendingInstructions.length>0&&onReconcileInstruction&&<p>有 {pendingInstructions.length} 次追加要求的保存结果待核对。<button type="button" disabled={controlling} onClick={()=>void reconcile()}>核对保存结果</button></p>}
+      {instructionNotice&&<p role="status">{instructionNotice}</p>}
       {["running", "queued", "paused", "partial", "failed"].includes(run.status) && <div className="agent-run-actions"><input aria-label="追加任务要求" value={instruction} onChange={event => setInstruction(event.target.value)} placeholder="追加要求，在下个安全边界生效" /><button type="button" disabled={controlling||!statusCurrent||!instruction.trim()} onClick={() => void control("instruct")}>追加</button></div>}
     </article></section>;
 }

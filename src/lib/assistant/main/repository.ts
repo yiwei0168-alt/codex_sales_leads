@@ -5,6 +5,7 @@ import type { AgentRun, ExecutionContext, MessageInput, ModelConfig, RunStatus, 
 import { digest } from "./contracts";
 import { approvalDigest,type AgentApproval } from "./approvals";
 import {evaluationTaskSpecSchema,type EvaluationTaskSpec} from './evaluation-task-spec';
+import {instructionRequestKeySchema,type InstructionSubmissionReceipt} from './run-control';
 
 type RunServerOptions = { kind:"mail"; spec:unknown; paused:true } | {
   kind:"main-agent-evaluation";
@@ -99,17 +100,36 @@ export async function boundary(context: ExecutionContext) {
   context.role = rows[0].role;
   return rows[0];
 }
-export async function controlRun(userId: string, id: string, action: "pause" | "resume" | "cancel" | "instruct", content?: string) {
+export async function readInstructionSubmission(userId:string,id:string,requestKey:string):Promise<InstructionSubmissionReceipt|null>{
+  const key=instructionRequestKeySchema.parse(requestKey);
+  const rows=await tenantQuery<Pick<AgentRun,'instructions'|'status'>>(userId,
+    "select instructions,status from agent_run where user_id=$1 and id=$2 and execution_kind<>'main-agent-evaluation'",[userId,id]);
+  if(!rows[0])return null;
+  const matching=rows[0].instructions.filter(instruction=>instruction.id.toLowerCase()===key);
+  if(matching.length>1)throw new Error('Ambiguous instruction receipt');
+  return matching[0]?{recorded:true,content:matching[0].content}:{recorded:false,terminal:['completed','cancelled'].includes(rows[0].status)};
+}
+export async function controlRun(userId: string, id: string, action: "pause" | "resume" | "cancel" | "instruct", content?: string,requestKey?:string) {
+  if(requestKey!==undefined&&action!=="instruct")throw new Error("Submission identity is only for instructions");
+  const key=requestKey===undefined?undefined:instructionRequestKeySchema.parse(requestKey);
   return tenantTransaction(userId, async client => {
     const locked = await client.query<AgentRun>("select * from agent_run where user_id=$1 and id=$2 for update", [userId, id]);
     const run = locked.rows[0];
     if (!run) return false;
-    if (["completed", "cancelled"].includes(run.status)) throw new Error("Task is terminal; create a new task");
     if (run.execution_kind === "main-agent-evaluation" && action !== "cancel")
       throw new Error("MA24 evaluation task can only be cancelled through ordinary task controls");
+    if(action==="instruct"&&key){
+      const matching=run.instructions.filter(instruction=>instruction.id.toLowerCase()===key);
+      if(matching.length){
+        if(matching.length!==1||matching[0].content!==content?.trim())throw new Error("Submission identity already used with different content");
+        // Acknowledgement recovery is read-only, including after completion.
+        return true;
+      }
+    }
+    if (["completed", "cancelled"].includes(run.status)) throw new Error("Task is terminal; create a new task");
     if (action === "instruct") {
       if (!content?.trim()) throw new Error("Instruction required");
-      await client.query("update agent_run set instructions=instructions||$3::jsonb,status=case when status='waiting_user' then 'queued' else status end,next_attempt_at=now(),updated_at=now() where user_id=$1 and id=$2", [userId, id, JSON.stringify([{ id: randomUUID(), content }])]);
+      await client.query("update agent_run set instructions=instructions||$3::jsonb,status=case when status='waiting_user' then 'queued' else status end,next_attempt_at=now(),updated_at=now() where user_id=$1 and id=$2", [userId, id, JSON.stringify([{ id:key??randomUUID(), content:key?content.trim():content }])]);
     } else if (action === "resume") {
       if (run.status === "running") throw new Error("Task is already running");
       await client.query("update agent_run set status='queued',control=null,lease_token=null,lease_until=null,next_attempt_at=now(),updated_at=now() where user_id=$1 and id=$2", [userId, id]);
@@ -120,7 +140,7 @@ export async function controlRun(userId: string, id: string, action: "pause" | "
     } else {
       await client.query("update agent_run set status=$3,control=null,updated_at=now() where user_id=$1 and id=$2", [userId, id, action === "pause" ? "paused" : "cancelled"]);
     }
-    await client.query("insert into agent_run_event(user_id,run_id,kind,payload) values($1,$2,'control',$3)", [userId, id, JSON.stringify({ action })]);
+    await client.query("insert into agent_run_event(user_id,run_id,kind,payload) values($1,$2,'control',$3)", [userId, id, JSON.stringify({ action,...(key?{instructionId:key}:{}) })]);
     return true;
   });
 }
