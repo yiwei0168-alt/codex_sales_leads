@@ -1,0 +1,15 @@
+# Mail original availability and cache recovery
+
+## Existing MA24-02 / MAILCRM-03 source-read scope
+
+Old immutable Web eb02b809 actual **21044 exited 1**: after a generated original is cached and reopened, a one-shot association GET 404 leaves the original drawer visible (expected zero, observed one). The fixture independently preserves the underlying generated message and issues no DELETE at this point. This is a client response-boundary reproduction, not genuine account/session revocation or provider quality.
+
+The association read controller now reports explicit 401/403/404 unavailability to its original reader. The reader clears its cached body, association metadata and drawer, and displays a neutral unavailable message with explicit retry. It does not invoke the confirmed-deletion callback or label a missing source as a successful deletion. Generic 5xx and transport errors retain their existing uncertain read behavior. Successful explicit original retry and a new association read restore the available state. Server authorization, encryption, grouping and all mutation semantics remain unchanged.
+
+An intermediate component check additionally exposed a verified association read being overwritten by unchanged initial props when recovery cleared its read-needed flag. The synchronization effect now reacts to an actual current-prop change, retaining verified local readback when the caller does not echo it. This does not add a new server version or page-reload protocol.
+
+## Verification status
+
+Actual React/Chrome availability component checks passed 1366/390/320 widths: each independently tests 401/403/404, original/action clearing, no delete attribution/callback/mutation, explicit original then metadata recovery, fresh metadata surviving old initial props, and 503 not implying revocation. The intermediate stale-initial-metadata failure is retained. Existing three-width association recovery also passes, preserving explicit writes, drawer unmount locks, unknown outcomes and delete acknowledgements. Full TypeScript/four-file lint/diff check is recorded separately.
+
+Native fixed-Web checks are prepared for the existing three window sizes with injected 404, unchanged underlying generated row, no DELETE/no extra PATCH, body/drawer/action clearing, explicit original retry and association read restoration. Packages/native acceptance remain pending. This does not establish genuine generation-period revocation, real mail/business quality, production qualification or deployment; G14-G20 remain deferred.

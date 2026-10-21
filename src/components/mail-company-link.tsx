@@ -1,7 +1,7 @@
 "use client";
 import {useEffect,useRef,useState} from 'react';
 export type MailCompanyLinkValue={companyId?:string|null;companyName?:string|null;source?:string|null};
-type Props={messageId:string;current?:MailCompanyLinkValue|null;onCurrentChange?:(value:MailCompanyLinkValue|null)=>void;onDeleted?:()=>void;onChanged:()=>void};
+type Props={messageId:string;current?:MailCompanyLinkValue|null;onCurrentChange?:(value:MailCompanyLinkValue|null)=>void;onDeleted?:()=>void;onUnavailable?:()=>void;onChanged:()=>void};
 type Company={id:string;displayName:string;country:string};
 function isLink(value:unknown):value is MailCompanyLinkValue|null{
  if(value===null)return true;if(!value||typeof value!=='object')return false;
@@ -9,11 +9,11 @@ function isLink(value:unknown):value is MailCompanyLinkValue|null{
 }
 export function MailCompanyLink(props:Props){return <CompanyLink key={props.messageId} {...props}/>;}
 function CompanyLink(props:Props){return useMailCompanyLink(props);}
-export function useMailCompanyLink({messageId,current,onCurrentChange,onDeleted,onChanged}:Props){
+export function useMailCompanyLink({messageId,current,onCurrentChange,onDeleted,onUnavailable,onChanged}:Props){
  const [saved,setSaved]=useState<MailCompanyLinkValue|null|undefined>(()=>isLink(current)?current:undefined),[companies,setCompanies]=useState<Company[]>([]),[ready,setReady]=useState(false),[company,setCompany]=useState<string>(),[search,setSearch]=useState(''),[notice,setNotice]=useState(''),[error,setError]=useState(''),[busy,setBusy]=useState(false),[needsRead,setNeedsRead]=useState(false);
  const lock=useRef(false),alive=useRef(true);
  useEffect(()=>{alive.current=true;return()=>{alive.current=false;};},[]);
- useEffect(()=>{if(!lock.current&&!needsRead)setSaved(isLink(current)?current:undefined);},[current,needsRead]);
+ useEffect(()=>{if(!lock.current)setSaved(isLink(current)?current:undefined);},[current]);
  const begin=()=>{if(lock.current||!alive.current)return false;lock.current=true;setBusy(true);setError('');return true;};
  const finish=()=>{lock.current=false;if(alive.current)setBusy(false);};
  async function open(){
@@ -24,7 +24,8 @@ export function useMailCompanyLink({messageId,current,onCurrentChange,onDeleted,
   }catch{if(alive.current)setError('候选库读取失败，请重试。');}finally{finish();}
  }
  async function readCurrent(){
-  const response=await fetch(`/api/mailbox/messages/${messageId}`,{cache:'no-store',signal:AbortSignal.timeout(10000)});if(!response.ok)throw new Error();const data=await response.json();
+  const response=await fetch(`/api/mailbox/messages/${messageId}`,{cache:'no-store',signal:AbortSignal.timeout(10000)});
+  if(!response.ok){if(alive.current&&[401,403,404].includes(response.status))onUnavailable?.();throw new Error();}const data=await response.json();
   if(data?.message?.id!==messageId||!isLink(data.companyLink))throw new Error();
   if(alive.current){setSaved(data.companyLink);setCompany(undefined);setNeedsRead(false);onCurrentChange?.(data.companyLink);}
  }

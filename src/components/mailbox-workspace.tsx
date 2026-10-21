@@ -50,7 +50,7 @@ function OriginalMail({messageId,onChanged}:{messageId:string;onChanged:()=>void
   const [loading,setLoading]=useState(false);
   const [readerOpen,setReaderOpen]=useState(false);
   const openButtonRef=useRef<HTMLButtonElement>(null);
-  const companyLinkView=useMailCompanyLink({messageId,current:companyLink,onCurrentChange:setCompanyLink,onDeleted:()=>{setContent(null);setCompanyLink(undefined);setReaderOpen(false);setError("本地邮件已删除，请刷新邮件列表。");},onChanged});
+  const companyLinkView=useMailCompanyLink({messageId,current:companyLink,onCurrentChange:setCompanyLink,onDeleted:()=>{setContent(null);setCompanyLink(undefined);setReaderOpen(false);setError("本地邮件已删除，请刷新邮件列表。");},onUnavailable:()=>{setContent(null);setCompanyLink(undefined);setReaderOpen(false);setError("原邮件当前不可读取，请刷新列表核对。");},onChanged});
   const longBody=content!==null&&(content.bodyText.length>1400||content.bodyText.split(/\r?\n/).length>20);
   async function load(){if(content||loading)return;setLoading(true);setError("");try{const response=await fetch(`/api/mailbox/messages/${messageId}`,{cache:"no-store"});const body=await response.json();if(!response.ok)throw new Error(body.error??"原文读取失败");const message=body.message as MailContent;setContent(message);setCompanyLink(body.companyLink);if(message.bodyText.length>1400||message.bodyText.split(/\r?\n/).length>20)setReaderOpen(true);}catch(reason){setError(reason instanceof Error?reason.message:"原文读取失败");}finally{setLoading(false);}}
   function closeReader(){setReaderOpen(false);requestAnimationFrame(()=>openButtonRef.current?.focus());}

@@ -52,6 +52,7 @@ export async function verifyMa24MailboxReaderClone(options: {
   const browser = await chromium.launch({ channel: "chrome", headless: true });
   const results: Array<Record<string, unknown>> = [];
   const associationScreenshots:string[]=[];
+  const unavailableScreenshots:string[]=[];
   try {
     await mkdir("tmp/ma24-mailbox-reader-clone", { recursive: true });
     for (const viewport of [{ width: 1366, height: 900 }, { width: 1366, height: 360 }, { width: 390, height: 760 }]) {
@@ -67,8 +68,10 @@ export async function verifyMa24MailboxReaderClone(options: {
       let listRequests = 0;
       let detailRequests = 0;
       let associationWrites=0;
+      let localDeletes=0;
       let releaseAssociationAck:(()=>void)|undefined;
       page.on('request',request=>{if(request.method()==='PATCH'&&new URL(request.url()).pathname.startsWith('/api/mailbox/messages/'))associationWrites++;});
+      page.on('request',request=>{if(request.method()==='DELETE'&&new URL(request.url()).pathname.startsWith('/api/mailbox/messages/'))localDeletes++;});
       await page.route("**/api/mailbox/messages**", async route => {
         const path = new URL(route.request().url()).pathname;
         if (path === "/api/mailbox/messages") {
@@ -209,6 +212,16 @@ export async function verifyMa24MailboxReaderClone(options: {
         await reopen.click();
         await expect(drawer).toBeVisible();
         await expect(drawer.locator('p').filter({hasText:/^关联公司：/})).toContainText(associationName);
+        assert.equal((await options.admin.query('select count(*)::int n from mailbox_message where user_id=$1 and id=$2',[options.userId,longId])).rows[0].n,1);
+        await page.route(`**/api/mailbox/messages/${longId}`,route=>route.fulfill({status:404,json:{error:'synthetic-original-unavailable'}}),{times:1});
+        await drawer.getByRole('button',{name:'读取当前关联',exact:true}).click();
+        await expect(drawer).toHaveCount(0);await expect(row.getByRole('alert')).toContainText('原邮件当前不可读取');
+        await expect(row.locator('.mailbox-message-content pre')).toHaveCount(0);await expect(row.getByRole('button',{name:'打开阅读面板'})).toHaveCount(0);
+        await expect(row).not.toContainText('本地邮件已删除');assert.equal(localDeletes,0);assert.equal(associationWrites,2);
+        assert.equal((await options.admin.query('select count(*)::int n from mailbox_message where user_id=$1 and id=$2',[options.userId,longId])).rows[0].n,1);
+        const unavailableShot=`tmp/ma24-mail-original-unavailable-${viewport.width}x${viewport.height}-${longId.slice(0,8)}.png`;await row.screenshot({path:unavailableShot});unavailableScreenshots.push(unavailableShot);
+        await row.getByRole('button',{name:'重试',exact:true}).click();await expect(drawer).toBeVisible();await expect(drawer.locator('pre')).toContainText('Line 80: synthetic mailbox content');
+        await drawer.getByRole('button',{name:'读取当前关联',exact:true}).click();await expect(drawer.locator('p').filter({hasText:/^关联公司：/})).toContainText(associationName);assert.equal(associationWrites,2);
         await drawer.getByRole("button", { name: "关闭窗口" }).click();
         await expect(reopen).toBeFocused();
         const shortRow = page.getByRole("tabpanel").locator(".mailbox-row").filter({ hasText: shortSubject });
@@ -235,7 +248,7 @@ export async function verifyMa24MailboxReaderClone(options: {
         await context.close();
       }
     }
-    return { candidatePage: true, syntheticEncryptedMessages: 3,associationScreenshots,oneGeneratedLocalMessageDeletedAtFinalViewport:true,manualAssociationDisplayMatchesSavedOriginal:true,companyIdentityDistinctFromMarketCandidate:true,unchangedAssociationDoesNotWrite:true,explicitUnlinkAndRelinkThroughUi:true,reopenedDrawerRetainsReadBackAssociation:true,heldCommittedAssociationAckSurvivesDrawerCloseReopen:true, modelCalls: 0, mailSends: 0, results };
+    return { candidatePage: true, syntheticEncryptedMessages: 3,associationScreenshots,unavailableScreenshots,injected404ClearsCachedOriginalAndDrawerWithoutDeleteClaim:true,underlyingGeneratedOriginalPreserved:true,explicitOriginalRetryAndAssociationReadRecover:true,oneGeneratedLocalMessageDeletedAtFinalViewport:true,manualAssociationDisplayMatchesSavedOriginal:true,companyIdentityDistinctFromMarketCandidate:true,unchangedAssociationDoesNotWrite:true,explicitUnlinkAndRelinkThroughUi:true,reopenedDrawerRetainsReadBackAssociation:true,heldCommittedAssociationAckSurvivesDrawerCloseReopen:true, modelCalls: 0, mailSends: 0, results };
   } finally {
     await browser.close();
   }
