@@ -51,6 +51,9 @@ export async function captureSkillAcceptanceLedger(client:PoolClient,userId:stri
    ...(runtime.runtimeTaskCount?{runtimeTaskLedgerHash:runtime.runtimeTaskLedgerHash}:{})}),acceptanceLedgerRuntimeTaskCount:runtime.runtimeTaskCount,
    acceptanceLedgerRuntimeLiveReadTaskCount:runtime.runtimeLiveReadTaskCount??0,
    acceptanceLedgerRuntimeLiveReadSourcesRevalidated:runtime.runtimeLiveReadSourcesRevalidated===true,
+   acceptanceLedgerRuntimeExecutionPoliciesRevalidated:runtime.runtimeExecutionPoliciesRevalidated===true,
+   acceptanceLedgerRuntimeExecutionPolicyCount:runtime.runtimeExecutionPolicyCount,
+   acceptanceLedgerRuntimeExecutionPolicyManifestHash:runtime.runtimeExecutionPolicyManifestHash,
    acceptanceLedgerAttemptCount:attempts.length,acceptanceLedgerCaptureCount:captures.length,acceptanceLedgerDeclarationCount:declarations.length};
  });
 }

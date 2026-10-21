@@ -1,0 +1,58 @@
+{
+  "date": "2026-10-21",
+  "stage": "server-production-graph-execution-qualification-for-completed-frozen-read-trials",
+  "rule": "MA24-06",
+  "scope": "G01-G13",
+  "productionExecutionScope": "completed-owned-frozen-read-trials-v1",
+  "ordinaryLifecycleEquivalent": false,
+  "sourceFiles": {
+    "src/lib/assistant/main/skill-production-execution.ts": "c8de63099d4c308002c04863a43518af63479c4993527aaa4460cbc1999b18b8",
+    "src/lib/assistant/main/skill-production-execution.test.ts": "c9bcce051bd0973fdb4b85f18a7cf1b4ed8f1d69bbe8e735240ea07faf766d3d",
+    "src/lib/assistant/main/skill-runtime-material-sources.ts": "aceae3e73296ee5a53b5ce7ead8a6cb01402905de2c399ed0ec7b3e4d490a334",
+    "src/lib/assistant/main/skill-acceptance-ledger.ts": "d49c34c47e50053dded8f50431f354300e2ac1002db3f0aae970ec25b3ed12c2",
+    "src/lib/assistant/main/skill-acceptance-ledger.test.ts": "dca20bc67e399f1d9237c4e9a9c96ab6a8845fd9e128ca7d91e7cadfa6715171",
+    "src/lib/assistant/main/skill-locked-transport-receipts.ts": "ee6dad4c26e508459da4990412d60542ae0f934fdbe71f61d7f1038404ad8650",
+    "src/lib/assistant/main/skill-locked-transport-receipts.test.ts": "2eaf4cc1aa6fabf25c67bcfb1b4c8fcc544d3dfd42defba2207594650a59f12c",
+    "src/lib/assistant/main/skill-locked-materials.ts": "02828b171dd1a4417503843204682afbdcf5ac8e57e3d6f66c202a698a9ec28b",
+    "src/lib/assistant/main/skill-locked-materials.test.ts": "df1da2ba7b607cab15177c7dde11da49928610c369d45e4d1d92d6d90f4c650e",
+    "src/lib/assistant/main/skill-final-activation.ts": "bb4fd43ec9b5bc7e2ae751f812edccf7c3352af9885bbb152da25a98ae0fe4d6",
+    "src/lib/assistant/main/skill-final-activation.test.ts": "9e4321cbbe236eea63e20a72c8aa377e1519f8bede79e22092aa257eff276ef4",
+    "scripts/fixtures/skill-final-activation-negative-db.ts": "e784c41cd9b9d614fc5a14e2a0b99b3b978e6d7ed74cfede50afccf6c26c3b5f",
+    "scripts/fixtures/skill-runtime-material-db.ts": "6f21c011c6a763a4c966c0035584c316727e6039541453ea863a9fd7ae8b87e4"
+  },
+  "checks": {
+    "tests": {
+      "sessionId": 91690,
+      "exitCode": 0,
+      "log": "tmp/ma24-production-execution-tests-accepted.log",
+      "logSha256": "b2e97bd9eaecfc9b4dcef57ad59ab389e13b399a9a7dabb5a562096fefc353e1"
+    },
+    "typecheck": {
+      "sessionId": 54457,
+      "exitCode": 0,
+      "log": "tmp/ma24-production-execution-typecheck-accepted.log",
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "lint": {
+      "sessionId": 22871,
+      "exitCode": 0,
+      "log": "tmp/ma24-production-execution-lint-accepted.log",
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "testsPassed": 161,
+  "databaseVerification": {
+    "status": "pending",
+    "declaredPolicyMaterialLedgerRequired": true,
+    "actualMissingEvidenceRejectionRequired": true,
+    "positiveTransactionCasesUseExplicitMockProducer": true
+  },
+  "productionQualificationProducerImplemented": true,
+  "positiveProducerTestsAreHypothetical": true,
+  "productionImagesRebuilt": false,
+  "actualQualifiedProductionBundleCreated": false,
+  "firstProviderExecutionVerified": false,
+  "realModelCalls": 0,
+  "humanApprovalCreated": false,
+  "automaticProductionActivationPerformed": false
+}

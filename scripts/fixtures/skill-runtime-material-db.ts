@@ -26,6 +26,7 @@ export async function verifySkillRuntimeMaterialDatabase(pool:Pool,userId:string
  assert.equal(stored[input.caseId].taskId,input.taskId);
  await tenantTransaction(userId,async client=>withBoundTenantTransaction(client,userId,async()=>{
   const locked=await lockSkillRuntimeMaterialSources(client,userId,evidence.artifact);assert.equal(locked.runtimeTaskCount,1);assert(locked.runtimeTaskLedgerHash);
+  assert.equal(locked.runtimeExecutionPoliciesRevalidated,true);assert.equal(locked.runtimeExecutionPolicyCount,1);assert(locked.runtimeExecutionPolicyManifestHash);
   const privateSources=await revalidateLockedSkillPrivateReceipts(userId,material.receipts);assert(privateSources.privateReceiptCount>=2);
   const tool=(await pool.query('select id from agent_tool_call where run_id=$1 order by id limit 1',[input.taskId])).rows[0];assert(tool);
   for(const [sql,id] of [['update agent_run set result=result where id=$1',input.taskId],['update agent_tool_call set output=output where id=$1',tool.id]]){

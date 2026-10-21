@@ -55,8 +55,9 @@ export async function revalidateLockedSkillTransportReceipts(client:PoolClient,c
    else processClaims.push(...summarizeRuntimeProcessCoverage({receiptHashes:out.transportReceiptHashes,claims:out.runtimeProcessClaims}).claims);
    audits.push({sourceHash:digest(source),journalHash:out.journalHash,receiptHashes:out.transportReceiptHashes,validBefore:out.transportValidBefore,signingEnrollmentHash:digest(bindings),signingWindowHash:digest(ranges)});
   };
-  for(const runId of runs)retain({runId},await verifyOwnedTaskModelTransports(context,{runId},now));
-  for(const ref of arms)retain(ref,await verifySkillCandidateJournalTransports(context,ref,{freezeId,plan:evidence.artifact.plan},now));
+  let originalReceiptCount=0,evaluationReceiptCount=0;
+  for(const runId of runs){const out=await verifyOwnedTaskModelTransports(context,{runId},now);retain({runId},out);originalReceiptCount+=out.transportReceiptHashes.length;}
+  for(const ref of arms){const out=await verifySkillCandidateJournalTransports(context,ref,{freezeId,plan:evidence.artifact.plan},now);retain(ref,out);evaluationReceiptCount+=out.transportReceiptHashes.length;}
   const after=await readLockedSkillAcceptanceEvidence(client,context,bundleId);
   if(after.artifactHash!==evidence.artifactHash||digest(await loadConfiguredSkillRunnerTrustRegistry(context.userId))!==registryHash)
    throw new Error('Acceptance transport evidence or trust changed during audit');
@@ -73,6 +74,7 @@ export async function revalidateLockedSkillTransportReceipts(client:PoolClient,c
    transportSigningEnrollmentWindows:mergeSkillSigningEnrollmentWindows(windows),
    transportAuditHash:digest(audits),transportRegistryHash:registryHash,transportOriginalTaskCount:runs.length,transportEvaluationArmCount:arms.length,
    transportReceiptCount:audits.reduce((count,row)=>count+row.receiptHashes.length,0),
+   transportOriginalReceiptCount:originalReceiptCount,transportEvaluationReceiptCount:evaluationReceiptCount,
    transportCheckedAt:checkedAt.toISOString(),transportValidBefore:new Date(validBefore).toISOString()};
  });
 }

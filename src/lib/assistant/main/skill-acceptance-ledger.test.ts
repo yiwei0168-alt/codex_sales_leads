@@ -28,6 +28,7 @@ beforeEach(()=>{
 it('retains freeze -> origins -> capture order and returns hashes/counts only',async()=>{
  m.captures=[{id:id(6),run_id:id(5),capture:{private:'capture body'},campaign:{private:'config'}}];
  const result=await capture();expect(result).toMatchObject({acceptanceLedgerRevalidated:true,acceptanceLedgerCaptureCount:1});
+ expect(result).toMatchObject({acceptanceLedgerRuntimeExecutionPoliciesRevalidated:false,acceptanceLedgerRuntimeExecutionPolicyCount:0});
  expect(JSON.stringify(result)).not.toContain('private');expect(m.freeze.mock.invocationCallOrder[0]).toBeLessThan(m.origins.mock.invocationCallOrder[0]);
  const lock=m.query.mock.calls.findIndex(([sql])=>sql.startsWith('select lock_skill_shadow'));
  expect(m.origins.mock.invocationCallOrder[0]).toBeLessThan(m.query.mock.invocationCallOrder[lock]);

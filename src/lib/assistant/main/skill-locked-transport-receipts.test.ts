@@ -59,7 +59,8 @@ it.each(['complete','missing-fallback','dropped-fallback'])('retains %s process 
   await expect(revalidateLockedSkillTransportReceipts(client,context,bundleId)).rejects.toThrow('coverage changed');return;
  }
  const out=await revalidateLockedSkillTransportReceipts(client,context,bundleId);
- expect(out).toMatchObject({transportReceiptCount:20,runtimeProcessCoverageComplete:mode==='complete',runtimeProcessMissingClaimCount:mode==='complete'?0:1});
+ expect(out).toMatchObject({transportReceiptCount:20,transportOriginalReceiptCount:4,transportEvaluationReceiptCount:16,
+  runtimeProcessCoverageComplete:mode==='complete',runtimeProcessMissingClaimCount:mode==='complete'?0:1});
  if(!out.transportReceiptsRequired)throw new Error('Expected production transport coverage');
  expect(out.runtimeProcessClaims).toHaveLength(20);expect(out.runtimeProcessReceiptHashes).toHaveLength(20);
  expect(out).not.toHaveProperty('productionAgentEquivalent');expect(out).not.toHaveProperty('runtimeProcessPackagesRevalidated');

@@ -279,7 +279,7 @@ it('composes authenticated registered collector provenance while keeping quality
   const out=await evaluateLockedSkillAcceptanceReadiness(client,{userId:id(1)},acceptedBundle);
   expect(out).toMatchObject({collectorProvenanceVerified:true,collectorProvenanceBlockers:[],policyPassed:false,
    sourceRevocationGuardsReady:true,sourceRevocationsLocked:false,sourceProtectionTransactionId:'42',automaticActivation:false});
-  expect(out).toHaveProperty('collectorProvenanceHash',expect.stringMatching(/^[a-f0-9]{64}$/));expect(out).not.toHaveProperty('productionAgentEquivalent');
+  expect(out).toHaveProperty('collectorProvenanceHash',expect.stringMatching(/^[a-f0-9]{64}$/));expect(out.productionAgentEquivalent).toBe(false);
   m.packages.mockResolvedValue({runtimePackagesRequired:true,runtimePackagesRegistered:false,runtimePackageBlockers:['latest-package-registration-withdrawn']});
   expect(await evaluateLockedSkillAcceptanceReadiness(client,{userId:id(1)},acceptedBundle)).toMatchObject({collectorProvenanceVerified:false,automaticActivation:false});
  }finally{registry.mockRestore();mode.mockRestore();}
@@ -305,7 +305,7 @@ it('passes the authenticated receipt/process coverage into the retained package 
   runtimeProcessPackagesRevalidated:false,runtimeProcessPackageBlockers:['runtime-process-claim-missing']});
  const out=await evaluateLockedSkillAcceptanceReadiness(client,context,bundleId);
  expect(m.packages.mock.calls[0][2]).toMatchObject({transportProcesses:{receiptHashes,claims}});
- expect(out).toMatchObject({runtimeProcessPackagesRevalidated:false,automaticActivation:false});expect(out).not.toHaveProperty('productionAgentEquivalent');
+ expect(out).toMatchObject({runtimeProcessPackagesRevalidated:false,automaticActivation:false,productionAgentEquivalent:false});
 });
 it('returns a missing-package blocker without substituting a package deadline or qualifying production',async()=>{
  m.runner.mockResolvedValue(declaration);m.transports.mockResolvedValue(transports);

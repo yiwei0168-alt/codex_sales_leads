@@ -26,6 +26,7 @@ import {skillAcceptanceRunIds} from './skill-acceptance-run-locks';
 import {captureSkillAcceptanceLedger} from './skill-acceptance-ledger';
 import {qualifySkillCollectorProvenance} from './skill-collector-provenance';
 import {prepareSkillSourceProtection} from './skill-source-protection';
+import {qualifySkillProductionExecution} from './skill-production-execution';
 
 /** Keep consumed receipts in a private closure inside the owning transaction;
  * public wrappers expose hashes/counts only, never source contents or callbacks. */
@@ -153,6 +154,9 @@ export async function evaluateLockedSkillAcceptanceReadiness(client:PoolClient,c
    ownerId:context.userId,bundleId,freezeId:final.freezeStatus.freezeId,sourceKind:final.artifact.sourceKind,
    currentRuntimeIdentityHash:policy.currentRuntimeIdentityHash,frozenRuntimeIdentityHash:digest(final.artifact.plan.identity),
    decisionMemorySnapshotRevalidated:true,memoryTimeFenceRevalidated:true,trustRegistryLocked:!!registry});
+  const execution=qualifySkillProductionExecution({ownerId:context.userId,bundleId,freezeId:final.freezeStatus.freezeId,artifactHash:final.artifactHash,
+   sourceKind:final.artifact.sourceKind,plan:final.artifact.plan,originalTaskCount:skillAcceptanceRunIds(final.artifact).length,
+   policy,materials,collector,transports:finalTransports,packages,ledger:acceptanceLedger,times:methodTimes,sources:sourceProtection});
   return {...policy,prospectiveCaptureSourcesLocked:materials.prospectiveCaptureSourcesLocked,prospectiveJobCount:materials.prospectiveJobCount,knowledgeSourcesLocked:materials.knowledgeSourcesLocked,decisionMemorySourcesLocked:materials.decisionMemorySourcesLocked,timelineSourcesLocked:materials.timelineSourcesLocked,timelineCustomerCount:materials.timelineCustomerCount,mailReadSourcesLocked:materials.mailReadSourcesLocked,mailCount:materials.mailCount,attachmentMetadataLocked:materials.attachmentMetadataLocked,attachmentCount:materials.attachmentCount,taskOriginsLocked:materials.taskOriginsLocked,taskJournalsLocked:materials.taskJournalsLocked,runCount:materials.runCount,materials:materials.materials,materialsHash:materials.materialsHash,sourcePayloadsRevalidated:true as const,
    pinnedMethodSourcesLocked:materials.pinnedMethodSourcesLocked,pinnedMethodPinCount:materials.pinnedMethodPinCount,
    skillCatalogSourcesLocked:materials.skillCatalogSourcesLocked,
@@ -174,6 +178,7 @@ export async function evaluateLockedSkillAcceptanceReadiness(client:PoolClient,c
    ...acceptanceLedger,
    ...collector,
    ...sourceProtection,
+   ...execution,
    pinnedMethodVersionCount:materials.pinnedMethodVersionCount,pinnedMethodExperienceObservationCount:materials.pinnedMethodExperienceObservationCount,
    automaticActivation:false as const};
   });

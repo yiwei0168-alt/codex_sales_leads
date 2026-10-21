@@ -49,6 +49,7 @@ export async function lockSkillRuntimeMaterialSources(client:PoolClient,userId:s
  const refs=skillRuntimeMaterialReferences(artifact);
  if(!refs.length)return {runtimeTaskSourcesLocked:true as const,runtimeTaskCount:0,runtimeTaskLedgerHash:null,
   runtimePrivateReadSourcesLocked:true as const,runtimeTimelineCustomerCount:0,runtimeMailCount:0,
+  runtimeExecutionPoliciesRevalidated:false,runtimeExecutionPolicyCount:0,runtimeExecutionPolicyManifestHash:digest([]),
   runtimeLiveReadSourcesRevalidated:true as const,runtimeLiveReadTaskCount:0,runtimeLiveReadSourceManifestHash:digest([])};
  const plan=skillAcceptancePlanSchema.parse(artifact.plan),freezeId=z.object({collector:z.object({freezeId:z.uuid()}).passthrough()}).passthrough().parse(artifact.rawReceipts).collector.freezeId;
  if(plan.pin.ownerId!==userId)throw new Error('Runtime material owner changed');
@@ -57,6 +58,7 @@ export async function lockSkillRuntimeMaterialSources(client:PoolClient,userId:s
    `select r.id,r.user_id,r.status,r.execution_kind,r.execution_spec,to_jsonb(r) snapshot from agent_run r
     where r.user_id=$1 and r.id=any($2::uuid[]) order by r.id for update of r`,[userId,refs.map(row=>row.taskId)])).rows;
   if(tasks.length!==refs.length)throw new Error('Runtime material task unavailable');
+  const policies=[];
   for(const task of tasks){
    const ref=refs.find(row=>row.taskId===task.id)!,spec=skillCandidateTaskSpecSchema.parse(task.execution_spec),item=plan.cases.find(row=>row.id===ref.caseId);
    if(task.user_id!==userId||task.status!=='completed'||task.execution_kind!=='main-agent-evaluation'||!item
@@ -66,6 +68,8 @@ export async function lockSkillRuntimeMaterialSources(client:PoolClient,userId:s
     ||spec.identityHash!==digest(plan.identity)||spec.inputHash!==item.inputHash||spec.sourceHash!==item.sourceHash)
     throw new Error('Runtime material task binding changed');
    z.object({reply:z.string()}).strict().parse(task.snapshot.result);
+   policies.push({taskId:task.id,caseId:spec.caseId,arm:spec.arm,evaluationId:spec.evaluationId,
+    executionPolicy:spec.executionPolicy??null,readExecution:spec.readExecution??'saved-receipt-read-v1'});
   }
   const tools=(await client.query<{user_id:string;run_id:string;tool_id:string;effect:string;status:string;input:unknown;input_hash:string;approval_id:string|null;snapshot:unknown}>(
    `select c.user_id,c.run_id,c.tool_id,c.effect,c.status,c.input,c.input_hash,c.approval_id,to_jsonb(c) snapshot from agent_tool_call c
@@ -77,7 +81,10 @@ export async function lockSkillRuntimeMaterialSources(client:PoolClient,userId:s
   return {runtimeTaskSourcesLocked:true as const,runtimeTaskCount:tasks.length,
    runtimePrivateReadSourcesLocked:true as const,runtimeTimelineCustomerCount:readSources.timelineCustomerCount,runtimeMailCount:readSources.mailCount,
    ...liveSources,
+   runtimeExecutionPoliciesRevalidated:policies.every(row=>row.executionPolicy!==null),
+   runtimeExecutionPolicyCount:policies.filter(row=>row.executionPolicy!==null).length,runtimeExecutionPolicyManifestHash:digest(policies),
    runtimeTaskLedgerHash:digest({protocol:'skill-runtime-material-ledger-v1',tasks:tasks.map(row=>row.snapshot),tools:tools.map(row=>row.snapshot),
+    executionPolicyManifestHash:digest(policies),
     ...(liveSources.runtimeLiveReadTaskCount?{liveSourceManifestHash:liveSources.runtimeLiveReadSourceManifestHash}:{})})};
  });
 }

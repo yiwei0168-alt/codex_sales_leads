@@ -19,6 +19,7 @@ import {productNodeBuildOptions} from '../lib/product-node-build.mjs';
 import {skillCommitFault} from '../lib/ma24-skill-commit-fault';
 import {readLockedSkillAcceptanceEvidence} from '../../src/lib/assistant/main/skill-acceptance-store';
 import {skillAcceptanceJudgmentSchema} from '../../src/lib/assistant/main/skill-acceptance-policy';
+import {SKILL_PRODUCTION_EXECUTION_SCOPE} from '../../src/lib/assistant/main/skill-production-execution';
 
 /** Disposable database only. The real producer must reject missing evidence.
  * SQL commit/rollback cases then replace ONLY that producer with an explicit
@@ -111,7 +112,12 @@ export async function verifyFinalActivationDatabase(pool:Pool,owner:string,other
    return {...${JSON.stringify(Object.fromEntries(flags.map(key=>[key,true])))},artifactHash:row.artifact_hash,latestReviewHash:${JSON.stringify(digest([]))},
     sourceRevocationsLocked:false,sourceProtectionHash:'${digest('mock source preparation')}',sourceProtectionTransactionId:protectedSource.transaction_id,
     materialsHash:'${digest('mock materials')}',currentRuntimeIdentityHash:'${digest(artifact.plan.identity)}',trustRegistryHash:'${digest(registry)}',runtimePackageRegistrationHash:'${digest('mock package')}',
-    runtimePackageRevisions:${JSON.stringify(packageRevisions)},...fence,...ledger,blockers:[],acceptanceTimeCheckedAt:now.toISOString(),acceptanceValidBefore:new Date(Math.min(
+    runtimePackageRevisions:${JSON.stringify(packageRevisions)},...fence,...ledger,
+    productionExecutionScope:${JSON.stringify(SKILL_PRODUCTION_EXECUTION_SCOPE)},productionExecutionProofHash:'${digest('mock execution qualification')}',ordinaryLifecycleEquivalent:false,
+    runtimeProcessCoverageComplete:true,runtimeProcessMissingClaimCount:0,runtimeProcessCoverageHash:'${digest('mock process coverage')}',
+    runtimeProcessPackagesRevalidated:true,runtimeProcessPackageBindingHash:'${digest('mock process binding')}',
+    acceptanceLedgerRuntimeExecutionPoliciesRevalidated:true,acceptanceLedgerRuntimeExecutionPolicyManifestHash:'${digest('mock policy manifest')}',
+    blockers:[],acceptanceTimeCheckedAt:now.toISOString(),acceptanceValidBefore:new Date(Math.min(
      now.getTime()+(process.env.MA24_ACTIVATION_EXPIRY==='1'?2000:3600000),fence.memoryTimeValidBefore?Date.parse(fence.memoryTimeValidBefore):Infinity,
      Date.parse(row.plan.expiresAt),
      ${JSON.stringify(sourceSnapshot.activationSourcesValidBefore)}?Date.parse(${JSON.stringify(sourceSnapshot.activationSourcesValidBefore)}):Infinity)).toISOString(),

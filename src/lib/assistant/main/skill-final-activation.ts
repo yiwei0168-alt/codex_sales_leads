@@ -8,6 +8,7 @@ import {configuredSkillRunnerTrustRegistryMode} from './skill-runner-attestation
 import {LeaseLostError,InstructionsChangedError} from './repository';
 import {skillActivationBindingSchema} from './skill-activation-binding';
 import {skillAcceptanceRunIds} from './skill-acceptance-run-locks';
+import {SKILL_PRODUCTION_EXECUTION_SCOPE} from './skill-production-execution';
 
 const unavailable='Skill replay and shadow acceptance required before Agent activation: trusted production evidence gate unavailable';
 const sha=z.string().regex(/^[a-f0-9]{64}$/);
@@ -15,6 +16,11 @@ const inputSchema=z.object({id:z.uuid(),version:z.number().int().positive(),oper
 const actorSchema=z.object({userId:z.uuid(),role:z.enum(['admin','member']),runId:z.uuid(),leaseToken:z.uuid(),callId:z.uuid(),instructionIds:z.array(z.uuid())}).passthrough();
 const dataSchema=z.object({updated:z.literal(true),acceptanceBundleId:z.uuid(),acceptanceArtifactHash:sha,activationProofHash:sha}).strict();
 const proofSchema=z.object({policyPassed:z.literal(true),blockers:z.array(z.string()).max(0),
+ productionExecutionScope:z.literal(SKILL_PRODUCTION_EXECUTION_SCOPE),productionExecutionProofHash:sha,
+ ordinaryLifecycleEquivalent:z.literal(false),
+ runtimeProcessCoverageComplete:z.literal(true),runtimeProcessMissingClaimCount:z.literal(0),runtimeProcessCoverageHash:sha,
+ runtimeProcessPackagesRevalidated:z.literal(true),runtimeProcessPackageBindingHash:sha,
+ acceptanceLedgerRuntimeExecutionPoliciesRevalidated:z.literal(true),acceptanceLedgerRuntimeExecutionPolicyManifestHash:sha,
  artifactHash:sha,latestReviewHash:sha,materialsHash:sha,currentRuntimeIdentityHash:sha,
  trustRegistryLocked:z.literal(true),trustRegistryHash:sha,sourceRevocationsLocked:z.literal(false),collectorProvenanceVerified:z.literal(true),productionAgentEquivalent:z.literal(true),
  sourceRevocationGuardsReady:z.literal(true),sourceProtectionHash:sha,sourceProtectionTransactionId:z.string().regex(/^[1-9][0-9]*$/),
@@ -158,7 +164,8 @@ export async function activateAgentSkill(context:Pick<ExecutionContext,'userId'|
     await client.query("insert into agent_run_event(user_id,run_id,kind,payload) values($1,$2,'skill_activated',$3)",
      [context.userId,actor.runId,JSON.stringify({protocol:'skill-final-activation-v1',validBefore:proof.acceptanceValidBefore,actorRole:actor.role,
       callId:actor.callId,skillId:action.id,version:action.version,...data,latestReviewHash:proof.latestReviewHash,sourceFenceId,sourceRevocationsLocked:true,
-      sourceProtectionHash:proof.sourceProtectionHash})]);
+      sourceProtectionHash:proof.sourceProtectionHash,productionExecutionScope:proof.productionExecutionScope,
+      productionExecutionProofHash:proof.productionExecutionProofHash})]);
     const time=(await client.query<{valid:boolean}>(`select clock_timestamp()<$1::timestamptz and exists(select 1 from agent_run
      where user_id=$2 and id=$3 and lease_token=$4 and status='running' and control is null and lease_until>clock_timestamp()) valid`,
     [proof.acceptanceValidBefore,context.userId,actor.runId,actor.leaseToken])).rows[0]?.valid;

@@ -14,21 +14,25 @@ vi.mock('./skill-locked-materials',()=>({evaluateLockedSkillAcceptanceReadiness:
 vi.mock('./memory-message-guard',()=>({withCurrentDecisionMemory:m.memory}));
 import {activateAgentSkill} from './skill-final-activation';
 import {digest,result} from './contracts';
+import {SKILL_PRODUCTION_EXECUTION_SCOPE} from './skill-production-execution';
 const id=(n:number)=>`00000000-0000-4000-8000-${String(n).padStart(12,'0')}`;
 const actor={userId:id(1),role:'member' as const,runId:id(2),leaseToken:id(3),callId:id(4),instructionIds:[]};
 const action={id:id(5),version:1,operation:'enable' as const},bundle={id:id(6),artifact_hash:digest('artifact'),source_kind:'production-runner-pending-verification'};
 const selection={scope:'account',files:{'SKILL.md':'Read original evidence'},dependencies:[],validation:{scripts:'none',dependencies:'none'}};
 const runtimeIdentity={runtimeHash:digest('runtimeHash')};
-// This is a mock of the future fully qualified producer. No real collector or
+// This is hypothetical complete producer output. No real collector or
 // human judgment is inserted and no genuine production eligibility is asserted.
 const qualified=()=>Object.fromEntries([
  ...['policyPassed','trustRegistryLocked','sourceRevocationGuardsReady','collectorProvenanceVerified','productionAgentEquivalent','canonicalOriginalCoverageRequired','canonicalOriginalCoverageRevalidated',
  'runnerDeclarationRequired','runnerDeclarationRevalidated','transportReceiptsRequired','transportReceiptsRevalidated','signingEnrollmentCoverageRequired','signingEnrollmentCoverageRevalidated',
  'runtimePackagesRequired','runtimePackagesRegistered','runtimePackageBytesPairRevalidated','runtimeModuleFormatPairRevalidated','methodExperienceTimesRevalidated',
+ 'runtimeProcessCoverageComplete','runtimeProcessPackagesRevalidated','acceptanceLedgerRuntimeExecutionPoliciesRevalidated',
  'decisionMemorySnapshotRevalidated','activationSourcesRevalidated','memoryReceiptSourcesRevalidated','memoryTimeFenceRevalidated','privateReceiptSourcesRevalidated','lockedEvidencePolicyEvaluated','sourcePayloadsRevalidated',
  'knowledgeSourcesLocked','decisionMemorySourcesLocked','skillCatalogSourcesLocked','pinnedMethodSourcesLocked','taskOriginsLocked','taskJournalsLocked',
  'prospectiveCaptureSourcesLocked','timelineSourcesLocked','mailReadSourcesLocked','attachmentMetadataLocked'].map(key=>[key,true]),
- ...['artifactHash','latestReviewHash','materialsHash','currentRuntimeIdentityHash','trustRegistryHash','runtimePackageRegistrationHash','acceptanceLedgerHash','sourceProtectionHash'].map(key=>[key,digest(key)]),
+ ...['artifactHash','latestReviewHash','materialsHash','currentRuntimeIdentityHash','trustRegistryHash','runtimePackageRegistrationHash','acceptanceLedgerHash','sourceProtectionHash',
+  'productionExecutionProofHash','runtimeProcessCoverageHash','runtimeProcessPackageBindingHash','acceptanceLedgerRuntimeExecutionPolicyManifestHash'].map(key=>[key,digest(key)]),
+ ['productionExecutionScope',SKILL_PRODUCTION_EXECUTION_SCOPE],['ordinaryLifecycleEquivalent',false],['runtimeProcessMissingClaimCount',0],
  ['sourceRevocationsLocked',false],['sourceProtectionTransactionId','42'],
  ['acceptanceLedgerRevalidated',true],
  ['artifactHash',bundle.artifact_hash],['blockers',[]],['acceptanceTimeCheckedAt','2026-10-20T00:00:00.000Z'],['acceptanceValidBefore','2026-10-20T01:00:00.000Z'],
@@ -75,6 +79,18 @@ it('uses registry -> catalog admission -> bundle/Skill evidence order and atomic
  expect(JSON.parse(params[9]).runtimeHash).toBe(runtimeIdentity.runtimeHash);
  expect(m.state.audit[0]).toMatchObject({sourceRevocationsLocked:true,sourceProtectionHash:digest('sourceProtectionHash')});
  expect(m.commits).toBe(1);expect(m.rollbacks).toBe(0);
+});
+it.each(['productionExecutionScope','productionExecutionProofHash','runtimeProcessCoverageHash','runtimeProcessPackageBindingHash','acceptanceLedgerRuntimeExecutionPolicyManifestHash'])
+ ('rejects a true legacy qualification flag without %s',async field=>{
+  const proof=qualified();delete proof[field];m.readiness.mockResolvedValue(proof);
+  await expect(activateAgentSkill(actor,action)).rejects.toThrow('trusted production evidence');
+  expect(m.state.enabled).toBe(false);expect(m.state.audit).toHaveLength(0);
+ });
+it.each(['scope','lifecycle','missing-process'])('rejects an unsupported %s qualification claim',async kind=>{
+ const proof=qualified();if(kind==='scope')proof.productionExecutionScope='all-future-tasks';
+ if(kind==='lifecycle')proof.ordinaryLifecycleEquivalent=true;if(kind==='missing-process')proof.runtimeProcessMissingClaimCount=1;
+ m.readiness.mockResolvedValue(proof);
+ await expect(activateAgentSkill(actor,action)).rejects.toThrow('trusted production evidence');expect(m.state.enabled).toBe(false);
 });
 it('refuses a readiness runtime identity differing from the frozen plan',async()=>{
  m.readiness.mockResolvedValue({...qualified(),currentRuntimeIdentityHash:digest('different identity')});
