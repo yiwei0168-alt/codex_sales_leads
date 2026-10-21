@@ -25,7 +25,7 @@ export function MemoryObservations(){
       .catch(()=>{if(!controller.signal.aborted){setItems([]);setHasMore(false);setError("记忆观察读取失败，请重试");setLoading(false);}});
     return()=>controller.abort();
   },[view,offset,revision]);
-  function changeView(next:View){setView(next);setOffset(0);setLoading(true);setItems([]);setEditing(null);setNotice('');}
+  function changeView(next:View){setView(next);setOffset(0);setLoading(true);setItems([]);setEditing(null);setNotice('');setRevision(value=>value+1);}
   function refresh(){setLoading(true);setItems([]);setHasMore(false);setError('');setRevision(value=>value+1);}
   function changePage(next:number){setOffset(next);setLoading(true);setItems([]);setHasMore(false);setError('');setEditing(null);}
   function startCorrection(id:string,original:string,cardId=id){setEditing({id,cardId,original});setContent(original);setReason('');setEditError('');setNotice('');setTimeMode('preserve');setValidFrom('');setValidUntil('');}

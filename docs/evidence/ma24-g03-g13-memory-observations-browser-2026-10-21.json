@@ -2,14 +2,335 @@
   "date": "2026-10-21",
   "rule": "MA24-04 existing sourced temporal memory and G13 recovery interactions",
   "scope": "Memory observation readback recovery and actual browser correction/history/conflict/undo flows",
-  "status": "component-passed-fixed-package-and-database-browser-pending",
+  "status": "followup-component-passed-new-fixed-package-and-database-browser-pending",
   "sourceFilesCanonicalLf": {
-    "src/components/memory-observations.tsx": "7e68027ddbd692ca2076cf3effd1f13215a0f075694d7776c2599a1f7f435a82",
-    "scripts/verify-memory-correction-ui.ts": "1d7ec91bb43a462fb2a7db731e9c6e3e882389ef2b81204dd2def1ae239fa7e9",
-    "scripts/verify-memory-observations-fixed-web.ts": "9ab0193468c44c9c2269e357f8637dd29c08a4d734d75dfdd9249fb0ddaf5e67",
+    "src/components/memory-observations.tsx": "cd6ba5854b85e5fc46479ec6901c9e75fdfdbb3652c8f96b9520f2b897eb1c90",
+    "scripts/verify-memory-correction-ui.ts": "3f437ab337b71bf0b3e6c614ad108ad3ca5669d50115f648f8078e8ee2165f5f",
+    "scripts/verify-memory-observations-fixed-web.ts": "dda3921713c4731abe46deee6699d594b5bfccb272890277ff6cc355a43a0bf4",
     "scripts/verify-ma24-fresh-pilot-new-cluster.ts": "790cb70226a9c07d94d91a3a1226242ffdc8a7910005b6c81ddc6a2682eef993"
   },
   "checks": {
+    "componentBrowser": {
+      "exitCode": 0,
+      "log": "tmp/ma24-memory-readback-ui-active-tab.log",
+      "logSha256": "b4a5b87d279f92ff26e2cc1ef115125007f1c6e9e2760b4f10fdaa8af3c08236",
+      "result": {
+        "componentHarness": true,
+        "viewports": 3,
+        "activeViewReloadVerified": true,
+        "cancelNoWrite": true,
+        "staleEditPreserved": true,
+        "savedWriteReadbackFailureClearsOldActions": true,
+        "explicitReadRetryRecovers": true,
+        "saveAndRefresh": true,
+        "keyboardFocus": true,
+        "scrollAndNoOverflow": true,
+        "modelCalls": 0,
+        "screenshots": [
+          "tmp/memory-correction-ui/editor-1366.png",
+          "tmp/memory-correction-ui/1366.png",
+          "tmp/memory-correction-ui/editor-390.png",
+          "tmp/memory-correction-ui/390.png",
+          "tmp/memory-correction-ui/editor-320.png",
+          "tmp/memory-correction-ui/320.png"
+        ]
+      },
+      "actualProductHttp": false
+    },
+    "typecheck": {
+      "sessionId": 88649,
+      "exitCode": 0,
+      "log": "tmp/ma24-memory-observations-typecheck-followup.log"
+    },
+    "lint": {
+      "sessionId": 89359,
+      "exitCode": 0,
+      "log": "tmp/ma24-memory-observations-lint-followup.log"
+    }
+  },
+  "actualVerification": {
+    "status": "failed-incomplete-fixture-followup-required"
+  },
+  "mutationApiChanged": false,
+  "memoryStorageChanged": false,
+  "syntheticObservationsOnly": true,
+  "naturalExtractionVerified": false,
+  "graphWorkerExecuted": false,
+  "actualModelCalls": 0,
+  "realQualityApproved": false,
+  "productionQualified": false,
+  "g14ThroughG20Advanced": false,
+  "deploymentPerformed": false,
+  "fixedSourceCommit": "5de2ee1899fa2cab8be35dda7b79e60e7d94f878",
+  "fixedImages": {
+    "main": "sha256:36ebda05691ed3853e4d517517d154cc73b4bed81d9e7bed24ed73ab882c209c",
+    "collector": "sha256:aca900a3608b41844ade23dae90be8f786a341c1834a91738d8262cdc3d9b95f",
+    "web": "sha256:85e25fc3807f0137b82977a6db77a4c2763ac8db324d4313313da07cdda8f7f0"
+  },
+  "builds": {
+    "main": {
+      "sessionId": 54113,
+      "exitCode": 0,
+      "log": "tmp/ma24-memory-observations-main-build.log",
+      "logSha256": "c86735890ea12e3c51c4178b5f5b022d96db5a23a3f84b9bcdfce0b32ff376d3"
+    },
+    "collector": {
+      "sessionId": 18516,
+      "exitCode": 0,
+      "log": "tmp/ma24-memory-observations-collector-build.log",
+      "logSha256": "e50f4c1ed929c3f1a955752e81fd2f8c1069ff2e352b85bd1db2b01901bf8893"
+    },
+    "web": {
+      "sessionId": 26634,
+      "exitCode": 0,
+      "log": "tmp/ma24-memory-observations-web-build.log",
+      "logSha256": "f3a209d408fda137d8ad271ca9c3983a7d86f63ff8a32b3529fd8c085df1f0bc"
+    }
+  },
+  "packageChecks": {
+    "main-pair": {
+      "sessionId": null,
+      "exitCode": 0,
+      "log": "tmp/ma24-memory-observations-main-pair.log",
+      "logSha256": "7651f66a5fac61f69fd1cc54220a08321e767dd805fe7afd59de6d43285ceb83",
+      "result": {
+        "mainAgentRuntimePair": "passed",
+        "web": "ma24-pilot-web:5de2ee18",
+        "runtime": "ma24-main-agent-runtime:5de2ee18",
+        "sourceCommit": "5de2ee1899fa2cab8be35dda7b79e60e7d94f878",
+        "webImageId": "sha256:85e25fc3807f0137b82977a6db77a4c2763ac8db324d4313313da07cdda8f7f0",
+        "mainRuntimeImageId": "sha256:36ebda05691ed3853e4d517517d154cc73b4bed81d9e7bed24ed73ab882c209c",
+        "inspectionUsesImmutableImageIds": true,
+        "runtimeHash": "6919e179736fed6e58020b61376d21a702568fbc3b5f01187298e05c79daec05",
+        "sourceInputs": 1053,
+        "node": "24.21.0",
+        "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+        "platform": "linux",
+        "arch": "x64",
+        "webPackages": {
+          "pg": "8.23.0"
+        },
+        "mainRuntimePackages": {
+          "pg": "8.23.0",
+          "zod": "4.4.3",
+          "@langchain/langgraph": "1.4.15",
+          "@langchain/core": "1.2.9",
+          "langsmith": "0.9.0",
+          "undici": "8.10.0"
+        },
+        "webUnresolved": [
+          "zod",
+          "@langchain/langgraph",
+          "@langchain/core",
+          "langsmith",
+          "undici"
+        ],
+        "mainRuntimeUnresolved": [],
+        "completeDependencyRuntimeEquivalenceVerified": false,
+        "productionQualified": false,
+        "actualModelCalls": 0
+      }
+    },
+    "collector-pair": {
+      "sessionId": null,
+      "exitCode": 0,
+      "log": "tmp/ma24-memory-observations-collector-pair.log",
+      "logSha256": "7ee75cee5600e01a5cd9db58a44c67c8983320d225830110e4dca8f6f96aa956",
+      "result": {
+        "skillSourceRuntimePair": "passed",
+        "web": "ma24-pilot-web:5de2ee18",
+        "collector": "ma24-skill-collector:5de2ee18",
+        "sourceCommit": "5de2ee1899fa2cab8be35dda7b79e60e7d94f878",
+        "webImageId": "sha256:85e25fc3807f0137b82977a6db77a4c2763ac8db324d4313313da07cdda8f7f0",
+        "collectorImageId": "sha256:aca900a3608b41844ade23dae90be8f786a341c1834a91738d8262cdc3d9b95f",
+        "inspectionUsesImmutableImageIds": true,
+        "runtimeHash": "6919e179736fed6e58020b61376d21a702568fbc3b5f01187298e05c79daec05",
+        "sourceInputs": 1053,
+        "node": "24.21.0",
+        "platform": "linux",
+        "arch": "x64",
+        "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+        "webPackages": {
+          "pg": "8.23.0"
+        },
+        "collectorPackages": {
+          "pg": "8.23.0",
+          "zod": "4.4.3",
+          "@langchain/langgraph": "1.4.15",
+          "@langchain/core": "1.2.9",
+          "langsmith": "0.9.0",
+          "undici": "8.10.0"
+        },
+        "webUnresolved": [
+          "zod",
+          "@langchain/langgraph",
+          "@langchain/core",
+          "langsmith",
+          "undici"
+        ],
+        "collectorUnresolved": [],
+        "completeDependencyRuntimeEquivalenceVerified": false,
+        "productionQualified": false,
+        "actualModelCalls": 0
+      }
+    },
+    "dependencies": {
+      "sessionId": 3570,
+      "exitCode": 0,
+      "log": "tmp/ma24-memory-observations-dependencies.log",
+      "logSha256": "2ec58e4a270ca3045df06acbe43edf52940b3e664cf0b1e29a8f481d7e3f7b7d",
+      "result": {
+        "localRuntimeDependencyPair": "passed",
+        "mainInspection": {
+          "role": "main-agent",
+          "imageId": "sha256:36ebda05691ed3853e4d517517d154cc73b4bed81d9e7bed24ed73ab882c209c",
+          "sourceCommit": "5de2ee1899fa2cab8be35dda7b79e60e7d94f878",
+          "deploymentHash": "aa6440297e0394bd3801d3c1def332b639f88505b2d62699d4ebb7f7cb296b86",
+          "runtimeHash": "6919e179736fed6e58020b61376d21a702568fbc3b5f01187298e05c79daec05",
+          "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+          "node": "24.21.0",
+          "platform": "linux",
+          "arch": "x64",
+          "sourceInputs": 1053,
+          "files": 34605,
+          "dependencyManifestHash": "d3edb974b4ae6e725cbb62205c8f0e65606b061fd97bce214289279ccca20137",
+          "dependencyFiles": 33503,
+          "runtimeModuleFormat": "esm",
+          "executionArtifacts": [
+            {
+              "path": "server.mjs",
+              "sha256": "e7a5e2a5314125207b0e969f5a351e1973700a703a16f38f2f0a98ce8a833883"
+            },
+            {
+              "path": "start.mjs",
+              "sha256": "a26da05b508790992197256b3ee8acc38dc664e2c2ab6b0d180dfc9bf6099266"
+            },
+            {
+              "path": "worker.mjs",
+              "sha256": "9c49e4b33614c570ce0a21623730093ab6339db2ebbffd32c8f267555570c81a"
+            }
+          ]
+        },
+        "collectorInspection": {
+          "role": "skill-collector",
+          "imageId": "sha256:aca900a3608b41844ade23dae90be8f786a341c1834a91738d8262cdc3d9b95f",
+          "sourceCommit": "5de2ee1899fa2cab8be35dda7b79e60e7d94f878",
+          "deploymentHash": "62e72ecd04b6c4275115a68bb79164d7ca3500ee346330685e85804bfaf53ed1",
+          "runtimeHash": "6919e179736fed6e58020b61376d21a702568fbc3b5f01187298e05c79daec05",
+          "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+          "node": "24.21.0",
+          "platform": "linux",
+          "arch": "x64",
+          "sourceInputs": 1053,
+          "files": 34569,
+          "dependencyManifestHash": "d3edb974b4ae6e725cbb62205c8f0e65606b061fd97bce214289279ccca20137",
+          "dependencyFiles": 33503,
+          "runtimeModuleFormat": "esm",
+          "executionArtifacts": [
+            {
+              "path": "runner.mjs",
+              "sha256": "c14d3483c6337f440eca8796e768f30525b5a29ae90eab93b483422b4b70dd8a"
+            },
+            {
+              "path": "start.mjs",
+              "sha256": "9940bc440764d0e9bae71b3faccbe2fc93c29b3cd4559ea55cc859c50bcb7b04"
+            }
+          ]
+        },
+        "comparison": {
+          "runtimePackageBytesPairRevalidated": true,
+          "runtimePackageBytesPairBlockers": [],
+          "runtimeModuleFormatPairRevalidated": true,
+          "runtimeModuleFormatPairBlockers": [],
+          "runtimePackageBytesPairHash": "2ad478d14b093864a26344393467f47c37db71bd3d36de1139cce9e6f1fa2726"
+        },
+        "esmModuleFormatPairVerified": true,
+        "runtimeRegistrationsPublished": false,
+        "completeDependencyRuntimeEquivalenceVerified": false,
+        "productionQualified": false,
+        "automaticActivation": false,
+        "modelCalls": 0
+      }
+    },
+    "web-source": {
+      "sessionId": null,
+      "exitCode": 0,
+      "log": "tmp/ma24-memory-observations-web-source.log",
+      "logSha256": "52795c2653cb1300c7488a000a2a910056ad9cec1391e52a77cfe94aefdd4115",
+      "result": {
+        "webImageSourceVerification": "passed",
+        "image": "ma24-pilot-web:5de2ee18",
+        "imageId": "sha256:85e25fc3807f0137b82977a6db77a4c2763ac8db324d4313313da07cdda8f7f0",
+        "sourceCommit": "5de2ee1899fa2cab8be35dda7b79e60e7d94f878",
+        "buildId": "1LSHLEGVmOhyXkXCi_kMu",
+        "runtimeSourceFileCount": 1053,
+        "runtimeSourceMatchesFixedGitExport": true,
+        "exportEolDifferences": 1053,
+        "runtimeSourceManifestHash": "f533e856fcdeffa6a6dd549fed805d8374c95fe67ada342e9f404f81aec7b652",
+        "privateEnvironmentFiles": false,
+        "privateStorageFiles": false,
+        "staticAssetsPresent": true,
+        "nonRootReadOnlyNoNetwork": true,
+        "productionQualified": false
+      }
+    },
+    "boundary": {
+      "sessionId": 11695,
+      "exitCode": 0,
+      "log": "tmp/ma24-memory-observations-boundary.log",
+      "logSha256": "8a5244038d999f26543bdad8a216d6c2b94aa0181b58bd3f615348b952a16453",
+      "result": {
+        "collectorImageVerification": "passed",
+        "image": "ma24-skill-collector:5de2ee18",
+        "imageId": "sha256:aca900a3608b41844ade23dae90be8f786a341c1834a91738d8262cdc3d9b95f",
+        "commit": "5de2ee1899fa2cab8be35dda7b79e60e7d94f878",
+        "packageFiles": 34569,
+        "deploymentHash": "62e72ecd04b6c4275115a68bb79164d7ca3500ee346330685e85804bfaf53ed1",
+        "measuredEnrollmentVerified": true,
+        "missingMalformedAndMismatchedEnrollmentRejectedBeforeRunner": true,
+        "matchedEnrollmentReachesRunner": true,
+        "nodeOptionsRejected": true,
+        "nonRootReadOnlyNoNetwork": true,
+        "changedRunnerRejectedBeforeExecution": true,
+        "actualModelCalls": 0,
+        "productionQualified": false
+      }
+    }
+  },
+  "previousExecutionArtifacts": {
+    "evidence": "ma24-g13-approval-target-preview-2026-10-21.json",
+    "unchanged": {
+      "mainInspection": {
+        "executionArtifacts": true,
+        "dependencyManifestHash": true,
+        "nodeSha256": true
+      },
+      "collectorInspection": {
+        "executionArtifacts": true,
+        "dependencyManifestHash": true,
+        "nodeSha256": true
+      }
+    },
+    "newWholeRuntimeCompositionRun": false
+  },
+  "attempts": [
+    {
+      "sessionId": 98310,
+      "exitCode": 1,
+      "log": "tmp/ma24-memory-observations-fixed-web.log",
+      "logSha256": "bdbd8ca617bea9ad8d43e15cfa482287dcf1abde2509460f11efce11aa2110f1",
+      "sourceCommit": "5de2ee1899fa2cab8be35dda7b79e60e7d94f878",
+      "result": "Incomplete browser fixture; 23 synthetic observations persisted through undo, no active DB lock wait, no final receipt. Exact validated child PID 52036 was stopped after prolonged lack of terminal result. Parent recorded code 4294967295 and cleaned all temporary containers. Root wait point remains unproven; this is not accepted as pass.",
+      "temporaryContainersRemoved": true,
+      "sourceFilesCanonicalLf": {
+        "src/components/memory-observations.tsx": "7e68027ddbd692ca2076cf3effd1f13215a0f075694d7776c2599a1f7f435a82",
+        "scripts/verify-memory-correction-ui.ts": "1d7ec91bb43a462fb2a7db731e9c6e3e882389ef2b81204dd2def1ae239fa7e9",
+        "scripts/verify-memory-observations-fixed-web.ts": "9ab0193468c44c9c2269e357f8637dd29c08a4d734d75dfdd9249fb0ddaf5e67",
+        "scripts/verify-ma24-fresh-pilot-new-cluster.ts": "790cb70226a9c07d94d91a3a1226242ffdc8a7910005b6c81ddc6a2682eef993"
+      }
+    }
+  ],
+  "previousStageChecks": {
     "componentBrowser": {
       "exitCode": 0,
       "log": "tmp/ma24-memory-readback-ui.log",
@@ -48,15 +369,6 @@
       "log": "tmp/ma24-memory-observations-lint.log"
     }
   },
-  "actualVerification": "pending",
-  "mutationApiChanged": false,
-  "memoryStorageChanged": false,
-  "syntheticObservationsOnly": true,
-  "naturalExtractionVerified": false,
-  "graphWorkerExecuted": false,
-  "actualModelCalls": 0,
-  "realQualityApproved": false,
-  "productionQualified": false,
-  "g14ThroughG20Advanced": false,
-  "deploymentPerformed": false
+  "previousFixedSourceCommit": "5de2ee1899fa2cab8be35dda7b79e60e7d94f878",
+  "followupIncludesActiveViewReload": true
 }

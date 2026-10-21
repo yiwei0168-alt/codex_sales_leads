@@ -39,6 +39,9 @@ try{
     });
     const page=await context.newPage();page.on('pageerror',error=>errors.push(error.message));
     await page.goto(`http://127.0.0.1:${address.port}`);
+    await expect(page.getByRole('button',{name:'\u66f4\u6b63\u8fd9\u6761\u8bb0\u5fc6',exact:true}).first()).toBeVisible();
+    await page.getByRole('button',{name:'\u5f53\u524d\u6709\u6548',exact:true}).click();
+    await expect(page.getByRole('button',{name:'\u66f4\u6b63\u8fd9\u6761\u8bb0\u5fc6',exact:true}).first()).toBeVisible();
     await page.getByRole('button',{name:'更正这条记忆',exact:true}).first().click();
     const field=page.getByLabel('更正后的完整内容');await expect(field).toBeFocused();
     await expect(page.getByRole('button',{name:'保存更正',exact:true})).toBeDisabled();
@@ -73,5 +76,5 @@ try{
     const path=`tmp/memory-correction-ui/${viewport.width}.png`;await page.screenshot({path});screenshots.push(path);
     await context.close();
   }
-  assert.deepEqual(errors,[]);console.log(JSON.stringify({componentHarness:true,viewports:3,cancelNoWrite:true,staleEditPreserved:true,savedWriteReadbackFailureClearsOldActions:true,explicitReadRetryRecovers:true,saveAndRefresh:true,keyboardFocus:true,scrollAndNoOverflow:true,modelCalls:0,screenshots}));
+  assert.deepEqual(errors,[]);console.log(JSON.stringify({componentHarness:true,viewports:3,activeViewReloadVerified:true,cancelNoWrite:true,staleEditPreserved:true,savedWriteReadbackFailureClearsOldActions:true,explicitReadRetryRecovers:true,saveAndRefresh:true,keyboardFocus:true,scrollAndNoOverflow:true,modelCalls:0,screenshots}));
 }finally{await browser.close();server.closeAllConnections();await new Promise<void>(done=>server.close(()=>done()));}

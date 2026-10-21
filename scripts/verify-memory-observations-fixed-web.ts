@@ -23,7 +23,11 @@ const proxy=createServer({key:docker(['exec',databaseContainer,'cat','/tmp/ma24-
  forwarded.on('error',()=>{outgoing.writeHead(502);outgoing.end();});incoming.pipe(forwarded);
 });
 let browser:Awaited<ReturnType<typeof chromium.launch>>|undefined;
+const progressPath=`tmp/ma24-memory-ui-progress-${databaseContainer.slice(0,12)}.json`;
+const progress=async(stage:string,detail?:string)=>writeFile(progressPath,JSON.stringify({stage,detail,at:new Date().toISOString()})+'\n');
+const watchdog=setTimeout(()=>{void progress('watchdog-expired').finally(()=>{console.error('Synthetic memory UI watchdog expired');process.exit(1);});},180000);watchdog.unref();
 try{
+ await progress('seeding');
  const owner=(await admin.query('select id,email from app_user where email=$1',[process.env.MA24_MEMORY_OWNER_EMAIL])).rows[0];assert(owner);assert.match(owner.email,/^pilot-container-[a-f0-9]{12}-0@example\.invalid$/);
  assert.equal((await admin.query('select count(*)::int n from agent_memory_observation where owner_id=$1',[owner.id])).rows[0].n,0);
  const marker=`Synthetic memory ${randomUUID()}`,unknownContent=`${marker} unknown original`,knownContent=`${marker} known original`,earlierContent=`${marker} conflicting earlier`,laterContent=`${marker} conflicting later`;
@@ -35,11 +39,14 @@ try{
  await observeMemory(owner.id,{kind:'business-fact',content:laterContent,memoryKey:conflictKey,validFrom:'2024-01-01T00:00:00Z',sourceReceipt:source});
  for(let i=0;i<13;i++)await observeMemory(owner.id,{kind:'preference',content:`${marker} pagination ${i}`,sourceReceipt:source});
  const endpoint=`${upstream.origin}/api/knowledge/observations`;
- const api=async(view:string,actor=cookie)=>{const r=await fetch(`${endpoint}?view=${view}`,{headers:{cookie:actor}});assert.equal(r.status,200);return r.json();};
- const post=async(body:unknown,actor=cookie)=>fetch(endpoint,{method:'POST',headers:{cookie:actor,'content-type':'application/json'},body:JSON.stringify(body)});
+ const api=async(view:string,actor=cookie)=>{const r=await fetch(`${endpoint}?view=${view}`,{headers:{cookie:actor},signal:AbortSignal.timeout(30000)});assert.equal(r.status,200);return r.json();};
+ const post=async(body:unknown,actor=cookie)=>{
+  const r=await fetch(endpoint,{method:'POST',headers:{cookie:actor,'content-type':'application/json'},body:JSON.stringify(body),signal:AbortSignal.timeout(30000)});
+  const text=await r.text();return {status:r.status,json:async()=>JSON.parse(text)};
+ };
  const row=async(id:string)=>(await admin.query('select * from agent_memory_observation where owner_id=$1 and id=$2',[owner.id,id])).rows[0];
  const clock=async()=>new Date((await admin.query('select clock_timestamp() value')).rows[0].value).toISOString();
- assert.equal((await fetch(endpoint)).status,401);assert.equal((await api('timeline',peerCookie)).items.length,0);assert.equal((await post({action:'correct',id:unknown,content:'Synthetic forbidden correction'},peerCookie)).status,404);
+ const anonymous=await fetch(endpoint,{signal:AbortSignal.timeout(30000)});assert.equal(anonymous.status,401);await anonymous.arrayBuffer();assert.equal((await api('timeline',peerCookie)).items.length,0);assert.equal((await post({action:'correct',id:unknown,content:'Synthetic forbidden correction'},peerCookie)).status,404);
  assert.equal((await api('timeline')).hasMore,true);assert.equal((await api('conflicts')).items.length,1);
  await new Promise<void>(done=>proxy.listen(0,'127.0.0.1',done));const address=proxy.address();assert(address&&typeof address!=='string');const base=`https://127.0.0.1:${address.port}`;
  browser=await chromium.launch({channel:'chrome',headless:true});const context=await browser.newContext({ignoreHTTPSErrors:true,viewport:{width:1366,height:900},timezoneId:'Asia/Shanghai'});
@@ -63,6 +70,7 @@ try{
   }throw new Error('Synthetic pagination limit exceeded');
  };
  const save=async(status=200)=>{const response=page.waitForResponse(r=>new URL(r.url()).pathname==='/api/knowledge/observations'&&r.request().method()==='POST');await section.getByRole('button',{name:'保存更正',exact:true}).click();const result=await response;assert.equal(result.status(),status);return result.json();};
+ await ready();await view('当前有效');await expect(section).toContainText(knownContent);await progress('active-view-reload-passed');
  await view('历史时间轴');let card=await findCard(unknownContent);assert(await section.getByRole('button',{name:'上一页',exact:true}).isEnabled());
  await card.getByRole('button',{name:'更正这条记忆',exact:true}).click();const contentField=section.getByLabel('更正后的完整内容');await expect(contentField).toBeFocused();
  await contentField.fill('Synthetic cancelled draft');await expect(section.getByRole('button',{name:'当前有效',exact:true})).toBeDisabled();await section.getByRole('button',{name:'取消',exact:true}).click();assert.equal(posts,0);
@@ -70,35 +78,46 @@ try{
  const corrected=(await save()).id;await expect(section.getByRole('alert')).toContainText('读取失败');await expect(section.getByRole('status')).toContainText('更正已保存');await expect(section.locator('article.opportunity-card')).toHaveCount(0);
  assert.equal((await row(corrected)).corrects_id,unknown);assert.equal((await row(corrected)).valid_from,null);
  await section.getByRole('button',{name:'重试读取记忆',exact:true}).click();await ready();await expect(section.getByRole('alert')).toHaveCount(0);
+ await progress('committed-correction-retry-passed');
  assert(!(await api('current')).items.some((r:{id:string})=>r.id===corrected));
  card=await findCard(correctedContent);await card.getByRole('button',{name:'更正这条记忆',exact:true}).click();const localDraft=`${marker} retained draft`;await contentField.fill(localDraft);
  const concurrentContent=`${marker} concurrent correction`,concurrentResponse=await post({action:'correct',id:corrected,content:concurrentContent});assert.equal(concurrentResponse.status,200);const concurrent=(await concurrentResponse.json()).id;
  await save(409);await expect(contentField).toHaveValue(localDraft);await expect(section.getByRole('alert')).toContainText('已被更正或撤销');await section.getByRole('button',{name:'取消',exact:true}).click();
+ await progress('concurrent-draft-passed');
  await view('当前有效');await view('历史时间轴');card=await findCard(concurrentContent);await card.getByRole('button',{name:'更正这条记忆',exact:true}).click();
  const datedContent=`${marker} dated correction`;await contentField.fill(datedContent);await section.getByLabel('业务生效时间',{exact:true}).selectOption('replace');
  await section.getByLabel('开始时间（含）').fill('2024-01-01T08:00');await section.getByLabel('结束时间（不含）').fill('2023-01-01T08:00');const beforeInvalid=posts;await section.getByRole('button',{name:'保存更正',exact:true}).click();await expect(section.getByRole('alert')).toContainText('结束时间必须晚于');assert.equal(posts,beforeInvalid);
  await section.getByLabel('结束时间（不含）').fill('2027-02-01T08:00');const dated=(await save()).id;await ready();
  const datedRow=await row(dated);assert.equal(datedRow.corrects_id,concurrent);assert.equal(new Date(datedRow.valid_from).toISOString(),'2024-01-01T00:00:00.000Z');assert.equal(new Date(datedRow.valid_until).toISOString(),'2027-02-01T00:00:00.000Z');
  assert.equal(datedRow.source_receipt.businessTimeCorrection.explicit,true);assert.equal(datedRow.source_receipt.usage,'unverified-internal-only');
+ await progress('business-time-passed');
  await view('当前有效');card=await findCard(knownContent);await card.getByRole('button',{name:'更正这条记忆',exact:true}).click();const knownNewContent=`${marker} known corrected`;await contentField.fill(knownNewContent);const beforeKnown=await clock(),knownNew=(await save()).id;await ready();const afterKnown=await clock();
  assert((await memoryAt(owner.id,afterKnown,beforeKnown)).some(r=>r.id===known));assert(!(await memoryAt(owner.id,afterKnown,beforeKnown)).some(r=>r.id===knownNew));
  assert((await memoryAt(owner.id,afterKnown,afterKnown)).some(r=>r.id===knownNew));assert(!(await memoryAt(owner.id,afterKnown,afterKnown)).some(r=>r.id===known));
+ await progress('known-at-passed');
  await view('冲突待处理');await expect(section).toContainText(earlierContent);await expect(section).toContainText(laterContent);await section.getByRole('button',{name:'更正前一条',exact:true}).click();await contentField.fill(laterContent);const resolved=(await save()).id;await ready();assert.equal((await row(resolved)).corrects_id,earlier);assert.equal((await api('conflicts')).items.length,0);
  await view('历史时间轴');card=await findCard(datedContent);assert.equal((await post({action:'undo',id:dated},peerCookie)).status,404);assert.equal((await post({action:'undo',id:unknown})).status,409);
  const undoneResponse=page.waitForResponse(r=>new URL(r.url()).pathname==='/api/knowledge/observations'&&r.request().method()==='POST');await card.getByRole('button',{name:'撤销这条记忆',exact:true}).click();const undone=await undoneResponse;assert.equal(undone.status(),200);const invalidation=(await undone.json()).id;await ready();
- assert.equal((await row(invalidation)).invalidates_id,dated);const repeated=await post({action:'undo',id:dated});assert.equal(repeated.status,200);assert.equal((await repeated.json()).id,invalidation);
+ assert.equal((await row(invalidation)).invalidates_id,dated);await progress('ui-undo-written');const repeated=await post({action:'undo',id:dated});assert.equal(repeated.status,200);assert.equal((await repeated.json()).id,invalidation);await progress('repeated-undo-passed');
  assert(!(await api('current')).items.some((r:{id:string})=>r.id===dated));
  await view('学习通知');await expect(section.locator('article.opportunity-card')).toHaveCount(12);await expect(section.getByRole('button',{name:'更正这条记忆',exact:true})).toHaveCount(0);await expect(section.getByRole('button',{name:'下一页',exact:true})).toBeEnabled();
+ await progress('notices-passed');
  await page.setViewportSize({width:390,height:844});assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));const screenshot=`tmp/ma24-memory-observations-ui-${randomUUID()}.png`;await page.screenshot({path:screenshot,fullPage:true});screenshots.push(screenshot);
  assert.deepEqual(errors,[]);const counts=(await admin.query(`select (select count(*)::int from agent_memory_observation where owner_id=$1) observations,
   (select count(*)::int from agent_memory_notice where owner_id=$1) notices,
   (select count(*)::int from agent_memory_graph_outbox o join agent_memory_observation m on m.id=o.observation_id where m.owner_id=$1) outbox`,[owner.id])).rows[0];
  assert.equal(counts.observations,counts.notices);assert.equal(counts.observations,counts.outbox);assert.equal((await api('timeline',peerCookie)).items.length,0);
  await context.close();const receipt={memoryObservationsFixedWeb:'passed',actualChromeAndHttpsAndCompiledWebAndDatabase:true,
-  paginationAndAllFourViews:true,cancelNoWrite:true,committedCorrectionReadbackFailureClearsOldActions:true,explicitRetryRecovers:true,
+  paginationAndAllFourViews:true,activeViewReloadVerified:true,cancelNoWrite:true,committedCorrectionReadbackFailureClearsOldActions:true,explicitRetryRecovers:true,
   concurrentCorrection409PreservesDraft:true,unknownValidityPreserved:true,explicitBusinessDatesAndDeviceTimezoneVerified:true,
   invalidDatesRejectedBeforeRequest:true,knownAtAndCurrentHistoryVerified:true,conflictCorrectionVerified:true,actualUiUndoAndIdempotentReplay:true,
   crossAccountReadCorrectionAndUndoRejected:true,noticesAndOutboxExactlyOnce:true,mobileNoHorizontalOverflow:true,noPageErrors:true,counts,screenshots,
   syntheticObservationsOnly:true,naturalExtractionVerified:false,graphWorkerExecuted:false,actualModelCalls:0,realQualityApproved:false,productionQualified:false};
- await writeFile('tmp/ma24-memory-observations-fixed-web-result.json',JSON.stringify(receipt,null,2)+'\n');console.log(JSON.stringify(receipt));
-}finally{await browser?.close();await new Promise<void>((done,reject)=>proxy.close(error=>error?reject(error):done()));await Promise.allSettled([admin.end(),getPool().end()]);}
+ await writeFile('tmp/ma24-memory-observations-fixed-web-result.json',JSON.stringify(receipt,null,2)+'\n');console.log(JSON.stringify(receipt));await progress('verified');
+}catch(error){
+ const detail=String(error instanceof Error?error.message:error).replaceAll(decodeURIComponent(adminUrl.password),'<temporary-password>').replaceAll(decodeURIComponent(appUrl.password),'<temporary-password>');
+ await progress('failed',detail.slice(0,3000));console.error(detail);throw error;
+}finally{
+ clearTimeout(watchdog);const cleanupTimeout=setTimeout(()=>{console.error('Synthetic memory UI cleanup timed out');process.exit(1);},15000);cleanupTimeout.unref();
+ try{await browser?.close();}finally{proxy.closeAllConnections();if(proxy.listening)await new Promise<void>(done=>proxy.close(()=>done()));await Promise.allSettled([admin.end(),getPool().end()]);clearTimeout(cleanupTimeout);}
+}

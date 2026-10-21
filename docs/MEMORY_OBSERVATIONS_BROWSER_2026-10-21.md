@@ -15,3 +15,6 @@ A new isolated fixed-Web browser fixture is pending. It creates only generated o
 This does not provide naturally occurring business samples, model extraction quality, sustained local Worker/graph operation, production qualification or deployment. G14-G20 stay deferred.
 
 [Evidence](evidence/ma24-g03-g13-memory-observations-browser-2026-10-21.json).
+
+
+Follow-up: first actual invocation 98310 did not produce a terminal receipt. The disposable database contained 23 generated observations through undo and no active lock wait; the exact verified test child was stopped after prolonged waiting, and its parent exited 1 and cleaned every temporary container. Its log/source/package receipts are retained, not accepted as a pass. The fixture now consumes direct HTTP response bodies, bounds fetches, writes per-step progress and bounds cleanup; the original wait point is not proven. Separate source review found that clicking the already-selected partition cleared its list without changing effect dependencies. Partition selection now increments its read revision; all three component viewports, full typecheck and four-file lint pass. New fixed packages and actual verification remain required.
