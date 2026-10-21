@@ -16,7 +16,7 @@ The projection hash changes with this source version. Historical fixed-version e
 
 ## Evidence and remaining work
 
-Three test suites / 25 tests, full typecheck, audit-module lint and the amended database fixture typecheck/lint passed. Targeted fresh database session 76848 exited 0 with graph, policy-comparison and unified review-material checks. No fixed images have been built for this comparison change; product 47be3168 / fixture 6b4f51c9 composition 37984 remains the previous accepted version.
+Three test suites / 25 tests, full typecheck, audit-module lint and the amended database fixture typecheck/lint passed. Targeted fresh database session 76848 exited 0 with graph, policy-comparison and unified review-material checks. Matching 6fd7142a images are built and their package checks passed; current full composition 2592 and separate TLS/database-trust 4843 are running. Product 47be3168 / fixture 6b4f51c9 composition 37984 remains the previous accepted full composition.
 
 Production entrypoint proof, a complete execution qualification producer, real provider/quality acceptance and positive activation remain unfinished. This comparison is one input to that work, not qualification itself.
 
@@ -24,3 +24,6 @@ Production entrypoint proof, a complete execution qualification producer, real p
 
 
 2026-10-21 / Targeted database **76848 exited 0** on source `d3be2e7a`, current schema 170/file trust. Execution-policy comparison, persisted graph reconstruction, unified review-material readback, task/tool locks, changed-result fingerprints, persisted-tool tamper rejection and terminal recovery without replay passed. All five recorded source files matched their pre-run hashes at completion. The two result records retain synthetic/provider/qualification boundaries; no human judgment, actual provider call or activation was created. Disposable cluster removed; original three services remain. This does not cover new fixed images or a whole production entrypoint. [Evidence](evidence/ma24-g09-runtime-policy-comparison-2026-10-21.json).
+
+
+2026-10-21 / Policy-comparison packages fixed at `6fd7142a`: main/collector/Web builds 52551/58079/14172 exited 0; source/Node pair checks, full dependency bytes/ESM, collector isolation/tamper/enrollment and Web source/private-root exclusion passed (1039 source inputs). Collector deployment hash `9b39369a3fdd090f828f0c31fa9b067b2a881528aad2804a62b54942fb2b2ab2`. Full current Linux composition **2592** and separate collector TLS/database-trust **4843** are running, not accepted. Their immutable image IDs and logs are recorded in [evidence](evidence/ma24-g09-runtime-policy-comparison-2026-10-21.json). No actual provider/quality/qualification/activation inferred.

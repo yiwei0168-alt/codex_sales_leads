@@ -1,6 +1,6 @@
 # MA24 G01–G13 当前剩余门槛（2026-10-16）
 
-2026-10-21 / Current state: execution-policy comparison source d3be2e7a passed 25 tests/typecheck/lint and targeted fresh graph/material database 76848 (exit 0). Matching fixed packages remain unbuilt. Previous product 47be3168 / fixture 6b4f51c9 passed composition 37984 (exit 0), retained separately. Complete production execution proof, a qualification producer and real provider/quality/activation remain unfinished; G14-G20/deployment stay deferred. [Current source comparison](RUNTIME_POLICY_COMPARISON_2026-10-21.md).
+2026-10-21 / Current state: source d3be2e7a policy comparison passed 25 tests/typecheck/lint and targeted fresh graph/material 76848. Matching 6fd7142a main/collector/Web packages are built and checked; full composition 2592 and separate TLS/database-trust 4843 are running, not accepted. Previous 47be3168/6b4f51c9 composition 37984 passed, retained separately. Production execution proof, qualification producer, real provider/quality/activation remain unfinished; G14-G20/deployment stay deferred. [Current stage](RUNTIME_POLICY_COMPARISON_2026-10-21.md).
 
 2026-10-21 / 最新终态：前瞻故障专项 73784 已退出 0，SIGKILL、拒绝提前接管、原租约自然到期、新进程恢复、防重复及执行规格/捕获绑定保持等 8 项断言通过；当前产品五类/八任务组合与登记仍通过，临时资源清理。后续优先补实时读取、日志重建和来源保护接线，不能用此结果关闭完整等价/真实质量。[前瞻收据](evidence/ma24-g09-prospective-process-recovery-2026-10-21.json)。
 
@@ -405,7 +405,7 @@ G09 任务与工具日志锁已接入材料重建入口：从已存包派生任�
 
 | 项目 | 已有依据 | 仍缺的实现或验收 | 下一项能关闭缺口的证据 |
 | --- | --- | --- | --- |
-| G01 Release baseline | Final 47be3168 package checks and Linux composition 37984 passed; separate collector TLS/database-trust results passed | Whole production entrypoint/TLS and first real provider call remain unverified; deployment deferred | Retain version-bound evidence and verify actual production execution. |
+| G01 Release baseline | Matching 6fd7142a main/collector/Web builds and package checks passed; previous 37984 composition retained separately | Current composition 2592 and separate TLS/database-trust 4843 running; whole production entrypoint and real provider unverified; deployment deferred | Inspect terminal results and preserve each evidence scope. |
 | G02 来源撤销 | 真实图、旧 checkpoint、隔离模型及局部 HTTP；当前构建的登记原件下载通过认证、Range、篡改和请求间撤回的真实 HTTP 验证 ([收据](evidence/ma24-g02-g05-asset-download-http-clone-2026-10-19.json)) | 当前服务上真实账号有界任务的生成期撤销、后续工具阻断和最终保存核对 | 获授权的专门来源/账号任务及撤销前后收据；新付费请求另列具体清单 |
 | G03 纠正与双时间 | 来源归属、自然纠正和隔离恢复；中文实际 Worker 经登录时间线、账号隔离、幂等撤销及同批精确历史时点回读通过 | 自然偏好/经历/业务事实与纠正样本不足；全部用户入口、最终统一候选和持续 Worker 试点未验 | 对照原句与更正内容的自然样本判决、最终候选各入口及连续 Worker 持久记录；本轮有限 HTTP 流程不扩称全部入口 |
 | G04 记忆图谱 | outbox、租约、故障恢复及 PostgreSQL 降级服务证据；中文同批投影、真实陈旧图谱候选的撤销过滤和原记录/纠正历史回读、第三条撤销投递通过 | 获准真实样本的持续抽取/投影、最终统一候选及持续故障/恢复运行未验 | 连续消费及图谱停机/恢复的同一批来源收据；同批有限撤销召回证据见最新工作流，不替代真实质量 |
@@ -413,7 +413,7 @@ G09 任务与工具日志锁已接入材料重建入口：从已存包派生任�
 | G06 安全 | 已定位旧歧义与注入失败，工具模型视图等边界已有修复 | 修复后固定协议的真实模型回答、独立安全判分不足；既有本地超时不能判通过 | 有明确请求范围的有效模型回答及答案/引用/权限/注入人工判决；相同超时配置不重复试跑 |
 | G07 真实回放 | 服务器持久收据与只读回放适配已实现；历史资格审计已有排除结果 | 尚无满足当前来源、Skill 相关性及完整收据要求的真实任务 | 同账号有效的完整只读任务或精确收据限定的子任务，固定版本回放和独立审核 |
 | G08 前瞻影子 | 任务前登记/捕获、签名原流程/候选、统一材料及受限持久化已有合成数据库贯通证据；未将历史任务改标前瞻 | 真实任务的原流程/候选结果、可信生产身份及真实质量仍未验收 | 在既有授权范围内取得任务前登记到执行、持久收据及审核的真实完整链 |
-| G09 Automatic activation | Prior 37984 fixed composition passed; source d3be2e7a policy comparison passed 25 tests and fresh graph/review-material database 76848 | New fixed images, actual production-entry execution proof, qualification producer, real provider/quality and positive activation remain unfinished | Complete execution proof and qualification chain; preserve the explicit quota/control/read differences. |
+| G09 Automatic activation | d3be2e7a policy comparison passed 25 tests and graph/review-material database 76848; matching 6fd7142a packages built/checked | Current fixed composition pending; actual production-entry execution proof, qualification producer, real provider/quality and positive activation remain unfinished | Complete execution proof and qualification chain; preserve explicit quota/control/read differences. |
 | G10 审核 | 固定21ade59d Chrome/HTTPS/真实数据库审核修订竞态、草稿协调、409、已提交后回读故障与撤销通过；r1–r7均为合成不通过，另保留前瞻两臂与旧HTTP/页面证据 | 完整真实人工材料、五类质量、生产身份和目标入口未验；本轮夹具原件预览未通过 | 在既有授权边界内准备真实同版本/冻结材料，逐题核对真实质量及生产入口 |
 | G11 邮箱/客户 | 固定2a1fb556正式邮箱Worker/实际IMAP库/合成TLS服务/新159数据库的日期分页、半页SIGKILL和原租约自然到期恢复通过；4封唯一加密邮件、统计4/4/4/0、账号隔离和空Worker不变 | 真实服务商日期范围与全分页、持续负载、客户归属/摘要质量及目标主机运行未验 | 已授权账号及日期范围上的收件/已发送对账、恢复与逐例归属判定；历史提供方对账单独保留 |
 | G12 三模式 | 恢复原因白名单修复，60 项定向测试及全新库 12 组脚本业务通过 | 真实只读业务回答、提供方失败/迟到/未知结果恢复及正式加载未验 | 有界真实任务和隔离提供方响应的持久收据；已消耗的 MODESEL-14 授权不复用 |
@@ -756,3 +756,6 @@ G09 current-source collector image TLS preflight (2026-10-19): rebuilt from the 
 
 
 2026-10-21 / Targeted database **76848 exited 0** on source `d3be2e7a`, current schema 170/file trust. Execution-policy comparison, persisted graph reconstruction, unified review-material readback, task/tool locks, changed-result fingerprints, persisted-tool tamper rejection and terminal recovery without replay passed. All five recorded source files matched their pre-run hashes at completion. The two result records retain synthetic/provider/qualification boundaries; no human judgment, actual provider call or activation was created. Disposable cluster removed; original three services remain. This does not cover new fixed images or a whole production entrypoint. [Evidence](evidence/ma24-g09-runtime-policy-comparison-2026-10-21.json).
+
+
+2026-10-21 / Policy-comparison packages fixed at `6fd7142a`: main/collector/Web builds 52551/58079/14172 exited 0; source/Node pair checks, full dependency bytes/ESM, collector isolation/tamper/enrollment and Web source/private-root exclusion passed (1039 source inputs). Collector deployment hash `9b39369a3fdd090f828f0c31fa9b067b2a881528aad2804a62b54942fb2b2ab2`. Full current Linux composition **2592** and separate collector TLS/database-trust **4843** are running, not accepted. Their immutable image IDs and logs are recorded in [evidence](evidence/ma24-g09-runtime-policy-comparison-2026-10-21.json). No actual provider/quality/qualification/activation inferred.

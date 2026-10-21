@@ -271,7 +271,7 @@
     "disposableContainersRemoved": true,
     "originalThreeServicesRunning": true
   },
-  "fixedImagesRebuilt": false,
+  "fixedImagesRebuilt": true,
   "priorFixedComposition": {
     "productCommit": "47be31685735b1f9c9925660f6f421c2e203a3fc",
     "fixtureCommit": "6b4f51c9003c1df5d4c27345b00dc9f491512777",
@@ -282,5 +282,240 @@
   "productionAgentEquivalent": false,
   "realModelCalls": 0,
   "automaticActivation": false,
-  "qualificationGranted": false
+  "qualificationGranted": false,
+  "fixedBuilds": {
+    "sourceCommit": "6fd7142ada411540d3bf1752b96b1322ccc6954d",
+    "status": "built-package-checks-passed-composition-running",
+    "images": {
+      "main": "sha256:d9654466c04f493f22d2d7da603493c4100b321f895ec316bd451e349ba61a3c",
+      "collector": "sha256:909e26dbaae1e6b28516bc9736a21ecb657689dfe774a5b4a3e12d49f05209f6",
+      "web": "sha256:0c4c0291c064bc9745163bb658258c3169aae0a461ae735d9146c2503f9a01b4"
+    },
+    "builds": {
+      "main": {
+        "sessionId": 52551,
+        "exitCode": 0,
+        "log": "tmp/ma24-policy-comparison-main-build.log",
+        "logSha256": "1b18b4ed8a7e585d662aaada44f5c3a06176c638bec585ba990220cc6b600d88"
+      },
+      "collector": {
+        "sessionId": 58079,
+        "exitCode": 0,
+        "log": "tmp/ma24-policy-comparison-collector-build.log",
+        "logSha256": "ac761bbae41a5fb808b24de140a491f267364e21d87d758a9a1dedbc02ca226c"
+      },
+      "web": {
+        "sessionId": 14172,
+        "exitCode": 0,
+        "log": "tmp/ma24-policy-comparison-web-build.log",
+        "logSha256": "e29c7033cef7da82a9d7e47853e6ca81c756ba7cde8a38a26c9ffaac42347748"
+      }
+    }
+  },
+  "fixedPackageChecks": {
+    "main-pair": {
+      "sessionId": null,
+      "exitCode": 0,
+      "log": "tmp/ma24-policy-comparison-main-pair.log",
+      "logSha256": "89355ce31d1c9ba13410bc09d12a0b1b0b3f84fd76632493d712d074ac7e85cc",
+      "result": {
+        "mainAgentRuntimePair": "passed",
+        "web": "sha256:0c4c0291c064bc9745163bb658258c3169aae0a461ae735d9146c2503f9a01b4",
+        "runtime": "sha256:d9654466c04f493f22d2d7da603493c4100b321f895ec316bd451e349ba61a3c",
+        "sourceCommit": "6fd7142ada411540d3bf1752b96b1322ccc6954d",
+        "webImageId": "sha256:0c4c0291c064bc9745163bb658258c3169aae0a461ae735d9146c2503f9a01b4",
+        "mainRuntimeImageId": "sha256:d9654466c04f493f22d2d7da603493c4100b321f895ec316bd451e349ba61a3c",
+        "inspectionUsesImmutableImageIds": true,
+        "runtimeHash": "25cb54f3193b5fabcc546c921dd94cfe633e29fdd4bcbb34793a57b4a053a2fa",
+        "sourceInputs": 1039,
+        "node": "24.21.0",
+        "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+        "platform": "linux",
+        "arch": "x64",
+        "webPackages": {
+          "pg": "8.23.0"
+        },
+        "mainRuntimePackages": {
+          "pg": "8.23.0",
+          "zod": "4.4.3",
+          "@langchain/langgraph": "1.4.15",
+          "@langchain/core": "1.2.9",
+          "langsmith": "0.9.0",
+          "undici": "8.10.0"
+        },
+        "webUnresolved": [
+          "zod",
+          "@langchain/langgraph",
+          "@langchain/core",
+          "langsmith",
+          "undici"
+        ],
+        "mainRuntimeUnresolved": [],
+        "completeDependencyRuntimeEquivalenceVerified": false,
+        "productionQualified": false,
+        "actualModelCalls": 0
+      }
+    },
+    "collector-pair": {
+      "sessionId": null,
+      "exitCode": 0,
+      "log": "tmp/ma24-policy-comparison-collector-pair.log",
+      "logSha256": "624f7bb11bfd08ed4dedf4591fab8240c998cf8c34520bbadd6ff98fd7a3062b",
+      "result": {
+        "skillSourceRuntimePair": "passed",
+        "web": "sha256:0c4c0291c064bc9745163bb658258c3169aae0a461ae735d9146c2503f9a01b4",
+        "collector": "sha256:909e26dbaae1e6b28516bc9736a21ecb657689dfe774a5b4a3e12d49f05209f6",
+        "sourceCommit": "6fd7142ada411540d3bf1752b96b1322ccc6954d",
+        "webImageId": "sha256:0c4c0291c064bc9745163bb658258c3169aae0a461ae735d9146c2503f9a01b4",
+        "collectorImageId": "sha256:909e26dbaae1e6b28516bc9736a21ecb657689dfe774a5b4a3e12d49f05209f6",
+        "inspectionUsesImmutableImageIds": true,
+        "runtimeHash": "25cb54f3193b5fabcc546c921dd94cfe633e29fdd4bcbb34793a57b4a053a2fa",
+        "sourceInputs": 1039,
+        "node": "24.21.0",
+        "platform": "linux",
+        "arch": "x64",
+        "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+        "webPackages": {
+          "pg": "8.23.0"
+        },
+        "collectorPackages": {
+          "pg": "8.23.0",
+          "zod": "4.4.3",
+          "@langchain/langgraph": "1.4.15",
+          "@langchain/core": "1.2.9",
+          "langsmith": "0.9.0",
+          "undici": "8.10.0"
+        },
+        "webUnresolved": [
+          "zod",
+          "@langchain/langgraph",
+          "@langchain/core",
+          "langsmith",
+          "undici"
+        ],
+        "collectorUnresolved": [],
+        "completeDependencyRuntimeEquivalenceVerified": false,
+        "productionQualified": false,
+        "actualModelCalls": 0
+      }
+    },
+    "dependency-pair": {
+      "sessionId": 55839,
+      "exitCode": 0,
+      "log": "tmp/ma24-policy-comparison-dependency-pair.log",
+      "logSha256": "f060880921e8e0e03b2edfd4c5f26af95a5bc53128318899abeed5cc66be270e",
+      "result": {
+        "localRuntimeDependencyPair": "passed",
+        "mainInspection": {
+          "role": "main-agent",
+          "imageId": "sha256:d9654466c04f493f22d2d7da603493c4100b321f895ec316bd451e349ba61a3c",
+          "sourceCommit": "6fd7142ada411540d3bf1752b96b1322ccc6954d",
+          "deploymentHash": "ec13230228ba310f00d3253428184571d32bcb22dd3c10e3fe9d7f9310a61641",
+          "runtimeHash": "25cb54f3193b5fabcc546c921dd94cfe633e29fdd4bcbb34793a57b4a053a2fa",
+          "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+          "node": "24.21.0",
+          "platform": "linux",
+          "arch": "x64",
+          "sourceInputs": 1039,
+          "files": 34591,
+          "dependencyManifestHash": "d3edb974b4ae6e725cbb62205c8f0e65606b061fd97bce214289279ccca20137",
+          "dependencyFiles": 33503,
+          "runtimeModuleFormat": "esm"
+        },
+        "collectorInspection": {
+          "role": "skill-collector",
+          "imageId": "sha256:909e26dbaae1e6b28516bc9736a21ecb657689dfe774a5b4a3e12d49f05209f6",
+          "sourceCommit": "6fd7142ada411540d3bf1752b96b1322ccc6954d",
+          "deploymentHash": "9b39369a3fdd090f828f0c31fa9b067b2a881528aad2804a62b54942fb2b2ab2",
+          "runtimeHash": "25cb54f3193b5fabcc546c921dd94cfe633e29fdd4bcbb34793a57b4a053a2fa",
+          "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+          "node": "24.21.0",
+          "platform": "linux",
+          "arch": "x64",
+          "sourceInputs": 1039,
+          "files": 34555,
+          "dependencyManifestHash": "d3edb974b4ae6e725cbb62205c8f0e65606b061fd97bce214289279ccca20137",
+          "dependencyFiles": 33503,
+          "runtimeModuleFormat": "esm"
+        },
+        "comparison": {
+          "runtimePackageBytesPairRevalidated": true,
+          "runtimePackageBytesPairBlockers": [],
+          "runtimeModuleFormatPairRevalidated": true,
+          "runtimeModuleFormatPairBlockers": [],
+          "runtimePackageBytesPairHash": "cbe00ab6d2a84e7c435f5c50e548ef7179bf0d8b21c515017bd83b8975e7cfc9"
+        },
+        "esmModuleFormatPairVerified": true,
+        "runtimeRegistrationsPublished": false,
+        "completeDependencyRuntimeEquivalenceVerified": false,
+        "productionQualified": false,
+        "automaticActivation": false,
+        "modelCalls": 0
+      }
+    },
+    "collector-boundary": {
+      "sessionId": 5836,
+      "exitCode": 0,
+      "log": "tmp/ma24-policy-comparison-collector-boundary.log",
+      "logSha256": "54d21acd8c7cb50a5aa8367c56a101d3df2805531f2027fb036b53029da99612",
+      "result": {
+        "collectorImageVerification": "passed",
+        "image": "sha256:909e26dbaae1e6b28516bc9736a21ecb657689dfe774a5b4a3e12d49f05209f6",
+        "imageId": "sha256:909e26dbaae1e6b28516bc9736a21ecb657689dfe774a5b4a3e12d49f05209f6",
+        "commit": "6fd7142ada411540d3bf1752b96b1322ccc6954d",
+        "packageFiles": 34555,
+        "deploymentHash": "9b39369a3fdd090f828f0c31fa9b067b2a881528aad2804a62b54942fb2b2ab2",
+        "measuredEnrollmentVerified": true,
+        "missingMalformedAndMismatchedEnrollmentRejectedBeforeRunner": true,
+        "matchedEnrollmentReachesRunner": true,
+        "nodeOptionsRejected": true,
+        "nonRootReadOnlyNoNetwork": true,
+        "changedRunnerRejectedBeforeExecution": true,
+        "actualModelCalls": 0,
+        "productionQualified": false
+      }
+    },
+    "web-source": {
+      "sessionId": null,
+      "exitCode": 0,
+      "log": "tmp/ma24-policy-comparison-web-source.log",
+      "logSha256": "123a56cfb11f473289c2203501e5006f396df55c2cb190a9eb8c4845be6a068a",
+      "result": {
+        "webImageSourceVerification": "passed",
+        "image": "sha256:0c4c0291c064bc9745163bb658258c3169aae0a461ae735d9146c2503f9a01b4",
+        "imageId": "sha256:0c4c0291c064bc9745163bb658258c3169aae0a461ae735d9146c2503f9a01b4",
+        "sourceCommit": "6fd7142ada411540d3bf1752b96b1322ccc6954d",
+        "buildId": "DMYuWxdIUn2oeimK2rSe3",
+        "runtimeSourceFileCount": 1039,
+        "runtimeSourceMatchesFixedGitExport": true,
+        "exportEolDifferences": 1039,
+        "runtimeSourceManifestHash": "2af48e7c6c25c32af79fde376aebb9e98c19756dfdb3ed2b52b6eaf3a16c72e9",
+        "privateEnvironmentFiles": false,
+        "privateStorageFiles": false,
+        "staticAssetsPresent": true,
+        "nonRootReadOnlyNoNetwork": true,
+        "productionQualified": false
+      }
+    }
+  },
+  "fixedFullComposition": {
+    "status": "running-not-accepted",
+    "sessionId": 2592,
+    "sourceCommit": "6fd7142ada411540d3bf1752b96b1322ccc6954d",
+    "fixtureCommit": "6fd7142ada411540d3bf1752b96b1322ccc6954d",
+    "log": "tmp/ma24-policy-comparison-fixed-linux.log",
+    "requiresPolicyComparison": true,
+    "requiresCaseVariantQuotaRace": true,
+    "requiresLiveBusinessReadCrashRecovery": true,
+    "requiresMeasuredRegistrationAndFixedReuse": true,
+    "wholeProductionWrapperVerified": false,
+    "wholeCombinationDatabaseTlsVerified": false
+  },
+  "fixedDeclarationDatabaseTrust": {
+    "status": "running-not-accepted",
+    "sessionId": 4843,
+    "sourceCommit": "6fd7142ada411540d3bf1752b96b1322ccc6954d",
+    "log": "tmp/ma24-policy-comparison-declaration-db-trust.log",
+    "separateFromWholeComposition": true
+  }
 }
