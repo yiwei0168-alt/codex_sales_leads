@@ -36,3 +36,11 @@ it('rejects a deleted original message or unavailable conversation',async()=>{
 it('binds instructions appended before the first decision',async()=>{
  const value=await bindRecordedInitialSource(context,[...messages(),{role:'user',content:'First clarification'}]);expect(value.initialInstructionCount).toBe(1);
 });
+
+it('treats case aliases of the same PostgreSQL UUID as one currently accessible source without rewriting the recorded input',async()=>{
+ const id='a0000000-0000-4000-8000-00000000000a',aliased={...input,attachments:[{assetId:id},{assetId:id.toUpperCase()}]};
+ db.query.mockReset().mockResolvedValueOnce({rows:[{...task,input:aliased}]}).mockResolvedValueOnce({rows:[{id:'original',content:input.content}]}).mockResolvedValueOnce({rows:history}).mockResolvedValueOnce({rows:[{id,source_sha256:'a'.repeat(64)}]});
+ const initial=initialTaskMessages({...context,role:'member',mode:'standard'},aliased,config,history);
+ const value=await bindRecordedInitialSource(context,[initial[0],decisionMemoryMessage([]),...initial.slice(1)]);
+ expect(value.attachmentsCurrentlyAccessible).toBe(true);expect(db.query.mock.calls[3][1]).toEqual([[id,id.toUpperCase()],'owner']);
+});

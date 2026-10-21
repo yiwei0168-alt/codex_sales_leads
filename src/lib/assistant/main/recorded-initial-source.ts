@@ -26,7 +26,7 @@ export async function bindRecordedInitialSource(context:{userId:string;runId:str
    left join knowledge_tree_version v on v.id=d.current_tree_version_id
    where a.id=any($1::uuid[]) and d.status='active' and (d.owner_id=$2 or d.visibility='shared') and a.registration_status='registered'
    and (d.current_tree_version_id is null or (v.status='ready' and v.asset_id=a.id and v.source_sha256=a.source_sha256)) order by a.id`,[ids,context.userId])).rows:[];
-  if(new Set(ids).size!==assets.length)throw new Error('Recorded attachment unavailable or superseded');
+  if(new Set(ids.map(id=>id.toLowerCase())).size!==assets.length)throw new Error('Recorded attachment unavailable or superseded');
   const expected=initialTaskMessages({userId:context.userId,role:task.role,mode:profile.mode,knowledgeScope:input.knowledgeScope},input,task.model_config,history);
   const recorded=[messages[0],...messages.slice(2)];
   const initialInstructions=recorded.slice(expected.length),instructions=z.array(z.object({content:z.string()})).parse(task.instructions);

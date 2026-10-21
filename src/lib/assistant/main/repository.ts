@@ -35,10 +35,15 @@ export async function enqueueRun(userId: string, input: MessageInput, model: Mod
         [userId, evaluation ? "MA24 evaluation" : input.content.slice(0, 38), evaluation ? "deleted" : "active"]);
       conversationId = c.rows[0].id;
     }
-    for (const attachment of input.attachments) {
-      const asset = await client.query(`select a.id from knowledge_asset a join knowledge_document d on d.id=a.document_id
-        where a.id=$1 and (d.owner_id=$2 or d.visibility='shared') and a.registration_status='registered'`, [attachment.assetId, userId]);
-      if (!asset.rowCount) throw new Error("Attachment unavailable");
+    const attachmentIds=[...new Set(input.attachments.map(attachment=>attachment.assetId.toLowerCase()))];
+    if(attachmentIds.length){
+      // An exact-key acknowledgement above never admits new work. New ordinary
+      // tasks may only attach the registered original of a ready current tree.
+      // Reviewed mail separately validates its pinned file bytes before enqueue.
+      const assets=await client.query(`select a.id from knowledge_asset a join knowledge_document d on d.id=a.document_id
+        ${serverOptions?.kind==="mail"?"":"join knowledge_tree_version v on v.id=d.current_tree_version_id and v.document_id=d.id and v.asset_id=a.id and v.status='ready' and v.source_sha256=a.source_sha256 and d.status='active'"}
+        where a.id=any($1::uuid[]) and (d.owner_id=$2 or d.visibility='shared') and a.registration_status='registered'`,[attachmentIds,userId]);
+      if(assets.rowCount!==attachmentIds.length)throw new Error("Attachment unavailable or not current and ready");
     }
     const saved = await client.query<AgentRun>(`insert into agent_run(user_id,conversation_id,request_key,request_hash,input,model_config,execution_kind,execution_spec,status)
       values($1,$2,$3,$4,$5,$6,$7,$8,$9) returning *`, [userId, conversationId, input.requestKey, hash, JSON.stringify(input), JSON.stringify(model),serverOptions?.kind??"main-agent",serverOptions?JSON.stringify(serverOptions.spec):null,serverOptions?.kind==="mail"&&serverOptions.paused?"paused":"queued"]);
