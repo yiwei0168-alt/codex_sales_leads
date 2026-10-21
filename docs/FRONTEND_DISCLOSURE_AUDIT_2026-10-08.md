@@ -72,7 +72,7 @@
 | knowledge-revisions | 历史列表；各版本全文 | F10；避免无限嵌套滚动 |
 | knowledge-tree | 完整来源坐标 | 原始页/块坐标常显；JSON次级、断行和复制 |
 | lead-filters | 高级筛选排序 | F11，收起仍显示已生效条件 |
-| memory-history | 状态范围快照 | 已有分页/加载/重试；增加前后差异可读层 |
+| memory-history | Status/range audit snapshots | Readable before/after projection and unchanged secondary raw copy accepted at 0315939e / actual 36512; [scope](MEMORY_AUDIT_DIFFERENCES_2026-10-22.md). |
 | memory-observations | 来源收据 | 保留审计；JSON可读与溢出约束 |
 | personal-memory | 记忆变更审计；正文 | 保留独立分区，正文长时统一阅读区域 |
 | outbound-composer | 发送历史；核实发送；详情；原邮件；保存草稿 | 历史维持分页；未知发送状态及核实入口应常显，避免藏在多层折叠里；保留最终发信确认 |
@@ -160,3 +160,6 @@
 
 
 2026-10-22 / Existing MA24-16 F12 memory-history disclosure: a readable before/after projection now uses only retained kind/status/scope/country/role/character-count values; creation/deletion, missing/null/invalid values and same-length body edits are explicit. Existing raw JSON remains secondary and exact. Four tests, typecheck/five-file lint and three-width actual-component read/copy/paging/recovery checks passed. Fixed packages and actual audit API/database/browser acceptance are pending; no retention/permission change, new confirmation, quality or production claim. [Scope](MEMORY_AUDIT_DIFFERENCES_2026-10-22.md).
+
+
+2026-10-22 / Existing MA24-16 F12 memory-history readable differences accepted within scope: fixed product/fixture **0315939e**, actual **36512 exited 0** through Chrome/HTTPS/compiled Web/API/fresh PostgreSQL; both result records inspected. Actual create/delete audit cells, same-length body revision with explicit change note, external-use revocation to internal learning, initially collapsed/exact copied raw snapshot and desktop/mobile table layout passed. Existing CRUD, version conflicts, confirmed-write/readback failure, owner/peer audit privacy, read-failure clearing/retry and pagination remain passed. Four projection tests, three-width actual-component long/missing/null/malformed/copy/paging checks, typecheck/five-file lint, three builds/five package checks and seven source hashes passed; representative component and all four actual audit screenshots inspected. Main/collector executables, Node and dependencies match b853fee5; its full runtime/TLS evidence is retained at that version rather than re-claimed as a new composition. Temporary resources removed, original three services remain. No retention/API/permission change, historical body restoration, model call, real business quality, production qualification or deployment is claimed. G14-G20 remain deferred. [Scope](MEMORY_AUDIT_DIFFERENCES_2026-10-22.md); [evidence](evidence/ma24-g13-memory-audit-differences-2026-10-22.json).

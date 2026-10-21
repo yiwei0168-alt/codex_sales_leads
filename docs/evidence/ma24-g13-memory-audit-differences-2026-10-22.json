@@ -1,0 +1,445 @@
+{
+  "date": "2026-10-22",
+  "scope": "Existing MA24-16 / F12 readable private-memory audit projection",
+  "status": "actual-fixed-web-memory-audit-differences-passed",
+  "productCommit": "0315939e437b833bc73fa1d82279e42aa63540ff",
+  "sourceFilesCanonicalLf": {
+    "src/components/memory-audit-changes.tsx": "cc689c6ad9b6ce2586ffaafa170677bdb5f356e6ea6890783e23b637b7fcfa05",
+    "src/components/memory-audit-changes.test.tsx": "1b3790832181b6b7c08683d39f412d799652230610e3da130c7c81897a6fbbde",
+    "src/components/memory-history.tsx": "cd19fe4a5611d5ec48d7cf8c9192bcbb344c62664f07e007dfa4be1d9277bd87",
+    "src/app/globals.css": "270cefeee8c8f358b5dac542ade48410efb29b21c327206535cee1110c95375b",
+    "scripts/verify-memory-audit-ui.ts": "41e13be0e938c92570935aa5eda4db9b787f24a00b6a78daa13969b87094fb2d",
+    "scripts/verify-personal-memory-fixed-web.ts": "7550e39c2fe19785db9e505d748823526d7da60e9103926ad386548c501f9320",
+    "scripts/verify-ma24-fresh-pilot-new-cluster.ts": "dcff8343d812ec2cf37d5f9d74d0628feca25cdbce4330bcff68a28802a0da8a"
+  },
+  "unitTests": {
+    "files": 1,
+    "tests": 4,
+    "exitCode": 0
+  },
+  "typecheckExitCode": 0,
+  "fiveFileLintExitCode": 0,
+  "component": {
+    "exitCode": 0,
+    "log": "tmp/ma24-memory-audit-component.log",
+    "sha256": "b3e81f05b6d0abe308f0f7993af4b58cbefe460f1d9a5cdd87463088d5f07dc2",
+    "records": [
+      {
+        "memoryAuditComponent": "passed",
+        "viewports": 3,
+        "readableInsertDeleteAndScopeChanges": true,
+        "sameLengthBodyChangeExplicit": true,
+        "missingNullMalformedDistinguished": true,
+        "rawSnapshotInitiallyCollapsedAndCopyExact": true,
+        "pagination": true,
+        "failedReadClearsOldDiffAndRetryRecovers": true,
+        "longScopeWrapsWithoutOverflow": true,
+        "screenshots": [
+          "tmp/memory-audit-ui/scope-1366.png",
+          "tmp/memory-audit-ui/body-1366.png",
+          "tmp/memory-audit-ui/scope-390.png",
+          "tmp/memory-audit-ui/body-390.png",
+          "tmp/memory-audit-ui/scope-320.png",
+          "tmp/memory-audit-ui/body-320.png"
+        ],
+        "syntheticHttpOnly": true,
+        "writes": 0,
+        "actualModelCalls": 0
+      }
+    ]
+  },
+  "packageChecks": {
+    "main-pair": {
+      "exitCode": 0,
+      "log": "tmp/ma24-memory-audit-main-pair.log",
+      "sha256": "16fe4a1ce8fbde8b46aa1ef03beb741337e1c114af26617d5bd002f05aa3e31a",
+      "records": [
+        {
+          "mainAgentRuntimePair": "passed",
+          "web": "ma24-pilot-web:0315939e",
+          "runtime": "ma24-main-agent-runtime:0315939e",
+          "sourceCommit": "0315939e437b833bc73fa1d82279e42aa63540ff",
+          "webImageId": "sha256:55d848bd81c1de9e32aeabad43c74a451f2d9cce0f865401cec9e3c17a4d0ccd",
+          "mainRuntimeImageId": "sha256:f229f18156f1db883cb95f5a49f1e3ccda2de6bb385bdeac51a4ef1d86deccdf",
+          "inspectionUsesImmutableImageIds": true,
+          "runtimeHash": "59c4fa5a1255a1327d4a3391205a39ebd9a279376b4dd961c4e4ad7eb1992882",
+          "sourceInputs": 1061,
+          "node": "24.21.0",
+          "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+          "platform": "linux",
+          "arch": "x64",
+          "webPackages": {
+            "pg": "8.23.0"
+          },
+          "mainRuntimePackages": {
+            "pg": "8.23.0",
+            "zod": "4.4.3",
+            "@langchain/langgraph": "1.4.15",
+            "@langchain/core": "1.2.9",
+            "langsmith": "0.9.0",
+            "undici": "8.10.0"
+          },
+          "webUnresolved": [
+            "zod",
+            "@langchain/langgraph",
+            "@langchain/core",
+            "langsmith",
+            "undici"
+          ],
+          "mainRuntimeUnresolved": [],
+          "completeDependencyRuntimeEquivalenceVerified": false,
+          "productionQualified": false,
+          "actualModelCalls": 0
+        }
+      ]
+    },
+    "collector-pair": {
+      "exitCode": 0,
+      "log": "tmp/ma24-memory-audit-collector-pair.log",
+      "sha256": "0a9ea5a2f3d80170d20a6478f7acef1633cbf2e511e5769e967887d94c52f619",
+      "records": [
+        {
+          "skillSourceRuntimePair": "passed",
+          "web": "ma24-pilot-web:0315939e",
+          "collector": "ma24-skill-collector:0315939e",
+          "sourceCommit": "0315939e437b833bc73fa1d82279e42aa63540ff",
+          "webImageId": "sha256:55d848bd81c1de9e32aeabad43c74a451f2d9cce0f865401cec9e3c17a4d0ccd",
+          "collectorImageId": "sha256:e5d4e8d7f62b23938d9bee4f65e6ecc067f1aa92ba84665a02908d3eb6da1a3c",
+          "inspectionUsesImmutableImageIds": true,
+          "runtimeHash": "59c4fa5a1255a1327d4a3391205a39ebd9a279376b4dd961c4e4ad7eb1992882",
+          "sourceInputs": 1061,
+          "node": "24.21.0",
+          "platform": "linux",
+          "arch": "x64",
+          "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+          "webPackages": {
+            "pg": "8.23.0"
+          },
+          "collectorPackages": {
+            "pg": "8.23.0",
+            "zod": "4.4.3",
+            "@langchain/langgraph": "1.4.15",
+            "@langchain/core": "1.2.9",
+            "langsmith": "0.9.0",
+            "undici": "8.10.0"
+          },
+          "webUnresolved": [
+            "zod",
+            "@langchain/langgraph",
+            "@langchain/core",
+            "langsmith",
+            "undici"
+          ],
+          "collectorUnresolved": [],
+          "completeDependencyRuntimeEquivalenceVerified": false,
+          "productionQualified": false,
+          "actualModelCalls": 0
+        }
+      ]
+    },
+    "dependencies": {
+      "exitCode": 0,
+      "log": "tmp/ma24-memory-audit-dependencies.log",
+      "sha256": "f992f62bc4c9620645384afa1ed1970cf71b458ccb51e553f80211dd76dead09",
+      "records": [
+        {
+          "localRuntimeDependencyPair": "passed",
+          "mainInspection": {
+            "role": "main-agent",
+            "imageId": "sha256:f229f18156f1db883cb95f5a49f1e3ccda2de6bb385bdeac51a4ef1d86deccdf",
+            "sourceCommit": "0315939e437b833bc73fa1d82279e42aa63540ff",
+            "deploymentHash": "a485ebfa8ddc522fbc6e32b50c7087d57c0fb770f18792c296c1589ae8997e1b",
+            "runtimeHash": "59c4fa5a1255a1327d4a3391205a39ebd9a279376b4dd961c4e4ad7eb1992882",
+            "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+            "node": "24.21.0",
+            "platform": "linux",
+            "arch": "x64",
+            "sourceInputs": 1061,
+            "files": 34613,
+            "dependencyManifestHash": "d3edb974b4ae6e725cbb62205c8f0e65606b061fd97bce214289279ccca20137",
+            "dependencyFiles": 33503,
+            "runtimeModuleFormat": "esm",
+            "executionArtifacts": [
+              {
+                "path": "server.mjs",
+                "sha256": "e7351afaa707c2f5658764e373988bbb914a515c478c1afa77e1bf46a2da8218"
+              },
+              {
+                "path": "start.mjs",
+                "sha256": "a26da05b508790992197256b3ee8acc38dc664e2c2ab6b0d180dfc9bf6099266"
+              },
+              {
+                "path": "worker.mjs",
+                "sha256": "939bc559eeaf39985dec177cdcab8a843ed6294abdd86f31f9ef44554a74cc65"
+              }
+            ]
+          },
+          "collectorInspection": {
+            "role": "skill-collector",
+            "imageId": "sha256:e5d4e8d7f62b23938d9bee4f65e6ecc067f1aa92ba84665a02908d3eb6da1a3c",
+            "sourceCommit": "0315939e437b833bc73fa1d82279e42aa63540ff",
+            "deploymentHash": "36aad3d1681d71dfdef9d4aeda6380ca3071e2badd9e9fed26e1f8d9ae44b0b4",
+            "runtimeHash": "59c4fa5a1255a1327d4a3391205a39ebd9a279376b4dd961c4e4ad7eb1992882",
+            "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+            "node": "24.21.0",
+            "platform": "linux",
+            "arch": "x64",
+            "sourceInputs": 1061,
+            "files": 34577,
+            "dependencyManifestHash": "d3edb974b4ae6e725cbb62205c8f0e65606b061fd97bce214289279ccca20137",
+            "dependencyFiles": 33503,
+            "runtimeModuleFormat": "esm",
+            "executionArtifacts": [
+              {
+                "path": "runner.mjs",
+                "sha256": "64e1b76e1d5d2ea2412efea9d882cb9d26d3ea789554a2b4892dc0ffbb5dbf32"
+              },
+              {
+                "path": "start.mjs",
+                "sha256": "9940bc440764d0e9bae71b3faccbe2fc93c29b3cd4559ea55cc859c50bcb7b04"
+              }
+            ]
+          },
+          "comparison": {
+            "runtimePackageBytesPairRevalidated": true,
+            "runtimePackageBytesPairBlockers": [],
+            "runtimeModuleFormatPairRevalidated": true,
+            "runtimeModuleFormatPairBlockers": [],
+            "runtimePackageBytesPairHash": "1ab89a9423dd70b41eb0e63e7dff34ec326d353566f87676462efcdbc2ba61bc"
+          },
+          "esmModuleFormatPairVerified": true,
+          "runtimeRegistrationsPublished": false,
+          "completeDependencyRuntimeEquivalenceVerified": false,
+          "productionQualified": false,
+          "automaticActivation": false,
+          "modelCalls": 0
+        }
+      ]
+    },
+    "collector-boundary": {
+      "exitCode": 0,
+      "log": "tmp/ma24-memory-audit-collector-boundary.log",
+      "sha256": "38bfc0c1f579f5f2c4e3c6f1c423e9d9780b10d889fd1d79a3c59f0b1fff07d4",
+      "records": [
+        {
+          "collectorImageVerification": "passed",
+          "image": "ma24-skill-collector:0315939e",
+          "imageId": "sha256:e5d4e8d7f62b23938d9bee4f65e6ecc067f1aa92ba84665a02908d3eb6da1a3c",
+          "commit": "0315939e437b833bc73fa1d82279e42aa63540ff",
+          "packageFiles": 34577,
+          "deploymentHash": "36aad3d1681d71dfdef9d4aeda6380ca3071e2badd9e9fed26e1f8d9ae44b0b4",
+          "measuredEnrollmentVerified": true,
+          "missingMalformedAndMismatchedEnrollmentRejectedBeforeRunner": true,
+          "matchedEnrollmentReachesRunner": true,
+          "nodeOptionsRejected": true,
+          "nonRootReadOnlyNoNetwork": true,
+          "changedRunnerRejectedBeforeExecution": true,
+          "actualModelCalls": 0,
+          "productionQualified": false
+        }
+      ]
+    },
+    "web-source": {
+      "exitCode": 0,
+      "log": "tmp/ma24-memory-audit-web-source.log",
+      "sha256": "6036c9925923519f4e74d9f9e82e05f66aa0c6574cb495559db608d9b1b29f80",
+      "records": [
+        {
+          "webImageSourceVerification": "passed",
+          "image": "ma24-pilot-web:0315939e",
+          "imageId": "sha256:55d848bd81c1de9e32aeabad43c74a451f2d9cce0f865401cec9e3c17a4d0ccd",
+          "sourceCommit": "0315939e437b833bc73fa1d82279e42aa63540ff",
+          "buildId": "mJk6rbt5JMpm624I6Ib4W",
+          "runtimeSourceFileCount": 1061,
+          "runtimeSourceMatchesFixedGitExport": true,
+          "exportEolDifferences": 1061,
+          "runtimeSourceManifestHash": "b4d0b1f994215a48bc25631776bfc954a22dcb2ec373cf7a996296db5aa231c1",
+          "privateEnvironmentFiles": false,
+          "privateStorageFiles": false,
+          "staticAssetsPresent": true,
+          "nonRootReadOnlyNoNetwork": true,
+          "productionQualified": false
+        }
+      ]
+    }
+  },
+  "builds": {
+    "main": {
+      "exitCode": 0,
+      "log": "tmp/ma24-memory-audit-main-build.log",
+      "sha256": "493e4d4bd901d4b1814f829da0501a87e524e6507575876728f300b8696910dd"
+    },
+    "collector": {
+      "exitCode": 0,
+      "log": "tmp/ma24-memory-audit-collector-build.log",
+      "sha256": "a57fdcd10a4cbcf5dacc83c76ebf687b634d475fd987482911cbc03a37858b2d"
+    },
+    "web": {
+      "exitCode": 0,
+      "log": "tmp/ma24-memory-audit-web-build.log",
+      "sha256": "80995e5dfcc8baacf2c7a34f17354fe7ae433e0df784a1b047fb45b397880efe"
+    }
+  },
+  "backendEvidenceReuse": "Main/collector executable bytes, Node and dependency manifest match accepted b853fee5. Its full TLS/API/Worker/declaration evidence remains version-scoped; this stage claims no new whole-runtime composition or registration.",
+  "actual": {
+    "exitCode": 0,
+    "log": "tmp/ma24-memory-audit-fixed-web.log",
+    "sha256": "a787b4f78330fedbba5dc3495eebf747ca153b16621b5c8d23bca043789728f8",
+    "records": [
+      {
+        "personalMemoryFixedWeb": "passed",
+        "actualChromeHttpsCompiledWeb": true,
+        "generatedAccountsOnly": true,
+        "createEditCancelAndScope": true,
+        "confirmationResetsOnChange": true,
+        "concurrentEditPreservesDraft": true,
+        "staleLifecycle409WithoutWriteOrAudit": true,
+        "observedVersionSent": true,
+        "archiveActivateDelete": true,
+        "postCommitReadFailureClearsActionsAndRetryRecovers": true,
+        "bodyFreeOwnerScopedAuditRetainedAfterDelete": true,
+        "auditFailureClearsOldRecords": true,
+        "readableAuditInsertDeleteAndExternalScope": true,
+        "sameLengthActualBodyEditExplained": true,
+        "rawAuditSnapshotCollapsedAndCopiedExactly": true,
+        "auditScreenshots": [
+          "tmp/ma24-memory-audit-body-1366-78efc513-621b-48cb-92b2-f861e958ca79.png",
+          "tmp/ma24-memory-audit-body-390-278531b4-28e9-490a-a178-2ca75d61c811.png",
+          "tmp/ma24-memory-audit-scope-1366-89543c02-9d23-4a90-9c13-2b7656faf4cc.png",
+          "tmp/ma24-memory-audit-scope-390-8599365e-c9a9-4507-b7d3-677cd7918552.png"
+        ],
+        "pagination": true,
+        "noHorizontalOverflow": true,
+        "screenshot": "tmp/ma24-personal-memory-mobile-40f0e84a-2c75-41a1-a2b3-3c75d42bf47d.png",
+        "actualModelCalls": 0,
+        "realBusinessQualityAccepted": false,
+        "productionQualified": false
+      },
+      {
+        "freshClusterPilot": "passed",
+        "image": "pgvector/pgvector:pg16",
+        "reviewDraftFixedImageVerified": false,
+        "mailboxImapWorkerVerified": false,
+        "mailboxWorkerImageVerified": false,
+        "mailboxWorkerImapImageVerified": false,
+        "scheduleDispatchVerified": false,
+        "batchSettlementVerified": false,
+        "batchWorkerCrashVerified": false,
+        "batchWorkerCommitVerified": false,
+        "scheduleWorkerCrashVerified": false,
+        "scheduleWorkerCommitVerified": false,
+        "publishedAddress": "127.0.0.1 only",
+        "rolesVerified": true,
+        "duplicateRoleBootstrapRejected": true,
+        "freshMigrationThrough": 170,
+        "currentSchemaMarkers": {
+          "mailbox_work_binding": true,
+          "mailbox_lease_binding": true,
+          "mailbox_binding_constraint": true,
+          "knowledge_source_gate": true,
+          "task_origin_gate": true,
+          "local_memory_source_gate": true,
+          "receipt_source_gate": true,
+          "immutable_snapshot_capture": true,
+          "immutable_snapshot_lifecycle": true,
+          "trust_registry_versions": true,
+          "trust_registry_pointer": true,
+          "trust_registry_publication": true,
+          "runtime_package_registrations": true,
+          "candidate_recovery_checkpoint": true,
+          "candidate_execution_lease": true,
+          "candidate_graph_checkpoint": true,
+          "runtime_package_withdrawals": true,
+          "runtime_package_publication": true,
+          "skill_activation_lifecycle": true,
+          "skill_activation_sources_sealed": true,
+          "skill_activation_reviews_serialized": true,
+          "skill_activation_declarations_serialized": true,
+          "skill_activation_source_guard_health": true,
+          "skill_activation_use_commit_guard": true,
+          "skill_activation_commit_guard": true,
+          "skill_activation_binding_guard": true
+        },
+        "snapshotLifecycleVerified": false,
+        "knowledgeScopeSourcesVerified": false,
+        "finalSettlementVerified": false,
+        "compiledMainRuntimeVerified": false,
+        "mainRuntimeSkillReceiptVerified": false,
+        "mainRuntimeModelReceiptVerified": false,
+        "mainRuntimeDurabilityVerified": false,
+        "mainRuntimeCrashRecoveryVerified": false,
+        "mainRuntimeInterruptionVerified": false,
+        "mainRuntimeNetworkLossVerified": false,
+        "mainRuntimeResumeRevocationVerified": false,
+        "mainRuntimeCommitLossVerified": false,
+        "mainRuntimeTaskEnrollmentVerified": false,
+        "snapshotDownloadResult": null,
+        "runStatusUiVerified": false,
+        "personalMemoryUiVerified": true,
+        "responsiveNavigationUiVerified": false,
+        "memoryObservationsUiVerified": false,
+        "localMemoryWorkerResult": null,
+        "trustRegistryRestoreResult": null,
+        "freshMailboxUiVerified": false,
+        "extendedFrontendUiVerified": false,
+        "syntheticAccountCompanyAndRestoreVerified": true,
+        "copiedProductionData": false,
+        "linuxWebImage": "ma24-pilot-web:0315939e",
+        "linuxWebHttpWorkflowVerified": true,
+        "linuxWebHttpsBrowserVerified": false,
+        "tenConcurrentSyntheticAccountsVerified": false,
+        "pilotBackupRestoreVerified": false,
+        "crossClusterRestoreVerified": false,
+        "nonemptyMailboxCrossClusterRestoreVerified": false,
+        "scriptedModeBusinessVerified": false,
+        "runnerAttestationStoreVerified": false,
+        "collectorDeclarationImageVerified": false,
+        "lockedPolicyDatabaseVerified": false,
+        "memorySourceLocksVerified": false,
+        "methodCatalogSourceLocksVerified": false,
+        "shadowSourceLocksVerified": false,
+        "safetySkillUsageVerified": false,
+        "transportJournalDatabaseVerified": false,
+        "agentCallLeaseDatabaseVerified": false,
+        "agentCheckpointLeaseDatabaseVerified": false,
+        "candidateLeaseContentionDatabaseVerified": false,
+        "runtimeReadSourceLocksDatabaseVerified": false,
+        "runtimeDisclosureDatabaseVerified": false,
+        "linuxFiveCategoryTransportVerified": false,
+        "collectorImageTlsPreflightVerified": false,
+        "poolRecoveryVerified": false,
+        "standaloneDatabaseRecoveryVerified": false,
+        "extraG09Migration": null,
+        "prospectiveSourceDatabaseVerified": false,
+        "prospectivePairedMaterialVerified": false,
+        "prospectiveStandaloneHttpVerified": false,
+        "prospectiveStandaloneBrowserVerified": false,
+        "completeCompositionVerified": false,
+        "samePortPriorImageRollbackVerified": false
+      }
+    ],
+    "session": 36512
+  },
+  "visuallyInspectedScreenshots": {
+    "tmp/memory-audit-ui/scope-320.png": "d10534e9061b37b1ec68441250f6d789163585e3fb0185307a9ddb5465760ee9",
+    "tmp/memory-audit-ui/body-390.png": "9851f86de22b754076a9cb5376bd776a2d565535567037e282530e44634fadbe",
+    "tmp/ma24-memory-audit-body-1366-78efc513-621b-48cb-92b2-f861e958ca79.png": "99842fcccff4ea337a66029fd528e8e22e160a91f1044244d5ac0e1e0f3d172d",
+    "tmp/ma24-memory-audit-body-390-278531b4-28e9-490a-a178-2ca75d61c811.png": "138c29b5e6f03a50723fe73da8c3515076ac1bf18878b71e600cf5f3f5b63ec9",
+    "tmp/ma24-memory-audit-scope-1366-89543c02-9d23-4a90-9c13-2b7656faf4cc.png": "4429e354c435350c45a5219d480a7878540f159456ebb9242e5752a0946c5dbd",
+    "tmp/ma24-memory-audit-scope-390-8599365e-c9a9-4507-b7d3-677cd7918552.png": "9a46220abc3052c9e67131135d4df976f51a943567bfdf4bdaba8acbe6c585c8"
+  },
+  "cleanup": {
+    "temporaryResourcesRemoved": true,
+    "originalThreeServicesRemain": true
+  },
+  "actualModelCalls": 0,
+  "productionQualified": false,
+  "realBusinessQualityAccepted": false,
+  "limits": [
+    "No audit storage, retention, API/permission change or restored historical title/body/vector/context.",
+    "Projection renders only known recorded snapshot fields; raw snapshot values stay separately available without rewriting.",
+    "Component malformed-value and long-scope checks are synthetic; actual fixed-Web checks use generated owner-scoped CRUD and audit records.",
+    "Not a full G03/G13, natural extraction/business answer quality, provider, production activation or deployment acceptance.",
+    "G14-G20/deployment remain deferred."
+  ]
+}
