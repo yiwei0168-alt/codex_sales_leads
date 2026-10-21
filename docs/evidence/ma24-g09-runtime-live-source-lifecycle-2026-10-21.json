@@ -38,8 +38,12 @@
     "typecheck": "Empty-reference return lacked new counters; fixed, final typecheck exited 0"
   },
   "nativeCombination": {
-    "status": "not-started-for-this-source",
-    "earlierSession14339": "Different source, still live; not evidence for this lifecycle change"
+    "status": "running-not-accepted",
+    "sessionId": 78222,
+    "sourceRevision": "7dbab64c",
+    "worktree": "F:/codex_sales_leads/tmp/ma24-lifecycle-stage",
+    "log": "tmp/ma24-live-source-lifecycle-db.log",
+    "earlierSession14339": "Exited 0; validates the earlier registered-read/disclosure implementation only"
   },
   "scope": {
     "sourceMutationTests": "mocked",

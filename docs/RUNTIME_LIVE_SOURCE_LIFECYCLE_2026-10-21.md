@@ -16,7 +16,7 @@ For each `registered-live-read-v1` task, the reader:
 
 Both acceptance preparation and `captureSkillAcceptanceLedger` call this retained reader. The latter is already invoked before and after business-source validation by `skillActivationCurrent`; therefore these checks also run during subsequent use. A changed source can reject even if every saved task and tool row remains unchanged. The existing binding schema and production qualification gate are unchanged.
 
-The full-combination fixture now requires one live task to reach this ledger check and reports that assertion separately. This new database composition has not yet run. The earlier live-read combination 14339 uses source before this lifecycle change and cannot validate it.
+The full-combination fixture now requires one live task to reach this ledger check and reports that assertion separately. Its new fresh-database composition is running as session 78222 on committed source 7dbab64c in the separate worktree and is not accepted yet. Earlier live-read combination 14339 exited 0 on source before this lifecycle change and cannot validate it.
 
 ## Evidence and limitations
 
