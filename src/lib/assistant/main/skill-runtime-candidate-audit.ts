@@ -12,6 +12,7 @@ import {hasReadEvidenceContract} from './read-evidence-tools';
 import {assertSkillRuntimeReadSources} from './skill-runtime-read-sources';
 import {assertSkillRuntimeModelDisclosure} from './skill-runtime-disclosure';
 import {skillCandidateExecutionPolicySchema} from './skill-candidate-execution-policy';
+import {compareSkillRuntimeExecutionPolicy} from './skill-runtime-policy-comparison';
 
 type Snapshot=Parameters<typeof runSkillCandidateArm>[0];
 export type SkillRuntimeToolReceipt={id:string;user_id:string;run_id:string;call_key:string;tool_id:string;tool_version:string;
@@ -131,8 +132,11 @@ export async function auditSkillRuntimeCandidate(context:{userId:string},input:P
  if(live)await assertSkillRuntimeReadSources(toolContext,sourceMessages,saved.snapshot.candidate.listing.id);
  if(digest(await readModels())!==digest(rows)||digest(await readTools())!==digest(tools)
   ||digest(await readCompletedSkillCandidateRuntimeTask(context,input,expectedPlan))!==digest(completed))throw new Error('Skill runtime audit records changed');
+ const policyComparison=compareSkillRuntimeExecutionPolicy(executionPolicy,{modelDecisionCount:decisions,
+  modelAttemptReceiptCount:prepared.ordered.length,...(live?{readExecution:'registered-live-read-v1' as const}:{})});
  const projection={protocol:'skill-runtime-candidate-audit-v1',ownerId:context.userId,taskId:input.taskId,evaluationId:input.evaluationId,arm:input.arm,
   executionPolicy,
+  executionPolicyComparison:policyComparison.comparison,executionPolicyComparisonHash:policyComparison.comparisonHash,
   ...(live?{readExecution:'registered-live-read-v1' as const}:{}),
   freezeId:input.freezeId,sourceKind:prepared.sourceKind,taskSpecHash:completed.specHash,completedTaskHash:digest(completed),serverSnapshotHash:saved.sourceHash,runtimeSnapshotHash,
   capturedAt:new Date(Math.min(...rows.map(row=>Date.parse(row.started_at??'')))).toISOString(),completedAt:new Date(completed.completedAt).toISOString(),

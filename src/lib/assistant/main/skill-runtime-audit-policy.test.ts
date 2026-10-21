@@ -32,6 +32,9 @@ it('reconstructs one completed decision under its stored quota of three and bind
  const out=await auditSkillRuntimeCandidate({userId:id(1)},input,{});
  expect(m.run.mock.calls[0][4]).toBe(3);
  expect(out.projection.executionPolicy).toEqual(skillCandidateExecutionPolicy(3));
+ expect(out.projection.executionPolicyComparison).toMatchObject({modelDecisionCount:1,modelAttemptReceiptCount:1,
+  trialPolicy:{modelCallLimit:3},graphLimitsMatch:true,ordinaryLifecycleEquivalent:false,qualificationGranted:false});
+ expect(out.projection.executionPolicyComparisonHash).toBe(digest(out.projection.executionPolicyComparison));
  expect(out.projection.selectedModels).toHaveLength(1);expect(out.productionAgentEquivalent).toBe(false);
 });
 it('does not infer an execution quota from journal length when the stored policy is absent',async()=>{

@@ -1,0 +1,61 @@
+{
+  "stage": "runtime-execution-policy-comparison",
+  "date": "2026-10-21",
+  "rule": "MA24-06",
+  "scope": "G01-G13",
+  "sourceFiles": {
+    "src/lib/assistant/main/skill-runtime-policy-comparison.ts": "4a65b299accf8de457a24887eb8ec1c1cf886efdf04af0d3bc96be192034047c",
+    "src/lib/assistant/main/skill-runtime-policy-comparison.test.ts": "ee53c11de970caf9bdf969ea226f02ad8d5cca1a79da2807b377dfd4a61ec7fd",
+    "src/lib/assistant/main/skill-runtime-candidate-audit.ts": "d83a1ab4d4b43a4438075b141cab9e085706f6589fdeb7d890df0230caf463d2",
+    "src/lib/assistant/main/skill-runtime-audit-policy.test.ts": "311971e75f64244ea0194fd2f5a5cd9994a35898ffae5bef5c9f9f0c1cebe982",
+    "scripts/fixtures/skill-runtime-candidate-db.ts": "46be0c8b3f141c31b69f37e58f00276a96cef7c3fcd75cdd02256897fbed56e9"
+  },
+  "checks": {
+    "tests": {
+      "sessionId": 42953,
+      "exitCode": 0,
+      "log": "tmp/ma24-runtime-policy-comparison-tests.log",
+      "logSha256": "0b947c6e92f2562ae41df672fb97e749634d585665da0dd1548090993eec117d"
+    },
+    "typecheck": {
+      "sessionId": 38302,
+      "exitCode": 0,
+      "log": "tmp/ma24-runtime-policy-comparison-typecheck.log",
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "lint": {
+      "sessionId": 67980,
+      "exitCode": 0,
+      "log": "tmp/ma24-runtime-policy-comparison-lint.log",
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "fixtureTypecheck": {
+      "sessionId": 73759,
+      "exitCode": 0,
+      "log": "tmp/ma24-runtime-policy-comparison-fixture-typecheck.log",
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "fixtureLint": {
+      "sessionId": 41413,
+      "exitCode": 0,
+      "log": "tmp/ma24-runtime-policy-comparison-fixture-lint.log",
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "testsPassed": 25,
+  "databaseVerification": {
+    "status": "pending"
+  },
+  "fixedImagesRebuilt": false,
+  "priorFixedComposition": {
+    "productCommit": "47be31685735b1f9c9925660f6f421c2e203a3fc",
+    "fixtureCommit": "6b4f51c9003c1df5d4c27345b00dc9f491512777",
+    "sessionId": 37984,
+    "exitCode": 0,
+    "coversThisComparisonChange": false
+  },
+  "productionAgentEquivalent": false,
+  "realModelCalls": 0,
+  "automaticActivation": false,
+  "qualificationGranted": false
+}

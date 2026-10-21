@@ -13,6 +13,7 @@ import {readSkillAcceptanceReviewCase} from '../../src/lib/assistant/main/skill-
 import {skillCandidateCheckpointSchema} from '../../src/lib/assistant/main/skill-candidate-checkpoint';
 import {readCandidateGraphCheckpoint} from './read-candidate-graph-checkpoint';
 import {MainAgentState} from '../../src/lib/assistant/main/graph';
+import {digest} from '../../src/lib/assistant/main/contracts';
 
 export async function verifySkillRuntimeCandidateDatabase(pool:Pool,owner:string,pin:Parameters<typeof enqueueSkillCandidateRuntimeTask>[1],
  frozen:NonNullable<SkillCandidateCollector['frozen']>,transaction:SkillCandidateCollector['transaction']){
@@ -73,6 +74,13 @@ export async function verifySkillRuntimeCandidateDatabase(pool:Pool,owner:string
  assert.equal((await pool.query('select enabled from agent_skill where id=$1',[pin.skillId])).rows[0].enabled,false);
  const audit=await auditSkillRuntimeCandidate(context,auditInput,frozen.plan);
  assert.equal(audit.completeToolJournalVerified,true);assert.equal(audit.projection.candidateSkillUsed,true);
+ assert.equal(audit.projection.executionPolicyComparison.modelDecisionCount,5);
+ assert.equal(audit.projection.executionPolicyComparison.modelAttemptReceiptCount,before.length);
+ assert.equal(audit.projection.executionPolicyComparison.graphLimitsMatch,true);
+ assert.equal(audit.projection.executionPolicyComparison.modelDecisionQuotaRespected,true);
+ assert.equal(audit.projection.executionPolicyComparison.ordinaryLifecycleEquivalent,false);
+ assert.equal(audit.projection.executionPolicyComparison.qualificationGranted,false);
+ assert.equal(audit.projection.executionPolicyComparisonHash,digest(audit.projection.executionPolicyComparison));
  assert.equal(audit.projection.toolReceipts.length,2);
  assert.deepEqual((await pool.query('select id,tool_id,status,output from agent_tool_call where run_id=$1 order by tool_id',[created.runId])).rows,tools);
  assert.deepEqual(requests,[0,1,2,3,4]);
@@ -85,6 +93,7 @@ export async function verifySkillRuntimeCandidateDatabase(pool:Pool,owner:string
  try{await assert.rejects(material.bundleId?readSkillAcceptanceReviewCase(context,{bundleId:material.bundleId,caseId:selection.caseId}):auditSkillRuntimeCandidate(context,auditInput,frozen.plan),/saved output differs/);}
  finally{await pool.query('update agent_tool_call set output=$2 where id=$1',[skillRead.id,skillRead.output]);}
  return {...material.checks,skillRuntimeCandidateGraphVerified:true,skillRuntimeCandidateModelAndRegisteredReadJournalsVerified:true,
+  skillRuntimeExecutionPolicyComparisonVerified:true,
   skillRuntimeIndependentGraphAuditVerified:true,skillRuntimeAuditRejectsUnsettledTaskAndPersistedToolTamper:true,skillRuntimeAuditDoesNotWriteOrRequest:true,
   skillRuntimeSettlementRollbackAndTerminalRecoveryVerified:true,skillRuntimeRecoveryNoModelOrToolReplay:true,
   skillRuntimeVirtualSkillDoesNotEnableAccount:true,actualModelCalls:0,productionAgentEquivalent:false,automaticActivation:false};
