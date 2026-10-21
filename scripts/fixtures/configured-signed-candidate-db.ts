@@ -43,7 +43,7 @@ export async function verifyConfiguredSignedCandidateDatabase(pool:Pool,input:{o
   plugins:[{name:'explicit-synthetic-network-and-billing',setup(builder){
    if(process.env.MA24_CONFIGURED_RUNTIME_PROCESS_CRASH==='1')builder.onLoad({filter:/skill-runtime-candidate\.ts$/},async args=>{
     const source=await readFile(args.path,'utf8'),needle='await dispatchTool(call,context,tools)';assert.equal(source.split(needle).length,2);
-    const replacement=`await(async()=>{const output=await dispatchTool(call,context,tools);if(process.env.MA24_RUNTIME_KILL_AFTER_SKILL_READ==='1'&&resolved.kind==='execute'&&resolved.tool.id==='skill_read'&&output.status==='success'){process.stdout.write('FIXTURE_RUNTIME_READ_COMMITTED'+String.fromCharCode(10),()=>process.kill(process.pid,'SIGKILL'));await new Promise<never>(()=>{});}return output;})()`;
+    const replacement=`await(async()=>{const output=await dispatchTool(call,context,tools);if(process.env.MA24_RUNTIME_KILL_AFTER_READ&&resolved.kind==='execute'&&resolved.tool.id===process.env.MA24_RUNTIME_KILL_AFTER_READ&&output.status==='success'){process.stdout.write('FIXTURE_RUNTIME_READ_COMMITTED'+String.fromCharCode(10),()=>process.kill(process.pid,'SIGKILL'));await new Promise<never>(()=>{});}return output;})()`;
     return {contents:source.replace(needle,replacement),loader:'ts',resolveDir:dirname(args.path)};
    });
    builder.onLoad({filter:/skill-candidate-runner\.ts$/},async args=>({contents:(await readFile(args.path,'utf8')).replace('}catch(error){stopReason=stopReason??',` }catch(error){const message=error instanceof Error?error.message:'';console.error('FIXTURE_INNER:'+(/^[A-Za-z -]{1,180}$/.test(message)?message:'Candidate nonstatic validation error'));stopReason=stopReason??`),loader:'ts',resolveDir:dirname(args.path)}));
@@ -56,7 +56,7 @@ export async function verifyConfiguredSignedCandidateDatabase(pool:Pool,input:{o
   const child=spawn(process.execPath,[fixedPackage?'/app/start.mjs':compiledPath,'--execute',jobPath],{windowsHide:true,stdio:['ignore','pipe','pipe'],env:{...process.env,
    NODE_ENV:'production',NODE_OPTIONS:'',NODE_EXTRA_CA_CERTS:'',SSL_CERT_FILE:'',SSL_CERT_DIR:'',NODE_USE_SYSTEM_CA:'0',NODE_TLS_REJECT_UNAUTHORIZED:'1',
    OPENROUTER_API_KEY:fixedPackage?'':'SYNTHETIC_NOT_A_CREDENTIAL',OPENROUTER_BASE_URL:'https://openrouter.ai/api/v1',OPENROUTER_HTTP_REFERER:'',
-   MA24_CANDIDATE_LIVE_PROSPECTIVE:input.prospective?'1':'0',MA24_RUNTIME_KILL_AFTER_SKILL_READ:crash?'1':'0',MA24_CANDIDATE_MINIMUM_HTTP_STEP:String(minimumStep),MA24_CANDIDATE_FORBID_REQUEST:reuse?'1':'0',MA24_CANDIDATE_SKILL_ID:input.skillId,MA24_CANDIDATE_EVALUATION_ID:evaluationId,
+   MA24_CANDIDATE_LIVE_PROSPECTIVE:input.prospective?'1':'0',MA24_RUNTIME_KILL_AFTER_READ:crash?(input.prospective?'customer_timeline':'skill_read'):'',MA24_CANDIDATE_MINIMUM_HTTP_STEP:String(minimumStep),MA24_CANDIDATE_FORBID_REQUEST:reuse?'1':'0',MA24_CANDIDATE_SKILL_ID:input.skillId,MA24_CANDIDATE_EVALUATION_ID:evaluationId,
    TASK_MODEL_TRANSPORT_COLLECTOR_ID:process.env.MA24_MEASURED_RUNTIME_PACKAGES_FILE?process.env.TASK_MODEL_TRANSPORT_COLLECTOR_ID:input.collectorId,
    TASK_MODEL_TRANSPORT_DEPLOYMENT_SHA256:process.env.MA24_MEASURED_RUNTIME_PACKAGES_FILE?process.env.TASK_MODEL_TRANSPORT_DEPLOYMENT_SHA256:input.deploymentHash,
    SKILL_RUNNER_COLLECTOR_ID:input.collectorId,SKILL_RUNNER_DEPLOYMENT_SHA256:input.deploymentHash,

@@ -90,7 +90,7 @@ try{
   for(const field of ['formalTaskProcessTerminatedAfterCommittedRead','formalTaskEarlyTakeoverRejected','formalTaskDefaultLeaseNaturallyExpired',
    'formalTaskNewProcessRecoveredPendingRead','formalTaskRecoveryPreservedCommittedModelAndToolRows','formalTaskRecoveryRejectsRepeatedCompletedHttpSteps'])
    assert.equal(summary[`${recoveryKind}FormalRecovery`]?.[field],true,`Fixed-image ${recoveryKind} recovery assertion missing: ${field}`);
-  if(recoveryKind==='prospective')for(const field of ['formalTaskRecoveryPreservedExecutionSpec','formalTaskRecoveryPreservedProspectiveCaptureBinding'])
+  if(recoveryKind==='prospective')for(const field of ['formalTaskRecoveryPreservedExecutionSpec','formalTaskRecoveryPreservedProspectiveCaptureBinding','formalTaskRecoveryPreservedCommittedLiveBusinessRead'])
    assert.equal(summary.prospectiveFormalRecovery?.[field],true,`Fixed-image prospective recovery assertion missing: ${field}`);
  }
  console.log(JSON.stringify({linuxFiveCategoryTransport:'passed',imageId:image,sourceCommit:commit,nodeAndDependenciesFromFixedImage:true,

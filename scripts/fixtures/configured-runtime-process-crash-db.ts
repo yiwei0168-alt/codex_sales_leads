@@ -23,9 +23,14 @@ export async function verifyConfiguredRuntimeProcessCrash(pool:Pool,input:{owner
  const tools=async()=> (await pool.query('select id,call_key,tool_id,status,to_jsonb(c) snapshot from agent_tool_call c where user_id=$1 and run_id=$2 order by id',
  [input.owner,taskId])).rows;
  const beforeModels=await models(),beforeTools=await tools();
- assert.equal(beforeModels.length,2);assert.equal(beforeTools.length,1);assert.equal(beforeTools[0].tool_id,'skill_read');assert.equal(beforeTools[0].status,'completed');
+ const liveBusiness=Boolean(input.prospectiveJobId),readTool=liveBusiness?'customer_timeline':'skill_read';
+ assert.equal(beforeModels.length,liveBusiness?3:2);assert.equal(beforeTools.length,liveBusiness?2:1);
+ assert(beforeTools.every(row=>row.status==='completed'));
+ const committedRead=beforeTools.filter(row=>row.tool_id===readTool);assert.equal(committedRead.length,1);
+ if(liveBusiness){assert.equal(spec.readExecution,'registered-live-read-v1');assert.deepEqual(committedRead[0].snapshot.input,{offset:1});}
+
  const checkpoint=await readCandidateGraphCheckpoint(pool,{owner:input.owner,evaluationId:input.evaluationId,arm:'candidate'});
- assert((checkpoint.checkpoint.channel_values.pending as Array<{id:string}>).some(call=>call.id===beforeTools[0].call_key),'Committed read must still be pending in the saved graph');
+ assert((checkpoint.checkpoint.channel_values.pending as Array<{id:string}>).some(call=>call.id===committedRead[0].call_key),'Committed read must still be pending in the saved graph');
  const lease=async()=> (await pool.query(`select e.execution_token,floor(extract(epoch from(greatest(r.lease_until,e.lease_until)-clock_timestamp()))*1000)::integer remaining_ms
   from agent_run r join agent_skill_candidate_execution_lease e on e.owner_id=r.user_id and e.evaluation_id=$2 and e.arm='candidate'
   where r.id=$1`,[taskId,input.evaluationId])).rows[0];
@@ -36,14 +41,14 @@ export async function verifyConfiguredRuntimeProcessCrash(pool:Pool,input:{owner
  const timeout=Date.now()+120_000;
  while((await lease()).remaining_ms>0){assert(Date.now()<timeout,'Killed process leases did not naturally expire');await new Promise(done=>setTimeout(done,1000));}
  // Any repeat HTTP for already completed steps is an explicit fixture failure.
- const exit=await launch(false,false,2);assert.equal(exit.code,0,`Expired formal task recovery failed: ${exit.diagnostic}`);
+ const exit=await launch(false,false,beforeModels.length);assert.equal(exit.code,0,`Expired formal task recovery failed: ${exit.diagnostic}`);
  const recovered=(await pool.query('select status,execution_spec from agent_run where id=$1',[taskId])).rows[0];
  assert.equal(recovered.status,'completed');assert.deepEqual(recovered.execution_spec,spec);
  assert.notEqual((await lease()).execution_token,beforeLease.execution_token);
  const afterModels=await models(),afterTools=await tools();
  assert.deepEqual(afterModels.filter(row=>beforeModels.some(old=>old.id===row.id)),beforeModels);
  assert.deepEqual(afterTools.filter(row=>beforeTools.some(old=>old.id===row.id)),beforeTools);
- return {exit,formalTaskProcessTerminatedAfterCommittedRead:true,formalTaskEarlyTakeoverRejected:true,
+ return {exit,formalTaskCrashReadTool:readTool,...(liveBusiness?{formalTaskRecoveryPreservedCommittedLiveBusinessRead:true}:{}),formalTaskProcessTerminatedAfterCommittedRead:true,formalTaskEarlyTakeoverRejected:true,
   formalTaskDefaultLeaseNaturallyExpired:true,formalTaskNewProcessRecoveredPendingRead:true,
   formalTaskRecoveryPreservedCommittedModelAndToolRows:true,formalTaskRecoveryRejectsRepeatedCompletedHttpSteps:true,
   formalTaskRecoveryPreservedExecutionSpec:true,...(input.prospectiveJobId?{formalTaskRecoveryPreservedProspectiveCaptureBinding:true}:{}),
