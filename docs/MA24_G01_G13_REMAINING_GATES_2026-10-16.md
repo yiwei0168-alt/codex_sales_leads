@@ -1,5 +1,7 @@
 # MA24 G01–G13 当前剩余门槛（2026-10-16）
 
+Current accepted source-fence update: 504dc63f native 24267, API/Worker 20802, collector TLS 95399 and full fixed TLS/recovery composition 12196 all exited 0 on disposable schema 171. Current text/excerpts, shared-current-only revision RLS and reader/delete recovery passed; genuine provider/business/answer quality and production remain open. Business databases unchanged; G14-G20/deployment deferred.
+
 Current accepted coordinate-reader update: 79f87251 actual 98858 passed late-read guards, directory recovery, owner isolation and disposable asset withdrawal/restoration. Saved-text/list/delete workflows and real document/answer quality remain separate; G14-G20/deployment deferred.
 
 Current accepted F08 update: 0aee85a7 Web / afcd56a0 host actual 95198 passed upload persistence/dedup/unknown-ack/status paging and unprocessed-asset refusal. Real extraction/content quality and target deployment remain unverified; G14-G20/deployment deferred.
@@ -437,7 +439,7 @@ G09 任务与工具日志锁已接入材料重建入口：从已存包派生任�
 
 | 项目 | 已有依据 | 仍缺的实现或验收 | 下一项能关闭缺口的证据 |
 | --- | --- | --- | --- |
-| G01 Release baseline | b853fee5 three fixed builds/five checks, native instruction recovery, actual API/Worker, canonical declaration TLS and full fixed TLS/recovery composition passed at declared scopes | Real provider/business quality and target deployment unverified; whole-fixture production wrapper remains false | Continue authorized business gates and verified workflow gaps; deploy only when resumed. |
+| G01 Release baseline | 504dc63f three fixed builds/five package checks, native library/schema-171 RLS, actual API/Worker, canonical declaration TLS and full fixed TLS/recovery composition passed at declared scopes | Real provider/business quality and target deployment unverified; whole-fixture production wrapper remains false | Continue authorized business gates and verified workflow gaps; deploy only when resumed. |
 | G02 来源撤销 | 真实图、旧 checkpoint、隔离模型及局部 HTTP；当前构建的登记原件下载通过认证、Range、篡改和请求间撤回的真实 HTTP 验证 ([收据](evidence/ma24-g02-g05-asset-download-http-clone-2026-10-19.json)) | 当前服务上真实账号有界任务的生成期撤销、后续工具阻断和最终保存核对 | 获授权的专门来源/账号任务及撤销前后收据；新付费请求另列具体清单 |
 | G03 Correction and two clocks | ae1431ff observation correction/history/conflict/undo (78901) and bfb76237 original-memory CRUD/scope/version/readback/audit/pagination (1619/59169) passed at declared scopes | Natural preference/experience/business-fact samples and sustained Worker operation unverified | Obtain authorized real source/correction samples; generated UI evidence does not establish natural extraction quality. |
 | G04 记忆图谱 | outbox、租约、故障恢复及 PostgreSQL 降级服务证据；中文同批投影、真实陈旧图谱候选的撤销过滤和原记录/纠正历史回读、第三条撤销投递通过 | 获准真实样本的持续抽取/投影、最终统一候选及持续故障/恢复运行未验 | 连续消费及图谱停机/恢复的同一批来源收据；同批有限撤销召回证据见最新工作流，不替代真实质量 |
@@ -449,7 +451,7 @@ G09 任务与工具日志锁已接入材料重建入口：从已存包派生任�
 | G10 Review | Fixed 08a093e9 actual Chrome/HTTPS/database review revisions r1-r7, partial-source refusal and separate complete two-original capture/withdrawal/restoration passed (89025) | Genuine complete human materials, five-category quality, provider identity and target entry remain unverified | Prepare authorized same-version/frozen real materials and verify independent judgments; synthetic revisions grant no quality approval. |
 | G11 邮箱/客户 | 固定2a1fb556正式邮箱Worker/实际IMAP库/合成TLS服务/新159数据库的日期分页、半页SIGKILL和原租约自然到期恢复通过；4封唯一加密邮件、统计4/4/4/0、账号隔离和空Worker不变 | 真实服务商日期范围与全分页、持续负载、客户归属/摘要质量及目标主机运行未验 | 已授权账号及日期范围上的收件/已发送对账、恢复与逐例归属判定；历史提供方对账单独保留 |
 | G12 三模式 | 恢复原因白名单修复，60 项定向测试及全新库 12 组脚本业务通过 | 真实只读业务回答、提供方失败/迟到/未知结果恢复及正式加载未验 | 有界真实任务和隔离提供方响应的持久收据；已消耗的 MODESEL-14 授权不复用 |
-| G13 Frontend | Prior original/approval/memory/navigation/status/instruction recovery plus 0315939e readable memory-audit differences and exact raw copy (36512) passed at declared versions | Real mail/documents/tasks/natural answers and target entry remain unverified; remaining disclosure entries retain their own acceptance scopes | Continue verified workflow gaps and authorized real quality; generated UI/API fixtures do not establish real quality. |
+| G13 Frontend | Prior approval/memory/navigation/status/instruction/conversation/attachment/tree receipts plus 504dc63f library current-source/read/deletion recovery passed at declared versions | Real mail/documents/tasks/natural answers and target entry remain unverified; remaining disclosure entries retain their own acceptance scopes | Continue verified workflow gaps and authorized real quality; generated UI/API fixtures do not establish real quality. |
 
 ## 已核实的实现断点
 
@@ -895,3 +897,8 @@ Follow-up G05/G13 audit: independently reconcile saved-text endpoint status/curr
 
 
 2026-10-22 / Existing MA24-02/MA24-16 current-library source guard implemented: body and private/shared/all excerpts now share active/current-tree/current-asset-or-original checks, retaining asset-free legacy text and explicit owner history. Migration 171 limits added SELECT visibility to the current active shared original; no write/history/private grant. Reader/list recovery clears stale actions; deletion lock and acknowledgement boundaries preserve confirmed outcomes. Three existing service tests, three-width component cases, typecheck/six-file lint passed. Actual schema-171 RLS/Web fixture prepared; packages/native acceptance pending. No business migration, new user confirmation, real quality, provider call, activation or deployment. [Scope](LIBRARY_CURRENT_SOURCE_GUARD_2026-10-22.md).
+
+
+
+
+2026-10-22 / Final current-source acceptance: **504dc63f**, full fixed TLS/composition/recovery **12196 exited 0**; all 12 result records and seven source hashes inspected. Six safety arms, same-freeze five categories, measured current runtime registration/provenance, live-source/policy checks, actual committed live-read process termination/default-lease natural expiry/new-process recovery without replay, preserved execution/capture/journals and completed fixed-launcher reuse passed. Application/migration TLS, plaintext/missing-CA/wrong-DNS and configured wrong-IP refusal passed. Native library/Web/RLS **24267**, actual API/Worker **20802**, canonical collector TLS/database trust **95399**, three builds/five package checks, three service tests/typecheck/six-file lint and three-width component cases are separately passed. Migration 171 is applied only to disposable databases; business databases/production are unchanged. Temporary containers removed, original three services remain. Existing MA24-02/MA24-16 current text/excerpt source protection and current-shared-original SELECT are accepted at these scopes, with explicit owner history retained. Whole production entrypoint wrapper, genuine provider/business/document-answer quality, qualification and activation remain false/unverified. G14-G20/deployment remain deferred. [Scope](LIBRARY_CURRENT_SOURCE_GUARD_2026-10-22.md); [final evidence](evidence/ma24-g02-g05-g13-library-current-source-2026-10-22.json).
