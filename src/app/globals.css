@@ -37,7 +37,7 @@ a { color: inherit; }
 .workspace-switcher small { margin-top: 3px; font-size: var(--text-secondary); color: #89a298; }
 .market-flag { display: grid; place-items: center; width: 32px; height: 25px; border-radius: 6px; background: linear-gradient(90deg, #156d48 0 33%, #f5f3e9 33% 66%, #b83d40 66%); color: transparent; font-size: var(--text-secondary); border: 1px solid rgb(255 255 255 / .12); }
 .nav-label { margin: 0 11px 8px; color: #627f74; font-size: var(--text-secondary); font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
-.nav-item { width: 100%; display: grid; grid-template-columns: 20px 1fr auto; align-items: center; gap: 10px; min-height: 42px; padding: 0 11px; margin: 3px 0; border-radius: 9px; color: #94aaa2; text-align: left; transition: .18s ease; }
+.nav-item { width: 100%; display: grid; grid-template-columns: 20px 1fr auto; align-items: center; gap: 10px; min-height: 42px; padding: 0 11px; margin: 3px 0; border-radius: 9px; color: #94aaa2; text-align: left; transition: background-color .18s ease, color .18s ease, border-color .18s ease; }
 .nav-item span { font-size: var(--text-secondary); font-weight: 650; }
 .nav-item em { min-width: 24px; height: 20px; padding: 0 6px; display: grid; place-items: center; border-radius: 6px; color: #82a398; background: rgb(255 255 255 / .06); font-style: normal; font-size: var(--text-secondary); }
 .nav-item:hover { color: #e8f0ed; background: rgb(255 255 255 / .04); }

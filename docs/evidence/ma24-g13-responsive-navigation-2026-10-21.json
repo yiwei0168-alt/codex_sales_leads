@@ -1,0 +1,173 @@
+{
+  "date": "2026-10-21",
+  "rule": "MA15-02 desktop 248px/collapse and mobile drawer below 960px",
+  "scope": "G13 responsive navigation visibility and desktop recovery of mobile dialog state",
+  "status": "style-and-static-passed-fixed-browser-pending",
+  "sourceFilesCanonicalLf": {
+    "src/app/globals.css": "7252c8609fad09da10067ee8f3bd7d5b075fa2fe02dad22150e2949f4bec46b2",
+    "src/components/copilot-demo.tsx": "70fe440920022763cda2f26ec2e3c58f440f2112288dbdb4a51c80fdaa3b5b30",
+    "scripts/verify-responsive-navigation-styles.mjs": "cdfeb4a21478927f942da9f3d3cf4da1349f7f19dc4fbcaa0efaeb2b5e6b1083",
+    "scripts/verify-responsive-navigation-fixed-web.ts": "43c8e7bffef58495948cbd4406050d4d608fa41a3f5bcadf4eb5e07dccdf91d0",
+    "scripts/verify-ma24-fresh-pilot-new-cluster.ts": "1c9e13c2908fcfd24073a9a4c1b0046cb09854fe4b159061464b8793b59cce23"
+  },
+  "baseline": {
+    "sourceCommit": "ae1431ff",
+    "globalsSha256": "4ed72ed6b4c319e2fb58c0c9a02ceaf1be5b1c93effe03993875c6585acef62b",
+    "log": "tmp/ma24-nav-visibility-diagnosis.log",
+    "logSha256": "1657d1e81b237b2adf1639dd175567b4514ec8d6c295747f5d0fca8dd89e06e3",
+    "syntheticDomActualStyles": {
+      "first": {
+        "sidebar": "hidden",
+        "items": [
+          {
+            "visibility": "visible",
+            "transition": "all",
+            "x": 14,
+            "width": 281
+          },
+          {
+            "visibility": "visible",
+            "transition": "all",
+            "x": 14,
+            "width": 281
+          }
+        ],
+        "animations": [
+          "transform",
+          "visibility",
+          "visibility"
+        ]
+      },
+      "frame": {
+        "sidebar": "hidden",
+        "items": [
+          {
+            "visibility": "visible",
+            "transition": "all",
+            "x": 6.205188751220703,
+            "width": 281
+          },
+          {
+            "visibility": "visible",
+            "transition": "all",
+            "x": 6.205188751220703,
+            "width": 281
+          }
+        ],
+        "animations": [
+          "transform",
+          "visibility",
+          "visibility"
+        ]
+      },
+      "settled": {
+        "sidebar": "hidden",
+        "items": [
+          {
+            "visibility": "hidden",
+            "transition": "all",
+            "x": -311.5,
+            "width": 281
+          },
+          {
+            "visibility": "hidden",
+            "transition": "all",
+            "x": -311.5,
+            "width": 281
+          }
+        ],
+        "animations": []
+      }
+    },
+    "finding": "Closed sidebar is hidden but child nav-item visibility stays visible during transition:all; labels are hidden after animation settles. Earlier screenshot is a transient visibility leak, not proof of permanently open state."
+  },
+  "checks": {
+    "styleBrowser": {
+      "exitCode": 0,
+      "log": "tmp/ma24-navigation-style-regression.log",
+      "logSha256": "f0393f558225ad48dbe8a81c18498b5919f86d9b18161996568e6cd43674a4be",
+      "result": {
+        "responsiveNavigationStyle": "passed",
+        "syntheticDomWithActualStyles": true,
+        "samples": {
+          "first": {
+            "sidebar": "hidden",
+            "items": [
+              {
+                "visibility": "hidden",
+                "transition": "background-color, color, border-color",
+                "x": 14,
+                "width": 281
+              },
+              {
+                "visibility": "hidden",
+                "transition": "background-color, color, border-color",
+                "x": 14,
+                "width": 281
+              }
+            ],
+            "animations": [
+              "transform"
+            ]
+          },
+          "frame": {
+            "sidebar": "hidden",
+            "items": [
+              {
+                "visibility": "hidden",
+                "transition": "background-color, color, border-color",
+                "x": 7.170690536499023,
+                "width": 281
+              },
+              {
+                "visibility": "hidden",
+                "transition": "background-color, color, border-color",
+                "x": 7.170690536499023,
+                "width": 281
+              }
+            ],
+            "animations": [
+              "transform"
+            ]
+          },
+          "settled": {
+            "sidebar": "hidden",
+            "items": [
+              {
+                "visibility": "hidden",
+                "transition": "background-color, color, border-color",
+                "x": -311.5,
+                "width": 281
+              },
+              {
+                "visibility": "hidden",
+                "transition": "background-color, color, border-color",
+                "x": -311.5,
+                "width": 281
+              }
+            ],
+            "animations": []
+          }
+        }
+      }
+    },
+    "typecheck": {
+      "sessionId": 92547,
+      "exitCode": 0,
+      "log": "tmp/ma24-responsive-navigation-typecheck.log"
+    },
+    "lint": {
+      "sessionId": 11482,
+      "exitCode": 0,
+      "log": "tmp/ma24-responsive-navigation-lint.log",
+      "files": 4
+    }
+  },
+  "actualVerification": "pending",
+  "businessApiChanged": false,
+  "actualModelCalls": 0,
+  "realBusinessQualityAccepted": false,
+  "productionQualified": false,
+  "deploymentPerformed": false,
+  "g14ThroughG20Advanced": false
+}

@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import {createServer} from 'node:http';
+import {chromium} from '@playwright/test';
+const css=(await Promise.all(['globals.css','ipados.css','conversation-theme.css','intelligence-theme.css'].map(f=>readFile('src/app/'+f,'utf8')))).join('\n');
+const server=createServer((req,res)=>{res.setHeader('content-type','text/html');res.end('<!doctype html><meta name="viewport" content="width=device-width,initial-scale=1"><style>'+css+'</style><body class="conversation-theme"><div class="app-shell"><aside class="sidebar"><nav><button class="nav-item"><span>First navigation</span></button><button class="nav-item active"><span>Current navigation</span></button></nav></aside><main class="main-shell"><header class="topbar">Header</header><h1>Readable content</h1></main></div>');});
+await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const browser=await chromium.launch({channel:'chrome',headless:true});
+try{const page=await browser.newPage({viewport:{width:1366,height:900}});await page.goto('http://127.0.0.1:'+server.address().port);
+ await page.setViewportSize({width:390,height:844});
+ const samples=await page.evaluate(async()=>{const sample=()=>({sidebar:getComputedStyle(document.querySelector('.sidebar')).visibility,items:[...document.querySelectorAll('.nav-item')].map(el=>({visibility:getComputedStyle(el).visibility,transition:getComputedStyle(el).transitionProperty,x:el.getBoundingClientRect().x,width:el.getBoundingClientRect().width})),animations:document.getAnimations().map(a=>a.transitionProperty)});const first=sample();await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));const frame=sample();await Promise.all(document.getAnimations().map(a=>a.finished.catch(()=>{})));return {first,frame,settled:sample()};});for(const phase of ['first','frame','settled']){assert.equal(samples[phase].sidebar,'hidden');assert(samples[phase].items.every(item=>item.visibility==='hidden'),'Closed navigation labels must be hidden from the first frame');}console.log(JSON.stringify({responsiveNavigationStyle:'passed',syntheticDomWithActualStyles:true,samples}));
+}finally{await browser.close();server.closeAllConnections();await new Promise(resolve=>server.close(resolve));}

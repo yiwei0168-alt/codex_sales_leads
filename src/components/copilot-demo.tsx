@@ -154,6 +154,12 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
   const [failedEdit, setFailedEdit] = useState<{ id: string; patch: CompanyEditablePatch } | null>(null);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const mobileNavRef = useDialogFocus(mobileNavOpen ? () => {setMobileNavOpen(false);setFooterMenu(null);} : undefined);
+  useEffect(()=>{
+    const mobile=window.matchMedia('(max-width: 959px)');
+    const closeOnDesktop=()=>{if(!mobile.matches){setMobileNavOpen(false);setFooterMenu(null);}};
+    mobile.addEventListener('change',closeOnDesktop);
+    return()=>mobile.removeEventListener('change',closeOnDesktop);
+  },[]);
   const saveQueue = useRef<Promise<unknown>>(Promise.resolve());
   const pendingSaves=useRef(0);
   const refreshAfterSave=useRef(false);
