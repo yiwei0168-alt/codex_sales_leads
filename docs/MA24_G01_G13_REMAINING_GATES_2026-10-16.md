@@ -1,5 +1,7 @@
 # MA24 G01–G13 当前剩余门槛（2026-10-16）
 
+2026-10-21 / Current e2a584b3 fixed Web HTTP **63888 exited 0** on fresh schema 170 and its verified-TLS application database. Synthetic member login/cookie checks, manual company creation/read and peer denial passed through the actual Next standalone image. This resolves the Web-specific runtime risk from the changed database identity adapter; it is not HTTPS-browser, complete frontend, real-mail/document/task quality or deployment acceptance. All six source hashes remain matched. Full Linux TLS composition 97322 is still running; collector 5366 and API/Worker 42562 remain separately passed. [Evidence](evidence/ma24-g01-g09-fixed-composition-database-tls-2026-10-21.json).
+
 2026-10-21 / Current e2a584b3 acceptance: collector TLS/database-trust **5366 exited 0** and actual fixed API/Worker synthetic saved-receipt recovery **42562 exited 0**, two result records each inspected. Collector issuance/retry, disablement commit wait and CA/deployment/key/purpose/revocation rejection passed; API model/Skill completed/unknown receipt recovery did not call a model or reactivate a Skill. Complete composition **97322 is still running**. Its live stdout separately passed application/migration encrypted-session, plaintext/missing-CA/wrong-DNS rejection and the actual configured adapter wrong-IP rejection; these are component results, not final composition acceptance. All six recorded source hashes match. Earlier 56686 remains failed, and real provider/quality/activation remain unaccepted. [Receipt](evidence/ma24-g01-g09-fixed-composition-database-tls-2026-10-21.json).
 
 2026-10-21 / TLS reference-identity fix packaged at **e2a584b3**: main/collector/Web builds and all five package checks exited 0 (1047 source inputs, same Node binary, complete dependency bytes/ESM, collector isolation/tamper and Web private-root exclusion). Full verified-TLS composition **97322**, separate canonical collector TLS **5366** and actual API/Worker saved-receipt recovery **42562** are running, not accepted. Earlier 56686 remains failed; previous 3b88c56d evidence is version-scoped. No actual provider call, quality approval or activation. [Current stage](DATABASE_TLS_REFERENCE_IDENTITY_2026-10-21.md); [receipt](evidence/ma24-g01-g09-fixed-composition-database-tls-2026-10-21.json).
@@ -413,7 +415,7 @@ G09 任务与工具日志锁已接入材料重建入口：从已存包派生任�
 
 | 项目 | 已有依据 | 仍缺的实现或验收 | 下一项能关闭缺口的证据 |
 | --- | --- | --- | --- |
-| G01 Release baseline | Current e2a584b3 three builds/five package checks, collector TLS 5366 and API/Worker 42562 passed; full TLS probes passed at component scope | Full verified-TLS composition 97322 running; production trial first provider execution unverified | Inspect terminal current-image composition/recovery evidence; preserve real acceptance gaps. |
+| G01 Release baseline | Current e2a584b3 builds/package checks, collector TLS 5366, API/Worker 42562, Web HTTP 63888 and live TLS component probes passed | Full verified-TLS composition 97322 running; whole production trial/provider/quality unverified | Inspect terminal current-image composition/recovery evidence; preserve real acceptance gates. |
 | G02 来源撤销 | 真实图、旧 checkpoint、隔离模型及局部 HTTP；当前构建的登记原件下载通过认证、Range、篡改和请求间撤回的真实 HTTP 验证 ([收据](evidence/ma24-g02-g05-asset-download-http-clone-2026-10-19.json)) | 当前服务上真实账号有界任务的生成期撤销、后续工具阻断和最终保存核对 | 获授权的专门来源/账号任务及撤销前后收据；新付费请求另列具体清单 |
 | G03 纠正与双时间 | 来源归属、自然纠正和隔离恢复；中文实际 Worker 经登录时间线、账号隔离、幂等撤销及同批精确历史时点回读通过 | 自然偏好/经历/业务事实与纠正样本不足；全部用户入口、最终统一候选和持续 Worker 试点未验 | 对照原句与更正内容的自然样本判决、最终候选各入口及连续 Worker 持久记录；本轮有限 HTTP 流程不扩称全部入口 |
 | G04 记忆图谱 | outbox、租约、故障恢复及 PostgreSQL 降级服务证据；中文同批投影、真实陈旧图谱候选的撤销过滤和原记录/纠正历史回读、第三条撤销投递通过 | 获准真实样本的持续抽取/投影、最终统一候选及持续故障/恢复运行未验 | 连续消费及图谱停机/恢复的同一批来源收据；同批有限撤销召回证据见最新工作流，不替代真实质量 |
@@ -425,7 +427,7 @@ G09 任务与工具日志锁已接入材料重建入口：从已存包派生任�
 | G10 审核 | 固定21ade59d Chrome/HTTPS/真实数据库审核修订竞态、草稿协调、409、已提交后回读故障与撤销通过；r1–r7均为合成不通过，另保留前瞻两臂与旧HTTP/页面证据 | 完整真实人工材料、五类质量、生产身份和目标入口未验；本轮夹具原件预览未通过 | 在既有授权边界内准备真实同版本/冻结材料，逐题核对真实质量及生产入口 |
 | G11 邮箱/客户 | 固定2a1fb556正式邮箱Worker/实际IMAP库/合成TLS服务/新159数据库的日期分页、半页SIGKILL和原租约自然到期恢复通过；4封唯一加密邮件、统计4/4/4/0、账号隔离和空Worker不变 | 真实服务商日期范围与全分页、持续负载、客户归属/摘要质量及目标主机运行未验 | 已授权账号及日期范围上的收件/已发送对账、恢复与逐例归属判定；历史提供方对账单独保留 |
 | G12 三模式 | 恢复原因白名单修复，60 项定向测试及全新库 12 组脚本业务通过 | 真实只读业务回答、提供方失败/迟到/未知结果恢复及正式加载未验 | 有界真实任务和隔离提供方响应的持久收据；已消耗的 MODESEL-14 授权不复用 |
-| G13 前端 | 固定 dddb9bfc 的 157/HTTPS 浏览器四套邮箱及六套扩展 UI 通过；同批实际记忆 Worker 到登录 HTTP 时间线、跨账号拒绝和幂等撤销通过 | 真实邮箱/资料/任务、未覆盖状态与记忆页面完整交互、批准后执行及最终目标入口未验 | 依赖 G05/G11/G12 的实际业务任务逐入口复核；合成 UI/接口通过不替代真实执行结果 |
+| G13 前端 | Current e2a584b3 Web HTTP/TLS 63888 login/company read-write/peer denial passed; 固定 dddb9bfc 的 157/HTTPS 浏览器四套邮箱及六套扩展 UI 通过；同批实际记忆 Worker 到登录 HTTP 时间线、跨账号拒绝和幂等撤销通过 | 真实邮箱/资料/任务、未覆盖状态与记忆页面完整交互、批准后执行及最终目标入口未验 | 依赖 G05/G11/G12 的实际业务任务逐入口复核；合成 UI/接口通过不替代真实执行结果 |
 
 ## 已核实的实现断点
 
