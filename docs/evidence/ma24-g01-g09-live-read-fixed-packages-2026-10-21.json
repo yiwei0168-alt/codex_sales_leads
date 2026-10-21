@@ -216,7 +216,16 @@
       "files": 3,
       "exitCode": 0
     },
-    "actualLinuxResult": "not-started"
+    "actualLinuxResult": {
+      "status": "running-not-accepted",
+      "sessionId": 60396,
+      "fixtureCommit": "88c3c1b59a9a25fb968f1e523df50a70319cae58",
+      "productCommit": "768b621b9b70f65d6c6cde82e80c235cc1c52266",
+      "log": "tmp/ma24-live-business-read-fixed-linux.log",
+      "prospectiveCrashAfter": "customer_timeline offset=1 committed; graph call pending",
+      "wholeProductionWrapperVerified": false,
+      "wholeCombinationDatabaseTlsVerified": false
+    }
   },
   "scope": {
     "actualModelCalls": 0,
@@ -225,5 +234,12 @@
     "wholeProductionWrapperVerified": false,
     "wholeCombinationDatabaseTlsVerified": false,
     "realQualityAccepted": false
+  },
+  "currentImageDeclarationDatabaseTrust": {
+    "status": "running-not-accepted",
+    "sessionId": 22333,
+    "log": "tmp/ma24-live-read-current-declaration-db-trust.log",
+    "databaseTrustMode": true,
+    "separateFromWholeLinuxComposition": true
   }
 }
