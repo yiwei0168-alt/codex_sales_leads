@@ -29,4 +29,6 @@ Web/主流程及 Web/采集器的 1033 个源码输入、Node 24.21.0 和二进�
 
 两轮日志分别为 `tmp/ma24-live-business-read-fixed-linux.log` 与 `tmp/ma24-live-read-current-declaration-db-trust.log`，均运行中，尚不记通过。78222 的八个候选任务已完成，但材料检查仍在进行。
 
+上述启动记录现更新：**78222、22333 均退出 0**。78222 的来源生命周期原生组合、五类/八任务及材料通过；22333 的当前固定采集器 TLS/数据库信任签发、重试复用、登记禁用等待提交及根证书/部署/账号/密钥/用途/撤销/NODE_OPTIONS 拒绝通过。两轮临时数据库均已清理。60396 仍运行，不记完整固定包组合通过；独立 TLS 不替代整轮组合的 TLS/包装器覆盖。
+
 [构建与检查收据](evidence/ma24-g01-g09-live-read-fixed-packages-2026-10-21.json)。

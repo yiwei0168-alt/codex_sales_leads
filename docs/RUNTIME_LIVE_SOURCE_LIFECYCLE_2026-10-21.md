@@ -25,3 +25,7 @@ The full-combination fixture now requires one live task to reach this ledger che
 Five-file lint passed. No actual model/provider calls, real business data, production package build, deployment, quality judgment or final activation occurred. This closes a concrete local revalidation wiring gap; it does not establish production execution equivalence, independent quality or through-commit immutability of external files.
 
 [Stage receipt](evidence/ma24-g09-runtime-live-source-lifecycle-2026-10-21.json).
+
+## Native composition terminal result
+
+Session 78222 exited 0 on frozen source 7dbab64c. All five recorded source/fixture inputs remained unchanged. The fresh-170 composition passed five cases/eight tasks, a prospective customer offset query absent from original receipts, the retained live-source/disclosure reader, material reconstruction and missing-human policy blocking. The disposable cluster was removed. This exercises live customer sources; the new knowledge/memory mutation tests above remain mocked. No immutable runtime registration, actual provider/data, quality or activation is qualified, and this result does not cover later shared graph-limit changes. Current fixed-package composition 60396 remains separate and running.
