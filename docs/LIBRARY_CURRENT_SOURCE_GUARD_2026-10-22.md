@@ -1,0 +1,17 @@
+# Current library text, excerpts and readback recovery
+
+## Existing MA24-02 / G02/G05/G13 requirements
+
+Current text/excerpts previously checked ownership and visibility but not document activity, current tree readiness or asset registration. The original-coordinate reader already applies those source guards. A withdrawn current binary could therefore retain readable saved text and list excerpts; an older registered asset could still be mistaken for an available original. Existing confirmed rules require atomic current revisions and source withdrawal protection while retaining historical provenance.
+
+The library body and private/shared/all excerpts now share a current-source SQL fence: active document and its own ready current tree, with matching registered current binary asset, or the matching non-reconstructed original text revision. Asset-free legacy database text without a tree retains its existing read semantics. A binary lacking a ready current tree is not readable current evidence. Unavailable rows retain metadata and the owner's explicit history but expose neither excerpt nor original-asset action. Public evidence retains its public/not-invalid contract.
+
+Migration 171 adds only a SELECT RLS policy for the exact current non-reconstructed revision of an active shared document with matching ready source, or an asset-free legacy text. This lets members read the published current original instead of falling back to legacy chunks, including existing text-tree original checks. Private revisions and noncurrent shared history retain the old owner policy. No write grant, privileged function, automatic publication or history-management permission is added. The migration is prepared for disposable verification, not applied to business data.
+
+The reader displays authoritative read metadata and mounts current body/tree/download links only after a successful read. Refresh/failure clears the previous current view; explicit owner history remains a separate provenance entry. Lists have loading/failure/empty distinctions, malformed-page rejection, deadlines and stale-read invalidation. A synchronous deletion lock prevents repeated submits. Confirmed deletion survives list-read failure as a separate notice; unknown acknowledgement never triggers automatic DELETE or a success claim. Deletion confirmation and server version contract remain unchanged; absence from a filtered page is not treated as proof of deletion.
+
+## Verification status
+
+Three existing service tests, full TypeScript and six-file lint passed. Actual component/local-HTTP checks at 1366/390/320 passed unavailable excerpt/link hiding, failed/malformed list clearing, authoritative reader metadata, failed current-body/tree/link clearing, explicit history, transport ignoring cancellation across document changes, unknown deletion and held confirmed-deletion/readback failure. Representative narrow screenshots inspected. An initial patch replacement was rejected without a change and then applied as separate file edit operations.
+
+The fixed-Web fixture is prepared for schema 171, actual source/SQL/RLS cases, current versus old original text, withdrawal with an older registered asset, legacy text, failed/mismatched text tree, shared-current versus historical/private access, API isolation and desktop/mobile read/deletion recovery. Native acceptance and current fixed runtime packages remain pending at this implementation stage. No real provider/model/document-quality or production qualification is claimed. G14-G20 and deployment remain deferred.

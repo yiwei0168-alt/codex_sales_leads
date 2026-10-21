@@ -38,6 +38,7 @@ const personalMemoryUi=args.includes('--personal-memory-ui');
 const conversationManagementUi=args.includes('--conversation-management-ui');
 const attachmentUploadUi=args.includes('--attachment-upload-ui');
 const knowledgeTreeUi=args.includes('--knowledge-tree-ui');
+const knowledgeLibraryUi=args.includes('--knowledge-library-ui');
 const runStatusUi=args.includes('--run-status-ui');
 const snapshotLifecycleCheck=args.includes('--snapshot-lifecycle');
 const knowledgeScopeSourcesCheck=args.includes('--knowledge-scope-sources');
@@ -121,6 +122,7 @@ assert(!personalMemoryUi||(webImage&&currentSchemaCheck&&args.every(arg=>[webIma
 assert(!conversationManagementUi||(webImage&&currentSchemaCheck&&args.every(arg=>[webImageArgument,'--current-schema','--conversation-management-ui'].includes(arg))),'Conversation management UI requires its own fixed Web/current-schema invocation');
 assert(!attachmentUploadUi||(webImage&&currentSchemaCheck&&args.every(arg=>[webImageArgument,'--current-schema','--attachment-upload-ui'].includes(arg))),'Attachment upload UI requires its own fixed Web/current-schema invocation');
 assert(!knowledgeTreeUi||(webImage&&currentSchemaCheck&&args.every(arg=>[webImageArgument,'--current-schema','--knowledge-tree-ui'].includes(arg))),'Knowledge tree UI requires its own fixed Web/current-schema invocation');
+assert(!knowledgeLibraryUi||(webImage&&currentSchemaCheck&&args.every(arg=>[webImageArgument,'--current-schema','--knowledge-library-ui'].includes(arg))),'Knowledge library UI requires its own fixed Web/current-schema invocation');
 assert(!responsiveNavigationUi||(webImage&&currentSchemaCheck&&args.every(arg=>[webImageArgument,'--current-schema','--responsive-navigation-ui'].includes(arg))),'Navigation UI requires its own fixed Web/current-schema invocation');
 assert(!memoryObservationsUi||(webImage&&currentSchemaCheck&&args.every(arg=>[webImageArgument,'--current-schema','--memory-observations-ui'].includes(arg))),'Memory UI requires its own fresh fixed Web/current-schema invocation');
 assert(!snapshotLifecycleCheck||(webImage&&currentSchemaCheck),'--snapshot-lifecycle requires --web-image and --current-schema');
@@ -155,7 +157,7 @@ assert(!localMemoryChineseCheck||localMemoryWorkerCheck,'--local-memory-chinese 
 assert(!localMemoryHttpCheck||(localMemoryGraphCheck&&localMemoryChineseCheck),'--local-memory-http requires Chinese memory and graph Worker checks');
 const rollbackImageArgument = args.find(arg => arg.startsWith("--rollback-image="));
 const rollbackImage = rollbackImageArgument?.slice("--rollback-image=".length);
-assert(args.length <= 22 && args.every(arg => ['--knowledge-tree-ui','--attachment-upload-ui','--conversation-management-ui','--run-status-ui','--personal-memory-ui','--responsive-navigation-ui','--memory-observations-ui','--main-runtime-approval-http','--main-runtime-resume-revocation', '--main-runtime-network-loss', '--main-runtime-interruption', '--main-runtime-crash-recovery', '--main-runtime-task-enrollment', '--main-runtime-commit-loss', '--main-runtime-durability', mainRuntimeArgument, '--main-runtime-only', '--main-runtime-skill-receipt', '--main-runtime-model-receipt', "--final-settlement", "--knowledge-scope-sources", "--snapshot-lifecycle", "--acceptance-originals", "--local-memory-http", "--local-memory-chinese", "--local-memory-graph-worker", "--local-memory-worker", "--snapshot-download", "--extended-ui", "--frontend-ui", "--current-schema", "--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", '--locked-policy', '--memory-source-locks', '--method-catalog-locks', '--shadow-source-locks', '--safety-skill-usage', '--agent-call-lease', '--agent-checkpoint-lease', '--candidate-lease-contention', '--runtime-read-sources', '--runtime-disclosure', '--transport-journal', '--pool-recovery', '--web-pool-recovery', "--prospective-source", "--prospective-material", '--prospective-browser', '--prospective-composition', declarationImageArgument,collectorImageArgument,transportLinuxArgument,prospectiveHttpArgument, webImageArgument, rollbackImageArgument].includes(arg))
+assert(args.length <= 22 && args.every(arg => ['--knowledge-library-ui','--knowledge-tree-ui','--attachment-upload-ui','--conversation-management-ui','--run-status-ui','--personal-memory-ui','--responsive-navigation-ui','--memory-observations-ui','--main-runtime-approval-http','--main-runtime-resume-revocation', '--main-runtime-network-loss', '--main-runtime-interruption', '--main-runtime-crash-recovery', '--main-runtime-task-enrollment', '--main-runtime-commit-loss', '--main-runtime-durability', mainRuntimeArgument, '--main-runtime-only', '--main-runtime-skill-receipt', '--main-runtime-model-receipt', "--final-settlement", "--knowledge-scope-sources", "--snapshot-lifecycle", "--acceptance-originals", "--local-memory-http", "--local-memory-chinese", "--local-memory-graph-worker", "--local-memory-worker", "--snapshot-download", "--extended-ui", "--frontend-ui", "--current-schema", "--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", '--locked-policy', '--memory-source-locks', '--method-catalog-locks', '--shadow-source-locks', '--safety-skill-usage', '--agent-call-lease', '--agent-checkpoint-lease', '--candidate-lease-contention', '--runtime-read-sources', '--runtime-disclosure', '--transport-journal', '--pool-recovery', '--web-pool-recovery', "--prospective-source", "--prospective-material", '--prospective-browser', '--prospective-composition', declarationImageArgument,collectorImageArgument,transportLinuxArgument,prospectiveHttpArgument, webImageArgument, rollbackImageArgument].includes(arg))
   &&(!declarationImageArgument||(declarationImage&&/^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(declarationImage)))
   &&(!transportLinuxArgument||(currentSchemaCheck&&transportLinuxImage&&/^sha256:[a-f0-9]{64}$/.test(transportLinuxImage)))
   &&(!collectorImageArgument||(collectorImage&&/^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(collectorImage)))
@@ -270,7 +272,7 @@ try {
   assert(verified.output.includes('"copiedProductionData":false'), verified.output);
   if (webImage || mainRuntimeOnly || modeBusinessCheck || runnerAttestationCheck || lockedPolicyCheck || memorySourceLocksCheck || methodCatalogLocksCheck || shadowSourceLocksCheck || prospectiveSourceCheck || safetySkillUsageCheck || transportJournalCheck || agentCallLeaseCheck || agentCheckpointLeaseCheck || candidateLeaseContentionCheck || runtimeReadSourcesCheck || runtimeDisclosureCheck || poolRecoveryCheck) {
     const migration = await run(process.execPath,
-      ["scripts/run-tsx.cjs", "scripts/migrate.ts", currentSchemaCheck?"--fresh-pilot-through=170":"--fresh-pilot-through=135"],
+      ["scripts/run-tsx.cjs", "scripts/migrate.ts", currentSchemaCheck?"--fresh-pilot-through=171":"--fresh-pilot-through=135"],
       { ...process.env, DATABASE_URL: appUrl.toString(), DATABASE_MIGRATION_URL: adminUrl.toString() });
     assert.equal(migration.code, 0, migration.output);
     if(currentSchemaCheck){
@@ -304,7 +306,8 @@ try {
           exists(select 1 from pg_trigger where tgrelid='public.agent_run_event'::regclass and tgname='skill_activation_commit_guard'
            and tgdeferrable and tginitdeferred and tgenabled in('O','A') and not tgisinternal) as skill_activation_commit_guard,
           exists(select 1 from pg_trigger where tgrelid='public.agent_run_event'::regclass and tgname='skill_activation_binding_commit_guard'
-           and tgdeferrable and tginitdeferred and tgenabled in('O','A') and not tgisinternal) as skill_activation_binding_guard
+           and tgdeferrable and tginitdeferred and tgenabled in('O','A') and not tgisinternal) as skill_activation_binding_guard,
+          exists(select 1 from pg_policies where schemaname='public' and tablename='knowledge_document_revision' and policyname='knowledge_revision_current_shared_read' and cmd='SELECT') as current_shared_original_policy
         `)).rows[0];
         assert(Object.values(currentSchemaMarkers).every(Boolean),'Current Web schema incomplete');
       }finally{await inspect.end();}
@@ -621,6 +624,13 @@ try {
         MA24_RUN_STATUS_WEB_BASE:base,MA24_RUN_STATUS_OWNER_COOKIE:firstCookie,MA24_RUN_STATUS_PEER_COOKIE:secondCookie,
         MA24_RUN_STATUS_OWNER_EMAIL:credentials[0].email,MA24_RUN_STATUS_DATABASE_CONTAINER:containerId!,OPENAI_API_KEY:'',OPENROUTER_API_KEY:''});
       assert.equal(checked.code,0,checked.output);assert(checked.output.includes('"runStatusFixedWeb":"passed"'),checked.output);console.log(checked.output.trim());
+    }
+    if(knowledgeLibraryUi){
+      const checked=await run(process.execPath,['scripts/run-tsx.cjs','scripts/verify-knowledge-library-fixed-web.ts'],
+       {...process.env,DATABASE_URL:appUrl.toString(),DATABASE_MIGRATION_URL:adminUrl.toString(),MA24_DISPOSABLE_LIBRARY_UI:'1',
+        MA24_LIBRARY_WEB_BASE:base,MA24_LIBRARY_OWNER_COOKIE:firstCookie,MA24_LIBRARY_PEER_COOKIE:secondCookie,
+        MA24_LIBRARY_OWNER_EMAIL:credentials[0].email,MA24_LIBRARY_DATABASE_CONTAINER:containerId!,OPENAI_API_KEY:'',OPENROUTER_API_KEY:''});
+      assert.equal(checked.code,0,checked.output);assert(checked.output.includes('"knowledgeLibraryFixedWeb":"passed"'),checked.output);console.log(checked.output.trim());
     }
     if(knowledgeTreeUi){
       const checked=await run(process.execPath,['scripts/run-tsx.cjs','scripts/verify-knowledge-tree-fixed-web.ts'],
@@ -955,7 +965,7 @@ try {
     scheduleWorkerCrashVerified:Boolean(scheduleWorkerImage)&&!scheduleWorkerCommitCheck,
     scheduleWorkerCommitVerified:Boolean(scheduleWorkerImage)&&scheduleWorkerCommitCheck,
     publishedAddress: "127.0.0.1 only", rolesVerified: true, duplicateRoleBootstrapRejected: true,
-    freshMigrationThrough: currentSchemaCheck?170:135,currentSchemaMarkers,snapshotLifecycleVerified:snapshotLifecycleCheck,knowledgeScopeSourcesVerified:knowledgeScopeSourcesCheck,finalSettlementVerified:finalSettlementCheck,compiledMainRuntimeVerified:Boolean(mainRuntimeImage),mainRuntimeSkillReceiptVerified:mainRuntimeSkillReceipt,mainRuntimeModelReceiptVerified:mainRuntimeModelReceipt,mainRuntimeDurabilityVerified:mainRuntimeDurability,mainRuntimeCrashRecoveryVerified:mainRuntimeCrashRecovery,mainRuntimeInterruptionVerified:mainRuntimeInterruption,mainRuntimeNetworkLossVerified:mainRuntimeNetworkLoss,mainRuntimeResumeRevocationVerified:mainRuntimeResumeRevocation,mainRuntimeCommitLossVerified:mainRuntimeCommitLoss,mainRuntimeTaskEnrollmentVerified:mainRuntimeTaskEnrollment,snapshotDownloadResult,runStatusUiVerified:runStatusUi,personalMemoryUiVerified:personalMemoryUi,conversationManagementUiVerified:conversationManagementUi,attachmentUploadUiVerified:attachmentUploadUi,knowledgeTreeUiVerified:knowledgeTreeUi,responsiveNavigationUiVerified:responsiveNavigationUi,memoryObservationsUiVerified:memoryObservationsUi,localMemoryWorkerResult,trustRegistryRestoreResult,freshMailboxUiVerified:frontendUiCheck,extendedFrontendUiVerified:extendedUiCheck,
+    freshMigrationThrough: currentSchemaCheck?171:135,currentSchemaMarkers,snapshotLifecycleVerified:snapshotLifecycleCheck,knowledgeScopeSourcesVerified:knowledgeScopeSourcesCheck,finalSettlementVerified:finalSettlementCheck,compiledMainRuntimeVerified:Boolean(mainRuntimeImage),mainRuntimeSkillReceiptVerified:mainRuntimeSkillReceipt,mainRuntimeModelReceiptVerified:mainRuntimeModelReceipt,mainRuntimeDurabilityVerified:mainRuntimeDurability,mainRuntimeCrashRecoveryVerified:mainRuntimeCrashRecovery,mainRuntimeInterruptionVerified:mainRuntimeInterruption,mainRuntimeNetworkLossVerified:mainRuntimeNetworkLoss,mainRuntimeResumeRevocationVerified:mainRuntimeResumeRevocation,mainRuntimeCommitLossVerified:mainRuntimeCommitLoss,mainRuntimeTaskEnrollmentVerified:mainRuntimeTaskEnrollment,snapshotDownloadResult,runStatusUiVerified:runStatusUi,personalMemoryUiVerified:personalMemoryUi,conversationManagementUiVerified:conversationManagementUi,attachmentUploadUiVerified:attachmentUploadUi,knowledgeTreeUiVerified:knowledgeTreeUi,knowledgeLibraryUiVerified:knowledgeLibraryUi,responsiveNavigationUiVerified:responsiveNavigationUi,memoryObservationsUiVerified:memoryObservationsUi,localMemoryWorkerResult,trustRegistryRestoreResult,freshMailboxUiVerified:frontendUiCheck,extendedFrontendUiVerified:extendedUiCheck,
     syntheticAccountCompanyAndRestoreVerified: true, copiedProductionData: false,
     linuxWebImage: webImage ?? null, linuxWebHttpWorkflowVerified: Boolean(webImage),
     linuxWebHttpsBrowserVerified: browserCheck, tenConcurrentSyntheticAccountsVerified: tenUserCheck,
