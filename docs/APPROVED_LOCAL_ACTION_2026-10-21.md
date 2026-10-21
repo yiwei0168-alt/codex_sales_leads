@@ -12,8 +12,11 @@ The next model node stops at the existing model-step limit, so terminal tasks ar
 
 ## Status
 
-Static checks and actual isolated execution remain pending. The initial TS7022 fixture inference errors are retained in the evidence. Existing package checks are reused at their precise immutable image/source scope; no rebuild or new whole-runtime composition is claimed.
+Static checks and actual isolated session 1400 passed at the scopes recorded below. The initial TS7022 fixture inference errors are retained in the evidence. Existing package checks are reused at their precise immutable image/source scope; no rebuild or new whole-runtime composition is claimed.
 
 [Evidence](evidence/ma24-g13-approved-local-action-2026-10-21.json).
 
 Full typecheck (7777) and three-file lint (60991) exited 0. Product source, runtime entry/build scripts and dependency inputs remain unchanged from fixed image source 08a093e9. The new actual browser/Worker verification is pending; no real approval or quality acceptance is inferred.
+
+
+2026-10-21 / G13 non-mail approval-to-execution engineering accepted: host fixture `8323f5dd`, fixed Web/main images `08a093e9`, isolated **1400 exited 0**. The compiled Worker creates exact pending approval without a tool receipt; actual HTTPS Chrome approves/denies/approves-then-revokes, and only a later Worker executes. Approved generated private document and chunk are deleted with one consumed approval/receipt; denied/revoked documents remain with zero tool calls; changed document hash returns missing_input and preserves the document. Anonymous/peer/wrong-hash/duplicate decisions reject; subsequent empty Workers leave task, document, approval and receipts unchanged. Both actual result records and all three frozen fixture source files inspected; temporary containers/database removed, original three services remain. Synthetic pending checkpoints stop the next model at its existing step limit: tasks end partial, actual model calls 0, natural business answers/real human quality/deployment remain unverified. This closes the previously untested local execution engineering path without closing G13 overall. [Scope and evidence](APPROVED_LOCAL_ACTION_2026-10-21.md).
