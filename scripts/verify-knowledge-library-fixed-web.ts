@@ -7,6 +7,7 @@ import {writeFile} from 'node:fs/promises';
 import {Client} from 'pg';
 import {tenantQuery} from '../src/lib/rag/db';
 import {chromium,expect} from '@playwright/test';
+import {verifyMa24RevisionHistoryClone} from './lib/verify-ma24-revision-history-clone';
 
 assert.equal(process.env.MA24_DISPOSABLE_LIBRARY_UI,'1');
 const database=process.env.MA24_LIBRARY_DATABASE_CONTAINER!;assert.match(database,/^[a-f0-9]{64}$/);
@@ -82,5 +83,6 @@ try{
    results.push({width,sourceWithdrawalHidesBodyTreeAndOriginalLinks:true,explicitOwnerHistoryRetained:true,sourceRestorationUsesCurrentAsset:true,list503ClearsActionsAndRetries:true,actualDroppedDeleteAckNoAutomaticRetry:true,confirmedDeleteLockAndReadFailureNotice:true,modelTasksQueued:0});
   }finally{release?.();await context.close();await admin.query("update knowledge_asset set registration_status='registered' where id=$1",[binary.asset]);}
  }
- const result={knowledgeLibraryFixedWeb:'passed',actualChromeHttpsCompiledWeb:true,generatedAccountsAndSourcesOnly:true,legacyAssetFreeTextPreserved:true,archivedCurrentBodyAndExcerptsBlocked:true,withdrawnCurrentAssetCannotFallBackToOlderRegisteredAsset:true,privateSharedAndAllExcerptGuardParity:true,currentSharedOriginalReadableButHistoryAndPrivateRevisionsDenied:true,textTreeMissingRevisionHashAndFailedVersionBlocked:true,unindexedBinaryBodyBlocked:true,publicEvidenceContractUnchanged:true,results,screenshots,actualModelCalls:0,realDocumentQualityAccepted:false,productionQualified:false};await writeFile('tmp/ma24-knowledge-library-result.json',JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify(result));
+ const revisionHistory=await verifyMa24RevisionHistoryClone({admin,base,cookie,userId:owner.id,allowSelfSignedLoopback:true});
+ const result={knowledgeLibraryFixedWeb:'passed',actualChromeHttpsCompiledWeb:true,generatedAccountsAndSourcesOnly:true,legacyAssetFreeTextPreserved:true,archivedCurrentBodyAndExcerptsBlocked:true,withdrawnCurrentAssetCannotFallBackToOlderRegisteredAsset:true,privateSharedAndAllExcerptGuardParity:true,currentSharedOriginalReadableButHistoryAndPrivateRevisionsDenied:true,textTreeMissingRevisionHashAndFailedVersionBlocked:true,unindexedBinaryBodyBlocked:true,publicEvidenceContractUnchanged:true,revisionHistory,results,screenshots,actualModelCalls:0,realDocumentQualityAccepted:false,productionQualified:false};await writeFile('tmp/ma24-knowledge-library-result.json',JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify(result));
 }finally{clearTimeout(watchdog);const timeout=setTimeout(()=>process.exit(1),15000);timeout.unref();try{await browser?.close();}finally{proxy.closeAllConnections();if(proxy.listening)await new Promise<void>(done=>proxy.close(()=>done()));await admin.end();clearTimeout(timeout);}}

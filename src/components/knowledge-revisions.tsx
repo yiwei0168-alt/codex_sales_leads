@@ -1,6 +1,13 @@
 "use client";
 import {useEffect,useState} from "react";
 type Revision={id:string;title:string;time:string;content:string;truncated:boolean;reconstructed:boolean};
+function isRevisionPage(value:unknown):value is {items:Revision[];hasMore:boolean}{
+  if(!value||typeof value!=="object"||!("items" in value)||!("hasMore" in value))return false;
+  if(!Array.isArray(value.items)||value.items.length>10||typeof value.hasMore!=="boolean")return false;
+  return value.items.every(item=>item&&typeof item==="object"&&typeof item.id==="string"&&item.id.length>0&&
+    typeof item.title==="string"&&typeof item.time==="string"&&typeof item.content==="string"&&
+    typeof item.truncated==="boolean"&&typeof item.reconstructed==="boolean")&&new Set(value.items.map(item=>item.id)).size===value.items.length;
+}
 export function KnowledgeRevisions({documentId}:{documentId:string}){
   return <RevisionHistory key={documentId} documentId={documentId}/>;
 }
@@ -11,15 +18,17 @@ function RevisionHistory({documentId}:{documentId:string}){
   useEffect(()=>{
     if(!open)return;
     const controller=new AbortController();
+    const failed=()=>{setItems([]);setMore(false);setLoading(false);setError("版本读取失败");};
+    const timeout=setTimeout(()=>{controller.abort();failed();},10000);
     fetch(`/api/knowledge/library/history?document=${encodeURIComponent(documentId)}&offset=${offset}`,{signal:controller.signal,cache:"no-store"})
       .then(async response=>{if(!response.ok)throw new Error();return response.json();})
       .then(data=>{
-        if(!Array.isArray(data.items)||typeof data.hasMore!=="boolean")throw new Error();
+        if(!isRevisionPage(data))throw new Error();
         if(!controller.signal.aborted){setItems(data.items);setMore(data.hasMore);setError("");setLoading(false);}
-      }).catch(()=>{if(!controller.signal.aborted){setLoading(false);setError("版本读取失败");}});
-    return()=>controller.abort();
+      }).catch(()=>{if(!controller.signal.aborted)failed();}).finally(()=>clearTimeout(timeout));
+    return()=>{clearTimeout(timeout);controller.abort();};
   },[open,offset,documentId,retry]);
-  const start=()=>{setLoading(true);setError("");};
+  const start=()=>{setItems([]);setMore(false);setLoading(true);setError("");};
   return <details onToggle={event=>{
     if(event.target!==event.currentTarget)return;
     if(event.currentTarget.open)start();

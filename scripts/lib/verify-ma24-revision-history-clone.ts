@@ -43,6 +43,7 @@ export async function verifyMa24RevisionHistoryClone(options: {
   assert.equal(secondPage.hasMore, false);
 
   const browser = await chromium.launch({ channel: "chrome", headless: true });
+  const screenshots:string[]=[];
   try {
     for (const viewport of [{ width: 390, height: 760 }, { width: 1366, height: 900 }]) {
       const context = await ma24BrowserContext(browser,options,{ viewport });
@@ -64,6 +65,15 @@ export async function verifyMa24RevisionHistoryClone(options: {
         await expect(reader.getByText("Synthetic version 11", { exact: false })).toBeVisible();
         await expect(reader.getByText("Synthetic version 02", { exact: false })).toBeVisible();
         await expect(reader.getByText("Synthetic version 01", { exact: false })).toHaveCount(0);
+        await page.route(`**/api/knowledge/library/history?document=${documentId}&offset=10`,route=>route.fulfill({json:{items:[null],hasMore:false}}),{times:1});
+        await reader.getByRole("button", { name: "下一页版本" }).click();
+        await expect(reader.getByRole("alert")).toContainText("版本读取失败");
+        assert.deepEqual(pageErrors,[]);
+        await expect(reader.getByText("Synthetic version 11", { exact: false })).toHaveCount(0);
+        await reader.getByRole("button", { name: "重试", exact: true }).click();
+        await expect(reader.getByText("Synthetic version 01", { exact: false })).toBeVisible();
+        await reader.getByRole("button", { name: "上一页版本" }).click();
+        await expect(reader.getByText("Synthetic version 11", { exact: false })).toBeVisible();
         await page.route(`**/api/knowledge/library/history?document=${documentId}&offset=10`, route =>
           route.fulfill({ status: 503, contentType: "application/json", body: JSON.stringify({ error: "Synthetic read interruption" }) }),
         { times: 1 });
@@ -78,10 +88,12 @@ export async function verifyMa24RevisionHistoryClone(options: {
         await expect(reader).toContainText("旧版本由历史检索片段重建");
         assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
         assert.deepEqual(pageErrors, []);
+        const screenshot=`tmp/ma24-revision-history-${viewport.width}-${randomUUID()}.png`;await reader.screenshot({path:screenshot});screenshots.push(screenshot);
       } finally { await context.close(); }
     }
     return { candidatePage: true, actualHistoryApi: true, privateRevisions: 11, pageSizes: [10, 1],
       injectedOneShot503: true, stalePageHidden: true, retrySameOffset: true, reconstructedDisclosure: true,
+      malformedRowRefusedWithoutReactCrash:true,screenshots,
       viewports: ["390x760", "1366x900"], noHorizontalOverflow: true, pageErrors: 0,
       modelCalls: 0, productionWrites: 0 };
   } finally { await browser.close(); }
