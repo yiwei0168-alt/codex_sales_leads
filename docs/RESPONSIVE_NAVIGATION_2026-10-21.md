@@ -13,3 +13,5 @@ Style-browser regression, full typecheck and four-file lint passed. The new actu
 No business API, stored permission, model, real task quality or deployment claim is added. Older memory interaction evidence remains version-scoped. G14-G20/deployment remain deferred.
 
 [Evidence](evidence/ma24-g13-responsive-navigation-2026-10-21.json).
+
+Fixed db1d1054 builds and all five package checks passed. First actual invocation 86049 exited 1 during reopening after navigation: an immediate body-overflow read saw the pre-effect empty string. Closed labels/open/Escape/backdrop/navigation checks had reached that point; desktop-resize/collapse gates had not. The host-only fixture now polls for the same required scroll lock/unlock states before focus checks, matching the existing desktop cleanup check. Typecheck and fixture lint passed; the product image remains unchanged. Failed invocation is retained; no full browser acceptance yet.

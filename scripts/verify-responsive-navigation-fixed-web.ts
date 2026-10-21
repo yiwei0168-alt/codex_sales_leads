@@ -35,11 +35,12 @@ try{
   assert.equal(sampled.visibility,'hidden');assert(sampled.labels.every(value=>value==='hidden'));closedSamples.push(sampled);
   await expect(page.locator('.mobile-nav-backdrop')).toHaveCount(0);
   await expect(sidebar).not.toHaveAttribute('role','dialog');
+  await expect.poll(()=>page.evaluate(()=>document.body.style.overflow)).not.toBe('hidden');
  };
  const opened=async()=>{
   await trigger.click();await expect(sidebar).toHaveAttribute('role','dialog');await expect(sidebar).toHaveAttribute('aria-modal','true');
   await expect.poll(()=>sidebar.evaluate(element=>Math.round(element.getBoundingClientRect().x))).toBe(0);
-  assert.equal(await page.evaluate(()=>document.body.style.overflow),'hidden');
+  await expect.poll(()=>page.evaluate(()=>document.body.style.overflow)).toBe('hidden');
   await content.getByRole('button',{name:'当前有效',exact:true}).focus();assert(await sidebar.evaluate(element=>element.contains(document.activeElement)));
  };
  await page.setViewportSize({width:390,height:844});await closed();await content.getByRole('button',{name:'当前有效',exact:true}).focus();await expect(content.getByRole('button',{name:'当前有效',exact:true})).toBeFocused();

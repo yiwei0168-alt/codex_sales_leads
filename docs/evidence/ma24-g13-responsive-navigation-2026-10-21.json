@@ -163,11 +163,300 @@
       "files": 4
     }
   },
-  "actualVerification": "pending",
+  "actualVerification": {
+    "status": "fixture-effect-confirmation-followup-pending"
+  },
   "businessApiChanged": false,
   "actualModelCalls": 0,
   "realBusinessQualityAccepted": false,
   "productionQualified": false,
   "deploymentPerformed": false,
-  "g14ThroughG20Advanced": false
+  "g14ThroughG20Advanced": false,
+  "fixedSourceCommit": "db1d1054144b2bc14f0de6cf9917e4095b268f00",
+  "fixedImages": {
+    "main": "sha256:9ee06880489cf1a42596295ddf9939635985265362bb57b593ed3e6b1a5738fb",
+    "collector": "sha256:33217bb645f9d816ba8c2965a3f6d204ef7606019d907fb4985d6245eb1710df",
+    "web": "sha256:7a01a6c0f20a03c298adcfc0b0574761f03abb45284655001673bddcba043d16"
+  },
+  "builds": {
+    "main": {
+      "sessionId": 70914,
+      "exitCode": 0,
+      "log": "tmp/ma24-responsive-navigation-main-build.log",
+      "logSha256": "bdcce9dea96b4415a544c02c853d740e760b558a92b309bf48e7a02fbb741994"
+    },
+    "collector": {
+      "sessionId": 53715,
+      "exitCode": 0,
+      "log": "tmp/ma24-responsive-navigation-collector-build.log",
+      "logSha256": "09ab7beed5ade96f1465960b6c54800810a4937436227bd0d24d8b75e11e2aa2"
+    },
+    "web": {
+      "sessionId": 76937,
+      "exitCode": 0,
+      "log": "tmp/ma24-responsive-navigation-web-build.log",
+      "logSha256": "b7d08fecdc256603b17fbb5446bba63595b33ff2abe05ba1c319ef60e1c1cfc7"
+    }
+  },
+  "packageChecks": {
+    "main-pair": {
+      "sessionId": null,
+      "exitCode": 0,
+      "log": "tmp/ma24-responsive-navigation-main-pair.log",
+      "logSha256": "d9570b2938511f400b5653a717399293a068c709a9005fd6908e4008c38563f8",
+      "result": {
+        "mainAgentRuntimePair": "passed",
+        "web": "ma24-pilot-web:db1d1054",
+        "runtime": "ma24-main-agent-runtime:db1d1054",
+        "sourceCommit": "db1d1054144b2bc14f0de6cf9917e4095b268f00",
+        "webImageId": "sha256:7a01a6c0f20a03c298adcfc0b0574761f03abb45284655001673bddcba043d16",
+        "mainRuntimeImageId": "sha256:9ee06880489cf1a42596295ddf9939635985265362bb57b593ed3e6b1a5738fb",
+        "inspectionUsesImmutableImageIds": true,
+        "runtimeHash": "119007729d933c40ba8b1771b6f5ca847458b4a75d7cc693550d070509692426",
+        "sourceInputs": 1053,
+        "node": "24.21.0",
+        "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+        "platform": "linux",
+        "arch": "x64",
+        "webPackages": {
+          "pg": "8.23.0"
+        },
+        "mainRuntimePackages": {
+          "pg": "8.23.0",
+          "zod": "4.4.3",
+          "@langchain/langgraph": "1.4.15",
+          "@langchain/core": "1.2.9",
+          "langsmith": "0.9.0",
+          "undici": "8.10.0"
+        },
+        "webUnresolved": [
+          "zod",
+          "@langchain/langgraph",
+          "@langchain/core",
+          "langsmith",
+          "undici"
+        ],
+        "mainRuntimeUnresolved": [],
+        "completeDependencyRuntimeEquivalenceVerified": false,
+        "productionQualified": false,
+        "actualModelCalls": 0
+      }
+    },
+    "collector-pair": {
+      "sessionId": null,
+      "exitCode": 0,
+      "log": "tmp/ma24-responsive-navigation-collector-pair.log",
+      "logSha256": "0ffa04e8fa46e14544cb7542d4f74978426a38829d8e86a8d0268ff7d6902c73",
+      "result": {
+        "skillSourceRuntimePair": "passed",
+        "web": "ma24-pilot-web:db1d1054",
+        "collector": "ma24-skill-collector:db1d1054",
+        "sourceCommit": "db1d1054144b2bc14f0de6cf9917e4095b268f00",
+        "webImageId": "sha256:7a01a6c0f20a03c298adcfc0b0574761f03abb45284655001673bddcba043d16",
+        "collectorImageId": "sha256:33217bb645f9d816ba8c2965a3f6d204ef7606019d907fb4985d6245eb1710df",
+        "inspectionUsesImmutableImageIds": true,
+        "runtimeHash": "119007729d933c40ba8b1771b6f5ca847458b4a75d7cc693550d070509692426",
+        "sourceInputs": 1053,
+        "node": "24.21.0",
+        "platform": "linux",
+        "arch": "x64",
+        "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+        "webPackages": {
+          "pg": "8.23.0"
+        },
+        "collectorPackages": {
+          "pg": "8.23.0",
+          "zod": "4.4.3",
+          "@langchain/langgraph": "1.4.15",
+          "@langchain/core": "1.2.9",
+          "langsmith": "0.9.0",
+          "undici": "8.10.0"
+        },
+        "webUnresolved": [
+          "zod",
+          "@langchain/langgraph",
+          "@langchain/core",
+          "langsmith",
+          "undici"
+        ],
+        "collectorUnresolved": [],
+        "completeDependencyRuntimeEquivalenceVerified": false,
+        "productionQualified": false,
+        "actualModelCalls": 0
+      }
+    },
+    "dependencies": {
+      "sessionId": 63988,
+      "exitCode": 0,
+      "log": "tmp/ma24-responsive-navigation-dependencies.log",
+      "logSha256": "fa33da71a7456c72fffa42a6afbcbbfa49eb5602354b57f94267d4d186ff662a",
+      "result": {
+        "localRuntimeDependencyPair": "passed",
+        "mainInspection": {
+          "role": "main-agent",
+          "imageId": "sha256:9ee06880489cf1a42596295ddf9939635985265362bb57b593ed3e6b1a5738fb",
+          "sourceCommit": "db1d1054144b2bc14f0de6cf9917e4095b268f00",
+          "deploymentHash": "369e18b36df7b7eb85da40eda7b56e11eacc0ca50f61c7c0d528dd6fc8c8e467",
+          "runtimeHash": "119007729d933c40ba8b1771b6f5ca847458b4a75d7cc693550d070509692426",
+          "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+          "node": "24.21.0",
+          "platform": "linux",
+          "arch": "x64",
+          "sourceInputs": 1053,
+          "files": 34605,
+          "dependencyManifestHash": "d3edb974b4ae6e725cbb62205c8f0e65606b061fd97bce214289279ccca20137",
+          "dependencyFiles": 33503,
+          "runtimeModuleFormat": "esm",
+          "executionArtifacts": [
+            {
+              "path": "server.mjs",
+              "sha256": "e7a5e2a5314125207b0e969f5a351e1973700a703a16f38f2f0a98ce8a833883"
+            },
+            {
+              "path": "start.mjs",
+              "sha256": "a26da05b508790992197256b3ee8acc38dc664e2c2ab6b0d180dfc9bf6099266"
+            },
+            {
+              "path": "worker.mjs",
+              "sha256": "9c49e4b33614c570ce0a21623730093ab6339db2ebbffd32c8f267555570c81a"
+            }
+          ]
+        },
+        "collectorInspection": {
+          "role": "skill-collector",
+          "imageId": "sha256:33217bb645f9d816ba8c2965a3f6d204ef7606019d907fb4985d6245eb1710df",
+          "sourceCommit": "db1d1054144b2bc14f0de6cf9917e4095b268f00",
+          "deploymentHash": "7a04df65f1857ce23f9b3f26a48ab7bc06a5c76d657087d775c0afd78fbeea0b",
+          "runtimeHash": "119007729d933c40ba8b1771b6f5ca847458b4a75d7cc693550d070509692426",
+          "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+          "node": "24.21.0",
+          "platform": "linux",
+          "arch": "x64",
+          "sourceInputs": 1053,
+          "files": 34569,
+          "dependencyManifestHash": "d3edb974b4ae6e725cbb62205c8f0e65606b061fd97bce214289279ccca20137",
+          "dependencyFiles": 33503,
+          "runtimeModuleFormat": "esm",
+          "executionArtifacts": [
+            {
+              "path": "runner.mjs",
+              "sha256": "c14d3483c6337f440eca8796e768f30525b5a29ae90eab93b483422b4b70dd8a"
+            },
+            {
+              "path": "start.mjs",
+              "sha256": "9940bc440764d0e9bae71b3faccbe2fc93c29b3cd4559ea55cc859c50bcb7b04"
+            }
+          ]
+        },
+        "comparison": {
+          "runtimePackageBytesPairRevalidated": true,
+          "runtimePackageBytesPairBlockers": [],
+          "runtimeModuleFormatPairRevalidated": true,
+          "runtimeModuleFormatPairBlockers": [],
+          "runtimePackageBytesPairHash": "41bac7a473dce9c4a706d046377cd916dfc93315a1a52d9f19cd8427cb697d0c"
+        },
+        "esmModuleFormatPairVerified": true,
+        "runtimeRegistrationsPublished": false,
+        "completeDependencyRuntimeEquivalenceVerified": false,
+        "productionQualified": false,
+        "automaticActivation": false,
+        "modelCalls": 0
+      }
+    },
+    "web-source": {
+      "sessionId": null,
+      "exitCode": 0,
+      "log": "tmp/ma24-responsive-navigation-web-source.log",
+      "logSha256": "d3ab8b66da2361bce90dd144f303e67ca210477f1b7efa1db0bc48dc195b4901",
+      "result": {
+        "webImageSourceVerification": "passed",
+        "image": "ma24-pilot-web:db1d1054",
+        "imageId": "sha256:7a01a6c0f20a03c298adcfc0b0574761f03abb45284655001673bddcba043d16",
+        "sourceCommit": "db1d1054144b2bc14f0de6cf9917e4095b268f00",
+        "buildId": "7-f4Gs8dXUnOHZgVbPQwR",
+        "runtimeSourceFileCount": 1053,
+        "runtimeSourceMatchesFixedGitExport": true,
+        "exportEolDifferences": 1053,
+        "runtimeSourceManifestHash": "91e9435490384b1beef4af2e550f575a09a90d8a9f376bb8ddc68803e523a7e3",
+        "privateEnvironmentFiles": false,
+        "privateStorageFiles": false,
+        "staticAssetsPresent": true,
+        "nonRootReadOnlyNoNetwork": true,
+        "productionQualified": false
+      }
+    },
+    "boundary": {
+      "sessionId": 63206,
+      "exitCode": 0,
+      "log": "tmp/ma24-responsive-navigation-boundary.log",
+      "logSha256": "aac154701bc7d522fe4c6d4f4b51d1869878694e221f712652ea6cc4966aee70",
+      "result": {
+        "collectorImageVerification": "passed",
+        "image": "ma24-skill-collector:db1d1054",
+        "imageId": "sha256:33217bb645f9d816ba8c2965a3f6d204ef7606019d907fb4985d6245eb1710df",
+        "commit": "db1d1054144b2bc14f0de6cf9917e4095b268f00",
+        "packageFiles": 34569,
+        "deploymentHash": "7a04df65f1857ce23f9b3f26a48ab7bc06a5c76d657087d775c0afd78fbeea0b",
+        "measuredEnrollmentVerified": true,
+        "missingMalformedAndMismatchedEnrollmentRejectedBeforeRunner": true,
+        "matchedEnrollmentReachesRunner": true,
+        "nodeOptionsRejected": true,
+        "nonRootReadOnlyNoNetwork": true,
+        "changedRunnerRejectedBeforeExecution": true,
+        "actualModelCalls": 0,
+        "productionQualified": false
+      }
+    }
+  },
+  "executionArtifactsComparedWithPrevious": {
+    "evidence": "ma24-g03-g13-memory-observations-browser-2026-10-21.json",
+    "unchanged": {
+      "mainInspection": {
+        "executionArtifacts": true,
+        "dependencyManifestHash": true,
+        "nodeSha256": true
+      },
+      "collectorInspection": {
+        "executionArtifacts": true,
+        "dependencyManifestHash": true,
+        "nodeSha256": true
+      }
+    },
+    "newFullRuntimeCompositionRun": false
+  },
+  "attempts": [
+    {
+      "sessionId": 86049,
+      "exitCode": 1,
+      "log": "tmp/ma24-responsive-navigation-fixed-web.log",
+      "logSha256": "26a11e3b63a14abce509988ece6c253876bb8d7dc468d8ab54388de39e217a35",
+      "sourceFilesCanonicalLf": {
+        "src/app/globals.css": "7252c8609fad09da10067ee8f3bd7d5b075fa2fe02dad22150e2949f4bec46b2",
+        "src/components/copilot-demo.tsx": "70fe440920022763cda2f26ec2e3c58f440f2112288dbdb4a51c80fdaa3b5b30",
+        "scripts/verify-responsive-navigation-styles.mjs": "cdfeb4a21478927f942da9f3d3cf4da1349f7f19dc4fbcaa0efaeb2b5e6b1083",
+        "scripts/verify-responsive-navigation-fixed-web.ts": "43c8e7bffef58495948cbd4406050d4d608fa41a3f5bcadf4eb5e07dccdf91d0",
+        "scripts/verify-ma24-fresh-pilot-new-cluster.ts": "1c9e13c2908fcfd24073a9a4c1b0046cb09854fe4b159061464b8793b59cce23"
+      },
+      "result": "Closed labels/open/Escape/backdrop/navigation checks reached. Immediate body-overflow assertion during a new menu open after navigation saw empty string before passive effect confirmation; subsequent desktop resize/collapse gates not reached. Follow-up waits for the same body lock/unlock condition before continuing; no product guard changed."
+    }
+  ],
+  "nextFixtureSourcesCanonicalLf": {
+    "src/app/globals.css": "7252c8609fad09da10067ee8f3bd7d5b075fa2fe02dad22150e2949f4bec46b2",
+    "src/components/copilot-demo.tsx": "70fe440920022763cda2f26ec2e3c58f440f2112288dbdb4a51c80fdaa3b5b30",
+    "scripts/verify-responsive-navigation-styles.mjs": "cdfeb4a21478927f942da9f3d3cf4da1349f7f19dc4fbcaa0efaeb2b5e6b1083",
+    "scripts/verify-responsive-navigation-fixed-web.ts": "ee56668aaa775df91d1a240cd75818cc113561b158954901082282b7b262d1f2",
+    "scripts/verify-ma24-fresh-pilot-new-cluster.ts": "1c9e13c2908fcfd24073a9a4c1b0046cb09854fe4b159061464b8793b59cce23"
+  },
+  "followupChecks": {
+    "typecheck": {
+      "sessionId": 47216,
+      "exitCode": 0,
+      "log": "tmp/ma24-responsive-navigation-effect-typecheck.log"
+    },
+    "lint": {
+      "sessionId": 3307,
+      "exitCode": 0,
+      "log": "tmp/ma24-responsive-navigation-effect-lint.log"
+    }
+  }
 }
