@@ -75,6 +75,8 @@ const agentCallLeaseCheck=args.includes('--agent-call-lease');
 const agentCheckpointLeaseCheck=args.includes('--agent-checkpoint-lease');
 const candidateLeaseContentionCheck=args.includes('--candidate-lease-contention');
 const runtimeReadSourcesCheck=args.includes('--runtime-read-sources');
+const runtimeDisclosureCheck=args.includes('--runtime-disclosure');
+assert(!runtimeDisclosureCheck||currentSchemaCheck,'--runtime-disclosure requires --current-schema');
 const poolRecoveryCheck = args.includes('--pool-recovery');
 const webPoolRecoveryCheck = args.includes('--web-pool-recovery');
 const prospectiveHttpArgument = args.find(arg => arg.startsWith('--prospective-http-image='));
@@ -95,11 +97,12 @@ const pristineDatabaseChecks = [
   agentCheckpointLeaseCheck,
   candidateLeaseContentionCheck,
   runtimeReadSourcesCheck,
+  runtimeDisclosureCheck,
   prospectiveSourceCheck,
 ].filter(Boolean).length;
 assert(pristineDatabaseChecks <= 1,
   "Each G09 disposable database fixture requires a pristine placeholder-only database; run one fixture flag per fresh-cluster invocation.");
-assert(!currentSchemaCheck||(((webImage||mainRuntimeOnly)&&pristineDatabaseChecks===0||(lockedPolicyCheck||transportJournalCheck||runnerAttestationCheck||agentCallLeaseCheck||agentCheckpointLeaseCheck||candidateLeaseContentionCheck||runtimeReadSourcesCheck)&&pristineDatabaseChecks===1&&!webImage)&&!modeBusinessCheck&&!poolRecoveryCheck),
+assert(!currentSchemaCheck||(((webImage||mainRuntimeOnly)&&pristineDatabaseChecks===0||(lockedPolicyCheck||transportJournalCheck||runnerAttestationCheck||agentCallLeaseCheck||agentCheckpointLeaseCheck||candidateLeaseContentionCheck||runtimeReadSourcesCheck||runtimeDisclosureCheck)&&pristineDatabaseChecks===1&&!webImage)&&!modeBusinessCheck&&!poolRecoveryCheck),
   '--current-schema requires isolated Web acceptance, locked-policy, transport-journal or runner-attestation; other G09 fixtures retain their historical schema bootstrap');
 assert(!frontendUiCheck||(webImage&&currentSchemaCheck&&browserCheck),'--frontend-ui requires --web-image, --current-schema and --browser');
 assert(!extendedUiCheck||frontendUiCheck,'--extended-ui requires --frontend-ui');
@@ -136,7 +139,7 @@ assert(!localMemoryChineseCheck||localMemoryWorkerCheck,'--local-memory-chinese 
 assert(!localMemoryHttpCheck||(localMemoryGraphCheck&&localMemoryChineseCheck),'--local-memory-http requires Chinese memory and graph Worker checks');
 const rollbackImageArgument = args.find(arg => arg.startsWith("--rollback-image="));
 const rollbackImage = rollbackImageArgument?.slice("--rollback-image=".length);
-assert(args.length <= 22 && args.every(arg => ['--main-runtime-resume-revocation', '--main-runtime-network-loss', '--main-runtime-interruption', '--main-runtime-crash-recovery', '--main-runtime-task-enrollment', '--main-runtime-commit-loss', '--main-runtime-durability', mainRuntimeArgument, '--main-runtime-only', '--main-runtime-skill-receipt', '--main-runtime-model-receipt', "--final-settlement", "--knowledge-scope-sources", "--snapshot-lifecycle", "--acceptance-originals", "--local-memory-http", "--local-memory-chinese", "--local-memory-graph-worker", "--local-memory-worker", "--snapshot-download", "--extended-ui", "--frontend-ui", "--current-schema", "--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", '--locked-policy', '--memory-source-locks', '--method-catalog-locks', '--shadow-source-locks', '--safety-skill-usage', '--agent-call-lease', '--agent-checkpoint-lease', '--candidate-lease-contention', '--runtime-read-sources', '--transport-journal', '--pool-recovery', '--web-pool-recovery', "--prospective-source", "--prospective-material", '--prospective-browser', '--prospective-composition', declarationImageArgument,collectorImageArgument,transportLinuxArgument,prospectiveHttpArgument, webImageArgument, rollbackImageArgument].includes(arg))
+assert(args.length <= 22 && args.every(arg => ['--main-runtime-resume-revocation', '--main-runtime-network-loss', '--main-runtime-interruption', '--main-runtime-crash-recovery', '--main-runtime-task-enrollment', '--main-runtime-commit-loss', '--main-runtime-durability', mainRuntimeArgument, '--main-runtime-only', '--main-runtime-skill-receipt', '--main-runtime-model-receipt', "--final-settlement", "--knowledge-scope-sources", "--snapshot-lifecycle", "--acceptance-originals", "--local-memory-http", "--local-memory-chinese", "--local-memory-graph-worker", "--local-memory-worker", "--snapshot-download", "--extended-ui", "--frontend-ui", "--current-schema", "--browser", "--ten-user", "--backup", "--cross-cluster", "--mode-business", "--runner-attestation", '--locked-policy', '--memory-source-locks', '--method-catalog-locks', '--shadow-source-locks', '--safety-skill-usage', '--agent-call-lease', '--agent-checkpoint-lease', '--candidate-lease-contention', '--runtime-read-sources', '--runtime-disclosure', '--transport-journal', '--pool-recovery', '--web-pool-recovery', "--prospective-source", "--prospective-material", '--prospective-browser', '--prospective-composition', declarationImageArgument,collectorImageArgument,transportLinuxArgument,prospectiveHttpArgument, webImageArgument, rollbackImageArgument].includes(arg))
   &&(!declarationImageArgument||(declarationImage&&/^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(declarationImage)))
   &&(!transportLinuxArgument||(currentSchemaCheck&&transportLinuxImage&&/^sha256:[a-f0-9]{64}$/.test(transportLinuxImage)))
   &&(!collectorImageArgument||(collectorImage&&/^[a-zA-Z0-9][a-zA-Z0-9_.:/-]*$/.test(collectorImage)))
@@ -249,7 +252,7 @@ try {
   assert.equal(verified.code, 0, verified.output);
   assert(verified.output.includes('"freshPilotRestore":"passed"'), verified.output);
   assert(verified.output.includes('"copiedProductionData":false'), verified.output);
-  if (webImage || mainRuntimeOnly || modeBusinessCheck || runnerAttestationCheck || lockedPolicyCheck || memorySourceLocksCheck || methodCatalogLocksCheck || shadowSourceLocksCheck || prospectiveSourceCheck || safetySkillUsageCheck || transportJournalCheck || agentCallLeaseCheck || agentCheckpointLeaseCheck || candidateLeaseContentionCheck || runtimeReadSourcesCheck || poolRecoveryCheck) {
+  if (webImage || mainRuntimeOnly || modeBusinessCheck || runnerAttestationCheck || lockedPolicyCheck || memorySourceLocksCheck || methodCatalogLocksCheck || shadowSourceLocksCheck || prospectiveSourceCheck || safetySkillUsageCheck || transportJournalCheck || agentCallLeaseCheck || agentCheckpointLeaseCheck || candidateLeaseContentionCheck || runtimeReadSourcesCheck || runtimeDisclosureCheck || poolRecoveryCheck) {
     const migration = await run(process.execPath,
       ["scripts/run-tsx.cjs", "scripts/migrate.ts", currentSchemaCheck?"--fresh-pilot-through=170":"--fresh-pilot-through=135"],
       { ...process.env, DATABASE_URL: appUrl.toString(), DATABASE_MIGRATION_URL: adminUrl.toString() });
@@ -471,6 +474,12 @@ try {
     const checked=await run(process.execPath,['scripts/run-tsx.cjs','scripts/verify-candidate-lease-contention-db.ts'],
       {...process.env,DATABASE_URL:appUrl.toString(),DATABASE_MIGRATION_URL:adminUrl.toString(),MA24_DISPOSABLE_CANDIDATE_LEASE_CONTENTION:'1'});
     assert.equal(checked.code,0,checked.output);assert(checked.output.includes('"candidateLeaseContentionDatabase":"passed"'),checked.output);
+    console.log(checked.output.trim());
+  }
+  if(runtimeDisclosureCheck){
+    const checked=await run(process.execPath,['scripts/run-tsx.cjs','scripts/verify-skill-runtime-disclosure-db.ts'],
+      {...process.env,DATABASE_URL:appUrl.toString(),DATABASE_MIGRATION_URL:adminUrl.toString(),MA24_DISPOSABLE_RUNTIME_DISCLOSURE:'1'});
+    assert.equal(checked.code,0,checked.output);assert(checked.output.includes('"runtimeDisclosureDatabase":"passed"'),checked.output);
     console.log(checked.output.trim());
   }
   if(runtimeReadSourcesCheck){
@@ -900,6 +909,7 @@ try {
     agentCheckpointLeaseDatabaseVerified:agentCheckpointLeaseCheck,
     candidateLeaseContentionDatabaseVerified:candidateLeaseContentionCheck,
     runtimeReadSourceLocksDatabaseVerified:runtimeReadSourcesCheck,
+    runtimeDisclosureDatabaseVerified:runtimeDisclosureCheck,
     linuxFiveCategoryTransportVerified:Boolean(transportLinuxImage),
     collectorImageTlsPreflightVerified: Boolean(collectorImage),
     poolRecoveryVerified: poolRecoveryCheck,
