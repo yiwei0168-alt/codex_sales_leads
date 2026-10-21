@@ -1,0 +1,606 @@
+{
+  "date": "2026-10-22",
+  "scope": "Existing MA24-16 F05/F06 mailbox reader selection and recovery",
+  "status": "component-fixed-web-api-three-viewports-and-five-package-checks-passed",
+  "productCommit": "b59252221bd4a022cddef336af4db23e95e8c726",
+  "hostFixtureCommit": "d4dd7baea4910df2e3f7ea570537371ff8eb05b2",
+  "canonicalLfSourceSha256": {
+    "src/components/mailbox-reader.tsx": {
+      "commit": "b59252221bd4a022cddef336af4db23e95e8c726",
+      "sha256": "2080604d2a990917441488fba67bf6587f34fe7f43f740663ed4ff28abb53841"
+    },
+    "scripts/verify-mailbox-reader-recovery-ui.ts": {
+      "commit": "b59252221bd4a022cddef336af4db23e95e8c726",
+      "sha256": "fb1164a328218bce9e771a263197f417d2079d43e0993e9927da46ad82e43c7a"
+    },
+    "scripts/verify-mailbox-reader-fixed-web.ts": {
+      "commit": "b59252221bd4a022cddef336af4db23e95e8c726",
+      "sha256": "2333625c382ef27c346c0a5498a2b6d2178585ffba9197e157e5f2b82d5d3ed9"
+    },
+    "scripts/lib/verify-ma24-mailbox-reader-clone.ts": {
+      "commit": "b59252221bd4a022cddef336af4db23e95e8c726",
+      "sha256": "0927796ddb713c148a6ee852908cbbfa3b6eda62d109549b00d0458bdaa676ff"
+    },
+    "scripts/verify-ma24-fresh-pilot-new-cluster.ts": {
+      "commit": "d4dd7baea4910df2e3f7ea570537371ff8eb05b2",
+      "sha256": "4c5a65cdbe088c6892aecde35e29503c9096ecbbbaa7f8861dab0704b22ebb01"
+    }
+  },
+  "regressionReproduction": {
+    "baseline": "022ff3042c797ae511f5513adffaffe75b5a3c4f",
+    "exitCode": 1,
+    "record": {
+      "mailboxReselectFailure": {
+        "detailRequestsBefore": 1,
+        "detailRequestsAfter": 1,
+        "readerText": "返回邮件列表正在读取原文…",
+        "pageErrors": []
+      }
+    }
+  },
+  "component": {
+    "session": 67805,
+    "exitCode": 0,
+    "record": {
+      "mailboxReaderRecoveryComponent": "passed",
+      "results": [
+        {
+          "width": 1366,
+          "reselectCurrentMailReadsAgain": true,
+          "mobileReturnAndReselect": false,
+          "lateResponseIgnoringCancellationCannotReplaceSelection": true,
+          "failedAndMalformedListClearOldRowsAndReader": true,
+          "wrongMessageIdentityRefused": true,
+          "originalRetryDoesNotReloadList": true,
+          "pagingClearsReader": true,
+          "actualDeadlineVerified": true,
+          "noPageErrors": true
+        },
+        {
+          "width": 390,
+          "reselectCurrentMailReadsAgain": false,
+          "mobileReturnAndReselect": true,
+          "lateResponseIgnoringCancellationCannotReplaceSelection": true,
+          "failedAndMalformedListClearOldRowsAndReader": true,
+          "wrongMessageIdentityRefused": true,
+          "originalRetryDoesNotReloadList": true,
+          "pagingClearsReader": true,
+          "actualDeadlineVerified": false,
+          "noPageErrors": true
+        },
+        {
+          "width": 320,
+          "reselectCurrentMailReadsAgain": false,
+          "mobileReturnAndReselect": true,
+          "lateResponseIgnoringCancellationCannotReplaceSelection": true,
+          "failedAndMalformedListClearOldRowsAndReader": true,
+          "wrongMessageIdentityRefused": true,
+          "originalRetryDoesNotReloadList": true,
+          "pagingClearsReader": true,
+          "actualDeadlineVerified": false,
+          "noPageErrors": true
+        }
+      ],
+      "screenshots": [
+        "tmp/mailbox-reader-recovery/recovered-1366.png",
+        "tmp/mailbox-reader-recovery/recovered-390.png",
+        "tmp/mailbox-reader-recovery/recovered-320.png"
+      ],
+      "syntheticHttpOnly": true,
+      "actualModelCalls": 0
+    }
+  },
+  "staticChecks": [
+    {
+      "session": 65393,
+      "exitCode": 0,
+      "fullTypecheck": true,
+      "lintFiles": 5
+    },
+    {
+      "session": 53359,
+      "exitCode": 0,
+      "fullTypecheck": true,
+      "lintFiles": 2
+    }
+  ],
+  "builds": {
+    "web": {
+      "session": 29541,
+      "exitCode": 0
+    },
+    "main": {
+      "session": 67801,
+      "exitCode": 0
+    },
+    "collector": {
+      "session": 65909,
+      "exitCode": 0
+    }
+  },
+  "packageChecks": {
+    "main-pair": [
+      {
+        "mainAgentRuntimePair": "passed",
+        "web": "ma24-pilot-web:b5925222",
+        "runtime": "ma24-main-agent-runtime:b5925222",
+        "sourceCommit": "b59252221bd4a022cddef336af4db23e95e8c726",
+        "webImageId": "sha256:eb68544d14db8473ed6c7899773ea469d917f4a450802f40e01bf7dc32170b23",
+        "mainRuntimeImageId": "sha256:1357d07a394cd2d0784a6db7ba022976c3a363077aa360e0cfae8c881be2ea45",
+        "inspectionUsesImmutableImageIds": true,
+        "runtimeHash": "8fc10a33b0705a2a7eccefdc29a2bc18838d5534f162ef19270acc0ad13a04e6",
+        "sourceInputs": 1063,
+        "node": "24.21.0",
+        "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+        "platform": "linux",
+        "arch": "x64",
+        "webPackages": {
+          "pg": "8.23.0"
+        },
+        "mainRuntimePackages": {
+          "pg": "8.23.0",
+          "zod": "4.4.3",
+          "@langchain/langgraph": "1.4.15",
+          "@langchain/core": "1.2.9",
+          "langsmith": "0.9.0",
+          "undici": "8.10.0"
+        },
+        "webUnresolved": [
+          "zod",
+          "@langchain/langgraph",
+          "@langchain/core",
+          "langsmith",
+          "undici"
+        ],
+        "mainRuntimeUnresolved": [],
+        "completeDependencyRuntimeEquivalenceVerified": false,
+        "productionQualified": false,
+        "actualModelCalls": 0
+      }
+    ],
+    "skill-pair": [
+      {
+        "skillSourceRuntimePair": "passed",
+        "web": "ma24-pilot-web:b5925222",
+        "collector": "ma24-skill-collector:b5925222",
+        "sourceCommit": "b59252221bd4a022cddef336af4db23e95e8c726",
+        "webImageId": "sha256:eb68544d14db8473ed6c7899773ea469d917f4a450802f40e01bf7dc32170b23",
+        "collectorImageId": "sha256:61ea778dd6087753d7c4a0ac45c5eeb16d8a2cbc0dfdd89ff91ad5bd7f5cf5ae",
+        "inspectionUsesImmutableImageIds": true,
+        "runtimeHash": "8fc10a33b0705a2a7eccefdc29a2bc18838d5534f162ef19270acc0ad13a04e6",
+        "sourceInputs": 1063,
+        "node": "24.21.0",
+        "platform": "linux",
+        "arch": "x64",
+        "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+        "webPackages": {
+          "pg": "8.23.0"
+        },
+        "collectorPackages": {
+          "pg": "8.23.0",
+          "zod": "4.4.3",
+          "@langchain/langgraph": "1.4.15",
+          "@langchain/core": "1.2.9",
+          "langsmith": "0.9.0",
+          "undici": "8.10.0"
+        },
+        "webUnresolved": [
+          "zod",
+          "@langchain/langgraph",
+          "@langchain/core",
+          "langsmith",
+          "undici"
+        ],
+        "collectorUnresolved": [],
+        "completeDependencyRuntimeEquivalenceVerified": false,
+        "productionQualified": false,
+        "actualModelCalls": 0
+      }
+    ],
+    "dependencies": [
+      {
+        "localRuntimeDependencyPair": "passed",
+        "mainInspection": {
+          "role": "main-agent",
+          "imageId": "sha256:1357d07a394cd2d0784a6db7ba022976c3a363077aa360e0cfae8c881be2ea45",
+          "sourceCommit": "b59252221bd4a022cddef336af4db23e95e8c726",
+          "deploymentHash": "69d6adf2fb9b87c6a88fe7ae97033ea2599fc5490090af5ae86b753912bb9666",
+          "runtimeHash": "8fc10a33b0705a2a7eccefdc29a2bc18838d5534f162ef19270acc0ad13a04e6",
+          "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+          "node": "24.21.0",
+          "platform": "linux",
+          "arch": "x64",
+          "sourceInputs": 1063,
+          "files": 34615,
+          "dependencyManifestHash": "d3edb974b4ae6e725cbb62205c8f0e65606b061fd97bce214289279ccca20137",
+          "dependencyFiles": 33503,
+          "runtimeModuleFormat": "esm",
+          "executionArtifacts": [
+            {
+              "path": "server.mjs",
+              "sha256": "6ade6d51ac2ad77f42e7c53223b5d8296b47a792050c5f4f91875cc6b2036b8e"
+            },
+            {
+              "path": "start.mjs",
+              "sha256": "a26da05b508790992197256b3ee8acc38dc664e2c2ab6b0d180dfc9bf6099266"
+            },
+            {
+              "path": "worker.mjs",
+              "sha256": "48c7074ac512830acd98063ec3532b6504ec259d75dfebb2a048f7ca1eda5ef6"
+            }
+          ]
+        },
+        "collectorInspection": {
+          "role": "skill-collector",
+          "imageId": "sha256:61ea778dd6087753d7c4a0ac45c5eeb16d8a2cbc0dfdd89ff91ad5bd7f5cf5ae",
+          "sourceCommit": "b59252221bd4a022cddef336af4db23e95e8c726",
+          "deploymentHash": "9bdcc7cb27af43c971aaaeb05330bc364a338712fad5e5606d35c03d16f0fb0c",
+          "runtimeHash": "8fc10a33b0705a2a7eccefdc29a2bc18838d5534f162ef19270acc0ad13a04e6",
+          "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+          "node": "24.21.0",
+          "platform": "linux",
+          "arch": "x64",
+          "sourceInputs": 1063,
+          "files": 34579,
+          "dependencyManifestHash": "d3edb974b4ae6e725cbb62205c8f0e65606b061fd97bce214289279ccca20137",
+          "dependencyFiles": 33503,
+          "runtimeModuleFormat": "esm",
+          "executionArtifacts": [
+            {
+              "path": "runner.mjs",
+              "sha256": "e76381d1a6a286e9844e2f0a10c285958bcfcb82e15093ee41cb210e953e5fd3"
+            },
+            {
+              "path": "start.mjs",
+              "sha256": "9940bc440764d0e9bae71b3faccbe2fc93c29b3cd4559ea55cc859c50bcb7b04"
+            }
+          ]
+        },
+        "comparison": {
+          "runtimePackageBytesPairRevalidated": true,
+          "runtimePackageBytesPairBlockers": [],
+          "runtimeModuleFormatPairRevalidated": true,
+          "runtimeModuleFormatPairBlockers": [],
+          "runtimePackageBytesPairHash": "4ab1a2a64b62b3f250ede2a6e71bb0f82bd21fb0a35c222d014a4e3508472d3c"
+        },
+        "esmModuleFormatPairVerified": true,
+        "runtimeRegistrationsPublished": false,
+        "completeDependencyRuntimeEquivalenceVerified": false,
+        "productionQualified": false,
+        "automaticActivation": false,
+        "modelCalls": 0
+      }
+    ],
+    "collector": [
+      {
+        "collectorImageVerification": "passed",
+        "image": "ma24-skill-collector:b5925222",
+        "imageId": "sha256:61ea778dd6087753d7c4a0ac45c5eeb16d8a2cbc0dfdd89ff91ad5bd7f5cf5ae",
+        "commit": "b59252221bd4a022cddef336af4db23e95e8c726",
+        "packageFiles": 34579,
+        "deploymentHash": "9bdcc7cb27af43c971aaaeb05330bc364a338712fad5e5606d35c03d16f0fb0c",
+        "measuredEnrollmentVerified": true,
+        "missingMalformedAndMismatchedEnrollmentRejectedBeforeRunner": true,
+        "matchedEnrollmentReachesRunner": true,
+        "nodeOptionsRejected": true,
+        "nonRootReadOnlyNoNetwork": true,
+        "changedRunnerRejectedBeforeExecution": true,
+        "actualModelCalls": 0,
+        "productionQualified": false
+      }
+    ],
+    "web-source": [
+      {
+        "webImageSourceVerification": "passed",
+        "image": "ma24-pilot-web:b5925222",
+        "imageId": "sha256:eb68544d14db8473ed6c7899773ea469d917f4a450802f40e01bf7dc32170b23",
+        "sourceCommit": "b59252221bd4a022cddef336af4db23e95e8c726",
+        "buildId": "QPhCmKuaSwj6PBhgEqqsY",
+        "runtimeSourceFileCount": 1063,
+        "runtimeSourceMatchesFixedGitExport": true,
+        "exportEolDifferences": 1063,
+        "runtimeSourceManifestHash": "81ea4a8a28839d4b3ff071baa9f19dd8499a9aee0cc9140a342fbdd95f5bd17a",
+        "privateEnvironmentFiles": false,
+        "privateStorageFiles": false,
+        "staticAssetsPresent": true,
+        "nonRootReadOnlyNoNetwork": true,
+        "productionQualified": false
+      }
+    ]
+  },
+  "unchangedBackendExecutionBytesComparedWithCe2e8cbb": {
+    "mainInspection": {
+      "executionArtifacts": [
+        {
+          "path": "server.mjs",
+          "sha256": "6ade6d51ac2ad77f42e7c53223b5d8296b47a792050c5f4f91875cc6b2036b8e"
+        },
+        {
+          "path": "start.mjs",
+          "sha256": "a26da05b508790992197256b3ee8acc38dc664e2c2ab6b0d180dfc9bf6099266"
+        },
+        {
+          "path": "worker.mjs",
+          "sha256": "48c7074ac512830acd98063ec3532b6504ec259d75dfebb2a048f7ca1eda5ef6"
+        }
+      ],
+      "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+      "dependencyManifestHash": "d3edb974b4ae6e725cbb62205c8f0e65606b061fd97bce214289279ccca20137",
+      "dependencyFiles": 33503,
+      "runtimeModuleFormat": "esm"
+    },
+    "collectorInspection": {
+      "executionArtifacts": [
+        {
+          "path": "runner.mjs",
+          "sha256": "e76381d1a6a286e9844e2f0a10c285958bcfcb82e15093ee41cb210e953e5fd3"
+        },
+        {
+          "path": "start.mjs",
+          "sha256": "9940bc440764d0e9bae71b3faccbe2fc93c29b3cd4559ea55cc859c50bcb7b04"
+        }
+      ],
+      "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+      "dependencyManifestHash": "d3edb974b4ae6e725cbb62205c8f0e65606b061fd97bce214289279ccca20137",
+      "dependencyFiles": 33503,
+      "runtimeModuleFormat": "esm"
+    }
+  },
+  "native": {
+    "session": 19976,
+    "exitCode": 0,
+    "records": [
+      {
+        "mailboxReaderFixedWeb": "passed",
+        "actualChromeHttpsCompiledWeb": true,
+        "reader": {
+          "candidatePage": true,
+          "syntheticEncryptedMessages": 3,
+          "modelCalls": 0,
+          "mailSends": 0,
+          "results": [
+            {
+              "viewport": {
+                "width": 1366,
+                "height": 900
+              },
+              "listRequests": 5,
+              "detailRequests": 10,
+              "listRetry": true,
+              "detailRetry": true,
+              "longOriginalDrawer": true,
+              "shortOriginalInline": true,
+              "inlineOriginalRetry": true,
+              "refreshFailureClearsStaleBody": true,
+              "currentMailReselection": true,
+              "sentAndInboxReadIdentityVerified": true,
+              "readingScroll": "reading-area",
+              "noHorizontalOverflow": true,
+              "pageErrors": 0
+            },
+            {
+              "viewport": {
+                "width": 1366,
+                "height": 360
+              },
+              "listRequests": 5,
+              "detailRequests": 10,
+              "listRetry": true,
+              "detailRetry": true,
+              "longOriginalDrawer": true,
+              "shortOriginalInline": true,
+              "inlineOriginalRetry": true,
+              "refreshFailureClearsStaleBody": true,
+              "currentMailReselection": true,
+              "sentAndInboxReadIdentityVerified": true,
+              "readingScroll": "main-shell",
+              "noHorizontalOverflow": true,
+              "pageErrors": 0
+            },
+            {
+              "viewport": {
+                "width": 390,
+                "height": 760
+              },
+              "listRequests": 4,
+              "detailRequests": 7,
+              "listRetry": true,
+              "detailRetry": true,
+              "longOriginalDrawer": true,
+              "shortOriginalInline": true,
+              "inlineOriginalRetry": true,
+              "refreshFailureClearsStaleBody": false,
+              "currentMailReselection": false,
+              "sentAndInboxReadIdentityVerified": true,
+              "readingScroll": "reading-area",
+              "noHorizontalOverflow": true,
+              "pageErrors": 0
+            }
+          ]
+        },
+        "ownerReadAndPeerAnonymousRefusal": true,
+        "syntheticEncryptedMessagesOnly": true,
+        "actualModelCalls": 0,
+        "mailConnections": 0,
+        "mailSends": 0,
+        "realBusinessQualityAccepted": false,
+        "productionQualified": false
+      },
+      {
+        "freshClusterPilot": "passed",
+        "image": "pgvector/pgvector:pg16",
+        "reviewDraftFixedImageVerified": false,
+        "mailboxImapWorkerVerified": false,
+        "mailboxWorkerImageVerified": false,
+        "mailboxWorkerImapImageVerified": false,
+        "scheduleDispatchVerified": false,
+        "batchSettlementVerified": false,
+        "batchWorkerCrashVerified": false,
+        "batchWorkerCommitVerified": false,
+        "scheduleWorkerCrashVerified": false,
+        "scheduleWorkerCommitVerified": false,
+        "publishedAddress": "127.0.0.1 only",
+        "rolesVerified": true,
+        "duplicateRoleBootstrapRejected": true,
+        "freshMigrationThrough": 171,
+        "currentSchemaMarkers": {
+          "mailbox_work_binding": true,
+          "mailbox_lease_binding": true,
+          "mailbox_binding_constraint": true,
+          "knowledge_source_gate": true,
+          "task_origin_gate": true,
+          "local_memory_source_gate": true,
+          "receipt_source_gate": true,
+          "immutable_snapshot_capture": true,
+          "immutable_snapshot_lifecycle": true,
+          "trust_registry_versions": true,
+          "trust_registry_pointer": true,
+          "trust_registry_publication": true,
+          "runtime_package_registrations": true,
+          "candidate_recovery_checkpoint": true,
+          "candidate_execution_lease": true,
+          "candidate_graph_checkpoint": true,
+          "runtime_package_withdrawals": true,
+          "runtime_package_publication": true,
+          "skill_activation_lifecycle": true,
+          "skill_activation_sources_sealed": true,
+          "skill_activation_reviews_serialized": true,
+          "skill_activation_declarations_serialized": true,
+          "skill_activation_source_guard_health": true,
+          "skill_activation_use_commit_guard": true,
+          "skill_activation_commit_guard": true,
+          "skill_activation_binding_guard": true,
+          "current_shared_original_policy": true
+        },
+        "snapshotLifecycleVerified": false,
+        "knowledgeScopeSourcesVerified": false,
+        "finalSettlementVerified": false,
+        "compiledMainRuntimeVerified": false,
+        "mainRuntimeSkillReceiptVerified": false,
+        "mainRuntimeModelReceiptVerified": false,
+        "mainRuntimeDurabilityVerified": false,
+        "mainRuntimeCrashRecoveryVerified": false,
+        "mainRuntimeInterruptionVerified": false,
+        "mainRuntimeNetworkLossVerified": false,
+        "mainRuntimeResumeRevocationVerified": false,
+        "mainRuntimeCommitLossVerified": false,
+        "mainRuntimeTaskEnrollmentVerified": false,
+        "snapshotDownloadResult": null,
+        "runStatusUiVerified": false,
+        "personalMemoryUiVerified": false,
+        "conversationManagementUiVerified": false,
+        "attachmentUploadUiVerified": false,
+        "knowledgeTreeUiVerified": false,
+        "knowledgeLibraryUiVerified": false,
+        "attachmentAdmissionUiVerified": false,
+        "mailboxReaderUiVerified": true,
+        "responsiveNavigationUiVerified": false,
+        "memoryObservationsUiVerified": false,
+        "localMemoryWorkerResult": null,
+        "trustRegistryRestoreResult": null,
+        "freshMailboxUiVerified": false,
+        "extendedFrontendUiVerified": false,
+        "syntheticAccountCompanyAndRestoreVerified": true,
+        "copiedProductionData": false,
+        "linuxWebImage": "ma24-pilot-web:b5925222",
+        "linuxWebHttpWorkflowVerified": true,
+        "linuxWebHttpsBrowserVerified": false,
+        "tenConcurrentSyntheticAccountsVerified": false,
+        "pilotBackupRestoreVerified": false,
+        "crossClusterRestoreVerified": false,
+        "nonemptyMailboxCrossClusterRestoreVerified": false,
+        "scriptedModeBusinessVerified": false,
+        "runnerAttestationStoreVerified": false,
+        "collectorDeclarationImageVerified": false,
+        "lockedPolicyDatabaseVerified": false,
+        "memorySourceLocksVerified": false,
+        "methodCatalogSourceLocksVerified": false,
+        "shadowSourceLocksVerified": false,
+        "safetySkillUsageVerified": false,
+        "transportJournalDatabaseVerified": false,
+        "agentCallLeaseDatabaseVerified": false,
+        "agentCheckpointLeaseDatabaseVerified": false,
+        "candidateLeaseContentionDatabaseVerified": false,
+        "runtimeReadSourceLocksDatabaseVerified": false,
+        "runtimeDisclosureDatabaseVerified": false,
+        "linuxFiveCategoryTransportVerified": false,
+        "collectorImageTlsPreflightVerified": false,
+        "poolRecoveryVerified": false,
+        "standaloneDatabaseRecoveryVerified": false,
+        "extraG09Migration": null,
+        "prospectiveSourceDatabaseVerified": false,
+        "prospectivePairedMaterialVerified": false,
+        "prospectiveStandaloneHttpVerified": false,
+        "prospectiveStandaloneBrowserVerified": false,
+        "completeCompositionVerified": false,
+        "samePortPriorImageRollbackVerified": false
+      }
+    ]
+  },
+  "retainedFailedNativeAttempts": [
+    {
+      "session": 84741,
+      "exitCode": 1
+    },
+    {
+      "session": 28092,
+      "exitCode": 1
+    }
+  ],
+  "nativeFailureCause": "Isolated mailbox key omitted from fixed Web/new native child; fixture-only shared temporary key correction, no product guard relaxed.",
+  "retainedFailedComponentAttempts": [
+    {
+      "session": 98850,
+      "exitCode": 1
+    },
+    {
+      "session": 15683,
+      "exitCode": 1
+    }
+  ],
+  "componentFailureCause": "Mobile fixture tried hidden list/paging controls; corrected to real return/list navigation.",
+  "visuallyInspectedScreenshotsSha256": {
+    "tmp/mailbox-reader-recovery/recovered-1366.png": "ac8ebffee49e3d0015da6ece94c2cebcd88feb20c4a532207b6ccf4f065dc253",
+    "tmp/mailbox-reader-recovery/recovered-320.png": "a14ca260eba636a00954a6e4f5d72c497a1b84b992e6d9a0b9653205fa46df7a",
+    "tmp/ma24-mailbox-reader-clone/1366x900-drawer.png": "24fcbdfa9b742f1254e8065e234b9cfcf28c673976fc80aa9f0083836826c988",
+    "tmp/ma24-mailbox-reader-clone/390x760-drawer.png": "7db40c618204c0b89a0140f9602b25a27d5b7a24b565e857fb472e67baa765a6"
+  },
+  "logSha256": {
+    "tmp/ma24-mailbox-reader-before-fix.log": "2f46b06cfb157153b06d3d3875391f22b0d28b447c915dad35b8214392ee62c2",
+    "tmp/ma24-mailbox-reader-collector-build.log": "c06f7508b6b35e16ca19807d315edd795df3d3c906e622c04a865862ded8f68a",
+    "tmp/ma24-mailbox-reader-collector.log": "46690dc4afa8fc9831115ac3fac07e1253eec39170ff7aa7742539045547fc7c",
+    "tmp/ma24-mailbox-reader-component-final.log": "5673187c0eb96f7f544d186824f87f7849dde868dc3ca625adb81d48e6d65457",
+    "tmp/ma24-mailbox-reader-component-mobile-path.log": "e09c3d1a881396d78d34fdded38843c0756357f6dd275f072c72e7d7018d074e",
+    "tmp/ma24-mailbox-reader-component.log": "bcc3d9ebb25635958e4bb0bbcb2286ec5b18f7049d53abc6a0b6d1dafd02b57a",
+    "tmp/ma24-mailbox-reader-dependencies.log": "5901adb1774f2a2f6bd92905a73c85a88159a8aa4a69e8038e7ee31cf26cd5f0",
+    "tmp/ma24-mailbox-reader-fixed-web-corrected.log": "1a43a7f3bb9055d5bdcd2b766506b7cb7ae462f6e9d7e426c7585f2e44330c88",
+    "tmp/ma24-mailbox-reader-fixed-web-diagnostic.log": "d38193d960d767a682b233f5146b6d64a830c03260f860730eabcef90f8d0c4f",
+    "tmp/ma24-mailbox-reader-fixed-web.log": "b89504fd31ffc4e4156553e29223a0b0bb94eb5b2f536138f21f6d021e270c88",
+    "tmp/ma24-mailbox-reader-main-build.log": "accc7bcfcf925b967635504e8aeede427d94ee61a94068c61f9af9ff00e8fccf",
+    "tmp/ma24-mailbox-reader-main-pair.log": "3cb4a0250ab6e77edd8712a189090bd9479ffb92a42521d526d0644fd44e8330",
+    "tmp/ma24-mailbox-reader-skill-pair.log": "33edeba5c04534fd487bba6e4d8b54634b805beb73c358f7db0054fbac12f37b",
+    "tmp/ma24-mailbox-reader-web-build.log": "1bfa8c54a38f811d65f3e4327298e047c91584d5ad8fdcf04672a141d124de18",
+    "tmp/ma24-mailbox-reader-web-source.log": "ba85a25429420aaf8f7848b7768c53ff162fec590b5db29b8e1a0ed2797024de"
+  },
+  "cleanup": {
+    "temporaryContainersRemoved": true,
+    "remainingOriginalServices": [
+      "codex_sales_leads-neo4j-1",
+      "codex_sales_leads-ollama-1",
+      "codex_sales_leads-postgres-1"
+    ]
+  },
+  "limits": {
+    "onlyRuntimeProductFileChanged": "src/components/mailbox-reader.tsx",
+    "sourceAndDeploymentManifestsChanged": true,
+    "newWholeBackendCompositionClaimed": false,
+    "fullCompositionEvidenceRemainsAt": "02be633829fcd5c7febc60437a31c6befff8d07b",
+    "actualModelCalls": 0,
+    "mailProviderConnections": 0,
+    "mailSends": 0,
+    "realBusinessQualityAccepted": false,
+    "productionQualified": false,
+    "deployment": false,
+    "deferredStages": "G14-G20"
+  }
+}
