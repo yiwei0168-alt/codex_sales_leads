@@ -1,6 +1,6 @@
 # MA24 G01–G13 当前剩余门槛（2026-10-16）
 
-2026-10-21 / 最新终态：359cbc60 产品与 5a7b027c 夹具的完整 Linux 组合 9428 已退出 0；五类同冻结、实测登记及真实进程终止/默认租约自然到期/恢复不重放通过，临时资源清理。固定启动器已完成任务复用补验另以 c35e160a 夹具运行中（76169），尚不判通过。下方较早“96880/9428 运行中或待重验”为历史；真实质量、生产入口整体覆盖和最终启用仍未通过。[已通过收据](evidence/ma24-g09-postgres-graph-linux-recovery-2026-10-21.json)、[启动器补验](FIXED_COLLECTOR_COMPLETED_REUSE_2026-10-21.md)。
+2026-10-21 / 最新终态：359cbc60 产品与 5a7b027c 夹具的完整 Linux 组合 9428 已退出 0；五类同冻结、实测登记及真实进程终止/默认租约自然到期/恢复不重放通过。固定启动器已完成任务复用补验 76169（夹具 c35e160a）也已退出 0，历史/前瞻任务与原记录精确复用通过；两轮临时资源均清理。下方较早“运行中或待重验”为历史；真实质量、生产入口整体覆盖和最终启用仍未通过。[组合收据](evidence/ma24-g09-postgres-graph-linux-recovery-2026-10-21.json)、[启动器补验](FIXED_COLLECTOR_COMPLETED_REUSE_2026-10-21.md)。
 
 2026-10-21 / 当前 359cbc60 数据库信任 TLS 58232 通过并清理。Linux 96880 退出 1，正式候选夹具旧 payload 读取失败；产品不变，夹具已按绑定 PostgresSaver 根图修正，类型/lint 通过，完整组合待提交后重验。协议/生命周期和真实质量不提升。[当前终态](POSTGRES_GRAPH_FIXED_PACKAGES_2026-10-21.md)。
 
@@ -399,7 +399,7 @@ G09 任务与工具日志锁已接入材料重建入口：从已存包派生任�
 
 | 项目 | 已有依据 | 仍缺的实现或验收 | 下一项能关闭缺口的证据 |
 | --- | --- | --- | --- |
-| G01 发布基线 | 当前 359cbc60 三镜像/源码/依赖/ESM、采集器/Web、实际 API/Worker、数据库信任 TLS 及 9428 完整 Linux 组合通过 | 整组生产入口未验；固定启动器完成复用补验 76169 仍运行；部署与目标主机/回切暂缓 | 核对启动器补验终态；恢复上线后核主机/回切。[当前包](POSTGRES_GRAPH_FIXED_PACKAGES_2026-10-21.md) |
+| G01 发布基线 | 当前 359cbc60 三镜像/源码/依赖/ESM、采集器/Web、实际 API/Worker、独立数据库信任 TLS、9428 完整 Linux 组合及 76169 固定启动器完成复用通过 | 整组生产入口/TLS与首次真实提供方执行未验；部署与目标主机/回切暂缓 | 补齐整体入口与真实执行证据；恢复上线后核主机/回切。[当前包](POSTGRES_GRAPH_FIXED_PACKAGES_2026-10-21.md) |
 | G02 来源撤销 | 真实图、旧 checkpoint、隔离模型及局部 HTTP；当前构建的登记原件下载通过认证、Range、篡改和请求间撤回的真实 HTTP 验证 ([收据](evidence/ma24-g02-g05-asset-download-http-clone-2026-10-19.json)) | 当前服务上真实账号有界任务的生成期撤销、后续工具阻断和最终保存核对 | 获授权的专门来源/账号任务及撤销前后收据；新付费请求另列具体清单 |
 | G03 纠正与双时间 | 来源归属、自然纠正和隔离恢复；中文实际 Worker 经登录时间线、账号隔离、幂等撤销及同批精确历史时点回读通过 | 自然偏好/经历/业务事实与纠正样本不足；全部用户入口、最终统一候选和持续 Worker 试点未验 | 对照原句与更正内容的自然样本判决、最终候选各入口及连续 Worker 持久记录；本轮有限 HTTP 流程不扩称全部入口 |
 | G04 记忆图谱 | outbox、租约、故障恢复及 PostgreSQL 降级服务证据；中文同批投影、真实陈旧图谱候选的撤销过滤和原记录/纠正历史回读、第三条撤销投递通过 | 获准真实样本的持续抽取/投影、最终统一候选及持续故障/恢复运行未验 | 连续消费及图谱停机/恢复的同一批来源收据；同批有限撤销召回证据见最新工作流，不替代真实质量 |
@@ -407,7 +407,7 @@ G09 任务与工具日志锁已接入材料重建入口：从已存包派生任�
 | G06 安全 | 已定位旧歧义与注入失败，工具模型视图等边界已有修复 | 修复后固定协议的真实模型回答、独立安全判分不足；既有本地超时不能判通过 | 有明确请求范围的有效模型回答及答案/引用/权限/注入人工判决；相同超时配置不重复试跑 |
 | G07 真实回放 | 服务器持久收据与只读回放适配已实现；历史资格审计已有排除结果 | 尚无满足当前来源、Skill 相关性及完整收据要求的真实任务 | 同账号有效的完整只读任务或精确收据限定的子任务，固定版本回放和独立审核 |
 | G08 前瞻影子 | 任务前登记/捕获、签名原流程/候选、统一材料及受限持久化已有合成数据库贯通证据；未将历史任务改标前瞻 | 真实任务的原流程/候选结果、可信生产身份及真实质量仍未验收 | 在既有授权范围内取得任务前登记到执行、持久收据及审核的真实完整链 |
-| G09 自动启用 | 正式候选 PostgresSaver/同图预算轨迹、135 回归/类型/lint、固定包/普通 Worker 回执恢复/独立数据库信任 TLS，以及 9428 当前五类/真实进程恢复通过 | **仍未完成**：完整协议/生命周期、其他题型故障、整组入口/身份、首次真实模型、独立质量和正向启用；启动器完成复用补验 76169 待终态 | 核对固定启动器实际复用，再继续协议/生命周期及真实审核；96880 旧夹具失败保留。[当前包](POSTGRES_GRAPH_FIXED_PACKAGES_2026-10-21.md)、[接线](CANDIDATE_GRAPH_POSTGRES_ENTRY_2026-10-21.md) |
+| G09 自动启用 | 正式候选 PostgresSaver/同图预算轨迹、135 回归/类型/lint、固定包/普通 Worker 回执恢复/独立数据库信任 TLS、9428 当前五类/真实进程恢复及 76169 固定启动器完成复用通过 | **仍未完成**：完整协议/生命周期、其他题型故障、整组入口/身份、首次真实模型、独立质量和正向启用 | 继续协议/生命周期及真实审核；不把固定包终态复用当成首次实际执行，96880 旧夹具失败保留。[当前包](POSTGRES_GRAPH_FIXED_PACKAGES_2026-10-21.md)、[接线](CANDIDATE_GRAPH_POSTGRES_ENTRY_2026-10-21.md) |
 | G10 审核 | 固定21ade59d Chrome/HTTPS/真实数据库审核修订竞态、草稿协调、409、已提交后回读故障与撤销通过；r1–r7均为合成不通过，另保留前瞻两臂与旧HTTP/页面证据 | 完整真实人工材料、五类质量、生产身份和目标入口未验；本轮夹具原件预览未通过 | 在既有授权边界内准备真实同版本/冻结材料，逐题核对真实质量及生产入口 |
 | G11 邮箱/客户 | 固定2a1fb556正式邮箱Worker/实际IMAP库/合成TLS服务/新159数据库的日期分页、半页SIGKILL和原租约自然到期恢复通过；4封唯一加密邮件、统计4/4/4/0、账号隔离和空Worker不变 | 真实服务商日期范围与全分页、持续负载、客户归属/摘要质量及目标主机运行未验 | 已授权账号及日期范围上的收件/已发送对账、恢复与逐例归属判定；历史提供方对账单独保留 |
 | G12 三模式 | 恢复原因白名单修复，60 项定向测试及全新库 12 组脚本业务通过 | 真实只读业务回答、提供方失败/迟到/未知结果恢复及正式加载未验 | 有界真实任务和隔离提供方响应的持久收据；已消耗的 MODESEL-14 授权不复用 |
@@ -672,3 +672,6 @@ G09 current-source collector image TLS preflight (2026-10-19): rebuilt from the 
 
 
 2026-10-21 / MA24-06 fixed collector completed reuse: optional fixture coverage now invokes immutable /app/start.mjs and its runner after historical/prospective completion, with the model API key empty and unchanged model/tool journal assertions. Syntax, full typecheck and three-file lint passed; actual fixed-package execution remains pending and does not replace first execution, whole-fixture wrapper/TLS or real quality. [Scope](FIXED_COLLECTOR_COMPLETED_REUSE_2026-10-21.md).
+
+
+2026-10-21 / MA24-06 fixed collector completed reuse accepted within its engineering scope: session 76169 exited 0, immutable product 359cbc60 and archived fixture c35e160a. Actual /app/start.mjs and packaged runner reused completed historical/prospective tasks with the model API key empty, without request injection; task/evaluation IDs matched, model-attempt and tool fields matched the captured projections, and bundle IDs/count were unchanged. Five-category/eight-task composition, measured registration and collector provenance also passed; the temporary database container was removed. First execution still uses synthetic compiled fixtures. Whole-fixture production wrapper/TLS, first real provider execution, independent quality and activation remain unaccepted; G09 remains incomplete. [Receipt](evidence/ma24-g09-fixed-collector-completed-reuse-2026-10-21.json).

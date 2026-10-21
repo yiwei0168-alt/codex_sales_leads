@@ -11,7 +11,10 @@
 ## 当前证据
 
 - JavaScript 语法、完整 TypeScript 检查及三文件 lint 已通过。
-- 夹具已固定为 `c35e160a` 并启动实际验证，会话 `76169`，日志 `tmp/ma24-fixed-collector-completed-reuse-linux.log`。原进程已核实存活且已有候选任务完成，启动器复用及整轮最终断言尚待结果；当前不记通过。
+- 夹具固定为 `c35e160a38643dd0aa4ac82c8285b2ae083a2e3a`，产品保持 `359cbc60`。实际会话 `76169` 已退出 0，日志 `tmp/ma24-fixed-collector-completed-reuse-linux.log`。固定启动器及包内 runner 的历史、前瞻已完成复用均通过；任务/评估 ID 一致、模型尝试和工具的所选字段相同、审核包 ID/数量不变断言通过。
+- 同轮五类同冻结组合、8 个任务台账、测量登记和采集器来源检查通过；临时数据库容器已确认移除。本轮没有重复 9428 的强制终止/自然到期专项。
 - 整轮生产包装器/TLS、首次真实模型执行、独立质量和最终启用仍未验收。
 
 原五类通过收据：[9428](evidence/ma24-g09-postgres-graph-linux-recovery-2026-10-21.json)。
+
+本轮实际通过收据：[76169](evidence/ma24-g09-fixed-collector-completed-reuse-2026-10-21.json)。首次执行仍使用合成测试编译件；不能据已完成复用扩称完整生产入口、首次真实提供方执行或生产资格通过。
