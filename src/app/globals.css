@@ -96,6 +96,10 @@ a { color: inherit; }
 .overview-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 15px; }
 .span-12 { grid-column: span 12; }.span-8 { grid-column: span 8; }.span-7 { grid-column: span 7; }.span-5 { grid-column: span 5; }.span-4 { grid-column: span 4; }
 .panel { border: 1px solid var(--line); border-radius: 12px; background: var(--surface); box-shadow: var(--shadow-sm); }
+.memory-audit-comparison{width:100%;table-layout:fixed;border-collapse:collapse;margin:8px 0 12px}
+.memory-audit-comparison caption{text-align:left;font-weight:600;margin-bottom:6px}
+.memory-audit-comparison th,.memory-audit-comparison td{padding:6px;vertical-align:top;text-align:left;border-bottom:1px solid var(--line);overflow-wrap:anywhere;font-size:var(--text-secondary);line-height:1.5}
+.memory-audit-comparison th:first-child{width:26%}
 .panel-header { min-height: 65px; display: flex; justify-content: space-between; align-items: center; gap: 14px; padding: 15px 18px; border-bottom: 1px solid #e7ebe7; }
 .panel-header h2 { margin: 4px 0 0; font-size: 14px; letter-spacing: -.01em; }
 .subtle { color: #8a9892; font-size: var(--text-secondary); }
