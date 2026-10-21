@@ -16,6 +16,12 @@
 
 ## 已启动，均未验收
 
+当前终态：**58232 已退出 0**，实际固定采集器声明在新 170/TLS 库通过数据库信任签发/回读/重试、登记禁用等待提交、根证书/部署/账号/用途/撤销/NODE_OPTIONS 拒绝，并清理独立资源。[数据库信任收据](evidence/ma24-g09-postgres-graph-declaration-db-trust-2026-10-21.json)。
+
+**96880 已退出 1**：共享租约组件先通过，正式候选组件夹具仍解引用旧 `saved.payload.state`，而新图入口的私有 payload 保持 null，导致 TypeError。没有通过整轮组合，资源已清理。[失败收据](evidence/ma24-g09-postgres-graph-linux-fixture-failure-2026-10-21.json)。
+
+仅夹具修正：统一按账号/评估/臂/来源哈希绑定线程，用已安装 PostgresSaver 重建根图；要求旧 payload 为 null，按声明通道严格解析状态，保留 completed/Skill 使用断言，并补五次调用和四条轨迹断言。正式进程终止夹具复用同一读者。完整类型及三文件 lint 通过，产品镜像不变；待提交夹具后重验完整组合，不据静态检查标通过。[修正范围](evidence/ma24-g09-postgres-graph-readback-fixture-2026-10-21.json)。下方运行描述保留为历史启动记录。
+
 终态更新：**86473 已退出 0**，当前固定 API/Worker 的合成终态/来源、完成及未知 Skill 回执、空图标准模式模型回执恢复通过，独立资源已清理。实际图只复用预存模型回执，首次提供方执行、原始进程崩溃及真实质量未验。[Worker 收据](evidence/ma24-g09-postgres-graph-sdk-worker-2026-10-21.json)。
 
 **17467 已退出 0**，实际采集器 TLS/登记匹配和密钥用途/撤销等拒绝通过，但该轮为本地信任文件模式，`configuredDeclarationDatabaseTrustVerified=false`，不覆盖数据库登记/禁用串行。保留该窄范围收据；专用 `MA24_DECLARATION_DATABASE_TRUST=1` 的新轮 **58232** 正在运行，不判通过。[文件模式收据](evidence/ma24-g09-postgres-graph-declaration-file-trust-2026-10-21.json)。完整 Linux **96880** 仍运行。

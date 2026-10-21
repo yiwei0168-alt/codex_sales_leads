@@ -10,6 +10,9 @@ import type {SkillCandidateCollector} from '../../src/lib/assistant/main/skill-c
 import {auditSkillRuntimeCandidate} from '../../src/lib/assistant/main/skill-runtime-candidate-audit';
 import {verifySkillRuntimeMaterialDatabase} from './skill-runtime-material-db';
 import {readSkillAcceptanceReviewCase} from '../../src/lib/assistant/main/skill-acceptance-review';
+import {skillCandidateCheckpointSchema} from '../../src/lib/assistant/main/skill-candidate-checkpoint';
+import {readCandidateGraphCheckpoint} from './read-candidate-graph-checkpoint';
+import {MainAgentState} from '../../src/lib/assistant/main/graph';
 
 export async function verifySkillRuntimeCandidateDatabase(pool:Pool,owner:string,pin:Parameters<typeof enqueueSkillCandidateRuntimeTask>[1],
  frozen:NonNullable<SkillCandidateCollector['frozen']>,transaction:SkillCandidateCollector['transaction']){
@@ -44,8 +47,16 @@ export async function verifySkillRuntimeCandidateDatabase(pool:Pool,owner:string
  const before=(await pool.query('select id,step,input_hash from agent_skill_model_attempt where evaluation_id=$1 order by step',[selection.evaluationId])).rows;
  assert.equal(before.length,5);
  assert.equal((await pool.query('select status from agent_run where id=$1',[created.runId])).rows[0].status,'running');
- const saved=(await pool.query('select payload from agent_skill_candidate_checkpoint where evaluation_id=$1',[selection.evaluationId])).rows[0];
- assert.equal(saved.payload.state.status,'completed');assert.equal(saved.payload.candidateSkillUsed,true);
+ const saved=await readCandidateGraphCheckpoint(pool,{owner,evaluationId:selection.evaluationId,arm:selection.arm});
+ // Match graph.getState's declared channels; internal routing channels are not
+ // product state and must not be passed to the strict product-state schema.
+ const values=saved.checkpoint.channel_values;
+ const state=Object.fromEntries(Object.keys(MainAgentState.spec).filter(key=>key in values).map(key=>[key,values[key]])),metadata=state.runtimeMetadata;
+ assert(metadata&&typeof metadata==='object'&&!Array.isArray(metadata));
+ assert.equal((metadata as {protocol?:unknown}).protocol,'skill-candidate-graph-checkpoint-v2');
+ const recoveredState=skillCandidateCheckpointSchema.parse({...metadata,protocol:'skill-candidate-graph-checkpoint-v1',state});
+ assert.equal(recoveredState.state.status,'completed');assert.equal(recoveredState.candidateSkillUsed,true);
+ assert.equal(recoveredState.calls,5);assert.equal(recoveredState.trace.length,4);
  const auditInput={...selection,taskId:created.runId};
  await assert.rejects(auditSkillRuntimeCandidate(context,auditInput,frozen.plan),/Completed Skill runtime task unavailable/);
  const tools=(await pool.query('select id,tool_id,status,output from agent_tool_call where run_id=$1 order by tool_id',[created.runId])).rows;

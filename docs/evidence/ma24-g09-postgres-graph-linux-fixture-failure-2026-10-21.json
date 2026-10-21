@@ -1,0 +1,18 @@
+{
+  "date": "2026-10-21",
+  "rule": "MA24-06",
+  "productSourceCommit": "359cbc6000c027fe48fc7ec2ddd1d5ef672492fa",
+  "fixtureCommit": "359cbc6000c027fe48fc7ec2ddd1d5ef672492fa",
+  "sessionId": 96880,
+  "exitCode": 1,
+  "log": "tmp/ma24-postgres-graph-linux-recovery.log",
+  "logSha256": "bdabb0af765e37709aff6ea1cb0b64022a76f1ca6145c17583807765c2c999fe",
+  "failure": "Formal runtime fixture still dereferenced legacy private payload instead of PostgresSaver graph state",
+  "location": "scripts/fixtures/skill-runtime-candidate-db.ts:48",
+  "sharedLeaseComponentPassed": true,
+  "allFiveCategoriesAccepted": false,
+  "newProtocolProcessRecoveryAccepted": false,
+  "actualModelCalls": 0,
+  "productionQualified": false,
+  "resourcesCleaned": true
+}

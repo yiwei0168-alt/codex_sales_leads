@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import type {Pool} from 'pg';
-import {PostgresSaver} from '@langchain/langgraph-checkpoint-postgres';
+import {readCandidateGraphCheckpoint} from './read-candidate-graph-checkpoint';
 
 type Exit={code:number|null;signal:string|null;output:string;diagnostic:string};
 type Launch=(reuse?:boolean,crash?:boolean,minimumStep?:number)=>Promise<Exit>;
@@ -21,14 +21,8 @@ export async function verifyConfiguredRuntimeProcessCrash(pool:Pool,input:{owner
  [input.owner,taskId])).rows;
  const beforeModels=await models(),beforeTools=await tools();
  assert.equal(beforeModels.length,2);assert.equal(beforeTools.length,1);assert.equal(beforeTools[0].tool_id,'skill_read');assert.equal(beforeTools[0].status,'completed');
- const thread=(await pool.query(`select thread_id from skill_candidate_graph.checkpoints
-  where split_part(thread_id,':',2)=$1 and split_part(thread_id,':',3)=$2 and split_part(thread_id,':',4)='candidate'
-  order by checkpoint_id desc limit 1`,[input.owner,input.evaluationId])).rows[0]?.thread_id;
- assert(thread,'Killed task must have a durable PostgresSaver checkpoint');
- // Fixture administrator readback only; the actual child uses the lease-fenced
- // collector adapter. Reconstruct blobs with the installed production serializer.
- const checkpoint=await new PostgresSaver(pool,undefined,{schema:'skill_candidate_graph'}).getTuple({configurable:{thread_id:thread,checkpoint_ns:''}});
- assert((checkpoint?.checkpoint.channel_values.pending as Array<{id:string}>).some(call=>call.id===beforeTools[0].call_key),'Committed read must still be pending in the saved graph');
+ const checkpoint=await readCandidateGraphCheckpoint(pool,{owner:input.owner,evaluationId:input.evaluationId,arm:'candidate'});
+ assert((checkpoint.checkpoint.channel_values.pending as Array<{id:string}>).some(call=>call.id===beforeTools[0].call_key),'Committed read must still be pending in the saved graph');
  const lease=async()=> (await pool.query(`select e.execution_token,floor(extract(epoch from(greatest(r.lease_until,e.lease_until)-clock_timestamp()))*1000)::integer remaining_ms
   from agent_run r join agent_skill_candidate_execution_lease e on e.owner_id=r.user_id and e.evaluation_id=$2 and e.arm='candidate'
   where r.id=$1`,[taskId,input.evaluationId])).rows[0];

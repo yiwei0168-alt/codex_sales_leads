@@ -1,0 +1,27 @@
+{
+  "date": "2026-10-21",
+  "rule": "MA24-06",
+  "parentCommit": "c93e8253b6816c0bcdb7666919cbbafe14af53fe",
+  "productSourceCommit": "359cbc6000c027fe48fc7ec2ddd1d5ef672492fa",
+  "fixtureOnly": true,
+  "sourceHashes": {
+    "scripts/fixtures/read-candidate-graph-checkpoint.ts": "34a769269fbba7876c8f524ff6e544dfa7cf6209bfdba6a8bd74602d0cafd479",
+    "scripts/fixtures/skill-runtime-candidate-db.ts": "5f4945a37c0eb82fbe83db75ab35edc18e5cd5988f02ae5e83a2a76babf24816",
+    "scripts/fixtures/configured-runtime-process-crash-db.ts": "e4a88d8318bfd98fd97cf74df28fbe7c5b2cd5ceaff3ad6764e611e324c1cea1"
+  },
+  "logHashes": {
+    "tmp/ma24-postgres-graph-fixture-typecheck.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "tmp/ma24-postgres-graph-fixture-lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "typeAndLintSession": 4707,
+  "typeAndLintExitCode": 0,
+  "runtimeReadbackUpdated": true,
+  "exactOwnerEvaluationArmSourceThreadRequired": true,
+  "legacySidecarMustRemainNull": true,
+  "strictCompletedAndSkillUsedAssertionsRetained": true,
+  "budgetFiveAndTraceFourAssertionsAdded": true,
+  "allFiveCategoryCompositionAccepted": false,
+  "newProtocolProcessRecoveryAccepted": false,
+  "actualModelCalls": 0,
+  "automaticActivation": false
+}
