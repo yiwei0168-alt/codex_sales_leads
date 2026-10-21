@@ -292,6 +292,254 @@
     "automaticActivation": false
   },
   "currentFixedBuilds": {
+    "sourceCommit": "47be31685735b1f9c9925660f6f421c2e203a3fc",
+    "status": "built-and-package-checked-full-composition-running",
+    "main": {
+      "sessionId": 22470,
+      "exitCode": 0,
+      "imageId": "sha256:0db364ba57150fe91b3bbba320b28ec462fdf4c5b6fa5553a0bc8e571ff0c45c"
+    },
+    "collector": {
+      "sessionId": 82075,
+      "exitCode": 0,
+      "imageId": "sha256:746cc13155c114e33bb9ca7c41d1c1109b258d460d76a37e7da87dda74381fd3"
+    },
+    "web": {
+      "sessionId": 74460,
+      "exitCode": 0,
+      "imageId": "sha256:86663553153d60fe6d27224edb006cc1339036f76e9aa59da67d60a847d48b8e"
+    }
+  },
+  "currentFixedPackageChecks": {
+    "main-pair": {
+      "exitCode": 0,
+      "result": {
+        "mainAgentRuntimePair": "passed",
+        "web": "sha256:86663553153d60fe6d27224edb006cc1339036f76e9aa59da67d60a847d48b8e",
+        "runtime": "sha256:0db364ba57150fe91b3bbba320b28ec462fdf4c5b6fa5553a0bc8e571ff0c45c",
+        "sourceCommit": "47be31685735b1f9c9925660f6f421c2e203a3fc",
+        "webImageId": "sha256:86663553153d60fe6d27224edb006cc1339036f76e9aa59da67d60a847d48b8e",
+        "mainRuntimeImageId": "sha256:0db364ba57150fe91b3bbba320b28ec462fdf4c5b6fa5553a0bc8e571ff0c45c",
+        "inspectionUsesImmutableImageIds": true,
+        "runtimeHash": "23d911673805b9fd38a69b61b19a21176d2200f0c13bc20532d3e915ca87e41a",
+        "sourceInputs": 1037,
+        "node": "24.21.0",
+        "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+        "platform": "linux",
+        "arch": "x64",
+        "webPackages": {
+          "pg": "8.23.0"
+        },
+        "mainRuntimePackages": {
+          "pg": "8.23.0",
+          "zod": "4.4.3",
+          "@langchain/langgraph": "1.4.15",
+          "@langchain/core": "1.2.9",
+          "langsmith": "0.9.0",
+          "undici": "8.10.0"
+        },
+        "webUnresolved": [
+          "zod",
+          "@langchain/langgraph",
+          "@langchain/core",
+          "langsmith",
+          "undici"
+        ],
+        "mainRuntimeUnresolved": [],
+        "completeDependencyRuntimeEquivalenceVerified": false,
+        "productionQualified": false,
+        "actualModelCalls": 0
+      },
+      "log": "tmp/ma24-task-policy-uuid-main-pair.log",
+      "logSha256": "a2a9fe8673e04364412bc51e3111e3d65851bbaffcf2ec0659182e279f977f89"
+    },
+    "collector-pair": {
+      "exitCode": 0,
+      "result": {
+        "skillSourceRuntimePair": "passed",
+        "web": "sha256:86663553153d60fe6d27224edb006cc1339036f76e9aa59da67d60a847d48b8e",
+        "collector": "sha256:746cc13155c114e33bb9ca7c41d1c1109b258d460d76a37e7da87dda74381fd3",
+        "sourceCommit": "47be31685735b1f9c9925660f6f421c2e203a3fc",
+        "webImageId": "sha256:86663553153d60fe6d27224edb006cc1339036f76e9aa59da67d60a847d48b8e",
+        "collectorImageId": "sha256:746cc13155c114e33bb9ca7c41d1c1109b258d460d76a37e7da87dda74381fd3",
+        "inspectionUsesImmutableImageIds": true,
+        "runtimeHash": "23d911673805b9fd38a69b61b19a21176d2200f0c13bc20532d3e915ca87e41a",
+        "sourceInputs": 1037,
+        "node": "24.21.0",
+        "platform": "linux",
+        "arch": "x64",
+        "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+        "webPackages": {
+          "pg": "8.23.0"
+        },
+        "collectorPackages": {
+          "pg": "8.23.0",
+          "zod": "4.4.3",
+          "@langchain/langgraph": "1.4.15",
+          "@langchain/core": "1.2.9",
+          "langsmith": "0.9.0",
+          "undici": "8.10.0"
+        },
+        "webUnresolved": [
+          "zod",
+          "@langchain/langgraph",
+          "@langchain/core",
+          "langsmith",
+          "undici"
+        ],
+        "collectorUnresolved": [],
+        "completeDependencyRuntimeEquivalenceVerified": false,
+        "productionQualified": false,
+        "actualModelCalls": 0
+      },
+      "log": "tmp/ma24-task-policy-uuid-collector-pair.log",
+      "logSha256": "0f2bd303d069cd84765ec1f418660b8d1ecbff007e9fb79a2454e42a82d419ca"
+    },
+    "dependency-pair": {
+      "exitCode": 0,
+      "result": {
+        "localRuntimeDependencyPair": "passed",
+        "mainInspection": {
+          "role": "main-agent",
+          "imageId": "sha256:0db364ba57150fe91b3bbba320b28ec462fdf4c5b6fa5553a0bc8e571ff0c45c",
+          "sourceCommit": "47be31685735b1f9c9925660f6f421c2e203a3fc",
+          "deploymentHash": "31a904ccb40d7fa1787753f4748ab54da142659a901a88d7a7b50c070e9c1e44",
+          "runtimeHash": "23d911673805b9fd38a69b61b19a21176d2200f0c13bc20532d3e915ca87e41a",
+          "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+          "node": "24.21.0",
+          "platform": "linux",
+          "arch": "x64",
+          "sourceInputs": 1037,
+          "files": 34589,
+          "dependencyManifestHash": "d3edb974b4ae6e725cbb62205c8f0e65606b061fd97bce214289279ccca20137",
+          "dependencyFiles": 33503,
+          "runtimeModuleFormat": "esm"
+        },
+        "collectorInspection": {
+          "role": "skill-collector",
+          "imageId": "sha256:746cc13155c114e33bb9ca7c41d1c1109b258d460d76a37e7da87dda74381fd3",
+          "sourceCommit": "47be31685735b1f9c9925660f6f421c2e203a3fc",
+          "deploymentHash": "86de457a779a9756151e63015000df75c1b5452e24b42f5a248d8b6a62000c09",
+          "runtimeHash": "23d911673805b9fd38a69b61b19a21176d2200f0c13bc20532d3e915ca87e41a",
+          "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+          "node": "24.21.0",
+          "platform": "linux",
+          "arch": "x64",
+          "sourceInputs": 1037,
+          "files": 34553,
+          "dependencyManifestHash": "d3edb974b4ae6e725cbb62205c8f0e65606b061fd97bce214289279ccca20137",
+          "dependencyFiles": 33503,
+          "runtimeModuleFormat": "esm"
+        },
+        "comparison": {
+          "runtimePackageBytesPairRevalidated": true,
+          "runtimePackageBytesPairBlockers": [],
+          "runtimeModuleFormatPairRevalidated": true,
+          "runtimeModuleFormatPairBlockers": [],
+          "runtimePackageBytesPairHash": "98823fa2e1d7dddd5262993358dcbf68b695aad5d0344a439d1cd699576f161d"
+        },
+        "esmModuleFormatPairVerified": true,
+        "runtimeRegistrationsPublished": false,
+        "completeDependencyRuntimeEquivalenceVerified": false,
+        "productionQualified": false,
+        "automaticActivation": false,
+        "modelCalls": 0
+      },
+      "log": "tmp/ma24-task-policy-uuid-dependency-pair.log",
+      "logSha256": "ffb08716717bd7362bf1db2e77e8971800923ec5ccb8e4c88d362c6761479a4c"
+    },
+    "collector-boundary": {
+      "exitCode": 0,
+      "result": {
+        "collectorImageVerification": "passed",
+        "image": "sha256:746cc13155c114e33bb9ca7c41d1c1109b258d460d76a37e7da87dda74381fd3",
+        "imageId": "sha256:746cc13155c114e33bb9ca7c41d1c1109b258d460d76a37e7da87dda74381fd3",
+        "commit": "47be31685735b1f9c9925660f6f421c2e203a3fc",
+        "packageFiles": 34553,
+        "deploymentHash": "86de457a779a9756151e63015000df75c1b5452e24b42f5a248d8b6a62000c09",
+        "measuredEnrollmentVerified": true,
+        "missingMalformedAndMismatchedEnrollmentRejectedBeforeRunner": true,
+        "matchedEnrollmentReachesRunner": true,
+        "nodeOptionsRejected": true,
+        "nonRootReadOnlyNoNetwork": true,
+        "changedRunnerRejectedBeforeExecution": true,
+        "actualModelCalls": 0,
+        "productionQualified": false
+      },
+      "log": "tmp/ma24-task-policy-uuid-collector-boundary.log",
+      "logSha256": "89ca1542589d61b32c7846a917a02e4cce7d4abf2e2697c0529d7792d561ff9b"
+    },
+    "web-source": {
+      "exitCode": 0,
+      "result": {
+        "imageSourceVerification": "passed",
+        "commit": "47be31685735b1f9c9925660f6f421c2e203a3fc",
+        "image": "sha256:86663553153d60fe6d27224edb006cc1339036f76e9aa59da67d60a847d48b8e",
+        "imageId": "sha256:86663553153d60fe6d27224edb006cc1339036f76e9aa59da67d60a847d48b8e",
+        "count": 1037,
+        "hash": "a1bdef4d084310446675c309ea8234bec5e36ef3d58bd493eb3462859363f20b",
+        "roots": [
+          ".next",
+          ".skill-runtime-source",
+          "knowledge",
+          "node_modules",
+          "package.json",
+          "scripts",
+          "server.js"
+        ],
+        "binaryAttestation": false,
+        "providerAttestation": false
+      },
+      "log": "tmp/ma24-task-policy-uuid-web-source.log",
+      "logSha256": "a3ab62bf3cd0ec64a61553754f5d67dfd229b521817f788e5d6e58ecf726fd3a"
+    }
+  },
+  "currentFixedFixture": {
+    "status": "syntax-type-lint-passed-actual-concurrency-pending",
+    "sourceFiles": {
+      "scripts/fixtures/skill-candidate-runtime-task-db.ts": "15c98a003128b5913eff95a6f08278d1cfa9f9645d89cb6fe44f2c56964d8b0c",
+      "scripts/run-skill-transport-linux-check.mjs": "c0e2a22fb5f50ef1125e7a9c989ca20cdbf565923a129f03f95d7e2fd37b7788"
+    },
+    "typecheck": {
+      "sessionId": 7622,
+      "exitCode": 0
+    },
+    "lint": {
+      "sessionId": 54012,
+      "exitCode": 0,
+      "files": 2
+    },
+    "syntaxExitCode": 0,
+    "concurrentDifferentQuotaAdmissionAdded": true,
+    "actualCaseVariantRacePending": true
+  },
+  "uuidLookupFollowup": {
+    "status": "unit-type-lint-passed-actual-case-race-pending",
+    "sourceFiles": {
+      "src/lib/assistant/main/skill-candidate-runtime-task.ts": "a6271ad2d564f6e1b314e402ff72cbeba76db06757138f7018c091deaab501c1",
+      "scripts/fixtures/skill-candidate-runtime-task-db.ts": "15c98a003128b5913eff95a6f08278d1cfa9f9645d89cb6fe44f2c56964d8b0c",
+      "scripts/run-skill-transport-linux-check.mjs": "c0e2a22fb5f50ef1125e7a9c989ca20cdbf565923a129f03f95d7e2fd37b7788"
+    },
+    "reason": "Match evaluation UUID case aliases using canonical UUID text, consistently with the existing admission advisory lock",
+    "tests": {
+      "exitCode": 0,
+      "tests": 11,
+      "files": 1,
+      "log": "tmp/ma24-task-policy-uuid-lookup-tests.log"
+    },
+    "typecheck": {
+      "sessionId": 48954,
+      "exitCode": 0
+    },
+    "lint": {
+      "sessionId": 37051,
+      "exitCode": 0,
+      "files": 3
+    },
+    "caseVariantConcurrencyFixtureAdded": true,
+    "includedIn72baa00bImage": false
+  },
+  "intermediate72baa00bFixedBuilds": {
     "sourceCommit": "72baa00b753179fe2e976bf1629b09ad0f4eb667",
     "productCodeCommit": "fb8ac00c8dbcac00c093690f1dcb45134e12055b",
     "status": "built-and-package-checked-database-composition-pending",
@@ -312,7 +560,7 @@
     },
     "laterUuidLookupFixNotIncluded": true
   },
-  "currentFixedPackageChecks": {
+  "intermediate72baa00bFixedPackageChecks": {
     "main-pair": {
       "exitCode": 0,
       "result": {
@@ -496,49 +744,23 @@
       "logSha256": "4c0e773abefc4a8e42b4fba8cae42bbd73964b2d937f81b7da0afc58371e9611"
     }
   },
-  "currentFixedFixture": {
-    "status": "syntax-type-lint-passed-actual-concurrency-pending",
-    "sourceFiles": {
-      "scripts/fixtures/skill-candidate-runtime-task-db.ts": "15c98a003128b5913eff95a6f08278d1cfa9f9645d89cb6fe44f2c56964d8b0c",
-      "scripts/run-skill-transport-linux-check.mjs": "c0e2a22fb5f50ef1125e7a9c989ca20cdbf565923a129f03f95d7e2fd37b7788"
-    },
-    "typecheck": {
-      "sessionId": 7622,
-      "exitCode": 0
-    },
-    "lint": {
-      "sessionId": 54012,
-      "exitCode": 0,
-      "files": 2
-    },
-    "syntaxExitCode": 0,
-    "concurrentDifferentQuotaAdmissionAdded": true,
-    "actualCaseVariantRacePending": true
+  "currentFixedFullComposition": {
+    "status": "running-not-accepted",
+    "sessionId": 9934,
+    "sourceCommit": "47be31685735b1f9c9925660f6f421c2e203a3fc",
+    "fixtureCommit": "47be31685735b1f9c9925660f6f421c2e203a3fc",
+    "log": "tmp/ma24-task-policy-uuid-fixed-linux.log",
+    "requiresCaseVariantQuotaRace": true,
+    "requiresProspectiveBusinessReadCrashRecovery": true,
+    "requiresMeasuredRegistrationAndFixedReuse": true,
+    "wholeProductionWrapperVerified": false,
+    "wholeCombinationDatabaseTlsVerified": false
   },
-  "uuidLookupFollowup": {
-    "status": "unit-type-lint-passed-actual-case-race-pending",
-    "sourceFiles": {
-      "src/lib/assistant/main/skill-candidate-runtime-task.ts": "a6271ad2d564f6e1b314e402ff72cbeba76db06757138f7018c091deaab501c1",
-      "scripts/fixtures/skill-candidate-runtime-task-db.ts": "15c98a003128b5913eff95a6f08278d1cfa9f9645d89cb6fe44f2c56964d8b0c",
-      "scripts/run-skill-transport-linux-check.mjs": "c0e2a22fb5f50ef1125e7a9c989ca20cdbf565923a129f03f95d7e2fd37b7788"
-    },
-    "reason": "Match evaluation UUID case aliases using canonical UUID text, consistently with the existing admission advisory lock",
-    "tests": {
-      "exitCode": 0,
-      "tests": 11,
-      "files": 1,
-      "log": "tmp/ma24-task-policy-uuid-lookup-tests.log"
-    },
-    "typecheck": {
-      "sessionId": 48954,
-      "exitCode": 0
-    },
-    "lint": {
-      "sessionId": 37051,
-      "exitCode": 0,
-      "files": 3
-    },
-    "caseVariantConcurrencyFixtureAdded": true,
-    "includedIn72baa00bImage": false
+  "currentFixedDeclarationDatabaseTrust": {
+    "status": "running-not-accepted",
+    "sessionId": 66804,
+    "sourceCommit": "47be31685735b1f9c9925660f6f421c2e203a3fc",
+    "log": "tmp/ma24-task-policy-uuid-declaration-db-trust.log",
+    "separateFromWholeComposition": true
   }
 }
