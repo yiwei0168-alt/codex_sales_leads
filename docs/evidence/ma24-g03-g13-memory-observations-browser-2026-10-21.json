@@ -2,7 +2,7 @@
   "date": "2026-10-21",
   "rule": "MA24-04 existing sourced temporal memory and G13 recovery interactions",
   "scope": "Memory observation readback recovery and actual browser correction/history/conflict/undo flows",
-  "status": "followup-component-passed-new-fixed-package-and-database-browser-pending",
+  "status": "actual-memory-interactions-passed-responsive-navigation-followup-open",
   "sourceFilesCanonicalLf": {
     "src/components/memory-observations.tsx": "cd6ba5854b85e5fc46479ec6901c9e75fdfdbb3652c8f96b9520f2b897eb1c90",
     "scripts/verify-memory-correction-ui.ts": "3f437ab337b71bf0b3e6c614ad108ad3ca5669d50115f648f8078e8ee2165f5f",
@@ -49,7 +49,483 @@
     }
   },
   "actualVerification": {
-    "status": "failed-watchdog-finer-fixture-progress-required"
+    "sessionId": 78901,
+    "exitCode": 0,
+    "fixtureSourceCommit": "f524e4308afb695d38cc5cf00c6739ba61a8b985",
+    "imageSourceCommit": "ae1431ff5d5a1b5fd99cf37bb29dc25483dcafb5",
+    "log": "tmp/ma24-memory-observations-undo-fixed-web.log",
+    "logSha256": "3334befe8bb183ce714d3b5ab98fa9c91a44b819be30a4822b63713514dee6de",
+    "results": [
+      {
+        "memoryObservationsFixedWeb": "passed",
+        "actualChromeAndHttpsAndCompiledWebAndDatabase": true,
+        "paginationAndAllFourViews": true,
+        "activeViewReloadVerified": true,
+        "cancelNoWrite": true,
+        "committedCorrectionReadbackFailureClearsOldActions": true,
+        "explicitRetryRecovers": true,
+        "concurrentCorrection409PreservesDraft": true,
+        "unknownValidityPreserved": true,
+        "explicitBusinessDatesAndDeviceTimezoneVerified": true,
+        "invalidDatesRejectedBeforeRequest": true,
+        "knownAtAndCurrentHistoryVerified": true,
+        "conflictCorrectionVerified": true,
+        "actualUiUndoAndIdempotentReplay": true,
+        "crossAccountReadCorrectionAndUndoRejected": true,
+        "noticesAndOutboxExactlyOnce": true,
+        "mobileNoHorizontalOverflow": true,
+        "noPageErrors": true,
+        "counts": {
+          "observations": 23,
+          "notices": 23,
+          "outbox": 23
+        },
+        "screenshots": [
+          "tmp/ma24-memory-observations-ui-0df444ee-a662-4058-a11f-769adc432196.png"
+        ],
+        "syntheticObservationsOnly": true,
+        "naturalExtractionVerified": false,
+        "graphWorkerExecuted": false,
+        "actualModelCalls": 0,
+        "realQualityApproved": false,
+        "productionQualified": false
+      },
+      {
+        "freshClusterPilot": "passed",
+        "image": "pgvector/pgvector:pg16",
+        "reviewDraftFixedImageVerified": false,
+        "mailboxImapWorkerVerified": false,
+        "mailboxWorkerImageVerified": false,
+        "mailboxWorkerImapImageVerified": false,
+        "scheduleDispatchVerified": false,
+        "batchSettlementVerified": false,
+        "batchWorkerCrashVerified": false,
+        "batchWorkerCommitVerified": false,
+        "scheduleWorkerCrashVerified": false,
+        "scheduleWorkerCommitVerified": false,
+        "publishedAddress": "127.0.0.1 only",
+        "rolesVerified": true,
+        "duplicateRoleBootstrapRejected": true,
+        "freshMigrationThrough": 170,
+        "currentSchemaMarkers": {
+          "mailbox_work_binding": true,
+          "mailbox_lease_binding": true,
+          "mailbox_binding_constraint": true,
+          "knowledge_source_gate": true,
+          "task_origin_gate": true,
+          "local_memory_source_gate": true,
+          "receipt_source_gate": true,
+          "immutable_snapshot_capture": true,
+          "immutable_snapshot_lifecycle": true,
+          "trust_registry_versions": true,
+          "trust_registry_pointer": true,
+          "trust_registry_publication": true,
+          "runtime_package_registrations": true,
+          "candidate_recovery_checkpoint": true,
+          "candidate_execution_lease": true,
+          "candidate_graph_checkpoint": true,
+          "runtime_package_withdrawals": true,
+          "runtime_package_publication": true,
+          "skill_activation_lifecycle": true,
+          "skill_activation_sources_sealed": true,
+          "skill_activation_reviews_serialized": true,
+          "skill_activation_declarations_serialized": true,
+          "skill_activation_source_guard_health": true,
+          "skill_activation_use_commit_guard": true,
+          "skill_activation_commit_guard": true,
+          "skill_activation_binding_guard": true
+        },
+        "snapshotLifecycleVerified": false,
+        "knowledgeScopeSourcesVerified": false,
+        "finalSettlementVerified": false,
+        "compiledMainRuntimeVerified": false,
+        "mainRuntimeSkillReceiptVerified": false,
+        "mainRuntimeModelReceiptVerified": false,
+        "mainRuntimeDurabilityVerified": false,
+        "mainRuntimeCrashRecoveryVerified": false,
+        "mainRuntimeInterruptionVerified": false,
+        "mainRuntimeNetworkLossVerified": false,
+        "mainRuntimeResumeRevocationVerified": false,
+        "mainRuntimeCommitLossVerified": false,
+        "mainRuntimeTaskEnrollmentVerified": false,
+        "snapshotDownloadResult": null,
+        "memoryObservationsUiVerified": true,
+        "localMemoryWorkerResult": null,
+        "trustRegistryRestoreResult": null,
+        "freshMailboxUiVerified": false,
+        "extendedFrontendUiVerified": false,
+        "syntheticAccountCompanyAndRestoreVerified": true,
+        "copiedProductionData": false,
+        "linuxWebImage": "sha256:cdf8a3257190e37acddc5ab13ec1aa656c120508dac54e338c9e0af3e3e8e3d1",
+        "linuxWebHttpWorkflowVerified": true,
+        "linuxWebHttpsBrowserVerified": false,
+        "tenConcurrentSyntheticAccountsVerified": false,
+        "pilotBackupRestoreVerified": false,
+        "crossClusterRestoreVerified": false,
+        "nonemptyMailboxCrossClusterRestoreVerified": false,
+        "scriptedModeBusinessVerified": false,
+        "runnerAttestationStoreVerified": false,
+        "collectorDeclarationImageVerified": false,
+        "lockedPolicyDatabaseVerified": false,
+        "memorySourceLocksVerified": false,
+        "methodCatalogSourceLocksVerified": false,
+        "shadowSourceLocksVerified": false,
+        "safetySkillUsageVerified": false,
+        "transportJournalDatabaseVerified": false,
+        "agentCallLeaseDatabaseVerified": false,
+        "agentCheckpointLeaseDatabaseVerified": false,
+        "candidateLeaseContentionDatabaseVerified": false,
+        "runtimeReadSourceLocksDatabaseVerified": false,
+        "runtimeDisclosureDatabaseVerified": false,
+        "linuxFiveCategoryTransportVerified": false,
+        "collectorImageTlsPreflightVerified": false,
+        "poolRecoveryVerified": false,
+        "standaloneDatabaseRecoveryVerified": false,
+        "extraG09Migration": null,
+        "prospectiveSourceDatabaseVerified": false,
+        "prospectivePairedMaterialVerified": false,
+        "prospectiveStandaloneHttpVerified": false,
+        "prospectiveStandaloneBrowserVerified": false,
+        "completeCompositionVerified": false,
+        "samePortPriorImageRollbackVerified": false
+      }
+    ],
+    "progressFile": "tmp/ma24-memory-ui-progress-fe6197fc0130.json",
+    "progressSha256": "607d107183f434c366d2c4f9a1dec7363d35a3f28646a328aee52712794c7d12",
+    "progress": {
+      "stage": "verified",
+      "steps": [
+        {
+          "stage": "seeding",
+          "at": "2026-10-21T14:07:48.233Z"
+        },
+        {
+          "stage": "api-start",
+          "detail": "timeline",
+          "at": "2026-10-21T14:07:48.501Z"
+        },
+        {
+          "stage": "api-complete",
+          "detail": "timeline",
+          "at": "2026-10-21T14:07:48.528Z"
+        },
+        {
+          "stage": "post-start",
+          "at": "2026-10-21T14:07:48.530Z"
+        },
+        {
+          "stage": "post-complete",
+          "detail": "404",
+          "at": "2026-10-21T14:07:48.557Z"
+        },
+        {
+          "stage": "api-start",
+          "detail": "timeline",
+          "at": "2026-10-21T14:07:48.558Z"
+        },
+        {
+          "stage": "api-complete",
+          "detail": "timeline",
+          "at": "2026-10-21T14:07:48.584Z"
+        },
+        {
+          "stage": "api-start",
+          "detail": "conflicts",
+          "at": "2026-10-21T14:07:48.585Z"
+        },
+        {
+          "stage": "api-complete",
+          "detail": "conflicts",
+          "at": "2026-10-21T14:07:48.615Z"
+        },
+        {
+          "stage": "view-start",
+          "detail": "当前有效",
+          "at": "2026-10-21T14:07:50.557Z"
+        },
+        {
+          "stage": "view-loaded",
+          "detail": "当前有效",
+          "at": "2026-10-21T14:07:50.647Z"
+        },
+        {
+          "stage": "active-view-reload-passed",
+          "at": "2026-10-21T14:07:50.653Z"
+        },
+        {
+          "stage": "view-start",
+          "detail": "历史时间轴",
+          "at": "2026-10-21T14:07:50.654Z"
+        },
+        {
+          "stage": "view-loaded",
+          "detail": "历史时间轴",
+          "at": "2026-10-21T14:07:50.711Z"
+        },
+        {
+          "stage": "card-page-search",
+          "detail": "0",
+          "at": "2026-10-21T14:07:50.719Z"
+        },
+        {
+          "stage": "card-page-search",
+          "detail": "1",
+          "at": "2026-10-21T14:07:50.771Z"
+        },
+        {
+          "stage": "save-start",
+          "at": "2026-10-21T14:07:50.935Z"
+        },
+        {
+          "stage": "save-complete",
+          "detail": "200",
+          "at": "2026-10-21T14:07:50.996Z"
+        },
+        {
+          "stage": "committed-correction-retry-passed",
+          "at": "2026-10-21T14:07:51.085Z"
+        },
+        {
+          "stage": "api-start",
+          "detail": "current",
+          "at": "2026-10-21T14:07:51.088Z"
+        },
+        {
+          "stage": "api-complete",
+          "detail": "current",
+          "at": "2026-10-21T14:07:51.108Z"
+        },
+        {
+          "stage": "page-reset",
+          "detail": "0",
+          "at": "2026-10-21T14:07:51.114Z"
+        },
+        {
+          "stage": "card-page-search",
+          "detail": "0",
+          "at": "2026-10-21T14:07:51.193Z"
+        },
+        {
+          "stage": "post-start",
+          "at": "2026-10-21T14:07:51.219Z"
+        },
+        {
+          "stage": "post-complete",
+          "detail": "200",
+          "at": "2026-10-21T14:07:51.254Z"
+        },
+        {
+          "stage": "save-start",
+          "at": "2026-10-21T14:07:51.255Z"
+        },
+        {
+          "stage": "save-complete",
+          "detail": "409",
+          "at": "2026-10-21T14:07:51.293Z"
+        },
+        {
+          "stage": "concurrent-draft-passed",
+          "at": "2026-10-21T14:07:51.323Z"
+        },
+        {
+          "stage": "view-start",
+          "detail": "当前有效",
+          "at": "2026-10-21T14:07:51.324Z"
+        },
+        {
+          "stage": "view-loaded",
+          "detail": "当前有效",
+          "at": "2026-10-21T14:07:51.375Z"
+        },
+        {
+          "stage": "view-start",
+          "detail": "历史时间轴",
+          "at": "2026-10-21T14:07:51.376Z"
+        },
+        {
+          "stage": "view-loaded",
+          "detail": "历史时间轴",
+          "at": "2026-10-21T14:07:51.438Z"
+        },
+        {
+          "stage": "card-page-search",
+          "detail": "0",
+          "at": "2026-10-21T14:07:51.443Z"
+        },
+        {
+          "stage": "save-start",
+          "at": "2026-10-21T14:07:51.558Z"
+        },
+        {
+          "stage": "save-complete",
+          "detail": "200",
+          "at": "2026-10-21T14:07:51.605Z"
+        },
+        {
+          "stage": "business-time-passed",
+          "at": "2026-10-21T14:07:51.639Z"
+        },
+        {
+          "stage": "view-start",
+          "detail": "当前有效",
+          "at": "2026-10-21T14:07:51.640Z"
+        },
+        {
+          "stage": "view-loaded",
+          "detail": "当前有效",
+          "at": "2026-10-21T14:07:51.699Z"
+        },
+        {
+          "stage": "card-page-search",
+          "detail": "0",
+          "at": "2026-10-21T14:07:51.706Z"
+        },
+        {
+          "stage": "save-start",
+          "at": "2026-10-21T14:07:51.758Z"
+        },
+        {
+          "stage": "save-complete",
+          "detail": "200",
+          "at": "2026-10-21T14:07:51.845Z"
+        },
+        {
+          "stage": "known-at-passed",
+          "at": "2026-10-21T14:07:51.910Z"
+        },
+        {
+          "stage": "view-start",
+          "detail": "冲突待处理",
+          "at": "2026-10-21T14:07:51.911Z"
+        },
+        {
+          "stage": "view-loaded",
+          "detail": "冲突待处理",
+          "at": "2026-10-21T14:07:51.962Z"
+        },
+        {
+          "stage": "save-start",
+          "at": "2026-10-21T14:07:51.993Z"
+        },
+        {
+          "stage": "save-complete",
+          "detail": "200",
+          "at": "2026-10-21T14:07:52.050Z"
+        },
+        {
+          "stage": "api-start",
+          "detail": "conflicts",
+          "at": "2026-10-21T14:07:52.086Z"
+        },
+        {
+          "stage": "api-complete",
+          "detail": "conflicts",
+          "at": "2026-10-21T14:07:52.121Z"
+        },
+        {
+          "stage": "view-start",
+          "detail": "历史时间轴",
+          "at": "2026-10-21T14:07:52.123Z"
+        },
+        {
+          "stage": "view-loaded",
+          "detail": "历史时间轴",
+          "at": "2026-10-21T14:07:52.178Z"
+        },
+        {
+          "stage": "card-page-search",
+          "detail": "0",
+          "at": "2026-10-21T14:07:52.184Z"
+        },
+        {
+          "stage": "post-start",
+          "at": "2026-10-21T14:07:52.187Z"
+        },
+        {
+          "stage": "post-complete",
+          "detail": "404",
+          "at": "2026-10-21T14:07:52.202Z"
+        },
+        {
+          "stage": "post-start",
+          "at": "2026-10-21T14:07:52.203Z"
+        },
+        {
+          "stage": "post-complete",
+          "detail": "409",
+          "at": "2026-10-21T14:07:52.220Z"
+        },
+        {
+          "stage": "ui-undo-start",
+          "at": "2026-10-21T14:07:52.222Z"
+        },
+        {
+          "stage": "ui-undo-clicked",
+          "at": "2026-10-21T14:07:52.239Z"
+        },
+        {
+          "stage": "ui-undo-response-accepted",
+          "at": "2026-10-21T14:07:52.265Z"
+        },
+        {
+          "stage": "ui-undo-written",
+          "at": "2026-10-21T14:07:52.304Z"
+        },
+        {
+          "stage": "post-start",
+          "at": "2026-10-21T14:07:52.305Z"
+        },
+        {
+          "stage": "post-complete",
+          "detail": "200",
+          "at": "2026-10-21T14:07:52.332Z"
+        },
+        {
+          "stage": "repeated-undo-passed",
+          "at": "2026-10-21T14:07:52.334Z"
+        },
+        {
+          "stage": "api-start",
+          "detail": "current",
+          "at": "2026-10-21T14:07:52.335Z"
+        },
+        {
+          "stage": "api-complete",
+          "detail": "current",
+          "at": "2026-10-21T14:07:52.367Z"
+        },
+        {
+          "stage": "view-start",
+          "detail": "学习通知",
+          "at": "2026-10-21T14:07:52.369Z"
+        },
+        {
+          "stage": "view-loaded",
+          "detail": "学习通知",
+          "at": "2026-10-21T14:07:52.425Z"
+        },
+        {
+          "stage": "notices-passed",
+          "at": "2026-10-21T14:07:52.435Z"
+        },
+        {
+          "stage": "api-start",
+          "detail": "timeline",
+          "at": "2026-10-21T14:07:52.496Z"
+        },
+        {
+          "stage": "api-complete",
+          "detail": "timeline",
+          "at": "2026-10-21T14:07:52.515Z"
+        },
+        {
+          "stage": "verified",
+          "at": "2026-10-21T14:07:52.541Z"
+        }
+      ]
+    },
+    "allFourFrozenSourcesMatch": true,
+    "productComponentMatchesFixedImageCommit": true
   },
   "mutationApiChanged": false,
   "memoryStorageChanged": false,
@@ -945,5 +1421,26 @@
       "exitCode": 0,
       "log": "tmp/ma24-memory-observations-undo-readback-lint.log"
     }
+  },
+  "screenshots": [
+    {
+      "path": "tmp/ma24-memory-observations-ui-0df444ee-a662-4058-a11f-769adc432196.png",
+      "sha256": "660957ea24d9210f7b299d2d442e907cf5d4c0b4822f750f3aec221db4fb8996",
+      "visuallyInspected": true,
+      "scope": "Mobile notice list after desktop-to-mobile resize; no horizontal overflow. Retained navigation overlays upper content, so complete responsive-layout acceptance is not granted."
+    }
+  ],
+  "visualFollowup": {
+    "desktopToMobileNavigationOverlayObserved": true,
+    "completeResponsiveLayoutAccepted": false,
+    "observationInteractionAssertionsPassed": true
+  },
+  "cleanup": {
+    "allTemporaryContainersAndDatabaseRemoved": true,
+    "remainingContainers": [
+      "codex_sales_leads-neo4j-1",
+      "codex_sales_leads-ollama-1",
+      "codex_sales_leads-postgres-1"
+    ]
   }
 }
