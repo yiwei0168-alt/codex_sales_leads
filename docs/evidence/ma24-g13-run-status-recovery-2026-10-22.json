@@ -1,0 +1,461 @@
+{
+  "date": "2026-10-22",
+  "rule": "Existing MA24-16 / F09 task status and draft recovery",
+  "status": "actual-fixed-web-task-status-recovery-passed",
+  "productCommit": "cd4cf736f95822f9015729a8208443f24664eff0",
+  "sourceFilesCanonicalLf": {
+    "src/components/agent-runs.tsx": "b483b3f6ae7ec5b6a195938d821d441aaffec72f1f44ff21927df56bba11ef6b",
+    "src/components/agent-approvals.tsx": "7dad9269343511bc5e45a08ded7537254bf912403fd28021b43e438eae3ee89b",
+    "src/components/assistant-home.tsx": "7380dabd1552ee530c6bbae5a7253f2306e28bca19fe88754e73c50856331830",
+    "scripts/verify-run-status-ui.ts": "301786d5519092e867121ff8b3d97522168b804cac25034df7988e2fdf62850e",
+    "scripts/verify-run-status-fixed-web.ts": "7fef79355243ce411255d50cc5916c04eb6e14d58251ff4f1f413acff86b9019",
+    "scripts/verify-ma24-fresh-pilot-new-cluster.ts": "dcff8343d812ec2cf37d5f9d74d0628feca25cdbce4330bcff68a28802a0da8a"
+  },
+  "unitTests": {
+    "files": 2,
+    "tests": 5,
+    "exitCode": 0
+  },
+  "typecheckExitCode": 0,
+  "sixFileLintExitCode": 0,
+  "packageChecks": {
+    "main-pair": {
+      "exitCode": 0,
+      "log": "tmp/ma24-run-status-main-pair.log",
+      "sha256": "8a21697e3017944653694173e0ebf4dbefeebd0ffde10f4260aac4238eff050b",
+      "result": {
+        "mainAgentRuntimePair": "passed",
+        "web": "ma24-pilot-web:cd4cf736",
+        "runtime": "ma24-main-agent-runtime:cd4cf736",
+        "sourceCommit": "cd4cf736f95822f9015729a8208443f24664eff0",
+        "webImageId": "sha256:2cac3222db3758e9b5bbea26284a4cd236674f01010406936a387e57f32d6ebc",
+        "mainRuntimeImageId": "sha256:59316bf650a271eb5018ee8e6a80033e4b3d2c411122e4847cd635eb7858f5ce",
+        "inspectionUsesImmutableImageIds": true,
+        "runtimeHash": "c88651fc5ee8d44610dc04aec925f2e1359a6801742d462617081b04366bce76",
+        "sourceInputs": 1054,
+        "node": "24.21.0",
+        "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+        "platform": "linux",
+        "arch": "x64",
+        "webPackages": {
+          "pg": "8.23.0"
+        },
+        "mainRuntimePackages": {
+          "pg": "8.23.0",
+          "zod": "4.4.3",
+          "@langchain/langgraph": "1.4.15",
+          "@langchain/core": "1.2.9",
+          "langsmith": "0.9.0",
+          "undici": "8.10.0"
+        },
+        "webUnresolved": [
+          "zod",
+          "@langchain/langgraph",
+          "@langchain/core",
+          "langsmith",
+          "undici"
+        ],
+        "mainRuntimeUnresolved": [],
+        "completeDependencyRuntimeEquivalenceVerified": false,
+        "productionQualified": false,
+        "actualModelCalls": 0
+      }
+    },
+    "collector-pair": {
+      "exitCode": 0,
+      "log": "tmp/ma24-run-status-collector-pair.log",
+      "sha256": "39debdb694cf37a988e97fd6820c803e59f169c3c7c944fb75b2c1e0b6e3ae01",
+      "result": {
+        "skillSourceRuntimePair": "passed",
+        "web": "ma24-pilot-web:cd4cf736",
+        "collector": "ma24-skill-collector:cd4cf736",
+        "sourceCommit": "cd4cf736f95822f9015729a8208443f24664eff0",
+        "webImageId": "sha256:2cac3222db3758e9b5bbea26284a4cd236674f01010406936a387e57f32d6ebc",
+        "collectorImageId": "sha256:9225ecfac75edc91feb0f4c3df58095df7d0f32c1e1cfd5b92fc665e45a26e08",
+        "inspectionUsesImmutableImageIds": true,
+        "runtimeHash": "c88651fc5ee8d44610dc04aec925f2e1359a6801742d462617081b04366bce76",
+        "sourceInputs": 1054,
+        "node": "24.21.0",
+        "platform": "linux",
+        "arch": "x64",
+        "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+        "webPackages": {
+          "pg": "8.23.0"
+        },
+        "collectorPackages": {
+          "pg": "8.23.0",
+          "zod": "4.4.3",
+          "@langchain/langgraph": "1.4.15",
+          "@langchain/core": "1.2.9",
+          "langsmith": "0.9.0",
+          "undici": "8.10.0"
+        },
+        "webUnresolved": [
+          "zod",
+          "@langchain/langgraph",
+          "@langchain/core",
+          "langsmith",
+          "undici"
+        ],
+        "collectorUnresolved": [],
+        "completeDependencyRuntimeEquivalenceVerified": false,
+        "productionQualified": false,
+        "actualModelCalls": 0
+      }
+    },
+    "dependencies": {
+      "exitCode": 0,
+      "log": "tmp/ma24-run-status-dependencies.log",
+      "sha256": "f48a16f439d02a0fa1531554966e789e023adf4583d522400b7fa6f06d398144",
+      "result": {
+        "localRuntimeDependencyPair": "passed",
+        "mainInspection": {
+          "role": "main-agent",
+          "imageId": "sha256:59316bf650a271eb5018ee8e6a80033e4b3d2c411122e4847cd635eb7858f5ce",
+          "sourceCommit": "cd4cf736f95822f9015729a8208443f24664eff0",
+          "deploymentHash": "feeea83beaae7ca524983f09f63490d65250c00cee03a3af5914c12174fb9d3a",
+          "runtimeHash": "c88651fc5ee8d44610dc04aec925f2e1359a6801742d462617081b04366bce76",
+          "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+          "node": "24.21.0",
+          "platform": "linux",
+          "arch": "x64",
+          "sourceInputs": 1054,
+          "files": 34606,
+          "dependencyManifestHash": "d3edb974b4ae6e725cbb62205c8f0e65606b061fd97bce214289279ccca20137",
+          "dependencyFiles": 33503,
+          "runtimeModuleFormat": "esm",
+          "executionArtifacts": [
+            {
+              "path": "server.mjs",
+              "sha256": "e7a5e2a5314125207b0e969f5a351e1973700a703a16f38f2f0a98ce8a833883"
+            },
+            {
+              "path": "start.mjs",
+              "sha256": "a26da05b508790992197256b3ee8acc38dc664e2c2ab6b0d180dfc9bf6099266"
+            },
+            {
+              "path": "worker.mjs",
+              "sha256": "9c49e4b33614c570ce0a21623730093ab6339db2ebbffd32c8f267555570c81a"
+            }
+          ]
+        },
+        "collectorInspection": {
+          "role": "skill-collector",
+          "imageId": "sha256:9225ecfac75edc91feb0f4c3df58095df7d0f32c1e1cfd5b92fc665e45a26e08",
+          "sourceCommit": "cd4cf736f95822f9015729a8208443f24664eff0",
+          "deploymentHash": "9e01417d0589957bf696984e80e339487c9f60cbc9c66c3025b7dde0da3d81d9",
+          "runtimeHash": "c88651fc5ee8d44610dc04aec925f2e1359a6801742d462617081b04366bce76",
+          "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+          "node": "24.21.0",
+          "platform": "linux",
+          "arch": "x64",
+          "sourceInputs": 1054,
+          "files": 34570,
+          "dependencyManifestHash": "d3edb974b4ae6e725cbb62205c8f0e65606b061fd97bce214289279ccca20137",
+          "dependencyFiles": 33503,
+          "runtimeModuleFormat": "esm",
+          "executionArtifacts": [
+            {
+              "path": "runner.mjs",
+              "sha256": "c14d3483c6337f440eca8796e768f30525b5a29ae90eab93b483422b4b70dd8a"
+            },
+            {
+              "path": "start.mjs",
+              "sha256": "9940bc440764d0e9bae71b3faccbe2fc93c29b3cd4559ea55cc859c50bcb7b04"
+            }
+          ]
+        },
+        "comparison": {
+          "runtimePackageBytesPairRevalidated": true,
+          "runtimePackageBytesPairBlockers": [],
+          "runtimeModuleFormatPairRevalidated": true,
+          "runtimeModuleFormatPairBlockers": [],
+          "runtimePackageBytesPairHash": "ae508d90f77e255c48e1c8b5f672b9d7c6aa8db0cd8cf33a4443f820a9858454"
+        },
+        "esmModuleFormatPairVerified": true,
+        "runtimeRegistrationsPublished": false,
+        "completeDependencyRuntimeEquivalenceVerified": false,
+        "productionQualified": false,
+        "automaticActivation": false,
+        "modelCalls": 0
+      }
+    },
+    "collector-boundary": {
+      "exitCode": 0,
+      "log": "tmp/ma24-run-status-collector-boundary.log",
+      "sha256": "cd0b4c30c850772a642f3a4e5c1a46f67b86aaf6e843a4fd49c56e422e7d431c",
+      "result": {
+        "collectorImageVerification": "passed",
+        "image": "ma24-skill-collector:cd4cf736",
+        "imageId": "sha256:9225ecfac75edc91feb0f4c3df58095df7d0f32c1e1cfd5b92fc665e45a26e08",
+        "commit": "cd4cf736f95822f9015729a8208443f24664eff0",
+        "packageFiles": 34570,
+        "deploymentHash": "9e01417d0589957bf696984e80e339487c9f60cbc9c66c3025b7dde0da3d81d9",
+        "measuredEnrollmentVerified": true,
+        "missingMalformedAndMismatchedEnrollmentRejectedBeforeRunner": true,
+        "matchedEnrollmentReachesRunner": true,
+        "nodeOptionsRejected": true,
+        "nonRootReadOnlyNoNetwork": true,
+        "changedRunnerRejectedBeforeExecution": true,
+        "actualModelCalls": 0,
+        "productionQualified": false
+      }
+    },
+    "web-source": {
+      "exitCode": 0,
+      "log": "tmp/ma24-run-status-web-source.log",
+      "sha256": "da8aa5051957d7798431f68fc26a03de9438a663b5e5701e1bf52af0b858ee84",
+      "result": {
+        "webImageSourceVerification": "passed",
+        "image": "ma24-pilot-web:cd4cf736",
+        "imageId": "sha256:2cac3222db3758e9b5bbea26284a4cd236674f01010406936a387e57f32d6ebc",
+        "sourceCommit": "cd4cf736f95822f9015729a8208443f24664eff0",
+        "buildId": "UVGK8n7UspCC59CqH7-nW",
+        "runtimeSourceFileCount": 1054,
+        "runtimeSourceMatchesFixedGitExport": true,
+        "exportEolDifferences": 1054,
+        "runtimeSourceManifestHash": "851d2d6f6c38e124be665727b53fcb1ecdb53321a84252d45689e32467579271",
+        "privateEnvironmentFiles": false,
+        "privateStorageFiles": false,
+        "staticAssetsPresent": true,
+        "nonRootReadOnlyNoNetwork": true,
+        "productionQualified": false
+      }
+    }
+  },
+  "runtimeEvidenceReuse": "Main/collector artifacts, Node and dependency bytes unchanged from prior accepted packages; no new full runtime composition claimed.",
+  "componentChecks": {
+    "task-status": {
+      "exitCode": 0,
+      "log": "tmp/ma24-run-status-component-final.log",
+      "sha256": "f7066f8cddbdcdb87d1d044c073c2ee0e1867c196bf82135f9abc5646d352e21",
+      "result": {
+        "runStatusComponent": "passed",
+        "viewports": 3,
+        "readFailureLocksControlsApprovalsAndUndo": true,
+        "draftPreserved": true,
+        "recovery": true,
+        "eventFailureDoesNotBlockStatus": true,
+        "realStatusAndEventTimeouts": true,
+        "largeEventCursorPreserved": true,
+        "writeFailureKeepsDraft": true,
+        "successfulWriteNoticeSurvivesReadFailure": true,
+        "oldReadCannotReenableControls": true,
+        "latePriorConversationActionCannotRefreshCurrent": true,
+        "emptyConversationAndScopedErrors": true,
+        "noHorizontalOverflow": true,
+        "screenshots": [
+          "tmp/run-status-ui/1366.png",
+          "tmp/run-status-ui/390.png",
+          "tmp/run-status-ui/320.png"
+        ],
+        "syntheticHttpOnly": true,
+        "actualModelCalls": 0,
+        "externalActions": 0
+      },
+      "screenshotsVisuallyInspected": true,
+      "screenshotSha256": {
+        "tmp/run-status-ui/1366.png": "fc86bfafacb45d69490ad3710c0f1f59c661b965ffc17b94670a1e03851b61b0",
+        "tmp/run-status-ui/390.png": "781ce8503f2cf0b1528e855c5de7875470f4640dc38b632a418e85b1e3b5fd48",
+        "tmp/run-status-ui/320.png": "5ad1e606f16a5fb6fe875ca4589014bc213792eae3f2c26773da07b4aae3aa81"
+      }
+    },
+    "approval-submission": {
+      "exitCode": 0,
+      "log": "tmp/ma24-run-status-approval-regression.log",
+      "sha256": "c792cd0a84645aaac38c142fc7bc07489838c5daa873750b7a24bebe7bdbb333",
+      "result": {
+        "approvalSubmissionComponent": "passed",
+        "viewports": 3,
+        "heldSingleAndBatchDisableAllActions": true,
+        "repeatedClicksDoNotResubmit": true,
+        "successReceiptSurvivesStaleProps": true,
+        "immediateRevokeAndDeny": true,
+        "newParameterHashRequiresNewConfirmation": true,
+        "batchUsesExactSubmittedSnapshot": true,
+        "changedAndNewBatchItemsRemainPending": true,
+        "conflictAndNetworkFailureNeverClaimSaved": true,
+        "terminalServerStateNotResurrected": true,
+        "noHorizontalOverflow": true,
+        "screenshots": [
+          "tmp/approval-submission-ui/1366.png",
+          "tmp/approval-submission-ui/390.png",
+          "tmp/approval-submission-ui/320.png"
+        ],
+        "syntheticHttpOnly": true,
+        "realHumanApproval": false,
+        "actualModelCalls": 0,
+        "externalActions": 0
+      }
+    }
+  },
+  "actual": {
+    "session": 45699,
+    "exitCode": 0,
+    "log": "tmp/ma24-run-status-fixed-web.log",
+    "sha256": "3f48e1d1a8d84b5e84ceac99477719aee21a77cb0799ebd768d002a47d784cce",
+    "records": [
+      {
+        "runStatusFixedWeb": "passed",
+        "actualChromeHttpsCompiledWebApiDatabase": true,
+        "statusFailureLocksActionsAndKeepsDraft": true,
+        "eventStallDoesNotBlockActualResumePause": true,
+        "realInstructionSavedOncePerConfirmation": true,
+        "successfulWriteFailedReadbackPreservesNewerDraft": true,
+        "preWriteGetCannotReenableOldControls": true,
+        "recovery": true,
+        "peerAndAnonymousIsolation": true,
+        "pendingMailApprovalsUnchanged": true,
+        "taskEndsPaused": true,
+        "toolCalls": 0,
+        "actualModelCalls": 0,
+        "externalActions": 0,
+        "screenshots": [
+          "tmp/ma24-run-status-mobile-c6a60580-7ad2-4614-bc6a-0be5ba118c13.png"
+        ],
+        "realBusinessQualityAccepted": false,
+        "productionQualified": false
+      },
+      {
+        "freshClusterPilot": "passed",
+        "image": "pgvector/pgvector:pg16",
+        "reviewDraftFixedImageVerified": false,
+        "mailboxImapWorkerVerified": false,
+        "mailboxWorkerImageVerified": false,
+        "mailboxWorkerImapImageVerified": false,
+        "scheduleDispatchVerified": false,
+        "batchSettlementVerified": false,
+        "batchWorkerCrashVerified": false,
+        "batchWorkerCommitVerified": false,
+        "scheduleWorkerCrashVerified": false,
+        "scheduleWorkerCommitVerified": false,
+        "publishedAddress": "127.0.0.1 only",
+        "rolesVerified": true,
+        "duplicateRoleBootstrapRejected": true,
+        "freshMigrationThrough": 170,
+        "currentSchemaMarkers": {
+          "mailbox_work_binding": true,
+          "mailbox_lease_binding": true,
+          "mailbox_binding_constraint": true,
+          "knowledge_source_gate": true,
+          "task_origin_gate": true,
+          "local_memory_source_gate": true,
+          "receipt_source_gate": true,
+          "immutable_snapshot_capture": true,
+          "immutable_snapshot_lifecycle": true,
+          "trust_registry_versions": true,
+          "trust_registry_pointer": true,
+          "trust_registry_publication": true,
+          "runtime_package_registrations": true,
+          "candidate_recovery_checkpoint": true,
+          "candidate_execution_lease": true,
+          "candidate_graph_checkpoint": true,
+          "runtime_package_withdrawals": true,
+          "runtime_package_publication": true,
+          "skill_activation_lifecycle": true,
+          "skill_activation_sources_sealed": true,
+          "skill_activation_reviews_serialized": true,
+          "skill_activation_declarations_serialized": true,
+          "skill_activation_source_guard_health": true,
+          "skill_activation_use_commit_guard": true,
+          "skill_activation_commit_guard": true,
+          "skill_activation_binding_guard": true
+        },
+        "snapshotLifecycleVerified": false,
+        "knowledgeScopeSourcesVerified": false,
+        "finalSettlementVerified": false,
+        "compiledMainRuntimeVerified": false,
+        "mainRuntimeSkillReceiptVerified": false,
+        "mainRuntimeModelReceiptVerified": false,
+        "mainRuntimeDurabilityVerified": false,
+        "mainRuntimeCrashRecoveryVerified": false,
+        "mainRuntimeInterruptionVerified": false,
+        "mainRuntimeNetworkLossVerified": false,
+        "mainRuntimeResumeRevocationVerified": false,
+        "mainRuntimeCommitLossVerified": false,
+        "mainRuntimeTaskEnrollmentVerified": false,
+        "snapshotDownloadResult": null,
+        "runStatusUiVerified": true,
+        "personalMemoryUiVerified": false,
+        "responsiveNavigationUiVerified": false,
+        "memoryObservationsUiVerified": false,
+        "localMemoryWorkerResult": null,
+        "trustRegistryRestoreResult": null,
+        "freshMailboxUiVerified": false,
+        "extendedFrontendUiVerified": false,
+        "syntheticAccountCompanyAndRestoreVerified": true,
+        "copiedProductionData": false,
+        "linuxWebImage": "ma24-pilot-web:cd4cf736",
+        "linuxWebHttpWorkflowVerified": true,
+        "linuxWebHttpsBrowserVerified": false,
+        "tenConcurrentSyntheticAccountsVerified": false,
+        "pilotBackupRestoreVerified": false,
+        "crossClusterRestoreVerified": false,
+        "nonemptyMailboxCrossClusterRestoreVerified": false,
+        "scriptedModeBusinessVerified": false,
+        "runnerAttestationStoreVerified": false,
+        "collectorDeclarationImageVerified": false,
+        "lockedPolicyDatabaseVerified": false,
+        "memorySourceLocksVerified": false,
+        "methodCatalogSourceLocksVerified": false,
+        "shadowSourceLocksVerified": false,
+        "safetySkillUsageVerified": false,
+        "transportJournalDatabaseVerified": false,
+        "agentCallLeaseDatabaseVerified": false,
+        "agentCheckpointLeaseDatabaseVerified": false,
+        "candidateLeaseContentionDatabaseVerified": false,
+        "runtimeReadSourceLocksDatabaseVerified": false,
+        "runtimeDisclosureDatabaseVerified": false,
+        "linuxFiveCategoryTransportVerified": false,
+        "collectorImageTlsPreflightVerified": false,
+        "poolRecoveryVerified": false,
+        "standaloneDatabaseRecoveryVerified": false,
+        "extraG09Migration": null,
+        "prospectiveSourceDatabaseVerified": false,
+        "prospectivePairedMaterialVerified": false,
+        "prospectiveStandaloneHttpVerified": false,
+        "prospectiveStandaloneBrowserVerified": false,
+        "completeCompositionVerified": false,
+        "samePortPriorImageRollbackVerified": false
+      }
+    ],
+    "screenshotsVisuallyInspected": true,
+    "screenshotSha256": {
+      "tmp/ma24-run-status-mobile-c6a60580-7ad2-4614-bc6a-0be5ba118c13.png": "31a467303661ba0c6bb3c93818b9a19b3ce9a7fc373ff0333aea416db41409e6"
+    }
+  },
+  "retainedFailure": {
+    "log": "tmp/ma24-run-status-component.log",
+    "sha256": "bf35749dde58667782b27fd22e9a16e364ca00e0c919411e6f5cb136e660ce2e",
+    "reason": "Recovered status left a stale read-required error masking event errors; fixed before final verification."
+  },
+  "cleanup": {
+    "temporaryResourcesRemoved": true,
+    "originalThreeServicesRemain": true
+  },
+  "limits": [
+    "Synthetic task and account; no natural business/answer/provider quality.",
+    "No Worker or mail connection was started; two pending mail payloads were never approved or sent.",
+    "Per-confirmation instruction persistence is not a mutation retry/idempotency contract.",
+    "Cross-conversation late-action and actual read timeouts covered by component harness; actual fixed Web covers readback failure, held event/old status and real control transactions.",
+    "Mobile actual screenshot verifies status header/readonly controls; full component screenshots additionally expose retained draft.",
+    "G14-G20, deployment, real human quality and production qualification remain unaccepted."
+  ],
+  "builds": {
+    "main": {
+      "exitCode": 0,
+      "log": "tmp/ma24-run-status-main-build.log",
+      "sha256": "954957481ec2f52e730bec0024b194194c3bba4a76b0427bd3065a6749cd853f"
+    },
+    "collector": {
+      "exitCode": 0,
+      "log": "tmp/ma24-run-status-collector-build.log",
+      "sha256": "0fc32e69ace3aaf7fd71631c5568d9b0348f1865063837f6de6ccca4312bd8c9"
+    },
+    "web": {
+      "exitCode": 0,
+      "log": "tmp/ma24-run-status-web-build.log",
+      "sha256": "823de0b166c5078baf177aac2671cac829e687651624000feb90bddb1739a956"
+    }
+  }
+}
