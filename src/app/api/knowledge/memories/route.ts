@@ -24,6 +24,7 @@ export async function PATCH(request:Request){
   if(!input.success)return Response.json({error:"请确认有效的记忆操作"},{status:400});
   try {const status=await changeMemory(session.userId,input.data);
     if(status==="not-found")return Response.json({error:"记忆不存在"},{status:404});
+    if(status==="conflict")return Response.json({error:"这条记忆已变化，请刷新后核对，再重新确认操作"},{status:409,headers:{"Cache-Control":"private, no-store"}});
     if(status==="source-managed")return Response.json({error:"请在公司详情或渠道关系图修改此事实记录"},{status:409});
     return Response.json({ok:true});
   }catch{return Response.json({error:"操作失败，请刷新核实状态"},{status:503});}

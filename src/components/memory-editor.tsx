@@ -15,7 +15,7 @@ export function MemoryEditor({item,onSaved,onCancel}:{item?:MemoryItem;onSaved:(
     if(!response.ok){const data=await response.json();throw new Error(data.error);}onSaved();
   }catch(error){setError(error instanceof Error?error.message:"保存失败");}finally{setBusy(false);}}
   return <form className="panel" onSubmit={event=>{event.preventDefault();void save();}}><h3>{item?"编辑":"新增"}个人记忆</h3>
-    <p>保存新正文会调用已配置的 Embedding 服务；仅改标题或范围会复用向量。不会调用生成模型。公司专属事实请在公司详情维护。</p>
+    <p>保存到个人私有记忆，不会调用模型服务。公司专属事实请在公司详情维护。</p>
     <fieldset disabled={busy} onChange={()=>setConfirmed(false)}>
       <label>类型<select value={kind} disabled={Boolean(item)} onChange={event=>setKind(event.target.value)}><option value="email-style">邮件风格</option><option value="user-approved-marketing-claim">用户确认业务信息</option></select></label>
       <label>标题<input required maxLength={160} value={title} onChange={event=>setTitle(event.target.value)}/></label>

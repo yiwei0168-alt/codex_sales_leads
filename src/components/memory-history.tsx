@@ -10,11 +10,11 @@ export function MemoryHistory(){
     fetch(`/api/knowledge/memories/history?offset=${offset}`,{cache:"no-store",signal:controller.signal}).then(async response=>{
       if(!response.ok)throw new Error();const data=await response.json();if(controller.signal.aborted)return;
       setItems(data.items);setMore(data.hasMore);setLoading(false);setError("");
-    }).catch(()=>{if(!controller.signal.aborted){setError("历史记录读取失败，请重试");setLoading(false);}});return()=>controller.abort();
+    }).catch(()=>{if(!controller.signal.aborted){setItems([]);setMore(false);setError("历史记录读取失败，请重试");setLoading(false);}});return()=>controller.abort();
   },[offset,revision]);
   function page(value:number){setItems([]);setLoading(true);setOffset(value);}
   return <section><p>记录审计功能启用后的变更。为避免重复保留已删除正文，只记录字段变化、状态和范围，不保存历史正文，不支持回滚。</p>
-    <button onClick={()=>setRevision(value=>value+1)}>刷新历史</button>{error&&<p role="alert">{error}</p>}{loading&&<p>正在读取…</p>}
+    <button onClick={()=>{setItems([]);setMore(false);setLoading(true);setError("");setRevision(value=>value+1);}}>刷新历史</button>{error&&<p role="alert">{error}</p>}{loading&&<p>正在读取…</p>}
     {!loading&&!error&&items.length===0&&<p>暂无变更记录。</p>}
     {items.map(item=><article key={item.id}><p>{item.createdAt} · {item.operation==="INSERT"?"新增":item.operation==="DELETE"?"删除":"修改"} · 记忆 {item.memoryId.slice(0,8)}</p><p>{item.changedFields.map(key=>fields[key]??key).join("、")}</p>
       <RawJsonDetails summary="状态与范围快照" value={{before:item.beforeState,after:item.afterState}}/></article>)}

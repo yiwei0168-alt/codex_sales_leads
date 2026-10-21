@@ -26,6 +26,11 @@ it("archives preferences with owner-scoped writes without model calls",async()=>
   expect(await changeMemory("owner",{id,operation:"archive",confirmed:true})).toBe("ok");
   expect(mocks.query).toHaveBeenCalledWith(expect.stringContaining("update user_outreach_memory"),["owner",id,"archived"]);
 });
+it("rejects an observed version changed before confirmation without writes or audit",async()=>{
+  mocks.query.mockResolvedValue({rows:[{kind:"email-style",workspace_id:null,updated_at:"current-version"}]});
+  expect(await changeMemory("owner",{id,operation:"delete",confirmed:true,expectedUpdatedAt:"older-version"})).toBe("conflict");
+  expect(mocks.query).toHaveBeenCalledTimes(1);
+});
 it("path learning requires a still-active matching memory, not just history",async()=>{
   mocks.query.mockResolvedValue([]);await retrieveCooperationPathMemory("owner","workspace","GB");
   expect(mocks.query).toHaveBeenCalledWith("owner",expect.stringContaining("m.status='active'"),["owner","workspace","GB",20]);

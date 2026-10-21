@@ -36,3 +36,6 @@
 - 外网使用显式 `127.0.0.1:7892` 代理，localhost/127.0.0.1/::1 直连；没有修改 TUN。GitHub 按同一代理逐阶段推送。
 
 验收摘要见 [机器记录](evidence/ma24-followup-local-2026-10-10.json)。本轮未消费新的模型调用授权，未发送邮件、修改正式评分、回写 Gold、删除旧索引或切换生产检索主路。
+
+
+2026-10-21 / MA24-04 G03/G13 original-memory follow-up: observed lifecycle versions now reach the API, rejected concurrent changes return 409, and stale cards/actions disappear until explicit refresh. Local editor replacement is locked while drafting; edit conflicts keep the draft. List/audit failures clear old records and confirmed-save notices remain distinct. Manual-save copy reflects database-only behavior. Seventeen tests, full typecheck and eight-file lint passed. Fixed-package browser acceptance is pending; no new confirmation, natural quality or production acceptance. [Scope](PERSONAL_MEMORY_CRUD_2026-10-21.md).
