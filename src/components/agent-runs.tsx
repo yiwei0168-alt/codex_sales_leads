@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { RunStatus } from "@/lib/assistant/main/contracts";
 import { mergeRunEvents, parseRunEventPage, type RunEvent } from "@/lib/assistant/main/run-events";
 import { AgentApprovals } from "./agent-approvals";
@@ -46,69 +46,95 @@ export function EventReceipt({ event }: { event: RunEvent }) {
 export function useAgentRuns(conversationId: string | undefined, onUpdated: () => void) {
   const [runs, setRuns] = useState<Run[]>([]);
   const [eventsByRun, setEventsByRun] = useState<Record<string, RunEvent[]>>({});
-  const [error, setError] = useState("");
-  const [controlError,setControlError]=useState<{conversationId:string|undefined;message:string}>();
+  const [readState,setReadState]=useState<{conversationId:string;current:boolean;error:string}>();
+  const [eventError,setEventError]=useState<{conversationId:string;message:string}>();
+  const [controlError,setControlError]=useState<{conversationId:string|undefined;message:string;kind?:"read-required"}>();
+  const [notice,setNotice]=useState<{conversationId:string|undefined;message:string}>();
+  const scope=useRef<string|undefined>(undefined),fresh=useRef<string|undefined>(undefined),epoch=useRef(0);
   const [now, setNow] = useState(0);
   useEffect(() => {
+    scope.current=conversationId;
     if (!conversationId) return;
     const controller = new AbortController(), cursors = new Map<string, string>();
-    let prior = "", pending = false;
-    const load = async () => {
-      if (pending) return;
-      pending = true;
-      try {
-        const response = await fetch(`/api/assistant/runs?conversationId=${conversationId}`, { signal: controller.signal, cache: "no-store" });
-        if (!response.ok) throw new Error("任务状态暂不可用，正在重试");
-        const data = await response.json() as { runs: Run[] };
-        if (controller.signal.aborted) return;
-        setRuns(data.runs);
-        await Promise.all(data.runs.map(async run => {
-          for (let page = 0; page < 5; page++) {
-            const after = cursors.get(run.id) ?? "0";
-            const response = await fetch(`/api/assistant/runs/${run.id}/events?after=${after}`, { signal: controller.signal, cache: "no-store" });
-            if (!response.ok) throw new Error("任务事件暂不可用，正在重试");
-            const events = parseRunEventPage(await response.text());
-            if (!events.length || controller.signal.aborted) break;
-            cursors.set(run.id, events[events.length - 1].id);
-            setEventsByRun(current => ({ ...current, [run.id]: mergeRunEvents(current[run.id]??[],events) }));
-            if (events.length < 100) break;
+    let prior = "", priorEvents="", pending = false, eventsPending=false;
+    const signal=()=>AbortSignal.any([controller.signal,AbortSignal.timeout(10_000)]);
+    const loadEvents=async(currentRuns:Run[])=>{
+      if(eventsPending||controller.signal.aborted)return;eventsPending=true;
+      try{
+        const outcomes=await Promise.allSettled(currentRuns.map(async run=>{
+          for(let page=0;page<5;page++){
+            const after=cursors.get(run.id)??"0";
+            const response=await fetch(`/api/assistant/runs/${run.id}/events?after=${after}`,{signal:signal(),cache:"no-store"});
+            if(!response.ok)throw new Error();
+            const events=parseRunEventPage(await response.text());
+            if(controller.signal.aborted)return;
+            if(!events.length)break;
+            cursors.set(run.id,events[events.length-1].id);
+            setEventsByRun(current=>({...current,[run.id]:mergeRunEvents(current[run.id]??[],events)}));
+            if(events.length<100)break;
           }
         }));
+        if(outcomes.some(outcome=>outcome.status==="rejected"))throw new Error();
         if(controller.signal.aborted)return;
-        const state = JSON.stringify(data.runs.map(run => [run.id, run.status, run.batch?.status, cursors.get(run.id)]));
-        if (prior && state !== prior) onUpdated();
-        prior = state; setError("");
-      } catch (reason) { if (!controller.signal.aborted) setError(reason instanceof Error ? reason.message : "任务状态暂不可用，正在重试"); }
+        const state=JSON.stringify(currentRuns.map(run=>[run.id,cursors.get(run.id)]));
+        if(priorEvents&&state!==priorEvents)onUpdated();priorEvents=state;setEventError(undefined);
+      }catch{if(!controller.signal.aborted)setEventError({conversationId,message:"任务事件暂不可用，正在重试"});}
+      finally{eventsPending=false;}
+    };
+    const load = async () => {
+      if (pending) return;pending = true;const startedEpoch=epoch.current;
+      try {
+        const response = await fetch(`/api/assistant/runs?conversationId=${conversationId}`, { signal:signal(), cache: "no-store" });
+        if (!response.ok) throw new Error();
+        const data = await response.json() as { runs: Run[] };
+        if(!Array.isArray(data.runs))throw new Error();
+        if (controller.signal.aborted||startedEpoch!==epoch.current) return;
+        fresh.current=conversationId;setRuns(data.runs);setReadState({conversationId,current:true,error:""});
+        setControlError(current=>current?.conversationId===conversationId&&current.kind==="read-required"?undefined:current);
+        const state = JSON.stringify(data.runs.map(run => [run.id, run.status, run.batch?.status]));
+        if (prior && state !== prior) onUpdated();prior = state;
+        // Saved-event pagination must not hold up status/control recovery.
+        void loadEvents(data.runs);
+      } catch {if (!controller.signal.aborted&&startedEpoch===epoch.current){fresh.current=undefined;setReadState({conversationId,current:false,error:"任务状态暂不可用，正在重试"});}}
       finally { pending = false; }
     };
     void load();
     const timer = window.setInterval(() => void load(), 2500), clock = window.setInterval(() => setNow(Date.now()), 1000);
-    return () => { controller.abort(); window.clearInterval(timer); window.clearInterval(clock); };
+    return () => { controller.abort();window.clearInterval(timer);window.clearInterval(clock);if(scope.current===conversationId){scope.current=undefined;fresh.current=undefined;} };
   }, [conversationId, onUpdated]);
+  function invalidate(){if(scope.current===conversationId){epoch.current++;fresh.current=undefined;if(conversationId)setReadState({conversationId,current:false,error:""});}}
   async function control(id: string, action: string, instruction?: string) {
     setControlError(undefined);
+    if(!conversationId||fresh.current!==conversationId){setControlError({conversationId,message:"任务状态尚未核实，请等待刷新后操作",kind:"read-required"});return false;}
+    setNotice(undefined);
     try {
       const response = await fetch(`/api/assistant/runs/${id}/control`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action, ...(action === "instruct" ? { content: instruction } : {}) }) });
-      if (!response.ok) throw new Error("操作失败，请刷新状态后重试");
-      onUpdated();return true;
-    } catch (reason) { setControlError({conversationId,message:reason instanceof Error ? reason.message : "操作失败"});return false; }
+      if (!response.ok) throw new Error();
+      if(scope.current===conversationId){invalidate();setNotice({conversationId,message:action==="instruct"?"追加要求已保存。":"任务操作请求已保存。"});onUpdated();}return true;
+    } catch { if(scope.current===conversationId)setControlError({conversationId,message:"操作结果未确认，请刷新状态后核对"});return false; }
   }
   async function undo(id: string, version: number) {
+    setControlError(undefined);
+    if(!conversationId||fresh.current!==conversationId){setControlError({conversationId,message:"任务状态尚未核实，请等待刷新后操作",kind:"read-required"});return;}
+    setNotice(undefined);
     try { const response = await fetch("/api/assistant/memory", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id, version, action: "undo" }) });
-      if (!response.ok) throw new Error("偏好已变化，请刷新后核对"); setError(""); onUpdated();
-    } catch (reason) { setError(reason instanceof Error ? reason.message : "撤销失败，请重试"); }
+      if (!response.ok) throw new Error();if(scope.current===conversationId){invalidate();setNotice({conversationId,message:"撤销请求已保存。"});onUpdated();}
+    } catch { if(scope.current===conversationId)setControlError({conversationId,message:"撤销结果未确认，请刷新后核对"}); }
   }
-  return { runs: runs.filter(run => run.conversation_id === conversationId), eventsByRun, error:(controlError?.conversationId===conversationId?controlError?.message:undefined)||error, now, control, undo };
+  return { runs: runs.filter(run => run.conversation_id === conversationId), eventsByRun,
+    statusCurrent:Boolean(readState&&readState.conversationId===conversationId&&readState.current),
+    error:(readState?.conversationId===conversationId?readState?.error:"")||(controlError?.conversationId===conversationId?controlError?.message:"")||(eventError?.conversationId===conversationId?eventError?.message:""),
+    notice:notice?.conversationId===conversationId?notice?.message:"",now, control, undo };
 }
 
-export function AgentRunCard({run, events = [], now, onControl, onUndo}: {run: Run; events?: RunEvent[]; now: number;
+export function AgentRunCard({run, events = [], now, onControl, onUndo,statusCurrent=true}: {run: Run; events?: RunEvent[]; now: number;statusCurrent?:boolean;
   onControl: (id: string, action: string, instruction?: string) => Promise<boolean>;
   onUndo: (id: string, version: number) => Promise<void>}) {
   const [instruction, setInstruction] = useState("");
   const [eventCount,setEventCount]=useState(16);
   const [controlling,setControlling]=useState(false);
   async function control(action:string){
-    if(controlling)return;
+    if(controlling||!statusCurrent)return;
     const submitted=instruction;
     setControlling(true);
     try{
@@ -117,15 +143,16 @@ export function AgentRunCard({run, events = [], now, onControl, onUndo}: {run: R
     }finally{setControlling(false);}
   }
   return <section id={`agent-run-${run.id}`} aria-label="当前任务" className="agent-runs ai-run-inline"><article className="agent-run">
-      <div className="agent-run-actions"><strong>{labels[run.status]}</strong>
-        {["running", "queued"].includes(run.status) && <button type="button" disabled={controlling} onClick={() => void control("pause")}>暂停</button>}
-        {["paused", "partial", "failed"].includes(run.status) && <button type="button" disabled={controlling} onClick={() => void control("resume")}>继续</button>}
-        {!["completed", "cancelled"].includes(run.status) && <button type="button" disabled={controlling} onClick={() => void control("cancel")}>取消</button>}
+      <div className="agent-run-actions"><strong>{statusCurrent?"":"上次读取："}{labels[run.status]}</strong>
+        {["running", "queued"].includes(run.status) && <button type="button" disabled={controlling||!statusCurrent} onClick={() => void control("pause")}>暂停</button>}
+        {["paused", "partial", "failed"].includes(run.status) && <button type="button" disabled={controlling||!statusCurrent} onClick={() => void control("resume")}>继续</button>}
+        {!["completed", "cancelled"].includes(run.status) && <button type="button" disabled={controlling||!statusCurrent} onClick={() => void control("cancel")}>取消</button>}
       </div>
+      {!statusCurrent&&<p role="status">任务状态尚未核实，暂不能提交操作，正在重新读取。</p>}
       {run.batch && <p className="agent-batch-state" role="status">{run.batch.status === "pending" ? `GLM Batch ${run.batch.providerStatus === "in_progress" ? "执行中" : "排队或等待结果"}` : run.batch.status === "completed" ? "GLM Batch 结果已保存" : `GLM Batch ${run.batch.status}，请核对`}{` · 已经过 ${elapsed(run.batch.submittedAt, now)} · 查询 ${run.batch.pollCount} 次`}</p>}
-      <AgentApprovals items={run.approvals ?? []} />
-      {run.memories?.map(memory => <p key={memory.id} className="text-sm">已记住偏好：{memory.key} <button type="button" onClick={() => void onUndo(memory.id, memory.version)}>撤销</button></p>)}
+      <AgentApprovals items={run.approvals ?? []} disabled={!statusCurrent}/>
+      {run.memories?.map(memory => <p key={memory.id} className="text-sm">已记住偏好：{memory.key} <button type="button" disabled={!statusCurrent} onClick={() => void onUndo(memory.id, memory.version)}>撤销</button></p>)}
       {events.length > 0 && <details className="agent-run-timeline"><summary>查看执行详情（{events.length} 条）</summary>{events.length>eventCount&&<button onClick={()=>setEventCount(v=>v+32)}>加载更早记录（剩余 {events.length-eventCount} 条）</button>}<ol>{events.slice(-eventCount).map(event => <EventReceipt key={event.id} event={event}/>)}</ol></details>}
-      {["running", "queued", "paused", "partial", "failed"].includes(run.status) && <div className="agent-run-actions"><input aria-label="追加任务要求" value={instruction} onChange={event => setInstruction(event.target.value)} placeholder="追加要求，在下个安全边界生效" /><button type="button" disabled={controlling||!instruction.trim()} onClick={() => void control("instruct")}>追加</button></div>}
+      {["running", "queued", "paused", "partial", "failed"].includes(run.status) && <div className="agent-run-actions"><input aria-label="追加任务要求" value={instruction} onChange={event => setInstruction(event.target.value)} placeholder="追加要求，在下个安全边界生效" /><button type="button" disabled={controlling||!statusCurrent||!instruction.trim()} onClick={() => void control("instruct")}>追加</button></div>}
     </article></section>;
 }

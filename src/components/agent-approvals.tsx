@@ -29,10 +29,11 @@ function ApprovalPreview({item}:{item:AgentApproval}) {
   const business=Object.fromEntries(Object.entries(payload).filter(([key])=>!(/hash|revision|version|sha256/i.test(key))));
   return <><BusinessValue value={business}/><RawJsonDetails summary="工具参数与版本详情" value={item.payload}/></>;
 }
-export function AgentApprovals({ items }: { items: AgentApproval[] }) {
+export function AgentApprovals({ items,disabled=false }: { items: AgentApproval[];disabled?:boolean }) {
   const [error, setError] = useState("");
   const [notice,setNotice]=useState("");
   const [busy,setBusy]=useState(false);const inFlight=useRef(false);
+  const locked=busy||disabled;
   const [decisions,setDecisions]=useState<Record<string,"approve"|"deny"|"revoke">>({});
   const key=(item:AgentApproval)=>`${item.id}:${item.parameter_hash}`;
   // Only a successful server response supplies a local receipt. Keep it while
@@ -44,7 +45,7 @@ export function AgentApprovals({ items }: { items: AgentApproval[] }) {
   }).filter(item=>item.status==="pending"||item.status==="approved");
   const pendingMail=visible.filter(i=>i.tool_id==="mail_send"&&i.status==="pending");
   async function approveBatch() {
-    if(inFlight.current||pendingMail.length<2)return;inFlight.current=true;setBusy(true);setError("");setNotice("");
+    if(inFlight.current||disabled||pendingMail.length<2)return;inFlight.current=true;setBusy(true);setError("");setNotice("");
     const submitted=pendingMail;
     try {
       const r=await fetch("/api/assistant/approvals/batch",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({items:submitted.map(i=>({id:i.id,parameterHash:i.parameter_hash}))})});
@@ -55,7 +56,7 @@ export function AgentApprovals({ items }: { items: AgentApproval[] }) {
     finally{inFlight.current=false;setBusy(false);}
   }
   async function decide(item: AgentApproval, decision: "approve" | "deny" | "revoke") {
-    if(inFlight.current)return;inFlight.current=true;setBusy(true);setError("");setNotice("");
+    if(inFlight.current||disabled)return;inFlight.current=true;setBusy(true);setError("");setNotice("");
     try { const r = await fetch(`/api/assistant/approvals/${item.id}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ decision, parameterHash: item.parameter_hash }) });
       if (!r.ok) throw new Error("确认内容或状态已变化，请刷新后核对");
       setDecisions(current=>({...current,[key(item)]:decision}));
@@ -68,7 +69,7 @@ export function AgentApprovals({ items }: { items: AgentApproval[] }) {
     <details><summary>操作来源</summary><span>{item.tool_id} · {item.tool_version}</span></details>
     <p className="text-sm">以下是本次实际执行内容。内容发生变化后，需要重新确认。</p>
     <ApprovalPreview item={item}/>
-    <div className="agent-run-actions">{item.status === "pending" && <><button type="button" disabled={busy} onClick={() => void decide(item, "approve")}>确认此内容</button><button type="button" disabled={busy} onClick={() => void decide(item, "deny")}>拒绝</button></>}
-      <button type="button" disabled={busy} onClick={() => void decide(item, "revoke")}>撤销</button></div>
-  </article>)}{pendingMail.length>1&&<button type="button" disabled={busy} onClick={()=>void approveBatch()}>确认以上全部邮件（{pendingMail.length} 封）</button>}{busy&&<p role="status">正在保存决定…</p>}{notice&&<p role="status">{notice}</p>}{error && <p role="alert">{error}</p>}</>;
+    <div className="agent-run-actions">{item.status === "pending" && <><button type="button" disabled={locked} onClick={() => void decide(item, "approve")}>确认此内容</button><button type="button" disabled={locked} onClick={() => void decide(item, "deny")}>拒绝</button></>}
+      <button type="button" disabled={locked} onClick={() => void decide(item, "revoke")}>撤销</button></div>
+  </article>)}{pendingMail.length>1&&<button type="button" disabled={locked} onClick={()=>void approveBatch()}>确认以上全部邮件（{pendingMail.length} 封）</button>}{busy&&<p role="status">正在保存决定…</p>}{notice&&<p role="status">{notice}</p>}{error && <p role="alert">{error}</p>}</>;
 }
