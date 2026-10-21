@@ -70,7 +70,7 @@ export async function verifyConfiguredSignedSafetyDatabase(pool:Pool,input:{owne
    const tools=(await pool.query('select id,tool_id,status,input_hash,output from agent_tool_call where run_id=$1 order by id',[taskId])).rows;
    assert(tools.every(row=>row.status==='completed'));if(arm==='candidate')assert(tools.some(row=>row.tool_id==='skill_read'));
    const attempts=(await pool.query('select id,snapshot_hash,input_hash from agent_skill_model_attempt where evaluation_id=$1 and arm=$2 order by id',[evaluationId,arm])).rows;
-   const expectedHash=digest({protocol:'skill-runtime-candidate-v1',sourceHash:saved.sourceHash,taskId,specHash:digest(task.execution_spec)});
+   const expectedHash=digest({protocol:'skill-runtime-candidate-v2-postgres',sourceHash:saved.sourceHash,taskId,specHash:digest(task.execution_spec)});
    assert(attempts.length>0);assert(attempts.every(row=>row.snapshot_hash===expectedHash));
    if(caseId===cases[0].caseId){
     const repeat=await launch(true);assert.equal(repeat.code,0,`Safety completed reuse failed: ${arm}`);assert.equal(JSON.parse(repeat.output.trim()).taskId,taskId);

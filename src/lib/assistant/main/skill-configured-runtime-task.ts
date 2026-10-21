@@ -11,7 +11,7 @@ export async function runConfiguredSkillRuntimeTask(context:{userId:string},pin:
  frozen:NonNullable<SkillCandidateCollector['frozen']>,transaction:SkillCandidateCollector['transaction'],sourceHash:string,maximumModelCalls:number){
   const task=await enqueueSkillCandidateRuntimeTask(context,pin,frozen.plan);
   const taskInput={...pin,taskId:task.runId},state=await inspectSkillCandidateRuntimeTask(context,taskInput,frozen.plan);
-  const snapshotHash=digest({protocol:'skill-runtime-candidate-v1',sourceHash,taskId:task.runId,specHash:task.specHash});
+  const snapshotHash=digest({protocol:'skill-runtime-candidate-v2-postgres',sourceHash,taskId:task.runId,specHash:task.specHash});
   if(state.status==='completed'){
    const audit=await auditSkillRuntimeCandidate(context,taskInput,frozen.plan),completed=await readCompletedSkillCandidateRuntimeTask(context,taskInput,frozen.plan);
    if(audit.projection.runtimeSnapshotHash!==snapshotHash||audit.projection.completedTaskHash!==digest(completed))throw new Error('Configured completed runtime task changed');

@@ -21,7 +21,7 @@ vi.mock('./skill-prospective-collector',()=>({collectSkillProspectiveAcceptance:
 const owner='11111111-1111-4111-8111-111111111111',runId='22222222-2222-4222-8222-222222222222',
  jobId='33333333-3333-4333-8333-333333333333',evaluationId='44444444-4444-4444-8444-444444444444';
 const taskId='66666666-6666-4666-8666-666666666666',specHash=digest('spec');
-const runtimeSnapshotHash=digest({protocol:'skill-runtime-candidate-v1',sourceHash:'snapshot',taskId,specHash});
+const runtimeSnapshotHash=digest({protocol:'skill-runtime-candidate-v2-postgres',sourceHash:'snapshot',taskId,specHash});
 const context={userId:owner},identity={runtimeHash:digest('runtime'),promptHash:digest('prompt'),toolSchemaHash:digest('tools'),
  modelConfigHash:digest('model-config'),scopeHash:digest('scope')};
 const frozen={freezeId:'55555555-5555-4555-8555-555555555555',plan:{pin:{ownerId:owner,skillId:jobId,version:1,contentHash:'content',sourceHash:'skill-source'},

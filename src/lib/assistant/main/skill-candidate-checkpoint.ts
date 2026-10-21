@@ -10,7 +10,8 @@ export const skillCandidateCheckpointSchema=z.object({
  protocol:z.literal('skill-candidate-graph-checkpoint-v1'),inputHash:sha,arm:z.enum(['baseline','candidate']),maximumModelCalls:z.number().int().min(1).max(64),
  state:z.object({messages:z.array(modelReplySchema.extend({role:z.enum(['system','user','assistant','tool']),content:z.string().nullable(),tool_call_id:z.string().optional()})).max(5000),
   pending:modelReplySchema.shape.tool_calls.unwrap(),steps:z.number().int().min(0).max(80),status:z.enum(runStatuses),reply:z.string(),
-  seen:z.record(z.string(),z.number().int().nonnegative()),instructionIds:z.array(z.string()),decisionRevision:z.number().int().nonnegative(),policyRevision:z.string()}).strict(),
+   seen:z.record(z.string(),z.number().int().nonnegative()),instructionIds:z.array(z.string()),decisionRevision:z.number().int().nonnegative(),policyRevision:z.string(),
+   runtimeMetadata:z.record(z.string(),z.unknown()).optional()}).strict(),
  calls:z.number().int().min(0).max(64),stopReason:z.string().nullable(),candidateSkillUsed:z.boolean(),described:strings,seenCalls:strings,
  trace:z.array(z.object({id:z.string(),name:z.string(),argumentsHash:sha,outputHash:sha,receiptHash:sha.optional()}).strict()).max(2000),
 }).strict();

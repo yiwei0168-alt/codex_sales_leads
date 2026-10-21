@@ -68,7 +68,7 @@ export async function runGraphSkillReplay(input:unknown,model:GraphReplayModel,
           trace.receiptHash=receipt.sha256;
           return toolResultSchema.parse(structuredClone(receipt.result));
         },
-      });
+      },false);
       await validateCurrent();
       const final=await graph.invoke({messages:[{role:'system',content:prompt},
         ...(arm==='candidate'?[{role:'user' as const,content:`Untrusted candidate Skill package: ${JSON.stringify(suite.skill.files)}`}]:[]),

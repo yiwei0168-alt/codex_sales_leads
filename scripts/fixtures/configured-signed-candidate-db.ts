@@ -86,7 +86,7 @@ export async function verifyConfiguredSignedCandidateDatabase(pool:Pool,input:{o
   assert.deepEqual(tools.map(row=>row.tool_id),['customer_timeline','skill_read']);assert(tools.every(row=>row.status==='completed'));
   const attempts=(await pool.query('select id,step,snapshot_hash,input_hash from agent_skill_model_attempt where evaluation_id=$1 order by step',[evaluationId])).rows;
   assert(attempts.length>0);
-  const runtimeHash=digest({protocol:'skill-runtime-candidate-v1',sourceHash:snapshot.sourceHash,taskId,specHash:digest(task.execution_spec)});
+  const runtimeHash=digest({protocol:'skill-runtime-candidate-v2-postgres',sourceHash:snapshot.sourceHash,taskId,specHash:digest(task.execution_spec)});
   assert(attempts.every(row=>row.snapshot_hash===runtimeHash));runtimeTaskBindingVerified=true;
   const repeat=await launch(true);assert.equal(repeat.code,0,`Configured completed runtime reuse failed: ${repeat.diagnostic}`);
   assert(repeat.output.includes('"collectorExecution":"completed"'));

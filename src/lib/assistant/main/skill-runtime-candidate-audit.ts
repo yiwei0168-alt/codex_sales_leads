@@ -78,7 +78,7 @@ export async function auditSkillRuntimeCandidate(context:{userId:string},input:P
  const readTools=()=>tenantQuery<SkillRuntimeToolReceipt>(context.userId,`select id,user_id,run_id,call_key,tool_id,tool_version,input,input_hash,effect,status,output,approval_id
   from agent_tool_call where user_id=$1 and run_id=$2 order by call_key,id`,[context.userId,input.taskId]);
  const rows=await readModels(),tools=await readTools(),prepared=prepareSkillModelJournalAudit({...context,evaluationId:input.evaluationId,arm:input.arm},rows);
- const runtimeSnapshotHash=digest({protocol:'skill-runtime-candidate-v1',sourceHash:saved.sourceHash,taskId:input.taskId,specHash:completed.specHash});
+ const runtimeSnapshotHash=digest({protocol:'skill-runtime-candidate-v2-postgres',sourceHash:saved.sourceHash,taskId:input.taskId,specHash:completed.specHash});
  if(prepared.snapshotHash!==runtimeSnapshotHash||prepared.freezeId!==input.freezeId||saved.sourceHash!==completed.spec.snapshotHash)
   throw new Error('Skill runtime model journal does not match hidden task');
  const toolContext={...context,runId:input.taskId,role:completed.role,mode:completed.mode,knowledgeScope:completed.knowledgeScope,

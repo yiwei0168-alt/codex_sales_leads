@@ -8,6 +8,8 @@ import {modeConfigSchema,type ModeConfig} from './mode-config';
 import {instructionOnlySkill} from './skills';
 import {assertLocalAnalysisBoundary} from './local-analysis-boundary';
 import {skillCandidateCheckpointSchema,type SkillCandidateCheckpointStore} from './skill-candidate-checkpoint';
+import type {BaseCheckpointSaver} from '@langchain/langgraph';
+import type {RunnableConfig} from '@langchain/core/runnables';
 
 type SkillListing={id:string;name:string;scope:string;current_version:number;enabled:boolean;published:boolean;owned:boolean};
 type Snapshot={context:Pick<ExecutionContext,'userId'|'role'|'mode'|'knowledgeScope'>;
@@ -16,6 +18,8 @@ type Snapshot={context:Pick<ExecutionContext,'userId'|'role'|'mode'|'knowledgeSc
  receipts:Array<{tool:string;arguments:Record<string,unknown>;output:unknown;hash:string}>};
 type Model=(input:{messages:ModelMessage[];profile:ModeConfig;step:number;signal:AbortSignal})=>Promise<unknown>;
 export type SkillRuntimeDispatch=(call:ModelToolCall)=>Promise<{output:ToolResult;receiptHash?:string;candidateSkillUsed?:boolean;stopReason?:string}>;
+export type SkillCandidateGraphStorage={checkpointer:BaseCheckpointSaver;config:RunnableConfig};
+const graphMetadataSchema=skillCandidateCheckpointSchema.omit({state:true}).extend({protocol:z.literal('skill-candidate-graph-checkpoint-v2')});
 
 /**
  * Isolated mechanism, not an authorization/production-equivalence claim. The
@@ -24,7 +28,8 @@ export type SkillRuntimeDispatch=(call:ModelToolCall)=>Promise<{output:ToolResul
  * Skill availability changes only through normal skill_list/skill_read results;
  * the original task and system prompts receive no replay or candidate instructions.
  */
-export async function runSkillCandidateArm(input:Snapshot,arm:'baseline'|'candidate',model:Model,validateCurrent:()=>Promise<void>,maximumModelCalls=8,checkpoint?:SkillCandidateCheckpointStore,executionSignal?:AbortSignal,runtimeDispatch?:SkillRuntimeDispatch){
+export async function runSkillCandidateArm(input:Snapshot,arm:'baseline'|'candidate',model:Model,validateCurrent:()=>Promise<void>,maximumModelCalls=8,checkpoint?:SkillCandidateCheckpointStore,executionSignal?:AbortSignal,runtimeDispatch?:SkillRuntimeDispatch,graphStorage?:SkillCandidateGraphStorage){
+ if(checkpoint&&graphStorage)throw new Error('Candidate checkpoint protocols cannot be combined');
  assertLocalAnalysisBoundary();z.number().int().min(1).max(64).parse(maximumModelCalls);
  const snapshot=structuredClone(input),profile=modeConfigSchema.parse(snapshot.profile),candidate=snapshot.candidate;
  if(profile.mode!==snapshot.context.mode||candidate.listing.scope!=='account'||candidate.listing.enabled||!candidate.listing.owned
@@ -39,16 +44,19 @@ export async function runSkillCandidateArm(input:Snapshot,arm:'baseline'|'candid
  const trace:Array<{id:string;name:string;argumentsHash:string;outputHash:string;receiptHash?:string}>=[];
  const check=async()=>{executionSignal?.throwIfAborted();assertLocalAnalysisBoundary();await validateCurrent();executionSignal?.throwIfAborted();};
  await check();const inputHash=digest(snapshot),saved=await checkpoint?.load();
- const restored=saved?skillCandidateCheckpointSchema.parse(saved):null;
- if(restored){
+ let restored=saved?skillCandidateCheckpointSchema.parse(saved):null;
+ const restore=()=>{if(restored){
   if(restored.inputHash!==inputHash||restored.arm!==arm||restored.maximumModelCalls!==maximumModelCalls||restored.calls>maximumModelCalls)
    throw new Error('Candidate checkpoint input changed');
   calls=restored.calls;stopReason=restored.stopReason;candidateSkillUsed=restored.candidateSkillUsed;
   for(const name of restored.described)described.add(name);
   for(const id of restored.seenCalls)seenCalls.add(id);
   trace.push(...restored.trace);
- }
+ }};
+ const metadata=()=>({protocol:'skill-candidate-graph-checkpoint-v2' as const,inputHash,arm,maximumModelCalls,
+  calls,stopReason,candidateSkillUsed,described:[...described],seenCalls:[...seenCalls],trace:structuredClone(trace)});
  const graph=buildMainAgentGraph({
+  checkpointMetadata:graphStorage?metadata:undefined,
   checkpoint:checkpoint?async state=>{
    await check();await checkpoint.save({protocol:'skill-candidate-graph-checkpoint-v1',inputHash,arm,maximumModelCalls,state,
     calls,stopReason,candidateSkillUsed,described:[...described],seenCalls:[...seenCalls],trace:structuredClone(trace)});
@@ -109,12 +117,21 @@ export async function runSkillCandidateArm(input:Snapshot,arm:'baseline'|'candid
    await check();
    trace.push({id:call.id,name:call.function.name,argumentsHash:digest(call.function.arguments),outputHash:digest(output),...(receiptHash?{receiptHash}:{})});return output;
   },
- });
+ },graphStorage?.checkpointer??false);
+ if(graphStorage){
+  const previous=await graph.getState(graphStorage.config),state=previous.values;
+  if(Object.keys(state).length){
+   const bookkeeping=graphMetadataSchema.parse(state.runtimeMetadata);
+   restored=skillCandidateCheckpointSchema.parse({...bookkeeping,protocol:'skill-candidate-graph-checkpoint-v1',state});
+  }
+ }
+ restore();
  await check();
- const initial=restored?.state??{messages:[snapshot.initialMessages[0],...snapshot.initialMessages.slice(2)],pending:[],steps:0,status:'running' as const,reply:'',seen:{},instructionIds:[],decisionRevision:0,policyRevision:''};
+ const initial=restored?.state??{messages:[snapshot.initialMessages[0],...snapshot.initialMessages.slice(2)],pending:[],steps:0,status:'running' as const,reply:'',seen:{},instructionIds:[],decisionRevision:0,policyRevision:'',
+  ...(graphStorage?{runtimeMetadata:metadata()}:{} )};
  // Pending recovery enters START -> safe_boundary, just like a new production
  // lease. A terminal checkpoint is read-only reuse after current-source checks.
- const final=initial.status==='running'?await graph.invoke(initial,{recursionLimit:maximumModelCalls*32}):initial;
+ const final=initial.status==='running'?await graph.invoke(initial,{...graphStorage?.config,recursionLimit:maximumModelCalls*32,durability:'sync'}):initial;
  await check();
  return {protocol:runtimeDispatch?'skill-instruction-overlay-runtime-v1':'skill-instruction-overlay-v1',arm,status:final.status,reply:final.reply,messages:final.messages,
   inputHash:digest(snapshot),profileHash:digest(profile),candidateContentHash:candidate.value.content_hash,

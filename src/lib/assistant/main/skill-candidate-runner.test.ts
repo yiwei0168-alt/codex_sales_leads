@@ -9,6 +9,7 @@ import {productTools} from './tools';
 import {dispatchTool} from './executor';
 import {orderedModeDecision,ModeModelsUnavailable} from './mode-fallback';
 import type {SkillCandidateCheckpoint,SkillCandidateCheckpointStore} from './skill-candidate-checkpoint';
+import {MemorySaver} from '@langchain/langgraph';
 const execution=vi.hoisted(()=>({run:vi.fn()}));
 vi.mock('./tool-execution',()=>({executeRegisteredTool:execution.run}));
 const owner='00000000-0000-4000-8000-000000000001',id='00000000-0000-4000-8000-000000000002';
@@ -25,6 +26,41 @@ function fixture(){
 }
 function call(name:string,args:unknown,id:string){return {role:'assistant',content:null,tool_calls:[{id,type:'function',function:{name,arguments:JSON.stringify(args)}}]};}
 const answer={role:'assistant',content:'Synthetic answer.'};
+it('retains zero-call bookkeeping in the checkpoint before the first safety boundary',async()=>{
+ const saver=new MemorySaver(),put=saver.put.bind(saver);let crash=true;
+ vi.spyOn(saver,'put').mockImplementation(async(...args)=>{
+  const saved=await put(...args);
+  if(crash&&Array.isArray(args[1].channel_values.messages)){crash=false;throw new Error('Synthetic initial checkpoint acknowledgement lost');}
+  return saved;
+ });
+ const storage={checkpointer:saver,config:{configurable:{thread_id:'candidate-first-boundary',checkpoint_ns:''}}};
+ const model=vi.fn(async()=>answer),run=()=>runSkillCandidateArm(fixture(),'candidate',model,async()=>{},8,undefined,undefined,undefined,storage);
+ await expect(run()).rejects.toThrow('Synthetic initial checkpoint acknowledgement lost');expect(model).not.toHaveBeenCalled();
+ expect((await saver.getTuple(storage.config))?.checkpoint.channel_values.runtimeMetadata).toMatchObject({calls:0,trace:[],candidateSkillUsed:false});
+ expect(await run()).toMatchObject({status:'completed',modelCalls:1});expect(model).toHaveBeenCalledTimes(1);
+});
+it('recovers graph state and candidate bookkeeping from one checkpoint without advancing after a failed commit',async()=>{
+ const saver=new MemorySaver(),original=saver.put.bind(saver);let crash=true;
+ vi.spyOn(saver,'put').mockImplementation(async(...args)=>{
+  const saved=await original(...args);
+  const pending=args[1].channel_values.pending as Array<{id:string}>|undefined;
+  if(crash&&pending?.[0]?.id==='read'){crash=false;throw new Error('Synthetic graph commit acknowledgement lost');}
+  return saved;
+ });
+ const storage={checkpointer:saver,config:{configurable:{thread_id:'candidate-graph-protocol-test',checkpoint_ns:''}}};
+ const steps=[call('describe_tool',{tool:'skill_read'},'describe'),call('execute_tool',{tool:'skill_read',arguments:{id}},'read'),answer];
+ const model=vi.fn(async({step}:{step:number})=>steps[step]);
+ const run=(selected=model)=>runSkillCandidateArm(fixture(),'candidate',selected,async()=>{},8,undefined,undefined,undefined,storage);
+ await expect(run()).rejects.toThrow('Synthetic graph commit acknowledgement lost');expect(model).toHaveBeenCalledTimes(2);
+ const prior=await saver.getTuple(storage.config);
+ expect(prior?.checkpoint.channel_values.runtimeMetadata).toMatchObject({protocol:'skill-candidate-graph-checkpoint-v2',calls:2,candidateSkillUsed:false});
+ const recovered=await run();expect(recovered).toMatchObject({status:'completed',modelCalls:3,candidateSkillUsed:true});
+ expect(recovered.trace).toHaveLength(2);expect(model).toHaveBeenCalledTimes(3);
+ const noModel=vi.fn(async()=>{throw new Error('Completed graph cannot call provider');});
+ expect(await run(noModel)).toEqual(recovered);expect(noModel).not.toHaveBeenCalled();
+ await expect(runSkillCandidateArm(fixture(),'candidate',noModel,async()=>{},7,undefined,undefined,undefined,storage)).rejects.toThrow('checkpoint input changed');
+ await expect(runSkillCandidateArm(fixture(),'candidate',noModel,async()=>{throw new Error('Source revoked');},8,undefined,undefined,undefined,storage)).rejects.toThrow('Source revoked');
+});
 it('recovers a persisted pending read through the safe boundary with graph metadata intact',async()=>{
  const snapshot=fixture();let saved:SkillCandidateCheckpoint|null=null,crash=true;
  const checkpoint:SkillCandidateCheckpointStore={load:async()=>structuredClone(saved),save:async value=>{

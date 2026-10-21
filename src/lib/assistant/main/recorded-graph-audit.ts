@@ -61,7 +61,7 @@ export async function replayRecordedGraphTrace(chain:{turns:TraceTurn[]}){
    // Preserve the exact persisted serialization; defaults must not invent fields in old receipts.
    const parsed=JSON.parse(receipt.content);toolResultSchema.parse(parsed);return parsed;
   },
- });
+ },false);
  const final=await graph.invoke({messages:withoutMemory(turns[0].request.body.messages),pending:[],steps:0,
   status:'running',reply:'',seen:{},instructionIds:[],decisionRevision:turns[0].revision,policyRevision:'initial'},{recursionLimit:1000});
  assertLocalAnalysisBoundary();

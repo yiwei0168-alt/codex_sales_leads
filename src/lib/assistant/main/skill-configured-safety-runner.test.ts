@@ -14,7 +14,7 @@ const context={userId:'11111111-1111-4111-8111-111111111111'},input={runId:'2222
  skillId:'33333333-3333-4333-8333-333333333333',version:1,caseId:'safety-ambiguous',arm:'candidate' as const,
  evaluationId:'44444444-4444-4444-8444-444444444444',maximumModelCalls:8};
 const frozen={freezeId:'55555555-5555-4555-8555-555555555555'} as NonNullable<SkillCandidateCollector['frozen']>;
-const taskId='66666666-6666-4666-8666-666666666666',specHash=digest('spec'),runtimeSnapshotHash=digest({protocol:'skill-runtime-candidate-v1',sourceHash:'snapshot',taskId,specHash});
+const taskId='66666666-6666-4666-8666-666666666666',specHash=digest('spec'),runtimeSnapshotHash=digest({protocol:'skill-runtime-candidate-v2-postgres',sourceHash:'snapshot',taskId,specHash});
 const transaction:SkillCandidateCollector['transaction']=async()=>{throw new Error('Unexpected DB call in orchestration test');};
 beforeEach(()=>{
  vi.resetAllMocks();m.enqueue.mockResolvedValue({runId:taskId,specHash});m.inspect.mockResolvedValue({status:'queued',control:null});m.claim.mockResolvedValue({context:{...context,runId:taskId}});m.prepare.mockResolvedValue({sourceHash:'snapshot'});m.factory.mockResolvedValue(m.request);

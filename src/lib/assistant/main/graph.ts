@@ -28,9 +28,11 @@ export const MainAgentState = Annotation.Root({
   steps: Annotation<number>(), status: Annotation<RunStatus>(), reply: Annotation<string>(),
   seen: Annotation<Record<string, number>>(), instructionIds: Annotation<string[]>(),
   decisionRevision: Annotation<number>(), policyRevision: Annotation<string>(),
+  runtimeMetadata: Annotation<Record<string,unknown>|undefined>(),
 });
 export interface MainGraphDependencies {
   checkpoint?: (state:typeof MainAgentState.State)=>Promise<void>;
+  checkpointMetadata?:()=>Record<string,unknown>;
   validateEvidence?: (messages:ModelMessage[])=>Promise<void>;
   boundary: () => Promise<{ control: "pause" | "cancel" | null; instructions: Array<{ id: string; content: string }>; policyRevision?:string }>;
   model: (messages: ModelMessage[], step: number,revision:number) => Promise<ModelMessage>;
@@ -50,9 +52,11 @@ function isPlaceholderEvidenceRead(call: ModelToolCall): boolean {
     return [args.sessionId, args.nodeId].some(id => typeof id === "string" && PLACEHOLDER_UUIDS.has(id.toLowerCase()));
   } catch { return false; }
 }
-export function buildMainAgentGraph(deps: MainGraphDependencies, checkpointer?: BaseCheckpointSaver) {
+export function buildMainAgentGraph(deps: MainGraphDependencies, checkpointer?: BaseCheckpointSaver|false) {
   const persist=(work:(state:typeof MainAgentState.State)=>Promise<Partial<typeof MainAgentState.State>>)=>async(state:typeof MainAgentState.State)=>{
-    const update=await work(state);await deps.checkpoint?.({...state,...update});return update;
+    const update=await work(state),metadata=deps.checkpointMetadata?.();
+    const persisted=metadata?{...update,runtimeMetadata:metadata}:update;
+    await deps.checkpoint?.({...state,...persisted});return persisted;
   };
   return new StateGraph(MainAgentState)
     .addNode("safe_boundary", persist(async state => {
@@ -257,6 +261,6 @@ export async function executeMainAgentRun(userId: string, runId: string, leaseTo
     initial = { messages: initialTaskMessages(context,run.input,run.model_config,history),
       pending: [], steps: 0, seen: {}, instructionIds: [],decisionRevision:0,policyRevision:"",status: "running", reply: "" };
   }
-  const final = await withProductSpend(userId, "main-agent", () => graph.invoke(initial, config), runId);
+  const final = await withProductSpend(userId, "main-agent", () => graph.invoke(initial, {...config,durability:'sync'}), runId);
   return settleMainAgentRun(context,final);
 }

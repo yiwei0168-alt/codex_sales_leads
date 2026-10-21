@@ -44,6 +44,7 @@ try{
  const serialization=await readFile('db/migrations/146_skill_model_freeze_serialization.sql','utf8');await pool.query(serialization);await pool.query(serialization);
  const checkpoints=await readFile('db/migrations/168_skill_candidate_checkpoint.sql','utf8');await pool.query(checkpoints);await pool.query(checkpoints);
  const leases=await readFile('db/migrations/169_skill_candidate_execution_lease.sql','utf8');await pool.query(leases);await pool.query(leases);
+ const graphStorage=await readFile('db/migrations/170_skill_candidate_graph_checkpoint.sql','utf8');await pool.query(graphStorage);await pool.query(graphStorage);
  for(const id of [owner,other])await pool.query("insert into app_user(id,email,display_name,role,status) values($1,$2,'Synthetic transport fixture','member','active')",[id,`${id}@example.invalid`]);
  const skill=await importSkill({userId:owner,role:'member'},{name:'Synthetic transport fixture',source:'synthetic-test',files:{'SKILL.md':'Synthetic transport journal instructions.'},dependencies:[]});
  const version=(await pool.query('select * from agent_skill_version where skill_id=$1 and version=1',[skill.id])).rows[0],hash=digest('synthetic');

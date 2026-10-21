@@ -4,6 +4,8 @@ import {decisionMemoryMessage} from './decision-memory-message';
 const saved=vi.hoisted(()=>({load:vi.fn()}));
 vi.mock('./recorded-task-source',()=>({loadRecordedTaskChain:saved.load}));
 import {auditRecordedGraphExecution,replayRecordedGraphTrace} from './recorded-graph-audit';
+import {buildMainAgentGraph} from './graph';
+import {MemorySaver} from '@langchain/langgraph';
 function fixture(){
  const initial:ModelMessage[]=[{role:'system',content:'Synthetic instructions'},decisionMemoryMessage([]),{role:'user',content:'Synthetic question'}];
  const call={id:'read-1',type:'function' as const,function:{name:'execute_tool',arguments:'{"tool":"memory_read","arguments":{}}'}};
@@ -20,6 +22,17 @@ afterEach(()=>{expect(fetch).not.toHaveBeenCalled();vi.unstubAllGlobals();vi.uns
 it('runs the production graph to its original answer using only recorded decisions/results',async()=>{
  const audit=await replayRecordedGraphTrace(fixture());
  expect(audit).toMatchObject({recordedDecisions:2,recordedTools:1,modelCalls:0,businessToolExecutions:0,qualityAccepted:false,liveShadow:false});
+});
+it('does not inherit the parent checkpoint saver while auditing inside a persisted task',async()=>{
+ const saver=new MemorySaver(),writes=vi.spyOn(saver,'put');
+ const graph=buildMainAgentGraph({boundary:async()=>({control:null,instructions:[]}),
+  model:async()=>{await replayRecordedGraphTrace(fixture());return {role:'assistant',content:'Parent answer'};},
+  tool:async()=>{throw new Error('Parent must not execute a tool');}},saver);
+ const final=await graph.invoke({messages:[{role:'system',content:'Synthetic parent'},{role:'user',content:'Synthetic question'}],pending:[],steps:0,
+  status:'running',reply:'',seen:{},instructionIds:[],decisionRevision:0,policyRevision:''},
+ {configurable:{thread_id:'parent-audit-isolation',checkpoint_ns:''},durability:'sync'});
+ expect(final.status).toBe('completed');expect(writes).toHaveBeenCalled();
+ expect(writes.mock.calls.every(([config])=>config.configurable?.checkpoint_ns==='')).toBe(true);
 });
 it('rejects missing tool receipts and changed graph history instead of executing a fallback',async()=>{
  const missing=fixture();missing.turns[1].request.body.messages.pop();await expect(replayRecordedGraphTrace(missing)).rejects.toThrow('pairing');

@@ -6,7 +6,7 @@ import {prepareSkillRuntimeCandidateSource} from './skill-runtime-candidate-sour
 import {runSkillCandidateArm,type SkillRuntimeDispatch} from './skill-candidate-runner';
 import {createDurableSkillCandidateModel,type SkillCandidateCollector} from './skill-candidate-model';
 import {withSkillCandidateLease} from './skill-candidate-lease';
-import {prepareSkillCandidateCheckpoint} from './skill-candidate-checkpoint';
+import {prepareSkillCandidateGraphCheckpointer} from './skill-candidate-graph-checkpointer';
 import {assertSkillCandidateRuntimeTask,settleSkillCandidateRuntimeTask} from './skill-candidate-runtime-task';
 import {withSkillRuntimeTaskLease} from './skill-runtime-task-lease';
 
@@ -58,12 +58,12 @@ export async function runSkillRuntimeCandidate(context:ExecutionContext,input:Se
   await validate();
   // Distinct binding prevents reusing legacy unjournaled-tool checkpoints or
   // model requests from another hidden task under the same evaluation ID.
-  const snapshotHash=digest({protocol:'skill-runtime-candidate-v1',sourceHash:saved.sourceHash,taskId:context.runId,specHash:context.skillTaskSpecHash});
+  const snapshotHash=digest({protocol:'skill-runtime-candidate-v2-postgres',sourceHash:saved.sourceHash,taskId:context.runId,specHash:context.skillTaskSpecHash});
   const durable=createDurableSkillCandidateModel({ownerId:context.userId,snapshotHash,arm:input.arm},collector,validate);
-  const checkpoint=await prepareSkillCandidateCheckpoint(collector.transaction,{ownerId:context.userId,evaluationId:input.evaluationId,arm:input.arm,
+  const graphStorage=await prepareSkillCandidateGraphCheckpointer(collector.transaction,{ownerId:context.userId,evaluationId:input.evaluationId,arm:input.arm,
    snapshotHash:digest({snapshotHash,maximumModelCalls}),sourceKind:collector.sourceKind,freezeId:frozen.freezeId},executionToken,validate);
-  const output=await runSkillCandidateArm(saved.snapshot,input.arm,durable.model,validate,maximumModelCalls,checkpoint,signal,
-   recordedRuntimeDispatch(context,saved.snapshot,input.arm,validate));
+  const output=await runSkillCandidateArm(saved.snapshot,input.arm,durable.model,validate,maximumModelCalls,undefined,signal,
+   recordedRuntimeDispatch(context,saved.snapshot,input.arm,validate),graphStorage);
   await validate();
   const settled=await settleSkillCandidateRuntimeTask(context,input,frozen.plan,output.status==='completed'&&output.stopReason===null?'completed':'partial',output.reply);
   return {...output,taskId:context.runId,taskStatus:settled.status,runtimeSnapshotHash:snapshotHash,serverSnapshotHash:saved.sourceHash,
