@@ -1,0 +1,145 @@
+{
+  "date": "2026-10-21",
+  "rule": "MA24-06",
+  "productSourceCommit": "0ce190f3a787305f7ba7b06ff2fbbec4fb88fb5a",
+  "buildExitCodes": {
+    "main": 0,
+    "collector": 0,
+    "web": 0
+  },
+  "checkExitCodes": {
+    "pair": 0,
+    "collector": 0,
+    "web": 0
+  },
+  "logs": {
+    "tmp/ma24-contention-main-image-build.log": "11eda84f807dbe128ddb6ea122d0f616618ba8b5a132629650da72a6fae72100",
+    "tmp/ma24-contention-collector-image-build.log": "a8e484f6242771121053cf8847cbe760f7693504797b1dc2c89391851b095dc8",
+    "tmp/ma24-contention-web-image-build.log": "d93e9f67f9b395ecb8b343c38af1b05c21c49631fbed967de195ff60a15c0682",
+    "tmp/ma24-contention-runtime-pair.log": "a39db89c5fae852cdbda8a8073a7d7dcc39a0d31884a8dad84ca9490918177cf",
+    "tmp/ma24-contention-collector-boundary.log": "e509cb92929f179283400449dd3a36991fd5018b233477b9ac8f50f6b4036b9b",
+    "tmp/ma24-contention-web-source.log": "b3e22a8d314c2475a2fdc3e6fd454edfb4dd99faed24729ade6466aee6722d2f"
+  },
+  "results": {
+    "tmp/ma24-contention-runtime-pair.log": [
+      {
+        "localRuntimeDependencyPair": "passed",
+        "mainInspection": {
+          "role": "main-agent",
+          "imageId": "sha256:1c110879837a339ba1bbb1f9422a9721107fe99c513796854901adafdac74d01",
+          "sourceCommit": "0ce190f3a787305f7ba7b06ff2fbbec4fb88fb5a",
+          "deploymentHash": "41694c51a12a0713da720c1b76c68f06eeeb57874386dc1372c854e65e8755f0",
+          "runtimeHash": "5e5180d67e5daee015dd053d6f5f676b57aabb6810d367428f8c38276823cb11",
+          "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+          "node": "24.21.0",
+          "platform": "linux",
+          "arch": "x64",
+          "sourceInputs": 1020,
+          "files": 34572,
+          "dependencyManifestHash": "d3edb974b4ae6e725cbb62205c8f0e65606b061fd97bce214289279ccca20137",
+          "dependencyFiles": 33503,
+          "runtimeModuleFormat": "esm"
+        },
+        "collectorInspection": {
+          "role": "skill-collector",
+          "imageId": "sha256:21ad703a296cc96f56aafe0a635ea7da7921cad69e666c00d477b74eaecae664",
+          "sourceCommit": "0ce190f3a787305f7ba7b06ff2fbbec4fb88fb5a",
+          "deploymentHash": "5ae9165ed8795a588a23649fd7a3f4eeeec362d920374a86c6564482e2b4d61b",
+          "runtimeHash": "5e5180d67e5daee015dd053d6f5f676b57aabb6810d367428f8c38276823cb11",
+          "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+          "node": "24.21.0",
+          "platform": "linux",
+          "arch": "x64",
+          "sourceInputs": 1020,
+          "files": 34536,
+          "dependencyManifestHash": "d3edb974b4ae6e725cbb62205c8f0e65606b061fd97bce214289279ccca20137",
+          "dependencyFiles": 33503,
+          "runtimeModuleFormat": "esm"
+        },
+        "comparison": {
+          "runtimePackageBytesPairRevalidated": true,
+          "runtimePackageBytesPairBlockers": [],
+          "runtimeModuleFormatPairRevalidated": true,
+          "runtimeModuleFormatPairBlockers": [],
+          "runtimePackageBytesPairHash": "3fe42a27fe248357d00f96e75a4b1af7b9006cb0ebd845ea6262dec3f7aea48f"
+        },
+        "esmModuleFormatPairVerified": true,
+        "runtimeRegistrationsPublished": false,
+        "completeDependencyRuntimeEquivalenceVerified": false,
+        "productionQualified": false,
+        "automaticActivation": false,
+        "modelCalls": 0
+      }
+    ],
+    "tmp/ma24-contention-collector-boundary.log": [
+      {
+        "collectorImageVerification": "passed",
+        "image": "sha256:21ad703a296cc96f56aafe0a635ea7da7921cad69e666c00d477b74eaecae664",
+        "imageId": "sha256:21ad703a296cc96f56aafe0a635ea7da7921cad69e666c00d477b74eaecae664",
+        "commit": "0ce190f3a787305f7ba7b06ff2fbbec4fb88fb5a",
+        "packageFiles": 34536,
+        "deploymentHash": "5ae9165ed8795a588a23649fd7a3f4eeeec362d920374a86c6564482e2b4d61b",
+        "measuredEnrollmentVerified": true,
+        "missingMalformedAndMismatchedEnrollmentRejectedBeforeRunner": true,
+        "matchedEnrollmentReachesRunner": true,
+        "nodeOptionsRejected": true,
+        "nonRootReadOnlyNoNetwork": true,
+        "changedRunnerRejectedBeforeExecution": true,
+        "actualModelCalls": 0,
+        "productionQualified": false
+      }
+    ],
+    "tmp/ma24-contention-web-source.log": [
+      {
+        "webImageSourceVerification": "passed",
+        "image": "ma24-pilot-web:0ce190f3",
+        "imageId": "sha256:63cd973405758480804ffb76522b12705fca74295b5f470151b7479d69b4a247",
+        "sourceCommit": "0ce190f3a787305f7ba7b06ff2fbbec4fb88fb5a",
+        "buildId": "8qrIw-kv7fOPwrBV253g8",
+        "runtimeSourceFileCount": 1020,
+        "runtimeSourceMatchesFixedGitExport": true,
+        "exportEolDifferences": 1020,
+        "runtimeSourceManifestHash": "5342fd61cf9948d6c005224395b4d567e57fde4835717f54045c2d437109beab",
+        "privateEnvironmentFiles": false,
+        "privateStorageFiles": false,
+        "staticAssetsPresent": true,
+        "nonRootReadOnlyNoNetwork": true,
+        "productionQualified": false
+      }
+    ]
+  },
+  "fixtureDiagnostic": {
+    "path": "scripts/fixtures/configured-signed-candidate-db.ts",
+    "sha256": "645ad66482a802dcf6f75a6cfe5ac28af97e570afdc3be8c4634c4eb99ffc7dc",
+    "onlyRestrictedCodeAndStaticMessagePublished": true,
+    "stderrTailCharacters": 16384,
+    "parseAfterStreamClose": true,
+    "typecheckExitCode": 0,
+    "oneFileLintExitCode": 0,
+    "checkLogs": {
+      "tmp/ma24-contention-diagnostic-typecheck.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tmp/ma24-contention-diagnostic-lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "databaseAcceptance": {
+    "fullCompositionAndFormalRecovery": {
+      "status": "pending-not-accepted",
+      "plannedLog": "tmp/ma24-contention-fixed-linux-recovery.log",
+      "requiresCommittedDiagnosticFixture": true
+    },
+    "ordinaryApiWorkerAllReceiptRecovery": {
+      "sessionId": 63199,
+      "status": "running-not-accepted",
+      "log": "tmp/ma24-contention-main-worker-recovery.log"
+    },
+    "independentDeclarationTls": {
+      "sessionId": 44186,
+      "status": "running-not-accepted",
+      "log": "tmp/ma24-contention-declaration-tls.log"
+    }
+  },
+  "productionQualified": false,
+  "realQualityAccepted": false,
+  "automaticActivation": false,
+  "deployment": false
+}

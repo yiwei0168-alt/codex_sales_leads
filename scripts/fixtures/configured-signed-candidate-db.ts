@@ -47,7 +47,7 @@ export async function verifyConfiguredSignedCandidateDatabase(pool:Pool,input:{o
     return {contents:source.replace(needle,replacement),loader:'ts',resolveDir:dirname(args.path)};
    });
    builder.onLoad({filter:/skill-candidate-runner\.ts$/},async args=>({contents:(await readFile(args.path,'utf8')).replace('}catch(error){stopReason=stopReason??',` }catch(error){const message=error instanceof Error?error.message:'';console.error('FIXTURE_INNER:'+(/^[A-Za-z -]{1,180}$/.test(message)?message:'Candidate nonstatic validation error'));stopReason=stopReason??`),loader:'ts',resolveDir:dirname(args.path)}));
-   builder.onLoad({filter:/skill-collector-runner\.ts$/},async args=>({contents:(await readFile(args.path,'utf8')).replace('main().catch(()=>{',`main().catch(error=>{const message=error instanceof Error?error.message:'';if(/^(Configured|Transport|Candidate|Recorded|Collector|Skill|Dedicated|Frozen|Local|Historical|Task) [A-Za-z -]{1,160}$/.test(message))console.error('FIXTURE_CODE:'+message);`),loader:'ts',resolveDir:dirname(args.path)}));
+   builder.onLoad({filter:/skill-collector-runner\.ts$/},async args=>({contents:(await readFile(args.path,'utf8')).replace('main().catch(()=>{',`main().catch(error=>{const code=error&&typeof error==='object'?error.code:undefined;if(typeof code==='string'&&/^[A-Z0-9_]{3,40}$/.test(code))console.error('FIXTURE_SQLCODE:'+code);const message=error instanceof Error?error.message:'';if(/^(Configured|Transport|Candidate|Recorded|Collector|Skill|Dedicated|Frozen|Local|Historical|Task) [A-Za-z -]{1,160}$/.test(message))console.error('FIXTURE_CODE:'+message);`),loader:'ts',resolveDir:dirname(args.path)}));
    builder.onResolve({filter:/(?:billing\/paid-fetch|network\/model-transport)$/},()=>({path:'synthetic-adapters',namespace:'ma24-fixture'}));
    builder.onLoad({filter:/.*/,namespace:'ma24-fixture'},()=>({contents:'export const budgetedFetch=(transport)=>transport; export const modelRoutedTransport=(transport)=>transport;',loader:'js'}));
   }}]});
@@ -59,8 +59,13 @@ export async function verifyConfiguredSignedCandidateDatabase(pool:Pool,input:{o
    TASK_MODEL_TRANSPORT_COLLECTOR_ID:process.env.MA24_MEASURED_RUNTIME_PACKAGES_FILE?process.env.TASK_MODEL_TRANSPORT_COLLECTOR_ID:input.collectorId,
    TASK_MODEL_TRANSPORT_DEPLOYMENT_SHA256:process.env.MA24_MEASURED_RUNTIME_PACKAGES_FILE?process.env.TASK_MODEL_TRANSPORT_DEPLOYMENT_SHA256:input.deploymentHash,
    SKILL_RUNNER_COLLECTOR_ID:input.collectorId,SKILL_RUNNER_DEPLOYMENT_SHA256:input.deploymentHash,
-   SKILL_MODEL_TRANSPORT_KEY_ID:input.keyId,SKILL_MODEL_TRANSPORT_PRIVATE_KEY_FILE:input.keyPath}});let output='',diagnostic='unclassified';
-  child.stdout.on('data',data=>{output+=String(data);});child.stderr.on('data',data=>{for(const match of String(data).matchAll(/FIXTURE_(?:CODE|INNER):([A-Za-z -]{1,180})/g))diagnostic+='; '+match[1];});child.once('error',reject);child.once('exit',(code,signal)=>resolve({code,signal,output,diagnostic}));
+   SKILL_MODEL_TRANSPORT_KEY_ID:input.keyId,SKILL_MODEL_TRANSPORT_PRIVATE_KEY_FILE:input.keyPath}});let output='',diagnostic='unclassified',diagnosticTail='';
+  child.stdout.on('data',data=>{output+=String(data);});child.stderr.on('data',data=>{diagnosticTail=(diagnosticTail+String(data)).slice(-16_384);});child.once('error',reject);
+  child.once('close',(code,signal)=>{
+   for(const match of diagnosticTail.matchAll(/FIXTURE_(?:CODE|INNER):([A-Za-z -]{1,180})/g))diagnostic+='; '+match[1];
+   for(const match of diagnosticTail.matchAll(/FIXTURE_SQLCODE:([A-Z0-9_]{3,40})/g))diagnostic+='; SQLCODE '+match[1];
+   resolve({code,signal,output,diagnostic});
+  });
  });
  const recovery=process.env.MA24_CONFIGURED_RUNTIME_PROCESS_CRASH==='1'&&!input.prospective?await verifyConfiguredRuntimeProcessCrash(pool,{owner:input.owner,evaluationId},launch):null;
  const exit=recovery?.exit??await launch();
