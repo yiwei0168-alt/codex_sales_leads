@@ -14,6 +14,8 @@ const commit=metadata.Config.Labels?.['org.opencontainers.image.revision'];asser
 const measuredMain=process.env.MA24_MEASURED_MAIN_IMAGE;
 if(measuredMain)assert.match(measuredMain,/^sha256:[a-f0-9]{64}$/);
 const formalRecovery=process.env.MA24_LINUX_FORMAL_RECOVERY==='1';
+const fixedCollectorReuse=process.env.MA24_FIXED_COLLECTOR_REUSE==='1';
+if(fixedCollectorReuse)assert(measuredMain,'Fixed collector reuse requires measured packages');
 if(formalRecovery)assert(measuredMain,'Fixed-image formal recovery requires measured runtime packages');
 // New fixture-only changes may exercise the fixed runtime without rebuilding it.
 // Every runtime source/config byte is checked against /app before execution.
@@ -28,6 +30,7 @@ try{
  const archive=join(directory,'source.tar');execFileSync('git',['archive','--format=tar',fixtureCommit,'-o',archive]);
  execFileSync('tar',['-xf',archive,'-C',source]);
  const values={NODE_ENV:'test',NEXT_TELEMETRY_DISABLED:'1',MA24_DISPOSABLE_TRANSPORT_JOURNAL:'1',MA24_CONFIGURED_COMBINED:'1',MA24_DATABASE_TRUST:'1'};
+ if(fixedCollectorReuse)values.MA24_FIXED_COLLECTOR_REUSE='1';
  if(formalRecovery)Object.assign(values,{MA24_SHARED_TASK_LEASE:'1',MA24_SKILL_RUNTIME_TASK:'1',MA24_SKILL_RUNTIME_GRAPH:'1',MA24_CONFIGURED_RUNTIME_PROCESS_CRASH:'1'});
  const measurementDirectory=join(directory,'measurements');
  if(measuredMain){
@@ -77,6 +80,7 @@ try{
  assert(summary?.configuredSameFreezeFiveCategoriesVerified&&summary.sourceRevocationGuardsReady&&summary.sourcePreparedWithoutSealing);
  assert.equal(summary.actualModelCalls,0);assert.equal(summary.productionQualificationGranted,false);
  if(measuredMain){assert.equal(summary.measuredRuntimeRegistrationCompositionVerified,true);assert.equal(summary.runtimePackagesRegistered,true);assert.equal(summary.collectorProvenanceVerified,true);}
+ if(fixedCollectorReuse)assert.equal(summary.fixedPackageHistoricalAndProspectiveCompletedReuseVerified,true);
  if(formalRecovery){
   for(const field of ['sharedAgentRunLeaseDatabaseVerified','sharedOrdinaryLeaseActualRenewalVerified','compiledOrdinaryWorkerSharedLeaseVerified',
    'ordinaryWorkerInitialPauseAndPauseCancelSettled','ordinaryWorkerTransportFailureNoAutomaticReplay','skillRuntimeSharedLeaseCancelSettled'])
@@ -89,6 +93,7 @@ try{
   fixtureCommit,runtimeSourceBytesMatchedImage:true,archivedFixtureSourceMatchesImageRevision:fixtureCommit===commit,measuredRuntimeRegistrationCompositionVerified:!!measuredMain,
   fixedCompiledDeclarationRunnerCopiedByteForByte:true,verificationScratchSeparateFromRuntime:true,
   fixedImageFormalRecoveryVerified:formalRecovery,
+  fixedPackageHistoricalAndProspectiveCompletedReuseVerified:fixedCollectorReuse,
   productionEntrypointWrapperUsedForWholeFixture:false,databaseConnection:'disposable namespace loopback',databaseTlsVerified:false,
   actualModelCalls:0,productionQualified:false,automaticActivation:false}));
 }finally{

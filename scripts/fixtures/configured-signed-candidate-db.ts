@@ -51,10 +51,11 @@ export async function verifyConfiguredSignedCandidateDatabase(pool:Pool,input:{o
    builder.onResolve({filter:/(?:billing\/paid-fetch|network\/model-transport)$/},()=>({path:'synthetic-adapters',namespace:'ma24-fixture'}));
    builder.onLoad({filter:/.*/,namespace:'ma24-fixture'},()=>({contents:'export const budgetedFetch=(transport)=>transport; export const modelRoutedTransport=(transport)=>transport;',loader:'js'}));
   }}]});
- const launch=(reuse=false,crash=false,minimumStep=0)=>new Promise<{code:number|null;signal:string|null;output:string;diagnostic:string}>((resolve,reject)=>{
-  const child=spawn(process.execPath,[compiledPath,'--execute',jobPath],{windowsHide:true,stdio:['ignore','pipe','pipe'],env:{...process.env,
+ const launch=(reuse=false,crash=false,minimumStep=0,fixedPackage=false)=>new Promise<{code:number|null;signal:string|null;output:string;diagnostic:string}>((resolve,reject)=>{
+  if(fixedPackage){assert.equal(process.platform,'linux');assert(process.env.MA24_MEASURED_RUNTIME_PACKAGES_FILE);assert(reuse&&!crash);}
+  const child=spawn(process.execPath,[fixedPackage?'/app/start.mjs':compiledPath,'--execute',jobPath],{windowsHide:true,stdio:['ignore','pipe','pipe'],env:{...process.env,
    NODE_ENV:'production',NODE_OPTIONS:'',NODE_EXTRA_CA_CERTS:'',SSL_CERT_FILE:'',SSL_CERT_DIR:'',NODE_USE_SYSTEM_CA:'0',NODE_TLS_REJECT_UNAUTHORIZED:'1',
-   OPENROUTER_API_KEY:'SYNTHETIC_NOT_A_CREDENTIAL',OPENROUTER_BASE_URL:'https://openrouter.ai/api/v1',OPENROUTER_HTTP_REFERER:'',
+   OPENROUTER_API_KEY:fixedPackage?'':'SYNTHETIC_NOT_A_CREDENTIAL',OPENROUTER_BASE_URL:'https://openrouter.ai/api/v1',OPENROUTER_HTTP_REFERER:'',
    MA24_RUNTIME_KILL_AFTER_SKILL_READ:crash?'1':'0',MA24_CANDIDATE_MINIMUM_HTTP_STEP:String(minimumStep),MA24_CANDIDATE_FORBID_REQUEST:reuse?'1':'0',MA24_CANDIDATE_SKILL_ID:input.skillId,MA24_CANDIDATE_EVALUATION_ID:evaluationId,
    TASK_MODEL_TRANSPORT_COLLECTOR_ID:process.env.MA24_MEASURED_RUNTIME_PACKAGES_FILE?process.env.TASK_MODEL_TRANSPORT_COLLECTOR_ID:input.collectorId,
    TASK_MODEL_TRANSPORT_DEPLOYMENT_SHA256:process.env.MA24_MEASURED_RUNTIME_PACKAGES_FILE?process.env.TASK_MODEL_TRANSPORT_DEPLOYMENT_SHA256:input.deploymentHash,
@@ -72,7 +73,7 @@ export async function verifyConfiguredSignedCandidateDatabase(pool:Pool,input:{o
  assert.equal(exit.code,0,`Configured signed candidate fixture failed: ${exit.diagnostic}`);assert(exit.output.includes('"collectorExecution":"completed"'));
  const bundles=(await pool.query<{id:string;raw_receipts:{collector:{protocol:string};candidateSources?:Record<string,{taskId:string}>;prospectiveSources?:Record<string,{taskId:string}>}}>('select id,raw_receipts from agent_skill_acceptance_bundle where owner_id=$1 and raw_receipts::text like $2',[input.owner,`%${evaluationId}%`])).rows;
  assert.equal(bundles.length,1);
- let runtimeTaskBindingVerified=false,completedRuntimeNoRequestReuseVerified=false,runtimeMaterialLockVerified=false,prospectiveCaptureMismatchRejected=false;
+ let runtimeTaskBindingVerified=false,completedRuntimeNoRequestReuseVerified=false,runtimeMaterialLockVerified=false,prospectiveCaptureMismatchRejected=false,fixedPackageCompletedReuseVerified=false;
  {
   const prospective=Boolean(input.prospective),caseId=prospective?'signed-shadow':'signed-replay';
   assert.equal(bundles[0].raw_receipts.collector.protocol,prospective?'prospective-collector-v2':'historical-collector-v2');
@@ -90,6 +91,12 @@ export async function verifyConfiguredSignedCandidateDatabase(pool:Pool,input:{o
   assert(attempts.every(row=>row.snapshot_hash===runtimeHash));runtimeTaskBindingVerified=true;
   const repeat=await launch(true);assert.equal(repeat.code,0,`Configured completed runtime reuse failed: ${repeat.diagnostic}`);
   assert(repeat.output.includes('"collectorExecution":"completed"'));
+  if(process.env.MA24_FIXED_COLLECTOR_REUSE==='1'){
+   const fixed=await launch(true,false,0,true);
+   assert.equal(fixed.code,0,'Fixed package startup/runner completed reuse failed');
+   const result=JSON.parse(fixed.output.trim());assert.equal(result.collectorExecution,'completed');assert.equal(result.taskId,taskId);
+   assert.equal(result.evaluationId,evaluationId);fixedPackageCompletedReuseVerified=true;
+  }
   assert.deepEqual((await pool.query('select id,step,snapshot_hash,input_hash from agent_skill_model_attempt where evaluation_id=$1 order by step',[evaluationId])).rows,attempts);
   assert.deepEqual((await pool.query('select id,tool_id,status,output from agent_tool_call where run_id=$1 order by tool_id',[taskId])).rows,tools);
   assert.deepEqual((await pool.query('select id from agent_skill_acceptance_bundle where owner_id=$1 and raw_receipts::text like $2',[input.owner,`%${evaluationId}%`])).rows,[{id:bundles[0].id}]);
@@ -113,5 +120,5 @@ export async function verifyConfiguredSignedCandidateDatabase(pool:Pool,input:{o
  }
 
  assert.equal((await pool.query('select enabled from agent_skill where id=$1',[input.skillId])).rows[0].enabled,false);
- return {collectorBundleId:bundles[0].id,configuredSignedCandidateDatabaseVerified:true,...(recovery?Object.fromEntries(Object.entries(recovery).filter(([key])=>key!=='exit')):{}),runtimeTaskBindingVerified,completedRuntimeNoRequestReuseVerified,runtimeTwoArmReviewVerified:true,runtimeMaterialLockVerified,prospectiveCaptureMismatchRejected,configuredCandidateKind:input.prospective?'prospective':'historical',candidateSkillRemainsDisabled:true,actualModelCalls:0,automaticActivation:false};
+ return {collectorBundleId:bundles[0].id,configuredSignedCandidateDatabaseVerified:true,...(recovery?Object.fromEntries(Object.entries(recovery).filter(([key])=>key!=='exit')):{}),runtimeTaskBindingVerified,completedRuntimeNoRequestReuseVerified,fixedPackageCompletedReuseVerified,runtimeTwoArmReviewVerified:true,runtimeMaterialLockVerified,prospectiveCaptureMismatchRejected,configuredCandidateKind:input.prospective?'prospective':'historical',candidateSkillRemainsDisabled:true,actualModelCalls:0,automaticActivation:false};
 }
