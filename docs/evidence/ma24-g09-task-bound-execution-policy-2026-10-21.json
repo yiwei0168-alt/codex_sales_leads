@@ -745,19 +745,17 @@
     }
   },
   "currentFixedFullComposition": {
-    "status": "failed-before-composition-acceptance",
-    "sessionId": 9934,
+    "status": "running-not-accepted",
+    "sessionId": 37984,
     "sourceCommit": "47be31685735b1f9c9925660f6f421c2e203a3fc",
-    "fixtureCommit": "47be31685735b1f9c9925660f6f421c2e203a3fc",
-    "log": "tmp/ma24-task-policy-uuid-fixed-linux.log",
+    "fixtureCommit": "6b4f51c9",
+    "log": "tmp/ma24-task-policy-settlement-fixed-linux.log",
     "requiresCaseVariantQuotaRace": true,
     "requiresProspectiveBusinessReadCrashRecovery": true,
     "requiresMeasuredRegistrationAndFixedReuse": true,
     "wholeProductionWrapperVerified": false,
     "wholeCombinationDatabaseTlsVerified": false,
-    "exitCode": 1,
-    "logSha256": "791cce0aff47fb57f45c15e6368a27570a976d91f6dab1b256e395cdf9ffa254",
-    "failure": "Unsettled-task audit rejection asserted obsolete task-unavailable message; policy admission now rejects earlier with execution-policy-unavailable. Remaining composition gates were not reached."
+    "fixtureOnlyCorrection": true
   },
   "currentFixedDeclarationDatabaseTrust": {
     "status": "passed-result-records-session-handle-expired",
@@ -917,5 +915,20 @@
     "realModelCalls": 0,
     "typecheckExitCode": 0,
     "lintExitCode": 0
+  },
+  "failed47beComposition": {
+    "status": "failed-before-composition-acceptance",
+    "sessionId": 9934,
+    "sourceCommit": "47be31685735b1f9c9925660f6f421c2e203a3fc",
+    "fixtureCommit": "47be31685735b1f9c9925660f6f421c2e203a3fc",
+    "log": "tmp/ma24-task-policy-uuid-fixed-linux.log",
+    "requiresCaseVariantQuotaRace": true,
+    "requiresProspectiveBusinessReadCrashRecovery": true,
+    "requiresMeasuredRegistrationAndFixedReuse": true,
+    "wholeProductionWrapperVerified": false,
+    "wholeCombinationDatabaseTlsVerified": false,
+    "exitCode": 1,
+    "logSha256": "791cce0aff47fb57f45c15e6368a27570a976d91f6dab1b256e395cdf9ffa254",
+    "failure": "Unsettled-task audit rejection asserted obsolete task-unavailable message; policy admission now rejects earlier with execution-policy-unavailable. Remaining composition gates were not reached."
   }
 }

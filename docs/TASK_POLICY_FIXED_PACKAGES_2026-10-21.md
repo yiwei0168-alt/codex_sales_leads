@@ -45,3 +45,6 @@
 
 
 2026-10-21 / Settlement fixture follow-up: final-product Linux session 9934 exited 1 before composition acceptance. The unsettled-task audit correctly rejected at execution-policy admission, but its fixture asserted the previous error message. The fixture now requires the exact current rejection; product guards are unchanged. Separate collector TLS/database-trust log contains two passing result records; its session handle has expired, so no process exit code is claimed. Disposable containers are gone; the original three services remain. Full composition and qualification remain unaccepted. See [evidence](evidence/ma24-g09-task-bound-execution-policy-2026-10-21.json).
+
+
+2026-10-21 / Corrected fixture frozen at `6b4f51c9` (product source remains `47be3168`). Typecheck 25005 and fixture lint 16287 exited 0. Full Linux rerun **37984** is running at `tmp/ma24-task-policy-settlement-fixed-linux.log`, using the same immutable main/collector images. Runtime source bytes must still match the images; the prior failed 9934 record is retained. No acceptance or activation inferred before terminal results.
