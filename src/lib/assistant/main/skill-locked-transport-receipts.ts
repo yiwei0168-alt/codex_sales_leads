@@ -9,6 +9,7 @@ import {verifyOwnedTaskModelTransports} from './task-model-transport-journal';
 import {verifySkillCandidateJournalTransports} from './skill-model-transport-journal';
 import {loadConfiguredSkillRunnerTrustRegistry} from './skill-runner-attestation';
 import {mergeSkillSigningEnrollments,mergeSkillSigningEnrollmentWindows,type SkillSigningEnrollment,type SkillSigningEnrollmentWindow} from './skill-signing-enrollment';
+import {summarizeRuntimeProcessCoverage,type RuntimeProcessRecord} from './runtime-process-coverage';
 
 /** Rebuild coverage from persisted case bindings. Historical/prospective baselines
  * use the original task journal; safety cases have two evaluation journals. */
@@ -42,12 +43,16 @@ export async function revalidateLockedSkillTransportReceipts(client:PoolClient,c
   await lockSkillAcceptanceRunJournals(client,context.userId,evidence.artifact);
   const registryHash=digest(await loadConfiguredSkillRunnerTrustRegistry(context.userId)),now=await databaseTime(client);
   const audits:Array<{sourceHash:string;journalHash:string;receiptHashes:string[];validBefore:string;signingEnrollmentHash:string;signingWindowHash:string}>=[],enrollments:SkillSigningEnrollment[]=[],windows:SkillSigningEnrollmentWindow[]=[];
-  const retain=(source:unknown,out:{registryHash:string|undefined;journalHash:string;transportReceiptHashes:string[];transportValidBefore:string;signingEnrollments:SkillSigningEnrollment[];signingEnrollmentWindows:SkillSigningEnrollmentWindow[]})=>{
+  const processClaims:RuntimeProcessRecord[]=[],processReceiptHashes:string[]=[];let processRecordsAvailable=true;
+  const retain=(source:unknown,out:{registryHash:string|undefined;journalHash:string;transportReceiptHashes:string[];transportValidBefore:string;signingEnrollments:SkillSigningEnrollment[];signingEnrollmentWindows:SkillSigningEnrollmentWindow[];runtimeProcessClaims?:readonly unknown[]})=>{
    if(out.registryHash!==registryHash||!out.transportReceiptHashes.length)throw new Error('Acceptance transport trust or coverage changed');
    const bindings=mergeSkillSigningEnrollments(out.signingEnrollments);
    if(!bindings.length)throw new Error('Acceptance transport signing enrollment empty');enrollments.push(...bindings);
    const ranges=mergeSkillSigningEnrollmentWindows(out.signingEnrollmentWindows);windows.push(...ranges);
    if(digest(ranges.map(({keyId,collectorId,deploymentHash,purpose})=>({keyId,collectorId,deploymentHash,purpose})))!==digest(bindings))throw new Error('Acceptance signing window coverage changed');
+   processReceiptHashes.push(...out.transportReceiptHashes);
+   if(out.runtimeProcessClaims===undefined)processRecordsAvailable=false;
+   else processClaims.push(...summarizeRuntimeProcessCoverage({receiptHashes:out.transportReceiptHashes,claims:out.runtimeProcessClaims}).claims);
    audits.push({sourceHash:digest(source),journalHash:out.journalHash,receiptHashes:out.transportReceiptHashes,validBefore:out.transportValidBefore,signingEnrollmentHash:digest(bindings),signingWindowHash:digest(ranges)});
   };
   for(const runId of runs)retain({runId},await verifyOwnedTaskModelTransports(context,{runId},now));
@@ -58,7 +63,12 @@ export async function revalidateLockedSkillTransportReceipts(client:PoolClient,c
   const validBefore=Math.min(Date.parse(evidence.artifact.plan.expiresAt),...audits.map(row=>Date.parse(row.validBefore)));
   const checkedAt=await databaseTime(client);
   if(!Number.isFinite(validBefore)||checkedAt.getTime()>=validBefore)throw new Error('Acceptance transport expired during audit');
+  const processCoverage=processRecordsAvailable?summarizeRuntimeProcessCoverage({receiptHashes:processReceiptHashes,claims:processClaims}):undefined;
   return {transportReceiptsRequired:true as const,transportReceiptsRevalidated:true as const,
+   runtimeProcessReceiptHashes:processReceiptHashes,
+   ...(processCoverage?{runtimeProcessClaims:processCoverage.claims,runtimeProcessCoverageHash:processCoverage.runtimeProcessCoverageHash}:{}),
+   runtimeProcessCoverageComplete:processCoverage?.runtimeProcessCoverageComplete===true,
+   runtimeProcessMissingClaimCount:processCoverage?.runtimeProcessMissingClaimCount??processReceiptHashes.length,
    transportSigningEnrollments:mergeSkillSigningEnrollments(enrollments),
    transportSigningEnrollmentWindows:mergeSkillSigningEnrollmentWindows(windows),
    transportAuditHash:digest(audits),transportRegistryHash:registryHash,transportOriginalTaskCount:runs.length,transportEvaluationArmCount:arms.length,

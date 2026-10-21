@@ -41,6 +41,20 @@ it('retains shared admission before latest registration reads and binds current 
  expect(params).toEqual(['3',trust.registry.keys[0].notBefore,trust.registry.keys[0].expiresAt,window.requiredFrom,window.requiredThrough,registration.validUntil]);
  expect(calls.some(([sql])=>/\b(commit|rollback|unlock)\b/i.test(sql))).toBe(false);
 });
+it('binds a process statement only after the current registration and its exact time window are retained',async()=>{
+ const executionArtifacts=(['start.mjs','worker.mjs','server.mjs'] as const).map(path=>({path,sha256:digest(path)}));
+ const current={...registration,inspection:{...registration.inspection,executionArtifacts}};
+ saved={...saved!,registration:current,registration_hash:digest(current)};
+ const claim={statementHash:digest('statement'),signingEnrollment:binding,proof:{protocol:'local-runtime-process-v1',role:'main-agent',
+  deploymentHash:binding.deploymentHash,nodeSha256:registration.inspection.nodeSha256,entry:'start.mjs',entrySha256:digest('start.mjs'),
+  artifact:'worker.mjs',artifactSha256:digest('worker.mjs')}};
+ const out=await readLockedSkillRuntimePackages(client,'owner',{registryHash,runtimeHash,windows:[window],transportProcesses:{receiptHashes:[claim.statementHash],claims:[claim]}});
+ expect(out).toMatchObject({runtimePackagesRegistered:true,runtimeProcessPackagesRevalidated:true,runtimeProcessBoundReceiptCount:1});
+ expect(m.query.mock.calls.some(([sql])=>sql.includes('registered_at>='))).toBe(true);
+ saved!.withdrawn=true;
+ expect(await readLockedSkillRuntimePackages(client,'owner',{registryHash,runtimeHash,windows:[window],transportProcesses:{receiptHashes:[claim.statementHash],claims:[claim]}}))
+  .toMatchObject({runtimePackagesRegistered:false,runtimePackageBlockers:['latest-package-registration-withdrawn']});
+});
 it.each(['file','schema','busy','missing','withdrawn','time'] as const)('keeps %s evidence unqualified without fallback',async kind=>{
  if(kind==='file')m.mode.mockReturnValue('file');if(kind==='schema')supported=false;if(kind==='busy')admitted=false;
  if(kind==='missing')saved=undefined;if(kind==='withdrawn')saved!.withdrawn=true;if(kind==='time')valid=false;

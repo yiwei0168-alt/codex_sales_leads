@@ -29,6 +29,7 @@ beforeEach(()=>{vi.resetAllMocks();m.read.mockResolvedValue(evidence());m.regist
 });
 it('audits two original tasks and all eight case arms using one DB time, returning hashes only',async()=>{
  const out=await revalidateLockedSkillTransportReceipts(client,context,bundleId);
+ if(!out.transportReceiptsRequired)throw new Error('Expected production transport coverage');
  expect(out).toMatchObject({transportReceiptsRequired:true,transportReceiptsRevalidated:true,transportOriginalTaskCount:2,transportEvaluationArmCount:8,transportReceiptCount:10});
  expect(out.transportSigningEnrollments).toHaveLength(2);
  expect(m.task).toHaveBeenCalledTimes(2);expect(m.candidate).toHaveBeenCalledTimes(8);
@@ -38,6 +39,30 @@ it('audits two original tasks and all eight case arms using one DB time, returni
  expect(m.lock.mock.invocationCallOrder[0]).toBeLessThan(m.task.mock.invocationCallOrder[0]);
  expect(JSON.stringify(out)).not.toContain('PRIVATE');expect(JSON.stringify(out)).not.toContain(runId);
  expect(m.query).toHaveBeenCalledTimes(2);
+ expect(out).toMatchObject({runtimeProcessCoverageComplete:false,runtimeProcessMissingClaimCount:10});
+});
+it.each(['complete','missing-fallback','dropped-fallback'])('retains %s process coverage across original and all evaluation arms',async mode=>{
+ const audit=(identity:string,purpose:'task-model-transport'|'model-transport')=>{
+  const main=purpose==='task-model-transport',role=main?'main-agent':'skill-collector',entry=main?'start.mjs':'runner.mjs',artifact=main?'worker.mjs':'runner.mjs';
+  const binding={keyId:main?'task-key':'eval-key',collectorId:main?'task':'eval',deploymentHash:digest(main?'task':'eval'),purpose};
+  const hashes=[digest(identity+'fallback'),digest(identity+'success')];
+  const claims=hashes.map((statementHash,index)=>({statementHash,signingEnrollment:binding,
+   proof:mode==='missing-fallback'&&identity===id(5)+'candidate'&&index===0?null:
+    {protocol:'local-runtime-process-v1',role,deploymentHash:binding.deploymentHash,nodeSha256:digest('node'),entry,entrySha256:digest(entry),artifact,artifactSha256:digest(artifact)}}));
+  if(mode==='dropped-fallback'&&identity===id(5)+'candidate')claims.shift();
+  return {registryHash:digest(registry),journalHash:digest(identity),transportReceiptHashes:hashes,transportValidBefore:expiresAt,
+   signingEnrollments:[binding],signingEnrollmentWindows:[{...binding,requiredFrom:now.toISOString(),requiredThrough:now.toISOString()}],runtimeProcessClaims:claims};
+ };
+ m.task.mockImplementation(async(_context:unknown,input:{runId:string})=>audit(input.runId,'task-model-transport'));
+ m.candidate.mockImplementation(async(_context:unknown,input:{evaluationId:string;arm:string})=>audit(input.evaluationId+input.arm,'model-transport'));
+ if(mode==='dropped-fallback'){
+  await expect(revalidateLockedSkillTransportReceipts(client,context,bundleId)).rejects.toThrow('coverage changed');return;
+ }
+ const out=await revalidateLockedSkillTransportReceipts(client,context,bundleId);
+ expect(out).toMatchObject({transportReceiptCount:20,runtimeProcessCoverageComplete:mode==='complete',runtimeProcessMissingClaimCount:mode==='complete'?0:1});
+ if(!out.transportReceiptsRequired)throw new Error('Expected production transport coverage');
+ expect(out.runtimeProcessClaims).toHaveLength(20);expect(out.runtimeProcessReceiptHashes).toHaveLength(20);
+ expect(out).not.toHaveProperty('productionAgentEquivalent');expect(out).not.toHaveProperty('runtimeProcessPackagesRevalidated');
 });
 it('does not promote synthetic evidence or require any registry or task transport',async()=>{
  m.read.mockResolvedValue({artifact:{sourceKind:'synthetic-fixture'}});

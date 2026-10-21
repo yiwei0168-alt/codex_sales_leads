@@ -27,7 +27,9 @@ beforeEach(()=>{
   signingEnrollment:{keyId:'task-key',collectorId:'synthetic',deploymentHash:digest('deployment'),purpose:'task-model-transport'}};m.success.mockReset().mockResolvedValue(checked);m.failure.mockReset().mockResolvedValue(checked);
 });
 it('loads owned completed rows and verifies every predecessor before success without claiming full provenance',async()=>{
- expect(await verifyOwnedTaskModelTransports(context,input)).toMatchObject({storedModeChainsVerified:true,completeTaskProvenanceVerified:false,automaticActivation:false});
+ const out=await verifyOwnedTaskModelTransports(context,input);
+ expect(out).toMatchObject({storedModeChainsVerified:true,completeTaskProvenanceVerified:false,automaticActivation:false});
+ expect(out.runtimeProcessClaims).toHaveLength(2);expect(out.runtimeProcessClaims.every(row=>row.proof===null)).toBe(true);
  expect(m.query.mock.calls[0][1]).toEqual([input.runId,context.userId]);
  expect(m.failure).toHaveBeenCalledOnce();expect(m.success).toHaveBeenCalledOnce();
  expect(m.failure.mock.calls[0][1]).toMatchObject({binding:{ownerId:context.userId,runId:input.runId,callId:m.rows[0].id},callCompletedAt:'2026-10-17T00:01:00.000Z'});
@@ -58,7 +60,9 @@ it.each(['missing-task','empty','gap','incomplete','legacy','changed-hash','no-s
 });
 it('rejects unsigned failures and changed rows observed at final reread',async()=>{
  m.failure.mockRejectedValueOnce(new Error('unsigned'));await expect(verifyOwnedTaskModelTransports(context,input)).rejects.toThrow('unsigned');
- m.failure.mockResolvedValue({registryHash:digest({keys:[]}),statementHash:digest('statement')});
- m.success.mockImplementation(async()=>{m.rows=[row(0,true)];return {registryHash:digest({keys:[]}),statementHash:digest('statement')};});
+ const checked={registryHash:digest({keys:[]}),statementHash:digest('statement'),validBefore:'2026-10-20T00:00:00.000Z',
+  signingEnrollment:{keyId:'task-key',collectorId:'synthetic',deploymentHash:digest('deployment'),purpose:'task-model-transport'}};
+ m.failure.mockResolvedValue(checked);
+ m.success.mockImplementation(async()=>{m.rows=[row(0,true)];return checked;});
  await expect(verifyOwnedTaskModelTransports(context,input)).rejects.toThrow('journal or trust changed');
 });

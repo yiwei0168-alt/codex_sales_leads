@@ -50,7 +50,8 @@ try{
  let window={...binding,requiredFrom:before,requiredThrough:before};
  const beginRead=async()=>{const client=await pool.connect();await client.query('begin isolation level read committed');await client.query('set local role network_copilot_app');
   await client.query("select set_config('app.current_user_id',$1,true),set_config('app.current_user_role','member',true)",[actor]);return client;};
- const read=async(runtimeHash=inspection.runtimeHash)=>{const client=await beginRead();try{return await readLockedSkillRuntimePackages(client,actor,{registryHash,runtimeHash,windows:[window]});}
+ type Processes=Parameters<typeof readLockedSkillRuntimePackages>[2]['transportProcesses'];
+ const read=async(runtimeHash=inspection.runtimeHash,transportProcesses?:Processes)=>{const client=await beginRead();try{return await readLockedSkillRuntimePackages(client,actor,{registryHash,runtimeHash,windows:[window],...(transportProcesses?{transportProcesses}:{})});}
   finally{await client.query('rollback');client.release();}};
  assert.deepEqual((await read()).runtimePackageBlockers,['registration-schema-unavailable']);
  await pool.query(await readFile('db/migrations/159_skill_runtime_package_registration.sql','utf8'));
@@ -66,6 +67,24 @@ try{
  assert.deepEqual((await read()).runtimePackageBlockers,['package-registration-time-window'],'Later registration must not qualify earlier attempts');
  await pool.query('select pg_sleep(0.01)');const after=(await pool.query<{time:Date}>('select clock_timestamp() time')).rows[0].time.toISOString();
  window={...window,requiredFrom:after,requiredThrough:after};assert.equal((await read()).runtimePackagesRegistered,true);
+ let processClaimPackageBindingVerified=false,processClaimMissingOrTamperedRejected=false;
+ let processCoverage:Processes;
+ if(purpose!=='runner-declaration'){
+  const entry=role==='main-agent'?'start.mjs':'runner.mjs',artifact=role==='main-agent'?'worker.mjs':'runner.mjs';
+  const artifactHash=(path:string)=>{const value=inspection.executionArtifacts?.find(row=>row.path===path);assert(value,'Measured execution artifact missing');return value.sha256;};
+  // Manually constructed component input, NOT a real signed model execution.
+  // The reader's caller normally supplies authenticated transport statements.
+  const claim={statementHash:digest('synthetic-process-component'),signingEnrollment:binding,proof:{protocol:'local-runtime-process-v1',role,
+   deploymentHash:inspection.deploymentHash,nodeSha256:inspection.nodeSha256,entry,entrySha256:artifactHash(entry),artifact,artifactSha256:artifactHash(artifact)}};
+  processCoverage={receiptHashes:[claim.statementHash],claims:[claim]};
+  assert.equal((await read(inspection.runtimeHash,processCoverage)).runtimeProcessPackagesRevalidated,true);
+  for(const proof of [null,{...claim.proof,nodeSha256:digest('wrong-node')},{...claim.proof,entrySha256:digest('wrong-entry'),...(role==='skill-collector'?{artifactSha256:digest('wrong-entry')}:{})}]){
+   const checked=await read(inspection.runtimeHash,{receiptHashes:[claim.statementHash],claims:[{...claim,proof}]});
+   assert.equal(checked.runtimePackagesRegistered,true);assert.equal(checked.runtimeProcessPackagesRevalidated,false);
+  }
+  await assert.rejects(read(inspection.runtimeHash,{receiptHashes:[claim.statementHash,digest('missing-fallback')],claims:[claim]}),/coverage changed/);
+  processClaimPackageBindingVerified=true;processClaimMissingOrTamperedRejected=true;
+ }
  assert.deepEqual((await read(digest('different-source'))).runtimePackageBlockers,['runtime-package-source-mismatch']);
  console.log(JSON.stringify({phase:'idempotent-cli-retry',purpose}));
  const repeated=await cli(argumentsFor(spec));assert.equal(repeated.code,0,repeated.output);assert(repeated.output.includes('"idempotent":true'));
@@ -78,7 +97,9 @@ try{
  // A caller-owned tenant transaction really retains admission beyond the read.
  const held=await beginRead();let heldReleased=false;
  try{
-  assert.equal((await readLockedSkillRuntimePackages(held,actor,{registryHash,runtimeHash:inspection.runtimeHash,windows:[window]})).runtimePackagesRegistered,true);
+  const retained=await readLockedSkillRuntimePackages(held,actor,{registryHash,runtimeHash:inspection.runtimeHash,windows:[window],...(processCoverage?{transportProcesses:processCoverage}:{})});
+  assert.equal(retained.runtimePackagesRegistered,true);
+  if(processCoverage)assert.equal(retained.runtimeProcessPackagesRevalidated,true);
   const withdrawal=operator(client=>withdrawSkillRuntimePackage(client,{requestId:randomUUID(),revision,reason:'isolated concurrent withdrawal'}));
   let waiting=false;for(let tries=0;tries<80;tries++){
    const count=(await pool.query("select count(*)::int count from pg_locks where locktype='advisory' and mode='ExclusiveLock' and not granted")).rows[0].count;
@@ -90,6 +111,7 @@ try{
   await held.query('commit');held.release();heldReleased=true;await withdrawal;
  }finally{if(!heldReleased){await held.query('rollback');held.release();}}
  assert.deepEqual((await read()).runtimePackageBlockers,['latest-package-registration-withdrawn']);
+ if(processCoverage)assert.equal((await read(inspection.runtimeHash,processCoverage)).runtimePackagesRegistered,false);
  // Explicit native fixtures exercise the reader at DB-time expiry. They reuse
  // the measured package, but do not claim to be a second CLI publication.
  const stored=(await pool.query('select registration from skill_runtime_package_registration where revision=$1',[revision])).rows[0].registration;
@@ -110,6 +132,7 @@ try{
   actualWithdrawalCli:true,idempotentWithdrawalCli:true,changedWithdrawalRequestDenied:true,
   realReadinessPackageReader:true,missingSchemaAndRegistrationDenied:true,retroactiveRegistrationDenied:true,sourceMismatchDenied:true,publicKeyRotationDenied:true,
   withdrawalWaitedForOuterCommit:true,queuedPublicationDeniedNewReader:true,latestWithdrawalAndExpiryDenied:true,autocommitAndApplicationOperatorDenied:true,
+  processClaimPackageBindingVerified,processClaimMissingOrTamperedRejected,processClaimsSynthetic:true,signedProductionProcessClaimsVerified:false,
   fullSchemaOrFiveCategoryComposition:false,providerIdentityVerified:false,productionQualified:false,automaticActivation:false,actualModelCalls:0}));
 }catch(error){console.error(String(error instanceof Error?error.stack:error).replaceAll(password,'<temporary-password>'));process.exitCode=1;}
 finally{

@@ -14,7 +14,9 @@ const hashes={};for(const p of files)hashes[p]=digest(fs.readFileSync(path.join(
 const bytes=fs.readFileSync('/app/runtime-manifest.json'),manifest=JSON.parse(bytes);
 console.log(JSON.stringify({runtimeHash:digest({protocol:'skill-local-source-runtime-v1',node:process.versions.node,platform:process.platform,arch:process.arch,files:hashes}),
 sourceInputs:files.length,node:process.versions.node,platform:process.platform,arch:process.arch,nodeSha256:sha(fs.readFileSync(process.execPath)),
-deploymentHash:sha(bytes),files:Object.keys(manifest.files).length,...measureDependencies(manifest.files,digest)}));`;
+deploymentHash:sha(bytes),files:Object.keys(manifest.files).length,
+executionArtifacts:['start.mjs','runner.mjs','worker.mjs','server.mjs'].filter(p=>manifest.files[p]?.sha256).sort().map(p=>({path:p,sha256:manifest.files[p].sha256})),
+...measureDependencies(manifest.files,digest)}));`;
 
 export function inspectSkillRuntimePackage(imageId:string,role:'main-agent'|'skill-collector'){
  if(!/^sha256:[a-f0-9]{64}$/.test(imageId))throw new Error('Runtime registration requires an immutable Docker image ID');

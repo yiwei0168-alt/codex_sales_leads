@@ -13,9 +13,14 @@ export const skillRuntimePackageInspectionSchema=z.object({
  sourceInputs:z.number().int().positive(),files:z.number().int().positive(),
  dependencyManifestHash:sha.optional(),dependencyFiles:z.number().int().positive().optional(),
  runtimeModuleFormat:z.enum(['esm','cjs']).optional(),
+ executionArtifacts:z.array(z.object({path:z.enum(['start.mjs','runner.mjs','worker.mjs','server.mjs']),sha256:sha}).strict()).min(2).max(3).optional(),
 }).strict().superRefine((row,context)=>{
  if((row.dependencyManifestHash===undefined)!==(row.dependencyFiles===undefined))context.addIssue({code:'custom',message:'Runtime dependency inventory incomplete'});
  if(row.dependencyFiles!==undefined&&row.dependencyFiles>row.files)context.addIssue({code:'custom',message:'Runtime dependency count exceeds package inventory'});
+ if(row.executionArtifacts){
+  const paths=row.executionArtifacts.map(value=>value.path).sort(),expected=row.role==='main-agent'?['server.mjs','start.mjs','worker.mjs']:['runner.mjs','start.mjs'];
+  if(JSON.stringify(paths)!==JSON.stringify(expected))context.addIssue({code:'custom',message:'Runtime execution artifact coverage differs from role'});
+ }
 });
 export const skillRuntimePackageRegistrationSchema=z.object({protocol:z.literal('skill-runtime-package-registration-v1'),
  binding:skillSigningEnrollmentSchema.extend({publicKeyHash:sha}),inspection:skillRuntimePackageInspectionSchema,validUntil:z.iso.datetime(),

@@ -1,0 +1,70 @@
+{
+  "date": "2026-10-21",
+  "stage": "authenticated-process-receipt-coverage-and-retained-package-byte-binding",
+  "rule": "MA24-06",
+  "scope": "G01-G13",
+  "sourceFiles": {
+    "src/lib/assistant/main/runtime-process-coverage.ts": "a4bffde42dbdd1526e2e4508baa7d3d910f1a4b214c9beaecab3db68e1a25180",
+    "src/lib/assistant/main/runtime-process-coverage.test.ts": "ca1afbed8c8e88c0cf469ff299e86c665cb2ee0c3d1ee9bbdecab89ddb082dbf",
+    "src/lib/assistant/main/skill-runtime-package-schema.ts": "9d8d3cef09834a65f8371531923ceebc60501fae969e20f4f91c3d4010fad00c",
+    "src/lib/assistant/main/skill-runtime-package-store.ts": "b732ed115b826d05c2c96a51a66000091527f4e0d91d7b35569d9a97ecc7e772",
+    "src/lib/assistant/main/skill-runtime-package-store.test.ts": "7c1e3db8080b4dca40e596f94a19406673908a8f41619a2f49c2907782055f1b",
+    "src/lib/assistant/main/skill-model-transport-journal.ts": "bb3b796efb5a3feab576d499491948bb09f47b14fbf5be86f2b83b3d336287f6",
+    "src/lib/assistant/main/task-model-transport-journal.ts": "1c1b4061358af6cd8c46196f666ccc6f004d3143f9b2a02397696722fbf442f8",
+    "src/lib/assistant/main/task-model-transport-journal.test.ts": "5a54950b475d59b6cfe479a7c19e795a97572e55b2b47fa74150105dd3ac225f",
+    "src/lib/assistant/main/skill-locked-transport-receipts.ts": "639928a74a7bf6c20c79af64e74c364aaf8a97f5947680838950ea1d4ab12b23",
+    "src/lib/assistant/main/skill-locked-transport-receipts.test.ts": "cf7728a840607f9b866be855f29866c9f54a3ceb54421039636945703a078278",
+    "src/lib/assistant/main/skill-locked-materials.ts": "f1bb40004b4972eda2938ba6bf9499e3d1377972e1df82b1ccdc6bc26ee1c9dd",
+    "src/lib/assistant/main/skill-locked-materials.test.ts": "9e3aac9a97612278fd0dcaafd8706c069ecec5c7b7c9184fecae352e11b03e0b",
+    "scripts/lib/skill-runtime-package-inspection.ts": "3bf1b03aaf3337b2f3ccc90987f3210a4c6319f2cf119b4d3d46a57008743cb3",
+    "scripts/verify-skill-runtime-package-publication.ts": "bb632b9f93da0aaed5e7609275790840ee0e071504530a3cb2b644ab27879fc3"
+  },
+  "checks": {
+    "tests": {
+      "sessionId": 90429,
+      "exitCode": 0,
+      "log": "tmp/ma24-process-package-binding-tests-corrected.log",
+      "logSha256": "6e57cb4f69b7786d7fe592058c29ecbcd5949bed1dd87391d5ec181cb9e7abfe"
+    },
+    "typecheck": {
+      "sessionId": 91011,
+      "exitCode": 0,
+      "log": "tmp/ma24-process-package-binding-typecheck-corrected.log",
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "lint": {
+      "sessionId": 1787,
+      "exitCode": 0,
+      "log": "tmp/ma24-process-package-binding-lint-corrected.log",
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "testsPassed": 148,
+  "preservedFailedChecks": {
+    "tests": {
+      "sessionId": 9905,
+      "exitCode": 1,
+      "log": "tmp/ma24-process-package-binding-tests.log",
+      "logSha256": "39a42766619149e82a5dacc6fabca458b56e82103523a57eeaf6a966359cceef"
+    },
+    "typecheck": {
+      "sessionId": 86821,
+      "exitCode": 2,
+      "log": "tmp/ma24-process-package-binding-typecheck.log",
+      "logSha256": "70ddd2d4335d96403403169884a7151563cba62c6ac380abf2d5ddb002bc0004"
+    }
+  },
+  "failureCorrection": "Narrow test union types; provide complete signing enrollment in the existing final-reread mutation mock. Product checks were not relaxed.",
+  "databaseVerification": {
+    "status": "pending",
+    "mainPurpose": "task-model-transport",
+    "collectorPurpose": "model-transport",
+    "claimsWillBeSyntheticComponentInputs": true
+  },
+  "productionImagesRebuilt": false,
+  "productionQualificationProducerImplemented": false,
+  "firstProviderExecutionVerified": false,
+  "realModelCalls": 0,
+  "productionAgentEquivalent": false,
+  "automaticActivation": false
+}

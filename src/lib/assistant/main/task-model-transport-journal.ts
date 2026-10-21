@@ -9,6 +9,7 @@ import {loadConfiguredSkillRunnerTrustRegistry} from './skill-runner-attestation
 import {verifyConfiguredTaskTransportReceipt} from './task-model-transport-receipt';
 import {verifyConfiguredTaskTransportFailure} from './task-model-transport-failure-receipt';
 import {mergeSkillSigningEnrollments,mergeSkillSigningEnrollmentWindows,type SkillSigningEnrollment,type SkillSigningEnrollmentWindow} from './skill-signing-enrollment';
+import {transportRuntimeProcessRecord,type RuntimeProcessRecord} from './runtime-process-coverage';
 
 type Row={id:string;call_key:string;tool_id:string;effect:string;status:string;input:unknown;input_hash:string;output:unknown;started_at:string;completed_at:string};
 /** Read-only audit of all stored mode-model chains. Does not authenticate the
@@ -33,6 +34,7 @@ export async function verifyOwnedTaskModelTransports(context:{userId:string},inp
   const group=match[1]+':'+match[2],chain=chains.get(group)??[];chain.push({row,index:Number(match[3])});chains.set(group,chain);
  }
  const hashes:string[]=[],expiries:string[]=[],enrollments:SkillSigningEnrollment[]=[],windows:SkillSigningEnrollmentWindow[]=[],generations=new Set<string>();let registryHash:string|undefined;
+ const runtimeProcessClaims:RuntimeProcessRecord[]=[];
  for(const chain of chains.values()){
   chain.sort((a,b)=>a.index-b.index);let requestHash:string|undefined,previousFinish=-Infinity;
   for(let position=0;position<chain.length;position++){
@@ -46,7 +48,7 @@ export async function verifyOwnedTaskModelTransports(context:{userId:string},inp
    const expected={binding:{ownerId:context.userId,runId:input.runId,callId:row.id,callKey:row.call_key,inputHash:row.input_hash,collectorId,deploymentHash},
     taskCreatedAt:new Date(saved.task.created_at).toISOString(),callStartedAt:new Date(row.started_at).toISOString(),callCompletedAt:new Date(row.completed_at).toISOString()};
    const outcome=z.object({status:z.enum(['success','unavailable']),data:z.unknown()}).passthrough().parse(row.output);
-   let checked:{registryHash:string;statementHash:string;validBefore:string;signingEnrollment:SkillSigningEnrollment};
+   let checked:{registryHash:string;statementHash:string;validBefore:string;signingEnrollment:SkillSigningEnrollment;runtimeProcessClaim?:unknown};
    if(position<chain.length-1){
     if(outcome.status!=='unavailable')throw new Error('Task fallback predecessor must fail');
     const data=z.object({retryable:z.literal(true),reason:z.string(),transportFailureReceipt:z.unknown()}).parse(outcome.data);
@@ -61,11 +63,13 @@ export async function verifyOwnedTaskModelTransports(context:{userId:string},inp
     checked=await verifyConfiguredTaskTransportReceipt(value.transportReceipt,{...expected,manifest:m,message:value.message},validationTime);
    }
    if(registryHash&&registryHash!==checked.registryHash)throw new Error('Task transport trust changed');registryHash=checked.registryHash;hashes.push(checked.statementHash);expiries.push(checked.validBefore);enrollments.push(checked.signingEnrollment);
+   runtimeProcessClaims.push(transportRuntimeProcessRecord(checked));
    windows.push({...checked.signingEnrollment,requiredFrom:new Date(row.started_at).toISOString(),requiredThrough:new Date(row.completed_at).toISOString()});
   }
  }
  if(digest(await read())!==digest(saved)||digest(await loadConfiguredSkillRunnerTrustRegistry(context.userId))!==registryHash)throw new Error('Task journal or trust changed during audit');
  return {transportValidBefore:new Date(Math.min(...expiries.map(Date.parse))).toISOString(),journalHash:digest(saved),transportReceiptHashes:hashes,registryHash,storedModeChainsVerified:true as const,
+  runtimeProcessClaims,
   signingEnrollments:mergeSkillSigningEnrollments(enrollments),
   signingEnrollmentWindows:mergeSkillSigningEnrollmentWindows(windows),
   completeTaskProvenanceVerified:false as const,binaryVerified:false as const,automaticActivation:false as const};

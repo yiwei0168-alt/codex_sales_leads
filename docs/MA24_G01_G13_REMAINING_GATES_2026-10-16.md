@@ -1,6 +1,6 @@
 # MA24 G01–G13 当前剩余门槛（2026-10-16）
 
-2026-10-21 / Current state: new local-process claim producer/signature binding passed 135 tests/typecheck/lint and nine synthetic-package Linux component cases. It is not yet in fixed product images and does not implement locked package claim binding or full qualification coverage. Prior 6fd7142a fixed composition 2592 and separate collector TLS 4843 passed. G07 rescan still has no newly validated relevant timeline task. Qualification producer, real provider/quality/activation remain unfinished; G14-G20/deployment stay deferred. [Current source stage](RUNTIME_PROCESS_IDENTITY_2026-10-21.md).
+2026-10-21 / Current state: process identity producer beaad9eb passed 135 tests and nine Linux component cases. Current per-attempt coverage/locked package byte binding passed 148 tests/typecheck/lint; fresh operator/database verification is pending. New source is not yet packaged; prior 6fd7142a composition 2592/TLS 4843 stays separate. Full qualification producer, first real provider execution, real quality and activation remain unfinished; G14-G20/deployment stay deferred. [Current stage](RUNTIME_PROCESS_PACKAGE_BINDING_2026-10-21.md).
 
 2026-10-21 / 最新终态：前瞻故障专项 73784 已退出 0，SIGKILL、拒绝提前接管、原租约自然到期、新进程恢复、防重复及执行规格/捕获绑定保持等 8 项断言通过；当前产品五类/八任务组合与登记仍通过，临时资源清理。后续优先补实时读取、日志重建和来源保护接线，不能用此结果关闭完整等价/真实质量。[前瞻收据](evidence/ma24-g09-prospective-process-recovery-2026-10-21.json)。
 
@@ -771,3 +771,6 @@ G09 current-source collector image TLS preflight (2026-10-19): rebuilt from the 
 
 
 2026-10-21 / Current source adds optional local process identity to original/candidate success/failure signatures. Actual kernel invocation, immutable package inventory and repeated boundary/Node/entry checks guard claim production; scratch entries remain unclaimed and legacy receipts are not upgraded. 135 tests/typecheck/13-file lint and nine real Linux synthetic-package component cases passed; no provider/model call or qualification/activation. Locked package entry-hash binding and complete coverage/qualification aggregation are still missing; no new fixed images yet. Prior 6fd7142a / 2592 / 4843 evidence remains version-scoped. [Implementation and limits](RUNTIME_PROCESS_IDENTITY_2026-10-21.md).
+
+
+2026-10-21 / Current source links authenticated per-attempt process records (including every fallback and explicit legacy nulls) through retained acceptance transport coverage to current package registrations. Independent inspection records role-specific entry/artifact hashes; package binding checks signing identity, Node and executable bytes under existing publication/time/source guards. 148 tests/typecheck/14-file lint passed; isolated operator/database verification is pending. No complete production qualification or activation; new source not packaged yet. [Current binding stage](RUNTIME_PROCESS_PACKAGE_BINDING_2026-10-21.md).

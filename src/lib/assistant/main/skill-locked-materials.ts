@@ -133,7 +133,9 @@ export async function evaluateLockedSkillAcceptanceReadiness(client:PoolClient,c
    &&finalTransports.transportRegistryHash!==finalDeclaration.runnerRegistryHash)throw new Error('Runner and transport trust snapshots differ');
   const signingCoverage=skillSigningEnrollmentCoverage(finalDeclaration,finalTransports);
   const packages=signingCoverage.signingEnrollmentCoverageRequired
-   ?await readLockedSkillRuntimePackages(client,context.userId,{registryHash:finalDeclaration.runnerRegistryHash!,runtimeHash:final.artifact.plan.identity.runtimeHash,windows:signingCoverage.signingEnrollmentWindows})
+   ?await readLockedSkillRuntimePackages(client,context.userId,{registryHash:finalDeclaration.runnerRegistryHash!,runtimeHash:final.artifact.plan.identity.runtimeHash,windows:signingCoverage.signingEnrollmentWindows,
+    ...(finalTransports.transportReceiptsRequired&&finalTransports.runtimeProcessClaims?{transportProcesses:{
+     receiptHashes:finalTransports.runtimeProcessReceiptHashes,claims:finalTransports.runtimeProcessClaims}}:{})})
    :{runtimePackagesRequired:false as const,runtimePackagesRegistered:false as const,runtimePackageBlockers:[] as string[]};
   const memoryTimeValidBefore=earliestSkillMemoryTimeFence(decisionTimeFence,materials,memoryReceipts);
   const collector=qualifySkillCollectorProvenance({ownerId:context.userId,bundleId,freezeId:final.freezeStatus.freezeId,

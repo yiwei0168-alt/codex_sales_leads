@@ -297,6 +297,16 @@ it('checks package registration after final signatures and limits final time wit
  expect(m.times.mock.calls[0][3]).toMatchObject({runtimePackageValidBefore});
  expect(out).toMatchObject({runtimePackagesRegistered:true,collectorProvenanceVerified:false,automaticActivation:false});
 });
+it('passes the authenticated receipt/process coverage into the retained package reader without granting full equivalence',async()=>{
+ m.runner.mockResolvedValue(declaration);
+ const receiptHashes=[digest('process statement')],claims=[{statementHash:receiptHashes[0],proof:null}];
+ m.transports.mockResolvedValue({...transports,runtimeProcessReceiptHashes:receiptHashes,runtimeProcessClaims:claims,runtimeProcessCoverageComplete:false});
+ m.packages.mockResolvedValue({runtimePackagesRequired:true,runtimePackagesRegistered:true,runtimePackageValidBefore:'2026-10-19T01:03:00.000Z',
+  runtimeProcessPackagesRevalidated:false,runtimeProcessPackageBlockers:['runtime-process-claim-missing']});
+ const out=await evaluateLockedSkillAcceptanceReadiness(client,context,bundleId);
+ expect(m.packages.mock.calls[0][2]).toMatchObject({transportProcesses:{receiptHashes,claims}});
+ expect(out).toMatchObject({runtimeProcessPackagesRevalidated:false,automaticActivation:false});expect(out).not.toHaveProperty('productionAgentEquivalent');
+});
 it('returns a missing-package blocker without substituting a package deadline or qualifying production',async()=>{
  m.runner.mockResolvedValue(declaration);m.transports.mockResolvedValue(transports);
  const out=await evaluateLockedSkillAcceptanceReadiness(client,context,bundleId);

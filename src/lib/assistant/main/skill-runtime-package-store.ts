@@ -7,16 +7,18 @@ import {readLockedSkillRunnerTrustRegistry} from './skill-runner-trust-registry-
 import {mergeSkillSigningEnrollmentWindows} from './skill-signing-enrollment';
 import {skillRuntimePackageRegistrationSchema,skillRuntimePublicKeyHash} from './skill-runtime-package-schema';
 import {compareSkillRuntimePackageBytes} from './skill-runtime-package-pair';
+import {bindRuntimeProcessesToPackages,type RuntimeProcessCoverage} from './runtime-process-coverage';
 
 const hash=z.string().regex(/^[a-f0-9]{64}$/);
 /** Necessary package-registration component, not provider/quality certification.
  * Retain admission until the owning transaction finishes. Never use a fallback
  * registration after latest-version withdrawal, expiry, rotation or mismatch. */
-export async function readLockedSkillRuntimePackages(client:PoolClient,userId:string,input:{registryHash:string;runtimeHash:string;windows:readonly unknown[]}){
+export async function readLockedSkillRuntimePackages(client:PoolClient,userId:string,input:{registryHash:string;runtimeHash:string;windows:readonly unknown[];transportProcesses?:RuntimeProcessCoverage}){
  hash.parse(input.registryHash);hash.parse(input.runtimeHash);
  const windows=mergeSkillSigningEnrollmentWindows(input.windows);if(!windows.length)throw new Error('Runtime package signing coverage empty');
  return withBoundTenantTransaction(client,userId,async()=>{
-  const blocked=(reason:string)=>({runtimePackagesRequired:true as const,runtimePackagesRegistered:false as const,runtimePackageBlockers:[reason]});
+  const blocked=(reason:string)=>({runtimePackagesRequired:true as const,runtimePackagesRegistered:false as const,runtimePackageBlockers:[reason],
+   runtimeProcessPackagesRevalidated:false as const,runtimeProcessPackageBlockers:[reason]});
   if(configuredSkillRunnerTrustRegistryMode()!=='database')return blocked('database-trust-required');
   const trust=await readLockedSkillRunnerTrustRegistry(client,userId);
   if(trust.registryHash!==input.registryHash)throw new Error('Runtime package signing trust changed');
@@ -50,6 +52,7 @@ export async function readLockedSkillRuntimePackages(client:PoolClient,userId:st
   }
   return {runtimePackagesRequired:true as const,runtimePackagesRegistered:true as const,runtimePackageBlockers:[] as string[],runtimePackageCount:registrations.length,
    runtimePackageRegistrationHash:digest(registrations),runtimePackageRevisions:registrations.map(row=>row.revision),
-   runtimePackageValidBefore:new Date(Math.min(...expiries.map(Date.parse))).toISOString(),...compareSkillRuntimePackageBytes(packages)};
+   runtimePackageValidBefore:new Date(Math.min(...expiries.map(Date.parse))).toISOString(),...compareSkillRuntimePackageBytes(packages),
+   ...bindRuntimeProcessesToPackages(packages,input.transportProcesses)};
  });
 }
