@@ -139,3 +139,6 @@
 - 候选 3048 与正式 3018 均通过一次性账号登录、未登录拒绝、分页、审核 owner 伪造拒绝、真实公开 PDF multipart 上传及同内容复用验证；测试账号/作业/原件清理完成，未创建模型任务。两处首页与 11 个静态资源健康。候选 PID 37384 已关闭。
 - 替换前确认主任务队列为空且旧网页 PID 为 3996；正式网页现为 PID 37244。LangGraph 仍为 PID 36248，主/邮箱/线索 worker 未重启；此前主 worker/LangGraph 更新授权仍待回应。未改变自动学习、图谱、Skill 或检索主路开关。
 - G13 全部可达折叠入口和 G14–G18 质量/发布门槛仍未完成，Goal 保持 active。证据：`docs/evidence/ma24-workflow-web-release-2026-10-11.json`。
+
+
+2026-10-21 / Existing MA24-16 F12 approval submission follow-up: in-flight individual/batch decisions now lock competing decision buttons. Successful server acknowledgements retain an ID/hash-specific local receipt while polls catch up; exact submitted batches do not approve changed/new items. Saved-decision notices do not claim action execution, and failures do not claim success. Two preview tests, actual-component synthetic HTTP checks at three widths, full typecheck and three-file lint passed. Fixed-package/API/database/Worker acceptance pending; no new product confirmation or real quality/production claim. [Scope](APPROVAL_SUBMISSION_STATE_2026-10-21.md).

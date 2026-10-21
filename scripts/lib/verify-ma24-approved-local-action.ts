@@ -12,6 +12,7 @@ import {loadDecisionMemory} from '../../src/lib/assistant/main/memory-context';
 import {digest,type ModelMessage,type ModelToolCall} from '../../src/lib/assistant/main/contracts';
 import {productTools} from '../../src/lib/assistant/main/tools';
 import {MAIN_AGENT_EXECUTION_LIMITS} from '../../src/lib/assistant/main/main-agent-limits';
+import {requestApproval,type AgentApproval} from '../../src/lib/assistant/main/approvals';
 
 /** Generated documents only. The production Worker creates and consumes the
  * approval; the browser is the sole source of its synthetic decision. */
@@ -87,7 +88,16 @@ export async function verifyMa24ApprovedLocalAction(input:{
    else{await expect(card).toContainText(title);await expect(card).toContainText('将永久删除这份私有资料及其检索片段');}
    if(kind==='changed-hash')await expect(card).toContainText('资料版本已变化');
    const decide=async(name:string)=>{const response=page.waitForResponse(value=>value.url()===`${base}/api/assistant/approvals/${approval.id}`&&value.request().method()==='POST');await card.getByRole('button',{name,exact:true}).click();assert.equal((await response).status(),200);};
-   await decide(kind==='deny'?'拒绝':'确认此内容');
+   if(kind==='approve'){
+    const routeUrl=`${base}/api/assistant/approvals/${approval.id}`;let requests=0;
+    const gate:{release:()=>void}={release:()=>{throw new Error('Single approval has not reached response gate');}};
+    await page.route(routeUrl,async route=>{requests++;const response=await route.fetch();assert.equal(response.status(),200);await new Promise<void>(done=>{gate.release=done;});await route.fulfill({response});});
+    const response=page.waitForResponse(value=>value.url()===routeUrl&&value.request().method()==='POST');await card.getByRole('button',{name:'确认此内容',exact:true}).click();
+    await expect.poll(()=>requests).toBe(1);await expect(card).toHaveAttribute('aria-busy','true');
+    assert(await card.locator('.agent-run-actions button').evaluateAll(buttons=>buttons.length>0&&buttons.every(button=>(button as HTMLButtonElement).disabled)));
+    await expect.poll(async()=>(await input.admin.query('select status from agent_approval where id=$1',[approval.id])).rows[0].status).toBe('approved');
+    gate.release();assert.equal((await response).status(),200);await expect(page.getByRole('status').filter({hasText:'批准决定已保存'})).toBeVisible();await expect(card.getByRole('button',{name:'确认此内容',exact:true})).toHaveCount(0);assert.equal(requests,1);await page.unroute(routeUrl);
+   }else await decide(kind==='deny'?'拒绝':'确认此内容');
    if(kind==='revoke'){
     await page.reload();await expect(card).toContainText('已批准，等待执行结果');await decide('撤销');
    }
@@ -118,10 +128,37 @@ export async function verifyMa24ApprovedLocalAction(input:{
    results.push({kind,approvalRequestedByCompiledWorker:true,browserDecision:true,status:rows[0].value.status,toolReceipts:calls.length,toolStatus:output.status,
     noExecutionBeforeDecision:true,browserDecisionOnlyQueues:true,subsequentEmptyWorkerNoReplay:true,duplicateDecisionRejected:true,actualModelCalls:0});
   }
+  // Exact batch decisions use the real API/database, but the generated task is
+  // paused before approvals exist. No mail connection or send worker is used.
+  const batchTask=await enqueueRun(input.owner,{content:'Synthetic paused mail approval UI only',attachments:[],requestKey:randomUUID()},
+   {model:'synthetic-unusable',providers:['synthetic-unusable'],version:'synthetic'});
+  await input.admin.query("update agent_run set status='paused' where id=$1 and user_id=$2",[batchTask.id,input.owner]);
+  const execution={userId:input.owner,runId:batchTask.id,leaseToken:randomUUID(),role:'member' as const};
+  const mailTool=productTools.find(tool=>tool.id==='mail_send'),planTool=productTools.find(tool=>tool.id==='plan_confirmation');assert(mailTool&&planTool);
+  const mailApprovals:AgentApproval[]=[];
+  for(const label of ['one','two'])mailApprovals.push(await requestApproval(execution,mailTool,{connectionId:randomUUID(),to:`synthetic-${label}@example.invalid`,subject:`Synthetic ${label} review only`,body:'Generated content; never sent.'}));
+  const planApproval=await requestApproval(execution,planTool,{plan:'Synthetic excluded plan'});
+  assert.equal((await page.goto(`${base}/c/${batchTask.conversation_id}`))?.status(),200);
+  const batchButton=page.getByRole('button',{name:'确认以上全部邮件（2 封）',exact:true});await expect(batchButton).toBeVisible();
+  const batchUrl=`${base}/api/assistant/approvals/batch`,batchGate:{release:()=>void}={release:()=>{throw new Error('Batch approval has not reached response gate');}};
+  let batchRequests=0;let submitted:unknown;
+  await page.route(batchUrl,async route=>{batchRequests++;submitted=route.request().postDataJSON();const response=await route.fetch();assert.equal(response.status(),200);await new Promise<void>(done=>{batchGate.release=done;});await route.fulfill({response});});
+  const batchResponse=page.waitForResponse(response=>response.url()===batchUrl&&response.request().method()==='POST');await batchButton.click();await expect.poll(()=>batchRequests).toBe(1);
+  await expect.poll(async()=>await batchButton.count()===0||await batchButton.isDisabled()).toBe(true);assert(await page.locator('.agent-approval .agent-run-actions button').evaluateAll(buttons=>buttons.length>0&&buttons.every(button=>(button as HTMLButtonElement).disabled)));
+  await expect.poll(async()=>(await input.admin.query("select count(*)::int n from agent_approval where run_id=$1 and tool_id='mail_send' and status='approved'",[batchTask.id])).rows[0].n).toBe(2);
+  assert.deepEqual(submitted,{items:mailApprovals.map(item=>({id:item.id,parameterHash:item.parameter_hash}))});
+  batchGate.release();assert.equal((await batchResponse).status(),200);await expect(page.getByRole('status').filter({hasText:'本次提交的 2 封邮件的批准决定已保存'})).toBeVisible();await expect(batchButton).toHaveCount(0);assert.equal(batchRequests,1);await page.unroute(batchUrl);
+  const first=page.locator('.agent-approval').filter({hasText:'synthetic-one@example.invalid'});await expect(first).toContainText('已批准，等待执行结果');
+  const revokeResponse=page.waitForResponse(response=>response.url()===`${base}/api/assistant/approvals/${mailApprovals[0].id}`&&response.request().method()==='POST');await first.getByRole('button',{name:'撤销',exact:true}).click();assert.equal((await revokeResponse).status(),200);await expect(first).toHaveCount(0);
+  const statuses=(await input.admin.query('select id,status from agent_approval where run_id=$1',[batchTask.id])).rows;
+  assert.equal(statuses.find(row=>row.id===mailApprovals[0].id).status,'revoked');assert.equal(statuses.find(row=>row.id===mailApprovals[1].id).status,'approved');assert.equal(statuses.find(row=>row.id===planApproval.id).status,'pending');
+  assert.equal((await input.admin.query('select status from agent_run where id=$1',[batchTask.id])).rows[0].status,'paused');assert.equal((await input.admin.query('select count(*)::int n from agent_tool_call where run_id=$1',[batchTask.id])).rows[0].n,0);
+  results.push({kind:'paused-mail-approval-batch',exactTwoMailItems:true,planExcluded:true,heldResponseLocksAllApprovalActions:true,singleBatchRequest:true,immediateSingleRevoke:true,taskRemainsPaused:true,toolReceipts:0,mailConnections:0,externalActions:0});
   assert.deepEqual(errors,[]);await context.close();
   return {approvedLocalAction:'passed',actualChromeAndCompiledWebAndApiAndWorker:true,results,screenshots,noPageErrors:true,
    syntheticDocumentsOnly:true,syntheticPendingCheckpoint:true,nextModelStoppedAtExistingStepLimit:true,naturalModelAnswerVerified:false,
    anonymousPeerAndWrongHashRejected:true,actualServerTargetNamesVerified:true,foreignPrivateTitleWithheld:true,changedVersionExplained:true,
+   heldSingleAndBatchResponsesLockApprovalActions:true,exactBatchApiDatabaseVerified:true,successfulDecisionReceiptVisible:true,
    realHumanApproval:false,realBusinessQualityApproved:false,actualModelCalls:0,externalActions:0,productionQualified:false};
  }finally{await browser?.close();await new Promise<void>((done,reject)=>proxy.close(error=>error?reject(error):done()));}
 }
