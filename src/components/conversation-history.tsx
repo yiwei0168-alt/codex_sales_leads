@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import type { AssistantConversationSummary } from "@/lib/assistant/types";
 import { ConversationTrace } from "./conversation-trace";
 import { WorkspaceDialog } from "./workspace-dialog";
+import { ConversationRenameDialog } from "./conversation-rename-dialog";
 
 export function ConversationHistory({ activeId, refreshKey, onSelect, onNew }: {
   activeId?: string;
@@ -15,6 +16,8 @@ export function ConversationHistory({ activeId, refreshKey, onSelect, onNew }: {
   const [items, setItems] = useState<AssistantConversationSummary[]>([]);
   const [error, setError] = useState("");
   const [deleting, setDeleting] = useState<AssistantConversationSummary>();
+  const [renaming, setRenaming] = useState<AssistantConversationSummary>();
+  const [notice, setNotice] = useState("");
   const [deleteError, setDeleteError] = useState("");
   const [deleteBusy, setDeleteBusy] = useState(false);
   const [localVersion, setLocalVersion] = useState(0);
@@ -24,6 +27,7 @@ export function ConversationHistory({ activeId, refreshKey, onSelect, onNew }: {
   const menuRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const deleteTriggerRef = useRef<HTMLButtonElement>(null);
+  const deleteLock = useRef(false);
   useEffect(() => {
     if (!openMenu) return;
     function outside(event: PointerEvent) { if (!menuRef.current?.contains(event.target as Node) && !triggerRef.current?.contains(event.target as Node)) setOpenMenu(undefined); }
@@ -52,34 +56,28 @@ export function ConversationHistory({ activeId, refreshKey, onSelect, onNew }: {
       .catch(reason => { if (!controller.signal.aborted) setError(reason instanceof Error ? reason.message : "对话历史暂不可用"); });
     return () => controller.abort();
   }, [activeId, refreshKey, localVersion]);
-  async function rename(item: AssistantConversationSummary) {
-    setOpenMenu(undefined);
-    const title = window.prompt("重命名对话", item.title)?.trim();
-    if (!title || title === item.title) return;
-    const response = await fetch(`/api/assistant/conversations/${item.id}`, {
-      method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ title }),
-    });
-    if (!response.ok) { setError("重命名失败，请刷新后重试"); return; }
-    setLocalVersion(version => version + 1);
-  }
   async function remove(item: AssistantConversationSummary) {
-    if(deleteBusy)return;
+    if(deleteLock.current)return;
+    deleteLock.current=true;
     setDeleteBusy(true);setDeleteError("");
     try {
     const response = await fetch(`/api/assistant/conversations/${item.id}`, { method: "DELETE" });
     if (!response.ok) { const body = await response.json().catch(() => null) as {error?:string}|null; throw new Error(body?.error ?? "删除失败，请重试"); }
     setLocalVersion(version => version + 1);
+    setItems(current => current.filter(candidate => candidate.id !== item.id));
     setDeleting(undefined);
-    if (item.id === activeId) { sessionStorage.removeItem("lastConversationId"); onNew(); }
+    setNotice("对话已从历史移除，任务和必要审计记录保留。");
+    if (item.id === activeId) { try { sessionStorage.removeItem("lastConversationId"); } catch { /* Browser storage is optional after a confirmed deletion. */ } onNew(); }
     } catch(reason) {setDeleteError(reason instanceof Error?reason.message:"连接中断，请刷新历史核实是否已删除后再重试");}
-    finally {setDeleteBusy(false);}
+    finally {deleteLock.current=false;setDeleteBusy(false);}
   }
   function closeDelete() {
     setDeleting(undefined);
     requestAnimationFrame(() => deleteTriggerRef.current?.isConnected && deleteTriggerRef.current.focus());
   }
   return <section className="conversation-history" aria-label="对话历史">
-    <div className="conversation-history-head"><strong>对话历史</strong></div>
+    <div className="conversation-history-head"><strong>对话历史</strong><button type="button" onClick={() => setLocalVersion(version => version + 1)}>刷新历史</button></div>
+    {notice && <p role="status">{notice}</p>}
     {error && <p role="status">{error}</p>}
     <div className="conversation-history-list">
       {items.map(item => <div className={`conversation-history-item ${item.id === activeId ? "active" : ""}`} key={item.id}>
@@ -93,11 +91,15 @@ export function ConversationHistory({ activeId, refreshKey, onSelect, onNew }: {
       {!items.length && !error && <p>还没有已保存的对话</p>}
     </div>
     {openMenu && items.find(item => item.id === openMenu) && createPortal(<div ref={menuRef} role="menu" aria-label={`${items.find(item => item.id === openMenu)!.title} 操作`} className="conversation-history-menu" style={menuPosition}>
-      <button type="button" role="menuitem" onClick={() => void rename(items.find(item => item.id === openMenu)!)}>重命名</button>
+      <button type="button" role="menuitem" onClick={() => {setRenaming(items.find(item => item.id === openMenu)!);setNotice("");setOpenMenu(undefined);}}>重命名</button>
       <button type="button" role="menuitem" onClick={() => { setTrace(items.find(item => item.id === openMenu)!); setOpenMenu(undefined); }}>查看技术流水</button>
       <button type="button" role="menuitem" className="danger" onClick={() => {setDeleting(items.find(item => item.id === openMenu)!);setDeleteError("");setOpenMenu(undefined);}}>删除对话</button>
     </div>, document.body)}
     {trace && <ConversationTrace key={trace.id} conversationId={trace.id} title={trace.title} onClose={() => setTrace(undefined)}/>}
+    {renaming && <ConversationRenameDialog key={renaming.id} id={renaming.id} initialTitle={renaming.title}
+      onObserved={title => setItems(current => current.map(item => item.id === renaming.id ? {...item,title} : item))}
+      onClose={() => {setRenaming(undefined);requestAnimationFrame(() => deleteTriggerRef.current?.isConnected && deleteTriggerRef.current.focus());}}
+      onSaved={(title, reconciled) => {setItems(current => current.map(item => item.id === renaming.id ? {...item,title} : item));setRenaming(undefined);setNotice(reconciled ? "已核对当前名称与提交一致。" : "对话名称已保存。");setLocalVersion(version => version + 1);requestAnimationFrame(() => deleteTriggerRef.current?.isConnected && deleteTriggerRef.current.focus());}} />}
     {deleting&&<WorkspaceDialog title="删除对话" busy={deleteBusy} focusCloseButton={false} onClose={closeDelete}>
       <p>从历史中删除“<strong>{deleting.title}</strong>”？</p>
       <p>对话将从历史列表移除，界面不提供撤销。已完成任务和必要审计记录会保留。进行中、等待确认或暂停的任务，以及已确认或执行中的操作，会阻止删除。</p>
