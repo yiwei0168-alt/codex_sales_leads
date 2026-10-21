@@ -5,8 +5,9 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {spawn,execFileSync} from 'node:child_process';
 import nextEnv from '@next/env';
-import {Pool} from 'pg';
+import {Pool,Client} from 'pg';
 import {getPool} from '../src/lib/rag/db';
+import {databaseConnectionString,databaseSslConfiguration} from '../src/lib/rag/database-ssl';
 import {digest} from '../src/lib/assistant/main/contracts';
 import {importSkill} from '../src/lib/assistant/main/skills';
 import {modeModelConfig} from '../src/lib/assistant/main/mode-config';
@@ -40,6 +41,14 @@ const transaction:SkillCollectorTransaction=async(userId,work)=>{
  }catch(error){await client.query('rollback');throw error;}finally{client.release();}
 };
 try{
+ let configuredDatabaseIpIdentityRejected=false;
+ if(admin.searchParams.get('sslmode')==='verify-full'){
+  const wrongIp=new URL(admin);wrongIp.hostname='127.0.0.1';
+  const probe=new Client({connectionString:databaseConnectionString(wrongIp.toString()),ssl:databaseSslConfiguration(wrongIp.toString()),connectionTimeoutMillis:3000});
+  try{await assert.rejects(probe.connect(),{code:'ERR_TLS_CERT_ALTNAME_INVALID'});configuredDatabaseIpIdentityRejected=true;}
+  finally{await probe.end().catch(()=>undefined);}
+  console.log(JSON.stringify({configuredDatabaseIpIdentity:'passed',configuredDatabaseIpIdentityRejected,actualModelCalls:0,productionQualified:false}));
+ }
  assert.equal((await pool.query('select count(*)::int n from app_user')).rows[0].n,1,'Fresh placeholder-only database required');
  const serialization=await readFile('db/migrations/146_skill_model_freeze_serialization.sql','utf8');await pool.query(serialization);await pool.query(serialization);
  const checkpoints=await readFile('db/migrations/168_skill_candidate_checkpoint.sql','utf8');await pool.query(checkpoints);await pool.query(checkpoints);
@@ -230,5 +239,5 @@ try{
  console.log(JSON.stringify({transportJournalDatabase:'passed',...sharedTaskLease,...executionOwnership,...graphCheckpoint,...timedLease,...originalTaskJournal,rejectedCompletedResponseKinds:3,rejectedCompletedResponsesPersistedAsNonretryable:true,rejectedResponseRecoveryNoReplay:true,rejectedResponsesNotTransportQualified:true,restrictedCollectorAppend:true,persistedSignatureVerified:true,recoveryReusesStoredOutcome:true,
   crossAccountHidden:true,appendOnly:true,registryRevocationRejected:true,freezeRevocationRejected:true,dedicatedLoginVerified:true,appRoleMembershipRejected:true,
   compiledCollectorDatabasePreflight:true,collectorImageTlsPreflight,signedFallbackJournalVerified:true,freezeRevocationSerialized:true,modelAttemptAndOutcomeAppendSerialized:true,waitingModelWritesRejectCommittedRevocation:true,postRevocationModelWritesRejected:true,
-  postRevocationLockedReadRejected:true,syntheticFixture:true,binaryVerified:false,automaticActivation:false,actualModelCalls:0}));
+  postRevocationLockedReadRejected:true,configuredDatabaseIpIdentityRejected,syntheticFixture:true,binaryVerified:false,automaticActivation:false,actualModelCalls:0}));
 }finally{await dedicated?.close();await pool.end();await getPool().end();await rm(directory,{recursive:true,force:true});}

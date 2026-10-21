@@ -106,6 +106,7 @@ try{
   assert.equal(tls[role]?.[field],true,`Whole-fixture database TLS assertion missing: ${role}/${field}`);
  const summary=(checked.stdout??'').split(/\r?\n/).filter(line=>line.startsWith('{')).map(line=>JSON.parse(line)).find(row=>row.transportJournalDatabase==='passed');
  assert(summary?.configuredSameFreezeFiveCategoriesVerified&&summary.sourceRevocationGuardsReady&&summary.sourcePreparedWithoutSealing);
+ assert.equal(summary.configuredDatabaseIpIdentityRejected,true,'Configured database IP reference identity probe missing');
  assert.equal(summary.actualModelCalls,0);assert.equal(summary.productionQualificationGranted,false);
  if(measuredMain){assert.equal(summary.measuredRuntimeRegistrationCompositionVerified,true);assert.equal(summary.runtimePackagesRegistered,true);assert.equal(summary.collectorProvenanceVerified,true);}
  if(fixedCollectorReuse)assert.equal(summary.fixedPackageHistoricalAndProspectiveCompletedReuseVerified,true);
@@ -128,6 +129,7 @@ try{
   fixedPackageHistoricalAndProspectiveCompletedReuseVerified:fixedCollectorReuse,
   productionEntrypointWrapperUsedForWholeFixture:false,databaseConnection:'disposable namespace loopback with verified TLS',databaseTlsVerified:true,
   allNewTcpConnectionsRequireTls:true,databaseCaAndHostnameRejectionVerified:true,
+  configuredDatabaseIpIdentityVerified:true,
   actualModelCalls:0,productionQualified:false,automaticActivation:false}));
 }finally{
  const final=relative(root,resolve(directory));assert(final&&!final.startsWith('..')&&!isAbsolute(final));rmSync(directory,{recursive:true,force:true});

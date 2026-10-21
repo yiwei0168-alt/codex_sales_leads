@@ -1,4 +1,7 @@
 import { readFileSync } from "node:fs";
+import {checkServerIdentity,type PeerCertificate} from 'node:tls';
+import {X509Certificate} from 'node:crypto';
+import {isIP} from 'node:net';
 
 function isRemoteDatabase(databaseUrl: string): boolean {
   const hostname = new URL(databaseUrl).hostname.toLowerCase();
@@ -18,7 +21,7 @@ function databaseCa(): string | undefined {
 
 export function databaseSslConfiguration(
   databaseUrl: string,
-): false | { rejectUnauthorized: true; ca?: string } {
+): false | { rejectUnauthorized: true; ca?: string; checkServerIdentity:typeof checkServerIdentity } {
   const url = new URL(databaseUrl);
   const requested = ["require", "verify-ca", "verify-full"].includes(
     url.searchParams.get("sslmode") ?? "",
@@ -31,7 +34,18 @@ export function databaseSslConfiguration(
   }
 
   const ca = databaseCa();
-  return ca ? { rejectUnauthorized: true, ca } : { rejectUnauthorized: true };
+  // pg supplies SNI only for DNS hosts. Pin the reference identity explicitly
+  // so an IP connection cannot inherit tls.connect's localhost fallback.
+  const hostname=url.hostname.replace(/^\[|\]$/g,'');
+  const ssl={rejectUnauthorized:true as const,
+    checkServerIdentity:(_hostname:string,certificate:PeerCertificate)=>{
+      if(!isIP(hostname))return checkServerIdentity(hostname,certificate);
+      // Use the actual DER SANs for IPs; this also avoids Node versions whose
+      // DNS normalization loses an unbracketed IPv6 reference before checking.
+      try{if(new X509Certificate(certificate.raw).checkIP(hostname))return;}catch{/* Return a TLS identity error below. */}
+      return Object.assign(new Error('Database certificate does not match the configured IP address'),{code:'ERR_TLS_CERT_ALTNAME_INVALID'});
+    }};
+  return ca ? {...ssl,ca} : ssl;
 }
 
 export function databaseConnectionString(databaseUrl: string): string {

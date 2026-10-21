@@ -1,15 +1,12 @@
 {
   "date": "2026-10-21",
   "scope": "MA24 G01/G09 disposable fixed-composition database TLS",
-  "runtimeSourceCommit": "3b88c56d1aa797211e4784861dae0284bf96c152",
-  "images": {
-    "main": "sha256:f7532eb30c0a27b6d5e22d05d2467b60eab98bad62094579cd4adfc8808348b2",
-    "collector": "sha256:f687c8bccdbd631ad5f2434c6e4f98fabd5aefd904eea71d56fccfba78597bc9",
-    "web": "sha256:fb500e6f115ac09bda5b30f6e6bd4329355b00b25037d8cdda15ac30ae9d0975"
-  },
   "sourceFiles": {
-    "scripts/run-skill-transport-linux-check.mjs": "8f1c9eee411a79c5029c5db00eaf82977938299bde7a7ac4289e09cc9baa38b6",
-    "scripts/lib/ma24-linux-database-tls.mjs": "3e080fe72608df2a40839524abed902a732954c4d2222fd0084731eef2455bbe",
+    "src/lib/rag/database-ssl.ts": "72ef4400a434ce40258611b61ac4bdbb1d0b70c33ae8ac4b6b6f1bdf0e92ccb9",
+    "src/lib/rag/database-ssl.test.ts": "c767022711e59fcfa237f62c0ddda70a09817e80b002bd1c73a79b7758e6d96b",
+    "scripts/lib/ma24-linux-database-tls.mjs": "29c353132f85306cf47bf72bb7f6f4c7d6e9ed366b68d4b3b26462dbb0dda94c",
+    "scripts/run-skill-transport-linux-check.mjs": "a4a434b4a5b239b6b26412c74078016c1d5c78b290e513695013a593ac6c9cfb",
+    "scripts/verify-skill-transport-journal-db.ts": "154f123112c321908b4af6833e85dd9fce2ad88ef82d74972a9a1c0e359379c3",
     "scripts/verify-ma24-fresh-pilot-new-cluster.ts": "2b0e3dacb09324dc99c43a3858723e286bf8fb7dfd80e90d5f439ad031290605"
   },
   "checks": {
@@ -33,8 +30,10 @@
       ]
     }
   },
-  "actualTlsProbes": "pending",
-  "fullFixedComposition": "pending",
+  "actualTlsProbes": "pending-new-images",
+  "fullFixedComposition": {
+    "status": "pending-new-images"
+  },
   "previousPlaintextComposition": {
     "sessionId": 50394,
     "exitCode": 0,
@@ -45,5 +44,66 @@
   "realModelCalls": 0,
   "realQualityAccepted": false,
   "automaticActivation": false,
-  "deploymentPerformed": false
+  "deploymentPerformed": false,
+  "attempts": [
+    {
+      "sessionId": 56686,
+      "exitCode": 1,
+      "log": "tmp/ma24-full-linux-tls-composition.log",
+      "logSha256": "f6ed34e3ffded4bea56d4a50c26810e0bc446b849576e6aca38a736a33068de4",
+      "fixtureCommit": "ccec4a6dd86dccc6be7892a6e6cca88365eaa99f",
+      "sourceFiles": {
+        "scripts/run-skill-transport-linux-check.mjs": "8f1c9eee411a79c5029c5db00eaf82977938299bde7a7ac4289e09cc9baa38b6",
+        "scripts/lib/ma24-linux-database-tls.mjs": "3e080fe72608df2a40839524abed902a732954c4d2222fd0084731eef2455bbe",
+        "scripts/verify-ma24-fresh-pilot-new-cluster.ts": "2b0e3dacb09324dc99c43a3858723e286bf8fb7dfd80e90d5f439ad031290605"
+      },
+      "failure": "wrong-hostname rejection probe not established; full composition did not pass",
+      "productionQualificationGranted": false
+    }
+  ],
+  "previousRuntimeSourceCommit": "3b88c56d1aa797211e4784861dae0284bf96c152",
+  "previousImages": {
+    "main": "sha256:f7532eb30c0a27b6d5e22d05d2467b60eab98bad62094579cd4adfc8808348b2",
+    "collector": "sha256:f687c8bccdbd631ad5f2434c6e4f98fabd5aefd904eea71d56fccfba78597bc9",
+    "web": "sha256:fb500e6f115ac09bda5b30f6e6bd4329355b00b25037d8cdda15ac30ae9d0975"
+  },
+  "identityChecks": {
+    "tests": {
+      "sessionId": null,
+      "exitCode": 0,
+      "log": "tmp/ma24-database-tls-identity-tests-final.log",
+      "logSha256": "c9a5aa83f6fbe793a20c4096b0bce10670d2cc4bdd44d528817952d69af66578"
+    },
+    "typecheck": {
+      "sessionId": 28772,
+      "exitCode": 0,
+      "log": "tmp/ma24-database-tls-identity-typecheck-final.log",
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "lint": {
+      "sessionId": 24921,
+      "exitCode": 0,
+      "log": "tmp/ma24-database-tls-identity-lint-accepted.log",
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "testsPassed": 5
+  },
+  "initialIdentityFailures": {
+    "tests": {
+      "sessionId": null,
+      "exitCode": 1,
+      "log": "tmp/ma24-database-tls-identity-tests.log",
+      "logSha256": "be2f4189057468a98437f9cc93456eb45866458da744be9b2c98edefb5c70ffc"
+    },
+    "typecheck": {
+      "sessionId": 93880,
+      "exitCode": 2,
+      "log": "tmp/ma24-database-tls-identity-typecheck.log",
+      "logSha256": "a8462812efb936e7b8d7a381a8b9b951db3b5d22e7d23255957c6d992503a81f"
+    },
+    "reason": "Initial native IPv6 identity positive failed on installed Node; initial test Error.code typing rejected. Final tests use real DER SANs and structural error assertions."
+  },
+  "runtimeImagesRebuilt": false,
+  "productDatabaseReferenceIdentityPinned": true,
+  "privateTestKeyRetained": false
 }

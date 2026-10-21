@@ -14,4 +14,6 @@ The server rule is confined to a running `ma24-pilot-fresh-*` container whose im
 
 JavaScript syntax, full typecheck and final three-file lint passed. Actual TLS probes and the complete current fixture are pending. No TLS gate is marked passed until its actual result is inspected. The previous accepted plaintext run remains preserved with `databaseTlsVerified=false`.
 
+Actual attempt 56686 exited 1 at the wrong-hostname probe. Subsequent installed-code review led to an explicit product database reference-identity fix and a corrected, separate DNS/IP probe contract. Runtime source now changed; the earlier statement about reusing `3b88c56d` packages applies only to the initial fixture-only change. New fixed packages and actual full acceptance are required. See [reference identity correction](DATABASE_TLS_REFERENCE_IDENTITY_2026-10-21.md).
+
 [Evidence](evidence/ma24-g01-g09-fixed-composition-database-tls-2026-10-21.json).
