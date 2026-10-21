@@ -11,7 +11,7 @@
 ## 当前证据
 
 - JavaScript 语法、完整 TypeScript 检查及三文件 lint 已通过。
-- 实际固定包复用尚待提交夹具后运行；当前不记通过。
+- 夹具已固定为 `c35e160a` 并启动实际验证，会话 `76169`，日志 `tmp/ma24-fixed-collector-completed-reuse-linux.log`。原进程已核实存活且已有候选任务完成，启动器复用及整轮最终断言尚待结果；当前不记通过。
 - 整轮生产包装器/TLS、首次真实模型执行、独立质量和最终启用仍未验收。
 
 原五类通过收据：[9428](evidence/ma24-g09-postgres-graph-linux-recovery-2026-10-21.json)。
