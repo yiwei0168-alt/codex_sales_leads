@@ -49,7 +49,17 @@
     "tmp/ma24-task-bound-quota-lint-fixture.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
   },
   "nativeDatabase": {
-    "status": "not-started-for-this-source"
+    "status": "running-not-accepted",
+    "sessionId": 5484,
+    "sourceRevision": "fb8ac00c8dbcac00c093690f1dcb45134e12055b",
+    "log": "tmp/ma24-task-bound-quota-db.log",
+    "scope": "Task admission plus nondefault completed metadata readback and a configured historical entry; no complete five-category composition",
+    "allTenInputsFrozen": true,
+    "nativeHostWorktreeNotCleanArchive": true,
+    "inheritedConfigurationSha256": {
+      "tsconfig.json": "4fe2ce94f4615da883d88216cd6f71a08808a0cf61634f4a359246d8d36c12b2",
+      "next-env.d.ts": "bbc51f5b1d50ec415a7300fcccfab797c55081814666b911cf9bec51d45c8f0c"
+    }
   },
   "scope": {
     "unitDependenciesMocked": true,
