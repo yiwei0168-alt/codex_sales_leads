@@ -41,11 +41,18 @@ export async function verifyCombinedConfiguredDatabase(pool:Pool,original:Signed
   const capture=(await pool.query<{id:string}>('select id from agent_skill_shadow_job where owner_id=$1 and run_id=$2',[prospective.owner,prospective.runId])).rows[0];assert(capture);
   const shadow=await verifyConfiguredSignedCandidateDatabase(pool,{...prospective,prospective:{jobId:capture.id,frozen:registration.frozen}});
   const historical=await verifyConfiguredSignedCandidateDatabase(pool,{...prospective,runId:original.runId,frozenOverride:registration.frozen});
-  const historicalFormalRecovery=process.env.MA24_CONFIGURED_RUNTIME_PROCESS_CRASH==='1'
+  const crashKind=process.env.MA24_CONFIGURED_RUNTIME_CRASH_KIND??'historical';assert(['historical','prospective'].includes(crashKind));
+  const historicalFormalRecovery=process.env.MA24_CONFIGURED_RUNTIME_PROCESS_CRASH==='1'&&crashKind==='historical'
    ?Object.fromEntries(Object.entries(historical).filter(([key])=>key.startsWith('formalTask'))):undefined;
   if(historicalFormalRecovery)for(const field of ['formalTaskProcessTerminatedAfterCommittedRead','formalTaskEarlyTakeoverRejected',
    'formalTaskDefaultLeaseNaturallyExpired','formalTaskNewProcessRecoveredPendingRead','formalTaskRecoveryPreservedCommittedModelAndToolRows',
    'formalTaskRecoveryRejectsRepeatedCompletedHttpSteps'])assert.equal(historicalFormalRecovery[field],true,`Historical recovery proof missing: ${field}`);
+  const prospectiveFormalRecovery=process.env.MA24_CONFIGURED_RUNTIME_PROCESS_CRASH==='1'&&crashKind==='prospective'
+   ?Object.fromEntries(Object.entries(shadow).filter(([key])=>key.startsWith('formalTask'))):undefined;
+  if(prospectiveFormalRecovery)for(const field of ['formalTaskProcessTerminatedAfterCommittedRead','formalTaskEarlyTakeoverRejected',
+   'formalTaskDefaultLeaseNaturallyExpired','formalTaskNewProcessRecoveredPendingRead','formalTaskRecoveryPreservedCommittedModelAndToolRows',
+   'formalTaskRecoveryRejectsRepeatedCompletedHttpSteps','formalTaskRecoveryPreservedExecutionSpec','formalTaskRecoveryPreservedProspectiveCaptureBinding'])
+   assert.equal(prospectiveFormalRecovery[field],true,`Prospective recovery proof missing: ${field}`);
   const fixedPackageReuse=process.env.MA24_FIXED_COLLECTOR_REUSE==='1';
   if(fixedPackageReuse){assert.equal(historical.fixedPackageCompletedReuseVerified,true);assert.equal(shadow.fixedPackageCompletedReuseVerified,true);}
   const safety=await verifyConfiguredSignedSafetyDatabase(pool,{...prospective,runId:original.runId,frozenOverride:registration.frozen});
@@ -156,7 +163,7 @@ export async function verifyCombinedConfiguredDatabase(pool:Pool,original:Signed
   const registrationSchema=(await pool.query("select to_regclass('public.skill_runtime_package_registration') is not null available")).rows[0].available;
   assert.deepEqual(readiness.runtimePackageBlockers,measuredRegistered?[]:[databaseTrust?(registrationSchema?'package-registration-missing':'registration-schema-unavailable'):'database-trust-required']);
   assert.equal((await pool.query('select enabled from agent_skill where id=$1',[original.skillId])).rows[0].enabled,false);
-  return {...(historicalFormalRecovery?{historicalFormalRecovery}:{}),fixedPackageHistoricalAndProspectiveCompletedReuseVerified:fixedPackageReuse,configuredSameFreezeFiveCategoriesVerified:true,runtimeProtocolEightTasksComposed:true,runtimeTaskLedgerCount:readiness.acceptanceLedgerRuntimeTaskCount,lockedTransportReceiptsRevalidated:true,transportOriginalTaskCount:2,transportEvaluationArmCount:8,disabledTransportKeyRejected:true,collectedCases:5,combinedArtifactHash:combined.artifactHash,
+  return {...(historicalFormalRecovery?{historicalFormalRecovery}:{}),...(prospectiveFormalRecovery?{prospectiveFormalRecovery}:{}),fixedPackageHistoricalAndProspectiveCompletedReuseVerified:fixedPackageReuse,configuredSameFreezeFiveCategoriesVerified:true,runtimeProtocolEightTasksComposed:true,runtimeTaskLedgerCount:readiness.acceptanceLedgerRuntimeTaskCount,lockedTransportReceiptsRevalidated:true,transportOriginalTaskCount:2,transportEvaluationArmCount:8,disabledTransportKeyRejected:true,collectedCases:5,combinedArtifactHash:combined.artifactHash,
    frozenPlanHash:digest(registration.frozen.plan),lockedMaterialsVerified:true,prospectiveCaptureSourcesLocked:true,missingHumanJudgmentBlocksPolicy:true,
    immutableAttachmentSnapshotVerified:true,withdrawnSnapshotSourceRejected:true,restoredCanonicalSnapshotRevalidated:true,
    signingEnrollmentCoverageVerified:true,signingEnrollmentCount:readiness.signingEnrollmentCount,signingEnrollmentCoverageHash:readiness.signingEnrollmentCoverageHash,

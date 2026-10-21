@@ -7,13 +7,16 @@ type Launch=(reuse?:boolean,crash?:boolean,minimumStep?:number)=>Promise<Exit>;
 
 /** Actual child termination after a committed formal read, followed by default
  * lease expiry. Never edit a lease/token or manufacture a completion receipt. */
-export async function verifyConfiguredRuntimeProcessCrash(pool:Pool,input:{owner:string;evaluationId:string},launch:Launch){
+export async function verifyConfiguredRuntimeProcessCrash(pool:Pool,input:{owner:string;evaluationId:string;prospectiveJobId?:string},launch:Launch){
  const crash=await launch(false,true);
  assert.notEqual(crash.code,0,'Fault-injected process must terminate');
+ if(process.platform==='linux')assert.equal(crash.signal,'SIGKILL','Linux fault injection must actually kill the child');
  assert(crash.output.includes('FIXTURE_RUNTIME_READ_COMMITTED'),'Termination point was not reached');
- const task=(await pool.query('select id,status,lease_token from agent_run where user_id=$1 and execution_spec->>\'evaluationId\'=$2',
+ const task=(await pool.query('select id,status,lease_token,execution_spec from agent_run where user_id=$1 and execution_spec->>\'evaluationId\'=$2',
   [input.owner,input.evaluationId])).rows;
  assert.equal(task.length,1);assert.equal(task[0].status,'running');const taskId=task[0].id as string;
+ const spec=task[0].execution_spec;
+ if(input.prospectiveJobId){assert.equal(spec.prospectiveJobId,input.prospectiveJobId);assert.match(spec.prospectiveProjectionHash,/^[a-f0-9]{64}$/);}
  const models=async()=> (await pool.query(`select a.id,to_jsonb(a) attempt,to_jsonb(o) outcome from agent_skill_model_attempt a
   join agent_skill_model_outcome o on o.attempt_id=a.id where a.owner_id=$1 and a.evaluation_id=$2 and a.arm='candidate' order by a.step,a.route_index`,
  [input.owner,input.evaluationId])).rows;
@@ -34,7 +37,8 @@ export async function verifyConfiguredRuntimeProcessCrash(pool:Pool,input:{owner
  while((await lease()).remaining_ms>0){assert(Date.now()<timeout,'Killed process leases did not naturally expire');await new Promise(done=>setTimeout(done,1000));}
  // Any repeat HTTP for already completed steps is an explicit fixture failure.
  const exit=await launch(false,false,2);assert.equal(exit.code,0,`Expired formal task recovery failed: ${exit.diagnostic}`);
- assert.equal((await pool.query('select status from agent_run where id=$1',[taskId])).rows[0].status,'completed');
+ const recovered=(await pool.query('select status,execution_spec from agent_run where id=$1',[taskId])).rows[0];
+ assert.equal(recovered.status,'completed');assert.deepEqual(recovered.execution_spec,spec);
  assert.notEqual((await lease()).execution_token,beforeLease.execution_token);
  const afterModels=await models(),afterTools=await tools();
  assert.deepEqual(afterModels.filter(row=>beforeModels.some(old=>old.id===row.id)),beforeModels);
@@ -42,5 +46,6 @@ export async function verifyConfiguredRuntimeProcessCrash(pool:Pool,input:{owner
  return {exit,formalTaskProcessTerminatedAfterCommittedRead:true,formalTaskEarlyTakeoverRejected:true,
   formalTaskDefaultLeaseNaturallyExpired:true,formalTaskNewProcessRecoveredPendingRead:true,
   formalTaskRecoveryPreservedCommittedModelAndToolRows:true,formalTaskRecoveryRejectsRepeatedCompletedHttpSteps:true,
+  formalTaskRecoveryPreservedExecutionSpec:true,...(input.prospectiveJobId?{formalTaskRecoveryPreservedProspectiveCaptureBinding:true}:{}),
   actualModelCalls:0};
 }

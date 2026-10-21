@@ -68,7 +68,9 @@ export async function verifyConfiguredSignedCandidateDatabase(pool:Pool,input:{o
    resolve({code,signal,output,diagnostic});
   });
  });
- const recovery=process.env.MA24_CONFIGURED_RUNTIME_PROCESS_CRASH==='1'&&!input.prospective?await verifyConfiguredRuntimeProcessCrash(pool,{owner:input.owner,evaluationId},launch):null;
+ const crashKind=process.env.MA24_CONFIGURED_RUNTIME_CRASH_KIND??'historical';assert(['historical','prospective'].includes(crashKind));
+ const recovery=process.env.MA24_CONFIGURED_RUNTIME_PROCESS_CRASH==='1'&&crashKind===(input.prospective?'prospective':'historical')
+  ?await verifyConfiguredRuntimeProcessCrash(pool,{owner:input.owner,evaluationId,...(input.prospective?{prospectiveJobId:input.prospective.jobId}:{})},launch):null;
  const exit=recovery?.exit??await launch();
  assert.equal(exit.code,0,`Configured signed candidate fixture failed: ${exit.diagnostic}`);assert(exit.output.includes('"collectorExecution":"completed"'));
  const bundles=(await pool.query<{id:string;raw_receipts:{collector:{protocol:string};candidateSources?:Record<string,{taskId:string}>;prospectiveSources?:Record<string,{taskId:string}>}}>('select id,raw_receipts from agent_skill_acceptance_bundle where owner_id=$1 and raw_receipts::text like $2',[input.owner,`%${evaluationId}%`])).rows;

@@ -14,6 +14,8 @@ const commit=metadata.Config.Labels?.['org.opencontainers.image.revision'];asser
 const measuredMain=process.env.MA24_MEASURED_MAIN_IMAGE;
 if(measuredMain)assert.match(measuredMain,/^sha256:[a-f0-9]{64}$/);
 const formalRecovery=process.env.MA24_LINUX_FORMAL_RECOVERY==='1';
+const recoveryKind=process.env.MA24_CONFIGURED_RUNTIME_CRASH_KIND??'historical';
+assert(['historical','prospective'].includes(recoveryKind),'Unknown formal recovery kind');
 const fixedCollectorReuse=process.env.MA24_FIXED_COLLECTOR_REUSE==='1';
 if(fixedCollectorReuse)assert(measuredMain,'Fixed collector reuse requires measured packages');
 if(formalRecovery)assert(measuredMain,'Fixed-image formal recovery requires measured runtime packages');
@@ -31,7 +33,7 @@ try{
  execFileSync('tar',['-xf',archive,'-C',source]);
  const values={NODE_ENV:'test',NEXT_TELEMETRY_DISABLED:'1',MA24_DISPOSABLE_TRANSPORT_JOURNAL:'1',MA24_CONFIGURED_COMBINED:'1',MA24_DATABASE_TRUST:'1'};
  if(fixedCollectorReuse)values.MA24_FIXED_COLLECTOR_REUSE='1';
- if(formalRecovery)Object.assign(values,{MA24_SHARED_TASK_LEASE:'1',MA24_SKILL_RUNTIME_TASK:'1',MA24_SKILL_RUNTIME_GRAPH:'1',MA24_CONFIGURED_RUNTIME_PROCESS_CRASH:'1'});
+ if(formalRecovery)Object.assign(values,{MA24_SHARED_TASK_LEASE:'1',MA24_SKILL_RUNTIME_TASK:'1',MA24_SKILL_RUNTIME_GRAPH:'1',MA24_CONFIGURED_RUNTIME_PROCESS_CRASH:'1',MA24_CONFIGURED_RUNTIME_CRASH_KIND:recoveryKind});
  const measurementDirectory=join(directory,'measurements');
  if(measuredMain){
   const output=execFileSync(process.execPath,['scripts/run-tsx.cjs','scripts/verify-skill-runtime-dependency-pair.ts',measuredMain,image,'--esm'],{encoding:'utf8',maxBuffer:2*1024*1024});
@@ -87,12 +89,15 @@ try{
    assert.equal(summary[field],true,`Fixed-image formal recovery assertion missing: ${field}`);
   for(const field of ['formalTaskProcessTerminatedAfterCommittedRead','formalTaskEarlyTakeoverRejected','formalTaskDefaultLeaseNaturallyExpired',
    'formalTaskNewProcessRecoveredPendingRead','formalTaskRecoveryPreservedCommittedModelAndToolRows','formalTaskRecoveryRejectsRepeatedCompletedHttpSteps'])
-   assert.equal(summary.historicalFormalRecovery?.[field],true,`Fixed-image historical recovery assertion missing: ${field}`);
+   assert.equal(summary[`${recoveryKind}FormalRecovery`]?.[field],true,`Fixed-image ${recoveryKind} recovery assertion missing: ${field}`);
+  if(recoveryKind==='prospective')for(const field of ['formalTaskRecoveryPreservedExecutionSpec','formalTaskRecoveryPreservedProspectiveCaptureBinding'])
+   assert.equal(summary.prospectiveFormalRecovery?.[field],true,`Fixed-image prospective recovery assertion missing: ${field}`);
  }
  console.log(JSON.stringify({linuxFiveCategoryTransport:'passed',imageId:image,sourceCommit:commit,nodeAndDependenciesFromFixedImage:true,
   fixtureCommit,runtimeSourceBytesMatchedImage:true,archivedFixtureSourceMatchesImageRevision:fixtureCommit===commit,measuredRuntimeRegistrationCompositionVerified:!!measuredMain,
   fixedCompiledDeclarationRunnerCopiedByteForByte:true,verificationScratchSeparateFromRuntime:true,
   fixedImageFormalRecoveryVerified:formalRecovery,
+  fixedImageFormalRecoveryKind:formalRecovery?recoveryKind:null,
   fixedPackageHistoricalAndProspectiveCompletedReuseVerified:fixedCollectorReuse,
   productionEntrypointWrapperUsedForWholeFixture:false,databaseConnection:'disposable namespace loopback',databaseTlsVerified:false,
   actualModelCalls:0,productionQualified:false,automaticActivation:false}));
