@@ -14,6 +14,9 @@ The fixture's DNS-negative case sets an explicit wrong reference name. A separat
 
 Five tests passed using a generated public DER certificate with DNS/IPv4/IPv6 SANs, plus typecheck and five-file lint. The test private key stayed inside a removed, network-disabled container. Tests verify matching and mismatching IP/DNS references and preservation of strict CA and URL override behavior. Initial native-IPv6 fixture and Error.code typing failures remain separately recorded.
 
-This change affects runtime source. New main/collector/Web packages and actual full TLS composition are pending. Previous `3b88c56d` image results remain valid only for that source. Whole production-entrypoint/provider/real quality/positive activation remain unverified; G14-G20 and deployment stay deferred.
+This change affects runtime source. Current e2a584b3 main/collector/Web packages and five package checks passed. Actual full TLS composition 97322, separate collector TLS 5366 and API/Worker recovery 42562 are running and unaccepted. Previous `3b88c56d` image results remain valid only for that source. Whole production-entrypoint/provider/real quality/positive activation remain unverified; G14-G20 and deployment stay deferred.
 
 [Evidence](evidence/ma24-g01-g09-fixed-composition-database-tls-2026-10-21.json).
+
+
+2026-10-21 / TLS reference-identity fix packaged at **e2a584b3**: main/collector/Web builds and all five package checks exited 0 (1047 source inputs, same Node binary, complete dependency bytes/ESM, collector isolation/tamper and Web private-root exclusion). Full verified-TLS composition **97322**, separate canonical collector TLS **5366** and actual API/Worker saved-receipt recovery **42562** are running, not accepted. Earlier 56686 remains failed; previous 3b88c56d evidence is version-scoped. No actual provider call, quality approval or activation. [Current stage](DATABASE_TLS_REFERENCE_IDENTITY_2026-10-21.md); [receipt](evidence/ma24-g01-g09-fixed-composition-database-tls-2026-10-21.json).

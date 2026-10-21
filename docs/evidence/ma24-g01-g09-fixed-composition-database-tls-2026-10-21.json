@@ -30,9 +30,12 @@
       ]
     }
   },
-  "actualTlsProbes": "pending-new-images",
+  "actualTlsProbes": "running-not-accepted",
   "fullFixedComposition": {
-    "status": "pending-new-images"
+    "status": "running",
+    "sessionId": 97322,
+    "log": "tmp/ma24-db-identity-full-linux-tls.log",
+    "fixtureCommit": "e2a584b38026070b6f602563db84584600f33f57"
   },
   "previousPlaintextComposition": {
     "sessionId": 50394,
@@ -103,7 +106,280 @@
     },
     "reason": "Initial native IPv6 identity positive failed on installed Node; initial test Error.code typing rejected. Final tests use real DER SANs and structural error assertions."
   },
-  "runtimeImagesRebuilt": false,
+  "runtimeImagesRebuilt": true,
   "productDatabaseReferenceIdentityPinned": true,
-  "privateTestKeyRetained": false
+  "privateTestKeyRetained": false,
+  "runtimeSourceCommit": "e2a584b38026070b6f602563db84584600f33f57",
+  "images": {
+    "main": "sha256:ae3e59d2db8c3e02272f3f671dce01ade17253aa3caac700d2441fb347d27f71",
+    "collector": "sha256:0c3d088cffa23a5233984078e5bf143b1bd3a1ff15f51fc13d7f9258ab31e5c7",
+    "web": "sha256:6f1583e24f2a52661359aafe9d48b6d57862806770108303ebe580bb57306331"
+  },
+  "builds": {
+    "main": {
+      "sessionId": 29900,
+      "exitCode": 0,
+      "log": "tmp/ma24-db-identity-main-build.log",
+      "logSha256": "5456f309e5a2cfb75d7b649e82230d0aa795d7d621456951d6e2886f402a25d5",
+      "results": [
+        {
+          "mainAgentRuntimeImageBuild": "passed",
+          "commit": "e2a584b38026070b6f602563db84584600f33f57",
+          "image": "ma24-main-agent-runtime:e2a584b3",
+          "productionQualified": false
+        }
+      ]
+    },
+    "collector": {
+      "sessionId": 98623,
+      "exitCode": 0,
+      "log": "tmp/ma24-db-identity-collector-build.log",
+      "logSha256": "a87d92075b50ef6b78660cc6191b879c7458373ac645366f53b32275edfcfba9",
+      "results": [
+        {
+          "collectorImageBuild": "passed",
+          "commit": "e2a584b38026070b6f602563db84584600f33f57",
+          "image": "ma24-skill-collector:e2a584b3",
+          "productionQualified": false
+        }
+      ]
+    },
+    "web": {
+      "sessionId": 99126,
+      "exitCode": 0,
+      "log": "tmp/ma24-db-identity-web-build.log",
+      "logSha256": "bc021e1a81ff9e7dd1276e2ddb492bca5c590fc2a0567f20d00118bd2fe75987",
+      "results": []
+    }
+  },
+  "packageChecks": {
+    "main-pair": {
+      "sessionId": null,
+      "exitCode": 0,
+      "log": "tmp/ma24-db-identity-main-pair.log",
+      "logSha256": "69b8cb624f6ad2fd9583b7674c1f1427fce7896944a06ea02fc0199936e7f9f1",
+      "results": [
+        {
+          "mainAgentRuntimePair": "passed",
+          "web": "ma24-pilot-web:e2a584b3",
+          "runtime": "ma24-main-agent-runtime:e2a584b3",
+          "sourceCommit": "e2a584b38026070b6f602563db84584600f33f57",
+          "webImageId": "sha256:6f1583e24f2a52661359aafe9d48b6d57862806770108303ebe580bb57306331",
+          "mainRuntimeImageId": "sha256:ae3e59d2db8c3e02272f3f671dce01ade17253aa3caac700d2441fb347d27f71",
+          "inspectionUsesImmutableImageIds": true,
+          "runtimeHash": "9f87a4a86b4e4d2d7f1a567d7c531125f04bf8b89fa09f088cd8e8e851ff0e81",
+          "sourceInputs": 1047,
+          "node": "24.21.0",
+          "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+          "platform": "linux",
+          "arch": "x64",
+          "webPackages": {
+            "pg": "8.23.0"
+          },
+          "mainRuntimePackages": {
+            "pg": "8.23.0",
+            "zod": "4.4.3",
+            "@langchain/langgraph": "1.4.15",
+            "@langchain/core": "1.2.9",
+            "langsmith": "0.9.0",
+            "undici": "8.10.0"
+          },
+          "webUnresolved": [
+            "zod",
+            "@langchain/langgraph",
+            "@langchain/core",
+            "langsmith",
+            "undici"
+          ],
+          "mainRuntimeUnresolved": [],
+          "completeDependencyRuntimeEquivalenceVerified": false,
+          "productionQualified": false,
+          "actualModelCalls": 0
+        }
+      ]
+    },
+    "collector-pair": {
+      "sessionId": null,
+      "exitCode": 0,
+      "log": "tmp/ma24-db-identity-collector-pair.log",
+      "logSha256": "cc555252894c58c51b9a6d5f32f3344f6ce49ad91c2ffefbab8bc0608f285d4a",
+      "results": [
+        {
+          "skillSourceRuntimePair": "passed",
+          "web": "ma24-pilot-web:e2a584b3",
+          "collector": "ma24-skill-collector:e2a584b3",
+          "sourceCommit": "e2a584b38026070b6f602563db84584600f33f57",
+          "webImageId": "sha256:6f1583e24f2a52661359aafe9d48b6d57862806770108303ebe580bb57306331",
+          "collectorImageId": "sha256:0c3d088cffa23a5233984078e5bf143b1bd3a1ff15f51fc13d7f9258ab31e5c7",
+          "inspectionUsesImmutableImageIds": true,
+          "runtimeHash": "9f87a4a86b4e4d2d7f1a567d7c531125f04bf8b89fa09f088cd8e8e851ff0e81",
+          "sourceInputs": 1047,
+          "node": "24.21.0",
+          "platform": "linux",
+          "arch": "x64",
+          "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+          "webPackages": {
+            "pg": "8.23.0"
+          },
+          "collectorPackages": {
+            "pg": "8.23.0",
+            "zod": "4.4.3",
+            "@langchain/langgraph": "1.4.15",
+            "@langchain/core": "1.2.9",
+            "langsmith": "0.9.0",
+            "undici": "8.10.0"
+          },
+          "webUnresolved": [
+            "zod",
+            "@langchain/langgraph",
+            "@langchain/core",
+            "langsmith",
+            "undici"
+          ],
+          "collectorUnresolved": [],
+          "completeDependencyRuntimeEquivalenceVerified": false,
+          "productionQualified": false,
+          "actualModelCalls": 0
+        }
+      ]
+    },
+    "dependency-esm": {
+      "sessionId": 73322,
+      "exitCode": 0,
+      "log": "tmp/ma24-db-identity-dependency-esm.log",
+      "logSha256": "c26b61d9af227bb4aa3505a7cc0ae2b2c44d9351f1c0f3f8f1eaa4604699acd3",
+      "results": [
+        {
+          "localRuntimeDependencyPair": "passed",
+          "mainInspection": {
+            "role": "main-agent",
+            "imageId": "sha256:ae3e59d2db8c3e02272f3f671dce01ade17253aa3caac700d2441fb347d27f71",
+            "sourceCommit": "e2a584b38026070b6f602563db84584600f33f57",
+            "deploymentHash": "d4a6ceb7b58f2d67a606ca7bed8bc42b56c46b551204edf94c68d0179ee7af1a",
+            "runtimeHash": "9f87a4a86b4e4d2d7f1a567d7c531125f04bf8b89fa09f088cd8e8e851ff0e81",
+            "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+            "node": "24.21.0",
+            "platform": "linux",
+            "arch": "x64",
+            "sourceInputs": 1047,
+            "files": 34599,
+            "dependencyManifestHash": "d3edb974b4ae6e725cbb62205c8f0e65606b061fd97bce214289279ccca20137",
+            "dependencyFiles": 33503,
+            "runtimeModuleFormat": "esm",
+            "executionArtifacts": [
+              {
+                "path": "server.mjs",
+                "sha256": "e7a5e2a5314125207b0e969f5a351e1973700a703a16f38f2f0a98ce8a833883"
+              },
+              {
+                "path": "start.mjs",
+                "sha256": "a26da05b508790992197256b3ee8acc38dc664e2c2ab6b0d180dfc9bf6099266"
+              },
+              {
+                "path": "worker.mjs",
+                "sha256": "9c49e4b33614c570ce0a21623730093ab6339db2ebbffd32c8f267555570c81a"
+              }
+            ]
+          },
+          "collectorInspection": {
+            "role": "skill-collector",
+            "imageId": "sha256:0c3d088cffa23a5233984078e5bf143b1bd3a1ff15f51fc13d7f9258ab31e5c7",
+            "sourceCommit": "e2a584b38026070b6f602563db84584600f33f57",
+            "deploymentHash": "a0e801258c34fdd47a84aaa6b8b7164fc5ea931aa6a6b78ffb2aef977e7e7694",
+            "runtimeHash": "9f87a4a86b4e4d2d7f1a567d7c531125f04bf8b89fa09f088cd8e8e851ff0e81",
+            "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+            "node": "24.21.0",
+            "platform": "linux",
+            "arch": "x64",
+            "sourceInputs": 1047,
+            "files": 34563,
+            "dependencyManifestHash": "d3edb974b4ae6e725cbb62205c8f0e65606b061fd97bce214289279ccca20137",
+            "dependencyFiles": 33503,
+            "runtimeModuleFormat": "esm",
+            "executionArtifacts": [
+              {
+                "path": "runner.mjs",
+                "sha256": "c14d3483c6337f440eca8796e768f30525b5a29ae90eab93b483422b4b70dd8a"
+              },
+              {
+                "path": "start.mjs",
+                "sha256": "9940bc440764d0e9bae71b3faccbe2fc93c29b3cd4559ea55cc859c50bcb7b04"
+              }
+            ]
+          },
+          "comparison": {
+            "runtimePackageBytesPairRevalidated": true,
+            "runtimePackageBytesPairBlockers": [],
+            "runtimeModuleFormatPairRevalidated": true,
+            "runtimeModuleFormatPairBlockers": [],
+            "runtimePackageBytesPairHash": "1f9c8d0fcb23a786a4ab9e3a09ad2396314f6057b2e4632d958b56753a6d8481"
+          },
+          "esmModuleFormatPairVerified": true,
+          "runtimeRegistrationsPublished": false,
+          "completeDependencyRuntimeEquivalenceVerified": false,
+          "productionQualified": false,
+          "automaticActivation": false,
+          "modelCalls": 0
+        }
+      ]
+    },
+    "collector-boundary": {
+      "sessionId": 31209,
+      "exitCode": 0,
+      "log": "tmp/ma24-db-identity-collector-boundary.log",
+      "logSha256": "05c05ab7d77324882fb076268aa89aba6b77edff5f12959e3284ff29471c28cf",
+      "results": [
+        {
+          "collectorImageVerification": "passed",
+          "image": "ma24-skill-collector:e2a584b3",
+          "imageId": "sha256:0c3d088cffa23a5233984078e5bf143b1bd3a1ff15f51fc13d7f9258ab31e5c7",
+          "commit": "e2a584b38026070b6f602563db84584600f33f57",
+          "packageFiles": 34563,
+          "deploymentHash": "a0e801258c34fdd47a84aaa6b8b7164fc5ea931aa6a6b78ffb2aef977e7e7694",
+          "measuredEnrollmentVerified": true,
+          "missingMalformedAndMismatchedEnrollmentRejectedBeforeRunner": true,
+          "matchedEnrollmentReachesRunner": true,
+          "nodeOptionsRejected": true,
+          "nonRootReadOnlyNoNetwork": true,
+          "changedRunnerRejectedBeforeExecution": true,
+          "actualModelCalls": 0,
+          "productionQualified": false
+        }
+      ]
+    },
+    "web-source": {
+      "sessionId": null,
+      "exitCode": 0,
+      "log": "tmp/ma24-db-identity-web-source.log",
+      "logSha256": "b4b9c8c163226025611fb759ca0012f063a4b086c22e268bb7d402c6008270e5",
+      "results": [
+        {
+          "webImageSourceVerification": "passed",
+          "image": "ma24-pilot-web:e2a584b3",
+          "imageId": "sha256:6f1583e24f2a52661359aafe9d48b6d57862806770108303ebe580bb57306331",
+          "sourceCommit": "e2a584b38026070b6f602563db84584600f33f57",
+          "buildId": "rAjcUI-Wix9kSKZYIbcUc",
+          "runtimeSourceFileCount": 1047,
+          "runtimeSourceMatchesFixedGitExport": true,
+          "exportEolDifferences": 1047,
+          "runtimeSourceManifestHash": "b3d05bf08acf49a8b3ec16e7791730b7faed9bda9c473715621032f07aeb46f6",
+          "privateEnvironmentFiles": false,
+          "privateStorageFiles": false,
+          "staticAssetsPresent": true,
+          "nonRootReadOnlyNoNetwork": true,
+          "productionQualified": false
+        }
+      ]
+    }
+  },
+  "separateCollectorTls": {
+    "status": "running",
+    "sessionId": 5366,
+    "log": "tmp/ma24-db-identity-declaration-tls.log"
+  },
+  "separateApiWorker": {
+    "status": "running",
+    "sessionId": 42562,
+    "log": "tmp/ma24-db-identity-api-worker.log"
+  }
 }
