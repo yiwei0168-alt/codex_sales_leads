@@ -7,6 +7,7 @@ import {storedProspectiveReferenceSchema} from './skill-prospective-candidate-re
 import {historicalCandidateReferenceSchema} from './skill-historical-candidate-reference';
 import {skillAcceptancePlanSchema} from './skill-acceptance-policy';
 import {skillCandidateTaskSpecSchema} from './evaluation-task-spec';
+import {lockSkillReadReceiptSources} from './skill-read-source-locks';
 
 type Artifact={plan:unknown;rawReceipts:unknown};
 /** Keep ordinary source-run IDs separate: they own original prompts, attachments
@@ -45,7 +46,8 @@ export function skillRuntimeMaterialReferences(artifact:Artifact){
  * Parent UPDATE locks stop new tool rows via FK; SHARE locks retain old outputs. */
 export async function lockSkillRuntimeMaterialSources(client:PoolClient,userId:string,artifact:Artifact){
  const refs=skillRuntimeMaterialReferences(artifact);
- if(!refs.length)return {runtimeTaskSourcesLocked:true as const,runtimeTaskCount:0,runtimeTaskLedgerHash:null};
+ if(!refs.length)return {runtimeTaskSourcesLocked:true as const,runtimeTaskCount:0,runtimeTaskLedgerHash:null,
+  runtimePrivateReadSourcesLocked:true as const,runtimeTimelineCustomerCount:0,runtimeMailCount:0};
  const plan=skillAcceptancePlanSchema.parse(artifact.plan),freezeId=z.object({collector:z.object({freezeId:z.uuid()}).passthrough()}).passthrough().parse(artifact.rawReceipts).collector.freezeId;
  if(plan.pin.ownerId!==userId)throw new Error('Runtime material owner changed');
  return withBoundTenantTransaction(client,userId,async()=>{
@@ -63,12 +65,14 @@ export async function lockSkillRuntimeMaterialSources(client:PoolClient,userId:s
     throw new Error('Runtime material task binding changed');
    z.object({reply:z.string()}).strict().parse(task.snapshot.result);
   }
-  const tools=(await client.query<{user_id:string;run_id:string;effect:string;status:string;input:unknown;input_hash:string;approval_id:string|null;snapshot:unknown}>(
-   `select c.user_id,c.run_id,c.effect,c.status,c.input,c.input_hash,c.approval_id,to_jsonb(c) snapshot from agent_tool_call c
+  const tools=(await client.query<{user_id:string;run_id:string;tool_id:string;effect:string;status:string;input:unknown;input_hash:string;approval_id:string|null;snapshot:unknown}>(
+   `select c.user_id,c.run_id,c.tool_id,c.effect,c.status,c.input,c.input_hash,c.approval_id,to_jsonb(c) snapshot from agent_tool_call c
     where c.user_id=$1 and c.run_id=any($2::uuid[]) order by c.id limit 10001 for share of c`,[userId,refs.map(row=>row.taskId)])).rows;
   if(tools.length>10000||tools.some(row=>row.user_id!==userId||!refs.some(ref=>ref.taskId===row.run_id)||row.effect!=='read'||row.status!=='completed'
    ||row.approval_id!==null||digest(row.input)!==row.input_hash))throw new Error('Runtime material journal binding changed');
+  const readSources=await lockSkillReadReceiptSources(client,userId,tools);
   return {runtimeTaskSourcesLocked:true as const,runtimeTaskCount:tasks.length,
+   runtimePrivateReadSourcesLocked:true as const,runtimeTimelineCustomerCount:readSources.timelineCustomerCount,runtimeMailCount:readSources.mailCount,
    runtimeTaskLedgerHash:digest({protocol:'skill-runtime-material-ledger-v1',tasks:tasks.map(row=>row.snapshot),tools:tools.map(row=>row.snapshot)})};
  });
 }

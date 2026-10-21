@@ -2,6 +2,8 @@ import type {PoolClient} from 'pg';
 import {z} from 'zod';
 import {messageInputSchema} from './contracts';
 import {lockSkillRuntimeMaterialSources} from './skill-runtime-material-sources';
+import {lockSkillReadReceiptSources} from './skill-read-source-locks';
+export {skillAcceptanceMailIds,skillAcceptanceTimelineSelection} from './skill-read-source-locks';
 
 type Artifact={plan:{cases:ReadonlyArray<{id:string;provenance:string}>};rawReceipts:Record<string,unknown>};
 /** Derive exclusively from the stored bundle, never from request-supplied run IDs. */
@@ -24,17 +26,6 @@ export function skillAcceptanceAttachmentIds(runs:ReadonlyArray<{input:unknown}>
  const ids=new Set<string>();
  for(const run of runs)for(const attachment of z.object({attachments:messageInputSchema.shape.attachments}).parse(run.input).attachments)ids.add(attachment.assetId);
  return [...ids].sort();
-}
-export function skillAcceptanceMailIds(receipts:ReadonlyArray<{tool_id:string;input:unknown}>){
- return [...new Set(receipts.filter(row=>row.tool_id==='mail_read').map(row=>z.object({messageId:z.uuid()}).strict().parse(row.input).messageId))].sort();
-}
-export function skillAcceptanceTimelineSelection(receipts:ReadonlyArray<{tool_id:string;input:unknown}>){
- const ids=new Set<string>();let includeAll=false;
- for(const row of receipts.filter(row=>row.tool_id==='customer_timeline')){
-  const value=z.object({customerId:z.uuid().optional()}).parse(row.input);
-  if(value.customerId)ids.add(value.customerId);else includeAll=true;
- }
- return {customerIds:[...ids].sort(),includeAll};
 }
 export function skillAcceptanceProspectiveBindings({plan,rawReceipts}:Artifact){
  const jobs=new Map<string,string>();
@@ -71,29 +62,11 @@ export async function lockRecordedTaskRunJournals(client:PoolClient,userId:strin
  }
  const journal=await client.query<{id:string;tool_id:string;input:unknown;effect:string;status:string;output:unknown}>(`select id,tool_id,input,effect,status,output from agent_tool_call where user_id=$1 and run_id=any($2::uuid[]) order by id for share`,[userId,ids]);
  const sourceRows=options.successfulReadSourcesOnly?journal.rows.filter(row=>row.effect==='read'&&row.status==='completed'&&['success','partial'].includes(String((row.output as {status?:unknown}|null)?.status))):journal.rows;
- const timeline=skillAcceptanceTimelineSelection(sourceRows);let timelineCustomerCount=0;
- const lockTimeline=async(customerIds:string[],includeAll:boolean)=>{
-  const locked=(await client.query<{n:number}>('select lock_skill_timeline_sources($1::uuid[],$2::boolean) n',[customerIds,includeAll])).rows[0]?.n;
-  if(typeof locked!=='number'||!Number.isInteger(locked)||locked<customerIds.length
-   ||(!includeAll&&locked!==customerIds.length))throw new Error('Acceptance timeline source lock incomplete');
-  return locked;
- };
- for(let offset=0;offset<timeline.customerIds.length;offset+=100)timelineCustomerCount+=await lockTimeline(timeline.customerIds.slice(offset,offset+100),false);
- if(timeline.includeAll){
-  const all=await lockTimeline([],true);
-  if(all<timelineCustomerCount)throw new Error('Acceptance timeline source lock incomplete');
-  timelineCustomerCount=all;
- }
- const mailIds=skillAcceptanceMailIds(sourceRows);
- for(let offset=0;offset<mailIds.length;offset+=100){
-  const batch=mailIds.slice(offset,offset+100);
-  const mail=await client.query<{id:string}>(`select id from mailbox_message where user_id=$1 and id=any($2::uuid[]) order by id for share`,[userId,batch]);
-  if(mail.rows.length!==batch.length)throw new Error('Acceptance mail source unavailable');
- }
+ const readSources=await lockSkillReadReceiptSources(client,userId,sourceRows);
  for(let offset=0;offset<prospective.length;offset+=100){
   const batch=prospective.slice(offset,offset+100);
   const count=(await client.query<{n:number}>('select lock_skill_shadow_sources($1::uuid[],$2::uuid[]) n',[batch.map(row=>row.jobId),batch.map(row=>row.runId)])).rows[0]?.n;
   if(count!==batch.length)throw new Error('Acceptance prospective source lock incomplete');
  }
- return {prospectiveCaptureSourcesLocked:true as const,prospectiveJobCount:prospective.length,timelineSourcesLocked:true as const,timelineCustomerCount,mailReadSourcesLocked:true as const,mailCount:mailIds.length,attachmentMetadataLocked:true as const,attachmentCount:attachments.length,taskOriginsLocked:true as const,taskJournalsLocked:true as const,runCount:ids.length};
+ return {prospectiveCaptureSourcesLocked:true as const,prospectiveJobCount:prospective.length,...readSources,attachmentMetadataLocked:true as const,attachmentCount:attachments.length,taskOriginsLocked:true as const,taskJournalsLocked:true as const,runCount:ids.length};
 }
