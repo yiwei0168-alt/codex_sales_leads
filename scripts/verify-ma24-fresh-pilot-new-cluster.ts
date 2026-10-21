@@ -177,7 +177,7 @@ assert(args.length <= 22 && args.every(arg => ['--mailbox-reader-ui','--attachme
 const networkName = `ma24-pilot-net-${id}`;
 const adminPassword = randomBytes(24).toString("hex");
 const appPassword = randomBytes(24).toString("hex");
-const mailboxFixtureKey = frontendUiCheck?randomBytes(32).toString('base64url'):undefined;
+const mailboxFixtureKey = (frontendUiCheck||mailboxReaderUi)?randomBytes(32).toString('base64url'):undefined;
 const availablePort = () => new Promise<number>((resolvePort, reject) => {
   const listener = createServer();
   listener.once("error", reject);
@@ -640,7 +640,7 @@ try {
       const checked=await run(process.execPath,['scripts/run-tsx.cjs','scripts/verify-mailbox-reader-fixed-web.ts'],
        {...process.env,DATABASE_URL:appUrl.toString(),DATABASE_MIGRATION_URL:adminUrl.toString(),MA24_DISPOSABLE_READER_UI:'1',
         MA24_READER_WEB_BASE:base,MA24_READER_OWNER_COOKIE:firstCookie,MA24_READER_PEER_COOKIE:secondCookie,
-        MA24_READER_OWNER_EMAIL:credentials[0].email,MA24_READER_DATABASE_CONTAINER:containerId!,OPENAI_API_KEY:'',OPENROUTER_API_KEY:''});
+        MA24_READER_OWNER_EMAIL:credentials[0].email,MA24_READER_DATABASE_CONTAINER:containerId!,MAILBOX_CREDENTIAL_KEY:mailboxFixtureKey!,OPENAI_API_KEY:'',OPENROUTER_API_KEY:''});
       assert.equal(checked.code,0,checked.output);assert(checked.output.includes('"mailboxReaderFixedWeb":"passed"'),checked.output);console.log(checked.output.trim());
     }
     if(knowledgeLibraryUi){
