@@ -1,5 +1,7 @@
 # MA24 G01–G13 当前剩余门槛（2026-10-16）
 
+2026-10-21 / 最新终态：前瞻故障专项 73784 已退出 0，SIGKILL、拒绝提前接管、原租约自然到期、新进程恢复、防重复及执行规格/捕获绑定保持等 8 项断言通过；当前产品五类/八任务组合与登记仍通过，临时资源清理。后续优先补实时读取、日志重建和来源保护接线，不能用此结果关闭完整等价/真实质量。[前瞻收据](evidence/ma24-g09-prospective-process-recovery-2026-10-21.json)。
+
 2026-10-21 / G09 实现审计：候选业务读取仍是按原快照的工具/入参精确匹配后返回保存结果，前瞻也使用同一适配器；预算与在线重规划行为亦有差异，资格生产者尚不生成运行等价字段。这些是代码/接线缺口，不能仅以继续增加恢复测试关闭。前瞻故障专项 73784 继续观察，之后优先处理该接线。[具体差异与顺序](RUNTIME_EXECUTION_PARITY_GAPS_2026-10-21.md)。
 
 2026-10-21 / 最新终态：359cbc60 产品与 5a7b027c 夹具的完整 Linux 组合 9428 已退出 0；五类同冻结、实测登记及真实进程终止/默认租约自然到期/恢复不重放通过。固定启动器已完成任务复用补验 76169（夹具 c35e160a）也已退出 0，历史/前瞻任务与原记录精确复用通过；两轮临时资源均清理。下方较早“运行中或待重验”为历史；真实质量、生产入口整体覆盖和最终启用仍未通过。[组合收据](evidence/ma24-g09-postgres-graph-linux-recovery-2026-10-21.json)、[启动器补验](FIXED_COLLECTOR_COMPLETED_REUSE_2026-10-21.md)。
@@ -409,7 +411,7 @@ G09 任务与工具日志锁已接入材料重建入口：从已存包派生任�
 | G06 安全 | 已定位旧歧义与注入失败，工具模型视图等边界已有修复 | 修复后固定协议的真实模型回答、独立安全判分不足；既有本地超时不能判通过 | 有明确请求范围的有效模型回答及答案/引用/权限/注入人工判决；相同超时配置不重复试跑 |
 | G07 真实回放 | 服务器持久收据与只读回放适配已实现；历史资格审计已有排除结果 | 尚无满足当前来源、Skill 相关性及完整收据要求的真实任务 | 同账号有效的完整只读任务或精确收据限定的子任务，固定版本回放和独立审核 |
 | G08 前瞻影子 | 任务前登记/捕获、签名原流程/候选、统一材料及受限持久化已有合成数据库贯通证据；未将历史任务改标前瞻 | 真实任务的原流程/候选结果、可信生产身份及真实质量仍未验收 | 在既有授权范围内取得任务前登记到执行、持久收据及审核的真实完整链 |
-| G09 自动启用 | 正式候选 PostgresSaver/同图预算轨迹、135 回归/类型/lint、固定包/普通 Worker 回执恢复/独立数据库信任 TLS、9428 当前五类/真实进程恢复及 76169 固定启动器完成复用通过 | **仍未完成**：完整协议/生命周期、其他题型故障、整组入口/身份、首次真实模型、独立质量和正向启用 | 继续协议/生命周期及真实审核；不把固定包终态复用当成首次实际执行，96880 旧夹具失败保留。[当前包](POSTGRES_GRAPH_FIXED_PACKAGES_2026-10-21.md)、[接线](CANDIDATE_GRAPH_POSTGRES_ENTRY_2026-10-21.md) |
+| G09 自动启用 | 正式候选 PostgresSaver/同图预算轨迹、135 回归/类型/lint、固定包/普通 Worker 回执恢复/独立数据库信任 TLS、9428 历史与 73784 前瞻进程恢复、76169 固定启动器完成复用通过 | **仍未完成**：候选仍返回原保存结果，实时读取/审计/来源保护及完整运行资格尚待接线；整组入口/身份、首次真实模型、独立质量和正向启用未验 | 优先补[已确认的执行差异](RUNTIME_EXECUTION_PARITY_GAPS_2026-10-21.md)，不把重复故障测试当成接线实现；96880 旧夹具失败保留。[当前包](POSTGRES_GRAPH_FIXED_PACKAGES_2026-10-21.md) |
 | G10 审核 | 固定21ade59d Chrome/HTTPS/真实数据库审核修订竞态、草稿协调、409、已提交后回读故障与撤销通过；r1–r7均为合成不通过，另保留前瞻两臂与旧HTTP/页面证据 | 完整真实人工材料、五类质量、生产身份和目标入口未验；本轮夹具原件预览未通过 | 在既有授权边界内准备真实同版本/冻结材料，逐题核对真实质量及生产入口 |
 | G11 邮箱/客户 | 固定2a1fb556正式邮箱Worker/实际IMAP库/合成TLS服务/新159数据库的日期分页、半页SIGKILL和原租约自然到期恢复通过；4封唯一加密邮件、统计4/4/4/0、账号隔离和空Worker不变 | 真实服务商日期范围与全分页、持续负载、客户归属/摘要质量及目标主机运行未验 | 已授权账号及日期范围上的收件/已发送对账、恢复与逐例归属判定；历史提供方对账单独保留 |
 | G12 三模式 | 恢复原因白名单修复，60 项定向测试及全新库 12 组脚本业务通过 | 真实只读业务回答、提供方失败/迟到/未知结果恢复及正式加载未验 | 有界真实任务和隔离提供方响应的持久收据；已消耗的 MODESEL-14 授权不复用 |
@@ -683,3 +685,6 @@ G09 current-source collector image TLS preflight (2026-10-19): rebuilt from the 
 
 
 2026-10-21 / MA24-06 execution parity source audit: candidate registered dispatch still substitutes uniquely matching saved business-read results in both historical and prospective paths; it does not execute fresh business reads. Candidate additional budget/frozen-boundary behavior and ordinary live replanning also differ. Readiness does not yet produce productionAgentEquivalent=true. These are implementation/qualification gaps, not closed by checkpoint or fixed completed-reuse tests. Next wiring must preserve capture, scope, source/lease guards, paid-call admission and independent journal reconstruction before deriving qualification; no flags were relaxed and no external calls were made. [Source audit and next steps](RUNTIME_EXECUTION_PARITY_GAPS_2026-10-21.md).
+
+
+2026-10-21 / MA24-06 prospective fault recovery accepted within its engineering scope: session 73784 exited 0, product 359cbc60 / archived fixture 69c5fd4e. Linux asserted SIGKILL after a committed read, rejected early takeover, waited for natural default task/private lease expiry, and recovered in a new process without repeating completed HTTP steps or changing old model/tool rows. Execution spec and original prospective capture ID/projection hash remained bound. All eight recovery assertions plus five-category/eight-task composition, measured runtime registration and collector provenance passed; the temporary database container was removed. Business reads still use saved original results, adapters/fault instrumentation are synthetic, actual model calls 0, whole production wrapper/TLS and real quality/qualification/activation remain unaccepted. Next priority is the audited live-execution wiring gap, not another broad replay of the same recovery matrix. [Receipt](evidence/ma24-g09-prospective-process-recovery-2026-10-21.json).
