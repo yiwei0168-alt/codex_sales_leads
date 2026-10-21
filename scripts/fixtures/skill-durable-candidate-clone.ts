@@ -54,7 +54,15 @@ export async function verifyDurableCandidateFixture(pool:Pool,owner:string,input
   await assert.rejects(createSkillModelJournal(transaction,binding).begin(rows[0].input),/binding changed/);
   console.log(JSON.stringify({candidateAcceptance:await verifyCandidateAcceptanceFixture(pool,owner,input.runId,input.skillId,audited,frozen,onReviewReady),cloneOnly:true}));
   await revokeSkillAcceptanceFreeze({userId:owner},{freezeId:frozen.freezeId,reason:'Synthetic revocation guard'});
-  await assert.rejects(runDurableRecordedSkillCandidateArm({userId:owner},input,'candidate',collector),/revoked/);assert.equal(requests,4);
+  assert.equal((await pool.query('select count(*)::int count from agent_skill_acceptance_freeze_revocation where freeze_id=$1 and owner_id=$2',[frozen.freezeId,owner])).rows[0].count,1);
+  const hasLease=(await pool.query("select to_regclass('public.agent_skill_candidate_execution_lease') is not null available")).rows[0].available===true;
+  const readLease=async()=>hasLease?(await pool.query("select * from agent_skill_candidate_execution_lease where owner_id=$1 and evaluation_id=$2 and arm='candidate'",[owner,evaluationId])).rows:[];
+  const beforeRevokedAdmission=await readLease();
+  if(hasLease){assert.equal(beforeRevokedAdmission.length,1);assert.equal(beforeRevokedAdmission[0].status,'released');assert.equal(beforeRevokedAdmission[0].control,null);assert.equal(beforeRevokedAdmission[0].freeze_id,frozen.freezeId);}
+  // Current schemas reject revoked freezes before granting a new lease; older
+  // schemas reject in the retained execution guard. Neither may issue a request.
+  await assert.rejects(runDurableRecordedSkillCandidateArm({userId:owner},input,'candidate',collector),hasLease?error=>error instanceof Error&&error.message==='Skill candidate execution already owned or controlled':/revoked/);assert.equal(requests,4);
+  assert.deepEqual(await readLease(),beforeRevokedAdmission);
   await assert.rejects(createSkillModelJournal(transaction,{...binding,freezeId:frozen.freezeId}).begin(rows[0].input),/freeze unavailable/);
   return {journalFreezePersisted:true,recoveryCannotRemoveFreeze:true,databaseRejectsRevokedAdmission:true,revokedFreezeStopsExecution:true,realGraphAndPersistentJournalConnected:true,failureThenFallback:true,recoveryWithoutAdditionalRequests:true,stableRemappedCallIds:true,
    messagesAndTraceIdenticalOnRecovery:true,snapshotAndSyntheticKindBound:true,readOnlyJournalAuditReconstructedGraph:true,auditCrossAccountRejected:true,syntheticRequests:requests,actualModelCalls:0,automaticActivation:false};

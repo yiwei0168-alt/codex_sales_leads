@@ -30,3 +30,5 @@ Only generated fixtures are used. The host corpus is not mounted. Temporary orig
 [Evidence](evidence/ma24-g10-review-originals-same-flow-2026-10-21.json).
 
 The pending-source fixture restores its single generated attachment into the isolated Web container before browser checks. This ensures capture is refused for incomplete coverage rather than an absent upload. Full typecheck and the modified fixture lint passed before freezing this follow-up.
+
+Fixed source `08a093e9` built all three images; all five package checks passed. Browser session 92866 passed the partial-source warning, zero-snapshot refusal and seven review revisions. The outer invocation failed later at an inherited legacy revocation-message assertion, before complete-group capture. The follow-up checks the persisted revocation, released/uncontrolled bound lease, unchanged lease after refusal and zero additional requests, with the exact current lease-admission error. Product guards are unchanged. The failed invocation is retained and not accepted as a full pass.
