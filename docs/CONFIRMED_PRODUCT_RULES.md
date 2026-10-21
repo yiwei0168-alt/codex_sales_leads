@@ -2878,3 +2878,6 @@ MA24-06 / G09、G10 后续实际新库验收：共享产品租约函数在应用
 
 
 2026-10-21 / Current source adds a completed-audit execution-policy comparison: declared quota, graph limits and observed decision/attempt receipt counts are bound into the projection hash; frozen/live-control and saved/live-read differences remain explicit. 25 tests, typecheck and module/fixture lint passed; targeted fresh graph/material database verification is pending. This source change is not in the accepted 47be3168 images; old 37984 remains version-scoped. No qualification/activation inferred. [Implementation and evidence](RUNTIME_POLICY_COMPARISON_2026-10-21.md).
+
+
+2026-10-21 / Targeted database **76848 exited 0** on source `d3be2e7a`, current schema 170/file trust. Execution-policy comparison, persisted graph reconstruction, unified review-material readback, task/tool locks, changed-result fingerprints, persisted-tool tamper rejection and terminal recovery without replay passed. All five recorded source files matched their pre-run hashes at completion. The two result records retain synthetic/provider/qualification boundaries; no human judgment, actual provider call or activation was created. Disposable cluster removed; original three services remain. This does not cover new fixed images or a whole production entrypoint. [Evidence](evidence/ma24-g09-runtime-policy-comparison-2026-10-21.json).

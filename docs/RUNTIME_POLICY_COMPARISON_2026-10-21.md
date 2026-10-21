@@ -16,8 +16,11 @@ The projection hash changes with this source version. Historical fixed-version e
 
 ## Evidence and remaining work
 
-Three test suites / 25 tests, full typecheck, audit-module lint and the amended database fixture typecheck/lint passed. A targeted fresh database run with graph and review-material checks is the next verification. No fixed images have been built for this comparison change; product 47be3168 / fixture 6b4f51c9 composition 37984 remains the previous accepted version.
+Three test suites / 25 tests, full typecheck, audit-module lint and the amended database fixture typecheck/lint passed. Targeted fresh database session 76848 exited 0 with graph, policy-comparison and unified review-material checks. No fixed images have been built for this comparison change; product 47be3168 / fixture 6b4f51c9 composition 37984 remains the previous accepted version.
 
 Production entrypoint proof, a complete execution qualification producer, real provider/quality acceptance and positive activation remain unfinished. This comparison is one input to that work, not qualification itself.
 
 [Machine-readable evidence](evidence/ma24-g09-runtime-policy-comparison-2026-10-21.json).
+
+
+2026-10-21 / Targeted database **76848 exited 0** on source `d3be2e7a`, current schema 170/file trust. Execution-policy comparison, persisted graph reconstruction, unified review-material readback, task/tool locks, changed-result fingerprints, persisted-tool tamper rejection and terminal recovery without replay passed. All five recorded source files matched their pre-run hashes at completion. The two result records retain synthetic/provider/qualification boundaries; no human judgment, actual provider call or activation was created. Disposable cluster removed; original three services remain. This does not cover new fixed images or a whole production entrypoint. [Evidence](evidence/ma24-g09-runtime-policy-comparison-2026-10-21.json).
