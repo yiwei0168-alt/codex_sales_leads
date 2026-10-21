@@ -44,9 +44,181 @@
     "lintFiles": 12
   },
   "actualVerification": {
-    "status": "fixture-followup",
-    "completeGroupCaptureRegressionRequired": true,
-    "fullPreviousInvocationAccepted": false
+    "status": "passed",
+    "sessionId": 89025,
+    "exitCode": 0,
+    "log": "tmp/ma24-original-state-lease-fixed-web.log",
+    "logSha256": "4f06701b427fed0b43e00b2c502d28150cb27c04824e93a6050752ebae2447e1",
+    "results": [
+      {
+        "fixedReviewDraftDatabase": "passed",
+        "browser": {
+          "skillReviewDraftFixedWeb": "passed",
+          "database": "ma11_replay_875e09909bb1",
+          "image": "sha256:c68bcf3f670ff6d825c394fad6f9f8eeb7661ec8b5cd6d65627598f884a766ac",
+          "immutableImageId": "sha256:c68bcf3f670ff6d825c394fad6f9f8eeb7661ec8b5cd6d65627598f884a766ac",
+          "sourceCommit": "08a093e9064f46b49a376c3e45abf312ac3f06a8",
+          "actualChromeAndHttpAndDatabase": true,
+          "secureSession": true,
+          "initialRevisionRaceReconciled": true,
+          "dirtyDraftKeptUntilExplicitChoice": true,
+          "staleRevision409": true,
+          "confirmedWriteWithReadbackFaultPreserved": true,
+          "adoptLatest": true,
+          "revokedRevision": 7,
+          "humanRevisionCount": 7,
+          "allSyntheticVerdictsFalse": true,
+          "skillRemainedDisabled": true,
+          "mobileNoHorizontalOverflow": true,
+          "realQualityApproval": false,
+          "modelCalls": 0,
+          "incompleteOriginalSourcesExplained": true,
+          "missingOriginalCaseCount": 4,
+          "partialOriginalCaptureRefused": true,
+          "originalSnapshotCount": 0
+        },
+        "freshTemplateOnly": true,
+        "modelsCalled": 0,
+        "realQualityApproval": false
+      },
+      {
+        "fixedReviewDraftDatabaseCleaned": true
+      },
+      {
+        "passed": true,
+        "results": [
+          "pending-production coverage component rejects two readable but uncaptured actual originals",
+          "preview derives attachment plus knowledge receipt original without writing; cross-account, caller IDs and stale preview reject",
+          "actual HTTP ownership/origin checks and HTTPS browser explicit preview/save pass",
+          "oversize rejects before capture; late file hash mismatch rolls back all copies; explicit capture succeeds",
+          "actual attachment and knowledge byte adapters pass canonical coverage after explicit capture and filesystem removal",
+          "repeated action reuses verified canonical bytes after original files disappear",
+          "shared withdrawal, disabled account and freeze revocation reject existing snapshots; Skill remains disabled"
+        ],
+        "actualFilesAndDatabase": true,
+        "actualCompiledHttpVerified": true,
+        "browserResult": {
+          "actualHttpsBrowserCapture": true,
+          "previewBeforeWriteVerified": true,
+          "explicitSaveAndDisabledReplayVerified": true,
+          "withdrawnSourceClearsStalePreview": true,
+          "restoredSourceRecoversCapturedPreview": true,
+          "noPageErrors": true,
+          "noHorizontalOverflow": true,
+          "screenshot": "tmp/ma24-originals-ui-d599bbe5-db31-4235-abd4-3dbfc57c0e12.png"
+        },
+        "syntheticSourcesOnly": true,
+        "humanJudgmentCreated": false,
+        "modelCalls": 0,
+        "automaticActivation": false,
+        "productionQualified": false
+      },
+      {
+        "freshClusterPilot": "passed",
+        "image": "pgvector/pgvector:pg16",
+        "reviewDraftFixedImageVerified": true,
+        "mailboxImapWorkerVerified": false,
+        "mailboxWorkerImageVerified": false,
+        "mailboxWorkerImapImageVerified": false,
+        "scheduleDispatchVerified": false,
+        "batchSettlementVerified": false,
+        "batchWorkerCrashVerified": false,
+        "batchWorkerCommitVerified": false,
+        "scheduleWorkerCrashVerified": false,
+        "scheduleWorkerCommitVerified": false,
+        "publishedAddress": "127.0.0.1 only",
+        "rolesVerified": true,
+        "duplicateRoleBootstrapRejected": true,
+        "freshMigrationThrough": 170,
+        "currentSchemaMarkers": {
+          "mailbox_work_binding": true,
+          "mailbox_lease_binding": true,
+          "mailbox_binding_constraint": true,
+          "knowledge_source_gate": true,
+          "task_origin_gate": true,
+          "local_memory_source_gate": true,
+          "receipt_source_gate": true,
+          "immutable_snapshot_capture": true,
+          "immutable_snapshot_lifecycle": true,
+          "trust_registry_versions": true,
+          "trust_registry_pointer": true,
+          "trust_registry_publication": true,
+          "runtime_package_registrations": true,
+          "candidate_recovery_checkpoint": true,
+          "candidate_execution_lease": true,
+          "candidate_graph_checkpoint": true,
+          "runtime_package_withdrawals": true,
+          "runtime_package_publication": true,
+          "skill_activation_lifecycle": true,
+          "skill_activation_sources_sealed": true,
+          "skill_activation_reviews_serialized": true,
+          "skill_activation_declarations_serialized": true,
+          "skill_activation_source_guard_health": true,
+          "skill_activation_use_commit_guard": true,
+          "skill_activation_commit_guard": true,
+          "skill_activation_binding_guard": true
+        },
+        "snapshotLifecycleVerified": false,
+        "knowledgeScopeSourcesVerified": false,
+        "finalSettlementVerified": false,
+        "compiledMainRuntimeVerified": false,
+        "mainRuntimeSkillReceiptVerified": false,
+        "mainRuntimeModelReceiptVerified": false,
+        "mainRuntimeDurabilityVerified": false,
+        "mainRuntimeCrashRecoveryVerified": false,
+        "mainRuntimeInterruptionVerified": false,
+        "mainRuntimeNetworkLossVerified": false,
+        "mainRuntimeResumeRevocationVerified": false,
+        "mainRuntimeCommitLossVerified": false,
+        "mainRuntimeTaskEnrollmentVerified": false,
+        "snapshotDownloadResult": null,
+        "localMemoryWorkerResult": null,
+        "trustRegistryRestoreResult": null,
+        "freshMailboxUiVerified": false,
+        "extendedFrontendUiVerified": false,
+        "syntheticAccountCompanyAndRestoreVerified": true,
+        "copiedProductionData": false,
+        "linuxWebImage": "sha256:c68bcf3f670ff6d825c394fad6f9f8eeb7661ec8b5cd6d65627598f884a766ac",
+        "linuxWebHttpWorkflowVerified": true,
+        "linuxWebHttpsBrowserVerified": false,
+        "tenConcurrentSyntheticAccountsVerified": false,
+        "pilotBackupRestoreVerified": false,
+        "crossClusterRestoreVerified": false,
+        "nonemptyMailboxCrossClusterRestoreVerified": false,
+        "scriptedModeBusinessVerified": false,
+        "runnerAttestationStoreVerified": false,
+        "collectorDeclarationImageVerified": false,
+        "lockedPolicyDatabaseVerified": false,
+        "memorySourceLocksVerified": false,
+        "methodCatalogSourceLocksVerified": false,
+        "shadowSourceLocksVerified": false,
+        "safetySkillUsageVerified": false,
+        "transportJournalDatabaseVerified": false,
+        "agentCallLeaseDatabaseVerified": false,
+        "agentCheckpointLeaseDatabaseVerified": false,
+        "candidateLeaseContentionDatabaseVerified": false,
+        "runtimeReadSourceLocksDatabaseVerified": false,
+        "runtimeDisclosureDatabaseVerified": false,
+        "linuxFiveCategoryTransportVerified": false,
+        "collectorImageTlsPreflightVerified": false,
+        "poolRecoveryVerified": false,
+        "standaloneDatabaseRecoveryVerified": false,
+        "extraG09Migration": null,
+        "prospectiveSourceDatabaseVerified": false,
+        "prospectivePairedMaterialVerified": false,
+        "prospectiveStandaloneHttpVerified": false,
+        "prospectiveStandaloneBrowserVerified": false,
+        "completeCompositionVerified": false,
+        "samePortPriorImageRollbackVerified": false
+      }
+    ],
+    "innerLog": {
+      "log": "tmp/ma24-skill-review-fixed-web-inner-ma11_replay_875e09909bb1.log",
+      "logSha256": "239243760a38be26f6b704b4a185e679e0b94742eed130c3cd1bf19d04cc19a3"
+    },
+    "sourceFilesUnchangedAtCompletion": true,
+    "actualPartialReviewAndSeparateCompleteCaptureVerified": true,
+    "newWholeRuntimeCompositionVerified": false
   },
   "syntheticRegisteredTextAttachments": 1,
   "attachmentsBoundBeforeTaskAndFreeze": true,
@@ -55,7 +227,7 @@
   "productionQualificationGranted": false,
   "automaticActivation": false,
   "productionCodeChanged": true,
-  "newImagesRequired": true,
+  "newImagesRequired": false,
   "g14ThroughG20Advanced": false,
   "deploymentPerformed": false,
   "attempts": [
@@ -145,7 +317,7 @@
     }
   },
   "stalePreviewInvalidationImplemented": true,
-  "stalePreviewBrowserVerified": false,
+  "stalePreviewBrowserVerified": true,
   "fixtureAttachmentRestoredIntoWeb": true,
   "fixtureFreezeChecks": {
     "typecheck": {
@@ -412,5 +584,60 @@
     },
     "newFullCompositionRun": false,
     "previousResultsRemainVersionScoped": true
+  },
+  "fixtureSourceCommit": "abcbea9f8bf29e05128d1a9c081e1858d6deee94",
+  "verifiedFinalSources": {
+    "commit": "abcbea9f8bf29e05128d1a9c081e1858d6deee94",
+    "sha256CanonicalLf": {
+      "scripts/verify-recorded-model-source-clone.ts": "a6fd5bc9d9acf50f275850d7407efcfb8f24cf4efcaade21301bca1c6e47132b",
+      "scripts/lib/verify-skill-draft-fixed-web.ts": "19faba39e6e034c0aaaca12babecea989bcad90586bd6cfef351db57651103df",
+      "scripts/verify-skill-review-draft-image-db.ts": "482c4237cb001d95d734f5e4757e0c72bd7d3b165d869582f4122c8d5e505b6f",
+      "scripts/fixtures/skill-candidate-acceptance-clone.ts": "1a776a02f8d2e536c1a04a6d84d26f500330652d798e9b5f576169cbc0e67c9f",
+      "src/lib/assistant/main/skill-original-source-coverage.ts": "c9df380cb558b5e6da2034cbc038039113050b1380ee34d4deeeb8f78c1b4e7f",
+      "src/lib/assistant/main/skill-original-source-coverage.test.ts": "707ed5829911aeffdd57b76f424e782fdece839287357301471c8394c2493ced",
+      "src/lib/assistant/main/skill-acceptance-originals.ts": "a5570dda3a1b90d1799f4fae290a55ce26cfe1d7fed2fd755a3a1b61239c9951",
+      "src/app/api/assistant/skills/acceptance-originals/route.ts": "934209c3ae09f20e4e43c3bfbd9bde633c69e3e4c0af9a93fe06359c5ade0c88",
+      "src/app/api/assistant/skills/acceptance-originals/route.test.ts": "3e23ea2172c347dc3a676692035b42a792dbea9a2c745639f9531bfaafcd18af",
+      "src/components/skill-acceptance-originals.tsx": "0254b716e30d4d8168ae078de0e0c5caa9971bfc05b65a249f9fe2df39932778",
+      "scripts/lib/verify-ma24-originals-browser.ts": "e7ba3d2b4861ce3beefddc6f583be98622915b32f514f26c6b4d985cf140d91e",
+      "scripts/verify-skill-acceptance-originals-db.ts": "30f29398bbf91d98cfd85b24335506fb21e5be878f64b31469e9d491bef3ba74",
+      "scripts/fixtures/skill-durable-candidate-clone.ts": "e0e2127214c96ea08fad6b4ceca002991366d701e78c92291f63f2d55dfa3984"
+    }
+  },
+  "fixtureFollowupChecks": {
+    "typecheck": {
+      "sessionId": 67778,
+      "exitCode": 0,
+      "log": "tmp/ma24-original-state-lease-fixture-typecheck.log",
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "lint": {
+      "sessionId": 66896,
+      "exitCode": 0,
+      "log": "tmp/ma24-original-state-lease-fixture-lint.log",
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "screenshots": [
+    {
+      "path": "tmp/skill-review-fixed-web/conflict-mobile.png",
+      "sha256": "9be0380cf38d3cb6aa6fe8e071a32fefccae677c5196c399b77ede54c20d3f17",
+      "visuallyInspected": true
+    },
+    {
+      "path": "tmp/ma24-originals-ui-d599bbe5-db31-4235-abd4-3dbfc57c0e12.png",
+      "sha256": "836efaecbd251c590ddfa760338b59f84ce00db8f9b2afd0819557c680179565",
+      "visuallyInspected": true
+    }
+  ],
+  "cleanup": {
+    "reviewDatabaseDropped": true,
+    "allTemporaryContainersRemoved": true,
+    "remainingContainers": [
+      "codex_sales_leads-neo4j-1",
+      "codex_sales_leads-ollama-1",
+      "codex_sales_leads-postgres-1"
+    ],
+    "generatedFixtureFilesRemoved": true
   }
 }
