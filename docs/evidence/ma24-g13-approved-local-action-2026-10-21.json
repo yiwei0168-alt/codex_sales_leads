@@ -1,0 +1,54 @@
+{
+  "date": "2026-10-21",
+  "scope": "G13 synthetic non-mail browser approval to actual compiled Worker execution",
+  "status": "static-passed-actual-pending",
+  "productionSourceChanged": false,
+  "fixedImageSourceCommit": "08a093e9064f46b49a376c3e45abf312ac3f06a8",
+  "webImage": "sha256:c68bcf3f670ff6d825c394fad6f9f8eeb7661ec8b5cd6d65627598f884a766ac",
+  "mainImage": "sha256:99dfebe07ff7faae16ff4febf479c51ae8e1fc9718136e06eaa1681c18e2ade7",
+  "sourceFiles": {
+    "scripts/lib/verify-ma24-approved-local-action.ts": "d619819246ab13838508a20b21fab6c3c1f5c7a3a2b8224c353bcaf6b13e6e59",
+    "scripts/verify-main-runtime-worker-db.ts": "9128a5e6f2f0683f2984a698751227586aea359bcee2b1bdf9ec9cfbe83097bc",
+    "scripts/verify-ma24-fresh-pilot-new-cluster.ts": "74ed8828e7f6725613d015b903b914aa009b2dc9cfb2b7c22366a71752e5b164"
+  },
+  "staticAttempts": [
+    {
+      "typecheckSession": 47974,
+      "exitCode": 2,
+      "log": "tmp/ma24-approved-local-action-typecheck.log",
+      "reason": "Explicit ModelToolCall and ModelMessage[] annotations required for TS7022 inferred variables; corrected in fixture."
+    },
+    {
+      "lintSession": 40144,
+      "exitCode": 0,
+      "log": "tmp/ma24-approved-local-action-lint.log"
+    }
+  ],
+  "actualVerification": "pending",
+  "syntheticDocumentsOnly": true,
+  "checkpointSeed": true,
+  "nextModelUsesExistingStepLimit": true,
+  "naturalModelAnswerVerified": false,
+  "realHumanApproval": false,
+  "actualModelCalls": 0,
+  "realQualityApproved": false,
+  "productionQualified": false,
+  "deploymentPerformed": false,
+  "g14ThroughG20Advanced": false,
+  "sourceHashEncoding": "canonical-LF",
+  "checks": {
+    "typecheck": {
+      "sessionId": 7777,
+      "exitCode": 0,
+      "log": "tmp/ma24-approved-local-action-typecheck-freeze.log",
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "lint": {
+      "sessionId": 60991,
+      "exitCode": 0,
+      "log": "tmp/ma24-approved-local-action-lint-freeze.log",
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "fixedProductAndEntrypointsUnchanged": true
+}

@@ -46,6 +46,8 @@ assert(!interruption||durability,'In-flight interruption requires a dedicated pe
 assert(!crashRecovery||durability,'Crash recovery requires a dedicated persistent state volume');
 const commitLoss=process.env.MA24_MAIN_RUNTIME_COMMIT_LOSS==='1';
 const taskEnrollment=process.env.MA24_MAIN_RUNTIME_TASK_ENROLLMENT==='1';
+const approvalHttp=process.env.MA24_MAIN_RUNTIME_APPROVAL_HTTP==='1';
+assert(!approvalHttp||(!interruption&&!durability&&!taskEnrollment),'Approval flow requires its own runtime invocation');
 let signingEnvironment:string[]=[],taskEnrollmentResult:Record<string,unknown>|null=null;
 let server:string|undefined,worker:string|undefined,volume:string|undefined,proxy:string|undefined,pgProxy:string|undefined,networkAnchor:string|undefined;
 let proxyAddress:string|undefined,serverRuntimeUrl=runtimeUrl;
@@ -137,10 +139,10 @@ try{
  };
  const stopServer=async()=>{assert(server);await execute(['stop','--time','15',server]);assert.equal(await execute(['inspect','--format','{{.State.ExitCode}}',server]),'0','API must flush and exit normally');await execute(['rm','--volumes',server]);server=undefined;};
  await startServer();
- const owner=interruption?(await admin.query<{id:string}>("select id from app_user where email=$1 and role='member' and status='active'",[process.env.MA24_MAIN_RUNTIME_OWNER_EMAIL])).rows[0]?.id:randomUUID();
+ const owner=interruption||approvalHttp?(await admin.query<{id:string}>("select id from app_user where email=$1 and role='member' and status='active'",[process.env.MA24_MAIN_RUNTIME_OWNER_EMAIL])).rows[0]?.id:randomUUID();
  assert(owner,'Interruption fixture requires the authenticated synthetic member');
  const sourceOwner=randomUUID(),document=randomUUID(),chunk=randomUUID(),content='Synthetic compiled worker source',hash=createHash('sha256').update(content).digest('hex');
- for(const id of interruption?[sourceOwner]:[owner,sourceOwner])await admin.query("insert into app_user(id,email,display_name,role,status) values($1,$2,'Synthetic runtime','member','active')",[id,`${id}@example.invalid`]);
+ for(const id of interruption||approvalHttp?[sourceOwner]:[owner,sourceOwner])await admin.query("insert into app_user(id,email,display_name,role,status) values($1,$2,'Synthetic runtime','member','active')",[id,`${id}@example.invalid`]);
  await admin.query(`insert into knowledge_document(id,collection_id,external_id,title,source_type,content_sha256,owner_id,visibility)
   values($1,(select id from knowledge_collection where slug='product'),$1::uuid::text,'Synthetic runtime source','text',$2,$3,'shared')`,[document,hash,sourceOwner]);
  await admin.query('insert into knowledge_chunk(id,document_id,chunk_index,content,token_estimate,content_sha256) values($1,$2,0,$3,10,$4)',[chunk,document,content,hash]);
@@ -179,6 +181,14 @@ try{
   completedTasks.push({id:task.id,row});
  }
  if(taskEnrollmentResult)taskEnrollmentResult.actualMatchingApiAndWorkerVerified=true;
+ let approvedLocalActionResult:unknown=null;
+ if(approvalHttp){
+  const {verifyMa24ApprovedLocalAction}=await import('./lib/verify-ma24-approved-local-action');
+  const databaseContainer=process.env.MA24_MAIN_RUNTIME_DATABASE_CONTAINER!;assert.match(databaseContainer,/^[a-f0-9]{64}$/);
+  approvedLocalActionResult=await verifyMa24ApprovedLocalAction({admin,owner,base:process.env.MA24_MAIN_RUNTIME_WEB_BASE!,
+   ownerCookie:process.env.MA24_MAIN_RUNTIME_OWNER_COOKIE!,peerCookie:process.env.MA24_MAIN_RUNTIME_PEER_COOKIE!,cert:ca,
+   key:await execute(['exec',databaseContainer,'cat','/tmp/ma24-server.key']),runWorker:async()=>{await startWorker();await finishWorker();}});
+ }
  let modelReceiptRecoveryResult:unknown=null;
  if(process.env.MA24_MAIN_RUNTIME_MODEL_RECEIPT==='1'){
   const config=modeModelConfig('standard'),task=await enqueueRun(owner,
@@ -435,7 +445,7 @@ try{
    priorTaskRowsUnchangedAfterRestart:true,gracefulApiExitCode:0,committedTaskSurvivesLostHttpResponse:true,noDuplicateReplyEventOrExtractionJob:true,subsequentWorkerMakesNoReplayRequest:true,forwardedApiRequests:1,crashResult};
  }
  const receipt={passed:true,image,immutableImageId:metadata.id,sourceCommit:metadata.revision,integrity,actualLangGraphApi:true,actualCompiledQueueWorker:true,postgresCheckpointRecovery:true,cases,
-  durabilityResult,commitLossResult,uncommittedLossResult,taskEnrollmentResult,interruptionResult,networkLossResult,skillReceiptRecoveryResult,modelReceiptRecoveryResult,syntheticCheckpointSeed:true,actualModelCalls:0,externalActions:0,firstModelExecutionVerified:false,productionQualified:false,automaticActivation:false};
+  durabilityResult,commitLossResult,uncommittedLossResult,taskEnrollmentResult,interruptionResult,networkLossResult,skillReceiptRecoveryResult,modelReceiptRecoveryResult,approvedLocalActionResult,syntheticCheckpointSeed:true,actualModelCalls:0,externalActions:0,firstModelExecutionVerified:false,productionQualified:false,automaticActivation:false};
  await writeFile('tmp/ma24-main-runtime-worker-result.json',JSON.stringify(receipt,null,2)+'\n');console.log(JSON.stringify({mainRuntimeWorker:'passed',...receipt}));
 }finally{
  if(worker)await docker(['rm','--force','--volumes',worker]);
