@@ -12,6 +12,7 @@ import {createConfiguredTaskModeRequest,taskTransportSigningConfigured} from './
 import { modeConfigSchema } from './mode-config';
 import { ModeModelsUnavailable } from './mode-fallback';
 import {SkillReadDisclosureError,SKILL_READ_DISCLOSURE_REPLY} from './skill-read-disclosure-error';
+import {MAIN_AGENT_EXECUTION_LIMITS} from './main-agent-limits';
 import {runJournaledModeModel} from './journaled-mode-model';
 import { BudgetDeniedError } from "@/lib/billing/policy";
 import { loadDecisionMemory } from "./memory-context";
@@ -77,7 +78,7 @@ export function buildMainAgentGraph(deps: MainGraphDependencies, checkpointer?: 
         decisionRevision:(state.decisionRevision??0)+(changed?1:0), ...(changed ? { seen: {},pending:[] } : {}) };
     }))
     .addNode("main_model", persist(async state => {
-      if (state.steps >= 80) return { status: "partial" as RunStatus, reply: "任务已保存部分结果，达到本轮执行步数限制。可以继续或调整要求。" };
+      if (state.steps >= MAIN_AGENT_EXECUTION_LIMITS.modelSteps) return { status: "partial" as RunStatus, reply: "任务已保存部分结果，达到本轮执行步数限制。可以继续或调整要求。" };
       try {
         await deps.validateEvidence?.(state.messages);
         const response = await deps.model(toolModelView(state.messages), state.steps,state.decisionRevision??0);
@@ -241,7 +242,7 @@ export async function executeMainAgentRun(userId: string, runId: string, leaseTo
     model: (messages, step,revision) => withCurrentDecisionMemory(userId,()=>durableModel(context, messages, step, revision,run.model_config)),
     tool: (call, instructionIds) => dispatchTool(call, { ...context, instructionIds }),
   }, checkpointer);
-  const config = { configurable: { thread_id: `main-agent:${userId}:${runId}`, checkpoint_ns: "" }, recursionLimit: 400 };
+  const config = { configurable: { thread_id: `main-agent:${userId}:${runId}`, checkpoint_ns: "" }, recursionLimit: MAIN_AGENT_EXECUTION_LIMITS.recursionLimit };
   const snapshot = await graph.getState(config);
   const old = snapshot.values as Partial<typeof MainAgentState.State>;
   let initial: Partial<typeof MainAgentState.State>;

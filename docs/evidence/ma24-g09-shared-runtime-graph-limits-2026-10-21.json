@@ -1,0 +1,53 @@
+{
+  "date": "2026-10-21",
+  "rule": "MA24-06",
+  "stage": "shared-registered-runtime-graph-limits",
+  "baseCommit": "26c7fed2",
+  "sourceFiles": {
+    "src/lib/assistant/main/main-agent-limits.ts": "c92e521d488fe0e266a9275e7daf1d0dc53679c7fde7e936f1039b51138036e1",
+    "src/lib/assistant/main/graph.ts": "58aa2982139a489d3c361cd312ad2298bd6a2abbba94c96884ff4f7b74e855c2",
+    "src/lib/assistant/main/graph.test.ts": "36c84eda8934b0a26a1d3cd32a6809cd3ad0373822f65176f71cb3897ca21746",
+    "src/lib/assistant/main/skill-candidate-runner.ts": "16f62aaa4840caf6536fe9a103288ba83b24adca019dc2e4e8973232b622f00e",
+    "src/lib/assistant/main/skill-candidate-runner.test.ts": "4bd54a3bab36c91665de78ef069489df37b5611611c1c793df0a330e141bc846"
+  },
+  "limits": {
+    "ordinaryModelSteps": 80,
+    "ordinaryAndRegisteredRecursion": 400,
+    "trialModelCallMinimum": 1,
+    "trialModelCallMaximum": 64,
+    "defaultTrialModelCalls": 8,
+    "standaloneSavedResultRecursion": "trial quota * 32"
+  },
+  "checks": {
+    "tests": {
+      "sessionId": 62787,
+      "exitCode": 0,
+      "tests": 55,
+      "files": 3
+    },
+    "typecheck": {
+      "sessionId": 61928,
+      "exitCode": 0
+    },
+    "lint": {
+      "sessionId": 96023,
+      "exitCode": 0,
+      "files": 5
+    }
+  },
+  "logSha256": {
+    "tmp/ma24-shared-runtime-graph-limit-tests-accepted.log": "ea5a1a8534f574d7e7cf4064e6e7b58fba7d8d076bd39a9230a0d0c7238dca97",
+    "tmp/ma24-shared-runtime-graph-limit-typecheck-final.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "tmp/ma24-shared-runtime-graph-limit-lint-final.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "initialTestFailure": "One response with 140 tools exceeded existing schema maximum 12; replaced with valid multi-turn test; no product schema relaxation",
+  "scope": {
+    "actualModelCalls": 0,
+    "syntheticCallbacksOnly": true,
+    "databaseComposition": "not-run-for-this-source",
+    "earlierSession78222": "Pinned to 7dbab64c before this change",
+    "fixedPackages": "pending",
+    "productionAgentEquivalent": false,
+    "automaticActivation": false
+  }
+}

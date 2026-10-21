@@ -8,6 +8,15 @@ import { InstructionsChangedError } from "./repository";
 const call = (id: string, tool: string): ModelToolCall => ({ id, type: "function", function: { name: "execute_tool", arguments: JSON.stringify({ tool, arguments: {} }) } });
 const initial = () => ({ messages: [{ role: "user" as const, content: "先查现有资料，再对照保存的公司决定，指出差异" }], pending: [], steps: 0, status: "running" as const, reply: "", seen: {}, instructionIds: [] });
 describe("open main Agent graph", () => {
+  it('preserves the 80-decision boundary while retaining the last permitted read result',async()=>{
+    const model=vi.fn(async():Promise<ModelMessage>=>({role:'assistant',content:null,tool_calls:[call('last-read','knowledge_search')]}));
+    const tool=vi.fn(async()=>result({evidence:'Synthetic final permitted read'}));
+    const graph=buildMainAgentGraph({boundary:async()=>({control:null,instructions:[]}),model,tool},false);
+    const out=await graph.invoke({...initial(),steps:79});
+    expect(out).toMatchObject({status:'partial',steps:80,pending:[]});
+    expect(model).toHaveBeenCalledOnce();expect(tool).toHaveBeenCalledOnce();
+    expect(out.messages.some(message=>message.role==='tool'&&message.content?.includes('Synthetic final permitted read'))).toBe(true);
+  });
   it("replans a composite stopped between leaf actions after new input",async()=>{
     let instructions:Array<{id:string;content:string}>=[];
     const action=call("batch","mail_batch_send");

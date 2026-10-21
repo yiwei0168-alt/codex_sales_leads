@@ -11,6 +11,7 @@ import {skillCandidateCheckpointSchema,type SkillCandidateCheckpointStore} from 
 import type {BaseCheckpointSaver} from '@langchain/langgraph';
 import type {RunnableConfig} from '@langchain/core/runnables';
 import {SkillReadDisclosureError} from './skill-read-disclosure-error';
+import {MAIN_AGENT_EXECUTION_LIMITS} from './main-agent-limits';
 
 type SkillListing={id:string;name:string;scope:string;current_version:number;enabled:boolean;published:boolean;owned:boolean};
 type Snapshot={context:Pick<ExecutionContext,'userId'|'role'|'mode'|'knowledgeScope'>;
@@ -133,7 +134,8 @@ export async function runSkillCandidateArm(input:Snapshot,arm:'baseline'|'candid
   ...(graphStorage?{runtimeMetadata:metadata()}:{} )};
  // Pending recovery enters START -> safe_boundary, just like a new production
  // lease. A terminal checkpoint is read-only reuse after current-source checks.
- const final=initial.status==='running'?await graph.invoke(initial,{...graphStorage?.config,recursionLimit:maximumModelCalls*32,durability:'sync'}):initial;
+ const recursionLimit=runtimeDispatch?MAIN_AGENT_EXECUTION_LIMITS.recursionLimit:maximumModelCalls*32;
+ const final=initial.status==='running'?await graph.invoke(initial,{...graphStorage?.config,recursionLimit,durability:'sync'}):initial;
  await check();
  return {protocol:runtimeDispatch?'skill-instruction-overlay-runtime-v1':'skill-instruction-overlay-v1',arm,status:final.status,reply:final.reply,messages:final.messages,
   inputHash:digest(snapshot),profileHash:digest(profile),candidateContentHash:candidate.value.content_hash,

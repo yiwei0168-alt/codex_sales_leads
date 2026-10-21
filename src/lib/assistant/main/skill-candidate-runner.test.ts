@@ -12,6 +12,8 @@ import type {SkillCandidateCheckpoint,SkillCandidateCheckpointStore} from './ski
 import {MemorySaver} from '@langchain/langgraph';
 import {KnowledgeSourceChangedError,SOURCE_CHANGED_REPLY} from './knowledge-message-guard';
 import {SkillReadDisclosureError,SKILL_READ_DISCLOSURE_REPLY} from './skill-read-disclosure-error';
+import {buildMainAgentGraph} from './graph';
+import {MAIN_AGENT_EXECUTION_LIMITS} from './main-agent-limits';
 const execution=vi.hoisted(()=>({run:vi.fn()}));
 vi.mock('./tool-execution',()=>({executeRegisteredTool:execution.run}));
 const owner='00000000-0000-4000-8000-000000000001',id='00000000-0000-4000-8000-000000000002';
@@ -28,6 +30,31 @@ function fixture(){
 }
 function call(name:string,args:unknown,id:string){return {role:'assistant',content:null,tool_calls:[{id,type:'function',function:{name,arguments:JSON.stringify(args)}}]};}
 const answer={role:'assistant',content:'Synthetic answer.'};
+it('stops a registered high-load read loop at the same graph boundary as an ordinary task',async()=>{
+ const harness=()=>{
+  let step=0;
+  const model=vi.fn(async()=>{
+   const turn=step++;return {role:'assistant',content:null,tool_calls:Array.from({length:12},(_,index)=>
+    call('execute_tool',{tool:'knowledge_search',arguments:{query:`Synthetic ${turn}-${index}`}},`read-${turn}-${index}`).tool_calls[0])} as ModelMessage;
+  });
+  return {model,tool:vi.fn(async()=>toolResultSchema.parse({status:'success',data:[],cost:'known'}))};
+ };
+ const candidate=harness();
+ await expect(runSkillCandidateArm(fixture(),'candidate',candidate.model,async()=>{},64,undefined,undefined,
+  async()=>({output:await candidate.tool()}))).rejects.toMatchObject({name:'GraphRecursionError'});
+ const ordinary=harness(),graph=buildMainAgentGraph({boundary:async()=>({control:null,instructions:[]}),model:ordinary.model,tool:ordinary.tool},false);
+ await expect(graph.invoke({messages:fixture().initialMessages,pending:[],steps:0,status:'running',reply:'',seen:{},instructionIds:[],decisionRevision:0,policyRevision:''},
+  {recursionLimit:MAIN_AGENT_EXECUTION_LIMITS.recursionLimit})).rejects.toMatchObject({name:'GraphRecursionError'});
+ expect(candidate.model).toHaveBeenCalledTimes(16);
+ expect(candidate.model).toHaveBeenCalledTimes(ordinary.model.mock.calls.length);
+ expect(candidate.tool).toHaveBeenCalledTimes(ordinary.tool.mock.calls.length);
+});
+it('retains the explicit model-call quota with registered dispatch after sharing the graph limit',async()=>{
+ const model=vi.fn(async()=>call('describe_tool',{tool:'knowledge_search'},'describe'));
+ const dispatch=vi.fn(async()=>({output:toolResultSchema.parse({status:'success',data:[],cost:'known'})}));
+ const out=await runSkillCandidateArm(fixture(),'candidate',model,async()=>{},1,undefined,undefined,dispatch);
+ expect(out).toMatchObject({status:'partial',modelCalls:1,stopReason:'model-call-limit'});expect(model).toHaveBeenCalledTimes(1);
+});
 it('reports a disclosure stop separately from model unavailability',async()=>{
  const out=await runSkillCandidateArm(fixture(),'candidate',async()=>{throw new SkillReadDisclosureError();},async()=>{});
  expect(out).toMatchObject({status:'partial',reply:SKILL_READ_DISCLOSURE_REPLY,stopReason:'external-disclosure-unavailable'});
