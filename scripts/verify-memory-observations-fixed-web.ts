@@ -24,7 +24,8 @@ const proxy=createServer({key:docker(['exec',databaseContainer,'cat','/tmp/ma24-
 });
 let browser:Awaited<ReturnType<typeof chromium.launch>>|undefined;
 const progressPath=`tmp/ma24-memory-ui-progress-${databaseContainer.slice(0,12)}.json`;
-const progress=async(stage:string,detail?:string)=>writeFile(progressPath,JSON.stringify({stage,detail,at:new Date().toISOString()})+'\n');
+const steps:Array<{stage:string;detail?:string;at:string}>=[];
+const progress=async(stage:string,detail?:string)=>{steps.push({stage,detail,at:new Date().toISOString()});await writeFile(progressPath,JSON.stringify({stage,steps})+'\n');};
 const watchdog=setTimeout(()=>{void progress('watchdog-expired').finally(()=>{console.error('Synthetic memory UI watchdog expired');process.exit(1);});},180000);watchdog.unref();
 try{
  await progress('seeding');
@@ -39,10 +40,10 @@ try{
  await observeMemory(owner.id,{kind:'business-fact',content:laterContent,memoryKey:conflictKey,validFrom:'2024-01-01T00:00:00Z',sourceReceipt:source});
  for(let i=0;i<13;i++)await observeMemory(owner.id,{kind:'preference',content:`${marker} pagination ${i}`,sourceReceipt:source});
  const endpoint=`${upstream.origin}/api/knowledge/observations`;
- const api=async(view:string,actor=cookie)=>{const r=await fetch(`${endpoint}?view=${view}`,{headers:{cookie:actor},signal:AbortSignal.timeout(30000)});assert.equal(r.status,200);return r.json();};
+ const api=async(view:string,actor=cookie)=>{await progress('api-start',view);const r=await fetch(`${endpoint}?view=${view}`,{headers:{cookie:actor},signal:AbortSignal.timeout(30000)});assert.equal(r.status,200);const value=await r.json();await progress('api-complete',view);return value;};
  const post=async(body:unknown,actor=cookie)=>{
-  const r=await fetch(endpoint,{method:'POST',headers:{cookie:actor,'content-type':'application/json'},body:JSON.stringify(body),signal:AbortSignal.timeout(30000)});
-  const text=await r.text();return {status:r.status,json:async()=>JSON.parse(text)};
+  await progress('post-start');const r=await fetch(endpoint,{method:'POST',headers:{cookie:actor,'content-type':'application/json'},body:JSON.stringify(body),signal:AbortSignal.timeout(30000)});
+  const text=await r.text();await progress('post-complete',String(r.status));return {status:r.status,json:async()=>JSON.parse(text)};
  };
  const row=async(id:string)=>(await admin.query('select * from agent_memory_observation where owner_id=$1 and id=$2',[owner.id,id])).rows[0];
  const clock=async()=>new Date((await admin.query('select clock_timestamp() value')).rows[0].value).toISOString();
@@ -61,15 +62,15 @@ try{
  assert.equal((await page.goto(base+'/knowledge'))?.status(),200);await page.getByRole('button',{name:'个人记忆',exact:true}).click();
  const section=page.locator('section[aria-label="学习记忆"]');await expect(section).toBeVisible();
  const ready=async()=>{await expect(section.getByText('正在读取…',{exact:true})).toHaveCount(0);};
- const view=async(name:string)=>{await section.getByRole('button',{name,exact:true}).click();await ready();};
+ const view=async(name:string)=>{await progress('view-start',name);await section.getByRole('button',{name,exact:true}).click();await ready();await progress('view-loaded',name);};
  const findCard=async(content:string):Promise<Locator>=>{
-  while(await section.getByRole('button',{name:'上一页',exact:true}).isEnabled()){await section.getByRole('button',{name:'上一页',exact:true}).click();await ready();}
+  for(let reset=0;await section.getByRole('button',{name:'上一页',exact:true}).isEnabled();reset++){assert(reset<4,'Synthetic fixture could not return to first page');await progress('page-reset',String(reset));await section.getByRole('button',{name:'上一页',exact:true}).click();await ready();}
   for(let n=0;n<5;n++){
-   const card=section.locator('article.opportunity-card').filter({has:page.getByText(content,{exact:true})});if(await card.count())return card;
+   await progress('card-page-search',String(n));const card=section.locator('article.opportunity-card').filter({has:page.getByText(content,{exact:true})});if(await card.count())return card;
    const next=section.getByRole('button',{name:'下一页',exact:true});assert(await next.isEnabled(),'Synthetic observation missing from page');await next.click();await ready();
   }throw new Error('Synthetic pagination limit exceeded');
  };
- const save=async(status=200)=>{const response=page.waitForResponse(r=>new URL(r.url()).pathname==='/api/knowledge/observations'&&r.request().method()==='POST');await section.getByRole('button',{name:'保存更正',exact:true}).click();const result=await response;assert.equal(result.status(),status);return result.json();};
+ const save=async(status=200)=>{await progress('save-start');const response=page.waitForResponse(r=>new URL(r.url()).pathname==='/api/knowledge/observations'&&r.request().method()==='POST');await section.getByRole('button',{name:'保存更正',exact:true}).click();const result=await response;assert.equal(result.status(),status);const value=await result.json();await progress('save-complete',String(status));return value;};
  await ready();await view('当前有效');await expect(section).toContainText(knownContent);await progress('active-view-reload-passed');
  await view('历史时间轴');let card=await findCard(unknownContent);assert(await section.getByRole('button',{name:'上一页',exact:true}).isEnabled());
  await card.getByRole('button',{name:'更正这条记忆',exact:true}).click();const contentField=section.getByLabel('更正后的完整内容');await expect(contentField).toBeFocused();
@@ -116,7 +117,9 @@ try{
  await writeFile('tmp/ma24-memory-observations-fixed-web-result.json',JSON.stringify(receipt,null,2)+'\n');console.log(JSON.stringify(receipt));await progress('verified');
 }catch(error){
  const detail=String(error instanceof Error?error.message:error).replaceAll(decodeURIComponent(adminUrl.password),'<temporary-password>').replaceAll(decodeURIComponent(appUrl.password),'<temporary-password>');
- await progress('failed',detail.slice(0,3000));console.error(detail);throw error;
+ await progress('failed',detail.slice(0,3000));console.error(detail);
+ for(const context of browser?.contexts()??[])for(const page of context.pages())await page.screenshot({path:`tmp/ma24-memory-ui-failure-${databaseContainer.slice(0,12)}.png`,timeout:5000}).catch(()=>{});
+ throw error;
 }finally{
  clearTimeout(watchdog);const cleanupTimeout=setTimeout(()=>{console.error('Synthetic memory UI cleanup timed out');process.exit(1);},15000);cleanupTimeout.unref();
  try{await browser?.close();}finally{proxy.closeAllConnections();if(proxy.listening)await new Promise<void>(done=>proxy.close(()=>done()));await Promise.allSettled([admin.end(),getPool().end()]);clearTimeout(cleanupTimeout);}
