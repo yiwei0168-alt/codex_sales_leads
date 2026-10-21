@@ -58,7 +58,11 @@ export async function verifySkillRuntimeCandidateDatabase(pool:Pool,owner:string
  assert.equal(recoveredState.state.status,'completed');assert.equal(recoveredState.candidateSkillUsed,true);
  assert.equal(recoveredState.calls,5);assert.equal(recoveredState.trace.length,4);
  const auditInput={...selection,taskId:created.runId};
- await assert.rejects(auditSkillRuntimeCandidate(context,auditInput,frozen.plan),/Completed Skill runtime task unavailable/);
+ // Completed-task admission now loads the owning settled execution policy
+ // before rebuilding the source binding. The task above is still running.
+ await assert.rejects(auditSkillRuntimeCandidate(context,auditInput,frozen.plan),{
+  message:'Completed Skill runtime execution policy unavailable',
+ });
  const tools=(await pool.query('select id,tool_id,status,output from agent_tool_call where run_id=$1 order by tool_id',[created.runId])).rows;
  assert.deepEqual(tools.map(row=>row.tool_id),['customer_timeline','skill_read']);assert(tools.every(row=>row.status==='completed'));
  const recovered=await runSkillRuntimeCandidate(claimed.context,selection,collector);
