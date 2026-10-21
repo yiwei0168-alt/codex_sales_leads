@@ -1,0 +1,121 @@
+{
+  "date": "2026-10-21",
+  "rule": "MA24-06",
+  "productCommit": "359cbc6000c027fe48fc7ec2ddd1d5ef672492fa",
+  "buildExitCodes": {
+    "main": 0,
+    "collector": 0,
+    "web": 0
+  },
+  "verificationExitCodes": {
+    "runtimePair": 0,
+    "collectorBoundary": 0,
+    "webSource": 0
+  },
+  "logHashes": {
+    "tmp/ma24-postgres-graph-main-build.log": "fe5e8f8b536a83084816aeb07026d7ffd4367c12aa3451fc4ef0ee1599ffdc1f",
+    "tmp/ma24-postgres-graph-collector-build.log": "00c7225d57e74d274b9e702cc3650f012b89ee3a7793987be1e0e8a9cc163c43",
+    "tmp/ma24-postgres-graph-web-build.log": "f8c924cbfa902249c0064f3925ad1c4ae7822a4431e7177378a13ab6b6aad695",
+    "tmp/ma24-postgres-graph-runtime-pair.log": "c9269e1ef91af4c7b6d3107268cd3a5f23295c38e66985694d8fed3d6abb49d4",
+    "tmp/ma24-postgres-graph-collector-boundary.log": "a32a4bba647e3aaf5e62bc3dc95bc11b7f6f4b711e4c826ab28bfccdabb0c62f",
+    "tmp/ma24-postgres-graph-web-source.log": "93826b0d57509256fea6a2419d95384f99da587aebf5d5ebfa9fc12833ab12bf"
+  },
+  "runtimePair": {
+    "localRuntimeDependencyPair": "passed",
+    "mainInspection": {
+      "role": "main-agent",
+      "imageId": "sha256:02421197a7992d87352f1f76546bdba5b5fe982f842ae954151494ed970c17c1",
+      "sourceCommit": "359cbc6000c027fe48fc7ec2ddd1d5ef672492fa",
+      "deploymentHash": "0c78826029f09b1a76e130c8f2d22555c932a34cfada95cd38f5f7b9f0acd993",
+      "runtimeHash": "a6860a47d6ebae33434dc5277ddf6d9480fc20e7f67a300766a2fa883afe2892",
+      "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+      "node": "24.21.0",
+      "platform": "linux",
+      "arch": "x64",
+      "sourceInputs": 1022,
+      "files": 34574,
+      "dependencyManifestHash": "d3edb974b4ae6e725cbb62205c8f0e65606b061fd97bce214289279ccca20137",
+      "dependencyFiles": 33503,
+      "runtimeModuleFormat": "esm"
+    },
+    "collectorInspection": {
+      "role": "skill-collector",
+      "imageId": "sha256:ad2c4fe22fb27db43006486e120f8f4e281cbe8f1762fc6917f6d6a043e25238",
+      "sourceCommit": "359cbc6000c027fe48fc7ec2ddd1d5ef672492fa",
+      "deploymentHash": "9b1801a2b15e55b9663b4da57315f251e8ea58259abe3aa454d39fbe69ab16ed",
+      "runtimeHash": "a6860a47d6ebae33434dc5277ddf6d9480fc20e7f67a300766a2fa883afe2892",
+      "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+      "node": "24.21.0",
+      "platform": "linux",
+      "arch": "x64",
+      "sourceInputs": 1022,
+      "files": 34538,
+      "dependencyManifestHash": "d3edb974b4ae6e725cbb62205c8f0e65606b061fd97bce214289279ccca20137",
+      "dependencyFiles": 33503,
+      "runtimeModuleFormat": "esm"
+    },
+    "comparison": {
+      "runtimePackageBytesPairRevalidated": true,
+      "runtimePackageBytesPairBlockers": [],
+      "runtimeModuleFormatPairRevalidated": true,
+      "runtimeModuleFormatPairBlockers": [],
+      "runtimePackageBytesPairHash": "8c9db88d027cf6ce03d207a5396996bc7a8ff69b7dd8295d9172670d93c01e10"
+    },
+    "esmModuleFormatPairVerified": true,
+    "runtimeRegistrationsPublished": false,
+    "completeDependencyRuntimeEquivalenceVerified": false,
+    "productionQualified": false,
+    "automaticActivation": false,
+    "modelCalls": 0
+  },
+  "collectorBoundary": {
+    "collectorImageVerification": "passed",
+    "image": "sha256:ad2c4fe22fb27db43006486e120f8f4e281cbe8f1762fc6917f6d6a043e25238",
+    "imageId": "sha256:ad2c4fe22fb27db43006486e120f8f4e281cbe8f1762fc6917f6d6a043e25238",
+    "commit": "359cbc6000c027fe48fc7ec2ddd1d5ef672492fa",
+    "packageFiles": 34538,
+    "deploymentHash": "9b1801a2b15e55b9663b4da57315f251e8ea58259abe3aa454d39fbe69ab16ed",
+    "measuredEnrollmentVerified": true,
+    "missingMalformedAndMismatchedEnrollmentRejectedBeforeRunner": true,
+    "matchedEnrollmentReachesRunner": true,
+    "nodeOptionsRejected": true,
+    "nonRootReadOnlyNoNetwork": true,
+    "changedRunnerRejectedBeforeExecution": true,
+    "actualModelCalls": 0,
+    "productionQualified": false
+  },
+  "webSource": {
+    "webImageSourceVerification": "passed",
+    "image": "ma24-pilot-web:359cbc60",
+    "imageId": "sha256:08280f831864c0babb892f0b126655b144f02cc3a2fbc1bdfb3f9a230b6103e9",
+    "sourceCommit": "359cbc6000c027fe48fc7ec2ddd1d5ef672492fa",
+    "buildId": "WNpiOXznTZz2TWjOpT5En",
+    "runtimeSourceFileCount": 1022,
+    "runtimeSourceMatchesFixedGitExport": true,
+    "exportEolDifferences": 1022,
+    "runtimeSourceManifestHash": "ac52c5da7fbfd4b3138ae2cd0d8764f9cc04406048e02830b98e268834ff66f0",
+    "privateEnvironmentFiles": false,
+    "privateStorageFiles": false,
+    "staticAssetsPresent": true,
+    "nonRootReadOnlyNoNetwork": true,
+    "productionQualified": false
+  },
+  "runningNotAccepted": {
+    "declarationTls": {
+      "session": 17467,
+      "log": "tmp/ma24-postgres-graph-declaration-tls.log"
+    },
+    "actualApiWorker": {
+      "session": 86473,
+      "log": "tmp/ma24-postgres-graph-main-worker.log"
+    },
+    "fiveCategoryLinuxAndFormalRecovery": {
+      "session": 96880,
+      "log": "tmp/ma24-postgres-graph-linux-recovery.log",
+      "fixtureCommit": "359cbc6000c027fe48fc7ec2ddd1d5ef672492fa"
+    }
+  },
+  "productionQualified": false,
+  "actualModelCalls": 0,
+  "automaticActivation": false
+}
