@@ -1,0 +1,15 @@
+# Knowledge tree current-selection read recovery
+
+## Existing G05/G13 workflow defect
+
+The original-coordinate reader had uncancelled evidence reads without a selection identity. An earlier slow request could replace a later selected block, or arrive after directory navigation. Old directory buttons remained present during a failed navigation, and directory failures had no local retry.
+
+Each evidence selection now aborts the previous read and owns an increasing identity. Results/errors/loading can update only that identity while the reader is mounted. Directory navigation, paging and retry invalidate pending evidence and clear the preview; changing document remounts the reader with an empty root. Directory and evidence loading/errors are independent. Pending and failed directories hide old node actions. Retry keeps the requested directory/page, and a failed or malformed evidence response clears the previous preview instead of presenting it as the newly requested original.
+
+Both read paths have ten-second deadlines. Directory and evidence shape checks reject malformed responses. Evidence must carry the selected node ID. Existing raw-coordinate copy remains exact and secondary. Server source, document/version, asset-registration and owner guards are unchanged. This cannot retract content already delivered to a user, detect revocation without another request, or establish model-answer citation quality.
+
+## Verification
+
+Actual component/local-HTTP checks passed at 1366/390/320 widths. The transport deliberately ignores abort for block A so the tests verify that its late response cannot replace selected B or cross directory/document changes. Directory 503/malformed responses hide old actions, retry preserves the directory, missing evidence clears preview and recovers, exact raw coordinate clipboard copy and long-string wrapping pass. One desktop case waits for the actual ten-second evidence deadline. No writes or model calls occur. Full TypeScript and four-file ESLint passed after fixing an initial fixture variable/type collision; the earlier cleanup ref lint warning was removed.
+
+The actual fixed-Web fixture is prepared with generated registered tree records, stored evidence and a disposable owner/peer pair. It checks browser/HTTP ordering, directory read failure, live asset withdrawal/404 and restoration, exact coordinates, reader unmount and owner isolation. It creates no real document-quality or model-answer evidence. New image build and native execution remain pending at this implementation stage. G14-G20 and deployment remain deferred.
