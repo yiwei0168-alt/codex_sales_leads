@@ -5,6 +5,7 @@ import {request} from 'node:http';
 import {writeFile} from 'node:fs/promises';
 import {Client} from 'pg';
 import {verifyMa24MailboxReaderClone} from './lib/verify-ma24-mailbox-reader-clone';
+import {verifyMa24CompanyCorrespondenceClone} from './lib/verify-ma24-company-correspondence-clone';
 
 assert.equal(process.env.MA24_DISPOSABLE_READER_UI,'1');
 const database=process.env.MA24_READER_DATABASE_CONTAINER!;assert.match(database,/^[a-f0-9]{64}$/);
@@ -26,6 +27,7 @@ try{
  const messages=(await admin.query("select m.id from mailbox_message m join mailbox_connection c on c.id=m.connection_id where m.user_id=$1 and c.email='ma24-reader@example.invalid' order by m.id",[owner.id])).rows;assert.equal(messages.length,2);
  const path='/api/mailbox/messages/'+messages[0].id;
  for(const [actor,status] of [[cookie,200],[peer,404],['',401]] as const){const response=await fetch(upstream.origin+path,{headers:{cookie:actor},signal:AbortSignal.timeout(15000)});assert.equal(response.status,status);}
+ const companyCorrespondence=await verifyMa24CompanyCorrespondenceClone({admin,base,cookie,peerCookie:peer,userId:owner.id,allowSelfSignedLoopback:true});
  assert.equal((await admin.query('select count(*)::int n from agent_run where user_id=$1',[owner.id])).rows[0].n,0);
- const result={mailboxReaderFixedWeb:'passed',actualChromeHttpsCompiledWeb:true,reader,ownerReadAndPeerAnonymousRefusal:true,syntheticEncryptedMessagesOnly:true,actualModelCalls:0,mailConnections:0,mailSends:0,realBusinessQualityAccepted:false,productionQualified:false};await writeFile('tmp/ma24-mailbox-reader-fixed-result.json',JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify(result));
+ const result={mailboxReaderFixedWeb:'passed',companyCorrespondence,actualChromeHttpsCompiledWeb:true,reader,ownerReadAndPeerAnonymousRefusal:true,syntheticEncryptedMessagesOnly:true,actualModelCalls:0,mailConnections:0,mailSends:0,realBusinessQualityAccepted:false,productionQualified:false};await writeFile('tmp/ma24-mailbox-reader-fixed-result.json',JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify(result));
 }finally{clearTimeout(watchdog);const timeout=setTimeout(()=>process.exit(1),15000);timeout.unref();proxy.closeAllConnections();if(proxy.listening)await new Promise<void>(done=>proxy.close(()=>done()));await admin.end();clearTimeout(timeout);}

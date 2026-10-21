@@ -1,0 +1,48 @@
+import assert from 'node:assert/strict';
+import {createHash,randomUUID} from 'node:crypto';
+import {chromium,expect} from '@playwright/test';
+import type {Client} from 'pg';
+import {encryptMailboxContent} from '../../src/lib/mailbox/crypto';
+import {ma24BrowserContext,ma24FixtureFetch} from './ma24-browser-context';
+
+export async function verifyMa24CompanyCorrespondenceClone(options:{admin:Client;base:string;cookie:string;peerCookie:string;userId:string;allowSelfSignedLoopback?:boolean}){
+ assert.equal(process.env.MA24_DISPOSABLE_READER_UI,'1');assert.equal(new URL(options.base).hostname,'127.0.0.1');
+ const owner=(await options.admin.query('select email from app_user where id=$1',[options.userId])).rows[0];assert.match(owner.email,/^pilot-container-[a-f0-9]{12}-0@example\.invalid$/);
+ const fetch=(path:string,cookie=options.cookie)=>ma24FixtureFetch(options,options.base+path,{headers:{cookie}});
+ const workspace=await fetch('/api/workspaces/current');assert.equal(workspace.status,200);const companies=(await workspace.json() as {companies:Array<{id:string;displayName:string}>}).companies;
+ const company=companies.find(row=>row.displayName==='Synthetic reader association company');assert(company);const other=companies.find(row=>row.id!==company.id);assert(other);
+ const physical=(await options.admin.query("select c.id from sales_company c join user_company_market wc on wc.company_id=c.id join market_workspace w on w.id=wc.workspace_id where w.owner_id=$1 and w.slug='global-sales' and wc.candidate_id=$2",[options.userId,company.id])).rows;assert.equal(physical.length,1);
+ const connection=(await options.admin.query("select id,host from mailbox_connection where user_id=$1 and email='ma24-reader@example.invalid'",[options.userId])).rows;assert.equal(connection.length,1);assert.equal(connection[0].host,'invalid.example');
+ const prefix=randomUUID().slice(0,8),sources:Array<{id:string;subject:string;body:string}>=[];
+ for(let index=0;index<21;index++){
+  const id=randomUUID(),subject=`Generated company correspondence ${String(index).padStart(2,'0')} ${prefix}`,body=`Generated company original ${index}\n`+Array.from({length:35},(_,line)=>`Generated line ${line}: owned correspondence content ${index}.`).join('\n');sources.push({id,subject,body});
+  await options.admin.query(`insert into mailbox_message(id,user_id,connection_id,folder_path,uid_validity,message_uid,internet_message_id,direction,subject,body_text,content_sha256,content_ciphertext,screening_bucket,screened_at,sent_at)
+   values($1,$2,$3,$4,$5,$6,$7,$8,'','',$9,$10,'ignored',now(),$11)`,[id,options.userId,connection[0].id,index%2?'Sent':'INBOX','ma24-corr-'+prefix,100+index,`<ma24-corr-${prefix}-${index}@example.invalid>`,index%2?'outbound':'inbound',createHash('sha256').update(body).digest('hex'),encryptMailboxContent(options.userId,{subject,bodyText:body,sender:[{address:'generated@example.invalid'}],recipients:[]}),new Date(Date.parse('2026-10-22T00:00:00Z')-index*60000).toISOString()]);
+  await options.admin.query('insert into mailbox_message_company(user_id,message_id,company_id,source) values($1,$2,$3,$4)',[options.userId,id,physical[0].id,index%2?'domain-match':'user-confirmed']);
+ }
+ const history=(id:string,offset=0)=>`/api/workspaces/current/companies/${encodeURIComponent(id)}/correspondence?offset=${offset}`;
+ const first=await fetch(history(company.id));assert.equal(first.status,200);const firstPage=await first.json() as {messages:Array<{id:string;bodyText?:unknown}>;hasMore:boolean};assert.equal(firstPage.messages.length,20);assert(firstPage.hasMore);assert.equal(firstPage.messages[0].id,sources[0].id);assert(firstPage.messages.every(row=>!('bodyText' in row)));
+ const second=await fetch(history(company.id,20));assert.equal(second.status,200);const secondPage=await second.json() as {messages:unknown[];hasMore:boolean};assert.equal(secondPage.messages.length,2);assert.equal(secondPage.hasMore,false);
+ for(const [id,cookie] of [[other.id,options.cookie],[company.id,options.peerCookie]]){const response=await fetch(history(id),cookie);assert.equal(response.status,200);const empty=await response.json() as {messages:unknown[]};assert.deepEqual(empty.messages,[]);}
+ assert.equal((await fetch(history(company.id),'')).status,401);assert.equal((await fetch('/api/mailbox/messages/'+sources[0].id,options.peerCookie)).status,404);assert.equal((await fetch('/api/mailbox/messages/'+sources[0].id,'')).status,401);
+ const stored=(await options.admin.query("select count(*)::int n from mailbox_message where id=any($1::uuid[]) and (subject<>'' or body_text<>'' or content_ciphertext is null)",[sources.map(row=>row.id)])).rows[0];assert.equal(stored.n,0);
+ const browser=await chromium.launch({channel:'chrome',headless:true}),results:unknown[]=[],screenshots:string[]=[];
+ try{
+  for(const viewport of [{width:1366,height:900},{width:1366,height:360},{width:390,height:760}]){
+   const context=await ma24BrowserContext(browser,options,{viewport});const[name,value]=options.cookie.split('=');assert(name&&value);await context.addCookies([{name,value,url:options.base}]);
+   try{
+    const page=await context.newPage(),errors:string[]=[];page.on('pageerror',error=>errors.push(error.message));let writes=0,bodyReads=0;
+    page.on('request',request=>{const path=new URL(request.url()).pathname;if(path.includes('/correspondence')||path.startsWith('/api/mailbox/messages/')){if(request.method()!=='GET')writes++;else if(path.startsWith('/api/mailbox/messages/'))bodyReads++;}});
+    await page.goto(options.base+'/markets/DE/leads');await page.getByRole('button',{name:`打开 ${company.displayName} 详情`,exact:true}).click();const dialog=page.getByRole('dialog',{name:company.displayName+' 公司详情'});await dialog.getByRole('button',{name:'开发记录',exact:true}).click();const section=dialog.locator('section').filter({hasText:'已关联往来邮件'}),rows=section.locator('details');await expect(rows).toHaveCount(20);assert.equal(bodyReads,0);
+    await page.route(`**/api/mailbox/messages/${sources[0].id}`,route=>route.fulfill({status:503,json:{error:'synthetic-body-read-failure'}}),{times:1});await rows.first().locator('summary').click();await expect(section.getByRole('alert')).toContainText('原文读取失败');await section.getByRole('button',{name:'重试原文'}).click();await expect(section.locator('pre')).toContainText('Generated company original 0');assert.equal(await section.locator('pre').textContent(),sources[0].body);
+    await page.route('**'+history(company.id),route=>route.fulfill({status:503,json:{error:'synthetic-linked-list-failure'}}),{times:1});await section.getByRole('button',{name:'刷新本地记录'}).click();await expect(section.getByRole('alert')).toContainText('邮件列表读取失败');await expect(rows).toHaveCount(0);await expect(section.locator('pre')).toHaveCount(0);await expect(section.getByText('暂无已关联邮件',{exact:false})).toHaveCount(0);
+    const failedShot=`tmp/ma24-company-correspondence-error-${viewport.width}x${viewport.height}-${prefix}.png`;await section.screenshot({path:failedShot});screenshots.push(failedShot);await section.getByRole('button',{name:'刷新本地记录'}).click();await expect(rows).toHaveCount(20);
+    await section.getByRole('button',{name:'下一页',exact:true}).click();await expect(rows).toHaveCount(2);await expect(section.getByRole('button',{name:'下一页',exact:true})).toBeDisabled();await expect(section.getByText('第 2 页',{exact:false})).toBeVisible();await expect(section.locator('pre')).toHaveCount(0);
+    await page.route('**'+history(company.id,20),route=>route.fulfill({status:503,json:{error:'synthetic-second-page-failure'}}),{times:1});await section.getByRole('button',{name:'刷新本地记录'}).click();await expect(section.getByRole('alert')).toContainText('邮件列表读取失败');await expect(rows).toHaveCount(0);await section.getByRole('button',{name:'刷新本地记录'}).click();await expect(rows).toHaveCount(2);await expect(section.getByText('第 2 页',{exact:false})).toBeVisible();await section.getByRole('button',{name:'上一页',exact:true}).click();await expect(rows).toHaveCount(20);
+    await rows.first().locator('summary').click();await expect(section.locator('pre')).toContainText('Generated company original 0');const body=dialog.locator('.drawer-body');assert(await body.evaluate(element=>element.scrollHeight>element.clientHeight));await body.evaluate(element=>element.scrollTop=0);const bounds=await body.boundingBox();assert(bounds);await page.mouse.move(bounds.x+bounds.width/2,bounds.y+Math.min(80,bounds.height/2));await page.mouse.wheel(0,700);await expect.poll(()=>body.evaluate(element=>element.scrollTop)).toBeGreaterThan(0);
+    assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));assert.deepEqual(errors,[]);assert.equal(writes,0);const shot=`tmp/ma24-company-correspondence-${viewport.width}x${viewport.height}-${prefix}.png`;await page.screenshot({path:shot,fullPage:true});screenshots.push(shot);results.push({viewport,pageSizes:[20,2],bodyOnlyOnExplicitExpansion:true,actualEncryptedOriginalRead:true,body503Retry:true,list503ClearsOldAssociationAndBody:true,noFalseEmptyOnError:true,secondPageFailureRetriesSameOffset:true,outerDrawerScroll:true,noHorizontalOverflow:true,componentMutations:0,pageErrors:0});
+   }finally{await context.close();}
+  }
+  return {companyCorrespondenceFixedPage:'passed',existingAssociatedOriginals:1,generatedAdditionalEncryptedMessages:21,totalAssociatedMessages:22,privateAndOtherCompanyMetadataExcluded:true,ownerBodyReadAndPeerAnonymousRefusal:true,metadataListDoesNotReturnBody:true,storedPlaintextEmpty:true,results,screenshots,actualModelCalls:0,mailSends:0};
+ }finally{await browser.close();}
+}
