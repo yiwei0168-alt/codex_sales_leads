@@ -1,0 +1,45 @@
+import assert from 'node:assert/strict';
+import {createServer} from 'node:http';
+import {mkdir,readFile,writeFile} from 'node:fs/promises';
+import {build} from 'esbuild';
+import {chromium,expect} from '@playwright/test';
+
+const id='11111111-1111-4111-8111-111111111111';
+const built=await build({stdin:{contents:`import React,{useState}from'react';import{createRoot}from'react-dom/client';import{useMailCompanyLink,type MailCompanyLinkValue}from'./src/components/mail-company-link';function Harness(){const[current,setCurrent]=useState<MailCompanyLinkValue|null>({companyId:'physical-a',companyName:'Generated A',source:'user-confirmed'}),[open,setOpen]=useState(true);const view=useMailCompanyLink({messageId:'${id}',current,onCurrentChange:setCurrent,onChanged:()=>{window.__changes=(window.__changes??0)+1;},onDeleted:()=>{window.__deleted=(window.__deleted??0)+1;}});return <><button onClick={()=>setOpen(v=>!v)}>切换关联面板</button>{open&&<section aria-label="关联面板">{view}</section>}</>;}createRoot(document.getElementById('root')).render(<Harness/>);`,resolveDir:process.cwd(),loader:'tsx'},bundle:true,write:false,jsx:'automatic',define:{'process.env.NODE_ENV':'"production"'}});
+const css=(await Promise.all(['src/app/globals.css','src/app/conversation-theme.css'].map(path=>readFile(path,'utf8')))).join('\n');
+const server=createServer((req,res)=>{if(req.url==='/component.js'){res.setHeader('content-type','application/javascript');res.end(built.outputFiles[0].text);}else if(req.url==='/styles.css'){res.setHeader('content-type','text/css');res.end(css);}else{res.setHeader('content-type','text/html');res.end('<!doctype html><html lang="zh"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="/styles.css"><body class="conversation-theme"><main style="padding:16px"><div id="root"></div></main><script src="/component.js"></script></body></html>');}});
+await new Promise<void>(done=>server.listen(0,'127.0.0.1',done));const address=server.address();assert(address&&typeof address!=='string');const base=`http://127.0.0.1:${address.port}`;
+const browser=await chromium.launch({channel:'chrome',headless:true}),results:unknown[]=[],screenshots:string[]=[];
+const watchdog=setTimeout(()=>{console.error('Company association UI watchdog expired');process.exit(1);},90000);watchdog.unref();
+try{
+ await mkdir('tmp/mail-company-link-recovery',{recursive:true});
+ for(const width of [1366,390,320]){
+  const context=await browser.newContext({viewport:{width,height:760}}),page=await context.newPage(),errors:string[]=[];page.on('pageerror',error=>errors.push(error.message));
+  let company='a',patches=0,deletes=0,hold=false,drop=false,dropDelete=false,readFails=false,badCandidates=false,release:(()=>void)|undefined;
+  await context.route('**/api/**',async route=>{
+   const path=new URL(route.request().url()).pathname;
+   if(path==='/api/workspaces/current')return route.fulfill({json:{companies:badCandidates?[null]:['a','b'].map(key=>({id:`market-${key}`,displayName:`Generated ${key.toUpperCase()}`,country:key==='a'?'DE':'FR'}))}});
+   assert.equal(path,'/api/mailbox/messages/'+id);
+   if(route.request().method()==='PATCH'){
+    patches++;const input=route.request().postDataJSON() as {confirmed:boolean;companyId:string|null};assert.equal(input.confirmed,true);assert(['market-a','market-b',null].includes(input.companyId));company=input.companyId?.slice(-1)??'';
+    if(hold)await new Promise<void>(done=>{release=done;});
+    return drop?route.abort('connectionreset'):route.fulfill({json:{updated:true}});
+   }
+   if(route.request().method()==='DELETE'){deletes++;return dropDelete?route.abort('connectionreset'):route.fulfill({json:{deleted:true}});}
+   return readFails?route.fulfill({status:503,json:{}}):route.fulfill({json:{message:{id},companyLink:{companyId:company?`physical-${company}`:null,companyName:company?`Generated ${company.toUpperCase()}`:null,source:company?'user-confirmed':'user-rejected'}}});
+  });
+  await page.goto(base);const panel=page.getByRole('region',{name:'关联面板'}),header=panel.locator('p').filter({hasText:/^关联公司：/}),choice=panel.getByRole('combobox',{name:'关联候选公司'}),save=panel.getByRole('button',{name:'确认保存',exact:true});
+  await expect(header).toContainText('Generated A');await panel.getByText('修改公司关联',{exact:true}).click();await expect(choice).toBeEnabled();await expect(choice).toHaveValue('__keep_current__');await expect(save).toBeDisabled();assert.equal(patches,0);
+  await panel.getByRole('textbox',{name:'搜索关联候选公司'}).fill('Generated B');await expect(choice.getByRole('option')).toHaveCount(3);await choice.selectOption('market-b');hold=true;await save.click();await expect.poll(()=>Boolean(release)).toBe(true);assert.equal(patches,1);await expect(choice).toBeDisabled();await expect(save).toBeDisabled();
+  await page.getByRole('button',{name:'切换关联面板'}).click();await page.getByRole('button',{name:'切换关联面板'}).click();await expect(panel.getByRole('status')).toContainText('正在保存关联');await panel.getByText('修改公司关联',{exact:true}).click();await expect(save).toBeDisabled();assert.equal(patches,1);hold=false;release!();release=undefined;await expect(header).toContainText('Generated B');await expect(panel.getByRole('status')).toContainText('公司关联已保存');
+  badCandidates=true;await panel.getByRole('button',{name:'刷新候选公司'}).click();await expect(panel.getByRole('alert')).toContainText('候选库读取失败');await expect(choice).toBeDisabled();badCandidates=false;await panel.getByRole('button',{name:'刷新候选公司'}).click();await expect(choice).toBeEnabled();await panel.getByRole('textbox',{name:'搜索关联候选公司'}).fill('');
+  drop=true;await choice.selectOption('market-a');await save.click();await expect(panel.getByRole('alert')).toContainText('保存结果未确认');assert.equal(patches,2);await expect(save).toBeDisabled();await expect(header).toContainText('关联信息待核对');
+  await page.getByRole('button',{name:'切换关联面板'}).click();await page.getByRole('button',{name:'切换关联面板'}).click();await panel.getByText('修改公司关联',{exact:true}).click();await expect(save).toBeDisabled();assert.equal(patches,2);readFails=true;await panel.getByRole('button',{name:'读取当前关联'}).click();await expect(panel.getByRole('alert')).toContainText('当前关联读取失败');readFails=false;await panel.getByRole('button',{name:'读取当前关联'}).click();await expect(header).toContainText('Generated A');await expect(panel.getByRole('status')).not.toContainText('公司关联已保存');assert.equal(patches,2);
+  drop=false;readFails=true;await choice.selectOption('market-b');await save.click();await expect(panel.getByRole('status')).toContainText('公司关联已保存');await expect(panel.getByRole('alert')).toContainText('保存已确认');await expect(save).toBeDisabled();assert.equal(patches,3);readFails=false;await panel.getByRole('button',{name:'读取当前关联'}).click();await expect(header).toContainText('Generated B');assert.equal(patches,3);
+  let acceptDelete=false;page.on('dialog',dialog=>acceptDelete?dialog.accept():dialog.dismiss());await panel.getByRole('button',{name:'删除此本地邮件（保留知识）'}).click();assert.equal(deletes,0);
+  assert.deepEqual(errors,[]);assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));const shot=`tmp/mail-company-link-recovery/recovered-${width}.png`;await page.screenshot({path:shot,fullPage:true});screenshots.push(shot);
+  acceptDelete=true;dropDelete=true;await panel.getByRole('button',{name:'\u5220\u9664\u6b64\u672c\u5730\u90ae\u4ef6\uff08\u4fdd\u7559\u77e5\u8bc6\uff09'}).click();await expect(panel.getByRole('alert')).toContainText('\u5220\u9664\u7ed3\u679c\u672a\u786e\u8ba4');assert.equal(deletes,1);await expect(save).toBeDisabled();await panel.getByRole('button',{name:'\u8bfb\u53d6\u5f53\u524d\u5173\u8054'}).click();await expect(header).toContainText('Generated B');assert.equal(deletes,1);
+  dropDelete=false;await panel.getByRole('button',{name:'\u5220\u9664\u6b64\u672c\u5730\u90ae\u4ef6\uff08\u4fdd\u7559\u77e5\u8bc6\uff09'}).click();await expect(panel.getByRole('status')).toContainText('\u672c\u5730\u90ae\u4ef6\u5df2\u5220\u9664');assert.equal(deletes,2);await expect.poll(()=>page.evaluate(()=>(window as Window&{__deleted?:number}).__deleted??0)).toBe(1);assert.deepEqual(errors,[]);await context.close();results.push({width,physicalIdentityNeverSubmittedAsCandidate:true,explicitChoiceRequired:true,searchAndMalformedCandidateRecovery:true,heldWriteSurvivesPanelUnmountWithoutDuplicate:true,unknownAckAndReadFailureNoAutomaticPatch:true,unknownStateSurvivesPanelUnmount:true,confirmedSaveNoticeRetainedAfterReadFailure:true,deleteCancelledWithoutRequest:true,unknownDeleteNoAutomaticRetry:true,confirmedDeleteCallback:true,patches:3,noPageErrors:true});
+ }
+ const result={mailCompanyLinkRecoveryComponent:'passed',results,screenshots,syntheticHttpOnly:true,actualModelCalls:0};await writeFile('tmp/mail-company-link-recovery/result.json',JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify(result));
+}finally{clearTimeout(watchdog);await browser.close();server.closeAllConnections();await new Promise<void>(done=>server.close(()=>done()));}

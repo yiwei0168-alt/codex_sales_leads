@@ -23,7 +23,7 @@ try{
  const owner=(await admin.query('select id,email from app_user where email=$1',[process.env.MA24_READER_OWNER_EMAIL])).rows[0];assert(owner);assert.match(owner.email,/^pilot-container-[a-f0-9]{12}-0@example\.invalid$/);
  await new Promise<void>(done=>proxy.listen(0,'127.0.0.1',done));const address=proxy.address();assert(address&&typeof address!=='string');const base=`https://127.0.0.1:${address.port}`;
  const reader=await verifyMa24MailboxReaderClone({admin,base,cookie,userId:owner.id,allowSelfSignedLoopback:true});
- const messages=(await admin.query("select m.id from mailbox_message m join mailbox_connection c on c.id=m.connection_id where m.user_id=$1 and c.email='ma24-reader@example.invalid' order by m.id",[owner.id])).rows;assert.equal(messages.length,3);
+ const messages=(await admin.query("select m.id from mailbox_message m join mailbox_connection c on c.id=m.connection_id where m.user_id=$1 and c.email='ma24-reader@example.invalid' order by m.id",[owner.id])).rows;assert.equal(messages.length,2);
  const path='/api/mailbox/messages/'+messages[0].id;
  for(const [actor,status] of [[cookie,200],[peer,404],['',401]] as const){const response=await fetch(upstream.origin+path,{headers:{cookie:actor},signal:AbortSignal.timeout(15000)});assert.equal(response.status,status);}
  assert.equal((await admin.query('select count(*)::int n from agent_run where user_id=$1',[owner.id])).rows[0].n,0);

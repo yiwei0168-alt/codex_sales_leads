@@ -3,7 +3,7 @@ import { createHash } from "node:crypto";
 import { mkdir } from "node:fs/promises";
 import { chromium, expect } from "@playwright/test";
 import type { Client } from "pg";
-import {ma24BrowserContext} from './ma24-browser-context';
+import {ma24BrowserContext,ma24FixtureFetch} from './ma24-browser-context';
 import { encryptMailboxContent } from "../../src/lib/mailbox/crypto";
 
 export async function verifyMa24MailboxReaderClone(options: {
@@ -43,8 +43,15 @@ export async function verifyMa24MailboxReaderClone(options: {
     [options.userId,connection.rows[0].id,createHash('sha256').update(sentBody).digest('hex'),
       encryptMailboxContent(options.userId,{subject:sentSubject,bodyText:sentBody,sender:[],recipients:[]})],
   );
+  const associationName='Synthetic reader association company';
+  const companyResponse=await ma24FixtureFetch(options,`${options.base}/api/workspaces/current/companies`,{method:'POST',headers:{cookie:options.cookie,'content-type':'application/json'},body:JSON.stringify({name:associationName,country:'DE',website:'https://reader-association.example.invalid'})});
+  assert.equal(companyResponse.status,200);const company=await companyResponse.json() as {externalId:string};assert(company.externalId);
+  const longId=(await options.admin.query('select id from mailbox_message where user_id=$1 and connection_id=$2 and message_uid=1',[options.userId,connection.rows[0].id])).rows[0].id;
+  const associated=await ma24FixtureFetch(options,`${options.base}/api/mailbox/messages/${longId}`,{method:'PATCH',headers:{cookie:options.cookie,'content-type':'application/json'},body:JSON.stringify({companyId:company.externalId,confirmed:true})});assert.equal(associated.status,200);
+  const observed=await ma24FixtureFetch(options,`${options.base}/api/mailbox/messages/${longId}`,{headers:{cookie:options.cookie}});assert.equal(observed.status,200);const linked=await observed.json() as {companyLink:{companyId:string;companyName:string}};assert.equal(linked.companyLink.companyName,associationName);assert.notEqual(linked.companyLink.companyId,company.externalId,'Company identity and market candidate are distinct existing contracts');
   const browser = await chromium.launch({ channel: "chrome", headless: true });
   const results: Array<Record<string, unknown>> = [];
+  const associationScreenshots:string[]=[];
   try {
     await mkdir("tmp/ma24-mailbox-reader-clone", { recursive: true });
     for (const viewport of [{ width: 1366, height: 900 }, { width: 1366, height: 360 }, { width: 390, height: 760 }]) {
@@ -59,6 +66,9 @@ export async function verifyMa24MailboxReaderClone(options: {
       let failDetail = true;
       let listRequests = 0;
       let detailRequests = 0;
+      let associationWrites=0;
+      let releaseAssociationAck:(()=>void)|undefined;
+      page.on('request',request=>{if(request.method()==='PATCH'&&new URL(request.url()).pathname.startsWith('/api/mailbox/messages/'))associationWrites++;});
       await page.route("**/api/mailbox/messages**", async route => {
         const path = new URL(route.request().url()).pathname;
         if (path === "/api/mailbox/messages") {
@@ -146,6 +156,35 @@ export async function verifyMa24MailboxReaderClone(options: {
         await expect(drawer).toBeVisible();
         await expect(drawer.getByRole("button", { name: "关闭窗口" })).toBeFocused();
         await expect(drawer.locator("pre")).toContainText("Line 80: synthetic mailbox content");
+        await expect(drawer).toContainText(associationName);
+        const association=drawer.locator('p').filter({hasText:/^关联公司：/});
+        await drawer.getByText('修改公司关联',{exact:true}).click();
+        const companySelect=drawer.getByRole('combobox',{name:'关联候选公司'});
+        await expect(companySelect).toBeEnabled();await expect(drawer.getByRole('button',{name:'确认保存',exact:true})).toBeDisabled();
+        assert.equal(associationWrites,0);
+        if(viewport.width===1366&&viewport.height===900){
+          await page.route(`**/api/mailbox/messages/${longId}`,async route=>{
+            if(route.request().method()!=='PATCH')return route.continue();
+            const response=await route.fetch();assert.equal(response.status(),200);
+            await new Promise<void>(done=>{releaseAssociationAck=done;});await route.fulfill({response});
+          },{times:1});
+        }
+        await companySelect.selectOption('');await drawer.getByRole('button',{name:'确认保存',exact:true}).click();
+        if(viewport.width===1366&&viewport.height===900){
+          await expect.poll(()=>Boolean(releaseAssociationAck)).toBe(true);assert.equal(associationWrites,1);
+          const persisted=(await options.admin.query('select company_id,source from mailbox_message_company where user_id=$1 and message_id=$2',[options.userId,longId])).rows[0];assert.deepEqual(persisted,{company_id:null,source:'user-rejected'});
+          await drawer.getByRole('button',{name:'关闭窗口'}).click();await expect(drawer).toHaveCount(0);
+          await row.getByRole('button',{name:'打开阅读面板'}).click();await expect(drawer).toBeVisible();
+          await expect(drawer.getByRole('status')).toContainText('正在保存关联');
+          await drawer.getByText('修改公司关联',{exact:true}).click();await expect(drawer.getByRole('button',{name:'确认保存',exact:true})).toBeDisabled();
+          assert.equal(associationWrites,1);releaseAssociationAck!();releaseAssociationAck=undefined;
+        }
+        await expect(association).toContainText('人工选择不关联');
+        await companySelect.selectOption(company.externalId);await drawer.getByRole('button',{name:'确认保存',exact:true}).click();
+        await expect(association).toContainText(associationName);await expect(association).toContainText('人工关联');
+        assert.equal(associationWrites,2);
+        assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));
+        const associationShot=`tmp/ma24-mail-company-link-${viewport.width}x${viewport.height}-${longId.slice(0,8)}.png`;await page.screenshot({path:associationShot,fullPage:true});associationScreenshots.push(associationShot);
         await expect(row.locator(".mailbox-message-content pre")).toHaveCount(0);
         await expect(inlineAlert).toHaveCount(0);
         const drawerBounds = await drawer.boundingBox();
@@ -169,12 +208,19 @@ export async function verifyMa24MailboxReaderClone(options: {
         await expect(reopen).toBeFocused();
         await reopen.click();
         await expect(drawer).toBeVisible();
+        await expect(drawer.locator('p').filter({hasText:/^关联公司：/})).toContainText(associationName);
         await drawer.getByRole("button", { name: "关闭窗口" }).click();
         await expect(reopen).toBeFocused();
         const shortRow = page.getByRole("tabpanel").locator(".mailbox-row").filter({ hasText: shortSubject });
         await shortRow.locator("summary", { hasText: "查看邮件原文" }).click();
         await expect(shortRow.locator(".mailbox-message-content pre")).toHaveText(shortBody);
         await expect(page.getByRole("dialog", { name: "邮件原文" })).toHaveCount(0);
+        if(viewport.width===390){
+          page.on('dialog',dialog=>dialog.accept());
+          await shortRow.getByRole('button',{name:'删除此本地邮件（保留知识）',exact:true}).click();
+          await expect(shortRow).toHaveCount(0);
+          assert.equal((await options.admin.query('select count(*)::int n from mailbox_message where user_id=$1 and connection_id=$2 and message_uid=2',[options.userId,connection.rows[0].id])).rows[0].n,0);
+        }
         assert(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1));
         assert.deepEqual(errors, []);
         await page.screenshot({ path: `tmp/ma24-mailbox-reader-clone/${viewport.width}x${viewport.height}.png` });
@@ -185,10 +231,11 @@ export async function verifyMa24MailboxReaderClone(options: {
           readingScroll: viewport.height < 500 ? "main-shell" : "reading-area",
           noHorizontalOverflow: true, pageErrors: 0 });
       } finally {
+        releaseAssociationAck?.();
         await context.close();
       }
     }
-    return { candidatePage: true, syntheticEncryptedMessages: 3, modelCalls: 0, mailSends: 0, results };
+    return { candidatePage: true, syntheticEncryptedMessages: 3,associationScreenshots,oneGeneratedLocalMessageDeletedAtFinalViewport:true,manualAssociationDisplayMatchesSavedOriginal:true,companyIdentityDistinctFromMarketCandidate:true,unchangedAssociationDoesNotWrite:true,explicitUnlinkAndRelinkThroughUi:true,reopenedDrawerRetainsReadBackAssociation:true,heldCommittedAssociationAckSurvivesDrawerCloseReopen:true, modelCalls: 0, mailSends: 0, results };
   } finally {
     await browser.close();
   }
