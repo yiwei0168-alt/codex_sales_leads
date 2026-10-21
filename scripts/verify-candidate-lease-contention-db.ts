@@ -6,6 +6,9 @@ import {withSkillCandidateLease} from '../src/lib/assistant/main/skill-candidate
 import type {SkillCollectorTransaction} from '../src/lib/assistant/main/skill-model-journal';
 import {prepareSkillCandidateCheckpoint,type SkillCandidateCheckpoint} from '../src/lib/assistant/main/skill-candidate-checkpoint';
 import {digest} from '../src/lib/assistant/main/contracts';
+import {readFile} from 'node:fs/promises';
+import {emptyCheckpoint} from '@langchain/langgraph-checkpoint';
+import {prepareSkillCandidateGraphCheckpointer} from '../src/lib/assistant/main/skill-candidate-graph-checkpointer';
 
 nextEnv.loadEnvConfig(process.cwd());assert.equal(process.env.MA24_DISPOSABLE_CANDIDATE_LEASE_CONTENTION,'1');
 const admin=new URL(process.env.DATABASE_MIGRATION_URL!),app=new URL(process.env.DATABASE_URL!);
@@ -94,8 +97,46 @@ try{
   await check();
  }),/lease lost or controlled/);
  assert.equal((await pool.query('select execution_token from agent_skill_candidate_execution_lease where owner_id=$1 and evaluation_id=$2 and arm=$3',changedArgs)).rows[0].execution_token,replacement);
+ await pool.query(await readFile('db/migrations/170_skill_candidate_graph_checkpoint.sql','utf8'));
+ const graphEvaluation=randomUUID();
+ await withSkillCandidateLease(transaction,{ownerId:owner,evaluationId:graphEvaluation,arm:'candidate',sourceKind:'synthetic-fixture'},async(check,token)=>{
+  const pin={ownerId:owner,evaluationId:graphEvaluation,arm:'candidate' as const,sourceKind:'synthetic-fixture' as const,snapshotHash:digest('Synthetic PostgresSaver backend')};
+  const {checkpointer:saver,config}=await prepareSkillCandidateGraphCheckpointer(transaction,pin,token,check);
+  const checkpoint=emptyCheckpoint();checkpoint.channel_values={evidence:'Synthetic protocol bytes'};checkpoint.channel_versions={evidence:1};
+  const saved=await saver.put(config,checkpoint,{source:'input',step:0,parents:{}},checkpoint.channel_versions);
+  await saver.putWrites(saved,[['result','Synthetic pending result']],'synthetic-task');
+  const tuple=await saver.getTuple(saved);assert.equal(tuple?.checkpoint.channel_values.evidence,'Synthetic protocol bytes');
+  assert.deepEqual(tuple?.pendingWrites,[['synthetic-task','result','Synthetic pending result']]);
+  const resumed=await prepareSkillCandidateGraphCheckpointer(transaction,pin,token,check);
+  assert.deepEqual((await resumed.checkpointer.getTuple(saved))?.checkpoint,tuple.checkpoint);
+  const listed=[];for await(const row of saver.list(config))listed.push(row);assert.equal(listed.length,1);
+  await assert.rejects(saver.getTuple({configurable:{thread_id:`main-agent:${owner}:${graphEvaluation}`}}),/identity changed/);
+  await assert.rejects(saver.setup(),/installed by migration/);
+  const peer=randomUUID();await pool.query("insert into app_user(id,email,display_name,role,status) values($1,$2,'Synthetic checkpoint peer','member','active')",[peer,`${peer}@example.invalid`]);
+  await transaction(peer,async client=>{
+   for(const table of ['checkpoints','checkpoint_blobs','checkpoint_writes'])
+    assert.equal((await client.query(`select count(*)::int n from skill_candidate_graph.${table}`)).rows[0].n,0);
+  });
+  await assert.rejects(transaction(peer,client=>client.query("insert into skill_candidate_graph.checkpoint_blobs(thread_id,channel,version,type,blob) values($1,'cross','1','json',null)",[config.configurable.thread_id])),error=>(error as {code?:string}).code==='42501');
+  const appClient=await pool.connect();try{
+   await appClient.query('begin');await appClient.query('set local role network_copilot_app');
+   await assert.rejects(appClient.query('select count(*) from skill_candidate_graph.checkpoints'),error=>(error as {code?:string}).code==='42501');
+  }finally{await appClient.query('rollback');appClient.release();}
+  // The same retained transaction must roll back a blocked pending write.
+  const held=await pool.connect();let attempt:Promise<unknown>|undefined;
+  try{
+   await held.query('begin');await held.query('lock table skill_candidate_graph.checkpoint_writes in share mode');
+   attempt=saver.putWrites(saved,[['result','Must roll back']],'expired-task').then(()=>null,error=>error);
+   // The common one-second lock budget rejects long blocking before expiry.
+   const error=await attempt;assert.equal((error as {code?:string})?.code,'55P03');
+  }finally{await held.query('rollback');held.release();if(attempt)await attempt;}
+  assert.equal((await pool.query('select count(*)::int n from skill_candidate_graph.checkpoint_writes where thread_id=$1 and task_id=$2',[config.configurable.thread_id,'expired-task'])).rows[0].n,0);
+ });
  console.log(JSON.stringify({candidateLeaseContentionDatabase:'passed',actualRenewalSql55P03Observed:true,sharedCheckpointLockDoesNotAbortLiveWork:true,
   contendedRenewalDoesNotExtendDeadline:true,nextNormalHeartbeatActuallyRenews:true,scopeReleased:true,
   checkpointClaimAndSaveWaitForBriefRenewalLock:true,checkpointLongLockBoundedAndPayloadUnchanged:true,
-  changedTokenDuringWaitRejectsCheckpointClaim:true,newTokenNotOverwrittenByOldRelease:true,leaseSeconds:90,heartbeatSeconds:20,actualModelCalls:0}));
+  changedTokenDuringWaitRejectsCheckpointClaim:true,newTokenNotOverwrittenByOldRelease:true,
+  candidatePostgresSaverRoundTripAndPendingWrites:true,candidatePostgresSaverRestartReadback:true,candidateGraphCrossTenantReadWriteDenied:true,
+  appRoleCannotReadCandidateGraph:true,candidateGraphLongLockWriteRolledBack:true,candidateRuntimeGraphEntryWired:false,
+  leaseSeconds:90,heartbeatSeconds:20,actualModelCalls:0}));
 }finally{await pool.end();}

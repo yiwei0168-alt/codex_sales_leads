@@ -21,7 +21,7 @@ const binding=z.object({ownerId:z.uuid(),evaluationId:z.uuid(),arm:z.enum(['base
 
 /** Retain the lease row through the checkpoint commit. An earlier external
  * ownership check cannot fence a delayed claim or write after takeover. */
-async function retainCheckpointLease(client:PoolClient,pin:z.infer<typeof binding>,executionToken:string){
+export async function retainCheckpointLease(client:PoolClient,pin:z.infer<typeof binding>,executionToken:string){
  const available=(await client.query<{available:boolean}>("select to_regclass('public.agent_skill_candidate_execution_lease') is not null available")).rows[0]?.available;
  if(!available){if(pin.sourceKind==='synthetic-fixture')return;throw new Error('Skill candidate checkpoint lease schema unavailable');}
  const args=[pin.ownerId,pin.evaluationId,pin.arm,executionToken,pin.sourceKind,pin.freezeId??null];

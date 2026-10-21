@@ -1,30 +1,10 @@
 import {PostgresSaver} from '@langchain/langgraph-checkpoint-postgres';
-import type {Pool,PoolClient} from 'pg';
+import type {Pool} from 'pg';
+import {checkpointTransactionPool} from './checkpoint-transaction-pool';
 import {getPool,tenantTransaction} from '@/lib/rag/db';
 import {databaseDeadline} from '@/lib/rag/database-deadline';
 import {boundary,LeaseLostError} from './repository';
 import type {ExecutionContext} from './contracts';
-
-/** The installed saver starts/commits its own transactions. Its scoped adapter
- * keeps those writes on the tenant transaction's client instead, so the task
- * lock, checkpoint blobs/writes, and final lease check commit or roll back together. */
-function transactionPool(pool:Pool,client:PoolClient):Pool{
- const scopedClient=new Proxy(client,{get(target,key){
-  if(key==='release')return ()=>{};
-  if(key==='query')return (...args:unknown[])=>{
-   if(typeof args[0]==='string'&&['BEGIN','COMMIT','ROLLBACK'].includes(args[0].trim().toUpperCase()))
-    return Promise.resolve({rows:[],rowCount:0,command:'',fields:[],oid:0});
-   return Reflect.apply(target.query,target,args);
-  };
-  const value=Reflect.get(target,key,target);return typeof value==='function'?value.bind(target):value;
- }});
- return new Proxy(pool,{get(target,key){
-  if(key==='connect')return async(...args:unknown[])=>{if(args.length)throw new Error('Checkpoint connection callbacks unavailable');return scopedClient;};
-  if(key==='query')return (...args:unknown[])=>Reflect.apply(client.query,client,args);
-  if(key==='end')return async()=>{throw new Error('Checkpoint adapter does not own the pool');};
-  const value=Reflect.get(target,key,target);return typeof value==='function'?value.bind(target):value;
- }});
-}
 
 /** Task-scoped ordinary graph storage. No schema or checkpoint-format changes;
  * the original PostgresSaver still serializes every checkpoint and pending write. */
@@ -50,7 +30,7 @@ export class AgentRunCheckpointer extends PostgresSaver{
    // Controls may be pending while the graph records its paused/cancelled state.
    // This grants storage authority only; business calls retain their control checks.
    await current();
-   const value=await work(new PostgresSaver(transactionPool(this.sharedPool,client),this.serde,{schema:'langgraph'}));
+   const value=await work(new PostgresSaver(checkpointTransactionPool(this.sharedPool,client),this.serde,{schema:'langgraph'}));
    await current();return value;
   },this.context.role,databaseDeadline(20_000));
  }
