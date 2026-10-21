@@ -21,7 +21,7 @@ const screenshots:string[]=[],errors:string[]=[];
 try{
   await mkdir('tmp/memory-correction-ui',{recursive:true});
   for(const viewport of [{width:1366,height:768},{width:390,height:844},{width:320,height:740}]){
-    const context=await browser.newContext({viewport,timezoneId:'Asia/Shanghai'});let saved=false,fail=false,posts=0;
+    const context=await browser.newContext({viewport,timezoneId:'Asia/Shanghai'});let saved=false,fail=false,failRead=false,posts=0;
     await context.route('**/*',async route=>{
       const request=route.request(),url=new URL(request.url());
       if(url.hostname!=='127.0.0.1')return route.abort();
@@ -30,8 +30,9 @@ try{
         posts++;const body=request.postDataJSON();assert.equal(body.action,'correct');assert.equal(body.id,'memory-0');
         assert.deepEqual(body.businessTime,{validFrom:'2024-01-01T00:00:00.000Z',validUntil:'2024-02-01T00:00:00.000Z'});
         if(fail)return route.fulfill({status:409,json:{error:'这条记忆已被更正或撤销，请刷新后查看最新记录。'}});
-        assert.equal(body.content,'更正后的合成偏好：使用简短摘要。');saved=true;return route.fulfill({json:{id:'new-memory'}});
+        assert.equal(body.content,'更正后的合成偏好：使用简短摘要。');saved=true;failRead=true;return route.fulfill({json:{id:'new-memory'}});
       }
+      if(failRead)return route.fulfill({status:503,json:{error:'Synthetic readback failure'}});
       return route.fulfill({json:{items:Array.from({length:12},(_,index)=>({id:`memory-${index}`,kind:'preference',
         content:saved&&index===0?'更正后的合成偏好：使用简短摘要。':`合成记忆 ${index}：我喜欢包含上下文的摘要。`,
         valid_from:null,recorded_at:'2026-10-10',source_receipt:{type:'local-qwen3-extraction'}})),hasMore:true}});
@@ -60,6 +61,9 @@ try{
     await expect(page.getByLabel('开始时间（含）')).toHaveValue('2024-01-01T08:00');
     fail=false;await page.getByRole('button',{name:'保存更正',exact:true}).click();
     await expect(page.getByRole('status')).toContainText('更正已保存');await expect(field).toHaveCount(0);
+    await expect(page.getByRole('alert')).toBeVisible();
+    await expect(page.locator('article.opportunity-card')).toHaveCount(0);
+    failRead=false;await page.getByRole('button',{name:'\u91cd\u8bd5\u8bfb\u53d6\u8bb0\u5fc6',exact:true}).click();
     await expect(page.getByText('更正后的合成偏好：使用简短摘要。',{exact:true})).toBeVisible();
     const geometry=await page.evaluate(()=>{
       const article=document.querySelector('article')!,list=article.parentElement!;
@@ -69,5 +73,5 @@ try{
     const path=`tmp/memory-correction-ui/${viewport.width}.png`;await page.screenshot({path});screenshots.push(path);
     await context.close();
   }
-  assert.deepEqual(errors,[]);console.log(JSON.stringify({componentHarness:true,viewports:3,cancelNoWrite:true,staleEditPreserved:true,saveAndRefresh:true,keyboardFocus:true,scrollAndNoOverflow:true,modelCalls:0,screenshots}));
+  assert.deepEqual(errors,[]);console.log(JSON.stringify({componentHarness:true,viewports:3,cancelNoWrite:true,staleEditPreserved:true,savedWriteReadbackFailureClearsOldActions:true,explicitReadRetryRecovers:true,saveAndRefresh:true,keyboardFocus:true,scrollAndNoOverflow:true,modelCalls:0,screenshots}));
 }finally{await browser.close();server.closeAllConnections();await new Promise<void>(done=>server.close(()=>done()));}

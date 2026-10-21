@@ -22,10 +22,12 @@ export function MemoryObservations(){
     fetch(`/api/knowledge/observations?view=${view}&offset=${offset}`,{cache:"no-store",signal:controller.signal})
       .then(async response=>{if(!response.ok)throw new Error("读取失败");return response.json();})
       .then(data=>{if(controller.signal.aborted)return;setItems(data.items);setHasMore(data.hasMore);setError("");setLoading(false);})
-      .catch(()=>{if(!controller.signal.aborted){setError("记忆观察读取失败，请重试");setLoading(false);}});
+      .catch(()=>{if(!controller.signal.aborted){setItems([]);setHasMore(false);setError("记忆观察读取失败，请重试");setLoading(false);}});
     return()=>controller.abort();
   },[view,offset,revision]);
   function changeView(next:View){setView(next);setOffset(0);setLoading(true);setItems([]);setEditing(null);setNotice('');}
+  function refresh(){setLoading(true);setItems([]);setHasMore(false);setError('');setRevision(value=>value+1);}
+  function changePage(next:number){setOffset(next);setLoading(true);setItems([]);setHasMore(false);setError('');setEditing(null);}
   function startCorrection(id:string,original:string,cardId=id){setEditing({id,cardId,original});setContent(original);setReason('');setEditError('');setNotice('');setTimeMode('preserve');setValidFrom('');setValidUntil('');}
   async function saveCorrection(){
     if(!editing||busy)return;
@@ -36,21 +38,21 @@ export function MemoryObservations(){
       const response=await fetch('/api/knowledge/observations',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({action:'correct',id:editing.id,content,reason,businessTime})});
       const data=await response.json();
       if(!response.ok)throw new Error(data.error||'更正未保存，请稍后重试。');
-      setEditing(null);setNotice('更正已保存，原记录保留在历史时间轴。');setRevision(value=>value+1);
+      setEditing(null);setNotice('更正已保存，原记录保留在历史时间轴。');refresh();
     }catch(error){setEditError(error instanceof Error?error.message:'更正未保存，请稍后重试。');}finally{setBusy(false);}
   }
   async function undo(id:string){
     setBusy(true);try{
       const response=await fetch("/api/knowledge/observations",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({action:"undo",id})});
       if(!response.ok){const data=await response.json();throw new Error(data.error||"撤销失败，请刷新后重试");}
-      setRevision(value=>value+1);
+      refresh();
     }catch(error){setError(error instanceof Error?error.message:"撤销失败");}finally{setBusy(false);}
   }
   return <section className={`panel ${styles.workspace}`} aria-label="学习记忆">
     <h3>学习记忆</h3><p>带来源的内部工作记忆。业务生效时间未知的记录保留在历史时间轴；正式事实仍需核验。</p>
     <nav className="knowledge-material-nav" aria-label="学习记忆分区">{(Object.keys(labels) as View[]).map(key=><button key={key} type="button" disabled={busy||!!editing} aria-current={view===key?"page":undefined} onClick={()=>changeView(key)}>{labels[key]}</button>)}</nav>
     {view==="skills"?<MemorySkills/>:<>
-    {loading&&<p>正在读取…</p>}{error&&<p role="alert">{error}</p>}
+    {loading&&<p>正在读取…</p>}{error&&<div role="alert"><p>{error}</p><button type="button" disabled={busy||!!editing||loading} onClick={refresh}>重试读取记忆</button></div>}
     {notice&&<p role="status">{notice}</p>}
     {!loading&&!error&&!items.length&&<p>当前分区暂无记录。</p>}
     <div className={styles.records}>{items.map((item,index)=><article className="opportunity-card" key={item.id??item.observation_id??index}>
@@ -84,7 +86,7 @@ export function MemoryObservations(){
           <button type="button" className="secondary-button" disabled={busy} onClick={()=>setEditing(null)}>取消</button></div>
       </form>}
     </article>)}</div>
-    <div className={styles.actions}><button type="button" disabled={busy||!!editing||loading||offset===0} onClick={()=>{setOffset(Math.max(0,offset-12));setLoading(true);setEditing(null);}}>上一页</button><span>第 {offset/12+1} 页</span><button type="button" disabled={busy||!!editing||loading||!hasMore} onClick={()=>{setOffset(offset+12);setLoading(true);setEditing(null);}}>下一页</button></div>
+    <div className={styles.actions}><button type="button" disabled={busy||!!editing||loading||offset===0} onClick={()=>changePage(Math.max(0,offset-12))}>上一页</button><span>第 {offset/12+1} 页</span><button type="button" disabled={busy||!!editing||loading||!hasMore} onClick={()=>changePage(offset+12)}>下一页</button></div>
     </>}
   </section>;
 }

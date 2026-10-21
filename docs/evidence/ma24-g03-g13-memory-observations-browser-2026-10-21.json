@@ -1,0 +1,62 @@
+{
+  "date": "2026-10-21",
+  "rule": "MA24-04 existing sourced temporal memory and G13 recovery interactions",
+  "scope": "Memory observation readback recovery and actual browser correction/history/conflict/undo flows",
+  "status": "component-passed-fixed-package-and-database-browser-pending",
+  "sourceFilesCanonicalLf": {
+    "src/components/memory-observations.tsx": "7e68027ddbd692ca2076cf3effd1f13215a0f075694d7776c2599a1f7f435a82",
+    "scripts/verify-memory-correction-ui.ts": "1d7ec91bb43a462fb2a7db731e9c6e3e882389ef2b81204dd2def1ae239fa7e9",
+    "scripts/verify-memory-observations-fixed-web.ts": "9ab0193468c44c9c2269e357f8637dd29c08a4d734d75dfdd9249fb0ddaf5e67",
+    "scripts/verify-ma24-fresh-pilot-new-cluster.ts": "790cb70226a9c07d94d91a3a1226242ffdc8a7910005b6c81ddc6a2682eef993"
+  },
+  "checks": {
+    "componentBrowser": {
+      "exitCode": 0,
+      "log": "tmp/ma24-memory-readback-ui.log",
+      "logSha256": "bfe7be94f3fcdc902984d0f87d0c9b960bccb5288899ad139d112c0b157a2d47",
+      "result": {
+        "componentHarness": true,
+        "viewports": 3,
+        "cancelNoWrite": true,
+        "staleEditPreserved": true,
+        "savedWriteReadbackFailureClearsOldActions": true,
+        "explicitReadRetryRecovers": true,
+        "saveAndRefresh": true,
+        "keyboardFocus": true,
+        "scrollAndNoOverflow": true,
+        "modelCalls": 0,
+        "screenshots": [
+          "tmp/memory-correction-ui/editor-1366.png",
+          "tmp/memory-correction-ui/1366.png",
+          "tmp/memory-correction-ui/editor-390.png",
+          "tmp/memory-correction-ui/390.png",
+          "tmp/memory-correction-ui/editor-320.png",
+          "tmp/memory-correction-ui/320.png"
+        ]
+      },
+      "actualProductHttp": false
+    },
+    "typecheck": {
+      "sessionId": 26382,
+      "exitCode": 0,
+      "log": "tmp/ma24-memory-observations-typecheck.log"
+    },
+    "lint": {
+      "sessionId": 15851,
+      "exitCode": 0,
+      "files": 4,
+      "log": "tmp/ma24-memory-observations-lint.log"
+    }
+  },
+  "actualVerification": "pending",
+  "mutationApiChanged": false,
+  "memoryStorageChanged": false,
+  "syntheticObservationsOnly": true,
+  "naturalExtractionVerified": false,
+  "graphWorkerExecuted": false,
+  "actualModelCalls": 0,
+  "realQualityApproved": false,
+  "productionQualified": false,
+  "g14ThroughG20Advanced": false,
+  "deploymentPerformed": false
+}
