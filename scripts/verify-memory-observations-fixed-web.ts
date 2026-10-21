@@ -98,7 +98,11 @@ try{
  await progress('known-at-passed');
  await view('冲突待处理');await expect(section).toContainText(earlierContent);await expect(section).toContainText(laterContent);await section.getByRole('button',{name:'更正前一条',exact:true}).click();await contentField.fill(laterContent);const resolved=(await save()).id;await ready();assert.equal((await row(resolved)).corrects_id,earlier);assert.equal((await api('conflicts')).items.length,0);
  await view('历史时间轴');card=await findCard(datedContent);assert.equal((await post({action:'undo',id:dated},peerCookie)).status,404);assert.equal((await post({action:'undo',id:unknown})).status,409);
- const undoneResponse=page.waitForResponse(r=>new URL(r.url()).pathname==='/api/knowledge/observations'&&r.request().method()==='POST');await card.getByRole('button',{name:'撤销这条记忆',exact:true}).click();const undone=await undoneResponse;assert.equal(undone.status(),200);const invalidation=(await undone.json()).id;await ready();
+ await progress('ui-undo-start');const undoneResponse=page.waitForResponse(r=>new URL(r.url()).pathname==='/api/knowledge/observations'&&r.request().method()==='POST');await card.getByRole('button',{name:'撤销这条记忆',exact:true}).click();await progress('ui-undo-clicked');const undone=await undoneResponse;assert.equal(undone.status(),200);await progress('ui-undo-response-accepted');await ready();
+ // The UI checks response.ok and refreshes; it does not consume a JSON body.
+ // Observe its actual effect independently, then verify the route's idempotent
+ // response body against that exact persisted invalidation.
+ const invalidations=(await admin.query('select id,source_receipt from agent_memory_observation where owner_id=$1 and invalidates_id=$2',[owner.id,dated])).rows;assert.equal(invalidations.length,1);assert.equal(invalidations[0].source_receipt.type,'user-undo');const invalidation=invalidations[0].id;
  assert.equal((await row(invalidation)).invalidates_id,dated);await progress('ui-undo-written');const repeated=await post({action:'undo',id:dated});assert.equal(repeated.status,200);assert.equal((await repeated.json()).id,invalidation);await progress('repeated-undo-passed');
  assert(!(await api('current')).items.some((r:{id:string})=>r.id===dated));
  await view('学习通知');await expect(section.locator('article.opportunity-card')).toHaveCount(12);await expect(section.getByRole('button',{name:'更正这条记忆',exact:true})).toHaveCount(0);await expect(section.getByRole('button',{name:'下一页',exact:true})).toBeEnabled();

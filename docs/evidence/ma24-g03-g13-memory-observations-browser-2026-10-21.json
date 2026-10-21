@@ -339,6 +339,286 @@
       "lastObservedCompletedStage": "known-at-passed",
       "terminalStage": "watchdog-expired",
       "result": "Bounded fixture reached its 180-second watchdog after knownAt checks, before a final receipt. Root wait point remains unproven. Parent cleaned all disposable containers; not accepted."
+    },
+    {
+      "sessionId": 90837,
+      "exitCode": 1,
+      "fixtureSourceCommit": "6511d12c",
+      "imageSourceCommit": "ae1431ff",
+      "log": "tmp/ma24-memory-observations-traversal-fixed-web.log",
+      "logSha256": "498f40edda0596bd9f4e4f4af41c16351cb1c7d536f7d80007984ced03cd6712",
+      "progressFile": "tmp/ma24-memory-ui-progress-4f6fef56a582.json",
+      "progressSha256": "b50554f5ceb89807b40d36347c57e871297836a830d76fe76d4e43b9aa3bd694",
+      "progress": {
+        "stage": "watchdog-expired",
+        "steps": [
+          {
+            "stage": "seeding",
+            "at": "2026-10-21T13:59:58.877Z"
+          },
+          {
+            "stage": "api-start",
+            "detail": "timeline",
+            "at": "2026-10-21T13:59:59.160Z"
+          },
+          {
+            "stage": "api-complete",
+            "detail": "timeline",
+            "at": "2026-10-21T13:59:59.176Z"
+          },
+          {
+            "stage": "post-start",
+            "at": "2026-10-21T13:59:59.178Z"
+          },
+          {
+            "stage": "post-complete",
+            "detail": "404",
+            "at": "2026-10-21T13:59:59.202Z"
+          },
+          {
+            "stage": "api-start",
+            "detail": "timeline",
+            "at": "2026-10-21T13:59:59.204Z"
+          },
+          {
+            "stage": "api-complete",
+            "detail": "timeline",
+            "at": "2026-10-21T13:59:59.231Z"
+          },
+          {
+            "stage": "api-start",
+            "detail": "conflicts",
+            "at": "2026-10-21T13:59:59.232Z"
+          },
+          {
+            "stage": "api-complete",
+            "detail": "conflicts",
+            "at": "2026-10-21T13:59:59.260Z"
+          },
+          {
+            "stage": "view-start",
+            "detail": "当前有效",
+            "at": "2026-10-21T14:00:00.617Z"
+          },
+          {
+            "stage": "view-loaded",
+            "detail": "当前有效",
+            "at": "2026-10-21T14:00:00.711Z"
+          },
+          {
+            "stage": "active-view-reload-passed",
+            "at": "2026-10-21T14:00:00.716Z"
+          },
+          {
+            "stage": "view-start",
+            "detail": "历史时间轴",
+            "at": "2026-10-21T14:00:00.717Z"
+          },
+          {
+            "stage": "view-loaded",
+            "detail": "历史时间轴",
+            "at": "2026-10-21T14:00:00.773Z"
+          },
+          {
+            "stage": "card-page-search",
+            "detail": "0",
+            "at": "2026-10-21T14:00:00.779Z"
+          },
+          {
+            "stage": "card-page-search",
+            "detail": "1",
+            "at": "2026-10-21T14:00:00.849Z"
+          },
+          {
+            "stage": "save-start",
+            "at": "2026-10-21T14:00:01.054Z"
+          },
+          {
+            "stage": "save-complete",
+            "detail": "200",
+            "at": "2026-10-21T14:00:01.117Z"
+          },
+          {
+            "stage": "committed-correction-retry-passed",
+            "at": "2026-10-21T14:00:01.189Z"
+          },
+          {
+            "stage": "api-start",
+            "detail": "current",
+            "at": "2026-10-21T14:00:01.190Z"
+          },
+          {
+            "stage": "api-complete",
+            "detail": "current",
+            "at": "2026-10-21T14:00:01.212Z"
+          },
+          {
+            "stage": "page-reset",
+            "detail": "0",
+            "at": "2026-10-21T14:00:01.216Z"
+          },
+          {
+            "stage": "card-page-search",
+            "detail": "0",
+            "at": "2026-10-21T14:00:01.267Z"
+          },
+          {
+            "stage": "post-start",
+            "at": "2026-10-21T14:00:01.294Z"
+          },
+          {
+            "stage": "post-complete",
+            "detail": "200",
+            "at": "2026-10-21T14:00:01.330Z"
+          },
+          {
+            "stage": "save-start",
+            "at": "2026-10-21T14:00:01.332Z"
+          },
+          {
+            "stage": "save-complete",
+            "detail": "409",
+            "at": "2026-10-21T14:00:01.392Z"
+          },
+          {
+            "stage": "concurrent-draft-passed",
+            "at": "2026-10-21T14:00:01.427Z"
+          },
+          {
+            "stage": "view-start",
+            "detail": "当前有效",
+            "at": "2026-10-21T14:00:01.428Z"
+          },
+          {
+            "stage": "view-loaded",
+            "detail": "当前有效",
+            "at": "2026-10-21T14:00:01.484Z"
+          },
+          {
+            "stage": "view-start",
+            "detail": "历史时间轴",
+            "at": "2026-10-21T14:00:01.486Z"
+          },
+          {
+            "stage": "view-loaded",
+            "detail": "历史时间轴",
+            "at": "2026-10-21T14:00:01.548Z"
+          },
+          {
+            "stage": "card-page-search",
+            "detail": "0",
+            "at": "2026-10-21T14:00:01.554Z"
+          },
+          {
+            "stage": "save-start",
+            "at": "2026-10-21T14:00:01.676Z"
+          },
+          {
+            "stage": "save-complete",
+            "detail": "200",
+            "at": "2026-10-21T14:00:01.731Z"
+          },
+          {
+            "stage": "business-time-passed",
+            "at": "2026-10-21T14:00:01.777Z"
+          },
+          {
+            "stage": "view-start",
+            "detail": "当前有效",
+            "at": "2026-10-21T14:00:01.779Z"
+          },
+          {
+            "stage": "view-loaded",
+            "detail": "当前有效",
+            "at": "2026-10-21T14:00:01.836Z"
+          },
+          {
+            "stage": "card-page-search",
+            "detail": "0",
+            "at": "2026-10-21T14:00:01.840Z"
+          },
+          {
+            "stage": "save-start",
+            "at": "2026-10-21T14:00:01.876Z"
+          },
+          {
+            "stage": "save-complete",
+            "detail": "200",
+            "at": "2026-10-21T14:00:01.926Z"
+          },
+          {
+            "stage": "known-at-passed",
+            "at": "2026-10-21T14:00:01.988Z"
+          },
+          {
+            "stage": "view-start",
+            "detail": "冲突待处理",
+            "at": "2026-10-21T14:00:01.989Z"
+          },
+          {
+            "stage": "view-loaded",
+            "detail": "冲突待处理",
+            "at": "2026-10-21T14:00:02.050Z"
+          },
+          {
+            "stage": "save-start",
+            "at": "2026-10-21T14:00:02.080Z"
+          },
+          {
+            "stage": "save-complete",
+            "detail": "200",
+            "at": "2026-10-21T14:00:02.134Z"
+          },
+          {
+            "stage": "api-start",
+            "detail": "conflicts",
+            "at": "2026-10-21T14:00:02.181Z"
+          },
+          {
+            "stage": "api-complete",
+            "detail": "conflicts",
+            "at": "2026-10-21T14:00:02.199Z"
+          },
+          {
+            "stage": "view-start",
+            "detail": "历史时间轴",
+            "at": "2026-10-21T14:00:02.200Z"
+          },
+          {
+            "stage": "view-loaded",
+            "detail": "历史时间轴",
+            "at": "2026-10-21T14:00:02.251Z"
+          },
+          {
+            "stage": "card-page-search",
+            "detail": "0",
+            "at": "2026-10-21T14:00:02.256Z"
+          },
+          {
+            "stage": "post-start",
+            "at": "2026-10-21T14:00:02.259Z"
+          },
+          {
+            "stage": "post-complete",
+            "detail": "404",
+            "at": "2026-10-21T14:00:02.277Z"
+          },
+          {
+            "stage": "post-start",
+            "at": "2026-10-21T14:00:02.278Z"
+          },
+          {
+            "stage": "post-complete",
+            "detail": "409",
+            "at": "2026-10-21T14:00:02.308Z"
+          },
+          {
+            "stage": "watchdog-expired",
+            "at": "2026-10-21T14:02:58.891Z"
+          }
+        ]
+      },
+      "result": "Actual view/date/knownAt/conflict checks passed; watchdog expired in the browser undo observation step, after peer/stale undo rejection. No final receipt. Exact response-observation wait remains unproven; use authoritative stored invalidation and idempotent HTTP body readback next."
     }
   ],
   "previousStageChecks": {
@@ -639,7 +919,7 @@
   "nextFixtureSourceFilesCanonicalLf": {
     "src/components/memory-observations.tsx": "cd6ba5854b85e5fc46479ec6901c9e75fdfdbb3652c8f96b9520f2b897eb1c90",
     "scripts/verify-memory-correction-ui.ts": "3f437ab337b71bf0b3e6c614ad108ad3ca5669d50115f648f8078e8ee2165f5f",
-    "scripts/verify-memory-observations-fixed-web.ts": "9e75257cb3cd3fce4a9ac066f1164e20c09bb8c6c0f822e6b55a082fa0f09b28",
+    "scripts/verify-memory-observations-fixed-web.ts": "4bad7fe957ef1150a9c833c6402d04ff6a373324ad4350e217d8a522ee5bd3bf",
     "scripts/verify-ma24-fresh-pilot-new-cluster.ts": "790cb70226a9c07d94d91a3a1226242ffdc8a7910005b6c81ddc6a2682eef993"
   },
   "fixtureProgressChecks": {
@@ -652,6 +932,18 @@
       "sessionId": 13023,
       "exitCode": 0,
       "log": "tmp/ma24-memory-observations-fixture-progress-lint.log"
+    }
+  },
+  "undoReadbackChecks": {
+    "typecheck": {
+      "sessionId": 69795,
+      "exitCode": 0,
+      "log": "tmp/ma24-memory-observations-undo-readback-typecheck.log"
+    },
+    "lint": {
+      "sessionId": 51663,
+      "exitCode": 0,
+      "log": "tmp/ma24-memory-observations-undo-readback-lint.log"
     }
   }
 }
