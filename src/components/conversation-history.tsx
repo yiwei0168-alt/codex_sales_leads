@@ -84,7 +84,7 @@ export function ConversationHistory({ activeId, refreshKey, onSelect, onNew }: {
     <div className="conversation-history-list">
       {items.map(item => <div className={`conversation-history-item ${item.id === activeId ? "active" : ""}`} key={item.id}>
         <button type="button" className="conversation-history-select" aria-current={item.id === activeId ? "page" : undefined} onClick={() => { setOpenMenu(undefined); onSelect(item.id); }}>
-          <span>{item.title}</span><small>{item.messageCount} 条消息 · {item.updatedAt.slice(0, 10)}</small>
+          <span>{item.title}</span><small>{item.messageCount} 条消息 · <time dateTime={item.updatedAt} title="按当前设备时区显示">{new Date(item.updatedAt).toLocaleDateString("zh-CN", { year: "numeric", month: "2-digit", day: "2-digit" })}</time></small>
         </button>
         <div className="conversation-history-actions">
           <button ref={openMenu === item.id ? triggerRef : undefined} type="button" className="conversation-history-more" aria-label={`${item.title} 更多操作`} aria-haspopup="menu" aria-expanded={openMenu === item.id} onClick={event => toggleMenu(item.id,event.currentTarget)}>⋯</button>

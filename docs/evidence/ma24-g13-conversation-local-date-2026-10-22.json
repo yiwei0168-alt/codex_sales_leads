@@ -1,0 +1,110 @@
+{
+  "date": "2026-10-22",
+  "scope": "G13 conversation history local calendar date display",
+  "status": "component-browser-passed",
+  "sourceCanonicalLfSha256": "2494c010d68bfdb0a8a6cbf5067c2383170d28856d6d6e2e631ef0f02270d1d6",
+  "verification": {
+    "conversationLocalDate": "passed",
+    "cases": [
+      {
+        "timezoneId": "Asia/Shanghai",
+        "width": 1366,
+        "expected": [
+          "2026/10/22",
+          "2026/10/22"
+        ],
+        "observed": [
+          "2026/10/22",
+          "2026/10/22"
+        ],
+        "rawTimestampsPreserved": true,
+        "screenshot": "tmp/conversation-local-date/Asia-Shanghai-1366.png"
+      },
+      {
+        "timezoneId": "Asia/Shanghai",
+        "width": 390,
+        "expected": [
+          "2026/10/22",
+          "2026/10/22"
+        ],
+        "observed": [
+          "2026/10/22",
+          "2026/10/22"
+        ],
+        "rawTimestampsPreserved": true,
+        "screenshot": "tmp/conversation-local-date/Asia-Shanghai-390.png"
+      },
+      {
+        "timezoneId": "America/Los_Angeles",
+        "width": 1366,
+        "expected": [
+          "2026/10/21",
+          "2026/10/22"
+        ],
+        "observed": [
+          "2026/10/21",
+          "2026/10/22"
+        ],
+        "rawTimestampsPreserved": true,
+        "screenshot": "tmp/conversation-local-date/America-Los_Angeles-1366.png"
+      },
+      {
+        "timezoneId": "America/Los_Angeles",
+        "width": 390,
+        "expected": [
+          "2026/10/21",
+          "2026/10/22"
+        ],
+        "observed": [
+          "2026/10/21",
+          "2026/10/22"
+        ],
+        "rawTimestampsPreserved": true,
+        "screenshot": "tmp/conversation-local-date/America-Los_Angeles-390.png"
+      },
+      {
+        "timezoneId": "UTC",
+        "width": 1366,
+        "expected": [
+          "2026/10/21",
+          "2026/10/22"
+        ],
+        "observed": [
+          "2026/10/21",
+          "2026/10/22"
+        ],
+        "rawTimestampsPreserved": true,
+        "screenshot": "tmp/conversation-local-date/UTC-1366.png"
+      },
+      {
+        "timezoneId": "UTC",
+        "width": 390,
+        "expected": [
+          "2026/10/21",
+          "2026/10/22"
+        ],
+        "observed": [
+          "2026/10/21",
+          "2026/10/22"
+        ],
+        "rawTimestampsPreserved": true,
+        "screenshot": "tmp/conversation-local-date/UTC-390.png"
+      }
+    ],
+    "writes": 0,
+    "actualModelCalls": 0,
+    "scope": "Actual React component served over local HTTP with synthetic read responses; not compiled Next or production acceptance"
+  },
+  "typecheckExitCode": 0,
+  "componentLintExitCode": 0,
+  "firstAttempt": {
+    "exitCode": 1,
+    "reason": "Sandbox denied loopback navigation; browser/server cleaned in finally. Same check rerun with approved local access passed."
+  },
+  "limits": [
+    "Synthetic local HTTP read responses only; no API/database/compiled Next acceptance.",
+    "Date display uses the current device timezone, consistent with message clocks; timestamp storage, ordering and backend contracts unchanged.",
+    "Screenshot inspected for date text only; no new full visual-layout acceptance.",
+    "No real model/provider/business data calls or writes. G14-G20 and deployment remain deferred."
+  ]
+}
