@@ -1,6 +1,6 @@
 # MA24 G01–G13 当前剩余门槛（2026-10-16）
 
-2026-10-21 / Current state: source d3be2e7a policy comparison passed 25 tests/typecheck/lint and targeted fresh graph/material 76848. Matching 6fd7142a main/collector/Web packages are built and checked; full composition 2592 and separate TLS/database-trust 4843 are running, not accepted. Previous 47be3168/6b4f51c9 composition 37984 passed, retained separately. Production execution proof, qualification producer, real provider/quality/activation remain unfinished; G14-G20/deployment stay deferred. [Current stage](RUNTIME_POLICY_COMPARISON_2026-10-21.md).
+2026-10-21 / Current state: source d3be2e7a policy comparison passed 25 tests/typecheck/lint and targeted fresh graph/material 76848. Matching 6fd7142a main/collector/Web packages are built and checked; full composition 2592 is running, not accepted; separate TLS/database-trust 4843 exited 0. Previous 47be3168/6b4f51c9 composition 37984 passed, retained separately. Production execution proof, qualification producer, real provider/quality/activation remain unfinished; G14-G20/deployment stay deferred. [Current stage](RUNTIME_POLICY_COMPARISON_2026-10-21.md).
 
 2026-10-21 / 最新终态：前瞻故障专项 73784 已退出 0，SIGKILL、拒绝提前接管、原租约自然到期、新进程恢复、防重复及执行规格/捕获绑定保持等 8 项断言通过；当前产品五类/八任务组合与登记仍通过，临时资源清理。后续优先补实时读取、日志重建和来源保护接线，不能用此结果关闭完整等价/真实质量。[前瞻收据](evidence/ma24-g09-prospective-process-recovery-2026-10-21.json)。
 
@@ -405,7 +405,7 @@ G09 任务与工具日志锁已接入材料重建入口：从已存包派生任�
 
 | 项目 | 已有依据 | 仍缺的实现或验收 | 下一项能关闭缺口的证据 |
 | --- | --- | --- | --- |
-| G01 Release baseline | Matching 6fd7142a main/collector/Web builds and package checks passed; previous 37984 composition retained separately | Current composition 2592 and separate TLS/database-trust 4843 running; whole production entrypoint and real provider unverified; deployment deferred | Inspect terminal results and preserve each evidence scope. |
+| G01 Release baseline | Matching 6fd7142a main/collector/Web builds and package checks passed; previous 37984 composition retained separately | Current composition 2592 running; separate TLS/database-trust 4843 passed; whole production entrypoint and real provider unverified; deployment deferred | Inspect terminal results and preserve each evidence scope. |
 | G02 来源撤销 | 真实图、旧 checkpoint、隔离模型及局部 HTTP；当前构建的登记原件下载通过认证、Range、篡改和请求间撤回的真实 HTTP 验证 ([收据](evidence/ma24-g02-g05-asset-download-http-clone-2026-10-19.json)) | 当前服务上真实账号有界任务的生成期撤销、后续工具阻断和最终保存核对 | 获授权的专门来源/账号任务及撤销前后收据；新付费请求另列具体清单 |
 | G03 纠正与双时间 | 来源归属、自然纠正和隔离恢复；中文实际 Worker 经登录时间线、账号隔离、幂等撤销及同批精确历史时点回读通过 | 自然偏好/经历/业务事实与纠正样本不足；全部用户入口、最终统一候选和持续 Worker 试点未验 | 对照原句与更正内容的自然样本判决、最终候选各入口及连续 Worker 持久记录；本轮有限 HTTP 流程不扩称全部入口 |
 | G04 记忆图谱 | outbox、租约、故障恢复及 PostgreSQL 降级服务证据；中文同批投影、真实陈旧图谱候选的撤销过滤和原记录/纠正历史回读、第三条撤销投递通过 | 获准真实样本的持续抽取/投影、最终统一候选及持续故障/恢复运行未验 | 连续消费及图谱停机/恢复的同一批来源收据；同批有限撤销召回证据见最新工作流，不替代真实质量 |
@@ -759,3 +759,9 @@ G09 current-source collector image TLS preflight (2026-10-19): rebuilt from the 
 
 
 2026-10-21 / Policy-comparison packages fixed at `6fd7142a`: main/collector/Web builds 52551/58079/14172 exited 0; source/Node pair checks, full dependency bytes/ESM, collector isolation/tamper/enrollment and Web source/private-root exclusion passed (1039 source inputs). Collector deployment hash `9b39369a3fdd090f828f0c31fa9b067b2a881528aad2804a62b54942fb2b2ab2`. Full current Linux composition **2592** and separate collector TLS/database-trust **4843** are running, not accepted. Their immutable image IDs and logs are recorded in [evidence](evidence/ma24-g09-runtime-policy-comparison-2026-10-21.json). No actual provider/quality/qualification/activation inferred.
+
+
+2026-10-21 / Current collector TLS/database-trust **4843 exited 0** for fixed 6fd7142a, including registry disablement waiting for commit and key/purpose/revocation/NODE_OPTIONS rejection; declaration cluster removed. Full Linux composition 2592 remains running, not accepted. Separate G07 existing-account READ ONLY metadata inventory passed: 11 completed main tasks, zero created since 2026-10-15 +08:00, four current-contract metadata candidates, zero timeline candidates. Source payloads and semantic relevance were not validated; this does not grant quality acceptance or establish unchanged old payloads. No model calls/effects/activation. [G07 scope and receipt](evidence/ma24-g07-current-source-metadata-2026-10-21.json); [package/TLS receipt](evidence/ma24-g09-runtime-policy-comparison-2026-10-21.json).
+
+
+2026-10-21 / G07 follow-up under the same forced READ ONLY transaction: all four metadata candidates were passed to current prepareHistoricalSkillReplay. Three were schema-rejected; one passed and its run-ID hash, suite hash and binding hash exactly match the previously off-topic USB product question from the 2026-10-14 receipt. This supplies current source validation, not a new timeline-quality sample or new human judgment. No model replay/provider calls were executed. [Metadata and source-validation scope](evidence/ma24-g07-current-source-metadata-2026-10-21.json).

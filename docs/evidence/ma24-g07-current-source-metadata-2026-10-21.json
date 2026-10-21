@@ -1,0 +1,110 @@
+{
+  "date": "2026-10-21",
+  "scope": "G07 existing private-manifest account read-only metadata rescan",
+  "result": {
+    "inventory": "passed",
+    "observedAt": "2026-10-21 07:59:13.532801+00",
+    "manifestSha256": "0d8355662382087bade728a4a925ee1c99bda7d558d0965abf9c1db11d832e8d",
+    "accountPinHash": "99519624503c7e0ed25ee7fa98340b4e2b6069e1cc1c8daea2f447a46da54043",
+    "transactionReadOnly": true,
+    "scope": "existing-manifest-account-only",
+    "completedMainRuns": 11,
+    "createdSinceBoundary": 0,
+    "boundary": "2026-10-15T00:00:00+08:00",
+    "journalMetadataCandidates": 4,
+    "timelineMetadataCandidates": 0,
+    "pinnedSkillVersionPresent": true,
+    "metadataOnly": true,
+    "sourcePayloadsValidated": false,
+    "semanticRelevanceJudged": false,
+    "qualityAcceptance": false,
+    "modelCalls": 0,
+    "externalEffects": 0,
+    "automaticActivation": false
+  },
+  "method": {
+    "transaction": "repeatable read read only; application role; explicit owned account filter",
+    "maximumRuns": 1000,
+    "maximumCallRows": 10000,
+    "criterion": "Every saved receipt completed; model receipts only main_model; read receipts only current hasReadEvidenceContract; at least one model and one read receipt. This is not source or semantic validation.",
+    "readContractFile": "src/lib/assistant/main/read-evidence-tools.ts",
+    "readContractSha256": "ac409b2198e68097d88ba92d3390428f1ce24faf46ff8d4026841e11dda2faf4",
+    "script": "tmp/ma24-g07-current-inventory.ts",
+    "scriptSha256": "1f42aa4aef775a84e5a69e1939edd30a3a446c9ab26c20bed949be044d78c0fd",
+    "log": "tmp/ma24-g07-current-inventory-authorized.log",
+    "logSha256": "0f3aeb27335abcf9cfe5699324d204a3420ff8cd15499b2baa71fcd4d2dd55a7",
+    "exitCode": 0
+  },
+  "sandboxAttempts": {
+    "count": 2,
+    "result": "EACCES; no inventory produced",
+    "retry": "Approved local read-only connection succeeded"
+  },
+  "limits": [
+    "Only the existing pinned account was inspected, not all users.",
+    "No prompt, answer, mail body or business source was printed or sent to a provider.",
+    "Metadata candidates have not passed complete current source validation or semantic relevance review.",
+    "Candidate counts are not directly comparable to the October 14 audit because the current read-tool contract is the screening criterion.",
+    "The created-since boundary does not establish that older task payloads or receipts stayed unchanged."
+  ],
+  "qualityAcceptance": false,
+  "newRealTaskExecuted": false,
+  "automaticActivation": false,
+  "currentSourceValidation": {
+    "exitCode": 0,
+    "log": "tmp/ma24-g07-current-source-validation.log",
+    "logSha256": "80b967f639a45f19122305fd6f23dfb7bd9fdc4cb0a53f236b94d8ef8286c7e1",
+    "script": "tmp/ma24-g07-current-source-validation.ts",
+    "scriptSha256": "b77059138895225e5321395760c4df47f74c68852c49c51b8e833a6e44a52917",
+    "preparationFunction": "prepareHistoricalSkillReplay",
+    "preparationSourceSha256": "638adb201d3989173a8b2db19c8e16c3f84c525babd99a261bb3865ee45d1c75",
+    "result": {
+      "sourceValidationAudit": "completed",
+      "observedAt": "2026-10-21 08:08:15.796217+00",
+      "manifestSha256": "0d8355662382087bade728a4a925ee1c99bda7d558d0965abf9c1db11d832e8d",
+      "accountPinHash": "99519624503c7e0ed25ee7fa98340b4e2b6069e1cc1c8daea2f447a46da54043",
+      "transactionReadOnly": true,
+      "metadataCandidates": 4,
+      "results": [
+        {
+          "runIdHash": "ef166cd0ad240a08fc697f55bfe4cd86c0af7c89aae6e02058991fd218fc117a",
+          "sourceValidation": "rejected",
+          "errorKind": "schema-rejected",
+          "errorHash": "63db9c78ce3cc8b6698f966c863d859626e23716866e1aa9f1909b7dc68f64d0",
+          "semanticRelevanceJudged": false
+        },
+        {
+          "runIdHash": "bb03292d49007388ebaa932d08797466772a71d6f9cb17dda61199c99595bc14",
+          "sourceValidation": "rejected",
+          "errorKind": "schema-rejected",
+          "errorHash": "63db9c78ce3cc8b6698f966c863d859626e23716866e1aa9f1909b7dc68f64d0",
+          "semanticRelevanceJudged": false
+        },
+        {
+          "runIdHash": "5b98770120554d90d46ba15a8c7ae3fe473d9a8e389e63f771f7a93dbe211e9e",
+          "sourceValidation": "passed",
+          "suiteHash": "f23f2bb21123d91997ac0d7859933e88d3fdf29cbc432409c7aaf827c2819b37",
+          "bindingHash": "ec3b5eff4817f6c3fe5b3c2b55956fd986ac03836e0006b142ce8a68c2072a64",
+          "questionHash": "87510815c3afcc217f9fc318d315019440a2d2fdcb7a2ea33d620451a8364b75",
+          "semanticRelevanceJudged": false
+        },
+        {
+          "runIdHash": "0eef521dbde2fb3205dedc6f022a67a6944a0e00c385b6e4cf32e5cb2b2efdd2",
+          "sourceValidation": "rejected",
+          "errorKind": "schema-rejected",
+          "errorHash": "63db9c78ce3cc8b6698f966c863d859626e23716866e1aa9f1909b7dc68f64d0",
+          "semanticRelevanceJudged": false
+        }
+      ],
+      "sourceValidationPassed": 1,
+      "semanticRelevanceJudged": false,
+      "qualityAcceptance": false,
+      "modelCalls": 0,
+      "externalEffects": 0,
+      "automaticActivation": false
+    },
+    "matchesPriorOffTopicTask": true,
+    "priorEvidence": "docs/evidence/ma24-g07-real-task-eligibility-2026-10-14.json",
+    "scope": "Four metadata candidates only; three schema-rejected, one source-valid identical to previously off-topic USB question. No new semantic or independent human quality judgment."
+  }
+}
