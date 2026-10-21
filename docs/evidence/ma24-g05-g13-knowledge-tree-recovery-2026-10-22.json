@@ -1,0 +1,262 @@
+{
+  "date": "2026-10-22",
+  "scope": "Existing G05/G13 coordinate reader selection and readback recovery",
+  "status": "actual-fixed-web-knowledge-tree-recovery-passed",
+  "productAndFixtureCommit": "79f872515a02467ef543c62f3edec6a5d28859bb",
+  "canonicalLfSourceSha256": {
+    "src/components/knowledge-tree.tsx": "b8836dfdbfc710b94d709e0cfc333ab4e8ba10659a2a99e22e397ad5df7ef389",
+    "scripts/verify-knowledge-tree-recovery-ui.ts": "4f81df136e4e6a9efbd3f41282607c8a84ae9178539465145987dc0b36351a94",
+    "scripts/verify-knowledge-tree-fixed-web.ts": "c2652cb1f610b57512c8c77dc4a5ba56c6b8c0a14c1b626c60b5828b56e14a5d",
+    "scripts/verify-ma24-fresh-pilot-new-cluster.ts": "ef2efdb1ba153935f9cea2bd70bb5ef11deaacc6e4f5df497089ef8c46e3e996"
+  },
+  "typecheckAndFourFileLint": {
+    "exitCode": 0,
+    "session": 35090
+  },
+  "component": {
+    "knowledgeTreeRecoveryComponent": "passed",
+    "results": [
+      {
+        "width": 1366,
+        "lateReadCannotReplaceLatestSelection": true,
+        "lateReadCannotCrossDirectoryOrDocument": true,
+        "directoryFailureAndMalformedHideOldNodes": true,
+        "retryRetainsDirectory": true,
+        "missingEvidenceClearsPreviewAndRecovers": true,
+        "mismatchedEvidenceNodeRejected": true,
+        "exactRawCoordinateCopy": true,
+        "actualTenSecondReadDeadline": true,
+        "writes": 0
+      },
+      {
+        "width": 390,
+        "lateReadCannotReplaceLatestSelection": true,
+        "lateReadCannotCrossDirectoryOrDocument": true,
+        "directoryFailureAndMalformedHideOldNodes": true,
+        "retryRetainsDirectory": true,
+        "missingEvidenceClearsPreviewAndRecovers": true,
+        "mismatchedEvidenceNodeRejected": true,
+        "exactRawCoordinateCopy": true,
+        "actualTenSecondReadDeadline": false,
+        "writes": 0
+      },
+      {
+        "width": 320,
+        "lateReadCannotReplaceLatestSelection": true,
+        "lateReadCannotCrossDirectoryOrDocument": true,
+        "directoryFailureAndMalformedHideOldNodes": true,
+        "retryRetainsDirectory": true,
+        "missingEvidenceClearsPreviewAndRecovers": true,
+        "mismatchedEvidenceNodeRejected": true,
+        "exactRawCoordinateCopy": true,
+        "actualTenSecondReadDeadline": false,
+        "writes": 0
+      }
+    ],
+    "screenshots": [
+      "tmp/knowledge-tree-recovery/selected-1366.png",
+      "tmp/knowledge-tree-recovery/selected-390.png",
+      "tmp/knowledge-tree-recovery/selected-320.png"
+    ],
+    "syntheticHttpOnly": true,
+    "actualModelCalls": 0
+  },
+  "build": {
+    "exitCode": 0,
+    "session": 96559,
+    "log": "tmp/ma24-knowledge-tree-web-build.log",
+    "sha256": "adcc91cc60c2b75499fe6d5445a5933b9fb4b8c4695b4226fcffbb599413dd17"
+  },
+  "webSource": {
+    "webImageSourceVerification": "passed",
+    "image": "ma24-pilot-web:79f87251",
+    "imageId": "sha256:4ec4738e306083d913548fcfb6d5de14ec43ab7650f291b97885d957825e2194",
+    "sourceCommit": "79f872515a02467ef543c62f3edec6a5d28859bb",
+    "buildId": "yPxe-SN99mmMglhVYtJeM",
+    "runtimeSourceFileCount": 1063,
+    "runtimeSourceMatchesFixedGitExport": true,
+    "exportEolDifferences": 1063,
+    "runtimeSourceManifestHash": "b4291bdc2a3dec03fd1d7ba0695c76771a31af4831d3997932e83f56fb685847",
+    "privateEnvironmentFiles": false,
+    "privateStorageFiles": false,
+    "staticAssetsPresent": true,
+    "nonRootReadOnlyNoNetwork": true,
+    "productionQualified": false
+  },
+  "native": {
+    "exitCode": 0,
+    "session": 98858,
+    "log": "tmp/ma24-knowledge-tree-fixed-web.log",
+    "sha256": "6f8d0cf86f5dbe0ba925a92901cb432a54b312b9c7853992929578095879d2b1",
+    "records": [
+      {
+        "knowledgeTreeFixedWeb": "passed",
+        "actualChromeHttpsCompiledWeb": true,
+        "generatedAccountsAndTreeOnly": true,
+        "results": [
+          {
+            "width": 1366,
+            "actualOwnedTreeAndNoStore": true,
+            "peerAnonymousDenied": true,
+            "heldOldReadCannotReplaceNewSelection": true,
+            "heldReadCannotCrossDirectoryOrReaderUnmount": true,
+            "directory503ClearsOldNodesAndRetry": true,
+            "withdrawnAsset404ClearsEvidenceAndRestorationRecovers": true,
+            "rawCoordinatesCopiedExactly": true,
+            "writes": 0
+          },
+          {
+            "width": 390,
+            "actualOwnedTreeAndNoStore": true,
+            "peerAnonymousDenied": true,
+            "heldOldReadCannotReplaceNewSelection": true,
+            "heldReadCannotCrossDirectoryOrReaderUnmount": true,
+            "directory503ClearsOldNodesAndRetry": true,
+            "withdrawnAsset404ClearsEvidenceAndRestorationRecovers": true,
+            "rawCoordinatesCopiedExactly": true,
+            "writes": 0
+          }
+        ],
+        "screenshots": [
+          "tmp/ma24-tree-selected-1366-bbd93172-235b-4689-8aea-9252222dd9f9.png",
+          "tmp/ma24-tree-selected-390-122ec8fd-9570-45f5-ad9b-f3b635e9d581.png"
+        ],
+        "actualModelCalls": 0,
+        "realDocumentQualityAccepted": false,
+        "productionQualified": false
+      },
+      {
+        "freshClusterPilot": "passed",
+        "image": "pgvector/pgvector:pg16",
+        "reviewDraftFixedImageVerified": false,
+        "mailboxImapWorkerVerified": false,
+        "mailboxWorkerImageVerified": false,
+        "mailboxWorkerImapImageVerified": false,
+        "scheduleDispatchVerified": false,
+        "batchSettlementVerified": false,
+        "batchWorkerCrashVerified": false,
+        "batchWorkerCommitVerified": false,
+        "scheduleWorkerCrashVerified": false,
+        "scheduleWorkerCommitVerified": false,
+        "publishedAddress": "127.0.0.1 only",
+        "rolesVerified": true,
+        "duplicateRoleBootstrapRejected": true,
+        "freshMigrationThrough": 170,
+        "currentSchemaMarkers": {
+          "mailbox_work_binding": true,
+          "mailbox_lease_binding": true,
+          "mailbox_binding_constraint": true,
+          "knowledge_source_gate": true,
+          "task_origin_gate": true,
+          "local_memory_source_gate": true,
+          "receipt_source_gate": true,
+          "immutable_snapshot_capture": true,
+          "immutable_snapshot_lifecycle": true,
+          "trust_registry_versions": true,
+          "trust_registry_pointer": true,
+          "trust_registry_publication": true,
+          "runtime_package_registrations": true,
+          "candidate_recovery_checkpoint": true,
+          "candidate_execution_lease": true,
+          "candidate_graph_checkpoint": true,
+          "runtime_package_withdrawals": true,
+          "runtime_package_publication": true,
+          "skill_activation_lifecycle": true,
+          "skill_activation_sources_sealed": true,
+          "skill_activation_reviews_serialized": true,
+          "skill_activation_declarations_serialized": true,
+          "skill_activation_source_guard_health": true,
+          "skill_activation_use_commit_guard": true,
+          "skill_activation_commit_guard": true,
+          "skill_activation_binding_guard": true
+        },
+        "snapshotLifecycleVerified": false,
+        "knowledgeScopeSourcesVerified": false,
+        "finalSettlementVerified": false,
+        "compiledMainRuntimeVerified": false,
+        "mainRuntimeSkillReceiptVerified": false,
+        "mainRuntimeModelReceiptVerified": false,
+        "mainRuntimeDurabilityVerified": false,
+        "mainRuntimeCrashRecoveryVerified": false,
+        "mainRuntimeInterruptionVerified": false,
+        "mainRuntimeNetworkLossVerified": false,
+        "mainRuntimeResumeRevocationVerified": false,
+        "mainRuntimeCommitLossVerified": false,
+        "mainRuntimeTaskEnrollmentVerified": false,
+        "snapshotDownloadResult": null,
+        "runStatusUiVerified": false,
+        "personalMemoryUiVerified": false,
+        "conversationManagementUiVerified": false,
+        "attachmentUploadUiVerified": false,
+        "knowledgeTreeUiVerified": true,
+        "responsiveNavigationUiVerified": false,
+        "memoryObservationsUiVerified": false,
+        "localMemoryWorkerResult": null,
+        "trustRegistryRestoreResult": null,
+        "freshMailboxUiVerified": false,
+        "extendedFrontendUiVerified": false,
+        "syntheticAccountCompanyAndRestoreVerified": true,
+        "copiedProductionData": false,
+        "linuxWebImage": "ma24-pilot-web:79f87251",
+        "linuxWebHttpWorkflowVerified": true,
+        "linuxWebHttpsBrowserVerified": false,
+        "tenConcurrentSyntheticAccountsVerified": false,
+        "pilotBackupRestoreVerified": false,
+        "crossClusterRestoreVerified": false,
+        "nonemptyMailboxCrossClusterRestoreVerified": false,
+        "scriptedModeBusinessVerified": false,
+        "runnerAttestationStoreVerified": false,
+        "collectorDeclarationImageVerified": false,
+        "lockedPolicyDatabaseVerified": false,
+        "memorySourceLocksVerified": false,
+        "methodCatalogSourceLocksVerified": false,
+        "shadowSourceLocksVerified": false,
+        "safetySkillUsageVerified": false,
+        "transportJournalDatabaseVerified": false,
+        "agentCallLeaseDatabaseVerified": false,
+        "agentCheckpointLeaseDatabaseVerified": false,
+        "candidateLeaseContentionDatabaseVerified": false,
+        "runtimeReadSourceLocksDatabaseVerified": false,
+        "runtimeDisclosureDatabaseVerified": false,
+        "linuxFiveCategoryTransportVerified": false,
+        "collectorImageTlsPreflightVerified": false,
+        "poolRecoveryVerified": false,
+        "standaloneDatabaseRecoveryVerified": false,
+        "extraG09Migration": null,
+        "prospectiveSourceDatabaseVerified": false,
+        "prospectivePairedMaterialVerified": false,
+        "prospectiveStandaloneHttpVerified": false,
+        "prospectiveStandaloneBrowserVerified": false,
+        "completeCompositionVerified": false,
+        "samePortPriorImageRollbackVerified": false
+      }
+    ]
+  },
+  "initialFindings": [
+    "Fixture coordinate constant shadowed global location in a browser initializer type check; explicit window.location fixed it.",
+    "Removed the redundant unmount read-counter mutation reported by the ref cleanup lint rule."
+  ],
+  "visuallyInspectedScreenshots": {
+    "tmp/ma24-tree-selected-1366-bbd93172-235b-4689-8aea-9252222dd9f9.png": "acc161b395345713e6e89b074a31269a2e444e8be523d84449061a48bdc239eb",
+    "tmp/ma24-tree-selected-390-122ec8fd-9570-45f5-ad9b-f3b635e9d581.png": "a94dea98d597bbf7956b475e7c1714639b2d63f40c63f7d4f72b54f18520a2b8",
+    "tmp/knowledge-tree-recovery/selected-390.png": "e4ed81bde955b4c060df8c659493e3a6c95041cbe679a87ae7ffe897fdf9acba",
+    "tmp/knowledge-tree-recovery/selected-320.png": "384d6321d8d4fa6c360e7fdb07dab1b73b805b4ada0534c4fc69cf5ff42ae4cb"
+  },
+  "cleanup": {
+    "temporaryContainersRemoved": true,
+    "remainingServices": [
+      "codex_sales_leads-neo4j-1",
+      "codex_sales_leads-ollama-1",
+      "codex_sales_leads-postgres-1"
+    ]
+  },
+  "limits": [
+    "Synthetic generated registered tree records only; no real original document/content-quality or answer-citation judgment.",
+    "Component fixture explicitly ignores cancellation for A to prove selection guard; native browser uses normal cancellation with actual stored API responses.",
+    "Live asset withdrawal/restoration is performed on disposable records; no production source changed.",
+    "Already delivered content cannot be retracted and no revocation detection is claimed without a new read.",
+    "Saved-text/list/delete workflows are not accepted by this coordinate-reader result.",
+    "No new backend permission/source contract, whole backend composition, real model/provider call, qualification, activation or deployment.",
+    "G14-G20 remain deferred."
+  ]
+}
