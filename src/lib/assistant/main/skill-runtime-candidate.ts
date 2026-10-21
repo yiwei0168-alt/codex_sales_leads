@@ -12,6 +12,7 @@ import {withSkillRuntimeTaskLease} from './skill-runtime-task-lease';
 import {hasReadEvidenceContract} from './read-evidence-tools';
 import {assertSkillRuntimeReadSources} from './skill-runtime-read-sources';
 import {assertSkillRuntimeModelDisclosure} from './skill-runtime-disclosure';
+import {DEFAULT_SKILL_CANDIDATE_MODEL_CALLS,skillCandidateModelCallQuotaSchema} from './skill-candidate-execution-policy';
 
 type Selection=Parameters<typeof assertSkillCandidateRuntimeTask>[1];
 
@@ -50,7 +51,9 @@ function runtimeDispatch(context:ExecutionContext,snapshot:Parameters<typeof run
 
 /** Dedicated internal G09 entry. Caller supplies a claimed server context and
  * an independently authorized request adapter; no model route is implicit. */
-export async function runSkillRuntimeCandidate(context:ExecutionContext,input:Selection,collector:SkillCandidateCollector,maximumModelCalls=8){
+export async function runSkillRuntimeCandidate(context:ExecutionContext,input:Selection,collector:SkillCandidateCollector,maximumModelCalls=DEFAULT_SKILL_CANDIDATE_MODEL_CALLS){
+ if(skillCandidateModelCallQuotaSchema.parse(maximumModelCalls)!==(input.maximumModelCalls??DEFAULT_SKILL_CANDIDATE_MODEL_CALLS))
+  throw new Error('Skill runtime model quota does not match task selection');
  const frozen=collector.frozen;
  if(!frozen||frozen.freezeId!==input.freezeId||collector.evaluationId!==input.evaluationId||context.evaluationArm!==input.arm)
   throw new Error('Skill runtime collector or task binding changed');

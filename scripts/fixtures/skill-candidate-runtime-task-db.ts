@@ -7,7 +7,7 @@ import {prepareSkillAcceptanceBaseline} from '../../src/lib/assistant/main/skill
 import {prepareSkillExecutionIdentity} from '../../src/lib/assistant/main/skill-runtime-identity';
 import {createConfiguredSkillCollectorConnection} from '../../src/lib/assistant/main/skill-collector-connection';
 import {freezeSkillAcceptancePlan,revokeSkillAcceptanceFreeze} from '../../src/lib/assistant/main/skill-acceptance-freeze';
-import {enqueueSkillCandidateRuntimeTask,claimSkillCandidateRuntimeTask,assertSkillCandidateRuntimeTask} from '../../src/lib/assistant/main/skill-candidate-runtime-task';
+import {enqueueSkillCandidateRuntimeTask,claimSkillCandidateRuntimeTask,assertSkillCandidateRuntimeTask,settleSkillCandidateRuntimeTask,readCompletedSkillCandidateRuntimeTask} from '../../src/lib/assistant/main/skill-candidate-runtime-task';
 import {getRun,listRuns,readEvents,claimRun,controlRun} from '../../src/lib/assistant/main/repository';
 import {withSkillRuntimeTaskLease} from '../../src/lib/assistant/main/skill-runtime-task-lease';
 import {dispatchTool} from '../../src/lib/assistant/main/executor';
@@ -28,6 +28,10 @@ export async function verifySkillCandidateRuntimeTaskDatabase(pool:Pool,owner:st
   assert.deepEqual(await enqueueSkillCandidateRuntimeTask(context,pin,frozen.plan),created);
   const row=(await pool.query('select r.*,c.status conversation_status from agent_run r join assistant_conversation c on c.id=r.conversation_id where r.id=$1',[created.runId])).rows[0];
   assert.equal(row.execution_kind,'main-agent-evaluation');assert.equal(row.execution_spec.schema,'skill-candidate-task-v1');
+  assert.deepEqual(row.execution_spec.executionPolicy,{protocol:'registered-read-trial-limits-v1',modelCallLimit:8,graphModelSteps:80,graphRecursionLimit:400});
+  await assert.rejects(enqueueSkillCandidateRuntimeTask(context,{...pin,maximumModelCalls:3},frozen.plan),/selection changed for existing evaluation/);
+  assert.equal((await pool.query(`select count(*)::int n from agent_run where user_id=$1 and execution_spec->>'evaluationId'=$2
+   and execution_spec->>'arm'='candidate'`,[owner,pin.evaluationId])).rows[0].n,1,'Changed quota must not create another task');
   assert.equal(row.conversation_status,'deleted');assert.equal(row.status,'queued');assert.deepEqual(row.input.attachments,[]);
   assert.equal((await pool.query('select count(*)::int n from assistant_message where conversation_id=$1',[row.conversation_id])).rows[0].n,0);
   assert.equal(await getRun(owner,created.runId),null);assert(!(await listRuns(owner)).some(run=>run.id===created.runId));assert.deepEqual(await readEvents(owner,created.runId,'0'),[]);
@@ -53,6 +57,16 @@ export async function verifySkillCandidateRuntimeTaskDatabase(pool:Pool,owner:st
   assert.deepEqual(tool,{tool_id:'skill_list',effect:'read',status:'completed'});
   await assertSkillCandidateRuntimeTask(claimed.context,pin,frozen.plan);
   const graph=process.env.MA24_SKILL_RUNTIME_GRAPH==='1'?await verifySkillRuntimeCandidateDatabase(pool,owner,pin,frozen,connection.transaction):{skillRuntimeCandidateGraphVerified:false};
+  // Metadata admission/readback only. With no model journal this completion
+  // cannot pass independent model audit or confer quality/activation proof.
+  const quotaPin={...pin,evaluationId:randomUUID(),maximumModelCalls:3},quotaTask=await enqueueSkillCandidateRuntimeTask(context,quotaPin,frozen.plan);
+  const quotaClaim=await claimSkillCandidateRuntimeTask(context,{...quotaPin,taskId:quotaTask.runId,workerId:'g09-quota-metadata-fixture'},frozen.plan);
+  await settleSkillCandidateRuntimeTask(quotaClaim.context,quotaPin,frozen.plan,'completed','Synthetic quota metadata result');
+  const {maximumModelCalls:omittedQuota,...reviewPin}=quotaPin;assert.equal(omittedQuota,3);
+  const quotaRead=await readCompletedSkillCandidateRuntimeTask(context,{...reviewPin,taskId:quotaTask.runId},frozen.plan);
+  assert.equal(quotaRead.spec.executionPolicy?.modelCallLimit,3);
+  await assert.rejects(readCompletedSkillCandidateRuntimeTask(context,{...reviewPin,taskId:quotaTask.runId,maximumModelCalls:4},frozen.plan),/model quota changed/);
+  await assert.rejects(readCompletedSkillCandidateRuntimeTask({userId:other},{...reviewPin,taskId:quotaTask.runId},frozen.plan),/execution policy unavailable/);
   const controlPin={...pin,evaluationId:randomUUID()},controlTask=await enqueueSkillCandidateRuntimeTask(context,controlPin,frozen.plan);
   const controlClaim=await claimSkillCandidateRuntimeTask(context,{...controlPin,taskId:controlTask.runId,workerId:'g09-fresh-control-fixture'},frozen.plan);
   await controlRun(owner,controlTask.runId,'cancel');
@@ -68,6 +82,7 @@ export async function verifySkillCandidateRuntimeTaskDatabase(pool:Pool,owner:st
   assert.equal((await pool.query('select enabled from agent_skill where id=$1',[skillId])).rows[0].enabled,false);
   assert.equal((await pool.query('select count(*)::int n from agent_memory_extraction_job where run_id=$1',[created.runId])).rows[0].n,0);
   return {...graph,skillRuntimeTaskAdmissionDatabaseVerified:true,skillRuntimeHiddenTaskAndIdempotencyVerified:true,skillRuntimeOrdinaryAndG16ClaimRejected:true,
+   skillRuntimeTaskExecutionPolicyBound:true,skillRuntimeChangedQuotaRejectedWithoutNewTask:true,skillRuntimeCompletedNondefaultQuotaReadbackVerified:true,skillRuntimeQuotaMetadataOnly:true,
    skillRuntimeExplicitClaimAndContextVerified:true,skillRuntimeRegisteredReadVerified:true,skillRuntimeCancellationAndFreezeRevocationRejected:true,skillRuntimeSharedLeaseCancelSettled:true,
    skillRuntimeOriginalTaskAndSkillUnchanged:true,actualModelCalls:0,productionAgentEquivalent:false,automaticActivation:false};
  }finally{await connection.close();}

@@ -1,0 +1,65 @@
+{
+  "date": "2026-10-21",
+  "rule": "MA24-06",
+  "stage": "server-bound-candidate-execution-policy",
+  "baseCommit": "5942f39b",
+  "sourceFiles": {
+    "src/lib/assistant/main/skill-candidate-execution-policy.ts": "90bef1594be824b563425c568a335fac91dbd5aeae9ac89f7e7ce2faddb7e795",
+    "src/lib/assistant/main/evaluation-task-spec.ts": "104d02f32c6085df061fd47af471cf54ee4218477b895a705bdb9c674979c331",
+    "src/lib/assistant/main/skill-candidate-runtime-task.ts": "46b5dfcd9a43c09083e4b3fc0d26b9bd247db1f7a1488955d96d40ed15aeab51",
+    "src/lib/assistant/main/skill-candidate-task-policy.test.ts": "70dd140234277c968a8a10c071bba4269ba17747ca7abc7c3d1272967799ee4f",
+    "src/lib/assistant/main/skill-runtime-quota-admission.test.ts": "96d49925f9793c1076f5afaccf598f4c508c07f12cb29385977acd4e6f3dd1c4",
+    "src/lib/assistant/main/skill-runtime-audit-policy.test.ts": "c915b5bca18b1afffe0d0763662e46043dceb3921bc074ccd8a819349c633f05",
+    "src/lib/assistant/main/skill-configured-runtime-task.ts": "203c0773175948fc3e358471b2e78d26357807c7fd79deb02c8fc6f81a59a62f",
+    "src/lib/assistant/main/skill-runtime-candidate.ts": "0bfac469faa0ef4f149ea08efe568c77d216642e61e9b711992a52fb71c46295",
+    "src/lib/assistant/main/skill-runtime-candidate-audit.ts": "f6b1e7fa2aa83005816415d891c896f83835e7c128a433cf61d7c1ccc43e412b",
+    "scripts/fixtures/skill-candidate-runtime-task-db.ts": "95be8c7db6885d2afd756e410e9d6da00645706b62821065d5740afe01aa11c5"
+  },
+  "policy": {
+    "protocol": "registered-read-trial-limits-v1",
+    "modelCallMinimum": 1,
+    "modelCallMaximum": 64,
+    "defaultModelCalls": 8,
+    "graphModelSteps": 80,
+    "graphRecursionLimit": 400
+  },
+  "checks": {
+    "tests": {
+      "sessionId": 43147,
+      "exitCode": 0,
+      "tests": 87,
+      "files": 9
+    },
+    "typecheck": {
+      "sessionId": 84387,
+      "exitCode": 0
+    },
+    "lint": {
+      "sessionId": 80796,
+      "exitCode": 0,
+      "files": 10,
+      "finalFixtureRecheckSession": 51652,
+      "finalFixtureRecheckExitCode": 0
+    }
+  },
+  "logSha256": {
+    "tmp/ma24-task-bound-quota-tests-accepted.log": "98e30ddb45d82b04f9f195e712756ffe11634a45ad2a38182f8915ace17f5352",
+    "tmp/ma24-task-bound-quota-typecheck-fixture.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "tmp/ma24-task-bound-quota-lint-accepted.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "tmp/ma24-task-bound-quota-lint-fixture.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "nativeDatabase": {
+    "status": "not-started-for-this-source"
+  },
+  "scope": {
+    "unitDependenciesMocked": true,
+    "actualModelCalls": 0,
+    "financialAdmissionUnchanged": true,
+    "defaultAndMaximumQuotaUnchanged": true,
+    "oldCompletedPolicyNotRelabeled": true,
+    "newFixedImagesBuilt": false,
+    "earlier60396": "Product 768b621b/fixture 88c3c1b5 passed before this policy change",
+    "productionAgentEquivalent": false,
+    "automaticActivation": false
+  }
+}

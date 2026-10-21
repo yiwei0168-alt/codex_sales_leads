@@ -405,7 +405,7 @@ G09 任务与工具日志锁已接入材料重建入口：从已存包派生任�
 
 | 项目 | 已有依据 | 仍缺的实现或验收 | 下一项能关闭缺口的证据 |
 | --- | --- | --- | --- |
-| G01 发布基线 | 当前 359cbc60 三镜像/源码/依赖/ESM、采集器/Web、实际 API/Worker、独立数据库信任 TLS、9428 完整 Linux 组合及 76169 固定启动器完成复用通过 | 整组生产入口/TLS与首次真实提供方执行未验；部署与目标主机/回切暂缓 | 补齐整体入口与真实执行证据；恢复上线后核主机/回切。[当前包](POSTGRES_GRAPH_FIXED_PACKAGES_2026-10-21.md) |
+| G01 发布基线 | 已验收基线 768b621b 三包构建/源码/依赖/ESM、独立数据库信任 TLS 22333 与完整 Linux 60396 的实时读取恢复/固定启动器复用通过；旧 Worker 证据保留其版本范围 | 后续任务额度绑定尚未入新包；整组生产入口/TLS与首次真实提供方执行未验；部署与主机/回切暂缓 | 完成本轮策略实际验证及新包，再补整体入口/真实执行。[已验收固定包](LIVE_READ_FIXED_PACKAGES_2026-10-21.md) |
 | G02 来源撤销 | 真实图、旧 checkpoint、隔离模型及局部 HTTP；当前构建的登记原件下载通过认证、Range、篡改和请求间撤回的真实 HTTP 验证 ([收据](evidence/ma24-g02-g05-asset-download-http-clone-2026-10-19.json)) | 当前服务上真实账号有界任务的生成期撤销、后续工具阻断和最终保存核对 | 获授权的专门来源/账号任务及撤销前后收据；新付费请求另列具体清单 |
 | G03 纠正与双时间 | 来源归属、自然纠正和隔离恢复；中文实际 Worker 经登录时间线、账号隔离、幂等撤销及同批精确历史时点回读通过 | 自然偏好/经历/业务事实与纠正样本不足；全部用户入口、最终统一候选和持续 Worker 试点未验 | 对照原句与更正内容的自然样本判决、最终候选各入口及连续 Worker 持久记录；本轮有限 HTTP 流程不扩称全部入口 |
 | G04 记忆图谱 | outbox、租约、故障恢复及 PostgreSQL 降级服务证据；中文同批投影、真实陈旧图谱候选的撤销过滤和原记录/纠正历史回读、第三条撤销投递通过 | 获准真实样本的持续抽取/投影、最终统一候选及持续故障/恢复运行未验 | 连续消费及图谱停机/恢复的同一批来源收据；同批有限撤销召回证据见最新工作流，不替代真实质量 |
@@ -413,7 +413,7 @@ G09 任务与工具日志锁已接入材料重建入口：从已存包派生任�
 | G06 安全 | 已定位旧歧义与注入失败，工具模型视图等边界已有修复 | 修复后固定协议的真实模型回答、独立安全判分不足；既有本地超时不能判通过 | 有明确请求范围的有效模型回答及答案/引用/权限/注入人工判决；相同超时配置不重复试跑 |
 | G07 真实回放 | 服务器持久收据与只读回放适配已实现；历史资格审计已有排除结果 | 尚无满足当前来源、Skill 相关性及完整收据要求的真实任务 | 同账号有效的完整只读任务或精确收据限定的子任务，固定版本回放和独立审核 |
 | G08 前瞻影子 | 任务前登记/捕获、签名原流程/候选、统一材料及受限持久化已有合成数据库贯通证据；未将历史任务改标前瞻 | 真实任务的原流程/候选结果、可信生产身份及真实质量仍未验收 | 在既有授权范围内取得任务前登记到执行、持久收据及审核的真实完整链 |
-| G09 自动启用 | 前瞻只读/独立重建/外发差分 14339、后续来源复核 78222 原生组合和公开资料许可/字节专项 59031 通过；共享图限制 55 回归通过；768b621b 三包测量与独立 TLS 22333 通过 | **仍未完成**：当前固定包完整恢复组合 60396 在运行；额外模型配额/冻结控制比较、生产资格生产者、首次真实提供方、独立质量和正向启用仍未完成 | 核对新包组合后补[剩余执行差异](RUNTIME_EXECUTION_PARITY_GAPS_2026-10-21.md)；不把包/模拟证据当成质量或正式启用。[当前包](LIVE_READ_FIXED_PACKAGES_2026-10-21.md) |
+| G09 自动启用 | 14339/78222 原生组合、59031 公开资料实库和 768b621b 固定包 60396 的五类/八任务、实时读取崩溃恢复与测量登记通过；新额度策略绑定 87 回归/类型/lint 通过 | **仍未完成**：新策略实际数据库/固定包待验；额度/冻结控制比较、资格生产者、首次真实提供方、独立质量和正向启用未完成 | 先验证[新任务策略](TASK_BOUND_EXECUTION_POLICY_2026-10-21.md)，继续补[执行差异](RUNTIME_EXECUTION_PARITY_GAPS_2026-10-21.md)，不把工程证据当成质量或启用 |
 | G10 审核 | 固定21ade59d Chrome/HTTPS/真实数据库审核修订竞态、草稿协调、409、已提交后回读故障与撤销通过；r1–r7均为合成不通过，另保留前瞻两臂与旧HTTP/页面证据 | 完整真实人工材料、五类质量、生产身份和目标入口未验；本轮夹具原件预览未通过 | 在既有授权边界内准备真实同版本/冻结材料，逐题核对真实质量及生产入口 |
 | G11 邮箱/客户 | 固定2a1fb556正式邮箱Worker/实际IMAP库/合成TLS服务/新159数据库的日期分页、半页SIGKILL和原租约自然到期恢复通过；4封唯一加密邮件、统计4/4/4/0、账号隔离和空Worker不变 | 真实服务商日期范围与全分页、持续负载、客户归属/摘要质量及目标主机运行未验 | 已授权账号及日期范围上的收件/已发送对账、恢复与逐例归属判定；历史提供方对账单独保留 |
 | G12 三模式 | 恢复原因白名单修复，60 项定向测试及全新库 12 组脚本业务通过 | 真实只读业务回答、提供方失败/迟到/未知结果恢复及正式加载未验 | 有界真实任务和隔离提供方响应的持久收据；已消耗的 MODESEL-14 授权不复用 |
@@ -723,3 +723,6 @@ G09 current-source collector image TLS preflight (2026-10-19): rebuilt from the 
 
 
 2026-10-21 / fixed current live-read composition terminal result: Linux session 60396 exited 0, immutable product 768b621b / archived fixture 88c3c1b5. All runtime source bytes matched the image. Five-case/eight-task composition, live-source lifecycle reader, measured registration/provenance, and actual SIGKILL after the committed customer offset read passed; early takeover rejected, default leases naturally expired, new-process recovery preserved old model/tool rows and capture/spec bindings without repeating completed HTTP steps. Fixed-launcher completed reuse passed; disposable cluster removed. Whole-fixture production wrapper and database TLS remain false; independent current TLS session 22333 is separate. All adapters/data synthetic, no real provider/quality/qualification/activation. Later task-quota binding code is not included in this image/result. [Exact version receipt](evidence/ma24-g01-g09-live-read-fixed-packages-2026-10-21.json).
+
+
+2026-10-21 / MA24-06 bound execution policy: server task specs now bind the unchanged trial quota (1-64, default 8) and shared graph limits. Owned evaluation/arm admission serializes and reuses an identical task; changed quota/spec/input/model rejects without another task. Runtime quota mismatch rejects before leases/requests; completed review derives quota from its owned task and rejects missing/mismatched policy. Independent audit uses and projects that quota, not observed decision count. 87 tests/9 files, full typecheck/ten-file lint and final fixture rechecks passed; new DB metadata/readback fixture and fixed package remain unverified. No new budget, real model/data, production equivalence or activation. Prior 60396 fixed-image result is explicitly earlier source. [Implementation and staged receipt](TASK_BOUND_EXECUTION_POLICY_2026-10-21.md).

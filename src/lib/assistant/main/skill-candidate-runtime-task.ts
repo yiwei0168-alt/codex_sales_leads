@@ -10,10 +10,12 @@ import {prepareSkillExecutionIdentity} from './skill-runtime-identity';
 import {prepareSkillProspectiveSource} from './skill-prospective-source';
 import {skillCandidateTaskSpecSchema} from './evaluation-task-spec';
 import {assertLocalAnalysisBoundary} from './local-analysis-boundary';
+import {skillCandidateExecutionPolicy,skillCandidateModelCallQuotaSchema,DEFAULT_SKILL_CANDIDATE_MODEL_CALLS} from './skill-candidate-execution-policy';
 
 const selection=z.object({runId:z.uuid(),skillId:z.uuid(),version:z.number().int().positive(),freezeId:z.uuid(),
- caseId:z.string().min(1).max(200),evaluationId:z.uuid(),prospectiveJobId:z.uuid().optional(),safetyCaseId:z.string().min(1).max(120).optional(),arm:z.enum(['baseline','candidate'])}).strict();
-type Selection=z.infer<typeof selection>;
+ caseId:z.string().min(1).max(200),evaluationId:z.uuid(),prospectiveJobId:z.uuid().optional(),safetyCaseId:z.string().min(1).max(120).optional(),arm:z.enum(['baseline','candidate']),
+ maximumModelCalls:skillCandidateModelCallQuotaSchema.default(DEFAULT_SKILL_CANDIDATE_MODEL_CALLS)}).strict();
+type Selection=z.input<typeof selection>;
 type Prepared={spec:z.infer<typeof skillCandidateTaskSpecSchema>;input:z.infer<typeof messageInputSchema>;model:ModelConfig;role:'member'|'admin';originalKnowledgeScope?:ExecutionContext['knowledgeScope']};
 
 /** Internal G09 admission only. Does not call a model, dispatch tools or qualify
@@ -40,7 +42,7 @@ async function withPreparedTask<T>(context:{userId:string},input:Selection,expec
    throw new Error('Skill runtime task sources or frozen identity changed');
   const spec=skillCandidateTaskSpecSchema.parse({schema:'skill-candidate-task-v1',freezeId:p.freezeId,planHash:digest(plan),caseId:p.caseId,
    evaluationId:p.evaluationId,arm:p.arm,originalRunId:p.runId,skillId:p.skillId,version:p.version,contentHash:plan.pin.contentHash,
-   snapshotHash:saved.sourceHash,inputHash:saved.taskInputHash,sourceHash:item.sourceHash,identityHash:digest(identity),...(prospective?{prospectiveJobId:p.prospectiveJobId,prospectiveProjectionHash:prospective.projectionHash,readExecution:'registered-live-read-v1'}:{}),...(saved.safety?{safetyCaseId:p.safetyCaseId}:{})});
+   snapshotHash:saved.sourceHash,inputHash:saved.taskInputHash,sourceHash:item.sourceHash,identityHash:digest(identity),executionPolicy:skillCandidateExecutionPolicy(p.maximumModelCalls),...(prospective?{prospectiveJobId:p.prospectiveJobId,prospectiveProjectionHash:prospective.projectionHash,readExecution:'registered-live-read-v1'}:{}),...(saved.safety?{safetyCaseId:p.safetyCaseId}:{})});
   const taskInput=messageInputSchema.parse({content:saved.safety?saved.snapshot.initialMessages.findLast(row=>row.role==='user')!.content:original.input.content,requestKey:`skill-runtime:${digest(spec)}`,
    attachments:[],mode:saved.snapshot.profile.mode,knowledgeScope:original.input.knowledgeScope??['industry','company','product']});
   const result=await work({spec,input:taskInput,model:original.model_config,role:original.role,originalKnowledgeScope:original.input.knowledgeScope});
@@ -52,10 +54,17 @@ async function withPreparedTask<T>(context:{userId:string},input:Selection,expec
 /** Hidden task metadata binds the original attachment-bearing prompt by hash;
  * no new user message, attachment registration or memory extraction is created. */
 export async function enqueueSkillCandidateRuntimeTask(context:{userId:string},input:Selection,expectedPlan:unknown){
- return withPreparedTask(context,input,expectedPlan,async prepared=>{
-  const run=await enqueueRun(context.userId,prepared.input,prepared.model,{kind:'main-agent-evaluation',spec:prepared.spec});
-  return {runId:run.id,specHash:digest(prepared.spec),productionAgentEquivalent:false,executionAuthorized:false,automaticActivation:false};
- });
+ return withPreparedTask(context,input,expectedPlan,prepared=>tenantTransaction(context.userId,async client=>{
+  await client.query("select pg_advisory_xact_lock(hashtextextended('skill-runtime-task:'||$1::uuid::text||':'||$2::uuid::text||':'||$3::text,0))",
+   [context.userId,prepared.spec.evaluationId,prepared.spec.arm]);
+  const prior=(await client.query<{id:string;execution_spec:unknown;input:unknown;model_config:unknown}>(`select id,execution_spec,input,model_config from agent_run
+   where user_id=$1 and execution_kind='main-agent-evaluation' and execution_spec->>'schema'='skill-candidate-task-v1'
+    and execution_spec->>'evaluationId'=$2 and execution_spec->>'arm'=$3 for share`,[context.userId,prepared.spec.evaluationId,prepared.spec.arm])).rows;
+  if(prior.length>1||prior.some(row=>digest(row.execution_spec)!==digest(prepared.spec)||digest(row.input)!==digest(prepared.input)||digest(row.model_config)!==digest(prepared.model)))
+   throw new Error('Skill runtime task selection changed for existing evaluation');
+  const runId=prior[0]?.id??(await enqueueRun(context.userId,prepared.input,prepared.model,{kind:'main-agent-evaluation',spec:prepared.spec})).id;
+  return {runId,specHash:digest(prepared.spec),productionAgentEquivalent:false,executionAuthorized:false,automaticActivation:false};
+ }));
 }
 
 /** Inspect only the exact server-derived task before selecting claim or
@@ -118,7 +127,8 @@ export async function assertSkillCandidateRuntimeTaskContext(context:ExecutionCo
  });
  const {spec,plan}=saved;
  return assertSkillCandidateRuntimeTask(context,{runId:spec.originalRunId,skillId:spec.skillId,version:spec.version,freezeId:spec.freezeId,
-  caseId:spec.caseId,evaluationId:spec.evaluationId,arm:spec.arm,...(spec.prospectiveJobId?{prospectiveJobId:spec.prospectiveJobId}:{}),...(spec.safetyCaseId?{safetyCaseId:spec.safetyCaseId}:{})},plan);
+  caseId:spec.caseId,evaluationId:spec.evaluationId,arm:spec.arm,maximumModelCalls:spec.executionPolicy?.modelCallLimit,
+  ...(spec.prospectiveJobId?{prospectiveJobId:spec.prospectiveJobId}:{}),...(spec.safetyCaseId?{safetyCaseId:spec.safetyCaseId}:{})},plan);
 }
 
 /** Same owning application transaction for task settlement and source rebuild.
@@ -138,7 +148,12 @@ export async function settleSkillCandidateRuntimeTask(context:ExecutionContext,i
  * accepted as proof; rebuild the same source, scope and frozen-plan binding. */
 export async function readCompletedSkillCandidateRuntimeTask(context:{userId:string},input:Selection&{taskId:string},expectedPlan:unknown){
  const {taskId,...pin}=input;z.uuid().parse(taskId);
- return withPreparedTask(context,pin,expectedPlan,async prepared=>tenantTransaction(context.userId,async client=>{
+ const stored=await tenantTransaction(context.userId,async client=>(await client.query<{execution_spec:unknown}>(`select execution_spec from agent_run
+  where id=$1 and user_id=$2 and status='completed' and control is null and execution_kind='main-agent-evaluation'`,[taskId,context.userId])).rows[0]);
+ const policy=stored&&skillCandidateTaskSpecSchema.parse(stored.execution_spec).executionPolicy;
+ if(!policy)throw new Error('Completed Skill runtime execution policy unavailable');
+ if(pin.maximumModelCalls!==undefined&&pin.maximumModelCalls!==policy.modelCallLimit)throw new Error('Completed Skill runtime model quota changed');
+ return withPreparedTask(context,{...pin,maximumModelCalls:policy.modelCallLimit},expectedPlan,async prepared=>tenantTransaction(context.userId,async client=>{
   const row=(await client.query<{result:unknown;completed_at:string}>(`select result,updated_at::text completed_at from agent_run
    where id=$1 and user_id=$2 and status='completed' and control is null and execution_kind='main-agent-evaluation'
     and execution_spec=$3::jsonb and input=$4::jsonb and model_config=$5::jsonb`,

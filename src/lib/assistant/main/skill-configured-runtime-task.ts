@@ -9,6 +9,8 @@ import type {SkillCandidateCollector} from './skill-candidate-model';
  * Task/source admission remains server-derived; no transport is created on reuse. */
 export async function runConfiguredSkillRuntimeTask(context:{userId:string},pin:Parameters<typeof enqueueSkillCandidateRuntimeTask>[1],
  frozen:NonNullable<SkillCandidateCollector['frozen']>,transaction:SkillCandidateCollector['transaction'],sourceHash:string,maximumModelCalls:number){
+  if(pin.maximumModelCalls!==undefined&&pin.maximumModelCalls!==maximumModelCalls)throw new Error('Configured runtime model quota changed');
+  pin={...pin,maximumModelCalls};
   const task=await enqueueSkillCandidateRuntimeTask(context,pin,frozen.plan);
   const taskInput={...pin,taskId:task.runId},state=await inspectSkillCandidateRuntimeTask(context,taskInput,frozen.plan);
   const snapshotHash=digest({protocol:'skill-runtime-candidate-v2-postgres',sourceHash,taskId:task.runId,specHash:task.specHash});

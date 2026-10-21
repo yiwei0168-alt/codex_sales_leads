@@ -11,6 +11,7 @@ import {toolModelView} from './tool-model-view';
 import {hasReadEvidenceContract} from './read-evidence-tools';
 import {assertSkillRuntimeReadSources} from './skill-runtime-read-sources';
 import {assertSkillRuntimeModelDisclosure} from './skill-runtime-disclosure';
+import {skillCandidateExecutionPolicySchema} from './skill-candidate-execution-policy';
 
 type Snapshot=Parameters<typeof runSkillCandidateArm>[0];
 export type SkillRuntimeToolReceipt={id:string;user_id:string;run_id:string;call_key:string;tool_id:string;tool_version:string;
@@ -81,6 +82,7 @@ export function reconstructSkillRuntimeTools(snapshot:Snapshot,context:Context,r
 export async function auditSkillRuntimeCandidate(context:{userId:string},input:Parameters<typeof readCompletedSkillCandidateRuntimeTask>[1],expectedPlan:unknown){
  assertLocalAnalysisBoundary();
  const completed=await readCompletedSkillCandidateRuntimeTask(context,input,expectedPlan);
+ const executionPolicy=skillCandidateExecutionPolicySchema.parse(completed.spec.executionPolicy);
  const source=()=>prepareSkillRuntimeCandidateSource(context,{runId:input.runId,skillId:input.skillId,version:input.version,...(input.safetyCaseId?{safetyCaseId:input.safetyCaseId}:{})});
  const saved=await source(),readModels=()=>readSkillCandidateJournal(context,input);
  const readTools=()=>tenantQuery<SkillRuntimeToolReceipt>(context.userId,`select id,user_id,run_id,call_key,tool_id,tool_version,input,input_hash,effect,status,output,approval_id
@@ -119,7 +121,7 @@ export async function auditSkillRuntimeCandidate(context:{userId:string},input:P
   }
   if(live)await assertSkillRuntimeModelDisclosure(context,request.messages,saved.snapshot);
   return next.message;
- },validate,prepared.selected.length,undefined,undefined,async call=>{
+ },validate,executionPolicy.modelCallLimit,undefined,undefined,async call=>{
   try{return await reconstruction.dispatch(call);}catch(error){reconstructionFailure=error instanceof Error?error:new Error('Skill runtime tool reconstruction failed');throw error;}
  });
  if(reconstructionFailure)throw reconstructionFailure;
@@ -130,6 +132,7 @@ export async function auditSkillRuntimeCandidate(context:{userId:string},input:P
  if(digest(await readModels())!==digest(rows)||digest(await readTools())!==digest(tools)
   ||digest(await readCompletedSkillCandidateRuntimeTask(context,input,expectedPlan))!==digest(completed))throw new Error('Skill runtime audit records changed');
  const projection={protocol:'skill-runtime-candidate-audit-v1',ownerId:context.userId,taskId:input.taskId,evaluationId:input.evaluationId,arm:input.arm,
+  executionPolicy,
   ...(live?{readExecution:'registered-live-read-v1' as const}:{}),
   freezeId:input.freezeId,sourceKind:prepared.sourceKind,taskSpecHash:completed.specHash,completedTaskHash:digest(completed),serverSnapshotHash:saved.sourceHash,runtimeSnapshotHash,
   capturedAt:new Date(Math.min(...rows.map(row=>Date.parse(row.started_at??'')))).toISOString(),completedAt:new Date(completed.completedAt).toISOString(),
