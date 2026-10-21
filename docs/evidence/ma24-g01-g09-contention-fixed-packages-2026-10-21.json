@@ -123,19 +123,20 @@
   },
   "databaseAcceptance": {
     "fullCompositionAndFormalRecovery": {
-      "status": "pending-not-accepted",
-      "plannedLog": "tmp/ma24-contention-fixed-linux-recovery.log",
-      "requiresCommittedDiagnosticFixture": true
+      "sessionId": 44023,
+      "fixtureCommit": "fcddf26b76a3653706f6dc72d05865d6b04a81f9",
+      "log": "tmp/ma24-contention-fixed-linux-recovery.log",
+      "status": "running-not-accepted"
     },
     "ordinaryApiWorkerAllReceiptRecovery": {
       "sessionId": 63199,
-      "status": "running-not-accepted",
-      "log": "tmp/ma24-contention-main-worker-recovery.log"
+      "exitCode": 0,
+      "receipt": "ma24-g09-contention-fixed-sdk-worker-2026-10-21.json"
     },
     "independentDeclarationTls": {
       "sessionId": 44186,
-      "status": "running-not-accepted",
-      "log": "tmp/ma24-contention-declaration-tls.log"
+      "exitCode": 0,
+      "receipt": "ma24-g09-contention-declaration-tls-2026-10-21.json"
     }
   },
   "productionQualified": false,
