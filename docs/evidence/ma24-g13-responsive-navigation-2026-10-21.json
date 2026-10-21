@@ -2,7 +2,7 @@
   "date": "2026-10-21",
   "rule": "MA15-02 desktop 248px/collapse and mobile drawer below 960px",
   "scope": "G13 responsive navigation visibility and desktop recovery of mobile dialog state",
-  "status": "style-and-static-passed-fixed-browser-pending",
+  "status": "fixed-package-and-actual-responsive-navigation-passed",
   "sourceFilesCanonicalLf": {
     "src/app/globals.css": "7252c8609fad09da10067ee8f3bd7d5b075fa2fe02dad22150e2949f4bec46b2",
     "src/components/copilot-demo.tsx": "70fe440920022763cda2f26ec2e3c58f440f2112288dbdb4a51c80fdaa3b5b30",
@@ -164,7 +164,234 @@
     }
   },
   "actualVerification": {
-    "status": "fixture-effect-confirmation-followup-pending"
+    "sessionId": 16283,
+    "exitCode": 0,
+    "fixtureSourceCommit": "8613434da9eca4a88f4841e0e879b6f691d7ec19",
+    "imageSourceCommit": "db1d1054144b2bc14f0de6cf9917e4095b268f00",
+    "log": "tmp/ma24-responsive-navigation-committed-fixed-web.log",
+    "logSha256": "4c4f377922051e185bf308d04e223a16ff7a3d0fa15269df7ce0963870092224",
+    "results": [
+      {
+        "responsiveNavigationFixedWeb": "passed",
+        "actualChromeHttpsCompiledWeb": true,
+        "closedLabelsHiddenFromFirstResizeSample": true,
+        "desktopAndInitialMobile": true,
+        "viewports": [
+          "1366x900",
+          "960x900",
+          "959x900",
+          "390x844",
+          "320x740"
+        ],
+        "mobileOpenCloseEscapeBackdropAndNavigation": true,
+        "focusTrappedOnlyWhileMobileOpen": true,
+        "desktopResizeClearsDialogFooterAndScrollLock": true,
+        "desktopCollapsePreferencePreserved": true,
+        "contentFocusRestored": true,
+        "noHorizontalOverflow": true,
+        "noPageErrors": true,
+        "nonReadRequests": 0,
+        "closedSamples": [
+          {
+            "visibility": "hidden",
+            "labels": [
+              "hidden",
+              "hidden",
+              "hidden",
+              "hidden",
+              "hidden",
+              "hidden"
+            ]
+          },
+          {
+            "visibility": "hidden",
+            "labels": [
+              "hidden",
+              "hidden",
+              "hidden",
+              "hidden",
+              "hidden",
+              "hidden"
+            ]
+          },
+          {
+            "visibility": "hidden",
+            "labels": [
+              "hidden",
+              "hidden",
+              "hidden",
+              "hidden",
+              "hidden",
+              "hidden"
+            ]
+          },
+          {
+            "visibility": "hidden",
+            "labels": [
+              "hidden",
+              "hidden",
+              "hidden",
+              "hidden",
+              "hidden",
+              "hidden"
+            ]
+          },
+          {
+            "visibility": "hidden",
+            "labels": [
+              "hidden",
+              "hidden",
+              "hidden",
+              "hidden",
+              "hidden",
+              "hidden"
+            ]
+          },
+          {
+            "visibility": "hidden",
+            "labels": [
+              "hidden",
+              "hidden",
+              "hidden",
+              "hidden",
+              "hidden",
+              "hidden"
+            ]
+          },
+          {
+            "visibility": "hidden",
+            "labels": [
+              "hidden",
+              "hidden",
+              "hidden",
+              "hidden",
+              "hidden",
+              "hidden"
+            ]
+          },
+          {
+            "visibility": "hidden",
+            "labels": [
+              "hidden",
+              "hidden",
+              "hidden",
+              "hidden",
+              "hidden",
+              "hidden"
+            ]
+          }
+        ],
+        "screenshots": [
+          "tmp/ma24-navigation-closed-65d0330b-18a6-46f3-9522-af68cb36e237.png",
+          "tmp/ma24-navigation-open-dae0bc8a-8f10-44e3-afe4-adb280d6f3e0.png"
+        ],
+        "actualModelCalls": 0,
+        "realBusinessQualityAccepted": false,
+        "productionQualified": false
+      },
+      {
+        "freshClusterPilot": "passed",
+        "image": "pgvector/pgvector:pg16",
+        "reviewDraftFixedImageVerified": false,
+        "mailboxImapWorkerVerified": false,
+        "mailboxWorkerImageVerified": false,
+        "mailboxWorkerImapImageVerified": false,
+        "scheduleDispatchVerified": false,
+        "batchSettlementVerified": false,
+        "batchWorkerCrashVerified": false,
+        "batchWorkerCommitVerified": false,
+        "scheduleWorkerCrashVerified": false,
+        "scheduleWorkerCommitVerified": false,
+        "publishedAddress": "127.0.0.1 only",
+        "rolesVerified": true,
+        "duplicateRoleBootstrapRejected": true,
+        "freshMigrationThrough": 170,
+        "currentSchemaMarkers": {
+          "mailbox_work_binding": true,
+          "mailbox_lease_binding": true,
+          "mailbox_binding_constraint": true,
+          "knowledge_source_gate": true,
+          "task_origin_gate": true,
+          "local_memory_source_gate": true,
+          "receipt_source_gate": true,
+          "immutable_snapshot_capture": true,
+          "immutable_snapshot_lifecycle": true,
+          "trust_registry_versions": true,
+          "trust_registry_pointer": true,
+          "trust_registry_publication": true,
+          "runtime_package_registrations": true,
+          "candidate_recovery_checkpoint": true,
+          "candidate_execution_lease": true,
+          "candidate_graph_checkpoint": true,
+          "runtime_package_withdrawals": true,
+          "runtime_package_publication": true,
+          "skill_activation_lifecycle": true,
+          "skill_activation_sources_sealed": true,
+          "skill_activation_reviews_serialized": true,
+          "skill_activation_declarations_serialized": true,
+          "skill_activation_source_guard_health": true,
+          "skill_activation_use_commit_guard": true,
+          "skill_activation_commit_guard": true,
+          "skill_activation_binding_guard": true
+        },
+        "snapshotLifecycleVerified": false,
+        "knowledgeScopeSourcesVerified": false,
+        "finalSettlementVerified": false,
+        "compiledMainRuntimeVerified": false,
+        "mainRuntimeSkillReceiptVerified": false,
+        "mainRuntimeModelReceiptVerified": false,
+        "mainRuntimeDurabilityVerified": false,
+        "mainRuntimeCrashRecoveryVerified": false,
+        "mainRuntimeInterruptionVerified": false,
+        "mainRuntimeNetworkLossVerified": false,
+        "mainRuntimeResumeRevocationVerified": false,
+        "mainRuntimeCommitLossVerified": false,
+        "mainRuntimeTaskEnrollmentVerified": false,
+        "snapshotDownloadResult": null,
+        "responsiveNavigationUiVerified": true,
+        "memoryObservationsUiVerified": false,
+        "localMemoryWorkerResult": null,
+        "trustRegistryRestoreResult": null,
+        "freshMailboxUiVerified": false,
+        "extendedFrontendUiVerified": false,
+        "syntheticAccountCompanyAndRestoreVerified": true,
+        "copiedProductionData": false,
+        "linuxWebImage": "sha256:7a01a6c0f20a03c298adcfc0b0574761f03abb45284655001673bddcba043d16",
+        "linuxWebHttpWorkflowVerified": true,
+        "linuxWebHttpsBrowserVerified": false,
+        "tenConcurrentSyntheticAccountsVerified": false,
+        "pilotBackupRestoreVerified": false,
+        "crossClusterRestoreVerified": false,
+        "nonemptyMailboxCrossClusterRestoreVerified": false,
+        "scriptedModeBusinessVerified": false,
+        "runnerAttestationStoreVerified": false,
+        "collectorDeclarationImageVerified": false,
+        "lockedPolicyDatabaseVerified": false,
+        "memorySourceLocksVerified": false,
+        "methodCatalogSourceLocksVerified": false,
+        "shadowSourceLocksVerified": false,
+        "safetySkillUsageVerified": false,
+        "transportJournalDatabaseVerified": false,
+        "agentCallLeaseDatabaseVerified": false,
+        "agentCheckpointLeaseDatabaseVerified": false,
+        "candidateLeaseContentionDatabaseVerified": false,
+        "runtimeReadSourceLocksDatabaseVerified": false,
+        "runtimeDisclosureDatabaseVerified": false,
+        "linuxFiveCategoryTransportVerified": false,
+        "collectorImageTlsPreflightVerified": false,
+        "poolRecoveryVerified": false,
+        "standaloneDatabaseRecoveryVerified": false,
+        "extraG09Migration": null,
+        "prospectiveSourceDatabaseVerified": false,
+        "prospectivePairedMaterialVerified": false,
+        "prospectiveStandaloneHttpVerified": false,
+        "prospectiveStandaloneBrowserVerified": false,
+        "completeCompositionVerified": false,
+        "samePortPriorImageRollbackVerified": false
+      }
+    ],
+    "allFiveFrozenFilesMatch": true,
+    "productCssAndComponentMatchImageCommit": true
   },
   "businessApiChanged": false,
   "actualModelCalls": 0,
@@ -512,5 +739,26 @@
       "exitCode": 0,
       "log": "tmp/ma24-responsive-navigation-commit-lint.log"
     }
-  }
+  },
+  "screenshots": [
+    {
+      "path": "tmp/ma24-navigation-closed-65d0330b-18a6-46f3-9522-af68cb36e237.png",
+      "sha256": "148d6e260b5bdf1ab5b6892f8f088a710869c2a823146502dc51ebf14d7be225",
+      "visuallyInspected": true
+    },
+    {
+      "path": "tmp/ma24-navigation-open-dae0bc8a-8f10-44e3-afe4-adb280d6f3e0.png",
+      "sha256": "05a0afd474bc678b41e647bbe8f94b1b0ccc65537b1b31d74fd5ed10d5c45366",
+      "visuallyInspected": true
+    }
+  ],
+  "cleanup": {
+    "temporaryContainersAndDatabaseRemoved": true,
+    "remainingContainers": [
+      "codex_sales_leads-neo4j-1",
+      "codex_sales_leads-ollama-1",
+      "codex_sales_leads-postgres-1"
+    ]
+  },
+  "priorMemoryNavigationVisualIssueResolvedWithinNavigationScope": true
 }
