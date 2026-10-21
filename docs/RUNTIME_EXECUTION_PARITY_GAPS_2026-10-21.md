@@ -24,3 +24,6 @@
 4. 在实际固定入口验证新读取、恢复防重复、权限/来源失效拒绝和最终合格夹具事务；真实质量、真实提供方身份及人工判断继续单列。
 
 不因本审计启用 Skill、不发起真实或付费调用、不推进部署或 G14–G20。现有工程收据继续保留其各自范围。
+
+
+2026-10-21 / Final composition acceptance: **37984 exited 0**, product `47be3168`, corrected fixture `6b4f51c9`, unchanged immutable main/collector packages. All 10 JSON records were inspected. Bound quotas, nondefault readback and case-variant UUID concurrent admission passed; the same freeze has five cases/eight ledger tasks. Live customer_timeline read, actual process termination, natural lease expiry/new-process recovery, preserved spec/capture/journals and no repeated completed HTTP steps passed, as did live-source revalidation, measured registration/provenance and fixed-launcher completed reuse. Temporary containers were removed; original three services remain. Whole-fixture production entrypoint/TLS, real model/provider/quality and activation are NOT established (actual model calls 0, qualification/activation false). Historical failed 9934 remains retained. [Evidence](evidence/ma24-g09-task-bound-execution-policy-2026-10-21.json).
