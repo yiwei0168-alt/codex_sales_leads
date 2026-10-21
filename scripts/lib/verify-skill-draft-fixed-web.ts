@@ -31,7 +31,9 @@ export async function verifySkillDraftFixedWeb(input:{pool:Pool;owner:string;ema
  try{
   container=docker(['run','--detach','--name',`ma24-review-web-${input.owner.slice(0,8)}`,'--network',network,'--publish',`127.0.0.1:${port}:3000`,
    '--env',`DATABASE_URL=${runtime}`,'--env',`DATABASE_SSL_CA=${ca}`,'--security-opt','no-new-privileges','--cap-drop=ALL',imageMeta.id]);assert.match(container,/^[a-f0-9]{64}$/);
-  // Partial source collection must reject before reading or copying any file.
+  // Match an already-uploaded attachment using only this generated fixture;
+  // pending capture must be rejected for coverage, not for a missing file.
+  docker(['cp',input.originalAsset.storageKey,`${container}:/app/${input.originalAsset.storageKey}`]);
   let ready=false;for(let i=0;i<120;i++){try{ready=(await fetchLocal(`http://127.0.0.1:${port}/api/auth/session`)).ok;}catch{}if(ready)break;await new Promise(done=>setTimeout(done,200));}assert(ready,docker(['logs',container]));
   await new Promise<void>(done=>proxy.listen(0,'127.0.0.1',done));const address=proxy.address();assert(address&&typeof address!=='string');const base=`https://127.0.0.1:${address.port}`;
   browser=await chromium.launch({channel:'chrome',headless:true});const context=await browser.newContext({ignoreHTTPSErrors:true,viewport:{width:1366,height:900}}),page=await context.newPage();

@@ -4,7 +4,7 @@
   "fixtureBaseCommit": "5a1772bbbb6525b976609f83b65d528802985d90",
   "sourceFiles": {
     "scripts/verify-recorded-model-source-clone.ts": "64eba84f88bb86a8131cf77be356617902e10a2858a404378484c7c34487e1db",
-    "scripts/lib/verify-skill-draft-fixed-web.ts": "0aaa87ba16c0d9ebe08bb18306b632362e14482849195764a8a118b692e6ba84",
+    "scripts/lib/verify-skill-draft-fixed-web.ts": "19faba39e6e034c0aaaca12babecea989bcad90586bd6cfef351db57651103df",
     "scripts/verify-skill-review-draft-image-db.ts": "482c4237cb001d95d734f5e4757e0c72bd7d3b165d869582f4122c8d5e505b6f",
     "scripts/fixtures/skill-candidate-acceptance-clone.ts": "b66bdce1818a789100cb319bda556d363a80fa12ce8fdfbef799a361abf83ca0",
     "src/lib/assistant/main/skill-original-source-coverage.ts": "c9df380cb558b5e6da2034cbc038039113050b1380ee34d4deeeb8f78c1b4e7f",
@@ -110,5 +110,19 @@
     }
   },
   "stalePreviewInvalidationImplemented": true,
-  "stalePreviewBrowserVerified": false
+  "stalePreviewBrowserVerified": false,
+  "fixtureAttachmentRestoredIntoWeb": true,
+  "fixtureFreezeChecks": {
+    "typecheck": {
+      "exitCode": 0,
+      "log": "tmp/ma24-original-source-pending-typecheck-freeze.log"
+    },
+    "lint": {
+      "exitCode": 0,
+      "log": "tmp/ma24-original-source-pending-lint-freeze.log",
+      "files": [
+        "scripts/lib/verify-skill-draft-fixed-web.ts"
+      ]
+    }
+  }
 }

@@ -28,3 +28,5 @@ Actual verification is pending new fixed packages:
 Only generated fixtures are used. The host corpus is not mounted. Temporary originals are removed and the parent drops its exact owned clone database. No independent human judgment is created by the test routes. Real business citations, extraction quality, production/provider identity and genuine positive activation remain unverified; G14-G20 and deployment stay deferred.
 
 [Evidence](evidence/ma24-g10-review-originals-same-flow-2026-10-21.json).
+
+The pending-source fixture restores its single generated attachment into the isolated Web container before browser checks. This ensures capture is refused for incomplete coverage rather than an absent upload. Full typecheck and the modified fixture lint passed before freezing this follow-up.
