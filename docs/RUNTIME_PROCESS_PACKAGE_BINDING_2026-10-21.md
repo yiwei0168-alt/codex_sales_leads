@@ -16,10 +16,13 @@ This adds no database migration and does not rewrite old receipts or registratio
 
 Seven suites / 148 tests, full typecheck and 14-file lint passed. Tests cover missing fallback claims, receipt coverage tamper, wrong Node/entry/role/deployment/enrollment, absent or duplicate artifact registrations, retained publication admission, withdrawal and readiness forwarding. Initial failures were two test typing issues and an incomplete mock missing its signature enrollment; the mock now preserves the final-reread mutation assertion.
 
-Next: run the amended operator-publication verification against fresh isolated databases for both main-agent and collector signing purposes. It measures real immutable image bytes but uses manually constructed **synthetic component claims**; it cannot prove that a model request executed in those images.
+Operator-publication runs 35917 (main-agent task transport) and 62599 (collector model transport) both exited 0 in separate fresh databases. They measured real immutable image bytes but used manually constructed **synthetic component claims**; they do not prove that a model request executed in those images.
 
 ## Remaining
 
 The full production execution qualification producer, actual first provider execution, real task/quality acceptance and positive activation remain unfinished. The new source is not yet in fixed product images. Prior `6fd7142a` composition 2592/TLS 4843 remains version-scoped evidence. The next image freeze should include the remaining qualification wiring, rather than repeatedly rebuilding between its component changes.
 
 [Evidence](evidence/ma24-g09-runtime-process-package-binding-2026-10-21.json).
+
+
+2026-10-21 / Process-package binding database acceptance: **35917 (main task purpose) and 62599 (collector model purpose) exited 0** on driver source `4f68a32f`. Real operator CLI publication/withdrawal, independent immutable-image entry hashes, exact retained byte matching, legacy/missing/tampered claim rejection, fallback coverage rejection, queued publication/withdrawal, expiry and key rotation passed in two separate fresh databases. All 14 source hashes matched at completion; temporary clusters removed, original three services remain. Image source is the prior 6fd7142a; process records are explicit manually constructed synthetic component inputs. No signed production process execution, provider/model call, complete qualification or activation was proved. [Acceptance evidence](evidence/ma24-g09-runtime-process-package-binding-2026-10-21.json).

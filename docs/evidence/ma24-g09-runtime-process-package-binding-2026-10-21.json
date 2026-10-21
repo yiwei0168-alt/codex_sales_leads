@@ -56,10 +56,177 @@
   },
   "failureCorrection": "Narrow test union types; provide complete signing enrollment in the existing final-reread mutation mock. Product checks were not relaxed.",
   "databaseVerification": {
-    "status": "pending",
-    "mainPurpose": "task-model-transport",
-    "collectorPurpose": "model-transport",
-    "claimsWillBeSyntheticComponentInputs": true
+    "status": "passed-both-isolated-components",
+    "driverSourceCommit": "4f68a32fe00977306e70b9157cd0b282f0856c95",
+    "measuredImageSourceCommit": "6fd7142ada411540d3bf1752b96b1322ccc6954d",
+    "claimsAreSyntheticComponentInputs": true,
+    "allRecordedSourceFilesUnchangedAtCompletion": true,
+    "disposableContainersRemoved": true,
+    "originalThreeServicesRunning": true,
+    "runs": {
+      "main": {
+        "sessionId": 35917,
+        "exitCode": 0,
+        "log": "tmp/ma24-process-package-binding-main-db.log",
+        "logSha256": "5aad0236bb1511226b933cc850f559d6021402e0d3cc3d37c25312e6e82a025e",
+        "results": [
+          {
+            "phase": "actual-image-inspection",
+            "imageId": "sha256:d9654466c04f493f22d2d7da603493c4100b321f895ec316bd451e349ba61a3c",
+            "purpose": "task-model-transport"
+          },
+          {
+            "phase": "actual-operator-cli-publication",
+            "purpose": "task-model-transport"
+          },
+          {
+            "phase": "idempotent-cli-retry",
+            "purpose": "task-model-transport"
+          },
+          {
+            "runtimePackagePublication": "passed",
+            "purpose": "task-model-transport",
+            "inspection": {
+              "role": "main-agent",
+              "imageId": "sha256:d9654466c04f493f22d2d7da603493c4100b321f895ec316bd451e349ba61a3c",
+              "sourceCommit": "6fd7142ada411540d3bf1752b96b1322ccc6954d",
+              "deploymentHash": "ec13230228ba310f00d3253428184571d32bcb22dd3c10e3fe9d7f9310a61641",
+              "runtimeHash": "25cb54f3193b5fabcc546c921dd94cfe633e29fdd4bcbb34793a57b4a053a2fa",
+              "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+              "node": "24.21.0",
+              "platform": "linux",
+              "arch": "x64",
+              "sourceInputs": 1039,
+              "files": 34591,
+              "dependencyManifestHash": "d3edb974b4ae6e725cbb62205c8f0e65606b061fd97bce214289279ccca20137",
+              "dependencyFiles": 33503,
+              "runtimeModuleFormat": "esm",
+              "executionArtifacts": [
+                {
+                  "path": "server.mjs",
+                  "sha256": "4ae262a0409b0d15f4a483dda218c36cd57c861d906248e1c4f4900d555974b4"
+                },
+                {
+                  "path": "start.mjs",
+                  "sha256": "a26da05b508790992197256b3ee8acc38dc664e2c2ab6b0d180dfc9bf6099266"
+                },
+                {
+                  "path": "worker.mjs",
+                  "sha256": "6d7a82b9320f8bf9497a5983399642333be7f94a4f1b9f60e3f6a99d084fb2c8"
+                }
+              ]
+            },
+            "schemas": [
+              157,
+              159
+            ],
+            "disposable": true,
+            "actualOperatorCli": true,
+            "idempotentCliRetry": true,
+            "actualWithdrawalCli": true,
+            "idempotentWithdrawalCli": true,
+            "changedWithdrawalRequestDenied": true,
+            "realReadinessPackageReader": true,
+            "missingSchemaAndRegistrationDenied": true,
+            "retroactiveRegistrationDenied": true,
+            "sourceMismatchDenied": true,
+            "publicKeyRotationDenied": true,
+            "withdrawalWaitedForOuterCommit": true,
+            "queuedPublicationDeniedNewReader": true,
+            "latestWithdrawalAndExpiryDenied": true,
+            "autocommitAndApplicationOperatorDenied": true,
+            "processClaimPackageBindingVerified": true,
+            "processClaimMissingOrTamperedRejected": true,
+            "processClaimsSynthetic": true,
+            "signedProductionProcessClaimsVerified": false,
+            "fullSchemaOrFiveCategoryComposition": false,
+            "providerIdentityVerified": false,
+            "productionQualified": false,
+            "automaticActivation": false,
+            "actualModelCalls": 0
+          }
+        ]
+      },
+      "collector": {
+        "sessionId": 62599,
+        "exitCode": 0,
+        "log": "tmp/ma24-process-package-binding-collector-db.log",
+        "logSha256": "80c91d46ec05eee48c1eec8767f091513266f6f490258d7f1f065814f3427b8a",
+        "results": [
+          {
+            "phase": "actual-image-inspection",
+            "imageId": "sha256:909e26dbaae1e6b28516bc9736a21ecb657689dfe774a5b4a3e12d49f05209f6",
+            "purpose": "model-transport"
+          },
+          {
+            "phase": "actual-operator-cli-publication",
+            "purpose": "model-transport"
+          },
+          {
+            "phase": "idempotent-cli-retry",
+            "purpose": "model-transport"
+          },
+          {
+            "runtimePackagePublication": "passed",
+            "purpose": "model-transport",
+            "inspection": {
+              "role": "skill-collector",
+              "imageId": "sha256:909e26dbaae1e6b28516bc9736a21ecb657689dfe774a5b4a3e12d49f05209f6",
+              "sourceCommit": "6fd7142ada411540d3bf1752b96b1322ccc6954d",
+              "deploymentHash": "9b39369a3fdd090f828f0c31fa9b067b2a881528aad2804a62b54942fb2b2ab2",
+              "runtimeHash": "25cb54f3193b5fabcc546c921dd94cfe633e29fdd4bcbb34793a57b4a053a2fa",
+              "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+              "node": "24.21.0",
+              "platform": "linux",
+              "arch": "x64",
+              "sourceInputs": 1039,
+              "files": 34555,
+              "dependencyManifestHash": "d3edb974b4ae6e725cbb62205c8f0e65606b061fd97bce214289279ccca20137",
+              "dependencyFiles": 33503,
+              "runtimeModuleFormat": "esm",
+              "executionArtifacts": [
+                {
+                  "path": "runner.mjs",
+                  "sha256": "76f61a21fedebf20426548c9a171434b00c3df20bb5f9698a2ecf1595e17136c"
+                },
+                {
+                  "path": "start.mjs",
+                  "sha256": "9940bc440764d0e9bae71b3faccbe2fc93c29b3cd4559ea55cc859c50bcb7b04"
+                }
+              ]
+            },
+            "schemas": [
+              157,
+              159
+            ],
+            "disposable": true,
+            "actualOperatorCli": true,
+            "idempotentCliRetry": true,
+            "actualWithdrawalCli": true,
+            "idempotentWithdrawalCli": true,
+            "changedWithdrawalRequestDenied": true,
+            "realReadinessPackageReader": true,
+            "missingSchemaAndRegistrationDenied": true,
+            "retroactiveRegistrationDenied": true,
+            "sourceMismatchDenied": true,
+            "publicKeyRotationDenied": true,
+            "withdrawalWaitedForOuterCommit": true,
+            "queuedPublicationDeniedNewReader": true,
+            "latestWithdrawalAndExpiryDenied": true,
+            "autocommitAndApplicationOperatorDenied": true,
+            "processClaimPackageBindingVerified": true,
+            "processClaimMissingOrTamperedRejected": true,
+            "processClaimsSynthetic": true,
+            "signedProductionProcessClaimsVerified": false,
+            "fullSchemaOrFiveCategoryComposition": false,
+            "providerIdentityVerified": false,
+            "productionQualified": false,
+            "automaticActivation": false,
+            "actualModelCalls": 0
+          }
+        ]
+      }
+    }
   },
   "productionImagesRebuilt": false,
   "productionQualificationProducerImplemented": false,
