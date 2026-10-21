@@ -1,8 +1,10 @@
 import { tenantQuery, tenantTransaction } from "@/lib/rag/db";
 import { digest, type ExecutionContext, type ProductTool } from "./contracts";
+import type {ApprovalTarget} from './approval-targets';
 export interface AgentApproval {
   id: string; run_id: string; tool_id: string; tool_version: string; parameter_hash: string;
   payload: unknown; status: "pending" | "approved" | "denied" | "revoked" | "consumed" | "expired"; expires_at: string;
+  target?:ApprovalTarget;
 }
 export function needsApproval(tool: Pick<ProductTool, "effect">) { return ["send", "destructive", "publish"].includes(tool.effect); }
 export function approvalDigest(tool: Pick<ProductTool, "id" | "version">, input: unknown) { return digest({ tool: tool.id, version: tool.version, input }); }

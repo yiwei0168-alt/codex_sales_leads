@@ -12,6 +12,14 @@ function BusinessValue({value}:{value:unknown}) {
   return <span className="approval-value">{String(value)}</span>;
 }
 function ApprovalPreview({item}:{item:AgentApproval}) {
+  if(item.tool_id==='knowledge_private_delete')return <>
+    {item.target?.kind==='private-knowledge'&&item.target.state!=='unavailable'?<>
+      <p><strong>资料：</strong><span className="approval-value">{item.target.title}</span></p>
+      <p>将永久删除这份私有资料及其检索片段。</p>
+      {item.target.state==='changed'&&<p role="status">资料版本已变化，原确认参数不能删除新版本。请重新读取资料后再确认。</p>}
+    </>:<p role="status">当前无法核对这份私有资料，请重新读取后再确认。</p>}
+    <RawJsonDetails summary="工具参数与版本详情" value={item.payload}/>
+  </>;
   const mail=item.tool_id==="mail_send"?item.payload as {to?:string;subject?:string;body?:string;attachments?:Array<{filename:string;sha256:string}>}:null;
   if(mail&&typeof mail.to==="string"&&typeof mail.subject==="string"&&typeof mail.body==="string")return <>
     <p><strong>收件人：</strong>{mail.to}</p><p><strong>主题：</strong>{mail.subject}</p><pre>{mail.body}</pre>

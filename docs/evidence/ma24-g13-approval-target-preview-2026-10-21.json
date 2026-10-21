@@ -1,0 +1,55 @@
+{
+  "date": "2026-10-21",
+  "rule": "MA15-05 existing approval business-object display",
+  "scope": "G13 private knowledge deletion target name and current version feedback",
+  "status": "static-passed-fixed-packages-and-browser-pending",
+  "sourceFilesCanonicalLf": {
+    "src/lib/assistant/main/approval-targets.ts": "d961c249400694fb0412dd17055e3b8ef4a2b1147f98c7c5996303ba52f0c9b2",
+    "src/lib/assistant/main/approval-targets.test.ts": "21890dd5f33fe48a3933451bcc2f5339fb85a1f3e3b65eeba54c488dca48b59f",
+    "src/lib/assistant/main/approvals.ts": "b5a47e087743fb0d0c85720b8cf9912f61d24668a4d6159b95cdce06adb31513",
+    "src/lib/assistant/main/repository.ts": "4be87c6e4a43a7781fcf7ea32a4816e570f5c0eeba25d4d145afb514f6c8a4e2",
+    "src/components/agent-approvals.tsx": "7c8d5d47f1db7b33a60b4d3f1582bdf9385d1d1c84c2c4a215289f9f61df89ce",
+    "src/components/agent-approvals.test.tsx": "75cb534417b380cd41c8c09d9eaeeb7eba4038ebaa07ce3ba60c6b7fdbaea556",
+    "src/app/api/assistant/runs/route.ts": "4acba87e1237e0759ef4c493f7c511945eb558e0e4cee088ec116f1bf6662d20",
+    "src/app/api/assistant/runs/[id]/approvals/route.ts": "f4dd763acf5a31a5c61e7d6039d1468c6d57023d9b6992fa91e7f0616efecb99",
+    "src/app/api/assistant/runs/approval-target-read.test.ts": "e7596bbef2c16b01c9d8ef7bbb30f882dcbf01255331816b0c66ce906ee4f699",
+    "scripts/lib/verify-ma24-approved-local-action.ts": "40063280e4478e859e88de2009d840547f83bfc9d899d6f8423ca61beb9270f4"
+  },
+  "checks": {
+    "tests": {
+      "exitCode": 0,
+      "passed": 13,
+      "files": 3,
+      "log": "tmp/ma24-approval-target-tests-workspace-temp.log",
+      "logSha256": "c7252a9f44c68c5c08b57e77865c090720b41002fe72e15b9037fae78186bd50"
+    },
+    "typecheck": {
+      "sessionId": 78465,
+      "exitCode": 0,
+      "log": "tmp/ma24-approval-target-typecheck.log"
+    },
+    "lint": {
+      "sessionId": 97073,
+      "exitCode": 0,
+      "files": 10,
+      "log": "tmp/ma24-approval-target-lint.log"
+    }
+  },
+  "initialTestAttempt": {
+    "exitCode": 1,
+    "testsExecuted": 0,
+    "log": "tmp/ma24-approval-target-tests.log",
+    "reason": "Sandbox C: temporary cache rename EPERM before test import. Same tests passed after using writable workspace temporary directory; no product/test guard changed."
+  },
+  "actualVerification": "pending",
+  "storedApprovalPayloadChanged": false,
+  "approvalHashChanged": false,
+  "executionGuardChanged": false,
+  "userConfirmedNewRule": false,
+  "realHumanApproval": false,
+  "realBusinessQualityAccepted": false,
+  "actualModelCalls": 0,
+  "productionQualified": false,
+  "g14ThroughG20Advanced": false,
+  "deploymentPerformed": false
+}

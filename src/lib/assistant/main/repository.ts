@@ -3,7 +3,7 @@ import type {DatabaseDeadline} from '../../rag/database-deadline';
 import { tenantQuery, tenantTransaction, query } from "@/lib/rag/db";
 import type { AgentRun, ExecutionContext, MessageInput, ModelConfig, RunStatus, ToolResult } from "./contracts";
 import { digest } from "./contracts";
-import { approvalDigest } from "./approvals";
+import { approvalDigest,type AgentApproval } from "./approvals";
 import {evaluationTaskSpecSchema,type EvaluationTaskSpec} from './evaluation-task-spec';
 
 type RunServerOptions = { kind:"mail"; spec:unknown; paused:true } | {
@@ -54,7 +54,7 @@ export async function getRun(userId: string, id: string): Promise<AgentRun | nul
     "select * from agent_run where user_id=$1 and id=$2 and execution_kind<>'main-agent-evaluation'", [userId, id]))[0] ?? null;
 }
 export async function listRuns(userId: string, conversationId?: string) {
-  return tenantQuery<Pick<AgentRun, "id" | "status" | "conversation_id" | "result">>(userId,
+  return tenantQuery<Pick<AgentRun, "id" | "status" | "conversation_id" | "result"> & {approvals:Array<Pick<AgentApproval,'id'|'tool_id'|'tool_version'|'parameter_hash'|'payload'|'status'>>}>(userId,
     `select r.id,r.status,r.conversation_id,r.result,
       (select title from assistant_conversation where user_id=r.user_id and id=r.conversation_id) as title,
       (select jsonb_build_object('status',b.status,'providerStatus',b.provider_status,'submittedAt',b.submitted_at,'pollCount',b.poll_count)
