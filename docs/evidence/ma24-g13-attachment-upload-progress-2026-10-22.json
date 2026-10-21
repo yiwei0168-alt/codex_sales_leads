@@ -1,0 +1,304 @@
+{
+  "date": "2026-10-22",
+  "scope": "Existing MA24-16 / G13 F08 task attachment upload progress and request locks",
+  "status": "actual-fixed-web-attachment-upload-passed",
+  "productCommit": "0aee85a7765435af963c9eec71e0443c5023588c",
+  "hostFixtureCommit": "afcd56a0b27b18ac3121f770bc25e21025c4a2d9",
+  "sourceFiles": {
+    "src/components/agent-attachments.tsx": {
+      "commit": "0aee85a7765435af963c9eec71e0443c5023588c",
+      "canonicalLfSha256": "20a320af95e509c191485211ba227497c302b6d0d4803f20c67ed8067ba2e79e"
+    },
+    "src/components/attachment-upload-progress.tsx": {
+      "commit": "0aee85a7765435af963c9eec71e0443c5023588c",
+      "canonicalLfSha256": "ca25fbc7be1ebffb08f3cf18cd2b37c7bdaa316d0af6f409de5f90550b16c123"
+    },
+    "src/app/globals.css": {
+      "commit": "0aee85a7765435af963c9eec71e0443c5023588c",
+      "canonicalLfSha256": "b35332d6c8feb9e7253ebef05780f6ca3af3e88caec4633e5a6c0ca9472f346f"
+    },
+    "scripts/verify-attachment-upload-ui.ts": {
+      "commit": "0aee85a7765435af963c9eec71e0443c5023588c",
+      "canonicalLfSha256": "f010acfd6cfc86860038c02971197799ca29a5b23a0fab36ce9eb554eaf1a495"
+    },
+    "scripts/verify-attachment-upload-fixed-web.ts": {
+      "commit": "afcd56a0b27b18ac3121f770bc25e21025c4a2d9",
+      "canonicalLfSha256": "e1347c7664819f291f55d1c1995ae05e1170e6574f496bf4ff499c79beb1be45"
+    },
+    "scripts/verify-ma24-fresh-pilot-new-cluster.ts": {
+      "commit": "0aee85a7765435af963c9eec71e0443c5023588c",
+      "canonicalLfSha256": "c7578ce676cdfcbf2d511cb156dde08192c59d5788ff4de942a9f4f48b171524"
+    }
+  },
+  "typecheckExitCode": 0,
+  "fiveFileLintExitCode": 0,
+  "component": {
+    "attachmentUploadComponent": "passed",
+    "results": [
+      {
+        "width": 1366,
+        "posts": 3,
+        "statusPaging": true,
+        "unknownStatusExplicit": true,
+        "readFailureAndMalformedClearStale": true,
+        "selectedProcessedOriginalRetained": true,
+        "closeReopenAndReadCannotUnlockUpload": true,
+        "unknownAcknowledgementNoAutomaticPost": true,
+        "reusedReceiptExplained": true,
+        "privateUploadOnly": true,
+        "noHorizontalOverflow": true
+      },
+      {
+        "width": 390,
+        "posts": 3,
+        "statusPaging": true,
+        "unknownStatusExplicit": true,
+        "readFailureAndMalformedClearStale": true,
+        "selectedProcessedOriginalRetained": true,
+        "closeReopenAndReadCannotUnlockUpload": true,
+        "unknownAcknowledgementNoAutomaticPost": true,
+        "reusedReceiptExplained": true,
+        "privateUploadOnly": true,
+        "noHorizontalOverflow": true
+      },
+      {
+        "width": 320,
+        "posts": 3,
+        "statusPaging": true,
+        "unknownStatusExplicit": true,
+        "readFailureAndMalformedClearStale": true,
+        "selectedProcessedOriginalRetained": true,
+        "closeReopenAndReadCannotUnlockUpload": true,
+        "unknownAcknowledgementNoAutomaticPost": true,
+        "reusedReceiptExplained": true,
+        "privateUploadOnly": true,
+        "noHorizontalOverflow": true
+      }
+    ],
+    "screenshots": [
+      "tmp/attachment-upload-ui/progress-1366.png",
+      "tmp/attachment-upload-ui/progress-390.png",
+      "tmp/attachment-upload-ui/progress-320.png"
+    ],
+    "syntheticHttpOnly": true,
+    "actualModelCalls": 0
+  },
+  "build": {
+    "exitCode": 0,
+    "session": 49064,
+    "log": "tmp/ma24-attachment-upload-web-build.log",
+    "sha256": "6b5a077dbbe4845792ebc0ae32359f56b29dc8f90be609a4927c6589d30541b5"
+  },
+  "webSource": {
+    "webImageSourceVerification": "passed",
+    "image": "ma24-pilot-web:0aee85a7",
+    "imageId": "sha256:7b32c196dd4b3e075c85fe5a3ebb7e8c9f73fe52ef25329d00c1676564e85eb6",
+    "sourceCommit": "0aee85a7765435af963c9eec71e0443c5023588c",
+    "buildId": "pXSErkTOTyYqJ0oX9gMkm",
+    "runtimeSourceFileCount": 1063,
+    "runtimeSourceMatchesFixedGitExport": true,
+    "exportEolDifferences": 1063,
+    "runtimeSourceManifestHash": "abbb597288e5e63a230aaae80e521439dfcc92be471ca8bf4b0a07fc85cbf4bd",
+    "privateEnvironmentFiles": false,
+    "privateStorageFiles": false,
+    "staticAssetsPresent": true,
+    "nonRootReadOnlyNoNetwork": true,
+    "productionQualified": false
+  },
+  "native": {
+    "exitCode": 0,
+    "session": 95198,
+    "log": "tmp/ma24-attachment-upload-fixed-web-final.log",
+    "sha256": "5faf03acc7100b44bf83c8f3f1cce0794927a020c2b20c0eb7afe7c66df703bb",
+    "records": [
+      {
+        "attachmentUploadFixedWeb": "passed",
+        "actualChromeHttpsCompiledWeb": true,
+        "generatedAccountsOnly": true,
+        "results": [
+          {
+            "width": 1366,
+            "posts": 3,
+            "actualPrivateUploadPending": true,
+            "backgroundReceiptCannotBeUnlockedByReopenOrRead": true,
+            "sameBytesOneJob": true,
+            "ownerPeerAnonymousIsolation": true,
+            "failedReadClearsOldProgress": true,
+            "syntheticFailureStatusDisplayed": true,
+            "committedDroppedUploadAckNoAutomaticRetry": true,
+            "sixItemStatusPagination": true,
+            "unprocessedJobCannotBeSelectedOrSubmitted": true,
+            "modelTasksQueued": 0
+          },
+          {
+            "width": 390,
+            "posts": 3,
+            "actualPrivateUploadPending": true,
+            "backgroundReceiptCannotBeUnlockedByReopenOrRead": true,
+            "sameBytesOneJob": true,
+            "ownerPeerAnonymousIsolation": true,
+            "failedReadClearsOldProgress": true,
+            "syntheticFailureStatusDisplayed": true,
+            "committedDroppedUploadAckNoAutomaticRetry": true,
+            "sixItemStatusPagination": true,
+            "unprocessedJobCannotBeSelectedOrSubmitted": true,
+            "modelTasksQueued": 0
+          }
+        ],
+        "screenshots": [
+          "tmp/ma24-attachment-progress-1366-c35c16f3-0a71-4b2f-b489-e5e4a091badf.png",
+          "tmp/ma24-attachment-progress-390-93b089ca-0b45-44c0-9497-547761d7a388.png"
+        ],
+        "actualExtractionWorkers": 0,
+        "actualModelCalls": 0,
+        "realDocumentQualityAccepted": false,
+        "productionQualified": false
+      },
+      {
+        "freshClusterPilot": "passed",
+        "image": "pgvector/pgvector:pg16",
+        "reviewDraftFixedImageVerified": false,
+        "mailboxImapWorkerVerified": false,
+        "mailboxWorkerImageVerified": false,
+        "mailboxWorkerImapImageVerified": false,
+        "scheduleDispatchVerified": false,
+        "batchSettlementVerified": false,
+        "batchWorkerCrashVerified": false,
+        "batchWorkerCommitVerified": false,
+        "scheduleWorkerCrashVerified": false,
+        "scheduleWorkerCommitVerified": false,
+        "publishedAddress": "127.0.0.1 only",
+        "rolesVerified": true,
+        "duplicateRoleBootstrapRejected": true,
+        "freshMigrationThrough": 170,
+        "currentSchemaMarkers": {
+          "mailbox_work_binding": true,
+          "mailbox_lease_binding": true,
+          "mailbox_binding_constraint": true,
+          "knowledge_source_gate": true,
+          "task_origin_gate": true,
+          "local_memory_source_gate": true,
+          "receipt_source_gate": true,
+          "immutable_snapshot_capture": true,
+          "immutable_snapshot_lifecycle": true,
+          "trust_registry_versions": true,
+          "trust_registry_pointer": true,
+          "trust_registry_publication": true,
+          "runtime_package_registrations": true,
+          "candidate_recovery_checkpoint": true,
+          "candidate_execution_lease": true,
+          "candidate_graph_checkpoint": true,
+          "runtime_package_withdrawals": true,
+          "runtime_package_publication": true,
+          "skill_activation_lifecycle": true,
+          "skill_activation_sources_sealed": true,
+          "skill_activation_reviews_serialized": true,
+          "skill_activation_declarations_serialized": true,
+          "skill_activation_source_guard_health": true,
+          "skill_activation_use_commit_guard": true,
+          "skill_activation_commit_guard": true,
+          "skill_activation_binding_guard": true
+        },
+        "snapshotLifecycleVerified": false,
+        "knowledgeScopeSourcesVerified": false,
+        "finalSettlementVerified": false,
+        "compiledMainRuntimeVerified": false,
+        "mainRuntimeSkillReceiptVerified": false,
+        "mainRuntimeModelReceiptVerified": false,
+        "mainRuntimeDurabilityVerified": false,
+        "mainRuntimeCrashRecoveryVerified": false,
+        "mainRuntimeInterruptionVerified": false,
+        "mainRuntimeNetworkLossVerified": false,
+        "mainRuntimeResumeRevocationVerified": false,
+        "mainRuntimeCommitLossVerified": false,
+        "mainRuntimeTaskEnrollmentVerified": false,
+        "snapshotDownloadResult": null,
+        "runStatusUiVerified": false,
+        "personalMemoryUiVerified": false,
+        "conversationManagementUiVerified": false,
+        "attachmentUploadUiVerified": true,
+        "responsiveNavigationUiVerified": false,
+        "memoryObservationsUiVerified": false,
+        "localMemoryWorkerResult": null,
+        "trustRegistryRestoreResult": null,
+        "freshMailboxUiVerified": false,
+        "extendedFrontendUiVerified": false,
+        "syntheticAccountCompanyAndRestoreVerified": true,
+        "copiedProductionData": false,
+        "linuxWebImage": "ma24-pilot-web:0aee85a7",
+        "linuxWebHttpWorkflowVerified": true,
+        "linuxWebHttpsBrowserVerified": false,
+        "tenConcurrentSyntheticAccountsVerified": false,
+        "pilotBackupRestoreVerified": false,
+        "crossClusterRestoreVerified": false,
+        "nonemptyMailboxCrossClusterRestoreVerified": false,
+        "scriptedModeBusinessVerified": false,
+        "runnerAttestationStoreVerified": false,
+        "collectorDeclarationImageVerified": false,
+        "lockedPolicyDatabaseVerified": false,
+        "memorySourceLocksVerified": false,
+        "methodCatalogSourceLocksVerified": false,
+        "shadowSourceLocksVerified": false,
+        "safetySkillUsageVerified": false,
+        "transportJournalDatabaseVerified": false,
+        "agentCallLeaseDatabaseVerified": false,
+        "agentCheckpointLeaseDatabaseVerified": false,
+        "candidateLeaseContentionDatabaseVerified": false,
+        "runtimeReadSourceLocksDatabaseVerified": false,
+        "runtimeDisclosureDatabaseVerified": false,
+        "linuxFiveCategoryTransportVerified": false,
+        "collectorImageTlsPreflightVerified": false,
+        "poolRecoveryVerified": false,
+        "standaloneDatabaseRecoveryVerified": false,
+        "extraG09Migration": null,
+        "prospectiveSourceDatabaseVerified": false,
+        "prospectivePairedMaterialVerified": false,
+        "prospectiveStandaloneHttpVerified": false,
+        "prospectiveStandaloneBrowserVerified": false,
+        "completeCompositionVerified": false,
+        "samePortPriorImageRollbackVerified": false
+      }
+    ]
+  },
+  "earlierNativeAttempts": [
+    {
+      "session": 86684,
+      "exitCode": 1,
+      "log": "tmp/ma24-attachment-upload-fixed-web.log",
+      "sha256": "eec826e871f7f4a774e7e8fffa169232b12fd6be8cf68dd9f2d7fc68178316eb"
+    },
+    {
+      "session": 20444,
+      "exitCode": 1,
+      "log": "tmp/ma24-attachment-upload-fixed-web-diagnostic.log",
+      "sha256": "8c778fdbdadca0ca7ddd10e7236dccbd4020af0e26619a3e4ccf01b6e250401a"
+    }
+  ],
+  "diagnosis": "Bootstrap replaced fetch with Undici; host native FormData became text/plain. Paired explicit Undici fetch/FormData fixes the fixture. Product multipart rejection and required 202 remain unchanged.",
+  "initialStaticAndComponentFindings": [
+    "Moved synchronous loading reset from effect to explicit paging/refresh handlers and used Next Link.",
+    "Standalone component bundle needed Next Link build-time process.env constants; final three-width cases passed with these constants."
+  ],
+  "visuallyInspectedScreenshots": {
+    "tmp/ma24-attachment-progress-1366-c35c16f3-0a71-4b2f-b489-e5e4a091badf.png": "c443a9957f05b6b8f277476a829eb84db7b1cea522a6c45548ac7b1b0c65cd84",
+    "tmp/ma24-attachment-progress-390-93b089ca-0b45-44c0-9497-547761d7a388.png": "6790c25b66bbaabd2aa0a35e440f1568638e00b75aabde0515eba3b786bb9390",
+    "tmp/attachment-upload-ui/progress-390.png": "d9c565bb93d414a1cdbb279ac33af356e962b416040fde11db9aa387bdbdf03a",
+    "tmp/attachment-upload-ui/progress-320.png": "1f13293547477fa97ffbbafc90c60bb944405ccd3288db7eac15662f64188142"
+  },
+  "cleanup": {
+    "temporaryContainersRemoved": true,
+    "remainingServices": [
+      "codex_sales_leads-neo4j-1",
+      "codex_sales_leads-ollama-1",
+      "codex_sales_leads-postgres-1"
+    ]
+  },
+  "limits": [
+    "Synthetic disposable accounts and signature-valid generated upload payloads only; no real business data.",
+    "No extraction worker, format/content-quality assessment, actual model/provider calls or queued model task.",
+    "Failure status is explicitly injected into disposable rows; it does not prove extractor failure/recovery.",
+    "Only registered originals in the separate library list can be selected; progress rows cannot attach jobs.",
+    "No new backend upload/dedup/permission contract, whole backend composition, production qualification, activation or deployment.",
+    "G14-G20 remain deferred."
+  ]
+}
