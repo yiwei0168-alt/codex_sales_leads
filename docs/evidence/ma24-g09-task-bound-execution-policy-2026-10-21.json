@@ -50,16 +50,31 @@
   },
   "nativeDatabase": {
     "status": "running-not-accepted",
-    "sessionId": 5484,
+    "sessionId": 10694,
     "sourceRevision": "fb8ac00c8dbcac00c093690f1dcb45134e12055b",
-    "log": "tmp/ma24-task-bound-quota-db.log",
-    "scope": "Task admission plus nondefault completed metadata readback and a configured historical entry; no complete five-category composition",
+    "log": "tmp/ma24-task-bound-quota-file-trust-db.log",
+    "trustMode": "file",
+    "scope": "Task quota admission/completed metadata readback plus configured historical entry; not database-trust or full five-category acceptance",
+    "firstFailedAttempt": {
+      "status": "failed-before-quota-component",
+      "sessionId": 5484,
+      "sourceRevision": "fb8ac00c8dbcac00c093690f1dcb45134e12055b",
+      "log": "tmp/ma24-task-bound-quota-db.log",
+      "scope": "Task admission plus nondefault completed metadata readback and a configured historical entry; no complete five-category composition",
+      "allTenInputsFrozen": true,
+      "nativeHostWorktreeNotCleanArchive": true,
+      "inheritedConfigurationSha256": {
+        "tsconfig.json": "4fe2ce94f4615da883d88216cd6f71a08808a0cf61634f4a359246d8d36c12b2",
+        "next-env.d.ts": "bbc51f5b1d50ec415a7300fcccfab797c55081814666b911cf9bec51d45c8f0c"
+      },
+      "exitCode": 1,
+      "logSha256": "2729a2203ee142b068d894655aefeb3217fef1a555b7e5040be2b46684bacf98",
+      "failure": "Fixture requires MA24_CONFIGURED_COMBINED=1 when database trust mode is enabled; this launch used COMBINED=0",
+      "temporaryClusterRemoved": true,
+      "quotaAssertionsReached": false
+    },
     "allTenInputsFrozen": true,
-    "nativeHostWorktreeNotCleanArchive": true,
-    "inheritedConfigurationSha256": {
-      "tsconfig.json": "4fe2ce94f4615da883d88216cd6f71a08808a0cf61634f4a359246d8d36c12b2",
-      "next-env.d.ts": "bbc51f5b1d50ec415a7300fcccfab797c55081814666b911cf9bec51d45c8f0c"
-    }
+    "nativeHostWorktreeNotCleanArchive": true
   },
   "scope": {
     "unitDependenciesMocked": true,

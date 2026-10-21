@@ -1824,3 +1824,6 @@ IEEE 2014 GEPOF 教程按用户确认仅进入 PPTX 读取与引用验收。使�
 
 
 2026-10-21 / bound-policy actual verification started: source fb8ac00c is frozen for native fresh-170 session 5484; all ten recorded inputs match. The isolated run enables hidden task admission/default quota/change rejection and nondefault quota-3 completed metadata readback, followed by a configured historical entry. It does not run the full five-category or immutable package composition. Log: tmp/ma24-task-bound-quota-db.log; result pending, no qualification or actual model calls. Prior fixed product 768b621b/fixture 88c3c1b5 session 60396 is already passed and remains separate. [Current quota receipt](evidence/ma24-g09-task-bound-execution-policy-2026-10-21.json).
+
+
+2026-10-21 / task-quota DB launch correction: session 5484 exited 1 before quota assertions because database-trust fixture mode requires COMBINED=1, while this targeted launch used COMBINED=0. Failure log and cleanup are retained. No product/verification guard changed. The same frozen source now runs as session 10694 using the existing file-trust mode for task admission/nondefault completed metadata readback and one historical entry. It is not a database-trust/full five-category result and remains pending. [Attempts and exact scope](evidence/ma24-g09-task-bound-execution-policy-2026-10-21.json).

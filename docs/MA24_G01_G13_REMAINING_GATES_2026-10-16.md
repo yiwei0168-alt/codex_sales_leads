@@ -1,6 +1,6 @@
 # MA24 G01–G13 当前剩余门槛（2026-10-16）
 
-2026-10-21 / Current state: fixed product 768b621b/fixture 88c3c1b5 passed Linux composition/recovery 60396; independent TLS 22333 and public-disclosure DB component 59031 also passed. New task-quota binding source fb8ac00c passed 87 tests/typecheck/lint and is running native DB session 5484, not accepted or packaged yet. Production equivalence, full entry/provider proof and real quality remain unfinished; G14-G20/deployment stay deferred. [Current task-policy scope](TASK_BOUND_EXECUTION_POLICY_2026-10-21.md).
+2026-10-21 / Current state: fixed product 768b621b/fixture 88c3c1b5 passed Linux composition/recovery 60396; independent TLS 22333 and public-disclosure DB component 59031 also passed. New task-quota binding source fb8ac00c passed 87 tests/typecheck/lint and is running native DB session 10694 in file-trust mode after a retained launch-configuration failure, not accepted or packaged yet. Production equivalence, full entry/provider proof and real quality remain unfinished; G14-G20/deployment stay deferred. [Current task-policy scope](TASK_BOUND_EXECUTION_POLICY_2026-10-21.md).
 
 2026-10-21 / 最新终态：前瞻故障专项 73784 已退出 0，SIGKILL、拒绝提前接管、原租约自然到期、新进程恢复、防重复及执行规格/捕获绑定保持等 8 项断言通过；当前产品五类/八任务组合与登记仍通过，临时资源清理。后续优先补实时读取、日志重建和来源保护接线，不能用此结果关闭完整等价/真实质量。[前瞻收据](evidence/ma24-g09-prospective-process-recovery-2026-10-21.json)。
 
@@ -729,3 +729,6 @@ G09 current-source collector image TLS preflight (2026-10-19): rebuilt from the 
 
 
 2026-10-21 / bound-policy actual verification started: source fb8ac00c is frozen for native fresh-170 session 5484; all ten recorded inputs match. The isolated run enables hidden task admission/default quota/change rejection and nondefault quota-3 completed metadata readback, followed by a configured historical entry. It does not run the full five-category or immutable package composition. Log: tmp/ma24-task-bound-quota-db.log; result pending, no qualification or actual model calls. Prior fixed product 768b621b/fixture 88c3c1b5 session 60396 is already passed and remains separate. [Current quota receipt](evidence/ma24-g09-task-bound-execution-policy-2026-10-21.json).
+
+
+2026-10-21 / task-quota DB launch correction: session 5484 exited 1 before quota assertions because database-trust fixture mode requires COMBINED=1, while this targeted launch used COMBINED=0. Failure log and cleanup are retained. No product/verification guard changed. The same frozen source now runs as session 10694 using the existing file-trust mode for task admission/nondefault completed metadata readback and one historical entry. It is not a database-trust/full five-category result and remains pending. [Attempts and exact scope](evidence/ma24-g09-task-bound-execution-policy-2026-10-21.json).
