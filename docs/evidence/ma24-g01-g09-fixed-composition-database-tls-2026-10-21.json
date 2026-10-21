@@ -1,0 +1,49 @@
+{
+  "date": "2026-10-21",
+  "scope": "MA24 G01/G09 disposable fixed-composition database TLS",
+  "runtimeSourceCommit": "3b88c56d1aa797211e4784861dae0284bf96c152",
+  "images": {
+    "main": "sha256:f7532eb30c0a27b6d5e22d05d2467b60eab98bad62094579cd4adfc8808348b2",
+    "collector": "sha256:f687c8bccdbd631ad5f2434c6e4f98fabd5aefd904eea71d56fccfba78597bc9",
+    "web": "sha256:fb500e6f115ac09bda5b30f6e6bd4329355b00b25037d8cdda15ac30ae9d0975"
+  },
+  "sourceFiles": {
+    "scripts/run-skill-transport-linux-check.mjs": "8f1c9eee411a79c5029c5db00eaf82977938299bde7a7ac4289e09cc9baa38b6",
+    "scripts/lib/ma24-linux-database-tls.mjs": "3e080fe72608df2a40839524abed902a732954c4d2222fd0084731eef2455bbe",
+    "scripts/verify-ma24-fresh-pilot-new-cluster.ts": "2b0e3dacb09324dc99c43a3858723e286bf8fb7dfd80e90d5f439ad031290605"
+  },
+  "checks": {
+    "typecheck": {
+      "exitCode": 0,
+      "sessionId": 93232,
+      "log": "tmp/ma24-full-linux-tls-typecheck.log",
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "lint": {
+      "exitCode": 0,
+      "sessionId": 56871,
+      "log": "tmp/ma24-full-linux-tls-lint-final.log",
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "syntax": {
+      "exitCode": 0,
+      "files": [
+        "scripts/run-skill-transport-linux-check.mjs",
+        "scripts/lib/ma24-linux-database-tls.mjs"
+      ]
+    }
+  },
+  "actualTlsProbes": "pending",
+  "fullFixedComposition": "pending",
+  "previousPlaintextComposition": {
+    "sessionId": 50394,
+    "exitCode": 0,
+    "databaseTlsVerified": false,
+    "receipt": "ma24-g09-production-execution-qualification-2026-10-21.json"
+  },
+  "productionEntrypointVerified": false,
+  "realModelCalls": 0,
+  "realQualityAccepted": false,
+  "automaticActivation": false,
+  "deploymentPerformed": false
+}

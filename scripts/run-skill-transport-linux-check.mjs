@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import {execFileSync,spawnSync} from 'node:child_process';
 import {mkdirSync,mkdtempSync,writeFileSync,rmSync} from 'node:fs';
 import {resolve,join,relative,isAbsolute} from 'node:path';
+import {verifyLoopbackDatabaseTls} from './lib/ma24-linux-database-tls.mjs';
 
 const [image,container]=process.argv.slice(2);
 assert(process.argv.length===4&&/^sha256:[a-f0-9]{64}$/.test(image??'')&&/^[a-f0-9]{64}$/.test(container??''),'Expected immutable image and disposable database container IDs');
@@ -28,10 +29,22 @@ assert.equal(db.Id,container);assert(db.Name.startsWith('/ma24-pilot-fresh-')&&d
 const root=resolve('tmp');mkdirSync(root,{recursive:true});const directory=mkdtempSync(join(root,'ma24-linux-five-'));
 const within=relative(root,directory);assert(within&&!within.startsWith('..')&&!isAbsolute(within));
 try{
+ const certificate=execFileSync('docker',['exec',container,'cat','/tmp/ma24-server.crt'],{encoding:'utf8'});
+ assert(certificate.includes('-----BEGIN CERTIFICATE-----'),'Disposable database TLS certificate missing');
+ const certificatePath=join(directory,'database-ca.pem');writeFileSync(certificatePath,certificate);
+ // Enforce TLS for every new fixture TCP connection, including raw pg pools and
+ // compiled child workers. This touches only the verified disposable container.
+ const reloaded=execFileSync('docker',['exec','--user','postgres',container,'sh','-ec',String.raw`
+ test "$PGDATA" = /var/lib/postgresql/data
+ { printf '%s\n' 'hostnossl all all all reject'; cat "$PGDATA/pg_hba.conf"; } > "$PGDATA/ma24-hba-tls.conf"
+ mv "$PGDATA/ma24-hba-tls.conf" "$PGDATA/pg_hba.conf"
+ psql -U postgres -d network_copilot_local -v ON_ERROR_STOP=1 -qAtc 'select pg_reload_conf()'
+ `],{encoding:'utf8'});
+ assert.equal(reloaded.trim(),'t','Disposable database TLS-only policy did not reload');
  const source=join(directory,'source');mkdirSync(source);
  const archive=join(directory,'source.tar');execFileSync('git',['archive','--format=tar',fixtureCommit,'-o',archive]);
  execFileSync('tar',['-xf',archive,'-C',source]);
- const values={NODE_ENV:'test',NEXT_TELEMETRY_DISABLED:'1',MA24_DISPOSABLE_TRANSPORT_JOURNAL:'1',MA24_CONFIGURED_COMBINED:'1',MA24_DATABASE_TRUST:'1'};
+ const values={NODE_ENV:'test',NEXT_TELEMETRY_DISABLED:'1',MA24_DISPOSABLE_TRANSPORT_JOURNAL:'1',MA24_CONFIGURED_COMBINED:'1',MA24_DATABASE_TRUST:'1',DATABASE_SSL_CA_FILE:'/database-ca.pem'};
  if(fixedCollectorReuse)values.MA24_FIXED_COLLECTOR_REUSE='1';
  if(formalRecovery)Object.assign(values,{MA24_SHARED_TASK_LEASE:'1',MA24_SKILL_RUNTIME_TASK:'1',MA24_SKILL_RUNTIME_GRAPH:'1',MA24_CONFIGURED_RUNTIME_PROCESS_CRASH:'1',MA24_CONFIGURED_RUNTIME_CRASH_KIND:recoveryKind});
  const measurementDirectory=join(directory,'measurements');
@@ -45,7 +58,8 @@ try{
  }
  for(const key of ['DATABASE_URL','DATABASE_MIGRATION_URL']){
   const url=new URL(process.env[key]);assert(['127.0.0.1','localhost'].includes(url.hostname));assert.equal(url.pathname,'/network_copilot_local');
-  url.hostname='127.0.0.1';url.port='5432';values[key]=url.toString();
+  url.hostname='localhost';url.port='5432';
+  url.searchParams.set('sslmode','verify-full');url.searchParams.set('sslrootcert','/database-ca.pem');values[key]=url.toString();
  }
  const environment=join(directory,'fixture.env');
  writeFileSync(environment,Object.entries(values).map(([key,value])=>{assert(!/[\r\n]/.test(value));return `${key}=${value}`;}).join('\n')+'\n',{mode:0o600});
@@ -64,10 +78,18 @@ try{
  fs.copyFileSync('/app/runner.mjs','/verification/tmp/skill-collector/runner.mjs');
  const sha=p=>crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex');
  if(sha('/app/runner.mjs')!==sha('/verification/tmp/skill-collector/runner.mjs'))throw Error('Fixed runner bytes differ');
- const result=cp.spawnSync(process.execPath,['--import','tsx','scripts/verify-skill-transport-journal-db.ts'],{cwd:'/verification',env:process.env,stdio:'inherit'});
- if(result.error)throw result.error;process.exitCode=result.status??1;`;
+ `+`
+ (async()=>{
+  const {Client}=require('/app/node_modules/pg');
+  const probe=${verifyLoopbackDatabaseTls.toString()};
+  const application=await probe(Client,process.env.DATABASE_URL),migration=await probe(Client,process.env.DATABASE_MIGRATION_URL);
+  console.log(JSON.stringify({linuxFixtureDatabaseTls:'passed',application,migration,allNewTcpConnectionsRequireTls:true,modelCalls:0,productionQualified:false}));
+  const result=cp.spawnSync(process.execPath,['--import','tsx','scripts/verify-skill-transport-journal-db.ts'],{cwd:'/verification',env:process.env,stdio:'inherit'});
+  if(result.error)throw result.error;process.exitCode=result.status??1;
+ })().catch(error=>{console.error(error);process.exitCode=1;});`;
  const checked=spawnSync('docker',['run','--rm','--read-only','--user','node','--cap-drop=ALL','--security-opt=no-new-privileges',
   '--network',`container:${container}`,'--mount',`type=bind,source=${source},target=/source,readonly`,
+  '--mount',`type=bind,source=${certificatePath},target=/database-ca.pem,readonly`,
   ...(measuredMain?['--mount',`type=bind,source=${measurementDirectory},target=/measurements,readonly`]:[]),
   '--tmpfs','/verification:rw,nosuid,nodev,size=536870912,mode=1777','--tmpfs','/tmp:rw,nosuid,nodev,size=268435456,mode=1777',
   '--env-file',environment,'--entrypoint','node',image,'-e',entry],{encoding:'utf8',maxBuffer:4*1024*1024});
@@ -78,6 +100,10 @@ try{
  if(checked.stdout)process.stdout.write(safe(checked.stdout));if(checked.stderr)process.stderr.write(safe(checked.stderr));
  if(checked.error)throw checked.error;
  assert.equal(checked.status,0,'Linux five-category fixture failed');
+ const tls=(checked.stdout??'').split(/\r?\n/).filter(line=>line.startsWith('{')).map(line=>JSON.parse(line)).find(row=>row.linuxFixtureDatabaseTls==='passed');
+ assert(tls?.allNewTcpConnectionsRequireTls,'Whole-fixture database TLS enforcement missing');
+ for(const role of ['application','migration'])for(const field of ['encryptedConnectionVerified','plaintextRejected','missingCaRejected','wrongHostnameRejected'])
+  assert.equal(tls[role]?.[field],true,`Whole-fixture database TLS assertion missing: ${role}/${field}`);
  const summary=(checked.stdout??'').split(/\r?\n/).filter(line=>line.startsWith('{')).map(line=>JSON.parse(line)).find(row=>row.transportJournalDatabase==='passed');
  assert(summary?.configuredSameFreezeFiveCategoriesVerified&&summary.sourceRevocationGuardsReady&&summary.sourcePreparedWithoutSealing);
  assert.equal(summary.actualModelCalls,0);assert.equal(summary.productionQualificationGranted,false);
@@ -100,7 +126,8 @@ try{
   fixedImageFormalRecoveryVerified:formalRecovery,
   fixedImageFormalRecoveryKind:formalRecovery?recoveryKind:null,
   fixedPackageHistoricalAndProspectiveCompletedReuseVerified:fixedCollectorReuse,
-  productionEntrypointWrapperUsedForWholeFixture:false,databaseConnection:'disposable namespace loopback',databaseTlsVerified:false,
+  productionEntrypointWrapperUsedForWholeFixture:false,databaseConnection:'disposable namespace loopback with verified TLS',databaseTlsVerified:true,
+  allNewTcpConnectionsRequireTls:true,databaseCaAndHostnameRejectionVerified:true,
   actualModelCalls:0,productionQualified:false,automaticActivation:false}));
 }finally{
  const final=relative(root,resolve(directory));assert(final&&!final.startsWith('..')&&!isAbsolute(final));rmSync(directory,{recursive:true,force:true});

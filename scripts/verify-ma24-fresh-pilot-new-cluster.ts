@@ -208,7 +208,7 @@ try {
     "--publish", `127.0.0.1:${port}:5432`, "--env", `POSTGRES_PASSWORD=${adminPassword}`,
     ...(prospectiveBrowserPort ? ['--publish', `127.0.0.1:${prospectiveBrowserPort}:3000`] : []),
     "--env", "POSTGRES_DB=network_copilot_local", "pgvector/pgvector:pg16",
-    ...(webImage||collectorImage||declarationImage||mainRuntimeOnly ? ["bash", "-ec", [
+    ...(webImage||collectorImage||declarationImage||mainRuntimeOnly||transportLinuxImage ? ["bash", "-ec", [
       "openssl req -x509 -nodes -newkey rsa:2048 -days 1 -subj /CN=pilot-db",
       "-addext subjectAltName=DNS:pilot-db,DNS:localhost -keyout /tmp/ma24-server.key",
       "-out /tmp/ma24-server.crt >/dev/null 2>&1;",
