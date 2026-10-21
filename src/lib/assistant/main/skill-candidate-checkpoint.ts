@@ -25,10 +25,12 @@ async function retainCheckpointLease(client:PoolClient,pin:z.infer<typeof bindin
  const available=(await client.query<{available:boolean}>("select to_regclass('public.agent_skill_candidate_execution_lease') is not null available")).rows[0]?.available;
  if(!available){if(pin.sourceKind==='synthetic-fixture')return;throw new Error('Skill candidate checkpoint lease schema unavailable');}
  const args=[pin.ownerId,pin.evaluationId,pin.arm,executionToken,pin.sourceKind,pin.freezeId??null];
+ await client.query("set local lock_timeout='1s'");
  await client.query(`select execution_token from agent_skill_candidate_execution_lease
-  where owner_id=$1 and evaluation_id=$2 and arm=$3 for share nowait`,args.slice(0,3));
+  where owner_id=$1 and evaluation_id=$2 and arm=$3 for share`,args.slice(0,3));
  // Check wall time after acquiring the lock, rather than retaining a condition
- // evaluated before a lock wait. NOWAIT also bounds conflicts with renewal.
+ // evaluated before a lock wait. A brief renewal may finish first; the one-second
+ // lock budget remains bounded and never extends the execution lease.
  const row=(await client.query(`select 1 from agent_skill_candidate_execution_lease
   where owner_id=$1 and evaluation_id=$2 and arm=$3 and execution_token=$4
    and source_kind=$5 and freeze_id is not distinct from $6::uuid

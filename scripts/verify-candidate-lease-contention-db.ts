@@ -4,6 +4,8 @@ import nextEnv from '@next/env';
 import {Pool} from 'pg';
 import {withSkillCandidateLease} from '../src/lib/assistant/main/skill-candidate-lease';
 import type {SkillCollectorTransaction} from '../src/lib/assistant/main/skill-model-journal';
+import {prepareSkillCandidateCheckpoint,type SkillCandidateCheckpoint} from '../src/lib/assistant/main/skill-candidate-checkpoint';
+import {digest} from '../src/lib/assistant/main/contracts';
 
 nextEnv.loadEnvConfig(process.cwd());assert.equal(process.env.MA24_DISPOSABLE_CANDIDATE_LEASE_CONTENTION,'1');
 const admin=new URL(process.env.DATABASE_MIGRATION_URL!),app=new URL(process.env.DATABASE_URL!);
@@ -22,7 +24,7 @@ try{
  await pool.query("insert into app_user(id,email,display_name,role,status) values($1,$2,'Synthetic lease contention','member','active')",[owner,`${owner}@example.invalid`]);
  const args=[owner,evaluationId,'candidate'];
  const expiry=async()=>(await pool.query('select lease_until::text until from agent_skill_candidate_execution_lease where owner_id=$1 and evaluation_id=$2 and arm=$3',args)).rows[0].until;
- await withSkillCandidateLease(transaction,{ownerId:owner,evaluationId,arm:'candidate',sourceKind:'synthetic-fixture'},async(check,_token,signal)=>{
+ await withSkillCandidateLease(transaction,{ownerId:owner,evaluationId,arm:'candidate',sourceKind:'synthetic-fixture'},async(check,token,signal)=>{
   const first=await expiry(),blocker=await pool.connect();
   try{
    await blocker.query('begin');await blocker.query('select execution_token from agent_skill_candidate_execution_lease where owner_id=$1 and evaluation_id=$2 and arm=$3 for share',args);
@@ -37,8 +39,63 @@ try{
    if(renewed)break;await new Promise(done=>setTimeout(done,100));
   }
   assert(renewed,'Next normal heartbeat must confirm renewal after the checkpoint lock releases');assert.equal(signal.aborted,false);await check();
+  const underRenewalLock=async<T>(work:()=>Promise<T>)=>{
+   const held=await pool.connect();let operation:Promise<{value?:T;code?:string}>|undefined;
+   try{
+    await held.query('begin');await held.query('select execution_token from agent_skill_candidate_execution_lease where owner_id=$1 and evaluation_id=$2 and arm=$3 for update',args);
+    const pid=(await held.query('select pg_backend_pid() pid')).rows[0].pid;let settled=false;
+    operation=work().then(value=>{settled=true;return {value};},error=>{settled=true;return {code:typeof error?.code==='string'?error.code:'unclassified'};});
+    let blocked=false;
+    for(let i=0;i<100;i++){
+     blocked=(await pool.query('select exists(select 1 from pg_stat_activity where $1::int=any(pg_blocking_pids(pid))) blocked',[pid])).rows[0].blocked;
+     if(blocked||settled)break;await new Promise(done=>setTimeout(done,10));
+    }
+    await held.query('commit');const outcome=await operation;
+    assert.equal(outcome.code,undefined,'A brief live renewal lock must not reject the checkpoint');assert(blocked,'Checkpoint did not wait for the actual renewal-style lock');
+    return outcome.value!;
+   }finally{await held.query('rollback');held.release();if(operation)await operation;}
+  };
+  const binding={ownerId:owner,evaluationId,arm:'candidate' as const,sourceKind:'synthetic-fixture' as const,snapshotHash:digest('Synthetic contention checkpoint source')};
+  const store=await underRenewalLock(()=>prepareSkillCandidateCheckpoint(transaction,binding,token,check));assert(store);
+  const payload:SkillCandidateCheckpoint={protocol:'skill-candidate-graph-checkpoint-v1',inputHash:digest('Synthetic contention input'),arm:'candidate',maximumModelCalls:8,
+   state:{messages:[],pending:[],steps:0,status:'running',reply:'',seen:{},instructionIds:[],decisionRevision:0,policyRevision:''},
+   calls:0,stopReason:null,candidateSkillUsed:false,described:[],seenCalls:[],trace:[]};
+  await underRenewalLock(()=>store.save(payload));assert.deepEqual(await store.load(),payload);
+  const before=(await pool.query('select revision,payload_hash from agent_skill_candidate_checkpoint where owner_id=$1 and evaluation_id=$2 and arm=$3',args)).rows[0];
+  const long=await pool.connect();let timed:Promise<string>|undefined;
+  try{
+   await long.query('begin');await long.query('select execution_token from agent_skill_candidate_execution_lease where owner_id=$1 and evaluation_id=$2 and arm=$3 for update',args);
+   const started=Date.now();timed=store.save(payload).then(()=>'',error=>typeof error?.code==='string'?error.code:'unclassified');
+   const release=setTimeout(()=>{void long.query('rollback').catch(()=>{});},5000);
+   try{assert.equal(await timed,'55P03');assert(Date.now()-started>=750&&Date.now()-started<4000,'Checkpoint lock wait must remain bounded near one second');}
+   finally{clearTimeout(release);}
+  }finally{await long.query('rollback');long.release();if(timed)await timed;}
+  assert.deepEqual((await pool.query('select revision,payload_hash from agent_skill_candidate_checkpoint where owner_id=$1 and evaluation_id=$2 and arm=$3',args)).rows[0],before);
+  assert.equal(signal.aborted,false);await check();
  });
  assert.equal((await pool.query('select status from agent_skill_candidate_execution_lease where owner_id=$1 and evaluation_id=$2 and arm=$3',args)).rows[0].status,'released');
+ const changedId=randomUUID(),changedArgs=[owner,changedId,'candidate'],replacement='999999999999';
+ await assert.rejects(withSkillCandidateLease(transaction,{ownerId:owner,evaluationId:changedId,arm:'candidate',sourceKind:'synthetic-fixture'},async(check,token)=>{
+  const held=await pool.connect();let operation:Promise<string>|undefined;
+  try{
+   await held.query('begin');await held.query('update agent_skill_candidate_execution_lease set execution_token=$4 where owner_id=$1 and evaluation_id=$2 and arm=$3',[...changedArgs,replacement]);
+   const pid=(await held.query('select pg_backend_pid() pid')).rows[0].pid;
+   operation=prepareSkillCandidateCheckpoint(transaction,{ownerId:owner,evaluationId:changedId,arm:'candidate',sourceKind:'synthetic-fixture',snapshotHash:digest('Synthetic changed lease checkpoint')},token,check)
+    .then(()=>'',error=>error instanceof Error?error.message:'unclassified');
+   let blocked=false;
+   for(let i=0;i<100;i++){
+    blocked=(await pool.query('select exists(select 1 from pg_stat_activity where $1::int=any(pg_blocking_pids(pid))) blocked',[pid])).rows[0].blocked;
+    if(blocked)break;await new Promise(done=>setTimeout(done,10));
+   }
+   assert(blocked,'Delayed checkpoint claim must reach the held changing-token row');await held.query('commit');
+   assert.match(await operation,/lease ownership changed/);
+   assert.equal((await pool.query('select count(*)::int n from agent_skill_candidate_checkpoint where owner_id=$1 and evaluation_id=$2',[owner,changedId])).rows[0].n,0);
+  }finally{await held.query('rollback');held.release();if(operation)await operation;}
+  await check();
+ }),/lease lost or controlled/);
+ assert.equal((await pool.query('select execution_token from agent_skill_candidate_execution_lease where owner_id=$1 and evaluation_id=$2 and arm=$3',changedArgs)).rows[0].execution_token,replacement);
  console.log(JSON.stringify({candidateLeaseContentionDatabase:'passed',actualRenewalSql55P03Observed:true,sharedCheckpointLockDoesNotAbortLiveWork:true,
-  contendedRenewalDoesNotExtendDeadline:true,nextNormalHeartbeatActuallyRenews:true,scopeReleased:true,leaseSeconds:90,heartbeatSeconds:20,actualModelCalls:0}));
+  contendedRenewalDoesNotExtendDeadline:true,nextNormalHeartbeatActuallyRenews:true,scopeReleased:true,
+  checkpointClaimAndSaveWaitForBriefRenewalLock:true,checkpointLongLockBoundedAndPayloadUnchanged:true,
+  changedTokenDuringWaitRejectsCheckpointClaim:true,newTokenNotOverwrittenByOldRelease:true,leaseSeconds:90,heartbeatSeconds:20,actualModelCalls:0}));
 }finally{await pool.end();}
