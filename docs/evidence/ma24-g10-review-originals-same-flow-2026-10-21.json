@@ -1,0 +1,114 @@
+{
+  "date": "2026-10-21",
+  "scope": "MA24 G10/G13 partial-review original-source completeness feedback and complete capture regression",
+  "fixtureBaseCommit": "5a1772bbbb6525b976609f83b65d528802985d90",
+  "sourceFiles": {
+    "scripts/verify-recorded-model-source-clone.ts": "64eba84f88bb86a8131cf77be356617902e10a2858a404378484c7c34487e1db",
+    "scripts/lib/verify-skill-draft-fixed-web.ts": "0aaa87ba16c0d9ebe08bb18306b632362e14482849195764a8a118b692e6ba84",
+    "scripts/verify-skill-review-draft-image-db.ts": "482c4237cb001d95d734f5e4757e0c72bd7d3b165d869582f4122c8d5e505b6f",
+    "scripts/fixtures/skill-candidate-acceptance-clone.ts": "b66bdce1818a789100cb319bda556d363a80fa12ce8fdfbef799a361abf83ca0",
+    "src/lib/assistant/main/skill-original-source-coverage.ts": "c9df380cb558b5e6da2034cbc038039113050b1380ee34d4deeeb8f78c1b4e7f",
+    "src/lib/assistant/main/skill-original-source-coverage.test.ts": "707ed5829911aeffdd57b76f424e782fdece839287357301471c8394c2493ced",
+    "src/lib/assistant/main/skill-acceptance-originals.ts": "a5570dda3a1b90d1799f4fae290a55ce26cfe1d7fed2fd755a3a1b61239c9951",
+    "src/app/api/assistant/skills/acceptance-originals/route.ts": "934209c3ae09f20e4e43c3bfbd9bde633c69e3e4c0af9a93fe06359c5ade0c88",
+    "src/app/api/assistant/skills/acceptance-originals/route.test.ts": "3e23ea2172c347dc3a676692035b42a792dbea9a2c745639f9531bfaafcd18af",
+    "src/components/skill-acceptance-originals.tsx": "0254b716e30d4d8168ae078de0e0c5caa9971bfc05b65a249f9fe2df39932778",
+    "scripts/lib/verify-ma24-originals-browser.ts": "e7ba3d2b4861ce3beefddc6f583be98622915b32f514f26c6b4d985cf140d91e",
+    "scripts/verify-skill-acceptance-originals-db.ts": "30f29398bbf91d98cfd85b24335506fb21e5be878f64b31469e9d491bef3ba74"
+  },
+  "productionGuards": {
+    "src/lib/assistant/main/skill-acceptance-originals.ts": "a5570dda3a1b90d1799f4fae290a55ce26cfe1d7fed2fd755a3a1b61239c9951",
+    "src/components/skill-acceptance-originals.tsx": "0254b716e30d4d8168ae078de0e0c5caa9971bfc05b65a249f9fe2df39932778",
+    "src/app/api/assistant/skills/acceptance-originals/route.ts": "934209c3ae09f20e4e43c3bfbd9bde633c69e3e4c0af9a93fe06359c5ade0c88"
+  },
+  "checks": {
+    "tests": {
+      "sessionId": 68775,
+      "exitCode": 0,
+      "log": "tmp/ma24-original-source-pending-tests-accepted.log",
+      "logSha256": "0da2fbd0dec6a257e61b2a2c22613e7e457c98fc3dfb418e7efebc66df13167d"
+    },
+    "testsPassed": 16,
+    "typecheck": {
+      "sessionId": 16945,
+      "exitCode": 0,
+      "log": "tmp/ma24-original-source-pending-typecheck-final.log",
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "lint": {
+      "sessionId": 33217,
+      "exitCode": 0,
+      "log": "tmp/ma24-original-source-pending-lint-final.log",
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "lintFiles": 12
+  },
+  "actualVerification": {
+    "status": "pending-new-images",
+    "partialGroupExpectedToRemainBlocked": true,
+    "completeGroupCaptureRegressionRequired": true
+  },
+  "syntheticRegisteredTextAttachments": 1,
+  "attachmentsBoundBeforeTaskAndFreeze": true,
+  "realModelCalls": 0,
+  "realQualityApproved": false,
+  "productionQualificationGranted": false,
+  "automaticActivation": false,
+  "productionCodeChanged": true,
+  "newImagesRequired": true,
+  "g14ThroughG20Advanced": false,
+  "deploymentPerformed": false,
+  "attempts": [
+    {
+      "sessionId": 40626,
+      "exitCode": 1,
+      "log": "tmp/ma24-review-originals-same-flow-fixed-web.log",
+      "logSha256": "6a0331f5681f0170e0573075b496b9a9ea714993a240f75085a466851b4091b9",
+      "sourceFiles": {
+        "scripts/verify-recorded-model-source-clone.ts": "dac4ec18446f5aa42b711805393c869c9cfe2f68158695d045f06621f8e5a758",
+        "scripts/lib/verify-skill-draft-fixed-web.ts": "6467b99367f9a3005f8723beb3bcf80f89471f734bfd3cbf6691b1f806a49153",
+        "scripts/verify-skill-review-draft-image-db.ts": "f82b13d850c580ed325c0069aa478633cbc63ed6f9c82e6c2ef63f475806e32a",
+        "scripts/fixtures/skill-candidate-acceptance-clone.ts": "0bd595ac7ba67f18058322d67f3de9bba057b0d35d2f7205f403e76af4ffc1ae"
+      },
+      "failure": "Old fixture expected the attachment-free question; the actual bound question includes the original registered asset ID. Failure occurred before preview/browser assertions."
+    },
+    {
+      "sessionId": 49972,
+      "exitCode": 1,
+      "log": "tmp/ma24-review-originals-question-bound-fixed-web.log",
+      "logSha256": "f13b48b715a947acdb35dd8c46f473a23e8575b678e55e5ebe55ad99fd7aecd7",
+      "sourceFiles": {
+        "scripts/verify-recorded-model-source-clone.ts": "3111d1ee0e22c9df27d01e2f3d875e969223bda79ded5c94157e802e11762d53",
+        "scripts/lib/verify-skill-draft-fixed-web.ts": "5b94ee732dfca2919920aa467b13d35657cbb48bb7aa44642c1a41f98999cb8e",
+        "scripts/verify-skill-review-draft-image-db.ts": "f82b13d850c580ed325c0069aa478633cbc63ed6f9c82e6c2ef63f475806e32a",
+        "scripts/fixtures/skill-candidate-acceptance-clone.ts": "b66bdce1818a789100cb319bda556d363a80fa12ce8fdfbef799a361abf83ca0"
+      },
+      "failure": "The five-case plan contains only one collected replay. Four source-reference sets are absent; strict original-source admission rejects before preview. No capture was permitted."
+    }
+  ],
+  "previousProductionGuards": {
+    "src/lib/assistant/main/skill-acceptance-originals.ts": "e59f0d3e4eae98deb841cc97580d735fa43ffa77061e1a4ef436f9d084317cff",
+    "src/components/skill-acceptance-originals.tsx": "801de4ee81015c3d6ebbed877eb37ce1bc19160070d2d5ce4d84fe5391a27873",
+    "src/app/api/assistant/skills/acceptance-originals/route.ts": "a9b545f972500024f3b87bb9038fd793319b23239f05325e8d5aa94e3272fbc7"
+  },
+  "strictRunSourceSelectorUnchanged": true,
+  "partialCaptureStillBlocked": true,
+  "previousWebImageId": "sha256:6f1583e24f2a52661359aafe9d48b6d57862806770108303ebe580bb57306331",
+  "previousImageSourceCommit": "e2a584b38026070b6f602563db84584600f33f57",
+  "previousChecks": {
+    "typecheck": {
+      "sessionId": 99114,
+      "exitCode": 0,
+      "log": "tmp/ma24-review-originals-question-bound-typecheck.log",
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "lint": {
+      "sessionId": 51056,
+      "exitCode": 0,
+      "log": "tmp/ma24-review-originals-question-bound-lint.log",
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "stalePreviewInvalidationImplemented": true,
+  "stalePreviewBrowserVerified": false
+}

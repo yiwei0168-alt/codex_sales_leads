@@ -8,7 +8,7 @@ export function SkillAcceptanceOriginals({bundleId,disabled,setBusy}:{bundleId:s
  const [preview,setPreview]=useState<Preview|null>(null),[working,setWorking]=useState(false),[error,setError]=useState(''),[notice,setNotice]=useState(''),[reload,setReload]=useState(0);
  useEffect(()=>{const controller=new AbortController();
   fetch(`${endpoint}?bundleId=${encodeURIComponent(bundleId)}`,{cache:'no-store',signal:controller.signal}).then(value)
-   .then(data=>{if(!controller.signal.aborted){setPreview(data);setError('');}}).catch(e=>{if(!controller.signal.aborted)setError(e instanceof Error?e.message:'原件副本暂不可用');});
+   .then(data=>{if(!controller.signal.aborted){setPreview(data);setError('');}}).catch(e=>{if(!controller.signal.aborted){setPreview(null);setError(e instanceof Error?e.message:'原件副本暂不可用');}});
   return()=>controller.abort();
  },[bundleId,reload]);
  async function capture(){
@@ -16,7 +16,7 @@ export function SkillAcceptanceOriginals({bundleId,disabled,setBusy}:{bundleId:s
   try{
    const saved=await value(await fetch(endpoint,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({bundleId,artifactHash:preview.artifactHash,sourceManifestHash:preview.sourceManifestHash})}));
    setPreview(saved);setNotice('本组文件原件副本已保存。');
-  }catch{setError('保存结果未确认，请重新核对原件后再操作。');}
+  }catch{setPreview(null);setError('保存结果未确认，请重新核对原件后再操作。');}
   finally{setWorking(false);setBusy(false);}
  }
  return <fieldset disabled={disabled||working}><legend>文件原件副本</legend>

@@ -1,13 +1,17 @@
 import {z} from 'zod';
 import {requireApiSession} from '@/lib/auth/session';
-import {previewSkillAcceptanceOriginals,captureSkillAcceptanceOriginals,captureSkillAcceptanceOriginalsSchema} from '@/lib/assistant/main/skill-acceptance-originals';
+import {previewSkillAcceptanceOriginals,captureSkillAcceptanceOriginals,captureSkillAcceptanceOriginalsSchema,OriginalSourcesPendingError} from '@/lib/assistant/main/skill-acceptance-originals';
 const headers={'Cache-Control':'private, no-store'};
+function pendingResponse(error:OriginalSourcesPendingError){
+ return Response.json({error:`本组还有 ${error.missingCaseCount} 个样本未采集完整，请在完整验收记录中保存原件副本。`,code:'original-sources-pending',missingCaseCount:error.missingCaseCount},{status:409,headers});
+}
 export async function GET(request:Request){
  const session=await requireApiSession();if(session instanceof Response)return session;
  const p=z.object({bundleId:z.uuid()}).strict().safeParse(Object.fromEntries(new URL(request.url).searchParams));
  if(!p.success)return Response.json({error:'原件查询参数无效'},{status:400,headers});
  try{return Response.json(await previewSkillAcceptanceOriginals({userId:session.userId},p.data.bundleId),{headers});}
- catch{return Response.json({error:'原件来源、权限或冻结状态已变化，请刷新后核对'},{status:409,headers});}
+ catch(error){if(error instanceof OriginalSourcesPendingError)return pendingResponse(error);
+  return Response.json({error:'原件来源、权限或冻结状态已变化，请刷新后核对'},{status:409,headers});}
 }
 export async function POST(request:Request){
  const session=await requireApiSession();if(session instanceof Response)return session;
@@ -19,5 +23,6 @@ export async function POST(request:Request){
  const p=captureSkillAcceptanceOriginalsSchema.safeParse(body);
  if(!p.success)return Response.json({error:'原件保存参数无效'},{status:400,headers});
  try{return Response.json(await captureSkillAcceptanceOriginals({userId:session.userId},p.data),{headers});}
- catch{return Response.json({error:'保存结果未确认；请刷新后核对原件、权限、文件内容及预览'},{status:409,headers});}
+ catch(error){if(error instanceof OriginalSourcesPendingError)return pendingResponse(error);
+  return Response.json({error:'保存结果未确认；请刷新后核对原件、权限、文件内容及预览'},{status:409,headers});}
 }

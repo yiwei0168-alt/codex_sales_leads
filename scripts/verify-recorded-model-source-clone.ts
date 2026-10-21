@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
-import {randomBytes,randomUUID} from 'node:crypto';
-import {readFile} from 'node:fs/promises';
+import {createHash,randomBytes,randomUUID} from 'node:crypto';
+import {mkdir,readFile,writeFile,unlink} from 'node:fs/promises';
 import nextEnv from '@next/env';
 import {Pool} from 'pg';
 import {getPool} from '../src/lib/rag/db';
@@ -34,6 +34,11 @@ const url=new URL(base);url.pathname=`/${state.database}`;process.env.DATABASE_U
 const pool=new Pool({connectionString:url.toString()}),owner=randomUUID(),other=randomUUID(),conversation=randomUUID(),runId=randomUUID(),callId=randomUUID(),memoryId=randomUUID(),readCallId=randomUUID();
 const fixedReviewImage=process.env.MA24_REVIEW_IMAGE;
 if(fixedReviewImage)assert(disposableReviewDatabase);
+const reviewAssetId=fixedReviewImage?randomUUID():null;
+const reviewAssetPath=reviewAssetId?`knowledge/ma24-review-original-${reviewAssetId}.txt`:null;
+const reviewBytes=Buffer.from('Synthetic review original; not business data.\n');
+const reviewSourceSha256=createHash('sha256').update(reviewBytes).digest('hex');
+let reviewFileCreated=false;
 const skillReviewUiPassword=process.argv.includes('--skill-review-ui')||fixedReviewImage?randomBytes(24).toString('base64url'):null;
 globalThis.fetch=async()=>{throw Error('No network in clone verification');};
 try{
@@ -51,6 +56,15 @@ try{
  await pool.query(await readFile('db/migrations/135_skill_freeze_current_version.sql','utf8'));
  }
  for(const id of [owner,other])await pool.query("insert into app_user(id,email,display_name,password_hash,role,status) values($1,$2,'Model source fixture',$3,'member','active')",[id,`${id}@example.invalid`,id===owner&&skillReviewUiPassword?hashPassword(skillReviewUiPassword):'!']);
+ if(reviewAssetId&&reviewAssetPath){
+  const collectionId=randomUUID(),documentId=randomUUID();
+  await mkdir('knowledge',{recursive:true});await writeFile(reviewAssetPath,reviewBytes,{flag:'wx'});reviewFileCreated=true;
+  await pool.query("insert into knowledge_collection(id,slug,name,base_type) values($1,$1::uuid::text,'Synthetic review originals','industry')",[collectionId]);
+  await pool.query(`insert into knowledge_document(id,collection_id,external_id,title,source_type,content_sha256,owner_id,visibility)
+   values($1,$2,$1::uuid::text,'Synthetic review original','text',$3,$4,'private')`,[documentId,collectionId,reviewSourceSha256,owner]);
+  await pool.query(`insert into knowledge_asset(id,document_id,storage_key,source_sha256,mime_type,byte_size,document_type,source_nature)
+   values($1,$2,$3,$4,'text/plain',$5,'TXT','synthetic')`,[reviewAssetId,documentId,reviewAssetPath,reviewSourceSha256,reviewBytes.length]);
+ }
  if(!fixedReviewImage){
   console.log(JSON.stringify({skillModelJournal:await verifySkillModelJournalFixture(pool,owner,other),cloneOnly:true}));
   console.log(JSON.stringify({skillAcceptanceFreeze:await verifyAcceptanceFreezeFixture(pool,owner,other),cloneOnly:true}));
@@ -61,7 +75,9 @@ try{
  const memories=await loadDecisionMemory(owner);
  assert(memories.some(row=>row.id===memoryId));
  const config=modeModelConfig('standard'),profile=config.profile!;
- const initial=initialTaskMessages({userId:owner,role:'member',mode:'standard'},{content:'Synthetic original task',attachments:[]},config,[]);
+ const recordedInput={content:'Synthetic original task',attachments:reviewAssetId?[{assetId:reviewAssetId}]:[]};
+ const initial=initialTaskMessages({userId:owner,role:'member',mode:'standard'},recordedInput,config,[]);
+ const expectedReviewQuestion=initial.find(message=>message.role==='user')?.content;assert(typeof expectedReviewQuestion==='string');
  const messages=[initial[0],decisionMemoryMessage(memories),...initial.slice(1),
   {role:'assistant' as const,content:null,tool_calls:[{id:'describe-1',type:'function' as const,function:{name:'describe_tool',arguments:JSON.stringify({tool:'memory_read'})}}]},
   {role:'tool' as const,tool_call_id:'describe-1',content:JSON.stringify({status:'success',data:describeTool(productTools.find(t=>t.id==='memory_read')!)})},
@@ -70,7 +86,7 @@ try{
  const body={model:profile.routes[1].model,messages:transportMessages(messages),tools:modelFunctions,stream:true,reasoning:{effort:profile.routes[1].effort}};
  const output={status:'success',data:{value:{requestManifest:modelRequestManifest(body,{model:body.model,provider:'fixture',id:'synthetic-generation'})}}};
  await pool.query(`insert into agent_run(id,user_id,conversation_id,request_key,request_hash,input,model_config,status,execution_kind)
- values($1,$2,$3,$1::uuid::text,$1::uuid::text,$4,$5,'completed','main-agent')`,[runId,owner,conversation,JSON.stringify({content:'Synthetic original task'}),JSON.stringify(config)]);
+ values($1,$2,$3,$1::uuid::text,$1::uuid::text,$4,$5,'completed','main-agent')`,[runId,owner,conversation,JSON.stringify(recordedInput),JSON.stringify(config)]);
  await pool.query("insert into assistant_message(user_id,conversation_id,role,intent,content,metadata) values($1,$2,'user','general','Synthetic original task',$3)",[owner,conversation,JSON.stringify({runId})]);
  await pool.query(`insert into agent_tool_call(id,user_id,run_id,call_key,tool_id,tool_version,input_hash,input,effect,status,output)
  values($1,$2,$3,$1::uuid::text,'main_model','1',$4,$5,'model','completed',$6)`,[callId,owner,runId,digest(input),JSON.stringify(input),JSON.stringify(output)]);
@@ -126,8 +142,10 @@ try{
   console.log(JSON.stringify({acceptanceBaseline,cloneOnly:true,modelCalls:0}));}
  const candidateSource=await verifyCandidateSourceFixture(pool,owner,other,runId,skillReviewUiPassword?async(bundleId,skillId)=>{
   if(fixedReviewImage){
+   assert(reviewAssetId&&reviewAssetPath);
    const {verifySkillDraftFixedWeb}=await import('./lib/verify-skill-draft-fixed-web');
-   return verifySkillDraftFixedWeb({pool,owner,email:`${owner}@example.invalid`,password:skillReviewUiPassword,bundleId,skillId,applicationDatabaseUrl:applicationUrl.toString()});
+   return verifySkillDraftFixedWeb({pool,owner,email:`${owner}@example.invalid`,password:skillReviewUiPassword,bundleId,skillId,applicationDatabaseUrl:applicationUrl.toString(),
+    originalAsset:{id:reviewAssetId,storageKey:reviewAssetPath,sourceSha256:reviewSourceSha256},expectedQuestion:expectedReviewQuestion});
   }
   const {verifyMa24SkillReviewUiClone}=await import('./lib/verify-ma24-skill-review-ui-clone');
   console.log(JSON.stringify({skillReviewUi:await verifyMa24SkillReviewUiClone({pool,owner,email:`${owner}@example.invalid`,password:skillReviewUiPassword,applicationDatabaseUrl:applicationUrl.toString(),migrationDatabaseUrl:url.toString(),bundleId,skillId}),cloneOnly:true}));
@@ -150,6 +168,7 @@ try{
  await assert.rejects(loadRecordedTaskChain({userId:other},{runId}),/unavailable/);
  console.log(JSON.stringify({cloneOnly:true,completeReadOnlyJournalVerified:true,unconsumedWriteRejected:true,unconsumedReadRejected:true,threeTurnChainBound:true,productionGraphReceiptReplay:true,instructionBoundaryReplay:true,initialSourceBound:true,changedUserMessageDenied:true,missingFallbackPredecessorDenied:true,fallbackChainBound:true,alteredEarlierReplyDenied:true,localEvidenceGuardsPassed:true,currentToolContractsChecked:true,readReceiptBound:true,substitutedReceiptDenied:true,revokedDecisionMemoryDenied:true,exactRequest:true,tenantIsolation:true,wrongRunDenied:true,changedInstructionsDenied:true,cancelledRunDenied:true,inputHashTamperingDenied:true,modelCalls:0,sourcePermissionsRevalidated:false,executionAuthorized:false,qualityAccepted:false}));
 }finally{
+ if(reviewFileCreated&&reviewAssetPath)await unlink(reviewAssetPath);
  await pool.query('delete from agent_memory_version where memory_id=$1',[memoryId]);
  await pool.query('delete from agent_memory where id=$1 and owner_id=$2',[memoryId,owner]);
  await pool.query('delete from agent_tool_call where user_id=any($1::uuid[])',[[owner,other]]);
@@ -157,6 +176,8 @@ try{
  await pool.query('delete from agent_run where user_id=any($1::uuid[])',[[owner,other]]);
  await pool.query('delete from assistant_message where user_id=any($1::uuid[])',[[owner,other]]);
  await pool.query('delete from assistant_conversation where user_id=any($1::uuid[])',[[owner,other]]);
- await pool.query('delete from app_user where id=any($1::uuid[])',[[owner,other]]);
+ // The fixed-review parent owns and drops the entire disposable database.
+ // Keep registered sources and their owners until that drop.
+ if(!reviewAssetId)await pool.query('delete from app_user where id=any($1::uuid[])',[[owner,other]]);
  await pool.end();await getPool().end();
 }

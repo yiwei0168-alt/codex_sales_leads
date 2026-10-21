@@ -7,6 +7,8 @@ import {readLockedSkillAcceptanceEvidence} from './skill-acceptance-store';
 import {lockSkillAcceptanceRunJournals,skillAcceptanceRunIds,skillAcceptanceAttachmentIds} from './skill-acceptance-run-locks';
 import {resolveLockedSkillKnowledgeReceiptAssets} from './skill-knowledge-receipt-bytes';
 import {digest} from './contracts';
+import {requireOriginalSourceCoverage} from './skill-original-source-coverage';
+export {OriginalSourcesPendingError} from './skill-original-source-coverage';
 
 const sha=z.string().regex(/^[a-f0-9]{64}$/),MAX_BYTES=52_428_800;
 export const captureSkillAcceptanceOriginalsSchema=z.object({bundleId:z.uuid(),artifactHash:sha,sourceManifestHash:sha}).strict();
@@ -15,6 +17,7 @@ async function selectOriginals(client:PoolClient,context:Context,bundleId:string
  const active=await client.query("select id from app_user where id=$1 and status='active' for share",[context.userId]);
  if(active.rows.length!==1)throw new Error('Original capture account unavailable');
  const evidence=await readLockedSkillAcceptanceEvidence(client,context,bundleId);
+ requireOriginalSourceCoverage(evidence.artifact);
  await lockSkillAcceptanceRunJournals(client,context.userId,evidence.artifact);
  const runs=skillAcceptanceRunIds(evidence.artifact);
  const tasks=await client.query<{input:unknown}>('select input from agent_run where user_id=$1 and id=any($2::uuid[]) order by id',[context.userId,runs]);

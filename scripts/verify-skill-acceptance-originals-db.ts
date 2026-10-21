@@ -104,7 +104,11 @@ try{
   assert.equal((await fetch(`${endpoint}?bundleId=${bundleId}`,{headers:{cookie:otherCookie}})).status,409);
   const denied=await fetch(endpoint,{method:'POST',headers:{cookie:ownedCookie,'content-type':'application/json',origin:'https://other.invalid'},body:JSON.stringify(input)});assert.equal(denied.status,403);assert.equal(await count(),0);
   const {verifyOriginalsBrowser}=await import('./lib/verify-ma24-originals-browser');
-  browserResult=await verifyOriginalsBrowser({base:http,cookie:ownedCookie,keyPath:process.env.MA24_ORIGINALS_TLS_KEY!,certPath:process.env.MA24_ORIGINALS_TLS_CERT!,skillName:'Synthetic original preservation'});
+  browserResult=await verifyOriginalsBrowser({base:http,cookie:ownedCookie,keyPath:process.env.MA24_ORIGINALS_TLS_KEY!,certPath:process.env.MA24_ORIGINALS_TLS_CERT!,skillName:'Synthetic original preservation',
+   withSourceWithdrawn:async verify=>{
+    await pool.query("update knowledge_document set visibility='private' where id=$1",[documents[1]]);
+    try{await verify();}finally{await pool.query("update knowledge_document set visibility='shared' where id=$1",[documents[1]]);}
+   }});
   assert.equal(await count(),2);results.push('actual HTTP ownership/origin checks and HTTPS browser explicit preview/save pass');
   for(const path of files)execFileSync('docker',['exec',webContainer!,'node','-e','require("node:fs").unlinkSync(process.argv[1])',`/app/${path}`],{windowsHide:true,stdio:'pipe'});
  }

@@ -3,9 +3,10 @@ import {readFile} from 'node:fs/promises';
 import {randomUUID} from 'node:crypto';
 import {createServer} from 'node:https';
 import {request as httpRequest} from 'node:http';
-import {chromium} from '@playwright/test';
+import {chromium,expect} from '@playwright/test';
 
-export async function verifyOriginalsBrowser(input:{base:string;cookie:string;keyPath:string;certPath:string;skillName:string}){
+export async function verifyOriginalsBrowser(input:{base:string;cookie:string;keyPath:string;certPath:string;skillName:string;
+ withSourceWithdrawn?:(verify:()=>Promise<void>)=>Promise<void>}){
  const upstream=new URL(input.base);assert.equal(upstream.protocol,'http:');assert.equal(upstream.hostname,'127.0.0.1');
  const proxy=createServer({key:await readFile(input.keyPath),cert:await readFile(input.certPath)},(request,response)=>{
   const forward=httpRequest({hostname:upstream.hostname,port:upstream.port,path:request.url,method:request.method,headers:{...request.headers,'x-forwarded-proto':'https'}},res=>{
@@ -31,8 +32,20 @@ export async function verifyOriginalsBrowser(input:{base:string;cookie:string;ke
   const response=page.waitForResponse(value=>value.url().includes('/acceptance-originals')&&value.request().method()==='POST');await save.click();assert.equal((await response).status(),200);
   await original.getByText('本组文件原件副本已保存。',{exact:true}).waitFor();
   await original.getByText('共 2 个原件，0.0 MiB；已保存 2 个。',{exact:true}).waitFor();assert(await save.isDisabled());
+  if(input.withSourceWithdrawn){
+   await input.withSourceWithdrawn(async()=>{
+    await original.getByRole('button',{name:'重新核对原件',exact:true}).click();
+    await expect(original.getByRole('alert')).toBeVisible();
+    await expect(original.getByRole('button',{name:'保存原件副本',exact:true})).toHaveCount(0);
+    await expect(original.getByText('共 2 个原件，0.0 MiB；已保存 2 个。',{exact:true})).toHaveCount(0);
+   });
+   await original.getByRole('button',{name:'重新核对原件',exact:true}).click();
+   await original.getByText('共 2 个原件，0.0 MiB；已保存 2 个。',{exact:true}).waitFor();assert(await save.isDisabled());
+  }
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth),true);assert.deepEqual(errors,[]);
   const screenshot=`tmp/ma24-originals-ui-${randomUUID()}.png`;await page.screenshot({path:screenshot,fullPage:true});
-  await context.close();return {actualHttpsBrowserCapture:true,previewBeforeWriteVerified:true,explicitSaveAndDisabledReplayVerified:true,noPageErrors:true,noHorizontalOverflow:true,screenshot};
+  await context.close();return {actualHttpsBrowserCapture:true,previewBeforeWriteVerified:true,explicitSaveAndDisabledReplayVerified:true,
+   withdrawnSourceClearsStalePreview:!!input.withSourceWithdrawn,restoredSourceRecoversCapturedPreview:!!input.withSourceWithdrawn,
+   noPageErrors:true,noHorizontalOverflow:true,screenshot};
  }finally{await browser?.close();await new Promise<void>((done,reject)=>proxy.close(error=>error?reject(error):done()));}
 }

@@ -19,6 +19,7 @@ try{
  const sanitized=result.output.replaceAll(decodeURIComponent(adminUrl.password),'<temporary-admin-password>').replaceAll(decodeURIComponent(applicationUrl.password),'<temporary-app-password>');
  await writeFile(`tmp/ma24-skill-review-fixed-web-inner-${database}.log`,sanitized);await writeFile('tmp/ma24-skill-review-fixed-web-inner.log',sanitized);assert.equal(result.code,0,sanitized.slice(-6500));
  const browser=JSON.parse(await readFile('tmp/skill-review-fixed-web/result.json','utf8'));assert.equal(browser.skillReviewDraftFixedWeb,'passed');assert.equal(browser.humanRevisionCount,7);assert.equal(browser.database,database);
+ assert.equal(browser.incompleteOriginalSourcesExplained,true);assert.equal(browser.missingOriginalCaseCount,4);assert.equal(browser.partialOriginalCaptureRefused,true);assert.equal(browser.originalSnapshotCount,0);
  console.log(JSON.stringify({fixedReviewDraftDatabase:'passed',browser,freshTemplateOnly:true,modelsCalled:0,realQualityApproval:false}));
 }finally{
  try{if(created){assert.match(database,/^ma11_replay_[a-f0-9]{12}$/);await admin.query(`drop database "${database}" with (force)`);}}finally{await admin.end();}

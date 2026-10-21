@@ -26,7 +26,7 @@ export async function prepareFrozenCandidateFixture(pool:Pool,owner:string,runId
  return freezeSkillAcceptancePlan({userId:owner},plan,transaction);
 }
 
-export type CandidateReviewReady=(bundleId:string,skillId:string)=>Promise<void|{humanRevisionCount:number}>;
+export type CandidateReviewReady=(bundleId:string,skillId:string)=>Promise<void|{humanRevisionCount:number;expectedQuestion?:string}>;
 export async function verifyCandidateAcceptanceFixture(pool:Pool,owner:string,runId:string,skillId:string,audited:Awaited<ReturnType<typeof auditDurableSkillCandidate>>,frozen:Awaited<ReturnType<typeof prepareFrozenCandidateFixture>>,onReviewReady?:CandidateReviewReady){
  const baseline=await prepareSkillAcceptanceBaseline({userId:owner},{runId}),p=baseline.projection,c=audited.projection;
  const {plan,freezeId}=frozen,{pin,identity}=plan;
@@ -63,10 +63,12 @@ export async function verifyCandidateAcceptanceFixture(pool:Pool,owner:string,ru
   assert((await listSkillAcceptanceReviews({userId:owner},{skillId,offset:0})).items.some(row=>row.id===collected.bundleId));
   assert.equal((await listSkillAcceptanceReviews({userId:randomUUID()},{skillId,offset:0})).items.length,0);
   const material=await readSkillAcceptanceReviewCase({userId:owner},{bundleId:collected.bundleId,caseId:'replay'});
-  assert.equal(material.question,'Synthetic original task');assert.equal(digest(material.baseline),p.answerHash);assert.equal(digest(material.candidate),c.answerHash);
+  if(!onReviewReady)assert.equal(material.question,'Synthetic original task');
+  assert.equal(digest(material.baseline),p.answerHash);assert.equal(digest(material.candidate),c.answerHash);
   assert(!('messages' in material));assert(!('rawReceipts' in material));
   if(onReviewReady){
    const reviewed=await onReviewReady(collected.bundleId,skillId),expectedHumanRevisions=reviewed?.humanRevisionCount??2;
+   assert.equal(material.question,reviewed?.expectedQuestion??'Synthetic original task');
    assert(Number.isSafeInteger(expectedHumanRevisions)&&expectedHumanRevisions>0);
    const client=await pool.connect();try{await client.query('begin');await client.query('set local session_replication_role=replica');
     const removed=await client.query("delete from agent_skill_acceptance_judgment where bundle_id=$1 and owner_id=$2 and reviewer_kind='human'",[collected.bundleId,owner]);

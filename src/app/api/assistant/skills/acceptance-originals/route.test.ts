@@ -3,6 +3,7 @@ const m=vi.hoisted(()=>({session:vi.fn(),preview:vi.fn(),capture:vi.fn()}));
 vi.mock('@/lib/auth/session',()=>({requireApiSession:m.session}));
 vi.mock('@/lib/assistant/main/skill-acceptance-originals',async original=>({...await original<typeof import('@/lib/assistant/main/skill-acceptance-originals')>(),previewSkillAcceptanceOriginals:m.preview,captureSkillAcceptanceOriginals:m.capture}));
 import {GET,POST} from './route';
+import {OriginalSourcesPendingError} from '@/lib/assistant/main/skill-acceptance-originals';
 const id='11111111-1111-4111-8111-111111111111',body={bundleId:id,artifactHash:'a'.repeat(64),sourceManifestHash:'b'.repeat(64)};
 const post=(data:unknown=body,headers:Record<string,string>={})=>POST(new Request('http://localhost/api/assistant/skills/acceptance-originals',{method:'POST',headers,body:JSON.stringify(data)}));
 beforeEach(()=>{vi.resetAllMocks();m.session.mockResolvedValue({userId:id});m.preview.mockResolvedValue({assetCount:1,pendingCount:1,automaticActivation:false});m.capture.mockResolvedValue({assetCount:1,pendingCount:0,automaticActivation:false});});
@@ -26,4 +27,12 @@ it('does not expose filesystem or source data when capture fails',async()=>{
 it('previews a stored bundle only and rejects extra query selectors',async()=>{
  expect((await GET(new Request('http://localhost/?bundleId='+id))).status).toBe(200);expect(m.preview).toHaveBeenCalledExactlyOnceWith({userId:id},id);
  expect((await GET(new Request('http://localhost/?bundleId='+id+'&assetId='+id))).status).toBe(400);
+});
+it('explains incomplete source collection while rejecting preview and capture',async()=>{
+ m.preview.mockRejectedValue(new OriginalSourcesPendingError(4));m.capture.mockRejectedValue(new OriginalSourcesPendingError(4));
+ for(const response of [await GET(new Request('http://localhost/?bundleId='+id)),await post()]){
+  expect(response.status).toBe(409);expect(response.headers.get('cache-control')).toContain('no-store');
+  const pending=await response.json();expect(pending).toMatchObject({code:'original-sources-pending',missingCaseCount:4});
+  expect(pending.error).toContain('完整验收记录');
+ }
 });
