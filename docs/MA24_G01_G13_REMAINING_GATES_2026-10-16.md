@@ -1,5 +1,7 @@
 # MA24 G01–G13 当前剩余门槛（2026-10-16）
 
+2026-10-21 / G09 实现审计：候选业务读取仍是按原快照的工具/入参精确匹配后返回保存结果，前瞻也使用同一适配器；预算与在线重规划行为亦有差异，资格生产者尚不生成运行等价字段。这些是代码/接线缺口，不能仅以继续增加恢复测试关闭。前瞻故障专项 73784 继续观察，之后优先处理该接线。[具体差异与顺序](RUNTIME_EXECUTION_PARITY_GAPS_2026-10-21.md)。
+
 2026-10-21 / 最新终态：359cbc60 产品与 5a7b027c 夹具的完整 Linux 组合 9428 已退出 0；五类同冻结、实测登记及真实进程终止/默认租约自然到期/恢复不重放通过。固定启动器已完成任务复用补验 76169（夹具 c35e160a）也已退出 0，历史/前瞻任务与原记录精确复用通过；两轮临时资源均清理。下方较早“运行中或待重验”为历史；真实质量、生产入口整体覆盖和最终启用仍未通过。[组合收据](evidence/ma24-g09-postgres-graph-linux-recovery-2026-10-21.json)、[启动器补验](FIXED_COLLECTOR_COMPLETED_REUSE_2026-10-21.md)。
 
 2026-10-21 / 当前 359cbc60 数据库信任 TLS 58232 通过并清理。Linux 96880 退出 1，正式候选夹具旧 payload 读取失败；产品不变，夹具已按绑定 PostgresSaver 根图修正，类型/lint 通过，完整组合待提交后重验。协议/生命周期和真实质量不提升。[当前终态](POSTGRES_GRAPH_FIXED_PACKAGES_2026-10-21.md)。
@@ -678,3 +680,6 @@ G09 current-source collector image TLS preflight (2026-10-19): rebuilt from the 
 
 
 2026-10-21 / MA24-06 prospective fault recovery coverage: archived fixtures can now select historical or prospective process termination, defaulting to historical. The prospective case additionally checks unchanged execution_spec and its original capture ID/projection hash; Linux asserts actual SIGKILL. Natural lease expiry and no repeated completed HTTP remain required. Syntax, full typecheck and four-file lint passed. Actual fixed-image prospective run is pending, not accepted; product images unchanged, no model calls/activation/deployment. [Scope](PROSPECTIVE_RUNTIME_PROCESS_RECOVERY_2026-10-21.md).
+
+
+2026-10-21 / MA24-06 execution parity source audit: candidate registered dispatch still substitutes uniquely matching saved business-read results in both historical and prospective paths; it does not execute fresh business reads. Candidate additional budget/frozen-boundary behavior and ordinary live replanning also differ. Readiness does not yet produce productionAgentEquivalent=true. These are implementation/qualification gaps, not closed by checkpoint or fixed completed-reuse tests. Next wiring must preserve capture, scope, source/lease guards, paid-call admission and independent journal reconstruction before deriving qualification; no flags were relaxed and no external calls were made. [Source audit and next steps](RUNTIME_EXECUTION_PARITY_GAPS_2026-10-21.md).
