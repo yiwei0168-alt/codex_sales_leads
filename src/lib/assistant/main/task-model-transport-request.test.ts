@@ -13,7 +13,8 @@ import {verifyConfiguredTaskTransportFailure} from './task-model-transport-failu
 import {modeTransportFailure} from './mode-transport-failure';
 import {OpenRouterRequestError} from '@/providers/openrouter-batch';
 import {ModelWaitError} from './model-stream';
-const m=vi.hoisted(()=>{const native=vi.fn();vi.stubGlobal('fetch',native);return {native,rpc:vi.fn(),query:vi.fn(),spend:undefined as unknown,registry:undefined as unknown};});
+const m=vi.hoisted(()=>{const native=vi.fn();vi.stubGlobal('fetch',native);return {native,rpc:vi.fn(),query:vi.fn(),runtime:vi.fn(),spend:undefined as unknown,registry:undefined as unknown};});
+vi.mock('./runtime-process-proof',()=>({readRegisteredRuntimeProcess:m.runtime}));
 vi.mock('@/lib/rag/db',()=>({tenantTransaction:async(_user:string,work:(client:unknown)=>Promise<unknown>)=>work({query:m.query})}));
 vi.mock('@/lib/billing/context',()=>({currentSpendContext:()=>m.spend}));
 vi.mock('@/providers/openrouter',()=>({getOpenRouterConfig:()=>({baseUrl:'https://openrouter.ai/api/v1'})}));
@@ -29,7 +30,8 @@ const endpoint='https://openrouter.ai/api/v1/chat/completions';let directory:str
 function response(status=200){const value=new Response(status===204?null:'{}',{status});Object.defineProperty(value,'url',{value:endpoint});return value;}
 beforeEach(async()=>{
  originalArgv=process.execArgv;process.execArgv=[];vi.useFakeTimers();vi.setSystemTime(new Date('2026-10-17T01:00:00.000Z'));
- vi.stubEnv('NODE_ENV','production');for(const key of ['NODE_OPTIONS','NODE_EXTRA_CA_CERTS','SSL_CERT_FILE','SSL_CERT_DIR','NODE_USE_SYSTEM_CA','NODE_TLS_REJECT_UNAUTHORIZED'])vi.stubEnv(key,'');
+ vi.stubEnv('NODE_ENV','production');for(const key of ['NODE_OPTIONS','NODE_PATH','NODE_EXTRA_CA_CERTS','SSL_CERT_FILE','SSL_CERT_DIR','NODE_USE_SYSTEM_CA','NODE_TLS_REJECT_UNAUTHORIZED'])vi.stubEnv(key,'');
+ m.runtime.mockReset().mockResolvedValue(undefined);
  vi.stubEnv('MODEL_PROXY_URL','http://127.0.0.1:18080');
  directory=await mkdtemp(join(tmpdir(),'original-task-transport-'));const path=join(directory,'ephemeral.pem');
  await writeFile(path,pair.privateKey.export({type:'pkcs8',format:'pem'}),{mode:0o600});
@@ -46,6 +48,29 @@ beforeEach(async()=>{
  });
 });
 afterEach(async()=>{process.execArgv=originalArgv;vi.useRealTimers();vi.unstubAllEnvs();await rm(directory,{recursive:true,force:true});});
+it('binds the main worker process claim and rechecks the boundary before request and signature',async()=>{
+ const proof={protocol:'local-runtime-process-v1',role:'main-agent',deploymentHash:digest('deployment'),nodeSha256:digest('node'),
+  entry:'start.mjs',entrySha256:digest('start'),artifact:'worker.mjs',artifactSha256:digest('worker')};
+ const assertCurrent=vi.fn().mockResolvedValue(undefined);m.runtime.mockResolvedValue({proof,assertCurrent});
+ const output=await (await createConfiguredTaskModeRequest(context,input))(request.messages,request.profile,request.index);
+ expect(output.transportReceipt.statement.runtimeProcess).toEqual(proof);expect(assertCurrent).toHaveBeenCalledTimes(3);
+});
+it('rejects a changed runtime boundary before invoking the model',async()=>{
+ m.runtime.mockResolvedValue({assertCurrent:vi.fn().mockRejectedValue(new Error('Runtime process admitted bytes changed'))});
+ const run=await createConfiguredTaskModeRequest(context,input);
+ await expect(run(request.messages,request.profile,0)).rejects.toThrow('admitted bytes changed');expect(m.rpc).not.toHaveBeenCalled();expect(m.native).not.toHaveBeenCalled();
+});
+it('does not sign or repeat a completed original transport after a runtime boundary change',async()=>{
+ const assertCurrent=vi.fn().mockResolvedValue(undefined).mockResolvedValueOnce(undefined).mockResolvedValueOnce(undefined)
+  .mockRejectedValueOnce(new Error('Runtime process admitted bytes changed'));
+ m.runtime.mockResolvedValue({assertCurrent});
+ const run=await createConfiguredTaskModeRequest(context,input);
+ await expect(run(request.messages,request.profile,0)).rejects.toThrow('admitted bytes changed');expect(m.native).toHaveBeenCalledTimes(1);expect(m.rpc).toHaveBeenCalledTimes(1);
+});
+it('rejects NODE_PATH injection before process measurement or model requests',async()=>{
+ vi.stubEnv('NODE_PATH','/unregistered/modules');
+ await expect(createConfiguredTaskModeRequest(context,input)).rejects.toThrow('Controlled production');expect(m.runtime).not.toHaveBeenCalled();expect(m.native).not.toHaveBeenCalled();
+});
 it('binds the owned started call to one observed request and an independently verifiable signature',async()=>{
  const run=await createConfiguredTaskModeRequest(context,input),output=await run(request.messages,request.profile,request.index);
  const s=output.transportReceipt.statement;

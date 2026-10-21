@@ -4,6 +4,7 @@ import {digest} from './contracts';
 import {modelRequestManifestSchema} from './model-request-manifest';
 import {loadConfiguredSkillRunnerTrustRegistry} from './skill-runner-attestation';
 import {skillTransportResponseHash} from './skill-model-transport-receipt';
+import {runtimeProcessProofSchema} from './runtime-process-proof-schema';
 
 const sha=z.string().regex(/^[a-f0-9]{64}$/);
 export const taskTransportBindingSchema=z.object({ownerId:z.uuid(),runId:z.uuid(),callId:z.uuid(),
@@ -13,7 +14,7 @@ export const taskTransportStatementSchema=taskTransportBindingSchema.extend({
  protocol:z.literal('task-model-transport-v1'),keyId:z.string().min(1).max(100),
  requestHash:sha,manifestHash:sha,responseHash:sha,origin:z.literal('https://openrouter.ai'),
  path:z.literal('/api/v1/chat/completions'),status:z.literal(200),
- capturedAt:z.iso.datetime(),completedAt:z.iso.datetime(),expiresAt:z.iso.datetime()}).strict();
+ capturedAt:z.iso.datetime(),completedAt:z.iso.datetime(),expiresAt:z.iso.datetime(),runtimeProcess:runtimeProcessProofSchema.optional()}).strict();
 export const taskTransportEnvelopeSchema=z.object({statement:taskTransportStatementSchema,
  signature:z.string().regex(/^[A-Za-z0-9_-]{86}$/)}).strict();
 
@@ -30,6 +31,7 @@ export async function verifyConfiguredTaskTransportReceipt(envelope:unknown,inpu
  if(!key?.enabled||!key.purposes.includes('task-model-transport'))throw new Error('Task transport trust key unavailable');
  for(const field of Object.keys(binding) as Array<keyof typeof binding>)if(s[field]!==binding[field])throw new Error('Task transport binding changed');
  if(key.collectorId!==binding.collectorId||key.deploymentHash!==binding.deploymentHash)throw new Error('Task transport enrollment changed');
+ if(s.runtimeProcess&&(s.runtimeProcess.role!=='main-agent'||s.runtimeProcess.deploymentHash!==s.deploymentHash))throw new Error('Task transport process claim binding changed');
  const captured=Date.parse(s.capturedAt),completed=Date.parse(s.completedAt),expiry=Date.parse(s.expiresAt),time=now.getTime();
  if(!Number.isFinite(time)||!(Date.parse(key.notBefore)<=captured&&created<=started&&started<=captured&&captured<=completed
   &&completed<=finished&&finished<=time&&time<expiry&&expiry<=Date.parse(key.expiresAt)))throw new Error('Task transport time invalid');
@@ -41,6 +43,7 @@ export async function verifyConfiguredTaskTransportReceipt(envelope:unknown,inpu
  if(publicKey.asymmetricKeyType!=='ed25519'||signature.length!==64||signature.toString('base64url')!==signed.signature
   ||!verify(null,Buffer.from(digest(s),'hex'),publicKey,signature))throw new Error('Task transport signature invalid');
  return {taskTransportSignatureVerified:true as const,validBefore:s.expiresAt,statementHash:digest(s),registryHash:digest(registry),keyId:key.keyId,
+  ...(s.runtimeProcess?{runtimeProcessClaim:s.runtimeProcess}:{}),
   signingEnrollment:{keyId:key.keyId,collectorId:key.collectorId,deploymentHash:key.deploymentHash,purpose:'task-model-transport' as const},
   completeTaskProvenanceVerified:false as const,automaticActivation:false as const};
 }

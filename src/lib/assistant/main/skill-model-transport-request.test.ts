@@ -16,7 +16,7 @@ import type {SkillCandidateCollector,SkillCandidateRequest} from './skill-candid
 
 const mocks=vi.hoisted(()=>{
  const native=vi.fn();vi.stubGlobal('fetch',native);
- return {native,rpc:vi.fn(),freeze:vi.fn(),registry:undefined as unknown,spend:undefined as unknown};
+ return {native,rpc:vi.fn(),freeze:vi.fn(),runtime:vi.fn(),registry:undefined as unknown,spend:undefined as unknown};
 });
 vi.mock('@/lib/billing/context',async importOriginal=>({...await importOriginal<typeof import('@/lib/billing/context')>(),currentSpendContext:()=>mocks.spend}));
 vi.mock('./model',async importOriginal=>({...await importOriginal<typeof import('./model')>(),requestModeModel:mocks.rpc}));
@@ -25,6 +25,7 @@ vi.mock('@/lib/network/model-transport',()=>({modelRoutedTransport:(transport:ty
 vi.mock('./skill-acceptance-freeze',()=>({requireSkillAcceptanceFreeze:mocks.freeze}));
 vi.mock('./local-analysis-boundary',()=>({assertLocalAnalysisBoundary:()=>{}}));
 vi.mock('./skill-runner-attestation',()=>({loadConfiguredSkillRunnerTrustRegistry:async()=>mocks.registry}));
+vi.mock('./runtime-process-proof',()=>({readRegisteredRuntimeProcess:mocks.runtime}));
 const pair=generateKeyPairSync('ed25519'),ownerId='11111111-1111-4111-8111-111111111111';
 const frozen={freezeId:'33333333-3333-4333-8333-333333333333',plan:{pin:{ownerId},identity:{toolSchemaHash:digest(modelFunctions)},
  frozenAt:'2026-10-16T00:00:00.000Z',expiresAt:'2026-10-17T00:00:00.000Z'}} as NonNullable<SkillCandidateCollector['frozen']>;
@@ -36,7 +37,8 @@ function response(status=200,url=endpoint){const result=new Response(status===20
 beforeEach(async()=>{
  originalArgv=process.execArgv;process.execArgv=[];vi.useFakeTimers();vi.setSystemTime(new Date('2026-10-16T01:00:00.000Z'));
  mocks.spend={userId:ownerId,operationId:input.evaluationId,stage:'skill-acceptance'};
- vi.stubEnv('NODE_ENV','production');for(const key of ['NODE_OPTIONS','NODE_EXTRA_CA_CERTS','SSL_CERT_FILE','SSL_CERT_DIR','NODE_USE_SYSTEM_CA','NODE_TLS_REJECT_UNAUTHORIZED'])vi.stubEnv(key,'');
+ vi.stubEnv('NODE_ENV','production');for(const key of ['NODE_OPTIONS','NODE_PATH','NODE_EXTRA_CA_CERTS','SSL_CERT_FILE','SSL_CERT_DIR','NODE_USE_SYSTEM_CA','NODE_TLS_REJECT_UNAUTHORIZED'])vi.stubEnv(key,'');
+ mocks.runtime.mockReset().mockResolvedValue(undefined);
  directory=await mkdtemp(join(tmpdir(),'skill-transport-test-'));const path=join(directory,'ephemeral.pem');
  await writeFile(path,pair.privateKey.export({type:'pkcs8',format:'pem'}),{mode:0o600});
  vi.stubEnv('SKILL_MODEL_TRANSPORT_PRIVATE_KEY_FILE',path);vi.stubEnv('SKILL_MODEL_TRANSPORT_KEY_ID','test-key');
@@ -56,6 +58,30 @@ it('signs only after the model adapter invokes the guarded transport',async()=>{
  expect(output.transportReceipt).toMatchObject({statement:{status:200,ownerId,step:0,routeIndex:0}});
  expect(mocks.native).toHaveBeenCalledTimes(1);expect(mocks.freeze).toHaveBeenCalledTimes(3);
  expect(JSON.stringify(output.transportReceipt)).not.toContain('TEST_ONLY');
+});
+it('binds a locally admitted runtime claim to the signed response and rechecks it around transport',async()=>{
+ const proof={protocol:'local-runtime-process-v1',role:'skill-collector',deploymentHash:digest('deployment'),nodeSha256:digest('node'),
+  entry:'runner.mjs',entrySha256:digest('runner'),artifact:'runner.mjs',artifactSha256:digest('runner')};
+ const assertCurrent=vi.fn().mockResolvedValue(undefined);mocks.runtime.mockResolvedValue({proof,assertCurrent});
+ const output=await (await createConfiguredSkillTransportRequest({userId:ownerId},input))(request);
+ expect(output.transportReceipt).toMatchObject({statement:{runtimeProcess:proof}});expect(assertCurrent).toHaveBeenCalledTimes(3);
+});
+it('does not request a model when the admitted runtime boundary changes',async()=>{
+ mocks.runtime.mockResolvedValue({assertCurrent:vi.fn().mockRejectedValue(new Error('Runtime process admitted bytes changed'))});
+ const run=await createConfiguredSkillTransportRequest({userId:ownerId},input);
+ await expect(run(request)).rejects.toThrow('admitted bytes changed');expect(mocks.rpc).not.toHaveBeenCalled();expect(mocks.native).not.toHaveBeenCalled();
+});
+it('does not sign or repeat a completed transport after the runtime boundary changes',async()=>{
+ const assertCurrent=vi.fn().mockResolvedValue(undefined).mockResolvedValueOnce(undefined).mockResolvedValueOnce(undefined)
+  .mockRejectedValueOnce(new Error('Runtime process admitted bytes changed'));
+ mocks.runtime.mockResolvedValue({assertCurrent});
+ const run=await createConfiguredSkillTransportRequest({userId:ownerId},input);
+ await expect(run(request)).rejects.toThrow('admitted bytes changed');expect(mocks.native).toHaveBeenCalledTimes(1);expect(mocks.rpc).toHaveBeenCalledTimes(1);
+});
+it('rejects NODE_PATH injection before reading keys or making a request',async()=>{
+ vi.stubEnv('NODE_PATH','/unregistered/modules');
+ await expect(createConfiguredSkillTransportRequest({userId:ownerId},input)).rejects.toThrow('Controlled production');
+ expect(mocks.runtime).not.toHaveBeenCalled();expect(mocks.native).not.toHaveBeenCalled();
 });
 it.each([201,204,500])('does not sign actual HTTP %s responses',async status=>{
  mocks.native.mockResolvedValue(response(status));

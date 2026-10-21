@@ -4,6 +4,7 @@ import {digest} from './contracts';
 import {modelReplySchema} from './model';
 import {modelRequestManifestSchema} from './model-request-manifest';
 import {loadConfiguredSkillRunnerTrustRegistry} from './skill-runner-attestation';
+import {runtimeProcessProofSchema} from './runtime-process-proof-schema';
 
 const sha=z.string().regex(/^[a-f0-9]{64}$/);
 export const skillTransportBindingSchema=z.object({ownerId:z.uuid(),freezeId:z.uuid(),evaluationId:z.uuid(),arm:z.enum(['baseline','candidate']),
@@ -11,7 +12,7 @@ export const skillTransportBindingSchema=z.object({ownerId:z.uuid(),freezeId:z.u
  collectorId:z.string().min(1).max(200),deploymentHash:sha}).strict();
 export const skillTransportStatementSchema=skillTransportBindingSchema.extend({protocol:z.literal('skill-model-transport-v1'),keyId:z.string().min(1).max(100),
  requestHash:sha,manifestHash:sha,responseHash:sha,origin:z.literal('https://openrouter.ai'),path:z.literal('/api/v1/chat/completions'),
- status:z.literal(200),capturedAt:z.iso.datetime(),completedAt:z.iso.datetime(),expiresAt:z.iso.datetime()}).strict();
+ status:z.literal(200),capturedAt:z.iso.datetime(),completedAt:z.iso.datetime(),expiresAt:z.iso.datetime(),runtimeProcess:runtimeProcessProofSchema.optional()}).strict();
 export const skillTransportEnvelopeSchema=z.object({statement:skillTransportStatementSchema,signature:z.string().regex(/^[A-Za-z0-9_-]{86}$/)}).strict();
 
 /** Tool-call IDs are replaced by the journal adapter. Bind all semantic fields
@@ -26,6 +27,7 @@ export async function verifyConfiguredSkillTransportReceipt(envelope:unknown,inp
  if(!key?.enabled||!key.purposes.includes('model-transport'))throw new Error('Transport trust key unavailable');
  for(const name of Object.keys(binding) as Array<keyof typeof binding>)if(binding[name]!==s[name])throw new Error('Transport receipt binding changed');
  if(key.collectorId!==s.collectorId||key.deploymentHash!==s.deploymentHash)throw new Error('Transport enrollment changed');
+ if(s.runtimeProcess&&(s.runtimeProcess.role!=='skill-collector'||s.runtimeProcess.deploymentHash!==s.deploymentHash))throw new Error('Transport process claim binding changed');
  const captured=Date.parse(s.capturedAt),completed=Date.parse(s.completedAt),expires=Date.parse(s.expiresAt),time=now.getTime();
  if(!Number.isFinite(time)||!(Date.parse(key.notBefore)<=Date.parse(input.frozenAt)&&Date.parse(input.frozenAt)<=captured&&captured<=completed
   &&completed<=time&&time<expires&&expires<=Date.parse(input.expiresAt)&&expires<=Date.parse(key.expiresAt)))throw new Error('Transport receipt time invalid');
@@ -37,5 +39,6 @@ export async function verifyConfiguredSkillTransportReceipt(envelope:unknown,inp
  if(publicKey.asymmetricKeyType!=='ed25519'||signature.length!==64||signature.toString('base64url')!==signed.signature
   ||!verify(null,Buffer.from(digest(s),'hex'),publicKey,signature))throw new Error('Transport signature invalid');
  return {transportSignatureVerified:true as const,validBefore:s.expiresAt,statementHash:digest(s),registryHash:digest(registry),
+  ...(s.runtimeProcess?{runtimeProcessClaim:s.runtimeProcess}:{}),
   signingEnrollment:{keyId:key.keyId,collectorId:key.collectorId,deploymentHash:key.deploymentHash,purpose:'model-transport' as const},automaticActivation:false as const};
 }

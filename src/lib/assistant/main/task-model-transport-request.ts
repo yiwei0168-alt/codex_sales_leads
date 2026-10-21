@@ -17,12 +17,13 @@ import {attachModeTransportFailure} from './mode-transport-failure';
 import {modelRequestManifest} from './model-request-manifest';
 import {failureStatusMatches} from './skill-model-transport-failure-receipt';
 import {taskTransportFailureStatementSchema} from './task-model-transport-failure-receipt';
+import {readRegisteredRuntimeProcess} from './runtime-process-proof';
 
 const nativeTransport=fetch;
 const settings=['TASK_MODEL_TRANSPORT_KEY_ID','TASK_MODEL_TRANSPORT_PRIVATE_KEY_FILE','TASK_MODEL_TRANSPORT_COLLECTOR_ID','TASK_MODEL_TRANSPORT_DEPLOYMENT_SHA256'] as const;
 export function taskTransportSigningConfigured(){return settings.some(key=>Boolean(process.env[key]?.trim()));}
 function controlled(){
- if(process.env.NODE_ENV!=='production'||process.execArgv.length||process.env.NODE_OPTIONS?.trim()
+ if(process.env.NODE_ENV!=='production'||process.execArgv.length||process.env.NODE_OPTIONS?.trim()||process.env.NODE_PATH?.trim()
   ||process.env.NODE_EXTRA_CA_CERTS||process.env.SSL_CERT_FILE||process.env.SSL_CERT_DIR||process.env.NODE_USE_SYSTEM_CA==='1'
   ||process.env.NODE_TLS_REJECT_UNAUTHORIZED==='0')throw new Error('Controlled production task transport process required');
 }
@@ -65,14 +66,15 @@ export async function createConfiguredTaskModeRequest(context:{userId:string;run
   if(!(Date.parse(key.notBefore)<=Date.now()&&Date.now()<Date.parse(key.expiresAt)))throw new Error('Task transport enrollment expired');
   return {hash:digest(registry),expiresAt:key.expiresAt};
  };
- await trust();let invoked=false;
+ await trust();const runtime=await readRegisteredRuntimeProcess('main-agent',binding.deploymentHash,import.meta.url);let invoked=false;
  return async(messages:ModelMessage[],profile:ModeConfig,index:number,signal?:AbortSignal)=>{
   if(invoked)throw new Error('Task transport request already invoked');invoked=true;
   assertLocalAnalysisBoundary();controlled();requireSpend();
+  await runtime?.assertCurrent();
   if(index!==Number(p.callKey.split(':').at(-1))||digest({messages,profile,index})!==saved.input_hash||digest(await read())!==digest(saved))throw new Error('Task transport stored input changed');
   const before=await trust(),capturedAt=new Date().toISOString();let observed=false,status:number|undefined,requestHash:string|undefined,observedBody:Record<string,unknown>|undefined;
   const transport:typeof fetch=async(url,init)=>{
-   requireSpend();controlled();const target=new URL(url instanceof Request?url.url:String(url));
+   requireSpend();controlled();await runtime?.assertCurrent();const target=new URL(url instanceof Request?url.url:String(url));
    if(observed||target.href!=='https://openrouter.ai/api/v1/chat/completions'||init?.method!=='POST'||init.redirect!=='error'||typeof init.body!=='string')throw new Error('Task transport request boundary changed');
    observed=true;observedBody=JSON.parse(init.body);requestHash=digest(observedBody);
    const response=await modelRoutedTransport(nativeTransport,url,init)(url,init);status=response.status;
@@ -83,11 +85,11 @@ export async function createConfiguredTaskModeRequest(context:{userId:string;run
   try{output=await requestModeModel(messages,profile,index,transport,signal);}
   catch(error){
    try{
-    requireSpend();controlled();assertLocalAnalysisBoundary();const after=await trust(),reason=modeFailureCode(error),httpStatus=status??null;
+    requireSpend();controlled();await runtime?.assertCurrent();assertLocalAnalysisBoundary();const after=await trust(),reason=modeFailureCode(error),httpStatus=status??null;
     if(observedBody&&mayFallback(error)&&!signal?.aborted&&before.hash===after.hash&&digest(await read())===digest(saved)&&failureStatusMatches(reason,httpStatus)){
      const manifest=modelRequestManifest(observedBody,null),completedAt=new Date().toISOString();
      if(manifest.toolSchemaHash!==digest(modelFunctions)||Date.parse(completedAt)>=Date.parse(after.expiresAt))throw new Error('Task failure boundary changed');
-     const statement=taskTransportFailureStatementSchema.parse({...binding,protocol:'task-model-transport-failure-v1',keyId,
+     const statement=taskTransportFailureStatementSchema.parse({...binding,...(runtime?{runtimeProcess:runtime.proof}:{}),protocol:'task-model-transport-failure-v1',keyId,
       requestHash:manifest.requestHash,manifestHash:digest(manifest),reason,retryable:true,httpStatus,origin:'https://openrouter.ai',
       path:'/api/v1/chat/completions',capturedAt,completedAt,expiresAt:after.expiresAt});
      attachModeTransportFailure(error,{statement,requestManifest:manifest,signature:sign(null,Buffer.from(digest(statement),'hex'),privateKey).toString('base64url')});
@@ -95,13 +97,13 @@ export async function createConfiguredTaskModeRequest(context:{userId:string;run
    }catch{/* Preserve the original error; unsigned failures cannot qualify provenance. */}
    throw error;
   }
-  requireSpend();controlled();const after=await trust();
+  requireSpend();controlled();await runtime?.assertCurrent();const after=await trust();
   if(before.hash!==after.hash||digest(await read())!==digest(saved)||!observed||status!==200
    ||requestHash!==output.requestManifest.requestHash||output.requestManifest.toolSchemaHash!==digest(modelFunctions)
    ||!output.requestManifest.response.modelMatchesRequested||!output.requestManifest.response.model
    ||!output.requestManifest.response.provider||!output.requestManifest.response.generationId)throw new Error('Task transport request or trust changed');
   const completedAt=new Date().toISOString();if(Date.parse(completedAt)>=Date.parse(after.expiresAt))throw new Error('Task transport enrollment expired');
-  const statement=taskTransportStatementSchema.parse({...binding,protocol:'task-model-transport-v1',keyId,requestHash,
+  const statement=taskTransportStatementSchema.parse({...binding,...(runtime?{runtimeProcess:runtime.proof}:{}),protocol:'task-model-transport-v1',keyId,requestHash,
    manifestHash:digest(output.requestManifest),responseHash:skillTransportResponseHash(output.message),origin:'https://openrouter.ai',
    path:'/api/v1/chat/completions',status:200,capturedAt,completedAt,expiresAt:after.expiresAt});
   return {...output,transportReceipt:{statement,signature:sign(null,Buffer.from(digest(statement),'hex'),privateKey).toString('base64url')}};

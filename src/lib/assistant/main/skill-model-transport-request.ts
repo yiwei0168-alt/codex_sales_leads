@@ -14,11 +14,12 @@ import {requireSkillAcceptanceFreeze} from './skill-acceptance-freeze';
 import {assertLocalAnalysisBoundary} from './local-analysis-boundary';
 import {loadConfiguredSkillRunnerTrustRegistry} from './skill-runner-attestation';
 import {skillTransportBindingSchema,skillTransportResponseHash,skillTransportStatementSchema,verifyConfiguredSkillTransportReceipt} from './skill-model-transport-receipt';
+import {readRegisteredRuntimeProcess} from './runtime-process-proof';
 import type {SkillCandidateCollector,SkillCandidateRequest} from './skill-candidate-model';
 
 const nativeTransport=fetch;
 function assertControlledProcess(){
- if(process.env.NODE_ENV!=='production'||process.execArgv.length||process.env.NODE_OPTIONS?.trim()
+ if(process.env.NODE_ENV!=='production'||process.execArgv.length||process.env.NODE_OPTIONS?.trim()||process.env.NODE_PATH?.trim()
   ||process.env.NODE_EXTRA_CA_CERTS||process.env.SSL_CERT_FILE||process.env.SSL_CERT_DIR||process.env.NODE_USE_SYSTEM_CA==='1'
   ||process.env.NODE_TLS_REJECT_UNAUTHORIZED==='0')throw new Error('Controlled production collector process required');
 }
@@ -56,14 +57,17 @@ export async function createConfiguredSkillTransportRequest(context:{userId:stri
   return {registryHash:digest(registry),expiresAt:new Date(Math.min(Date.parse(key.expiresAt),Date.parse(frozen.plan.expiresAt))).toISOString()};
  };
  await trust();
+ const runtime=await readRegisteredRuntimeProcess('skill-collector',binding.deploymentHash,import.meta.url);
  return async request=>{
   requireSpend();
   assertLocalAnalysisBoundary();await requireSkillAcceptanceFreeze(context,frozen.freezeId,frozen.plan);const before=await trust();
   assertControlledProcess();
+  await runtime?.assertCurrent();
   let observedHash:string|undefined,observedBody:Record<string,unknown>|undefined,observedStatus:number|undefined,observed=false;const capturedAt=new Date().toISOString();
   const transport:typeof fetch=async(url,init)=>{
    requireSpend();
    assertControlledProcess();
+   await runtime?.assertCurrent();
    const target=new URL(url instanceof Request?url.url:String(url));
    if(observed||target.href!=='https://openrouter.ai/api/v1/chat/completions'||init?.method!=='POST'||init.redirect!=='error'||typeof init.body!=='string')throw new Error('Transport request boundary changed');
    observed=true;observedBody=JSON.parse(init.body);observedHash=digest(observedBody);
@@ -78,12 +82,12 @@ export async function createConfiguredSkillTransportRequest(context:{userId:stri
    // A failed signature/admission check must never turn an unknown result into proof.
    // Preserve the original error so existing reconciliation/fallback rules still apply.
    try{
-    requireSpend();assertControlledProcess();await requireSkillAcceptanceFreeze(context,frozen.freezeId,frozen.plan);
+    requireSpend();assertControlledProcess();await runtime?.assertCurrent();await requireSkillAcceptanceFreeze(context,frozen.freezeId,frozen.plan);
     const after=await trust(),reason=modeFailureCode(error),status=observedStatus??null;
     if(observedBody&&mayFallback(error)&&!request.signal?.aborted&&after.registryHash===before.registryHash&&failureStatusMatches(reason,status)){
      const manifest=modelRequestManifest(observedBody,null);
      if(manifest.toolSchemaHash!==frozen.plan.identity.toolSchemaHash)throw new Error('Failure transport tools changed');
-     const statement=skillTransportFailureStatementSchema.parse({...binding,protocol:'skill-model-transport-failure-v1',keyId,
+     const statement=skillTransportFailureStatementSchema.parse({...binding,...(runtime?{runtimeProcess:runtime.proof}:{}),protocol:'skill-model-transport-failure-v1',keyId,
       step:request.step,routeIndex:request.index,requestHash:manifest.requestHash,manifestHash:digest(manifest),reason,retryable:true,httpStatus:status,
       origin:'https://openrouter.ai',path:'/api/v1/chat/completions',capturedAt,completedAt:new Date().toISOString(),expiresAt:after.expiresAt});
      attachModeTransportFailure(error,{statement,requestManifest:manifest,signature:sign(null,Buffer.from(digest(statement),'hex'),privateKey).toString('base64url')});
@@ -93,10 +97,11 @@ export async function createConfiguredSkillTransportRequest(context:{userId:stri
   }
   requireSpend();
   assertControlledProcess();
+  await runtime?.assertCurrent();
   await requireSkillAcceptanceFreeze(context,frozen.freezeId,frozen.plan);const after=await trust();
   if(after.registryHash!==before.registryHash||!observed||observedStatus!==200||observedHash!==output.requestManifest.requestHash
    ||output.requestManifest.toolSchemaHash!==frozen.plan.identity.toolSchemaHash)throw new Error('Transport request or trust changed during call');
-  const statement=skillTransportStatementSchema.parse({...binding,protocol:'skill-model-transport-v1',keyId,step:request.step,routeIndex:request.index,
+  const statement=skillTransportStatementSchema.parse({...binding,...(runtime?{runtimeProcess:runtime.proof}:{}),protocol:'skill-model-transport-v1',keyId,step:request.step,routeIndex:request.index,
    requestHash:observedHash,manifestHash:digest(output.requestManifest),responseHash:skillTransportResponseHash(output.message),origin:'https://openrouter.ai',
    path:'/api/v1/chat/completions',status:200,capturedAt,completedAt:new Date().toISOString(),expiresAt:after.expiresAt});
   const envelope={statement,signature:sign(null,Buffer.from(digest(statement),'hex'),privateKey).toString('base64url')};

@@ -7,12 +7,13 @@ import {retryableModeFailureReasons} from './mode-failure-reasons';
 import {modelRequestManifestSchema,assertModelRequestManifest} from './model-request-manifest';
 import {skillTransportBindingSchema} from './skill-model-transport-receipt';
 import {loadConfiguredSkillRunnerTrustRegistry} from './skill-runner-attestation';
+import {runtimeProcessProofSchema} from './runtime-process-proof-schema';
 
 const sha=z.string().regex(/^[a-f0-9]{64}$/);
 export const skillTransportFailureStatementSchema=skillTransportBindingSchema.extend({protocol:z.literal('skill-model-transport-failure-v1'),
  keyId:z.string().min(1).max(100),requestHash:sha,manifestHash:sha,reason:z.enum(retryableModeFailureReasons),retryable:z.literal(true),
  httpStatus:z.number().int().min(100).max(599).nullable(),origin:z.literal('https://openrouter.ai'),path:z.literal('/api/v1/chat/completions'),
- capturedAt:z.iso.datetime(),completedAt:z.iso.datetime(),expiresAt:z.iso.datetime()}).strict();
+ capturedAt:z.iso.datetime(),completedAt:z.iso.datetime(),expiresAt:z.iso.datetime(),runtimeProcess:runtimeProcessProofSchema.optional()}).strict();
 export const skillTransportFailureEnvelopeSchema=z.object({statement:skillTransportFailureStatementSchema,requestManifest:modelRequestManifestSchema,
  signature:z.string().regex(/^[A-Za-z0-9_-]{86}$/)}).strict();
 export function failureStatusMatches(reason:string,status:number|null){
@@ -33,6 +34,7 @@ export async function verifyConfiguredSkillTransportFailure(envelope:unknown,inp
   ||s.requestHash!==m.requestHash||s.manifestHash!==digest(m)||s.reason!==input.reason||!failureStatusMatches(s.reason,s.httpStatus))
   throw new Error('Transport failure request or outcome changed');
  for(const key of Object.keys(b) as Array<keyof typeof b>)if(b[key]!==s[key])throw new Error('Transport failure binding changed');
+ if(s.runtimeProcess&&(s.runtimeProcess.role!=='skill-collector'||s.runtimeProcess.deploymentHash!==s.deploymentHash))throw new Error('Transport failure process claim binding changed');
  const registry=await loadConfiguredSkillRunnerTrustRegistry(b.ownerId),key=registry.keys.find(row=>row.keyId===s.keyId);
  if(!key?.enabled||!key.purposes.includes('model-transport')||key.collectorId!==s.collectorId||key.deploymentHash!==s.deploymentHash)throw new Error('Transport failure trust unavailable');
  if(!(Date.parse(key.notBefore)<=Date.parse(input.frozenAt)&&Date.parse(input.frozenAt)<=Date.parse(s.capturedAt)
@@ -41,5 +43,6 @@ export async function verifyConfiguredSkillTransportFailure(envelope:unknown,inp
  const publicKey=createPublicKey(key.publicKeyPem),signature=Buffer.from(signed.signature,'base64url');
  if(publicKey.asymmetricKeyType!=='ed25519'||signature.toString('base64url')!==signed.signature||!verify(null,Buffer.from(digest(s),'hex'),publicKey,signature))throw new Error('Transport failure signature invalid');
  return {validBefore:s.expiresAt,statementHash:digest(s),registryHash:digest(registry),
+  ...(s.runtimeProcess?{runtimeProcessClaim:s.runtimeProcess}:{}),
   signingEnrollment:{keyId:key.keyId,collectorId:key.collectorId,deploymentHash:key.deploymentHash,purpose:'model-transport' as const},automaticActivation:false as const};
 }

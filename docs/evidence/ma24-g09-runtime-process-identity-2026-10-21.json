@@ -1,0 +1,120 @@
+{
+  "date": "2026-10-21",
+  "stage": "local-runtime-process-identity-claim-producer-and-signature-binding",
+  "rule": "MA24-06",
+  "scope": "G01-G13",
+  "sourceFiles": {
+    "src/lib/assistant/main/runtime-process-proof-schema.ts": "0c01de7cd7344def3ac8184b3f88cf19d33f92173c902516406a51bde4a07dff",
+    "src/lib/assistant/main/runtime-process-proof.ts": "46e70893a73c9703a679dc8557de8d23f958ce475235d83c26105378ba551f04",
+    "src/lib/assistant/main/runtime-process-proof.test.ts": "bb2121e1eea8f110af68076ea9ac4b97aaf3f01a860b76fb2649cd9e72c2a86c",
+    "src/lib/assistant/main/skill-model-transport-request.ts": "7169d1ee9c6893e200011d5b5fc3397f2105c190038344f0c6766651d15a4b4d",
+    "src/lib/assistant/main/task-model-transport-request.ts": "0981d5e91aad3d5d34bd558fe15ca3e5f484e842de291901e2b86bc23a135831",
+    "src/lib/assistant/main/skill-model-transport-receipt.ts": "27c31f8df3d37a014b31b24233bda533ae656ccb20f3394c6e9783338f2b9668",
+    "src/lib/assistant/main/task-model-transport-receipt.ts": "2ca0d46bec3fd47ccc8ceae775dc74c341ddb5fa084e445309dec3cf84847c3b",
+    "src/lib/assistant/main/skill-model-transport-failure-receipt.ts": "85d5220b8e9c6b1e87e3e4e28d4bcd6016062d14c7aa3331e186150a89f788da",
+    "src/lib/assistant/main/task-model-transport-failure-receipt.ts": "81d674b02e6e8a5f99acde700b76f209cd0bbb9487965ac88fd1b6f2e8d4b911",
+    "src/lib/assistant/main/skill-model-transport-request.test.ts": "a94dd19597bf3784ba495a510aa5339a6762cba1623b11bc99f538182cf48a05",
+    "src/lib/assistant/main/task-model-transport-request.test.ts": "7261575554b38eb411a5e9e0032aff86a4618bf09ce90f67e929ba0323fc0a2a",
+    "src/lib/assistant/main/skill-model-transport-receipt.test.ts": "79a52e3acdb29b35147aeb13e1c37e7d2641c98c1f012edde0295fbb9280f032",
+    "scripts/verify-runtime-process-proof-linux.ts": "8de319986325ebf9fdcc78e280d0f4d4a30d19f0c80e74a69178486dd0e106f8"
+  },
+  "checks": {
+    "tests": {
+      "sessionId": 82656,
+      "exitCode": 0,
+      "log": "tmp/ma24-runtime-process-claim-tests-accepted.log",
+      "logSha256": "8e85c77f1f9e81ef5b2383e9f5933fb42e975dcf60beb202b93b25ecf98965df"
+    },
+    "typecheck": {
+      "sessionId": 10078,
+      "exitCode": 0,
+      "log": "tmp/ma24-runtime-process-claim-typecheck-accepted.log",
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "lint": {
+      "sessionId": 72012,
+      "exitCode": 0,
+      "log": "tmp/ma24-runtime-process-claim-lint-accepted.log",
+      "logSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "linuxComponent": {
+      "sessionId": 52498,
+      "exitCode": 0,
+      "log": "tmp/ma24-runtime-process-claim-linux-component.log",
+      "logSha256": "b25c212f5968237d6003a28666ddf8e63998715f695b7e352522744ffaf4c759"
+    }
+  },
+  "testsPassed": 135,
+  "linuxComponentResult": {
+    "runtimeProcessLinuxComponent": "passed",
+    "imageId": "sha256:909e26dbaae1e6b28516bc9736a21ecb657689dfe774a5b4a3e12d49f05209f6",
+    "cases": [
+      {
+        "case": "collector-canonical-entry",
+        "admission": "admitted"
+      },
+      {
+        "case": "worker-canonical-entry",
+        "admission": "admitted"
+      },
+      {
+        "case": "server-canonical-entry",
+        "admission": "admitted"
+      },
+      {
+        "case": "scratch-entry-never-promoted",
+        "admission": "legacy-unclaimed"
+      },
+      {
+        "case": "argv-spoof-rejected-by-kernel-command",
+        "admission": "rejected"
+      },
+      {
+        "case": "writable-root-rejected",
+        "admission": "rejected"
+      },
+      {
+        "case": "node-options-rejected",
+        "admission": "rejected"
+      },
+      {
+        "case": "wrong-deployment-rejected",
+        "admission": "rejected"
+      },
+      {
+        "case": "inventory-tamper-rejected",
+        "admission": "rejected"
+      }
+    ],
+    "usesCurrentGuardSource": true,
+    "syntheticPackage": true,
+    "registeredProductionPackage": false,
+    "firstProviderExecutionVerified": false,
+    "productionAgentEquivalent": false,
+    "automaticActivation": false,
+    "modelCalls": 0
+  },
+  "preservedFailedChecks": {
+    "initialTests": {
+      "sessionId": 78848,
+      "exitCode": 1,
+      "log": "tmp/ma24-runtime-process-claim-tests.log",
+      "logSha256": "3b22d2322a5f40b469d3d450e8b0e325904bdd7b05f5fa868972da04020f8c00"
+    },
+    "initialLint": {
+      "sessionId": 47187,
+      "exitCode": 1,
+      "log": "tmp/ma24-runtime-process-claim-lint.log",
+      "logSha256": "b4c9cdba5b8593447bdab98d5bb04d025678cab02aa9efa24253fa2dd7d9981e"
+    }
+  },
+  "failureCorrection": "Use OS-independent URL pathname screening for Linux invocation facts; rename a reserved module variable. Linux-only actual admission unchanged.",
+  "productionImagesRebuilt": false,
+  "lockedPackageClaimBindingImplemented": false,
+  "completeProcessCoverageAggregationImplemented": false,
+  "productionQualificationProducerImplemented": false,
+  "firstProviderExecutionVerified": false,
+  "realModelCalls": 0,
+  "productionAgentEquivalent": false,
+  "automaticActivation": false
+}

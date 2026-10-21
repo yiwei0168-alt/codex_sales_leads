@@ -55,3 +55,21 @@ it('rejects forged signatures and expired receipts',async()=>{
  await expect(verifyConfiguredSkillTransportReceipt({...envelope,signature:sign(null,Buffer.from(digest(envelope.statement),'hex'),other.privateKey).toString('base64url')},input,now)).rejects.toThrow('signature');
  await expect(verifyConfiguredSkillTransportReceipt(envelope,input,new Date(input.expiresAt))).rejects.toThrow('time');
 });
+it('authenticates an optional process claim without promoting it to package qualification',async()=>{
+ const {envelope}=fixture(),runtimeProcess={protocol:'local-runtime-process-v1',role:'skill-collector',deploymentHash:binding.deploymentHash,
+  nodeSha256:digest('node'),entry:'runner.mjs',entrySha256:digest('runner'),artifact:'runner.mjs',artifactSha256:digest('runner')};
+ const statement={...envelope.statement,runtimeProcess},signed={statement,signature:sign(null,Buffer.from(digest(statement),'hex'),pair.privateKey).toString('base64url')};
+ const out=await verifyConfiguredSkillTransportReceipt(signed,input,now);expect(out.runtimeProcessClaim).toEqual(runtimeProcess);
+ expect(out).not.toHaveProperty('productionAgentEquivalent');expect(out).not.toHaveProperty('runtimeProcessPackageVerified');
+ await expect(verifyConfiguredSkillTransportReceipt({...signed,statement:{...statement,runtimeProcess:{...runtimeProcess,nodeSha256:digest('changed')}}},input,now)).rejects.toThrow('signature');
+});
+it.each(['role','deployment'])('rejects a correctly signed process claim with a different %s binding',async kind=>{
+ const {envelope}=fixture();
+ const runtimeProcess=kind==='role'?{protocol:'local-runtime-process-v1',role:'main-agent',deploymentHash:binding.deploymentHash,
+  nodeSha256:digest('node'),entry:'start.mjs',entrySha256:digest('start'),artifact:'worker.mjs',artifactSha256:digest('worker')}:
+  {protocol:'local-runtime-process-v1',role:'skill-collector',deploymentHash:digest('other'),nodeSha256:digest('node'),
+   entry:'runner.mjs',entrySha256:digest('runner'),artifact:'runner.mjs',artifactSha256:digest('runner')};
+ const statement={...envelope.statement,runtimeProcess};
+ await expect(verifyConfiguredSkillTransportReceipt({statement,signature:sign(null,Buffer.from(digest(statement),'hex'),pair.privateKey).toString('base64url')},input,now))
+  .rejects.toThrow('process claim binding changed');
+});
