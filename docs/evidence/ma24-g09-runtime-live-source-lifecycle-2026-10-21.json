@@ -1,0 +1,53 @@
+{
+  "date": "2026-10-21",
+  "rule": "MA24-06",
+  "stage": "runtime-live-source-lifecycle-local-revalidation",
+  "baseCommit": "9f3b13e1cf622c94da17622fa13155b3de323b56",
+  "worktree": "F:\\codex_sales_leads\\tmp\\ma24-lifecycle-stage",
+  "sourceFiles": {
+    "src/lib/assistant/main/skill-runtime-live-source-lifecycle.ts": "4a7469b9b6b2bef5549b18786afa9d8142e62a114c6062fc9c2e96ede2cd233a",
+    "src/lib/assistant/main/skill-runtime-live-source-lifecycle.test.ts": "ab38291568e134f4034a8b3d386377b37025ac647b2a2073fa55ffb1e474d1a6",
+    "src/lib/assistant/main/skill-runtime-material-sources.ts": "1f23f5d3ea551a9d81cbb85080356e65420a392053f68322a9b72a263f6819c6",
+    "src/lib/assistant/main/skill-acceptance-ledger.ts": "0aaffbbcc088d9d3167c41406fa0142d238673596d3d58dfb92dd6c44ff45626",
+    "scripts/fixtures/configured-five-category-db.ts": "ccfba886c89ceb4e2511d987eda00a3f7ac0c3782dad9e8a7639b91192de0b15"
+  },
+  "checks": {
+    "tests": {
+      "sessionId": 4017,
+      "exitCode": 0,
+      "tests": 114,
+      "files": 6
+    },
+    "typecheck": {
+      "sessionId": 51644,
+      "exitCode": 0
+    },
+    "lint": {
+      "sessionId": 63214,
+      "exitCode": 0,
+      "files": 5
+    }
+  },
+  "logSha256": {
+    "ma24-live-source-lifecycle-tests-composition.log": "a90855150a92a4492ae83c5a67e46f0d1c725de09ffd1761e8effeb5f22b5943",
+    "ma24-live-source-lifecycle-typecheck-accepted.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ma24-live-source-lifecycle-lint-final.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "initialFailures": {
+    "testCache": "Sandbox TEMP rename EPERM before any tests; workspace TEMP/TMP retry passed",
+    "typecheck": "Empty-reference return lacked new counters; fixed, final typecheck exited 0"
+  },
+  "nativeCombination": {
+    "status": "not-started-for-this-source",
+    "earlierSession14339": "Different source, still live; not evidence for this lifecycle change"
+  },
+  "scope": {
+    "sourceMutationTests": "mocked",
+    "actualModelCalls": 0,
+    "realBusinessData": false,
+    "fixedImagesBuilt": false,
+    "productionAgentEquivalent": false,
+    "automaticActivation": false,
+    "deployment": false
+  }
+}

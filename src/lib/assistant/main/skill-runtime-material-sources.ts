@@ -8,6 +8,7 @@ import {historicalCandidateReferenceSchema} from './skill-historical-candidate-r
 import {skillAcceptancePlanSchema} from './skill-acceptance-policy';
 import {skillCandidateTaskSpecSchema} from './evaluation-task-spec';
 import {lockSkillReadReceiptSources} from './skill-read-source-locks';
+import {revalidateSkillRuntimeLiveSources} from './skill-runtime-live-source-lifecycle';
 
 type Artifact={plan:unknown;rawReceipts:unknown};
 /** Keep ordinary source-run IDs separate: they own original prompts, attachments
@@ -47,7 +48,8 @@ export function skillRuntimeMaterialReferences(artifact:Artifact){
 export async function lockSkillRuntimeMaterialSources(client:PoolClient,userId:string,artifact:Artifact){
  const refs=skillRuntimeMaterialReferences(artifact);
  if(!refs.length)return {runtimeTaskSourcesLocked:true as const,runtimeTaskCount:0,runtimeTaskLedgerHash:null,
-  runtimePrivateReadSourcesLocked:true as const,runtimeTimelineCustomerCount:0,runtimeMailCount:0};
+  runtimePrivateReadSourcesLocked:true as const,runtimeTimelineCustomerCount:0,runtimeMailCount:0,
+  runtimeLiveReadSourcesRevalidated:true as const,runtimeLiveReadTaskCount:0,runtimeLiveReadSourceManifestHash:digest([])};
  const plan=skillAcceptancePlanSchema.parse(artifact.plan),freezeId=z.object({collector:z.object({freezeId:z.uuid()}).passthrough()}).passthrough().parse(artifact.rawReceipts).collector.freezeId;
  if(plan.pin.ownerId!==userId)throw new Error('Runtime material owner changed');
  return withBoundTenantTransaction(client,userId,async()=>{
@@ -71,8 +73,11 @@ export async function lockSkillRuntimeMaterialSources(client:PoolClient,userId:s
   if(tools.length>10000||tools.some(row=>row.user_id!==userId||!refs.some(ref=>ref.taskId===row.run_id)||row.effect!=='read'||row.status!=='completed'
    ||row.approval_id!==null||digest(row.input)!==row.input_hash))throw new Error('Runtime material journal binding changed');
   const readSources=await lockSkillReadReceiptSources(client,userId,tools);
+  const liveSources=await revalidateSkillRuntimeLiveSources(client,userId,tasks,tools);
   return {runtimeTaskSourcesLocked:true as const,runtimeTaskCount:tasks.length,
    runtimePrivateReadSourcesLocked:true as const,runtimeTimelineCustomerCount:readSources.timelineCustomerCount,runtimeMailCount:readSources.mailCount,
-   runtimeTaskLedgerHash:digest({protocol:'skill-runtime-material-ledger-v1',tasks:tasks.map(row=>row.snapshot),tools:tools.map(row=>row.snapshot)})};
+   ...liveSources,
+   runtimeTaskLedgerHash:digest({protocol:'skill-runtime-material-ledger-v1',tasks:tasks.map(row=>row.snapshot),tools:tools.map(row=>row.snapshot),
+    ...(liveSources.runtimeLiveReadTaskCount?{liveSourceManifestHash:liveSources.runtimeLiveReadSourceManifestHash}:{})})};
  });
 }

@@ -49,6 +49,8 @@ export async function captureSkillAcceptanceLedger(client:PoolClient,userId:stri
   if(declarations.length>limit)throw new Error('Acceptance ledger declaration limit exceeded');
   return {acceptanceLedgerRevalidated:true as const,acceptanceLedgerHash:digest({protocol:'skill-acceptance-ledger-v1',artifactHash,freezeId,attempts,captures,declarationsAvailable,declarations,
    ...(runtime.runtimeTaskCount?{runtimeTaskLedgerHash:runtime.runtimeTaskLedgerHash}:{})}),acceptanceLedgerRuntimeTaskCount:runtime.runtimeTaskCount,
+   acceptanceLedgerRuntimeLiveReadTaskCount:runtime.runtimeLiveReadTaskCount??0,
+   acceptanceLedgerRuntimeLiveReadSourcesRevalidated:runtime.runtimeLiveReadSourcesRevalidated===true,
    acceptanceLedgerAttemptCount:attempts.length,acceptanceLedgerCaptureCount:captures.length,acceptanceLedgerDeclarationCount:declarations.length};
  });
 }
