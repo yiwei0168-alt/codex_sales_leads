@@ -6,6 +6,7 @@ import {request} from 'node:http';
 import {writeFile} from 'node:fs/promises';
 import {Client} from 'pg';
 import {chromium,expect} from '@playwright/test';
+import {FormData as FixtureFormData,fetch as fixtureFetch} from 'undici';
 
 assert.equal(process.env.MA24_DISPOSABLE_ATTACHMENT_UI,'1');
 const database=process.env.MA24_ATTACHMENT_DATABASE_CONTAINER!;assert.match(database,/^[a-f0-9]{64}$/);
@@ -26,7 +27,7 @@ try{
  const owner=(await admin.query('select id,email from app_user where email=$1',[process.env.MA24_ATTACHMENT_OWNER_EMAIL])).rows[0];assert(owner);assert.match(owner.email,/^pilot-container-[a-f0-9]{12}-0@example\.invalid$/);
  const list=async(actor=cookie)=>{const r=await fetch(upstream.origin+'/api/knowledge/uploads',{headers:{cookie:actor},signal:AbortSignal.timeout(15000)});return {status:r.status,body:await r.json()};};
  const queued=async()=>(await admin.query('select count(*)::int n from agent_run where user_id=$1',[owner.id])).rows[0].n;
- const apiUpload=async(name:string,bytes:Buffer)=>{const form=new FormData();form.set('collection','company');form.set('title',name);form.set('visibility','private');form.set('file',new Blob([new Uint8Array(bytes)],{type:'application/pdf'}),name);const r=await fetch(upstream.origin+'/api/knowledge/uploads',{method:'POST',headers:{cookie},body:form,signal:AbortSignal.timeout(15000)});assert.equal(r.status,202);return (await r.json()).id as string;};
+ const apiUpload=async(name:string,bytes:Buffer)=>{const form=new FixtureFormData();form.set('collection','company');form.set('title',name);form.set('visibility','private');form.set('file',new Blob([new Uint8Array(bytes)],{type:'application/pdf'}),name);const r=await fixtureFetch(upstream.origin+'/api/knowledge/uploads',{method:'POST',headers:{cookie},body:form,signal:AbortSignal.timeout(15000)});const receipt=await r.json() as {id?:string;error?:string};assert.equal(r.status,202,JSON.stringify({phase:'paging-upload',error:receipt.error??null}));assert(receipt.id);return receipt.id;};
  assert.equal((await list('')).status,401);assert.deepEqual((await list(peer)).body.jobs,[]);
  await new Promise<void>(done=>proxy.listen(0,'127.0.0.1',done));const address=proxy.address();assert(address&&typeof address!=='string');const base=`https://127.0.0.1:${address.port}`;
  browser=await chromium.launch({channel:'chrome',headless:true});
