@@ -56,3 +56,19 @@ it('rejects a wire value that changes the verified output',async()=>{
  const f=fixture();f.wire.set(f.call.id,JSON.stringify({...result({...f.snapshot.candidate.value,scope:'global'},{cost:'known'}),callId:f.row.id}));
  await expect(reconstructSkillRuntimeTools(f.snapshot,f.context,[f.row],f.wire).dispatch(f.call)).rejects.toThrow('wire output changed');
 });
+
+it('reconstructs a prospective business read from its own journal without an original matching query',async()=>{
+ const f=fixture(),tool=productTools.find(row=>row.id==='customer_timeline')!,input=tool.input.parse({offset:1});
+ f.row={...f.row,tool_id:tool.id,tool_version:tool.version,input,input_hash:digest(input),output:{...result({customers:[],offset:1},{cost:'known'}),callId:f.row.id}};
+ f.call.function.arguments=JSON.stringify({tool:tool.id,arguments:input});
+ f.wire.set(f.call.id,toolModelView([{role:'tool',tool_call_id:f.call.id,content:JSON.stringify(f.row.output)}])[0].content!);
+ await expect(reconstructSkillRuntimeTools(f.snapshot,f.context,[f.row],f.wire).dispatch(f.call)).rejects.toThrow('original receipt unavailable');
+ const reader=reconstructSkillRuntimeTools(f.snapshot,f.context,[f.row],f.wire,true),rebuilt=await reader.dispatch(f.call);
+ expect(rebuilt.receiptHash).toBe(digest({tool:tool.id,arguments:input,output:f.row.output}));reader.assertClosed();
+});
+it('does not admit a live read without an existing source-checking contract',async()=>{
+ const f=fixture(),tool=productTools.find(row=>row.id==='company_read')!,input=tool.input.parse({candidateId:'synthetic'});
+ f.row={...f.row,tool_id:tool.id,tool_version:tool.version,input,input_hash:digest(input)};
+ f.call.function.arguments=JSON.stringify({tool:tool.id,arguments:input});
+ await expect(reconstructSkillRuntimeTools(f.snapshot,f.context,[f.row],f.wire,true).dispatch(f.call)).rejects.toThrow('source contract unavailable');
+});

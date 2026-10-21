@@ -1,6 +1,6 @@
 import {z} from 'zod';
 import {tenantQuery} from '@/lib/rag/db';
-import {digest,result,toolResultSchema,type ExecutionContext,type ModelToolCall} from './contracts';
+import {digest,result,toolResultSchema,type ExecutionContext,type ModelToolCall,type ModelMessage} from './contracts';
 import {resolveToolDispatch} from './tool-dispatch-resolution';
 import {runSkillCandidateArm,type SkillRuntimeDispatch} from './skill-candidate-runner';
 import {prepareSkillRuntimeCandidateSource} from './skill-runtime-candidate-source';
@@ -8,6 +8,9 @@ import {readCompletedSkillCandidateRuntimeTask} from './skill-candidate-runtime-
 import {readSkillCandidateJournal,prepareSkillModelJournalAudit} from './skill-candidate-audit';
 import {assertLocalAnalysisBoundary} from './local-analysis-boundary';
 import {toolModelView} from './tool-model-view';
+import {hasReadEvidenceContract} from './read-evidence-tools';
+import {assertSkillRuntimeReadSources} from './skill-runtime-read-sources';
+import {assertSkillRuntimeModelDisclosure} from './skill-runtime-disclosure';
 
 type Snapshot=Parameters<typeof runSkillCandidateArm>[0];
 export type SkillRuntimeToolReceipt={id:string;user_id:string;run_id:string;call_key:string;tool_id:string;tool_version:string;
@@ -29,7 +32,7 @@ function orderLike(expected:unknown,wire:unknown):unknown{
 
 /** Pure reconstruction: resolves contracts but never invokes a tool handler,
  * dispatcher, provider, checkpoint writer or journal writer. */
-export function reconstructSkillRuntimeTools(snapshot:Snapshot,context:Context,rows:SkillRuntimeToolReceipt[],wireOutputs:ReadonlyMap<string,string>){
+export function reconstructSkillRuntimeTools(snapshot:Snapshot,context:Context,rows:SkillRuntimeToolReceipt[],wireOutputs:ReadonlyMap<string,string>,live=false){
  const used=new Set<string>();
  if(rows.length>2000||new Set(rows.map(row=>row.call_key)).size!==rows.length||new Set(rows.map(row=>row.id)).size!==rows.length)
   throw new Error('Skill runtime tool journal duplicate or oversized');
@@ -48,6 +51,9 @@ export function reconstructSkillRuntimeTools(snapshot:Snapshot,context:Context,r
   if(tool.id==='skill_list')expected=result(snapshot.skills.map(row=>row.id===snapshot.candidate.listing.id?{...row,enabled:context.evaluationArm==='candidate'}:row),{cost:'known'});
   else if(tool.id==='skill_read'&&(input as {id?:string}).id===snapshot.candidate.listing.id){
    candidateSkillUsed=context.evaluationArm==='candidate';expected=result(candidateSkillUsed?snapshot.candidate.value:null,{cost:'known'});
+  }else if(live){
+   if(!hasReadEvidenceContract(tool.id))throw new Error('Skill runtime live read source contract unavailable');
+   expected=toolResultSchema.parse(row.output);
   }else{
    const matches=snapshot.receipts.filter(row=>row.tool===tool.id&&digest(row.arguments)===digest(input));
    if(matches.length!==1)throw new Error('Skill runtime original receipt unavailable or ambiguous');
@@ -57,6 +63,8 @@ export function reconstructSkillRuntimeTools(snapshot:Snapshot,context:Context,r
   }
   const bound=json({...toolResultSchema.parse(expected),callId:row.id});
   if(digest(row.output)!==digest(bound))throw new Error('Skill runtime saved output differs from authoritative source');
+  if(live&&tool.id!=='skill_list'&&!(tool.id==='skill_read'&&(input as {id?:string}).id===snapshot.candidate.listing.id))
+   receiptHash=digest({tool:tool.id,arguments:input,output:bound});
   // JSONB changes object key order. Recover only that order from the stored
   // model request; all raw values still come from the verified source/receipt.
   const wire=wireOutputs.get(call.id);if(wire===undefined)throw new Error('Skill runtime consumed wire output missing');
@@ -83,6 +91,11 @@ export async function auditSkillRuntimeCandidate(context:{userId:string},input:P
   throw new Error('Skill runtime model journal does not match hidden task');
  const toolContext={...context,runId:input.taskId,role:completed.role,mode:completed.mode,knowledgeScope:completed.knowledgeScope,
   evaluationArm:input.arm,skillTaskSpecHash:completed.specHash};
+ const live=completed.spec.readExecution==='registered-live-read-v1';
+ const sourceMessages:ModelMessage[]=tools.flatMap(row=>[
+  {role:'assistant' as const,content:null,tool_calls:[{id:row.call_key,type:'function' as const,function:{name:'execute_tool',arguments:JSON.stringify({tool:row.tool_id,arguments:row.input})}}]},
+  {role:'tool' as const,tool_call_id:row.call_key,content:JSON.stringify(row.output)},
+ ]);
  const wireOutputs=new Map<string,string>();
  for(const next of prepared.selected){
   const messages=z.object({messages:z.array(z.object({role:z.string(),tool_call_id:z.string().optional(),content:z.string().nullable().optional()}).passthrough())}).parse(next.row.input).messages;
@@ -91,8 +104,12 @@ export async function auditSkillRuntimeCandidate(context:{userId:string},input:P
    if(prior!==undefined&&prior!==content)throw new Error('Skill runtime consumed history changed');wireOutputs.set(id,content);
   }
  }
- const reconstruction=reconstructSkillRuntimeTools(saved.snapshot,toolContext,tools,wireOutputs);let decisions=0,reconstructionFailure:Error|undefined;
- const validate=async()=>{if((await source()).sourceHash!==saved.sourceHash)throw new Error('Skill runtime audit sources changed');};
+ const reconstruction=reconstructSkillRuntimeTools(saved.snapshot,toolContext,tools,wireOutputs,live);let decisions=0,reconstructionFailure:Error|undefined;
+ const validate=async(messages?:ModelMessage[])=>{
+  if((await source()).sourceHash!==saved.sourceHash)throw new Error('Skill runtime audit sources changed');
+  if(live&&messages)await assertSkillRuntimeReadSources(toolContext,messages,saved.snapshot.candidate.listing.id);
+ };
+ if(live)await assertSkillRuntimeReadSources(toolContext,sourceMessages,saved.snapshot.candidate.listing.id);
  const replay=await runSkillCandidateArm(saved.snapshot,input.arm,async request=>{
   const next=prepared.selected[decisions++];
   // The model journal validates the JSON representation persisted by PG;
@@ -100,6 +117,7 @@ export async function auditSkillRuntimeCandidate(context:{userId:string},input:P
   if(!next||next.row.step!==request.step||digest(next.row.input)!==digest(json({messages:request.messages,profile:request.profile,index:next.row.route_index}))){
    reconstructionFailure=new Error(`Skill runtime model input reconstruction mismatch at step ${request.step}`);throw reconstructionFailure;
   }
+  if(live)await assertSkillRuntimeModelDisclosure(context,request.messages,saved.snapshot);
   return next.message;
  },validate,prepared.selected.length,undefined,undefined,async call=>{
   try{return await reconstruction.dispatch(call);}catch(error){reconstructionFailure=error instanceof Error?error:new Error('Skill runtime tool reconstruction failed');throw error;}
@@ -108,9 +126,11 @@ export async function auditSkillRuntimeCandidate(context:{userId:string},input:P
  reconstruction.assertClosed();
  if(replay.status!=='completed'||replay.stopReason!==null||replay.reply!==completed.reply||decisions!==prepared.selected.length
   ||replay.candidateSkillUsed!==(input.arm==='candidate'))throw new Error('Skill runtime reconstructed result does not match completed task');
+ if(live)await assertSkillRuntimeReadSources(toolContext,sourceMessages,saved.snapshot.candidate.listing.id);
  if(digest(await readModels())!==digest(rows)||digest(await readTools())!==digest(tools)
   ||digest(await readCompletedSkillCandidateRuntimeTask(context,input,expectedPlan))!==digest(completed))throw new Error('Skill runtime audit records changed');
  const projection={protocol:'skill-runtime-candidate-audit-v1',ownerId:context.userId,taskId:input.taskId,evaluationId:input.evaluationId,arm:input.arm,
+  ...(live?{readExecution:'registered-live-read-v1' as const}:{}),
   freezeId:input.freezeId,sourceKind:prepared.sourceKind,taskSpecHash:completed.specHash,completedTaskHash:digest(completed),serverSnapshotHash:saved.sourceHash,runtimeSnapshotHash,
   capturedAt:new Date(Math.min(...rows.map(row=>Date.parse(row.started_at??'')))).toISOString(),completedAt:new Date(completed.completedAt).toISOString(),
   taskInputHash:saved.taskInputHash,modelConfigHash:saved.modelConfigHash,journalHash:prepared.journalHash,toolJournalHash:digest(tools),

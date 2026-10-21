@@ -9,9 +9,9 @@ import {assertCurrentSkillMessages} from './skill-message-guard';
 import {assertCurrentMemoryMessages} from './memory-message-guard';
 import {assertCurrentKnowledgeMessages} from './knowledge-message-guard';
 import {assertCurrentPrivateReplayMessages} from './private-replay-guard';
+import {READ_EVIDENCE_TOOLS} from './read-evidence-tools';
 
-const supported=new Set(['knowledge_search','knowledge_facts','knowledge_compare','knowledge_originals','vectorless_read',
- 'memory_read','memory_history_search','memory_observation_search','skill_read','mail_read','customer_timeline']);
+const supported=new Set<string>(READ_EVIDENCE_TOOLS);
 /** Every source result must have exactly one preceding call; no orphan or reused identity.
  * Discovery/description metadata is separately checked against current contracts.
  */

@@ -10,6 +10,7 @@ import {assertLocalAnalysisBoundary} from './local-analysis-boundary';
 import {skillCandidateCheckpointSchema,type SkillCandidateCheckpointStore} from './skill-candidate-checkpoint';
 import type {BaseCheckpointSaver} from '@langchain/langgraph';
 import type {RunnableConfig} from '@langchain/core/runnables';
+import {SkillReadDisclosureError} from './skill-read-disclosure-error';
 
 type SkillListing={id:string;name:string;scope:string;current_version:number;enabled:boolean;published:boolean;owned:boolean};
 type Snapshot={context:Pick<ExecutionContext,'userId'|'role'|'mode'|'knowledgeScope'>;
@@ -24,11 +25,12 @@ const graphMetadataSchema=skillCandidateCheckpointSchema.omit({state:true}).exte
 /**
  * Isolated mechanism, not an authorization/production-equivalence claim. The
  * server collector must prepare/revalidate this snapshot and supply an authorized
- * durable model adapter. There is deliberately no business-tool dispatcher here.
+ * durable model adapter. Registered business dispatch is supplied by the server;
+ * the standalone mechanism retains its saved-read behavior.
  * Skill availability changes only through normal skill_list/skill_read results;
  * the original task and system prompts receive no replay or candidate instructions.
  */
-export async function runSkillCandidateArm(input:Snapshot,arm:'baseline'|'candidate',model:Model,validateCurrent:()=>Promise<void>,maximumModelCalls=8,checkpoint?:SkillCandidateCheckpointStore,executionSignal?:AbortSignal,runtimeDispatch?:SkillRuntimeDispatch,graphStorage?:SkillCandidateGraphStorage){
+export async function runSkillCandidateArm(input:Snapshot,arm:'baseline'|'candidate',model:Model,validateCurrent:(messages?:ModelMessage[])=>Promise<void>,maximumModelCalls=8,checkpoint?:SkillCandidateCheckpointStore,executionSignal?:AbortSignal,runtimeDispatch?:SkillRuntimeDispatch,graphStorage?:SkillCandidateGraphStorage){
  if(checkpoint&&graphStorage)throw new Error('Candidate checkpoint protocols cannot be combined');
  assertLocalAnalysisBoundary();z.number().int().min(1).max(64).parse(maximumModelCalls);
  const snapshot=structuredClone(input),profile=modeConfigSchema.parse(snapshot.profile),candidate=snapshot.candidate;
@@ -42,7 +44,7 @@ export async function runSkillCandidateArm(input:Snapshot,arm:'baseline'|'candid
  const skills=snapshot.skills.map(row=>row.id===candidate.listing.id?{...row,enabled:arm==='candidate'}:row);
  let calls=0,stopReason:string|null=null,candidateSkillUsed=false;
  const trace:Array<{id:string;name:string;argumentsHash:string;outputHash:string;receiptHash?:string}>=[];
- const check=async()=>{executionSignal?.throwIfAborted();assertLocalAnalysisBoundary();await validateCurrent();executionSignal?.throwIfAborted();};
+ const check=async(messages?:ModelMessage[])=>{executionSignal?.throwIfAborted();assertLocalAnalysisBoundary();await validateCurrent(messages);executionSignal?.throwIfAborted();};
  await check();const inputHash=digest(snapshot),saved=await checkpoint?.load();
  let restored=saved?skillCandidateCheckpointSchema.parse(saved):null;
  const restore=()=>{if(restored){
@@ -78,7 +80,7 @@ export async function runSkillCandidateArm(input:Snapshot,arm:'baseline'|'candid
     if(!reply.content?.trim()&&!reply.tool_calls?.length)throw new Error('empty reply');
     for(const call of reply.tool_calls??[]){if(seenCalls.has(call.id))throw new Error('duplicate call');seenCalls.add(call.id);}
     return {...reply,content:reply.content??null};
-   }catch(error){stopReason=stopReason??'model-or-source-unavailable';throw error;}
+   }catch(error){stopReason=stopReason??(error instanceof SkillReadDisclosureError?'external-disclosure-unavailable':'model-or-source-unavailable');throw error;}
    finally{clearTimeout(timer);executionSignal?.removeEventListener('abort',cancelled);controller.abort();}
   },
   tool:async call=>{

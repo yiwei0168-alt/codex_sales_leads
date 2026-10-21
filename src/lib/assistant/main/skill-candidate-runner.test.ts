@@ -10,6 +10,8 @@ import {dispatchTool} from './executor';
 import {orderedModeDecision,ModeModelsUnavailable} from './mode-fallback';
 import type {SkillCandidateCheckpoint,SkillCandidateCheckpointStore} from './skill-candidate-checkpoint';
 import {MemorySaver} from '@langchain/langgraph';
+import {KnowledgeSourceChangedError,SOURCE_CHANGED_REPLY} from './knowledge-message-guard';
+import {SkillReadDisclosureError,SKILL_READ_DISCLOSURE_REPLY} from './skill-read-disclosure-error';
 const execution=vi.hoisted(()=>({run:vi.fn()}));
 vi.mock('./tool-execution',()=>({executeRegisteredTool:execution.run}));
 const owner='00000000-0000-4000-8000-000000000001',id='00000000-0000-4000-8000-000000000002';
@@ -26,6 +28,18 @@ function fixture(){
 }
 function call(name:string,args:unknown,id:string){return {role:'assistant',content:null,tool_calls:[{id,type:'function',function:{name,arguments:JSON.stringify(args)}}]};}
 const answer={role:'assistant',content:'Synthetic answer.'};
+it('reports a disclosure stop separately from model unavailability',async()=>{
+ const out=await runSkillCandidateArm(fixture(),'candidate',async()=>{throw new SkillReadDisclosureError();},async()=>{});
+ expect(out).toMatchObject({status:'partial',reply:SKILL_READ_DISCLOSURE_REPLY,stopReason:'external-disclosure-unavailable'});
+});
+it('revalidates newly consumed read messages before another model request',async()=>{
+ const snapshot=fixture(),steps=[call('describe_tool',{tool:'knowledge_search'},'describe'),
+  call('execute_tool',{tool:'knowledge_search',arguments:snapshot.receipts[0].arguments},'read'),answer];let requests=0;
+ const out=await runSkillCandidateArm(snapshot,'candidate',async()=>steps[requests++],async messages=>{
+  if(messages?.some(row=>row.role==='tool'&&row.tool_call_id==='read'))throw new KnowledgeSourceChangedError();
+ },8,undefined,undefined,async()=>({output:toolResultSchema.parse(snapshot.receipts[0].output)}));
+ expect(requests).toBe(2);expect(out).toMatchObject({status:'partial',reply:SOURCE_CHANGED_REPLY,modelCalls:2});
+});
 it('retains zero-call bookkeeping in the checkpoint before the first safety boundary',async()=>{
  const saver=new MemorySaver(),put=saver.put.bind(saver);let crash=true;
  vi.spyOn(saver,'put').mockImplementation(async(...args)=>{

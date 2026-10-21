@@ -40,7 +40,7 @@ async function withPreparedTask<T>(context:{userId:string},input:Selection,expec
    throw new Error('Skill runtime task sources or frozen identity changed');
   const spec=skillCandidateTaskSpecSchema.parse({schema:'skill-candidate-task-v1',freezeId:p.freezeId,planHash:digest(plan),caseId:p.caseId,
    evaluationId:p.evaluationId,arm:p.arm,originalRunId:p.runId,skillId:p.skillId,version:p.version,contentHash:plan.pin.contentHash,
-   snapshotHash:saved.sourceHash,inputHash:saved.taskInputHash,sourceHash:item.sourceHash,identityHash:digest(identity),...(prospective?{prospectiveJobId:p.prospectiveJobId,prospectiveProjectionHash:prospective.projectionHash}:{}),...(saved.safety?{safetyCaseId:p.safetyCaseId}:{})});
+   snapshotHash:saved.sourceHash,inputHash:saved.taskInputHash,sourceHash:item.sourceHash,identityHash:digest(identity),...(prospective?{prospectiveJobId:p.prospectiveJobId,prospectiveProjectionHash:prospective.projectionHash,readExecution:'registered-live-read-v1'}:{}),...(saved.safety?{safetyCaseId:p.safetyCaseId}:{})});
   const taskInput=messageInputSchema.parse({content:saved.safety?saved.snapshot.initialMessages.findLast(row=>row.role==='user')!.content:original.input.content,requestKey:`skill-runtime:${digest(spec)}`,
    attachments:[],mode:saved.snapshot.profile.mode,knowledgeScope:original.input.knowledgeScope??['industry','company','product']});
   const result=await work({spec,input:taskInput,model:original.model_config,role:original.role,originalKnowledgeScope:original.input.knowledgeScope});

@@ -1,0 +1,65 @@
+{
+  "date": "2026-10-21",
+  "rule": "MA24-06",
+  "stage": "registered-prospective-reads-with-disclosure-delta-check",
+  "sourceFreeze": {
+    "baseCommit": "e391d66f1a1bdc357836935ef5c0d85cb8f25b76",
+    "files": {
+      "src/lib/assistant/main/read-evidence-tools.ts": "ac409b2198e68097d88ba92d3390428f1ce24faf46ff8d4026841e11dda2faf4",
+      "src/lib/assistant/main/skill-runtime-read-sources.ts": "3a10963c01ae1a00d41e976140a26b072d83a1582fbdf3bc4d860fa741b89e49",
+      "src/lib/assistant/main/model-request-evidence.ts": "f3eb34c9d49ad9f08ad0cf6446d64b3584a77047bae5a2889d15d97880f535fe",
+      "src/lib/assistant/main/evaluation-task-spec.ts": "63ab74ee214fcb8bf1ff77cff09441c11e5d3dd186bf366a419315b80c3595e3",
+      "src/lib/assistant/main/skill-candidate-runtime-task.ts": "7a80f1fa78da77d565e52b8af36ce17592c066a66a9a56099f83cc3a34fc896f",
+      "src/lib/assistant/main/skill-candidate-runner.ts": "cd45c5e997a787ac83420df4b6642da71793b28a31c61ab44a96efface52b499",
+      "src/lib/assistant/main/skill-candidate-runner.test.ts": "56ab3acbd01968225be359913c9eb8978a5f0a76c1c3c70b8080cbbf761d5354",
+      "src/lib/assistant/main/skill-runtime-candidate.ts": "eb66375c251d13b8bf50286d0e181388b0b80999f6efe694e4ab104d5abc8cff",
+      "src/lib/assistant/main/skill-runtime-candidate-audit.ts": "ef1524a9452c723f80137c0d45590afbeb9411fdb0427dbaffafb7a31cb92a53",
+      "src/lib/assistant/main/skill-runtime-candidate-audit.test.ts": "4ab71af20b6998522f3c46f7fe50ceeaaf13d2649f77e5f6319099735c718200",
+      "src/lib/assistant/main/skill-runtime-read-sources.test.ts": "98b3b370140ce95a5093afda4b484acfd67a49b8da15bf7a866ebe420ee5d441",
+      "scripts/fixtures/configured-signed-candidate-db.ts": "fb23c2847391eedd7786b005effb0a77b7ada85bf58eb348318cc1968d4b498c",
+      "scripts/fixtures/configured-five-category-db.ts": "103e64595833d1b515e1d045bcef19b08d077c601be7bb3ea6fa75afcd03a4d9",
+      "src/lib/assistant/main/skill-runtime-disclosure.ts": "50f7455f4511464b52897a752cc650aee01fe635a22e9d785334efd5f9d5af43",
+      "src/lib/assistant/main/skill-runtime-disclosure.test.ts": "1ee81baa321953fb0893bc0691860acb8f428974e29f8ceea9549447168d372c",
+      "src/lib/assistant/main/skill-read-disclosure-error.ts": "1bfd8bf257f8a1098096a761f04c55512a08875ea1e34b8451d9fb6245b938e4",
+      "src/lib/assistant/main/graph.ts": "b9054cce545e516f19a439f5bf29b66f5607804e78354a40decc334846c31ce6"
+    },
+    "stage": "registered-live-reads-with-disclosure-delta-check",
+    "nativeVerificationPending": true
+  },
+  "checks": {
+    "tests": {
+      "exitCode": 0,
+      "files": 8,
+      "tests": 112,
+      "sessionId": 98242
+    },
+    "typecheck": {
+      "exitCode": 0,
+      "sessionId": 10631
+    },
+    "lint": {
+      "exitCode": 0,
+      "files": 17,
+      "sessionId": 95730
+    }
+  },
+  "logSha256": {
+    "tmp/ma24-prospective-live-disclosure-tests.log": "ef6247188b75d5fc539ecec29e4ec991a83604c89d8fba6ec36edb88fa9f8fc3",
+    "tmp/ma24-prospective-live-disclosure-typecheck.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "tmp/ma24-prospective-live-disclosure-lint.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "nativeCombination": {
+    "sessionId": 14339,
+    "status": "running-not-accepted",
+    "log": "tmp/ma24-prospective-live-disclosure-db.log"
+  },
+  "priorExecutionOnlyEvidence": "ma24-g09-prospective-live-read-execution-before-disclosure-gate-2026-10-21.json",
+  "scope": {
+    "actualModelCalls": 0,
+    "realBusinessData": false,
+    "productionAgentEquivalent": false,
+    "realQualityAccepted": false,
+    "fixedImagesBuilt": false,
+    "automaticActivation": false
+  }
+}

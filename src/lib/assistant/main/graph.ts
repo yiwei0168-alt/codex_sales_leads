@@ -11,6 +11,7 @@ import { requestModel, requestModeModel } from "./model";
 import {createConfiguredTaskModeRequest,taskTransportSigningConfigured} from './task-model-transport-request';
 import { modeConfigSchema } from './mode-config';
 import { ModeModelsUnavailable } from './mode-fallback';
+import {SkillReadDisclosureError,SKILL_READ_DISCLOSURE_REPLY} from './skill-read-disclosure-error';
 import {runJournaledModeModel} from './journaled-mode-model';
 import { BudgetDeniedError } from "@/lib/billing/policy";
 import { loadDecisionMemory } from "./memory-context";
@@ -98,6 +99,7 @@ export function buildMainAgentGraph(deps: MainGraphDependencies, checkpointer?: 
         if(error instanceof MemoryContextChangedError)return {status:'partial' as RunStatus,reply:MEMORY_CHANGED_REPLY,pending:[]};
         if(error instanceof SkillContextChangedError)return {status:'partial' as RunStatus,reply:SKILL_CHANGED_REPLY,pending:[]};
         if(error instanceof KnowledgeSourceChangedError)return {status:'partial' as RunStatus,reply:SOURCE_CHANGED_REPLY,pending:[]};
+        if(error instanceof SkillReadDisclosureError)return {status:'partial' as RunStatus,reply:SKILL_READ_DISCLOSURE_REPLY,pending:[]};
         if(error instanceof ModeModelsUnavailable)return {steps:state.steps+1,status:'partial' as RunStatus,reply:'当前模式的模型尝试已结束，任务和已有工具结果已保存。请查看执行详情；结果不明的请求需先核对，已执行的操作不会自动重做。'};
         if(error instanceof ModelBatchPending)return {status:"queued" as RunStatus,reply:"主模型批次已保存，正在等待提供方返回结果；后台会继续查询。批处理完成窗口为 24 小时，可暂停或取消后续工作。"};
         if(error instanceof OpenRouterRequestError&&error.status===429)return {steps:state.steps+1,status:"partial" as RunStatus,reply:"模型服务返回 HTTP 429：请求受到限流或配额限制。本次已停止立即重试，任务和已有结果已保存；请稍后恢复任务。"};

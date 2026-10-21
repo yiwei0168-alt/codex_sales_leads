@@ -39,7 +39,7 @@ export async function verifyConfiguredSignedCandidateDatabase(pool:Pool,input:{o
  await writeFile(jobPath,JSON.stringify({ownerId:input.owner,freezeId:frozen.freezeId,evaluationId,maximumModelCalls:8,
   ...(input.prospective?{caseId:'signed-shadow',kind:'prospective',jobId:input.prospective.jobId}:{caseId:'signed-replay',kind:'historical',runId:input.runId})}));
  await build({...productNodeBuildOptions(),entryPoints:['scripts/skill-collector-runner.ts'],outfile:compiledPath,
-  banner:{js:`globalThis.fetch=async(url,init)=>{if(process.env.MA24_CANDIDATE_FORBID_REQUEST==='1')throw new Error('Synthetic repeat requested network');if(String(url)!=='https://openrouter.ai/api/v1/chat/completions')throw new Error('Synthetic destination rejected');const body=JSON.parse(init.body);const step=body.messages.filter(m=>m.role==='assistant').length;if(step<Number(process.env.MA24_CANDIDATE_MINIMUM_HTTP_STEP||0))throw new Error('Completed model step requested again');const call=(id,name,args)=>({index:0,id,type:'function',function:{name,arguments:JSON.stringify(args)}});let calls;if(step===0)calls=[call('candidate-describe-skill','describe_tool',{tool:'skill_read'}),{...call('candidate-describe-customers','describe_tool',{tool:'customer_timeline'}),index:1}];else if(step===1)calls=[call('candidate-read-skill','execute_tool',{tool:'skill_read',arguments:{id:process.env.MA24_CANDIDATE_SKILL_ID}})];else if(step===2)calls=[call('candidate-read-customers','execute_tool',{tool:'customer_timeline',arguments:{}})];const chunk={id:'synthetic-candidate-'+process.env.MA24_CANDIDATE_EVALUATION_ID+'-'+step,model:body.model,provider:'synthetic',choices:[{index:0,delta:calls?{tool_calls:calls}:{content:'Synthetic streamed reply'},finish_reason:calls?'tool_calls':'stop'}]};const nl=String.fromCharCode(10);const response=new Response('data: '+JSON.stringify(chunk)+nl+nl+'data: [DONE]'+nl+nl,{status:200,headers:{'Content-Type':'text/event-stream'}});Object.defineProperty(response,'url',{value:String(url)});return response;};`},
+  banner:{js:`globalThis.fetch=async(url,init)=>{if(process.env.MA24_CANDIDATE_FORBID_REQUEST==='1')throw new Error('Synthetic repeat requested network');if(String(url)!=='https://openrouter.ai/api/v1/chat/completions')throw new Error('Synthetic destination rejected');const body=JSON.parse(init.body);const step=body.messages.filter(m=>m.role==='assistant').length;if(step<Number(process.env.MA24_CANDIDATE_MINIMUM_HTTP_STEP||0))throw new Error('Completed model step requested again');const call=(id,name,args)=>({index:0,id,type:'function',function:{name,arguments:JSON.stringify(args)}});let calls;if(step===0)calls=[call('candidate-describe-skill','describe_tool',{tool:'skill_read'}),{...call('candidate-describe-customers','describe_tool',{tool:'customer_timeline'}),index:1}];else if(step===1)calls=[call('candidate-read-skill','execute_tool',{tool:'skill_read',arguments:{id:process.env.MA24_CANDIDATE_SKILL_ID}})];else if(step===2)calls=[call('candidate-read-customers','execute_tool',{tool:'customer_timeline',arguments:process.env.MA24_CANDIDATE_LIVE_PROSPECTIVE==='1'?{offset:1}:{}})];const chunk={id:'synthetic-candidate-'+process.env.MA24_CANDIDATE_EVALUATION_ID+'-'+step,model:body.model,provider:'synthetic',choices:[{index:0,delta:calls?{tool_calls:calls}:{content:'Synthetic streamed reply'},finish_reason:calls?'tool_calls':'stop'}]};const nl=String.fromCharCode(10);const response=new Response('data: '+JSON.stringify(chunk)+nl+nl+'data: [DONE]'+nl+nl,{status:200,headers:{'Content-Type':'text/event-stream'}});Object.defineProperty(response,'url',{value:String(url)});return response;};`},
   plugins:[{name:'explicit-synthetic-network-and-billing',setup(builder){
    if(process.env.MA24_CONFIGURED_RUNTIME_PROCESS_CRASH==='1')builder.onLoad({filter:/skill-runtime-candidate\.ts$/},async args=>{
     const source=await readFile(args.path,'utf8'),needle='await dispatchTool(call,context,tools)';assert.equal(source.split(needle).length,2);
@@ -56,7 +56,7 @@ export async function verifyConfiguredSignedCandidateDatabase(pool:Pool,input:{o
   const child=spawn(process.execPath,[fixedPackage?'/app/start.mjs':compiledPath,'--execute',jobPath],{windowsHide:true,stdio:['ignore','pipe','pipe'],env:{...process.env,
    NODE_ENV:'production',NODE_OPTIONS:'',NODE_EXTRA_CA_CERTS:'',SSL_CERT_FILE:'',SSL_CERT_DIR:'',NODE_USE_SYSTEM_CA:'0',NODE_TLS_REJECT_UNAUTHORIZED:'1',
    OPENROUTER_API_KEY:fixedPackage?'':'SYNTHETIC_NOT_A_CREDENTIAL',OPENROUTER_BASE_URL:'https://openrouter.ai/api/v1',OPENROUTER_HTTP_REFERER:'',
-   MA24_RUNTIME_KILL_AFTER_SKILL_READ:crash?'1':'0',MA24_CANDIDATE_MINIMUM_HTTP_STEP:String(minimumStep),MA24_CANDIDATE_FORBID_REQUEST:reuse?'1':'0',MA24_CANDIDATE_SKILL_ID:input.skillId,MA24_CANDIDATE_EVALUATION_ID:evaluationId,
+   MA24_CANDIDATE_LIVE_PROSPECTIVE:input.prospective?'1':'0',MA24_RUNTIME_KILL_AFTER_SKILL_READ:crash?'1':'0',MA24_CANDIDATE_MINIMUM_HTTP_STEP:String(minimumStep),MA24_CANDIDATE_FORBID_REQUEST:reuse?'1':'0',MA24_CANDIDATE_SKILL_ID:input.skillId,MA24_CANDIDATE_EVALUATION_ID:evaluationId,
    TASK_MODEL_TRANSPORT_COLLECTOR_ID:process.env.MA24_MEASURED_RUNTIME_PACKAGES_FILE?process.env.TASK_MODEL_TRANSPORT_COLLECTOR_ID:input.collectorId,
    TASK_MODEL_TRANSPORT_DEPLOYMENT_SHA256:process.env.MA24_MEASURED_RUNTIME_PACKAGES_FILE?process.env.TASK_MODEL_TRANSPORT_DEPLOYMENT_SHA256:input.deploymentHash,
    SKILL_RUNNER_COLLECTOR_ID:input.collectorId,SKILL_RUNNER_DEPLOYMENT_SHA256:input.deploymentHash,
@@ -75,7 +75,7 @@ export async function verifyConfiguredSignedCandidateDatabase(pool:Pool,input:{o
  assert.equal(exit.code,0,`Configured signed candidate fixture failed: ${exit.diagnostic}`);assert(exit.output.includes('"collectorExecution":"completed"'));
  const bundles=(await pool.query<{id:string;raw_receipts:{collector:{protocol:string};candidateSources?:Record<string,{taskId:string}>;prospectiveSources?:Record<string,{taskId:string}>}}>('select id,raw_receipts from agent_skill_acceptance_bundle where owner_id=$1 and raw_receipts::text like $2',[input.owner,`%${evaluationId}%`])).rows;
  assert.equal(bundles.length,1);
- let runtimeTaskBindingVerified=false,completedRuntimeNoRequestReuseVerified=false,runtimeMaterialLockVerified=false,prospectiveCaptureMismatchRejected=false,fixedPackageCompletedReuseVerified=false;
+ let runtimeTaskBindingVerified=false,completedRuntimeNoRequestReuseVerified=false,runtimeMaterialLockVerified=false,prospectiveCaptureMismatchRejected=false,fixedPackageCompletedReuseVerified=false,prospectiveLiveReadOutsideOriginalReceiptsVerified=false;
  {
   const prospective=Boolean(input.prospective),caseId=prospective?'signed-shadow':'signed-replay';
   assert.equal(bundles[0].raw_receipts.collector.protocol,prospective?'prospective-collector-v2':'historical-collector-v2');
@@ -85,8 +85,15 @@ export async function verifyConfiguredSignedCandidateDatabase(pool:Pool,input:{o
   assert.equal(task.execution_spec.schema,'skill-candidate-task-v1');assert.equal(task.execution_spec.originalRunId,input.runId);
   assert.equal(task.execution_spec.evaluationId,evaluationId);assert.equal(task.execution_spec.freezeId,frozen.freezeId);
   assert.equal(task.execution_spec.prospectiveJobId,input.prospective?.jobId);if(prospective)assert.match(task.execution_spec.prospectiveProjectionHash,/^[a-f0-9]{64}$/);
-  const tools=(await pool.query('select id,tool_id,status,output from agent_tool_call where run_id=$1 order by tool_id',[taskId])).rows;
+  const tools=(await pool.query('select id,tool_id,status,input,output from agent_tool_call where run_id=$1 order by tool_id',[taskId])).rows;
   assert.deepEqual(tools.map(row=>row.tool_id),['customer_timeline','skill_read']);assert(tools.every(row=>row.status==='completed'));
+  if(prospective){
+   assert.equal(task.execution_spec.readExecution,'registered-live-read-v1');
+   const read=tools.find(row=>row.tool_id==='customer_timeline')!;assert.equal(read.input.offset,1);
+   assert(!snapshot.snapshot.receipts.some(row=>row.tool==='customer_timeline'&&digest(row.arguments)===digest(read.input)),
+    'Prospective query must not match an original saved receipt');
+   prospectiveLiveReadOutsideOriginalReceiptsVerified=true;
+  }
   const attempts=(await pool.query('select id,step,snapshot_hash,input_hash from agent_skill_model_attempt where evaluation_id=$1 order by step',[evaluationId])).rows;
   assert(attempts.length>0);
   const runtimeHash=digest({protocol:'skill-runtime-candidate-v2-postgres',sourceHash:snapshot.sourceHash,taskId,specHash:digest(task.execution_spec)});
@@ -100,7 +107,7 @@ export async function verifyConfiguredSignedCandidateDatabase(pool:Pool,input:{o
    assert.equal(result.evaluationId,evaluationId);fixedPackageCompletedReuseVerified=true;
   }
   assert.deepEqual((await pool.query('select id,step,snapshot_hash,input_hash from agent_skill_model_attempt where evaluation_id=$1 order by step',[evaluationId])).rows,attempts);
-  assert.deepEqual((await pool.query('select id,tool_id,status,output from agent_tool_call where run_id=$1 order by tool_id',[taskId])).rows,tools);
+  assert.deepEqual((await pool.query('select id,tool_id,status,input,output from agent_tool_call where run_id=$1 order by tool_id',[taskId])).rows,tools);
   assert.deepEqual((await pool.query('select id from agent_skill_acceptance_bundle where owner_id=$1 and raw_receipts::text like $2',[input.owner,`%${evaluationId}%`])).rows,[{id:bundles[0].id}]);
   const review=await readSkillAcceptanceReviewCase(context,{bundleId:bundles[0].id,caseId});
   assert.equal(review.judgment,null);assert.equal(review.automaticActivation,false);
@@ -122,5 +129,5 @@ export async function verifyConfiguredSignedCandidateDatabase(pool:Pool,input:{o
  }
 
  assert.equal((await pool.query('select enabled from agent_skill where id=$1',[input.skillId])).rows[0].enabled,false);
- return {collectorBundleId:bundles[0].id,configuredSignedCandidateDatabaseVerified:true,...(recovery?Object.fromEntries(Object.entries(recovery).filter(([key])=>key!=='exit')):{}),runtimeTaskBindingVerified,completedRuntimeNoRequestReuseVerified,fixedPackageCompletedReuseVerified,runtimeTwoArmReviewVerified:true,runtimeMaterialLockVerified,prospectiveCaptureMismatchRejected,configuredCandidateKind:input.prospective?'prospective':'historical',candidateSkillRemainsDisabled:true,actualModelCalls:0,automaticActivation:false};
+ return {collectorBundleId:bundles[0].id,configuredSignedCandidateDatabaseVerified:true,...(recovery?Object.fromEntries(Object.entries(recovery).filter(([key])=>key!=='exit')):{}),runtimeTaskBindingVerified,completedRuntimeNoRequestReuseVerified,fixedPackageCompletedReuseVerified,prospectiveLiveReadOutsideOriginalReceiptsVerified,runtimeTwoArmReviewVerified:true,runtimeMaterialLockVerified,prospectiveCaptureMismatchRejected,configuredCandidateKind:input.prospective?'prospective':'historical',candidateSkillRemainsDisabled:true,actualModelCalls:0,automaticActivation:false};
 }
