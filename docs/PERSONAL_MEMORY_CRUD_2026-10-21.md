@@ -13,3 +13,5 @@ Seventeen focused route/storage tests passed, including stale-version HTTP statu
 No new product confirmation, paid/model call, genuine business quality, production qualification or deployment is claimed. G14-G20 remain deferred.
 
 First actual run 20436 exited 1 while selecting the prefilled edit textarea by its exact wrapping-label text. Create/cancel and stored scope/peer checks had passed; lifecycle/audit/pagination were not reached. The host fixture now selects the unique textarea inside the visible editor form, covering the same field without relying on the label text excluding its initial textarea content. Product image is unchanged; this failed run remains retained.
+
+Retry 15821 exited 1 selecting the type dropdown by exact wrapping-label text (its option text is included). Create/edit, concurrent draft/lifecycle 409, archive/activate/delete and audit recovery had passed in this invocation, but the complete result remains unaccepted. The host fixture now selects the sole combobox in the editor; remaining scope and product are unchanged.
