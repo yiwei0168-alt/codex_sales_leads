@@ -438,13 +438,28 @@
         "scripts/verify-ma24-fresh-pilot-new-cluster.ts": "1c9e13c2908fcfd24073a9a4c1b0046cb09854fe4b159061464b8793b59cce23"
       },
       "result": "Closed labels/open/Escape/backdrop/navigation checks reached. Immediate body-overflow assertion during a new menu open after navigation saw empty string before passive effect confirmation; subsequent desktop resize/collapse gates not reached. Follow-up waits for the same body lock/unlock condition before continuing; no product guard changed."
+    },
+    {
+      "sessionId": 47288,
+      "exitCode": 1,
+      "log": "tmp/ma24-responsive-navigation-settled-fixed-web.log",
+      "logSha256": "b503c35c8ef08847a63427f6b1359ead243f5a0af29ffc3f07caa64b53156d61",
+      "fixtureSource": "9f8ba650",
+      "sourceFilesCanonicalLf": {
+        "src/app/globals.css": "7252c8609fad09da10067ee8f3bd7d5b075fa2fe02dad22150e2949f4bec46b2",
+        "src/components/copilot-demo.tsx": "70fe440920022763cda2f26ec2e3c58f440f2112288dbdb4a51c80fdaa3b5b30",
+        "scripts/verify-responsive-navigation-styles.mjs": "cdfeb4a21478927f942da9f3d3cf4da1349f7f19dc4fbcaa0efaeb2b5e6b1083",
+        "scripts/verify-responsive-navigation-fixed-web.ts": "ee56668aaa775df91d1a240cd75818cc113561b158954901082282b7b262d1f2",
+        "scripts/verify-ma24-fresh-pilot-new-cluster.ts": "1c9e13c2908fcfd24073a9a4c1b0046cb09854fe4b159061464b8793b59cce23"
+      },
+      "result": "After choosing the current Knowledge route, a new dialog scenario raced the route read replacing its client shell. Expected dialog disappeared and the memory pane reset to document list. Desktop-recovery/collapse assertions were not reached. Follow-up finishes the route read and reacquires the pane before the next independent scenario; product unchanged."
     }
   ],
   "nextFixtureSourcesCanonicalLf": {
     "src/app/globals.css": "7252c8609fad09da10067ee8f3bd7d5b075fa2fe02dad22150e2949f4bec46b2",
     "src/components/copilot-demo.tsx": "70fe440920022763cda2f26ec2e3c58f440f2112288dbdb4a51c80fdaa3b5b30",
     "scripts/verify-responsive-navigation-styles.mjs": "cdfeb4a21478927f942da9f3d3cf4da1349f7f19dc4fbcaa0efaeb2b5e6b1083",
-    "scripts/verify-responsive-navigation-fixed-web.ts": "ee56668aaa775df91d1a240cd75818cc113561b158954901082282b7b262d1f2",
+    "scripts/verify-responsive-navigation-fixed-web.ts": "5385ccededaea74c47476e9b7af1e7fd8fd2e85560a91fcc23fc4d7b36220ad1",
     "scripts/verify-ma24-fresh-pilot-new-cluster.ts": "1c9e13c2908fcfd24073a9a4c1b0046cb09854fe4b159061464b8793b59cce23"
   },
   "followupChecks": {
@@ -457,6 +472,18 @@
       "sessionId": 3307,
       "exitCode": 0,
       "log": "tmp/ma24-responsive-navigation-effect-lint.log"
+    }
+  },
+  "routeFollowupChecks": {
+    "typecheck": {
+      "sessionId": 11403,
+      "exitCode": 0,
+      "log": "tmp/ma24-responsive-navigation-route-typecheck.log"
+    },
+    "lint": {
+      "sessionId": 85324,
+      "exitCode": 0,
+      "log": "tmp/ma24-responsive-navigation-route-lint.log"
     }
   }
 }

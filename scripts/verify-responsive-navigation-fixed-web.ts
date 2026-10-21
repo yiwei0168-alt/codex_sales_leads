@@ -49,6 +49,9 @@ try{
  await page.keyboard.press('Escape');await closed();await expect(trigger).toBeFocused();
  await opened();await page.locator('.mobile-nav-backdrop').click({position:{x:382,y:500}});await closed();
  await opened();await sidebar.getByRole('button',{name:'知识库',exact:true}).click();await closed();
+ // The route can replace its client shell after the immediate close. Finish
+ // that read transition before opening the next independent dialog scenario.
+ await page.waitForLoadState('networkidle');
  if(!await content.isVisible())await page.getByRole('button',{name:'个人记忆',exact:true}).click();await expect(content).toBeVisible();
  await opened();await sidebar.getByRole('button',{name:'帮助',exact:true}).click();await expect(sidebar.locator('.footer-menu')).toBeVisible();
  await page.setViewportSize({width:960,height:900});await expect(sidebar).not.toHaveAttribute('role','dialog');await expect(sidebar.locator('.footer-menu')).toHaveCount(0);
