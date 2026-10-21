@@ -1,0 +1,543 @@
+{
+  "date": "2026-10-22",
+  "scope": "Existing MA24-16 F10 history read recovery",
+  "status": "component-fixed-web-api-native-and-five-package-checks-passed-integrated",
+  "productAndFixtureCommit": "ce2e8cbbd4fec5adda1a5ef15f460456b9bc3201",
+  "isolatedWorktree": "tmp/ma24-revision-recovery-stage",
+  "canonicalLfSourceSha256": {
+    "src/components/knowledge-revisions.tsx": "89dd6c8c53871e5a2718e594438983b8877e7cf110ddceef7db39cfcc1d82a6d",
+    "scripts/verify-knowledge-revisions-recovery-ui.ts": "031fcc3b6afbcf98dbe79f1718b8479d5854b2c67ee188404cad047606630b24",
+    "scripts/lib/verify-ma24-revision-history-clone.ts": "7d82de8c7d497087cb2161d5e29264d6e0d222985e98e268417e91212b2d4569",
+    "scripts/verify-knowledge-library-fixed-web.ts": "5b9be60317aa48b9c1e83924f7390f1ca13c6e3e2ef0f5d4e863dd10de2354a1"
+  },
+  "regressionReproduction": {
+    "exitCode": 1,
+    "baseline": "02be633829fcd5c7febc60437a31c6befff8d07b",
+    "record": {
+      "revisionMalformedResponseFailure": {
+        "pageErrors": [
+          "Cannot read properties of null (reading 'title')"
+        ],
+        "rootContent": ""
+      }
+    }
+  },
+  "component": {
+    "session": 24392,
+    "exitCode": 0,
+    "record": {
+      "knowledgeRevisionRecoveryComponent": "passed",
+      "results": [
+        {
+          "width": 1366,
+          "malformedRowsRefusedWithoutReactCrash": true,
+          "readFailureHidesOldPageAndDoesNotClaimEmpty": true,
+          "retryRetainsPage": true,
+          "pagingAndHistoryWarnings": true,
+          "longContentWraps": true,
+          "actualDeadlineVerified": true
+        },
+        {
+          "width": 390,
+          "malformedRowsRefusedWithoutReactCrash": true,
+          "readFailureHidesOldPageAndDoesNotClaimEmpty": true,
+          "retryRetainsPage": true,
+          "pagingAndHistoryWarnings": true,
+          "longContentWraps": true,
+          "actualDeadlineVerified": false
+        },
+        {
+          "width": 320,
+          "malformedRowsRefusedWithoutReactCrash": true,
+          "readFailureHidesOldPageAndDoesNotClaimEmpty": true,
+          "retryRetainsPage": true,
+          "pagingAndHistoryWarnings": true,
+          "longContentWraps": true,
+          "actualDeadlineVerified": false
+        }
+      ],
+      "screenshots": [
+        "tmp/knowledge-revisions-recovery/recovered-1366.png",
+        "tmp/knowledge-revisions-recovery/recovered-390.png",
+        "tmp/knowledge-revisions-recovery/recovered-320.png"
+      ],
+      "syntheticHttpOnly": true,
+      "actualModelCalls": 0
+    }
+  },
+  "staticChecks": {
+    "session": 79967,
+    "exitCode": 0,
+    "fullTypecheck": true,
+    "lintFiles": 4,
+    "diffCheck": true
+  },
+  "webSource": {
+    "webImageSourceVerification": "passed",
+    "image": "ma24-pilot-web:ce2e8cbb",
+    "imageId": "sha256:961cda56a7c5bb936c8ccedb90904fdc9bddbd2da3f0e6c33c8e7fdd1fcc39d6",
+    "sourceCommit": "ce2e8cbbd4fec5adda1a5ef15f460456b9bc3201",
+    "buildId": "Z8ejZJPqmQTmECCgYe6MC",
+    "runtimeSourceFileCount": 1063,
+    "runtimeSourceMatchesFixedGitExport": true,
+    "exportEolDifferences": 1063,
+    "runtimeSourceManifestHash": "fec7edd6190a66c388ad32afdf7fdba0810fcc88ed09cfba334b55cf6830daf6",
+    "privateEnvironmentFiles": false,
+    "privateStorageFiles": false,
+    "staticAssetsPresent": true,
+    "nonRootReadOnlyNoNetwork": true,
+    "productionQualified": false
+  },
+  "native": {
+    "session": 82101,
+    "exitCode": 0,
+    "records": [
+      {
+        "knowledgeLibraryFixedWeb": "passed",
+        "actualChromeHttpsCompiledWeb": true,
+        "generatedAccountsAndSourcesOnly": true,
+        "legacyAssetFreeTextPreserved": true,
+        "archivedCurrentBodyAndExcerptsBlocked": true,
+        "withdrawnCurrentAssetCannotFallBackToOlderRegisteredAsset": true,
+        "privateSharedAndAllExcerptGuardParity": true,
+        "currentSharedOriginalReadableButHistoryAndPrivateRevisionsDenied": true,
+        "textTreeMissingRevisionHashAndFailedVersionBlocked": true,
+        "unindexedBinaryBodyBlocked": true,
+        "publicEvidenceContractUnchanged": true,
+        "revisionHistory": {
+          "candidatePage": true,
+          "actualHistoryApi": true,
+          "privateRevisions": 11,
+          "pageSizes": [
+            10,
+            1
+          ],
+          "injectedOneShot503": true,
+          "stalePageHidden": true,
+          "retrySameOffset": true,
+          "reconstructedDisclosure": true,
+          "malformedRowRefusedWithoutReactCrash": true,
+          "screenshots": [
+            "tmp/ma24-revision-history-390-951933bc-116b-4ceb-9c31-ebafe5342619.png",
+            "tmp/ma24-revision-history-1366-078e935c-83bc-4aee-b5ec-4201c9f21dd1.png"
+          ],
+          "viewports": [
+            "390x760",
+            "1366x900"
+          ],
+          "noHorizontalOverflow": true,
+          "pageErrors": 0,
+          "modelCalls": 0,
+          "productionWrites": 0
+        },
+        "results": [
+          {
+            "width": 1366,
+            "sourceWithdrawalHidesBodyTreeAndOriginalLinks": true,
+            "explicitOwnerHistoryRetained": true,
+            "sourceRestorationUsesCurrentAsset": true,
+            "list503ClearsActionsAndRetries": true,
+            "actualDroppedDeleteAckNoAutomaticRetry": true,
+            "confirmedDeleteLockAndReadFailureNotice": true,
+            "modelTasksQueued": 0
+          },
+          {
+            "width": 390,
+            "sourceWithdrawalHidesBodyTreeAndOriginalLinks": true,
+            "explicitOwnerHistoryRetained": true,
+            "sourceRestorationUsesCurrentAsset": true,
+            "list503ClearsActionsAndRetries": true,
+            "actualDroppedDeleteAckNoAutomaticRetry": true,
+            "confirmedDeleteLockAndReadFailureNotice": true,
+            "modelTasksQueued": 0
+          }
+        ],
+        "screenshots": [
+          "tmp/ma24-library-source-unavailable-1366-fa0622a0-a0e0-4fe0-8743-6e83f74e2f67.png",
+          "tmp/ma24-library-source-unavailable-390-330719fb-9390-448f-a86b-82f247627da6.png"
+        ],
+        "actualModelCalls": 0,
+        "realDocumentQualityAccepted": false,
+        "productionQualified": false
+      },
+      {
+        "freshClusterPilot": "passed",
+        "image": "pgvector/pgvector:pg16",
+        "reviewDraftFixedImageVerified": false,
+        "mailboxImapWorkerVerified": false,
+        "mailboxWorkerImageVerified": false,
+        "mailboxWorkerImapImageVerified": false,
+        "scheduleDispatchVerified": false,
+        "batchSettlementVerified": false,
+        "batchWorkerCrashVerified": false,
+        "batchWorkerCommitVerified": false,
+        "scheduleWorkerCrashVerified": false,
+        "scheduleWorkerCommitVerified": false,
+        "publishedAddress": "127.0.0.1 only",
+        "rolesVerified": true,
+        "duplicateRoleBootstrapRejected": true,
+        "freshMigrationThrough": 171,
+        "currentSchemaMarkers": {
+          "mailbox_work_binding": true,
+          "mailbox_lease_binding": true,
+          "mailbox_binding_constraint": true,
+          "knowledge_source_gate": true,
+          "task_origin_gate": true,
+          "local_memory_source_gate": true,
+          "receipt_source_gate": true,
+          "immutable_snapshot_capture": true,
+          "immutable_snapshot_lifecycle": true,
+          "trust_registry_versions": true,
+          "trust_registry_pointer": true,
+          "trust_registry_publication": true,
+          "runtime_package_registrations": true,
+          "candidate_recovery_checkpoint": true,
+          "candidate_execution_lease": true,
+          "candidate_graph_checkpoint": true,
+          "runtime_package_withdrawals": true,
+          "runtime_package_publication": true,
+          "skill_activation_lifecycle": true,
+          "skill_activation_sources_sealed": true,
+          "skill_activation_reviews_serialized": true,
+          "skill_activation_declarations_serialized": true,
+          "skill_activation_source_guard_health": true,
+          "skill_activation_use_commit_guard": true,
+          "skill_activation_commit_guard": true,
+          "skill_activation_binding_guard": true,
+          "current_shared_original_policy": true
+        },
+        "snapshotLifecycleVerified": false,
+        "knowledgeScopeSourcesVerified": false,
+        "finalSettlementVerified": false,
+        "compiledMainRuntimeVerified": false,
+        "mainRuntimeSkillReceiptVerified": false,
+        "mainRuntimeModelReceiptVerified": false,
+        "mainRuntimeDurabilityVerified": false,
+        "mainRuntimeCrashRecoveryVerified": false,
+        "mainRuntimeInterruptionVerified": false,
+        "mainRuntimeNetworkLossVerified": false,
+        "mainRuntimeResumeRevocationVerified": false,
+        "mainRuntimeCommitLossVerified": false,
+        "mainRuntimeTaskEnrollmentVerified": false,
+        "snapshotDownloadResult": null,
+        "runStatusUiVerified": false,
+        "personalMemoryUiVerified": false,
+        "conversationManagementUiVerified": false,
+        "attachmentUploadUiVerified": false,
+        "knowledgeTreeUiVerified": false,
+        "knowledgeLibraryUiVerified": true,
+        "attachmentAdmissionUiVerified": false,
+        "responsiveNavigationUiVerified": false,
+        "memoryObservationsUiVerified": false,
+        "localMemoryWorkerResult": null,
+        "trustRegistryRestoreResult": null,
+        "freshMailboxUiVerified": false,
+        "extendedFrontendUiVerified": false,
+        "syntheticAccountCompanyAndRestoreVerified": true,
+        "copiedProductionData": false,
+        "linuxWebImage": "ma24-pilot-web:ce2e8cbb",
+        "linuxWebHttpWorkflowVerified": true,
+        "linuxWebHttpsBrowserVerified": false,
+        "tenConcurrentSyntheticAccountsVerified": false,
+        "pilotBackupRestoreVerified": false,
+        "crossClusterRestoreVerified": false,
+        "nonemptyMailboxCrossClusterRestoreVerified": false,
+        "scriptedModeBusinessVerified": false,
+        "runnerAttestationStoreVerified": false,
+        "collectorDeclarationImageVerified": false,
+        "lockedPolicyDatabaseVerified": false,
+        "memorySourceLocksVerified": false,
+        "methodCatalogSourceLocksVerified": false,
+        "shadowSourceLocksVerified": false,
+        "safetySkillUsageVerified": false,
+        "transportJournalDatabaseVerified": false,
+        "agentCallLeaseDatabaseVerified": false,
+        "agentCheckpointLeaseDatabaseVerified": false,
+        "candidateLeaseContentionDatabaseVerified": false,
+        "runtimeReadSourceLocksDatabaseVerified": false,
+        "runtimeDisclosureDatabaseVerified": false,
+        "linuxFiveCategoryTransportVerified": false,
+        "collectorImageTlsPreflightVerified": false,
+        "poolRecoveryVerified": false,
+        "standaloneDatabaseRecoveryVerified": false,
+        "extraG09Migration": null,
+        "prospectiveSourceDatabaseVerified": false,
+        "prospectivePairedMaterialVerified": false,
+        "prospectiveStandaloneHttpVerified": false,
+        "prospectiveStandaloneBrowserVerified": false,
+        "completeCompositionVerified": false,
+        "samePortPriorImageRollbackVerified": false
+      }
+    ]
+  },
+  "visuallyInspectedScreenshotsSha256": {
+    "tmp/ma24-revision-recovery-stage/tmp/ma24-revision-history-390-951933bc-116b-4ceb-9c31-ebafe5342619.png": "c2ee8f5dfd29522bb7b675f1f4d1265be2c3d3c9753476c150ac308ea9d7cd53",
+    "tmp/ma24-revision-recovery-stage/tmp/ma24-revision-history-1366-078e935c-83bc-4aee-b5ec-4201c9f21dd1.png": "29ceed5d99ecacac29375dcd41edfb16ed7e3f525bfc5d7d08309490d396f922",
+    "tmp/ma24-revision-recovery-stage/tmp/knowledge-revisions-recovery/recovered-1366.png": "2008f06282ed2fc27c3a2872734a861e67296030dcbff2945a4425174b185899",
+    "tmp/ma24-revision-recovery-stage/tmp/knowledge-revisions-recovery/recovered-320.png": "11d45690bc56edee3862374f9b811a925161f04969a16a032b456f268fa84780"
+  },
+  "limits": {
+    "onlyClientRuntimeProductFileChanged": "src/components/knowledge-revisions.tsx",
+    "backendRuntimeBaseline": "02be633829fcd5c7febc60437a31c6befff8d07b",
+    "newWholeBackendCompositionClaimed": false,
+    "actualModelCalls": 0,
+    "realDocumentQualityAccepted": false,
+    "productionQualified": false,
+    "deployment": false,
+    "deferredStages": "G14-G20",
+    "runtimeSourceManifestAndDeploymentHashChanged": true,
+    "wholeCompositionEvidenceRemainsVersionScoped": true
+  },
+  "builds": {
+    "web": {
+      "session": 86405,
+      "exitCode": 0
+    },
+    "main": {
+      "session": 70229,
+      "exitCode": 0
+    },
+    "collector": {
+      "session": 45452,
+      "exitCode": 0
+    }
+  },
+  "packageChecks": {
+    "main-pair": {
+      "mainAgentRuntimePair": "passed",
+      "web": "ma24-pilot-web:ce2e8cbb",
+      "runtime": "ma24-main-agent-runtime:ce2e8cbb",
+      "sourceCommit": "ce2e8cbbd4fec5adda1a5ef15f460456b9bc3201",
+      "webImageId": "sha256:961cda56a7c5bb936c8ccedb90904fdc9bddbd2da3f0e6c33c8e7fdd1fcc39d6",
+      "mainRuntimeImageId": "sha256:b9d3de2faff3191c7cb21f02651dc3ff64e6d22ddb36cd6f820039e25f2bbcf2",
+      "inspectionUsesImmutableImageIds": true,
+      "runtimeHash": "9a5dfc6df346c0e5a58cc4497b22b71fa817d4197b3bad30639235ba8d2e8b54",
+      "sourceInputs": 1063,
+      "node": "24.21.0",
+      "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+      "platform": "linux",
+      "arch": "x64",
+      "webPackages": {
+        "pg": "8.23.0"
+      },
+      "mainRuntimePackages": {
+        "pg": "8.23.0",
+        "zod": "4.4.3",
+        "@langchain/langgraph": "1.4.15",
+        "@langchain/core": "1.2.9",
+        "langsmith": "0.9.0",
+        "undici": "8.10.0"
+      },
+      "webUnresolved": [
+        "zod",
+        "@langchain/langgraph",
+        "@langchain/core",
+        "langsmith",
+        "undici"
+      ],
+      "mainRuntimeUnresolved": [],
+      "completeDependencyRuntimeEquivalenceVerified": false,
+      "productionQualified": false,
+      "actualModelCalls": 0
+    },
+    "skill-pair": {
+      "skillSourceRuntimePair": "passed",
+      "web": "ma24-pilot-web:ce2e8cbb",
+      "collector": "ma24-skill-collector:ce2e8cbb",
+      "sourceCommit": "ce2e8cbbd4fec5adda1a5ef15f460456b9bc3201",
+      "webImageId": "sha256:961cda56a7c5bb936c8ccedb90904fdc9bddbd2da3f0e6c33c8e7fdd1fcc39d6",
+      "collectorImageId": "sha256:cd1518a2a1da65dcf6b9a693cec668478b6955937dff223eec5ab97321a2064e",
+      "inspectionUsesImmutableImageIds": true,
+      "runtimeHash": "9a5dfc6df346c0e5a58cc4497b22b71fa817d4197b3bad30639235ba8d2e8b54",
+      "sourceInputs": 1063,
+      "node": "24.21.0",
+      "platform": "linux",
+      "arch": "x64",
+      "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+      "webPackages": {
+        "pg": "8.23.0"
+      },
+      "collectorPackages": {
+        "pg": "8.23.0",
+        "zod": "4.4.3",
+        "@langchain/langgraph": "1.4.15",
+        "@langchain/core": "1.2.9",
+        "langsmith": "0.9.0",
+        "undici": "8.10.0"
+      },
+      "webUnresolved": [
+        "zod",
+        "@langchain/langgraph",
+        "@langchain/core",
+        "langsmith",
+        "undici"
+      ],
+      "collectorUnresolved": [],
+      "completeDependencyRuntimeEquivalenceVerified": false,
+      "productionQualified": false,
+      "actualModelCalls": 0
+    },
+    "dependencies": {
+      "localRuntimeDependencyPair": "passed",
+      "mainInspection": {
+        "role": "main-agent",
+        "imageId": "sha256:b9d3de2faff3191c7cb21f02651dc3ff64e6d22ddb36cd6f820039e25f2bbcf2",
+        "sourceCommit": "ce2e8cbbd4fec5adda1a5ef15f460456b9bc3201",
+        "deploymentHash": "6a95914a03a23bc2deb7cdc7a5c14ce8f67ba7530c45ca65ca7a5c7ce04838da",
+        "runtimeHash": "9a5dfc6df346c0e5a58cc4497b22b71fa817d4197b3bad30639235ba8d2e8b54",
+        "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+        "node": "24.21.0",
+        "platform": "linux",
+        "arch": "x64",
+        "sourceInputs": 1063,
+        "files": 34615,
+        "dependencyManifestHash": "d3edb974b4ae6e725cbb62205c8f0e65606b061fd97bce214289279ccca20137",
+        "dependencyFiles": 33503,
+        "runtimeModuleFormat": "esm",
+        "executionArtifacts": [
+          {
+            "path": "server.mjs",
+            "sha256": "6ade6d51ac2ad77f42e7c53223b5d8296b47a792050c5f4f91875cc6b2036b8e"
+          },
+          {
+            "path": "start.mjs",
+            "sha256": "a26da05b508790992197256b3ee8acc38dc664e2c2ab6b0d180dfc9bf6099266"
+          },
+          {
+            "path": "worker.mjs",
+            "sha256": "48c7074ac512830acd98063ec3532b6504ec259d75dfebb2a048f7ca1eda5ef6"
+          }
+        ]
+      },
+      "collectorInspection": {
+        "role": "skill-collector",
+        "imageId": "sha256:cd1518a2a1da65dcf6b9a693cec668478b6955937dff223eec5ab97321a2064e",
+        "sourceCommit": "ce2e8cbbd4fec5adda1a5ef15f460456b9bc3201",
+        "deploymentHash": "a99112d36478ae55d5363235851d056bedad3d2c8141fbeba3b1738c443793d2",
+        "runtimeHash": "9a5dfc6df346c0e5a58cc4497b22b71fa817d4197b3bad30639235ba8d2e8b54",
+        "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+        "node": "24.21.0",
+        "platform": "linux",
+        "arch": "x64",
+        "sourceInputs": 1063,
+        "files": 34579,
+        "dependencyManifestHash": "d3edb974b4ae6e725cbb62205c8f0e65606b061fd97bce214289279ccca20137",
+        "dependencyFiles": 33503,
+        "runtimeModuleFormat": "esm",
+        "executionArtifacts": [
+          {
+            "path": "runner.mjs",
+            "sha256": "e76381d1a6a286e9844e2f0a10c285958bcfcb82e15093ee41cb210e953e5fd3"
+          },
+          {
+            "path": "start.mjs",
+            "sha256": "9940bc440764d0e9bae71b3faccbe2fc93c29b3cd4559ea55cc859c50bcb7b04"
+          }
+        ]
+      },
+      "comparison": {
+        "runtimePackageBytesPairRevalidated": true,
+        "runtimePackageBytesPairBlockers": [],
+        "runtimeModuleFormatPairRevalidated": true,
+        "runtimeModuleFormatPairBlockers": [],
+        "runtimePackageBytesPairHash": "d7412f4041976b3803dacc1b1da06e31c3556c27e480ddfb16a163f020807b20"
+      },
+      "esmModuleFormatPairVerified": true,
+      "runtimeRegistrationsPublished": false,
+      "completeDependencyRuntimeEquivalenceVerified": false,
+      "productionQualified": false,
+      "automaticActivation": false,
+      "modelCalls": 0
+    },
+    "collector": {
+      "collectorImageVerification": "passed",
+      "image": "ma24-skill-collector:ce2e8cbb",
+      "imageId": "sha256:cd1518a2a1da65dcf6b9a693cec668478b6955937dff223eec5ab97321a2064e",
+      "commit": "ce2e8cbbd4fec5adda1a5ef15f460456b9bc3201",
+      "packageFiles": 34579,
+      "deploymentHash": "a99112d36478ae55d5363235851d056bedad3d2c8141fbeba3b1738c443793d2",
+      "measuredEnrollmentVerified": true,
+      "missingMalformedAndMismatchedEnrollmentRejectedBeforeRunner": true,
+      "matchedEnrollmentReachesRunner": true,
+      "nodeOptionsRejected": true,
+      "nonRootReadOnlyNoNetwork": true,
+      "changedRunnerRejectedBeforeExecution": true,
+      "actualModelCalls": 0,
+      "productionQualified": false
+    },
+    "web-source": {
+      "webImageSourceVerification": "passed",
+      "image": "ma24-pilot-web:ce2e8cbb",
+      "imageId": "sha256:961cda56a7c5bb936c8ccedb90904fdc9bddbd2da3f0e6c33c8e7fdd1fcc39d6",
+      "sourceCommit": "ce2e8cbbd4fec5adda1a5ef15f460456b9bc3201",
+      "buildId": "Z8ejZJPqmQTmECCgYe6MC",
+      "runtimeSourceFileCount": 1063,
+      "runtimeSourceMatchesFixedGitExport": true,
+      "exportEolDifferences": 1063,
+      "runtimeSourceManifestHash": "fec7edd6190a66c388ad32afdf7fdba0810fcc88ed09cfba334b55cf6830daf6",
+      "privateEnvironmentFiles": false,
+      "privateStorageFiles": false,
+      "staticAssetsPresent": true,
+      "nonRootReadOnlyNoNetwork": true,
+      "productionQualified": false
+    }
+  },
+  "unchangedExecutionBytesComparedWith02be6338": {
+    "mainInspection": {
+      "executionArtifacts": [
+        {
+          "path": "server.mjs",
+          "sha256": "6ade6d51ac2ad77f42e7c53223b5d8296b47a792050c5f4f91875cc6b2036b8e"
+        },
+        {
+          "path": "start.mjs",
+          "sha256": "a26da05b508790992197256b3ee8acc38dc664e2c2ab6b0d180dfc9bf6099266"
+        },
+        {
+          "path": "worker.mjs",
+          "sha256": "48c7074ac512830acd98063ec3532b6504ec259d75dfebb2a048f7ca1eda5ef6"
+        }
+      ],
+      "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+      "dependencyManifestHash": "d3edb974b4ae6e725cbb62205c8f0e65606b061fd97bce214289279ccca20137",
+      "dependencyFiles": 33503,
+      "runtimeModuleFormat": "esm"
+    },
+    "collectorInspection": {
+      "executionArtifacts": [
+        {
+          "path": "runner.mjs",
+          "sha256": "e76381d1a6a286e9844e2f0a10c285958bcfcb82e15093ee41cb210e953e5fd3"
+        },
+        {
+          "path": "start.mjs",
+          "sha256": "9940bc440764d0e9bae71b3faccbe2fc93c29b3cd4559ea55cc859c50bcb7b04"
+        }
+      ],
+      "nodeSha256": "7fde7b8afa198da66257f42ee2001d874c7355631e6d1579a5fb5ef1f246df4c",
+      "dependencyManifestHash": "d3edb974b4ae6e725cbb62205c8f0e65606b061fd97bce214289279ccca20137",
+      "dependencyFiles": 33503,
+      "runtimeModuleFormat": "esm"
+    }
+  },
+  "cleanup": {
+    "temporaryContainersRemoved": true,
+    "remainingOriginalServices": [
+      "codex_sales_leads-neo4j-1",
+      "codex_sales_leads-ollama-1",
+      "codex_sales_leads-postgres-1"
+    ]
+  },
+  "logSha256": {
+    "tmp/ma24-revision-recovery-stage/tmp/revision-recovery-collector-build.log": "99a72f4d8ffba55a86568b75be76faaf5ff95fe391b42d14b7024d37053617f0",
+    "tmp/ma24-revision-recovery-stage/tmp/revision-recovery-collector.log": "4afb47ea415b00c35587304b0796810e644d1f6e0105355b04b00dd6e213383b",
+    "tmp/ma24-revision-recovery-stage/tmp/revision-recovery-component.log": "92f49a663b969935d434996048d7755be433e5a6fa14ec4c58e67d8778c3069a",
+    "tmp/ma24-revision-recovery-stage/tmp/revision-recovery-dependencies.log": "29145fd3286bd1214492af42aca70b7cfc946405fe64d2f3a9c82964a5a749bb",
+    "tmp/ma24-revision-recovery-stage/tmp/revision-recovery-fixed-web.log": "ab52e7deb2f499c9feee7af999a155fcf9c3b7b840ad34e68b62a2c5b2cbfae2",
+    "tmp/ma24-revision-recovery-stage/tmp/revision-recovery-main-build.log": "2ec6403eba56c594e9670d47ba05ea48c9918d488ecc84f1a5b6b449f9482caf",
+    "tmp/ma24-revision-recovery-stage/tmp/revision-recovery-main-pair.log": "97201a6257e9bb223292b18774c68e8bdf446c560ccb9108be1d0d842dff81aa",
+    "tmp/ma24-revision-recovery-stage/tmp/revision-recovery-skill-pair.log": "bbbe5cc0b4f301734922d874e82135bcb70475751ca8bbe341b381a5b174a354",
+    "tmp/ma24-revision-recovery-stage/tmp/revision-recovery-web-build.log": "1baacbf0825dd1202c31db73787b5953d7e8ba24cb2c52153c8124af47ac55f5",
+    "tmp/ma24-revision-recovery-stage/tmp/revision-recovery-web-source.log": "426836d5eec22a61051b344594f45a9a266b63a188b4eb20b33c436c97df6927"
+  }
+}
