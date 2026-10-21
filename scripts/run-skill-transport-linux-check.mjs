@@ -85,7 +85,8 @@ try{
  if(fixedCollectorReuse)assert.equal(summary.fixedPackageHistoricalAndProspectiveCompletedReuseVerified,true);
  if(formalRecovery){
   for(const field of ['sharedAgentRunLeaseDatabaseVerified','sharedOrdinaryLeaseActualRenewalVerified','compiledOrdinaryWorkerSharedLeaseVerified',
-   'ordinaryWorkerInitialPauseAndPauseCancelSettled','ordinaryWorkerTransportFailureNoAutomaticReplay','skillRuntimeSharedLeaseCancelSettled'])
+   'ordinaryWorkerInitialPauseAndPauseCancelSettled','ordinaryWorkerTransportFailureNoAutomaticReplay','skillRuntimeSharedLeaseCancelSettled',
+   'skillRuntimeTaskExecutionPolicyBound','skillRuntimeChangedQuotaRejectedWithoutNewTask','skillRuntimeCompletedNondefaultQuotaReadbackVerified','skillRuntimeConcurrentQuotaChangeSerialized'])
    assert.equal(summary[field],true,`Fixed-image formal recovery assertion missing: ${field}`);
   for(const field of ['formalTaskProcessTerminatedAfterCommittedRead','formalTaskEarlyTakeoverRejected','formalTaskDefaultLeaseNaturallyExpired',
    'formalTaskNewProcessRecoveredPendingRead','formalTaskRecoveryPreservedCommittedModelAndToolRows','formalTaskRecoveryRejectsRepeatedCompletedHttpSteps'])

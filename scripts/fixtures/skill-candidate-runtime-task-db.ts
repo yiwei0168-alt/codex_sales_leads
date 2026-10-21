@@ -67,6 +67,17 @@ export async function verifySkillCandidateRuntimeTaskDatabase(pool:Pool,owner:st
   assert.equal(quotaRead.spec.executionPolicy?.modelCallLimit,3);
   await assert.rejects(readCompletedSkillCandidateRuntimeTask(context,{...reviewPin,taskId:quotaTask.runId,maximumModelCalls:4},frozen.plan),/model quota changed/);
   await assert.rejects(readCompletedSkillCandidateRuntimeTask({userId:other},{...reviewPin,taskId:quotaTask.runId},frozen.plan),/execution policy unavailable/);
+  const racePin={...pin,evaluationId:'a'+randomUUID().slice(1)};
+  const raced=await Promise.allSettled([
+   enqueueSkillCandidateRuntimeTask(context,{...racePin,maximumModelCalls:3},frozen.plan),
+   enqueueSkillCandidateRuntimeTask(context,{...racePin,evaluationId:racePin.evaluationId.toUpperCase(),maximumModelCalls:4},frozen.plan),
+  ]);
+  const winner=raced.find(row=>row.status==='fulfilled'),loser=raced.find(row=>row.status==='rejected');
+  assert(winner?.status==='fulfilled'&&loser?.status==='rejected','Exactly one changed-quota admission must win');
+  assert.match(String(loser.reason),/selection changed for existing evaluation/);
+  assert.equal((await pool.query(`select count(*)::int n from agent_run where user_id=$1 and lower(execution_spec->>'evaluationId')=$2::uuid::text
+   and execution_spec->>'arm'='candidate'`,[owner,racePin.evaluationId])).rows[0].n,1);
+  await controlRun(owner,winner.value.runId,'cancel');
   const controlPin={...pin,evaluationId:randomUUID()},controlTask=await enqueueSkillCandidateRuntimeTask(context,controlPin,frozen.plan);
   const controlClaim=await claimSkillCandidateRuntimeTask(context,{...controlPin,taskId:controlTask.runId,workerId:'g09-fresh-control-fixture'},frozen.plan);
   await controlRun(owner,controlTask.runId,'cancel');
@@ -82,7 +93,8 @@ export async function verifySkillCandidateRuntimeTaskDatabase(pool:Pool,owner:st
   assert.equal((await pool.query('select enabled from agent_skill where id=$1',[skillId])).rows[0].enabled,false);
   assert.equal((await pool.query('select count(*)::int n from agent_memory_extraction_job where run_id=$1',[created.runId])).rows[0].n,0);
   return {...graph,skillRuntimeTaskAdmissionDatabaseVerified:true,skillRuntimeHiddenTaskAndIdempotencyVerified:true,skillRuntimeOrdinaryAndG16ClaimRejected:true,
-   skillRuntimeTaskExecutionPolicyBound:true,skillRuntimeChangedQuotaRejectedWithoutNewTask:true,skillRuntimeCompletedNondefaultQuotaReadbackVerified:true,skillRuntimeQuotaMetadataOnly:true,
+   skillRuntimeTaskExecutionPolicyBound:true,skillRuntimeChangedQuotaRejectedWithoutNewTask:true,skillRuntimeCompletedNondefaultQuotaReadbackVerified:true,
+   skillRuntimeConcurrentQuotaChangeSerialized:true,skillRuntimeQuotaMetadataOnly:true,
    skillRuntimeExplicitClaimAndContextVerified:true,skillRuntimeRegisteredReadVerified:true,skillRuntimeCancellationAndFreezeRevocationRejected:true,skillRuntimeSharedLeaseCancelSettled:true,
    skillRuntimeOriginalTaskAndSkillUnchanged:true,actualModelCalls:0,productionAgentEquivalent:false,automaticActivation:false};
  }finally{await connection.close();}

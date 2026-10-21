@@ -1,6 +1,6 @@
 # MA24 G01–G13 当前剩余门槛（2026-10-16）
 
-2026-10-21 / Current state: fixed product 768b621b/fixture 88c3c1b5 passed Linux composition/recovery 60396; independent TLS 22333 and public-disclosure DB component 59031 also passed. New task-quota binding source fb8ac00c passed 87 tests/typecheck/lint and is running native DB session 10694 in file-trust mode after a retained launch-configuration failure, not accepted or packaged yet. Production equivalence, full entry/provider proof and real quality remain unfinished; G14-G20/deployment stay deferred. [Current task-policy scope](TASK_BOUND_EXECUTION_POLICY_2026-10-21.md).
+2026-10-21 / Current state: old fixed product 768b621b/fixture 88c3c1b5 passed full Linux 60396 and separate TLS 22333. Task-quota source fb8ac00c passed 87 tests and targeted file-trust DB 10694; 72baa00b packages built/checked, then a UUID lookup followup passed 11 focused tests/typecheck/lint. That followup and the case-variant quota race still need a final fixed package/composition. No real-provider/quality/activation claim; G14-G20/deployment remain deferred. [Current package scope](TASK_POLICY_FIXED_PACKAGES_2026-10-21.md).
 
 2026-10-21 / 最新终态：前瞻故障专项 73784 已退出 0，SIGKILL、拒绝提前接管、原租约自然到期、新进程恢复、防重复及执行规格/捕获绑定保持等 8 项断言通过；当前产品五类/八任务组合与登记仍通过，临时资源清理。后续优先补实时读取、日志重建和来源保护接线，不能用此结果关闭完整等价/真实质量。[前瞻收据](evidence/ma24-g09-prospective-process-recovery-2026-10-21.json)。
 
@@ -405,7 +405,7 @@ G09 任务与工具日志锁已接入材料重建入口：从已存包派生任�
 
 | 项目 | 已有依据 | 仍缺的实现或验收 | 下一项能关闭缺口的证据 |
 | --- | --- | --- | --- |
-| G01 发布基线 | 已验收基线 768b621b 三包构建/源码/依赖/ESM、独立数据库信任 TLS 22333 与完整 Linux 60396 的实时读取恢复/固定启动器复用通过；旧 Worker 证据保留其版本范围 | 后续任务额度绑定尚未入新包；整组生产入口/TLS与首次真实提供方执行未验；部署与主机/回切暂缓 | 完成本轮策略实际验证及新包，再补整体入口/真实执行。[已验收固定包](LIVE_READ_FIXED_PACKAGES_2026-10-21.md) |
+| G01 发布基线 | 768b621b 的完整 Linux 60396/独立 TLS 22333 通过；额度绑定版 72baa00b 三包构建与源码/依赖/ESM/边界检查通过 | 后补 UUID 查找小修须重新入包；最终完整组合/整组入口/TLS与首次真实提供方未验；部署暂缓 | 固定最终源码并验证组合，旧包结果保留版本范围。[当前包阶段](TASK_POLICY_FIXED_PACKAGES_2026-10-21.md) |
 | G02 来源撤销 | 真实图、旧 checkpoint、隔离模型及局部 HTTP；当前构建的登记原件下载通过认证、Range、篡改和请求间撤回的真实 HTTP 验证 ([收据](evidence/ma24-g02-g05-asset-download-http-clone-2026-10-19.json)) | 当前服务上真实账号有界任务的生成期撤销、后续工具阻断和最终保存核对 | 获授权的专门来源/账号任务及撤销前后收据；新付费请求另列具体清单 |
 | G03 纠正与双时间 | 来源归属、自然纠正和隔离恢复；中文实际 Worker 经登录时间线、账号隔离、幂等撤销及同批精确历史时点回读通过 | 自然偏好/经历/业务事实与纠正样本不足；全部用户入口、最终统一候选和持续 Worker 试点未验 | 对照原句与更正内容的自然样本判决、最终候选各入口及连续 Worker 持久记录；本轮有限 HTTP 流程不扩称全部入口 |
 | G04 记忆图谱 | outbox、租约、故障恢复及 PostgreSQL 降级服务证据；中文同批投影、真实陈旧图谱候选的撤销过滤和原记录/纠正历史回读、第三条撤销投递通过 | 获准真实样本的持续抽取/投影、最终统一候选及持续故障/恢复运行未验 | 连续消费及图谱停机/恢复的同一批来源收据；同批有限撤销召回证据见最新工作流，不替代真实质量 |
@@ -413,7 +413,7 @@ G09 任务与工具日志锁已接入材料重建入口：从已存包派生任�
 | G06 安全 | 已定位旧歧义与注入失败，工具模型视图等边界已有修复 | 修复后固定协议的真实模型回答、独立安全判分不足；既有本地超时不能判通过 | 有明确请求范围的有效模型回答及答案/引用/权限/注入人工判决；相同超时配置不重复试跑 |
 | G07 真实回放 | 服务器持久收据与只读回放适配已实现；历史资格审计已有排除结果 | 尚无满足当前来源、Skill 相关性及完整收据要求的真实任务 | 同账号有效的完整只读任务或精确收据限定的子任务，固定版本回放和独立审核 |
 | G08 前瞻影子 | 任务前登记/捕获、签名原流程/候选、统一材料及受限持久化已有合成数据库贯通证据；未将历史任务改标前瞻 | 真实任务的原流程/候选结果、可信生产身份及真实质量仍未验收 | 在既有授权范围内取得任务前登记到执行、持久收据及审核的真实完整链 |
-| G09 自动启用 | 14339/78222 原生组合、59031 公开资料实库和 768b621b 固定包 60396 的五类/八任务、实时读取崩溃恢复与测量登记通过；新额度策略绑定 87 回归/类型/lint 通过 | **仍未完成**：新策略实际数据库/固定包待验；额度/冻结控制比较、资格生产者、首次真实提供方、独立质量和正向启用未完成 | 先验证[新任务策略](TASK_BOUND_EXECUTION_POLICY_2026-10-21.md)，继续补[执行差异](RUNTIME_EXECUTION_PARITY_GAPS_2026-10-21.md)，不把工程证据当成质量或启用 |
+| G09 自动启用 | 14339/78222、59031 与旧包完整 60396 通过；新额度绑定 87 回归及 10694 针对性实库通过，72baa00b 包检查通过；后补 UUID 查找 11 回归通过 | **仍未完成**：不同额度/UUID 大小写并发竞争及最终新包完整组合待验；额度/冻结控制比较、资格生产者、真实提供方/质量和正向启用未完成 | 验证最终[任务策略与固定包](TASK_POLICY_FIXED_PACKAGES_2026-10-21.md)，继续补[执行差异](RUNTIME_EXECUTION_PARITY_GAPS_2026-10-21.md) |
 | G10 审核 | 固定21ade59d Chrome/HTTPS/真实数据库审核修订竞态、草稿协调、409、已提交后回读故障与撤销通过；r1–r7均为合成不通过，另保留前瞻两臂与旧HTTP/页面证据 | 完整真实人工材料、五类质量、生产身份和目标入口未验；本轮夹具原件预览未通过 | 在既有授权边界内准备真实同版本/冻结材料，逐题核对真实质量及生产入口 |
 | G11 邮箱/客户 | 固定2a1fb556正式邮箱Worker/实际IMAP库/合成TLS服务/新159数据库的日期分页、半页SIGKILL和原租约自然到期恢复通过；4封唯一加密邮件、统计4/4/4/0、账号隔离和空Worker不变 | 真实服务商日期范围与全分页、持续负载、客户归属/摘要质量及目标主机运行未验 | 已授权账号及日期范围上的收件/已发送对账、恢复与逐例归属判定；历史提供方对账单独保留 |
 | G12 三模式 | 恢复原因白名单修复，60 项定向测试及全新库 12 组脚本业务通过 | 真实只读业务回答、提供方失败/迟到/未知结果恢复及正式加载未验 | 有界真实任务和隔离提供方响应的持久收据；已消耗的 MODESEL-14 授权不复用 |
@@ -732,3 +732,9 @@ G09 current-source collector image TLS preflight (2026-10-19): rebuilt from the 
 
 
 2026-10-21 / task-quota DB launch correction: session 5484 exited 1 before quota assertions because database-trust fixture mode requires COMBINED=1, while this targeted launch used COMBINED=0. Failure log and cleanup are retained. No product/verification guard changed. The same frozen source now runs as session 10694 using the existing file-trust mode for task admission/nondefault completed metadata readback and one historical entry. It is not a database-trust/full five-category result and remains pending. [Attempts and exact scope](evidence/ma24-g09-task-bound-execution-policy-2026-10-21.json).
+
+
+2026-10-21 / task-bound execution policy targeted DB accepted: source fb8ac00c session 10694 exited 0 in file-trust mode; default policy, changed-quota rejection without another task, owner-bound quota-3 completed metadata readback, explicit claim/context, hidden-task isolation and historical configured entry passed. All ten inputs matched at completion; temporary cluster removed. Quota metadata completion is not model/quality proof; initial 5484 configuration failure is retained. New fixed source 72baa00b main/collector/Web builds and 1037-source/Node/dependency/ESM/collector-boundary/Web-source checks passed. Concurrent different-quota admission fixture has syntax/type/lint checks only and awaits the new full Linux composition. No new DB-trust/current-image full-composition or production/quality/activation claim. [Exact receipts](evidence/ma24-g09-task-bound-execution-policy-2026-10-21.json).
+
+
+2026-10-21 / UUID admission followup: evaluation lookup now matches canonical UUID text consistently with its transaction admission lock, preventing uppercase/lowercase aliases from bypassing the prior-task lookup. The concurrent quota-3/quota-4 fixture deliberately uses two cases of the same UUID and requires one saved task. Eleven task-policy tests, typecheck and three-file lint passed; actual case-variant race and final-image composition remain pending. Previously built/checked 72baa00b images do not include this small source change and are preserved as an earlier stage, not promoted. No quota/financial permission or qualification change. [Current version scope](TASK_POLICY_FIXED_PACKAGES_2026-10-21.md).

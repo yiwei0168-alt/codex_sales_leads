@@ -59,7 +59,7 @@ export async function enqueueSkillCandidateRuntimeTask(context:{userId:string},i
    [context.userId,prepared.spec.evaluationId,prepared.spec.arm]);
   const prior=(await client.query<{id:string;execution_spec:unknown;input:unknown;model_config:unknown}>(`select id,execution_spec,input,model_config from agent_run
    where user_id=$1 and execution_kind='main-agent-evaluation' and execution_spec->>'schema'='skill-candidate-task-v1'
-    and execution_spec->>'evaluationId'=$2 and execution_spec->>'arm'=$3 for share`,[context.userId,prepared.spec.evaluationId,prepared.spec.arm])).rows;
+    and lower(execution_spec->>'evaluationId')=$2::uuid::text and execution_spec->>'arm'=$3 for share`,[context.userId,prepared.spec.evaluationId,prepared.spec.arm])).rows;
   if(prior.length>1||prior.some(row=>digest(row.execution_spec)!==digest(prepared.spec)||digest(row.input)!==digest(prepared.input)||digest(row.model_config)!==digest(prepared.model)))
    throw new Error('Skill runtime task selection changed for existing evaluation');
   const runId=prior[0]?.id??(await enqueueRun(context.userId,prepared.input,prepared.model,{kind:'main-agent-evaluation',spec:prepared.spec})).id;
