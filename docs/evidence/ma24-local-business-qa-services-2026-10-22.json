@@ -1,0 +1,153 @@
+{
+  "date": "2026-10-22",
+  "scope": "Enable localhost business-question infrastructure for user-operated acceptance; no public deployment",
+  "productCommit": "6dded2684399b87de83dc96232f4d4b9488a6a75",
+  "webEntry": "http://localhost:3001",
+  "webBuildId": "xXntY4Z7VrlLP9tgl-VfJ",
+  "readOnlyQueuePreflight": {
+    "mode": "read-only",
+    "queues": {
+      "ordinaryactive": 0,
+      "enabledschedules": 0,
+      "pendingmodelbatches": 0,
+      "retaineduncertaincalls": 0
+    },
+    "providerCredentialConfigured": true,
+    "localModelSnapshotPresent": true,
+    "modelRequestsSent": 0
+  },
+  "sourceCheck": {
+    "currentSourceFilesMatchFixedWebSource": 1060,
+    "canonicalLfComparison": true
+  },
+  "fixedMainArtifactsSha256": {
+    "server": "6ade6d51ac2ad77f42e7c53223b5d8296b47a792050c5f4f91875cc6b2036b8e",
+    "worker": "48c7074ac512830acd98063ec3532b6504ec259d75dfebb2a048f7ca1eda5ef6"
+  },
+  "legacyGraphsBundleSha256": "36e6a03de2ddf2d0c1b59959a5f326d245ea3938c038cdd47d16fb0e8453d667",
+  "processes": {
+    "bge": {
+      "mode": "bge",
+      "pid": 34732,
+      "startedAt": "2026-10-22T05:33:30.728Z",
+      "localOnly": true,
+      "privateTracing": false,
+      "migrationCredentialIncluded": false,
+      "paidStageOverrideIncluded": false
+    },
+    "api": {
+      "mode": "api",
+      "pid": 3444,
+      "startedAt": "2026-10-22T05:37:46.406Z",
+      "localOnly": true,
+      "privateTracing": false,
+      "migrationCredentialIncluded": false,
+      "paidStageOverrideIncluded": false
+    },
+    "worker": {
+      "mode": "worker",
+      "pid": 51128,
+      "startedAt": "2026-10-22T05:40:06.673Z",
+      "localOnly": true,
+      "privateTracing": false,
+      "migrationCredentialIncluded": false,
+      "paidStageOverrideIncluded": false
+    }
+  },
+  "liveState": {
+    "listeners": [
+      {
+        "LocalAddress": "127.0.0.1",
+        "LocalPort": 8765,
+        "OwningProcess": 26288
+      },
+      {
+        "LocalAddress": "127.0.0.1",
+        "LocalPort": 3001,
+        "OwningProcess": 12784
+      },
+      {
+        "LocalAddress": "127.0.0.1",
+        "LocalPort": 2024,
+        "OwningProcess": 3444
+      }
+    ],
+    "workerStderrBytes": 0,
+    "processes": [
+      {
+        "ProcessId": 12784,
+        "Name": "node.exe",
+        "CommandLine": "\"C:\\Program Files\\nodejs\\node.exe\" --require F:\\codex_sales_leads\\.next-releases\\local-accepted-6dded268-native/.skill-runtime-source/scripts/patch-node-user.cjs F:\\codex_sales_leads\\scripts\\start-ma24-pilot-web.mjs F:\\codex_sales_leads\\.next-releases\\local-accepted-6dded268-native"
+      },
+      {
+        "ProcessId": 3444,
+        "Name": "node.exe",
+        "CommandLine": "\"C:\\Program Files\\nodejs\\node.exe\" --import file:///F:/codex_sales_leads/scripts/langgraph-os-userinfo-preload.mjs --import file:///F:/codex_sales_leads/tmp/ma24-local-qa-network-preload.mjs --import tsx/esm F:\\codex_sales_leads\\tmp\\ma24-local-qa-api.mjs"
+      },
+      {
+        "ProcessId": 51128,
+        "Name": "node.exe",
+        "CommandLine": "\"C:\\Program Files\\nodejs\\node.exe\" --import file:///F:/codex_sales_leads/scripts/langgraph-os-userinfo-preload.mjs --import file:///F:/codex_sales_leads/tmp/ma24-local-qa-network-preload.mjs --import tsx/esm F:\\codex_sales_leads\\.next-releases\\local-accepted-6dded268-native\\business-worker.mjs"
+      }
+    ]
+  },
+  "chainProbe": {
+    "localBusinessChainProbe": "passed",
+    "webFixedBuild": true,
+    "apiGraphExecution": {
+      "probe": "local-business-qa-health-only",
+      "status": "ready",
+      "service": "network-channel-langgraph"
+    },
+    "bgeIdentity": {
+      "status": "ready",
+      "model": "BAAI/bge-m3",
+      "revision": "5617a9f61b028005a4858fdac845db406aefb181",
+      "dimensions": 1024
+    },
+    "localSyntheticEmbeddingProbe": {
+      "inputCount": 1,
+      "dimensions": 1024,
+      "finite": true
+    },
+    "externalGenerativeModelRequests": 0,
+    "realBusinessInputsUsed": false
+  },
+  "operatorFileSha256": {
+    "tmp/ma24-start-local-qa.mjs": "0834f398eeee28acf841e4051cb455ea52829a0e62d9c40e635af620fa54a654",
+    "tmp/ma24-local-qa-api.mjs": "b6835dd3fdd58d7de5399109ee6800c6bb5e945fac86b3d25ce8eb54838c09e0",
+    "tmp/ma24-local-qa-network-preload.mjs": "2f9f6e3563592b6d0f5bea127e5a4a0bf6f6a010c190c129c77a1304f5453b1f",
+    "tmp/ma24-prepare-local-qa.mjs": "119ad047acb8fb058019649f035cae9391c7819329079bff3b31f6600ba2d4c2",
+    "tmp/ma24-local-qa-chain-probe.mjs": "f6fb13393d1028e1deba246981ff9cbff8a77ad3a71281a1f5b081bc43576ba5",
+    "scripts/bge_m3_service.py": "614dac43b0f7ef29c5b31e423aed280260162b3f138b2eb67d7638b77eeeb4f9",
+    "scripts/lib/main-runtime-durable-persistence.mjs": "ae178ae8964f555cc7f40a0eb6c405a7f2687506835739d130c0f9f086674bc5"
+  },
+  "configuration": {
+    "localBgeMainSearchEnabled": true,
+    "privateCloudTracingEnabled": false,
+    "modelRuntimeOverridesEnabled": false,
+    "migrationCredentialPassedToServices": false,
+    "apiUsesDedicatedStateInFixedWebDirectory": true,
+    "oldRootApiStateLoaded": false,
+    "originalWeb3000Stopped": false,
+    "mailboxWorkerStarted": false,
+    "knowledgeUploadWorkerStarted": false,
+    "naturalMemoryWorkerStarted": false,
+    "publicOrLanDeployment": false
+  },
+  "initialFailure": {
+    "firstApiPid": 32168,
+    "terminal": true,
+    "reason": "Windows --import absolute paths require file URLs; corrected launcher process 3444 serves API",
+    "retainedLog": "tmp/local-business-qa/api.stderr.log"
+  },
+  "limits": [
+    "The operator submitted only a provider-free health graph and one local BGE synthetic embedding probe, no business task or external generative-model question.",
+    "Readiness does not establish successful first provider inference, business accuracy, exact citations, independent quality judgment, Skill qualification or activation.",
+    "Model credentials are configured; provider response and current request admission remain to be verified by the first user-submitted task. Existing permission, approval and paid-call gates remain.",
+    "The native Windows runtime and local dependency directory are not the previously accepted immutable Linux process identity.",
+    "Only main task/API/local retrieval services started. New-upload ingestion, mailbox synchronization/learning and natural extraction workers remain separate workflows.",
+    "Processes run in the background for this local session; this is not an installed Windows service or public hosting.",
+    "G14-G20 and public/LAN deployment remain deferred."
+  ]
+}
