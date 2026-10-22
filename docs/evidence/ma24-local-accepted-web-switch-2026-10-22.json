@@ -1,0 +1,443 @@
+{
+  "date": "2026-10-22",
+  "scope": "User-requested localhost switch to the accepted Web build; no LAN/public deployment or inference task execution",
+  "productCommit": "6dded2684399b87de83dc96232f4d4b9488a6a75",
+  "buildId": "xXntY4Z7VrlLP9tgl-VfJ",
+  "imageId": "sha256:fe71d562a0673dfd4a6c3813c7e137fa095482c519391e2049cbd6b86e399b4d",
+  "sourceImage": "ma24-pilot-web:6dded268",
+  "entry": "http://localhost:3001",
+  "binding": "127.0.0.1:3001",
+  "process": {
+    "pid": 12784,
+    "productCommit": "6dded2684399b87de83dc96232f4d4b9488a6a75",
+    "buildId": "xXntY4Z7VrlLP9tgl-VfJ",
+    "root": "F:\\codex_sales_leads\\.next-releases\\local-accepted-6dded268-native",
+    "host": "127.0.0.1",
+    "port": 3001,
+    "startedAt": "2026-10-22T03:46:40.341Z",
+    "nativeNode": "v24.18.1",
+    "linuxRuntimeEquivalent": false
+  },
+  "backup": {
+    "pilotBackupRestore": "passed",
+    "archiveFile": "ma24_pilot_2026-10-22T02-21-21Z_da9919ec.dump",
+    "bytes": 194911707,
+    "sha256": "e3be3e006bbb97a8c2017f70ed31b79a7a4733da664d3b4a0a6f9adef31800a2",
+    "restoredToSecondDatabase": true,
+    "restrictedApplicationRead": true,
+    "tenantVisibilityMatched": true,
+    "tenantMembersCompared": 2,
+    "consistentExportedSnapshot": true,
+    "currentSchema": false,
+    "mailboxLogicalDigestsMatched": true,
+    "trustRegistryVersionsCompared": 0,
+    "trustRegistryDigestsMatched": false
+  },
+  "knowledgeBackup": {
+    "root": "F:/codex_sales_leads_backups/knowledge_before_6dded268_20261022",
+    "manifestSha256": "d5d0dc1f7b51a03e9585cac6b36d095fc8d29f70732e356482d32244388d8b31",
+    "fileCount": 525,
+    "totalBytes": 653079240,
+    "verifiedCopy": true
+  },
+  "cloneUpgrade": {
+    "status": "passed",
+    "mode": "--clone",
+    "product": "6dded2684399b87de83dc96232f4d4b9488a6a75",
+    "targetHash": "404b9b61ba6a693307faddc6a76f343d3035db75e5d9f202d3b7d4025a5cca61",
+    "migrationHash": "d41069ce8ac4a04b11fcd9b7060aace153777cc3436ce9344a5ab5108fbb2b5e",
+    "migrations": [
+      {
+        "name": "136_ma24_evaluation_run_kind.sql",
+        "sha256": "929730833e9ba80e14ea6f0c35c2e23ac5f6db068f6312c45fba8a2b18943e58"
+      },
+      {
+        "name": "137_ma24_explicit_evaluation_claim.sql",
+        "sha256": "f397ce899c4a59abfea6ad51438d85a21d3dd27d8717561faced10b06af0fa78"
+      },
+      {
+        "name": "138_ma24_evaluation_claim_owner.sql",
+        "sha256": "6e820837e527d059b5a6f5177bc895fc2a0933d75664b04e74a1de4404646564"
+      },
+      {
+        "name": "139_ma24_evaluation_hard_limits.sql",
+        "sha256": "8e76d494129bd346393a2eed7f5c7712dc26fe3961a106c3ff43dd0dff9fb7d7"
+      },
+      {
+        "name": "140_ma24_evaluation_hard_limit_binding.sql",
+        "sha256": "de77ab189c0f42ceafb4caf849dbc3f5a249bb9f780a2595b690546aaad98e8f"
+      },
+      {
+        "name": "141_skill_runner_attestation.sql",
+        "sha256": "f66a007c4d327276d304b7515ff539ba76b573b82877e3ca0c08a2f106335aa5"
+      },
+      {
+        "name": "142_skill_memory_source_locks.sql",
+        "sha256": "1d4fe0a387f1b1fbeef5d7b8a0a3f9aeadc144d159350f66ccf845921cdaa6f0"
+      },
+      {
+        "name": "143_skill_memory_origin_locks.sql",
+        "sha256": "a8c7b746fa9d3b0993ad35a6d312b8fd96c190896a06bead9b64deb29925592d"
+      },
+      {
+        "name": "144_skill_task_origin_locks.sql",
+        "sha256": "f664a2914bc6b87613c25d4a582ebb47285ee7999ba9426144508bf1ebcf10e9"
+      },
+      {
+        "name": "145_skill_attachment_source_locks.sql",
+        "sha256": "537d830462d73bda026398f7ac936702214cbc05298a3f11dbb6ace35cd0cd26"
+      },
+      {
+        "name": "146_skill_model_freeze_serialization.sql",
+        "sha256": "23e96e89b6138314e8264dfd2748b2cf833c4ac13ca16a11591e13a5f1c6a2b4"
+      },
+      {
+        "name": "147_skill_timeline_source_locks.sql",
+        "sha256": "8f45929d5ee7adf2731f3a0aeac0ec022ad236685d988cfdf9af41dba99b4648"
+      },
+      {
+        "name": "148_skill_decision_memory_source_locks.sql",
+        "sha256": "f816b532be3d5ce786637c2848ae29cb60e278dc0561a5c3e74aa6a93fdb6760"
+      },
+      {
+        "name": "149_skill_knowledge_source_locks.sql",
+        "sha256": "ab12d7c5e93dc04483468b00352b9458011027d1ff0ecdb4865aefa3f09a646c"
+      },
+      {
+        "name": "150_skill_shadow_source_locks.sql",
+        "sha256": "670bc79bb282c95ac58848fb3d861852e29bef664ac148816d9667dcc32a0a23"
+      },
+      {
+        "name": "151_skill_pinned_method_source_locks.sql",
+        "sha256": "deb535c8f0a57b611b1050f2a85fd38f7be5f117c800bf6d9b918c62b26cfce7"
+      },
+      {
+        "name": "152_skill_catalog_source_admission.sql",
+        "sha256": "53fa1617d43caba3569e8d3c9c92e82d4101a7cf02e28858b29de9ccc8ec0218"
+      },
+      {
+        "name": "153_mailbox_sync_worker_binding.sql",
+        "sha256": "2bf21e186da758a0ab9392be2fbd3c9683a1f9df74b10d0c4fad1d9856925a99"
+      },
+      {
+        "name": "154_local_memory_extraction_source_locks.sql",
+        "sha256": "274ca8dfb775f938ab265a852aec6bb180c08e5e52f724e7c14006ed750f0380"
+      },
+      {
+        "name": "155_local_memory_receipt_source_locks.sql",
+        "sha256": "eb81a4c9fd5a2c494efb0bab0235ae83d455106a0a8ee87a580d3050a80d0925"
+      },
+      {
+        "name": "156_knowledge_asset_immutable_snapshot.sql",
+        "sha256": "c9fff47bd913e847cd82e8ac5034d47279927b25f88dcdcc740a1025cf116373"
+      },
+      {
+        "name": "157_skill_runner_trust_registry.sql",
+        "sha256": "30f9e02ead4b10fcf1079e80045acd5b8991eec473f1ecd06b5734d8926f786c"
+      },
+      {
+        "name": "158_immutable_snapshot_orphan_lifecycle.sql",
+        "sha256": "7af6c820f85d6e7f37d5aae7b863ab15ab8cdab0bfbe532d94fdcae6ceaed3d7"
+      },
+      {
+        "name": "159_skill_runtime_package_registration.sql",
+        "sha256": "7a943a6ec232f66b4f0223aff209b617bfed7a818afcaa055858ee60305b4afb"
+      },
+      {
+        "name": "160_skill_activation_commit_guard.sql",
+        "sha256": "0c6da9ae6204a5d40ab509d2050992bdf197d2936155d16573b1e50d656d4867"
+      },
+      {
+        "name": "161_skill_activation_lifecycle.sql",
+        "sha256": "1ca93851ed3f70fa889113ed4c488561ebbc6cf594fabf2acff3be19b723f2a7"
+      },
+      {
+        "name": "162_skill_activation_source_fence.sql",
+        "sha256": "1fcd6fa92c3f3f91eb3960507deb6454a93caecaf812c56e26e9f577573c764e"
+      },
+      {
+        "name": "163_skill_acceptance_review_serialization.sql",
+        "sha256": "1daf9d6b412291442d3266084ebe801c70b252fde8889ab298cf8e91d8e17752"
+      },
+      {
+        "name": "164_skill_runner_attestation_serialization.sql",
+        "sha256": "c823b82da80fda9f0e0eb557cfa9767060e4d00bed34c6aa5c4f44ba0888da73"
+      },
+      {
+        "name": "165_skill_activation_source_readiness.sql",
+        "sha256": "70d0daab01742a284aae63a9140a3eb8771e2d71723566e921b52a47adbf2f65"
+      },
+      {
+        "name": "166_skill_activation_use_commit_guard.sql",
+        "sha256": "ee837298a461fd7ca7533e707bf8a0924d4aefb11e7623ad9c073d2cbde0e24f"
+      },
+      {
+        "name": "167_skill_activation_use_scoped_role.sql",
+        "sha256": "7c288566683f564ebe91cec2ba2bd5af300ae84613287e198b6b71fb9480f4d2"
+      },
+      {
+        "name": "168_skill_candidate_checkpoint.sql",
+        "sha256": "1db92920c88a7d82d0717eb190adc26a85950369b0a33ac485df9cf5d4ae38f1"
+      },
+      {
+        "name": "169_skill_candidate_execution_lease.sql",
+        "sha256": "675c541323f1c4aed34e5d65bfbe36ee93d2e215af3c7b7ae13bc8f29d093f43"
+      },
+      {
+        "name": "170_skill_candidate_graph_checkpoint.sql",
+        "sha256": "c1234db7bd3cea15c5cc76f24c2c1f543657c333771fcdfaad89fe64f87ec290"
+      },
+      {
+        "name": "171_current_shared_original_revision_read.sql",
+        "sha256": "5a7fa17cb74f82880991e01dac351d9a0c441b2630411d08d0cff00ad4b3189c"
+      }
+    ],
+    "backupFile": "ma24_pilot_2026-10-22T02-21-21Z_da9919ec.dump",
+    "existingPublicTablesCompared": 145,
+    "existingPublicValuesPreserved": true,
+    "snapshotHash": "25e35c7a4a0d2422268d6b1b53db16c20751f960cc719adb797efed519262e14",
+    "restrictedApplicationRead": true,
+    "standardGraphSchemaSetup": true,
+    "finishedAt": "2026-10-22T02:56:27.259Z",
+    "modelCalls": 0,
+    "mailSends": 0
+  },
+  "actualDatabaseUpgrade": {
+    "status": "passed",
+    "mode": "--apply",
+    "product": "6dded2684399b87de83dc96232f4d4b9488a6a75",
+    "targetHash": "404b9b61ba6a693307faddc6a76f343d3035db75e5d9f202d3b7d4025a5cca61",
+    "migrationHash": "d41069ce8ac4a04b11fcd9b7060aace153777cc3436ce9344a5ab5108fbb2b5e",
+    "migrations": [
+      {
+        "name": "136_ma24_evaluation_run_kind.sql",
+        "sha256": "929730833e9ba80e14ea6f0c35c2e23ac5f6db068f6312c45fba8a2b18943e58"
+      },
+      {
+        "name": "137_ma24_explicit_evaluation_claim.sql",
+        "sha256": "f397ce899c4a59abfea6ad51438d85a21d3dd27d8717561faced10b06af0fa78"
+      },
+      {
+        "name": "138_ma24_evaluation_claim_owner.sql",
+        "sha256": "6e820837e527d059b5a6f5177bc895fc2a0933d75664b04e74a1de4404646564"
+      },
+      {
+        "name": "139_ma24_evaluation_hard_limits.sql",
+        "sha256": "8e76d494129bd346393a2eed7f5c7712dc26fe3961a106c3ff43dd0dff9fb7d7"
+      },
+      {
+        "name": "140_ma24_evaluation_hard_limit_binding.sql",
+        "sha256": "de77ab189c0f42ceafb4caf849dbc3f5a249bb9f780a2595b690546aaad98e8f"
+      },
+      {
+        "name": "141_skill_runner_attestation.sql",
+        "sha256": "f66a007c4d327276d304b7515ff539ba76b573b82877e3ca0c08a2f106335aa5"
+      },
+      {
+        "name": "142_skill_memory_source_locks.sql",
+        "sha256": "1d4fe0a387f1b1fbeef5d7b8a0a3f9aeadc144d159350f66ccf845921cdaa6f0"
+      },
+      {
+        "name": "143_skill_memory_origin_locks.sql",
+        "sha256": "a8c7b746fa9d3b0993ad35a6d312b8fd96c190896a06bead9b64deb29925592d"
+      },
+      {
+        "name": "144_skill_task_origin_locks.sql",
+        "sha256": "f664a2914bc6b87613c25d4a582ebb47285ee7999ba9426144508bf1ebcf10e9"
+      },
+      {
+        "name": "145_skill_attachment_source_locks.sql",
+        "sha256": "537d830462d73bda026398f7ac936702214cbc05298a3f11dbb6ace35cd0cd26"
+      },
+      {
+        "name": "146_skill_model_freeze_serialization.sql",
+        "sha256": "23e96e89b6138314e8264dfd2748b2cf833c4ac13ca16a11591e13a5f1c6a2b4"
+      },
+      {
+        "name": "147_skill_timeline_source_locks.sql",
+        "sha256": "8f45929d5ee7adf2731f3a0aeac0ec022ad236685d988cfdf9af41dba99b4648"
+      },
+      {
+        "name": "148_skill_decision_memory_source_locks.sql",
+        "sha256": "f816b532be3d5ce786637c2848ae29cb60e278dc0561a5c3e74aa6a93fdb6760"
+      },
+      {
+        "name": "149_skill_knowledge_source_locks.sql",
+        "sha256": "ab12d7c5e93dc04483468b00352b9458011027d1ff0ecdb4865aefa3f09a646c"
+      },
+      {
+        "name": "150_skill_shadow_source_locks.sql",
+        "sha256": "670bc79bb282c95ac58848fb3d861852e29bef664ac148816d9667dcc32a0a23"
+      },
+      {
+        "name": "151_skill_pinned_method_source_locks.sql",
+        "sha256": "deb535c8f0a57b611b1050f2a85fd38f7be5f117c800bf6d9b918c62b26cfce7"
+      },
+      {
+        "name": "152_skill_catalog_source_admission.sql",
+        "sha256": "53fa1617d43caba3569e8d3c9c92e82d4101a7cf02e28858b29de9ccc8ec0218"
+      },
+      {
+        "name": "153_mailbox_sync_worker_binding.sql",
+        "sha256": "2bf21e186da758a0ab9392be2fbd3c9683a1f9df74b10d0c4fad1d9856925a99"
+      },
+      {
+        "name": "154_local_memory_extraction_source_locks.sql",
+        "sha256": "274ca8dfb775f938ab265a852aec6bb180c08e5e52f724e7c14006ed750f0380"
+      },
+      {
+        "name": "155_local_memory_receipt_source_locks.sql",
+        "sha256": "eb81a4c9fd5a2c494efb0bab0235ae83d455106a0a8ee87a580d3050a80d0925"
+      },
+      {
+        "name": "156_knowledge_asset_immutable_snapshot.sql",
+        "sha256": "c9fff47bd913e847cd82e8ac5034d47279927b25f88dcdcc740a1025cf116373"
+      },
+      {
+        "name": "157_skill_runner_trust_registry.sql",
+        "sha256": "30f9e02ead4b10fcf1079e80045acd5b8991eec473f1ecd06b5734d8926f786c"
+      },
+      {
+        "name": "158_immutable_snapshot_orphan_lifecycle.sql",
+        "sha256": "7af6c820f85d6e7f37d5aae7b863ab15ab8cdab0bfbe532d94fdcae6ceaed3d7"
+      },
+      {
+        "name": "159_skill_runtime_package_registration.sql",
+        "sha256": "7a943a6ec232f66b4f0223aff209b617bfed7a818afcaa055858ee60305b4afb"
+      },
+      {
+        "name": "160_skill_activation_commit_guard.sql",
+        "sha256": "0c6da9ae6204a5d40ab509d2050992bdf197d2936155d16573b1e50d656d4867"
+      },
+      {
+        "name": "161_skill_activation_lifecycle.sql",
+        "sha256": "1ca93851ed3f70fa889113ed4c488561ebbc6cf594fabf2acff3be19b723f2a7"
+      },
+      {
+        "name": "162_skill_activation_source_fence.sql",
+        "sha256": "1fcd6fa92c3f3f91eb3960507deb6454a93caecaf812c56e26e9f577573c764e"
+      },
+      {
+        "name": "163_skill_acceptance_review_serialization.sql",
+        "sha256": "1daf9d6b412291442d3266084ebe801c70b252fde8889ab298cf8e91d8e17752"
+      },
+      {
+        "name": "164_skill_runner_attestation_serialization.sql",
+        "sha256": "c823b82da80fda9f0e0eb557cfa9767060e4d00bed34c6aa5c4f44ba0888da73"
+      },
+      {
+        "name": "165_skill_activation_source_readiness.sql",
+        "sha256": "70d0daab01742a284aae63a9140a3eb8771e2d71723566e921b52a47adbf2f65"
+      },
+      {
+        "name": "166_skill_activation_use_commit_guard.sql",
+        "sha256": "ee837298a461fd7ca7533e707bf8a0924d4aefb11e7623ad9c073d2cbde0e24f"
+      },
+      {
+        "name": "167_skill_activation_use_scoped_role.sql",
+        "sha256": "7c288566683f564ebe91cec2ba2bd5af300ae84613287e198b6b71fb9480f4d2"
+      },
+      {
+        "name": "168_skill_candidate_checkpoint.sql",
+        "sha256": "1db92920c88a7d82d0717eb190adc26a85950369b0a33ac485df9cf5d4ae38f1"
+      },
+      {
+        "name": "169_skill_candidate_execution_lease.sql",
+        "sha256": "675c541323f1c4aed34e5d65bfbe36ee93d2e215af3c7b7ae13bc8f29d093f43"
+      },
+      {
+        "name": "170_skill_candidate_graph_checkpoint.sql",
+        "sha256": "c1234db7bd3cea15c5cc76f24c2c1f543657c333771fcdfaad89fe64f87ec290"
+      },
+      {
+        "name": "171_current_shared_original_revision_read.sql",
+        "sha256": "5a7fa17cb74f82880991e01dac351d9a0c441b2630411d08d0cff00ad4b3189c"
+      }
+    ],
+    "backupFile": "ma24_pilot_2026-10-22T02-21-21Z_da9919ec.dump",
+    "existingPublicTablesCompared": 145,
+    "existingPublicValuesPreserved": true,
+    "snapshotHash": "25e35c7a4a0d2422268d6b1b53db16c20751f960cc719adb797efed519262e14",
+    "restrictedApplicationRead": true,
+    "standardGraphSchemaSetup": true,
+    "finishedAt": "2026-10-22T03:00:35.016Z",
+    "modelCalls": 0,
+    "mailSends": 0
+  },
+  "http": {
+    "base": "http://127.0.0.1:3001",
+    "expectedBuild": "xXntY4Z7VrlLP9tgl-VfJ",
+    "checks": [
+      {
+        "path": "/",
+        "status": 200,
+        "expected": 200,
+        "sha256": "b23fcc98514cbed111741f71db336eaada21d5e7a9ce4dd155d67c1b05431468"
+      },
+      {
+        "path": "/_next/static/xXntY4Z7VrlLP9tgl-VfJ/_buildManifest.js",
+        "status": 200,
+        "expected": 200,
+        "sha256": "9476e0afd3f9da68a64e6ec58631191fd3eaca62c9f5a377e7517fe9a89e59ea"
+      },
+      {
+        "path": "/api/auth/session",
+        "status": 200,
+        "expected": 200,
+        "sha256": "772abe847a32b98144d5f21f8711bd0cb64399f23aa5d9d4ecee438e02a83530"
+      },
+      {
+        "path": "/api/mailbox/customers",
+        "status": 401,
+        "expected": 401,
+        "sha256": "3be5b8e53fdc8b0a2996590589456db33504977f3d1ce9bb75016c8a707e1a71"
+      },
+      {
+        "path": "/api/auth/session",
+        "invalidSessionDatabaseRead": true,
+        "status": 200
+      }
+    ]
+  },
+  "artifactCheck": {
+    "fixedExportRegularFilesMatched": 2168,
+    "buildId": "xXntY4Z7VrlLP9tgl-VfJ",
+    "nativeDependencyDirectorySeparate": true
+  },
+  "runtimeBoundary": {
+    "migrationCredentialIncluded": false,
+    "paidCallStageOverrideIncluded": false,
+    "originalPort3000Retained": true,
+    "originalServicesRetained": true,
+    "inaccessibleNewDockerContainerStopped": true,
+    "nativeNode": "v24.18.1",
+    "acceptedLinuxNode": "v24.21.0",
+    "linuxRuntimeEquivalent": false,
+    "taskApi2024Reachable": false,
+    "retrieval8765Reachable": false,
+    "backgroundInferenceWorkersStarted": false
+  },
+  "operationalFailures": [
+    "Initial clone checker name[] parsing failed before migrations; changed aggregation to text[] and corrected clone passed.",
+    "Docker host-network Web was healthy internally but not reachable from Windows loopback; stopped the newly created container.",
+    "Direct docker cp encountered Linux symbolic-link privilege limits; exported a dereferenced binary archive and verified 2168 regular files after extraction."
+  ],
+  "logHashes": {
+    "tmp/ma24-local-cutover-backup.log": "2f446c012b132720d849dbd17d4bab4a6d49cefcce93e5305b47bc4150add78d",
+    "tmp/ma24-local-cutover-clone.log": "f0e6d7d9893f84f14ccbf2e6567078e5e46437e2c926262a5a4882dba49b3cb3",
+    "tmp/ma24-local-cutover-clone-diagnostic.log": "256a2fff85693dbcb3cc2cd4867bfb00405fd3c76855b4e9002d089c5b17373e",
+    "tmp/ma24-local-cutover-clone-corrected.log": "ceb0085459558268ab47a691f9ca881afe56c0f56a37aa585e13691f656521d4",
+    "tmp/ma24-local-cutover-apply.log": "b44b1f65881ec3d21f83ada46448f0c46f91e7c343608a9b05a8d8e7cf6b1c38",
+    "tmp/ma24-local-cutover-upgrade.ts": "9650a32fbab3e67f0046010e3240d0de87d7d0c1ff089c20bab23141154d4cca",
+    "tmp/ma24-start-local-accepted-web.mjs": "3a0781c8456ec0afd71192fa4e9535f5a363e01da0c1b13c8346819540c54a6f"
+  },
+  "limits": [
+    "Anonymous HTTP/session and invalid-cookie database lookup tested; real-user login and business results not yet accepted.",
+    "The Web build and source archive are fixed; native Windows Node/dependencies differ from the accepted Linux process, so no production runtime equivalence or qualification is claimed.",
+    "145 existing public tables preserved their pre-upgrade columns and row values; new schema columns/tables/policies and standard graph setup were intentionally installed.",
+    "The old 3000 service shares the upgraded database. Retaining its process is not a tested rollback of the current schema, data or uploads.",
+    "Database backup and source files are retained locally outside Git; backups after subsequent business writes require a new snapshot.",
+    "Task API and local retrieval are not listening; do not treat the visible Web as a complete ready business-answer chain.",
+    "No provider/model request, mail send, real task, Skill activation, G14-G20 work or public deployment was performed."
+  ]
+}
