@@ -1,4 +1,25 @@
 # MA24 G01–G13 当前剩余门槛（2026-10-16）
+
+## 2026-10-22 当前执行检查点
+
+本轮边界仍为 G01–G13；G14–G20 与部署不推进。下面的旧阶段记录用于追溯，不能把其中当时的“运行中”“待重跑”直接当作当前状态。
+
+- 最新产品包为 `6dded268`，主机验收脚本修正 `45aee93d`，验收归档 `7c669fe7`。客户时间线原文、既有邮箱及公司往来邮件回归在三视口实际页面/API/隔离库通过；三类构建及五项包检查通过。[验收范围](CUSTOMER_TIMELINE_ORIGINAL_RECOVERY_2026-10-22.md)。这不是 G01–G13 全部完成。
+- G07 输入复查已执行：此前固定账号仍有 11 个已完成主任务，自 10 月 15 日边界起新增 0；4 个元数据候选中，`customer_timeline` 候选为 0。本轮只读事务未读取任务问答、邮件或资料正文，未重新作来源/语义判定。聚合计数一致不能证明旧载荷未变。[只读收据](evidence/ma24-g07-input-availability-recheck-2026-10-22.json)。
+- 原先请求的真实客户时间线任务及材料/日期授权范围仍未补齐；不重复把旧的异题任务或合成结果作为合格回放，也不自行新建实际模型任务。
+
+### 下一阶段所需输入与对应未关闭门槛
+
+| 优先级 | 门槛 | 具体需要 | 可接受的完成证据 |
+| --- | --- | --- | --- |
+| P0 | G07/G08：真实回放与前瞻 | 同账号、与客户时间线 Skill 相关的任务；明确允许的邮件/公司/资料及日期范围。历史任务须完整且来源当前有效；前瞻须执行前登记。 | 完整原流程与候选日志、冻结材料、账号/来源绑定、独立质量审核。不能将历史改标前瞻。 |
+| P0 | G06/G09/G10：安全、资格与审核 | 固定协议、合格真实任务、有效提供方执行收据及独立逐项判断；新模型调用必须有适用且未消耗的授权。 | 五类材料与判断齐全，实际固定入口和每次尝试身份可核，服务端资格推导与最终事务均通过。当前真实资格/正向启用未验。 |
+| P1 | G02–G05：撤权、自然记忆、图谱与资料 | 获准的真实来源/纠正样本、任务与撤权时点、真实文档及内容/视觉判断；持续 Worker 的运行范围。 | 同一批来源的抽取、投影、撤回、召回/引用和故障恢复；真实答案及引用逐项核对。合成矩阵只作工程证据。 |
+| P1 | G11–G13：邮箱、模式和实际工作流质量 | 真实邮箱账号及日期/文件夹范围、归属与摘要判定样本、真实只读业务任务及适用调用范围。 | 服务商全分页对账与恢复、客户归属/摘要、三模式业务回答和实际入口结果；未知结果先核对，不盲目重发。 |
+| 暂缓 | G01 目标运行、G14–G20 | 用户恢复相应范围后再确定目标与验收输入。 | 目标主机、备份恢复、试点/回切及最终交付各自的实际证据；本机工程记录不代替目标验收。 |
+
+G09 的 `completed-owned-frozen-read-trials-v1` 资格范围及 `ordinaryLifecycleEquivalent=false` 保持明确；整个试验的生产入口覆盖仍未证明。不能仅补资格布尔字段、放宽 schema 或重跑同类合成组合来关闭真实门槛。工程证据仍按各提交版本保留；不宣称所有剩余代码、全部 UI 入口或生产行为已经验收。
+
 Latest accepted UI update: 6dded268 / host 45aee93d actual 46707 passes customer timeline original selection/retry and prior mailbox/correspondence regressions; three builds/five package checks pass. Real business/provider/quality/production gates remain open; G14-G20/deployment deferred. Older status notes below are version-scoped history.
 Current accepted original-reader update: 336ab312 actual 75913 closes the recorded GET-unavailable body/drawer cache follow-up at the explicit UI response boundary; three builds/five package checks pass with unchanged backend execution bytes. Real session/generation-period revocation, business/provider/quality/production and other declared workflow scopes remain open; G14-G20/deployment deferred.
 Current accepted association update: eb02b809 actual 88523 and three builds/five package checks passed within declared display/readback/drawer scope. GET-unavailable original-cache invalidation remains open, alongside real business/provider/quality/production gates; G14-G20/deployment deferred.

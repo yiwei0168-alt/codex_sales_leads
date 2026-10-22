@@ -1,0 +1,76 @@
+{
+  "date": "2026-10-22",
+  "scope": "G07-G10 input availability recheck of the previously pinned account only",
+  "sourceCommit": "7c669fe7e67c0d7dd9c4166a0fb2ea22dfe29807",
+  "result": {
+    "inventory": "passed",
+    "observedAt": "2026-10-22 00:06:13.861604+00",
+    "manifestSha256": "0d8355662382087bade728a4a925ee1c99bda7d558d0965abf9c1db11d832e8d",
+    "accountPinHash": "99519624503c7e0ed25ee7fa98340b4e2b6069e1cc1c8daea2f447a46da54043",
+    "transactionReadOnly": true,
+    "scope": "existing-manifest-account-only",
+    "completedMainRuns": 11,
+    "createdSinceBoundary": 0,
+    "boundary": "2026-10-15T00:00:00+08:00",
+    "journalMetadataCandidates": 4,
+    "timelineMetadataCandidates": 0,
+    "pinnedSkillVersionPresent": true,
+    "metadataOnly": true,
+    "sourcePayloadsValidated": false,
+    "semanticRelevanceJudged": false,
+    "qualityAcceptance": false,
+    "modelCalls": 0,
+    "externalEffects": 0,
+    "automaticActivation": false
+  },
+  "comparison": {
+    "completedMainRuns": {
+      "prior": 11,
+      "current": 11,
+      "equal": true
+    },
+    "createdSinceBoundary": {
+      "prior": 0,
+      "current": 0,
+      "equal": true
+    },
+    "journalMetadataCandidates": {
+      "prior": 4,
+      "current": 4,
+      "equal": true
+    },
+    "timelineMetadataCandidates": {
+      "prior": 0,
+      "current": 0,
+      "equal": true
+    },
+    "pinnedSkillVersionPresent": {
+      "prior": true,
+      "current": true,
+      "equal": true
+    }
+  },
+  "method": {
+    "script": "tmp/ma24-g07-current-inventory.ts",
+    "scriptSha256": "1f42aa4aef775a84e5a69e1939edd30a3a446c9ab26c20bed949be044d78c0fd",
+    "log": "tmp/ma24-g07-current-inventory-2026-10-22.log",
+    "logSha256": "2818acc7eab1c35c17df5b7f33a36467b15b0026ae5070fb37191456e6e13756",
+    "exitCode": 0,
+    "transaction": "repeatable read read only, application role, explicit pinned account filter",
+    "maximumRuns": 1000,
+    "maximumCallRows": 10000,
+    "readContractFile": "src/lib/assistant/main/read-evidence-tools.ts",
+    "readContractSha256": "ac409b2198e68097d88ba92d3390428f1ce24faf46ff8d4026841e11dda2faf4"
+  },
+  "priorEvidence": "ma24-g07-current-source-metadata-2026-10-21.json",
+  "currentSourcePayloadValidationRepeated": false,
+  "semanticRelevanceJudgmentRepeated": false,
+  "limits": [
+    "No task input/output, mail body or document content was inspected in this rescan.",
+    "No model/provider/IMAP call, source mutation, task creation, Skill activation or deployment occurred.",
+    "Identical aggregate metadata does not establish unchanged task/source payloads.",
+    "Four metadata candidates are not four eligible replays. The previous three schema rejections and one off-topic USB task remain historical findings, not newly validated source results.",
+    "No metadata candidate uses customer_timeline; the pending request for an authorized relevant task/material/date scope remains unresolved.",
+    "This receipt establishes current input availability only; it does not establish product workflow, business quality, production entrypoint or qualification completion."
+  ]
+}
