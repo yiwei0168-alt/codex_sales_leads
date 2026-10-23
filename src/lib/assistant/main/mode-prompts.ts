@@ -1,8 +1,10 @@
 import content from './mode-prompt-content.json';
 import { KNOWLEDGE_RESPONSE_POLICY } from './knowledge-response-policy';
+import { RESPONSE_READABILITY_POLICY } from './response-readability-policy';
 
 export const LEGACY_MODE_PROMPT_VERSION = 'agent-mode-prompts-v1.0.0';
-export const MODE_PROMPT_VERSION = 'agent-mode-prompts-v1.1.0';
+export const KNOWLEDGE_MODE_PROMPT_VERSION = 'agent-mode-prompts-v1.1.0';
+export const MODE_PROMPT_VERSION = 'agent-mode-prompts-v1.2.0';
 export type AgentMode = 'quick' | 'standard' | 'deep';
 export const DEFAULT_AGENT_MODE: AgentMode = 'standard';
 
@@ -17,6 +19,6 @@ export function parseAgentMode(value: unknown): AgentMode {
 export function modePromptRules(mode: AgentMode = DEFAULT_AGENT_MODE,
   version: string = MODE_PROMPT_VERSION): string {
   const selected = parseAgentMode(mode);
-  if(version!==MODE_PROMPT_VERSION&&version!==LEGACY_MODE_PROMPT_VERSION)throw new Error('Unknown mode prompt version');
-  return `${content.common}\n\n${content[selected]}${version===MODE_PROMPT_VERSION?`\n\n${KNOWLEDGE_RESPONSE_POLICY}`:''}`;
+  if(version!==MODE_PROMPT_VERSION&&version!==KNOWLEDGE_MODE_PROMPT_VERSION&&version!==LEGACY_MODE_PROMPT_VERSION)throw new Error('Unknown mode prompt version');
+  return `${content.common}\n\n${content[selected]}${version!==LEGACY_MODE_PROMPT_VERSION?`\n\n${KNOWLEDGE_RESPONSE_POLICY}`:''}${version===MODE_PROMPT_VERSION?`\n\n${RESPONSE_READABILITY_POLICY}`:''}`;
 }

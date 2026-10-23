@@ -1,7 +1,18 @@
 import { describe, expect, it } from 'vitest';
-import { modePromptRules, parseAgentMode } from './mode-prompts';
+import { modePromptRules, parseAgentMode, MODE_PROMPT_VERSION, KNOWLEDGE_MODE_PROMPT_VERSION, LEGACY_MODE_PROMPT_VERSION } from './mode-prompts';
+import content from './mode-prompt-content.json';
+import { KNOWLEDGE_RESPONSE_POLICY } from './knowledge-response-policy';
+import { modeConfigSchema, modeModelConfig } from './mode-config';
 
 describe('mode prompt selection boundary', () => {
+  it.each(['quick','standard','deep'] as const)('preserves historical %s prompts while new tasks get readability guidance', mode => {
+    expect(modePromptRules(mode,LEGACY_MODE_PROMPT_VERSION)).toBe(`${content.common}\n\n${content[mode]}`);
+    expect(modePromptRules(mode,KNOWLEDGE_MODE_PROMPT_VERSION)).toBe(`${content.common}\n\n${content[mode]}\n\n${KNOWLEDGE_RESPONSE_POLICY}`);
+    const profile=modeModelConfig(mode).profile!;
+    expect(profile.promptVersion).toBe(MODE_PROMPT_VERSION);
+    expect(modePromptRules(mode,profile.promptVersion)).toContain('回答组织与可读性');
+    expect(modeConfigSchema.parse({...profile,promptVersion:KNOWLEDGE_MODE_PROMPT_VERSION}).promptVersion).toBe(KNOWLEDGE_MODE_PROMPT_VERSION);
+  });
   it('defaults only an omitted selection to standard', () => {
     expect(parseAgentMode(undefined)).toBe('standard');
     expect(modePromptRules()).toBe(modePromptRules('standard'));
