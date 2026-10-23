@@ -1,0 +1,114 @@
+{
+  "verifiedAt": "2026-10-23T09:13:28.587Z",
+  "productCommit": "561ae931",
+  "buildId": "rVQimk58cA0EceH36aSrv",
+  "sourceChecks": [
+    {
+      "path": "src/lib/sales/company-query.ts",
+      "sha256": "d45d158f0fc2b90bff10305fd746b7ffc229f22fb0555d2904cb8640cce6862c"
+    },
+    {
+      "path": "src/lib/mailbox/customer-search.ts",
+      "sha256": "f9edca97216469a218b5e2c351799ba7161a543fef81e8b15d0667345b954ec3"
+    },
+    {
+      "path": "src/lib/assistant/main/company-search.ts",
+      "sha256": "fc575293c6266c7f9a143703a0d4627afd979123ef938257c64a19ee6808942e"
+    },
+    {
+      "path": "src/lib/assistant/main/tools.ts",
+      "sha256": "cd07d47c4f6006e9a80832a522ce450c7642a0bfea4dc05c3da2f8f6b1b411b8"
+    },
+    {
+      "path": "src/lib/assistant/product-actions.ts",
+      "sha256": "44a0116a3f2db5143b9344cafa7ce3a86290de48d59c4b5f8253609bf70fbbc3"
+    }
+  ],
+  "artifactManifest": {
+    "sourceCommit": "561ae931",
+    "artifacts": {
+      "business-main-server": "64c7fb2ce396bb6b731659e654b19f13e0aed78988a3fa821ed443a15a9b8a58",
+      "business-worker": "380705ee34a655b55c38a0a6db1b59020436bbdba0d6650024c0f776d21600cc",
+      "business-legacy-server": "ab9bdc935519a222eba92c68a46b9e23c273d7fb2ac174376c7d17743ff3cbae"
+    }
+  },
+  "probes": {
+    "web": 200,
+    "static": 200,
+    "session": 200,
+    "anonymousMail": 401,
+    "api": 200
+  },
+  "records": {
+    "api": {
+      "mode": "api",
+      "pid": 29316,
+      "startedAt": "2026-10-23T09:12:42.904Z",
+      "localOnly": true,
+      "privateTracing": false,
+      "migrationCredentialIncluded": false,
+      "paidStageOverrideIncluded": false
+    },
+    "worker": {
+      "mode": "worker",
+      "pid": 25736,
+      "startedAt": "2026-10-23T09:13:18.900Z",
+      "localOnly": true,
+      "privateTracing": false,
+      "migrationCredentialIncluded": false,
+      "paidStageOverrideIncluded": false
+    },
+    "web": {
+      "pid": 17228,
+      "productCommit": "561ae931",
+      "buildId": "rVQimk58cA0EceH36aSrv",
+      "root": "F:\\codex_sales_leads\\.next-companymatch-561ae931\\standalone",
+      "host": "127.0.0.1",
+      "port": 3001,
+      "startedAt": "2026-10-23T09:12:43.115Z",
+      "nativeNode": "v24.18.1",
+      "linuxRuntimeEquivalent": false
+    }
+  },
+  "lookup": {
+    "checks": [
+      {
+        "query": "Reichelt",
+        "salesCandidates": 0,
+        "mailboxCandidates": 2,
+        "includesExpectedDomain": true,
+        "requiresSelection": true
+      },
+      {
+        "query": "reichelt.de",
+        "salesCandidates": 0,
+        "mailboxCandidates": 2,
+        "includesExpectedDomain": true,
+        "requiresSelection": true
+      },
+      {
+        "query": "Reichelt Elektronik GmbH",
+        "salesCandidates": 0,
+        "mailboxCandidates": 2,
+        "includesExpectedDomain": true,
+        "requiresSelection": true
+      },
+      {
+        "query": "https://www.reichelt.de",
+        "salesCandidates": 0,
+        "mailboxCandidates": 2,
+        "includesExpectedDomain": true,
+        "requiresSelection": true
+      }
+    ],
+    "mode": "owned read-only lookup",
+    "modelCalls": 0,
+    "dataMutations": 0
+  },
+  "notes": [
+    "Name variants are retrieval probes, not verified legal aliases",
+    "No auto merge, renaming, new migration, or agent-submitted model question",
+    "User quick-mode answer acceptance still pending",
+    "Native local build; no Linux production qualification"
+  ]
+}
