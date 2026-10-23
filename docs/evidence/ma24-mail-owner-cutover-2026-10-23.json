@@ -1,0 +1,78 @@
+{
+  "verifiedAt": "2026-10-23T09:34:50.473Z",
+  "productCommit": "c8b518ff",
+  "promptVersion": "agent-mode-prompts-v1.3.0",
+  "buildId": "Svo92znyB7D7IV0V_EtVQ",
+  "sourceChecks": [
+    {
+      "path": "src/lib/assistant/main/mode-prompts.ts",
+      "sha256": "249a70dfc5acf7806424596bcc438019e3da2057af08195fb927572ef9b60f57"
+    },
+    {
+      "path": "src/lib/assistant/main/mode-config.ts",
+      "sha256": "b85f98aa8fa7a235a14088df6264342a80436505c78478d55654d9ce0bffed7a"
+    },
+    {
+      "path": "src/lib/assistant/main/response-readability-policy.ts",
+      "sha256": "52426858a44eaa492e385618c61ceb1318278629ba6f4c4b8ce23c843a6c2210"
+    }
+  ],
+  "artifacts": {
+    "sourceCommit": "c8b518ff",
+    "artifacts": {
+      "business-main-server": "521e0f5061e9b21cc08f6f85e4f3b21c4a8b9e84c9cef4f861ea3497bde4661d",
+      "business-worker": "dd1979dee273b41d508bb9e294d1f066592070e4f0b26f50539c65ccba15817a",
+      "business-legacy-server": "d8acf96c2d86b80a44c2cb78ae77d2cac9e4b692d809a07b8d9f488701408760"
+    }
+  },
+  "probes": {
+    "web": 200,
+    "static": 200,
+    "session": 200,
+    "anonymousMail": 401,
+    "api": 200
+  },
+  "records": {
+    "api": {
+      "mode": "api",
+      "pid": 7188,
+      "startedAt": "2026-10-23T09:34:06.087Z",
+      "localOnly": true,
+      "privateTracing": false,
+      "migrationCredentialIncluded": false,
+      "paidStageOverrideIncluded": false
+    },
+    "worker": {
+      "mode": "worker",
+      "pid": 20208,
+      "startedAt": "2026-10-23T09:34:41.988Z",
+      "localOnly": true,
+      "privateTracing": false,
+      "migrationCredentialIncluded": false,
+      "paidStageOverrideIncluded": false
+    },
+    "web": {
+      "pid": 20136,
+      "productCommit": "c8b518ff",
+      "buildId": "Svo92znyB7D7IV0V_EtVQ",
+      "root": "F:\\codex_sales_leads\\.next-mailowner-c8b518ff\\standalone",
+      "host": "127.0.0.1",
+      "port": 3001,
+      "startedAt": "2026-10-23T09:34:06.296Z",
+      "nativeNode": "v24.18.1",
+      "linuxRuntimeEquivalent": false
+    }
+  },
+  "regressions": {
+    "tests": 19,
+    "typecheck": true,
+    "changedFileLint": true,
+    "webBuild": true
+  },
+  "limitations": [
+    "Owner-inference real answer accuracy awaits user review",
+    "No automatic task assignment, customer edits or invented deadlines",
+    "No agent-submitted model question or new migration",
+    "Native local acceptance; not Linux production qualification"
+  ]
+}
