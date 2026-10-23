@@ -1,0 +1,62 @@
+{
+  "verifiedAt": "2026-10-23T08:47:54.540Z",
+  "productSourceCommit": "6fa62b92",
+  "promptVersion": "agent-mode-prompts-v1.2.0",
+  "buildId": "24-SedUFJFqp1XvlSbdew",
+  "sourceChecks": [
+    {
+      "path": "src/lib/assistant/main/mode-prompts.ts",
+      "sha256": "65bd6296b79b8196c86844e66acc373e009a8b28bd119fe42ee9c8c58ab6055f"
+    },
+    {
+      "path": "src/lib/assistant/main/mode-config.ts",
+      "sha256": "9cd50fbf239c88cafd28def0819b6283cb623b89967cc79e9b7f2543a3e408e6"
+    },
+    {
+      "path": "src/lib/assistant/main/response-readability-policy.ts",
+      "sha256": "36425c4d28c19327afa04e20ea6a50468be08bc94812a6df4c03b17f1bf35d0b"
+    }
+  ],
+  "web": {
+    "pid": 44876,
+    "productCommit": "6fa62b92",
+    "buildId": "24-SedUFJFqp1XvlSbdew",
+    "root": "F:\\codex_sales_leads\\.next-releases\\local-readability-6fa62b92-native",
+    "host": "127.0.0.1",
+    "port": 3001,
+    "startedAt": "2026-10-23T08:46:57.561Z",
+    "nativeNode": "v24.18.1",
+    "linuxRuntimeEquivalent": false
+  },
+  "records": {
+    "api": {
+      "mode": "api",
+      "pid": 51732,
+      "startedAt": "2026-10-23T08:46:57.345Z",
+      "localOnly": true,
+      "privateTracing": false,
+      "migrationCredentialIncluded": false,
+      "paidStageOverrideIncluded": false
+    },
+    "worker": {
+      "mode": "worker",
+      "pid": 48400,
+      "startedAt": "2026-10-23T08:47:47.222Z",
+      "localOnly": true,
+      "privateTracing": false,
+      "migrationCredentialIncluded": false,
+      "paidStageOverrideIncluded": false
+    }
+  },
+  "checks": {
+    "web200": true,
+    "static200": true,
+    "session200": true,
+    "anonymousMail401": true,
+    "api200": true,
+    "processesAlive": true
+  },
+  "qualification": "Native local acceptance; not Linux production identity",
+  "modelQuestionSubmittedByAgent": false,
+  "businessReadabilityAccepted": false
+}
