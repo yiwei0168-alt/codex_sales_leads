@@ -8,7 +8,7 @@ import { resolveVerifiedFacts } from "@/lib/knowledge/fact-repository";
 import {factReviewDecisionSchema,factReviewListSchema} from "@/lib/knowledge/review-input";
 import {listKnowledgeLibrary,listKnowledgeRevisions,deletePrivateKnowledgeDocument} from "@/lib/knowledge/library-service";
 import {listKnowledgeUploadJobs} from "@/lib/knowledge/upload";
-import { findProductActionCompanies } from "../product-actions";
+import { searchOwnedCompanies } from './company-search';
 import { listMemories,changeMemory } from "@/lib/outreach/memory-management";
 import {memoryEditorSchema} from "@/lib/outreach/memory-editor";
 import {saveManualMemory} from "@/lib/outreach/memory-save";
@@ -143,9 +143,9 @@ export const productTools: ProductTool[] = [
     execute: async (i,c) => {const {decideFactReview}=await import("@/lib/knowledge/review-repository");await decideFactReview(c.userId,i);return result({updated:true,reviewId:i.reviewId,decision:i.decision},{cost:"known"});} }),
   knowledgeOriginalsTool,
   knowledgeCompareTool,
-  defineTool({ id: "company_search", description: "Query saved account companies by literal name/domain and optional market; no discovery prerequisite.",
+  defineTool({ id: "company_search", description: "Search owned sales companies AND mailbox customers by full name, partial name or domain/URL, with optional country. Returns candidates, not confirmed identities. For mailboxCustomers use their id with customer_timeline; for companies use candidate id with company_read. Clarify ambiguous candidates; never infer absence of mail from an empty sales-company list alone. No model, external lookup or merge.",
     input: z.object({ query: z.string().max(180), countryCode: z.string().regex(/^[A-Z]{2}$/).optional() }).strict(),
-    execute: async (i, c) => result(await findProductActionCompanies(c.userId, { kind: "library", companyQuery: i.query, countryCode: i.countryCode }), { cost: "known" }) }),
+    execute: async (i, c) => result(await searchOwnedCompanies(c.userId,i), { cost: "known" }) }),
   defineTool({ id: "company_read", description: "Read the account's company/market state and saved evidence, without generating a score or re-running discovery.",
     input: z.object({ candidateId: z.string().min(1).max(200) }).strict(),
     execute: async (i, c) => {const rows=await tenantQuery<{revision:string}>(c.userId, `select wc.candidate_id,wc.market_country_code,wc.record,wc.updated_at,locked.revision
