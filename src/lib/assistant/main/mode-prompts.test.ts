@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { modePromptRules, parseAgentMode, MODE_PROMPT_VERSION, KNOWLEDGE_MODE_PROMPT_VERSION, LEGACY_MODE_PROMPT_VERSION } from './mode-prompts';
+import { modePromptRules, parseAgentMode, MODE_PROMPT_VERSION, READABILITY_MODE_PROMPT_VERSION, KNOWLEDGE_MODE_PROMPT_VERSION, LEGACY_MODE_PROMPT_VERSION } from './mode-prompts';
+import { RESPONSE_READABILITY_POLICY } from './response-readability-policy';
 import content from './mode-prompt-content.json';
 import { KNOWLEDGE_RESPONSE_POLICY } from './knowledge-response-policy';
 import { modeConfigSchema, modeModelConfig } from './mode-config';
@@ -8,9 +9,13 @@ describe('mode prompt selection boundary', () => {
   it.each(['quick','standard','deep'] as const)('preserves historical %s prompts while new tasks get readability guidance', mode => {
     expect(modePromptRules(mode,LEGACY_MODE_PROMPT_VERSION)).toBe(`${content.common}\n\n${content[mode]}`);
     expect(modePromptRules(mode,KNOWLEDGE_MODE_PROMPT_VERSION)).toBe(`${content.common}\n\n${content[mode]}\n\n${KNOWLEDGE_RESPONSE_POLICY}`);
+    expect(modePromptRules(mode,READABILITY_MODE_PROMPT_VERSION)).toBe(`${content.common}\n\n${content[mode]}\n\n${KNOWLEDGE_RESPONSE_POLICY}\n\n${RESPONSE_READABILITY_POLICY}`);
     const profile=modeModelConfig(mode).profile!;
     expect(profile.promptVersion).toBe(MODE_PROMPT_VERSION);
     expect(modePromptRules(mode,profile.promptVersion)).toContain('回答组织与可读性');
+    expect(modePromptRules(mode,profile.promptVersion)).toContain('根据邮件上下文推定');
+    expect(modePromptRules(mode,profile.promptVersion)).not.toContain('待办只填写资料明确支持的责任人和期限');
+    expect(modeConfigSchema.parse({...profile,promptVersion:READABILITY_MODE_PROMPT_VERSION}).promptVersion).toBe(READABILITY_MODE_PROMPT_VERSION);
     expect(modeConfigSchema.parse({...profile,promptVersion:KNOWLEDGE_MODE_PROMPT_VERSION}).promptVersion).toBe(KNOWLEDGE_MODE_PROMPT_VERSION);
   });
   it('defaults only an omitted selection to standard', () => {

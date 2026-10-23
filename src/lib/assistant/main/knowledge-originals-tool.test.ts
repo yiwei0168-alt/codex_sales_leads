@@ -31,7 +31,7 @@ it('does not silently select one of multiple registered matches',async()=>{
 });
 it('pins prior prompt behavior and gives new jobs explicit refusal and clarification rules',()=>{
   const profile=modeModelConfig('quick').profile!;
-  expect(profile.promptVersion).toBe('agent-mode-prompts-v1.2.0');
+  expect(profile.promptVersion).toBe('agent-mode-prompts-v1.3.0');
   expect(modeConfigSchema.parse({...profile,promptVersion:LEGACY_MODE_PROMPT_VERSION}).promptVersion).toBe(LEGACY_MODE_PROMPT_VERSION);
   expect(modePromptRules('quick',LEGACY_MODE_PROMPT_VERSION)).not.toContain('资料回答边界');
   for(const mode of ['quick','standard','deep'] as const)expect(modePromptRules(mode)).toContain('不要用“资料不足”代替拒绝');
