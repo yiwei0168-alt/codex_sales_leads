@@ -60,8 +60,9 @@ export async function getRun(userId: string, id: string): Promise<AgentRun | nul
     "select * from agent_run where user_id=$1 and id=$2 and execution_kind<>'main-agent-evaluation'", [userId, id]))[0] ?? null;
 }
 export async function listRuns(userId: string, conversationId?: string) {
-  return tenantQuery<Pick<AgentRun, "id" | "status" | "conversation_id" | "result"> & {approvals:Array<Pick<AgentApproval,'id'|'tool_id'|'tool_version'|'parameter_hash'|'payload'|'status'>>}>(userId,
+  return tenantQuery<Pick<AgentRun, "id" | "status" | "conversation_id" | "result"> & {queue_wait_ms:number;approvals:Array<Pick<AgentApproval,'id'|'tool_id'|'tool_version'|'parameter_hash'|'payload'|'status'>>}>(userId,
     `select r.id,r.status,r.conversation_id,r.result,
+      case when r.status='queued' then greatest(0,extract(epoch from (clock_timestamp()-greatest(r.updated_at,r.next_attempt_at)))*1000)::double precision else 0 end as queue_wait_ms,
       (select title from assistant_conversation where user_id=r.user_id and id=r.conversation_id) as title,
       (select jsonb_build_object('status',b.status,'providerStatus',b.provider_status,'submittedAt',b.submitted_at,'pollCount',b.poll_count)
         from agent_model_batch b where b.user_id=r.user_id and b.run_id=r.id order by b.submitted_at desc limit 1) as batch,

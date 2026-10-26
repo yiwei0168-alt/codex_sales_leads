@@ -8,17 +8,24 @@ import type { ExecutionContext } from "../src/lib/assistant/main/contracts";
 import { dispatchDueSchedule } from "../src/lib/assistant/main/schedules";
 import {pollDueModelBatch} from "../src/lib/assistant/main/model-batch";
 import {getPool,withDatabaseDeadline} from '../src/lib/rag/db';
+import {recoverWorkerPoll} from '../src/lib/assistant/main/worker-poll-recovery';
 
 nextEnv.loadEnvConfig(process.cwd());
 const client = new Client({ apiUrl: process.env.LANGGRAPH_API_URL || "http://127.0.0.1:2024", apiKey: null, callerOptions: { maxRetries: 0 } });
 const workerId = `main-agent-${randomUUID()}`;
 let stopping = false;
-process.on("SIGINT", () => { stopping = true; });
-process.on("SIGTERM", () => { stopping = true; });
+const shutdown=new AbortController();
+process.on("SIGINT", () => { stopping = true;shutdown.abort(); });
+process.on("SIGTERM", () => { stopping = true;shutdown.abort(); });
 try { do {
+  const polled=await recoverWorkerPoll(async()=>{
   await withDatabaseDeadline(databaseDeadline(20_000),()=>pollDueModelBatch());
   await withDatabaseDeadline(databaseDeadline(20_000),()=>dispatchDueSchedule());
-  const run = await withDatabaseDeadline(databaseDeadline(20_000),()=>claimRun(workerId));
+  return withDatabaseDeadline(databaseDeadline(20_000),()=>claimRun(workerId));
+  },{once:process.argv.includes('--once'),signal:shutdown.signal,
+    onFailure:failure=>console.warn(JSON.stringify({mainAgentPolling:'retrying',...failure}))});
+  if(polled.stopped)break;
+  const run=polled.value;
   if (!run) {
     if (process.argv.includes("--once")) break;
     await new Promise(resolve => setTimeout(resolve, 2000));

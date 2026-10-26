@@ -4,11 +4,12 @@ import { useEffect, useRef, useState } from "react";
 import type { RunStatus } from "@/lib/assistant/main/contracts";
 import { mergeRunEvents, parseRunEventPage, type RunEvent } from "@/lib/assistant/main/run-events";
 import { AgentApprovals } from "./agent-approvals";
+import {AgentQueueNotice} from './agent-queue-notice';
 import type { AgentApproval } from "@/lib/assistant/main/approvals";
 import {pendingInstructionSubmissions,prepareInstructionSubmission} from '@/lib/assistant/instruction-submissions';
 import type {InstructionSubmissionReceipt} from '@/lib/assistant/main/run-control';
 
-type Run = { id: string; conversation_id: string; status: RunStatus; result: { reply: string } | null; approvals?: AgentApproval[];
+type Run = { id: string; conversation_id: string; status: RunStatus; result: { reply: string } | null; approvals?: AgentApproval[];queue_wait_ms?:number;
   memories?: Array<{ id: string; key: string; version: number }>;
   batch?: { status: string; providerStatus: string | null; submittedAt: string; pollCount: number } | null };
 const labels: Record<RunStatus, string> = { queued: "排队中", running: "执行中", waiting_user: "等待确认", paused: "已暂停", partial: "部分完成", completed: "已完成", failed: "失败", cancelled: "已取消" };
@@ -183,6 +184,7 @@ export function AgentRunCard({run, events = [], now, onControl, onUndo,statusCur
         {!["completed", "cancelled"].includes(run.status) && <button type="button" disabled={controlling||!statusCurrent} onClick={() => void control("cancel")}>取消</button>}
       </div>
       {!statusCurrent&&<p role="status">任务状态尚未核实，暂不能提交操作，正在重新读取。</p>}
+      <AgentQueueNotice status={run.status} waitMs={run.queue_wait_ms} current={statusCurrent} pendingBatch={run.batch?.status==='pending'}/>
       {run.batch && <p className="agent-batch-state" role="status">{run.batch.status === "pending" ? `GLM Batch ${run.batch.providerStatus === "in_progress" ? "执行中" : "排队或等待结果"}` : run.batch.status === "completed" ? "GLM Batch 结果已保存" : `GLM Batch ${run.batch.status}，请核对`}{` · 已经过 ${elapsed(run.batch.submittedAt, now)} · 查询 ${run.batch.pollCount} 次`}</p>}
       <AgentApprovals items={run.approvals ?? []} disabled={!statusCurrent}/>
       {run.memories?.map(memory => <p key={memory.id} className="text-sm">已记住偏好：{memory.key} <button type="button" disabled={!statusCurrent} onClick={() => void onUndo(memory.id, memory.version)}>撤销</button></p>)}

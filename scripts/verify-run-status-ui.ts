@@ -15,7 +15,7 @@ const server=createServer((req,res)=>{
 });
 await new Promise<void>(done=>server.listen(0,'127.0.0.1',done));const address=server.address();assert(address&&typeof address!=='string');const base=`http://127.0.0.1:${address.port}`;
 const browser=await chromium.launch({channel:'chrome',headless:true}),screenshots:string[]=[],errors:string[]=[];
-const watchdog=setTimeout(()=>{console.error('Run status component watchdog expired');process.exit(1);},150000);watchdog.unref();
+const watchdog=setTimeout(()=>{console.error('Run status component watchdog expired');process.exit(1);},180000);watchdog.unref();
 try{
  await mkdir('tmp/run-status-ui',{recursive:true});
  for(const width of [1366,390,320]){
@@ -23,7 +23,8 @@ try{
   let statusMode:'ok'|'fail'|'hold'='ok',eventMode:'ok'|'fail'|'hold'='ok',postMode:'ok'|'fail'|'hold'='ok';
   const status:Record<string,string>={A:'paused',B:'paused'},reads:{scope:string;after?:string}[]=[],eventReads:string[]=[],posts:Array<{path:string;body:Record<string,unknown>}>=[];
   const holds:Array<{kind:string;release:()=>void;finished:boolean}>=[];
-  const run=(id:string)=>({id:'run-'+id,conversation_id:id,status:status[id],result:null,memories:[{id:'memory-'+id,key:'Generated preference '+id,version:1}],approvals:['one','two'].map(label=>({id:label+'-'+id,run_id:'run-'+id,tool_id:'mail_send',tool_version:'1',parameter_hash:'a'.repeat(64),status:'pending',expires_at:'2099-01-01',payload:{to:label+'@example.invalid',subject:'Generated only '+id,body:'Synthetic body. No sending.'}}))});
+  let queueWaitMs=0,pendingBatch=false;
+  const run=(id:string)=>({id:'run-'+id,conversation_id:id,status:status[id],result:null,queue_wait_ms:queueWaitMs,batch:pendingBatch?{status:'pending',submittedAt:new Date().toISOString(),pollCount:1}:null,memories:[{id:'memory-'+id,key:'Generated preference '+id,version:1}],approvals:['one','two'].map(label=>({id:label+'-'+id,run_id:'run-'+id,tool_id:'mail_send',tool_version:'1',parameter_hash:'a'.repeat(64),status:'pending',expires_at:'2099-01-01',payload:{to:label+'@example.invalid',subject:'Generated only '+id,body:'Synthetic body. No sending.'}}))});
   await context.route('**/*',async route=>{
    const url=new URL(route.request().url());if(url.origin!==base)return route.abort();if(!url.pathname.startsWith('/api/'))return route.continue();
    let kind:string='',body:unknown;
@@ -44,7 +45,14 @@ try{
   await page.goto(base);await expect(page.getByTestId('scope')).toHaveText('none');await expect(page.locator('.agent-run')).toHaveCount(0);
   const open=async(id:string|undefined)=>page.evaluate(id=>(window as unknown as {openConversation:(id:string|undefined)=>void}).openConversation(id),id);
   await open('A');const card=page.locator('#agent-run-run-A'),draft=card.getByLabel('追加任务要求'),resume=card.getByRole('button',{name:'继续',exact:true});
-  await expect(resume).toBeEnabled();await draft.fill('Synthetic unsaved requirement');
+  await expect(resume).toBeEnabled();
+  const queueHint=card.getByRole('status').filter({hasText:'等待后台调度已超过'});
+  status.A='queued';queueWaitMs=60_000;await expect(queueHint).toBeVisible();await expect(queueHint).toContainText('无需重复提交');
+  const queuePath=`tmp/run-status-ui/queue-${width}.png`;await page.screenshot({path:queuePath,fullPage:true});screenshots.push(queuePath);assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1));assert.equal(posts.length,0);
+  pendingBatch=true;await expect(card.locator('.agent-batch-state')).toBeVisible();await expect(queueHint).toHaveCount(0);
+  pendingBatch=false;status.A='running';await expect(card.locator('.agent-run-actions strong').first()).toHaveText('执行中');await expect(queueHint).toHaveCount(0);
+  status.A='queued';await expect(queueHint).toBeVisible();statusMode='fail';await expect(card.getByRole('status').filter({hasText:'尚未核实'})).toBeVisible();await expect(queueHint).toHaveCount(0);
+  status.A='paused';queueWaitMs=0;statusMode='ok';await expect(resume).toBeEnabled();await draft.fill('Synthetic unsaved requirement');
   statusMode='fail';await expect(card.getByRole('status').filter({hasText:'尚未核实'})).toBeVisible();await expect(draft).toHaveValue('Synthetic unsaved requirement');
   assert(await card.locator('.agent-run-actions button').evaluateAll(buttons=>buttons.length>0&&buttons.every(button=>(button as HTMLButtonElement).disabled)));
   await expect(card.getByRole('button',{name:/^确认以上全部邮件/})).toBeDisabled();await expect(card.locator('p').filter({hasText:'Generated preference A'}).getByRole('button',{name:'撤销',exact:true})).toBeDisabled();
@@ -72,5 +80,5 @@ try{
   }
   for(const held of holds)held.release();await context.close();
  }
- assert.deepEqual(errors,[]);const result={runStatusComponent:'passed',viewports:3,readFailureLocksControlsApprovalsAndUndo:true,draftPreserved:true,recovery:true,eventFailureDoesNotBlockStatus:true,realStatusAndEventTimeouts:true,largeEventCursorPreserved:true,writeFailureKeepsDraft:true,successfulWriteNoticeSurvivesReadFailure:true,oldReadCannotReenableControls:true,latePriorConversationActionCannotRefreshCurrent:true,emptyConversationAndScopedErrors:true,noHorizontalOverflow:true,screenshots,syntheticHttpOnly:true,actualModelCalls:0,externalActions:0};await writeFile('tmp/run-status-ui/result.json',JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify(result));
+ assert.deepEqual(errors,[]);const result={runStatusComponent:'passed',viewports:3,longQueueHint:true,hintHiddenForStaleRunningAndSupplierBatch:true,readFailureLocksControlsApprovalsAndUndo:true,draftPreserved:true,recovery:true,eventFailureDoesNotBlockStatus:true,realStatusAndEventTimeouts:true,largeEventCursorPreserved:true,writeFailureKeepsDraft:true,successfulWriteNoticeSurvivesReadFailure:true,oldReadCannotReenableControls:true,latePriorConversationActionCannotRefreshCurrent:true,emptyConversationAndScopedErrors:true,noHorizontalOverflow:true,screenshots,syntheticHttpOnly:true,actualModelCalls:0,externalActions:0};await writeFile('tmp/run-status-ui/result.json',JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify(result));
 }finally{clearTimeout(watchdog);await browser.close();server.closeAllConnections();await new Promise<void>(done=>server.close(()=>done()));}
