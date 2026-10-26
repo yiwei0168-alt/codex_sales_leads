@@ -20,6 +20,8 @@ venv/
 node_modules/
 .next/
 .next-releases/
+.local-runtime/
+.next-*/
 dist/
 build/
 *.tsbuildinfo

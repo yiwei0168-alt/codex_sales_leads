@@ -1,0 +1,12 @@
+import {readFile} from 'node:fs/promises';import {resolve} from 'node:path';import {fileURLToPath} from 'node:url';import {createServer} from 'node:net';
+import {sha,validateConfig,inventory,selectExisting,healthy,ensureDocker,ensureComponent,runtimeEnvironment,launch,saveResult} from './lib/local-runtime.mjs';
+const root=resolve(fileURLToPath(new URL('../',import.meta.url))),action=process.argv[2]??'status';if(process.argv.length>3||!['status','start'].includes(action))throw Error('Use start or status');
+const config=JSON.parse(await readFile(resolve(root,'.local-runtime/config.json'),'utf8'));await validateConfig(config,root);
+if(action==='status'){const state=await inventory(root),components=[];for(const component of config.components){const process=selectExisting(component,state);components.push({name:component.name,pid:process?.pid??null,ready:Boolean(process&&(!component.health||await healthy(component.health,component.healthExpected)))});}console.log(JSON.stringify({configured:true,buildId:config.buildId,components}));}
+else{
+ const lock=createServer(socket=>socket.destroy()),pipe='\\\\.\\pipe\\codex-sales-leads-start-'+sha(root.toLowerCase()).slice(0,16);let held=false;
+ try{held=await new Promise((done,reject)=>{lock.once('error',error=>error.code==='EADDRINUSE'?done(false):reject(error));lock.listen(pipe,()=>done(true));});if(!held){console.log(JSON.stringify({startup:'already-in-progress'}));}else{
+  await ensureDocker(config,root);const env=await runtimeEnvironment(root),results=[];for(const component of config.components)results.push(await ensureComponent(component,{inventory:()=>inventory(root),healthy,start:component=>launch(component,root,env),wait:ms=>new Promise(done=>setTimeout(done,ms))}));
+  const result={startup:'ready',verifiedAt:new Date().toISOString(),buildId:config.buildId,components:results,modelQuestionsSubmitted:0,migrationCredentialIncluded:Boolean(env.DATABASE_MIGRATION_URL),paidStageOverrideIncluded:Boolean(env.PAID_CALL_STAGE_OVERRIDE||env.PAID_CALL_STAGE_OVERRIDE_USER_ID),cloudTracingEnabled:env.LANGSMITH_TRACING!=='false'||env.LANGCHAIN_TRACING_V2!=='false'};await saveResult(root,result);console.log(JSON.stringify(result));
+ }}catch(error){await saveResult(root,{startup:'failed',at:new Date().toISOString(),reason:String(error.message).slice(0,240)});console.error('Local runtime startup failed; check .local-runtime/last-start.json');process.exitCode=1;}finally{if(held)await new Promise(done=>lock.close(done));}
+}

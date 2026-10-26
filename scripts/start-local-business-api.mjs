@@ -1,0 +1,8 @@
+import {readFile,mkdir} from 'node:fs/promises';import {createRequire} from 'node:module';import {pathToFileURL} from 'node:url';import {createHash} from 'node:crypto';import {resolve} from 'node:path';
+import {startServer} from '@langchain/langgraph-api/server';import {installDurablePersistence} from './lib/main-runtime-durable-persistence.mjs';
+const root=resolve(process.argv[2]??'');if(process.argv.length!==3||root!==process.cwd())throw Error('API requires its configured working directory');
+const require=createRequire(import.meta.url),url=pathToFileURL(require.resolve('@langchain/langgraph-api/server')),persistence=new URL('./storage/persist.mjs',url);
+if(createHash('sha256').update(await readFile(persistence)).digest('hex')!=='127d8a480f67026a95197e424ba9c6669da0856ac19bd4c2a29746851251e21a')throw Error('Unsupported persistence module');
+installDurablePersistence(await import(persistence.href));await mkdir(root+'/.langgraph_api',{recursive:true});
+const runtime=await startServer({port:2024,host:'127.0.0.1',nWorkers:1,cwd:root,graphs:{main_agent_workflow:'./business-main-server.mjs:mainAgentWorkflowGraph',runtime_health:'./business-legacy-server.mjs:runtimeHealthGraph',assistant_workflow:'./business-legacy-server.mjs:assistantWorkflowGraph',knowledge_workflow:'./business-legacy-server.mjs:knowledgeWorkflowGraph',lead_workflow:'./business-legacy-server.mjs:leadWorkflowGraph'},http:{cors:{allow_origins:['http://localhost:3001','http://127.0.0.1:3001'],allow_methods:['GET','POST','OPTIONS']}}});
+console.log(JSON.stringify({localBusinessApi:'ready',binding:'127.0.0.1:2024'}));let stopping=false;const stop=async()=>{if(stopping)return;stopping=true;await runtime.cleanup();process.exit(0);};process.on('SIGINT',stop);process.on('SIGTERM',stop);
