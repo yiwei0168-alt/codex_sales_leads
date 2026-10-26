@@ -1,0 +1,155 @@
+{
+  "verifiedAt": "2026-10-26T09:57:37.699Z",
+  "startupSourceCommit": "7a9f0059",
+  "productCommit": "405ec008",
+  "buildId": "2byNCVYvgzzkOm7RDLuDe",
+  "task": {
+    "lastRunUtc": "2026-10-26T09:51:45.0000000Z",
+    "restartCount": 3,
+    "multipleInstances": "IgnoreNew",
+    "hiddenWindow": true,
+    "runLevel": "Limited",
+    "lastResult": 0,
+    "state": "Ready",
+    "triggerBoundToCurrentUser": true,
+    "taskName": "CodexSalesLeads-LocalAcceptance-B4F89217B995",
+    "logonType": "Interactive",
+    "trigger": "MSFT_TaskLogonTrigger",
+    "restartInterval": "PT1M"
+  },
+  "warm": {
+    "startup": "ready",
+    "verifiedAt": "2026-10-26T08:24:31.758Z",
+    "buildId": "2byNCVYvgzzkOm7RDLuDe",
+    "components": [
+      {
+        "name": "bge",
+        "pid": 26288,
+        "adopted": true
+      },
+      {
+        "name": "api",
+        "pid": 2484,
+        "adopted": true
+      },
+      {
+        "name": "web",
+        "pid": 51792,
+        "adopted": true
+      },
+      {
+        "name": "worker",
+        "pid": 56144,
+        "adopted": true
+      },
+      {
+        "name": "mailbox",
+        "pid": 46924,
+        "adopted": true
+      }
+    ],
+    "modelQuestionsSubmitted": 0,
+    "migrationCredentialIncluded": false,
+    "paidStageOverrideIncluded": false,
+    "cloudTracingEnabled": false
+  },
+  "cold": {
+    "startup": "ready",
+    "verifiedAt": "2026-10-26T08:28:57.798Z",
+    "buildId": "2byNCVYvgzzkOm7RDLuDe",
+    "components": [
+      {
+        "name": "bge",
+        "pid": 26288,
+        "adopted": true
+      },
+      {
+        "name": "api",
+        "pid": 36032,
+        "adopted": false
+      },
+      {
+        "name": "web",
+        "pid": 51792,
+        "adopted": true
+      },
+      {
+        "name": "worker",
+        "pid": 30724,
+        "adopted": false
+      },
+      {
+        "name": "mailbox",
+        "pid": 31400,
+        "adopted": false
+      }
+    ],
+    "modelQuestionsSubmitted": 0,
+    "migrationCredentialIncluded": false,
+    "paidStageOverrideIncluded": false,
+    "cloudTracingEnabled": false
+  },
+  "scheduled": {
+    "startup": "ready",
+    "verifiedAt": "2026-10-26T09:52:11.583Z",
+    "buildId": "2byNCVYvgzzkOm7RDLuDe",
+    "components": [
+      {
+        "name": "bge",
+        "pid": 26288,
+        "adopted": true
+      },
+      {
+        "name": "api",
+        "pid": 36032,
+        "adopted": true
+      },
+      {
+        "name": "web",
+        "pid": 51792,
+        "adopted": true
+      },
+      {
+        "name": "worker",
+        "pid": 30724,
+        "adopted": true
+      },
+      {
+        "name": "mailbox",
+        "pid": 31400,
+        "adopted": true
+      }
+    ],
+    "modelQuestionsSubmitted": 0,
+    "migrationCredentialIncluded": false,
+    "paidStageOverrideIncluded": false,
+    "cloudTracingEnabled": false
+  },
+  "health": {
+    "web": 200,
+    "api": 200,
+    "bge": 200
+  },
+  "stderrBytes": {
+    "api": 0,
+    "worker": 0,
+    "mailbox": 0
+  },
+  "checks": {
+    "unitTests": 8,
+    "typecheck": true,
+    "changedFileLint": true,
+    "powershellSyntax": true,
+    "pidReuseAndUnknownPortProtection": true,
+    "actualColdStart": true,
+    "actualLimitedScheduledExecution": true,
+    "noDuplicateProcesses": true,
+    "configurationStoresCredentials": false
+  },
+  "limits": [
+    "Real reboot/logon not performed",
+    "Current-user at-logon startup, not a system service or continuous crash watchdog",
+    "No new model question, IMAP sync request or outgoing mail submitted by startup",
+    "Existing containers and current native runtime only; no LAN/public deployment"
+  ]
+}

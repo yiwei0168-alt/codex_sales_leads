@@ -2,6 +2,8 @@
 
 ## 当前可打开的版本
 
+**当前用户登录启动已完成（2026-10-26）：**正式入口 `node scripts/start-local-runtime.mjs start`/`status`；登录任务已安装，当前用户 Interactive/Limited 隐藏执行，实际返回码 0，状态 Ready。受控冷启动恢复 API/主 Worker/邮箱 Worker，随后普通入口与任务计划程序均复用五个 PID，服务健康和日志检查通过。产品仍为本机 `405ec008`、Build ID `2byNCVYvgzzkOm7RDLuDe`，地址 http://localhost:3001。实际 Windows 重启/重新登录尚未执行，不认定登录前系统服务或全天候守护已实现。[操作文档](LOCAL_LOGIN_STARTUP_2026-10-26.md)、[证据](evidence/ma24-local-login-startup-2026-10-26.json)。以下为阶段历史记录。
+
 2026-10-26 / 本机启动入口已整理：`node scripts/start-local-runtime.mjs start` 可恢复所需服务，`status` 可查看状态。8 项回归、类型/lint/PowerShell语法、实际暖启动/受控冷启动/再次启动无重复进程检查通过；当前业务 API 和 Worker 已使用正式入口，Web/BGE保留原进程。登录任务安装待最后登记，尚未实际重启电脑。[操作与边界](LOCAL_LOGIN_STARTUP_2026-10-26.md)。
 
 **最新：后台轮询恢复版已切换（2026-10-26）。**入口仍为 http://localhost:3001，当前源码 `405ec008`、Build ID `2byNCVYvgzzkOm7RDLuDe`，提示 v1.3.0 保持不变，运行目录 `.next-pollrecovery-405ec008/standalone`。最终独立构建、17 回归、真实隔离连接拒绝/握手超时入口、三视口实际组件、受限等待计算SQL、五份源码/三编译产物和页面/静态资源/API/匿名权限/进程核对通过。切换前活动普通任务/未知调用/启用定时/待处理批次为零，无新迁移或代理模型问答，邮箱与 BGE 保持原进程。[切换证据](evidence/ma24-worker-poll-recovery-cutover-2026-10-26.json)。

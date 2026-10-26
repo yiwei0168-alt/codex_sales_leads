@@ -9,7 +9,7 @@ node scripts/start-local-runtime.mjs status
 node scripts/start-local-runtime.mjs start
 ```
 
-入口读取 `.local-runtime/config.json`，固定本机 `405ec008` Web/API/主 Worker，访问地址仍为 http://localhost:3001。配置只含路径、哈希和进程身份，不保存密码、令牌或迁移连接。私有配置和启动日志已排除 Git。运行目录、Node 版本或启动文件变化后，需重新核对和生成配置；此入口不是发布升级工具。
+入口读取 `.local-runtime/config.json`，固定本机 `405ec008` Web/API/主 Worker，访问地址仍为 http://localhost:3001。配置只含路径、哈希和进程身份，不保存密码、令牌或迁移连接。私有配置和启动日志已排除 Git。保留 `.local-runtime` 和固定运行目录；清理前先取消登录自启。运行目录、Node 版本或启动文件变化后，需重新核对和生成配置；此入口不是发布升级工具。
 
 ## 启动顺序与边界
 
@@ -38,11 +38,11 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/local-runtime-ta
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/local-runtime-task.ps1 -Action Uninstall
 ```
 
-取消登录任务保留当前运行中的业务服务。该方案在用户登录后恢复本机验收环境，不是登录前的 Windows 系统服务或全天候进程守护。真实电脑重启/重新登录验证尚未执行。
+已安装任务 `CodexSalesLeads-LocalAcceptance-B4F89217B995`，实际手动触发的任务执行完毕，状态 Ready、返回码 0。已核对当前用户登录触发、Interactive/Limited、隐藏窗口、IgnoreNew 和三次一分钟间隔失败重试。取消登录任务保留当前运行中的业务服务。该方案在用户登录后恢复本机验收环境，不是登录前的 Windows 系统服务或全天候进程守护。真实电脑重启/重新登录验证尚未执行。
 
 ## 验证记录
 
 - 8 项单元测试、完整类型检查和变更文件 lint 通过；三个 PowerShell 文件语法通过。
 - 实际暖启动五个服务均复用原 PID；受控空闲冷启动恢复 API、主 Worker 和邮箱 Worker，BGE/Web 保持原进程；再次启动复用五个 PID，服务日志无错误。
 - 冷启动前普通活动任务、未知调用、启用定时和待处理模型批次均零，邮箱 queued/running 均零；169 条待核实学习记录不重放。没有代理自行提交真实问题或发信。
-- Windows 登录任务安装和执行结果待登记；不将手动启动成功等同于已实际重启验证。
+- Windows 登录任务已安装并以 Limited 身份实际执行成功，五个进程与受控冷启动后的 PID 一致，均为复用；任务和服务错误日志为零。首页/API/BGE健康通过。没有将手动触发登录任务成功等同于已实际重启验证。[完整证据](evidence/ma24-local-login-startup-2026-10-26.json)。
