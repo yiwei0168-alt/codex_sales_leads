@@ -1,0 +1,153 @@
+{
+  "verifiedAt": "2026-10-26T07:37:51.566Z",
+  "productCommit": "405ec008",
+  "promptVersion": "agent-mode-prompts-v1.3.0",
+  "buildId": "2byNCVYvgzzkOm7RDLuDe",
+  "sourceChecks": [
+    {
+      "path": "src/lib/assistant/main/worker-poll-recovery.ts",
+      "sha256": "3c74aa4876d68f4b67309566b101165667ef7154cc5ed91ef437f1fe93ca4eb8"
+    },
+    {
+      "path": "src/lib/assistant/main/repository.ts",
+      "sha256": "3f21a62f479e2155f5f350c34a25f3e180550e80fc989657afa0f715b084b70d"
+    },
+    {
+      "path": "src/components/agent-queue-notice.tsx",
+      "sha256": "a7a011332650487ae59925f2f0c103ebf8c4870c2d329289c77ada11d3a17a2b"
+    },
+    {
+      "path": "src/components/agent-runs.tsx",
+      "sha256": "d32c8e5de825c5b4ed4a21fd6fab4b1f33308fd2ae3e7a378fbcbd71826f7d70"
+    },
+    {
+      "path": "src/components/agent-task-history.tsx",
+      "sha256": "f71741a338e777169e716da0e665f730e12c7cc40014f125a01e53524fec535c"
+    }
+  ],
+  "artifacts": {
+    "sourceCommit": "405ec008",
+    "artifacts": {
+      "business-main-server": "62ebc899cce41c40e8cf5f3d17b690550457537ff1269fc802970f39d245a86d",
+      "business-worker": "cc1c4bb00e02fa6848f9f65715cdc5ac35bdc3096b74a2866355a2a13f85aa7f",
+      "business-legacy-server": "d8acf96c2d86b80a44c2cb78ae77d2cac9e4b692d809a07b8d9f488701408760"
+    }
+  },
+  "probes": {
+    "web": 200,
+    "static": 200,
+    "session": 200,
+    "anonymousRuns": 401,
+    "api": 200
+  },
+  "records": {
+    "api": {
+      "mode": "api",
+      "pid": 2484,
+      "startedAt": "2026-10-26T07:28:50.827Z",
+      "localOnly": true,
+      "privateTracing": false,
+      "migrationCredentialIncluded": false,
+      "paidStageOverrideIncluded": false
+    },
+    "worker": {
+      "mode": "worker",
+      "pid": 56144,
+      "startedAt": "2026-10-26T07:37:23.614Z",
+      "localOnly": true,
+      "privateTracing": false,
+      "migrationCredentialIncluded": false,
+      "paidStageOverrideIncluded": false
+    },
+    "web": {
+      "pid": 51792,
+      "productCommit": "405ec008",
+      "buildId": "2byNCVYvgzzkOm7RDLuDe",
+      "root": "F:\\codex_sales_leads\\.next-pollrecovery-405ec008\\standalone",
+      "host": "127.0.0.1",
+      "port": 3001,
+      "startedAt": "2026-10-26T07:28:51.049Z",
+      "nativeNode": "v24.18.1",
+      "linuxRuntimeEquivalent": false
+    }
+  },
+  "checks": {
+    "regressions": 17,
+    "typecheck": true,
+    "changedFileLint": true,
+    "webBuild": true,
+    "workerEntry": {
+      "continuousProcessSurvived": true,
+      "retries": 2,
+      "boundedBackoff": true,
+      "diagnosticFailedVisibly": true,
+      "stalledHandshakeRecovered": true,
+      "isolatedUnavailableDatabase": true,
+      "actualWorkerEntry": true,
+      "businessDatabaseAccess": false,
+      "modelRequests": 0
+    },
+    "browser": {
+      "runStatusComponent": "passed",
+      "viewports": 3,
+      "longQueueHint": true,
+      "hintHiddenForStaleRunningAndSupplierBatch": true,
+      "readFailureLocksControlsApprovalsAndUndo": true,
+      "draftPreserved": true,
+      "recovery": true,
+      "eventFailureDoesNotBlockStatus": true,
+      "realStatusAndEventTimeouts": true,
+      "largeEventCursorPreserved": true,
+      "writeFailureKeepsDraft": true,
+      "successfulWriteNoticeSurvivesReadFailure": true,
+      "oldReadCannotReenableControls": true,
+      "latePriorConversationActionCannotRefreshCurrent": true,
+      "emptyConversationAndScopedErrors": true,
+      "noHorizontalOverflow": true,
+      "screenshots": [
+        "tmp/run-status-ui/queue-1366.png",
+        "tmp/run-status-ui/1366.png",
+        "tmp/run-status-ui/queue-390.png",
+        "tmp/run-status-ui/390.png",
+        "tmp/run-status-ui/queue-320.png",
+        "tmp/run-status-ui/320.png"
+      ],
+      "syntheticHttpOnly": true,
+      "actualModelCalls": 0,
+      "externalActions": 0
+    },
+    "sql": {
+      "readOnly": true,
+      "role": "restricted application",
+      "syntheticCases": [
+        {
+          "label": "old",
+          "passed": true
+        },
+        {
+          "label": "scheduled",
+          "passed": true
+        },
+        {
+          "label": "recent",
+          "passed": true
+        },
+        {
+          "label": "completed",
+          "passed": true
+        }
+      ],
+      "liveRunProjectionPassed": true,
+      "liveRows": 28,
+      "modelCalls": 0,
+      "dataWrites": 0
+    }
+  },
+  "limits": [
+    "No Windows service or crash supervisor installed",
+    "No failure injected into business database",
+    "No model question submitted by agent",
+    "Queue age is not a worker-offline diagnosis",
+    "Native local acceptance, not Linux production identity"
+  ]
+}
