@@ -1,6 +1,10 @@
 import {expect,it,vi} from 'vitest';
 import {recoverWorkerPoll} from './worker-poll-recovery';
 const failure=(code:string)=>Object.assign(new Error('synthetic private detail'),{code});
+it.each(['Connection terminated due to connection timeout','timeout exceeded when trying to connect','timeout expired','Connection terminated unexpectedly'])('recovers known uncoded pg connection failure: %s',async message=>{
+ const poll=vi.fn().mockRejectedValueOnce(new Error(message)).mockResolvedValue(null),wait=vi.fn().mockResolvedValue(undefined);
+ expect(await recoverWorkerPoll(poll,{once:false,signal:new AbortController().signal,onFailure:()=>{},wait})).toEqual({stopped:false,value:null});expect(poll).toHaveBeenCalledTimes(2);
+});
 it('recovers transient failures then returns the original claimed task once',async()=>{
  const task={id:'original-task',lease:'original-lease'},poll=vi.fn().mockRejectedValueOnce(failure('DATABASE_DEADLINE_EXCEEDED')).mockRejectedValueOnce(failure('ECONNRESET')).mockResolvedValue(task);
  const wait=vi.fn().mockResolvedValue(undefined),log=vi.fn();
