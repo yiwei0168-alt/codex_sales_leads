@@ -1764,3 +1764,12 @@ MODESEL-15：53 项本地测试通过。旧入口仅返回停用提示，配置�
 
 
 2026-10-21 / MA15-02 G13 responsive navigation accepted within scope: fixed product db1d1054, host fixture 8613434d, actual **16283 exited 0** through Chrome/HTTPS/compiled Web on a fresh disposable database. Five viewport sizes (1366, 960, 959, 390, 320 widths), initial mobile, first-resize closed labels, open/Escape/backdrop/close/navigation controls, mobile focus containment, desktop dialog/footer/scroll-lock cleanup, content focus and retained desktop collapse preference passed. Eight closed-state samples each verify six hidden label elements; browser non-read requests 0 and actual model calls 0. Closed/open screenshots visually inspected; all five frozen files matched, product CSS/component match the fixed image, and temporary containers/database were removed. Three earlier fixture failures remain retained; route continuation waits for committed URL and new library pane. All five package checks passed; main/collector entry artifacts/Node/dependencies match earlier accepted bytes, without claiming a new full runtime composition. This resolves the navigation visual follow-up from memory run 78901, not other memory entrypoints, real business/model quality, full G13 or deployment. G14-G20 remain deferred. [Scope/evidence](RESPONSIVE_NAVIGATION_2026-10-21.md).
+
+
+## LEAD-ROLE-ACCEPTANCE-01 / Role-by-role discovery acceptance (2026-10-29)
+
+- User confirmed a country-specific acceptance scope and a target for every channel class. Exact user wording and values remain in the local working acceptance record because the repository is public.
+- Implementation interpretation: use the current 13-role taxonomy and independent per-role targets; one role cannot satisfy another. OEM/ODM remains a cooperation opportunity. Role enumeration and sequential scheduling are implementation choices.
+- Implementation verified locally: role-plan normalization, explicit provider configuration forwarding, dedicated worker setup/recoverable polling, same-collection current-product retrieval fallback, and buffered plan requests under real graph message callbacks.
+- Acceptance status: first real case blocked at an unknown planner-call outcome. No external company search or actual company-quality pass is claimed; remaining classes not started. Preserve the original checkpoint and paid-effect record; do not automatically replay the unknown request.
+- Workflow and verification limits: [channel discovery acceptance](LEAD_ROLE_ACCEPTANCE_2026-10-29.md).

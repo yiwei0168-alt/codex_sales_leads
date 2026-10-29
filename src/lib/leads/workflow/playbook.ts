@@ -145,6 +145,8 @@ export async function buildLeadMarketPlaybook(plan: LeadSearchPlan, citations: L
     maxRetries: 2,
     timeout: 90_000,
     streamUsage: false,
+    // Graph message listeners must not change this buffered structured-output contract.
+    disableStreaming: true,
     modelKwargs: { provider: config.providerPreferences,
       ...(!pinnedSol?{max_completion_tokens:textOutputLimit("lead-playbook")}:{}) },
     configuration: { baseURL: config.baseUrl, defaultHeaders: config.defaultHeaders,fetch:sdkModelFetch() },

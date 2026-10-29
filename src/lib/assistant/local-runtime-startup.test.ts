@@ -11,6 +11,13 @@ it('keeps application configuration while removing migration, override and trace
  const env=filterRuntimeEnvironment(source,{...Object.fromEntries(denied.map(key=>[key,'synthetic'])),DATABASE_URL:'synthetic-app',AMBIENT_SECRET:'not-configured'});
  expect(env.DATABASE_URL).toBe('synthetic-app');for(const key of [...denied,'AMBIENT_SECRET'])expect(env).not.toHaveProperty(key);expect(env.LANGSMITH_TRACING).toBe('false');expect(env.NO_PROXY).toContain('127.0.0.1');
 });
+it('passes only allowlisted ambient search credentials and normalizes the legacy SearchAPI key',()=>{
+ const env=filterRuntimeEnvironment('',{BRAVE_SEARCH_API_KEY:'synthetic-brave',GOOGLE_PLACES_API_KEY:'synthetic-places','SearchApi.io_API_KEY':'synthetic-search',AMBIENT_SECRET:'do-not-copy',DATABASE_MIGRATION_URL:'do-not-copy'});
+ expect(env.BRAVE_SEARCH_API_KEY).toBe('synthetic-brave');expect(env.GOOGLE_PLACES_API_KEY).toBe('synthetic-places');expect(env.SEARCHAPI_API_KEY).toBe('synthetic-search');
+ expect(env).not.toHaveProperty('SearchApi.io_API_KEY');expect(env).not.toHaveProperty('AMBIENT_SECRET');expect(env).not.toHaveProperty('DATABASE_MIGRATION_URL');expect(env.LEAD_WORKFLOW_EXECUTION_MODE).toBe('worker');
+ expect(filterRuntimeEnvironment('',{SEARCHAPI_API_KEY:'canonical','SearchApi.io_API_KEY':'legacy'}).SEARCHAPI_API_KEY).toBe('canonical');
+ expect(filterRuntimeEnvironment('',{LEAD_WORKFLOW_EXECUTION_MODE:'inline'}).LEAD_WORKFLOW_EXECUTION_MODE).toBe('inline');
+});
 it('matches complete path arguments, not similarly prefixed releases',()=>{
  expect(commandHasPath(`node "${entry}" "${root}-other"`,root)).toBe(false);
  expect(ownsProcess(component,process)).toBe(true);

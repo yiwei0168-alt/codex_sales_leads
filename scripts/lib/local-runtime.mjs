@@ -34,15 +34,21 @@ export async function validateConfig(config,root){
  if((await readFile(resolve(config.runtimeRoot,config.distDir,'BUILD_ID'),'utf8')).trim()!==config.buildId)throw Error('Build ID mismatch');
  for(const [path,hash] of Object.entries(config.integrity)){if(!within(root,path)||sha(await readFile(path))!==hash)throw Error('Local runtime file mismatch: '+relative(root,path));}
  for(const filename of ['.env','.env.local','.env.production','.env.production.local']){try{await readFile(resolve(config.runtimeRoot,filename));throw Error('Runtime directory contains private environment file');}catch(error){if(error.code!=='ENOENT')throw error;}}
- if(config.components.map(component=>component.name).join(',')!=='bge,api,web,worker,mailbox')throw Error('Invalid component order');
+ if(!['bge,api,web,worker,mailbox','bge,api,web,worker,mailbox,lead'].includes(config.components.map(component=>component.name).join(',')))throw Error('Invalid component order');
  const allowedEnv=new Set(['PORT','HOSTNAME','BGE_M3_MODEL_PATH','BGE_M3_PORT','HF_HUB_OFFLINE','TRANSFORMERS_OFFLINE','HF_HUB_DISABLE_TELEMETRY','DO_NOT_TRACK','TOKENIZERS_PARALLELISM']);
  for(const component of config.components){if((resolve(component.cwd)!==root&&!within(root,component.cwd))||component.identityPaths.some(path=>!within(root,path))||Object.keys(component.env??{}).some(key=>!allowedEnv.has(key)))throw Error('Invalid component scope');if(component.health&&!/^http:\/\/127\.0\.0\.1:(3001|2024|8765)(\/|$)/.test(component.health))throw Error('Invalid health scope');if(component.executable!==config.nodeExecutable&&component.executable!==resolve(root,'.venv-bge-v3/Scripts/python.exe'))throw Error('Invalid runtime executable');}
 }
 export function filterRuntimeEnvironment(source,inherited){
  const keys=[...source.matchAll(/^\s*(?:export\s+)?([A-Z][A-Z0-9_]*)\s*=/gm)].map(match=>match[1]),env={};
- for(const key of ['SystemRoot','WINDIR','PATH','PATHEXT','COMSPEC','USERPROFILE','USERNAME','TEMP','TMP','HTTP_PROXY','HTTPS_PROXY','ALL_PROXY','NO_PROXY','http_proxy','https_proxy','all_proxy','no_proxy',...keys])if(inherited[key]!==undefined)env[key]=inherited[key];
+ // Providers may be configured in .env or the process environment, not only
+ // .env.local. Keep an explicit application allowlist, never all ambient secrets.
+ const providers=['BRAVE_SEARCH_API_KEY','BRAVE_SEARCH_BASE_URL','GOOGLE_PLACES_API_KEY','GOOGLE_PLACES_BASE_URL',
+  'SEARCHAPI_API_KEY','SEARCHAPI_BASE_URL','EXA_API_KEY','EXA_BASE_URL','TAVILY_API_KEY','TAVILY_BASE_URL',
+  'OPENROUTER_API_KEY','OPENROUTER_BASE_URL','GEMINI_SEARCH_MODEL','GEMINI_DISCOVERY_MODEL','MODEL_PROXY_URL','GEMINI_PROXY_URL','LEAD_WORKFLOW_EXECUTION_MODE'];
+ for(const key of ['SystemRoot','WINDIR','PATH','PATHEXT','COMSPEC','USERPROFILE','USERNAME','TEMP','TMP','HTTP_PROXY','HTTPS_PROXY','ALL_PROXY','NO_PROXY','http_proxy','https_proxy','all_proxy','no_proxy',...providers,...keys])if(inherited[key]!==undefined)env[key]=inherited[key];
+ if(!env.SEARCHAPI_API_KEY&&inherited['SearchApi.io_API_KEY'])env.SEARCHAPI_API_KEY=inherited['SearchApi.io_API_KEY'];
  for(const key of ['DATABASE_MIGRATION_URL','PAID_CALL_STAGE_OVERRIDE','PAID_CALL_STAGE_OVERRIDE_USER_ID','NODE_OPTIONS','LANGSMITH_API_KEY','LANGCHAIN_API_KEY'])delete env[key];
- Object.assign(env,{NODE_ENV:'production',NEXT_TELEMETRY_DISABLED:'1',LANGSMITH_TRACING:'false',LANGCHAIN_TRACING_V2:'false',LANGGRAPH_API_URL:'http://127.0.0.1:2024',ENABLE_MAIN_AGENT_LOCAL_BGE_SEARCH:'1',BGE_M3_SERVICE_URL:'http://127.0.0.1:8765',NO_PROXY:[env.NO_PROXY,'127.0.0.1','localhost','::1'].filter(Boolean).join(',')});return env;
+ Object.assign(env,{NODE_ENV:'production',NEXT_TELEMETRY_DISABLED:'1',LANGSMITH_TRACING:'false',LANGCHAIN_TRACING_V2:'false',LEAD_WORKFLOW_EXECUTION_MODE:env.LEAD_WORKFLOW_EXECUTION_MODE??'worker',LANGGRAPH_API_URL:'http://127.0.0.1:2024',ENABLE_MAIN_AGENT_LOCAL_BGE_SEARCH:'1',BGE_M3_SERVICE_URL:'http://127.0.0.1:8765',NO_PROXY:[env.NO_PROXY,'127.0.0.1','localhost','::1'].filter(Boolean).join(',')});return env;
 }
 export async function runtimeEnvironment(root){const {default:nextEnv}=await import('@next/env');nextEnv.loadEnvConfig(root);return filterRuntimeEnvironment(await readFile(resolve(root,'.env.local'),'utf8'),process.env);}
 export async function launch(component,root,env){

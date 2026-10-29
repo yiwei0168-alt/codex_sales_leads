@@ -1,0 +1,15 @@
+import {readFile,writeFile,mkdir,copyFile} from 'node:fs/promises';
+import {resolve} from 'node:path';import {fileURLToPath} from 'node:url';import {build} from 'esbuild';
+import {productNodeBuildOptions} from './lib/product-node-build.mjs';
+import {sha,validateConfig,nodePreloads} from './lib/local-runtime.mjs';
+const root=resolve(fileURLToPath(new URL('../',import.meta.url)));process.chdir(root);
+if(process.argv.length>2)throw Error('This command only configures the existing verified local runtime');
+const path=resolve('.local-runtime/config.json'),config=JSON.parse(await readFile(path,'utf8'));await validateConfig(config,root);
+await mkdir(resolve('.local-runtime/artifacts'),{recursive:true});const candidate=resolve('.local-runtime/lead-worker.build.mjs');
+await build({...productNodeBuildOptions(),entryPoints:[resolve('scripts/run-lead-workflow-worker.ts')],outfile:candidate});
+const hash=sha(await readFile(candidate)),artifact=resolve('.local-runtime/artifacts/lead-'+hash+'.mjs');await copyFile(candidate,artifact);
+const component={name:'lead',executable:config.nodeExecutable,args:[...nodePreloads(root),artifact],cwd:config.runtimeRoot,identityPaths:[artifact],startupMs:90000};
+const previous=config.components.findIndex(c=>c.name==='lead');if(previous>=0)config.components[previous]=component;else config.components.push(component);
+config.integrity[artifact]=hash;await validateConfig(config,root);
+await writeFile(resolve('.local-runtime/config-before-lead-worker.json'),await readFile(path));await writeFile(path,JSON.stringify(config,null,2)+'\n');
+console.log(JSON.stringify({configured:true,component:'lead',artifactSha256:hash,started:false,providerCalls:0}));

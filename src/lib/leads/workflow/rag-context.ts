@@ -52,13 +52,24 @@ export async function retrieveLeadRagContext(userId: string, plan: LeadSearchPla
   const embeddings = await embedTextsWithBge(specs.map((item) => item.question)).catch(() => []);
   await options.onEmbeddingUsage?.([]);
   const groups = await Promise.all(specs.map(async (spec, index) => {
-    const chunks = await hybridSearch(userId, spec.question, null, {
+    let chunks = await hybridSearch(userId, spec.question, null, {
       collections: [spec.collection],
       lexicalQuery: localKeywordQuery(spec.question),
       market: spec.collection === "industry" ? plan.countryCode : undefined,
       minAuthority: 1,
       structuredProductTerms: spec.collection === "product" ? structuredProductTerms(plan) : undefined,
     }, spec.limit, embeddings[index] ?? null);
+    if(spec.collection==='product'&&!chunks.some(chunk=>chunk.corroborated&&chunk.retrievalSignals.includes('structured'))){
+      // Legacy structured search accepts product families. V3 entity filters
+      // identify exact models: a family label must not hide current products.
+      // Broaden only this collection, keeping V3 authority and corroboration.
+      const broader=await hybridSearch(userId,spec.question,null,{
+        collections:['product'],lexicalQuery:localKeywordQuery(spec.question),minAuthority:1,
+      },spec.limit,embeddings[index]??null);
+      chunks=[...new Map([...chunks,...broader].map(chunk=>[chunk.id,chunk])).values()]
+        .sort((a,b)=>Number(b.corroborated&&b.retrievalSignals.includes('structured'))-Number(a.corroborated&&a.retrievalSignals.includes('structured')))
+        .slice(0,spec.limit);
+    }
     // Market-specific industry material is optional. Retry without the market
     // filter when a new country has no dedicated documents yet.
     const usable = chunks.length > 0 || spec.collection !== "industry"
