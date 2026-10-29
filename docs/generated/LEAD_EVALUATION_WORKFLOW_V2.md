@@ -770,13 +770,13 @@ flowchart TD
 | `src/lib/leads/global-search.ts` | `e203e2114b9b3d9121525eacda6053f2cdb4268885e11c0a60918bf0fbdb9f1f` |
 | `src/lib/leads/workflow/evidence-correction-agent.ts` | `b367b2c9a50367a4a65aae894758df21a27eea55ce63c9c32c5610d1df80c8c8` |
 | `src/lib/leads/workflow/evidence-packet.ts` | `b832b0ed99a9759c2656da65d65a004445ff63e1441b6cae5d5618b5fa889ba1` |
-| `src/lib/leads/workflow/qualification-agent.ts` | `c1fbe6054c6c713f1db8f2ea96b208005e693f92684e6efaa6a9469f1a63a56d` |
+| `src/lib/leads/workflow/qualification-agent.ts` | `aaa53fa72b137d37a0c7c5142eabae82f12daa67d8c920af19a5a5f3e0653c17` |
 | `src/lib/leads/workflow/assessment-cache.ts` | `fd85ce372411429490cd1f272575f337a91a543bdd2b0c06cb04c362842c4df4` |
 | `src/lib/leads/workflow/assessment-review-agent.ts` | `e4ab294e1641670bfae34778fe3ce81d46c838994751f86b891a4ce750095564` |
-| `src/providers/deepseek.ts` | `d72ee42bdeccfee5bd6079a47262f786312b11c78f0b27d48b6f7d5b26f9b373` |
+| `src/providers/deepseek.ts` | `28f6cd1c950bc387697673e900679bf906a9eec8493c0bfa4b072f5b1f7a1c28` |
 | `src/providers/discovery-contracts.ts` | `fa2f8b32bb6b7b2dae7a09835b4976810483ddbf789bcedd6968a0a646d88e2f` |
-| `src/providers/discovery.ts` | `284de4f0cba7d1241d4588a365638b3ab68dd081007c4c2d79aef93d80167c9b` |
-| `src/providers/resilient-ai.ts` | `cb22f39085dcdd301655e7c748c6f31477de7f8a5aa1139db561938103716811` |
+| `src/providers/discovery.ts` | `9ee4a8a052127e8ab5539ac4d3fe8ecb9cc1d7cef1e697deb8b2d9509bb1d2e6` |
+| `src/providers/resilient-ai.ts` | `94a44e6434c62f36d1d319e1505e570fb99b1b611461feb31d419fb187b24118` |
 | `src/providers/openrouter.ts` | `5c6db9671958ece7bf9272ba1bfa48cb9da058ac8160db446682ab071294d472` |
 | `db/migrations/034_model_account_cash_cost.sql` | `4790c7ad12eda543e197c84ddd77c4a5ce296b7871ccee799f3aa2262684bdbb` |
 | `src/providers/tavily.ts` | `b02257f8499a16b370ca42493e45bbbf53b7214b9f803203ab5e19ef80969eda` |
