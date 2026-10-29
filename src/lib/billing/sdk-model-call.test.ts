@@ -8,11 +8,23 @@ vi.mock("./policy",async original=>({...await original<typeof import("./policy")
 import {withSdkModelCall,sdkModelFetch} from "./sdk-model-call";
 import {withSpendContext} from "./context";
 import {BudgetDeniedError,PaidCallOutcomeUnknownError} from "./policy";
-import {IncompleteModelOutputError} from "./policy";
+import {IncompleteModelOutputError,ModelProviderResponseError} from "./policy";
 import {textOutputLimit} from "./text-output-policy";
 
 const metadata={provider:"fixture-provider",task:"fixture-task",promptVersion:"fixture-prompt-v1"};
 const scope={userId:"owner-a",operationId:"operation-a",stage:"fixture"};
+it.each([502,"private-provider-message"])("reports HTTP-200 provider errors without exposing raw text or retrying (%s)",async code=>{
+  const transport=vi.fn<typeof fetch>().mockResolvedValue(Response.json({error:{code,message:"private-provider-message"}}));
+  const model=new ChatOpenAI({apiKey:"fixture",model:"fixture-model",maxRetries:1,maxTokens:100,
+    configuration:{baseURL:"https://example.test",fetch:sdkModelFetch(transport)}});
+  const result=await withSpendContext(scope,()=>withSdkModelCall({...metadata,task:"lead-playbook"},()=>model.invoke("synthetic"))).catch(error=>error);
+  expect(result).toBeInstanceOf(ModelProviderResponseError);
+  expect(result.message).toContain("模型服务返回错误");
+  expect(result.message).not.toContain("private-provider-message");
+  expect(result.providerCode).toBe(code===502?502:null);
+  expect(transport).toHaveBeenCalledOnce();expect(mocks.reserve).toHaveBeenCalledOnce();
+  expect(mocks.settle.mock.calls[0][2]).toMatchObject({succeeded:false,outputIncomplete:true,reportedMicros:null});
+},15000);
 it("marks incomplete embedding batches as unsuccessful and prevents SDK replay",async()=>{
   const transport=vi.fn<typeof fetch>().mockResolvedValue(Response.json({data:[{index:0,embedding:[0.1]}],usage:{prompt_tokens:2,total_tokens:2}}));
   const sdk=new OpenAI({apiKey:"fixture",baseURL:"https://example.test",maxRetries:1,fetch:sdkModelFetch(transport)});

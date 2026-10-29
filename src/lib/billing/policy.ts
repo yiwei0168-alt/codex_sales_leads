@@ -22,6 +22,16 @@ export class IncompleteModelOutputError extends BudgetDeniedError {
   constructor(){super("model-output-incomplete");this.name="IncompleteModelOutputError";
     this.message="模型输出未完整结束，未记为成功；已保留本次费用记录并停止自动重试，请检查输出上限或服务商响应后恢复。";}
 }
+/** A gateway can return an error envelope with HTTP 200; do not call it token truncation. */
+export class ModelProviderResponseError extends BudgetDeniedError {
+  readonly providerCode:number|null;
+  constructor(code:unknown){
+    super("model-output-incomplete");
+    this.providerCode=typeof code==="number"&&Number.isInteger(code)&&code>=400&&code<=599?code:null;
+    this.name="ModelProviderResponseError";
+    this.message=`模型服务返回错误${this.providerCode===null?"":`（${this.providerCode}）`}，未产生可用结果；已保留本次调用记录并停止自动重试。请检查模型服务后恢复。`;
+  }
+}
 export const tariffSchema=z.object({
   key:z.string().min(1),origin:z.url(),pathname:z.string().startsWith("/"),model:z.string(),
   maximumChargeMicros:z.number().int().positive().max(1000000000000),

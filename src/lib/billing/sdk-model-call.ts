@@ -1,7 +1,7 @@
 import {AsyncLocalStorage} from "node:async_hooks";
 import {randomUUID} from "node:crypto";
 import {budgetedFetch} from "./paid-fetch";
-import {BudgetDeniedError,IncompleteModelOutputError} from "./policy";
+import {BudgetDeniedError,IncompleteModelOutputError,ModelProviderResponseError} from "./policy";
 import {textOutputCompletion} from "./text-output-policy";
 import {embeddingOutputCompletion} from "./embedding-output-policy";
 import {withModelAttempt, type ModelAttemptContext} from "./model-attempt-context";
@@ -48,6 +48,10 @@ export function sdkModelFetch(transport:typeof fetch=fetch):typeof fetch{
         let value:unknown=null;
         if(textOutputCompletion(state.metadata.task,{})!==undefined){
           try{value=await response.clone().json();}catch{/* Incomplete/unreadable output is not accepted. */}
+          if(value&&typeof value==="object"&&"error" in value&&value.error&&typeof value.error==="object"){
+            const failure=value.error as Record<string,unknown>;
+            throw new ModelProviderResponseError(failure.code);
+          }
           if(textOutputCompletion(state.metadata.task,value)==="incomplete")throw new IncompleteModelOutputError();
         }
       }

@@ -28,6 +28,10 @@ Plan generation explicitly disables streaming. LangGraph message listeners other
 
 Resume failed work from its original checkpoint after reviewing any paid-effect records. Do not blindly replay uncertain calls or erase completed effects. A multi-role company's qualification in one role does not automatically qualify it in another.
 
+Under the already confirmed MA05 policy, unknown text-call billing does not freeze ordinary work; at most one retry of the same model failure is allowed. A user reporting no visible provider record is an observation, not verified zero billing. Preserve the unknown record and explicitly track the single recovery attempt. Successful output remains non-replayable. Never convert absence from a dashboard into a verified-unbilled settlement.
+
+A provider error envelope inside HTTP 200 is still a failed model call. Show a sanitized numeric error code when available, retain the recorded response metadata and stop SDK retries; do not describe it as token-limit truncation or accept it as a successful plan.
+
 ## Verification status
 
 Local regression covers independent role targets, runtime environment forwarding, product retrieval fallback and a real LangGraph message-stream callback with intercepted model transport. The callback test reproduced `stream: true` before the fix and passes with `stream: false` afterward. These tests make no external model call and do not establish real discovery quality. Real role-by-role quality acceptance remains open.
