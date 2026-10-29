@@ -16,5 +16,5 @@ it('preserves explicitly rejected links and only inserts owned existing-customer
  const query=vi.fn().mockResolvedValue({rows:[]});
  await linkImportedCustomerMail({query} as unknown as PoolClient,'owner','message',['person@gmail.com'],'me@owner.test',customers);
  expect(query).toHaveBeenCalledWith(expect.stringContaining('on conflict(user_id,customer_id,message_id) do nothing'),['owner','message',['person']]);
- expect(query.mock.calls[0][0]).toContain("c.confirmed and c.customer_type='partner'");
+ expect(query.mock.calls[0][0]).toContain("c.customer_type='partner'");
 });

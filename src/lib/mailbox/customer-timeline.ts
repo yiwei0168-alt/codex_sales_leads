@@ -43,7 +43,7 @@ export async function listMailboxCustomers(userId:string,options:{country?:strin
  const items=await tenantQuery(userId,`select c.*, (select max(m.sent_at) from mailbox_customer_message l
   join mailbox_message m on m.user_id=l.user_id and m.id=l.message_id where l.user_id=c.user_id and l.customer_id=c.id and l.source<>'rejected') as last_contact
   from mailbox_customer c where user_id=$1 and ($2::text is null or coalesce(country,'unknown')=$2) and archived=$4
-   and (not $5::boolean or (confirmed and customer_type='partner')) and merged_into is null
+   and (not $5::boolean or (customer_type='partner')) and merged_into is null
   order by last_contact desc nulls last,c.name,c.id limit 21 offset $3`,params);
  const countries=await tenantQuery(userId,"select coalesce(country,'unknown') as country,count(*)::int as count from mailbox_customer where user_id=$1 and archived=$2 group by country order by country",[userId,options.archived??false]);
  return {items:items.slice(0,20),hasMore:items.length>20,countries};
@@ -51,15 +51,15 @@ export async function listMailboxCustomers(userId:string,options:{country?:strin
 export async function editMailboxCustomer(userId:string,input:unknown){
  const value=customerEditSchema.parse(input);
  return tenantTransaction(userId,async client=>{
-  const prior=(await client.query<{confirmed:boolean;customer_type:string|null}>(
-   'select confirmed,customer_type from mailbox_customer where user_id=$1 and id=$2 for update',[userId,value.id])).rows[0];
+  const prior=(await client.query<{archived:boolean;customer_type:string|null}>(
+   'select archived,customer_type from mailbox_customer where user_id=$1 and id=$2 for update',[userId,value.id])).rows[0];
   const updated=await client.query(`update mailbox_customer set name=$3,country=$4,customer_type=$5,notes=$6,confirmed=$7,archived=$8,
    revision=revision+1,updated_at=now() where user_id=$1 and id=$2 and revision=$9 returning *`,[userId,value.id,value.name,value.country,value.customer_type,value.notes,value.confirmed,value.archived,value.revision]);
   if(!updated.rowCount)throw new Error('公司已变化或不可访问，请刷新后再保存');
   const item=updated.rows[0];
   await client.query('insert into mailbox_customer_revision(user_id,customer_id,revision,snapshot) values($1,$2,$3,$4)',[userId,item.id,item.revision,JSON.stringify(item)]);
   // One-time local backfill when a company first becomes an existing customer.
-  if(item.confirmed&&item.customer_type==='partner'&&!item.archived&&(!prior?.confirmed||prior.customer_type!=='partner')){
+  if(item.customer_type==='partner'&&!item.archived&&(prior?.customer_type!=='partner'||prior.archived)){
    const identity=item as unknown as CustomerMailIdentity;
    const rows=(await client.query<{id:string;content_ciphertext:string;email:string}>(`select m.id,m.content_ciphertext,c.email
     from mailbox_message m join mailbox_connection c on c.id=m.connection_id and c.user_id=m.user_id

@@ -16,7 +16,7 @@ try{
  await c.query("update mailbox_work_job set status='completed' where id=$1",[jobs[0].id]);await c.query('select enqueue_due_mailbox_daily_sync()');
  jobs=(await c.query('select payload from mailbox_work_job where user_id=$1 order by created_at,id',[owner])).rows;assert.equal(jobs.length,2);
  assert.equal(new Set(jobs.map(j=>j.payload.from)).size,2);assert.equal((await c.query('select count(*)::int n from mailbox_work_job where user_id=$1',[other])).rows[0].n,0);
- await c.query("insert into mailbox_customer(id,user_id,identity_key,name,domain,confirmed,customer_type) values($1,$2,'domain:customer.invalid','Fixture','customer.invalid',true,'partner')",[customer,owner]);
+ await c.query("insert into mailbox_customer(id,user_id,identity_key,name,domain,confirmed,customer_type) values($1,$2,'domain:customer.invalid','Fixture','customer.invalid',false,'partner')",[customer,owner]);
  await c.query(`insert into mailbox_message(id,user_id,connection_id,folder_path,uid_validity,message_uid,direction,content_ciphertext,content_sha256)
   values($1,$2,$3,'INBOX','1',1,'inbound','synthetic-ciphertext',$4)`,[message,owner,connection,'a'.repeat(64)]);
  await c.query('set local role network_copilot_app');await c.query("select set_config('app.current_user_id',$1,true),set_config('app.current_user_role','member',true)",[owner]);
