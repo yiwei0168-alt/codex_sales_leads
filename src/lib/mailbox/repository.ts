@@ -5,6 +5,7 @@ import { ALIMAIL_IMAP_HOST, type MailboxConnectionInput } from "./connection-con
 import type { KimiMailboxLearningResult } from "./kimi";
 import { screenMailboxMessage, type MailboxScreeningBucket } from "./screening";
 import { matchImportedCompany } from "./company-links";
+import {linkImportedCustomerMail,loadAutoLinkCustomers} from './customer-auto-link';
 import type { PoolClient } from "pg";
 
 export interface MailboxSyncWorkerLease { jobId: string; leaseToken: string }
@@ -218,6 +219,7 @@ export async function persistMailboxImport(input: {
       `select model, product_name from product_catalog order by model limit 5000`,
     );
     const productTerms = products.rows.flatMap((item) => [item.model, item.product_name]);
+    const customerIdentities=input.messages.length?await loadAutoLinkCustomers(client,input.userId):[];
     for (const message of input.messages) {
       const contentCiphertext = encryptMailboxContent(input.userId, {
         subject: message.subject, bodyText: message.bodyText,
@@ -254,6 +256,7 @@ export async function persistMailboxImport(input: {
       );
       const stored = result.rows[0];
       await matchImportedCompany(client,input.userId,stored.id,[...message.sender,...message.recipients].map(item=>item.address),connection.rows[0].email);
+      await linkImportedCustomerMail(client,input.userId,stored.id,[...message.sender,...message.recipients].map(item=>item.address),connection.rows[0].email,customerIdentities);
       if (stored.inserted) imported += 1;
       storedMessages.push({ id: stored.id, inserted: stored.inserted, learningStatus: stored.learning_status, message });
     }

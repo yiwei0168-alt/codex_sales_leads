@@ -13,7 +13,7 @@ export default async function BusinessPage({ params, searchParams }: {
 }) {
   const { section } = await params;
   const query = await searchParams;
-  if (!["development", "knowledge", "tasks", "settings", "help"].includes(section)) notFound();
+  if (!["development", "mailbox", "knowledge", "tasks", "settings", "help"].includes(section)) notFound();
   const session = await getSession();
   if (!session) return <LoginScreen configured={await hasConfiguredUsers()} />;
   const workspace = await getCurrentWorkspace(session.userId);

@@ -15,7 +15,7 @@ vi.mock("imapflow", () => ({
       mock.fetches.push({ folder: this.folder, uids });
       for (const uid of uids) {
         if(uid===mock.omitUid)continue;
-        const message={ uid, source: uid===mock.emptySourceUid?undefined:Buffer.from(`From: source@example.invalid\r\nTo: owner@example.invalid\r\nSubject: Synthetic ${uid}\r\n\r\nBody ${uid}`) };
+        const message={ uid, internalDate:new Date(['2026-10-28T15:59:59Z','2026-10-28T16:00:00Z','2026-10-29T15:59:59Z','2026-10-29T16:00:00Z'][uid-1]),source: uid===mock.emptySourceUid?undefined:Buffer.from(`From: source@example.invalid\r\nTo: owner@example.invalid\r\nSubject: Synthetic ${uid}\r\n\r\nBody ${uid}`) };
         yield message;
         if(uid===mock.duplicateUid)yield message;
       }
@@ -69,4 +69,10 @@ it('fails without a cursor when the server returns a duplicate UID',async()=>{
  mock.inboxUids=[1,2];mock.duplicateUid=1;
  await expect(readAliMailMessages({email:'owner@example.invalid',password:'synthetic',host:'imap.example.invalid',
   cursors:new Map(),since:new Date('2026-10-01T00:00:00Z'),maxMessages:2})).rejects.toThrow('unexpected or duplicate UID');
+});
+
+it('filters the exact Beijing day before applying the sync page limit',async()=>{
+ const result=await readAliMailMessages({email:'owner@example.invalid',password:'synthetic',host:'imap.example.invalid',cursors:new Map(),since:new Date('2026-10-28T16:00:00Z'),before:new Date('2026-10-29T16:00:00Z'),strictDateRange:true,maxMessages:1});
+ expect(result.messages.map(m=>m.uid)).toEqual([2]);expect(result.discovered).toBe(2);
+ expect(result.cursors[0].lastUid).toBe(2);expect(result.cursors[1].lastUid).toBe(0);
 });

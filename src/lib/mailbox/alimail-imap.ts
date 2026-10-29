@@ -133,6 +133,7 @@ export async function readAliMailMessages(input: {
   cursors: Map<string, MailboxCursor>;
   since: Date;
   before?:Date;
+  strictDateRange?:boolean;
   folderScope?:"both"|"inbox"|"sent";
   knownMessages?:Set<string>;
   maxMessages: number;
@@ -156,8 +157,23 @@ export async function readAliMailMessages(input: {
         const uidValidity = client.mailbox.uidValidity.toString();
         const previous = input.cursors.get(folder.path);
         const lastUid = previous?.uidValidity === uidValidity ? previous.lastUid : 0;
-        const found = await client.search({ since: input.since,...(input.before?{before:input.before}:{}), ...(lastUid > 0 ? { uid: `${lastUid + 1}:*` } : {}) }, { uid: true });
-        const allUids = Array.isArray(found) ? found.filter((uid) => uid > lastUid&&!input.knownMessages?.has(`${folder.path}:${uidValidity}:${uid}`)).sort((a, b) => a - b) : [];
+        // IMAP SEARCH dates have day precision. Widen the search, then use
+        // INTERNALDATE to enforce the exact business-timezone day before paging.
+        const since=input.strictDateRange?new Date(Math.floor(input.since.getTime()/86400000)*86400000):input.since;
+        const before=input.strictDateRange&&input.before?new Date(Math.ceil(input.before.getTime()/86400000)*86400000):input.before;
+        const found = await client.search({ since,...(before?{before}:{}), ...(lastUid > 0 ? { uid: `${lastUid + 1}:*` } : {}) }, { uid: true });
+        let allUids = Array.isArray(found) ? found.filter((uid) => uid > lastUid&&!input.knownMessages?.has(`${folder.path}:${uidValidity}:${uid}`)).sort((a, b) => a - b) : [];
+        if(input.strictDateRange&&allUids.length){
+          const wanted=new Set(allUids),seen=new Set<number>(),inside=new Set<number>();
+          for await(const item of client.fetch(allUids,{uid:true,internalDate:true},{uid:true})){
+            if(!wanted.has(item.uid)||seen.has(item.uid)||!item.internalDate)throw Error('Mailbox date metadata unavailable');
+            seen.add(item.uid);const time=new Date(item.internalDate).getTime();
+            if(!Number.isFinite(time))throw Error('Mailbox date metadata invalid');
+            if(time>=input.since.getTime()&&(!input.before||time<input.before.getTime()))inside.add(item.uid);
+          }
+          if(seen.size!==wanted.size)throw Error('Mailbox date metadata incomplete');
+          allUids=allUids.filter(uid=>inside.has(uid));
+        }
         discovered += allUids.length;
         await input.onProgress?.({ phase: "fetching", folders: folders.length, discovered, processed: messages.length });
         const remaining = input.maxMessages - messages.length;

@@ -7,7 +7,7 @@ export async function GET(request:Request){
  const session=await requireApiSession();if(session instanceof Response)return session;
  const search=new URL(request.url).searchParams;const id=search.get('id');const offset=Math.max(0,Math.min(100000,Math.floor(Number(search.get('offset'))||0)));
  if(id){if(!z.uuid().safeParse(id).success)return Response.json({error:'无效公司'},{status:400});const result=await readCustomerTimeline(session.userId,id,offset);return result?Response.json(result):Response.json({error:'公司不存在'},{status:404});}
- return Response.json(await listMailboxCustomers(session.userId,{offset,country:search.get('country')||undefined,archived:search.get('archived')==='true'}));
+ return Response.json(await listMailboxCustomers(session.userId,{offset,country:search.get('country')||undefined,archived:search.get('archived')==='true',existingOnly:search.get('existingOnly')==='true'}));
 }
 export async function POST(request:Request){
  const session=await requireApiSession();if(session instanceof Response)return session;

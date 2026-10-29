@@ -428,3 +428,10 @@ a { color: inherit; }
 .ai-attachment-jobs { margin-top: 16px; overflow-wrap: anywhere; }
 .ai-attachment-jobs article { padding: 8px 0; border-bottom: 1px solid var(--line); }
 .ai-attachment-jobs nav { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+
+/* Mail automation follows the existing violet workspace controls. */
+.mailbox-daily-sync { padding: 14px 0; border-top: 1px solid var(--line); margin-top: 12px; }
+.mailbox-daily-sync label { display: flex; align-items: center; gap: 9px; font-weight: 600; }
+.mailbox-daily-sync input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--primary); flex: 0 0 auto; }
+.mailbox-daily-sync p { max-width: 64ch; color: var(--muted); line-height: 1.65; margin: 8px 0; }
+.mailbox-daily-sync small { display: block; color: var(--muted); line-height: 1.6; overflow-wrap: anywhere; }

@@ -44,6 +44,7 @@ export async function syncAliMail(userId: string, connectionId: string, options:
   folderScope?:"both"|"inbox"|"sent";
   from?:string;
   through?:string;
+  timeZone?:'Asia/Shanghai';
 } = {}, workerLease?: MailboxSyncWorkerLease): Promise<{ runId: string; imported: number; skipped: number; discovered: number; awaitingReview: number }> {
   const connection = await getMailboxConnection(userId, connectionId);
   if (!connection || connection.status === "disabled") throw new Error("Mailbox connection not found");
@@ -61,7 +62,7 @@ export async function syncAliMail(userId: string, connectionId: string, options:
       password: connectionPassword(connection),
       host:connection.imapHost,port:connection.imapPort,
       cursors: options.from?new Map():await getMailboxCursors(userId, connectionId),
-      ...range,folderScope:options.folderScope,
+      ...range,folderScope:options.folderScope,strictDateRange:Boolean(options.timeZone),
       knownMessages:new Set(existing.map(item=>`${item.folder_path}:${item.uid_validity}:${item.message_uid}`)),
       maxMessages,
       onProgress: (progress) => updateMailboxSyncProgress({

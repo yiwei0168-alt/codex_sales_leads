@@ -19,6 +19,7 @@ import { AgentLibrary } from "@/components/agent-library";
 import { KnowledgeBase } from "@/components/knowledge-base";
 import { TaskCenter } from "@/components/task-center";
 import { MailboxWorkspace } from "@/components/mailbox-workspace";
+import {MailboxCustomers} from '@/components/mailbox-customers';
 import {
   primaryRole,
   type AccountTier,
@@ -335,17 +336,18 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
     router.refresh();
   }
 
-  const marketViews: View[] = ["overview", "results", "map"];
-  const developmentViews: View[] = ["opportunities", "assistant", "mailbox"];
+  const marketViews: View[] = ["overview", "results", "map", "customers"];
+  const developmentViews: View[] = ["opportunities", "assistant"];
   const isMarket = marketViews.includes(view), isDevelopment = developmentViews.includes(view);
   const navItems: Array<{ id: View; label: string; active: boolean }> = [
     { id: "overview", label: "市场与线索", active: isMarket },
     { id: "opportunities", label: "客户开发", active: isDevelopment },
+    { id: "mailbox", label: "邮箱", active: view === "mailbox" },
     { id: "knowledge", label: "知识库", active: view === "knowledge" },
   ];
-  const title = isMarket ? "市场与线索" : isDevelopment ? "客户开发" : ({home:"对话", knowledge:"知识库", tasks:"任务记录", settings:"账户与设置", help:"使用说明"} as Partial<Record<View,string>>)[view];
-  const tabs: Array<{id:View;label:string}> = isMarket ? [{id:"overview",label:"市场概览"},{id:"results",label:"销售线索"},{id:"map",label:"渠道关系"}]
-    : isDevelopment ? [{id:"opportunities",label:"机会"},{id:"assistant",label:"开发信"},{id:"mailbox",label:"邮箱"}] : [];
+  const title = isMarket ? "市场与线索" : isDevelopment ? "客户开发" : ({home:"对话", mailbox:"邮箱", knowledge:"知识库", tasks:"任务记录", settings:"账户与设置", help:"使用说明"} as Partial<Record<View,string>>)[view];
+  const tabs: Array<{id:View;label:string}> = isMarket ? [{id:"overview",label:"市场概览"},{id:"results",label:"销售线索"},{id:"map",label:"渠道关系"},{id:"customers",label:"现有客户"}]
+    : isDevelopment ? [{id:"opportunities",label:"机会"},{id:"assistant",label:"开发信"}] : [];
 
   return (
     <div className={`app-shell ${collapsed ? "sidebar-collapsed" : ""}`}>
@@ -385,7 +387,7 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
         <header className="topbar">
           <button className="mobile-nav-trigger" aria-label="打开导航菜单" aria-controls="primary-navigation" aria-expanded={mobileNavOpen} onClick={() => setMobileNavOpen(true)}><span/><span/><span/></button>
           {collapsed && <button className="sidebar-expand" aria-label="展开侧栏" onClick={()=>setCollapsed(false)}>☰</button>}
-          <div className="breadcrumbs">{view !== "home" ? <><button onClick={()=>setView("home")}>返回对话</button>{view==="mailbox"&&<strong> · 客户开发 / 邮箱</strong>}</> : <strong>销售工作台</strong>}</div>
+          <div className="breadcrumbs">{view !== "home" ? <><button onClick={()=>setView("home")}>返回对话</button>{view==="mailbox"&&<strong> · 邮箱</strong>}</> : <strong>销售工作台</strong>}</div>
           <div className="top-actions">{view !== "home" && <button onClick={()=>{setRefreshVersion(value=>value+1);router.refresh();}} aria-label="刷新当前页面">{view==="mailbox"?"刷新":"刷新当前页面"}</button>}</div>
         </header>
 
@@ -410,6 +412,7 @@ export function CopilotDemo({ initialWorkspace, userName = "Workspace Owner", in
           {view === "tasks" && <TaskCenter key={refreshVersion} />}
           {view === "knowledge" && <KnowledgeBase key={refreshVersion} initialTab={initialTab} />}
           {view === "mailbox" && <MailboxWorkspace key={refreshVersion} />}
+          {view === "customers" && <MailboxCustomers key={refreshVersion} initialCountry={country} />}
           {view === "settings" && <><section className="account-summary"><strong>{userName}</strong><button className="secondary-button" onClick={logout}>退出登录</button></section><AgentLibrary key={refreshVersion} /></>}
           {view === "help" && <section className="panel help-copy"><h2>从一个问题开始</h2><p>点击“新对话”描述目标，发送第一条消息后保存对话。当前任务进度、异常和待批准操作留在对应对话中。</p><h2>找到业务资料</h2><p>在“市场与线索”切换国家、查看已保存线索与渠道关系。在“客户开发”选择公司，查看机会、准备开发信并管理邮箱。“知识库”提供资料、知识问答和按权限展示的审核。</p><h2>核对后执行</h2><p>执行前请阅读批准卡上的最终内容。发送邮件和删除等操作需要明确批准；批准后的真实执行结果显示在对话中。</p><button className="secondary-button" onClick={()=>setView("tasks")}>查看任务记录</button></section>}
         </div>

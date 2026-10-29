@@ -2,6 +2,7 @@ import {z} from 'zod';
 import {tenantQuery,tenantTransaction} from '@/lib/rag/db';
 import {decryptMailboxContent} from './crypto';
 import {getMailboxMessageForReview} from './repository';
+import {linkImportedCustomerMail,type CustomerMailIdentity} from './customer-auto-link';
 
 const publicDomains=new Set(['gmail.com','outlook.com','hotmail.com','live.com','yahoo.com','qq.com','163.com','126.com','icloud.com','aol.com','proton.me','protonmail.com']);
 export function customerIdentity(address:string){
@@ -37,11 +38,12 @@ export async function discoverMailboxCustomers(userId:string,offset=0){
  }
  return {processed:rows.length,nextOffset:offset+rows.length,hasMore:rows.length===100};
 }
-export async function listMailboxCustomers(userId:string,options:{country?:string;offset?:number;archived?:boolean}={}){
- const params=[userId,options.country||null,options.offset??0,options.archived??false];
+export async function listMailboxCustomers(userId:string,options:{country?:string;offset?:number;archived?:boolean;existingOnly?:boolean}={}){
+ const params=[userId,options.country||null,options.offset??0,options.archived??false,options.existingOnly??false];
  const items=await tenantQuery(userId,`select c.*, (select max(m.sent_at) from mailbox_customer_message l
   join mailbox_message m on m.user_id=l.user_id and m.id=l.message_id where l.user_id=c.user_id and l.customer_id=c.id and l.source<>'rejected') as last_contact
   from mailbox_customer c where user_id=$1 and ($2::text is null or coalesce(country,'unknown')=$2) and archived=$4
+   and (not $5::boolean or (confirmed and customer_type='partner')) and merged_into is null
   order by last_contact desc nulls last,c.name,c.id limit 21 offset $3`,params);
  const countries=await tenantQuery(userId,"select coalesce(country,'unknown') as country,count(*)::int as count from mailbox_customer where user_id=$1 and archived=$2 group by country order by country",[userId,options.archived??false]);
  return {items:items.slice(0,20),hasMore:items.length>20,countries};
@@ -49,11 +51,24 @@ export async function listMailboxCustomers(userId:string,options:{country?:strin
 export async function editMailboxCustomer(userId:string,input:unknown){
  const value=customerEditSchema.parse(input);
  return tenantTransaction(userId,async client=>{
+  const prior=(await client.query<{confirmed:boolean;customer_type:string|null}>(
+   'select confirmed,customer_type from mailbox_customer where user_id=$1 and id=$2 for update',[userId,value.id])).rows[0];
   const updated=await client.query(`update mailbox_customer set name=$3,country=$4,customer_type=$5,notes=$6,confirmed=$7,archived=$8,
    revision=revision+1,updated_at=now() where user_id=$1 and id=$2 and revision=$9 returning *`,[userId,value.id,value.name,value.country,value.customer_type,value.notes,value.confirmed,value.archived,value.revision]);
   if(!updated.rowCount)throw new Error('公司已变化或不可访问，请刷新后再保存');
   const item=updated.rows[0];
   await client.query('insert into mailbox_customer_revision(user_id,customer_id,revision,snapshot) values($1,$2,$3,$4)',[userId,item.id,item.revision,JSON.stringify(item)]);
+  // One-time local backfill when a company first becomes an existing customer.
+  if(item.confirmed&&item.customer_type==='partner'&&!item.archived&&(!prior?.confirmed||prior.customer_type!=='partner')){
+   const identity=item as unknown as CustomerMailIdentity;
+   const rows=(await client.query<{id:string;content_ciphertext:string;email:string}>(`select m.id,m.content_ciphertext,c.email
+    from mailbox_message m join mailbox_connection c on c.id=m.connection_id and c.user_id=m.user_id
+    where m.user_id=$1 and m.content_ciphertext is not null and not coalesce((m.metadata->>'rawContentPurged')::boolean,false)
+     and not exists(select 1 from mailbox_customer_message l where l.user_id=m.user_id and l.message_id=m.id and l.customer_id=$2)`,[userId,item.id])).rows;
+   for(const row of rows){const mail=decryptMailboxContent(userId,row.content_ciphertext);
+    const participants=z.array(z.object({address:z.string()})).parse([...mail.sender,...mail.recipients]);
+    await linkImportedCustomerMail(client,userId,row.id,participants.map(p=>p.address),row.email,[identity]);}
+  }
   return item;
  });
 }
