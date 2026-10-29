@@ -137,18 +137,23 @@ export async function buildLeadMarketPlaybook(plan: LeadSearchPlan, citations: L
   const config = plannerConfiguration();
   if (!config) return buildStandardLeadMarketPlaybook(plan, citations, "OpenRouter lead-planner credentials are not configured.");
   const pinnedSol=config.model==="openai/gpt-5.6-sol";
+  // Current Anthropic routes accept max_tokens and omit temperature.
+  const anthropic=config.model.startsWith("anthropic/");
+  const usesMaxTokens=pinnedSol||anthropic;
   const model = new ChatOpenAI({
     apiKey: config.apiKey,
     model: config.model,
-    ...(!pinnedSol?{temperature:0}:{}),
-    ...(pinnedSol?{maxTokens:textOutputLimit("lead-playbook")}:{}),
-    maxRetries: 2,
+    ...(!pinnedSol&&!anthropic?{temperature:0}:{}),
+    ...(usesMaxTokens?{maxTokens:textOutputLimit("lead-playbook")}:{}),
+    // The SDK parses schema JSON inside its retry boundary. A parser failure
+    // after HTTP success must not purchase the same plan again.
+    maxRetries: 0,
     timeout: 90_000,
     streamUsage: false,
     // Graph message listeners must not change this buffered structured-output contract.
     disableStreaming: true,
     modelKwargs: { provider: config.providerPreferences,
-      ...(!pinnedSol?{max_completion_tokens:textOutputLimit("lead-playbook")}:{}) },
+      ...(!usesMaxTokens?{max_completion_tokens:textOutputLimit("lead-playbook")}:{}) },
     configuration: { baseURL: config.baseUrl, defaultHeaders: config.defaultHeaders,fetch:sdkModelFetch() },
   }).withStructuredOutput(leadMarketPlaybookModelSchema, {
     name: "lead_market_playbook",

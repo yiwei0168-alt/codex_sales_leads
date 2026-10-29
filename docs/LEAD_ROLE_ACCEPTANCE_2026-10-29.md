@@ -32,6 +32,10 @@ Under the already confirmed MA05 policy, unknown text-call billing does not free
 
 A provider error envelope inside HTTP 200 is still a failed model call. Show a sanitized numeric error code when available, retain the recorded response metadata and stop SDK retries; do not describe it as token-limit truncation or accept it as a successful plan.
 
+An explicitly authorized alternate planner uses `LEAD_PLANNER_MODEL`, leaving the global generation model and chat-mode routes unchanged. Record the actual model used and keep the original failed attempts. Verify strict schema output with a synthetic input before resuming the original business checkpoint. Current Anthropic planner requests omit temperature and use `max_tokens`; the original pinned OpenAI request contract remains unchanged. Alternative-model results establish only that model's behavior.
+
+The planning SDK has no automatic retries: its structured-output parser runs inside a retry boundary and can otherwise resend after HTTP success. A local malformed-JSON response reproduced three transport calls before this fix and one afterward. Existing non-pinned-model parse failures may use the explicitly labeled deterministic fallback; it must never be presented as recovered model output. If a prior completed response is unavailable, preserve its record and disclose any rules-based recovery rather than repurchasing or inventing the missing answer.
+
 ## Verification status
 
 Local regression covers independent role targets, runtime environment forwarding, product retrieval fallback and a real LangGraph message-stream callback with intercepted model transport. The callback test reproduced `stream: true` before the fix and passes with `stream: false` afterward. These tests make no external model call and do not establish real discovery quality. Real role-by-role quality acceptance remains open.
